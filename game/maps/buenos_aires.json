@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "buenos_aires",
-  "revision": 2,
+  "revision": 3,
   "width": 20,
   "height": 16,
   "metadata": {
@@ -74,14 +74,14 @@
     {
       "x": 9,
       "y": 0,
-      "type": "road",
+      "type": "grass",
       "blocked": false,
       "cover": 0
     },
     {
       "x": 10,
       "y": 0,
-      "type": "road",
+      "type": "grass",
       "blocked": false,
       "cover": 0
     },
@@ -214,14 +214,14 @@
     {
       "x": 9,
       "y": 1,
-      "type": "road",
+      "type": "grass",
       "blocked": false,
       "cover": 0
     },
     {
       "x": 10,
       "y": 1,
-      "type": "road",
+      "type": "grass",
       "blocked": false,
       "cover": 0
     },
@@ -354,14 +354,14 @@
     {
       "x": 9,
       "y": 2,
-      "type": "road",
+      "type": "grass",
       "blocked": false,
       "cover": 0
     },
     {
       "x": 10,
       "y": 2,
-      "type": "road",
+      "type": "grass",
       "blocked": false,
       "cover": 0
     },
@@ -494,14 +494,14 @@
     {
       "x": 9,
       "y": 3,
-      "type": "road",
+      "type": "grass",
       "blocked": false,
       "cover": 0
     },
     {
       "x": 10,
       "y": 3,
-      "type": "road",
+      "type": "grass",
       "blocked": false,
       "cover": 0
     },
@@ -634,14 +634,14 @@
     {
       "x": 9,
       "y": 4,
-      "type": "road",
+      "type": "grass",
       "blocked": false,
       "cover": 0
     },
     {
       "x": 10,
       "y": 4,
-      "type": "road",
+      "type": "grass",
       "blocked": false,
       "cover": 0
     },
@@ -746,51 +746,51 @@
     {
       "x": 5,
       "y": 5,
-      "type": "stone",
+      "type": "grass",
       "blocked": false,
-      "cover": 10
+      "cover": 0
     },
     {
       "x": 6,
       "y": 5,
-      "type": "stone",
+      "type": "grass",
       "blocked": false,
-      "cover": 10
+      "cover": 0
     },
     {
       "x": 7,
       "y": 5,
-      "type": "stone",
+      "type": "grass",
       "blocked": false,
-      "cover": 10
+      "cover": 0
     },
     {
       "x": 8,
       "y": 5,
-      "type": "stone",
+      "type": "grass",
       "blocked": false,
-      "cover": 10
+      "cover": 0
     },
     {
       "x": 9,
       "y": 5,
-      "type": "road",
+      "type": "grass",
       "blocked": false,
       "cover": 0
     },
     {
       "x": 10,
       "y": 5,
-      "type": "road",
+      "type": "grass",
       "blocked": false,
       "cover": 0
     },
     {
       "x": 11,
       "y": 5,
-      "type": "stone",
+      "type": "grass",
       "blocked": false,
-      "cover": 10
+      "cover": 0
     },
     {
       "x": 12,
@@ -802,9 +802,9 @@
     {
       "x": 13,
       "y": 5,
-      "type": "stone",
+      "type": "grass",
       "blocked": false,
-      "cover": 10
+      "cover": 0
     },
     {
       "x": 14,
@@ -2253,17 +2253,62 @@
   "buildings": [
     {
       "id": "buenos_aires:building",
-      "name": "Casa del sector",
-      "x": 3,
-      "y": 1,
-      "width": 5,
-      "height": 3,
+      "name": "Cabildo de Buenos Aires",
+      "x": 1,
+      "y": 0,
+      "width": 11,
+      "height": 6,
       "roof": "tile",
       "material": "adobe",
+      "architecture": "cabildo",
       "rooms": [
         {
           "id": "buenos_aires:building:interior",
           "cells": [
+            {
+              "x": 2,
+              "y": 1
+            },
+            {
+              "x": 3,
+              "y": 1
+            },
+            {
+              "x": 4,
+              "y": 1
+            },
+            {
+              "x": 5,
+              "y": 1
+            },
+            {
+              "x": 6,
+              "y": 1
+            },
+            {
+              "x": 7,
+              "y": 1
+            },
+            {
+              "x": 8,
+              "y": 1
+            },
+            {
+              "x": 9,
+              "y": 1
+            },
+            {
+              "x": 10,
+              "y": 1
+            },
+            {
+              "x": 2,
+              "y": 2
+            },
+            {
+              "x": 3,
+              "y": 2
+            },
             {
               "x": 4,
               "y": 2
@@ -2275,14 +2320,125 @@
             {
               "x": 6,
               "y": 2
+            },
+            {
+              "x": 7,
+              "y": 2
+            },
+            {
+              "x": 8,
+              "y": 2
+            },
+            {
+              "x": 9,
+              "y": 2
+            },
+            {
+              "x": 10,
+              "y": 2
+            },
+            {
+              "x": 2,
+              "y": 3
+            },
+            {
+              "x": 3,
+              "y": 3
+            },
+            {
+              "x": 4,
+              "y": 3
+            },
+            {
+              "x": 5,
+              "y": 3
+            },
+            {
+              "x": 6,
+              "y": 3
+            },
+            {
+              "x": 7,
+              "y": 3
+            },
+            {
+              "x": 8,
+              "y": 3
+            },
+            {
+              "x": 9,
+              "y": 3
+            },
+            {
+              "x": 10,
+              "y": 3
+            },
+            {
+              "x": 2,
+              "y": 4
+            },
+            {
+              "x": 3,
+              "y": 4
+            },
+            {
+              "x": 4,
+              "y": 4
+            },
+            {
+              "x": 5,
+              "y": 4
+            },
+            {
+              "x": 6,
+              "y": 4
+            },
+            {
+              "x": 7,
+              "y": 4
+            },
+            {
+              "x": 8,
+              "y": 4
+            },
+            {
+              "x": 9,
+              "y": 4
+            },
+            {
+              "x": 10,
+              "y": 4
             }
           ]
         }
       ],
+      "kind": "cabildo",
       "walls": [
         {
+          "x": 1,
+          "y": 0,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "buenos_aires:building",
+          "roomId": null
+        },
+        {
+          "x": 2,
+          "y": 0,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "buenos_aires:building",
+          "roomId": null
+        },
+        {
           "x": 3,
-          "y": 1,
+          "y": 0,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2293,7 +2449,7 @@
         },
         {
           "x": 4,
-          "y": 1,
+          "y": 0,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2304,7 +2460,7 @@
         },
         {
           "x": 5,
-          "y": 1,
+          "y": 0,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2315,7 +2471,7 @@
         },
         {
           "x": 6,
-          "y": 1,
+          "y": 0,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2326,7 +2482,7 @@
         },
         {
           "x": 7,
-          "y": 1,
+          "y": 0,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2336,8 +2492,52 @@
           "roomId": null
         },
         {
-          "x": 3,
-          "y": 2,
+          "x": 8,
+          "y": 0,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "buenos_aires:building",
+          "roomId": null
+        },
+        {
+          "x": 9,
+          "y": 0,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "buenos_aires:building",
+          "roomId": null
+        },
+        {
+          "x": 10,
+          "y": 0,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "buenos_aires:building",
+          "roomId": null
+        },
+        {
+          "x": 11,
+          "y": 0,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "buenos_aires:building",
+          "roomId": null
+        },
+        {
+          "x": 1,
+          "y": 1,
           "type": "window",
           "blocked": true,
           "blocksSight": false,
@@ -2347,7 +2547,18 @@
           "roomId": null
         },
         {
-          "x": 7,
+          "x": 11,
+          "y": 1,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "buenos_aires:building",
+          "roomId": null
+        },
+        {
+          "x": 1,
           "y": 2,
           "type": "wall",
           "blocked": true,
@@ -2358,8 +2569,85 @@
           "roomId": null
         },
         {
-          "x": 3,
+          "x": 11,
+          "y": 2,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "buenos_aires:building",
+          "roomId": null
+        },
+        {
+          "x": 1,
           "y": 3,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "buenos_aires:building",
+          "roomId": null
+        },
+        {
+          "x": 11,
+          "y": 3,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "buenos_aires:building",
+          "roomId": null
+        },
+        {
+          "x": 1,
+          "y": 4,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "buenos_aires:building",
+          "roomId": null
+        },
+        {
+          "x": 11,
+          "y": 4,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "buenos_aires:building",
+          "roomId": null
+        },
+        {
+          "x": 1,
+          "y": 5,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "buenos_aires:building",
+          "roomId": null
+        },
+        {
+          "x": 2,
+          "y": 5,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "buenos_aires:building",
+          "roomId": null
+        },
+        {
+          "x": 3,
+          "y": 5,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2370,7 +2658,7 @@
         },
         {
           "x": 4,
-          "y": 3,
+          "y": 5,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2381,7 +2669,18 @@
         },
         {
           "x": 5,
-          "y": 3,
+          "y": 5,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "buenos_aires:building",
+          "roomId": null
+        },
+        {
+          "x": 6,
+          "y": 5,
           "type": "door",
           "blocked": true,
           "blocksSight": true,
@@ -2394,8 +2693,8 @@
           "locked": false
         },
         {
-          "x": 6,
-          "y": 3,
+          "x": 7,
+          "y": 5,
           "type": "door",
           "blocked": true,
           "blocksSight": true,
@@ -2408,8 +2707,41 @@
           "locked": false
         },
         {
-          "x": 7,
-          "y": 3,
+          "x": 8,
+          "y": 5,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "buenos_aires:building",
+          "roomId": null
+        },
+        {
+          "x": 9,
+          "y": 5,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "buenos_aires:building",
+          "roomId": null
+        },
+        {
+          "x": 10,
+          "y": 5,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "buenos_aires:building",
+          "roomId": null
+        },
+        {
+          "x": 11,
+          "y": 5,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2418,33 +2750,41 @@
           "buildingId": "buenos_aires:building",
           "roomId": null
         }
-      ],
-      "kind": "cabildo",
-      "wallFinish": "limewash",
-      "roofFinish": "clay",
-      "doorStyle": "panelled",
-      "windowStyle": "barred"
+      ]
     },
     {
       "id": "buenos_aires:house-0",
-      "name": "Casa 2 del poblado",
-      "x": 11,
-      "y": 1,
-      "width": 6,
-      "height": 3,
+      "name": "Pulpería del poblado",
+      "x": 13,
+      "y": 0,
+      "width": 7,
+      "height": 6,
       "roof": "tile",
       "material": "adobe",
+      "architecture": "pulperia",
       "rooms": [
         {
           "id": "buenos_aires:house-0:interior",
           "cells": [
             {
-              "x": 12,
-              "y": 2
+              "x": 14,
+              "y": 1
             },
             {
-              "x": 13,
-              "y": 2
+              "x": 15,
+              "y": 1
+            },
+            {
+              "x": 16,
+              "y": 1
+            },
+            {
+              "x": 17,
+              "y": 1
+            },
+            {
+              "x": 18,
+              "y": 1
             },
             {
               "x": 14,
@@ -2453,14 +2793,68 @@
             {
               "x": 15,
               "y": 2
+            },
+            {
+              "x": 16,
+              "y": 2
+            },
+            {
+              "x": 17,
+              "y": 2
+            },
+            {
+              "x": 18,
+              "y": 2
+            },
+            {
+              "x": 14,
+              "y": 3
+            },
+            {
+              "x": 15,
+              "y": 3
+            },
+            {
+              "x": 16,
+              "y": 3
+            },
+            {
+              "x": 17,
+              "y": 3
+            },
+            {
+              "x": 18,
+              "y": 3
+            },
+            {
+              "x": 14,
+              "y": 4
+            },
+            {
+              "x": 15,
+              "y": 4
+            },
+            {
+              "x": 16,
+              "y": 4
+            },
+            {
+              "x": 17,
+              "y": 4
+            },
+            {
+              "x": 18,
+              "y": 4
             }
           ]
         }
       ],
+      "purpose": "bar",
+      "kind": "pulperia",
       "walls": [
         {
-          "x": 11,
-          "y": 1,
+          "x": 13,
+          "y": 0,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2470,8 +2864,63 @@
           "roomId": null
         },
         {
-          "x": 12,
-          "y": 1,
+          "x": 14,
+          "y": 0,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "buenos_aires:house-0",
+          "roomId": null
+        },
+        {
+          "x": 15,
+          "y": 0,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "buenos_aires:house-0",
+          "roomId": null
+        },
+        {
+          "x": 16,
+          "y": 0,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "buenos_aires:house-0",
+          "roomId": null
+        },
+        {
+          "x": 17,
+          "y": 0,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "buenos_aires:house-0",
+          "roomId": null
+        },
+        {
+          "x": 18,
+          "y": 0,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "buenos_aires:house-0",
+          "roomId": null
+        },
+        {
+          "x": 19,
+          "y": 0,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2483,50 +2932,6 @@
         {
           "x": 13,
           "y": 1,
-          "type": "wall",
-          "blocked": true,
-          "blocksSight": true,
-          "cover": 40,
-          "material": "adobe",
-          "buildingId": "buenos_aires:house-0",
-          "roomId": null
-        },
-        {
-          "x": 14,
-          "y": 1,
-          "type": "wall",
-          "blocked": true,
-          "blocksSight": true,
-          "cover": 40,
-          "material": "adobe",
-          "buildingId": "buenos_aires:house-0",
-          "roomId": null
-        },
-        {
-          "x": 15,
-          "y": 1,
-          "type": "wall",
-          "blocked": true,
-          "blocksSight": true,
-          "cover": 40,
-          "material": "adobe",
-          "buildingId": "buenos_aires:house-0",
-          "roomId": null
-        },
-        {
-          "x": 16,
-          "y": 1,
-          "type": "wall",
-          "blocked": true,
-          "blocksSight": true,
-          "cover": 40,
-          "material": "adobe",
-          "buildingId": "buenos_aires:house-0",
-          "roomId": null
-        },
-        {
-          "x": 11,
-          "y": 2,
           "type": "window",
           "blocked": true,
           "blocksSight": false,
@@ -2536,7 +2941,18 @@
           "roomId": null
         },
         {
-          "x": 16,
+          "x": 19,
+          "y": 1,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "buenos_aires:house-0",
+          "roomId": null
+        },
+        {
+          "x": 13,
           "y": 2,
           "type": "wall",
           "blocked": true,
@@ -2547,19 +2963,8 @@
           "roomId": null
         },
         {
-          "x": 11,
-          "y": 3,
-          "type": "wall",
-          "blocked": true,
-          "blocksSight": true,
-          "cover": 40,
-          "material": "adobe",
-          "buildingId": "buenos_aires:house-0",
-          "roomId": null
-        },
-        {
-          "x": 12,
-          "y": 3,
+          "x": 19,
+          "y": 2,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2580,22 +2985,63 @@
           "roomId": null
         },
         {
-          "x": 14,
+          "x": 19,
           "y": 3,
-          "type": "door",
+          "type": "wall",
           "blocked": true,
           "blocksSight": true,
-          "cover": 0,
+          "cover": 40,
           "material": "adobe",
           "buildingId": "buenos_aires:house-0",
-          "roomId": null,
-          "doorId": "buenos_aires:house-0:door:14:3",
-          "open": false,
-          "locked": false
+          "roomId": null
+        },
+        {
+          "x": 13,
+          "y": 4,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "buenos_aires:house-0",
+          "roomId": null
+        },
+        {
+          "x": 19,
+          "y": 4,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "buenos_aires:house-0",
+          "roomId": null
+        },
+        {
+          "x": 13,
+          "y": 5,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "buenos_aires:house-0",
+          "roomId": null
+        },
+        {
+          "x": 14,
+          "y": 5,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "buenos_aires:house-0",
+          "roomId": null
         },
         {
           "x": 15,
-          "y": 3,
+          "y": 5,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2606,7 +3052,43 @@
         },
         {
           "x": 16,
-          "y": 3,
+          "y": 5,
+          "type": "door",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 0,
+          "material": "adobe",
+          "buildingId": "buenos_aires:house-0",
+          "roomId": null,
+          "doorId": "buenos_aires:house-0:door:16:5",
+          "open": false,
+          "locked": false
+        },
+        {
+          "x": 17,
+          "y": 5,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "buenos_aires:house-0",
+          "roomId": null
+        },
+        {
+          "x": 18,
+          "y": 5,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "buenos_aires:house-0",
+          "roomId": null
+        },
+        {
+          "x": 19,
+          "y": 5,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2615,26 +3097,54 @@
           "buildingId": "buenos_aires:house-0",
           "roomId": null
         }
-      ],
-      "wallFinish": "ochre",
-      "roofFinish": "clay",
-      "doorStyle": "double",
-      "windowStyle": "lattice",
-      "kind": "pulperia"
+      ]
     },
     {
       "id": "buenos_aires:house-1",
-      "name": "Casa 3 del poblado",
-      "x": 4,
-      "y": 12,
-      "width": 4,
-      "height": 3,
+      "name": "Pulpería",
+      "x": 1,
+      "y": 11,
+      "width": 7,
+      "height": 5,
       "roof": "tile",
       "material": "adobe",
+      "architecture": "pulperia",
       "rooms": [
         {
           "id": "buenos_aires:house-1:interior",
           "cells": [
+            {
+              "x": 2,
+              "y": 12
+            },
+            {
+              "x": 3,
+              "y": 12
+            },
+            {
+              "x": 4,
+              "y": 12
+            },
+            {
+              "x": 5,
+              "y": 12
+            },
+            {
+              "x": 6,
+              "y": 12
+            },
+            {
+              "x": 2,
+              "y": 13
+            },
+            {
+              "x": 3,
+              "y": 13
+            },
+            {
+              "x": 4,
+              "y": 13
+            },
             {
               "x": 5,
               "y": 13
@@ -2642,14 +3152,36 @@
             {
               "x": 6,
               "y": 13
+            },
+            {
+              "x": 2,
+              "y": 14
+            },
+            {
+              "x": 3,
+              "y": 14
+            },
+            {
+              "x": 4,
+              "y": 14
+            },
+            {
+              "x": 5,
+              "y": 14
+            },
+            {
+              "x": 6,
+              "y": 14
             }
           ]
         }
       ],
+      "purpose": "home",
+      "kind": "pulperia",
       "walls": [
         {
-          "x": 4,
-          "y": 12,
+          "x": 1,
+          "y": 11,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2659,8 +3191,44 @@
           "roomId": null
         },
         {
+          "x": 2,
+          "y": 11,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "buenos_aires:house-1",
+          "roomId": null
+        },
+        {
+          "x": 3,
+          "y": 11,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "buenos_aires:house-1",
+          "roomId": null
+        },
+        {
+          "x": 4,
+          "y": 11,
+          "type": "door",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 0,
+          "material": "adobe",
+          "buildingId": "buenos_aires:house-1",
+          "roomId": null,
+          "doorId": "buenos_aires:house-1:door:4:11",
+          "open": false,
+          "locked": false
+        },
+        {
           "x": 5,
-          "y": 12,
+          "y": 11,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2671,7 +3239,7 @@
         },
         {
           "x": 6,
-          "y": 12,
+          "y": 11,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2682,7 +3250,7 @@
         },
         {
           "x": 7,
-          "y": 12,
+          "y": 11,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2692,8 +3260,8 @@
           "roomId": null
         },
         {
-          "x": 4,
-          "y": 13,
+          "x": 1,
+          "y": 12,
           "type": "window",
           "blocked": true,
           "blocksSight": false,
@@ -2704,6 +3272,17 @@
         },
         {
           "x": 7,
+          "y": 12,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "buenos_aires:house-1",
+          "roomId": null
+        },
+        {
+          "x": 1,
           "y": 13,
           "type": "wall",
           "blocked": true,
@@ -2714,8 +3293,8 @@
           "roomId": null
         },
         {
-          "x": 4,
-          "y": 14,
+          "x": 7,
+          "y": 13,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2725,7 +3304,7 @@
           "roomId": null
         },
         {
-          "x": 5,
+          "x": 1,
           "y": 14,
           "type": "wall",
           "blocked": true,
@@ -2734,20 +3313,6 @@
           "material": "adobe",
           "buildingId": "buenos_aires:house-1",
           "roomId": null
-        },
-        {
-          "x": 6,
-          "y": 14,
-          "type": "door",
-          "blocked": true,
-          "blocksSight": true,
-          "cover": 0,
-          "material": "adobe",
-          "buildingId": "buenos_aires:house-1",
-          "roomId": null,
-          "doorId": "buenos_aires:house-1:door:6:14",
-          "open": false,
-          "locked": false
         },
         {
           "x": 7,
@@ -2759,27 +3324,120 @@
           "material": "adobe",
           "buildingId": "buenos_aires:house-1",
           "roomId": null
+        },
+        {
+          "x": 1,
+          "y": 15,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "buenos_aires:house-1",
+          "roomId": null
+        },
+        {
+          "x": 2,
+          "y": 15,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "buenos_aires:house-1",
+          "roomId": null
+        },
+        {
+          "x": 3,
+          "y": 15,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "buenos_aires:house-1",
+          "roomId": null
+        },
+        {
+          "x": 4,
+          "y": 15,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "buenos_aires:house-1",
+          "roomId": null
+        },
+        {
+          "x": 5,
+          "y": 15,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "buenos_aires:house-1",
+          "roomId": null
+        },
+        {
+          "x": 6,
+          "y": 15,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "buenos_aires:house-1",
+          "roomId": null
+        },
+        {
+          "x": 7,
+          "y": 15,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "buenos_aires:house-1",
+          "roomId": null
         }
-      ],
-      "wallFinish": "adobe",
-      "roofFinish": "thatch",
-      "doorStyle": "plank",
-      "windowStyle": "shutters",
-      "kind": "house"
+      ]
     },
     {
       "id": "buenos_aires:house-2",
-      "name": "Casa 4 del poblado",
+      "name": "Casa colonial",
       "x": 12,
-      "y": 12,
-      "width": 5,
-      "height": 3,
-      "roof": "tile",
+      "y": 11,
+      "width": 7,
+      "height": 5,
+      "roof": "terrace",
       "material": "adobe",
+      "architecture": "house",
       "rooms": [
         {
           "id": "buenos_aires:house-2:interior",
           "cells": [
+            {
+              "x": 13,
+              "y": 12
+            },
+            {
+              "x": 14,
+              "y": 12
+            },
+            {
+              "x": 15,
+              "y": 12
+            },
+            {
+              "x": 16,
+              "y": 12
+            },
+            {
+              "x": 17,
+              "y": 12
+            },
             {
               "x": 13,
               "y": 13
@@ -2791,14 +3449,44 @@
             {
               "x": 15,
               "y": 13
+            },
+            {
+              "x": 16,
+              "y": 13
+            },
+            {
+              "x": 17,
+              "y": 13
+            },
+            {
+              "x": 13,
+              "y": 14
+            },
+            {
+              "x": 14,
+              "y": 14
+            },
+            {
+              "x": 15,
+              "y": 14
+            },
+            {
+              "x": 16,
+              "y": 14
+            },
+            {
+              "x": 17,
+              "y": 14
             }
           ]
         }
       ],
+      "purpose": "home",
+      "kind": "house",
       "walls": [
         {
           "x": 12,
-          "y": 12,
+          "y": 11,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2809,7 +3497,7 @@
         },
         {
           "x": 13,
-          "y": 12,
+          "y": 11,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2820,7 +3508,7 @@
         },
         {
           "x": 14,
-          "y": 12,
+          "y": 11,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2831,7 +3519,21 @@
         },
         {
           "x": 15,
-          "y": 12,
+          "y": 11,
+          "type": "door",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 0,
+          "material": "adobe",
+          "buildingId": "buenos_aires:house-2",
+          "roomId": null,
+          "doorId": "buenos_aires:house-2:door:15:11",
+          "open": false,
+          "locked": false
+        },
+        {
+          "x": 16,
+          "y": 11,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2841,8 +3543,19 @@
           "roomId": null
         },
         {
-          "x": 16,
-          "y": 12,
+          "x": 17,
+          "y": 11,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "buenos_aires:house-2",
+          "roomId": null
+        },
+        {
+          "x": 18,
+          "y": 11,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2853,7 +3566,7 @@
         },
         {
           "x": 12,
-          "y": 13,
+          "y": 12,
           "type": "window",
           "blocked": true,
           "blocksSight": false,
@@ -2863,7 +3576,29 @@
           "roomId": null
         },
         {
-          "x": 16,
+          "x": 18,
+          "y": 12,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "buenos_aires:house-2",
+          "roomId": null
+        },
+        {
+          "x": 12,
+          "y": 13,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "buenos_aires:house-2",
+          "roomId": null
+        },
+        {
+          "x": 18,
           "y": 13,
           "type": "wall",
           "blocked": true,
@@ -2885,8 +3620,30 @@
           "roomId": null
         },
         {
-          "x": 13,
+          "x": 18,
           "y": 14,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "buenos_aires:house-2",
+          "roomId": null
+        },
+        {
+          "x": 12,
+          "y": 15,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "buenos_aires:house-2",
+          "roomId": null
+        },
+        {
+          "x": 13,
+          "y": 15,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2897,21 +3654,18 @@
         },
         {
           "x": 14,
-          "y": 14,
-          "type": "door",
+          "y": 15,
+          "type": "wall",
           "blocked": true,
           "blocksSight": true,
-          "cover": 0,
+          "cover": 40,
           "material": "adobe",
           "buildingId": "buenos_aires:house-2",
-          "roomId": null,
-          "doorId": "buenos_aires:house-2:door:14:14",
-          "open": false,
-          "locked": false
+          "roomId": null
         },
         {
           "x": 15,
-          "y": 14,
+          "y": 15,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2922,7 +3676,29 @@
         },
         {
           "x": 16,
-          "y": 14,
+          "y": 15,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "buenos_aires:house-2",
+          "roomId": null
+        },
+        {
+          "x": 17,
+          "y": 15,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "buenos_aires:house-2",
+          "roomId": null
+        },
+        {
+          "x": 18,
+          "y": 15,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2931,20 +3707,15 @@
           "buildingId": "buenos_aires:house-2",
           "roomId": null
         }
-      ],
-      "wallFinish": "ochre",
-      "roofFinish": "aged",
-      "doorStyle": "arched",
-      "windowStyle": "small",
-      "kind": "chapel"
+      ]
     }
   ],
   "props": [
     {
-      "id": "buenos_aires:building:table:4:2",
+      "id": "buenos_aires:building:table:2:1",
       "type": "table",
-      "x": 4,
-      "y": 2,
+      "x": 2,
+      "y": 1,
       "buildingId": "buenos_aires:building",
       "roomId": "buenos_aires:building:interior",
       "footprint": {
@@ -2954,23 +3725,49 @@
       "blocksMovement": true
     },
     {
-      "id": "buenos_aires:house-0:table:12:2",
-      "type": "table",
-      "x": 12,
-      "y": 2,
-      "buildingId": "buenos_aires:house-0",
-      "roomId": "buenos_aires:house-0:interior",
-      "footprint": {
-        "width": 1,
-        "height": 1
-      },
-      "blocksMovement": true
-    },
-    {
-      "id": "buenos_aires:house-0:bench:15:2",
+      "id": "buenos_aires:building:bench:10:1",
       "type": "bench",
-      "x": 15,
-      "y": 2,
+      "x": 10,
+      "y": 1,
+      "buildingId": "buenos_aires:building",
+      "roomId": "buenos_aires:building:interior",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "buenos_aires:building:bed:2:4",
+      "type": "bed",
+      "x": 2,
+      "y": 3,
+      "buildingId": "buenos_aires:building",
+      "roomId": "buenos_aires:building:interior",
+      "footprint": {
+        "width": 1,
+        "height": 2
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "buenos_aires:building:chest:10:4",
+      "type": "chest",
+      "x": 10,
+      "y": 4,
+      "buildingId": "buenos_aires:building",
+      "roomId": "buenos_aires:building:interior",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "buenos_aires:house-0:table:14:1",
+      "type": "table",
+      "x": 14,
+      "y": 1,
       "buildingId": "buenos_aires:house-0",
       "roomId": "buenos_aires:house-0:interior",
       "footprint": {
@@ -2980,10 +3777,49 @@
       "blocksMovement": true
     },
     {
-      "id": "buenos_aires:house-1:table:5:13",
+      "id": "buenos_aires:house-0:bench:18:1",
+      "type": "bench",
+      "x": 18,
+      "y": 1,
+      "buildingId": "buenos_aires:house-0",
+      "roomId": "buenos_aires:house-0:interior",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "buenos_aires:house-0:bed:14:4",
+      "type": "bed",
+      "x": 14,
+      "y": 3,
+      "buildingId": "buenos_aires:house-0",
+      "roomId": "buenos_aires:house-0:interior",
+      "footprint": {
+        "width": 1,
+        "height": 2
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "buenos_aires:house-0:chest:18:4",
+      "type": "chest",
+      "x": 18,
+      "y": 4,
+      "buildingId": "buenos_aires:house-0",
+      "roomId": "buenos_aires:house-0:interior",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "buenos_aires:house-1:table:2:12",
       "type": "table",
-      "x": 5,
-      "y": 13,
+      "x": 2,
+      "y": 12,
       "buildingId": "buenos_aires:house-1",
       "roomId": "buenos_aires:house-1:interior",
       "footprint": {
@@ -2993,10 +3829,49 @@
       "blocksMovement": true
     },
     {
-      "id": "buenos_aires:house-2:table:13:13",
+      "id": "buenos_aires:house-1:bench:6:12",
+      "type": "bench",
+      "x": 6,
+      "y": 12,
+      "buildingId": "buenos_aires:house-1",
+      "roomId": "buenos_aires:house-1:interior",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "buenos_aires:house-1:bed:2:14",
+      "type": "bed",
+      "x": 2,
+      "y": 13,
+      "buildingId": "buenos_aires:house-1",
+      "roomId": "buenos_aires:house-1:interior",
+      "footprint": {
+        "width": 1,
+        "height": 2
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "buenos_aires:house-1:chest:6:14",
+      "type": "chest",
+      "x": 6,
+      "y": 14,
+      "buildingId": "buenos_aires:house-1",
+      "roomId": "buenos_aires:house-1:interior",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "buenos_aires:house-2:table:13:12",
       "type": "table",
       "x": 13,
-      "y": 13,
+      "y": 12,
       "buildingId": "buenos_aires:house-2",
       "roomId": "buenos_aires:house-2:interior",
       "footprint": {
@@ -3006,14 +3881,62 @@
       "blocksMovement": true
     },
     {
-      "id": "buenos_aires:house-2:bench:15:13",
+      "id": "buenos_aires:house-2:bench:17:12",
       "type": "bench",
-      "x": 15,
+      "x": 17,
+      "y": 12,
+      "buildingId": "buenos_aires:house-2",
+      "roomId": "buenos_aires:house-2:interior",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "buenos_aires:house-2:bed:13:14",
+      "type": "bed",
+      "x": 13,
       "y": 13,
       "buildingId": "buenos_aires:house-2",
       "roomId": "buenos_aires:house-2:interior",
       "footprint": {
         "width": 1,
+        "height": 2
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "buenos_aires:house-2:chest:17:14",
+      "type": "chest",
+      "x": 17,
+      "y": 14,
+      "buildingId": "buenos_aires:house-2",
+      "roomId": "buenos_aires:house-2:interior",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "buenos_aires:house-0:cart",
+      "type": "cart",
+      "x": 13,
+      "y": 7,
+      "footprint": {
+        "width": 2,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "buenos_aires:house-1:cart",
+      "type": "cart",
+      "x": 8,
+      "y": 12,
+      "footprint": {
+        "width": 2,
         "height": 1
       },
       "blocksMovement": true
@@ -3026,11 +3949,45 @@
     {
       "id": "buenos_aires:lantern",
       "type": "lantern",
-      "x": 5,
-      "y": 4,
+      "x": 6,
+      "y": 6,
       "radius": 3,
       "intensity": 0.8
     }
   ],
-  "decor": []
+  "decor": [],
+  "boundaryRoads": [
+    {
+      "x": 9,
+      "y": 0
+    },
+    {
+      "x": 10,
+      "y": 0
+    },
+    {
+      "x": 0,
+      "y": 7
+    },
+    {
+      "x": 19,
+      "y": 7
+    },
+    {
+      "x": 0,
+      "y": 8
+    },
+    {
+      "x": 19,
+      "y": 8
+    },
+    {
+      "x": 9,
+      "y": 15
+    },
+    {
+      "x": 10,
+      "y": 15
+    }
+  ]
 }

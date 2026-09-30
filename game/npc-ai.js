@@ -1,13 +1,16 @@
-import {applyCivilianHarm} from './civilian-harm.js';
 import {recoverCivilianBreath} from './civilian-health.js';
+import {accessStepsFrom,sameCell,sameSurface,spaceKey,surfaceHeight,tacticalLevel} from './tactical-space.js';
+import {atHand,planningPoint} from './tactical-planning-space.js';
 import {propCells} from './props.js';
-import {directionTo, approximateHeardPosition} from './npc-perception.js';
+import {directionTo, approximateHeardPosition} from './tactical-awareness.js';
+import {applyCivilianHarm} from './civilian-harm.js';
+import {recoverEnergy} from './fatigue.js';
 
 // Local, deterministic state machines. No network, hidden enemy positions or RNG.
-export const NPC_ACTIVITIES = ['roaming','home','working','socializing','meeting','hiding','fleeing'];
-export const NPC_ACTIVITY_LABELS = {meeting:'en un encuentro',roaming:'paseando',home:'en casa',working:'trabajando',socializing:'en la pulpería',hiding:'a cubierto',fleeing:'buscando refugio'};
-const key = p => `${p.x},${p.y}`;
-const point = p => ({x:p.x,y:p.y});
+export const NPC_ACTIVITIES = ['roaming','home','working','socializing','meeting','hiding','fleeing','following','waiting'];
+export const NPC_ACTIVITY_LABELS = {meeting:'en un encuentro',roaming:'paseando',home:'en casa',working:'trabajando',socializing:'en la pulpería',hiding:'a cubierto',fleeing:'buscando refugio',following:'siguiendo a la escolta',waiting:'esperando a la escolta'};
+const key = p => tacticalLevel(p)===0?`${p.x},${p.y}`:spaceKey(p);
+const point = planningPoint;
 const distance = (a,b) => Math.abs(a.x-b.x)+Math.abs(a.y-b.y);
 const hash = value => [...String(value)].reduce((h,c)=>(Math.imul(h,31)+c.charCodeAt(0))>>>0,17);
 const mobile = n => (n.hp??100)>0&&!n.unconscious&&!n.departure&&!n.surrendered;
@@ -16,8 +19,8 @@ const now = s => s.elapsedSeconds??0;
 // Cardinal routes cannot cut corners. Unlocked doors are usable, but opening
 // one is a separate paid step. Occupancy is rebuilt for each actor.
 export function npcRoutes(s,n,{stopWhen}={}) {
-  const tiles=new Map(s.tiles.map(t=>[key(t),t]));
-  const occupied=new Set([...(s.npcs??[]).filter(v=>v!==n&&v.id!==n.id&&mobile(v)),...s.units.filter(v=>v.id!==n.id&&v.hp>0&&!v.departure&&!v.unconscious)].map(key));
+  const tiles=new Map([...s.tiles,...(s.upperSurfaces??[])].map(t=>[key(t),t]));
+  const occupied=new Set([...(s.npcs??[]).filter(v=>v!==n&&v.id!==n.id&&(v.hp??100)>0&&!v.departure&&!v.fled),...s.units.filter(v=>v.id!==n.id&&v.hp>0&&!v.departure&&!v.fled)].map(key));
   for(const p of s.props??[])if(p.blocksMovement!==false)for(const cell of propCells(p))occupied.add(key(cell));
   const usable=t=>t&&!occupied.has(key(t))&&(!t.blocked||t.type==='door'&&!t.locked&&!t.jammed);
   const records=new Map([[key(n),{...point(n),path:[]}]]),queue=[point(n)];
@@ -25,9 +28,13 @@ export function npcRoutes(s,n,{stopWhen}={}) {
     const from=queue[i],record=records.get(key(from));
     if(stopWhen?.(from,tiles.get(key(from))))break;
     for(const [dx,dy] of [[1,0],[0,1],[-1,0],[0,-1]]){
-      const at={x:from.x+dx,y:from.y+dy},id=key(at);
-      if(records.has(id)||!usable(tiles.get(id)))continue;
+      const at={...point(from),x:from.x+dx,y:from.y+dy},id=key(at);
+      if(records.has(id)||!usable(tiles.get(id))||surfaceHeight(s,from)!==surfaceHeight(s,at))continue;
       records.set(id,{...at,path:[...record.path,at]});queue.push(at);
+    }
+    if((n.stance??'standing')==='standing'&&!n.mounted&&!n.entangled&&!n.knockedDown)for(const at of accessStepsFrom(s,from)){
+      const id=key(at);if(records.has(id)||!usable(tiles.get(id))||tiles.get(id).blocked)continue;
+      records.set(id,{...point(at),path:[...record.path,at]});queue.push(point(at));
     }
   }
   return {records,tiles};
@@ -65,7 +72,7 @@ function shelterScore(s,p,threat,tiles) {
   // Trace only the remembered sound area, never a shooter's live position.
   const count=Math.max(Math.abs(p.x-threat.x),Math.abs(p.y-threat.y));
   for(let i=1;i<count;i++){
-    const cell=tiles.get(`${Math.round(p.x+(threat.x-p.x)*i/count)},${Math.round(p.y+(threat.y-p.y)*i/count)}`);
+    const cell=tiles.get(key({...point(p),x:Math.round(p.x+(threat.x-p.x)*i/count),y:Math.round(p.y+(threat.y-p.y)*i/count)}));
     if(cell?.blocksSight??cell?.blocked)walls++;
   }
   return Math.min(walls,2)*24+(t?.roomId?14:0)+(t?.cover??0)*.4+Math.min(20,distance(p,threat))*2-p.path.length*1.5;
@@ -73,44 +80,53 @@ function shelterScore(s,p,threat,tiles) {
 
 export function advanceNpc(s,n,budget=24,atTime=now(s)) {
   if(!mobile(n))return;
+  if(n.detention&&!n.detention.freed){n.lastMovePath=[];return;}
   n.ai??={cycle:0,homeId:null,activity:'roaming',wait:0};
   const ai=n.ai;n.lastMovePath=[];
+  if(n.escort&&(n.entangled||n.knockedDown)){ai.activity='waiting';delete ai.destination;return;}
   const danger=ai.threat&&atTime<ai.safeAfter;
-  if(!danger&&!n.scriptedMove&&s.approachingNpcIds?.includes(n.id))return;
-  if(!danger&&ai.threat){delete ai.threat;delete ai.safeAfter;delete ai.destination;ai.wait=0;}
-  if(!danger&&n.scriptedMove&&distance(n,n.scriptedMove.target)===0){
-    ai.destination={...n.scriptedMove.target};ai.activity='meeting';ai.wait=0;n.stance='standing';n.movementMode='walk';return;
+  if(!danger&&!n.scriptedMove&&!n.escort&&s.approachingNpcIds?.includes(n.id))return;
+  if(!danger&&n.scriptedMove&&sameCell(n,n.scriptedMove.target)){
+    ai.destination=point(n.scriptedMove.target);ai.activity='meeting';ai.wait=0;n.stance='standing';n.movementMode='walk';return;
   }
+  if(!danger&&ai.threat){delete ai.threat;delete ai.safeAfter;delete ai.destination;ai.wait=0;}
   // Conference speakers remain available at their meeting while it is safe.
   // They still take shelter through the ordinary danger branch.
-  if(n.mission&&!danger&&!n.scriptedMove){
+  if(n.mission&&!n.escort&&!n.scriptedMove&&!danger){
     ai.activity='working';delete ai.destination;n.stance='standing';n.movementMode='walk';
-    const visitor=s.units.find(u=>u.side==='player'&&u.hp>0&&!u.departure&&!u.unconscious&&distance(u,n)<=1);
+    const visitor=s.units.find(u=>u.side==='player'&&u.hp>0&&!u.departure&&!u.unconscious&&atHand(u,n,1));
     if(visitor)n.facing=directionTo(n,visitor);
     return;
   }
-  // Conversation and routine pauses need no route search. Keep the movement
-  // budget for the phase where this actor actually has somewhere to go.
-  if(!danger&&!n.scriptedMove){
+  if(!danger&&!n.escort&&!n.scriptedMove){
     n.stance='standing';n.movementMode='walk';
-    const visitor=s.units.find(u=>u.side==='player'&&u.hp>0&&!u.departure&&!u.unconscious&&distance(u,n)<=1);
+    const visitor=s.units.find(u=>u.side==='player'&&u.hp>0&&!u.departure&&!u.unconscious&&atHand(u,n,1));
     if(visitor){n.facing=directionTo(n,visitor);return;}
     if(ai.wait>0){ai.wait--;return;}
   }
   const routes=npcRoutes(s,n),places=destinations(s,n,routes);
   if(danger){
     const choices=places.cells.filter(p=>p.path.length<=8).sort((a,b)=>shelterScore(s,b,ai.threat,routes.tiles)-shelterScore(s,a,ai.threat,routes.tiles)||a.y-b.y||a.x-b.x);
-    ai.destination=point(choices[0]??n);ai.activity=distance(n,ai.destination)?'fleeing':'hiding';
+    ai.destination=point(choices[0]??n);ai.activity=sameCell(n,ai.destination)?'hiding':'fleeing';
     n.stance??='crouched';n.movementMode=n.stance==='prone'?'prone':'crouch';
   }else if(n.scriptedMove){
-    ai.destination={...n.scriptedMove.target};ai.activity='meeting';ai.wait=0;n.stance='standing';n.movementMode='walk';
+    ai.destination=point(n.scriptedMove.target);ai.activity='meeting';ai.wait=0;n.stance='standing';n.movementMode='walk';
+  }else if(n.escort){
+    // Escort movement uses the same occupied-cell, door and climbing routes as
+    // other civilians. An absent or incapacitated leader cannot pull an escort.
+    const leader=s.units.find(u=>u.id===n.escort.leaderId&&u.side==='player'&&u.hp>=15&&!u.unconscious&&!u.departure&&!u.fled&&!u.routed&&!u.surrendered&&u.energy>0);
+    n.stance='standing';n.movementMode='walk';ai.wait=0;delete ai.destination;
+    if(n.escort.waiting||!leader||atHand(n,leader,1)){ai.activity='waiting';if(leader)n.facing=directionTo(n,leader);return;}
+    const choices=places.cells.filter(p=>atHand(p,leader,1)).sort((a,b)=>a.path.length-b.path.length||a.y-b.y||a.x-b.x);
+    if(!choices.length){ai.activity='waiting';return;}
+    ai.destination=point(choices[0]);ai.activity='following';
   }else{
     if(!ai.destination||!routes.records.has(key(ai.destination))){
       const hour=((s.startSeconds??43200)+atTime)/3600%24;
       const activity=hour<6||hour>=22?'home':['roaming','working','socializing','home'][(ai.cycle+hash(n.id))%4];
       let choices=activity==='home'?places.home:activity==='socializing'?places.bar:activity==='working'?places.work:places.outside;
       if(!choices.length)choices=places.outside.length?places.outside:places.cells;
-      const other=choices.filter(p=>distance(n,p)>0);if(other.length)choices=other;
+      const other=choices.filter(p=>!sameCell(n,p));if(other.length)choices=other;
       const target=choices[(hash(n.id)+ai.cycle*7)%choices.length];
       ai.activity=activity==='socializing'&&!places.bar.length?'roaming':activity;
       if(!target)return;ai.destination=point(target);
@@ -119,7 +135,8 @@ export function advanceNpc(s,n,budget=24,atTime=now(s)) {
   const route=routes.records.get(key(ai.destination));
   if(!route){if(!n.scriptedMove)delete ai.destination;return;}
   for(const p of route.path){
-    const t=routes.tiles.get(key(p)),cost=n.stance==='prone'?16:n.stance==='crouched'?10:8;
+    const t=routes.tiles.get(key(p)),climbing=!sameSurface(n,p),up=climbing&&surfaceHeight(s,p)>surfaceHeight(s,n),cost=climbing?(up?20:15):n.stance==='prone'?16:n.stance==='crouched'?10:8;
+    if(climbing&&(n.stance??'standing')!=='standing')break;
     if(t.type==='door'&&!t.open){
       if(budget<6)break;
       if(t.trap&&t.trap.armed!==false){
@@ -133,11 +150,15 @@ export function advanceNpc(s,n,budget=24,atTime=now(s)) {
       t.open=true;t.blocked=false;t.blocksSight=false;budget-=6;
     }
     if(budget<cost)break;
-    budget-=cost;n.facing=directionTo(n,p);Object.assign(n,p);n.lastMovePath.push(point(p));
+    // Spend this civilian phase resting before a climb would exhaust the
+    // resident. Do not keep walking with zero breath and an awake flag.
+    if(climbing&&(n.energy??100)<=(up?12:8)){recoverEnergy(n,10);break;}
+    budget-=cost;if(climbing)n.energy=Math.max(0,(n.energy??100)-(up?12:8));if(n.x!==p.x||n.y!==p.y)n.facing=directionTo(n,p);Object.assign(n,point(p));n.lastMovePath.push(climbing?{...p}:point(p));
   }
-  if(ai.destination&&distance(n,ai.destination)===0){
+  if(sameCell(n,ai.destination)){
     if(danger)ai.activity='hiding';
     else if(n.scriptedMove)ai.activity='meeting';
+    else if(n.escort){ai.activity='waiting';delete ai.destination;}
     else {ai.cycle++;ai.wait=2+hash(n.id+ai.cycle)%4;delete ai.destination;}
   }
 }
@@ -149,7 +170,6 @@ export function runCivilianPhase(s,atTime=now(s)) {
   const npcs=s.npcs??[],offset=s.civilianTurns%Math.max(1,npcs.length);
   for(let i=0;i<npcs.length;i++){
     const npc=npcs[(i+offset)%npcs.length];advanceNpc(s,npc,24,atTime);
-    // Recover after its phase: a newly conscious resident moves next phase.
     recoverCivilianBreath(npc);
   }
   s.phase=phase;

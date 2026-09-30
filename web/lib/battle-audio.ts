@@ -37,7 +37,7 @@ export class BattleAudio {
       [0,.18,.36,.7].forEach(delay=>this.drum(this.context!.currentTime+delay,.18));return;
     }
     const text=entries.join(' ');
-    if(/metralla|bala rasa|cañón.*dispara/i.test(text)){this.noise(.9,.28,1500);this.drum(this.context.currentTime,.28);}
+    if(/metralla|bala rasa|cañón.*dispara|explosión de granada/i.test(text)){this.noise(.9,.28,1500);this.drum(this.context.currentTime,.28);}
     else if(/dispara|de daño/.test(text)&&next.smoke.length>previous.smoke.length){this.noise(.45,.2,2800);this.drum(this.context.currentTime,.15);}
     else if(/recarga|ceba|chispa/.test(text))this.noise(.12,.08,5000);
     else if(/hiere|carga contra/.test(text)){this.noise(.16,.09,1800);this.drum(this.context.currentTime,.09);}

@@ -1,0 +1,4 @@
+.ja2-weapon-mode{display:flex;align-items:center;flex-wrap:wrap;gap:3px;grid-column:1/-1;}
+.battle-layout .ja2-weapon-mode button{padding:3px 7px;font-size:10px;line-height:1.25;border:1px solid #7b8060;background:#263127;color:#e3ddbc;border-radius:0;}
+.battle-layout .ja2-weapon-mode button[aria-pressed=true]{background:#5c603b;border-color:#dbce82;color:#fff3bb;}
+.battle-layout .ja2-weapon-mode button:focus-visible{outline:2px solid #f4cf68;outline-offset:1px;}.ja2-weapon-mode span{font-size:10px;color:#d4c78c;}

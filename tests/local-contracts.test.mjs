@@ -5,6 +5,8 @@ import {encounterHireTerms,encountersFor} from '../game/encounters.js';
 import {actBattle,getReachable} from '../game/tactical.js';
 import {decodeSave,encodeSave} from '../game/save.js';
 import {A,order,saved,localId,localNPC,localPackage,visit,sync,tactical,readyLocal,talk,hireLocal,leave} from './local-contract-fixture.mjs';
+import {approachNPC} from './approach-npc.mjs';
+import {applyCivilianHarm} from '../game/civilian-harm.js';
 
 test('local paid residents offer all terms and begin service in place without becoming bulletin arrivals',()=>{
  for(const [term,hours,price]of [['day',24,10],['week',168,70],['month',720,300]]){
@@ -24,15 +26,19 @@ test('insufficient money and invalid terms cannot charge or transfer a local res
 });
 
 test('wounded local recruits retain health through deferred expiry, return and rehire',()=>{
- let p=readyLocal();p=tactical(p,{type:'melee',targetId:localNPC(p.battle).id});p=tactical(p,{type:'heal',targetId:localNPC(p.battle).id});const hp=localNPC(p.battle).hp;
+ let p=readyLocal();applyCivilianHarm(p.battle,localNPC(p.battle),{damage:20,intentional:false});p=sync(p);p=tactical(p,{type:'weapon',slot:'medical'});p=tactical(p,{type:'heal',targetId:localNPC(p.battle).id});const hp=localNPC(p.battle).hp;
  p=hireLocal(p);const id=localId(p.campaign);assert.equal(p.battle.units.find(u=>u.id===String(id)).hp,hp);
  for(let i=0;i<144;i++)p.battle=actBattle(p.battle,{type:'rest'});p=saved(sync(p));
  assert.equal(p.campaign.contracts[id].departurePending,true);assert.ok(p.campaign.recruited.includes(id));assert.equal(localNPC(p.battle),undefined);
  let s=leave(p);assert.ok(!s.recruited.includes(id));assert.equal(s.contracts[id],undefined);p=visit(saved({campaign:s}).campaign);assert.equal(localNPC(p.battle).hp,hp);assert.equal(p.battle.units.some(u=>u.id===String(id)),false);
  // Use normal approach after the scene is reconstructed.
- const npc=localNPC(p.battle),unit=p.battle.units.find(u=>u.side==='player');const {x,y}=npc;
- const spot=getReachable(p.battle,unit.id).find(t=>Math.abs(t.x-x)+Math.abs(t.y-y)===1);assert.ok(spot);if(spot.cost)p=tactical(p,{type:'move',x:spot.x,y:spot.y});
+ const npc=localNPC(p.battle),unit=p.battle.units.find(u=>u.side==='player');p=sync({campaign:p.campaign,battle:approachNPC(p.battle,unit.id,npc.id)});
  p=hireLocal(p,'week');assert.equal(p.battle.units.find(u=>u.id===String(id)).hp,hp);assert.equal(p.campaign.contracts[id].term,'week');assert.ok(saved(p));
+});
+
+test('bandaging a resident hurt by the player does not erase refusal or permit a paid hire',()=>{
+ let p=readyLocal();p=tactical(p,{type:'melee',targetId:localNPC(p.battle).id});p=tactical(p,{type:'weapon',slot:'medical'});p=tactical(p,{type:'heal',targetId:localNPC(p.battle).id});p=saved(p);
+ const before=structuredClone(p.campaign),rejected=dispatchCampaign(p.campaign,talk(p));assert.match(rejected.lastError,/Me heriste/);assert.deepEqual({...rejected,lastError:null},before);assert.deepEqual(p.campaign,before);assert.ok(saved(p));
 });
 
 
@@ -45,7 +51,7 @@ test('renewal and dismissal preserve paid local identity and reject permanent-co
 
 test('zero-price local contracts still expire and unpaid permanent service remains explicit',()=>{
  let p=hireLocal(readyLocal({pay:0})),id=localId(p.campaign),s=leave(p);assert.equal(s.contracts[id].kind,'paid');assert.equal(s.contracts[id].paid,0);assert.ok(Number.isInteger(s.contracts[id].expiresAt));
- s=order(s,{type:'wait',hours:24});assert.ok(!s.recruited.includes(id));assert.ok(saved({campaign:s}));
+ const expires=s.contracts[id].expiresAt;while(s.hour<expires){const before=s.hour;s=order(s,{type:'wait',hours:expires-s.hour});assert.ok(s.hour>before,'time must advance after each notice');}assert.ok(!s.recruited.includes(id));assert.ok(saved({campaign:s}));
  p=readyLocal({pay:0,service:'permanent'});assert.deepEqual(encounterHireTerms(p.campaign,localNPC(p.battle)),[]);p=hireLocal(p);assert.equal(p.campaign.contracts[localId(p.campaign)].expiresAt,null);
  const bad=localPackage({pay:10,service:'permanent'});assert.throws(()=>initialCampaign(42,bad));
 });

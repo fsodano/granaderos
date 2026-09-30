@@ -50,7 +50,7 @@ test('a commander who dies during post-victory exploration still causes permanen
 });
 
 test('the mounted game can explore the won mission and use its ordinary return control',async t=>{
- const m=await mountCampaign(t,wonMission());await m.click('Explorar el sector y recoger equipo');await m.click('Pausar exploración');
+ const m=await mountCampaign(t,wonMission());await m.click('Explorar el sector y recoger equipo');await m.click('Pausar');
  await act(async()=>m.issue({type:'heal',unitId:'1000',targetId:'57'}));const health=m.saved().battle.units.find(u=>u.id==='57').hp;
  await m.click('Volver a la campaña');const {campaign:s,battle}=m.saved();
  assert.equal(battle,null);assert.equal(s.flags.sanLorenzo,true);assert.equal(s.missions.san_lorenzo.completed,true);assert.equal(s.missionAllies.san_lorenzo.hp,health);assert.equal(s.phase,2);

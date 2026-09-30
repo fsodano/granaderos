@@ -1,7 +1,7 @@
 import {register} from 'node:module';register('./tactical-render-loader.mjs',import.meta.url);
 import test from 'node:test';import assert from 'node:assert/strict';
 import {JSDOM} from '../web/node_modules/jsdom/lib/api.js';
-import {createElement as h,act} from '../web/node_modules/react/index.js';
+import {createElement as h,act,useMemo} from '../web/node_modules/react/index.js';
 import {createRoot} from '../web/node_modules/react-dom/client.js';
 import {createBattle} from '../game/tactical.js';
 import {spriteRender,spriteMovementFrame} from '../game/sprite-render.js';
@@ -16,7 +16,7 @@ async function mount(t){
  for(const [key,value]of Object.entries(globals))Object.defineProperty(globalThis,key,{configurable:true,writable:true,value});
  const root=createRoot(dom.window.document.getElementById('root'));
  t.after(async()=>{try{await act(async()=>root.unmount());}finally{dom.window.close();for(const [key,value]of prior)if(value)Object.defineProperty(globalThis,key,value);else delete globalThis[key];}});
- function Probe({battle}){motion=useUnitMotion(battle);return null;}
+ function Probe({battle}){const visible=useMemo(()=>battle.presentationVisibleIds?new Set(battle.presentationVisibleIds):undefined,[battle]),continuing=useMemo(()=>new Set(battle.presentationMovingUnitId?[battle.presentationMovingUnitId]:[]),[battle]);motion=useUnitMotion(battle,undefined,visible,continuing);return null;}
  return {draw:battle=>act(async()=>root.render(h(Probe,{battle}))),async tick(ms){now+=ms;const pending=[...callbacks.values()];callbacks.clear();await act(async()=>{for(const fn of pending)fn(now);});},get motion(){return motion;},get pending(){return callbacks.size;}};
 }
 function field(){return createBattle([{id:'p',x:1,y:1}],{width:16,height:8,tiles:Array.from({length:128},(_,i)=>({x:i%16,y:Math.floor(i/16),type:'grass',cover:0,blocked:false})),enemies:[{id:'e',x:3,y:1,weapon:1801}]});}
@@ -76,4 +76,20 @@ test('a late endpoint callback does not add waiting time to the next step',async
  assert.equal(env.motion.positions.e.elapsedMs,120,'the finished cell contributes only its actual duration');
  state={...state,units:state.units.map(u=>u.id==='e'?{...u,x:5}:u)};await env.draw(state);await env.tick(60);
  assert.equal(env.motion.positions.e.x,4.5);assert.equal(env.motion.positions.e.elapsedMs,180);
+});
+
+
+for(const [movementMode,stepMs]of [['walk',240],['run',150],['crouch',320],['prone',420]])test(`player ${movementMode} retains its gait through delayed cell preparation`,async t=>{
+ const env=await mount(t);let state={...field(),presentationVisibleIds:['p','e']};
+ state={...state,units:state.units.map(u=>u.id==='p'?{...u,y:2,movementMode,stance:movementMode==='prone'?'prone':movementMode==='crouch'?'crouched':'standing'}:u)};await env.draw(state);
+ for(let step=1;step<=4;step++){
+  state={...state,presentationMovingUnitId:'p',units:state.units.map(u=>u.id==='p'?{...u,x:1+step}:u)};await env.draw(state);
+  assert.equal(env.motion.positions.p.elapsedMs,(step-1)*stepMs);
+  await env.tick(stepMs/2);assert.equal(env.motion.positions.p.x,step+.5);assert.equal(env.motion.positions.p.elapsedMs,(step-.5)*stepMs);
+  // An unrelated React snapshot must leave the active clock intact.
+  state={...state};await env.draw(state);await env.tick(stepMs/2);
+  assert.equal(env.motion.positions.p.x,step+1);assert.equal(env.motion.positions.p.elapsedMs,step*stepMs);
+  assert.equal(env.motion.positions.p.settled,true);assert.equal(env.pending,0);await env.tick(450);
+ }
+ await env.draw({...state,presentationMovingUnitId:null});assert.equal(env.motion.positions.p.moving,false);
 });

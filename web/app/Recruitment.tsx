@@ -19,7 +19,7 @@ export default function Recruitment({state:s,dispatch}:Props){
  const options=hiringArrivalOptions(s);
  const destination=options.some(o=>o.id===chosenDestination)?chosenDestination:options.find(o=>o.id===s.location)?.id??options[0]?.id??'';
  const visible:typeof roster=filterMercenaries(roster,s,{query,specialty,availability,sort});
- const busy=Boolean(s.pendingBattle);
+ const busy=Boolean(s.pendingBattle||s.pendingEncounter)||s.defeated;
  return <section className="roster-section">
   <p>Cada contrato se paga por adelantado y comienza cuando llega el personaje. Hasta entonces, el contratado permanece fuera del mapa.</p>
   <label className="arrival-destination">Destino de nuevos contratados

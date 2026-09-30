@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "tucuman",
-  "revision": 2,
+  "revision": 3,
   "width": 20,
   "height": 16,
   "metadata": {
@@ -655,14 +655,14 @@
     {
       "x": 12,
       "y": 4,
-      "type": "road",
+      "type": "grass",
       "blocked": false,
       "cover": 0
     },
     {
       "x": 13,
       "y": 4,
-      "type": "road",
+      "type": "grass",
       "blocked": false,
       "cover": 0
     },
@@ -1061,7 +1061,7 @@
     {
       "x": 10,
       "y": 7,
-      "type": "road",
+      "type": "grass",
       "blocked": false,
       "cover": 0
     },
@@ -1096,7 +1096,7 @@
     {
       "x": 15,
       "y": 7,
-      "type": "road",
+      "type": "grass",
       "blocked": false,
       "cover": 0
     },
@@ -1201,7 +1201,7 @@
     {
       "x": 10,
       "y": 8,
-      "type": "road",
+      "type": "grass",
       "blocked": false,
       "cover": 0
     },
@@ -1236,7 +1236,7 @@
     {
       "x": 15,
       "y": 8,
-      "type": "road",
+      "type": "grass",
       "blocked": false,
       "cover": 0
     },
@@ -2254,23 +2254,52 @@
     {
       "id": "tucuman:building",
       "name": "Casa del sector",
-      "x": 11,
-      "y": 5,
-      "width": 4,
-      "height": 4,
-      "roof": "tile",
+      "x": 10,
+      "y": 4,
+      "width": 6,
+      "height": 5,
+      "roof": "terrace",
       "material": "adobe",
+      "architecture": "house",
       "rooms": [
         {
           "id": "tucuman:building:interior",
           "cells": [
             {
+              "x": 11,
+              "y": 5
+            },
+            {
+              "x": 12,
+              "y": 5
+            },
+            {
+              "x": 13,
+              "y": 5
+            },
+            {
+              "x": 14,
+              "y": 5
+            },
+            {
+              "x": 11,
+              "y": 6
+            },
+            {
               "x": 12,
               "y": 6
             },
             {
               "x": 13,
               "y": 6
+            },
+            {
+              "x": 14,
+              "y": 6
+            },
+            {
+              "x": 11,
+              "y": 7
             },
             {
               "x": 12,
@@ -2278,15 +2307,31 @@
             },
             {
               "x": 13,
+              "y": 7
+            },
+            {
+              "x": 14,
               "y": 7
             }
           ]
         }
       ],
+      "kind": "house",
       "walls": [
         {
+          "x": 10,
+          "y": 4,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "tucuman:building",
+          "roomId": null
+        },
+        {
           "x": 11,
-          "y": 5,
+          "y": 4,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2297,7 +2342,7 @@
         },
         {
           "x": 12,
-          "y": 5,
+          "y": 4,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2308,7 +2353,7 @@
         },
         {
           "x": 13,
-          "y": 5,
+          "y": 4,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2319,7 +2364,7 @@
         },
         {
           "x": 14,
-          "y": 5,
+          "y": 4,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2329,8 +2374,19 @@
           "roomId": null
         },
         {
-          "x": 11,
-          "y": 6,
+          "x": 15,
+          "y": 4,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "tucuman:building",
+          "roomId": null
+        },
+        {
+          "x": 10,
+          "y": 5,
           "type": "window",
           "blocked": true,
           "blocksSight": false,
@@ -2340,7 +2396,18 @@
           "roomId": null
         },
         {
-          "x": 14,
+          "x": 15,
+          "y": 5,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "tucuman:building",
+          "roomId": null
+        },
+        {
+          "x": 10,
           "y": 6,
           "type": "wall",
           "blocked": true,
@@ -2351,7 +2418,18 @@
           "roomId": null
         },
         {
-          "x": 11,
+          "x": 15,
+          "y": 6,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "tucuman:building",
+          "roomId": null
+        },
+        {
+          "x": 10,
           "y": 7,
           "type": "wall",
           "blocked": true,
@@ -2362,8 +2440,19 @@
           "roomId": null
         },
         {
-          "x": 14,
+          "x": 15,
           "y": 7,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "tucuman:building",
+          "roomId": null
+        },
+        {
+          "x": 10,
+          "y": 8,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2411,6 +2500,20 @@
         {
           "x": 14,
           "y": 8,
+          "type": "door",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 0,
+          "material": "adobe",
+          "buildingId": "tucuman:building",
+          "roomId": null,
+          "doorId": "tucuman:door-right",
+          "open": false,
+          "locked": false
+        },
+        {
+          "x": 15,
+          "y": 8,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2419,19 +2522,53 @@
           "buildingId": "tucuman:building",
           "roomId": null
         }
-      ],
-      "wallFinish": "limewash",
-      "roofFinish": "aged",
-      "doorStyle": "double",
-      "windowStyle": "small",
-      "kind": "barracks"
+      ]
     }
   ],
   "props": [
     {
-      "id": "tucuman:building:table:12:6",
+      "id": "tucuman:building:table:11:5",
       "type": "table",
-      "x": 12,
+      "x": 11,
+      "y": 5,
+      "buildingId": "tucuman:building",
+      "roomId": "tucuman:building:interior",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "tucuman:building:bench:14:5",
+      "type": "bench",
+      "x": 14,
+      "y": 5,
+      "buildingId": "tucuman:building",
+      "roomId": "tucuman:building:interior",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "tucuman:building:bed:11:7",
+      "type": "bed",
+      "x": 11,
+      "y": 6,
+      "buildingId": "tucuman:building",
+      "roomId": "tucuman:building:interior",
+      "footprint": {
+        "width": 1,
+        "height": 2
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "tucuman:building:chest:14:7",
+      "type": "chest",
+      "x": 14,
       "y": 6,
       "buildingId": "tucuman:building",
       "roomId": "tucuman:building:interior",
@@ -2455,5 +2592,39 @@
       "intensity": 0.8
     }
   ],
-  "decor": []
+  "decor": [],
+  "boundaryRoads": [
+    {
+      "x": 12,
+      "y": 0
+    },
+    {
+      "x": 13,
+      "y": 0
+    },
+    {
+      "x": 0,
+      "y": 7
+    },
+    {
+      "x": 19,
+      "y": 7
+    },
+    {
+      "x": 0,
+      "y": 8
+    },
+    {
+      "x": 19,
+      "y": 8
+    },
+    {
+      "x": 12,
+      "y": 15
+    },
+    {
+      "x": 13,
+      "y": 15
+    }
+  ]
 }

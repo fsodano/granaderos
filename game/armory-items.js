@@ -1,40 +1,46 @@
-import {WEAPONS} from './data.js';
-import {contentWeaponOf,weaponRecord,validateWeaponCarrier,setWeaponDefinition} from './weapon-definition.js';
+import {equipmentKey} from './equipment-catalog.js';
+import {storeEquipment,takeEquipment,addEquipment,storedEquipmentStack,storedEquipmentMetadata,validateEquipmentStorage,migrateEquipmentStorage} from './stored-equipment.js';
+import {handRecord,handMetadata,inventoryUsage} from './tactical-inventory.js';
+import {syncCarriedAmmunition} from './physical-ammunition.js';
+
+export {usesAuthoredEquipment,equipmentKey} from './equipment-catalog.js';
 const need=(ok,message)=>{if(!ok)throw Error(message);};
-export const usesAuthoredEquipment=s=>['character-weapons-v2','character-presence-v1'].includes(s.contentCampaign?.adapter);
-export const equipmentKey=value=>contentWeaponOf(value)?.id??String(value.weapon??value.item??value);
 export function storeArmoryItem(s,record){
- need(s.armoryItems.length<10000,'La armería está llena.');
- validateWeaponCarrier(record);
- const item={...structuredClone(record),count:1,id:`armory-${s.nextArmoryItemId++}`};
- s.armoryItems.push(item);const key=equipmentKey(item);s.armory[key]=(s.armory[key]??0)+1;return item;
+ const {weapon,item,count,...data}=record;
+ need(count===undefined||count===1,'Guardá un solo ejemplar de arma.');
+ return storeEquipment(s,weapon??item,data);
 }
-export function addArmoryStock(s,item,quantity){
- if(!usesAuthoredEquipment(s)||item.category==='artillery'){const key=item.stockKey??item.item;s.armory[key]=(s.armory[key]??0)+quantity;return;}
- for(let i=0;i<quantity;i++)storeArmoryItem(s,{weapon:item.id,count:1,weight:item.contentWeapon?.weight??(item.category==='firearm'?4:1.3),condition:100,jammed:false,loaded:0,...(item.contentWeapon?{contentWeapon:item.contentWeapon}:{})});
-}
+export function addArmoryStock(s,item,quantity){return addEquipment(s,item.stockKey??item.item,quantity);}
+
+// Plan the whole exchange before committing either custodian. Loaded rounds
+// move with their weapon; changing a gun never creates or refunds cartridges.
 export function equipArmoryItem(s,op,action){
- const key=String(action.itemId),index=s.armoryItems.findIndex(i=>(action.instanceId?i.id===action.instanceId:equipmentKey(i)===key));
- need(index>=0,'No quedan ejemplares de esa arma en la armería.');
- const item=s.armoryItems[index],slot=action.slot;
- need(equipmentKey(item)===key,'El ejemplar no corresponde al arma elegida.');
- need(WEAPONS[item.weapon]&&item.weapon>=1800&&item.weapon<=1813&&(slot!=='blade'||item.weapon>=1809),'Esta arma no corresponde a ese espacio.');
- const record=s.operativeState[op.id];
- s.armoryItems.splice(index,1);s.armory[equipmentKey(item)]--;
- if(op[slot])storeArmoryItem(s,weaponRecord({...op,...record,loaded:0},slot==='blade'?'blade':'primary'));
- s.loadouts[op.id]={...s.loadouts[op.id],[slot]:item.weapon};
- if(slot==='weapon'){setWeaponDefinition(record,item);record.condition=item.condition;record.jammed=item.jammed;}else setWeaponDefinition(record,item,'blade');
- return item;
-}
-export function validateArmoryItems(s){
- if(!usesAuthoredEquipment(s))return;
- const integer=(n,min,max)=>Number.isSafeInteger(n)&&n>=min&&n<=max;
- need(Array.isArray(s.armoryItems)&&s.armoryItems.length<=10000&&integer(s.nextArmoryItemId,1,1e9),'Los ejemplares de la armería son inválidos.');
- const ids=new Set(),counts={};
- for(const item of s.armoryItems){
-  need(item&&typeof item==='object'&&typeof item.id==='string'&&/^armory-[1-9][0-9]*$/.test(item.id)&&Number(item.id.slice(7))<s.nextArmoryItemId&&!ids.has(item.id)&&integer(item.weapon,1800,1813)&&item.count===1&&Number.isFinite(item.condition)&&item.condition>=0&&item.condition<=100&&typeof item.jammed==='boolean'&&item.loaded===0,'El ejemplar de la armería es inválido.');
-  need(Number.isFinite(item.weight)&&item.weight>=.1&&item.weight<=30,'El peso almacenado es inválido.');
-  validateWeaponCarrier(item);ids.add(item.id);const key=equipmentKey(item);counts[key]=(counts[key]??0)+1;
+ const slot=action.slot;need(['weapon','blade'].includes(slot),'Este espacio de equipo no existe.');
+ const key=String(action.itemId),row=s.armoryItems.find(i=>equipmentKey(i)===key&&(action.instanceId===undefined||i.id===action.instanceId));
+ need(row,'No quedan ejemplares de esa arma en la armería.');
+ const incoming=storedEquipmentStack(row);need(slot!=='blade'||incoming.weapon>=1809,'Esta arma no corresponde a ese espacio.');
+ const original=s.operativeState[op.id],record=structuredClone(original),actor={...op,...record,loaded:record.carriedLoaded??0,reloadProgress:record.carriedReloadProgress};
+ const outgoing=op[slot]&&!(slot==='weapon'&&record.weaponDropped)?handRecord(actor,slot==='blade'?'blade':'primary'):null;
+ const trial={...s,armory:{...s.armory},armoryItems:[...s.armoryItems]};
+ takeEquipment(trial,key,row.id);
+ if(outgoing)storeEquipment(trial,outgoing.weapon,{...outgoing,itemMetadata:handMetadata(outgoing)});
+ const metadata=storedEquipmentMetadata(row);
+ if(Object.keys(metadata).length)record[`${slot}Metadata`]=metadata;else delete record[`${slot}Metadata`];
+ for(const [source,destination]of [['instanceId',`${slot}InstanceId`],['fittingPattern',`${slot}FittingPattern`]]){
+  if(incoming[source]!==undefined)record[destination]=structuredClone(incoming[source]);else delete record[destination];
  }
- for(const key of new Set([...Object.keys(counts),...Object.keys(s.armory).filter(k=>!['bronze4','field8','swivel'].includes(k))]))need((counts[key]??0)===(s.armory[key]??0),'Las cantidades de la armería no coinciden con sus ejemplares.');
+ if(slot==='weapon'){
+  delete record.contentWeapon;record.condition=incoming.condition;record.jammed=incoming.jammed;record.weaponDropped=false;record.weaponFittings=structuredClone(incoming.fittings??{});
+  if(incoming.ammunitionChoice!==undefined)record.ammunitionChoice=incoming.ammunitionChoice;else delete record.ammunitionChoice;
+  record.carriedLoaded=incoming.loaded??0;
+  if(incoming.reloadProgress!==undefined)record.carriedReloadProgress=incoming.reloadProgress;else delete record.carriedReloadProgress;
+ }else {record.bladeCondition=incoming.condition;record.bladeJammed=incoming.jammed;}
+ const next={...op,...record,[slot]:incoming.weapon,loaded:record.carriedLoaded??0,reloadProgress:record.carriedReloadProgress};
+ for(const field of slot==='weapon'?['contentWeapon','weaponMetadata','ammunitionChoice','weaponInstanceId','weaponFittingPattern']:['bladeMetadata','bladeInstanceId','bladeFittingPattern'])if(record[field]===undefined)delete next[field];
+ need(!inventoryUsage(next).overloaded,'No quedan bolsillos para el equipo guardado.');
+ syncCarriedAmmunition(record,next.weapon);
+ s.armory=trial.armory;s.armoryItems=trial.armoryItems;s.nextArmoryItemId=trial.nextArmoryItemId;
+ s.operativeState[op.id]=record;s.loadouts[op.id]={...s.loadouts[op.id],[slot]:incoming.weapon};
+ return row;
 }
+export function validateArmoryItems(s){migrateEquipmentStorage(s);validateEquipmentStorage(s);}

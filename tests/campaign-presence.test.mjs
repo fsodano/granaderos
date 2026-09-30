@@ -119,7 +119,7 @@ test('save admission rejects invalid clock, status, placement revision and dupli
   v=>v.battle.npcs[0].presenceRevision++,v=>delete v.battle.npcs[0].operativeId,
   v=>v.campaign.pendingBattle.npcs[0].presenceRevision++,v=>v.campaign.contentPresence.receipts.push('not-a-trigger'),
  ]){const bad=JSON.parse(wire);mutate(bad);assert.throws(()=>decodeSave(JSON.stringify(bad)));}
- let s=leave(pair);const stale=structuredClone(s.sectorStates[A]);stale.sectorId=B;stale.sourceMapId=B;s.sectorStates[B]=stale;assert.throws(()=>saved(s),/apariciones/);
+ let s=leave(pair);const stale=structuredClone(s.sectorStates[A]);stale.sectorId=B;stale.sourceMapId=B;s.sectorStates[B]=stale;assert.throws(()=>saved(s),/apariciones|residencia del parte/);
 });
 
 test('older authored saves retain their original fixed behavior; edited locations cannot bypass presence through an old adapter',()=>{

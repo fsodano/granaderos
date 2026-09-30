@@ -1,0 +1,5 @@
+.ja2-item-card{display:grid;grid-template-columns:minmax(130px,1fr) minmax(125px,1fr);gap:.7rem;padding:.8rem;border:1px solid #89794c;background:#1b2119;color:#e8e3cf;max-width:440px}
+.ja2-item-picture{position:relative;display:grid;place-items:center;min-height:100px;background:#303426;border:1px solid #615b40}
+.ja2-item-picture img{width:100%;max-height:110px;object-fit:contain}
+.ja2-item-charge{position:absolute;bottom:4px;left:4px;border-radius:12px;background:#742b24;color:#fff;padding:2px 9px;font-variant-numeric:tabular-nums}
+.ja2-item-card dl{display:grid;grid-template-columns:1fr auto;align-content:start;gap:.4rem;margin:0;font-size:13px}.ja2-item-card dd{margin:0;font-variant-numeric:tabular-nums}.ja2-item-card h4,.ja2-item-card>p,.ja2-item-card>.ja2-attachment-detail,.ja2-item-card>.ja2-attachment-none{grid-column:1/-1;margin:0}.ja2-item-card h4{border-top:1px solid #89794c;padding-top:.5rem}.ja2-item-card>p{font-size:12px;line-height:1.5}

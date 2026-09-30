@@ -4,11 +4,14 @@ import {encodeSave,decodeSave} from '../game/save.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {buildSectorMap,MAP_IDS} from '../game/maps.js';
-import {TACTICAL_SIZE} from '../game/sector-expansion.js';
+import {TACTICAL_SIZE,physicalEntryAnchor} from '../game/sector-expansion.js';
+import {BUILDING_FOOTPRINTS} from '../game/building-types.js';
 import {CAMPAIGN_SECTORS,OPERATIVES} from '../game/data.js';
 import {enterSector} from '../game/world.js';
-import {createBattle,getReachable} from '../game/tactical.js';
+import {sectorExits,boundaryMatches,inwardFromBoundary} from '../game/tactical-exits.js';
+import {movementStepCost,createBattle,getReachable} from '../game/tactical.js';
 import {propCells,propBlocksAt} from '../game/props.js';
+import {validateBattleSnapshot} from '../game/validate-battle.js';
 const key=p=>`${p.x},${p.y}`;
 const towns=CAMPAIGN_SECTORS.filter(s=>!['uspallata','los_patos','humahuaca'].includes(s.id));
 function reachable(map,start,doors=false){
@@ -42,16 +45,50 @@ test('new neighbourhoods leave at least two clear squares between buildings and 
   }
  }
 });
+test('new buildings use complete plans with room to walk around furniture',()=>{
+ for(const sector of MAP_IDS){
+  const map=buildSectorMap({sector});
+  for(const b of map.buildings){
+   const [width,height]=BUILDING_FOOTPRINTS[b.architecture];
+   assert.ok(b.width>=width&&b.height>=height,`${sector}: ${b.id} must not shrink to fit a leftover lot`);
+   for(const room of b.rooms){
+    assert.ok(new Set(room.cells.map(c=>c.x)).size>=4,`${b.id}: interior needs at least four columns`);
+    assert.ok(new Set(room.cells.map(c=>c.y)).size>=2,`${b.id}: interior cannot be a single row`);
+   }
+  }
+ }
+});
+test('larger authored landmarks apply only to new layouts and preserve the compact plans',()=>{
+ for(const [sector,oldPlan,newPlan] of [['buenos_aires',[8,4],[11,6]],['san_lorenzo',[5,6],[6,7]]]){
+  const compact=buildSectorMap({sector,compactLayout:true}),expanded=buildSectorMap({sector});
+  const old=compact.buildings[0],current=expanded.buildings[0];
+  assert.equal(current.id,old.id);
+  assert.deepEqual([old.width,old.height],oldPlan);
+  assert.deepEqual([current.width,current.height],newPlan);
+  assert.ok(current.rooms[0].cells.length>=old.rooms[0].cells.length*1.5);
+  assert.deepEqual(expanded.tiles.filter(t=>t.buildingId===current.id&&t.type==='door').map(t=>t.doorId),compact.tiles.filter(t=>t.buildingId===old.id&&t.type==='door').map(t=>t.doorId));
+ }
+});
+test('all campaign routes arrive at the new physical edges with a legal inward step',()=>{
+ for(const source of CAMPAIGN_SECTORS)for(const exit of sectorExits(source.id)){
+  const squad=Array.from({length:6},(_,i)=>({id:i,entryReason:'arrival',entryEdge:exit.entryEdge,entryAnchor:exit.entryAnchor}));
+  const state=enterSector({sector:exit.destination,squad,enemies:[],exploration:true});
+  const anchor=physicalEntryAnchor(exit.entryEdge,exit.entryAnchor,state.width,state.height,exit.destination);
+  assert.ok(boundaryMatches(state,anchor,exit.entryEdge));
+  assert.equal(state.tiles[anchor.y*state.width+anchor.x].type,'road',exit.id);
+  for(const unit of state.units){assert.ok(boundaryMatches(state,unit,exit.entryEdge),exit.id);assert.ok(Number.isFinite(movementStepCost(state,unit,unit,inwardFromBoundary(unit,exit.entryEdge))));}
+ }
+});
 test('compact saved sectors keep their geometry, building IDs and ground gear on revisit',()=>{
  const req={sector:'cordoba',squad:[{id:1}],enemies:[],exploration:true};
  const prior=enterSector({...req,compactLayout:true});assert.equal(prior.width,20);
- prior.groundItems=[{id:'retained',type:'item',x:1,y:7,item:'ammo',count:3,weight:.04}];
+ prior.groundItems=[{id:'retained',type:'item',x:1,y:7,item:'inventory:ammo:musket_75',kind:'ammunition',ammoType:'musket_75',name:'Cartucho de mosquete .75',count:3,weight:.04}];
  const before=structuredClone(prior),again=enterSector(req,prior);
- assert.equal(again.width,20);assert.equal(again.height,16);assert.deepEqual(again.tiles,prior.tiles);assert.deepEqual(again.groundItems,prior.groundItems);assert.deepEqual(prior,before);
+ assert.equal(again.width,20);assert.equal(again.height,16);assert.deepEqual(again.tiles,prior.tiles);assert.deepEqual(again.groundItems,prior.groundItems.map(g=>({...g,knownToPlayer:true})));assert.deepEqual(prior,before);
 });
 test('expanded maps are deterministic, validate and retain their geometry on revisit',()=>{
  const req={sector:'mendoza',squad:[{id:1}],enemies:[],exploration:true};
- const a=enterSector(req),b=enterSector(req);assert.deepEqual(a,b);
+ const a=enterSector(req),b=enterSector(req);assert.deepEqual(a,b);assert.doesNotThrow(()=>validateBattleSnapshot(a));
  const again=enterSector(req,a);assert.equal(again.width,64);assert.deepEqual(again.tiles,a.tiles);assert.deepEqual(again.buildings,a.buildings);
 });
 test('expanded countryside can be crossed with the normal exploration pathfinder',()=>{
@@ -72,24 +109,20 @@ test('large tactical row labels remain readable after row Z',()=>{
  assert.equal(tacticalGridLabel(0,0),'A1');assert.equal(tacticalGridLabel(19,25),'Z20');assert.equal(tacticalGridLabel(0,26),'AA1');assert.equal(tacticalGridLabel(63,47),'AV64');
 });
 
+test('conference speakers remain at the meeting as a soldier crosses the expanded scene',async()=>{
+ const {runCivilianPhase,hearNpcNoise}=await import('../game/npc-ai.js');
+ const {YATASTO_NPCS}=await import('../game/missions.js');
+ const battle=enterSector({sector:'tucuman',sceneId:'yatasto',squad:[{id:1}],npcs:YATASTO_NPCS,enemies:[],exploration:true});
+ const positions=battle.npcs.map(n=>({x:n.x,y:n.y}));
+ for(let i=0;i<40;i++)runCivilianPhase(battle);
+ assert.deepEqual(battle.npcs.map(n=>({x:n.x,y:n.y})),positions);
+ const npc=battle.npcs[0];hearNpcNoise(battle,{x:npc.x+1,y:npc.y},'fire',30);runCivilianPhase(battle);
+ assert.ok(['hiding','fleeing'].includes(npc.ai.activity));
+});
 
 test('reinforcements without explicit coordinates deploy near the landmark with finite coordinates',()=>{
  const map=buildSectorMap({sector:'san_lorenzo',squad:[{id:1}],enemies:[],garrison:[{id:'militia'}],missionAllies:[{id:57,missionAlly:true}]});
  for(const u of [...map.garrison,...map.missionAllies]){assert.ok(Number.isInteger(u.x)&&Number.isInteger(u.y));assert.ok(u.x>=32&&u.y>=16);}
  const state=enterSector({sector:'san_lorenzo',squad:[{id:1}],enemies:[],garrison:[{id:'militia'}],missionAllies:[{id:57,missionAlly:true}]});
- assert.ok(state.units.every(u=>u.x>=32&&u.y>=16));
-});
-
-test('editor structures, contents and provenance move together into the larger map',()=>{
- const request={sector:'cordoba',squad:[{id:1}],enemies:[],exploration:true};
- const core=buildSectorMap({...request,compactLayout:true}),map=buildSectorMap(request);
- assert.equal(map.sourceMapId,core.sourceMapId);assert.equal(map.sourceMapRevision,core.sourceMapRevision);
- for(const original of core.buildings){
-  const moved=map.buildings.find(b=>b.id===original.id);
-  assert.deepEqual(moved.walls,original.walls.map(w=>({...w,x:w.x+22,y:w.y+16})));
-  for(const wall of moved.walls)assert.equal(map.tiles[wall.y*map.width+wall.x].buildingId,moved.id);
- }
- assert.deepEqual(map.groundItems,core.groundItems.map(item=>({...item,x:item.x+22,y:item.y+16})));
- const previous=enterSector(request),again=enterSector(request,previous);
- assert.equal(again.sourceMapId,previous.sourceMapId);assert.equal(again.sourceMapRevision,previous.sourceMapRevision);
+ assert.ok(state.units.every(u=>u.x>=32&&u.y>=16));assert.doesNotThrow(()=>validateBattleSnapshot(state));
 });

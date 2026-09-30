@@ -16,7 +16,7 @@ export async function mountCampaign(t,saved){
  const unmount=async()=>{if(mounted){await act(async()=>root.unmount());mounted=false;}};
  t.after(async()=>{try{await unmount();}finally{dom.window.close();for(const [key,descriptor]of previous){if(descriptor)Object.defineProperty(globalThis,key,descriptor);else delete globalThis[key];}}});
  await act(async()=>root.render(h(Home)));const document=dom.window.document;
- const click=async text=>{const b=[...document.querySelectorAll('button')].find(b=>b.textContent.trim().startsWith(text));assert.ok(b,text);await act(async()=>b.dispatchEvent(new dom.window.MouseEvent('click',{bubbles:true})));};
- if(saved){await click('Continuar campaña');if(saved.battle.mode==='exploration')await click('Pausar exploración');}
+ const click=async text=>{const b=[...document.querySelectorAll('button')].find(b=>(b.getAttribute('aria-label')??b.textContent.trim()).startsWith(text));assert.ok(b,text);await act(async()=>b.dispatchEvent(new dom.window.MouseEvent('click',{bubbles:true})));};
+ if(saved){await click('Continuar campaña');if(saved.battle.mode==='exploration')await click('Pausar');}
  return {dom,document,registrations,unmount,click,read:()=>registrations.find(t=>t.name==='read_granaderos_state').execute(),issue:action=>registrations.find(t=>t.name==='issue_granaderos_tactical_order').execute(action),saved:()=>decodeSave(dom.window.localStorage.getItem(CONTENT_SAVE_KEY))};
 }

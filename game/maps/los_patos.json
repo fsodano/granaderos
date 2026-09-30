@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "los_patos",
-  "revision": 0,
+  "revision": 1,
   "width": 20,
   "height": 16,
   "metadata": {
@@ -2256,5 +2256,23 @@
   "spawns": [],
   "exits": [],
   "lights": [],
-  "decor": []
+  "decor": [],
+  "boundaryRoads": [
+    {
+      "x": 19,
+      "y": 6
+    },
+    {
+      "x": 19,
+      "y": 7
+    },
+    {
+      "x": 0,
+      "y": 9
+    },
+    {
+      "x": 0,
+      "y": 10
+    }
+  ]
 }

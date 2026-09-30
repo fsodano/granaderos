@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "san_lorenzo",
-  "revision": 1,
+  "revision": 2,
   "width": 20,
   "height": 16,
   "metadata": {
@@ -2254,17 +2254,38 @@
     {
       "id": "san_lorenzo:building",
       "name": "Convento de San Carlos",
-      "x": 4,
-      "y": 5,
-      "width": 5,
-      "height": 6,
+      "x": 3,
+      "y": 4,
+      "width": 6,
+      "height": 7,
       "roof": "tile",
       "material": "adobe",
+      "architecture": "church",
       "rooms": [
         {
           "id": "san_lorenzo:building:interior",
           "cells": [
             {
+              "x": 4,
+              "y": 5
+            },
+            {
+              "x": 5,
+              "y": 5
+            },
+            {
+              "x": 6,
+              "y": 5
+            },
+            {
+              "x": 7,
+              "y": 5
+            },
+            {
+              "x": 4,
+              "y": 6
+            },
+            {
               "x": 5,
               "y": 6
             },
@@ -2275,6 +2296,10 @@
             {
               "x": 7,
               "y": 6
+            },
+            {
+              "x": 4,
+              "y": 7
             },
             {
               "x": 5,
@@ -2289,6 +2314,10 @@
               "y": 7
             },
             {
+              "x": 4,
+              "y": 8
+            },
+            {
               "x": 5,
               "y": 8
             },
@@ -2299,6 +2328,10 @@
             {
               "x": 7,
               "y": 8
+            },
+            {
+              "x": 4,
+              "y": 9
             },
             {
               "x": 5,
@@ -2315,10 +2348,22 @@
           ]
         }
       ],
+      "kind": "church",
       "walls": [
         {
+          "x": 3,
+          "y": 4,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "san_lorenzo:building",
+          "roomId": null
+        },
+        {
           "x": 4,
-          "y": 5,
+          "y": 4,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2329,7 +2374,7 @@
         },
         {
           "x": 5,
-          "y": 5,
+          "y": 4,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2340,7 +2385,7 @@
         },
         {
           "x": 6,
-          "y": 5,
+          "y": 4,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2351,7 +2396,7 @@
         },
         {
           "x": 7,
-          "y": 5,
+          "y": 4,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2362,7 +2407,7 @@
         },
         {
           "x": 8,
-          "y": 5,
+          "y": 4,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2372,8 +2417,8 @@
           "roomId": null
         },
         {
-          "x": 4,
-          "y": 6,
+          "x": 3,
+          "y": 5,
           "type": "window",
           "blocked": true,
           "blocksSight": false,
@@ -2384,6 +2429,17 @@
         },
         {
           "x": 8,
+          "y": 5,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "san_lorenzo:building",
+          "roomId": null
+        },
+        {
+          "x": 3,
           "y": 6,
           "type": "wall",
           "blocked": true,
@@ -2394,7 +2450,18 @@
           "roomId": null
         },
         {
-          "x": 4,
+          "x": 8,
+          "y": 6,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "san_lorenzo:building",
+          "roomId": null
+        },
+        {
+          "x": 3,
           "y": 7,
           "type": "wall",
           "blocked": true,
@@ -2416,7 +2483,7 @@
           "roomId": null
         },
         {
-          "x": 4,
+          "x": 3,
           "y": 8,
           "type": "wall",
           "blocked": true,
@@ -2438,7 +2505,7 @@
           "roomId": null
         },
         {
-          "x": 4,
+          "x": 3,
           "y": 9,
           "type": "wall",
           "blocked": true,
@@ -2451,6 +2518,17 @@
         {
           "x": 8,
           "y": 9,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "san_lorenzo:building",
+          "roomId": null
+        },
+        {
+          "x": 3,
+          "y": 10,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2520,20 +2598,15 @@
           "buildingId": "san_lorenzo:building",
           "roomId": null
         }
-      ],
-      "kind": "church",
-      "wallFinish": "limewash",
-      "roofFinish": "clay",
-      "doorStyle": "arched",
-      "windowStyle": "arched"
+      ]
     }
   ],
   "props": [
     {
-      "id": "san_lorenzo:building:table:5:6",
+      "id": "san_lorenzo:building:table:4:5",
       "type": "table",
-      "x": 5,
-      "y": 6,
+      "x": 4,
+      "y": 5,
       "buildingId": "san_lorenzo:building",
       "roomId": "san_lorenzo:building:interior",
       "footprint": {
@@ -2543,10 +2616,10 @@
       "blocksMovement": true
     },
     {
-      "id": "san_lorenzo:building:bench:7:6",
+      "id": "san_lorenzo:building:bench:7:5",
       "type": "bench",
       "x": 7,
-      "y": 6,
+      "y": 5,
       "buildingId": "san_lorenzo:building",
       "roomId": "san_lorenzo:building:interior",
       "footprint": {
@@ -2556,9 +2629,9 @@
       "blocksMovement": true
     },
     {
-      "id": "san_lorenzo:building:bed:5:9",
+      "id": "san_lorenzo:building:bed:4:9",
       "type": "bed",
-      "x": 5,
+      "x": 4,
       "y": 8,
       "buildingId": "san_lorenzo:building",
       "roomId": "san_lorenzo:building:interior",
@@ -2600,10 +2673,44 @@
       "type": "convent",
       "asset": "/art/convent.png",
       "name": "Convento de San Carlos",
-      "x": 4,
-      "y": 5,
-      "width": 5,
-      "height": 6
+      "x": 3,
+      "y": 4,
+      "width": 6,
+      "height": 7
+    }
+  ],
+  "boundaryRoads": [
+    {
+      "x": 11,
+      "y": 0
+    },
+    {
+      "x": 12,
+      "y": 0
+    },
+    {
+      "x": 0,
+      "y": 2
+    },
+    {
+      "x": 0,
+      "y": 3
+    },
+    {
+      "x": 0,
+      "y": 12
+    },
+    {
+      "x": 0,
+      "y": 13
+    },
+    {
+      "x": 11,
+      "y": 15
+    },
+    {
+      "x": 12,
+      "y": 15
     }
   ]
 }

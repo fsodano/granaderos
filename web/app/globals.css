@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
+@import './powder-smoke.css';
 @import 'shadcn/tailwind.css';
 @theme inline { --color-background:var(--background); --color-foreground:var(--foreground); --color-popover:var(--popover); --color-popover-foreground:var(--foreground); --color-primary:var(--primary); --color-border:var(--border); --color-muted:var(--muted); --color-muted-foreground:var(--muted-foreground); }
 :root{--background:#101b20;--foreground:#ece5d3;--popover:#1b282d;--primary:#d1b371;--border:#435052;--muted:#28353b;--muted-foreground:#afb6af;--gold:#d1b371;--ink:#101b20;--paper:#e6dcc4;--red:#b74c40;--blue:#6eacb8}

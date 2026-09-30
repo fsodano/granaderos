@@ -1,3 +1,5 @@
+import {CHARACTER_PORTRAITS} from './character-portraits.js';
+
 // Shared visual archetypes, not one sprite set per named character.
 // These traits describe the actual art to author; they are not inferred from
 // names, nationality, stats, or a character's current health or animation.
@@ -67,10 +69,7 @@ export const ROSTER_SPRITE_APPEARANCES = canonicalMappings({
 });
 
 export const CUSTOM_SPRITE_APPEARANCES = canonicalMappings({
- 'avatar-woman-scout':'woman-scout',
- 'avatar-woman-civilian':'woman-shawl',
- 'avatar-man-gaucho':'gaucho',
- 'avatar-man-soldier':'granadero',
+ ...Object.fromEntries(CHARACTER_PORTRAITS.filter(portrait=>portrait.spriteAppearance).map(portrait=>[portrait.id,portrait.spriteAppearance])),
  '103':'naval','104':'naval',
 });
 
@@ -83,6 +82,9 @@ export function spriteAppearance(unit, kind='soldier') {
  if(explicit)return explicit;
  if(kind==='civilian')return 'surgeon';
  if(unit.side==='enemy')return 'royalist';
- if(Number(unit.id)===1000)return CUSTOM_SPRITE_APPEARANCES[unit.portraitId]??'granadero';
+ if(Number(unit.id)===1000){
+  const portraitId=Number(unit.portraitId);
+  return CUSTOM_SPRITE_APPEARANCES[unit.portraitId]??(Number.isInteger(portraitId)&&portraitId>=100&&portraitId<=147?ROSTER_SPRITE_APPEARANCES[portraitId]:undefined)??'granadero';
+ }
  return ROSTER_SPRITE_APPEARANCES[unit.id]??'granadero';
 }

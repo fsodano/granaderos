@@ -4,7 +4,7 @@ import {createBattle,actBattle,endTurn} from '../game/tactical.js';
 import {advanceNpc,advanceCivilianTime,hearNpcNoise,runCivilianPhase,npcRoutes} from '../game/npc-ai.js';
 import {placeBuilding} from '../game/buildings.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
-import {choosePatrolAction} from '../game/npc-patrol.js';
+import {choosePatrolAction} from '../game/tactical-ai.js';
 import {enterSector} from '../game/world.js';
 import {selectSprite,spriteCondition} from '../game/sprite-state.js';
 
@@ -107,7 +107,13 @@ test('NPC routines and positions persist on sector re-entry; malformed state is 
 });
 
 test('sheltering civilian sprites keep their conscious life state',()=>{
-  const n={hp:100,stance:'prone'};assert.equal(spriteCondition(n),'prone');assert.equal(selectSprite(n,{moving:false},'idle','civilian').playback,'still');assert.equal(n.unconscious,undefined);
+  const n={hp:100,stance:'prone'};
+  assert.equal(spriteCondition(n),'prone');
+  assert.deepEqual(selectSprite(n,{moving:false},'idle','civilian'),{name:'surgeon-prone-unarmed-idle',playback:'still'});
+  assert.deepEqual(selectSprite(n,{moving:true},'idle','civilian'),{name:'surgeon-prone-unarmed-walk',playback:'movement'});
+  assert.deepEqual(selectSprite({...n,unconscious:true},{moving:false},'idle','civilian'),{name:'surgeon-unconscious-breathe',playback:'breathing'});
+  assert.deepEqual(selectSprite({...n,hp:0},{moving:false},'idle','civilian'),{name:'surgeon-dead-idle',playback:'still'});
+  assert.equal(n.unconscious,undefined);
 });
 
 test('ambient ticks advance wounds and lights once, preserve combat AP, and stop in combat',()=>{
@@ -122,7 +128,7 @@ test('ambient ticks advance wounds and lights once, preserve combat AP, and stop
 
 test('a patrol that discovers the player interrupts resting at its first contact',()=>{
   const tiles=Array.from({length:32*12},(_,i)=>({x:i%32,y:Math.floor(i/32),type:'grass',blocked:false,cover:0}));
-  const s=createBattle([{id:'p',x:1,y:5,facing:6}],{width:32,height:12,tiles,night:true,exploration:true,enemies:[{id:'enemy',x:10,y:5,traits:['night_vision'],marksmanship:0,loaded:0,ammo:0}],npcs:[]});
+  const s=createBattle([{id:'p',x:1,y:5,facing:6}],{width:32,height:12,tiles,exploration:true,enemies:[{id:'enemy',x:14,y:5,facing:2,marksmanship:0,loaded:0,ammo:0}],npcs:[]});
   assert.equal(s.mode,'exploration');const n=endTurn(s);
   assert.equal(n.mode,'combat');assert.ok(n.elapsedSeconds<600);assert.equal(n.roundFirstSide,'enemy');assert.equal(n.civilianTurns??0,0);assert.equal(n.turn,1);
   assert.doesNotThrow(()=>validateBattleSnapshot(n));

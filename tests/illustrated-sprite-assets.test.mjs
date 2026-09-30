@@ -6,6 +6,7 @@ import {join} from 'node:path';
 import {verifyIllustratedSpriteAssets} from '../tools/verify-tactical-assets.mjs';
 import {SPRITE_APPEARANCES} from '../game/sprite-appearances.js';
 import {SPRITE_SEQUENCES,CIVILIAN_SPRITE_SEQUENCES} from '../game/sprite-state.js';
+import {ILLUSTRATED_SPRITE_ATLASES} from '../game/illustrated-sprite-atlases.js';
 import sharp from '../web/node_modules/sharp/lib/index.js';
 
 test('dead poses exactly preserve the final collapse pixels with no breathing',async()=>{
@@ -30,6 +31,25 @@ test('published illustrated metadata and every atlas match the runtime and stati
  assert.equal(expected.length,240);
  for(const name of expected)assert.ok(manifest.atlases[name],`active appearance and action must be published: ${name}`);
  // Retired art remains available; it does not increase the active authoring scope.
+});
+
+test('the build rejects matching manifest and runtime banks that omit an active sequence or whole appearance',async()=>{
+ const root=await mkdtemp(join(tmpdir(),'granaderos-illustrated-coverage-'));
+ try{
+  await cp(new URL('../web/public/art/illustrated',import.meta.url),join(root,'art/illustrated'),{recursive:true});
+  const path=join(root,'art/illustrated/manifest.json'),original=await readFile(path,'utf8');
+  const absent=[['granadero-run'],['worker-unconscious-breathe'],SPRITE_SEQUENCES.map(sequence=>`woman-shawl-${sequence}`)];
+  for(const omitted of absent){
+   const manifest=JSON.parse(original),runtimeAtlases={...ILLUSTRATED_SPRITE_ATLASES};
+   for(const name of omitted){delete manifest.atlases[name];delete runtimeAtlases[name];}
+   assert.equal(manifest.status,'complete','a stale completeness label is not proof of active coverage');
+   assert.deepEqual(Object.keys(manifest.atlases).sort(),Object.keys(runtimeAtlases).sort(),'both generated banks agree, and all their remaining assets are valid');
+   await writeFile(path,JSON.stringify(manifest));
+   await assert.rejects(verifyIllustratedSpriteAssets(root,()=>{},{runtimeAtlases}),error=>{
+    assert.ok(omitted.some(name=>error.message===`Missing active illustrated sprite: ${name}`),error.message);return true;
+   });
+  }
+ }finally{await rm(root,{recursive:true,force:true});}
 });
 
 test('illustrated validation rejects stale runtime metadata, missing directions and changed pixels',async()=>{

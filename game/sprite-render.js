@@ -1,3 +1,4 @@
+import {SPRITE_DISPLAY_CALIBRATION} from './sprite-display-calibration.js';
 import {ILLUSTRATED_SPRITE_ATLASES} from './illustrated-sprite-atlases.js';
 import {spriteLayout} from './sprite-layouts.js';
 import {selectSprite,selectLegacySprite,spriteAnimationFrame} from './sprite-state.js';
@@ -37,10 +38,11 @@ export function spriteViewport(sprite,position,direction,frame,drawSize=52){
  // Authored cells have triple raster density but the same logical scale.
  // Wider action/prone/horse padding must not make the body smaller.
  const density=sprite.cell/sprite.logicalCell,scale=drawSize/52/density;
+ const [sx,sy]=sprite.style==='illustrated-pixel-art'?(SPRITE_DISPLAY_CALIBRATION[sprite.name]?.[dir]??[1,1]):[1,1];
  // Smoothly sampled illustrated art follows fractional camera positions. The
  // legacy native-pixel fallback retains its original integer alignment.
  const align=sprite.style==='illustrated-pixel-art'?(value=>value):Math.round;
- return {x:align(position.x-sprite.anchor[0]*scale),y:align(position.y-sprite.anchor[1]*scale),
-  width:sprite.cell*scale,height:sprite.cell*scale,
+ return {x:align(position.x-sprite.anchor[0]*scale*sx),y:align(position.y-sprite.anchor[1]*scale*sy),
+  width:sprite.cell*scale*sx,height:sprite.cell*scale*sy,
   viewBox:`${(animated?phase:dir)*sprite.cell} ${animated?dir*sprite.cell:0} ${sprite.cell} ${sprite.cell}`};
 }

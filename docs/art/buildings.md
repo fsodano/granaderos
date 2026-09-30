@@ -209,3 +209,23 @@ Regenerate the catalog after renderer or material changes; an earlier image is
 evidence only for the revision that produced it. Use the generated JSON maps in
 the editor to inspect partial room revelation and walk through the interiors in
 playtest mode.
+
+## Consolidation status — 30 September 2026
+
+The working integration selects the catalog renderer for campaign landmarks and
+new neighbourhood buildings as well as editor templates. `kind` takes precedence
+over legacy `architecture` metadata for pitched roofs. The retained `estancia`
+and `mansion` names map to the catalog's farmhouse and palace profiles. Supports
+use the actual authored wall cells, including the smaller tower fallback for
+compact churches. Geometry and saved identities are not resized by rendering.
+
+Flat terraces keep the [earlier flat roof geometry](archive/campaign-building-styles.md)
+so their slab, chimney, parapets and climb routes still match the playable roof.
+Older snapshots without a catalog kind keep their original appearance. Existing
+saved maps are not replaced with new layouts.
+
+The current 67-check building batch passes, including exact campaign/editor
+render comparisons, roof-level inspection and terrace routes. Exterior and
+interior images from the real renderer were inspected for Retiro, Buenos Aires,
+San Lorenzo and Yatasto. These are renderer checks. The final built browser
+scene and editor export checks remain pending.

@@ -6,6 +6,7 @@ import {actBattle,createBattle,getReachable} from '../game/tactical.js';
 import {enterSector} from '../game/world.js';
 import {syncBattleTime} from '../game/time.js';
 import {encodeSave,decodeSave} from '../game/save.js';
+import {approachNPC} from './approach-npc.mjs';
 export const A='cell-27-27';
 export const order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,n.lastError);return n;};
 export const saved=p=>decodeSave(encodeSave(p.campaign,p.battle??null));
@@ -20,7 +21,7 @@ export function localPackage({pay=300,service='contract',recruitable=true}={}){
 export const visit=s=>{const campaign=order(s,{type:'visitSector'});return saved({campaign,battle:enterSector({...campaign.pendingBattle,hour:campaign.hour,secondOfHour:campaign.secondOfHour??0},campaign.sectorStates[campaign.location])});};
 export const sync=p=>{const n=syncBattleTime(p.campaign,p.battle);assert.equal(n.error,null,n.error);return {campaign:n.campaign,battle:n.battle};};
 export function tactical(p,action){const battle=actBattle(p.battle,{unitId:p.battle.units.find(u=>u.side==='player').id,...action});assert.equal(battle.lastError,null,battle.lastError);return sync({campaign:p.campaign,battle});}
-export function readyLocal(options,content=localPackage(options)){let s=order(initialCampaign(42,content),{type:'recruitCivic',id:110,term:'month'});s=order(s,{type:'travel',sector:A});let p=visit(s);const n=localNPC(p.battle),unit=p.battle.units.find(u=>u.side==='player'),spot=getReachable(p.battle,unit.id).find(t=>Math.abs(t.x-n.x)+Math.abs(t.y-n.y)===1);assert.ok(spot);return spot.cost?tactical(p,{type:'move',x:spot.x,y:spot.y}):p;}
+export function readyLocal(options,content=localPackage(options)){let s=order(initialCampaign(42,content),{type:'recruitCivic',id:110,term:'month'});s=order(s,{type:'travel',sector:A});const p=visit(s),n=localNPC(p.battle),unit=p.battle.units.find(u=>u.side==='player');return sync({campaign:p.campaign,battle:approachNPC(p.battle,unit.id,n.id)});}
 export const talk=(p,term='day',approach='recruit')=>({type:'talkNPC',npcId:localNPC(p.battle).id,unitId:p.battle.units.find(u=>u.side==='player').id,term,approach,sectorState:p.battle});
 export function hireLocal(p,term='day'){
  const npc=localNPC(p.battle),campaign=order(p.campaign,talk(p,term)),id=localId(campaign),op=campaign.pendingBattle.squad.find(u=>u.id===id),battle=structuredClone(p.battle);

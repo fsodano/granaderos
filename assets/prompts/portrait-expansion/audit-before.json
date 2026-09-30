@@ -1,0 +1,423 @@
+{
+  "targetPerCombination": 5,
+  "legacyOnly": [
+    "104",
+    "113",
+    "143",
+    "100",
+    "106",
+    "108"
+  ],
+  "before": 64,
+  "add": 122,
+  "selectableTarget": 180,
+  "groups": [
+    {
+      "gender": "woman",
+      "role": "soldier",
+      "skinTone": "light",
+      "before": 0,
+      "retained": [],
+      "add": 5,
+      "target": 5
+    },
+    {
+      "gender": "woman",
+      "role": "soldier",
+      "skinTone": "brown",
+      "before": 0,
+      "retained": [],
+      "add": 5,
+      "target": 5
+    },
+    {
+      "gender": "woman",
+      "role": "soldier",
+      "skinTone": "dark",
+      "before": 1,
+      "retained": [
+        "avatar-woman-black-soldier"
+      ],
+      "add": 4,
+      "target": 5
+    },
+    {
+      "gender": "woman",
+      "role": "officer",
+      "skinTone": "light",
+      "before": 0,
+      "retained": [],
+      "add": 5,
+      "target": 5
+    },
+    {
+      "gender": "woman",
+      "role": "officer",
+      "skinTone": "brown",
+      "before": 0,
+      "retained": [],
+      "add": 5,
+      "target": 5
+    },
+    {
+      "gender": "woman",
+      "role": "officer",
+      "skinTone": "dark",
+      "before": 1,
+      "retained": [
+        "avatar-woman-black-officer"
+      ],
+      "add": 4,
+      "target": 5
+    },
+    {
+      "gender": "woman",
+      "role": "scout",
+      "skinTone": "light",
+      "before": 0,
+      "retained": [],
+      "add": 5,
+      "target": 5
+    },
+    {
+      "gender": "woman",
+      "role": "scout",
+      "skinTone": "brown",
+      "before": 4,
+      "retained": [
+        "avatar-woman-scout",
+        "101",
+        "120",
+        "126"
+      ],
+      "add": 1,
+      "target": 5
+    },
+    {
+      "gender": "woman",
+      "role": "scout",
+      "skinTone": "dark",
+      "before": 1,
+      "retained": [
+        "avatar-woman-black-scout"
+      ],
+      "add": 4,
+      "target": 5
+    },
+    {
+      "gender": "woman",
+      "role": "gaucho",
+      "skinTone": "light",
+      "before": 0,
+      "retained": [],
+      "add": 5,
+      "target": 5
+    },
+    {
+      "gender": "woman",
+      "role": "gaucho",
+      "skinTone": "brown",
+      "before": 1,
+      "retained": [
+        "avatar-woman-black-gaucho"
+      ],
+      "add": 4,
+      "target": 5
+    },
+    {
+      "gender": "woman",
+      "role": "gaucho",
+      "skinTone": "dark",
+      "before": 0,
+      "retained": [],
+      "add": 5,
+      "target": 5
+    },
+    {
+      "gender": "woman",
+      "role": "artisan",
+      "skinTone": "light",
+      "before": 0,
+      "retained": [],
+      "add": 5,
+      "target": 5
+    },
+    {
+      "gender": "woman",
+      "role": "artisan",
+      "skinTone": "brown",
+      "before": 1,
+      "retained": [
+        "avatar-woman-civilian"
+      ],
+      "add": 4,
+      "target": 5
+    },
+    {
+      "gender": "woman",
+      "role": "artisan",
+      "skinTone": "dark",
+      "before": 1,
+      "retained": [
+        "avatar-woman-black-artisan"
+      ],
+      "add": 4,
+      "target": 5
+    },
+    {
+      "gender": "woman",
+      "role": "medic",
+      "skinTone": "light",
+      "before": 1,
+      "retained": [
+        "139"
+      ],
+      "add": 4,
+      "target": 5
+    },
+    {
+      "gender": "woman",
+      "role": "medic",
+      "skinTone": "brown",
+      "before": 3,
+      "retained": [
+        "122",
+        "130",
+        "135"
+      ],
+      "add": 2,
+      "target": 5
+    },
+    {
+      "gender": "woman",
+      "role": "medic",
+      "skinTone": "dark",
+      "before": 3,
+      "retained": [
+        "107",
+        "116",
+        "avatar-woman-black-medic"
+      ],
+      "add": 2,
+      "target": 5
+    },
+    {
+      "gender": "man",
+      "role": "soldier",
+      "skinTone": "light",
+      "before": 6,
+      "retained": [
+        "avatar-man-soldier",
+        "105",
+        "131",
+        "138",
+        "142"
+      ],
+      "add": 0,
+      "target": 5
+    },
+    {
+      "gender": "man",
+      "role": "soldier",
+      "skinTone": "brown",
+      "before": 3,
+      "retained": [
+        "114",
+        "123",
+        "141"
+      ],
+      "add": 2,
+      "target": 5
+    },
+    {
+      "gender": "man",
+      "role": "soldier",
+      "skinTone": "dark",
+      "before": 4,
+      "retained": [
+        "110",
+        "119",
+        "127",
+        "avatar-man-black-soldier"
+      ],
+      "add": 1,
+      "target": 5
+    },
+    {
+      "gender": "man",
+      "role": "officer",
+      "skinTone": "light",
+      "before": 7,
+      "retained": [
+        "109",
+        "118",
+        "124",
+        "128",
+        "132"
+      ],
+      "add": 0,
+      "target": 5
+    },
+    {
+      "gender": "man",
+      "role": "officer",
+      "skinTone": "brown",
+      "before": 2,
+      "retained": [
+        "111",
+        "137"
+      ],
+      "add": 3,
+      "target": 5
+    },
+    {
+      "gender": "man",
+      "role": "officer",
+      "skinTone": "dark",
+      "before": 1,
+      "retained": [
+        "avatar-man-black-officer"
+      ],
+      "add": 4,
+      "target": 5
+    },
+    {
+      "gender": "man",
+      "role": "scout",
+      "skinTone": "light",
+      "before": 1,
+      "retained": [
+        "134"
+      ],
+      "add": 4,
+      "target": 5
+    },
+    {
+      "gender": "man",
+      "role": "scout",
+      "skinTone": "brown",
+      "before": 2,
+      "retained": [
+        "115",
+        "147"
+      ],
+      "add": 3,
+      "target": 5
+    },
+    {
+      "gender": "man",
+      "role": "scout",
+      "skinTone": "dark",
+      "before": 2,
+      "retained": [
+        "136",
+        "avatar-man-black-scout"
+      ],
+      "add": 3,
+      "target": 5
+    },
+    {
+      "gender": "man",
+      "role": "gaucho",
+      "skinTone": "light",
+      "before": 0,
+      "retained": [],
+      "add": 5,
+      "target": 5
+    },
+    {
+      "gender": "man",
+      "role": "gaucho",
+      "skinTone": "brown",
+      "before": 8,
+      "retained": [
+        "avatar-man-gaucho",
+        "117",
+        "129",
+        "145",
+        "avatar-man-black-gaucho"
+      ],
+      "add": 0,
+      "target": 5
+    },
+    {
+      "gender": "man",
+      "role": "gaucho",
+      "skinTone": "dark",
+      "before": 0,
+      "retained": [],
+      "add": 5,
+      "target": 5
+    },
+    {
+      "gender": "man",
+      "role": "artisan",
+      "skinTone": "light",
+      "before": 3,
+      "retained": [
+        "102",
+        "103",
+        "144"
+      ],
+      "add": 2,
+      "target": 5
+    },
+    {
+      "gender": "man",
+      "role": "artisan",
+      "skinTone": "brown",
+      "before": 3,
+      "retained": [
+        "121",
+        "125",
+        "140"
+      ],
+      "add": 2,
+      "target": 5
+    },
+    {
+      "gender": "man",
+      "role": "artisan",
+      "skinTone": "dark",
+      "before": 2,
+      "retained": [
+        "133",
+        "avatar-man-black-artisan"
+      ],
+      "add": 3,
+      "target": 5
+    },
+    {
+      "gender": "man",
+      "role": "medic",
+      "skinTone": "light",
+      "before": 2,
+      "retained": [
+        "112",
+        "146"
+      ],
+      "add": 3,
+      "target": 5
+    },
+    {
+      "gender": "man",
+      "role": "medic",
+      "skinTone": "brown",
+      "before": 0,
+      "retained": [],
+      "add": 5,
+      "target": 5
+    },
+    {
+      "gender": "man",
+      "role": "medic",
+      "skinTone": "dark",
+      "before": 1,
+      "retained": [
+        "avatar-man-black-medic"
+      ],
+      "add": 4,
+      "target": 5
+    }
+  ]
+}

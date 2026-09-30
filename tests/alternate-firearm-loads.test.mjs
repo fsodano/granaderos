@@ -33,7 +33,7 @@ test('tactical unload, choice and reload retain physical load on packed and reco
  let p=visit(choose(hire(),'ammoShot'));p=tactical(p,{type:'unloadAmmunition'});assert.equal(unit(p).loaded,0);assert.equal(ammoCount(unit(p),'ammoShot'),10);p=tactical(p,{type:'selectAmmunitionLoad',family:'ammoMusket'});assert.equal(ammoTypeFor(unit(p)),'ammoMusket');
  const denied=actBattle(p.battle,{type:'reload',unitId:'110'});assert.ok(denied.lastError);assert.equal(ammoCount(denied.units.find(u=>u.id==='110'),'ammoShot'),10);
  p=tactical(p,{type:'selectAmmunitionLoad',family:'ammoShot'});p=tactical(p,{type:'reload'});const gun=weaponRecord(unit(p));assert.equal(gun.ammunitionChoice,'ammoShot');assert.equal(gun.loaded,1);assert.equal(weaponSpecification(gun).loadPattern,'cone');
- p=tactical(p,{type:'drop',slot:'primary'});p=saved(p);const dropped=p.battle.droppedWeapons.find(g=>g.unitId==='110');assert.equal(dropped.ammunitionChoice,'ammoShot');assert.equal(dropped.loaded,1);
+ p=tactical(p,{type:'drop',slot:'primary'});p=saved(p);const dropped=p.battle.groundItems.find(g=>g.weapon===gun.weapon&&g.count===1);assert.equal(dropped.ammunitionChoice,'ammoShot');assert.equal(dropped.loaded,1);
 });
 
 test('invalid choices and partial reload changes reject without converting ammunition',()=>{
@@ -62,13 +62,13 @@ test('a loaded alternative survives held transfer, recipient equip and tactical 
 
 test('unloading requires pocket capacity and combat AP, and cannot clear a jam for free',()=>{
  const field=()=>createBattle([{id:'p',x:1,y:1,weapon:1800,loaded:1,ammunitionChoice:'ammoShot',ammo:0,ap:3}],{width:8,height:8,enemies:[{id:'e',x:7,y:7,weapon:1813,patrol:false}]});
- let b=field();b.units[0].ap=3;const before=structuredClone(b.units);let n=actBattle(b,{type:'unloadAmmunition',unitId:'p'});assert.match(n.lastError,/4 PA/);assert.deepEqual(n.units,before);
- b=field();b.units[0].jammed=true;b.units[0].ap=10;n=actBattle(b,{type:'unloadAmmunition',unitId:'p'});assert.equal(n.lastError,null);assert.equal(n.units[0].ap,6);assert.equal(n.units[0].loaded,0);assert.equal(n.units[0].jammed,false);assert.equal(ammoCount(n.units[0],'ammoShot'),1);
- b=field();b.units[0].ap=10;b.units[0].inventory=Object.fromEntries(Array.from({length:12},(_,i)=>['full'+i,{count:1,weight:0,weapon:1800,loaded:0}]));const full=structuredClone(b.units);n=actBattle(b,{type:'unloadAmmunition',unitId:'p'});assert.ok(n.lastError);assert.deepEqual(n.units,full);
+ let b=field();b.units[0].ap=3;const before=structuredClone(b.units);let n=actBattle(b,{type:'unloadAmmunition',unitId:'p'});assert.match(n.lastError,/12 PA/);assert.deepEqual(n.units,before);
+ b=field();b.units[0].jammed=true;b.units[0].ap=20;n=actBattle(b,{type:'unloadAmmunition',unitId:'p'});assert.equal(n.lastError,null);assert.equal(n.units[0].ap,8);assert.equal(n.units[0].loaded,0);assert.equal(n.units[0].jammed,true);assert.equal(ammoCount(n.units[0],'ammoShot'),1);
+ b=field();b.units[0].ap=20;b.units[0].inventory=Object.fromEntries(Array.from({length:12},(_,i)=>['full'+i,{name:'Objeto '+i,count:1,weight:.1,instanceId:'full-'+i}]));const full=structuredClone(b.units);n=actBattle(b,{type:'unloadAmmunition',unitId:'p'});assert.ok(n.lastError);assert.deepEqual(n.units,full);
 });
 
 test('an empty AI firearm selects owned compatible shot and closes distance instead of discarding it',async()=>{
  const {endTurn,shotChance}=await import('../game/tactical.js');
  const b=createBattle([{id:'p',x:1,y:1,weapon:1800,ammo:0,loaded:0}],{seed:45,width:12,height:10,tiles:Array.from({length:120},(_,i)=>({x:i%12,y:Math.floor(i/12),type:'grass',blocked:false,cover:0})),enemies:[{id:'e',x:8,y:5,weapon:1800,loaded:0,ammo:2,ammunition:{ammoShot:2},patrol:false,overwatch:false}]});
- assert.equal(shotChance(b,{...b.units[1],ammunitionChoice:'ammoShot'},b.units[0]),0);const n=endTurn(b),enemy=n.units.find(u=>u.id==='e');assert.equal(enemy.ammunitionChoice,'ammoShot');assert.equal(enemy.loaded,1);assert.equal(ammoCount(enemy,'ammoShot'),1);assert.ok(Math.hypot(enemy.x-1,enemy.y-1)<6);assert.equal(n.lastError,null);
+ assert.equal(shotChance(b,{...b.units[1],ammunitionChoice:'ammoShot'},b.units[0]),0);let n=endTurn(b);for(let i=0;n.phase==='interrupt'&&i<8;i++)n=endTurn(n);const enemy=n.units.find(u=>u.id==='e');assert.equal(enemy.ammunitionChoice,'ammoShot');assert.equal(enemy.loaded,0);assert.equal(ammoCount(enemy,'ammoShot'),1);assert.match(n.log.join(' '),/recarga/);assert.match(n.log.join(' '),/dispara una carga de perdigones/);assert.ok(n.units[0].hp<b.units[0].hp);assert.ok(Math.hypot(enemy.x-1,enemy.y-1)<6);assert.equal(n.lastError,null);
 });

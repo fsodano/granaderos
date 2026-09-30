@@ -1,110 +1,232 @@
-import {migrateAmmoGround,AMMO_KEYS,AMMO_TYPES,ammoTypeFor,ammoCount,ammunitionChoiceReason,ammunitionLoadsFor,normalizeAmmo,changeAmmo,supplyCount,changeSupply} from './ammo-types.js';
-import {pocketChangeReason,supplyRoom,inventoryRoom,movePocket,POCKET_FULL} from './personal-pockets.js';
-import {recordBattleFrame,captureBattlePresentation} from './battle-presentation.js';
-import {FISTS,BUTTSTOCK,unarmedChance,unarmedImpact} from './unarmed-combat.js';
-import {ARTILLERY,artilleryProfile} from './artillery-definitions.js';
-export {ARTILLERY} from './artillery-definitions.js';
-import {chooseArtilleryAction,holdsArtilleryPost} from './tactical-ai-artillery.js';
-import {militiaPatrolRules} from './militia-patrol-rules.js';
-import {recordMilitiaHit} from './militia-experience.js';
-import {firearmPreparation,lowerWeapon} from './weapon-readiness.js';
-import {planReload,reloadRoundCost} from './weapon-reload.js';
-import {firstAidPlan} from './first-aid.js';
-import {speechFor} from './characters.js';
-import {civilianSupplyLoot} from './civilian-supplies.js';
-import {CHARACTER_SUPPLY_LABELS,TRANSFER_SUPPLY_LABELS} from './character-supplies.js';
-import {isUnconscious,fieldCapable,refreshMilitaryCondition} from './actor-condition.js';
-import {seedCivilianHealth,isCivilianUnconscious,civilianRestoredHp} from './civilian-health.js';
-import {applyCivilianHarm,advanceCivilianWoundTime} from './civilian-harm.js';
+import {AMMUNITION_FAMILIES} from './ammunition-families.js';
+import {AMMO_TYPES,ammoTypeFor,ammunitionChoiceReason} from './ammo-types.js';
+import {migrateBattleAmmunition,initializeGroundAmmunition} from './physical-ammunition.js';
+import {weaponSpecification,contentWeaponOf} from './weapon-definition.js';
 import {hasCharacterAbility} from './character-abilities.js';
-import {weaponSpecification,contentWeaponOf,weaponRecord,setWeaponDefinition,validateWeaponCarrier} from './weapon-definition.js';
-import {WEAPONS} from './firearm-definitions.js';
-import {hearNpcNoise,runCivilianPhase,advanceCivilianTime} from './npc-ai.js';
-import {choosePatrolAction} from './npc-patrol.js';
+import {speechFor} from './characters.js';
+import {seedCivilianHealth} from './civilian-health.js';
+import {civilianSupplyLoot} from './civilian-supplies.js';
+import {supplyRoom,POCKET_FULL} from './personal-pockets.js';
+import {militiaPatrolRules} from './militia-patrol-rules.js';
 import {militiaPatrolOrder} from './militia-patrol.js';
-import {directionTo} from './npc-perception.js';
-import {propBlocksAt} from './props.js';
+import {holdsArtilleryPost} from './tactical-ai-artillery.js';
+import {ARTILLERY,artilleryProfile} from './artillery-definitions.js';
+import {WEAPONS} from './firearm-definitions.js';
+import {BLADES} from './blade-definitions.js';
+export {ARTILLERY,WEAPONS,BLADES};
+import {removeIgnitionSupplies} from './ignition-kit.js';
+import {recordBattleFrame,captureBattlePresentation} from './battle-presentation.js';
+import {RouteQueue} from './route-queue.js';
+import {crossPrisonerEscorts,prisonerCanExit} from './prisoner-escape.js';
+import {PRISONER_RELEASE_AP,PRISONER_ESCORT_AP,recordPrisonerRelease,recordPrisonerEscort} from './prisoner-release.js';
+import {availableAmmunition,weaponAmmoType} from './ammunition-types.js';
+import {initializeUnitAmmunition,syncUnitAmmunition,consumeWeaponAmmunition} from './tactical-ammunition.js';
+import {sectorDeploymentAction} from './sector-deployment.js';
+import {pairedPistol,secondHeldPistol,pistolPairPenalty,secondaryPistolView} from './paired-fire.js';
+import {pocketOrderFromSlots} from './inventory-pockets.js';
+import {planEquipmentUnload,planEquipmentAttachment,planEquipmentPickup,planEquipmentCursorPlacement,planEquipmentCursorReturn} from './equipment-cursor.js';
+import {regionalWeatherAt} from './regional-weather.js';
+import {heldThrowingKnife,knifeThrowCosts,knifeThrowRange,knifeThrowChance,knifeThrowDamage} from './thrown-knife.js';
+import {knifeFlight} from './knife-flight.js';
+import {heldGrenade,grenadeThrowCosts,grenadeThrowRange,grenadeThrowChance,grenadeScatterRadius,GRENADE_THROW} from './grenade-throw.js';
+import {grenadeFlight,grenadeBlastExposure} from './grenade-flight.js';
+import {itemFlight} from './item-flight.js';
+import {usesElevationGeometry,elevationSightClear,absoluteBodyHeight,geometryCells,rayHeightIntersection} from './sight-geometry.js';
+import {tacticalLevel,spaceKey,sameSurface,sameCell,surfaceAt,surfaceHeight,accessStepsFrom} from './tactical-space.js';
+import {questGiftPlan,questGiftDecision} from './quests.js';
+import {BODY_SLOTS,wornBodyItems,OUTFIT_CHANGE_AP,normalizeOutfit,wornOutfit,hasPoncho} from './outfits.js';
+import {handsRequired,selectMainHand,handLayout} from './hand-layout.js';
+import {firearmPreparation,lowerWeapon,lowersWeapon,turnLowersWeapon} from './weapon-readiness.js';
+import {planReload,reloadRoundCost} from './weapon-reload.js';
+import {planReprime,reprimeCost} from './weapon-reprime.js';
+import {discoverInventory} from './inventory-discovery.js';
+import {isInteriorVisible} from './tactical-visibility.js';
+import {automaticOrder,searchOrder} from './autonomous-orders.js';
+import {shotRangeModifiers} from './shot-range.js';
+import {limitEnergy,maximumEnergy,recoverEnergy,recoverFatigue} from './fatigue.js';
+import {recordMilitiaHit} from './militia-experience.js';
+import {projectilePath,projectileFlight,pointProjectileFlight,physicalBodies,concealmentAt,concealmentSightPenalty} from './projectile-cover.js';
+import {applyCivilianHarm,civilianWoundedByPlayer,advanceCivilianWoundTime} from './civilian-harm.js';
+import {boundaryMatches} from './tactical-exits.js';
+import {HELD_SUPPLIES,heldSupply,clearEmptySupply} from './held-supplies.js';
+import {heldTool,environmentActionProfile,resolveEnvironmentInteraction,extractContainerItem} from './environment-interactions.js';
+import {SUPPLY_ITEMS,handMetadata,droppedWeaponStack,carriedObject,inventoryUsage,itemDescriptor,itemQuantity,extractItemQuantity,extractEquipmentSelection,applyItemQuantity,transferItemQuantity,planFitBayonet,planRemoveBayonet,planPocketMove,planEquipOutfit,planStowOutfit,planHoldOffhand,equipmentEndpoint,equipmentFingerprint,planOutfitPlacement,pocketMergeCount} from './tactical-inventory.js';
+import {FITTING_RULES_VERSION,FIT_BAYONET_AP,REMOVE_BAYONET_AP,LOOSE_BAYONET,fixedBayonetFor,fixedBayonetProfile,fittingWeight,weaponItemWeight,normalizeUnitFittings} from './weapon-fittings.js';
+import {FISTS,BUTTSTOCK,unarmedChance,unarmedImpact,weaponStealChance,STEAL_MIN_AP} from './unarmed-combat.js';
+import {directionTo,facingAllowsSight,turnAPCost,stealthAPMultiplier,noiseRadius,approximateHeardPosition} from './tactical-awareness.js';
+import {HIT_LOCATIONS,shotLocationsFor,shotLocationPenalty,shotLocationEffects,getHitLocationProfile} from './targeted-combat.js';
+import {hearNpcNoise,runCivilianPhase,advanceCivilianTime} from './npc-ai.js';
+import {chooseEnemyAction,choosePatrolAction} from './tactical-ai.js';
+import {AP_CARRY_LIMIT,CRITICAL_HEALTH,STANCES,isUnconscious,effectiveWounds,maxActionPoints,actionPointBudget,stanceCost,movementStance,refreshCondition} from './tactical-condition.js';
+export {AP_CARRY_LIMIT,CRITICAL_HEALTH,maxActionPoints,actionPointBudget,stanceCost};
+import {propBlocksAt,propCells} from './props.js';
 import {advanceBattleClock,COMBAT_ROUND_SECONDS,REST_SECONDS} from './time.js';
 import {practice} from './skill-training.js';
+import {firstAidPlan} from './first-aid.js';
 // Deterministic, serializable tactical simulation. The browser uses this module directly.
-export {WEAPONS} from './firearm-definitions.js';
-
-import {BLADES} from './blade-definitions.js';
-export {BLADES} from './blade-definitions.js';
-export function bladeFor(unit){if(unit.activeSlot==='unarmed')return FISTS;if(unit.activeSlot==='blade')return BLADES[unit.blade]?(contentWeaponOf(unit,'blade')?weaponSpecification(unit,'blade'):BLADES[unit.blade]):FISTS;if(unit.weaponDropped||!unit.weapon)return FISTS;return BLADES[unit.weapon]?(contentWeaponOf(unit)?weaponSpecification(unit):BLADES[unit.weapon]):WEAPONS[unit.weapon]?{...BUTTSTOCK,ap:contentWeaponOf(unit)?.stockAP??BUTTSTOCK.ap,damage:contentWeaponOf(unit)?.stockDamage??BUTTSTOCK.damage,reach:contentWeaponOf(unit)?.stockReach??BUTTSTOCK.reach}:FISTS;}
+export function bladeFor(unit){
+ if(['unarmed','medical','tool','supply','item'].includes(unit.activeSlot))return FISTS;
+ if(unit.activeSlot==='blade')return contentWeaponOf(unit,'blade')?weaponSpecification(unit,'blade'):unit.blade===1811?LOOSE_BAYONET:BLADES[unit.blade]||FISTS;
+ if(unit.weaponDropped)return FISTS;
+ const fixed=fixedBayonetProfile(unit);if(fixed)return fixed;
+ if(BLADES[unit.weapon])return contentWeaponOf(unit)?weaponSpecification(unit):unit.weapon===1811?LOOSE_BAYONET:BLADES[unit.weapon];
+ return hasFirearm(unit)?{...BUTTSTOCK,ap:contentWeaponOf(unit)?.stockAP??BUTTSTOCK.ap,damage:contentWeaponOf(unit)?.stockDamage??BUTTSTOCK.damage,reach:contentWeaponOf(unit)?.stockReach??BUTTSTOCK.reach}:FISTS;
+}
 const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
 const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
-const present=u=>u.hp>0&&!u.routed;
-const civilian=(s,u)=>Boolean(u&&s.npcs?.includes(u));
-const victims=s=>[...s.units,...(s.npcs??[])];
-const targetable=(s,u)=>u&&(civilian(s,u)?u.hp>0&&!u.departure:present(u));
+const positionOf=p=>({x:p.x,y:p.y,...(p.tacticalLevel===undefined?{}:{tacticalLevel:p.tacticalLevel})});
+const contactDistance=(a,b)=>sameSurface(a,b)?dist(a,b):Infinity;
+const spaceDistance=(s,a,b)=>Math.hypot(a.x-b.x,a.y-b.y,(surfaceHeight(s,a)??0)-(surfaceHeight(s,b)??0));
+const onField=u=>(u.hp??100)>0&&!u.departure&&!u.fled;
+const targetable=u=>onField(u)&&!u.surrendered;
+const present=u=>targetable(u)&&!u.routed;
+export const fieldCapable=u=>Boolean(onField(u)&&!u.surrendered&&u.hp>=CRITICAL_HEALTH);
 const alive=u=>present(u)&&!isUnconscious(u);
-const clone=s=>{const copy=structuredClone(s);for(const u of copy.units){normalizeAmmo(u);if(u.side==='enemy'&&u.patrol!==false)u.patrolOrigin??={x:u.x,y:u.y};u.activeSlot??='primary';u.reactionSpent??=0;u.reactionTurn??=0;u.interceptTurn??=0;u.fatigue??=0;u.rations??=2;u.parryTurn??=0;u.counterTurn??=0;u.braceTurn??=0;u.knockedDown??=false;u.braced??=false;u.energy??=100;refreshMilitaryCondition(u);u.movementMode??='walk';u.inventory??={};u.boleadoras??=1;u.torches??=2;u.strengthTraining??=0;}copy.conditionVersion=1;copy.artillery??=[];copy.mode??='combat';copy.groundItems=migrateAmmoGround(copy.groundItems);copy.lights??=[];copy.buildings??=[];copy.revealedRooms??=[];copy.sectorCleared??=false;copy.droppedWeapons??=[];return copy;};
+const clone=s=>{const copy=removeIgnitionSupplies(structuredClone(s));copy.fittingRulesVersion??=FITTING_RULES_VERSION;migrateBattleAmmunition(copy);copy.conditionVersion=1;for(const u of copy.units){if(u.side==='enemy'&&u.patrol!==false)u.patrolOrigin??=positionOf(u);normalizeUnitFittings(u);u.activeSlot??='primary';u.facing??=u.side==='enemy'?6:2;u.stealthMode??=false;u.reactionSpent??=0;u.reactionTurn??=0;u.interceptTurn??=0;u.fatigue??=0;u.rations??=2;u.parryTurn??=0;u.counterTurn??=0;u.braceTurn??=0;u.knockedDown??=false;u.braced??=false;u.energy??=100;if(s.conditionVersion!==1)refreshCondition(u);u.movementMode??='walk';u.inventory??={};u.boleadoras??=1;u.torches??=2;u.strengthTraining??=0;u.bandaged??=u.bleeding?0:Math.max(0,u.maxHp-u.hp);u.shock??=0;u.experienceLevel??=4;u.carriedAP??=0;}copy.artillery??=[];copy.mode??='combat';copy.groundItems??=[];copy.lights??=[];copy.buildings??=[];copy.revealedRooms??=[];copy.sectorCleared??=false;copy.enemyTurns??=copy.mode==='combat'?Math.max(0,copy.turn-1):0;copy.droppedWeapons??=[];return copy;};
 function random(s){s.seed=(Math.imul(s.seed,1664525)+1013904223)>>>0;return s.seed/4294967296;}
 function say(s,text){s.log.push(text);s.log=s.log.slice(-80);}
-export function hasFirearm(unit){if(unit.weaponDropped)return false;if(unit.activeSlot==='blade'||unit.activeSlot==='unarmed')return false;return typeof unit.weapon==='object'?unit.weapon.capacity>0:Boolean(WEAPONS[unit.weapon]);}
-export function weaponFor(unit){if(unit.activeSlot==='unarmed'||unit.activeSlot==='blade'||unit.weaponDropped||!unit.weapon)return {...bladeFor(unit),fireAP:0,aimAP:0,reloadAP:0,capacity:0,range:bladeFor(unit).reach};return typeof unit.weapon==='object'?unit.weapon:WEAPONS[unit.weapon]?weaponSpecification(unit):{...bladeFor(unit),fireAP:0,aimAP:0,reloadAP:0,capacity:0,range:bladeFor(unit).reach};}
+// Record names only while the squad can observe the event. Later contact must
+// not reveal earlier hidden actions through the saved journal.
+function journalVisible(s,unit){return unit.side!=='enemy'||teamCanSee(s,'player',unit);}
+function sayObserved(s,subjects,text){if(subjects.every(unit=>journalVisible(s,unit)))say(s,text);}
+export function hasFirearm(unit){if(unit.weaponDropped)return false;if(unit.activeSlot&&unit.activeSlot!=='primary')return false;return typeof unit.weapon==='object'?unit.weapon.capacity>0:Boolean(WEAPONS[unit.weapon]);}
+export function weaponFor(unit){if(unit.activeSlot==='item')return {id:'item',name:carriedObject(unit)?.label??'Objeto',damage:0,fireAP:0,aimAP:0,reloadAP:0,capacity:0,range:0};if(unit.activeSlot==='supply'){const supply=heldSupply(unit);return {id:supply?.key??'supply',name:supply?.name??'Pertrecho',damage:0,fireAP:0,aimAP:0,reloadAP:0,capacity:0,range:supply?.range??0};}if(unit.activeSlot==='tool'){const tool=heldTool(unit);return {id:tool?.toolKey??'tool',name:tool?.label??'Herramienta',damage:0,fireAP:0,aimAP:0,reloadAP:0,capacity:0,range:1.5};}if(unit.activeSlot==='unarmed')return {...FISTS,fireAP:0,aimAP:0,reloadAP:0,capacity:0,range:FISTS.reach};if(unit.activeSlot==='medical')return {id:'medical',name:'Equipo de curación',damage:0,fireAP:0,aimAP:0,reloadAP:0,capacity:0,range:1.5};if(unit.activeSlot==='blade')return {...bladeFor(unit),fireAP:0,aimAP:0,reloadAP:0,capacity:0,range:bladeFor(unit).reach};if(unit.weaponDropped)return {...FISTS,fireAP:0,aimAP:0,reloadAP:0,capacity:0,range:FISTS.reach};return typeof unit.weapon==='object'?unit.weapon:WEAPONS[unit.weapon]?weaponSpecification(unit):{...bladeFor(unit),fireAP:0,aimAP:0,reloadAP:0,capacity:0,range:bladeFor(unit).reach};}
 export function misfireChance(condition=100,rain=0,humidity=0){return clamp(Math.round(2+(100-clamp(condition,0,100))*.2+clamp(rain,0,100)*.5+clamp(humidity,0,100)),0,95);}
 export function hasTrait(u,id){return Array.isArray(u.traits)&&u.traits.includes(id);}
 function nearbyTrait(s,u,id,radius=4){return s.units.some(v=>v.side===u.side&&alive(v)&&hasTrait(v,id)&&dist(u,v)<=radius);}
-export function actionCosts(s,u){const w=weaponFor(u),cavalry=u.mounted&&hasTrait(u,'cavalry_commander'),firstShot=Math.max(1,Math.ceil(w.fireAP*(cavalry?.8:1))-(hasCharacterAbility(u,'quick_shot')&&[1803,1805,1806,1808].includes(w.id)?2:0)),preparation=firearmPreparation(u,w,firstShot);return{heal:hasCharacterAbility(u,'rapid_first_aid')?18:hasTrait(u,'field_rescuer')?20:25,breach:hasCharacterAbility(u,'breaching')?25:45,mount:hasTrait(u,'cavalry_commander')?8:12,fire:preparation.total,ready:preparation.ready,discharge:preparation.discharge,aim:Math.max(0,Math.ceil(w.aimAP*(hasTrait(u,'line_marksman')?.65:1))),reprime:hasTrait(u,'gunsmith_artillerist')?10:15,repair:hasTrait(u,'gunsmith_artillerist')?18:25,reload:reloadPlan(u,s).pa,melee:Math.ceil(bladeFor(u).ap*(cavalry?.8:1))};}
-export function artilleryCosts(s,u,gun){const spec=artilleryProfile(s,gun),assist=(nearby(s,u,'loading_support',2)?.8:1)*(hasTrait(u,'gunsmith_artillerist')?.85:1);return{crew:spec.crew,fire:Math.ceil(spec.fireAP*assist*(hasCharacterAbility(u,'artillery_fire')?.85:1)),reload:Math.ceil(spec.reloadAP*assist*(hasCharacterAbility(u,'artillery_loading')?.8:1)),move:spec.moveAP,pivot:spec.pivotAP};}
-export function artilleryContact(s,u,gun){
- if(!u||!gun||dist(u,gun)>1.5||!hasLineOfSight(s,u,gun))return false;
- const ground=tile(s,gun.x,gun.y);if(!ground||ground.blocked||ground.type==='water'||propBlocksAt(s,gun.x,gun.y))return false;
- return u.x===gun.x||u.y===gun.y||[tile(s,u.x,gun.y),tile(s,gun.x,u.y)].every(t=>t&&!t.blocked&&!propBlocksAt(s,t.x,t.y));
+export function reprimePlan(unit,state){return planReprime(unit,{exploring:state.mode==='exploration',firearm:hasFirearm(unit)});}
+export function actionCosts(s,u,point){
+  const w=weaponFor(u),cavalry=u.mounted&&hasTrait(u,'cavalry_commander');
+  const meleeStrike=Math.ceil(bladeFor(u).ap*(cavalry?.8:1)),meleeStance=u.stance==='prone'?stanceCost(u,'standing'):0;
+  const fire=Math.max(1,Math.ceil(w.fireAP*(cavalry?.8:1))-(hasCharacterAbility(u,'quick_shot')&&[1803,1805,1806,1808].includes(w.id)?2:0));
+  const turn=hasFirearm(u)&&Number.isFinite(point?.x)&&Number.isFinite(point?.y)?turnAPCost(u,directionTo(u,point)):0;
+  const preparation=hasFirearm(u)?firearmPreparation(u,w,fire,turn):{raise:0,turn:0,setup:0,discharge:fire,total:fire};
+  const second=pairedPistol(u),other=second?actionCosts(s,secondaryPistolView(u,second),point):null;
+  const setup=Math.max(preparation.setup,other?.setup??0),discharge=Math.max(preparation.discharge,other?.discharge??0);
+  return {
+    fire:setup+discharge,ready:Math.max(preparation.raise,other?.ready??0),turn:preparation.turn,setup,discharge,overwatch:setup+discharge,aim:Math.max(other?.aim??0,Math.max(0,Math.ceil(w.aimAP*(hasTrait(u,'line_marksman')?.65:1)))),
+    stance:stanceCost(u,STANCES[(STANCES.indexOf(u.stance??'standing')+1)%3]),
+    weapon:4,brace:16,ration:10,torch:10,bolas:12,free:15,loot:8,equipLoot:6,fitBayonet:FIT_BAYONET_AP,removeBayonet:REMOVE_BAYONET_AP,
+    heal:hasCharacterAbility(u,'rapid_first_aid')?18:hasTrait(u,'field_rescuer')?20:25,
+    breach:hasCharacterAbility(u,'breaching')?25:45,mount:hasTrait(u,'cavalry_commander')?8:12,
+    reprime:reprimePlan(u,s).pa||reprimeCost(u),repair:hasTrait(u,'gunsmith_artillerist')?18:25,
+    reload:reloadCost(u,s),melee:meleeStrike+meleeStance,meleeStrike,meleeStance,
+  };
 }
-// Every assigned artillerist performs the same work. Crew eligibility is shared
-// with the controls; a hired soldier cannot spend an autonomous militia's AP.
+// All ordinary hostile clicks, HUD previews and attack animations share this
+// choice. Gun mode is explicit; distance never silently changes fire into melee.
+export function contextualAttack(s,u,target,options={}){
+  if(heldGrenade(u)&&!['fire','melee'].includes(options.type))return {type:'throwGrenade',pa:grenadeThrowCosts(u,target).total,profile:GRENADE_THROW};
+  const explicit=['fire','melee'].includes(options.type)?options.type:null;
+  const type=explicit??(hasFirearm(u)?u.weaponMode??'fire':'melee');
+  const costs=actionCosts(s,u,target),aim=clamp(Math.floor(Number.isFinite(options.aim)?options.aim:0),0,4);
+  return {type,pa:type==='fire'?costs.fire+aim*costs.aim:costs.melee,profile:type==='fire'?weaponFor(u):bladeFor(u)};
+}
+export function artilleryCosts(s,u,gun){const powderFactor=1+(50-clamp(u.explosives??50,0,100))/500,spec=artilleryProfile(s,gun),assist=(nearby(s,u,'loading_support',2)?.8:1)*(hasTrait(u,'gunsmith_artillerist')?.85:1);return{crew:spec.crew,fire:Math.ceil(spec.fireAP*assist*(hasCharacterAbility(u,'artillery_fire')?.85:1)),reload:Math.ceil(spec.reloadAP*assist*(hasCharacterAbility(u,'artillery_loading')?.8:1)*powderFactor),move:spec.moveAP,pivot:spec.pivotAP};}
+export function artilleryContact(s,u,gun){return Boolean(u&&gun&&!['water','cliff'].includes(tile(s,gun.x,gun.y)?.type)&&sameSurface(u,gun)&&contactDistance(u,gun)<=1.5&&hasLineOfSight(s,u,gun)&&(sameCell(u,gun)||Number.isFinite(movementStepCost(s,u,u,gun))));}
+// Crew work is simultaneous: the least available assigned member limits one
+// loading step. Prefer stronger available helpers without spending other units' AP.
 export function artilleryCrewPlan(s,u,gun,cost,partial=false){
- const spec=artilleryProfile(s,gun);
- if(!u||!spec||gun.side!==u.side)return {crew:[],reason:'Debes estar junto a una pieza de artillería propia.'};
- const eligible=v=>v.side===u.side&&Boolean(v.militia)===Boolean(u.militia)&&alive(v)&&!v.knockedDown&&!v.fled&&!v.departure&&!v.surrendered&&!v.entangled&&!v.mounted&&v.stance!=='prone'&&
-  (s.mode==='exploration'||s.phase===v.side&&v.ap>=cost)&&artilleryContact(s,v,gun);
- const helpers=s.units.filter(v=>v.id!==u.id&&eligible(v));
- if(partial)helpers.sort((a,b)=>b.ap-a.ap||String(a.id).localeCompare(String(b.id)));
- const assigned=eligible(u)?[u,...helpers].slice(0,spec.crew):[];
- const reason=assigned.length<spec.crew?`La pieza necesita ${spec.crew} artilleros de pie o agachados, próximos y disponibles${s.mode==='exploration'?'':` con ${cost} PA cada uno`}.`:null;
- return {crew:assigned.map(v=>v.id),reason};
+  const spec=artilleryProfile(s,gun);
+  const eligible=v=>v.side===u?.side&&Boolean(v.militia)===Boolean(u?.militia)&&!v.fled&&!v.mounted&&!v.entangled&&!v.unconscious&&!v.asleep&&v.stance!=='prone'&&
+    !(v.side==='enemy'&&s.reactionStack?.length&&!s.reactionStack.at(-1).unitIds.includes(v.id))&&
+    !inventoryOrderReason(s,v,cost)&&artilleryContact(s,v,gun);
+  if(!u||!spec||gun.side!==u.side)return {crew:[],reason:'Debes estar junto a una pieza de artillería propia.'};
+  const helpers=s.units.filter(v=>v.id!==u.id&&eligible(v));
+  if(partial)helpers.sort((a,b)=>b.ap-a.ap||String(a.id).localeCompare(String(b.id)));
+  const assigned=eligible(u)?[u,...helpers].slice(0,spec.crew):[];
+  const reason=assigned.length<spec.crew?`La pieza necesita ${spec.crew} artilleros de pie o agachados, próximos y disponibles${s.mode==='exploration'?'':` con ${cost} PA cada uno`}.`:null;
+  return {crew:assigned.map(v=>v.id),reason};
 }
 export function artilleryReloadPreview(s,u,gun){
- const spec=artilleryProfile(s,gun),rate=spec&&u?artilleryCosts(s,u,gun).reload:0;
- const crew=artilleryCrewPlan(s,u,gun,1,true),ap=crew.crew.length?Math.min(...crew.crew.map(id=>s.units.find(v=>v.id===id).ap)):0;
- const plan=planReload({loaded:Number(gun?.loaded??false),ammo:gun?.ammo??0,reloadProgress:gun?.reloadProgress,ap},rate,1,s.mode==='exploration');
- const reason=gun?.loaded?'La pieza ya está cargada.':gun&&gun.ammo<1?'No quedan municiones para la pieza.':crew.reason||(!plan.pa?'Faltan puntos de acción para recargar.':null);
- return {...plan,crew:crew.crew,rate,reason,valid:!reason};
+  const spec=artilleryProfile(s,gun),rate=spec&&u?artilleryCosts(s,u,gun).reload:0;
+  const crew=artilleryCrewPlan(s,u,gun,1,true);
+  const ap=crew.crew.length?Math.min(...crew.crew.map(id=>s.units.find(v=>v.id===id).ap)):0;
+  const plan=planReload({loaded:Number(gun?.loaded??false),ammo:gun?.ammo??0,reloadProgress:gun?.reloadProgress,ap},rate,1,s.mode==='exploration');
+  const reason=gun?.loaded?'La pieza ya está cargada.':gun&&gun.ammo<1?'No quedan municiones para la pieza.':crew.reason||(!plan.pa?'Faltan puntos de acción para recargar.':null);
+  return {...plan,crew:crew.crew,rate,reason,valid:!reason};
 }
-// The same read-only trace governs actual fire and autonomous collateral checks.
-// Perception callers may filter actors; execution always supplies the full field.
+
+
+// Read-only geometry shared by actual cannon fire and autonomous aiming.
+// Callers may supply a perceived roster; execution always uses the full field.
 export function artilleryCanisterContains(s,gun,point,body){
- const spec=artilleryProfile(s,gun),length=dist(gun,point);if(!length)return false;
+ const spec=artilleryProfile(s,gun),length=dist(gun,point);if(!length||!sameSurface(gun,body))return false;
  const dx=(point.x-gun.x)/length,dy=(point.y-gun.y)/length,vx=body.x-gun.x,vy=body.y-gun.y,forward=vx*dx+vy*dy,across=Math.abs(vx*dy-vy*dx);
  return forward>1&&forward<=spec.radius*2&&across<=Math.max(1,forward*.5)&&hasLineOfSight(s,gun,body);
 }
 export function artilleryShotTrace(s,u,gun,point,mode='solid'){
- const spec=artilleryProfile(s,gun),events=[],cells=[];
+ const spec=artilleryProfile(s,gun),events=[],cells=[],bodies=physicalBodies(s);
  if(mode==='canister'){
-  for(const v of victims(s).filter(v=>targetable(s,v)&&artilleryCanisterContains(s,gun,point,v))){const forward=((v.x-gun.x)*(point.x-gun.x)+(v.y-gun.y)*(point.y-gun.y))/dist(gun,point);events.push({type:'impact',unitId:v.id,victimKind:civilian(s,v)?'npc':'unit',damage:spec.damage*Math.max(.35,1-forward/(spec.radius*3))*(hasCharacterAbility(u,'artillery_fire')?1.15:1)});}
+  const length=dist(gun,point),dx=(point.x-gun.x)/length,dy=(point.y-gun.y)/length;
+  for(const {body,kind} of bodies)if(artilleryCanisterContains(s,gun,point,body)){
+   const forward=(body.x-gun.x)*dx+(body.y-gun.y)*dy;
+   events.push({type:'impact',unitId:body.id,...(kind==='npc'?{victimKind:'npc'}:{}),damage:spec.damage*Math.max(.35,1-forward/(spec.radius*3))*(hasCharacterAbility(u,'artillery_fire')?1.15:1)});
+  }
  }else{
   let energy=spec.damage,penetration=spec.penetration+(hasCharacterAbility(u,'artillery_loading')?1:0);
   for(const p of line(gun,point)){
    cells.push(p);const ground=tile(s,p.x,p.y);
-   if(ground?.blocked){if(ground.type==='water'||ground.type==='cliff')break;const stone=ground.material==='stone'||ground.type==='stone',resistance=stone?3:1;if(penetration<resistance){events.push({type:'stopped'});break;}penetration-=resistance;events.push({type:'breach',x:p.x,y:p.y,stone});}
-   for(const v of victims(s).filter(v=>targetable(s,v)&&v.x===p.x&&v.y===p.y)){events.push({type:'impact',unitId:v.id,victimKind:civilian(s,v)?'npc':'unit',damage:energy});energy*=.75;penetration--;}
+   if(ground?.blocked){
+    if(ground.type==='water'||ground.type==='cliff')break;
+    const stone=ground.material==='stone'||ground.type==='stone',resistance=stone?3:1;
+    if(penetration<resistance){events.push({type:'stop'});break;}
+    penetration-=resistance;events.push({type:'breach',...p,stone});
+   }
+   for(const {body,kind} of bodies.filter(({body})=>sameSurface(body,gun)&&sameCell(body,p))){events.push({type:'impact',unitId:body.id,...(kind==='npc'?{victimKind:'npc'}:{}),damage:energy});energy*=.75;penetration--;}
    if(penetration<0||energy<20)break;
   }
  }
  return {events,cells};
 }
-export function interruptInitiative(s,u){return (u.agility||0)+(u.wisdom||0)*.25+(nearby(s,u,'tactical_command',4)?25:0)+(nearby(s,u,'strategic_command',6)?50:0);}
+
+export function interruptInitiative(s,u){return (u.agility??75)+(u.wisdom??50)*.25+(u.experienceLevel??4)*10-(u.shock??0)*2-(u.movementMode==='run'?10:0)+(nearby(s,u,'tactical_command',4)?25:0)+(nearby(s,u,'strategic_command',6)?50:0);}
 export function ignitionRisk(s,u){const w=weaponFor(u);return clamp(misfireChance(u.condition,s.weather.rain,s.weather.humidity)*(w.id===1801?.9:1)*(hasTrait(u,'gunsmith_artillerist')?.65:1)-(w.id===1806?1:0),0,95);}
 function nearby(s,u,ability,radius=4){return s?.units?.some(v=>hasCharacterAbility(v,ability)&&v.side===u.side&&alive(v)&&dist(u,v)<=radius);}
-export function maxActionPoints(s,u){if(u.hp<=0||isUnconscious(u))return 0;const fatigue=clamp(u.fatigue||0,0,100),high=s.altitude>=2500||s.biome==='mountain',cold=high||s.weather.rain>0;return Math.round(clamp(100-fatigue*(hasTrait(u,'guerrilla_tactician')?.25:.4)-(high?15:0)-(cold&&!u.poncho?10:0),35,100));}
+
 function holdMorale(s,u){if(nearby(s,u,'strategic_command',6)||(u.militia&&nearby(s,u,'militia_command',4))||(u.mounted&&nearbyTrait(s,u,'cavalry_commander',4))||(!u.mounted&&nearby(s,u,'foot_morale',4))){u.morale=Math.max(20,u.morale);u.routed=false;return true;}return false;}
-export function reloadPlan(unit,state){const w=weaponFor(unit);return planReload({...unit,ammo:ammoCount(unit)},reloadRoundCost(unit,w,Boolean(state&&nearby(state,unit,'loading_support',2))),w.capacity,state?.mode==='exploration');}
+// The v1.13 look cursor turns first; a second look along the same facing
+// raises the held firearm. This never fires, identifies a target, or loads it.
+export function lookPreview(s,u,point){
+  let reason=!u||!alive(u)?'El combatiente no puede actuar.':u.knockedDown?'Primero debés levantarte.':
+    !Number.isInteger(point?.x)||!Number.isInteger(point?.y)||!surfaceAt(s,point)||sameCell(point,u)?'Seleccioná otra casilla del mapa.':null;
+  const facing=reason?u?.facing??2:directionTo(u,point),turn=reason?0:turnAPCost(u,facing);
+  const prepare=!reason&&!turn&&hasFirearm(u)&&!u.weaponReady;
+  const pa=reason?0:prepare?actionCosts(s,u).ready:turn;
+  if(!reason&&!pa)reason=hasFirearm(u)?'El arma ya está en posición de tiro.':'El combatiente ya mira en esa dirección.';
+  if(!reason&&s.mode!=='exploration'&&u.ap<pa)reason='PA insuficientes.';
+  return {valid:!reason,reason,pa,facing,prepare,actionLabel:prepare?'Preparar el arma':'Mirar'};
+}
+function singleReloadPlan(unit,state,reserved=0){
+  const w=weaponFor(unit),rate=reloadRoundCost(unit,w,Boolean(state&&nearby(state,unit,'loading_support',2)));
+  return planReload({...unit,ammo:Math.max(0,availableAmmunition(unit,unit)-reserved)},rate,w.capacity,state?.mode==='exploration');
+}
+export function reloadPlan(unit,state){
+  const first=singleReloadPlan(unit,state),other=secondHeldPistol(unit);
+  if(!other||other.jammed||(other.condition??100)<=0)return first;
+  const second=secondaryPistolView(unit,other),hands=[];
+  const step=(hand,view,plan)=>({hand,weapon:view.weapon,name:weaponFor(view).name,...plan});
+  if(first.available)hands.push(step('primary',unit,first));
+  // Reserve ammunition for the first gun before considering the second.
+  const reserved=weaponAmmoType(unit)===weaponAmmoType(second)?first.available:0;
+  second.ap=Math.max(0,unit.ap-first.totalPA);
+  const last=singleReloadPlan(second,state,reserved);
+  // Do not spend the AP left after a completed primary load on incomplete
+  // secondary work. When only the secondary needs work, it may span turns.
+  const include=last.available&&(!first.available||!first.partial&&!last.partial);
+  if(include)hands.push(step('offhand',second,last));
+  if(!hands.length)return first;
+  return {...hands[0],hands,offhandPending:Boolean(last.available&&!include),
+    pa:hands.reduce((n,h)=>n+h.pa,0),totalPA:hands.reduce((n,h)=>n+h.totalPA,0),
+    rounds:hands.reduce((n,h)=>n+h.rounds,0),available:hands.reduce((n,h)=>n+h.available,0),
+    partial:hands.some(h=>h.partial),remainingPA:hands.reduce((n,h)=>n+h.remainingPA,0)};
+}
 export function reloadCost(unit,state){return reloadPlan(unit,state).totalPA;}
-function makeUnit(raw,side,index,x,y){raw=normalizeAmmo({...raw,weapon:raw.weapon??raw.primary??1800,ammo:raw.ammo??12});lowerWeapon(raw);const stats=raw.stats||{};const weapon=raw.weapon??raw.primary??1800;const w=typeof weapon==='object'?weapon:weaponSpecification({...raw,weapon})||WEAPONS[1800];return {...raw,id:String(raw.id??`${side}-${index}`),name:raw.name||raw.nickname||(side==='player'?'Granadero':'Realista'),side,x:raw.x??x,y:raw.y??y,maxHp:raw.maxHp??raw.health??stats.health??100,hp:raw.hp??raw.health??stats.health??100,ap:100,morale:raw.morale??Math.min(100,(raw.personality==='optimistic'?90:raw.personality==='pessimistic'?70:80)+((raw.traits||[]).includes('steadfast')?10:0)),marksmanship:raw.marksmanship??stats.marksmanship??70,agility:raw.agility??stats.agility??75,strength:raw.strength??stats.strength??75,medical:raw.medical??stats.medical??30,mechanical:raw.mechanical??stats.mechanical??0,stealth:raw.stealth??stats.stealth??0,weapon,loaded:raw.loaded??(WEAPONS[weapon]||typeof weapon==='object'?w.capacity:0),ammo:raw.ammo??12,condition:raw.condition??100,stance:'standing',mounted:Boolean(raw.mounted),horse:Boolean(raw.horse||raw.canMount||raw.mounted),jammed:Boolean(raw.jammed),bleeding:raw.bleeding??0,routed:false,medkits:raw.medkits??2,momentum:0,lastDirection:null,activeSlot:raw.activeSlot||'primary',fatigue:raw.fatigue||0,rations:raw.rations??2,energy:raw.energy??100,unconscious:(raw.energy??100)<=0,movementMode:raw.movementMode||'walk',inventory:{...raw.inventory},boleadoras:raw.boleadoras??1,torches:raw.torches??2,strengthTraining:raw.strengthTraining??0,interceptTurn:0,parryTurn:0,counterTurn:0,braceTurn:0,braced:false,knockedDown:false,overwatch:side==='enemy'||Boolean(raw.militia),reactionTurn:0,reactionSpent:0};}
-export function createBattle(squad=[],sector={}){const width=sector.width||16,height=sector.height||12;const state={version:1,conditionVersion:1,...(sector.artilleryDefinitions!==undefined?{artilleryDefinitions:structuredClone(sector.artilleryDefinitions)}:{}),...(sector.militiaPatrol!==undefined?{militiaPatrol:structuredClone(sector.militiaPatrol)}:{}),battleId:sector.id??null,startSeconds:(sector.hour??(sector.night||sector.weather?.night?0:12))*3600+(sector.secondOfHour??0),elapsedSeconds:0,syncedSeconds:0,roundTimeCharged:false,sectorId:sector.sector||sector.id||'san-lorenzo',...(sector.sourceMapId?{sourceMapId:sector.sourceMapId,sourceMapRevision:sector.sourceMapRevision}:{}),sectorName:sector.name||'San Lorenzo',width,height,biome:sector.biome||'grassland',altitude:sector.altitude||0,night:Boolean(sector.night||sector.weather?.night||(sector.hour!==undefined&&(sector.hour%24>=20||sector.hour%24<6))),enemyCommand:sector.enemyCommand||null,objective:sector.objective||null,npcs:structuredClone(sector.npcs||[]).map(n=>n.civilianHealthVersion===1?n:seedCivilianHealth(n,{maxHp:n.maxHp??100,hp:n.hp??100,energy:n.energy??100})),props:structuredClone(sector.props??[]),buildings:sector.buildings||[],revealedRooms:[],decor:sector.decor||[],turn:1,enemyTurns:0,roundFirstSide:sector.firstSide==='enemy'?'enemy':'player',phase:'player',mode:sector.exploration?'exploration':'combat',sectorCleared:false,status:'active',seed:(sector.seed??18130203)>>>0,weather:{rain:0,humidity:0,...sector.weather},tiles:[],units:[],droppedWeapons:[],groundItems:migrateAmmoGround(structuredClone(sector.groundItems??[])),lights:(sector.lights||[]).map((l,i)=>({id:`light-${i}`,type:'campfire',radius:4,intensity:1,...l})),artillery:(sector.artillery||[]).map((g,i)=>({id:`gun-${i}`,type:'bronze4',side:'player',loaded:artilleryProfile(sector,g.type??'bronze4').initialLoaded,ammo:artilleryProfile(sector,g.type??'bronze4').initialAmmo,...g})),smoke:[],log:[],lastError:null};
+function makeUnit(raw,side,index,x,y){const stats=raw.stats||{};const weapon=raw.weapon??raw.primary??1800;const w=typeof weapon==='object'?weapon:weaponSpecification({...raw,weapon})||WEAPONS[1800];return initializeUnitAmmunition({...raw,id:String(raw.id??`${side}-${index}`),name:raw.name||raw.nickname||(side==='player'?'Granadero':'Realista'),side,facing:raw.facing??(side==='enemy'?6:2),stealthMode:Boolean(raw.stealthMode),x:raw.x??x,y:raw.y??y,maxHp:raw.maxHp??raw.health??stats.health??100,hp:raw.hp??raw.health??stats.health??100,ap:100,morale:raw.morale??Math.min(100,(raw.personality==='optimistic'?90:raw.personality==='pessimistic'?70:80)+((raw.traits||[]).includes('steadfast')?10:0)),marksmanship:raw.marksmanship??stats.marksmanship??70,agility:raw.agility??stats.agility??75,strength:raw.strength??stats.strength??75,medical:raw.medical??stats.medical??30,mechanical:raw.mechanical??stats.mechanical??0,stealth:raw.stealth??stats.stealth??0,weapon,loaded:raw.loaded??(WEAPONS[weapon]||typeof weapon==='object'?w.capacity:0),ammo:raw.ammo,condition:raw.condition??100,stance:raw.stance??movementStance(raw.movementMode??'walk'),mounted:Boolean(raw.mounted),horse:Boolean(raw.horse||raw.canMount||raw.mounted),jammed:raw.jammed??false,bleeding:raw.bleeding??0,bandaged:raw.bandaged??((raw.bleeding??0)>0?0:Math.max(0,(raw.maxHp??raw.health??stats.health??100)-(raw.hp??raw.health??stats.health??100))),shock:raw.shock??0,experienceLevel:raw.experienceLevel??stats.experienceLevel??Math.min(10,4+Math.floor((raw.xp??0)/100)),dexterity:raw.dexterity??stats.dexterity??75,wisdom:raw.wisdom??stats.wisdom??50,carriedAP:0,routed:raw.routed??false,medkits:raw.medkits??2,momentum:0,lastDirection:null,weaponMode:raw.weaponMode??'fire',activeSlot:raw.activeSlot||'primary',fatigue:raw.fatigue||0,rations:raw.rations??2,energy:raw.energy??100,unconscious:isUnconscious({hp:raw.hp??raw.health??stats.health??100,energy:raw.energy??100}),movementMode:raw.movementMode||'walk',inventory:{...raw.inventory},boleadoras:raw.boleadoras??1,torches:raw.torches??2,strengthTraining:raw.strengthTraining??0,interceptTurn:0,parryTurn:0,counterTurn:0,braceTurn:0,braced:false,knockedDown:Boolean(raw.knockedDown),overwatch:raw.overwatch??(side==='enemy'),reactionTurn:0,reactionSpent:0});}
+export function createBattle(squad=[],sector={}){const width=sector.width||16,height=sector.height||12;const state={version:1,conditionVersion:1,...(sector.sourceMapId?{sourceMapId:sector.sourceMapId,sourceMapRevision:sector.sourceMapRevision}:{}),...(sector.artilleryDefinitions!==undefined?{artilleryDefinitions:structuredClone(sector.artilleryDefinitions)}:{}),...(sector.militiaPatrol!==undefined?{militiaPatrol:structuredClone(sector.militiaPatrol)}:{}),ammunitionVersion:2,fittingRulesVersion:FITTING_RULES_VERSION,exits:structuredClone(sector.exits??[]),exitRulesVersion:sector.exitRulesVersion??1,enemyExits:['N','E','S','W'].map(edge=>({id:`enemy:${edge}`,edge,destination:'__offmap_enemy__'})),battleId:sector.id??null,startSeconds:(sector.hour??(sector.night||sector.weather?.night?0:12))*3600+(sector.secondOfHour??0),elapsedSeconds:0,syncedSeconds:0,roundTimeCharged:false,quietCombatTurns:sector.exploration?2:0,contactThisRound:false,sectorId:sector.sector||sector.id||'san-lorenzo',sectorName:sector.name||'San Lorenzo',width,height,biome:sector.biome||'grassland',altitude:sector.altitude||0,night:Boolean(sector.night||sector.weather?.night||(sector.hour!==undefined&&(sector.hour%24>=20||sector.hour%24<6))),enemyCommand:sector.enemyCommand||null,objective:sector.objective||null,npcs:structuredClone(sector.npcs||[]).map(n=>n.civilianHealthVersion===1?n:seedCivilianHealth(n,{maxHp:n.maxHp??100,hp:n.hp??100,energy:n.energy??100})),props:structuredClone(sector.props??[]),buildings:sector.buildings||[],revealedRooms:[],decor:sector.decor||[],turn:1,enemyTurns:0,roundFirstSide:sector.firstSide==='enemy'?'enemy':'player',phase:'player',mode:sector.exploration?'exploration':'combat',sectorCleared:false,status:'active',seed:(sector.seed??18130203)>>>0,weather:{rain:0,humidity:0,...sector.weather},tiles:[],units:[],droppedWeapons:[],groundItems:structuredClone(sector.groundItems??[]),lights:(sector.lights||[]).map((l,i)=>({id:`light-${i}`,type:'campfire',radius:4,intensity:1,...l})),artillery:(sector.artillery||[]).map((g,i)=>({id:`gun-${i}`,type:'bronze4',side:'player',loaded:artilleryProfile(sector,g.type??'bronze4').initialLoaded,ammo:artilleryProfile(sector,g.type??'bronze4').initialAmmo,...g})),smoke:[],log:[],lastError:null};
+if(sector.upperSurfaces!==undefined)state.upperSurfaces=structuredClone(sector.upperSurfaces);
+if(sector.climbLinks!==undefined)state.climbLinks=structuredClone(sector.climbLinks);
+if(sector.regionalWeather){state.regionalWeather=true;state.weather=regionalWeatherAt(state.sectorId,state.startSeconds/3600);}
 state.weather.rain=typeof state.weather.rain==='boolean'?(state.weather.rain?40:0):state.weather.rain;state.weather.humidity=state.weather.humidity>0&&state.weather.humidity<=1?state.weather.humidity*10:state.weather.humidity;
 for(let y=0;y<height;y++)for(let x=0;x<width;x++){const edge=x===Math.floor(width*.56)&&y>1&&y<height-2&&y!==Math.floor(height/2);state.tiles.push({x,y,type:edge?'wall':sector.biome==='wetland'&&x>3&&x<width-3&&y%3===0?'mud':sector.biome==='mountain'||sector.biome==='foothills'?'stone':'grass',blocked:edge,cover:edge?40:sector.biome==='forest'&&x>3&&x<width-3&&y%3===0?20:0});}
 if(Array.isArray(sector.tiles))state.tiles=sector.tiles.map(t=>({blocked:false,cover:0,...t}));
@@ -112,110 +234,1544 @@ state.units=squad.map((u,i)=>makeUnit(u,'player',i,1+Math.floor(i/(height-2)),1+
 const enemies=Array.isArray(sector.enemies)?sector.enemies:Array.from({length:sector.exploration?0:sector.enemyCount||Math.max(3,squad.length+(sector.difficulty||1)-1)},(_,i)=>({id:`enemy-${i}`,name:`Realista ${i+1}`,weapon:i%3===0?1801:1800,marksmanship:50+(sector.difficulty||1)*5,morale:60+(sector.difficulty||1)*5}));
 state.units.push(...enemies.map((u,i)=>makeUnit(u,'enemy',i,width-2-Math.floor(i/(height-2)),1+i%(height-2))));
 if(!Array.isArray(sector.artillery)&&sector.cannons>0)state.artillery=Array.from({length:Math.min(sector.cannons,3)},(_,i)=>({id:`gun-${i}`,type:'bronze4',side:'player',x:2,y:2+i*3,loaded:artilleryProfile(sector,'bronze4').initialLoaded,ammo:artilleryProfile(sector,'bronze4').initialAmmo}));
-for(const u of state.units){if(u.side==='enemy'&&u.patrol!==false)u.patrolOrigin??={x:u.x,y:u.y};u.maxAP=maxActionPoints(state,u);u.ap=u.maxAP;refreshMilitaryCondition(u);}
-say(state,`Combate en ${state.sectorName}. Cada soldado dispone de 100 puntos de acción.`);checkEnd(state);detectContact(state);revealRooms(state);if(sector.firstSide==='enemy'&&state.mode==='combat'&&state.status==='active')state.contactInitiative='enemy';return resolveFirstContact(state);}
-function tile(s,x,y){const at=s.tiles[y*s.width+x];return at?.x===x&&at?.y===y?at:s.tiles.find(t=>t.x===x&&t.y===y);}
-
-function occupied(s,x,y,except){return propBlocksAt(s,x,y)||(s.npcs||[]).some(n=>n.hp>0&&!n.unconscious&&n.x===x&&n.y===y)||s.units.some(u=>alive(u)&&u.id!==except&&u.x===x&&u.y===y);}
-export function carryCapacity(u){return Math.max(10,(u.strength||50)*.5);}
-export function carriedWeight(u){const inventory=Object.values(u.inventory||{}).reduce((sum,item)=>sum+(typeof item==='object'?(item.count||0)*((item.weight||0)+(WEAPONS[item.weapon]?(item.loaded||0)*.04:0)):0),0);return Number(u.weight??u.carryWeight??0)+inventory+((u.loaded||0)+(u.ammo||0))*.04+(u.blade?(contentWeaponOf(u,'blade')?.weight??(BLADES[u.blade]?1.3:0)):0)+(u.weaponDropped||!u.weapon?0:(contentWeaponOf(u)?.weight??(WEAPONS[u.weapon]?4:1.3)));}
-function weightPenalty(u){return Math.max(1,carriedWeight(u)/carryCapacity(u));}
-export function movementEnergy(u,t){const style=u.movementMode||'walk',base={walk:1,run:3,crouch:2,prone:3}[style]||1;return Math.max(1,Math.ceil(base*weightPenalty(u)*(u.mounted?1-Math.min(100,u.ridingSkill||0)*.005:1)*(t?.type==='mud'?1.5:1)*(hasTrait(u,'guerrilla_tactician')?.75:1)));}
-function exhaust(s,u,cost){if(u.mounted&&u.mount){u.mount.stamina=Math.max(0,u.mount.stamina-Math.max(1,Math.ceil(cost*(1-Math.min(100,u.ridingSkill||0)*.005))));if(u.mount.stamina===0){u.mounted=false;say(s,`${u.name} desmonta: su caballo está agotado.`);}}u.energy=Math.max(0,(u.energy??100)-cost);if(u.energy===0){u.unconscious=true;u.ap=0;u.mounted=false;say(s,`${u.name} cae inconsciente por agotamiento.`);}}
-export function tileIllumination(s,x,y){if(!s.night)return 1;let light=.08;for(const lamp of s.lights||[]){if(lamp.turns===0||lamp.extinguished)continue;const distance=dist(lamp,{x,y});if(distance>lamp.radius||!hasLineOfSight(s,lamp,{x,y}))continue;light=Math.max(light,(lamp.intensity??1)*(1-distance/(lamp.radius+1)));}return clamp(light,0,1);}
-export function canSee(s,u,target){if(!alive(u)||!hasLineOfSight(s,u,target))return false;const bonus=hasTrait(u,'night_vision')||hasCharacterAbility(u,'night_scout')?2:hasTrait(u,'night_vision_basic')?1:0;const concealment=['crouch','prone'].includes(target.movementMode)&&!target.mounted?Math.min(1,(target.trainedStats?.stealth||0)*.1):0;const range=(s.night?6+bonus:12)-concealment;const distance=dist(u,target);if(distance>range&&!(distance<=16&&tileIllumination(s,target.x,target.y)>=.25))return false;const smoke=line(u,target).filter(p=>s.smoke.some(v=>dist(p,v)<=v.radius)).length;return smoke<5;}
-export function teamCanSee(s,side,target){return s.units.some(u=>u.side===side&&alive(u)&&canSee(s,u,target));}
-export function visibleRooms(s){const ids=new Set();for(const t of s.tiles){if(t.roomId&&s.units.some(u=>u.side==='player'&&alive(u)&&canSee(s,u,t)))ids.add(t.roomId);}return [...ids];}
-function revealRooms(s){s.revealedRooms=[...new Set([...(s.revealedRooms||[]),...visibleRooms(s)])];}
-export function visibleTiles(s,u){return s.tiles.filter(t=>canSee(s,u,t)).map(t=>({x:t.x,y:t.y,illumination:tileIllumination(s,t.x,t.y)}));}
-export function visibleHostiles(s,u){return s.units.filter(v=>v.side!==u.side&&present(v)&&canSee(s,u,v));}
-export function visibleEnemies(s){return s.units.filter(v=>v.side==='enemy'&&s.units.some(u=>u.side==='player'&&alive(u)&&visibleHostiles(s,u).some(t=>t.id===v.id)));}
-function detectContact(s){
- if(s.mode!=='exploration'||s.status!=='active')return false;
- const observers=s.units.filter(u=>alive(u)&&visibleHostiles(s,u).some(fieldCapable));if(!observers.length)return false;
- s.mode='combat';s.phase='player';s.roundFirstSide=observers.some(u=>u.side==='player')?'player':'enemy';s.enemyTurns=0;s.roundTimeCharged=false;
- delete s.enemyFirstAwaitingPlayer;
- for(const u of s.units.filter(alive)){u.maxAP=maxActionPoints(s,u);u.ap=u.maxAP;}
- if(s.roundFirstSide==='enemy')s.contactInitiative='enemy';
- say(s,s.roundFirstSide==='enemy'?'¡El enemigo toma la iniciativa!':'¡Contacto visual con el enemigo! Comienza el combate por turnos.');return true;
-}
-function resolveFirstContact(s){if(s.contactInitiative!=='enemy')return s;delete s.contactInitiative;return endTurn(s);}
-function npcNoise(s,source,kind){
- const radius=kind==='explosion'?28:18;
- hearNpcNoise(s,source,kind,radius,n=>line(n,source).slice(0,-1).filter(p=>tile(s,p.x,p.y)?.blocksSight??tile(s,p.x,p.y)?.blocked).length);
-}
-function advanceExploration(s,seconds){
- // Six-second chunks let a patrol stop rest at its first visual contact.
- for(let remaining=seconds;remaining>0&&s.status==='active'&&s.mode==='exploration';){
-  const step=Math.min(6,remaining);remaining-=step;advanceBattleClock(s,step);
-  s.actionTimeAppliedSeconds=(s.actionTimeAppliedSeconds??0)+step;
-  s.explorationWoundSeconds=(s.explorationWoundSeconds??0)+step;
-  while(s.explorationWoundSeconds>=6){s.explorationWoundSeconds-=6;for(const u of s.units.filter(present))if(u.bleeding){u.hp=Math.max(0,u.hp-u.bleeding);refreshMilitaryCondition(u);}}
-  for(const n of s.npcs??[])advanceCivilianWoundTime(s,n,step);
-  checkEnd(s);if(s.status!=='active'||detectContact(s))break;
-  advanceCivilianTime(s,step,()=>{
-   for(const u of s.units.filter(u=>(u.side==='enemy'||u.side==='player'&&u.militia)&&alive(u))){
-    const planning={...s,mode:'combat',turn:(s.civilianTurns??0)+1},actor={...u,ap:u.militia?100:24,patrolTurn:undefined};
-    const patrol=holdsArtilleryPost(planning,actor)?null:u.militia?militiaPatrolOrder(planning,actor):choosePatrolAction(planning,actor);if(!patrol)continue;
-    const next=getReachable(planning,actor).find(p=>p.x===patrol.x&&p.y===patrol.y)?.path[0];if(!next)continue;
-    const cost=movementEnergy(u,tile(s,next.x,next.y));const rules=militiaPatrolRules(s);if(u.energy<=cost||u.militia&&u.energy-cost<rules.energyReserve){u.energy=Math.min(100,u.energy+(u.militia?rules.restEnergy:10));continue;}
-    lowerWeapon(u);u.facing=directionTo(u,next);u.x=next.x;u.y=next.y;exhaust(s,u,cost);if(detectContact(s))return false;
-   }
-   return true;
-  });
-  if(detectContact(s))break;
+for(const u of state.units){normalizeOutfit(u);lowerWeapon(u);limitEnergy(u);if(u.side==='enemy'&&u.patrol!==false)u.patrolOrigin??=positionOf(u);normalizeUnitFittings(u);u.weaponFittings=structuredClone(u.weaponFittings);u.maxAP=maxActionPoints(state,u.routed?{...u,routed:false}:u);u.ap=u.maxAP;refreshCondition(u);}
+for(const item of state.groundItems)initializeGroundAmmunition(item);
+migrateBattleAmmunition(state);
+const entered=sector.deferContact?state:initializeBattlePerception(state,sector.firstSide);say(entered,entered.mode==='exploration'?`Exploración de ${entered.sectorName}.`:`Combate en ${entered.sectorName}. Puedes conservar hasta 20 PA entre turnos.`);return removeIgnitionSupplies(entered);}
+export function initializeBattlePerception(state,firstSide){
+ if(state.deployment)return state;
+ checkEnd(state);detectContact(state);rememberContacts(state);revealRooms(state);
+ // Only the new encounter may declare an ambush. Reentry and deferred sight
+ // initialization do not repeat an already spent enemy opening phase.
+ if(firstSide==='enemy'&&state.mode==='combat'&&state.status==='active'){
+  state.roundFirstSide='enemy';state.contactInitiative='enemy';
  }
+ return resolveFirstContact(state);
+}
+function tile(s,x,y,level=0){if(level)return surfaceAt(s,{x,y,tacticalLevel:level});const at=s.tiles[y*s.width+x];return at?.x===x&&at?.y===y?at:s.tiles.find(t=>t.x===x&&t.y===y);}
+function occupied(s,x,y,except,level=0){const point={x,y,tacticalLevel:level};return propBlocksAt(s,x,y,level)||(s.npcs||[]).some(n=>onField(n)&&n.id!==except&&sameCell(n,point))||s.units.some(u=>onField(u)&&u.id!==except&&sameCell(u,point));}
+export function carryCapacity(u){return Math.max(10,(u.strength||50)*.5);}
+export function carriedWeight(u){const inventory=Object.values(u.inventory||{}).reduce((sum,item)=>sum+(item&&typeof item==='object'?(item.count||0)*((item.weight||0)+fittingWeight(item))+(item.count||0)*(item.loaded||0)*.04:0),0);const cursor=u.equipmentCursor?.stack;return (cursor?cursor.count*((cursor.weight??0)+fittingWeight(cursor)+(cursor.loaded??0)*.04):0)+Number(u.weight??u.carryWeight??0)+BODY_SLOTS.reduce((sum,slot)=>sum+(wornOutfit(u,slot)?.weight??0),0)+inventory+(u.loaded||0)*.04+Object.entries(SUPPLY_ITEMS).reduce((sum,[key,item])=>sum+(key==='ammo'&&u.ammunitionVersion===2?0:(u[key]??0)*item.weight),0)+(u.weaponDropped?0:(contentWeaponOf(u)?.weight??u.weaponMetadata?.weight??weaponItemWeight(u.weapon))+fittingWeight(u))+(contentWeaponOf(u,'blade')?.weight??u.bladeMetadata?.weight??weaponItemWeight(u.blade))+(u.offHand?(u.offHand.weight??weaponItemWeight(u.offHand.weapon))+fittingWeight(u.offHand)+(u.offHand.loaded??0)*.04:0);}
+function weightPenalty(u){return Math.max(1,carriedWeight(u)/carryCapacity(u));}
+// Ordinary exploration walking spends one breath point per twenty light-load
+// grass tiles; crouched exploration costs five times as much. Running,
+// crawling, load and mud retain their exertion;
+// combat costs and the separate fatigue ceiling are unchanged.
+export function movementEnergy(u,t,exploring=false){const style=u.movementMode||'walk',base=(exploring?{walk:.05,run:1.5,crouch:.25,prone:1.5}:{walk:1,run:3,crouch:2,prone:3})[style]??1,cost=base*weightPenalty(u)*(u.mounted?1-Math.min(100,u.ridingSkill||0)*.005:1)*(t?.type==='mud'?1.5:1)*(hasTrait(u,'guerrilla_tactician')?.75:1);return exploring?Math.max(.001,Math.round(cost*1000)/1000):Math.max(1,Math.ceil(cost));}
+function movementStepEnergy(s,u,t,factor=1){const exploring=s.mode==='exploration',cost=movementEnergy(u,t,exploring)*factor;return exploring?cost:Math.ceil(cost);}
+function exhaust(s,u,cost){limitEnergy(u);if(u.mounted&&u.mount){u.mount.stamina=Math.max(0,u.mount.stamina-Math.max(1,Math.ceil(cost*(1-Math.min(100,u.ridingSkill||0)*.005))));if(u.mount.stamina===0){u.mounted=false;sayObserved(s,[u],`${u.name} desmonta: su caballo está agotado.`);}}u.energy=Math.max(0,Math.round(((u.energy??100)-cost)*1000)/1000);if(u.energy===0){lowerWeapon(u);u.unconscious=true;u.ap=0;u.mounted=false;sayObserved(s,[u],`${u.name} cae inconsciente por agotamiento.`);}}
+export function tileIllumination(s,x,y,level=0){if(!s.night)return 1;let light=.08;for(const lamp of s.lights||[]){if(lamp.turns===0||lamp.extinguished)continue;const point={x,y,tacticalLevel:level},distance=Math.hypot(lamp.x-x,lamp.y-y,(surfaceHeight(s,lamp)??0)-(surfaceHeight(s,point)??0));if(distance>lamp.radius||!hasLineOfSight(s,lamp,point))continue;light=Math.max(light,(lamp.intensity??1)*(1-distance/(lamp.radius+1)));}return clamp(light,0,1);}
+const nightSightBonus=u=>hasTrait(u,'night_vision')||hasCharacterAbility(u,'night_scout')?2:hasTrait(u,'night_vision_basic')?1:0;
+export function visibleDistance(s,u,target){
+  const concealment=['crouch','prone'].includes(target.movementMode)&&!target.mounted?Math.min(1,(target.trainedStats?.stealth||0)*.1):0;
+  const cover=concealmentSightPenalty(s,target),normal=(s.night?6+nightSightBonus(u):12)-concealment-cover;
+  return Math.max(0,normal,tileIllumination(s,target.x,target.y,tacticalLevel(target))>=.25?16-cover:0);
+}
+export function canSee(s,u,target){if(s.deployment||!alive(u)||target.departure||!facingAllowsSight(u,target)||dist(u,target)>visibleDistance(s,u,target)||!hasLineOfSight(s,u,target))return false;const smoke=smokeBetween(s,u,target);return smoke<5;}
+export function teamCanSee(s,side,target){return s.units.some(u=>u.side===side&&alive(u)&&canSee(s,u,target));}
+export function visibleRooms(s){const ids=new Set();for(const t of [...s.tiles,...(s.upperSurfaces??[])]){if(t.roomId&&s.units.some(u=>u.side==='player'&&alive(u)&&canSee(s,u,t)))ids.add(t.roomId);}return [...ids];}
+function revealRooms(s){s.revealedRooms=[...new Set([...(s.revealedRooms||[]),...visibleRooms(s)])];discoverInventory(s);}
+export function visibleTiles(s,u){return [...s.tiles,...(s.upperSurfaces??[])].filter(t=>canSee(s,u,t)).map(t=>({x:t.x,y:t.y,...(t.tacticalLevel!==undefined?{tacticalLevel:t.tacticalLevel}:{}),illumination:tileIllumination(s,t.x,t.y,tacticalLevel(t))}));}
+export function visibleHostiles(s,u){return s.units.filter(v=>v.side!==u.side&&onField(v)&&canSee(s,u,v));}
+// Test each enemy directly. Building a complete hostile list for every pair
+// repeats the same geometry traces once for every other enemy in the sector.
+export function visibleEnemies(s){const observers=s.units.filter(u=>u.side==='player'&&alive(u));return s.units.filter(v=>v.side==='enemy'&&onField(v)&&observers.some(u=>canSee(s,u,v)));}
+function emitNoise(s,source,kind,position=source,{deferCivilians=false}={}){
+  const radius=noiseRadius(kind,source,tile(s,position.x,position.y));
+  // Soldiers hear the initiating sound before its damage can incapacitate
+  // them. Civilian posture changes can wait until this impact is resolved.
+  const notifyCivilians=()=>hearNpcNoise(s,position,kind,radius,n=>line(n,position).slice(0,-1).filter(p=>tile(s,p.x,p.y)?.blocksSight??tile(s,p.x,p.y)?.blocked).length);
+  if(!deferCivilians)notifyCivilians();
+  for(const listener of s.units.filter(v=>v.side!==source.side&&alive(v))){
+    if(canSee(s,listener,source))continue;
+    const obstructions=line(listener,position).slice(0,-1).filter(p=>tile(s,p.x,p.y)?.blocksSight??tile(s,p.x,p.y)?.blocked).length;
+    const heard=approximateHeardPosition(listener,position,{kind,radius,turn:s.turn,width:s.width,height:s.height,obstructions,night:s.night});
+    if(!heard)continue;
+    const previous=listener.lastHeardNoise;listener.lastHeardNoise=heard;
+    if(listener.side==='player'&&(!previous||previous.kind!==kind||previous.x!==heard.x||previous.y!==heard.y))sayObserved(s,[listener],`${listener.name} oye ${kind==='fire'?'un disparo':kind==='explosion'?'una detonación':kind==='alarm'?'una alarma':'un ruido'} cerca de ${heard.x+1}, ${heard.y+1}.`);
+  }
+  return notifyCivilians;
+}
+function forgetInvestigatedNoise(s){
+  for(const u of s.units)if(u.lastHeardNoise&&s.turn-u.lastHeardNoise.turn>3)delete u.lastHeardNoise;
+}
+function investigateNoise(s,u){
+  const heard=u.lastHeardNoise;
+  if(heard&&dist(u,heard)<=Math.max(1,heard.uncertainty)&&facingAllowsSight(u,heard,{peripheralRange:0})&&hasLineOfSight(s,u,heard)){delete u.lastHeardNoise;u.lastInvestigatedTurn=s.turn;}
+}
+function rememberContacts(s){if(s.mode==='combat'&&hasVisualContact(s)){s.contactThisRound=true;s.quietCombatTurns=0;}forgetInvestigatedNoise(s);for(const u of s.units.filter(alive)){const seen=visibleHostiles(s,u).filter(alive).sort((a,b)=>dist(u,a)-dist(u,b)||String(a.id).localeCompare(String(b.id)));if(seen.length)u.lastKnownEnemy={...positionOf(seen[0]),turn:s.turn};else if(u.lastKnownEnemy&&(s.turn-u.lastKnownEnemy.turn>3||contactDistance(u,u.lastKnownEnemy)<=1))delete u.lastKnownEnemy;}}
+function hasVisualContact(s){return s.units.some(u=>alive(u)&&visibleHostiles(s,u).some(alive));}
+export function canEndCombat(s){
+  if(s.status!=='active'||s.mode!=='combat'||s.phase!=='player'||s.alliedTurn||s.enemyTurn||s.interrupt||s.reactionStack?.length||s.units.some(u=>u.routed&&fieldCapable(u))||hasVisualContact(s))return false;
+  // Older snapshots have no counter. Use their retained sight history only;
+  // anonymous sound remains an investigation clue, not visible enemy contact.
+  return s.quietCombatTurns===undefined?!s.units.some(u=>alive(u)&&u.lastKnownEnemy&&s.turn-u.lastKnownEnemy.turn<=2):s.quietCombatTurns>=2;
+}
+function resumeExploration(s){
+  s.mode='exploration';s.status='active';s.phase='player';s.roundTimeCharged=false;s.contactThisRound=false;s.quietCombatTurns=2;
+  delete s.enemyFirstAwaitingPlayer;delete s.roundFirstSide;
+  say(s,s.sectorCleared?'El sector está despejado. Puedes explorar y recoger equipo.':'Dos turnos sin contacto visual. La escuadra vuelve a explorar.');
+  return s;
+}
+function resolveFirstContact(s){
+  if(s.contactInitiative!=='enemy')return s;
+  delete s.contactInitiative;return endTurn(s);
+}
+function detectContact(s){
+  if(s.mode!=='exploration'||s.status!=='active')return false;
+  const observers=s.units.filter(u=>alive(u)&&visibleHostiles(s,u).some(alive));
+  if(!observers.length)return false;
+  const playerAware=observers.some(u=>u.side==='player');
+  s.mode='combat';s.phase='player';s.enemyTurns=0;s.roundTimeCharged=false;s.quietCombatTurns=0;s.contactThisRound=true;
+  for(const unit of s.units)returnBattleEquipmentCursor(s,unit);
+  s.roundFirstSide=playerAware?'player':'enemy';delete s.enemyFirstAwaitingPlayer;
+  for(const u of s.units.filter(alive)){u.maxAP=maxActionPoints(s,u);u.ap=u.maxAP;}
+  if(!playerAware)s.contactInitiative='enemy';
+  say(s,playerAware?'¡Contacto visual con el enemigo! Comienza el combate por turnos.':'¡El enemigo descubre a la escuadra y toma la iniciativa!');
+  return true;
+}
+function stepCost(u,t){const rough=['mud','forest','stone','scrub'].includes(t?.type),base=(u.mounted?(hasTrait(u,'cavalry_commander')?3:4):u.stance==='prone'?16:hasCharacterAbility(u,'quick_movement')?6:8)*(t?.type==='mud'?(u.mounted?(hasCharacterAbility(u,'mud_rider')?1.25:2):1.5):1);return Math.max(2,Math.ceil(base*(u.mounted?1-Math.min(100,u.ridingSkill||0)*.005:1)*(u.movementMode==='run'?.7:u.movementMode==='crouch'?1.25:1)*weightPenalty(u)*stealthAPMultiplier(u)*(rough&&hasTrait(u,'guerrilla_tactician')?.75:1)));}
+function movementFactor(from,to){return from.x!==to.x&&from.y!==to.y?1.4:1;}
+export function movementIntentReason(u,intent='forward'){
+  if(!['forward','preserveFacing'].includes(intent))return 'La intención de movimiento no es válida.';
+  if(intent==='preserveFacing'&&u?.mounted)return 'Debes desmontar antes de retroceder o avanzar de costado.';
+  if(intent==='preserveFacing'&&u?.movementMode==='run')return 'Camina, agáchate o arrástrate para conservar la dirección.';
+  return null;
+}
+const intentFactor=intent=>intent==='preserveFacing'?1.25:1;
+function stepCostWithGeometry(s,u,from,to,lookup,propBlocked,intent='forward',costFor=null){
+  if(!sameSurface(from,to))return Infinity;
+  const dx=Math.abs(to.x-from.x),dy=Math.abs(to.y-from.y),start=lookup(from.x,from.y),ground=lookup(to.x,to.y),elevated=Boolean(s.upperSurfaces?.length);
+  if(!Number.isInteger(from.x)||!Number.isInteger(from.y)||!start||!Number.isInteger(dx)||!Number.isInteger(dy)||Math.max(dx,dy)!==1||!ground||ground.blocked||propBlocked(to.x,to.y))return Infinity;
+  // The route already has a floor-specific index. Reuse these records instead
+  // of repeating global surface lookup for every edge and diagonal corner.
+  const elevation=start.elevation??0;
+  if(elevated&&(start.blocked||(ground.elevation??0)!==elevation))return Infinity;
+  if(dx&&dy){
+    const horizontal=lookup(to.x,from.y),vertical=lookup(from.x,to.y);
+    if(!horizontal||!vertical||horizontal.blocked||vertical.blocked||propBlocked(to.x,from.y)||propBlocked(from.x,to.y))return Infinity;
+    if(elevated&&((horizontal.elevation??0)!==elevation||(vertical.elevation??0)!==elevation))return Infinity;
+  }
+  return Math.ceil(Math.ceil((costFor?costFor(ground):stepCost(u,ground))*movementFactor(from,to))*intentFactor(intent));
+}
+export function movementStepCost(s,u,from,to,options={}){
+  const intent=options?.movementIntent===undefined?'forward':options.movementIntent;
+  if(movementIntentReason(u,intent))return Infinity;
+  if(!sameSurface(from,to))return climbStep(s,u,from,to).pa;
+  const level=tacticalLevel(from);
+  return stepCostWithGeometry(s,u,from,to,(x,y)=>tile(s,x,y,level),(x,y)=>propBlocksAt(s,x,y,level),intent);
+}
+// Climbing uses authored access points. Standing first is an explicit action;
+// path previews cannot grant a free posture change or a second AP budget.
+function climbStep(s,u,from,to){
+  const access=accessStepsFrom(s,from).find(step=>sameCell(step,to)&&(!to.linkId||step.linkId===to.linkId));
+  const up=surfaceHeight(s,to)>surfaceHeight(s,from),pa=up?20:15;
+  const reason=!access?'No hay un acceso entre esas alturas.':u.mounted?'Debes desmontar antes de trepar.':u.entangled?'Primero debés liberarte de las boleadoras.':u.knockedDown||u.stance!=='standing'?'Ponete de pie antes de trepar.':
+    !surfaceAt(s,to)||surfaceAt(s,to).blocked||occupied(s,to.x,to.y,u.id,tacticalLevel(to))?'El acceso está bloqueado.':null;
+  return {valid:!reason,reason,pa:reason?Infinity:pa,energy:Math.ceil((up?12:8)*weightPenalty(u)),seconds:up?6:4,destination:access??null};
+}
+export function climbPreview(s,u,action={}){
+  const destination=u&&accessStepsFrom(s,u).find(step=>step.linkId===action.linkId),step=destination?climbStep(s,u,u,destination):null;
+  const reason=!u||!alive(u)||s.status!=='active'||(u.side==='player'?!interruptAvailable(s,u):s.phase!=='enemy')?'El combatiente no puede actuar ahora.':!step?'Acercate a un acceso para trepar.':step.reason||
+    ((u.energy??100)<step.energy?'Falta energía para trepar.':s.mode!=='exploration'&&u.ap<step.pa?'PA insuficientes para trepar.':null);
+  return {...step,valid:!reason,reason,pa:step&&Number.isFinite(step.pa)?step.pa:0,destination:step?.destination??null};
+}
+// Equipment, stance and traits do not change during one route search. The
+// base step cost depends only on terrain type; do not weigh the same inventory
+// again for every edge. Keep the cache local so equipment changes stay live.
+function routeStepCosts(u){
+  const costs=new Map();
+  return ground=>{const type=ground?.type;if(!costs.has(type))costs.set(type,stepCost(u,ground));return costs.get(type);};
+}
+function elevatedReachable(s,u,options,intent){
+  const costFor=routeStepCosts(u);
+  const cells=new Map([...s.tiles,...(s.upperSurfaces??[])].map(cell=>[spaceKey(cell),cell]));
+  const props=new Set((s.props??[]).filter(p=>p.blocksMovement!==false).flatMap(propCells).map(spaceKey));
+  const occupants=new Set([...(s.npcs??[]),...s.units].filter(v=>onField(v)&&v.id!==u.id).map(spaceKey));
+  const origin={x:u.x,y:u.y,tacticalLevel:tacticalLevel(u)},start=spaceKey(origin),costs=new Map([[start,0]]),paths=new Map([[start,[]]]),queue=new RouteQueue({...origin,cost:0});
+  while(queue.length){
+    const from=queue.shift(),fromKey=spaceKey(from);if(from.cost!==costs.get(fromKey))continue;
+    if(options.stopAt?.(from))return [{...from,path:paths.get(fromKey)}];
+    const level=tacticalLevel(from),lookup=(x,y)=>cells.get(spaceKey({x,y,tacticalLevel:level})),blocked=(x,y)=>props.has(spaceKey({x,y,tacticalLevel:level}));
+    const adjacent=[[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]].map(([dx,dy])=>({x:from.x+dx,y:from.y+dy,tacticalLevel:level,kind:'move'}));
+    for(const to of [...adjacent,...accessStepsFrom(s,from)]){
+      const key=spaceKey(to);if(occupants.has(key))continue;
+      const step=to.kind==='climb'?climbStep(s,u,from,to).pa:stepCostWithGeometry(s,u,from,to,lookup,blocked,intent,costFor),cost=from.cost+step;
+      if(!Number.isFinite(cost)||cost>(s.mode==='exploration'?Infinity:u.ap)||cost>=(costs.get(key)??Infinity))continue;
+      costs.set(key,cost);paths.set(key,[...paths.get(fromKey),to]);queue.push({...to,cost});
+    }
+  }
+  return options.stopAt?[]:[...costs].map(([key,cost])=>({...cells.get(key),tacticalLevel:tacticalLevel(cells.get(key)),cost,path:paths.get(key)}));
+}
+export function getReachable(s,unitOrId,options={}){
+  const u=typeof unitOrId==='object'?unitOrId:s.units.find(u=>u.id===String(unitOrId)),intent=options?.movementIntent===undefined?'forward':options.movementIntent;if(!u||!alive(u)||s.status!=='active'||movementIntentReason(u,intent))return [];
+  if(s.upperSurfaces?.length)return elevatedReachable(s,u,options,intent);
+  const tiles=new Map(s.tiles.map(t=>[`${t.x},${t.y}`,t])),props=new Set((s.props??[]).filter(p=>p.blocksMovement!==false).flatMap(propCells).map(p=>`${p.x},${p.y}`));
+  const lookup=(x,y)=>tiles.get(`${x},${y}`),propBlocked=(x,y)=>props.has(`${x},${y}`),costFor=routeStepCosts(u);
+  const occupants=new Set([...(s.npcs??[]),...s.units].filter(v=>onField(v)&&v.id!==u.id).map(v=>`${v.x},${v.y}`));
+  const costs=new Map([[`${u.x},${u.y}`,0]]),paths=new Map([[`${u.x},${u.y}`,[]]]),queue=new RouteQueue({x:u.x,y:u.y,cost:0});
+  while(queue.length){
+    const p=queue.shift();if(p.cost!==costs.get(`${p.x},${p.y}`))continue;
+    if(options?.stopAt?.(p))return [{...p,path:paths.get(`${p.x},${p.y}`)}];
+    for(const [dx,dy]of[[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]]){
+      const x=p.x+dx,y=p.y+dy,key=`${x},${y}`;if(occupants.has(key))continue;
+      const step=stepCostWithGeometry(s,u,p,{x,y},lookup,propBlocked,intent,costFor),cost=p.cost+step;
+      if(!Number.isFinite(cost)||cost>(s.mode==='exploration'?Infinity:u.ap)||cost>=(costs.get(key)??Infinity))continue;
+      costs.set(key,cost);paths.set(key,[...paths.get(`${p.x},${p.y}`),{x,y}]);queue.push({x,y,cost});
+    }
+  }
+  return options?.stopAt?[]:[...costs].map(([key,cost])=>{const[x,y]=key.split(',').map(Number);return{x,y,cost,path:paths.get(key)};});
+}
+// Animation positions can lie between cells. Trace their grid cells so each
+// integer step reaches the endpoint instead of growing an unbounded point list.
+function line(a,b){const points=[];let x=Math.round(a.x),y=Math.round(a.y);const endX=Math.round(b.x),endY=Math.round(b.y);if(![x,y,endX,endY].every(Number.isSafeInteger))throw new RangeError('Invalid sight coordinates');const dx=Math.abs(endX-x),dy=Math.abs(endY-y),sx=x<endX?1:-1,sy=y<endY?1:-1;let err=dx-dy;while(x!==endX||y!==endY){const e=2*err;if(e>-dy){err-=dy;x+=sx;}if(e<dx){err+=dx;y+=sy;}points.push({x,y});}return points;}
+// Smoke remains a local cloud above its supporting surface. Upper-map rays
+// sample the cloud's height, so a downstairs shot does not cross roof smoke.
+function smokeBetween(s,a,b){
+ if(!s.smoke?.length)return 0;
+ if(!usesElevationGeometry(s,a,b))return line(a,b).filter(p=>s.smoke.some(v=>dist(p,v)<=v.radius)).length;
+ const start=absoluteBodyHeight(s,a),end=absoluteBodyHeight(s,b);
+ if(start===null||end===null)return 0;
+ return geometryCells(a,b).filter(cell=>cell.entry!==cell.exit&&(cell.x!==Math.round(a.x)||cell.y!==Math.round(a.y))&&s.smoke.some(cloud=>{
+  const base=surfaceHeight(s,cloud);return base!==null&&dist(cell,cloud)<=cloud.radius&&rayHeightIntersection(start,end,cell,base,base+2);
+ })).length;
+}
+export function hasLineOfSight(s,a,b){if(usesElevationGeometry(s,a,b))return elevationSightClear(s,a,b);return !line(a,b).slice(0,-1).some(p=>(tile(s,p.x,p.y)?.blocksSight??(tile(s,p.x,p.y)?.type==='window'?false:tile(s,p.x,p.y)?.blocked)));}
+export function firearmProjectilePath(s,attacker,target,hitLocation='torso'){return projectilePath(s,attacker,target,weaponFor(attacker),hitLocation);}
+// Forecast only known bodies; actual flight below checks every body. Hypothetical
+// target positions used by AI exposure replace that actor's old position.
+function firearmPreviewScene(s,attacker,target){
+  const units=s.units.filter(u=>u.id!==target.id&&(u.side===attacker.side||(attacker.side==='player'?teamCanSee(s,'player',u):canSee(s,attacker,u))));
+  if(target.id!==undefined)units.push(target);
+  const npcs=knownCivilianBodies(s,attacker);
+  return {...s,units,npcs};
+}
+export function firearmFlightPreview(s,attacker,target,hitLocation='torso'){
+ return projectileFlight(firearmPreviewScene(s,attacker,target),attacker,target,weaponFor(attacker),hitLocation);
+}
+export function shotChance(s,attacker,target,aim=0,hitLocation='torso'){
+  const accuracy=shotAccuracy(s,attacker,target,aim,hitLocation);
+  const path=firearmFlightPreview(s,attacker,target,hitLocation);
+  return accuracy&&!path.blocked&&path.victimKind!=='npc'&&(!path.victimId||path.victimId===target.id)?accuracy:0;
+}
+export function firearmVolleyPreview(s,unit,target,aim=0,hitLocation='torso'){
+ const second=pairedPistol(unit),penalty=second?pistolPairPenalty(unit):0;
+ const guns=[{hand:'primary',view:unit},...(second?[{hand:'offhand',view:secondaryPistolView(unit,second)}]:[])];
+ return {paired:Boolean(second),shots:guns.map(({hand,view})=>{
+  const w=weaponFor(view),path=firearmFlightPreview(s,view,target,hitLocation);
+  return {hand,weapon:w.id,name:w.name,chance:path.blocked||path.victimKind==='npc'||path.victimId&&path.victimId!==target.id?0:shotAccuracy(s,view,target,aim,hitLocation,false,penalty),damageFactor:path.damageFactor,damage:w.damage};
+ })};
+}
+// One geometry trace per body region serves all affordable aim increments.
+// This is a fresh read, not a cache that can outlive movement or a breached wall.
+export function firearmShotOptions(s,attacker,target,maxAim=4){
+  if(!hasFirearm(attacker)||!hasLineOfSight(s,attacker,target))return [];
+  const options=[],limit=clamp(Number.isFinite(maxAim)?Math.floor(maxAim):0,0,4);
+  const second=pairedPistol(attacker),other=second?secondaryPistolView(attacker,second):null;
+  // Body-region aiming cannot change which people the shooter can see. Build
+  // that finite forecast once per hand, without caching across game actions.
+  const scene=firearmPreviewScene(s,attacker,target),otherScene=other?firearmPreviewScene(s,other,target):null;
+  for(const hitLocation of shotLocationsFor(target)){
+    const path=projectileFlight(scene,attacker,target,weaponFor(attacker),hitLocation);
+    const otherPath=other?projectileFlight(otherScene,other,target,weaponFor(other),hitLocation):null;
+    for(let aim=0;aim<=limit;aim++){
+      const chance=path.blocked||path.victimKind==='npc'||path.victimId&&path.victimId!==target.id?0:shotAccuracy(s,attacker,target,aim,hitLocation,false,second?pistolPairPenalty(attacker):0,true);
+      const shots=other?[{hand:'primary',weapon:weaponFor(attacker).id,name:weaponFor(attacker).name,chance,damageFactor:path.damageFactor,damage:weaponFor(attacker).damage},
+        {hand:'offhand',weapon:weaponFor(other).id,name:weaponFor(other).name,chance:otherPath.blocked||otherPath.victimKind==='npc'||otherPath.victimId&&otherPath.victimId!==target.id?0:shotAccuracy(s,other,target,aim,hitLocation,false,pistolPairPenalty(attacker),true),damageFactor:otherPath.damageFactor,damage:weaponFor(other).damage}]:undefined;
+      options.push({hitLocation,aim,chance,damageFactor:path.damageFactor,...(shots?{shots}:{})});
+    }
+  }
+  return options;
+}
+export function firearmRangeProfile(s,attacker,target){
+  const distance=spaceDistance(s,attacker,target),w=weaponFor(attacker);
+  const smoke=smokeBetween(s,attacker,target);
+  // Preserve period-game obscuration weights, expressed as apparent distance.
+  // Night training improves both detection reach and aiming in poor light.
+  const concealment=concealmentAt(s,target)*(hasCharacterAbility(attacker,'scatter_concealment')&&w.id===1807?.5:1);
+  const darkness=s.night?(20-nightSightBonus(attacker)*7.5)*(1-tileIllumination(s,target.x,target.y,tacticalLevel(target))):0;
+  const apparentRange=distance+(concealment+darkness+smoke*(hasTrait(attacker,'line_marksman')?6:12))/3;
+  return shotRangeModifiers({distance,weaponRange:w.range,apparentRange,visibleRange:visibleDistance(s,attacker,target)});
+}
+function shotAccuracy(s,attacker,target,aim=0,hitLocation='torso',pointShot=false,pairPenalty=pairedPistol(attacker)?pistolPairPenalty(attacker):0,knownSight=false){
+  if(attacker.departure||target.departure||!hasFirearm(attacker)||!pointShot&&!knownSight&&!hasLineOfSight(s,attacker,target))return 0;
+  const w=weaponFor(attacker),range=spaceDistance(s,attacker,target);if(w.loadPattern==='cone'&&range>w.range)return 0;
+  const rangeProfile=firearmRangeProfile(s,attacker,target);
+  const skill=attacker.marksmanship??70,condition=attacker.condition??100;
+  const effectiveSkill=condition<skill?(skill+condition)/2:skill;
+  const targetPosture=target.mounted?0:Math.min(Math.max(0,range-5)*3,target.stance==='prone'?40:target.stance==='crouched'?20:0);
+  const support=attacker.mounted?0:attacker.stance==='prone'?10:attacker.stance==='crouched'?5:0;
+  const repeat=!pointShot&&attacker.lastTargetId===target.id&&attacker.lastShotPosition&&sameCell(attacker.lastShotPosition,attacker)?10:0;
+  const chance=effectiveSkill+support+repeat+(nearby(s,attacker,'strategic_command',6)?12:0)+(nearby(s,attacker,'tactical_command',4)?8:0)+clamp(Number.isFinite(aim)?Math.floor(aim):0,0,4)*8+rangeProfile.sightAdjustment-rangeProfile.weaponPenalty-effectiveWounds(attacker)*.3-(100-(attacker.energy??100))*.15-(attacker.shock??0)*5+((attacker.morale??80)-80)*.1-targetPosture
+    -(attacker.mounted&&![1803,1805,1806,1808].includes(w.id)?15:0)
+    +(hasTrait(attacker,'guerrilla_tactician')&&!attacker.momentum&&((surfaceAt(s,attacker)?.cover||0)>=20||['forest','scrub'].includes(surfaceAt(s,attacker)?.type))?10:0)
+    -(hasTrait(target,'guerrilla_tactician')&&!target.mounted&&((tile(s,target.x,target.y)?.cover||0)>=20||['forest','scrub'].includes(tile(s,target.x,target.y)?.type))?12:0);
+  return Math.round(clamp((chance-pairPenalty-shotLocationPenalty(hitLocation,rangeProfile.effectiveSightRange))*rangeProfile.chanceFactor,1,95));
+}
+function firearmImpact(s,attacker,target,amount,hitLocation='torso',{source=attacker,intentional=false}={}){
+  const path=firearmProjectilePath(s,attacker,target,hitLocation),observed=observedBody(s,target);
+  if(path.blocked){if(observed)say(s,'La cobertura detiene el disparo.');return;}
+  if(path.damageFactor<1&&observed)say(s,'El disparo atraviesa la cobertura y pierde fuerza.');
+  physicalImpact(s,target,amount*path.damageFactor,source,{hitLocation,intentional});
+}
+const isCivilianBody=(s,body)=>(s.npcs??[]).includes(body);
+const observedBody=(s,body)=>isCivilianBody(s,body)?teamCanSee(s,'player',body):journalVisible(s,body);
+const knownCivilianBodies=(s,actor)=>(s.npcs??[]).filter(n=>(n.hp??100)>0&&!n.departure&&!n.fled&&(actor.side==='player'?teamCanSee(s,actor.side,n):canSee(s,actor,n)));
+const intendedCivilian=(s,actor,point)=>knownCivilianBodies(s,actor).find(n=>sameCell(n,point));
+const flightVictim=(s,flight)=>(flight.victimKind==='npc'?s.npcs??[]:s.units).find(v=>v.id===flight.victimId);
+function physicalImpact(s,target,amount,source,{kind='firearm',projectile=true,hitLocation='torso',extraBreath=0,report=true,intentional=false}={}){
+ if(!isCivilianBody(s,target))return damage(s,target,amount,source,projectile,hitLocation,extraBreath,report);
+ // Civilian harm shares body effects but cannot enter soldier rewards, guards,
+ // equipment handling or morale routs. Observe before the impact lowers them.
+ const impact=shotLocationEffects(projectile?hitLocation:'torso',Math.max(0,amount),{...target,hp:target.hp??100}),observed=report&&observedBody(s,target);
+ applyCivilianHarm(s,target,{source,damage:impact.damage,breathLoss:impact.breathLoss+extraBreath,hitLocation,kind,observed,knockedDown:impact.knockedDown,intentional});
+ if(observed)say(s,`${target.name} ${target.hp>0?'queda herido por el impacto.':'muere por el impacto.'}`);
+ return target;
+}
+function scatteredShotDestination(s,u,target){
+  const radius=Math.min(4,Math.max(1,Math.ceil(dist(u,target)/8))),dx=Math.floor(random(s)*(radius*2+1))-radius,dy=Math.floor(random(s)*(radius*2+1))-radius;
+  return {x:target.x+(dx||dy?dx:1),y:target.y+dy,stance:target.unconscious||target.knockedDown?'prone':target.stance??'standing',mounted:!target.unconscious&&!target.knockedDown&&Boolean(target.mounted)};
+}
+function coneFireImpact(s,attacker,target,aim,hitLocation,source=attacker){
+ const w=weaponFor(attacker),length=dist(attacker,target),dx=(target.x-attacker.x)/length,dy=(target.y-attacker.y)/length;
+ for(const {body:victim,kind} of physicalBodies(s).filter(({body,kind})=>kind==='npc'||body.id!==attacker.id)){
+  const vx=victim.x-attacker.x,vy=victim.y-attacker.y,forward=vx*dx+vy*dy,across=Math.abs(vx*dy-vy*dx);
+  if(forward<=0||forward>w.range||across>Math.max(.5,forward*.25)||!hasLineOfSight(s,attacker,victim))continue;
+  const intended=victim.id===target.id,location=intended?hitLocation:'torso';
+  if(kind!=='npc')victim.morale=Math.max(0,victim.morale-18);
+  if(random(s)*100<Math.min(95,shotAccuracy(s,attacker,victim,aim,location)+20))firearmImpact(s,attacker,victim,w.damage*(1-forward/(w.range*2)),location,{source,intentional:intended});
+  else if(kind!=='npc'&&victim.morale<15)rout(s,victim);
+ }
+ sayObserved(s,[source],`${source.name} dispara una carga de perdigones con ${w.name}.`);
+}
+function directedFireImpact(s,u,target,hitLocation,hit,source=u){
+  const w=weaponFor(u),end=hit?target:scatteredShotDestination(s,u,target);
+  // A failed accuracy roll must remain a miss of the selected soldier. The
+  // cell-wide approximation still checks every other body along that miss.
+  const flightState=hit?s:{...s,units:s.units.filter(v=>v.id!==target.id),npcs:(s.npcs??[]).filter(v=>v.id!==target.id)};
+  const flight=projectileFlight(flightState,u,end,w,hitLocation,{destinationHeight:absoluteBodyHeight(s,target,hitLocation)}),victim=flightVictim(s,flight);
+  // Keep the established damage draw for aimed hits, including blocked ones.
+  const amount=hit||victim?w.damage*(.8+random(s)*.4):0;
+  if(flight.blocked){if(journalVisible(s,target))say(s,'La cobertura detiene el disparo.');return;}
+  if(victim){
+    if(flight.damageFactor<1&&observedBody(s,victim))say(s,'El disparo atraviesa la cobertura y pierde fuerza.');
+    physicalImpact(s,victim,amount*flight.damageFactor,source,{hitLocation:flight.hitLocation,intentional:victim.id===target.id});
+  }
+}
+export function completedTacticalVictory(snapshot){
+  const playersRemain=snapshot.units.some(u=>u.side==='player'&&fieldCapable(u)),enemiesRemain=snapshot.units.some(u=>u.side==='enemy'&&fieldCapable(u));
+  const clearedExploration=snapshot.status==='active'&&snapshot.mode==='exploration'&&snapshot.phase==='player'&&snapshot.sectorCleared===true&&!snapshot.enemyTurn&&!snapshot.interrupt&&!snapshot.reactionStack;
+  return playersRemain&&!enemiesRemain&&(snapshot.status==='victory'||clearedExploration);
+}
+function checkEnd(s){
+  for(const unit of s.units)refreshCondition(unit);
+  const able=side=>s.units.some(u=>u.side===side&&fieldCapable(u));
+  if(!able('player')){const status=s.units.some(u=>u.side==='player'&&u.departure)?'retreat':'defeat';if(s.status!==status)say(s,status==='retreat'?'La última fuerza capaz salió del sector.':'La escuadra quedó fuera de combate.');s.status=status;s.phase='player';delete s.interrupt;delete s.enemyTurn;delete s.reactionStack;delete s.alliedTurn;}
+  else if(!able('enemy')){s.sectorCleared=true;if(s.mode==='exploration')return;if(s.status!=='victory')say(s,'¡Victoria! El enemigo quedó fuera de combate.');s.status='victory';s.phase='player';delete s.interrupt;delete s.enemyTurn;delete s.reactionStack;delete s.alliedTurn;}
+}
+function rout(s,u,report=true){
+  if(u.routed||!onField(u)||holdMorale(s,u))return;
+  lowerWeapon(u);u.routed=true;u.fled=false;u.fleePath=[];u.braced=false;u.overwatch=false;
+  if(!u.weaponDropped&&(WEAPONS[u.weapon]||BLADES[u.weapon]||typeof u.weapon==='object')){
+    u.weaponDropped=true;u.droppedWeapon=typeof u.weapon==='object'?u.weapon.id:u.weapon;
+    s.droppedWeapons??=[];s.droppedWeapons.push({unitId:u.id,...positionOf(u),weapon:u.droppedWeapon,...(u.ammunitionChoice!==undefined?{ammunitionChoice:u.ammunitionChoice}:{}),weight:contentWeaponOf(u)?.weight??u.weaponMetadata?.weight??weaponItemWeight(u.weapon),...(u.weaponMetadata?{weaponMetadata:structuredClone(u.weaponMetadata)}:{}),loaded:u.loaded,...(u.reloadProgress?{reloadProgress:u.reloadProgress}:{}),condition:u.condition,...(u.jammed?{jammed:true}:{}),...(u.weaponInstanceId?{instanceId:u.weaponInstanceId}:{}),...(u.weaponFittings?.bayonet?{fittings:structuredClone(u.weaponFittings)}:{}),...(u.weaponFittingPattern!=null?{fittingPattern:u.weaponFittingPattern}:{})});u.loaded=0;delete u.reloadProgress;u.weaponFittings={};u.weaponFittingPattern=null;delete u.weaponInstanceId;delete u.weaponMetadata;delete u.contentWeapon;delete u.ammunitionChoice;
+  }
+  if(report)sayObserved(s,[u],`${u.name} pierde la disciplina y abandona su arma. Intentará alcanzar una salida en su turno.`);
+}
+function wearBayonet(unit){const fitting=fixedBayonetFor(unit);if(fitting){fitting.condition=Math.max(0,fitting.condition-1);if(fitting.condition===0)unit.braced=false;}}
+function meleeStrike(s,attacker,target,amount,{counter=true}={}){if(isCivilianBody(s,target)){physicalImpact(s,target,amount,attacker,{projectile:false,kind:'melee',intentional:true});return;}const blade=bladeFor(attacker),defense=bladeFor(target);wearBayonet(attacker);if([1809,1810].includes(defense.id)&&target.ap>=6&&target.parryTurn!==s.turn){target.parryTurn=s.turn;target.ap-=6;amount*=.75;sayObserved(s,[target],`${target.name} desvía parte del golpe con su sable.`);}if(defense.id===1813||hasPoncho(target))amount*=.8;damage(s,target,amount,attacker);if(alive(target)){if([1809,1810].includes(blade.id))target.bleeding=Math.min(10,target.bleeding+3);if(blade.id===1812){lowerWeapon(target);target.knockedDown=true;target.stance='prone';target.mounted=false;target.ap=Math.max(0,target.ap-20);sayObserved(s,[target],`${target.name} cae derribado por la lanza.`);}if(counter&&target.stance!=='prone'&&!target.knockedDown&&(defense.id===1813||hasCharacterAbility(target,'counterattack'))&&target.counterTurn!==s.turn&&target.ap>=defense.ap&&contactDistance(target,attacker)<=defense.reach&&alive(attacker)){lowerWeapon(target);target.counterTurn=s.turn;target.ap-=defense.ap;sayObserved(s,[target],`${target.name} responde con un contragolpe.`);wearBayonet(target);damage(s,attacker,defense.damage*.5,target);}}}
+function interceptCharge(s,mover,target){const blade=fixedBayonetProfile(target);if(!alive(target)||target.stance==='prone'||target.knockedDown||!target.braced||target.braceTurn===s.turn||!blade||target.ap<16||contactDistance(mover,target)>2||!hasLineOfSight(s,target,mover))return;target.braceTurn=s.turn;target.ap-=16;sayObserved(s,[target],`${target.name} recibe la carga con la bayoneta fijada.`);wearBayonet(target);damage(s,mover,blade.damage,target);}
+function damage(s,target,amount,source,projectile=false,hitLocation='torso',extraBreath=0,report=true){
+  if(isCivilianBody(s,target))return physicalImpact(s,target,amount,source,{projectile,hitLocation,extraBreath,report,intentional:true});
+  if(projectile&&(hasCharacterAbility(target,'protected_commander')||(target.leadership||0)>=90)){
+    const guard=s.units.find(v=>hasCharacterAbility(v,'bodyguard')&&v.side===target.side&&v.id!==target.id&&alive(v)&&v.hp>25&&v.ap>=8&&v.interceptTurn!==s.turn&&contactDistance(v,target)<=1.5);
+    if(guard){guard.ap-=8;guard.interceptTurn=s.turn;if(report)sayObserved(s,[guard,target],`${guard.name} se interpone para proteger a ${target.name}.`);target=guard;}
+  }
+  report=report&&journalVisible(s,target);
+  const sourceKnown=journalVisible(s,source);
+  const creditEligible=target.hp>=CRITICAL_HEALTH&&!target.unconscious&&!target.routed&&!target.surrendered&&!target.departure;
+  const impact=shotLocationEffects(projectile?hitLocation:'torso',Math.max(0,amount),target);
+  impact.breathLoss+=extraBreath;const loss=Math.min(target.hp,impact.damage);
+  target.hp=Math.max(0,target.hp-loss);target.energy=Math.max(0,(target.energy??100)-impact.breathLoss);
+  target.shock=Math.min(20,(target.shock??0)+loss/10+impact.breathLoss/20);
+  recordMilitiaHit(s,source,target,creditEligible,loss);
+  if(projectile){
+    target.lastHitLocation=hitLocation;
+    if(impact.balanceLoss)target.ap=Math.max(0,target.ap-impact.balanceLoss);
+    if(impact.knockedDown){target.knockedDown=true;target.stance='prone';target.movementMode='prone';target.mounted=false;if(report)say(s,`${target.name} cae por el impacto en las piernas.`);}
+  }
+  refreshCondition(target);
+  target.bleeding=target.hp>0?Math.min(10,target.bleeding+Math.ceil(impact.damage/15)):0;
+  target.morale=Math.max(0,target.morale-impact.damage*.45);
+  if(report)say(s,`${sourceKnown?source.name+' hiere a': 'Un ataque alcanza a'} ${target.name}${projectile&&hitLocation!=='torso'?` (${getHitLocationProfile(hitLocation).label.toLowerCase()})`:''}: ${impact.damage} de daño.`);
+  if(target.hp===0){if(report)say(s,`${target.name} cayó en combate.`);for(const u of s.units.filter(u=>u.side===target.side&&alive(u)))u.morale=Math.max(0,u.morale-18);}
+  holdMorale(s,target);if(alive(target)&&target.morale<15)rout(s,target,report);
+  return target;
+}
+// An interrupt grants control, not a new AP budget. Normal orders remain usable.
+export function interruptAvailable(s,u){
+ if(s.deployment)return false;
+  return Boolean(u&&u.side==='player'&&alive(u)&&s.status==='active'&&
+    (s.phase==='player'||s.phase==='interrupt'&&s.interrupt?.unitIds.includes(u.id)));
+}
+// Capture only what each opponent knew before this action. The snapshot is
+// transient: save files retain anonymous noise reports, never sound source IDs.
+function reactionObservation(s,actor){
+  return {x:actor.x,y:actor.y,tacticalLevel:tacticalLevel(actor),listeners:new Map(s.units.filter(u=>u.side!==actor.side&&alive(u)).map(u=>[u.id,{seen:canSee(s,u,actor),noise:u.lastHeardNoise}]))};
+}
+function reactionFire(s,actor,before){
+  if(s.mode!=='combat'||s.status!=='active'||!alive(actor)||!before)return false;
+  const moved=before.crossing===true||before.x!==actor.x||before.y!==actor.y||!sameSurface(before,actor);
+  const qualified=s.units.filter(u=>u.side!==actor.side&&alive(u)&&!u.knockedDown&&u.reactionTurn!==s.turn&&u.ap>=3&&
+    (u.side==='player'||u.overwatch!==false)).filter(u=>{
+      if(interruptInitiative(s,u)<interruptInitiative(s,actor))return false;
+      const prior=before.listeners.get(u.id),seen=canSee(s,u,actor),noise=u.lastHeardNoise;
+      const newSound=noise&&noise!==prior?.noise&&(!prior?.noise||['x','y','kind','turn'].some(key=>noise[key]!==prior.noise[key]));
+      return seen&&(!prior?.seen||moved)&&dist(u,actor)<=(nearby(s,u,'strategic_command',6)?12:nearby(s,u,'tactical_command',4)?10:8)||Boolean(newSound);
+    }).sort((a,b)=>interruptInitiative(s,b)-interruptInitiative(s,a)||String(a.id).localeCompare(String(b.id)));
+  if(!qualified.length)return false;
+  if(actor.side==='enemy'){
+    if(s.phase!=='enemy'||!s.enemyTurn&&!s.reactionStack?.length)return false;
+    for(const u of qualified)u.reactionTurn=s.turn;
+    s.phase='interrupt';s.interrupt={side:'player',unitIds:qualified.map(u=>u.id),enemyId:actor.id,...(s.reactionStack?.length?{returnTo:'reaction'}:{})};
+    say(s,`¡Interrupción! ${qualified.map(u=>u.name).join(', ')} pueden actuar con sus PA restantes.`);
+  }else{
+    if(!['player','interrupt'].includes(s.phase))return false;
+    for(const u of qualified)u.reactionTurn=s.turn;
+    s.reactionStack??=[];
+    s.reactionStack.push({unitIds:qualified.map(u=>u.id),unitIndex:0,actionsTaken:0,resumePhase:s.phase,...(s.interrupt?{resumeInterrupt:structuredClone(s.interrupt)}:{})});
+    s.phase='enemy';delete s.interrupt;
+    const seen=qualified.filter(u=>journalVisible(s,u));
+    say(s,seen.length?`${seen.map(u=>u.name).join(', ')} interrumpen con sus PA restantes.`:'El enemigo interrumpe.');
+  }
+  return true;
 }
 
-function stepCost(u,t){const rough=['mud','forest','stone','scrub'].includes(t?.type),base=(u.mounted?(hasTrait(u,'cavalry_commander')?3:4):u.stance==='prone'?16:hasCharacterAbility(u,'quick_movement')?6:8)*(t?.type==='mud'?(u.mounted?(hasCharacterAbility(u,'mud_rider')?1.25:2):1.5):1);return Math.max(2,Math.ceil(base*(u.mounted?1-Math.min(100,u.ridingSkill||0)*.005:1)*(u.movementMode==='run'?.7:u.movementMode==='crouch'?1.25:1)*weightPenalty(u)*(rough&&hasTrait(u,'guerrilla_tactician')?.75:1)));}
-export function getReachable(s,unitOrId){const u=typeof unitOrId==='object'?unitOrId:s.units.find(u=>u.id===String(unitOrId));if(!u||!alive(u)||s.status!=='active')return [];const costs=new Map([[`${u.x},${u.y}`,0]]),paths=new Map([[`${u.x},${u.y}`,[]]]),queue=[{x:u.x,y:u.y,cost:0}];while(queue.length){queue.sort((a,b)=>a.cost-b.cost);const p=queue.shift();for(const [dx,dy]of[[1,0],[-1,0],[0,1],[0,-1]]){const x=p.x+dx,y=p.y+dy,t=tile(s,x,y);if(!t||t.blocked||occupied(s,x,y,u.id))continue;const key=`${x},${y}`,cost=p.cost+stepCost(u,t);if(cost>(s.mode==='exploration'?Infinity:u.ap)||cost>=(costs.get(key)??Infinity))continue;costs.set(key,cost);paths.set(key,[...paths.get(`${p.x},${p.y}`),{x,y}]);queue.push({x,y,cost});}}return [...costs].map(([key,cost])=>{const[x,y]=key.split(',').map(Number);return{x,y,cost,path:paths.get(key)};});}
-function line(a,b){const points=[];let x=a.x,y=a.y;const dx=Math.abs(b.x-x),dy=Math.abs(b.y-y),sx=x<b.x?1:-1,sy=y<b.y?1:-1;let err=dx-dy;while(x!==b.x||y!==b.y){const e=2*err;if(e>-dy){err-=dy;x+=sx;}if(e<dx){err+=dx;y+=sy;}points.push({x,y});}return points;}
-export function hasLineOfSight(s,a,b){return !line(a,b).slice(0,-1).some(p=>(tile(s,p.x,p.y)?.blocksSight??(tile(s,p.x,p.y)?.type==='window'?false:tile(s,p.x,p.y)?.blocked)));}
-export function shotChance(s,attacker,target,aim=0){if(!hasLineOfSight(s,attacker,target))return 0;const w=weaponFor(attacker),range=dist(attacker,target);if(w.loadPattern==='cone'&&range>w.range)return 0;let cap=w.id===1802?(range<=45?95:Math.max(1,85-(range-50)*5)):(range<=15?85:range<=25?85-(range-15)*5:range<=35?35-(range-25)*3:Math.max(1,5-(range-35)));const obscured=line(attacker,target).filter(p=>s.smoke.some(v=>dist(p,v)<=v.radius)).length;return Math.round(clamp(Math.min(cap,attacker.marksmanship+(nearby(s,attacker,'strategic_command',6)?12:0)+(nearby(s,attacker,'tactical_command',4)?8:0)+clamp(aim,0,4)*8-range*1.1-(attacker.maxHp-attacker.hp)*.3-(target.stance==='prone'?18:0)-(tile(s,target.x,target.y)?.cover||0)*(hasCharacterAbility(attacker,'scatter_concealment')&&w.id===1807?.5:1)-(s.night?(hasCharacterAbility(attacker,'night_scout')?5:20)*(1-tileIllumination(s,target.x,target.y)):0)-Math.max(0,range-w.range)*4-(attacker.mounted&&![1803,1805,1806,1808].includes(w.id)?15:0)-obscured*(hasTrait(attacker,'line_marksman')?6:12)+(hasTrait(attacker,'guerrilla_tactician')&&!attacker.momentum&&((tile(s,attacker.x,attacker.y)?.cover||0)>=20||['forest','scrub'].includes(tile(s,attacker.x,attacker.y)?.type))?10:0)-(hasTrait(target,'guerrilla_tactician')&&!target.mounted&&((tile(s,target.x,target.y)?.cover||0)>=20||['forest','scrub'].includes(tile(s,target.x,target.y)?.type))?12:0)),1,95));}
-function checkEnd(s){for(const u of s.units)refreshMilitaryCondition(u);if(!s.units.some(u=>u.side==='player'&&fieldCapable(u))){s.status='defeat';say(s,'La escuadra quedó fuera de combate.');}else if(!s.units.some(u=>u.side==='enemy'&&fieldCapable(u))){s.sectorCleared=true;if(s.mode==='exploration')return;s.status='victory';say(s,'¡Victoria! El enemigo quedó fuera de combate.');}}
-function rout(s,u){if(u.routed||u.hp<=0||holdMorale(s,u))return;u.routed=true;u.weaponDropped=true;lowerWeapon(u);u.droppedWeapon=typeof u.weapon==='object'?u.weapon.id:u.weapon;s.droppedWeapons??=[];if(u.weapon)s.droppedWeapons.push({...weaponRecord(u),unitId:u.id,x:u.x,y:u.y});u.loaded=0;delete u.reloadProgress;u.ap=0;u.braced=false;const goal=u.side==='player'?0:s.width-1,queue=[{x:u.x,y:u.y,path:[]}],seen=new Set([`${u.x},${u.y}`]);let escape=null;while(queue.length){const p=queue.shift();if(p.x===goal){escape=p;break;}for(const[dx,dy]of[[Math.sign(goal-u.x)||1,0],[0,1],[0,-1],[-(Math.sign(goal-u.x)||1),0]]){const x=p.x+dx,y=p.y+dy,key=`${x},${y}`,t=tile(s,x,y);if(!t||t.blocked||seen.has(key)||occupied(s,x,y,u.id))continue;seen.add(key);queue.push({x,y,path:[...p.path,{x,y}]});}}u.fleePath=escape?.path||[];u.fled=Boolean(escape);if(escape){u.x=escape.x;u.y=escape.y;}say(s,`${u.name} abandona el arma y ${escape?'huye hacia la retaguardia':'se rinde sin encontrar una salida'}.`);}
-function meleeStrike(s,attacker,target,amount,{counter=true}={}){if(civilian(s,target)){applyCivilianHarm(s,target,{source:attacker,damage:amount,intentional:true});say(s,`${attacker.name} hiere a ${target.name}.`);return;}const blade=bladeFor(attacker),defense=bladeFor(target);if([1809,1810].includes(defense.id)&&target.ap>=6&&target.parryTurn!==s.turn){target.parryTurn=s.turn;target.ap-=6;lowerWeapon(target);amount*=.75;say(s,`${target.name} desvía parte del golpe con su sable.`);}if(defense.id===1813||target.poncho)amount*=.8;damage(s,target,amount,attacker);if(alive(target)){if([1809,1810].includes(blade.id))target.bleeding=Math.min(10,target.bleeding+3);if(blade.id===1812){target.knockedDown=true;target.stance='prone';target.mounted=false;target.ap=Math.max(0,target.ap-20);say(s,`${target.name} cae derribado por la lanza.`);}if(counter&&(defense.id===1813||hasCharacterAbility(target,'counterattack'))&&target.counterTurn!==s.turn&&target.ap>=defense.ap&&dist(target,attacker)<=defense.reach&&alive(attacker)){target.counterTurn=s.turn;target.ap-=defense.ap;lowerWeapon(target);say(s,`${target.name} responde con un contragolpe.`);damage(s,attacker,defense.damage*.5,target);}}}
-function interceptCharge(s,mover,target){const blade=bladeFor(target);if(!alive(target)||!target.braced||target.braceTurn===s.turn||blade.id!==1811||target.ap<blade.ap||dist(mover,target)>blade.reach||!hasLineOfSight(s,target,mover))return;target.braceTurn=s.turn;target.ap-=blade.ap;say(s,`${target.name} recibe la carga con la bayoneta calada.`);damage(s,mover,blade.damage,target);}
-function damage(s,target,amount,source,projectile=false,intentional=false){if(civilian(s,target)){applyCivilianHarm(s,target,{source,damage:amount,intentional});say(s,`${source.name} hiere a ${target.name}: ${Math.round(amount)} de daño.`);return;}if(projectile&&(hasCharacterAbility(target,'protected_commander')||(target.leadership||0)>=90)){const guard=s.units.find(v=>hasCharacterAbility(v,'bodyguard')&&v.side===target.side&&v.id!==target.id&&alive(v)&&v.hp>25&&v.ap>=8&&v.interceptTurn!==s.turn&&dist(v,target)<=1.5);if(guard){guard.ap-=8;lowerWeapon(guard);guard.interceptTurn=s.turn;say(s,`${guard.name} se interpone para proteger a ${target.name}.`);target=guard;}}const creditEligible=target.hp>=15&&!target.unconscious&&!target.routed&&!target.surrendered&&!target.departure,previousHealth=target.hp;target.hp=Math.max(0,target.hp-Math.round(amount));recordMilitiaHit(s,source,target,creditEligible,previousHealth-target.hp);target.bleeding=target.hp>0?Math.min(10,target.bleeding+Math.ceil(amount/15)):0;target.morale=Math.max(0,target.morale-amount*.45);refreshMilitaryCondition(target);say(s,`${source.name} hiere a ${target.name}: ${Math.round(amount)} de daño.`);if(target.hp===0){say(s,`${target.name} cayó en combate.`);for(const u of s.units.filter(u=>u.side===target.side&&alive(u)))u.morale=Math.max(0,u.morale-18);}holdMorale(s,target);if(target.hp>0&&target.morale<15){rout(s,target);}}
-function reactionFire(s,mover){
-for(const defender of s.units.filter(u=>u.side!==mover.side&&alive(u)&&u.overwatch&&u.reactionTurn!==s.turn&&hasFirearm(u)&&u.loaded>0&&!u.jammed).sort((a,b)=>interruptInitiative(s,b)-interruptInitiative(s,a))){
-if(!alive(mover)||s.status!=='active')break;
-if(!canSee(s,defender,mover)||dist(defender,mover)>(nearby(s,defender,'strategic_command',6)?12:nearby(s,defender,'tactical_command',4)?10:8)||!hasLineOfSight(s,defender,mover)||shotChance(s,defender,mover)<25||defender.ap<actionCosts(s,defender).fire)continue;
-defender.reactionTurn=s.turn;const before=defender.ap;say(s,`${defender.name} interrumpe el avance con fuego de reacción.`);
-apply(s,{type:'fire',unitId:defender.id,targetId:mover.id},defender.side==='enemy');defender.reactionSpent+=before-defender.ap;
-}}
-function apply(s,a,enemy=false){
- if(!['move','charge'].includes(a.type))recordBattleFrame(s,{type:'prepare',unitId:String(a.unitId),action:a.type});
- const accepted=applyOrder(s,a,enemy);
+function replaceUnit(unit,next){for(const key of Object.keys(unit))if(!Object.hasOwn(next,key))delete unit[key];Object.assign(unit,next);}
+function inventoryOrderReason(s,u,pa){
+  const window=u?.side==='enemy'?s.phase==='enemy'&&s.status==='active'&&alive(u):interruptAvailable(s,u);
+  if(!window||u.knockedDown)return 'El soldado no puede manejar equipo ahora.';
+  if(s.mode!=='exploration'&&u.ap<pa)return `Faltan ${pa} PA para manejar el equipo.`;
+  return null;
+}
+export function grenadeThrowPreview(s,u,target,options={}){
+  const costs=u?grenadeThrowCosts(u,target):{total:0,stance:0,turn:0,attack:0,aim:0,aimLevel:0,energy:0};
+  const grenade=heldGrenade(u),range=u?grenadeThrowRange(u,grenade):{maximum:0};
+  let reason=inventoryOrderReason(s,u,costs.total),flight=null;
+  if(!reason&&!grenade)reason='Prepará una granada en la mano principal.';
+  if(!reason&&grenade.record.condition<=0)reason='Esta granada está inutilizada.';
+  if(!reason&&grenade.record.condition<100&&(s.groundItems?.length??0)>=2000)reason='No queda espacio en el sector para conservar una granada fallida.';
+  if(!reason&&u.mounted)reason='Desmontá antes de lanzar la granada.';
+  if(!reason&&(!Number.isInteger(target?.x)||!Number.isInteger(target?.y)||!surfaceAt(s,target)))reason='Seleccioná una superficie del mapa.';
+  if(!reason&&(options.targetId!==undefined||options.hitLocation!==undefined))reason='La granada se lanza a una casilla, sin elegir una zona del cuerpo.';
+  if(!reason&&sameCell(u,target))reason='Seleccioná otra casilla para lanzar la granada.';
+  const distance=u&&target&&surfaceAt(s,target)?spaceDistance(s,u,target):Infinity;
+  if(!reason&&distance>range.maximum)reason='Fuera del alcance de la granada.';
+  if(!reason){flight=grenadeFlight(s,u,target);if(!flight.landing||flight.impact.kind==='invalid')reason='No hay una trayectoria válida para la granada.';}
+  // No enemy data or hidden civilian positions enter the public preview.
+  const friendlyRisk=Boolean(flight?.landing&&[...s.units.filter(v=>v.side===u.side&&onField(v)&&!v.fled),...(s.npcs??[]).filter(v=>(v.hp??100)>0&&!v.departure&&!v.fled&&canSee(s,u,v))]
+    .some(v=>grenadeBlastExposure(s,flight.landing,v,GRENADE_THROW.radius).multiplier>0));
+  return {valid:!reason,reason,pa:costs.total,aim:0,chance:reason?0:grenadeThrowChance(u,distance,grenade),costs,range,flight,blastRadius:GRENADE_THROW.radius,friendlyRisk};
+}
+const grenadeThrowVisuals=new WeakMap();
+export function getGrenadeThrowVisual(before,after){const visual=grenadeThrowVisuals.get(after);return before!==after&&visual?structuredClone(visual):null;}
+function grenadeScatter(s,u,point,range){
+  const radius=grenadeScatterRadius(dist(u,point)),candidates=[];
+  for(let y=point.y-radius;y<=point.y+radius;y++)for(let x=point.x-radius;x<=point.x+radius;x++){
+    const cell={x,y,tacticalLevel:tacticalLevel(point)};
+    if(!sameCell(cell,point)&&surfaceAt(s,cell)&&spaceDistance(s,u,cell)<=range.maximum)candidates.push(cell);
+  }
+  return candidates.length?candidates[Math.floor(random(s)*candidates.length)]:point;
+}
+function grenadeBlast(s,source,origin,intended){
+  const notifyCivilians=emitNoise(s,source,'explosion',origin,{deferCivilians:true});
+  // Routed, surrendered and unconscious bodies remain physically exposed.
+  // A departed or dead body cannot take another hit or earn combat credit.
+  for(const victim of s.units.filter(v=>onField(v)&&!v.fled)){
+    const {multiplier}=grenadeBlastExposure(s,origin,victim,GRENADE_THROW.radius);
+    if(multiplier<=0)continue;
+    const amount=GRENADE_THROW.damage*multiplier,breath=GRENADE_THROW.energyDamage*multiplier;
+    const automaticBreath=Math.ceil(Math.min(victim.hp,Math.round(amount))*.5);
+    damage(s,victim,amount,source,false,'torso',Math.max(0,Math.round(breath)-automaticBreath));
+  }
+  for(const npc of (s.npcs??[]).filter(n=>(n.hp??100)>0&&!n.departure&&!n.fled)){
+    const {multiplier}=grenadeBlastExposure(s,origin,npc,GRENADE_THROW.radius);
+    if(multiplier<=0)continue;
+    const visible=teamCanSee(s,'player',npc);
+    applyCivilianHarm(s,npc,{source,damage:Math.round(GRENADE_THROW.damage*multiplier),breathLoss:Math.round(GRENADE_THROW.energyDamage*multiplier),hitLocation:'torso',kind:'grenade',observed:visible,intentional:npc===intended});
+    if(visible)say(s,`${npc.name} ${npc.hp>0?'queda herido por la explosión.':'muere por la explosión.'}`);
+  }
+  // Sound can make survivors take cover only after this blast is resolved.
+  notifyCivilians();
+}
+// The attack cursor can inspect only bodies already known to this side. Actual
+// flight checks the complete roster after confirmation. Ground throws never
+// acquire an occupant or a selectable body region from private state.
+function knownKnifeFlight(s,u,point,hitLocation,options={}){
+  const units=s.units.filter(v=>v.side===u.side||(u.side==='player'?teamCanSee(s,u.side,v):canSee(s,u,v)));
+  return knifeFlight({...s,units,npcs:knownCivilianBodies(s,u)},u,point,hitLocation,options);
+}
+export function knifeThrowPreview(s,u,target,options={}){
+  const costs=u?knifeThrowCosts(u,target,options.aim):{total:0,aimLevel:0,stance:0,turn:0,attack:0,aim:0,energy:6};
+  const knife=heldThrowingKnife(u),range=u?knifeThrowRange(u,knife):{nominal:0,maximum:0};
+  const hitLocation=options.hitLocation??'torso',pointShot=target?.id===undefined;
+  let reason=inventoryOrderReason(s,u,costs.total),flight=null;
+  if(!reason&&!knife)reason='Prepará el facón que querés lanzar en la mano.';
+  if(!reason&&u.mounted)reason='Desmontá antes de lanzar el facón.';
+  if(!reason&&(!Number.isInteger(target?.x)||!Number.isInteger(target?.y)||!surfaceAt(s,target)))reason='Seleccioná una superficie del mapa.';
+  if(!reason&&sameCell(u,target))reason='Seleccioná otra casilla para lanzar el facón.';
+  if(!reason&&!HIT_LOCATIONS.includes(hitLocation))reason='Seleccioná torso, cabeza o piernas.';
+  if(!reason&&pointShot&&hitLocation!=='torso')reason='El lanzamiento a una casilla apunta a una altura fija.';
+  if(!reason&&!pointShot){
+    const actual=s.units.find(v=>v.id===target.id);
+    if(!actual||!sameCell(actual,target)||actual.side===u.side||!targetable(actual))reason='Seleccioná un enemigo activo.';
+    else if(!(u.side==='player'?teamCanSee(s,u.side,actual):canSee(s,u,actual)))reason='El objetivo no está a la vista.';
+    else if(!shotLocationsFor(actual).includes(hitLocation))reason='Un objetivo cuerpo a tierra tiene una sola zona de tiro.';
+  }
+  if(!reason&&(u.energy??100)<costs.energy)reason='Falta energía para lanzar el facón.';
+  const distance=target&&u&&surfaceAt(s,target)?spaceDistance(s,u,target):Infinity;
+  if(!reason&&distance>range.maximum)reason='Fuera del alcance del facón.';
+  const prepared=u?{...u,stance:'standing',facing:costs.facing}:u;
+  const point=pointShot&&target?{...positionOf(target),stance:'standing',mounted:false}:target;
+  if(!reason){flight=knownKnifeFlight(s,prepared,point,hitLocation);if(!flight.landing||flight.impact.kind==='invalid')reason='No hay una trayectoria válida para el facón.';}
+  const chance=reason?0:knifeThrowChance(u,distance,costs.aimLevel,knife);
+  return {valid:!reason,reason,pa:costs.total,aim:costs.aimLevel,chance:flight?.blocked||flight?.victimKind==='npc'||flight?.victimId&&flight.victimId!==target?.id?0:chance,hitLocation,range,flight,costs,pointShot};
+}
+// One transient visual per returned state; it never enters a save or public
+// state payload. Unseen actors are excluded from the displayed trajectory.
+const knifeThrowVisuals=new WeakMap();
+export function getKnifeThrowVisual(before,after){
+  const visual=knifeThrowVisuals.get(after);
+  return visual&&before!==after?structuredClone(visual):null;
+}
+export function pointFirePreview(s,u,point,aim=0){
+  const level=clamp(Number.isFinite(aim)?Math.floor(aim):0,0,4),costs=u?actionCosts(s,u,point):{fire:0,aim:0},pa=costs.fire+level*costs.aim;
+  let reason=!u||!(u.side==='enemy'?s.phase==='enemy'&&alive(u)&&s.status==='active':interruptAvailable(s,u))||u.knockedDown?'El soldado no puede disparar ahora.':null;
+  if(!reason&&!hasFirearm(u))reason='Equipá un arma de fuego.';
+  if(!reason&&(!Number.isInteger(point?.x)||!Number.isInteger(point?.y)||point.x<0||point.y<0||point.x>=s.width||point.y>=s.height))reason='Seleccioná una casilla del mapa.';
+  if(!reason&&!surfaceAt(s,point))reason='Seleccioná una superficie del mapa.';
+  if(!reason&&sameCell(point,u))reason='Seleccioná otra casilla para disparar.';
+  if(!reason&&u.jammed)reason='Cebá el arma antes de disparar.';
+  if(!reason&&!(u.loaded>0))reason='Recargá el arma.';
+  if(!reason&&s.mode!=='exploration'&&u.ap<pa)reason='PA insuficientes.';
+  // No occupancy, enemy attributes, cover or sight query: empty and unobserved
+  // occupied coordinates have exactly the same public preflight.
+  return {valid:!reason,reason,pa,aim:level};
+}
+function pointFireImpact(s,u,point,aim,source=u,preparedAccuracy){
+  const w=weaponFor(u),accuracy=preparedAccuracy??shotAccuracy(s,u,{...point,stance:'standing'},aim,'torso',true),intended=intendedCivilian(s,source,point);
+  const impact=(victim,amount,location)=>{
+    const visible=observedBody(s,victim),before=victim.hp,eligible=!isCivilianBody(s,victim)&&fieldCapable(victim)&&!victim.unconscious&&!victim.routed;
+    physicalImpact(s,victim,amount,source,{hitLocation:location,report:visible,intentional:victim===intended});
+    if(eligible&&victim.side!==source.side&&victim.hp<before)practice(source,'marksmanship',2);
+  };
+  if(w.loadPattern==='cone'||!w.loadPattern&&w.id===1807){
+    const length=dist(u,point),dx=(point.x-u.x)/length,dy=(point.y-u.y)/length;
+    for(const {body:victim} of physicalBodies(s).filter(({body,kind})=>kind==='npc'||body.id!==u.id)){
+      const vx=victim.x-u.x,vy=victim.y-u.y,forward=vx*dx+vy*dy,across=Math.abs(vx*dy-vy*dx);
+      if(forward<=0||forward>w.range||across>Math.max(.5,forward*.25))continue;
+      const path=firearmProjectilePath(s,u,victim);
+      if(!path.blocked&&random(s)*100<Math.min(95,accuracy+20))impact(victim,w.damage*(1-forward/(w.range*2))*path.damageFactor,'torso');
+    }
+    return;
+  }
+  let end=positionOf(point);
+  if(random(s)*100>=accuracy){
+    end=scatteredShotDestination(s,u,point);
+  }
+  const flight=usesElevationGeometry(s,u,point)?projectileFlight(s,u,{...end,stance:'standing',mounted:false},w,'torso',{destinationHeight:absoluteBodyHeight(s,{...point,stance:'standing',mounted:false},'torso')}):pointProjectileFlight(s,u,end,w),victim=flightVictim(s,flight);
+  if(victim)impact(victim,w.damage*(.8+random(s)*.4)*flight.damageFactor,flight.hitLocation);
+}
+export function dropPreview(s,u,item,count=1){
+  const pa=4;let reason=inventoryOrderReason(s,u,pa);
+  if(!reason&&s.groundItems.length>=2000)reason='No queda espacio para otro objeto en el sector.';
+  if(!reason)try{extractItemQuantity(u,item,count);}catch(error){reason=error.message;}
+  return {pa,kind:'drop',chance:100,reason,valid:!reason};
+}
+// Older callers address personal supplies by family; ownership still lives in
+// the same finite pockets and physical stacks used by the equipment cursor.
+function legacyActorReason(s,u,pa){
+ if(!u||u.side!=='player'||u.militia||!alive(u)||u.fled||u.departure)return 'Seleccioná un integrante de la escuadra que pueda actuar.';
+ return inventoryOrderReason(s,u,pa);
+}
+function adjacentRecipientReason(s,u,target){
+ if(!target||target.id===u.id||target.side!==u.side||target.militia||!alive(target)||target.fled||target.departure||target.knockedDown||target.entangled)return 'Elegí otro integrante consciente de la escuadra.';
+ if(!artilleryContact(s,u,target))return 'El compañero debe estar al lado, sin obstáculos entre ambos.';
+ return null;
+}
+function legacySupplyPlan(u,item,count,target=null){
+ if(!Number.isSafeInteger(count)||count<1)throw Error('La cantidad debe ser un número entero positivo.');
+ const family=item==='ammo'?ammoTypeFor(u):item;
+ if(count>(item==='medkits'?1000000:100000))throw Error('Esa cantidad supera el límite de un bulto.');
+ let selections;
+ if(Object.hasOwn(AMMO_TYPES,family??'')){
+  const type=AMMUNITION_FAMILIES[family].type;let remaining=count;
+  selections=Object.entries(u.inventory??{}).filter(([,r])=>r?.kind==='ammunition'&&r.ammoType===type).sort(([a],[b])=>a.localeCompare(b)).flatMap(([key,r])=>{
+   const amount=Math.min(remaining,r.count);remaining-=amount;return amount?[{item:`inventory:${key}`,count:amount}]:[];
+  });
+  if(remaining)throw Error('No quedan suficientes cartuchos de ese tipo.');
+ }else {
+  if(!Object.hasOwn(SUPPLY_ITEMS,item)||item==='ammo')throw Error('Elegí un suministro personal disponible.');
+  selections=[{item,count}];
+ }
+ let source=u,receiver=target;const stacks=[];
+ for(const selection of selections){const extraction=extractItemQuantity(source,selection.item,selection.count);source=extraction.unit;stacks.push(extraction.stack);if(receiver)receiver=applyItemQuantity(receiver,extraction.stack);}
+ return {source,target:receiver,stacks};
+}
+export function supplyDropPreview(s,u,item,count){
+ let reason=legacyActorReason(s,u,4),plan;
+ if(!reason&&item==='ammo')reason='Seleccioná una pila o un tipo de munición para dejar.';
+ if(!reason)try{plan=legacySupplyPlan(u,item,count);if(s.groundItems.length+plan.stacks.length>2000)reason='No queda espacio para otro objeto en el sector.';}catch(error){reason=error.message;}
+ return {reason,valid:!reason,pa:4,seconds:s.mode==='exploration'?1:undefined};
+}
+export function supplyTransferPreview(s,u,target,item,count){
+ let reason=legacyActorReason(s,u,4);
+ if(!reason)reason=adjacentRecipientReason(s,u,target);
+ if(!reason)try{legacySupplyPlan(u,item,count,target);}catch(error){reason=error.message;}
+ return {reason,valid:!reason,pa:4,seconds:s.mode==='exploration'?1:undefined};
+}
+export function weaponTransferPreview(s,u,target,inventoryKey,slot=undefined){
+ let reason=legacyActorReason(s,u,4),item;
+ if(!reason)reason=adjacentRecipientReason(s,u,target);
+ if(!reason&&slot!==undefined&&(!['primary','blade'].includes(slot)||inventoryKey!==undefined))reason='Elegí una sola mano o un arma de la mochila.';
+ if(!reason)try{item=slot??`inventory:${inventoryKey}`;const plan=extractItemQuantity(u,item,1);if(!WEAPONS[plan.stack.weapon]&&!BLADES[plan.stack.weapon])throw Error('Elegí un arma disponible para entregar.');applyItemQuantity(target,plan.stack);}catch(error){reason=error.message;}
+ return {reason,valid:!reason,pa:4,seconds:s.mode==='exploration'?1:undefined,item};
+}
+export function groundSupplyPickupPreview(s,u,groundId,count){
+ let reason=legacyActorReason(s,u,8);const ground=s.groundItems.find(g=>g.id===groundId);
+ if(!reason&&(!ground||!Number.isSafeInteger(ground.count)||ground.count<1||ground.heldBy||ground.containerId))reason='Ese bulto no está disponible para recoger.';
+ if(!reason&&!artilleryContact(s,u,ground))reason='Acercate al bulto, sin obstáculos entre ambos.';
+ if(!reason&&(!Number.isSafeInteger(count)||count<1))reason='La cantidad debe ser un número entero positivo.';
+ if(!reason)reason=lootPreview(s,u,{groundId,count}).reason;
+ return {reason,valid:!reason,amount:reason?0:count,pa:8,seconds:s.mode==='exploration'?1:undefined};
+}
+export function equipmentUnloadPreview(s,u,action){
+ let reason=inventoryOrderReason(s,u,12);
+ if(!reason&&(u.side!=='player'||u.militia||u.departure))reason='Elegí un combatiente de tu escuadra.';
+ if(!reason)try{planEquipmentUnload(u,action);}catch(error){reason=error.message;}
+ return {valid:!reason,reason,pa:s.mode==='exploration'?0:12};
+}
+export function equipmentAttachmentPreview(s,u,action){
+ let reason=inventoryOrderReason(s,u,0),plan;
+ if(!reason&&(u.side!=='player'||u.militia||u.departure))reason='Elegí un combatiente de tu escuadra.';
+ if(!reason&&action.operation==='detach'&&s.units?.some(other=>other.id!==u.id&&alive(other)&&other.equipmentCursor))reason='Colocá primero el objeto del otro combatiente.';
+ if(!reason)try{plan=planEquipmentAttachment(u,action);reason=inventoryOrderReason(s,u,plan.pa);}catch(error){reason=error.message;}
+ return {valid:!reason,reason,pa:s.mode==='exploration'?0:plan?.pa??(action.operation==='detach'?REMOVE_BAYONET_AP:FIT_BAYONET_AP),swapped:plan?.swapped??false};
+}
+export function fitBayonetPreview(s,u,item){
+  const pa=FIT_BAYONET_AP;let reason=inventoryOrderReason(s,u,pa),plan;
+  if(!reason)try{plan=planFitBayonet(u,item);}catch(error){reason=error.message;}
+  return {pa,source:item,destination:'primary',host:u?.weapon,fitting:plan?.fitting??null,reason,valid:!reason};
+}
+export function removeBayonetPreview(s,u,destination='inventory'){
+  const pa=REMOVE_BAYONET_AP;let reason=inventoryOrderReason(s,u,pa),plan;
+  if(!reason)try{plan=planRemoveBayonet(u,destination);}catch(error){reason=error.message;}
+  return {pa,source:'primary',destination,host:u?.weapon,fitting:plan?.fitting??u?.weaponFittings?.bayonet??null,reason,valid:!reason};
+}
+// A relay is one inventory transaction. Intermediate soldiers must be able to
+// handle this exact stack, without swapping their own equipment into the chain.
+function itemRelayRoute(s,u,target,stack){
+  const adjacent=(a,b)=>contactDistance(a,b)<=1.5&&hasLineOfSight(s,a,b)&&Number.isFinite(movementStepCost(s,a,a,b));
+  if(adjacent(u,target))return [u,target];
+  const helpers=s.units.filter(v=>v.id!==u.id&&v.id!==target.id&&v.side===u.side&&
+    !v.fled&&Boolean(v.militia)===Boolean(u.militia)&&!inventoryOrderReason(s,v,4)).filter(v=>{
+      try{applyItemQuantity(v,stack);return true;}catch{return false;}
+    }).sort((a,b)=>String(a.id).localeCompare(String(b.id)));
+  const queue=[[u]],seen=new Set([u.id]);
+  for(let i=0;i<queue.length;i++){
+    const path=queue[i],last=path[path.length-1];
+    if(adjacent(last,target))return [...path,target];
+    for(const v of helpers)if(!seen.has(v.id)&&adjacent(last,v)){seen.add(v.id);queue.push([...path,v]);}
+  }
+  return null;
+}
+export function transferPreview(s,u,target,item,count=1){
+  const distance=u&&target?contactDistance(u,target):Infinity;
+  let kind=distance<=1.5?'give':'throw',pa=kind==='give'?4:8,route=null;
+  let reason=inventoryOrderReason(s,u,4),chance=kind==='give'?100:0;
+  if(!reason&&(!target||target.id===u.id||target.side!==u.side||!alive(target)))reason='Elige otro compañero consciente.';
+  if(!reason)try{
+    const transfer=transferItemQuantity(u,target,item,count);
+    route=itemRelayRoute(s,u,target,transfer.stack);
+  }catch(error){reason=error.message;}
+  if(route){kind=route.length>2?'relay':'give';pa=4;chance=100;}
+  else if(!reason){kind='throw';pa=8;reason=inventoryOrderReason(s,u,pa);}
+  if(!reason&&!route&&(distance>6||!hasLineOfSight(s,u,target)))reason='El compañero debe estar al alcance y sin obstáculos, o conectado por aliados contiguos.';
+  if(kind==='throw'&&target)chance=target.knockedDown||(s.mode!=='exploration'&&target.ap<2)?0:Math.round(clamp(((u?.dexterity??50)+(target.dexterity??50))/2+20-distance*5-(100-(target.energy??100))*.2,5,95));
+  const participants=route?.map((v,i)=>({id:v.id,name:v.nickname||v.name,pa:i<route.length-1?4:0}))??[];
+  return {pa,kind,chance,route:participants,totalPA:route?(route.length-1)*4:pa,reason,valid:!reason};
+}
+function planInventoryMap(s,u,action){
+ const need=(ok,message)=>{if(!ok)throw Error(message);};
+ const unavailable=inventoryOrderReason(s,u,4);need(!unavailable,unavailable);
+ need(u.side==='player'&&!u.militia&&!(s.alliedTurn&&s.phase!=='interrupt'),'Elegí un combatiente de tu escuadra.');
+ const intent=action.intent??'auto';need(['auto','ground'].includes(intent),'Elegí entregar el objeto o dejarlo en el suelo.');
+ const point={x:action.x,y:action.y,tacticalLevel:action.tacticalLevel===undefined?tacticalLevel(u):action.tacticalLevel},surface=surfaceAt(s,point);
+ need(surface&&!surface.blocked&&!propBlocksAt(s,point.x,point.y,point.tacticalLevel),'Elegí una superficie libre para dejar el objeto.');
+ const extraction=extractEquipmentSelection(u,action);
+ let target=null,received=null,route=null,flight=null,kind='drop',cost=4,chance=100;
+ if(intent==='auto'&&action.targetId!==undefined&&String(action.targetId)===u.id)need(sameCell(u,point),'El combatiente cambió de lugar. Volvé a seleccionar el destino.');
+ // A point order never resolves a private occupant into an inventory target.
+ if(intent==='auto'&&action.targetId!==undefined&&String(action.targetId)!==u.id){
+  target=s.units.find(other=>other.id===String(action.targetId));
+  if(!target){
+   const npc=s.npcs?.find(other=>other.id===String(action.targetId));
+   const visible=npc&&sameCell(npc,point)&&canSee(s,u,npc)&&isInteriorVisible(s,npc,new Set(s.revealedRooms??[]));
+   if(visible)return planSelectedNpcGift(s,u,action,npc,extraction,point);
+  }
+  need(target&&target.side===u.side&&target.id!==u.id&&!target.fled&&alive(target),'Elegí otro compañero consciente y presente.');
+  need(sameCell(target,point),'El compañero cambió de lugar. Volvé a seleccionar el destino.');
+  received=applyItemQuantity(target,extraction.stack);
+  route=itemRelayRoute(s,u,target,extraction.stack);
+  if(route){kind=route.length>2?'relay':'give';}
+  else {kind='throw';cost=8;chance=target.knockedDown||(s.mode!=='exploration'&&target.ap<2)?0:Math.round(clamp(((u.dexterity??50)+(target.dexterity??50))/2+20-spaceDistance(s,u,target)*5-(100-(target.energy??100))*.2,5,95));}
+ }else if(contactDistance(u,point)<=1.5){
+  need(sameCell(u,point)||hasLineOfSight(s,u,point)&&Number.isFinite(movementStepCost(s,u,u,point)),'No podés dejar el objeto a través de un obstáculo.');
+ }else {kind='throw';cost=8;}
+ if(kind==='throw'){
+  need(spaceDistance(s,u,point)<=6,'El destino está fuera del alcance del lanzamiento.');
+  flight=itemFlight(s,u,target?{...target,catch:true}:point);
+  need(flight.valid&&!flight.blocked&&flight.landing,flight.reason??'No hay una trayectoria libre para el objeto.');
+ }
+ const reason=inventoryOrderReason(s,u,cost);need(!reason,reason);
+ // Every toss needs room for a failed catch. Empty historical piles still
+ // count toward the same collection bound used by save admission.
+ if(!target||kind==='throw')need((s.groundItems??[]).length<2000,'No queda espacio para más objetos en el sector.');
+ const participants=route?.map((v,i)=>({id:v.id,name:v.nickname||v.name,pa:s.mode==='exploration'||i===route.length-1?0:4}))??[];
+ const routeIds=participants.map(v=>v.id),expectedRoute=JSON.stringify((route??[]).map(v=>({id:v.id,...positionOf(v),tacticalLevel:tacticalLevel(v)})));
+ if(action.transferKind!==undefined)need(action.transferKind===kind,'Cambió la entrega. Volvé a revisar el destino.');
+ if(action.transferRoute!==undefined)need(JSON.stringify(action.transferRoute)===JSON.stringify(routeIds),'Cambió la cadena de entrega. Volvé a revisar los compañeros.');
+ if(action.expectedRoute!==undefined)need(action.expectedRoute===expectedRoute,'Los compañeros cambiaron de lugar. Volvé a revisar la entrega.');
+ const confirmed={type:'inventoryMap',unitId:u.id,sourceId:action.sourceId,expectedSource:action.expectedSource,count:action.count??1,intent,...point,
+  ...(target?{targetId:target.id}:{}),transferKind:kind,transferRoute:routeIds,expectedRoute};
+ const pa=s.mode==='exploration'?0:cost,totalPA=route?participants.reduce((sum,v)=>sum+v.pa,0):pa;
+ return {extraction,target,received,cost,valid:true,reason:null,kind,pa,totalPA,chance,route:participants,landing:flight?.landing??point,flight,path:flight?.path??[],action:confirmed,
+  name:itemDescriptor(u,extraction.source.item).label,actionLabel:kind==='drop'?'Dejar en el suelo':kind==='give'?'Dar al compañero':kind==='relay'?'Pasar por aliados':target?'Arrojar al compañero':'Arrojar al suelo'};
+}
+export function inventoryMapPreview(s,u,action={}){
+ try{const {extraction,target,received,cost,...preview}=planInventoryMap(s,u,action);return preview;}
+ catch(error){return {valid:false,reason:error.message,kind:null,pa:0,totalPA:0,chance:0,route:[],landing:null,flight:null,path:[],action:null};}
+}
+// Gift responses are UI events, not additional item owners or save records.
+const npcGiftResults=new WeakMap();
+export function getNpcGiftResult(before,after){
+ const result=npcGiftResults.get(after);return before!==after&&result?structuredClone(result):null;
+}
+function recordNpcGiftResult(state,action,npc,status,text){
+ npcGiftResults.set(state,{unitId:String(action.unitId),npcId:npc.id,name:npc.name,x:action.x,y:action.y,tacticalLevel:action.tacticalLevel??tacticalLevel(npc),status,text,
+  sourceId:action.sourceId,expectedSource:action.expectedSource,count:action.count??1});
+}
+function planSelectedNpcGift(s,u,action,npc,extraction,point){
+ const need=(ok,message)=>{if(!ok)throw Error(message);};
+ need(s.mode==='exploration','Terminá el combate antes de entregar el objeto.');
+ need(!npc.departure&&!npc.fled&&!npc.routed&&(npc.hp??100)>0&&!npc.unconscious,'El interlocutor debe estar disponible y a la vista.');
+ need(!civilianWoundedByPlayer(npc),'No quiere colaborar con quienes lo hirieron.');
+ const inReach=cell=>sameSurface(cell,npc)&&Math.abs(cell.x-npc.x)+Math.abs(cell.y-npc.y)===1&&hasLineOfSight(s,cell,npc)&&Number.isFinite(movementStepCost(s,u,cell,npc));
+ let approach=null;
+ if(!inReach(u)){
+  need(!u.entangled,'Primero debés liberarte de las boleadoras.');
+  const revealed=new Set(s.revealedRooms??[]),knownNpcs=s.npcs.filter(other=>teamCanSee(s,u.side,other)&&isInteriorVisible(s,other,revealed));
+  approach=knownApproachRoute({...s,npcs:knownNpcs},u,inReach);need(approach,'No hay un camino libre para acercarse y entregar el objeto.');
+ }
+ if(action.transferKind!==undefined)need(action.transferKind==='gift','Cambió el destinatario. Volvé a seleccionar el objeto.');
+ const confirmed={type:'inventoryMap',unitId:u.id,sourceId:action.sourceId,expectedSource:action.expectedSource,count:action.count??1,intent:'auto',...point,targetId:npc.id,transferKind:'gift'};
+ return {extraction,target:npc,received:null,cost:4,valid:true,reason:null,type:'inventoryMap',kind:'gift',pa:0,totalPA:0,actionPa:4,movePa:approach?.cost??0,chance:100,route:[],
+  destination:approach?{...positionOf(approach),tacticalLevel:tacticalLevel(approach)}:{...positionOf(u),tacticalLevel:tacticalLevel(u)},landing:null,flight:null,path:approach?.path??[],action:confirmed,
+  name:itemDescriptor(u,extraction.source.item).label,actionLabel:'Entregar objeto'};
+}
+function groundStack(ground){
+  if(ground.type==='money')return {item:`inventory:${ground.id}`,name:'Pesos',count:ground.count,weight:.01};
+  if(Object.hasOwn(SUPPLY_ITEMS,ground.type)&&ground.type!=='ammo')return {item:ground.type,count:ground.count,weight:SUPPLY_ITEMS[ground.type].weight};
+  const {id,type,x,y,tacticalLevel,heldBy,knownToPlayer,...stack}=ground;return stack;
+}
+function addGroundStack(s,stack,position,prefix='item'){let index=s.groundItems.length,id;do{id=`${prefix}-${s.turn}-${index++}`;}while(s.groundItems.some(item=>item.id===id));s.groundItems.push({...stack,id,type:'item',...positionOf(position)});}
+function lootSource(s,a){
+  const source=a.targetId?[...s.units,...(s.npcs??[])].find(v=>v.id===String(a.targetId)):null,drop=a.dropIndex!==undefined?s.droppedWeapons[a.dropIndex]:null,ground=a.groundId?s.groundItems.find(g=>g.id===a.groundId):null;
+  return {source,drop,ground,position:source||drop||ground};
+}
+export function planLoot(s,u,a){
+  if([a.targetId!==undefined,a.dropIndex!==undefined,a.groundId!==undefined].filter(Boolean).length!==1)throw Error('Seleccioná un solo cuerpo u objeto.');
+  if(a.count!==undefined&&(!Number.isSafeInteger(a.count)||a.count<1))throw Error('La cantidad debe ser un número entero positivo.');
+  const {source,drop,ground,position}=lootSource(s,a);
+  if(ground&&!artilleryContact(s,u,ground))throw Error('Acercate al bulto, sin obstáculos entre ambos.');
+  if(source?.departure||source?.fled)throw Error('Esa persona ya salió del sector.');
+  if(!position||contactDistance(u,position)>1.5||!hasLineOfSight(s,u,position))throw Error('Acércate al cuerpo o equipo que quieres registrar.');
+  if(source&&source.hp>0&&!source.unconscious&&!source.surrendered)throw Error('Solo puedes registrar un cuerpo o una persona inconsciente.');
+  if(drop?.taken||ground?.count===0||ground?.heldBy||ground?.containerId)throw Error('Ese objeto ya fue recogido o sigue enredado.');
+  let receiver=u,donor=source;
+  if(source&&isCivilianBody(s,source)){
+    donor=structuredClone(source);receiver=structuredClone(u);
+    const wanted=a.item??'all',gear=donor.civilianWeapons;
+    if(a.count!==undefined&&(!Number.isSafeInteger(a.count)||a.count<1))throw Error('La cantidad debe ser un número entero positivo.');
+    const supplies=civilianSupplyLoot(donor,receiver,a),slots=['primary','blade'].filter(slot=>(wanted==='all'||wanted===(slot==='primary'?'weapon':'blade')||wanted===slot)&&gear?.[slot]);
+    if(!supplies.valid&&!slots.length)throw Error(supplies.reason);
+    let collected=0;
+    for(const slot of slots){
+      try{receiver=applyItemQuantity(receiver,{item:'weapon',...gear[slot]});gear[slot]=null;collected++;}
+      catch(error){if(wanted!=='all')throw error;}
+    }
+    for(const [key,wantedCount]of Object.entries(supplies.amounts)){
+      const count=supplyRoom(receiver,key,wantedCount);
+      if(a.count!==undefined&&count<wantedCount)throw Error(POCKET_FULL);
+      if(count){receiver=applyItemQuantity(receiver,{item:key,count,weight:SUPPLY_ITEMS[key].weight});donor.civilianSupplies[key]-=count;collected+=count;}
+    }
+    if(!collected)throw Error(POCKET_FULL);
+    syncUnitAmmunition(receiver);return {receiver,source,donor};
+  }
+  if(source){
+    const wanted=a.item??'all';
+    const items=wanted==='all'?[...Object.keys(SUPPLY_ITEMS).filter(k=>(k!=='ammo'||source.ammunitionVersion!==2)&&(source[k]??0)>0),...(!source.weaponDropped&&(WEAPONS[source.weapon]||BLADES[source.weapon])?['primary']:[]),...(BLADES[source.blade]?['blade']:[]),...(source.offHand?['offhand']:[]),...wornBodyItems(source),...(source.equipmentCursor?['cursor']:[]),...Object.entries(source.inventory??{}).filter(([,r])=>(typeof r==='number'?r:r?.count)>0).map(([key])=>`inventory:${key}`)]:[wanted==='weapon'?'primary':wanted];
+    if(!items.length)throw Error('No queda equipo que recoger.');
+    for(const item of items){const count=wanted==='all'?itemQuantity(donor,item):a.count??itemQuantity(donor,item);const transfer=transferItemQuantity(donor,receiver,item,count);donor=transfer.source;receiver=transfer.target;}
+  }else{
+    const stack=drop?droppedWeaponStack(drop):groundStack(ground);
+    const count=a.count??stack.count;if(!Number.isSafeInteger(count)||count<1||count>stack.count)throw Error('No queda esa cantidad del objeto.');
+    receiver=applyItemQuantity(receiver,{...stack,count});
+    return {receiver,drop,ground,remaining:stack.count-count};
+  }
+  return {receiver,source,donor};
+}
+function commitLoot(u,plan){
+  replaceUnit(u,plan.receiver);
+  if(plan.source)replaceUnit(plan.source,plan.donor);
+  if(plan.drop)plan.drop.taken=true;
+  if(plan.ground)plan.ground.count=plan.remaining;
+}
+function planLootBatch(s,u,items){
+  if(!Array.isArray(items)||!items.length||items.length>1000)throw Error('Seleccioná entre uno y mil objetos para recoger.');
+  // Work on private source/receiver copies. A later capacity or quantity failure
+  // must not consume any earlier selection in the same pickup transaction.
+  const view={...s,units:structuredClone(s.units),npcs:structuredClone(s.npcs??[]),groundItems:structuredClone(s.groundItems),droppedWeapons:structuredClone(s.droppedWeapons)};
+  const receiver=view.units.find(unit=>unit.id===u.id),seen=new Set();let point=null;
+  for(const item of items){
+    if(!item||typeof item!=='object'||Array.isArray(item)||Object.keys(item).some(key=>!['targetId','groundId','dropIndex','item','count'].includes(key)))throw Error('La selección de equipo no es válida.');
+    const selectors=['targetId','groundId','dropIndex'].filter(key=>Object.hasOwn(item,key));
+    if(selectors.length!==1||!Number.isSafeInteger(item.count)||item.count<1)throw Error('Indicá un origen y una cantidad entera para cada objeto.');
+    const selector=selectors[0];
+    if(selector==='dropIndex'?!Number.isSafeInteger(item.dropIndex)||item.dropIndex<0:typeof item[selector]!=='string'||!item[selector])throw Error('El origen del objeto no es válido.');
+    if(selector==='targetId'?(typeof item.item!=='string'||!item.item||item.item==='all'):item.item!==undefined)throw Error('Seleccioná cada objeto del cuerpo por separado.');
+    const key=JSON.stringify([selector,item[selector],item.item==='weapon'?'primary':item.item??null]);
+    if(seen.has(key))throw Error('El mismo objeto aparece más de una vez en la selección.');seen.add(key);
+    const {position}=lootSource(view,item);
+    if(!position||!canSee(view,receiver,position))throw Error('El equipo seleccionado debe estar a la vista.');
+    if(point&&(!sameCell(position,point)))throw Error('Recogé objetos de una sola casilla por vez.');point=position;
+    commitLoot(receiver,planLoot(view,receiver,item));
+  }
+  return view;
+}
+export function lootBatchPreview(s,u,items){
+  const pa=8;let reason=inventoryOrderReason(s,u,pa);
+  if(!reason)try{planLootBatch(s,u,items);}catch(error){reason=error.message;}
+  return {pa,valid:!reason,reason};
+}
+export function planEquipLoot(u,key,slot='primary'){
+  if(slot==='offhandItem')return planHoldOffhand(u,key);
+  if(BODY_SLOTS.includes(slot))return key===null?planStowOutfit(u,slot):planEquipOutfit(u,key,slot);
+  const record=u.inventory?.[key];
+  if(!record||typeof record!=='object'||record.count<1||!['primary','blade','offhand'].includes(slot))throw Error('Selecciona un arma recuperada disponible.');
+  if(!(WEAPONS[record.weapon]||BLADES[record.weapon])||(slot==='blade'&&!BLADES[record.weapon]))throw Error('Ese objeto no puede equiparse en esa mano.');
+  const extracted=extractItemQuantity(u,`inventory:${key}`,1);
+  return equipIncomingHand(extracted.unit,extracted.stack,slot);
+}
+function equipIncomingHand(unit,incoming,slot){
+  let next=structuredClone(unit);
+  if(slot==='offhand'){
+    delete next.leftHandItem;
+    if(handsRequired(incoming.weapon)>1)throw Error('La mano secundaria necesita un arma de una mano.');
+    if(!next.weaponDropped&&handsRequired(next.weapon)>1&&(next.activeSlot??'primary')==='primary')throw Error('El arma principal ocupa las dos manos.');
+    for(const item of ['blade','offhand'])if(itemQuantity(next,item)){const stored=extractItemQuantity(next,item,1,{keepOtherHand:false});next=applyItemQuantity(stored.unit,stored.stack,{deferCapacity:true});}
+    const {item,...record}=incoming;next.offHand=structuredClone(record);next.offHand.count=1;
+    if(inventoryUsage(next).overloaded)throw Error('No queda espacio para guardar el equipo desplazado.');
+    return next;
+  }
+  if(slot==='blade'&&next.offHand){const stored=extractItemQuantity(next,'offhand',1,{keepOtherHand:false});next=applyItemQuantity(stored.unit,stored.stack,{deferCapacity:true});}
+  const previous=slot==='primary'?next.weapon:next.blade;
+  if(previous&&!(slot==='primary'&&next.weaponDropped)){
+    const stored=extractItemQuantity(next,slot,1,{keepOtherHand:false});next=applyItemQuantity(stored.unit,stored.stack,{deferCapacity:true});
+  }
+  if(slot==='primary'){delete next.contentWeapon;delete next.ammunitionChoice;if(incoming.ammunitionChoice!==undefined)next.ammunitionChoice=incoming.ammunitionChoice;next.weapon=incoming.weapon;next.loaded=incoming.loaded??0;delete next.reloadProgress;if(incoming.reloadProgress)next.reloadProgress=incoming.reloadProgress;next.condition=incoming.condition??100;next.jammed=Boolean(incoming.jammed);next.weaponDropped=false;next.weaponFittings=structuredClone(incoming.fittings??{});next.weaponFittingPattern=incoming.fittingPattern??null;delete next.weaponInstanceId;if(incoming.instanceId)next.weaponInstanceId=incoming.instanceId;}
+  else {next.blade=incoming.weapon;next.bladeCondition=incoming.condition??100;next.bladeFittingPattern=incoming.fittingPattern??null;delete next.bladeInstanceId;if(incoming.instanceId)next.bladeInstanceId=incoming.instanceId;}
+  const metadataKey=slot==='primary'?'weaponMetadata':'bladeMetadata',metadata=handMetadata(incoming);delete next[metadataKey];if(metadata&&Object.keys(metadata).length)next[metadataKey]=metadata;
+  lowerWeapon(next);next=selectMainHand(next,{activeSlot:slot});delete next.activeTool;delete next.activeSupply;delete next.activeItem;next.braced=false;next.momentum=0;delete next.lastTargetId;delete next.lastShotPosition;
+  if(inventoryUsage(next).overloaded)throw Error('No queda espacio para guardar el equipo desplazado.');
+  return next;
+}
+export function planSwapHands(unit){
+  if(!unit.offHand)throw Error('La mano secundaria está vacía.');
+  let next=structuredClone(unit);const incoming=next.offHand;delete next.offHand;
+  if(!next.weaponDropped&&next.weapon){const taken=extractItemQuantity(next,'primary',1,{keepOtherHand:false});next=taken.unit;if(handsRequired(taken.stack.weapon)===1){const {item,...record}=taken.stack;next.offHand=record;}else next=applyItemQuantity(next,taken.stack,{deferCapacity:true});}
+  return equipIncomingHand(next,{item:'weapon',...incoming},'primary');
+}
+function planStealWeapon(u,target){
+  const slot=target.activeSlot??'primary';
+  if(!['primary','blade'].includes(slot)||!itemQuantity(target,slot))throw Error('El enemigo no lleva un arma en la mano.');
+  const taken=extractItemQuantity(target,slot,1);
+  return {source:taken.unit,receiver:equipIncomingHand(u,taken.stack,'primary')};
+}
+export function stealPreview(s,u,target){
+  const pa=s.mode==='exploration'?STEAL_MIN_AP:Math.max(STEAL_MIN_AP,u?.ap??0);
+  let reason=!u||!alive(u)||s.status!=='active'||(u.side==='player'?!interruptAvailable(s,u):s.phase!=='enemy')?'El soldado no puede actuar ahora.':null;
+  if(!reason&&(u.activeSlot!=='unarmed'||handLayout(u).held.length))reason='Prepará las manos libres antes de quitar un arma.';
+  if(!reason&&(u.mounted||u.knockedDown||u.entangled||u.stance==='prone'))reason='Debés estar de pie o agachado, desmontado y libre para quitar un arma.';
+  if(!reason&&(!target||target.side===u.side||!alive(target)||target.routed||target.surrendered))reason='Seleccioná un enemigo consciente; los cuerpos se registran con Recoger equipo.';
+  if(!reason&&(!teamCanSee(s,u.side,target)||dist(u,target)>1.5||!hasLineOfSight(s,u,target)||!Number.isFinite(movementStepCost(s,u,u,target))))reason='Acercate al enemigo visible para quitarle el arma.';
+  if(!reason&&target.mounted)reason='El arma de un jinete queda fuera del alcance de las manos.';
+  if(!reason&&s.mode!=='exploration'&&u.ap<STEAL_MIN_AP)reason=`Quitar el arma requiere al menos ${STEAL_MIN_AP} PA y consume todos los restantes.`;
+  if(!reason)try{planStealWeapon(u,target);}catch(error){reason=error.message;}
+  return {pa,valid:!reason,reason};
+}
+function planMainHandEquipment(u,a){
+ if(!['primary','blade','medical','unarmed','tool','supply','item'].includes(a.slot))throw Error('Selecciona el objeto que quieres llevar en la mano.');
+ if(a.slot==='primary'&&(u.weaponDropped||!(WEAPONS[u.weapon]||BLADES[u.weapon]||typeof u.weapon==='object')))throw Error('No lleva un arma principal disponible.');
+ if(a.slot==='item'&&!carriedObject(u,a.item))throw Error('No lleva ese objeto disponible.');
+ if(a.slot==='medical'&&u.medkits<1)throw Error('No quedan vendas en el equipo de curación.');
+ if(a.slot==='blade'&&!BLADES[u.blade])throw Error('No hay un arma blanca secundaria equipada.');
+ if(a.slot==='tool'&&!heldTool({...u,activeSlot:'tool',activeTool:a.toolKey}))throw Error('No lleva esa herramienta en el inventario.');
+ if(a.slot==='supply'&&!heldSupply({...u,activeSlot:'supply',activeSupply:a.supplyKey}))throw Error('No lleva ese pertrecho en el inventario.');
+ if(!(a.slot==='unarmed'&&handLayout(u).left)&&(u.activeSlot||'primary')===a.slot&&(a.slot!=='tool'||u.activeTool===a.toolKey)&&(a.slot!=='supply'||u.activeSupply===a.supplyKey)&&(a.slot!=='item'||u.activeItem===a.item))throw Error('Ese objeto ya está en la mano.');
+ const next=selectMainHand(structuredClone(u),{activeSlot:a.slot,...(a.slot==='tool'?{activeTool:a.toolKey}:a.slot==='supply'?{activeSupply:a.supplyKey}:a.slot==='item'?{activeItem:a.item}:{})});
+ if(a.slot!=='tool')delete next.activeTool;if(a.slot!=='supply')delete next.activeSupply;if(a.slot!=='item')delete next.activeItem;
+ if(inventoryUsage(next).overloaded)throw Error('No queda espacio para guardar el objeto que tenés en la mano.');
+ lowerWeapon(next);next.momentum=0;next.braced=false;delete next.lastTargetId;delete next.lastShotPosition;return next;
+}
+function readyReference(unit,item,side){
+ const descriptor=itemDescriptor(unit,item),weapon=descriptor.weapon;
+ if(side==='left'){
+  if(weapon){
+   if(handsRequired(weapon)>1)throw Error('El arma necesita las dos manos.');
+   if(item.startsWith('inventory:'))return {unit:planEquipLoot(unit,item.slice(10),'offhand'),pa:6};
+   let next=structuredClone(unit);if(handLayout(next).right===item){next.activeSlot='unarmed';delete next.activeTool;delete next.activeSupply;delete next.activeItem;}
+   next.leftHandItem=item;lowerWeapon(next);
+   if(inventoryUsage(next).overloaded)throw Error('No queda espacio para guardar el objeto desplazado.');
+   return {unit:next,pa:4};
+  }
+  let next=structuredClone(unit);if(handLayout(next).right===item){next.activeSlot='unarmed';delete next.activeTool;delete next.activeSupply;delete next.activeItem;}
+  return {unit:planHoldOffhand(next,item),pa:4};
+ }
+ if(weapon){
+  if(item.startsWith('inventory:'))return {unit:planEquipLoot(unit,item.slice(10),'primary'),pa:6};
+  if(item==='offhand')return {unit:planSwapHands(unit),pa:4};
+  return {unit:planMainHandEquipment(unit,{slot:item}),pa:4};
+ }
+ const action=item==='medkits'?{slot:'medical'}:HELD_SUPPLIES[item]?{slot:'supply',supplyKey:item}:heldTool({...unit,activeSlot:'tool',activeTool:item})?{slot:'tool',toolKey:item}:carriedObject(unit,item)?{slot:'item',item}:null;
+ if(!action)throw Error('Este objeto no se puede llevar en la mano principal.');
+ return {unit:planMainHandEquipment(unit,action),pa:4};
+}
+// Campaign equipment uses the same item-to-mode and pocket checks as dragging.
+export function planReadyMainHand(unit,item){return readyReference(unit,item,'right').unit;}
+function storeHandReference(unit,source){
+ let next=structuredClone(unit),item=source.item;const other=handLayout(unit)[source.side==='right'?'left':'right'];
+ if(['primary','blade','offhand'].includes(item)){
+  const oldKeys=new Set(Object.keys(next.inventory??{})),taken=extractItemQuantity(next,item,1,{keepOtherHand:false});next=taken.unit;
+  if(source.side==='right'){next.activeSlot='unarmed';delete next.activeTool;delete next.activeSupply;delete next.activeItem;next.leftHandItem=other;}
+  else next.leftHandItem=null;
+  next=applyItemQuantity(next,taken.stack,{deferCapacity:true});item='inventory:'+Object.keys(next.inventory).find(key=>!oldKeys.has(key));
+ }else if(source.side==='right'){
+  next.activeSlot='unarmed';delete next.activeTool;delete next.activeSupply;delete next.activeItem;next.leftHandItem=other;
+ }else next.leftHandItem=null;
+ lowerWeapon(next);return {unit:next,item};
+}
+export function planEquipmentPlacement(unit,action){
+ const {sourceId,destinationId,expectedSource,expectedDestination}=action;
+ if(sourceId===destinationId)throw Error('Elegí otra ranura.');
+ for(const [id,expected]of [[sourceId,expectedSource],[destinationId,expectedDestination]])if(typeof expected!=='string'||expected!==equipmentFingerprint(unit,id))throw Error('Cambió el equipo. Volvé a seleccionar el objeto.');
+ const source=equipmentEndpoint(unit,sourceId),destination=equipmentEndpoint(unit,destinationId);
+ if(!source.item)throw Error('La ranura de origen está vacía.');
+ if(action.count!==undefined&&(!Number.isSafeInteger(action.count)||action.count<1||action.count>source.count))throw Error('No queda esa cantidad en la ranura de origen.');
+ if(action.count>1&&source.kind!=='pocket')throw Error('Las manos y la vestimenta admiten un objeto por ranura.');
+ if(source.kind==='outfit'||destination.kind==='outfit')return {unit:planOutfitPlacement(unit,source,destination),pa:OUTFIT_CHANGE_AP};
+ if(source.kind==='pocket'&&destination.kind==='pocket')return {unit:planPocketMove(unit,sourceId,destinationId,undefined,undefined,action.count),pa:0};
+ if(destination.kind==='hand'){
+  if(destination.blocked)throw Error('El arma principal ocupa las dos manos.');
+  const result=readyReference(unit,source.item,destination.side);
+  if(source.kind==='pocket'){
+   const slots=structuredClone(inventoryUsage(unit).slots),from=slots.find(slot=>slot.id===sourceId);
+   from.entry.count--;if(!from.entry.count)from.entry=null;
+   result.unit.pocketOrder=pocketOrderFromSlots(slots);
+   if(inventoryUsage(result.unit).overloaded)throw Error('No queda espacio para guardar el objeto desplazado.');
+  }
+  return result;
+ }
+ // A hand-to-pocket exchange first puts the held item away. If the target
+ // was occupied, ready its item in that hand before fixing the pocket order.
+ const stored=storeHandReference(unit,source);let next=stored.unit,pa=4;
+ if(destination.item&&destination.item!==stored.item){
+  const ready=readyReference(next,destination.item,source.side);next=ready.unit;pa=Math.max(pa,ready.pa);
+ }
+ const descriptor=itemDescriptor(next,stored.item);
+ if(descriptor.slotSize>1&&destination.size!=='large')throw Error('Ese objeto necesita un bolsillo grande.');
+ const slots=structuredClone(inventoryUsage(unit).slots),to=slots.find(slot=>slot.id===destinationId);
+ const count=destination.item===stored.item?destination.count+1:1;
+ if(count>descriptor.stackLimit)throw Error('Esa pila ya está completa.');
+ to.entry={...descriptor,count};next.pocketOrder=pocketOrderFromSlots(slots);
+ if(inventoryUsage(next).overloaded)throw Error('No queda espacio para guardar el objeto desplazado.');
+ return {unit:next,pa};
+}
+export function mainItemPreview(s,u,item){
+ let reason=inventoryOrderReason(s,u,4);
+ if(!reason)try{planMainHandEquipment(u,{slot:'item',item});}catch(error){reason=error.message;}
+ return {pa:s.mode==='exploration'?0:4,valid:!reason,reason,action:{type:'weapon',slot:'item',item}};
+}
+export function equipmentPlacementPreview(s,u,action){
+ let pa=0,reason=inventoryOrderReason(s,u,0),remainingSelection;
+ if(!reason)try{
+  const plan=planEquipmentPlacement(u,action);pa=plan.pa;reason=inventoryOrderReason(s,u,pa);
+  if(!reason&&action.count>1){
+   const source=equipmentEndpoint(u,action.sourceId),destination=equipmentEndpoint(u,action.destinationId);
+   if(source.kind==='pocket'){
+    const moved=destination.kind==='hand'?1:destination.kind==='pocket'?pocketMergeCount(u,action.sourceId,action.destinationId):0;
+    if(moved>0&&moved<action.count){const remaining=equipmentEndpoint(plan.unit,action.sourceId);remainingSelection={sourceId:action.sourceId,expectedSource:equipmentFingerprint(plan.unit,action.sourceId),count:action.count-moved,maxCount:remaining.count};}
+   }
+  }
+ }catch(error){reason=error.message;}
+ return {pa,reason,valid:!reason,...(remainingSelection?{remainingSelection}:{})};
+}
+
+const cursorOrders=new Set(['pickupEquipment','placeEquipment','returnEquipmentCursor','dragEquipment']);
+export function planEquipmentCursorOrder(unit,action,state){
+ const loading={exploring:!state||state.mode==='exploration',assisted:Boolean(state&&nearby(state,unit,'loading_support',2))};
+ if(action.type==='pickupEquipment')return planEquipmentPickup(unit,action);
+ if(action.type==='placeEquipment')return planEquipmentCursorPlacement(unit,action,loading);
+ if(action.type==='returnEquipmentCursor'){
+  if(action.expectedSource!==equipmentFingerprint(unit,'cursor'))throw Error('Cambió el objeto del cursor. Revisá el equipo.');
+  return planEquipmentCursorReturn(unit);
+ }
+ if(action.type==='dragEquipment'){
+  if(action.expectedDestination!==equipmentFingerprint(unit,action.destinationId))throw Error('Cambió el destino. Revisá el equipo.');
+  const picked=planEquipmentPickup(unit,action);
+  return planEquipmentCursorPlacement(picked.unit,{...action,expectedSource:equipmentFingerprint(picked.unit,'cursor'),expectedDestination:equipmentFingerprint(picked.unit,action.destinationId)},loading);
+ }
+ throw Error('La orden del cursor no es válida.');
+}
+export function equipmentCursorPreview(s,u,action){
+ let reason=inventoryOrderReason(s,u,0),plan;
+ if(!reason&&(u.side!=='player'||u.militia||u.departure))reason='Elegí un combatiente de tu escuadra.';
+ if(!reason&&['pickupEquipment','dragEquipment'].includes(action.type)&&s.units?.some(other=>other.id!==u.id&&alive(other)&&other.equipmentCursor))reason='Colocá primero el objeto del otro combatiente.';
+ if(!reason)try{
+  if(action.type==='dragEquipment'&&action.expectedDestination!==equipmentFingerprint(u,action.destinationId))throw Error('Cambió el destino. Revisá el equipo.');
+  plan=planEquipmentCursorOrder(u,action,s);
+  reason=inventoryOrderReason(s,u,plan.pa);
+  if(plan.dropped&&(s.groundItems?.length??0)>=2000)throw Error('No queda espacio para dejar el objeto. Sigue en el cursor.');
+ }catch(error){reason=error.message;}
+ return {pa:s.mode==='exploration'?0:plan?.pa??0,valid:!reason,reason,...(plan?.operation==='reload'?{operation:plan.operation,rounds:plan.rounds,partial:plan.partial,remainingPA:plan.remainingPA,actionLabel:plan.actionLabel,seconds:s.mode==='exploration'&&s.equipmentContext!=='campaign'?plan.seconds:0}:{})};
+}
+
+function returnBattleEquipmentCursor(s,unit){
+ if(!unit.equipmentCursor)return true;
+ const plan=planEquipmentCursorReturn(unit);
+ if(plan.dropped&&s.groundItems.length>=2000)return false;
+ replaceUnit(unit,plan.unit);if(plan.dropped)addGroundStack(s,plan.dropped,unit);
+ return true;
+}
+
+export function swapHandsPreview(s,u){
+ const pa=s.mode==='exploration'?0:4;let reason=inventoryOrderReason(s,u,pa);
+ if(!reason)try{planSwapHands(u);}catch(error){reason=error.message;}
+ return {pa,reason,valid:!reason};
+}
+export function equipLootPreview(s,u,inventoryKey,slot='primary'){
+  const pa=BODY_SLOTS.includes(slot)?OUTFIT_CHANGE_AP:slot==='offhandItem'?4:6;let reason=inventoryOrderReason(s,u,pa);
+  if(!reason)try{planEquipLoot(u,inventoryKey,slot);}catch(error){reason=error.message;}
+  return {pa,reason,valid:!reason};
+}
+export function lootPreview(s,u,action={}){
+  const pa=8;let reason=inventoryOrderReason(s,u,pa);
+  if(!reason)try{planLoot(s,u,action);}catch(error){reason=error.message;}
+  return {pa,reason,valid:!reason};
+}
+export function lootApproachPreview(s,u,action={}){
+  const local=lootPreview(s,u,action),{position}=lootSource(s,action);
+  const result=(reason=local.reason,route=null)=>({...local,type:'loot',actionPa:local.pa,movePa:route?.cost??0,pa:local.pa+(route?.cost??0),
+    destination:route?positionOf(route):null,path:route?.path??[],valid:!reason,reason});
+  if(!u||inventoryOrderReason({...s,mode:'exploration'},u,0))return result();
+  if(!position||position.departure||!canSee(s,u,position))return result('El cuerpo o equipo debe estar a la vista del soldado.');
+  if(contactDistance(u,position)<=1.5&&hasLineOfSight(s,u,position))return result();
+  // Capacity and exact source quantities must be valid before the approach.
+  // This virtual preflight changes neither ownership nor position in the battle.
+  const ready=lootPreview({...s,mode:'exploration'},{...u,...positionOf(position),tacticalLevel:tacticalLevel(position)},action);
+  if(!ready.valid)return result(ready.reason);
+  if(u.entangled)return result('Primero debés liberarte de las boleadoras.');
+  const route=knownApproachRoute(s,u,cell=>contactDistance(cell,position)<=1.5&&hasLineOfSight(s,cell,position));
+  if(!route)return result('No hay una ruta para acercarse y recoger el equipo.');
+  return result(s.mode!=='exploration'&&route.cost+local.pa>u.ap?'PA insuficientes para acercarse y recoger el equipo.':null,route);
+}
+export function lootSearchPreview(s,u,point){
+  let available=false;
+  const result=(reason=null,route=null)=>({type:'approachLoot',available,pa:route?.cost??0,movePa:route?.cost??0,actionPa:0,destination:route?positionOf(route):u?positionOf(u):null,path:route?.path??[],valid:!reason,reason});
+  const reason=inventoryOrderReason({...s,mode:'exploration'},u,0);if(reason)return result(reason);
+  if(!point||!canSee(s,u,point))return result('El cuerpo o equipo debe estar a la vista del soldado.');
+  const at=source=>sameCell(source,point);
+  const found=s.units.some(source=>source.id!==u.id&&!source.departure&&!source.fled&&(source.hp<=0||source.unconscious||source.surrendered)&&at(source))||s.droppedWeapons.some(source=>!source.taken&&at(source))||s.groundItems.some(source=>source.count>0&&!source.heldBy&&at(source));
+  if(!found)return result('No hay un cuerpo o equipo para registrar en esta casilla.');
+  available=true;
+  if(contactDistance(u,point)<=1.5&&hasLineOfSight(s,u,point))return result();
+  if(u.entangled)return result('Primero debés liberarte de las boleadoras.');
+  const route=knownApproachRoute(s,u,cell=>contactDistance(cell,point)<=1.5&&hasLineOfSight(s,cell,point));
+  if(!route)return result('No hay una ruta para acercarse al equipo.');
+  return result(s.mode!=='exploration'&&u.ap<route.cost?'PA insuficientes para acercarse al equipo.':null,route);
+}
+function environmentObject(s,ref){
+  if(ref?.kind==='door')return s.tiles.find(t=>t.type==='door'&&(t.doorId??`door:${t.x}:${t.y}`)===ref.id);
+  if(ref?.kind==='container')return s.props.find(p=>p.type==='chest'&&p.id===ref.id);
+  return null;
+}
+export function environmentTargetAt(s,point){
+  const door=s.tiles.find(t=>sameCell(t,point)&&t.type==='door');
+  if(door)return {...door,kind:'door',id:door.doorId??`door:${door.x}:${door.y}`};
+  const chest=s.props.find(p=>p.type==='chest'&&propCells(p).some(t=>sameCell(t,point)));
+  return chest?{...chest,kind:'container'}:null;
+}
+function environmentReachReason(s,u,object){
+  if(!object)return 'El objeto ya no está en el sector.';
+  if(!u||!alive(u)||!interruptAvailable(s,u)||u.knockedDown)return 'El soldado no puede manejar el objeto ahora.';
+  const cells=object.type==='chest'?propCells(object).map(point=>({...object,...point})):[object];
+  if(!cells.some(p=>contactDistance(u,p)<=1.5&&canSee(s,u,p)))return 'Acércate al objeto y mira hacia él.';
+  return null;
+}
+export function environmentPreview(s,u,ref,verb){
+  const target=environmentObject(s,ref),tool=u&&heldTool(u);
+  verb??=tool?.toolKey==='pliers'?'disarm':target?.locked?(tool?.verb??'inspect'):target?.open?'close':'open';
+  const profile=environmentActionProfile(u??{},target,verb);
+  let reason=environmentReachReason(s,u,target)??profile.reason;
+  if(!reason&&verb==='close'&&target.type==='door'&&(s.units.some(v=>onField(v)&&sameCell(v,target))||(s.npcs??[]).some(v=>onField(v)&&sameCell(v,target))||s.artillery.some(v=>sameCell(v,target))))reason='Hay una persona o una pieza en el paso de la puerta.';
+  if(!reason&&s.mode!=='exploration'&&u.ap<profile.pa)reason=`Faltan ${profile.pa} PA para manejar el objeto.`;
+  return {...profile,reason,valid:!reason,action:{type:'environment',unitId:u?.id,kind:ref?.kind,id:ref?.id,verb}};
+}
+export function environmentUsePreview(s,u,ref,verb){
+  const local=environmentPreview(s,u,ref,verb),target=environmentObject(s,ref);
+  const result=(reason=local.reason,route=null)=>({...local,type:'environment',actionPa:local.pa,movePa:route?.cost??0,pa:local.pa+(route?.cost??0),
+    label:route?.cost?`Acercarse y ${local.label.toLowerCase()}`:local.label,destination:route?positionOf(route):null,path:route?.path??[],reason,valid:!reason});
+  if(!target||!u||!alive(u)||!interruptAvailable(s,u)||u.knockedDown)return result();
+  const cells=target.type==='chest'?propCells(target).map(point=>({...target,...point})):[target];
+  const visible=cells.find(point=>canSee(s,u,point));
+  if(!visible)return result('El objeto debe estar a la vista del soldado.');
+  if(!environmentReachReason(s,u,target))return result();
+  // Check the held tool, lock, known trap and occupied doorway before spending
+  // movement. Only position and the AP cap are relaxed in this pure preflight.
+  const ready=environmentPreview({...s,mode:'exploration'},{...u,...positionOf(visible),tacticalLevel:tacticalLevel(visible)},ref,local.action.verb);
+  if(!ready.valid)return result(ready.reason);
+  if(u.entangled)return result('Primero debés liberarte de las boleadoras.');
+  const route=knownApproachRoute(s,u,cell=>cells.some(point=>contactDistance(cell,point)<=1.5&&canSee(s,{...u,...cell},point)));
+  if(!route)return result('No hay una ruta para acercarse y usar el objeto.');
+  return result(s.mode!=='exploration'&&route.cost+local.pa>u.ap?'PA insuficientes para acercarse y usar el objeto.':null,route);
+}
+export function containerLootPreview(s,u,ref,index,count=1){
+  const target=environmentObject(s,{...ref,kind:'container'}),pa=8;
+  let reason=environmentReachReason(s,u,target);
+  if(!reason&&s.mode!=='exploration'&&u.ap<pa)reason=`Recoger el objeto requiere ${pa} PA.`;
+  if(!reason)try{const {stack}=extractContainerItem(target,index,count);applyItemQuantity(u,stack);}catch(error){reason=error.message;}
+  return {pa,valid:!reason,reason,action:{type:'containerLoot',unitId:u?.id,kind:'container',id:ref?.id,index,count}};
+}
+
+export function medicalUsePreview(s,u,target=u,{targetKind='unit'}={}){
+  const baseCost=u?actionCosts(s,u).heal:0;let treatment=null;
+  const civilian=targetKind==='npc';
+  let reason=!u||!alive(u)||s.status!=='active'||(u.side==='player'?!interruptAvailable(s,u):s.phase!=='enemy')?'El soldado no puede usar equipo ahora.':null;
+  if(!reason&&!['unit','npc'].includes(targetKind))reason='El tipo de herido no es válido.';
+  if(!reason&&u.activeSlot!=='medical')reason='Prepará las vendas en la mano antes de tratar una herida.';
+  if(!reason&&civilian&&(!target||!s.npcs?.includes(target)||target.departure||target.fled||(target.hp??100)<=0||!canSee(s,u,target)))reason='El habitante herido debe estar vivo y a la vista.';
+  if(!reason&&(!target||!civilian&&(target.side!==u.side||target.hp<=0||target.departure||target.routed)||contactDistance(u,target)>1.5||!hasLineOfSight(s,u,target)))reason='El herido debe estar vivo, junto a ti y al alcance de las vendas.';
+  if(!reason&&!u.medkits)reason='No quedan vendas.';
+  if(!reason&&!(u.medical>0))reason='Este soldado no tiene conocimientos de primeros auxilios.';
+  if(!reason){treatment=firstAidPlan(u,target,{baseCost,budgetAP:s.mode==='exploration'?Infinity:u.ap,targetKind});if(!treatment.valid)reason=treatment.reason;}
+  return {allowed:!reason,reason,cost:treatment?.paCost??baseCost,treatment};
+}
+
+// Ordinary held-item targeting can include an approach. Explicit heal/melee
+// aliases remain local actions; the composed command uses those same rules.
+function knownApproachRoute(s,u,inReach){
+  const units=s.units.filter(other=>other.side===u.side||teamCanSee(s,u.side,other));
+  const npcs=(s.npcs??[]).filter(npc=>teamCanSee(s,u.side,npc));
+  // Stop Dijkstra at the cheapest usable position. Ignoring the AP cap reports
+  // the true combined cost even when this turn cannot afford the whole order.
+  return getReachable({...s,units,npcs,mode:'exploration'},u,{stopAt:cell=>inReach(cell)&&
+    !units.some(other=>other.id!==u.id&&!other.departure&&other.hp>0&&sameCell(other,cell))})[0];
+}
+export function npcGiftPreview(s,u,npc){
+ const actionPa=4,result=(reason=null,route=null)=>({type:'giveItem',label:'Entregar poncho',actionPa,movePa:route?.cost??0,pa:actionPa+(route?.cost??0),destination:route?positionOf(route):null,path:route?.path??[],valid:!reason,reason});
+ const unavailable=inventoryOrderReason(s,u,actionPa);if(unavailable)return result(unavailable);
+ if(s.mode!=='exploration')return result('Terminá el combate antes de entregar el objeto.');
+ if(!npc||!s.npcs.includes(npc)||npc.departure||npc.fled||npc.routed||(npc.hp??100)<=0||npc.unconscious||!canSee(s,u,npc))return result('El interlocutor debe estar disponible y a la vista.');
+ if(civilianWoundedByPlayer(npc))return result('No quiere colaborar con quienes lo hirieron.');
+ try{questGiftPlan(u,npc);}catch(error){return result(error.message);}
+ const inReach=cell=>sameSurface(cell,npc)&&Math.abs(cell.x-npc.x)+Math.abs(cell.y-npc.y)===1&&hasLineOfSight(s,cell,npc);
+ if(inReach(u))return result();
+ if(u.entangled)return result('Primero debés liberarte de las boleadoras.');
+ const route=knownApproachRoute(s,u,inReach);
+ return route?result(null,route):result('No hay una ruta para entregar el objeto.');
+}
+// Melee is prepared from the actual hand. Crawling remains the approach mode;
+// only the final contact position is evaluated with the required upright body.
+export function meleePreview(s,u,target,{approach=false}={}){
+  const costs=u?actionCosts(s,u):{},stancePa=costs.meleeStance??0,strikePa=costs.meleeStrike??0,actionPa=stancePa+strikePa;
+  const result=(reason=null,route=null)=>({type:'melee',stancePa,strikePa,actionPa,movePa:route?.cost??0,pa:actionPa+(route?.cost??0),destination:route?positionOf(route):null,path:route?.path??[],valid:!reason,reason});
+  if(!u||!alive(u)||s.status!=='active'||(u.side==='player'?!interruptAvailable(s,u):s.phase!=='enemy'))return result('El combatiente no puede actuar ahora.');
+  if(u.knockedDown)return result('El soldado está derribado: primero debés levantarte.');
+  if(['medical','tool','supply','item'].includes(u.activeSlot))return result('Prepará un arma o las manos libres antes de atacar.');
+  if(!target||!targetable(target)||target.fled||target.side===u.side)return result('El objetivo no está disponible para atacar.');
+  if(!teamCanSee(s,u.side,target))return result('Ningún compañero puede ver ese objetivo.');
+  if(stancePa&&u.mounted)return result('Debes desmontar antes de cambiar de postura.');
+  const ready=cell=>({...u,...positionOf(cell),...(stancePa?{stance:'standing',movementMode:'walk'}:{})}),reach=bladeFor(u).reach;
+  const inReach=cell=>contactDistance(cell,target)<=reach&&hasLineOfSight(s,ready(cell),target);
+  let route=null;
+  if(!inReach(u)){
+    if(!approach)return result('Debes acercarte al enemigo para atacar.');
+    if(u.entangled)return result('Primero debés liberarte de las boleadoras.');
+    route=knownApproachRoute(s,u,cell=>contactDistance(cell,target)>0&&inReach(cell));
+    if(!route)return result('No hay una ruta para acercarse y atacar.');
+  }
+  return result(s.mode!=='exploration'&&u.ap<actionPa+(route?.cost??0)?'PA insuficientes para completar el ataque.':null,route);
+}
+// A coordinate orders a deliberate swing, never an implicit attack on a body.
+// Its preview depends on known geometry and approach routes, not on an unseen
+// occupant. The ordinary targeted melee action remains the way to hit someone.
+export function meleePointPreview(s,u,point,{approach=true}={}){
+  const costs=u?actionCosts(s,u):{},stancePa=costs.meleeStance??0,strikePa=costs.meleeStrike??0,actionPa=stancePa+strikePa;
+  const result=(reason=null,route=null)=>({type:'meleePoint',stancePa,strikePa,actionPa,movePa:route?.cost??0,pa:actionPa+(route?.cost??0),destination:route?positionOf(route):null,path:route?.path??[],valid:!reason,reason});
+  if(!u||!alive(u)||s.status!=='active'||(u.side==='player'?!interruptAvailable(s,u):s.phase!=='enemy'))return result('El combatiente no puede actuar ahora.');
+  if(u.knockedDown)return result('El soldado está derribado: primero debés levantarte.');
+  if(['medical','tool','supply','item'].includes(u.activeSlot))return result('Prepará un arma o las manos libres antes de atacar.');
+  if(point?.targetId!==undefined||point?.targetKind!==undefined)return result('Elegí una casilla sin un objetivo personal.');
+  if(!Number.isInteger(point?.x)||!Number.isInteger(point?.y)||point.x<0||point.y<0||point.x>=s.width||point.y>=s.height)return result('Seleccioná una casilla del mapa.');
+  const ground=surfaceAt(s,point);
+  if(!ground)return result('Seleccioná una superficie del mapa.');
+  if(sameCell(u,point))return result('Seleccioná otra casilla para golpear.');
+  if(ground.blocked||propBlocksAt(s,point.x,point.y,tacticalLevel(point)))return result('La casilla está bloqueada: elegí terreno libre para golpear.');
+  if(stancePa&&u.mounted)return result('Debes desmontar antes de cambiar de postura.');
+  const destination=positionOf(point),ready=cell=>({...u,...positionOf(cell),...(stancePa?{stance:'standing',movementMode:'walk'}:{})}),reach=bladeFor(u).reach;
+  const inReach=cell=>contactDistance(cell,destination)>0&&contactDistance(cell,destination)<=reach&&hasLineOfSight(s,ready(cell),destination);
+  let route=null;
+  if(!inReach(u)){
+    if(!approach)return result('Debes acercarte a la casilla para golpear.');
+    if(u.entangled)return result('Primero debés liberarte de las boleadoras.');
+    route=knownApproachRoute(s,u,inReach);
+    if(!route)return result('No hay una ruta para acercarse y golpear.');
+  }
+  return result(s.mode!=='exploration'&&u.ap<actionPa+(route?.cost??0)?'PA insuficientes para completar el ataque.':null,route);
+}
+const meleeAttackResults=new WeakMap();
+export function getMeleeAttackResult(before,after,unitId){return before!==after&&Boolean(meleeAttackResults.get(after)?.has(String(unitId)));}
+function carryMeleeAttackResult(applied,resolved){
+  const completed=meleeAttackResults.get(applied);
+  if(applied!==resolved&&completed?.size)meleeAttackResults.set(resolved,new Set([...completed,...(meleeAttackResults.get(resolved)??[])]));
+  return resolved;
+}
+/** @param {string|null} [escortOrder] */
+export function prisonerReleasePreview(s,u,npc,escortOrder=null){
+ const escort=escortOrder!==null,cost=escort?PRISONER_ESCORT_AP:PRISONER_RELEASE_AP;
+ const reason=!u||u.side!=='player'||!interruptAvailable(s,u)||u.energy<=0?'El combatiente no puede actuar ahora.':
+  !npc?.detention||!s.npcs?.includes(npc)||npc.hp<=0||npc.departure||!canSee(s,u,npc)?'El prisionero debe estar vivo y a la vista.':
+  escort&&!['follow','wait'].includes(escortOrder)?'La orden de escolta es inválida.':
+  escort&&!npc.detention.freed?'Primero soltá las ataduras del prisionero.':
+  !escort&&npc.detention.freed?'El prisionero ya está libre de ataduras.':
+  escort&&npc.escort?.leaderId===u.id&&npc.escort.waiting===(escortOrder==='wait')?'El prisionero ya tiene esa orden.':
+  u.entangled||u.knockedDown||u.mounted||!['standing','crouched'].includes(u.stance)?'Liberá al prisionero de pie o agachado, sin montura ni ataduras.':
+  !sameSurface(u,npc)||dist(u,npc)>1.5||dist(u,npc)===0||!hasLineOfSight(s,u,npc)?'Acercate a una casilla adyacente al prisionero.':
+  s.mode!=='exploration'&&u.ap<cost?`La orden requiere ${cost} PA.`:null;
+ return {valid:!reason,reason,cost,seconds:1};
+}
+export function itemUsePreview(s,u,target,{targetKind='unit'}={}){
+  if(!u||!['primary','blade','unarmed','medical'].includes(u.activeSlot??'primary'))return null;
+  const civilian=targetKind==='npc',type=u.activeSlot==='medical'||civilian?'heal':contextualAttack(s,u,target).type;
+  if(!['heal','melee'].includes(type))return null;
+  if(type==='melee')return meleePreview(s,u,target,{approach:true});
+  let actionPa=actionCosts(s,u).heal,treatment=null;const reach=1.5;
+  const result=(reason=null,route=null)=>({type,actionPa,movePa:route?.cost??0,pa:actionPa+(route?.cost??0),destination:route?positionOf(route):null,path:route?.path??[],valid:!reason,reason,treatment});
+  if(!alive(u)||s.status!=='active'||(u.side==='player'?!interruptAvailable(s,u):s.phase!=='enemy'))return result('El combatiente no puede actuar ahora.');
+  if(!['unit','npc'].includes(targetKind))return result('El tipo de herido no es válido.');
+  if(civilian&&(!target||!s.npcs?.includes(target)||target.departure||target.fled||(target.hp??100)<=0||!canSee(s,u,target)))return result('El habitante herido debe estar vivo y a la vista.');
+  if(!civilian&&(!target||!onField(target)||type==='heal'&&target.side!==u.side||type==='melee'&&(target.side===u.side||target.surrendered)))return result('El objetivo no está disponible para este objeto.');
+  if(type==='melee'&&!teamCanSee(s,u.side,target))return result('Ningún compañero puede ver ese objetivo.');
+  if(type==='heal'){
+    // Validate the actual supplies and patient before searching. The virtual
+    // position removes only the reach check; it grants no AP, kit or treatment.
+    const medical=medicalUsePreview(s,{...u,...positionOf(target),tacticalLevel:tacticalLevel(target)},target,{targetKind});
+    actionPa=medical.cost;treatment=medical.treatment;
+    if(!medical.allowed)return result(medical.reason);
+  }
+  const inReach=contactDistance(u,target)<=reach&&hasLineOfSight(s,u,target);
+  if(u.knockedDown&&(type!=='heal'||!inReach))return result('El soldado está derribado: primero debés levantarte.');
+  if(s.mode!=='exploration'&&u.ap<actionPa)return result('PA insuficientes para usar el objeto.');
+  if(inReach)return result();
+  if(u.entangled)return result('Primero debés liberarte de las boleadoras.');
+  const route=knownApproachRoute(s,u,cell=>contactDistance(cell,target)>0&&contactDistance(cell,target)<=reach&&hasLineOfSight(s,cell,target));
+  if(!route)return result('No hay una ruta para acercarse y usar el objeto.');
+  const arrived=medicalUsePreview(s,{...u,...positionOf(target),tacticalLevel:tacticalLevel(target),ap:Math.max(0,u.ap-route.cost)},target,{targetKind});
+  actionPa=arrived.cost;treatment=arrived.treatment;
+  return result(!arrived.allowed?s.mode!=='exploration'&&route.cost+actionPa>u.ap?'PA insuficientes para acercarse y usar el objeto.':arrived.reason:null,route);
+}
+
+export function supplyUsePreview(s,u,target,key=u?.activeSupply){
+  const supply=Object.hasOwn(HELD_SUPPLIES,key)?HELD_SUPPLIES[key]:null,cost=supply?.cost??0;
+  let reason=!u||!alive(u)||s.status!=='active'||(u.side==='player'?!interruptAvailable(s,u):s.phase!=='enemy')?'El soldado no puede usar equipo ahora.':null;
+  if(!reason&&target?.departure)reason='Esa persona ya salió del sector.';
+  if(!reason&&!supply)reason='Selecciona un pertrecho disponible.';
+  if(!reason&&heldSupply(u)?.key!==key)reason='Prepará ese pertrecho en la mano antes de usarlo.';
+  if(!reason&&u.knockedDown&&key!=='rations')reason='El soldado está derribado: debe ponerse de pie.';
+  if(!reason&&!(u[key]>0))reason='No queda ese pertrecho.';
+  if(!reason&&['torches','boleadoras'].includes(key)&&target&&!sameSurface(u,target))reason='El lanzamiento requiere un objetivo a la misma altura.';
+  if(!reason&&key==='torches'){
+    if(!target||!Number.isInteger(target.x)||!Number.isInteger(target.y)||!surfaceAt(s,target)||surfaceAt(s,target).blocked||propBlocksAt(s,target.x,target.y,tacticalLevel(target))||dist(u,target)>supply.range||!hasLineOfSight(s,u,target))reason='La antorcha debe caer en terreno accesible a ocho casillas o menos.';
+    else if(target.id!==undefined&&target.side!==u.side&&!teamCanSee(s,u.side,target))reason='Ningún compañero puede ver ese objetivo.';
+  }
+  if(!reason&&key==='boleadoras'){
+    if(target?.id!==undefined){
+     const victim=s.units.find(v=>v.id===String(target.id));
+     if(!victim||victim.side===u.side||!targetable(victim)||dist(u,victim)>supply.range||!hasLineOfSight(s,u,victim)||!teamCanSee(s,u.side,victim))reason='El blanco de las boleadoras debe estar visible y a ocho casillas o menos.';
+    }else if(!target||!Number.isInteger(target.x)||!Number.isInteger(target.y)||!surfaceAt(s,target)||surfaceAt(s,target).blocked||propBlocksAt(s,target.x,target.y,tacticalLevel(target))||dist(u,target)>supply.range||!hasLineOfSight(s,u,target))reason='Las boleadoras deben caer en terreno accesible a ocho casillas o menos.';
+  }
+  if(!reason&&key==='rations'){
+    if(target?.id!==u.id)reason='La ración se usa sobre el mismo soldado.';
+    else if(!(u.fatigue>0)&&(u.energy??100)>=100)reason='El soldado ya está descansado.';
+  }
+  if(!reason&&s.mode!=='exploration'&&u.ap<cost)reason=`Usar ${supply.name.toLowerCase()} requiere ${cost} PA.`;
+  return {allowed:!reason,reason,cost};
+}
+
+function grenadeUseOrder(s,a){
+  const actor=s.units.find(v=>v.id===String(a.unitId));
+  const known=a.targetId===undefined?null:[...s.units,...(s.npcs??[])].find(v=>v.id===String(a.targetId)&&!v.departure&&(v.side===actor?.side||actor&&canSee(s,actor,v)));
+  const {targetId,environment,hitLocation,...rest}=a;
+  return {...rest,type:'throwGrenade',...(targetId===undefined?{}:known?positionOf(known):{x:undefined,y:undefined})};
+}
+function apply(s,a,enemy=false,movementPath=null){
+ const movement=a.type==='move'||a.type==='climb'||a.type==='charge';
+ if(!movement)recordBattleFrame(s,{type:'prepare',unitId:String(a.unitId),action:a.type});
+ const accepted=applyOrder(s,a,enemy,movementPath);
  if(accepted!==false)recordBattleFrame(s,{type:'result',unitId:String(a.unitId),action:a.type});
  return accepted;
 }
-function applyOrder(s,a,enemy=false){const fail=text=>{s.lastError=text;say(s,text);return false;};const u=s.units.find(u=>u.id===String(a.unitId));if(s.status!=='active')return fail('El combate ya terminó.');if(!u||!alive(u))return fail('El soldado no puede actuar.');if(u.side!==(enemy?'enemy':'player'))return fail('No puedes dar órdenes a ese soldado.');if(u.knockedDown&&!['stance','heal','ration'].includes(a.type))return fail('El soldado está derribado: debe ponerse de pie.');const target=victims(s).find(u=>u.id===String(a.targetId));const pay=n=>{if(s.mode==='exploration'){s.actionDurationSeconds=Math.max(1,Math.ceil(n*.06));return true;}if(u.ap<n)return false;u.ap-=n;return true;};
-if(a.type==='move'){const exploring=s.mode==='exploration';if(a.movement&&['walk','run','crouch','prone'].includes(a.movement)){u.movementMode=a.movement;u.stance=a.movement==='prone'?'prone':'standing';}if(u.entangled)return fail('Las boleadoras inmovilizan al soldado: debe liberarse.');const path=getReachable(s,u).find(p=>p.x===a.x&&p.y===a.y);if(!path||path.cost===0)return fail('Destino inaccesible o puntos de acción insuficientes.');pay(path.cost);u.braced=false;u.fatigue=clamp((u.fatigue||0)+Math.ceil(path.cost/25*(hasTrait(u,'guerrilla_tactician')?.5:1)),0,100);s.actionDurationSeconds=0;for(const p of path.path){if(occupied(s,p.x,p.y,u.id))break;s.actionDurationSeconds+=u.movementMode==='run'?1:u.movementMode==='prone'?5:3;const dir=`${p.x-u.x},${p.y-u.y}`;u.momentum=dir===u.lastDirection?u.momentum+1:1;u.lastDirection=dir;u.x=p.x;u.y=p.y;if(u.mounted&&(!u.mount||u.mount.stamina>0)){u.ridingPracticeTiles??=[];const key=`${u.x},${u.y}`;if(!u.ridingPracticeTiles.includes(key)){u.ridingPracticeTiles.push(key);practice(u,'ridingSkill');}}exhaust(s,u,movementEnergy(u,tile(s,p.x,p.y)));if(['crouch','prone'].includes(u.movementMode)&&!u.mounted&&s.units.some(v=>v.side!==u.side&&alive(v)&&dist(v,u)<=12)&&!s.units.some(v=>v.side!==u.side&&alive(v)&&canSee(s,v,u))){u.practiceTiles??=[];const key=`${u.x},${u.y}`;if(!u.practiceTiles.includes(key)){u.practiceTiles.push(key);practice(u,'agility');practice(u,'stealth');}}if(carriedWeight(u)>carryCapacity(u)){u.strengthTraining++;if(u.strengthTraining>=30){u.strength=Math.min(100,u.strength+1);u.strengthTraining=0;}}if(s.mode==='exploration')advanceExploration(s,u.movementMode==='run'?1:u.movementMode==='prone'?5:3);recordBattleFrame(s,{type:'step',unitId:u.id,action:a.type});if(!alive(u)||exploring&&s.mode!=='exploration'||detectContact(s))break;if(s.mode==='combat')reactionFire(s,u);if(!alive(u)||s.status!=='active')break;}say(s,`${u.name} avanza (${path.cost} PA).`);}
-else if(a.type==='unloadAmmunition'){if(!hasFirearm(u)||!u.loaded||u.reloadProgress)return fail('El arma debe estar cargada y sin recarga pendiente.');const after=structuredClone(u),key=ammoTypeFor(u);changeAmmo(after,key,u.loaded);after.loaded=0;const reason=pocketChangeReason(u,after);if(reason)return fail(reason);if(!pay(4))return fail('Descargar requiere 4 PA.');u.ammunition=after.ammunition;u.ammo=after.ammo;u.loaded=0;u.jammed=false;lowerWeapon(u);say(s,`${u.name} guarda la carga en sus bolsillos.`);}
-else if(a.type==='selectAmmunitionLoad'){const reason=ammunitionChoiceReason(u,a.family);if(reason)return fail(reason);u.ammunitionChoice=a.family;s.actionDurationSeconds=0;say(s,`${u.name} prepara ${AMMO_TYPES[a.family].name.toLowerCase()}.`);}
-else if(a.type==='fire'){if(!target||target.side===u.side||!targetable(s,target))return fail('Seleccioná un objetivo vivo.');if(!hasFirearm(u))return fail('Este soldado lleva un arma blanca: acércate para atacar.');if(!teamCanSee(s,u.side,target))return fail('Ningún compañero puede ver ese objetivo.');if(u.jammed)return fail('La cazoleta falló: vuelve a cebar el arma.');if(u.loaded<1)return fail('El arma está descargada.');if(!hasLineOfSight(s,u,target))return fail('No hay línea de tiro.');const aim=clamp(Math.floor(a.aim||0),0,4),w=weaponFor(u),chance=shotChance(s,u,target,aim);if(!pay(actionCosts(s,u).fire+aim*actionCosts(s,u).aim))return fail('Faltan puntos de acción para disparar.');if((w.readyAP??0)>0)u.weaponReady=true;u.momentum=0;const risk=ignitionRisk(s,u);if(random(s)*100<risk){u.jammed=true;say(s,`${u.name}: fallo de chispa. La carga se conserva; cebar cuesta ${actionCosts(s,u).reprime} PA.`);}else{npcNoise(s,u,'fire');u.loaded--;if(!civilian(s,target))practice(u,'marksmanship',2);u.condition=Math.max(0,u.condition-1);s.smoke.push({x:u.x,y:u.y,radius:1,turns:3});if(w.loadPattern==='cone'||!w.loadPattern&&w.id===1807){const length=dist(u,target),dx=(target.x-u.x)/length,dy=(target.y-u.y)/length;for(const victim of victims(s).filter(v=>targetable(s,v)&&v.id!==u.id)){const vx=victim.x-u.x,vy=victim.y-u.y,forward=vx*dx+vy*dy,across=Math.abs(vx*dy-vy*dx);if(forward<=0||forward>(w.loadPattern? w.range:6)||across>Math.max(.5,forward*.25)||!hasLineOfSight(s,u,victim))continue;if(!civilian(s,victim))victim.morale=Math.max(0,victim.morale-18);if(random(s)*100<Math.min(95,shotChance(s,u,victim,aim)+20))damage(s,victim,w.damage*(1-forward/(2*(w.loadPattern?w.range:6))),u,true,victim===target);else if(victim.morale<15)rout(s,victim);}say(s,`${u.name} dispara una carga de perdigones en abanico.`);}else if(random(s)*100<chance){const path=line(u,target).slice(0,-1),intercept=path.map(p=>(s.npcs??[]).find(n=>n.hp>0&&n.x===p.x&&n.y===p.y)).find(Boolean);damage(s,intercept??target,w.damage*(.8+random(s)*.4),u,true,!intercept);}else{if(!civilian(s,target))target.morale=Math.max(0,target.morale-4);say(s,`${u.name} dispara y falla (${chance}%).`);} }}
-else if(a.type==='reload'){
- if(!hasFirearm(u))return fail('Las armas blancas no necesitan recarga.');if(u.jammed)return fail('Primero debes volver a cebar el arma.');
- let plan=reloadPlan(u,s);if(!plan.totalPA)return fail(`No falta carga o no queda munición compatible: ${AMMO_TYPES[ammoTypeFor(u)]?.name??'ninguna'}.`);if(!plan.pa)return fail('Faltan puntos de acción para recargar.');
- const exploring=s.mode==='exploration',before={...u},store=()=>{u.loaded=before.loaded+plan.rounds;changeAmmo(u,ammoTypeFor(u),ammoCount(before)-plan.rounds-ammoCount(u));if(plan.progress>0)u.reloadProgress=plan.progress;else delete u.reloadProgress;};
- if(exploring){
-  const duration=Math.max(1,Math.ceil(plan.totalPA*.06)),totalPA=plan.totalPA,rate=reloadRoundCost(u,weaponFor(u),Boolean(nearby(s,u,'loading_support',2))),capacity=weaponFor(u).capacity,start=s.elapsedSeconds;
-  while(s.mode==='exploration'&&s.status==='active'&&alive(u)&&s.elapsedSeconds-start<duration){
-   advanceExploration(s,Math.min(6,duration-(s.elapsedSeconds-start)));
-   plan=planReload({...before,ammo:ammoCount(before),ap:totalPA*(s.elapsedSeconds-start)/duration},rate,capacity);store();
-  }
-  s.actionDurationSeconds=s.elapsedSeconds-start;
- }else {if(!pay(plan.pa))return fail('Faltan puntos de acción para recargar.');store();}
- u.momentum=0;
- say(s,`${u.name} ${plan.partial?'avanza la recarga':'completa la recarga'} (${exploring?`${s.actionDurationSeconds} s`:`${plan.pa} PA`}). ${plan.rounds} cartuchos cargados.${plan.partial?` Faltan ${plan.remainingPA} PA.`:''}`);
+function applyOrder(s,a,enemy=false,movementPath=null){if(a.type==='useItem'){const user=s.units.find(v=>v.id===String(a.unitId));if(heldGrenade(user))a=grenadeUseOrder(s,a);else if(user?.activeSlot==='item'&&s.npcs?.some(n=>n.id===String(a.targetId)))a={...a,type:'giveItem'};else if(user?.activeSlot==='supply'){const point=s.units.find(v=>v.id===String(a.targetId));a={...a,type:heldSupply(user)?.action??'invalidSupply',...(point?positionOf(point):{}),targetId:a.targetId??(user.activeSupply==='rations'?'':undefined)};}else if(a.environment)a={...a,...a.environment,type:'environment'};else a={...a,type:user?.activeSlot==='medical'?'heal':user?contextualAttack(s,user,s.units.find(v=>v.id===String(a.targetId)),a).type:'melee'};}const fail=text=>{if(!enemy||u&&journalVisible(s,u)){s.lastError=text;say(s,text);}return false;};const u=s.units.find(u=>u.id===String(a.unitId));if(s.status!=='active')return fail('El combate ya terminó.');if(!u||!alive(u))return fail('El soldado no puede actuar.');if(u.side!==(enemy?'enemy':'player'))return fail('No puedes dar órdenes a ese soldado.');if(!enemy&&!interruptAvailable(s,u))return fail('Ese soldado no puede actuar en esta interrupción.');if(u.knockedDown&&!['stance','heal','ration'].includes(a.type))return fail('El soldado está derribado: debe ponerse de pie.');const observation=reactionObservation(s,u);if(a.targetKind==='npc'&&a.targetId!==undefined&&!['heal','giveItem','free','prisonerEscort','loot','fire','melee'].includes(a.type))return fail('Prepará las vendas para tratar al habitante.');const target=a.type==='giveItem'||['heal','free','prisonerEscort','loot','fire','melee'].includes(a.type)&&a.targetKind==='npc'?s.npcs?.find(n=>n.id===String(a.targetId)):s.units.find(u=>u.id===String(a.targetId)&&!u.departure);if(a.type!=='inventoryMap'&&a.targetId!==undefined&&!target)return fail('El objetivo no está disponible en este sector.');const pay=n=>{if(!Number.isFinite(n)||n<0||s.mode!=='exploration'&&u.ap<n)return false;if(n>0&&(lowersWeapon(a.type)||a.type==='look'&&u.stance==='prone'))lowerWeapon(u);if(s.mode==='exploration'){if(a.type!=='move'&&a.type!=='climb')s.actionDurationSeconds=Math.max(1,Math.ceil(n*.06));return true;}u.ap-=n;return true;};
+if(a.type==='unloadAmmunition'){
+ if(!hasFirearm(u)||!u.loaded||u.reloadProgress)return fail('El arma debe estar cargada y sin recarga pendiente.');
+ let plan;try{plan=planEquipmentUnload(u,{hostId:'hand:right',expectedHost:equipmentFingerprint(u,'hand:right')});}catch(error){return fail(error.message);}if(!pay(plan.pa))return fail(`Descargar requiere ${plan.pa} PA.`);plan.unit.ap=u.ap;replaceUnit(u,plan.unit);sayObserved(s,[u],`${u.name} guarda la carga en sus bolsillos.`);
 }
-else if(a.type==='reprime'){if(!u.jammed)return fail('El arma no necesita cebado.');const cost=actionCosts(s,u).reprime;if(!pay(cost))return fail(`Cebar requiere ${cost} PA.`);practice(u,'mechanical');u.jammed=false;say(s,`${u.name} vuelve a cebar la cazoleta.`);}
-else if(a.type==='melee'){const blade=bladeFor(u);if(!target||!targetable(s,target)||target.side===u.side||dist(u,target)>blade.reach||!hasLineOfSight(s,u,target))return fail('Debes acercarte al enemigo para atacar cuerpo a cuerpo.');const meleeCost=actionCosts(s,u).melee;if(!pay(meleeCost))return fail(`El ataque requiere ${meleeCost} PA.`);const direction=`${Math.sign(target.x-u.x)},${Math.sign(target.y-u.y)}`;const bonus=1+(direction===u.lastDirection?Math.min(u.momentum,5)*.1:0);if(blade.id===FISTS.id){if(random(s)*100<unarmedChance(u,target,{aware:canSee(s,target,u)})){const impact=unarmedImpact(u);if(civilian(s,target))applyCivilianHarm(s,target,{source:u,damage:impact.damage,breathLoss:impact.breathLoss,intentional:true});else{damage(s,target,impact.damage,u);if(target.hp>0){target.energy=Math.max(0,(target.energy??100)-impact.breathLoss);refreshMilitaryCondition(target);}}say(s,`${u.name} golpea a ${target.name} con las manos vacías.`);}else say(s,`${u.name} falla el golpe con las manos vacías.`);}else meleeStrike(s,u,target,blade.damage*bonus);u.momentum=0;}
-else if(a.type==='charge'){const blade=bladeFor(u);if(blade.id===FISTS.id)return fail('Acercate al enemigo para golpear con las manos vacías.');if(blade.id===BUTTSTOCK.id)return fail('Elegí un arma blanca para cargar; la culata solo sirve a corta distancia.');if(!target||!targetable(s,target)||target.side===u.side)return fail('Seleccioná un objetivo vivo para cargar.');const dx=target.x-u.x,dy=target.y-u.y;if(dx!==0&&dy!==0&&Math.abs(dx)!==Math.abs(dy))return fail('La carga exige una línea recta.');let path=line(u,target);const contact=path.findIndex(p=>dist(p,target)<=blade.reach);path=dist(u,target)<=blade.reach?[]:path.slice(0,contact+1);if(!path.length&&dist(u,target)>blade.reach)return fail('No hay espacio para cargar.');let previous=u,cost=actionCosts(s,u).melee;for(const p of path){const t=tile(s,p.x,p.y);if(!t||t.blocked||occupied(s,p.x,p.y,u.id))return fail('La carga está bloqueada.');if(p.x!==previous.x&&p.y!==previous.y&&(tile(s,p.x,previous.y)?.blocked||tile(s,previous.x,p.y)?.blocked||propBlocksAt(s,p.x,previous.y)||propBlocksAt(s,previous.x,p.y)))return fail('La carga no puede atravesar una esquina.');cost+=stepCost(u,t)*(p.x!==previous.x&&p.y!==previous.y?1.4:1);previous=p;}if(u.ap<Math.ceil(cost))return fail('Faltan puntos de acción para completar la carga.');for(const p of path){u.x=p.x;u.y=p.y;exhaust(s,u,movementEnergy({...u,movementMode:'run'},tile(s,p.x,p.y)));recordBattleFrame(s,{type:'step',unitId:u.id,action:'charge'});if(!alive(u))break;reactionFire(s,u);interceptCharge(s,u,target);if(!alive(u)||s.status!=='active')break;}u.fatigue=clamp((u.fatigue||0)+Math.ceil(cost/20*(hasTrait(u,'guerrilla_tactician')?.5:1)),0,100);u.ap=0;if(!alive(u)){say(s,`${u.name} no logra completar la carga.`);checkEnd(s);return true;}meleeStrike(s,u,target,blade.damage*(1+path.length*.1)*(u.mounted?1.25:1)*(hasCharacterAbility(u,'mounted_charge')&&u.mounted?1.2:1));if(hasCharacterAbility(u,'mounted_intimidation')&&u.mounted){for(const levy of s.units.filter(v=>v.side!==u.side&&alive(v)&&dist(v,u)<=4&&(v.militia||v.levy||v.marksmanship<60))){levy.morale=Math.max(0,levy.morale-25);if(levy.morale<15)rout(s,levy);}say(s,`${u.name} aterroriza a las levas con su carga montada.`);}if(!civilian(s,target)){target.morale=Math.max(0,target.morale-15);holdMorale(s,target);if(target.hp>0&&target.morale<15){rout(s,target);}}u.momentum=0;say(s,`${u.name} ejecuta una carga de ${path.length} casillas con ${blade.name}.`);}
+else if(a.type==='selectAmmunitionLoad'){const reason=ammunitionChoiceReason(u,a.family);if(reason)return fail(reason);u.ammunitionChoice=a.family;syncUnitAmmunition(u);s.actionDurationSeconds=0;sayObserved(s,[u],`${u.name} prepara ${AMMO_TYPES[a.family].name.toLowerCase()}.`);}
+else if(a.type==='move'||a.type==='climb'){
+  if(u.entangled)return fail('Las boleadoras inmovilizan al soldado: debe liberarse.');
+  let postureCost=0;
+  if(a.movement!==undefined){
+    if(!['walk','run','crouch','prone'].includes(a.movement))return fail('Forma de desplazamiento inválida.');
+    const stance=movementStance(a.movement);
+    if(u.mounted&&stance!=='standing')return fail('Debes desmontar antes de agacharte.');
+    postureCost=stanceCost(u,stance);if(!pay(postureCost))return fail('Faltan PA para cambiar de postura.');
+    u.movementMode=a.movement;u.stance=stance;
+  }
+  const movementIntent=a.movementIntent===undefined?'forward':a.movementIntent,intentReason=movementIntentReason(u,movementIntent);
+  if(intentReason)return fail(intentReason);
+  const climbing=a.type==='climb'?climbPreview(s,u,a):null;
+  if(climbing&&!climbing.valid)return fail(climbing.reason);
+  const destination={x:a.x,y:a.y,tacticalLevel:a.tacticalLevel??tacticalLevel(u)};
+  // Plan from observed occupants; inspect the actual field one step at a time.
+  // Hidden people must not reject a distant route or secretly divert it.
+  const observed=point=>u.side==='player'?teamCanSee(s,u.side,point):canSee(s,u,point);
+  const planning={...s,units:s.units.filter(v=>v.side===u.side||observed(v)),npcs:(s.npcs??[]).filter(observed)};
+  const path=climbing?{cost:climbing.pa,path:[climbing.destination]}:movementPath??getReachable(planning,u,{movementIntent,stopAt:point=>sameCell(point,destination)})[0];
+  if(!path||path.cost===0)return fail('Destino inaccesible o puntos de acción insuficientes.');
+  const exploring=s.mode==='exploration',setupSeconds=postureCost>0?Math.max(1,Math.ceil(postureCost*.06)):0;
+  u.braced=false;u.overwatch=false;u.lastMovePath=[];s.actionDurationSeconds=setupSeconds;let spent=postureCost,steps=0;
+  if(exploring&&setupSeconds){advanceExplorationAction(s,setupSeconds);if(alive(u))detectContact(s);}
+  for(const p of path.path){
+    if(!alive(u)||exploring&&s.mode!=='exploration')break;
+    // A planned route uses known occupancy. An unseen obstruction can
+    // stop that route, but cannot secretly select a different path around it.
+    if(occupied(s,p.x,p.y,u.id,tacticalLevel(p))||!Number.isFinite(movementStepCost(s,u,u,p,{movementIntent}))){
+      if(!steps)return fail('La ruta está bloqueada.');
+      sayObserved(s,[u],`${u.name} se detiene: la ruta está bloqueada.`);break;
+    }
+    const vertical=!sameSurface(u,p)?climbStep(s,u,u,p):null;
+    if(vertical&&(u.energy??100)<vertical.energy){if(!steps)return fail('Falta energía para trepar.');sayObserved(s,[u],`${u.name} se detiene: falta energía para trepar.`);break;}
+    const stepObservation=reactionObservation(s,u);
+    const factor=vertical?1:movementFactor(u,p),step=movementStepCost(s,u,u,p,{movementIntent});if(!pay(step))break;spent+=step;steps++;
+    const seconds=vertical?vertical.seconds:Math.ceil((u.movementMode==='run'?1:u.movementMode==='prone'?5:3)*stealthAPMultiplier(u)*factor*intentFactor(movementIntent));s.actionDurationSeconds+=seconds;
+    const dir=`${p.x-u.x},${p.y-u.y}`;u.momentum=movementIntent==='preserveFacing'?0:dir===u.lastDirection?u.momentum+1:1;u.lastDirection=dir;if(movementIntent!=='preserveFacing'&&(u.x!==p.x||u.y!==p.y))u.facing=directionTo(u,p);u.x=p.x;u.y=p.y;if(p.tacticalLevel!==undefined||u.tacticalLevel!==undefined)u.tacticalLevel=tacticalLevel(p);if(vertical){u.momentum=0;lowerWeapon(u);}investigateNoise(s,u);
+    // Save only reached cells, including authored climb identity. The browser
+    // animates this route without planning the same order a second time.
+    u.lastMovePath.push({...p});
+    delete u.lastTargetId;delete u.lastShotPosition;
+    if(u.mounted&&u.mount&&u.mount.stamina>0){u.ridingPracticeTiles??=[];const key=`${u.x},${u.y}`;if(!u.ridingPracticeTiles.includes(key)){u.ridingPracticeTiles.push(key);practice(u,'ridingSkill');}}
+    exhaust(s,u,vertical?vertical.energy:movementStepEnergy(s,u,tile(s,p.x,p.y,tacticalLevel(p)),factor));
+    if(exploring)advanceExplorationAction(s,seconds);
+    emitNoise(s,u,'move');rememberContacts(s);recordBattleFrame(s,{type:'step',unitId:u.id,action:a.type});
+    if(u.stealthMode&&!u.mounted&&s.units.some(v=>v.side!==u.side&&alive(v)&&dist(v,u)<=12)&&!s.units.some(v=>v.side!==u.side&&alive(v)&&canSee(s,v,u))){u.practiceTiles??=[];const key=`${u.x},${u.y}`;if(!u.practiceTiles.includes(key)){u.practiceTiles.push(key);practice(u,'agility');practice(u,'stealth');}}
+    if(carriedWeight(u)>carryCapacity(u)){u.strengthTraining++;if(u.strengthTraining>=30){practice(u,'strength',40);u.strengthTraining=0;}}
+    if(!alive(u)||detectContact(s))break;
+    if(s.mode==='combat'&&reactionFire(s,u,stepObservation))break;
+    if(!alive(u)||s.status!=='active')break;
+  }
+
+  sayObserved(s,[u],u.side==='player'?`${u.name} ${movementIntent==='preserveFacing'?'se desplaza sin girar':'avanza'} ${steps} casillas${exploring?'':` (${spent} PA)`}.`:`${u.name} avanza.`);
+}
+else if(a.type==='throwGrenade'){
+  const point=positionOf(a),preview=grenadeThrowPreview(s,u,point,a);
+  if(!preview.valid)return fail(preview.reason);
+  if(u.stance!=='standing')return fail('Ponete de pie antes de lanzar la granada.');
+  const grenade=heldGrenade(u),source={...positionOf(u),height:absoluteBodyHeight(s,u,'muzzle')},intended=intendedCivilian(s,u,point);
+  const hit=random(s)*100<preview.chance,end=hit?point:grenadeScatter(s,u,point,preview.range),flight=grenadeFlight(s,u,end);
+  if(!flight.landing||flight.impact.kind==='invalid')return fail('No hay una trayectoria válida para la granada.');
+  const visible=journalVisible(s,u),extracted=extractItemQuantity(u,grenade.slot,1);
+  if(!pay(preview.pa))return fail('PA insuficientes.');
+  extracted.unit.ap=u.ap;replaceUnit(u,extracted.unit);
+  lowerWeapon(u);u.facing=preview.costs.facing;u.momentum=0;u.overwatch=false;u.braced=false;delete u.lastTargetId;delete u.lastShotPosition;
+  // A failed period grenade becomes a finite, recoverable but unusable object.
+  // Delayed malfunction fuses and physical bounces remain separate work.
+  const detonated=grenade.record.condition>=100||random(s)*100<grenade.record.condition;
+  if(visible)recordBattleFrame(s,{type:'effect',unitId:u.id,action:'throwGrenade',grenadeVisual:{source,impact:flight.impact,landing:flight.landing,points:flight.points,radius:GRENADE_THROW.radius,detonated,visible:true}});
+  if(detonated){grenadeBlast(s,u,flight.landing,intended);if(visible)say(s,`${u.name}: explosión de granada.`);}
+  else{addGroundStack(s,{...extracted.stack,condition:0},flight.landing);emitNoise(s,u,'knife',flight.landing);if(visible)say(s,`${u.name}: la granada no explota y queda inutilizada.`);}
+  if(visible)grenadeThrowVisuals.set(s,{source,impact:flight.impact,landing:flight.landing,points:flight.points,radius:GRENADE_THROW.radius,detonated,visible:true});
+}
+else if(a.type==='throwKnife'){
+  const point=target??{...positionOf(a),stance:'standing',mounted:false},preview=knifeThrowPreview(s,u,point,a);
+  if(!preview.valid)return fail(preview.reason);
+  if(u.stance!=='standing'||preview.costs.turn)return fail('Ponete de pie y mirá hacia el objetivo antes de lanzar.');
+  const knife=heldThrowingKnife(u),source={...positionOf(u),height:absoluteBodyHeight(s,u,'muzzle')},height=absoluteBodyHeight(s,point,preview.hitLocation),intended=target?null:intendedCivilian(s,u,point);
+  const accuracy=knifeThrowChance(u,spaceDistance(s,u,point),preview.aim,knife),hit=random(s)*100<accuracy;
+  const end=hit?point:scatteredShotDestination(s,u,point),flightState=!hit&&target?{...s,units:s.units.filter(v=>v.id!==target.id)}:s;
+  const flight=knifeFlight(flightState,u,end,preview.hitLocation,{destinationHeight:height});
+  if(!flight.landing||flight.impact.kind==='invalid')return fail('No hay una trayectoria válida para el facón.');
+  const shown=knownKnifeFlight(flightState,u,end,preview.hitLocation,{destinationHeight:height}),visible=journalVisible(s,u);
+  const amount=knifeThrowDamage(u,knife),extracted=extractItemQuantity(u,knife.slot,1);
+  replaceUnit(u,extracted.unit);
+  if(!pay(preview.pa))return fail('PA insuficientes.');
+  u.momentum=0;u.overwatch=false;u.braced=false;delete u.lastTargetId;delete u.lastShotPosition;
+  emitNoise(s,u,'knife');
+  let victim=flightVictim(s,flight),stored=false;
+  if(victim){
+    victim=physicalImpact(s,victim,amount,u,{kind:'knife',hitLocation:flight.hitLocation,intentional:victim===intended});
+    if(flight.victimKind!=='npc'){
+      if(victim.side!==u.side){practice(u,'marksmanship');practice(u,'agility');}
+      try{replaceUnit(victim,applyItemQuantity(victim,extracted.stack));stored=true;}catch{/* A full pack leaves the exact knife at the supported impact cell. */}
+    }
+  }
+  if(!stored)addGroundStack(s,extracted.stack,flight.landing);
+  exhaust(s,u,preview.costs.energy);
+  sayObserved(s,[u],`${u.name} lanza el facón que llevaba en la mano.`);
+  if(visible)knifeThrowVisuals.set(s,{source,impact:shown.impact,landing:shown.landing,weapon:knife.record.weapon,visible:true});
+}
+else if(['fire','firePoint'].includes(a.type)&&pairedPistol(u)){
+  const pointShot=a.type==='firePoint',hitLocation=a.hitLocation??'torso';
+  if(pointShot){
+    const preview=pointFirePreview(s,u,a,a.aim);if(!preview.valid)return fail(preview.reason);
+    if(a.targetId!==undefined)return fail('El disparo a una casilla usa coordenadas, no una persona.');
+    if(hitLocation!=='torso')return fail('El disparo a una casilla apunta a una altura fija.');
+  }else{
+    if(!HIT_LOCATIONS.includes(hitLocation))return fail('Selecciona torso, cabeza o piernas.');
+    if(!target||target.side===u.side||!targetable(target))return fail('Selecciona un enemigo activo.');
+    if(!teamCanSee(s,u.side,target))return fail('Ningún compañero puede ver ese objetivo.');
+    if(!shotLocationsFor(target).includes(hitLocation))return fail('Un objetivo cuerpo a tierra tiene una sola zona de tiro.');
+    if(!hasLineOfSight(s,u,target))return fail('No hay línea de tiro.');
+  }
+  const point=pointShot?{...positionOf(a),stance:'standing',mounted:false}:{...target},aim=clamp(Math.floor(Number.isFinite(a.aim)?a.aim:0),0,4);
+  const costs=actionCosts(s,u,point),penalty=pistolPairPenalty(u),other=u.offHand;
+  // Both shots commit to this aim before smoke, damage or repeat-target memory.
+  const shots=[{record:u,view:{...u},hand:'principal'},{record:other,view:secondaryPistolView(u,other),hand:'secundaria'}].map(shot=>({...shot,
+    chance:shotAccuracy(s,shot.view,point,aim,hitLocation,pointShot,penalty),risk:ignitionRisk(s,shot.view)}));
+  if(!pay(costs.fire+aim*costs.aim))return fail('Faltan puntos de acción para disparar ambas pistolas.');
+  u.weaponReady=true;u.momentum=0;u.facing=directionTo(u,point);
+  if(pointShot){delete u.lastTargetId;delete u.lastShotPosition;}else{u.lastTargetId=target.id;u.lastShotPosition=positionOf(u);}
+  sayObserved(s,[u],`${u.name} dispara ambas pistolas.`);
+  for(const shot of shots){
+    if(random(s)*100<shot.risk){shot.record.jammed=true;sayObserved(s,[u],`${u.name}: fallo de chispa en la mano ${shot.hand}. La carga se conserva.`);continue;}
+    shot.record.loaded--;shot.record.condition=Math.max(0,(shot.record.condition??100)-1);
+    const notifyCivilians=emitNoise(s,u,'fire',u,{deferCivilians:true});
+    if(pointShot)pointFireImpact(s,shot.view,point,aim,u,shot.chance);
+    else{
+      practice(u,'marksmanship',2);
+      if(weaponFor(shot.view).loadPattern==='cone')coneFireImpact(s,shot.view,target,aim,hitLocation,u);
+      else {
+       const hit=random(s)*100<shot.chance;directedFireImpact(s,shot.view,target,hitLocation,hit,u);
+       if(!hit&&!isCivilianBody(s,target)){target.morale=Math.max(0,target.morale-4);sayObserved(s,[u],`${u.name} falla con la mano ${shot.hand} (${shot.chance}%).`);}
+      }
+    }
+    // Hearing this shot cannot change the silhouette that it already struck.
+    notifyCivilians();s.smoke.push({...positionOf(u),radius:1,turns:3});
+  }
+}
+else if(a.type==='firePoint'){
+  const preview=pointFirePreview(s,u,a,a.aim);if(!preview.valid)return fail(preview.reason);
+  if(a.targetId!==undefined)return fail('El disparo a una casilla usa coordenadas, no una persona.');
+  if(a.hitLocation!==undefined&&a.hitLocation!=='torso')return fail('El disparo a una casilla apunta a una altura fija.');
+  if(!pay(preview.pa))return fail('PA insuficientes.');
+  u.weaponReady=true;u.momentum=0;u.facing=directionTo(u,a);delete u.lastTargetId;delete u.lastShotPosition;
+  if(random(s)*100<ignitionRisk(s,u)){u.jammed=true;sayObserved(s,[u],`${u.name}: fallo de chispa. La carga se conserva${s.mode==='exploration'?'. Volvé a cebar la cazoleta.':`; cebar cuesta ${actionCosts(s,u).reprime} PA.`}`);}
+  else{
+    u.loaded--;const notifyCivilians=emitNoise(s,u,'fire',u,{deferCivilians:true});pointFireImpact(s,u,a,preview.aim);notifyCivilians();u.condition=Math.max(0,u.condition-1);s.smoke.push({...positionOf(u),radius:1,turns:3});
+    sayObserved(s,[u],`${u.name} dispara hacia ${a.x+1}, ${a.y+1}. El disparo puede alcanzar a cualquiera en su trayectoria.`);
+  }
+}
+else if(a.type==='fire'){const hitLocation=a.hitLocation??'torso';if(!HIT_LOCATIONS.includes(hitLocation))return fail('Selecciona torso, cabeza o piernas.');if(!target||target.side===u.side||!targetable(target))return fail('Selecciona un enemigo activo.');if(!hasFirearm(u))return fail('Este soldado lleva un arma blanca: acércate para atacar.');if(!teamCanSee(s,u.side,target))return fail('Ningún compañero puede ver ese objetivo.');if(!shotLocationsFor(target).includes(hitLocation))return fail('Un objetivo cuerpo a tierra tiene una sola zona de tiro.');if(u.jammed)return fail('La cazoleta falló: vuelve a cebar el arma.');if(u.loaded<1)return fail('El arma está descargada.');if(!hasLineOfSight(s,u,target))return fail('No hay línea de tiro.');const aim=clamp(Math.floor(Number.isFinite(a.aim)?a.aim:0),0,4),w=weaponFor(u),chance=shotAccuracy(s,u,target,aim,hitLocation);if(!pay(actionCosts(s,u,target).fire+aim*actionCosts(s,u,target).aim))return fail('Faltan puntos de acción para disparar.');u.weaponReady=true;u.momentum=0;u.facing=directionTo(u,target);u.lastTargetId=target.id;u.lastShotPosition=positionOf(u);const risk=ignitionRisk(s,u);if(random(s)*100<risk){u.jammed=true;sayObserved(s,[u],`${u.name}: fallo de chispa. La carga se conserva${s.mode==='exploration'?'. Volvé a cebar la cazoleta.':`; cebar cuesta ${actionCosts(s,u).reprime} PA.`}`);}else{u.loaded--;const notifyCivilians=emitNoise(s,u,'fire',u,{deferCivilians:true});practice(u,'marksmanship',2);u.condition=Math.max(0,u.condition-1);s.smoke.push({...positionOf(u),radius:1,turns:3});if(w.loadPattern==='cone'||!w.loadPattern&&w.id===1807){coneFireImpact(s,u,target,aim,hitLocation);}else{const hit=random(s)*100<chance;directedFireImpact(s,u,target,hitLocation,hit);if(!hit&&!isCivilianBody(s,target)){target.morale=Math.max(0,target.morale-4);sayObserved(s,[u],`${u.name} dispara sin acertar al punto elegido (${chance}%).`);}}notifyCivilians(); }}
+else if(a.type==='swapHands'){
+  let next;try{next=planSwapHands(u);}catch(error){return fail(error.message);}
+  if(!pay(4))return fail('Cambiar de mano requiere 4 PA.');next.ap=u.ap;replaceUnit(u,next);sayObserved(s,[u],`${u.name} prepara el arma de la otra mano.`);
+}
+else if(a.type==='weaponMode'){
+  if(!hasFirearm(u))return fail('Prepará un arma de fuego en la mano.');
+  if(!['fire','melee'].includes(a.mode))return fail('Elegí disparo o combate cercano.');
+  if(u.weaponMode===a.mode)return fail('Ese modo ya está seleccionado.');
+  u.weaponMode=a.mode;
+  sayObserved(s,[u],`${u.name}: ${a.mode==='fire'?'disparo':fixedBayonetFor(u)?'estocada de bayoneta':'culatazo'}.`);return true;
+}
+else if(a.type==='reload'){
+  if(!hasFirearm(u))return fail('Las armas blancas no necesitan recarga.');
+  if(u.jammed)return fail('Primero debes volver a cebar el arma.');
+  const plan=reloadPlan(u,s);
+  if(!plan.totalPA)return fail('No falta carga o no quedan cartuchos compatibles.');
+  if(!plan.pa||!pay(plan.pa))return fail('Faltan puntos de acción para recargar.');
+  for(const hand of plan.hands??[{hand:'primary',...plan}]){
+    const gun=hand.hand==='offhand'?u.offHand:u;
+    if(hand.rounds)consumeWeaponAmmunition(u,gun,hand.rounds);
+    gun.loaded+=hand.rounds;
+    if(hand.progress>0)gun.reloadProgress=hand.progress;else delete gun.reloadProgress;
+  }
+  syncUnitAmmunition(u);
+  emitNoise(s,u,'reload');u.momentum=0;
+  const subject=plan.hands?.length===2?' ambas pistolas':plan.hands?.[0]?.hand==='offhand'?' la pistola de la segunda mano':'';
+  sayObserved(s,[u],plan.partial?`${u.name} avanza la recarga${subject?' de'+subject:''} (${plan.pa} PA). Carga ${plan.rounds} cartuchos; faltan ${plan.remainingPA} PA para completar la recarga.`:`${u.name} recarga${subject}${s.mode==='exploration'?'':` (${plan.pa} PA)`}.${plan.offhandPending?' La segunda pistola espera: faltan PA para completar su recarga.':''}`);
+}
+else if(a.type==='reprime'){
+  const plan=reprimePlan(u,s);if(plan.reason)return fail(plan.reason);
+  if(!pay(plan.pa))return fail(`Cebar requiere ${plan.pa} PA.`);
+  for(const hand of plan.hands){const gun=hand==='offhand'?u.offHand:u;gun.jammed=false;practice(u,'mechanical');}
+  const subject=plan.hands.length===2?'las cazoletas de ambas pistolas':plan.hands[0]==='offhand'?'la cazoleta de la segunda mano':'la cazoleta';
+  sayObserved(s,[u],`${u.name} vuelve a cebar ${subject}.${plan.pending?' La segunda pistola todavía necesita cebado.':''}`);
+}
+else if(a.type==='melee'||a.type==='meleePoint'){
+  if(u.activeSlot==='item')return fail('Este objeto no sirve para atacar. Guardalo o elegí un arma.');
+  if(u.activeSlot==='tool')return fail('La herramienta se usa sobre una puerta o un cofre.');
+  if(u.activeSlot==='supply')return fail('Usa el pertrecho que llevas en la mano.');
+  if(u.activeSlot==='medical')return fail('El equipo de curación se usa sobre un compañero herido.');
+  const pointStrike=a.type==='meleePoint',destination=pointStrike?positionOf(a):target;
+  const preview=()=>pointStrike?meleePointPreview(s,u,a,{approach:false}):meleePreview(s,u,target);
+  const plan=preview();if(!plan.valid)return fail(plan.reason);
+  let preparationSeconds=0;
+  if(plan.stancePa){
+    const before={mode:s.mode,phase:s.phase,units:s.units.map(other=>({id:other.id,reactionTurn:other.reactionTurn}))},position=positionOf(u),exploring=s.mode==='exploration';
+    if(apply(s,{type:'stance',unitId:u.id,stance:'standing'},enemy)===false)return false;
+    if(exploring){preparationSeconds=s.actionDurationSeconds;advanceExplorationAction(s,preparationSeconds);checkEnd(s);detectContact(s);}
+    if(!approachCompleted(before,s,u.id,{destination:position})||!preview().valid){
+      sayObserved(s,[u],`${u.name} se detiene antes de atacar. Revisá la situación.`);return true;
+    }
+  }
+  const blade=bladeFor(u),meleeCost=actionCosts(s,u).meleeStrike;
+  if(!pay(meleeCost))return fail(`El ataque requiere ${meleeCost} PA.`);
+  if(preparationSeconds)s.actionDurationSeconds+=preparationSeconds;
+  const completed=meleeAttackResults.get(s)??new Set();completed.add(u.id);meleeAttackResults.set(s,completed);
+  const direction=`${Math.sign(destination.x-u.x)},${Math.sign(destination.y-u.y)}`,bonus=1+(direction===u.lastDirection?Math.min(u.momentum,5)*.1:0);
+  u.facing=directionTo(u,destination);emitNoise(s,u,'melee');
+  if(pointStrike)sayObserved(s,[u],`${u.name} golpea hacia la casilla con ${blade.name.toLowerCase()}.`);
+  else if(blade.id===FISTS.id){
+    const chance=unarmedChance(u,target,{aware:canSee(s,target,u)});
+    if(random(s)*100<chance){const impact=unarmedImpact(u);damage(s,target,impact.damage,u,false,'torso',Math.max(0,impact.breathLoss-Math.ceil(impact.damage/2)));practice(u,'agility');if(target.unconscious)sayObserved(s,[target],`${target.name} queda inconsciente por el golpe.`);}
+    else sayObserved(s,[u],`${u.name} falla el golpe (${chance}%).`);
+  }else meleeStrike(s,u,target,blade.damage*bonus);
+  u.momentum=0;
+}
+else if(a.type==='charge'){if(u.stance==='prone')return fail('Primero debés levantarte para cargar.');if(tacticalLevel(u)!==0||target&&tacticalLevel(target)!==0)return fail('La carga requiere terreno al nivel del suelo.');if(['medical','tool','supply','item'].includes(u.activeSlot))return fail('Prepara un arma antes de atacar.');const blade=bladeFor(u);if(blade.id===0)return fail('Acércate al enemigo para golpear con las manos vacías.');if(!target||!targetable(target)||target.side===u.side)return fail('Selecciona un enemigo para cargar.');const dx=target.x-u.x,dy=target.y-u.y;if(dx!==0&&dy!==0&&Math.abs(dx)!==Math.abs(dy))return fail('La carga exige una línea recta.');let path=line(u,target);const contact=path.findIndex(p=>dist(p,target)<=blade.reach);path=dist(u,target)<=blade.reach?[]:path.slice(0,contact+1);if(!path.length&&dist(u,target)>blade.reach)return fail('No hay espacio para cargar.');let previous=u,cost=actionCosts(s,u).melee;for(const p of path){const t=tile(s,p.x,p.y);if(!t||t.blocked||occupied(s,p.x,p.y,u.id))return fail('La carga está bloqueada.');const step=movementStepCost(s,u,previous,p);if(!Number.isFinite(step))return fail('La carga no puede atravesar una esquina.');cost+=step;previous=p;}if(!hasLineOfSight(s,u,target))return fail('No hay un paso libre hasta el objetivo.');if(u.ap<Math.ceil(cost))return fail('Faltan puntos de acción para completar la carga.');u.lastMovePath=[];let stopped=false;for(const p of path){const stepObservation=reactionObservation(s,u);const factor=movementFactor(u,p),step=movementStepCost(s,u,u,p);if(u.ap<step){stopped=true;break;}u.ap-=step;lowerWeapon(u);u.facing=directionTo(u,p);u.x=p.x;u.y=p.y;u.lastMovePath.push({...p});investigateNoise(s,u);delete u.lastTargetId;delete u.lastShotPosition;exhaust(s,u,Math.ceil(movementEnergy({...u,movementMode:'run'},tile(s,p.x,p.y))*factor));emitNoise(s,{...u,movementMode:'run',stealthMode:false},'move');rememberContacts(s);recordBattleFrame(s,{type:'step',unitId:u.id,action:'charge'});if(!alive(u)){stopped=true;break;}const interrupted=reactionFire(s,u,stepObservation);interceptCharge(s,u,target);if(interrupted||!alive(u)||s.status!=='active'){stopped=true;break;}}if(stopped){sayObserved(s,[u],`${u.name} detiene la carga antes de alcanzar al enemigo.`);checkEnd(s);return true;}const impactObservation=reactionObservation(s,u);lowerWeapon(u);u.ap=0;if(!alive(u)){sayObserved(s,[u],`${u.name} no logra completar la carga.`);checkEnd(s);return true;}u.facing=directionTo(u,target);emitNoise(s,u,'melee');meleeStrike(s,u,target,blade.damage*(1+path.length*.1)*(u.mounted?1.25:1)*(hasCharacterAbility(u,'mounted_charge')&&u.mounted?1.2:1));if(hasCharacterAbility(u,'mounted_intimidation')&&u.mounted){for(const levy of s.units.filter(v=>v.side!==u.side&&alive(v)&&dist(v,u)<=4&&(v.militia||v.levy||v.marksmanship<60))){levy.morale=Math.max(0,levy.morale-25);if(levy.morale<15)rout(s,levy);}sayObserved(s,[u],`${u.name} aterroriza a las levas con su carga montada.`);}target.morale=Math.max(0,target.morale-15);holdMorale(s,target);if(alive(target)&&target.morale<15){rout(s,target);}u.momentum=0;sayObserved(s,[u],u.side==='player'?`${u.name} ejecuta una carga de ${path.length} casillas con ${blade.name}.`:`${u.name} ataca con ${blade.name}.`);checkEnd(s);reactionFire(s,u,impactObservation);}
 else if(['artillery','artilleryReload','artilleryMove','artilleryPivot'].includes(a.type)){
 const gun=s.artillery.find(g=>g.id===a.artilleryId),spec=artilleryProfile(s,gun);
-if(!gun||!spec||gun.side!==u.side||dist(u,gun)>1.5)return fail('Debes estar junto a una pieza de artillería propia.');
+if(!gun||!spec||gun.side!==u.side||contactDistance(u,gun)>1.5)return fail('Debes estar junto a una pieza de artillería propia.');
+if(tacticalLevel(gun)!==0||tacticalLevel(u)!==0||tacticalLevel(target??a)!==0)return fail('La artillería necesita posiciones y blancos al nivel del suelo.');
 const costs=artilleryCosts(s,u,gun),loading=a.type==='artilleryReload'?artilleryReloadPreview(s,u,gun):null;
 const cost=loading?loading.pa:costs[{artillery:'fire',artilleryMove:'move',artilleryPivot:'pivot'}[a.type]];
 const crew=loading??artilleryCrewPlan(s,u,gun,cost);if(crew.reason)return fail(crew.reason);
@@ -223,356 +1779,707 @@ const assigned=crew.crew.map(id=>s.units.find(v=>v.id===id));
 if(a.type==='artilleryMove'){
 const dx=a.x-gun.x,dy=a.y-gun.y;if(!Number.isInteger(a.x)||!Number.isInteger(a.y)||Math.abs(dx)+Math.abs(dy)!==1)return fail('La pieza se arrastra una casilla horizontal o vertical por orden.');
 const positions=[{x:a.x,y:a.y},...assigned.map(v=>({x:v.x+dx,y:v.y+dy}))],ids=new Set(assigned.map(v=>v.id));
-if(positions.some(p=>propBlocksAt(s,p.x,p.y)||!tile(s,p.x,p.y)||tile(s,p.x,p.y).blocked||tile(s,p.x,p.y).type==='water'||s.units.some(v=>alive(v)&&!ids.has(v.id)&&v.x===p.x&&v.y===p.y)||s.artillery.some(g=>g!==gun&&g.x===p.x&&g.y===p.y)))return fail('La pieza y su dotación no caben en ese terreno.');
-gun.x=a.x;gun.y=a.y;for(const v of assigned){v.x+=dx;v.y+=dy;}say(s,`${u.name} dirige el arrastre de ${spec.name}.`);
+if(positions.some(p=>propBlocksAt(s,p.x,p.y)||!tile(s,p.x,p.y)||tile(s,p.x,p.y).blocked||tile(s,p.x,p.y).type==='water'||s.units.some(v=>onField(v)&&!ids.has(v.id)&&sameCell(v,p))||(s.npcs??[]).some(v=>onField(v)&&sameCell(v,p))||s.artillery.some(g=>g!==gun&&sameCell(g,p))))return fail('La pieza y su dotación no caben en ese terreno.');
+gun.x=a.x;gun.y=a.y;for(const v of assigned){v.x+=dx;v.y+=dy;}sayObserved(s,[u],`${u.name} dirige el arrastre de ${spec.name}.`);
 }else if(a.type==='artilleryPivot'){
-if(!Number.isInteger(a.x)||!Number.isInteger(a.y)||!tile(s,a.x,a.y)||dist(gun,a)<1)return fail('Indica una casilla hacia la cual orientar la pieza.');gun.facing=Math.atan2(a.y-gun.y,a.x-gun.x);say(s,`${spec.name} gira hacia la nueva línea de tiro.`);
+if(!Number.isInteger(a.x)||!Number.isInteger(a.y)||!tile(s,a.x,a.y)||dist(gun,a)<1)return fail('Indica una casilla hacia la cual orientar la pieza.');gun.facing=Math.atan2(a.y-gun.y,a.x-gun.x);sayObserved(s,[u],`${spec.name} gira hacia la nueva línea de tiro.`);
 }else if(a.type==='artilleryReload'){
 if(loading.rounds){gun.loaded=true;gun.ammo--;delete gun.reloadProgress;}
 else if(loading.progress>0)gun.reloadProgress=loading.progress;
-say(s,loading.partial?`${u.name} dirige la recarga de ${spec.name}: ${cost} PA por artillero; faltan ${loading.remainingPA} PA por artillero.`:`${u.name} completa la recarga de ${spec.name}.`);
+emitNoise(s,u,'reload',gun);
+sayObserved(s,[u],loading.partial?`${u.name} dirige la recarga de ${spec.name}: ${cost} PA por artillero; faltan ${loading.remainingPA} PA por artillero.`:`${u.name} completa la recarga de ${spec.name}${s.mode==='exploration'?'':` (${cost} PA por artillero)`}.`);
 }else{
 if(!gun.loaded)return fail('Primero hay que recargar la pieza.');const point=target||{x:a.x,y:a.y};
 if(!Number.isInteger(point.x)||!Number.isInteger(point.y)||!tile(s,point.x,point.y)||dist(gun,point)<1||dist(gun,point)>spec.range)return fail(`Objetivo fuera del alcance de ${spec.range} casillas o no válido.`);
 const facing=Math.atan2(point.y-gun.y,point.x-gun.x);if(Number.isFinite(gun.facing)&&Math.abs(Math.atan2(Math.sin(facing-gun.facing),Math.cos(facing-gun.facing)))>Math.PI/4)return fail('Gira la pieza antes de disparar fuera de su arco frontal.');
-gun.facing=facing;npcNoise(s,gun,'explosion');gun.loaded=false;s.smoke.push({x:gun.x,y:gun.y,radius:2,turns:3});
+const intended=target?null:intendedCivilian(s,u,point);
+gun.facing=facing;gun.loaded=false;const notifyCivilians=emitNoise(s,u,'explosion',gun,{deferCivilians:true});s.smoke.push({x:gun.x,y:gun.y,radius:2,turns:3});
 for(const event of artilleryShotTrace(s,u,gun,point,a.mode).events){
  if(event.type==='impact'){
-  const v=event.victimKind==='npc'?s.npcs.find(v=>v.id===event.unitId):s.units.find(v=>v.id===event.unitId);damage(s,v,event.damage,u,false,v===target);
-  if(a.mode==='canister'&&!civilian(s,v)&&alive(v)){v.morale=Math.max(0,v.morale-12);if(v.morale<15)rout(s,v);}
+  const victim=flightVictim(s,{...event,victimId:event.unitId});physicalImpact(s,victim,event.damage,u,{kind:'artillery',projectile:false,intentional:victim===intended});
+  if(event.victimKind!=='npc'&&a.mode==='canister'&&alive(victim)){victim.morale=Math.max(0,victim.morale-12);if(victim.morale<15)rout(s,victim);}
  }else if(event.type==='breach'){
-  const ground=tile(s,event.x,event.y);ground.blocked=false;ground.blocksSight=false;ground.type='rubble';ground.cover=20;say(s,`La bala abre una brecha en ${event.stone?'la piedra':'el adobe'}.`);
+  const ground=tile(s,event.x,event.y);ground.blocked=false;ground.blocksSight=false;ground.type='rubble';ground.cover=20;delete ground.obstacleHeight;delete ground.projectileResistance;
+  say(s,`La bala abre una brecha en ${event.stone?'la piedra':'el adobe'}.`);
  }else say(s,'La bala se detiene contra la fortificación.');
 }
-say(s,a.mode==='canister'?`${spec.name} barre el frente con metralla.`:`${spec.name} dispara una bala rasa que atraviesa su línea de tiro.`);
+notifyCivilians();sayObserved(s,[u],a.mode==='canister'?`${spec.name} barre el frente con metralla.`:`${spec.name} dispara una bala rasa que atraviesa su línea de tiro.`);
 }
-for(const v of assigned){if(s.mode!=='exploration')v.ap-=cost;lowerWeapon(v);}
+for(const v of assigned){lowerWeapon(v);if(s.mode!=='exploration')v.ap-=cost;if(a.type==='artillery'||a.type==='artilleryReload'&&loading.rounds)practice(v,'explosives',a.type==='artillery'?2:1);}
 if(s.mode==='exploration')s.actionDurationSeconds=Math.max(1,Math.ceil(cost*.06));
 }
-else if(a.type==='door'){const door=a.doorId?s.tiles.find(t=>t.doorId===a.doorId):tile(s,a.x,a.y);if(!door||door.type!=='door'||dist(u,door)>1.5)return fail('Acércate a la hoja de puerta que quieres accionar.');if(door.locked)return fail('La puerta está cerrada con llave.');if(!pay(4))return fail('Accionar la puerta requiere 4 PA.');door.open=typeof a.open==='boolean'?a.open:!door.open;door.blocked=!door.open;door.blocksSight=!door.open;say(s,`${u.name} ${door.open?'abre':'cierra'} la puerta.`);}
-else if(a.type==='throwTorch'){const point={x:a.x,y:a.y};if(!Number.isInteger(a.x)||!Number.isInteger(a.y)||!tile(s,a.x,a.y)||tile(s,a.x,a.y).blocked||dist(u,point)>8||!hasLineOfSight(s,u,point))return fail('La antorcha debe caer en terreno accesible a ocho casillas o menos.');if(!u.torches)return fail('No quedan antorchas.');if(!pay(10))return fail('Lanzar la antorcha requiere 10 PA.');u.torches--;s.lights.push({id:`torch-${u.id}-${s.turn}-${s.lights.length}`,type:'torch',x:a.x,y:a.y,radius:4,intensity:1,turns:s.weather.rain>50?4:8,age:0});say(s,`${u.name} lanza una antorcha encendida.`);}
-else if(a.type==='movement'){if(!['walk','run','crouch','prone'].includes(a.movement))return fail('Elige caminar, correr, agacharte o arrastrarte.');u.movementMode=a.movement;u.stance=a.movement==='prone'?'prone':'standing';say(s,`${u.name} cambia su forma de desplazarse.`);}
-else if(a.type==='pocket'){
- try{u.pocketOrder=movePocket(u,a.source,a.destination);}catch(error){return fail(error.message);}
- s.actionDurationSeconds=1;
+else if(a.type==='door'||a.type==='environment'){
+  const ref=a.type==='door'?{kind:'door',id:a.doorId??environmentTargetAt(s,a)?.id}:a;
+  const object=environmentObject(s,ref);
+  const verb=a.type==='door'?(typeof a.open==='boolean'?(a.open?'open':'close'):object?.open?'close':'open'):a.verb;
+  const preview=environmentPreview(s,u,ref,verb);if(!preview.valid)return fail(preview.reason);
+  const result=resolveEnvironmentInteraction(u,object,{verb:preview.verb,...(preview.requiresRoll?{roll:random(s)}:{})});
+  replaceUnit(u,result.unit);pay(result.pa);replaceUnit(object,result.target);u.facing=directionTo(u,object);
+  for(const [skill,amount]of Object.entries(result.practice))practice(u,skill,amount);
+  if(result.damage||result.breathLoss)damage(s,u,result.damage,{name:'La trampa'},false,'torso',Math.max(0,result.breathLoss-Math.ceil(result.damage/2)));
+  if(result.noiseKind)emitNoise(s,{...u,activeSlot:'unarmed'},result.noiseKind,object);
+  sayObserved(s,[u],`${u.name}: ${result.message}`);
 }
-else if(a.type==='drop'){
- const key=a.inventoryKey,held=a.slot!==undefined;
- if(held&&(!['primary','blade'].includes(a.slot)||key!==undefined))return fail('Elegí una sola mano o un arma de la mochila.');
- if(held&&(a.slot==='primary'?(u.weaponDropped||!u.weapon):!BLADES[u.blade]))return fail('Esa mano no tiene un arma para dejar.');
- const record=held?weaponRecord(u,a.slot):u.inventory?.[key];
- if(!record||typeof record!=='object'||!Number.isSafeInteger(record.count)||record.count<1||!(WEAPONS[record.weapon]||BLADES[record.weapon]))return fail('Elegí un arma disponible para dejar en el suelo.');
- try{validateWeaponCarrier(record);}catch(error){return fail(error.message);}
- const spec=weaponSpecification(record);if(!Number.isFinite(record.weight)||record.weight<0||record.weight>10000||!Number.isInteger(record.loaded??0)||(record.loaded??0)<0||(record.loaded??0)>(spec.capacity??0)||!Number.isFinite(record.condition??100)||(record.condition??100)<0||(record.condition??100)>100)return fail('El estado del arma recuperada no es válido.');
- if(s.droppedWeapons.length>=2000)return fail('No queda espacio para otro objeto en el sector.');
- if(!pay(4))return fail('Dejar una pieza en el suelo requiere 4 PA.');
- s.droppedWeapons.push({...weaponRecord(record),weight:record.weight,unitId:u.id,x:u.x,y:u.y});
- if(held)releaseHeldWeapon(u,a.slot);
- else{record.count--;if(!record.count)delete u.inventory[key];}
- say(s,`${u.name} deja ${weaponSpecification(record).name} en el suelo.`);
+else if(a.type==='containerLoot'){
+  const preview=containerLootPreview(s,u,a,a.index,a.count??1);if(!preview.valid)return fail(preview.reason);
+  const object=environmentObject(s,{...a,kind:'container'}),extracted=extractContainerItem(object,a.index,a.count??1);
+  replaceUnit(u,applyItemQuantity(u,extracted.stack));replaceUnit(object,extracted.target);pay(preview.pa);
+  sayObserved(s,[u],`${u.name} recoge el objeto del cofre.`);
 }
-else if(a.type==='dropSupply'){
- if(a.slot!==undefined||a.inventoryKey!==undefined)return fail('Elegí solamente el suministro y la cantidad para dejar.');
- const plan=supplyDropPreview(s,u,a.item,a.count);if(plan.reason)return fail(plan.reason);
- if(!pay(4))return fail('Dejar suministros requiere 4 PA.');
- const base=`supply-${u.id}-${s.turn}-${s.groundItems.length}`;let id=base,serial=0;while(s.groundItems.some(g=>g.id===id))id=`${base}-${++serial}`;
- s.groundItems.push({id,type:a.item,x:u.x,y:u.y,count:a.count});changeSupply(u,a.item,-a.count);
- lowerWeapon(u);say(s,`${u.name} deja ${a.count} ${(TRANSFER_SUPPLY_LABELS[a.item]??'Cartuchos').toLowerCase()} en el suelo.`);
+else if(a.type==='throwTorch'){const point=target??positionOf(a),preview=supplyUsePreview(s,u,point,'torches');if(!preview.allowed)return fail(preview.reason);pay(preview.cost);u.torches--;clearEmptySupply(u);s.lights.push({id:`torch-${u.id}-${s.turn}-${s.lights.length}`,type:'torch',...positionOf(point),radius:4,intensity:1,turns:s.weather.rain>50?4:8,age:0});if(dist(u,point)>0)u.facing=directionTo(u,point);sayObserved(s,[u],`${u.name} lanza una antorcha encendida.`);}
+else if(a.type==='look'){
+  const preview=lookPreview(s,u,a);if(!preview.valid)return fail(preview.reason);
+  if(!pay(preview.pa))return fail('PA insuficientes.');
+  u.momentum=0;
+  if(preview.prepare){u.weaponReady=true;sayObserved(s,[u],`${u.name} pone ${weaponFor(u).name} en posición de tiro${s.mode==='exploration'?'':` (${preview.pa} PA)`}.`);}
+  else {if(turnLowersWeapon(u,preview.pa))lowerWeapon(u);u.facing=preview.facing;investigateNoise(s,u);delete u.lastTargetId;delete u.lastShotPosition;
+    sayObserved(s,[u],`${u.name} gira para observar${s.mode==='exploration'?'':` (${preview.pa} PA)`}.`);}
 }
-else if(a.type==='transferSupply'){
- if(a.slot!==undefined||a.inventoryKey!==undefined)return fail('Elegí solamente el suministro y la cantidad para entregar.');
- const plan=supplyTransferPreview(s,u,target,a.item,a.count);if(plan.reason)return fail(plan.reason);
- if(!pay(4))return fail('Entregar suministros requiere 4 PA.');
- changeSupply(u,a.item,-a.count);changeSupply(target,a.item==='ammo'?(ammoTypeFor(u)??'ammoMusket'):a.item,a.count);
- lowerWeapon(u);say(s,`${u.name} entrega ${a.count} ${(TRANSFER_SUPPLY_LABELS[a.item]??'Cartuchos').toLowerCase()} a ${target.name}.`);
+else if(a.type==='stealth'){
+  if(typeof a.enabled!=='boolean')return fail('Indica si quieres activar el sigilo.');
+  if(a.enabled&&u.mounted)return fail('Debes desmontar antes de avanzar con sigilo.');
+  u.stealthMode=a.enabled;s.actionDurationSeconds=0;sayObserved(s,[u],`${u.name} ${a.enabled?'avanzará con sigilo':'deja de avanzar con sigilo'}.`);
 }
-else if(a.type==='transfer'){
- const plan=weaponTransferPreview(s,u,target,a.inventoryKey,a.slot);if(plan.reason)return fail(plan.reason);
- if(!pay(4))return fail('Entregar una pieza requiere 4 PA.');
- const held=a.slot!==undefined,record=held?weaponRecord(u,a.slot):u.inventory[a.inventoryKey],source=held?`held:${a.slot}`:a.inventoryKey;let serial=0,key=`transfer:${u.id}:${source}`;
- while(target.inventory[key])key=`transfer:${u.id}:${source}:${++serial}`;
- target.inventory[key]={...weaponRecord(record),weight:record.weight};
- if(held)releaseHeldWeapon(u,a.slot);
- else{record.count--;if(!record.count)delete u.inventory[a.inventoryKey];}
- lowerWeapon(u);say(s,`${u.name} entrega ${weaponSpecification(target.inventory[key]).name} a ${target.name}.`);
+else if(a.type==='movement'){
+  if(!['walk','run','crouch','prone'].includes(a.movement))return fail('Elige caminar, correr, agacharte o arrastrarte.');
+  const stance=movementStance(a.movement);if(u.mounted&&stance!=='standing')return fail('Debes desmontar antes de agacharte.');
+  const cost=stanceCost(u,stance);if(!pay(cost))return fail(`Cambiar de postura requiere ${cost} PA.`);
+  u.movementMode=a.movement;u.stance=stance;u.momentum=0;sayObserved(s,[u],`${u.name} cambia su forma de desplazarse.`);
+}
+else if(cursorOrders.has(a.type)){
+  const preview=equipmentCursorPreview(s,u,a);if(!preview.valid)return fail(preview.reason);
+  const plan=planEquipmentCursorOrder(u,a,s);
+  if(plan.operation!=='reload'||!pay(plan.pa))return fail('Faltan puntos de acción para recargar.');
+  plan.unit.ap=u.ap;replaceUnit(u,plan.unit);emitNoise(s,u,'reload');
+  sayObserved(s,[u],`${u.name} ${plan.partial?'avanza la recarga de':'recarga'} ${WEAPONS[plan.host].name}${s.mode==='exploration'?'':` (${plan.pa} PA)`}.${plan.partial?` Faltan ${plan.remainingPA} PA para completar la recarga.`:''}`);
+}
+else if(a.type==='unloadEquipment'){
+ const preview=equipmentUnloadPreview(s,u,a);if(!preview.valid)return fail(preview.reason);
+ const plan=planEquipmentUnload(u,a);if(!pay(plan.pa))return fail('Descargar requiere 12 PA.');
+ plan.unit.ap=u.ap;replaceUnit(u,plan.unit);emitNoise(s,u,'reload');
+ sayObserved(s,[u],`${u.name} descarga ${WEAPONS[plan.host].name} y guarda ${plan.count} cartucho(s).`);
+}
+else if(a.type==='attachment'){
+  const preview=equipmentAttachmentPreview(s,u,a);if(!preview.valid)return fail(preview.reason);
+  const plan=planEquipmentAttachment(u,a);if(!pay(plan.pa))return fail(`Cambiar el accesorio requiere ${plan.pa} PA.`);
+  plan.unit.ap=u.ap;replaceUnit(u,plan.unit);emitNoise(s,u,'reload');
+  sayObserved(s,[u],`${u.name} ${plan.operation==='detach'?'retira la bayoneta al cursor':plan.swapped?'cambia la bayoneta del arma':'fija la bayoneta al arma'}${s.mode==='exploration'?'':` (${plan.pa} PA)`}.`);
+}
+else if(a.type==='fitBayonet'||a.type==='removeBayonet'){
+  const fitting=a.type==='fitBayonet',pa=fitting?FIT_BAYONET_AP:REMOVE_BAYONET_AP;let plan;
+  try{plan=fitting?planFitBayonet(u,a.item):planRemoveBayonet(u,a.destination??'inventory');}catch(error){return fail(error.message);}
+  if(!pay(pa))return fail(`Cambiar la bayoneta requiere ${pa} PA.`);
+  plan.unit.ap=u.ap;replaceUnit(u,plan.unit);emitNoise(s,u,'reload');
+  sayObserved(s,[u],`${u.name} ${fitting?'fija la bayoneta correspondiente al fusil':'retira la bayoneta del fusil'}${s.mode==='exploration'?'':` (${pa} PA)`}.`);
+}
+else if(a.type==='steal'){
+  const preview=stealPreview(s,u,target);if(!preview.valid)return fail(preview.reason);
+  const plan=planStealWeapon(u,target),chance=weaponStealChance(u,target,{aware:canSee(s,target,u)});
+  pay(preview.pa);
+  if(random(s)*100<chance){
+    plan.receiver.ap=u.ap;replaceUnit(u,plan.receiver);replaceUnit(target,plan.source);
+    practice(u,'dexterity');sayObserved(s,[u,target],`${u.name} quita ${weaponFor(u).name} a ${target.name}. El enemigo aún puede combatir.`);
+  }else sayObserved(s,[u,target],`${u.name} no logra quitar el arma a ${target.name}.`);
+  u.facing=directionTo(u,target);u.momentum=0;u.braced=false;u.overwatch=false;delete u.lastTargetId;delete u.lastShotPosition;
+  exhaust(s,u,8);emitNoise(s,{...u,activeSlot:'unarmed'},'melee');
+}
+else if(a.type==='giveItem'){
+ const preview=npcGiftPreview(s,u,target);if(!preview.valid||preview.path.length)return fail(preview.reason??'Acercate al interlocutor para entregar el objeto.');
+ const plan=questGiftPlan(u,target);pay(preview.actionPa);plan.unit.ap=u.ap;replaceUnit(u,plan.unit);target.questGifts=plan.gifts;lowerWeapon(u);
+ sayObserved(s,[u],`${u.name} entrega un poncho a ${target.name}. Recibidos: ${plan.gifts.length}/2.`);
 }
 else if(a.type==='equipLoot'){
- const key=a.inventoryKey,record=u.inventory?.[key],slot=a.slot||'primary';
- if(!record||typeof record!=='object'||record.count<1||!['primary','blade'].includes(slot))return fail('Selecciona un arma recuperada disponible.');
- if(!(WEAPONS[record.weapon]||BLADES[record.weapon])||(slot==='blade'&&!BLADES[record.weapon]))return fail('Ese objeto no puede equiparse en esa mano.');
- try{validateWeaponCarrier(record);}catch(error){return fail(error.message);}
- const capacity=weaponSpecification(record)?.capacity||0;
- if(!Number.isInteger(record.loaded??0)||(record.loaded??0)>capacity)return fail('La carga del arma recuperada no es válida.');
- if(!pay(6))return fail('Equipar el arma recuperada requiere 6 PA.');
- const previous=slot==='primary'?u.weapon:u.blade;
- if(previous&&!(slot==='primary'&&u.weaponDropped)){
-  let serial=Object.keys(u.inventory).length,stored=`swap:${typeof previous==='object'?previous.id:previous}:${serial}`;while(u.inventory[stored])stored=`swap:${typeof previous==='object'?previous.id:previous}:${++serial}`;
-  u.inventory[stored]=weaponRecord(u,slot);
- }
- record.count--;
- if(slot==='primary'){u.weapon=record.weapon;setWeaponDefinition(u,record);u.loaded=record.loaded??0;delete u.reloadProgress;if(record.reloadProgress!==undefined)u.reloadProgress=record.reloadProgress;u.condition=record.condition??100;u.jammed=Boolean(record.jammed);u.weaponDropped=false;}
- else {u.blade=record.weapon;setWeaponDefinition(u,record,'blade');}
- u.activeSlot=slot;u.braced=false;u.momentum=0;say(s,`${u.name} equipa ${weaponFor(u).name} y guarda el arma desplazada.`);
+  const preview=equipLootPreview(s,u,a.inventoryKey,a.slot??'primary');if(!preview.valid)return fail(preview.reason);
+  const next=planEquipLoot(u,a.inventoryKey,a.slot??'primary');pay(preview.pa);next.ap=u.ap;
+  replaceUnit(u,next);sayObserved(s,[u],a.slot==='offhandItem'?`${u.name} ${a.inventoryKey===null?'guarda el objeto de la segunda mano':'sostiene '+itemDescriptor(u,a.inventoryKey).label+' en la segunda mano'}.`:BODY_SLOTS.includes(a.slot)?`${u.name} ${a.inventoryKey===null?'guarda su vestimenta en un bolsillo grande':'se pone '+itemDescriptor(u,a.slot).label}.`:`${u.name} equipa ${weaponFor(u).name} y guarda el arma desplazada.`);
 }
-else if(a.type==='loot'&&civilian(s,target)){
- if(dist(u,target)>1.5)return fail('Acércate al cuerpo o habitante que quieres registrar.');
- const item=a.item??'all',gear=target.civilianWeapons;
- if(target.departure||target.hp>0&&!isUnconscious(target))return fail('Solo puedes registrar un cuerpo o una persona inconsciente.');
- if(a.count!==undefined&&(!Number.isSafeInteger(a.count)||a.count<1))return fail('La cantidad debe ser un número entero positivo.');
- const plan=civilianSupplyLoot(target,u,a),weapons=['primary','blade'].filter(slot=>(item==='all'||item===(slot==='primary'?'weapon':'blade'))&&gear?.[slot]);
- if(!plan.valid&&!weapons.length)return fail(plan.reason);
- if(!pay(8))return fail('Registrar el equipo requiere 8 PA.');
- let collected=0;const collectedNames=[];
- for(const slot of weapons){const gun=gear[slot];let key=`${slot}:${gun.weapon}:civilian:${target.id}`,serial=0;while(u.inventory[key])key=`${slot}:${gun.weapon}:civilian:${target.id}:${++serial}`;
-  if(inventoryRoom(u,key,gun)){u.inventory[key]=structuredClone(gun);gear[slot]=null;collected++;collectedNames.push(weaponSpecification(gun).name);}
+else if(a.type==='moveEquipment'){
+ const preview=equipmentPlacementPreview(s,u,a);if(!preview.valid)return fail(preview.reason);
+ const plan=planEquipmentPlacement(u,a);pay(plan.pa);plan.unit.ap=u.ap;replaceUnit(u,plan.unit);sayObserved(s,[u],`${u.name} cambia el equipo de ranura.`);
+}
+else if(a.type==='movePocket'){
+  const reason=inventoryOrderReason(s,u,0);if(reason)return fail(reason);
+  let next;try{next=planPocketMove(u,a.sourceId,a.destinationId,a.expectedSource,a.expectedDestination,a.count);}catch(error){return fail(error.message);}
+  pay(0);replaceUnit(u,next);sayObserved(s,[u],`${u.name} ordena sus bolsillos.`);
+}
+else if(a.type==='inventoryMap'){
+ let plan;try{plan=planInventoryMap(s,u,a);}catch(error){return fail(error.message);}
+ if(plan.kind==='gift'){
+  if(plan.path.length)return fail('Acercate al interlocutor para entregar el objeto.');
+  let decision;try{decision=questGiftDecision(plan.target,plan.extraction.stack);}catch(error){return fail(error.message);}
+  pay(plan.cost);
+  if(decision.accepted){plan.extraction.unit.ap=u.ap;lowerWeapon(plan.extraction.unit);replaceUnit(u,plan.extraction.unit);plan.target.questGifts=decision.gifts;}
+  recordNpcGiftResult(s,plan.action,plan.target,decision.accepted?'accepted':'refused',decision.text);
+  sayObserved(s,[u],`${plan.target.name}: «${decision.text}»`);
+ }else{
+ replaceUnit(u,plan.extraction.unit);pay(plan.cost);
+ if(plan.kind==='relay'){
+  for(const step of plan.route.slice(1,-1)){
+   const helper=s.units.find(other=>other.id===step.id);lowerWeapon(helper);
+   if(s.mode!=='exploration')helper.ap-=step.pa;
+  }
+  if(s.mode==='exploration')s.actionDurationSeconds=plan.route.length-1;
  }
- for(const [key,wanted]of Object.entries(plan.amounts)){const count=supplyRoom(u,key,wanted);if(a.count!==undefined&&count<wanted)return fail(POCKET_FULL);if(count){collected+=count;collectedNames.push(`${count} ${CHARACTER_SUPPLY_LABELS[key].toLowerCase()}`);u[key]=(u[key]??0)+count;target.civilianSupplies[key]-=count;}}
- if(!collected)return fail(POCKET_FULL);
- say(s,`${u.name} recoge de ${target.name}: ${collectedNames.join(', ')}.`);
+ const caught=plan.target&&(plan.kind!=='throw'||random(s)*100<plan.chance);
+ if(caught){
+  replaceUnit(plan.target,plan.received);lowerWeapon(plan.target);
+  if(plan.kind==='throw'&&s.mode!=='exploration')plan.target.ap-=2;
+  sayObserved(s,[u,plan.target],`${u.name} entrega ${a.count??1} × ${plan.name} a ${plan.target.name}.`);
+ }else{
+  addGroundStack(s,plan.extraction.stack,plan.landing);s.groundItems.at(-1).knownToPlayer=true;
+  sayObserved(s,plan.target?[u,plan.target]:[u],plan.target?`${plan.target.name} no atrapa el objeto. Queda en el suelo a sus pies.`:`${u.name} ${plan.kind==='throw'?'arroja':'deja'} ${a.count??1} × ${plan.name} en el suelo.`);
+ }
+ }
+}
+else if(a.type==='dropSupply'||a.type==='transferSupply'){
+ if(a.slot!==undefined||a.inventoryKey!==undefined)return fail('Elegí solamente el suministro y la cantidad.');
+ const giving=a.type==='transferSupply',preview=giving?supplyTransferPreview(s,u,target,a.item,a.count):supplyDropPreview(s,u,a.item,a.count);
+ if(!preview.valid)return fail(preview.reason);
+ const plan=legacySupplyPlan(u,a.item,a.count,giving?target:null);replaceUnit(u,plan.source);pay(preview.pa);
+ if(giving)replaceUnit(target,plan.target);
+ else for(const stack of plan.stacks){addGroundStack(s,stack,u,'supply');const ground=s.groundItems.at(-1);if(Object.hasOwn(SUPPLY_ITEMS,stack.item))ground.type=stack.item;}
+ sayObserved(s,giving?[u,target]:[u],giving?`${u.name} entrega los suministros a ${target.name}.`:`${u.name} deja los suministros en el suelo.`);
+}
+else if(a.type==='drop'){
+  const preview=dropPreview(s,u,a.item,a.count??1);if(!preview.valid)return fail(preview.reason);
+  const extracted=extractItemQuantity(u,a.item,a.count??1);replaceUnit(u,extracted.unit);pay(preview.pa);addGroundStack(s,extracted.stack,u);
+  sayObserved(s,[u],`${u.name} deja el objeto en el suelo.`);
+}
+else if(a.type==='transfer'){
+  const preview=transferPreview(s,u,target,a.item,a.count??1);if(!preview.valid)return fail(preview.reason);
+  if(a.transferKind!==undefined&&(a.transferKind!==preview.kind||JSON.stringify(a.transferRoute)!==JSON.stringify(preview.route.map(v=>v.id))))return fail('Cambió la entrega. Revisa el destinatario y los PA antes de confirmar.');
+  const transfer=transferItemQuantity(u,target,a.item,a.count??1);replaceUnit(u,transfer.source);pay(preview.pa);
+  if(preview.kind==='relay'){
+    for(const step of preview.route.slice(1,-1)){
+      const helper=s.units.find(v=>v.id===step.id);lowerWeapon(helper);
+      if(s.mode!=='exploration')helper.ap-=step.pa;
+    }
+    if(s.mode==='exploration')s.actionDurationSeconds=preview.route.length-1;
+  }
+  if(preview.kind!=='throw'||random(s)*100<preview.chance){replaceUnit(target,transfer.target);lowerWeapon(target);if(preview.kind==='throw'&&s.mode!=='exploration')target.ap-=2;sayObserved(s,[u,target],`${u.name} entrega el objeto a ${target.name}${preview.kind==='relay'?' a través de '+preview.route.slice(1,-1).map(v=>v.name).join(', '):''}.`);}
+  else {addGroundStack(s,transfer.stack,target);sayObserved(s,[target],`${target.name} no atrapa el objeto. Queda en el suelo a sus pies.`);}
 }
 else if(a.type==='loot'){
- const source=target,drop=a.dropIndex!==undefined?s.droppedWeapons[a.dropIndex]:null,ground=a.groundId?s.groundItems.find(g=>g.id===a.groundId):null;
- if([source,drop,ground].filter(Boolean).length!==1)return fail('Elegí un solo cuerpo u objeto.');
- const pos=source||drop||ground;
- if(!pos||!artilleryContact(s,u,pos))return fail('Acércate al equipo, sin obstáculos entre ambos.');
- if(source&&source.hp>0&&!source.unconscious&&!source.routed)return fail('Solo puedes registrar un cuerpo o una persona inconsciente.');
- if(drop?.taken||ground?.count===0||ground?.heldBy||ground?.containerId)return fail('Ese objeto ya fue recogido o no está disponible.');
- if(a.count!==undefined&&(!Number.isSafeInteger(a.count)||a.count<1))return fail('La cantidad debe ser un número entero positivo.');
- const keys=[...AMMO_KEYS,'rations','boleadoras','medkits','torches'],item=a.item==='ammo'?(ammoTypeFor(source)??'ammoMusket'):a.item||'all';
- if(source&&item!=='all'&&item!=='weapon'&&item!=='blade'&&!keys.includes(item))return fail('Ese objeto no se puede saquear.');
- const hasWeapon=source&&!source.weaponDropped&&Boolean(source.weapon),hasBlade=source&&Boolean(BLADES[source.blade]);
- const available=source?(item==='all'?(hasWeapon||hasBlade||keys.some(key=>supplyCount(source,key)>0)||Object.values(source.inventory??{}).some(record=>(typeof record==='number'?record:record.count)>0)):item==='weapon'?hasWeapon:item==='blade'?hasBlade:supplyCount(source,item)>0):Boolean(drop||ground?.count);
- if(!available)return fail('No queda equipo que recoger.');
- let collected=0;
- const addRecord=(base,record)=>{
-  let key=base,serial=0;while(u.inventory[key])key=`${base}:${++serial}`;
-  const amount=inventoryRoom(u,key,record);if(amount){u.inventory[key]={...structuredClone(record),count:amount};collected+=amount;}return amount;
- };
- const addSupply=(key,available)=>{
-  const wanted=Math.min(available,a.count??available),amount=supplyRoom(u,key,wanted);
-  if(a.count!==undefined&&(a.count>available||amount<a.count))return 0;
-  if(amount){changeSupply(u,key,amount);collected+=amount;}return amount;
- };
- if(source){
-  if((item==='all'||item==='weapon')&&!source.weaponDropped&&source.weapon){
-   if(addRecord(`weapon:${source.weapon}:${source.id}`,weaponRecord(source))){source.weaponDropped=true;source.loaded=0;delete source.reloadProgress;}
-  }
-  if((item==='all'||item==='blade')&&BLADES[source.blade]){
-   if(addRecord(`blade:${source.blade}:${source.id}`,weaponRecord(source,'blade'))){source.blade=0;delete source.bladeMetadata;delete source.bladeCondition;delete source.bladeJammed;if(source.activeSlot==='blade')source.activeSlot='primary';source.braced=false;}
-  }
-  for(const key of keys)if(item==='all'||item===key)changeSupply(source,key,-addSupply(key,supplyCount(source,key)));
-  if(item==='all')for(const [key,value]of Object.entries(source.inventory??{})){
-   const record=typeof value==='number'?{count:value,weight:0}:value;
-   if(record.count>0){const amount=addRecord(`${key}:from${source.id}`,record);if(typeof value==='number')source.inventory[key]-=amount;else record.count-=amount;}
-  }
- }else if(drop){
-  if(addRecord(`weapon:${drop.weapon}:drop${a.dropIndex}`,{...weaponRecord(drop),...(drop.weight===undefined?{}:{weight:drop.weight})}))drop.taken=true;
- }else if(ground.type==='money'){
-  // Money is one finite purse. Keep its provenance key for treasury settlement.
-  if(inventoryRoom(u,ground.id,{count:ground.count,weight:0})===ground.count){u.inventory[ground.id]={count:ground.count,weight:0};collected=ground.count;ground.count=0;}
- }else if(keys.includes(ground.type)){
-  const wanted=a.count??Math.min(ground.count,supplyRoom(u,ground.type,ground.count));
-  if(Object.hasOwn(TRANSFER_SUPPLY_LABELS,ground.type)){const plan=groundSupplyPickupPreview(s,u,ground.id,wanted);if(plan.reason)return fail(plan.reason);}
-  ground.count-=addSupply(ground.type,ground.count);
- }else return fail('Ese objeto no se puede recoger.');
- if(!collected)return fail(POCKET_FULL);
- if(!pay(8))return fail('Registrar el equipo requiere 8 PA.');
- say(s,`${u.name} recoge el equipo que cabe en sus bolsillos. El resto queda en el lugar.`);
+  const preview=lootPreview(s,u,a);if(!preview.valid)return fail(preview.reason);
+  const plan=planLoot(s,u,a);commitLoot(u,plan);pay(preview.pa);
+  sayObserved(s,[u],`${u.name} recoge el equipo seleccionado.`);
 }
-else if(a.type==='boleadoras'){if(civilian(s,target))return fail('Las boleadoras requieren un combatiente enemigo.');if(!target||target.side===u.side||!alive(target)||dist(u,target)>8||!hasLineOfSight(s,u,target))return fail('El blanco de las boleadoras debe estar visible y a ocho casillas o menos.');if(!u.boleadoras)return fail('No quedan boleadoras.');if(!pay(12))return fail('Lanzar boleadoras requiere 12 PA.');u.boleadoras--;target.entangled=true;target.mounted=false;exhaust(s,target,20);s.groundItems.push({id:`bola-${u.id}-${s.turn}-${s.groundItems.length}`,type:'boleadoras',x:target.x,y:target.y,count:1,heldBy:target.id});say(s,`${u.name} enreda a ${target.name} con las boleadoras.`);}
-else if(a.type==='free'){if(!u.entangled)return fail('El soldado no está enredado.');if(!pay(15))return fail('Soltarse requiere 15 PA.');u.entangled=false;for(const g of s.groundItems)if(g.heldBy===u.id)g.heldBy=null;say(s,`${u.name} se libera de las boleadoras.`);}
-else if(a.type==='breach'){const wall=tile(s,a.x,a.y);if(!wall?.blocked||dist(u,{x:a.x,y:a.y})>1.5)return fail('Acércate a una barricada o pared de adobe.');if(wall.material==='stone'||['stone','cliff','water'].includes(wall.type))return fail('La piedra requiere artillería; no puede abrirse a mano.');const cost=actionCosts(s,u).breach;if(!pay(cost))return fail(`Abrir la brecha requiere ${cost} PA.`);wall.blocked=false;wall.blocksSight=false;wall.type='rubble';wall.cover=15;say(s,`${u.name} abre una brecha para el asalto.`);}
-else if(a.type==='repair'){if(!hasFirearm(u))return fail('Prepara primero el arma de fuego que quieres mantener.');if(u.condition>=100)return fail('El mecanismo ya está en buen estado.');const cost=actionCosts(s,u).repair;if(!pay(cost))return fail(`Mantener el arma requiere ${cost} PA.`);practice(u,'mechanical',3);u.condition=Math.min(100,u.condition+(hasTrait(u,'gunsmith_artillerist')?45:hasTrait(u,'workshop_training')?40:30));say(s,`${u.name} limpia y ajusta el mecanismo.`);}
-else if(a.type==='ration'){if(!u.fatigue&&!u.bleeding&&u.ap>=maxActionPoints(s,u))return fail('El soldado ya está descansado y no necesita vendas.');if(u.rations<1)return fail('No quedan raciones de tasajo y lino.');if(!pay(10))return fail('Usar las provisiones requiere 10 PA.');u.rations--;u.fatigue=Math.max(0,(u.fatigue||0)-25);u.bleeding=0;u.maxAP=maxActionPoints(s,u);u.ap=Math.min(u.maxAP,u.ap+20);say(s,`${u.name} toma tasajo y se venda: recupera fuerzas y detiene la hemorragia.`);}
-else if(a.type==='brace'){if(bladeFor(u).id!==1811)return fail('Se necesita una bayoneta preparada para recibir la carga.');if(u.ap<bladeFor(u).ap)return fail(`Reserva al menos ${bladeFor(u).ap} PA para detener una carga.`);u.braced=true;say(s,`${u.name} cala la bayoneta y espera la carga.`);}
-else if(a.type==='weapon'){if(!['primary','blade','unarmed'].includes(a.slot))return fail('Seleccioná arma principal, secundaria o manos vacías.');if(a.slot==='blade'&&!BLADES[u.blade])return fail('No hay un arma blanca secundaria equipada.');if((u.activeSlot||'primary')===a.slot)return fail('Esa arma ya está en la mano.');if(!pay(4))return fail('Cambiar de arma requiere 4 PA.');u.activeSlot=a.slot;u.momentum=0;say(s,`${u.name} prepara ${weaponFor(u).name}.`);}
-else if(a.type==='overwatch'){if(!hasFirearm(u)||!u.loaded||u.jammed)return fail('Necesitas un arma cargada y cebada para cubrir el frente.');u.overwatch=true;say(s,`${u.name} queda preparado para fuego de reacción.`);}
-else if(a.type==='mount'){if(!u.horse)return fail('Este soldado no tiene una montura asignada.');if(!u.mounted&&u.mount&&(u.mount.stamina<20||u.mount.condition<30))return fail('El caballo necesita descanso y cuidados antes de la monta.');const cost=actionCosts(s,u).mount;if(!pay(cost))return fail(`Montar o desmontar requiere ${cost} PA.`);u.mounted=!u.mounted;u.stance='standing';u.momentum=0;say(s,`${u.name} ${u.mounted?'monta a caballo':'desmonta'}.`);} 
+else if(a.type==='lootBatch'){
+  const preview=lootBatchPreview(s,u,a.items);if(!preview.valid)return fail(preview.reason);
+  const plan=planLootBatch(s,u,a.items);
+  for(const unit of s.units)replaceUnit(unit,plan.units.find(next=>next.id===unit.id));
+  s.npcs=plan.npcs;s.groundItems=plan.groundItems;s.droppedWeapons=plan.droppedWeapons;pay(preview.pa);
+  sayObserved(s,[u],`${u.name} recoge ${a.items.length} objeto(s) seleccionados${s.mode==='exploration'?'':` (${preview.pa} PA)`}.`);
+}
+else if(a.type==='boleadoras'){const point=target??positionOf(a),preview=supplyUsePreview(s,u,point,'boleadoras');if(!preview.allowed)return fail(preview.reason);pay(preview.cost);u.boleadoras--;clearEmptySupply(u);if(dist(u,point)>0)u.facing=directionTo(u,point);if(target){target.entangled=true;target.mounted=false;exhaust(s,target,20);s.groundItems.push({id:`bola-${u.id}-${s.turn}-${s.groundItems.length}`,type:'boleadoras',...positionOf(target),count:1,heldBy:target.id});sayObserved(s,[u,target],`${u.name} enreda a ${target.name} con las boleadoras.`);}else{s.groundItems.push({id:`bola-${u.id}-${s.turn}-${s.groundItems.length}`,type:'boleadoras',...positionOf(point),count:1});sayObserved(s,[u],`${u.name} lanza las boleadoras a una casilla.`);}}
+else if(a.type==='prisonerEscort'){const preview=prisonerReleasePreview(s,u,target,a.escortOrder??'invalid');if(!preview.valid)return fail(preview.reason);if(!pay(preview.cost))return fail('PA insuficientes.');recordPrisonerEscort(s,u,target,a.escortOrder==='wait');sayObserved(s,[u],`${u.name} indica a ${target.name} que ${a.escortOrder==='wait'?'espere aquí':'lo siga'}.`);}
+else if(a.type==='free'&&a.targetKind==='npc'){const preview=prisonerReleasePreview(s,u,target);if(!preview.valid)return fail(preview.reason);if(!pay(preview.cost))return fail('PA insuficientes.');lowerWeapon(u);recordPrisonerRelease(s,u,target);sayObserved(s,[u],`${u.name} libera de las ataduras a ${target.name}. Te seguirá cuando pueda caminar.`);}
+else if(a.type==='free'){if(!u.entangled)return fail('El soldado no está enredado.');if(!pay(15))return fail('Soltarse requiere 15 PA.');u.entangled=false;for(const g of s.groundItems)if(g.heldBy===u.id)g.heldBy=null;sayObserved(s,[u],`${u.name} se libera de las boleadoras.`);}
+else if(a.type==='breach'){if(tacticalLevel(u)!==0||tacticalLevel(a)!==0)return fail('La brecha manual requiere una pared al nivel del suelo.');const wall=tile(s,a.x,a.y);if(!wall?.blocked||dist(u,{x:a.x,y:a.y})>1.5)return fail('Acércate a una barricada o pared de adobe.');if(wall.material==='stone'||['stone','cliff','water'].includes(wall.type))return fail('La piedra requiere artillería; no puede abrirse a mano.');const cost=hasCharacterAbility(u,'breaching')?25:45;if(!pay(cost))return fail(`Abrir la brecha requiere ${cost} PA.`);wall.blocked=false;wall.blocksSight=false;wall.type='rubble';wall.cover=15;delete wall.obstacleHeight;delete wall.projectileResistance;emitNoise(s,u,'explosion',wall);sayObserved(s,[u],`${u.name} abre una brecha para el asalto.`);}
+else if(a.type==='repair'){if(!hasFirearm(u))return fail('Prepara primero el arma de fuego que quieres mantener.');if(u.condition>=100)return fail('El mecanismo ya está en buen estado.');const cost=actionCosts(s,u).repair;if(!pay(cost))return fail(`Mantener el mecanismo requiere ${cost} PA.`);practice(u,'mechanical',3);u.condition=Math.min(100,u.condition+(hasTrait(u,'gunsmith_artillerist')?45:hasTrait(u,'workshop_training')?40:30));sayObserved(s,[u],`${u.name} mantiene y ajusta el mecanismo.`);}
+else if(a.type==='ration'){
+  const preview=supplyUsePreview(s,u,a.targetId===undefined?u:target,'rations');if(!preview.allowed)return fail(preview.reason);pay(preview.cost);
+  u.rations--;clearEmptySupply(u);recoverFatigue(u,10,20);
+  sayObserved(s,[u],`${u.name} come una ración y recupera fuerzas. Las heridas requieren vendas.`);
+}
+else if(a.type==='brace'){if(u.stance==='prone')return fail('Primero debés levantarte para preparar la guardia.');if(!fixedBayonetFor(u))return fail('Se necesita una bayoneta preparada para recibir la carga.');if(u.ap<16)return fail('Reserva al menos 16 PA para detener una carga.');u.braced=true;sayObserved(s,[u],`${u.name} mantiene la bayoneta fijada en guardia.`);}
+else if(a.type==='weapon'){
+ let next;try{next=planMainHandEquipment(u,a);}catch(error){return fail(error.message);}
+ if(!pay(4))return fail('Cambiar de objeto requiere 4 PA.');next.ap=u.ap;replaceUnit(u,next);sayObserved(s,[u],`${u.name} prepara ${weaponFor(u).name}.`);
+}
+else if(a.type==='overwatch'){
+  if(u.overwatch){u.overwatch=false;sayObserved(s,[u],`${u.name} deja de cubrir el frente.`);}
+  else {if(!hasFirearm(u)||!u.loaded||u.jammed)return fail('Necesitas un arma cargada y cebada para cubrir el frente.');
+    if(s.mode!=='exploration'&&u.ap<actionCosts(s,u).fire)return fail('Reserva PA suficientes para disparar.');
+    u.overwatch=true;sayObserved(s,[u],`${u.name} reserva sus PA para fuego de reacción.`);}
+}
+else if(a.type==='mount'){if(tacticalLevel(u)!==0)return fail('La montura debe permanecer en el suelo.');if(!u.horse)return fail('Este soldado no tiene una montura asignada.');if(!u.mounted&&u.mount&&(u.mount.stamina<20||u.mount.condition<30))return fail('El caballo necesita descanso y cuidados antes de la monta.');const cost=actionCosts(s,u).mount;if(!pay(cost))return fail(`Montar o desmontar requiere ${cost} PA.`);u.mounted=!u.mounted;u.stance='standing';u.momentum=0;sayObserved(s,[u],`${u.name} ${u.mounted?'monta a caballo':'desmonta'}.`);}
 else if(a.type==='heal'){
- if(a.targetId!==undefined&&!target)return fail('No se encuentra al herido.');
- const t=target||u,isCivilian=civilian(s,t);if(t.hp<=0||(!isCivilian&&t.side!==u.side)||dist(u,t)>1.5)return fail('El herido debe estar a tu lado.');
- const plan=firstAidPlan(u,t,{baseCost:actionCosts(s,u).heal,budgetAP:s.mode==='exploration'?Infinity:u.ap,targetKind:isCivilian?'npc':'unit'});if(!plan.valid)return fail(plan.reason);if(!pay(plan.paCost))return fail(`Vendar requiere ${plan.paCost} PA.`);
- const before=t.hp;u.medkits-=plan.dressingsUsed;practice(u,'medical',3);t.hp=plan.hpAfter;t.bleeding=plan.bleedingAfter;t.bandaged=plan.bandagedAfter;
- if(isCivilian){if(!t.bleeding){delete t.bleedSource;delete t.civilianWoundSeconds;}t.civilianWoundVersion=1;if(t.hp>before)t.civilianFirstAid={version:1,hpRestored:civilianRestoredHp(t)+t.hp-before};t.unconscious=isCivilianUnconscious(t);}
- say(s,plan.partial?`${u.name} estabiliza a ${t.name}; el tratamiento debe continuar.`:`${u.name} venda a ${t.name}. La recuperación de salud continúa en campaña.`);
- // Speak only for this accepted, paid stroke, before any later ambient recovery.
- // Current HP/energy, rather than an older military flag, decides consciousness.
- if(t!==u&&!t.departure&&t.hp>0&&!isUnconscious(t)){
-  const line=speechFor(t,'treated');if(line?.trim())say(s,`${t.nickname||t.name}: «${line}»`);
- }
-}
-else if(a.type==='stance'){if(u.mounted)return fail('Debes desmontar antes de cambiar de postura.');if(!['standing','prone'].includes(a.stance)||u.stance===a.stance)return fail('Postura no válida.');const cost=u.knockedDown?12:6;if(!pay(cost))return fail(`Cambiar de postura requiere ${cost} PA.`);u.stance=a.stance;if(a.stance==='standing')u.knockedDown=false;u.momentum=0;say(s,`${u.name} ${a.stance==='prone'?'se tiende cuerpo a tierra':'se pone de pie'}.`);}
-else return fail('Orden desconocida.');if(!['fire','overwatch'].includes(a.type))lowerWeapon(u);checkEnd(s);return true;}
-export function actBattle(state,action){
- if(action.type==='rest')return endTurn(state);
- const s=clone(state);s.lastError=null;delete s.actionTimeAppliedSeconds;
- if(action.type==='ambient'){
-  if(s.mode==='exploration'&&s.phase==='player'&&s.status==='active')advanceExploration(s,6);
-  delete s.actionTimeAppliedSeconds;revealRooms(s);return resolveFirstContact(s);
- }
- if(action.type==='explore'&&(s.status==='victory'||s.sectorCleared)){
-  s.mode='exploration';s.status='active';s.roundTimeCharged=false;delete s.enemyFirstAwaitingPlayer;delete s.contactInitiative;
-  say(s,'El sector está despejado. Puedes explorar y recoger equipo.');return s;
- }
- if(s.units.find(u=>u.id===String(action.unitId))?.militia){s.lastError='Las milicias actúan por su cuenta; seleccioná un integrante de la escuadra.';say(s,s.lastError);return s;}
- const oldMode=s.mode;delete s.actionDurationSeconds;
- if(action.type==='move')s.approachingNpcIds=s.npcs.filter(n=>Math.abs(n.x-action.x)+Math.abs(n.y-action.y)===1).map(n=>n.id);
- const inventoryAction=['loot','drop','dropSupply','transfer','transferSupply','equipLoot','weapon','pocket'].includes(action.type);
- const success=apply(s,action);
- if(inventoryAction){
-  const reason=s.lastError||s.units.filter(u=>u.side==='player').map(u=>pocketChangeReason(state.units.find(v=>v.id===u.id)??u,u)).find(Boolean);
-  if(success===false||reason){const rejected=clone(state);rejected.lastError=reason||POCKET_FULL;say(rejected,rejected.lastError);return rejected;}
- }
- if(success!==false&&!s.lastError){
-  if(oldMode==='exploration')advanceExploration(s,Math.max(0,(s.actionDurationSeconds??6)-(s.actionTimeAppliedSeconds??0)));
-  else if(!s.roundTimeCharged){advanceBattleClock(s,COMBAT_ROUND_SECONDS);s.roundTimeCharged=true;}
- }
- delete s.actionDurationSeconds;delete s.actionTimeAppliedSeconds;delete s.approachingNpcIds;detectContact(s);revealRooms(s);return resolveFirstContact(s);
-}
-function releaseHeldWeapon(u,slot){
- if(slot==='primary'){u.weaponDropped=true;u.loaded=0;delete u.reloadProgress;}
- else{u.blade=0;delete u.bladeMetadata;delete u.bladeCondition;delete u.bladeJammed;}
- if((u.activeSlot||'primary')===slot)u.activeSlot='unarmed';u.braced=false;
-}
-function companionTransferReason(s,u,target){
- if(s.status!=='active'||!u||u.side!=='player'||u.militia||!alive(u)||u.fled||u.departure||u.knockedDown)return 'Seleccioná un integrante de la escuadra que pueda actuar.';
- if(!target||target===u||target.id===u.id||target.side!==u.side||target.militia||!alive(target)||target.fled||target.departure||target.knockedDown||target.entangled)return 'Elegí otro integrante consciente de la escuadra.';
- if(!artilleryContact(s,u,target))return 'El compañero debe estar al lado, sin obstáculos entre ambos.';
- return null;
-}
-const personalSupplyLimit=item=>item==='medkits'?1000000:100000;
-function personalSupplyStockReason(u,item,count,includeCartridges=false){
- if(!(Object.hasOwn(TRANSFER_SUPPLY_LABELS,item)||includeCartridges&&item==='ammo'))return 'Elegí un suministro personal disponible.';
- if(!Number.isSafeInteger(count)||count<1)return 'La cantidad debe ser un número entero positivo.';
- const available=supplyCount(u,item);
- if(!Number.isSafeInteger(available)||available<count)return 'No quedan suficientes suministros de ese tipo.';
- return null;
-}
-export function groundSupplyPickupPreview(s,u,groundId,count){
- const reject=reason=>({reason,amount:0,pa:8,seconds:s.mode==='exploration'?1:undefined});
- if(s.status!=='active'||!u||u.side!=='player'||u.militia||!alive(u)||u.fled||u.departure||u.knockedDown)return reject('Seleccioná un integrante de la escuadra que pueda actuar.');
- const source=s.groundItems.find(g=>g.id===groundId);
- if(!source||!Object.hasOwn(TRANSFER_SUPPLY_LABELS,source.type)||!Number.isSafeInteger(source.count)||source.count<=0||source.heldBy||source.containerId)return reject('Ese bulto no está disponible para recoger.');
- if(!artilleryContact(s,u,source))return reject('Acercate al bulto, sin obstáculos entre ambos.');
- if(!Number.isSafeInteger(count)||count<1)return reject('La cantidad debe ser un número entero positivo.');
- if(count>source.count)return reject('No queda esa cantidad en el bulto.');
- const carried=supplyCount(u,source.type);
- if(!Number.isSafeInteger(carried)||carried<0||carried+count>personalSupplyLimit(source.type))return reject('No puedes guardar toda la cantidad de ese suministro.');
- if(supplyRoom(u,source.type,count)<count)return reject(POCKET_FULL);
- if(s.mode!=='exploration'&&u.ap<8)return reject('Recoger suministros requiere 8 PA.');
- return {reason:null,amount:count,pa:8,seconds:s.mode==='exploration'?1:undefined};
-}
-export function supplyDropPreview(s,u,item,count){
- const reject=reason=>({reason,pa:4,seconds:s.mode==='exploration'?1:undefined});
- if(s.status!=='active'||!u||u.side!=='player'||u.militia||!alive(u)||u.fled||u.departure||u.knockedDown)return reject('Seleccioná un integrante de la escuadra que pueda actuar.');
- if(item==='ammo')return reject('Los cartuchos solo se pueden entregar a un compañero.');
- const reason=personalSupplyStockReason(u,item,count);if(reason)return reject(reason);
- if(count>personalSupplyLimit(item))return reject('Esa cantidad supera el límite de un bulto.');
- if(s.groundItems.length>=2000)return reject('No queda espacio para otro objeto en el sector.');
- if(s.mode!=='exploration'&&u.ap<4)return reject('Dejar suministros requiere 4 PA.');
- return {reason:null,pa:4,seconds:s.mode==='exploration'?1:undefined};
-}
-export function supplyTransferPreview(s,u,target,item,count){
- const reject=reason=>({reason,pa:4,seconds:s.mode==='exploration'?1:undefined}),reason=companionTransferReason(s,u,target);if(reason)return reject(reason);
- const stockReason=personalSupplyStockReason(u,item,count,true);if(stockReason)return reject(stockReason);
- if(item==='ammo')item=ammoTypeFor(u)??'ammoMusket';const received=supplyCount(target,item);
- if(!Number.isSafeInteger(received)||received<0||received+count>(item==='ammo'?100000-(target.loaded??0):personalSupplyLimit(item)))return reject('El compañero no puede guardar esa cantidad de suministros.');
- if(supplyRoom(target,item,count)<count)return reject(POCKET_FULL);
- if(s.mode!=='exploration'&&u.ap<4)return reject('Entregar suministros requiere 4 PA.');
- return {reason:null,pa:4,seconds:s.mode==='exploration'?1:undefined};
-}
-// Shared preflight for the inventory control and execution; it never mutates.
-/** @param {'primary'|'blade'|'unarmed'} [slot] */
-export function weaponTransferPreview(s,u,target,inventoryKey,slot=undefined){
- const reject=reason=>({reason,pa:4,seconds:s.mode==='exploration'?1:undefined});
- const reason=companionTransferReason(s,u,target);if(reason)return reject(reason);
- const held=slot!==undefined;
- if(held&&(!['primary','blade'].includes(slot)||inventoryKey!==undefined))return reject('Elegí una sola mano o un arma de la mochila.');
- if(held&&(slot==='primary'?(u.weaponDropped||!u.weapon):!BLADES[u.blade]))return reject('Esa mano no tiene un arma para entregar.');
- const record=held?weaponRecord(u,slot):u.inventory?.[inventoryKey];
- if(!record||typeof record!=='object'||!Number.isSafeInteger(record.count)||record.count<1||!(WEAPONS[record.weapon]||BLADES[record.weapon]))return reject('Elegí un arma disponible para entregar.');
- try{validateWeaponCarrier(record);}catch(error){return reject(error.message);}
- const spec=weaponSpecification(record);if(!Number.isFinite(record.weight)||record.weight<0||record.weight>10000||!Number.isInteger(record.loaded??0)||(record.loaded??0)<0||(record.loaded??0)>(spec.capacity??0)||!Number.isFinite(record.condition??100)||(record.condition??100)<0||(record.condition??100)>100)return reject('El estado del arma recuperada no es válido.');
- if(Object.keys(target.inventory??{}).length>=1000)return reject('El compañero no puede guardar más equipo.');
- let key='incoming';while(Object.hasOwn(target.inventory??{},key))key+='-';
- if(inventoryRoom(target,key,record,1)<1)return reject(POCKET_FULL);
- if(s.mode!=='exploration'&&u.ap<4)return reject('Entregar una pieza requiere 4 PA.');
- return {reason:null,pa:4,seconds:s.mode==='exploration'?1:undefined};
-}
-export function endTurn(state){
- const s=clone(state);s.lastError=null;if(s.status!=='active')return s;
- if(s.mode==='exploration'){
-  for(const u of s.units.filter(present)){u.energy=Math.min(100,(u.energy??100)+15);refreshMilitaryCondition(u);}
-  advanceExploration(s,REST_SECONDS);delete s.actionTimeAppliedSeconds;if(s.mode==='exploration')s.turn++;
-  detectContact(s);revealRooms(s);return resolveFirstContact(s);
- }
- if(s.enemyFirstAwaitingPlayer){delete s.enemyFirstAwaitingPlayer;finishCombatRound(s);if(s.status!=='active')return s;}
- if(!s.roundTimeCharged)advanceBattleClock(s,COMBAT_ROUND_SECONDS);
- s.roundTimeCharged=true;s.phase='enemy';
- runEnemyPhase(s);s.enemyTurns=(s.enemyTurns??0)+1;
- if(s.status!=='active'){s.phase='player';if(s.roundFirstSide!=='enemy')s.turn++;return s;}
- if(s.roundFirstSide==='enemy'){s.enemyFirstAwaitingPlayer=true;s.phase='player';revealRooms(s);return s;}
- return finishCombatRound(s);
-}
-function authoredBladeSwitch(u,target){
- if(!contentWeaponOf(u,'blade'))return null;
- const blade=bladeFor({...u,activeSlot:'blade'}),distance=dist(u,target);
- if(u.activeSlot==='blade')return WEAPONS[u.weapon]&&!u.weaponDropped&&(u.loaded||distance>6&&ammoCount(u))&&distance>blade.reach&&u.ap>=4?'primary':null;
- if((WEAPONS[u.weapon]||!u.weapon)&&(distance<=blade.reach||!u.loaded&&distance<=6)&&u.ap>=4)return 'blade';
- return null;
-}
-function runEnemyPhase(s){runForcePhase(s,'enemy');}
-function runMilitiaPhase(s){
- if(s.units.some(u=>u.side==='player'&&u.militia&&alive(u)))say(s,`Turno ${s.turn}: actúa la guarnición local.`);
- runForcePhase(s,'player');
-}
-function runForcePhase(s,side){
- const enemy=side==='enemy',order=action=>apply(s,action,enemy),actors=s.units.filter(u=>u.side===side&&(enemy||u.militia)&&alive(u));s.phase=side;
- // Allocate the whole side once. A helper may spend AP before its own decision;
- // visiting that helper later must not issue a second budget.
- for(const u of actors){if(enemy){u.maxAP=maxActionPoints(s,u);u.ap=Math.max(0,u.maxAP-u.reactionSpent);}u.reactionSpent=0;}
- for(const u of actors){
-  for(let n=0;n<12&&alive(u)&&u.ap>0&&s.status==='active';n++){
-   const targets=s.units.filter(t=>t.side!==side&&alive(t)&&canSee(s,u,t)).sort((a,b)=>dist(u,a)-dist(u,b)),t=targets[0];
-   const artillery=chooseArtilleryAction(s,u,targets);if(artillery){
-    // Perceived paths cannot authorize a longer detour around an unseen body.
-    if(artillery.type==='move'){const path=getReachable(s,u).find(p=>p.x===artillery.x&&p.y===artillery.y);if(!path||path.cost>24||path.path.length>3)break;}
-    if(!order(artillery))break;continue;
-   }
-   // Keep the first operators at the gun while their helpers approach/stand.
-   // An exhausted post or immediate close threat returns to ordinary combat.
-   if(holdsArtilleryPost(s,u)&&targets.every(t=>dist(u,t)>2.5))break;
-   if(u.ap<6)break;
-   if(!t){
-    const patrol=enemy?choosePatrolAction(s,u):militiaPatrolOrder(s,u);
-    if(patrol){u.patrolTurn=s.turn;order(patrol);if(s.units.some(v=>v.side!==side&&alive(v)&&canSee(s,u,v)))continue;}
-    break;
-   }
-   const weaponSwitch=authoredBladeSwitch(u,t);
-   if(u.entangled){if(!order({type:'free',unitId:u.id}))break;}
-   else if(u.knockedDown){if(!order({type:'stance',unitId:u.id,stance:'standing'}))break;}
-   else if(weaponSwitch){if(!order({type:'weapon',unitId:u.id,slot:weaponSwitch}))break;}
-   else if(dist(u,t)<=bladeFor(u).reach&&hasLineOfSight(s,u,t)){if(!order({type:'melee',unitId:u.id,targetId:t.id}))break;}
-   else if(!u.loaded&&bladeFor(u).id>0&&dist(u,t)<=6&&(u.x===t.x||u.y===t.y||Math.abs(u.x-t.x)===Math.abs(u.y-t.y))&&hasLineOfSight(s,u,t)&&u.ap>=Math.ceil(dist(u,t)*stepCost(u,t))+actionCosts(s,u).melee){if(!order({type:'charge',unitId:u.id,targetId:t.id}))break;}
-   else if(u.jammed){if(!order({type:'reprime',unitId:u.id}))break;}
-   else if(hasFirearm(u)&&!u.loaded&&!u.reloadProgress&&!ammoCount(u)&&ammunitionLoadsFor(u).some(load=>ammoCount(u,load.family)>0)){const load=ammunitionLoadsFor(u).find(load=>ammoCount(u,load.family)>0);if(!order({type:'selectAmmunitionLoad',unitId:u.id,family:load.family}))break;}
-   else if(hasFirearm(u)&&!u.loaded&&ammoCount(u)){if(!order({type:'reload',unitId:u.id}))break;}
-   else if(hasFirearm(u)&&u.loaded&&hasLineOfSight(s,u,t)&&shotChance(s,u,t)>=20){if(!order({type:'fire',unitId:u.id,targetId:t.id}))break;}
-   else{
-    const candidates=getReachable(s,u).filter(p=>p.cost>0).sort((a,b)=>(dist(a,t)*10+a.cost*.1)-(dist(b,t)*10+b.cost*.1)),p=candidates[0];
-    if(!p||dist(p,t)>=dist(u,t)||!order({type:'move',unitId:u.id,x:p.x,y:p.y}))break;
-   }
+  const t=target||u;
+  const preview=medicalUsePreview(s,u,t,{targetKind:a.targetKind});if(!preview.allowed)return fail(preview.reason);pay(preview.cost);
+  const treatment=preview.treatment,bleedReduced=(t.bleeding??0)-treatment.bleedingAfter;u.medkits-=treatment.dressingsUsed;practice(u,'medical',3);
+  t.hp=treatment.hpAfter;t.bleeding=treatment.bleedingAfter;t.bandaged=treatment.bandagedAfter;
+  if(a.targetKind==='npc'){
+    t.civilianWoundVersion=1;if(!t.bleeding){delete t.bleedSource;delete t.civilianWoundSeconds;}t.unconscious=isUnconscious(t);
+    if(treatment.hpGain>0)t.civilianFirstAid={version:1,hpRestored:(t.civilianFirstAid?.hpRestored??0)+treatment.hpGain};
   }
-  if(alive(u)&&u.ap>=bladeFor(u).ap&&bladeFor(u).id===1811)u.braced=true;
+  else refreshCondition(t);
+  const progress=[treatment.hpGain>0?`recupera ${treatment.hpGain} de salud crítica`:null,bleedReduced>0?`reduce la hemorragia en ${bleedReduced}`:null].filter(Boolean).join(' y ');
+  sayObserved(s,[u,t],treatment.critical?`${u.name} venda a ${t.name}: ${progress}${treatment.partial?'; necesita más primeros auxilios.':'; estabilizado. La recuperación restante requiere descanso y atención médica.'}`:`${u.name} venda a ${t.name} y detiene la hemorragia. La salud se recupera con descanso y atención médica.`);
+  const line=speechFor(t,'treated');if(line?.trim())sayObserved(s,[t],`${t.nickname||t.name}: «${line}»`);
+}
+else if(a.type==='stance'){
+  if(u.mounted)return fail('Debes desmontar antes de cambiar de postura.');
+  if(!STANCES.includes(a.stance)||u.stance===a.stance)return fail('Postura no válida.');
+  if(u.knockedDown&&a.stance!=='standing')return fail('El soldado derribado debe ponerse de pie.');
+  const cost=stanceCost(u,a.stance);if(!pay(cost))return fail(`Cambiar de postura requiere ${cost} PA.`);
+  u.stance=a.stance;u.movementMode=a.stance==='prone'?'prone':a.stance==='crouched'?'crouch':'walk';
+  if(a.stance==='standing')u.knockedDown=false;u.momentum=0;
+  sayObserved(s,[u],`${u.name} ${a.stance==='prone'?'se tiende cuerpo a tierra':a.stance==='crouched'?'se agacha':'se pone de pie'}.`);
+}
+else return fail('Orden desconocida.');if(lowersWeapon(a.type)&&a.type!=='movement')lowerWeapon(u);checkEnd(s);if(!['move','climb','charge'].includes(a.type))reactionFire(s,u,observation);return true;}
+function advanceWounds(s,seconds){
+  s.bleedSeconds=(s.bleedSeconds??0)+seconds;
+  const ticks=Math.floor(s.bleedSeconds/COMBAT_ROUND_SECONDS);s.bleedSeconds%=COMBAT_ROUND_SECONDS;
+  for(const u of s.units.filter(u=>u.hp>0)){
+    if(u.bleeding){const loss=Math.min(u.hp,u.bleeding*ticks);u.hp-=loss;u.bandaged=Math.min(u.bandaged??0,u.maxHp-u.hp);if(u.side==='player'||teamCanSee(s,'player',u))sayObserved(s,[u],`${u.name} pierde ${loss} de salud por hemorragia.`);}
+    refreshCondition(u);
+  }
+  for(const npc of s.npcs??[]){
+    const before=npc.hp??100,visible=teamCanSee(s,'player',npc);
+    advanceCivilianWoundTime(s,npc,seconds);
+    if((npc.hp??100)<before&&visible){say(s,`${npc.name} pierde ${before-npc.hp} de salud por hemorragia.`);if(npc.hp===0)say(s,`${npc.name} muere por sus heridas.`);}
+  }
+}
+// Apply exploration time at the end of each completed movement step. This lets
+// bleeding and changing light stop a route at the tile where they take effect.
+// The scratch counter is removed before returning a public battle snapshot.
+function advanceExplorationAction(s,seconds){
+  advanceBattleClock(s,seconds);advanceWounds(s,seconds);advanceAmbientTime(s,seconds);
+  s.actionTimeAppliedSeconds=(s.actionTimeAppliedSeconds??0)+seconds;
+}
+function advanceAmbientTime(s,seconds){
+  if(s.mode!=='exploration'||s.status!=='active')return;
+  advanceCivilianTime(s,seconds,()=>{
+    if(detectContact(s))return false;
+    for(const u of s.units.filter(u=>(u.side==='enemy'||u.militia)&&alive(u)&&!u.routed)){
+      const patrolState={...s,turn:(s.civilianTurns??0)+1,mode:'combat'};
+      const order=holdsArtilleryPost(patrolState,u)?null:u.militia?militiaPatrolOrder(patrolState,{...u,ap:100}):choosePatrolAction(patrolState,{...u,patrolTurn:undefined,ap:24});
+      if(!order)continue;
+      const step=getReachable(patrolState,{...u,ap:u.militia?100:24}).find(p=>sameCell(p,{...order,tacticalLevel:order.tacticalLevel??tacticalLevel(u)}))?.path[0];
+      if(!step)continue;
+      const climbing=!sameSurface(u,step)?climbStep(s,u,u,step):null;
+      if(climbing&&!climbing.valid)continue;
+      const cost=climbing?.energy??movementEnergy(u,surfaceAt(s,step));
+      // Keep a breath reserve for contact. A tired patrol spends this whole
+      // six-second tick recovering instead of walking until near collapse.
+      // Fatigue still limits recovery, and every completed step pays its cost.
+      // A costly climb may require full capacity. Retain the best reserve
+      // that capacity permits, but never take a step that would cause collapse.
+      const capacity=maximumEnergy(u),rules=militiaPatrolRules(s),reserve=Math.max(1,Math.min(u.militia?rules.energyReserve:Math.ceil(capacity/2),capacity-cost));
+      if(u.energy-cost<reserve){recoverEnergy(u,u.militia?rules.restEnergy:10);continue;}
+      lowerWeapon(u);if(u.x!==step.x||u.y!==step.y)u.facing=directionTo(u,step);
+      // Route metadata belongs to the path, never to the persistent actor.
+      Object.assign(u,positionOf(step));u.momentum=0;delete u.lastTargetId;delete u.lastShotPosition;exhaust(s,u,cost);
+      if(detectContact(s))return false;
+    }
+    return true;
+  });
+  detectContact(s);
+}
+function beginUnitTurn(s,u){
+  const budget=actionPointBudget(s,u.routed?{...u,routed:false}:u);u.maxAP=budget.base;u.carriedAP=budget.carryover;u.ap=budget.total;
+  u.reactionSpent=0;u.shock=(u.shock??0)/2;
+}
+// Exit orders retain every participant. A receipt records the paid crossing;
+// it does not transfer the soldier or their equipment to campaign stock.
+function exitUnitReason(s,u,exit,{routing=false}={}){
+  if(!u||u.side!=='player'&&!routing)return 'No puedes retirar a ese combatiente.';
+  if(u.departure)return 'El soldado ya salió del sector.';
+  if(u.hp<=0||u.unconscious||u.hp<CRITICAL_HEALTH)return 'El soldado no puede caminar.';
+  if(u.surrendered||u.routed&&!routing)return 'El soldado no está bajo tus órdenes.';
+  if(u.knockedDown)return 'El soldado debe ponerse de pie.';
+  if(u.entangled)return 'El soldado debe liberarse de las boleadoras.';
+  if(tacticalLevel(u)!==0)return 'Bajá al suelo antes de salir del sector.';
+  if(!boundaryMatches(s,u,exit.edge))return 'Debe alcanzar el borde de esta salida.';
+  const ground=tile(s,u.x,u.y);
+  if(!ground||ground.blocked||propBlocksAt(s,u.x,u.y))return 'El paso de salida está bloqueado.';
+  if(s.mode!=='exploration'&&u.ap<stepCost(u,ground))return 'Faltan PA para cruzar el borde.';
+  if(u.energy<=movementStepEnergy(s,u,ground))return 'Faltan fuerzas para cruzar el borde.';
+  return null;
+}
+export function exitPreview(s,{unitIds,exitId}={}){
+  const exit=s?.exits?.find(v=>v.id===exitId),ids=Array.isArray(unitIds)?unitIds.map(String):[];
+  let reason=!s||s.status!=='active'||s.phase!=='player'||s.interrupt||s.enemyTurn||s.alliedTurn||s.reactionStack?.length?'La salida requiere el turno normal del jugador.':null;
+  if(!reason&&!exit)reason='Selecciona una salida autorizada.';
+  if(!reason&&(!ids.length||new Set(ids).size!==ids.length))reason='Selecciona combatientes distintos para salir.';
+  const eligibleIds=[],blocked=[],costById={};
+  for(const id of ids){const u=s?.units?.find(v=>v.id===id),why=reason??(u?.militia?'La milicia actúa por su cuenta.':exitUnitReason(s,u,exit));if(why)blocked.push({id,reason:why});else {eligibleIds.push(id);costById[id]=stepCost(u,tile(s,u.x,u.y));}}
+  const prisoners=(s?.npcs??[]).filter(n=>n.detention?.freed&&!n.departure&&n.hp>0&&ids.includes(n.escort?.leaderId)&&teamCanSee(s,'player',n)).map(n=>({id:n.id,name:n.name,ready:Boolean(exit&&eligibleIds.includes(n.escort.leaderId)&&prisonerCanExit(s,n,s.units.find(u=>u.id===n.escort.leaderId),exit))}));
+  return {prisoners,available:!reason&&!blocked.length&&ids.length>0,reason:reason??blocked[0]?.reason??null,edge:exit?.edge??null,destination:exit?.destination??null,eligibleIds,blocked,costById};
+}
+function crossBoundary(s,u,exit){
+  const exploring=s.mode==='exploration',observation={...reactionObservation(s,u),crossing:true},ground=tile(s,u.x,u.y),cost=stepCost(u,ground);
+  if(!exploring)u.ap-=cost;
+  lowerWeapon(u);u.facing={N:0,E:2,S:4,W:6}[exit.edge];u.momentum=0;u.overwatch=false;u.braced=false;
+  delete u.lastTargetId;delete u.lastShotPosition;
+  exhaust(s,u,movementStepEnergy(s,u,ground));
+  if(exploring){const seconds=Math.ceil((u.movementMode==='run'?1:u.movementMode==='prone'?5:3)*stealthAPMultiplier(u));s.actionDurationSeconds=(s.actionDurationSeconds??0)+seconds;advanceExplorationAction(s,seconds);}
+  else if(!s.roundTimeCharged){advanceBattleClock(s,COMBAT_ROUND_SECONDS);s.roundTimeCharged=true;}
+  emitNoise(s,u,'move');rememberContacts(s);
+  if(!alive(u)||exploring&&detectContact(s)){sayObserved(s,[u],`${u.name} detiene la salida en el borde del sector.`);return false;}
+  if(s.mode==='combat'&&reactionFire(s,u,observation)){sayObserved(s,[u],`${u.name} detiene la salida ante una reacción enemiga.`);return false;}
+  const departureObserved=journalVisible(s,u);
+  u.departure={exitId:exit.id,edge:exit.edge,destination:exit.destination,x:u.x,y:u.y,elapsedSeconds:s.elapsedSeconds??0,mountId:u.mounted&&u.mount?.id?u.mount.id:null};
+  if(u.routed)u.fled=true;
+  delete u.lastKnownEnemy;delete u.lastHeardNoise;
+  if(departureObserved)say(s,`${u.name} sale del sector por el borde ${{N:'norte',E:'este',S:'sur',W:'oeste'}[exit.edge]}.`);
+  return true;
+}
+function applyExit(s,a){
+  const preview=exitPreview(s,a);
+  if(!preview.available){s.lastError=preview.reason;say(s,s.lastError);return false;}
+  const exit=s.exits.find(v=>v.id===a.exitId);s.actionDurationSeconds=0;
+  for(const id of preview.eligibleIds){
+    const u=s.units.find(v=>v.id===id),reason=exitUnitReason(s,u,exit);
+    if(reason){sayObserved(s,[u],`${u.name}: ${reason}`);break;}
+    if(!crossBoundary(s,u,exit))break;
+    for(const npc of crossPrisonerEscorts(s,u,exit))say(s,`${npc.name} cruza la salida junto a ${u.name}. Su equipo queda en el lugar de cautiverio.`);
+    checkEnd(s);if(s.status!=='active')break;
+  }
+  return true;
+}
+function routedOrder(s,u,action){
+  // Internal automation uses the ordinary reducer. Restore the flag before a
+  // public snapshot, including an interruption. Apply exploration time once.
+  const exploring=s.mode==='exploration';
+  delete s.actionDurationSeconds;delete s.actionTimeAppliedSeconds;u.routed=false;
+  const accepted=apply(s,{...action,unitId:u.id},u.side==='enemy');
+  if(accepted!==false&&exploring){const seconds=Math.max(0,(s.actionDurationSeconds??6)-(s.actionTimeAppliedSeconds??0));if(seconds)advanceExplorationAction(s,seconds);checkEnd(s);detectContact(s);}
+  u.routed=true;if(accepted===false)s.lastError=null;
+  delete s.actionDurationSeconds;delete s.actionTimeAppliedSeconds;
+  return accepted;
+}
+function processRout(s,u){
+  if(!u.routed||!fieldCapable(u)||u.unconscious)return;
+  const exploring=s.mode==='exploration',stopped=()=>s.status!=='active'||s.phase==='interrupt'||s.reactionStack?.length||exploring&&s.mode!=='exploration';
+  if(u.knockedDown||s.upperSurfaces?.length&&u.stance!=='standing'){if(!routedOrder(s,u,{type:'stance',stance:'standing'})||stopped())return;}
+  if(u.entangled){if(!routedOrder(s,u,{type:'free'})||stopped())return;}
+  if(stopped())return;
+  const exits=u.side==='player'?s.exits??[]:s.enemyExits??['N','E','S','W'].map(edge=>({id:`enemy:${edge}`,edge,destination:'__offmap_enemy__'}));
+  const proxy={...u,routed:false},routes=getReachable({...s,mode:'exploration'},proxy).filter(point=>tacticalLevel(point)===0).flatMap(point=>exits.filter(exit=>boundaryMatches(s,point,exit.edge)).map(exit=>({...point,exit})));
+  routes.sort((a,b)=>a.cost-b.cost||a.exit.id.localeCompare(b.exit.id)||a.y-b.y||a.x-b.x);
+  if(!routes.length){lowerWeapon(u);u.surrendered=true;u.ap=0;sayObserved(s,[u],`${u.name} se rinde: no encuentra un paso de salida.`);checkEnd(s);return;}
+  const route=routes[0];
+  if(route.path.length){
+    const reachable=getReachable(s,proxy),step=[...route.path].reverse().map(p=>reachable.find(v=>sameCell(v,p))).find(Boolean);
+    if(!step)return;
+    const before=positionOf(u);if(!routedOrder(s,u,{type:'move',...positionOf(step)}))return;
+    const actual=step.path.findIndex(p=>sameCell(p,u));if(actual>=0)u.fleePath=[...(u.fleePath??[]),...step.path.slice(0,actual+1)];
+    if(sameCell(u,before))return;
+  }
+  if(stopped()||exitUnitReason(s,u,route.exit,{routing:true}))return;
+  u.routed=false;const departed=crossBoundary(s,u,route.exit);u.routed=true;if(departed)u.fled=true;checkEnd(s);
+}
+
+export function actBattle(state,action,movementPath=null){
+  if(state.deployment)return sectorDeploymentAction(state,action);
+  const ids=[action.unitId,...(Array.isArray(action.unitIds)?action.unitIds:[])].filter(id=>id!==undefined).map(String);
+  if(state.units.some(u=>u.militia&&ids.includes(u.id))||state.alliedTurn&&state.phase!=='interrupt'){
+    const rejected=clone(state);rejected.lastError='La milicia actúa por su cuenta. Da órdenes a los combatientes de tu escuadra.';say(rejected,rejected.lastError);return rejected;
+  }
+  const next=actBattleInput(state,action,movementPath);
+  if(next!==state&&!next.lastError)for(const unit of next.units)syncUnitAmmunition(unit);
+  if(cursorOrders.has(action.type))return next;
+  return next.lastError?next:carryMeleeAttackResult(next,cleanActionTime(settleAutonomous(next)));
+}
+function actBattleInput(state,action,movementPath=null){
+ // Older authored encounters identify a resident by ID. Resolve that alias
+ // only when no military actor shares it; explicit kinds remain authoritative.
+ if(action.targetKind===undefined&&action.targetId!==undefined&&['fire','melee','heal','free','prisonerEscort','loot','useItem'].includes(action.type)&&
+    !state.units.some(u=>u.id===String(action.targetId))&&state.npcs?.some(n=>n.id===String(action.targetId)))action={...action,targetKind:'npc'};
+ if(['drop','transfer'].includes(action.type)&&(action.slot!==undefined||action.inventoryKey!==undefined)){
+  const u=state.units.find(v=>v.id===String(action.unitId)),target=state.units.find(v=>v.id===String(action.targetId));
+  let reason=action.item!==undefined?'Elegí una sola pieza de equipo.':null;
+  if(!reason&&action.type==='transfer')reason=weaponTransferPreview(state,u,target,action.inventoryKey,action.slot).reason;
+  if(!reason&&action.slot!==undefined&&(!['primary','blade'].includes(action.slot)||action.inventoryKey!==undefined))reason='Elegí una sola mano o un arma de la mochila.';
+  if(reason){const rejected=clone(state);rejected.lastError=reason;return rejected;}
+  action={...action,item:action.slot??`inventory:${action.inventoryKey}`};
  }
+
+  if(action.type==='meleePoint'){
+    const unit=state.units.find(u=>u.id===String(action.unitId)),plan=meleePointPreview(state,unit,action);
+    if(unit?.side!=='player'||!plan.valid){const rejected=clone(state);rejected.lastError=plan.reason??'No puedes dar órdenes a ese soldado.';say(rejected,rejected.lastError);return rejected;}
+    if(plan.path.length)return approachAndUse(state,action,plan);
+    return actBattleOrder(state,action);
+  }
+  if(action.type==='useItem'&&heldGrenade(state.units.find(u=>u.id===String(action.unitId))))action=grenadeUseOrder(state,action);
+  if(action.type==='throwGrenade'){
+    const unit=state.units.find(u=>u.id===String(action.unitId)),plan=grenadeThrowPreview(state,unit,action,action);
+    if(!plan.valid){const rejected=clone(state);rejected.lastError=plan.reason;say(rejected,plan.reason);return rejected;}
+    if(plan.costs.stance){
+      const prepared=actBattleOrder(state,{type:'stance',unitId:unit.id,stance:'standing'}),ready=prepared.units.find(u=>u.id===unit.id);
+      if(!approachCompleted(state,prepared,unit.id,{destination:positionOf(unit)})||!grenadeThrowPreview(prepared,ready,action,action).valid){
+        if(!prepared.lastError)say(prepared,'La preparación se detuvo antes del lanzamiento. Revisá la situación y apuntá de nuevo.');
+        return prepared;
+      }
+      return actBattleOrder(prepared,action);
+    }
+    return actBattleOrder(state,action);
+  }
+  if(cursorOrders.has(action.type)){
+    const unit=state.units.find(u=>u.id===String(action.unitId)),preview=equipmentCursorPreview(state,unit,action),next=clone(state);
+    if(!preview.valid){next.lastError=preview.reason;say(next,preview.reason);return next;}
+    if(preview.operation==='reload')return cleanActionTime(settleAutonomous(actBattleOrder(state,action)));
+    const plan=planEquipmentCursorOrder(unit,action,state),actor=next.units.find(u=>u.id===unit.id);
+    replaceUnit(actor,plan.unit);if(plan.dropped)addGroundStack(next,plan.dropped,actor);
+    next.lastError=null;return next;
+  }
+  if(action.type==='inventoryMap'){
+    const unit=state.units.find(u=>u.id===String(action.unitId)),plan=inventoryMapPreview(state,unit,action);
+    if(!plan.valid){const rejected=clone(state);rejected.lastError=plan.reason;say(rejected,plan.reason);return rejected;}
+    if(plan.kind==='gift'&&plan.path.length)return approachAndUse(state,plan.action,plan);
+    return actBattleOrder(state,plan.action);
+  }
+  if(action.type==='throwKnife'){
+    const unit=state.units.find(u=>u.id===String(action.unitId)),target=action.targetId===undefined?action:state.units.find(u=>u.id===String(action.targetId));
+    const plan=knifeThrowPreview(state,unit,target,action);
+    if(!plan.valid){const rejected=clone(state);rejected.lastError=plan.reason;say(rejected,plan.reason);return rejected;}
+    let prepared=state;
+    for(const type of ['stance','look']){
+      const current=prepared.units.find(u=>u.id===String(action.unitId)),costs=knifeThrowCosts(current,target,action.aim);
+      if(!(type==='stance'?costs.stance:costs.turn))continue;
+      const order=type==='stance'?{type,unitId:current.id,stance:'standing'}:{type,unitId:current.id,...positionOf(target)};
+      const next=actBattleOrder(prepared,order);
+      const ready=next.units.find(u=>u.id===current.id);
+      if(!approachCompleted(prepared,next,current.id,{destination:positionOf(current)})||!knifeThrowPreview(next,ready,action.targetId===undefined?action:next.units.find(v=>v.id===String(action.targetId)),action).valid){
+        if(!next.lastError)say(next,'La preparación se detuvo antes del lanzamiento. Revisá la situación y apuntá de nuevo.');
+        return next;
+      }
+      prepared=next;
+    }
+    return actBattleOrder(prepared,action);
+  }
+  if(action.type==='approachLoot'){
+    const unit=state.units.find(u=>u.id===String(action.unitId)),plan=lootSearchPreview(state,unit,action);
+    if(unit?.side!=='player'||!plan.valid){const rejected=clone(state);rejected.lastError=plan.reason??'No puedes dar órdenes a ese soldado.';say(rejected,rejected.lastError);return rejected;}
+    if(!plan.path.length){const next=clone(state);next.lastError=null;return next;}
+    return actBattleOrder(state,{type:'move',unitId:action.unitId,...plan.destination},{...plan.destination,cost:plan.movePa,path:plan.path});
+  }
+  if(action.type==='useItem'||action.type==='loot'){
+    const unit=state.units.find(u=>u.id===String(action.unitId));
+    const plan=unit?.side==='player'?contextualUsePlan(state,unit,action):null;
+    if(plan&&!plan.valid){const rejected=clone(state);rejected.lastError=plan.reason;say(rejected,plan.reason);return rejected;}
+    if(plan?.path.length)return approachAndUse(state,action,plan);
+  }
+  return actBattleOrder(state,action,action.type==='move'?movementPath:null);
+}
+function contextualUsePlan(state,unit,action){
+  if(action.type==='meleePoint')return meleePointPreview(state,unit,action);
+  if(action.type==='inventoryMap')return inventoryMapPreview(state,unit,action);
+  if(action.type==='loot')return lootApproachPreview(state,unit,action);
+  if(action.environment)return environmentUsePreview(state,unit,action.environment,action.environment.verb);
+  const npc=state.npcs?.find(n=>n.id===String(action.targetId));
+  if(npc&&unit.activeSlot==='item')return npcGiftPreview(state,unit,npc);
+  return action.targetId!==undefined?itemUsePreview(state,unit,action.targetKind==='npc'?npc:state.units.find(u=>u.id===String(action.targetId)),{targetKind:action.targetKind}):null;
+}
+export function approachCompleted(state,moved,unitId,plan){
+  const unit=moved.units.find(u=>u.id===String(unitId));
+  return Boolean(unit&&alive(unit)&&!moved.lastError&&moved.mode===state.mode&&moved.phase===state.phase&&plan.destination&&sameCell(unit,plan.destination)&&
+    !moved.units.some(other=>other.side!==unit.side&&other.reactionTurn!==state.units.find(old=>old.id===other.id)?.reactionTurn));
+}
+function approachAndUse(state,action,plan){
+  const moved=actBattleOrder(state,{type:'move',unitId:action.unitId,...plan.destination},{...plan.destination,cost:plan.movePa,path:plan.path});
+  const interruptedGift=()=>{
+    if(plan.kind==='gift')recordNpcGiftResult(moved,action,state.npcs.find(npc=>npc.id===action.targetId),'interrupted','El desplazamiento se detuvo antes de entregar el objeto. Revisá la situación.');
+  };
+  if(moved.lastError){interruptedGift();return moved;}
+  const unit=moved.units.find(u=>u.id===String(action.unitId));
+  const pending=plan.type==='environment'?{...action,environment:{...action.environment,verb:plan.action.verb}}:action;
+  const current=contextualUsePlan(moved,unit,pending);
+  if(!approachCompleted(state,moved,action.unitId,plan)||!current?.valid||current.path.length){
+    interruptedGift();
+    say(moved,'El desplazamiento terminó antes de usar el objeto. Revisá la situación y seleccioná el objetivo de nuevo.');return moved;
+  }
+  return actBattleOrder(moved,plan.type==='environment'?plan.action:{...action,type:plan.type});
+}
+function actBattleOrder(state,action,movementPath=null){
+  if(action.type==='rest')return endTurn(state);
+  const s=clone(state);s.lastError=null;
+  if(action.type==='ambient'){
+    if(s.mode!=='exploration'||s.phase!=='player'||s.status!=='active')return s;
+    advanceExplorationAction(s,6);checkEnd(s);detectContact(s);rememberContacts(s);revealRooms(s);
+    return cleanActionTime(resolveFirstContact(s));
+  }
+  if(action.type==='explore'){
+    if(s.status==='victory'||s.status==='active'&&(s.sectorCleared||canEndCombat(s))){
+      return resumeExploration(s);
+    }
+    s.lastError='Deben pasar dos turnos completos sin contacto visual con el enemigo.';say(s,s.lastError);return s;
+  }
+  const oldMode=s.mode;delete s.actionDurationSeconds;delete s.actionTimeAppliedSeconds;
+  const success=action.type==='exit'?applyExit(s,action):apply(s,action,false,movementPath);
+  if(success===false||s.lastError){const rejected=clone(state);rejected.lastError=s.lastError;say(rejected,s.lastError);return rejected;}
+  if(action.type==='weaponMode')return cleanActionTime(s);
+  if(oldMode==='exploration'){
+    const seconds=Math.max(0,(s.actionDurationSeconds??6)-(s.actionTimeAppliedSeconds??0));if(seconds){advanceBattleClock(s,seconds);advanceWounds(s,seconds);advanceAmbientTime(s,seconds);}
+  }else if(!s.roundTimeCharged){advanceBattleClock(s,COMBAT_ROUND_SECONDS);s.roundTimeCharged=true;}
+  delete s.actionDurationSeconds;delete s.actionTimeAppliedSeconds;checkEnd(s);detectContact(s);rememberContacts(s);revealRooms(s);if(s.phase==='enemy'&&s.reactionStack?.length)runEnemyReactions(s);return carryMeleeAttackResult(s,cleanActionTime(resolveFirstContact(s)));
+}
+function finishEnemyRound(s){
+  delete s.enemyTurn;delete s.interrupt;delete s.reactionStack;s.enemyTurns++;
+  if(s.roundFirstSide==='enemy'){s.enemyFirstAwaitingPlayer=true;s.phase='player';s.lastError=null;rememberContacts(s);revealRooms(s);return s;}
+  return beginAlliedTurn(s);
+}
+function beginAlliedTurn(s,startEnemyAfter=false){
+  s.phase='player';
+  s.alliedTurn={unitIds:s.units.filter(u=>u.side==='player'&&u.militia&&fieldCapable(u)).map(u=>u.id),unitIndex:0,actionsTaken:0,startEnemyAfter};
+  if(s.alliedTurn.unitIds.length)say(s,`Turno ${s.turn}: actúa la guarnición local.`);
+  return runAlliedTurn(s);
+}
+// Militia use their existing AP, equipment and awareness. This queue survives
+// enemy reactions and hired-soldier interrupts without starting the turn again.
+function runAlliedTurn(s){
+  const queue=s.alliedTurn;
+  while(queue.unitIndex<queue.unitIds.length&&s.status==='active'){
+    const u=s.units.find(v=>v.id===queue.unitIds[queue.unitIndex]);
+    if(u?.routed&&fieldCapable(u)&&!queue.actionsTaken){queue.actionsTaken=12;processRout(s,u);if(s.status!=='active'||s.phase!=='player')return s;}
+    while(u&&alive(u)&&u.ap>=3&&queue.actionsTaken<12&&s.status==='active'){
+      rememberContacts(s);const order=automaticOrder(s,u);if(!order)break;
+      queue.actionsTaken++;
+      const accepted=apply(s,order,false);if(order.patrol)u.patrolTurn=s.turn;
+      if(accepted===false){s.lastError=null;break;}
+      if(s.status!=='active'||s.phase!=='player')return s;
+    }
+    queue.unitIndex++;queue.actionsTaken=0;
+  }
+  if(s.status!=='active')return s;
+  delete s.alliedTurn;finishCombatRound(s);
+  return queue.startEnemyAfter&&s.status==='active'&&s.mode==='combat'?endTurnState(s):s;
+}
+function settleAutonomous(s){
+  while(s.status==='active'){
+    if(s.phase==='enemy'&&s.reactionStack?.length){runEnemyReactions(s);continue;}
+    if(s.phase==='interrupt'){
+      const window=s.interrupt;
+      const militia=window.unitIds.map(id=>s.units.find(u=>u.id===id)).find(u=>u?.militia&&alive(u)&&u.ap>=3&&(window.militiaActions?.[u.id]??0)<12);
+      if(militia){
+        window.militiaActions??={};rememberContacts(s);const order=chooseEnemyAction(s,militia);
+        window.militiaActions[militia.id]=order?(window.militiaActions[militia.id]??0)+1:12;
+        if(order&&apply(s,order,false)===false){window.militiaActions[militia.id]=12;s.lastError=null;}
+        continue;
+      }
+      if(window.unitIds.some(id=>{const u=s.units.find(v=>v.id===id);return u&&!u.militia;}))break;
+      const reaction=window.returnTo==='reaction';delete s.interrupt;s.phase='enemy';
+      if(reaction)runEnemyReactions(s);else runEnemyPhase(s);
+      continue;
+    }
+    if(s.phase==='player'&&s.alliedTurn){s=runAlliedTurn(s);continue;}
+    break;
+  }
+  return s;
 }
 function finishCombatRound(s){
- // Allies spend their remaining AP once, after the player and enemy phases.
- // With enemy-first contact this runs after the player's deferred response.
- runMilitiaPhase(s);if(s.status!=='active'){s.phase='player';s.turn++;s.lastError=null;return s;}
- if(s.npcs?.length)say(s,`Turno ${s.turn}: actúan los civiles.`);
- for(const n of s.npcs??[])advanceCivilianWoundTime(s,n,6);
- runCivilianPhase(s);
-s.smoke=s.smoke.map(v=>({...v,radius:Math.min((v.radius||1)+.5,3),turns:v.turns-1})).filter(v=>v.turns>0);for(const u of s.units.filter(present)){u.energy=Math.min(100,(u.energy??100)+10);refreshMilitaryCondition(u);if(u.bleeding){u.hp=Math.max(0,u.hp-u.bleeding);say(s,`${u.name} pierde ${u.bleeding} de salud por hemorragia.`);}refreshMilitaryCondition(u);if(u.side==='player'){u.maxAP=maxActionPoints(s,u);u.ap=Math.max(0,u.maxAP-u.reactionSpent);u.reactionSpent=0;}u.momentum=0;u.lastDirection=null;}s.turn++;s.phase='player';s.roundTimeCharged=false;checkEnd(s);if(s.status==='active')say(s,`Turno ${s.turn}: ¡órdenes, comandante!`);s.lastError=null;return s;}
-
+  if(s.npcs?.length)say(s,`Turno ${s.turn}: actúan los civiles.`);
+  runCivilianPhase(s);
+  s.smoke=s.smoke.map(v=>({...v,radius:Math.min((v.radius||1)+.5,3),turns:v.turns-1})).filter(v=>v.turns>0);
+  advanceWounds(s,COMBAT_ROUND_SECONDS);
+  for(const u of s.units.filter(u=>onField(u)&&!u.surrendered)){
+    recoverEnergy(u,u.side==='player'&&!u.militia?20:10);refreshCondition(u);
+    if(u.side==='player')beginUnitTurn(s,u);
+    u.momentum=0;u.lastDirection=null;
+  }
+  const contact=s.contactThisRound||hasVisualContact(s);
+  s.quietCombatTurns=contact?0:Math.min(2,(s.quietCombatTurns??0)+1);s.contactThisRound=false;
+  s.turn++;s.phase='player';s.roundTimeCharged=false;checkEnd(s);rememberContacts(s);revealRooms(s);
+  if(canEndCombat(s))resumeExploration(s);
+  else if(s.status==='active')say(s,`Turno ${s.turn}: ¡órdenes, comandante!`);
+  s.lastError=null;return s;
+}
+function issueEnemyTurnBudgets(s,queue){
+  if(queue.budgetsIssued)return;
+  // A legacy saved queue has already initialized its current started actor.
+  // Issue only the remaining budgets, once, before anyone can pay crew work.
+  for(const id of queue.unitIds.slice(queue.unitIndex+(queue.started?1:0))){
+    const u=s.units.find(v=>v.id===id);if(!u||!alive(u)&&!fieldCapable(u))continue;
+    // Contact already issued the first budget; preserve any paid reactions.
+    if(s.enemyTurns>0)beginUnitTurn(s,u);else {u.reactionSpent=0;u.shock=(u.shock??0)/2;}
+  }
+  queue.budgetsIssued=true;
+}
+function runEnemyPhase(s){
+  const queue=s.enemyTurn;issueEnemyTurnBudgets(s,queue);
+  while(queue.unitIndex<queue.unitIds.length&&s.status==='active'){
+    const u=s.units.find(v=>v.id===queue.unitIds[queue.unitIndex]);
+    if(!u||!alive(u)&&!fieldCapable(u)){queue.unitIndex++;queue.actionsTaken=0;queue.started=false;continue;}
+    if(!queue.started)queue.started=true;
+    if(u.routed){processRout(s,u);if(s.status!=='active'||s.phase==='interrupt')return s;if(u.departure)queue.unitIds.splice(queue.unitIndex,1);else queue.unitIndex++;queue.actionsTaken=0;queue.started=false;continue;}
+    while(queue.actionsTaken<12&&alive(u)&&u.ap>=3&&s.status==='active'){
+      rememberContacts(s);const order=chooseEnemyAction(s,u);if(!order)break;
+      const accepted=apply(s,order,true);if(order.patrol)u.patrolTurn=s.turn;queue.actionsTaken++;
+      if(accepted===false)break;
+      if(s.status!=='active'){s.lastError=null;revealRooms(s);return s;}
+      if(s.phase==='interrupt'){s.lastError=null;revealRooms(s);return s;}
+    }
+    if(alive(u)){
+      // Readiness to react is independent of a loaded gun: looking, loading,
+      // moving and melee can all use the remaining budget.
+      u.overwatch=u.ap>=3;
+      if(!u.mounted&&u.ap>=16&&fixedBayonetFor(u))u.braced=true;
+    }
+    queue.unitIndex++;queue.actionsTaken=0;queue.started=false;
+  }
+  return finishEnemyRound(s);
+}
+// Enemy reactions are resumable mini-turns. They consume the current AP budget;
+// they never advance the clock, bleed wounds, refresh AP, or reset a reaction.
+function runEnemyReactions(s){
+  while(s.reactionStack?.length&&s.status==='active'){
+    const frame=s.reactionStack.at(-1);
+    while(frame.unitIndex<frame.unitIds.length&&s.status==='active'){
+      const unit=s.units.find(u=>u.id===frame.unitIds[frame.unitIndex]);
+      while(unit&&alive(unit)&&unit.ap>=3&&frame.actionsTaken<12&&s.status==='active'){
+        rememberContacts(s);const order=chooseEnemyAction(s,unit);if(!order)break;
+        const accepted=apply(s,order,true);frame.actionsTaken++;
+        if(accepted===false){s.lastError=null;break;}
+        if(s.phase==='interrupt'){revealRooms(s);s.lastError=null;return s;}
+      }
+      frame.unitIndex++;frame.actionsTaken=0;
+    }
+    if(s.status!=='active')return s;
+    s.reactionStack.pop();s.phase=frame.resumePhase;
+    if(frame.resumeInterrupt)s.interrupt=frame.resumeInterrupt;else delete s.interrupt;
+    if(!s.reactionStack.length)delete s.reactionStack;
+    // A parent player window must be returned to the player before its older
+    // enemy reaction continues, including after save/load at any nesting depth.
+    if(s.phase==='interrupt')break;
+  }
+  checkEnd(s);rememberContacts(s);revealRooms(s);s.lastError=null;return s;
+}
+function cleanActionTime(s){
+ for(const unit of s.units)syncUnitAmmunition(unit);
+ delete s.actionDurationSeconds;delete s.actionTimeAppliedSeconds;
+ for(const unit of s.units)if(unit.equipmentCursor&&(!alive(unit)||unit.departure||unit.side==='player'&&!interruptAvailable(s,unit)))returnBattleEquipmentCursor(s,unit);
+ return s;
+}
 export function presentedEndTurn(state){return captureBattlePresentation(state,()=>endTurn(state),(s,u)=>teamCanSee(s,'player',u));}
+export function endTurn(state){
+ if(state.deployment)return sectorDeploymentAction(state,{type:'endTurn'});
+ const ready=clone(state);
+ for(const unit of ready.units)if(!returnBattleEquipmentCursor(ready,unit)){
+  const rejected=clone(state);rejected.lastError='Colocá el objeto del cursor antes de terminar el turno.';say(rejected,rejected.lastError);return rejected;
+ }
+ return cleanActionTime(settleAutonomous(endTurnState(ready)));
+}
+function endTurnState(state){
+  const s=clone(state);s.lastError=null;if(s.status!=='active')return s;
+  if(s.phase==='interrupt'){
+    const reaction=s.interrupt?.returnTo==='reaction';
+    if(reaction?!s.reactionStack?.length:!s.enemyTurn){s.lastError='Falta el turno enemigo que debe continuar.';return s;}
+    delete s.interrupt;s.phase='enemy';say(s,'Continúa el turno enemigo.');return reaction?runEnemyReactions(s):runEnemyPhase(s);
+  }
+  if(s.mode==='exploration'){
+    const startedAt=s.elapsedSeconds??0;
+    for(const u of s.units.filter(u=>u.routed&&fieldCapable(u))){processRout(s,u);if(s.status!=='active'||s.mode!=='exploration')return resolveFirstContact(s);}
+    if((s.elapsedSeconds??0)>startedAt){s.turn++;checkEnd(s);rememberContacts(s);revealRooms(s);return s;}
+    for(let seconds=0;seconds<REST_SECONDS;seconds+=6){
+      for(const u of s.units.filter(u=>u.side==='player'&&!u.militia&&onField(u)&&!u.surrendered)){recoverEnergy(u,60*6/REST_SECONDS);u.energy=Math.round(u.energy*1000)/1000;refreshCondition(u);}
+      advanceBattleClock(s,6,{resting:true});advanceWounds(s,6);advanceAmbientTime(s,6);checkEnd(s);
+      if(s.status!=='active'||s.mode!=='exploration'){rememberContacts(s);revealRooms(s);return resolveFirstContact(s);}
+    }
+    s.turn++;checkEnd(s);detectContact(s);rememberContacts(s);revealRooms(s);return resolveFirstContact(s);
+  }
+  if(s.phase==='enemy'&&s.reactionStack?.length)return runEnemyReactions(s);
+  if(s.phase==='enemy'&&s.enemyTurn)return runEnemyPhase(s);
+  if(s.alliedTurn)return runAlliedTurn(s);
+  if(s.enemyFirstAwaitingPlayer){delete s.enemyFirstAwaitingPlayer;return beginAlliedTurn(s,true);}
+  if(!s.roundTimeCharged){advanceBattleClock(s,COMBAT_ROUND_SECONDS);s.roundTimeCharged=true;}
+  for(const u of s.units.filter(u=>u.side==='player'&&!u.militia&&u.routed)){processRout(s,u);if(s.status!=='active'||s.phase==='interrupt')return s;if(s.reactionStack?.length)return runEnemyReactions(s);}
+  if(!s.roundTimeCharged)advanceBattleClock(s,COMBAT_ROUND_SECONDS);
+  s.roundTimeCharged=true;return startEnemyTurn(s);
+}
+function startEnemyTurn(s){
+  s.phase='enemy';rememberContacts(s);
+  s.enemyTurn={unitIds:s.units.filter(u=>u.side==='enemy'&&fieldCapable(u)).map(u=>u.id),unitIndex:0,actionsTaken:0,started:false};
+  return runEnemyPhase(s);
+}

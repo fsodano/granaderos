@@ -1,10 +1,10 @@
 import {deploymentCost} from '../game/campaign.js';
 import {AMMO_KEYS} from '../game/ammo-types.js';
 import {setReserve} from './typed-ammo-fixture.mjs';
-import {secondaryLootField,secondaryOrder} from './secondary-loot-fixture.mjs';
+import {secondaryLootField,secondaryOrder,secondaryRetreat} from './secondary-loot-fixture.mjs';
 import {enterSector} from '../game/world.js';
 import test from 'node:test';import assert from 'node:assert/strict';
-import {createBattle,actBattle,groundSupplyPickupPreview,supplyDropPreview} from '../game/tactical.js';
+import {createBattle,actBattle,getReachable,groundSupplyPickupPreview,supplyDropPreview} from '../game/tactical.js';
 import {returnAmmunition} from '../game/ammunition.js';
 import {cartridgePrice} from '../game/campaign-rules.js';
 import {supplyCareField} from './supply-transfer-fixture.mjs';
@@ -16,7 +16,7 @@ const field=(exploration=false)=>createBattle([{id:'a',x:1,y:1,loaded:1,ammo:9}]
 
 test('cartridge bundles preserve exact stock and charges through repeated drop, partial pickup, saves and campaign return',()=>{
  let p=supplyCareField();const price=cartridgePrice(p.campaign),treasury=p.campaign.resources.treasury,total=roundStock(p.battle),loaded=actor(p).loaded;
- p=tactical(p,{type:'dropSupply',unitId:'110',item:'ammoMusket',count:4});const groundId=p.battle.groundItems.find(g=>g.type==='ammoMusket').id;
+ p=tactical(p,{type:'dropSupply',unitId:'110',item:'ammoMusket',count:4});const groundId=p.battle.groundItems.find(g=>g.kind==='ammunition'&&g.ammoType==='musket_75').id;
  assert.equal(actor(p).loaded,loaded);assert.equal(actor(p).ammo,5);assert.equal(roundStock(p.battle),total-4);
  let s=leave(saved(p));assert.equal(s.resources.treasury,treasury);assert.equal(s.operativeState[110].ammo,5);assert.equal(s.sectorStates.retiro.groundItems.find(g=>g.id===groundId).count,4);
  for(const quantity of [1,3]){
@@ -29,9 +29,9 @@ test('cartridge bundles preserve exact stock and charges through repeated drop, 
 });
 test('picking up and dropping an old bundle again moves its custody without creating a refund or a second allowance',()=>{
  let p=supplyCareField();p=tactical(p,{type:'dropSupply',unitId:'110',item:'ammoMusket',count:4});let s=leave(saved(p)),money=s.resources.treasury;
- p=visit(saved({campaign:s}).campaign);const old=p.battle.groundItems.find(g=>g.type==='ammoMusket').id;
+ p=visit(saved({campaign:s}).campaign);const old=p.battle.groundItems.find(g=>g.kind==='ammunition'&&g.ammoType==='musket_75').id;
  p=tactical(p,{type:'loot',unitId:'110',groundId:old,count:4});p=tactical(p,{type:'dropSupply',unitId:'110',item:'ammoMusket',count:4});s=leave(saved(p));assert.equal(s.resources.treasury,money-4*cartridgePrice(s));assert.equal(s.operativeState[110].ammo,9);
- p=visit(saved({campaign:s}).campaign);const bundles=p.battle.groundItems.filter(g=>g.type==='ammoMusket');assert.equal(bundles.reduce((n,g)=>n+g.count,0),4);assert.equal(bundles.find(g=>g.id===old).count,0);
+ p=visit(saved({campaign:s}).campaign);const bundles=p.battle.groundItems.filter(g=>g.kind==='ammunition'&&g.ammoType==='musket_75');assert.equal(bundles.reduce((n,g)=>n+g.count,0),4);assert.equal(bundles.find(g=>g.id===old).count,0);
  const current=bundles.find(g=>g.count>0);p=tactical(p,{type:'loot',unitId:'110',groundId:current.id,count:4});s=leave(saved(p));assert.equal(s.resources.treasury,money-4*cartridgePrice(s));assert.equal(s.operativeState[110].ammo,13);
 });
 test('ground pickup allowance requires a prior finite source and cannot pay for new or duplicate bundles',()=>{
@@ -57,12 +57,15 @@ test('drop and pickup use ordinary action costs, loaded cartridges stay in the w
 
 test('combat retreat leaves unrefunded cartridges, and a later actual assault can recover and return that same finite stock',()=>{
  let p=secondaryLootField(),price=cartridgePrice(p.campaign),before=p.campaign.resources.treasury,issued=roundStock(p.battle);
- p=secondaryOrder(p,{type:'dropSupply',item:'ammoMusket',count:4});const id=p.battle.groundItems.find(g=>g.type==='ammoMusket').id;
- let s=order(p.campaign,{type:'battleResult',battleId:p.campaign.pendingBattle.id,outcome:'retreat',sectorState:p.battle,survivors:p.battle.units.filter(u=>u.side==='player')});assert.equal(s.resources.treasury,before);assert.equal(s.operativeState[110].ammo+s.operativeState[110].carriedLoaded,issued-4);
+ p=secondaryOrder(p,{type:'dropSupply',item:'ammoMusket',count:4});const id=p.battle.groundItems.find(g=>g.kind==='ammunition'&&g.ammoType==='musket_75').id;
+ p=secondaryRetreat(p);let s=order(p.campaign,{type:'battleResult',battleId:p.campaign.pendingBattle.id,outcome:'retreat',sectorState:p.battle,survivors:p.battle.units.filter(u=>u.side==='player')});assert.equal(s.resources.treasury,before);assert.equal(s.operativeState[110].ammo+s.operativeState[110].carriedLoaded,issued-4);
  s=order(saved({campaign:s}).campaign,{type:'attack',sector:'buenos_aires'});
  // Deployment advances the campaign clock and can collect ordinary sector income.
  // Compare the return with the treasury after those events and the new issue.
  const treasury=s.resources.treasury,newIssue=s.pendingBattle.issuedCartridges;
  p={campaign:s,battle:enterSector(s.pendingBattle,s.sectorStates.buenos_aires)};assert.equal(p.battle.groundItems.find(g=>g.id===id).count,4);
- p=secondaryOrder(p,{type:'loot',groundId:id,count:4});s=order(p.campaign,{type:'battleResult',battleId:p.campaign.pendingBattle.id,outcome:'retreat',sectorState:p.battle,survivors:p.battle.units.filter(u=>u.side==='player')});assert.equal(s.resources.treasury,treasury);assert.equal(s.operativeState[110].ammo+s.operativeState[110].carriedLoaded,newIssue+4);assert.equal(s.sectorStates.buenos_aires.groundItems.find(g=>g.id===id).count,0);assert.ok(saved({campaign:s}));
+ const pile=p.battle.groundItems.find(g=>g.id===id),walker=actor(p);
+ const approach=getReachable(p.battle,walker).filter(point=>Math.max(Math.abs(point.x-pile.x),Math.abs(point.y-pile.y))<=1).sort((a,b)=>a.cost-b.cost)[0];assert.ok(approach,'The saved pile has a reachable adjacent tile.');
+ p=secondaryOrder(p,{type:'move',x:approach.x,y:approach.y});p=secondaryOrder(p,{type:'look',x:pile.x,y:pile.y});
+ p=secondaryOrder(p,{type:'loot',groundId:id,count:4});const retained=roundStock(p.battle);p=secondaryRetreat(p);s=order(p.campaign,{type:'battleResult',battleId:p.campaign.pendingBattle.id,outcome:'retreat',sectorState:p.battle,survivors:p.battle.units.filter(u=>u.side==='player')});assert.equal(s.resources.treasury,treasury);assert.equal(s.operativeState[110].ammo+s.operativeState[110].carriedLoaded,retained);assert.equal(s.sectorStates.buenos_aires.groundItems.find(g=>g.id===id).count,0);assert.ok(saved({campaign:s}));
 });

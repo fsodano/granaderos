@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "mendoza",
-  "revision": 2,
+  "revision": 3,
   "width": 20,
   "height": 16,
   "metadata": {
@@ -102,7 +102,7 @@
     {
       "x": 13,
       "y": 0,
-      "type": "road",
+      "type": "grass",
       "blocked": false,
       "cover": 0
     },
@@ -172,9 +172,9 @@
     {
       "x": 3,
       "y": 1,
-      "type": "forest",
+      "type": "grass",
       "blocked": false,
-      "cover": 20
+      "cover": 0
     },
     {
       "x": 4,
@@ -242,7 +242,7 @@
     {
       "x": 13,
       "y": 1,
-      "type": "road",
+      "type": "grass",
       "blocked": false,
       "cover": 0
     },
@@ -312,9 +312,9 @@
     {
       "x": 3,
       "y": 2,
-      "type": "forest",
+      "type": "grass",
       "blocked": false,
-      "cover": 20
+      "cover": 0
     },
     {
       "x": 4,
@@ -452,9 +452,9 @@
     {
       "x": 3,
       "y": 3,
-      "type": "forest",
+      "type": "grass",
       "blocked": false,
-      "cover": 20
+      "cover": 0
     },
     {
       "x": 4,
@@ -2254,16 +2254,45 @@
     {
       "id": "mendoza:building",
       "name": "Maestranza de El Plumerillo",
-      "x": 5,
-      "y": 1,
-      "width": 5,
-      "height": 3,
+      "x": 3,
+      "y": 0,
+      "width": 7,
+      "height": 6,
       "roof": "tile",
       "material": "adobe",
+      "architecture": "warehouse",
       "rooms": [
         {
           "id": "mendoza:building:interior",
           "cells": [
+            {
+              "x": 4,
+              "y": 1
+            },
+            {
+              "x": 5,
+              "y": 1
+            },
+            {
+              "x": 6,
+              "y": 1
+            },
+            {
+              "x": 7,
+              "y": 1
+            },
+            {
+              "x": 8,
+              "y": 1
+            },
+            {
+              "x": 4,
+              "y": 2
+            },
+            {
+              "x": 5,
+              "y": 2
+            },
             {
               "x": 6,
               "y": 2
@@ -2275,14 +2304,77 @@
             {
               "x": 8,
               "y": 2
+            },
+            {
+              "x": 4,
+              "y": 3
+            },
+            {
+              "x": 5,
+              "y": 3
+            },
+            {
+              "x": 6,
+              "y": 3
+            },
+            {
+              "x": 7,
+              "y": 3
+            },
+            {
+              "x": 8,
+              "y": 3
+            },
+            {
+              "x": 4,
+              "y": 4
+            },
+            {
+              "x": 5,
+              "y": 4
+            },
+            {
+              "x": 6,
+              "y": 4
+            },
+            {
+              "x": 7,
+              "y": 4
+            },
+            {
+              "x": 8,
+              "y": 4
             }
           ]
         }
       ],
+      "kind": "warehouse",
       "walls": [
         {
+          "x": 3,
+          "y": 0,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "mendoza:building",
+          "roomId": null
+        },
+        {
+          "x": 4,
+          "y": 0,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "mendoza:building",
+          "roomId": null
+        },
+        {
           "x": 5,
-          "y": 1,
+          "y": 0,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2293,7 +2385,7 @@
         },
         {
           "x": 6,
-          "y": 1,
+          "y": 0,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2304,7 +2396,7 @@
         },
         {
           "x": 7,
-          "y": 1,
+          "y": 0,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2315,7 +2407,7 @@
         },
         {
           "x": 8,
-          "y": 1,
+          "y": 0,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2326,7 +2418,7 @@
         },
         {
           "x": 9,
-          "y": 1,
+          "y": 0,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2336,8 +2428,8 @@
           "roomId": null
         },
         {
-          "x": 5,
-          "y": 2,
+          "x": 3,
+          "y": 1,
           "type": "window",
           "blocked": true,
           "blocksSight": false,
@@ -2348,6 +2440,17 @@
         },
         {
           "x": 9,
+          "y": 1,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "mendoza:building",
+          "roomId": null
+        },
+        {
+          "x": 3,
           "y": 2,
           "type": "wall",
           "blocked": true,
@@ -2358,8 +2461,85 @@
           "roomId": null
         },
         {
-          "x": 5,
+          "x": 9,
+          "y": 2,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "mendoza:building",
+          "roomId": null
+        },
+        {
+          "x": 3,
           "y": 3,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "mendoza:building",
+          "roomId": null
+        },
+        {
+          "x": 9,
+          "y": 3,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "mendoza:building",
+          "roomId": null
+        },
+        {
+          "x": 3,
+          "y": 4,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "mendoza:building",
+          "roomId": null
+        },
+        {
+          "x": 9,
+          "y": 4,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "mendoza:building",
+          "roomId": null
+        },
+        {
+          "x": 3,
+          "y": 5,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "mendoza:building",
+          "roomId": null
+        },
+        {
+          "x": 4,
+          "y": 5,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "mendoza:building",
+          "roomId": null
+        },
+        {
+          "x": 5,
+          "y": 5,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2370,18 +2550,7 @@
         },
         {
           "x": 6,
-          "y": 3,
-          "type": "wall",
-          "blocked": true,
-          "blocksSight": true,
-          "cover": 40,
-          "material": "adobe",
-          "buildingId": "mendoza:building",
-          "roomId": null
-        },
-        {
-          "x": 7,
-          "y": 3,
+          "y": 5,
           "type": "door",
           "blocked": true,
           "blocksSight": true,
@@ -2394,8 +2563,8 @@
           "locked": false
         },
         {
-          "x": 8,
-          "y": 3,
+          "x": 7,
+          "y": 5,
           "type": "door",
           "blocked": true,
           "blocksSight": true,
@@ -2408,8 +2577,19 @@
           "locked": false
         },
         {
+          "x": 8,
+          "y": 5,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "mendoza:building",
+          "roomId": null
+        },
+        {
           "x": 9,
-          "y": 3,
+          "y": 5,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2418,26 +2598,50 @@
           "buildingId": "mendoza:building",
           "roomId": null
         }
-      ],
-      "kind": "smithy",
-      "wallFinish": "brick",
-      "roofFinish": "aged",
-      "doorStyle": "barn",
-      "windowStyle": "barred"
+      ]
     },
     {
       "id": "mendoza:house-0",
-      "name": "Casa 2 del poblado",
-      "x": 5,
-      "y": 12,
-      "width": 5,
-      "height": 3,
+      "name": "Pulpería del poblado",
+      "x": 3,
+      "y": 11,
+      "width": 7,
+      "height": 5,
       "roof": "tile",
       "material": "adobe",
+      "architecture": "pulperia",
       "rooms": [
         {
           "id": "mendoza:house-0:interior",
           "cells": [
+            {
+              "x": 4,
+              "y": 12
+            },
+            {
+              "x": 5,
+              "y": 12
+            },
+            {
+              "x": 6,
+              "y": 12
+            },
+            {
+              "x": 7,
+              "y": 12
+            },
+            {
+              "x": 8,
+              "y": 12
+            },
+            {
+              "x": 4,
+              "y": 13
+            },
+            {
+              "x": 5,
+              "y": 13
+            },
             {
               "x": 6,
               "y": 13
@@ -2449,14 +2653,58 @@
             {
               "x": 8,
               "y": 13
+            },
+            {
+              "x": 4,
+              "y": 14
+            },
+            {
+              "x": 5,
+              "y": 14
+            },
+            {
+              "x": 6,
+              "y": 14
+            },
+            {
+              "x": 7,
+              "y": 14
+            },
+            {
+              "x": 8,
+              "y": 14
             }
           ]
         }
       ],
+      "purpose": "bar",
+      "kind": "pulperia",
       "walls": [
         {
+          "x": 3,
+          "y": 11,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "mendoza:house-0",
+          "roomId": null
+        },
+        {
+          "x": 4,
+          "y": 11,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "mendoza:house-0",
+          "roomId": null
+        },
+        {
           "x": 5,
-          "y": 12,
+          "y": 11,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2467,18 +2715,21 @@
         },
         {
           "x": 6,
-          "y": 12,
-          "type": "wall",
+          "y": 11,
+          "type": "door",
           "blocked": true,
           "blocksSight": true,
-          "cover": 40,
+          "cover": 0,
           "material": "adobe",
           "buildingId": "mendoza:house-0",
-          "roomId": null
+          "roomId": null,
+          "doorId": "mendoza:house-0:door:6:11",
+          "open": false,
+          "locked": false
         },
         {
           "x": 7,
-          "y": 12,
+          "y": 11,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2489,7 +2740,7 @@
         },
         {
           "x": 8,
-          "y": 12,
+          "y": 11,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2500,7 +2751,7 @@
         },
         {
           "x": 9,
-          "y": 12,
+          "y": 11,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2510,8 +2761,8 @@
           "roomId": null
         },
         {
-          "x": 5,
-          "y": 13,
+          "x": 3,
+          "y": 12,
           "type": "window",
           "blocked": true,
           "blocksSight": false,
@@ -2522,6 +2773,17 @@
         },
         {
           "x": 9,
+          "y": 12,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "mendoza:house-0",
+          "roomId": null
+        },
+        {
+          "x": 3,
           "y": 13,
           "type": "wall",
           "blocked": true,
@@ -2532,8 +2794,8 @@
           "roomId": null
         },
         {
-          "x": 5,
-          "y": 14,
+          "x": 9,
+          "y": 13,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2543,32 +2805,7 @@
           "roomId": null
         },
         {
-          "x": 6,
-          "y": 14,
-          "type": "wall",
-          "blocked": true,
-          "blocksSight": true,
-          "cover": 40,
-          "material": "adobe",
-          "buildingId": "mendoza:house-0",
-          "roomId": null
-        },
-        {
-          "x": 7,
-          "y": 14,
-          "type": "door",
-          "blocked": true,
-          "blocksSight": true,
-          "cover": 0,
-          "material": "adobe",
-          "buildingId": "mendoza:house-0",
-          "roomId": null,
-          "doorId": "mendoza:house-0:door:7:14",
-          "open": false,
-          "locked": false
-        },
-        {
-          "x": 8,
+          "x": 3,
           "y": 14,
           "type": "wall",
           "blocked": true,
@@ -2588,38 +2825,169 @@
           "material": "adobe",
           "buildingId": "mendoza:house-0",
           "roomId": null
+        },
+        {
+          "x": 3,
+          "y": 15,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "mendoza:house-0",
+          "roomId": null
+        },
+        {
+          "x": 4,
+          "y": 15,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "mendoza:house-0",
+          "roomId": null
+        },
+        {
+          "x": 5,
+          "y": 15,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "mendoza:house-0",
+          "roomId": null
+        },
+        {
+          "x": 6,
+          "y": 15,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "mendoza:house-0",
+          "roomId": null
+        },
+        {
+          "x": 7,
+          "y": 15,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "mendoza:house-0",
+          "roomId": null
+        },
+        {
+          "x": 8,
+          "y": 15,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "mendoza:house-0",
+          "roomId": null
+        },
+        {
+          "x": 9,
+          "y": 15,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "mendoza:house-0",
+          "roomId": null
         }
-      ],
-      "wallFinish": "adobe",
-      "roofFinish": "thatch",
-      "doorStyle": "barn",
-      "windowStyle": "lattice",
-      "kind": "stable"
+      ]
     },
     {
       "id": "mendoza:house-1",
-      "name": "Casa 3 del poblado",
+      "name": "Pulpería",
       "x": 13,
-      "y": 2,
-      "width": 3,
-      "height": 3,
+      "y": 0,
+      "width": 7,
+      "height": 5,
       "roof": "tile",
       "material": "adobe",
+      "architecture": "pulperia",
       "rooms": [
         {
           "id": "mendoza:house-1:interior",
           "cells": [
             {
               "x": 14,
+              "y": 1
+            },
+            {
+              "x": 15,
+              "y": 1
+            },
+            {
+              "x": 16,
+              "y": 1
+            },
+            {
+              "x": 17,
+              "y": 1
+            },
+            {
+              "x": 18,
+              "y": 1
+            },
+            {
+              "x": 14,
+              "y": 2
+            },
+            {
+              "x": 15,
+              "y": 2
+            },
+            {
+              "x": 16,
+              "y": 2
+            },
+            {
+              "x": 17,
+              "y": 2
+            },
+            {
+              "x": 18,
+              "y": 2
+            },
+            {
+              "x": 14,
+              "y": 3
+            },
+            {
+              "x": 15,
+              "y": 3
+            },
+            {
+              "x": 16,
+              "y": 3
+            },
+            {
+              "x": 17,
+              "y": 3
+            },
+            {
+              "x": 18,
               "y": 3
             }
           ]
         }
       ],
+      "purpose": "home",
+      "kind": "pulperia",
       "walls": [
         {
           "x": 13,
-          "y": 2,
+          "y": 0,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2630,7 +2998,7 @@
         },
         {
           "x": 14,
-          "y": 2,
+          "y": 0,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2641,7 +3009,51 @@
         },
         {
           "x": 15,
-          "y": 2,
+          "y": 0,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "mendoza:house-1",
+          "roomId": null
+        },
+        {
+          "x": 16,
+          "y": 0,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "mendoza:house-1",
+          "roomId": null
+        },
+        {
+          "x": 17,
+          "y": 0,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "mendoza:house-1",
+          "roomId": null
+        },
+        {
+          "x": 18,
+          "y": 0,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "mendoza:house-1",
+          "roomId": null
+        },
+        {
+          "x": 19,
+          "y": 0,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2652,7 +3064,7 @@
         },
         {
           "x": 13,
-          "y": 3,
+          "y": 1,
           "type": "window",
           "blocked": true,
           "blocksSight": false,
@@ -2662,7 +3074,51 @@
           "roomId": null
         },
         {
-          "x": 15,
+          "x": 19,
+          "y": 1,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "mendoza:house-1",
+          "roomId": null
+        },
+        {
+          "x": 13,
+          "y": 2,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "mendoza:house-1",
+          "roomId": null
+        },
+        {
+          "x": 19,
+          "y": 2,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "mendoza:house-1",
+          "roomId": null
+        },
+        {
+          "x": 13,
+          "y": 3,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "mendoza:house-1",
+          "roomId": null
+        },
+        {
+          "x": 19,
           "y": 3,
           "type": "wall",
           "blocked": true,
@@ -2686,16 +3142,13 @@
         {
           "x": 14,
           "y": 4,
-          "type": "door",
+          "type": "wall",
           "blocked": true,
           "blocksSight": true,
-          "cover": 0,
+          "cover": 40,
           "material": "adobe",
           "buildingId": "mendoza:house-1",
-          "roomId": null,
-          "doorId": "mendoza:house-1:door:14:4",
-          "open": false,
-          "locked": false
+          "roomId": null
         },
         {
           "x": 15,
@@ -2707,21 +3160,63 @@
           "material": "adobe",
           "buildingId": "mendoza:house-1",
           "roomId": null
+        },
+        {
+          "x": 16,
+          "y": 4,
+          "type": "door",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 0,
+          "material": "adobe",
+          "buildingId": "mendoza:house-1",
+          "roomId": null,
+          "doorId": "mendoza:house-1:door:16:4",
+          "open": false,
+          "locked": false
+        },
+        {
+          "x": 17,
+          "y": 4,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "mendoza:house-1",
+          "roomId": null
+        },
+        {
+          "x": 18,
+          "y": 4,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "mendoza:house-1",
+          "roomId": null
+        },
+        {
+          "x": 19,
+          "y": 4,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "mendoza:house-1",
+          "roomId": null
         }
-      ],
-      "wallFinish": "limewash",
-      "roofFinish": "aged",
-      "doorStyle": "double",
-      "windowStyle": "small",
-      "kind": "barracks"
+      ]
     }
   ],
   "props": [
     {
-      "id": "mendoza:building:table:6:2",
+      "id": "mendoza:building:table:4:1",
       "type": "table",
-      "x": 6,
-      "y": 2,
+      "x": 4,
+      "y": 1,
       "buildingId": "mendoza:building",
       "roomId": "mendoza:building:interior",
       "footprint": {
@@ -2731,10 +3226,49 @@
       "blocksMovement": true
     },
     {
-      "id": "mendoza:house-0:table:6:13",
+      "id": "mendoza:building:chest:8:1",
+      "type": "chest",
+      "x": 8,
+      "y": 1,
+      "buildingId": "mendoza:building",
+      "roomId": "mendoza:building:interior",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "mendoza:building:bed:4:4",
+      "type": "bed",
+      "x": 4,
+      "y": 3,
+      "buildingId": "mendoza:building",
+      "roomId": "mendoza:building:interior",
+      "footprint": {
+        "width": 1,
+        "height": 2
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "mendoza:building:chest:8:4",
+      "type": "chest",
+      "x": 8,
+      "y": 4,
+      "buildingId": "mendoza:building",
+      "roomId": "mendoza:building:interior",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "mendoza:house-0:table:4:12",
       "type": "table",
-      "x": 6,
-      "y": 13,
+      "x": 4,
+      "y": 12,
       "buildingId": "mendoza:house-0",
       "roomId": "mendoza:house-0:interior",
       "footprint": {
@@ -2744,14 +3278,115 @@
       "blocksMovement": true
     },
     {
-      "id": "mendoza:house-0:chest:8:13",
+      "id": "mendoza:house-0:chest:8:12",
       "type": "chest",
       "x": 8,
+      "y": 12,
+      "buildingId": "mendoza:house-0",
+      "roomId": "mendoza:house-0:interior",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true,
+      "purpose": "supply-cache"
+    },
+    {
+      "id": "mendoza:house-0:bed:4:14",
+      "type": "bed",
+      "x": 4,
       "y": 13,
       "buildingId": "mendoza:house-0",
       "roomId": "mendoza:house-0:interior",
       "footprint": {
         "width": 1,
+        "height": 2
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "mendoza:house-0:chest:8:14",
+      "type": "chest",
+      "x": 8,
+      "y": 14,
+      "buildingId": "mendoza:house-0",
+      "roomId": "mendoza:house-0:interior",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "mendoza:house-1:table:14:1",
+      "type": "table",
+      "x": 14,
+      "y": 1,
+      "buildingId": "mendoza:house-1",
+      "roomId": "mendoza:house-1:interior",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "mendoza:house-1:chest:18:1",
+      "type": "chest",
+      "x": 18,
+      "y": 1,
+      "buildingId": "mendoza:house-1",
+      "roomId": "mendoza:house-1:interior",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "mendoza:house-1:bed:14:3",
+      "type": "bed",
+      "x": 14,
+      "y": 2,
+      "buildingId": "mendoza:house-1",
+      "roomId": "mendoza:house-1:interior",
+      "footprint": {
+        "width": 1,
+        "height": 2
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "mendoza:house-1:chest:18:3",
+      "type": "chest",
+      "x": 18,
+      "y": 3,
+      "buildingId": "mendoza:house-1",
+      "roomId": "mendoza:house-1:interior",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "mendoza:house-0:cart",
+      "type": "cart",
+      "x": 1,
+      "y": 14,
+      "footprint": {
+        "width": 2,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "mendoza:house-1:cart",
+      "type": "cart",
+      "x": 13,
+      "y": 6,
+      "footprint": {
+        "width": 2,
         "height": 1
       },
       "blocksMovement": true
@@ -2764,11 +3399,45 @@
     {
       "id": "mendoza:lantern",
       "type": "lantern",
-      "x": 7,
-      "y": 4,
+      "x": 6,
+      "y": 6,
       "radius": 3,
       "intensity": 0.8
     }
   ],
-  "decor": []
+  "decor": [],
+  "boundaryRoads": [
+    {
+      "x": 12,
+      "y": 0
+    },
+    {
+      "x": 13,
+      "y": 0
+    },
+    {
+      "x": 0,
+      "y": 7
+    },
+    {
+      "x": 19,
+      "y": 7
+    },
+    {
+      "x": 0,
+      "y": 8
+    },
+    {
+      "x": 19,
+      "y": 8
+    },
+    {
+      "x": 12,
+      "y": 15
+    },
+    {
+      "x": 13,
+      "y": 15
+    }
+  ]
 }

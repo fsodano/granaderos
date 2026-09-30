@@ -1,0 +1,14 @@
+.battle-layout .ja2-conversation{position:absolute;z-index:12;right:12px;top:42px;width:310px;max-width:calc(100% - 24px);max-height:calc(100% - 52px);overflow:auto;padding:5px;background:#19231d;border:2px solid #aaa076;box-shadow:inset 0 0 0 2px #394235,2px 3px 8px #0009;color:#f2edd7;font-size:12px;}
+.ja2-conversation-head{display:grid;grid-template-columns:112px 1fr;gap:5px;}
+.ja2-conversation figure{margin:0;background:#111814;border:1px solid #82795a;}
+.ja2-conversation figure img{display:block;width:100%;height:118px;object-fit:cover;object-position:center 20%;}
+.ja2-conversation figcaption{padding:4px;text-align:center;font-size:11px;line-height:1.2;color:#e1d4a8;}
+.ja2-conversation-choices{display:flex;flex-direction:column;gap:3px;}
+.battle-layout .ja2-conversation button{min-height:27px;padding:4px 6px;border:1px solid #847b59;border-radius:0;background:linear-gradient(#48513d,#303c2d);box-shadow:inset 1px 1px #ffffff15;color:#f1e6bf;font-size:11px;line-height:1.2;}
+.battle-layout .ja2-conversation button:disabled{opacity:.45;cursor:not-allowed;}
+.battle-layout .ja2-conversation button:focus-visible,.ja2-speech button:focus-visible{outline:2px solid #f4cf68;outline-offset:1px;}
+.ja2-conversation-choices button:last-child{margin-top:auto;}
+.battle-layout .ja2-conversation-text{margin:5px 0 0;padding:9px;background:#101711;border:1px solid #b8aa78;font-size:13px;line-height:1.45;}
+.ja2-conversation-reason{padding:5px;color:#ddc796;}.ja2-conversation-reason p{margin:0 0 5px;}
+.battle-layout .ja2-speech{position:absolute;z-index:11;transform:translate(-50%,-100%);width:max-content;max-width:min(280px,calc(100% - 24px));padding:8px 27px 8px 10px;border:2px solid #c1b482;background:#172016f5;box-shadow:inset 0 0 0 1px #53563a,2px 3px 5px #0008;color:#f7f1da;pointer-events:auto;}
+.ja2-speech p{margin:0;font-size:13px;line-height:1.4;}.battle-layout .ja2-speech button{position:absolute;right:3px;top:2px;background:transparent;border:0;color:#d4cba9;padding:1px 4px;}

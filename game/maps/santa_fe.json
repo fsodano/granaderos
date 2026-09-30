@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "santa_fe",
-  "revision": 2,
+  "revision": 3,
   "width": 20,
   "height": 16,
   "metadata": {
@@ -39,14 +39,14 @@
     {
       "x": 4,
       "y": 0,
-      "type": "road",
+      "type": "grass",
       "blocked": false,
       "cover": 0
     },
     {
       "x": 5,
       "y": 0,
-      "type": "road",
+      "type": "grass",
       "blocked": false,
       "cover": 0
     },
@@ -599,30 +599,30 @@
     {
       "x": 4,
       "y": 4,
-      "type": "road",
+      "type": "grass",
       "blocked": false,
       "cover": 0
     },
     {
       "x": 5,
       "y": 4,
-      "type": "road",
+      "type": "grass",
       "blocked": false,
       "cover": 0
     },
     {
       "x": 6,
       "y": 4,
-      "type": "forest",
+      "type": "grass",
       "blocked": false,
-      "cover": 20
+      "cover": 0
     },
     {
       "x": 7,
       "y": 4,
-      "type": "forest",
+      "type": "grass",
       "blocked": false,
-      "cover": 20
+      "cover": 0
     },
     {
       "x": 8,
@@ -2254,27 +2254,84 @@
     {
       "id": "santa_fe:building",
       "name": "Casa del sector",
-      "x": 12,
-      "y": 11,
-      "width": 3,
-      "height": 3,
-      "roof": "tile",
+      "x": 11,
+      "y": 10,
+      "width": 6,
+      "height": 5,
+      "roof": "terrace",
       "material": "adobe",
+      "architecture": "house",
       "rooms": [
         {
           "id": "santa_fe:building:interior",
           "cells": [
             {
+              "x": 12,
+              "y": 11
+            },
+            {
+              "x": 13,
+              "y": 11
+            },
+            {
+              "x": 14,
+              "y": 11
+            },
+            {
+              "x": 15,
+              "y": 11
+            },
+            {
+              "x": 12,
+              "y": 12
+            },
+            {
               "x": 13,
               "y": 12
+            },
+            {
+              "x": 14,
+              "y": 12
+            },
+            {
+              "x": 15,
+              "y": 12
+            },
+            {
+              "x": 12,
+              "y": 13
+            },
+            {
+              "x": 13,
+              "y": 13
+            },
+            {
+              "x": 14,
+              "y": 13
+            },
+            {
+              "x": 15,
+              "y": 13
             }
           ]
         }
       ],
+      "kind": "house",
       "walls": [
         {
+          "x": 11,
+          "y": 10,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "santa_fe:building",
+          "roomId": null
+        },
+        {
           "x": 12,
-          "y": 11,
+          "y": 10,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2285,7 +2342,7 @@
         },
         {
           "x": 13,
-          "y": 11,
+          "y": 10,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2296,7 +2353,7 @@
         },
         {
           "x": 14,
-          "y": 11,
+          "y": 10,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2306,8 +2363,30 @@
           "roomId": null
         },
         {
-          "x": 12,
-          "y": 12,
+          "x": 15,
+          "y": 10,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "santa_fe:building",
+          "roomId": null
+        },
+        {
+          "x": 16,
+          "y": 10,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "santa_fe:building",
+          "roomId": null
+        },
+        {
+          "x": 11,
+          "y": 11,
           "type": "window",
           "blocked": true,
           "blocksSight": false,
@@ -2317,7 +2396,18 @@
           "roomId": null
         },
         {
-          "x": 14,
+          "x": 16,
+          "y": 11,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "santa_fe:building",
+          "roomId": null
+        },
+        {
+          "x": 11,
           "y": 12,
           "type": "wall",
           "blocked": true,
@@ -2328,7 +2418,18 @@
           "roomId": null
         },
         {
-          "x": 12,
+          "x": 16,
+          "y": 12,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "santa_fe:building",
+          "roomId": null
+        },
+        {
+          "x": 11,
           "y": 13,
           "type": "wall",
           "blocked": true,
@@ -2339,8 +2440,52 @@
           "roomId": null
         },
         {
-          "x": 13,
+          "x": 16,
           "y": 13,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "santa_fe:building",
+          "roomId": null
+        },
+        {
+          "x": 11,
+          "y": 14,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "santa_fe:building",
+          "roomId": null
+        },
+        {
+          "x": 12,
+          "y": 14,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "santa_fe:building",
+          "roomId": null
+        },
+        {
+          "x": 13,
+          "y": 14,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "santa_fe:building",
+          "roomId": null
+        },
+        {
+          "x": 14,
+          "y": 14,
           "type": "door",
           "blocked": true,
           "blocksSight": true,
@@ -2353,8 +2498,22 @@
           "locked": false
         },
         {
-          "x": 14,
-          "y": 13,
+          "x": 15,
+          "y": 14,
+          "type": "door",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 0,
+          "material": "adobe",
+          "buildingId": "santa_fe:building",
+          "roomId": null,
+          "doorId": "santa_fe:door-right",
+          "open": false,
+          "locked": false
+        },
+        {
+          "x": 16,
+          "y": 14,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2363,37 +2522,113 @@
           "buildingId": "santa_fe:building",
           "roomId": null
         }
-      ],
-      "wallFinish": "stone",
-      "roofFinish": "aged",
-      "doorStyle": "barn",
-      "windowStyle": "small",
-      "kind": "warehouse"
+      ]
     },
     {
       "id": "santa_fe:house-0",
-      "name": "Casa 2 del poblado",
-      "x": 4,
-      "y": 1,
-      "width": 3,
-      "height": 3,
+      "name": "Pulpería del poblado",
+      "x": 2,
+      "y": 0,
+      "width": 7,
+      "height": 5,
       "roof": "tile",
       "material": "adobe",
+      "architecture": "pulperia",
       "rooms": [
         {
           "id": "santa_fe:house-0:interior",
           "cells": [
             {
+              "x": 3,
+              "y": 1
+            },
+            {
+              "x": 4,
+              "y": 1
+            },
+            {
+              "x": 5,
+              "y": 1
+            },
+            {
+              "x": 6,
+              "y": 1
+            },
+            {
+              "x": 7,
+              "y": 1
+            },
+            {
+              "x": 3,
+              "y": 2
+            },
+            {
+              "x": 4,
+              "y": 2
+            },
+            {
               "x": 5,
               "y": 2
+            },
+            {
+              "x": 6,
+              "y": 2
+            },
+            {
+              "x": 7,
+              "y": 2
+            },
+            {
+              "x": 3,
+              "y": 3
+            },
+            {
+              "x": 4,
+              "y": 3
+            },
+            {
+              "x": 5,
+              "y": 3
+            },
+            {
+              "x": 6,
+              "y": 3
+            },
+            {
+              "x": 7,
+              "y": 3
             }
           ]
         }
       ],
+      "purpose": "bar",
+      "kind": "pulperia",
       "walls": [
         {
+          "x": 2,
+          "y": 0,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "santa_fe:house-0",
+          "roomId": null
+        },
+        {
+          "x": 3,
+          "y": 0,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "santa_fe:house-0",
+          "roomId": null
+        },
+        {
           "x": 4,
-          "y": 1,
+          "y": 0,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2404,7 +2639,7 @@
         },
         {
           "x": 5,
-          "y": 1,
+          "y": 0,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2415,7 +2650,7 @@
         },
         {
           "x": 6,
-          "y": 1,
+          "y": 0,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2425,8 +2660,30 @@
           "roomId": null
         },
         {
-          "x": 4,
-          "y": 2,
+          "x": 7,
+          "y": 0,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "santa_fe:house-0",
+          "roomId": null
+        },
+        {
+          "x": 8,
+          "y": 0,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "santa_fe:house-0",
+          "roomId": null
+        },
+        {
+          "x": 2,
+          "y": 1,
           "type": "window",
           "blocked": true,
           "blocksSight": false,
@@ -2436,7 +2693,18 @@
           "roomId": null
         },
         {
-          "x": 6,
+          "x": 8,
+          "y": 1,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "santa_fe:house-0",
+          "roomId": null
+        },
+        {
+          "x": 2,
           "y": 2,
           "type": "wall",
           "blocked": true,
@@ -2447,8 +2715,63 @@
           "roomId": null
         },
         {
-          "x": 4,
+          "x": 8,
+          "y": 2,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "santa_fe:house-0",
+          "roomId": null
+        },
+        {
+          "x": 2,
           "y": 3,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "santa_fe:house-0",
+          "roomId": null
+        },
+        {
+          "x": 8,
+          "y": 3,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "santa_fe:house-0",
+          "roomId": null
+        },
+        {
+          "x": 2,
+          "y": 4,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "santa_fe:house-0",
+          "roomId": null
+        },
+        {
+          "x": 3,
+          "y": 4,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "santa_fe:house-0",
+          "roomId": null
+        },
+        {
+          "x": 4,
+          "y": 4,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2459,7 +2782,7 @@
         },
         {
           "x": 5,
-          "y": 3,
+          "y": 4,
           "type": "door",
           "blocked": true,
           "blocksSight": true,
@@ -2467,13 +2790,35 @@
           "material": "adobe",
           "buildingId": "santa_fe:house-0",
           "roomId": null,
-          "doorId": "santa_fe:house-0:door:5:3",
+          "doorId": "santa_fe:house-0:door:5:4",
           "open": false,
           "locked": false
         },
         {
           "x": 6,
-          "y": 3,
+          "y": 4,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "santa_fe:house-0",
+          "roomId": null
+        },
+        {
+          "x": 7,
+          "y": 4,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "santa_fe:house-0",
+          "roomId": null
+        },
+        {
+          "x": 8,
+          "y": 4,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2482,15 +2827,126 @@
           "buildingId": "santa_fe:house-0",
           "roomId": null
         }
-      ],
-      "wallFinish": "ochre",
-      "roofFinish": "clay",
-      "doorStyle": "double",
-      "windowStyle": "lattice",
-      "kind": "pulperia"
+      ]
     }
   ],
-  "props": [],
+  "props": [
+    {
+      "id": "santa_fe:building:table:12:11",
+      "type": "table",
+      "x": 12,
+      "y": 11,
+      "buildingId": "santa_fe:building",
+      "roomId": "santa_fe:building:interior",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "santa_fe:building:bench:15:11",
+      "type": "bench",
+      "x": 15,
+      "y": 11,
+      "buildingId": "santa_fe:building",
+      "roomId": "santa_fe:building:interior",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "santa_fe:building:bed:12:13",
+      "type": "bed",
+      "x": 12,
+      "y": 12,
+      "buildingId": "santa_fe:building",
+      "roomId": "santa_fe:building:interior",
+      "footprint": {
+        "width": 1,
+        "height": 2
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "santa_fe:building:chest:15:13",
+      "type": "chest",
+      "x": 15,
+      "y": 12,
+      "buildingId": "santa_fe:building",
+      "roomId": "santa_fe:building:interior",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "santa_fe:house-0:table:3:1",
+      "type": "table",
+      "x": 3,
+      "y": 1,
+      "buildingId": "santa_fe:house-0",
+      "roomId": "santa_fe:house-0:interior",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "santa_fe:house-0:bench:7:1",
+      "type": "bench",
+      "x": 7,
+      "y": 1,
+      "buildingId": "santa_fe:house-0",
+      "roomId": "santa_fe:house-0:interior",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "santa_fe:house-0:bed:3:3",
+      "type": "bed",
+      "x": 3,
+      "y": 2,
+      "buildingId": "santa_fe:house-0",
+      "roomId": "santa_fe:house-0:interior",
+      "footprint": {
+        "width": 1,
+        "height": 2
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "santa_fe:house-0:chest:7:3",
+      "type": "chest",
+      "x": 7,
+      "y": 3,
+      "buildingId": "santa_fe:house-0",
+      "roomId": "santa_fe:house-0:interior",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "santa_fe:house-0:cart",
+      "type": "cart",
+      "x": 2,
+      "y": 6,
+      "footprint": {
+        "width": 2,
+        "height": 1
+      },
+      "blocksMovement": true
+    }
+  ],
   "items": [],
   "spawns": [],
   "exits": [],
@@ -2498,11 +2954,37 @@
     {
       "id": "santa_fe:lantern",
       "type": "lantern",
-      "x": 13,
-      "y": 14,
+      "x": 14,
+      "y": 15,
       "radius": 3,
       "intensity": 0.8
     }
   ],
-  "decor": []
+  "decor": [],
+  "boundaryRoads": [
+    {
+      "x": 4,
+      "y": 0
+    },
+    {
+      "x": 5,
+      "y": 0
+    },
+    {
+      "x": 0,
+      "y": 7
+    },
+    {
+      "x": 0,
+      "y": 8
+    },
+    {
+      "x": 4,
+      "y": 15
+    },
+    {
+      "x": 5,
+      "y": 15
+    }
+  ]
 }

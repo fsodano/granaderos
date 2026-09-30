@@ -1,12 +1,12 @@
-import {secureArea} from './controlled-area-fixture.mjs';
+import {secureArea} from './secured-area-fixture.mjs';
 import test from 'node:test';import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign as reduce,rosterFor,contractQuote,operativeLocation} from '../game/campaign.js';
 import {defaultProfile} from '../game/character-profile.js';import {enterSector} from '../game/world.js';import {encodeSave,decodeSave} from '../game/save.js';
 const step=(s,a)=>{const n=reduce(s,a);assert.equal(n.lastError,null,`${a.type}: ${n.lastError}`);return n;};
-const start=()=>step(initialCampaign(),{type:'createOfficer',name:'Elena Valdés',profile:defaultProfile(),answers:{origin:'cabildo',doctrine:'guerrilla_tactician',crisis:'rally',specialty:'teacher',temperament:'steady'}});
+const start=()=>step(secureArea(initialCampaign()),{type:'createOfficer',name:'Elena Valdés',profile:defaultProfile(),answers:{origin:'cabildo',doctrine:'guerrilla_tactician',crisis:'rally',specialty:'teacher',temperament:'steady'}});
 const waitTo=(s,h)=>{while(s.hour<h)s=step(s,{type:'wait',hours:Math.min(240,h-s.hour)});return s;};
 const roundTrip=(s)=>{s=step(s,{type:'visitSector'});const b=enterSector(s.pendingBattle,s.sectorStates[s.location]);const restored=decodeSave(encodeSave(s,b));return step(restored.campaign,{type:'leaveSector',battleId:s.pendingBattle.id,sectorState:restored.battle,survivors:restored.battle.units.filter(u=>u.side==='player').map(u=>({...u,id:Number(u.id)}))});};
-test('mixed terms in controlled territory survive field visit, expires, save, and depleted-kit rehire',()=>{
+test('established-area mixed terms survive field visit, expires, save, and depleted-kit rehire',()=>{
  let s=start();const terms=[[100,'day'],[101,'week'],[102,'month']];for(const[id,term]of terms)s=step(s,{type:'recruitCivic',id,term});s=step(s,{type:'purchaseEquipment',item:1803,quantity:1});s=step(s,{type:'equip',operativeId:100,slot:'weapon',itemId:1803});const storedOld=s.armory[1804];
  secureArea(s,'buenos_aires');s=step(s,{type:'travel',sector:'buenos_aires'});assert.equal(s.hour,12);s=roundTrip(s);assert.deepEqual(s.recruited,[1000,100,101,102]);s=waitTo(s,24);assert.ok(!s.recruited.includes(100));assert.equal(operativeLocation(s,100),'buenos_aires');assert.equal(s.contracts[101].expiresAt,168);s=decodeSave(encodeSave(s)).campaign;s=step(s,{type:'recruitCivic',id:100,term:'week'});assert.equal(rosterFor(s).find(o=>o.id===100).weapon,1803);assert.equal(s.armory[1804],storedOld);assert.deepEqual(Object.keys(s.resources),['treasury']);s=step(s,{type:'dismiss',id:100});s=waitTo(s,168);assert.deepEqual(s.recruited,[1000,102]);s=waitTo(s,720);assert.deepEqual(s.recruited,[1000]);assert.equal(s.defeated,false);assert.deepEqual(decodeSave(encodeSave(s)).campaign.recruited,[1000]);
 });

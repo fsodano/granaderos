@@ -18,10 +18,11 @@ for(let round=0;round<80&&b.status==='active';round++){
   for(let n=0;n<20&&b.status==='active';n++){
    const u=b.units.find(u=>u.id===id);if(!live(u)||u.ap<6)break;visited.add(`${u.x},${u.y}`);
    const visible=b.units.filter(t=>t.side==='enemy'&&live(t)&&teamCanSee(b,'player',t));if(visible.length)known=visible.map(({x,y})=>({x,y}));if(!visible.length&&known.every(p=>teamCanSee(b,'player',p)))known=[];const c=actionCosts(b,u),opts=[];
-   if(u.medkits&&u.bleeding&&u.hp<u.maxHp-10)opts.push({type:'heal'});
+   if(u.medkits&&u.bleeding&&u.hp<u.maxHp-10)opts.push(u.activeSlot==='medical'?{type:'heal'}:{type:'weapon',slot:'medical'});
+   else if(u.activeSlot==='medical')opts.push({type:'weapon',slot:'primary'});
    if(!visible.length&&u.stance==='prone')opts.push({type:'stance',stance:'standing'});
    if(u.knockedDown)opts.push({type:'stance',stance:'standing'});
-   if(visible.length&&u.loaded&&u.stance!=='prone')opts.push({type:'stance',stance:'prone'});
+   if(visible.length&&u.loaded&&u.stance!=='prone'&&visible.every(t=>dist(u,t)>2))opts.push({type:'stance',stance:'prone'});
    if(!u.loaded&&u.stance==='prone')opts.push({type:'stance',stance:'standing'});
    if(u.jammed)opts.push({type:'reprime'});
    const adjacent=visible.filter(t=>dist(u,t)<=bladeFor(u).reach).sort((a,b)=>a.hp-b.hp);if(adjacent[0])opts.push({type:'melee',targetId:adjacent[0].id});

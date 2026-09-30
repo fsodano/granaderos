@@ -1,6 +1,7 @@
 import { LAYERS, ground, cellKey, FURNITURE, TERRAIN } from "./map-catalog.js";
 import { compileBuilding } from "./compile-map.js";
 import { validateMap } from "./map-schema.js";
+import { BUILDING_TYPES } from "./building-types.js";
 import { buildBuilding } from "./buildings.js";
 export function makeBuilding({
   id,
@@ -11,6 +12,8 @@ export function makeBuilding({
   name = "Casa",
   material = "adobe",
   kind,
+  architecture,
+  roof,
   wallFinish,
   roofFinish,
   doorStyle,
@@ -34,8 +37,13 @@ export function makeBuilding({
     height,
     name,
     material,
+    architecture,
+    roof: roof ?? (architecture ? undefined : "tile"),
     doors: [{ x: x + Math.floor(width / 2), y: y + height - 1 }],
   });
+  // A template without an architecture uses its authored kind and profile.
+  // Do not let the gameplay helper's default house override that choice.
+  if (architecture === undefined) delete building.architecture;
   return {
     ...building,
     ...Object.fromEntries(
@@ -205,13 +213,24 @@ export function applyMapCommands(
         doc[layer].splice(index, 1);
         doc.items = doc.items.filter((i) => i.containerId !== c.id);
       } else if (c.type === "setObject") {
-        const { object } = entity(doc, c.id);
+        const { object, layer } = entity(doc, c.id);
         if (
           ["id", "x", "y", "walls", "rooms", "width", "height", "footprint"].some(
             (k) => k in c.values,
           )
         )
           throw Error("Usa una operación geométrica para cambiar la posición o el tamaño.");
+        if (layer === "buildings" && "kind" in c.values && !("architecture" in c.values)) {
+          // A new editor type must not leave the former campaign silhouette.
+          const previous = BUILDING_TYPES[object.architecture];
+          if (previous) {
+            const next = BUILDING_TYPES[c.values.kind];
+            if (next) object.architecture = c.values.kind;
+            else delete object.architecture;
+            if (!("roof" in c.values) && object.roof === previous.roof)
+              object.roof = next?.roof ?? "tile";
+          }
+        }
         Object.assign(object, structuredClone(c.values));
         if ("containerId" in c.values && object.containerId) {
           const container = entity(doc, object.containerId).object;

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {initialCampaign,dispatchCampaign} from '../game/campaign.js';
+import {initialCampaign,dispatchCampaign,serializeCampaign} from '../game/campaign.js';
 import {defaultContentPackage} from '../game/content-package.js';
 import {operativeIdForCharacter} from '../game/content-character-ids.js';
 import {encountersFor} from '../game/encounters.js';
@@ -70,7 +70,7 @@ test('one-second orders in another squad preserve the remaining wound interval a
 test('a loaded resident receives each wound interval once and first aid stops later off-screen damage',()=>{
  let p=wound(visit(ready())),before=structuredClone(npc(p));
  for(let i=0;i<6;i++)p=second(p);assert.equal(npc(p).hp,before.hp-before.bleeding);assert.equal(health(p.campaign).hp,npc(p).hp);
- p=approach(p);const supplies=p.battle.units[0].medkits;p=act(p,{type:'heal',targetId:npc(p).id});assert.equal(npc(p).bleeding,0);assert.equal(npc(p).civilianWoundSeconds,undefined);assert.ok(p.battle.units[0].medkits<supplies);
+ p=approach(p);const supplies=p.battle.units[0].medkits;p=act(p,{type:'weapon',slot:'medical'});p=act(p,{type:'heal',targetId:npc(p).id});assert.equal(npc(p).bleeding,0);assert.equal(npc(p).civilianWoundSeconds,undefined);assert.ok(p.battle.units[0].medkits<supplies);
  const hp=npc(p).hp;let s=order(leave(saved(p)),{type:'wait',hours:24});assert.equal(health(s).hp,hp);assert.equal(s.operativeState[id(s)].alive,true);assert.ok(saved({campaign:s}));
 });
 
@@ -108,7 +108,7 @@ test('a batched remote checkpoint crossing midnight uses the actual wound delta 
  const before=now(p.campaign);let battle=actBattle(p.battle,{type:'rest',unitId:'111'});assert.equal(battle.lastError,null);assert.equal(battle.elapsedSeconds-p.battle.elapsedSeconds,600);
  p=sync({...p,battle});assert.equal(now(p.campaign),before+600);assert.equal(health(p.campaign).hp,0);
  assert.equal(p.campaign.contentPresence.receipts[0].minute,Math.floor(deathSecond/60));assert.ok(p.campaign.contentPresence.receipts[0].minute<p.campaign.contentPresence.minute);
- assert.equal(p.campaign.contentPresence.people.successor.appeared,true);assert.deepEqual(sync(saved(p)).campaign,p.campaign);assert.ok(saved(p));
+ assert.equal(p.campaign.contentPresence.people.successor.appeared,true);assert.equal(serializeCampaign(sync(saved(p)).campaign),serializeCampaign(p.campaign));assert.ok(saved(p));
 });
 
 
@@ -133,7 +133,8 @@ test('a historical command casualty outside the loaded sector preserves the expl
 test('batched and incremental tactical checkpoints produce identical off-screen death receipts and succession',()=>{
  let p=approach(visit(ready({successor:true,quest:true})));p.campaign=order(p.campaign,{type:'talkNPC',npcId:npc(p).id,unitId:110,approach:'dialogue',dialogueNode:'start',dialogueChoice:'accept',sectorState:p.battle});
  const initial=remote(wound(p));let immediate=saved(initial),battle=initial.battle;
- for(let i=0;i<40;i++){
+ const remoteWound=health(initial.campaign),duration=Math.ceil(remoteWound.hp/remoteWound.bleeding)*6-(remoteWound.civilianWoundSeconds??0)+60;
+ for(let i=0;i<duration;i++){
   battle=actBattle(battle,{type:'ambient'});assert.equal(battle.lastError,null);
   immediate=sync({campaign:immediate.campaign,battle});
  }

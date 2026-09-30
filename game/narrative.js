@@ -8,12 +8,17 @@ export const ROYALIST_COMMANDS=[
  {id:'partisans',name:'Cabildos leales y partidas del interior',commander:'Mandos locales y cuadros de Talavera',theater:'interior',objective:'Aprovechar el descontento para saquear estancias y cortar el enlace de Córdoba.',doctrine:'Sabotaje logístico y requisas sobre provincias de baja lealtad'},
 ];
 export const NORTHERN_AXIS=['humahuaca','jujuy','salta','tucuman'];
-export function coastalRevenue(s){return CAMPAIGN_SECTORS.filter(d=>d.theater==='coast'&&s.sectors[d.id].owner==='patriot').reduce((v,d)=>v+Math.floor(d.income*(s.sectors[d.id].damageUntil>s.hour?.25:1)*(s.blockade?.25:1)),0);}
-export function royalistIntel(s){
- const north=NORTHERN_AXIS.find(id=>s.sectors[id].owner==='patriot');
- const ports=['san_nicolas','santa_fe','ensenada','buenos_aires'].filter(id=>s.sectors[id].owner==='patriot').sort((a,b)=>CAMPAIGN_SECTORS.find(x=>x.id===b).income-CAMPAIGN_SECTORS.find(x=>x.id===a).income);
- return ROYALIST_COMMANDS.map(c=>({...c,target:c.id==='north'?north??null:c.id==='naval'?ports[0]??null:c.id==='partisans'&&s.sectors.cordoba.owner==='patriot'&&s.sectors.cordoba.loyalty<50?'cordoba':null,nextActionHours:c.id==='north'?120-s.hour%120:c.id==='naval'?168-s.hour%168:c.id==='partisans'?144-s.hour%144:null,active:s.completed||s.defeated?false:c.id==='north'?Boolean(north):c.id==='naval'?coastalRevenue(s)>=500:c.id==='partisans'?s.sectors.cordoba.owner==='patriot'&&s.sectors.cordoba.loyalty<50:true}));
+// Retiro alone starts at four defenders. The last hostile sector faces thirty.
+// Count current ownership, not elapsed time or the size of the attacking squad.
+export function campaignEnemyCount(campaign){
+ const controlled=CAMPAIGN_SECTORS.filter(d=>campaign.sectors[d.id]?.owner==='patriot').length;
+ const progress=Math.max(0,Math.min(1,(controlled-1)/(CAMPAIGN_SECTORS.length-2)));
+ return 4+Math.round(26*progress);
 }
+export function coastalRevenue(s){return CAMPAIGN_SECTORS.filter(d=>d.theater==='coast'&&s.sectors[d.id].owner==='patriot').reduce((v,d)=>v+Math.floor(d.income*(s.sectors[d.id].damageUntil>s.hour?.25:1)*(s.blockade?.25:1)),0);}
+// Public background doctrine, not access to the enemy dispatch scheduler.
+export function royalistIntel(){return ROYALIST_COMMANDS.map(command=>({...command}));}
+
 export function mentorDispatch(s){
  const messages=[
  'San Martín: «La instrucción comienza en Retiro. Reunamos hombres, caballos y armas antes de empeñar al regimiento».',
@@ -26,7 +31,7 @@ export function mentorDispatch(s){
 }
 export function oppositionFor(request,state){
  const command=ROYALIST_COMMANDS.find(c=>c.id===(request.theater==='north'?'north':request.theater==='coast'?'naval':'partisans'));
- const count=Math.max(3,request.squad.length+request.difficulty-1);
+ const count=request.enemyCount??Math.max(3,request.squad.length+request.difficulty-1);
  const names=request.theater==='north'?['Oficial de la vanguardia de Tristán','Veterano del Ejército Real del Perú','Fusilero de Pezuela']:request.theater==='coast'?['Oficial de la flotilla de Romarate','Infante de desembarco realista','Marinero de la escuadra de Montevideo']:['Oficial de los cuadros de Talavera','Partidario del Cabildo realista','Miliciano leal a la Corona'];
  return {enemyCommand:command.id,enemyCommander:command.commander,enemyObjective:command.objective,enemies:Array.from({length:count},(_,i)=>authoredForceEquipment(state,'oppositionEquipment',i===0?'officer':i%3===0?'veteran':'line',{id:`enemy-${i}`,name:`${names[i%names.length]} ${Math.floor(i/names.length)+1}`,weapon:i===0?1805:i%3===0?1801:1800,blade:i===0?1809:1811,marksmanship:50+request.difficulty*5+(request.theater==='north'?3:0),morale:60+request.difficulty*5,leadership:i===0?75:40},campaignRules(state).enemyCartridges))};
 }

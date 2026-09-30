@@ -12,7 +12,7 @@ const prepared=(exploration=false)=>createBattle([{id:'sender',x:1,y:1,medkits:4
 test('actual paid soldiers share authored supplies, the recipient uses the received dressings on a critical arrival, and saved return retains each remainder',()=>{
  let p=supplyCareField();assert.equal(unit(p,111).medkits,0);assert.equal(unit(p,112).hp,1);assert.equal(unit(p,112).unconscious,true);
  p=tactical(p,{type:'transferSupply',unitId:'110',targetId:'111',item:'medkits',count:3});assert.equal(unit(p,110).medkits,1);assert.equal(unit(p,111).medkits,3);assert.equal(unit(p,112).hp,1);
- p=tactical(saved(p),{type:'heal',unitId:'111',targetId:'112'});p=tactical(saved(p),{type:'heal',unitId:'111',targetId:'112'});assert.equal(unit(p,111).medkits,1);assert.equal(unit(p,112).hp,15);assert.equal(unit(p,112).unconscious,false);
+ p=tactical(saved(p),{type:'weapon',unitId:'111',slot:'medical'});p=tactical(p,{type:'heal',unitId:'111',targetId:'112'});p=tactical(saved(p),{type:'heal',unitId:'111',targetId:'112'});assert.equal(unit(p,111).medkits,1);assert.equal(unit(p,112).hp,15);assert.equal(unit(p,112).unconscious,false);
  const other=Object.keys(CHARACTER_SUPPLY_LABELS).filter(k=>k!=='medkits'),expected={};for(const item of other){expected[item]=[unit(p,110)[item]-1,unit(p,111)[item]+1];p=tactical(p,{type:'transferSupply',unitId:'110',targetId:'111',item,count:1});}
  const c=leave(saved(p));assert.equal(c.operativeState[110].medkits,1);assert.equal(c.operativeState[111].medkits,1);p=visit(saved({campaign:c}).campaign);assert.equal(unit(p,110).medkits,1);assert.equal(unit(p,111).medkits,1);assert.equal(unit(p,112).hp,15);for(const [item,amounts]of Object.entries(expected))assert.deepEqual([unit(p,110)[item],unit(p,111)[item]],amounts);assert.ok(saved(p));
 });

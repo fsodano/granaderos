@@ -1,3 +1,4 @@
+import {scriptedBattleReport} from './scripted-battle-report.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {dispatchCampaign as dispatch,restoreCampaign,serializeCampaign,operativeLocation} from '../game/campaign.js';
@@ -11,12 +12,14 @@ test('two persistent squads travel independently and cannot teleport members',()
 });
 test('remote attacks reject; genuine march and frontier entry advance time and location',()=>{
  let s=initialCampaign();assert.ok(dispatch(s,{type:'attack',sector:'san_nicolas'}).lastError);s=order(s,{type:'travel',sector:'buenos_aires'});const before=s.hour;s=order(s,{type:'attack',sector:'san_nicolas'});assert.equal(s.hour,before+12);assert.equal(s.location,'san_nicolas');assert.equal(s.squads[0].location,'san_nicolas');
- s=order(s,{type:'battleResult',battleId:s.pendingBattle.id,outcome:'retreat',survivors:s.pendingBattle.squad.map(o=>({id:o.id,hp:o.hp}))});assert.equal(s.location,'buenos_aires');
+ s=order(s,scriptedBattleReport(s,{outcome:'retreat'}));assert.equal(s.location,'buenos_aires');
 });
 test('friendly tactical visits preserve sector and inventory without capture rewards',()=>{
  let s=order(initialCampaign(),{type:'visitSector',sector:'retiro'});assert.equal(s.pendingBattle.exploration,true);assert.deepEqual(s.pendingBattle.enemies,[]);const request=s.pendingBattle,map=buildSectorMap(request),battle=createBattle(map.squad,map),cash=s.resources.treasury;
- // Declared inventory-only fixture: an empty recovered gun adds no rounds.
- battle.units[0].inventory={'weapon:1801:enemy-1':{count:1,weight:4,weapon:1801,loaded:0,condition:90}};
+ for(const u of battle.units.filter(u=>u.side==='player'))u.energy=60;
+ // The fixture records one pre-existing French-musket charge as field loot.
+ request.fieldAmmunition={...request.fieldAmmunition,musket_75:(request.fieldAmmunition.musket_75??0)+1};request.fieldCartridges+=1;
+ battle.units[0].inventory={...battle.units[0].inventory,'weapon:1801:enemy-1':{count:1,weight:4,weapon:1801,loaded:1,condition:90}};
  s=order(s,{type:'leaveSector',battleId:request.id,sectorState:battle,survivors:battle.units.filter(o=>o.side==='player').map(o=>({id:o.id,hp:o.hp,energy:60,inventory:o.inventory??{}}))});assert.equal(s.resources.treasury,cash);assert.equal(s.pendingBattle,null);assert.equal(s.operativeState[3].energy,60);assert.ok(s.sectorStates.retiro);assert.deepEqual(restoreCampaign(serializeCampaign(s)),s);
  s=order(s,{type:'visitSector'});assert.equal(s.pendingBattle.squad.find(o=>o.id===3).inventory['weapon:1801:enemy-1'].weapon,1801);
 });

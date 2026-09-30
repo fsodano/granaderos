@@ -1,7 +1,7 @@
 import {refreshMilitaryCondition} from '../game/actor-condition.js';
 import {attendYatasto} from './mission-helpers.mjs';
 import {enterSector} from '../game/world.js';
-import {marchToFront,meetLocalRecruit} from './campaign-test-helpers.mjs';
+import {marchToFront,restForMarch,meetLocalRecruit} from './campaign-test-helpers.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {dispatchCampaign as dispatch,isSupplied,recruitmentStatus,restoreCampaign,serializeCampaign,OPERATIVES,CAMPAIGN_SECTORS,PHASES} from '../game/campaign.js';
@@ -25,13 +25,30 @@ test('five-phase campaign cannot unlock San Martín early',()=>{
 test('captured crossroads cut the Camino Real; traversal respects control',()=>{
  const s=initialCampaign();for(const id of ['cordoba','tucuman','salta'])s.sectors[id].owner='patriot';assert.equal(isSupplied(s,'salta'),true);s.sectors.cordoba.owner='royalist';assert.equal(isSupplied(s,'salta'),false);assert.ok(dispatch(s,{type:'travel',sector:'salta'}).lastError);
 });
-test('militia holds raids and vulnerable northern provinces fall',()=>{
- let s=initialCampaign();s.sectors.jujuy.owner='patriot';s=order(s,{type:'wait',hours:120});assert.equal(s.sectors.jujuy.owner,'royalist');
- s=initialCampaign();s.sectors.jujuy.owner='patriot';s.sectors.jujuy.militia=[0,0,5];s=order(s,{type:'wait',hours:120});assert.equal(s.sectors.jujuy.owner,'patriot');
+test('an unguarded province falls while a reinforced militia garrison can hold the raid',()=>{
+ let s=initialCampaign();s.sectors.jujuy.owner='patriot';s=order(s,{type:'wait',hours:144});assert.equal(s.sectors.jujuy.owner,'royalist');
+ // The current territorial tier launches eleven attackers. Twelve authored
+ // veterans lose the actual fight; preserve that defeat and its permanent loss.
+ s=initialCampaign();s.sectors.jujuy.owner='patriot';s.sectors.jujuy.militia=[0,0,12];s=order(s,{type:'wait',hours:144});
+ const attackingForce=s.enemyGroups.find(g=>g.id===s.pendingEncounter.groupId).units.length;
+ s=order(s,{type:'respondToEncounter',groupId:s.pendingEncounter.groupId,choice:'auto'});
+ assert.equal(s.enemyGroups[0].status,'stationed');assert.equal(s.sectors.jujuy.owner,'royalist');
+ assert.equal(s.sectorStates.jujuy.status,'defeat');assert.deepEqual(s.sectors.jujuy.militia,[0,0,0]);
+ assert.ok(s.sectorStates.jujuy.units.some(u=>u.militia&&u.hp===0));
+ // This subsystem fixture starts with a larger existing garrison. It tests
+ // real combat settlement; the campaign route must pay for its own training.
+ const defenders=16;
+ s=initialCampaign();s.sectors.jujuy.owner='patriot';s.sectors.jujuy.militia=[0,0,defenders];s=order(s,{type:'wait',hours:144});
+ assert.equal(s.enemyGroups.find(g=>g.id===s.pendingEncounter.groupId).units.length,attackingForce,'the reinforced defense faces the same enemy force');
+ assert.equal(s.pendingEncounter.sector,'jujuy');s=order(s,{type:'respondToEncounter',groupId:s.pendingEncounter.groupId,choice:'auto'});
+ assert.equal(s.enemyGroups[0].status,'defeated');assert.equal(s.sectors.jujuy.owner,'patriot');
+ const militia=s.sectorStates.jujuy.units.filter(u=>u.militia);
+ assert.equal(militia.length,defenders);assert.equal(s.sectors.jujuy.militia[2],militia.filter(u=>u.hp>0).length);
+ assert.ok(militia.some(u=>u.hp<=0));assert.ok(militia.reduce((n,u)=>n+u.loaded+u.ammo,0)<defenders*6);
 });
 test('battle result IDs prevent stale victories and preserve casualties',()=>{
  let s=order(initialCampaign(),{type:'attack',sector:'san_nicolas'});assert.ok(dispatch(s,{type:'battleResult',battleId:'wrong',outcome:'victory',survivors:[]}).lastError);
- s=order(s,{type:'battleResult',battleId:s.pendingBattle.id,outcome:'victory',survivors:[{id:3,hp:40},{id:10,hp:60}]});assert.equal(s.operativeState[4].alive,false);assert.deepEqual(s.squad,[3,10]);assert.equal(s.sectors.san_nicolas.owner,'patriot');
+ s=order(s,scriptedBattleReport(s,{units:[{id:3,hp:40},{id:4,hp:0},{id:10,hp:60}]}));assert.equal(s.operativeState[4].alive,false);assert.deepEqual(s.squad,[3,10]);assert.equal(s.sectors.san_nicolas.owner,'patriot');
 });
 test('Plumerillo requires army funding, artillery, fortifications and parliament',()=>{
  let s=initialCampaign();s.phase=3;s.flags.foundry=true;s.flags.parliament=true;s.flags.armyFunded=false;s.armory.bronze4=3;

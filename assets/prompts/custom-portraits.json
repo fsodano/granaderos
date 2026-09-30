@@ -1,0 +1,122 @@
+[
+  {
+    "id": "avatar-man-black-soldier",
+    "gender": "man",
+    "role": "soldier",
+    "skinTone": "dark",
+    "prompt": "Use case: historical-scene. Asset type: square selectable custom-character portrait for Granaderos, Río de la Plata circa 1812. Primary request: one original fictional Black Afro-Rioplatense adult. Style/medium: sober, finely modeled realistic oil painting, detailed natural face and coarse period cloth with subtle painted surface, muted earth tones, matching the existing Granaderos game portrait style. Composition: close head-and-upper-shoulders portrait, entire head visible with a modest top margin, face large and clearly readable at 384 pixels, gaze toward viewer, square 1:1 image, plain dark umber painted background, soft warm side lighting from upper left. Constraints: dignified believable individual, ordinary human anatomy, distinct natural facial features, period 1810-1820 clothing. No text, letters, frame, watermark, weapons, tools or held props; no modern clothing, modern insignia or Red Cross symbols, no glossy digital-fantasy look, no resemblance to a real or famous person.\nSubject: A 25-year-old Black man with deep dark brown skin, compact broad face, rounded cheeks, clean-shaven jaw and short dense black curls. Calm, resolute eyes. Worn dark navy infantry wool coat with plain faded red standing collar and one visible brass button; no hat.",
+    "source": "assets/source/custom-avatar-man-black-soldier-v1.png",
+    "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55e-30bc-7ff1-a4fa-2362d564e663/exec-08ecf5d9-1873-4dd8-9b56-c4f2292913c3.png",
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-black-soldier",
+    "gender": "woman",
+    "role": "soldier",
+    "skinTone": "dark",
+    "prompt": "Use case: historical-scene. Asset type: square selectable custom-character portrait for Granaderos, Río de la Plata circa 1812. Primary request: one original fictional Black Afro-Rioplatense adult. Style/medium: sober, finely modeled realistic oil painting, detailed natural face and coarse period cloth with subtle painted surface, muted earth tones, matching the existing Granaderos game portrait style. Composition: close head-and-upper-shoulders portrait, entire head visible with a modest top margin, face large and clearly readable at 384 pixels, gaze toward viewer, square 1:1 image, plain dark umber painted background, soft warm side lighting from upper left. Constraints: dignified believable individual, ordinary human anatomy, distinct natural facial features, period 1810-1820 clothing. No text, letters, frame, watermark, weapons, tools or held props; no modern clothing, modern insignia or Red Cross symbols, no glossy digital-fantasy look, no resemblance to a real or famous person.\nSubject: A 28-year-old Black woman with very dark brown skin, strong angular jaw, high cheekbones, broad nose, full lips and short natural tight curls. Steady confident expression. Worn dark navy infantry wool jacket with faded red standing collar and plain offwhite linen at throat, no hat.",
+    "source": "assets/source/custom-avatar-woman-black-soldier-v1.png",
+    "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55e-30bc-7ff1-a4fa-2362d564e663/exec-076e411b-b5e5-4f96-80e7-224c1efb94a0.png",
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-man-black-officer",
+    "gender": "man",
+    "role": "officer",
+    "skinTone": "dark",
+    "prompt": "Use case: historical-scene. Asset type: square selectable custom-character portrait for Granaderos, Río de la Plata circa 1812. Primary request: one original fictional Black Afro-Rioplatense adult. Style/medium: sober, finely modeled realistic oil painting, detailed natural face and coarse period cloth with subtle painted surface, muted earth tones, matching the existing Granaderos game portrait style. Composition: close head-and-upper-shoulders portrait, entire head visible with a modest top margin, face large and clearly readable at 384 pixels, gaze toward viewer, square 1:1 image, plain dark umber painted background, soft warm side lighting from upper left. Constraints: dignified believable individual, ordinary human anatomy, distinct natural facial features, period 1810-1820 clothing. No text, letters, frame, watermark, weapons, tools or held props; no modern clothing, modern insignia or Red Cross symbols, no glossy digital-fantasy look, no resemblance to a real or famous person.\nSubject: A 48-year-old Black man with very dark brown skin, long lean face, deep-set attentive eyes, high forehead, close-cropped graying curls and neat short salt-and-pepper moustache. Composed veteran expression. Early independence officer's dark blue wool high-collared coat, restrained crimson collar with thin gold piping, a modest golden shoulder detail, no medals, no hat.",
+    "source": "assets/source/custom-avatar-man-black-officer-v1.png",
+    "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55e-30bc-7ff1-a4fa-2362d564e663/exec-57d199c9-aea6-41a3-9473-6e0473b1d95a.png",
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-black-officer",
+    "gender": "woman",
+    "role": "officer",
+    "skinTone": "dark",
+    "prompt": "Use case: historical-scene. Asset type: square selectable custom-character portrait for Granaderos, Río de la Plata circa 1812. Primary request: one original fictional Black Afro-Rioplatense adult. Style/medium: sober, finely modeled realistic oil painting, detailed natural face and coarse period cloth with subtle painted surface, muted earth tones, matching the existing Granaderos game portrait style. Composition: close head-and-upper-shoulders portrait, entire head visible with a modest top margin, face large and clearly readable at 384 pixels, gaze toward viewer, square 1:1 image, plain dark umber painted background, soft warm side lighting from upper left. Constraints: dignified believable individual, ordinary human anatomy, distinct natural facial features, period 1810-1820 clothing. No text, letters, frame, watermark, weapons, tools or held props; no modern clothing, modern insignia or Red Cross symbols, no glossy digital-fantasy look, no resemblance to a real or famous person.\nSubject: A 43-year-old Black woman with deep dark brown skin, oval face with mature smile lines, broad cheekbones, focused dark eyes, tightly braided hair drawn into a low bun. Calm authoritative expression. Early independence dark navy fitted officer's coat with crimson collar, thin restrained gold edging and small plain brass button, no medals, no hat.",
+    "source": "assets/source/custom-avatar-woman-black-officer-v1.png",
+    "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55e-30bc-7ff1-a4fa-2362d564e663/exec-77dca008-9276-4f90-9c9f-a69532fa0af5.png",
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-man-black-scout",
+    "gender": "man",
+    "role": "scout",
+    "skinTone": "dark",
+    "prompt": "Use case: historical-scene. Asset type: square selectable custom-character portrait for Granaderos, Río de la Plata circa 1812. Primary request: one original fictional Black Afro-Rioplatense adult. Style/medium: sober, finely modeled realistic oil painting, detailed natural face and coarse period cloth with subtle painted surface, muted earth tones, matching the existing Granaderos game portrait style. Composition: close head-and-upper-shoulders portrait, entire head visible with a modest top margin, face large and clearly readable at 384 pixels, gaze toward viewer, square 1:1 image, plain dark umber painted background, soft warm side lighting from upper left. Constraints: dignified believable individual, ordinary human anatomy, distinct natural facial features, period 1810-1820 clothing. No text, letters, frame, watermark, weapons, tools or held props; no modern clothing, modern insignia or Red Cross symbols, no glossy digital-fantasy look, no resemblance to a real or famous person.\nSubject: A 31-year-old Black man with dark brown skin, slender long face, prominent cheekbones, slightly uneven brows, alert dark eyes, shoulder-length natural tight curls held back by a plain narrow faded olive cloth tie and sparse short beard. Faded olive-brown traveling shoulder cape over unbleached linen shirt, practical scout appearance.",
+    "source": "assets/source/custom-avatar-man-black-scout-v1.png",
+    "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55e-30bc-7ff1-a4fa-2362d564e663/exec-2b208097-33d3-4fc9-9162-3ce0aa5f4b6a.png",
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-black-scout",
+    "gender": "woman",
+    "role": "scout",
+    "skinTone": "dark",
+    "prompt": "Use case: historical-scene. Asset type: square selectable custom-character portrait for Granaderos, Río de la Plata circa 1812. Primary request: one original fictional Black Afro-Rioplatense adult. Style/medium: sober, finely modeled realistic oil painting, detailed natural face and coarse period cloth with subtle painted surface, muted earth tones, matching the existing Granaderos game portrait style. Composition: close head-and-upper-shoulders portrait, entire head visible with a modest top margin, face large and clearly readable at 384 pixels, gaze toward viewer, square 1:1 image, plain dark umber painted background, soft warm side lighting from upper left. Constraints: dignified believable individual, ordinary human anatomy, distinct natural facial features, period 1810-1820 clothing. No text, letters, frame, watermark, weapons, tools or held props; no modern clothing, modern insignia or Red Cross symbols, no glossy digital-fantasy look, no resemblance to a real or famous person.\nSubject: A 23-year-old Black woman with very dark brown skin, narrow heart-shaped face, expressive large dark eyes, a few freckles, natural coiled hair pulled back into a simple high puff with an unadorned olive cloth tie. Alert inquisitive expression. Weathered muted moss-green traveling cape over unbleached linen blouse, practical scout appearance.",
+    "source": "assets/source/custom-avatar-woman-black-scout-v1.png",
+    "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55e-30bc-7ff1-a4fa-2362d564e663/exec-f5f7a777-5faa-493e-a8cd-2d7cf5422a0c.png",
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-man-black-gaucho",
+    "gender": "man",
+    "role": "gaucho",
+    "skinTone": "brown",
+    "prompt": "Use case: historical-scene. Asset type: square selectable custom-character portrait for Granaderos, Río de la Plata circa 1812. Primary request: one original fictional Black Afro-Rioplatense adult. Style/medium: sober, finely modeled realistic oil painting, detailed natural face and coarse period cloth with subtle painted surface, muted earth tones, matching the existing Granaderos game portrait style. Composition: close head-and-upper-shoulders portrait, entire head visible with a modest top margin, face large and clearly readable at 384 pixels, gaze toward viewer, square 1:1 image, plain dark umber painted background, soft warm side lighting from upper left. Constraints: dignified believable individual, ordinary human anatomy, distinct natural facial features, period 1810-1820 clothing. No text, letters, frame, watermark, weapons, tools or held props; no modern clothing, modern insignia or Red Cross symbols, no glossy digital-fantasy look, no resemblance to a real or famous person.\nSubject: A 39-year-old Black Afro-Rioplatense gaucho man with medium brown skin, broad weathered face, thick black eyebrows, short curly hair and a thick natural moustache. Steady relaxed expression. Rustic muted reddish-brown woven poncho at shoulders, offwhite linen shirt, plain ochre neck cloth. No hat.",
+    "source": "assets/source/custom-avatar-man-black-gaucho-v1.png",
+    "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55e-30bc-7ff1-a4fa-2362d564e663/exec-c7252d92-146a-456b-8441-bdd35d779d1b.png",
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-black-gaucho",
+    "gender": "woman",
+    "role": "gaucho",
+    "skinTone": "brown",
+    "prompt": "Use case: historical-scene. Asset type: square selectable custom-character portrait for Granaderos, Río de la Plata circa 1812. Primary request: one original fictional Black Afro-Rioplatense adult. Style/medium: sober, finely modeled realistic oil painting, detailed natural face and coarse period cloth with subtle painted surface, muted earth tones, matching the existing Granaderos game portrait style. Composition: close head-and-upper-shoulders portrait, entire head visible with a modest top margin, face large and clearly readable at 384 pixels, gaze toward viewer, square 1:1 image, plain dark umber painted background, soft warm side lighting from upper left. Constraints: dignified believable individual, ordinary human anatomy, distinct natural facial features, period 1810-1820 clothing. No text, letters, frame, watermark, weapons, tools or held props; no modern clothing, modern insignia or Red Cross symbols, no glossy digital-fantasy look, no resemblance to a real or famous person.\nSubject: A 35-year-old Black Afro-Rioplatense rural horsewoman with medium brown skin, rounded face, wide-set dark eyes, broad nose, full lips, tightly curled hair braided low and tied with plain cloth. Calm self-possessed expression. Rustic muted russet and brown wool poncho draped across shoulders over unbleached linen blouse with a plain ochre neck cloth. No hat.",
+    "source": "assets/source/custom-avatar-woman-black-gaucho-v1.png",
+    "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55e-30bc-7ff1-a4fa-2362d564e663/exec-d5db6632-2338-43e0-b3ae-8f1a6c56a738.png",
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-man-black-artisan",
+    "gender": "man",
+    "role": "artisan",
+    "skinTone": "dark",
+    "prompt": "Use case: historical-scene. Asset type: square selectable custom-character portrait for Granaderos, Río de la Plata circa 1812. Primary request: one original fictional Black Afro-Rioplatense adult. Style/medium: sober, finely modeled realistic oil painting, detailed natural face and coarse period cloth with subtle painted surface, muted earth tones, matching the existing Granaderos game portrait style. Composition: close head-and-upper-shoulders portrait, entire head visible with a modest top margin, face large and clearly readable at 384 pixels, gaze toward viewer, square 1:1 image, plain dark umber painted background, soft warm side lighting from upper left. Constraints: dignified believable individual, ordinary human anatomy, distinct natural facial features, period 1810-1820 clothing. No text, letters, frame, watermark, weapons, tools or held props; no modern clothing, modern insignia or Red Cross symbols, no glossy digital-fantasy look, no resemblance to a real or famous person.\nSubject: A 55-year-old Black man with very dark brown skin, broad square face, pronounced forehead creases, kind dark eyes, short salt-and-pepper tightly curled hair and close-cropped gray beard. Patient thoughtful expression. Coarse offwhite linen work shirt with open simple collar and broad worn brown leather apron straps clearly visible at shoulders.",
+    "source": "assets/source/custom-avatar-man-black-artisan-v1.png",
+    "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55e-30bc-7ff1-a4fa-2362d564e663/exec-9ec2f2ab-a04e-4ce7-aef8-c2be7c796ab5.png",
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-black-artisan",
+    "gender": "woman",
+    "role": "artisan",
+    "skinTone": "dark",
+    "prompt": "Use case: historical-scene. Asset type: square selectable custom-character portrait for Granaderos, Río de la Plata circa 1812. Primary request: one original fictional Black Afro-Rioplatense adult. Style/medium: sober, finely modeled realistic oil painting, detailed natural face and coarse period cloth with subtle painted surface, muted earth tones, matching the existing Granaderos game portrait style. Composition: close head-and-upper-shoulders portrait, entire head visible with a modest top margin, face large and clearly readable at 384 pixels, gaze toward viewer, square 1:1 image, plain dark umber painted background, soft warm side lighting from upper left. Constraints: dignified believable individual, ordinary human anatomy, distinct natural facial features, period 1810-1820 clothing. No text, letters, frame, watermark, weapons, tools or held props; no modern clothing, modern insignia or Red Cross symbols, no glossy digital-fantasy look, no resemblance to a real or famous person.\nSubject: A 32-year-old Black woman with dark brown skin, sturdy square face, rounded cheeks, gently arched brows, full lips, dark tightly curled hair partly wrapped in a small plain rust-colored kerchief that leaves the hairline visible. Attentive practical expression. Coarse offwhite linen work blouse, brown work bodice and a broad faded leather apron strap at shoulder.",
+    "source": "assets/source/custom-avatar-woman-black-artisan-v1.png",
+    "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55e-30bc-7ff1-a4fa-2362d564e663/exec-f68afe9c-e367-407f-80d4-db0f3c29c8d0.png",
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-man-black-medic",
+    "gender": "man",
+    "role": "medic",
+    "skinTone": "dark",
+    "prompt": "Use case: historical-scene. Asset type: square selectable custom-character portrait for Granaderos, Río de la Plata circa 1812. Primary request: one original fictional Black Afro-Rioplatense adult. Style/medium: sober, finely modeled realistic oil painting, detailed natural face and coarse period cloth with subtle painted surface, muted earth tones, matching the existing Granaderos game portrait style. Composition: close head-and-upper-shoulders portrait, entire head visible with a modest top margin, face large and clearly readable at 384 pixels, gaze toward viewer, square 1:1 image, plain dark umber painted background, soft warm side lighting from upper left. Constraints: dignified believable individual, ordinary human anatomy, distinct natural facial features, period 1810-1820 clothing. No text, letters, frame, watermark, weapons, tools or held props; no modern clothing, modern insignia or Red Cross symbols, no glossy digital-fantasy look, no resemblance to a real or famous person.\nSubject: A 44-year-old Black man with deep dark brown skin, long oval face, gentle dark eyes, narrow straight brows, closely cropped natural black hair threaded with gray and clean-shaven jaw. Quiet reassuring expression. Plain unbleached linen shirt, charcoal wool waistcoat and muted blue-gray neck cloth, the sober practical dress of an early nineteenth-century field medic, no modern symbols.",
+    "source": "assets/source/custom-avatar-man-black-medic-v1.png",
+    "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55e-30bc-7ff1-a4fa-2362d564e663/exec-e593eb4d-7e1e-4a63-8b48-4dc2fc26100d.png",
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-black-medic",
+    "gender": "woman",
+    "role": "medic",
+    "skinTone": "dark",
+    "prompt": "Use case: historical-scene. Asset type: square selectable custom-character portrait for Granaderos, Río de la Plata circa 1812. Primary request: one original fictional Black Afro-Rioplatense adult. Style/medium: sober, finely modeled realistic oil painting, detailed natural face and coarse period cloth with subtle painted surface, muted earth tones, matching the existing Granaderos game portrait style. Composition: close head-and-upper-shoulders portrait, entire head visible with a modest top margin, face large and clearly readable at 384 pixels, gaze toward viewer, square 1:1 image, plain dark umber painted background, soft warm side lighting from upper left. Constraints: dignified believable individual, ordinary human anatomy, distinct natural facial features, period 1810-1820 clothing. No text, letters, frame, watermark, weapons, tools or held props; no modern clothing, modern insignia or Red Cross symbols, no glossy digital-fantasy look, no resemblance to a real or famous person.\nSubject: A 59-year-old Black woman with very dark brown skin, soft broad face, fine wrinkles around warm dark eyes, dignified strong nose, natural gray coiled hair visible at temples under a simple offwhite linen headwrap. Calm reassuring expression. Muted blue wool shawl and plain unbleached linen blouse, practical early nineteenth-century healer, no modern medical symbols.",
+    "source": "assets/source/custom-avatar-woman-black-medic-v1.png",
+    "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55e-30bc-7ff1-a4fa-2362d564e663/exec-ea90fe98-621f-450a-9b7a-97b223b4d2ba.png",
+    "method": "built-in image_gen"
+  }
+]

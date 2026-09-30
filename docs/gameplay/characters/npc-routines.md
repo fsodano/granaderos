@@ -6,7 +6,7 @@ NPC decisions use deterministic local rules. They do not call an LLM or a networ
 
 The active tactical view advances six game seconds every six real seconds. Residents walk, enter and leave houses, work, and visit a pulpería. Enemies patrol short routes around their posts. A patrol that discovers the squad starts combat at that contact.
 
-Use **Pausar exploración** to stop the automatic clock. Explicit orders still cost their normal time. The automatic clock also pauses during movement animation, conversation, inventory use, and while the tab is hidden. Wounds and temporary lights use the same clock; they continue when exploration runs.
+Use **Pausar exploración** to stop the automatic clock. Explicit orders still cost their normal time. The automatic clock also pauses during movement animation, conversation, inventory use, exit selection, and while the tab is hidden. Wounds and temporary lights use the same clock; they continue when exploration runs.
 
 ## Civilian decisions
 
@@ -28,14 +28,14 @@ The faction that gains contact initiative acts first for that engagement:
 1. Player, then enemy, then civilians; or
 2. Enemy, then player, then civilians.
 
-The civilian phase is atomic and runs once after both combat factions. It does not issue soldier AP, advance the clock again, or create a combat interruption. A civilian log entry marks the phase. Automatic reaction fire retains its existing AP costs.
+The civilian phase is atomic and runs once after both combat factions. It does not issue soldier AP, advance the clock again, or create a combat interruption. A civilian log entry marks the phase. Normal combat interruptions retain their existing budgets and return to the suspended faction.
 
-Enemies without visible contact patrol one short bound per round and retain AP for combat. Reaction fire retains its existing AP rules. Authored sentries can use `patrol: false`.
+Enemies without recent contact patrol one short bound per round and retain AP for combat. They stop patrolling during interruption windows and pause after investigating a noise. Authored sentries can use `patrol: false`.
 
 ## Persistence and checks
 
 Civilian positions and routine progress survive JSON save/load and sector re-entry. Re-entry clears old fear reports because the new encounter has a new clock. New fields are optional for older saves and validated when present.
 
-`tests/npc-ai.test.mjs` covers routes through doors, home/bar visits, collision, hearing and recovery, real gunfire, conversation waiting, fixed time cadence, both initiative orders, patrols, persistence, wounds/lights, interrupted rest, and traps. The published movement, time, campaign, and render tests cover integration.
+`tests/npc-ai.test.mjs` covers routes through doors, home/bar visits, collision, hearing and recovery, real gunfire, conversation waiting, fixed time cadence, both initiative orders, patrols, persistence, wounds/lights, interrupted rest, and traps. Existing awareness, interruption, movement, time, and render tests cover integration.
 
-The original shared-workspace implementation was checked in a live browser for automatic movement, house entry, shot reactions, shelter movement, and pause/resume. This isolated port is covered by the automated checks above; that browser check was not repeated for this port.
+Live browser checks used an isolated scene with the real `Battlefield` component and no campaign storage. They confirmed automatic movement, entry into a house, prone/crouched reactions to a real musket shot, shelter movement after the enemy phase, pause/resume, and no browser console errors.

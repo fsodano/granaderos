@@ -39,7 +39,7 @@ Campaign progress and its active battle are saved in browser storage. **Continua
 
 Browser storage belongs to the current browser profile and site origin. A different hostname or port has separate storage. Export a save before moving between origins or clearing browser data. The export is the portable copy.
 
-The save implementation is in [`game/save.js`](../../game/save.js). [`web/app/page.tsx`](../../web/app/page.tsx) saves campaign and battle changes and reports storage errors through the game notice.
+The save implementation is in [`game/save.js`](../../game/save.js). [`useCampaignAutosave.ts`](../../web/lib/useCampaignAutosave.ts) saves campaign and battle changes and reports storage errors through the game notice.
 
 ## Checks
 
@@ -70,7 +70,7 @@ Documentation link checks and `git diff --check` verify documentation structure 
 npm run build
 ```
 
-[`web/next.config.ts`](../../web/next.config.ts) configures a static export. The web build writes its client output to `web/dist/client/`. [`tools/build-web.mjs`](../../tools/build-web.mjs) checks asset references, manifests and artwork checksums before replacing the root `dist/` directory with the verified export. It then checks the copied files.
+[`web/next.config.ts`](../../web/next.config.ts) configures a static export. The web build writes its client output to `web/dist/client/`. [`tools/build-web.mjs`](../../tools/build-web.mjs) checks asset references, manifests, artwork checksums and browser worker URLs before replacing the root `dist/` directory with the verified export. It then checks the copied files.
 
 Serve the root `dist/` directory through an HTTP server for production review. The repository has no dedicated root preview command. The web package's `start` script targets a Wrangler server configuration; it is separate from the root static-export workflow.
 
@@ -90,3 +90,5 @@ Build success establishes that the export and its checked assets were produced. 
 | [`docs/`](../README.md) | Guides, specifications and verification records |
 
 Earlier native conversion work remains in `engine/`, `native/`, `patches/` and `mod/`. Its Windows toolchain, packaging and original JA2 data requirements are described in the [native build reference](../reference/native-build.md). Those instructions apply to that separate implementation.
+
+The game, story editor and sector editor show the same source build ID. `/build-info.json` exposes its source digest. See [the consolidation record](../verification/latest-build-consolidation.md) before selecting a preview server; a running preview can still contain an earlier build.

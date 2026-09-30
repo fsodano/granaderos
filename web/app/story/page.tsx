@@ -1,4 +1,5 @@
 'use client';
+import BuildIdentity from '../BuildIdentity';
 import AlternativeLoads from './AlternativeLoads';
 import {storyReferences} from '../../../game/campaign-story.js';
 import DialogueEditor from './DialogueEditor';
@@ -376,7 +377,7 @@ export default function ContentEditor() {
       <header>
         <div>
           <a href="/">← Volver al juego</a> · <a href="/editor">Editar sectores</a>
-          <p className="eyebrow">Taller de campañas</p>
+          <p className="eyebrow">Taller de campañas</p><BuildIdentity/>
           <h1>El mundo y sus protagonistas</h1>
           <p>Editá el contenido. Probá sus reglas en una sesión separada.</p>
         </div>

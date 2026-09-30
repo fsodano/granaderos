@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import {createBattle,endTurn,presentedEndTurn,teamCanSee} from '../game/tactical.js';
+import {createBattle,actBattle,endTurn,presentedEndTurn,teamCanSee} from '../game/tactical.js';
 import {enterSector} from '../game/world.js';
 import {OPERATIVES} from '../game/campaign.js';
 import {captureBattlePresentation,recordBattleFrame} from '../game/battle-presentation.js';
@@ -31,4 +31,19 @@ test('presentation snapshots preserve old terrain and earlier injuries and do no
 test('a successful shot is shown before its injury, with the original result unchanged',()=>{
  const s=createBattle([{id:'p',x:1,y:1,weapon:1801}],{...map,enemies:[{id:'e',x:7,y:1,weapon:1801,marksmanship:70,morale:100}]});const r=presentedEndTurn(s);assert.deepEqual(r.state,endTurn(s));
  const hit=r.frames.findIndex((f,i)=>i>0&&f.type==='result'&&f.action==='fire'&&f.state.units.some((u,j)=>u.hp<r.frames[i-1].state.units[j].hp));assert.ok(hit>0);assert.equal(r.frames[hit-1].type,'prepare');assert.equal(r.frames[hit-1].action,'fire');
+});
+
+
+test('visible movement pauses at the real interrupt and resumes without repeating time or enemy AP',()=>{
+ const source=createBattle([{id:'p',x:1,y:1,marksmanship:100}],{width:12,height:8,seed:45,tiles:Array.from({length:96},(_,i)=>({x:i%12,y:Math.floor(i/12),type:'grass',blocked:false,cover:0})),enemies:[{id:'e',x:7,y:1,weapon:1809}]});
+ source.units[0].ap=20;source.units[1].ap=24;
+ const paused=presentedEndTurn(source);assert.deepEqual(paused.state,endTurn(source));assert.equal(paused.state.phase,'interrupt');
+ const steps=paused.frames.filter(frame=>frame.type==='step');assert.equal(steps.length,1);assert.equal(steps[0].state.units[1].x,6);
+ assert.equal(paused.state.units[1].ap,16);assert.equal(paused.state.elapsedSeconds,6);
+ for(const shoot of [false,true]){
+  const next=shoot?actBattle(paused.state,{type:'useItem',unitId:'p',targetId:'e'}):paused.state;
+  const resumed=presentedEndTurn(structuredClone(next));assert.deepEqual(resumed.state,endTurn(next));
+  assert.equal(resumed.state.phase,'player');assert.equal(resumed.state.elapsedSeconds,6);
+  assert.ok(resumed.state.units[1].ap<=16);assert.equal(resumed.state.enemyTurn,undefined);
+ }
 });

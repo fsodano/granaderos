@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "cordoba",
-  "revision": 2,
+  "revision": 3,
   "width": 20,
   "height": 16,
   "metadata": {
@@ -165,16 +165,16 @@
     {
       "x": 2,
       "y": 1,
-      "type": "forest",
+      "type": "grass",
       "blocked": false,
-      "cover": 20
+      "cover": 0
     },
     {
       "x": 3,
       "y": 1,
-      "type": "forest",
+      "type": "grass",
       "blocked": false,
-      "cover": 20
+      "cover": 0
     },
     {
       "x": 4,
@@ -305,16 +305,16 @@
     {
       "x": 2,
       "y": 2,
-      "type": "forest",
+      "type": "grass",
       "blocked": false,
-      "cover": 20
+      "cover": 0
     },
     {
       "x": 3,
       "y": 2,
-      "type": "forest",
+      "type": "grass",
       "blocked": false,
-      "cover": 20
+      "cover": 0
     },
     {
       "x": 4,
@@ -445,16 +445,16 @@
     {
       "x": 2,
       "y": 3,
-      "type": "forest",
+      "type": "grass",
       "blocked": false,
-      "cover": 20
+      "cover": 0
     },
     {
       "x": 3,
       "y": 3,
-      "type": "forest",
+      "type": "grass",
       "blocked": false,
-      "cover": 20
+      "cover": 0
     },
     {
       "x": 4,
@@ -1705,16 +1705,16 @@
     {
       "x": 2,
       "y": 12,
-      "type": "forest",
+      "type": "grass",
       "blocked": false,
-      "cover": 20
+      "cover": 0
     },
     {
       "x": 3,
       "y": 12,
-      "type": "forest",
+      "type": "grass",
       "blocked": false,
-      "cover": 20
+      "cover": 0
     },
     {
       "x": 4,
@@ -1845,16 +1845,16 @@
     {
       "x": 2,
       "y": 13,
-      "type": "forest",
+      "type": "grass",
       "blocked": false,
-      "cover": 20
+      "cover": 0
     },
     {
       "x": 3,
       "y": 13,
-      "type": "forest",
+      "type": "grass",
       "blocked": false,
-      "cover": 20
+      "cover": 0
     },
     {
       "x": 4,
@@ -1985,16 +1985,16 @@
     {
       "x": 2,
       "y": 14,
-      "type": "forest",
+      "type": "grass",
       "blocked": false,
-      "cover": 20
+      "cover": 0
     },
     {
       "x": 3,
       "y": 14,
-      "type": "forest",
+      "type": "grass",
       "blocked": false,
-      "cover": 20
+      "cover": 0
     },
     {
       "x": 4,
@@ -2255,15 +2255,56 @@
       "id": "cordoba:building",
       "name": "Casa del sector",
       "x": 12,
-      "y": 2,
-      "width": 5,
-      "height": 3,
+      "y": 0,
+      "width": 7,
+      "height": 6,
       "roof": "tile",
       "material": "adobe",
+      "architecture": "warehouse",
       "rooms": [
         {
           "id": "cordoba:building:interior",
           "cells": [
+            {
+              "x": 13,
+              "y": 1
+            },
+            {
+              "x": 14,
+              "y": 1
+            },
+            {
+              "x": 15,
+              "y": 1
+            },
+            {
+              "x": 16,
+              "y": 1
+            },
+            {
+              "x": 17,
+              "y": 1
+            },
+            {
+              "x": 13,
+              "y": 2
+            },
+            {
+              "x": 14,
+              "y": 2
+            },
+            {
+              "x": 15,
+              "y": 2
+            },
+            {
+              "x": 16,
+              "y": 2
+            },
+            {
+              "x": 17,
+              "y": 2
+            },
             {
               "x": 13,
               "y": 3
@@ -2275,14 +2316,43 @@
             {
               "x": 15,
               "y": 3
+            },
+            {
+              "x": 16,
+              "y": 3
+            },
+            {
+              "x": 17,
+              "y": 3
+            },
+            {
+              "x": 13,
+              "y": 4
+            },
+            {
+              "x": 14,
+              "y": 4
+            },
+            {
+              "x": 15,
+              "y": 4
+            },
+            {
+              "x": 16,
+              "y": 4
+            },
+            {
+              "x": 17,
+              "y": 4
             }
           ]
         }
       ],
+      "kind": "warehouse",
       "walls": [
         {
           "x": 12,
-          "y": 2,
+          "y": 0,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2293,7 +2363,7 @@
         },
         {
           "x": 13,
-          "y": 2,
+          "y": 0,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2304,7 +2374,7 @@
         },
         {
           "x": 14,
-          "y": 2,
+          "y": 0,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2315,7 +2385,7 @@
         },
         {
           "x": 15,
-          "y": 2,
+          "y": 0,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2326,6 +2396,72 @@
         },
         {
           "x": 16,
+          "y": 0,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "cordoba:building",
+          "roomId": null
+        },
+        {
+          "x": 17,
+          "y": 0,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "cordoba:building",
+          "roomId": null
+        },
+        {
+          "x": 18,
+          "y": 0,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "cordoba:building",
+          "roomId": null
+        },
+        {
+          "x": 12,
+          "y": 1,
+          "type": "window",
+          "blocked": true,
+          "blocksSight": false,
+          "cover": 25,
+          "material": "adobe",
+          "buildingId": "cordoba:building",
+          "roomId": null
+        },
+        {
+          "x": 18,
+          "y": 1,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "cordoba:building",
+          "roomId": null
+        },
+        {
+          "x": 12,
+          "y": 2,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "cordoba:building",
+          "roomId": null
+        },
+        {
+          "x": 18,
           "y": 2,
           "type": "wall",
           "blocked": true,
@@ -2338,16 +2474,16 @@
         {
           "x": 12,
           "y": 3,
-          "type": "window",
+          "type": "wall",
           "blocked": true,
-          "blocksSight": false,
-          "cover": 25,
+          "blocksSight": true,
+          "cover": 40,
           "material": "adobe",
           "buildingId": "cordoba:building",
           "roomId": null
         },
         {
-          "x": 16,
+          "x": 18,
           "y": 3,
           "type": "wall",
           "blocked": true,
@@ -2360,6 +2496,28 @@
         {
           "x": 12,
           "y": 4,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "cordoba:building",
+          "roomId": null
+        },
+        {
+          "x": 18,
+          "y": 4,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "cordoba:building",
+          "roomId": null
+        },
+        {
+          "x": 12,
+          "y": 5,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2370,7 +2528,7 @@
         },
         {
           "x": 13,
-          "y": 4,
+          "y": 5,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2381,7 +2539,18 @@
         },
         {
           "x": 14,
-          "y": 4,
+          "y": 5,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "cordoba:building",
+          "roomId": null
+        },
+        {
+          "x": 15,
+          "y": 5,
           "type": "door",
           "blocked": true,
           "blocksSight": true,
@@ -2394,8 +2563,8 @@
           "locked": false
         },
         {
-          "x": 15,
-          "y": 4,
+          "x": 16,
+          "y": 5,
           "type": "door",
           "blocked": true,
           "blocksSight": true,
@@ -2408,8 +2577,19 @@
           "locked": false
         },
         {
-          "x": 16,
-          "y": 4,
+          "x": 17,
+          "y": 5,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "cordoba:building",
+          "roomId": null
+        },
+        {
+          "x": 18,
+          "y": 5,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2418,37 +2598,144 @@
           "buildingId": "cordoba:building",
           "roomId": null
         }
-      ],
-      "kind": "smithy",
-      "wallFinish": "brick",
-      "roofFinish": "aged",
-      "doorStyle": "barn",
-      "windowStyle": "barred"
+      ]
     },
     {
       "id": "cordoba:house-0",
-      "name": "Casa 2 del poblado",
-      "x": 5,
-      "y": 2,
-      "width": 3,
-      "height": 3,
+      "name": "Pulpería del poblado",
+      "x": 2,
+      "y": 0,
+      "width": 7,
+      "height": 6,
       "roof": "tile",
       "material": "adobe",
+      "architecture": "pulperia",
       "rooms": [
         {
           "id": "cordoba:house-0:interior",
           "cells": [
             {
+              "x": 3,
+              "y": 1
+            },
+            {
+              "x": 4,
+              "y": 1
+            },
+            {
+              "x": 5,
+              "y": 1
+            },
+            {
+              "x": 6,
+              "y": 1
+            },
+            {
+              "x": 7,
+              "y": 1
+            },
+            {
+              "x": 3,
+              "y": 2
+            },
+            {
+              "x": 4,
+              "y": 2
+            },
+            {
+              "x": 5,
+              "y": 2
+            },
+            {
+              "x": 6,
+              "y": 2
+            },
+            {
+              "x": 7,
+              "y": 2
+            },
+            {
+              "x": 3,
+              "y": 3
+            },
+            {
+              "x": 4,
+              "y": 3
+            },
+            {
+              "x": 5,
+              "y": 3
+            },
+            {
               "x": 6,
               "y": 3
+            },
+            {
+              "x": 7,
+              "y": 3
+            },
+            {
+              "x": 3,
+              "y": 4
+            },
+            {
+              "x": 4,
+              "y": 4
+            },
+            {
+              "x": 5,
+              "y": 4
+            },
+            {
+              "x": 6,
+              "y": 4
+            },
+            {
+              "x": 7,
+              "y": 4
             }
           ]
         }
       ],
+      "purpose": "bar",
+      "kind": "pulperia",
       "walls": [
         {
+          "x": 2,
+          "y": 0,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "cordoba:house-0",
+          "roomId": null
+        },
+        {
+          "x": 3,
+          "y": 0,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "cordoba:house-0",
+          "roomId": null
+        },
+        {
+          "x": 4,
+          "y": 0,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "cordoba:house-0",
+          "roomId": null
+        },
+        {
           "x": 5,
-          "y": 2,
+          "y": 0,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2459,7 +2746,7 @@
         },
         {
           "x": 6,
-          "y": 2,
+          "y": 0,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2470,7 +2757,7 @@
         },
         {
           "x": 7,
-          "y": 2,
+          "y": 0,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2480,8 +2767,19 @@
           "roomId": null
         },
         {
-          "x": 5,
-          "y": 3,
+          "x": 8,
+          "y": 0,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "cordoba:house-0",
+          "roomId": null
+        },
+        {
+          "x": 2,
+          "y": 1,
           "type": "window",
           "blocked": true,
           "blocksSight": false,
@@ -2491,7 +2789,40 @@
           "roomId": null
         },
         {
-          "x": 7,
+          "x": 8,
+          "y": 1,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "cordoba:house-0",
+          "roomId": null
+        },
+        {
+          "x": 2,
+          "y": 2,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "cordoba:house-0",
+          "roomId": null
+        },
+        {
+          "x": 8,
+          "y": 2,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "cordoba:house-0",
+          "roomId": null
+        },
+        {
+          "x": 2,
           "y": 3,
           "type": "wall",
           "blocked": true,
@@ -2502,7 +2833,18 @@
           "roomId": null
         },
         {
-          "x": 5,
+          "x": 8,
+          "y": 3,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "cordoba:house-0",
+          "roomId": null
+        },
+        {
+          "x": 2,
           "y": 4,
           "type": "wall",
           "blocked": true,
@@ -2513,8 +2855,52 @@
           "roomId": null
         },
         {
-          "x": 6,
+          "x": 8,
           "y": 4,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "cordoba:house-0",
+          "roomId": null
+        },
+        {
+          "x": 2,
+          "y": 5,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "cordoba:house-0",
+          "roomId": null
+        },
+        {
+          "x": 3,
+          "y": 5,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "cordoba:house-0",
+          "roomId": null
+        },
+        {
+          "x": 4,
+          "y": 5,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "cordoba:house-0",
+          "roomId": null
+        },
+        {
+          "x": 5,
+          "y": 5,
           "type": "door",
           "blocked": true,
           "blocksSight": true,
@@ -2522,13 +2908,35 @@
           "material": "adobe",
           "buildingId": "cordoba:house-0",
           "roomId": null,
-          "doorId": "cordoba:house-0:door:6:4",
+          "doorId": "cordoba:house-0:door:5:5",
           "open": false,
           "locked": false
         },
         {
+          "x": 6,
+          "y": 5,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "cordoba:house-0",
+          "roomId": null
+        },
+        {
           "x": 7,
-          "y": 4,
+          "y": 5,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "cordoba:house-0",
+          "roomId": null
+        },
+        {
+          "x": 8,
+          "y": 5,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2537,38 +2945,135 @@
           "buildingId": "cordoba:house-0",
           "roomId": null
         }
-      ],
-      "wallFinish": "stone",
-      "roofFinish": "aged",
-      "doorStyle": "barn",
-      "windowStyle": "small",
-      "kind": "warehouse"
+      ]
     },
     {
       "id": "cordoba:house-1",
-      "name": "Casa 3 del poblado",
-      "x": 5,
+      "name": "Pulpería",
+      "x": 1,
       "y": 11,
-      "width": 3,
-      "height": 4,
+      "width": 7,
+      "height": 5,
       "roof": "tile",
       "material": "adobe",
+      "architecture": "pulperia",
       "rooms": [
         {
           "id": "cordoba:house-1:interior",
           "cells": [
             {
-              "x": 6,
+              "x": 2,
+              "y": 12
+            },
+            {
+              "x": 3,
+              "y": 12
+            },
+            {
+              "x": 4,
+              "y": 12
+            },
+            {
+              "x": 5,
               "y": 12
             },
             {
               "x": 6,
+              "y": 12
+            },
+            {
+              "x": 2,
               "y": 13
+            },
+            {
+              "x": 3,
+              "y": 13
+            },
+            {
+              "x": 4,
+              "y": 13
+            },
+            {
+              "x": 5,
+              "y": 13
+            },
+            {
+              "x": 6,
+              "y": 13
+            },
+            {
+              "x": 2,
+              "y": 14
+            },
+            {
+              "x": 3,
+              "y": 14
+            },
+            {
+              "x": 4,
+              "y": 14
+            },
+            {
+              "x": 5,
+              "y": 14
+            },
+            {
+              "x": 6,
+              "y": 14
             }
           ]
         }
       ],
+      "purpose": "home",
+      "kind": "pulperia",
       "walls": [
+        {
+          "x": 1,
+          "y": 11,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "cordoba:house-1",
+          "roomId": null
+        },
+        {
+          "x": 2,
+          "y": 11,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "cordoba:house-1",
+          "roomId": null
+        },
+        {
+          "x": 3,
+          "y": 11,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "cordoba:house-1",
+          "roomId": null
+        },
+        {
+          "x": 4,
+          "y": 11,
+          "type": "door",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 0,
+          "material": "adobe",
+          "buildingId": "cordoba:house-1",
+          "roomId": null,
+          "doorId": "cordoba:house-1:door:4:11",
+          "open": false,
+          "locked": false
+        },
         {
           "x": 5,
           "y": 11,
@@ -2603,7 +3108,7 @@
           "roomId": null
         },
         {
-          "x": 5,
+          "x": 1,
           "y": 12,
           "type": "window",
           "blocked": true,
@@ -2625,7 +3130,7 @@
           "roomId": null
         },
         {
-          "x": 5,
+          "x": 1,
           "y": 13,
           "type": "wall",
           "blocked": true,
@@ -2647,8 +3152,74 @@
           "roomId": null
         },
         {
-          "x": 5,
+          "x": 1,
           "y": 14,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "cordoba:house-1",
+          "roomId": null
+        },
+        {
+          "x": 7,
+          "y": 14,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "cordoba:house-1",
+          "roomId": null
+        },
+        {
+          "x": 1,
+          "y": 15,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "cordoba:house-1",
+          "roomId": null
+        },
+        {
+          "x": 2,
+          "y": 15,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "cordoba:house-1",
+          "roomId": null
+        },
+        {
+          "x": 3,
+          "y": 15,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "cordoba:house-1",
+          "roomId": null
+        },
+        {
+          "x": 4,
+          "y": 15,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "cordoba:house-1",
+          "roomId": null
+        },
+        {
+          "x": 5,
+          "y": 15,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2659,21 +3230,18 @@
         },
         {
           "x": 6,
-          "y": 14,
-          "type": "door",
+          "y": 15,
+          "type": "wall",
           "blocked": true,
           "blocksSight": true,
-          "cover": 0,
+          "cover": 40,
           "material": "adobe",
           "buildingId": "cordoba:house-1",
-          "roomId": null,
-          "doorId": "cordoba:house-1:door:6:14",
-          "open": false,
-          "locked": false
+          "roomId": null
         },
         {
           "x": 7,
-          "y": 14,
+          "y": 15,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2682,49 +3250,76 @@
           "buildingId": "cordoba:house-1",
           "roomId": null
         }
-      ],
-      "wallFinish": "ochre",
-      "roofFinish": "aged",
-      "doorStyle": "panelled",
-      "windowStyle": "shutters",
-      "kind": "posta"
+      ]
     },
     {
       "id": "cordoba:house-2",
-      "name": "Casa 4 del poblado",
-      "x": 12,
+      "name": "Rancho de campo",
+      "x": 13,
       "y": 11,
-      "width": 4,
-      "height": 3,
-      "roof": "tile",
+      "width": 6,
+      "height": 5,
+      "roof": "thatch",
       "material": "adobe",
+      "architecture": "farmhouse",
       "rooms": [
         {
           "id": "cordoba:house-2:interior",
           "cells": [
             {
-              "x": 13,
+              "x": 14,
+              "y": 12
+            },
+            {
+              "x": 15,
+              "y": 12
+            },
+            {
+              "x": 16,
+              "y": 12
+            },
+            {
+              "x": 17,
               "y": 12
             },
             {
               "x": 14,
-              "y": 12
+              "y": 13
+            },
+            {
+              "x": 15,
+              "y": 13
+            },
+            {
+              "x": 16,
+              "y": 13
+            },
+            {
+              "x": 17,
+              "y": 13
+            },
+            {
+              "x": 14,
+              "y": 14
+            },
+            {
+              "x": 15,
+              "y": 14
+            },
+            {
+              "x": 16,
+              "y": 14
+            },
+            {
+              "x": 17,
+              "y": 14
             }
           ]
         }
       ],
+      "purpose": "home",
+      "kind": "farmhouse",
       "walls": [
-        {
-          "x": 12,
-          "y": 11,
-          "type": "wall",
-          "blocked": true,
-          "blocksSight": true,
-          "cover": 40,
-          "material": "adobe",
-          "buildingId": "cordoba:house-2",
-          "roomId": null
-        },
         {
           "x": 13,
           "y": 11,
@@ -2759,7 +3354,43 @@
           "roomId": null
         },
         {
-          "x": 12,
+          "x": 16,
+          "y": 11,
+          "type": "door",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 0,
+          "material": "adobe",
+          "buildingId": "cordoba:house-2",
+          "roomId": null,
+          "doorId": "cordoba:house-2:door:16:11",
+          "open": false,
+          "locked": false
+        },
+        {
+          "x": 17,
+          "y": 11,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "cordoba:house-2",
+          "roomId": null
+        },
+        {
+          "x": 18,
+          "y": 11,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "cordoba:house-2",
+          "roomId": null
+        },
+        {
+          "x": 13,
           "y": 12,
           "type": "window",
           "blocked": true,
@@ -2770,19 +3401,8 @@
           "roomId": null
         },
         {
-          "x": 15,
+          "x": 18,
           "y": 12,
-          "type": "wall",
-          "blocked": true,
-          "blocksSight": true,
-          "cover": 40,
-          "material": "adobe",
-          "buildingId": "cordoba:house-2",
-          "roomId": null
-        },
-        {
-          "x": 12,
-          "y": 13,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2803,21 +3423,7 @@
           "roomId": null
         },
         {
-          "x": 14,
-          "y": 13,
-          "type": "door",
-          "blocked": true,
-          "blocksSight": true,
-          "cover": 0,
-          "material": "adobe",
-          "buildingId": "cordoba:house-2",
-          "roomId": null,
-          "doorId": "cordoba:house-2:door:14:13",
-          "open": false,
-          "locked": false
-        },
-        {
-          "x": 15,
+          "x": 18,
           "y": 13,
           "type": "wall",
           "blocked": true,
@@ -2826,21 +3432,104 @@
           "material": "adobe",
           "buildingId": "cordoba:house-2",
           "roomId": null
+        },
+        {
+          "x": 13,
+          "y": 14,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "cordoba:house-2",
+          "roomId": null
+        },
+        {
+          "x": 18,
+          "y": 14,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "cordoba:house-2",
+          "roomId": null
+        },
+        {
+          "x": 13,
+          "y": 15,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "cordoba:house-2",
+          "roomId": null
+        },
+        {
+          "x": 14,
+          "y": 15,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "cordoba:house-2",
+          "roomId": null
+        },
+        {
+          "x": 15,
+          "y": 15,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "cordoba:house-2",
+          "roomId": null
+        },
+        {
+          "x": 16,
+          "y": 15,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "cordoba:house-2",
+          "roomId": null
+        },
+        {
+          "x": 17,
+          "y": 15,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "cordoba:house-2",
+          "roomId": null
+        },
+        {
+          "x": 18,
+          "y": 15,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "cordoba:house-2",
+          "roomId": null
         }
-      ],
-      "wallFinish": "adobe",
-      "roofFinish": "thatch",
-      "doorStyle": "plank",
-      "windowStyle": "shutters",
-      "kind": "house"
+      ]
     }
   ],
   "props": [
     {
-      "id": "cordoba:building:table:13:3",
+      "id": "cordoba:building:table:13:1",
       "type": "table",
       "x": 13,
-      "y": 3,
+      "y": 1,
       "buildingId": "cordoba:building",
       "roomId": "cordoba:building:interior",
       "footprint": {
@@ -2850,8 +3539,112 @@
       "blocksMovement": true
     },
     {
-      "id": "cordoba:house-1:table:6:12",
+      "id": "cordoba:building:chest:17:1",
+      "type": "chest",
+      "x": 17,
+      "y": 1,
+      "buildingId": "cordoba:building",
+      "roomId": "cordoba:building:interior",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "cordoba:building:bed:13:4",
+      "type": "bed",
+      "x": 13,
+      "y": 3,
+      "buildingId": "cordoba:building",
+      "roomId": "cordoba:building:interior",
+      "footprint": {
+        "width": 1,
+        "height": 2
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "cordoba:building:chest:17:4",
+      "type": "chest",
+      "x": 17,
+      "y": 4,
+      "buildingId": "cordoba:building",
+      "roomId": "cordoba:building:interior",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "cordoba:house-0:table:3:1",
       "type": "table",
+      "x": 3,
+      "y": 1,
+      "buildingId": "cordoba:house-0",
+      "roomId": "cordoba:house-0:interior",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "cordoba:house-0:chest:7:1",
+      "type": "chest",
+      "x": 7,
+      "y": 1,
+      "buildingId": "cordoba:house-0",
+      "roomId": "cordoba:house-0:interior",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "cordoba:house-0:bed:3:4",
+      "type": "bed",
+      "x": 3,
+      "y": 3,
+      "buildingId": "cordoba:house-0",
+      "roomId": "cordoba:house-0:interior",
+      "footprint": {
+        "width": 1,
+        "height": 2
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "cordoba:house-0:chest:7:4",
+      "type": "chest",
+      "x": 7,
+      "y": 4,
+      "buildingId": "cordoba:house-0",
+      "roomId": "cordoba:house-0:interior",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "cordoba:house-1:table:2:12",
+      "type": "table",
+      "x": 2,
+      "y": 12,
+      "buildingId": "cordoba:house-1",
+      "roomId": "cordoba:house-1:interior",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "cordoba:house-1:chest:6:12",
+      "type": "chest",
       "x": 6,
       "y": 12,
       "buildingId": "cordoba:house-1",
@@ -2863,14 +3656,101 @@
       "blocksMovement": true
     },
     {
-      "id": "cordoba:house-2:table:13:12",
+      "id": "cordoba:house-1:bed:2:14",
+      "type": "bed",
+      "x": 2,
+      "y": 13,
+      "buildingId": "cordoba:house-1",
+      "roomId": "cordoba:house-1:interior",
+      "footprint": {
+        "width": 1,
+        "height": 2
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "cordoba:house-1:chest:6:14",
+      "type": "chest",
+      "x": 6,
+      "y": 14,
+      "buildingId": "cordoba:house-1",
+      "roomId": "cordoba:house-1:interior",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "cordoba:house-2:table:14:12",
       "type": "table",
-      "x": 13,
+      "x": 14,
       "y": 12,
       "buildingId": "cordoba:house-2",
       "roomId": "cordoba:house-2:interior",
       "footprint": {
         "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "cordoba:house-2:chest:17:12",
+      "type": "chest",
+      "x": 17,
+      "y": 12,
+      "buildingId": "cordoba:house-2",
+      "roomId": "cordoba:house-2:interior",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "cordoba:house-2:bed:14:14",
+      "type": "bed",
+      "x": 14,
+      "y": 13,
+      "buildingId": "cordoba:house-2",
+      "roomId": "cordoba:house-2:interior",
+      "footprint": {
+        "width": 1,
+        "height": 2
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "cordoba:house-2:chest:17:14",
+      "type": "chest",
+      "x": 17,
+      "y": 14,
+      "buildingId": "cordoba:house-2",
+      "roomId": "cordoba:house-2:interior",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "cordoba:house-0:cart",
+      "type": "cart",
+      "x": 2,
+      "y": 7,
+      "footprint": {
+        "width": 2,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "cordoba:house-1:cart",
+      "type": "cart",
+      "x": 8,
+      "y": 12,
+      "footprint": {
+        "width": 2,
         "height": 1
       },
       "blocksMovement": true
@@ -2883,11 +3763,45 @@
     {
       "id": "cordoba:lantern",
       "type": "lantern",
-      "x": 14,
-      "y": 5,
+      "x": 15,
+      "y": 6,
       "radius": 3,
       "intensity": 0.8
     }
   ],
-  "decor": []
+  "decor": [],
+  "boundaryRoads": [
+    {
+      "x": 9,
+      "y": 0
+    },
+    {
+      "x": 10,
+      "y": 0
+    },
+    {
+      "x": 0,
+      "y": 7
+    },
+    {
+      "x": 19,
+      "y": 7
+    },
+    {
+      "x": 0,
+      "y": 8
+    },
+    {
+      "x": 19,
+      "y": 8
+    },
+    {
+      "x": 9,
+      "y": 15
+    },
+    {
+      "x": 10,
+      "y": 15
+    }
+  ]
 }

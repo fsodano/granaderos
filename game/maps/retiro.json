@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "retiro",
-  "revision": 1,
+  "revision": 2,
   "width": 20,
   "height": 16,
   "metadata": {
@@ -459,56 +459,56 @@
     {
       "x": 4,
       "y": 3,
-      "type": "road",
+      "type": "grass",
       "blocked": false,
       "cover": 0
     },
     {
       "x": 5,
       "y": 3,
-      "type": "road",
+      "type": "grass",
       "blocked": false,
       "cover": 0
     },
     {
       "x": 6,
       "y": 3,
-      "type": "road",
+      "type": "grass",
       "blocked": false,
       "cover": 0
     },
     {
       "x": 7,
       "y": 3,
-      "type": "road",
+      "type": "grass",
       "blocked": false,
       "cover": 0
     },
     {
       "x": 8,
       "y": 3,
-      "type": "road",
+      "type": "grass",
       "blocked": false,
       "cover": 0
     },
     {
       "x": 9,
       "y": 3,
-      "type": "road",
+      "type": "grass",
       "blocked": false,
       "cover": 0
     },
     {
       "x": 10,
       "y": 3,
-      "type": "road",
+      "type": "grass",
       "blocked": false,
       "cover": 0
     },
     {
       "x": 11,
       "y": 3,
-      "type": "road",
+      "type": "grass",
       "blocked": false,
       "cover": 0
     },
@@ -928,23 +928,23 @@
     {
       "x": 11,
       "y": 6,
-      "type": "stone",
+      "type": "grass",
       "blocked": false,
-      "cover": 10
+      "cover": 0
     },
     {
       "x": 12,
       "y": 6,
-      "type": "stone",
+      "type": "grass",
       "blocked": false,
-      "cover": 10
+      "cover": 0
     },
     {
       "x": 13,
       "y": 6,
-      "type": "stone",
+      "type": "grass",
       "blocked": false,
-      "cover": 10
+      "cover": 0
     },
     {
       "x": 14,
@@ -1068,23 +1068,23 @@
     {
       "x": 11,
       "y": 7,
-      "type": "stone",
+      "type": "grass",
       "blocked": false,
-      "cover": 10
+      "cover": 0
     },
     {
       "x": 12,
       "y": 7,
-      "type": "stone",
+      "type": "grass",
       "blocked": false,
-      "cover": 10
+      "cover": 0
     },
     {
       "x": 13,
       "y": 7,
-      "type": "stone",
+      "type": "grass",
       "blocked": false,
-      "cover": 10
+      "cover": 0
     },
     {
       "x": 14,
@@ -1208,23 +1208,23 @@
     {
       "x": 11,
       "y": 8,
-      "type": "stone",
+      "type": "grass",
       "blocked": false,
-      "cover": 10
+      "cover": 0
     },
     {
       "x": 12,
       "y": 8,
-      "type": "stone",
+      "type": "grass",
       "blocked": false,
-      "cover": 10
+      "cover": 0
     },
     {
       "x": 13,
       "y": 8,
-      "type": "stone",
+      "type": "grass",
       "blocked": false,
-      "cover": 10
+      "cover": 0
     },
     {
       "x": 14,
@@ -1348,23 +1348,23 @@
     {
       "x": 11,
       "y": 9,
-      "type": "wall",
-      "blocked": true,
-      "cover": 40
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
     },
     {
       "x": 12,
       "y": 9,
-      "type": "wall",
-      "blocked": true,
-      "cover": 40
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
     },
     {
       "x": 13,
       "y": 9,
-      "type": "stone",
+      "type": "grass",
       "blocked": false,
-      "cover": 10
+      "cover": 0
     },
     {
       "x": 14,
@@ -1726,56 +1726,56 @@
     {
       "x": 5,
       "y": 12,
-      "type": "road",
+      "type": "grass",
       "blocked": false,
       "cover": 0
     },
     {
       "x": 6,
       "y": 12,
-      "type": "road",
+      "type": "grass",
       "blocked": false,
       "cover": 0
     },
     {
       "x": 7,
       "y": 12,
-      "type": "road",
+      "type": "grass",
       "blocked": false,
       "cover": 0
     },
     {
       "x": 8,
       "y": 12,
-      "type": "road",
+      "type": "grass",
       "blocked": false,
       "cover": 0
     },
     {
       "x": 9,
       "y": 12,
-      "type": "road",
+      "type": "grass",
       "blocked": false,
       "cover": 0
     },
     {
       "x": 10,
       "y": 12,
-      "type": "road",
+      "type": "grass",
       "blocked": false,
       "cover": 0
     },
     {
       "x": 11,
       "y": 12,
-      "type": "road",
+      "type": "grass",
       "blocked": false,
       "cover": 0
     },
     {
       "x": 12,
       "y": 12,
-      "type": "road",
+      "type": "grass",
       "blocked": false,
       "cover": 0
     },
@@ -2256,10 +2256,11 @@
       "name": "Casa del sector",
       "x": 6,
       "y": 6,
-      "width": 5,
+      "width": 8,
       "height": 4,
       "roof": "tile",
       "material": "adobe",
+      "architecture": "barracks",
       "rooms": [
         {
           "id": "retiro:building:interior",
@@ -2277,6 +2278,18 @@
               "y": 7
             },
             {
+              "x": 10,
+              "y": 7
+            },
+            {
+              "x": 11,
+              "y": 7
+            },
+            {
+              "x": 12,
+              "y": 7
+            },
+            {
               "x": 7,
               "y": 8
             },
@@ -2287,10 +2300,23 @@
             {
               "x": 9,
               "y": 8
+            },
+            {
+              "x": 10,
+              "y": 8
+            },
+            {
+              "x": 11,
+              "y": 8
+            },
+            {
+              "x": 12,
+              "y": 8
             }
           ]
         }
       ],
+      "kind": "barracks",
       "walls": [
         {
           "x": 6,
@@ -2348,6 +2374,39 @@
           "roomId": null
         },
         {
+          "x": 11,
+          "y": 6,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:building",
+          "roomId": null
+        },
+        {
+          "x": 12,
+          "y": 6,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:building",
+          "roomId": null
+        },
+        {
+          "x": 13,
+          "y": 6,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:building",
+          "roomId": null
+        },
+        {
           "x": 6,
           "y": 7,
           "type": "window",
@@ -2359,7 +2418,7 @@
           "roomId": null
         },
         {
-          "x": 10,
+          "x": 13,
           "y": 7,
           "type": "wall",
           "blocked": true,
@@ -2381,7 +2440,7 @@
           "roomId": null
         },
         {
-          "x": 10,
+          "x": 13,
           "y": 8,
           "type": "wall",
           "blocked": true,
@@ -2416,6 +2475,28 @@
         {
           "x": 8,
           "y": 9,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:building",
+          "roomId": null
+        },
+        {
+          "x": 9,
+          "y": 9,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:building",
+          "roomId": null
+        },
+        {
+          "x": 10,
+          "y": 9,
           "type": "door",
           "blocked": true,
           "blocksSight": true,
@@ -2428,7 +2509,7 @@
           "locked": false
         },
         {
-          "x": 9,
+          "x": 11,
           "y": 9,
           "type": "door",
           "blocked": true,
@@ -2442,7 +2523,18 @@
           "locked": false
         },
         {
-          "x": 10,
+          "x": 12,
+          "y": 9,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:building",
+          "roomId": null
+        },
+        {
+          "x": 13,
           "y": 9,
           "type": "wall",
           "blocked": true,
@@ -2452,22 +2544,18 @@
           "buildingId": "retiro:building",
           "roomId": null
         }
-      ],
-      "kind": "barracks",
-      "wallFinish": "limewash",
-      "roofFinish": "aged",
-      "doorStyle": "double",
-      "windowStyle": "small"
+      ]
     },
     {
       "id": "retiro:house-0",
       "name": "Barraca del cuartel",
       "x": 4,
       "y": 0,
-      "width": 9,
-      "height": 3,
+      "width": 8,
+      "height": 4,
       "roof": "tile",
       "material": "adobe",
+      "architecture": "barracks",
       "rooms": [
         {
           "id": "retiro:house-0:interior",
@@ -2497,12 +2585,34 @@
               "y": 1
             },
             {
-              "x": 11,
-              "y": 1
+              "x": 5,
+              "y": 2
+            },
+            {
+              "x": 6,
+              "y": 2
+            },
+            {
+              "x": 7,
+              "y": 2
+            },
+            {
+              "x": 8,
+              "y": 2
+            },
+            {
+              "x": 9,
+              "y": 2
+            },
+            {
+              "x": 10,
+              "y": 2
             }
           ]
         }
       ],
+      "purpose": "home",
+      "kind": "barracks",
       "walls": [
         {
           "x": 4,
@@ -2593,17 +2703,6 @@
           "roomId": null
         },
         {
-          "x": 12,
-          "y": 0,
-          "type": "wall",
-          "blocked": true,
-          "blocksSight": true,
-          "cover": 40,
-          "material": "adobe",
-          "buildingId": "retiro:house-0",
-          "roomId": null
-        },
-        {
           "x": 4,
           "y": 1,
           "type": "window",
@@ -2615,7 +2714,7 @@
           "roomId": null
         },
         {
-          "x": 12,
+          "x": 11,
           "y": 1,
           "type": "wall",
           "blocked": true,
@@ -2627,75 +2726,6 @@
         },
         {
           "x": 4,
-          "y": 2,
-          "type": "wall",
-          "blocked": true,
-          "blocksSight": true,
-          "cover": 40,
-          "material": "adobe",
-          "buildingId": "retiro:house-0",
-          "roomId": null
-        },
-        {
-          "x": 5,
-          "y": 2,
-          "type": "wall",
-          "blocked": true,
-          "blocksSight": true,
-          "cover": 40,
-          "material": "adobe",
-          "buildingId": "retiro:house-0",
-          "roomId": null
-        },
-        {
-          "x": 6,
-          "y": 2,
-          "type": "wall",
-          "blocked": true,
-          "blocksSight": true,
-          "cover": 40,
-          "material": "adobe",
-          "buildingId": "retiro:house-0",
-          "roomId": null
-        },
-        {
-          "x": 7,
-          "y": 2,
-          "type": "wall",
-          "blocked": true,
-          "blocksSight": true,
-          "cover": 40,
-          "material": "adobe",
-          "buildingId": "retiro:house-0",
-          "roomId": null
-        },
-        {
-          "x": 8,
-          "y": 2,
-          "type": "door",
-          "blocked": true,
-          "blocksSight": true,
-          "cover": 0,
-          "material": "adobe",
-          "buildingId": "retiro:house-0",
-          "roomId": null,
-          "doorId": "retiro:house-0:door:8:2",
-          "open": false,
-          "locked": false
-        },
-        {
-          "x": 9,
-          "y": 2,
-          "type": "wall",
-          "blocked": true,
-          "blocksSight": true,
-          "cover": 40,
-          "material": "adobe",
-          "buildingId": "retiro:house-0",
-          "roomId": null
-        },
-        {
-          "x": 10,
           "y": 2,
           "type": "wall",
           "blocked": true,
@@ -2717,8 +2747,88 @@
           "roomId": null
         },
         {
-          "x": 12,
-          "y": 2,
+          "x": 4,
+          "y": 3,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:house-0",
+          "roomId": null
+        },
+        {
+          "x": 5,
+          "y": 3,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:house-0",
+          "roomId": null
+        },
+        {
+          "x": 6,
+          "y": 3,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:house-0",
+          "roomId": null
+        },
+        {
+          "x": 7,
+          "y": 3,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:house-0",
+          "roomId": null
+        },
+        {
+          "x": 8,
+          "y": 3,
+          "type": "door",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 0,
+          "material": "adobe",
+          "buildingId": "retiro:house-0",
+          "roomId": null,
+          "doorId": "retiro:house-0:door:8:3",
+          "open": false,
+          "locked": false
+        },
+        {
+          "x": 9,
+          "y": 3,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:house-0",
+          "roomId": null
+        },
+        {
+          "x": 10,
+          "y": 3,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:house-0",
+          "roomId": null
+        },
+        {
+          "x": 11,
+          "y": 3,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2727,26 +2837,46 @@
           "buildingId": "retiro:house-0",
           "roomId": null
         }
-      ],
-      "kind": "barracks",
-      "wallFinish": "limewash",
-      "roofFinish": "aged",
-      "doorStyle": "double",
-      "windowStyle": "small"
+      ]
     },
     {
       "id": "retiro:house-1",
       "name": "Barraca del cuartel",
       "x": 5,
-      "y": 13,
+      "y": 12,
       "width": 8,
-      "height": 3,
+      "height": 4,
       "roof": "tile",
       "material": "adobe",
+      "architecture": "barracks",
       "rooms": [
         {
           "id": "retiro:house-1:interior",
           "cells": [
+            {
+              "x": 6,
+              "y": 13
+            },
+            {
+              "x": 7,
+              "y": 13
+            },
+            {
+              "x": 8,
+              "y": 13
+            },
+            {
+              "x": 9,
+              "y": 13
+            },
+            {
+              "x": 10,
+              "y": 13
+            },
+            {
+              "x": 11,
+              "y": 13
+            },
             {
               "x": 6,
               "y": 14
@@ -2774,10 +2904,12 @@
           ]
         }
       ],
+      "purpose": "home",
+      "kind": "barracks",
       "walls": [
         {
           "x": 5,
-          "y": 13,
+          "y": 12,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2788,7 +2920,7 @@
         },
         {
           "x": 6,
-          "y": 13,
+          "y": 12,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2799,7 +2931,7 @@
         },
         {
           "x": 7,
-          "y": 13,
+          "y": 12,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2810,7 +2942,7 @@
         },
         {
           "x": 8,
-          "y": 13,
+          "y": 12,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2821,7 +2953,7 @@
         },
         {
           "x": 9,
-          "y": 13,
+          "y": 12,
           "type": "door",
           "blocked": true,
           "blocksSight": true,
@@ -2829,13 +2961,13 @@
           "material": "adobe",
           "buildingId": "retiro:house-1",
           "roomId": null,
-          "doorId": "retiro:house-1:door:9:13",
+          "doorId": "retiro:house-1:door:9:12",
           "open": false,
           "locked": false
         },
         {
           "x": 10,
-          "y": 13,
+          "y": 12,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2846,11 +2978,33 @@
         },
         {
           "x": 11,
-          "y": 13,
+          "y": 12,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
           "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:house-1",
+          "roomId": null
+        },
+        {
+          "x": 12,
+          "y": 12,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:house-1",
+          "roomId": null
+        },
+        {
+          "x": 5,
+          "y": 13,
+          "type": "window",
+          "blocked": true,
+          "blocksSight": false,
+          "cover": 25,
           "material": "adobe",
           "buildingId": "retiro:house-1",
           "roomId": null
@@ -2869,10 +3023,10 @@
         {
           "x": 5,
           "y": 14,
-          "type": "window",
+          "type": "wall",
           "blocked": true,
-          "blocksSight": false,
-          "cover": 25,
+          "blocksSight": true,
+          "cover": 40,
           "material": "adobe",
           "buildingId": "retiro:house-1",
           "roomId": null
@@ -2976,12 +3130,7 @@
           "buildingId": "retiro:house-1",
           "roomId": null
         }
-      ],
-      "kind": "barracks",
-      "wallFinish": "limewash",
-      "roofFinish": "aged",
-      "doorStyle": "double",
-      "windowStyle": "small"
+      ]
     }
   ],
   "props": [
@@ -2999,9 +3148,9 @@
       "blocksMovement": true
     },
     {
-      "id": "retiro:building:bench:9:7",
+      "id": "retiro:building:bench:12:7",
       "type": "bench",
-      "x": 9,
+      "x": 12,
       "y": 7,
       "buildingId": "retiro:building",
       "roomId": "retiro:building:interior",
@@ -3012,9 +3161,22 @@
       "blocksMovement": true
     },
     {
-      "id": "retiro:house-0:bench:11:1",
+      "id": "retiro:house-0:bed:5:1",
+      "type": "bed",
+      "x": 5,
+      "y": 1,
+      "buildingId": "retiro:house-0",
+      "roomId": "retiro:house-0:interior",
+      "footprint": {
+        "width": 1,
+        "height": 2
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "retiro:house-0:bench:10:1",
       "type": "bench",
-      "x": 11,
+      "x": 10,
       "y": 1,
       "buildingId": "retiro:house-0",
       "roomId": "retiro:house-0:interior",
@@ -3025,10 +3187,23 @@
       "blocksMovement": true
     },
     {
-      "id": "retiro:house-1:bench:11:14",
+      "id": "retiro:house-1:bed:6:13",
+      "type": "bed",
+      "x": 6,
+      "y": 13,
+      "buildingId": "retiro:house-1",
+      "roomId": "retiro:house-1:interior",
+      "footprint": {
+        "width": 1,
+        "height": 2
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "retiro:house-1:bench:11:13",
       "type": "bench",
       "x": 11,
-      "y": 14,
+      "y": 13,
       "buildingId": "retiro:house-1",
       "roomId": "retiro:house-1:interior",
       "footprint": {
@@ -3045,11 +3220,61 @@
     {
       "id": "retiro:lantern",
       "type": "lantern",
-      "x": 8,
+      "x": 10,
       "y": 10,
       "radius": 3,
       "intensity": 0.8
     }
   ],
-  "decor": []
+  "decor": [],
+  "boundaryRoads": [
+    {
+      "x": 14,
+      "y": 0
+    },
+    {
+      "x": 15,
+      "y": 0
+    },
+    {
+      "x": 0,
+      "y": 3
+    },
+    {
+      "x": 19,
+      "y": 3
+    },
+    {
+      "x": 0,
+      "y": 4
+    },
+    {
+      "x": 19,
+      "y": 4
+    },
+    {
+      "x": 0,
+      "y": 12
+    },
+    {
+      "x": 19,
+      "y": 12
+    },
+    {
+      "x": 0,
+      "y": 13
+    },
+    {
+      "x": 19,
+      "y": 13
+    },
+    {
+      "x": 14,
+      "y": 15
+    },
+    {
+      "x": 15,
+      "y": 15
+    }
+  ]
 }

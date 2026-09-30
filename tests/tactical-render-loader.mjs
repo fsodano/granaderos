@@ -15,9 +15,16 @@ export function resolve(specifier,context,next){
  return next(specifier,context);
 }
 export function load(url,context,next){
+ // SSR does not run effects or workers. Resolve the URL import without trying
+ // to execute a browser worker as part of rendering. Worker jobs have separate tests.
  if(url.endsWith('?worker&url'))return {format:'module',shortCircuit:true,source:`export default ${JSON.stringify(url)};`};
  if(url.endsWith('.css'))return {format:'module',shortCircuit:true,source:'export default {};'};
  if(url.endsWith('.json'))return next(url,{...context,importAttributes:{...context.importAttributes,type:'json'}});
- if(/\.tsx?$/.test(url))return {format:'module',shortCircuit:true,source:ts.transpileModule(readFileSync(new URL(url),'utf8'),{compilerOptions:{jsx:ts.JsxEmit.ReactJSX,module:ts.ModuleKind.ESNext,target:ts.ScriptTarget.ES2022}}).outputText};
+ if(/\.tsx?$/.test(url)){
+  const result=ts.transpileModule(readFileSync(new URL(url),'utf8'),{fileName:new URL(url).pathname,reportDiagnostics:true,compilerOptions:{jsx:ts.JsxEmit.ReactJSX,module:ts.ModuleKind.ESNext,target:ts.ScriptTarget.ES2022}});
+  const errors=(result.diagnostics??[]).filter(diagnostic=>diagnostic.category===ts.DiagnosticCategory.Error);
+  if(errors.length)throw Error(`${url}: ${errors.map(error=>ts.flattenDiagnosticMessageText(error.messageText,'\n')).join('\n')}`);
+  return {format:'module',shortCircuit:true,source:result.outputText};
+ }
  return next(url,context);
 }

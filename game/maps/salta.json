@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "salta",
-  "revision": 2,
+  "revision": 3,
   "width": 20,
   "height": 16,
   "metadata": {
@@ -88,7 +88,7 @@
     {
       "x": 11,
       "y": 0,
-      "type": "road",
+      "type": "grass",
       "blocked": false,
       "cover": 0
     },
@@ -228,7 +228,7 @@
     {
       "x": 11,
       "y": 1,
-      "type": "road",
+      "type": "grass",
       "blocked": false,
       "cover": 0
     },
@@ -368,7 +368,7 @@
     {
       "x": 11,
       "y": 2,
-      "type": "road",
+      "type": "grass",
       "blocked": false,
       "cover": 0
     },
@@ -508,7 +508,7 @@
     {
       "x": 11,
       "y": 3,
-      "type": "road",
+      "type": "grass",
       "blocked": false,
       "cover": 0
     },
@@ -648,7 +648,7 @@
     {
       "x": 11,
       "y": 4,
-      "type": "road",
+      "type": "grass",
       "blocked": false,
       "cover": 0
     },
@@ -2255,15 +2255,32 @@
       "id": "salta:building",
       "name": "Casa del sector",
       "x": 12,
-      "y": 11,
-      "width": 4,
-      "height": 3,
-      "roof": "tile",
+      "y": 10,
+      "width": 6,
+      "height": 5,
+      "roof": "terrace",
       "material": "adobe",
+      "architecture": "house",
       "rooms": [
         {
           "id": "salta:building:interior",
           "cells": [
+            {
+              "x": 13,
+              "y": 11
+            },
+            {
+              "x": 14,
+              "y": 11
+            },
+            {
+              "x": 15,
+              "y": 11
+            },
+            {
+              "x": 16,
+              "y": 11
+            },
             {
               "x": 13,
               "y": 12
@@ -2271,14 +2288,39 @@
             {
               "x": 14,
               "y": 12
+            },
+            {
+              "x": 15,
+              "y": 12
+            },
+            {
+              "x": 16,
+              "y": 12
+            },
+            {
+              "x": 13,
+              "y": 13
+            },
+            {
+              "x": 14,
+              "y": 13
+            },
+            {
+              "x": 15,
+              "y": 13
+            },
+            {
+              "x": 16,
+              "y": 13
             }
           ]
         }
       ],
+      "kind": "house",
       "walls": [
         {
           "x": 12,
-          "y": 11,
+          "y": 10,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2289,7 +2331,7 @@
         },
         {
           "x": 13,
-          "y": 11,
+          "y": 10,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2300,7 +2342,7 @@
         },
         {
           "x": 14,
-          "y": 11,
+          "y": 10,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2311,7 +2353,29 @@
         },
         {
           "x": 15,
-          "y": 11,
+          "y": 10,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "salta:building",
+          "roomId": null
+        },
+        {
+          "x": 16,
+          "y": 10,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "salta:building",
+          "roomId": null
+        },
+        {
+          "x": 17,
+          "y": 10,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2322,7 +2386,7 @@
         },
         {
           "x": 12,
-          "y": 12,
+          "y": 11,
           "type": "window",
           "blocked": true,
           "blocksSight": false,
@@ -2332,7 +2396,29 @@
           "roomId": null
         },
         {
-          "x": 15,
+          "x": 17,
+          "y": 11,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "salta:building",
+          "roomId": null
+        },
+        {
+          "x": 12,
+          "y": 12,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "salta:building",
+          "roomId": null
+        },
+        {
+          "x": 17,
           "y": 12,
           "type": "wall",
           "blocked": true,
@@ -2354,7 +2440,7 @@
           "roomId": null
         },
         {
-          "x": 13,
+          "x": 17,
           "y": 13,
           "type": "wall",
           "blocked": true,
@@ -2365,8 +2451,41 @@
           "roomId": null
         },
         {
+          "x": 12,
+          "y": 14,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "salta:building",
+          "roomId": null
+        },
+        {
+          "x": 13,
+          "y": 14,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "salta:building",
+          "roomId": null
+        },
+        {
           "x": 14,
-          "y": 13,
+          "y": 14,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "salta:building",
+          "roomId": null
+        },
+        {
+          "x": 15,
+          "y": 14,
           "type": "door",
           "blocked": true,
           "blocksSight": true,
@@ -2379,8 +2498,22 @@
           "locked": false
         },
         {
-          "x": 15,
-          "y": 13,
+          "x": 16,
+          "y": 14,
+          "type": "door",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 0,
+          "material": "adobe",
+          "buildingId": "salta:building",
+          "roomId": null,
+          "doorId": "salta:door-right",
+          "open": false,
+          "locked": false
+        },
+        {
+          "x": 17,
+          "y": 14,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2389,26 +2522,46 @@
           "buildingId": "salta:building",
           "roomId": null
         }
-      ],
-      "wallFinish": "adobe",
-      "roofFinish": "thatch",
-      "doorStyle": "plank",
-      "windowStyle": "shutters",
-      "kind": "house"
+      ]
     },
     {
       "id": "salta:house-0",
-      "name": "Casa 2 del poblado",
-      "x": 12,
-      "y": 1,
-      "width": 4,
-      "height": 3,
+      "name": "Pulpería del poblado",
+      "x": 11,
+      "y": 0,
+      "width": 7,
+      "height": 5,
       "roof": "tile",
       "material": "adobe",
+      "architecture": "pulperia",
       "rooms": [
         {
           "id": "salta:house-0:interior",
           "cells": [
+            {
+              "x": 12,
+              "y": 1
+            },
+            {
+              "x": 13,
+              "y": 1
+            },
+            {
+              "x": 14,
+              "y": 1
+            },
+            {
+              "x": 15,
+              "y": 1
+            },
+            {
+              "x": 16,
+              "y": 1
+            },
+            {
+              "x": 12,
+              "y": 2
+            },
             {
               "x": 13,
               "y": 2
@@ -2416,14 +2569,55 @@
             {
               "x": 14,
               "y": 2
+            },
+            {
+              "x": 15,
+              "y": 2
+            },
+            {
+              "x": 16,
+              "y": 2
+            },
+            {
+              "x": 12,
+              "y": 3
+            },
+            {
+              "x": 13,
+              "y": 3
+            },
+            {
+              "x": 14,
+              "y": 3
+            },
+            {
+              "x": 15,
+              "y": 3
+            },
+            {
+              "x": 16,
+              "y": 3
             }
           ]
         }
       ],
+      "purpose": "bar",
+      "kind": "pulperia",
       "walls": [
         {
+          "x": 11,
+          "y": 0,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "salta:house-0",
+          "roomId": null
+        },
+        {
           "x": 12,
-          "y": 1,
+          "y": 0,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2434,7 +2628,7 @@
         },
         {
           "x": 13,
-          "y": 1,
+          "y": 0,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2445,7 +2639,7 @@
         },
         {
           "x": 14,
-          "y": 1,
+          "y": 0,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2456,7 +2650,7 @@
         },
         {
           "x": 15,
-          "y": 1,
+          "y": 0,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2466,8 +2660,30 @@
           "roomId": null
         },
         {
-          "x": 12,
-          "y": 2,
+          "x": 16,
+          "y": 0,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "salta:house-0",
+          "roomId": null
+        },
+        {
+          "x": 17,
+          "y": 0,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "salta:house-0",
+          "roomId": null
+        },
+        {
+          "x": 11,
+          "y": 1,
           "type": "window",
           "blocked": true,
           "blocksSight": false,
@@ -2477,7 +2693,18 @@
           "roomId": null
         },
         {
-          "x": 15,
+          "x": 17,
+          "y": 1,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "salta:house-0",
+          "roomId": null
+        },
+        {
+          "x": 11,
           "y": 2,
           "type": "wall",
           "blocked": true,
@@ -2488,8 +2715,52 @@
           "roomId": null
         },
         {
-          "x": 12,
+          "x": 17,
+          "y": 2,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "salta:house-0",
+          "roomId": null
+        },
+        {
+          "x": 11,
           "y": 3,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "salta:house-0",
+          "roomId": null
+        },
+        {
+          "x": 17,
+          "y": 3,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "salta:house-0",
+          "roomId": null
+        },
+        {
+          "x": 11,
+          "y": 4,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "salta:house-0",
+          "roomId": null
+        },
+        {
+          "x": 12,
+          "y": 4,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2500,7 +2771,7 @@
         },
         {
           "x": 13,
-          "y": 3,
+          "y": 4,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2511,7 +2782,7 @@
         },
         {
           "x": 14,
-          "y": 3,
+          "y": 4,
           "type": "door",
           "blocked": true,
           "blocksSight": true,
@@ -2519,13 +2790,35 @@
           "material": "adobe",
           "buildingId": "salta:house-0",
           "roomId": null,
-          "doorId": "salta:house-0:door:14:3",
+          "doorId": "salta:house-0:door:14:4",
           "open": false,
           "locked": false
         },
         {
           "x": 15,
-          "y": 3,
+          "y": 4,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "salta:house-0",
+          "roomId": null
+        },
+        {
+          "x": 16,
+          "y": 4,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "salta:house-0",
+          "roomId": null
+        },
+        {
+          "x": 17,
+          "y": 4,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2534,19 +2827,53 @@
           "buildingId": "salta:house-0",
           "roomId": null
         }
-      ],
-      "wallFinish": "ochre",
-      "roofFinish": "aged",
-      "doorStyle": "panelled",
-      "windowStyle": "shutters",
-      "kind": "posta"
+      ]
     }
   ],
   "props": [
     {
-      "id": "salta:building:table:13:12",
+      "id": "salta:building:table:13:11",
       "type": "table",
       "x": 13,
+      "y": 11,
+      "buildingId": "salta:building",
+      "roomId": "salta:building:interior",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "salta:building:bench:16:11",
+      "type": "bench",
+      "x": 16,
+      "y": 11,
+      "buildingId": "salta:building",
+      "roomId": "salta:building:interior",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "salta:building:bed:13:13",
+      "type": "bed",
+      "x": 13,
+      "y": 12,
+      "buildingId": "salta:building",
+      "roomId": "salta:building:interior",
+      "footprint": {
+        "width": 1,
+        "height": 2
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "salta:building:chest:16:13",
+      "type": "chest",
+      "x": 16,
       "y": 12,
       "buildingId": "salta:building",
       "roomId": "salta:building:interior",
@@ -2557,14 +2884,64 @@
       "blocksMovement": true
     },
     {
-      "id": "salta:house-0:table:13:2",
+      "id": "salta:house-0:table:12:1",
       "type": "table",
-      "x": 13,
+      "x": 12,
+      "y": 1,
+      "buildingId": "salta:house-0",
+      "roomId": "salta:house-0:interior",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "salta:house-0:bench:16:1",
+      "type": "bench",
+      "x": 16,
+      "y": 1,
+      "buildingId": "salta:house-0",
+      "roomId": "salta:house-0:interior",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "salta:house-0:bed:12:3",
+      "type": "bed",
+      "x": 12,
       "y": 2,
       "buildingId": "salta:house-0",
       "roomId": "salta:house-0:interior",
       "footprint": {
         "width": 1,
+        "height": 2
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "salta:house-0:chest:16:3",
+      "type": "chest",
+      "x": 16,
+      "y": 3,
+      "buildingId": "salta:house-0",
+      "roomId": "salta:house-0:interior",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "salta:house-0:cart",
+      "type": "cart",
+      "x": 11,
+      "y": 6,
+      "footprint": {
+        "width": 2,
         "height": 1
       },
       "blocksMovement": true
@@ -2577,11 +2954,45 @@
     {
       "id": "salta:lantern",
       "type": "lantern",
-      "x": 14,
-      "y": 14,
+      "x": 15,
+      "y": 15,
       "radius": 3,
       "intensity": 0.8
     }
   ],
-  "decor": []
+  "decor": [],
+  "boundaryRoads": [
+    {
+      "x": 10,
+      "y": 0
+    },
+    {
+      "x": 11,
+      "y": 0
+    },
+    {
+      "x": 0,
+      "y": 7
+    },
+    {
+      "x": 19,
+      "y": 7
+    },
+    {
+      "x": 0,
+      "y": 8
+    },
+    {
+      "x": 19,
+      "y": 8
+    },
+    {
+      "x": 10,
+      "y": 15
+    },
+    {
+      "x": 11,
+      "y": 15
+    }
+  ]
 }

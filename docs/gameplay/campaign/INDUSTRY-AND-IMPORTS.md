@@ -22,7 +22,7 @@ marker. A surviving soldier must bring the money out of the sector. The campaign
 records recovered caches so saves and repeat visits cannot pay them twice.
 
 Recruitment, militia, diplomacy, fortifications, and equipment all cost pesos.
-Organizing Retiro costs 300; El Plumerillo costs 500; funding the army costs 3000.
+The opening needs one living combatant in service and no separate academy payment. El Plumerillo costs 500; funding the army costs 3000.
 The final preparation also needs three purchased guns, the parliament agreement,
 and fortified control of Mendoza and both Andean passes.
 
@@ -31,9 +31,7 @@ Personal weapons remain finite equipment. Brown Bess and Baker imports take
 Local weapons and artillery arrive immediately. Artillery is counted in the
 armory, with no separate resource counter.
 
-Each firearm receives ten cartridges on deployment at one peso per cartridge.
-Validated unused ammunition is refunded on return. Tactical ammunition remains
-finite. Militia training includes its initial kit. Cavalry access is automatic;
+A supplied local market can prepare the configured marching ammunition. Purchases spend pesos and reduce finite stock; carried and stored rounds retain physical custody. Unused ammunition stays with its owner on return and is not refunded. See [handheld ammunition](../equipment/typed-ammunition.md). Militia training includes its initial kit. Cavalry access is automatic;
 there is no separate horse economy. Repairs and personal kit refills cost pesos.
 
 Start a new campaign for economy version 2. Earlier economy saves are rejected

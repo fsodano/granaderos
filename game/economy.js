@@ -1,13 +1,12 @@
+import {sectorIncomeDetails} from './sector-income.js';
 import {CAMPAIGN_SECTORS} from './data.js';
 
 // Town trade and local contributions funded the independence armies.
 // Amounts are game balance values, not reconstructed historical revenue.
 export function incomeSources(state){
  return CAMPAIGN_SECTORS.map(sector=>{
-  const region=state.sectors[sector.id],controlled=region.owner==='patriot';
-  const recovering=region.damageUntil>state.hour,blocked=sector.theater==='coast'&&state.blockade;
-  const income=controlled?Math.floor(sector.income*(recovering?.25:1)*(blocked?.25:1)):0;
-  return {id:sector.id,name:sector.name,source:sector.theater==='coast'?'Comercio y aduana':'Contribución local',base:sector.income,income,status:!controlled?'Ocupada':recovering&&blocked?'En recuperación y bloqueada':recovering?'En recuperación':blocked?'Bloqueada':'Activa'};
+  const details=sectorIncomeDetails(state,sector);
+  return {id:sector.id,name:sector.name,source:sector.theater==='coast'?'Comercio y aduana':'Contribución local',base:details.base,income:details.daily,status:details.limits.length?details.limits.join(' · '):'Activa'};
  });
 }
 export function dailyIncome(state){return incomeSources(state).reduce((sum,site)=>sum+site.income,0);}

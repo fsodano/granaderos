@@ -9,3 +9,22 @@ test('pivoting consumes crew AP and makes a previously forbidden firing arc usab
 test('solid shot breaches adobe and stone and penetrates consecutive troops',()=>{const b=setup('field8');for(const[x,material]of[[4,'adobe'],[5,'stone']])Object.assign(b.tiles.find(t=>t.x===x&&t.y===3),{type:'wall',material,blocked:true});b.units.push({...b.units.at(-1),id:'rank-one',x:7,y:3,hp:100,morale:100},{...b.units.at(-1),id:'rank-two',x:8,y:3,hp:100,morale:100});const n=actBattle(b,{type:'artillery',unitId:20,artilleryId:'gun',x:12,y:3,mode:'solid'});assert.equal(n.lastError,null);for(const x of [4,5])assert.equal(n.tiles.find(t=>t.x===x&&t.y===3).blocked,false);assert.equal(n.units.find(u=>u.id==='rank-one').hp,0);assert.ok(n.units.find(u=>u.id==='rank-two').hp<100);});
 test('light swivel does not magically demolish stone fortifications',()=>{const b=setup('swivel');Object.assign(b.tiles.find(t=>t.x===5&&t.y===3),{type:'wall',material:'stone',blocked:true});const n=actBattle(b,{type:'artillery',unitId:20,artilleryId:'gun',x:10,y:3});assert.equal(n.lastError,null);assert.equal(n.tiles.find(t=>t.x===5&&t.y===3).blocked,true);});
 test('Brown fires efficiently and Barcala completes a difficult crew reload',()=>{const brown=setup('swivel',5);brown.units[0].ap=17;const fired=actBattle(brown,{type:'artillery',unitId:5,artilleryId:'gun',x:10,y:3});assert.equal(fired.lastError,null);assert.equal(fired.units[0].ap,0);let barcala=setup('field8',7);barcala.artillery[0].loaded=false;for(const u of barcala.units.filter(u=>u.side==='player'))u.ap=60;const loaded=actBattle(barcala,{type:'artilleryReload',unitId:7,artilleryId:'gun'});assert.equal(loaded.lastError,null);assert.equal(loaded.artillery[0].loaded,true);assert.equal(loaded.units[0].ap,0);});
+
+
+test('prone operators cannot fire, reload, pivot or drag a gun, and rejection spends nothing',()=>{
+ for(const type of ['artillery','artilleryReload','artilleryPivot','artilleryMove']){
+  const b=setup('swivel');b.units[0].stance='prone';
+  if(type==='artilleryReload')b.artillery[0].loaded=false;
+  const before=structuredClone(b),n=actBattle(b,{type,unitId:20,artilleryId:'gun',x:type==='artilleryMove'?3:10,y:3});
+  assert.match(n.lastError,/de pie o agachados/);
+  assert.deepEqual({...n,lastError:before.lastError,log:before.log},before);
+ }
+});
+test('prone helpers cannot satisfy a crew requirement but crouched helpers can',()=>{
+ const b=setup('field8');b.units[1].stance='prone';
+ const rejected=actBattle(b,{type:'artillery',unitId:20,artilleryId:'gun',x:10,y:3});
+ assert.match(rejected.lastError,/de pie o agachados/);assert.equal(rejected.artillery[0].loaded,true);
+ b.units[1].stance='crouched';b.units[0].stance='crouched';
+ const fired=actBattle(b,{type:'artillery',unitId:20,artilleryId:'gun',x:10,y:3});
+ assert.equal(fired.lastError,null);assert.equal(fired.artillery[0].loaded,false);
+});
