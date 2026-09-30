@@ -21,15 +21,16 @@ export function sleepOrderReason(s,id,asleep){
  if(r.energy>=100&&r.fatigue===0)return 'No está cansado.';
  return '';
 }
-export function setSleep(s,id,asleep){const reason=sleepOrderReason(s,id,asleep);if(reason)throw Error(reason);const r=s.operativeState[id];r.asleep=asleep;if(asleep&&maximumEnergy(r)<=10)r.sleepCollapsed=true;}
+const wake=record=>{record.asleep=false;if(record.assignment!=='rest')record.recoveryHours=0;};
+export function setSleep(s,id,asleep){const reason=sleepOrderReason(s,id,asleep);if(reason)throw Error(reason);const r=s.operativeState[id];if(asleep)r.asleep=true;else wake(r);if(asleep&&maximumEnergy(r)<=10)r.sleepCollapsed=true;}
 
 export function prepareSleep(s,roster,context={}){
  const events=[];
  for(const op of roster){
   const r=s.operativeState[op.id];if(!r)continue;
   if(r.sleepCollapsed&&!needsCollapseRecovery(r))r.sleepCollapsed=false;
-  if(!available(s,op.id)){r.asleep=false;if(!s.recruited.includes(op.id)||!r.alive||r.captured)r.sleepCollapsed=false;continue;}
-  if(r.asleep&&!safe(s,op.id,context)){r.asleep=false;events.push({id:op.id,code:'sleep_disturbed'});continue;}
+  if(!available(s,op.id)){wake(r);if(!s.recruited.includes(op.id)||!r.alive||r.captured)r.sleepCollapsed=false;continue;}
+  if(r.asleep&&!safe(s,op.id,context)){wake(r);events.push({id:op.id,code:'sleep_disturbed'});continue;}
   if(!safe(s,op.id,context)||r.hp<15||r.bleeding)continue;
   // Finish the stage before collapsing. A paused onward route retains its path;
   // a hostile arrival still takes precedence over strategic sleep.
@@ -50,7 +51,7 @@ export function finishSleepHour(s,roster,context={}){
   if(r.asleep){
    // Medical care already applies this hour's rest recovery to these roles.
    if(!['rest','patient'].includes(r.assignment)){const rate=sleepRecovery({...op,...r});recoverFatigue(r,rate.fatigue,rate.energy);}
-   if(r.energy>=100&&r.fatigue===0){r.asleep=false;events.push({id:op.id,code:'sleep_complete'});}
+   if(r.energy>=100&&r.fatigue===0){wake(r);events.push({id:op.id,code:'sleep_complete'});}
   }else if(r.assignment==='active'&&!(context.working??[]).includes(op.id)&&!s.militiaTraining?.some(t=>t.trainerId===op.id)&&r.hp>=15&&!r.bleeding){
    recoverFatigue(r,1,3);
   }

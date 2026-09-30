@@ -122,7 +122,7 @@ test('recent sight or sound keeps a donor at its post while adjacent handovers r
 
 test('a supplied medic treats an adjacent unconscious patient without taking the patient’s equipment',()=>{
  const s=field({ammo:0,medkits:1},{medical:60,loaded:1,ap:33});
- s.units.push(setTestAmmunition({...structuredClone(receiver(s)),id:'patient',x:13,y:4,hp:10,bleeding:3,unconscious:true,medkits:0,ap:0,weaponInstanceId:'patient-gun'},7));
+ s.units.push(setTestAmmunition({...structuredClone(receiver(s)),id:'patient',x:13,y:4,hp:10,bleeding:3,unconscious:true,medkits:0,ap:0,maxAP:0,overwatch:false,weaponInstanceId:'patient-gun'},7));
  const n=endTurn(s),p=n.units.find(u=>u.id==='patient');assert.equal(donor(n).medkits,0);assert.equal(receiver(n).medkits,0);assert.equal(receiver(n).ap,0);
  assert.equal(p.hp,15);assert.equal(p.bleeding,0);assert.equal(p.unconscious,false);assert.equal(p.ap,0);assert.equal(p.ammo,7);assert.equal(p.weaponInstanceId,'patient-gun');assert.deepEqual(n,endTurn(restored(s)));assert.doesNotThrow(()=>restored(n));
 });
@@ -135,7 +135,7 @@ test('a real enemy reaction can spend its remaining four AP on an adjacent suppl
 
 test('a donor supplies stabilization when a critical patient has no remaining bleeding',()=>{
  const s=field({ammo:0,medkits:1},{medical:60,loaded:1,ap:33});
- s.units.push(setTestAmmunition({...structuredClone(receiver(s)),id:'patient',x:13,y:4,hp:10,bleeding:0,bandaged:90,unconscious:true,medkits:0,ap:0,weaponInstanceId:'patient-gun'},7));
+ s.units.push(setTestAmmunition({...structuredClone(receiver(s)),id:'patient',x:13,y:4,hp:10,bleeding:0,bandaged:90,unconscious:true,medkits:0,ap:0,maxAP:0,overwatch:false,weaponInstanceId:'patient-gun'},7));
  const before=structuredClone(s);
  assert.deepEqual(choice(s),{type:'transfer',unitId:'donor',targetId:'receiver',item:'medkits',count:1});
  assert.deepEqual(s,before);

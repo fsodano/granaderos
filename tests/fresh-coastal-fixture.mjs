@@ -46,7 +46,7 @@ export function freshCoastalRoute(kind,{onCheckpoint}={}){
  assert.ok(first.every(id=>s.recruited.includes(id)&&s.contracts[id].started===6));notes.push({stage:'ready',hour:s.hour,funds:s.resources.treasury,squad:[...s.squad]});
  for(const sector of ['buenos_aires','san_nicolas','san_lorenzo']){
   s=order(s,{type:'attack',sector});assert.ok(s.pendingBattle);const request={...s.pendingBattle,hour:s.hour,secondOfHour:s.secondOfHour??0},previous=s.sectorStates[sector];
-  const {battle,orders,actions}=cautiousFight(request,previous,{scoutCostWeight:.01,avoidCivilians:true,holdPosition:sector==='san_lorenzo'?['57']:[]});assert.equal(battle.status,'victory',`${kind}: ${sector}; ${JSON.stringify(battle.units.filter(u=>u.hp>0&&!u.routed&&!u.unconscious).map(({id,side,x,y,hp,energy,loaded,ammo})=>({id,side,x,y,hp,energy,loaded,ammo})))}`);
+  const {battle,orders,actions}=cautiousFight(request,previous,{scoutCostWeight:.01,avoidCivilians:true,fallbackOrders:true,holdPosition:sector==='san_lorenzo'?['57']:[]});assert.equal(battle.status,'victory',`${kind}: ${sector}; ${JSON.stringify(battle.units.filter(u=>u.hp>0&&!u.routed&&!u.unconscious).map(({id,side,x,y,hp,energy,loaded,ammo})=>({id,side,x,y,hp,energy,loaded,ammo})))}`);
   // Replay every legal order with the normal campaign clock. Reload halfway
   // through the real engagement, then verify its deterministic final state.
   let p={campaign:s,battle:enterSector(request,previous)};

@@ -13,6 +13,7 @@ import {planFitBayonet} from './tactical-inventory.js';
 import {shotLocationEffects,shotLocationsFor} from './targeted-combat.js';
 import {reprimePlan} from './tactical.js';
 import {criticalFirstAidNeeded} from './first-aid.js';
+import {contentWeaponOf} from './weapon-definition.js';
 
 // Decisions use only this soldier's sight and the last place an opponent was seen.
 // No randomness or state changes occur here; tactical.js applies the returned order.
@@ -203,6 +204,16 @@ function backupWeapon(state, unit, costs, targets) {
   return best?.order ?? null;
 }
 
+function authoredSecondary(state,unit,costs,targets){
+  if((unit.activeSlot??'primary')!=='primary'||!hasFirearm(unit)||!contentWeaponOf(unit,'blade')||unit.ap<costs.weapon)return null;
+  // A prone gunner keeps useful cover. Switching is a paid order; the next
+  // decision uses the real hand and remaining AP, without issuing equipment.
+  if(unit.stance==='prone'&&readyGun(unit))return null;
+  const next={...unit,activeSlot:'blade',ap:unit.ap-costs.weapon},ownTurn={...state,phase:unit.side==='enemy'?'enemy':'player'};
+  if(targets.some(target=>meleePreview(ownTurn,next,target).valid))return {type:'weapon',unitId:unit.id,slot:'blade'};
+  return null;
+}
+
 function investigate(state, unit, known, costs, paths) {
   const reacting = state.phase === 'interrupt' || Boolean(state.reactionStack?.length);
   // Search in short bounds and leave a useful attack available after contact.
@@ -288,6 +299,8 @@ export function chooseEnemyAction(state, unit) {
   const grenade=chooseGrenadeThrow(state,unit,targets);
   if(grenade)return grenade;
   if(hasFirearm(unit)&&!unit.loaded&&!unit.reloadProgress&&!ammoCount(unit)){const load=ammunitionLoadsFor(unit).find(load=>ammoCount(unit,load.family)>0);if(load)return {type:'selectAmmunitionLoad',unitId:unit.id,family:load.family};}
+  const secondary=authoredSecondary(state,unit,costs,targets);
+  if(secondary)return secondary;
   const backup = backupWeapon(state, unit, costs, targets);
   if (backup) return backup;
   if (['medical','tool','supply','item'].includes(unit.activeSlot)) {

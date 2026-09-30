@@ -790,7 +790,7 @@ export function orderDescriptors(state, unit, ctx = {}) {
     useItem: u.activeSlot==='item'?true:itemPreview ? !itemPreview.valid : u.activeSlot === 'supply' ? !(u[u.activeSupply] > 0) || (u.activeSupply === 'rations' || ctx.target) && !supplyPreview.allowed : u.activeSlot === 'tool' ? !heldTool(u) : u.activeSlot === 'medical' ? !medicalPreview.allowed : attack?.type === 'fire' && (!(u.loaded > 0) || Boolean(u.jammed)),
     fire: !firearm || !(u.loaded > 0) || Boolean(u.jammed),
     melee: localMelee?!localMelee.valid:['medical','tool','supply','item'].includes(u.activeSlot),
-    charge: blade.id===0||['medical','tool','supply','item'].includes(u.activeSlot)||u.stance==='prone',
+    charge: blade.id<=0||['medical','tool','supply','item'].includes(u.activeSlot)||u.stance==='prone',
     heal: !medicalPreview.allowed,
     loot: false,
     reload: !firearm || !loading?.pa || !loading.available || Boolean(u.jammed),

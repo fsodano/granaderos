@@ -79,3 +79,22 @@ test('sleep natural healing cannot heal critical injuries or stop bleeding',()=>
  let s=initialCampaign();Object.assign(r(s),{hp:30,bandaged:r(s).maxHp-30,energy:10,fatigue:80});s=sleep(s,3);s=wait(s,6);assert.equal(r(s).hp,31);assert.equal(r(s).recoveryHours,0);
  s=initialCampaign();Object.assign(r(s),{hp:15,bandaged:0,bleeding:4,energy:40});s=sleep(s,3);s=wait(s,6);assert.equal(s.hour,6);assert.equal(r(s).asleep,true);s=wait(s,3);assert.equal(s.hour,8);assert.ok(event(s,'sleep_complete'));s=wait(s,1);assert.equal(r(s).hp,6);assert.equal(r(s).bleeding,4);
 });
+
+test('wounded sleepers save partial healing and waking clears only sleep recovery progress',()=>{
+ for(const assignment of ['active','practice','rest']){
+  let s=assignment==='practice'?practice():initialCampaign();
+  Object.assign(r(s),{hp:30,bandaged:r(s).maxHp-30,energy:40,fatigue:40});
+  if(assignment==='rest')s=order(s,{type:'assignCare',operativeId:3,assignment});
+  s=wait(sleep(s,3),1);assert.equal(r(s).recoveryHours,1);
+  assert.deepEqual(decodeSave(encodeSave(s)).campaign,s);
+  s=sleep(s,3,false);assert.equal(r(s).recoveryHours,assignment==='rest'?1:0);assert.equal(r(s).hp,30);
+  assert.deepEqual(decodeSave(encodeSave(s)).campaign,s);
+ }
+});
+test('automatic and unsafe waking leave a valid wound record without completing partial healing',()=>{
+ for(const unsafe of [false,true]){
+  let s=initialCampaign();Object.assign(r(s),{hp:30,bandaged:r(s).maxHp-30,energy:88,fatigue:8});s=wait(sleep(s,3),1);assert.equal(r(s).asleep,true);assert.equal(r(s).recoveryHours,1);
+  if(unsafe)s.sectors.retiro.owner='royalist';
+  s=wait(s,1);assert.equal(r(s).asleep,false);assert.equal(r(s).recoveryHours,0);assert.equal(r(s).hp,30);assert.deepEqual(decodeSave(encodeSave(s)).campaign,s);
+ }
+});

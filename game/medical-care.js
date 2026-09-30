@@ -182,7 +182,7 @@ export function validateMedicalCare(s,roster){
     requireThat(Number.isInteger(r.maxHp)&&r.maxHp>0&&r.maxHp<=op.maxHp&&r.hp<=r.maxHp,'La salud máxima guardada es inválida.');
     requireThat(Number.isFinite(r.bleeding)&&r.bleeding>=0&&r.bleeding<=100&&Number.isFinite(r.bandaged)&&r.bandaged>=0&&r.bandaged<=r.maxHp-r.hp,'Las heridas guardadas son inválidas.');
     requireThat(Number.isInteger(r.medkits)&&r.medkits>=0&&r.medkits<=100000,'Los vendas guardados son inválidos.');
-    requireThat(Object.hasOwn(ALL_ASSIGNMENTS,r.assignment)&&Number.isInteger(r.recoveryHours)&&r.recoveryHours>=0&&r.recoveryHours<careRules(s).restHealingHours&&(r.assignment==='rest'||r.recoveryHours===0),'Las asignaciones guardadas son inválidas.');
+    requireThat(Object.hasOwn(ALL_ASSIGNMENTS,r.assignment)&&Number.isInteger(r.recoveryHours)&&r.recoveryHours>=0&&r.recoveryHours<careRules(s).restHealingHours&&(r.assignment==='rest'||r.asleep&&r.assignment!=='patient'||r.recoveryHours===0),'Las asignaciones guardadas son inválidas.');
     requireThat(r.assignment==='active'||(s.recruited.includes(op.id)&&r.alive&&!r.captured&&!deployed(s,op.id)&&!operativeInTransit(s,op.id)&&!training(s,op.id)),'El combatiente tiene asignaciones incompatibles.');
     requireThat(!['doctor','militia_doctor'].includes(r.assignment)||(op.medical??0)>=careRules(s).minimumSkill,'La asignación médica guardada es inválida.');
   }

@@ -13,6 +13,6 @@ export function buttstockField({stock={}}={}){
  const request=campaign.pendingBattle,enemies=enterSector(request).units.filter(u=>u.side==='enemy');
  // A real paid deployment in declared compact geometry. No assigned hit or kill.
  const tiles=Array.from({length:120},(_,i)=>({x:i%12,y:Math.floor(i/12),type:'grass',blocked:false,cover:0}));
- const battle=createBattle(request.squad.map(u=>({...u,x:1,y:1})),{...request,width:12,height:10,tiles,enemies:[{...enemies[0],x:2,y:1,patrolOrigin:{x:2,y:1}},{...enemies[1],x:11,y:9,patrolOrigin:{x:11,y:9}}],seed:45});
+ const battle=createBattle(request.squad.map(u=>({...u,x:1,y:1})),{...request,width:12,height:10,tiles,enemies:enemies.map((u,i)=>({...u,x:i?11:2,y:i?10-i:1,patrolOrigin:{x:i?11:2,y:i?10-i:1}})),seed:45});
  return {...saved(sync({campaign,battle})),target:battle.units.find(u=>u.side==='enemy').id};
 }

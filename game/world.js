@@ -61,6 +61,9 @@ export function enterSector(request,previous=null,{placement=false}={}){
  });
  // Deployment intent does not establish contact. Resolve sight only after final placement.
  let state=createBattle([...map.squad,...(map.garrison??[]),...(map.missionAllies??[])],{...map,exploration:true,deferContact:true});
+ // Retained garrisons also start a new encounter clock. Their wounds and gear
+ // persist, but remembered targets and reaction counters belong to the old visit.
+ for(const unit of state.units)clearEncounter(unit);
  for(const field of ['upperSurfaces','climbLinks'])if(map[field]!==undefined)state[field]=structuredClone(map[field]);
  if(previous){
    for(const unit of state.units.filter(u=>u.side==='player'&&u.hp>0)){const old=previous.units.find(u=>u.id===unit.id&&u.side==='player');for(const key of ['practiceTiles','ridingPracticeTiles'])if(old?.[key])unit[key]=structuredClone(old[key]);}

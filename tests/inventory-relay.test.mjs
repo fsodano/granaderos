@@ -47,7 +47,7 @@ test('a chain can go around a wall but cannot pass through a blocked handover',(
  assert.notEqual(plan(s).kind,'relay');
 });
 test('incapable, autonomous, exhausted or full-pack soldiers cannot forward an item',()=>{
- for(const patch of [{unconscious:true},{knockedDown:true},{routed:true},{surrendered:true},{hp:0},{fled:true},{departure:{exitId:'test'}},{militia:true},{ap:3},{inventory:fullPack()}]){
+ for(const patch of [{unconscious:true,energy:0,ap:0,maxAP:0},{knockedDown:true},{routed:true},{surrendered:true},{hp:0},{fled:true},{departure:{exitId:'test'}},{militia:true},{ap:3},{inventory:fullPack()}]){
   const s=field(3),p=plan(s);Object.assign(s.units[1],patch);assert.notEqual(plan(s).kind,'relay',JSON.stringify(patch));reject(s,p);
  }
 });

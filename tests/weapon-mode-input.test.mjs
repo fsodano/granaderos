@@ -143,6 +143,6 @@ test('mounted reaction-cancelled approach never plays a strike after the reached
 test('mounted close-combat targeting retains civilian conversation without an attack',async t=>{
  const c=await controller(t,variants[0][1],{npc:true});await c.key('b');await c.key('f');const before=structuredClone(c.battle()),count=c.commits.length;
  await c.rightClick('civilian');assert.equal(c.scene().props.mode,'useItem');assert.equal(c.scene().props.aim,0);
- const sceneTree=componentTree(TacticalScene,c.scene().props),talk=nodes(sceneTree).find(node=>node.type==='rect'&&node.props['aria-label']==='Hablar con Paisano');assert.ok(talk,'a civilian keeps its conversation affordance');
+ const sceneTree=componentTree(TacticalScene,c.scene().props),talk=nodes(sceneTree).find(node=>node.type==='rect'&&node.props['aria-label']?.startsWith('Hablar con Paisano ·'));assert.ok(talk,'a civilian keeps its conversation affordance');
  await c.mounted.act(async()=>talk.props.onClick({}));assert.equal(c.find(JA2Conversation)?.props.npc.id,'civilian');assert.equal(c.commits.length,count);assert.deepEqual(c.battle(),before);
 });

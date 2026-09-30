@@ -12,7 +12,7 @@ import {enterSector} from '../game/world.js';
 import {actBattle,endTurn,reloadPlan,getReachable,bladeFor,weaponFor,actionCosts,hasFirearm,shotChance,teamCanSee} from '../game/tactical.js';
 const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y),live=u=>u.hp>0&&!u.routed&&!u.unconscious;
 const clearOfCivilians=(b,u,t)=>{const dx=t.x-u.x,dy=t.y-u.y,length=dx*dx+dy*dy;return !b.npcs.some(n=>{if(n.hp<=0||!teamCanSee(b,'player',n))return false;const f=((n.x-u.x)*dx+(n.y-u.y)*dy)/length;return f>0&&f<1&&Math.hypot(n.x-u.x-f*dx,n.y-u.y-f*dy)<.8;});};
-export function fight(request,previous=null,{scoutCostWeight=.1,avoidCivilians=false,holdPosition=[]}={}){let b=enterSector(request,previous),actions=0;const orders=[];let known=[];
+export function fight(request,previous=null,{scoutCostWeight=.1,avoidCivilians=false,holdPosition=[],fallbackOrders=false}={}){let b=enterSector(request,previous),actions=0;const orders=[];let known=[];
 for(let round=0;round<80&&b.status==='active';round++){
  for(const id of b.units.filter(u=>u.side==='player').map(u=>u.id)){
   const visited=new Set();
@@ -39,7 +39,7 @@ for(let round=0;round<80&&b.status==='active';round++){
    const currentScore=visible.length?Math.max(...visible.map(t=>shotChance(b,u,t,2)))*.7+(b.tiles.find(t=>t.x===u.x&&t.y===u.y)?.cover??0)*.7-Math.max(0,5-currentDistance)*12:-currentDistance;
    if(scored[0]&&scored[0].score>currentScore+2)opts.push({type:'move',x:scored[0].p.x,y:scored[0].p.y});
    if(hasFirearm(u)&&!u.loaded&&u.ammo)opts.push({type:'reload'});
-   let done=false;for(const a of opts){const next=actBattle(b,{...a,unitId:id});if(!next.lastError){b=next;orders.push({...a,unitId:id});actions++;done=true;break;}}if(!done){const fallback=automaticOrder(b,u),target=fallback?.targetId&&b.units.find(t=>t.id===fallback.targetId);if(fallback&&!(holdPosition.includes(u.id)&&['move','charge','climb','exit'].includes(fallback.type))&&!(avoidCivilians&&fallback.type==='fire'&&target&&!clearOfCivilians(b,u,target))){const next=actBattle(b,{...fallback,unitId:id});if(!next.lastError){b=next;orders.push({...fallback,unitId:id});actions++;done=true;}}}if(!done)break;
+   let done=false;for(const a of opts){const next=actBattle(b,{...a,unitId:id});if(!next.lastError){b=next;orders.push({...a,unitId:id});actions++;done=true;break;}}if(!done&&fallbackOrders){const fallback=automaticOrder(b,u),target=fallback?.targetId&&b.units.find(t=>t.id===fallback.targetId);if(fallback&&!(holdPosition.includes(u.id)&&['move','charge','climb','exit'].includes(fallback.type))&&!(avoidCivilians&&fallback.type==='fire'&&target&&!clearOfCivilians(b,u,target))){const next=actBattle(b,{...fallback,unitId:id});if(!next.lastError){b=next;orders.push({...fallback,unitId:id});actions++;done=true;}}}if(!done)break;
   }
  }
  if(b.status==='active'){b=endTurn(b);orders.push({type:'endTurn'});}
