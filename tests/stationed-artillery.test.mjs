@@ -6,7 +6,7 @@ import {enterSector} from '../game/world.js';
 import {actBattle} from '../game/tactical.js';
 import {order,visit,leave,saved,sync} from './local-contract-fixture.mjs';
 import {issuedBattery,wonBattery,fireStationed,wakeBatteryCrew} from './stationed-artillery-fixture.mjs';
-import {fight} from './cuyo-route-driver.mjs';
+import {fight} from './battery-field-driver.mjs';
 import {secondaryRetreat} from './secondary-loot-fixture.mjs';
 import {advanceCampaignHours} from './campaign-wait-fixture.mjs';
 import {validateBattleSnapshot} from '../game/validate-battle.js';

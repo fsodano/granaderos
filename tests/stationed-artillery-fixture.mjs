@@ -6,7 +6,7 @@ import {actBattle,getReachable} from '../game/tactical.js';
 import {advanceCampaignHours} from './campaign-wait-fixture.mjs';
 import {needsCollapseRecovery} from '../game/fatigue.js';
 import {tooTiredToMarch} from '../game/march-fatigue.js';
-import {fight} from './cuyo-route-driver.mjs';
+import {fight} from './battery-field-driver.mjs';
 import {order,saved,sync,leave} from './local-contract-fixture.mjs';
 export function issuedBattery(content){
  const d=content?structuredClone(content):defaultContentPackage();d.rules.startingTreasury=10000;d.startingTerritory.buenos_aires={owner:'patriot',loyalty:65};

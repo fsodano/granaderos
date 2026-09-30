@@ -1,3 +1,6 @@
+import {travelLegHours} from '../game/squad-travel.js';
+import {finishReloadsBeforeMarch} from './pre-march-reload.mjs';
+import {advanceCampaignHours} from './campaign-wait-fixture.mjs';
 import {equipOpeningRifles} from './opening-equipment.mjs';
 import {approachNPC} from './approach-npc.mjs';
 import {firstAidPlan} from '../game/first-aid.js';
@@ -46,8 +49,14 @@ export function freshCoastalRoute(kind,{onCheckpoint,onReplayFailure}={}){
  s=saved({campaign:order(s,{type:'wait',hours:6})}).campaign;
  assert.ok(first.every(id=>s.recruited.includes(id)&&s.contracts[id].started===6));notes.push({stage:'ready',hour:s.hour,funds:s.resources.treasury,squad:[...s.squad]});
  for(const sector of ['buenos_aires','san_nicolas','san_lorenzo']){
+  if(kind==='local'&&sector==='san_nicolas'){
+   // The twelve-hour approach must arrive in daylight. The small local force
+   // cannot scout this town as if night visibility were the daytime range.
+   const wait=(12-travelLegHours(s.location,sector)-s.hour%24+48)%24;if(wait)s=advanceCampaignHours(s,wait);
+  }
+  if(kind==='local'&&sector!=='buenos_aires')s=finishReloadsBeforeMarch(s);
   s=order(s,{type:'attack',sector});assert.ok(s.pendingBattle);const request={...s.pendingBattle,hour:s.hour,secondOfHour:s.secondOfHour??0},previous=s.sectorStates[sector];
-  const {battle,orders,actions}=cautiousFight(request,previous,{scoutCostWeight:.01,avoidCivilians:true,fallbackOrders:true,holdPosition:sector==='san_lorenzo'?['57']:[]});assert.equal(battle.status,'victory',`${kind}: ${sector}; ${JSON.stringify(battle.units.filter(u=>u.hp>0&&!u.routed&&!u.unconscious).map(({id,side,x,y,hp,energy,loaded,ammo})=>({id,side,x,y,hp,energy,loaded,ammo})))}`);
+  const {battle,orders,actions}=cautiousFight(request,previous,{scoutCostWeight:.01,avoidCivilians:true,fallbackOrders:true,holdPosition:sector==='san_lorenzo'?(kind==='local'?['10','57']:['57']):[]});assert.equal(battle.status,'victory',`${kind}: ${sector}; ${JSON.stringify(battle.units.filter(u=>u.hp>0&&!u.routed&&!u.unconscious).map(({id,side,x,y,hp,energy,loaded,ammo})=>({id,side,x,y,hp,energy,loaded,ammo})))}`);
   // Replay every legal order with the normal campaign clock. Reload halfway
   // through the real engagement, then verify its deterministic final state.
   let p={campaign:s,battle:enterSector(request,previous)};

@@ -6,7 +6,8 @@
 // Reserve AP for fire, use affordable aimed fire, treat bleeding and search past cleared
 // remembered positions. avoidCivilians filters shots through visible residents;
 // holdPosition keeps selected actors at their actual entry cells. They can still
-// fire, reload and bandage, and retain the same risks and costs.
+// fire, reload and bandage, and retain the same risks and costs. When only
+// reserves remain, they must advance; they cannot keep each other waiting.
 import {automaticOrder} from '../game/autonomous-orders.js';
 import {enterSector} from '../game/world.js';
 import {actBattle,endTurn,reloadPlan,getReachable,bladeFor,weaponFor,actionCosts,hasFirearm,shotChance,teamCanSee,interruptAvailable,firearmShotOptions,stanceCost} from '../game/tactical.js';
@@ -23,7 +24,7 @@ for(let window=0;window<600&&b.turn<=80&&b.status==='active';window++){
   let acted=false;
   for(const id of ids){
    const u=b.units.find(u=>u.id===id);if(b.status!=='active'||!live(u)||!interruptAvailable(b,u)||u.ap<6)continue;const visited=visitedByActor.get(id);visited.add(spaceKey(u));
-   const hold=holdPosition.includes(u.id)&&b.units.some(other=>other.id!==u.id&&other.side==='player'&&live(other)&&!other.departure&&!other.surrendered);
+   const hold=holdPosition.includes(u.id)&&b.units.some(other=>other.id!==u.id&&!holdPosition.includes(other.id)&&other.side==='player'&&live(other)&&!other.departure&&!other.surrendered);
    const visible=b.units.filter(t=>t.side==='enemy'&&live(t)&&teamCanSee(b,'player',t));if(visible.length)known=visible.map(spacePoint);if(!visible.length&&known.every(p=>teamCanSee(b,'player',p)))known=[];const opts=[];
    if(u.medkits&&u.bleeding&&u.hp<u.maxHp-10)opts.push(u.activeSlot==='medical'?{type:'heal'}:{type:'weapon',slot:'medical'});
    else if(u.activeSlot==='medical')opts.push({type:'weapon',slot:'primary'});

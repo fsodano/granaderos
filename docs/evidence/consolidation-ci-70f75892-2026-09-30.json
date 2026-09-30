@@ -1,0 +1,463 @@
+{
+  "revision": "70f75892ae18f52dced45d871b968080c782b5ed",
+  "run": "https://github.com/fsodano/granaderos/actions/runs/36769694677",
+  "shards": [
+    {
+      "shard": 1,
+      "job": "110072636705",
+      "logSha256": "aca49c83a652faf0a8907550f87fc1c18b83359420b50a93746fdd652c7a80f7",
+      "tests": 1253,
+      "pass": 1229,
+      "fail": 19,
+      "cancelled": 0,
+      "skipped": 5
+    },
+    {
+      "shard": 2,
+      "job": "110072636881",
+      "logSha256": "5041faa7ba45eb0560817c0c07d806eb71bbf94a19c550c488284615400b71cb",
+      "tests": 947,
+      "pass": 929,
+      "fail": 18,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    {
+      "shard": 3,
+      "job": "110072636794",
+      "logSha256": "d9059e3da0b4bf9a7e86f84797b26ba170736803690a6738fa35622fe5dbe19c",
+      "tests": 1042,
+      "pass": 1028,
+      "fail": 14,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    {
+      "shard": 4,
+      "job": "110072636708",
+      "logSha256": "ddf1da79ac7368694cd446417b89437a160c56c38ba14f00ab0e865b6079a41a",
+      "tests": 926,
+      "pass": 919,
+      "fail": 7,
+      "cancelled": 0,
+      "skipped": 0
+    }
+  ],
+  "totals": {
+    "tests": 4168,
+    "pass": 4105,
+    "fail": 58,
+    "cancelled": 0,
+    "skipped": 5
+  },
+  "web": "passed",
+  "failures": [
+    {
+      "shard": 1,
+      "number": 38,
+      "name": "the mounted depot sends its actual stored gun back to the front and saves one finite shipment",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 10136.365654\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/artillery-depot-transport-render.test.mjs:7:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + 'defeat'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'defeat'\n  operator: 'strictEqual'\n  stack: |-\n    wonBattery (file:///home/runner/work/granaderos/granaderos/tests/stationed-artillery-fixture.mjs:26:165)\n    fieldGun (file:///home/runner/work/granaderos/granaderos/tests/artillery-transport-fixture.mjs:7:8)\n    homeDepotGun (file:///home/runner/work/granaderos/granaderos/tests/artillery-depot-fixture.mjs:9:8)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/artillery-depot-transport-render.test.mjs:8:38)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.start (node:internal/test_runner/test:944:17)\n    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)\n  ..."
+    },
+    {
+      "shard": 1,
+      "number": 61,
+      "name": "an actually purchased and fired gun travels once, arrives in a local depot and redeploys without fresh ammunition",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 10439.677988\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/artillery-transport.test.mjs:17:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + 'defeat'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'defeat'\n  operator: 'strictEqual'\n  stack: |-\n    wonBattery (file:///home/runner/work/granaderos/granaderos/tests/stationed-artillery-fixture.mjs:26:165)\n    fieldGun (file:///home/runner/work/granaderos/granaderos/tests/artillery-transport-fixture.mjs:7:8)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/artillery-transport.test.mjs:18:8)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.start (node:internal/test_runner/test:944:17)\n    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)\n  ..."
+    },
+    {
+      "shard": 1,
+      "number": 62,
+      "name": "a prepared interruption keeps the exact shipment until control returns and delivery cannot replay",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 9281.33987\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/artillery-transport.test.mjs:25:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + 'defeat'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'defeat'\n  operator: 'strictEqual'\n  stack: |-\n    wonBattery (file:///home/runner/work/granaderos/granaderos/tests/stationed-artillery-fixture.mjs:26:165)\n    fieldGun (file:///home/runner/work/granaderos/granaderos/tests/artillery-transport-fixture.mjs:7:8)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/artillery-transport.test.mjs:26:13)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.processPendingSubtests (node:internal/test_runner/test:744:18)\n    Test.postRun (node:internal/test_runner/test:1173:19)\n    Test.run (node:internal/test_runner/test:1101:12)\n    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)\n  ..."
+    },
+    {
+      "shard": 1,
+      "number": 63,
+      "name": "explicit empty, stale remote and duplicate depot selections cannot create or borrow a transported gun",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 9128.029022\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/artillery-transport.test.mjs:30:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + 'defeat'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'defeat'\n  operator: 'strictEqual'\n  stack: |-\n    wonBattery (file:///home/runner/work/granaderos/granaderos/tests/stationed-artillery-fixture.mjs:26:165)\n    fieldGun (file:///home/runner/work/granaderos/granaderos/tests/artillery-transport-fixture.mjs:7:8)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/artillery-transport.test.mjs:31:34)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.processPendingSubtests (node:internal/test_runner/test:744:18)\n    Test.postRun (node:internal/test_runner/test:1173:19)\n    Test.run (node:internal/test_runner/test:1101:12)\n    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n  ..."
+    },
+    {
+      "shard": 1,
+      "number": 64,
+      "name": "prepared crew, control, hostile, route and mode boundaries reject atomically",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 9227.234235\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/artillery-transport.test.mjs:34:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + 'defeat'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'defeat'\n  operator: 'strictEqual'\n  stack: |-\n    wonBattery (file:///home/runner/work/granaderos/granaderos/tests/stationed-artillery-fixture.mjs:26:165)\n    fieldGun (file:///home/runner/work/granaderos/granaderos/tests/artillery-transport-fixture.mjs:7:8)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/artillery-transport.test.mjs:35:13)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.processPendingSubtests (node:internal/test_runner/test:744:18)\n    Test.postRun (node:internal/test_runner/test:1173:19)\n    Test.run (node:internal/test_runner/test:1101:12)\n    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n  ..."
+    },
+    {
+      "shard": 1,
+      "number": 65,
+      "name": "a paid flotilla takes the coastal duration and a prepared blockade delays the same saved gun",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 10200.705306\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/artillery-transport.test.mjs:41:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + 'defeat'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'defeat'\n  operator: 'strictEqual'\n  stack: |-\n    wonBattery (file:///home/runner/work/granaderos/granaderos/tests/stationed-artillery-fixture.mjs:26:165)\n    fieldGun (file:///home/runner/work/granaderos/granaderos/tests/artillery-transport-fixture.mjs:7:8)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/artillery-transport.test.mjs:42:14)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.processPendingSubtests (node:internal/test_runner/test:744:18)\n    Test.postRun (node:internal/test_runner/test:1173:19)\n    Test.run (node:internal/test_runner/test:1101:12)\n    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n  ..."
+    },
+    {
+      "shard": 1,
+      "number": 66,
+      "name": "full saves reject malformed routes and duplicate gun ownership across fields, transfers and depots",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 9328.427111\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/artillery-transport.test.mjs:45:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + 'defeat'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'defeat'\n  operator: 'strictEqual'\n  stack: |-\n    wonBattery (file:///home/runner/work/granaderos/granaderos/tests/stationed-artillery-fixture.mjs:26:165)\n    fieldGun (file:///home/runner/work/granaderos/granaderos/tests/artillery-transport-fixture.mjs:7:8)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/artillery-transport.test.mjs:46:15)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.processPendingSubtests (node:internal/test_runner/test:744:18)\n    Test.postRun (node:internal/test_runner/test:1173:19)\n    Test.run (node:internal/test_runner/test:1101:12)\n    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n  ..."
+    },
+    {
+      "shard": 1,
+      "number": 67,
+      "name": "a declared unfinished-load boundary keeps exact work and facing through transport, save and redeployment",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 9759.265129\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/artillery-transport.test.mjs:53:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + 'defeat'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'defeat'\n  operator: 'strictEqual'\n  stack: |-\n    wonBattery (file:///home/runner/work/granaderos/granaderos/tests/stationed-artillery-fixture.mjs:26:165)\n    fieldGun (file:///home/runner/work/granaderos/granaderos/tests/artillery-transport-fixture.mjs:7:8)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/artillery-transport.test.mjs:55:8)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.processPendingSubtests (node:internal/test_runner/test:744:18)\n    Test.postRun (node:internal/test_runner/test:1173:19)\n    Test.run (node:internal/test_runner/test:1101:12)\n    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n  ..."
+    },
+    {
+      "shard": 1,
+      "number": 68,
+      "name": "declared destination threats and full depots delay arrival, and occupied depots cannot supply a battery",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 8991.08393\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/artillery-transport.test.mjs:60:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + 'defeat'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'defeat'\n  operator: 'strictEqual'\n  stack: |-\n    wonBattery (file:///home/runner/work/granaderos/granaderos/tests/stationed-artillery-fixture.mjs:26:165)\n    fieldGun (file:///home/runner/work/granaderos/granaderos/tests/artillery-transport-fixture.mjs:7:8)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/artillery-transport.test.mjs:61:21)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.processPendingSubtests (node:internal/test_runner/test:744:18)\n    Test.postRun (node:internal/test_runner/test:1173:19)\n    Test.run (node:internal/test_runner/test:1101:12)\n    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n  ..."
+    },
+    {
+      "shard": 1,
+      "number": 69,
+      "name": "prepared route geography and authored crew sizes constrain dispatch without changing the gun",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 9050.265797\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/artillery-transport.test.mjs:70:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + 'defeat'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'defeat'\n  operator: 'strictEqual'\n  stack: |-\n    wonBattery (file:///home/runner/work/granaderos/granaderos/tests/stationed-artillery-fixture.mjs:26:165)\n    fieldGun (file:///home/runner/work/granaderos/granaderos/tests/artillery-transport-fixture.mjs:7:8)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/artillery-transport.test.mjs:71:10)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.processPendingSubtests (node:internal/test_runner/test:744:18)\n    Test.postRun (node:internal/test_runner/test:1173:19)\n    Test.run (node:internal/test_runner/test:1101:12)\n    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n  ..."
+    },
+    {
+      "shard": 1,
+      "number": 70,
+      "name": "saved transit and depot pieces reject invalid facing before they can poison a later deployment",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 9638.742428\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/artillery-transport.test.mjs:78:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + 'defeat'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'defeat'\n  operator: 'strictEqual'\n  stack: |-\n    wonBattery (file:///home/runner/work/granaderos/granaderos/tests/stationed-artillery-fixture.mjs:26:165)\n    fieldGun (file:///home/runner/work/granaderos/granaderos/tests/artillery-transport-fixture.mjs:7:8)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/artillery-transport.test.mjs:79:21)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.processPendingSubtests (node:internal/test_runner/test:744:18)\n    Test.postRun (node:internal/test_runner/test:1173:19)\n    Test.run (node:internal/test_runner/test:1101:12)\n    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n  ..."
+    },
+    {
+      "shard": 1,
+      "number": 90,
+      "name": "actual paid and fired guns use pinned cart and flotilla rates and pay one dispatch fee only",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 10217.707698\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/authored-artillery-transport.test.mjs:21:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + 'defeat'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'defeat'\n  operator: 'strictEqual'\n  stack: |-\n    wonBattery (file:///home/runner/work/granaderos/granaderos/tests/stationed-artillery-fixture.mjs:26:165)\n    fieldGun (file:///home/runner/work/granaderos/granaderos/tests/artillery-transport-fixture.mjs:7:8)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/authored-artillery-transport.test.mjs:23:84)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.processPendingSubtests (node:internal/test_runner/test:744:18)\n    Test.postRun (node:internal/test_runner/test:1173:19)\n    Test.run (node:internal/test_runner/test:1101:12)\n    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)\n  ..."
+    },
+    {
+      "shard": 1,
+      "number": 91,
+      "name": "disabled transport, insufficient funds and repeated orders reject without moving a gun or charging twice",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 9149.130911\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/authored-artillery-transport.test.mjs:29:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + 'defeat'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'defeat'\n  operator: 'strictEqual'\n  stack: |-\n    wonBattery (file:///home/runner/work/granaderos/granaderos/tests/stationed-artillery-fixture.mjs:26:165)\n    fieldGun (file:///home/runner/work/granaderos/granaderos/tests/artillery-transport-fixture.mjs:7:8)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/authored-artillery-transport.test.mjs:30:17)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.processPendingSubtests (node:internal/test_runner/test:744:18)\n    Test.postRun (node:internal/test_runner/test:1173:19)\n    Test.run (node:internal/test_runner/test:1101:12)\n    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n  ..."
+    },
+    {
+      "shard": 1,
+      "number": 92,
+      "name": "a delayed paid shipment retains its authored schedule across full saves without another charge",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 9053.302697\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/authored-artillery-transport.test.mjs:35:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + 'defeat'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'defeat'\n  operator: 'strictEqual'\n  stack: |-\n    wonBattery (file:///home/runner/work/granaderos/granaderos/tests/stationed-artillery-fixture.mjs:26:165)\n    fieldGun (file:///home/runner/work/granaderos/granaderos/tests/artillery-transport-fixture.mjs:7:8)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/authored-artillery-transport.test.mjs:36:8)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.processPendingSubtests (node:internal/test_runner/test:744:18)\n    Test.postRun (node:internal/test_runner/test:1173:19)\n    Test.run (node:internal/test_runner/test:1101:12)\n    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n  ..."
+    },
+    {
+      "shard": 1,
+      "number": 623,
+      "name": "a fresh campaign prepares Cuyo with real battles, living roles, purchases, funding and physical late recruitment",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 115408.219041\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/fresh-cuyo-route.test.mjs:2:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    cordoba\n    + actual - expected\n    \n    + 'defeat'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'defeat'\n  operator: 'strictEqual'\n  stack: |-\n    freshNorthernRoute (file:///home/runner/work/granaderos/granaderos/tests/fresh-northern-fixture.mjs:24:95)\n    freshCuyoRoute (file:///home/runner/work/granaderos/granaderos/tests/fresh-cuyo-fixture.mjs:31:15)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/fresh-cuyo-route.test.mjs:3:27)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.start (node:internal/test_runner/test:944:17)\n    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)\n  ..."
+    },
+    {
+      "shard": 1,
+      "number": 2,
+      "name": "survivors recover with finite supplies and paid replacements capture C\u00f3rdoba",
+      "nested": true,
+      "diagnostic": "---\n      duration_ms: 9702.436929\n      type: 'test'\n      location: '/home/runner/work/granaderos/granaderos/tests/opening-playthrough.test.mjs:37:10'\n      failureType: 'testCodeFailure'\n      error: |-\n        {\"sector\":\"cordoba\",\"preparationSeconds\":3,\"startSeconds\":302689,\"elapsedSeconds\":87,\"status\":\"defeat\",\"turns\":9,\"actions\":91,\"units\":[{\"id\":\"110\",\"side\":\"player\",\"hp\":0,\"ammo\":7,\"loaded\":0,\"routed\":true},{\"id\":\"107\",\"side\":\"player\",\"hp\":1,\"ammo\":7,\"loaded\":1,\"routed\":false},{\"id\":\"120\",\"side\":\"player\",\"hp\":0,\"ammo\":6,\"loaded\":0,\"routed\":false},{\"id\":\"134\",\"side\":\"player\",\"hp\":8,\"ammo\":6,\"loaded\":1,\"routed\":false},{\"id\":\"136\",\"side\":\"player\",\"hp\":0,\"ammo\":8,\"loaded\":0,\"routed\":false},{\"id\":\"117\",\"side\":\"player\",\"hp\":6,\"ammo\":7,\"loaded\":0,\"routed\":false},{\"id\":\"enemy-0\",\"side\":\"enemy\",\"hp\":0,\"ammo\":12,\"loaded\":0,\"routed\":true},{\"id\":\"enemy-1\",\"side\":\"enemy\",\"hp\":19,\"ammo\":12,\"loaded\":0,\"routed\":true},{\"id\":\"enemy-2\",\"side\":\"enemy\",\"hp\":0,\"ammo\":11,\"loaded\":1,\"routed\":false},{\"id\":\"enemy-3\",\"side\":\"enemy\",\"hp\":100,\"ammo\":11,\"loaded\":1,\"routed\":false},{\"id\":\"enemy-4\",\"side\":\"enemy\",\"hp\":100,\"ammo\":12,\"loaded\":0,\"routed\":false},{\"id\":\"enemy-5\",\"side\":\"enemy\",\"hp\":0,\"ammo\":12,\"loaded\":1,\"routed\":false},{\"id\":\"enemy-6\",\"side\":\"enemy\",\"hp\":100,\"ammo\":12,\"loaded\":1,\"routed\":false},{\"id\":\"enemy-7\",\"side\":\"enemy\",\"hp\":100,\"ammo\":9,\"loaded\":1,\"routed\":false},{\"id\":\"enemy-8\",\"side\":\"enemy\",\"hp\":0,\"ammo\":10,\"loaded\":0,\"routed\":true},{\"id\":\"enemy-9\",\"side\":\"enemy\",\"hp\":0,\"ammo\":12,\"loaded\":1,\"routed\":false},{\"id\":\"enemy-10\",\"side\":\"enemy\",\"hp\":39,\"ammo\":12,\"loaded\":0,\"routed\":true}]}\n        + actual - expected\n        \n        + 'defeat'\n        - 'victory'\n        \n      code: 'ERR_ASSERTION'\n      name: 'AssertionError'\n      expected: 'victory'\n      actual: 'defeat'\n      operator: 'strictEqual'\n      stack: |-\n        fightNorthernSector (file:///home/runner/work/granaderos/granaderos/tests/northern-route.mjs:226:9)\n        TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/opening-playthrough.test.mjs:59:16)\n        Test.runInAsyncScope (node:async_hooks:214:14)\n        Test.run (node:internal/test_runner/test:1047:25)\n        Test.start (node:internal/test_runner/test:944:17)\n        TestContext.test (node:internal/test_runner/test:373:20)\n        TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/opening-playthrough.test.mjs:37:10)\n        async Test.run (node:internal/test_runner/test:1054:7)\n        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)\n      ..."
+    },
+    {
+      "shard": 1,
+      "number": 887,
+      "name": "established southern campaign reaches Yatasto through combat, defeat, rescue and paid recovery",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 26304.847978\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/opening-playthrough.test.mjs:17:1'\n  failureType: 'subtestsFailed'\n  error: '1 subtest failed'\n  code: 'ERR_TEST_FAILURE'\n  ..."
+    },
+    {
+      "shard": 1,
+      "number": 938,
+      "name": "paid relief starts at the real arrival edge, fights, releases prisoners and escorts them back with permanent losses",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 3141.468371\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/prisoner-rescue-route.test.mjs:5:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    the entire relief force must physically leave or fall\n    + actual - expected\n    \n    + 'defeat'\n    - 'retreat'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'retreat'\n  actual: 'defeat'\n  operator: 'strictEqual'\n  stack: |-\n    runPrisonerRescue (file:///home/runner/work/granaderos/granaderos/tests/prisoner-rescue-route.mjs:56:8)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/prisoner-rescue-route.test.mjs:6:57)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.start (node:internal/test_runner/test:944:17)\n    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)\n  ..."
+    },
+    {
+      "shard": 1,
+      "number": 1061,
+      "name": "mounted production armory shows the actual fired emplacement separately from unissued battery stock",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 10228.526837\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/stationed-artillery-render.test.mjs:8:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + 'defeat'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'defeat'\n  operator: 'strictEqual'\n  stack: |-\n    wonBattery (file:///home/runner/work/granaderos/granaderos/tests/stationed-artillery-fixture.mjs:26:165)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/stationed-artillery-render.test.mjs:9:30)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.start (node:internal/test_runner/test:944:17)\n    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)\n  ..."
+    },
+    {
+      "shard": 2,
+      "number": 41,
+      "name": "a paid local cohort operates a purchased retained gun and full campaign saves preserve both",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 13123.093239\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/artillery-autonomy.test.mjs:105:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + 'defeat'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'defeat'\n  operator: 'strictEqual'\n  stack: |-\n    wonBattery (file:///home/runner/work/granaderos/granaderos/tests/stationed-artillery-fixture.mjs:26:165)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/artillery-autonomy.test.mjs:109:8)\n    async Test.run (node:internal/test_runner/test:1054:7)\n    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n  ..."
+    },
+    {
+      "shard": 2,
+      "number": 44,
+      "name": "a purchased fired gun returns from the home depot to the front and enters actual combat without fresh ammunition",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 13274.538581\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/artillery-depot-transport.test.mjs:17:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + 'defeat'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'defeat'\n  operator: 'strictEqual'\n  stack: |-\n    wonBattery (file:///home/runner/work/granaderos/granaderos/tests/stationed-artillery-fixture.mjs:26:165)\n    fieldGun (file:///home/runner/work/granaderos/granaderos/tests/artillery-transport-fixture.mjs:7:8)\n    homeDepotGun (file:///home/runner/work/granaderos/granaderos/tests/artillery-depot-fixture.mjs:9:8)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/artillery-depot-transport.test.mjs:18:8)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.start (node:internal/test_runner/test:944:17)\n    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)\n  ..."
+    },
+    {
+      "shard": 2,
+      "number": 45,
+      "name": "a repurchased exact gun with declared unfinished loading can leave its workshop depot and redeploy elsewhere",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 12337.933368\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/artillery-depot-transport.test.mjs:22:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + 'defeat'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'defeat'\n  operator: 'strictEqual'\n  stack: |-\n    wonBattery (file:///home/runner/work/granaderos/granaderos/tests/stationed-artillery-fixture.mjs:26:165)\n    fieldGun (file:///home/runner/work/granaderos/granaderos/tests/artillery-transport-fixture.mjs:7:8)\n    depotTradeGun (file:///home/runner/work/granaderos/granaderos/tests/artillery-trading-fixture.mjs:13:212)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/artillery-depot-transport.test.mjs:23:8)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.processPendingSubtests (node:internal/test_runner/test:744:18)\n    Test.postRun (node:internal/test_runner/test:1173:19)\n    Test.run (node:internal/test_runner/test:1101:12)\n    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)\n  ..."
+    },
+    {
+      "shard": 2,
+      "number": 46,
+      "name": "depot forwarding charges its authored fee once and rejects wrong origin, stale identity and duplicated saved custody",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 12153.727787\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/artillery-depot-transport.test.mjs:26:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + 'defeat'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'defeat'\n  operator: 'strictEqual'\n  stack: |-\n    wonBattery (file:///home/runner/work/granaderos/granaderos/tests/stationed-artillery-fixture.mjs:26:165)\n    fieldGun (file:///home/runner/work/granaderos/granaderos/tests/artillery-transport-fixture.mjs:7:8)\n    homeDepotGun (file:///home/runner/work/granaderos/granaderos/tests/artillery-depot-fixture.mjs:9:8)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/artillery-depot-transport.test.mjs:27:119)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.processPendingSubtests (node:internal/test_runner/test:744:18)\n    Test.postRun (node:internal/test_runner/test:1173:19)\n    Test.run (node:internal/test_runner/test:1101:12)\n    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n  ..."
+    },
+    {
+      "shard": 2,
+      "number": 50,
+      "name": "mounted armory buys exactly one round for an actually depleted gun and the saved field crew loads it",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 13137.119531\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/artillery-supply-render.test.mjs:6:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + 'defeat'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'defeat'\n  operator: 'strictEqual'\n  stack: |-\n    wonBattery (file:///home/runner/work/granaderos/granaderos/tests/stationed-artillery-fixture.mjs:26:165)\n    emptyBattery (file:///home/runner/work/granaderos/granaderos/tests/artillery-supply-fixture.mjs:8:53)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/artillery-supply-render.test.mjs:7:38)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.start (node:internal/test_runner/test:944:17)\n    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)\n  ..."
+    },
+    {
+      "shard": 2,
+      "number": 51,
+      "name": "the mounted supply control displays retained loading work and does not complete it when adding reserve",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 12475.355544\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/artillery-supply-render.test.mjs:11:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + 'defeat'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'defeat'\n  operator: 'strictEqual'\n  stack: |-\n    wonBattery (file:///home/runner/work/granaderos/granaderos/tests/stationed-artillery-fixture.mjs:26:165)\n    emptyBattery (file:///home/runner/work/granaderos/granaderos/tests/artillery-supply-fixture.mjs:8:53)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/artillery-supply-render.test.mjs:14:10)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.processPendingSubtests (node:internal/test_runner/test:744:18)\n    Test.postRun (node:internal/test_runner/test:1173:19)\n    Test.run (node:internal/test_runner/test:1101:12)\n    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)\n  ..."
+    },
+    {
+      "shard": 2,
+      "number": 52,
+      "name": "mounted production commerce sells and repurchases the actual depot gun without replacing its partial load",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 13415.406191\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/artillery-trading-render.test.mjs:8:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + 'defeat'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'defeat'\n  operator: 'strictEqual'\n  stack: |-\n    wonBattery (file:///home/runner/work/granaderos/granaderos/tests/stationed-artillery-fixture.mjs:26:165)\n    fieldGun (file:///home/runner/work/granaderos/granaderos/tests/artillery-transport-fixture.mjs:7:8)\n    depotTradeGun (file:///home/runner/work/granaderos/granaderos/tests/artillery-trading-fixture.mjs:13:212)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/artillery-trading-render.test.mjs:9:10)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.start (node:internal/test_runner/test:944:17)\n    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)\n  ..."
+    },
+    {
+      "shard": 2,
+      "number": 53,
+      "name": "mounted finite merchant funds reject a sale without changing the gun or either balance",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 12435.17873\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/artillery-trading-render.test.mjs:14:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + 'defeat'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'defeat'\n  operator: 'strictEqual'\n  stack: |-\n    wonBattery (file:///home/runner/work/granaderos/granaderos/tests/stationed-artillery-fixture.mjs:26:165)\n    fieldGun (file:///home/runner/work/granaderos/granaderos/tests/artillery-transport-fixture.mjs:7:8)\n    depotTradeGun (file:///home/runner/work/granaderos/granaderos/tests/artillery-trading-fixture.mjs:13:212)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/artillery-trading-render.test.mjs:15:10)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.processPendingSubtests (node:internal/test_runner/test:744:18)\n    Test.postRun (node:internal/test_runner/test:1173:19)\n    Test.run (node:internal/test_runner/test:1101:12)\n    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)\n  ..."
+    },
+    {
+      "shard": 2,
+      "number": 54,
+      "name": "the mounted workshop displays and applies authored local percentages and its finite starting cash",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 12333.712903\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/artillery-trading-render.test.mjs:18:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + 'defeat'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'defeat'\n  operator: 'strictEqual'\n  stack: |-\n    wonBattery (file:///home/runner/work/granaderos/granaderos/tests/stationed-artillery-fixture.mjs:26:165)\n    fieldGun (file:///home/runner/work/granaderos/granaderos/tests/artillery-transport-fixture.mjs:7:8)\n    depotTradeGun (file:///home/runner/work/granaderos/granaderos/tests/artillery-trading-fixture.mjs:13:212)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/artillery-trading-render.test.mjs:19:354)\n    async Test.run (node:internal/test_runner/test:1054:7)\n    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n  ..."
+    },
+    {
+      "shard": 2,
+      "number": 441,
+      "name": "a Retiro-only campaign retains paid recovery and real losses through coordinated San Nicol\u00e1s, San Lorenzo, C\u00f3rdoba, Tucum\u00e1n and Salta victories through Yatasto, Mendoza funding and both mountain passes, Ensenada, naval recruitment, Santa Fe, Tucum\u00e1n and Salta recapture, Jujuy and Humahuaca",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 258431.82961\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/fresh-campaign-recovery.test.mjs:20:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    {\"sector\":\"cordoba\",\"preparationSeconds\":0,\"startSeconds\":1061201,\"elapsedSeconds\":132,\"status\":\"retreat\",\"turns\":21,\"actions\":203,\"units\":[{\"id\":\"139\",\"side\":\"player\",\"hp\":0,\"ammo\":10,\"loaded\":1,\"routed\":false},{\"id\":\"1000\",\"side\":\"player\",\"hp\":28,\"ammo\":5,\"loaded\":0,\"routed\":true},{\"id\":\"10\",\"side\":\"player\",\"hp\":0,\"ammo\":7,\"loaded\":0,\"routed\":true},{\"id\":\"4\",\"side\":\"player\",\"hp\":0,\"ammo\":11,\"loaded\":1,\"routed\":false},{\"id\":\"11\",\"side\":\"player\",\"hp\":0,\"ammo\":7,\"loaded\":0,\"routed\":true},{\"id\":\"101\",\"side\":\"player\",\"hp\":0,\"ammo\":8,\"loaded\":0,\"routed\":false},{\"id\":\"102\",\"side\":\"player\",\"hp\":0,\"ammo\":6,\"loaded\":0,\"routed\":false},{\"id\":\"108\",\"side\":\"player\",\"hp\":0,\"ammo\":8,\"loaded\":1,\"routed\":false},{\"id\":\"enemy-group-3-0\",\"side\":\"enemy\",\"hp\":100,\"ammo\":4,\"loaded\":1,\"routed\":false},{\"id\":\"enemy-group-3-1\",\"side\":\"enemy\",\"hp\":0,\"ammo\":2,\"loaded\":0,\"routed\":true},{\"id\":\"enemy-group-3-2\",\"side\":\"enemy\",\"hp\":0,\"ammo\":5,\"loaded\":1,\"routed\":false},{\"id\":\"enemy-group-3-3\",\"side\":\"enemy\",\"hp\":0,\"ammo\":5,\"loaded\":1,\"routed\":false},{\"id\":\"enemy-group-3-4\",\"side\":\"enemy\",\"hp\":0,\"ammo\":2,\"loaded\":0,\"routed\":true},{\"id\":\"enemy-group-3-5\",\"side\":\"enemy\",\"hp\":0,\"ammo\":5,\"loaded\":1,\"routed\":false},{\"id\":\"enemy-group-3-6\",\"side\":\"enemy\",\"hp\":100,\"ammo\":5,\"loaded\":1,\"routed\":false},{\"id\":\"enemy-group-3-7\",\"side\":\"enemy\",\"hp\":0,\"ammo\":5,\"loaded\":1,\"routed\":false},{\"id\":\"enemy-group-3-8\",\"side\":\"enemy\",\"hp\":36,\"ammo\":5,\"loaded\":0,\"routed\":true},{\"id\":\"enemy-group-3-9\",\"side\":\"enemy\",\"hp\":100,\"ammo\":4,\"loaded\":1,\"routed\":false},{\"id\":\"enemy-group-3-10\",\"side\":\"enemy\",\"hp\":100,\"ammo\":5,\"loaded\":1,\"routed\":false},{\"id\":\"enemy-group-3-11\",\"side\":\"enemy\",\"hp\":100,\"ammo\":3,\"loaded\":1,\"routed\":false},{\"id\":\"enemy-group-3-12\",\"side\":\"enemy\",\"hp\":100,\"ammo\":2,\"loaded\":1,\"routed\":false},{\"id\":\"110\",\"side\":\"player\",\"hp\":0,\"ammo\":6,\"loaded\":0,\"routed\":true},{\"id\":\"127\",\"side\":\"player\",\"hp\":0,\"ammo\":0,\"loaded\":0,\"routed\":false},{\"id\":\"117\",\"side\":\"player\",\"hp\":0,\"ammo\":9,\"loaded\":0,\"routed\":true},{\"id\":\"121\",\"side\":\"player\",\"hp\":0,\"ammo\":0,\"loaded\":0,\"routed\":true},{\"id\":\"129\",\"side\":\"player\",\"hp\":0,\"ammo\":0,\"loaded\":0,\"routed\":false},{\"id\":\"144\",\"side\":\"player\",\"hp\":0,\"ammo\":0,\"loaded\":0,\"routed\":true},{\"id\":\"124\",\"side\":\"player\",\"hp\":0,\"ammo\":0,\"loaded\":0,\"routed\":false},{\"id\":\"136\",\"side\":\"player\",\"hp\":0,\"ammo\":6,\"loaded\":1,\"routed\":false},{\"id\":\"134\",\"side\":\"player\",\"hp\":0,\"ammo\":3,\"loaded\":0,\"routed\":false},{\"id\":\"enemy-group-1-0\",\"side\":\"enemy\",\"hp\":0,\"ammo\":5,\"loaded\":0,\"routed\":false},{\"id\":\"enemy-group-1-1\",\"side\":\"enemy\",\"hp\":0,\"ammo\":5,\"loaded\":0,\"routed\":true},{\"id\":\"enemy-group-1-2\",\"side\":\"enemy\",\"hp\":0,\"ammo\":8,\"loaded\":0,\"routed\":true},{\"id\":\"enemy-group-1-3\",\"side\":\"enemy\",\"hp\":0,\"ammo\":0,\"loaded\":0,\"routed\":false},{\"id\":\"enemy-group-1-4\",\"side\":\"enemy\",\"hp\":0,\"ammo\":0,\"loaded\":0,\"routed\":true},{\"id\":\"enemy-group-1-6\",\"side\":\"enemy\",\"hp\":0,\"ammo\":0,\"loaded\":0,\"routed\":false},{\"id\":\"enemy-group-1-7\",\"side\":\"enemy\",\"hp\":0,\"ammo\":0,\"loaded\":0,\"routed\":false},{\"id\":\"enemy-group-1-8\",\"side\":\"enemy\",\"hp\":0,\"ammo\":0,\"loaded\":1,\"routed\":false},{\"id\":\"enemy-group-1-10\",\"side\":\"enemy\",\"hp\":0,\"ammo\":0,\"loaded\":0,\"routed\":true},{\"id\":\"116\",\"side\":\"player\",\"hp\":0,\"ammo\":0,\"loaded\":0,\"routed\":false},{\"id\":\"122\",\"side\":\"player\",\"hp\":0,\"ammo\":9,\"loaded\":0,\"routed\":false},{\"id\":\"107\",\"side\":\"player\",\"hp\":0,\"ammo\":8,\"loaded\":0,\"routed\":false},{\"id\":\"126\",\"side\":\"player\",\"hp\":0,\"ammo\":9,\"loaded\":1,\"routed\":false},{\"id\":\"enemy-0\",\"side\":\"enemy\",\"hp\":0,\"ammo\":12,\"loaded\":1,\"routed\":false},{\"id\":\"enemy-1\",\"side\":\"enemy\",\"hp\":0,\"ammo\":0,\"loaded\":1,\"routed\":false},{\"id\":\"enemy-2\",\"side\":\"enemy\",\"hp\":0,\"ammo\":0,\"loaded\":0,\"routed\":true},{\"id\":\"enemy-3\",\"side\":\"enemy\",\"hp\":0,\"ammo\":2,\"loaded\":0,\"routed\":true},{\"id\":\"enemy-4\",\"side\":\"enemy\",\"hp\":0,\"ammo\":12,\"loaded\":1,\"routed\":false},{\"id\":\"enemy-5\",\"side\":\"enemy\",\"hp\":0,\"ammo\":12,\"loaded\":1,\"routed\":false},{\"id\":\"enemy-6\",\"side\":\"enemy\",\"hp\":0,\"ammo\":0,\"loaded\":0,\"routed\":false},{\"id\":\"enemy-7\",\"side\":\"enemy\",\"hp\":0,\"ammo\":11,\"loaded\":0,\"routed\":true},{\"id\":\"enemy-8\",\"side\":\"enemy\",\"hp\":0,\"ammo\":0,\"loaded\":0,\"routed\":false},{\"id\":\"125\",\"side\":\"player\",\"hp\":0,\"ammo\":9,\"loaded\":0,\"routed\":true},{\"id\":\"103\",\"side\":\"player\",\"hp\":0,\"ammo\":8,\"loaded\":0,\"routed\":true}]}\n    + actual - expected\n    \n    + 'retreat'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'retreat'\n  operator: 'strictEqual'\n  stack: |-\n    fightNorthernSector (file:///home/runner/work/granaderos/granaderos/tests/northern-route.mjs:226:9)\n    order (file:///home/runner/work/granaderos/granaderos/tests/fresh-northern-recovery.mjs:120:6)\n    reuniteFreshNorthernSquad (file:///home/runner/work/granaderos/granaderos/tests/fresh-northern-recovery.mjs:202:2)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/fresh-campaign-recovery.test.mjs:123:17)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.start (node:internal/test_runner/test:944:17)\n    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)\n  ..."
+    },
+    {
+      "shard": 2,
+      "number": 442,
+      "name": "a fresh stock campaign wins all localities with actual combat and continues after saved victory and service expiry",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 139309.017165\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/fresh-ending-route.test.mjs:5:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    cordoba\n    + actual - expected\n    \n    + 'defeat'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'defeat'\n  operator: 'strictEqual'\n  stack: |-\n    freshNorthernRoute (file:///home/runner/work/granaderos/granaderos/tests/fresh-northern-fixture.mjs:24:95)\n    freshCuyoRoute (file:///home/runner/work/granaderos/granaderos/tests/fresh-cuyo-fixture.mjs:31:15)\n    freshHistoricalEnding (file:///home/runner/work/granaderos/granaderos/tests/fresh-ending-fixture.mjs:55:80)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/fresh-ending-route.test.mjs:6:29)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.start (node:internal/test_runner/test:944:17)\n    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)\n  ..."
+    },
+    {
+      "shard": 2,
+      "number": 791,
+      "name": "paid stock is issued once and real victory retains the same owned physical cannon",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 18180.320694\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/stationed-artillery.test.mjs:15:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + 'defeat'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'defeat'\n  operator: 'strictEqual'\n  stack: |-\n    wonBattery (file:///home/runner/work/granaderos/granaderos/tests/stationed-artillery-fixture.mjs:26:165)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/stationed-artillery.test.mjs:18:12)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.start (node:internal/test_runner/test:944:17)\n    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)\n  ..."
+    },
+    {
+      "shard": 2,
+      "number": 792,
+      "name": "actual firing, return, full saves and repeated visits retain the unloaded gun, finite reserve and full-map position",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 11711.489628\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/stationed-artillery.test.mjs:20:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + 'defeat'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'defeat'\n  operator: 'strictEqual'\n  stack: |-\n    wonBattery (file:///home/runner/work/granaderos/granaderos/tests/stationed-artillery-fixture.mjs:26:165)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/stationed-artillery.test.mjs:21:28)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.processPendingSubtests (node:internal/test_runner/test:744:18)\n    Test.postRun (node:internal/test_runner/test:1173:19)\n    Test.run (node:internal/test_runner/test:1101:12)\n    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)\n  ..."
+    },
+    {
+      "shard": 2,
+      "number": 794,
+      "name": "actual withdrawal leaves the issued gun to the occupation and a real return victory recaptures its exact reserve",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 18320.199009\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/stationed-artillery.test.mjs:32:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + 'defeat'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'defeat'\n  operator: 'strictEqual'\n  stack: |-\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/stationed-artillery.test.mjs:36:228)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.processPendingSubtests (node:internal/test_runner/test:744:18)\n    Test.postRun (node:internal/test_runner/test:1173:19)\n    Test.run (node:internal/test_runner/test:1101:12)\n    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n  ..."
+    },
+    {
+      "shard": 2,
+      "number": 795,
+      "name": "legacy repeated projections are reconciled against paid stock once and retain the latest actual load",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 12823.119296\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/stationed-artillery.test.mjs:39:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + 'defeat'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'defeat'\n  operator: 'strictEqual'\n  stack: |-\n    wonBattery (file:///home/runner/work/granaderos/granaderos/tests/stationed-artillery-fixture.mjs:26:165)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/stationed-artillery.test.mjs:40:43)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.processPendingSubtests (node:internal/test_runner/test:744:18)\n    Test.postRun (node:internal/test_runner/test:1173:19)\n    Test.run (node:internal/test_runner/test:1101:12)\n    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n  ..."
+    },
+    {
+      "shard": 2,
+      "number": 796,
+      "name": "an actual reload spends reserve once and an empty battery choice leaves that saved emplacement in place",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 11959.31511\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/stationed-artillery.test.mjs:45:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + 'defeat'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'defeat'\n  operator: 'strictEqual'\n  stack: |-\n    wonBattery (file:///home/runner/work/granaderos/granaderos/tests/stationed-artillery-fixture.mjs:26:165)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/stationed-artillery.test.mjs:46:28)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.processPendingSubtests (node:internal/test_runner/test:744:18)\n    Test.postRun (node:internal/test_runner/test:1173:19)\n    Test.run (node:internal/test_runner/test:1101:12)\n    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n  ..."
+    },
+    {
+      "shard": 2,
+      "number": 799,
+      "name": "current full saves reject duplicate physical ownership, missing receipts and invalid serials or tactical identities",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 12708.312346\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/stationed-artillery.test.mjs:63:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + 'defeat'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'defeat'\n  operator: 'strictEqual'\n  stack: |-\n    wonBattery (file:///home/runner/work/granaderos/granaderos/tests/stationed-artillery-fixture.mjs:26:165)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/stationed-artillery.test.mjs:64:12)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.processPendingSubtests (node:internal/test_runner/test:744:18)\n    Test.postRun (node:internal/test_runner/test:1173:19)\n    Test.run (node:internal/test_runner/test:1101:12)\n    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n  ..."
+    },
+    {
+      "shard": 2,
+      "number": 800,
+      "name": "the separate Yatasto conference does not copy stationed town artillery into its mission scene",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 12402.121588\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/stationed-artillery.test.mjs:71:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + 'defeat'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'defeat'\n  operator: 'strictEqual'\n  stack: |-\n    wonBattery (file:///home/runner/work/granaderos/granaderos/tests/stationed-artillery-fixture.mjs:26:165)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/stationed-artillery.test.mjs:74:34)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.processPendingSubtests (node:internal/test_runner/test:744:18)\n    Test.postRun (node:internal/test_runner/test:1173:19)\n    Test.run (node:internal/test_runner/test:1101:12)\n    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n  ..."
+    },
+    {
+      "shard": 3,
+      "number": 42,
+      "name": "an actual emplaced gun exhausts its issued ammunition through seven peaceful shots and six reloads with synchronized saves",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 9962.46198\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/artillery-crew-loading.test.mjs:57:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + 'defeat'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'defeat'\n  operator: 'strictEqual'\n  stack: |-\n    wonBattery (file:///home/runner/work/granaderos/granaderos/tests/stationed-artillery-fixture.mjs:26:165)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/artillery-crew-loading.test.mjs:58:14)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.processPendingSubtests (node:internal/test_runner/test:744:18)\n    Test.postRun (node:internal/test_runner/test:1173:19)\n    Test.run (node:internal/test_runner/test:1101:12)\n    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n  ..."
+    },
+    {
+      "shard": 3,
+      "number": 50,
+      "name": "a truly exhausted emplaced gun buys one paid reserve, preserves full saves and loads only through its ordinary crew order",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 10046.081535\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/artillery-supply.test.mjs:18:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + 'defeat'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'defeat'\n  operator: 'strictEqual'\n  stack: |-\n    wonBattery (file:///home/runner/work/granaderos/granaderos/tests/stationed-artillery-fixture.mjs:26:165)\n    emptyBattery (file:///home/runner/work/granaderos/granaderos/tests/artillery-supply-fixture.mjs:8:53)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/artillery-supply.test.mjs:19:8)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.processPendingSubtests (node:internal/test_runner/test:744:18)\n    Test.postRun (node:internal/test_runner/test:1173:19)\n    Test.run (node:internal/test_runner/test:1101:12)\n    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)\n  ..."
+    },
+    {
+      "shard": 3,
+      "number": 51,
+      "name": "supply is limited by the pinned reserve cap and rejected orders preserve finite money and gun state",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 9298.688201\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/artillery-supply.test.mjs:22:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + 'defeat'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'defeat'\n  operator: 'strictEqual'\n  stack: |-\n    wonBattery (file:///home/runner/work/granaderos/granaderos/tests/stationed-artillery-fixture.mjs:26:165)\n    emptyBattery (file:///home/runner/work/granaderos/granaderos/tests/artillery-supply-fixture.mjs:8:53)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/artillery-supply.test.mjs:23:8)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.processPendingSubtests (node:internal/test_runner/test:744:18)\n    Test.postRun (node:internal/test_runner/test:1173:19)\n    Test.run (node:internal/test_runner/test:1101:12)\n    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n  ..."
+    },
+    {
+      "shard": 3,
+      "number": 52,
+      "name": "a lower authored supply cap preserves the initial bundle and permits buying only after real consumption falls below it",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 8880.869082\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/artillery-supply.test.mjs:25:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + 'defeat'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'defeat'\n  operator: 'strictEqual'\n  stack: |-\n    wonBattery (file:///home/runner/work/granaderos/granaderos/tests/stationed-artillery-fixture.mjs:26:165)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/artillery-supply.test.mjs:26:103)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.processPendingSubtests (node:internal/test_runner/test:744:18)\n    Test.postRun (node:internal/test_runner/test:1173:19)\n    Test.run (node:internal/test_runner/test:1101:12)\n    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n  ..."
+    },
+    {
+      "shard": 3,
+      "number": 53,
+      "name": "authored prices, zero-price supply and disabled replenishment apply to actual paid and fired campaign pieces",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 8872.003907\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/artillery-supply.test.mjs:29:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + 'defeat'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'defeat'\n  operator: 'strictEqual'\n  stack: |-\n    wonBattery (file:///home/runner/work/granaderos/granaderos/tests/stationed-artillery-fixture.mjs:26:165)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/artillery-supply.test.mjs:30:223)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.processPendingSubtests (node:internal/test_runner/test:744:18)\n    Test.postRun (node:internal/test_runner/test:1173:19)\n    Test.run (node:internal/test_runner/test:1101:12)\n    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n  ..."
+    },
+    {
+      "shard": 3,
+      "number": 54,
+      "name": "remote, hostile, disconnected, busy, unavailable and unaffordable prepared boundaries reject without changing custody",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 8691.109999\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/artillery-supply.test.mjs:34:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + 'defeat'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'defeat'\n  operator: 'strictEqual'\n  stack: |-\n    wonBattery (file:///home/runner/work/granaderos/granaderos/tests/stationed-artillery-fixture.mjs:26:165)\n    emptyBattery (file:///home/runner/work/granaderos/granaderos/tests/artillery-supply-fixture.mjs:8:53)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/artillery-supply.test.mjs:35:13)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.processPendingSubtests (node:internal/test_runner/test:744:18)\n    Test.postRun (node:internal/test_runner/test:1173:19)\n    Test.run (node:internal/test_runner/test:1101:12)\n    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n  ..."
+    },
+    {
+      "shard": 3,
+      "number": 55,
+      "name": "finite supply preserves prepared unfinished loading and uses each configured model quote without altering other pieces",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 8706.609646\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/artillery-supply.test.mjs:41:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + 'defeat'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'defeat'\n  operator: 'strictEqual'\n  stack: |-\n    wonBattery (file:///home/runner/work/granaderos/granaderos/tests/stationed-artillery-fixture.mjs:26:165)\n    emptyBattery (file:///home/runner/work/granaderos/granaderos/tests/artillery-supply-fixture.mjs:8:53)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/artillery-supply.test.mjs:42:10)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.processPendingSubtests (node:internal/test_runner/test:744:18)\n    Test.postRun (node:internal/test_runner/test:1173:19)\n    Test.run (node:internal/test_runner/test:1101:12)\n    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n  ..."
+    },
+    {
+      "shard": 3,
+      "number": 56,
+      "name": "an actually fired and transported depot gun sells and returns with finite funds, identity and ammunition before a real attack",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 9806.660077\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/artillery-trading.test.mjs:17:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + 'defeat'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'defeat'\n  operator: 'strictEqual'\n  stack: |-\n    wonBattery (file:///home/runner/work/granaderos/granaderos/tests/stationed-artillery-fixture.mjs:26:165)\n    fieldGun (file:///home/runner/work/granaderos/granaderos/tests/artillery-transport-fixture.mjs:7:8)\n    depotTradeGun (file:///home/runner/work/granaderos/granaderos/tests/artillery-trading-fixture.mjs:13:212)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/artillery-trading.test.mjs:18:8)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.start (node:internal/test_runner/test:944:17)\n    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)\n  ..."
+    },
+    {
+      "shard": 3,
+      "number": 57,
+      "name": "a real configured workshop accepts its local fired emplacement, retaining declared unfinished work through repurchase",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 8808.386311\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/artillery-trading.test.mjs:25:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + 'defeat'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'defeat'\n  operator: 'strictEqual'\n  stack: |-\n    wonBattery (file:///home/runner/work/granaderos/granaderos/tests/stationed-artillery-fixture.mjs:26:165)\n    fieldGun (file:///home/runner/work/granaderos/granaderos/tests/artillery-transport-fixture.mjs:7:8)\n    fieldTradeGun (file:///home/runner/work/granaderos/granaderos/tests/artillery-trading-fixture.mjs:17:211)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/artillery-trading.test.mjs:26:8)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.processPendingSubtests (node:internal/test_runner/test:744:18)\n    Test.postRun (node:internal/test_runner/test:1173:19)\n    Test.run (node:internal/test_runner/test:1101:12)\n    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)\n  ..."
+    },
+    {
+      "shard": 3,
+      "number": 59,
+      "name": "prepared access, cash, crew and hostile boundaries reject trades without changing custody",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 8832.542813\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/artillery-trading.test.mjs:37:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + 'defeat'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'defeat'\n  operator: 'strictEqual'\n  stack: |-\n    wonBattery (file:///home/runner/work/granaderos/granaderos/tests/stationed-artillery-fixture.mjs:26:165)\n    fieldGun (file:///home/runner/work/granaderos/granaderos/tests/artillery-transport-fixture.mjs:7:8)\n    fieldTradeGun (file:///home/runner/work/granaderos/granaderos/tests/artillery-trading-fixture.mjs:17:211)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/artillery-trading.test.mjs:38:13)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.processPendingSubtests (node:internal/test_runner/test:744:18)\n    Test.postRun (node:internal/test_runner/test:1173:19)\n    Test.run (node:internal/test_runner/test:1101:12)\n    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n  ..."
+    },
+    {
+      "shard": 3,
+      "number": 60,
+      "name": "full saves reject invalid shop money, excessive stock, changed load and duplicated physical ownership",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 8705.448546\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/artillery-trading.test.mjs:45:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + 'defeat'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'defeat'\n  operator: 'strictEqual'\n  stack: |-\n    wonBattery (file:///home/runner/work/granaderos/granaderos/tests/stationed-artillery-fixture.mjs:26:165)\n    fieldGun (file:///home/runner/work/granaderos/granaderos/tests/artillery-transport-fixture.mjs:7:8)\n    depotTradeGun (file:///home/runner/work/granaderos/granaderos/tests/artillery-trading-fixture.mjs:13:212)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/artillery-trading.test.mjs:46:8)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.processPendingSubtests (node:internal/test_runner/test:744:18)\n    Test.postRun (node:internal/test_runner/test:1173:19)\n    Test.run (node:internal/test_runner/test:1101:12)\n    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n  ..."
+    },
+    {
+      "shard": 3,
+      "number": 61,
+      "name": "prepared store capacity, local buying rates and serial boundaries preserve finite inventory",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 9265.357833\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/artillery-trading.test.mjs:50:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + 'defeat'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'defeat'\n  operator: 'strictEqual'\n  stack: |-\n    wonBattery (file:///home/runner/work/granaderos/granaderos/tests/stationed-artillery-fixture.mjs:26:165)\n    fieldGun (file:///home/runner/work/granaderos/granaderos/tests/artillery-transport-fixture.mjs:7:8)\n    fieldTradeGun (file:///home/runner/work/granaderos/granaderos/tests/artillery-trading-fixture.mjs:17:211)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/artillery-trading.test.mjs:51:13)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.processPendingSubtests (node:internal/test_runner/test:744:18)\n    Test.postRun (node:internal/test_runner/test:1173:19)\n    Test.run (node:internal/test_runner/test:1101:12)\n    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n  ..."
+    },
+    {
+      "shard": 3,
+      "number": 420,
+      "name": "a fresh Retiro force reaches Yatasto through paid replacements and actual northern victories with saved replay",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 105728.886819\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/fresh-northern-route.test.mjs:5:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    cordoba\n    + actual - expected\n    \n    + 'defeat'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'defeat'\n  operator: 'strictEqual'\n  stack: |-\n    freshNorthernRoute (file:///home/runner/work/granaderos/granaderos/tests/fresh-northern-fixture.mjs:24:95)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/fresh-northern-route.test.mjs:6:25)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.start (node:internal/test_runner/test:944:17)\n    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)\n  ..."
+    },
+    {
+      "shard": 3,
+      "number": 450,
+      "name": "a fresh Mendoza victory cannot conceal the subsequent death of its required engineer",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 105221.363888\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/historical-loss.test.mjs:7:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    cordoba\n    + actual - expected\n    \n    + 'defeat'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'defeat'\n  operator: 'strictEqual'\n  stack: |-\n    freshNorthernRoute (file:///home/runner/work/granaderos/granaderos/tests/fresh-northern-fixture.mjs:24:95)\n    freshMendozaLoss (file:///home/runner/work/granaderos/granaderos/tests/historical-loss-fixture.mjs:11:8)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/historical-loss.test.mjs:8:39)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.start (node:internal/test_runner/test:944:17)\n    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)\n  ..."
+    },
+    {
+      "shard": 4,
+      "number": 31,
+      "name": "a real authored emplacement retains finite configured ammunition and names through shots, return and saved reentry",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 13611.120611\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/artillery-profiles.test.mjs:68:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + 'defeat'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'defeat'\n  operator: 'strictEqual'\n  stack: |-\n    wonBattery (file:///home/runner/work/granaderos/granaderos/tests/stationed-artillery-fixture.mjs:26:165)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/artillery-profiles.test.mjs:69:168)\n    async Test.run (node:internal/test_runner/test:1054:7)\n    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n  ..."
+    },
+    {
+      "shard": 4,
+      "number": 36,
+      "name": "mounted production armory sends one actual fired gun, rejects unavailable transport and displays finite saved cargo",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 14364.410105\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/artillery-transport-render.test.mjs:11:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + 'defeat'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'defeat'\n  operator: 'strictEqual'\n  stack: |-\n    wonBattery (file:///home/runner/work/granaderos/granaderos/tests/stationed-artillery-fixture.mjs:26:165)\n    fieldGun (file:///home/runner/work/granaderos/granaderos/tests/artillery-transport-fixture.mjs:7:8)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/artillery-transport-render.test.mjs:12:38)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.start (node:internal/test_runner/test:944:17)\n    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)\n  ..."
+    },
+    {
+      "shard": 4,
+      "number": 37,
+      "name": "mounted local depot preserves declared unfinished loading and selects its exact gun for a real attack",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 13099.619982\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/artillery-transport-render.test.mjs:21:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + 'defeat'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'defeat'\n  operator: 'strictEqual'\n  stack: |-\n    wonBattery (file:///home/runner/work/granaderos/granaderos/tests/stationed-artillery-fixture.mjs:26:165)\n    fieldGun (file:///home/runner/work/granaderos/granaderos/tests/artillery-transport-fixture.mjs:7:8)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/artillery-transport-render.test.mjs:22:8)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.processPendingSubtests (node:internal/test_runner/test:744:18)\n    Test.postRun (node:internal/test_runner/test:1173:19)\n    Test.run (node:internal/test_runner/test:1101:12)\n    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)\n  ..."
+    },
+    {
+      "shard": 4,
+      "number": 38,
+      "name": "the mounted armory quotes the authored transport duration and charges its displayed fee exactly once",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 12362.042841\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/artillery-transport-render.test.mjs:30:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + 'defeat'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'defeat'\n  operator: 'strictEqual'\n  stack: |-\n    wonBattery (file:///home/runner/work/granaderos/granaderos/tests/stationed-artillery-fixture.mjs:26:165)\n    fieldGun (file:///home/runner/work/granaderos/granaderos/tests/artillery-transport-fixture.mjs:7:8)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/artillery-transport-render.test.mjs:31:305)\n    async Test.run (node:internal/test_runner/test:1054:7)\n    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n  ..."
+    },
+    {
+      "shard": 4,
+      "number": 39,
+      "name": "the mounted fee rejection keeps the actual gun in place and spends no money",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 12205.221139\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/artillery-transport-render.test.mjs:35:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + 'defeat'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'defeat'\n  operator: 'strictEqual'\n  stack: |-\n    wonBattery (file:///home/runner/work/granaderos/granaderos/tests/stationed-artillery-fixture.mjs:26:165)\n    fieldGun (file:///home/runner/work/granaderos/granaderos/tests/artillery-transport-fixture.mjs:7:8)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/artillery-transport-render.test.mjs:36:297)\n    async Test.run (node:internal/test_runner/test:1054:7)\n    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n  ..."
+    },
+    {
+      "shard": 4,
+      "number": 58,
+      "name": "an actual fired depot gun trades at its authored local rate and saved workshop money never resets",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 13254.079085\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/authored-artillery-trading.test.mjs:21:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + 'defeat'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'defeat'\n  operator: 'strictEqual'\n  stack: |-\n    wonBattery (file:///home/runner/work/granaderos/granaderos/tests/stationed-artillery-fixture.mjs:26:165)\n    fieldGun (file:///home/runner/work/granaderos/granaderos/tests/artillery-transport-fixture.mjs:7:8)\n    depotTradeGun (file:///home/runner/work/granaderos/granaderos/tests/artillery-trading-fixture.mjs:13:212)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/authored-artillery-trading.test.mjs:22:109)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.processPendingSubtests (node:internal/test_runner/test:744:18)\n    Test.postRun (node:internal/test_runner/test:1173:19)\n    Test.run (node:internal/test_runner/test:1101:12)\n    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)\n  ..."
+    },
+    {
+      "shard": 4,
+      "number": 387,
+      "name": "a fresh free officer and local recruits complete the opening without bulletin hires, preserving paid recovery and permanent losses",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 41607.413705\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/fresh-coastal-route.test.mjs:13:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    local: san_nicolas; [{\"id\":\"enemy-0\",\"side\":\"enemy\",\"x\":47,\"y\":32,\"hp\":64,\"energy\":66,\"loaded\":1,\"ammo\":12},{\"id\":\"enemy-1\",\"side\":\"enemy\",\"x\":46,\"y\":32,\"hp\":100,\"energy\":75,\"loaded\":1,\"ammo\":12},{\"id\":\"enemy-2\",\"side\":\"enemy\",\"x\":45,\"y\":32,\"hp\":100,\"energy\":81,\"loaded\":1,\"ammo\":12},{\"id\":\"enemy-4\",\"side\":\"enemy\",\"x\":47,\"y\":34,\"hp\":100,\"energy\":72,\"loaded\":1,\"ammo\":12},{\"id\":\"enemy-5\",\"side\":\"enemy\",\"x\":48,\"y\":32,\"hp\":31,\"energy\":45,\"loaded\":1,\"ammo\":12}]\n    + actual - expected\n    \n    + 'defeat'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'defeat'\n  operator: 'strictEqual'\n  stack: |-\n    freshCoastalRoute (file:///home/runner/work/granaderos/granaderos/tests/fresh-coastal-fixture.mjs:50:180)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/fresh-coastal-route.test.mjs:14:27)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.processPendingSubtests (node:internal/test_runner/test:744:18)\n    Test.postRun (node:internal/test_runner/test:1173:19)\n    Test.run (node:internal/test_runner/test:1101:12)\n    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n  ..."
+    }
+  ],
+  "scope": "Complete GitHub CI at the pushed PR revision. Includes nested failures and downstream prerequisite skips. This is not passing integration acceptance."
+}
