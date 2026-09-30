@@ -1,3 +1,6 @@
+import {restForMarch} from './campaign-test-helpers.mjs';
+import {approachNPC} from './approach-npc.mjs';
+import {scriptedWithdrawal} from './scripted-battle-report.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign,rosterFor,civicStatus,recruitmentStatus} from '../game/campaign.js';
@@ -5,13 +8,13 @@ import {defaultContentPackage,validateContentPackage} from '../game/content-pack
 import {campaignContentReport} from '../game/campaign-content.js';
 import {operativeIdForCharacter} from '../game/content-character-ids.js';
 import {encountersFor,encounterContacts,encounterRequirements} from '../game/encounters.js';
-import {actBattle,createBattle,endTurn,getReachable} from '../game/tactical.js';
+import {actBattle,createBattle,endTurn} from '../game/tactical.js';
 import {enterSector} from '../game/world.js';
 import {secureArea} from './controlled-area-fixture.mjs';
 import {syncBattleTime} from '../game/time.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 const A='cell-27-27',B='cell-26-27';
-const order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,`${a.type}: ${n.lastError}`);return n;};
+const order=(s,a)=>{const n=dispatchCampaign(a.type==='travel'?restForMarch(s):s,a);assert.equal(n.lastError,null,`${a.type}: ${n.lastError}`);return n;};
 const save=(campaign,battle=null)=>decodeSave(encodeSave(campaign,battle));
 function authored({recruitable=true,mode='fixed',sectors=[A]}={}){
  const d=defaultContentPackage(),template=structuredClone(d.characters.find(c=>c.id==='person-100'));delete template.arrivalHours;
@@ -28,7 +31,7 @@ function ready(d=authored()){
 const visit=s=>{const campaign=order(s,{type:'visitSector'});return {campaign,battle:enterSector({...campaign.pendingBattle,hour:campaign.hour},campaign.sectorStates[campaign.location])};};
 const synced=p=>{const n=syncBattleTime(p.campaign,p.battle);assert.equal(n.error,null);return n;};
 function act(p,action){p.battle=actBattle(p.battle,{unitId:'110',...action});assert.equal(p.battle.lastError,null);return synced(p);}
-function approach(p){const n=resident(p.battle),spot=getReachable(p.battle,'110').find(t=>Math.abs(t.x-n.x)+Math.abs(t.y-n.y)===1);assert.ok(spot);return spot.cost?act(p,{type:'move',x:spot.x,y:spot.y}):synced(p);}
+function approach(p){return synced({...p,battle:approachNPC(p.battle,'110',resident(p.battle).id)});}
 const leave=p=>{p=synced(p);return order(p.campaign,{type:'leaveSector',battleId:p.campaign.pendingBattle.id,sectorState:p.battle,survivors:p.battle.units.filter(u=>u.side==='player')});};
 const talk=(p,approach='friendly')=>({type:'talkNPC',npcId:resident(p.battle).id,unitId:110,approach,sectorState:p.battle});
 function transfer(p){
@@ -47,18 +50,25 @@ test('new world identities are independent of bulletin candidates and cannot inh
  const wire=JSON.parse(encodeSave(s));wire.campaign.contentCampaign.adapter='character-weapons-v2';delete wire.campaign.contentPresence;assert.throws(()=>decodeSave(JSON.stringify(wire)),/habitantes nuevos/);
 });
 
-test('an authored greeting, portrait and health survive relocation, local recruitment and deployment without duplication',()=>{
+test('an authored resident keeps her greeting, portrait, wounds and refusal after harm and relocation',()=>{
  let p=approach(visit(ready(authored({mode:'daily',sectors:[A,B]})))),n=resident(p.battle),id=idFor(p.campaign);
  assert.equal(n.maxHp,75);assert.equal(n.hp,75);assert.equal(n.portraitId,'/art/avatar-woman-scout.webp');assert.equal(n.spriteAppearance,'woman-shawl');
  p.campaign=order(p.campaign,talk(p));assert.equal(p.campaign.lastConversation.text,'Conozco los caminos de la posta.');
- p=act(p,{type:'melee',targetId:n.id});p=act(p,{type:'heal',targetId:n.id});const hp=resident(p.battle).hp;assert.ok(hp>0&&hp<75);
+ p=act(p,{type:'melee',targetId:n.id});p=act(p,{type:'weapon',slot:'medical'});p=act(p,{type:'heal',targetId:n.id});const hp=resident(p.battle).hp;assert.ok(hp>0&&hp<75);
  p=save(p.campaign,p.battle);let s=leave(p),old=s.location;
  s=order(s,{type:'wait',hours:Math.ceil((s.contentPresence.nextDaily-s.contentPresence.minute)/60)});const at=s.contentPresence.people['alma-posta'].sector;assert.notEqual(at,old);assert.equal(s.sectorStates[old].npcs.length,0);
  assert.match(encounterContacts(s).find(n=>n.contentId==='alma-posta').locationLabel,/Último encuentro/);
- p=approach(visit(order(save(s).campaign,{type:'travel',sector:at})));assert.equal(resident(p.battle).hp,hp);
+ p=visit(order(save(s).campaign,{type:'travel',sector:at}));p=act(p,{type:'movement',movement:'run'});p=approach(p);assert.equal(resident(p.battle).hp,hp);
+ const before=structuredClone(p.campaign),rejected=dispatchCampaign(p.campaign,talk(p,'recruit'));
+ assert.match(rejected.lastError,/Me heriste/);assert.equal(rejected.resources.treasury,before.resources.treasury);assert.deepEqual(rejected.recruited,before.recruited);assert.deepEqual(rejected.contracts,before.contracts);
+ assert.equal(rejected.recruited.includes(id),false);assert.equal(resident(p.battle).hp,hp);assert.ok(save(rejected,p.battle));
+});
+
+test('an unharmed authored resident joins, deploys and returns without payment or duplicate presence',()=>{
+ let p=approach(visit(ready())),id=idFor(p.campaign),hp=resident(p.battle).hp,at=p.campaign.location;
  const cash=p.campaign.resources.treasury;p=transfer(p);assert.equal(p.campaign.resources.treasury,cash);assert.equal(p.campaign.contracts[id].kind,'patriot');assert.equal(p.campaign.contracts[id].expiresAt,null);
  assert.equal(p.battle.units.find(u=>u.id===String(id)).hp,hp);assert.equal(resident(p.battle),undefined);assert.equal(encountersFor(p.campaign,at).some(n=>n.operativeId===id),false);
- s=leave(p);p=visit(save(s).campaign);assert.equal(p.battle.units.find(u=>u.id===String(id)).hp,hp);assert.equal(resident(p.battle),undefined);assert.ok(save(p.campaign,p.battle));
+ const s=leave(p);p=visit(save(s).campaign);assert.equal(p.battle.units.find(u=>u.id===String(id)).hp,hp);assert.equal(resident(p.battle),undefined);assert.ok(save(p.campaign,p.battle));
 });
 
 test('a non-recruitable authored resident can converse and die but never join or reappear in another cell',()=>{
@@ -89,7 +99,7 @@ test('initial random locations stay pinned and missing placements produce no wor
 });
 
 test('authored resident saves reject forged identities, ledger names, locations and missing health records',()=>{
- let p=approach(visit(ready()));p.campaign=order(p.campaign,talk(p));p=act(p,{type:'melee',targetId:resident(p.battle).id});p=act(p,{type:'heal',targetId:resident(p.battle).id});
+ let p=approach(visit(ready()));p.campaign=order(p.campaign,talk(p));p=act(p,{type:'melee',targetId:resident(p.battle).id});p=act(p,{type:'weapon',slot:'medical'});p=act(p,{type:'heal',targetId:resident(p.battle).id});
  const wire=encodeSave(p.campaign,p.battle),key=`person-${idFor(p.campaign)}`;
  for(const mutate of [v=>v.battle.npcs[0].operativeId=3,v=>v.battle.npcs[0].contentId='person-3',v=>v.campaign.civilianState.people[key].npcId='unknown-person',v=>delete v.campaign.operativeState[idFor(v.campaign)],v=>v.campaign.conversations['unknown-person']={met:true,hour:0,lastApproach:'friendly'},v=>v.campaign.contentPresence.people['alma-posta'].sector=B]){const copy=JSON.parse(wire);mutate(copy);assert.throws(()=>decodeSave(JSON.stringify(copy)));}
 });
@@ -103,9 +113,12 @@ test('authored residents keep growth policy and later soldier health after retre
   s.operativeState[id].xp=95;s=save(s).campaign;secureArea(s,'buenos_aires');
   s=order(s,{type:'travel',sector:'retiro'});s=order(s,{type:'travel',sector:'buenos_aires'});s=order(s,{type:'attack',sector:'san_nicolas'});
   const request=s.pendingBattle;
-  let b=createBattle(request.squad.map(u=>({...u,x:1,y:u.id===id?1:6})),{width:12,height:8,id:request.id,sector:request.sector,npcs:request.npcs,seed:45,tiles:Array.from({length:96},(_,i)=>({x:i%12,y:Math.floor(i/12),type:'grass',blocked:false,cover:0})),enemies:[{id:'guard',x:7,y:1,weapon:1806,ammo:0,fatigue:100,marksmanship:100}]});
-  b=endTurn(b);assert.equal(b.lastError,null);const hurt=b.units.find(u=>u.id===String(id));assert.ok(hurt.hp>0&&hurt.hp<hurt.maxHp,JSON.stringify({hp:hurt.hp,log:b.log}));
-  p=synced({campaign:s,battle:b});s=order(p.campaign,{type:'battleResult',battleId:request.id,outcome:'retreat',sectorState:p.battle,survivors:p.battle.units.filter(u=>u.side==='player')});
+  // Keep the whole canonical force and isolate one actual shot at a prone
+  // resident. The gunner has a limited prepared action budget, not a new gun.
+  let b=createBattle(request.squad.map(u=>({...u,x:u.id===id?5:1,y:u.id===id?1:6,...(u.id===id?{stance:'prone',movementMode:'prone'}:{})})),{...request,width:12,height:8,seed:45,tiles:Array.from({length:96},(_,i)=>({x:i%12,y:Math.floor(i/12),type:Math.floor(i/12)===4?'wall':'grass',blocked:Math.floor(i/12)===4,blocksSight:Math.floor(i/12)===4,cover:0})),enemies:request.enemies.map((u,i)=>({...u,x:7,y:i%8,...(i?{hp:0,bleeding:0,bandaged:0}:{y:1,marksmanship:100})}))});
+  b.units.find(u=>u.side==='enemy'&&u.hp>0).ap=30;b=endTurn(b);assert.equal(b.lastError,null);const hurt=b.units.find(u=>u.id===String(id));assert.ok(hurt.hp>=15&&hurt.hp<hurt.maxHp,JSON.stringify({hp:hurt.hp,log:b.log}));
+  b=actBattle(b,{type:'weapon',unitId:String(id),slot:'medical'});assert.equal(b.lastError,null);b=actBattle(b,{type:'heal',unitId:String(id)});assert.equal(b.lastError,null);
+  p=synced({campaign:s,battle:scriptedWithdrawal(b)});s=order(p.campaign,{type:'battleResult',battleId:request.id,outcome:'retreat',sectorState:p.battle,survivors:p.battle.units.filter(u=>u.side==='player')});
   assert.equal(s.operativeState[id].xp,progression==='experience'?105:95);assert.equal(rosterFor(s).find(o=>o.id===id).maxHp,progression==='experience'?77:75);
   s=order(s,{type:'travel',sector:'retiro'});s=order(s,{type:'travel',sector:A});p=visit(save(s).campaign);
   const wounded=p.battle.units.find(u=>u.id===String(id));assert.ok(wounded.hp<wounded.maxHp);

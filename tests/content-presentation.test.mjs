@@ -1,3 +1,5 @@
+import {approachNPC} from './approach-npc.mjs';
+import {completeTestTravel} from './campaign-test-helpers.mjs';
 import {weaponMetadata} from '../game/weapon-definition.js';
 import {secureArea} from './controlled-area-fixture.mjs';
 import test from 'node:test';
@@ -7,7 +9,7 @@ import {initialCampaign,dispatchCampaign,rosterFor} from '../game/campaign.js';
 import {operativeIdForCharacter} from '../game/content-character-ids.js';
 import {characterProfile,speechFor,SPEECH_EVENTS} from '../game/characters.js';
 import {characterEventLines,withCharacterSpeech} from '../game/character-events.js';
-import {createBattle,actBattle,endTurn,getReachable} from '../game/tactical.js';
+import {createBattle,actBattle,endTurn} from '../game/tactical.js';
 import {enterSector} from '../game/world.js';
 import {syncBattleTime} from '../game/time.js';
 import {encodeSave,decodeSave} from '../game/save.js';
@@ -15,7 +17,7 @@ import {spriteAppearance} from '../game/sprite-appearances.js';
 import {sanLorenzoAlly,missionContacts} from '../game/missions.js';
 import {createContentTestRange} from '../game/content-test-range.js';
 
-const order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,`${a.type}: ${n.lastError}`);return n;};
+const order=(s,a)=>{const n=a.type==='travel'?completeTestTravel(s,a):dispatchCampaign(s,a);assert.equal(n.lastError,null,`${a.type}: ${n.lastError}`);return n;};
 const saved=(s,b=null)=>decodeSave(encodeSave(s,b));
 function definition(){
  const d=defaultContentPackage();const c={...structuredClone(d.characters.find(c=>c.id==='person-100')),id:'clara',name:'Clara del Río',nickname:'Clara',personality:'Paciente y resuelta.',spriteAppearance:'woman-scout',portrait:'/art/avatar-woman-civilian.webp',traits:[],arrivalHours:2};
@@ -46,10 +48,12 @@ test('actual tactical contact, wounds, exhaustion, clearance and death emit auth
  let after=actBattle(before,{type:'move',unitId:String(id),x:4,y:1});assert.equal(after.lastError,null);assert.ok(characterEventLines(before,after).some(l=>l.includes(lines.contact)));
  before=field(op,[{id:'guard',x:10,y:1,weapon:1806,blade:1811,bladeMetadata:weaponMetadata(defaultContentPackage().weapons.find(w=>w.id==='blade-1811')),ammo:0,fatigue:100,marksmanship:100}]);
  after=withCharacterSpeech(before,endTurn(before));assert.ok(after.units[0].hp<before.units[0].hp);assert.ok(after.log.some(l=>l.includes(lines.wounded)));
- for(let i=0;i<10&&after.units[0].hp>0;i++){before=after;after=withCharacterSpeech(before,endTurn(before));}
+ // A critical survivor has not died. Use a separate exposed, wounded actor
+ // to verify an actual fatal shot rather than advancing an already ended fight.
+ before=field({...op,hp:20},[{id:'guard',x:10,y:1,weapon:1806,ammo:0,fatigue:100,marksmanship:100}]);after=withCharacterSpeech(before,endTurn(before));
  assert.equal(after.units[0].hp,0);assert.equal(after.log.filter(l=>l.includes(lines.death)).length,1);
  before=field({...op,hp:41},[{id:'guard',x:2,y:1,weapon:1813,overwatch:false}]);after=endTurn(before);assert.ok(after.units[0].hp>0&&after.units[0].hp<15);assert.equal(after.units[0].unconscious,true);assert.ok(characterEventLines(before,after).some(l=>l.includes(lines.wounded)));assert.ok(!characterEventLines(before,after).some(l=>l.includes(lines.exhausted)));
- before=field({...op,energy:1},[],{exploration:true});after=actBattle(before,{type:'move',unitId:String(id),x:2,y:1});assert.equal(after.lastError,null);assert.ok(after.units[0].unconscious);assert.ok(characterEventLines(before,after).some(l=>l.includes(lines.exhausted)));
+ before=field({...op,energy:1},[{id:'guard',x:19,y:7,weapon:1813,overwatch:false}]);after=actBattle(before,{type:'move',unitId:String(id),x:2,y:1});assert.equal(after.lastError,null);assert.ok(after.units[0].unconscious);assert.ok(characterEventLines(before,after).some(l=>l.includes(lines.exhausted)));
  before=field(op,[{id:'guard',x:4,y:1,hp:20,weapon:1800,overwatch:false}]);after=actBattle(before,{type:'fire',unitId:String(id),targetId:'guard'});assert.equal(after.lastError,null);assert.equal(after.sectorCleared,true);assert.ok(characterEventLines(before,after).some(l=>l.includes(lines.cleared)));
  const silent={...op,storyProfile:{...op.storyProfile,speech:Object.fromEntries(SPEECH_EVENTS.map(event=>[event,'  ']))}};
  before=field(silent,[{id:'guard',x:4,y:1,hp:20,overwatch:false}]);after=actBattle(before,{type:'fire',unitId:String(id),targetId:'guard'});assert.equal(after.sectorCleared,true);assert.deepEqual(characterEventLines(before,after),[]);assert.deepEqual(withCharacterSpeech(before,after).log,after.log);
@@ -70,7 +74,7 @@ test('local contacts and the mission commander use authored presentation and kee
  Object.assign(commander,{spriteAppearance:'gaucho',personality:'Un mando de campaña.',speech:{...commander.speech,contact:'A sus puestos.'}});
  let {s,id}=hired(d);s=order(s,{type:'visitSector'});let b=enterSector(s.pendingBattle),npc=b.npcs.find(n=>n.operativeId===3);
  assert.equal(npc.name,c.name);assert.equal(spriteAppearance(npc,'civilian'),'woman-shawl');assert.equal(npc.storyProfile.personality,c.personality);
- b=actBattle(b,{type:'move',unitId:String(id),x:npc.x-1,y:npc.y});assert.equal(b.lastError,null);
+ b=approachNPC(b,String(id),npc.id);
  let pair=syncBattleTime(s,b);assert.equal(pair.error,null);
  s=order(pair.campaign,{type:'talkNPC',npcId:npc.id,unitId:id,approach:'recruit',sectorState:pair.battle});assert.ok(s.lastConversation.text.includes('Vamos juntos.'));assert.equal(s.lastConversation.speaker,c.name);
  assert.equal(s.pendingBattle.squad.find(o=>o.id===3).spriteAppearance,'woman-shawl');
@@ -98,9 +102,11 @@ test('an authored mission contact keeps its presentation through conversation, s
  s=order(s,{type:'travel',sector:'tucuman'});s=order(s,{type:'visitMission',mission:'yatasto'});
  let b=enterSector(s.pendingBattle),pair=saved(s,b),npc=pair.battle.npcs.find(n=>n.id==='yatasto-san-martin');
  assert.deepEqual(npc.abilities,['rapid_first_aid']);assert.equal(npc.name,c.name);assert.equal(npc.spriteAppearance,c.spriteAppearance);assert.equal(npc.storyProfile.personality,c.personality);assert.equal(npc.operativeId,undefined);
- s=pair.campaign;b=pair.battle;const spot=getReachable(b,String(id)).find(p=>Math.abs(p.x-npc.x)+Math.abs(p.y-npc.y)===1);assert.ok(spot);
- b=actBattle(b,{type:'move',unitId:String(id),x:spot.x,y:spot.y});assert.equal(b.lastError,null);pair=syncBattleTime(s,b);assert.equal(pair.error,null);
- s=order(pair.campaign,{type:'talkNPC',npcId:npc.id,unitId:id,approach:'friendly',sectorState:pair.battle});assert.equal(s.lastConversation.speaker,c.name);
+ // The commander responds after the actual report from Belgrano.
+ s=pair.campaign;b=approachNPC(pair.battle,String(id),'yatasto-belgrano');pair=syncBattleTime(s,b);assert.equal(pair.error,null);
+ s=order(pair.campaign,{type:'talkNPC',npcId:'yatasto-belgrano',unitId:id,approach:'mission',sectorState:pair.battle});
+ b=approachNPC(pair.battle,String(id),npc.id);pair=syncBattleTime(s,b);assert.equal(pair.error,null);
+ s=order(pair.campaign,{type:'talkNPC',npcId:npc.id,unitId:id,approach:'mission',sectorState:pair.battle});assert.equal(s.lastConversation.speaker,c.name);
  assert.ok(!s.lastConversation.options.includes('recruit'));assert.ok(saved(s,pair.battle));
  s=order(s,{type:'leaveSector',battleId:s.pendingBattle.id,sectorState:pair.battle,survivors:pair.battle.units.filter(u=>u.side==='player')});
  s=order(saved(s).campaign,{type:'visitMission',mission:'yatasto'});pair=saved(s,enterSector(s.pendingBattle,s.sceneStates.yatasto));
@@ -123,8 +129,7 @@ test('local recruits require a meeting in explicitly controlled territory',()=>{
   let {s,id}=hired(d);secureArea(s,'buenos_aires');
   assert.ok(dispatchCampaign(s,{type:'recruit',id:target}).lastError);
   if(s.location!==sector)s=order(s,{type:'travel',sector});s=order(s,{type:'visitSector'});let b=enterSector(s.pendingBattle);
-  const npc=b.npcs.find(n=>n.operativeId===target),spot=getReachable(b,String(id)).find(p=>Math.abs(p.x-npc.x)+Math.abs(p.y-npc.y)===1);assert.ok(spot);
-  b=actBattle(b,{type:'move',unitId:String(id),x:spot.x,y:spot.y});assert.equal(b.lastError,null);const pair=syncBattleTime(s,b);assert.equal(pair.error,null);
+  const npc=b.npcs.find(n=>n.operativeId===target);b=approachNPC(b,String(id),npc.id);const pair=syncBattleTime(s,b);assert.equal(pair.error,null);
   s=order(pair.campaign,{type:'talkNPC',npcId:npc.id,unitId:id,approach:'recruit',sectorState:pair.battle});assert.ok(s.recruited.includes(target));
   // Same physical NPC-to-soldier transition as the actual game screen.
   b=pair.battle;b.npcs=b.npcs.filter(n=>n.id!==npc.id);const record=s.pendingBattle.squad.find(o=>o.id===target);
