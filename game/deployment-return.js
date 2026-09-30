@@ -1,3 +1,4 @@
+import {completedTacticalVictory} from './battle-outcome.js';
 import {expandCellScene} from './cell-scene-storage.js';
 import {validWorldLocation,worldOwner,worldCell} from './world-cells.js';
 import {buildSectorMap} from './maps.js';
@@ -81,7 +82,7 @@ export function planDeploymentReturn(s,request,snapshot,outcome){
   if(outcome==='retreat')need(snapshot.status==='retreat'&&departed.length>0&&!players.some(fieldCapable),'La retirada necesita salidas físicas y el cierre del combate.');
   // A mission can fail after the field is won (San Martín's death). Its
   // terminal campaign outcome must not invent captors on a cleared field.
-  const cleared=snapshot.status==='victory'&&!snapshot.units.some(u=>u.side==='enemy'&&fieldCapable(u));
+  const cleared=completedTacticalVictory(snapshot);
   const friendly=outcome==='victory'||cleared||Boolean(request.exploration&&snapshot.status!=='defeat'&&!snapshot.units.some(u=>u.side==='enemy'&&fieldCapable(u)));
   const classify=(u,auxiliary=false)=>{
     const departure=departureFor(s,request,snapshot,u),at=departure?.destination??sourceSector;
