@@ -1,3 +1,4 @@
+import {supplyRouteAmmunition} from './route-ammunition.mjs';
 import {finishReloadsBeforeMarch} from './pre-march-reload.mjs';
 import {fightNorthernSector} from './northern-route.mjs';
 import {cautiousCombatOrder} from './cautious-driver.mjs';
@@ -6,9 +7,8 @@ import {sellSurplusEquipment} from './surplus-equipment-route.mjs';
 import {enterSector} from '../game/world.js';
 import {equipOpeningRifles} from './opening-equipment.mjs';
 import assert from 'node:assert/strict';
-import {initialCampaign,dispatchCampaign,rosterFor} from '../game/campaign.js';
+import {initialCampaign,dispatchCampaign,rosterFor,deploymentCost} from '../game/campaign.js';
 import {weaponAmmoType,availableAmmunition} from '../game/ammunition-types.js';
-import {ammoResourceKey} from '../game/campaign-ammunition.js';
 import {fight} from './opening-driver.mjs';
 import {hiredAssaultOrder} from './hired-assault-driver.mjs';
 import {syncBattleTime} from '../game/time.js';
@@ -28,8 +28,7 @@ export function beginFreshCampaign({seed=8,report=()=>{}}={}){
  assert.deepEqual(Object.keys(campaign.sectors).filter(id=>campaign.sectors[id].owner==='patriot'),['retiro']);
  for(const id of [110,114,115,123,137,107])order({type:'recruitCivic',id,term:'week'});
  order({type:'purchaseMedicalSupplies',operativeId:107,quantity:20});
- const needed={};for(const op of rosterFor(campaign).filter(op=>campaign.squad.includes(op.id))){const type=weaponAmmoType(op.weapon);needed[type]=(needed[type]??0)+10;}
- for(const [ammoType,count] of Object.entries(needed)){const quantity=Math.max(0,count-campaign.resources[ammoResourceKey(ammoType)]);if(quantity)order({type:'purchaseAmmunition',ammoType,quantity});}
+ campaign=supplyRouteAmmunition(campaign,campaign.squad).campaign;
  order({type:'attack',sector:'buenos_aires'});
  const request=structuredClone(campaign.pendingBattle);
  report({event:'battleStarted',sector:request.sector,hour:campaign.hour,treasury:campaign.resources.treasury});
@@ -108,7 +107,7 @@ export function recoverFreshCapital(start,{report=()=>{}}={}){
  const salvage=equipOpeningRifles(enterSector(campaign.pendingBattle,campaign.sectorStates.buenos_aires),field);
  const synced=syncBattleTime(campaign,salvage.battle);assert.equal(synced.error,null);campaign=synced.campaign;
  order({type:'leaveSector',battleId:campaign.pendingBattle.id,sectorState:synced.battle,survivors:synced.battle.units.filter(u=>u.side==='player')});
- const support=[114,116,119,127,141,104,121,110,115,123,124,136,134].filter(id=>campaign.operativeState[id].alive&&!field.includes(id)).slice(0,6),clothingTransfers=[];
+ const support=[114,116,119,127,141,104,121,110,115,123,124,136,134].filter(id=>campaign.operativeState[id].alive&&!field.includes(id)).slice(0,6),clothingTransfers=[],clothingRecoveries=[];
  for(const operativeId of field.filter(id=>!campaign.operativeState[id].outfit)){
   const model=()=>sectorInventoryModel(campaign,'buenos_aires',rosterFor(campaign),operativeId);
   const available=()=>model().entries.find(row=>{const item=JSON.parse(row.expected);return row.reachable&&item.item==='outfit'&&item.outfit==='poncho';});
@@ -125,11 +124,12 @@ export function recoverFreshCapital(start,{report=()=>{}}={}){
    }
   }
   if(!outfit)continue;
+  clothingRecoveries.push({sourceKey:outfit.key,expected:outfit.expected,receiverId:operativeId});
   order({type:'sectorInventory',sector:'buenos_aires',operativeId,direction:'take',sourceKey:outfit.key,expected:outfit.expected,count:1});
   const carried=model().carried.find(row=>row.equip?.some(option=>option.slot==='outfit'));
   assert.ok(carried);order({type:'sectorInventory',sector:'buenos_aires',operativeId,direction:'equip',inventoryKey:carried.inventoryKey,expected:carried.expected,slot:'outfit'});
  }
- report({event:'freshEquipmentRecovery',transfers:salvage.transfers,unfilled:salvage.unfilled,clothingTransfers});
+ report({event:'freshEquipmentRecovery',transfers:salvage.transfers,unfilled:salvage.unfilled,clothingTransfers,clothingRecoveries});
  const fieldSquad=campaign.activeSquadId;
  assert.equal(support.length,6,'six living recruits must be available for the paid support squad');
  for(const id of support)if(!campaign.recruited.includes(id))order({type:'recruitCivic',id,term:'week'});
@@ -151,19 +151,8 @@ export function prepareFreshNorthernAssault(prepared,{report=()=>{}}={}){
  const order=action=>{const next=dispatchCampaign(campaign,action);assert.equal(next.lastError,null,JSON.stringify(action)+': '+next.lastError);campaign=next;};
  const squads=[prepared.fieldSquad,prepared.supportSquad];
  const ids=new Set(squads.flatMap(id=>campaign.squads.find(squad=>squad.id===id).members));
- const needed={};
- for(const unit of rosterFor(campaign).filter(unit=>ids.has(unit.id))){
-  const type=weaponAmmoType(unit.weapon);if(type)needed[type]=(needed[type]??0)+10;
- }
- // The local capital has no ammunition workshop. Make a real return trip to
- // Retiro before purchasing compatible cartridges for the salvaged guns.
- order({type:'selectSquad',id:prepared.fieldSquad});
- order({type:'travel',sector:'retiro'});
- for(const [ammoType,count] of Object.entries(needed)){
-  const quantity=Math.max(0,count-(campaign.resources[ammoResourceKey(ammoType)]??0));
-  if(quantity)order({type:'purchaseAmmunition',ammoType,quantity});
- }
- order({type:'travel',sector:'buenos_aires'});
+ // The current local provider supplies the actual recovered guns of both squads.
+ campaign=supplyRouteAmmunition(campaign,[...ids],{report}).campaign;
  for(const id of squads){order({type:'selectSquad',id});campaign=finishReloadsBeforeMarch(campaign,{report});}
  const departureDelay=(6-((campaign.hour+12)%24)+24)%24;
  for(let i=0;i<departureDelay;i++)order({type:'wait',hours:1});
@@ -186,7 +175,7 @@ export function prepareFreshSanLorenzo(start,{report=()=>{}}={}){
  assert.equal(campaign.sectors.san_nicolas.owner,'patriot');
  const field=[120,111,125,103,140,112],cash=campaign.resources.treasury;
  for(const id of field){assert.ok(campaign.operativeState[id].alive);if(!campaign.recruited.includes(id))order({type:'recruitCivic',id,term:'week'});}
- order({type:'squad',ids:field});order({type:'visitSector'});
+ order({type:'squad',ids:field});const ammunitionCost=deploymentCost(campaign);order({type:'visitSector'});
  const salvage=equipOpeningRifles(enterSector(campaign.pendingBattle,campaign.sectorStates.san_nicolas),field);
  const synced=syncBattleTime(campaign,salvage.battle);assert.equal(synced.error,null);campaign=synced.campaign;
  order({type:'leaveSector',battleId:campaign.pendingBattle.id,sectorState:synced.battle,survivors:synced.battle.units.filter(u=>u.side==='player')});
@@ -198,7 +187,7 @@ export function prepareFreshSanLorenzo(start,{report=()=>{}}={}){
  }
  for(const id of dead)assert.equal(campaign.operativeState[id].alive,false);
  assert.deepEqual(decodeSave(encodeSave(campaign)).campaign,campaign);
- report({event:'freshSanLorenzoPreparation',hour:campaign.hour,field,paid:cash-campaign.resources.treasury,recoveredDressings:recovered,transfers:salvage.transfers,unfilled:salvage.unfilled});
+ report({event:'freshSanLorenzoPreparation',hour:campaign.hour,field,paid:cash-campaign.resources.treasury,ammunitionCost,recoveredDressings:recovered,transfers:salvage.transfers,unfilled:salvage.unfilled});
  return campaign;
 }
 
@@ -220,6 +209,7 @@ export function prepareFreshMissionSupport(start,{report=()=>{}}={}){
  assert.equal(support.length,6,'six living soldiers must be available for mission support');
  for(const id of support){assert.ok(campaign.operativeState[id].alive);if(!campaign.recruited.includes(id))order({type:'recruitCivic',id,term:'week'});}
  order({type:'createSquad',ids:support,name:'Apoyo de San Lorenzo'});const second=campaign.activeSquadId;
+ report({event:'supportDeployment',ammunitionCost:deploymentCost(campaign)});
  order({type:'visitSector'});
  const salvage=equipOpeningRifles(enterSector(campaign.pendingBattle,campaign.sectorStates.san_nicolas),support);
  const synced=syncBattleTime(campaign,salvage.battle);assert.equal(synced.error,null);campaign=synced.campaign;
@@ -235,7 +225,7 @@ export function prepareFreshMissionSupport(start,{report=()=>{}}={}){
 
 // Keep the surviving doctors with the advance. All participants travel through
 // ordinary queued squad orders; no new soldiers or supplies are injected.
-export function prepareFreshCordobaAssault(start,doctors){
+export function prepareFreshCordobaAssault(start,doctors,{report=()=>{}}={}){
  let campaign=finishReloadsBeforeMarch(decodeSave(encodeSave(start)).campaign);
  const order=action=>{campaign=dispatchCampaign(campaign,action);assert.equal(campaign.lastError,null,JSON.stringify(action)+': '+campaign.lastError);};
  const field=campaign.activeSquadId;
@@ -254,20 +244,7 @@ export function prepareFreshCordobaAssault(start,doctors){
  order({type:'leaveSector',battleId:campaign.pendingBattle.id,sectorState:synced.battle,survivors:synced.battle.units.filter(u=>u.side==='player')});
  for(const operativeId of doctors)order({type:'assignCare',operativeId,assignment:'active'});
  const deploying=squads.flatMap(id=>campaign.squads.find(squad=>squad.id===id).members);
- const requiredAmmo={};
- for(const unit of rosterFor(campaign).filter(unit=>deploying.includes(unit.id))){
-  const type=weaponAmmoType(unit.weapon);if(type)requiredAmmo[type]=(requiredAmmo[type]??0)+10;
- }
- const productionIds=[];
- for(const [type,count] of Object.entries(requiredAmmo)){
-  const key=ammoResourceKey(type);if((campaign.resources[key]??0)>=count)continue;
-  order({type:'produce',recipe:key,sector:'retiro'});productionIds.push(campaign.production.at(-1).id);
- }
- for(let hours=0;productionIds.some(id=>campaign.production.some(job=>job.id===id))&&hours<24;hours++){
-  assert.equal(campaign.pendingEncounter,null,'resolve any encounter before loading for Córdoba');
-  order({type:'wait',hours:1});
- }
- assert.ok(productionIds.every(id=>!campaign.production.some(job=>job.id===id)),'compatible ammunition must finish production before departure');
+ campaign=supplyRouteAmmunition(campaign,deploying,{report}).campaign;
  for(const id of deploying){
   while(campaign.contracts[id]?.expiresAt!=null&&campaign.contracts[id].expiresAt-campaign.hour<=24)order({type:'renewContract',id,term:'day',expectedExpiresAt:campaign.contracts[id].expiresAt});
  }
@@ -563,9 +540,7 @@ for(const id of fieldIds){while(c.contracts[id]?.expiresAt!==null&&c.contracts[i
 // Stage the actual squads through the ordinary clock before the coordinated march.
 // Enemy movement and contract costs continue during this wait.
 order({type:'wait',hours:4});
-const requiredAmmo={};
-for(const op of rosterFor(c).filter(op=>fieldIds.includes(op.id))){const ammoType=weaponAmmoType(op.weapon);if(ammoType)requiredAmmo[ammoType]=(requiredAmmo[ammoType]??0)+Math.max(0,10-availableAmmunition(c.operativeState[op.id],ammoType)-(c.operativeState[op.id].carriedLoaded??0));}
-for(const [ammoType,count] of Object.entries(requiredAmmo)){const quantity=Math.max(0,count-(c.resources[ammoResourceKey(ammoType)]??0)-(c.depots.cordoba?.[ammoResourceKey(ammoType)]??0));if(quantity)order({type:'purchaseAmmunition',ammoType,quantity});}
+c=supplyRouteAmmunition(c,fieldIds,{report}).campaign;
 for(const id of assaultSquads){order({type:'selectSquad',id});c=finishReloadsBeforeMarch(c,{report});order({type:'attack',sector:'tucuman',queue:true});}for(let i=0;i<24&&!assaultSquads.every(id=>c.squads.find(s=>s.id===id)?.journey?.status==='ready');i++)order({type:'wait',hours:1});
 // The musketeers wait for daylight instead of crossing the citadel approaches
 // at night without lamps. Strategic time, contracts and enemy movement continue.

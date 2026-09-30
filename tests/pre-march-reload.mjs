@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import {WEAPONS} from '../game/data.js';
-import {dispatchCampaign,rosterFor} from '../game/campaign.js';
+import {dispatchCampaign,rosterFor,deploymentCost} from '../game/campaign.js';
 import {enterSector} from '../game/world.js';
 import {actBattle,reloadCost} from '../game/tactical.js';
 import {syncBattleTime} from '../game/time.js';
@@ -11,6 +11,7 @@ import {encodeSave,decodeSave} from '../game/save.js';
 export function finishReloadsBeforeMarch(start,{report=()=>{}}={}){
  const roster=rosterFor(start),ids=start.squad.filter(id=>{const r=start.operativeState[id],capacity=WEAPONS[roster.find(u=>u.id===id)?.weapon]?.capacity??0;return !r.weaponDropped&&r.carriedLoaded!==undefined&&r.carriedLoaded<capacity;});
  if(!ids.length)return start;
+ report({event:'reloadDeployment',ammunitionCost:deploymentCost(start)});
  let campaign=dispatchCampaign(start,{type:'visitSector'});assert.equal(campaign.lastError,null,campaign.lastError);
  let battle=enterSector(campaign.pendingBattle,campaign.sectorStates[campaign.location]);
  const before=battle.elapsedSeconds,rounds=battle.units.filter(u=>u.side==='player').reduce((sum,u)=>sum+u.ammo+u.loaded,0);let completed=0;

@@ -1,0 +1,147 @@
+{
+  "revision": "c802dfe21158df063e558bb59987c3a0247f70c5",
+  "run": "https://github.com/fsodano/granaderos/actions/runs/36761506812",
+  "shards": [
+    {
+      "shard": 1,
+      "job": "110044947220",
+      "logSha256": "e294cb6f7a5100cc114424b80f41a113115e14c595c18f917d7b34c34cdf22d0",
+      "tests": 1009,
+      "pass": 1007,
+      "fail": 2,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    {
+      "shard": 2,
+      "job": "110044947125",
+      "logSha256": "3427b287308643db6ff10abf590d9180c44686666bffa7312f453d1645586c8f",
+      "tests": 984,
+      "pass": 979,
+      "fail": 5,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    {
+      "shard": 3,
+      "job": "110044947211",
+      "logSha256": "05841b8a6bc5c21616468ae46e716898ac74e0caa16676dd6107866243304d02",
+      "tests": 978,
+      "pass": 974,
+      "fail": 4,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    {
+      "shard": 4,
+      "job": "110044947236",
+      "logSha256": "c15389d6510a0d8f404ce0cce367d0d62c09d38afe5fd8ad9dddeb611f346e9b",
+      "tests": 1183,
+      "pass": 1180,
+      "fail": 3,
+      "cancelled": 0,
+      "skipped": 0
+    }
+  ],
+  "totals": {
+    "tests": 4154,
+    "pass": 4140,
+    "fail": 14,
+    "cancelled": 0,
+    "skipped": 0
+  },
+  "web": "passed",
+  "failures": [
+    {
+      "shard": 1,
+      "number": 67,
+      "name": "tests/fresh-campaign-recovery.test.mjs",
+      "diagnostic": "---\n  duration_ms: 173.168332\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/fresh-campaign-recovery.test.mjs:1:1'\n  failureType: 'testCodeFailure'\n  exitCode: 1\n  signal: ~\n  error: 'test failed'\n  code: 'ERR_TEST_FAILURE'\n  ...",
+      "moduleLoadDiagnostic": "# file:///home/runner/work/granaderos/granaderos/tests/northern-route.mjs:16\n# import {RECIPES} from '../game/data.js';\n#         ^^^^^^^\n# SyntaxError: The requested module '../game/data.js' does not provide an export named 'RECIPES'\n#     at ModuleJob._instantiate (node:internal/modules/esm/module_job:226:21)\n#     at async ModuleJob.run (node:internal/modules/esm/module_job:335:5)\n#     at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)\n#     at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)\n# Node.js v22.23.3\n# Subtest: tests/fresh-campaign-recovery.test.mjs"
+    },
+    {
+      "shard": 1,
+      "number": 451,
+      "name": "a fresh stock campaign wins all localities with actual combat and continues after saved victory and service expiry",
+      "diagnostic": "---\n  duration_ms: 108708.796112\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/fresh-ending-route.test.mjs:5:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    created: san_lorenzo; [{\"id\":\"57\",\"side\":\"player\",\"x\":33,\"y\":23,\"hp\":88,\"energy\":100,\"loaded\":2,\"ammo\":0},{\"id\":\"enemy-0\",\"side\":\"enemy\",\"x\":47,\"y\":19,\"hp\":100,\"energy\":55,\"loaded\":1,\"ammo\":11}]\n    + actual - expected\n    \n    + 'active'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'active'\n  operator: 'strictEqual'\n  stack: |-\n    freshCoastalRoute (file:///home/runner/work/granaderos/granaderos/tests/fresh-coastal-fixture.mjs:49:180)\n    freshNorthernRoute (file:///home/runner/work/granaderos/granaderos/tests/fresh-northern-fixture.mjs:16:15)\n    freshCuyoRoute (file:///home/runner/work/granaderos/granaderos/tests/fresh-cuyo-fixture.mjs:31:15)\n    freshHistoricalEnding (file:///home/runner/work/granaderos/granaderos/tests/fresh-ending-fixture.mjs:55:80)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/fresh-ending-route.test.mjs:6:29)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.start (node:internal/test_runner/test:944:17)\n    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)\n  ...",
+      "moduleLoadDiagnostic": "# file:///home/runner/work/granaderos/granaderos/tests/northern-route.mjs:16\n# import {RECIPES} from '../game/data.js';\n#         ^^^^^^^\n# SyntaxError: The requested module '../game/data.js' does not provide an export named 'RECIPES'\n#     at ModuleJob._instantiate (node:internal/modules/esm/module_job:226:21)\n#     at async ModuleJob.run (node:internal/modules/esm/module_job:335:5)\n#     at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)\n#     at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)\n# Node.js v22.23.3\n# Subtest: tests/fresh-campaign-recovery.test.mjs\nnot ok 67 - tests/fresh-campaign-recovery.test.mjs\n  ---\n  duration_ms: 173.168332\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/fresh-campaign-recovery.test.mjs:1:1'\n  failureType: 'testCodeFailure'\n  exitCode: 1\n  signal: ~\n  error: 'test failed'\n  code: 'ERR_TEST_FAILURE'\n  ...\n# Subtest: a fresh stock campaign wins all localities with actual combat and continues after saved victory and service expiry"
+    },
+    {
+      "shard": 2,
+      "number": 23,
+      "name": "tests/campaign-battery-driver.test.mjs",
+      "diagnostic": "---\n  duration_ms: 165.247631\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/campaign-battery-driver.test.mjs:1:1'\n  failureType: 'testCodeFailure'\n  exitCode: 1\n  signal: ~\n  error: 'test failed'\n  code: 'ERR_TEST_FAILURE'\n  ...",
+      "moduleLoadDiagnostic": "# file:///home/runner/work/granaderos/granaderos/tests/northern-route.mjs:16\n# import {RECIPES} from '../game/data.js';\n#         ^^^^^^^\n# SyntaxError: The requested module '../game/data.js' does not provide an export named 'RECIPES'\n#     at ModuleJob._instantiate (node:internal/modules/esm/module_job:226:21)\n#     at async ModuleJob.run (node:internal/modules/esm/module_job:335:5)\n#     at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)\n#     at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)\n# Node.js v22.23.2\n# Subtest: tests/campaign-battery-driver.test.mjs"
+    },
+    {
+      "shard": 2,
+      "number": 67,
+      "name": "tests/fresh-capital-recovery.test.mjs",
+      "diagnostic": "---\n  duration_ms: 195.486821\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/fresh-capital-recovery.test.mjs:1:1'\n  failureType: 'testCodeFailure'\n  exitCode: 1\n  signal: ~\n  error: 'test failed'\n  code: 'ERR_TEST_FAILURE'\n  ...",
+      "moduleLoadDiagnostic": "# file:///home/runner/work/granaderos/granaderos/tests/northern-route.mjs:16\n# import {RECIPES} from '../game/data.js';\n#         ^^^^^^^\n# SyntaxError: The requested module '../game/data.js' does not provide an export named 'RECIPES'\n#     at ModuleJob._instantiate (node:internal/modules/esm/module_job:226:21)\n#     at async ModuleJob.run (node:internal/modules/esm/module_job:335:5)\n#     at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)\n#     at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)\n# Node.js v22.23.2\n# Subtest: tests/fresh-capital-recovery.test.mjs"
+    },
+    {
+      "shard": 2,
+      "number": 412,
+      "name": "a fresh Retiro force reaches Yatasto through paid replacements and actual northern victories with saved replay",
+      "diagnostic": "---\n  duration_ms: 103409.317882\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/fresh-northern-route.test.mjs:5:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    created: san_lorenzo; [{\"id\":\"57\",\"side\":\"player\",\"x\":33,\"y\":23,\"hp\":88,\"energy\":100,\"loaded\":2,\"ammo\":0},{\"id\":\"enemy-0\",\"side\":\"enemy\",\"x\":47,\"y\":19,\"hp\":100,\"energy\":55,\"loaded\":1,\"ammo\":11}]\n    + actual - expected\n    \n    + 'active'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'active'\n  operator: 'strictEqual'\n  stack: |-\n    freshCoastalRoute (file:///home/runner/work/granaderos/granaderos/tests/fresh-coastal-fixture.mjs:49:180)\n    freshNorthernRoute (file:///home/runner/work/granaderos/granaderos/tests/fresh-northern-fixture.mjs:16:15)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/fresh-northern-route.test.mjs:6:25)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.start (node:internal/test_runner/test:944:17)\n    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)\n  ...",
+      "moduleLoadDiagnostic": "# file:///home/runner/work/granaderos/granaderos/tests/northern-route.mjs:16\n# import {RECIPES} from '../game/data.js';\n#         ^^^^^^^\n# SyntaxError: The requested module '../game/data.js' does not provide an export named 'RECIPES'\n#     at ModuleJob._instantiate (node:internal/modules/esm/module_job:226:21)\n#     at async ModuleJob.run (node:internal/modules/esm/module_job:335:5)\n#     at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)\n#     at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)\n# Node.js v22.23.2\n# Subtest: tests/fresh-capital-recovery.test.mjs\nnot ok 67 - tests/fresh-capital-recovery.test.mjs\n  ---\n  duration_ms: 195.486821\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/fresh-capital-recovery.test.mjs:1:1'\n  failureType: 'testCodeFailure'\n  exitCode: 1\n  signal: ~\n  error: 'test failed'\n  code: 'ERR_TEST_FAILURE'\n  ...\n# Subtest: a fresh Retiro force reaches Yatasto through paid replacements and actual northern victories with saved replay"
+    },
+    {
+      "shard": 2,
+      "number": 442,
+      "name": "a fresh Mendoza victory cannot conceal the subsequent death of its required engineer",
+      "diagnostic": "---\n  duration_ms: 103709.242035\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/historical-loss.test.mjs:7:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    created: san_lorenzo; [{\"id\":\"57\",\"side\":\"player\",\"x\":33,\"y\":23,\"hp\":88,\"energy\":100,\"loaded\":2,\"ammo\":0},{\"id\":\"enemy-0\",\"side\":\"enemy\",\"x\":47,\"y\":19,\"hp\":100,\"energy\":55,\"loaded\":1,\"ammo\":11}]\n    + actual - expected\n    \n    + 'active'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'active'\n  operator: 'strictEqual'\n  stack: |-\n    freshCoastalRoute (file:///home/runner/work/granaderos/granaderos/tests/fresh-coastal-fixture.mjs:49:180)\n    freshNorthernRoute (file:///home/runner/work/granaderos/granaderos/tests/fresh-northern-fixture.mjs:16:15)\n    freshMendozaLoss (file:///home/runner/work/granaderos/granaderos/tests/historical-loss-fixture.mjs:11:8)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/historical-loss.test.mjs:8:39)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.start (node:internal/test_runner/test:944:17)\n    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)\n  ..."
+    },
+    {
+      "shard": 2,
+      "number": 703,
+      "name": "the downloadable authored post campaign finishes its complete paid combat and dialogue route with saved casualties",
+      "diagnostic": "---\n  duration_ms: 32539.109953\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/post-campaign.test.mjs:9:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    {\"sector\":\"salta\",\"turn\":12,\"mode\":\"combat\",\"actions\":55,\"units\":[{\"id\":\"2001\",\"hp\":5,\"side\":\"player\",\"x\":33,\"y\":47,\"ammo\":13,\"loaded\":1,\"weapon\":1801,\"activeSlot\":\"primary\",\"unconscious\":true,\"routed\":false},{\"id\":\"2012\",\"hp\":0,\"side\":\"player\",\"x\":45,\"y\":36,\"ammo\":13,\"loaded\":0,\"weapon\":1802,\"activeSlot\":\"primary\",\"unconscious\":false,\"routed\":false},{\"id\":\"2006\",\"hp\":0,\"side\":\"player\",\"x\":30,\"y\":42,\"ammo\":12,\"loaded\":0,\"weapon\":1801,\"activeSlot\":\"primary\",\"unconscious\":false,\"routed\":false},{\"id\":\"2011\",\"hp\":0,\"side\":\"player\",\"x\":32,\"y\":46,\"ammo\":13,\"loaded\":1,\"weapon\":1801,\"activeSlot\":\"medical\",\"unconscious\":false,\"routed\":false},{\"id\":\"2010\",\"hp\":0,\"side\":\"player\",\"x\":36,\"y\":44,\"ammo\":13,\"loaded\":0,\"weapon\":1802,\"activeSlot\":\"primary\",\"unconscious\":false,\"routed\":false},{\"id\":\"2002\",\"hp\":0,\"side\":\"player\",\"x\":31,\"y\":43,\"ammo\":13,\"loaded\":1,\"weapon\":1801,\"activeSlot\":\"primary\",\"unconscious\":false,\"routed\":false},{\"id\":\"enemy-0\",\"hp\":100,\"side\":\"enemy\",\"x\":39,\"y\":21,\"ammo\":12,\"loaded\":1,\"weapon\":1805,\"activeSlot\":\"primary\",\"unconscious\":false,\"routed\":false},{\"id\":\"enemy-1\",\"hp\":100,\"side\":\"enemy\",\"x\":31,\"y\":43,\"ammo\":8,\"loaded\":0,\"weapon\":1800,\"activeSlot\":\"primary\",\"unconscious\":false,\"routed\":false},{\"id\":\"enemy-2\",\"hp\":100,\"side\":\"enemy\",\"x\":38,\"y\":21,\"ammo\":12,\"loaded\":1,\"weapon\":1800,\"activeSlot\":\"primary\",\"unconscious\":false,\"routed\":false},{\"id\":\"enemy-3\",\"hp\":100,\"side\":\"enemy\",\"x\":42,\"y\":21,\"ammo\":12,\"loaded\":1,\"weapon\":1801,\"activeSlot\":\"primary\",\"unconscious\":false,\"routed\":false},{\"id\":\"enemy-4\",\"hp\":0,\"side\":\"enemy\",\"x\":31,\"y\":42,\"ammo\":11,\"loaded\":1,\"weapon\":1800,\"activeSlot\":\"primary\",\"unconscious\":false,\"routed\":false},{\"id\":\"enemy-5\",\"hp\":100,\"side\":\"enemy\",\"x\":31,\"y\":42,\"ammo\":9,\"loaded\":1,\"weapon\":1800,\"activeSlot\":\"primary\",\"unconscious\":false,\"routed\":false}],\"log\":[\"Fusilero de Pezuela 2 avanza.\",\"Fusilero de Pezuela 2 avanza.\",\"Fusilero de Pezuela 2 hiere a Juli\u00e1n Salvatierra: 22 de da\u00f1o.\",\"Veterano del Ej\u00e9rcito Real del Per\u00fa 1 recarga (45 PA).\",\"Veterano del Ej\u00e9rcito Real del Per\u00fa 1 avanza.\",\"Veterano del Ej\u00e9rcito Real del Per\u00fa 1 hiere a Juli\u00e1n Salvatierra: 67 de da\u00f1o.\",\"Juli\u00e1n Salvatierra cay\u00f3 en combate.\",\"La escuadra qued\u00f3 fuera de combate.\"]}\n    + actual - expected\n    \n    + 'defeat'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'defeat'\n  operator: 'strictEqual'\n  stack: |-\n    finishPostCampaign (file:///home/runner/work/granaderos/granaderos/tests/post-campaign-fixture.mjs:34:89)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/post-campaign.test.mjs:12:27)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.start (node:internal/test_runner/test:944:17)\n    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)\n  ..."
+    },
+    {
+      "shard": 3,
+      "number": 168,
+      "name": "scripted combat settlements advance historical progression through money-only reducer orders",
+      "diagnostic": "---\n  duration_ms: 4493.526789\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/campaign-web.test.mjs:87:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    attack los_patos from uspallata at 284: Debes abrir una ruta hasta el frente.\n    + actual - expected\n    \n    + 'Debes abrir una ruta hasta el frente.'\n    - null\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: ~\n  actual: 'Debes abrir una ruta hasta el frente.'\n  operator: 'strictEqual'\n  stack: |-\n    order (file:///home/runner/work/granaderos/granaderos/tests/campaign-web.test.mjs:8:164)\n    capture (file:///home/runner/work/granaderos/granaderos/tests/campaign-web.test.mjs:18:4)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/campaign-web.test.mjs:91:87)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.processPendingSubtests (node:internal/test_runner/test:744:18)\n    Test.postRun (node:internal/test_runner/test:1173:19)\n    Test.run (node:internal/test_runner/test:1101:12)\n    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n  ..."
+    },
+    {
+      "shard": 3,
+      "number": 399,
+      "name": "fresh created force wins the coastal opening with real losses, paid replacements and saved replay",
+      "diagnostic": "---\n  duration_ms: 73106.176868\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/fresh-coastal-route.test.mjs:6:39'\n  failureType: 'testCodeFailure'\n  error: |-\n    created: san_lorenzo; [{\"id\":\"57\",\"side\":\"player\",\"x\":33,\"y\":23,\"hp\":88,\"energy\":100,\"loaded\":2,\"ammo\":0},{\"id\":\"enemy-0\",\"side\":\"enemy\",\"x\":47,\"y\":19,\"hp\":100,\"energy\":55,\"loaded\":1,\"ammo\":11}]\n    + actual - expected\n    \n    + 'active'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'active'\n  operator: 'strictEqual'\n  stack: |-\n    freshCoastalRoute (file:///home/runner/work/granaderos/granaderos/tests/fresh-coastal-fixture.mjs:49:180)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/fresh-coastal-route.test.mjs:7:25)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.start (node:internal/test_runner/test:944:17)\n    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)\n  ..."
+    },
+    {
+      "shard": 3,
+      "number": 400,
+      "name": "fresh hired force wins the coastal opening with real losses, paid replacements and saved replay",
+      "diagnostic": "---\n  duration_ms: 115276.4127\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/fresh-coastal-route.test.mjs:6:39'\n  failureType: 'testCodeFailure'\n  error: |-\n    hired: san_lorenzo; [{\"id\":\"57\",\"side\":\"player\",\"x\":33,\"y\":21,\"hp\":88,\"energy\":100,\"loaded\":2,\"ammo\":0},{\"id\":\"enemy-1\",\"side\":\"enemy\",\"x\":45,\"y\":32,\"hp\":24,\"energy\":100,\"loaded\":1,\"ammo\":10},{\"id\":\"enemy-2\",\"side\":\"enemy\",\"x\":48,\"y\":22,\"hp\":100,\"energy\":54,\"loaded\":1,\"ammo\":12},{\"id\":\"enemy-3\",\"side\":\"enemy\",\"x\":45,\"y\":33,\"hp\":100,\"energy\":100,\"loaded\":1,\"ammo\":9},{\"id\":\"enemy-4\",\"side\":\"enemy\",\"x\":46,\"y\":23,\"hp\":100,\"energy\":53,\"loaded\":1,\"ammo\":12}]\n    + actual - expected\n    \n    + 'active'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'active'\n  operator: 'strictEqual'\n  stack: |-\n    freshCoastalRoute (file:///home/runner/work/granaderos/granaderos/tests/fresh-coastal-fixture.mjs:49:180)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/fresh-coastal-route.test.mjs:7:25)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.processPendingSubtests (node:internal/test_runner/test:744:18)\n    Test.postRun (node:internal/test_runner/test:1173:19)\n    Test.run (node:internal/test_runner/test:1101:12)\n    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)\n  ..."
+    },
+    {
+      "shard": 3,
+      "number": 401,
+      "name": "a fresh free officer and local recruits complete the opening without bulletin hires, preserving paid recovery and permanent losses",
+      "diagnostic": "---\n  duration_ms: 4929.037884\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/fresh-coastal-route.test.mjs:13:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    local: buenos_aires; [{\"id\":\"enemy-0\",\"side\":\"enemy\",\"x\":38,\"y\":8,\"hp\":100,\"energy\":91,\"loaded\":0,\"ammo\":10},{\"id\":\"enemy-2\",\"side\":\"enemy\",\"x\":37,\"y\":8,\"hp\":100,\"energy\":94,\"loaded\":0,\"ammo\":11},{\"id\":\"enemy-3\",\"side\":\"enemy\",\"x\":42,\"y\":12,\"hp\":32,\"energy\":82,\"loaded\":1,\"ammo\":12}]\n    + actual - expected\n    \n    + 'defeat'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'defeat'\n  operator: 'strictEqual'\n  stack: |-\n    freshCoastalRoute (file:///home/runner/work/granaderos/granaderos/tests/fresh-coastal-fixture.mjs:49:180)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/fresh-coastal-route.test.mjs:14:27)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.processPendingSubtests (node:internal/test_runner/test:744:18)\n    Test.postRun (node:internal/test_runner/test:1173:19)\n    Test.run (node:internal/test_runner/test:1101:12)\n    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n  ..."
+    },
+    {
+      "shard": 4,
+      "number": 604,
+      "name": "a fresh campaign prepares Cuyo with real battles, living roles, purchases, funding and physical late recruitment",
+      "diagnostic": "---\n  duration_ms: 110362.5258\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/fresh-cuyo-route.test.mjs:2:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    created: san_lorenzo; [{\"id\":\"57\",\"side\":\"player\",\"x\":33,\"y\":23,\"hp\":88,\"energy\":100,\"loaded\":2,\"ammo\":0},{\"id\":\"enemy-0\",\"side\":\"enemy\",\"x\":47,\"y\":19,\"hp\":100,\"energy\":55,\"loaded\":1,\"ammo\":11}]\n    + actual - expected\n    \n    + 'active'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'active'\n  operator: 'strictEqual'\n  stack: |-\n    freshCoastalRoute (file:///home/runner/work/granaderos/granaderos/tests/fresh-coastal-fixture.mjs:49:180)\n    freshNorthernRoute (file:///home/runner/work/granaderos/granaderos/tests/fresh-northern-fixture.mjs:16:15)\n    freshCuyoRoute (file:///home/runner/work/granaderos/granaderos/tests/fresh-cuyo-fixture.mjs:31:15)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/fresh-cuyo-route.test.mjs:3:27)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.start (node:internal/test_runner/test:944:17)\n    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)\n  ..."
+    },
+    {
+      "shard": 4,
+      "number": 103,
+      "name": "tests/opening-playthrough.test.mjs",
+      "diagnostic": "---\n  duration_ms: 167.259081\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/opening-playthrough.test.mjs:1:1'\n  failureType: 'testCodeFailure'\n  exitCode: 1\n  signal: ~\n  error: 'test failed'\n  code: 'ERR_TEST_FAILURE'\n  ...",
+      "moduleLoadDiagnostic": "# file:///home/runner/work/granaderos/granaderos/tests/northern-route.mjs:16\n# import {RECIPES} from '../game/data.js';\n#         ^^^^^^^\n# SyntaxError: The requested module '../game/data.js' does not provide an export named 'RECIPES'\n#     at ModuleJob._instantiate (node:internal/modules/esm/module_job:226:21)\n#     at async ModuleJob.run (node:internal/modules/esm/module_job:335:5)\n#     at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)\n#     at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)\n# Node.js v22.23.3\n# Subtest: tests/opening-playthrough.test.mjs"
+    },
+    {
+      "shard": 4,
+      "number": 918,
+      "name": "paid relief starts at the real arrival edge, fights, releases prisoners and escorts them back with permanent losses",
+      "diagnostic": "---\n  duration_ms: 4166.094525\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/prisoner-rescue-route.test.mjs:5:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    the entire relief force must physically leave or fall\n    + actual - expected\n    \n    + 'defeat'\n    - 'retreat'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'retreat'\n  actual: 'defeat'\n  operator: 'strictEqual'\n  stack: |-\n    runPrisonerRescue (file:///home/runner/work/granaderos/granaderos/tests/prisoner-rescue-route.mjs:56:8)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/prisoner-rescue-route.test.mjs:6:57)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.start (node:internal/test_runner/test:944:17)\n    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)\n  ..."
+    }
+  ],
+  "scope": "Complete pushed-head CI. Predates retained-critical-enemy and route-custody repairs."
+}

@@ -7,6 +7,7 @@ import {enterSector} from '../game/world.js';
 import {actBattle,getReachable} from '../game/tactical.js';
 import {returnAmmunition} from '../game/ammunition.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
+import {refreshMilitaryCondition} from '../game/actor-condition.js';
 import {weaponSpecification} from '../game/weapon-definition.js';
 import {OPERATIVES} from '../game/data.js';
 import {fight} from './opening-driver.mjs';
@@ -77,4 +78,22 @@ test('a real second battle settles and saves with the original player and enemy 
  const restored=saved(pair);s=order(restored.campaign,{type:'battleResult',battleId:request.id,outcome:restored.battle.status,sectorState:restored.battle,survivors:restored.battle.units.filter(u=>u.side==='player')});
  s=saved({campaign:s}).campaign;assert.equal(s.operativeState[id].deathMinute,oldDeath);assert.equal(s.operativeState[id].alive,false);
  assert.ok(s.sectorStates.buenos_aires.units.filter(u=>u.hp===0).length>=oldBodies.length);
+});
+
+// Prepared retained casualty: the case isolates revisiting a cleared sector.
+test('a saved critical enemy can remain or die during a visit without authorizing revival or extra enemies',()=>{
+ const {campaign:before}=paidCasualty();
+ const wounded=before.sectorStates.buenos_aires.units.find(u=>u.side==='enemy'&&u.hp===0);
+ assert.ok(wounded);Object.assign(wounded,{hp:8,bleeding:0,bandaged:wounded.maxHp-8,energy:0});refreshMilitaryCondition(wounded);
+ const p=visit(saved({campaign:before}).campaign),retained=p.battle.units.find(u=>u.id===wounded.id);
+ assert.equal(retained.hp,8);assert.equal(retained.unconscious,true);
+ const action={type:'leaveSector',battleId:p.campaign.pendingBattle.id,sectorState:p.battle,survivors:p.battle.units.filter(u=>u.side==='player')};
+ const returned=order(p.campaign,action);assert.equal(returned.sectorStates.buenos_aires.units.find(u=>u.id===wounded.id).hp,8);
+ assert.equal(visit(saved({campaign:returned}).campaign).battle.units.find(u=>u.id===wounded.id).hp,8);
+ for(const patch of [{hp:9},{hp:80,unconscious:false},{id:'extra-enemy'}]){
+  const forged=structuredClone(action),unit=forged.sectorState.units.find(u=>u.id===wounded.id);Object.assign(unit,patch);unit.bandaged=unit.maxHp-unit.hp;refreshMilitaryCondition(unit);
+  const rejected=dispatchCampaign(p.campaign,forged);assert.match(rejected.lastError,/enemigos del despliegue/);assert.deepEqual(rejected.sectorStates,p.campaign.sectorStates);
+ }
+ const died=structuredClone(action),dead=died.sectorState.units.find(u=>u.id===wounded.id);Object.assign(dead,{hp:0,bandaged:0});refreshMilitaryCondition(dead);
+ assert.equal(order(p.campaign,died).sectorStates.buenos_aires.units.find(u=>u.id===wounded.id).hp,0);
 });

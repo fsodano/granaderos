@@ -5,6 +5,7 @@ import {initialCampaign,dispatchCampaign as dispatch,rosterFor} from '../game/ca
 import {enterSector} from '../game/world.js';
 import {actBattle,getReachable,hasLineOfSight} from '../game/tactical.js';
 import {fight} from './opening-driver.mjs';
+import {sanLorenzoCombatOrder} from './san-lorenzo-driver.mjs';
 import {equipOpeningRifles} from './opening-equipment.mjs';
 import {autoBandageBattle} from '../game/auto-bandage.js';
 import {syncBattleTime} from '../game/time.js';
@@ -112,8 +113,9 @@ export function runOpeningCampaign({report=()=>{}}={}){
   const entry=enterSector(request);
   assert.equal(entry.startSeconds,c.hour*3600+(c.secondOfHour??0),'combat starts at the actual arrival time');
   assert.equal(entry.night,false,'ordinary departure and wait orders schedule daylight assaults');
-  let {battle:b,actions}=fight(request);
-  assert.deepEqual(b,fight(request).battle,'identical seed and legal orders replay deterministically');
+  const options=sector==='san_lorenzo'?{controller:sanLorenzoCombatOrder}:{};
+  let {battle:b,actions}=fight(request,undefined,options);
+  assert.deepEqual(b,fight(request,undefined,options).battle,'identical seed and legal orders replay deterministically');
   assert.ok(actions>0);assert.ok(b.turn>1);
   assert.ok(b.units.filter(u=>u.side==='player').reduce((sum,u)=>sum+u.loaded+totalReserveAmmunition(u),0)<request.issuedCartridges+(request.missionAllies??[]).reduce((sum,u)=>sum+u.loaded+totalReserveAmmunition(u),0),'actual shots consume issued cartridges');
   transcript.push({sector,startSeconds:b.startSeconds,status:b.status,turn:b.turn,actions,units:b.units.map(u=>({id:u.id,hp:u.hp,energy:u.energy,ammo:u.ammo,reserve:ammunitionByType(u),loaded:u.loaded,routed:u.routed}))});

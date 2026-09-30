@@ -17,7 +17,7 @@ import {validMilitiaExperience} from './militia-experience.js';
 import {workshopServiceQuote} from './workshop-service.js';
 import {CARE_ASSIGNMENTS,careAssignmentBusy,assignMedicalCare,advanceMedicalCare,advanceMilitaryWounds,validateMedicalCare,medicalSupplyQuote,MEDICAL_KIT_PRICE,migrateMedicalCare,returnMedicalCare} from './medical-care.js';
 import {enforceHistoricalLoss} from './historical-loss.js';
-import {previousDeploymentScene,withoutPreviousCasualties} from './military-remains.js';
+import {previousDeploymentScene,withoutPreviousCasualties,retainedMilitaryBodies} from './military-remains.js';
 import {completedTacticalVictory} from './battle-outcome.js';
 import {foundryFor} from './campaign-foundry.js';
 import {campaignRole,campaignRoleActive,foundryReason} from './campaign-roles.js';
@@ -378,8 +378,10 @@ function completeDeploymentReport(s,request,action){
   const players=snapshot.units.filter(u=>u.side==='player');
   requireThat([...ids,...auxiliary,...(request.remains??[]).map(r=>r.unitId)].every(id=>players.some(u=>u.id===id))&&players.every(u=>known.has(u.id)||(u.hp<=0&&corpses.includes(u.id))),'El estado táctico contiene una escuadra incompleta o ajena al despliegue.');
   const source=!request.exploration&&!request.defenseGroupId&&!request.occupationGroupIds?.length&&previous&&!previous.sectorCleared?previous.units.filter(u=>u.side==='enemy'&&!u.departure):request.enemies??[],enemyIds=new Set(source.map(u=>String(u.id))),enemies=snapshot.units.filter(u=>u.side==='enemy');
-  const oldEnemyBodies=(previous?.units??[]).filter(u=>u.side==='enemy'&&u.hp<=0&&!u.departure);
-  requireThat([...enemyIds].every(id=>enemies.some(u=>u.id===id))&&enemies.every(u=>enemyIds.has(u.id)||u.hp<=0&&oldEnemyBodies.some(old=>old.id===u.id||u.originalUnitId===old.id&&u.id.startsWith(`corpse:${previous.battleId??request.sector}:${old.id}`))),'El estado táctico no incluye a todos los enemigos del despliegue.');
+  // Re-entry also retains incapacitated enemies from a cleared sector. Use
+  // the same identities as placement, including collisions with a new force.
+  const retained=retainedMilitaryBodies(previous,[...request.squad,...(request.garrison??[]),...(request.missionAllies??[]),...source],request.sector).filter(u=>u.side==='enemy'&&!u.departure);
+  requireThat([...enemyIds].every(id=>enemies.some(u=>u.id===id))&&enemies.every(u=>enemyIds.has(u.id)||retained.some(old=>old.id===u.id&&u.hp<=old.hp)),'El estado táctico no incluye a todos los enemigos del despliegue.');
   const required=['hp','maxHp','weapon','condition','jammed','loaded','ammo','inventory','bleeding','bandaged','energy','medkits','fatigue','rations','torches','boleadoras','activeSlot'];
   if(request.fittingRulesVersion===FITTING_RULES_VERSION){requireThat(raw.fittingRulesVersion===FITTING_RULES_VERSION,'El parte no contiene la versión de accesorios del despliegue.');required.push('weaponFittings','weaponFittingPattern','bladeFittingPattern');}
   for(const id of known){const unit=raw.units.find(u=>u.side==='player'&&String(u.id)===id);requireThat(unit&&required.every(key=>Object.hasOwn(unit,key)&&unit[key]!==undefined),'El equipo y la salud del combatiente están incompletos.');}

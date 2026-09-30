@@ -1,7 +1,7 @@
 import {assertCustodyCare} from './custody-care-evidence.mjs';
 import assert from 'node:assert/strict';
 import {finishReloadsBeforeMarch} from './pre-march-reload.mjs';
-import {dispatchCampaign,rosterFor} from '../game/campaign.js';
+import {dispatchCampaign,rosterFor,isSupplied} from '../game/campaign.js';
 import {sectorInventoryModel} from '../game/sector-inventory.js';
 import {decodeSave,encodeSave} from '../game/save.js';
 import {syncBattleTime} from '../game/time.js';
@@ -10,10 +10,9 @@ import {enterSector} from '../game/world.js';
 import {sameCell,sameSurface,spacePoint} from '../game/tactical-space.js';
 import {getReachable,teamCanSee,stanceCost,actionCosts,hasLineOfSight,firearmShotOptions,weaponFor} from '../game/tactical.js';
 import {shotLocationEffects} from '../game/targeted-combat.js';
-import {availableAmmunition,weaponAmmoType} from '../game/ammunition-types.js';
-import {ammoResourceKey} from '../game/campaign-ammunition.js';
-import {doctorRate} from '../game/medical-care.js';
-import {RECIPES} from '../game/data.js';
+import {availableAmmunition} from '../game/ammunition-types.js';
+import {doctorRate,medicalSupplyQuote} from '../game/medical-care.js';
+import {supplyRouteAmmunition} from './route-ammunition.mjs';
 import {contractQuote} from '../game/contracts.js';
 
 export function northernCombatOrder(battle,unit){
@@ -103,16 +102,6 @@ export function prepareNorthernSquad(start,{report=()=>{}}={}){
  const {events,doctors,staging}=staged,dead=Object.entries(start.operativeState).filter(([,record])=>!record.alive).map(([id])=>Number(id));
  const patients=campaign.recruited.filter(id=>{const r=campaign.operativeState[id];return r.alive&&!r.captured&&r.location==='san_nicolas'&&r.hp<r.maxHp;});
  const order=action=>{const next=dispatchCampaign(campaign,action);assert.equal(next.lastError,null,JSON.stringify(action)+': '+next.lastError);campaign=next;events.push({action,hour:campaign.hour,second:campaign.secondOfHour??0});};
- // Recovery also gives the controlled Retiro workshop time to prepare the
- // actual survivors' loads. Other calibers cannot supply an exhausted Baker.
- const ammunitionProduction=[];
- for(const type of new Set(rosterFor(campaign).filter(op=>campaign.recruited.includes(op.id)&&!doctors.includes(op.id)&&campaign.operativeState[op.id].alive).map(op=>weaponAmmoType(op.weapon)).filter(Boolean))){
-  const key=ammoResourceKey(type),required=rosterFor(campaign).filter(op=>campaign.recruited.includes(op.id)&&!doctors.includes(op.id)&&weaponAmmoType(op.weapon)===type).reduce((sum,op)=>sum+Math.max(0,10-(campaign.operativeState[op.id].carriedLoaded??0)-availableAmmunition(campaign.operativeState[op.id],type)),0);
-  if(campaign.resources[key]>=required)continue;
-  const recipe=RECIPES[key],before=structuredClone(campaign.resources);order({type:'produce',recipe:key,sector:'retiro'});
-  for(const [resource,cost] of Object.entries(recipe.cost))assert.equal(campaign.resources[resource],before[resource]-cost);
-  const production=campaign.production.at(-1);ammunitionProduction.push({type,key,id:production.id,due:production.due,count:recipe.yield[key],cost:recipe.cost});
- }
  const model=(id,sector='san_nicolas')=>sectorInventoryModel(campaign,sector,rosterFor(campaign),id);
  const gathered=[];
  const gather=(id,limit=1000,sector='san_nicolas')=>{
@@ -179,11 +168,12 @@ export function prepareNorthernSquad(start,{report=()=>{}}={}){
    // Deliver affordable batches, then recompute the remaining wounds before
    // another trip. The merchant's twenty-item transaction limit is not a
    // limit on how many dressings the whole recovery may consume.
-   const quantity=Math.min(20,remainingDressings,stock,Math.floor(cash/30));
+   const op=rosterFor(campaign).find(op=>op.id===courier),unitPrice=medicalSupplyQuote(campaign,op,1,isSupplied(campaign,campaign.location)).cost;
+   const quantity=Math.min(20,remainingDressings,stock,unitPrice?Math.floor(cash/unitPrice):20);
    assert.ok(quantity>0,'the relief courier must pay for available supplies');
-   order({type:'purchaseMedicalSupplies',operativeId:courier,quantity});assert.equal(cash-campaign.resources.treasury,quantity*30);assert.equal(campaign.merchants.retiro.supplies.medkits,stock-quantity);boughtDressings+=quantity;
+   order({type:'purchaseMedicalSupplies',operativeId:courier,quantity});assert.equal(cash-campaign.resources.treasury,quantity*unitPrice);assert.equal(campaign.merchants.retiro.supplies.medkits,stock-quantity);boughtDressings+=quantity;
    order({type:'travel',sector:'san_nicolas'});assert.equal(campaign.pendingEncounter,null);assert.ok(campaign.hour>startHour);
-   order({type:'assignCare',operativeId:courier,assignment:'doctor'});medicalTrips.push({courier,startHour,endHour:campaign.hour,quantity,cost:quantity*30});
+   order({type:'assignCare',operativeId:courier,assignment:'doctor'});medicalTrips.push({courier,startHour,endHour:campaign.hour,quantity,unitPrice,cost:quantity*unitPrice});
   }
   order({type:'wait',hours:1});
  }
@@ -217,9 +207,9 @@ export function prepareNorthernSquad(start,{report=()=>{}}={}){
  }
  for(const id of dead)assert.equal(campaign.operativeState[id].alive,false);
  for(const id of ids){assert.ok(campaign.operativeState[id].hp>=15);assert.equal(campaign.operativeState[id].bleeding,0);}
+ const supplied=supplyRouteAmmunition(campaign,ids,{report:event=>events.push(event)});campaign=supplied.campaign;
  assert.ok(campaign.resources.treasury>=0);assert.deepEqual(decodeSave(encodeSave(campaign)).campaign,campaign);
- for(const production of ammunitionProduction){assert.ok(campaign.hour>=production.due);assert.ok(!campaign.production.some(order=>order.id===production.id));assert.ok(campaign.resources[production.key]>=production.count);}
- const recovery={startHour:recoveryStart,endHour:campaign.hour,staging,doctors,patients,usedDressings,boughtDressings,medicalTrips,careRenewals,recoveredDressings,laterRecoveredDressings,collectedDonations,donatedDressings,donors,replacements,fieldIds:ids,gathered,ammunitionProduction};report({event:'recovered',...recovery,cash:campaign.resources.treasury});
+ const recovery={startHour:recoveryStart,endHour:campaign.hour,staging,doctors,patients,usedDressings,boughtDressings,medicalTrips,careRenewals,recoveredDressings,laterRecoveredDressings,collectedDonations,donatedDressings,donors,replacements,fieldIds:ids,gathered,ammunitionTransactions:supplied.transactions};report({event:'recovered',...recovery,cash:campaign.resources.treasury});
  return {campaign,events,dead,recovery};
 }
 

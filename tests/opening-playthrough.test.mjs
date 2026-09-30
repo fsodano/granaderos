@@ -3,9 +3,8 @@ import assert from 'node:assert/strict';
 import {dispatchCampaign,rosterFor} from '../game/campaign.js';
 import {sectorInventoryModel} from '../game/sector-inventory.js';
 import {decodeSave,encodeSave} from '../game/save.js';
-import {RECIPES} from '../game/data.js';
-import {ammoResourceKey} from '../game/campaign-ammunition.js';
-import {weaponAmmoType,availableAmmunition} from '../game/ammunition-types.js';
+import {carriedAmmunition} from '../game/campaign-ammunition.js';
+import {ammoTypeFor,ammoCount} from '../game/ammo-types.js';
 import {recoverRescueForce} from './rescue-recovery.mjs';
 import {prepareSaltaAssault,completeNorthernMission} from './salta-route.mjs';
 import {cautiousCombatOrder} from './cautious-driver.mjs';
@@ -41,18 +40,16 @@ test('established southern campaign reaches Yatasto through combat, defeat, resc
   assert.deepEqual(opening.campaign,before);assert.ok(prepared.recovery.patients.length?prepared.recovery.usedDressings>0:prepared.recovery.usedDressings===0);
   assert.equal(prepared.recovery.staging.hiringCost,294);preserveDeaths(before,prepared.campaign);
   assert.equal(prepared.recovery.boughtDressings,prepared.recovery.medicalTrips.reduce((sum,trip)=>sum+trip.quantity,0));
-  for(const trip of prepared.recovery.medicalTrips){assert.ok(trip.endHour>trip.startHour);assert.equal(trip.cost,trip.quantity*30);}
-  // Production follows the actual surviving weapons and carried rounds. A
-  // stockpile that already covers the shortage must not trigger a forced job.
-  const staged=northernStaging.campaign,needs=new Map();
-  for(const op of rosterFor(staged).filter(op=>staged.recruited.includes(op.id)&&!northernStaging.doctors.includes(op.id)&&staged.operativeState[op.id].alive)){
-   const type=weaponAmmoType(op.weapon);if(!type)continue;
-   const record=staged.operativeState[op.id];
-   needs.set(type,(needs.get(type)??0)+Math.max(0,10-(record.carriedLoaded??0)-availableAmmunition(record,type)));
+  for(const trip of prepared.recovery.medicalTrips){assert.ok(trip.endHour>trip.startHour);assert.equal(trip.cost,trip.quantity*trip.unitPrice);}
+  for(const receipt of prepared.recovery.ammunitionTransactions){
+   assert.equal(receipt.sector,'san_nicolas');assert.ok(prepared.campaign.squad.includes(receipt.action.operativeId));
+   assert.equal(receipt.cost,receipt.action.direction==='buy'?receipt.action.quantity*receipt.unitPrice:0);
   }
-  const requiredJobs=[...needs].filter(([type,need])=>staged.resources[ammoResourceKey(type)]<need).map(([type])=>{const key=ammoResourceKey(type),recipe=RECIPES[key];return {type,count:recipe.yield[key],cost:recipe.cost};});
-  assert.deepEqual(prepared.recovery.ammunitionProduction.map(({type,count,cost})=>({type,count,cost})),requiredJobs);
-  assert.ok(prepared.recovery.ammunitionProduction.every(job=>job.due<=prepared.campaign.hour&&!prepared.campaign.production.some(p=>p.id===job.id)),'real workshop time completes each paid matching-ammunition order before departure');
+  for(const id of prepared.campaign.squad){
+   const op=rosterFor(prepared.campaign).find(op=>op.id===id),unit=carriedAmmunition(op,prepared.campaign.operativeState[id]);
+   const family=ammoTypeFor({...unit,activeSlot:'primary'});
+   if(family&&!unit.weaponDropped)assert.ok(unit.loaded+ammoCount(unit,family)>=10,'each actual gun has its selected matching load before the march');
+  }
   assert.equal(prepared.recovery.donatedDressings,prepared.recovery.donors.reduce((sum,donor)=>sum+donor.count,0));
   for(const donor of prepared.recovery.donors){assert.equal(before.operativeState[donor.id].alive,true);assert.equal(donor.count,before.operativeState[donor.id].medkits);assert.equal(prepared.campaign.operativeState[donor.id].medkits,0);}
   for(const id of prepared.recovery.patients)assert.equal(prepared.campaign.operativeState[id].hp,prepared.campaign.operativeState[id].maxHp);
