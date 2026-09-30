@@ -49,7 +49,7 @@ export function returnGarrison(s,request,snapshot,dispositions=[]){
   if(actual.hp<=0||entry&&['dispersed','departed'].includes(entry.kind))s.sectors[request.sector].militia[issued.militiaRank]=Math.max(0,s.sectors[request.sector].militia[issued.militiaRank]-1);
   if(actual.hp<=0||entry?.kind==='dispersed')continue;
   const promotedRank=earnedMilitiaRank(issued,actual,militiaProgression(s));
-  const record=promoteMilitia({...structuredClone(actual),id:issued.id},promotedRank,militiaProgression(s));
+  const record=promoteMilitia({...structuredClone(actual),id:issued.id,blade:actual.blade??0},promotedRank,militiaProgression(s));
   if(promotedRank!==issued.militiaRank){
    if(entry?.kind!=='departed'){s.sectors[request.sector].militia[issued.militiaRank]--;s.sectors[request.sector].militia[promotedRank]++;}
    s.log.unshift({hour:s.hour,text:`${record.name} asciende por experiencia de combate (${record.militiaExperience} puntos).`});s.log=s.log.slice(0,80);

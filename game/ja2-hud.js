@@ -580,7 +580,7 @@ export function inventoryModel(state, unit) {
   const items = [
     ...BODY_SLOTS.flatMap(slot=>{const worn=wornOutfit(unit,slot);return worn?[{...worn,item:slot,label:OUTFITS[worn.outfit].name}]:[];}),
     ...(hasPrimary(unit) ? [{item: 'primary', label: weaponFor({...unit, activeSlot: 'primary'}).name, count: 1, loaded: unit.loaded, condition: unit.condition, jammed: Boolean(unit.jammed)}] : []),
-    ...(BLADES[unit.blade] ? [{item: 'blade', label: BLADES[unit.blade].name, count: 1}] : []),
+    ...(BLADES[unit.blade] ? [{item: 'blade', label: weaponSpecification(unit,'blade').name, count: 1}] : []),
     ...(unit.offHand ? [{...itemDescriptor(unit,'offhand'),...unit.offHand,item:'offhand',count:1}] : []),
     ...supplies.filter(supply => supply.count > 0).map(supply => ({item: supply.id, label: supply.label, count: supply.count})),
     ...backpack.filter(record => record.count > 0).map(record => ({...record, item: `inventory:${record.key}`, label: record.name || 'Pertrechos'})),
@@ -642,12 +642,12 @@ export function nearbyLootOptions(state, unit, point=/** @type {{x:number,y:numb
   }
   for (const [index, source] of (state.droppedWeapons || []).entries()) {
     if (source.taken || !visible(source)) continue;
-    options.push({...source, id: `drop:${index}`, label: WEAPONS[source.weapon]?.name || BLADES[source.weapon]?.name || 'Arma', count: 1, source: 'En el suelo', action: {type: 'loot', dropIndex: index}});
+    options.push({...source, id: `drop:${index}`, label: weaponSpecification(source)?.name || 'Arma', count: 1, source: 'En el suelo', action: {type: 'loot', dropIndex: index}});
   }
   for (const source of state.groundItems || []) {
     if (source.heldBy || !(source.count > 0) || !visible(source)) continue;
     const stack = source.stack || source;
-    options.push({...stack, id: `ground:${source.id}`, label: WEAPONS[stack.weapon]?.name || BLADES[stack.weapon]?.name || OUTFITS[stack.outfit]?.name || SUPPLY_ITEMS[stack.item || stack.type]?.label || stack.name || 'Objeto', count: source.count, source: 'En el suelo', action: {type: 'loot', groundId: source.id}});
+    options.push({...stack, id: `ground:${source.id}`, label: weaponSpecification(stack)?.name || OUTFITS[stack.outfit]?.name || SUPPLY_ITEMS[stack.item || stack.type]?.label || stack.name || 'Objeto', count: source.count, source: 'En el suelo', action: {type: 'loot', groundId: source.id}});
   }
   return options;
 }
@@ -699,7 +699,7 @@ export function nearbyEnvironmentModel(state, unit, ctx = {}) {
   const target = targets.find(entry => entry.key === ctx.targetKey) || targets[0];
   if (!target) return {targets, target: null, preview: null, contents: [], verbs: [], loot: null};
   const raw = found.get(target.key), preview = environmentPreview(state, unit, target, ctx.verb || undefined);
-  const contents = visibleContainerContents(raw).map((stack, index) => ({...stack, index, label: WEAPONS[stack.weapon]?.name || BLADES[stack.weapon]?.name || OUTFITS[stack.outfit]?.name || TOOL_TYPES[stack.toolKey]?.label || SUPPLY_ITEMS[stack.item]?.label || stack.name || 'Pertrechos'}));
+  const contents = visibleContainerContents(raw).map((stack, index) => ({...stack, index, label: weaponSpecification(stack)?.name || OUTFITS[stack.outfit]?.name || TOOL_TYPES[stack.toolKey]?.label || SUPPLY_ITEMS[stack.item]?.label || stack.name || 'Pertrechos'}));
   const verbs = ENVIRONMENT_VERBS.map(id => ({id, label: environmentPreview(state, unit, target, id).label}));
   const loot = target.kind === 'container' ? containerLootPreview(state, unit, target, ctx.index ?? 0, ctx.count ?? 1) : null;
   return {targets, target, preview, contents, verbs, loot};
@@ -778,7 +778,7 @@ export function orderDescriptors(state, unit, ctx = {}) {
     useItem: u.activeSlot==='item'?true:itemPreview ? !itemPreview.valid : u.activeSlot === 'supply' ? !(u[u.activeSupply] > 0) || (u.activeSupply === 'rations' || ctx.target) && !supplyPreview.allowed : u.activeSlot === 'tool' ? !heldTool(u) : u.activeSlot === 'medical' ? !medicalPreview.allowed : attack?.type === 'fire' && (!(u.loaded > 0) || Boolean(u.jammed)),
     fire: !firearm || !(u.loaded > 0) || Boolean(u.jammed),
     melee: localMelee?!localMelee.valid:['medical','tool','supply','item'].includes(u.activeSlot),
-    charge: ['medical','tool','supply','item'].includes(u.activeSlot)||u.stance==='prone',
+    charge: blade.id===0||['medical','tool','supply','item'].includes(u.activeSlot)||u.stance==='prone',
     heal: !medicalPreview.allowed,
     loot: false,
     reload: !firearm || !loading?.pa || !loading.available || Boolean(u.jammed),

@@ -153,7 +153,7 @@ test('S4 orderDescriptors cover every order id with Spanish labels and kinds',()
   assert.equal(new Set(ids).size,ids.length);
   const byId=Object.fromEntries(descriptors.map(d=>[d.id,d]));
   assert.equal(byId.move.kind,'mode');assert.equal(byId.useItem.kind,'mode');assert.equal(byId.useItem.label,'Usar arma');assert.equal(byId.reload.kind,'order');assert.equal(byId.sight.kind,'toggle');
-  assert.equal(byId.move.label,'Mover');assert.equal(byId.fire.label,'Disparar');assert.equal(byId.melee.label,'Atacar');assert.equal(byId.charge.label,'Cargar');assert.equal(byId.heal.label,'Vendar');assert.equal(byId.endTurn.label,'Fin del turno');
+  assert.equal(byId.move.label,'Mover');assert.equal(byId.fire.label,'Disparar');assert.equal(byId.melee.label,'Golpear con la culata');assert.equal(byId.charge.label,'Cargar');assert.equal(byId.heal.label,'Vendar');assert.equal(byId.endTurn.label,'Fin del turno');
   for(const d of descriptors){
     assert.ok(d.label&&d.label.length>0);assert.ok(['mode','order','toggle'].includes(d.kind));
     assert.equal(typeof d.disabled,'boolean');

@@ -3249,5 +3249,49 @@
         "served": false
       }
     }
+  },
+  "groundEquipmentRepair": {
+    "source": "50995fac34f9c4fcf666cbcfbab2621a0b8786f43f60bb2cb289297cfe9edd38",
+    "scope": "Exact-source focused inventory and HUD checks, including mounted game controls; not full regression or browser performance acceptance",
+    "runs": [
+      {
+        "name": "ground-equipment-final",
+        "log": "/tmp/granaderos-ground-final.tap",
+        "tests": 163,
+        "pass": 163,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "sha256": "be1127ab1046d856f0ffd88d334c333da9671f3c76f8f50c20ee2cb97c5760f6"
+      },
+      {
+        "name": "broader-garrison-diagnostic",
+        "log": "/tmp/granaderos-ground-garrison.tap",
+        "tests": 22,
+        "pass": 15,
+        "fail": 7,
+        "cancelled": 0,
+        "skipped": 0,
+        "sha256": "51f1e85d6f09772f37c50e2e408eeec5a98a685539180936e344b56bd093427c"
+      }
+    ],
+    "fixes": [
+      "Canonical empty secondary weapon on militia return",
+      "Authored weapon names in body, ground and container lists",
+      "Disable charge with empty hands to match tactical action validation"
+    ],
+    "otherChecks": {
+      "typecheck": "passed",
+      "referenceAudit": {
+        "passed": 38,
+        "failed": 0
+      },
+      "privateProductionBuild": {
+        "passed": true,
+        "files": 1131,
+        "assetReferences": 1031,
+        "served": false
+      }
+    }
   }
 }
