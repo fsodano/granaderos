@@ -112,7 +112,8 @@ function BattlefieldContents({battle:committed,onPlaybackBusy,onPlaybackValidate
   const [speech,setSpeech]=useState<any>(null);const replyCounts=useRef<Record<string,number>>({});
   useEffect(()=>{if(!speech)return;const timer=setTimeout(()=>setSpeech(null),10000);return()=>clearTimeout(timer);},[speech]);
   useEffect(()=>{setSpeech(null);setTalking(null);setPendingGift(null);setGiftReply(null);},[s.battleId,s.sectorId]);
-  const talking=talkingSelection?(s.npcs??[]).find((n:any)=>n.id===talkingSelection.id)??null:null;
+  const talking=talkingSelection?(s.npcs??[]).find((n:any)=>n.id===talkingSelection.id&&(n.hp??100)>0&&!n.unconscious&&!n.departure&&!n.fled&&!n.routed)??null:null;
+  useEffect(()=>{if(talkingSelection&&!talking){setTalking(null);setGiftReply(null);}},[talkingSelection,talking]);
   useEffect(()=>{
     const modifier=(event:KeyboardEvent)=>{setMovementIntent(pointerMovementIntent(event));setItemIntent(pointerItemIntent(event));};
     const reset=()=>{setMovementIntent('forward');clickMovementIntent.current='forward';setItemIntent('use');clickItemIntent.current='use';};

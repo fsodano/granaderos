@@ -26,7 +26,7 @@ test('critical residents and bodies do not wake or heal, and loaded recovery kee
 });
 
 test('actual tactical time recovers civilians once per completed round or six exploration seconds, while field aid grants no breath',()=>{
- const original=field({hp:1,stance:'prone'}),treated=actBattle(createBattle([{id:'doc',x:4,y:3,medical:80,medkits:2}],{width:12,height:8,exploration:true,enemies:[],npcs:original.npcs}),{type:'heal',unitId:'doc',targetId:'resident'});
+ const original=field({hp:1,stance:'prone'}),treated=actBattle(createBattle([{id:'doc',x:4,y:3,medical:80,medkits:2,activeSlot:'medical'}],{width:12,height:8,exploration:true,enemies:[],npcs:original.npcs}),{type:'heal',unitId:'doc',targetId:'resident'});
  assert.equal(treated.lastError,null);assert.ok(treated.npcs[0].hp>1);assert.equal(treated.npcs[0].energy,0);assert.equal(treated.npcs[0].unconscious,true);
  const stabilized=actBattle(treated,{type:'heal',unitId:'doc',targetId:'resident'});assert.equal(stabilized.lastError,null);assert.equal(stabilized.npcs[0].hp,15);assert.equal(stabilized.npcs[0].energy,0);assert.equal(stabilized.npcs[0].unconscious,true);assert.equal(stabilized.units[0].medkits,0);
  const awake=actBattle(stabilized,{type:'ambient'});assert.equal(awake.npcs[0].energy,10);assert.equal(awake.npcs[0].unconscious,false);assert.equal(awake.npcs[0].hp,15);assert.equal(awake.npcs[0].stance,'prone');assert.equal(awake.units[0].medkits,0);

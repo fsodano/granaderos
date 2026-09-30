@@ -1,172 +1,125 @@
-import {autoBandageBattle} from '../game/auto-bandage.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {initialCampaign,dispatchCampaign} from '../game/campaign.js';
-import {createBattle,actBattle} from '../game/tactical.js';
-import {applyCivilianHarm,civilianIncidents} from '../game/civilian-harm.js';
+import {autoBandageBattle} from '../game/auto-bandage.js';
+import {dispatchCampaign} from '../game/campaign.js';
+import {civilianIncidents} from '../game/civilian-harm.js';
 import {hasPendingCivilianHarm} from '../game/campaign-civilian-harm.js';
 import {enterSector} from '../game/world.js';
 import {syncBattleTime} from '../game/time.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {playerKnownBattle} from '../game/player-known-state.js';
+import {PATIENT,PATIENT_ID,order,act,sync,saved,npc,record,aid,finish,paidVisit,wound,hirePatient} from './campaign-medical-fixture.mjs';
 
-const order=(campaign,action)=>{const next=dispatchCampaign(campaign,action);assert.equal(next.lastError,null,`${action.type}: ${next.lastError}`);return next;};
-const act=(battle,action)=>{const next=actBattle(battle,action);assert.equal(next.lastError,null,`${action.type}: ${next.lastError}`);return next;};
-const sync=(campaign,battle)=>{const pair=syncBattleTime(campaign,battle);assert.equal(pair.error,null,pair.error);return pair;};
-const save=campaign=>decodeSave(encodeSave(campaign)).campaign;
-const finish=(campaign,battle)=>order(campaign,{type:'leaveSector',battleId:campaign.pendingBattle.id,sectorState:battle,survivors:battle.units.filter(unit=>unit.side==='player')});
-const npc=(battle,id='sosa')=>battle.npcs.find(npc=>npc.id===id);
-const serviceRow=(campaign,id='sosa')=>Object.values(campaign.civilianHarm.records).find(record=>record.npcId===id);
-
-function paidVisit({sector='buenos_aires',target='sosa'}={}){
- let campaign=initialCampaign(8);
- // This lifecycle fixture starts after local liberation and uses a compact,
- // open treatment area. Hiring, supply purchase, march, visit and all reports
- // are ordinary paid actions; every authored resident remains in the scene.
- if(sector!=='retiro')campaign.sectors[sector].owner='patriot';
- const initialCash=campaign.resources.treasury,stock=campaign.merchants.retiro.supplies.medkits;
- campaign=order(campaign,{type:'recruitCivic',id:112,term:'week'});
- campaign=order(campaign,{type:'purchaseMedicalSupplies',operativeId:112,quantity:1});
- assert.equal(campaign.resources.treasury,initialCash-campaign.contracts[112].paid-30);
- assert.equal(campaign.merchants.retiro.supplies.medkits,stock-1);
- assert.equal(campaign.operativeState[112].medkits,3);
- if(sector!=='retiro')campaign=order(campaign,{type:'travel',sector});
- campaign=order(campaign,{type:'visitSector'});const request=campaign.pendingBattle;
- let battle=createBattle(request.squad.map(unit=>({...unit,x:2,y:2})),{...request,width:12,height:10,props:[],enemies:[],
-  tiles:Array.from({length:120},(_,i)=>({x:i%12,y:Math.floor(i/12),type:'grass',blocked:false,cover:0})),
-  npcs:request.npcs.map((resident,index)=>({...resident,x:resident.id===target?3:8,y:resident.id===target?2:5+index}))});
- assert.ok(npc(battle,target));battle=act(battle,{type:'weapon',unitId:'112',slot:'medical'});
- return {campaign,battle};
-}
-function wound(battle,{target='sosa',damage=20,source='player'}={}){
- // The shared damage path supplies the actual wound/bleed attribution; the
- // fixture chooses its magnitude so this test isolates treatment persistence.
- applyCivilianHarm(battle,npc(battle,target),{source:source==='player'?battle.units.find(unit=>unit.id==='112'):null,damage,intentional:source==='player'});
-}
-const aid=battle=>act(battle,{type:'useItem',unitId:'112',targetId:'sosa',targetKind:'npc'});
-
+const save=campaign=>saved({campaign}).campaign;
 function repeatSync(campaign,battle){
- const before=structuredClone(campaign),again=sync(campaign,battle);assert.deepEqual(again.campaign,before,'repeated medical sync does not subtract wounds or consume supplies again');return again;
+ const before=structuredClone(campaign),again=sync(campaign,battle);
+ assert.deepEqual(again.campaign,before,'repeated medical sync does not subtract wounds or consume supplies again');return again;
 }
+const revisit=campaign=>{campaign=order(campaign,{type:'visitSector'});return {campaign,battle:enterSector(campaign.pendingBattle,campaign.sectorStates[campaign.location])};};
 
-test('paid first aid keeps wounds and refusal through save, reentry, and paid service transfer',()=>{
+test('paid first aid keeps player-inflicted wounds and refusal through save and reentry',()=>{
  let {campaign,battle}=paidVisit();wound(battle);
- assert.equal(npc(battle).hp,npc(battle).maxHp-20);assert.equal(npc(battle).bleeding,2);assert.equal(npc(battle).bandaged,0);
- assert.equal(Object.hasOwn(playerKnownBattle(battle).npcs.find(npc=>npc.id==='sosa'),'bleedSource'),false);
- ({campaign,battle}=sync(campaign,battle));
- const woundedHp=campaign.operativeState[100].maxHp-20;
- assert.equal(campaign.operativeState[100].hp,woundedHp);assert.equal(campaign.operativeState[100].bleeding,2);
+ assert.equal(npc(battle).hp,50);assert.equal(npc(battle).bleeding,2);assert.equal(npc(battle).bandaged,0);
+ assert.equal(Object.hasOwn(playerKnownBattle(battle).npcs.find(n=>n.id===PATIENT),'bleedSource'),false);
+ ({campaign,battle}=sync(campaign,battle));assert.equal(campaign.operativeState[PATIENT_ID].hp,50);assert.equal(campaign.operativeState[PATIENT_ID].bleeding,2);
  ({campaign,battle}=repeatSync(campaign,battle));
  const before=structuredClone(npc(battle)),supplies=battle.units[0].medkits,loyalty=campaign.sectors.buenos_aires.loyalty;
  battle=aid(battle);
  assert.equal(npc(battle).hp,before.hp);assert.equal(npc(battle).energy,before.energy);assert.equal(npc(battle).unconscious,before.unconscious);
  assert.equal(npc(battle).bleeding,0);assert.equal(npc(battle).bandaged,20);assert.equal(npc(battle).bleedSource,undefined);assert.equal(npc(battle).civilianWoundVersion,1);
  assert.equal(battle.units[0].medkits,supplies-1);assert.deepEqual(civilianIncidents(npc(battle)),civilianIncidents(before));
- assert.equal(hasPendingCivilianHarm(campaign,battle),true,'bandaging alone must synchronize the named service record');
+ assert.equal(hasPendingCivilianHarm(campaign,battle),true);
  ({campaign,battle}=sync(campaign,battle));({campaign,battle}=repeatSync(campaign,battle));
- assert.equal(campaign.operativeState[100].hp,woundedHp);assert.equal(campaign.operativeState[100].bleeding,0);assert.equal(campaign.operativeState[100].bandaged,20);
- assert.equal(campaign.sectors.buenos_aires.loyalty,loyalty);assert.equal(campaign.cityLoyaltyEvents.length,0);
- ({campaign,battle}=decodeSave(encodeSave(campaign,battle)));campaign=save(finish(campaign,battle));
- assert.equal(campaign.operativeState[112].medkits,supplies-1);
- campaign=order(campaign,{type:'visitSector'});battle=enterSector(campaign.pendingBattle,campaign.sectorStates.buenos_aires);
- assert.equal(npc(battle).hp,npc(battle).maxHp-20);assert.equal(npc(battle).bleeding,0);assert.equal(npc(battle).bandaged,20);assert.equal(npc(battle).civilianWoundVersion,1);
- const refusal=dispatchCampaign(campaign,{type:'talkNPC',unitId:112,npcId:'sosa',approach:'friendly',sectorState:battle});assert.match(refusal.lastError,/Me heriste/);
- campaign=finish(campaign,battle);const cash=campaign.resources.treasury;
- campaign=order(campaign,{type:'recruitCivic',id:100,term:'week'});assert.equal(campaign.resources.treasury,cash-campaign.contracts[100].paid);
- assert.equal(campaign.operativeState[100].hp,woundedHp);assert.equal(campaign.operativeState[100].bleeding,0);assert.equal(campaign.operativeState[100].bandaged,20);assert.equal(serviceRow(campaign).transferredTo,100);
- campaign=save(campaign);campaign=order(campaign,{type:'visitSector'});battle=enterSector(campaign.pendingBattle,campaign.sectorStates.buenos_aires);
- assert.equal(npc(battle),undefined);const soldier=battle.units.find(unit=>unit.id==='100');assert.equal(soldier.hp,woundedHp);assert.equal(soldier.bandaged,20);assert.equal(soldier.bleeding,0);
- campaign=save(finish(campaign,battle));assert.equal(campaign.operativeState[100].hp,woundedHp);
+ assert.equal(campaign.operativeState[PATIENT_ID].hp,50);assert.equal(campaign.operativeState[PATIENT_ID].bleeding,0);assert.equal(campaign.operativeState[PATIENT_ID].bandaged,20);
+ assert.equal(campaign.sectors.buenos_aires.loyalty,loyalty);assert.equal(campaign.cityLoyaltyEvents.filter(e=>e.kind.startsWith('civilian')).length,0);
+ ({campaign,battle}=saved({campaign,battle}));campaign=save(finish(campaign,battle));assert.equal(campaign.operativeState[112].medkits,supplies-1);
+ ({campaign,battle}=revisit(campaign));assert.equal(npc(battle).hp,50);assert.equal(npc(battle).bleeding,0);assert.equal(npc(battle).bandaged,20);
+ for(const approach of ['friendly','recruit']){
+  const before=structuredClone(campaign),refusal=dispatchCampaign(campaign,{type:'talkNPC',unitId:112,npcId:PATIENT,approach,term:'week',sectorState:battle});
+  assert.match(refusal.lastError,/Me heriste/);assert.deepEqual({...refusal,lastError:null},before);
+ }
+ campaign=finish(campaign,battle);assert.ok(dispatchCampaign(campaign,{type:'recruitCivic',id:PATIENT_ID,term:'week'}).lastError,'the bulletin cannot bypass a local refusal');
+ assert.equal(record(campaign).inService,undefined);assert.deepEqual(civilianIncidents(record(campaign).health),civilianIncidents(before));
 });
 
-test('unattributed civilian bleeding survives paid hiring and dismissal without invented blame or respawn',()=>{
+test('unattributed wounds survive local hiring, dismissal and rehire without invented blame or healing',()=>{
  let {campaign,battle}=paidVisit();wound(battle,{source:'unknown'});
  ({campaign,battle}=sync(campaign,battle));({campaign,battle}=repeatSync(campaign,battle));
- const hp=campaign.operativeState[100].maxHp-20;
- assert.equal(campaign.operativeState[100].hp,hp);assert.equal(campaign.operativeState[100].bleeding,2);assert.equal(campaign.operativeState[100].bandaged,0);
- assert.deepEqual(serviceRow(campaign).incidents,[]);assert.deepEqual(serviceRow(campaign).effects,[]);assert.equal(civilianIncidents(npc(battle)).length,0);
- ({campaign,battle}=decodeSave(encodeSave(campaign,battle)));campaign=save(finish(campaign,battle));
- campaign=order(campaign,{type:'recruitCivic',id:100,term:'week'});assert.equal(serviceRow(campaign).transferredTo,100);
- assert.equal(campaign.operativeState[100].hp,hp);assert.equal(campaign.operativeState[100].bleeding,2);assert.equal(campaign.operativeState[100].bandaged,0);
- campaign=order(campaign,{type:'dismiss',id:100});campaign=save(campaign);campaign=order(campaign,{type:'visitSector'});battle=enterSector(campaign.pendingBattle,campaign.sectorStates.buenos_aires);
- assert.equal(npc(battle),undefined);campaign=save(finish(campaign,battle));assert.equal(campaign.cityLoyaltyEvents.length,0);
- campaign=order(campaign,{type:'recruitCivic',id:100,term:'week'});assert.equal(campaign.operativeState[100].hp,hp);assert.equal(campaign.operativeState[100].bleeding,2);assert.equal(campaign.operativeState[100].bandaged,0);
+ assert.equal(campaign.operativeState[PATIENT_ID].hp,50);assert.equal(campaign.operativeState[PATIENT_ID].bleeding,2);assert.equal(campaign.operativeState[PATIENT_ID].bandaged,0);
+ assert.deepEqual(civilianIncidents(record(campaign).health),[]);assert.equal(campaign.cityLoyaltyEvents.filter(e=>e.kind.startsWith('civilian')).length,0);
+ ({campaign,battle}=saved({campaign,battle}));({campaign,battle}=hirePatient(campaign,battle));
+ const health=structuredClone(campaign.operativeState[PATIENT_ID]);assert.equal(record(campaign).inService,true);
+ assert.equal(health.hp,50);assert.equal(health.bleeding,2);assert.equal(health.bandaged,0);assert.equal(npc(battle),undefined);
+ assert.equal(battle.units.find(u=>u.id===String(PATIENT_ID)).hp,health.hp);
+ campaign=save(finish(campaign,battle));campaign=order(campaign,{type:'dismiss',id:PATIENT_ID});campaign=save(campaign);
+ ({campaign,battle}=revisit(campaign));assert.equal(npc(battle).hp,health.hp);assert.equal(npc(battle).bleeding,2);assert.equal(npc(battle).bandaged,0);
+ assert.equal(record(campaign).inService,undefined);assert.deepEqual(civilianIncidents(npc(battle)),[]);
+ // Rehiring requires a real local conversation. Any elapsed approach time
+ // must retain its damage; it cannot restore the earlier healthier snapshot.
+ ({campaign,battle}=hirePatient(campaign,battle));assert.ok(campaign.operativeState[PATIENT_ID].hp<=health.hp);
+ assert.equal(campaign.operativeState[PATIENT_ID].bleeding,2);assert.equal(campaign.operativeState[PATIENT_ID].bandaged,0);
+ assert.equal(campaign.cityLoyaltyEvents.filter(e=>e.kind.startsWith('civilian')).length,0);assert.ok(saved({campaign,battle}));
 });
 
 test('first aid to an ordinary resident persists without a service record or health gain',()=>{
  let {campaign,battle}=paidVisit({sector:'retiro',target:'local-retiro'});wound(battle,{target:'local-retiro',source:'unknown'});
  const hp=npc(battle,'local-retiro').hp,treasury=campaign.resources.treasury;
- battle=act(battle,{type:'useItem',unitId:'112',targetId:'local-retiro',targetKind:'npc'});({campaign,battle}=sync(campaign,battle));({campaign,battle}=decodeSave(encodeSave(campaign,battle)));
- campaign=save(finish(campaign,battle));campaign=order(campaign,{type:'visitSector'});
- // Legacy deployments could omit their civilian roster. A saved injured
- // resident still owns its condition even without an attributed harm receipt.
- delete campaign.pendingBattle.npcs;battle=enterSector(campaign.pendingBattle,campaign.sectorStates.retiro);
+ battle=act(battle,{type:'useItem',unitId:'112',targetId:'local-retiro',targetKind:'npc'});({campaign,battle}=sync(campaign,battle));({campaign,battle}=saved({campaign,battle}));
+ campaign=save(finish(campaign,battle));({campaign,battle}=revisit(campaign));
  const resident=npc(battle,'local-retiro');assert.equal(resident.hp,hp);assert.equal(resident.bleeding,0);assert.equal(resident.bandaged,100-hp);assert.equal(resident.civilianWoundVersion,1);
- assert.equal(serviceRow(campaign,'local-retiro'),undefined);assert.equal(campaign.resources.treasury,treasury);assert.equal(campaign.cityLoyaltyEvents.length,0);
- assert.deepEqual(decodeSave(encodeSave(campaign,battle)),{campaign,battle});
+ assert.equal(resident.operativeId,undefined);assert.equal(campaign.civilianState.people['npc-local-retiro'].health.hp,hp);
+ assert.equal(campaign.resources.treasury,treasury);assert.equal(campaign.cityLoyaltyEvents.filter(e=>e.kind.startsWith('civilian')).length,0);assert.deepEqual(saved({campaign,battle}),{campaign,battle});
 });
 
-test('invalid civilian wound fields and missing canonical medical records reject at save and report boundaries',()=>{
+test('invalid wounds and altered canonical health reject at save and report boundaries',()=>{
  let {campaign,battle}=paidVisit();wound(battle,{source:'unknown'});({campaign,battle}=sync(campaign,battle));
  const raw=JSON.parse(encodeSave(campaign,battle));
  for(const change of [n=>n.bleeding=-1,n=>n.bleeding=11,n=>n.bleeding=1.5,n=>n.bandaged=-1,n=>n.bandaged=21,n=>n.civilianWoundVersion=2,n=>delete n.civilianWoundVersion,n=>delete n.bleedSource,n=>n.bleedSource.intentional=true,n=>n.bleedSource.extra=true]){
   const bad=structuredClone(raw);change(npc(bad.battle));assert.throws(()=>decodeSave(JSON.stringify(bad)));
-  const before=structuredClone(campaign),report=dispatchCampaign(campaign,{type:'leaveSector',battleId:campaign.pendingBattle.id,sectorState:bad.battle,survivors:bad.battle.units.filter(unit=>unit.side==='player')});assert.ok(report.lastError);assert.deepEqual(campaign,before);
+  const before=structuredClone(campaign),report=dispatchCampaign(campaign,{type:'leaveSector',battleId:campaign.pendingBattle.id,sectorState:bad.battle,survivors:bad.battle.units.filter(u=>u.side==='player')});assert.ok(report.lastError);assert.deepEqual(campaign,before);
  }
- const missing=structuredClone(raw);delete missing.campaign.civilianHarm;assert.throws(()=>decodeSave(JSON.stringify(missing)));
- const treated=aid(battle),treatedPair=sync(campaign,treated),downgraded=JSON.parse(encodeSave(treatedPair.campaign,treatedPair.battle));
- delete npc(downgraded.battle).civilianWoundVersion;assert.throws(()=>decodeSave(JSON.stringify(downgraded)),'a treated canonical wound cannot masquerade as a legacy record');
+ for(const change of [s=>s.civilianState.version=3,s=>record(s).health.hp++,s=>record(s).health.bleeding=0,s=>record(s).extra=true]){const bad=structuredClone(raw);change(bad.campaign);assert.throws(()=>decodeSave(JSON.stringify(bad)));}
+ const treated=aid(battle),pair=sync(campaign,treated),downgraded=JSON.parse(encodeSave(pair.campaign,pair.battle));
+ delete npc(downgraded.battle).civilianWoundVersion;assert.throws(()=>decodeSave(JSON.stringify(downgraded)));
  campaign=finish(campaign,battle);const returned=JSON.parse(encodeSave(campaign));
- for(const change of [s=>delete s.civilianHarm,s=>s.civilianHarm.records={},s=>s.sectorStates.buenos_aires.npcs.find(n=>n.id==='sosa').bandaged=99]){const bad=structuredClone(returned);change(bad.campaign);assert.throws(()=>decodeSave(JSON.stringify(bad)));}
+ for(const change of [s=>record(s).health.hp++,s=>npc(s.sectorStates.buenos_aires).bandaged=99]){const bad=structuredClone(returned);change(bad.campaign);assert.throws(()=>decodeSave(JSON.stringify(bad)));}
 });
 
-test('a delayed civilian death retains its real absent attacker across sector reentry exactly once',()=>{
+test('a delayed civilian death retains its absent attacker across sector reentry exactly once',()=>{
  let {campaign,battle}=paidVisit();wound(battle,{damage:npc(battle).hp-4});({campaign,battle}=sync(campaign,battle));campaign=save(finish(campaign,battle));
- const loyalty=campaign.sectors.buenos_aires.loyalty;campaign=order(campaign,{type:'recruitCivic',id:110,term:'week'});campaign=order(campaign,{type:'squad',ids:[110]});campaign=order(campaign,{type:'visitSector'});
- battle=enterSector(campaign.pendingBattle,campaign.sectorStates.buenos_aires);assert.equal(battle.units.some(unit=>unit.id==='112'),false);assert.equal(npc(battle).bleedSource.attackerId,'112');
- battle=act(battle,{type:'rest'});assert.equal(npc(battle).hp,0);assert.equal(npc(battle).bleeding,0);assert.equal(npc(battle).bleedSource,undefined);
- assert.equal(civilianIncidents(npc(battle)).at(-1).attackerId,'112');
+ const loyalty=campaign.sectors.buenos_aires.loyalty;campaign=order(campaign,{type:'recruitCivic',id:110,term:'week'});campaign=order(campaign,{type:'squad',ids:[110]});
+ ({campaign,battle}=revisit(campaign));assert.equal(battle.units.some(u=>u.id==='112'),false);assert.equal(npc(battle).bleedSource.attackerId,'112');
+ battle=act(battle,{type:'rest'});assert.equal(npc(battle).hp,0);assert.equal(npc(battle).bleeding,0);assert.equal(npc(battle).bleedSource,undefined);assert.equal(civilianIncidents(npc(battle)).at(-1).attackerId,'112');
  for(const change of [event=>event.attackerId='other-attacker',event=>event.intentional=false]){
   const bad=structuredClone(battle),before=structuredClone(campaign);change(civilianIncidents(npc(bad)).at(-1));assert.ok(syncBattleTime(campaign,bad).error);assert.deepEqual(campaign,before);
  }
- ({campaign,battle}=sync(campaign,battle));assert.equal(campaign.sectors.buenos_aires.loyalty,loyalty-10);assert.equal(campaign.operativeState[100].alive,false);
- ({campaign,battle}=repeatSync(campaign,battle));({campaign,battle}=decodeSave(encodeSave(campaign,battle)));campaign=save(finish(campaign,battle));
- assert.equal(campaign.sectors.buenos_aires.loyalty,loyalty-10);assert.equal(serviceRow(campaign).incidents.length,2);
+ ({campaign,battle}=sync(campaign,battle));assert.equal(campaign.sectors.buenos_aires.loyalty,loyalty-10);assert.equal(campaign.operativeState[PATIENT_ID].alive,false);
+ ({campaign,battle}=repeatSync(campaign,battle));({campaign,battle}=saved({campaign,battle}));campaign=save(finish(campaign,battle));
+ assert.equal(campaign.sectors.buenos_aires.loyalty,loyalty-10);assert.equal(civilianIncidents(record(campaign).health).length,2);
 });
 
-test('a pristine or legacy contact cannot heal a dismissed soldier during synchronization',()=>{
- let campaign=initialCampaign(8);campaign.sectors.buenos_aires.owner='patriot'; // Local-control checkpoint only.
- campaign=order(campaign,{type:'recruitCivic',id:100,term:'week'});campaign=order(campaign,{type:'recruitCivic',id:112,term:'week'});
- campaign=order(campaign,{type:'travel',sector:'buenos_aires'});campaign=order(campaign,{type:'visitSector'});
- const request=campaign.pendingBattle;
- // A soldier wound is the fixture input. The ordinary deployment report,
- // dismissal, civilian revisit and later paid rehire must preserve it.
- let battle=createBattle(request.squad.map((unit,index)=>({...unit,x:2,y:2+index,...(unit.id===100?{hp:60,bleeding:2,bandaged:3}:{})})),{...request,width:12,height:10,props:[],enemies:[],
-  tiles:Array.from({length:120},(_,i)=>({x:i%12,y:Math.floor(i/12),type:'grass',blocked:false,cover:0})),npcs:request.npcs.map((resident,index)=>({...resident,x:8,y:5+index}))});
- campaign=save(finish(campaign,battle));const wounded=structuredClone(campaign.operativeState[100]);
- assert.equal(wounded.hp,60);assert.equal(wounded.bleeding,2);assert.equal(wounded.bandaged,3);
- campaign=order(campaign,{type:'dismiss',id:100});campaign=order(campaign,{type:'visitSector'});battle=enterSector(campaign.pendingBattle,campaign.sectorStates.buenos_aires);
- assert.ok(npc(battle));assert.equal(npc(battle).hp,60);assert.equal(npc(battle).civilianWoundVersion,1);assert.equal(npc(battle).bleeding,2);
- for(const legacy of [false,true]){
-  const field=structuredClone(battle);if(legacy){delete npc(field).civilianWoundVersion;delete npc(field).bleeding;delete npc(field).bandaged;delete npc(field).bleedSource;}
-  const synced=sync(campaign,field);assert.equal(synced.campaign.operativeState[100].hp,60);assert.equal(synced.campaign.operativeState[100].bleeding,2);assert.equal(synced.campaign.operativeState[100].bandaged,3);
-  assert.equal(hasPendingCivilianHarm(synced.campaign,synced.battle),false);assert.deepEqual(decodeSave(encodeSave(synced.campaign,synced.battle)),{campaign:synced.campaign,battle:synced.battle});
- }
- ({campaign,battle}=sync(campaign,battle));campaign=save(finish(campaign,battle));campaign=order(campaign,{type:'recruitCivic',id:100,term:'week'});
- assert.equal(campaign.operativeState[100].hp,60);assert.equal(campaign.operativeState[100].bleeding,2);assert.equal(campaign.operativeState[100].bandaged,3);
+test('a former local recruit returns with current soldier wounds and cannot heal from a stale civilian cache',()=>{
+ let {campaign,battle}=paidVisit();({campaign,battle}=hirePatient(campaign,battle));
+ // A new soldier wound is this scenario input. The report, dismissal and
+ // local rehire must preserve the service body instead of the pristine cache.
+ Object.assign(battle.units.find(u=>u.id===String(PATIENT_ID)),{hp:60,bleeding:2,bandaged:3});
+ campaign=save(finish(campaign,battle));const wounded=structuredClone(campaign.operativeState[PATIENT_ID]);assert.equal(wounded.hp,60);
+ campaign=order(campaign,{type:'dismiss',id:PATIENT_ID});({campaign,battle}=revisit(campaign));
+ assert.equal(npc(battle).hp,60);assert.equal(npc(battle).civilianWoundVersion,1);assert.equal(npc(battle).bleeding,2);assert.equal(npc(battle).bandaged,3);
+ const stale=structuredClone(battle);Object.assign(npc(stale),{hp:70,bleeding:0,bandaged:0});delete npc(stale).bleedSource;
+ assert.ok(syncBattleTime(campaign,stale).error);assert.equal(campaign.operativeState[PATIENT_ID].hp,60);
+ ({campaign,battle}=sync(campaign,battle));assert.equal(hasPendingCivilianHarm(campaign,battle),false);assert.deepEqual(saved({campaign,battle}),{campaign,battle});
+ ({campaign,battle}=hirePatient(campaign,battle));assert.ok(campaign.operativeState[PATIENT_ID].hp<=60);assert.equal(campaign.operativeState[PATIENT_ID].bleeding,2);assert.equal(campaign.operativeState[PATIENT_ID].bandaged,3);
 });
 
 test('automatic civilian care retains named health, finite dressings and refusal through campaign saves',()=>{
  let {campaign,battle}=paidVisit();wound(battle);({campaign,battle}=sync(campaign,battle));
  const kits=battle.units[0].medkits,report=autoBandageBattle(battle);
- assert.deepEqual(report.treatedIds,['npc:sosa']);assert.equal(report.untreated.length,0);
- battle=report.battle;assert.equal(battle.units[0].medkits,kits-1);
- ({campaign,battle}=sync(campaign,battle));({campaign,battle}=repeatSync(campaign,battle));
- const health=structuredClone(campaign.operativeState[100]);
- assert.equal(health.bleeding,0);assert.ok(health.bandaged>0);
- ({campaign,battle}=decodeSave(encodeSave(campaign,battle)));
- campaign=save(finish(campaign,battle));campaign=order(campaign,{type:'visitSector'});battle=enterSector(campaign.pendingBattle,campaign.sectorStates.buenos_aires);
- assert.equal(npc(battle).hp,health.hp);assert.equal(npc(battle).bandaged,health.bandaged);
- assert.ok(civilianIncidents(npc(battle)).some(event=>event.side==='player'));
- assert.equal(battle.units.find(unit=>unit.id==='112').medkits,kits-1);
+ assert.deepEqual(report.treatedIds,[`npc:${PATIENT}`]);assert.equal(report.untreated.length,0);battle=report.battle;assert.equal(battle.units[0].medkits,kits-1);
+ ({campaign,battle}=sync(campaign,battle));({campaign,battle}=repeatSync(campaign,battle));const health=structuredClone(campaign.operativeState[PATIENT_ID]);
+ assert.equal(health.bleeding,0);assert.ok(health.bandaged>0);({campaign,battle}=saved({campaign,battle}));
+ campaign=save(finish(campaign,battle));({campaign,battle}=revisit(campaign));
+ assert.equal(npc(battle).hp,health.hp);assert.equal(npc(battle).bandaged,health.bandaged);assert.ok(civilianIncidents(npc(battle)).some(e=>e.side==='player'));
+ assert.equal(battle.units.find(u=>u.id==='112').medkits,kits-1);
+ assert.match(dispatchCampaign(campaign,{type:'talkNPC',unitId:112,npcId:PATIENT,approach:'recruit',term:'week',sectorState:battle}).lastError,/Me heriste/);
 });

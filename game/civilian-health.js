@@ -46,6 +46,16 @@ export function seedCivilianHealth(npc,service){
  return result;
 }
 
+// A raw scene resident can already carry a wound and its cause. Seeding from
+// only HP would silently stop the bleeding; service seeding alone would replace
+// an attributed injury with an unknown origin. Keep the scene's physical input.
+export function initializeCivilianHealth(npc){
+ if(npc.civilianHealthVersion===1)return npc;
+ const result=seedCivilianHealth(npc,{...npc,maxHp:npc.maxHp??100,hp:npc.hp??npc.maxHp??100,energy:npc.energy??100});
+ if(npc.bleedSource!==undefined)result.bleedSource=npc.bleedSource;
+ return result;
+}
+
 export function migrateCivilianHealth(npc,service,{currentContact=true}={}){
  if(npc.civilianHealthVersion!==undefined||npc.maxHp!==undefined)return validateCivilianHealth(npc);
  const oldHp=npc.hp??100;
