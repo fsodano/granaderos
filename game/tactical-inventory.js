@@ -145,7 +145,8 @@ function recordDescriptor(item, value) {
   const compactWeapon = handheld && [1805, 1806, 1808, 1811, 1813].includes(spec.id);
   const slotSize = value.kind==='outfit'?2:handheld ? compactWeapon ? 1 : 2 : value.weight > 2 ? 2 : 1;
   const label = value.kind==='outfit'?OUTFITS[value.outfit].name:value.fittingPattern != null ? fittingLabel(value.fittingPattern) : spec?.name ?? (isTool(value) ? TOOL_LABELS[value.toolKey] : typeof value.name==='string'&&value.name.trim()?value.name.trim().slice(0,100):item.replace(/^inventory:/, ''));
-  return {item, label, name: label, ...(spec?.art?{art:spec.art}:{}), ...(spec?{weapon:spec.id,loaded:value.loaded,condition:value.condition}:value.condition!==undefined?{condition:value.condition}:{}), stackLimit: spec || isTool(value) || value.instanceId ? 1 : slotSize === 2 ? 1 : 4, slotSize, weight: value.weight+fittingWeight(value), kind: value.kind==='outfit'?'outfit':spec ? 'weapon' : isTool(value) ? 'tool' : 'inventory'};
+  const stackLimit=spec||isTool(value)||value.instanceId||slotSize===2?1:item.startsWith('inventory:cash:')?1000000:4;
+  return {item, label, name: label, ...(spec?.art?{art:spec.art}:{}), ...(spec?{weapon:spec.id,loaded:value.loaded,condition:value.condition}:value.condition!==undefined?{condition:value.condition}:{}), stackLimit, slotSize, weight: value.weight+fittingWeight(value), kind: value.kind==='outfit'?'outfit':spec ? 'weapon' : isTool(value) ? 'tool' : 'inventory'};
 }
 
 export function itemQuantity(unit, item) {return resolvedQuantity(unit,resolve(unit,item));}
@@ -318,6 +319,7 @@ export function itemStackDescriptor(stack){
 export function equipmentStacksMerge(left,right){
  const a=incoming(left),b=incoming(right);if(a.kind!==b.kind)return false;
  if(a.kind==='supply')return a.key===b.key;
+ if(a.key!==b.key&&(a.key.startsWith('cash:')||b.key.startsWith('cash:')))return false;
  if(a.value.weapon!==undefined||a.value.kind==='outfit'||a.value.instanceId||isTool(a.value)||a.key!==b.key&&!a.value.name)return false;
  return sameMetadata(a.value,b.value);
 }
@@ -448,6 +450,7 @@ export function pocketMergeCount(unit,sourceId,destinationId,layout=inventoryUsa
  if(!source||!destination)return 0;
  if(source.item!==destination.item){
   if(!source.item.startsWith('inventory:')||!destination.item.startsWith('inventory:'))return 0;
+  if(source.item.startsWith('inventory:cash:')||destination.item.startsWith('inventory:cash:'))return 0;
   const a=record(unit.inventory[source.item.slice(10)]),b=record(unit.inventory[destination.item.slice(10)]);
   if(!a.name||a.weapon!==undefined||a.kind==='outfit'||a.instanceId||isTool(a)||!sameMetadata(a,b))return 0;
  }

@@ -413,6 +413,7 @@ function commitDeploymentReturn(s,request,snapshot,plan){
   returnGarrison(s,request,snapshot,plan.auxiliary);
   settleSectorArtillery(snapshot,plan.outcome);
   snapshot.returnLedger={battleId:request.id,entries:clone([...plan.entries,...plan.auxiliary]),creditedCartridges:plan.ammunition.creditedCartridges,creditedAmmunition:clone(plan.ammunition.creditedAmmunition)};
+  if(!request.sceneId)collectSectorCash(s,snapshot);
   const delivered=new Set((request.remains??[]).map(r=>`${r.battleId}:${r.unitId}`));s.sectorRemains[plan.sourceSector]=(s.sectorRemains[plan.sourceSector]??[]).filter(r=>!delivered.has(`${r.battleId}:${r.unitId}`));
   for(const e of [...plan.entries,...plan.auxiliary].filter(e=>e.kind==='dead'&&e.departure)){
     const unit=clone(snapshot.units.find(u=>u.id===e.unitId));delete unit.entryEdge;delete unit.entryAnchor;delete unit.entryReason;s.sectorRemains[e.sector]??=[];s.sectorRemains[e.sector].push({battleId:request.id,unitId:e.unitId,unit,entryEdge:e.departure.entryEdge,entryAnchor:clone(e.departure.entryAnchor)});
@@ -879,7 +880,7 @@ export function dispatchCampaign(previous,action){
           else {const region=s.sectors[request.sector];region.owner='patriot';region.damageUntil=0;releaseCaptives(s,request.sector);}
           if(request.theater==='coast'&&!s.enemyGroups.some(g=>g.theater==='coast'&&['waiting','engaged','stationed'].includes(g.status)))s.blockade=false;if(request.wasRoyalist||request.sector==='san_lorenzo')add(s,{treasury:250});standing(s,'directory',5);standing(s,'gauchos',request.theater==='north'?10:2);note(s,`Victoria en ${request.name}. Se recuperan armas y fondos realistas.`);
         }else{standing(s,'directory',-5);note(s,`El destacamento se retira de ${request.name}.`);}
-        s.sectorStates[request.sector]=clone(compactCellScene(battleSnapshot));collectSectorCash(s,battleSnapshot);
+        s.sectorStates[request.sector]=clone(compactCellScene(battleSnapshot));
         s.pendingBattle=null;s.squad=s.squad.filter(id=>s.operativeState[id].alive);
         if(!s.squad.length){
           // Select an existing local column without copying its members into the

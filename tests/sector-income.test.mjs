@@ -47,9 +47,9 @@ test('quest cooperation raises real recurring income only once for the same resu
  recordCityLoyalty(s,{sectorId:'retiro',kind:'quest',eventId:'income-check'});assert.equal(totalSectorIncome(s,isSupplied),improved);
  const paid=dispatchCampaign(s,{type:'wait',hours:1});assert.equal(paid.resources.treasury-s.resources.treasury,improved);
 });
-test('frontier requisition trades immediate horses for reduced later local contributions',()=>{
+test('frontier requisition trades an immediate treasury payment for reduced later local contributions',()=>{
  const s=secureArea(initialCampaign());s.sectors.cordoba.owner='patriot';s.sectors.mendoza.owner='patriot';s.sectors.mendoza.loyalty=80;s.location='mendoza';s.squads[0].location='mendoza';
- const next=dispatchCampaign(s,{type:'policy',kind:'frontierRequisition'});assert.equal(next.lastError,null);assert.equal(next.resources.horses,s.resources.horses+8);
+ const next=dispatchCampaign(s,{type:'policy',kind:'frontierRequisition'});assert.equal(next.lastError,null);assert.equal(next.resources.treasury,s.resources.treasury+160);assert.deepEqual(next.horseState,s.horseState);
  assert.equal(sectorIncome(s,place('mendoza'),isSupplied),80);assert.equal(sectorIncome(next,place('mendoza'),isSupplied),65);
 });
 test('save continuation on both sides of midnight cannot duplicate or change the payout',()=>{
