@@ -19,6 +19,8 @@ export function woundedGarrison({twoDoctors=false,casualty=false,careRules,injur
  const troops=[...r.squad.map((u,i)=>({...u,x:1,y:2+i*2})),...r.garrison.map((u,i)=>({...u,x:i===0?5:9+i,y:i===0?2:6}))];
  let battle=createBattle(troops,{...r,hour:s.hour,secondOfHour:s.secondOfHour??0,width:14,height:10,seed:45,exploration:true,tiles:Array.from({length:140},(_,i)=>({x:i%14,y:Math.floor(i/14),type:'grass',blocked:false,cover:0})),enemies:[]});
  const actor=battle.units.find(u=>u.id==='1000'),patientId=String(r.garrison[0].id);
+ // The newly bought gun is empty. Load it through the same order as a player.
+ assert.equal(actor.loaded,0);battle=actBattle(battle,{type:'reload',unitId:actor.id});assert.equal(battle.lastError,null,battle.lastError);assert.ok(battle.units.find(u=>u.id===actor.id).loaded>0);
  for(let i=0;i<(casualty?12:1);i++){
   const current=battle.units.find(u=>u.id===actor.id),patient=battle.units.find(u=>u.id===patientId);if(patient.hp<=0)break;
   battle=actBattle(battle,current.loaded?{type:'firePoint',unitId:actor.id,x:patient.x,y:patient.y,aim:4}:{type:'reload',unitId:actor.id});assert.equal(battle.lastError,null,battle.lastError);

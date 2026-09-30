@@ -104,25 +104,29 @@ export function selectCampaignAmmunitionLoad(s,op,family){
 }
 export function moveCampaignAmmunition(s,op,key,quantity,direction,supplied){
  const quote=ammunitionOrderQuote(s,op,key,quantity,direction,supplied);need(quote.available,quote.reason);
- const record=s.operativeState[op.id],unit=carriedAmmunition(op,record);
+ const record=s.operativeState[op.id],unit=carriedAmmunition(op,record),unissued=record.carriedLoaded===undefined;
  if(direction==='buy'){
   s.ammunitionShops[s.location]??=freshShop(s,s.location);s.ammunitionShops[s.location].stock[key]-=quantity;s.resources.treasury-=quote.cost;
  }else{
   s.ammunitionStores[s.location]??={};s.ammunitionStores[s.location][key]=quote.stored+(direction==='store'?quantity:-quantity);
  }
- changeAmmo(unit,key,direction==='store'?-quantity:quantity);keep(record,unit);return quote;
+ changeAmmo(unit,key,direction==='store'?-quantity:quantity);keep(record,unit);
+ // Moving loose rounds does not turn an unissued weapon into a returned empty gun.
+ if(unissued)delete record.carriedLoaded;
+ return quote;
 }
 
-// A supplied town may complete the configured marching load. Outside a supplied town,
-// deployment carries existing ammunition; it never buys supplies at a distance.
+// A supplied town may buy the configured marching allowance. Only an untracked
+// initial weapon receives a prepared charge: returning or explicitly equipped
+// guns keep their actual load and work. Remote deployment buys nothing.
 export function prepareCampaignAmmunition(s,roster,ids,{at=s.location,supplied=false,commit=false}={}){
  const state=commit?s:structuredClone(s);migrateAmmunitionCustody(state);
  const allocation={};let cost=0,issued=0;
  for(const id of ids){
-  const op=roster.find(o=>o.id===id),record=state.operativeState[id],unit=carriedAmmunition(op,record),key=ammoTypeFor(unit),capacity=weaponSpecification({...op,...record})?.capacity??0;
+  const op=roster.find(o=>o.id===id),record=state.operativeState[id],unit=carriedAmmunition(op,record),key=ammoTypeFor(unit),capacity=weaponSpecification({...op,...record})?.capacity??0,initialLoad=record.carriedLoaded===undefined&&!record.carriedReloadProgress;
   if(key&&!unit.weaponDropped&&arrivalFacilityOptions(at).length>0&&worldOwner(state,at)==='patriot'&&supplied){
-   if(!record.carriedReloadProgress){const charges=Math.min(capacity-unit.loaded,ammoCount(unit,key));unit.loaded+=charges;changeAmmo(unit,key,-charges);}
-   const wanted=Math.max(0,campaignRules(state).deploymentCartridges-unit.loaded-ammoCount(unit,key)),roomInGun=record.carriedReloadProgress?0:Math.min(wanted,capacity-unit.loaded),quantity=!hasAmmunitionMarket(state,at)||!ammunitionMarketRules(state,at).automaticPurchase?0:Math.min(shop(state,at).stock[key],roomInGun+supplyRoom(unit,key,wanted-roomInGun));
+   if(initialLoad){const charges=Math.min(capacity-unit.loaded,ammoCount(unit,key));unit.loaded+=charges;changeAmmo(unit,key,-charges);}
+   const wanted=Math.max(0,campaignRules(state).deploymentCartridges-unit.loaded-ammoCount(unit,key)),roomInGun=initialLoad?Math.min(wanted,capacity-unit.loaded):0,quantity=!hasAmmunitionMarket(state,at)||!ammunitionMarketRules(state,at).automaticPurchase?0:Math.min(shop(state,at).stock[key],roomInGun+supplyRoom(unit,key,wanted-roomInGun));
    if(quantity){state.ammunitionShops[at]??=freshShop(state,at);state.ammunitionShops[at].stock[key]-=quantity;const charges=Math.min(roomInGun,quantity);unit.loaded+=charges;changeAmmo(unit,key,quantity-charges);cost+=quantity*ammunitionUnitPrice(state,at,key);}
   }
   allocation[id]={...(unit.ammunitionChoice!==undefined?{ammunitionChoice:unit.ammunitionChoice}:{}),loaded:unit.loaded,ammo:unit.ammo,ammunitionVersion:2,inventory:structuredClone(unit.inventory),...(record.carriedReloadProgress?{reloadProgress:record.carriedReloadProgress}:{})};

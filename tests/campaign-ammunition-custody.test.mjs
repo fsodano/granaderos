@@ -37,7 +37,8 @@ test('mixed reserves survive actual weapon replacement, deployment and repeated 
  s=order(s,{type:'purchaseEquipment',item:'firearm-1805'});const instance=s.armoryItems.find(i=>i.itemMetadata?.contentWeapon?.id==='firearm-1805');
  s=order(s,{type:'equip',operativeId:110,slot:'weapon',itemId:'firearm-1805',instanceId:instance.id});assert.equal(s.operativeState[110].carriedLoaded,0);assert.equal(ammoCount(s.operativeState[110],'ammoMusket'),9);assert.equal(ammoCount(s.operativeState[110],'ammoPistol'),8);
  const storedMusket=s.armoryItems.find(i=>i.item===1800);assert.ok(storedMusket);assert.equal(storedMusket.loaded,1);
- const p=visit(s);assert.equal(p.battle.units[0].loaded,1);assert.equal(ammoCount(p.battle.units[0],'ammoPistol'),9);assert.equal(ammoCount(p.battle.units[0],'ammoMusket'),9);assert.equal(p.campaign.resources.treasury,cash-130-6);
+ let p=visit(s);assert.equal(p.battle.units[0].loaded,0);assert.equal(ammoCount(p.battle.units[0],'ammoPistol'),10);assert.equal(ammoCount(p.battle.units[0],'ammoMusket'),9);assert.equal(p.campaign.resources.treasury,cash-130-6);
+ const elapsed=p.battle.elapsedSeconds,shops=structuredClone(p.campaign.ammunitionShops);p=tactical(p,{type:'reload'});assert.equal(p.battle.units[0].loaded,1);assert.equal(ammoCount(p.battle.units[0],'ammoPistol'),9);assert.ok(p.battle.elapsedSeconds>elapsed);assert.deepEqual(p.campaign.ammunitionShops,shops);assert.equal(p.campaign.resources.treasury,cash-130-6);
  const returned=leave(p),restored=saved({campaign:returned}).campaign;assert.deepEqual(restored.armoryItems.find(i=>i.id===storedMusket.id),storedMusket);assert.deepEqual(restored,returned);assert.deepEqual(saved({campaign:restored}).campaign,restored);
 });
 

@@ -72,7 +72,7 @@ test('a new officer loads three recovered cursor cartridges into an unissued gun
 
 function partlyLoadedPistol(){
  let s=hire();s=order(s,{type:'purchaseEquipment',item:1808});s=order(s,{type:'equip',operativeId:110,itemId:1808,slot:'weapon'});
- let b;({s,b}=visit(s));assert.equal(actor(b).loaded,2);
+ let b;({s,b}=visit(s));assert.equal(actor(b).loaded,0);b=act(b,{type:'reload',unitId:'110'});assert.equal(actor(b).loaded,2);
  b=act(b,{type:'firePoint',unitId:'110',x:5,y:2});assert.equal(actor(b).loaded,1);assert.equal(actor(b).jammed,false);
  s=leave(s,b);assert.equal(personal(s).loaded,1);assert.equal(total(s),issuedMarketStock-1);return s;
 }

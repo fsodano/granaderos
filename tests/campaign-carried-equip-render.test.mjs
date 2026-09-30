@@ -12,7 +12,7 @@ const fixture=()=>{const s=initialCampaign();s.operativeState[3].inventory={reco
 const buttons=node=>Array.isArray(node)?node.flatMap(buttons):!node||typeof node!=='object'?[]:[...(node.type==='button'?[node]:[]),...buttons(node.props?.children)];
 test('an unscouted friendly town allows carried equipment while ground transfers remain disabled',()=>{
  const s=fixture(),html=render(h(SectorInventory,{state:s,sectorId:'retiro',dispatch:()=>{}}));
- assert.match(html,/Primero reconocé y asegurá el sector/);assert.match(html,/Recarga 50%/);assert.match(html,/Estado 62%/);assert.match(html,/<button[^>]*aria-label="Equipar Brown Bess modelo India: principal"/);assert.doesNotMatch(html,/<button[^>]*disabled=""[^>]*aria-label="Equipar/);
+ assert.match(html,/Primero reconocé y asegurá el sector/);assert.match(html,/Recarga 50%/);assert.match(html,/Estado 62%/);assert.match(html,/<button[^>]*aria-label="Bolsillo grande 1: Brown Bess · 1"/);assert.doesNotMatch(html,/<button[^>]*disabled=""[^>]*aria-label="Bolsillo grande 1:/);
 });
 test('the item control sends its selected hand and applies the actual recovered weapon',()=>{
  let s=fixture();const row=sectorInventoryModel(s,'retiro',rosterFor(s),3).carried.find(row=>row.inventoryKey==='recovered');const [button]=buttons(EquipCarriedItem({row,onEquip:slot=>{s=dispatchCampaign(s,{type:'sectorInventory',sector:'retiro',operativeId:3,direction:'equip',inventoryKey:row.inventoryKey,expected:row.expected,slot});}}));button.props.onClick();assert.equal(s.lastError,null);assert.equal(s.loadouts[3].weapon,1800);assert.equal(s.operativeState[3].carriedReloadProgress,.5);
