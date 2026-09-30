@@ -1,3 +1,5 @@
+import {refreshMilitaryCondition} from '../game/actor-condition.js';
+import {initializeUnitAmmunition} from '../game/tactical-ammunition.js';
 import {secureArea} from './controlled-area-fixture.mjs';
 import test from 'node:test';import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign,restoreCampaign,serializeCampaign} from '../game/campaign.js';
@@ -16,7 +18,7 @@ test('actual tactical militia casualties reduce strategic counts and never respa
  let b=createBattle(squad,{id:request.id,sector:request.sector,exits:request.exits,exitRulesVersion:1,width:20,height:16,tiles:Array.from({length:320},(_,i)=>({x:i%20,y:Math.floor(i/20),type:'grass',blocked:false,cover:0})),enemies:request.enemies,npcs:request.npcs.map((npc,i)=>({...npc,x:16-i,y:12}))});
  b=endTurn(b);const killed=b.units.filter(u=>u.militia&&u.hp<=0);assert.ok(killed.length>0,'The real enemy phase must kill at least one nearby militia soldier');
  // The settlement fixture closes only after the hostile field is cleared.
- for(const u of b.units.filter(u=>u.side==='enemy'))Object.assign(u,{hp:0,bleeding:0,bandaged:0,unconscious:false,ap:0});b.status='victory';b.sectorCleared=true;s=leave(s,b);assert.equal(s.sectors.retiro.militia[0],3-killed.length);s=restoreCampaign(serializeCampaign(s));s=step(s,{type:'visitSector'});const next=enterSector(s.pendingBattle,s.sectorStates.retiro);assert.equal(next.units.filter(u=>u.militia&&u.hp>0).length,3-killed.length);assert.ok(killed.every(dead=>next.units.some(u=>u.id===dead.id&&u.hp===0)));
+ for(const u of b.units.filter(u=>u.side==='enemy')){Object.assign(u,{hp:0,bleeding:0,bandaged:0});refreshMilitaryCondition(u);}b.status='victory';b.sectorCleared=true;s=leave(s,b);assert.equal(s.sectors.retiro.militia[0],3-killed.length);s=restoreCampaign(serializeCampaign(s));s=step(s,{type:'visitSector'});const next=enterSector(s.pendingBattle,s.sectorStates.retiro);assert.equal(next.units.filter(u=>u.militia&&u.hp>0).length,3-killed.length);assert.ok(killed.every(dead=>next.units.some(u=>u.id===dead.id&&u.hp===0)));
 });
 test('garrison deployment requires complete casualty snapshots and validates saved records',()=>{
  let s=trained();s=step(s,{type:'visitSector'});const b=enterSector(s.pendingBattle);b.units=b.units.filter(u=>!u.militia);assert.ok(dispatchCampaign(s,{type:'leaveSector',battleId:s.pendingBattle.id,sectorState:b,survivors:b.units.map(u=>({...u,id:Number(u.id)}))}).lastError);const corrupted=structuredClone(s);corrupted.garrisons.retiro[0].ammo=-1;assert.throws(()=>restoreCampaign(serializeCampaign(corrupted)));

@@ -30,8 +30,8 @@ function fightAndReturn(s){
 }
 
 test('real paid kills promote a survivor through two ranks without a new soldier, healing or equipment',()=>{
- let s=ready();const first=s.garrisons.retiro[0];Object.assign(first,{weapon:1800,marksmanship:100,condition:100,hp:44,bandaged:16,energy:77,jammed:false});setTestAmmunition(first,5);
- let result=fightAndReturn(s);s=result.s;let unit=s.garrisons.retiro.find(u=>u.id===first.id);assert.equal(unit.militiaRank,1);assert.equal(unit.militiaExperience,3);assert.ok(s.log.findIndex(e=>e.text.includes('asciende por experiencia'))<s.log.findIndex(e=>e.text.startsWith('Buenos Aires, 1812.')));assert.deepEqual(s.sectors.retiro.militia,[2,1,0]);
+ let s=ready();const initialLog=s.log[0].text,first=s.garrisons.retiro[0];Object.assign(first,{weapon:1800,marksmanship:100,condition:100,hp:44,bandaged:16,energy:77,jammed:false});setTestAmmunition(first,5);
+ let result=fightAndReturn(s);s=result.s;let unit=s.garrisons.retiro.find(u=>u.id===first.id);assert.equal(unit.militiaRank,1);assert.equal(unit.militiaExperience,3);assert.ok(s.log.findIndex(e=>e.text.includes('asciende por experiencia'))<s.log.findIndex(e=>e.text===initialLog));assert.deepEqual(s.sectors.retiro.militia,[2,1,0]);
  for(const k of ['hp','maxHp','weapon','loaded','ammo','condition','inventory','bleeding','bandaged','energy','weaponFittings'])assert.deepEqual(unit[k],result.actual[k]);assert.equal(s.nextMilitiaId,20003);
  s=restoreCampaign(serializeCampaign(s));unit=s.garrisons.retiro.find(u=>u.id===first.id);
  // The next encounter still uses the earned soldier and his finite rounds.

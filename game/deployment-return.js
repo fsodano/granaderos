@@ -33,6 +33,10 @@ export function prepareDeploymentExits(s,request){
   request.exitRulesVersion=1;
   request.remains=clone(s.sectorRemains?.[strategicSector(request)]??[]);
   const previous=request.sceneId?s.sceneStates?.[request.sceneId]:s.sectorStates?.[request.sector];
+  // An unfinished assault reuses the actual enemy equipment on that field.
+  // Match enterSector: a new occupation or defense force has its own issue.
+  if(previous&&!request.defenseGroupId&&!request.occupationGroupIds?.length&&!request.exploration&&!previous.sectorCleared)
+    request.ammunitionSources=previous.units.filter(u=>u.side==='enemy'&&!u.departure).map(ammunitionSource);
   // Bind first-entry caches to the same authored map that tactical entry uses.
   // A survivor cannot claim those rounds twice by also leaving them in the chest.
   let field=expandCellScene(previous);

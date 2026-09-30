@@ -59,6 +59,10 @@ Earlier component-only checks used a diagnostic import guard while the campaign 
 
 The integration PR must remain draft while the regression failures are repaired. Merge, publication, and the one-build handover remain open. Full campaign and JA2 parity are not complete.
 
+The next complete CI run at `2d40a774` recorded **3,665 passing and 448 failing tests (4,113 total)**, with no skips or cancellations. All web checks passed. This run predates the equipment repair batch in `b9aa76c7`. The [exact failure inventory](../evidence/consolidation-ci-2d40a774-2026-09-30.json) was extracted from the complete job logs; one cached log response was truncated and was replaced with the complete job download before counting. These failures remain release blockers until the complete final-head run passes.
+
+The next ammunition reentry repair passes **38/38 force-equipment, militia and ownership checks**, plus **19/19 ammunition admission, loading, migration and reattack-budget checks**. It restores the finite enemy ammunition allowance for an unfinished assault; an extra invented round is rejected after real loot, retreat, save and reentry. New occupation and defense forces keep their own allowance. TypeScript, documentation and the private build pass at source `9a96fd0b5b07`; the build verified 1,131 files and 1,031 references and is not serving the user. The earlier seven-failure garrison diagnostic is superseded by this passing focused run, not by a new full-suite pass.
+
 ## Queued after this integration
 
 The user requested that characters leave their equipment when their service ends. Implement that change **after PR #139 is merged**. It has not started and is not part of this integration acceptance.

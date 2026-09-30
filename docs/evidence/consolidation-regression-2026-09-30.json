@@ -3293,5 +3293,37 @@
         "served": false
       }
     }
+  },
+  "ammunitionReentryRepair": {
+    "source": "9a96fd0b5b076ff3a7d808ebe199ec1ec422cefe3c45189905a2d936952dcf4f",
+    "fix": "Retained hostile-field ammunition sources match the actual enemies reused by tactical reentry. New occupation and defense forces retain their own ammunition allowance.",
+    "runs": [
+      {
+        "scope": "Force equipment, militia, drop and secondary ownership",
+        "log": "/tmp/granaderos-garrison-repair-5.tap",
+        "pass": 38,
+        "fail": 0,
+        "skipped": 0,
+        "cancelled": 0,
+        "logSha256": "0dc4e2bd0e6f0145216a512f00bedf55ee1677cf7014df539271f30e82104387"
+      },
+      {
+        "scope": "Reattack budget, ammunition admission, published migration and loading",
+        "log": "/tmp/granaderos-reattack-budget.tap",
+        "pass": 19,
+        "fail": 0,
+        "skipped": 0,
+        "cancelled": 0,
+        "logSha256": "e85556958060df476b1591e0066fcf222894a867cc13318478c34fb2fb7b0fbf"
+      }
+    ],
+    "types": "PASS",
+    "docs": "PASS",
+    "privateBuild": {
+      "status": "PASS",
+      "served": false,
+      "files": 1131,
+      "assetReferences": 1031
+    }
   }
 }
