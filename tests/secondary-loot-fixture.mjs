@@ -25,8 +25,13 @@ export function secondaryOrder(pair,action){const battle=actBattle(pair.battle,{
 export function secondaryRetreat(pair){
  let p=pair;const exit=p.battle.exits.find(e=>e.destination===p.campaign.pendingBattle.origin);assert.ok(exit);const onEdge=u=>exit.edge==='N'?u.y===0:exit.edge==='S'?u.y===p.battle.height-1:exit.edge==='W'?u.x===0:u.x===p.battle.width-1;
  for(const id of p.battle.units.filter(u=>u.side==='player'&&u.hp>0&&!u.departure).map(u=>u.id)){
-  const u=p.battle.units.find(u=>u.id===id);
-  if(!onEdge(u)){const destination=getReachable(p.battle,u).filter(q=>onEdge(q)&&!p.battle.units.some(v=>v.id!==id&&v.hp>0&&!v.departure&&v.x===q.x&&v.y===q.y)).sort((a,b)=>a.cost-b.cost)[0];assert.ok(destination);p=secondaryOrder(p,{type:'move',unitId:id,x:destination.x,y:destination.y});}
+  for(let step=0;!onEdge(p.battle.units.find(u=>u.id===id))&&step<30;step++){
+   const u=p.battle.units.find(u=>u.id===id),before={x:u.x,y:u.y};
+   const destination=getReachable(p.battle,u).filter(q=>onEdge(q)&&!p.battle.units.some(v=>v.id!==id&&v.hp>0&&!v.departure&&v.x===q.x&&v.y===q.y)).sort((a,b)=>a.cost-b.cost)[0];assert.ok(destination);
+   p=secondaryOrder(p,{type:'move',unitId:id,x:destination.x,y:destination.y});
+   const after=p.battle.units.find(u=>u.id===id);assert.notDeepEqual({x:after.x,y:after.y},before,'withdrawal must make a real paid step after contact interrupts a route');
+  }
+  assert.ok(onEdge(p.battle.units.find(u=>u.id===id)));
   p=secondaryOrder(p,{type:'exit',unitIds:[id],exitId:exit.id});
  }
  assert.equal(p.battle.status,'retreat');return p;

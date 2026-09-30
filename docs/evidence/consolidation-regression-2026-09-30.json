@@ -3195,6 +3195,59 @@
       "assetReferences": 1031,
       "log": "/tmp/granaderos-cold-build-fixed.log",
       "served": false
+    },
+    "ci": {
+      "revision": "28f7b24955e52c52066ecb0112237fdd3848277d",
+      "web": "passed",
+      "testSuite": "failed",
+      "result": {
+        "tests": 4111,
+        "pass": 3628,
+        "fail": 483,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "inventory": "consolidation-ci-2026-09-30.json"
+    }
+  },
+  "civilianDialogueRepair": {
+    "source": "6bbb1b7258d271731c515ce6556a8c352c72292ebf5594acbe3e0f90896f35ef",
+    "scope": "Focused repair and dependent-file verification; not a complete current regression or live performance check",
+    "runs": [
+      {
+        "name": "civilian-dialogue",
+        "log": "/tmp/granaderos-civilian-dialogue-final.tap",
+        "passed": 94,
+        "failed": 0,
+        "sha256": "57d39fddb44d84e7d8f69c6eaa0c79bdca7d49c0ca2584ea07c3bac73979f60f"
+      },
+      {
+        "name": "hiring-arrivals",
+        "log": "/tmp/granaderos-hire-reentry-final.tap",
+        "passed": 14,
+        "failed": 0,
+        "sha256": "2478ea5b874af6e7d9897a6ebebfc52f86e786fdf7da31b631bffb4c91da5d66"
+      },
+      {
+        "name": "withdrawal-dependents",
+        "log": "/tmp/granaderos-withdrawal-dependents.tap",
+        "passed": 39,
+        "failed": 20,
+        "sha256": "4aa2df6bce013b02d7bd8a555e801eb9acb921cf670efa38a823f4e92e2b9212"
+      }
+    ],
+    "otherChecks": {
+      "typecheck": "passed",
+      "referenceAudit": {
+        "passed": 38,
+        "failed": 0
+      },
+      "privateProductionBuild": {
+        "passed": true,
+        "files": 1131,
+        "assetReferences": 1031,
+        "served": false
+      }
     }
   }
 }

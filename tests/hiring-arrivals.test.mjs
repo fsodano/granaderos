@@ -1,3 +1,4 @@
+import {launchEnemyGroup,GROUP_LEG_HOURS} from '../game/enemy-groups.js';
 import {secureArea} from './controlled-area-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -53,11 +54,14 @@ test('naval blockade holds a water-only arrival until a safe land destination is
  s=order(saved(s),{type:'redirectHire',id:110,destination:'buenos_aires'});
  s=order(s,{type:'wait',hours:6});assert.equal(s.operativeState[110].location,'buenos_aires');assert.equal(s.squad.includes(110),false);assert.equal(s.contracts[110].started,12);
 });
-test('same-hour naval raid is resolved before an arrival is admitted',()=>{
- const d=defaultContentPackage();d.characters.find(c=>c.id==='person-110').arrivalHours=168;
- const initial=secureArea(initialCampaign(42,d),'ensenada','buenos_aires');initial.sectors.san_nicolas.owner='patriot';initial.sectors.santa_fe.owner='patriot';
- let s=order(initial,{...hire,destination:'ensenada'});
- s=order(s,{type:'wait',hours:168});assert.equal(s.blockade,true);assert.equal(s.recruited.includes(110),false);assert.equal(s.hiringArrivals.length,1);
+test('a naval force arriving in the same hour is resolved before a hire is admitted',()=>{
+ const d=defaultContentPackage();d.characters.find(c=>c.id==='person-110').arrivalHours=GROUP_LEG_HOURS.coast;
+ const initial=secureArea(initialCampaign(42,d),'ensenada','buenos_aires');
+ // Declare a launched force, then advance its real route and the paid hire
+ // together. A newly launched weekly raid is still offshore at that hour.
+ const group=launchEnemyGroup(initial,'coast','ensenada');assert.ok(group);
+ let s=order(saved(initial),{...hire,destination:'ensenada'});assert.equal(s.hiringArrivals[0].dueAt,group.arrivalAt);
+ s=order(s,{type:'wait',hours:group.arrivalAt-s.hour});assert.equal(s.blockade,true);assert.equal(s.recruited.includes(110),false);assert.equal(s.hiringArrivals.length,1);assert.equal(s.enemyGroups.find(g=>g.id===group.id).status,'stationed');
  assert.ok(saved(s));
 });
 test('cancelling refunds exactly once and never creates a contract',()=>{
@@ -116,4 +120,13 @@ test('an arrival at the departure point does not join a squad already marching e
  secureArea(s,'buenos_aires');s=order(s,{type:'travel',sector:'buenos_aires'});
  assert.equal(s.location,'buenos_aires');assert.equal(s.operativeState[110].location,'retiro');assert.equal(s.squad.includes(110),false);
  assert.equal(s.contracts[110].started,6);assert.equal(saved(s).operativeState[110].location,'retiro');
+});
+test('a new bulletin contract discards an earlier tactical entry route at a different destination',()=>{
+ const d=defaultContentPackage();for(const id of [100,110])d.characters.find(c=>c.id===`person-${id}`).arrivalHours=0;
+ let s=secureArea(initialCampaign(42,d),'buenos_aires');
+ for(const id of [100,110])s=order(s,{type:'recruitCivic',id,term:'week'});
+ s=order(s,{type:'travel',sector:'buenos_aires'});assert.equal(s.operativeState[110].arrival.toSector,'buenos_aires');
+ s=order(s,{type:'dismiss',id:110});const cash=s.resources.treasury;
+ s=order(saved(s),{type:'recruitCivic',id:110,term:'day',destination:'retiro'});
+ assert.ok(s.resources.treasury<cash);assert.equal(s.operativeState[110].location,'retiro');assert.equal(s.operativeState[110].arrival,null);assert.equal(s.operativeState[110].residentSector,null);assert.ok(!s.squad.includes(110));assert.ok(saved(s));
 });

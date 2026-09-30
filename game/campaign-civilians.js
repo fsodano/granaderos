@@ -10,7 +10,7 @@ import {YATASTO_NPCS} from './missions.js';
 import {authoredOperative,authoredRoster} from './content-roster.js';
 import {civilianMaxHp,civilianRestoredHp,seedCivilianHealth,migrateCivilianHealth} from './civilian-health.js';
 import {civilianIncidents,validateCivilianWounds,advanceCivilianWoundTime} from './civilian-harm.js';
-import {recordCityLoyalty} from './cities.js';
+import {recordCityLoyalty,cityForSector,validCityLoyaltyEvents} from './cities.js';
 import {failQuestsForDeadContact} from './quests.js';
 import {CIVILIAN_SUPPLY_FIELDS,civilianSuppliesFor,validCivilianSupplies} from './civilian-supplies.js';
 
@@ -26,6 +26,29 @@ function supplies(s,n){
  return result;
 }
 export const civilianKey=n=>operativeId(n)!==undefined?`person-${operativeId(n)}`:`npc-${n.id}`;
+const civicSector=r=>r.sector==='san_lorenzo'?'san_nicolas':r.sector;
+const deathEventIds=(key,r,death)=>[`civilian:${key}`,`civilian:${JSON.stringify([r.sector,r.sceneId,r.npcId])}:${death.sequence}`];
+function deathKind(death,owner){
+ const kind=death.side==='player'?(death.militia?'civilianMilitia':'civilianPlayerIntentional'):
+  owner==='patriot'?'civilianEnemyPatriot':'civilianEnemyRoyalist';
+ return death.intentional?kind:kind==='civilianPlayerIntentional'?'civilianPlayerAccidental':`${kind}Accidental`;
+}
+function validateDeathEffects(s){
+ const events=(s.cityLoyaltyEvents??[]).filter(e=>e.kind?.startsWith('civilian')),used=new Set();
+ need(validCityLoyaltyEvents(events),'El registro de lealtad civil no es válido.');
+ for(const [key,r]of Object.entries(s.civilianState.people)){
+  const death=civilianIncidents(r.health).find(e=>e.kind==='death');
+  if(!death||death.side==='unknown'||!cityForSector(civicSector(r)))continue;
+  const ids=deathEventIds(key,r,death),matches=events.filter(e=>ids.includes(e.eventId));
+  need(matches.length===1,'Falta el efecto de una muerte civil, o está repetido.');
+  const event=matches[0];
+  // Control can change after the death. The recorded civic kind preserves
+  // that earlier control; it must still match the recorded responsibility.
+  need(event.sectorId===civicSector(r)&&event.hour<=s.hour&&['patriot','royalist'].some(owner=>deathKind(death,owner)===event.kind),'El efecto civil no corresponde a la muerte registrada.');
+  used.add(event.key);
+ }
+ need(used.size===events.length,'El registro de lealtad tiene un efecto civil sin una muerte registrada.');
+}
 function definition(s,n){
  const original=[...encounterDefinitions(s),...YATASTO_NPCS].find(v=>v.id===n.id);
  need(original&&original.operativeId===n.operativeId,'El habitante no pertenece a este mundo.');
@@ -55,10 +78,13 @@ export function civilianDiedHere(s,n,sector,sceneId=null){
 function applyDeath(s,n,record,atHour=s.hour){
  const death=civilianIncidents(n).find(e=>e.kind==='death');
  if(death&&death.side!=='unknown'){
-  const kind=death.side==='player'?(death.militia?'civilianMilitia':'civilianPlayerIntentional'):
-   s.sectors[record.sector]?.owner==='patriot'?'civilianEnemyPatriot':'civilianEnemyRoyalist';
-  const accidental=death.intentional?kind:kind==='civilianPlayerIntentional'?'civilianPlayerAccidental':`${kind}Accidental`;
-  recordCityLoyalty(s,{sectorId:record.sector==='san_lorenzo'?'san_nicolas':record.sector,kind:accidental,eventId:`civilian:${civilianKey(n)}`});
+  const ids=deathEventIds(civilianKey(n),record,death);
+  // Earlier saves used the scene identity. Preserve the existing effect
+  // instead of applying the same death again under the current identity.
+  if(!(s.cityLoyaltyEvents??[]).some(e=>ids.includes(e.eventId))){
+   const result=recordCityLoyalty(s,{sectorId:civicSector(record),kind:deathKind(death,s.sectors[civicSector(record)]?.owner),eventId:ids[0]});
+   if(result.applied)s.log.unshift({hour:atHour,text:`La muerte de un habitante modifica el apoyo local (${result.delta>0?'+':''}${result.delta}).`});
+  }
  }
  for(const text of failQuestsForDeadContact(s,record.sector,record.sceneId,n.id,atHour))s.log.unshift({hour:atHour,text});
  s.log=s.log.slice(0,80);
@@ -255,8 +281,10 @@ export function validateCampaignCivilians(s){
   validateCivilianWounds(r.health);
   const id=operativeId(n);
   need(r.inService===undefined||r.inService===true&&id!==undefined);
+  need(!r.inService||r.health.hp>0,'Un habitante muerto no puede trasladarse al servicio.');
   if(id!==undefined&&!r.inService&&!s.recruited.includes(id))need(s.operativeState[id].hp===r.health.hp&&s.operativeState[id].alive===(r.health.hp>0));
  }
+ validateDeathEffects(s);
  if(ledger.version===2)for(const {n,id,sector}of placedResidents(s)){
   const record=ledger.people[civilianKey(n)];
   if(s.operativeState[id].bleeding>0)need(record,'Falta el reloj de un habitante herido.');

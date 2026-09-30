@@ -129,7 +129,7 @@ function signContract(s,op,term){
 function receiveHire(s,arrival,joinSquad=true){
   const id=arrival.operativeId,op=rosterFor(s).find(o=>o.id===id);
   s.contracts[id]={kind:arrival.permanent?'patriot':'paid',term:arrival.term,started:s.hour,expiresAt:arrival.permanent?null:s.hour+arrival.serviceHours,paid:arrival.paid};
-  s.recruited.push(id);issueInitialOutfit(s,id);s.operativeState[id].location=arrival.destination;
+  s.recruited.push(id);issueInitialOutfit(s,id);Object.assign(s.operativeState[id],{location:arrival.destination,arrival:null,residentSector:null,residentScene:null});
   if(joinSquad&&!s.pendingBattle&&s.location===arrival.destination&&s.squad.length<6)s.squad.push(id);
   note(s,`${op.name} llega a ${sector(arrival.destination).name} y comienza su servicio.`);
   if(s.contentCampaign){const line=speechFor(op,'hired');if(line?.trim())note(s,`${op.name}: «${line}»`);}
@@ -730,9 +730,10 @@ export function dispatchCampaign(previous,action){
         if(action.approach==='repeat'){text=s.conversations?.[npc.id]?.text??npc.greeting;outcome='repeated';}
         if(action.approach==='dialogue'){dialogue=chooseDialogue(s,npc,action.dialogueChoice,action.dialogueNode,snapshot);text=dialogue.text;outcome='dialogue';if(dialogue.effect?.applied){if(dialogue.effect.amount)note(s,`${npc.name}: ${dialogue.effect.amount>0?'entrega':'recibe'} ${Math.abs(dialogue.effect.amount)} pesos.`);if(dialogue.effect.movement)note(s,dialogue.effect.movement.destination==='routine'?`${npc.name} termina el encuentro con ${dialogue.effect.movement.name}.`:`${npc.name} llama a ${dialogue.effect.movement.name} para un encuentro en este sector.`);if(dialogue.effect.quest)note(s,`Encargo «${dialogue.effect.quest.title}»: ${dialogue.effect.quest.status==='active'?'en curso':dialogue.effect.quest.status==='completed'?'completado':'fallido'}.`);}}
         if(action.approach==='direct'){
-          const terms=`un mando con ${npc.requiredLeadership} de liderazgo y ${npc.requiredLiberated} localidades seguras`,hireTerms=encounterHireTerms(s,npc);
+          const hireTerms=encounterHireTerms(s,npc),gate=recruitmentStatus(s,npc.operativeId,true);
+          const reason=encounterRequirements(s,npc,actor)||(!gate.available?gate.reason:null);
           const service=hireTerms.length?`Puedo incorporarme por contrato: ${hireTerms.map(q=>`${q.name.toLowerCase()}, ${q.price} pesos`).join('; ')}.`:'Puedo incorporarme sin paga.';
-          text=!canRecruitEncounter(npc)?npc.greeting:npc.recruitable===undefined?`Para incorporarme necesito ${terms} y que se cumplan mis compromisos regionales.`:`${service} Necesito ${terms}.${npc.requiredSector?` También debe estar liberada ${sector(npc.requiredSector).name}.`:''}`;
+          text=!canRecruitEncounter(npc)?npc.greeting:reason??`Estoy dispuesto a servir. ${service}`;
         }
         if(action.approach==='mission'){requireThat(s.pendingBattle.sceneId==='yatasto','No hay una conferencia pendiente.');text=talkMission(s,npc.id,isSupplied(s,'salta'));outcome='mission';}
         if(['escortFollow','escortWait'].includes(action.approach)){
@@ -752,7 +753,7 @@ export function dispatchCampaign(previous,action){
         }
         if(action.approach==='recruit'){
           requireThat(canRecruitEncounter(npc),'Este habitante no es un recluta.');requireThat(!s.recruited.includes(npc.operativeId),'Este combatiente ya se incorporó.');const reason=encounterRequirements(s,npc,actor);requireThat(!reason,reason);
-          const gate=recruitmentStatus(s,npc.operativeId,true);requireThat(gate.available,gate.reason);const op=rosterFor(s).find(o=>o.id===npc.operativeId);signContract(s,op,action.term);s.recruited.push(op.id);transferCivilian(s,local);s.operativeState[op.id].location=s.location;if(s.squad.length<6){s.squad.push(op.id);s.pendingBattle.squad.push({...clone(op),...carriedAmmunition(op,clone(s.operativeState[op.id]))});}const line=s.contentCampaign?speechFor(op,'hired'):'Acepto servir junto a ustedes.';text=`${line?.trim()?line+' ':''}${op.name} se incorpora a la fuerza patriota.`;outcome='recruited';note(s,text);
+          const gate=recruitmentStatus(s,npc.operativeId,true);requireThat(gate.available,gate.reason);const op=rosterFor(s).find(o=>o.id===npc.operativeId);signContract(s,op,action.term);s.recruited.push(op.id);transferCivilian(s,local);Object.assign(s.operativeState[op.id],{location:s.location,arrival:null,residentSector:s.pendingBattle.sector,residentScene:s.pendingBattle.sceneId??null});if(s.squad.length<6){s.squad.push(op.id);s.pendingBattle.squad.push({...clone(op),...carriedAmmunition(op,clone(s.operativeState[op.id]))});}const line=s.contentCampaign?speechFor(op,'hired'):'Acepto servir junto a ustedes.';text=`${line?.trim()?line+' ':''}${op.name} se incorpora a la fuerza patriota.`;outcome='recruited';note(s,text);
         }
         s.conversations??={};s.conversations[npc.id]={...s.conversations[npc.id],...(dialogue?{dialogueNode:dialogue.node}:{}),met:true,lastApproach:action.approach,hour:s.hour,text,sector:s.pendingBattle.sector};s.lastConversation={npcId:npc.id,speaker:npc.name,text,outcome,...(dialogue?{dialogueNode:dialogue.node,...(dialogue.effect?{dialogueEffect:dialogue.effect}:{})}:{}),operativeId:npc.operativeId??null,options:[...(dialogueForNPC(s,npc)?['dialogue']:[]),...dialogueOptions(npc,questForNPC(s,npc.id)).map(([option])=>option).filter(option=>option!=='recruit'||canRecruitEncounter(npc)&&!s.recruited.includes(npc.operativeId))]};break;
       }
