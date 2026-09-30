@@ -636,7 +636,7 @@ export function dispatchCampaign(previous,action){
       case 'assignCare':{const op=rosterFor(s).find(o=>o.id===Number(action.operativeId??action.id));requireThat(op,'El combatiente no existe.');assignMedicalCare(s,op,action.assignment);note(s,`${op.name}: ${CARE_ASSIGNMENTS[action.assignment]}.`);break;}
 
       case 'purchaseMedicalSupplies':{
-        const op=rosterFor(s).find(o=>o.id===Number(action.operativeId??action.id)),quantity=action.quantity??1,quote=medicalSupplyQuote(s,op,quantity,isSupplied(s,s.location));requireThat(quote.available,quote.reason);
+        const op=rosterFor(s).find(o=>o.id===Number(action.operativeId??action.id)),quantity=action.quantity===undefined?1:action.quantity,quote=medicalSupplyQuote(s,op,quantity,isSupplied(s,s.location));requireThat(quote.available,quote.reason);
         requireThat(quantity<=medicalSupplyStock(s),'La maestranza no tiene suficientes vendas.');pay(s,{treasury:quote.cost});s.operativeState[op.id].medkits=(s.operativeState[op.id].medkits??2)+quantity;s.merchants[s.location].supplies.medkits-=quantity;changeMerchantCash(s,s.location,quote.cost);note(s,`${op.name} compra ${quantity} vendas por ${quote.cost} pesos.`);break;
       }
       case 'academy':requireThat(s.flags.academy||hasReadyCombatant(s),'Contratá un combatiente o creá tu granadero para comenzar.');break;
@@ -965,7 +965,10 @@ export function restoreCampaignValue(s){
   requireThat(s.recruited.every(id=>characterForOperative(s,id)?.encounter?.recruitable!==false),'Un habitante no reclutable no puede estar en la escuadra.');
   requireThat(object(s.operativeState)&&rosterFor(s).every(o=>{const r=s.operativeState[o.id];return object(r)&&integer(r.hp,0,o.maxHp)&&integer(r.fatigue,0,100)&&typeof r.alive==='boolean'&&r.alive===(r.hp>0)&&(r.location===undefined||validWorldLocation(r.location));}),'Las hojas de servicio son inválidas.');
   // Older authored saves retained the initial ceiling after gaining a level.
-  for(const op of rosterFor(s))if(s.operativeState[op.id].maxHp!==undefined)s.operativeState[op.id].maxHp=op.maxHp;
+  for(const op of rosterFor(s))if(s.operativeState[op.id].maxHp!==undefined){
+    requireThat(integer(s.operativeState[op.id].maxHp,1,op.maxHp),'La salud máxima guardada es inválida.');
+    s.operativeState[op.id].maxHp=op.maxHp;
+  }
   validateHireArrivals(s,rosterFor(s));
   requireThat(object(s.flags)&&Object.keys(base.flags).every(k=>typeof s.flags[k]==='boolean')&&object(s.routes)&&Object.keys(base.routes).every(k=>typeof s.routes[k]==='boolean'),'Los acuerdos del archivo son inválidos.');
   validateCampaignProgress(s);

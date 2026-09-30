@@ -121,6 +121,7 @@ export function careStatus(s,op,roster){
     const doctor=roster.find(o=>o.id!==op.id&&s.operativeState[o.id]?.assignment==='doctor'&&!careAssignmentReason(s,o,'doctor')&&operativeLocation(s,o.id)===operativeLocation(s,op.id));
     return doctor?`En atención con ${doctor.nickname??doctor.name}. Las hemorragias tienen prioridad.`:'Sin médico disponible en este sector. Solo recupera energía.';
   }
+  if(careAssignmentProgress(s,op,roster).code==='rest_complete')return CARE_ISSUE_TEXT.rest_complete;
   return record.bleeding?'El descanso no detiene la hemorragia. Necesita un médico.':record.hp<15?'Estado crítico: necesita un médico para recuperar salud.':`+${restRecovery(op,record,s).energy} energía/h · +1 salud cada ${careRules(s).restHealingHours} h de descanso.`;
 }
 
@@ -181,7 +182,7 @@ export function validateMedicalCare(s,roster){
     requireThat(Number.isInteger(r.maxHp)&&r.maxHp>0&&r.maxHp<=op.maxHp&&r.hp<=r.maxHp,'La salud máxima guardada es inválida.');
     requireThat(Number.isFinite(r.bleeding)&&r.bleeding>=0&&r.bleeding<=100&&Number.isFinite(r.bandaged)&&r.bandaged>=0&&r.bandaged<=r.maxHp-r.hp,'Las heridas guardadas son inválidas.');
     requireThat(Number.isInteger(r.medkits)&&r.medkits>=0&&r.medkits<=100000,'Los vendas guardados son inválidos.');
-    requireThat(Object.hasOwn(ALL_ASSIGNMENTS,r.assignment)&&Number.isInteger(r.recoveryHours)&&r.recoveryHours>=0&&r.recoveryHours<careRules(s).restHealingHours,'Las asignaciones guardadas son inválidas.');
+    requireThat(Object.hasOwn(ALL_ASSIGNMENTS,r.assignment)&&Number.isInteger(r.recoveryHours)&&r.recoveryHours>=0&&r.recoveryHours<careRules(s).restHealingHours&&(r.assignment==='rest'||r.recoveryHours===0),'Las asignaciones guardadas son inválidas.');
     requireThat(r.assignment==='active'||(s.recruited.includes(op.id)&&r.alive&&!r.captured&&!deployed(s,op.id)&&!operativeInTransit(s,op.id)&&!training(s,op.id)),'El combatiente tiene asignaciones incompatibles.');
     requireThat(!['doctor','militia_doctor'].includes(r.assignment)||(op.medical??0)>=careRules(s).minimumSkill,'La asignación médica guardada es inválida.');
   }

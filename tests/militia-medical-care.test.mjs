@@ -51,7 +51,7 @@ test('supply exhaustion interrupts a long wait, survives a save and resumes afte
  assert.ok(s.assignmentAttention.notice.events.some(e=>e.assignment==='militia_doctor'&&e.code==='no_medkits'));
  s=decodeSave(encodeSave(s)).campaign;const before=structuredClone(s.garrisons.retiro);
  s=order(s,{type:'wait',hours:1});assert.deepEqual(s.garrisons.retiro,before);assert.equal(s.operativeState[10].medkits,0);
- const money=s.resources.treasury;s=order(s,{type:'purchaseMedicalSupplies',operativeId:10,quantity:1});assert.equal(s.resources.treasury,money-30);
+ const money=s.resources.treasury;s=order(s,{type:'purchaseMedicalSupplies',operativeId:10,quantity:1});assert.equal(s.resources.treasury,money-10);
  s=order(s,{type:'wait',hours:1});assert.equal(s.operativeState[10].medkits,0);assert.ok(s.garrisons.retiro.some((u,i)=>u.hp>before[i].hp));
  assert.deepEqual(decodeSave(encodeSave(s)).campaign,s);
 });

@@ -51,7 +51,7 @@ test('a doctor who uses the last kit is identified with the blocked task and sec
  const notice=publicAssignmentNotice(state),doctor=notice.events.find(event=>event.operativeId===10);
  assert.equal(notice.advancedHours,1);assert.equal(doctor.code,'no_medkits');assert.equal(doctor.state,'blocked');
  const text=textOnly(draw(state));assert.match(text,/1 de 6 horas solicitadas/);
- assert.match(text,/Paroissien · Médico en Buenos Aires · Fuerte y Retiro/);assert.match(text,/botiquines/);
+ assert.match(text,/Paroissien · Médico en Buenos Aires · Fuerte y Retiro/);assert.match(text,/vendas/);
  assert.ok(text.includes(assignmentAttentionText(state,doctor,rosterFor(state))));
 });
 

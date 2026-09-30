@@ -2016,7 +2016,7 @@ else if(a.type==='heal'){
   else refreshCondition(t);
   const progress=[treatment.hpGain>0?`recupera ${treatment.hpGain} de salud crítica`:null,bleedReduced>0?`reduce la hemorragia en ${bleedReduced}`:null].filter(Boolean).join(' y ');
   sayObserved(s,[u,t],treatment.critical?`${u.name} venda a ${t.name}: ${progress}${treatment.partial?'; necesita más primeros auxilios.':'; estabilizado. La recuperación restante requiere descanso y atención médica.'}`:`${u.name} venda a ${t.name} y detiene la hemorragia. La salud se recupera con descanso y atención médica.`);
-  const line=speechFor(t,'treated');if(line?.trim())sayObserved(s,[t],`${t.nickname||t.name}: «${line}»`);
+  const line=t!==u&&!isUnconscious(t)?speechFor(t,'treated'):null;if(line?.trim())sayObserved(s,[t],`${t.nickname||t.name}: «${line}»`);
 }
 else if(a.type==='stance'){
   if(u.mounted)return fail('Debes desmontar antes de cambiar de postura.');

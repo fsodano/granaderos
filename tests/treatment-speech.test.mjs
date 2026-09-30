@@ -21,7 +21,7 @@ test('treatment speech is optional, strictly validated and preserves older packa
 
 test('a paid deployed patient speaks after actual finite stabilization restores consciousness, with no replay after save or failed care',()=>{
  const d=defaultContentPackage();for(const id of [110,112])person(d,id).arrivalHours=0;person(d,110).attributes.medical=80;person(d,112).startingCondition={...condition};person(d,112).speech.treated=phrase;
- let s=initialCampaign(42,d);for(const id of [110,112])s=order(s,{type:'recruitCivic',id,term:'week'});let p=visit(s);
+ let s=initialCampaign(42,d);for(const id of [110,112])s=order(s,{type:'recruitCivic',id,term:'week'});let p=visit(s);p=tactical(p,{type:'weapon',slot:'medical'});
  p=tactical(p,{type:'heal',targetId:'112'});assert.equal(count(p.battle),0);assert.ok(p.battle.units.find(u=>u.id==='112').hp<15);
  p=tactical(saved(p),{type:'heal',targetId:'112'});assert.equal(p.battle.units.find(u=>u.id==='112').hp,15);assert.equal(p.battle.units.find(u=>u.id==='112').unconscious,false);assert.equal(p.battle.units.find(u=>u.id==='110').medkits,0);assert.equal(count(p.battle),1);
  p=saved(p);assert.equal(count(p.battle),1);const again=actBattle(p.battle,{type:'heal',unitId:'110',targetId:'112'});assert.ok(again.lastError);assert.equal(count(again),1);assert.deepEqual(again.units,p.battle.units);
@@ -30,14 +30,14 @@ test('a paid deployed patient speaks after actual finite stabilization restores 
 
 test('an authored resident responds to actual care and keeps the pinned voice and spent dressings through active save and return',()=>{
  const d=localPackage(),resident=d.characters.at(-1);resident.startingCondition={...condition};resident.speech.treated=phrase;person(d,110).attributes.medical=80;
- let p=readyLocal(undefined,d),npc=localNPC(p.battle);assert.equal(count(p.battle),0);p=tactical(p,{type:'heal',targetId:npc.id});assert.equal(count(p.battle),0);p=tactical(saved(p),{type:'heal',targetId:npc.id});assert.equal(count(p.battle),1);assert.ok(p.battle.log.some(line=>line===`Alma: «${phrase}»`||line===`Alma Contratada: «${phrase}»`));assert.equal(localNPC(p.battle).hp,15);
+ let p=readyLocal(undefined,d);p=tactical(p,{type:'weapon',slot:'medical'});const npc=localNPC(p.battle);assert.equal(count(p.battle),0);p=tactical(p,{type:'heal',targetId:npc.id});assert.equal(count(p.battle),0);p=tactical(saved(p),{type:'heal',targetId:npc.id});assert.equal(count(p.battle),1);assert.ok(p.battle.log.some(line=>line===`Alma: «${phrase}»`||line===`Alma Contratada: «${phrase}»`));assert.equal(localNPC(p.battle).hp,15);
  p=saved(p);const bad=JSON.parse(encodeSave(p.campaign,p.battle));bad.battle.npcs.find(n=>n.id===npc.id).storyProfile.speech.treated='Changed';assert.throws(()=>decodeSave(JSON.stringify(bad)),/voz o apariencia/);
  d.characters.at(-1).speech.treated='Later draft';assert.equal(localNPC(p.battle).storyProfile.speech.treated,phrase);
  p=visit(saved({campaign:leave(p)}).campaign);assert.equal(localNPC(p.battle).hp,15);assert.equal(localNPC(p.battle).storyProfile.speech.treated,phrase);assert.equal(p.battle.units[0].medkits,0);const prior=count(p.battle);p=tactical(p,{type:'ambient'});assert.equal(count(p.battle),prior);
 });
 
 const field=(patient={},doctor={})=>createBattle([
- {id:'doc',name:'Sanitario',x:1,y:1,medical:80,dexterity:75,experienceLevel:4,medkits:3,...doctor},
+ {id:'doc',name:'Sanitario',x:1,y:1,activeSlot:'medical',medical:80,dexterity:75,experienceLevel:4,medkits:3,...doctor},
  {id:'patient',name:'Paciente',x:2,y:1,maxHp:100,hp:55,bleeding:4,bandaged:0,energy:100,storyProfile:{speech:{treated:phrase}},...patient}
 ],{width:8,height:8,enemies:[{id:'enemy',x:7,y:7,patrol:false,overwatch:false}]});
 const aid=s=>actBattle(s,{type:'heal',unitId:'doc',targetId:'patient'});
@@ -51,7 +51,7 @@ test('only accepted care for another conscious patient emits the optional line; 
 
 test('a resident that wakes in the following ambient phase does not retroactively speak for care received while exhausted',()=>{
  for(const pendingSeconds of [0,5]){
- const b=createBattle([{id:'doc',name:'Sanitario',x:1,y:1,medical:80,medkits:2}],{width:8,height:8,enemies:[],exploration:true,npcs:[{id:'civil',name:'Vecina',x:2,y:1,civilianHealthVersion:1,maxHp:100,hp:14,energy:0,unconscious:true,civilianWoundVersion:1,bleeding:0,bandaged:0,storyProfile:{speech:{treated:phrase}}}]});
+ const b=createBattle([{id:'doc',name:'Sanitario',x:1,y:1,activeSlot:'medical',medical:80,medkits:2}],{width:8,height:8,enemies:[],exploration:true,npcs:[{id:'civil',name:'Vecina',x:2,y:1,civilianHealthVersion:1,maxHp:100,hp:14,energy:0,unconscious:true,civilianWoundVersion:1,bleeding:0,bandaged:0,storyProfile:{speech:{treated:phrase}}}]});
  b.civilianSeconds=pendingSeconds;
  const n=actBattle(b,{type:'heal',unitId:'doc',targetId:'civil'});assert.equal(n.lastError,null);assert.equal(n.npcs[0].hp,15);assert.equal(n.units[0].medkits,1);assert.equal(n.npcs[0].energy,pendingSeconds?10:0);assert.equal(n.npcs[0].unconscious,!pendingSeconds);assert.equal(count(n),0);assert.ok(validateBattleSnapshot(n));
  const later=actBattle(validateBattleSnapshot(n),{type:'ambient'});assert.equal(later.npcs[0].hp,15);assert.equal(later.npcs[0].energy,pendingSeconds?20:10);assert.equal(later.npcs[0].unconscious,false);assert.equal(count(later),0);

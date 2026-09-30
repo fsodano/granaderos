@@ -15,7 +15,7 @@ const medicalTeam=()=>{let s=initialCampaign();wound(s,3);s=assign(s,10,'doctor'
 test('doctor treatment requires hours and consumes finite personal kits',()=>{
  let s=medicalTeam();const rate=doctorRate(rosterFor(s).find(o=>o.id===10));assert.equal(s.operativeState[3].hp,30);
  s=order(s,{type:'wait',hours:1});assert.equal(s.operativeState[3].hp,30+rate);assert.equal(s.operativeState[10].medkits,1);assert.equal(s.operativeState[3].bandaged,s.operativeState[3].maxHp-s.operativeState[3].hp);
- s=order(s,{type:'wait',hours:5});assert.equal(s.operativeState[3].hp,30+rate*2);assert.equal(s.operativeState[10].medkits,0);assert.match(careStatus(s,rosterFor(s).find(o=>o.id===10),rosterFor(s)),/botiquines/);
+ s=order(s,{type:'wait',hours:5});assert.equal(s.operativeState[3].hp,30+rate*2);assert.equal(s.operativeState[10].medkits,0);assert.match(careStatus(s,rosterFor(s).find(o=>o.id===10),rosterFor(s)),/vendas/);
 });
 
 test('a critical bleeding patient is stabilized before health recovery',()=>{
@@ -51,7 +51,7 @@ test('travel and deployment require active assignments and cannot grant recovery
  let s=medicalTeam();assert.ok(dispatch(s,{type:'travel',sector:'ensenada'}).lastError);assert.ok(dispatch(s,{type:'visitSector'}).lastError);assert.ok(dispatch(s,{type:'attack',sector:'san_nicolas'}).lastError);
  s=assign(s,3,'active');s=assign(s,10,'active');s=order(s,{type:'travel',sector:'ensenada'});assert.equal(s.operativeState[3].hp,30);assert.equal(s.operativeState[3].energy,16);assert.equal(s.operativeState[3].fatigue,84);
  assert.ok(dispatch(s,{type:'visitSector'}).lastError,'collapse requires recovery before voluntary deployment');
- s=order(s,{type:'wait',hours:8});s=order(s,{type:'setSleep',operativeId:3,asleep:false});const {hp,energy}=s.operativeState[3];
+ s=order(s,{type:'wait',hours:8});s=order(s,{type:'setSleep',operativeId:3,asleep:false});s=order(s,{type:'cancelTravel',choice:'stop'});assert.equal(s.location,'buenos_aires','resting does not complete a paused route');const {hp,energy}=s.operativeState[3];
  s=order(s,{type:'visitSector'});assert.ok(dispatch(s,{type:'assignCare',operativeId:3,assignment:'rest'}).lastError);s=order(s,{type:'syncTacticalTime',battleId:s.pendingBattle.id,elapsedSeconds:86400});assert.equal(s.operativeState[3].hp,hp);assert.equal(s.operativeState[3].energy,energy);
 });
 

@@ -70,7 +70,7 @@ test('kit exhaustion pauses further treatment at the exact depleted hour and a p
  assert.ok(event(s,10,'no_medkits'));assert.ok(event(s,3,'no_doctor'));
  const stable=wait(s,2);assert.equal(stable.hour,4);assert.equal(stable.assignmentAttention.notice,null);assert.equal(record(stable,3).hp,68);
  const money=stable.resources.treasury;s=order(stable,{type:'purchaseMedicalSupplies',operativeId:10,quantity:1});
- assert.equal(s.resources.treasury,money-30);assert.equal(s.merchants.retiro.supplies.medkits,stock-1);
+ assert.equal(s.resources.treasury,money-10);assert.equal(s.merchants.retiro.supplies.medkits,stock-1);
  s=wait(s,6);stopped(s,6,1,4);assert.equal(record(s,3).hp,74);assert.equal(record(s,10).medkits,0);
  assert.ok(event(s,10,'no_medkits'));assert.equal(record(s,10).assignment,'doctor');
 });

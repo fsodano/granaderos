@@ -25,8 +25,8 @@ test('typed eligibility retains the existing exact admission reasons and success
   assert.equal(careAssignmentIssue(s,op(s,10),'doctor'),null);
   assert.equal(careAssignmentReason(s,op(s,10),'doctor'),'');
   s.operativeState[10].medkits=0;
-  assert.deepEqual(careAssignmentIssue(s,op(s,10),'doctor'),{code:'no_medkits',reason:'El médico no tiene botiquines.'});
-  assert.equal(careAssignmentReason(s,op(s,10),'doctor'),'El médico no tiene botiquines.');
+  assert.deepEqual(careAssignmentIssue(s,op(s,10),'doctor'),{code:'no_medkits',reason:'El médico no tiene vendas.'});
+  assert.equal(careAssignmentReason(s,op(s,10),'doctor'),'El médico no tiene vendas.');
   s=repair();s.operativeState[10].toolkitPoints=0;
   assert.deepEqual(workAssignmentIssue(s,op(s,10),'repair',{targetId:4},roster(s)),{code:'no_tools',reason:'No quedan puntos de herramientas.'});
   assert.equal(workAssignmentReason(s,op(s,10),'repair',{targetId:4},roster(s)),'No quedan puntos de herramientas.');
