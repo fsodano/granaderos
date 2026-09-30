@@ -1,3 +1,4 @@
+import {marchToFront,completeTestTravel} from './campaign-test-helpers.mjs';
 import {firstAidPlan} from '../game/first-aid.js';
 import assert from 'node:assert/strict';
 import {dispatchCampaign,isSupplied} from '../game/campaign.js';
@@ -6,7 +7,8 @@ import {actBattle,endTurn,getReachable} from '../game/tactical.js';
 import {hasWorkshop} from '../game/campaign-headquarters.js';
 import {hiringArrivalOptions} from '../game/hiring-arrivals.js';
 import {freshCoastalRoute} from './fresh-coastal-fixture.mjs';
-import {fight} from './coastal-route-driver.mjs';
+import {fight} from './opening-driver.mjs';
+import {hiredAssaultOrder} from './hired-assault-driver.mjs';
 import {order,saved,sync} from './local-contract-fixture.mjs';
 
 const tactical=(p,a)=>{const battle=a.type==='endTurn'?endTurn(p.battle):actBattle(p.battle,a);assert.equal(battle.lastError,null,battle.lastError);return sync({campaign:p.campaign,battle});};
@@ -15,10 +17,11 @@ const deadIds=s=>Object.entries(s.operativeState).filter(([,r])=>!r.alive).map((
 export function freshNorthernRoute({onCheckpoint}={}){
  const prefix=freshCoastalRoute('created');let s=prefix.campaign;const notes=[];
  for(const sector of ['cordoba','tucuman','salta']){
+  s=marchToFront(s,{type:'attack',sector});
   s=order(s,{type:'attack',sector});assert.ok(s.pendingBattle);const request={...s.pendingBattle,hour:s.hour,secondOfHour:s.secondOfHour??0},previous=s.sectorStates[sector];
-  // Forest AP costs must not make the controller refuse every unseen forward
-  // step. Actual movement still pays the ordinary terrain cost and energy.
-  const {battle,orders,actions}=fight(request,previous,{scoutCostWeight:.01});assert.equal(battle.status,'victory',sector);
+  // Use the shared floor-aware squad controller and record every order for
+  // replay. Interruptions retain their actual participants and AP budgets.
+  const {battle,orders,actions}=fight(request,previous,{controller:hiredAssaultOrder});assert.equal(battle.status,'victory',sector);
   let p={campaign:s,battle:enterSector(request,previous)};
   for(let i=0;i<orders.length;i++){p=tactical(p,orders[i]);if(i===Math.floor(orders.length/2))p=saved(p);}
   assert.deepEqual(p.battle.units,battle.units);assert.equal(p.battle.seed,battle.seed);assert.equal(p.battle.elapsedSeconds,battle.elapsedSeconds);p=saved(p);
@@ -40,7 +43,7 @@ export function freshNorthernRoute({onCheckpoint}={}){
   notes.push({...record,fundsBeforeSettlement:before,fundsAfterReplacements:s.resources.treasury,replacements,deaths});onCheckpoint?.(sector,s,notes);
  }
  const paid=s.resources.treasury;s=order(s,{type:'diplomacy',kind:'northPact'});s=order(s,{type:'diplomacy',kind:'partisanSupply'});assert.equal(s.resources.treasury,paid-550);
- s=order(s,{type:'travel',sector:'tucuman'});assert.equal(s.location,'tucuman');assert.equal(s.phase,2);s=order(s,{type:'visitMission',mission:'yatasto'});
+ s=completeTestTravel(s,{sector:'tucuman'});assert.equal(s.location,'tucuman');assert.equal(s.phase,2);s=order(s,{type:'visitMission',mission:'yatasto'});
  let p=saved({campaign:s,battle:enterSector({...s.pendingBattle,hour:s.hour,secondOfHour:s.secondOfHour??0},s.sceneStates.yatasto)});
  assert.ok(dispatchCampaign(s,{type:'finishMission',battleId:s.pendingBattle.id,sectorState:p.battle,survivors:p.battle.units.filter(u=>u.side==='player')}).lastError);
  for(const npcId of ['yatasto-belgrano','yatasto-san-martin','yatasto-san-martin']){

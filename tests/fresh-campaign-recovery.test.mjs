@@ -241,7 +241,7 @@ test('a Retiro-only campaign retains paid recovery and real losses through coord
  for(const [id,record]of Object.entries(salta.campaign.operativeState))if(!record.alive)assert.equal(yatasto.operativeState[id].alive,false);
  for(const [id,record]of Object.entries(reunited.operativeState))if(!record.alive)assert.equal(salta.campaign.operativeState[id].alive,false);
  assert.equal(reunited.flags.partisanSupply,true);
- assert.equal(reunited.resources.muskets,relief.resources.muskets-50);
+ assert.deepEqual(Object.keys(reunited.resources),['treasury']);
  for(const id of reunited.squad)assert.equal(reunited.operativeState[id].location,'tucuman');
  for(const [id,record]of Object.entries(relief.operativeState))if(!record.alive)assert.equal(reunited.operativeState[id].alive,false);
  for(const [id,record]of Object.entries(tucuman.campaign.operativeState))if(!record.alive)assert.equal(relief.operativeState[id].alive,false);

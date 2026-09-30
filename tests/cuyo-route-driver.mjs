@@ -3,44 +3,64 @@
 // This is one reproducible strategy, not the game AI or a general balance proof.
 // Prefer cover to unfinished loading; complete an affordable charge first and
 // spend otherwise unused AP on the remaining partial work.
-// Reserve AP for fire, use prone fire, treat bleeding and search past cleared
+// Reserve AP for fire, use affordable aimed fire, treat bleeding and search past cleared
 // remembered positions. avoidCivilians filters shots through visible residents;
 // holdPosition keeps selected actors at their actual entry cells. They can still
 // fire, reload and bandage, and retain the same risks and costs.
 import {automaticOrder} from '../game/autonomous-orders.js';
 import {enterSector} from '../game/world.js';
-import {actBattle,endTurn,reloadPlan,getReachable,bladeFor,weaponFor,actionCosts,hasFirearm,shotChance,teamCanSee} from '../game/tactical.js';
+import {actBattle,endTurn,reloadPlan,getReachable,bladeFor,weaponFor,actionCosts,hasFirearm,shotChance,teamCanSee,interruptAvailable,firearmShotOptions,stanceCost} from '../game/tactical.js';
+import {spacePoint,spaceKey,sameSurface} from '../game/tactical-space.js';
+import {shotLocationEffects} from '../game/targeted-combat.js';
 const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y),live=u=>u.hp>0&&!u.routed&&!u.unconscious;
 const clearOfCivilians=(b,u,t)=>{const dx=t.x-u.x,dy=t.y-u.y,length=dx*dx+dy*dy;return !b.npcs.some(n=>{if(n.hp<=0||!teamCanSee(b,'player',n))return false;const f=((n.x-u.x)*dx+(n.y-u.y)*dy)/length;return f>0&&f<1&&Math.hypot(n.x-u.x-f*dx,n.y-u.y-f*dy)<.8;});};
 export function fight(request,previous=null,{scoutCostWeight=.1,avoidCivilians=false,holdPosition=[],fallbackOrders=false}={}){let b=enterSector(request,previous),actions=0;const orders=[];let known=[];
-for(let round=0;round<80&&b.status==='active';round++){
- for(const id of b.units.filter(u=>u.side==='player').map(u=>u.id)){
-  const visited=new Set();
-  for(let n=0;n<20&&b.status==='active';n++){
-   const u=b.units.find(u=>u.id===id);if(!live(u)||u.ap<6)break;visited.add(`${u.x},${u.y}`);
-   const visible=b.units.filter(t=>t.side==='enemy'&&live(t)&&teamCanSee(b,'player',t));if(visible.length)known=visible.map(({x,y})=>({x,y}));if(!visible.length&&known.every(p=>teamCanSee(b,'player',p)))known=[];const opts=[];
+for(let window=0;window<600&&b.turn<=80&&b.status==='active';window++){
+ const ids=b.units.filter(u=>u.side==='player'&&!u.militia).map(u=>u.id),visitedByActor=new Map(ids.map(id=>[id,new Set()]));
+ // Give each soldier one order before returning to the first. Short scouting
+ // bounds keep the squad together while contact can interrupt any move.
+ for(let attempt=0;attempt<20&&b.status==='active';attempt++){
+  let acted=false;
+  for(const id of ids){
+   const u=b.units.find(u=>u.id===id);if(b.status!=='active'||!live(u)||!interruptAvailable(b,u)||u.ap<6)continue;const visited=visitedByActor.get(id);visited.add(spaceKey(u));
+   const hold=holdPosition.includes(u.id)&&b.units.some(other=>other.id!==u.id&&other.side==='player'&&live(other)&&!other.departure&&!other.surrendered);
+   const visible=b.units.filter(t=>t.side==='enemy'&&live(t)&&teamCanSee(b,'player',t));if(visible.length)known=visible.map(spacePoint);if(!visible.length&&known.every(p=>teamCanSee(b,'player',p)))known=[];const opts=[];
    if(u.medkits&&u.bleeding&&u.hp<u.maxHp-10)opts.push(u.activeSlot==='medical'?{type:'heal'}:{type:'weapon',slot:'medical'});
    else if(u.activeSlot==='medical')opts.push({type:'weapon',slot:'primary'});
    if(!visible.length&&u.stance==='prone')opts.push({type:'stance',stance:'standing'});
    if(u.knockedDown)opts.push({type:'stance',stance:'standing'});
-   if(visible.length&&u.loaded&&u.stance!=='prone'&&visible.every(t=>dist(u,t)>2))opts.push({type:'stance',stance:'prone'});
-   if(!u.loaded&&u.stance==='prone')opts.push({type:'stance',stance:'standing'});
+   if(visible.length&&u.loaded&&u.stance==='standing'&&!u.mounted&&visible.every(t=>dist(u,t)>2)&&u.ap>=stanceCost(u,'crouched')+actionCosts(b,{...u,stance:'crouched',weaponReady:false},visible[0]).fire+12)opts.push({type:'stance',stance:'crouched'});
+   if(!u.loaded&&u.stance==='prone')opts.push({type:'stance',stance:'crouched'});
    if(u.jammed)opts.push({type:'reprime'});
-   const adjacent=visible.filter(t=>dist(u,t)<=bladeFor(u).reach).sort((a,b)=>a.hp-b.hp);if(adjacent[0])opts.push({type:'melee',targetId:adjacent[0].id});
+   const adjacent=visible.filter(t=>sameSurface(u,t)&&dist(u,t)<=bladeFor(u).reach).sort((a,b)=>a.hp-b.hp);if(adjacent[0])opts.push({type:'melee',targetId:adjacent[0].id});
    if(hasFirearm(u)&&u.loaded&&!u.jammed){
-    const shots=visible.filter(t=>!avoidCivilians||clearOfCivilians(b,u,t)).map(t=>{const shotCosts=actionCosts(b,u,t);let aim=0;while(aim<4&&shotCosts.fire+(aim+1)*shotCosts.aim<=u.ap&&shotChance(b,u,t,aim)<75)aim++;const chance=shotChance(b,u,t,aim);return {t,aim,chance,affordable:shotCosts.fire+aim*shotCosts.aim<=u.ap,score:chance*(t.hp<=weaponFor(u).damage?2:1)};}).filter(x=>x.chance>=30&&x.affordable).sort((a,b)=>b.score-a.score);
-    if(shots[0])opts.push({type:'fire',targetId:shots[0].t.id,aim:shots[0].aim});
+    const shots=[];
+    // Use the game's current, visible body-region previews. A wall can block
+    // a torso shot while the head is exposed. Previewed bodies also protect
+    // known civilians and teammates without reading hidden occupants.
+    for(const t of visible){
+     const cost=actionCosts(b,u,t);if(u.ap<cost.fire)continue;
+     for(const shot of firearmShotOptions(b,u,t,Math.min(4,Math.floor((u.ap-cost.fire)/cost.aim)))){
+      if(shot.chance<25)continue;
+      const effect=shotLocationEffects(shot.hitLocation,weaponFor(u).damage*shot.damageFactor,t);
+      const score=shot.chance*(Math.min(t.hp,effect.damage)+(t.hp-effect.damage<15?15:0))-(cost.fire+shot.aim*cost.aim)*.2;
+      shots.push({t,...shot,score});
+     }
+    }
+    shots.sort((a,b)=>b.score-a.score);
+    if(shots[0])opts.push({type:'fire',targetId:shots[0].t.id,aim:shots[0].aim,hitLocation:shots[0].hitLocation});
    }
    if(hasFirearm(u)&&!u.loaded&&u.ammo&&visible.length&&!reloadPlan(u,b).partial)opts.push({type:'reload'});
    const goal=visible.length?visible:known.length?known:[{x:b.width-3,y:Math.round(b.height/2)}];
    const currentDistance=Math.min(...goal.map(t=>dist(u,t)));
-   const moves=(holdPosition.includes(u.id)?[]:getReachable(b,u)).filter(p=>p.cost>0&&p.cost<=Math.max(0,u.ap-30)&&!visited.has(`${p.x},${p.y}`));
-   const scored=moves.map(p=>{const actor={...u,x:p.x,y:p.y},distance=Math.min(...goal.map(t=>dist(p,t))),cover=b.tiles.find(t=>t.x===p.x&&t.y===p.y)?.cover??0,chance=visible.length?Math.max(...visible.map(t=>shotChance(b,actor,t,2))):0;return {p,distance,score:visible.length?chance*.7+cover*.7-Math.max(0,5-distance)*12-p.cost*.2:-distance-p.cost*scoutCostWeight};}).filter(x=>visible.length?x.distance>=3||!hasFirearm(u):x.distance<currentDistance).sort((a,b)=>b.score-a.score);
-   const currentScore=visible.length?Math.max(...visible.map(t=>shotChance(b,u,t,2)))*.7+(b.tiles.find(t=>t.x===u.x&&t.y===u.y)?.cover??0)*.7-Math.max(0,5-currentDistance)*12:-currentDistance;
-   if(scored[0]&&scored[0].score>currentScore+2)opts.push({type:'move',x:scored[0].p.x,y:scored[0].p.y});
+   const moves=(hold?[]:getReachable(b,u)).filter(p=>p.cost>0&&p.cost<=Math.min(32,Math.max(0,u.ap-30))&&!visited.has(spaceKey(p)));
+   const scored=moves.map(p=>{const actor={...u,...spacePoint(p)},distance=Math.min(...goal.map(t=>dist(p,t))),cover=b.tiles.find(t=>t.x===p.x&&t.y===p.y)?.cover??0,chance=visible.length?Math.max(...visible.map(t=>Math.max(shotChance(b,actor,t,2),shotChance(b,actor,t,2,'head')))):0;return {p,distance,score:visible.length?chance*.7+cover*.7-Math.max(0,5-distance)*12-p.cost*.2:-distance-p.cost*scoutCostWeight};}).filter(x=>visible.length?x.distance>=3||!hasFirearm(u):x.distance<currentDistance).sort((a,b)=>b.score-a.score);
+   const currentScore=visible.length?Math.max(...visible.map(t=>Math.max(shotChance(b,u,t,2),shotChance(b,u,t,2,'head'))))*.7+(b.tiles.find(t=>t.x===u.x&&t.y===u.y)?.cover??0)*.7-Math.max(0,5-currentDistance)*12:-currentDistance;
+   if(scored[0]&&scored[0].score>currentScore+2)opts.push({type:'move',...spacePoint(scored[0].p)});
    if(hasFirearm(u)&&!u.loaded&&u.ammo)opts.push({type:'reload'});
-   let done=false;for(const a of opts){const next=actBattle(b,{...a,unitId:id});if(!next.lastError){b=next;orders.push({...a,unitId:id});actions++;done=true;break;}}if(!done&&fallbackOrders){const fallback=automaticOrder(b,u),target=fallback?.targetId&&b.units.find(t=>t.id===fallback.targetId);if(fallback&&!(holdPosition.includes(u.id)&&['move','charge','climb','exit'].includes(fallback.type))&&!(avoidCivilians&&fallback.type==='fire'&&target&&!clearOfCivilians(b,u,target))){const next=actBattle(b,{...fallback,unitId:id});if(!next.lastError){b=next;orders.push({...fallback,unitId:id});actions++;done=true;}}}if(!done)break;
+   let done=false;for(const a of opts){const next=actBattle(b,{...a,unitId:id});if(!next.lastError){b=next;orders.push({...a,unitId:id});actions++;done=true;break;}}if(!done&&fallbackOrders){const fallback=automaticOrder(b,u),target=fallback?.targetId&&b.units.find(t=>t.id===fallback.targetId);if(fallback&&!(hold&&['move','charge','climb','exit'].includes(fallback.type))&&!(avoidCivilians&&fallback.type==='fire'&&target&&!clearOfCivilians(b,u,target))){const next=actBattle(b,{...fallback,unitId:id});if(!next.lastError){b=next;orders.push({...fallback,unitId:id});actions++;done=true;}}}if(done)acted=true;
   }
+  if(!acted)break;
  }
  if(b.status==='active'){b=endTurn(b);orders.push({type:'endTurn'});}
 }

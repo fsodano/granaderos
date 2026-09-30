@@ -624,10 +624,12 @@ export function interruptAvailable(s,u){
 // Capture only what each opponent knew before this action. The snapshot is
 // transient: save files retain anonymous noise reports, never sound source IDs.
 function reactionObservation(s,actor){
-  return {x:actor.x,y:actor.y,tacticalLevel:tacticalLevel(actor),listeners:new Map(s.units.filter(u=>u.side!==actor.side&&alive(u)).map(u=>[u.id,{seen:canSee(s,u,actor),noise:u.lastHeardNoise}]))};
+  return {mode:s.mode,x:actor.x,y:actor.y,tacticalLevel:tacticalLevel(actor),listeners:new Map(s.units.filter(u=>u.side!==actor.side&&alive(u)).map(u=>[u.id,{seen:canSee(s,u,actor),noise:u.lastHeardNoise}]))};
 }
 function reactionFire(s,actor,before){
-  if(s.mode!=='combat'||s.status!=='active'||!alive(actor)||!before)return false;
+  // Contact starts a new combat window. The exploration step that revealed
+  // it is already paid in elapsed time; it must not also start a reaction turn.
+  if(s.mode!=='combat'||s.status!=='active'||!alive(actor)||before?.mode!=='combat')return false;
   const moved=before.crossing===true||before.x!==actor.x||before.y!==actor.y||!sameSurface(before,actor);
   const qualified=s.units.filter(u=>u.side!==actor.side&&alive(u)&&!u.knockedDown&&u.reactionTurn!==s.turn&&u.ap>=3&&
     (u.side==='player'||u.overwatch!==false)).filter(u=>{

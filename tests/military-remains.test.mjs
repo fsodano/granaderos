@@ -37,7 +37,9 @@ test('actual military casualties persist through saved sector visits with finite
  const cash=p.campaign.resources.treasury,issued=p.campaign.pendingBattle.issuedCartridges;
  let s=saved({campaign:leave(p)}).campaign;assert.equal(s.resources.treasury,cash);assert.equal(totalReserveAmmunition(s.operativeState[actor.id])+s.operativeState[actor.id].carriedLoaded,cartridges+ammo);
  assert.equal(s.operativeState[id].deathMinute,death);assert.equal(s.operativeState[id].alive,false);
- p=visit(s);assert.equal(p.battle.units.find(u=>u.id===body.id).ammo,0);assert.equal(p.battle.units.find(u=>u.id===body.id).weaponDropped,true);assert.ok(actBattle(p.battle,{type:'loot',unitId:actor.id,targetId:body.id,item:'weapon'}).lastError);assert.equal(p.battle.units.filter(u=>u.hp===0).length,bodies.length);
+ const returnedBodies=s.sectorStates.buenos_aires.units.filter(u=>u.hp===0).map(u=>u.id).sort();
+ assert.ok(bodies.every(u=>returnedBodies.includes(u.id)),'all original deaths remain; a bleeding critical casualty can also die during recovery');
+ p=visit(s);assert.equal(p.battle.units.find(u=>u.id===body.id).ammo,0);assert.equal(p.battle.units.find(u=>u.id===body.id).weaponDropped,true);assert.ok(actBattle(p.battle,{type:'loot',unitId:actor.id,targetId:body.id,item:'weapon'}).lastError);assert.deepEqual(p.battle.units.filter(u=>u.hp===0).map(u=>u.id).sort(),returnedBodies);
  s=saved({campaign:leave(p)}).campaign;assert.equal(s.resources.treasury,cash);assert.equal(totalReserveAmmunition(s.operativeState[actor.id])+s.operativeState[actor.id].carriedLoaded,cartridges+ammo);
  assert.deepEqual(s.contentPresence.events,before.contentPresence.events);
 });

@@ -54,6 +54,7 @@ export function combatOrder(b,u){
 }
 export function fight(request,sectorState,{controller=combatOrder,deploy}={}){let b=enterSector(request,sectorState,{placement:Boolean(deploy)}),actions=0;
  if(deploy)b=deploy(b);
+ const orders=[];
  // Enemy movement can yield several control windows within the same round.
  for(let window=0;window<600&&b.turn<=80&&b.status==='active';window++){
   const ids=b.units.filter(u=>u.side==='player'&&!u.militia).sort((a,c)=>c.marksmanship-a.marksmanship).map(u=>u.id);
@@ -65,11 +66,11 @@ export function fight(request,sectorState,{controller=combatOrder,deploy}={}){le
     if(b.status!=='active')break;
     const u=b.units.find(u=>u.id===id);if(!interruptAvailable(b,u)||u.ap<3)continue;
     const action=controller(b,u);if(!action)continue;
-    const next=actBattle(b,action);assert.equal(next.lastError,null,JSON.stringify(action));b=next;actions++;acted=true;
+    const next=actBattle(b,action);assert.equal(next.lastError,null,JSON.stringify(action));b=next;orders.push(action);actions++;acted=true;
    }
    if(!acted)break;
   }
-  if(b.status==='active')b=endTurn(b);
+  if(b.status==='active'){b=endTurn(b);orders.push({type:'endTurn'});}
  }
- return {battle:b,actions};
+ return {battle:b,actions,orders};
 }

@@ -1,3 +1,4 @@
+import {equipOpeningRifles} from './opening-equipment.mjs';
 import {approachNPC} from './approach-npc.mjs';
 import {firstAidPlan} from '../game/first-aid.js';
 import assert from 'node:assert/strict';
@@ -27,7 +28,7 @@ function recruitLocal(s,id=3){
  return saved({campaign:leave(saved({campaign:s,battle:p.battle}))}).campaign;
 }
 
-export function freshCoastalRoute(kind,{onCheckpoint}={}){
+export function freshCoastalRoute(kind,{onCheckpoint,onReplayFailure}={}){
  let s=stock();const notes=[],dead=new Set();
  assert.deepEqual(Object.keys(s.sectors).filter(id=>s.sectors[id].owner==='patriot'),['retiro']);assert.equal(s.resources.treasury,3200);assert.deepEqual(s.recruited,[]);
  if(kind==='created'||kind==='local'){
@@ -50,7 +51,10 @@ export function freshCoastalRoute(kind,{onCheckpoint}={}){
   // Replay every legal order with the normal campaign clock. Reload halfway
   // through the real engagement, then verify its deterministic final state.
   let p={campaign:s,battle:enterSector(request,previous)};
-  for(let i=0;i<orders.length;i++){p=tactical(p,orders[i]);if(i===Math.floor(orders.length/2))p=saved(p);}
+  for(let i=0;i<orders.length;i++){
+   try{p=tactical(p,orders[i]);if(i===Math.floor(orders.length/2))p=saved(p);}
+   catch(error){onReplayFailure?.({sector,index:i,action:orders[i],before:p});throw error;}
+  }
   assert.deepEqual(p.battle.units,battle.units);assert.equal(p.battle.seed,battle.seed);assert.equal(p.battle.elapsedSeconds,battle.elapsedSeconds);p=saved(p);
   const battleNotes={sector,actions,turns:battle.turn,hour:p.campaign.hour,second:p.campaign.secondOfHour,funds:p.campaign.resources.treasury,units:actorStates(battle)};
   for(const u of battle.units.filter(u=>u.side==='player'&&!u.missionAlly&&u.hp===0))dead.add(Number(u.id));
@@ -77,6 +81,10 @@ export function freshCoastalRoute(kind,{onCheckpoint}={}){
    assert.ok(hiringArrivalOptions(s).some(o=>o.id===s.location));const location=s.location;
    for(const id of replacements)s=order(s,{type:'recruitCivic',id,term:'week',destination:location});
    if(replacements.length){assert.ok(replacements.every(id=>!s.recruited.includes(id)));s=saved({campaign:order(s,{type:'wait',hours:6})}).campaign;assert.ok(replacements.every(id=>s.recruited.includes(id)&&s.operativeState[id].location===location));}
+   // Replacements may arrive with short guns. Recover rifles left by this
+   // actual battle through ordinary approach, pickup and equipment orders.
+   const depot=visit(s),rearmed=equipOpeningRifles(depot.battle,s.squad);
+   s=leave(sync({campaign:depot.campaign,battle:rearmed.battle}));
    s=prepareLocalOpening(s,{buyWeapons:false}).campaign;
   }
  }

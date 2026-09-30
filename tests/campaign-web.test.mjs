@@ -1,3 +1,7 @@
+import {getCityStatus,CITY_LOYALTY_THRESHOLD} from '../game/cities.js';
+import {equipmentCatalogItem,merchantStatus} from '../game/equipment.js';
+import {artilleryCount} from '../game/economy.js';
+import {transportPath} from '../game/logistics.js';
 import {scriptedBattleReport} from './scripted-battle-report.mjs';
 import {attendYatasto} from './mission-helpers.mjs';
 import {marchToFront,restForMarch,meetLocalRecruit,completeTestTravel} from './campaign-test-helpers.mjs';
@@ -7,7 +11,21 @@ import {dispatchCampaign as dispatch,isSupplied,recruitmentStatus,restoreCampaig
 import {initialCampaign} from './legacy-campaign-fixture.mjs';
 const order=(s,action)=>{const next=action.type==='travel'?completeTestTravel(s,action):meetLocalRecruit(s,action)??dispatch(marchToFront(s,action),action);assert.equal(next.lastError,null,`${action.type} ${action.sector??''} from ${s.location} at ${s.hour}: ${next.lastError}`);return action.type==='diplomacy'&&action.kind==='northPact'&&next.phase===2?attendYatasto(next):next;};
 // Progression-only fixtures settle declared battles; these are not combat playthroughs.
-const capture=(s,id)=>{
+function connectSupplyRoad(s){
+ // Raids can sever the rear road while the field squad is elsewhere. Reopen
+ // an accessible bridge from the supplied side before pressing the front.
+ for(let repair=0;!isSupplied(s,s.location)&&repair<CAMPAIGN_SECTORS.length;repair++){
+  const gap=CAMPAIGN_SECTORS.find(d=>s.sectors[d.id].owner==='royalist'&&d.neighbors.some(n=>isSupplied(s,n))&&d.neighbors.some(n=>transportPath(s,s.location,n)));
+  assert.ok(gap,'the cut road needs a reachable sector next to the supplied network');
+  s=capture(s,gap.id,{restoreSupply:false});
+ }
+ assert.ok(isSupplied(s,s.location),'the field location must have an actual controlled supply path');return s;
+}
+const capture=(s,id,{restoreSupply=true,attempt=0}={})=>{
+ assert.ok(attempt<40,'the field force must restore a stable supply road within a bounded number of marches');
+ s=restForMarch(s);
+ if(restoreSupply)s=connectSupplyRoad(s);
+
  const target=id==='san_lorenzo'?'san_nicolas':id,queue=[[s.location]],seen=new Set([s.location]);let path;
  while(queue.length){const current=queue.shift();if(current.at(-1)===target){path=current;break;}for(const next of CAMPAIGN_SECTORS.find(d=>d.id===current.at(-1)).neighbors)if(!seen.has(next)){seen.add(next);queue.push([...current,next]);}}
  assert.ok(path,`A map route to ${id} must exist`);
@@ -15,6 +33,8 @@ const capture=(s,id)=>{
   if(s.sectors[next].owner==='royalist'||s.enemyGroups.some(g=>g.target===next&&g.status==='stationed'))s=capture(s,next);
   else s=order(s,{type:'travel',sector:next});
  }
+ s=restForMarch(s);
+ if(restoreSupply&&!isSupplied(s,s.location))return capture(s,id,{attempt:attempt+1});
  s=order(s,{type:'attack',sector:id});assert.ok(s.pendingBattle,`The ${id} deployment must finish its actual approach`);s=order(s,scriptedBattleReport(s));
  return s;
 };
@@ -85,19 +105,64 @@ test('untrusted saves reject malformed resources, sectors, squads and pending ba
  for(const alter of [s=>s.resources.powder=-1,s=>s.sectors.salta.militia=[-2,0,0],s=>s.squad=[3,999],s=>s.operativeState[3].hp=10000,s=>s.pendingBattle={id:'invalid'},s=>s.resources.treasury=-1]){const s=initialCampaign();alter(s);assert.throws(()=>restoreCampaign(JSON.stringify(s)));}
 });
 test('scripted combat settlements advance historical progression through money-only reducer orders',()=>{
+ const settleDefense=s=>{
+  if(!s.pendingEncounter)return s;
+  s=order(s,{type:'respondToEncounter',groupId:s.pendingEncounter.groupId,choice:'tactical'});
+  return order(s,scriptedBattleReport(s));
+ };
+ const waitHere=(start,hours)=>{
+  let s=start;const until=s.hour+hours;
+  for(let attempt=0;s.hour<until&&attempt<hours*3+20;attempt++){
+   s=settleDefense(s);
+   for(const id of s.recruited){const contract=s.contracts[id];if(contract?.expiresAt!=null&&contract.expiresAt<=s.hour+1)s=order(s,{type:'renewContract',id,term:'day',expectedExpiresAt:contract.expiresAt});}
+   s=order(s,{type:'wait',hours:1});
+  }
+  assert.equal(s.hour,until);return settleDefense(s);
+ };
+ const train=(start,id)=>{
+  let s=start;if(s.sectors[id].owner==='royalist')s=capture(s,id);s=order(s,{type:'travel',sector:id});
+  // Wait for actual local cooperation and defend the town while it recovers.
+  // A conquest, a delay or a paused wait cannot manufacture training consent.
+  for(let hour=0;getCityStatus(s,id).loyalty<CITY_LOYALTY_THRESHOLD&&hour<24*40;hour++){
+   if(!isSupplied(s,id)){s=connectSupplyRoad(s);s=order(s,{type:'travel',sector:id});}
+   s=waitHere(s,1);
+  }
+  assert.ok(getCityStatus(s,id).loyalty>=CITY_LOYALTY_THRESHOLD);
+  s=order(s,{type:'militia',sector:id,rank:0,trainerId:4});
+  const course=s.militiaTraining.find(c=>c.sector===id);
+  for(let hour=0;s.militiaTraining.some(c=>c.sector===id&&c.started===course.started)&&hour<240;hour++)s=waitHere(s,1);
+  assert.ok(!s.militiaTraining.some(c=>c.sector===id&&c.started===course.started));return s;
+ };
  let s=order(initialCampaign(),{type:'academy'});
  for(const id of ['san_nicolas','san_lorenzo','cordoba','tucuman','salta'])s=capture(s,id);
  s=order(s,{type:'diplomacy',kind:'northPact'});
  for(const id of ['santa_fe','jujuy','humahuaca','mendoza','uspallata','los_patos'])s=capture(s,id);
  s=order(s,{type:'travel',sector:'mendoza'});s=order(s,{type:'recruit',id:2});s=order(s,{type:'foundry'});
- for(const id of ['mendoza','uspallata','los_patos','san_nicolas','jujuy'])s=order(s,{type:'fortify',sector:id});
- for(const id of ['san_nicolas','jujuy','jujuy']){if(s.sectors[id].owner==='royalist')s=capture(s,id);s=order(s,{type:'travel',sector:id});s=order(s,{type:'militia',sector:id,rank:0,trainerId:4});s=order(s,{type:'wait',hours:s.militiaTraining[0].remaining});}s=order(s,{type:'travel',sector:'mendoza'});
+ for(const id of ['mendoza','uspallata','los_patos','san_nicolas','jujuy']){if(s.sectors[id].owner==='royalist')s=capture(s,id);s=order(s,{type:'fortify',sector:id});}
+ for(const id of ['san_nicolas','jujuy','jujuy'])s=train(s,id);s=order(s,{type:'travel',sector:'mendoza'});
  s=order(s,{type:'diplomacy',kind:'parliament'});
- while(s.resources.treasury<5100)s=order(s,{type:'wait',hours:24});
- s=order(s,{type:'fundArmy'});s=order(s,{type:'purchaseEquipment',item:'bronze4',quantity:3});
+ for(let day=0;s.resources.treasury<5100&&day<60;day++)s=waitHere(s,24);assert.ok(s.resources.treasury>=5100);
+ s=order(s,{type:'fundArmy'});
+ const artillery=equipmentCatalogItem('bronze4',s),pieces=artilleryCount(s);
+ for(let hour=0;artilleryCount(s)<pieces+3&&hour<240;hour++){
+  const offer=merchantStatus(s,artillery,isSupplied);assert.equal(offer.available,true,offer.reason);
+  if(offer.stock&&s.resources.treasury>=artillery.price){const money=s.resources.treasury;s=order(s,{type:'purchaseEquipment',item:'bronze4',quantity:1});assert.equal(s.resources.treasury,money-artillery.price);}
+  else s=waitHere(s,1);
+ }
+ assert.equal(artilleryCount(s),pieces+3);
  assert.equal(s.flags.armyFunded,true);assert.equal(s.phase,4);for(const def of CAMPAIGN_SECTORS)if(s.sectors[def.id].owner==='royalist')s=capture(s,def.id);
- for(let i=0;i<2;i++)s=order(s,{type:'fortify',sector:'humahuaca'});s=order(s,{type:'travel',sector:'jujuy'});for(let i=0;i<3;i++){s=order(s,{type:'militia',sector:'jujuy',rank:0,trainerId:4});s=order(s,{type:'wait',hours:s.militiaTraining[0].remaining});}
- s=order(s,{type:'recruit',id:57});for(const def of CAMPAIGN_SECTORS)if(s.sectors[def.id].owner==='royalist')s=capture(s,def.id);if(s.blockade)s=capture(s,'san_nicolas');assert.equal(s.completed,true);assert.ok(s.hour<24*150,`Preparation took ${s.hour/24} days`);
+ for(let i=0;i<2;i++)s=order(s,{type:'fortify',sector:'humahuaca'});s=order(s,{type:'travel',sector:'jujuy'});for(let i=0;i<3;i++)s=train(s,'jujuy');
+ s=order(s,{type:'recruit',id:57});
+ // Victory also requires resolving existing enemy columns. A single map sweep
+ // cannot claim an ending while another raid is still marching toward a town.
+ for(let step=0;!s.completed&&step<24*30;step++){
+  s=settleDefense(s);
+  const occupied=CAMPAIGN_SECTORS.find(d=>s.sectors[d.id].owner==='royalist'),blockaders=s.enemyGroups.find(g=>g.theater==='coast'&&g.status==='stationed');
+  if(occupied)s=capture(s,occupied.id);
+  else if(s.blockade&&blockaders)s=capture(s,blockaders.target);
+  else s=waitHere(s,1);
+ }
+ assert.equal(s.completed,true);assert.ok(s.hour<24*150,`Preparation took ${s.hour/24} days`);
 });
 
 test('southern winter closes Andean passes while northern gorge remains operational',()=>{

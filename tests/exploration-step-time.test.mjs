@@ -190,3 +190,31 @@ test('invalid destinations and invalid bundled orders do not advance clock, woun
     clockMatches(n, s, 0);
   }
 });
+
+test('dawn contact during a movement step does not replay that step as a combat reaction', () => {
+  const s = field({agility: 10, experienceLevel: 1}, {
+    hour: 5, secondOfHour: 3599,
+    enemies: [{id: 'e', x: 10, y: 1, facing: 6, agility: 80, experienceLevel: 5, patrol: false, loaded: 0}],
+  }, [{id: 'ally', x: 1, y: 3, facing: 2, agility: 100, experienceLevel: 10}]);
+  assert.equal(s.mode, 'exploration');
+  const n = move(s, 5, 1);
+  assert.equal(n.mode, 'combat');
+  assert.equal(n.roundFirstSide, 'player');
+  assert.equal(n.phase, 'player');
+  assert.equal(n.reactionStack, undefined);
+  assert.equal(n.interrupt, undefined);
+  assert.equal(n.roundTimeCharged, false);
+  assert.deepEqual(person(n).lastMovePath.map(({x, y}) => ({x, y})), [{x: 2, y: 1}]);
+  assert.equal(person(n, 'e').loaded, 0, 'the enemy has not taken a combat reload during the exploration step');
+  assert.equal(person(n, 'e').reactionTurn, person(s, 'e').reactionTurn);
+  clockMatches(n, s, 3);
+  const saved = validateBattleSnapshot(JSON.parse(JSON.stringify(n)));
+  const action = {type: 'move', unitId: 'p', x: 3, y: 1};
+  const next = actBattle(n, action), resumed = actBattle(saved, action);
+  assert.equal(next.lastError, null);
+  assert.deepEqual(resumed, next);
+  assert.equal(next.roundTimeCharged, true);
+  assert.equal(next.elapsedSeconds, n.elapsedSeconds + COMBAT_ROUND_SECONDS);
+  assert.equal(person(next, 'e').reactionTurn, next.turn, 'ordinary combat movement can still trigger a reaction');
+  assert.doesNotThrow(() => validateBattleSnapshot(next));
+});

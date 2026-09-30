@@ -1,4 +1,4 @@
-import {ammoResourceKey} from '../game/campaign-ammunition.js';
+import {supplyRouteAmmunition} from './route-ammunition.mjs';
 import {finishReloadsBeforeMarch} from './pre-march-reload.mjs';
 import {autoBandageBattle} from '../game/auto-bandage.js';
 import {fightNorthernSector,northernCombatOrder} from './northern-route.mjs';
@@ -57,9 +57,7 @@ export function recoverFreshNorthernDoctor(start,{report=()=>{}}={}){
  }
  order({type:'createSquad',name:'Hospital de Córdoba',ids:patients,sector});
  order({type:'createOfficer',name:'Oficial de socorro',answers:{origin:'cabildo',doctrine:'line_marksman',crisis:'rescue'}});
- const ammunition={};
- for(const op of rosterFor(c).filter(op=>c.squad.includes(op.id))){const type=weaponAmmoType(op.weapon);if(type)ammunition[type]=(ammunition[type]??0)+Math.max(0,10-availableAmmunition(c.operativeState[op.id],type)-(c.operativeState[op.id].carriedLoaded??0));}
- for(const [ammoType,count]of Object.entries(ammunition)){const key=ammoResourceKey(ammoType),quantity=Math.max(0,count-(c.resources[key]??0)-(c.depots[sector]?.[key]??0));if(quantity)order({type:'purchaseAmmunition',ammoType,quantity});}
+ c=supplyRouteAmmunition(c,c.squad,{report}).campaign;
 
  for(const row of sectorInventoryModel(c,sector,rosterFor(c),1000).entries.filter(row=>row.reachable&&JSON.parse(row.expected).item==='medkits')){
   const count=Math.min(row.count,10-c.operativeState[1000].medkits);if(count<=0)break;
@@ -216,7 +214,7 @@ assert.ok(available.length);
 order({type:'squad',ids:available.slice(0,5)});const mainSquad=c.activeSquadId;
 for(let offset=5;offset<available.length;offset+=6)order({type:'createSquad',name:'Reserva del norte',ids:available.slice(offset,offset+6)});
 order({type:'selectSquad',id:mainSquad});
-for(const operativeId of available)order({type:'assignCare',operativeId,assignment:'active'});order({type:'diplomacy',kind:'partisanSupply'});c=meetRecruits(c,['azurduy'],available[0]);assert.deepEqual(decodeSave(encodeSave(c)).campaign,c);return c;
+for(const operativeId of available)order({type:'assignCare',operativeId,assignment:'active'});const funds=c.resources.treasury;order({type:'diplomacy',kind:'partisanSupply'});assert.equal(c.resources.treasury,funds-250);c=meetRecruits(c,['azurduy'],available[0]);assert.deepEqual(decodeSave(encodeSave(c)).campaign,c);return c;
 }
 
 export function prepareFreshSaltaAssault(start){
@@ -267,7 +265,7 @@ export function finishFreshNorthernCampaign(start,{report=()=>{}}={}){
   order({type:'wait',hours:1});
  };
  const before=structuredClone(c.resources);order({type:'diplomacy',kind:'northPact'});
- assert.equal(c.resources.muskets,before.muskets-20);assert.equal(c.resources.horses,before.horses-10);assert.equal(c.resources.powder,before.powder-10);
+ assert.equal(c.resources.treasury,before.treasury-300);assert.deepEqual(Object.keys(c.resources),['treasury']);
  // Select the living envoy explicitly after a multi-squad victory. Other
  // survivors retain their records and equipment in Salta.
  const envoy=rosterFor(c).filter(op=>{const r=c.operativeState[op.id];return c.recruited.includes(op.id)&&r.alive&&!r.captured&&r.hp>=15&&r.location==='salta';}).sort((a,b)=>b.leadership-a.leadership||a.id-b.id)[0];
