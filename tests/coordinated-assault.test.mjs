@@ -1,4 +1,4 @@
-import {AMMUNITION_RESOURCE_KEYS} from '../game/campaign-ammunition.js';
+import {refreshMilitaryCondition} from '../game/actor-condition.js';
 import {stockAmmo,stockAndCarriedAmmo} from './ammunition-balance.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -46,8 +46,9 @@ test('attacking now uses only ready squads; later squads return without joining 
  s=order(s,{type:'syncTacticalTime',battleId:s.pendingBattle.id,elapsedSeconds:8*3600});assert.equal(s.squads[1].journey,undefined);assert.equal(s.squads[1].location,'cordoba');assert.equal(s.pendingBattle.squad.length,6);roundtrip(s);
 });
 test('combined victory keeps squad membership, wounds and finite ammunition accounting',()=>{
- let s=both();for(const key of Object.values(AMMUNITION_RESOURCE_KEYS))s.resources[key]=0;s.depots.buenos_aires={ammo_pistol_69:20,ammo_shot_16:10};s.depots.cordoba={ammo_shot_16:10,ammo_rifle_62:10,ammo_pistol_69:10,cartridges:10};s=begin(wait(s,12));assert.equal(s.pendingBattle.issuedCartridges,70);assert.ok(Object.values(s.depots.buenos_aires).every(n=>n===0));assert.ok(Object.values(s.depots.cordoba).every(n=>n===0));assert.equal(stockAmmo(s),0);
- const memberships=s.squads.map(q=>[...q.members]),report=scriptedBattleReport(s);s=order(s,report);assert.equal(s.pendingBattle,null);assert.equal(s.sectors.san_nicolas.owner,'patriot');assert.deepEqual(s.squads.map(q=>q.members),memberships);assert.ok(s.squads.every(q=>q.location==='san_nicolas'));roundtrip(s);
+ let s=wait(both(),12);const cash=s.resources.treasury;assert.equal(stockAndCarriedAmmo(s),0);s=begin(s);assert.equal(s.pendingBattle.issuedCartridges,110);assert.equal(stockAmmo(s),0);assert.equal(stockAndCarriedAmmo(s),110);assert.equal(s.resources.treasury,cash-110);assert.deepEqual(s.ammunitionShops.buenos_aires.stock,{ammoMusket:180,ammoRifle:60,ammoPistol:160,ammoShot:90});assert.deepEqual(s.ammunitionShops.cordoba.stock,{ammoMusket:170,ammoRifle:50,ammoPistol:170,ammoShot:90});
+ // Declared wounds isolate settlement; this is not a combat-playthrough claim.
+ const memberships=s.squads.map(q=>[...q.members]),report=scriptedBattleReport(s,{units:[{id:4,hp:40,bleeding:0},{id:103,hp:42,bleeding:0}]});s=order(s,report);assert.equal(s.pendingBattle,null);assert.equal(s.sectors.san_nicolas.owner,'patriot');assert.deepEqual(s.squads.map(q=>q.members),memberships);assert.ok(s.squads.every(q=>q.location==='san_nicolas'));assert.equal(s.operativeState[4].hp,40);assert.equal(s.operativeState[103].hp,42);assert.equal(stockAndCarriedAmmo(s),110);roundtrip(s);
  assert.ok(dispatchCampaign(s,report).lastError,'the same report cannot credit equipment twice');
 });
 test('an actual tactical withdrawal returns both columns through separate exits',()=>{
@@ -72,8 +73,8 @@ test('all eight six-person squads fit the real deployment and remain separate',(
  s.squads=Array.from({length:8},(_,i)=>({id:`squad-${i+1}`,name:`Columna ${i+1}`,location:i%2?'cordoba':'buenos_aires',members:ids.slice(i*6,i*6+6)}));s.location='buenos_aires';s.squad=[...s.squads[0].members];for(const q of s.squads)for(const id of q.members)s.operativeState[id].location=q.location;
  for(const q of s.squads){s=order(s,{type:'selectSquad',id:q.id});s=queue(s);}s=begin(wait(s,12));roundtrip(s);const b=enterSector(s.pendingBattle);assert.equal(b.units.filter(u=>u.side==='player').length,48);assert.equal(new Set(b.units.map(u=>`${u.x},${u.y}`)).size,b.units.length);assert.equal(decodeSave(encodeSave(s,b)).campaign.pendingBattle.squad.length,48);
 });
-test('insufficient attack supplies leave staged squads and the clock unchanged',()=>{
- const s=wait(both(),12);s.resources.powder=0;const before=serializeCampaign(s),next=dispatchCampaign(s,{type:'beginAssault',sector:'san_nicolas'});assert.ok(next.lastError);assert.equal(serializeCampaign(s),before);assert.deepEqual(next.squads,s.squads);assert.equal(next.hour,s.hour);assert.equal(next.pendingBattle,null);
+test('insufficient money for ammunition leaves staged squads and the clock unchanged',()=>{
+ const s=wait(both(),12);s.resources.treasury=0;const before=serializeCampaign(s),next=dispatchCampaign(s,{type:'beginAssault',sector:'san_nicolas'});assert.ok(next.lastError);assert.equal(serializeCampaign(s),before);assert.deepEqual(next.squads,s.squads);assert.equal(next.hour,s.hour);assert.equal(next.pendingBattle,null);
 });
 
 test('travel orders cannot smuggle an assault intent past attack admission',()=>{
@@ -88,7 +89,7 @@ test('loss of the active column selects the existing surviving squad without dup
  let s=begin(wait(both(),12));const active=s.activeSquadId,fallen=[...s.squads.find(q=>q.id===active).members],surviving=structuredClone(s.squads.find(q=>q.id!==active)),report=scriptedBattleReport(s);
  // This settlement fixture preserves every combatant and all finite equipment;
  // it declares the active column's deaths after the coordinated victory.
- for(const unit of report.sectorState.units.filter(u=>u.side==='player'&&fallen.includes(Number(u.id))))Object.assign(unit,{hp:0,bleeding:0,bandaged:0,unconscious:false,ap:0});
+ for(const unit of report.sectorState.units.filter(u=>u.side==='player'&&fallen.includes(Number(u.id)))){Object.assign(unit,{hp:0,bleeding:0,bandaged:0,unconscious:false});refreshMilitaryCondition(unit);}
  report.survivors=report.sectorState.units.filter(u=>u.side==='player');s=order(s,report);
  assert.equal(s.activeSquadId,surviving.id);assert.deepEqual(s.squad,surviving.members);assert.deepEqual(s.squads.find(q=>q.id===surviving.id).members,surviving.members);assert.deepEqual(s.squads.find(q=>q.id===active).members,[]);
  const members=s.squads.flatMap(q=>q.members);assert.equal(new Set(members).size,members.length);assert.ok(fallen.every(id=>!s.operativeState[id].alive));roundtrip(s);
@@ -111,6 +112,6 @@ test('a crowded mountain assault stays staged without consuming gear or committi
  assert.equal(returning.squads.find(q=>q.id===returning.activeSquadId).journey.returning,true);
  const smaller=order(returning,{type:'beginAssault',sector:'uspallata'});
  assert.equal(smaller.pendingBattle.squad.length,6);assert.equal(smaller.pendingBattle.artillery.length,1);
- assert.equal(smaller.resources.cannons,before.resources.cannons-1);
+ assert.equal(smaller.pendingBattle.artillery[0].type,'bronze4');assert.equal(smaller.armory.bronze4,before.armory.bronze4-1);
  assert.equal(enterSector(smaller.pendingBattle).units.filter(u=>u.side==='player').length,6);
 });

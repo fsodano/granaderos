@@ -31,6 +31,7 @@ export function equipArmoryItem(s,op,action){
  }
  if(slot==='weapon'){
   delete record.contentWeapon;record.condition=incoming.condition;record.jammed=incoming.jammed;record.weaponDropped=false;record.weaponFittings=structuredClone(incoming.fittings??{});
+  if(record.activeSlot==='unarmed')record.activeSlot='primary';
   if(incoming.ammunitionChoice!==undefined)record.ammunitionChoice=incoming.ammunitionChoice;else delete record.ammunitionChoice;
   record.carriedLoaded=incoming.loaded??0;
   if(incoming.reloadProgress!==undefined)record.carriedReloadProgress=incoming.reloadProgress;else delete record.carriedReloadProgress;
