@@ -1,0 +1,73 @@
+{
+  "feature": "Civilian weapon custody",
+  "source": "cf22706d654fdf35b26b941563e9f2d39a8b83e3",
+  "base": "8191350bcab8e8c6d530988afa07d38b8dd9e36c",
+  "checks": {
+    "runtime": {
+      "passed": 5,
+      "failed": 0
+    },
+    "relatedSuppliesAndService": {
+      "passed": 16,
+      "failed": 0
+    },
+    "finalMountedInterfaces": {
+      "passed": 3,
+      "failed": 0
+    },
+    "namedAllyAndSupplies": {
+      "passed": 6,
+      "failed": 0
+    },
+    "types": "PASS",
+    "build": {
+      "status": "PASS",
+      "files": 735,
+      "assetReferences": 637
+    },
+    "browser": {
+      "url": "http://localhost:3134/?content=1",
+      "fixture": "tests/civilian-weapons-fixture.mjs",
+      "recovered": [
+        "Mosquete de Alma",
+        "Sable de Alma"
+      ],
+      "equipped": "Sable de Alma",
+      "browserReloadRetained": true,
+      "consoleErrors": 0,
+      "consoleWarnings": 0,
+      "scope": "Controlled authored campaign; keyboard target activation and pointer pocket/equip controls."
+    },
+    "regression": {
+      "total": 1329,
+      "passed": 1329,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 291945.674584,
+      "scope": "Full implementation run; final blade-control display and expanded named-ally assertions also passed focused checks. Final-head CI gates merge."
+    },
+    "baseline": {
+      "passed": 36
+    }
+  },
+  "sourceHashes": {
+    "game/campaign-ammunition.js": "47ed1e4ba81d70de933d8177b0e84795a084979b21f1572c9a1d769f5c277fff",
+    "game/campaign-civilians.js": "7c6630513badff489bfbc21cf78d9834aaeaeeedfe859dede22603c954e1b116",
+    "game/civilian-weapons.js": "d979728b5e0e31f55b59c52236ca94a31751f217add69acb4761ab69d8c4d87d",
+    "game/tactical.js": "ecd32e3eab2f4444be48a4cda4923f1d1162df9c0131ab95e943cc43e2f78e4b",
+    "game/validate-battle.js": "24af5d5be6b0e092ec7bd437a1388d98460ff6a75cad9e7324567af1f0c0c055",
+    "tests/civilian-interaction.test.mjs": "aa63eeedd8eb8c9d47482fa34ac9b678e482edc11b24ad408ef93627dd3f993a",
+    "tests/civilian-supplies.test.mjs": "2e4771b60dd3325cd016bdb8dffedaf8948edd0bc6040fa67bc7aa4623d54625",
+    "tests/civilian-weapons-fixture.mjs": "d1eda03cad446ed719598ddb9eb0e728f283717c760c7a9cb6269b4a536e8b0f",
+    "tests/civilian-weapons-render.test.mjs": "c12bdea09ebe11ccfebb9a97e1e61bcb4fd117dcf9e110db8d6b94de4a6063cd",
+    "tests/civilian-weapons.test.mjs": "e2184c1f12e1c7c6239369408120d9d68ab9e03e4345f832809ab4519abd72d5",
+    "web/app/AmmunitionLoadChoice.tsx": "cdcaa498fd7489e67c55d140b700f9e4cd8f5ce5ddb29d7f5727fbb5ed611d2b",
+    "web/app/TacticalScene.tsx": "5f4952c5f0536dd66a8b99866f01e245c9d37ddfca16b5d1c9d37463d114bbff"
+  },
+  "screenshot": "docs/evidence/civilian-weapon-custody.png",
+  "limits": [
+    "Civilian armour and arbitrary belongings remain open.",
+    "Loose civilian cartridge recovery remains open.",
+    "Successor stock transfer and full game/editor acceptance remain open."
+  ]
+}

@@ -639,6 +639,11 @@
       "id": "E-AMMO-LOADS",
       "path": "docs/evidence/alternate-firearm-loads.json",
       "description": "Selectable authored load effects, conserved custody, mounted editor and game controls, production browser check. Advanced inventory and custom families remain open."
+    },
+    {
+      "id": "E-CIVILIAN-WEAPONS",
+      "path": "docs/evidence/civilian-weapon-custody.json",
+      "description": "Finite civilian primary/secondary recovery, loaded states, service return, successor separation, save validation, mounted UI and controlled production browser check. Armour and arbitrary belongings remain open."
     }
   ],
   "queue": [
@@ -3582,9 +3587,9 @@
       "requirement": "All 9 firearms and 5 melee weapons",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Nine firearms and five blade families match reference base values. Firearm and blade variants/images are authored and retained in character equipment, combat and saves. Enemy roles and militia ranks now support independent primary and secondary blade selections. AMMOLOADS-01 adds multiple existing ammunition families per firearm with authored effects and conserved load choices.",
+      "published": "Nine firearms and five blade families match reference base values. Firearm and blade variants/images are authored and retained in character equipment, combat and saves. Enemy roles and militia ranks now support independent primary and secondary blade selections. AMMOLOADS-01 adds multiple existing ammunition families per firearm with authored effects and conserved load choices. CIVILIANWEAPONS-01 adds finite recovery of configured civilian primary and secondary weapons with saved service continuity.",
       "local": "See local suite and preserved parity source; not equivalent to published integration. BATTERYCHOICE-01 tracks explicit saved artillery choice and exact model availability. SECONDARYLOOT-01 tracks finite recovery of military secondary weapons, their authored identity and saved empty source slots. DROPWEAPON-01 tracks finite ground placement and collection of recovered weapons. WEAPONHANDOVER-01 tracks adjacent transfer of recovered weapons with saved recipient ownership. EMPTYHAND-01 tracks genuine empty-hand attacks after weapon loss and retained secondary use. AMMOCUSTODY-01 tracks strategic family custody, exact sector stores and finite town shops in the published runtime. It does not publish the advanced inventory adapter.",
-      "remaining": "Author fittings and further ammunition variants; finish complete physical inventory, civilian equipment looting, wear and unarmed behavior. SECONDARYLOOT-01 accepts bounded military secondary recovery.",
+      "remaining": "Author fittings and further ammunition variants; finish complete physical inventory, civilian armour and arbitrary belongings, wear and unarmed behavior. SECONDARYLOOT-01 accepts bounded military secondary recovery.",
       "acceptance": "XML values, inventory images, sounds and use in combat",
       "evidence": [
         "E-PUBLISHED",
@@ -3597,7 +3602,8 @@
         "E-ADJACENT-WEAPON-TRANSFER",
         "E-EMPTY-HAND-MELEE",
         "E-AMMO-CUSTODY",
-        "E-AMMO-LOADS"
+        "E-AMMO-LOADS",
+        "E-CIVILIAN-WEAPONS"
       ]
     },
     {
@@ -3765,9 +3771,9 @@
       "requirement": "New world identities, persistent residents and death successors",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "New and existing world residents retain physical identity. Confirmed civilian or active military death can activate a distinct new world successor after a saved delay; earlier bodies and each character health stay separate. New residents can offer paid local service for all published terms, with quoted prices and persistent expiry, renewal and return. Authored progression can omit historical identities or copy them into independent residents; generic original residents are optional. Confirmed casualties can leave the service ledger through expiry or dismissal without invalidating saves; known stale deceased-service bits are repaired. Military bodies and finite equipment now persist through reentry and renewed occupation without rejoining service. Each character can configure finite initial personal supplies, retained through actual service and saves without free rehire replenishment. Each character can author initial wounds, energy and fatigue, assigned once and retained through actual treatment, care and service changes. Residents retain six finite personal supply quantities. Adjacent collection from a dead or unconscious resident, saved movement and service changes preserve the remainder; named allied roles cannot grant a replacement allocation. This bounded PR advances previously recorded civilian wounds outside the loaded sector, retaining partial intervals, actual death times and one set of consequences. Exact-head CI remains required before merge.",
+      "published": "New and existing world residents retain physical identity. Confirmed civilian or active military death can activate a distinct new world successor after a saved delay; earlier bodies and each character health stay separate. New residents can offer paid local service for all published terms, with quoted prices and persistent expiry, renewal and return. Authored progression can omit historical identities or copy them into independent residents; generic original residents are optional. Confirmed casualties can leave the service ledger through expiry or dismissal without invalidating saves; known stale deceased-service bits are repaired. Military bodies and finite equipment now persist through reentry and renewed occupation without rejoining service. Each character can configure finite initial personal supplies, retained through actual service and saves without free rehire replenishment. Each character can author initial wounds, energy and fatigue, assigned once and retained through actual treatment, care and service changes. Residents retain six finite personal supply quantities. Adjacent collection from a dead or unconscious resident, saved movement and service changes preserve the remainder; named allied roles cannot grant a replacement allocation. This bounded PR advances previously recorded civilian wounds outside the loaded sector, retaining partial intervals, actual death times and one set of consequences. Exact-head CI remains required before merge. CIVILIANWEAPONS-01 adds finite recovery of configured civilian primary and secondary weapons with saved service continuity.",
       "local": "Preview transitions supplied the core schedule. Published identity, health and successor activation are connected; advanced inventories and role transfer remain separate. UNSEENWOUND-01 tracks initial physical wounds from actual world appearance, including successor and daily-placement clock boundaries.",
-      "remaining": "Extend starting allocations into complete editable belongings, civilian weapon and armour looting, custody and explicit role/stock transfer. Strategic civilian care and off-screen breath/fatigue recovery remain separate work. CIVILIANRETURN-01 and UNSEENWOUND-01 cover bounded service departure and initial world-wound continuity.",
+      "remaining": "Extend starting allocations into complete editable belongings, civilian armour and loose-ammunition looting, custody and explicit role/stock transfer. Strategic civilian care and off-screen breath/fatigue recovery remain separate work. CIVILIANRETURN-01 and UNSEENWOUND-01 cover bounded service departure and initial world-wound continuity.",
       "acceptance": "Move an injured NPC, reload, recruit it, confirm death and activate one distinct successor without healing or duplicating goods.",
       "evidence": [
         "E-CONFLICTS",
@@ -3782,7 +3788,8 @@
         "E-CHARACTER-CONDITION",
         "E-CIVILIAN-SUPPLIES",
         "E-UNLOADED-CIVILIAN",
-        "E-UNSEEN-RESIDENT-WOUNDS"
+        "E-UNSEEN-RESIDENT-WOUNDS",
+        "E-CIVILIAN-WEAPONS"
       ]
     },
     {
@@ -3864,8 +3871,8 @@
       "requirement": "Complete equipment and merchant authoring",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Firearm and blade variants include images and edited combat, weight and price values. Character and generated troop loadouts, armory instances and returns retain definitions. Enemy roles and militia ranks select primary weapons and secondary blades independently. Cartridge allotments are configurable for player deployment and fresh generated troops. Import orders use authored port and delivery windows. Each character can configure finite initial personal supplies, retained through actual service and saves without free rehire replenishment. Residents retain four finite personal supply quantities; separate ignition stocks were removed by PR #130. Adjacent collection from a dead or unconscious resident, saved movement and service changes preserve the remainder; named allied roles cannot grant a replacement allocation. Current quantities of four personal supply types can gate dialogue, chapters and failure; legacy ignition conditions see the implicit full kit. Active scenes override stale deployed records; the check does not grant or consume goods. PR #83 adds paid partial loading for authored firearms, retained tactical weapon work and interruption-aware exploration time. Merged after exact-head CI. PR #84 publishes authored preparation within the first shot, retained firing position and actual AP/time controls, after exact-head CI. PR #85 adds an optional pinned cartridge unit price. AMMOCUSTODY-01 retains that price for finite purchases and replaces return credit with owned cartridges. PR #98 adds pinned editable militia patrol rules. PR #128 publishes shared physical pockets and finite capacity across collection, transfer, purchases and deployment; the capacity and stack tuning remain fixed. AMMOAUTHOR-01 adds a pinned compatible family selector to each authored firearm. AMMOMARKETS-01 adds pinned global and per-town ammunition prices, stock caps, replenishment and automatic-purchase permissions. AMMOLOADS-01 adds multiple existing ammunition families per firearm with authored effects and conserved load choices.",
-      "local": "Advanced physical inventory controls, fittings and merchants remain more complete locally and are not generally authored. PATROLRULES-01 tracks optional patrol activation, timing and exploration energy settings. ARTILLERYSUPPLY-01 accepts pinned pesos prices, supply permission, reserve cap and finite local replenishment. ARTILLERYPROFILE-01 accepts editing the three gun families, model images, costs, crew, ballistics and finite initial ammunition with saved package references. ARTILLERYTRANSPORTRULES-01 accepts pinned transfer permission, route rates and one-time fees. ARTILLERYTRADERULES-01 tracks authored cash, prices and named workshop overrides. AMMOFAMILY-01 accepts four published tactical families and the approved implicit ignition kit. AMMOFAMILIES-01 records completed local four-family custody and save migration. Publishing that advanced adapter, authored local family overrides and alternative loads remains open. AMMOCUSTODY-01 tracks strategic family custody, exact sector stores and finite town shops in the published runtime. It does not publish the advanced inventory adapter.",
+      "published": "Firearm and blade variants include images and edited combat, weight and price values. Character and generated troop loadouts, armory instances and returns retain definitions. Enemy roles and militia ranks select primary weapons and secondary blades independently. Cartridge allotments are configurable for player deployment and fresh generated troops. Import orders use authored port and delivery windows. Each character can configure finite initial personal supplies, retained through actual service and saves without free rehire replenishment. Residents retain four finite personal supply quantities; separate ignition stocks were removed by PR #130. Adjacent collection from a dead or unconscious resident, saved movement and service changes preserve the remainder; named allied roles cannot grant a replacement allocation. Current quantities of four personal supply types can gate dialogue, chapters and failure; legacy ignition conditions see the implicit full kit. Active scenes override stale deployed records; the check does not grant or consume goods. PR #83 adds paid partial loading for authored firearms, retained tactical weapon work and interruption-aware exploration time. Merged after exact-head CI. PR #84 publishes authored preparation within the first shot, retained firing position and actual AP/time controls, after exact-head CI. PR #85 adds an optional pinned cartridge unit price. AMMOCUSTODY-01 retains that price for finite purchases and replaces return credit with owned cartridges. PR #98 adds pinned editable militia patrol rules. PR #128 publishes shared physical pockets and finite capacity across collection, transfer, purchases and deployment; the capacity and stack tuning remain fixed. AMMOAUTHOR-01 adds a pinned compatible family selector to each authored firearm. AMMOMARKETS-01 adds pinned global and per-town ammunition prices, stock caps, replenishment and automatic-purchase permissions. AMMOLOADS-01 adds multiple existing ammunition families per firearm with authored effects and conserved load choices. CIVILIANWEAPONS-01 adds finite recovery of configured civilian primary and secondary weapons with saved service continuity.",
+      "local": "Advanced physical inventory controls, fittings and merchants remain more complete locally and are not generally authored. PATROLRULES-01 tracks optional patrol activation, timing and exploration energy settings. ARTILLERYSUPPLY-01 accepts pinned pesos prices, supply permission, reserve cap and finite local replenishment. ARTILLERYPROFILE-01 accepts editing the three gun families, model images, costs, crew, ballistics and finite initial ammunition with saved package references. ARTILLERYTRANSPORTRULES-01 accepts pinned transfer permission, route rates and one-time fees. ARTILLERYTRADERULES-01 tracks authored cash, prices and named workshop overrides. AMMOFAMILY-01 accepts four published tactical families and the approved implicit ignition kit. AMMOFAMILIES-01 records completed local four-family custody and save migration. Publishing that advanced adapter and its authored local family overrides remains open; AMMOLOADS-01 publishes alternative loads in the main runtime. AMMOCUSTODY-01 tracks strategic family custody, exact sector stores and finite town shops in the published runtime. It does not publish the advanced inventory adapter.",
       "remaining": "Author new ammunition families, fittings and non-ammunition merchant stock, prices, buyback and replenishment; integrate civilian belongings and complete physical custody. Add pocket/stack authoring and portable item custody; shared pockets and ammunition supplier rules alone do not close equipment authoring.",
       "acceptance": "Create each supported equipment type; buy/use/trade/reload without duplication or lost instance data.",
       "evidence": [
@@ -3891,7 +3898,8 @@
         "E-AMMO-FAMILIES",
         "E-AMMO-CUSTODY",
         "E-AMMO-MARKETS",
-        "E-AMMO-LOADS"
+        "E-AMMO-LOADS",
+        "E-CIVILIAN-WEAPONS"
       ]
     },
     {
@@ -4829,7 +4837,7 @@
         "E-AMMO-LOADS"
       ],
       "sourceRow": "JA2-I08",
-      "sourceNotes": "Alternate loads for one gun remain absent. Caliber/load mapping, initial stock, prices and production costs are Granaderos tuning. Modern AP/HP cartridges are inappropriate. Artillery ammunition remains a separate model."
+      "sourceNotes": "The original audit lacked alternate loads; AMMOLOADS-01 now publishes this capability within the four families. Caliber/load mapping, initial stock, prices and production costs are Granaderos tuning. Modern AP/HP cartridges are inappropriate. Artillery ammunition remains a separate model."
     },
     {
       "id": "JA2-I09",
@@ -6456,7 +6464,7 @@
       "requirement": "Choose and author multiple compatible ammunition loads for one firearm",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "This delivery adds selectable primary and alternative loads, authored damage/range/pattern, conserved unloading and saved gun choices. All five final-head checks gate merge.",
+      "published": "This delivery adds selectable primary and alternative loads, authored damage/range/pattern, conserved unloading and saved gun choices. All five final-head checks gate merge. PR #137 merged as 8191350bcab8e8c6d530988afa07d38b8dd9e36c after all five final-head checks passed (1323 tests; run 36646202445).",
       "local": "Eight runtime, two mounted interface and one mounted editor cases cover actual use. Production browser verifies immediate reset validity, campaign launch, safe hire, unloading and selection.",
       "remaining": "",
       "acceptance": "Author unique alternate families and effects; unload actual charges without conversion; select only with an empty gun and no unfinished reload; purchase, reload, fire, transfer, drop, return and save the selected load with conserved rounds.",
@@ -6475,16 +6483,41 @@
         "tests/story-editor.test.mjs"
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/137"
+    },
+    {
+      "id": "CIVILIANWEAPONS-01",
+      "group": "Published deliveries",
+      "requirement": "Keep civilian primary and secondary weapons finite through recovery and service changes",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "This delivery connects configured civilian weapons to physical recovery, pocket capacity, saved ownership, military service and distinct death successors. Final-head CI gates merge.",
+      "local": "Five new runtime cases, one mounted recovery/equip case, existing service and named-ally checks, and a controlled browser recovery/equip/reload check pass.",
+      "remaining": "",
+      "acceptance": "Recover actual configured primary and secondary weapons only from adjacent dead or unconscious residents; retain their definitions, condition, loads and work; preserve empty sources through saves, recruitment and departure; keep successor allocations separate.",
+      "evidence": [
+        "E-CIVILIAN-WEAPONS"
+      ],
+      "parents": [
+        "STORY-02",
+        "STORY-06",
+        "ITEM-01",
+        "INTEGRATION-01"
+      ],
+      "testFiles": [
+        "tests/civilian-weapons.test.mjs",
+        "tests/civilian-weapons-render.test.mjs",
+        "tests/civilian-supplies.test.mjs"
+      ]
     }
   ],
   "latestPublishedCheck": {
-    "source": "c1c368fde297ee7b407b28fe40b2061e91d91acc",
-    "total": 1312,
-    "passed": 1312,
+    "source": "590e657b35d79bbbe9c3ae912dc00ff27baadcec",
+    "total": 1323,
+    "passed": 1323,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-AMMO-MARKETS"
+    "evidenceId": "E-AMMO-LOADS"
   }
 }
