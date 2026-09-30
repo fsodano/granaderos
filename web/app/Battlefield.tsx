@@ -102,7 +102,7 @@ export default function Battlefield({battle:committed,onPlaybackBusy,onPlaybackV
   const npcClick=(n:any)=>{if(lootTile)return;if(mode==='loot'&&((s.droppedWeapons||[]).some((d:any)=>d.x===n.x&&d.y===n.y&&!d.taken)||(s.groundItems||[]).some((g:any)=>g.x===n.x&&g.y===n.y&&g.count>0&&!g.heldBy&&!g.containerId))){tileClick(n);return;}if(mode==='move'){if((n.hp??100)>0&&!n.unconscious)setTalking(n);return;}if(mode.startsWith('artillery'))order({type:mode,artilleryId:cannonId,targetId:n.id,x:n.x,y:n.y,mode:shotType});else if(['fire','melee','charge','heal','loot','bolas'].includes(mode))order({type:mode==='bolas'?'boleadoras':mode,targetId:n.id});};
   return <section className={`battle-layout ${s.night?'night-field':''}`}>
     <header className="battle-header"><div><p className="eyebrow">OPERACIÓN TERRESTRE · {s.night?'NOCHE':'DÍA'} · {s.weather.rain?'LLUVIA':'CIELO DESPEJADO'}</p><h1>{s.sectorName}</h1></div><div className="battle-status"><span className="turn-dot"/>{busy?'Procesando órdenes':s.mode==='exploration'?'Exploración libre':`Turno ${s.turn} · Ejército patriota`}<span className="enemy-count">{enemies.length} avistados</span></div></header>
-    {s.mode==='exploration'&&s.status==='active'&&<div className="notice" aria-label="Tiempo de exploración"><button className="line-button" onClick={()=>setAmbientPaused(paused=>!paused)}>{ambientPaused?'Reanudar exploración':'Pausar exploración'}</button><span>{ambientPaused?'Reloj detenido entre órdenes.':'El tiempo avanza: los habitantes se mueven, las heridas y las luces siguen su curso.'}</span></div>}
+
 
     {mission&&<details className="hud-mission" aria-label="Objetivos de la misión"><summary>{mission.name} · Objetivos</summary><ul>{(mission.objectives||[]).map((objective:any,index:number)=><li key={index}>{typeof objective==='string'?objective:`${objective.done?'✓ ':''}${objective.text||objective.label||objective.name}`}</li>)}</ul>{s.sceneId==='yatasto'&&onMissionFinish&&<button className="line-button" disabled={busy||!(mission.objectives||[]).every((o:any)=>o.done)} onClick={onMissionFinish}>Concluir el encuentro</button>}</details>}
     <div className="tactical-help-toggle"><button className="line-button" aria-expanded={keyHelp} aria-controls="tactical-key-reference" onClick={()=>setKeyHelp(v=>!v)}>Atajos de teclado · H</button>{keyHelp&&<section id="tactical-key-reference" aria-label="Atajos de teclado" style={{padding:'1rem',background:'#20332c',color:'#f1e5c7'}}><h2>Órdenes de teclado</h2><p>Los cursores requieren seleccionar una casilla o un objetivo. Las órdenes respetan los puntos de acción y el equipo disponible.</p><dl style={{display:'grid',gridTemplateColumns:'minmax(120px, 1fr) 3fr',gap:'.35rem 1rem'}}>{TACTICAL_KEYS.map(([keys,label])=><div key={keys} style={{display:'contents'}}><dt><kbd>{keys}</kbd></dt><dd style={{margin:0}}>{label}</dd></div>)}</dl><p>Mientras escribís o conversás, los atajos se suspenden. Ctrl y ⌘ quedan reservados al navegador.</p><button className="line-button" onClick={()=>setKeyHelp(false)}>Cerrar ayuda · Esc</button></section>}</div>
@@ -115,6 +115,8 @@ export default function Battlefield({battle:committed,onPlaybackBusy,onPlaybackV
     </div>
     <JA2Strip
       battle={s}
+      ambientPaused={ambientPaused}
+      onToggleAmbientPause={()=>setAmbientPaused(paused=>!paused)}
       selected={selected}
       unit={u}
       players={players}

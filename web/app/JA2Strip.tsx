@@ -10,6 +10,7 @@ import {canSee, visibleEnemies, ARTILLERY} from '../../game/tactical.js';
 import {Footprints, Crosshair, Swords, Flag, Heart, RotateCcw, Shield, Eye, CircleArrowUp, Package} from 'lucide-react';
 
 type Props = {
+  ambientPaused?: boolean; onToggleAmbientPause?: () => void;
   battle: any; selected: any; unit: any; players: any[]; missionAllies: any[]; localMilitia: any[];
   mode: any; showSight: boolean; aim: number; costs: any; weapon: any; firearm: boolean;
   cannonId: any; shotType: any; gunCosts: any; artillery: any[]; busy: boolean; inventoryId: any;
@@ -35,7 +36,7 @@ function LogOverlay({log}: { log: string[] }) {
   );
 }
 
-export default function JA2Strip({battle, selected, unit, players, missionAllies, localMilitia, mode, showSight, aim, costs, weapon, firearm, cannonId, shotType, gunCosts, artillery, busy, inventoryId, vw, vh, cameraRect, project, cameraX, cameraY, zoom, onSelect, onOrder, onMode, onToggleSight, onEndTurn, onRetreat, onOpenInventory, onCloseInventory, onCameraCenter, onCameraPan, onZoom, onCannonChange, onShotTypeChange, onSetAim}: Props) {
+export default function JA2Strip({battle, ambientPaused, onToggleAmbientPause, selected, unit, players, missionAllies, localMilitia, mode, showSight, aim, costs, weapon, firearm, cannonId, shotType, gunCosts, artillery, busy, inventoryId, vw, vh, cameraRect, project, cameraX, cameraY, zoom, onSelect, onOrder, onMode, onToggleSight, onEndTurn, onRetreat, onOpenInventory, onCloseInventory, onCameraCenter, onCameraPan, onZoom, onCannonChange, onShotTypeChange, onSetAim}: Props) {
   const units = battle.units.filter((v: any) => v.side === 'player' || players.some((p: any) => canSee(battle, p, v)));
   const descriptors=orderDescriptors(battle,unit,{busy,cannonId});
   const gunOrders: {id:string;kind:string;disabled:boolean;pa?:number;seconds?:number;detail?:string}[]=descriptors.filter(d=>d.id.startsWith('artillery'));
@@ -74,6 +75,7 @@ export default function JA2Strip({battle, selected, unit, players, missionAllies
           <small>La pieza debe apuntar al objetivo. {gunOrders.find(d=>d.id==='artilleryReload')?.detail}</small>
         </div>}
         <button className="line-button" disabled={!unit} onClick={() => unit && onOpenInventory(unit.id)}>Equipo y órdenes</button>
+        {battle.mode === 'exploration' && battle.status === 'active' && onToggleAmbientPause && <button className="line-button" aria-pressed={Boolean(ambientPaused)} title={ambientPaused ? 'Reloj detenido entre órdenes.' : 'El tiempo avanza: los habitantes se mueven, las heridas y las luces siguen su curso.'} onClick={onToggleAmbientPause}>{ambientPaused ? 'Reanudar exploración' : 'Pausar exploración'}</button>}
         <button className="gold-button end-turn" disabled={busy || battle.status !== 'active'} onClick={onEndTurn}>{busy ? 'Procesando…' : battle.mode === 'exploration' ? 'Descansar' : 'Fin del turno'}</button>
       </div>
       <div className="ja2-right">
