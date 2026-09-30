@@ -376,6 +376,11 @@ transport and world persistence. Its missing or unverified parts are not removed
 by this summary. Numerical adaptations must be recorded with tests, not described
 as exact JA2 equivalence without evidence.
 
+The [30 September overview review](../verification/ja2-gameplay-review-2026-09-30.md)
+identifies decisions still to document for route freedom, sector approaches, shop
+progression, campaign variation and lasting attribute damage. These are proposed
+clarifications, not silently approved additions or implementation-status changes.
+
 ## Story editor and authoring
 
 The story editor uses searchable character and weapon catalogues. Portraits and
