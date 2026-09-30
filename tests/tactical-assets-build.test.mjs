@@ -148,7 +148,7 @@ test("every dynamic architecture renderer URL is registered by the static build 
   let markup = render(h("svg", null, h(ArchitectureDefs)));
   for (const roofFinish of ["clay", "aged", "thatch"]) {
     const objects = buildBuildingObjects({
-      state: { tiles: base.tiles, buildings: [{ ...base.building, roofFinish }] },
+      state: { tiles: base.tiles, buildings: [{ ...base.building, kind: "house", roof: "tile", roofFinish }] },
       project: (x, y) => ({ x: (x - y) * 26, y: (x + y) * 14 }),
       light: () => 1,
       revealed: new Set(),

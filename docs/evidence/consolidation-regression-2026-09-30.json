@@ -3346,5 +3346,26 @@
     },
     "limits": "Mounted DOM and domain tests; not a browser, full campaign, performance, or full-suite pass.",
     "docs": "PASS"
+  },
+  "saveAssetRepair": {
+    "source": "72bd1ddcb455a82df25afd299cf7a66502ff63fda1a625bd49e38cd4bc23606f",
+    "fix": "Architecture verification identifies material errors and exercises the current catalog roof renderer. Retired economy imports report the required new-campaign boundary before ammunition conversion. Cursor loading tests conserve finite shop, store and carried rounds. Family migration tests preserve historical stock at the migration layer without claiming the retired full economy is supported.",
+    "run": {
+      "log": "/tmp/granaderos-save-assets-verified.tap",
+      "pass": 51,
+      "fail": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "logSha256": "4f930062b60061dad0ca2b9808ac3814db02d0985e8c5cf58fee8f64019644f9"
+    },
+    "types": "PASS",
+    "docs": "PASS",
+    "privateBuild": {
+      "status": "PASS",
+      "served": false,
+      "files": 1131,
+      "assetReferences": 1031
+    },
+    "limits": "No new full-suite or browser acceptance. Earlier material-economy saves remain unsupported, as documented on main."
   }
 }

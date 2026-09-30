@@ -7,7 +7,9 @@ import {equipmentFingerprint,equipmentEndpoint,inventoryUsage,readItemStack} fro
 import {sectorInventoryModel} from '../game/sector-inventory.js';
 import {ammunitionByType} from '../game/ammunition-types.js';
 import {unitAmmunitionByType} from '../game/campaign-ammunition.js';
-import {stockAmmo} from './ammunition-balance.mjs';
+import {DEFAULT_AMMUNITION_MARKET} from '../game/ammunition-market-rules.js';
+const issuedMarketStock=Object.values(DEFAULT_AMMUNITION_MARKET.families).reduce((sum,f)=>sum+f.initial,0);
+const stockAmmo=s=>[...Object.values(s.ammunitionShops).map(shop=>shop.stock),...Object.values(s.ammunitionStores)].reduce((sum,stock)=>sum+Object.values(stock).reduce((n,count)=>n+count,0),0);
 import {syncBattleTime} from '../game/time.js';
 import {enterSector} from '../game/world.js';
 import {encodeSave,decodeSave} from '../game/save.js';
@@ -46,7 +48,7 @@ function suppliedOfficer(){
  assert.equal(s.operativeState[1000].carriedLoaded,undefined);
  const row=sectorInventoryModel(s,'retiro',rosterFor(s),1000).entries.find(entry=>JSON.parse(entry.expected).ammoType==='musket_75');assert.ok(row?.reachable);
  s=order(s,{type:'sectorInventory',sector:'retiro',operativeId:1000,direction:'take',sourceKey:row.key,expected:row.expected,count:3});
- assert.equal(total(s),300);return s;
+ assert.equal(total(s),issuedMarketStock);return s;
 }
 
 test('a new officer loads three recovered cursor cartridges into an unissued gun and keeps the exact remainder through saves and deployment',()=>{
@@ -58,21 +60,21 @@ test('a new officer loads three recovered cursor cartridges into an unissued gun
  assert.deepEqual(ammunitionByType(s.operativeState[id]),{});
  assert.deepEqual(personal(s,id).equipmentCursor,{...cursor,stack:{...cursor.stack,count:2}});
  assert.equal(personal(s,id).weapon,before.weapon);assert.equal(personal(s,id).condition,before.condition);
- assert.equal(personal(s,id).priming,undefined);assert.ok(Math.abs(carriedWeight(personal(s,id))-weight)<1e-9);assert.equal(total(s),300);
+ assert.equal(personal(s,id).priming,undefined);assert.ok(Math.abs(carriedWeight(personal(s,id))-weight)<1e-9);assert.equal(total(s),issuedMarketStock);
  assert.match(s.log[0].text,/recarga Brown Bess con 1 cartucho/);assert.doesNotMatch(s.log[0].text,/ordena su equipo/);
  s=save(s);assert.equal(personal(s,id).loaded,1);assert.equal(personal(s,id).equipmentCursor.stack.count,2);
  const full=action(s,'placeEquipment',{destinationId:'hand:right'},id);assert.match(reject(s,full).lastError,/ya está cargada/);
  s=arrange(s,'returnEquipmentCursor',{},id);assert.deepEqual(ammunitionByType(personal(s,id)),{musket_75:2});
  s=order(save(s),{type:'visitSector'});let b=enterSector(s.pendingBattle,s.sectorStates.retiro);
  assert.equal(actor(b,id).loaded,1);assert.deepEqual(unitAmmunitionByType(actor(b,id)),{musket_75:10});
- ({campaign:s,battle:b}=decodeSave(encodeSave(s,b)));s=leave(s,b);assert.equal(total(s),300);assert.equal(personal(s,id).loaded,1);assert.deepEqual(save(s),s);
+ ({campaign:s,battle:b}=decodeSave(encodeSave(s,b)));s=leave(s,b);assert.equal(total(s),issuedMarketStock);assert.equal(personal(s,id).loaded,1);assert.deepEqual(save(s),s);
 });
 
 function partlyLoadedPistol(){
  let s=hire();s=order(s,{type:'purchaseEquipment',item:1808});s=order(s,{type:'equip',operativeId:110,itemId:1808,slot:'weapon'});
  let b;({s,b}=visit(s));assert.equal(actor(b).loaded,2);
  b=act(b,{type:'firePoint',unitId:'110',x:5,y:2});assert.equal(actor(b).loaded,1);assert.equal(actor(b).jammed,false);
- s=leave(s,b);assert.equal(personal(s).loaded,1);assert.equal(total(s),299);return s;
+ s=leave(s,b);assert.equal(personal(s).loaded,1);assert.equal(total(s),issuedMarketStock-1);return s;
 }
 
 test('a paid double-barrel pistol loads in either hand or its pocket without changing its physical state or consuming the general reserve',()=>{
@@ -86,11 +88,11 @@ test('a paid double-barrel pistol loads in either hand or its pocket without cha
   assert.deepEqual(personal(s).equipmentCursor,{...cursor,stack:{...cursor.stack,count:4}});
   for(const [key,record]of Object.entries(remainingInventory))if(record.kind==='ammunition')assert.deepEqual(personal(s).inventory[key],record);
   assert.deepEqual(['hand:right','hand:left'].map(id=>equipmentEndpoint(personal(s),id).item),hands.map(hand=>hand.item));
-  assert.equal(personal(s).priming,undefined);assert.ok(Math.abs(carriedWeight(personal(s))-weight)<1e-9);assert.equal(total(s),299);
+  assert.equal(personal(s).priming,undefined);assert.ok(Math.abs(carriedWeight(personal(s))-weight)<1e-9);assert.equal(total(s),issuedMarketStock-1);
   s=save(s);assert.equal(stackAt(personal(s),hostId).loaded,2);assert.equal(personal(s).equipmentCursor.stack.count,4);
   s=arrange(s,'returnEquipmentCursor');s=order(save(s),{type:'visitSector'});let b=enterSector(s.pendingBattle,s.sectorStates.retiro);
   assert.equal(stackAt(actor(b),hostId).loaded,2);({campaign:s,battle:b}=decodeSave(encodeSave(s,b)));s=leave(s,b);
-  assert.equal(stackAt(personal(s),hostId).loaded,2);assert.equal(total(s),299);assert.deepEqual(save(s),s);
+  assert.equal(stackAt(personal(s),hostId).loaded,2);assert.equal(total(s),issuedMarketStock-1);assert.deepEqual(save(s),s);
  }
 });
 
@@ -112,7 +114,7 @@ test('saved unfinished loading belongs to the gun and completing it removes prog
  const sourceId=pocket(personal(s),'inventory:ammo:pistol_69');s=arrange(s,'pickupEquipment',{sourceId,count:2});
  s=arrange(save(s),'placeEquipment',{destinationId:'hand:right'});
  assert.equal(s.operativeState[110].carriedLoaded,2);assert.equal(s.operativeState[110].carriedReloadProgress,undefined);
- assert.equal(personal(s).reloadProgress,undefined);assert.equal(personal(s).equipmentCursor.stack.count,1);assert.equal(total(s),299);
+ assert.equal(personal(s).reloadProgress,undefined);assert.equal(personal(s).equipmentCursor.stack.count,1);assert.equal(total(s),issuedMarketStock-1);
  s=arrange(save(s),'returnEquipmentCursor');s=order(save(s),{type:'visitSector'});const b=enterSector(s.pendingBattle,s.sectorStates.retiro);
  assert.equal(actor(b).loaded,2);assert.equal(actor(b).reloadProgress,undefined);assert.doesNotThrow(()=>decodeSave(encodeSave(s,b)));
 });

@@ -52,11 +52,11 @@ export async function verifyIllustratedSpriteAssets(directory,requireAsset=()=>{
  }
 }
 export async function verifyTacticalAssets(directory,requireAsset=()=>{}){
- const png=async(name,width,height,sha)=>{
-  requireAsset(`/art/${name}`,'tactical atlas contract');
+ const png=async(name,width,height,sha,kind='tactical atlas')=>{
+  requireAsset(`/art/${name}`,`${kind} contract`);
   const bytes=await readFile(resolve(directory,'art',name));
-  if(bytes.length<32||bytes.subarray(0,8).toString('hex')!=='89504e470d0a1a0a'||bytes.readUInt32BE(16)!==width||bytes.readUInt32BE(20)!==height)throw Error(`Invalid tactical atlas dimensions: ${name}`);
-  if(sha&&createHash('sha256').update(bytes).digest('hex')!==sha)throw Error(`Tactical atlas checksum mismatch: ${name}`);
+  if(bytes.length<32||bytes.subarray(0,8).toString('hex')!=='89504e470d0a1a0a'||bytes.readUInt32BE(16)!==width||bytes.readUInt32BE(20)!==height)throw Error(`Invalid ${kind} dimensions: ${name}`);
+  if(sha&&createHash('sha256').update(bytes).digest('hex')!==sha)throw Error(`${kind} checksum mismatch: ${name}`);
  };
  // Native sprites remain explicit migration fallbacks until every illustrated
  // sequence is authored. Validate their full set while they are still selected.

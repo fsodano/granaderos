@@ -14,7 +14,7 @@ test('every authored cartridge allocation can save an actual peaceful and combat
   let s=ready(rounds),before=s.resources.treasury;s=order(s,action);assert.equal(s.resources.treasury,before-rounds);
   const request=s.pendingBattle,record=request.squad[0];assert.equal(record.ammo+record.loaded,rounds);
   const b=enterSector({...request,hour:s.hour,secondOfHour:s.secondOfHour??0},s.sectorStates[request.sector]);let p=saved({campaign:s,battle:b});const u=p.battle.units.find(u=>u.id==='110');assert.equal(u.ammo+u.loaded,rounds);
-  const forged=JSON.parse(encodeSave(p.campaign,p.battle));forged.campaign.pendingBattle.squad[0].ammo=rounds+1;assert.throws(()=>decodeSave(JSON.stringify(forged)),/munición/);
+  const forged=JSON.parse(encodeSave(p.campaign,p.battle));forged.campaign.pendingBattle.squad[0].ammo=rounds+1;assert.throws(()=>decodeSave(JSON.stringify(forged)),/reserva del combatiente no coincide con su inventario/);
   if(action.type==='visitSector'){const after=leave(p);assert.equal(after.resources.treasury,before-rounds);assert.equal(after.operativeState[110].ammo+after.operativeState[110].carriedLoaded,rounds);assert.ok(dispatchCampaign(after,{type:'leaveSector',battleId:request.id,sectorState:p.battle,survivors:p.battle.units.filter(u=>u.side==='player')}).lastError);}
  }
 });

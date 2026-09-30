@@ -925,9 +925,9 @@ export function restoreCampaignValue(s){
   const integer=(v,min,max)=>Number.isInteger(v)&&v>=min&&v<=max;
   const object=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
   requireThat(object(s)&&s.version===1&&integer(s.hour,0,24*365*100)&&integer(s.phase,0,4)&&integer(s.seed,0,4294967295)&&validWorldLocation(s.location),'El archivo de campaña no es compatible.');
-  validateStoredFittingFields(s);validateStoredAmmo(s);migrateAmmunitionCustody(s);
   requireThat(!['production','shipments','depots','convoys'].some(key=>key in s),'Esta partida contiene sistemas retirados. Iniciá una campaña nueva.');
   requireThat(s.economyVersion===2,'Esta partida usa la economía anterior. Iniciá una campaña nueva.');
+  validateStoredFittingFields(s);validateStoredAmmo(s);migrateAmmunitionCustody(s);
   requireThat(Array.isArray(s.foundMoney)&&new Set(s.foundMoney).size===s.foundMoney.length&&s.foundMoney.every(id=>sector(id)),'El registro de fondos es inválido.');
   s.equipmentShipments??=[];requireThat(validEquipmentShipments(s),'Los pedidos de armas guardados son inválidos.');
   requireThat(object(s.resources)&&Object.keys(base.resources).every(k=>integer(s.resources[k],0,1e9)),'La tesorería del archivo es inválida.');
