@@ -1,3 +1,6 @@
+import {refreshMilitaryCondition} from '../game/actor-condition.js';
+import {scriptedWithdrawal} from './scripted-battle-report.mjs';
+import {approachNPC} from './approach-npc.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign} from '../game/campaign.js';
@@ -27,7 +30,7 @@ function ready(d=authored()) {let s=order(initialCampaign(42,d),{type:'recruitCi
 const visit=s=>{const campaign=order(s,{type:'visitSector'});return {campaign,battle:enterSector({...campaign.pendingBattle,hour:campaign.hour},campaign.sectorStates[campaign.location])};};
 const synced=p=>{const n=syncBattleTime(p.campaign,p.battle);assert.equal(n.error,null);return n;};
 function act(p,action){p.battle=actBattle(p.battle,{unitId:'110',...action});assert.equal(p.battle.lastError,null);return synced(p);}
-function approach(p,id='pablo'){const n=resident(p.battle,id),spot=getReachable(p.battle,'110').find(t=>Math.abs(t.x-n.x)+Math.abs(t.y-n.y)===1);assert.ok(spot);return spot.cost?act(p,{type:'move',x:spot.x,y:spot.y}):p;}
+function approach(p,id='pablo'){return synced({campaign:p.campaign,battle:approachNPC(p.battle,'110',resident(p.battle,id).id)});}
 function kill(p,id='pablo'){p=approach(p,id);for(let i=0;i<6&&resident(p.battle,id).hp>0;i++)p=act(p,{type:'melee',targetId:resident(p.battle,id).id});assert.equal(resident(p.battle,id).hp,0);return p;}
 const leave=p=>{p=synced(p);return order(p.campaign,{type:'leaveSector',battleId:p.campaign.pendingBattle.id,sectorState:p.battle,survivors:p.battle.units.filter(u=>u.side==='player')});};
 const talk=(p,id)=>({type:'talkNPC',npcId:resident(p.battle,id).id,unitId:110,approach:'recruit',sectorState:p.battle});
@@ -58,7 +61,7 @@ test('an immediate successor waits outside the loaded cell without rerolling and
 test('a daily successor starts its own routine after activation and carries its wounds into later cells',()=>{
  let p=kill(visit(ready(authored({mode:'daily',sectors:[B,C],selection:'alternate',delayMin:0,delayMax:0}))));
  let s=leave(p);s=order(s,{type:'travel',sector:person(s,'sal').sector});if(s.location!==person(s,'sal').sector)s=order(s,{type:'travel',sector:person(s,'sal').sector});const first=s.location;p=approach(visit(s),'sal');
- p=act(p,{type:'melee',targetId:resident(p.battle,'sal').id});p=act(p,{type:'heal',targetId:resident(p.battle,'sal').id});const hp=resident(p.battle,'sal').hp;assert.ok(hp>0&&hp<61);
+ p=act(p,{type:'melee',targetId:resident(p.battle,'sal').id});p=act(p,{type:'weapon',slot:'medical'});p=act(p,{type:'heal',targetId:resident(p.battle,'sal').id});const hp=resident(p.battle,'sal').hp;assert.ok(hp>0&&hp<61);
  s=leave(p);s=order(s,{type:'wait',hours:Math.ceil((s.contentPresence.nextDaily-s.contentPresence.minute)/60)});const next=person(s,'sal').sector;assert.notEqual(next,first);assert.ok(!s.sectorStates[first].npcs.some(n=>n.contentId==='sal'));
  p=visit(order(save({campaign:s}).campaign,{type:'travel',sector:next}));assert.equal(resident(p.battle,'sal').hp,hp);assert.equal(p.campaign.contentPresence.receipts.length,1);assert.ok(save(p));
 });
@@ -73,16 +76,18 @@ test('successor admission rejects missing or forged receipts, timers, destinatio
 test('death during military service activates the same successor without restoring the former NPC',()=>{
  let p=recruit(visit(ready(authored({delayMin:0,delayMax:0}))), 'pablo'),s=leave(p),id=numeric(s,'pablo');secureArea(s,'buenos_aires');
  s=order(s,{type:'travel',sector:'retiro'});s=order(s,{type:'travel',sector:'buenos_aires'});s=order(s,{type:'attack',sector:'san_nicolas'});const request=s.pendingBattle;
- let b=createBattle(request.squad.map(u=>({...u,x:1,y:u.id===id?1:6})),{width:12,height:8,id:request.id,sector:request.sector,npcs:request.npcs,seed:45,tiles:Array.from({length:96},(_,i)=>({x:i%12,y:Math.floor(i/12),type:'grass',blocked:false,cover:0})),enemies:[{id:'guard',x:7,y:1,weapon:1802,ammo:0,fatigue:100,marksmanship:100}]});
+ let b=createBattle(request.squad.map(u=>({...u,x:u.id===id?5:1,y:u.id===id?1:6})),{...request,width:12,height:8,seed:45,tiles:Array.from({length:96},(_,i)=>({x:i%12,y:Math.floor(i/12),type:Math.floor(i/12)===4?'wall':'grass',blocked:Math.floor(i/12)===4,blocksSight:Math.floor(i/12)===4,cover:0})),enemies:request.enemies.map((u,i)=>({...u,x:7,y:i%8,...(i?{hp:0,bleeding:0,bandaged:0}:{y:1,marksmanship:100})}))});
  b=endTurn(b);assert.equal(b.units.find(u=>u.id===String(id)).hp,0);p=synced({campaign:s,battle:b});assert.equal(person(p.campaign,'sal').appeared,true);p=save(p);assert.equal(p.campaign.operativeState[id].alive,false);
  const forged=JSON.parse(encodeSave(p.campaign,p.battle));forged.battle.units.find(u=>u.id===String(id)).hp=1;assert.throws(()=>decodeSave(JSON.stringify(forged)));
- const revived=p.battle.units.filter(u=>u.side==='player').map(u=>u.id===String(id)?{...u,hp:1}:u);assert.match(dispatchCampaign(p.campaign,{type:'battleResult',battleId:request.id,outcome:'retreat',sectorState:p.battle,survivors:revived}).lastError,/muerte confirmada/);
+ p=synced({campaign:p.campaign,battle:scriptedWithdrawal(p.battle)});
+ const forgedScene=structuredClone(p.battle),body=forgedScene.units.find(u=>u.id===String(id));body.hp=1;refreshMilitaryCondition(body);const refused=dispatchCampaign(p.campaign,{type:'battleResult',battleId:request.id,outcome:'retreat',sectorState:forgedScene,survivors:forgedScene.units.filter(u=>u.side==='player')});assert.ok(refused.lastError);assert.deepEqual({...refused,lastError:null},{...p.campaign,lastError:null});
+ const revived=p.battle.units.filter(u=>u.side==='player').map(u=>u.id===String(id)?{...u,hp:1}:u),ignored=order(p.campaign,{type:'battleResult',battleId:request.id,outcome:'retreat',sectorState:p.battle,survivors:revived});assert.equal(ignored.operativeState[id].hp,0);assert.equal(ignored.operativeState[id].alive,false);
  s=order(p.campaign,{type:'battleResult',battleId:request.id,outcome:'retreat',sectorState:p.battle,survivors:p.battle.units.filter(u=>u.side==='player')});assert.equal(s.operativeState[id].alive,false);assert.equal(person(s,'sal').appeared,true);assert.equal(s.contentPresence.receipts.length,1);assert.ok(!encountersFor(s,A).some(n=>n.contentId==='pablo'));assert.ok(save({campaign:s}));
 });
 
 test('a batched tactical checkpoint starts the delay at confirmed death time, after its elapsed hours',()=>{
  let p=approach(visit(ready())),n=resident(p.battle,'pablo');p=act(p,{type:'weapon',slot:'blade'});
- p.battle=actBattle(p.battle,{type:'melee',unitId:'110',targetId:n.id});assert.equal(p.battle.lastError,null);assert.equal(resident(p.battle,'pablo').hp,0);
+ for(let i=0;i<6&&resident(p.battle,'pablo').hp>0;i++){p.battle=actBattle(p.battle,{type:'melee',unitId:'110',targetId:n.id});assert.equal(p.battle.lastError,null);}assert.equal(resident(p.battle,'pablo').hp,0);
  for(let i=0;i<12;i++){p.battle=actBattle(p.battle,{type:'rest',unitId:'110'});assert.equal(p.battle.lastError,null);}
  p=synced(p);const r=p.campaign.contentPresence,receipt=r.receipts[0];assert.equal(receipt.minute,r.minute);assert.ok(receipt.at>=r.minute+60);assert.equal(person(p.campaign,'sal').appeared,false);assert.ok(save(p));
 });

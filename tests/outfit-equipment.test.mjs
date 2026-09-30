@@ -49,18 +49,18 @@ test('outfit validation rejects invented garments, mixed weapon records, invalid
  for(const extra of [{outfit:'constructor'},{outfit:'invented'},{weight:0},{count:2},{condition:101},{condition:-1},{loaded:0},{weapon:1800},{itemType:'tool'},{instanceId:'__proto__'}]){const b=field();b.units[0].outfit={...garment(),...extra};assert.throws(()=>validateBattleSnapshot(b));}
  const b=field({outfit:garment()});b.units[0].inventory={clone:garment()};assert.throws(()=>validateBattleSnapshot(b));assert.throws(()=>validatePersonalInventory({fake:{...garment(),fittings:{}}}));
 });
-test('new recruits draw initial clothing once from finite stock, and reserve withdrawals remain physical pocket items',()=>{
- let c=campaign();assert.equal(c.resources.ponchos,5);assert.equal(c.operativeState[1000].outfit.outfit,'poncho');c=step(c,{type:'recruitCivic',id:110,term:'day'});assert.equal(c.resources.ponchos,4);
- const m=sectorInventoryModel(c,'retiro',rosterFor(c),1000);assert.equal(m.outfitStock,4);assert.equal(m.outfitIssueReason,null);
- c=step(c,{type:'sectorInventory',sector:'retiro',operativeId:1000,direction:'issueOutfit'});assert.equal(c.resources.ponchos,3);assert.equal(Object.values(c.operativeState[1000].inventory).filter(r=>r.kind==='outfit').length,1);
- const remote=sectorInventoryModel(c,'buenos_aires',rosterFor(c),1000);assert.equal(remote.outfitStock,0);
- const blocked=structuredClone(c);blocked.resources.ponchos=0;const n=dispatchCampaign(blocked,{type:'sectorInventory',sector:'retiro',operativeId:1000,direction:'issueOutfit'});assert.ok(n.lastError);assert.deepEqual({...n,lastError:null},blocked);
+test('recruits bring initial clothing while paid reserve purchases consume finite local stock',()=>{
+ let c=campaign();assert.equal(c.merchants.retiro.supplies.ponchos,6);assert.equal(c.operativeState[1000].outfit.outfit,'poncho');c=step(c,{type:'recruitCivic',id:110,term:'day'});assert.equal(c.merchants.retiro.supplies.ponchos,6);
+ const m=sectorInventoryModel(c,'retiro',rosterFor(c),1000);assert.equal(m.outfitStock,6);assert.equal(m.outfitIssueReason,null);
+ const money=c.resources.treasury,shopCash=c.merchants.retiro.cash;c=step(c,{type:'sectorInventory',sector:'retiro',operativeId:1000,direction:'issueOutfit'});assert.equal(c.merchants.retiro.supplies.ponchos,5);assert.equal(c.resources.treasury,money-20);assert.equal(c.merchants.retiro.cash,shopCash+20);assert.equal(Object.values(c.operativeState[1000].inventory).filter(r=>r.kind==='outfit').length,1);
+ const remote=sectorInventoryModel(c,'buenos_aires',rosterFor(c),1000);assert.ok(remote.outfitIssueReason);
+ const blocked=structuredClone(c);blocked.merchants.retiro.supplies.ponchos=0;const n=dispatchCampaign(blocked,{type:'sectorInventory',sector:'retiro',operativeId:1000,direction:'issueOutfit'});assert.ok(n.lastError);assert.deepEqual({...n,lastError:null},blocked);
 });
 test('an outfit returns, saves, stows on the map and redeploys without another stock issue',()=>{
  let c=campaign();c.operativeState[1000].outfit=garment('personal',47);let v=visit(c);c=v.c;let b=v.b;assert.deepEqual(b.units.find(u=>u.id==='1000').outfit,garment('personal',47));c=leave(c,b);let m=sectorInventoryModel(c,'retiro',rosterFor(c),1000);let row=m.carried.find(r=>r.item==='outfit');assert.ok(row.equip[0].valid);
  c=step(c,{type:'sectorInventory',sector:'retiro',operativeId:1000,direction:'equip',slot:'outfit',inventoryKey:null,expected:row.expected});assert.equal(c.operativeState[1000].outfit,null);c=decodeSave(encodeSave(c,null)).campaign;
  m=sectorInventoryModel(c,'retiro',rosterFor(c),1000);row=m.carried.find(r=>r.inventoryKey===keyFor(c.operativeState[1000],'personal'));c=step(c,{type:'sectorInventory',sector:'retiro',operativeId:1000,direction:'equip',slot:'outfit',inventoryKey:row.inventoryKey,expected:row.expected});
- v=visit(c);assert.deepEqual(v.b.units.find(u=>u.id==='1000').outfit,garment('personal',47));assert.equal(v.c.resources.ponchos,5);assert.deepEqual(decodeSave(encodeSave(v.c,v.b)).battle,v.b);
+ v=visit(c);assert.deepEqual(v.b.units.find(u=>u.id==='1000').outfit,garment('personal',47));assert.equal(v.c.merchants.retiro.supplies.ponchos,6);assert.deepEqual(decodeSave(encodeSave(v.c,v.b)).battle,v.b);
 });
 test('sector ground transfers retire historical clothing identities before a new owner equips the item',()=>{
  let c=campaign();c=step(c,{type:'recruitCivic',id:110,term:'day'});c.operativeState[1000].outfit=garment('transfer');let v=visit(c);c=leave(v.c,v.b);
@@ -73,11 +73,14 @@ test('the public view describes owned clothing but does not reveal its internal 
  const c=campaign();c.operativeState[1000].outfit=garment('private-id');const known=playerKnownCampaign(c);assert.equal(known.operatives.find(u=>u.id===1000).outfit.condition,63);assert.ok(!JSON.stringify(known).includes('private-id'));
 });
 
-test('six issued ponchos exhaust stock and the next recruit receives an empty outfit slot',()=>{
+test('six paid reserve ponchos exhaust local stock while recruits retain their own clothing',()=>{
  let c=campaign();for(const id of [110,114,115,123,107,116])c=step(c,{type:'recruitCivic',id,term:'day'});
- assert.equal(c.resources.ponchos,0);assert.equal(c.operativeState[116].outfit,null);assert.equal(c.recruited.filter(id=>c.operativeState[id].outfit).length,6);
- const v=visit(c);assert.equal(v.c.resources.ponchos,0);for(const u of v.b.units.filter(u=>u.side==='player'))assert.deepEqual(u.outfit,c.operativeState[u.id].outfit);
+ const money=c.resources.treasury;for(const id of c.recruited.slice(0,6))c=step(c,{type:'sectorInventory',sector:'retiro',operativeId:id,direction:'issueOutfit'});
+ assert.equal(c.merchants.retiro.supplies.ponchos,0);assert.equal(c.resources.treasury,money-120);assert.equal(c.recruited.filter(id=>c.operativeState[id].outfit).length,7);
+ const refused=dispatchCampaign(c,{type:'sectorInventory',sector:'retiro',operativeId:116,direction:'issueOutfit'});assert.ok(refused.lastError);assert.deepEqual({...refused,lastError:null},c);
+ const v=visit(c);assert.equal(v.c.merchants.retiro.supplies.ponchos,0);for(const u of v.b.units.filter(u=>u.side==='player'))assert.deepEqual(u.outfit,c.operativeState[u.id].outfit);
 });
+
 test('wearing one garment from an equivalent stack consumes only one and keeps the spare in a large pocket',()=>{
  let b=field({outfit:null,inventory:{clothes:{...makeOutfit(),count:2}}});b=order(b,{type:'equipLoot',inventoryKey:'clothes',slot:'outfit'});assert.equal(b.units[0].inventory.clothes.count,1);assert.equal(b.units[0].outfit.count,1);assert.equal(inventoryUsage(b.units[0]).items.find(i=>i.item==='inventory:clothes').condition,100);
  b=order(b,{type:'equipLoot',inventoryKey:null,slot:'outfit'});assert.equal(b.units[0].outfit,null);assert.equal(Object.values(b.units[0].inventory).filter(r=>r.kind==='outfit').reduce((sum,r)=>sum+r.count,0),2);assert.equal(inventoryUsage(b.units[0]).slots.filter(s=>s.entry?.kind==='outfit').length,2);

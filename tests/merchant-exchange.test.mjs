@@ -1,3 +1,5 @@
+import {stockAndCarriedAmmo} from './ammunition-balance.mjs';
+import {ownedArtilleryCount} from '../game/campaign-artillery.js';
 import test from 'node:test';import assert from 'node:assert/strict';
 import {initialCampaign} from './legacy-campaign-fixture.mjs';
 import {dispatchCampaign,isSupplied} from '../game/campaign.js';
@@ -21,9 +23,9 @@ test('a weapon offsets a new purchase and only the final difference is required'
  s.resources.treasury=28;s=save(order(s,a));assert.equal(s.resources.treasury,0);assert.equal(s.merchants.retiro.cash,28);assert.equal(s.merchants.retiro.stock[1804],stock-1);assert.equal(s.armoryItems[0].item,1804);assert.equal(s.merchants.retiro.usedItems[0].id,id);
 });
 test('artillery can fund a multiple-item purchase with exact retained loading and a net cash payout',()=>{
- let s=initialCampaign();const gun={id:'barter-piece',type:'field8',side:'player',loaded:false,ammo:1,reloadProgress:.6};s.artilleryStores={retiro:[gun]};s.resources.treasury=0;s.merchants.retiro.cash=120;
+ let s=initialCampaign();const gun={id:'barter-piece',type:'field8',side:'player',loaded:false,ammo:1,reloadProgress:.6};s.artilleryDepots={retiro:[gun]};s.resources.treasury=0;s.merchants.retiro.cash=120;
  const a=basket(s,[[`sell:artillery:stored:${gun.id}`],['buy:new:1809',2]]);assert.equal(merchantExchangePreview(s,a,isSupplied).net,-120);
- s=save(order(s,a));assert.equal(s.resources.treasury,120);assert.equal(s.merchants.retiro.cash,0);assert.deepEqual(s.merchants.retiro.usedArtillery,[gun]);assert.equal(s.armoryItems.filter(i=>i.item===1809).length,2);assert.deepEqual(s.artilleryStores.retiro,[]);
+ s=save(order(s,a));assert.equal(s.resources.treasury,120);assert.equal(s.merchants.retiro.cash,0);assert.deepEqual(s.artilleryMerchants.retiro.guns,[gun]);assert.equal(s.armoryItems.filter(i=>i.item===1809).length,2);assert.deepEqual(s.artilleryDepots.retiro,[]);
 });
 test('changed, duplicated, unavailable and remote offers reject the whole exchange without partial trades',()=>{
  const base=stocked(),id=base.armoryItems[0].id,a=basket(base,[[`sell:weapon:${id}`],['buy:new:1804']]);
@@ -36,14 +38,14 @@ test('full merchant storage can exchange outgoing used stock for an offered weap
  const a=basket(s,[[`sell:weapon:${id}`],['buy:weapon:armory-2']]);s=save(order(s,a));assert.equal(s.merchants.retiro.usedItems.length,1000);assert.equal(s.armoryItems.length,1);assert.equal(s.armoryItems[0].id,'armory-2');
 });
 test('multiple undeployed cannons materialize once per exchanged piece',()=>{
- let s=initialCampaign();s.resources.cannons=2;s.armory.swivel=2;s.merchants.retiro.cash=300;
- const a=basket(s,[['sell:artillery:stock:swivel',2],['buy:new:1813']]);s=save(order(s,a));assert.equal(s.resources.cannons,0);assert.equal(s.armory.swivel,0);assert.equal(s.merchants.retiro.usedArtillery.length,2);assert.notEqual(s.merchants.retiro.usedArtillery[0].id,s.merchants.retiro.usedArtillery[1].id);assert.ok(s.merchants.retiro.usedArtillery.every(g=>g.loaded&&g.ammo===6));
+ let s=initialCampaign();s.armory.swivel=2;s.merchants.retiro.cash=300;
+ const a=basket(s,[['sell:artillery:stock:swivel',2],['buy:new:1813']]);s=save(order(s,a));assert.equal(ownedArtilleryCount(s),0);assert.equal(s.armory.swivel,0);assert.equal(s.artilleryMerchants.retiro.guns.length,2);assert.notEqual(s.artilleryMerchants.retiro.guns[0].id,s.artilleryMerchants.retiro.guns[1].id);assert.ok(s.artilleryMerchants.retiro.guns.every(g=>g.loaded&&g.ammo===6));
 });
 test('a fitted loaded musket retains its exact metadata and does not replenish campaign ammunition during exchange',()=>{
  let s=order(initialCampaign(),{type:'purchaseEquipment',item:1803});const item=s.armoryItems[0];Object.assign(item,{item:1800,condition:50,jammed:true,loaded:1,instanceId:'barter-musket',fittings:{bayonet:{weapon:1811,condition:25,instanceId:'barter-bayonet',fittingPattern:'india_socket'}}});s.armory[1803]=0;s.armory[1800]=1;s=save(s);
- const exact=structuredClone(s.armoryItems[0]),ammo=s.resources.cartridges;s=save(order(s,basket(s,[[`sell:weapon:${item.id}`],['buy:new:1813']])));assert.deepEqual(s.merchants.retiro.usedItems,[exact]);assert.equal(s.resources.cartridges,ammo);
+ const exact=structuredClone(s.armoryItems[0]),ammo=stockAndCarriedAmmo(s);s=save(order(s,basket(s,[[`sell:weapon:${item.id}`],['buy:new:1813']])));assert.deepEqual(s.merchants.retiro.usedItems,[exact]);assert.equal(stockAndCarriedAmmo(s),ammo);
 });
 test('insufficient merchant change and lost artillery crew reject all offered goods',()=>{
  let s=order(initialCampaign(),{type:'purchaseEquipment',item:1803});s.merchants.retiro.cash=31;const a=basket(s,[[`sell:weapon:${s.armoryItems[0].id}`],['buy:new:1813']]);const bad=dispatchCampaign(s,a);assert.match(bad.lastError,/comerciante.*diferencia/);assert.deepEqual({...bad,lastError:null},s);
- s.sectorStates.retiro={units:[],artillery:[{id:'crew-gun',type:'field8',side:'player',loaded:true,ammo:2,x:3,y:3}]};const b=basket(s,[[`sell:weapon:${s.armoryItems[0].id}`],['sell:artillery:deployed:crew-gun']]);s.operativeState[s.squad[0]].hp=10;const noCrew=dispatchCampaign(s,b);assert.match(noCrew.lastError,/artilleros/);assert.deepEqual({...noCrew,lastError:null},s);
+ s.sectorStates.retiro={units:[],artillery:[{id:'crew-gun',type:'field8',side:'player',loaded:true,ammo:2,x:3,y:3}]};const b=basket(s,[[`sell:weapon:${s.armoryItems[0].id}`],['sell:artillery:deployed:crew-gun']]);s.operativeState[s.squad[0]].hp=10;const noCrew=dispatchCampaign(s,b);assert.match(noCrew.lastError,/combatientes disponibles/);assert.deepEqual({...noCrew,lastError:null},s);
 });
