@@ -191,3 +191,5 @@ test partition and retained publication gates. It is infrastructure evidence.
 - [Alternative firearm loads](alternate-firearm-loads.md): authored effects, selection, unloading and conserved family custody.
 
 - [Civilian weapon custody](civilian-weapon-custody.md): finite recovery of configured weapons, loaded state and service continuity.
+
+- [JA2 gameplay overview review, 30 September](ja2-gameplay-review-2026-09-30.md): existing coverage and proposed design clarifications; no new gameplay acceptance.

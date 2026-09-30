@@ -23,6 +23,10 @@ the [workspace acceptance record](../verification/gameplay-completion.md) and
 6. **Assess completion:** read the published progress ledger and its linked
    evidence before using a feature note as proof of campaign-wide behavior.
 
+The [JA2 overview review](../verification/ja2-gameplay-review-2026-09-30.md) connects
+the strategic, tactical and character systems to the existing parity requirements.
+It separates current documentation coverage from proposed design decisions.
+
 ## Browse by subject
 
 | Subject | Contents |
