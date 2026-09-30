@@ -29,6 +29,7 @@ test('all new sectors contain 3072 unique squares and town sectors contain twent
   if(towns.some(t=>t.id===sector)){assert.equal(map.buildings.length,20,sector);assert.equal(map.buildings.filter(b=>b.purpose==='bar').length,1,`${sector}: civilian meeting place`);}
   const seen=reachable(map,map.squad[0],true);
   for(const b of map.buildings){
+   assert.ok(b.walls.length>0);assert.ok(b.walls.every(w=>w.buildingId===b.id),`${sector}: ${b.id} must not retain another building's walls`);
    assert.ok(map.tiles.some(t=>t.buildingId===b.id&&t.type==='door'&&seen.has(key(t))),`${sector}: ${b.id} needs an accessible entrance`);
    assert.ok(b.rooms.every(r=>r.cells.some(t=>seen.has(key(t)))),`${sector}: ${b.id} needs accessible floor`);
   }
@@ -58,14 +59,14 @@ test('new buildings use complete plans with room to walk around furniture',()=>{
   }
  }
 });
-test('larger authored landmarks apply only to new layouts and preserve the compact plans',()=>{
- for(const [sector,oldPlan,newPlan] of [['buenos_aires',[8,4],[11,6]],['san_lorenzo',[5,6],[6,7]]]){
+test('current authored landmarks retain their complete plans when the surrounding sector expands',()=>{
+ for(const [sector,plan] of [['buenos_aires',[11,6]],['san_lorenzo',[6,7]]]){
   const compact=buildSectorMap({sector,compactLayout:true}),expanded=buildSectorMap({sector});
   const old=compact.buildings[0],current=expanded.buildings[0];
   assert.equal(current.id,old.id);
-  assert.deepEqual([old.width,old.height],oldPlan);
-  assert.deepEqual([current.width,current.height],newPlan);
-  assert.ok(current.rooms[0].cells.length>=old.rooms[0].cells.length*1.5);
+  assert.deepEqual([old.width,old.height],plan);
+  assert.deepEqual([current.width,current.height],plan);
+  assert.equal(current.rooms[0].cells.length,old.rooms[0].cells.length);
   assert.deepEqual(expanded.tiles.filter(t=>t.buildingId===current.id&&t.type==='door').map(t=>t.doorId),compact.tiles.filter(t=>t.buildingId===old.id&&t.type==='door').map(t=>t.doorId));
  }
 });

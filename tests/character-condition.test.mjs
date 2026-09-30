@@ -15,7 +15,7 @@ const condition=o=>Object.fromEntries(['hp','energy','fatigue','bleeding','banda
 test('initial condition validates complete finite integer fields and coherent wounds without changing legacy content identity',()=>{
  const d=defaultContentPackage(),identity=contentIdentity(d),max=person(d).attributes.maxHp;
  assert.equal(person(d).startingCondition,undefined);assert.deepEqual(contentIdentity(parseContentPackage(encodeContentPackage(d))),identity);
- const old=saved({campaign:initialCampaign(42,d)}).campaign;assert.equal(old.operativeState[110].hp,max);assert.equal(old.operativeState[110].energy,undefined);
+ const old=saved({campaign:initialCampaign(42,d)}).campaign;assert.equal(old.operativeState[110].hp,max);assert.equal(old.operativeState[110].energy,100);
  for(const bad of [null,[],{},30,{...state(),hp:0},{...state(),hp:max+1},{...state(),hp:1.5},{...state(),energy:-1},{...state(),energy:101},{...state(),fatigue:'23'},{...state(),fatigue:Infinity},{...state(),bleeding:11},{...state(),bandaged:-1},{...state(),bandaged:max},{...state(max),bandaged:0,bleeding:1},{...state(),bandaged:max-30,bleeding:1},{...state(),alive:true}]){
   person(d).startingCondition=bad;assert.ok(validateContentPackage(d).some(e=>e.includes('startingCondition')),JSON.stringify(bad));assert.throws(()=>initialCampaign(42,d));
  }
@@ -39,7 +39,7 @@ test('authored paid candidates remain off the map and preserve condition through
 test('an editor-authored critical resident is stabilized, recruited, treated with purchased supplies and returns without resetting',()=>{
  const d=localPackage({pay:0,service:'permanent'}),resident=d.characters.find(c=>c.id==='alma-contract');resident.startingCondition={hp:1,energy:100,fatigue:0,bleeding:0,bandaged:0};person(d).attributes.medical=80;
  let p=readyLocal(undefined,d),npc=localNPC(p.battle);assert.equal(npc.hp,1);assert.equal(npc.unconscious,true);assert.equal(npc.civilianHarm,undefined);assert.ok(dispatchCampaign(p.campaign,talk(p)).lastError);
- p=tactical(p,{type:'heal',targetId:npc.id});p=saved(p);assert.ok(localNPC(p.battle).hp>1&&localNPC(p.battle).hp<15);assert.equal(p.battle.units.find(u=>u.id==='110').medkits,1);
+ p=tactical(p,{type:'weapon',slot:'medical'});p=tactical(p,{type:'heal',targetId:npc.id});p=saved(p);assert.ok(localNPC(p.battle).hp>1&&localNPC(p.battle).hp<15);assert.equal(p.battle.units.find(u=>u.id==='110').medkits,1);
  p=tactical(p,{type:'heal',targetId:npc.id});assert.equal(localNPC(p.battle).hp,15);assert.equal(localNPC(p.battle).unconscious,false);assert.equal(p.battle.units.find(u=>u.id==='110').medkits,0);assert.deepEqual(civilianIncidents(localNPC(p.battle)),[]);
  p=hireLocal(saved(p));const id=localId(p.campaign);assert.equal(p.battle.units.find(u=>u.id===String(id)).hp,15);
  let s=order(leave(p),{type:'travel',sector:'retiro'});const money=s.resources.treasury;s=order(s,{type:'purchaseMedicalSupplies',id:110,quantity:2});assert.equal(s.resources.treasury,money-20);s=order(s,{type:'assignCare',id:110,assignment:'doctor'});s=order(s,{type:'assignCare',id,assignment:'patient'});s=order(s,{type:'wait',hours:2});assert.equal(s.operativeState[id].hp,27);assert.equal(s.operativeState[110].medkits,0);

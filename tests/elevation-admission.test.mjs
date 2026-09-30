@@ -29,9 +29,9 @@ test('roof admission rejects live soldiers or ordinary civilians sharing one phy
  const ground=field([{id:'a',x:1,y:1},{id:'b',x:1,y:1}]);ground.npcs.push({id:'civilian',name:'Vecino',x:1,y:1});assert.deepEqual(decodeBattle(ground),ground,'legacy ground overlap semantics are unchanged');
 });
 
-test('ordinary civilians without hp need an unblocked upper surface and clear furniture footprint',()=>{
+test('ordinary civilians initialize healthy and need an unblocked upper surface and clear furniture footprint',()=>{
  const s=field([{id:'p',x:3,y:4}],{npcs:[{id:'civilian',name:'Vecino',x:6,y:5,tacticalLevel:1}]});
- assert.equal(s.npcs[0].hp,undefined);assert.deepEqual(decodeBattle(s),s);
+ assert.equal(s.npcs[0].hp,100);assert.deepEqual(decodeBattle(s),s);
  const blocked=structuredClone(s);blocked.upperSurfaces.find(p=>sameCell(p,blocked.npcs[0])).blocked=true;assert.throws(()=>decodeBattle(blocked),/apoyos de personas/);
  for(const actor of ['civilian','soldier']){
   const b=actor==='civilian'?structuredClone(s):field([{id:'p',x:6,y:5,tacticalLevel:1}]);

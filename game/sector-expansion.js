@@ -76,7 +76,7 @@ export function expandSectorMap(core,boundaryRoads=core.tiles.filter(t=>t.type==
   const result=placeBuilding(map.tiles,{id:buildingId,architecture,name:`${BUILDING_TYPES[architecture].name} · ${index+1}`,...lot,width:w,height:h,doors:[{x:lot.x+Math.floor(w/2),y:lot.y+h-1}],windows:[{x:lot.x,y:lot.y+Math.floor(h/2)}],material:'adobe'});
   // New neighbourhood shells share the editor's catalog renderer. Keep the
   // structural walls for entrance-relative details and the original save IDs.
-  result.building.kind=architecture;result.building.walls=result.tiles.filter(t=>['wall','door','window'].includes(t.type));
+  result.building.kind=architecture;result.building.walls=result.tiles.filter(t=>t.buildingId===buildingId&&['wall','door','window'].includes(t.type));
   if(bar)Object.assign(result.building,{purpose:'bar',name:'Pulpería del barrio'});
   map.tiles=result.tiles;map.buildings.push(result.building);
   const prop={id:`${buildingId}:chest`,type:'chest',x:lot.x+1,y:lot.y+1,buildingId,roomId:result.building.rooms[0].id,footprint:{width:1,height:1},blocksMovement:true};

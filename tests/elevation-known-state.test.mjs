@@ -39,7 +39,7 @@ test('surface and climb IDs require observed cells on both endpoint floors',()=>
  view.upperSurfaces[0].elevation=99;view.climbLinks[0].from.x=99;assert.equal(s.upperSurfaces[0].elevation,3);assert.equal(s.climbLinks[0].from.x,2);
 });
 test('roof container IDs and anonymous observed contacts preserve floor without private metadata',()=>{
- const s=fixture();s.props=[{id:'roof-cache',type:'chest',x:5,y:4,tacticalLevel:1,open:false,locked:false,keyId:secret,contents:[{item:'ammo',count:2}]}];
+ const s=fixture();s.props=[{id:'roof-cache',type:'chest',x:5,y:4,tacticalLevel:1,open:false,locked:false,keyId:secret,contents:[{item:'inventory:roof-rounds',kind:'ammunition',ammoType:'musket_75',name:'Cartucho de mosquete .75',count:2,weight:.04}]}];
  s.units[0].lastKnownEnemy={x:6,y:4,tacticalLevel:1,turn:s.turn,enemyId:secret};
  s.units[0].lastHeardNoise={x:6,y:4,kind:'move',uncertainty:2,turn:s.turn,enemyId:secret};
  let view=playerKnownBattle(s);assert.equal(view.props[0].tacticalLevel,1);assert.equal(view.environment[0].tacticalLevel,1);assert.equal(view.environment[0].contents,undefined);

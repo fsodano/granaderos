@@ -71,6 +71,9 @@ test('older saves gain the expanded roster without changing existing volunteers'
  let s=order(initialCampaign(),{type:'recruitCivic',id:100,term:'week'});
  const original=structuredClone(s.operativeState[100]),contract=structuredClone(s.contracts[100]);
  for(const op of MERCENARY_ADDITIONS)delete s.operativeState[op.id];
+ assert.throws(()=>restoreCampaign(serializeCampaign(s)),/munición/);
+ // A genuine older roster predates the physical-ammunition version marker.
+ delete s.ammunitionVersion;for(const record of Object.values(s.operativeState))delete record.ammunitionVersion;
  s=restoreCampaign(serializeCampaign(s));
  assert.deepEqual(s.operativeState[100],original);assert.deepEqual(s.contracts[100],contract);
  for(const op of MERCENARY_ADDITIONS){assert.equal(s.operativeState[op.id].hp,op.maxHp);assert.equal(s.operativeState[op.id].alive,true);}
@@ -99,7 +102,7 @@ test('replaced officer identities retain an existing weekly contract, injuries a
  // A pre-replacement volunteer could already have a weekly contract.
  s.contracts[109]={kind:'paid',term:'week',started:0,expiresAt:168,paid:77};
  s.operativeState[109].hp=40;s.operativeState[109].xp=120;
- const record=structuredClone(s.operativeState[109]),contract=structuredClone(s.contracts[109]);
+ const record={...structuredClone(s.operativeState[109]),maxHp:rosterFor(s).find(o=>o.id===109).maxHp},contract=structuredClone(s.contracts[109]);
  s=restoreCampaign(serializeCampaign(s));
  assert.deepEqual(s.operativeState[109],record);assert.deepEqual(s.contracts[109],contract);
  const officer=rosterFor(s).find(o=>o.id===109);
