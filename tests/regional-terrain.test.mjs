@@ -90,7 +90,7 @@ test('regional mud consumes extra energy and turn AP, but exploration keeps AP u
  assert.ok(movementStepCost(state,unit,from,mud)>movementStepCost(dryState,unit,from,dry));
  const moved=actBattle(state,{type:'move',unitId:unit.id,x:mud.x,y:mud.y});
  assert.equal(moved.lastError,null);assert.equal(moved.mode,'exploration');
- assert.equal(moved.units[0].ap,0);assert.equal(moved.units[0].energy,100-movementEnergy(unit,mud));
+ assert.equal(moved.units[0].ap,0);assert.equal(moved.units[0].energy,100-movementEnergy(unit,mud,true));
  const wood=buildSectorMap(request('tucuman')),scrub=buildSectorMap(request('cordoba'));
  assert.ok(concealmentAt(wood,wood.tiles.find(t=>t.type==='forest'))>=20);
  assert.ok(concealmentAt(scrub,scrub.tiles.find(t=>t.type==='scrub'))>=15);

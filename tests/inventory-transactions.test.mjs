@@ -105,11 +105,11 @@ test('partial corpse loot leaves unselected supplies and the loaded weapon on th
 });
 
 test('loot-all preflight rejects capacity overflow without taking the first items or spending AP', () => {
-  const state = field({}, {}, [{id: 'corpse', x: 1, y: 4, hp: 0, ammo: 100, priming: 0, flints: 0, rations: 0, medkits: 0, boleadoras: 0, torches: 0}]);
+  const state = field({}, {}, [{id: 'corpse', x: 1, y: 4, hp: 0, ammo: 200, priming: 0, flints: 0, rations: 0, medkits: 0, boleadoras: 0, torches: 0}]);
   assert.equal(lootPreview(state, troop(state), {targetId: 'corpse'}).valid, false);
   rejectUnchanged(state, {type: 'loot', targetId: 'corpse', item: 'all'});
   const partial = order(state, {type: 'loot', targetId: 'corpse', item: AMMO, count: 8});
-  assert.equal(troop(partial).ammo, 20); assert.equal(troop(partial, 'corpse').ammo, 92);
+  assert.equal(troop(partial).ammo, 20); assert.equal(troop(partial, 'corpse').ammo, 192);
 });
 
 test('transfer range, obstacles, capacity, quantities, and insufficient AP reject atomically', () => {

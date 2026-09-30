@@ -1,0 +1,153 @@
+{
+  "completedIds": [
+    "avatar-man-gaucho-dark-2",
+    "avatar-man-gaucho-dark-5",
+    "avatar-man-artisan-brown-4",
+    "avatar-man-artisan-dark-4",
+    "avatar-man-medic-light-4",
+    "avatar-man-medic-brown-2",
+    "avatar-man-medic-brown-5",
+    "avatar-man-medic-dark-4",
+    "avatar-man-gaucho-dark-3",
+    "avatar-man-artisan-light-4",
+    "avatar-man-artisan-brown-5",
+    "avatar-man-artisan-dark-5",
+    "avatar-man-medic-light-5",
+    "avatar-man-medic-brown-3",
+    "avatar-man-medic-dark-2",
+    "avatar-man-medic-dark-5",
+    "avatar-man-gaucho-dark-1",
+    "avatar-man-gaucho-dark-4",
+    "avatar-man-artisan-light-5",
+    "avatar-man-artisan-dark-3",
+    "avatar-man-medic-light-3",
+    "avatar-man-medic-brown-1",
+    "avatar-man-medic-brown-4",
+    "avatar-man-medic-dark-3"
+  ],
+  "failedIds": [],
+  "method": "built-in image_gen",
+  "visualReview": "All 24 returned portraits inspected: distinct faces, period clothing, intended skin-tone groups and consistent painted style.",
+  "results": [
+    {
+      "id": "avatar-man-gaucho-dark-2",
+      "source": "assets/source/balanced-avatar-man-gaucho-dark-2-v1.png",
+      "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55c-4c78-7bf3-a0fb-9b43b7024c93/exec-d4605a67-2bd4-44ea-b9f4-4a06a55a7d74.png"
+    },
+    {
+      "id": "avatar-man-gaucho-dark-5",
+      "source": "assets/source/balanced-avatar-man-gaucho-dark-5-v1.png",
+      "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55c-4c78-7bf3-a0fb-9b43b7024c93/exec-776f54fa-9023-468a-9c18-9adb72e2f1a0.png"
+    },
+    {
+      "id": "avatar-man-artisan-brown-4",
+      "source": "assets/source/balanced-avatar-man-artisan-brown-4-v1.png",
+      "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55c-4c78-7bf3-a0fb-9b43b7024c93/exec-3cf8221a-0b1b-4f18-91c6-2ccd13f461c1.png"
+    },
+    {
+      "id": "avatar-man-artisan-dark-4",
+      "source": "assets/source/balanced-avatar-man-artisan-dark-4-v1.png",
+      "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55c-4c78-7bf3-a0fb-9b43b7024c93/exec-df1ee691-86a6-4012-86b0-82ac948fd358.png"
+    },
+    {
+      "id": "avatar-man-medic-light-4",
+      "source": "assets/source/balanced-avatar-man-medic-light-4-v1.png",
+      "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55c-4c78-7bf3-a0fb-9b43b7024c93/exec-6dd89d63-bab8-4d77-b750-4a053851ceeb.png"
+    },
+    {
+      "id": "avatar-man-medic-brown-2",
+      "source": "assets/source/balanced-avatar-man-medic-brown-2-v1.png",
+      "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55c-4c78-7bf3-a0fb-9b43b7024c93/exec-4680c8f0-be1a-4813-b29b-5ea43c5a8a27.png"
+    },
+    {
+      "id": "avatar-man-medic-brown-5",
+      "source": "assets/source/balanced-avatar-man-medic-brown-5-v1.png",
+      "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55c-4c78-7bf3-a0fb-9b43b7024c93/exec-b50166e7-9122-4a74-86e3-e022bf437f78.png"
+    },
+    {
+      "id": "avatar-man-medic-dark-4",
+      "source": "assets/source/balanced-avatar-man-medic-dark-4-v1.png",
+      "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55c-4c78-7bf3-a0fb-9b43b7024c93/exec-4e14f73a-005a-4872-8704-77bab895744d.png"
+    },
+    {
+      "id": "avatar-man-gaucho-dark-3",
+      "source": "assets/source/balanced-avatar-man-gaucho-dark-3-v1.png",
+      "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55c-4c78-7bf3-a0fb-9b43b7024c93/exec-59129d11-e672-487c-89e5-e81cdf67da81.png"
+    },
+    {
+      "id": "avatar-man-artisan-light-4",
+      "source": "assets/source/balanced-avatar-man-artisan-light-4-v1.png",
+      "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55c-4c78-7bf3-a0fb-9b43b7024c93/exec-712442cf-bcf0-49cf-a934-cb0294b36a26.png"
+    },
+    {
+      "id": "avatar-man-artisan-brown-5",
+      "source": "assets/source/balanced-avatar-man-artisan-brown-5-v1.png",
+      "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55c-4c78-7bf3-a0fb-9b43b7024c93/exec-cd794c45-0ca6-4ef0-b95f-510b60f002ab.png"
+    },
+    {
+      "id": "avatar-man-artisan-dark-5",
+      "source": "assets/source/balanced-avatar-man-artisan-dark-5-v1.png",
+      "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55c-4c78-7bf3-a0fb-9b43b7024c93/exec-f241dba0-7dac-45d1-b744-04e4b8e3911d.png"
+    },
+    {
+      "id": "avatar-man-medic-light-5",
+      "source": "assets/source/balanced-avatar-man-medic-light-5-v1.png",
+      "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55c-4c78-7bf3-a0fb-9b43b7024c93/exec-f7d3e070-1966-4720-bddf-adde619b9e07.png"
+    },
+    {
+      "id": "avatar-man-medic-brown-3",
+      "source": "assets/source/balanced-avatar-man-medic-brown-3-v1.png",
+      "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55c-4c78-7bf3-a0fb-9b43b7024c93/exec-9a58a41e-99ba-4e7c-bc67-504ebbfd2554.png"
+    },
+    {
+      "id": "avatar-man-medic-dark-2",
+      "source": "assets/source/balanced-avatar-man-medic-dark-2-v1.png",
+      "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55c-4c78-7bf3-a0fb-9b43b7024c93/exec-610830a9-c29b-4c85-bfbd-894e0bba3b0d.png"
+    },
+    {
+      "id": "avatar-man-medic-dark-5",
+      "source": "assets/source/balanced-avatar-man-medic-dark-5-v1.png",
+      "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55c-4c78-7bf3-a0fb-9b43b7024c93/exec-2ed1306a-797a-4bc1-81ad-cc13742b9e95.png"
+    },
+    {
+      "id": "avatar-man-gaucho-dark-1",
+      "source": "assets/source/balanced-avatar-man-gaucho-dark-1-v1.png",
+      "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55c-4c78-7bf3-a0fb-9b43b7024c93/exec-4a1e68a9-1e74-4382-aef5-abaf3b9b9b78.png"
+    },
+    {
+      "id": "avatar-man-gaucho-dark-4",
+      "source": "assets/source/balanced-avatar-man-gaucho-dark-4-v1.png",
+      "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55c-4c78-7bf3-a0fb-9b43b7024c93/exec-b90c0825-2ec9-4f6b-afd9-1ddcbe3984e0.png"
+    },
+    {
+      "id": "avatar-man-artisan-light-5",
+      "source": "assets/source/balanced-avatar-man-artisan-light-5-v1.png",
+      "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55c-4c78-7bf3-a0fb-9b43b7024c93/exec-b67ca262-7f2f-4347-95ef-e26179ce9da8.png"
+    },
+    {
+      "id": "avatar-man-artisan-dark-3",
+      "source": "assets/source/balanced-avatar-man-artisan-dark-3-v1.png",
+      "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55c-4c78-7bf3-a0fb-9b43b7024c93/exec-499135a9-45ed-431e-9bdc-a374c502d118.png"
+    },
+    {
+      "id": "avatar-man-medic-light-3",
+      "source": "assets/source/balanced-avatar-man-medic-light-3-v1.png",
+      "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55c-4c78-7bf3-a0fb-9b43b7024c93/exec-dfda5647-4bb3-47dc-9746-51c0d01139c5.png"
+    },
+    {
+      "id": "avatar-man-medic-brown-1",
+      "source": "assets/source/balanced-avatar-man-medic-brown-1-v1.png",
+      "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55c-4c78-7bf3-a0fb-9b43b7024c93/exec-5c9f218c-7d94-4613-bc07-1ff272da0263.png"
+    },
+    {
+      "id": "avatar-man-medic-brown-4",
+      "source": "assets/source/balanced-avatar-man-medic-brown-4-v1.png",
+      "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55c-4c78-7bf3-a0fb-9b43b7024c93/exec-bf51f11f-515e-4a7b-b07e-44ac28641b53.png"
+    },
+    {
+      "id": "avatar-man-medic-dark-3",
+      "source": "assets/source/balanced-avatar-man-medic-dark-3-v1.png",
+      "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55c-4c78-7bf3-a0fb-9b43b7024c93/exec-cf07aaf6-37dd-4536-b23a-c600950e5726.png"
+    }
+  ]
+}

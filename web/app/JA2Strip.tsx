@@ -1,10 +1,9 @@
 'use client';
 import './ja2-compact.css';
-import JA2OrdersMenu from './JA2OrdersMenu';
 // JA2 bottom-strip disposition (DESIGN.md MODE A / MODE B). Root switches content on inventoryId.
 // Pure read model (game/ja2-hud.js orderDescriptors/orderAction); all mutations are caller-provided callbacks.
-import {useMemo,useState} from 'react';
-import JA2Roster from './JA2Roster';
+import {memo,useMemo,useState} from 'react';
+import {StableJA2Roster as JA2Roster} from './JA2Roster';
 import JA2Inventory, {RadarCluster} from './JA2Inventory';
 import {turnModel, unitCanAct} from '../../game/ja2-hud.js';
 import {canSee} from '../../game/tactical.js';
@@ -23,7 +22,7 @@ type Props = {
   onCannonChange: (id: any) => void; onShotTypeChange: (t: any) => void; onSetAim: (n: number) => void; onHitLocationChange: (location: string) => void;
 };
 
-function LogOverlay({log}: { log: string[] }) {
+const LogOverlay=memo(function LogOverlay({log}: { log: string[] }) {
   const [open, setOpen] = useState(false);
   const lines = log.slice(-5).reverse();
   return (
@@ -32,11 +31,12 @@ function LogOverlay({log}: { log: string[] }) {
       <div aria-live="polite">{(open ? lines : lines.slice(0, 1)).map((l, i) => <p className={i === 0 ? 'latest' : ''} key={`${log.length}-${i}`}>{l}</p>)}</div>
     </section>
   );
-}
+});
 
 export default function JA2Strip({battle, selected, unit, players, missionAllies, localMilitia, mode, showSight, aim, hitLocation, costs, weapon, firearm, cannonId, shotType, gunCosts, artillery, busy, inventoryId, vw, vh, cameraRect, project, cameraX, cameraY, zoom, onSelect, onOrder, onMode, onToggleSight, onEndTurn, onRetreat, onOpenInventory, onCloseInventory, onCameraCenter, onCameraPan, onZoom, onCannonChange, onShotTypeChange, onSetAim, onHitLocationChange, onAutoBandage, bandageReport, groupIds, target, cursorLevel, onCursorLevelChange}: Props) {
   const units = useMemo(()=>battle.units.filter((v: any) => !v.departure && !v.fled && (v.side === 'player' || players.some((p: any) => canSee(battle, p, v)))),[battle,players]);
-  const turn = turnModel(battle);
+  const turn = useMemo(()=>turnModel(battle),[battle]);
+  const rosterPlayers=useMemo(()=>players.filter((p:any)=>!p.militia&&!p.missionAlly),[players]);
   if (inventoryId) {
     return (
       <div className="ja2-hud">
@@ -50,8 +50,7 @@ export default function JA2Strip({battle, selected, unit, players, missionAllies
   return (
     <div className="ja2-hud">
     <section className="ja2-strip squad-view">
-      <JA2Roster groupIds={groupIds} battle={battle} players={players.filter((p: any) => !p.militia && !p.missionAlly)} selected={selected} medicalTargeting={unit?.activeSlot === 'medical' && unitCanAct(battle, unit)} onSelect={onSelect} onOpenInventory={onOpenInventory} />
-      <JA2OrdersMenu battle={battle} unit={unit} mode={mode} aim={aim} firearm={firearm} cannonId={cannonId} shotType={shotType} artillery={artillery} busy={busy} target={target} onOrder={onOrder} onMode={onMode} onToggleSight={onToggleSight} onEndTurn={onEndTurn} onOpenInventory={onOpenInventory} onCannonChange={onCannonChange} onShotTypeChange={onShotTypeChange} />
+      <JA2Roster groupIds={groupIds} battle={battle} players={rosterPlayers} selected={selected} medicalTargeting={unit?.activeSlot === 'medical' && unitCanAct(battle, unit)} onSelect={onSelect} onOpenInventory={onOpenInventory} />
       <div className="ja2-right">
         <RadarCluster battle={battle} units={units} selected={selected} project={project} vw={vw} vh={vh} cameraRect={cameraRect} zoom={zoom} mode={mode} missionAllies={missionAllies} localMilitia={localMilitia} onSelect={onSelect} onRetreat={onRetreat} onCameraCenter={onCameraCenter} onCameraPan={onCameraPan} onZoom={onZoom} />
         <div className="ja2-essential"><button className="line-button" disabled={!unit} onClick={()=>unit && onOpenInventory(unit.id)}>Equipo</button>{battle.mode !== 'exploration' && <button className="gold-button" disabled={busy || battle.status !== 'active'} onClick={onEndTurn}>{turn.endLabel}</button>}</div>

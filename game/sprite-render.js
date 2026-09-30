@@ -39,7 +39,10 @@ export function spriteViewport(sprite,position,direction,frame,drawSize=52){
  // Wider action/prone/horse padding must not make the body smaller.
  const density=sprite.cell/sprite.logicalCell,scale=drawSize/52/density;
  const [sx,sy]=sprite.style==='illustrated-pixel-art'?(SPRITE_DISPLAY_CALIBRATION[sprite.name]?.[dir]??[1,1]):[1,1];
- return {x:Math.round(position.x-sprite.anchor[0]*scale*sx),y:Math.round(position.y-sprite.anchor[1]*scale*sy),
+ // Smoothly sampled illustrated art follows fractional camera positions. The
+ // legacy native-pixel fallback retains its original integer alignment.
+ const align=sprite.style==='illustrated-pixel-art'?(value=>value):Math.round;
+ return {x:align(position.x-sprite.anchor[0]*scale*sx),y:align(position.y-sprite.anchor[1]*scale*sy),
   width:sprite.cell*scale*sx,height:sprite.cell*scale*sy,
   viewBox:`${(animated?phase:dir)*sprite.cell} ${animated?dir*sprite.cell:0} ${sprite.cell} ${sprite.cell}`};
 }

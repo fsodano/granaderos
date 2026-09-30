@@ -19,7 +19,7 @@ test('a real paid workshop order stops the clock on completion and credits its g
  const start=secureArea(initialCampaign()),queued=produce(start),n=wait(queued,24);
  assert.equal(queued.resources.treasury,start.resources.treasury-30);assert.equal(queued.resources.powder,start.resources.powder-5);
  assert.equal(n.hour,12);assert.equal(n.resources.cartridges,start.resources.cartridges+60);assert.equal(n.production.length,0);
- assert.deepEqual(n.logisticsNotice,{hour:12,requestedHours:24,advancedHours:12,events:[{kind:'production',sector:'retiro',name:'Cartucho de mosquete .75',goods:{cartridges:60}}]});
+ assert.deepEqual(n.logisticsNotice,{hour:12,requestedHours:24,advancedHours:12,events:[{kind:'production',sector:'retiro',name:'Cartuchos de mosquete',goods:{cartridges:60}}]});
  const again=wait(saved(n),6);assert.equal(again.hour,18);assert.equal(again.logisticsNotice,null);assert.equal(again.resources.cartridges,n.resources.cartridges);assert.deepEqual(n,wait(saved(queued),24));
 });
 test('all deliveries in the completion hour are grouped after their actual credit',()=>{
@@ -36,17 +36,21 @@ test('a paid convoy reports the destination depot and its return to the general 
  s=wait(s,24);assert.equal(s.hour,18);assert.equal(s.depots.buenos_aires.muskets,10);assert.deepEqual(s.logisticsNotice.events,[{kind:'convoy',sector:'buenos_aires',goods:{muskets:10}}]);
  s=order(s,{type:'supplyTransfer',source:'buenos_aires',destination:'reserve',mode:'carts',goods:{muskets:10}});s=wait(s,24);assert.equal(s.hour,36);assert.equal(s.resources.muskets,initial);assert.equal(s.logisticsNotice.events[0].sector,'reserve');assert.deepEqual(saved(s),s);
 });
-test('a blockade or occupied port delays both imports without announcing an arrival',()=>{
+test('a blockade or occupied port stops once for both pending imports and then permits continued waiting',()=>{
  for(const cause of ['blockade','occupation']){
   let s=secureArea(initialCampaign());s.shipments=[{due:1,goods:{powder:7}}];s.equipmentShipments=[{due:1,item:1802,quantity:1}];if(cause==='blockade')s.blockade=true;else s.sectors.ensenada.owner='royalist';
-  s=wait(s,6);assert.equal(s.hour,6);assert.equal(s.logisticsNotice,null);assert.equal(s.shipments.length,1);assert.equal(s.equipmentShipments.length,1);
-  s.blockade=false;s.sectors.ensenada.owner='patriot';s=wait(s,6);assert.equal(s.hour,7);assert.equal(s.logisticsNotice.events.length,2);assert.equal(s.shipments.length+s.equipmentShipments.length,0);assert.deepEqual(saved(s),s);
+  const powder=s.resources.powder;s=wait(s,6);assert.equal(s.hour,1);assert.equal(s.logisticsNotice.events.length,2);assert.ok(s.logisticsNotice.events.every(event=>event.state==='blocked'&&event.code===(cause==='blockade'?'blockade':'occupied')));assert.equal(s.shipments.length,1);assert.equal(s.equipmentShipments.length,1);assert.equal(s.resources.powder,powder);assert.equal(s.armory[1802]??0,0);
+  s=wait(saved(s),6);assert.equal(s.hour,7);assert.equal(s.logisticsNotice,null);
+  s.blockade=false;s.sectors.ensenada.owner='patriot';s=wait(s,6);assert.equal(s.hour,8);assert.equal(s.logisticsNotice.events.length,2);assert.ok(s.logisticsNotice.events.every(event=>event.state===undefined));assert.equal(s.shipments.length+s.equipmentShipments.length,0);assert.equal(s.resources.powder,powder+7);assert.equal(s.armory[1802],1);assert.deepEqual(s.logisticsAttention.reported,{});assert.deepEqual(saved(s),s);
  }
 });
 test('blocked workshop and convoy routes do not report completion until supply access returns',()=>{
  let s=secureArea(initialCampaign(),['buenos_aires','cordoba']);s=order(s,{type:'produce',recipe:'cartridges',sector:'cordoba'});s.routes.carts=true;s.convoys=[{id:'held',source:'reserve',destination:'cordoba',mode:'carts',due:1,goods:{copper:3}}];s.sectors.buenos_aires.owner='royalist';
- s=wait(s,24);assert.equal(s.hour,24);assert.equal(s.logisticsNotice,null);assert.equal(s.production.length,1);assert.equal(s.convoys.length,1);
- s.sectors.buenos_aires.owner='patriot';s=wait(s,6);assert.equal(s.hour,25);assert.equal(s.logisticsNotice.events.length,2);assert.equal(s.production.length+s.convoys.length,0);
+ const due=s.production[0].due;
+ s=wait(s,24);assert.equal(s.hour,1);assert.equal(s.logisticsNotice.events[0].code,'route_cut');assert.equal(s.production.length,1);assert.equal(s.convoys.length,1);
+ s=wait(saved(s),24);assert.equal(s.hour,due);assert.equal(s.logisticsNotice.events.length,1);assert.equal(s.logisticsNotice.events[0].code,'unsupplied');
+ s=wait(saved(s),6);assert.equal(s.hour,due+6);assert.equal(s.logisticsNotice,null);
+ s.sectors.buenos_aires.owner='patriot';s=wait(s,6);assert.equal(s.hour,due+7);assert.equal(s.logisticsNotice.events.length,2);assert.ok(s.logisticsNotice.events.every(event=>event.state===undefined));assert.equal(s.production.length+s.convoys.length,0);
 });
 test('production, contract and assignment attention retain the same fully processed hour',()=>{
  let s=order(staffed(),{type:'recruitCivic',id:103,term:'day'});s=wait(s,10);s=produce(s);s=wait(s,11);

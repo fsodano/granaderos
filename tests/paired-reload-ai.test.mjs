@@ -24,7 +24,7 @@ test('AI maintenance can reload the main pistol when completing both would excee
 
 test('a real enemy turn reloads both held pistols with finite reserve and then pays a separate paired shot',()=>{
  const s=field(),before=structuredClone(s);assert.deepEqual(chooseEnemyAction(s,enemy(s)),{type:'reload',unitId:'e'});assert.equal(actionCosts(s,enemy(s)).reload,87);
- assert.deepEqual(ammunitionByType(enemy(s)),{pistol_69:1,pistol_54:2});
+ assert.deepEqual(ammunitionByType(enemy(s)),{pistol_69:3});
  const next=endTurn(s),u=enemy(next);assert.equal(next.lastError,null);assert.equal(u.loaded,0);assert.equal(u.offHand.loaded,1);assert.equal(totalReserveAmmunition(u),0);assert.equal(u.ap,2);assert.equal(u.condition,99);assert.equal(u.offHand.condition,99);assert.equal(u.weaponInstanceId,'main');assert.equal(u.offHand.instanceId,'second');assert.ok(next.units[0].hp<250);assert.equal(next.elapsedSeconds,6);assert.ok(next.log.some(line=>line.includes('recarga ambas pistolas (87 PA)')));
  assert.deepEqual(next,endTurn(restore(s)));assert.doesNotThrow(()=>restore(next));assert.deepEqual(s,before);
 });

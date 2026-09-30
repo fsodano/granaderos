@@ -28,7 +28,7 @@ test('a disarmed soldier unpacks its own reserve instead of fabricating or steal
 });
 
 test('the planner rejects a capacity-breaking swap and does not turn other stored equipment into weapons',()=>{
-  const s=field({ammo:60,inventory:{pistol,...Object.fromEntries(Array.from({length:4},(_,i)=>[`long-${i}`,{weapon:1800,count:1,weight:4,loaded:0}]))}});assert.equal(inventoryUsage(enemy(s)).used,12);
+  const s=field({ammo:60,inventory:{pistol,...Object.fromEntries(Array.from({length:4},(_,i)=>[`long-${i}`,{weapon:1800,count:1,weight:4,loaded:0}]))}});for(const slot of inventoryUsage(enemy(s)).slots.filter(slot=>!slot.entry))enemy(s).inventory[`full-${slot.id}`]={count:1,weight:.1};assert.equal(inventoryUsage(enemy(s)).used,12);
   assert.throws(()=>planEquipLoot(enemy(s),'pistol'));assert.notEqual(chooseEnemyAction(s,enemy(s))?.type,'equipLoot');
   const unsupported=field({inventory:{old:{count:1,weight:1,weapon:1700,loaded:0,condition:100}}});assert.notEqual(chooseEnemyAction(unsupported,enemy(unsupported))?.type,'equipLoot');
 });
@@ -82,7 +82,7 @@ test('a prone rifleman pays to kneel and reload when prone loading exceeds the t
   assert.deepEqual(chooseEnemyAction(s,enemy(s)),{type:'stance',unitId:'e',stance:'crouched'});
   assert.deepEqual(s,before);
   const n=endTurn(s);assert.equal(n.lastError,null);assert.equal(enemy(n).stance,'crouched');assert.equal(enemy(n).movementMode,'crouch');
-  assert.equal(enemy(n).loaded,1);assert.equal(enemy(n).ammo,1);assert.equal(enemy(n).priming,9);assert.equal(enemy(n).ap,0);
+  assert.equal(enemy(n).loaded,1);assert.equal(enemy(n).ammo,1);assert.equal(enemy(n).priming,undefined);assert.equal(enemy(n).ap,0);
   assert.equal(n.elapsedSeconds,6);
   assert.deepEqual(n,endTurn(validateBattleSnapshot(JSON.parse(JSON.stringify(before)))));assert.doesNotThrow(()=>validateBattleSnapshot(n));
 });

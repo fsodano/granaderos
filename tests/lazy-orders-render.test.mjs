@@ -22,12 +22,12 @@ const counted=(component,props)=>{
 };
 const nodes=node=>!node||typeof node!=='object'?[]:[node,...(Array.isArray(node)?node:Array.isArray(node.props?.children)?node.props.children:[node.props?.children]).flatMap(nodes)];
 
-test('closed orders do no optional preview work while all six portraits and essential controls render',()=>{
+test('battle strip omits the orders menu while all six portraits and essential controls render',()=>{
  const initial=fixture();
  for(const props of [initial,{...initial,unit:initial.players[1],selected:initial.players[1].id},{...initial,battle:{...initial.battle,turn:2},busy:true},{...initial,unit:null,selected:null}]){
   const {html,calls}=counted(Strip,props);
   assert.deepEqual(calls,{},'no orders, hands, equipment, hearing, medical, item, supply or artillery previews');
-  assert.match(html,/<details class="ja2-orders-menu"><summary>Órdenes<\/summary><\/details>/);
+  assert.doesNotMatch(html,/ja2-orders-menu|<summary>Órdenes/);
   assert.equal((html.match(/role="listitem"/g)||[]).length,6);
   assert.match(html,/class="ja2-essential"/);assert.match(html,/>Equipo<\/button>/);assert.match(html,/>Fin del turno<\/button>/);
   assert.doesNotMatch(html,/ja2-context|ja2-order-grid|ja2-equipped-slots|ja2-hands/);

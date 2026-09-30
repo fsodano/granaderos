@@ -22,8 +22,8 @@ export function combatOrder(b,u){
   if(u.activeSlot==='medical'&&u.ap>=cost.heal)return {type:'useItem',unitId:u.id,targetId:patient.id};
   if(u.activeSlot!=='medical'&&u.ap>=cost.heal+cost.weapon)return {type:'weapon',unitId:u.id,slot:'medical'};
  }
- if(['medical','tool','supply'].includes(u.activeSlot)&&u.ap>=cost.weapon)return {type:'weapon',unitId:u.id,slot:'primary'};
- if(u.jammed&&u.priming&&u.ap>=cost.reprime)return {type:'reprime',unitId:u.id};
+ if(['medical','tool','supply'].includes(u.activeSlot)&&u.weapon&&!u.weaponDropped&&u.ap>=cost.weapon)return {type:'weapon',unitId:u.id,slot:'primary'};
+ if(u.jammed&&u.ap>=cost.reprime)return {type:'reprime',unitId:u.id};
  const target=visible.filter(t=>hasLineOfSight(b,u,t)).sort((a,c)=>shotChance(b,u,c,4)-shotChance(b,u,a,4))[0];
  if(target)cost=actionCosts(b,u,target);
  if(target&&u.loaded&&!u.jammed&&u.ap>=cost.fire){
@@ -52,10 +52,11 @@ export function combatOrder(b,u){
  moves.sort((a,c)=>distance(a,destination)-distance(c,destination)||a.cost-c.cost);
  return moves[0]?{type:'move',unitId:u.id,...spacePoint(moves[0])}:null;
 }
-export function fight(request,sectorState,{controller=combatOrder}={}){let b=enterSector(request,sectorState),actions=0;
+export function fight(request,sectorState,{controller=combatOrder,deploy}={}){let b=enterSector(request,sectorState,{placement:Boolean(deploy)}),actions=0;
+ if(deploy)b=deploy(b);
  // Enemy movement can yield several control windows within the same round.
  for(let window=0;window<600&&b.turn<=80&&b.status==='active';window++){
-  const ids=b.units.filter(u=>u.side==='player').sort((a,c)=>c.marksmanship-a.marksmanship).map(u=>u.id);
+  const ids=b.units.filter(u=>u.side==='player'&&!u.militia).sort((a,c)=>c.marksmanship-a.marksmanship).map(u=>u.id);
   // Coordinate the squad one order at a time. Spending one scout's whole
   // turn before the others advance separates him from fire and medical aid.
   for(let attempt=0;attempt<16&&b.status==='active';attempt++){

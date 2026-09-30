@@ -7,19 +7,27 @@ import {enterSector} from '../game/world.js';
 import {marchToFront,restForMarch,meetLocalRecruit} from './campaign-test-helpers.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {dispatchCampaign as dispatch,isSupplied,recruitmentStatus,restoreCampaign,serializeCampaign,OPERATIVES,CAMPAIGN_SECTORS,PHASES,RECIPES} from '../game/campaign.js';
+import {initialCampaign as freshCampaign,contractQuote,rosterFor,dispatchCampaign as dispatch,isSupplied,recruitmentStatus,restoreCampaign,serializeCampaign,OPERATIVES,CAMPAIGN_SECTORS,PHASES,RECIPES} from '../game/campaign.js';
 import {initialCampaign} from './legacy-campaign-fixture.mjs';
 function resolveFixtureContacts(s){for(let i=0;s.pendingEncounter&&i<30;i++){s=dispatch(s,{type:'respondToEncounter',groupId:s.pendingEncounter.groupId,choice:'tactical'});assert.equal(s.lastError,null);const b=enterSector(s.pendingBattle,s.sectorStates[s.pendingBattle.sector]);b.status='victory';b.sectorCleared=true;for(const enemy of b.units.filter(u=>u.side==='enemy'))enemy.hp=0;s=dispatch(s,{type:'battleResult',battleId:s.pendingBattle.id,outcome:'victory',sectorState:b,survivors:b.units.filter(u=>u.side==='player')});assert.equal(s.lastError,null);}return s;}
+function readyFixtureMarch(s){
+ // Rest can be interrupted by a new strategic contact. Settle that encounter,
+ // then finish the actual recovery before submitting another march.
+ for(let attempt=0;attempt<30;attempt++){
+  s=resolveFixtureContacts(s);s=restForMarch(s);
+  if(!s.pendingEncounter)return s;
+ }
+ throw Error('Strategic encounters kept interrupting march recovery.');
+}
 let scriptedGuards=false;
 const order=(s,action)=>{
  if(scriptedGuards)s=resolveFixtureContacts(s);
- if(['travel','attack'].includes(action.type))s=restForMarch(s);
- if(scriptedGuards)s=resolveFixtureContacts(s);
- if(scriptedGuards&&action.type==='attack')for(let i=0;i<12;i++){const at=s.location;s=resolveFixtureContacts(marchToFront(s,action));if(s.location===at)break;}
+ if(['travel','attack'].includes(action.type))s=scriptedGuards?readyFixtureMarch(s):restForMarch(s);
+ if(scriptedGuards&&action.type==='attack')for(let i=0;i<12;i++){const at=s.location;s=readyFixtureMarch(marchToFront(s,action));if(s.location===at)break;}
  if(action.type==='recruit'){const encounter=encounterForOperative(action.id);if(encounter&&s.location!==encounter.sector)s=order(s,{type:'travel',sector:encounter.sector});}
  const end=action.type==='wait'?s.hour+(action.hours??24):0;
  let next=meetLocalRecruit(s,action)??dispatch(marchToFront(s,action),action);assert.equal(next.lastError,null,JSON.stringify(action)+': '+next.lastError);
- if(scriptedGuards){next=resolveFixtureContacts(next);for(let i=0;i<120&&((action.type==='travel'&&next.location!==action.sector)||(action.type==='wait'&&next.hour<end));i++){next=dispatch(action.type==='travel'?restForMarch(next):next,action.type==='wait'?{...action,hours:Math.min(240,end-next.hour)}:action);assert.equal(next.lastError,null);next=resolveFixtureContacts(next);}}
+ if(scriptedGuards){next=resolveFixtureContacts(next);for(let i=0;i<120&&((action.type==='travel'&&next.location!==action.sector)||(action.type==='wait'&&next.hour<end));i++){next=dispatch(action.type==='travel'?readyFixtureMarch(next):next,action.type==='wait'?{...action,hours:Math.min(240,end-next.hour)}:action);assert.equal(next.lastError,null);next=resolveFixtureContacts(next);}}
  if(scriptedGuards&&action.type==='attack')for(let attempt=0;!next.pendingBattle&&attempt<12;attempt++){next=resolveFixtureContacts(next);next=dispatch(marchToFront(next,action),action);assert.equal(next.lastError,null);next=resolveFixtureContacts(next);}
  const result=action.type==='diplomacy'&&action.kind==='northPact'&&next.phase===2?attendYatasto(next):next;return scriptedGuards?resolveFixtureContacts(result):result;
 };
@@ -28,9 +36,14 @@ test('historical geography, roster and phase definitions preserve requested scop
  assert.equal(CAMPAIGN_SECTORS.length,13);assert.equal(new Set(CAMPAIGN_SECTORS.map(s=>s.grid)).size,13);assert.equal(new Set(CAMPAIGN_SECTORS.map(s=>s.theater)).size,4);assert.equal(OPERATIVES.length,13);assert.equal(PHASES.length,5);
  assert.equal(OPERATIVES.find(o=>o.id===0).weeklyPay,0);assert.equal(OPERATIVES.find(o=>o.id===2).weeklyPay,400);assert.equal(OPERATIVES.find(o=>o.id===10).medical,98);
 });
-test('orders immutable; failed purchases roll back all effects',()=>{
- const s=initialCampaign();const text=JSON.stringify(s);const n=order(s,{type:'academy'});assert.equal(JSON.stringify(s),text);assert.equal(n.phase,1);assert.equal(n.resources.muskets,50);
- const bad=dispatch(n,{type:'academy'});assert.ok(bad.lastError);delete bad.lastError;const comparison={...n};delete comparison.lastError;assert.deepEqual(bad,comparison);
+test('the first paid recruit advances phase one without academy funding; orders remain immutable',()=>{
+ const s=freshCampaign(),text=JSON.stringify(s),quote=contractQuote(s,rosterFor(s).find(op=>op.id===110),'week');
+ assert.ok(dispatch(s,{type:'academy'}).lastError,'an empty command cannot organize an academy');
+ const n=order(s,{type:'recruitCivic',id:110,term:'week'});
+ assert.equal(JSON.stringify(s),text);assert.equal(n.phase,1);assert.deepEqual(n.squad,[110]);
+ assert.deepEqual(n.resources,{...s.resources,treasury:s.resources.treasury-quote.price,ponchos:s.resources.ponchos-1},'only the ordinary contract and issued poncho consume resources');
+ assert.deepEqual(order(n,{type:'academy'}),n,'legacy academy orders are a free no-op after recruitment');
+ const bad=dispatch(n,{type:'recruitCivic',id:110,term:'week'});assert.ok(bad.lastError);delete bad.lastError;const comparison={...n};delete comparison.lastError;assert.deepEqual(bad,comparison);
 });
 test('five-phase campaign cannot unlock San Martín early',()=>{
  let s=initialCampaign();assert.equal(recruitmentStatus(s,57).available,false);s=order(s,{type:'academy'});assert.ok(dispatch(s,{type:'attack',sector:'san_lorenzo'}).lastError);
@@ -51,11 +64,19 @@ test('captured crossroads cut the Camino Real; traversal respects control',()=>{
 });
 test('an unguarded province falls while a reinforced militia garrison can hold the raid',()=>{
  let s=initialCampaign();s.sectors.jujuy.owner='patriot';s=order(s,{type:'wait',hours:144});assert.equal(s.sectors.jujuy.owner,'royalist');
- // Five veterans now lose this real fight on the scaled town map. Their losses
- // and dispersal are covered in enemy-groups; use a reinforced force here to
- // retain coverage of a successful defense without inventing a victory report.
- const defenders=12;
+ // The current territorial tier launches eleven attackers. Twelve authored
+ // veterans lose the actual fight; preserve that defeat and its permanent loss.
+ s=initialCampaign();s.sectors.jujuy.owner='patriot';s.sectors.jujuy.militia=[0,0,12];s=order(s,{type:'wait',hours:144});
+ const attackingForce=s.enemyGroups.find(g=>g.id===s.pendingEncounter.groupId).units.length;
+ s=order(s,{type:'respondToEncounter',groupId:s.pendingEncounter.groupId,choice:'auto'});
+ assert.equal(s.enemyGroups[0].status,'stationed');assert.equal(s.sectors.jujuy.owner,'royalist');
+ assert.equal(s.sectorStates.jujuy.status,'defeat');assert.deepEqual(s.sectors.jujuy.militia,[0,0,0]);
+ assert.ok(s.sectorStates.jujuy.units.some(u=>u.militia&&u.hp===0));
+ // This subsystem fixture starts with a larger existing garrison. It tests
+ // real combat settlement; the campaign route must pay for its own training.
+ const defenders=16;
  s=initialCampaign();s.sectors.jujuy.owner='patriot';s.sectors.jujuy.militia=[0,0,defenders];s=order(s,{type:'wait',hours:144});
+ assert.equal(s.enemyGroups.find(g=>g.id===s.pendingEncounter.groupId).units.length,attackingForce,'the reinforced defense faces the same enemy force');
  assert.equal(s.pendingEncounter.sector,'jujuy');s=order(s,{type:'respondToEncounter',groupId:s.pendingEncounter.groupId,choice:'auto'});
  assert.equal(s.enemyGroups[0].status,'defeated');assert.equal(s.sectors.jujuy.owner,'patriot');
  const militia=s.sectorStates.jujuy.units.filter(u=>u.militia);
@@ -77,7 +98,7 @@ test('save reload is deterministic and invalid version rejected',()=>{
 });
 
 test('ammunition is finite, tactical round returns are capped and string IDs accepted',()=>{
- let s=initialCampaign();for(const key of Object.values(AMMUNITION_RESOURCE_KEYS))s.resources[key]=0;s.resources.ammo_pistol_54=2;s=order(s,{type:'attack',sector:'san_nicolas'});assert.equal(s.resources.ammo_pistol_54,0);assert.equal(s.pendingBattle.squad.reduce((n,o)=>n+o.loaded+o.ammo,0),2);
+ let s=initialCampaign();for(const key of Object.values(AMMUNITION_RESOURCE_KEYS))s.resources[key]=0;s.resources.ammo_pistol_69=2;s=order(s,{type:'attack',sector:'san_nicolas'});assert.equal(s.resources.ammo_pistol_69,0);assert.equal(s.pendingBattle.squad.reduce((n,o)=>n+o.loaded+o.ammo,0),2);
  const report=scriptedBattleReport(s,{outcome:'retreat'});report.survivors=report.survivors.map(u=>({...u,loaded:100,ammo:100}));s=order(s,report);assert.equal(stockAndCarriedAmmo(s),2);
  s.resources.cartridges=0;s=order(s,{type:'attack',sector:'san_nicolas'});assert.ok(s.pendingBattle.squad.every(o=>o.ammo===0));assert.equal(s.pendingBattle.squad.reduce((n,o)=>n+o.loaded,0),2,'Empty stock cannot erase the two charges retained from the previous deployment.');
 });

@@ -11,6 +11,8 @@ import {createBattle} from '../game/tactical.js';
 // the existing group/unit limits; no limit is enlarged to make the fixture fit.
 function longCampaign(){
   const state=initialCampaign();state.hour=6500;
+  // Twelve controlled sectors select the actual 30-enemy late-campaign tier.
+  for(const [id,sector] of Object.entries(state.sectors))if(id!=='humahuaca')sector.owner='patriot';
   const bodies=[];
   for(let i=0;i<35;i++){
     // Model a large pre-reserve history, not a playable campaign route. Keep

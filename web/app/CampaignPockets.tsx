@@ -1,7 +1,7 @@
 'use client';
 import {useMemo,useState} from 'react';
 import JA2Pockets from './JA2Pockets';
-import JA2AttachmentSlot from './JA2AttachmentSlot';
+import JA2ItemCard from './JA2ItemCard';
 import JA2OutfitSlot from './JA2OutfitSlot';
 import {handLayout} from '../../game/hand-layout.js';
 import {inventoryUsage,itemDescriptor,equipmentEndpoint} from '../../game/tactical-inventory.js';
@@ -16,8 +16,7 @@ function CampaignPocketsBody({unit,disabled,onOrder}:Props){
  const inspect=(item:string,slotId='')=>{setInspected(item);setInspectedSlot(slotId);};
  const inspected=inspectedSlot?equipmentEndpoint(unit,inspectedSlot).item??inspectedReference:inspectedReference;
  const context=useMemo(()=>({mode:'exploration',phase:'player',status:'active',units:[unit],equipmentContext:'campaign'}),[unit]);
- const arrange=({type,...action}:any)=>{if(type==='attachment')return onOrder({direction:'attachment',...action});return onOrder({direction:'arrange',kind:['pickupEquipment','placeEquipment','returnEquipmentCursor','dragEquipment'].includes(type)?'cursor':type==='movePocket'?'pocket':'equipment',cursorAction:type,...action});};
- const inspectedItem=inspected&&(!inspected.startsWith('inventory:')||Object.hasOwn(unit.inventory??{},inspected.slice(10)))?itemDescriptor(unit,inspected):null;
+ const arrange=({type,...action}:any)=>{if(type==='unloadEquipment')return onOrder({direction:'unload',...action});if(type==='attachment')return onOrder({direction:'attachment',...action});return onOrder({direction:'arrange',kind:['pickupEquipment','placeEquipment','returnEquipmentCursor','dragEquipment'].includes(type)?'cursor':type==='movePocket'?'pocket':'equipment',cursorAction:type,...action});};
  const drag=useEquipmentDrag(context,unit,disabled,arrange),hands=handLayout(unit);
  return <section className="campaign-pockets" aria-label="Organizar equipo llevado">
   <h4>Equipo llevado</h4><p>Podés mover objetos entre manos, vestimenta y bolsillos. No consume tiempo.</p>
@@ -31,7 +30,6 @@ function CampaignPocketsBody({unit,disabled,onOrder}:Props){
    </button>;
   })}</div>
   <JA2Pockets battle={context} unit={unit} layout={inventoryUsage(unit)} disabled={disabled} onPick={inspect} onOrder={arrange}/>
-  {inspectedSlot&&<JA2AttachmentSlot battle={context} unit={unit} hostId={inspectedSlot} disabled={disabled} onOrder={arrange}/>}
-  {inspectedItem&&<p>Detalles: {inspectedItem.label}. Las opciones para equipar y dejar objetos están en la lista inferior.</p>}
+  {inspected&&<JA2ItemCard battle={context} unit={unit} reference={inspected} slotId={inspectedSlot} disabled={disabled} onOrder={arrange}/>}
  </section>;
 }

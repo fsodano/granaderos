@@ -5,6 +5,7 @@ import test from 'node:test';import assert from 'node:assert/strict';
 import {createElement as h} from '../web/node_modules/react/index.js';
 import {renderToStaticMarkup as render} from '../web/node_modules/react-dom/server.node.js';
 import {createBattle,actBattle} from '../game/tactical.js';
+import {hearNpcNoise,advanceNpc} from '../game/npc-ai.js';
 import {detentionManifest} from '../game/detention.js';
 const {default:JA2ExitPanel}=await import('../web/app/JA2ExitPanel.tsx');
 const {default:PrisonerActions}=await import('../web/app/PrisonerActions.tsx');
@@ -21,4 +22,14 @@ test('visible prisoner controls show action costs, wait state and a fallen leade
  const exitHtml=()=>render(h(JA2ExitPanel,{model:exitModel(state,{unitIds:['rescuer'],exitId:'tucuman:salta'}),busy:false,exploring:false,onUnits(){},onExit(){},onLeave(){},onClose(){}}));
  assert.match(exitHtml(),/cruzará con su rescatista/);state.npcs[0].y=1;assert.match(exitHtml(),/quedará en el sector/);state.npcs[0].y=0;
  state=actBattle(state,{type:'exit',unitIds:['rescuer'],exitId:'tucuman:salta'});assert.equal(state.lastError,null);assert.match(html(),/Prisionero salió hacia salta/);
+});
+
+test('a freed prisoner honestly reports taking shelter instead of following under gunfire',()=>{
+ const npc=detentionManifest({operativeState:{3:{captured:true,alive:true,capturedAt:1,capturedSector:'tucuman',hp:40,maxHp:80,energy:80,bleeding:0,bandaged:40}}},[{id:3,name:'Prisionero',maxHp:80}],'tucuman')[0];
+ let state=createBattle([{id:'rescuer',name:'Rescatista',x:2,y:2}],{width:12,height:8,exploration:true,enemies:[],npcs:[{...npc,x:3,y:2}]});state.battleId='rescue-shelter';state.sectorId='tucuman';
+ state=actBattle(state,{type:'free',unitId:'rescuer',targetKind:'npc',targetId:npc.id});assert.equal(state.lastError,null);
+ const html=()=>render(h(PrisonerActions,{state,unit:state.units[0],busy:false,onRelease(){},onEscort(){}}));
+ hearNpcNoise(state,{x:5,y:2},'fire',12);advanceNpc(state,state.npcs[0]);
+ assert.match(html(),/por los disparos/);assert.match(html(),/Volverá a seguir a Rescatista cuando pase el peligro/);assert.doesNotMatch(html(),/>Sigue a Rescatista\./);
+ state.elapsedSeconds=state.npcs[0].ai.safeAfter+1;advanceNpc(state,state.npcs[0]);assert.match(html(),/Sigue a Rescatista/);assert.doesNotMatch(html(),/por los disparos/);
 });

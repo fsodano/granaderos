@@ -18,8 +18,8 @@ const unchanged=s=>({...s,lastError:null});
 function reject(s,a){const n=dispatchCampaign(s,a);assert.ok(n.lastError);assert.deepEqual(unchanged(n),unchanged(s));}
 
 test('campaign prepares actual bandages, tools, supplies and objects without time, healing or stock changes',()=>{
- let s=fresh();const before=structuredClone(s),r0=s.operativeState[1000];assert.ok(model(s).reason);assert.equal(model(s).carriedReason,null);
- for(const [item,slot,key,value] of [['medkits','medical'],['torches','supply','activeSupply','torches'],['inventory:key','tool','activeTool','inventory:key'],['inventory:note','item','activeItem','inventory:note'],['flints','item','activeItem','flints'],['primary','primary']]){
+ let s=fresh();const before=structuredClone(s),r0=s.operativeState[1000];assert.ok(model(s).reason);assert.equal(model(s).carriedReason,null);assert.equal(row(s,'priming'),undefined);assert.equal(row(s,'flints'),undefined);
+ for(const [item,slot,key,value] of [['medkits','medical'],['torches','supply','activeSupply','torches'],['inventory:key','tool','activeTool','inventory:key'],['inventory:note','item','activeItem','inventory:note'],['primary','primary']]){
   s=prepare(s,item);const r=s.operativeState[1000];assert.equal(r.activeSlot,slot);if(key)assert.equal(r[key],value);
   for(const field of ['activeTool','activeSupply','activeItem'])if(field!==key)assert.equal(r[field],undefined);
   assert.equal(row(s,item).mainhand.valid,false);assert.match(row(s,item).mainhand.label,/En mano principal/);

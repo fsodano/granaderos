@@ -46,9 +46,9 @@ test('clicking a chosen cartridge stack onto the main gun loads it and retains o
 });
 
 test('dragging ammunition onto a second pistol fills its empty barrel without exchanging either held gun',()=>{
- const ui=controls(field({weapon:1805,loaded:1,offHand:{weapon:1808,count:1,weight:1.3,loaded:1,condition:73,instanceId:'second-pistol'},inventory:{selected:rounds('pistol_54',5)}})),source=pocket(ui.unit,'inventory:selected');
+ const ui=controls(field({weapon:1805,loaded:1,offHand:{weapon:1808,count:1,weight:1.3,loaded:1,condition:73,instanceId:'second-pistol'},inventory:{selected:rounds('pistol_69',5)}})),source=pocket(ui.unit,'inventory:selected');
  const hint=ui.drag(source,'hand:left');assert.match(hint,/Recargar Pistola Doble Cañón/);assert.match(hint,/sin PA/);assert.equal(ui.battle.lastError,null);assert.equal(ui.orders.length,1);assert.equal(ui.orders[0].type,'dragEquipment');assert.equal(ui.orders[0].sourceId,source);assert.equal(ui.orders[0].destinationId,'hand:left');
- assert.equal(ui.unit.weapon,1805);assert.equal(ui.unit.loaded,1);assert.equal(ui.unit.offHand.weapon,1808);assert.equal(ui.unit.offHand.loaded,2);assert.equal(ui.unit.offHand.instanceId,'second-pistol');assert.equal(ui.unit.offHand.condition,73);assert.equal(ui.unit.equipmentCursor.stack.count,4);assert.equal(ui.unit.equipmentCursor.stack.ammoType,'pistol_54');
+ assert.equal(ui.unit.weapon,1805);assert.equal(ui.unit.loaded,1);assert.equal(ui.unit.offHand.weapon,1808);assert.equal(ui.unit.offHand.loaded,2);assert.equal(ui.unit.offHand.instanceId,'second-pistol');assert.equal(ui.unit.offHand.condition,73);assert.equal(ui.unit.equipmentCursor.stack.count,4);assert.equal(ui.unit.equipmentCursor.stack.ammoType,'pistol_69');
 });
 
 test('the same pocket buttons load a stored gun without equipping it',()=>{

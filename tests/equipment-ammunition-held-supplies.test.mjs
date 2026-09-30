@@ -6,7 +6,7 @@ import {weaponAmmoType,totalReserveAmmunition} from '../game/ammunition-types.js
 import {validateBattleSnapshot} from '../game/validate-battle.js';
 
 function field({priming=1,bothHands=false,weapon=1805,combat=false}={}){
- return createBattle([{id:'p',x:1,y:1,weapon:0,weaponDropped:true,loaded:0,blade:0,ammo:0,ammunitionVersion:1,
+ return createBattle([{id:'p',x:1,y:1,weapon:0,weaponDropped:true,loaded:0,blade:0,ammo:0,ammunitionVersion:2,
   activeSlot:'item',activeItem:'priming',...(bothHands?{leftHandItem:'priming'}:{}),priming,
   medkits:0,flints:0,rations:0,boleadoras:0,torches:0,inventory:{
    cartridges:{kind:'ammunition',ammoType:weaponAmmoType(weapon),count:5,weight:.04,name:'Carga elegida'},
@@ -35,33 +35,33 @@ function load(b,count){
  return {next,preview};
 }
 
-test('loading a stored pistol consumes the final held priming portion and clears the empty main hand',()=>{
+test('loading a stored pistol works after obsolete held powder is removed',()=>{
  const b=field(),{next,preview}=load(b);
- assert.equal(preview.rounds,1);assert.equal(person(next).priming,0);assert.equal(person(next).activeSlot,'unarmed');
+ assert.equal(preview.rounds,1);assert.equal(person(next).priming,undefined);assert.equal(person(next).activeSlot,'unarmed');
  assert.equal(person(next).activeItem,undefined);assert.equal(person(next).leftHandItem,null);
  assert.equal(storedGun(next).loaded,1);assert.equal(person(next).equipmentCursor.stack.count,4);
  assert.equal(person(next).ap,person(b).ap);assert.equal(next.elapsedSeconds-b.elapsedSeconds,preview.seconds);
 });
 
-test('loading two barrels consumes both held priming portions without leaving either empty hand selected',()=>{
+test('loading two barrels works after both obsolete hand references are removed',()=>{
  const b=field({priming:2,bothHands:true,weapon:1808}),{next,preview}=load(b);
- assert.equal(preview.rounds,2);assert.equal(person(next).priming,0);assert.equal(person(next).activeSlot,'unarmed');
+ assert.equal(preview.rounds,2);assert.equal(person(next).priming,undefined);assert.equal(person(next).activeSlot,'unarmed');
  assert.equal(person(next).activeItem,undefined);assert.equal(person(next).leftHandItem,null);
  assert.equal(storedGun(next).loaded,2);assert.equal(person(next).equipmentCursor.stack.count,3);
 });
 
-test('partial loading that completes no charge preserves both held priming portions and the entire cursor stack',()=>{
+test('partial loading preserves the entire cursor stack after implicit-kit migration',()=>{
  const b=field({priming:2,bothHands:true,weapon:1808,combat:true});person(b).ap=10;
  const {next,preview}=load(b);
  assert.equal(preview.rounds,0);assert.equal(preview.partial,true);assert.equal(person(next).ap,0);
- assert.equal(person(next).priming,2);assert.equal(person(next).activeSlot,'item');assert.equal(person(next).activeItem,'priming');assert.equal(person(next).leftHandItem,'priming');
+ assert.equal(person(next).priming,undefined);assert.equal(person(next).activeSlot,'unarmed');assert.equal(person(next).activeItem,undefined);assert.equal(person(next).leftHandItem,null);
  assert.equal(storedGun(next).loaded,0);assert.ok(storedGun(next).reloadProgress>0);assert.equal(person(next).equipmentCursor.stack.count,5);
  assert.equal(next.elapsedSeconds-b.elapsedSeconds,6);
 });
 
-test('available pocket priming is consumed before either held portion',()=>{
+test('legacy powder quantities do not affect one-round loading',()=>{
  const b=field({priming:3,bothHands:true}),{next,preview}=load(b);
- assert.equal(preview.rounds,1);assert.equal(person(next).priming,2);assert.equal(person(next).activeSlot,'item');
- assert.equal(person(next).activeItem,'priming');assert.equal(person(next).leftHandItem,'priming');
+ assert.equal(preview.rounds,1);assert.equal(person(next).priming,undefined);assert.equal(person(next).activeSlot,'unarmed');
+ assert.equal(person(next).activeItem,undefined);assert.equal(person(next).leftHandItem,null);
  assert.equal(inventoryUsage(person(next)).slots.some(slot=>slot.entry?.item==='priming'),false);
 });

@@ -1,25 +1,25 @@
 import {syncUnitAmmunition} from './tactical-ammunition.js';
-import {isAmmunitionStack,weaponAmmoType} from './ammunition-types.js';
+import {AMMUNITION_TYPES,isAmmunitionStack,weaponAmmoType} from './ammunition-types.js';
 import {planReload,reloadRoundCost} from './weapon-reload.js';
 import {WEAPONS} from './data.js';
 import {FITTING_PATTERNS,FIT_BAYONET_AP,REMOVE_BAYONET_AP,fittingFromItem,fittingToItem} from './weapon-fittings.js';
 import {handsRequired,handLayout} from './hand-layout.js';
 import {HELD_SUPPLIES} from './held-supplies.js';
 import {POCKETS,pocketOrderFromSlots} from './inventory-pockets.js';
-import {wornOutfit,validateOutfit} from './outfits.js';
+import {BODY_SLOTS,wornOutfit,validateOutfit} from './outfits.js';
 import {lowerWeapon} from './weapon-readiness.js';
 import {SUPPLY_ITEMS,inventoryUsage,equipmentEndpoint,equipmentFingerprint,readItemStack,readItemStacks,itemStackDescriptor,equipmentStacksMerge,validateItemStack,validateEquipmentCursor,handMetadata} from './tactical-inventory.js';
 export {validateEquipmentCursor} from './tactical-inventory.js';
 const copy=value=>structuredClone(value);
 const need=(ok,text)=>{if(!ok)throw Error(text);};
-const physical=id=>id==='outfit'||id==='hand:right'||id==='hand:left'||POCKETS.some(slot=>slot.id===id);
+const physical=id=>BODY_SLOTS.includes(id)||id==='hand:right'||id==='hand:left'||POCKETS.some(slot=>slot.id===id);
 const qty=(value,max)=>need(Number.isSafeInteger(value)&&value>0&&value<=max,'No queda esa cantidad del objeto.');
 const stackAt=(unit,item,count)=>item?readItemStack(unit,item,count):null;
 function model(unit){
  validateEquipmentCursor(unit);const usage=inventoryUsage(unit),hands=handLayout(unit);
  const entries=[...usage.slots.flatMap(slot=>slot.entry?[slot.entry]:[]),...usage.overflow,...[hands.right,hands.left].filter(Boolean).map(item=>({item,count:1}))];
  const stacks=readItemStacks(unit,entries);let index=0;
- return {slots:usage.slots.map(slot=>({...slot,stack:slot.entry?stacks[index++]:null})),overflow:usage.overflow.map(()=>stacks[index++]),right:hands.right?stacks[index++]:null,left:hands.left?stacks[index++]:null,outfit:wornOutfit(unit)?{item:'outfit',...copy(wornOutfit(unit))}:null,cursor:copy(unit.equipmentCursor)};
+ return {slots:usage.slots.map(slot=>({...slot,stack:slot.entry?stacks[index++]:null})),overflow:usage.overflow.map(()=>stacks[index++]),right:hands.right?stacks[index++]:null,left:hands.left?stacks[index++]:null,...Object.fromEntries(BODY_SLOTS.map(slot=>[slot,wornOutfit(unit,slot)?{item:slot,...copy(wornOutfit(unit,slot))}:null])),cursor:copy(unit.equipmentCursor)};
 }
 const metadata=stack=>JSON.stringify(Object.fromEntries(Object.entries(stack).filter(([key])=>key!=='count'&&key!=='item').sort(([a],[b])=>a.localeCompare(b))));
 // The model owns exact physical stacks. Rebuild aggregate records once, after
@@ -40,7 +40,7 @@ function materialize(before,m){
  };
  const slots=m.slots.map(slot=>({...slot,entry:slot.stack?{...itemStackDescriptor(slot.stack),item:store(slot.stack),count:slot.stack.count}:null}));
  for(const stack of m.overflow)store(stack);
- if(m.outfit){const {item,...outfit}=copy(m.outfit);validateOutfit(outfit,{worn:true});next.outfit=outfit;}
+ for(const slot of BODY_SLOTS){next[slot]=null;if(m[slot]){const {item,...outfit}=copy(m[slot]);validateOutfit(outfit,{worn:true,slot});next[slot]=outfit;}}
  const originalHands=handLayout(before);
  const install=(stack,side)=>{
   if(!stack)return;
@@ -71,12 +71,12 @@ function materialize(before,m){
  if(m.cursor)next.equipmentCursor=copy(m.cursor);
  const old=handLayout(before),sameHands=metadata(stackAt(before,old.right,1)??{})===metadata(m.right??{})&&metadata(stackAt(before,old.left,1)??{})===metadata(m.left??{});
  if(!sameHands){lowerWeapon(next);next.braced=false;next.overwatch=false;next.momentum=0;delete next.lastTargetId;delete next.lastShotPosition;}
- if(next.ammunitionVersion===1)syncUnitAmmunition(next);
+ if(next.ammunitionVersion===2)syncUnitAmmunition(next);
  inventoryUsage(next);validateEquipmentCursor(next);return next;
 }
 function cell(m,id){
  if(id==='hand:right'||id==='hand:left'){const key=id.slice(5);return {kind:'hand',side:key,get stack(){return m[key];},set stack(value){m[key]=value;}};}
- if(id==='outfit')return {kind:'outfit',get stack(){return m.outfit;},set stack(value){m.outfit=value;}};
+ if(BODY_SLOTS.includes(id))return {kind:'outfit',id,get stack(){return m[id];},set stack(value){m[id]=value;}};
  const slot=m.slots.find(slot=>slot.id===id);need(slot,'La ranura de equipo no existe.');return {kind:'pocket',size:slot.size,get stack(){return slot.stack;},set stack(value){slot.stack=value;}};
 }
 const fits=(stack,slot)=>itemStackDescriptor(stack).slotSize<=1||slot.size==='large';
@@ -95,7 +95,7 @@ function autoplace(m,raw,{exclude=null,emptyOnly=false}={}){
 function place(m,destinationId,count){
  const cursor=m.cursor;need(cursor,'El cursor está vacío.');const destination=cell(m,destinationId),incoming=cursor.stack;qty(count,incoming.count);
  const description=itemStackDescriptor(incoming);
- if(destination.kind==='outfit')need(description.kind==='outfit','Solo podés equipar una vestimenta en esa ranura.');
+ if(destination.kind==='outfit'){need(description.kind==='outfit','Solo podés equipar una vestimenta en esa ranura.');validateOutfit(incoming,{slot:destination.id});}
  if(destination.kind==='pocket')need(description.slotSize<=1||destination.size==='large','Ese objeto necesita un bolsillo grande.');
  if(destination.kind==='hand'){
   if(incoming.weapon!==undefined)need(Object.hasOwn(WEAPONS,incoming.weapon)&&incoming.weapon>=1800&&incoming.weapon<=1813,'Ese equipo no se puede usar en una mano.');
@@ -143,12 +143,6 @@ export function planEquipmentCursorPlacement(unit,action,{exploring=true,assiste
   gun.loaded=(gun.loaded??0)+reload.rounds;
   if(reload.progress>0)gun.reloadProgress=reload.progress;else delete gun.reloadProgress;
   ammo.count-=reload.rounds;if(!ammo.count)m.cursor=null;
-  // Priming powder can itself occupy either hand. Remove spent portions
-  // before rebuilding ownership, so an empty hand cannot retain a stale item.
-  let priming=reload.rounds;
-  for(const stack of [...m.slots.map(slot=>slot.stack),...m.overflow,m.right,m.left])if(stack?.item==='priming'){
-   const spent=Math.min(priming,stack.count);stack.count-=spent;priming-=spent;
-  }
   for(const slot of m.slots)if(slot.stack?.count===0)slot.stack=null;
   m.overflow=m.overflow.filter(stack=>stack.count>0);
   if(m.right?.count===0)m.right=null;if(m.left?.count===0)m.left=null;
@@ -172,7 +166,7 @@ export function planEquipmentCursorReturn(unit){
 // A weapon detail names the physical host slot. The cursor remains a separate
 // custodian, including when a full pack cannot accept the removed attachment.
 export function equipmentAttachmentHost(unit,hostId){
- need(physical(hostId)&&hostId!=='outfit','Elegí la ranura del arma.');
+ need(physical(hostId)&&!BODY_SLOTS.includes(hostId),'Elegí la ranura del arma.');
  const endpoint=equipmentEndpoint(unit,hostId);
  need(!endpoint.blocked&&endpoint.item&&endpoint.count===1,'El arma ya no está en esa ranura.');
  const stack=readItemStack(unit,endpoint.item,1);
@@ -204,4 +198,21 @@ export function planEquipmentAttachment(unit,action){
  const next=materialize(unit,m);
  lowerWeapon(next);next.braced=false;next.overwatch=false;next.momentum=0;delete next.lastTargetId;delete next.lastShotPosition;
  return {unit:next,pa,operation,swapped:Boolean(operation==='attach'&&previous),host:host.stack.weapon};
+}
+
+// Unloading is a game adaptation for the period firearms. Never create a
+// second copy of loaded rounds or silently discard them when pockets are full.
+export function planEquipmentUnload(unit,action){
+ need(action.expectedHost===equipmentFingerprint(unit,action.hostId),'Cambió el arma. Revisá el equipo.');
+ const info=equipmentAttachmentHost(unit,action.hostId),count=info.stack.loaded??0;
+ need(count>0,'El arma está descargada.');
+ const type=weaponAmmoType(info.stack.weapon),spec=AMMUNITION_TYPES[type];
+ need(spec,'La munición de este modelo no se puede recuperar.');
+ const m=model(unit),host=cell(m,action.hostId);
+ const rounds={item:`inventory:ammo:${type}`,kind:'ammunition',ammoType:type,name:spec.name,weight:spec.weight,count};
+ // Prefer small pockets for both merging and free-space placement.
+ m.slots.sort((a,b)=>(a.size==='large')-(b.size==='large'));
+ need(!autoplace(m,rounds),'No hay espacio para guardar la munición.');
+ host.stack.loaded=0;delete host.stack.reloadProgress;
+ return {unit:materialize(unit,m),pa:12,count,host:info.stack.weapon};
 }

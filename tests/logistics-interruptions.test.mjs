@@ -1,0 +1,80 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {initialCampaign,dispatchCampaign,restoreCampaign,serializeCampaign,isSupplied} from '../game/campaign.js';
+import {initialCampaign as staffed} from './legacy-campaign-fixture.mjs';
+import {secureArea} from './secured-area-fixture.mjs';
+import {encodeSave,decodeSave} from '../game/save.js';
+import {addEquipment,takeEquipment} from '../game/equipment.js';
+import {playerKnownCampaign} from '../game/player-known-state.js';
+import {reconcileLogisticsAttention,logisticsEventText} from '../game/logistics-attention.js';
+const order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,`${a.type}: ${n.lastError}`);return n;};
+const wait=(s,hours=24)=>order(s,{type:'wait',hours});
+const saved=s=>decodeSave(encodeSave(s)).campaign;
+const overdue=()=>{const s=secureArea(initialCampaign());s.shipments=[{due:0,goods:{powder:7}}];s.blockade=true;return s;};
+
+test('an already overdue blocked cargo stops at the current hour without credit or repeated pauses after saving',()=>{
+ const s=overdue(),before=structuredClone(s),n=wait(s);
+ assert.equal(n.hour,0);assert.equal(n.logisticsNotice.advancedHours,0);assert.equal(n.logisticsNotice.events[0].code,'blockade');assert.equal(n.resources.powder,before.resources.powder);assert.deepEqual(n.shipments,before.shipments);assert.deepEqual(s,before);
+ assert.deepEqual(saved(n),n);const continued=wait(saved(n),6);assert.equal(continued.hour,6);assert.equal(continued.logisticsNotice,null);assert.equal(continued.resources.powder,before.resources.powder);
+});
+
+test('a real paid import is reported only when due, keeps its payment and cargo, then delivers exactly once',()=>{
+ let s=secureArea(initialCampaign());const treasury=s.resources.treasury;
+ s=order(s,{type:'contraband',offer:'supplies'});const paid=s.resources.treasury,due=s.shipments[0].due,goods=structuredClone(s.shipments[0].goods),powder=s.resources.powder;
+ assert.ok(paid<treasury);s.blockade=true;s=wait(s,10);assert.equal(s.hour,10);assert.equal(s.logisticsNotice,null);
+ s=wait(s,120);assert.equal(s.hour,due);assert.equal(s.logisticsNotice.events[0].code,'blockade');assert.equal(s.resources.powder,powder);assert.deepEqual(s.shipments[0].goods,goods);
+ s=wait(saved(s),1);assert.equal(s.hour,due+1);assert.equal(s.logisticsNotice,null);
+ s.blockade=false;s=wait(saved(s),2);assert.equal(s.hour,due+2);assert.equal(s.shipments.length,0);assert.equal(s.resources.powder,powder+goods.powder);assert.equal(s.logisticsNotice.events[0].state,undefined);
+ const stock=s.resources.powder;s=wait(saved(s),1);assert.equal(s.resources.powder,stock);assert.deepEqual(s.logisticsAttention.reported,{});
+});
+
+test('a changed obstruction is actionable once and a resolved route can report a later interruption',()=>{
+ let s=wait(overdue());s.sectors.ensenada.owner='royalist';s=wait(saved(s),6);
+ assert.equal(s.hour,0);assert.equal(s.logisticsNotice.events[0].code,'occupied');s=wait(saved(s),2);assert.equal(s.hour,2);assert.equal(s.logisticsNotice,null);
+ s.sectors.ensenada.owner='patriot';s.blockade=false;reconcileLogisticsAttention(s,{isSupplied});assert.deepEqual(s.logisticsAttention.reported,{});
+ s.blockade=true;s=wait(saved(s),6);assert.equal(s.hour,2);assert.equal(s.logisticsNotice.events[0].code,'blockade');
+});
+
+test('separate identical pending orders are acknowledged together and an added order still needs attention',()=>{
+ let s=overdue();s.shipments.push(structuredClone(s.shipments[0]));s=wait(s);
+ assert.equal(s.logisticsNotice.events.length,2);assert.equal(Object.keys(s.logisticsAttention.reported).length,2);
+ s=wait(saved(s),1);assert.equal(s.hour,1);assert.equal(s.logisticsNotice,null);
+ s.shipments.push({due:0,goods:{powder:7}});s=wait(s,6);assert.equal(s.hour,1);assert.equal(s.logisticsNotice.events.length,1);
+ s.blockade=false;s=wait(s,1);assert.equal(s.logisticsNotice.events.length,3);assert.equal(s.shipments.length,0);assert.deepEqual(s.logisticsAttention.reported,{});
+});
+
+test('a full armory retains the imported gun until a real storage slot is available',()=>{
+ let s=secureArea(initialCampaign());addEquipment(s,1800,10000);s.equipmentShipments=[{due:1,item:1802,quantity:1}];
+ s=wait(s,6);assert.equal(s.hour,1);assert.equal(s.logisticsNotice.events[0].code,'armory_full');assert.equal(s.armoryItems.length,10000);assert.equal(s.armory[1802]??0,0);assert.equal(s.equipmentShipments.length,1);
+ assert.match(logisticsEventText(s.logisticsNotice.events[0]),/Retirá o vendé/);s=wait(saved(s),1);assert.equal(s.hour,2);assert.equal(s.logisticsNotice,null);
+ takeEquipment(s,1800);s=wait(saved(s),6);assert.equal(s.hour,3);assert.equal(s.armoryItems.length,10000);assert.equal(s.armory[1800],9999);assert.equal(s.armory[1802],1);assert.equal(s.equipmentShipments.length,0);
+});
+
+test('completed and interrupted jobs share the same fully processed hour with separate meanings',()=>{
+ let s=secureArea(initialCampaign());s=order(s,{type:'produce',recipe:'cartridges',sector:'retiro'});s.shipments=[{due:12,goods:{powder:7}}];s.blockade=true;
+ s=wait(s,24);assert.equal(s.hour,12);assert.equal(s.logisticsNotice.events.length,2);assert.equal(s.logisticsNotice.events[0].kind,'production');assert.equal(s.logisticsNotice.events[0].state,undefined);assert.equal(s.logisticsNotice.events[1].state,'blocked');assert.equal(s.production.length,0);assert.equal(s.shipments.length,1);assert.equal(s.horseState.hour,12);assert.deepEqual(saved(s),s);
+});
+
+test('a convoy snow closure uses its existing delayed status rather than inventing a material shortage',()=>{
+ let s=secureArea(initialCampaign(),['buenos_aires','cordoba','mendoza','uspallata']);s.hour=2159;s.routes.mules=true;
+ s=order(s,{type:'supplyTransfer',source:'reserve',destination:'uspallata',mode:'mules',goods:{copper:3}});const due=s.convoys[0].due;
+ // Observe the queued cargo at its June due date without simulating unrelated raids.
+ s.hour=due;s=wait(s,120);assert.equal(s.hour,due);assert.equal(s.logisticsNotice.advancedHours,0);assert.equal(s.logisticsNotice.events[0].code,'snow');assert.equal(s.convoys.length,1);assert.equal(s.depots.uspallata,undefined);assert.match(logisticsEventText(s.logisticsNotice.events[0]),/nieve/);
+});
+
+test('blocking travel finishes its duration and leaves an unseen overdue interruption for the next explicit wait',()=>{
+ let s=staffed();s.shipments=[{due:1,goods:{powder:7}}];s.blockade=true;
+ s=order(s,{type:'travel',sector:'buenos_aires'});assert.equal(s.hour,12);assert.equal(s.location,'buenos_aires');assert.equal(s.logisticsNotice,null);assert.deepEqual(s.logisticsAttention.reported,{});
+ s=wait(saved(s),24);assert.equal(s.hour,12);assert.equal(s.logisticsNotice.advancedHours,0);assert.equal(s.logisticsNotice.events[0].code,'blockade');
+});
+
+test('public interruption notices detach goods and omit queue bindings and acknowledgement state',()=>{
+ const s=wait(overdue()),view=playerKnownCampaign(s);assert.equal(view.logisticsAttention,undefined);assert.equal(view.logisticsNotice.events[0].code,'blockade');assert.equal(view.logisticsNotice.events[0].binding,undefined);view.logisticsNotice.events[0].goods.powder=100;assert.equal(s.logisticsNotice.events[0].goods.powder,7);
+});
+
+test('old saves migrate and malformed interruption notices or acknowledgement records are rejected',()=>{
+ const old=initialCampaign();delete old.logisticsAttention;delete old.logisticsNotice;const migrated=saved(old);assert.deepEqual(migrated.logisticsAttention,{version:1,reported:{}});assert.equal(migrated.logisticsNotice,null);
+ const s=wait(overdue());for(const change of [n=>n.logisticsAttention=null,n=>n.logisticsAttention.version=2,n=>n.logisticsAttention.reported=[],n=>n.logisticsAttention.reported['bad']='blockade',n=>n.logisticsAttention.reported[Object.keys(n.logisticsAttention.reported)[0]]='made_up',n=>n.logisticsNotice.events[0].code='armory_full',n=>n.logisticsNotice.events[0].state='completed',n=>n.logisticsNotice.events[0].private=true]){
+  const n=structuredClone(s);change(n);assert.throws(()=>restoreCampaign(serializeCampaign(n)),/avisos de producción/);
+ }
+});

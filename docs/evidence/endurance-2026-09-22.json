@@ -1,0 +1,96 @@
+{
+  "scope": "Player walking and energy recovery",
+  "implemented": {
+    "explorationBaseEnergyPerTile": {
+      "walk": 0.25,
+      "run": 1.5,
+      "crouch": 0.75,
+      "prone": 1.5
+    },
+    "hostileExplorationIncluded": true,
+    "combatMovementCostsChanged": false,
+    "controlledSquadCombatRoundRecovery": 20,
+    "explorationRestRecovery": 60,
+    "restSeconds": 600,
+    "restSliceSeconds": 6,
+    "patrolRecoveryIndependent": true
+  },
+  "verification": {
+    "hostileWalkTiles": 200,
+    "remainingEnergy": 50,
+    "interruptedRestAtDawn": {
+      "elapsedSeconds": 6,
+      "startingEnergy": 20,
+      "endingEnergy": 20.6,
+      "mode": "combat"
+    },
+    "focusedTestsPassed": 83,
+    "fullSuite": {
+      "tests": 2726,
+      "passed": 2722,
+      "failed": 4,
+      "durationMs": 191884.180083,
+      "failures": [
+        "fresh-campaign-recovery: opening defeat",
+        "northern-route: established campaign battle defeat",
+        "retiro-expansion: opening defeat",
+        "stationed-artillery: defeat produced no captives for rescue scenario"
+      ]
+    }
+  },
+  "legalOpeningExperiments": {
+    "fourTileBoundsEliteDayContracts": {
+      "result": "victory",
+      "turns": 6,
+      "actions": 96,
+      "survivingHp": {
+        "128": 79,
+        "115": 70,
+        "131": 82,
+        "110": 35
+      }
+    },
+    "threeTileBoundsWeeklySquad": {
+      "result": "victory",
+      "turns": 37,
+      "actions": 139,
+      "survivingHp": {
+        "107": 72
+      }
+    }
+  },
+  "limits": "Full campaign completion remains unproven. Victory and permanent-death assertions remain. Patient checks now match actual injured survivors rather than assuming wounds. Earlier phase-4 checkpoints predate this endurance balance.",
+  "campaignFollowup": {
+    "changes": [
+      "Veteran hired squad scouts in 32-AP legs; the mixed weekly squad uses 24-AP legs. All moves and battle outcomes use ordinary commands.",
+      "A full pack drops its replaced weapon through the tactical command before equipping salvage; every weapon-record field is verified in its retained pack or ground record.",
+      "Capital support recruitment excludes actual deaths and pays for a living replacement. Medical recovery checks the actual wounded survivors; the current sole survivor is unwounded."
+    ],
+    "focusedValidation": {
+      "tests": 2,
+      "passed": 2,
+      "failed": 0,
+      "files": [
+        "tests/retiro-expansion.test.mjs",
+        "tests/fresh-capital-recovery.test.mjs"
+      ],
+      "log": "/tmp/granaderos-capital-recovery-current.log"
+    },
+    "fullFreshRoute": {
+      "opening": "victory",
+      "capitalRecovery": "passed",
+      "sanNicolas": "victory",
+      "sanLorenzo": "victory",
+      "cordoba": "victory",
+      "cordobaCounterattack": "victory",
+      "nextFailure": "Tucuman preparation: insufficient treasury for a 10-peso contract renewal during rest",
+      "log": "/tmp/granaderos-fresh-integration-current.log"
+    },
+    "remaining": [
+      "Established southern campaign still loses San Lorenzo; alternate cautious controller did not solve it and was not retained.",
+      "Stationed artillery defeat still produces no captives; a shorter movement experiment did not solve it and was not retained.",
+      "Full suite has not been rerun after these driver updates."
+    ],
+    "latestRouteEvidence": "endurance-cordoba-route-2026-09-22.json"
+  }
+}

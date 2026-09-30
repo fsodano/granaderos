@@ -10,6 +10,13 @@ export const TRANSPORT_OPTIONS=[
 ];
 const sector=id=>CAMPAIGN_SECTORS.find(s=>s.id===id);
 const place=id=>id==='reserve'?'retiro':id;
+export const TRANSPORT_ISSUES=Object.freeze({
+ network_unavailable:'Primero organiza esta red de transporte.',
+ route_cut:'Los realistas interrumpen el camino entre los depósitos.',
+ snow:'Los pasos andinos están cerrados por la nieve.',
+ flotilla_route:'La flotilla requiere puertos comunicados y libres de bloqueo.',
+ mountain_carts:'Las carretas no atraviesan las sendas altas; transborda la carga a mulas.',
+});
 export function cargoWeight(goods){return Object.entries(goods).reduce((sum,[key,quantity])=>sum+(CARGO_WEIGHTS[key]??Infinity)*quantity,0);}
 export function transportPath(s,source,destination){
  const from=place(source),to=place(destination);if(!sector(from)||!sector(to)||s.sectors[from].owner!=='patriot'||s.sectors[to].owner!=='patriot')return null;
@@ -18,13 +25,13 @@ export function transportPath(s,source,destination){
 export function transferOptions(s,source='reserve',destination=s.location){
  const path=transportPath(s,source,destination);const month=(2+Math.floor(s.hour/720))%12+1;
  return TRANSPORT_OPTIONS.map(mode=>{
- let reason='Disponible para el convoy.';
- if(!s.routes[mode.id])reason='Primero organiza esta red de transporte.';
- else if(!path)reason='Los realistas interrumpen el camino entre los depósitos.';
- else if(path.some(id=>['uspallata','los_patos'].includes(id))&&month>=6&&month<=8)reason='Los pasos andinos están cerrados por la nieve.';
- else if(mode.id==='flotilla'&&(s.blockade||path.some(id=>sector(id).theater!=='coast')))reason='La flotilla requiere puertos comunicados y libres de bloqueo.';
- else if(mode.id==='carts'&&path.some(id=>['uspallata','los_patos'].includes(id)))reason='Las carretas no atraviesan las sendas altas; transborda la carga a mulas.';
- return {...mode,path,available:reason==='Disponible para el convoy.',reason,hours:path?Math.max(1,(path.length-1)*mode.hoursPerLeg):null,remounts:mode.id==='posta'&&path?Math.max(1,path.length-1):0};
+ let code=null;
+ if(!s.routes[mode.id])code='network_unavailable';
+ else if(!path)code='route_cut';
+ else if(path.some(id=>['uspallata','los_patos'].includes(id))&&month>=6&&month<=8)code='snow';
+ else if(mode.id==='flotilla'&&(s.blockade||path.some(id=>sector(id).theater!=='coast')))code='flotilla_route';
+ else if(mode.id==='carts'&&path.some(id=>['uspallata','los_patos'].includes(id)))code='mountain_carts';
+ return {...mode,path,available:code===null,code,reason:code?TRANSPORT_ISSUES[code]:'Disponible para el convoy.',hours:path?Math.max(1,(path.length-1)*mode.hoursPerLeg):null,remounts:mode.id==='posta'&&path?Math.max(1,path.length-1):0};
  });
 }
 export function inventoryAt(s,id){if(id==='reserve')return {...s.resources};if(!sector(id))throw Error('El depósito indicado no existe.');return {...(s.depots?.[id]??{})};}
@@ -43,4 +50,4 @@ export function planTransfer(s,action){
  if(option.remounts>s.resources.horses)throw Error('No hay suficientes caballos de remonta para las postas.');
  return {...option,source,destination,goods:{...goods},weight,due:s.hour+option.hours};
 }
-export function convoyStatus(s,convoy){const mode=transferOptions(s,convoy.source,convoy.destination).find(o=>o.id===convoy.mode);return {ready:s.hour>=convoy.due&&Boolean(mode?.available),delayed:s.hour>=convoy.due&&!mode?.available,reason:mode?.reason??'Ruta desconocida.'};}
+export function convoyStatus(s,convoy){const mode=transferOptions(s,convoy.source,convoy.destination).find(o=>o.id===convoy.mode);return {ready:s.hour>=convoy.due&&Boolean(mode?.available),delayed:s.hour>=convoy.due&&!mode?.available,code:mode?.code??null,reason:mode?.reason??'Ruta desconocida.'};}

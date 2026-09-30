@@ -8,3 +8,7 @@
 .ja2-outfit-slot button[data-held="true"]{cursor:grab;touch-action:none;user-select:none;}
 .ja2-outfit-slot button.drop-target{outline:2px solid #f6d881;background:#35432a;}
 .campaign-pockets>.ja2-outfit-slot{margin-bottom:6px;}
+
+.ja2-body-slots{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;width:100%}
+.ja2-body-slots button{display:flex;flex-direction:column;gap:3px;min-width:0}
+.ja2-body-slots button small{color:#ded3a3;text-transform:uppercase;font-size:9px}

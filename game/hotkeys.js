@@ -4,11 +4,11 @@ export const TACTICAL_KEYS=[
  ['Mayús+clic','Agregar o quitar un aliado del grupo durante exploración'],
  ['Ctrl+clic / Ctrl+Enter sobre un enemigo','Con manos libres: intentar quitar el arma; consume los PA restantes'],
  ['Alt+clic en suelo libre','Mover solo al seleccionado sin girar; caminar, agachado o cuerpo a tierra'],
- ['G / F / A','Uso contextual / disparo deliberado a enemigo o casilla, o usar objeto / equipar arma blanca'],['Mayús+R / S / C / P','Correr / caminar / agacharse / cuerpo a tierra'],
- ['RePág / AvPág','Subir / bajar postura'],['Z','Activar o desactivar sigilo sin cambiar de postura'],['L','Mirar hacia una casilla; en la misma dirección, preparar el arma sin disparar'],['Botón derecho / clic izquierdo','Entrar en puntería; sobre personaje, aumentarla; sobre suelo, cancelar / disparar'],['↑ / ↓ sobre un objetivo con foco','Elegir cabeza, torso o piernas; cuerpo a tierra usa una sola zona'],
+ ['G / F / A','Uso contextual / usar el objeto o arma en el modo elegido con B / equipar arma blanca'],['Mayús+R / S / C / P','Correr / caminar / agacharse / cuerpo a tierra'],
+ ['RePág / AvPág','Subir / bajar postura'],['Z','Activar o desactivar sigilo sin cambiar de postura'],['L','Mirar hacia una casilla; en la misma dirección, preparar el arma sin disparar'],['Botón derecho / clic izquierdo','Preparar el ataque elegido; en Disparo, ajustar puntería / confirmar ataque'],['↑ / ↓ sobre un objetivo con foco','Elegir cabeza, torso o piernas; cuerpo a tierra usa una sola zona'],
  ['R','Recargar o cebar el arma'],['W','Cambiar entre arma, arma blanca, vendas, herramientas, cada pertrecho y manos libres'],
  ['J','Hablar: seleccioná una persona contigua; Esc vuelve a movimiento'],
- ['B','Guardia con bayoneta ya fijada'],['T','Montar o desmontar'],
+ ['B','Alternar disparo / estocada de bayoneta o culatazo'],['T','Montar o desmontar'],
  ['V','Mostrar u ocultar campo de visión'],['I / Q','Cursor para recoger equipo / equipar vendas'],
  ['[ / ]','Reducir / aumentar puntería adicional'],['+ / −','Acercar / alejar'],['H / ?','Abrir o cerrar esta ayuda'],
  ['Esc','Volver al cursor de movimiento o cerrar ayuda'],
@@ -27,5 +27,5 @@ export function tacticalShortcut(event,{editing=false,dialog=false,nativeControl
  if(event.shiftKey&&!['?','+','{','}'].includes(key))return null;
  if(key==='tab')return 'cursor-level';
  if(/^[1-6]$/.test(key))return `select:${Number(key)-1}`;
- return ({' ':'next',m:'map',d:'turn',g:'move',f:'fire',a:'melee',r:'reload',s:'walk',c:'crouch',p:'prone',z:'stealth',l:'look',pageup:'stance-up',pagedown:'stance-down',w:'weapon',b:'brace',o:'overwatch',t:'mount',j:'talk',v:'sight',i:'loot',q:'heal','[':'aim-down',']':'aim-up','{':'aim-down','}':'aim-up','+':'zoom-in','=':'zoom-in','-':'zoom-out',h:'help','?':'help',escape:'cancel'})[key]??null;
+ return ({' ':'next',m:'map',d:'turn',g:'move',f:'fire',a:'melee',r:'reload',s:'walk',c:'crouch',p:'prone',z:'stealth',l:'look',pageup:'stance-up',pagedown:'stance-down',w:'weapon',b:'weapon-mode',o:'overwatch',t:'mount',j:'talk',v:'sight',i:'loot',q:'heal','[':'aim-down',']':'aim-up','{':'aim-down','}':'aim-up','+':'zoom-in','=':'zoom-in','-':'zoom-out',h:'help','?':'help',escape:'cancel'})[key]??null;
 }

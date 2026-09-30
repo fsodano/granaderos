@@ -1,4 +1,5 @@
 'use client';
+import {firearmMaintenanceAction} from '../../game/ja2-hud.js';
 import {useMemo, useState} from 'react';
 import JA2Hands from './JA2Hands';
 import JA2WeaponMode from './JA2WeaponMode';
@@ -30,7 +31,8 @@ export default function JA2OrdersMenu(props: Props) {
 // All optional read models and descendants run only while the menu is open.
 export function JA2OrdersPanel({battle, unit, mode, aim, firearm, cannonId, shotType, artillery, busy, target, onOrder, onMode, onToggleSight, onEndTurn, onOpenInventory, onCannonChange, onShotTypeChange}: Props) {
   const descriptors = useMemo(()=>unit ? orderDescriptors(battle, unit, {busy, aim, cannonId, target}) : [],[battle,unit,busy,aim,cannonId,target]);
-  const gridDefs = descriptors.filter((d: any) => !GRID_EXCLUDE.has(d.id) && (d.id !== 'reprime' || unit?.jammed) && (d.id !== 'reload' || !unit?.jammed) && (!['reload', 'reprime', 'overwatch'].includes(d.id) || firearm));
+  const needsPriming=Boolean(unit&&firearmMaintenanceAction(battle,unit).type==='reprime');
+  const gridDefs = descriptors.filter((d: any) => !GRID_EXCLUDE.has(d.id) && (d.id !== 'reprime' || needsPriming) && (d.id !== 'reload' || !needsPriming) && (!['reload', 'reprime', 'overwatch'].includes(d.id) || firearm));
   const budget = unit ? actionPointBudget(battle, unit) : null;
   const turn = turnModel(battle);
   const heardNoise = heardNoiseModel(battle, unit);

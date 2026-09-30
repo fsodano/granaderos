@@ -54,15 +54,17 @@ test('every paid volunteer can be hired, saved, restored, dismissed and rehired'
   s=order(s,{type:'recruitCivic',id:op.id});assert.ok(s.recruited.includes(op.id));
  }
 });
-test('new specialists obey daily elite and ordinary weekly contract rules',()=>{
+test('specialists sign weekly contracts only when the treasury affords them',()=>{
  for(const op of MERCENARY_ADDITIONS){
-  let s=initialCampaign();const elite=contractQuote(s,op).topTier;
-  const weekly=dispatchCampaign(s,{type:'recruitCivic',id:op.id,term:'week'});
-  if(elite){assert.ok(weekly.lastError);assert.equal(weekly.resources.treasury,s.resources.treasury);}
-  else {assert.equal(weekly.lastError,null);assert.equal(weekly.contracts[op.id].expiresAt,168);}
-  s=order(s,{type:'recruitCivic',id:op.id});
-  const renewed=dispatchCampaign(s,{type:'renewContract',id:op.id,term:'day'});
-  if(elite)assert.ok(renewed.lastError);else {assert.equal(renewed.lastError,null);assert.equal(renewed.contracts[op.id].expiresAt,48);}
+  let s=initialCampaign();
+  if(contractQuote(s,op).topTier){
+   const weeklyQuote=contractQuote(s,op,'week');
+   assert.ok(weeklyQuote.price>s.resources.treasury,'a week of a top-tier specialist exceeds the starting treasury');
+   assert.ok(dispatchCampaign(s,{type:'recruitCivic',id:op.id,term:'week'}).lastError);
+   s.resources.treasury=weeklyQuote.price+10000;
+  }
+  s=order(s,{type:'recruitCivic',id:op.id,term:'week'});assert.equal(s.contracts[op.id].expiresAt,168);
+  s=order(s,{type:'renewContract',id:op.id,term:'day'});assert.equal(s.contracts[op.id].expiresAt,192);
  }
 });
 test('older saves gain the expanded roster without changing existing volunteers',()=>{

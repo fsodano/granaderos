@@ -6,7 +6,7 @@ import {createElement as h} from '../web/node_modules/react/index.js';
 import {renderToStaticMarkup as render} from '../web/node_modules/react-dom/server.node.js';
 import {actBattle,createBattle} from '../game/tactical.js';
 import {orderDescriptors} from '../game/ja2-hud.js';
-const {motionActivity}=await import('../web/app/useUnitMotion.ts');
+const {motionActivity,motionTransitions}=await import('../web/app/useUnitMotion.ts');
 const {default:TacticalScene}=await import('../web/app/TacticalScene.tsx');
 
 const walking=(actor)=>({x:actor.x-.25,y:actor.y,direction:3,frame:2,moving:true});
@@ -16,6 +16,20 @@ function field(){
   npcs:[{id:'civilian',name:'Vecina',x:4,y:2,ai:{cycle:0,wait:0,activity:'roaming',destination:{x:6,y:2}}}]});
 }
 const movementEnabled=(battle,positions)=>!orderDescriptors(battle,battle.units[0],{busy:motionActivity(battle,positions).blocking}).find(a=>a.id==='move').disabled;
+
+test('animation omits hidden routes and does not reveal an actor before first sight',()=>{
+ const before=field();before.units.push({id:'hidden',side:'enemy',x:6,y:1,hp:100},{id:'departing',side:'enemy',x:5,y:1,hp:100});
+ const battle=structuredClone(before);battle.units.find(u=>u.id==='hidden').x=4;battle.units.find(u=>u.id==='departing').x=7;battle.units[0].y--;
+ const prior=new Set(['scout','partner','departing']),visible=new Set(['scout','partner','hidden']);
+ const transitions=motionTransitions(before,battle,prior,visible);
+ assert.deepEqual(transitions.map(t=>t.unit.id),['scout','partner','hidden']);
+ assert.equal(transitions.find(t=>t.unit.id==='scout').old,before.units[0]);
+ assert.equal(transitions.find(t=>t.unit.id==='hidden').old,undefined,'a newly seen enemy starts at its currently visible position');
+ assert.ok(!transitions.some(t=>t.unit.id==='departing'),'an enemy leaving sight has no animation track');
+ assert.ok(!transitions.some(t=>t.unit.id==='civilian'),'hidden civilian routes are also excluded');
+ const remaining=motionTransitions(battle,structuredClone(battle),visible,visible);
+ assert.equal(remaining.find(t=>t.unit.id==='hidden').old,battle.units.find(u=>u.id==='hidden'));
+});
 
 test('a real civilian routine stays animated while exploration orders remain available',()=>{
  const before=field(),battle=actBattle(before,{type:'ambient'}),npc=battle.npcs[0];

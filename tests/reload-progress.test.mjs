@@ -29,7 +29,7 @@ test('a wounded soldier finishes a Baker reload over real turns without gaining 
   assert.equal(preview.valid,true);assert.equal(preview.pa,plan.pa);
   s=load(s);spent+=u.ap-s.units[0].ap;turns++;
   assert.deepEqual(before.units[0],u);assert.equal(s.units[0].loaded+s.units[0].ammo,3);
-  assert.equal(s.units[0].priming,50-s.units[0].loaded);
+  assert.equal(s.units[0].priming,undefined);
   assert.doesNotThrow(()=>validateBattleSnapshot(s));
   if(!s.units[0].loaded){assert.equal(s.units[0].ap,0);assert.ok(s.units[0].reloadProgress>0);s=endTurn(s);}
  }

@@ -58,7 +58,7 @@ test('a new officer loads three recovered cursor cartridges into an unissued gun
  assert.deepEqual(ammunitionByType(s.operativeState[id]),{});
  assert.deepEqual(personal(s,id).equipmentCursor,{...cursor,stack:{...cursor.stack,count:2}});
  assert.equal(personal(s,id).weapon,before.weapon);assert.equal(personal(s,id).condition,before.condition);
- assert.equal(personal(s,id).priming,before.priming-1);assert.ok(Math.abs(carriedWeight(personal(s,id))-(weight-.01))<1e-9);assert.equal(total(s),300);
+ assert.equal(personal(s,id).priming,undefined);assert.ok(Math.abs(carriedWeight(personal(s,id))-weight)<1e-9);assert.equal(total(s),300);
  assert.match(s.log[0].text,/recarga Brown Bess con 1 cartucho/);assert.doesNotMatch(s.log[0].text,/ordena su equipo/);
  s=save(s);assert.equal(personal(s,id).loaded,1);assert.equal(personal(s,id).equipmentCursor.stack.count,2);
  const full=action(s,'placeEquipment',{destinationId:'hand:right'},id);assert.match(reject(s,full).lastError,/ya está cargada/);
@@ -79,14 +79,14 @@ test('a paid double-barrel pistol loads in either hand or its pocket without cha
  for(const hostId of ['hand:right','hand:left','large-4']){
   let s=partlyLoadedPistol();
   if(hostId!=='hand:right'){s=arrange(s,'pickupEquipment',{sourceId:'hand:right'});s=arrange(s,'placeEquipment',{destinationId:hostId});if(personal(s).equipmentCursor)s=arrange(s,'returnEquipmentCursor');}
-  const u=personal(s),gun=stackAt(u,hostId),hands=['hand:right','hand:left'].map(id=>equipmentEndpoint(u,id)),weight=carriedWeight(u),sourceId=pocket(u,'inventory:ammo:pistol_54');
+  const u=personal(s),gun=stackAt(u,hostId),hands=['hand:right','hand:left'].map(id=>equipmentEndpoint(u,id)),weight=carriedWeight(u),sourceId=pocket(u,'inventory:ammo:pistol_69');
   s=arrange(s,'pickupEquipment',{sourceId,count:5});const before=personal(s),remainingInventory=structuredClone(before.inventory),cursor=before.equipmentCursor;
   s=arrange(save(s),'placeEquipment',{destinationId:hostId});const loaded=stackAt(personal(s),hostId);
   assert.deepEqual(loaded,{...gun,loaded:2});assert.equal(personal(s).equipmentCursor.stack.count,4);
   assert.deepEqual(personal(s).equipmentCursor,{...cursor,stack:{...cursor.stack,count:4}});
   for(const [key,record]of Object.entries(remainingInventory))if(record.kind==='ammunition')assert.deepEqual(personal(s).inventory[key],record);
   assert.deepEqual(['hand:right','hand:left'].map(id=>equipmentEndpoint(personal(s),id).item),hands.map(hand=>hand.item));
-  assert.equal(personal(s).priming,before.priming-1);assert.ok(Math.abs(carriedWeight(personal(s))-(weight-.01))<1e-9);assert.equal(total(s),299);
+  assert.equal(personal(s).priming,undefined);assert.ok(Math.abs(carriedWeight(personal(s))-weight)<1e-9);assert.equal(total(s),299);
   s=save(s);assert.equal(stackAt(personal(s),hostId).loaded,2);assert.equal(personal(s).equipmentCursor.stack.count,4);
   s=arrange(s,'returnEquipmentCursor');s=order(save(s),{type:'visitSector'});let b=enterSector(s.pendingBattle,s.sectorStates.retiro);
   assert.equal(stackAt(actor(b),hostId).loaded,2);({campaign:s,battle:b}=decodeSave(encodeSave(s,b)));s=leave(s,b);
@@ -109,7 +109,7 @@ test('saved unfinished loading belongs to the gun and completing it removes prog
  // This saved-work fixture adds no gun or ammunition. The physical pistol has
  // one loaded barrel and half of the next loading action already completed.
  s.operativeState[110].carriedReloadProgress=.5;s=save(s);
- const sourceId=pocket(personal(s),'inventory:ammo:pistol_54');s=arrange(s,'pickupEquipment',{sourceId,count:2});
+ const sourceId=pocket(personal(s),'inventory:ammo:pistol_69');s=arrange(s,'pickupEquipment',{sourceId,count:2});
  s=arrange(save(s),'placeEquipment',{destinationId:'hand:right'});
  assert.equal(s.operativeState[110].carriedLoaded,2);assert.equal(s.operativeState[110].carriedReloadProgress,undefined);
  assert.equal(personal(s).reloadProgress,undefined);assert.equal(personal(s).equipmentCursor.stack.count,1);assert.equal(total(s),299);

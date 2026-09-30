@@ -550,7 +550,7 @@ export const CAMPAIGN_SECTORS = [
   {id:'humahuaca',grid:'A1',name:'Quebrada de Humahuaca',theater:'north',biome:'mountain',x:33,y:3,income:40,asset:'Paso fronterizo del Alto Perú',neighbors:['jujuy']},
 ];
 export const PHASES = [
-  {id:'retiro',name:'I · Formación en Retiro',objective:'Destina 20 caballos, 40 mosquetes, 60 textiles y 300 pesos a la academia.'},
+  {id:'retiro',name:'I · Formación en Retiro',objective:'Contratá al menos un combatiente o creá tu granadero para comenzar.'},
   {id:'san_lorenzo',name:'II · Bautismo de fuego',objective:'Libera San Nicolás y vence al desembarco realista en San Lorenzo.'},
   {id:'yatasto',name:'III · Encuentro de Yatasto',objective:'Libera Tucumán y Salta, asegura el Camino Real y pacta con Güemes.'},
   {id:'plumerillo',name:'IV · Preparativos de El Plumerillo',objective:'Controla Cuyo, activa la fundición, equipa 3000 infantes y acuerda el paso con los pehuenches.'},

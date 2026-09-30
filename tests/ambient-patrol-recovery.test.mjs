@@ -21,7 +21,7 @@ test('a real 600-second Buenos Aires wait cannot exhaust unseen enemy patrols',(
  const b=enterSector(campaign.pendingBattle),before=structuredClone(b),rested=actBattle(b,{type:'rest'});
  assert.equal(b.units.filter(u=>u.side==='player').length,6);assert.ok(b.upperSurfaces.length>0);
  assert.equal(rested.lastError,null);assert.equal(rested.mode,'exploration');assert.equal(rested.elapsedSeconds,600);
- const enemies=rested.units.filter(u=>u.side==='enemy');assert.equal(enemies.length,6);
+ const enemies=rested.units.filter(u=>u.side==='enemy');assert.equal(enemies.length,4);
  assert.ok(enemies.some(u=>!sameCell(u,b.units.find(v=>v.id===u.id))));
  for(const u of enemies){
   assert.ok(u.energy>=maximumEnergy(u)/2,`${u.id} retains a breath reserve`);

@@ -25,7 +25,7 @@ test('teacher questionnaire shortens actual militia instruction and personal spe
  assert.ok(militiaCourse(teacher,0).hours<militiaCourse(rider,0).hours);
  assert.ok(characterProfile(teacher).skills.includes('Enseñanza'));
  assert.notEqual(speechFor(teacher,'contact'),speechFor({...teacher,personality:'pessimistic'},'contact'));
- const p=defaultProfile();p.attributes.medical=34;p.attributes.strength+=21;assert.throws(()=>createOfficerRecord('Juan Testigo',answers,p));
+  const p=defaultProfile();p.attributes.medical=86;p.attributes.strength=24;assert.throws(()=>createOfficerRecord('Juan Testigo',answers,p));
 });
 test('origin and crisis answers affect real actions without changing allocated attributes',async()=>{
  const {actBattle}=await import('../game/tactical.js');const profile=defaultProfile();

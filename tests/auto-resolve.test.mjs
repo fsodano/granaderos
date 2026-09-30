@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {autoResolve, withdrawAutomatically} from '../game/auto-resolve.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
 import {enterSector} from '../game/world.js';
-import {completedTacticalVictory,createBattle,actBattle,endTurn,AP_CARRY_LIMIT,maxActionPoints} from '../game/tactical.js';
+import {completedTacticalVictory,createBattle,actBattle,endTurn,AP_CARRY_LIMIT,maxActionPoints,movementEnergy} from '../game/tactical.js';
 import {battleFromRequest} from '../game/battle-handoff.js';
 const request=(style='balanced')=>({id:'auto-defense',sector:'san_nicolas',seed:45,defenseGroupId:'enemy-group-1',defenseFort:1,
  squad:Array.from({length:style==='weak'?1:3},(_,i)=>({id:1000+i,name:`Defensor ${i}`,weapon:style==='blade'?1813:1800,marksmanship:style==='weak'?20:65,medical:50,agility:style==='blade'?95:70,experienceLevel:style==='blade'?9:4,hp:style==='weak'?30:90,maxHp:90,loaded:style==='blade'?0:1,ammo:style==='blade'?0:4,priming:5,flints:0,rations:0,torches:0,boleadoras:0,medkits:1,morale:100})),
@@ -115,7 +115,7 @@ test('a sealed remaining soldier stays in the encounter after partial withdrawal
 test('withdrawal can free and stand a soldier but cannot rest or refill during exploration',()=>{
  const state=withdrawalFixture([{id:'p',x:1,y:2,knockedDown:true,stance:'prone',entangled:true}],{exploration:true,enemies:[]});
  const result=withdrawAutomatically(state);assert.equal(result.battle.status,'retreat');assert.deepEqual(result.orders.slice(0,2).map(order=>order.type),['stance','free']);assert.ok(!result.orders.some(order=>['rest','endTurn','ration'].includes(order.type)));assert.deepEqual(result.battle,replayWithdrawal(state,result.orders));assert.ok(result.battle.units[0].energy<state.units[0].energy);
- const tired=withdrawalFixture([{id:'p',x:0,y:2,energy:1}],{exploration:true,enemies:[]}),blocked=withdrawAutomatically(tired);assert.equal(blocked.battle,tired);assert.deepEqual(blocked.orders,[]);assert.equal(blocked.battle.units[0].departure,undefined);
+ const tired=withdrawalFixture([{id:'p',x:0,y:2}],{exploration:true,enemies:[]});tired.units[0].energy=movementEnergy(tired.units[0],{type:'grass'},true);const blocked=withdrawAutomatically(tired);assert.equal(blocked.battle,tired);assert.deepEqual(blocked.orders,[]);assert.equal(blocked.battle.units[0].departure,undefined);
  for(const maxRounds of [0,9,Infinity,1.5])assert.throws(()=>withdrawAutomatically(state,{maxRounds}));
 });
 

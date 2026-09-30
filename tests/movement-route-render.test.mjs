@@ -6,7 +6,9 @@ import {createElement as h} from '../web/node_modules/react/index.js';
 import {renderToStaticMarkup as render} from '../web/node_modules/react-dom/server.node.js';
 import {initialCampaign,dispatchCampaign} from '../game/campaign.js';
 import {enterSector} from '../game/world.js';
-import {createBattle,actBattle,getReachable,canSee,visibleRooms} from '../game/tactical.js';
+import {createBattle,actBattle,getReachable,canSee,visibleRooms,itemUsePreview} from '../game/tactical.js';
+import {executeGroupMove} from '../game/group-movement.js';
+import {validateBattleSnapshot} from '../game/validate-battle.js';
 import {sameCell,tacticalLevel} from '../game/tactical-space.js';
 import {tacticalViewport} from '../game/tactical-viewport.js';
 const {movementRoute,sampleMovementSegment,motionDirection}=await import('../web/app/useUnitMotion.ts');
@@ -15,6 +17,18 @@ const {default:Scene}=await import('../web/app/TacticalScene.tsx');
 const noop=()=>{};
 const openTiles=(width,height)=>Array.from({length:width*height},(_,i)=>({x:i%width,y:Math.floor(i/width),type:'grass',blocked:false,cover:0}));
 const fullRange=(state,actor,preserveFacing=false)=>getReachable({...state,status:'active',mode:'exploration'},actor,preserveFacing?{movementIntent:'preserveFacing'}:{});
+// Any legacy replanning would inspect the map. An executed route must be
+// usable without reading it, and must retain the exact authored path nodes.
+const noSearch=new Proxy({},{get(){throw new Error('animation replanned an executed route');}});
+function assertRecordedRoute(before,after,id,expected){
+ const old=before.units.find(unit=>unit.id===id),unit=after.units.find(unit=>unit.id===id);
+ assert.deepEqual(unit.lastMovePath,expected);
+ const route=movementRoute(noSearch,old,unit);
+ assert.equal(route[0],old);assert.equal(route.length,expected.length+1);
+ for(const [index,point]of unit.lastMovePath.entries())assert.equal(route[index+1],point);
+ assert.ok(sameCell(route.at(-1),unit));
+ assert.doesNotThrow(()=>validateBattleSnapshot(after));
+}
 function buenosAires(){
  let campaign=initialCampaign(8);
  for(const id of [128,142,123,115,131,110])campaign=dispatchCampaign(campaign,{type:'recruitCivic',id,term:'day'});
@@ -48,6 +62,9 @@ test('animation routes distinguish stacked physical cells and retain recorded cl
  assert.equal(route[1].kind,'climb');assert.equal(route[1].linkId,'up');
  assert.ok(route.slice(1).every(point=>tacticalLevel(point)===1));
  const climbed=actBattle(state,{type:'climb',unitId:actor.id,linkId:'up'});assert.equal(climbed.lastError,null);
+ assertRecordedRoute(state,climbed,actor.id,expected.path.slice(0,1));
+ const onRoof=actBattle(state,{type:'move',unitId:actor.id,...target});assert.equal(onRoof.lastError,null);
+ assertRecordedRoute(state,onRoof,actor.id,expected.path);
  const down=fullRange(climbed,climbed.units[0]).find(point=>sameCell(point,{x:1,y:1}));
  assert.deepEqual(movementRoute(climbed,climbed.units[0],{x:1,y:1}),[climbed.units[0],...down.path]);
  const recorded={...target,lastMovePath:expected.path},reused=movementRoute(state,actor,recorded);
@@ -56,6 +73,53 @@ test('animation routes distinguish stacked physical cells and retain recorded cl
  const unsupported={x:6,y:6,tacticalLevel:1};
  assert.deepEqual(movementRoute(state,actor,unsupported),[actor,unsupported]);
  assert.equal(movementRoute(state,actor,unsupported)[1],unsupported,'cross-floor fallback retains authoritative destination identity');
+});
+
+test('executed player routes retain detours and facing intent and replace the previous order',()=>{
+ for(const movementIntent of ['forward','preserveFacing']){
+  const state=createBattle([{id:'walker',x:1,y:1}],{width:10,height:10,tiles:openTiles(10,10),exploration:true,enemies:[]});
+  for(const tile of state.tiles)if(tile.x===3&&tile.y<6)tile.blocked=true;
+  const actor=state.units[0],destination=getReachable(state,actor,{movementIntent}).find(point=>sameCell(point,{x:5,y:2}));
+  const next=actBattle(state,{type:'move',unitId:actor.id,x:5,y:2,movementIntent});
+  assert.equal(next.lastError,null);assertRecordedRoute(state,next,actor.id,destination.path);
+  assert.equal(actor.lastMovePath,undefined,'the source snapshot remains unchanged');
+  const back=getReachable(next,next.units[0],{movementIntent}).find(point=>sameCell(point,{x:5,y:3}));
+  const returned=actBattle(next,{type:'move',unitId:actor.id,x:5,y:3,movementIntent});
+  assertRecordedRoute(next,returned,actor.id,back.path);
+  assert.equal(returned.units[0].lastMovePath.length,1,'the next order replaces the prior route');
+ }
+});
+
+test('hidden occupancy and charge interrupts record only the steps actually reached',()=>{
+ const state=createBattle([{id:'walker',x:5,y:2,facing:2}],{width:12,height:6,seed:45,tiles:openTiles(12,6),enemies:[{id:'hidden',x:1,y:2,overwatch:false,patrol:false}]});
+ const blocked=actBattle(state,{type:'move',unitId:'walker',x:1,y:2});assert.equal(blocked.lastError,null);
+ assertRecordedRoute(state,blocked,'walker',[{x:4,y:2},{x:3,y:2},{x:2,y:2}]);
+ const charge=createBattle([{id:'walker',x:1,y:1,morale:100,weapon:1809}],{width:12,height:6,seed:45,tiles:openTiles(12,6),enemies:[{id:'guard',x:6,y:1,overwatch:true,weapon:1806}]});
+ const interrupted=actBattle(charge,{type:'charge',unitId:'walker',targetId:'guard'});assert.equal(interrupted.lastError,null);
+ assertRecordedRoute(charge,interrupted,'walker',[{x:2,y:1}]);
+ assert.equal(interrupted.units[1].hp,charge.units[1].hp,'an interrupted charge does not strike its target');
+ const clear=structuredClone(charge);clear.units[1].ap=0;clear.units[1].overwatch=false;
+ const finished=actBattle(clear,{type:'charge',unitId:'walker',targetId:'guard'});assert.equal(finished.lastError,null);
+ assertRecordedRoute(clear,finished,'walker',[{x:2,y:1},{x:3,y:1},{x:4,y:1},{x:5,y:1}]);
+});
+
+test('sequential group orders preserve each member executed route',()=>{
+ const state=createBattle([{id:'a',x:1,y:2},{id:'b',x:1,y:3},{id:'c',x:2,y:3}],{width:16,height:10,tiles:openTiles(16,10),exploration:true,enemies:[]});
+ const result=executeGroupMove(state,{unitIds:['a','b','c'],anchorId:'a',x:8,y:2});assert.equal(result.status,'completed');
+ let replay=state;
+ for(const action of result.orders){
+  const next=actBattle(replay,action),executed=next.units.find(unit=>unit.id===action.unitId).lastMovePath;
+  assertRecordedRoute(state,result.state,action.unitId,executed);replay=next;
+ }
+ assert.deepEqual(result.state,replay);
+});
+
+test('a completed approach and treatment retains the executed route through the second action',()=>{
+ const state=createBattle([{id:'medic',x:2,y:2,activeSlot:'medical',medical:60,medkits:2},{id:'patient',x:6,y:2,hp:50,bleeding:4}],{width:16,height:10,seed:45,tiles:openTiles(16,10),enemies:[{id:'guard',x:14,y:8,patrol:false,overwatch:false}]});
+ for(const tile of state.tiles)if(tile.x===10)Object.assign(tile,{type:'wall',blocked:true,blocksSight:true});
+ const plan=itemUsePreview(state,state.units[0],state.units[1]);assert.equal(plan.valid,true);
+ const next=actBattle(state,{type:'useItem',unitId:'medic',targetId:'patient'});assert.equal(next.lastError,null);
+ assertRecordedRoute(state,next,'medic',plan.path);assert.equal(next.units[1].bleeding,0);
 });
 
 test('straight charges and movement into a previously occupied cell retain their terrain fallback',()=>{

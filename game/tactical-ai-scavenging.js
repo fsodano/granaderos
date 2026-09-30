@@ -10,7 +10,7 @@ const usable=unit=>weaponFor(unit).capacity>0&&unit.loaded>0&&!unit.jammed;
 export function chooseScavengingAction(state,unit,targets,paths){
   const costs=actionCosts(state,unit);
   if(unit.ap<costs.loot||unit.knockedDown||unit.entangled||usable(unit))return null;
-  if(hasFirearm(unit)&&(unit.jammed?unit.priming>0:availableAmmunition(unit,weaponFor(unit))>0))return null;
+  if(hasFirearm(unit)&&(unit.jammed||availableAmmunition(unit,weaponFor(unit))>0))return null;
   if(!hasFirearm(unit)&&!unit.weaponDropped)return null;
   // A carried ready spare already supplies this need, even if its shot must wait.
   if(Object.keys(unit.inventory??{}).some(key=>{try{return usable(planEquipLoot(unit,key));}catch{return false;}}))return null;

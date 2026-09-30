@@ -8,7 +8,7 @@ import {WEAPONS} from '../game/data.js';
 import {weaponAmmoType,ammunitionByType} from '../game/ammunition-types.js';
 const ammo=(type,count,name='Cartuchos elegidos')=>({kind:'ammunition',ammoType:type,count,weight:.04,name});
 function field(extra={},exploration=true){
- return createBattle([{id:'p',name:'Tirador',x:2,y:2,weapon:1808,loaded:0,condition:71,weaponInstanceId:'right-gun',ammunitionVersion:1,ammo:0,blade:0,medkits:0,priming:50,torches:0,boleadoras:0,rations:0,flints:0,inventory:{chosen:ammo('pistol_54',5),reserve:ammo('pistol_54',4,'Otra pila')},...extra}],{width:24,height:8,exploration,seed:45,tiles:Array.from({length:192},(_,i)=>({x:i%24,y:Math.floor(i/24),type:'grass',blocked:false,cover:0})),enemies:exploration?[]:[{id:'e',x:22,y:6,weapon:1813,loaded:0,ammo:0,patrol:false,overwatch:false}]});
+ return createBattle([{id:'p',name:'Tirador',x:2,y:2,weapon:1808,loaded:0,condition:71,weaponInstanceId:'right-gun',ammunitionVersion:2,ammo:0,blade:0,medkits:0,priming:50,torches:0,boleadoras:0,rations:0,flints:0,inventory:{chosen:ammo('pistol_69',5),reserve:ammo('pistol_69',4,'Otra pila')},...extra}],{width:24,height:8,exploration,seed:45,tiles:Array.from({length:192},(_,i)=>({x:i%24,y:Math.floor(i/24),type:'grass',blocked:false,cover:0})),enemies:exploration?[]:[{id:'e',x:22,y:6,weapon:1813,loaded:0,ammo:0,patrol:false,overwatch:false}]});
 }
 const unit=b=>b.units[0],pocket=(u,item)=>inventoryUsage(u).slots.find(s=>s.entry?.item===item).id;
 const slotGun=(u,id)=>{const e=equipmentEndpoint(u,id);return readItemStack(u,e.item,1);};
@@ -20,7 +20,7 @@ const placed=(b,id='hand:right',count)=>{const n=actBattle(b,placement(b,id,coun
 test('selected physical stack loads only the target gun and retains exact remainder and reserve',()=>{
  const original=field(),b=pick(original),before=structuredClone(b),u=unit(b),preview=equipmentCursorPreview(b,u,placement(b));
  assert.equal(preview.operation,'reload');assert.equal(preview.pa,0);assert.equal(preview.rounds,2);assert.equal(preview.seconds,4);
- const n=placed(b);assert.equal(unit(n).weapon,1808);assert.equal(unit(n).weaponInstanceId,'right-gun');assert.equal(unit(n).condition,71);assert.equal(unit(n).loaded,2);assert.equal(unit(n).equipmentCursor.stack.count,3);assert.equal(unit(n).equipmentCursor.stack.name,'Cartuchos elegidos');assert.equal(unit(n).inventory.reserve.count,4);assert.equal(unit(n).ammo,4);assert.equal(unit(n).ap,u.ap);assert.equal(n.elapsedSeconds-b.elapsedSeconds,preview.seconds);assert.equal(unit(n).priming,48);assert.deepEqual(b,before);save(n);
+ const n=placed(b);assert.equal(unit(n).weapon,1808);assert.equal(unit(n).weaponInstanceId,'right-gun');assert.equal(unit(n).condition,71);assert.equal(unit(n).loaded,2);assert.equal(unit(n).equipmentCursor.stack.count,3);assert.equal(unit(n).equipmentCursor.stack.name,'Cartuchos elegidos');assert.equal(unit(n).inventory.reserve.count,4);assert.equal(unit(n).ammo,4);assert.equal(unit(n).ap,u.ap);assert.equal(n.elapsedSeconds-b.elapsedSeconds,preview.seconds);assert.equal(unit(n).priming,undefined);assert.deepEqual(b,before);save(n);
 });
 
 test('every firearm uses its compatible cartridge and the same reload rate as R',()=>{
@@ -32,7 +32,7 @@ test('every firearm uses its compatible cartridge and the same reload rate as R'
 
 test('either hand and a pocket can be loaded without changing the weapon being held',()=>{
  for(const host of ['left','pocket']){
-  const gun={weapon:1808,count:1,loaded:1,reloadProgress:.5,condition:63,weight:1.6,instanceId:'target-gun',name:'Mi pistola'},extra=host==='left'?{offHand:gun}:{inventory:{chosen:ammo('pistol_54',5),gun}},initial=field({weapon:1805,loaded:1,...extra}),b=pick(initial),id=host==='left'?'hand:left':pocket(unit(b),'inventory:gun'),n=placed(b,id),loaded=slotGun(unit(n),id);
+  const gun={weapon:1808,count:1,loaded:1,reloadProgress:.5,condition:63,weight:1.6,instanceId:'target-gun',name:'Mi pistola'},extra=host==='left'?{offHand:gun}:{inventory:{chosen:ammo('pistol_69',5),gun}},initial=field({weapon:1805,loaded:1,...extra}),b=pick(initial),id=host==='left'?'hand:left':pocket(unit(b),'inventory:gun'),n=placed(b,id),loaded=slotGun(unit(n),id);
   assert.equal(unit(n).weapon,1805);assert.equal(unit(n).loaded,1);assert.equal(loaded.weapon,1808);assert.equal(loaded.loaded,2);assert.equal(loaded.reloadProgress,undefined);assert.equal(loaded.condition,63);assert.equal(loaded.instanceId,'target-gun');assert.equal(loaded.name,'Mi pistola');assert.equal(unit(n).equipmentCursor.stack.count,4);save(n);
  }
 });
@@ -83,12 +83,12 @@ test('dragging ammo onto a gun follows the same paid load and stale drag stays a
 
 test('cursor return over a gun is ordinary return, never an implicit reload',()=>{
  const b=pick(field()),u=unit(b);u.equipmentCursor.sourceId='hand:right';const n=planEquipmentCursorReturn(u).unit;
- assert.equal(n.equipmentCursor,undefined);assert.equal(ammunitionByType(n).pistol_54,9);const gun=Object.values(n.inventory).find(item=>item.weapon===1808);assert.equal(gun.loaded,0);assert.equal(gun.instanceId,'right-gun');
+ assert.equal(n.equipmentCursor,undefined);assert.equal(ammunitionByType(n).pistol_69,9);const gun=Object.values(n.inventory).find(item=>item.weapon===1808);assert.equal(gun.loaded,0);assert.equal(gun.instanceId,'right-gun');
 });
 
 test('a real movement interrupt permits partial cursor loading and resumes without replaying AP, time or ammunition',async()=>{
  const {endTurn}=await import('../game/tactical.js');
- const initial=createBattle([{id:'p',x:1,y:1,weapon:1800,loaded:0,ammo:0,ammunitionVersion:1,blade:0,
+ const initial=createBattle([{id:'p',x:1,y:1,weapon:1800,loaded:0,ammo:0,ammunitionVersion:2,blade:0,
   agility:100,experienceLevel:10,inventory:{chosen:ammo('musket_75',5)},
  }],{width:32,height:12,seed:45,tiles:Array.from({length:384},(_,i)=>({x:i%32,y:Math.floor(i/32),type:'grass',blocked:false,cover:0})),
   enemies:[{id:'e',x:7,y:1,weapon:1809,loaded:0,ammo:0,patrol:false}],

@@ -11,7 +11,7 @@ import {encodeSave,decodeSave} from '../game/save.js';
 
 const owned=c=>Object.entries(c.sectors).filter(([,s])=>s.owner==='patriot').map(([id])=>id).sort();
 
-test('a hired-only squad earns its first expansion from Retiro and retains casualties and equipment on return',()=>{
+test('a hired-only squad earns its first expansion from Retiro and retains injuries and equipment on return',()=>{
  let c=initialCampaign(8);
  const order=action=>{c=dispatchCampaign(c,action);assert.equal(c.lastError,null,JSON.stringify(action)+': '+c.lastError);};
  assert.deepEqual(owned(c),['retiro']);assert.deepEqual(c.recruited,[]);
@@ -31,7 +31,7 @@ test('a hired-only squad earns its first expansion from Retiro and retains casua
  assert.equal(c.merchants.retiro.ammunition.rifle_62,merchantStock-10);
  order({type:'attack',sector:'buenos_aires'});
  const request=structuredClone(c.pendingBattle);
- assert.equal(c.hour,12);assert.equal(c.officer,null);assert.deepEqual(owned(c),['retiro']);assert.equal(request.enemies.length,6);
+ assert.equal(c.hour,12);assert.equal(c.officer,null);assert.deepEqual(owned(c),['retiro']);assert.equal(request.enemies.length,4);
  assert.ok(request.squad.every(u=>u.loaded===1&&u.ammo===9),'every hire draws its ten real matching loads');
  const orders=[];
  let {battle,actions}=fight(request,undefined,{controller:(b,u)=>{
@@ -60,7 +60,10 @@ test('a hired-only squad earns its first expansion from Retiro and retains casua
  if(carried.instanceId!==undefined)assert.equal(fieldWeapon.instanceId,carried.instanceId);
  const players=battle.units.filter(u=>u.side==='player'),dead=players.filter(u=>u.hp<=0),survivors=players.filter(u=>u.hp>0);
  assert.ok(players.some(u=>u.hp<request.squad.find(initial=>String(initial.id)===u.id).hp),'the assault must retain its actual wounds');
- assert.ok(dead.length>0,'the earned victory retains its actual deaths');
+ // The four-enemy opening can be won without deaths. Preserve every actual
+ // participant; casualty settlement has explicit coverage in battle-report.
+ assert.equal(players.length,request.squad.length);
+ assert.deepEqual(players.map(u=>u.id).sort(),request.squad.map(u=>String(u.id)).sort());
  assert.ok(survivors.some(u=>u.hp<request.squad.find(initial=>String(initial.id)===u.id).hp),'wounded survivors must retain their actual injuries');
  assert.ok(survivors.length>0);
  const pair=syncBattleTime(c,battle);assert.equal(pair.error,null);

@@ -18,7 +18,7 @@ function field(patch={},extra={}){
  const s=createBattle([{id:'p',x:2,y:2,facing:2,weapon:1805,weaponInstanceId:'right-pistol',loaded:0,ammo:3,condition:91,offHand:second(),...patch}],{width:16,height:8,seed:45,tiles:Array.from({length:128},(_,i)=>({x:i%16,y:Math.floor(i/16),type:'grass',cover:0,blocked:false})),enemies:[{id:'e',x:7,y:2,overwatch:false,patrol:false}],...extra});
  const u=s.units[0],count=patch.ammo??3,other=weaponAmmoType(u.offHand?.weapon);
  // Keep the original finite reserve: one prepared main-pistol load, then
- // distinct cartridges for the two barrels of the secondary pistol.
+ // cartridges for the two barrels of the secondary pistol.
  const main=other?Math.min(count,Math.max(0,WEAPONS[u.weapon].capacity-u.loaded)):count;
  setTestAmmunition(u,main);if(count-main)addAmmunition(u,other,count-main);syncUnitAmmunition(u);
  u.ap=patch.ap??100;for(const enemy of s.units.slice(1))enemy.ap=0;return s;
@@ -33,7 +33,7 @@ function panel(s,onOrder=()=>{}){return {battle:s,unit:s.units[0],mode:'fire',ai
 
 test('empty-pistol preview shows one reload order with exact rounds and AP for each hand',()=>{
  const s=field(),u=s.units[0],before=structuredClone(s),p=targetPreview(s,u,s.units[1],{mode:'fire',aim:4,hitLocation:'head'});
- assert.deepEqual(ammunitionByType(u),{pistol_69:1,pistol_54:2});assert.equal(u.ammo,1,'the main-pistol projection excludes the secondary prepared load');
+ assert.deepEqual(ammunitionByType(u),{pistol_69:3});assert.equal(u.ammo,3,'both pistols use the same family reserve');
  assert.equal(p.valid,true);assert.equal(p.actionLabel,'Recargar ambas pistolas');assert.equal(p.attackType,'reload');assert.equal(p.cursor,'reload');assert.equal(p.pa,87);assert.equal(p.rounds,3);assert.equal(p.remaining,13);
  assert.match(p.coverNote,/Mano principal: carga 1 cartucho \(32 PA\)/);assert.match(p.coverNote,/Segunda mano: carga 2 cartuchos \(55 PA\)/);assert.match(p.coverNote,/Quedan 0 cartuchos de reserva/);assert.equal(reload(s).disabled,false);assert.equal(reload(s).pa,p.pa);
  const html=render(h('svg',null,h(AimCursor,{point:{x:80,y:80},aim:4,preview:p,target:s.units[1]})));assert.match(html,/Recargar ambas pistolas · 87 PA/);assert.match(html,/13 PA restantes/);assert.match(html,/aim-reload/);assert.doesNotMatch(html,/aim-step|Cabeza/);
@@ -78,7 +78,7 @@ test('stowed or unserviceable secondary guns stay out of reload controls, and pr
  }
  const jammed=field({jammed:true,priming:4}),u=jammed.units[0];assert.equal(reload(jammed).disabled,true);assert.equal(emptyGunPreview(jammed,u).valid,false);assert.match(emptyGunPreview(jammed,u).reason,/Cebá el arma/);
  let sent;const tree=componentTree(JA2OrdersPanel,panel(jammed,a=>sent=a)),buttons=nodes(tree).filter(n=>n.type==='button');assert.ok(!buttons.some(n=>n.props['aria-label']?.startsWith('Recargar')));const reprime=buttons.find(n=>n.props['aria-label']==='Cebar');assert.ok(reprime);assert.equal(reprime.props.disabled,false);reprime.props.onClick();assert.deepEqual(sent,{type:'reprime'});
- const next=actBattle(jammed,{unitId:'p',...sent});assert.equal(next.lastError,null);assert.equal(next.units[0].jammed,false);assert.equal(next.units[0].loaded,u.loaded);assert.deepEqual(next.units[0].offHand,u.offHand);assert.equal(totalReserveAmmunition(next.units[0]),totalReserveAmmunition(u));assert.equal(next.units[0].priming,3);
+ const next=actBattle(jammed,{unitId:'p',...sent});assert.equal(next.lastError,null);assert.equal(next.units[0].jammed,false);assert.equal(next.units[0].loaded,u.loaded);assert.deepEqual(next.units[0].offHand,u.offHand);assert.equal(totalReserveAmmunition(next.units[0]),totalReserveAmmunition(u));assert.equal(next.units[0].priming,undefined);
 });
 
 test('empty-pistol reload information is independent of unseen people at the selected coordinates',()=>{

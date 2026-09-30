@@ -1,14 +1,16 @@
+import {LEGACY_AMMUNITION,AMMUNITION_FAMILIES} from './ammunition-families.js';
+import {groupAmmunitionCounts,groupAmmunitionResources,groupSceneAmmunition,legacyCompatibleReserve,legacyReserveTotal,groupAmmunitionNotices} from './ammunition-family-migration.js';
 import {WEAPONS} from './data.js';
 import {AMMUNITION_TYPES,weaponAmmoType,isAmmunitionStack,validateAmmunitionStack,ammunitionByType,totalReserveAmmunition} from './ammunition-types.js';
 import {initializeUnitAmmunition,syncUnitAmmunition} from './tactical-ammunition.js';
 
-export const AMMUNITION_VERSION=1;
+export const AMMUNITION_VERSION=2;
 export const AMMUNITION_RESOURCE_KEYS=Object.freeze(Object.fromEntries(Object.keys(AMMUNITION_TYPES).map(type=>[type,type==='musket_75'?'cartridges':`ammo_${type}`])));
 const need=(ok,message)=>{if(!ok)throw Error(message);};
 export function validateAmmoCounts(value){need(value!==null&&typeof value==='object'&&!Array.isArray(value),'La cuenta de munición no es válida.');for(const[type,n]of Object.entries(value))need(Object.hasOwn(AMMUNITION_TYPES,type)&&count(n),'La cuenta de munición no es válida.');return value;}
 const count=value=>Number.isSafeInteger(value)&&value>=0&&value<=1000000000;
 export function ammoResourceKey(type){need(typeof type==='string'&&Object.hasOwn(AMMUNITION_RESOURCE_KEYS,type),'El tipo de munición no es válido.');return AMMUNITION_RESOURCE_KEYS[type];}
-export function initialAmmunitionStock(){return Object.fromEntries(Object.values(AMMUNITION_RESOURCE_KEYS).map((key,i)=>[key,[100,60,30,20,20,20,10,20,20][i]]));}
+export function initialAmmunitionStock(){return Object.fromEntries(Object.values(AMMUNITION_RESOURCE_KEYS).map((key,i)=>[key,[180,30,50,40][i]]));}
 export function addAmmoCounts(target,source,factor=1){for(const[type,n]of Object.entries(source??{})){need(Object.hasOwn(AMMUNITION_TYPES,type)&&count(n),'La cuenta de munición no es válida.');target[type]=(target[type]??0)+n*factor;}return target;}
 export const totalAmmoCounts=counts=>Object.values(counts??{}).reduce((sum,n)=>sum+n,0);
 export function stackAmmunitionByType(stack){
@@ -50,21 +52,22 @@ function rejectMixedLegacy(root){
 }
 export function migrateBattleAmmunition(snapshot,{legacy=snapshot?.ammunitionVersion===undefined}={}){
  if(!snapshot)return snapshot;
- need(snapshot.ammunitionVersion===undefined||snapshot.ammunitionVersion===1,'La versión de munición no es válida.');
+ need(snapshot.ammunitionVersion===undefined||[1,2].includes(snapshot.ammunitionVersion),'La versión de munición no es válida.');
  legacy=snapshot.ammunitionVersion===undefined;
  if(legacy)rejectMixedLegacy(snapshot);
  for(const unit of snapshot.units??[]){
-  if(!legacy)need(unit.ammunitionVersion===1,'La munición del combatiente no tiene versión.');
+  if(!legacy)need(unit.ammunitionVersion===snapshot.ammunitionVersion,'La munición del combatiente no tiene versión.');
   initializeUnitAmmunition(unit,{legacy,defaultCount:0});
  }
+ if(snapshot.ammunitionVersion===1)groupSceneAmmunition(snapshot);
  if(legacy)for(const stack of fieldStacks(snapshot))migrateStack(stack);
  else {rejectLegacyStacks(fieldStacks(snapshot));for(const u of snapshot.units??[])rejectLegacyStacks(Object.values(u.inventory??{}));}
- snapshot.ammunitionVersion=1;return snapshot;
+ snapshot.ammunitionVersion=2;return snapshot;
 }
 export function syncCarriedAmmunition(record,weapon){
  record.carriedAmmo=totalReserveAmmunition(record)+(record.captured?0:record.carriedLoaded??0);
  if(record.captured&&record.capturedAmmunition)record.capturedAmmunition.ammo=totalReserveAmmunition(record);
- record.ammunitionVersion=1;
+ record.ammunitionVersion=2;
  return record;
 }
 function initializeStrategicRecord(record,weapon,legacy){
@@ -72,19 +75,21 @@ function initializeStrategicRecord(record,weapon,legacy){
  const carried=record.carriedAmmo??0;
  need(count(carried)&&count(loaded)&&(record.captured||loaded<=carried),'La munición personal antigua no es válida.');
  const loose=record.captured?record.capturedAmmunition?.ammo??0:carried-loaded;
- const actor={...record,weapon,loaded,ammo:loose};
+ if(record.ammunitionVersion===1){const reserve=legacyReserveTotal(record);need(record.carriedAmmo===reserve+(record.captured?0:loaded)&&(!record.captured||record.capturedAmmunition?.ammo===reserve),'La reserva personal antigua no coincide con su inventario.');}
+ const actor={...record,weapon,loaded,ammo:record.ammunitionVersion===1?legacyCompatibleReserve(record,weapon):loose};
  initializeUnitAmmunition(actor,{legacy,defaultCount:0});
  for(const key of ['inventory','pocketOrder','equipmentCursor','activeItem','leftHandItem','activeSlot','handItems','leftHandMetadata','mainHandMetadata'])if(Object.hasOwn(actor,key))record[key]=structuredClone(actor[key]);else delete record[key];
  syncCarriedAmmunition(record,weapon);
 }
 export function migrateCampaignAmmunition(state,roster=[],{fresh=false}={}){
- need(state.ammunitionVersion===undefined||state.ammunitionVersion===1,'La versión de munición no es válida.');
+ need(state.ammunitionVersion===undefined||[1,2].includes(state.ammunitionVersion),'La versión de munición no es válida.');
  const legacy=state.ammunitionVersion===undefined;
+ if(state.ammunitionVersion===1)return migrateCampaignFamilies(state,roster);
  if(!legacy)return state;
  if(!fresh){rejectMixedLegacy(state);need(Object.values(AMMUNITION_RESOURCE_KEYS).filter(key=>key!=='cartridges').every(key=>state.resources?.[key]===undefined)&&Object.values(state.merchants??{}).every(m=>m.ammunition===undefined),'La partida mezcla reservas antiguas y nuevas de munición.');}
  const snapshots=[...Object.values(state.sectorStates??{}),...Object.values(state.sceneStates??{}),...(state.pendingBattle?.resumeSnapshot?[state.pendingBattle.resumeSnapshot]:[])];
  const looseLegacy=!fresh&&((state.resources?.cartridges??0)>0||Object.values(state.depots??{}).some(d=>d.cartridges>0)||[...(state.shipments??[]),...(state.convoys??[])].some(s=>s.goods?.cartridges>0)||Object.values(state.operativeState??{}).some(r=>r.ammunitionVersion===undefined&&((r.carriedAmmo??0)-(r.carriedLoaded??0)>0||r.capturedAmmunition?.ammo>0))||(state.pendingBattle?.squad??[]).some(u=>u.ammunitionVersion===undefined&&u.ammo>0)||snapshots.some(b=>(b.units??[]).some(u=>u.ammunitionVersion===undefined&&u.ammo>0)||fieldStacks(b).some(i=>i.item==='ammo'&&i.count>0)));
- for(const [at,merchant]of Object.entries(state.merchants??{}))merchant.ammunition??=Object.fromEntries(Object.keys(AMMUNITION_TYPES).map(type=>[type,at==='ensenada'?0:60]));
+ for(const [at,merchant]of Object.entries(state.merchants??{}))merchant.ammunition??=Object.fromEntries(Object.keys(AMMUNITION_TYPES).map(type=>[type,at==='ensenada'?0:60*Object.values(AMMUNITION_FAMILIES).find(f=>f.type===type).legacyTypes.length]));
  if(state.resources)for(const key of Object.values(AMMUNITION_RESOURCE_KEYS))if(state.resources[key]===undefined)state.resources[key]=0;
  for(const [id,record]of Object.entries(state.operativeState??{}))initializeStrategicRecord(record,roster.find(op=>String(op.id)===id)?.weapon??state.loadouts?.[id]?.weapon??0,true);
  const requests=state.pendingBattle?[state.pendingBattle]:[];
@@ -108,13 +113,13 @@ export function migrateCampaignAmmunition(state,roster=[],{fresh=false}={}){
   request.fieldCartridges=totalAmmoCounts(request.fieldAmmunition);
   for(const record of request.remains??[])initializeUnitAmmunition(record.unit,{legacy:true,defaultCount:0});
   if(request.resumeSnapshot)migrateBattleAmmunition(request.resumeSnapshot,{legacy:true});
-  request.ammunitionVersion=1;
+  request.ammunitionVersion=2;
  }
  for(const snapshot of [...Object.values(state.sectorStates??{}),...Object.values(state.sceneStates??{})])migrateBattleAmmunition(snapshot,{legacy:true});
  for(const records of Object.values(state.sectorRemains??{}))for(const record of records)initializeUnitAmmunition(record.unit,{legacy:true,defaultCount:0});
  for(const unit of [...Object.values(state.garrisons??{}).flat(),...(state.militiaTraining??[]).flatMap(course=>course.trainees??[]),...(state.enemyGroups??[]).flatMap(group=>group.units??[]),...Object.values(state.missionAllies??{})])if(unit&&typeof unit==='object')initializeUnitAmmunition(unit,{legacy:true,defaultCount:0});
- state.ammunitionVersion=1;
- if(looseLegacy&&Array.isArray(state.log)){state.log.unshift({hour:state.hour,text:'La munición antigua sin tipo se conserva como cartucho de mosquete .75. Las cargas dentro de las armas conservan el tipo de cada arma.'});state.log=state.log.slice(0,80);}
+ state.ammunitionVersion=2;
+ if(looseLegacy&&Array.isArray(state.log)){state.log.unshift({hour:state.hour,text:'La munición antigua sin tipo se conserva como cartuchos de mosquete. Las cargas dentro de las armas conservan el tipo de cada arma.'});state.log=state.log.slice(0,80);}
  return state;
 }
 export function syncCampaignAmmunition(state,roster=[]){
@@ -126,13 +131,13 @@ export function syncCampaignAmmunition(state,roster=[]){
  return state;
 }
 export function validateCampaignAmmunition(state,roster=[]){
- need(state.ammunitionVersion===1,'La versión de munición no es válida.');
+ need(state.ammunitionVersion===2,'La versión de munición no es válida.');
  for(const key of Object.values(AMMUNITION_RESOURCE_KEYS))need(count(state.resources?.[key]),'La reserva de munición no es válida.');
- const unit=u=>{rejectLegacyStacks(Object.values(u?.inventory??{}));need(u?.ammunitionVersion===1,'La munición del combatiente no tiene versión.');const before=u.ammo;syncUnitAmmunition(u);need(count(before)&&before===u.ammo,'La reserva del combatiente no coincide con su inventario.');};
+ const unit=u=>{rejectLegacyStacks(Object.values(u?.inventory??{}));need(u?.ammunitionVersion===2,'La munición del combatiente no tiene versión.');const before=u.ammo;syncUnitAmmunition(u);need(count(before)&&before===u.ammo,'La reserva del combatiente no coincide con su inventario.');};
  for(const u of [...Object.values(state.garrisons??{}).flat(),...(state.militiaTraining??[]).flatMap(course=>course.trainees??[]),...(state.enemyGroups??[]).flatMap(group=>group.units??[]),...Object.values(state.missionAllies??{})])unit(u);
  for(const snapshot of [...Object.values(state.sectorStates??{}),...Object.values(state.sceneStates??{}),...(state.pendingBattle?.resumeSnapshot?[state.pendingBattle.resumeSnapshot]:[])]){rejectLegacyStacks(fieldStacks(snapshot));for(const u of snapshot.units??[])rejectLegacyStacks(Object.values(u.inventory??{}));}
  if(state.pendingBattle){const request=state.pendingBattle;rejectLegacyStacks(fieldStacks(request));
-  need(request.ammunitionVersion===1,'El despliegue no tiene versión de munición.');
+  need(request.ammunitionVersion===2,'El despliegue no tiene versión de munición.');
   for(const u of [...(request.squad??[]),...(request.garrison??[]),...(request.missionAllies??[]),...(request.enemies??[])])unit(u);
   for(const key of ['issuedAmmunition','fieldAmmunition'])validateAmmoCounts(request[key]);
   for(const source of [...(request.ammunitionSources??[]),...(request.garrisonLootSources??[]),...(request.casualtyLootSources??[])])validateAmmoCounts(source.ammunitionByType);
@@ -140,10 +145,43 @@ export function validateCampaignAmmunition(state,roster=[]){
  }
  for(const [id,record]of Object.entries(state.operativeState??{})){
   rejectLegacyStacks(Object.values(record.inventory??{}));
-  need(record.ammunitionVersion===1,'La munición del combatiente no tiene versión.');
+  need(record.ammunitionVersion===2,'La munición del combatiente no tiene versión.');
   const expected=totalReserveAmmunition(record)+(record.captured?0:record.carriedLoaded??0);
   need(record.carriedAmmo===expected,'La reserva personal no coincide con su inventario.');
   if(record.captured)need(record.capturedAmmunition?.ammo===totalReserveAmmunition(record),'La munición en custodia no coincide con su inventario.');
  }
+ return state;
+}
+
+// Version 1 named each historical load separately. Group every physical owner,
+// finite stock and return receipt once before current-state validation.
+function migrateCampaignFamilies(state,roster) {
+ const tactical=unit=>{need(unit?.ammunitionVersion===1,'La munición antigua del combatiente no tiene versión.');initializeUnitAmmunition(unit,{defaultCount:0});};
+ need(state.resources&&Object.keys(LEGACY_AMMUNITION).every(type=>Object.hasOwn(state.resources,type==='musket_75'?'cartridges':`ammo_${type}`)),'La reserva antigua de munición está incompleta.');
+ state.resources=groupAmmunitionResources(state.resources);
+ for(const [at,goods]of Object.entries(state.depots??{}))state.depots[at]=groupAmmunitionResources(goods);
+ for(const task of state.production??[])task.yield=groupAmmunitionResources(task.yield);
+ for(const shipment of [...(state.shipments??[]),...(state.convoys??[])])shipment.goods=groupAmmunitionResources(shipment.goods);
+ for(const [at,merchant]of Object.entries(state.merchants??{})){const counts=merchant.ammunition;need(counts&&Object.keys(counts).length===9&&Object.keys(LEGACY_AMMUNITION).every(type=>Number.isInteger(counts[type])&&counts[type]>=0&&counts[type]<=(at==='ensenada'?0:60)),'La munición antigua del comercio no es válida.');merchant.ammunition=groupAmmunitionCounts(counts);}
+ groupAmmunitionNotices(state);
+ for(const [id,record]of Object.entries(state.operativeState??{})){
+  need(record?.ammunitionVersion===1,'La munición personal antigua no tiene versión.');
+  initializeStrategicRecord(record,roster.find(op=>String(op.id)===id)?.weapon??state.loadouts?.[id]?.weapon??0,false);
+ }
+ for(const unit of [...Object.values(state.garrisons??{}).flat(),...(state.militiaTraining??[]).flatMap(course=>course.trainees??[]),...(state.enemyGroups??[]).flatMap(group=>group.units??[]),...Object.values(state.missionAllies??{})])tactical(unit);
+ for(const snapshot of [...Object.values(state.sectorStates??{}),...Object.values(state.sceneStates??{})]){
+  need(snapshot.ammunitionVersion===1,'La escena antigua no tiene versión de munición.');migrateBattleAmmunition(snapshot);
+ }
+ for(const remains of Object.values(state.sectorRemains??{}))for(const entry of remains)tactical(entry.unit);
+ const request=state.pendingBattle;
+ if(request){
+  need(request.ammunitionVersion===1,'El despliegue antiguo no tiene versión de munición.');
+  for(const key of ['squad','garrison','missionAllies','enemies'])for(const unit of request[key]??[])tactical(unit);
+  for(const entry of request.remains??[])tactical(entry.unit);
+  if(request.resumeSnapshot)migrateBattleAmmunition(request.resumeSnapshot);
+  groupSceneAmmunition(request);request.ammunitionVersion=2;
+ }
+ state.ammunitionVersion=2;
+ if(Array.isArray(state.log)){state.log.unshift({hour:state.hour,text:'Los cartuchos guardados se agrupan en munición de mosquete, fusil, pistola y perdigones. Cada propietario conserva sus cantidades.'});state.log=state.log.slice(0,80);}
  return state;
 }

@@ -4,38 +4,47 @@
 
 ![Granaderos title artwork: mounted soldiers overlooking the Paraná and San Carlos convent at sunset](web/public/art/main-menu.webp)
 
-A browser strategy and turn-based tactical game set during the **Argentine War of Independence (1810–1820)**. Recruit historical figures, manage a campaign across the provinces, and command your squad through smoke, musket fire, and cavalry charges.
+Granaderos is a browser strategy and turn-based tactical game set during the Argentine War of Independence. Recruit a force, manage supplies and alliances, and command individual soldiers in battle. The game draws on **Jagged Alliance 2 v1.13** and adapts its systems to the weapons and conditions of the period.
 
-Inspired by **Jagged Alliance 2 v1.13**, Granaderos connects decisions at your campaign desk to the soldiers and supplies you take onto the battlefield. Player-facing content is **Spanish**; code and documentation are English.
+The game interface is **Spanish**. Code and documentation are English.
 
-**Playable and in development.** The complete design has not yet passed its completion audit. See the [progress ledger](docs/PROGRESS.md) for implemented systems, evidence, and remaining work.
+**Playable and in development.** A complete campaign from a fresh start has not yet passed acceptance. Full JA2 parity, campaign balance, character animation coverage and performance across all scenes remain open. Read the [campaign acceptance record](docs/verification/gameplay-completion.md) and [JA2 parity audit](docs/verification/ja2-parity-audit.md) for the evidence and remaining work.
 
-[Run locally](#run-locally) · [Gameplay](#how-you-play) · [Artwork](#faces-of-the-campaign) · [Development](#development)
+[Run locally](#run-locally) · [Gameplay](#gameplay) · [Development](#development) · [Documentation](docs/README.md)
 
-## How you play
+## Run locally
 
-The campaign is fought on two scales: a strategic map where you prepare your forces, and tactical maps where every action spends precious time and ammunition.
+Install **Node.js 22.13.0 or newer** and npm. Then run:
 
-| At the campaign desk | On the battlefield |
+```sh
+git clone https://github.com/fsodano/granaderos.git
+cd granaderos
+npm ci --prefix web
+npm run dev
+```
+
+Open [localhost:3000](http://localhost:3000), or the address shown by the development server.
+
+Choose **Nueva campaña** to start at Retiro. Hire a combatant or create your own character to begin. Hiring uses the quoted contract price; the current character-creation path is free. You can also choose **Combate de San Lorenzo** for a separate battle.
+
+The game saves campaign progress in browser storage. Use **Guardar** to export a portable save file and **Importar partida** to load one.
+
+The browser game uses JavaScript and React. It does not require the engine submodule or an original JA2 installation.
+
+## Gameplay
+
+The campaign connects strategic decisions to persistent tactical encounters. Soldiers retain their wounds and equipment. Deaths, prisoners and spent supplies affect later decisions.
+
+| On the campaign map | On the battlefield |
 | --- | --- |
-| Recruit officers and volunteers, equip squads, and pay stipends. | Move and fight with a limited action-point budget. |
-| Secure provinces and protect the routes that keep them supplied. | Balance musket fire and slow reloads against melee and mounted charges. |
-| Turn raw materials into uniforms, weapons, and artillery. | Account for smoke, misfires, terrain, and lines of sight. |
-| Negotiate with factions and prepare defenses against raids. | Bring surviving soldiers and remaining ammunition back to the campaign. |
+| Hire combatants, form squads and pay contracts. | Explore sectors and enter turn-based combat on contact. |
+| Control routes, move supplies and prepare production. | Manage action points, ammunition, reloads and weapon condition. |
+| Train militia, repair equipment and treat wounded soldiers. | Use terrain, sight, smoke, posture and interrupts. |
+| Negotiate alliances and defend captured sectors. | Fight with firearms, blades, cavalry and crew-served artillery. |
 
-Battles have lasting consequences: casualties and spent supplies affect what you can do next. A successful advance needs recruits, production, diplomacy, and a route home as much as it needs a winning volley.
+The campaign begins with Retiro under your control. Its chapters follow San Lorenzo, the northern campaign and Yatasto, El Plumerillo, and preparations for the Army of the Andes. Maps and events are historical interpretations adapted for play.
 
-## From Retiro to the Andes
-
-The campaign follows five stages inspired by San Martín's military preparations:
-
-1. **Retiro** — gather the horses, muskets, and materials needed to organize the force.
-2. **San Lorenzo** — fight the river encounter on its authored tactical map.
-3. **Yatasto** — secure the northern campaign and negotiate its support.
-4. **El Plumerillo** — fund the foundry and prepare equipped infantry and artillery.
-5. **The Andean preparations** — meet the military and diplomatic requirements that unlock San Martín and complete the campaign objectives.
-
-Thirteen strategic sectors connect the campaign's theaters, with fourteen authored tactical maps including San Lorenzo. This is a historical interpretation built around the [supplied game design](docs/specification/original.txt); logistics, geography, and events are adapted for play.
+Use the in-game **Manual de campaña** for an introduction. See the [tactical controls](docs/gameplay/tactical/TACTICAL-HOTKEYS.md) for keyboard and mouse commands, and the [documentation index](docs/README.md) for system guides and verification records.
 
 ## Faces of the campaign
 
@@ -47,50 +56,34 @@ Thirteen strategic sectors connect the campaign's theaters, with fourteen author
   </tr>
 </table>
 
-The roster includes thirteen historical operatives with distinct attributes, equipment, and recruitment conditions, alongside civic volunteers and a custom officer system.
+Historical figures serve alongside fictional paid volunteers and a custom character. Their attributes, equipment and recruitment conditions differ.
 
-The title painting and portraits above are **original game artwork, not gameplay screenshots**. AI-generated paintings and portraits are retained with their prompts and source files; likenesses and uniform details are artistic interpretations. See the [artwork documentation](assets/README.md) and [portrait references](assets/portrait-references.md) for provenance and historical limitations.
-
-## Run locally
-
-Requires **Node.js 22.13.0 or newer** and npm.
-
-```sh
-git clone https://github.com/fsodano/granaderos.git
-cd granaderos
-npm ci --prefix web
-npm run dev
-```
-
-Open **http://localhost:3000**. Campaign saves are stored in your browser; use **Guardar** to export a portable save file.
-
-The playable version uses JavaScript and React. You do not need the engine submodule or an original JA2 installation to run or build the browser game.
+The images above are **game artwork, not gameplay screenshots**. AI-generated paintings and portraits have retained prompts and source files. Likenesses and uniform details are artistic interpretations. See the [artwork documentation](assets/README.md) and [portrait references](assets/portrait-references.md) for provenance and limitations.
 
 ## Development
 
 Run these commands from the repository root after installing the web dependencies:
 
 ```sh
-npm test             # Rules, campaign, maps, and integration checks
+npm test             # Rules and integration checks
 npm run typecheck    # TypeScript validation
-npm run build        # Static production artifact in dist/
+npm run build        # Build and validate the static export in dist/
 ```
 
-Automated checks verify rules and integration; they do not establish that a human has completed the campaign. Remaining release work includes broader gameplay fidelity, animation and dialogue coverage, historical review, balance, and an end-to-end playthrough.
+See the [verification records](docs/verification/README.md) for known failures and tested scope. Automated checks and recorded route tests cover specific scenarios. Complete campaign acceptance also requires gameplay evidence.
 
-| Path | What lives here |
+| Path | Contents |
 | --- | --- |
-| [web/](web/) | Spanish browser interface and installed artwork |
-| [game/](game/) | Tactical rules, campaign systems, authored maps, and save validation |
-| [assets/](assets/) | Original art, generation prompts, references, and reproducible exports |
+| [web/](web/) | Browser interface, browser workers and installed artwork |
+| [game/](game/) | Tactical rules, campaign systems, maps and save validation |
+| [assets/](assets/) | Artwork sources, prompts, references and exports |
 | [tests/](tests/) | Rules and integration checks |
-| [docs/](docs/) | Design, implementation notes, and verification records |
-| `engine/`, `native/`, `patches/`, `mod/` | Upstream source and earlier native conversion work retained for reference |
+| [tools/](tools/) | Build, asset and verification tools |
+| [docs/](docs/README.md) | Guides, design documents and verification records |
+| `engine/`, `native/`, `patches/`, `mod/` | Upstream source and earlier native conversion work |
 
-For more detail, read the [campaign systems guide](docs/WEB-SYSTEMS.md), [tactical verification notes](docs/tactical-verification.md), and [requirement audit](docs/REQUIREMENT-AUDIT.md).
+Read the [development guide](docs/development/getting-started.md) for setup, build outputs and verification guidance. The browser implementation is the primary game; the earlier native conversion has separate build and runtime requirements.
 
-## Contributing
+For contributions, identify the relevant acceptance criteria in the [parity audit](docs/verification/ja2-parity-audit.md) or [documentation index](docs/README.md). Submit a focused pull request with verification evidence. Keep generated assets reproducible from their source inputs and state which behavior was checked in the browser.
 
-Start with the [progress ledger](docs/PROGRESS.md) to find outstanding work and its acceptance criteria. Make changes on a feature branch and submit a pull request with relevant verification evidence. Keep generated assets reproducible from committed source inputs, and distinguish automated checks from actual gameplay verification.
-
-[VERSION](VERSION) follows Semantic Versioning. Development milestones use prerelease versions; **1.0.0** requires the full supplied specification to pass its completion audit.
+[VERSION](VERSION) records the development version. A 1.0.0 release requires the supplied specification to pass its completion audit.

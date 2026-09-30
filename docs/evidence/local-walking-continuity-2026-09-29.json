@@ -1,0 +1,156 @@
+{
+  "scope": "Advanced local checkout served on port 3000; not published-main or full-game acceptance",
+  "base": "eb39ef7e903fa33f1d463b2af0db2de3c66cf93c",
+  "files": {
+    "web/app/useUnitMotion.ts": "ec17527c34e31ad1a1129cf043e02ef9eb136bfe8a0410ca492c4bd0ed3dfd02",
+    "game/sprite-render.js": "d60230c70e95b1533c7bb7206f964d054af37756ee236b066a2545e45d27ae9e",
+    "web/app/SpriteFigure.tsx": "5b56a4c186fde488909c6be32d9eeeac7c18bc2db7b3c4abda51f2b8a2760bb0",
+    "tests/enemy-motion-gait.test.mjs": "3ed949c071ae00671f4427b6b5a15a5e954cd0e6f19baae76772f6a3cd588065",
+    "tests/illustrated-sprite-runtime.test.mjs": "4d392b0cea47327fda8eef32310694933f6dd176376929c9a107cfa1fca70a4a",
+    "web/app/CampaignPerformance.tsx": "b3c56c3d83b8eea416b9656869fbd7d803ac43c280634a28a13777766b37b2e0"
+  },
+  "focusedOriginal": {
+    "total": 33,
+    "passed": 33,
+    "failed": 0,
+    "skipped": 0
+  },
+  "relatedIsolated": {
+    "total": 44,
+    "passed": 44,
+    "failed": 0,
+    "skipped": 0
+  },
+  "playerModes": {
+    "total": 8,
+    "passed": 8,
+    "failed": 0,
+    "skipped": 0
+  },
+  "types": "PASS",
+  "build": {
+    "status": "PASS",
+    "files": 1099,
+    "assetReferences": 993
+  },
+  "browser": {
+    "origin": "http://localhost:3000/?qa=1&performance=1",
+    "sector": "retiro",
+    "scalePercent": 100,
+    "captureSeconds": 20,
+    "visible": true,
+    "start": {
+      "x": 23,
+      "y": 20,
+      "energy": 98.8
+    },
+    "end": {
+      "x": 23,
+      "y": 14,
+      "energy": 98.5
+    },
+    "actors": 1,
+    "all": {
+      "frames": 609,
+      "meanMs": 32.868144499179,
+      "p95Ms": 34.20000000001164,
+      "maxMs": 34.300000000046566
+    },
+    "moving": {
+      "frames": 56,
+      "meanMs": 28.275000000000414,
+      "p95Ms": 33.40000000002328,
+      "maxMs": 33.70000000001164
+    },
+    "positionUpdates": {
+      "frames": 48,
+      "meanMs": 32.29375000000073,
+      "p95Ms": 33.70000000001164,
+      "maxMs": 66.70000000001164
+    },
+    "walkingSprites": [
+      {
+        "unitId": "110",
+        "name": "granadero-walk",
+        "direction": 1,
+        "phases": [
+          0,
+          1,
+          2,
+          3,
+          0,
+          1,
+          2,
+          3
+        ],
+        "samples": 56,
+        "fractionalPositions": 56
+      }
+    ],
+    "longTasks": [],
+    "slowFrames": [],
+    "consoleErrors": 0,
+    "conditions": "Test runners stopped. Battery power at 18 percent. Browser display enabled for this capture. The earlier hidden capture also ran near 30 FPS. Energy-saving throttling is possible but not established; no system or browser power setting was changed.",
+    "limits": "All existing poses appear in order, but only four poses at five FPS exist. This is not sustained 60 FPS or complete walking-art acceptance."
+  },
+  "logs": {
+    "focusedOriginal": {
+      "sha256": "fb61540ffdd027f6ba640f10d08d5ba07a3ad7c66fd4efe74a26be19cee36e10"
+    },
+    "relatedIsolated": {
+      "sha256": "0fc09e2d8a7864e835ede024b3b33d3b51095b1fb0206aa4a00b523b365c1655"
+    },
+    "playerModes": {
+      "sha256": "669f4a02522f30f8536613aed768caa595be480a7e46baeea8c0cce3a1d23736"
+    },
+    "types": {
+      "sha256": "618e2b7cc2f862b8b6b986380544b0379d2b322c250298a73c22eb1239b0ee30"
+    },
+    "build": {
+      "sha256": "648df95600cb981e3091e31742a484504e6c43ee2ff67a5a91d6c3eae1670b6d"
+    },
+    "renderedOriginal": {
+      "sha256": "9264b9196a2b30c659895a7f61f7102231319094ef87f1c96087ac792ff01749"
+    }
+  },
+  "renderedOriginal": {
+    "total": 11,
+    "passed": 11,
+    "failed": 0,
+    "skipped": 0
+  },
+  "preservation": {
+    "sourceFilesCompared": 743,
+    "unrelatedSourceChanges": 0,
+    "method": "Compare the retained pre-integration source manifest. All eleven differences belong to this walking correction or the already recorded enemy/scenery integration."
+  },
+  "idleBrowserControl": {
+    "screen": "title",
+    "campaign": false,
+    "actors": 0,
+    "svgElements": 0,
+    "captureSeconds": 6,
+    "visible": true,
+    "frames": 184,
+    "meanMs": 32.654347826086955,
+    "p95Ms": 34.20000000000073,
+    "maxMs": 34.399999999999636,
+    "longTasks": [],
+    "slowFrames": [],
+    "interpretation": "The browser callback rate remains near 30 FPS with no tactical scene or animation. The walking renderer is not sufficient to explain the current callback limit; the specific platform or power cause is not established."
+  },
+  "published": {
+    "pr": "https://github.com/fsodano/granaderos/pull/127",
+    "head": "fca80a22f9a97c57ab825d4402b0bbc64f01c80e",
+    "merge": "45bcc53861e3891fec40058c862cb256e7912478",
+    "mergedAt": "2026-09-29T14:29:32Z",
+    "checks": "All five exact-head checks passed",
+    "run": "https://github.com/fsodano/granaderos/actions/runs/36581916832",
+    "tests": {
+      "passed": 1247,
+      "total": 1247,
+      "failed": 0,
+      "skipped": 0
+    }
+  }
+}

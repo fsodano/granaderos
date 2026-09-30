@@ -1,0 +1,50 @@
+{
+  "scope": "Paid rifle and prisoner-safe firing trials; neither satisfies complete rescue.",
+  "purchase": {
+    "item": 1802,
+    "quantity": 2,
+    "recipients": [
+      112,
+      113
+    ],
+    "method": "Normal purchase, wait for real imported shipment, then equip."
+  },
+  "firstTrial": {
+    "controller": "Northern firing controller, clear guards first",
+    "turn": 17,
+    "guardsKilled": 11,
+    "rescuerDepartures": 5,
+    "failure": "Friendly missed rifle shot inflicted 61 damage on prisoner 10; subsequent bleeding killed him."
+  },
+  "protectedTrial": {
+    "outcome": "retreat",
+    "turn": 9,
+    "departures": 0,
+    "prisoners": [
+      {
+        "id": 3,
+        "hp": 15,
+        "departed": false
+      },
+      {
+        "id": 4,
+        "hp": 84,
+        "departed": false
+      },
+      {
+        "id": 10,
+        "hp": 72,
+        "departed": false
+      }
+    ],
+    "policy": "Avoid visible prisoners within 1.5 cells of the firing line; choose another target when possible.",
+    "failure": "Force retreated without physical evacuation."
+  },
+  "nextAction": "Add a paid coordinated support squad while preserving the prisoner-safe firing constraint.",
+  "adopted": "Stronger route completion assertions only; experimental preparation and controllers not adopted.",
+  "logs": [
+    "/tmp/granaderos-humahuaca-trace.log",
+    "/tmp/granaderos-humahuaca-safe-fire.log",
+    "/tmp/granaderos-humahuaca-current-verified.log"
+  ]
+}

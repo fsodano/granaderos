@@ -5,7 +5,7 @@ import {chooseEnemyAction} from '../game/tactical-ai.js';
 import {shotLocationEffects} from '../game/targeted-combat.js';
 import {sameCell,spacePoint,tacticalLevel} from '../game/tactical-space.js';
 
-function rooftopReconOrder(b,u){
+function rooftopReconOrder(b,u,reconBudget){
  if(b.mode!=='exploration'||tacticalLevel(u)!==0)return null;
  // Reconnoitre toward a real roof overlooking the known sector center. The
  // former straight-to-center approach funneled the squad around one blind
@@ -16,7 +16,7 @@ function rooftopReconOrder(b,u){
  if(!goal)return null;
  const perceived={...b,units:b.units.filter(v=>v.side===u.side||canSee(b,u,v))};
  const route=getReachable(perceived,u,{stopAt:p=>sameCell(p,goal)})[0],reachable=getReachable(perceived,u);
- const step=[...(route?.path??[])].reverse().map(p=>reachable.find(v=>sameCell(v,p))).find(p=>p.cost>0&&p.cost<=Math.min(40,u.ap-20));
+ const step=[...(route?.path??[])].reverse().map(p=>reachable.find(v=>sameCell(v,p))).find(p=>p.cost>0&&p.cost<=Math.min(reconBudget,u.ap-20));
  return step?{type:'move',unitId:u.id,...spacePoint(step)}:null;
 }
 
@@ -42,8 +42,10 @@ function aimedShotOrder(b,u){
  return shots.sort((a,b)=>b.score-a.score)[0]?.action??null;
 }
 
-export function hiredAssaultOrder(b,u){
- const reconnaissance=rooftopReconOrder(b,u);if(reconnaissance)return reconnaissance;
+export function hiredAssaultOrder(b,u,{reconBudget=32}={}){
+ // Short reconnaissance legs let the next soldier catch up before contact.
+ // They use ordinary moves; combat, casualties and ammunition stay authoritative.
+ const reconnaissance=rooftopReconOrder(b,u,reconBudget);if(reconnaissance)return reconnaissance;
  const action=combatOrder(b,u);
  if(action?.type==='fire')return aimedShotOrder(b,u)??action;
  if(action?.type!=='stance'||action.stance!=='prone')return action;

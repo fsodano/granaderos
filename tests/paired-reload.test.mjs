@@ -10,7 +10,7 @@ import {setTestAmmunition} from './typed-ammunition-fixture.mjs';
 
 const second=(patch={})=>({weapon:1806,loaded:0,condition:57,jammed:false,count:1,weight:1.2,instanceId:'left-gun',name:'Recuerdo',...patch});
 function supplied(raw){
- const unit={...raw,inventory:structuredClone(raw.inventory??{}),ammunitionVersion:1},count=raw.ammo??0;
+ const unit={...raw,inventory:structuredClone(raw.inventory??{}),ammunitionVersion:2},count=raw.ammo??0;
  const first=weaponAmmoType(raw.weapon),other=weaponAmmoType(raw.offHand?.weapon);
  // Keep each fixture's original finite total. Unlike pistols need separate
  // prepared loads; a full main gun leaves the finite reserve for the other.
@@ -32,8 +32,8 @@ const total=u=>u.loaded+u.offHand.loaded+totalReserveAmmunition(u);
 test('R loads both held pistols in main-first order and pays both real loading costs',()=>{
  const s=field(),before=structuredClone(s),plan=reloadPlan(s.units[0],s);
  assert.equal(plan.pa,60);assert.deepEqual(plan.hands.map(h=>[h.hand,h.rounds,h.pa]),[['primary',1,32],['offhand',1,28]]);
- const n=reload(s),u=n.units[0];assert.equal(u.ap,40);assert.equal(u.loaded,1);assert.equal(u.offHand.loaded,1);assert.equal(totalReserveAmmunition(u),6);assert.equal(u.priming,48);
- assert.deepEqual(ammunitionByType(u),{pistol_69:3,pistol_50:3});assert.equal(u.ammo,3,'the scalar displays only the main pistol reserve');
+ const n=reload(s),u=n.units[0];assert.equal(u.ap,40);assert.equal(u.loaded,1);assert.equal(u.offHand.loaded,1);assert.equal(totalReserveAmmunition(u),6);assert.equal(u.priming,undefined);
+ assert.deepEqual(ammunitionByType(u),{pistol_69:6});assert.equal(u.ammo,6,'both pistols can use the same reserve');
  assert.equal(u.condition,81);assert.equal(u.weaponInstanceId,'right-gun');assert.deepEqual(u.offHand,{...before.units[0].offHand,loaded:1});
  assert.equal(total(u),8);assert.deepEqual(s,before);assert.equal(n.seed,s.seed);assert.deepEqual(n.smoke,[]);assert.match(n.log.at(-1),/ambas pistolas/);
 });

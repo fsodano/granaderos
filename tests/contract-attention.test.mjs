@@ -97,7 +97,7 @@ test('insufficient funds reject renewal without acknowledging or changing the wa
 
 test('renewing an expired traveling contract cancels deferred departure without restoring supplies',()=>{
  let s=order(wait(hire(),20),{type:'travel',sector:'buenos_aires',queue:true});s=wait(wait(s,10),10);assert.equal(s.contracts[103].departurePending,true);
- s.operativeState[103].flints=1;s.operativeState[103].priming=7;const r=structuredClone(s.operativeState[103]),journey=structuredClone(s.squads[0].journey);
- s=order(s,{type:'renewContract',id:103,term:'day',expectedExpiresAt:24});assert.equal(s.contracts[103].departurePending,undefined);assert.equal(s.contracts[103].expiresAt,48);assert.equal(s.hour,24);assert.deepEqual(s.squads[0].journey,journey);assert.equal(s.operativeState[103].flints,r.flints);assert.equal(s.operativeState[103].priming,r.priming);
- s=wait(saved(s),12);assert.ok(s.recruited.includes(103));assert.equal(s.location,'buenos_aires');assert.equal(s.operativeState[103].flints,1);
+ s.operativeState[103].rations=1;s.operativeState[103].torches=1;const r=structuredClone(s.operativeState[103]),journey=structuredClone(s.squads[0].journey);
+ s=order(s,{type:'renewContract',id:103,term:'day',expectedExpiresAt:24});assert.equal(s.contracts[103].departurePending,undefined);assert.equal(s.contracts[103].expiresAt,48);assert.equal(s.hour,24);assert.deepEqual(s.squads[0].journey,journey);assert.equal(s.operativeState[103].rations,r.rations);assert.equal(s.operativeState[103].torches,r.torches);
+ s=wait(saved(s),12);assert.ok(s.recruited.includes(103));assert.equal(s.location,'buenos_aires');assert.equal(s.operativeState[103].rations,1);
 });

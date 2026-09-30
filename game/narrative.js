@@ -6,6 +6,13 @@ export const ROYALIST_COMMANDS=[
  {id:'partisans',name:'Cabildos leales y partidas del interior',commander:'Mandos locales y cuadros de Talavera',theater:'interior',objective:'Aprovechar el descontento para saquear estancias y cortar el enlace de Córdoba.',doctrine:'Sabotaje logístico y requisas sobre provincias de baja lealtad'},
 ];
 export const NORTHERN_AXIS=['humahuaca','jujuy','salta','tucuman'];
+// Retiro alone starts at four defenders. The last hostile sector faces thirty.
+// Count current ownership, not elapsed time or the size of the attacking squad.
+export function campaignEnemyCount(campaign){
+ const controlled=CAMPAIGN_SECTORS.filter(d=>campaign.sectors[d.id]?.owner==='patriot').length;
+ const progress=Math.max(0,Math.min(1,(controlled-1)/(CAMPAIGN_SECTORS.length-2)));
+ return 4+Math.round(26*progress);
+}
 export function coastalRevenue(s){return CAMPAIGN_SECTORS.filter(d=>d.theater==='coast'&&s.sectors[d.id].owner==='patriot').reduce((v,d)=>v+Math.floor(d.income*(s.sectors[d.id].damageUntil>s.hour?.25:1)*(s.blockade?.25:1)),0);}
 // Public background doctrine, not access to the enemy dispatch scheduler.
 export function royalistIntel(){return ROYALIST_COMMANDS.map(command=>({...command}));}
@@ -22,7 +29,7 @@ export function mentorDispatch(s){
 }
 export function oppositionFor(request){
  const command=ROYALIST_COMMANDS.find(c=>c.id===(request.theater==='north'?'north':request.theater==='coast'?'naval':'partisans'));
- const count=Math.max(3,request.squad.length+request.difficulty-1);
+ const count=request.enemyCount??Math.max(3,request.squad.length+request.difficulty-1);
  const names=request.theater==='north'?['Oficial de la vanguardia de Tristán','Veterano del Ejército Real del Perú','Fusilero de Pezuela']:request.theater==='coast'?['Oficial de la flotilla de Romarate','Infante de desembarco realista','Marinero de la escuadra de Montevideo']:['Oficial de los cuadros de Talavera','Partidario del Cabildo realista','Miliciano leal a la Corona'];
  return {enemyCommand:command.id,enemyCommander:command.commander,enemyObjective:command.objective,enemies:Array.from({length:count},(_,i)=>({id:`enemy-${i}`,name:`${names[i%names.length]} ${Math.floor(i/names.length)+1}`,weapon:i===0?1805:i%3===0?1801:1800,blade:i===0?1809:1811,marksmanship:50+request.difficulty*5+(request.theater==='north'?3:0),morale:60+request.difficulty*5,leadership:i===0?75:40}))};
 }

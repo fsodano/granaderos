@@ -1,13 +1,20 @@
-# Web-Port Reference Series — `engine/` (JA2 v1.13) → Browser Clone
+# JA2 engine reference for the browser game
 
-Target reader: an agent with **zero prior JA2 knowledge** tasked with reproducing this
-game in full as a web game. Each doc is self-contained, cites engine `file:line`
-sources, maps to the existing web implementation (`game/*.js`, `web/app/*`), and ends
-with a reproduction checklist.
+[Documentation index](../README.md) · [Development](../development/README.md)
 
-Engine identity: JA2 v1.13 fork (`engine/` submodule, `1dot13/source`), C++17, Win32/x86,
-CMake (`engine/CMakeLists.txt`). Web clone: Next.js + `game/*.js` rules + `tests/`.
-Player-facing content is Spanish; code and docs are English.
+This series explains the JA2 v1.13 source and its possible browser adaptations.
+Each document includes source references, mappings to `game/` and `web/`, and a
+reproduction checklist. Source paths and line numbers refer to the analyzed
+engine revision and can change.
+
+The reference engine is the `engine/` submodule (`1dot13/source`), built with
+C++17 and CMake for Windows x86. The playable browser game uses JavaScript rules
+and React with vinext. See [browser setup](../development/getting-started.md).
+
+**Reference scope:** proposals, checklists and gap descriptions in this series
+are not current acceptance results. Use [gameplay acceptance](../verification/gameplay-completion.md)
+for status and [the parity audit](../verification/ja2-parity-audit.md) for the
+active gameplay baseline.
 
 ## Reading order
 
@@ -23,7 +30,7 @@ Player-facing content is Spanish; code and docs are English.
 | 07 | [Strategic Layer](07-strategic-layer.md) | `Strategic/` | `campaign.js`, `time.js`, `world.js` |
 | 08 | [Laptop](08-laptop.md) | `Laptop/` | `Desk.tsx`, `Recruitment.tsx`, `Armory.tsx` |
 | 09 | [Dialogue, Quests & NPCs](09-dialogue-quests.md) | dialogue/quests/facts, `lua/` | `narrative.js`, `quests.js`, `missions.js` |
-| 10 | [Save / Load & Persistence](10-save-load.md) | save/load, INI, i18n selection | `game/save.js`, Guadar export |
+| 10 | [Save / Load & Persistence](10-save-load.md) | save/load, INI, i18n selection | `game/save.js`, Guardar export |
 | 11 | [Data Formats & Asset Pipeline](11-data-assets.md) | `gamedir/`, XML, STI, i18n | `assets/`, `web/public/` pipeline |
 | 12 | [Audio, UI & Input](12-audio-ui-input.md) | buttons, sound, screens, fonts | `web/components`, `web/hooks` |
 | 13 | [Multiplayer & Editor](13-multiplayer-editor.md) | `Multiplayer/`, `Editor/`, `tools/` | port-or-defer decisions |
@@ -31,34 +38,14 @@ Player-facing content is Spanish; code and docs are English.
 Dependency notes: read `00` first; `02` before `03`; `01` before `10`/`11`/`12`;
 `03` + `04` + `05` before `06`; `07` before `08`/`09`; `13` last (mostly defer).
 
-## How this was produced (parallelization record)
+## Use the reference
 
-14 files, ~7,900 lines, produced by parallel `deep` documentation agents:
+1. Find the relevant system and its acceptance criteria in the parity audit.
+2. Read its engine reference and the current [gameplay note](../gameplay/README.md).
+3. Check the source when an exact formula, rule or proposed mapping matters.
+4. Implement and verify the bounded behavior. Record results and remaining gaps
+   in the relevant feature note and acceptance record.
 
-1. Created `docs/web-port/` and fanned out one agent per doc (14 parallel tasks).
-   Each prompt fixed: exact output path, line-count target, tool budget
-   (`Read`/`Glob`/`Grep`/`Write` only), MUST DO topic list, MUST NOT DO
-   boundaries (no code edits, no other files), and the web files to cross-reference.
-2. Queue-timeout failures (4 docs) and missing-file completions (SGP, strategic,
-   soldiers) were detected via `ls` + `wc -l`, then retried with tightened scopes
-   (headers + signature grep instead of full `.cpp` reads, ≤30 tool calls) on the
-   emptied queue — all landed.
-3. Verified: every file present, 294–899 lines each, each with file:line citations,
-   web-mapping tables, and a reproduction checklist.
-
-## Coverage vs. the existing web game
-
-- Already mirrored in `game/`: campaign clock, tactical AP/fire skeleton, operative
-  roster, equipment/industry/logistics, authored maps, save/export.
-- Known gaps each doc flags: positional inventory slots, trait-id mapping, morale
-  stack, records/opinions, interrupt/overwatch fidelity, strategic-event parity,
-  laptop transaction flows, dialogue trigger graph, save-schema versioning.
-- Deliberately deferred (see `13`): networked multiplayer; native map editor
-  (browser MVP proposed instead).
-
-## Using these docs to build
-
-A porting agent should work doc-by-doc: read the doc, implement against its
-TypeScript/JSON schema proposals, tick its reproduction checklist, and run the
-mapped `tests/` plus `npm run typecheck`. Do not start from the C++ — the docs
-already distill the formulas, structs, and state machines.
+The [editor and multiplayer reference](13-multiplayer-editor.md) includes
+port-or-defer proposals. The [implementation plans](../plans/README.md) hold
+separate project plans; neither location proves that a feature is available.

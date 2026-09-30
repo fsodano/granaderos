@@ -10,6 +10,7 @@ import {heldThrowingKnife,knifeThrowDamage} from './thrown-knife.js';
 import {availableAmmunition} from './ammunition-types.js';
 import {planFitBayonet} from './tactical-inventory.js';
 import {shotLocationEffects,shotLocationsFor} from './targeted-combat.js';
+import {reprimePlan} from './tactical.js';
 import {criticalFirstAidNeeded} from './first-aid.js';
 
 // Decisions use only this soldier's sight and the last place an opponent was seen.
@@ -26,6 +27,17 @@ export function choosePatrolAction(state,unit) {
   // post and a rotating waypoint prevent aimless drift across the whole map.
   const directions=[[0,-4],[4,0],[0,4],[-4,0]];
   const offset=[...String(unit.id)].reduce((sum,c)=>sum+c.charCodeAt(0),0);
+  if(unit.assaultPatrol){
+    // Invaders search the sector rather than orbiting their arrival post.
+    // These waypoints depend only on terrain dimensions and the turn clock.
+    const corners=[[.25,.25],[.75,.25],[.75,.75],[.25,.75]];
+    const corner=corners[(Math.floor((state.turn-1)/12)+offset)%corners.length];
+    const goal={...planningPoint(anchor),x:Math.floor(state.width*corner[0]),y:Math.floor(state.height*corner[1])};
+    const perceived={...state,units:state.units.filter(other=>other.side===unit.side||canSee(state,unit,other))};
+    const cells=getReachable(perceived,unit).filter(p=>sameSurface(p,anchor)&&p.cost>0&&p.cost<=24&&p.path.length<=3&&distance(p,goal)<distance(unit,goal));
+    cells.sort((a,b)=>distance(a,goal)-distance(b,goal)||a.cost-b.cost||a.y-b.y||a.x-b.x);
+    return cells[0]?moveOrder(state,unit,cells[0],{patrol:true}):null;
+  }
   const [dx,dy]=directions[(state.turn+offset)%4],goal={...planningPoint(anchor),x:anchor.x+dx,y:anchor.y+dy};
   const perceived={...state,units:state.units.filter(other=>other.side===unit.side||canSee(state,unit,other))};
   const cells=getReachable(perceived,unit).filter(p=>sameSurface(p,anchor)&&p.cost>0&&p.cost<=24&&p.path.length<=3&&distance(p,anchor)<=6);
@@ -68,6 +80,25 @@ function bestShot(state, unit, targets, budget = unit.ap) {
   return best;
 }
 
+// A visible contact may offer no useful standing shot or better movement cell.
+// Pay for a posture only when it leaves a useful shot this turn. This fallback
+// prevents mutual idle turns without wasting finite ammunition on blind fire.
+function firingPosture(state,unit,targets,currentShot){
+ if(!readyGun(unit)||unit.mounted||currentShot?.effectiveness>=25||targets.some(target=>sameSurface(unit,target)&&distance(unit,target)<=2.5))return null;
+ let best=null;
+ for(const stance of ['crouched','prone','standing']){
+  if(stance===unit.stance)continue;
+  const cost=stanceCost(unit,stance);if(cost>=unit.ap)continue;
+  const position={...unit,stance,weaponReady:false};
+  const visible=targets.filter(target=>canSee(state,position,target));
+  const shot=bestShot(state,position,visible,unit.ap-cost);
+  if(!shot||shot.effectiveness<25)continue;
+  const score=shot.score-cost*.2;
+  if(!best||score>best.score)best={stance,score};
+ }
+ return best?{type:'stance',unitId:unit.id,stance:best.stance}:null;
+}
+
 export function chooseKnifeThrow(state,unit,targets){
   const knife=heldThrowingKnife(unit);if(!knife)return null;
   let best=null;
@@ -90,9 +121,10 @@ export function chooseKnifeThrow(state,unit,targets){
   return {type:'throwKnife',unitId:unit.id,targetId:best.target.id,aim:best.aim,hitLocation:best.hitLocation};
 }
 
-function maintenance(state, unit, costs) {
+function maintenance(state, unit, costs, allowSecondary=false) {
   if (weaponFor(unit).capacity <= 0) return null;
-  if (unit.jammed) return unit.priming > 0 && unit.ap >= costs.reprime ? {type: 'reprime', unitId: unit.id} : null;
+  const priming=reprimePlan(unit,state);
+  if (unit.jammed) return priming.hands.length ? {type: 'reprime', unitId: unit.id} : null;
   if (unit.loaded === 0 && availableAmmunition(unit,weaponFor(unit)) > 0 && costs.reload > 0) {
     if (unit.ap >= costs.reload) return {type: 'reload', unitId: unit.id};
     // Muzzle-loading while prone can exceed a soldier's entire turn budget.
@@ -107,7 +139,7 @@ function maintenance(state, unit, costs) {
     if (unit.ap > 0 && (unit.reloadProgress > 0 || costs.reload > maxActionPoints(state, unit) + AP_CARRY_LIMIT))
       return {type: 'reload', unitId: unit.id};
   }
-  return null;
+  return allowSecondary&&priming.hands.length ? {type:'reprime',unitId:unit.id} : null;
 }
 
 function fieldAid(state, unit, costs, targets, paths) {
@@ -147,7 +179,7 @@ function backupWeapon(state, unit, costs, targets) {
   const blade = bladeFor(unit);
   if (blade.id !== 0 && targets.some(target => atHand(unit,target,blade.reach) && hasLineOfSight(state, unit, target))) return null;
   const held = weaponFor(unit);
-  const serviceable = held.capacity > 0 && (unit.jammed ? unit.priming > 0 : unit.loaded > 0 || availableAmmunition(unit,held) > 0);
+  const serviceable = held.capacity > 0 && (unit.jammed || unit.loaded > 0 || availableAmmunition(unit,held) > 0);
   // Do not unpack guns just to stand idle. With contact, a prepared spare can
   // permit a shot this turn when the held weapon needs a long reload.
   if (!targets.length && (serviceable || held.capacity === 0 && blade.id !== 0)) return null;
@@ -264,7 +296,7 @@ export function chooseEnemyAction(state, unit) {
     if(slot)return {type:'weapon',unitId:unit.id,slot};
   }
 
-  const upkeep = maintenance(state, unit, costs);
+  const upkeep = maintenance(state, unit, costs, !targets.length);
   const move = cell => cell.path?.[0]?.kind==='climb' ? (climbPreview(perceived,unit,{linkId:cell.path[0].linkId}).valid?{type:'climb',unitId:unit.id,linkId:cell.path[0].linkId}:null) : moveOrder(state,unit,cell);
 
   if (!targets.length) {
@@ -314,7 +346,7 @@ export function chooseEnemyAction(state, unit) {
   const scavenge = chooseScavengingAction(state, unit, targets, paths);
   if (scavenge) return scavenge;
 
-  if (weaponFor(unit).capacity <= 0 || (!unit.loaded && !availableAmmunition(unit,weaponFor(unit))) || (unit.jammed && !unit.priming)) {
+  if (weaponFor(unit).capacity <= 0 || (!unit.loaded && !availableAmmunition(unit,weaponFor(unit)))) {
     // Close for an affordable melee attack; never spend the entire turn rushing
     // across open ground towards an armed enemy who can shoot on arrival.
     const reacting = state.phase === 'interrupt' || Boolean(state.reactionStack?.length);
@@ -364,6 +396,7 @@ export function chooseEnemyAction(state, unit) {
   }
   if (best) return move(best.cell);
   if (shot?.effectiveness >= 25) return {type: 'fire', unitId: unit.id, targetId: shot.target.id, aim: shot.aim,hitLocation:shot.hitLocation};
+  const posture=firingPosture(state,unit,targets,shot);if(posture)return posture;
   for(const target of targets){const pursuit=verticalPursuit(state,unit,target,costs);if(pursuit)return pursuit;}
   return null;
 }

@@ -39,7 +39,8 @@ test('a real house ceiling hides unseen roof controls, chest art, light, smoke a
   for(const level of [0,1]){
    const all=scene(state,level);assert.ok(!all.some(node=>node.props?.['data-surface-id']));assert.ok(!all.some(node=>node.props?.['data-unit-id']==='roof-guard'));
    assert.ok(!all.some(node=>node.props?.['data-prop-id']==='roof-chest'));
-   assert.ok(!all.some(node=>node.type==='ellipse'&&['#efa242','url(#smokefill)'].includes(node.props.fill)));
+   assert.ok(!all.some(node=>node.props?.source?.type==='torch'&&node.props?.point),'hidden roof lights must not reach the renderer');
+   assert.ok(!all.some(node=>node.type==='ellipse'&&node.props.fill==='url(#smokefill)'));
    assert.ok(!all.some(node=>String(node.props?.['aria-label']).includes('Guardia oculto')));
   }
   const upper=componentTree(Scene,props),roof=nodes(upper).find(node=>node.props?.['data-roof-room']===building.rooms[0].id);
@@ -55,7 +56,7 @@ test('roof observers and a roof teammate reveal current contents while ground se
   assert.ok(view.units.some(unit=>unit.id==='roof-guard'));assert.ok(view.upperSurfaces.length>0);
   for(const level of [0,1]){
    const all=scene(state,level);assert.ok(all.some(node=>node.props?.['data-prop-id']==='roof-chest'));
-   assert.ok(all.some(node=>node.type==='ellipse'&&node.props.fill==='#efa242'));assert.ok(all.some(node=>node.type==='ellipse'&&node.props.fill==='url(#smokefill)'));
+   assert.ok(all.some(node=>node.props?.source?.type==='torch'&&node.props?.point),'the visible roof light reaches the shared light renderer');assert.ok(all.some(node=>node.type==='ellipse'&&node.props.fill==='url(#smokefill)'));
    const guard=all.find(node=>node.props?.['data-unit-id']==='roof-guard'),hit=nodes(guard).find(node=>node.props?.['data-person-hit-target']);assert.ok(hit);assert.equal(hit.props.pointerEvents,level===1?'all':'none');assert.equal(hit.props.tabIndex,level===1?0:-1);
    const buttons=all.filter(node=>node.props?.['data-surface-id']).map(node=>node.props['data-surface-id']);
    assert.deepEqual(buttons.sort(),level===1?view.upperSurfaces.map(surface=>surface.id).sort():[]);

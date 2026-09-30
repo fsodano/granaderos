@@ -54,3 +54,9 @@ test('partial reload reticle shows the immediate cost and the remaining work',()
  const html=render(h('svg',null,h(AimCursor,{point:{x:80,y:90},aim:4,preview,target:null})));
  assert.match(html,/Recarga parcial · 20 PA/);assert.match(html,/Faltan 50 PA de recarga/);assert.match(html,/aim-cursor valid/);assert.doesNotMatch(html,/aim-step|Puntería/);
 });
+
+test('pending movement search uses a neutral ground highlight instead of a blocked destination',()=>{
+ const s=field(),hover={x:2,y:2};
+ const markup=render(h('svg',null,h(TacticalScene,{state:s,selected:'p',unit:s.units[0],players:[s.units[0]],units:s.units,positions:{},poses:{},directions:{},hover,mode:'move',aim:0,reachable:[],routesPending:true,showSight:false,sight:new Set(),revealed:new Set(),project:(x,y)=>({x:x*26,y:y*14}),onTile:()=>{},onHover:()=>{},onTalk:()=>{},onCannon:()=>{},cannonId:''})));
+ assert.match(markup,/fill="#aaa99c" fill-opacity="0?\.16"/);
+});

@@ -103,7 +103,7 @@ test('a full pack retains the detached bayonet on the saved cursor and rejects a
  const before=structuredClone(s),weight=carriedWeight(personal(s));s=attachment(s,'detach');
  assert.equal(inventoryUsage(personal(s)).free,0);assert.equal(carriedWeight(personal(s)),weight);assert.equal(personal(s).equipmentCursor.stack.instanceId,identity);
  assert.deepEqual(s.operativeState[110].inventory,before.operativeState[110].inventory);assert.deepEqual(save(s),s);
- const sourceId=pocket(personal(s),'flints');reject(s,{...cursorAction(personal(s),'pickupEquipment',{sourceId}),type:'sectorInventory',sector:'retiro',operativeId:110,direction:'arrange',kind:'cursor',cursorAction:'pickupEquipment'});
+ const sourceId=pocket(personal(s),'rations');reject(s,{...cursorAction(personal(s),'pickupEquipment',{sourceId}),type:'sectorInventory',sector:'retiro',operativeId:110,direction:'arrange',kind:'cursor',cursorAction:'pickupEquipment'});
  // Before the sector is surveyed there is no legal ground fallback. Cancelling
  // cannot discard the finite item or quietly restore it to the gun.
  reject(s,{...cursorAction(personal(s),'returnEquipmentCursor'),type:'sectorInventory',sector:'retiro',operativeId:110,direction:'arrange',kind:'cursor',cursorAction:'returnEquipmentCursor'});

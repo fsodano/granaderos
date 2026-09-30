@@ -1,9 +1,10 @@
+import {groupUnitAmmunition} from './ammunition-family-migration.js';
 import {AMMUNITION_TYPES, AMMUNITION_STACK_LIMIT, addAmmunition, consumeAmmunition,
   weaponAmmoType, isAmmunitionStack, validateAmmunitionStack, ammunitionByType, availableAmmunition} from './ammunition-types.js';
 import {validatePocketOrder} from './inventory-pockets.js';
 import {handLayout} from './hand-layout.js';
 
-export const AMMUNITION_VERSION = 1;
+export const AMMUNITION_VERSION = 2;
 const object = value => value !== null && typeof value === 'object' && !Array.isArray(value);
 const need = (condition, message) => {if (!condition) throw Error(message);};
 const countValid = count => Number.isSafeInteger(count) && count >= 0 && count <= 1000000;
@@ -65,8 +66,9 @@ export function syncUnitAmmunition(unit) {return commit(unit,synchronized(unit))
 export function initializeUnitAmmunition(unit,{legacy=false,defaultCount=12}={}) {
   need(object(unit),'El propietario de la munición no es válido.');
   need(typeof legacy==='boolean'&&countValid(defaultCount),'La provisión inicial de munición no es válida.');
-  need(unit.ammunitionVersion===undefined||unit.ammunitionVersion===AMMUNITION_VERSION,'La versión de munición no es compatible.');
+  need(unit.ammunitionVersion===undefined||[1,AMMUNITION_VERSION].includes(unit.ammunitionVersion),'La versión de munición no es compatible.');
   if(unit.ammunitionVersion===AMMUNITION_VERSION)return syncUnitAmmunition(unit);
+  if(unit.ammunitionVersion===1){const next=groupUnitAmmunition(unit);next.ammunitionVersion=AMMUNITION_VERSION;return commit(unit,synchronized(next));}
   const next={...unit};ammunitionByType(next);
   let type=legacy?'musket_75':weaponAmmoType(next.weapon);
   const typed=Object.values(next.inventory??{}).some(isAmmunitionStack);

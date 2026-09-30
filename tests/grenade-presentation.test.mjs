@@ -2,7 +2,9 @@ import {register} from 'node:module';register('./tactical-render-loader.mjs',imp
 import test from 'node:test';import assert from 'node:assert/strict';
 import {createElement as h} from '../web/node_modules/react/index.js';import {renderToStaticMarkup as render} from '../web/node_modules/react-dom/server.node.js';
 import {componentTree} from './component-tree.mjs';
-import {createBattle,actBattle,getGrenadeThrowVisual} from '../game/tactical.js';
+import {mountBattlefield} from './mounted-battlefield.mjs';
+import {createBattle,actBattle,endTurn,presentedEndTurn,getGrenadeThrowVisual} from '../game/tactical.js';
+import {movementStep} from '../game/movement-step.js';
 import {makeGrenadeStack} from '../game/grenades.js';
 import {targetPreview,grenadeThrowInputAction} from '../game/ja2-hud.js';
 import {initialCampaign,dispatchCampaign,rosterFor,isSupplied} from '../game/campaign.js';
@@ -42,12 +44,21 @@ test('grenade sprite hit frames use one ground point and route NPC mouse and key
   for(const key of ['Enter',' ']){frame.props.onKeyDown({key,preventDefault(){}});assert.equal(talked,false);const action=grenadeThrowInputAction(s,s.units[0],clicked);assert.equal(action.targetId,undefined);assert.equal(action.hitLocation,undefined);assert.equal(action.aim,0);}
  }
 });
-test('Battlefield movement after cursor cancellation keeps the grenade and moves to the chosen ground',()=>{
- const s=field();s.mode='exploration';s.units=s.units.filter(unit=>unit.side==='player');let next,tree;
- const wrapper=Battlefield({battle:s,onChange:b=>{next=b;return b;},onFinish(){}}),content=wrapper.props.children;
- function Capture(){tree=content.type(content.props);return null;}
- render(h(wrapper.type,null,h(Capture)));const scene=hosts(tree).find(node=>node.type===TacticalScene);assert.ok(scene);assert.equal(scene.props.mode,'move');
- scene.props.onTile({x:2,y:2});assert.ok(next);assert.equal(next.lastError,null);assert.equal(next.units[0].inventory.grenade.count,1);assert.equal(next.units[0].x,2);assert.equal(next.units[0].y,2);assert.equal(getGrenadeThrowVisual(s,next),null);
+for(const delivery of ['reply','messageerror'])test(`Battlefield movement after cursor cancellation keeps the grenade: ${delivery}`,async t=>{
+ const s=field();s.mode='exploration';s.units=s.units.filter(unit=>unit.side==='player');let next;
+ const mounted=await mountBattlefield(t,Battlefield,{battle:s,onChange:b=>{next=b;return b;},onFinish(){}});
+ const scene=hosts(mounted.tree()).find(node=>node.type===TacticalScene);assert.ok(scene);assert.equal(scene.props.mode,'move');
+ await mounted.act(async()=>scene.props.onTile({x:2,y:2}));
+ assert.equal(next,undefined,'movement waits for the worker result');
+ await mounted.act(async()=>scene.props.onTile({x:3,y:2}));
+ assert.equal(mounted.jobs().filter(message=>message.job.kind==='movement-step').length,1);
+ if(delivery==='reply'){
+  await mounted.deliver('movement-step');assert.equal(next,undefined,'the first uncommitted result cannot overwrite the new destination');
+  assert.equal(mounted.jobs().find(message=>message.job.kind==='movement-step').job.action.x,3);
+  await mounted.deliver('movement-step');
+ }else await mounted.fail('movement-step');
+ const expected=movementStep(s,{type:'move',unitId:'p',x:3,y:2}).state;
+ assert.ok(next);assert.equal(next.lastError,null);assert.equal(next.units[0].inventory.grenade.count,1);assert.equal(next.units[0].x,expected.units[0].x);assert.equal(next.units[0].y,expected.units[0].y);assert.equal(getGrenadeThrowVisual(s,next),null);
 });
 test('Battlefield movement-mode clicks on allies and NPCs never fall through to a grenade useItem order',()=>{
  for(const pointKind of ['ally','npc']){
@@ -59,19 +70,31 @@ test('Battlefield movement-mode clicks on allies and NPCs never fall through to 
   assert.equal(next,undefined);assert.equal(s.units[0].inventory.grenade.count,1);
  }
 });
-test('ending the turn presents a visible enemy grenade only when the next battle is accepted',t=>{
- let scheduled;t.mock.method(globalThis,'setTimeout',(callback,delay)=>{assert.equal(delay,450);scheduled=callback;return 1;});
- for(const accepted of [true,false]){
+for(const accepted of [true,false])test(`ending the turn presents an enemy grenade only for an accepted result: ${accepted}`,async t=>{
   const s=createBattle([{id:'p',name:'Objetivo',x:7,y:4,facing:6,weapon:1813,loaded:0,ammo:0,blade:0,medical:0,medkits:0,patrol:false,overwatch:false}],{
    width:24,height:12,seed:45,tiles:Array.from({length:288},(_,i)=>({x:i%24,y:Math.floor(i/24),type:'grass',blocked:false,cover:0})),
    enemies:[{id:'e',name:'Lanzador',x:1,y:4,facing:2,weapon:1800,loaded:0,ammo:0,blade:0,priming:0,flints:0,rations:0,medkits:0,boleadoras:0,torches:0,marksmanship:100,dexterity:100,strength:100,medical:0,morale:100,patrol:false,overwatch:false,activeSlot:'item',activeItem:'inventory:grenade',inventory:{grenade:makeGrenadeStack()}}]
   });
-  s.units[0].ap=0;s.units[1].ap=100;let next,tree,invoked=false;
-  const wrapper=Battlefield({battle:s,onChange:b=>{next=b;return accepted?b:null;},onFinish(){}}),content=wrapper.props.children;
-  function Capture(){tree=content.type(content.props);if(!invoked){invoked=true;hosts(tree).find(node=>node.props?.onEndTurn).props.onEndTurn();assert.equal(next,undefined);scheduled();}return null;}
-  render(h(wrapper.type,null,h(Capture)));assert.equal(next.lastError,null);const visual=getGrenadeThrowVisual(s,next);assert.ok(visual?.visible);
-  const effect=hosts(tree).find(node=>node.type===GrenadeThrowEffect);assert.equal(Boolean(effect),accepted);if(effect)assert.deepEqual(effect.props.visual,visual);
- }
+  s.units[0].ap=0;s.units[1].ap=100;let next;
+  const mounted=await mountBattlefield(t,Battlefield,{battle:s,onChange:b=>{next=b;return b;},onPlaybackValidate:()=>accepted,onFinish(){}},{virtualTimers:true});
+  await mounted.act(async()=>hosts(mounted.tree()).find(node=>node.props?.onEndTurn).props.onEndTurn());
+  assert.equal(next,undefined,'the campaign receives no state before worker completion');
+  assert.equal(hosts(mounted.tree()).some(node=>node.type===GrenadeThrowEffect),false);
+  const result=presentedEndTurn(s);await mounted.deliver('presentation');
+  if(!accepted){assert.equal(next,undefined);assert.equal(hosts(mounted.tree()).some(node=>node.type===GrenadeThrowEffect),false);return;}
+  let sawFlight=false;
+  for(const frame of result.frames){
+   assert.equal(next,undefined,'intermediate animation states are never saved');
+   const effect=hosts(mounted.tree()).find(node=>node.type===GrenadeThrowEffect);
+   if(frame.type==='effect'){
+    sawFlight=true;assert.ok(effect);assert.deepEqual(effect.props.visual,frame.grenadeVisual);
+    const scene=hosts(mounted.tree()).find(node=>node.type===TacticalScene);
+    assert.equal(scene.props.state.units.find(u=>u.id==='p').hp,s.units[0].hp,'flight precedes injury');
+   }
+   await mounted.nextDelay();
+  }
+  assert.ok(sawFlight);assert.deepEqual(next,endTurn(s));
+  assert.equal(hosts(mounted.tree()).some(node=>node.type===GrenadeThrowEffect),false);
 });
 test('grenade flight and blast use only the observed arc and expire after a finite animation',()=>{
  const s=field(),next=actBattle(s,{type:'throwGrenade',unitId:'p',x:6,y:2}),visual=getGrenadeThrowVisual(s,next);assert.equal(next.lastError,null);assert.ok(visual);

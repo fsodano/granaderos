@@ -55,9 +55,9 @@ test('compact hands retain their ordinary action click instead of selecting equi
  ui.slot('hand:left').props.onClick(event());assert.equal(ui.orders.length,1);assert.equal(ui.orders[0].type,'swapHands');assert.deepEqual(ui.inspections,[]);
 });
 
-test('unavailable inventory exposes all fifteen destinations as disabled and only one shared hint',()=>{
+test('unavailable inventory exposes all seventeen destinations as disabled and only one shared hint',()=>{
  const ui=controls(field({outfit:null}),{disabled:true});const buttons=Object.values(ui.trees).flatMap(nodes).filter(node=>node.props?.['data-equipment-slot']);
- assert.equal(buttons.length,15);assert.ok(buttons.every(button=>button.props.disabled));
+ assert.equal(buttons.length,17);assert.ok(buttons.every(button=>button.props.disabled));
  const hints=Object.values(ui.trees).flatMap(nodes).filter(node=>node.props?.role==='status');assert.equal(hints.length,1);
  assert.ok(buttons.every(button=>typeof button.props.onClick==='function'&&typeof button.props.onContextMenu==='function'));
 });

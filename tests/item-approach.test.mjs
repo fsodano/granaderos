@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createBattle,actBattle,endTurn,itemUsePreview,movementStepCost,canSee} from '../game/tactical.js';
+import {createBattle,actBattle,endTurn,itemUsePreview,movementStepCost,movementEnergy,canSee} from '../game/tactical.js';
 import {targetPreview,orderDescriptors} from '../game/ja2-hud.js';
 import {playerKnownBattle} from '../game/player-known-state.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
@@ -60,7 +60,8 @@ test('exploration charges every walking second and then treatment without chargi
 });
 
 test('collapse or patient death during exploration preserves the walked cost and does not consume dressings',()=>{
-  const tired=field({energy:2},{},{exploration:true}),n=use(tired);assert.equal(n.lastError,null);assert.ok(n.units[0].x>2&&n.units[0].x<5);assert.equal(n.units[0].unconscious,true);assert.equal(n.units[0].medkits,2);assert.ok(n.elapsedSeconds>0);assert.ok(n.units[1].bleeding>0);
+  const tired=field({},{},{exploration:true});tired.units[0].energy=2*movementEnergy(tired.units[0],{type:'grass'},true);
+  const n=use(tired);assert.equal(n.lastError,null);assert.equal(n.units[0].x,4);assert.equal(n.units[0].unconscious,true);assert.equal(n.units[0].ap,0);assert.equal(n.units[0].medkits,2);assert.equal(n.elapsedSeconds,6);assert.ok(n.units[1].bleeding>0);
   const dying=field({}, {hp:4,bleeding:4},{exploration:true}),after=use(dying);assert.equal(after.lastError,null);assert.equal(after.units[1].hp,0);assert.equal(after.units[0].medkits,2);assert.ok(after.elapsedSeconds>0);assert.doesNotThrow(()=>validateBattleSnapshot(after));
 });
 

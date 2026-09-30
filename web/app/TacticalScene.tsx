@@ -1,58 +1,68 @@
 'use client';
+import {createSceneTerrainCache} from '../../game/scene-terrain.js';
 import {pointInViewport} from '../../game/tactical-viewport.js';
 import {terrainMaterial} from '../../game/regional-terrain.js';
 import {aimedBodyPart,targetHitFrame} from '../../game/aim-cursor.js';
 import {canChooseShotLocation} from '../../game/targeted-combat.js';
 import {tacticalGridLabel} from '../../game/tactical-grid.js';
 import {NPC_ACTIVITY_LABELS} from '../../game/npc-ai.js';
-import {propBlocksAt} from '../../game/props.js';
+import {propCells} from '../../game/props.js';
 import SpriteFigure from './SpriteFigure';
+import TacticalLight from './TacticalLight';
+import StaticSceneLayer from './StaticSceneLayer';
+import SceneryImage from './SceneryImage';
 import {spriteCondition} from '../../game/sprite-state.js';
 import {createBuildingRenderer} from './TacticalBuildings';
 import {isInteriorVisible} from '../../game/tactical-visibility.js';
 import {buildPropObjects} from './TacticalProps';
 import {canSee,tileIllumination,shotChance,hasFirearm,contextualAttack,ARTILLERY} from '../../game/tactical.js';
 import {heardNoiseModel,groundLootPiles,civilianMedicalInputAction,aimedCursorMode,grenadeTargetingMode} from '../../game/ja2-hud.js';
-import {useMemo,useRef,type ReactNode} from 'react';
+import {cloneElement,useMemo,useRef,type CSSProperties,type ReactElement,type ReactNode} from 'react';
 import {sameCell,spaceKey,tacticalLevel,surfaceHeight} from '../../game/tactical-space.js';
 import {projectSurface,surfaceDrawDepth,surfaceRenderOffset} from '../lib/tactical-elevation';
-type Props={viewport?:any;cursorLevel?:number;state:any;selected:any;unit:any;players:any[];units:any[];positions:any;poses:any;directions:any;hover:any;mode:string;aim:number;hitLocation?:string;reachable:any[];showSight:boolean;sight:Set<string>;revealed:Set<string>;project:(x:number,y:number)=>{x:number;y:number};onTile:(t:any)=>void;onHover:(t:any)=>void;onTalk:(n:any)=>void;onCannon:(id:string)=>void;cannonId:string};
+type Props={viewport?:any;cursorLevel?:number;state:any;selected:any;unit:any;players:any[];units:any[];positions:any;poses:any;directions:any;hover:any;mode:string;aim:number;hitLocation?:string;reachable:any[];routesPending?:boolean;showSight:boolean;sight:Set<string>;revealed:Set<string>;project:(x:number,y:number)=>{x:number;y:number};onTile:(t:any)=>void;onHover:(t:any)=>void;onTalk:(n:any)=>void;onCannon:(id:string)=>void;cannonId:string};
 const materials=['dry-grass','dirt','cobble','green-grass','mud','floor','plaster','roof','wood'];
+// Fixed offsets give each cloud an uneven silhouette without render-time randomness.
+const smokePuffs=[[-18,2,17,12],[-7,-9,20,15],[10,-6,18,14],[22,4,15,11],[3,10,22,12],[-23,-10,12,10],[15,-20,13,11],[-4,-24,14,12]];
 const diamond=(x:number,y:number)=>`${x},${y-14} ${x+26},${y} ${x},${y+14} ${x-26},${y}`;
 const hash=(x:number,y:number)=>((x*374761393+y*668265263)>>>0)%1000;
-export default function TacticalScene({viewport,cursorLevel=0,state:s,selected,unit:u,players,units,positions,poses,directions,hover,mode,aim,hitLocation='torso',reachable,showSight,sight,revealed,project,onTile,onHover,onTalk,onCannon,cannonId}:Props){
+export default function TacticalScene({viewport,cursorLevel=0,state:s,selected,unit:u,players,units,positions,poses,directions,hover,mode,aim,hitLocation='torso',reachable,routesPending=false,showSight,sight,revealed,project,onTile,onHover,onTalk,onCannon,cannonId}:Props){
+ const terrainCache=useRef<ReturnType<typeof createSceneTerrainCache>|null>(null);
+ if(!terrainCache.current)terrainCache.current=createSceneTerrainCache();
+ const terrain=useMemo(()=>terrainCache.current!(s),[s]);
+ const roomKey=JSON.stringify([...revealed].sort());
+ const stableRooms=useMemo(()=>new Set<string>(JSON.parse(roomKey)),[roomKey]);
  const handlers=useRef({onTile,onHover});handlers.current={onTile,onHover};
  // Roof geography remains drawn in full. Upper-floor controls and changing
  // contents require actual shared sight, including the room on that floor.
  const upperPointVisible=(point:any)=>!tacticalLevel(point)||isInteriorVisible(s,point,revealed)&&players.some(player=>canSee(s,player,point));
- const visibleTiles=useMemo(()=>s.tiles.filter((t:any)=>pointInViewport(viewport,projectSurface(s,project,t),110)),[s.tiles,viewport,project]);
+ const visibleTiles=useMemo(()=>terrain.tiles.filter((t:any)=>pointInViewport(viewport,projectSurface(terrain,project,t),110)),[terrain,viewport,project]);
  const upperTiles=useMemo(()=>(s.upperSurfaces??[]).filter((t:any)=>tacticalLevel(t)===cursorLevel&&pointInViewport(viewport,projectSurface(s,project,t),110)&&upperPointVisible(t)),[s,players,revealed,viewport,project,cursorLevel]);
  const heard=heardNoiseModel(s,u),heardPoint=heard?projectSurface(s,project,heard):null;
- const buildings=useMemo(()=>createBuildingRenderer({state:s,revealed,cursorLevel,project,light:(x,y,level=0)=>s.night?.27+tileIllumination(s,x,y,level)*.73:1}),[s,revealed,project,cursorLevel]);
+ const buildings=useMemo(()=>createBuildingRenderer({state:terrain,revealed:stableRooms,cursorLevel,project,light:(x,y,level=0)=>terrain.night?.27+tileIllumination(terrain,x,y,level)*.73:1}),[terrain,stableRooms,project,cursorLevel]);
+ const softenedWoods=useMemo(()=>new Set<string>(terrain.tiles.filter((t:any)=>t.type==='forest'&&units.some(v=>v.hp>0&&Math.abs(v.x-t.x)<1.4&&Math.abs(v.y-t.y)<1.4)).map((t:any)=>`${t.x},${t.y}`)),[terrain,units]);
+ const propVisibilityKey=JSON.stringify((s.props??[]).filter(upperPointVisible).map((p:any)=>p.id));
  const scenery=useMemo(()=>{
+ const s=terrain,visiblePropsIds=new Set(JSON.parse(propVisibilityKey));
  const objects:{depth:number;key:string;node:ReactNode}[]=[];
  const add=(key:string,x:number,y:number,node:ReactNode,bias=0)=>objects.push({key,depth:x+y+bias,node});
 
  const light=(x:number,y:number,level=0)=>s.night?.27+tileIllumination(s,x,y,level)*.73:1;
 
- for(const t of visibleTiles){
+ for(const t of terrain.tiles){
   const p=projectSurface(s,project,t);
   if(t.blocked&&!['wall','door','window','water'].includes(t.type)){
    add(`rock-${t.x}-${t.y}`,t.x,t.y,<image href="/art/scenery-rocks-v1.webp" x={p.x-25} y={p.y-32} width="50" height="40" pointerEvents="none" style={{filter:`brightness(${light(t.x,t.y)})`}}/>);
   }else if(t.type==='stone'&&t.material==='stone'&&!t.buildingId){
    add(`loose-rock-${t.x}-${t.y}`,t.x,t.y,<image href="/art/scenery-rocks-v1.webp" x={p.x-14} y={p.y-14} width="28" height="22" pointerEvents="none" style={{filter:`brightness(${light(t.x,t.y)})`}}/>);
   }
-  // Natural decoration is stable per tile. Cover-bearing woods remain traversable.
-  if(t.type==='forest'){
-   const h=hash(t.x,t.y),tree=h%4!==0,width=tree?75+h%28:40,height=tree?90+h%30:35;
-   const soften=units.some(v=>v.hp>0&&Math.abs(v.x-t.x)<1.4&&Math.abs(v.y-t.y)<1.4);
-   add(`woodland-${t.x}-${t.y}`,t.x+.25,t.y+.25,<image href={`/art/scenery-${tree?(h%3?'tree':'poplar'):'shrub'}-v1.webp`} x={p.x-width*.5+6} y={p.y-height+10} width={width} height={height} opacity={soften?.48:1} pointerEvents="none" style={{filter:`brightness(${light(t.x,t.y)})`}}/>);
-  }else if(t.type==='scrub'||t.type==='grass'&&!t.buildingId&&hash(t.x,t.y)%11===0){
+  // Low ground decoration can share a static depth cache.
+  if(t.type==='scrub'||t.type==='grass'&&!t.buildingId&&hash(t.x,t.y)%11===0){
    add(`scrub-${t.x}-${t.y}`,t.x,t.y,<image href="/art/scenery-shrub-v1.webp" x={p.x-16} y={p.y-20} width="32" height="26" pointerEvents="none" opacity=".9" style={{filter:`brightness(${light(t.x,t.y)})`}}/>);
   }
  }
- objects.push(...buildings(viewport));
- const visibleProps=(s.props??[]).filter((p:any)=>pointInViewport(viewport,projectSurface(s,project,p),200)&&upperPointVisible(p));
+ objects.push(...buildings());
+ const visibleProps=(s.props??[]).filter((p:any)=>visiblePropsIds.has(p.id));
  objects.push(...buildPropObjects({state:{...s,props:visibleProps.filter((p:any)=>!surfaceHeight(s,p))},revealed,project,light}));
  for(const prop of visibleProps.filter((p:any)=>(surfaceHeight(s,p)??0)>0)){
   const level=tacticalLevel(prop),height=surfaceHeight(s,prop)??0;
@@ -61,13 +71,30 @@ export default function TacticalScene({viewport,cursorLevel=0,state:s,selected,u
   objects.push(...raised.map((object:any)=>({...object,depth:surfaceDrawDepth(s,prop,object.depth-prop.x-prop.y)})));
  }
  return objects;
- },[s,players,revealed,project,units,viewport,visibleTiles,buildings]);
- const objects=[...scenery];
+ },[terrain,stableRooms,project,buildings,propVisibilityKey]);
+ const staticGroups=useMemo(()=>{
+  const groups=new Map<number,typeof scenery>();
+  for(const object of scenery){const group=groups.get(object.depth)??[];group.push(object);groups.set(object.depth,group);}
+  return [...groups].map(([depth,group])=>{
+   group.sort((a,b)=>a.key.localeCompare(b.key));
+   const children=group.map(object=><g key={object.key}>{object.node}</g>);
+   return {depth,key:group[0].key,members:group,children};
+  });
+ },[scenery]);
+ const staticLayers=staticGroups.map(({children,...group})=>({...group,node:<StaticSceneLayer>{children}</StaticSceneLayer>}));
+ // Trees already use small raster assets. Keep them separate from scenery
+ // caches: fading nearby foliage must not regenerate large depth-layer PNGs.
+ const woodland=useMemo(()=>terrain.tiles.filter((t:any)=>t.type==='forest').map((t:any)=>{
+  const p=projectSurface(terrain,project,t),h=hash(t.x,t.y),tree=h%4!==0,width=tree?75+h%28:40,height=tree?90+h%30:35;
+  const brightness=terrain.night?.27+tileIllumination(terrain,t.x,t.y)*.73:1;
+  return {point:p,cell:`${t.x},${t.y}`,key:`woodland-${t.x}-${t.y}`,depth:t.x+t.y+.5,node:<SceneryImage href={`/art/scenery-${tree?(h%3?'tree':'poplar'):'shrub'}-v1.webp`} brightness={brightness} x={p.x-width*.5+6} y={p.y-height+10} width={width} height={height} opacity={1} pointerEvents="none"/>};
+ }),[terrain,project]);
+ const visibleWoodland=woodland.filter((tree:any)=>pointInViewport(viewport,tree.point,160)).map((tree:any)=>({...tree,node:softenedWoods.has(tree.cell)?cloneElement(tree.node,{opacity:.48}):tree.node}));
+ const objects:{depth:number;key:string;node:ReactNode;members?:{depth:number;key:string;node:ReactNode}[]}[]=[...staticLayers,...visibleWoodland];
  const add=(key:string,x:number,y:number,node:ReactNode,bias=0,level=0)=>objects.push({key,depth:surfaceDrawDepth(s,{x,y,tacticalLevel:level},bias),node});
  const reachableSet=useMemo(()=>new Set(reachable.map(spaceKey)),[reachable]);
- const illumination=useMemo(()=>new Map<string,number>(visibleTiles.map((t:any)=>[`${t.x},${t.y}`,tileIllumination(s,t.x,t.y)])),[s,visibleTiles]);
+ const illumination=useMemo(()=>new Map<string,number>(terrain.tiles.map((t:any)=>[`${t.x},${t.y}`,tileIllumination(terrain,t.x,t.y)])),[terrain]);
  const light=(x:number,y:number,level=0)=>s.night?.27+tileIllumination(s,x,y,level)*.73:1;
- const material=(t:any)=>terrainMaterial(t,s.sceneId??s.sectorId);
  const areaThrow=grenadeTargetingMode(u,mode),pointThrow=areaThrow||mode==='throwKnife',grenadeHeld=grenadeTargetingMode(u,'useItem');
  const drawPerson=(v:any,npc=false)=>{
   const moving=positions[v.id]??{...v,direction:v.side==='enemy'?7:3,frame:0,moving:false};const at={...v,...moving},p=projectSurface(s,project,at),interactive=tacticalLevel(v)===cursorLevel,hovered=hover&&(hover.id?hover.id===v.id:sameCell(hover,v));
@@ -92,10 +119,13 @@ export default function TacticalScene({viewport,cursorLevel=0,state:s,selected,u
    {mode!=='inventory'&&hovered&&v.side==='enemy'&&v.hp>0&&!v.surrendered&&u&&hasFirearm(u)&&contextualAttack(s,u,v,{type:mode,aim}).type==='fire'&&<text x={p.x} y={top-5} textAnchor="middle" fill="#f2d5a0" fontSize="10" stroke="#11180f" strokeWidth="2" paintOrder="stroke">{shotChance(s,u,v,aim,hitLocation)}%</text>}
   </g>;
  };
- for(const v of units.filter(v=>!v.fled&&isInteriorVisible(s,v,revealed))){const at=positions[v.id]??v;objects.push({key:`unit-${v.id}`,depth:surfaceDrawDepth(s,{...v,...at},.05),node:drawPerson(v)});}
- for(const npc of s.npcs??[])if(isInteriorVisible(s,npc,revealed)&&players.some(p=>canSee(s,p,npc))){const at=positions[npc.id]??npc;objects.push({key:`npc-${npc.id}`,depth:surfaceDrawDepth(s,{...npc,...at},.05),node:drawPerson({...npc,hp:npc.hp??100,maxHp:npc.maxHp??100,side:'player'},true)});}
+ const visiblePeople=useMemo(()=>units.filter(v=>!v.fled&&isInteriorVisible(s,v,revealed)),[s,units,revealed]);
+ const visibleCivilians=useMemo(()=>(s.npcs??[]).filter((npc:any)=>isInteriorVisible(s,npc,revealed)&&players.some(p=>canSee(s,p,npc))),[s,players,revealed]);
+ const lootPiles=useMemo(()=>groundLootPiles(s,players).filter((pile:any)=>isInteriorVisible(s,pile,revealed)),[s,players,revealed]);
+ for(const v of visiblePeople){const at=positions[v.id]??v;objects.push({key:`unit-${v.id}`,depth:surfaceDrawDepth(s,{...v,...at},.05),node:drawPerson(v)});}
+ for(const npc of visibleCivilians){const at=positions[npc.id]??npc;objects.push({key:`npc-${npc.id}`,depth:surfaceDrawDepth(s,{...npc,...at},.05),node:drawPerson({...npc,hp:npc.hp??100,maxHp:npc.maxHp??100,side:'player'},true)});}
  for(const a of s.artillery??[]){const p=projectSurface(s,project,a);add(`gun-${a.id}`,a.x,a.y,<g role="button" tabIndex={0} aria-label={`Seleccionar ${(ARTILLERY as any)[a.type].name}`} onClick={()=>onCannon(a.id)} onKeyDown={e=>{if(e.key==='Enter')onCannon(a.id);}}>{a.id===cannonId&&<ellipse cx={p.x} cy={p.y} rx="24" ry="10" fill="none" stroke="#d8bf7e"/>}<image href="/art/cannon.png" x={p.x-38} y={p.y-58} width="76" height="76" pointerEvents="none" style={{filter:`brightness(${light(a.x,a.y,tacticalLevel(a))})`}}/></g>,0,tacticalLevel(a));}
- for(const pile of groundLootPiles(s,players))if(isInteriorVisible(s,pile,revealed)){
+ for(const pile of lootPiles){
   const p=projectSurface(s,project,pile),point={x:pile.x,y:pile.y,...(pile.tacticalLevel===undefined?{}:{tacticalLevel:pile.tacticalLevel}),loot:true};
   add(`equipment-${spaceKey(pile)}`,pile.x,pile.y,<g data-ground-equipment="true" role="button" pointerEvents={tacticalLevel(pile)===cursorLevel?"auto":"none"} tabIndex={tacticalLevel(pile)===cursorLevel?0:-1} aria-label={`Equipo en ${tacticalGridLabel(pile.x,pile.y)} · ${pile.count} objeto(s)`} onMouseEnter={()=>onHover(point)} onMouseLeave={()=>onHover(null)} onFocus={()=>onHover(point)} onBlur={()=>onHover(null)} onClick={()=>onTile(point)} onKeyDown={event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();onTile(point);}}}>
    <ellipse cx={p.x} cy={p.y} rx="17" ry="10" fill="#243123" stroke="#d8bf7e" strokeWidth="1"/>
@@ -103,22 +133,73 @@ export default function TacticalScene({viewport,cursorLevel=0,state:s,selected,u
    {pile.count>1&&<text x={p.x+11} y={p.y+9} textAnchor="middle" fill="#fff2c7" stroke="#18261d" strokeWidth="2" paintOrder="stroke" fontSize="10" pointerEvents="none">{pile.count}</text>}
   </g>,.02,tacticalLevel(pile));
  }
- for(const [i,l] of (s.lights??[]).entries())if(isInteriorVisible(s,l,revealed)&&upperPointVisible(l)){const p=projectSurface(s,project,l);add(`light-${i}`,l.x,l.y,<g pointerEvents="none"><ellipse cx={p.x} cy={p.y-4} rx="3" ry="7" fill="#efa242"/><ellipse cx={p.x} cy={p.y-5} rx="1.5" ry="4" fill="#ffe3a0"/></g>,.03,tacticalLevel(l));}
+ for(const [i,l] of (s.lights??[]).entries())if(isInteriorVisible(s,l,revealed)&&upperPointVisible(l)){const p=projectSurface(s,project,l);add(`light-${i}`,l.x,l.y,<TacticalLight source={l} point={p} night={s.night}/>,.03,tacticalLevel(l));}
  for(const t of upperTiles){
   const p=projectSurface(s,project,t),key=spaceKey(t),occupant=units.find(v=>sameCell(v,t)&&!v.fled);
   objects.push({key:`surface-${key}`,depth:surfaceDrawDepth(s,t,.01),node:<g data-surface-level={tacticalLevel(t)} data-surface-id={t.id} role="button" tabIndex={0} aria-label={`${tacticalGridLabel(t.x,t.y)}, nivel superior${occupant?', '+occupant.name:t.blocked?', obstáculo':', accesible'}`} onClick={()=>onTile(t)} onKeyDown={event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();onTile(t);}}} onMouseEnter={()=>onHover(t)} onMouseLeave={()=>onHover(null)} onFocus={()=>onHover(t)} onBlur={()=>onHover(null)}>
    <polygon points={diamond(p.x,p.y)} fill={t.buildingId?'transparent':'url(#terrain-floor)'} stroke="none" pointerEvents="all"/>
    {showSight&&<polygon points={diamond(p.x,p.y)} fill={sight.has(key)?'#69ac54':'#a94536'} opacity=".32" pointerEvents="none"/>}
-   {hover&&sameCell(hover,t)&&<polygon points={diamond(p.x,p.y)} fill={mode==='move'&&reachableSet.has(key)?'#d8dca1':'#bd6f4d'} fillOpacity=".16" stroke="#ddd6a7" strokeWidth="1" pointerEvents="none"/>}
+   {hover&&sameCell(hover,t)&&<polygon points={diamond(p.x,p.y)} fill={mode==='move'&&routesPending?'#aaa99c':mode==='move'&&reachableSet.has(key)?'#d8dca1':'#bd6f4d'} fillOpacity=".16" stroke="#ddd6a7" strokeWidth="1" pointerEvents="none"/>}
   </g>});
  }
- const ground=useMemo(()=>(<g>{visibleTiles.map((t:any)=>{const p=projectSurface(s,project,t),key=`${t.x},${t.y}`,occupant=units.find(v=>sameCell(v,t)&&!v.fled);return <g key={key} data-surface-level="0" role="button" pointerEvents={cursorLevel===0?"auto":"none"} tabIndex={cursorLevel===0?0:-1} aria-label={`${tacticalGridLabel(t.x,t.y)}${occupant?', '+occupant.name:(t.blocked||propBlocksAt(s,t.x,t.y))?', obstáculo':', accesible'}`} onClick={()=>handlers.current.onTile({...t,tacticalLevel:0})} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();handlers.current.onTile({...t,tacticalLevel:0});}}} onMouseEnter={()=>handlers.current.onHover({...t,tacticalLevel:0})} onMouseLeave={()=>handlers.current.onHover(null)} onFocus={()=>handlers.current.onHover({...t,tacticalLevel:0})} onBlur={()=>handlers.current.onHover(null)}><polygon points={diamond(p.x,p.y)} fill={t.type==='water'?'#516b67':`url(#terrain-${material(t)})`} stroke="none"/>{t.type==='water'&&<path d={`M${p.x-17},${p.y}l15,-3m-5,9l20,-3`} stroke="#a8b9a6" opacity=".22" strokeWidth=".7"/>}{s.night&&<polygon points={diamond(p.x,p.y)} fill="#050914" opacity={.78*(1-(illumination.get(key)??0))} pointerEvents="none"/>}{showSight&&<polygon points={diamond(p.x,p.y)} fill={sight.has(spaceKey(t))?'#69ac54':'#a94536'} opacity=".32" pointerEvents="none"/>}</g>;})}</g>),[visibleTiles,units,project,s.night,s.props,showSight,sight,illumination,cursorLevel]);
+ const groundPaint=useMemo(()=>{
+  const fills=new Map<string,string[]>(),shades=new Map<number,string[]>();
+  for(const t of terrain.tiles){const p=projectSurface(terrain,project,t),d=`M${p.x},${p.y-14}l26,14 -26,14 -26,-14z`,fill=t.type==='water'?'#516b67':`url(#terrain-${terrainMaterial(t,terrain.sceneId??terrain.sectorId)})`;
+   if(!fills.has(fill))fills.set(fill,[]);fills.get(fill)!.push(d);
+   if(terrain.night){const opacity=.78*(1-(illumination.get(`${t.x},${t.y}`)??0));if(!shades.has(opacity))shades.set(opacity,[]);shades.get(opacity)!.push(d);}
+  }
+  return <g pointerEvents="none" data-ground-paint="batched">{[...fills].map(([fill,paths])=><path key={fill} d={paths.join('')} fill={fill}/>)}{[...shades].map(([opacity,paths])=><path key={opacity} d={paths.join('')} fill="#050914" opacity={opacity}/>)}</g>;
+ },[terrain,project,illumination]);
+ // Reuse tile elements when the camera crosses an overscan boundary. Rebuilding
+ // labels and obstacle checks for every visible tile caused an 80 ms pause.
+ const blockedGround=useMemo(()=>new Set<string>((terrain.props??[]).filter((p:any)=>tacticalLevel(p)===0&&p.blocksMovement!==false).flatMap(propCells).map((p:any)=>`${p.x},${p.y}`)),[terrain]);
+ const groundNodes=useMemo(()=>new Map<string,ReactElement<{'aria-label':string}>>(terrain.tiles.map((t:any)=>{const p=projectSurface(terrain,project,t),key=`${t.x},${t.y}`;return [key,<g key={key} data-surface-level="0" role="button" pointerEvents={cursorLevel===0?"auto":"none"} tabIndex={cursorLevel===0?0:-1} aria-label={`${tacticalGridLabel(t.x,t.y)}${(t.blocked||blockedGround.has(key))?', obstáculo':', accesible'}`} onClick={()=>handlers.current.onTile({...t,tacticalLevel:0})} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();handlers.current.onTile({...t,tacticalLevel:0});}}} onMouseEnter={()=>handlers.current.onHover({...t,tacticalLevel:0})} onMouseLeave={()=>handlers.current.onHover(null)} onFocus={()=>handlers.current.onHover({...t,tacticalLevel:0})} onBlur={()=>handlers.current.onHover(null)}><polygon points={diamond(p.x,p.y)} fill="transparent" stroke="none"/>{t.type==='water'&&<path d={`M${p.x-17},${p.y}l15,-3m-5,9l20,-3`} stroke="#a8b9a6" opacity=".22" strokeWidth=".7"/>}</g>] as const;})),[terrain,project,blockedGround,cursorLevel]);
+ const occupiedGround=useMemo(()=>{
+  const nodes=new Map();
+  for(const occupant of units){
+   if(occupant.fled||tacticalLevel(occupant))continue;
+   const key=`${occupant.x},${occupant.y}`,base=groundNodes.get(key);
+   if(base&&!nodes.has(key))nodes.set(key,cloneElement(base,{'aria-label':`${tacticalGridLabel(occupant.x,occupant.y)}, ${occupant.name}`}));
+  }
+  return nodes;
+ },[units,groundNodes]);
+ const ground=useMemo(()=><g>{visibleTiles.map((tile:any)=>{const key=`${tile.x},${tile.y}`;return occupiedGround.get(key)??groundNodes.get(key);})}{showSight&&visibleTiles.map((tile:any)=>{const p=projectSurface(terrain,project,tile);return <polygon key={`sight-${tile.x},${tile.y}`} points={diamond(p.x,p.y)} fill={sight.has(spaceKey(tile))?'#69ac54':'#a94536'} opacity=".32" pointerEvents="none"/>;})}</g>,[visibleTiles,groundNodes,occupiedGround,showSight,sight,terrain,project]);
+ // At an exact actor/scenery depth tie retain the original key ordering.
+ // Only that layer uses vectors for this frame; actors never jump in front of
+ // a tree or prop merely because the surrounding scenery was cached.
+ const actorDepths=new Set(objects.filter(object=>!object.members).map(object=>object.depth));
+ const orderedObjects=objects.flatMap(object=>{
+  if(!object.members)return [object];
+  const tied=actorDepths.has(object.depth);
+  // Retain the decoded image while exact-depth members interleave with actors.
+  // Unmounting here would rasterize the layer again at the next movement step.
+  const cached={...object,key:`static-cache-${object.depth}`,node:<g visibility={tied?'hidden':undefined}>{object.node}</g>};
+  return tied?[cached,...object.members]:[cached];
+ }).sort((a,b)=>a.depth-b.depth||a.key.localeCompare(b.key));
  return <>
-  <defs>{materials.map(name=><pattern key={name} id={`terrain-${name}`} patternUnits="userSpaceOnUse" width="128" height="128" patternTransform={['plaster','roof','wood'].includes(name)?undefined:'matrix(1 .538 -1 .538 0 0)'}><image href={`/art/terrain-${name}-v1.webp`} width="128" height="128"/></pattern>)}<radialGradient id="smokefill"><stop offset="0" stopColor="#d4ccae" stopOpacity=".65"/><stop offset="1" stopColor="#d4ccae" stopOpacity="0"/></radialGradient></defs>
+  <defs>{materials.map(name=><pattern key={name} id={`terrain-${name}`} patternUnits="userSpaceOnUse" width="128" height="128" patternTransform={['plaster','roof','wood'].includes(name)?undefined:'matrix(1 .538 -1 .538 0 0)'}><image href={`/art/terrain-${name}-v1.webp`} width="128" height="128"/></pattern>)}<radialGradient id="smokefill"><stop offset="0" stopColor="#d9dce0" stopOpacity=".72"/><stop offset=".45" stopColor="#aeb6bf" stopOpacity=".46"/><stop offset="1" stopColor="#84909d" stopOpacity="0"/></radialGradient></defs>
+  <StaticSceneLayer>{groundPaint}</StaticSceneLayer>
   {ground}
-  {hover&&!tacticalLevel(hover)&&pointInViewport(viewport,projectSurface(s,project,hover))&&<polygon points={diamond(projectSurface(s,project,hover).x,projectSurface(s,project,hover).y)} fill={mode==='move'&&reachableSet.has(spaceKey(hover))?'#d8dca1':'#bd6f4d'} fillOpacity=".16" stroke="#ddd6a7" strokeWidth="1" pointerEvents="none"/>}
-  {objects.sort((a,b)=>a.depth-b.depth||a.key.localeCompare(b.key)).map(o=><g key={o.key}>{o.node}</g>)}
-  {(s.smoke??[]).filter(upperPointVisible).map((v:any,i:number)=>{const p=projectSurface(s,project,v);return <ellipse key={i} cx={p.x} cy={p.y-24} rx={32*v.radius} ry={23*v.radius} fill="url(#smokefill)" pointerEvents="none"/>})}
+  {hover&&!tacticalLevel(hover)&&pointInViewport(viewport,projectSurface(s,project,hover))&&<polygon points={diamond(projectSurface(s,project,hover).x,projectSurface(s,project,hover).y)} fill={mode==='move'&&routesPending?'#aaa99c':mode==='move'&&reachableSet.has(spaceKey(hover))?'#d8dca1':'#bd6f4d'} fillOpacity=".16" stroke="#ddd6a7" strokeWidth="1" pointerEvents="none"/>}
+  {orderedObjects.map(o=><g key={o.key}>{o.node}</g>)}
+  {(()=>{
+   const occurrences=new Map<string,number>();
+   return (s.smoke??[]).map((v:any)=>{
+    // Expiry round stays constant as turns decrease. Removing an older cloud
+    // must not restart the animation of a later shot at a different position.
+    const identity=`${spaceKey(v)}:${(s.turn??0)+(v.turns??3)}`,ordinal=occurrences.get(identity)??0;
+    occurrences.set(identity,ordinal+1);
+    if(!upperPointVisible(v))return null;
+    const p=projectSurface(s,project,v),age=Math.max(0,3-(v.turns??3));
+    return <g key={`${identity}:${ordinal}`} data-powder-smoke="true" transform={`translate(${p.x} ${p.y-22})`} data-smoke-age={age} pointerEvents="none" aria-hidden="true">
+     <g style={{transform:`scale(${v.radius})`,transition:'transform 1.2s ease-out'}}>
+      {smokePuffs.map(([x,y,rx,ry],index)=><g key={index} className="powder-smoke-puff" style={{'--smoke-dx':`${8+x*.65}px`,'--smoke-dy':`${-12+y*.3}px`,'--smoke-age':Math.min(2,age),'--smoke-opacity':age===0?.75:age===1?.42:.2} as CSSProperties}>
+       <g className={age===0?"powder-smoke-bloom":undefined}><ellipse cx={x} cy={y} rx={rx} ry={ry} fill="url(#smokefill)"/></g>
+      </g>)}
+     </g>
+    </g>;
+   });
+  })()}
   {heard&&heardPoint&&<g className="ja2-noise-marker" aria-label="Ruido: zona aproximada" pointerEvents="none"><ellipse cx={heardPoint.x} cy={heardPoint.y} rx={Math.max(26,heard.radius*26)} ry={Math.max(14,heard.radius*14)} fill="#d4b35a" fillOpacity=".08" stroke="#e7ca7d" strokeWidth="1.5" strokeDasharray="4 4"/><text x={heardPoint.x} y={heardPoint.y+4} textAnchor="middle" fill="#fff0b7" fontSize="17" fontWeight="bold" stroke="#282316" strokeWidth="3" paintOrder="stroke">?</text></g>}
  </>;
 }

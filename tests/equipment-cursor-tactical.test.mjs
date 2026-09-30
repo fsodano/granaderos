@@ -45,7 +45,7 @@ test('ending a turn resolves cursor custody before the enemy phase',()=>{
 test('a body cursor retained at the ground limit remains visible in the actual loot picker and recoverable',async()=>{
  const {nearbyLootOptions}=await import('../game/ja2-hud.js');
  let b=field();b=pickup(b,'hand:right');const body={...b.units[0],id:'body',hp:0,unconscious:true};
- b.units=[{...field().units[0],x:3,y:2},body];b.groundItems=Array.from({length:2000},(_,i)=>({id:`full-${i}`,type:'item',item:'flints',count:1,weight:.05,x:9,y:7}));
+ b.units=[{...field().units[0],x:3,y:2},body];b.groundItems=Array.from({length:2000},(_,i)=>({id:`full-${i}`,type:'item',item:'rations',count:1,weight:.5,x:9,y:7}));
  const option=nearbyLootOptions(b,b.units[0]).find(item=>item.action.item==='cursor');assert.ok(option);assert.equal(option.loaded,1);assert.equal(option.count,1);
  const n=actBattle(b,{...option.action,unitId:'p',count:1});assert.equal(n.lastError,null);assert.equal(n.units[1].equipmentCursor,undefined);assert.ok(Object.values(n.units[0].inventory).some(item=>item.weapon===1805&&item.loaded===1));
 });

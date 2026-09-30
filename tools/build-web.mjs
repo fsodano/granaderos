@@ -1,6 +1,7 @@
 // Build the browser-only game and stage a verified static export for hosting.
 import {verifyTacticalAssets} from './verify-tactical-assets.mjs';
 import {MERCENARY_ADDITIONS} from '../game/mercenaries.js';
+import {CHARACTER_PORTRAITS} from '../game/character-profile.js';
 import {spawnSync} from 'node:child_process';
 import {cp,readFile,readdir,rm,stat} from 'node:fs/promises';
 import {resolve,dirname,relative,extname} from 'node:path';
@@ -45,6 +46,10 @@ for(const file of sourceFiles){
   }
   if(extname(file)==='.js'){
     const javascript=await readFile(file,'utf8');
+    // SSR transforms can substitute a local import.meta.url into client code.
+    // A worker asset can exist yet be unusable from an HTTP page with that base.
+    if(/new\s+Worker\s*\(\s*new\s+URL\s*\([^)]*file:\/\//.test(javascript))throw Error(`Worker uses a local file URL in browser export: ${name}`);
+    for(const match of javascript.matchAll(/["'`](\/_next\/static\/[^"'`$?#]*worker[^"'`$?#]*\.js)["'`]/g))requireAsset(match[1],name);
     for(const match of javascript.matchAll(/[\"'`](\/art\/[^\"'`$?#]+)[\"'`]/g))requireAsset(match[1],name);
   }
   if(extname(file)==='.css'){
@@ -53,7 +58,7 @@ for(const file of sourceFiles){
   }
 }
 for(const id of [103,104])requireAsset(`/art/portrait-${id}.png`,'foreign volunteer portrait');
-for(const id of ['avatar-woman-scout','avatar-woman-civilian','avatar-man-gaucho','avatar-man-soldier'])requireAsset(`/art/${id}.webp`,'custom avatar');
+for(const portrait of CHARACTER_PORTRAITS)requireAsset(portrait.src,'custom portrait catalog');
 // Dynamic portrait and action-frame URLs are not visible to literal URL scans.
 for(const id of [0,1,2,3,4,5,6,7,8,9,10,11,57,100,101,102,105,106])requireAsset(`/art/portrait-${id}.webp`,'roster');
 for(const {id} of MERCENARY_ADDITIONS)requireAsset(`/art/portrait-${id}.webp`,'paid mercenary roster');

@@ -1,0 +1,590 @@
+{
+  "date": "2026-09-27",
+  "fullGameplayComplete": false,
+  "scope": "Actual paid route after automatic phase 1 on first recruitment. Full fresh run reached foundry; subsequent accepted checks continue its exact saved checkpoints. No complete fresh-start-to-ending pass is claimed.",
+  "modifiedFiles": [
+    "tests/fresh-cuyo-route.mjs",
+    "tests/fresh-mountain-route.mjs",
+    "tests/fresh-campaign-recovery.test.mjs"
+  ],
+  "verification": {
+    "freshRun": {
+      "log": "/tmp/granaderos-cuyo-agent-fresh-20260927-diagnostic.log",
+      "through": "Mendoza victory, foundry, emancipation and first cannon",
+      "stoppedAt": "Fixed dead patient 8 in prepareFreshArmyProduction; corrected and continued from the exact saved foundry state"
+    },
+    "continuationLogs": [
+      "/tmp/granaderos-cuyo-agent-army-20260927.log",
+      "/tmp/granaderos-cuyo-agent-uspallata-crew-20260927.log",
+      "/tmp/granaderos-cuyo-agent-pass-care-20260927.log"
+    ],
+    "syntaxAndDiffChecks": true,
+    "fullSuiteRunByThisAgent": false
+  },
+  "mendoza": {
+    "source": "/tmp/granaderos-cuyo-agent-fresh-20260927-mendoza-won.json",
+    "hour": 657,
+    "secondOfHour": 89,
+    "phase": 3,
+    "treasury": 757,
+    "infantry": 0,
+    "cannons": 0,
+    "employedLiving": [
+      {
+        "id": 142,
+        "health": 12,
+        "maxHealth": 79,
+        "bleeding": 4,
+        "sector": "cordoba",
+        "morale": 0
+      },
+      {
+        "id": 145,
+        "health": 88,
+        "maxHealth": 88,
+        "bleeding": 0,
+        "sector": "mendoza",
+        "morale": 0
+      }
+    ],
+    "completed": false,
+    "controller": "cautiousCombatOrder",
+    "turns": 12,
+    "actions": 200,
+    "deterministicReplay": true,
+    "saveSettlement": true,
+    "transport": "posta",
+    "reliefId": 145,
+    "reliefContractCost": 1230,
+    "assaultSquadSizes": [
+      4,
+      3
+    ],
+    "actualDeaths": [
+      0,
+      8,
+      1000,
+      134,
+      146
+    ],
+    "preparationIssue": "Three healthy veterans had personal morale 0-2. Paid relief, finite recovered guns, full energy recovery and coordinated movement replaced the inadequate six-soldier approach."
+  },
+  "foundry": {
+    "source": "/tmp/granaderos-cuyo-agent-fresh-20260927-foundry.json",
+    "hour": 707,
+    "secondOfHour": 334,
+    "phase": 3,
+    "treasury": 821,
+    "infantry": 0,
+    "cannons": 1,
+    "employedLiving": [
+      {
+        "id": 2,
+        "health": 76,
+        "maxHealth": 76,
+        "bleeding": 0,
+        "sector": "mendoza",
+        "morale": 80
+      },
+      {
+        "id": 7,
+        "health": 85,
+        "maxHealth": 85,
+        "bleeding": 0,
+        "sector": "mendoza",
+        "morale": 80
+      }
+    ],
+    "completed": false,
+    "flags": {
+      "foundry": true,
+      "emancipation": true
+    },
+    "envoy": 145
+  },
+  "initialArmy": {
+    "source": "/tmp/granaderos-cuyo-agent-fresh-20260927-initial-army.json",
+    "hour": 760,
+    "secondOfHour": 334,
+    "phase": 3,
+    "treasury": 1181,
+    "infantry": 200,
+    "cannons": 2,
+    "employedLiving": [
+      {
+        "id": 2,
+        "health": 76,
+        "maxHealth": 76,
+        "bleeding": 0,
+        "sector": "mendoza",
+        "morale": 80
+      },
+      {
+        "id": 7,
+        "health": 85,
+        "maxHealth": 85,
+        "bleeding": 0,
+        "sector": "mendoza",
+        "morale": 80
+      }
+    ],
+    "completed": false
+  },
+  "fullArmy": {
+    "source": "/tmp/granaderos-cuyo-agent-fresh-20260927-army.json",
+    "hour": 1406,
+    "secondOfHour": 334,
+    "phase": 3,
+    "treasury": 7616,
+    "infantry": 3000,
+    "cannons": 3,
+    "employedLiving": [
+      {
+        "id": 2,
+        "health": 76,
+        "maxHealth": 76,
+        "bleeding": 0,
+        "sector": "mendoza",
+        "morale": 80
+      },
+      {
+        "id": 7,
+        "health": 85,
+        "maxHealth": 85,
+        "bleeding": 0,
+        "sector": "cordoba",
+        "morale": 80
+      }
+    ],
+    "completed": false
+  },
+  "uspallata": {
+    "source": "/tmp/granaderos-cuyo-agent-uspallata-20260927-won.json",
+    "hour": 1644,
+    "secondOfHour": 461,
+    "phase": 3,
+    "treasury": 4060,
+    "infantry": 3000,
+    "cannons": 2,
+    "employedLiving": [
+      {
+        "id": 2,
+        "health": 15,
+        "maxHealth": 76,
+        "bleeding": 0,
+        "sector": "uspallata",
+        "morale": 6.549999999999997
+      },
+      {
+        "id": 7,
+        "health": 19,
+        "maxHealth": 85,
+        "bleeding": 0,
+        "sector": "uspallata",
+        "morale": 10.55
+      },
+      {
+        "id": 105,
+        "health": 70,
+        "maxHealth": 70,
+        "bleeding": 0,
+        "sector": "uspallata",
+        "morale": 38
+      },
+      {
+        "id": 128,
+        "health": 79,
+        "maxHealth": 79,
+        "bleeding": 0,
+        "sector": "uspallata",
+        "morale": 34
+      },
+      {
+        "id": 109,
+        "health": 84,
+        "maxHealth": 84,
+        "bleeding": 0,
+        "sector": "uspallata",
+        "morale": 48
+      },
+      {
+        "id": 147,
+        "health": 78,
+        "maxHealth": 78,
+        "bleeding": 0,
+        "sector": "uspallata",
+        "morale": 38
+      }
+    ],
+    "completed": false,
+    "controller": "mountainBatteryOrder",
+    "controllerOptions": {
+      "leaderId": "7",
+      "helperId": "2",
+      "screenDistance": 3
+    },
+    "turns": 11,
+    "actions": 151,
+    "deterministicReplay": true,
+    "saveSettlement": true,
+    "transport": "posta",
+    "paidRecruits": [
+      105,
+      128,
+      109,
+      132,
+      106,
+      147
+    ],
+    "actualDeaths": [
+      132,
+      106
+    ]
+  },
+  "uspallataRecovery": {
+    "source": "/tmp/granaderos-cuyo-agent-uspallata-20260927-healed.json",
+    "hour": 1671,
+    "secondOfHour": 461,
+    "phase": 3,
+    "treasury": 2894,
+    "infantry": 3000,
+    "cannons": 2,
+    "employedLiving": [
+      {
+        "id": 2,
+        "health": 76,
+        "maxHealth": 76,
+        "bleeding": 0,
+        "sector": "mendoza",
+        "morale": 9.549999999999997
+      },
+      {
+        "id": 7,
+        "health": 85,
+        "maxHealth": 85,
+        "bleeding": 0,
+        "sector": "mendoza",
+        "morale": 13.55
+      },
+      {
+        "id": 109,
+        "health": 84,
+        "maxHealth": 84,
+        "bleeding": 0,
+        "sector": "mendoza",
+        "morale": 50
+      },
+      {
+        "id": 147,
+        "health": 78,
+        "maxHealth": 78,
+        "bleeding": 0,
+        "sector": "mendoza",
+        "morale": 40
+      }
+    ],
+    "completed": false,
+    "patients": [
+      2,
+      7
+    ],
+    "retainedDoctors": [
+      109,
+      147
+    ],
+    "expiredHealthyContracts": [
+      105,
+      128
+    ],
+    "allSixBattleSurvivorsAliveAndFullyHealed": true,
+    "finiteRecoveredGunSales": 21
+  },
+  "remaining": [
+    "Los Patos preparation now succeeds; the actual battle fails at turn 5 with the required victory assertion intact. The earned route remains accepted only through Uspallata recovery.",
+    "Andes completion, coastal route, return north and the ending remain unverified on this earned state.",
+    "No changes were made to enemy strength, starting resources, casualties, runtime morale, or victory requirements in this subtask."
+  ],
+  "losPatosAttempt": {
+    "source": "/tmp/granaderos-cuyo-agent-patos-followup-20260927-ready.json",
+    "log": "/tmp/granaderos-cuyo-agent-patos-followup-20260927.log",
+    "preparationFix": "Buy only missing muskets and skip equip when the operative already carries the correct undropped gun.",
+    "hour": 2154,
+    "treasury": 6041,
+    "arrival": [
+      {
+        "id": 7,
+        "health": 85,
+        "energy": 82,
+        "morale": 85,
+        "weapon": 1801,
+        "ammo": 10,
+        "loaded": 0
+      },
+      {
+        "id": 2,
+        "health": 76,
+        "energy": 82,
+        "morale": 85,
+        "weapon": 1805,
+        "ammo": 9,
+        "loaded": 1
+      },
+      {
+        "id": 105,
+        "health": 70,
+        "energy": 69,
+        "morale": 39,
+        "weapon": 1802,
+        "ammo": 9,
+        "loaded": 1
+      },
+      {
+        "id": 147,
+        "health": 78,
+        "energy": 82,
+        "morale": 44,
+        "weapon": 1801,
+        "ammo": 9,
+        "loaded": 1
+      },
+      {
+        "id": 143,
+        "health": 76,
+        "energy": 82,
+        "morale": 90,
+        "weapon": 1800,
+        "ammo": 9,
+        "loaded": 1
+      },
+      {
+        "id": 118,
+        "health": 82,
+        "energy": 82,
+        "morale": 80,
+        "weapon": 1801,
+        "ammo": 9,
+        "loaded": 1
+      },
+      {
+        "id": 138,
+        "health": 77,
+        "energy": 76,
+        "morale": 80,
+        "weapon": 1801,
+        "ammo": 9,
+        "loaded": 1
+      },
+      {
+        "id": 135,
+        "health": 76,
+        "energy": 76,
+        "morale": 80,
+        "weapon": 1801,
+        "ammo": 1,
+        "loaded": 1
+      }
+    ],
+    "outcome": "defeat",
+    "turns": 5,
+    "actions": 77,
+    "elapsedSeconds": 112,
+    "units": [
+      {
+        "id": "7",
+        "side": "player",
+        "hp": 0,
+        "ammo": 9,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "2",
+        "side": "player",
+        "hp": 3,
+        "ammo": 7,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "105",
+        "side": "player",
+        "hp": 0,
+        "ammo": 9,
+        "loaded": 0,
+        "routed": false
+      },
+      {
+        "id": "147",
+        "side": "player",
+        "hp": 0,
+        "ammo": 8,
+        "loaded": 0,
+        "routed": true
+      },
+      {
+        "id": "143",
+        "side": "player",
+        "hp": 0,
+        "ammo": 9,
+        "loaded": 0,
+        "routed": false
+      },
+      {
+        "id": "118",
+        "side": "player",
+        "hp": 0,
+        "ammo": 8,
+        "loaded": 0,
+        "routed": false
+      },
+      {
+        "id": "138",
+        "side": "player",
+        "hp": 12,
+        "ammo": 9,
+        "loaded": 0,
+        "routed": false
+      },
+      {
+        "id": "135",
+        "side": "player",
+        "hp": 0,
+        "ammo": 0,
+        "loaded": 0,
+        "routed": true
+      },
+      {
+        "id": "enemy-0",
+        "side": "enemy",
+        "hp": 53,
+        "ammo": 11,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "enemy-1",
+        "side": "enemy",
+        "hp": 100,
+        "ammo": 11,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "enemy-2",
+        "side": "enemy",
+        "hp": 100,
+        "ammo": 12,
+        "loaded": 0,
+        "routed": false
+      },
+      {
+        "id": "enemy-3",
+        "side": "enemy",
+        "hp": 100,
+        "ammo": 12,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "enemy-4",
+        "side": "enemy",
+        "hp": 100,
+        "ammo": 12,
+        "loaded": 0,
+        "routed": false
+      },
+      {
+        "id": "enemy-5",
+        "side": "enemy",
+        "hp": 100,
+        "ammo": 10,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "enemy-6",
+        "side": "enemy",
+        "hp": 100,
+        "ammo": 12,
+        "loaded": 0,
+        "routed": false
+      },
+      {
+        "id": "enemy-7",
+        "side": "enemy",
+        "hp": 100,
+        "ammo": 12,
+        "loaded": 0,
+        "routed": false
+      },
+      {
+        "id": "enemy-8",
+        "side": "enemy",
+        "hp": 100,
+        "ammo": 10,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "enemy-9",
+        "side": "enemy",
+        "hp": 100,
+        "ammo": 12,
+        "loaded": 0,
+        "routed": false
+      },
+      {
+        "id": "enemy-10",
+        "side": "enemy",
+        "hp": 45,
+        "ammo": 11,
+        "loaded": 0,
+        "routed": false
+      },
+      {
+        "id": "enemy-11",
+        "side": "enemy",
+        "hp": 100,
+        "ammo": 11,
+        "loaded": 0,
+        "routed": false
+      },
+      {
+        "id": "enemy-12",
+        "side": "enemy",
+        "hp": 100,
+        "ammo": 12,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "enemy-13",
+        "side": "enemy",
+        "hp": 51,
+        "ammo": 11,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "enemy-14",
+        "side": "enemy",
+        "hp": 0,
+        "ammo": 12,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "enemy-15",
+        "side": "enemy",
+        "hp": 15,
+        "ammo": 11,
+        "loaded": 1,
+        "routed": false
+      }
+    ],
+    "acceptedVictory": false,
+    "deterministicReplay": false,
+    "saveSettlement": false,
+    "victoryAssertionUnchanged": true
+  }
+}

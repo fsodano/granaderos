@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createBattle, actBattle, endTurn, getReachable, movementStepCost} from '../game/tactical.js';
+import {createBattle, actBattle, endTurn, getReachable, movementStepCost, movementEnergy} from '../game/tactical.js';
 import {directionTo} from '../game/tactical-awareness.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
 
@@ -148,7 +148,8 @@ test('exploration charges diagonal distance in time and energy without spending 
 });
 
 test('energy exhaustion stops a multi-diagonal exploration path at the completed step', () => {
-  const s = field({energy: 1}, {exploration: true}), route = pathTo(s, 8, 8);
+  const s = field({}, {exploration: true});player(s).energy=movementEnergy(player(s),{type:'grass'},true);
+  const route = pathTo(s, 8, 8);
   assert.ok(route.path.length > 1);
   const first = route.path[0], oneStep = move(s, first.x, first.y), n = move(s, 8, 8);
   assert.deepEqual([player(n).x, player(n).y], [first.x, first.y]);

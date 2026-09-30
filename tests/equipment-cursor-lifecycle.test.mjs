@@ -58,8 +58,8 @@ test('cursor cartridges remain finite through two reports and return to personal
 
 function displacedBulky(s){
  // Finite capacity fixture: each authored crate is a distinct, carried object.
- const r=s.operativeState[110];r.flints=1;r.inventory=Object.fromEntries(Array.from({length:4},(_,i)=>[`crate${i}`,{name:`Cajón ${i}`,count:1,weight:4,instanceId:`crate-${i}`} ]));
- const sourceId=pocket(personal(s),'flints');s=arrange(s,'pickupEquipment',{sourceId});s=arrange(s,'placeEquipment',{destinationId:'large-1'});
+ const r=s.operativeState[110];r.rations=1;r.inventory=Object.fromEntries(Array.from({length:4},(_,i)=>[`crate${i}`,{name:`Cajón ${i}`,count:1,weight:4,instanceId:`crate-${i}`} ]));
+ const sourceId=pocket(personal(s),'rations');s=arrange(s,'pickupEquipment',{sourceId});s=arrange(s,'placeEquipment',{destinationId:'large-1'});
  assert.equal(s.operativeState[110].equipmentCursor.stack.instanceId,'crate-0');assert.equal(planEquipmentCursorReturn(personal(s)).dropped.instanceId,'crate-0');return s;
 }
 test('a displaced bulky item returns to actual cleared ground once when its original small pocket cannot hold it',()=>{
@@ -72,7 +72,7 @@ test('a displaced bulky item returns to actual cleared ground once when its orig
 test('missing or full ground storage rejects cancellation atomically and keeps the displaced item',()=>{
  for(const full of [false,true]){
   let s=fresh();if(full){const p=visit(s);s=leave(p.s,p.b);}s=displacedBulky(s);
-  if(full)s.sectorStates.retiro.groundItems=Array.from({length:2000},(_,i)=>({id:`full-${i}`,type:'item',item:'flints',count:1,weight:.05,x:1,y:1,knownToPlayer:true}));
+  if(full)s.sectorStates.retiro.groundItems=Array.from({length:2000},(_,i)=>({id:`full-${i}`,type:'item',item:'rations',count:1,weight:.5,x:1,y:1,knownToPlayer:true}));
   const action={...cursorAction(personal(s),'returnEquipmentCursor'),type:'sectorInventory',sector:'retiro',operativeId:110,direction:'arrange',kind:'cursor',cursorAction:'returnEquipmentCursor'};
   reject(s,action);assert.equal(s.operativeState[110].equipmentCursor.stack.instanceId,'crate-0');
  }

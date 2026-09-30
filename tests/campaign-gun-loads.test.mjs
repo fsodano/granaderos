@@ -10,7 +10,7 @@ import {targetPreview,tacticalInputAction} from '../game/ja2-hud.js';
 import {isAmmunitionStack,totalReserveAmmunition} from '../game/ammunition-types.js';
 import {ammoResourceKey} from '../game/campaign-ammunition.js';
 import {stockAndCarriedAmmo} from './ammunition-balance.mjs';
-const pistolStock=ammoResourceKey('pistol_54');
+const pistolStock=ammoResourceKey('pistol_69');
 const order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,n.lastError);return n;};
 const act=(b,a)=>{const n=actBattle(b,{unitId:'10',...a});assert.equal(n.lastError,null,n.lastError);return n;};
 const save=s=>decodeSave(encodeSave(s)).campaign;
@@ -24,14 +24,14 @@ test('a fully loaded issued firearm remains loaded through returns without credi
 });
 test('an empty issued gun stays empty after return and reloads only when the player uses it',()=>{
  let {s,b}=field();b=act(b,shooting);b=act(b,shooting);assert.equal(b.units[0].loaded,0);assert.equal(b.units[0].ammo,8);
- s=leave(s,b);assert.equal(s.operativeState[10].carriedLoaded,0);assert.equal(totalReserveAmmunition(s.operativeState[10]),8);assert.equal(s.resources[pistolStock],10);assert.equal(stockAndCarriedAmmo(s),298);
- for(let i=0;i<2;i++){s=order(save(s),{type:'visitSector'});b=enterSector(s.pendingBattle,s.sectorStates.retiro);assert.equal(b.units[0].loaded,0);assert.equal(b.units[0].ammo,10);s=leave(s,b);assert.equal(s.resources[pistolStock],8);assert.equal(stockAndCarriedAmmo(s),298);}
- s=order(s,{type:'visitSector'});b=enterSector(s.pendingBattle,s.sectorStates.retiro);const input=tacticalInputAction(b,b.units[0],shooting);assert.equal(input.type,'reload');const ammo=b.units[0].ammo;b=act(b,input);assert.equal(b.units[0].loaded,2);assert.equal(b.units[0].ammo,ammo-2);s=leave(s,b);assert.equal(s.resources[pistolStock],8);assert.equal(totalReserveAmmunition(s.operativeState[10]),8);assert.equal(s.operativeState[10].carriedAmmo,10);assert.equal(stockAndCarriedAmmo(s),298);save(s);
+ s=leave(s,b);assert.equal(s.operativeState[10].carriedLoaded,0);assert.equal(totalReserveAmmunition(s.operativeState[10]),8);assert.equal(s.resources[pistolStock],40);assert.equal(stockAndCarriedAmmo(s),298);
+ for(let i=0;i<2;i++){s=order(save(s),{type:'visitSector'});b=enterSector(s.pendingBattle,s.sectorStates.retiro);assert.equal(b.units[0].loaded,0);assert.equal(b.units[0].ammo,10);s=leave(s,b);assert.equal(s.resources[pistolStock],38);assert.equal(stockAndCarriedAmmo(s),298);}
+ s=order(s,{type:'visitSector'});b=enterSector(s.pendingBattle,s.sectorStates.retiro);const input=tacticalInputAction(b,b.units[0],shooting);assert.equal(input.type,'reload');const ammo=b.units[0].ammo;b=act(b,input);assert.equal(b.units[0].loaded,2);assert.equal(b.units[0].ammo,ammo-2);s=leave(s,b);assert.equal(s.resources[pistolStock],38);assert.equal(totalReserveAmmunition(s.operativeState[10]),8);assert.equal(s.operativeState[10].carriedAmmo,10);assert.equal(stockAndCarriedAmmo(s),298);save(s);
 });
 test('an exhausted issued gun remains exhausted through save and reentry and shows the empty cursor',()=>{
- let {s,b}=field();b=act(b,shooting);b=act(b,shooting);const key=Object.entries(b.units[0].inventory).find(([,stack])=>isAmmunitionStack(stack)&&stack.ammoType==='pistol_54')[0];b=act(b,{type:'drop',item:`inventory:${key}`,count:8});s=leave(s,b);s.resources[pistolStock]=0;
+ let {s,b}=field();b=act(b,shooting);b=act(b,shooting);const key=Object.entries(b.units[0].inventory).find(([,stack])=>isAmmunitionStack(stack)&&stack.ammoType==='pistol_69')[0];b=act(b,{type:'drop',item:`inventory:${key}`,count:8});s=leave(s,b);s.resources[pistolStock]=0;
  s=order(save(s),{type:'visitSector'});b=enterSector(s.pendingBattle,s.sectorStates.retiro);const u=b.units[0];assert.equal(u.loaded,0);assert.equal(u.ammo,0);assert.equal(targetPreview(b,u,{x:5,y:1},{mode:'fire'}).cursor,'empty');const failed=actBattle(b,{unitId:'10',...tacticalInputAction(b,u,shooting)});assert.ok(failed.lastError);assert.deepEqual(failed.units,b.units);assert.equal(failed.elapsedSeconds,b.elapsedSeconds);
- s=leave(s,b);assert.equal(s.resources[pistolStock],0);assert.equal(s.resources.cartridges,100,'unlike musket rounds cannot reload this pistol');assert.equal(s.operativeState[10].carriedLoaded,0);assert.equal(s.sectorStates.retiro.groundItems.find(g=>g.ammoType==='pistol_54').count,8);save(s);
+ s=leave(s,b);assert.equal(s.resources[pistolStock],0);assert.equal(s.resources.cartridges,180,'unlike musket rounds cannot reload this pistol');assert.equal(s.operativeState[10].carriedLoaded,0);assert.equal(s.sectorStates.retiro.groundItems.find(g=>g.ammoType==='pistol_69').count,8);save(s);
 });
 test('a partially discharged gun retains its last barrel and swapping it through the armory cannot refill it',()=>{
  let {s,b}=field();b=act(b,shooting);s=leave(s,b);assert.equal(s.operativeState[10].carriedLoaded,1);const total=stockAndCarriedAmmo(s);

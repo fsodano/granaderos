@@ -10,3 +10,8 @@ test('the empty desk presents custom creation as optional and hiring as an indep
 test('a hired-only desk counts the paid soldier while keeping custom creation available',()=>{
  const s=dispatchCampaign(initialCampaign(8),{type:'recruitCivic',id:110,term:'day'});assert.equal(s.lastError,null);assert.equal(s.officer,null);const html=draw(s);assert.match(html,/1 granadero/);assert.match(html,/>Crear mi granadero<\/button>/);assert.doesNotMatch(html,/Tu hoja de servicio está firmada/);
 });
+test('the desk explains a one-person start and never asks for regiment funding',()=>{
+ for(const state of [initialCampaign(8),dispatchCampaign(initialCampaign(8),{type:'recruitCivic',id:110,term:'day'})]){
+  const html=draw(state);assert.match(html,/Con una sola persona ya podés partir/);assert.doesNotMatch(html,/Fundar el regimiento|300 pesos|20 caballos, 40 mosquetes/);
+ }
+});

@@ -1,6 +1,7 @@
+import {SUPPLY_PRESENTATION} from './supply-presentation.js';
 import {AMMUNITION_TYPES,validateAmmunitionStack,isAmmunitionStack} from './ammunition-types.js';
 import {GRENADE_TYPES,validateGrenadeStack,isGrenadeStack} from './grenades.js';
-import {OUTFITS,validateOutfit,wornOutfit} from './outfits.js';
+import {BODY_SLOTS,OUTFITS,validateOutfit,wornOutfit} from './outfits.js';
 import {handLayout,handsRequired,selectMainHand} from './hand-layout.js';
 import {allocatePockets,rearrangePockets,pocketOrderFromSlots,validatePocketOrder} from './inventory-pockets.js';
 import {lowerWeapon} from './weapon-readiness.js';
@@ -15,10 +16,9 @@ import {validateFitting,validateFittingPattern,validateWeaponFittings,validateUn
 // Supply stack limits and bulk classifications are period-game tuning.
 export const INVENTORY_CAPACITY = 12;
 export const SUPPLY_ITEMS = Object.freeze(Object.fromEntries([
-  ['ammo', 'Cartuchos', 20, .04], ['priming', 'Pólvora de cebar', 50, .01],
-  ['flints', 'Piedras de chispa', 4, .05], ['rations', 'Raciones', 2, .5],
+  ['ammo', 'Cartuchos', 20, .04], ['rations', 'Raciones', 2, .5],
   ['medkits', 'Vendas', 5, .2], ['boleadoras', 'Boleadoras', 2, .8], ['torches', 'Antorchas', 2, .4],
-].map(([item, label, stackLimit, weight]) => [item, Object.freeze({item, label, name: label, stackLimit, slotSize: 1, weight, kind: 'supply'})])));
+].map(([item, label, stackLimit, weight]) => [item, Object.freeze({...SUPPLY_PRESENTATION[item], item, label, name: label, stackLimit, slotSize: 1, weight, kind: 'supply'})])));
 
 const own = (object, key) => Object.hasOwn(object, key);
 const object = value => value !== null && typeof value === 'object' && !Array.isArray(value);
@@ -97,9 +97,9 @@ function resolve(unit, item, validatedPack) {
     if (!own(inventory, key)) fail('Ese objeto ya no está en el inventario.');
     return {kind: 'inventory', key, item: `inventory:${key}`, record: record(inventory[key])};
   }
-  if (item === 'ammo' && unit.ammunitionVersion === 1) fail('Seleccioná una pila de munición del calibre indicado.');
+  if (item === 'ammo' && unit.ammunitionVersion === 2) fail('Seleccioná una pila de munición compatible.');
   if (own(SUPPLY_ITEMS, item)) return {kind: 'supply', key: item, item, count: quantity(unit[item] ?? 0)};
-  if(item==='outfit')return {kind:'outfit',key:item,item,record:wornOutfit(unit)};
+  if(BODY_SLOTS.includes(item))return {kind:'outfit',key:item,item,record:wornOutfit(unit,item)};
   if (item === 'primary' || item === 'blade' || item === 'offhand') return {kind: 'hand', key: item, item};
   const key = safeKey(item), inventory = validatedPack??pack(unit);
   if (!own(inventory, key)) fail('Ese objeto ya no está en el inventario.');
@@ -136,7 +136,7 @@ export function handRecord(unit, slot) {
     ...((primary?unit.weaponFittingPattern:unit.bladeFittingPattern)!=null ? {fittingPattern:primary?unit.weaponFittingPattern:unit.bladeFittingPattern} : {})});
 }
 function recordDescriptor(item, value) {
-  if (isAmmunitionStack(value)) {const spec=AMMUNITION_TYPES[value.ammoType];return {item,label:value.name,name:value.name,ammoType:value.ammoType,stackLimit:value.instanceId?1:spec.stackLimit,slotSize:1,weight:spec.weight,kind:'ammunition'};}
+  if (isAmmunitionStack(value)) {const spec=AMMUNITION_TYPES[value.ammoType];return {...SUPPLY_PRESENTATION.ammo,art:spec.art,item,label:value.name,name:value.name,ammoType:value.ammoType,stackLimit:value.instanceId?1:spec.stackLimit,slotSize:1,weight:spec.weight,kind:'ammunition'};}
   if (isGrenadeStack(value)) {const spec=GRENADE_TYPES[value.grenadeType];return {item,label:value.name,name:value.name,grenadeType:value.grenadeType,condition:value.condition,stackLimit:value.instanceId?1:spec.stackLimit,slotSize:1,weight:spec.weight,kind:'grenade'};}
   const spec = value.weapon === undefined ? null : weapon(value.weapon);
   const handheld = spec && spec.id >= 1800 && spec.id <= 1813;
@@ -171,13 +171,13 @@ export function carriedObject(unit,item=unit.activeItem){
   if(typeof item!=='string')return null;
   const entry=resolve(unit,item);
   if(entry.item!==item||!['supply','inventory'].includes(entry.kind)||itemQuantity(unit,item)<1)return null;
-  if(entry.kind==='supply'&&!['ammo','priming','flints'].includes(item))return null;
+  if(entry.kind==='supply'&&item!=='ammo')return null;
   if(entry.kind==='inventory'&&(entry.record.weapon!==undefined||isTool(entry.record)))return null;
   return itemDescriptor(unit,item);
  }catch{return null;}
 }
 export function validateHands(unit) {
-  wornOutfit(unit);validateEquipmentCursor(unit);
+  for(const slot of BODY_SLOTS)wornOutfit(unit,slot);validateEquipmentCursor(unit);
   for(const [slot,key]of [['primary','weaponMetadata'],['blade','bladeMetadata']])if(unit[key]!==undefined){if(!itemQuantity(unit,slot))fail('Un arma ausente no puede conservar metadatos.');handRecord(unit,slot);}
   if(unit.activeSlot==='item'?!carriedObject(unit):unit.activeItem!==undefined)fail('El objeto de la mano principal no es válido.');
   if(unit.leftHandItem!=null){
@@ -196,13 +196,13 @@ export function inventoryUsage(unit) {
   validatePocketOrder(unit.pocketOrder);
   const inventory=pack(unit);
   for(const slot of unit.pocketOrder??[]){
-    const item=slot.item,known=(own(SUPPLY_ITEMS,item)&&(item!=='ammo'||unit.ammunitionVersion!==1))||['primary','blade','offhand','outfit'].includes(item)||item.startsWith('inventory:')&&own(inventory,item.slice(10));
+    const item=slot.item,known=(own(SUPPLY_ITEMS,item)&&(item!=='ammo'||unit.ammunitionVersion!==2))||['primary','blade','offhand',...BODY_SLOTS].includes(item)||item.startsWith('inventory:')&&own(inventory,item.slice(10));
     // Known depleted or held items still have a limit. A stale oversized hint
     // must not pass save admission and then prevent the next real pickup.
     if(slot.count!==undefined&&known&&slot.count>resolvedDescriptor(unit,resolve(unit,item,inventory)).stackLimit)fail('La cantidad del bolsillo supera el límite de la pila.');
   }
   const items = [],hands=handLayout(unit);
-  for (const item of [...Object.keys(SUPPLY_ITEMS).filter(item=>item!=='ammo'||unit.ammunitionVersion!==1), ...Object.keys(inventory).sort().map(key => `inventory:${key}`),...hands.stowed]) {
+  for (const item of [...Object.keys(SUPPLY_ITEMS).filter(item=>item!=='ammo'||unit.ammunitionVersion!==2), ...Object.keys(inventory).sort().map(key => `inventory:${key}`),...hands.stowed]) {
     const entry=resolve(unit,item,inventory),count=resolvedQuantity(unit,entry)-hands.held.filter(held=>held===item).length;
     if (!count) continue;
     const descriptor=resolvedDescriptor(unit,entry),stacks=Math.ceil(count/descriptor.stackLimit);
@@ -231,7 +231,7 @@ function stackFromEntry(unit,entry,count){
  if(resolvedQuantity(unit,entry)<count)fail('No queda esa cantidad del objeto.');
  if(entry.kind==='cursor')return {...structuredClone(entry.record),count};
  if(entry.kind==='supply')return {item,count,weight:SUPPLY_ITEMS[item].weight};
- if(entry.kind==='outfit')return {item:'outfit',...structuredClone(entry.record),count:1};
+ if(entry.kind==='outfit')return {item:entry.item,...structuredClone(entry.record),count:1};
  if(entry.kind==='hand')return {item:'weapon',...structuredClone(handRecord(unit,entry.key))};
  return {...structuredClone(entry.record),item:entry.item,count};
 }
@@ -249,7 +249,7 @@ export function extractItemQuantity(unit, item, count = 1, {keepOtherHand=true}=
     next[item] = entry.count - count;
     clearEmptySupply(next);
     stack = {item, count, weight: SUPPLY_ITEMS[item].weight};
-  } else if(entry.kind==='outfit'){stack={item:'outfit',...entry.record,count:1};next.outfit=null;delete next.poncho;
+  } else if(entry.kind==='outfit'){stack={item:entry.item,...entry.record,count:1};next[entry.item]=null;if(entry.item==='outfit')delete next.poncho;
   } else if (entry.kind === 'hand') {
     stack = {item: 'weapon', ...handRecord(unit, entry.key)};
     if (entry.key === 'primary') {lowerWeapon(next); next.weaponDropped = true; next.loaded = 0; delete next.reloadProgress; next.jammed = false; delete next.weaponInstanceId; delete next.weaponMetadata; next.weaponFittings={}; next.weaponFittingPattern=null;}
@@ -319,12 +319,12 @@ export function equipmentStacksMerge(left,right){
  if(a.value.weapon!==undefined||a.value.kind==='outfit'||a.value.instanceId||isTool(a.value)||a.key!==b.key&&!a.value.name)return false;
  return sameMetadata(a.value,b.value);
 }
-const physicalEquipmentSlot=id=>id==='outfit'||id==='hand:right'||id==='hand:left'||/^large-[1-4]$/.test(id)||/^small-[1-8]$/.test(id);
-const equipmentCursorSource=id=>physicalEquipmentSlot(id)||id.startsWith('attachment:')&&id.slice(11)!=='outfit'&&physicalEquipmentSlot(id.slice(11));
+const physicalEquipmentSlot=id=>BODY_SLOTS.includes(id)||id==='hand:right'||id==='hand:left'||/^large-[1-4]$/.test(id)||/^small-[1-8]$/.test(id);
+const equipmentCursorSource=id=>physicalEquipmentSlot(id)||id.startsWith('attachment:')&&!BODY_SLOTS.includes(id.slice(11))&&physicalEquipmentSlot(id.slice(11));
 export function validateEquipmentCursor(unit){
  const cursor=unit.equipmentCursor;if(cursor===undefined)return true;
  if(!object(cursor)||Object.keys(cursor).some(key=>!['sourceId','stack'].includes(key))||typeof cursor.sourceId!=='string'||!equipmentCursorSource(cursor.sourceId)||!object(cursor.stack)||cursor.stack.item==='cursor')fail('El objeto del cursor no es válido.');
- if(unit.ammunitionVersion===1&&cursor.stack.item==='ammo')fail('La munición del cursor necesita un tipo de carga definido.');
+ if(unit.ammunitionVersion===2&&cursor.stack.item==='ammo')fail('La munición del cursor necesita un tipo de carga definido.');
  const descriptor=itemStackDescriptor(cursor.stack);if(cursor.stack.count>descriptor.stackLimit)fail('La cantidad del cursor supera el límite de la pila.');
  const existing=[...heldItemIds(unit),...Object.values(pack(unit)).filter(value=>object(value)&&value.count>0).flatMap(fittingItemIds)],ids=fittingItemIds(cursor.stack);
  if(new Set(ids).size!==ids.length||ids.some(id=>existing.includes(id)))fail('La identidad del objeto del cursor está duplicada.');
@@ -345,7 +345,7 @@ function sameMetadata(left, right) {
 }
 // Deferred checks are only for atomic equipment planners, which validate the final layout.
 export function applyItemQuantity(unit, stack, {deferCapacity=false}={}) {
-  if (stack.item==='ammo'&&unit.ammunitionVersion===1) fail('La munición necesita un tipo de carga definido.');
+  if (stack.item==='ammo'&&unit.ammunitionVersion===2) fail('La munición necesita un tipo de carga definido.');
   const entry = incoming(stack), usage = inventoryUsage(unit);
   if (!deferCapacity && usage.overloaded) fail('El inventario está sobrecargado. Retirá objetos antes de recibir más.');
   const next = structuredClone(unit); next.inventory ??= {};
@@ -469,14 +469,14 @@ export function planPocketMove(unit,sourceId,destinationId,expectedSource,expect
 
 export const pocketFingerprint=slot=>JSON.stringify(slot?.entry?{item:slot.entry.item,index:slot.entry.index,count:slot.entry.count}:null);
 
-export function planEquipOutfit(unit,key){
- const value=unit.inventory?.[key];if(!value||value.kind!=='outfit')fail('Seleccioná una vestimenta guardada.');validateOutfit(value);
- const taken=extractItemQuantity(unit,`inventory:${key}`,1);let next=taken.unit;const old=wornOutfit(next);next.outfit=null;delete next.poncho;
- if(old)next=applyItemQuantity(next,{item:'outfit',...old},{deferCapacity:true});
- const {item,...outfit}=taken.stack;next.outfit=outfit;validateOutfit(outfit,{worn:true});
+export function planEquipOutfit(unit,key,slot='outfit'){
+ const value=unit.inventory?.[key];if(!value||value.kind!=='outfit')fail('Seleccioná una vestimenta guardada.');validateOutfit(value,{slot});
+ const taken=extractItemQuantity(unit,`inventory:${key}`,1);let next=taken.unit;const old=wornOutfit(next,slot);next[slot]=null;delete next.poncho;
+ if(old)next=applyItemQuantity(next,{item:slot,...old},{deferCapacity:true});
+ const {item,...outfit}=taken.stack;next[slot]=outfit;validateOutfit(outfit,{worn:true,slot});
  if(inventoryUsage(next).overloaded)fail('No queda un bolsillo grande para la vestimenta retirada.');return next;
 }
-export function planStowOutfit(unit){const taken=extractItemQuantity(unit,'outfit',1);return applyItemQuantity(taken.unit,taken.stack);}
+export function planStowOutfit(unit,slot='outfit'){const taken=extractItemQuantity(unit,slot,1);return applyItemQuantity(taken.unit,taken.stack);}
 
 export function planHoldOffhand(unit,item){
  const next=structuredClone(unit);
@@ -498,7 +498,7 @@ export function planHoldOffhand(unit,item){
 // so a delayed drag cannot silently equip a changed item or overwrite a slot.
 export function equipmentEndpoint(unit,slotId){
  if(slotId==='cursor'){validateEquipmentCursor(unit);return {id:slotId,kind:'cursor',item:unit.equipmentCursor?'cursor':null,count:unit.equipmentCursor?.stack.count??0};}
- if(slotId==='outfit'){const item=wornOutfit(unit)?'outfit':null;return {id:slotId,kind:'outfit',item,count:item?1:0};}
+ if(BODY_SLOTS.includes(slotId)){const item=wornOutfit(unit,slotId)?slotId:null;return {id:slotId,kind:'outfit',item,count:item?1:0};}
  const layout=handLayout(unit);
  if(slotId==='hand:right'||slotId==='hand:left'){
   const side=slotId.slice(5),item=layout[side];return {id:slotId,kind:'hand',side,item,count:item?1:0,blocked:side==='left'&&layout.twoHanded};
@@ -545,20 +545,21 @@ export function extractEquipmentSelection(unit,{sourceId,expectedSource,count=1}
 // Keep the outgoing garment separate from equivalent packed garments so it
 // cannot merge into an item held in the other hand or claim another pocket.
 export function planOutfitPlacement(unit,source,destination){
+ const slot=(source.kind==='outfit'?source:destination).id;
  const other=source.kind==='outfit'?destination:source;
  if(!['pocket','hand'].includes(other.kind))fail('Elegí una mano o un bolsillo para la vestimenta.');
  if(other.blocked)fail('El arma principal ocupa las dos manos.');
  if(other.kind==='pocket'&&other.size!=='large')fail('La vestimenta necesita un bolsillo grande.');
  if(other.item&&itemDescriptor(unit,other.item).kind!=='outfit')fail('Solo podés equipar una vestimenta en esa ranura.');
- const layout=inventoryUsage(unit),hands=handLayout(unit),outgoing=wornOutfit(unit);
+ const layout=inventoryUsage(unit),hands=handLayout(unit),outgoing=wornOutfit(unit,slot);
  let next=structuredClone(unit),incoming=null;
  if(other.item){const taken=extractItemQuantity(next,other.item,1,{keepOtherHand:false});next=taken.unit;incoming=taken.stack;}
- next.outfit=null;delete next.poncho;
+ next[slot]=null;delete next.poncho;
  if(other.kind==='hand'){
   if(other.side==='right'){next.activeSlot='unarmed';delete next.activeItem;delete next.activeTool;delete next.activeSupply;next.leftHandItem=hands.left;}
   else next.leftHandItem=null;
  }
- if(incoming){const {item,...outfit}=incoming;validateOutfit(outfit,{worn:true});next.outfit=outfit;}
+ if(incoming){const {item,...outfit}=incoming;validateOutfit(outfit,{worn:true,slot});next[slot]=outfit;}
  let stored=null;
  if(outgoing){
   stored=`inventory:${uniqueKey(next.inventory??{},'outfit')}`;

@@ -4,7 +4,7 @@ import {handLayout} from './hand-layout.js';
 import {readItemStack,itemStackDescriptor} from './tactical-inventory.js';
 import {fittingLabel} from './weapon-fittings.js';
 
-const supplyIcons={ammo:'ammo',priming:'priming',flints:'flints',rations:'rations',medkits:'medical',boleadoras:'boleadoras',torches:'torch'};
+const supplyIcons={ammo:'ammo',rations:'rations',medkits:'medical',boleadoras:'boleadoras',torches:'torch'};
 // The roster reads only the two physical hands. It does not plan actions or
 // inspect the pack for an alternative weapon when a hand is empty or blocked.
 export function rosterHands(unit){

@@ -14,7 +14,7 @@ test('off-map dispatch is hidden from both reports and campaign announcements',(
  assert.ok(!s.log.some(l=>/realistas en marcha|Llegada prevista|Pezuela ordena/.test(l.text)));save(s);
 });
 test('nearby militia observe a real moving group; saved reports retain the last observation after scouts leave',()=>{
- let s=frontier(),r=enemyIntelligenceReports(s)[0];assert.equal(s.hour,36);assert.equal(r.sector,'salta');assert.equal(r.strength,3);assert.equal(r.source,'militia');assert.equal(r.stale,false);save(s);
+ let s=frontier(),r=enemyIntelligenceReports(s)[0];assert.equal(s.hour,36);assert.equal(r.sector,'salta');assert.equal(r.strength,s.enemyGroups[0].units.length);assert.equal(r.source,'militia');assert.equal(r.stale,false);save(s);
  s.sectors.tucuman.militia=[0,0,0];s=order(s,{type:'wait',hours:1});r=enemyIntelligenceReports(s)[0];assert.equal(r.ageHours,1);assert.equal(r.stale,true);assert.equal(r.observedAt,36);
  const view=playerKnownCampaign(s).enemyReports;
  s.enemyGroups[0].units[0].hp=0;s.enemyGroups[0].arrivalAt+=20;s.enemyGroups[0].nextArrivalAt+=20;
@@ -23,7 +23,7 @@ test('nearby militia observe a real moving group; saved reports retain the last 
  for(const forbidden of ['units','route','target','destination','remaining','seed','initialStrength','nextArrivalAt','crossingAt'])assert.ok(!(forbidden in r));
 });
 test('sleeping, critical, captured, dead and traveling soldiers cannot supply current scouting',()=>{
- const base=initialCampaign();launchEnemyGroup(base,'coast','retiro',{immediate:true});assert.equal(enemyIntelligenceReports(base)[0].strength,3);
+ const base=initialCampaign();launchEnemyGroup(base,'coast','retiro',{immediate:true});assert.equal(enemyIntelligenceReports(base)[0].strength,base.enemyGroups[0].units.length);
  for(const patch of [{asleep:true},{hp:14},{captured:true},{alive:false},{unconscious:true}]){
   const s=structuredClone(base);for(const id of s.recruited)Object.assign(s.operativeState[id],patch);assert.deepEqual(enemyIntelligenceReports(s),[]);
  }

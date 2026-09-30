@@ -1,0 +1,74 @@
+[
+  {
+    "family": "granadero",
+    "prompt": "Use case: precise-object-edit. Asset type: transparent tactical-game equipment sprite atlas. Preserve EXACTLY the supplied granadero character: same face, gender, clothing, equipment pack, colors, adult realistic proportions and top-down isometric camera. Remove the original firearm completely. Produce 80 separated full-body figures in a precisely aligned TEN-column EIGHT-row atlas, landscape 2048x1536, REAL TRANSPARENT background. Each row faces one direction in order N BACK VIEW, NE back/right, E right profile, SE front/right, S front, SW front/left, W left profile, NW back/left. Columns 1 through 5 hold a curved steel SABRE in the RIGHT hand: ready idle, then four alternating walking phases. Columns 6 through 10 repeat the same poses holding a SHORT steel FACON KNIFE in the RIGHT hand: ready idle then four walking phases. The knife has a simple small guard and blade about forearm length; sabre blade is about leg length and has a curved brass guard. Hold blades low at the right side, free hand relaxed. No gun, no text, no labels, no grid lines, no shadows, no background checkerboard. Broad transparent gutters. Same body size in every cell, no overlaps, no clipping. Both weapons must stay in the RIGHT hand for all directions. Keep all character identities and clothes unchanged. Detailed illustrated pixel art matching reference, not smooth cartoon. Walk feet must alternate clearly.",
+    "status": "rejected",
+    "reason": "Atlas grid and/or facing directions changed; not registered or published.",
+    "candidate": "assets/previews/equipped-sprites/rejected-blades/granadero-atlas.png",
+    "published": false
+  },
+  {
+    "family": "royalist",
+    "prompt": "Use case: precise-object-edit. Asset type: transparent tactical-game equipment sprite atlas. Preserve EXACTLY the supplied royalist character: same face, gender, clothing, equipment pack, colors, adult realistic proportions and top-down isometric camera. Remove the original firearm completely. Produce 80 separated full-body figures in a precisely aligned TEN-column EIGHT-row atlas, landscape 2048x1536, REAL TRANSPARENT background. Each row faces one direction in order N BACK VIEW, NE back/right, E right profile, SE front/right, S front, SW front/left, W left profile, NW back/left. Columns 1 through 5 hold a curved steel SABRE in the RIGHT hand: ready idle, then four alternating walking phases. Columns 6 through 10 repeat the same poses holding a SHORT steel FACON KNIFE in the RIGHT hand: ready idle then four walking phases. The knife has a simple small guard and blade about forearm length; sabre blade is about leg length and has a curved brass guard. Hold blades low at the right side, free hand relaxed. No gun, no text, no labels, no grid lines, no shadows, no background checkerboard. Broad transparent gutters. Same body size in every cell, no overlaps, no clipping. Both weapons must stay in the RIGHT hand for all directions. Keep all character identities and clothes unchanged. Detailed illustrated pixel art matching reference, not smooth cartoon. Walk feet must alternate clearly.",
+    "status": "rejected",
+    "reason": "Atlas grid and/or facing directions changed; not registered or published.",
+    "candidate": "assets/previews/equipped-sprites/rejected-blades/royalist-atlas.png",
+    "published": false
+  },
+  {
+    "family": "worker",
+    "prompt": "Use case: precise-object-edit. Asset type: transparent tactical-game equipment sprite atlas. Preserve EXACTLY the supplied worker character: same face, gender, clothing, equipment pack, colors, adult realistic proportions and top-down isometric camera. Remove the original firearm completely. Produce 80 separated full-body figures in a precisely aligned TEN-column EIGHT-row atlas, landscape 2048x1536, REAL TRANSPARENT background. Each row faces one direction in order N BACK VIEW, NE back/right, E right profile, SE front/right, S front, SW front/left, W left profile, NW back/left. Columns 1 through 5 hold a curved steel SABRE in the RIGHT hand: ready idle, then four alternating walking phases. Columns 6 through 10 repeat the same poses holding a SHORT steel FACON KNIFE in the RIGHT hand: ready idle then four walking phases. The knife has a simple small guard and blade about forearm length; sabre blade is about leg length and has a curved brass guard. Hold blades low at the right side, free hand relaxed. No gun, no text, no labels, no grid lines, no shadows, no background checkerboard. Broad transparent gutters. Same body size in every cell, no overlaps, no clipping. Both weapons must stay in the RIGHT hand for all directions. Keep all character identities and clothes unchanged. Detailed illustrated pixel art matching reference, not smooth cartoon. Walk feet must alternate clearly.",
+    "status": "rejected",
+    "reason": "Atlas grid and/or facing directions changed; not registered or published.",
+    "candidate": "assets/previews/equipped-sprites/rejected-blades/worker-atlas.png",
+    "published": false
+  },
+  {
+    "family": "surgeon",
+    "prompt": "Use case: precise-object-edit. Asset type: transparent tactical-game equipment sprite atlas. Preserve EXACTLY the supplied surgeon character: same face, gender, clothing, equipment pack, colors, adult realistic proportions and top-down isometric camera. Remove the original firearm completely. Produce 80 separated full-body figures in a precisely aligned TEN-column EIGHT-row atlas, landscape 2048x1536, REAL TRANSPARENT background. Each row faces one direction in order N BACK VIEW, NE back/right, E right profile, SE front/right, S front, SW front/left, W left profile, NW back/left. Columns 1 through 5 hold a curved steel SABRE in the RIGHT hand: ready idle, then four alternating walking phases. Columns 6 through 10 repeat the same poses holding a SHORT steel FACON KNIFE in the RIGHT hand: ready idle then four walking phases. The knife has a simple small guard and blade about forearm length; sabre blade is about leg length and has a curved brass guard. Hold blades low at the right side, free hand relaxed. No gun, no text, no labels, no grid lines, no shadows, no background checkerboard. Broad transparent gutters. Same body size in every cell, no overlaps, no clipping. Both weapons must stay in the RIGHT hand for all directions. Keep all character identities and clothes unchanged. Detailed illustrated pixel art matching reference, not smooth cartoon. Walk feet must alternate clearly.",
+    "status": "rejected",
+    "reason": "Atlas grid and/or facing directions changed; not registered or published.",
+    "candidate": "assets/previews/equipped-sprites/rejected-blades/surgeon-atlas.png",
+    "published": false
+  },
+  {
+    "family": "gaucho",
+    "prompt": "Use case: precise-object-edit. Asset type: transparent tactical-game equipment sprite atlas. Preserve EXACTLY the supplied gaucho character: same face, gender, clothing, equipment pack, colors, adult realistic proportions and top-down isometric camera. Remove the original firearm completely. Produce 80 separated full-body figures in a precisely aligned TEN-column EIGHT-row atlas, landscape 2048x1536, REAL TRANSPARENT background. Each row faces one direction in order N BACK VIEW, NE back/right, E right profile, SE front/right, S front, SW front/left, W left profile, NW back/left. Columns 1 through 5 hold a curved steel SABRE in the RIGHT hand: ready idle, then four alternating walking phases. Columns 6 through 10 repeat the same poses holding a SHORT steel FACON KNIFE in the RIGHT hand: ready idle then four walking phases. The knife has a simple small guard and blade about forearm length; sabre blade is about leg length and has a curved brass guard. Hold blades low at the right side, free hand relaxed. No gun, no text, no labels, no grid lines, no shadows, no background checkerboard. Broad transparent gutters. Same body size in every cell, no overlaps, no clipping. Both weapons must stay in the RIGHT hand for all directions. Keep all character identities and clothes unchanged. Detailed illustrated pixel art matching reference, not smooth cartoon. Walk feet must alternate clearly.",
+    "status": "rejected",
+    "reason": "Atlas grid and/or facing directions changed; not registered or published.",
+    "candidate": "assets/previews/equipped-sprites/rejected-blades/gaucho-atlas.png",
+    "published": false
+  },
+  {
+    "family": "friar",
+    "prompt": "Use case: precise-object-edit. Asset type: transparent tactical-game equipment sprite atlas. Preserve EXACTLY the supplied friar character: same face, gender, clothing, equipment pack, colors, adult realistic proportions and top-down isometric camera. Remove the original firearm completely. Produce 80 separated full-body figures in a precisely aligned TEN-column EIGHT-row atlas, landscape 2048x1536, REAL TRANSPARENT background. Each row faces one direction in order N BACK VIEW, NE back/right, E right profile, SE front/right, S front, SW front/left, W left profile, NW back/left. Columns 1 through 5 hold a curved steel SABRE in the RIGHT hand: ready idle, then four alternating walking phases. Columns 6 through 10 repeat the same poses holding a SHORT steel FACON KNIFE in the RIGHT hand: ready idle then four walking phases. The knife has a simple small guard and blade about forearm length; sabre blade is about leg length and has a curved brass guard. Hold blades low at the right side, free hand relaxed. No gun, no text, no labels, no grid lines, no shadows, no background checkerboard. Broad transparent gutters. Same body size in every cell, no overlaps, no clipping. Both weapons must stay in the RIGHT hand for all directions. Keep all character identities and clothes unchanged. Detailed illustrated pixel art matching reference, not smooth cartoon. Walk feet must alternate clearly.",
+    "status": "rejected",
+    "reason": "Atlas grid and/or facing directions changed; not registered or published.",
+    "candidate": "assets/previews/equipped-sprites/rejected-blades/friar-atlas.png",
+    "published": false
+  },
+  {
+    "family": "woman-scout",
+    "prompt": "Use case: precise-object-edit. Asset type: transparent tactical-game equipment sprite atlas. Preserve EXACTLY the supplied woman-scout character: same face, gender, clothing, equipment pack, colors, adult realistic proportions and top-down isometric camera. Remove the original firearm completely. Produce 80 separated full-body figures in a precisely aligned TEN-column EIGHT-row atlas, landscape 2048x1536, REAL TRANSPARENT background. Each row faces one direction in order N BACK VIEW, NE back/right, E right profile, SE front/right, S front, SW front/left, W left profile, NW back/left. Columns 1 through 5 hold a curved steel SABRE in the RIGHT hand: ready idle, then four alternating walking phases. Columns 6 through 10 repeat the same poses holding a SHORT steel FACON KNIFE in the RIGHT hand: ready idle then four walking phases. The knife has a simple small guard and blade about forearm length; sabre blade is about leg length and has a curved brass guard. Hold blades low at the right side, free hand relaxed. No gun, no text, no labels, no grid lines, no shadows, no background checkerboard. Broad transparent gutters. Same body size in every cell, no overlaps, no clipping. Both weapons must stay in the RIGHT hand for all directions. Keep all character identities and clothes unchanged. Detailed illustrated pixel art matching reference, not smooth cartoon. Walk feet must alternate clearly.",
+    "status": "rejected",
+    "reason": "Atlas grid and/or facing directions changed; not registered or published.",
+    "candidate": "assets/previews/equipped-sprites/rejected-blades/woman-scout-atlas.png",
+    "published": false
+  },
+  {
+    "family": "woman-shawl",
+    "prompt": "Use case: precise-object-edit. Asset type: transparent tactical-game equipment sprite atlas. Preserve EXACTLY the supplied woman-shawl character: same face, gender, clothing, equipment pack, colors, adult realistic proportions and top-down isometric camera. Remove the original firearm completely. Produce 80 separated full-body figures in a precisely aligned TEN-column EIGHT-row atlas, landscape 2048x1536, REAL TRANSPARENT background. Each row faces one direction in order N BACK VIEW, NE back/right, E right profile, SE front/right, S front, SW front/left, W left profile, NW back/left. Columns 1 through 5 hold a curved steel SABRE in the RIGHT hand: ready idle, then four alternating walking phases. Columns 6 through 10 repeat the same poses holding a SHORT steel FACON KNIFE in the RIGHT hand: ready idle then four walking phases. The knife has a simple small guard and blade about forearm length; sabre blade is about leg length and has a curved brass guard. Hold blades low at the right side, free hand relaxed. No gun, no text, no labels, no grid lines, no shadows, no background checkerboard. Broad transparent gutters. Same body size in every cell, no overlaps, no clipping. Both weapons must stay in the RIGHT hand for all directions. Keep all character identities and clothes unchanged. Detailed illustrated pixel art matching reference, not smooth cartoon. Walk feet must alternate clearly.",
+    "status": "rejected",
+    "reason": "Atlas grid and/or facing directions changed; not registered or published.",
+    "candidate": "assets/previews/equipped-sprites/rejected-blades/woman-shawl-atlas.png",
+    "published": false
+  },
+  {
+    "family": "granadero",
+    "prompt": "Edit this existing game sprite atlas in place. Keep EXACTLY its existing 4 columns and 8 rows, all 32 soldiers in their exact current cells and poses and facing directions. Preserve hats, faces, uniform, belts, bags, boots, walking leg frames and transparent background. The ONLY change: remove every musket from every soldier; repair the exposed uniform naturally; put a short steel fighting knife in the right hand, with free relaxed left hand. Knife is visibly a blade, not a firearm. Do not rearrange, add or delete any cell or direction. Same 1:2 image aspect ratio. No text or grid. Preserve crisp illustrated pixel-art style and existing soldier body scale. This must be a strict equipment replacement of the supplied sheet, not a redesigned character or new atlas.",
+    "status": "rejected",
+    "reason": "Correct grid retained but weapon grip changes sides and frontal blade is missing; not published.",
+    "candidate": "assets/previews/equipped-sprites/rejected-blades/granadero-walk-edit.png",
+    "published": false
+  }
+]

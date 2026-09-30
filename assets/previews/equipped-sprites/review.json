@@ -1,0 +1,10 @@
+{
+  "status": "in-progress",
+  "published": false,
+  "appearance": "granadero",
+  "sequence": "idle",
+  "directions": 8,
+  "equipmentStyles": 4,
+  "allActionsReviewed": false,
+  "issue": "Weapon masks and grips require further visual correction before runtime use."
+}

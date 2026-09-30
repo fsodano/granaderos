@@ -21,11 +21,11 @@ test('civic combat experience actually improves battle statistics and persists',
  let s=order(initialCampaign(),{type:'recruitCivic',id:100,term:'month'});s=order(s,{type:'squad',ids:[3,100]});const original=rosterFor(s).find(o=>o.id===100).marksmanship;
  for(const sector of ['san_nicolas','cordoba']){s=order(s,{type:'attack',sector});assert.ok(s.pendingBattle.squad.find(o=>o.id===100));s=order(s,scriptedBattleReport(s,{units:s.pendingBattle.squad.map(o=>({id:o.id,priming:20,flints:2,rations:1,condition:80,fatigue:10}))}));}
  const trained=rosterFor(s).find(o=>o.id===100);assert.equal(trained.xp,120);assert.equal(trained.level,2);assert.equal(trained.marksmanship,original+4);assert.equal(rosterFor(s).find(o=>o.id===3).marksmanship,68);
- s=restoreCampaign(serializeCampaign(s));s=order(s,{type:'attack',sector:'santa_fe'});const soldier=s.pendingBattle.squad.find(o=>o.id===100);assert.equal(soldier.marksmanship,original+4);assert.equal(soldier.priming,20);assert.equal(soldier.flints,2);assert.equal(soldier.rations,1);assert.equal(soldier.condition,80);
+ s=restoreCampaign(serializeCampaign(s));s=order(s,{type:'attack',sector:'santa_fe'});const soldier=s.pendingBattle.squad.find(o=>o.id===100);assert.equal(soldier.marksmanship,original+4);assert.equal(soldier.priming,undefined);assert.equal(soldier.flints,undefined);assert.equal(soldier.rations,1);assert.equal(soldier.condition,80);
 });
 test('legacy version1 saves migrate without losing historical stats',()=>{
  const old=initialCampaign();delete old.officer;for(const id of [100,101,102])delete old.operativeState[id];for(const op of Object.values(old.operativeState)){delete op.xp;delete op.priming;delete op.flints;delete op.rations;delete op.condition;}
- const s=restoreCampaign(JSON.stringify(old));assert.equal(s.officer,null);assert.equal(s.operativeState[100].xp,0);assert.equal(s.operativeState[3].priming,50);assert.equal(rosterFor(s).find(o=>o.id===57).leadership,99);
+ const s=restoreCampaign(JSON.stringify(old));assert.equal(s.officer,null);assert.equal(s.operativeState[100].xp,0);assert.equal(s.operativeState[3].priming,undefined);assert.equal(rosterFor(s).find(o=>o.id===57).leadership,99);
 });
 
 test('fictional foreign volunteers have finite contracts and persist in legacy-compatible saves',()=>{

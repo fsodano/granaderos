@@ -9,7 +9,8 @@ import {militiaEligibility} from './militia.js';
 import {repairEquipmentQueue,repairEquipment,repairEquipmentBlocked} from './equipment-repair.js';
 export {repairEquipmentQueue} from './equipment-repair.js';
 
-export const WORK_ASSIGNMENTS={practice:'Práctica individual',instructor:'Instructor',student:'Alumno',repair:'Reparación'};
+import {WORK_ASSIGNMENTS} from './assignment-labels.js';
+export {WORK_ASSIGNMENTS} from './assignment-labels.js';
 export const STUDY_SKILLS=TRAINING_LABELS;
 export const TOOLKIT_PRICE=120;
 export const TOOLKIT_POINTS=100;

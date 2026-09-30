@@ -2,7 +2,7 @@ import {CAMPAIGN_SECTORS} from './data.js';
 
 export const EXIT_EDGES = ['N', 'E', 'S', 'W'];
 // Explicit road links on schematic maps. Mountain passages need not retain
-// the strategic chart's compass direction. See docs/tactical-exit-layouts.md.
+// the strategic chart's compass direction. See docs/gameplay/tactical/tactical-exit-layouts.md.
 const links = [
   ['buenos_aires', 'N', 9, 0, 'retiro', 'S', 14, 15],
   ['buenos_aires', 'E', 19, 7, 'ensenada', 'W', 0, 7],

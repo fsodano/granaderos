@@ -1,0 +1,265 @@
+{
+  "part": 1,
+  "total": 41,
+  "completed": [
+    "avatar-woman-soldier-light-1",
+    "avatar-woman-soldier-light-4",
+    "avatar-woman-soldier-brown-2",
+    "avatar-woman-soldier-brown-5",
+    "avatar-woman-soldier-dark-4",
+    "avatar-woman-officer-light-2",
+    "avatar-woman-officer-light-5",
+    "avatar-woman-officer-brown-3",
+    "avatar-woman-officer-dark-2",
+    "avatar-woman-officer-dark-5",
+    "avatar-woman-scout-light-3",
+    "avatar-woman-scout-brown-5",
+    "avatar-woman-scout-dark-4",
+    "avatar-woman-gaucho-light-2",
+    "avatar-woman-gaucho-light-5",
+    "avatar-woman-gaucho-brown-4",
+    "avatar-woman-gaucho-dark-2",
+    "avatar-woman-gaucho-dark-5",
+    "avatar-woman-artisan-light-3",
+    "avatar-woman-artisan-brown-2",
+    "avatar-woman-artisan-brown-5",
+    "avatar-woman-artisan-dark-4",
+    "avatar-woman-medic-light-3",
+    "avatar-woman-medic-brown-4",
+    "avatar-woman-medic-dark-5",
+    "avatar-man-soldier-dark-5",
+    "avatar-man-officer-brown-5",
+    "avatar-man-officer-dark-4",
+    "avatar-man-scout-light-3",
+    "avatar-man-scout-brown-3",
+    "avatar-man-scout-dark-3",
+    "avatar-man-gaucho-light-1",
+    "avatar-man-gaucho-light-4"
+  ],
+  "failed": [],
+  "results": [
+    {
+      "id": "avatar-woman-officer-light-2",
+      "source": "assets/source/balanced-avatar-woman-officer-light-2-v1.png",
+      "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55e-30bc-7ff1-a4fa-2362d564e663/exec-ea0a12a3-9b0c-4dc3-b26c-0b4252bd1c15.png",
+      "bytes": 17476
+    },
+    {
+      "id": "avatar-woman-soldier-dark-4",
+      "source": "assets/source/balanced-avatar-woman-soldier-dark-4-v1.png",
+      "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55e-30bc-7ff1-a4fa-2362d564e663/exec-d13ac16a-e6fd-4eae-a0b8-543041e1348c.png",
+      "bytes": 21688
+    },
+    {
+      "id": "avatar-woman-officer-light-5",
+      "source": "assets/source/balanced-avatar-woman-officer-light-5-v1.png",
+      "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55e-30bc-7ff1-a4fa-2362d564e663/exec-2fd88de8-e962-47e3-a768-d55918eb9e27.png",
+      "bytes": 20356
+    },
+    {
+      "id": "avatar-woman-soldier-light-1",
+      "source": "assets/source/balanced-avatar-woman-soldier-light-1-v1.png",
+      "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55e-30bc-7ff1-a4fa-2362d564e663/exec-761cd2a6-07ce-4d6b-bf4b-89d0c2a7cc80.png",
+      "bytes": 18244
+    },
+    {
+      "id": "avatar-woman-soldier-brown-2",
+      "source": "assets/source/balanced-avatar-woman-soldier-brown-2-v1.png",
+      "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55e-30bc-7ff1-a4fa-2362d564e663/exec-26104c5e-5235-4211-b4f8-e9f96bc2824e.png",
+      "bytes": 15662
+    },
+    {
+      "id": "avatar-woman-soldier-brown-5",
+      "source": "assets/source/balanced-avatar-woman-soldier-brown-5-v1.png",
+      "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55e-30bc-7ff1-a4fa-2362d564e663/exec-d83ccde4-9f21-4b99-8878-082c2d40a32b.png",
+      "bytes": 16764
+    },
+    {
+      "id": "avatar-woman-soldier-light-4",
+      "source": "assets/source/balanced-avatar-woman-soldier-light-4-v1.png",
+      "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55e-30bc-7ff1-a4fa-2362d564e663/exec-b06109e3-38db-46b3-aa8a-5218a062fc51.png",
+      "bytes": 19112
+    },
+    {
+      "id": "avatar-woman-officer-brown-3",
+      "source": "assets/source/balanced-avatar-woman-officer-brown-3-v1.png",
+      "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55e-30bc-7ff1-a4fa-2362d564e663/exec-4397613c-ee6b-4bef-87c0-ac7847f67668.png",
+      "bytes": 17032
+    },
+    {
+      "id": "avatar-woman-scout-brown-5",
+      "source": "assets/source/balanced-avatar-woman-scout-brown-5-v1.png",
+      "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55e-30bc-7ff1-a4fa-2362d564e663/exec-8319164c-dbab-4ff0-9043-fc20d5775c6d.png",
+      "bytes": 22890
+    },
+    {
+      "id": "avatar-woman-gaucho-light-5",
+      "source": "assets/source/balanced-avatar-woman-gaucho-light-5-v1.png",
+      "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55e-30bc-7ff1-a4fa-2362d564e663/exec-0df82cba-1a72-43a9-bfba-45c352ff6696.png",
+      "bytes": 21808
+    },
+    {
+      "id": "avatar-woman-gaucho-light-2",
+      "source": "assets/source/balanced-avatar-woman-gaucho-light-2-v1.png",
+      "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55e-30bc-7ff1-a4fa-2362d564e663/exec-3a017f6a-0d11-4a7d-9a39-d846d3fe5c7c.png",
+      "bytes": 26282
+    },
+    {
+      "id": "avatar-woman-officer-dark-2",
+      "source": "assets/source/balanced-avatar-woman-officer-dark-2-v1.png",
+      "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55e-30bc-7ff1-a4fa-2362d564e663/exec-5e5bde11-0229-4683-9eea-6b65a65d8695.png",
+      "bytes": 16958
+    },
+    {
+      "id": "avatar-woman-scout-light-3",
+      "source": "assets/source/balanced-avatar-woman-scout-light-3-v1.png",
+      "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55e-30bc-7ff1-a4fa-2362d564e663/exec-2d67b47c-4813-4de1-82a3-2a398106134d.png",
+      "bytes": 22732
+    },
+    {
+      "id": "avatar-woman-scout-dark-4",
+      "source": "assets/source/balanced-avatar-woman-scout-dark-4-v1.png",
+      "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55e-30bc-7ff1-a4fa-2362d564e663/exec-f79a8dbe-5584-4794-a4f0-c0ad35b6773b.png",
+      "bytes": 22772
+    },
+    {
+      "id": "avatar-woman-officer-dark-5",
+      "source": "assets/source/balanced-avatar-woman-officer-dark-5-v1.png",
+      "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55e-30bc-7ff1-a4fa-2362d564e663/exec-5a13b1b2-4ff9-4518-90fd-fa6c2ca4d460.png",
+      "bytes": 18800
+    },
+    {
+      "id": "avatar-woman-gaucho-brown-4",
+      "source": "assets/source/balanced-avatar-woman-gaucho-brown-4-v1.png",
+      "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55e-30bc-7ff1-a4fa-2362d564e663/exec-3dd6f235-5fc1-4923-a1d4-cb99d531a645.png",
+      "bytes": 28794
+    },
+    {
+      "id": "avatar-woman-medic-light-3",
+      "source": "assets/source/balanced-avatar-woman-medic-light-3-v1.png",
+      "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55e-30bc-7ff1-a4fa-2362d564e663/exec-41525ec7-adef-4140-bcdb-e3367605edc6.png",
+      "bytes": 21086
+    },
+    {
+      "id": "avatar-woman-artisan-brown-5",
+      "source": "assets/source/balanced-avatar-woman-artisan-brown-5-v1.png",
+      "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55e-30bc-7ff1-a4fa-2362d564e663/exec-b29d8c5c-9df8-487d-bab0-a82a0d8a3111.png",
+      "bytes": 20856
+    },
+    {
+      "id": "avatar-woman-artisan-dark-4",
+      "source": "assets/source/balanced-avatar-woman-artisan-dark-4-v1.png",
+      "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55e-30bc-7ff1-a4fa-2362d564e663/exec-92fb0e74-c34e-40d8-85e4-d2fb64db132d.png",
+      "bytes": 25806
+    },
+    {
+      "id": "avatar-woman-medic-dark-5",
+      "source": "assets/source/balanced-avatar-woman-medic-dark-5-v1.png",
+      "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55e-30bc-7ff1-a4fa-2362d564e663/exec-d04865f7-8187-45f7-8dd6-becf9403b3d9.png",
+      "bytes": 20408
+    },
+    {
+      "id": "avatar-woman-medic-brown-4",
+      "source": "assets/source/balanced-avatar-woman-medic-brown-4-v1.png",
+      "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55e-30bc-7ff1-a4fa-2362d564e663/exec-d8079c3d-215d-421e-af09-7352c38ad8aa.png",
+      "bytes": 22300
+    },
+    {
+      "id": "avatar-man-officer-brown-5",
+      "source": "assets/source/balanced-avatar-man-officer-brown-5-v1.png",
+      "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55e-30bc-7ff1-a4fa-2362d564e663/exec-4a65585c-4b0f-4608-b451-2504a954a58d.png",
+      "bytes": 17530
+    },
+    {
+      "id": "avatar-man-soldier-dark-5",
+      "source": "assets/source/balanced-avatar-man-soldier-dark-5-v1.png",
+      "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55e-30bc-7ff1-a4fa-2362d564e663/exec-ffe2efe5-10c2-43d7-8342-caacf58a1afe.png",
+      "bytes": 15042
+    },
+    {
+      "id": "avatar-man-officer-dark-4",
+      "source": "assets/source/balanced-avatar-man-officer-dark-4-v1.png",
+      "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55e-30bc-7ff1-a4fa-2362d564e663/exec-1d9e049b-6301-4c17-9c24-c1b96c26632a.png",
+      "bytes": 20798
+    },
+    {
+      "id": "avatar-man-scout-light-3",
+      "source": "assets/source/balanced-avatar-man-scout-light-3-v1.png",
+      "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55e-30bc-7ff1-a4fa-2362d564e663/exec-b9958bd4-33fe-4c4d-b5b3-72c26a9edca3.png",
+      "bytes": 20522
+    },
+    {
+      "id": "avatar-man-scout-brown-3",
+      "source": "assets/source/balanced-avatar-man-scout-brown-3-v1.png",
+      "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55e-30bc-7ff1-a4fa-2362d564e663/exec-5c168574-292d-46a6-80c3-43e72a35aa4d.png",
+      "bytes": 20992
+    },
+    {
+      "id": "avatar-man-scout-dark-3",
+      "source": "assets/source/balanced-avatar-man-scout-dark-3-v1.png",
+      "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55e-30bc-7ff1-a4fa-2362d564e663/exec-a972356a-cc00-4a19-9fce-304d3a72c1c3.png",
+      "bytes": 18272
+    },
+    {
+      "id": "avatar-woman-gaucho-dark-5",
+      "source": "assets/source/balanced-avatar-woman-gaucho-dark-5-v1.png",
+      "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55e-30bc-7ff1-a4fa-2362d564e663/exec-2fac528f-d462-43b1-8c53-95477b7bdbbc.png",
+      "bytes": 25220
+    },
+    {
+      "id": "avatar-woman-artisan-light-3",
+      "source": "assets/source/balanced-avatar-woman-artisan-light-3-v1.png",
+      "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55e-30bc-7ff1-a4fa-2362d564e663/exec-025ee4ae-f1e3-4cb8-a6db-79d1d267b440.png",
+      "bytes": 23644
+    },
+    {
+      "id": "avatar-woman-artisan-brown-2",
+      "source": "assets/source/balanced-avatar-woman-artisan-brown-2-v1.png",
+      "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55e-30bc-7ff1-a4fa-2362d564e663/exec-8d4f1400-a79d-4587-a26f-74abe777a11d.png",
+      "bytes": 21668
+    },
+    {
+      "id": "avatar-woman-gaucho-dark-2",
+      "source": "assets/source/balanced-avatar-woman-gaucho-dark-2-v1.png",
+      "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55e-30bc-7ff1-a4fa-2362d564e663/exec-526bcfab-954b-4699-893e-805fc46bf426.png",
+      "bytes": 23976
+    },
+    {
+      "id": "avatar-man-gaucho-light-1",
+      "source": "assets/source/balanced-avatar-man-gaucho-light-1-v1.png",
+      "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55e-30bc-7ff1-a4fa-2362d564e663/exec-a01cee6c-8380-4f0d-9e71-9d8997ed904f.png",
+      "bytes": 24828
+    },
+    {
+      "id": "avatar-man-gaucho-light-4",
+      "source": "assets/source/balanced-avatar-man-gaucho-light-4-v1.png",
+      "generatedSource": "/Users/fsodano/.codex/generated_images/01a0e55e-30bc-7ff1-a4fa-2362d564e663/exec-23272fc6-8f5a-4889-bbd4-1e80a032a819.png",
+      "bytes": 30188
+    }
+  ],
+  "reviewSheets": [
+    "assets/previews/portrait-expansion/part-1-01.webp",
+    "assets/previews/portrait-expansion/part-1-09.webp",
+    "assets/previews/portrait-expansion/part-1-17.webp",
+    "assets/previews/portrait-expansion/part-1-25.webp",
+    "assets/previews/portrait-expansion/part-1-33.webp"
+  ],
+  "assignedTotal": 33,
+  "transferredToRoot": [
+    "avatar-man-gaucho-dark-2",
+    "avatar-man-gaucho-dark-5",
+    "avatar-man-artisan-brown-4",
+    "avatar-man-artisan-dark-4",
+    "avatar-man-medic-light-4",
+    "avatar-man-medic-brown-2",
+    "avatar-man-medic-brown-5",
+    "avatar-man-medic-dark-4"
+  ],
+  "state": "assigned work complete",
+  "verification": {
+    "pngOriginals": 33,
+    "webp384Copies": 33,
+    "uniqueProductionHashes": 33,
+    "matchingProductionCopies": true
+  }
+}

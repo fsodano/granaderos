@@ -9,7 +9,7 @@ test('Tristán advances down the actual northern corridor under Pezuela orders',
  for(const id of NORTHERN_AXIS){s=wait(s,120-s.hour%120);const group=s.enemyGroups.at(-1);assert.equal(group.status,'marching');s=wait(s,group.arrivalAt-s.hour);assert.equal(s.sectors[id].owner,'royalist',id);assert.equal(group.command,'north');assert.ok(group.units.some(u=>u.name.includes('Tristán')));assert.ok(!s.log.some(e=>e.text.includes('Pezuela ordena')));}
 });
 test('a held border prevents the army from skipping to undefended southern provinces',()=>{
- let s=initialCampaign();for(const id of NORTHERN_AXIS)s.sectors[id].owner='patriot';s.sectors.humahuaca.fort=3;s.sectors.humahuaca.militia=[0,0,5];s=wait(s,240);assert.equal(s.hour,132);assert.equal(s.pendingEncounter.sector,'humahuaca');s=dispatch(s,{type:'respondToEncounter',groupId:s.pendingEncounter.groupId,choice:'auto'});assert.equal(s.lastError,null);assert.equal(s.enemyGroups[0].status,'defeated');
+ let s=initialCampaign();for(const id of NORTHERN_AXIS)s.sectors[id].owner='patriot';s.sectors.humahuaca.fort=3;s.sectors.humahuaca.militia=[0,0,20];s=wait(s,240);assert.equal(s.hour,132);assert.equal(s.pendingEncounter.sector,'humahuaca');s=dispatch(s,{type:'respondToEncounter',groupId:s.pendingEncounter.groupId,choice:'auto'});assert.equal(s.lastError,null);assert.equal(s.enemyGroups[0].status,'defeated');
  for(const id of NORTHERN_AXIS)assert.equal(s.sectors[id].owner,'patriot');assert.equal(royalistIntel(s).find(c=>c.id==='north').target,undefined);
 });
 test('Romarate responds to actual customs revenue and suppresses that same economy',()=>{

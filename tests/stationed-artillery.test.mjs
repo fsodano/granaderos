@@ -9,8 +9,10 @@ import {prepareSectorArtillery,validateArtilleryDeployment,validateArtilleryRepo
 import {createBattle,actBattle,endTurn,getReachable,artilleryReloadPreview,artilleryCrewPlan,artilleryCosts,interruptAvailable} from '../game/tactical.js';
 import {enterSector} from '../game/world.js';
 import {buildSectorMap} from '../game/maps.js';
-import {automaticOrder} from '../game/autonomous-orders.js';import {sameSurface,tacticalLevel} from '../game/tactical-space.js';
+import {sameSurface,tacticalLevel} from '../game/tactical-space.js';
 import {fight} from './opening-driver.mjs';
+import {mountainBatteryOrder} from './mountain-battery-driver.mjs';
+import {hiredAssaultOrder} from './hired-assault-driver.mjs';
 import {encodeSave,decodeSave} from '../game/save.js';import {syncBattleTime} from '../game/time.js';
 const order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,n.lastError);return n;};
 const act=(s,a)=>{const n=actBattle(s,a);assert.equal(n.lastError,null,n.lastError);return n;};
@@ -19,11 +21,20 @@ function issued({reinforced=true}={}){let c=order(initialCampaign(45),{type:'pur
  if(reinforced){const cash=c.resources.treasury;for(const id of [123,115,110])c=order(c,{type:'recruitCivic',id,term:'week'});assert.equal(cash-c.resources.treasury,371);assert.ok(c.resources.treasury>=0);}
  // Draw actual clothing before the march; assault no longer grants protection from pooled stock.
  for(const operativeId of c.squad.filter(id=>!c.operativeState[id].outfit)){c=order(c,{type:'sectorInventory',sector:'retiro',operativeId,direction:'issueOutfit'});const row=sectorInventoryModel(c,'retiro',rosterFor(c),operativeId).carried.find(row=>row.equip?.some(e=>e.slot==='outfit'));c=order(c,{type:'sectorInventory',sector:'retiro',operativeId,direction:'equip',inventoryKey:row.inventoryKey,expected:row.expected,slot:'outfit'});}
- c=order(c,{type:'travel',sector:'buenos_aires'});return order(c,{type:'attack',sector:'san_nicolas'});}
+ c=order(c,{type:'travel',sector:'buenos_aires'});
+ if(reinforced){
+  // Recover from the first march before starting another. The assault still
+  // charges its real travel time and fatigue; no condition values are patched.
+  for(const operativeId of c.squad)c=order(c,{type:'assignCare',operativeId,assignment:'rest'});
+  for(let hours=0;hours<24&&c.squad.some(id=>{const u=c.operativeState[id];return u.energy<100||u.fatigue>0||u.asleep;});hours++)c=order(c,{type:'wait',hours:1});
+  assert.ok(c.squad.every(id=>{const u=c.operativeState[id];return u.energy===100&&u.fatigue===0&&!u.asleep;}));
+  for(const operativeId of c.squad)c=order(c,{type:'assignCare',operativeId,assignment:'active'});
+ }
+ return order(c,{type:'attack',sector:'san_nicolas'});}
 function won(){let c=issued();
  // Coordinate one ordinary order per soldier per pass. Spending a scout's
  // entire turn first separates him from fire support and medical aid.
- const r=fight(c.pendingBattle,null,{controller:automaticOrder});assert.equal(r.battle.status,'victory');assert.ok(r.actions>0);const pair=syncBattleTime(c,r.battle);assert.equal(pair.error,null);const saved=decodeSave(encodeSave(pair.campaign,pair.battle));c=order(saved.campaign,{type:'battleResult',battleId:c.pendingBattle.id,outcome:r.battle.status,sectorState:saved.battle,survivors:saved.battle.units.filter(u=>u.side==='player')});for(const u of r.battle.units.filter(u=>u.side==='player')){assert.equal(c.operativeState[u.id].alive,u.hp>0);assert.equal(c.operativeState[u.id].hp,u.hp);}return c;}
+ const r=fight(c.pendingBattle,null,{controller:(battle,unit)=>mountainBatteryOrder(battle,unit,{leaderId:'3',helperId:'10',screenDistance:4})});assert.equal(r.battle.status,'victory');assert.ok(r.actions>0);const pair=syncBattleTime(c,r.battle);assert.equal(pair.error,null);const saved=decodeSave(encodeSave(pair.campaign,pair.battle));c=order(saved.campaign,{type:'battleResult',battleId:c.pendingBattle.id,outcome:r.battle.status,sectorState:saved.battle,survivors:saved.battle.units.filter(u=>u.side==='player')});for(const u of r.battle.units.filter(u=>u.side==='player')){assert.equal(c.operativeState[u.id].alive,u.hp>0);assert.equal(c.operativeState[u.id].hp,u.hp);}return c;}
 function returnVisit(c,b){const pair=syncBattleTime(c,b);assert.equal(pair.error,null);return order(pair.campaign,{type:'leaveSector',battleId:c.pendingBattle.id,sectorState:pair.battle,survivors:pair.battle.units.filter(u=>u.side==='player')});}
 const save=c=>restoreCampaign(serializeCampaign(c));
 const flat=()=>Array.from({length:240},(_,i)=>({x:i%24,y:Math.floor(i/24),type:'grass',blocked:false,cover:0}));
@@ -121,17 +132,31 @@ test('a defeated squad can hire a rescue force and recover its actual prisoners 
  for(const u of dead)assert.equal(restored.operativeState[u.id].alive,false);
  for(const {id} of captured){assert.equal(restored.operativeState[id].captured,true);assert.equal(restored.operativeState[id].location,'san_nicolas');}
  const custodyStart=structuredClone(restored),captives=structuredClone(restored.operativeState),cash=restored.resources.treasury;
- for(const id of [123,115,110])restored=order(restored,{type:'recruitCivic',id,term:'week'});
- assert.equal(cash-restored.resources.treasury,371);
- restored=order(restored,{type:'travel',sector:'buenos_aires'});restored=order(restored,{type:'attack',sector:'san_nicolas'});
+ const reliefIds=[123,115,110,131,113,124];
+ for(const id of reliefIds)restored=order(restored,{type:'recruitCivic',id,term:'week'});
+ assert.equal(cash-restored.resources.treasury,reliefIds.reduce((sum,id)=>sum+restored.contracts[id].paid,0));
+ assert.ok(restored.resources.treasury>=0);
+ // Issue only the depot's remaining physical ponchos; no free protection.
+ for(const operativeId of restored.squad.filter(id=>!restored.operativeState[id].outfit)){
+  if(!sectorInventoryModel(restored,'retiro',rosterFor(restored),operativeId).outfitStock)break;
+  restored=order(restored,{type:'sectorInventory',sector:'retiro',operativeId,direction:'issueOutfit'});
+  const row=sectorInventoryModel(restored,'retiro',rosterFor(restored),operativeId).carried.find(row=>row.equip?.some(e=>e.slot==='outfit'));
+  restored=order(restored,{type:'sectorInventory',sector:'retiro',operativeId,direction:'equip',inventoryKey:row.inventoryKey,expected:row.expected,slot:'outfit'});
+ }
+ restored=order(restored,{type:'travel',sector:'buenos_aires'});
+ for(const operativeId of restored.squad)restored=order(restored,{type:'assignCare',operativeId,assignment:'rest'});
+ for(let hours=0;hours<24&&restored.squad.some(id=>{const u=restored.operativeState[id];return u.energy<100||u.fatigue>0||u.asleep;});hours++)restored=order(restored,{type:'wait',hours:1});
+ assert.ok(restored.squad.every(id=>{const u=restored.operativeState[id];return u.energy===100&&u.fatigue===0&&!u.asleep;}));
+ for(const operativeId of restored.squad)restored=order(restored,{type:'assignCare',operativeId,assignment:'active'});
+ restored=order(restored,{type:'attack',sector:'san_nicolas'});
  assert.deepEqual(restored.pendingBattle.artillery,[{...gun,stationed:true}]);validateArtilleryDeployment(restored.pendingBattle);
  const heldBeforeRescue=structuredClone(restored.operativeState);
  for(const {id} of captured)assertCustodyCare(custodyStart,restored,Number(id));
  assert.ok(Object.values(restored.detentionRecords??{}).some(entry=>entry.care?.length));
  const rescueEntry=enterSector(restored.pendingBattle,restored.sectorStates.san_nicolas);
- // Coordinate one order per rescuer per pass, as in the original paid
- // assault. Their real enemies can now stabilize critical comrades too.
- const rescue=fight(restored.pendingBattle,restored.sectorStates.san_nicolas,{controller:automaticOrder});
+ // Approach using authored cover and observed contacts. The controller spends
+ // real AP and ammunition; guards retain their health and medical supplies.
+ const rescue=fight(restored.pendingBattle,restored.sectorStates.san_nicolas,{controller:hiredAssaultOrder});
  assert.equal(rescue.battle.status,'victory');
  assert.ok(rescue.actions>0);assert.ok(rescue.battle.turn<=80);assert.ok(rescue.battle.elapsedSeconds>0);
  assert.ok(rescue.battle.units.filter(u=>u.side==='player').reduce((n,u)=>n+u.loaded+u.ammo,0)<rescueEntry.units.filter(u=>u.side==='player').reduce((n,u)=>n+u.loaded+u.ammo,0));

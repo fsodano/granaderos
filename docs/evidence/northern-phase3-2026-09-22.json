@@ -1,0 +1,193 @@
+{
+  "hospitalDefense": {
+    "hour": 294,
+    "phase": 2,
+    "location": "cordoba",
+    "treasury": 144,
+    "squad": [
+      116,
+      133
+    ],
+    "survivors": [
+      {
+        "id": 116,
+        "hp": 51,
+        "location": "cordoba"
+      },
+      {
+        "id": 141,
+        "hp": 86,
+        "location": "tucuman"
+      },
+      {
+        "id": 144,
+        "hp": 81,
+        "location": "tucuman"
+      },
+      {
+        "id": 133,
+        "hp": 31,
+        "location": "cordoba"
+      }
+    ],
+    "defeatedGroups": [
+      "enemy-group-1",
+      "enemy-group-2"
+    ]
+  },
+  "relief": {
+    "hour": 335,
+    "phase": 2,
+    "location": "buenos_aires",
+    "treasury": 118,
+    "squad": [
+      116,
+      133,
+      10,
+      4
+    ],
+    "survivors": [
+      {
+        "id": 116,
+        "hp": 81,
+        "location": "buenos_aires"
+      },
+      {
+        "id": 141,
+        "hp": 86,
+        "location": "tucuman"
+      },
+      {
+        "id": 144,
+        "hp": 81,
+        "location": "tucuman"
+      },
+      {
+        "id": 133,
+        "hp": 91,
+        "location": "buenos_aires"
+      },
+      {
+        "id": 10,
+        "hp": 72,
+        "location": "buenos_aires"
+      },
+      {
+        "id": 4,
+        "hp": 84,
+        "location": "buenos_aires"
+      }
+    ],
+    "defeatedGroups": [
+      "enemy-group-1",
+      "enemy-group-2"
+    ]
+  },
+  "salta": {
+    "hour": 395,
+    "phase": 2,
+    "location": "salta",
+    "treasury": 1414,
+    "squad": [
+      141
+    ],
+    "survivors": [
+      {
+        "id": 141,
+        "hp": 88,
+        "location": "salta"
+      },
+      {
+        "id": 4,
+        "hp": 84,
+        "location": "salta"
+      },
+      {
+        "id": 1,
+        "hp": 88,
+        "location": "salta"
+      }
+    ],
+    "defeatedGroups": [
+      "enemy-group-1",
+      "enemy-group-2"
+    ]
+  },
+  "saltaDefense": {
+    "hour": 396,
+    "phase": 2,
+    "location": "salta",
+    "treasury": 1414,
+    "squad": [
+      1,
+      8
+    ],
+    "survivors": [
+      {
+        "id": 141,
+        "hp": 68,
+        "location": "salta"
+      },
+      {
+        "id": 4,
+        "hp": 84,
+        "location": "salta"
+      },
+      {
+        "id": 1,
+        "hp": 88,
+        "location": "salta"
+      },
+      {
+        "id": 8,
+        "hp": 70,
+        "location": "salta"
+      }
+    ],
+    "defeatedGroups": [
+      "enemy-group-1",
+      "enemy-group-2",
+      "enemy-group-3"
+    ]
+  },
+  "yatasto": {
+    "hour": 424,
+    "phase": 3,
+    "location": "tucuman",
+    "treasury": 1821,
+    "squad": [
+      1,
+      8
+    ],
+    "survivors": [
+      {
+        "id": 141,
+        "hp": 40,
+        "location": "salta"
+      },
+      {
+        "id": 4,
+        "hp": 84,
+        "location": "salta"
+      },
+      {
+        "id": 1,
+        "hp": 88,
+        "location": "tucuman"
+      },
+      {
+        "id": 8,
+        "hp": 70,
+        "location": "tucuman"
+      }
+    ],
+    "defeatedGroups": [
+      "enemy-group-1",
+      "enemy-group-2",
+      "enemy-group-3"
+    ]
+  },
+  "verification": "Public campaign commands and ordinary tactical combat; each fightNorthernSector victory is deterministically replayed, time-synchronized, settled, and save-round-tripped. No injected victory or restored casualty.",
+  "scope": "Full fresh-start integration confirms the northern route through Yatasto and phase 3. It then stops in prepareFreshCuyoDefense because the treasury cannot cover recruit 142 at 1290 pesos after current preparation spending. Later Cuyo, mountain, coastal and ending stages remain unverified on this state.",
+  "integrationLog": "/tmp/granaderos-route-phase3-current.log"
+}

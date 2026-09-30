@@ -1,13 +1,12 @@
 import {sleepRecovery} from './sleep-needs.js';
 import {gainFatigue,recoverFatigue} from './fatigue.js';
 import {operativeInTransit,operativeLocation} from './squads.js';
-import {WORK_ASSIGNMENTS} from './assignments.js';
+import {CARE_ASSIGNMENTS,ALL_ASSIGNMENTS} from './assignment-labels.js';
+export {CARE_ASSIGNMENTS,ALL_ASSIGNMENTS} from './assignment-labels.js';
 import {sleepStatus} from './sleep.js';
 import {baseMorale} from './morale.js';
 import {refreshCondition} from './tactical-condition.js';
 
-export const CARE_ASSIGNMENTS={active:'En servicio',doctor:'Médico',militia_doctor:'Médico de milicias',patient:'Paciente',rest:'Descanso'};
-export const ALL_ASSIGNMENTS={...CARE_ASSIGNMENTS,...WORK_ASSIGNMENTS};
 export const MEDICAL_KIT_PRICE=30;
 export const REST_HEALING_HOURS=6;
 const requireThat=(value,message)=>{if(!value)throw Error(message);};

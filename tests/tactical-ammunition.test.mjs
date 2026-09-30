@@ -6,13 +6,13 @@ const stack=(ammoType,count,extra={})=>({kind:'ammunition',ammoType,count,weight
 const hint=(slotId,item,index,count)=>({slotId,item,index,...(count===undefined?{}:{count})});
 
 test('fresh authorship issues the matching prepared load once and keeps weapon charges separate',()=>{
- for(const [weapon,type] of [[1800,'musket_75'],[1801,'musket_69'],[1802,'rifle_62'],[1805,'pistol_69'],[1808,'pistol_54']]){
+ for(const [weapon,type] of [[1800,'musket_75'],[1801,'musket_75'],[1802,'rifle_62'],[1805,'pistol_69'],[1808,'pistol_69']]){
   const u={weapon,loaded:1,reloadProgress:.25,condition:73};assert.equal(initializeUnitAmmunition(u),u);
   assert.equal(u.ammunitionVersion,AMMUNITION_VERSION);assert.deepEqual(ammunitionByType(u),{[type]:12});assert.equal(u.ammo,12);
   assert.equal(u.loaded,1);assert.equal(u.reloadProgress,.25);assert.equal(u.condition,73);
   const inventory=structuredClone(u.inventory);u.ammo=1000;initializeUnitAmmunition(u);assert.deepEqual(u.inventory,inventory);assert.equal(u.ammo,12);
  }
- const explicit={weapon:1806,loaded:0,ammo:3};initializeUnitAmmunition(explicit);assert.deepEqual(ammunitionByType(explicit),{pistol_50:3});
+ const explicit={weapon:1806,loaded:0,ammo:3};initializeUnitAmmunition(explicit);assert.deepEqual(ammunitionByType(explicit),{pistol_69:3});
 });
 
 test('unarmed defaults create no ammunition and explicit old spare rounds use one fixed fallback',()=>{
@@ -60,19 +60,19 @@ test('legacy cursor rounds migrate as a separate physical owner with retained cu
 
 test('sync changes only the projection and stale placement hints, without funding from a scalar',()=>{
  const u={weapon:1805,loaded:1,ammo:900,activeSlot:'primary',leftHandItem:'inventory:a',inventory:{
-  a:stack('pistol_69',5),p:stack('pistol_50',7),cloth:{name:'Tela',count:2,weight:.1}},
+  a:stack('pistol_69',5),p:stack('pistol_69',7),cloth:{name:'Tela',count:2,weight:.1}},
   pocketOrder:[hint('small-1','inventory:a',0,3),hint('small-2','inventory:a',1,3),hint('small-3','inventory:a',2,2),hint('small-4','inventory:cloth',0,2)],
   equipmentCursor:{sourceId:'small-6',stack:{item:'inventory:cursor',...stack('musket_75',4)}}};
  const inventory=u.inventory,cursor=u.equipmentCursor;syncUnitAmmunition(u);
- assert.equal(u.ammo,5);assert.equal(u.inventory,inventory);assert.equal(u.equipmentCursor,cursor);assert.equal(totalReserveAmmunition(u),12);
+ assert.equal(u.ammo,12);assert.equal(u.inventory,inventory);assert.equal(u.equipmentCursor,cursor);assert.equal(totalReserveAmmunition(u),12);
  assert.deepEqual(u.pocketOrder,[hint('small-1','inventory:a',0,3),hint('small-2','inventory:a',1,1),hint('small-4','inventory:cloth',0,2)]);
  assert.equal(u.loaded,1);assert.equal(u.leftHandItem,'inventory:a');assert.equal(u.ammunitionVersion,undefined);
- u.weapon=1806;syncUnitAmmunition(u);assert.equal(u.ammo,7);assert.equal(u.inventory,inventory);
+ u.weapon=1806;syncUnitAmmunition(u);assert.equal(u.ammo,12);assert.equal(u.inventory,inventory);
 });
 
 test('consumption reconciles duplicate ammo hands and finally clears them without promoting a stowed gun',()=>{
  const u={weapon:1800,loaded:1,ammo:2,activeSlot:'item',activeItem:'inventory:custom',leftHandItem:'inventory:custom',
-  inventory:{custom:stack('musket_75',2,{name:'Cartuchos elegidos',lot:{maker:'Taller'}})},ammunitionVersion:1};
+  inventory:{custom:stack('musket_75',2,{name:'Cartuchos elegidos',lot:{maker:'Taller'}})},ammunitionVersion:2};
  consumeWeaponAmmunition(u,1800,1);
  assert.equal(u.ammo,1);assert.equal(u.activeItem,'inventory:custom');assert.equal(u.leftHandItem,null);assert.equal(u.inventory.custom.count,1);
  assert.deepEqual(u.inventory.custom.lot,{maker:'Taller'});
@@ -89,7 +89,7 @@ test('a left-hand reference blocked by a long gun does not remove a round from i
 });
 
 test('weapon consumption preserves other calibers, cursor rounds and valid remaining stack partitions',()=>{
- const u={weapon:1800,loaded:1,ammo:9,inventory:{a:stack('musket_75',9),p:stack('pistol_50',2)},
+ const u={weapon:1800,loaded:1,ammo:9,inventory:{a:stack('musket_75',9),p:stack('pistol_69',2)},
   pocketOrder:[hint('small-2','inventory:a',0,3),hint('small-6','inventory:a',1,6),hint('small-8','inventory:p',0)],
   equipmentCursor:{sourceId:'small-1',stack:{item:'inventory:cursor',...stack('musket_75',3)}}};
  const cursor=u.equipmentCursor,pistol=u.inventory.p;consumeWeaponAmmunition(u,1800,5);
@@ -101,7 +101,7 @@ test('weapon consumption preserves other calibers, cursor rounds and valid remai
 
 test('invalid initialization and late cleanup failures reject atomically',()=>{
  const base={weapon:1800,ammo:3,activeSlot:'item',activeItem:'ammo'};
- for(const patch of [{ammunitionVersion:2},{ammo:-1},{ammo:.5},{ammo:'3'},{ammo:1000001},
+ for(const patch of [{ammunitionVersion:3},{ammo:-1},{ammo:.5},{ammo:'3'},{ammo:1000001},
   {inventory:{bad:stack('musket_75',1,{ammoType:'missing',name:'Inválida'})}},
   {pocketOrder:[hint('small-1','ammo',0,21)]},
   {equipmentCursor:{sourceId:'small-1',stack:{item:'ammo',count:0,weight:.04}}},
@@ -114,6 +114,6 @@ test('invalid initialization and late cleanup failures reject atomically',()=>{
 });
 
 test('missing compatible rounds reject despite unrelated stock or a stale scalar projection',()=>{
- const u={weapon:1800,ammo:100,inventory:{p:stack('pistol_50',2)},equipmentCursor:{sourceId:'small-1',stack:{item:'inventory:c',...stack('musket_75',3)}}};
+ const u={weapon:1800,ammo:100,inventory:{p:stack('pistol_69',2)},equipmentCursor:{sourceId:'small-1',stack:{item:'inventory:c',...stack('musket_75',3)}}};
  for(const weapon of [1800,0,65535]){const before=structuredClone(u);assert.throws(()=>consumeWeaponAmmunition(u,weapon,1));assert.deepEqual(u,before);}
 });

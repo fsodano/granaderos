@@ -36,7 +36,8 @@ test('rendered sprites preserve body scale and fixed ground anchors across every
   const viewport=spriteViewport(selected,{x:100.2,y:100.4},3,0);
   const markup=render(h(SpriteFigure,{unit,pose,position:{x:100.2,y:100.4},motion:{direction:3,moving:false,frame:0}}));
   assert.ok(markup.includes(selected.href),name);
-  assert.ok(markup.includes(`x="${viewport.x}" y="${viewport.y}" width="${viewport.width}" height="${viewport.height}"`));
+  assert.ok(markup.includes(`data-sprite-position="true" transform="translate(${viewport.x} ${viewport.y})"`));
+  assert.ok(markup.includes(`x="0" y="0" width="${viewport.width}" height="${viewport.height}"`));
   const layers=[...markup.matchAll(/<image\b[^>]*>/g)];assert.ok(layers.length>0);
   for(const [image] of layers)assert.match(image,/image-rendering:auto/,'illustrated body and skin retain the same smooth sampling');
  }
@@ -56,16 +57,19 @@ test('published illustrated art reaches the SVG with its actual raster grid and 
   }
  }
 });
-test('responsive tactical camera keeps integer pixel magnification and bounded panning',()=>{
+test('responsive tactical camera retains smooth magnification and bounded fractional panning',()=>{
  const world={width:996,height:659},focus={x:498,y:330};
- for(const viewport of [{width:375,height:430},{width:768,height:420},{width:1280,height:560}])for(const zoom of [1,2,3]){
+ for(const viewport of [{width:375,height:430},{width:768,height:420},{width:1280,height:560}])for(const zoom of [1,1.25,2,2.72,3]){
   const camera=tacticalCamera(world,viewport,focus,{x:.3,y:.7},zoom);
-  assert.equal(viewport.width/camera.width,zoom);assert.equal(viewport.height/camera.height,zoom);
-  assert.ok(Number.isInteger(camera.x)&&Number.isInteger(camera.y));
+  assert.ok(Math.abs(viewport.width/camera.width-zoom)<1e-10);assert.ok(Math.abs(viewport.height/camera.height-zoom)<1e-10);
+  assert.equal(camera.x,Math.max(0,Math.min(Math.max(0,world.width-camera.width),focus.x+.3-camera.width/2)));
+  assert.equal(camera.y,Math.max(0,Math.min(Math.max(0,world.height-camera.height),focus.y+.7-camera.height/2)));
   const min=tacticalCamera(world,viewport,focus,{x:-9999,y:-9999},zoom);assert.equal(min.x,0);assert.equal(min.y,0);
   const max=tacticalCamera(world,viewport,focus,{x:9999,y:9999},zoom);
-  assert.equal(max.x,Math.round(Math.max(0,world.width-max.width)));assert.equal(max.y,Math.round(Math.max(0,world.height-max.height)));
+  assert.equal(max.x,Math.max(0,world.width-max.width));assert.equal(max.y,Math.max(0,world.height-max.height));
  }
+ assert.equal(tacticalCamera(world,{width:960,height:540},focus,{x:0,y:0},.5).width,960);
+ assert.equal(tacticalCamera(world,{width:960,height:540},focus,{x:0,y:0},4).width,320);
 });
 test('civilian selection uses idle columns and walk rows in all eight directions',()=>{
  for(let direction=0;direction<8;direction++)for(const moving of [false,true]){

@@ -54,3 +54,12 @@ test('a same-model empty replacement stays empty instead of receiving initial is
  s=move(s,pocket(s,'inventory:replacement'),'hand:right');assert.equal(s.operativeState[110].carriedLoaded,0);
  s=order(save(s),{type:'visitSector'});const b=enterSector(s.pendingBattle);assert.equal(b.units.find(u=>u.id==='110').loaded,0);
 });
+
+test('campaign unloading stores real cartridges and keeps the gun empty after save and deployment',()=>{
+ let s=fresh();s.operativeState[110].carriedLoaded=1;
+ const before=ammunitionByType(actor(s)),hour=s.hour,resources=structuredClone(s.resources);
+ s=order(s,{type:'sectorInventory',sector:'retiro',operativeId:110,direction:'unload',hostId:'hand:right',expectedHost:equipmentFingerprint(actor(s),'hand:right')});
+ assert.equal(actor(s).loaded,0);assert.equal(ammunitionByType(actor(s)).musket_75,(before.musket_75??0)+1);
+ assert.equal(s.hour,hour);assert.deepEqual(s.resources,resources);s=save(s);
+ s=order(s,{type:'visitSector'});const b=enterSector(s.pendingBattle),u=b.units.find(u=>u.id==='110');assert.equal(u.loaded,0);
+});

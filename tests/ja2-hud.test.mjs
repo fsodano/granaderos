@@ -59,7 +59,7 @@ test('bayonet inventory controls share paid fit/removal admission and retain inc
   const unknown=structuredClone(s);unknown.units[0].bladeFittingPattern=null;
   assert.equal(fittingInventoryModel(unknown,unknown.units[0]).sources[0].preview.valid,false);
 });
-test('close-combat mode shares thrust routing, AP and pose while F permits deliberate close fire',()=>{
+test('close-combat mode shares thrust routing, AP and pose while F retains the selected attack',()=>{
   const s=battle([merc(0,{weapon:1800})]);const u=players(s)[0],target=s.units.find(unit=>unit.side==='enemy');
   Object.assign(u,{weapon:1800,activeSlot:'primary',weaponMode:'melee',x:1,y:1,condition:61,loaded:0,jammed:true,weaponFittings:{bayonet:{weapon:1811,fittingPattern:'india_socket',instanceId:'socket-attack-hud',condition:73}}});
   Object.assign(target,{x:3,y:1});
@@ -68,7 +68,7 @@ test('close-combat mode shares thrust routing, AP and pose while F permits delib
   assert.equal(orderDescriptors(s,u,{target,aim:4}).find(order=>order.id==='useItem').disabled,false);
   assert.equal(resolvedOrderType(s,u,{type:'useItem',targetId:target.id}),'melee');
   assert.match(equippedItemHelp(s,u,{target,aim:4}),/Estocada de bayoneta/);
-  assert.equal(attackCursorMode(u),'fire');assert.deepEqual(targetItemAction('fire',target.id,u),{type:'fire',targetId:target.id});
+  assert.equal(attackCursorMode(u),'useItem');assert.deepEqual(targetItemAction('fire',target.id,u),{type:'fire',targetId:target.id});
   assert.equal(targetPreview(s,u,target,{mode:'fire'}).valid,false);
   u.loaded=1;u.jammed=false;
   const deliberate=targetPreview(s,u,target,{mode:'fire',aim:2});assert.equal(deliberate.pa,contextualAttack(s,u,target,{type:'fire',aim:2}).pa);assert.equal(typeof deliberate.chance,'number');
@@ -119,12 +119,12 @@ test('S2 inventory: Güemes stats, hand slots, slotAction, backpack records, sup
   u.inventory.junk={count:1,weight:2,weapon:9999,loaded:0};
   assert.equal(inventoryModel(s,u).backpack.find(b=>b.key==='junk').equippable,false);
   const supplies=inventoryModel(s,u).supplies;
-  assert.equal(supplies.length,6);
+  assert.equal(supplies.length,4);
   const byId=Object.fromEntries(supplies.map(x=>[x.id,x]));
-  assert.deepEqual(Object.keys(byId).sort(),['boleadoras','flints','medkits','priming','rations','torches']);
+  assert.deepEqual(Object.keys(byId).sort(),['boleadoras','medkits','rations','torches']);
   const ammunition=inventoryModel(s,u).items.filter(isAmmunitionStack);
-  assert.equal(ammunition.length,1);assert.equal(ammunition[0].item,ammoItem(u));assert.equal(ammunition[0].ammoType,'carbine_65');assert.equal(ammunition[0].label,AMMUNITION_TYPES.carbine_65.label);assert.equal(ammunition[0].count,totalReserveAmmunition(u));assert.equal(ammunition[0].weight,.04);
-  assert.equal(byId.medkits.count,u.medkits);assert.equal(byId.priming.count,u.priming);assert.equal(byId.flints.count,u.flints);assert.equal(byId.rations.count,u.rations);assert.equal(byId.boleadoras.count,u.boleadoras);assert.equal(byId.torches.count,u.torches);
+  assert.equal(ammunition.length,1);assert.equal(ammunition[0].item,ammoItem(u));assert.equal(ammunition[0].ammoType,'musket_75');assert.equal(ammunition[0].label,AMMUNITION_TYPES.musket_75.label);assert.equal(ammunition[0].count,totalReserveAmmunition(u));assert.equal(ammunition[0].weight,.04);
+  assert.equal(byId.medkits.count,u.medkits);assert.equal(byId.priming,undefined);assert.equal(byId.flints,undefined);assert.equal(byId.rations.count,u.rations);assert.equal(byId.boleadoras.count,u.boleadoras);assert.equal(byId.torches.count,u.torches);
   for(const x of supplies){assert.ok(x.label&&x.label.length>0);assert.equal(typeof x.count,'number');}
   const m2=inventoryModel(s,u);
   assert.equal(m2.weight,carriedWeight(u));assert.equal(m2.capacity,carryCapacity(u));assert.equal(m2.poncho,false);
@@ -240,7 +240,7 @@ test('aim levels stop at four and unavailable firearm actions cannot be selected
   assert.ok(aimOptions(s,u).every(option=>option.disabled));
   assert.equal(orderDescriptors(s,u).find(d=>d.id==='useItem').disabled,true);
   assert.equal(orderDescriptors(s,u).find(d=>d.id==='reprime').disabled,false);
-  u.priming=0;assert.equal(orderDescriptors(s,u).find(d=>d.id==='reprime').disabled,true);
+  u.priming=0;assert.equal(orderDescriptors(s,u).find(d=>d.id==='reprime').disabled,false);
   u.jammed=false;u.loaded=0;setTestAmmunition(u,0);
   for(const id of ['useItem','fire','reload','overwatch'])assert.equal(orderDescriptors(s,u).find(d=>d.id===id).disabled,true,id);
   u.activeSlot='medical';u.medkits=0;
@@ -456,7 +456,7 @@ test('item handling shares AP, range, capacity, quantity and throw previews with
   target.x=2;assert.equal(inventoryHandlingModel(s,u,{...ctx,count:1.5}).transfer.disabled,true);
   assert.equal(inventoryHandlingModel(s,u,{...ctx,count:totalReserveAmmunition(u)+1}).drop.disabled,true);
   assert.equal(inventoryHandlingModel(s,u,{...ctx,busy:true}).drop.disabled,true);
-  for(let i=0;i<5;i++)target.inventory[`full${i}`]={count:1,weight:1};
+  for(const slot of inventoryModel(s,target).pockets.slots.filter(slot=>!slot.entry))target.inventory[`full-${slot.id}`]={count:1,weight:.1};
   setTestAmmunition(u,20);assert.equal(inventoryModel(s,target).pockets.free,0);
   assert.equal(inventoryHandlingModel(s,u,{...ctx,count:20}).transfer.disabled,true);
 });
@@ -475,6 +475,7 @@ test('inventory rows retain exact weapon records and use canonical keys when man
 
 test('nearby loot gives a selectable partial stack without exposing distant or fled bodies',()=>{
   const s=exchangeBattle(),u=s.units[0],source=s.units[1];source.hp=0;source.unconscious=true;
+  for(const slot of inventoryModel(s,u).pockets.slots.filter(slot=>!slot.entry))u.inventory[`full-${slot.id}`]={count:1,weight:.1};
   const options=nearbyLootOptions(s,u),ammo=options.find(item=>item.action.targetId===source.id&&item.action.item===ammoItem(source));
   assert.ok(ammo);assert.ok(options.some(item=>item.action.item==='weapon'));
   assert.equal(lootPreview(s,u,{type:'loot',targetId:source.id}).valid,false);
@@ -715,4 +716,21 @@ test('a routed visible enemy remains an attack target until surrender or real de
  const s=battle([{id:'p',x:1,y:1}],{enemies:[{id:'e',x:3,y:1,routed:true}]});
  const [u,target]=s.units;const preview=targetPreview(s,u,target);assert.ok(preview);assert.equal(preview.valid,true);assert.equal(actBattle(s,{type:'useItem',unitId:u.id,targetId:target.id}).lastError,null);
  target.surrendered=true;assert.equal(targetPreview(s,u,target),null);
+});
+
+test('movement preview pending and failure states never suppress independent firing previews',()=>{
+ const s=battle([merc(0,{x:1,y:1,weapon:1800})]),u=players(s)[0],point={x:2,y:2},enemy=s.units.find(v=>v.side==='enemy');
+ for(const movementIntent of ['forward','preserveFacing']){
+  const pending=targetPreview(s,u,point,{mode:'move',movementIntent,reachable:[],routesPending:true});
+  assert.equal(pending.pending,true);assert.match(pending.reason,/Calculando ruta/);assert.equal(pending.pa,undefined);
+  const failed=targetPreview(s,u,point,{mode:'move',movementIntent,reachable:[],routesFailed:true});
+  assert.match(failed.reason,/comprobará al dar la orden/);assert.equal(failed.pa,undefined);
+  const ready=targetPreview(s,u,point,{mode:'move',movementIntent,reachable:getReachable(s,u,{movementIntent})});
+  assert.equal(ready.valid,true);assert.ok(ready.pa>0);
+ }
+ for(const mode of ['move','fire'])for(const status of [{routesPending:true},{routesFailed:true}]){
+  const expected=targetPreview(s,u,enemy,{mode,aim:1});
+  assert.equal(expected.attackType,'fire');
+  assert.deepEqual(targetPreview(s,u,enemy,{mode,aim:1,...status}),expected);
+ }
 });

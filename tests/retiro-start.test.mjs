@@ -23,3 +23,30 @@ test('waiting and academy preparation do not lose the campaign because Buenos Ai
 test('the first expansion is an actual hostile deployment and never gives the capital for free',()=>{
  let s=order(initialCampaign(8),{type:'recruitCivic',id:110,term:'week'});const walked=dispatchCampaign(s,{type:'travel',sector:'buenos_aires'});assert.ok(walked.lastError);assert.deepEqual(own(walked),['retiro']);s=order(s,{type:'attack',sector:'buenos_aires'});assert.ok(s.pendingBattle.enemies.length>0);assert.equal(s.pendingBattle.sector,'buenos_aires');assert.equal(s.sectors.buenos_aires.owner,'royalist');assert.equal(s.officer,null);const pair=prepareCampaignBattle(s);assert.equal(pair.error,null);assert.deepEqual(decodeSave(encodeSave(pair.campaign,pair.battle)).campaign,pair.campaign);
 });
+
+test('one paid hire automatically starts the campaign without regiment funding or supply debits',()=>{
+ const before=initialCampaign(8),snapshot=structuredClone(before);
+ let s=order(before,{type:'recruitCivic',id:110,term:'week'});
+ assert.deepEqual(before,snapshot);
+ assert.equal(s.phase,1);assert.equal(s.flags.academy,true);assert.deepEqual(s.squad,[110]);
+ assert.equal(s.resources.treasury,before.resources.treasury-s.contracts[110].paid);
+ for(const key of ['horses','muskets','textiles'])assert.equal(s.resources[key],before.resources[key]);
+ const again=order(s,{type:'academy'});assert.deepEqual(again,s,'older clients cannot charge or reward funding again');
+ s=order(s,{type:'visitSector'});const pair=prepareCampaignBattle(s);
+ assert.equal(pair.error,null);assert.equal(pair.battle.units.filter(u=>u.side==='player').length,1);
+ assert.deepEqual(decodeSave(encodeSave(pair.campaign,pair.battle)),{campaign:pair.campaign,battle:pair.battle});
+});
+test('one created character can start and deploy with no treasury balance',()=>{
+ const before=initialCampaign(8);before.resources.treasury=0;
+ let s=order(before,create);assert.equal(s.resources.treasury,0);assert.equal(s.phase,1);assert.equal(s.flags.academy,true);assert.deepEqual(s.squad,[1000]);
+ for(const key of ['horses','muskets','textiles'])assert.equal(s.resources[key],before.resources[key]);
+ s=order(s,{type:'visitSector'});const pair=prepareCampaignBattle(s);assert.equal(pair.error,null);
+ assert.deepEqual(pair.battle.units.filter(u=>u.side==='player').map(u=>u.id),['1000']);
+ assert.deepEqual(decodeSave(encodeSave(pair.campaign,pair.battle)),{campaign:pair.campaign,battle:pair.battle});
+});
+test('an empty or failed recruitment cannot unlock the start',()=>{
+ const before=initialCampaign(8);before.resources.treasury=0;
+ for(const action of [{type:'academy'},{type:'recruitCivic',id:110,term:'week'}]){
+  const failed=dispatchCampaign(before,action);assert.ok(failed.lastError);assert.equal(failed.phase,0);assert.equal(failed.flags.academy,false);assert.deepEqual(failed.recruited,[]);assert.equal(failed.resources.treasury,0);
+ }
+});

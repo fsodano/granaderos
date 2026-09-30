@@ -1,0 +1,239 @@
+{
+  "scope": "Focused current-endurance continuations from verified blockade victory. Public campaign orders, actual money and equipment, no health grants, no authored battle outcomes. Full fresh integration not rerun yet.",
+  "controllerChanges": [
+    "Hold the light cannon at contact instead of continuing an exposed advance.",
+    "Search map quadrants using known terrain when no enemy is in shared sight; never inspect hidden enemy positions."
+  ],
+  "verifiedBattles": {
+    "santa_fe": {
+      "hour": 3271,
+      "turns": 23,
+      "actions": 191,
+      "elapsedSeconds": 448,
+      "survivors": [
+        2,
+        57
+      ]
+    },
+    "tucuman": {
+      "hour": 3298,
+      "turns": 10,
+      "actions": 267,
+      "elapsedSeconds": 420,
+      "survivors": [
+        2,
+        57,
+        11,
+        9,
+        10,
+        134,
+        132,
+        111
+      ]
+    },
+    "salta": {
+      "hour": 3326,
+      "turns": 7,
+      "actions": 186,
+      "elapsedSeconds": 315,
+      "survivors": [
+        2,
+        57,
+        11,
+        9,
+        10,
+        134,
+        132,
+        111
+      ]
+    },
+    "jujuy": {
+      "hour": 3362,
+      "turns": 37,
+      "actions": 227,
+      "elapsedSeconds": 564,
+      "survivors": [
+        2,
+        57,
+        134
+      ],
+      "criticalSurvivor": {
+        "id": 2,
+        "hp": 1,
+        "bleeding": 4
+      }
+    }
+  },
+  "validation": "Each listed battle passes deterministic replay, save roundtrip, settlement and continuing-campaign checks. Permanent losses remain dead.",
+  "recovery": {
+    "officer1000": "Healed from 17 to 80 HP in Cordoba using doctor 10 and finite paid supplies.",
+    "beltran2": "Subsequent real first-aid approach takes 61 seconds; Beltran dies before treatment. This is retained as a permanent loss.",
+    "finalColumn": {
+      "hour": 3390,
+      "treasury": 3205,
+      "field": [
+        1000,
+        134,
+        145,
+        139,
+        140,
+        103
+      ],
+      "commander57": "Alive at Cordoba; not in the next assault force."
+    }
+  },
+  "newThreats": [
+    {
+      "id": "enemy-group-7",
+      "theater": "north",
+      "target": "jujuy",
+      "initialStrength": 17,
+      "launchedAt": 3360,
+      "resolvedAt": 3384,
+      "status": "stationed"
+    },
+    {
+      "id": "enemy-group-8",
+      "theater": "coast",
+      "target": "buenos_aires",
+      "initialStrength": 17,
+      "launchedAt": 3360,
+      "resolvedAt": 3368,
+      "status": "stationed"
+    }
+  ],
+  "remaining": [
+    "Heal the wounded survivor and defend recaptured provinces with actual garrisons.",
+    "Resolve stationed groups 9 at Jujuy, 10 at Salta and 8 at Buenos Aires, plus later actual threats.",
+    "Win Humahuaca and verify actual ending, save reload and ending UI.",
+    "Full fresh integration beyond current continuation remains unverified.",
+    "Blade artwork, broader parity requirements and broader 60 FPS coverage remain open."
+  ],
+  "counterattackFollowup": {
+    "sector": "jujuy",
+    "hour": 3404,
+    "status": "victory",
+    "turns": 43,
+    "actions": 338,
+    "elapsedSeconds": 530,
+    "fieldIds": [
+      1000,
+      134,
+      145,
+      139,
+      140,
+      103,
+      104,
+      127,
+      144
+    ],
+    "survivors": [
+      1000,
+      139,
+      144
+    ],
+    "permanentDeaths": [
+      134,
+      145,
+      140,
+      103,
+      104,
+      127
+    ],
+    "treasuryBeforeReinforcement": 3205,
+    "treasuryAfterReinforcement": 2528,
+    "treasuryAfterVictory": 2778,
+    "validation": [
+      "Same battle replay matches",
+      "Tactical and campaign save round trips pass",
+      "Public settlement clears enemy-group-7",
+      "San Martin alive in Cordoba",
+      "Campaign remains playable"
+    ],
+    "driverFixes": [
+      "Ignore dead former gunner retained in the sector",
+      "Move the nearby friendly cannon, not the first persisted cannon"
+    ],
+    "regression": "Two tests in tests/campaign-battery-driver.test.mjs pass, including heavy-crew continuity."
+  },
+  "veteranRecoveryFollowup": {
+    "hour": 3438,
+    "treasury": 2468,
+    "fieldIds": [
+      1000,
+      139,
+      144,
+      107,
+      141
+    ],
+    "allFullHealth": true,
+    "method": "Actual return journey, paid recruitment and renewals, doctor assignments with finite bought dressings, weapon replacement, ammunition, repairs, rest and reloads. Uses the existing reserve bronze cannon.",
+    "sanMartin": "Alive at Cordoba",
+    "checkpoint": "/tmp/granaderos-final-veterans-current.json"
+  },
+  "humahuacaAttempt": {
+    "hour": 3458,
+    "status": "defeat",
+    "turns": 3,
+    "actions": 72,
+    "elapsedSeconds": 193,
+    "fieldIds": [
+      1000,
+      139,
+      144,
+      107,
+      141
+    ],
+    "artillery": "Actual reserve bronze4",
+    "acceptance": "Not passed; no victory checkpoint or ending claim",
+    "checkpoint": "/tmp/granaderos-humahuaca-prepared-current.json",
+    "log": "/tmp/granaderos-humahuaca-close-defense.log",
+    "next": "Inspect melee losses and legal approach/deployment; preserve finite roster, paid supplies and real outcomes."
+  },
+  "moraleRecoveryFollowup": {
+    "fromHour": 3438,
+    "toHour": 3798,
+    "treasuryAfter": 8467,
+    "method": "Ordinary rest, hourly campaign waits and paid contract renewals; no morale assignment.",
+    "moraleAfter": {
+      "1000": 80,
+      "139": 86,
+      "144": 86,
+      "107": 86,
+      "141": 93
+    },
+    "consequence": "Enemy groups 9, 10 and 11 occupy Jujuy, Salta and Tucuman during recovery.",
+    "checkpoint": "/tmp/granaderos-final-morale-current.json"
+  },
+  "finalTucumanFollowup": {
+    "hour": 3826,
+    "status": "victory",
+    "turns": 22,
+    "actions": 191,
+    "elapsedSeconds": 204,
+    "survivors": [
+      1000,
+      139,
+      144
+    ],
+    "permanentDeaths": [
+      107,
+      141
+    ],
+    "woundedSurvivor": {
+      "id": 139,
+      "hp": 15,
+      "bleeding": 0
+    },
+    "treasury": 8578,
+    "preparation": "Actual Mendoza round trip purchases six finite arsenal grenades for 480 pesos, paid renewals and rest; merchant lot remains exhausted.",
+    "deployment": "Normal placeDeployment and confirmDeployment orders; middle crew and infantry on both legal entry flanks. No hidden enemy coordinates used.",
+    "verification": [
+      "Deterministic replay matches",
+      "Tactical and campaign save checks pass",
+      "Public settlement defeats enemy-group-11",
+      "Campaign remains playable; San Martin alive at Cordoba"
+    ],
+    "checkpoint": "/tmp/granaderos-final-tucuman-won-current.json"
+  }
+}

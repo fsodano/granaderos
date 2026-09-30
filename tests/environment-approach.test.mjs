@@ -3,7 +3,7 @@ const AMMO='inventory:ammo:musket_75';
 const ammoStack=count=>({item:AMMO,kind:'ammunition',ammoType:'musket_75',name:AMMUNITION_TYPES.musket_75.name,count,weight:.04});
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createBattle,actBattle,endTurn,environmentUsePreview,environmentPreview,canSee,movementStepCost} from '../game/tactical.js';
+import {createBattle,actBattle,endTurn,environmentUsePreview,environmentPreview,canSee,movementStepCost,movementEnergy} from '../game/tactical.js';
 import {targetPreview,nearbyEnvironmentModel} from '../game/ja2-hud.js';
 import {environmentTargetSummary} from '../game/environment-interactions.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
@@ -87,7 +87,8 @@ test('container targeting uses its footprint, opens once and leaves finite conte
 
 test('exploration charges each step and the environment action while collapse stops before use',()=>{
   const s=field({}, {exploration:true}),after=use(s);assert.equal(after.elapsedSeconds,10);assert.equal(after.units[0].ap,100);assert.equal(door(after).locked,false);
-  const exhausted=field({energy:2},{exploration:true}),stopped=use(exhausted);assert.equal(stopped.units[0].unconscious,true);assert.equal(door(stopped).locked,true);assert.deepEqual(stopped.units[0].inventory,exhausted.units[0].inventory);assert.equal(stopped.elapsedSeconds,6);
+  const exhausted=field({},{exploration:true});exhausted.units[0].energy=2*movementEnergy(exhausted.units[0],{type:'grass'},true);
+  const stopped=use(exhausted);assert.equal(stopped.units[0].unconscious,true);assert.equal(stopped.units[0].x,4);assert.equal(stopped.units[0].ap,0);assert.equal(door(stopped).locked,true);assert.deepEqual(stopped.units[0].inventory,exhausted.units[0].inventory);assert.equal(stopped.elapsedSeconds,6);
 });
 
 test('an enemy reaction during approach stops before the tool is used',()=>{

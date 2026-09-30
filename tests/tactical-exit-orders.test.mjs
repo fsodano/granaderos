@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createBattle,actBattle,endTurn,exitPreview,canSee,visibleEnemies,getReachable,fieldCapable} from '../game/tactical.js';
+import {createBattle,actBattle,endTurn,exitPreview,canSee,visibleEnemies,getReachable,fieldCapable,movementEnergy} from '../game/tactical.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
 import {planGroupMove} from '../game/group-movement.js';
 const exits=[{id:'west',edge:'W',destination:'retiro',entryEdge:'S',entryAnchor:{x:14,y:15}},{id:'south',edge:'S',destination:'ensenada',entryEdge:'W',entryAnchor:{x:0,y:7}}];
@@ -33,7 +33,7 @@ test('the last capable departure concludes retreat while critical and dead recor
 });
 test('exploration exits pay movement time once and a bleeding collapse stops at the actual edge',()=>{
  const b=fixture([{id:'p',x:0,y:2,hp:20,bleeding:10},{id:'q',x:1,y:5}],{exploration:true,enemies:[]});b.bleedSeconds=3;
- const n=actBattle(b,request);assert.equal(n.elapsedSeconds,3);assert.equal(n.units[0].hp,10);assert.equal(n.units[0].unconscious,true);assert.equal(n.units[0].departure,undefined);assert.equal(n.units[0].energy,99);assert.equal(n.actionDurationSeconds,undefined);assert.equal(n.actionTimeAppliedSeconds,undefined);
+ const n=actBattle(b,request);assert.equal(n.elapsedSeconds,3);assert.equal(n.units[0].hp,10);assert.equal(n.units[0].unconscious,true);assert.equal(n.units[0].departure,undefined);assert.equal(n.units[0].energy,100-movementEnergy(b.units[0],{type:'grass'},true));assert.equal(n.actionDurationSeconds,undefined);assert.equal(n.actionTimeAppliedSeconds,undefined);
  const clean=fixture([{id:'p',x:0,y:2},{id:'q',x:0,y:5}],{exploration:true,enemies:[]});const departed=actBattle(clean,{...request,unitIds:['p','q']});assert.equal(departed.elapsedSeconds,6);assert.equal(departed.status,'retreat');assert.deepEqual(departed.units.map(u=>u.departure.elapsedSeconds),[3,6]);
 });
 test('a later batch casualty keeps already completed exits and never exports the collapsed member',()=>{
@@ -88,7 +88,7 @@ test('a visible fleeing enemy is a legal firearm or blade target while surrender
 });
 test('rout during exploration advances real movement time instead of remaining frozen through rests',()=>{
  const b=fixture([{id:'p',x:4,y:4,routed:true,weaponDropped:true,loaded:0},{id:'q',x:1,y:6}],{exploration:true,enemies:[],exits:[exits[0]]});const n=endTurn(b);
- assert.ok(n.units[0].departure);assert.equal(n.units[0].departure.edge,'W');assert.equal(n.elapsedSeconds,15);assert.equal(n.units[0].energy,95);assert.equal(n.units[1].energy,100);assert.equal(n.actionDurationSeconds,undefined);assert.equal(n.actionTimeAppliedSeconds,undefined);assert.doesNotThrow(()=>validateBattleSnapshot(n));
+ assert.ok(n.units[0].departure);assert.equal(n.units[0].departure.edge,'W');assert.equal(n.elapsedSeconds,15);assert.equal(n.units[0].energy,100-5*movementEnergy(b.units[0],{type:'grass'},true));assert.equal(n.units[1].energy,100);assert.equal(n.actionDurationSeconds,undefined);assert.equal(n.actionTimeAppliedSeconds,undefined);assert.doesNotThrow(()=>validateBattleSnapshot(n));
 });
 test('routed soldiers stand before freeing entanglement and then use the remaining budget to flee',()=>{
  let b=fixture([{id:'p',x:0,y:6}],{enemies:[{id:'router',x:6,y:2,routed:true,weaponDropped:true,loaded:0,knockedDown:true,entangled:true,stance:'prone',movementMode:'prone'}]});

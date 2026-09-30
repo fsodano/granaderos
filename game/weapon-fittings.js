@@ -109,7 +109,7 @@ export function heldItemIds(unit) {
     ...(!unit.weaponDropped ? [unit.weaponInstanceId,unit.weaponFittings?.bayonet?.instanceId] : []),
     ...(unit.blade ? [unit.bladeInstanceId] : []),
     ...(unit.offHand?fittingItemIds(unit.offHand):[]),
-    ...(unit.outfit?.instanceId?[unit.outfit.instanceId]:[]),
+    ...['headwear','outfit','legwear'].flatMap(slot=>unit[slot]?.instanceId?[unit[slot].instanceId]:[]),
   ].filter(id => id !== undefined);
 }
 export function normalizeUnitFittings(unit) {

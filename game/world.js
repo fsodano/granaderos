@@ -160,6 +160,10 @@ export function enterSector(request,previous=null,{placement=false}={}){
  if(request.detainedPrisoners?.length)state=placeDetainedPrisoners(state,request.detainedPrisoners);
  state.sceneId=request.sceneId??null;state.missionId=request.missionId??request.sceneId??null;
  state.enteredHour=request.hour??0;
+ for(const unit of state.units)if(unit.side==='enemy'){
+   if(request.defenseGroupId&&unit.hp>0)unit.assaultPatrol=true;
+   else delete unit.assaultPatrol; // A later occupation is a guard post again.
+ }
  const selecting=placement&&!request.exploration&&beginSectorDeployment(state,request),deferred=new Set(state.deployment?.units.map(u=>u.id)??[]);
  // Residents receive their cover now; arriving defenders receive it only at
  // their committed cells, never at the unused automatic arrival positions.

@@ -13,7 +13,7 @@ const fullPack=()=>Object.fromEntries(Array.from({length:12},(_,i)=>[`slot${i}`,
 const tiles=()=>Array.from({length:240},(_,i)=>({x:i%24,y:Math.floor(i/24),type:'grass',blocked:false,cover:0}));
 const field=(length=4,exploration=false)=>{
  const s=createBattle(Array.from({length},(_,i)=>({id:`p${i}`,name:`Soldado ${i}`,x:1+i,y:2})),{width:24,height:10,tiles:tiles(),seed:45,exploration,enemies:exploration?[]:[{id:'guard',x:22,y:8,overwatch:false}]});
- for(const u of s.units.filter(u=>u.side==='player')){Object.assign(u,{ap:100,medkits:0,priming:0,flints:0,rations:0,boleadoras:0,torches:0});setTestAmmunition(u,0);}
+ for(const u of s.units.filter(u=>u.side==='player')){Object.assign(u,{ap:100,medkits:0,rations:0,boleadoras:0,torches:0});setTestAmmunition(u,0);}
  setTestAmmunition(s.units[0],12);return s;
 };
 const plan=(s,item=AMMO,count=3)=>inventoryHandlingModel(s,s.units[0],{item,count,targetId:s.units.filter(u=>u.side==='player').at(-1).id}).transfer;

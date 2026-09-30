@@ -23,19 +23,19 @@ test('a depleted command cannot spawn troops or reuse identities; a final viable
  assert.ok(launchEnemyGroup(s,'coast','buenos_aires',{immediate:true}));
 });
 test('defeat, history trimming, reload and later time never replenish expended troops',()=>{
- let s=initialCampaign();s.enemyReserves.remaining.north=120;
- for(let i=0;i<40;i++){
+ let s=initialCampaign();for(const [id,sector] of Object.entries(s.sectors))sector.owner=id==='retiro'?'patriot':'royalist';s.enemyReserves.remaining.north=120;
+ for(let i=0;i<30;i++){
   const g=launchEnemyGroup(s,'north','humahuaca',{immediate:true});assert.ok(g);g.status='defeated';g.resolvedAt=s.hour;for(const u of g.units)u.hp=0;
  }
  assert.equal(s.enemyReserves.remaining.north,0);
- for(let i=0;i<12;i++){const g=launchEnemyGroup(s,'coast','buenos_aires',{immediate:true});g.status='defeated';g.resolvedAt=s.hour;for(const u of g.units)u.hp=0;}
+ for(let i=0;i<20;i++){const g=launchEnemyGroup(s,'coast','buenos_aires',{immediate:true});g.status='defeated';g.resolvedAt=s.hour;for(const u of g.units)u.hp=0;}
  assert.ok(!s.enemyGroups.some(g=>g.id==='enemy-group-1'));assert.equal(s.enemyGroups.length,49);s=roundtrip(s);assert.equal(s.enemyReserves.remaining.north,0);
  s.sectors.jujuy.owner='patriot';s=dispatchCampaign(s,{type:'wait',hours:120});assert.equal(s.lastError,null);assert.equal(s.enemyReserves.remaining.north,0);assert.ok(s.enemyGroups.every(g=>g.status==='defeated'));
 });
 test('legacy saves debit all retained groups once, including casualties, and preserve active groups',()=>{
  const s=initialCampaign(),g=launchEnemyGroup(s,'north','humahuaca',{immediate:true});g.status='defeated';g.resolvedAt=s.hour;for(const u of g.units)u.hp=0;
  launchEnemyGroup(s,'coast','buenos_aires');const expectedGroups=roundtrip(s).enemyGroups;delete s.enemyReserves;
- const loaded=roundtrip(s);assert.deepEqual(loaded.enemyReserves.remaining,{north:117,coast:77,interior:40});assert.deepEqual(loaded.enemyGroups,expectedGroups);assert.deepEqual(roundtrip(loaded),loaded);
+ const loaded=roundtrip(s);assert.deepEqual(loaded.enemyReserves.remaining,{north:120-expectedGroups.find(g=>g.theater==='north').initialStrength,coast:80-expectedGroups.find(g=>g.theater==='coast').initialStrength,interior:40});assert.deepEqual(loaded.enemyGroups,expectedGroups);assert.deepEqual(roundtrip(loaded),loaded);
 });
 test('invalid saved reserves cannot silently reset the enemy budget',()=>{
  const s=initialCampaign();assert.deepEqual(s.enemyReserves.remaining,ENEMY_RESERVE_LIMITS);

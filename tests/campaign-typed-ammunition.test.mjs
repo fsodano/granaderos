@@ -22,8 +22,8 @@ const leave=(s,b)=>{const synced=syncBattleTime(s,b);assert.equal(synced.error,n
 const flat=s=>createBattle(s.pendingBattle.squad.map((u,i)=>({...u,x:2+i,y:2})),{...s.pendingBattle,width:12,height:10,tiles:Array.from({length:120},(_,i)=>({x:i%12,y:Math.floor(i/12),type:'grass',blocked:false,cover:0})),enemies:[],npcs:s.pendingBattle.npcs.map((npc,i)=>({...npc,x:10-i,y:8})),props:[]});
 
 test('fresh stock is an explicit finite total of 300 prepared loads with no personal grant',()=>{
- const s=initialCampaign();assert.deepEqual(Object.values(stock(s)),[100,60,30,20,20,20,10,20,20]);assert.equal(Object.values(stock(s)).reduce((a,b)=>a+b),300);
- assert.ok(Object.values(s.operativeState).every(r=>r.ammunitionVersion===1&&r.carriedAmmo===0&&!Object.keys(ammunitionByType(r)).length));assert.equal(s.recruited.length,0);assert.deepEqual(save(s),s);
+ const s=initialCampaign();assert.deepEqual(Object.values(stock(s)),[180,30,50,40]);assert.equal(Object.values(stock(s)).reduce((a,b)=>a+b),300);
+ assert.ok(Object.values(s.operativeState).every(r=>r.ammunitionVersion===2&&r.carriedAmmo===0&&!Object.keys(ammunitionByType(r)).length));assert.equal(s.recruited.length,0);assert.deepEqual(save(s),s);
 });
 
 test('purchases debit exact funds and one finite merchant type without advancing time',()=>{
@@ -33,7 +33,7 @@ test('purchases debit exact funds and one finite merchant type without advancing
  for(const a of [{ammoType:'rifle_62',quantity:1},{ammoType:'universal',quantity:1},{ammoType:'pistol_69',quantity:-1},{ammoType:'pistol_69',quantity:1.5},{ammoType:'pistol_69',quantity:61}])reject(s,{type:'purchaseAmmunition',...a});
  const poor={...s,resources:{...s.resources,treasury:2}};reject(poor,{type:'purchaseAmmunition',ammoType:'pistol_69',quantity:1});
  const pending=order(hire(s),{type:'visitSector'});reject(pending,{type:'purchaseAmmunition',ammoType:'pistol_69',quantity:1});
- for(let hour=0;hour<23;hour++)advanceMerchants(s,()=>true);assert.equal(s.merchants.retiro.ammunition.rifle_62,0);advanceMerchants(s,()=>true);assert.equal(s.merchants.retiro.ammunition.rifle_62,6);assert.equal(s.merchants.retiro.ammunition.musket_75,60);
+ for(let hour=0;hour<23;hour++)advanceMerchants(s,()=>true);assert.equal(s.merchants.retiro.ammunition.rifle_62,0);advanceMerchants(s,()=>true);assert.equal(s.merchants.retiro.ammunition.rifle_62,6);assert.equal(s.merchants.retiro.ammunition.musket_75,180);
  s.sectors.retiro.owner='royalist';for(let hour=0;hour<48;hour++)advanceMerchants(s,()=>true);assert.equal(s.merchants.retiro.ammunition.rifle_62,6);
 });
 
@@ -49,20 +49,20 @@ test('typed contraband and convoy cargo preserve the paid type through saved del
  // A controlled logistics fixture makes the two port endpoints available;
  // all goods, funds, transport costs and subsequent deliveries remain finite.
  let s=initialCampaign();for(const id of ['buenos_aires','ensenada'])Object.assign(s.sectors[id],{owner:'patriot',loyalty:65});
- const before=stock(s),cash=s.resources.treasury;s=order(s,{type:'contraband',offer:'ammunition',ammoType:'pistol_50'});assert.ok(s.resources.treasury<cash);assert.deepEqual(s.shipments[0].goods,{ammo_pistol_50:100});assert.deepEqual(stock(s),before);
- const due=s.shipments[0].due;s=order(save(s),{type:'wait',hours:due-s.hour});assert.deepEqual(stock(s),{...before,pistol_50:before.pistol_50+100});assert.equal(s.shipments.length,0);
- s=order(s,{type:'transport',mode:'posta'});const reserves=stock(s);s=order(s,{type:'supplyTransfer',source:'reserve',destination:'retiro',mode:'posta',goods:{ammo_pistol_50:7,ammo_rifle_62:3}});
- assert.deepEqual(stock(s),{...reserves,pistol_50:reserves.pistol_50-7,rifle_62:reserves.rifle_62-3});assert.deepEqual(s.convoys[0].goods,{ammo_pistol_50:7,ammo_rifle_62:3});
- s=order(save(s),{type:'wait',hours:1});assert.equal(s.convoys.length,0);assert.equal(s.depots.retiro.ammo_pistol_50,7);assert.equal(s.depots.retiro.ammo_rifle_62,3);assert.deepEqual(save(s),s);
+ const before=stock(s),cash=s.resources.treasury;s=order(s,{type:'contraband',offer:'ammunition',ammoType:'pistol_69'});assert.ok(s.resources.treasury<cash);assert.deepEqual(s.shipments[0].goods,{ammo_pistol_69:100});assert.deepEqual(stock(s),before);
+ const due=s.shipments[0].due;s=order(save(s),{type:'wait',hours:due-s.hour});assert.deepEqual(stock(s),{...before,pistol_69:before.pistol_69+100});assert.equal(s.shipments.length,0);
+ s=order(s,{type:'transport',mode:'posta'});const reserves=stock(s);s=order(s,{type:'supplyTransfer',source:'reserve',destination:'retiro',mode:'posta',goods:{ammo_pistol_69:7,ammo_rifle_62:3}});
+ assert.deepEqual(stock(s),{...reserves,pistol_69:reserves.pistol_69-7,rifle_62:reserves.rifle_62-3});assert.deepEqual(s.convoys[0].goods,{ammo_pistol_69:7,ammo_rifle_62:3});
+ s=order(save(s),{type:'wait',hours:1});assert.equal(s.convoys.length,0);assert.equal(s.depots.retiro.ammo_pistol_69,7);assert.equal(s.depots.retiro.ammo_rifle_62,3);assert.deepEqual(save(s),s);
 });
 
 test('a paid hire retains typed rounds across real deployment, report, weapon swap, and reentry',()=>{
  let s=hire(initialCampaign(8));s=order(s,{type:'visitSector'});let b=enterSector(s.pendingBattle,s.sectorStates.retiro);
- assert.deepEqual(unitAmmunitionByType(b.units.find(u=>u.id==='110')),{musket_75:10});assert.equal(s.resources.cartridges,90);
- ({campaign:s,battle:b}=decodeSave(encodeSave(s,b)));s=leave(s,b);assert.equal(s.resources.cartridges,90);assert.deepEqual(ammunitionByType(s.operativeState[110]),{musket_75:9});
+ assert.deepEqual(unitAmmunitionByType(b.units.find(u=>u.id==='110')),{musket_75:10});assert.equal(s.resources.cartridges,170);
+ ({campaign:s,battle:b}=decodeSave(encodeSave(s,b)));s=leave(s,b);assert.equal(s.resources.cartridges,170);assert.deepEqual(ammunitionByType(s.operativeState[110]),{musket_75:9});
  s=order(s,{type:'purchaseEquipment',item:1805});s=order(s,{type:'equip',operativeId:110,itemId:1805,slot:'weapon'});assert.deepEqual(ammunitionByType(s.operativeState[110]),{musket_75:9});const stored=s.armoryItems.find(i=>i.item===1800);assert.equal(stored.loaded,1);
- s=order(save(s),{type:'visitSector'});b=enterSector(s.pendingBattle,s.sectorStates.retiro);let u=b.units.find(u=>u.id==='110');assert.equal(u.weapon,1805);assert.equal(u.loaded,1,'first issuance loads the purchased gun from finite matching stock');assert.deepEqual(ammunitionByType(u),{musket_75:9,pistol_69:9});assert.equal(u.ammo,9);assert.equal(s.resources.cartridges,90);assert.equal(s.resources.ammo_pistol_69,10);
- s=leave(s,b);assert.equal(s.resources.cartridges,90);assert.equal(s.resources.ammo_pistol_69,10);s=order(save(s),{type:'visitSector'});assert.deepEqual(ammunitionByType(s.pendingBattle.squad[0]),{musket_75:9,pistol_69:9});assert.equal(s.resources.ammo_pistol_69,10);assert.deepEqual(restoreCampaign(serializeCampaign(s)),s);
+ s=order(save(s),{type:'visitSector'});b=enterSector(s.pendingBattle,s.sectorStates.retiro);let u=b.units.find(u=>u.id==='110');assert.equal(u.weapon,1805);assert.equal(u.loaded,1,'first issuance loads the purchased gun from finite matching stock');assert.deepEqual(ammunitionByType(u),{musket_75:9,pistol_69:9});assert.equal(u.ammo,9);assert.equal(s.resources.cartridges,170);assert.equal(s.resources.ammo_pistol_69,40);
+ s=leave(s,b);assert.equal(s.resources.cartridges,170);assert.equal(s.resources.ammo_pistol_69,40);s=order(save(s),{type:'visitSector'});assert.deepEqual(ammunitionByType(s.pendingBattle.squad[0]),{musket_75:9,pistol_69:9});assert.equal(s.resources.ammo_pistol_69,40);assert.deepEqual(restoreCampaign(serializeCampaign(s)),s);
 });
 
 test('finite in-sector transfers can retain more than ten compatible rounds through pending saves',()=>{
@@ -78,12 +78,12 @@ test('issuance uses only matching finite depot and shared stock and respects a f
 });
 
 test('militia draws and releases only the ammunition of its actual weapon',()=>{
- const s=initialCampaign(),before=stock(s);s.sectors.retiro.militia=[1,1,0];const units=prepareGarrison(s,'retiro');assert.deepEqual(units.map(unitAmmunitionByType),[{shot_16:6},{carbine_65:6}]);assert.deepEqual(stock(s),{...before,shot_16:before.shot_16-6,carbine_65:before.carbine_65-6});
+ const s=initialCampaign(),before=stock(s);s.sectors.retiro.militia=[1,1,0];const units=prepareGarrison(s,'retiro');assert.deepEqual(units.map(unitAmmunitionByType),[{shot_16:6},{musket_75:6}]);assert.deepEqual(stock(s),{...before,shot_16:before.shot_16-6,musket_75:before.musket_75-6});
  s.sectors.retiro.militia=[0,0,0];prepareGarrison(s,'retiro');assert.deepEqual(stock(s),before);
 });
 
 test('return receipts reject an equal-count type conversion and retain captive custody without stock credit',()=>{
- const original={id:110,side:'player',weapon:1800,loaded:1,ammunitionVersion:1,inventory:{}};addAmmunition(original,'musket_75',9);
+ const original={id:110,side:'player',weapon:1800,loaded:1,ammunitionVersion:2,inventory:{}};addAmmunition(original,'musket_75',9);
  const request={squad:[original],fieldAmmunition:{},enemies:[]},unit={...structuredClone(original),id:'110'},snapshot={units:[unit],groundItems:[]};
  const entry={unitId:'110',kind:'captured'},plan=planReturnAmmunition(request,snapshot,[entry]);assert.equal(plan.creditedCartridges,0);assert.deepEqual(plan.creditedAmmunition,{});assert.deepEqual(plan.custody['110'],{loaded:1,ammo:9,preserveLoading:true});assert.deepEqual(plan.retainedAmmunition,{musket_75:10});
  unit.inventory={};addAmmunition(unit,'pistol_69',9);assert.throws(()=>planReturnAmmunition(request,snapshot,[entry]),/más munición de ese tipo/);
@@ -92,7 +92,7 @@ test('return receipts reject an equal-count type conversion and retain captive c
 function unmarkCampaign(s){delete s.ammunitionVersion;for(const r of Object.values(s.operativeState)){delete r.ammunitionVersion;delete r.carriedAmmo;}for(const key of Object.values(AMMUNITION_RESOURCE_KEYS))if(key!=='cartridges')delete s.resources[key];for(const m of Object.values(s.merchants))delete m.ammunition;return s;}
 test('legacy loose rounds migrate once to .75 while a different gun keeps its own loaded charge',()=>{
  const old=unmarkCampaign(hire(initialCampaign()));old.loadouts[110]={weapon:1802};Object.assign(old.operativeState[110],{carriedLoaded:1,carriedAmmo:8,carriedReloadProgress:undefined});
- const s=restoreCampaign(JSON.stringify(old));assert.deepEqual(ammunitionByType(s.operativeState[110]),{musket_75:7});assert.equal(s.operativeState[110].carriedLoaded,1);assert.equal(availableAmmunition({...s.operativeState[110],weapon:1802}),0);assert.equal(s.resources.cartridges,100);assert.ok(Object.entries(stock(s)).filter(([t])=>t!=='musket_75').every(([,n])=>n===0));assert.match(s.log[0].text,/munición antigua/);assert.deepEqual(save(s),s);
+ const s=restoreCampaign(JSON.stringify(old));assert.deepEqual(ammunitionByType(s.operativeState[110]),{musket_75:7});assert.equal(s.operativeState[110].carriedLoaded,1);assert.equal(availableAmmunition({...s.operativeState[110],weapon:1802}),0);assert.equal(s.resources.cartridges,180);assert.ok(Object.entries(stock(s)).filter(([t])=>t!=='musket_75').every(([,n])=>n===0));assert.match(s.log[0].text,/munición antigua/);assert.deepEqual(save(s),s);
  const twice=restoreCampaign(serializeCampaign(s));assert.deepEqual(twice,s);assert.equal(twice.log.filter(e=>/munición antigua/.test(e.text)).length,1);
 });
 
@@ -122,8 +122,8 @@ test('a retained corpse consumes its own issue allowance and cannot also fund a 
 test('ground and source growth cannot duplicate carried ammunition, including a different absent type',()=>{
  const source=createBattle([{id:'p',weapon:1800,loaded:0,ammo:10}],{enemies:[{id:'e',weapon:1801,loaded:1,ammo:3}]});
  const request={squad:[structuredClone(source.units[0])],fieldAmmunition:{},enemies:[structuredClone(source.units[1])]},entries=[{unitId:'p',kind:'resident'}];
- for(const type of ['musket_75','pistol_54']){const snapshot=structuredClone(source);snapshot.groundItems.push({item:`inventory:ammo:${type}`,kind:'ammunition',ammoType:type,name:AMMUNITION_TYPES[type].name,count:1,weight:.04});assert.throws(()=>planReturnAmmunition(request,snapshot,entries),/más munición de ese tipo/);}
- const snapshot=structuredClone(source);addAmmunition(snapshot.units[1],'pistol_54',1);assert.throws(()=>planReturnAmmunition(request,snapshot,entries),/más munición de ese tipo/);
+ for(const type of ['musket_75','pistol_69']){const snapshot=structuredClone(source);snapshot.groundItems.push({item:`inventory:ammo:${type}`,kind:'ammunition',ammoType:type,name:AMMUNITION_TYPES[type].name,count:1,weight:.04});assert.throws(()=>planReturnAmmunition(request,snapshot,entries),/más munición de ese tipo/);}
+ const snapshot=structuredClone(source);addAmmunition(snapshot.units[1],'pistol_69',1);assert.throws(()=>planReturnAmmunition(request,snapshot,entries),/más munición de ese tipo/);
 });
 
 
@@ -143,5 +143,5 @@ test('canonical ground, containers, NPC gifts, and personal stacks cannot restor
  const injectors=[b=>b.groundItems=[{...old,id:'old',type:'item',x:1,y:1}],b=>b.props=[{id:'chest',contents:[{...old}]}],b=>b.tiles[0].contents=[{...old}],b=>b.npcs=[{id:'npc',contents:[{...old}]}],b=>b.npcs=[{id:'npc',questGifts:[{...old}]}],b=>b.units[0].inventory={bad:{...old}}];
  for(const inject of injectors){const b=structuredClone(original);inject(b);assert.throws(()=>migrateBattleAmmunition(b),/tipo explícito/);}
  const s=initialCampaign();s.operativeState[110].inventory={old};assert.throws(()=>restoreCampaign(serializeCampaign(s)));
- for(const inject of injectors.slice(0,5)){const b=structuredClone(original);delete b.ammunitionVersion;delete b.units[0].ammunitionVersion;inject(b);const migrated=migrateBattleAmmunition(b);assert.equal(migrated.ammunitionVersion,1);assert.ok(JSON.stringify(migrated).includes('inventory:ammo:musket_75'));}
+ for(const inject of injectors.slice(0,5)){const b=structuredClone(original);delete b.ammunitionVersion;delete b.units[0].ammunitionVersion;inject(b);const migrated=migrateBattleAmmunition(b);assert.equal(migrated.ammunitionVersion,2);assert.ok(JSON.stringify(migrated).includes('inventory:ammo:musket_75'));}
 });

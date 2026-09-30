@@ -1,0 +1,16 @@
+{
+  "date": "2026-09-26",
+  "environment": "Production static export, Codex in-app browser, localhost:3002/performance-check.html",
+  "fixture": "tools/performance-fixtures/frame-rate-check.tsx",
+  "sharedExecutor": "web/lib/useBattleExecutor.ts",
+  "scenario": {"enemies": 30, "players": 6, "visibleEnemies": 30, "renderedActors": 36, "night": false, "zoomPercent": 100, "sampleSeconds": 8},
+  "fault": "The initial worker URL was based on file:///ROOT/lib/useBattleExecutor.ts. Worker creation failed and the hook ran its synchronous fallback.",
+  "fix": "Use the bundler worker&url asset import. The export verifier rejects local-file worker URL bases and checks emitted worker references.",
+  "beforeFixReactions": {"orderElapsedMs": 68, "wholeMaxMs": 66.8, "movingMaxMs": 66.6, "wholeOver16_8Ms": 2, "mainThreadLongTaskMs": 71, "frameCallbackScriptMs": 68.2},
+  "afterFixReactions": {"orderElapsedMs": 74.9, "movingFrames": 17, "movingMaxMs": 66.7, "wholeOver16_8Ms": 3, "mainThreadLongTasks": 0, "longAnimationFrames": 1, "phase": "interrupt", "actualPosition": [43, 19], "lastError": null},
+  "afterFixUninterrupted": {"orderElapsedMs": 31.3, "movingFrames": 346, "movingMeanMs": 8.33324, "movingP95Ms": 8.4, "movingP99Ms": 9.2, "movingMaxMs": 9.4, "wholeMaxMs": 9.4, "wholeOver16_8Ms": 0, "mainThreadLongTasks": 0, "longAnimationFrames": 0, "phase": "player", "actualPosition": [46, 10], "lastError": null},
+  "afterFixWarmReactions": {"orderElapsedMs": 54.1, "movingFrames": 32, "movingMeanMs": 9.81875, "movingP95Ms": 16.7, "movingMaxMs": 58.4, "wholeOver16_8Ms": 1, "mainThreadLongTasks": 0, "longAnimationFrames": 1, "longAnimationFrameMs": 60, "phase": "interrupt", "actualPosition": [43, 19], "lastError": null},
+  "orderMetric": "Asynchronous request-to-result elapsed time, not main-thread CPU time",
+  "full60FpsAccepted": false,
+  "remaining": "Reaction frames still exceed the 16.8 ms measurement threshold. The warm repeat rules out a purely first-use asset delay. Night, simultaneous group movement and full campaign combat are not covered by these samples."
+}

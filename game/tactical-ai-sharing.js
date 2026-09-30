@@ -1,6 +1,7 @@
 import {atHand,moveOrder,planningPoint} from './tactical-planning-space.js';
 import {canSee,hasLineOfSight,weaponFor,transferPreview,actionCosts} from './tactical.js';
 import {ammunitionByType,weaponAmmoType} from './ammunition-types.js';
+import {criticalFirstAidNeeded} from './first-aid.js';
 
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 const available=u=>u.hp>0&&!u.unconscious&&!u.departure&&!u.fled&&!u.routed&&!u.surrendered;
@@ -31,10 +32,10 @@ export function chooseSupplySharingAction(state,unit,targets,paths){
       for(const [key,stack] of sources)if(stack.ammoType===type)needs.push({ally,item:`inventory:${key}`,count:Math.min(capacity,spare[type],stack.count),priority:1});
     if(spareDressings&&ally.medical>0&&ally.medkits===0){
       // A dressing has a present purpose only when the recipient can reach a
-      // bleeding patient at hand and enough AP to treat this turn. A handover
+      // bleeding or critically wounded patient at hand and enough AP to treat this turn. A handover
       // must not consume a rescue opportunity for a medic who cannot act.
       // Do not inspect unseen casualties for demand.
-      const patients=state.units.filter(p=>p.side===unit.side&&present(p)&&p.bleeding>0&&
+      const patients=state.units.filter(p=>p.side===unit.side&&present(p)&&(p.bleeding>0||criticalFirstAidNeeded(p))&&
         atHand(ally,p)&&hasLineOfSight(state,ally,p)&&(p.id===unit.id||observed(state,unit,p)));
       const treatment=actionCosts(state,{...ally,activeSlot:'medical',medkits:1});
       const prepare=ally.activeSlot==='medical'?0:treatment.weapon;

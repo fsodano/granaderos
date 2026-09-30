@@ -90,7 +90,7 @@ export function createBuildingRenderer({state:s,revealed:knownRooms,project,ligh
      <WallDetails building={b} front={Boolean(isFront&&axis==='x')} cut={Boolean(cut)} opening={isOpening}/>
      <rect y={-height} width="40" height={height} fill="url(#building-wall-age)"/>
      {/* Limewash wear is irregular but stable across renders. */}
-     {Array.from({length:cut?4:Math.round(height*.42)},(_,i)=>{const n=noise(t.x*43+i,t.y*29+index),x=n%38+1,y=-(n%Math.max(1,height-3)+2);return <path key={i} d={`M${x},${y}h${1+n%3}`} stroke={i%3?'#796d50':'#fff1ce'} opacity={i%3?'.16':'.23'} strokeWidth=".6"/>;})}
+     {[false,true].map(highlight=><path key={String(highlight)} d={Array.from({length:cut?4:Math.round(height*.42)},(_,i)=>{if((i%3===0)!==highlight)return '';const n=noise(t.x*43+i,t.y*29+index),x=n%38+1,y=-(n%Math.max(1,height-3)+2);return `M${x},${y}h${1+n%3}`;}).join('')} stroke={highlight?'#fff1ce':'#796d50'} opacity={highlight?'.23':'.16'} strokeWidth=".6"/>)}
      {!cut&&<><path d={`M0,-${height-2}H40`} stroke={style.trim} strokeWidth="2"/><path d={`M0,-${height-5}H40`} stroke="#66553e" strokeWidth="2" opacity=".4"/></>}
      {/* Broken plaster and jointed stone footing, deterministic per tile. */}
      {!isOpening&&<><path d={`M${3+seed},-${Math.min(height-2,12)}l3,2 2,-1 2,4 -2,3 -6,-1Z`} fill="#a69570" opacity=".6"/>{height>15&&b?.architecture==='farmhouse'&&<path d={`M${27-seed},-34l-2,5 3,3 -1,5`} fill="none" stroke="#867d61" strokeWidth=".55" opacity=".75"/>}</>}
@@ -116,18 +116,18 @@ export function createBuildingRenderer({state:s,revealed:knownRooms,project,ligh
     // adjacent floor edges to that wall plane, covering the underlying grass.
     const x0=c.x===b.x+1?b.x+wallInset:c.x-.5,x1=c.x===b.x+b.width-2?b.x+b.width-1+wallInset:c.x+.5;
     const y0=c.y===b.y+1?b.y+wallInset:c.y-.5,y1=c.y===b.y+b.height-2?b.y+b.height-1+wallInset:c.y+.5;
-    const joints:ReactNode[]=[];
+    const joints:string[]=[];
     for(let row=0;row<4;row++){
      const y=c.y-.5+row/4;
-     joints.push(<path key={`row-${row}`} d={`M${point(c.x-.5,y)}L${point(c.x+.5,y)}`} />);
+     joints.push(`M${point(c.x-.5,y)}L${point(c.x+.5,y)}`);
      for(let col=0;col<2;col++){
       const x=c.x-.5+(col+(row%2?.5:0))/2;
-      joints.push(<path key={`${row}-${col}`} d={`M${point(x,y)}L${point(x,y+.25)}`} />);
+      joints.push(`M${point(x,y)}L${point(x,y+.25)}`);
      }
     }
     return {depth:-1000,node:<g data-building-floor={room.id} pointerEvents="none" style={{filter:`brightness(${light(c.x,c.y)})`}}>
      <polygon data-floor-surface="true" points={[point(x0,y0),point(x1,y0),point(x1,y1),point(x0,y1)].join(' ')} fill="url(#terrain-floor)"/>
-     <g stroke="#514332" strokeWidth=".65" opacity=".36">{joints}</g>
+     <path d={joints.join('')} fill="none" stroke="#514332" strokeWidth=".65" opacity=".36"/>
      {!cells.has(`${c.x-1},${c.y}`)&&<polygon points={[point(x0,y0),point(x0+.22,y0),point(x0+.22,y1),point(x0,y1)].join(' ')} fill="#332d20" opacity=".2"/>}
      {!cells.has(`${c.x},${c.y-1}`)&&<polygon points={[point(x0,y0),point(x1,y0),point(x1,y0+.2),point(x0,y0+.2)].join(' ')} fill="#332d20" opacity=".2"/>}
     </g>};

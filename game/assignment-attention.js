@@ -1,14 +1,18 @@
 // A07 assignment attention only. These helpers never advance time or perform work.
+import {ALL_ASSIGNMENTS,CARE_ASSIGNMENTS,WORK_ASSIGNMENTS} from './assignment-labels.js';
 import {SLEEP_ISSUE_TEXT} from './sleep.js';
 import {CAMPAIGN_SECTORS,WEAPONS} from './data.js';
 import {operativeLocation} from './squads.js';
 import {TRAINABLE_SKILLS} from './skill-training.js';
-import {CARE_ASSIGNMENTS,CARE_ISSUE_TEXT,careAssignmentProgress} from './medical-care.js';
-import {WORK_ASSIGNMENTS,WORK_ISSUE_TEXT,workAssignmentProgress,militiaAssignmentIssue} from './assignments.js';
+import {CARE_ISSUE_TEXT,careAssignmentProgress} from './medical-care.js';
+import {WORK_ISSUE_TEXT,workAssignmentProgress,militiaAssignmentIssue} from './assignments.js';
 
-const assignments={...CARE_ASSIGNMENTS,...WORK_ASSIGNMENTS,militia:'Instrucción de milicias',sleep:'Sueño'};
+// Care, work and snapshot validation share a dependency cycle. Resolve their
+// issue codes only after module initialization, regardless of the entry module.
+let issueCodes;
+const assignments={...ALL_ASSIGNMENTS,militia:'Instrucción de milicias',sleep:'Sueño'};
 const completeCodes=new Set(['healing_complete','repair_complete','training_complete','rest_complete','militia_complete','sleep_complete']);
-const codes=new Set([...Object.keys(CARE_ISSUE_TEXT),...Object.keys(WORK_ISSUE_TEXT),...Object.keys(SLEEP_ISSUE_TEXT)]);
+const codes=()=>issueCodes??=new Set([...Object.keys(CARE_ISSUE_TEXT),...Object.keys(WORK_ISSUE_TEXT),...Object.keys(SLEEP_ISSUE_TEXT)]);
 const sectors=new Set(CAMPAIGN_SECTORS.map(sector=>sector.id));
 const training=new Set(['practice','instructor','student']);
 const terminal=event=>event.state==='complete'||event.state==='blocked';
@@ -100,7 +104,7 @@ function compatibleCode(assignment,code){
 }
 function validateBindingCode(subject,binding,code,ids,hour){
   const values=bindingData(binding,ids),[assignment,id,sector]=values;
-  need(subject===(assignment==='militia'?`militia:${sector}`:assignment==='sleep'?`sleep:${id}`:`operative:${id}`)&&codes.has(code)&&compatibleCode(assignment,code));
+  need(subject===(assignment==='militia'?`militia:${sector}`:assignment==='sleep'?`sleep:${id}`:`operative:${id}`)&&codes().has(code)&&compatibleCode(assignment,code));
   if(assignment==='militia')need(values[4]<=hour);
   return values;
 }

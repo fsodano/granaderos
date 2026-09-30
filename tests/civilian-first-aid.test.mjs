@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createBattle,actBattle,endTurn,medicalUsePreview,itemUsePreview,canSee,npcGiftPreview} from '../game/tactical.js';
+import {createBattle,actBattle,endTurn,medicalUsePreview,itemUsePreview,canSee,npcGiftPreview,movementEnergy} from '../game/tactical.js';
 import {applyCivilianHarm,advanceCivilianBleeding,civilianIncidents,civilianWoundedByPlayer,validateCivilianWounds} from '../game/civilian-harm.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
 
@@ -74,7 +74,8 @@ test('equipment, skill, full action cost and availability are checked atomically
 
 test('patient death or medic collapse during the approach stops treatment without spending a bandage',()=>{
  const dying=field({}, {hp:4},{exploration:true}),dead=use(dying);assert.equal(dead.lastError,null);assert.equal(dead.npcs[0].hp,0);assert.equal(dead.npcs[0].bleeding,0);assert.equal(dead.units[0].medkits,2);assert.ok(dead.elapsedSeconds>0);assert.equal(civilianIncidents(dead.npcs[0]).at(-1).side,'unknown');validateBattleSnapshot(dead);
- const tired=field({energy:2},{},{exploration:true}),stopped=use(tired);assert.equal(stopped.lastError,null);assert.equal(stopped.units[0].unconscious,true);assert.equal(stopped.units[0].medkits,2);assert.ok(stopped.units[0].x>2&&stopped.units[0].x<5);assert.ok(stopped.npcs[0].bleeding>0);
+ const tired=field({},{},{exploration:true});tired.units[0].energy=2*movementEnergy(tired.units[0],{type:'grass'},true);
+ const stopped=use(tired);assert.equal(stopped.lastError,null);assert.equal(stopped.units[0].unconscious,true);assert.equal(stopped.units[0].medkits,2);assert.equal(stopped.units[0].x,4);assert.equal(stopped.elapsedSeconds,6);assert.ok(stopped.npcs[0].bleeding>0);
 });
 
 test('a final-tile hostile reaction cancels queued civilian first aid',()=>{

@@ -46,7 +46,7 @@ test('supply reserves, present need, capacity and AP prevent useless or impossib
 });
 test('an empty donor retains its own complete load and gives at most one recipient load',()=>{
  const s=field({loaded:0,ammo:5,weapon:1808},{weapon:1808});const order=choice(s);
- assert.deepEqual(order,{type:'transfer',unitId:'donor',targetId:'receiver',item:'inventory:ammo:pistol_54',count:2});
+ assert.deepEqual(order,{type:'transfer',unitId:'donor',targetId:'receiver',item:'inventory:ammo:pistol_69',count:2});
  const preview=transferPreview({...s,phase:'enemy'},donor(s),receiver(s),order.item,order.count);assert.equal(preview.valid,true);assert.equal(preview.pa,4);assert.equal(preview.kind,'give');
  setTestAmmunition(donor(s),3);assert.equal(choice(s).count,1);setTestAmmunition(donor(s),2);assert.equal(choice(s),null);
 });
@@ -131,4 +131,30 @@ test('a real enemy reaction can spend its remaining four AP on an adjacent suppl
  Object.assign(s.units[0],{x:7,y:3,facing:2,ap:20,experienceLevel:1,agility:30});
  const action={type:'move',unitId:'p',x:8,y:3},n=actBattle(s,action);assert.equal(n.lastError,null);assert.equal(n.turn,1);assert.equal(donor(n).ammo,2);assert.equal(donor(n).ap,0);assert.equal(receiver(n).ammo,1);
  assert.deepEqual(n,actBattle(restored(s),action));assert.doesNotThrow(()=>restored(n));
+});
+
+test('a donor supplies stabilization when a critical patient has no remaining bleeding',()=>{
+ const s=field({ammo:0,medkits:1},{medical:60,loaded:1,ap:33});
+ s.units.push(setTestAmmunition({...structuredClone(receiver(s)),id:'patient',x:13,y:4,hp:10,bleeding:0,bandaged:90,unconscious:true,medkits:0,ap:0,weaponInstanceId:'patient-gun'},7));
+ const before=structuredClone(s);
+ assert.deepEqual(choice(s),{type:'transfer',unitId:'donor',targetId:'receiver',item:'medkits',count:1});
+ assert.deepEqual(s,before);
+ const n=endTurn(s),patient=n.units.find(u=>u.id==='patient');
+ assert.equal(donor(n).medkits,0);assert.equal(donor(n).ap,0);
+ assert.equal(receiver(n).medkits,0);assert.equal(receiver(n).ap,0);
+ assert.equal(patient.hp,15);assert.equal(patient.unconscious,false);assert.equal(patient.bleeding,0);
+ assert.equal(patient.ap,0);assert.equal(patient.ammo,7);assert.equal(patient.weaponInstanceId,'patient-gun');
+ assert.deepEqual(n,endTurn(restored(s)));assert.doesNotThrow(()=>restored(n));
+});
+
+test('critical-care demand still requires a living observed patient and an able recipient',()=>{
+ for(const patch of [{hp:0},{hp:15,unconscious:false},{departure:{edge:'E'}},{routed:true},{surrendered:true},{x:7}]){
+  const s=field({ammo:0,medkits:1},{medical:60,loaded:1,ap:33});
+  s.units.push({...structuredClone(receiver(s)),id:'patient',x:13,y:4,hp:10,bleeding:0,bandaged:90,unconscious:true,ap:0,...patch});
+  assert.equal(choice(s),null,JSON.stringify(patch));
+ }
+ const s=field({ammo:0,medkits:1},{medical:60,loaded:1,ap:28});
+ s.units.push({...structuredClone(receiver(s)),id:'patient',x:13,y:4,hp:10,bleeding:0,bandaged:90,unconscious:true,ap:0});
+ assert.equal(choice(s),null,'Insufficient AP for equipping and treatment.');
+ receiver(s).ap=29;assert.equal(choice(s)?.item,'medkits');
 });

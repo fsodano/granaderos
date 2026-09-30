@@ -17,19 +17,19 @@ test('swapping to a rifle preserves musket rounds and the empty cursor names the
  let b=field({inventory:{baker:{weapon:1802,loaded:0,condition:100,jammed:false,weight:4,count:1}}});
  const before=ammunitionByType(b.units[0]);b=act(b,{type:'equipLoot',inventoryKey:'baker'});
  assert.deepEqual(ammunitionByType(b.units[0]),before);assert.equal(availableAmmunition(b.units[0]),0);
- const p=targetPreview(b,b.units[0],null,{mode:'fire'});assert.equal(p.cursor,'empty');assert.equal(p.valid,false);assert.match(p.reason,/\.62/);
+ const p=targetPreview(b,b.units[0],null,{mode:'fire'});assert.equal(p.cursor,'empty');assert.equal(p.valid,false);assert.match(p.reason,/fusil/);
  const rejected=actBattle(b,{type:'reload',unitId:'p'});assert.ok(rejected.lastError);assert.deepEqual(physical(rejected),physical(b));
  const saved=validateBattleSnapshot(JSON.parse(JSON.stringify(b)));assert.deepEqual(ammunitionByType(saved.units[0]),before);assert.equal(reloadPlan(saved.units[0],saved).available,0);
  const key=Object.keys(saved.units[0].inventory).find(k=>saved.units[0].inventory[k].weapon===1800);
  b=act(saved,{type:'equipLoot',inventoryKey:key});b=act(b,{type:'reload'});assert.equal(b.units[0].loaded,1);assert.deepEqual(ammunitionByType(b.units[0]),{musket_75:2});
 });
 
-test('unlike pistols consume their own loads even when only the second gun has reserves',()=>{
+test('different pistols consume a shared compatible pool without duplicating rounds',()=>{
  for(const firstCount of [0,2]){
-  let b=field({weapon:1805,ammo:firstCount,offHand:pistol(1806)});addAmmunition(b.units[0],'pistol_50',3);syncUnitAmmunition(b.units[0]);
-  const plan=reloadPlan(b.units[0],b);assert.deepEqual(plan.hands.map(h=>h.hand),firstCount?['primary','offhand']:['offhand']);
-  b=act(b,{type:'reload'});assert.equal(b.units[0].loaded,firstCount?1:0);assert.equal(b.units[0].offHand.loaded,1);
-  assert.deepEqual(ammunitionByType(b.units[0]),firstCount?{pistol_69:1,pistol_50:2}:{pistol_50:2});
+  let b=field({weapon:1805,ammo:firstCount,offHand:pistol(1806)});addAmmunition(b.units[0],'pistol_69',3);syncUnitAmmunition(b.units[0]);
+  const plan=reloadPlan(b.units[0],b);assert.deepEqual(plan.hands.map(h=>h.hand),['primary','offhand']);
+  b=act(b,{type:'reload'});assert.equal(b.units[0].loaded,1);assert.equal(b.units[0].offHand.loaded,1);
+  assert.deepEqual(ammunitionByType(b.units[0]),{pistol_69:firstCount+1});
  }
 });
 
@@ -43,7 +43,7 @@ test('empty shooting clicks load only matching cartridges and never fire during 
 test('typed cartridges use twenty-round pockets and physical weight is counted once',()=>{
  const b=field({ammo:0}),u=b.units[0],weight=carriedWeight(u);addAmmunition(u,'musket_75',41);syncUnitAmmunition(u);
  const slots=inventoryUsage(u).slots.filter(s=>s.entry?.kind==='ammunition');assert.deepEqual(slots.map(s=>s.entry.count),[20,20,1]);assert.ok(Math.abs(carriedWeight(u)-weight-41*.04)<1e-8);
- const inv=inventoryModel(b,u);assert.equal(inv.items.filter(i=>i.kind==='ammunition').length,1);assert.equal(inv.items.some(i=>i.item==='ammo'),false);assert.match(inv.items.find(i=>i.kind==='ammunition').label,/\.75/);
+ const inv=inventoryModel(b,u);assert.equal(inv.items.filter(i=>i.kind==='ammunition').length,1);assert.equal(inv.items.some(i=>i.item==='ammo'),false);assert.match(inv.items.find(i=>i.kind==='ammunition').label,/mosquete/);
 });
 
 test('cursor custody excludes cartridges from reload reserves and restores their exact lot',()=>{
@@ -69,7 +69,7 @@ test('a genuine legacy cursor migrates once and places the same finite musket ca
  const old=field({ammo:0}),u=old.units[0];delete old.ammunitionVersion;delete u.ammunitionVersion;
  u.equipmentCursor={sourceId:'small-8',stack:{item:'ammo',count:3,weight:.04,name:'Cartuchos antiguos',lot:'legacy-7'}};
  const before=structuredClone(old),migrated=validateBattleSnapshot(old),owner=migrated.units[0];assert.deepEqual(old,before);
- assert.equal(owner.ammunitionVersion,1);assert.deepEqual(owner.equipmentCursor.stack,{item:'inventory:ammo:musket_75',kind:'ammunition',ammoType:'musket_75',count:3,weight:.04,name:'Cartuchos antiguos',lot:'legacy-7'});assert.equal(availableAmmunition(owner),0);
+ assert.equal(owner.ammunitionVersion,2);assert.deepEqual(owner.equipmentCursor.stack,{item:'inventory:ammo:musket_75',kind:'ammunition',ammoType:'musket_75',count:3,weight:.04,name:'Cartuchos antiguos',lot:'legacy-7'});assert.equal(availableAmmunition(owner),0);
  const again=validateBattleSnapshot(JSON.parse(JSON.stringify(migrated)));assert.deepEqual(again,migrated);
  const placed=act(again,{type:'placeEquipment',destinationId:'small-8',expectedSource:equipmentFingerprint(owner,'cursor'),expectedDestination:equipmentFingerprint(owner,'small-8')});assert.equal(placed.units[0].equipmentCursor,undefined);assert.deepEqual(ammunitionByType(placed.units[0]),{musket_75:3});assert.equal(placed.units[0].inventory['ammo:musket_75'].lot,'legacy-7');assert.doesNotThrow(()=>validateBattleSnapshot(placed));
 });

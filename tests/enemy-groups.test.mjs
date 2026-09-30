@@ -15,7 +15,7 @@ const victory=b=>{for(const u of b.units.filter(u=>u.side==='enemy')){u.hp=0;u.b
 
 test('scheduled northern troops travel a persistent route before reaching the frontier',()=>{
  let s=initialCampaign();s.sectors.jujuy.owner='patriot';s=order(s,{type:'wait',hours:120});const g=s.enemyGroups[0];assert.equal(s.sectors.jujuy.owner,'patriot');assert.deepEqual(g.route,['humahuaca','jujuy']);assert.equal(g.status,'marching');assert.equal(g.arrivalAt,144);assert.deepEqual(restoreCampaign(serializeCampaign(s)),s);
- s=order(s,{type:'wait',hours:12});assert.equal(s.enemyGroups[0].routeIndex,1);s=order(s,{type:'wait',hours:12});assert.equal(s.sectors.jujuy.owner,'royalist');assert.equal(s.enemyGroups[0].status,'stationed');assert.equal(s.enemyGroups[0].units.length,3);
+ s=order(s,{type:'wait',hours:12});assert.equal(s.enemyGroups[0].routeIndex,1);s=order(s,{type:'wait',hours:12});assert.equal(s.sectors.jujuy.owner,'royalist');assert.equal(s.enemyGroups[0].status,'stationed');assert.equal(s.enemyGroups[0].units.length,s.enemyGroups[0].initialStrength);
 });
 test('encounter pauses waiting and rejects unrelated orders without spending resources',()=>{
  let s=initialCampaign();launchEnemyGroup(s,'coast','retiro');s=order(s,{type:'wait',hours:100});assert.equal(s.hour,8);assert.equal(s.pendingEncounter.sector,'retiro');const before=serializeCampaign(s);const rejected=dispatchCampaign(s,{type:'purchaseMedicalSupplies',id:10,quantity:1});assert.match(rejected.lastError,/encuentro/);assert.deepEqual({...rejected,lastError:null},JSON.parse(before));assert.deepEqual(restoreCampaign(before),s);

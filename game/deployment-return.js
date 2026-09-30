@@ -23,7 +23,7 @@ export function recordStrategicArrival(s,ids,fromSector,toSector,sceneId=null){
 // Request routes are immutable authority. Later arrivals are queued while a
 // deployment is active and are resolved after the actual departures return.
 export function prepareDeploymentExits(s,request){
-  request.ammunitionVersion=1;
+  request.ammunitionVersion=2;
   for(const enemy of request.enemies??[]){enemy.weapon??=1800;enemy.loaded??=WEAPONS[enemy.weapon]?.capacity??0;initializeUnitAmmunition(enemy,{defaultCount:12});}
   request.fittingRulesVersion=FITTING_RULES_VERSION;
   for(const unit of [...request.squad,...(request.garrison??[]),...(request.missionAllies??[])])normalizeUnitFittings(unit);
@@ -162,7 +162,7 @@ export function validateDeploymentReturnState(s){
       const key=`${r?.battleId}:${r?.unitId}`;need(object(r)&&typeof r.battleId==='string'&&r.battleId.length<100&&typeof r.unitId==='string'&&r.unit?.id===r.unitId&&r.unit.hp===0&&r.unit.side==='player'&&validEntry(r.entryEdge,r.entryAnchor)&&!seen.has(key),'La identidad de un caído está duplicada o es inválida.');seen.add(key);
       const exit=knownExit(r.unit.departure?.exitId);need(exit&&exit.destination===at&&sameEntry(r,exit),'La llegada del caído no corresponde a su salida.');
       const unit=clone(r.unit);delete unit.departure;
-      const rawFields=['hp','maxHp','weapon','condition','jammed','loaded','ammo','inventory','bleeding','bandaged','energy','medkits','fatigue','priming','flints','rations','torches','boleadoras','activeSlot','weaponFittings','weaponFittingPattern','bladeFittingPattern'];need(rawFields.every(k=>Object.hasOwn(unit,k)&&unit[k]!==undefined),'El equipo del caído está incompleto.');
+      const rawFields=['hp','maxHp','weapon','condition','jammed','loaded','ammo','inventory','bleeding','bandaged','energy','medkits','fatigue','rations','torches','boleadoras','activeSlot','weaponFittings','weaponFittingPattern','bladeFittingPattern'];need(rawFields.every(k=>Object.hasOwn(unit,k)&&unit[k]!==undefined),'El equipo del caído está incompleto.');
       const {width,height}=remainsDimensions(s,exit);
       validateBattleSnapshot({...(unit.ammunitionVersion===undefined?{}:{ammunitionVersion:unit.ammunitionVersion}),width,height,units:[unit],tiles:Array.from({length:width*height},(_,i)=>({x:i%width,y:Math.floor(i/width),type:'grass',blocked:false,cover:0})),status:'defeat'});
     }

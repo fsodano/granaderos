@@ -1,6 +1,6 @@
 import {sameSurface,spacePoint} from '../game/tactical-space.js';
 import assert from 'node:assert/strict';
-import {actBattle,getReachable,hasLineOfSight} from '../game/tactical.js';
+import {actBattle,getReachable,hasLineOfSight,equipLootPreview} from '../game/tactical.js';
 import {handRecord} from '../game/tactical-inventory.js';
 
 const rifles=new Set([1800,1801,1802]);
@@ -31,12 +31,21 @@ export function equipOpeningRifles(battle,receiverIds){
   const entry=Object.entries(receiver.inventory).find(([key,item])=>!previousKeys.has(key)&&item.weapon===incoming.weapon&&item.instanceId===incoming.instanceId);
   assert.ok(entry,'the recovered rifle has its own inventory record');
   assert.equal(entry[1].count,1,'one actual rifle was recovered');
+  let leftOnGround=false;
+  if(outgoing&&!equipLootPreview(next,receiver,entry[0]).valid){
+   order({type:'drop',unitId:receiver.id,item:'primary',count:1});
+   leftOnGround=true;
+  }
   order({type:'equipLoot',unitId:receiver.id,inventoryKey:entry[0]});
   const equipped=next.units.find(unit=>unit.id===receiver.id),looted=next.units.find(unit=>unit.id===source.id);
   assert.deepEqual(handRecord(equipped,'primary'),incoming,'the rifle keeps its loading, condition, fittings and identity');
-  if(outgoing)assert.deepEqual(Object.values(equipped.inventory).find(item=>item.weapon===outgoing.weapon&&item.instanceId===outgoing.instanceId),outgoing,'the replaced gun and its charges remain in the pack');
+  if(outgoing){
+   const stored=(leftOnGround?next.groundItems:Object.values(equipped.inventory)).find(item=>item.weapon===outgoing.weapon&&item.instanceId===outgoing.instanceId);
+   assert.ok(stored,'the replaced gun remains in the pack or on the ground');
+   for(const [key,value] of Object.entries(outgoing))assert.deepEqual(stored[key],value,`the replaced gun preserves ${key}`);
+  }
   assert.equal(looted.hp,0);assert.equal(looted.weaponDropped,true);assert.equal(looted.loaded,0);assert.equal(looted.ammo,source.ammo);
-  transfers.push({receiverId:receiver.id,sourceId:source.id,sourceSide:source.side,weapon:incoming.weapon,instanceId:incoming.instanceId});
+  transfers.push({receiverId:receiver.id,sourceId:source.id,sourceSide:source.side,weapon:incoming.weapon,instanceId:incoming.instanceId,leftOnGround,outgoing});
  }
  return {battle:next,transfers,unfilled};
 }

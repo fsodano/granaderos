@@ -56,7 +56,7 @@ test('full packs, unaffordable pickup, depleted sources and jammed recovered gun
  const s=field({ap:30});s.groundItems=[{...gun(),jammed:true}];assert.notEqual(chooseEnemyAction(s,enemy(s))?.type,'loot');
 });
 test('the pickup plan uses the same finite capacity and does not mutate donor or receiver during scoring',()=>{
- const s=field({rations:14,ap:8});s.groundItems=[ammo(7,3,100)];assert.equal(inventoryUsage(enemy(s)).used,11);
+ const s=field({rations:18,ap:8});s.groundItems=[ammo(7,3,100)];assert.equal(inventoryUsage(enemy(s)).used,11);
  const before=structuredClone(s),choice=chooseEnemyAction(s,enemy(s));assert.equal(choice.count,12);const plan=planLoot(s,enemy(s),choice);assert.equal(availableAmmunition(plan.receiver,enemy(s).weapon),12);assert.equal(plan.remaining,88);assert.deepEqual(s,before);
  const n=endTurn(s);assert.equal(enemy(n).ammo,12);assert.equal(n.groundItems[0].count,88);
 });

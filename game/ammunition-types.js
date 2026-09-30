@@ -1,23 +1,13 @@
+import {AMMUNITION_FAMILIES} from './ammunition-families.js';
 // Prepared loads, not interchangeable balls of the same nominal diameter.
 // These helpers own only loose inventory quantities. Gun loads, the equipment
 // cursor, pocket capacity and campaign stock are separate caller-owned state.
 export const AMMUNITION_WEIGHT = .04;
 export const AMMUNITION_STACK_LIMIT = 20;
 const MAX_QUANTITY = 1000000;
-const definitions = [
-  ['musket_75', 'Cartucho de mosquete .75', 1800],
-  ['musket_69', 'Cartucho de mosquete .69', 1801],
-  ['rifle_62', 'Cartucho de fusil .62 con parche', 1802],
-  ['carbine_65', 'Cartucho de tercerola .65', 1803],
-  ['shot_16', 'Carga de perdigones calibre 16', 1804],
-  ['pistol_69', 'Cartucho de pistola .69', 1805],
-  ['pistol_50', 'Cartucho de pistola .50', 1806],
-  ['scatter', 'Carga de metralla para trabuco', 1807],
-  ['pistol_54', 'Cartucho de pistola .54', 1808],
-];
-export const AMMUNITION_TYPES = Object.freeze(Object.fromEntries(definitions.map(([id, name, weapon]) =>
-  [id, Object.freeze({id, name, label:name, weaponIds:Object.freeze([weapon]), weight:AMMUNITION_WEIGHT, stackLimit:AMMUNITION_STACK_LIMIT})])));
-export const WEAPON_AMMO_TYPES = Object.freeze(Object.fromEntries(definitions.map(([type, , weapon]) => [weapon, type])));
+export const AMMUNITION_TYPES = Object.freeze(Object.fromEntries(Object.values(AMMUNITION_FAMILIES).map(f =>
+  [f.type, Object.freeze({id:f.type, name:f.name, label:f.name, art:f.art, weaponIds:f.weapons, weight:AMMUNITION_WEIGHT, stackLimit:AMMUNITION_STACK_LIMIT})])));
+export const WEAPON_AMMO_TYPES = Object.freeze(Object.fromEntries(Object.values(AMMUNITION_FAMILIES).flatMap(f=>f.weapons.map(weapon=>[weapon,f.type]))));
 
 const object = value => value !== null && typeof value === 'object' && !Array.isArray(value);
 const need = (condition, message) => {if (!condition) throw Error(message);};

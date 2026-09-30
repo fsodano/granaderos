@@ -14,7 +14,7 @@ test('finite successful healing and maintenance train relevant skills only',()=>
  s=actBattle(s,{type:'weapon',unitId:1000,slot:'medical'});assert.equal(s.lastError,null);assert.equal(s.elapsedSeconds,1);
  s=actBattle(s,{type:'useItem',unitId:1000,targetId:1000});assert.equal(s.lastError,null);assert.equal(s.units[0].medical,41);assert.equal(s.units[0].medkits,1);
  const treatedAt=s.elapsedSeconds;s=actBattle(s,{type:'weapon',unitId:1000,slot:'primary'});assert.equal(s.lastError,null);assert.equal(s.elapsedSeconds,treatedAt+1);
- s=actBattle(s,{type:'repair',unitId:1000});assert.equal(s.units[0].mechanical,41);assert.equal(s.units[0].flints,3);
+ s=actBattle(s,{type:'repair',unitId:1000});assert.equal(s.units[0].mechanical,41);assert.equal(s.units[0].flints,undefined);
  s=actBattle(s,{type:'repair',unitId:1000});const before=structuredClone(s.units[0]);const n=actBattle(s,{type:'repair',unitId:1000});assert.ok(n.lastError);assert.deepEqual(n.units[0],before);
 });
 test('sneaking past unseen nearby enemies practices each tile only once',()=>{

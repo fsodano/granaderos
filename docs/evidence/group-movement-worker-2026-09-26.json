@@ -1,0 +1,48 @@
+{
+  "date": "2026-09-26",
+  "environment": "Production static export, Codex in-app browser, localhost:3002/performance-check.html, 100 percent zoom",
+  "fixture": "tools/performance-fixtures/frame-rate-check.tsx",
+  "runtimeChanges": [
+    "The main Battlefield group handler executes formation orders through the shared battle worker.",
+    "Animation routes are reconstructed only for currently visible actors that were also visible before the update.",
+    "Group controls and reports no longer change map height. Route detail is collapsed by default."
+  ],
+  "patrolBeforeVisibleMotionFix": {
+    "enemies": 30, "players": 6, "visibleEnemiesBefore": 0, "visibleEnemiesAfter": 1,
+    "groupStatus": "contact", "actions": 1, "movingFrames": 213,
+    "wholeMaxMs": 168, "wholeOver16_8Ms": 1, "mainThreadLongTaskMs": 158,
+    "note": "The UI rebuilt motion routes for hidden patrol units."
+  },
+  "patrolAfterVisibleMotionFix": {
+    "enemies": 30, "players": 6, "visibleEnemiesBefore": 0, "visibleEnemiesAfter": 1,
+    "groupStatus": "contact", "actions": 1, "orderElapsedMs": 214.6,
+    "movingFrames": 231, "movingMeanMs": 8.37013, "movingP95Ms": 9.5,
+    "wholeMaxMs": 15.4, "wholeOver16_8Ms": 0, "mainThreadLongTasks": 0,
+    "positions": [["3",24,28],["4",23,21],["5",23,22],["1",23,23],["7",23,24],["8",23,25]],
+    "lastError": null
+  },
+  "sixSoldiersDuringSceneryPreparation": {
+    "enemies": 0, "players": 6, "groupStatus": "completed", "actions": 6,
+    "movingFrames": 540, "wholeMaxMs": 50.2, "wholeOver16_8Ms": 2,
+    "mainThreadLongTaskMs": 51, "fileReaderCallbackMs": 39.2,
+    "note": "This sample overlaps conversion of the new scenery and does not meet the target."
+  },
+  "sixSoldiersPreparedScene": {
+    "enemies": 0, "players": 6, "groupStatus": "completed", "actions": 6,
+    "orderElapsedMs": 194.8, "movingFrames": 543, "movingMeanMs": 8.33333,
+    "movingP95Ms": 8.7, "wholeMaxMs": 16.7, "wholeOver16_8Ms": 0,
+    "mainThreadLongTasks": 0, "longAnimationFrames": 0,
+    "positions": [["3",24,38],["4",24,39],["5",24,40],["1",24,41],["7",24,42],["8",24,43]],
+    "lastError": null
+  },
+  "normalControls": {
+    "selection": "Shift-clicked squad portraits 2 through 6 with soldier 1 already selected.",
+    "order": "Activated the accessible R24 ground cell through the shared Battlefield handler.",
+    "result": "Six soldiers reached R24, S24, T24, U24, V24 and W24. The report recorded 54 seconds.",
+    "mapSizeDuringOrder": [1280,422],
+    "compactPanel": "The report and return-to-individual-orders button were visibly present. Clearing the group removed its panel.",
+    "browserWarningsAndErrors": []
+  },
+  "limits": "The patrol sample has 30 simulated enemies but only one becomes visible. It is not a 30-visible-enemy group benchmark. Route preview preparation remains synchronous and measured about 19 to 21 ms in these samples. Initial scenery conversion and full enemy-turn acceptance remain open.",
+  "full60FpsAccepted": false
+}

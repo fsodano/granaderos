@@ -86,7 +86,7 @@ Animated previews are in `assets/web/pixel/`, including
 `granadero-unconscious-breathe-se-preview.webp` and
 `granadero-prone-armed-fire-se-preview.webp`.
 
-Validation of the isolated sprite PR: 254 tests passed; type checking and the production build passed.
+Validation: 262 tests passed; type checking and the production build passed.
 The build verified 236 exported files and 148 asset references. All 47 recorded
 portrait hashes still match.
 

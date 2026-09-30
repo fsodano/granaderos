@@ -62,7 +62,7 @@ test('front reports require observers and never disclose the enemy crossing sche
   const s=initialCampaign(),g=launchEnemyGroup(s,'north','tucuman');s.hour=40;g.routeIndex=3;
   s.squads[0].location='tucuman';s.squads[0].journey={path:['tucuman','salta'],status:'ready',intent:'attack',returning:false,elapsed:12,legHours:12};delayCrossingEnemyGroups(s);
   const html=render(h(EnemyEncounters,{state:s,dispatch:noop}));assert.match(html,/Sin partes recientes/);assert.doesNotMatch(html,/Rutas opuestas|Llegada prevista|Salta/);
-  s.sectors.tucuman.owner='patriot';s.sectors.tucuman.militia=[1,0,0];const observed=render(h(EnemyEncounters,{state:s,dispatch:noop}));assert.match(observed,/Salta/);assert.match(observed,/3 realistas observados/);assert.doesNotMatch(observed,/Llegada prevista|Rutas opuestas/);
+  s.sectors.tucuman.owner='patriot';s.sectors.tucuman.militia=[1,0,0];const observed=render(h(EnemyEncounters,{state:s,dispatch:noop}));assert.match(observed,/Salta/);assert.ok(observed.includes(`${g.units.length} realistas observados`));assert.doesNotMatch(observed,/Llegada prevista|Rutas opuestas/);
 });
 
 test('the journal identifies historical commands without publishing target or activity predictions',async()=>{

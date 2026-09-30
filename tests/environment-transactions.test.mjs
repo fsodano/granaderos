@@ -139,7 +139,7 @@ test('Yatasto tools can be acquired through a legal open-door path and its key u
   state = approach(state, 'p', chest);
   state = order(state, {type: 'environment', ...ref, verb: 'open'});
   while (state.props.find(p => p.id === chest.id).contents.length) state = order(state, {type: 'containerLoot', ...ref, index: 0, count: 1});
-  assert.equal(inventoryUsage(soldier(state)).used, 11);
+  assert.equal(inventoryUsage(soldier(state)).used, 9);
   assert.deepEqual(Object.values(soldier(state).inventory).filter(item => item.toolKey).map(item => item.toolKey).sort(), ['crowbar', 'key', 'lockpick', 'pliers']);
   const right = state.tiles.find(t => t.doorId === 'yatasto:door-right');
   state = approach(state, 'p', right);

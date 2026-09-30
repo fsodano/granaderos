@@ -1,8 +1,9 @@
 import {AMMUNITION_TYPES,availableAmmunition,totalReserveAmmunition,weaponAmmoType} from './ammunition-types.js';
 import {tacticalLevel, sameCell, sameSurface, spaceKey} from './tactical-space.js';
-import {OUTFITS,wornOutfit,hasPoncho} from './outfits.js';
+import {BODY_SLOTS,OUTFITS,wornOutfit,hasPoncho} from './outfits.js';
 import {handLayout,selectMainHand} from './hand-layout.js';
-import {reloadPlan,lookPreview} from './tactical.js';
+import {reloadPlan,reprimePlan,lookPreview} from './tactical.js';
+import {reprimeLabel} from './weapon-reprime.js';
 import {shotRangeText} from './shot-range.js';
 import {heldThrowingKnife} from './thrown-knife.js';
 import {heldGrenade} from './grenade-throw.js';
@@ -19,8 +20,9 @@ import {inventoryUsage, carriedObject, itemDescriptor, INVENTORY_CAPACITY, SUPPL
 import {TOOL_TYPES, heldTool, ENVIRONMENT_VERBS, environmentTargetSummary, visibleContainerContents} from './environment-interactions.js';
 import {HELD_SUPPLIES, heldSupply} from './held-supplies.js';
 import {planGroupMove} from './group-movement.js';
-import {npcGiftPreview,contextualAttack,meleePreview, fitBayonetPreview, removeBayonetPreview, medicalUsePreview,itemUsePreview,environmentUsePreview,lootApproachPreview,lootSearchPreview,lootBatchPreview,stealPreview,pointFirePreview} from './tactical.js';
+import {npcGiftPreview,contextualAttack,meleePreview,meleePointPreview, fitBayonetPreview, removeBayonetPreview, medicalUsePreview,itemUsePreview,environmentUsePreview,lootApproachPreview,lootSearchPreview,lootBatchPreview,stealPreview,pointFirePreview} from './tactical.js';
 import {fixedBayonetFor, fittingLabel, weaponItemWeight} from './weapon-fittings.js';
+import {firearmBystanderRisk,firearmBystanderWarning} from './firearm-bystander-risk.js';
 
 const alive = u => u.hp > 0 && !u.routed && !u.unconscious && !u.departure && !u.fled;
 const shortName = u => u.nickname || String(u.name || '').split(' ').slice(-1)[0] || '';
@@ -40,13 +42,15 @@ export function supplyItems(unit) {
   });
 }
 export function heldSupplyAction(unit, target) {
-  return {type: 'useItem', ...(unit.activeSupply === 'torches' ? {x: target.x, y: target.y, ...(target.tacticalLevel===undefined?{}:{tacticalLevel:target.tacticalLevel})} : {targetId: target?.id})};
+  return {type: 'useItem', ...((unit.activeSupply === 'torches' || target?.id === undefined) ? {x: target.x, y: target.y, ...(target.tacticalLevel===undefined?{}:{tacticalLevel:target.tacticalLevel})} : {targetId: target?.id})};
 }
 
-export const attackCursorMode = unit => heldGrenade(unit) ? 'throwGrenade' : heldThrowingKnife(unit) ? 'throwKnife' : hasFirearm(unit || {}) ? 'fire' : 'useItem';
+export const attackCursorMode = unit => heldGrenade(unit) ? 'throwGrenade' : heldThrowingKnife(unit) ? 'throwKnife' : hasFirearm(unit || {}) && unit.weaponMode !== 'melee' ? 'fire' : 'useItem';
 export const aimedCursorMode = mode => mode === 'fire' || mode === 'throwKnife' || mode === 'throwGrenade';
 export const grenadeTargetingMode = (unit,mode) => mode==='throwGrenade'||mode==='useItem'&&Boolean(heldGrenade(unit));
-export const retainedAttackCursor = (unit, mode) => (mode === 'throwKnife' && !heldThrowingKnife(unit) || mode === 'throwGrenade' && !heldGrenade(unit) || mode === 'fire' && !hasFirearm(unit || {})) ? 'move' : mode;
+export const meleePointTargetingMode = (unit,mode) => mode==='useItem'&&Boolean(unit)&&!['medical','tool','supply','item'].includes(unit.activeSlot)&&(!hasFirearm(unit)||unit.weaponMode==='melee');
+export const meleePointInputAction = point => ({type:'meleePoint',x:point?.x,y:point?.y,tacticalLevel:tacticalLevel(point)});
+export const retainedAttackCursor = (unit, mode) => (mode === 'throwKnife' && !heldThrowingKnife(unit) || mode === 'throwGrenade' && !heldGrenade(unit) || mode === 'fire' && !hasFirearm(unit || {})) ? 'move' : mode === 'fire' && unit.weaponMode === 'melee' ? 'useItem' : mode;
 export const pickupTargetAction = (target,unit) => ({type:target.side!==unit?.side&&target.hp>0&&!target.unconscious&&!target.surrendered&&!target.routed?'steal':'loot',targetId:target.id});
 export const targetItemAction = (mode, targetId, unit) => ({type: mode === 'fire' && hasFirearm(unit || {}) ? 'fire' : 'useItem', targetId});
 export function civilianMedicalInputAction(state,unit,point,mode='move') {
@@ -95,6 +99,13 @@ export function tacticalInputAction(state, unit, action) {
   const type = resolvedOrderType(state, unit, action);
   if (!['fire', 'firePoint'].includes(type)) return action;
   return {type: 'reload', ...(action.unitId ? {unitId: action.unitId} : {}), aim: 0};
+}
+// Keep a failed spare from blocking useful loading of the main hand. Both R
+// and the existing order control choose the same next maintenance action.
+export function firearmMaintenanceAction(state,unit){
+  const priming=reprimePlan(unit,state);
+  if(!unit.jammed&&reloadPlan(unit,state).pa>0&&(unit.loaded<1||!priming.hands.length))return {type:'reload'};
+  return {type:priming.required?'reprime':'reload'};
 }
 export function firearmCostText(state,unit,point){
   if(state.mode==='exploration')return 'Sin coste de PA; consume tiempo y la munición del disparo.';
@@ -177,14 +188,14 @@ export function toggleMovementGroup(state, ids, targetId, selectedId) {
   return [...new Set([...current, targetId])];
 }
 
-export function movementGroupModel(state, ids, selectedId, point) {
+export function movementGroupModel(state, ids, selectedId, point, {preview=true} = {}) {
   const members = groupSelectionMode(state) ? [...new Set(ids)].flatMap(id => {
     const unit = state.units.find(unit => unit.id === id && unit.side === 'player' && !unit.departure && !unit.fled);
     return unit ? [{id, name: unit.nickname || unit.name}] : [];
   }) : [];
   const anchorId = members.some(unit => unit.id === selectedId) ? selectedId : members[0]?.id;
   const request = members.length && point ? {unitIds: members.map(unit => unit.id), anchorId, x: point.x, y: point.y,...(state.upperSurfaces?.length||point.tacticalLevel!==undefined?{tacticalLevel:tacticalLevel(point)}:{})} : null;
-  return {members, anchorId, request, preview: request ? planGroupMove(state, request) : null};
+  return {members, anchorId, request, preview: preview&&request ? planGroupMove(state, request) : null};
 }
 
 export function turnModel(state) {
@@ -237,20 +248,20 @@ export function interruptHover(state, selectedId) {
 export function targetingHelp(mode, unit, ctx = {}) {
   if(mode==='move'&&heldGrenade(unit))return 'Granada en mano: clic en el suelo para caminar. Botón derecho o F: preparar el lanzamiento. Otro clic derecho vuelve a movimiento.';
   if(grenadeTargetingMode(unit,mode))return 'Granada: clic en una casilla para lanzar. Otro clic derecho o Esc vuelve a movimiento. No permite aumentar la puntería ni elegir una parte del cuerpo. La explosión puede herir aliados.';
-  if(mode==='throwKnife')return 'Facón: clic para lanzar; botón derecho sobre una persona para apuntar más, fuera de ella para mover.';
+  if(mode==='throwKnife')return 'Facón: clic para lanzar; botón derecho para apuntar más, incluso a una casilla vacía. Esc vuelve al cursor de movimiento.';
   if(mode==='talk')return 'Hablar: seleccioná una persona visible y contigua. Esc vuelve al cursor de movimiento.';
   if ((ctx.itemIntent==='steal'&&['move','useItem'].includes(mode))||mode==='loot'&&unit?.activeSlot==='unarmed') return 'Manos libres: seleccioná un enemigo contiguo para quitarle el arma. Requiere 28 PA como mínimo y consume todos los restantes. Los cuerpos se registran.';
-  if (unit?.activeSlot==='unarmed'&&['move','useItem'].includes(mode)) return 'Seleccioná un enemigo para acercarte y golpear. Ctrl+clic o Recoger equipo: intentar quitar el arma a un enemigo contiguo.';
+  if (unit?.activeSlot==='unarmed'&&['move','useItem'].includes(mode)) return mode==='useItem'?'Puños: seleccioná un enemigo o una casilla para acercarte y golpear. Esc: caminar.':'Seleccioná un enemigo para golpear. F: golpear una casilla. Ctrl+clic: quitar el arma.';
   if (mode === 'fire') return 'Disparo deliberado: seleccioná un enemigo o una casilla. Una casilla no confirma un objetivo; el tiro puede herir aliados. G o Esc vuelve al uso contextual.';
-  if (mode === 'look') return 'Seleccioná hacia dónde mirar. El giro consume PA. Con un arma de fuego, mirá otra vez en la misma dirección para prepararla sin disparar. La vista previa muestra el costo. F: disparar; Esc: cancelar.';
+  if (mode === 'look') return 'Seleccioná hacia dónde mirar. El giro consume PA. Con un arma de fuego, mirá otra vez en la misma dirección para prepararla sin disparar. La vista previa muestra el costo. F: usar el arma en el modo elegido; Esc: cancelar.';
   if (mode === 'move' && ctx.movementIntent === 'preserveFacing') return 'Alt: mové solo al seleccionado sin girar. Cancela el grupo. Caminar, agachado o cuerpo a tierra; no correr ni montar.';
-  if (unit?.activeSlot === 'supply' && ['move', 'useItem'].includes(mode)) return ({torches: 'Seleccioná una casilla para arrojar la antorcha. Para avanzar, cambiá el objeto en mano.', boleadoras: 'Seleccioná un enemigo visible para lanzar las boleadoras.', rations: 'Seleccionate a vos para comer la ración. Recupera fuerzas; no detiene hemorragias.'})[unit.activeSupply] || 'Equipá un pertrecho disponible.';
+  if (unit?.activeSlot === 'supply' && ['move', 'useItem'].includes(mode)) return ({torches: 'Seleccioná una casilla para arrojar la antorcha. Para avanzar, cambiá el objeto en mano.', boleadoras: 'Seleccioná un enemigo visible o una casilla para lanzar las boleadoras. Para avanzar, cambiá el objeto en mano.', rations: 'Seleccionate a vos para comer la ración. Recupera fuerzas; no detiene hemorragias.'})[unit.activeSupply] || 'Equipá un pertrecho disponible.';
   if (unit?.activeSlot === 'item' && ['move','useItem'].includes(mode)) return 'Objeto en mano: podés guardarlo, darlo o soltarlo. Para atacar, prepará un arma o las manos libres.';
   if (unit?.activeSlot === 'tool' && ['move', 'useItem'].includes(mode)) return 'Seleccioná una puerta o un cofre para usar la herramienta. Las casillas libres permiten avanzar.';
-  if(hasFirearm(unit||{})&&unit.weaponMode==='melee'&&['move','useItem'].includes(mode))return `${fixedBayonetFor(unit)?'Estocada de bayoneta':'Culatazo'}: seleccioná un enemigo para acercarte y golpear. No dispara ni recarga. Botón derecho o F: apuntar para disparar.`;
+  if(hasFirearm(unit||{})&&unit.weaponMode==='melee'&&['move','useItem'].includes(mode))return `${fixedBayonetFor(unit)?'Bayoneta':'Culatazo'}: ${mode==='useItem'?'seleccioná un enemigo o una casilla para acercarte y golpear. Esc: caminar.':'clic en el suelo para caminar; F o botón derecho para golpear una casilla.'} B: volver a Disparo.`;
   if(heldThrowingKnife(unit)&&['move','useItem'].includes(mode))return 'Clic sobre un enemigo: acercarse y atacar con el facón. Botón derecho o F: apuntar para lanzarlo.';
   if (mode === 'useItem') return unit?.activeSlot === 'medical' ? 'Seleccionate a vos, a un aliado o a un civil herido. Se acerca y venda si hay ruta y PA suficientes. Reduce la hemorragia y estabiliza heridas críticas hasta 15 de salud. Puede necesitar más de una venda.' : hasFirearm(unit || {}) ? 'Seleccioná un enemigo. Apuntar consume PA adicionales.' : 'Seleccioná un enemigo para acercarte y usar el arma blanca.';
-  return ({move: 'Seleccioná una casilla para avanzar. Sobre un combatiente se usa el objeto equipado.', loot: 'Seleccioná un cuerpo o equipo visible. Elegí qué recoger; los PA incluyen el desplazamiento.', torch: 'Seleccioná una casilla para arrojar la antorcha.', bolas: 'Seleccioná un enemigo para lanzar las boleadoras.', artillery: 'Seleccioná un objetivo dentro del arco del cañón.', artilleryMove: 'Seleccioná una casilla contigua al cañón.', artilleryPivot: 'Seleccioná hacia dónde apuntar el cañón.'})[mode] || 'Seleccioná una orden.';
+  return ({move: 'Seleccioná una casilla para avanzar. Sobre un combatiente se usa el objeto equipado.', loot: 'Seleccioná un cuerpo o equipo visible. Elegí qué recoger; los PA incluyen el desplazamiento.', torch: 'Seleccioná una casilla para arrojar la antorcha.', bolas: 'Seleccioná un enemigo o una casilla para lanzar las boleadoras.', artillery: 'Seleccioná un objetivo dentro del arco del cañón.', artilleryMove: 'Seleccioná una casilla contigua al cañón.', artilleryPivot: 'Seleccioná hacia dónde apuntar el cañón.'})[mode] || 'Seleccioná una orden.';
 }
 
 export function aimOptions(state, unit, ctx = {}) {
@@ -292,6 +303,11 @@ function medicalTreatmentText(state, preview) {
     treatment.partial?'Tratamiento parcial: necesita más vendas.':treatment.critical?'Estabilizado. La recuperación completa requiere atención en campaña.':'Las heridas quedan vendadas; la recuperación de salud requiere atención en campaña.',
     preview.movePa?'El contacto puede detener la acción.':null].filter(Boolean).join(' ');
 }
+function pendingMovementPreview(point,ctx){
+  if(!ctx.routesPending&&!ctx.routesFailed)return null;
+  return {name:tacticalGridLabel(point.x,point.y),actionLabel:'Mover',valid:false,pending:Boolean(ctx.routesPending),
+    reason:ctx.routesPending?'Calculando ruta…':'No se pudo calcular la vista previa. La ruta se comprobará al dar la orden.'};
+}
 function targetPreviewWithCosts(state, unit, point, ctx = {}) {
   if (!unit) return null;
   const mode = ctx.mode || 'move';
@@ -331,12 +347,17 @@ function targetPreviewWithCosts(state, unit, point, ctx = {}) {
     const paired=Boolean(pairedPistol(unit));
     return {name:tacticalGridLabel(point.x,point.y),actionLabel:paired?'Disparar ambas pistolas a la casilla':'Disparar a la casilla',attackType:'fire',pa:preview.pa,remaining:Math.max(0,unit.ap-(state.mode==='exploration'?0:preview.pa)),valid:preview.valid,reason:preview.reason,coverNote:`${firearmCostText(state,unit,point)} ${paired?'Un disparo por pistola. ':''}Sin objetivo confirmado. Altura fija; la cobertura y los cuerpos pueden interceptar el tiro. Puede herir aliados.`};
   }
+  if(!target&&!recipient&&meleePointTargetingMode(unit,mode)&&ctx.itemIntent!=='steal'){
+    const preview=meleePointPreview(state,unit,point),label=unit.activeSlot==='unarmed'?'Puños':fixedBayonetFor(unit)?'Estocada de bayoneta':hasFirearm(unit)?'Culatazo':bladeFor(unit).name;
+    return {name:tacticalGridLabel(point.x,point.y),actionLabel:preview.movePa?'Acercarse y golpear la casilla':preview.stancePa?'Levantarse y golpear la casilla':'Golpear la casilla',attackLabel:label,attackType:'meleePoint',pa:preview.pa,remaining:Math.max(0,unit.ap-(state.mode==='exploration'?0:preview.pa)),valid:preview.valid,reason:preview.reason,coverNote:[meleePreparationText(state,preview),'Golpe al vacío.'].filter(Boolean).join(' ')};
+  }
   if(target&&target.side!==unit.side&&pickupTargetAction(target,unit).type==='steal'&&(ctx.itemIntent==='steal'&&['move','useItem'].includes(mode)||mode==='loot')){
     const preview=stealPreview(state,unit,target);
     return {name:target.name,actionLabel:'Quitar arma',attackLabel:'Quitar arma',pa:preview.pa,remaining:state.mode==='exploration'?unit.ap:0,reason:preview.reason,valid:preview.valid,coverNote:'Intento disputado: consume todos los PA restantes, también si falla.'};
   }
   const preserveFacing = mode === 'move' && ctx.movementIntent === 'preserveFacing' && isMovementGround(state, unit, point);
   if (preserveFacing) {
+    const pending=pendingMovementPreview(point,ctx);if(pending)return pending;
     const destination = (ctx.reachable || getReachable(state, unit, {movementIntent: 'preserveFacing'})).find(tile => sameCell(tile, point));
     const reason = movementIntentReason(unit, 'preserveFacing') || (!unitCanAct(state, unit) ? 'El combatiente no puede actuar.' : unit.knockedDown ? 'Primero debés levantarte.' : unit.entangled ? 'Primero debés liberarte de las boleadoras.' : !destination || !destination.path.length ? 'Destino inaccesible o PA insuficientes.' : null);
     const pa = destination ? state.mode === 'exploration' ? 0 : destination.cost : undefined;
@@ -345,9 +366,9 @@ function targetPreviewWithCosts(state, unit, point, ctx = {}) {
   const pickup=pickupSelection(state,unit,point,ctx);
   if(pickup.length){const p=pickup[0];return {name:'Equipo',actionLabel:p.movePa?'Acercarse al equipo':'Elegir qué recoger',pa:p.movePa,remaining:Math.max(0,unit.ap-(state.mode==='exploration'?0:p.movePa)),valid:p.valid,reason:p.reason,coverNote:state.mode==='exploration'?'Al llegar, elegí el objeto y la cantidad. Recoger consume tiempo.':'Al llegar, elegí el objeto y la cantidad. Recoger cuesta 8 PA adicionales. El contacto puede detener el desplazamiento.'};}
   const aliasSupply = ({torch: 'torches', bolas: 'boleadoras', ration: 'rations'})[mode];
-  if (aliasSupply || unit.activeSlot === 'supply' && ['move', 'useItem'].includes(mode) && (unit.activeSupply === 'torches' || target || mode === 'useItem')) {
+  if (aliasSupply || unit.activeSlot === 'supply' && ['move', 'useItem'].includes(mode) && (unit.activeSupply === 'torches' || unit.activeSupply === 'boleadoras' || target || mode === 'useItem')) {
     const key = aliasSupply || unit.activeSupply;
-    const preview = supplyUsePreview(state, unit, key === 'torches' ? point : target, key);
+    const preview = supplyUsePreview(state, unit, (key === 'torches' || key === 'boleadoras') ? (target ?? point) : target, key);
     const label = ({torches: 'Arrojar antorcha', boleadoras: 'Lanzar boleadoras', rations: 'Comer ración'})[key] || 'Usar pertrecho';
     return {name: target?.name || `${tacticalGridLabel(point.x,point.y)}`, actionLabel: label, attackLabel: label, pa: preview.cost, chance: preview.chance, remaining: Math.max(0, unit.ap - (state.mode === 'exploration' ? 0 : preview.cost)), reason: preview.reason, valid: preview.allowed};
   }
@@ -396,12 +417,14 @@ function targetPreviewWithCosts(state, unit, point, ctx = {}) {
         const chances=volley.shots.map(shot=>`${shot.hand==='primary'?'Mano principal':'Segunda mano'}: ${shot.chance}%${shot.damageFactor===0?' (la cobertura detiene el tiro)':shot.damageFactor<1?` (daño reducido un ${Math.round((1-shot.damageFactor)*100)}%)`:''}`).join(' · ');
         coverNote=[`${chances}. Un disparo por pistola.`,`Mano principal: ${shotRangeText(firearmRangeProfile(state,unit,target))}`,flight.victimId&&flight.victimId!==target.id?'Un combatiente está en la trayectoria. Disparar puede herirlo y consume las cargas.':undefined].filter(Boolean).join(' ');
       }
+      coverNote=[coverNote,firearmBystanderWarning(firearmBystanderRisk(state,unit,target,hitLocationFor(ctx.hitLocation)))].filter(Boolean).join(' ');
       if (!canChooseShotLocation(target)&&hitLocationFor(ctx.hitLocation)!=='torso') reason = 'Un objetivo cuerpo a tierra tiene una sola zona de tiro.';
       else if (unit.jammed) reason = 'Cebá el arma antes de disparar.';
       else if (!(unit.loaded > 0)) reason = 'Recargá el arma.';
       else if (!hasLineOfSight(state,unit,target)) reason = 'No hay línea de tiro.';
     }
   } else if (mode === 'move' && !target) {
+    const pending=pendingMovementPreview(point,ctx);if(pending)return pending;
     const destination = (ctx.reachable || []).find(p => sameCell(p, point));
     if (!destination) reason = 'Destino inaccesible o PA insuficientes.';
     else pa = state.mode === 'exploration' ? 0 : destination.cost;
@@ -531,9 +554,7 @@ export function inventoryModel(state, unit) {
     {id: 'medical', label: 'Medicina', value: unit.medical},
   ];
   const supplies = [
-    ...(unit.ammunitionVersion===1?[]:[{id:'ammo',label:'Cartuchos',count:unit.ammo}]),
-    {id: 'priming', label: 'Cebado', count: unit.priming},
-    {id: 'flints', label: 'Sílex', count: unit.flints},
+    ...(unit.ammunitionVersion===2?[]:[{id:'ammo',label:'Cartuchos',count:unit.ammo}]),
     {id: 'rations', label: 'Raciones', count: unit.rations},
     {id: 'medkits', label: 'Vendas', count: unit.medkits ?? 0},
     {id: 'boleadoras', label: 'Boleadoras', count: unit.boleadoras},
@@ -554,7 +575,7 @@ export function inventoryModel(state, unit) {
     });
   const outfit=wornOutfit(unit);
   const items = [
-    ...(outfit ? [{...outfit,item:'outfit',label:OUTFITS[outfit.outfit].name}] : []),
+    ...BODY_SLOTS.flatMap(slot=>{const worn=wornOutfit(unit,slot);return worn?[{...worn,item:slot,label:OUTFITS[worn.outfit].name}]:[];}),
     ...(hasPrimary(unit) ? [{item: 'primary', label: weaponFor({...unit, activeSlot: 'primary'}).name, count: 1, loaded: unit.loaded, condition: unit.condition, jammed: Boolean(unit.jammed)}] : []),
     ...(BLADES[unit.blade] ? [{item: 'blade', label: BLADES[unit.blade].name, count: 1}] : []),
     ...(unit.offHand ? [{...itemDescriptor(unit,'offhand'),...unit.offHand,item:'offhand',count:1}] : []),
@@ -722,6 +743,7 @@ export function orderDescriptors(state, unit, ctx = {}) {
   const gun = (state.artillery || []).find(g => g.id === ctx.cannonId && g.side === u.side);
   const costs = unit ? actionCosts(state, unit) : {};
   const loading = unit ? reloadPlan(unit, state) : null;
+  const priming = unit ? reprimePlan(unit, state) : null;
   const pa = {...costs, reload: loading?.pa??0, fire: costs.fire + Math.max(0, Math.min(4, Math.floor(ctx.aim || 0))) * costs.aim, stance: unit ? stanceCost(u, nextStance(u)) : 0};
   const attack = unit && !['medical', 'tool', 'supply','item'].includes(u.activeSlot) ? contextualAttack(state, u, ctx.target, {aim: ctx.aim || 0}) : null;
   const medicalPreview = medicalUsePreview(state, unit, ctx.target ?? unit);
@@ -730,7 +752,7 @@ export function orderDescriptors(state, unit, ctx = {}) {
   const supplyAliases = {
     ration: supplyUsePreview(state, unit, ctx.target ?? unit, 'rations'),
     torch: supplyUsePreview(state, unit, ctx.target ?? {x: ctx.x, y: ctx.y,...(ctx.tacticalLevel===undefined?{}:{tacticalLevel:ctx.tacticalLevel})}, 'torches'),
-    bolas: supplyUsePreview(state, unit, ctx.target, 'boleadoras'),
+    bolas: supplyUsePreview(state, unit, ctx.target ?? (Number.isInteger(ctx.x) && Number.isInteger(ctx.y) ? {x: ctx.x, y: ctx.y,...(ctx.tacticalLevel===undefined?{}:{tacticalLevel:ctx.tacticalLevel})} : undefined), 'boleadoras'),
   };
   pa.heal = medicalPreview.cost;
   for (const [id, preview] of Object.entries(supplyAliases)) pa[id] = preview.cost;
@@ -755,13 +777,13 @@ export function orderDescriptors(state, unit, ctx = {}) {
     heal: !medicalPreview.allowed,
     loot: false,
     reload: !firearm || !loading?.pa || !loading.available || Boolean(u.jammed),
-    reprime: !firearm || !u.jammed || !(u.priming > 0),
+    reprime: !firearm || !priming?.hands.length,
     weapon: false,
     stance: Boolean(u.mounted),
     overwatch: !u.overwatch && (!firearm || !(u.loaded > 0) || Boolean(u.jammed)),
     mount: !u.horse,
     brace: !fixedBayonetFor(u)||u.stance==='prone',
-    repair: !firearm || (u.flints ?? 4) < 1,
+    repair: !firearm || (u.condition ?? 100) >= 100,
     ration: !supplyAliases.ration.allowed,
     torch: !supplyAliases.torch.allowed,
     bolas: !supplyAliases.bolas.allowed,
@@ -787,7 +809,7 @@ export function orderDescriptors(state, unit, ctx = {}) {
       const crew = def.id==='artilleryReload'?artilleryReloadPreview(state,unit,gun):artilleryCrewPlan(state,unit,gun,pa[def.id]);
       unavailable ||= Boolean(crew.reason);
     }
-    const label = def.id === 'useItem' ? u.activeSlot === 'item' ? 'Objeto sin uso' : u.activeSlot === 'supply' ? 'Usar pertrecho' : u.activeSlot === 'tool' ? 'Usar herramienta' : u.activeSlot === 'medical' ? 'Usar vendas' : firearm ? 'Usar arma' : u.activeSlot === 'unarmed' ? 'Usar puños' : 'Usar arma blanca' : def.id === 'reload'&&loading?.hands ? reloadLabel(loading) : def.id === 'stance' ? stanceLabel(nextStance(u)) : def.id === 'overwatch' && u.overwatch ? 'Cancelar cobertura' : def.label;
+    const label = def.id === 'useItem' ? u.activeSlot === 'item' ? 'Objeto sin uso' : u.activeSlot === 'supply' ? 'Usar pertrecho' : u.activeSlot === 'tool' ? 'Usar herramienta' : u.activeSlot === 'medical' ? 'Usar vendas' : firearm ? 'Usar arma' : u.activeSlot === 'unarmed' ? 'Usar puños' : 'Usar arma blanca' : def.id === 'reprime'&&priming ? reprimeLabel(priming) : def.id === 'reload'&&loading?.hands ? reloadLabel(loading) : def.id === 'stance' ? stanceLabel(nextStance(u)) : def.id === 'overwatch' && u.overwatch ? 'Cancelar cobertura' : def.label;
     /** @type {{id:string,label:string,kind:string,disabled:boolean,pa?:number,reserve?:boolean,active?:boolean}} */
     const d = {id: def.id, label, kind: def.kind, disabled: baseDisabled || unavailable || (!reserveOff && def.id in pa && !affordable(state, u, pa[def.id]))};
     if (def.id === 'overwatch') d.reserve = !reserveOff;
@@ -829,7 +851,7 @@ export function orderAction(state, unit, ctx = {}, id) {
     case 'torch':
       return {type: 'throwTorch', x: ctx.x, y: ctx.y,...(ctx.tacticalLevel===undefined?{}:{tacticalLevel:ctx.tacticalLevel})};
     case 'bolas':
-      return {type: 'boleadoras', targetId: ctx.targetId};
+      return ctx.targetId !== undefined ? {type: 'boleadoras', targetId: ctx.targetId} : {type: 'boleadoras', x: ctx.x, y: ctx.y,...(ctx.tacticalLevel===undefined?{}:{tacticalLevel:ctx.tacticalLevel})};
     case 'artillery':
       return {type: 'artillery', artilleryId: ctx.artilleryId, x: ctx.x, y: ctx.y,...(ctx.tacticalLevel===undefined?{}:{tacticalLevel:ctx.tacticalLevel}), targetId: ctx.targetId, mode: ctx.mode};
     case 'artilleryMove':

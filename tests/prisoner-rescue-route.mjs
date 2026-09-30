@@ -54,6 +54,13 @@ for(let window=0;window<400&&battle.turn<65&&!['defeat','retreat'].includes(batt
  if(battle.status==='active'){orders.push({type:'endTurn',turn:battle.turn,mode:battle.mode});battle=endTurn(battle);assert.equal(battle.lastError,null);}
 }
 assert.equal(battle.status,'retreat','the entire relief force must physically leave or fall');
+// Morale can also end a battle in retreat. That outcome alone does not prove
+// that the prisoners were released or that anyone reached the physical exit.
+for(const original of initial.battle.npcs.filter(n=>n.detention)){
+ const prisoner=battle.npcs.find(n=>n.id===original.id);
+ assert.ok(prisoner?.hp>0&&prisoner.detention.freed&&prisoner.departure?.destination==='jujuy',`${original.name} must leave alive through the Jujuy exit`);
+}
+assert.ok(savedDepartures>0,'the rescue must record physical evacuation orders');
 const paired=sync(campaign,battle),restored=decodeSave(encodeSave(paired.campaign,paired.battle));
 campaign=order(restored.campaign,{type:'battleResult',battleId:battle.battleId,outcome:'retreat',sectorState:restored.battle,survivors:restored.battle.units.filter(u=>u.side==='player')});
 assert.deepEqual(decodeSave(encodeSave(campaign)).campaign,campaign);

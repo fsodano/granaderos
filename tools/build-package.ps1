@@ -35,7 +35,7 @@ if ($LASTEXITCODE -ne 0) { throw 'Cannot read engine revision.' }
     requires_original_ja2 = $true
     executables = @('JA2.exe', 'JA2MAPEDITOR.exe')
 } | ConvertTo-Json | Set-Content (Join-Path $package 'Granaderos-build.json') -Encoding utf8
-Copy-Item (Join-Path $root 'docs/build.md') (Join-Path $package 'BUILD-AND-INSTALL.md')
+Copy-Item (Join-Path $root 'docs/reference/native-build.md') (Join-Path $package 'BUILD-AND-INSTALL.md')
 Get-ChildItem $package -Recurse -File | ForEach-Object {
     $relative = [IO.Path]::GetRelativePath($package, $_.FullName).Replace('\', '/')
     '{0}  {1}' -f (Get-FileHash $_.FullName -Algorithm SHA256).Hash.ToLowerInvariant(), $relative

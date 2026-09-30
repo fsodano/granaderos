@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createBattle,actBattle,endTurn,stanceCost,environmentUsePreview,lookPreview} from '../game/tactical.js';
+import {createBattle,actBattle,endTurn,stanceCost,environmentUsePreview,lookPreview,movementEnergy} from '../game/tactical.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
 import {geometryCells} from '../game/sight-geometry.js';
 const tiles=()=>Array.from({length:400},(_,i)=>({x:i%40,y:Math.floor(i/40),type:'grass',blocked:false,cover:0}));
@@ -23,7 +23,7 @@ test('ambient roof scouts pay the roof walking energy and keep downstairs occupa
 
 test('a routed crouching soldier stands, descends and reaches only the ground exit',()=>{
  const b=field([{id:'router',x:4,y:4,tacticalLevel:1,routed:true,weaponDropped:true,loaded:0,stance:'crouched',movementMode:'crouch'},{id:'p',x:20,y:8}],{exits:[{id:'west',edge:'W',destination:'retiro',entryEdge:'S',entryAnchor:{x:14,y:15}}]}),n=endTurn(b),u=n.units[0];
- assert.equal(u.stance,'standing');assert.equal(u.tacticalLevel,0);assert.equal(u.departure?.edge,'W');assert.equal(u.ap,b.units[0].ap);assert.equal(u.energy,88);
+ assert.equal(u.stance,'standing');assert.equal(u.movementMode,'walk');assert.equal(u.tacticalLevel,0);assert.equal(u.departure?.edge,'W');assert.equal(u.ap,b.units[0].ap);assert.equal(u.energy,100-8-4*movementEnergy(u,{type:'grass'},true),'descent keeps its eight-point cost; walking and the boundary crossing use exploration breath');
  assert.ok(u.fleePath.some(p=>p.kind==='climb'&&p.tacticalLevel===0));assert.equal(n.elapsedSeconds,Math.max(1,Math.ceil(stanceCost(b.units[0],'standing')*.06))+4+12);assert.equal(u.weaponDropped,true);
  assert.deepEqual(validateBattleSnapshot(JSON.parse(JSON.stringify(n))),n);
 });

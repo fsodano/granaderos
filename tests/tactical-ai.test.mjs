@@ -61,14 +61,13 @@ test('AI changes from medical equipment to a weapon before fighting', () => {
   assert.equal(chooseEnemyAction(state, unit), null);
 });
 
-test('a jammed soldier without priming powder can close for a blade attack', () => {
+test('a jammed soldier uses its implicit ignition kit before considering melee', () => {
   const state = battle([{id: 'p', x: 5, y: 3}], {priming: 0}), unit = enemy(state);
   unit.jammed = true;
   const action = chooseEnemyAction(state, unit);
-  assert.equal(action.type, 'move');
-  assert.ok(Math.hypot(action.x - state.units[0].x, action.y - state.units[0].y) <= 2);
-  const path = getReachable(state, unit).find(cell => cell.x === action.x && cell.y === action.y);
-  assert.ok(unit.ap - path.cost >= actionCosts(state, unit).melee);
+  assert.equal(action.type, 'reprime');
+  assert.equal(action.unitId,unit.id);
+  assert.ok(unit.ap>=actionCosts(state,unit).reprime);
 });
 
 test('outnumbered AI uses nearby cover and keeps enough AP to fire', () => {

@@ -3,7 +3,7 @@ const AMMO='inventory:ammo:musket_75';
 const ammoStack=count=>({item:AMMO,kind:'ammunition',ammoType:'musket_75',name:AMMUNITION_TYPES.musket_75.name,count,weight:.04});
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createBattle,actBattle,endTurn,lootApproachPreview,lootSearchPreview,approachCompleted,lootPreview} from '../game/tactical.js';
+import {createBattle,actBattle,endTurn,lootApproachPreview,lootSearchPreview,approachCompleted,lootPreview,movementEnergy} from '../game/tactical.js';
 import {nearbyLootOptions,pickupSelection,lootSelectionModel,groundLootPiles,targetPreview} from '../game/ja2-hud.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
 import {inventoryUsage} from '../game/tactical-inventory.js';
@@ -61,7 +61,8 @@ test('unavailable targets, insufficient AP, invalid quantities, invisibility and
 
 test('exploration counts each approach second plus pickup and stops if the soldier collapses',()=>{
   const s=field({}, {exploration:true}),after=actBattle(s,pick);assert.equal(after.elapsedSeconds,10);assert.equal(after.units[0].ap,100);assert.equal(after.groundItems[0].count,9);
-  const tired=field({energy:2},{exploration:true}),stopped=actBattle(tired,pick);assert.equal(stopped.units[0].unconscious,true);assert.equal(stopped.units[0].x,4);assert.equal(stopped.groundItems[0].count,12);assert.equal(stopped.elapsedSeconds,6);
+  const tired=field({},{exploration:true});tired.units[0].energy=2*movementEnergy(tired.units[0],{type:'grass'},true);
+  const stopped=actBattle(tired,pick);assert.equal(stopped.units[0].unconscious,true);assert.equal(stopped.units[0].x,4);assert.equal(stopped.units[0].ap,0);assert.equal(stopped.groundItems[0].count,12);assert.equal(stopped.elapsedSeconds,6);
 });
 
 test('enemy reactions stop both search and combined pickup before inventory changes',()=>{

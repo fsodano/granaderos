@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createBattle,actBattle,inventoryMapPreview,getNpcGiftResult,canSee,movementStepCost} from '../game/tactical.js';
+import {createBattle,actBattle,inventoryMapPreview,getNpcGiftResult,canSee,movementStepCost,movementEnergy} from '../game/tactical.js';
 import {equipmentFingerprint,inventoryUsage} from '../game/tactical-inventory.js';
 import {questGiftDecision} from '../game/quests.js';
 import {makeOutfit} from '../game/outfits.js';
@@ -102,7 +102,8 @@ test('a connected roof gift pays a real climb and reaches the NPC surface',()=>{
 });
 
 test('energy collapse preserves the walked cost and item without an NPC answer',()=>{
- const b=field({energy:2}, {x:7}),{after:n,result}=attempt(b);assert.equal(result.status,'interrupted');assert.equal(unit(n).unconscious,true);assert.ok(unit(n).x>unit(b).x);assert.ok(n.elapsedSeconds>b.elapsedSeconds);assert.equal(unit(n).inventory.coat.instanceId,'gift');assert.equal(npc(n).questGifts,undefined);assert.ok(!n.log.some(line=>line.startsWith('Sargento:')));
+ const b=field({}, {x:7});unit(b).energy=2*movementEnergy(unit(b),{type:'grass'},true);
+ const {after:n,result}=attempt(b);assert.equal(result.status,'interrupted');assert.equal(unit(n).unconscious,true);assert.equal(unit(n).x,4);assert.equal(n.elapsedSeconds-b.elapsedSeconds,6);assert.equal(unit(n).inventory.coat.instanceId,'gift');assert.equal(npc(n).questGifts,undefined);assert.ok(!n.log.some(line=>line.startsWith('Sargento:')));
 });
 
 test('an NPC moving during the actual walk interrupts the reserved offer',()=>{

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {actBattle, createBattle} from '../game/tactical.js';
+import {actBattle, createBattle, movementEnergy} from '../game/tactical.js';
 import {autoBandageBattle, autoBandageStatus} from '../game/auto-bandage.js';
 
 const map = (extra = {}) => ({width: 12, height: 7, exploration: true, enemies: [], tiles: Array.from({length: 84}, (_, i) => ({x: i % 12, y: Math.floor(i / 12), type: 'grass', blocked: false, cover: 0})), ...extra});
@@ -89,7 +89,8 @@ test('blocked paths consume no kits and accessible casualties are still treated'
 });
 
 test('movement exhaustion stops without treatment, refill, rest or a repeated failed order', () => {
-  const state = make([medic({energy: 1, activeSlot: 'medical'}), patient({x: 10})]);
+  const state = make([medic({activeSlot: 'medical'}), patient({x: 10})]);
+  state.units[0].energy = 4 * movementEnergy(state.units[0], {type: 'grass'}, true);
   const report = autoBandageBattle(state);
   assert.equal(report.steps.length, 1); assert.equal(report.steps[0].type, 'move');
   assert.equal(report.battle.units[0].energy, 0); assert.equal(report.battle.units[0].unconscious, true);

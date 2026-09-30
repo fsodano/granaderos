@@ -111,7 +111,7 @@ test('equipment panel keeps quantity, give/drop and selective pickup controls ou
   s.units[0].inventory.found={count:1,weight:4,weapon:1800,loaded:1,condition:63,jammed:true};
   const markup=strip(s,true);
   for(const label of ['Objeto para dar o soltar','Cantidad de objetos','Aliado que recibe el equipo','Objeto cercano para recoger','Cantidad para recoger'])assert.ok(markup.includes(`aria-label="${label}"`),label);
-  assert.match(markup,/Manos libres/);assert.match(markup,/Soltar aquí · 4 PA/);assert.match(markup,/Recoger · 8 PA/);
+  assert.match(markup,/Manos del combatiente/);assert.match(markup,/Soltar aquí · 4 PA/);assert.match(markup,/Recoger · 8 PA/);
   assert.match(markup,/value="inventory:found"/);assert.match(markup,/estado 63%/);assert.match(markup,/4 grandes \/ 8 pequeños/);
   assert.match(markup,/En el suelo · Cartuchos · 7/);
   assert.ok(!strip(s).includes('Cantidad de objetos'));assert.ok(!strip(s).includes('Soltar aquí'));
@@ -140,7 +140,7 @@ test('the real inventory renders equipped tools and only reveals an open nearby 
   const s=fixture(),u=s.units[0];Object.assign(u,{mechanical:80,activeSlot:'tool',activeTool:'inventory:picks'});
   u.inventory.picks={itemType:'tool',toolKey:'lockpick',count:1,condition:47,weight:.4};
   s.props.push({id:'sealed',type:'chest',x:2,y:1,open:false,locked:true,contents:[{item:'ammo',count:137,weight:.04}],trap:{type:'alarm',difficulty:73,discoveredBy:[],armed:true}});
-  const closed=strip(s,true);assert.match(closed,/aria-label="Equipar herramienta"/);assert.match(closed,/Ganzúas · 1 · estado 47%/);assert.match(closed,/Forzar con ganzúas/);assert.ok(!closed.includes('Cartuchos · 137'));assert.ok(!closed.includes('Trampa detectada'));
+  const closed=strip(s,true);assert.ok(!closed.includes('aria-label="Equipar herramienta"'));assert.match(closed,/Ganzúas/);assert.match(closed,/[Ee]stado 47%/);assert.match(closed,/Forzar con ganzúas/);assert.ok(!closed.includes('Cartuchos · 137'));assert.ok(!closed.includes('Trampa detectada'));
   s.props[0].open=true;s.props[0].locked=false;
   const open=strip(s,true);assert.match(open,/Cartuchos · 137/);assert.match(open,/aria-label="Cantidad del cofre"/);
 });
@@ -158,11 +158,14 @@ test('optional squad bandaging stays in medical equipment and reports untreated 
   assert.ok(blocked);assert.match(blocked,/disabled=""/);assert.match(blocked,/sector seguro/);
 });
 
-test('supplies are equipped from inventory and expose one held-item control without separate use buttons',()=>{
+test('supplies use ordinary pockets and hands without dedicated selectors',()=>{
   const s=fixture(),u=s.units[0];Object.assign(u,{activeSlot:'supply',activeSupply:'torches'});
   const inventory=strip(s,true);
-  assert.match(inventory,/aria-label="Equipar pertrecho"/);
-  for(const key of ['torches','boleadoras','rations'])assert.ok(inventory.includes(`value="${key}"`));
+  assert.ok(!inventory.includes('aria-label="Equipar pertrecho"'));
+  assert.ok(!inventory.includes('aria-label="Equipar herramienta"'));
+  assert.match(inventory,/aria-label="Bolsillos del combatiente"/);
+  assert.match(inventory,/aria-label="Manos del combatiente"/);
+
   for(const label of ['Arrojar antorcha','Lanzar boleadoras','Comer tasajo'])assert.ok(!new RegExp(`<button[^>]*>[^<]*${label}`).test(inventory),label);
   const main=orders(s);assert.match(main,/Antorcha · 10 PA/);assert.match(main,/Para avanzar, cambiá el objeto en mano/);assert.ok(!main.includes('aria-label="Zona de tiro"'));
   assert.ok(!main.includes('aria-label="Equipar pertrecho"'));
@@ -182,7 +185,7 @@ test('group selection renders portrait membership, planned slots, and clear indi
   assert.match(stopped,/Contacto enemigo/);assert.match(stopped,/Vigía: La marcha se detuvo/);assert.match(stopped,/Cerrar parte de marcha/);assert.ok(!stopped.includes('Quitar a'));
 });
 
-test('group route hover reserves the same bounded area before, during, and after a preview',()=>{
+test('group route details stay collapsed before, during, and after a preview',()=>{
   const members=[{id:'scout',name:'Vigía'},{id:'medic',name:'Sanitario'}];
   const props={members,anchorId:'scout',busy:false,onRemove:noop,onClear:noop};
   const views=[
@@ -191,16 +194,17 @@ test('group route hover reserves the same bounded area before, during, and after
     render(h(JA2GroupMovePanel,{...props,preview:{ok:false,reason:'La ruta está bloqueada. '.repeat(30)}})),
     render(h(JA2GroupMovePanel,props)),
   ];
-  const routeTag=markup=>markup.match(/<div class="ja2-group-preview"[^>]*>/)?.[0];
+  const routeTag=markup=>markup.match(/<details class="ja2-group-preview"[^>]*>/)?.[0];
   assert.ok(routeTag(views[0]));
   for(const markup of views)assert.equal(routeTag(markup),routeTag(views[0]));
-  assert.match(routeTag(views[0]),/style="height:3rem"/);
+  assert.doesNotMatch(routeTag(views[0]),/ open(?:[ =]|>)/);
+  assert.match(views[0],/<summary>Ruta del grupo<\/summary>/);
   assert.match(views[0],/Señalá una casilla libre para ver la ruta/);
   assert.ok(!views[0].includes('sin destino'));
   assert.match(views[1],/Vigía: E4 · 1 pasos/);
   assert.match(views[2],/La ruta está bloqueada/);
   const large=render(h(JA2GroupMovePanel,{...props,members:Array.from({length:12},(_,index)=>({id:String(index),name:`Soldado ${index}`}))}));
-  assert.match(routeTag(large),/style="height:5.5rem"/);
+  assert.doesNotMatch(routeTag(large),/ open(?:[ =]|>)/);
 });
 
 test('settled exploration offers a campaign report separately from physical exit orders',()=>{

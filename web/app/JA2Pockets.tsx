@@ -1,6 +1,6 @@
 'use client';
 import {Package,Flame,Utensils,Cross,Gem,CircleDot} from 'lucide-react';
-const icons:Record<string,any>={ammo:Package,priming:CircleDot,flints:Gem,rations:Utensils,medkits:Cross,boleadoras:CircleDot,torches:Flame};
+const icons:Record<string,any>={ammo:Package,rations:Utensils,medkits:Cross,boleadoras:CircleDot,torches:Flame};
 import {useEquipmentDrag} from '../lib/equipment-drag';
 import './ja2-pockets.css';
 type QuantityProps={scope:string;quantity:{count:number;maxCount:number};setCount:(count:number)=>boolean;disabled?:boolean};
@@ -22,7 +22,7 @@ export default function JA2Pockets({battle,unit,layout,disabled,onPick,onOrder}:
     const Icon=icons[slot.entry?.item]??Package;
     return <button key={slot.id} type="button" className={`ja2-pocket ${slot.entry?'occupied':''}${drag.target===slot.id?' drop-target':''}`} aria-label={`${slot.label}: ${slot.entry?`${slot.entry.label} · ${slot.entry.count}`:'vacío'}`} disabled={disabled} title={`${slot.label}${slot.entry?`: ${slot.entry.label} · ${slot.entry.count}${slot.entry.condition!==undefined?` · estado ${slot.entry.condition}%`:''}`:''}`}
      {...drag.handlers(slot.id,{onInspect:onPick})}>
-     {slot.entry?<>{slot.entry.weapon>=1800&&slot.entry.weapon<=1813?<img src={`/art/weapon-${slot.entry.weapon}.png`} alt=""/>:<Icon size={22} aria-hidden="true"/>}<span>{slot.entry.label}</span><b>{slot.entry.count}</b></>:<span className="empty">{size==='large'?'Grande':'Pequeño'}</span>}
+     {slot.entry?<>{slot.entry.art||slot.entry.weapon>=1800&&slot.entry.weapon<=1813?<img src={slot.entry.art??`/art/weapon-${slot.entry.weapon}.png`} alt=""/>:<Icon size={22} aria-hidden="true"/>}<span>{slot.entry.label}</span><b>{slot.entry.count}</b></>:<span className="empty">{size==='large'?'Grande':'Pequeño'}</span>}
     </button>;
    })}
   </div>)}

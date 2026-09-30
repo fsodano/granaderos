@@ -27,3 +27,10 @@ test('visited mission sites appear as labelled inventory choices beside their pa
  assert.match(html,/<option value="yatasto">Conferencia de Yatasto · [0-9]+ objetos<\/option>/);
  const unseen=draw(initialCampaign());assert.doesNotMatch(unseen,/Lugar del equipo|Conferencia de Yatasto|Combate de San Lorenzo/);
 });
+
+test('armory storage has a labelled control and is disabled when the active squad is elsewhere',()=>{
+ const s=ready();
+ assert.match(draw(s),/<button class="line-button" aria-label="Guardar en armería: [^"]+">Guardar en armería<\/button>/);
+ s.location='buenos_aires';
+ assert.match(draw(s),/<button class="line-button" disabled="" title="La escuadra activa debe estar en este sector\." aria-label="Guardar en armería:/);
+});

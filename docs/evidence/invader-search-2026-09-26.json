@@ -1,0 +1,65 @@
+{
+  "scope": "Strategic invasion patrols and final-route defense continuation",
+  "garrisonPreparation": {
+    "source": "/tmp/granaderos-final-tucuman-won-current.json",
+    "checkpoint": "/tmp/granaderos-final-garrison-current.json",
+    "hour": 3880,
+    "treasury": 8728,
+    "militia": [
+      6,
+      0,
+      0
+    ],
+    "patient": 139,
+    "health": 79,
+    "maxHealth": 79,
+    "method": "Paid doctor supplies, actual travel and contract renewals; two paid militia courses; no state grants."
+  },
+  "defense": {
+    "source": "/tmp/granaderos-final-defense-prepared-current.json",
+    "group": "enemy-group-12",
+    "hour": 3888,
+    "before": {
+      "status": "active",
+      "turn": 81,
+      "hiredSurvivors": 0,
+      "remainingFitMilitia": 5,
+      "problem": "Invaders remained around their original posts while militia were elsewhere."
+    },
+    "after": {
+      "status": "defeat",
+      "turn": 55,
+      "actions": 52,
+      "elapsedSeconds": 693,
+      "campaignDefeated": false,
+      "sectorOwner": "royalist",
+      "checkpoint": "/tmp/granaderos-final-defense-defeat-current.json"
+    },
+    "verification": [
+      "Identical deterministic replay",
+      "Tactical save round trip",
+      "Public campaign settlement",
+      "Final campaign save round trip",
+      "Fallen militia do not return to the garrison"
+    ]
+  },
+  "changes": [
+    "Incoming strategic attackers search fixed sector quadrants using terrain and turn time only.",
+    "Existing stationary guards retain their original local patrol.",
+    "Search respects disabled patrols, artillery crews, interrupts, investigation delays and one patrol bound per turn.",
+    "Route controller no longer issues manual militia orders.",
+    "Route settlement checks militia separately from hired operative records."
+  ],
+  "tests": {
+    "focusedAiMilitiaDeploymentVisibility": 140,
+    "enemyGroupsDefenseWorldAmbientPatrol": 23,
+    "finalWorldFollowup": 7,
+    "typecheck": "pass",
+    "productionBuild": "pass; 960 files and 856 asset references"
+  },
+  "remaining": [
+    "Find a winning defense and finish the campaign through its real ending.",
+    "Rerun the full fresh route after the invasion behavior change.",
+    "Complete blade artwork, remaining parity requirements and broader 60 FPS coverage."
+  ]
+}

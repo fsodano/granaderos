@@ -1,5 +1,5 @@
 'use client';
-import {useEffect,useState} from 'react';
+import {memo,useEffect,useMemo,useRef,useState} from 'react';
 import {maximumEnergy} from '../../game/fatigue.js';
 // Every deployed squad remains accessible in the portrait strip.
 // Pure read model (game/ja2-hud.js rosterCells); all mutations are caller-provided callbacks.
@@ -10,8 +10,15 @@ import {portraitFor} from '../lib/portraits';
 
 type Props = {battle?: any; players: any[]; selected: any; groupIds?: string[]; medicalTargeting?: boolean; onSelect: (id: any, additive?: boolean) => void; onOpenInventory: (id: any) => void};
 const short = (u: any) => u.nickname || String(u.name || '').split(' ').slice(-1)[0] || '';
-const handIcons:Record<string,any>={ammo:Package,priming:CircleDot,flints:Gem,rations:Utensils,medical:Cross,boleadoras:Link,torch:Flame,key:KeyRound,lockpick:Wrench,crowbar:Hammer,pliers:Scissors,outfit:Shirt,item:Package,empty:Hand,blocked:Ban};
+const handIcons:Record<string,any>={ammo:Package,rations:Utensils,medical:Cross,boleadoras:Link,torch:Flame,key:KeyRound,lockpick:Wrench,crowbar:Hammer,pliers:Scissors,outfit:Shirt,item:Package,empty:Hand,blocked:Ban};
 
+export function StableJA2Roster(props:Props) {
+  // Camera and walking updates replace parent callbacks. Keep their current
+  // behavior without rebuilding portraits and inventory descriptions each frame.
+  const handlers=useRef(props);handlers.current=props;
+  const callbacks=useMemo(()=>({onSelect:(id:any,additive?:boolean)=>handlers.current.onSelect(id,additive),onOpenInventory:(id:any)=>handlers.current.onOpenInventory(id)}),[]);
+  return <MemoizedRoster {...props} {...callbacks}/>;
+}
 export default function JA2Roster({battle, players, selected, groupIds = [], medicalTargeting = false, onSelect, onOpenInventory}: Props) {
   const all = rosterCells(players, selected, battle);
   const [page,setPage] = useState(()=>Math.floor(Math.max(0,all.findIndex((cell:any)=>cell.active))/6));
@@ -63,3 +70,4 @@ export default function JA2Roster({battle, players, selected, groupIds = [], med
     </div>{pageCount>1 && <nav className="ja2-roster-paging" aria-label="Páginas de combatientes"><button aria-label="Combatientes anteriores" disabled={currentPage===0} onClick={()=>setPage(currentPage-1)}>←</button><span>{currentPage+1} / {pageCount}</span><button aria-label="Combatientes siguientes" disabled={currentPage+1>=pageCount} onClick={()=>setPage(currentPage+1)}>→</button></nav>}</div>
   );
 }
+const MemoizedRoster=memo(JA2Roster);

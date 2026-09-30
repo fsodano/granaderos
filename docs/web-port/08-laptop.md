@@ -311,7 +311,7 @@ AIM_VIDEO_NOT_DISPLAYED → POPUP → INIT → WillMercAcceptCall()
 ### 3.6 Web mapping — AIM → `Recruitment.tsx` + `game/recruitment.js`
 
 The web clone **replaces the AIM/MERC paid-merc market with authored civic volunteers and
-historical NPC encounters** (`docs/WEB-SYSTEMS.md:113-121`). The engine's AIM concepts map as
+historical NPC encounters** (`docs/development/WEB-SYSTEMS.md`). The engine's AIM concepts map as
 follows:
 
 | Engine (AIM) | Web equivalent |
@@ -508,7 +508,7 @@ Desk.tsx (tab="workshop")
 
 The web clone **does not port MERC** as a site. Its role (cheap, per-day, credit-based mercs)
 is replaced by `CIVIC_RECRUITS` (`game/recruitment.js:16-25`, ids 100-106) hired through the
-desk catalogue with prepaid contracts (`docs/WEB-SYSTEMS.md:113-119`). The engine's
+desk catalogue with prepaid contracts (`docs/development/WEB-SYSTEMS.md`). The engine's
 "account/credit" model maps to the web's **prepaid** model: `signContract()` charges the full
 quote up front (`game/campaign.js:41-43`), and `contractQuote()` returns `price` and
 `expiresAt` (`game/contracts.js:9`). The MERC "Speck" personality is not ported.
@@ -553,7 +553,7 @@ quote up front (`game/campaign.js:41-43`), and `contractQuote()` returns `price`
 | `iCurrentImpPage` stepper | `CharacterCreator.tsx` single-page form (name, portrait, class, attributes, questions) |
 | `COST_OF_PROFILE 3000` | `creationCost = profile.version===2 ? 0 : 300` (`game/campaign.js:201`) — v2 profiles are free |
 | `iStrength`...`iAddMechanical` globals | `profile.attributes` (10 attributes, `PROFILE_ATTRIBUTES`, `game/character-profile.js:1`) |
-| Attribute allocation | `PROFILE_POINTS = 550`, each 35-85 (`game/character-profile.js:2,21`) |
+| Attribute allocation | `PROFILE_POINTS = 550`, each 0-85 (`game/character-profile.js:2,21`) |
 | `fCharacterIsMale` + portraits | `CHARACTER_PORTRAITS` (`game/character-profile.js:9`) |
 | `iSkillA/B/C` | `traits[]` from `OFFICER_TRAITS` + `PROFILE_QUESTIONS` answers (`game/recruitment.js:4-9`, `game/character-profile.js:10-13`) |
 | `iPersonality`/`iAttitude` | `answers.temperament` → `personality` (`game/character-profile.js:22`) |
@@ -877,7 +877,7 @@ flavor sites.
 3. **MERC is a credit model, the web is prepaid** — the engine lets Speck bill later
    (`SettleMercAccounts`, `mercs Account.cpp:595`); the web charges the full quote up front
    (`signContract`, `game/campaign.js:41-43`). This is a deliberate design change
-   (`docs/WEB-SYSTEMS.md:113-119`).
+   (`docs/development/WEB-SYSTEMS.md`).
 4. **Bobby Ray's stock is simulated** (`SimulateBobbyRayCustomer`, `BobbyR.cpp:918`) — the web
    has no competing buyers; `s.armory` only decreases when the player buys.
 5. **`fBobbyRSiteCanBeAccessed` gates the whole site** (`BobbyR.cpp:295`) — the web equivalent

@@ -1,0 +1,65 @@
+{
+  "hour": 27,
+  "energy": [
+    76,
+    76,
+    76,
+    76,
+    76,
+    76
+  ],
+  "status": "victory",
+  "turn": 26,
+  "actions": 160,
+  "survivors": [
+    {
+      "id": "3",
+      "hp": 96,
+      "energy": 69
+    },
+    {
+      "id": "4",
+      "hp": 84,
+      "energy": 74
+    },
+    {
+      "id": "10",
+      "hp": 0,
+      "energy": 58.25
+    },
+    {
+      "id": "123",
+      "hp": 83,
+      "energy": 79
+    },
+    {
+      "id": "115",
+      "hp": 70,
+      "energy": 73
+    },
+    {
+      "id": "110",
+      "hp": 57,
+      "energy": 71
+    }
+  ],
+  "gun": [
+    {
+      "id": "san_nicolas-27-45:piece-0",
+      "type": "swivel",
+      "side": "player",
+      "loaded": true,
+      "ammo": 6,
+      "x": 41,
+      "y": 41
+    }
+  ],
+  "scope": "Legacy campaign artillery persistence setup; normal rest and coordinated battery orders. Not full fresh-campaign acceptance.",
+  "validation": {
+    "tests": 14,
+    "passed": 13,
+    "failed": 1,
+    "remaining": "Paid prisoner and cannon rescue loses the real battle",
+    "log": "/tmp/granaderos-artillery-rested-tests.log"
+  }
+}

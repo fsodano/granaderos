@@ -1,0 +1,158 @@
+[
+  {
+    "id": "avatar-man-black-soldier",
+    "file": "/art/avatar-man-black-soldier.webp",
+    "source": "assets/source/custom-avatar-man-black-soldier-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 15690,
+    "sha256": "10131c8b32003c8b75ffcdcca2bef2e60f348bca42288b3d481770a18b9213b4",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-black-soldier",
+    "file": "/art/avatar-woman-black-soldier.webp",
+    "source": "assets/source/custom-avatar-woman-black-soldier-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 14854,
+    "sha256": "c8a52ddb7de4a9fc964e968b8d27ead136782f307c2bad6c73d8f61b939a4c86",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-man-black-officer",
+    "file": "/art/avatar-man-black-officer.webp",
+    "source": "assets/source/custom-avatar-man-black-officer-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 14004,
+    "sha256": "f2e35fa4d7e1b21cab644ab1d2dda41de138d0f58170c8ee91a48eb450ac8031",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-black-officer",
+    "file": "/art/avatar-woman-black-officer.webp",
+    "source": "assets/source/custom-avatar-woman-black-officer-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 14438,
+    "sha256": "dafa85cb4b1c93042ae1a203688021980335d926758d7bd8f5c9697e9afe53df",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-man-black-scout",
+    "file": "/art/avatar-man-black-scout.webp",
+    "source": "assets/source/custom-avatar-man-black-scout-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 22132,
+    "sha256": "0e7d481d35d701874a40582729d6ba15a1c45002ab1c6dab450c773f8f9edb54",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-black-scout",
+    "file": "/art/avatar-woman-black-scout.webp",
+    "source": "assets/source/custom-avatar-woman-black-scout-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 18256,
+    "sha256": "78938c39a69e52d87d72fe40a2e8d3e222001e213adeefcda1f895ac93db8cdf",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-man-black-gaucho",
+    "file": "/art/avatar-man-black-gaucho.webp",
+    "source": "assets/source/custom-avatar-man-black-gaucho-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 23178,
+    "sha256": "04663a9ffb1688bd1f2dc53f4f38325a12cfb2c6f3bce7f1b60aff55c8a472b7",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-black-gaucho",
+    "file": "/art/avatar-woman-black-gaucho.webp",
+    "source": "assets/source/custom-avatar-woman-black-gaucho-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 22218,
+    "sha256": "8d1b6801ba7dfcf2a7b422a0badbca7476fb29f7c84ba4755aa48b63c507ef7e",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-man-black-artisan",
+    "file": "/art/avatar-man-black-artisan.webp",
+    "source": "assets/source/custom-avatar-man-black-artisan-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 24458,
+    "sha256": "d5bdfc3bbc1a0facf0b02fef61015eb33ff51092ac69b4ca9a6013589acc4342",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-black-artisan",
+    "file": "/art/avatar-woman-black-artisan.webp",
+    "source": "assets/source/custom-avatar-woman-black-artisan-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 19500,
+    "sha256": "42a249f5146d5e16401e6db533c280305d59477e7be350b373bb9bc699414de1",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-man-black-medic",
+    "file": "/art/avatar-man-black-medic.webp",
+    "source": "assets/source/custom-avatar-man-black-medic-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 18776,
+    "sha256": "64aa87b8cc75169980293646b3d220e122adf6fc30776e73df8a34e505bf0d2f",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-black-medic",
+    "file": "/art/avatar-woman-black-medic.webp",
+    "source": "assets/source/custom-avatar-woman-black-medic-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 21048,
+    "sha256": "48af592e6e9ac45d0e85dae58f7ac522979fdc788932dbf869927101a0dd1789",
+    "fictional": true,
+    "method": "built-in image_gen"
+  }
+]

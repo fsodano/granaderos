@@ -12,7 +12,7 @@ export const GARRISON_RANKS=[
 ];
 function newGarrisonMember(s,rank){
  const stats=GARRISON_RANKS[rank],key=ammoResourceKey(weaponAmmoType(stats.weapon)),rounds=Math.min(6,s.resources[key]??0);s.resources[key]-=rounds;
- return initializeUnitAmmunition({...stats,id:s.nextMilitiaId++,name:`${stats.name} de la guarnición`,hp:stats.maxHp,militia:true,militiaRank:rank,leadership:30+rank*15,wisdom:55,dexterity:55,medical:15,loaded:Math.min(1,rounds),ammo:Math.max(0,rounds-1),condition:85,priming:6,flints:0,rations:0,medkits:0,torches:0,boleadoras:rank===1?1:0,inventory:{},overwatch:true},{defaultCount:0});
+ return initializeUnitAmmunition({...stats,id:s.nextMilitiaId++,name:`${stats.name} de la guarnición`,hp:stats.maxHp,militia:true,militiaRank:rank,leadership:30+rank*15,wisdom:55,dexterity:55,medical:15,loaded:Math.min(1,rounds),ammo:Math.max(0,rounds-1),condition:85,rations:0,medkits:0,torches:0,boleadoras:rank===1?1:0,inventory:{},overwatch:true},{defaultCount:0});
 }
 // Paid cohorts can exist as counts before their first deployment. Create only
 // the records needed by a transfer, using the same finite initial ammunition.
@@ -64,7 +64,7 @@ export function returnGarrison(s,request,snapshot,dispositions=[]){
 }
 export function validGarrisons(s){
  if(!s.garrisons||typeof s.garrisons!=='object'||Array.isArray(s.garrisons)||!Number.isInteger(s.nextMilitiaId)||s.nextMilitiaId<20000||s.nextMilitiaId>1e9)return false;
- const ids=new Set();return Object.entries(s.garrisons).every(([sector,units])=>s.sectors[sector]&&Array.isArray(units)&&units.length<=1000&&units.every(u=>{if(!u||!validMilitiaExperience(u)||typeof u.name!=='string'||u.name.length>100||!Number.isInteger(u.weapon)||u.weapon<0||u.weapon>65535||u.blade!==undefined&&(!Number.isInteger(u.blade)||u.blade<0||u.blade>65535)||!Number.isFinite(u.condition)||u.condition<0||u.condition>100||!Number.isInteger(u.maxHp)||u.maxHp<1||u.maxHp>100||!Number.isInteger(u.id)||u.id<20000||u.id>=s.nextMilitiaId||ids.has(u.id)||!Number.isInteger(u.militiaRank)||u.militiaRank<0||u.militiaRank>2||u.militia!==true||!Number.isFinite(u.hp)||u.hp<=0||u.hp>u.maxHp||(u.loaded??0)>(WEAPONS[u.weapon]?.capacity??0))return false;ids.add(u.id);validatePersonalInventory(u.inventory??{});return ['ammo','loaded','priming','flints','rations','torches','medkits','boleadoras'].every(k=>Number.isInteger(u[k]??0)&&(u[k]??0)>=0&&(u[k]??0)<=100000);}));
+ const ids=new Set();return Object.entries(s.garrisons).every(([sector,units])=>s.sectors[sector]&&Array.isArray(units)&&units.length<=1000&&units.every(u=>{if(!u||!validMilitiaExperience(u)||typeof u.name!=='string'||u.name.length>100||!Number.isInteger(u.weapon)||u.weapon<0||u.weapon>65535||u.blade!==undefined&&(!Number.isInteger(u.blade)||u.blade<0||u.blade>65535)||!Number.isFinite(u.condition)||u.condition<0||u.condition>100||!Number.isInteger(u.maxHp)||u.maxHp<1||u.maxHp>100||!Number.isInteger(u.id)||u.id<20000||u.id>=s.nextMilitiaId||ids.has(u.id)||!Number.isInteger(u.militiaRank)||u.militiaRank<0||u.militiaRank>2||u.militia!==true||!Number.isFinite(u.hp)||u.hp<=0||u.hp>u.maxHp||(u.loaded??0)>(WEAPONS[u.weapon]?.capacity??0))return false;ids.add(u.id);validatePersonalInventory(u.inventory??{});return ['ammo','loaded','rations','torches','medkits','boleadoras'].every(k=>Number.isInteger(u[k]??0)&&(u[k]??0)>=0&&(u[k]??0)<=100000);}));
 }
 
 export function reserveMilitiaTrainees(s,sector,rank,count){

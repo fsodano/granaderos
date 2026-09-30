@@ -20,11 +20,13 @@ test('explicit aiming uses the actual held facón and default enemy clicks still
  assert.equal(spriteOrderPose('throwKnife'),'strike');
 });
 
-test('knife cursor enters, cycles four affordable aim levels and cancels off characters without state changes',()=>{
+test('knife cursor enters, cycles four affordable aim levels and stays on empty tiles without state changes',()=>{
  const s=knifeField(),u=s.units[0],before=structuredClone(s);let cursor=rightClickAim(s,u,{mode:'move',aim:4});assert.deepEqual(cursor,{mode:'throwKnife',aim:0});
  for(let level=1;level<=4;level++){cursor=rightClickAim(s,u,{...cursor,target:s.units[1]});assert.equal(cursor.aim,level);}
  assert.equal(rightClickAim(s,u,{...cursor,target:s.units[1]}).aim,0);
- for(const target of [null,{x:5,y:2},{id:'absent',x:5,y:2}])assert.deepEqual(rightClickAim(s,u,{...cursor,target}),{mode:'move',aim:0});
+ assert.deepEqual(rightClickAim(s,u,{...cursor,target:null}),{mode:'throwKnife',aim:0});
+ assert.equal(rightClickAim(s,u,{...cursor,target:{x:5,y:2}}).mode,'throwKnife');
+ assert.deepEqual(rightClickAim(s,u,{...cursor,target:{id:'absent',x:5,y:2}}),{mode:'move',aim:0});
  assert.equal(rightClickAim(s,u,{...cursor,busy:true}),null);assert.deepEqual(s,before);
 });
 
