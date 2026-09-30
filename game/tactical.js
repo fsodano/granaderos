@@ -1,3 +1,4 @@
+import {worldCell} from './world-cells.js';
 import {fieldCapable} from './actor-condition.js';
 export {fieldCapable};
 export {completedTacticalVictory} from './battle-outcome.js';
@@ -2153,7 +2154,8 @@ function processRout(s,u){
   if(u.knockedDown||s.upperSurfaces?.length&&u.stance!=='standing'){if(!routedOrder(s,u,{type:'stance',stance:'standing'})||stopped())return;}
   if(u.entangled){if(!routedOrder(s,u,{type:'free'})||stopped())return;}
   if(stopped())return;
-  const exits=u.side==='player'?s.exits??[]:s.enemyExits??['N','E','S','W'].map(edge=>({id:`enemy:${edge}`,edge,destination:'__offmap_enemy__'}));
+  // Garrisons retain town custody; only hired squads can return to rural cells.
+  const exits=u.side==='player'?(s.exits??[]).filter(exit=>!u.militia||worldCell(exit.destination)?.anchor):s.enemyExits??['N','E','S','W'].map(edge=>({id:`enemy:${edge}`,edge,destination:'__offmap_enemy__'}));
   const proxy={...u,routed:false},routes=getReachable({...s,mode:'exploration'},proxy).filter(point=>tacticalLevel(point)===0).flatMap(point=>exits.filter(exit=>boundaryMatches(s,point,exit.edge)).map(exit=>({...point,exit})));
   routes.sort((a,b)=>a.cost-b.cost||a.exit.id.localeCompare(b.exit.id)||a.y-b.y||a.x-b.x);
   if(!routes.length){lowerWeapon(u);u.surrendered=true;u.ap=0;sayObserved(s,[u],`${u.name} se rinde: no encuentra un paso de salida.`);checkEnd(s);return;}

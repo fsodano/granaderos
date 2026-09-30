@@ -1,3 +1,4 @@
+import {validWorldLocation,campaignPlace} from './world-cells.js';
 // A07 assignment attention only. These helpers never advance time or perform work.
 import {ALL_ASSIGNMENTS,CARE_ASSIGNMENTS,WORK_ASSIGNMENTS} from './assignment-labels.js';
 import {SLEEP_ISSUE_TEXT} from './sleep.js';
@@ -81,7 +82,7 @@ function bindingData(binding,ids){
   let values;try{values=JSON.parse(binding);}catch{need(false);}
   need(Array.isArray(values)&&values.length===7&&JSON.stringify(values)===binding);
   const [assignment,id,sector,target,skill,instructor,weapon]=values;
-  need(typeof assignment==='string'&&Object.hasOwn(assignments,assignment)&&assignment!=='active'&&(ids.has(id)||assignment==='militia'&&id===null)&&sectors.has(sector));
+  need(typeof assignment==='string'&&Object.hasOwn(assignments,assignment)&&assignment!=='active'&&(ids.has(id)||assignment==='militia'&&id===null)&&(assignment==='militia'?sectors.has(sector):validWorldLocation(sector)));
   if(assignment==='militia'){
     need(integer(target,0,2)&&integer(skill,0,24*365*100)&&integer(instructor,1,96)&&weapon===3);
   }else{
@@ -131,7 +132,7 @@ export function validateAssignmentAttention(s,roster){
 
 export function assignmentAttentionText(s,event,roster){
   const op=roster.find(op=>op.id===event.operativeId),name=op?.nickname??op?.name??'El personal';
-  const place=CAMPAIGN_SECTORS.find(sector=>sector.id===event.sector)?.name??event.sector;
+  const place=campaignPlace(event.sector)?.name??event.sector;
   const reasons=event.assignment==='sleep'?SLEEP_ISSUE_TEXT:Object.hasOwn(CARE_ASSIGNMENTS,event.assignment)?CARE_ISSUE_TEXT:WORK_ISSUE_TEXT;
   const reason=reasons[event.code]??'La asignación necesita atención.';
   return `${name} · ${assignments[event.assignment]??'Asignación'} en ${place}: ${reason}`;

@@ -1,5 +1,4 @@
-import {CAMPAIGN_SECTORS} from './data.js';
-import {validWorldLocation} from './world-cells.js';
+import {validWorldLocation,worldCell} from './world-cells.js';
 
 export const EXIT_EDGES = ['N', 'E', 'S', 'W'];
 // Explicit road links on schematic maps. Mountain passages need not retain
@@ -22,7 +21,6 @@ const links = [
   ['salta', 'N', 10, 0, 'jujuy', 'E', 19, 7],
   ['jujuy', 'W', 0, 7, 'humahuaca', 'E', 19, 7],
 ];
-const campaignIds = new Set(CAMPAIGN_SECTORS.map(s => s.id));
 const descriptor = (source, edge, destination, entryEdge, x, y) => ({
   id: `${source}:${destination}`, edge, destination, entryEdge, entryAnchor: {x, y},
 });
@@ -31,11 +29,18 @@ export function sectorExits(sectorId, sceneId = null) {
   if (sceneId === 'yatasto' && sectorId === 'tucuman') return [descriptor('yatasto', 'S', 'tucuman', 'N', 13, 0)];
   if (sceneId != null) return [];
   if (sectorId === 'san_lorenzo') return [descriptor('san_lorenzo', 'S', 'san_nicolas', 'N', 12, 0)];
-  if (!campaignIds.has(sectorId)) return [];
+  if (!validWorldLocation(sectorId)) return [];
   const result = links.flatMap(([a, aEdge, ax, ay, b, bEdge, bx, by]) =>
     a === sectorId ? [descriptor(a, aEdge, b, bEdge, bx, by)] :
     b === sectorId ? [descriptor(b, bEdge, a, aEdge, ax, ay)] : []);
-  return result.sort((a, b) => a.id.localeCompare(b.id));
+  result.sort((a,b)=>a.id.localeCompare(b.id));
+  // Preserve named road routes first. Rural cells use their physical neighbours.
+  const cell=worldCell(sectorId);
+  for(const [dx,dy,edge,entryEdge,x,y] of [[0,-1,'N','S',2,15],[1,0,'E','W',0,8],[0,1,'S','N',2,0],[-1,0,'W','E',19,8]]){
+    const next=worldCell(`cell-${cell.col+dx}-${cell.row+dy}`);
+    if(next?.land&&!result.some(e=>e.destination===next.location))result.push(descriptor(sectorId,edge,next.location,entryEdge,x,y));
+  }
+  return result;
 }
 
 export function findSectorExit(sectorId, sceneId, exitId) {

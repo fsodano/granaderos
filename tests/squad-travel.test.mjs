@@ -70,7 +70,7 @@ test('mounted travelers lose stamina hourly and retain hired mounts until arriva
  s=wait(s,24);assert.equal(h().location,'buenos_aires');assert.equal(h().returned,true);roundtrip(s);
 });
 test('posta charges a remount per started stage; save/reload does not charge twice',()=>{
- let s=initialCampaign();s.routes.posta=true;const horses=s.resources.horses;s=queue(s,'ensenada',{mode:'posta'});assert.equal(s.resources.horses,horses);s=wait(s,1);assert.equal(s.resources.horses,horses-1);s=restoreCampaign(serializeCampaign(s));s=wait(s,3);assert.equal(s.resources.horses,horses-1);s=wait(s,24);assert.equal(s.hour,8);assert.equal(s.resources.horses,horses-2);assert.equal(record(s).fatigue,8);
+ let s=initialCampaign();s.routes.posta=true;const cash=s.resources.treasury,horses=structuredClone(s.horseState.horses);s=queue(s,'ensenada',{mode:'posta'});assert.equal(s.resources.treasury,cash);s=wait(s,1);assert.equal(s.resources.treasury,cash-10);s=restoreCampaign(serializeCampaign(s));s=wait(s,3);assert.equal(s.resources.treasury,cash-10);s=wait(s,24);assert.equal(s.hour,8);assert.equal(s.resources.treasury,cash-20);assert.deepEqual(s.horseState.horses,horses);assert.equal(record(s).fatigue,8);
 });
 test('another squad travels during tactical time synchronization',()=>{
  let s=queue(split());s=order(s,{type:'selectSquad',id:'squad-1'});s=order(s,{type:'visitSector',sector:'retiro'});const before=structuredClone(s.pendingBattle.squad);s=order(s,{type:'syncTacticalTime',battleId:s.pendingBattle.id,elapsedSeconds:12*3600});assert.equal(s.squads.find(q=>q.name==='Exploradores').location,'buenos_aires');assert.equal(s.location,'retiro');assert.deepEqual(s.pendingBattle.squad,before);roundtrip(s);
@@ -78,7 +78,7 @@ test('another squad travels during tactical time synchronization',()=>{
 test('invalid saved journey progress, routes and double deployment are rejected',()=>{
  const s=wait(queue(initialCampaign()),3);
  for(const change of [j=>j.elapsed=-1,j=>j.elapsed=12,j=>j.legHours=1,j=>j.path=['retiro','mendoza'],j=>j.path[0]='ensenada',j=>j.status='teleport',j=>j.mode='balloon',j=>j.startedAt=99,j=>j.status='paused']){const bad=structuredClone(s);change(q(bad).journey);assert.throws(()=>restoreCampaign(JSON.stringify(bad)),/ruta|avance/);}
- for(const change of [r=>r.asleep=true,r=>r.assignment='rest']){const bad=structuredClone(s);change(record(bad));assert.throws(()=>restoreCampaign(JSON.stringify(bad)),/viajeros/);}
+ for(const change of [r=>r.asleep=true,r=>r.assignment='rest']){const bad=structuredClone(s);change(record(bad));assert.throws(()=>restoreCampaign(JSON.stringify(bad)),/viajeros|asignaciones incompatibles/);}
  roundtrip(s);
 });
 

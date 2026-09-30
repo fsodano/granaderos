@@ -1,23 +1,25 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {physicalEntryAnchor} from '../game/sector-expansion.js';
+import {WORLD_CELLS,worldCell,adjacentCells} from '../game/world-cells.js';
 import {CAMPAIGN_SECTORS} from '../game/data.js';
 import {sectorExits,findSectorExit,entryFromSector,exitAnchorFor,boundaryMatches,validEntry,inwardFromBoundary,validateSectorExits} from '../game/tactical-exits.js';
 import {buildSectorMap} from '../game/maps.js';
 import {createBattle,getReachable,movementStepCost} from '../game/tactical.js';
 
-test('route definitions cover the exact campaign graph and use fresh stable descriptors', () => {
+test('route definitions preserve every campaign road and add only adjacent land cells with stable descriptors', () => {
   let directed = 0;
   for (const sector of CAMPAIGN_SECTORS) {
     const exits = sectorExits(sector.id);
-    assert.deepEqual(exits.map(e => e.destination).sort(), [...sector.neighbors].sort());
+    assert.deepEqual(exits.filter(e=>sector.neighbors.includes(e.destination)).map(e=>e.destination).sort(),[...sector.neighbors].sort());
+    assert.ok(exits.filter(e=>!sector.neighbors.includes(e.destination)).every(e=>worldCell(e.destination).land&&adjacentCells(sector.id,e.destination)));
     assert.equal(new Set(exits.map(e => e.id)).size, exits.length);
     assert.equal(validateSectorExits(sector.id, null, exits), true);
     for (const exit of exits) {
       assert.equal(exit.id, `${sector.id}:${exit.destination}`);
       assert.deepEqual(findSectorExit(sector.id, null, exit.id), exit);
       assert.ok(sectorExits(exit.destination).some(e => e.destination === sector.id));
-      directed++;
+      if(sector.neighbors.includes(exit.destination))directed++;
     }
     exits[0].entryAnchor.x = -1;
     assert.ok(sectorExits(sector.id).every(e => e.entryAnchor.x >= 0));
@@ -84,4 +86,15 @@ test('authorized route subsets validate while forged topology and duplicate IDs 
     [{...exits[0], entryAnchor: {x: 2, y: 0}}], [{...exits[0], ignoreOccupancy: true}],
     [{...exits[0], entryEdge: 'N'}], [null], {}, null,
   ]) assert.equal(validateSectorExits('buenos_aires', null, bad), false);
+});
+
+
+test('all land-cell exits use canonical identities and have symmetric boundary routes',()=>{
+ for(const cell of WORLD_CELLS){
+  const exits=sectorExits(cell.location);if(!cell.land){assert.deepEqual(exits,[]);continue;}
+  assert.ok(validateSectorExits(cell.location,null,exits));assert.equal(new Set(exits.map(e=>e.id)).size,exits.length);
+  if(!cell.anchor)assert.ok(exits.every(e=>worldCell(e.destination).land&&adjacentCells(cell.location,e.destination)));
+  for(const exit of exits){assert.ok(findSectorExit(exit.destination,null,`${exit.destination}:${cell.location}`));assert.deepEqual(entryFromSector(cell.location,exit.destination),{entryEdge:exit.entryEdge,entryAnchor:exit.entryAnchor});}
+ }
+ assert.deepEqual(sectorExits('cell-27-28'),[],'aliases cannot define a second identity for a locality');
 });

@@ -41,5 +41,5 @@ test('an adjacent enemy destination previews an assault and arrives at the bound
 });
 test('transport preview uses the selected transport duration and rejects unavailable transport',()=>{
  const s=initialCampaign();assert.equal(previewStrategicRoute(s,s.activeSquadId,'buenos_aires','posta').valid,false);
- s.routes.posta=true;s.resources.horses=2;assert.equal(previewStrategicRoute(s,s.activeSquadId,'ensenada','posta').hours,8);
+ s.routes.posta=true;assert.equal(previewStrategicRoute(s,s.activeSquadId,'ensenada','posta').hours,8);
 });

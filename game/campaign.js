@@ -61,7 +61,7 @@ import {moveSectorItem} from './sector-inventory.js';
 import {handLayout} from './hand-layout.js';
 import {initialContractAttention,migrateContractAttention,reconcileContractAttention,collectContractAttention,validateContractAttention} from './contract-attention.js';
 import {totalSectorIncome} from './sector-income.js';
-import {queueSquadTravel,cancelSquadTravel,resumeSquadTravel,advanceSquadTravel,validateSquadTravel,readyAssaultSquads,arriveForAssault,validateAssaultDeployment} from './squad-travel.js';
+import {assaultNeighbor,queueSquadTravel,cancelSquadTravel,resumeSquadTravel,advanceSquadTravel,validateSquadTravel,readyAssaultSquads,arriveForAssault,validateAssaultDeployment} from './squad-travel.js';
 import {gainFatigue,needsCollapseRecovery} from './fatigue.js';
 import {advanceMarchFatigue,tooTiredToMarch} from './march-fatigue.js';
 import {assertSaveSize} from './save-limits.js';
@@ -369,6 +369,7 @@ function completeDeploymentReport(s,request,action){
   requireThat(action.sectorState&&Array.isArray(action.survivors),'El despliegue necesita un estado táctico completo y un parte de todos los combatientes.');
   const raw=action.sectorState,snapshot=validateSectorSnapshot(raw),ids=request.squad.map(u=>String(u.id));
   requireThat(snapshot.battleId===request.id&&snapshot.sectorId===request.sector&&(snapshot.sceneId??null)===(request.sceneId??null),'El estado táctico no corresponde al despliegue y sector pendientes.');
+  requireThat(worldCell(request.sector)?.anchor!==false||snapshot.sourceMapId===request.sector,'El parte no corresponde a la celda del despliegue.');
   validateAcknowledgedNpcGiftReceipts(s,snapshot.npcs,request.sector);
   hasPendingCivilians(s,snapshot);
   const previous=request.sceneId?s.sceneStates[request.sceneId]:s.sectorStates[request.sector];
@@ -842,7 +843,7 @@ export function dispatchCampaign(previous,action){
       case 'attack':{
         const at=action.sector??'san_lorenzo',san=at==='san_lorenzo',def=san?{id:at,name:'Combate de San Lorenzo',biome:'river',theater:'coast'}:sector(at);
         requireThat(at===s.location||!s.squad.some(id=>tooTiredToMarch(s.operativeState[id])),'La escuadra necesita descansar antes de atacar.');
-        requireThat(def,'No existe ese campo de batalla.');requireThat(san?s.location==='san_nicolas':(s.location===at||def.neighbors.includes(s.location)),'La escuadra debe marchar a un sector vecino antes de atacar.');requireThat(!(['uspallata','los_patos'].includes(at)&&campaignDate(s).month>=6&&campaignDate(s).month<=8),'La nieve invernal ha cerrado los pasos.');requireThat(s.squad.some(id=>s.operativeState[id].alive&&s.operativeState[id].hp>0),'No hay combatientes disponibles.');
+        requireThat(def,'No existe ese campo de batalla.');requireThat(san?s.location==='san_nicolas':(s.location===at||assaultNeighbor(s.location,at)),'La escuadra debe marchar a un sector vecino antes de atacar.');requireThat(!(['uspallata','los_patos'].includes(at)&&campaignDate(s).month>=6&&campaignDate(s).month<=8),'La nieve invernal ha cerrado los pasos.');requireThat(s.squad.some(id=>s.operativeState[id].alive&&s.operativeState[id].hp>0),'No hay combatientes disponibles.');
         if(san)requireThat(!campaignStory(s),'Esta campaña utiliza sus propios objetivos.');
         if(san)requireThat(s.phase>=1&&!s.flags.sanLorenzo&&s.sectors.san_nicolas.owner==='patriot','Organiza Retiro y libera San Nicolás antes de combatir en San Lorenzo.');
         else {requireThat(s.sectors[at].owner==='royalist'||(s.blockade&&def.theater==='coast'),'El sector ya está bajo control patriota.');requireThat(def.neighbors.some(id=>s.sectors[id].owner==='patriot'&&isSupplied(s,id)),'Debes abrir una ruta hasta el frente.');}

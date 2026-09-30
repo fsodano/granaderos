@@ -20,16 +20,16 @@ export function previewStrategicRoute(s,squadId,destination,mode='march'){
  if(!cell)return reject('Elegí un destino en el mapa.');
  destination=locationId(destination);
  if(destination===q.location)return reject('La escuadra ya está en este sector.');
- if(!cell.anchor||!worldCell(q.location)?.anchor){
+ const target=CAMPAIGN_SECTORS.find(d=>d.id===destination);
+ const intent=target&&(s.sectors[destination].owner==='royalist'||s.blockade&&target.theater==='coast')?'attack':'travel';
+ if(!cell.anchor||!worldCell(q.location)?.anchor&&intent!=='attack'){
   if(mode!=='march')return reject('Para esta celda, elegí marcha a pie.');
   const plan=cellTravelPlan({...s,location:q.location},destination);
   if(plan.reason)return reject(plan.reason);
   return {valid:true,reason:null,path:plan.path,hours:plan.hours,action:{type:'travel',sector:destination,mode}};
  }
- const target=CAMPAIGN_SECTORS.find(d=>d.id===destination);
  if(!target)return reject('Elegí un destino en el mapa.');
  if(destination===q.location)return reject('La escuadra ya está en este sector.');
- const intent=s.sectors[destination].owner==='royalist'||s.blockade&&target.theater==='coast'?'attack':'travel';
  if(intent==='attack'){
   if(s.completed)return reject('La campaña está ganada.');
   if(!target.neighbors.some(id=>s.sectors[id].owner==='patriot'&&isSupplied(s,id)))return reject('Debes abrir una ruta hasta el frente.');

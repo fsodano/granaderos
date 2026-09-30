@@ -1,9 +1,9 @@
 import {expandCellScene} from './cell-scene-storage.js';
-import {validWorldLocation} from './world-cells.js';
+import {validWorldLocation,worldOwner,worldCell} from './world-cells.js';
 import {buildSectorMap} from './maps.js';
 import {authoredEnvironment} from './environment-interactions.js';
 import {validateReloadProgress} from './weapon-reload.js';
-import {CAMPAIGN_SECTORS,WEAPONS} from './data.js';
+import {WEAPONS} from './data.js';
 import {sectorExits,validateSectorExits,boundaryMatches,entryFromSector,validEntry} from './tactical-exits.js';
 import {planReturnAmmunition,fieldAmmunition,storedWeaponAmmunition,ammunitionSource} from './ammunition.js';
 import {fieldAmmunitionByType,totalAmmoCounts,addAmmoCounts,unitAmmunitionByType} from './campaign-ammunition.js';
@@ -16,7 +16,8 @@ import {FITTING_RULES_VERSION,normalizeUnitFittings} from './weapon-fittings.js'
 const clone=value=>structuredClone(value);
 const need=(ok,message)=>{if(!ok)throw Error(message);};
 const sector=id=>validWorldLocation(id)||id==='san_lorenzo';
-const authorizedExits=(s,request)=>sectorExits(request.sector,request.sceneId??null).filter(e=>s.sectors[e.destination]?.owner==='patriot'&&!s.enemyGroups?.some(g=>g.target===e.destination&&['engaged','stationed'].includes(g.status)));
+const safeExit=(s,destination)=>['patriot','neutral'].includes(worldOwner(s,destination))&&!s.enemyGroups?.some(g=>(g.target===destination||g.target===worldCell(destination)?.locality)&&['waiting','engaged','stationed'].includes(g.status));
+const authorizedExits=(s,request)=>sectorExits(request.sector,request.sceneId??null).filter(e=>safeExit(s,e.destination));
 export const strategicSector=request=>request.sector==='san_lorenzo'?'san_nicolas':request.sector;
 export function recordStrategicArrival(s,ids,fromSector,toSector,sceneId=null){
   const entry=entryFromSector(fromSector,toSector,sceneId);if(!entry)return;
@@ -63,7 +64,8 @@ function departureFor(s,request,snapshot,u){
   const d=u.departure,e=request.exits.find(e=>e.id===d.exitId);
   need(e&&d.edge===e.edge&&d.destination===e.destination&&boundaryMatches(snapshot,d,e.edge),'La salida no corresponde a una ruta del despliegue.');
   need(Number.isSafeInteger(d.elapsedSeconds)&&d.elapsedSeconds>=0&&d.elapsedSeconds<=(snapshot.elapsedSeconds??0),'El reloj de salida es inválido.');
-  need(s.sectors[e.destination]?.owner==='patriot'&&!s.enemyGroups?.some(g=>g.target===e.destination&&['engaged','stationed'].includes(g.status)),'El destino de salida está ocupado.');
+  need(safeExit(s,e.destination),'El destino de salida está ocupado.');
+  need(!u.militia||worldCell(e.destination)?.anchor,'La guarnición necesita una localidad de destino.');
   need(d.mountId===null||typeof d.mountId==='string'&&d.mountId===u.mount?.id,'La montura de salida no corresponde al combatiente.');
   return {...clone(d),entryEdge:e.entryEdge,entryAnchor:clone(e.entryAnchor)};
 }
@@ -129,7 +131,7 @@ export function planMountReturn(s,request,snapshot,entries){
 
 export function migrateDeploymentReturns(s){s.sectorRemains??={};for(const r of Object.values(s.operativeState??{}))r.capturedAmmunition??={loaded:0,ammo:0};return s;}
 const sameEntry=(a,b)=>Boolean(a&&b&&a.entryEdge===b.entryEdge&&a.entryAnchor?.x===b.entryAnchor?.x&&a.entryAnchor?.y===b.entryAnchor?.y);
-const knownExit=id=>[...CAMPAIGN_SECTORS.flatMap(s=>sectorExits(s.id)),...sectorExits('san_lorenzo'),...sectorExits('tucuman','yatasto')].find(e=>e.id===id);
+const knownExit=id=>{if(typeof id!=='string')return null;const source=id.split(':')[0];return sectorExits(source==='yatasto'?'tucuman':source,source==='yatasto'?'yatasto':null).find(e=>e.id===id);};
 function remainsDimensions(s,exit){
   const source=exit.id.slice(0,exit.id.indexOf(':'));
   const saved=source==='yatasto'?s.sceneStates?.[source]:s.sectorStates?.[source];
