@@ -3174,5 +3174,27 @@
     "reason": "The reporting shell command hid the failing exit code. The loose-bayonet audit read catalog values instead of the held profile. New authored packages also inherited fixed-bayonet values. Both are corrected.",
     "currentPassed": 38,
     "currentFailed": 0
+  },
+  "cleanBuildRepair": {
+    "source": "816544c971ded1005c2144a84f4d9455e83970302802718de63347a1c16f970b",
+    "failure": "CI clean build treated generated web/next-env.d.ts as source mutation",
+    "reproduction": {
+      "exit": 1,
+      "changedSourcePaths": [
+        "web/next-env.d.ts"
+      ],
+      "log": "/tmp/granaderos-cold-build-diagnostic.log"
+    },
+    "regressionTests": {
+      "passed": 1,
+      "failed": 0
+    },
+    "coldBuild": {
+      "passed": true,
+      "files": 1131,
+      "assetReferences": 1031,
+      "log": "/tmp/granaderos-cold-build-fixed.log",
+      "served": false
+    }
   }
 }

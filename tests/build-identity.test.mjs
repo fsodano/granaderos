@@ -15,5 +15,11 @@ test('game, editor, tools and public art changes each produce a different source
   }
   await writeFile(join(root,'web/dist/output.js'),'compiled output');await writeFile(join(root,'web/node_modules/dependency.js'),'installed dependency');
   assert.deepEqual(await buildIdentity(root),before,'outputs and installed modules cannot make identity depend on prior builds');
+  await writeFile(join(root,'web/next-env.d.ts'),'generated route declarations');
+  assert.deepEqual(await buildIdentity(root),before,'a clean build can generate route declarations without changing its identity');
+  await writeFile(join(root,'web/next-env.d.ts'),'updated generated declarations');
+  assert.deepEqual(await buildIdentity(root),before);
+  await rm(join(root,'web/next-env.d.ts'));
+  assert.deepEqual(await buildIdentity(root),before);
  }finally{await rm(root,{recursive:true,force:true});}
 });
