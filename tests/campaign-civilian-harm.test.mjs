@@ -187,13 +187,14 @@ test('real paid grenade death survives synchronization, live save, final report,
  let b=createBattle(request.squad.map(unit=>({...unit,x:1,y:2})),{...request,seed:45,width:12,height:10,tiles:flat(),enemies:[],props:[],npcs:request.npcs.map((npc,index)=>({...npc,x:index?10:5,y:index?6+index:2,...(index?{}:{hp:40,energy:100})}))});
  const id=b.npcs[0].id;b=act(b,{type:'throwGrenade',unitId:'110',x:5,y:2});assert.equal(b.npcs[0].hp,0);assert.equal(civilianIncidents(b.npcs[0])[0].kind,'death');
  ({campaign:s,battle:b}=sync(s,b));assert.equal(s.sectors.mendoza.loyalty,loyalty-10);assert.equal(s.cityLoyaltyEvents.filter(event=>event.kind.startsWith('civilian')).length,1);
- ({campaign:s,battle:b}=decodeSave(encodeSave(s,b)));const before=structuredClone(s);({campaign:s,battle:b}=sync(s,b));assert.deepEqual(s,before);
+ ({campaign:s,battle:b}=decodeSave(encodeSave(s,b)));const before={...structuredClone(s),secondOfHour:s.secondOfHour??0};({campaign:s,battle:b}=sync(s,b));assert.deepEqual(s,before);
  const omitted=structuredClone(b);omitted.npcs=omitted.npcs.filter(npc=>npc.id!==id);assert.throws(()=>decodeSave(encodeSave(s,omitted)));const rejected=dispatchCampaign(s,{type:'leaveSector',battleId:s.pendingBattle.id,sectorState:omitted,survivors:omitted.units.filter(unit=>unit.side==='player')});assert.ok(rejected.lastError);assert.deepEqual({...rejected,lastError:null},{...s,lastError:null});
  s=finish(s,b);s=snapshot(s);const hour=s.hour;s=order(s,{type:'visitSector'});assert.equal(s.hour,hour);b=enterSector(s.pendingBattle,s.sectorStates.mendoza);assert.equal(b.npcs.find(npc=>npc.id===id).hp,0);({campaign:s,battle:b}=sync(s,b));assert.equal(s.sectors.mendoza.loyalty,loyalty-10);assert.equal(record(s,id).incidents.length,1);s=finish(s,b);assert.deepEqual(snapshot(s),s);
 });
 
 test('an accepted errand fails once on contact death and retains that result through saves and reentry',()=>{
  let {s,b}=visit();
+ const priorQuestRewards=s.cityLoyaltyEvents.filter(e=>e.kind==='quest').length;
  // Accepted-errand fixture isolates consequences; existing quest tests cover
  // the adjacent conversation and physical delivery controls.
  s.quests['retiro-uniformes']={status:'offered',offeredAt:s.hour,completedAt:null};
@@ -203,8 +204,8 @@ test('an accepted errand fails once on contact death and retains that result thr
  injury(b,npc,100,{intentional:true});({campaign:s,battle:b}=sync(s,b));
  assert.deepEqual(s.quests['retiro-uniformes'],{status:'failed',offeredAt:0,completedAt:null,failedAt:s.hour,failureReason:'contact-dead'});
  assert.equal(s.log.filter(e=>e.text.startsWith('Encargo fallido:')).length,1);
- assert.equal(s.cityLoyaltyEvents.filter(e=>e.kind==='quest').length,0);
- const before=structuredClone(s);({campaign:s,battle:b}=sync(s,b));assert.deepEqual(s,before);
+ assert.equal(s.cityLoyaltyEvents.filter(e=>e.kind==='quest').length,priorQuestRewards);
+ const before={...structuredClone(s),secondOfHour:s.secondOfHour??0};({campaign:s,battle:b}=sync(s,b));assert.deepEqual(s,before);
  s=finish(s,b);s=snapshot(s);s=order(s,{type:'visitSector'});b=enterSector(s.pendingBattle,s.sectorStates.retiro);
  assert.equal(s.quests['retiro-uniformes'].status,'failed');
  assert.equal(b.npcs.find(n=>n.id==='local-retiro').hp,0);
@@ -218,6 +219,20 @@ test('contact death neither creates an unknown errand nor revokes a completed de
   acknowledgeCivilianHarm(s,b);
   assert.equal(s.quests['retiro-uniformes']?.status,status==='unoffered'?undefined:status);
  }
+});
+
+test('a remote contact death dates the accepted errand at the wound clock and keeps a bounded diary',()=>{
+ let {s,b}=visit();s.quests['retiro-uniformes']={status:'offered',offeredAt:s.hour,completedAt:null};
+ const npc=b.npcs.find(n=>n.id==='local-retiro');injury(b,npc,98,{intentional:true});
+ ({campaign:s,battle:b}=sync(s,b));s=finish(s,b);
+ const deathHour=Math.floor((s.hour*3600+(s.secondOfHour??0)+6)/3600);
+ s.log=Array.from({length:80},(_,i)=>({hour:s.hour,text:`Entrada previa ${i}`}));
+ s=order(s,{type:'wait',hours:1});
+ assert.equal(s.civilianState.people['npc-local-retiro'].health.hp,0);
+ assert.equal(s.quests['retiro-uniformes'].failedAt,deathHour);
+ assert.equal(s.log.filter(e=>e.text.startsWith('Encargo fallido:')).length,1);
+ assert.ok(s.log.length<=80);assert.deepEqual(snapshot(s),s);
+ s=order(s,{type:'wait',hours:1});assert.equal(s.log.filter(e=>e.text.startsWith('Encargo fallido:')).length,1);
 });
 
 test('failed-errand saves require a matching death receipt and bounded failure date',()=>{

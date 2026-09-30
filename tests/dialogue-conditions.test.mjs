@@ -5,15 +5,15 @@ import {initialCampaign,dispatchCampaign} from '../game/campaign.js';
 import {dialogueForNPC} from '../game/content-dialogue.js';
 import {dialogueConditionsMet} from '../game/dialogue-conditions.js';
 import {equipmentCatalog} from '../game/equipment.js';
-import {getReachable} from '../game/tactical.js';
+import {approachNPC} from './approach-npc.mjs';
 import {dialoguePackage} from './dialogue-fixture.mjs';
 import {secureArea} from './controlled-area-fixture.mjs';
-import {A,order,saved,localNPC,localId,readyLocal,talk,leave,visit,tactical,hireLocal} from './local-contract-fixture.mjs';
+import {A,order,saved,localNPC,localId,readyLocal,talk,leave,visit,tactical,hireLocal,sync} from './local-contract-fixture.mjs';
 const content=conditions=>{const d=dialoguePackage();d.characters.at(-1).encounter.dialogue.nodes[0].choices[0].conditions=conditions;return d;};
 const ready=conditions=>readyLocal(undefined,content(conditions));
 const visible=p=>dialogueForNPC(p.campaign,localNPC(p.battle),p.battle).choices.some(c=>c.id==='north');
 const select=p=>dispatchCampaign(p.campaign,{...talk(p,undefined,'dialogue'),dialogueNode:'start',dialogueChoice:'north'});
-function approach(p,npc){const unit=p.battle.units.find(u=>u.side==='player'),tile=getReachable(p.battle,unit.id).find(t=>Math.abs(t.x-npc.x)+Math.abs(t.y-npc.y)===1);assert.ok(tile);return tile.cost?tactical(p,{type:'move',x:tile.x,y:tile.y}):p;}
+const approach=(p,npc)=>sync({campaign:p.campaign,battle:approachNPC(p.battle,p.battle.units.find(u=>u.side==='player').id,npc.id)});
 
 test('day intervals hide a choice until the actual campaign day and close it after the final day',()=>{
  let p=ready([{type:'day',min:2,max:2}]);assert.equal(visible(p),false);assert.match(select(p).lastError,/no está disponible/);
@@ -35,7 +35,7 @@ test('all conditions must hold and ownership follows prepared, save-admitted loc
 
 test('confirmed civilian death opens a character-gated branch immediately without changing its owner identity',()=>{
  const d=content([{type:'character',character:'pablo-gate',state:'dead'}]),base=structuredClone(d.characters.at(-1));delete base.encounter.dialogue;d.characters.push({...base,id:'pablo-gate',name:'Pablo',attributes:{...base.attributes,maxHp:30}});d.placements.push({...structuredClone(d.placements.at(-1)),id:'pablo-place',character:'pablo-gate'});
- let p=readyLocal(undefined,d);assert.equal(visible(p),false);let npc=p.battle.npcs.find(n=>n.contentId==='pablo-gate');p=approach(p,npc);p=tactical(p,{type:'weapon',slot:'blade'});p=tactical(p,{type:'melee',targetId:npc.id});assert.equal(p.battle.npcs.find(n=>n.id===npc.id).hp,0);p=approach(p,localNPC(p.battle));p=saved(p);assert.equal(visible(p),true);assert.equal(select(p).lastConversation.dialogueNode,'north');
+ let p=readyLocal(undefined,d);assert.equal(visible(p),false);let npc=p.battle.npcs.find(n=>n.contentId==='pablo-gate');p=approach(p,npc);p=tactical(p,{type:'weapon',slot:'blade'});for(let i=0;i<3&&p.battle.npcs.find(n=>n.id===npc.id).hp>0;i++)p=tactical(p,{type:'melee',targetId:npc.id});assert.equal(p.battle.npcs.find(n=>n.id===npc.id).hp,0);p=approach(p,localNPC(p.battle));p=saved(p);assert.equal(visible(p),true);assert.equal(select(p).lastConversation.dialogueNode,'north');
 });
 
 test('character conditions distinguish presence, service and accepted deployed health',()=>{

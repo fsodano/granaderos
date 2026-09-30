@@ -3,13 +3,13 @@ import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign} from '../game/campaign.js';
 import {dialogueForNPC} from '../game/content-dialogue.js';
 import {contentQuestStatus,contentQuestJournal} from '../game/content-quests.js';
-import {getReachable} from '../game/tactical.js';
+import {approachNPC} from './approach-npc.mjs';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {questPackage} from './content-quest-fixture.mjs';
 import {dialoguePackage} from './dialogue-fixture.mjs';
-import {order,saved,localNPC,readyLocal,talk,leave,visit,tactical} from './local-contract-fixture.mjs';
+import {order,saved,localNPC,readyLocal,talk,leave,visit,tactical,sync} from './local-contract-fixture.mjs';
 const choose=(p,node,id,npcId=localNPC(p.battle).id)=>({...p,campaign:order(p.campaign,{...talk(p,undefined,'dialogue'),npcId,dialogueNode:node,dialogueChoice:id})});
-const approach=(p,npc=localNPC(p.battle))=>{const unit=p.battle.units.find(u=>u.side==='player'),tile=getReachable(p.battle,unit.id).find(t=>Math.abs(t.x-npc.x)+Math.abs(t.y-npc.y)===1);assert.ok(tile);return tile.cost?tactical(p,{type:'move',x:tile.x,y:tile.y}):p;};
+const approach=(p,npc=localNPC(p.battle))=>sync({campaign:p.campaign,battle:approachNPC(p.battle,p.battle.units.find(u=>u.side==='player').id,npc.id)});
 const progress=p=>contentQuestStatus(p.campaign,'river-post');
 
 test('an authored quest starts, waits for its actual day condition and completes with one saved reward',()=>{

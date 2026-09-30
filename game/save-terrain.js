@@ -1,4 +1,5 @@
 import {saveByteLength} from './save-limits.js';
+import {cellSceneExpandedBytes} from './cell-scene-storage.js';
 
 // Bound expansion before allocating tiles, independently of the file-size cap.
 export const MAX_EXPANDED_SAVE_BYTES=20_000_000;
@@ -25,6 +26,11 @@ export function expandSaveTerrain(value){
  for(const map of maps(value)){
   if(Array.isArray(map.tiles))continue;
   const packed=map.tiles,{width,height}=map;
+  if(packed?.format==='cell-tiles-v1'){
+   bytes+=cellSceneExpandedBytes(map)-saveByteLength(JSON.stringify(packed));
+   if(bytes>MAX_EXPANDED_SAVE_BYTES)throw Error('La partida expandida supera el límite de 20 MB.');
+   continue;
+  }
   if(!object(packed)||packed.encoding!=='palette-v1'||Object.keys(packed).some(k=>!['encoding','palette','indices'].includes(k))||!Number.isInteger(width)||width<4||width>128||!Number.isInteger(height)||height<4||height>128)invalid();
   const {palette,indices}=packed;
   if(!Array.isArray(indices)||indices.length!==width*height||!Array.isArray(palette)||!palette.length||palette.length>indices.length||!palette.every(t=>object(t)&&!Object.hasOwn(t,'x')&&!Object.hasOwn(t,'y'))||!indices.every(i=>Number.isInteger(i)&&i>=0&&i<palette.length))invalid();

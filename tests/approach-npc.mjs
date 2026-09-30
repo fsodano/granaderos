@@ -1,11 +1,14 @@
-import {actBattle,getReachable,endTurn} from '../game/tactical.js';
+import {actBattle,getReachable,endTurn,canSee} from '../game/tactical.js';
 // Civilian routines advance during movement. Replan short, legal steps rather
 // than walking toward an obsolete NPC coordinate on a larger sector.
 export function approachNPC(battle,unitId,npcId){
  for(let i=0;i<240;i++){
   const actor=battle.units.find(u=>u.id===String(unitId)),npc=battle.npcs.find(n=>n.id===npcId);
   if(!actor||!npc)throw Error('Missing interlocutor or actor.');
-  if(Math.abs(actor.x-npc.x)+Math.abs(actor.y-npc.y)<=1)return battle;
+  if(Math.abs(actor.x-npc.x)+Math.abs(actor.y-npc.y)<=1){
+   if(canSee(battle,actor,npc))return battle;
+   battle=actBattle(battle,{type:'look',unitId:actor.id,x:npc.x,y:npc.y});if(battle.lastError)throw Error(battle.lastError);continue;
+  }
   if(actor.hp>=15&&actor.energy<10&&battle.mode==='exploration'){battle=endTurn(battle);if(battle.lastError)throw Error(battle.lastError);continue;}
   const reachable=getReachable(battle,actor);
   const adjacent=reachable.filter(p=>Math.abs(p.x-npc.x)+Math.abs(p.y-npc.y)===1).sort((a,b)=>a.cost-b.cost)[0];

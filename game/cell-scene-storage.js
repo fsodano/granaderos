@@ -1,4 +1,4 @@
-import {expandCellTiles} from './cell-scene-codec.js';
+import {expandCellTiles,cellTilesPlan} from './cell-scene-codec.js';
 import {worldCell} from './world-cells.js';
 
 const FORMAT='cell-tiles-v1';
@@ -29,6 +29,13 @@ export function expandCellScene(scene){
  // These are the two actual cell layouts, not dimensions supplied by the codec.
  need(width===64&&height===48||width===20&&height===16);
  return {...scene,tiles:expandCellTiles(scene)};
+}
+
+// Inspect the cell codec without allocating tiles. Mixed-format saves use this
+// size in their shared expansion budget before either codec expands terrain.
+export function cellSceneExpandedBytes(scene){
+ need(cellScene(scene));
+ return cellTilesPlan(scene).bytes;
 }
 
 export function cellSceneSaveReplacer(replacer){

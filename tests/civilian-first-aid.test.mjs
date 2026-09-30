@@ -9,7 +9,7 @@ function field(actor={},patient={},extra={}){
  const s=createBattle([{id:'p',name:'Médico',x:2,y:2,facing:2,activeSlot:'medical',medical:60,medkits:2,...actor}],{
   width:16,height:10,seed:45,tiles:Array.from({length:160},(_,i)=>({x:i%16,y:Math.floor(i/16),type:i%16===10?'wall':'grass',blocked:i%16===10,blocksSight:i%16===10,cover:0})),
   enemies:[{id:'e',x:14,y:8,patrol:false,overwatch:false}],
-  npcs:[{id:'q',name:'Vecina',x:6,y:2,hp:50,energy:0,unconscious:true,stance:'prone',movementMode:'prone',bleeding:4,bandaged:0,civilianWoundVersion:1,bleedSource:unknown(),...patient}],...extra,
+  npcs:[{id:'q',name:'Vecina',x:6,y:2,civilianHealthVersion:1,maxHp:100,hp:50,energy:0,unconscious:true,stance:'prone',movementMode:'prone',bleeding:4,bandaged:0,civilianWoundVersion:1,bleedSource:unknown(),...patient}],...extra,
  });
  s.units[0].ap=actor.ap??60;for(const u of s.units.filter(u=>u.side==='enemy'))u.ap=0;return s;
 }

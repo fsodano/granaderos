@@ -27,11 +27,11 @@ export function validateQuests(quests,hour){
 }
 // Only a recorded death ends an accepted errand. Injury, flight and temporary
 // enemy occupation do not erase it, and completed deliveries remain credited.
-export function failQuestsForDeadContact(campaign,sectorId,sceneId,npcId){
+export function failQuestsForDeadContact(campaign,sectorId,sceneId,npcId,atHour=campaign.hour){
  if(sceneId)return [];
  const quest=NPC_QUESTS.find(q=>q.sector===sectorId&&q.npcId===npcId),record=quest&&campaign.quests?.[quest.id];
  if(record?.status!=='offered')return [];
- campaign.quests[quest.id]={...record,status:'failed',failedAt:campaign.hour,failureReason:'contact-dead'};
+ campaign.quests[quest.id]={...record,status:'failed',failedAt:atHour,failureReason:'contact-dead'};
  return [`Encargo fallido: ${quest.title}. El contacto murió.${quest.carried?' Los objetos ya entregados no se recuperan.':''}`];
 }
 export function validateQuestFailures(campaign){

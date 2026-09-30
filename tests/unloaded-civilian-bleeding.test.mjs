@@ -74,14 +74,14 @@ test('a loaded resident receives each wound interval once and first aid stops la
  const hp=npc(p).hp;let s=order(leave(saved(p)),{type:'wait',hours:24});assert.equal(health(s).hp,hp);assert.equal(s.operativeState[id(s)].alive,true);assert.ok(saved({campaign:s}));
 });
 
-test('off-screen civilian death fails offered or unoffered errands and applies the real responsibility once',()=>{
+test('off-screen civilian death fails only accepted errands and applies the real responsibility once',()=>{
  for(const offered of [true,false]){
  const d=defaultContentPackage();d.characters.find(c=>c.id==='person-110').arrivalHours=0;
  let p=visit(order(initialCampaign(42,d),{type:'recruitCivic',id:110,term:'month'}));p=approach(p,p.battle.npcs.find(n=>n.id==='local-retiro'));
  if(offered)p.campaign=order(p.campaign,{type:'talkNPC',npcId:'local-retiro',unitId:110,approach:'quest',sectorState:p.battle});
  p=act(p,{type:'melee',targetId:'local-retiro'});const target=p.battle.npcs.find(n=>n.id==='local-retiro');assert.ok(target.hp>0&&target.bleeding>0);
  const loyalty=p.campaign.sectors.retiro.loyalty;let s=order(leave(saved(p)),{type:'wait',hours:1});
- assert.equal(s.quests['retiro-uniformes'].status,'failed');assert.equal(s.sectors.retiro.loyalty,loyalty-10);assert.equal(s.cityLoyaltyEvents.filter(e=>e.eventId==='civilian:npc-local-retiro').length,1);
+ assert.equal(s.quests['retiro-uniformes']?.status,offered?'failed':undefined);assert.equal(s.sectors.retiro.loyalty,loyalty-10);assert.equal(s.cityLoyaltyEvents.filter(e=>e.eventId==='civilian:npc-local-retiro').length,1);
  const receipt=structuredClone(s.quests['retiro-uniformes']);s=order(saved({campaign:s}).campaign,{type:'wait',hours:1});assert.deepEqual(s.quests['retiro-uniformes'],receipt);assert.equal(s.sectors.retiro.loyalty,loyalty-10);assert.ok(saved({campaign:s}));
  }
 });

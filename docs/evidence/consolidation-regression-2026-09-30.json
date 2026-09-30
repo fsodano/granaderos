@@ -3132,5 +3132,47 @@
     "command": "node --test --test-concurrency=3 --test-reporter=tap tests/logistics-attention.test.mjs tests/logistics-interruptions.test.mjs tests/critical-first-aid.test.mjs tests/mission-ally-fitting-ownership.test.mjs tests/authored-militia-progression-render.test.mjs tests/fittings-campaign.test.mjs tests/militia-distribution.test.mjs tests/adjacent-supply-transfer-render.test.mjs tests/adjacent-weapon-transfer-render.test.mjs tests/adjacent-weapon-transfer.test.mjs",
     "logSha256": "a59e046d31a021f3f27b30980a4fff53cf1c745a774020872834fdebfa5ce09a",
     "scope": "Later focused checks; do not subtract these from the earlier full-run failure count."
+  },
+  "storySaveRepair": {
+    "source": "da312e261805b430b075d6b47b8bf76f74c9b7379b8107622cc95bd0e1e81e3f",
+    "scope": "Focused repair verification, not a complete regression run or browser performance measurement",
+    "runs": [
+      {
+        "name": "story-save",
+        "passed": 130,
+        "failed": 0,
+        "sha256": "246a3eda42d34e677d850c0e4ea45c6ad618c97d7d484dcf08268c1e210959a5",
+        "log": "/tmp/granaderos-story-save-final.tap"
+      },
+      {
+        "name": "errand-death",
+        "passed": 4,
+        "failed": 0,
+        "sha256": "20c21377b59ed48b9fef0b183cb4cb3640e29a1fd3d614b488ade34a4e215d7b",
+        "log": "/tmp/granaderos-quest-death-consequences.tap"
+      }
+    ],
+    "otherChecks": {
+      "typecheck": "passed",
+      "documentation": "passed",
+      "referenceAudit": {
+        "passed": 38,
+        "failed": 0
+      },
+      "privateProductionBuild": {
+        "passed": true,
+        "files": 1131,
+        "assetReferences": 1031,
+        "buildId": "da312e261805",
+        "served": false
+      }
+    }
+  },
+  "referenceAuditCorrection": {
+    "originalPassed": 36,
+    "originalFailed": 1,
+    "reason": "The reporting shell command hid the failing exit code. The loose-bayonet audit read catalog values instead of the held profile. New authored packages also inherited fixed-bayonet values. Both are corrected.",
+    "currentPassed": 38,
+    "currentFailed": 0
   }
 }

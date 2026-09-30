@@ -11,7 +11,7 @@ import {authoredOperative,authoredRoster} from './content-roster.js';
 import {civilianMaxHp,civilianRestoredHp,seedCivilianHealth,migrateCivilianHealth} from './civilian-health.js';
 import {civilianIncidents,validateCivilianWounds,advanceCivilianWoundTime} from './civilian-harm.js';
 import {recordCityLoyalty} from './cities.js';
-import {NPC_QUESTS} from './quests.js';
+import {failQuestsForDeadContact} from './quests.js';
 import {CIVILIAN_SUPPLY_FIELDS,civilianSuppliesFor,validCivilianSupplies} from './civilian-supplies.js';
 
 const need=(ok,message='El estado de los habitantes no coincide con la campaña.')=>{if(!ok)throw Error(message);};
@@ -60,8 +60,8 @@ function applyDeath(s,n,record,atHour=s.hour){
   const accidental=death.intentional?kind:kind==='civilianPlayerIntentional'?'civilianPlayerAccidental':`${kind}Accidental`;
   recordCityLoyalty(s,{sectorId:record.sector==='san_lorenzo'?'san_nicolas':record.sector,kind:accidental,eventId:`civilian:${civilianKey(n)}`});
  }
- for(const q of NPC_QUESTS.filter(q=>q.npcId===n.id))if(s.quests[q.id]?.status!=='completed')
-  s.quests[q.id]={...s.quests[q.id],status:'failed',offeredAt:s.quests[q.id]?.offeredAt??atHour,completedAt:null,failedAt:atHour,failureReason:'contact-dead'};
+ for(const text of failQuestsForDeadContact(s,record.sector,record.sceneId,n.id,atHour))s.log.unshift({hour:atHour,text});
+ s.log=s.log.slice(0,80);
  if(!campaignStory(s)&&(operativeId(n)===57||n.id==='yatasto-belgrano')&&!s.completed){
   s.defeated=true;
   if(record.sceneId==='yatasto')s.missions.yatasto={...(s.missions.yatasto??{}),stage:'failed',completed:false};

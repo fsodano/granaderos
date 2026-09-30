@@ -6,7 +6,9 @@ const root=resolve(process.argv[2]??dirname(fileURLToPath(import.meta.url))+'/..
 const load=path=>import(pathToFileURL(resolve(root,path)));
 const spec=readFileSync(resolve(root,'docs/specification/original.txt'),'utf8');
 const {OPERATIVES,CAMPAIGN_SECTORS}=await load('game/data.js');
-const {WEAPONS,BLADES,ARTILLERY}=await load('game/tactical.js');
+const {WEAPONS,BLADES,ARTILLERY,bladeFor}=await load('game/tactical.js');
+const {defaultContentPackage}=await load('game/content-package.js');
+const {weaponMetadata}=await load('game/weapon-definition.js');
 const {initialCampaign,contractQuote}=await load('game/campaign.js');
 const {CIVIC_RECRUITS}=await load('game/recruitment.js');
 const tables=spec.split('\n').map(line=>line.split('\t'));
@@ -34,7 +36,11 @@ for(const[i,c]of blades.entries()){
   const {fixedBayonetProfile}=await load('game/weapon-fittings.js');
   const fixed=fixedBayonetProfile({weapon:1800,activeSlot:'primary',weaponFittings:{bayonet:{weapon:1811,fittingPattern:'india_socket',instanceId:'audit-bayonet',condition:100}}});
   compare(`blade-${id}`,[Number(c[3]),Number(c[4])],[fixed?.ap,fixed?.damage]);
-  compare('loose-bayonet',[16,24,1],[w?.ap,w?.damage,w?.reach]);
+  const loose=bladeFor({weapon:1800,blade:1811,activeSlot:'blade'});
+  compare('loose-bayonet',[16,24,1],[loose?.ap,loose?.damage,loose?.reach]);
+  const authored=defaultContentPackage().weapons.find(w=>w.template===1811);
+  const held=bladeFor({weapon:1800,blade:1811,activeSlot:'blade',bladeMetadata:weaponMetadata(authored)});
+  compare('default-authored-loose-bayonet',[16,24,1],[held?.ap,held?.damage,held?.reach]);
   adaptations.push({id:'blade-1811',reason:'The source describes the fixed bayonet. The later model also has a loose 24-damage, one-tile item. Its healthy fixed profile must retain 16 AP and 50 damage.'});
  }else compare(`blade-${id}`,[Number(c[3]),Number(c[4])],[w?.ap,w?.damage]);
 }
