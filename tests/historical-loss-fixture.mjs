@@ -1,3 +1,4 @@
+import {scriptedWithdrawal} from './scripted-battle-report.mjs';
 import assert from 'node:assert/strict';
 import {dispatchCampaign,rosterFor} from '../game/campaign.js';
 import {enterSector} from '../game/world.js';
@@ -13,7 +14,7 @@ export function freshMendozaLoss(){
  for(const id of s.squad)for(const type of ['resupply','repairWeapon']){const n=dispatchCampaign(s,{type,operativeId:id});if(!n.lastError)s=n;}
  for(const id of s.squad){
   const op=rosterFor(s).find(o=>o.id===id);if(op.weapon===1802)continue;
-  s=order(s,{type:'purchaseEquipment',item:'firearm-1801',quantity:1});const instance=s.armoryItems.find(i=>i.contentWeapon?.template===1801);assert.ok(instance);
+  s=order(s,{type:'purchaseEquipment',item:'firearm-1801',quantity:1});const instance=s.armoryItems.find(i=>i.itemMetadata?.contentWeapon?.template===1801);assert.ok(instance);
   s=order(s,{type:'equip',operativeId:id,slot:'weapon',itemId:'firearm-1801',instanceId:instance.id});
  }
  s=saved({campaign:s}).campaign;assert.equal(s.hour,120);assert.equal(s.resources.treasury,3202);assert.equal(s.operativeState[2].alive,true);
@@ -47,8 +48,9 @@ export async function servingEngineerLoss({built=false,custom=false}={}){
  let s=order(initialCampaign(8,d),{type:'recruitCivic',id:110,term:'week'});s=order(s,{type:'recruitCivic',id:136,term:'week'});
  if(built){const money=s.resources.treasury;s=order(s,{type:'foundry'});assert.equal(s.resources.treasury,money-137);}
  s=order(s,{type:'travel',sector:'buenos_aires'});s=order(s,{type:'attack',sector:'san_nicolas'});const r=s.pendingBattle;
- let battle=createBattle(r.squad.map(u=>({...u,x:1,y:u.id===110?1:6})),{width:12,height:8,id:r.id,sector:r.sector,npcs:r.npcs,seed:45,hour:s.hour,tiles:Array.from({length:96},(_,i)=>({x:i%12,y:Math.floor(i/12),type:'grass',blocked:false,cover:0})),enemies:[{id:'guard',x:7,y:1,weapon:1802,ammo:0,fatigue:100,marksmanship:100}]});
+ let battle=createBattle(r.squad.map(u=>({...u,x:u.id===110?5:1,y:u.id===110?1:6})),{...r,width:12,height:8,seed:45,tiles:Array.from({length:96},(_,i)=>({x:i%12,y:Math.floor(i/12),type:Math.floor(i/12)===4?'wall':'grass',blocked:Math.floor(i/12)===4,blocksSight:Math.floor(i/12)===4,cover:0})),enemies:r.enemies.map((u,i)=>({...u,x:7,y:i%8,...(i?{hp:0,bleeding:0,bandaged:0}:{y:1,marksmanship:100})}))});
  battle=endTurn(battle);assert.equal(battle.units.find(u=>u.id==='110').hp,0);const active=saved(sync({campaign:s,battle}));
- s=saved({campaign:order(active.campaign,{type:'battleResult',battleId:r.id,outcome:'retreat',sectorState:active.battle,survivors:active.battle.units.filter(u=>u.side==='player')})}).campaign;
+ const returned=sync({campaign:active.campaign,battle:scriptedWithdrawal(active.battle)});
+ s=saved({campaign:order(returned.campaign,{type:'battleResult',battleId:r.id,outcome:'retreat',sectorState:returned.battle,survivors:returned.battle.units.filter(u=>u.side==='player')})}).campaign;
  return {campaign:s,active};
 }

@@ -25,6 +25,8 @@ test('civic combat experience actually improves battle statistics and persists',
 });
 test('legacy version1 saves migrate without losing historical stats',()=>{
  const old=initialCampaign();delete old.officer;for(const id of [100,101,102])delete old.operativeState[id];for(const op of Object.values(old.operativeState)){delete op.xp;delete op.priming;delete op.flints;delete op.rations;delete op.condition;}
+ // A partial current-format ammunition record is invalid; declare the older format explicitly.
+ assert.throws(()=>restoreCampaign(JSON.stringify(old)),/munición/);delete old.ammunitionVersion;for(const op of Object.values(old.operativeState))delete op.ammunitionVersion;
  const s=restoreCampaign(JSON.stringify(old));assert.equal(s.officer,null);assert.equal(s.operativeState[100].xp,0);assert.equal(s.operativeState[3].priming,undefined);assert.equal(rosterFor(s).find(o=>o.id===57).leadership,99);
 });
 

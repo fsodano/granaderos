@@ -96,6 +96,20 @@ test('empty-fire input loads both guns without firing and exploration charges on
  assert.equal(n.elapsedSeconds-s.elapsedSeconds,7);assert.deepEqual(n.smoke,[]);assert.equal(n.seed,s.seed);assert.doesNotMatch(n.log.at(-1),/\d+ PA/);assert.deepEqual(actBattle(restore(s),order),n);
 });
 
+test('contact stops a paired exploration reload in the second hand and saved continuation spends only remaining work',()=>{
+ const s=field({weapon:1808,offHand:second({weapon:1808,weight:1.3})},{exploration:true,enemies:[{id:'e',x:6,y:2,facing:6,weapon:1813,ammo:0,patrol:false,overwatch:false}]});
+ // Prepare an exploration snapshot immediately before its next contact check.
+ s.mode='exploration';const before=structuredClone(s);
+ const interrupted=reload(s),u=interrupted.units[0];
+ assert.equal(interrupted.mode,'combat');assert.equal(interrupted.elapsedSeconds,6);
+ assert.equal(u.loaded,2);assert.equal(u.offHand.loaded,1);assert.ok(u.offHand.reloadProgress>0&&u.offHand.reloadProgress<1);
+ assert.equal(totalReserveAmmunition(u),5);assert.equal(total(u),8);assert.equal(reloadPlan(u,interrupted).totalPA,16);
+ assert.match(interrupted.log.at(-1),/interrumpe la recarga.*6 s/);assert.deepEqual(s,before);
+ const finished=reload(restore(interrupted));assert.equal(finished.units[0].ap,u.ap-16);assert.equal(finished.units[0].loaded,2);assert.equal(finished.units[0].offHand.loaded,2);
+ assert.equal(finished.units[0].offHand.reloadProgress,undefined);assert.equal(totalReserveAmmunition(finished.units[0]),4);assert.equal(total(finished.units[0]),8);
+ assert.deepEqual(reload(interrupted),finished);
+});
+
 test('prone stance and the gunsmith trait affect each pistol loading rate',()=>{
  const s=field({stance:'prone',movementMode:'prone',traits:['gunsmith_artillerist']});
  const plan=reloadPlan(s.units[0],s);assert.deepEqual(plan.hands.map(h=>h.pa),[41,36]);const n=reload(s);assert.equal(n.units[0].ap,23);assert.equal(totalReserveAmmunition(n.units[0]),6);

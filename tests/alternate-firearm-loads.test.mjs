@@ -23,17 +23,17 @@ test('default smoothbores offer separate ball and shot loads and authored altern
 
 test('chosen shot purchases, deployment, unload and reselection preserve both families and money through saves',()=>{
  let s=choose(hire(),'ammoShot'),cash=s.resources.treasury;assert.equal(deploymentCost(s),10);
- let p=visit(s);assert.equal(ammoTypeFor(unit(p)),'ammoShot');assert.equal(unit(p).loaded,1);assert.equal(ammoCount(unit(p),'ammoShot'),9);assert.equal(weaponSpecification(unit(p)).loadPattern,'cone');
+ let p=visit(s);assert.equal(ammoTypeFor(unit(p)),'ammoShot');assert.equal(unit(p).loaded,0);assert.equal(ammoCount(unit(p),'ammoShot'),10);p=tactical(p,{type:'reload'});assert.equal(unit(p).loaded,1);assert.equal(ammoCount(unit(p),'ammoShot'),9);assert.equal(weaponSpecification(unit(p)).loadPattern,'cone');
  s=leave(saved(p));assert.equal(s.resources.treasury,cash-10);assert.equal(s.operativeState[110].ammunitionChoice,'ammoShot');
  assert.match(dispatchCampaign(s,{type:'selectAmmunitionLoad',operativeId:110,family:'ammoMusket'}).lastError,/Vaciá/);
- s=action(s,'unloadAmmunition');assert.equal(ammoCount(s.operativeState[110],'ammoShot'),10);s=choose(s,'ammoMusket');p=visit(saved({campaign:s}).campaign);assert.equal(ammoCount(unit(p),'ammoShot'),10);assert.equal(ammoCount(unit(p),'ammoMusket'),9);assert.equal(unit(p).loaded,1);assert.equal(p.campaign.resources.treasury,cash-20);assert.equal(weaponSpecification(unit(p)).loadPattern,undefined);
+ s=action(s,'unloadAmmunition');assert.equal(ammoCount(s.operativeState[110],'ammoShot'),10);s=choose(s,'ammoMusket');p=visit(saved({campaign:s}).campaign);assert.equal(unit(p).loaded,0);assert.equal(ammoCount(unit(p),'ammoMusket'),10);p=tactical(p,{type:'reload'});assert.equal(ammoCount(unit(p),'ammoShot'),10);assert.equal(ammoCount(unit(p),'ammoMusket'),9);assert.equal(unit(p).loaded,1);assert.equal(p.campaign.resources.treasury,cash-20);assert.equal(weaponSpecification(unit(p)).loadPattern,undefined);
 });
 
 test('tactical unload, choice and reload retain physical load on packed and recovered weapons',()=>{
- let p=visit(choose(hire(),'ammoShot'));p=tactical(p,{type:'unloadAmmunition'});assert.equal(unit(p).loaded,0);assert.equal(ammoCount(unit(p),'ammoShot'),10);p=tactical(p,{type:'selectAmmunitionLoad',family:'ammoMusket'});assert.equal(ammoTypeFor(unit(p)),'ammoMusket');
+ let p=visit(choose(hire(),'ammoShot'));p=tactical(p,{type:'reload'});p=tactical(p,{type:'unloadAmmunition'});assert.equal(unit(p).loaded,0);assert.equal(ammoCount(unit(p),'ammoShot'),10);p=tactical(p,{type:'selectAmmunitionLoad',family:'ammoMusket'});assert.equal(ammoTypeFor(unit(p)),'ammoMusket');
  const denied=actBattle(p.battle,{type:'reload',unitId:'110'});assert.ok(denied.lastError);assert.equal(ammoCount(denied.units.find(u=>u.id==='110'),'ammoShot'),10);
  p=tactical(p,{type:'selectAmmunitionLoad',family:'ammoShot'});p=tactical(p,{type:'reload'});const gun=weaponRecord(unit(p));assert.equal(gun.ammunitionChoice,'ammoShot');assert.equal(gun.loaded,1);assert.equal(weaponSpecification(gun).loadPattern,'cone');
- p=tactical(p,{type:'drop',slot:'primary'});p=saved(p);const dropped=p.battle.groundItems.find(g=>g.weapon===gun.weapon&&g.count===1);assert.equal(dropped.ammunitionChoice,'ammoShot');assert.equal(dropped.loaded,1);
+ p=tactical(p,{type:'drop',item:'primary'});p=saved(p);const dropped=p.battle.groundItems.find(g=>g.weapon===gun.weapon&&g.count===1);assert.equal(dropped.ammunitionChoice,'ammoShot');assert.equal(dropped.loaded,1);
 });
 
 test('invalid choices and partial reload changes reject without converting ammunition',()=>{
