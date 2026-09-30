@@ -381,6 +381,20 @@ export function applyItemQuantity(unit, stack, {deferCapacity=false}={}) {
 export function canCarryTransfer(unit, stack) {
   try {applyItemQuantity(unit, stack); return true;} catch {return false;}
 }
+// Automatic pickup may take a partial stack. Validate the item first, then
+// find the largest quantity that fits without changing either owner.
+export function incomingItemRoom(unit, stack) {
+  const maximum=quantity(stack.count,1);
+  applyItemQuantity(unit,{...stack,count:1},{deferCapacity:true});
+  if(inventoryUsage(unit).overloaded)return 0;
+  let low=0,high=maximum;
+  while(low<high){
+    const middle=Math.ceil((low+high)/2);
+    if(canCarryTransfer(unit,{...stack,count:middle}))low=middle;
+    else high=middle-1;
+  }
+  return low;
+}
 export function transferItemQuantity(source, target, item, count = 1) {
   if (source === target || source.id !== undefined && target.id !== undefined && String(source.id) === String(target.id)) fail('Elegí otro combatiente para recibir el objeto.');
   const extracted = extractItemQuantity(source, item, count), received = applyItemQuantity(target, extracted.stack);

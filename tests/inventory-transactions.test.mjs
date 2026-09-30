@@ -1,7 +1,7 @@
 import test from 'node:test';
 const AMMO='inventory:ammo:musket_75';
 import assert from 'node:assert/strict';
-import {createBattle, actBattle, transferPreview, dropPreview, lootPreview} from '../game/tactical.js';
+import {createBattle, actBattle, transferPreview, dropPreview, lootPreview, lootBatchPreview} from '../game/tactical.js';
 import {inventoryUsage} from '../game/tactical-inventory.js';
 import {validatePersonalInventory} from '../game/squads.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
@@ -104,10 +104,11 @@ test('partial corpse loot leaves unselected supplies and the loaded weapon on th
   assert.equal(troop(next, 'corpse').ammo, 6);
 });
 
-test('loot-all preflight rejects capacity overflow without taking the first items or spending AP', () => {
+test('select-all preflight rejects capacity overflow without taking the first items or spending AP', () => {
   const state = field({}, {}, [{id: 'corpse', x: 1, y: 4, hp: 0, ammo: 200, priming: 0, flints: 0, rations: 0, medkits: 0, boleadoras: 0, torches: 0}]);
-  assert.equal(lootPreview(state, troop(state), {targetId: 'corpse'}).valid, false);
-  rejectUnchanged(state, {type: 'loot', targetId: 'corpse', item: 'all'});
+  const items=[{targetId:'corpse',item:'primary',count:1},{targetId:'corpse',item:AMMO,count:200}];
+  assert.equal(lootBatchPreview(state, troop(state), items).valid, false);
+  rejectUnchanged(state, {type: 'lootBatch', items});
   const partial = order(state, {type: 'loot', targetId: 'corpse', item: AMMO, count: 8});
   assert.equal(troop(partial).ammo, 20); assert.equal(troop(partial, 'corpse').ammo, 192);
 });

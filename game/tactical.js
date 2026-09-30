@@ -50,7 +50,7 @@ import {applyCivilianHarm,civilianWoundedByPlayer,advanceCivilianWoundTime} from
 import {boundaryMatches} from './tactical-exits.js';
 import {HELD_SUPPLIES,heldSupply,clearEmptySupply} from './held-supplies.js';
 import {heldTool,environmentActionProfile,resolveEnvironmentInteraction,extractContainerItem} from './environment-interactions.js';
-import {SUPPLY_ITEMS,handMetadata,droppedWeaponStack,carriedObject,inventoryUsage,itemDescriptor,itemQuantity,extractItemQuantity,extractEquipmentSelection,applyItemQuantity,transferItemQuantity,planFitBayonet,planRemoveBayonet,planPocketMove,planEquipOutfit,planStowOutfit,planHoldOffhand,equipmentEndpoint,equipmentFingerprint,planOutfitPlacement,pocketMergeCount} from './tactical-inventory.js';
+import {SUPPLY_ITEMS,handMetadata,droppedWeaponStack,carriedObject,inventoryUsage,itemDescriptor,itemQuantity,extractItemQuantity,extractEquipmentSelection,applyItemQuantity,incomingItemRoom,transferItemQuantity,planFitBayonet,planRemoveBayonet,planPocketMove,planEquipOutfit,planStowOutfit,planHoldOffhand,equipmentEndpoint,equipmentFingerprint,planOutfitPlacement,pocketMergeCount} from './tactical-inventory.js';
 import {FITTING_RULES_VERSION,FIT_BAYONET_AP,REMOVE_BAYONET_AP,LOOSE_BAYONET,fixedBayonetFor,fixedBayonetProfile,fittingWeight,weaponItemWeight,normalizeUnitFittings} from './weapon-fittings.js';
 import {FISTS,BUTTSTOCK,unarmedChance,unarmedImpact,weaponStealChance,STEAL_MIN_AP} from './unarmed-combat.js';
 import {directionTo,facingAllowsSight,turnAPCost,stealthAPMultiplier,noiseRadius,approximateHeardPosition} from './tactical-awareness.js';
@@ -1005,6 +1005,7 @@ export function planLoot(s,u,a){
     if(a.count!==undefined&&(!Number.isSafeInteger(a.count)||a.count<1))throw Error('La cantidad debe ser un número entero positivo.');
     const supplies=civilianSupplyLoot(donor,receiver,a),slots=['primary','blade'].filter(slot=>(wanted==='all'||wanted===(slot==='primary'?'weapon':'blade')||wanted===slot)&&gear?.[slot]);
     if(!supplies.valid&&!slots.length)throw Error(supplies.reason);
+    if(slots.length&&a.count!==undefined&&a.count!==1)throw Error('No queda esa cantidad del arma.');
     let collected=0;
     for(const slot of slots){
       try{receiver=applyItemQuantity(receiver,{item:'weapon',...gear[slot]});gear[slot]=null;collected++;}
@@ -1022,10 +1023,19 @@ export function planLoot(s,u,a){
     const wanted=a.item??'all';
     const items=wanted==='all'?[...Object.keys(SUPPLY_ITEMS).filter(k=>(k!=='ammo'||source.ammunitionVersion!==2)&&(source[k]??0)>0),...(!source.weaponDropped&&(WEAPONS[source.weapon]||BLADES[source.weapon])?['primary']:[]),...(BLADES[source.blade]?['blade']:[]),...(source.offHand?['offhand']:[]),...wornBodyItems(source),...(source.equipmentCursor?['cursor']:[]),...Object.entries(source.inventory??{}).filter(([,r])=>(typeof r==='number'?r:r?.count)>0).map(([key])=>`inventory:${key}`)]:[wanted==='weapon'?'primary':wanted];
     if(!items.length)throw Error('No queda equipo que recoger.');
-    for(const item of items){const count=wanted==='all'?itemQuantity(donor,item):a.count??itemQuantity(donor,item);const transfer=transferItemQuantity(donor,receiver,item,count);donor=transfer.source;receiver=transfer.target;}
+    let collected=0;
+    for(const item of items){
+      const available=itemQuantity(donor,item),stack=extractItemQuantity(donor,item,available).stack;
+      const count=wanted==='all'?incomingItemRoom(receiver,stack):a.count??available;
+      if(!count)continue;
+      const transfer=transferItemQuantity(donor,receiver,item,count);donor=transfer.source;receiver=transfer.target;collected+=count;
+    }
+    if(!collected)throw Error(POCKET_FULL);
   }else{
     const stack=drop?droppedWeaponStack(drop):groundStack(ground);
-    const count=a.count??stack.count;if(!Number.isSafeInteger(count)||count<1||count>stack.count)throw Error('No queda esa cantidad del objeto.');
+    const count=a.count??incomingItemRoom(receiver,stack);
+    if(!count&&a.count===undefined)throw Error(POCKET_FULL);
+    if(!Number.isSafeInteger(count)||count<1||count>stack.count)throw Error('No queda esa cantidad del objeto.');
     receiver=applyItemQuantity(receiver,{...stack,count});
     return {receiver,drop,ground,remaining:stack.count-count};
   }
@@ -1301,7 +1311,7 @@ export function lootSearchPreview(s,u,point){
   const reason=inventoryOrderReason({...s,mode:'exploration'},u,0);if(reason)return result(reason);
   if(!point||!canSee(s,u,point))return result('El cuerpo o equipo debe estar a la vista del soldado.');
   const at=source=>sameCell(source,point);
-  const found=s.units.some(source=>source.id!==u.id&&!source.departure&&!source.fled&&(source.hp<=0||source.unconscious||source.surrendered)&&at(source))||s.droppedWeapons.some(source=>!source.taken&&at(source))||s.groundItems.some(source=>source.count>0&&!source.heldBy&&at(source));
+  const found=[...s.units,...(s.npcs??[])].some(source=>source.id!==u.id&&!source.departure&&!source.fled&&(source.hp<=0||source.unconscious||source.surrendered)&&at(source))||s.droppedWeapons.some(source=>!source.taken&&at(source))||s.groundItems.some(source=>source.count>0&&!source.heldBy&&!source.containerId&&at(source));
   if(!found)return result('No hay un cuerpo o equipo para registrar en esta casilla.');
   available=true;
   if(contactDistance(u,point)<=1.5&&hasLineOfSight(s,u,point))return result();

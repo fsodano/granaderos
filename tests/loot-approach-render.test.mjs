@@ -31,3 +31,13 @@ test('exploration pickup states energy and time without advertising an AP debit'
  const html=render(h(JA2LootPicker,{battle:s,unit:s.units[0],point:{x:6,y:2},busy:false,onTake:()=>{},onClose:()=>{}}));
  assert.match(html,/Recoger consume tiempo/);assert.match(html,/100 EN/);assert.match(html,/Recoger selección/);assert.doesNotMatch(html,/\bPA\b/);
 });
+
+
+test('a resident over loose equipment still talks normally and routes Control-click or Control-Enter to pickup',()=>{
+ const s=field({x:5});s.npcs=[{id:'resident',name:'Vecina',x:6,y:2,hp:100,maxHp:100}];const calls=[];
+ const tree=componentTree(TacticalScene,{state:s,selected:'p',unit:s.units[0],players:[s.units[0]],units:s.units,positions:{},poses:{},directions:{},hover:null,mode:'move',aim:0,reachable:[],showSight:false,sight:new Set(),revealed:new Set(),project:(x,y)=>({x:x*26,y:y*14}),onHover:()=>{},onTile:point=>calls.push(['pickup',point]),onTalk:npc=>calls.push(['talk',npc.id])});
+ const nodes=[];function walk(node){if(Array.isArray(node))return node.forEach(walk);if(!node||typeof node!=='object')return;nodes.push(node);walk(node.props?.children);}walk(tree);
+ const group=nodes.find(node=>node.props?.['data-unit-id']==='resident'),hit=group.props.children.find(node=>node?.props?.['data-person-hit-target']);assert.ok(hit);assert.match(hit.props['aria-label'],/^Hablar con/);
+ hit.props.onClick({});assert.deepEqual(calls,[['talk','resident']]);hit.props.onClick({ctrlKey:true});assert.equal(calls[1][0],'pickup');assert.equal(calls[1][1].loot,true);assert.equal(calls[1][1].x,6);
+ let prevented=false;hit.props.onKeyDown({key:'Enter',ctrlKey:true,preventDefault(){prevented=true;}});assert.equal(prevented,true);assert.deepEqual(calls[2],calls[1]);
+});

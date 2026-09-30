@@ -478,7 +478,8 @@ test('nearby loot gives a selectable partial stack without exposing distant or f
   for(const slot of inventoryModel(s,u).pockets.slots.filter(slot=>!slot.entry))u.inventory[`full-${slot.id}`]={count:1,weight:.1};
   const options=nearbyLootOptions(s,u),ammo=options.find(item=>item.action.targetId===source.id&&item.action.item===ammoItem(source));
   assert.ok(ammo);assert.ok(options.some(item=>item.action.item==='weapon'));
-  assert.equal(lootPreview(s,u,{type:'loot',targetId:source.id}).valid,false);
+  assert.equal(lootPreview(s,u,{type:'loot',targetId:source.id}).valid,true);
+  assert.equal(lootPreview(s,u,{type:'loot',targetId:source.id,item:'weapon',count:1}).valid,false);
   assert.equal(lootPreview(s,u,{...ammo.action,count:1}).valid,true);
   const next=actBattle(s,{unitId:u.id,...ammo.action,count:1});assert.equal(next.lastError,null);assert.equal(totalReserveAmmunition(next.units[0]),totalReserveAmmunition(u)+1);assert.equal(totalReserveAmmunition(next.units[1]),totalReserveAmmunition(source)-1);
   source.x=8;assert.deepEqual(nearbyLootOptions(s,u),[]);

@@ -1,3 +1,4 @@
+import {CIVILIAN_SUPPLY_FIELDS} from './civilian-supplies.js';
 import {weaponSpecification} from './weapon-definition.js';
 import {AMMUNITION_TYPES,availableAmmunition,totalReserveAmmunition,weaponAmmoType} from './ammunition-types.js';
 import {tacticalLevel, sameCell, sameSurface, spaceKey} from './tactical-space.js';
@@ -640,12 +641,23 @@ export function nearbyLootOptions(state, unit, point=/** @type {{x:number,y:numb
       options.push({...item, id: `unit:${source.id}:${item.item}`, source: source.name, action: {type: 'loot', targetId: source.id, item: item.item === 'primary' ? 'weapon' : item.item}});
     }
   }
+  for (const source of state.npcs || []) {
+    if (source.departure || source.fled || !(source.hp <= 0 || source.unconscious) || distance(unit,source)>1.5 || !visible(source)) continue;
+    for (const item of CIVILIAN_SUPPLY_FIELDS) {
+      const count=source.civilianSupplies?.[item],spec=SUPPLY_ITEMS[item];
+      if (count>0) options.push({id:`npc:${source.id}:${item}`,label:spec.label,count,source:source.name,action:{type:'loot',targetId:source.id,item}});
+    }
+    for (const slot of ['primary','blade']) {
+      const record=source.civilianWeapons?.[slot];
+      if (record) options.push({...record,id:`npc:${source.id}:${slot}`,label:weaponSpecification(record)?.name||'Arma',count:1,source:source.name,action:{type:'loot',targetId:source.id,item:slot==='primary'?'weapon':'blade'}});
+    }
+  }
   for (const [index, source] of (state.droppedWeapons || []).entries()) {
     if (source.taken || !visible(source)) continue;
     options.push({...source, id: `drop:${index}`, label: weaponSpecification(source)?.name || 'Arma', count: 1, source: 'En el suelo', action: {type: 'loot', dropIndex: index}});
   }
   for (const source of state.groundItems || []) {
-    if (source.heldBy || !(source.count > 0) || !visible(source)) continue;
+    if (source.heldBy || source.containerId || !(source.count > 0) || !visible(source)) continue;
     const stack = source.stack || source;
     options.push({...stack, id: `ground:${source.id}`, label: weaponSpecification(stack)?.name || OUTFITS[stack.outfit]?.name || SUPPLY_ITEMS[stack.item || stack.type]?.label || stack.name || 'Objeto', count: source.count, source: 'En el suelo', action: {type: 'loot', groundId: source.id}});
   }
@@ -678,7 +690,7 @@ export function lootBatchSelectionModel(state,unit,point,selection={}){
 }
 export function groundLootPiles(state,actors){
   const piles=new Map();
-  for(const source of [...(state.droppedWeapons??[]).filter(item=>!item.taken),...(state.groundItems??[]).filter(item=>item.count>0&&!item.heldBy)]){
+  for(const source of [...(state.droppedWeapons??[]).filter(item=>!item.taken),...(state.groundItems??[]).filter(item=>item.count>0&&!item.heldBy&&!item.containerId)]){
     if(!actors.some(actor=>canSee(state,actor,source)))continue;
     const key=spaceKey(source),pile=piles.get(key)??{x:source.x,y:source.y,...(source.tacticalLevel===undefined?{}:{tacticalLevel:source.tacticalLevel}),count:0};pile.count++;piles.set(key,pile);
   }

@@ -3325,5 +3325,26 @@
       "files": 1131,
       "assetReferences": 1031
     }
+  },
+  "pickupRepair": {
+    "source": "05f1c8746c1441a2dfa67ca2302a3ac7707f64e360fe66ae5316151d9d1b65e4",
+    "fix": "Automatic pickup takes only what fits. Exact selected batches remain atomic. Civilian body and covered ground equipment use the shared picker; living resident stock and closed containers stay excluded. Stale civilian quantities reject without clipping. Control-click and Control-Enter reach covered ground equipment while ordinary clicks retain conversation.",
+    "run": {
+      "log": "/tmp/granaderos-pickup-current.tap",
+      "pass": 238,
+      "fail": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "logSha256": "6cadc5d8cf06bec1d2b56546b0fc3f4504a21d650f85dda0c7096a1178879b1e"
+    },
+    "types": "PASS",
+    "privateBuild": {
+      "status": "PASS",
+      "served": false,
+      "files": 1131,
+      "assetReferences": 1031
+    },
+    "limits": "Mounted DOM and domain tests; not a browser, full campaign, performance, or full-suite pass.",
+    "docs": "PASS"
   }
 }
