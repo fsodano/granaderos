@@ -1044,3 +1044,14 @@ ammunition once. Dead soldiers leave their rounds on the field. Loaded guns,
 partial work, mixed reserves, ground bundles and recovered weapons retain their
 physical quantities across saves and repeated entries. See
 [persistent ammunition verification](../verification/strategic-ammunition-custody.md).
+
+### Civilian weapon ownership
+
+A resident's configured primary weapon and secondary blade belong to the same
+identity during civilian life and military service. Adjacent recovery from a
+dead or unconscious resident moves those exact weapons into available pockets,
+including authored definitions, wear, loaded ammunition and unfinished work.
+Recruitment and later service departure do not refill emptied weapon slots.
+A death successor receives its own allocation, not a duplicate of the body's
+remaining property. See [civilian weapon verification](../verification/civilian-weapon-custody.md).
+Armour, arbitrary belongings and explicit stock transfer remain separate work.

@@ -71,5 +71,15 @@
     "Four ammunition families only.",
     "Gameplay tuning is not historical ballistic measurement.",
     "Full game and editor acceptance remains open."
-  ]
+  ],
+  "published": {
+    "pr": 137,
+    "merge": "8191350bcab8e8c6d530988afa07d38b8dd9e36c",
+    "head": "590e657b35d79bbbe9c3ae912dc00ff27baadcec",
+    "run": 36646202445,
+    "checksPassed": 5,
+    "tests": 1323,
+    "failed": 0,
+    "skipped": 0
+  }
 }

@@ -1,3 +1,4 @@
+import {civilianWeaponsFor,acknowledgeCivilianWeapons,validateCivilianWeaponRecoveries} from './civilian-weapons.js';
 import {campaignStory} from './campaign-story.js';
 import {validateMovementScene} from './dialogue-movement.js';
 import {validWorldLocation,locationId} from './world-cells.js';
@@ -41,10 +42,10 @@ function service(s,n){
 export function campaignCivilian(s,n,{fromService=false}={}){
  const record=s.civilianState?.people[civilianKey(n)],id=operativeId(n);
  const metadata={...n};for(const k of fields)delete metadata[k];
- if(record&&!fromService&&!record.inService&&!s.recruited.includes(id))return {...metadata,...structuredClone(record.health),civilianSupplies:supplies(s,n)};
+ if(record&&!fromService&&!record.inService&&!s.recruited.includes(id))return {...metadata,...structuredClone(record.health),civilianSupplies:supplies(s,n),civilianWeapons:civilianWeaponsFor(s,id)};
  const seeded=seedCivilianHealth(metadata,service(s,n));
  if(record?.health.civilianHarm&&seeded.hp>0&&record.health.hp>0)seeded.civilianHarm=structuredClone(record.health.civilianHarm);
- return {...seeded,civilianSupplies:supplies(s,n)};
+ return {...seeded,civilianSupplies:supplies(s,n),civilianWeapons:civilianWeaponsFor(s,id)};
 }
 export function civilianDiedHere(s,n,sector,sceneId=null){
  const record=s.civilianState?.people[civilianKey(n)];
@@ -100,6 +101,7 @@ export function acknowledgeCivilians(s,snapshot){
   const prior=expected.find(v=>v.id===n.id);
   need(prior&&prior.operativeId===n.operativeId&&prior.contentId===n.contentId&&prior.presenceRevision===n.presenceRevision&&!s.recruited.includes(operativeId(n)));
   const previous=campaignCivilian(s,prior);compareHistory(previous,n);
+  acknowledgeCivilianWeapons(s,operativeId(n),previous,n);
   n.civilianSupplies??=structuredClone(previous.civilianSupplies);
   need(validCivilianSupplies(n.civilianSupplies)&&CIVILIAN_SUPPLY_FIELDS.every(k=>n.civilianSupplies[k]<=previous.civilianSupplies[k]),'Los suministros del habitante aumentaron sin una entrega.');
   for(const e of civilianIncidents(n).slice(civilianIncidents(previous).length))if(e.side!=='unknown'){
@@ -123,7 +125,7 @@ function refreshCivilianScenes(s){
  // with the single identity, including the currently loaded request.
  for(const scene of [...Object.values(s.sectorStates),...Object.values(s.sceneStates),...(request?[request]:[])])for(const n of scene.npcs??[]){
   const record=s.civilianState.people[civilianKey(n)];
-  if((record||operativeId(n)===57)&&!s.recruited.includes(operativeId(n))){const actor=campaignCivilian(s,n),current=physical(actor);if(!same(physical(n),current)){for(const k of fields)delete n[k];Object.assign(n,current);}n.civilianSupplies=actor.civilianSupplies;}
+  if((record||operativeId(n)===57)&&!s.recruited.includes(operativeId(n))){const actor=campaignCivilian(s,n),current=physical(actor);if(!same(physical(n),current)){for(const k of fields)delete n[k];Object.assign(n,current);}n.civilianSupplies=actor.civilianSupplies;n.civilianWeapons=actor.civilianWeapons;}
  }
  for(const scene of [...Object.values(s.sectorStates),...Object.values(s.sceneStates),...(request?[request]:[])])scene.npcs=(scene.npcs??[]).filter(n=>n.hp>0||civilianDiedHere(s,n,scene.sectorId??scene.sector,scene.sceneId??null));
 }
@@ -215,12 +217,14 @@ export function validateCivilianScene(s,scene,{active=false}={}){
   const record=s.civilianState?.people[civilianKey(n)];
   need(!s.recruited.includes(operativeId(n)));
   const expected=campaignCivilian(s,n);need(same(physical(n),physical(expected)));
+  need(same(n.civilianWeapons,expected.civilianWeapons),'Las armas guardadas del habitante no coinciden con su ficha.');
   need(validCivilianSupplies(n.civilianSupplies)&&CIVILIAN_SUPPLY_FIELDS.every(k=>n.civilianSupplies[k]===expected.civilianSupplies[k]),'Los suministros guardados del habitante no coinciden con su ficha.');
   if(n.hp===0)need(civilianDiedHere(s,n,scene.sectorId??scene.sector,scene.sceneId??null));
   if(record&&!record.inService)need(record.health.hp===n.hp);
  }
 }
 export function validateCampaignCivilians(s){
+ validateCivilianWeaponRecoveries(s);
  const ledger=s.civilianState;
  need(ledger&&[1,2].includes(ledger.version)&&ledger.people&&typeof ledger.people==='object'&&!Array.isArray(ledger.people));
  need(Object.keys(ledger).length===2&&Object.keys(ledger.people).length<=encounterDefinitions(s).length+YATASTO_NPCS.length);
@@ -259,6 +263,7 @@ export function migrateCampaignCivilians(s){
  return true;
 }
 export function migrateActiveCivilians(s,battle,{legacy=false}={}){
+ for(const n of battle.npcs??[])n.civilianWeapons??=civilianWeaponsFor(s,operativeId(n));
  for(const n of battle.npcs??[])if(n.civilianSupplies===undefined)n.civilianSupplies=supplies(s,n);
  for(const n of battle.npcs??[])if(n.civilianHealthVersion===undefined){
   migrateCivilianHealth(n,service(s,n));
@@ -268,5 +273,5 @@ export function migrateActiveCivilians(s,battle,{legacy=false}={}){
  if(legacy)acknowledgeCivilians(s,battle);
 }
 export function migrateCampaignCivilianSupplies(s){
- for(const scene of [...Object.values(s.sectorStates),...Object.values(s.sceneStates),...(s.pendingBattle?[s.pendingBattle]:[])])for(const n of scene.npcs??[])if(n.civilianSupplies===undefined)n.civilianSupplies=supplies(s,n);
+ for(const scene of [...Object.values(s.sectorStates),...Object.values(s.sceneStates),...(s.pendingBattle?[s.pendingBattle]:[])])for(const n of scene.npcs??[]){n.civilianWeapons??=civilianWeaponsFor(s,operativeId(n));if(n.civilianSupplies===undefined)n.civilianSupplies=supplies(s,n);}
 }

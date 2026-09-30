@@ -316,12 +316,19 @@ else if(a.type==='equipLoot'){
 }
 else if(a.type==='loot'&&civilian(s,target)){
  if(dist(u,target)>1.5)return fail('Acércate al cuerpo o habitante que quieres registrar.');
- const plan=civilianSupplyLoot(target,u,a);if(!plan.valid)return fail(plan.reason);
- if(!pay(8))return fail('Registrar los suministros requiere 8 PA.');
- const amounts={};for(const [key,wanted]of Object.entries(plan.amounts)){const count=supplyRoom(u,key,wanted);if(a.count!==undefined&&count<wanted)return fail(POCKET_FULL);if(count){amounts[key]=count;u[key]=(u[key]??0)+count;target.civilianSupplies[key]-=count;}}
- if(!Object.keys(amounts).length)return fail(POCKET_FULL);
- const collected=Object.entries(amounts).map(([key,count])=>`${count} ${CHARACTER_SUPPLY_LABELS[key].toLowerCase()}`).join(', ');
- say(s,`${u.name} recoge de ${target.name}: ${collected}.`);
+ const item=a.item??'all',gear=target.civilianWeapons;
+ if(target.departure||target.hp>0&&!isUnconscious(target))return fail('Solo puedes registrar un cuerpo o una persona inconsciente.');
+ if(a.count!==undefined&&(!Number.isSafeInteger(a.count)||a.count<1))return fail('La cantidad debe ser un número entero positivo.');
+ const plan=civilianSupplyLoot(target,u,a),weapons=['primary','blade'].filter(slot=>(item==='all'||item===(slot==='primary'?'weapon':'blade'))&&gear?.[slot]);
+ if(!plan.valid&&!weapons.length)return fail(plan.reason);
+ if(!pay(8))return fail('Registrar el equipo requiere 8 PA.');
+ let collected=0;const collectedNames=[];
+ for(const slot of weapons){const gun=gear[slot];let key=`${slot}:${gun.weapon}:civilian:${target.id}`,serial=0;while(u.inventory[key])key=`${slot}:${gun.weapon}:civilian:${target.id}:${++serial}`;
+  if(inventoryRoom(u,key,gun)){u.inventory[key]=structuredClone(gun);gear[slot]=null;collected++;collectedNames.push(weaponSpecification(gun).name);}
+ }
+ for(const [key,wanted]of Object.entries(plan.amounts)){const count=supplyRoom(u,key,wanted);if(a.count!==undefined&&count<wanted)return fail(POCKET_FULL);if(count){collected+=count;collectedNames.push(`${count} ${CHARACTER_SUPPLY_LABELS[key].toLowerCase()}`);u[key]=(u[key]??0)+count;target.civilianSupplies[key]-=count;}}
+ if(!collected)return fail(POCKET_FULL);
+ say(s,`${u.name} recoge de ${target.name}: ${collectedNames.join(', ')}.`);
 }
 else if(a.type==='loot'){
  const source=target,drop=a.dropIndex!==undefined?s.droppedWeapons[a.dropIndex]:null,ground=a.groundId?s.groundItems.find(g=>g.id===a.groundId):null;
