@@ -3,6 +3,8 @@ import {defaultContentPackage,validateContentPackage,encodeContentPackage,parseC
 import {contentIdentity} from '../game/content-identity.js';
 import {cartridgePrice} from '../game/campaign-rules.js';
 import {initialCampaign,dispatchCampaign,deploymentCost} from '../game/campaign.js';
+import {enterSector} from '../game/world.js';
+import {secondaryRetreat} from './secondary-loot-fixture.mjs';
 import {createBattle,actBattle} from '../game/tactical.js';
 import {ammunitionRefund,returnAmmunition} from '../game/ammunition.js';
 import {order,saved,sync,visit,leave} from './local-contract-fixture.mjs';
@@ -20,9 +22,9 @@ test('actual entry pays once and saved return keeps owned rounds without a refun
 });
 
 test('an actual paid assault, discharge, saved checkpoint and retreat keep the six unspent cartridges',()=>{
- let s=hired(content());const money=s.resources.treasury;s=order(s,{type:'attack',sector:'buenos_aires'});assert.equal(s.resources.treasury,money-21);assert.equal(s.pendingBattle.issuedCartridges,7);const r=s.pendingBattle;
- // Compact geometry isolates accounting; the deployment, shot and retreat are ordinary orders.
- let b=createBattle(r.squad.map(u=>({...u,x:1,y:1})),{...r,seed:45,width:12,height:8,tiles:Array.from({length:96},(_,i)=>({x:i%12,y:Math.floor(i/12),type:'grass',blocked:false,cover:0})),enemies:[{...r.enemies[0],id:'guard',x:5,y:1,overwatch:false,patrol:false}],npcs:(r.npcs??[]).map((n,i)=>({...n,x:8+i%3,y:4+Math.floor(i/3)}))});b=actBattle(b,{type:'fire',unitId:'110',targetId:'guard'});assert.equal(b.lastError,null);assert.equal(b.units[0].loaded+b.units[0].ammo,6);const p=saved(sync({campaign:s,battle:b}));
+ let s=hired(content());const money=s.resources.treasury;s=order(s,{type:'attack',sector:'buenos_aires'});assert.equal(s.resources.treasury,money-21);assert.equal(s.pendingBattle.issuedCartridges,7);const r=s.pendingBattle,issued=enterSector(r),enemies=issued.units.filter(u=>u.side==='enemy');
+ // Keep all issued enemies. Compact geometry isolates accounting; the deployment, shot and retreat are ordinary orders.
+ let b=createBattle(r.squad.map(u=>({...u,x:1,y:1})),{...r,seed:45,width:20,height:20,tiles:Array.from({length:400},(_,i)=>({x:i%20,y:Math.floor(i/20),type:'grass',blocked:false,cover:0})),enemies:enemies.map((u,i)=>{const at={x:i?19:5,y:i?19-i:1};return {...u,...at,patrolOrigin:at,overwatch:false,patrol:false};}),npcs:(r.npcs??[]).map((n,i)=>({...n,x:8+i%3,y:4+Math.floor(i/3)}))});b=actBattle(b,{type:'fire',unitId:'110',targetId:enemies[0].id});assert.equal(b.lastError,null);assert.equal(b.units[0].loaded+b.units[0].ammo,6);const p=secondaryRetreat(saved(sync({campaign:s,battle:b})));
  const report={type:'battleResult',battleId:r.id,outcome:'retreat',sectorState:p.battle,survivors:p.battle.units.filter(u=>u.side==='player')};s=saved({campaign:order(p.campaign,report)}).campaign;assert.equal(s.resources.treasury,money-21);assert.equal(s.operativeState[110].ammo+s.operativeState[110].carriedLoaded,6);assert.equal(s.location,'retiro');assert.equal(s.pendingBattle,null);assert.ok(dispatchCampaign(s,report).lastError);assert.equal(cartridgePrice(s),3);
 });
 

@@ -5,7 +5,7 @@ import {firearmBystanderRisk,firearmBystanderWarning} from '../game/firearm-byst
 import {targetPreview} from '../game/ja2-hud.js';
 
 function field(){
- const state=createBattle([{id:'rescuer',name:'Rescatista',x:1,y:4,weapon:1802,marksmanship:5}],{width:12,height:8,enemies:[{id:'guard',name:'Guardia',x:8,y:4,weapon:1800,patrol:false}],npcs:[{id:'prisoner',name:'Prisionero visible',x:8,y:5,hp:100,maxHp:100,civilianHealthVersion:1,energy:100,stance:'standing'}]});
+ const state=createBattle([{id:'rescuer',name:'Rescatista',x:1,y:4,weapon:1802,marksmanship:5}],{width:12,height:8,enemies:[{id:'guard',name:'Guardia',x:8,y:4,weapon:1800,patrol:false}],npcs:[{id:'prisoner',name:'Prisionero visible',x:8,y:5,hp:100,maxHp:100,civilianHealthVersion:1,energy:100,unconscious:false,stance:'standing'}]});
  for(const tile of state.tiles){tile.type='grass';tile.blocked=false;tile.blocksSight=false;}
  state.seed=9;return state;
 }

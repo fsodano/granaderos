@@ -106,7 +106,7 @@ export {ROYALIST_COMMANDS,royalistIntel,mentorDispatch} from './narrative.js';
 export {CIVIC_RECRUITS} from './recruitment.js';
 export function civicStatus(s,id,local=false){return baseCivicStatus(s,id);}
 export {OPERATIVES, WEAPONS, CAMPAIGN_SECTORS, FACTIONS, PHASES, RESOURCE_NAMES};
-export function rosterFor(s){return baseRosterFor(s).map(o=>{const record=s.operativeState?.[o.id]??{};return {...o,...(s.loadouts?.[o.id]??{}),...(record.ammunitionChoice!==undefined?{ammunitionChoice:record.ammunitionChoice}:{}),...(record.weaponMetadata?{weaponMetadata:record.weaponMetadata}:{}),...(record.bladeMetadata?{bladeMetadata:record.bladeMetadata}:{}),...Object.fromEntries(TRAINABLE_SKILLS.map(skill=>[skill,Math.min(100,(o[skill]??0)+(record.trainedStats?.[skill]??0))])),strength:Math.max(o.strength,Math.min(100,record.strength??o.strength))};});}
+export function rosterFor(s){return baseRosterFor(s).map(o=>{const record=s.operativeState?.[o.id]??{};return {...o,...(s.loadouts?.[o.id]??{}),...(record.ammunitionChoice!==undefined?{ammunitionChoice:record.ammunitionChoice}:{}),...(record.weaponMetadata?{weaponMetadata:record.weaponMetadata}:{}),...(record.bladeMetadata?{bladeMetadata:record.bladeMetadata}:{}),...Object.fromEntries(TRAINABLE_SKILLS.map(skill=>[skill,Math.min(100,(o[skill]??0)+(record.trainedStats?.[skill]??0))])),strength:Math.max(Math.min(100,o.strength+(record.trainedStats?.strength??0)),Math.min(100,record.strength??o.strength))};});}
 export function deploymentCost(s){return prepareCampaignAmmunition(s,rosterFor(s),s.squad,{supplied:isSupplied(s,s.location)}).cost;}
 function deploymentOperative(s,id){
   const op=rosterFor(s).find(o=>o.id===id);

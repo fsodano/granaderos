@@ -83,7 +83,7 @@ test('changed source or NPC position rejects before any approach begins',()=>{
 });
 
 test('unavailable, concealed and wrong-cell NPCs do not reveal gift rules or consume anything',()=>{
- for(const patch of [{hp:0},{unconscious:true},{fled:true},{routed:true},{departure:{exitId:'gone'}}]){const b=field({},patch);reject(b,request(b));}
+ for(const patch of [{hp:0},{hp:10,energy:0,unconscious:true},{fled:true},{routed:true},{departure:{exitId:'gone'}}]){const b=field({},patch);reject(b,request(b));}
  const b=field();b.revealedRooms=[];b.tiles.find(t=>t.x===3&&t.y===2).roomId='hidden-room';const a=request(b),unknown={...a,targetId:'absent'};assert.equal(inventoryMapPreview(b,unit(b),a).reason,inventoryMapPreview(b,unit(b),unknown).reason);reject(b,a);
  const wrong=field(),point=request(wrong,undefined,{x:4,y:2});assert.equal(inventoryMapPreview(wrong,unit(wrong),point).reason,inventoryMapPreview(wrong,unit(wrong),{...point,targetId:'absent'}).reason);reject(wrong,point);
  const combat=field({}, {},{exploration:false,enemies:[{id:'guard',x:14,y:8,patrol:false,overwatch:false}]});reject(combat,request(combat));

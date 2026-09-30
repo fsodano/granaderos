@@ -30,11 +30,11 @@ for(const delivery of ['early','late'])test(`real map input redirects and runs w
  if(delivery==='early'){await mounted.deliver('movement-step');assert.equal(commits.length,1,'a prepared result cannot spend the next step before the endpoint');}
  await frame(120);
  assert.equal(get(TacticalScene).props.positions.p.moving,true,'the sprite keeps its gait between committed cells');
- if(delivery==='late'){assert.equal(commits.length,1);await frame(50);assert.equal(get(TacticalScene).props.positions.p.x,2);await mounted.deliver('movement-step');}
+ if(delivery==='late'){assert.equal(commits.length,1);await frame(50);assert.equal(get(TacticalScene).props.positions.p.x,2);assert.equal(get(TacticalScene).props.positions.p.elapsedMs,240,'waiting for a worker holds the gait at the reached cell');await mounted.deliver('movement-step');}
  else assert.equal(commits.length,2,'the prepared step commits at the endpoint without waiting for a worker');
  await mounted.render(props());
  assert.equal(battle.units[0].x,2);assert.equal(battle.units[0].y,2);assert.equal(battle.elapsedSeconds,4);assert.equal(battle.units[0].movementMode,'run');
- await frame(75);assert.equal(get(TacticalScene).props.positions.p.y,1.5);assert.equal(get(TacticalScene).props.positions.p.elapsedMs,delivery==='late'?365:315);
+ await frame(75);assert.equal(get(TacticalScene).props.positions.p.y,1.5);assert.equal(get(TacticalScene).props.positions.p.elapsedMs,315);
  await mounted.act(async()=>document.body.dispatchEvent(new window.KeyboardEvent('keydown',{key:'Escape',bubbles:true})));
  await frame(75);assert.equal(get(TacticalScene).props.positions.p.y,2);assert.equal(get(TacticalScene).props.positions.p.moving,false);
  assert.equal(jobs().length,1);await mounted.deliver('movement-step');assert.equal(jobs().length,0);

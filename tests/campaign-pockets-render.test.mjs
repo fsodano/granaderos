@@ -9,7 +9,7 @@ test('campaign exposes twelve pockets, two hands and three body endpoints before
  let s=fresh(),html=draw(s);assert.match(html,/Organizar equipo llevado/);for(const slot of ['headwear','outfit','legwear'])assert.ok(html.includes(`data-equipment-slot="${slot}"`));assert.equal((html.match(/data-equipment-slot=/g)||[]).length,17);assert.match(html,/Segunda mano: Ocupada por el arma/);
  const u=sectorInventoryModel(s,'retiro',rosterFor(s),110).personal;
  s=dispatchCampaign(s,{type:'sectorInventory',sector:'retiro',operativeId:110,direction:'arrange',kind:'equipment',sourceId:'hand:right',destinationId:'large-4',expectedSource:equipmentFingerprint(u,'hand:right'),expectedDestination:equipmentFingerprint(u,'large-4')});assert.equal(s.lastError,null);
- html=draw(s);assert.match(html,/Mano principal: Vacía/);assert.match(html,/Bolsillo grande 4: Brown Bess modelo India · 1/);assert.match(html,/Primero reconocé y asegurá el sector/);
+ html=draw(s);assert.match(html,/Mano principal: Vacía/);assert.match(html,/Bolsillo grande 4: Brown Bess · 1/);assert.match(html,/Primero reconocé y asegurá el sector/);
  assert.equal((html.match(/data-equipment-slot=/g)||[]).length,17);
 });
 test('sleeping soldiers retain visible contents but every drag endpoint is disabled',()=>{

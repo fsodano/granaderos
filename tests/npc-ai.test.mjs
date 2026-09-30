@@ -156,6 +156,6 @@ test('a blocked dialogue route waits, resumes when reopened and takes shelter be
 test('dialogue movement stops for incapacity, occupants and an alarmed door without losing its order',()=>{
  const s=field(),n=s.npcs[0],target={x:7,y:4};n.scriptedMove={order:0,target};n.unconscious=true;const before={x:n.x,y:n.y};advanceNpc(s,n);assert.deepEqual({x:n.x,y:n.y},before);n.unconscious=false;
  s.npcs.push({id:'guest',name:'Otra persona',x:7,y:4,hp:100});for(let i=0;i<10;i++)advanceNpc(s,n);assert.notDeepEqual({x:n.x,y:n.y},target);
- s.npcs.pop();const door=s.tiles.find(t=>t.type==='door'&&t.buildingId==='house');door.trap={type:'alarm',armed:true};for(let i=0;i<10&&door.trap.armed;i++)advanceNpc(s,n);
- assert.equal(door.trap.armed,false);assert.notEqual(door.open,true);assert.deepEqual(n.scriptedMove.target,target);s.elapsedSeconds=100;for(let i=0;i<20;i++)advanceNpc(s,n);assert.deepEqual({x:n.x,y:n.y},target);
+ s.npcs.pop();const door=s.tiles.find(t=>t.type==='door'&&t.buildingId==='house');door.trap={type:'alarm',armed:true,difficulty:20,discoveredBy:[]};for(let i=0;i<10&&door.trap.armed;i++)advanceNpc(s,n);
+ assert.equal(door.trap.armed,false);assert.notEqual(door.open,true);assert.equal(n.ai.destination,undefined);assert.equal(n.ai.activity,'hiding');assert.deepEqual(n.scriptedMove.target,target);assert.doesNotThrow(()=>validateBattleSnapshot(s));s.elapsedSeconds=100;for(let i=0;i<20;i++)advanceNpc(s,n);assert.deepEqual({x:n.x,y:n.y},target);
 });

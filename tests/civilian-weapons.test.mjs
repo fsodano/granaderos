@@ -37,7 +37,7 @@ test('civilian gear respects unconsciousness, distance, AP and shared pockets an
 
 test('a returned resident keeps a paid alternative charge; recovery, saved return and reentry conserve it',()=>{
  let p=civilianWeaponField();p=tactical(p,{type:'weapon',slot:'medical'});for(let i=0;i<2;i++)p=tactical(p,{type:'heal',targetId:localNPC(p.battle).id});p=hireLocal(p,'month');const id=localId(p.campaign);
- let s=order(leave(p),{type:'travel',sector:'retiro'});if(s.operativeState[id].carriedLoaded)s=order(s,{type:'unloadAmmunition',operativeId:id});s=order(s,{type:'selectAmmunitionLoad',operativeId:id,family:'ammoShot'});s=order(s,{type:'travel',sector:A});s=order(s,{type:'dismiss',id});p=visit(s);
+ let s=order(leave(p),{type:'travel',sector:'retiro'});if(s.operativeState[id].carriedLoaded)s=order(s,{type:'unloadAmmunition',operativeId:id});s=order(s,{type:'selectAmmunitionLoad',operativeId:id,family:'ammoShot'});p=visit(s);assert.equal(p.battle.units.find(u=>Number(u.id)===id).loaded,0);if(p.battle.units.find(u=>Number(u.id)===id).activeSlot!=='primary')p=tactical(p,{type:'weapon',unitId:String(id),slot:'primary'});p=tactical(p,{type:'reload',unitId:String(id)});assert.equal(p.battle.units.find(u=>Number(u.id)===id).loaded,1);s=order(leave(saved(p)),{type:'travel',sector:A});s=order(s,{type:'dismiss',id});p=visit(s);
  const n=localNPC(p.battle);assert.equal(n.civilianWeapons.primary.loaded,1);assert.equal(n.civilianWeapons.primary.ammunitionChoice,'ammoShot');
  // A real approach and attack creates the recoverable body.
  const u=p.battle.units[0],spot=getReachable(p.battle,u).find(t=>Math.abs(t.x-n.x)+Math.abs(t.y-n.y)===1);assert.ok(spot);if(spot.cost)p=tactical(p,{type:'move',x:spot.x,y:spot.y});

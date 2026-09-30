@@ -1,9 +1,11 @@
 import {hiredAssaultOrder} from './hired-assault-driver.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {initialCampaign,dispatchCampaign,isSupplied,rosterFor,contractQuote} from '../game/campaign.js';
+import {initialCampaign,dispatchCampaign,isSupplied,rosterFor,contractQuote,deploymentCost} from '../game/campaign.js';
 import {fight} from './opening-driver.mjs';
 import {actBattle} from '../game/tactical.js';
+import {ammoCount} from '../game/ammo-types.js';
+import {ammunitionOrderQuote} from '../game/campaign-ammunition.js';
 import {sameCell} from '../game/tactical-space.js';
 import {syncBattleTime} from '../game/time.js';
 import {prepareCampaignBattle} from '../game/battle-handoff.js';
@@ -21,14 +23,15 @@ test('a hired-only squad earns its first expansion from Retiro and retains injur
  for(const id of hireIds)order({type:'recruitCivic',id,term:'day'});
  const hiredTreasury=c.resources.treasury;
  assert.equal(3200-hiredTreasury,quotedCost,'all six day contracts are paid from the starting treasury');
- // Four Baker rifles need forty issued loads; Retiro starts with thirty.
- // Buy the missing ten before departure so Funes receives a usable weapon.
- const rifleStock=c.resources.ammo_rifle_62,merchantStock=c.merchants.retiro.ammunition.rifle_62;
- order({type:'purchaseAmmunition',ammoType:'rifle_62',quantity:10});
+ // Buy physical cartridges for a present rifleman before the ordinary assault.
+ // The other hires buy their finite marching allowance when they depart.
+ const rifleman=rosterFor(c).find(o=>o.id===128),quote=ammunitionOrderQuote(c,rifleman,'ammoRifle',10,'buy',true);
+ assert.equal(quote.available,true,quote.reason);
+ order({type:'ammunition',operativeId:128,family:'ammoRifle',quantity:10,direction:'buy'});
  const stagingTreasury=c.resources.treasury;
- assert.equal(hiredTreasury-stagingTreasury,30);
- assert.equal(c.resources.ammo_rifle_62,rifleStock+10);
- assert.equal(c.merchants.retiro.ammunition.rifle_62,merchantStock-10);
+ assert.equal(hiredTreasury-stagingTreasury,quote.cost);
+ assert.equal(ammoCount(c.operativeState[128],'ammoRifle'),quote.carried+10);
+ assert.equal(c.ammunitionShops.retiro.stock.ammoRifle,quote.stock-10);
  order({type:'attack',sector:'buenos_aires'});
  const request=structuredClone(c.pendingBattle);
  assert.equal(c.hour,12);assert.equal(c.officer,null);assert.deepEqual(owned(c),['retiro']);assert.equal(request.enemies.length,4);
@@ -84,7 +87,7 @@ test('a hired-only squad earns its first expansion from Retiro and retains injur
  assert.deepEqual(c.sectorStates.buenos_aires.droppedWeapons.filter(g=>players.some(u=>u.id===g.unitId)),dropped);
  assert.deepEqual(c.sectorStates.buenos_aires.groundItems.find(g=>g.id===fieldWeapon.id),fieldWeapon,'the actual discarded weapon stays in the sector with its finite load');
  const restored=decodeSave(encodeSave(c));assert.deepEqual(restored.campaign,c);c=restored.campaign;
- const secondOfHour=c.secondOfHour,treasury=c.resources.treasury;
+ const secondOfHour=c.secondOfHour,treasury=c.resources.treasury,reentryCost=deploymentCost(c);
  order({type:'visitSector'});const visit=prepareCampaignBattle(c);assert.equal(visit.error,null);
  assert.equal(visit.battle.mode,'exploration');assert.equal(visit.battle.sectorCleared,true);
  assert.equal(visit.campaign.hour,c.hour);assert.equal(visit.campaign.secondOfHour,secondOfHour);
@@ -95,6 +98,6 @@ test('a hired-only squad earns its first expansion from Retiro and retains injur
  for(const u of survivors){const actor=visit.battle.units.find(v=>v.id===u.id);assert.equal(actor.hp,u.hp);assert.equal(actor.loaded,u.loaded);assert.equal(Boolean(actor.weaponDropped),Boolean(u.weaponDropped));assert.equal(actor.condition,u.condition);assert.equal(actor.jammed,u.jammed);}
  const visitSave=decodeSave(encodeSave(visit.campaign,visit.battle));c=visitSave.campaign;
  order({type:'leaveSector',battleId:c.pendingBattle.id,survivors:visitSave.battle.units.filter(u=>u.side==='player'),sectorState:visitSave.battle});
- assert.equal(c.resources.treasury,treasury,'revisiting the battlefield cannot grant another victory reward');
+ assert.equal(c.resources.treasury,treasury-reentryCost,'reentry pays only its finite ammunition shortfall, without another victory reward');
  assert.deepEqual(owned(c),['buenos_aires','retiro']);assert.deepEqual(decodeSave(encodeSave(c)).campaign,c);
 });

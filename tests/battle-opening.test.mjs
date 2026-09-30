@@ -17,7 +17,7 @@ test('the first published campaign battle synchronizes immediate enemy initiativ
 
 test('a peaceful opening publishes a loadable pair without advancing time or mutating its source',()=>{
  let c=dispatchCampaign(initialCampaign(8),{type:'createOfficer',name:'Vigía',answers:{origin:'cabildo',doctrine:'line_marksman',crisis:'rally'}});c=dispatchCampaign(c,{type:'visitSector'});assert.equal(c.lastError,null);const before=structuredClone(c),pair=prepareCampaignBattle(c);
- assert.equal(pair.error,null);assert.equal(pair.battle.mode,'exploration');assert.equal(pair.battle.elapsedSeconds,0);assert.equal(pair.campaign.hour,c.hour);assert.equal(pair.campaign.secondOfHour,c.secondOfHour??0);assert.deepEqual(c,before);assert.deepEqual(decodeSave(encodeSave(pair.campaign,pair.battle)).battle,pair.battle);
+ assert.equal(pair.error,null);assert.equal(pair.battle.mode,'exploration');assert.equal(pair.battle.elapsedSeconds,0);assert.equal(pair.campaign.hour,c.hour);assert.equal(pair.campaign.secondOfHour??0,c.secondOfHour??0);assert.deepEqual(c,before);assert.deepEqual(decodeSave(encodeSave(pair.campaign,pair.battle)).battle,pair.battle);
 });
 test('opening without a pending deployment returns an error and preserves the campaign',()=>{
  const c=initialCampaign(8),before=structuredClone(c),pair=prepareCampaignBattle(c);assert.ok(pair.error);assert.equal(pair.battle,null);assert.equal(pair.campaign,c);assert.deepEqual(c,before);

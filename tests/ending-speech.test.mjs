@@ -25,7 +25,7 @@ test('a recruited commander who died cannot trigger the campaign ending',()=>{
  const s=preparedEnding();s.operativeState[57].hp=0;s.operativeState[57].alive=false;
  const n=dispatchCampaign(s,{type:'wait',hours:1});assert.equal(n.lastError,null);
  assert.equal(n.completed,false);assert.equal(n.defeated,true);
- assert.ok(n.log.some(row=>row.text.includes('San Martín ha caído')));
+ assert.ok(n.log.some(row=>row.text.includes('San Martín ha muerto')));
  assert.equal(n.log.some(row=>row.text.includes('Campaña concluida')),false);
  const again=dispatchCampaign(n,{type:'wait',hours:1});assert.ok(again.lastError);
  assert.equal(again.hour,n.hour);assert.deepEqual(again.log,n.log);

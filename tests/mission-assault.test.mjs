@@ -19,10 +19,10 @@ function ready(){
  return {s,ids:[second,first]};
 }
 test('explicit local squads deploy together with one commander and complete save and return records',()=>{
- let {s,ids}=ready();const before=structuredClone(s),stock=s.resources.powder;
+ let {s,ids}=ready();const before=structuredClone(s),stock=structuredClone(s.ammunitionShops),funds=s.resources.treasury;
  s=order(s,{type:'attack',sector:'san_lorenzo',squadIds:ids});
  assert.equal(s.pendingBattle.squad.length,8);assert.equal(s.pendingBattle.missionAllies.length,1);
- assert.deepEqual(s.pendingBattle.assaultSquads.map(q=>q.id),ids);assert.equal(s.resources.powder,stock-3);
+ assert.deepEqual(s.pendingBattle.assaultSquads.map(q=>q.id),ids);assert.deepEqual(s.ammunitionShops,stock);assert.equal(s.resources.treasury,funds);
  assert.deepEqual(restoreCampaign(serializeCampaign(s)),s);
  const pair=prepareCampaignBattle(s,{placement:true});assert.equal(pair.error,null,pair.error);
  assert.equal(pair.battle.deployment.units.length,8);

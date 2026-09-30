@@ -45,7 +45,7 @@ test('shared player sight retains a known obstruction even when the mover faces 
 
 test('an unseen civilian blocks actual passage without rejecting the distant plan',()=>{
  const s=field();s.units[1].x=10;s.units[1].y=5;
- s.npcs=[{id:'civilian',name:'Vecino',x:1,y:2,hp:100,maxHp:100,civilianHealthVersion:1}];
+ s.npcs=[{id:'civilian',name:'Vecino',x:1,y:2,hp:100,maxHp:100,civilianHealthVersion:1,energy:100,unconscious:false}];
  assert.equal(canSee(s,s.units[0],s.npcs[0]),false);
  const n=actBattle(s,{type:'move',unitId:'p',x:1,y:2});
  assert.equal(n.lastError,null);assert.equal(n.units[0].x,2);assert.deepEqual(n.npcs,s.npcs);

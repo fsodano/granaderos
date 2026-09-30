@@ -19,7 +19,7 @@ test('notebook receipts are acknowledged quantities and incomplete territorial r
  assert.deepEqual(s,before);assert.equal(entries[0].id,'salta-correos');
  assert.equal(entries.find(q=>q.id==='retiro-uniformes').delivered,1);
  assert.deepEqual(entries[0].unsecured,['jujuy']);assert.match(html,/Ponchos entregados: 1\/2/);
- assert.match(html,/5 mosquetes y 2 caballos/i);assert.match(html,/Primero asegurá:/);assert.match(html,/Día 2 · 1:00/);
+ assert.match(html,/400 pesos/);assert.match(html,/Asegurá Salta y Jujuy/);assert.doesNotMatch(html,/mosquetes|caballos/);assert.match(html,/Primero asegurá:/);assert.match(html,/Día 2 · 1:00/);
 });
 test('completed and failed errands retain their terminal outcome without delivery instructions',()=>{
  for(const status of ['completed','failed']){

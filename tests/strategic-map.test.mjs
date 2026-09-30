@@ -32,8 +32,9 @@ test('income readout matches actual campaign daily payout',()=>{
 test('income readout applies control, damage and blockade without mutation',()=>{
  const s=secureArea(initialCampaign(),'ensenada'),d=CAMPAIGN_SECTORS.find(d=>d.id==='ensenada');
  s.sectors[d.id].damageUntil=10;s.blockade=true;
+ // Established area with 65 loyalty: 3 pesos after damage and blockade limits.
  const before=JSON.stringify(s);
- assert.equal(sectorIncome(s,d),10);
+ assert.equal(sectorIncome(s,d),3);
  assert.equal(JSON.stringify(s),before);
  s.sectors[d.id].owner='royalist';assert.equal(sectorIncome(s,d,()=>true),0);
 });

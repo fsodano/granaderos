@@ -6,6 +6,7 @@ import {defaultContentPackage,validateContentPackage,parseContentPackage,encodeC
 import {initialCampaign,dispatchCampaign,isSupplied,campaignObjectives,availableActions} from '../game/campaign.js';
 import {defaultProfile} from '../game/character-profile.js';
 import {hiringArrivalOptions} from '../game/hiring-arrivals.js';
+import {dailyIncome} from '../game/economy.js';
 import {refillCost,firearmRepairCost} from '../game/equipment.js';
 import {enterSector} from '../game/world.js';
 import {syncBattleTime} from '../game/time.js';
@@ -52,5 +53,5 @@ test('pinned headquarters survive travel and draft changes, while altered saved 
 });
 
 test('a hired squad launches and saves an actual frontier attack supplied from the alternate headquarters',()=>{
- let s=order(initialCampaign(8,content('mendoza')),{type:'recruitCivic',id:110,term:'week'});s=order(s,{type:'wait',hours:6});const funds=s.resources.treasury;s=order(s,{type:'attack',sector:'uspallata'});assert.equal(s.pendingBattle.origin,'mendoza');assert.equal(s.pendingBattle.sector,'uspallata');assert.equal(s.resources.treasury,funds-10);assert.equal(s.sectors.retiro.owner,'royalist');assert.equal(s.sectors.uspallata.owner,'royalist');const b=enterSector(s.pendingBattle),pair=save(s,b);assert.ok(b.units.some(u=>u.side==='enemy'));assert.equal(pair.campaign.location,'uspallata');assert.equal(headquartersFor(pair.campaign),'mendoza');assert.deepEqual(pair.battle,b);
+ let s=order(initialCampaign(8,content('mendoza')),{type:'recruitCivic',id:110,term:'week'});s=order(s,{type:'wait',hours:6});const funds=s.resources.treasury,income=dailyIncome(s);s=order(s,{type:'attack',sector:'uspallata'});assert.equal(s.pendingBattle.origin,'mendoza');assert.equal(s.pendingBattle.sector,'uspallata');assert.equal(s.hour,24);assert.equal(s.resources.treasury,funds+income-10);assert.equal(s.sectors.retiro.owner,'royalist');assert.equal(s.sectors.uspallata.owner,'royalist');const b=enterSector(s.pendingBattle),pair=save(s,b);assert.ok(b.units.some(u=>u.side==='enemy'));assert.equal(pair.campaign.location,'uspallata');assert.equal(headquartersFor(pair.campaign),'mendoza');assert.deepEqual(pair.battle,b);
 });

@@ -30,9 +30,9 @@ test('paid squad save retains stacked soldiers, finite dropped ammunition, roof 
  const at=authoredTerrace(battle),players=battle.units.filter(u=>u.side==='player');
  Object.assign(players[0],at,{tacticalLevel:1});Object.assign(players[1],at,{tacticalLevel:0});
  // Controlled persistence fixture: author the upper placement before movement exists.
- Object.assign(battle.groundItems[0],at,{tacticalLevel:1});
+ const dropped=battle.groundItems.find(g=>g.ammoType===weaponAmmoType(unit.weapon));assert.ok(dropped);Object.assign(dropped,at,{tacticalLevel:1});
  const original=structuredClone(battle),loaded=decodeSave(encodeSave(campaign,battle));
- assert.deepEqual(loaded.battle,original);assert.equal(players[0].ammo+loaded.battle.groundItems[0].count,reserveBefore);
+ assert.deepEqual(loaded.battle,original);assert.equal(players[0].ammo+loaded.battle.groundItems.find(g=>g.id===dropped.id).count,reserveBefore);
  const request={...loaded.campaign.pendingBattle,squad:loaded.battle.units.filter(u=>u.side==='player').map(u=>({...u,entryReason:'resident'}))};
  const entered=enterSector(request,loaded.battle),again=enterSector(request,entered);
  for(const state of [entered,again]){
@@ -42,7 +42,7 @@ test('paid squad save retains stacked soldiers, finite dropped ammunition, roof 
   assert.notEqual(spaceKey(state.units[0]),spaceKey(state.units[1]));assert.equal(state.mode,'exploration');
  }
  assert.deepEqual(battle,original,'reentry must not mutate the saved sector');
- for(const mutate of [b=>delete b.upperSurfaces,b=>b.groundItems[0].tacticalLevel=2,b=>b.units[0].tacticalLevel=2]){const broken=structuredClone(battle);mutate(broken);assert.throws(()=>decodeSave(encodeSave(campaign,broken)));}
+ for(const mutate of [b=>delete b.upperSurfaces,b=>b.groundItems.find(g=>g.id===dropped.id).tacticalLevel=2,b=>b.units[0].tacticalLevel=2]){const broken=structuredClone(battle);mutate(broken);assert.throws(()=>decodeSave(encodeSave(campaign,broken)));}
 });
 test('roof residents, corpses, lights and furniture persist while strategic arrivals use the ground boundary',()=>{
  const request={sector:'retiro',exploration:true,squad:[{id:'resident'}],enemies:[],npcs:[{id:'civilian',name:'Vecino',x:1,y:4}]};

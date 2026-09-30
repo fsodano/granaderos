@@ -155,7 +155,8 @@ export function advanceNpc(s,n,budget=24,atTime=now(s)) {
     if(climbing&&(n.energy??100)<=(up?12:8)){recoverEnergy(n,10);break;}
     budget-=cost;if(climbing)n.energy=Math.max(0,(n.energy??100)-(up?12:8));if(n.x!==p.x||n.y!==p.y)n.facing=directionTo(n,p);Object.assign(n,point(p));n.lastMovePath.push(climbing?{...p}:point(p));
   }
-  if(sameCell(n,ai.destination)){
+  // An alarm can clear the walking destination while this route is in progress.
+  if(ai.destination&&sameCell(n,ai.destination)){
     if(danger)ai.activity='hiding';
     else if(n.scriptedMove)ai.activity='meeting';
     else if(n.escort){ai.activity='waiting';delete ai.destination;}

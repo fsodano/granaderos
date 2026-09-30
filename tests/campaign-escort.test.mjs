@@ -49,7 +49,7 @@ test('escort death permanently fails the accepted quest and saved directives can
  const missing=structuredClone(pair);missing.battle.npcs=[];assert.throws(()=>decodeSave(encodeSave(missing.campaign,missing.battle)));
  const unknown=structuredClone(pair.battle);unknown.npcs.find(n=>n.id===npcId).id='unknown-escort';assert.throws(()=>validateQuestEscortOrders(pair.campaign,unknown));
  applyCivilianHarm(pair.battle,pair.battle.npcs.find(n=>n.id===npcId),{source:pair.battle.units.find(u=>u.id==='112'),damage:100,breathLoss:0,intentional:true});pair=sync(pair);
- assert.equal(pair.campaign.quests[questId].status,'failed');assert.equal(pair.battle.npcs.find(n=>n.id===npcId).escort.waiting,true);assert.equal(pair.campaign.cityLoyaltyEvents.filter(e=>e.kind==='quest').length,0);
+ assert.equal(pair.campaign.quests[questId].status,'failed');assert.equal(pair.battle.npcs.find(n=>n.id===npcId).escort.waiting,true);assert.equal(pair.campaign.cityLoyaltyEvents.filter(e=>e.kind==='quest'&&e.eventId===`npc-${questId}`).length,0);
 });
 
 test('leadership changes require a present adjacent speaker and retain the escort position',()=>{

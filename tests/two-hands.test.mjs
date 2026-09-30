@@ -1,4 +1,5 @@
-import {AMMUNITION_RESOURCE_KEYS,unitAmmunitionByType} from '../game/campaign-ammunition.js';
+import {unitAmmunitionByType} from '../game/campaign-ammunition.js';
+import {AMMUNITION_FAMILIES} from '../game/ammunition-families.js';
 import test from 'node:test';import assert from 'node:assert/strict';
 import {createBattle,actBattle,planEquipLoot,planSwapHands,swapHandsPreview,carriedWeight} from '../game/tactical.js';
 import {handLayout,handsRequired} from '../game/hand-layout.js';import {inventoryUsage,handRecord,transferItemQuantity} from '../game/tactical-inventory.js';
@@ -40,7 +41,7 @@ test('validation rejects impossible and duplicated second-hand records; public s
 });
 test('a second gun survives an actual campaign return, full save and redeployment with ammunition conserved',()=>{
  const step=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,n.lastError);return n;};let c=step(initialCampaign(),{type:'createOfficer',name:'Juana del Sur',answers:{origin:'cabildo',doctrine:'line_marksman',crisis:'rally'}});
- c.operativeState[1000].inventory={...c.operativeState[1000].inventory,second:pistol('campaign-second'),third:pistol('campaign-third',{weapon:1805,loaded:0})};c=step(c,{type:'visitSector'});let b=enterSector(c.pendingBattle),u=b.units.find(u=>u.id==='1000');const balance=(campaign,unit)=>{const carried=unitAmmunitionByType(unit);return Object.fromEntries(Object.entries(AMMUNITION_RESOURCE_KEYS).map(([type,key])=>[type,(campaign.resources[key]??0)+(carried[type]??0)]));};const total=balance(c,u);
+ c.operativeState[1000].inventory={...c.operativeState[1000].inventory,second:pistol('campaign-second'),third:pistol('campaign-third',{weapon:1805,loaded:0})};c=step(c,{type:'visitSector'});let b=enterSector(c.pendingBattle),u=b.units.find(u=>u.id==='1000');const balance=(campaign,unit)=>{const carried=unitAmmunitionByType(unit);return Object.fromEntries(Object.values(AMMUNITION_FAMILIES).map(({type,id})=>[type,(campaign.ammunitionShops.retiro?.stock[id]??0)+(campaign.ammunitionStores.retiro?.[id]??0)+(carried[type]??0)]));};const total=balance(c,u);
  b=actBattle(b,{type:'equipLoot',unitId:u.id,inventoryKey:'second',slot:'primary'});assert.equal(b.lastError,null);b=actBattle(b,{type:'equipLoot',unitId:u.id,inventoryKey:'third',slot:'offhand'});assert.equal(b.lastError,null);b=actBattle(b,{type:'swapHands',unitId:u.id});assert.equal(b.lastError,null);let pair=syncBattleTime(c,b);assert.equal(pair.error,null);c=pair.campaign;b=pair.battle;c=step(c,{type:'leaveSector',battleId:c.pendingBattle.id,sectorState:b,survivors:b.units.filter(u=>u.side==='player')});assert.equal(c.operativeState[1000].offHand.instanceId,'campaign-second');assert.equal(c.operativeState[1000].offHand.loaded,2);
  c=decodeSave(encodeSave(c,null)).campaign;c=step(c,{type:'visitSector'});b=enterSector(c.pendingBattle);u=b.units.find(u=>u.id==='1000');assert.equal(u.offHand.instanceId,'campaign-second');assert.equal(u.offHand.loaded,2);assert.deepEqual(balance(c,u),total);assert.doesNotThrow(()=>decodeSave(encodeSave(c,b)));
 });

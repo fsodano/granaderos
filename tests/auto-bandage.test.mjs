@@ -1,3 +1,4 @@
+import {CIVILIAN_BREATH_RECOVERY} from '../game/civilian-health.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {actBattle, createBattle, movementEnergy} from '../game/tactical.js';
@@ -146,7 +147,7 @@ test('automatic care includes visible civilians through typed paid orders and ex
  assert.ok(report.steps.some(a=>a.type==='move'));assert.ok(report.steps.some(a=>a.type==='useItem'&&a.targetKind==='npc'));
  assert.equal(report.battle.units[0].medkits,2);assert.ok(report.elapsedSeconds>0);
  assert.equal(report.battle.npcs[0].bleeding,0);assert.ok(report.battle.npcs[0].hp<=50);
- assert.equal(report.battle.npcs[0].energy,0);assert.equal(report.battle.npcs[0].ap,undefined);
+ assert.equal(report.battle.npcs[0].energy,2*CIVILIAN_BREATH_RECOVERY);assert.equal(report.battle.npcs[0].unconscious,false);assert.equal(report.battle.npcs[0].ap,undefined);
 });
 test('automatic civilian stabilization repeats finite dressings and reports exhaustion',()=>{
  for(const kits of [1,8]){

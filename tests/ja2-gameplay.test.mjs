@@ -51,9 +51,9 @@ test('resting before contact does not grant an extra first enemy AP budget',()=>
  s.units[1].ap=0;const n=endTurn(s);assert.equal(n.units[1].ap,0);assert.equal(n.units[1].carriedAP,0);
 });
 test('legacy charges stop at an interrupt and cannot strike through a wall',()=>{
- let s=field([{id:'p',x:1,y:1,morale:100}],{enemies:[{id:'e',x:6,y:1,overwatch:true,weapon:1806}]});
+ let s=field([{id:'p',x:1,y:1,morale:100,blade:1809,activeSlot:'blade'}],{enemies:[{id:'e',x:6,y:1,overwatch:true,weapon:1806}]});
  s.units[1].ap=actionCosts(s,s.units[1]).fire;const n=order(s,{type:'charge',targetId:'e'});assert.equal(n.units[0].x,2);assert.equal(n.units[1].hp,100);assert.equal(n.units[0].ap,92);
- s=field([{id:'p',x:1,y:1}],{enemies:[{id:'e',x:3,y:1,overwatch:false}]});
+ s=field([{id:'p',x:1,y:1,blade:1809,activeSlot:'blade'}],{enemies:[{id:'e',x:3,y:1,overwatch:false}]});
  Object.assign(s.tiles.find(t=>t.x===2&&t.y===1),{type:'wall',blocked:true});
  const blocked=actBattle(s,{type:'charge',unitId:'p',targetId:'e'});assert.ok(blocked.lastError);assert.deepEqual(blocked.units,s.units);
 });

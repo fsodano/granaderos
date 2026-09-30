@@ -51,8 +51,11 @@ test('actual blast wounds, unconsciousness and death survive live save, report a
 
 test('NPC health admission keeps healthy legacy defaults and the old dead-trap flag but rejects incoherent living state',()=>{
  const field=patch=>createBattle([{id:'p',x:1,y:2}],{width:12,height:10,tiles:flat(),exploration:true,enemies:[],npcs:[{id:'civil',name:'Vecina',x:5,y:2,...patch}]});
- const legacy=field();validateBattleSnapshot(legacy);for(const key of ['hp','energy','unconscious'])assert.equal(Object.hasOwn(legacy.npcs[0],key),false);
- for(const patch of [{hp:100,energy:100},{hp:0,energy:0,unconscious:true},{hp:0,energy:0,unconscious:false},{hp:5,energy:100,unconscious:true},{hp:80,energy:0,unconscious:true},{unconscious:true}])assert.doesNotThrow(()=>validateBattleSnapshot(field(patch)),JSON.stringify(patch));
- for(const patch of [{hp:5},{energy:0}]){const b=validateBattleSnapshot(field(patch));assert.equal(b.npcs[0].unconscious,true);}
- for(const patch of [{hp:-1},{hp:101},{hp:null},{energy:-1},{energy:101},{energy:'bad'},{unconscious:'bad'},{unconscious:null},{hp:5,unconscious:false},{hp:100,energy:0,unconscious:false},{hp:100,energy:100,unconscious:true}])assert.throws(()=>validateBattleSnapshot(field(patch)),JSON.stringify(patch));
+ const legacy=field();validateBattleSnapshot(legacy);assert.deepEqual(['hp','energy','unconscious'].map(key=>legacy.npcs[0][key]),[100,100,false]);
+ for(const patch of [{hp:100,energy:100},{hp:0,energy:0},{hp:5,energy:100},{hp:80,energy:0}])assert.doesNotThrow(()=>validateBattleSnapshot(field(patch)),JSON.stringify(patch));
+ for(const patch of [{hp:5},{energy:0}])assert.equal(validateBattleSnapshot(field(patch)).npcs[0].unconscious,true);
+ // Old trap snapshots used either corpse flag. New scenes normalize it.
+ for(const unconscious of [false,true]){const old=field({hp:0,energy:0});delete old.npcs[0].civilianHealthVersion;delete old.npcs[0].maxHp;old.npcs[0].unconscious=unconscious;assert.doesNotThrow(()=>validateBattleSnapshot(old));}
+ // Test save admission directly: constructing a scene normalizes initial health.
+ for(const patch of [{hp:-1},{hp:101},{hp:null},{energy:-1},{energy:101},{energy:'bad'},{unconscious:'bad'},{unconscious:null},{hp:5,unconscious:false},{hp:100,energy:0,unconscious:false},{hp:100,energy:100,unconscious:true}]){const bad=field();Object.assign(bad.npcs[0],patch);assert.throws(()=>validateBattleSnapshot(bad),JSON.stringify(patch));}
 });

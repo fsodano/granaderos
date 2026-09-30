@@ -8,6 +8,7 @@ import {enterSector} from '../game/world.js';
 import {inventoryUsage,equipmentFingerprint} from '../game/tactical-inventory.js';
 import {syncBattleTime} from '../game/time.js';
 import {encodeSave,decodeSave} from '../game/save.js';
+import {PONCHO_PRICE} from '../game/outfits.js';
 import {launchEnemyGroup} from '../game/enemy-groups.js';
 import {approachNPC} from './approach-npc.mjs';
 
@@ -17,8 +18,8 @@ const sync=(campaign,battle)=>{const result=syncBattleTime(campaign,battle);asse
 
 test('a later real defense keeps the NPC and exact poncho delivered during the previous visit',()=>{
  let campaign=initialCampaign(8);const originalCash=campaign.resources.treasury;
- campaign=order(campaign,{type:'recruitCivic',id:110,term:'week'});assert.ok(campaign.resources.treasury<originalCash);const originalPonchos=campaign.resources.ponchos;
- campaign=order(campaign,{type:'sectorInventory',sector:'retiro',operativeId:110,direction:'issueOutfit'});assert.equal(campaign.resources.ponchos,originalPonchos-1);
+ campaign=order(campaign,{type:'recruitCivic',id:110,term:'week'});assert.ok(campaign.resources.treasury<originalCash);const originalPonchos=campaign.merchants.retiro.supplies.ponchos,cashBeforePurchase=campaign.resources.treasury;
+ campaign=order(campaign,{type:'sectorInventory',sector:'retiro',operativeId:110,direction:'issueOutfit'});assert.equal(campaign.merchants.retiro.supplies.ponchos,originalPonchos-1);assert.equal(campaign.resources.treasury,cashBeforePurchase-PONCHO_PRICE);
  campaign=order(campaign,{type:'visitSector'});let pair=prepareCampaignBattle(campaign);assert.equal(pair.error,null,pair.error);
  pair=sync(pair.campaign,approachNPC(pair.battle,'110',npcId));
  const actor=pair.battle.units.find(u=>u.id==='110'),npc=pair.battle.npcs.find(n=>n.id===npcId),source=inventoryUsage(actor).slots.find(slot=>slot.entry?.kind==='outfit');assert.ok(source);
@@ -41,7 +42,7 @@ test('a later real defense keeps the NPC and exact poncho delivered during the p
  assert.equal(pair.battle.npcs.filter(n=>n.id===npcId).length,1);assert.deepEqual(pair.battle.npcs.find(n=>n.id===npcId).questGifts,receipt);
  const explicitOwner=enterSector({...campaign.pendingBattle,npcs:[previous.npcs.find(n=>n.id===npcId)]},previous);assert.equal(explicitOwner.npcs.length,1);assert.deepEqual(explicitOwner.npcs[0].questGifts,receipt);
  assert.equal(pair.battle.units.filter(u=>u.side==='player'&&u.id==='110').length,1);assert.equal(pair.battle.units.filter(u=>u.side==='enemy').length,group.initialStrength);
- assert.equal(pair.campaign.conversations[npcId].giftCount,1);assert.equal(pair.campaign.resources.ponchos,originalPonchos-1);assert.deepEqual(pair.campaign.cityLoyaltyEvents,before.cityLoyaltyEvents);
+ assert.equal(pair.campaign.conversations[npcId].giftCount,1);assert.equal(pair.campaign.merchants.retiro.supplies.ponchos,originalPonchos-1);assert.deepEqual(pair.campaign.cityLoyaltyEvents,before.cityLoyaltyEvents);
  const saved=decodeSave(encodeSave(pair.campaign,pair.battle));assert.deepEqual(saved.battle.npcs.find(n=>n.id===npcId).questGifts,receipt);assert.deepEqual(sync(saved.campaign,saved.battle).campaign,saved.campaign);
  // Continue the saved defense through ordinary finite orders and enemy turns.
  // The fixture tests custody after the actual result, not a chosen casualty count.
