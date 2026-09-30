@@ -1,0 +1,57 @@
+{
+  "baseRevision": "3f2e0aa04dbe922283b2b366b124f5d5c1ea5db5",
+  "runtimeSource": "b5cfe7592703ec1ddce17e43e897c1e376ab39edaf74c1343e21efb297cab1fe",
+  "scope": "Working branch route verification; not a release or complete campaign acceptance.",
+  "checks": [
+    {
+      "tests": 43,
+      "pass": 43,
+      "fail": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "durationMs": 3747.992291,
+      "logSha256": "05bd0df794d8c1954430c545fe2cc6b5d0f10d6751f5d0a78c8beb1bdbbb3c89",
+      "files": [
+        "tests/prisoner-rescue-route.test.mjs",
+        "tests/campaign-detention.test.mjs",
+        "tests/prisoner-custody.test.mjs",
+        "tests/detention-care.test.mjs",
+        "tests/prisoner-release.test.mjs",
+        "tests/detention-health.test.mjs",
+        "tests/detention.test.mjs",
+        "tests/prisoner-custody-render.test.mjs",
+        "tests/prisoner-actions-render.test.mjs"
+      ]
+    }
+  ],
+  "rescue": {
+    "scenario": "Established northern front and scripted prior capture; paid relief and actual rescue combat.",
+    "paidGun": "One 400-peso swivel gun is kept out of the captured patrol and issued to the relief force.",
+    "requirements": [
+      "Six relief soldiers enter from the physical eastern arrival edge.",
+      "Actual combat clears all guards before evacuation.",
+      "All three living prisoners are released and physically escorted to Jujuy.",
+      "Every surviving relief soldier exits; actual deaths remain permanent.",
+      "The cannon spends its finite loaded shot and reserve ammunition.",
+      "Each evacuation and final campaign round-trip their save."
+    ],
+    "limits": "This prepared rescue does not prove a fresh campaign or stealth escape."
+  },
+  "northern": {
+    "test": "tests/fresh-northern-route.test.mjs",
+    "pass": 0,
+    "fail": 1,
+    "durationMs": 198555.9825,
+    "logSha256": "7886555207a483486450af096fe2b0738b16f15544fb61b1f8b1442fe50af275",
+    "verifiedBeforeFailure": "The fresh created-character opening, coordinated Cordoba assault and paid twelve-person Tucuman assault all complete their combat and saved replay.",
+    "failure": "The next Salta assault ends in defeat; Yatasto is not reached.",
+    "support": "Six living low-cost replacements are paid for, arrive at the controlled destination, recover real guns, buy matching ammunition and finish both journeys before deployment."
+  },
+  "remaining": [
+    "Fresh northern Salta and dependent Cuyo, ending and historical-loss routes.",
+    "Established southern Cordoba assault and downstream prerequisites.",
+    "Long fresh-campaign Cordoba defense.",
+    "Matching-head complete CI, final browser checks, PR merge and replacement of the old build at port 3134.",
+    "User-requested service-end equipment return, only after PR139 merges."
+  ]
+}

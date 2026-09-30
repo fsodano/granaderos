@@ -3,6 +3,7 @@ import {start,sync,order} from './prisoner-rescue-fixture.mjs';
 import {actBattle,endTurn,getReachable,teamCanSee,prisonerReleasePreview,exitPreview,interruptAvailable,stanceCost} from '../game/tactical.js';
 import {automaticOrder} from '../game/autonomous-orders.js';
 import {combatOrder} from './opening-driver.mjs';
+import {mountainBatteryOrder} from './mountain-battery-driver.mjs';
 import {encodeSave,decodeSave} from '../game/save.js';
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 export function runPrisonerRescue(){
@@ -15,6 +16,9 @@ function toward(b,u,predicate){
  return point?{type:'move',unitId:u.id,x:point.x,y:point.y,tacticalLevel:point.tacticalLevel??0}:null;
 }
 function rescueOrder(b,u){
+ // Clear the guards with the paid gun and its infantry screen before moving
+ // prisoners. This route verifies a guarded rescue, not an unseen escape.
+ if(!b.sectorCleared)return mountainBatteryOrder(b,u,{leaderId:'112',helperId:'none',screenDistance:3});
  for(const n of b.npcs.filter(n=>n.detention&&(teamCanSee(b,'player',n)||n.detention.freed)))seen.set(n.id,structuredClone(n));
  const following=b.npcs.find(n=>n.detention?.freed&&!n.departure&&n.escort?.leaderId===u.id&&n.hp>=15&&!n.unconscious);
  if(following){

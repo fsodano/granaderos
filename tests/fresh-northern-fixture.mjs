@@ -6,7 +6,9 @@ import {finishReloadsBeforeMarch} from './pre-march-reload.mjs';
 import {marchToFront,completeTestTravel} from './campaign-test-helpers.mjs';
 import {firstAidPlan} from '../game/first-aid.js';
 import assert from 'node:assert/strict';
-import {dispatchCampaign,isSupplied} from '../game/campaign.js';
+import {dispatchCampaign,isSupplied,rosterFor} from '../game/campaign.js';
+import {contractQuote} from '../game/contracts.js';
+import {prepareNorthernSupport} from './northern-support-fixture.mjs';
 import {enterSector} from '../game/world.js';
 import {actBattle,endTurn,getReachable} from '../game/tactical.js';
 import {hasWorkshop} from '../game/campaign-headquarters.js';
@@ -37,6 +39,8 @@ export function freshNorthernRoute({onCheckpoint}={}){
  for(let hour=0;hour<24&&![field,support].every(id=>s.squads.find(q=>q.id===id)?.journey?.status==='ready');hour++)s=order(s,{type:'wait',hours:1});
  s=order(s,{type:'beginAssault',sector:'cordoba'});assert.equal(s.pendingBattle.squad.length,12);
  for(const sector of ['cordoba','tucuman','salta']){
+  const support=sector==='tucuman'?prepareNorthernSupport(s,sector):null;
+  if(support)s=support.campaign;
   if(!s.pendingBattle){s=finishReloadsBeforeMarch(s);s=marchToFront(s,{type:'attack',sector});s=order(s,{type:'attack',sector});}assert.ok(s.pendingBattle);const request={...s.pendingBattle,hour:s.hour,secondOfHour:s.secondOfHour??0},previous=s.sectorStates[sector];
   // Use the shared floor-aware squad controller and record every order for
   // replay. Interruptions retain their actual participants and AP budgets.
@@ -44,7 +48,7 @@ export function freshNorthernRoute({onCheckpoint}={}){
   let p={campaign:s,battle:enterSector(request,previous)};
   for(let i=0;i<orders.length;i++){p=tactical(p,orders[i]);if(i===Math.floor(orders.length/2))p=saved(p);}
   assert.deepEqual(p.battle.units,battle.units);assert.equal(p.battle.seed,battle.seed);assert.equal(p.battle.elapsedSeconds,battle.elapsedSeconds);p=saved(p);
-  const before=p.campaign.resources.treasury;const record={sector,actions,turns:battle.turn,hour:p.campaign.hour,second:p.campaign.secondOfHour,units:battle.units.filter(u=>u.side==='player').map(({id,hp,bleeding,medkits,routed})=>({id,hp,bleeding,medkits,routed}))};
+  const before=p.campaign.resources.treasury;const record={sector,actions,turns:battle.turn,hour:p.campaign.hour,second:p.campaign.secondOfHour,support:support&&{ids:support.ids,cost:support.cost},units:battle.units.filter(u=>u.side==='player').map(({id,hp,bleeding,medkits,routed})=>({id,hp,bleeding,medkits,routed}))};
   p=tactical(p,{type:'explore'});
   for(const actor of p.battle.units.filter(u=>u.side==='player'&&u.hp>0&&!u.routed&&!u.unconscious).sort((a,b)=>a.hp-b.hp)){
    const current=p.battle.units.find(u=>u.id===actor.id);if(firstAidPlan(current,current).valid)p=tactical(p,{type:'heal',unitId:actor.id});
@@ -56,10 +60,15 @@ export function freshNorthernRoute({onCheckpoint}={}){
   // that evacuation real, and select the surviving local field command.
   const local=s.squads.find(q=>q.location===sector&&q.members.some(id=>s.operativeState[id].alive&&!s.operativeState[id].captured));assert.ok(local,'the victory must retain a living local field command');
   s=order(s,{type:'selectSquad',id:local.id});
+  if(sector!=='cordoba'){
+   const survivors=s.recruited.filter(id=>{const r=s.operativeState[id];return r.alive&&!r.captured&&r.location===sector&&r.hp>=15;});
+   s=order(s,{type:'squad',ids:survivors.slice(0,6)});
+  }
   if(hasWorkshop(s,s.location))for(const id of s.squad)for(const type of ['resupply','repairWeapon']){
    const next=dispatchCampaign(s,{type,operativeId:id});if(!next.lastError){assert.ok(next.resources.treasury<s.resources.treasury);s=next;}
   }
-  const candidates=[115,123,114,137,113,124,112,134,139,108,111,117,121,126,129,133,130].filter(id=>s.operativeState[id].alive&&!s.recruited.includes(id)),replacements=candidates.slice(0,6-s.squad.length);
+  const affordable=rosterFor(s).filter(o=>o.id>=100&&contractQuote(s,o,'week').price<=200).sort((a,b)=>contractQuote(s,a,'week').price-contractQuote(s,b,'week').price||a.id-b.id).map(o=>o.id);
+  const candidates=[...new Set([115,123,114,137,113,124,112,134,139,108,111,117,121,126,129,133,130,...affordable])].filter(id=>s.operativeState[id].alive&&!s.recruited.includes(id)),replacements=candidates.slice(0,6-s.squad.length);
   assert.ok(hiringArrivalOptions(s).some(o=>o.id===s.location));const at=s.location;
   for(const id of replacements)s=order(s,{type:'recruitCivic',id,term:'week',destination:at});
   if(replacements.length){assert.ok(replacements.every(id=>!s.recruited.includes(id)));s=saved({campaign:order(s,{type:'wait',hours:6})}).campaign;assert.ok(replacements.every(id=>s.recruited.includes(id)&&s.operativeState[id].location===at));}
