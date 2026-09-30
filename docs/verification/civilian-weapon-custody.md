@@ -1,5 +1,7 @@
 # Civilian weapon custody
 
+[PR #138](https://github.com/fsodano/granaderos/pull/138) carries this delivery.
+
 Residents now project their configured primary weapon and secondary blade from
 the same ownership record used in service. The character editor already selects
 these weapons and their authored definitions. This delivery connects those

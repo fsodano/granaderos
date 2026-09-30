@@ -6507,7 +6507,8 @@
         "tests/civilian-weapons.test.mjs",
         "tests/civilian-weapons-render.test.mjs",
         "tests/civilian-supplies.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/138"
     }
   ],
   "latestPublishedCheck": {
