@@ -1,6 +1,8 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import {dispatchCampaign,rosterFor} from '../game/campaign.js';
 import {doctorRate,careStatus,careAssignmentReason} from '../game/medical-care.js';
+import {serviceReturnSources} from '../game/service-equipment-return.js';
+import {sectorInventoryModel} from '../game/sector-inventory.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {order,saved,visit,leave} from './local-contract-fixture.mjs';
 import {advanceCampaignHours} from './campaign-wait-fixture.mjs';
@@ -34,8 +36,16 @@ test('care assignments block deployment and competing militia work, and reject u
 });
 
 test('expired and dismissed medical staff leave no hidden work, free supply or invalid assignment',()=>{
- let s=assignedCare({term:'day'});s=advanceCampaignHours(s,s.contracts[DOCTOR].expiresAt-1-s.hour);assert.equal(s.hour,23);s=order(s,{type:'purchaseMedicalSupplies',id:DOCTOR,quantity:2});const hp=s.operativeState[PATIENT].hp;s=order(s,{type:'wait',hours:1});assert.ok(!s.recruited.includes(DOCTOR));assert.equal(s.operativeState[DOCTOR].assignment,'active');assert.equal(s.operativeState[DOCTOR].medkits,2);assert.equal(s.operativeState[PATIENT].hp,hp,'the expired doctor cannot treat and an unattended patient does not heal');assert.ok(saved({campaign:s}));
- s=order(s,{type:'recruitCivic',id:DOCTOR,term:'week'});assert.equal(s.operativeState[DOCTOR].assignment,'active');assert.equal(s.operativeState[DOCTOR].medkits,2);s=order(s,{type:'assignCare',id:DOCTOR,assignment:'doctor'});s=order(s,{type:'dismiss',id:DOCTOR});assert.equal(s.operativeState[DOCTOR].assignment,'active');assert.ok(saved({campaign:s}));
+ let s=assignedCare({term:'day'});s=advanceCampaignHours(s,s.contracts[DOCTOR].expiresAt-1-s.hour);assert.equal(s.hour,23);s=order(s,{type:'purchaseMedicalSupplies',id:DOCTOR,quantity:2});const hp=s.operativeState[PATIENT].hp;s=order(s,{type:'wait',hours:1});assert.ok(!s.recruited.includes(DOCTOR));assert.equal(s.operativeState[DOCTOR].assignment,'active');assert.equal(s.operativeState[DOCTOR].medkits,0);assert.equal(s.operativeState[PATIENT].hp,hp,'the expired doctor cannot treat and an unattended patient does not heal');
+ const returned=serviceReturnSources(s,'retiro').filter(row=>row.stack?.item==='medkits');assert.equal(returned.length,1);assert.equal(returned[0].stack.count,2,'the two paid dressings stay in local return custody');
+ s=saved({campaign:s}).campaign;assert.deepEqual(serviceReturnSources(s,'retiro').filter(row=>row.stack?.item==='medkits'),returned);
+ s=order(s,{type:'recruitCivic',id:DOCTOR,term:'week'});assert.equal(s.operativeState[DOCTOR].assignment,'active');assert.equal(s.operativeState[DOCTOR].medkits,0,'rehiring cannot issue the returned dressings again');assert.match(dispatchCampaign(s,{type:'assignCare',id:DOCTOR,assignment:'doctor'}).lastError,/vendas/);
+ s=order(s,{type:'assignCare',id:PATIENT,assignment:'active'});s=leave(visit(s));
+ const rows=state=>sectorInventoryModel(state,'retiro',rosterFor(state),DOCTOR).entries.filter(row=>JSON.parse(row.expected).item==='medkits');
+ const localTotal=rows(s).reduce((total,row)=>total+row.count,0),row=rows(s).find(row=>row.kind==='serviceReturn');assert.equal(row.count,2);assert.ok(row.reachable);
+ const collect={type:'sectorInventory',sector:'retiro',operativeId:DOCTOR,direction:'take',sourceKey:row.key,expected:row.expected,count:2};s=order(s,collect);assert.equal(s.operativeState[DOCTOR].medkits,2);assert.equal(rows(s).reduce((total,item)=>total+item.count,0),localTotal-2);assert.ok(dispatchCampaign(s,collect).lastError);
+ s=order(s,{type:'assignCare',id:DOCTOR,assignment:'doctor'});s=order(s,{type:'dismiss',id:DOCTOR});assert.equal(s.operativeState[DOCTOR].assignment,'active');assert.equal(s.operativeState[DOCTOR].medkits,0);
+ s=saved({campaign:s}).campaign;assert.equal(rows(s).reduce((total,item)=>total+item.count,0),localTotal,'dismissal returns the two recovered dressings once');assert.ok(!rows(s).some(item=>item.key===row.key),'the consumed expiry source cannot be reused');
 });
 
 test('medical supply purchases and saved assignments reject invalid quantities, funds and forged roles',()=>{
