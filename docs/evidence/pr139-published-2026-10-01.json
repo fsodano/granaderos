@@ -1,0 +1,174 @@
+{
+  "schema": 1,
+  "pull_request": 139,
+  "url": "https://github.com/fsodano/granaderos/pull/139",
+  "head": "04003dd1de15fffbe71ec0e06d953181ee77c229",
+  "merge_commit": "7ac3c9d612cc5d46c846617e0686ef5b6b450184",
+  "merged_at": "2026-10-01T12:44:32Z",
+  "head_tree": "46ae101d2a84e601519dbbaa91ef4bc645c0bdb4",
+  "merge_tree": "46ae101d2a84e601519dbbaa91ef4bc645c0bdb4",
+  "published_tree_equals_verified_head": true,
+  "ci": {
+    "head": "04003dd1de15fffbe71ec0e06d953181ee77c229",
+    "run_id": 36855720414,
+    "url": "https://github.com/fsodano/granaderos/actions/runs/36855720414",
+    "status": "completed",
+    "conclusion": "success",
+    "checked_at": "2026-10-01T12:43:42.173516+00:00",
+    "jobs": [
+      {
+        "name": "web",
+        "id": 110347619722,
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Tests (2/4)",
+        "id": 110347620036,
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Tests (1/4)",
+        "id": 110347620043,
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Tests (4/4)",
+        "id": 110347620141,
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Tests (3/4)",
+        "id": 110347620201,
+        "status": "completed",
+        "conclusion": "success"
+      }
+    ],
+    "completed_proofs": [
+      {
+        "name": "web",
+        "id": 110347619722,
+        "conclusion": "success",
+        "started_at": "2026-10-01T11:29:50Z",
+        "completed_at": "2026-10-01T11:31:58Z",
+        "url": "https://github.com/fsodano/granaderos/actions/runs/36855720414/job/110347619722",
+        "log": "/tmp/granaderos-pr139-ci-110347619722.log",
+        "log_sha256": "c3ddba916278059a693fa0629894d66d3d16d1f1efb32a2f5c1a98622f3725c9",
+        "summary": {}
+      },
+      {
+        "name": "Tests (1/4)",
+        "id": 110347620043,
+        "conclusion": "success",
+        "started_at": "2026-10-01T11:29:50Z",
+        "completed_at": "2026-10-01T11:41:05Z",
+        "url": "https://github.com/fsodano/granaderos/actions/runs/36855720414/job/110347620043",
+        "log": "/tmp/granaderos-pr139-ci-110347620043.log",
+        "log_sha256": "7fc2fb2ee83f90faa2d488b1b9cfc0a54c743e6f5bc1b6c1b91f028d2d527aa6",
+        "summary": {
+          "tests": 952,
+          "pass": 952,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "name": "Tests (2/4)",
+        "id": 110347620036,
+        "conclusion": "success",
+        "started_at": "2026-10-01T11:29:50Z",
+        "completed_at": "2026-10-01T11:49:33Z",
+        "url": "https://github.com/fsodano/granaderos/actions/runs/36855720414/job/110347620036",
+        "log": "/tmp/granaderos-pr139-ci-110347620036.log",
+        "log_sha256": "f9c094040f6ecff887e481b7e8ba2d8ff32704d6bda09dada2295e864e77df4f",
+        "summary": {
+          "tests": 934,
+          "pass": 934,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "name": "Tests (3/4)",
+        "id": 110347620201,
+        "conclusion": "success",
+        "started_at": "2026-10-01T11:29:50Z",
+        "completed_at": "2026-10-01T11:56:26Z",
+        "url": "https://github.com/fsodano/granaderos/actions/runs/36855720414/job/110347620201",
+        "log": "/tmp/granaderos-pr139-ci-110347620201.log",
+        "log_sha256": "712e34418d17bce0e26af7865727624fdddc0813a2895edc37cfe0af62800061",
+        "summary": {
+          "tests": 1270,
+          "pass": 1270,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "name": "Tests (4/4)",
+        "id": 110347620141,
+        "conclusion": "success",
+        "started_at": "2026-10-01T11:29:50Z",
+        "completed_at": "2026-10-01T12:36:23Z",
+        "url": "https://github.com/fsodano/granaderos/actions/runs/36855720414/job/110347620141",
+        "log": "/tmp/granaderos-pr139-ci-110347620141.log",
+        "log_sha256": "2c0bca4ae510843af587368660ff88f7abb1bdce61de38355afaa2232b9a7ef2",
+        "summary": {
+          "tests": 1058,
+          "pass": 1058,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      }
+    ],
+    "complete_test_totals": {
+      "tests": 4214,
+      "pass": 4214,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "accepted_exact_head": true
+  },
+  "local_evidence": "consolidation-final-local-2026-10-01.json",
+  "local_executed_revision": "4938fd79835776a202273b09cf303fc7251ad392",
+  "local_final_commit": "04003dd1de15fffbe71ec0e06d953181ee77c229",
+  "frozen_inputs": 9310,
+  "frozen_source_manifest": "consolidation-final-source-inputs-2026-10-01.json",
+  "frozen_source_manifest_sha256": "d44fac095e4eae1e8a8dc1c652665f39b989442544abb9a756ddf5e7c84c39f1",
+  "local_source_verification": "Every frozen source input matched the final commit before the guarded merge; the main merge tree is identical to that final commit. Documentation/evidence additions were audited separately. The local command was not rerun after the final documentation commit.",
+  "engine_revision": "ddb691318eb3dd0cdc6eab42139739b6d498c645",
+  "engine_clean_at_merge": true,
+  "accepted_main_build": {
+    "version": "0.4.0-dev.1",
+    "id": "d5c4c44efab0",
+    "source": "d5c4c44efab0f355d7103fb9f6a97c8fee5300ff3a5d6a18438ceb74919e5feb",
+    "revision": "7ac3c9d612cc5d46c846617e0686ef5b6b450184"
+  },
+  "export_files": 1131,
+  "preview": {
+    "origin": "http://localhost:3134",
+    "immutable_directory": "/tmp/granaderos-main-7ac3c9d6-d5c4c44efab0",
+    "saved_data_preserved": true,
+    "browser_handover": "Verified directly at the original localhost:3134 origin: restored the existing authored campaign with Baltasar Acosta at cell 28,28 (85 health, 93 energy) and paused between orders. Game, story editor and sector editor identify build d5c4c44efab0. Story content and saved sector draft remain available; no draft was replaced or discarded. No browser errors or warnings on the checked surfaces.",
+    "browser_screenshot": "/tmp/granaderos-pr139-merged-main-paused.jpg"
+  },
+  "limits": [
+    "Full JA2 parity remains open.",
+    "Expanded artwork and audio review remain open.",
+    "The short visible walking/combat samples do not establish sustained loaded 60 FPS.",
+    "Service-end equipment return is separate post-merge alpha work."
+  ]
+}

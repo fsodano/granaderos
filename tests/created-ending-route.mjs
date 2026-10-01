@@ -1,5 +1,8 @@
 import assert from 'node:assert/strict';
-import {dispatchCampaign} from '../game/campaign.js';
+import {dispatchCampaign,rosterFor} from '../game/campaign.js';
+import {primaryAmmoTypeFor} from '../game/ammo-types.js';
+import {sectorInventoryModel} from '../game/sector-inventory.js';
+import {equipmentCatalog,equipmentKey} from '../game/equipment-catalog.js';
 import {decodeSave,encodeSave} from '../game/save.js';
 import {enterSector} from '../game/world.js';
 import {visit,sync,leave} from './local-contract-fixture.mjs';
@@ -51,6 +54,29 @@ export function prepareCreatedCoastalAssault(start,{report=()=>{}}={}){
   }
   assert.ok(ready(),'bounded coastal preparation must reach its stated condition');
  };
+ const rearmMissingPrimaries=ids=>{
+  for(const operativeId of ids){
+   const primary=()=>rosterFor(c).find(op=>op.id===operativeId);
+   if(!c.operativeState[operativeId].weaponDropped&&primaryAmmoTypeFor(primary()))continue;
+   const inventory=()=>sectorInventoryModel(c,c.location,rosterFor(c),operativeId);
+   const carried=()=>inventory().carried.find(row=>row.inventoryKey&&row.equip?.some(option=>option.slot==='primary'&&option.valid)&&primaryAmmoTypeFor(JSON.parse(row.expected)));
+   let firearm=carried();
+   if(!firearm){
+    const source=inventory().entries.find(row=>row.reachable&&primaryAmmoTypeFor(JSON.parse(row.expected)));
+    if(source){
+     order({type:'sectorInventory',sector:c.location,operativeId,direction:'take',sourceKey:source.key,expected:source.expected,count:1});
+     firearm=carried();assert.ok(firearm,'the collected local firearm must be available to equip');
+    }
+   }
+   if(firearm)order({type:'sectorInventory',sector:c.location,operativeId,direction:'equip',inventoryKey:firearm.inventoryKey,expected:firearm.expected,slot:'primary'});
+   else {
+    const rifle=equipmentKey(equipmentCatalog(c).find(item=>item.id===1801));
+    waitUntil(48,()=>c.merchants[c.location].stock[rifle]>0);
+    order({type:'purchaseEquipment',item:rifle});order({type:'equip',operativeId,slot:'weapon',itemId:rifle});
+   }
+   assert.ok(!c.operativeState[operativeId].weaponDropped&&primaryAmmoTypeFor(primary()),'the actual hired soldier must hold a compatible firearm before supply');
+  }
+ };
  assert.equal(c.location,'mendoza');assert.ok(c.operativeState[57].alive);
  order({type:'recruitCivic',id:107,term:'week',destination:'mendoza'});keep.add(107);
  for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'rest'});
@@ -78,6 +104,7 @@ export function prepareCreatedCoastalAssault(start,{report=()=>{}}={}){
  })&&c.resources.treasury>=8500);
  for(const operativeId of field)order({type:'assignCare',operativeId,assignment:'active'});
  let p=visit(c);c=leave(sync({campaign:p.campaign,battle:equipOpeningRifles(p.battle,field).battle}));
+ rearmMissingPrimaries(field);
  order({type:'travel',sector:'buenos_aires',mode:'posta'});
  order({type:'squad',ids:[57,107,114,139]});c=meetRecruits(c,['dorrego','paroissien'],57);
  field.push(4,10);keep.add(4);keep.add(10);
@@ -92,6 +119,7 @@ export function prepareCreatedCoastalAssault(start,{report=()=>{}}={}){
  for(const id of groups){
   order({type:'selectSquad',id});p=visit(c);
   c=leave(sync({campaign:p.campaign,battle:equipOpeningRifles(p.battle,c.squad).battle}));
+  rearmMissingPrimaries(c.squad);
   c=supplyRouteAmmunition(c,c.squad,{target:16}).campaign;c=finishReloadsBeforeMarch(c);
  }
  for(let count=0;count<2;count++){
@@ -116,6 +144,7 @@ export function prepareCreatedCoastalAssault(start,{report=()=>{}}={}){
  for(const operativeId of reinforcements)order({type:'assignCare',operativeId,assignment:'active'});
  order({type:'createSquad',ids:reinforcements,sector:'retiro',name:'Refuerzo del puerto'});
  p=visit(c);c=leave(sync({campaign:p.campaign,battle:equipOpeningRifles(p.battle,reinforcements).battle}));
+ rearmMissingPrimaries(reinforcements);
  c=supplyRouteAmmunition(c,reinforcements,{target:16}).campaign;c=finishReloadsBeforeMarch(c);
  for(const operativeId of field)order({type:'assignCare',operativeId,assignment:'rest'});
  waitUntil(48,()=>c.hour%24===6&&field.every(id=>{

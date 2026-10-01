@@ -17,10 +17,11 @@ import {syncCarriedAmmunition} from './campaign-ammunition.js';
 import {weaponItemWeight} from './weapon-fittings.js';
 import {validateBattleSnapshot} from './validate-battle.js';
 import {MISSION_SCENES} from './missions.js';
+import {serviceReturnSources,serviceReturnSites,consumeServiceReturn} from './service-equipment-return.js';
 
 const copy=value=>structuredClone(value);
 const need=(ok,message)=>{if(!ok)throw Error(message);};
-const fields=['inventory','condition','rations','medkits','boleadoras','torches','pocketOrder'];
+const fields=['inventory','condition','rations','medkits','boleadoras','torches','pocketOrder','toolkitPoints'];
 function stackLabel(stack){
  if(SUPPLY_ITEMS[stack.item])return SUPPLY_ITEMS[stack.item].label;
  const key=stack.item==='weapon'?'weapon':stack.item.replace(/^inventory:/,'');
@@ -53,17 +54,30 @@ export function knownSectorEquipment(snapshot){
  return poolSources(snapshot).map(row=>({key:row.key,label:row.label,count:row.stack.count,...planningPoint(row),kind:row.kind,
   ...(row.stack.condition!==undefined?{condition:row.stack.condition}:{}),...(row.stack.loaded!==undefined?{loaded:row.stack.loaded,jammed:row.stack.jammed??false}:{})}));
 }
+function siteSources(s,siteId,snapshot){
+ return [...poolSources(snapshot),...serviceReturnSources(s,siteId,snapshot).filter(row=>row.stack).map(row=>({...row,source:row.placement,label:stackLabel(row.stack)}))];
+}
+function knownSiteEquipment(s,site){
+ return siteSources(s,site.id,site.snapshot).map(row=>({key:row.key,label:row.label,count:row.stack.count,...(row.source?planningPoint(row.source):{}),kind:row.kind,
+  ...(row.stack.condition!==undefined?{condition:row.stack.condition}:{}),...(row.stack.loaded!==undefined?{loaded:row.stack.loaded,jammed:row.stack.jammed??false}:{})}));
+}
 function inventorySite(s,id){
  const mission=MISSION_SCENES[id];
  const snapshot=mission?(id==='san_lorenzo'?s.sectorStates[id]:s.sceneStates?.[id]):s.sectorStates[id];
  return {id,sectorId:mission?.anchor??id,name:mission?.name??'Terreno del sector',snapshot:expandCellScene(snapshot)};
 }
 export function sectorInventorySites(s,sectorId){
- return [inventorySite(s,sectorId),...Object.values(MISSION_SCENES).filter(m=>m.anchor===sectorId).map(m=>inventorySite(s,m.id)).filter(site=>site.snapshot)]
-  .map(({id,name,snapshot})=>({id,name,count:knownSectorEquipment(snapshot).reduce((n,row)=>n+row.count,0)}));
+ const ids=[sectorId,...Object.values(MISSION_SCENES).filter(m=>m.anchor===sectorId).map(m=>m.id).filter(id=>inventorySite(s,id).snapshot),...serviceReturnSites(s,sectorId)];
+ return [...new Set(ids)].map(id=>{
+  const site=inventorySite(s,id),repairPoints=serviceReturnSources(s,id,site.snapshot).reduce((n,row)=>n+(row.repairPoints??0),0);
+  return {id,name:site.name,count:knownSiteEquipment(s,site).reduce((n,row)=>n+row.count,0),repairPoints};
+ });
 }
 export function knownCampaignSectorEquipment(s,sectorId){
- return sectorInventorySites(s,sectorId).flatMap(site=>knownSectorEquipment(inventorySite(s,site.id).snapshot).map(row=>({...row,key:JSON.stringify([site.id,row.key]),siteId:site.id,siteName:site.name})));
+ return sectorInventorySites(s,sectorId).flatMap(site=>knownSiteEquipment(s,inventorySite(s,site.id)).map(row=>({...row,key:JSON.stringify([site.id,row.key]),siteId:site.id,siteName:site.name})));
+}
+export function knownCampaignRepairReserves(s,sectorId){
+ return sectorInventorySites(s,sectorId).flatMap(site=>serviceReturnSources(s,site.id,inventorySite(s,site.id).snapshot).filter(row=>row.repairPoints>0).map(row=>({key:JSON.stringify([site.id,row.key]),siteId:site.id,siteName:site.name,label:'Materiales de reparación',repairPoints:row.repairPoints,...(row.placement?planningPoint(row.placement):{})})));
 }
 function carriedActor(s,op){const r=s.operativeState[op.id];return syncUnitAmmunition({...op,...r,id:String(op.id),side:'player',loaded:r.carriedLoaded??0,...(r.carriedReloadProgress?{reloadProgress:r.carriedReloadProgress}:{}),ap:100,energy:r.energy??100,unconscious:false,movementMode:'walk',stance:'standing'});}
 function actorAt(s,sectorId,op){
@@ -94,11 +108,15 @@ export function sectorInventoryModel(s,sectorId,roster,operativeId){
  if(!reason&&!actor)reason='El combatiente debe entrar al sector para encontrar un acceso.';
  const view=actor?{...snapshot,units:[actor],mode:'exploration',phase:'player',status:'active',artillery:[],npcs:[]}:null;
  const reach=!reason?getReachable(view,actor):[];
- const entries=poolSources(snapshot).map(row=>{
-  const cells=row.kind==='container'?propCells(row.source):[row.source];
+ const access=row=>{
+  const cells=row.kind==='container'?propCells(row.source):row.source?[row.source]:[];
   const reachable=!reason&&reach.some(p=>cells.some(c=>atHand(p,c)&&hasLineOfSight(view,p,c)));
-  return {key:row.key,label:row.label,count:row.stack.count,...planningPoint(row),kind:row.kind,expected:JSON.stringify(row.stack),condition:row.stack.condition,loaded:row.stack.loaded,jammed:row.stack.jammed,fittingPattern:row.stack.fittingPattern,reachable,reason:reason??(!reachable?'No hay un camino abierto hasta este equipo.':null)};
+  return {...(row.source?planningPoint(row.source):{}),reachable,reason:reason??(!reachable?'No hay un camino abierto hasta este equipo.':null)};
+ };
+ const entries=siteSources(s,sectorId,snapshot).map(row=>{
+  return {key:row.key,label:row.label,count:row.stack.count,...access(row),kind:row.kind,expected:JSON.stringify(row.stack),condition:row.stack.condition,loaded:row.stack.loaded,jammed:row.stack.jammed,fittingPattern:row.stack.fittingPattern};
  });
+ const repairReserves=serviceReturnSources(s,sectorId,snapshot).filter(row=>row.repairPoints>0).map(row=>({key:row.key,label:'Materiales de reparación',repairPoints:row.repairPoints,capacity:Math.max(0,100000-(r?.toolkitPoints??0)),expected:JSON.stringify({repairPoints:row.repairPoints}),...access({...row,source:row.placement})}));
  const personal=op?carriedActor(s,op):null;
  const carried=personal?[...Object.keys(SUPPLY_ITEMS).filter(key=>key!=='ammo'||personal.ammunitionVersion!==2),...(!personal.weaponDropped&&personal.weapon?['primary']:[]),...(personal.blade?['blade']:[]),...(personal.offHand?['offhand']:[]),...wornBodyItems(personal),...Object.keys(personal.inventory??{}).map(key=>`inventory:${key}`)].filter(item=>itemQuantity(personal,item)>0).map(item=>{
   const row={item,label:itemDescriptor(personal,item).label,count:itemQuantity(personal,item)};
@@ -132,7 +150,7 @@ export function sectorInventoryModel(s,sectorId,roster,operativeId){
  if(!outfitIssueReason&&s.resources.treasury<PONCHO_PRICE)outfitIssueReason='No hay pesos suficientes.';
  if(!outfitIssueReason&&merchantCash(s,location)+PONCHO_PRICE>1e9)outfitIssueReason='La caja del comerciante no admite ese pago.';
  if(!outfitIssueReason)try{applyItemQuantity(personal,{item:'outfit',...makeOutfit()});}catch(error){outfitIssueReason=error.message;}
- return {personal,outfitStock,outfitPrice:PONCHO_PRICE,outfitIssueReason,sectorId,operativeId:op?.id??null,candidates:candidates.map(op=>({id:op.id,name:op.nickname??op.name})),reason,carriedReason,entries,carried,usage:personal?inventoryUsage(personal):null};
+ return {personal,outfitStock,outfitPrice:PONCHO_PRICE,outfitIssueReason,sectorId,operativeId:op?.id??null,candidates:candidates.map(op=>({id:op.id,name:op.nickname??op.name})),reason,carriedReason,entries,repairReserves,carried,usage:personal?inventoryUsage(personal):null};
 }
 
 function modelStoreReason(s,location,reason,actor){
@@ -143,7 +161,7 @@ function modelStoreReason(s,location,reason,actor){
 // updating either custodian; the source key is resolved again on confirmation.
 export function moveSectorItem(s,action,roster){
  const {sector:sectorId,operativeId,direction,count=1}=action;
- need(['take','drop','store','equip','issueOutfit','arrange','attachment','unload'].includes(direction)&&Number.isSafeInteger(count)&&count>0&&count<=1000000,'La orden de inventario no es válida.');
+ need(['take','takeRepairPoints','drop','store','equip','issueOutfit','arrange','attachment','unload'].includes(direction)&&Number.isSafeInteger(count)&&count>0&&count<=1000000,'La orden de inventario no es válida.');
  const model=sectorInventoryModel(s,sectorId,roster,operativeId);
  const reason=['equip','issueOutfit','arrange','attachment','unload'].includes(direction)?model.carriedReason:model.reason;need(!reason,reason);need(model.operativeId===Number(operativeId),'Elegí un combatiente presente.');
  const op=roster.find(op=>op.id===Number(operativeId)),snapshot=inventorySite(s,sectorId).snapshot,actor=['equip','issueOutfit','arrange','attachment','unload'].includes(direction)?carriedActor(s,op):actorAt(s,sectorId,op);
@@ -189,11 +207,22 @@ export function moveSectorItem(s,action,roster){
   need(action.expected===JSON.stringify(stow?wornOutfit(actor,action.slot):actor.inventory?.[action.inventoryKey])&&typeof action.expected==='string','El equipo cambió. Revisá la mochila antes de equiparlo.');
   stack=extractItemQuantity(actor,stow?action.slot:`inventory:${action.inventoryKey}`,1).stack;next=planEquipLoot(actor,action.inventoryKey,action.slot);
   }
+ }else if(direction==='takeRepairPoints'){
+  const row=serviceReturnSources(s,sectorId,snapshot).find(row=>row.key===action.sourceKey&&row.repairPoints>0),entry=model.repairReserves.find(row=>row.key===action.sourceKey);
+  need(row&&entry?.reachable,entry?.reason??'Los materiales ya no están disponibles.');
+  need(typeof action.expected==='string'&&action.expected===JSON.stringify({repairPoints:row.repairPoints}),'La reserva cambió. Revisá la lista antes de retirarla.');
+  need(count<=row.repairPoints,'No quedan esos materiales de reparación.');
+  const points=actor.toolkitPoints??0;
+  need(Number.isSafeInteger(points)&&points>=0&&points+count<=100000,'El combatiente no puede llevar más materiales de reparación.');
+  next={...actor,toolkitPoints:points+count};
+  const consumed=consumeServiceReturn(s,row.sourceKey,action.expected,count);need(consumed.repairPoints===count,'La reserva cambió. Revisá los materiales.');
  }else if(direction==='take'){
-  const row=poolSources(snapshot).find(row=>row.key===action.sourceKey),entry=model.entries.find(row=>row.key===action.sourceKey);
+  const row=siteSources(s,sectorId,snapshot).find(row=>row.key===action.sourceKey),entry=model.entries.find(row=>row.key===action.sourceKey);
   need(row&&entry?.reachable,entry?.reason??'El equipo ya no está disponible.');need(action.expected===JSON.stringify(row.stack),'El equipo cambió. Revisá la lista antes de recogerlo.');need(count<=row.stack.count,'No queda esa cantidad del objeto.');
   stack={...row.stack,count};next=applyItemQuantity(actor,stack);
-  if(row.kind==='body'){const extraction=extractItemQuantity(row.source,row.item,count);syncUnitAmmunition(extraction.unit);Object.keys(row.source).forEach(key=>delete row.source[key]);Object.assign(row.source,extraction.unit);}
+  if(row.kind==='serviceReturn'){
+   const consumed=consumeServiceReturn(s,row.sourceKey,action.expected,count);need(JSON.stringify(consumed.stack)===JSON.stringify(stack),'El equipo cambió. Revisá la lista.');
+  }else if(row.kind==='body'){const extraction=extractItemQuantity(row.source,row.item,count);syncUnitAmmunition(extraction.unit);Object.keys(row.source).forEach(key=>delete row.source[key]);Object.assign(row.source,extraction.unit);}
   else if(row.kind==='drop')row.source.taken=true;
   else if(row.kind==='container'){row.source.contents[row.index].count-=count;if(!row.source.contents[row.index].count)row.source.contents.splice(row.index,1);}
   else row.source.count-=count;
@@ -234,6 +263,7 @@ export function moveSectorItem(s,action,roster){
   validateBattleSnapshot(snapshot);
  }
  if(direction==='store')return `${op.nickname??op.name} guarda ${stackLabel(stack)} en la armería, con su estado y carga actuales.`;
+ if(direction==='takeRepairPoints')return `${op.nickname??op.name} retira ${count} puntos de reparación en el sector.`;
  if(direction==='unload')return `${op.nickname??op.name} descarga el arma y guarda la munición.`;
  if(direction==='attachment')return `${op.nickname??op.name} ${action.operation==='detach'?'retira la bayoneta al cursor':'coloca la bayoneta en el arma'}.`;
  if(cursorPlan?.operation==='reload')return `${op.nickname??op.name} recarga ${WEAPONS[cursorPlan.host].name} con ${cursorPlan.rounds} cartucho${cursorPlan.rounds===1?'':'s'}.`;

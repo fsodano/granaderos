@@ -16,6 +16,7 @@ import {enterSector} from '../game/world.js';
 import {playerKnownBattle,playerKnownCampaign} from '../game/player-known-state.js';
 import {planReturnAmmunition,storedWeaponAmmunition} from '../game/ammunition.js';
 import {prepareDeploymentExits} from '../game/deployment-return.js';
+import {serviceReturnSources} from '../game/service-equipment-return.js';
 
 const order=(s,a)=>{const next=dispatchCampaign(s,a);assert.equal(next.lastError,null,next.lastError);return next;};
 const act=(b,a)=>{const next=actBattle(b,a);assert.equal(next.lastError,null,next.lastError);return next;};
@@ -122,10 +123,12 @@ test('an identified fitted rifle keeps its separate bayonet, wear and unfinished
  s=arrange(save(s),'placeEquipment',{destinationId:'hand:right'});for(const key of ['carriedAmmo','carriedLoaded','carriedReloadProgress','condition','weaponInstanceId','weaponFittings'])assert.deepEqual(s.operativeState[110][key],before[key],key);save(s);
 });
 
-test('a dismissed cursor owner retains property without duplicating it on a later paid contract',()=>{
+test('a dismissed cursor returns its exact property locally without duplicating it on a later paid contract',()=>{
  let s=fresh();s.operativeState[110].weaponInstanceId='departed-rifle';s=arrange(s,'pickupEquipment',{sourceId:'hand:right'});const payload=structuredClone(s.operativeState[110].equipmentCursor);
- s=order(s,{type:'dismiss',id:110});assert.ok(!s.recruited.includes(110));s=save(s);assert.deepEqual(s.operativeState[110].equipmentCursor,payload);
- const before=s.resources.treasury;s=order(s,{type:'recruitCivic',id:110,term:'week'});assert.ok(s.resources.treasury<before);assert.deepEqual(s.operativeState[110].equipmentCursor,payload);s=arrange(s,'returnEquipmentCursor');assert.equal(s.operativeState[110].equipmentCursor,undefined);assert.equal(s.operativeState[110].weaponInstanceId,'departed-rifle');save(s);
+ s=order(s,{type:'dismiss',id:110});assert.ok(!s.recruited.includes(110));s=save(s);assert.equal(s.operativeState[110].equipmentCursor,undefined);
+ const returned=serviceReturnSources(s,'retiro').find(row=>row.stack?.instanceId==='departed-rifle');assert.deepEqual(returned.stack,payload.stack);
+ const before=s.resources.treasury;s=order(s,{type:'recruitCivic',id:110,term:'week'});assert.ok(s.resources.treasury<before);assert.equal(s.operativeState[110].equipmentCursor,undefined);assert.equal(s.operativeState[110].weaponInstanceId,undefined);assert.equal(s.loadouts[110].weapon,0);
+ assert.deepEqual(serviceReturnSources(s,'retiro').find(row=>row.key===returned.key).stack,payload.stack);save(s);
 });
 
 test('a known fallen soldier cursor can be collected through the strategic pool after its real return report',()=>{

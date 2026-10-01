@@ -7,6 +7,7 @@ import {syncBattleTime} from '../game/time.js';
 import {finishReloadsBeforeMarch} from './pre-march-reload.mjs';
 import assert from 'node:assert/strict';
 import {dispatchCampaign,rosterFor,refillCost,firearmRepairCost} from '../game/campaign.js';
+import {primaryAmmoTypeFor} from '../game/ammo-types.js';
 import {decodeSave,encodeSave} from '../game/save.js';
 import {meetRecruits} from './campaign-recruitment-route.mjs';
 
@@ -127,7 +128,8 @@ export function prepareFreshSantaFeAssault(start,{report=()=>{}}={}){
  order({type:'squad',ids:field});
  c=restoreFinalMorale(c);
  for(const operativeId of field){
-  if(c.operativeState[operativeId].weaponDropped){order({type:'purchaseEquipment',item:1801});order({type:'equip',operativeId,slot:'weapon',itemId:1801});}
+  const primary=rosterFor(c).find(op=>op.id===operativeId);
+  if(c.operativeState[operativeId].weaponDropped||!primaryAmmoTypeFor(primary)){order({type:'purchaseEquipment',item:1801});order({type:'equip',operativeId,slot:'weapon',itemId:1801});}
   if(refillCost(c.operativeState[operativeId]))order({type:'resupply',operativeId});
   if(firearmRepairCost(c.operativeState[operativeId]))order({type:'repairWeapon',operativeId});
   order({type:'assignCare',operativeId,assignment:'active'});

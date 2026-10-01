@@ -1,20 +1,28 @@
-# Latest build consolidation — work in progress
+# Latest build consolidation — PR #139 published
 
-This is a working-branch record, updated on 1 October 2026. It does not describe a released build. The [published progress ledger](published-progress.md) remains the authority for accepted work on `main`.
+Updated on 1 October 2026. [PR #139](https://github.com/fsodano/granaderos/pull/139) is merged on `main` at **`7ac3c9d612cc5d46c846617e0686ef5b6b450184`**. This record separates that accepted consolidation from earlier repair snapshots and subsequent local alpha work. The [published progress ledger](published-progress.md) remains the authority for accepted work on `main`.
 
 ## Why the previews differ
 
-Parallel work used separate Git worktrees. Published work and newer local gameplay were not combined before the preview at port 3134 started. The consolidation branch is `codex/consolidate-latest-gameplay`. Its original published base is `f5b6290f2e32a4e78bd78c928e1459a3be4213b3`, with the compact exploration control at `7c274016`. The local gameplay source is preserved as snapshot `377156af1b67e00946f83afa152ef215bb2f0a62`. The original working folders remain unchanged.
+Parallel work used separate Git worktrees. Published work and newer local gameplay were not combined before the earlier preview at port 3134 started. The consolidation used `codex/consolidate-latest-gameplay`, from original published base `f5b6290f2e32a4e78bd78c928e1459a3be4213b3`, with the compact exploration control at `7c274016`. The original local gameplay source remains preserved as snapshot `377156af1b67e00946f83afa152ef215bb2f0a62`. PR #139 now puts the main game and developer tools on the same accepted base. The original working folders remain unchanged.
 
-**The combined build is not released.** The earlier preview used `http://localhost:3134`; the current listener check found no server on that port. Preserve that origin and its saved data at handover. Port 3135 is a private verification server. It must not be presented as the replacement game.
+The accepted main build **`d5c4c44efab0`** is running at the original **`http://localhost:3134`** address from the immutable main export. The direct browser handover restored the existing authored campaign with Baltasar Acosta at cell **28,28**, **85 health / 93 energy**, paused between orders. The game, story editor and sector editor each identify that same build, with no browser errors or warnings on the checked surfaces. Story content and the saved sector draft remain available; no draft was recovered, replaced or discarded. See the [publication and handover receipt](../evidence/pr139-published-2026-10-01.json). Earlier private verification ports remain historical previews.
+
+## Publication acceptance
+
+Exact-head [CI run `36855720414`](https://github.com/fsodano/granaderos/actions/runs/36855720414) passed all five required jobs: the web job and all four complete test groups. The groups passed **952 + 934 + 1,270 + 1,058 = 4,214 tests**, with zero failures, skips, cancellations or TODOs. The actual merge tree equals verified final head **`04003dd1de15fffbe71ec0e06d953181ee77c229`**. See the [publication receipt](../evidence/pr139-published-2026-10-01.json).
+
+The local complete test command executed at **`4938fd79835776a202273b09cf303fc7251ad392`**. The final PR head added audited documentation and evidence after that run; all **9,310 frozen executing source inputs** remained unchanged. The merged tree then matched that final head. The local command was not rerun after the final documentation commit. The receipt and frozen manifest preserve this source relationship.
+
+Service-end equipment return has now started on separate local branch **`codex/alpha-service-equipment-2026-10-01`** from the actual merge. It is outside PR #139 and is not accepted as implemented until its own local verification completes. Later alpha results must use separate evidence; they must not replace the immutable PR #139 local and published records. Full JA2 parity, art/audio review, extensive player alpha testing and sustained loaded 60 FPS remain open.
 
 ## Validation and push policy
 
 From 30 September 2026, keep corrections local until the complete candidate passes all local tests, documentation and reference audits, TypeScript, the production build, and applicable browser checks. Follow the [before-push procedure](../development/getting-started.md#before-pushing). Push one completed batch, then wait for required CI before merging. Do not use repeated remote builds to find failures.
 
-Run `36776925051` had already finished when cancellation was attempted. It was not cancelled or restarted. No further push is authorized by a partial local pass. PR #139 remains draft, and service-end equipment return remains queued until after that PR merges.
+Earlier run `36776925051` had already finished when cancellation was attempted. It was not cancelled or restarted. The final accepted batch was pushed once and merged after its matching-head checks passed. Further alpha changes must complete their own local gates before delivery; a partial local pass does not authorize a new push.
 
-The local final candidate raises only the test-job timeout from 30 to 90 minutes. Complete fresh campaign routes can exceed the former limit. The four complete groups, two-worker limit and required checks remain enabled. Jobs still finish as soon as their checks end; the higher ceiling avoids discarding a passing long route and paying for a repeat run.
+The published consolidation raises only the test-job timeout from 30 to 90 minutes. Complete fresh campaign routes can exceed the former limit. The four complete groups, two-worker limit and required checks remain enabled. Jobs still finish as soon as their checks end; the higher ceiling avoids discarding a passing long route and paying for a repeat run.
 
 ## Final local acceptance
 
@@ -24,7 +32,7 @@ All required local gates pass: test partition self-check and full coverage, docu
 
 The complete **uncached fresh ending test passes** in **2,346.7 seconds**. It starts a stock campaign, wins all 13 localities through actual tactical combat, preserves permanent losses and finite paid supplies, saves the victory, and verifies the next 48 hours, changing daily income receipts and actual service expiry. Recovery, Cuyo, the northern route, the southern opening and historical loss also pass inside this same complete run. The earlier failed baseline remains historical evidence below; it is superseded by this final result.
 
-PR #139 is still draft until the verified batch is pushed and its matching-head GitHub checks pass. The original `localhost:3134` origin and saved data remain reserved for handover. Loaded movement performance remains alpha acceptance work; full JA2 parity and the expanded art target are not claimed. Service-end equipment return remains queued until this PR merges.
+This final local result is now published through PR #139 and its passing exact-head CI. Direct browser handover is verified at the original `localhost:3134` origin, with the existing campaign and editor data preserved. Loaded movement performance remains alpha acceptance work; full JA2 parity and the expanded art target are not claimed. Service-end equipment return is subsequent local alpha work.
 
 ### Previous complete baseline
 
@@ -32,7 +40,7 @@ The previous local baseline had **4,184 passes, 25 failures and three skips** ac
 
 ## Earlier repair evidence
 
-The entries below record earlier candidates and diagnostics. Their pending states and counts are historical; the final local acceptance above is the current complete result.
+The entries below record earlier candidates and diagnostics. Their pending states and counts are historical; the complete local and published acceptance above supersede those source-specific failures. These snapshots do not describe the current main build or the later alpha branch.
 
 - The ending source now connects the actual Cuyo survivors, coastal victories, northern recaptures, Salta and Jujuy defenses, high-pass stabilization and final capital assault. The real three-survivor capital battery wins in **15 turns / 296 orders**, with replay, saving, time synchronization and settlement. Its complete campaign matches the accepted diagnostic except the human log. A separate source continuation check passes the exact next 48 hours, two changing daily income receipts, paid service expiry, retained scene absence, all 59 prior deaths and the one-time ending. Five source paths are integrated and all 267 imported inputs match. These are **checkpoint diagnostics**, not a completed fresh ending test. That uncached file will run once inside the complete final suite. See the [ending source evidence](../evidence/consolidation-local-ending-source-2026-10-01.json).
 

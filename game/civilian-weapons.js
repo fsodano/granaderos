@@ -7,7 +7,7 @@ const need=(ok)=>{if(!ok)throw Error('Las armas del habitante no coinciden con s
 export const civilianWeaponSlots=['primary','blade'];
 export function civilianWeaponsFor(s,id){
  const base=authoredRoster(s,[...OPERATIVES,...CIVIC_RECRUITS]).find(o=>o.id===id),record=s.operativeState[id];
- if(!base||!record)return {version:1,primary:null,blade:null};
+ if(!base||!record||record.serviceEquipmentReturn)return {version:1,primary:null,blade:null};
  const carrier={...base,...record,...s.loadouts[id],loaded:record.carriedLoaded??0,...(record.carriedReloadProgress?{reloadProgress:record.carriedReloadProgress}:{})};
  return {version:1,primary:carrier.weapon?weaponRecord(carrier):null,blade:carrier.blade?weaponRecord(carrier,'blade'):null};
 }

@@ -38,6 +38,6 @@ export function rosterFor(state){
 export function civicStatus(state,id){
  id=Number(id);
  const op=rosterFor(state).find(o=>o.id===id&&isContractOperative(state,o)),record=state.operativeState[id];
- const reason=!op?'No existe ese voluntario.':state.recruited.includes(id)?'Ya se encuentra en tus filas.':pendingHire(state,id)?'Este contratado ya está en camino.':!record?.alive?'Ha caído en combate.':record.captured?'Este personaje está cautivo.':null;
+ const reason=!op?'No existe ese voluntario.':state.recruited.includes(id)?'Ya se encuentra en tus filas.':pendingHire(state,id)?'Este contratado ya está en camino.':!record?.alive?'Ha caído en combate.':record.captured?'Este personaje está cautivo.':record.serviceEquipmentReturn?'Recogé todo el equipo que dejó esta persona antes de volver a contratarla.':null;
  return {available:!reason,reason:reason??'Disponible en el boletín del Cabildo.'};
 }
