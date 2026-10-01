@@ -1,0 +1,19 @@
+{
+  "status": "failed baseline; not merge acceptance",
+  "node": "22.23.3",
+  "concurrency": 2,
+  "tests": 4212,
+  "pass": 4184,
+  "fail": 25,
+  "skipped": 3,
+  "cancelled": 0,
+  "todo": 0,
+  "duration_ms": 3073701.209292,
+  "input_files": 2417,
+  "input_manifest_sha256": "da80b35af00f0bd9299d5e3a4ab7bbacbc99df87c5428eba3906271dcf1f964b",
+  "inputs_unchanged": true,
+  "local_log": "/tmp/granaderos-pr139-complete-baseline.log",
+  "remote_push": false,
+  "merged": false,
+  "next_gate": "complete stable candidate with zero failures or skips"
+}

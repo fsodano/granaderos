@@ -1,11 +1,12 @@
+import {approachNPC} from './approach-npc.mjs';
 import test from 'node:test';import assert from 'node:assert/strict';
-import {actBattle,createBattle,getReachable} from '../game/tactical.js';
+import {actBattle,createBattle} from '../game/tactical.js';
 import {decodeSave,encodeSave} from '../game/save.js';
 import {weaponRecord} from '../game/weapon-definition.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
 import {dispatchCampaign} from '../game/campaign.js';
 import {civilianWeaponField,civilianWeaponContent,localNPC} from './civilian-weapons-fixture.mjs';
-import {tactical,saved,leave,order,visit,localId,hireLocal,readyLocal,A} from './local-contract-fixture.mjs';
+import {tactical,saved,leave,order,visit,localId,hireLocal,readyLocal,A,sync} from './local-contract-fixture.mjs';
 const loot=(p,item='all')=>tactical(p,{type:'loot',targetId:localNPC(p.battle).id,item});
 
 test('authored civilian weapons transfer once, keep images and definitions, and stay absent after recruitment and service return',()=>{
@@ -40,8 +41,8 @@ test('a returned resident keeps a paid alternative charge; recovery, saved retur
  let s=order(leave(p),{type:'travel',sector:'retiro'});if(s.operativeState[id].carriedLoaded)s=order(s,{type:'unloadAmmunition',operativeId:id});s=order(s,{type:'selectAmmunitionLoad',operativeId:id,family:'ammoShot'});p=visit(s);assert.equal(p.battle.units.find(u=>Number(u.id)===id).loaded,0);if(p.battle.units.find(u=>Number(u.id)===id).activeSlot!=='primary')p=tactical(p,{type:'weapon',unitId:String(id),slot:'primary'});p=tactical(p,{type:'reload',unitId:String(id)});assert.equal(p.battle.units.find(u=>Number(u.id)===id).loaded,1);s=order(leave(saved(p)),{type:'travel',sector:A});s=order(s,{type:'dismiss',id});p=visit(s);
  const n=localNPC(p.battle);assert.equal(n.civilianWeapons.primary.loaded,1);assert.equal(n.civilianWeapons.primary.ammunitionChoice,'ammoShot');
  // A real approach and attack creates the recoverable body.
- const u=p.battle.units[0],spot=getReachable(p.battle,u).find(t=>Math.abs(t.x-n.x)+Math.abs(t.y-n.y)===1);assert.ok(spot);if(spot.cost)p=tactical(p,{type:'move',x:spot.x,y:spot.y});
- p=tactical(p,{type:'weapon',slot:'blade'});p=tactical(p,{type:'melee',targetId:n.id});assert.ok(localNPC(p.battle).hp<=14);p=loot(p,'weapon');p=saved(p);
+ p=tactical(p,{type:'movement',movement:'run'});p=tactical(p,{type:'weapon',slot:'blade'});p=sync({campaign:p.campaign,battle:approachNPC(p.battle,p.battle.units[0].id,localNPC(p.battle).id)});
+ p=tactical(p,{type:'melee',targetId:localNPC(p.battle).id});assert.ok(localNPC(p.battle).hp<=14);p=loot(p,'weapon');p=saved(p);
  const recovered=Object.values(p.battle.units[0].inventory).find(g=>g.ammunitionChoice==='ammoShot');assert.equal(recovered.loaded,1);s=leave(p);p=visit(saved({campaign:s}).campaign);assert.equal(localNPC(p.battle).civilianWeapons.primary,null);assert.equal(Object.values(p.battle.units[0].inventory).find(g=>g.ammunitionChoice==='ammoShot').loaded,1);assert.ok(saved(p));
 });
 

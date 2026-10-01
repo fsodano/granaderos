@@ -67,12 +67,23 @@ test('registered orders keep consecutive tactical actions, midnight, UI orders a
 
 test('registered civilian attack and aid persist finite supplies, death and a delayed successor',async t=>{
  const m=await mount(t,fixture({residents:true}));let state=m.saved(),want=structuredClone(pair(state));const unit=state.battle.units.find(u=>u.side==='player'),npc=state.battle.npcs.find(n=>n.contentId==='pablo');
- const tile=getReachable(state.battle,unit.id).find(p=>Math.abs(p.x-npc.x)+Math.abs(p.y-npc.y)===1);assert.ok(tile);
  async function issue(a){want=expected(want,{unitId:unit.id,...a});await act(async()=>m.issue({unitId:unit.id,...a}));assert.deepEqual(pair(m.saved()),want);assert.deepEqual(m.saved(),want);}
- if(tile.cost)await issue({type:'move',x:tile.x,y:tile.y});
+ async function approach(){
+  for(let step=0;step<240;step++){
+   const actor=want.battle.units.find(u=>u.id===unit.id),resident=want.battle.npcs.find(n=>n.id===npc.id);
+   if(Math.abs(actor.x-resident.x)+Math.abs(actor.y-resident.y)<=1){
+    if(canSee(want.battle,actor,resident))return;
+    const look=lookPreview(want.battle,actor,resident);assert.equal(look.valid,true,look.reason);await issue({type:'look',x:resident.x,y:resident.y});continue;
+   }
+   const goal=getReachable(want.battle,actor).filter(p=>Math.abs(p.x-resident.x)+Math.abs(p.y-resident.y)===1).sort((a,b)=>a.cost-b.cost)[0];assert.ok(goal?.path.length,'A legal path must reach the current resident.');
+   await issue({type:'move',...goal.path[0]});
+  }
+  assert.fail('The current resident was not reached.');
+ }
+ await issue({type:'movement',movement:'run'});await issue({type:'weapon',slot:'blade'});await approach();
  await issue({type:'melee',targetId:npc.id});const charges=want.battle.units.find(u=>u.id===unit.id).medkits;
- await issue({type:'weapon',slot:'medical'});await issue({type:'heal',targetId:npc.id});await issue({type:'weapon',slot:'primary'});assert.ok(want.battle.units.find(u=>u.id===unit.id).medkits<charges);
- for(let i=0;i<6&&want.battle.npcs.find(n=>n.id===npc.id).hp>0;i++)await issue({type:'melee',targetId:npc.id});
+ await issue({type:'weapon',slot:'medical'});await approach();await issue({type:'heal',targetId:npc.id});await issue({type:'weapon',slot:'blade'});assert.ok(want.battle.units.find(u=>u.id===unit.id).medkits<charges);
+ for(let i=0;i<6&&want.battle.npcs.find(n=>n.id===npc.id).hp>0;i++){await approach();await issue({type:'melee',targetId:npc.id});}
  assert.equal(want.battle.npcs.find(n=>n.id===npc.id).hp,0);assert.equal(want.campaign.contentPresence.receipts.length,1);assert.equal(want.campaign.contentPresence.people.sal.appeared,false);
  await issue({type:'rest'});assert.equal(want.campaign.contentPresence.people.sal.appeared,true);assert.equal(want.campaign.contentPresence.receipts.length,1);
 });

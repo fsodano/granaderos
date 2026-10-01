@@ -18,7 +18,7 @@ function toward(b,u,predicate){
 function rescueOrder(b,u){
  // Clear the guards with the paid gun and its infantry screen before moving
  // prisoners. This route verifies a guarded rescue, not an unseen escape.
- if(!b.sectorCleared)return mountainBatteryOrder(b,u,{leaderId:'112',helperId:'none',screenDistance:3});
+ if(!b.sectorCleared)return mountainBatteryOrder(b,u,{leaderId:['112','123'].includes(u.id)?u.id:'112',helperId:'none',screenDistance:3});
  for(const n of b.npcs.filter(n=>n.detention&&(teamCanSee(b,'player',n)||n.detention.freed)))seen.set(n.id,structuredClone(n));
  const following=b.npcs.find(n=>n.detention?.freed&&!n.departure&&n.escort?.leaderId===u.id&&n.hp>=15&&!n.unconscious);
  if(following){
@@ -34,8 +34,7 @@ function rescueOrder(b,u){
   if(exitPreview(b,{unitIds:[u.id],exitId:'humahuaca:jujuy'}).available)return {type:'exit',unitIds:[u.id],exitId:'humahuaca:jujuy'};
   return toward(b,u,p=>p.x===b.width-1);
  }
- if(!prisoner)return combatOrder(b,u)??automaticOrder(b,u);
- if(distance(u,prisoner)>6&&!b.npcs.some(n=>n.detentionEscape))return combatOrder(b,u)??automaticOrder(b,u);
+ if(!prisoner)return toward(b,u,p=>Math.hypot(p.x-Math.floor(b.width*.65),p.y-Math.floor(b.height*.5))<=2);
  if(prisoner&&distance(u,prisoner)<=1.5&&u.stance==='prone')return {type:'stance',unitId:u.id,stance:'standing'};
  const fighting=combatOrder(b,u);if(fighting&&['fire','reprime','reload','heal','useItem'].includes(fighting.type))return fighting;
  const target=prisoner??{x:Math.floor(b.width*.65),y:Math.floor(b.height*.5)};
@@ -45,7 +44,7 @@ for(let window=0;window<400&&battle.turn<65&&!['defeat','retreat'].includes(batt
  if(battle.status==='victory'){orders.push({type:'explore',turn:battle.turn,mode:battle.mode});battle=actBattle(battle,{type:'explore'});assert.equal(battle.lastError,null);}
  for(let pass=0;pass<12&&battle.status==='active';pass++){
   let acted=false;
-  for(const id of ['123','115','110','114','113','112']){
+  for(const id of ['112','123','115','110','114','113']){
    const u=battle.units.find(u=>u.id===id);if(!interruptAvailable(battle,u)||battle.mode!=='exploration'&&u.ap<3)continue;
    const action=rescueOrder(battle,u);if(!action)continue;
    const next=actBattle(battle,action);assert.equal(next.lastError,null,JSON.stringify(action)+': '+next.lastError);

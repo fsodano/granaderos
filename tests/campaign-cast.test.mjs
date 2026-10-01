@@ -5,16 +5,15 @@ import {defaultCampaignStory} from '../game/campaign-story.js';
 import {isHistoricalCharacter,operativeIdForCharacter,legacyOperativeId} from '../game/content-character-ids.js';
 import {encountersFor,encounterDefinitions,encounterContacts} from '../game/encounters.js';
 import {defaultProfile} from '../game/character-profile.js';
-import {getReachable} from '../game/tactical.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {questPackage} from './content-quest-fixture.mjs';
-import {order,saved,visit,talk,tactical,leave,A} from './local-contract-fixture.mjs';
+import {order,saved,visit,talk,approachLocal,leave,A} from './local-contract-fixture.mjs';
 const choose=(p,node,id)=>({...p,campaign:order(p.campaign,{...talk(p,undefined,'dialogue'),dialogueNode:node,dialogueChoice:id})});
 function cast(){
  const d=questPackage(),courier={...structuredClone(d.characters.find(c=>c.id==='person-110')),id:'courier',name:'Lucía del Correo',nickname:'Lucía',arrivalHours:2};d.characters=[courier,d.characters.at(-1)];d.placements=d.placements.filter(p=>p.character==='alma-contract');d.includeOriginalResidents=false;d.campaignStory={...defaultCampaignStory(),victory:'La posta recibió el informe.',chapters:[{id:'post',name:'El informe',objective:'Conversá con Alma y entregá el informe.',conditions:[{type:'quest',quest:'river-post',status:'completed'}]}]};return d;
 }
 function ready(d=cast()){
- let s=initialCampaign(42,d),id=operativeIdForCharacter(d,'courier');s=order(s,{type:'recruitCivic',id,term:'week'});assert.equal(s.recruited.length,0);s=order(s,{type:'wait',hours:2});s=order(s,{type:'travel',sector:A});let p=visit(s);const n=p.battle.npcs.find(n=>n.contentId==='alma-contract'),unit=p.battle.units.find(u=>u.side==='player'),spot=getReachable(p.battle,unit.id).find(t=>Math.abs(t.x-n.x)+Math.abs(t.y-n.y)===1);assert.ok(spot);return spot.cost?tactical(p,{type:'move',x:spot.x,y:spot.y}):p;
+ let s=initialCampaign(42,d),id=operativeIdForCharacter(d,'courier');s=order(s,{type:'recruitCivic',id,term:'week'});assert.equal(s.recruited.length,0);s=order(s,{type:'wait',hours:2});s=order(s,{type:'travel',sector:A});return approachLocal(visit(s));
 }
 
 test('a wholly authored cast hires, encounters, completes a real dialogue quest and wins without historical records or returning contacts',()=>{

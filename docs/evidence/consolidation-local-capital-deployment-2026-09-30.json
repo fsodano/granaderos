@@ -1,0 +1,281 @@
+{
+  "schema": 1,
+  "status": "PARTIAL_LOCAL_VERIFICATION",
+  "checkedAt": "2026-10-01T02:06:44.235958+00:00",
+  "revision": "4938fd79835776a202273b09cf303fc7251ad392",
+  "runtimeSource": "922000b4e109268f307a722f9df9cd731cbe99758b28c3b736874ac07b0fb0d7",
+  "unpublished": true,
+  "pushed": false,
+  "merged": false,
+  "previewReplaced": false,
+  "changes": [
+    "Capital campaign driver uses the public spread-arrival action and ordinary infantry orders; enemy force and rules are unchanged.",
+    "Coastal recovery and Santa Fe preparation select actual living survivors, affordable paid support, physical ammunition and a safe Cordoba care destination.",
+    "Battery test driver uses each gun model's required crew and moves the physically leading piece first, independent of purchase order.",
+    "A surviving available gunner can replace fallen named officers.",
+    "Capital preparation now rests rehired survivors before departure and pays any required renewal during recovery.",
+    "Medical recovery renews serving doctor contracts as well as patient contracts, with actual payment receipts.",
+    "Santa Fe keeps permanent officers and affordable support through extended morale recovery."
+  ],
+  "combinedRegression": {
+    "log": "/tmp/granaderos-local-survivor-combined.tap",
+    "sha256": "6d215639ddd4564786378f13479b6638e537c1f7fc2717f2af364225bfcb1f55",
+    "tests": 103,
+    "pass": 103,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "duration_ms": 18860.357167,
+    "files": 14,
+    "testSourcesSha256": "08e368f6ead7412303c17a4c6568ca176fd2029523b448050f60d938451df6f1",
+    "sourceFrozenDuringRun": true
+  },
+  "capitalSavedPrefix": {
+    "status": "PASS",
+    "log": "/tmp/granaderos-capital-replay-check.log",
+    "input": "/tmp/granaderos-blockade-integrated-ready.json",
+    "result": "/tmp/granaderos-capital-replay-result.json",
+    "turns": 38,
+    "actions": 450,
+    "campaignHour": 3030,
+    "treasury": 7885,
+    "blockade": false,
+    "commanderAlive": true,
+    "checks": [
+      "actual battle victory",
+      "deterministic replay",
+      "paired save and reload",
+      "campaign settlement",
+      "permanent casualties",
+      "nonterminal campaign"
+    ],
+    "limitation": "Earlier saved-prefix state differs from the latest full fresh route; full fresh run failed the same battle."
+  },
+  "freshCampaign": {
+    "status": "FAIL",
+    "sessionId": null,
+    "startedAt": "2026-10-01T01:28:39.924929+00:00",
+    "runtime": "922000b4e109268f307a722f9df9cd731cbe99758b28c3b736874ac07b0fb0d7",
+    "testSourcesSha256": "08e368f6ead7412303c17a4c6568ca176fd2029523b448050f60d938451df6f1",
+    "testFiles": 691,
+    "log": "/tmp/granaderos-local-fresh-capital-spread.tap",
+    "fail": 1,
+    "duration_ms": 484364.439833,
+    "failedSector": "buenos_aires",
+    "battleStatus": "retreat",
+    "turns": 16,
+    "actions": 174,
+    "logSha256": "e898a3e607178b09e12fa213b31a32de0a1170154d7811345a127ec9c9c8b225",
+    "pass": 0
+  },
+  "knownRemainingTests": {
+    "count": 5,
+    "basis": "Ten failures in the preceding complete local run; five now pass in complete focused files. A new complete suite has not run.",
+    "groups": [
+      {
+        "count": 4,
+        "files": [
+          "tests/fresh-northern-route.test.mjs",
+          "tests/fresh-cuyo-route.test.mjs",
+          "tests/fresh-ending-route.test.mjs",
+          "tests/historical-loss.test.mjs"
+        ],
+        "currentFailure": "Shared freshNorthernRoute loses Salta. Current whole-route diagnostic reproduced it.",
+        "log": "/tmp/granaderos-northern-current-check.log"
+      },
+      {
+        "count": 1,
+        "files": [
+          "tests/fresh-campaign-recovery.test.mjs"
+        ],
+        "currentFailure": "The last full fresh run passes capital, then fails medical preparation for Santa Fe. Doctor retention is now corrected and verified from that current checkpoint. The following Santa Fe battle still loses; no final whole-route pass."
+      }
+    ]
+  },
+  "diagnosticsOnly": [
+    {
+      "log": "/tmp/granaderos-santa-fe-march-check.log",
+      "status": "FAIL",
+      "battle": "santa_fe",
+      "turns": 8,
+      "actions": 87,
+      "notes": "Five actual survivors and one light gun."
+    },
+    {
+      "log": "/tmp/granaderos-santa-fe-contact-check.log",
+      "status": "FAIL",
+      "battle": "santa_fe",
+      "turns": 12,
+      "actions": 179,
+      "notes": "Nearest living replacement operates the light gun."
+    },
+    {
+      "log": "/tmp/granaderos-santa-fe-light.log",
+      "status": "FAIL",
+      "battle": "santa_fe",
+      "turns": 7,
+      "actions": 217,
+      "notes": "Three purchased light guns."
+    },
+    {
+      "log": "/tmp/granaderos-santa-fe-reinforced.log",
+      "status": "TERMINATED",
+      "notes": "Seven actual hires and two heavy guns plus one light gun stalled before contact. Stopped owned probe; no victory."
+    },
+    {
+      "log": "/tmp/granaderos-santa-fe-ordered.log",
+      "status": "FAIL",
+      "battle": "santa_fe",
+      "turns": 25,
+      "actions": 285,
+      "notes": "Leading light piece clears the approach; whole force still loses."
+    },
+    {
+      "log": "/tmp/granaderos-santa-fe-advance.log",
+      "status": "FAIL",
+      "battle": "santa_fe",
+      "turns": 9,
+      "actions": 206
+    },
+    {
+      "log": "/tmp/granaderos-northern-salta-spread.log",
+      "status": "FAIL",
+      "battle": "salta",
+      "turns": 16,
+      "actions": 86
+    },
+    {
+      "log": "/tmp/granaderos-paid-care-santa-fe.log",
+      "status": "FAIL",
+      "battle": "santa_fe",
+      "turns": 11,
+      "actions": 241,
+      "notes": "Corrected paid medical recovery completes; six actual rested troops still lose the subsequent battle."
+    },
+    {
+      "log": "/tmp/granaderos-santa-fe-south.log",
+      "status": "FAIL",
+      "battle": "santa_fe",
+      "turns": 21,
+      "actions": 194
+    },
+    {
+      "log": "/tmp/granaderos-santa-fe-supported.log",
+      "status": "FAIL",
+      "battle": "santa_fe",
+      "turns": 5,
+      "actions": 114,
+      "notes": "One purchased bronze gun plus the existing light gun, southern approach."
+    },
+    {
+      "log": "/tmp/granaderos-santa-fe-infantry-west.log",
+      "status": "FAIL",
+      "battle": "santa_fe",
+      "turns": 10,
+      "actions": 116
+    },
+    {
+      "log": "/tmp/granaderos-santa-fe-infantry-south.log",
+      "status": "FAIL",
+      "battle": "santa_fe",
+      "turns": 10,
+      "actions": 120
+    },
+    {
+      "log": "/tmp/granaderos-cover-northern.log",
+      "status": "FAIL",
+      "battle": "cordoba",
+      "notes": "Temporary alternative cover policy; no source change from this diagnostic."
+    }
+  ],
+  "limits": [
+    "Focused batches overlap and are not a new complete-suite pass.",
+    "No final browser, performance or full-campaign acceptance.",
+    "The existing preview and remote PR head remain unchanged.",
+    "Service-end equipment return remains queued after PR139 merge."
+  ],
+  "restedCapitalSavedPrefix": {
+    "status": "PASS",
+    "input": "/tmp/granaderos-capital-current-ready.json",
+    "log": "/tmp/granaderos-capital-rested.log",
+    "result": "/tmp/granaderos-capital-rested-result.json",
+    "turns": 17,
+    "actions": 408,
+    "campaignHour": 2886,
+    "treasury": 8155,
+    "commanderAlive": true,
+    "campaignDefeated": false,
+    "checks": [
+      "real pre-march rest through paid campaign time",
+      "actual battle victory",
+      "deterministic replay",
+      "paired save and reload",
+      "campaign settlement",
+      "permanent casualties"
+    ],
+    "note": "Uses a checkpoint generated from the latest full route, not the older saved prefix. Full fresh rerun remains required."
+  },
+  "currentFreshCampaign": {
+    "startedAt": "2026-10-01T01:54:20.284084+00:00",
+    "runtime": "922000b4e109268f307a722f9df9cd731cbe99758b28c3b736874ac07b0fb0d7",
+    "testSourcesSha256": "b96660dec23cebcfab4a336470e9a8d9872ca2003a981fca10f87735c16b56dc",
+    "testFiles": 691,
+    "status": "FAIL",
+    "sessionId": null,
+    "log": "/tmp/granaderos-local-fresh-rested-capital.tap",
+    "fail": 1,
+    "cancelled": 0,
+    "skipped": 0,
+    "duration_ms": 482294.191041,
+    "sourceFrozenDuringRun": true,
+    "capitalPassed": true,
+    "failedAt": "Santa Fe medical preparation: doctor contract expired, patient 36/82",
+    "logSha256": "e3b9930d4800b1c2bcefb2b8df94df09d5e4f151aa96842a4ae5e30634a25a21",
+    "pass": 0
+  },
+  "subsequentCareDiagnostic": {
+    "status": "PASS",
+    "log": "/tmp/granaderos-paid-care-verification.log",
+    "result": "/tmp/granaderos-paid-care-verified.json",
+    "testSourcesSha256": "be5e5b737b7d0bcc0437bd73da760c0ca478880514a27ad476b479715927fefa",
+    "hour": 2901,
+    "treasury": 6748,
+    "patientHealth": 82,
+    "doctor": 135,
+    "receipts": [
+      {
+        "event": "careRenewal",
+        "operativeId": 135,
+        "assignment": "doctor",
+        "hour": 2893,
+        "cost": 1287,
+        "previousExpiresAt": 2894,
+        "expiresAt": 2918
+      }
+    ],
+    "doctorExpiresAt": 2918,
+    "checks": [
+      "actual paid doctor renewal",
+      "patient healed with finite supplies",
+      "unchanged input",
+      "permanent casualties",
+      "save and reload",
+      "commander survives"
+    ]
+  },
+  "currentTestSourcesSha256": "be5e5b737b7d0bcc0437bd73da760c0ca478880514a27ad476b479715927fefa",
+  "latestCareRegression": {
+    "status": "PASS",
+    "tests": 62,
+    "pass": 62,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "files": 7,
+    "duration_ms": 16266.223666,
+    "testSourcesSha256": "be5e5b737b7d0bcc0437bd73da760c0ca478880514a27ad476b479715927fefa",
+    "log": "/tmp/granaderos-local-rested-care-regression.tap",
+    "logSha256": "f4d2f4fa75b6365a4d91308e2765297a1f9b5cccfbe50a69f5d4ca7d90a14a11"
+  }
+}

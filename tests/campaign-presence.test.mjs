@@ -1,4 +1,5 @@
 import {secureArea} from './controlled-area-fixture.mjs';
+import {approachNPC} from './approach-npc.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign} from '../game/campaign.js';
@@ -7,7 +8,7 @@ import {campaignContentReport} from '../game/campaign-content.js';
 import {encountersFor,encounterContacts} from '../game/encounters.js';
 import {createContentSession,advancePlacementState} from '../game/content-placement.js';
 import {enterSector} from '../game/world.js';
-import {createBattle,actBattle,getReachable} from '../game/tactical.js';
+import {createBattle,actBattle} from '../game/tactical.js';
 import {syncBattleTime} from '../game/time.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {contentIdentity} from '../game/content-identity.js';
@@ -24,8 +25,8 @@ const leave=pair=>{pair=synced(pair);return order(pair.campaign,{type:'leaveSect
 const person=s=>s.contentPresence.people['person-3'];
 const contact=b=>b.npcs.find(n=>n.operativeId===3);
 function approach(pair){
- const npc=contact(pair.battle),spot=getReachable(pair.battle,'110').find(p=>Math.abs(p.x-npc.x)+Math.abs(p.y-npc.y)===1);assert.ok(spot);
- if(spot.cost>0)pair.battle=actBattle(pair.battle,{type:'move',unitId:'110',x:spot.x,y:spot.y});assert.equal(pair.battle.lastError,null);return synced(pair);
+ pair.battle=actBattle(pair.battle,{type:'movement',unitId:'110',movement:'run'});assert.equal(pair.battle.lastError,null);
+ pair.battle=approachNPC(pair.battle,'110',contact(pair.battle).id);return synced(pair);
 }
 
 test('authored fixed cell is the real encounter, with conversation, local hiring and no duplicate after save or reentry',()=>{
@@ -34,6 +35,7 @@ test('authored fixed cell is the real encounter, with conversation, local hiring
  s=order(pair.campaign,{type:'talkNPC',npcId:npc.id,unitId:110,approach:'friendly',sectorState:pair.battle});
  assert.equal(s.conversations.cabral.sector,A);assert.match(encounterContacts(s).find(n=>n.id==='cabral').locationLabel,/Último encuentro/);
  pair=saved(s,pair.battle);s=leave(pair);pair=approach(visit(saved(s).campaign));
+ npc=contact(pair.battle);
  s=order(pair.campaign,{type:'talkNPC',npcId:npc.id,unitId:110,approach:'recruit',sectorState:pair.battle});assert.ok(s.recruited.includes(3));assert.equal(person(s).recruited,true);
  // Apply the same local NPC-to-squad transition as page.tsx.
  pair.battle.npcs=pair.battle.npcs.filter(n=>n.id!==npc.id);const record=s.pendingBattle.squad.find(u=>u.id===3);

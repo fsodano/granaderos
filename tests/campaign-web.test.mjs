@@ -9,6 +9,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {dispatchCampaign as dispatch,isSupplied,recruitmentStatus,restoreCampaign,serializeCampaign,OPERATIVES,CAMPAIGN_SECTORS,PHASES} from '../game/campaign.js';
 import {initialCampaign} from './legacy-campaign-fixture.mjs';
+import {enterSector} from '../game/world.js';
 const order=(s,action)=>{const next=action.type==='travel'?completeTestTravel(s,action):meetLocalRecruit(s,action)??dispatch(marchToFront(s,action),action);assert.equal(next.lastError,null,`${action.type} ${action.sector??''} from ${s.location} at ${s.hour}: ${next.lastError}`);return action.type==='diplomacy'&&action.kind==='northPact'&&next.phase===2?attendYatasto(next):next;};
 // Progression-only fixtures settle declared battles; these are not combat playthroughs.
 function connectSupplyRoad(s){
@@ -55,26 +56,41 @@ test('five-phase campaign cannot unlock San Martín early',()=>{
 test('captured crossroads cut the Camino Real; traversal respects control',()=>{
  const s=initialCampaign();for(const id of ['cordoba','tucuman','salta'])s.sectors[id].owner='patriot';assert.equal(isSupplied(s,'salta'),true);s.sectors.cordoba.owner='royalist';assert.equal(isSupplied(s,'salta'),false);assert.ok(dispatch(s,{type:'travel',sector:'salta'}).lastError);
 });
-test('unguarded and defeated provinces fall while unresolved militia combat remains active',()=>{
+test('unguarded and defeated provinces fall while a stronger militia earns its victory with permanent losses',()=>{
  let s=initialCampaign();s.sectors.jujuy.owner='patriot';s=order(s,{type:'wait',hours:144});assert.equal(s.sectors.jujuy.owner,'royalist');
- // The current territorial tier launches eleven attackers. Twelve authored
- // veterans lose the actual fight; preserve that defeat and its permanent loss.
- s=initialCampaign();s.sectors.jujuy.owner='patriot';s.sectors.jujuy.militia=[0,0,12];s=order(s,{type:'wait',hours:144});
+ // One defender cannot hold against the actual arriving column. Keep the
+ // defeated defender's critical wound instead of manufacturing a death.
+ s=initialCampaign();s.sectors.jujuy.owner='patriot';s.sectors.jujuy.militia=[0,0,1];s=order(s,{type:'wait',hours:144});
  const attackingForce=s.enemyGroups.find(g=>g.id===s.pendingEncounter.groupId).units.length;
  s=order(s,{type:'respondToEncounter',groupId:s.pendingEncounter.groupId,choice:'auto'});
  assert.equal(s.enemyGroups[0].status,'stationed');assert.equal(s.sectors.jujuy.owner,'royalist');
  assert.equal(s.sectorStates.jujuy.status,'defeat');assert.deepEqual(s.sectors.jujuy.militia,[0,0,0]);
- assert.ok(s.sectorStates.jujuy.units.some(u=>u.militia&&u.hp===0));
+ assert.ok(s.sectorStates.jujuy.units.some(u=>u.militia&&u.hp<15));
  // This subsystem fixture starts with a larger existing garrison. It tests
  // real combat settlement; the campaign route must pay for its own training.
  const defenders=16;
  s=initialCampaign();s.sectors.jujuy.owner='patriot';s.sectors.jujuy.militia=[0,0,defenders];s=order(s,{type:'wait',hours:144});
  assert.equal(s.enemyGroups.find(g=>g.id===s.pendingEncounter.groupId).units.length,attackingForce,'the reinforced defense faces the same enemy force');
  assert.equal(s.pendingEncounter.sector,'jujuy');s=order(s,{type:'respondToEncounter',groupId:s.pendingEncounter.groupId,choice:'auto'});
- assert.equal(s.enemyGroups[0].status,'engaged');assert.equal(s.sectors.jujuy.owner,'patriot');
- const b=s.pendingBattle.resumeSnapshot;assert.equal(b.status,'active');assert.equal(b.battleId,s.pendingBattle.id);assert.equal(b.savedHour,s.hour);assert.equal(b.savedSecond,s.secondOfHour);
+ assert.equal(s.enemyGroups[0].status,'defeated');assert.equal(s.sectors.jujuy.owner,'patriot');
+ const b=s.sectorStates.jujuy;assert.equal(b.status,'victory');assert.equal(s.pendingBattle,null);
  const militia=b.units.filter(u=>u.militia);assert.equal(militia.length,defenders);assert.ok(militia.some(u=>u.hp<=0));
  assert.ok(militia.reduce((n,u)=>n+u.loaded+u.ammo,0)<defenders*6);assert.deepEqual(restoreCampaign(serializeCampaign(s)),s);
+});
+test('an unreachable militia shelter retains the unresolved encounter and synchronized save',()=>{
+ let s=initialCampaign();s.sectors.jujuy.owner='patriot';s.sectors.jujuy.militia=[0,0,4];s=order(s,{type:'wait',hours:144});
+ s=order(s,{type:'respondToEncounter',groupId:s.pendingEncounter.groupId,choice:'tactical'});
+ // An explicit old compact-map fixture encloses the defenders. The arriving
+ // force still has a legal boundary approach outside the shelter.
+ const previous=enterSector({...s.pendingBattle,compactLayout:true}),men=previous.units.filter(u=>u.militia);
+ const minX=Math.min(...men.map(u=>u.x))-1,maxX=Math.max(...men.map(u=>u.x))+1,minY=Math.min(...men.map(u=>u.y))-1,maxY=Math.max(...men.map(u=>u.y))+1;
+ for(const tile of previous.tiles)if(tile.x>=minX&&tile.x<=maxX&&tile.y>=minY&&tile.y<=maxY&&(tile.x===minX||tile.x===maxX||tile.y===minY||tile.y===maxY))Object.assign(tile,{type:'wall',blocked:true,blocksSight:true});
+ s.sectorStates.jujuy=previous;
+ const group=s.enemyGroups.find(g=>g.id===s.pendingBattle.defenseGroupId);s.pendingBattle=null;group.status='waiting';s.pendingEncounter={groupId:group.id,sector:'jujuy',hour:s.hour};
+ s=order(s,{type:'respondToEncounter',groupId:group.id,choice:'auto'});
+ const b=s.pendingBattle.resumeSnapshot;assert.equal(b.status,'active');assert.equal(s.enemyGroups[0].status,'engaged');assert.equal(s.sectors.jujuy.owner,'patriot');
+ assert.equal(b.battleId,s.pendingBattle.id);assert.equal(b.savedHour,s.hour);assert.equal(b.savedSecond,s.secondOfHour);
+ assert.equal(b.units.filter(u=>u.militia).length,4);assert.deepEqual(restoreCampaign(serializeCampaign(s)),s);
 });
 test('battle result IDs prevent stale victories and preserve casualties',()=>{
  let s=order(initialCampaign(),{type:'attack',sector:'san_nicolas'});assert.ok(dispatch(s,{type:'battleResult',battleId:'wrong',outcome:'victory',survivors:[]}).lastError);

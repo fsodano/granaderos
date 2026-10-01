@@ -1,7 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createBattle,actBattle,shotChance,actionCosts} from '../game/tactical.js';
+import {createBattle,actBattle,shotChance,actionCosts,canSee} from '../game/tactical.js';
 import {combatOrder} from './opening-driver.mjs';
+import {cautiousCombatOrder} from './cautious-driver.mjs';
 const tiles=Array.from({length:384},(_,i)=>({x:i%32,y:Math.floor(i/32),type:'grass',blocked:false,cover:0}));
 const field=(players,enemy={})=>createBattle(players,{width:32,height:12,tiles,seed:45,enemies:[{id:'e',x:5,y:1,weapon:1813,patrol:false,hp:200,maxHp:200,...enemy}]});
 const apply=(s,a)=>{const n=actBattle(s,a);assert.equal(n.lastError,null);return n;};
@@ -52,4 +53,27 @@ test('the opening driver does not prescribe adjacent medical use across a visibl
  assert.deepEqual(order,{type:'weapon',unitId:'medic',slot:'primary'});
  assert.deepEqual(s,before);const next=apply(s,order);
  assert.equal(next.units[1].bleeding,s.units[1].bleeding);assert.equal(next.units[0].medkits,2);
+});
+
+test('the route controller does not reprime a stowed firearm while a blade is held',()=>{
+ const s=field([{id:'p',x:1,y:1,weapon:1800,blade:1811,activeSlot:'blade',jammed:true}],{x:31,y:11});
+ const u=s.units[0],before=structuredClone(s);assert.equal(u.jammed,true);assert.equal(u.activeSlot,'blade');
+ const order=combatOrder(s,u);assert.notEqual(order?.type,'reprime');assert.deepEqual(s,before);
+ if(order)apply(s,order);
+});
+
+test('a roof defender fires at a visible ground target instead of repeatedly lowering behind the roof edge',()=>{
+ const upperSurfaces=Array.from({length:12},(_,i)=>({id:`roof:${i}`,x:4+i%4,y:4+Math.floor(i/4),tacticalLevel:1,elevation:3,type:'floor',kind:'roof',blocked:false,cover:0}));
+ const s=createBattle([{id:'p',x:5,y:4,tacticalLevel:1,weapon:1800,facing:0,marksmanship:90,medkits:0,stance:'standing'}],{width:32,height:12,tiles,upperSurfaces,seed:45,enemies:[{id:'e',x:5,y:2,weapon:1813,patrol:false,hp:200,maxHp:200,overwatch:false}]}),before=structuredClone(s),u=s.units[0],target=s.units[1];
+ assert.equal(canSee(s,u,target),true);assert.equal(canSee(s,{...u,stance:'prone'},target),false);
+ const order=cautiousCombatOrder(s,u);assert.equal(order.type,'fire');assert.deepEqual(s,before);
+ const next=apply(s,order);assert.equal(next.units[0].stance,'standing');assert.equal(next.units[0].loaded,u.loaded-1);assert.ok(next.units[0].ap<u.ap);assert.ok(next.units[1].hp<target.hp);
+ assert.deepEqual(apply(before,order),next,'the paid shot replays without a posture loop');
+});
+
+test('a cautious rifleman still lowers and fires when the prone shot remains visible',()=>{
+ let s=field([{id:'p',x:1,y:1,weapon:1800,facing:2,marksmanship:90,medkits:0,stance:'standing'}],{x:5,y:1,overwatch:false});
+ const first=cautiousCombatOrder(s,s.units[0]);assert.deepEqual(first,{type:'stance',unitId:'p',stance:'prone'});
+ s=apply(s,first);const next=cautiousCombatOrder(s,s.units[0]);assert.equal(next.type,'fire');
+ const fired=apply(s,next);assert.equal(fired.units[0].loaded,0);assert.ok(fired.units[0].ap<s.units[0].ap);
 });

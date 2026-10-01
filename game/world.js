@@ -1,4 +1,5 @@
 import {militiaArrivalTerrain} from './militia-arrival.js';
+import {placeInvaders} from './invader-entry.js';
 import {sectorCash} from './economy.js';
 import {worldCell} from './world-cells.js';
 import {expandCellScene} from './cell-scene-storage.js';
@@ -88,7 +89,10 @@ export function enterSector(request,previous=null,{placement=false}={}){
    corpse.entryReason='arrival';corpse.entryEdge=arrival?.entryEdge??corpse.entryEdge;corpse.entryAnchor=arrival?.entryAnchor??corpse.entryAnchor;
    queued.push(corpse);state.units.push(corpse);
  }
- const occupied=new Set(state.units.filter(u=>u.side==='enemy'&&u.hp>0&&!u.departure&&!u.fled).map(key));
+ const issuedEnemies=new Set(map.enemies.map(u=>String(u.id)));
+ const invaders=request.defenseGroupId?state.units.filter(u=>u.side==='enemy'&&u.hp>0&&!u.departure&&!u.fled&&issuedEnemies.has(u.id)):[];
+ const arrivingEnemyIds=new Set(invaders.map(u=>u.id));
+ const occupied=new Set(state.units.filter(u=>u.side==='enemy'&&u.hp>0&&!u.departure&&!u.fled&&!arrivingEnemyIds.has(u.id)).map(key));
  const reserve=(preferred,terrain=null,ordered=false)=>{
    const level=tacticalLevel(preferred),candidates=(terrain??surfacesAtLevel(state,level)).filter(t=>!t.blocked&&!propBlocksAt(state,t.x,t.y,level)&&!occupied.has(key(t)));
    if(!ordered)candidates.sort((a,b)=>Math.abs(a.x-preferred.x)+Math.abs(a.y-preferred.y)-Math.abs(b.x-preferred.x)-Math.abs(b.y-preferred.y)||a.y-b.y||a.x-b.x);
@@ -165,12 +169,18 @@ export function enterSector(request,previous=null,{placement=false}={}){
      }
    }
  }
- if(request.detainedPrisoners?.length)state=placeDetainedPrisoners(state,request.detainedPrisoners);
+ if(request.detainedPrisoners?.length){
+   state=placeDetainedPrisoners(state,request.detainedPrisoners);
+   for(const npc of state.npcs)if(npc.hp>0&&!npc.departure)occupied.add(key(npc));
+ }
  state.sceneId=request.sceneId??null;state.missionId=request.missionId??request.sceneId??null;
  if(!previous&&!request.sceneId&&sectorCash(request.sector)){
    const leader=state.units.find(u=>u.side==='player'&&u.hp>0),spot=leader&&state.tiles.find(t=>!t.blocked&&!propBlocksAt(state,t.x,t.y)&&!occupied.has(key(t))&&Math.abs(t.x-leader.x)+Math.abs(t.y-leader.y)===1);
    if(spot)state.groundItems.push({id:`cash:${request.sector}`,type:'money',x:spot.x,y:spot.y,count:sectorCash(request.sector)});
  }
+ // Prisoner placement clones the battle. Select arrivals from the current
+ // state so the final scene receives their positions and patrol origins.
+ placeInvaders(state,state.units.filter(u=>arrivingEnemyIds.has(u.id)),request,occupied);
  state.enteredHour=request.hour??0;
  for(const unit of state.units)if(unit.side==='enemy'){
    if(request.defenseGroupId&&unit.hp>0)unit.assaultPatrol=true;

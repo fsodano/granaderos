@@ -1,0 +1,401 @@
+{
+  "schema": 1,
+  "status": "PARTIAL_LOCAL_VERIFICATION",
+  "checkedAt": "2026-10-01T06:26:19.693465+00:00",
+  "revision": "4938fd79835776a202273b09cf303fc7251ad392",
+  "runtimeSource": "af9ec4318d546bd25378221e1152fc7772f0859d363676579c24e9022d14ebbc",
+  "unpublished": true,
+  "pushed": false,
+  "merged": false,
+  "previewReplaced": false,
+  "changes": [
+    "The test controller clears crowded arrival guns using the actual engine-selected crew and legal routes. It does not reserve incompatible static pairs.",
+    "A fighting gun crew stays together and does not alternate prone, crouched and standing orders until its AP is spent.",
+    "Capital preparation selects the real living Retiro rear guard. Its results match both prior created-campaign and recovery-campaign preparations.",
+    "The recovery route now clears the post-Santa-Fe capital blockade, recaptures Tucuman and recaptures Salta using its actual survivors.",
+    "Before evacuation, critically wounded survivors receive local paid hourly care. Medical purchases wait for finite shop stock while retaining patient and doctor contracts."
+  ],
+  "regression": {
+    "status": "PASS",
+    "tests": 56,
+    "pass": 56,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "duration_ms": 15333.909791,
+    "files": [
+      "tests/staged-battery-driver.test.mjs",
+      "tests/campaign-battery-driver.test.mjs",
+      "tests/battery-deployment-driver.test.mjs",
+      "tests/team-artillery-driver.test.mjs",
+      "tests/contract-attention.test.mjs",
+      "tests/campaign-care.test.mjs",
+      "tests/medical-care.test.mjs"
+    ],
+    "log": {
+      "path": "/tmp/granaderos-local-return-battery-care-regression.tap",
+      "sha256": "a0dfb9686b4c8b245bd9d0922016aeddd404762aaafe9a1d52c12366eb8bda8d"
+    }
+  },
+  "capitalPreparation": {
+    "status": "PASS",
+    "log": {
+      "path": "/tmp/granaderos-capital-preparation-source-check.log",
+      "sha256": "8fc89c04f9c2cd194008170431a30aeeb6197cbc6ed6b577bcca7c7f1d255e34"
+    },
+    "cases": [
+      "created campaign: six actual participants, hour4430",
+      "recovery campaign: six actual participants, hour3398"
+    ],
+    "inputUnchanged": true,
+    "matchesPreviousValidatedPreparations": true
+  },
+  "recoveryReturnChain": {
+    "status": "PASS_CHECKPOINT_ONLY",
+    "input": {
+      "path": "/tmp/granaderos-recovery-new-santa-fe-result.json",
+      "sha256": "b9bd6a1a7064fab3f53426d202b5b90c999e8e29a79d24e9db95fbfd17bc9c17"
+    },
+    "inputUnchanged": true,
+    "sourceLog": {
+      "path": "/tmp/granaderos-recovery-return-source-check.log",
+      "sha256": "ca721dc660f3e94eee5b697a574b2fb6b21a644f7dd17c48e066f429d3416cc9"
+    },
+    "battles": [
+      {
+        "artifact": {
+          "path": "/tmp/granaderos-capital-staged-result.json",
+          "sha256": "27b9f28f7a5e7854eb4be17c378f96dc7d0b590d8271381246cb2becf53c3010"
+        },
+        "sector": "buenos_aires",
+        "hour": 3398,
+        "treasury": 21416,
+        "turns": 13,
+        "actions": 126,
+        "outcome": "victory",
+        "survivors": [
+          {
+            "id": 57,
+            "hp": 88,
+            "bleeding": 0,
+            "location": "cordoba"
+          },
+          {
+            "id": 3,
+            "hp": 96,
+            "bleeding": 0,
+            "location": "buenos_aires"
+          },
+          {
+            "id": 5,
+            "hp": 15,
+            "bleeding": 0,
+            "location": "buenos_aires"
+          },
+          {
+            "id": 120,
+            "hp": 79,
+            "bleeding": 0,
+            "location": "buenos_aires"
+          },
+          {
+            "id": 123,
+            "hp": 95,
+            "bleeding": 0,
+            "location": "buenos_aires"
+          },
+          {
+            "id": 111,
+            "hp": 83,
+            "bleeding": 0,
+            "location": "buenos_aires"
+          },
+          {
+            "id": 133,
+            "hp": 95,
+            "bleeding": 0,
+            "location": "buenos_aires"
+          }
+        ],
+        "replaySaveAndSettlement": "PASS"
+      },
+      {
+        "artifact": {
+          "path": "/tmp/granaderos-recovery-source-tucuman-result.json",
+          "sha256": "a80b636781e9856b253ead37f838e29bd10cd36eaef8b96fc46fbb65c652a858"
+        },
+        "sector": "tucuman",
+        "hour": 3562,
+        "treasury": 23777,
+        "turns": 8,
+        "actions": 157,
+        "outcome": "victory",
+        "survivors": [
+          {
+            "id": 57,
+            "hp": 88,
+            "bleeding": 0,
+            "location": "cordoba"
+          },
+          {
+            "id": 3,
+            "hp": 96,
+            "bleeding": 0,
+            "location": "tucuman"
+          },
+          {
+            "id": 5,
+            "hp": 60,
+            "bleeding": 0,
+            "location": "tucuman"
+          },
+          {
+            "id": 120,
+            "hp": 81,
+            "bleeding": 0,
+            "location": "tucuman"
+          },
+          {
+            "id": 123,
+            "hp": 95,
+            "bleeding": 0,
+            "location": "tucuman"
+          },
+          {
+            "id": 111,
+            "hp": 83,
+            "bleeding": 0,
+            "location": "tucuman"
+          }
+        ],
+        "replaySaveAndSettlement": "PASS"
+      },
+      {
+        "artifact": {
+          "path": "/tmp/granaderos-recovery-source-salta-result.json",
+          "sha256": "73605caaa9df10f8f7dd951611e8c83bb456eb0422a76eca7bcbe0567fbf70b0"
+        },
+        "sector": "salta",
+        "hour": 3614,
+        "treasury": 22979,
+        "turns": 16,
+        "actions": 199,
+        "outcome": "victory",
+        "survivors": [
+          {
+            "id": 57,
+            "hp": 88,
+            "bleeding": 0,
+            "location": "cordoba"
+          },
+          {
+            "id": 3,
+            "hp": 7,
+            "bleeding": 2,
+            "location": "salta"
+          },
+          {
+            "id": 5,
+            "hp": 85,
+            "bleeding": 0,
+            "location": "salta"
+          },
+          {
+            "id": 120,
+            "hp": 51,
+            "bleeding": 0,
+            "location": "salta"
+          },
+          {
+            "id": 111,
+            "hp": 45,
+            "bleeding": 0,
+            "location": "salta"
+          }
+        ],
+        "replaySaveAndSettlement": "PASS"
+      }
+    ],
+    "note": "This linked source run starts at the actual Santa Fe checkpoint from the prior complete fresh-start prefix. It does not replace a complete fresh-start rerun. Salta uses 40 fewer stance orders than the temporary predecessor, with the same operative records, contracts, sectors, money and campaign clock."
+  },
+  "createdTucumanDiagnostic": {
+    "status": "PASS_CHECKPOINT_ONLY",
+    "battle": {
+      "artifact": {
+        "path": "/tmp/granaderos-tucuman-staged-result.json",
+        "sha256": "96cd52c712192a056fa0e3b77b8a035c15f09fcaab2bad1b58568c1b6bc5911a"
+      },
+      "sector": "tucuman",
+      "hour": 7282,
+      "treasury": 32671,
+      "turns": 12,
+      "actions": 228,
+      "outcome": "victory",
+      "survivors": [
+        {
+          "id": 57,
+          "hp": 88,
+          "bleeding": 0,
+          "location": "cordoba"
+        },
+        {
+          "id": 4,
+          "hp": 84,
+          "bleeding": 0,
+          "location": "tucuman"
+        },
+        {
+          "id": 146,
+          "hp": 78,
+          "bleeding": 0,
+          "location": "tucuman"
+        },
+        {
+          "id": 143,
+          "hp": 15,
+          "bleeding": 0,
+          "location": "tucuman"
+        },
+        {
+          "id": 147,
+          "hp": 80,
+          "bleeding": 0,
+          "location": "tucuman"
+        }
+      ],
+      "replaySaveAndSettlement": "PASS"
+    },
+    "log": {
+      "path": "/tmp/granaderos-tucuman-staged-check.log",
+      "sha256": "ea9bdc02c6634bc32457e401c602ee6674a2587dddde26742d7bc757c1df606f"
+    },
+    "fullEndingIntegrated": false
+  },
+  "createdLaterRecaptureDiagnostic": {
+    "status": "PASS_TEMPORARY_DIAGNOSTIC",
+    "battle": {
+      "artifact": {
+        "path": "/tmp/granaderos-created-light-recapture-result.json",
+        "sha256": "135f45788c88400f88661c92d702551d429bdc235cc1b4f724de022b0bc864c9"
+      },
+      "sector": "tucuman",
+      "hour": 7426,
+      "treasury": 17223,
+      "turns": 8,
+      "actions": 145,
+      "outcome": "victory",
+      "survivors": [
+        {
+          "id": 57,
+          "hp": 20,
+          "bleeding": 0,
+          "location": "tucuman"
+        },
+        {
+          "id": 4,
+          "hp": 84,
+          "bleeding": 0,
+          "location": "tucuman"
+        },
+        {
+          "id": 146,
+          "hp": 78,
+          "bleeding": 0,
+          "location": "tucuman"
+        },
+        {
+          "id": 143,
+          "hp": 78,
+          "bleeding": 0,
+          "location": "tucuman"
+        },
+        {
+          "id": 147,
+          "hp": 80,
+          "bleeding": 0,
+          "location": "tucuman"
+        }
+      ],
+      "replaySaveAndSettlement": "PASS"
+    },
+    "log": {
+      "path": "/tmp/granaderos-created-light-recapture-check.log",
+      "sha256": "4827823a9b11ff2982aae4cb17fd182a88a31335a7b1e4e409b82cc0ab39fbb3"
+    },
+    "note": "Paid medical care and three purchased swivel guns permit recapture of a later real occupation. The commander takes actual wounds and must recover before another march. This temporary branch is not integrated into the full ending fixture."
+  },
+  "remaining": [
+    "Both complete campaign files remain open. The preceding full-suite count remains 4169 pass,10 fail,1 skip; eight later complete focused files passed. There is no new full-suite total.",
+    "After the recovery Salta victory, local urgent care preserves Cabral at7HP with2bleeding. Medical care and finite purchases subsequently pass, but new northern occupations prevent friendly travel to Jujuy. These occupations must be fought; their ownership must not be bypassed.",
+    "The created route still needs Salta, Jujuy, Humahuaca, later blockades and post-victory service-expiry validation. A four-person direct Salta assault fails and is not accepted.",
+    "No final full suite, browser acceptance, push, merge or preview replacement. Service-end equipment return remains after PR139 merge."
+  ],
+  "sources": [
+    {
+      "path": "tests/staged-battery-driver.mjs",
+      "sha256": "b75688afa4cdda211168f7bfa1e229c61be27b07c051b14fee9badf4d7bcdce2"
+    },
+    {
+      "path": "tests/stable-crew-driver.mjs",
+      "sha256": "36fdf3a924bc5763c4ca591fa3bca70d871d7e3abe5e7e2ae4382d5ea413a6d6"
+    },
+    {
+      "path": "tests/staged-battery-driver.test.mjs",
+      "sha256": "c2514265983fa26bd2cfb5c535848d19433407f56d05aa8c5ef6f91e1155ecc0"
+    },
+    {
+      "path": "tests/survivor-return-route.mjs",
+      "sha256": "1c84b253d9d1352702b249f06839d15b1706910baefc3d3e53c369f3d8a0948a"
+    },
+    {
+      "path": "tests/created-capital-return.mjs",
+      "sha256": "627e98a58147a89b0634c66485f9549b789d68d5071dc56d12dbde7fa9de3dfa"
+    },
+    {
+      "path": "tests/fresh-coastal-route.mjs",
+      "sha256": "7f6f47d50c28d584767e16297bdf87ca2c427936853d1a5074daa3f23f9bb6d6"
+    },
+    {
+      "path": "tests/fresh-campaign-recovery.test.mjs",
+      "sha256": "81e317bee56387952c5996f465bddf250158030e6d15773c0710bfc891786348"
+    }
+  ],
+  "createdForwardTransportDiagnostic": {
+    "status": "PREPARATION_PASS_BATTLE_FAIL",
+    "temporaryOnly": true,
+    "ready": {
+      "path": "/tmp/granaderos-created-forward-salta-ready.json",
+      "sha256": "cb25052ebd25cb7fe6785a0020cb33c64a68cf83ddc96538d30c22047ff2992f"
+    },
+    "preparationLog": {
+      "path": "/tmp/granaderos-created-forward-guns.log",
+      "sha256": "70e33d381b9d8dc68b4dfb810cfafa80d4817e9bb2216812264db095bc8f265e"
+    },
+    "battleLog": {
+      "path": "/tmp/granaderos-created-forward-salta-check.log",
+      "sha256": "0c7c1021602a578d12f8c8b8719437246ddfeac8ed874c20c791ad225c89200b"
+    },
+    "hour": 7478,
+    "treasury": 12172,
+    "ownedGunsForwarded": 3,
+    "ammunitionAndUnfinishedLoadsPreserved": true,
+    "battle": {
+      "outcome": "defeat",
+      "turns": 15,
+      "actions": 274
+    },
+    "note": "The actual three swivel guns travel by paid carts through Cordoba to the Tucuman depot. A later northern group reinforces Salta before the attack. The failed fight is not accepted or integrated."
+  },
+  "documentationAudit": {
+    "status": "PASS",
+    "requirements": 274,
+    "originalRows": 50,
+    "parityRows": 87,
+    "evidenceRecords": 114,
+    "log": {
+      "path": "/tmp/granaderos-local-battery-return-docs.log",
+      "sha256": "c6c076f01cd351740dc7bcbe7b68361867248f3de019638f05f41f10bc855b66"
+    }
+  },
+  "diffCheck": "PASS"
+}

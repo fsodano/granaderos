@@ -1,0 +1,99 @@
+{
+  "date": "2026-09-30",
+  "baseRevision": "4938fd79835776a202273b09cf303fc7251ad392",
+  "runtimeSource": "afe5dda42ea47b9c8297477ea47c967dcce64c5148245ccc637392b34bb7bd6b",
+  "testSourcesSha256": "f5d6fd1161f22920572efde984066ca7d14b37ec30cb5e62b01e058dba6fad02",
+  "scope": "Unpushed local test-route repairs. No release, browser, performance or complete campaign acceptance.",
+  "completeLocalSuiteBeforeRepairs": {
+    "evidence": "consolidation-local-arrival-custody-2026-09-30.json",
+    "log": "/tmp/granaderos-local-complete-afe5dda4.tap",
+    "logSha256": "ef7ec44502f9b7968c5d371f58236fe4b22079b1ce498ff19c4683257f804e50",
+    "tests": 4180,
+    "pass": 4169,
+    "fail": 10,
+    "cancelled": 0,
+    "skipped": 1,
+    "todo": 0,
+    "duration_ms": 1935960.225083
+  },
+  "focusedAfterRepairs": {
+    "files": [
+      "tests/opening-playthrough.test.mjs",
+      "tests/campaign-web.test.mjs",
+      "tests/tactical-exit-campaign.test.mjs",
+      "tests/prisoner-rescue-route.test.mjs",
+      "tests/campaign-detention.test.mjs",
+      "tests/invader-arrival.test.mjs"
+    ],
+    "log": "/tmp/granaderos-local-recovery-rescue-regression.tap",
+    "logSha256": "08f89377dbf9d527ec81c22937258a7ff80f436cab7b8c10466a72f23a3bb350",
+    "tests": 65,
+    "pass": 65,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "duration_ms": 124818.028542
+  },
+  "freshCampaignAfterRepairs": {
+    "log": "/tmp/granaderos-local-fresh-recovery-after-care.tap",
+    "logSha256": "d99e08aa16bdf685ffdef7727f55e90255a4ea595ffdbe90090ec0a076be2687",
+    "tests": 1,
+    "pass": 0,
+    "fail": 1,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "duration_ms": 182109.13125,
+    "verifiedProgress": "A full fresh start passes its initial Cordoba defense, paid recovery, 15-person Tucuman assault, hospital defense, evacuation, Salta victory and Yatasto handover.",
+    "nextFailure": "Mendoza preparation requests recruit 145 for 1230 pesos without enough funds. No completed campaign pass."
+  },
+  "changes": [
+    "Militia outcome fixtures distinguish actual defeat and victory; a separate enclosure retains unresolved combat and a synchronized save.",
+    "The automatic-withdrawal enclosure has a legal exterior approach for the invading force. The defending room remains sealed.",
+    "The guarded rescue pays for a swivel and bronze4 gun. Both spend actual shots. All three prisoners and four living rescuers leave through the exit, while two rescuers remain dead.",
+    "Fresh-route care consumes held or bought dressings, waits through real sleep, returns routed survivors through actual travel, and uses a healthy hospital escort.",
+    "Southern-route preparation hires only living available candidates, reloads active reserves, purchases its supporting gun, pays a surviving medic, and charges the current 300-peso northern pact."
+  ],
+  "diagnosticsOnly": {
+    "southernSavedPrefix": "Actual Salta victory at hour 252 and treasury 485; paid care and Yatasto at hour 265 and treasury 322. Superseded by the full southern-route pass above.",
+    "freshSavedPrefix": "Salta victory at hour 404, treasury 742; Yatasto phase3 at hour420, treasury823. Fresh test above then reaches its later Mendoza budget failure.",
+    "mendozaOptionalHireSkipped": "A diagnostic that skips unaffordable reinforcement retreats in the actual Mendoza battle. Not integrated; does not satisfy victory."
+  },
+  "remaining": [
+    "Fresh northern fixture still fails Salta; Cuyo, ending and historical-loss tests depend on it.",
+    "Long fresh recovery route still fails Mendoza funding/preparation.",
+    "Complete final local suite, applicable browser checks, one batch push, required CI, merge and same-origin preview update remain required."
+  ],
+  "delivery": {
+    "pushed": false,
+    "merged": false,
+    "pr": 139,
+    "prState": "OPEN DRAFT",
+    "userPreviewReplaced": false,
+    "browserChecked": false,
+    "serviceEndEquipmentReturn": "Queued after PR139 merges; not started."
+  },
+  "otherChecks": {
+    "documentation": {
+      "passed": true,
+      "requirements": 274,
+      "originalRows": 50,
+      "parityRows": 87,
+      "evidenceRecords": 114
+    },
+    "testPartition": {
+      "passed": true,
+      "files": 592,
+      "groups": 4
+    },
+    "diffWhitespace": {
+      "passed": true
+    },
+    "unchangedRuntimeChecks": {
+      "source": "afe5dda42ea47b9c8297477ea47c967dcce64c5148245ccc637392b34bb7bd6b",
+      "priorEvidence": "consolidation-local-arrival-custody-2026-09-30.json",
+      "note": "Runtime unchanged since the passing typecheck, baseline and private production build. Not rebuilt or served in this repair batch."
+    }
+  }
+}

@@ -1,3 +1,9 @@
+import {prepareHiredNorthernDefense,prepareNorthernOfficerRelief,completeHiredNorthernMission} from './fresh-northern-command.mjs';
+import {prepareFreshTucumanAssault} from './fresh-campaign-route.mjs';
+import {fightNorthernSector} from './northern-route.mjs';
+import {tucumanCombatOrder} from './tucuman-driver.mjs';
+import {cautiousCombatOrder} from './cautious-driver.mjs';
+import {mountainBatteryOrder} from './mountain-battery-driver.mjs';
 import {supplyRouteAmmunition} from './route-ammunition.mjs';
 import {equipOpeningRifles} from './opening-equipment.mjs';
 import {prepareLocalOpening} from './local-opening-care-fixture.mjs';
@@ -38,7 +44,7 @@ export function freshNorthernRoute({onCheckpoint}={}){
  for(const id of [field,support]){s=order(s,{type:'selectSquad',id});s=order(s,{type:'attack',sector:'cordoba',queue:true});}
  for(let hour=0;hour<24&&![field,support].every(id=>s.squads.find(q=>q.id===id)?.journey?.status==='ready');hour++)s=order(s,{type:'wait',hours:1});
  s=order(s,{type:'beginAssault',sector:'cordoba'});assert.equal(s.pendingBattle.squad.length,12);
- for(const sector of ['cordoba','tucuman','salta']){
+ for(const sector of ['cordoba']){
   const support=sector==='tucuman'?prepareNorthernSupport(s,sector):null;
   if(support)s=support.campaign;
   if(!s.pendingBattle){s=finishReloadsBeforeMarch(s);s=marchToFront(s,{type:'attack',sector});s=order(s,{type:'attack',sector});}assert.ok(s.pendingBattle);const request={...s.pendingBattle,hour:s.hour,secondOfHour:s.secondOfHour??0},previous=s.sectorStates[sector];
@@ -77,18 +83,13 @@ export function freshNorthernRoute({onCheckpoint}={}){
   s=supplyRouteAmmunition(s,s.squad).campaign;
   notes.push({...record,fundsBeforeSettlement:before,fundsAfterReplacements:s.resources.treasury,replacements,deaths});onCheckpoint?.(sector,s,notes);
  }
- const paid=s.resources.treasury;s=order(s,{type:'diplomacy',kind:'northPact'});s=order(s,{type:'diplomacy',kind:'partisanSupply'});assert.equal(s.resources.treasury,paid-550);
- s=completeTestTravel(s,{sector:'tucuman'});assert.equal(s.location,'tucuman');assert.equal(s.phase,2);s=order(s,{type:'visitMission',mission:'yatasto'});
- let p=saved({campaign:s,battle:enterSector({...s.pendingBattle,hour:s.hour,secondOfHour:s.secondOfHour??0},s.sceneStates.yatasto)});
- assert.ok(dispatchCampaign(s,{type:'finishMission',battleId:s.pendingBattle.id,sectorState:p.battle,survivors:p.battle.units.filter(u=>u.side==='player')}).lastError);
- for(const npcId of ['yatasto-belgrano','yatasto-san-martin','yatasto-san-martin']){
-  const npc=p.battle.npcs.find(n=>n.id===npcId),actor=p.battle.units.find(u=>u.side==='player'&&u.hp>0&&!u.unconscious),spot=getReachable(p.battle,actor).filter(t=>Math.abs(t.x-npc.x)+Math.abs(t.y-npc.y)===1).sort((a,b)=>a.cost-b.cost)[0];assert.ok(spot,npcId);
-  if(spot.cost)p=tactical(p,{type:'move',unitId:actor.id,x:spot.x,y:spot.y});
-  const campaign=order(p.campaign,{type:'talkNPC',npcId,approach:'mission',unitId:Number(actor.id),sectorState:p.battle});p=saved({campaign,battle:p.battle});
- }
- const finished={type:'finishMission',battleId:p.campaign.pendingBattle.id,sectorState:p.battle,survivors:p.battle.units.filter(u=>u.side==='player')};
- s=saved({campaign:order(p.campaign,finished)}).campaign;assert.ok(dispatchCampaign(s,finished).lastError);
- assert.equal(s.phase,3);assert.equal(s.missions.yatasto.completed,true);assert.equal(s.flags.northPact,true);assert.equal(s.flags.partisanSupply,true);assert.ok(isSupplied(s,'salta'));assert.equal(s.operativeState[1000].alive,false);assert.equal(s.operativeState[10].alive,false);assert.equal(s.operativeState[57].hp,88);assert.ok(!s.recruited.includes(57));assert.equal(s.defeated,false);assert.equal(s.completed,false);assert.equal(s.pendingBattle,null);
+ const defense=fightNorthernSector(prepareHiredNorthernDefense(s),'cordoba',{controller:cautiousCombatOrder});
+ const tucuman=fightNorthernSector(prepareFreshTucumanAssault(defense.campaign),'tucuman',{controller:tucumanCombatOrder});
+ s=tucuman.campaign;notes.push({...tucuman.summary,deaths:deadIds(s),defense:defense.summary});onCheckpoint?.('tucuman',s,notes);
+ const salta=fightNorthernSector(prepareNorthernOfficerRelief(s),'salta',{controller:(battle,unit)=>mountainBatteryOrder(battle,unit,{leaderId:'9',helperId:'none',screenDistance:3})});
+ s=salta.campaign;notes.push({...salta.summary,deaths:deadIds(s)});onCheckpoint?.('salta',s,notes);
+ s=completeHiredNorthernMission(s);
+ assert.equal(s.flags.northPact,true);assert.equal(s.flags.partisanSupply,true);assert.ok(isSupplied(s,'salta'));assert.equal(s.pendingBattle,null);
  const ending={stage:'yatasto',hour:s.hour,second:s.secondOfHour,phase:s.phase,funds:s.resources.treasury,squad:[...s.squad],deaths:deadIds(s)};notes.push(ending);onCheckpoint?.('yatasto',s,notes);
  return {campaign:s,notes,prefix:prefix.notes};
 }

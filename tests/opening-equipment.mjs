@@ -23,7 +23,7 @@ export function equipOpeningRifles(battle,receiverIds){
   }).sort((a,b)=>Number(a.source.side!=='player')-Number(b.source.side!=='player')||a.approach.cost-b.approach.cost||a.source.id.localeCompare(b.source.id));
   const choice=sources[0];
   if(!choice){unfilled.push(receiver.id);continue;}
-  const {source,approach}=choice,incoming=handRecord(source,'primary'),outgoing=receiver.weaponDropped?null:handRecord(receiver,'primary');
+  const {source,approach}=choice,incoming=handRecord(source,'primary'),outgoing=receiver.weaponDropped||!receiver.weapon?null:handRecord(receiver,'primary');
   const previousKeys=new Set(Object.keys(receiver.inventory));
   if(approach.cost)order({type:'move',unitId:receiver.id,...spacePoint(approach)});
   order({type:'loot',unitId:receiver.id,targetId:source.id,item:'primary',count:1});

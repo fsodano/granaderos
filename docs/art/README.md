@@ -14,6 +14,7 @@ systems and their recorded scope.
 - [Skin tones](skin-tones.md) *(workspace)*
 - [Seven sprite families](sprite-families.md)
 - [Tactical sprite rendering quality](sprite-render-quality.md) *(workspace)*
+- [Historical shared-action recovery record](archive/action-completion.md) *(archive)*
 
 See [visual decision records](../adr/README.md) for accepted direction and
 [portrait references](../../assets/portrait-references.md) for historical limits.

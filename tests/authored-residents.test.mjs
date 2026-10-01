@@ -31,7 +31,7 @@ function ready(d=authored()){
 const visit=s=>{const campaign=order(s,{type:'visitSector'});return {campaign,battle:enterSector({...campaign.pendingBattle,hour:campaign.hour},campaign.sectorStates[campaign.location])};};
 const synced=p=>{const n=syncBattleTime(p.campaign,p.battle);assert.equal(n.error,null);return n;};
 function act(p,action){p.battle=actBattle(p.battle,{unitId:'110',...action});assert.equal(p.battle.lastError,null);return synced(p);}
-function approach(p){return synced({...p,battle:approachNPC(p.battle,'110',resident(p.battle).id)});}
+function approach(p){p=act(p,{type:'movement',movement:'run'});return synced({...p,battle:approachNPC(p.battle,'110',resident(p.battle).id)});}
 const leave=p=>{p=synced(p);return order(p.campaign,{type:'leaveSector',battleId:p.campaign.pendingBattle.id,sectorState:p.battle,survivors:p.battle.units.filter(u=>u.side==='player')});};
 const talk=(p,approach='friendly')=>({type:'talkNPC',npcId:resident(p.battle).id,unitId:110,approach,sectorState:p.battle});
 function transfer(p){

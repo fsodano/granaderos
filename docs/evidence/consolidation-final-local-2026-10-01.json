@@ -1,0 +1,381 @@
+{
+  "status": "passed",
+  "node": "22.23.3",
+  "revision": "4938fd79835776a202273b09cf303fc7251ad392",
+  "source_manifest_sha256": "d44fac095e4eae1e8a8dc1c652665f39b989442544abb9a756ddf5e7c84c39f1",
+  "frozen_inputs": 9310,
+  "test_files": 597,
+  "started_at": "2026-10-01T10:18:48.724449+00:00",
+  "gates": [
+    {
+      "name": "partition-selftest",
+      "exit_code": 0,
+      "duration_seconds": 0.583,
+      "log": "/tmp/granaderos-pr139-final-partition-selftest.log",
+      "log_sha256": "62c5c6db8ca41f2e410f80e08a970428ac80bae50277661414b1c14319bdd88c"
+    },
+    {
+      "name": "partition",
+      "exit_code": 0,
+      "duration_seconds": 0.033,
+      "log": "/tmp/granaderos-pr139-final-partition.log",
+      "log_sha256": "60e8828660ff654ea0423cdc9146fc6b4d553f3173260e75e25e8e5f6edea76d"
+    },
+    {
+      "name": "complete-suite",
+      "exit_code": 0,
+      "duration_seconds": 3956.85,
+      "log": "/tmp/granaderos-pr139-final-complete-suite.log",
+      "log_sha256": "5d61d35b6bf6ea87a19a512937a9d6a97d14b8687b65d5067d83642cb98dfd80"
+    },
+    {
+      "name": "docs",
+      "exit_code": 0,
+      "duration_seconds": 0.193,
+      "log": "/tmp/granaderos-pr139-final-docs.log",
+      "log_sha256": "e3923e03434b98220eedc6c14bee82b4b312460f8aafe832484aec390321a15f"
+    },
+    {
+      "name": "reference",
+      "exit_code": 0,
+      "duration_seconds": 0.243,
+      "log": "/tmp/granaderos-pr139-final-reference.log",
+      "log_sha256": "1b69c274d789de9602d4c94a2485b59f709998cc0d34d7d6d9456d16cd195dff"
+    },
+    {
+      "name": "types",
+      "exit_code": 0,
+      "duration_seconds": 2.076,
+      "log": "/tmp/granaderos-pr139-final-types.log",
+      "log_sha256": "618e2b7cc2f862b8b6b986380544b0379d2b322c250298a73c22eb1239b0ee30"
+    },
+    {
+      "name": "build",
+      "exit_code": 0,
+      "duration_seconds": 7.22,
+      "log": "/tmp/granaderos-pr139-final-build.log",
+      "log_sha256": "4dbc6c47db87e19ee8c487c9a643fca8db841f146f59462861a55b63be02ab44"
+    },
+    {
+      "name": "python",
+      "exit_code": 0,
+      "duration_seconds": 1.257,
+      "log": "/tmp/granaderos-pr139-final-python.log",
+      "log_sha256": "bbc570b265ac95f9f3c60ab6f99bee934358dd87972e59e632ae26491f7f0073"
+    },
+    {
+      "name": "native-compile",
+      "exit_code": 0,
+      "duration_seconds": 0.816,
+      "log": "/tmp/granaderos-pr139-final-native-compile.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "native",
+      "exit_code": 0,
+      "duration_seconds": 0.58,
+      "log": "/tmp/granaderos-pr139-final-native.log",
+      "log_sha256": "b3d770b962de42ff28a533221b1d0ae81c2b7e79992a5dded57c5ba6ccbdc1b4"
+    },
+    {
+      "name": "diff",
+      "exit_code": 0,
+      "duration_seconds": 0.174,
+      "log": "/tmp/granaderos-pr139-final-diff.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "all_source_inputs_unchanged": true,
+  "completed_at": "2026-10-01T11:25:01.931758+00:00",
+  "schema": 1,
+  "scope": "Final complete local candidate for PR #139; no runtime or test inputs changed during validation. Documentation and evidence additions are audited separately before commit.",
+  "test_summary": {
+    "tests": 4214,
+    "suites": 0,
+    "pass": 4214,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "duration_ms": 3956817.234167
+  },
+  "frozen_source_manifest": "consolidation-final-source-inputs-2026-10-01.json",
+  "engine_revision": "ddb691318eb3dd0cdc6eab42139739b6d498c645",
+  "engine_clean": true,
+  "production_build": {
+    "version": "0.4.0-dev.1",
+    "id": "d5c4c44efab0",
+    "source": "d5c4c44efab0f355d7103fb9f6a97c8fee5300ff3a5d6a18438ceb74919e5feb",
+    "revision": "4938fd79835776a202273b09cf303fc7251ad392"
+  },
+  "production_export": {
+    "files": 1131,
+    "asset_references": 1031
+  },
+  "python_tests": {
+    "tests": 15,
+    "passed": 15,
+    "failed": 0
+  },
+  "native_rules": "C++17 strict-warning compilation and black-powder assertions pass",
+  "fresh_ending": {
+    "uncached": true,
+    "duration_ms": 2346742.123458,
+    "checkpoints": [
+      {
+        "routeCheckpoint": "coastal-preparation",
+        "hour": 3614,
+        "treasury": 9044
+      },
+      {
+        "routeCheckpoint": "ensenada",
+        "hour": 3615,
+        "treasury": 9294
+      },
+      {
+        "routeCheckpoint": "naval-command",
+        "hour": 3619,
+        "treasury": 9284
+      },
+      {
+        "routeCheckpoint": "coastal-care",
+        "hour": 3627,
+        "treasury": 9990
+      },
+      {
+        "routeCheckpoint": "santa_fe",
+        "hour": 4043,
+        "treasury": 14500
+      },
+      {
+        "routeCheckpoint": "buenos_aires",
+        "hour": 4430,
+        "treasury": 16531
+      },
+      {
+        "routeCheckpoint": "northern-relief",
+        "hour": 7282,
+        "treasury": 32421
+      },
+      {
+        "routeCheckpoint": "tucuman-return",
+        "hour": 7282,
+        "treasury": 32671
+      },
+      {
+        "routeCheckpoint": "salta-return",
+        "hour": 7301,
+        "treasury": 32541
+      },
+      {
+        "routeCheckpoint": "salta-defense",
+        "hour": 7356,
+        "treasury": 24475
+      },
+      {
+        "routeCheckpoint": "salta-defense-care",
+        "hour": 7370,
+        "treasury": 25015
+      },
+      {
+        "routeCheckpoint": "jujuy",
+        "hour": 7412,
+        "treasury": 19260
+      },
+      {
+        "routeCheckpoint": "jujuy-care",
+        "hour": 7427,
+        "treasury": 16350
+      },
+      {
+        "routeCheckpoint": "jujuy-defense",
+        "hour": 7464,
+        "treasury": 12119
+      },
+      {
+        "routeCheckpoint": "humahuaca",
+        "hour": 7500,
+        "treasury": 6273
+      },
+      {
+        "routeCheckpoint": "humahuaca-stabilization",
+        "hour": 7500,
+        "treasury": 6273
+      },
+      {
+        "routeCheckpoint": "buenos_aires-final",
+        "hour": 7559,
+        "treasury": 1783
+      }
+    ],
+    "result": {
+      "victory": {
+        "hour": 7559,
+        "second": 462,
+        "treasury": 1783,
+        "squad": [
+          57,
+          146,
+          147
+        ],
+        "commanderHp": 24,
+        "dead": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          100,
+          101,
+          102,
+          103,
+          104,
+          105,
+          106,
+          107,
+          108,
+          109,
+          110,
+          111,
+          112,
+          113,
+          114,
+          115,
+          116,
+          117,
+          118,
+          119,
+          120,
+          121,
+          122,
+          123,
+          124,
+          125,
+          126,
+          127,
+          128,
+          129,
+          130,
+          131,
+          132,
+          133,
+          134,
+          135,
+          136,
+          137,
+          138,
+          139,
+          140,
+          141,
+          142,
+          143,
+          144,
+          145,
+          1000
+        ]
+      },
+      "battles": [
+        {
+          "sector": "ensenada",
+          "turns": 13,
+          "actions": 671
+        },
+        {
+          "sector": "santa_fe",
+          "turns": 13,
+          "actions": 283
+        },
+        {
+          "sector": "buenos_aires",
+          "turns": 21,
+          "actions": 191
+        },
+        {
+          "sector": "tucuman",
+          "turns": 11,
+          "actions": 103
+        },
+        {
+          "sector": "salta",
+          "turns": 10,
+          "actions": 171
+        },
+        {
+          "sector": "salta",
+          "turns": 19,
+          "actions": 178
+        },
+        {
+          "sector": "jujuy",
+          "turns": 22,
+          "actions": 259
+        },
+        {
+          "sector": "jujuy",
+          "turns": 40,
+          "actions": 622
+        },
+        {
+          "sector": "humahuaca",
+          "turns": 14,
+          "actions": 93
+        },
+        {
+          "sector": "buenos_aires",
+          "turns": 15,
+          "actions": 296
+        }
+      ],
+      "postVictoryCare": {
+        "hours": 0,
+        "dressingsUsed": 0,
+        "dressingsBought": 0,
+        "cost": 0
+      },
+      "continuation": {
+        "hour": 7607,
+        "second": 462,
+        "treasury": 3937,
+        "squad": [
+          57
+        ],
+        "commanderHp": 24,
+        "expired": [
+          146,
+          147
+        ],
+        "payments": [
+          {
+            "hour": 7560,
+            "daily": 1075
+          },
+          {
+            "hour": 7584,
+            "daily": 1079
+          }
+        ]
+      }
+    }
+  },
+  "browser_acceptance": {
+    "candidate_id": "d5c4c44efab0",
+    "game_and_editors_share_build": true,
+    "story_export": {
+      "characters": 61,
+      "canonical_readonly_export": true,
+      "repeated_exports": true,
+      "copy_feedback": true,
+      "saved_draft_preserved": true
+    },
+    "saved_campaign_resumes": true,
+    "loaded_performance": "Pending alpha acceptance; no performance claim from these tests."
+  },
+  "remote_delivery": "Not pushed or merged at the time of this local record."
+}

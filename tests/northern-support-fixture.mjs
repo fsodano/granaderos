@@ -10,10 +10,10 @@ import {supplyRouteAmmunition} from './route-ammunition.mjs';
 
 // Hire a second squad at the controlled reception site, recover actual weapons,
 // buy its missing cartridges, then wait for both real journeys before attacking.
-export function prepareNorthernSupport(start,sector){
+export function prepareNorthernSupport(start,sector,{maxWeeklyPrice=Infinity,preferMarksmanship=false}={}){
  let s=start;
- const field=s.activeSquadId,ids=rosterFor(s).filter(o=>o.id>=100&&s.operativeState[o.id].alive&&!s.recruited.includes(o.id))
-  .sort((a,b)=>contractQuote(s,a,'week').price-contractQuote(s,b,'week').price||a.id-b.id).slice(0,6).map(o=>o.id);
+ const field=s.activeSquadId,ids=rosterFor(s).filter(o=>o.id>=100&&s.operativeState[o.id].alive&&!s.recruited.includes(o.id)&&contractQuote(s,o,'week').price<=maxWeeklyPrice)
+  .sort((a,b)=>(preferMarksmanship?b.marksmanship-a.marksmanship:0)||contractQuote(s,a,'week').price-contractQuote(s,b,'week').price||a.id-b.id).slice(0,6).map(o=>o.id);
  assert.equal(ids.length,6,'six living replacements must remain available');
  const cost=ids.reduce((sum,id)=>sum+contractQuote(s,rosterFor(s).find(o=>o.id===id),'week').price,0),funds=s.resources.treasury;
  for(const id of ids)s=order(s,{type:'recruitCivic',id,term:'week',destination:s.location});

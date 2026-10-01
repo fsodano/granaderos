@@ -9,13 +9,14 @@ import {actBattle} from '../game/tactical.js';
 import {enterSector} from '../game/world.js';
 import {prepareCampaignBattle} from '../game/battle-handoff.js';
 import {syncBattleTime} from '../game/time.js';
+import {runCivilianPhase} from '../game/npc-ai.js';
 import {advanceCivilianBleeding,applyCivilianHarm} from '../game/civilian-harm.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 const order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,n.lastError);return n;};
-function captured({custodySupplies=0,sameSectorRescue=false}={}){
+function captured({custodySupplies=0,sameSectorRescue=false,captiveEnergy=100}={}){
  let s=initialCampaign();s=order(s,{type:'recruitCivic',id:112,term:'week'});s.operativeState[112].location=s.location;s=order(s,{type:'purchaseMedicalSupplies',operativeId:112,quantity:2});s=order(s,{type:'squad',ids:[3,4,10]});s.operativeState[112].location='buenos_aires';s.location='humahuaca';s.squads[0].location=s.location;s.sectors.humahuaca.owner='patriot';
  launchEnemyGroup(s,'north','humahuaca',{immediate:true});s=order(s,{type:'wait',hours:1});s=order(s,{type:'respondToEncounter',groupId:s.pendingEncounter.groupId,choice:'tactical'});
- let b=enterSector(s.pendingBattle);const u=b.units.find(u=>Number(u.id)===3);u.hp=11;u.bleeding=2;u.bandaged=20;u.unconscious=true;u.stance='prone';u.movementMode='prone';
+ let b=enterSector(s.pendingBattle);const u=b.units.find(u=>Number(u.id)===3);u.hp=11;u.energy=captiveEnergy;u.bleeding=2;u.bandaged=20;u.unconscious=true;u.stance='prone';u.movementMode='prone';
  for(const u of b.units.filter(u=>u.side==='player')){u.surrendered=true;u.ap=0;u.medkits=custodySupplies;refreshMilitaryCondition(u);}b.status='defeat';
  s=order(s,{type:'battleResult',battleId:s.pendingBattle.id,outcome:'defeat',sectorState:b,survivors:b.units.filter(u=>u.side==='player')});
  for(const id of ['cordoba','tucuman','salta','jujuy'])s.sectors[id].owner='patriot';s.location=sameSectorRescue?'humahuaca':'jujuy';s.squad=[112];s.squads[0].members=[112];s.squads[0].location=s.location;
@@ -28,6 +29,24 @@ test('real capture deploys equipment-free prisoners and full saves retain wounds
  assert.ok(n);assert.equal(n.hp,11);assert.equal(n.bleeding,2);assert.equal(n.weapon,undefined);assert.equal(n.inventory,undefined);
  const restored=decodeSave(encodeSave(campaign,battle));assert.equal(restored.campaign.operativeState[3].hp,11);assert.deepEqual(restored.battle.npcs,battle.npcs);
  assert.deepEqual(restoreCampaign(serializeCampaign(campaign)),campaign);
+});
+test('loaded prisoner breath recovery keeps campaign health and save receipts in agreement',()=>{
+ let {campaign,battle}=start({captiveEnergy:30});
+ const id=battle.npcs.find(n=>n.detention?.operativeId===3).id;
+ const before=structuredClone(campaign.operativeState[3]);
+ for(const expected of [40,50]){
+  runCivilianPhase(battle);
+  assert.equal(battle.npcs.find(n=>n.id===id).energy,expected);
+  ({campaign,battle}=sync(campaign,battle));
+  assert.equal(campaign.operativeState[3].energy,expected);
+  assert.equal(campaign.detentionRecords[id].npc.energy,expected);
+  for(const key of ['hp','bleeding','bandaged','captured','capturedAt','capturedSector'])assert.equal(campaign.operativeState[3][key],before[key]);
+  const loaded=decodeSave(encodeSave(campaign,battle));
+  assert.deepEqual(sync(loaded.campaign,loaded.battle).campaign,campaign);
+  ({campaign,battle}=loaded);
+ }
+ const forged=structuredClone(battle);forged.npcs.find(n=>n.id===id).energy=101;
+ assert.ok(syncBattleTime(campaign,forged).error);
 });
 test('prisoner bleeding settles once and a missing or impersonated prisoner rejects the whole report',()=>{
  let {campaign,battle}=start();const npc=battle.npcs.find(n=>n.detention?.operativeId===3);advanceCivilianBleeding(battle,npc,2);

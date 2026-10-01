@@ -21,8 +21,9 @@ export function planDetentionHealth(operativeId,record,npc,acknowledged=0){
  need(record.hp>0&&record.alive!==false||npc.hp===0,'Un prisionero fallecido no puede volver al servicio.');
  if(npc.hp===0)need(civilianIncidents(npc).some(event=>event.kind==='death'),'Falta el registro de la muerte del prisionero.');
  // Do not round fractional damage upward: that would create health at each
- // repeated report. Energy recovery is settled by its own campaign system.
- const hp=npc.hp,energy=Math.min(record.energy??100,npc.energy);
+ // repeated report. Loaded prisoners recover breath in the civilian phase;
+ // its validated value must match the receipt and the service record.
+ const hp=npc.hp,energy=npc.energy;
  const bleeding=hp>0?(npc.bleeding??0):0;
  const bandaged=Math.min(npc.bandaged??record.bandaged??0,record.maxHp-hp);
  return {health:{hp,energy,bleeding,bandaged,alive:hp>0,unconscious:isUnconscious({hp,energy}),recoveryHours:0},hpRestored:restored};

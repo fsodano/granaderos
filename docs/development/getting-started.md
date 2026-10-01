@@ -60,6 +60,27 @@ node --test tests/save-web.test.mjs
 
 The first command checks campaign and economy rules. The second checks save behavior. Run broader checks when the change affects shared systems. Report failures, skipped cases and the exact scope checked.
 
+### Before pushing
+
+Keep small fixes local. A push to an open pull request starts a paid GitHub Actions run. Use focused local tests to find and fix failures. Then run all checks below on the complete candidate before pushing it:
+
+```sh
+node --test tools/test-shard-selftest.mjs
+node tools/test-shard.mjs --check
+node --test --test-concurrency=2 tests/*.test.mjs
+npm run audit:docs
+npm run audit:baseline
+npm run typecheck
+npm run build
+git diff --check
+```
+
+Each command must finish successfully. The full test command includes every test file used by the four CI groups and limits concurrent test files to two. Record the source revision, test totals, failures and skips. A focused test result does not replace this full run. If a command fails, fix the problem locally; do not push to use CI as a diagnostic tool.
+
+Run the build in a private candidate folder if a preview serves this checkout's output. The build replaces both `web/dist/` and root `dist/`. Check the affected game or editor behavior in the browser before delivery. Keep the user's preview origin and saved progress intact.
+
+After all local checks pass on the final candidate, push the completed batch once. Keep required GitHub checks enabled and wait for them before merging. If the candidate changes after verification, repeat the affected checks and run the full final checks before the next push. Do not claim a complete campaign or smooth rendering from build and unit-test results alone.
+
 The [published progress ledger](../verification/published-progress.md) records delivered scope and remaining acceptance work on `main`. The [development-workspace acceptance record](../verification/gameplay-completion.md) and [JA2 parity audit](../verification/ja2-parity-audit.md) describe a separate integration checkout. Their results do not establish that the published checkout has those features or passes those checks.
 
 Documentation link checks and `git diff --check` verify documentation structure and formatting. They do not establish game health, browser behavior or a successful campaign. Automated scenarios also do not replace a complete gameplay acceptance run.

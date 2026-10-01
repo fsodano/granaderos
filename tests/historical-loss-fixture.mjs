@@ -2,24 +2,19 @@ import {scriptedWithdrawal} from './scripted-battle-report.mjs';
 import assert from 'node:assert/strict';
 import {dispatchCampaign,rosterFor} from '../game/campaign.js';
 import {enterSector} from '../game/world.js';
-import {actBattle,endTurn,getReachable} from '../game/tactical.js';
+import {actBattle,endTurn} from '../game/tactical.js';
+import {approachNPC} from './approach-npc.mjs';
 import {order,saved,sync} from './local-contract-fixture.mjs';
 import {freshNorthernRoute} from './fresh-northern-fixture.mjs';
-import {fight} from './cuyo-route-driver.mjs';
+import {fight} from './opening-driver.mjs';
+import {coastalBatteryController} from './coastal-command-driver.mjs';
+import {assembleCreatedCuyo,prepareCreatedMendozaAssault} from './created-cuyo-route.mjs';
 
 export function freshMendozaLoss(){
- let s=freshNorthernRoute().campaign;
- for(const sector of Object.keys(s.sectors).filter(id=>s.sectors[id].owner==='patriot'))s=order(s,{type:'fortify',sector});
- s=order(s,{type:'travel',sector:'cordoba'});s=order(s,{type:'recruitCivic',id:108,term:'week',destination:'cordoba'});s=order(s,{type:'wait',hours:6});
- for(const id of s.squad)for(const type of ['resupply','repairWeapon']){const n=dispatchCampaign(s,{type,operativeId:id});if(!n.lastError)s=n;}
- for(const id of s.squad){
-  const op=rosterFor(s).find(o=>o.id===id);if(op.weapon===1802)continue;
-  s=order(s,{type:'purchaseEquipment',item:'firearm-1801',quantity:1});const instance=s.armoryItems.find(i=>i.itemMetadata?.contentWeapon?.template===1801);assert.ok(instance);
-  s=order(s,{type:'equip',operativeId:id,slot:'weapon',itemId:'firearm-1801',instanceId:instance.id});
- }
- s=saved({campaign:s}).campaign;assert.equal(s.hour,120);assert.equal(s.resources.treasury,3202);assert.equal(s.operativeState[2].alive,true);
- s=order(s,{type:'attack',sector:'mendoza'});const request={...s.pendingBattle,hour:s.hour,secondOfHour:s.secondOfHour??0};
- const {battle,orders,actions}=fight(request,s.sectorStates.mendoza,{scoutCostWeight:.01,avoidCivilians:true});assert.equal(battle.status,'victory');assert.ok(battle.npcs.find(n=>n.operativeId===2).hp>0);
+ let s=prepareCreatedMendozaAssault(assembleCreatedCuyo(freshNorthernRoute().campaign));
+ assert.equal(s.operativeState[2].alive,true);
+ const request={...s.pendingBattle,hour:s.hour,secondOfHour:s.secondOfHour??0};
+ const {battle,orders,actions}=fight(request,s.sectorStates.mendoza,{controller:coastalBatteryController(enterSector(request,s.sectorStates.mendoza),{sharedArtillerySight:true})});assert.equal(battle.status,'victory');assert.ok(battle.npcs.find(n=>n.operativeId===2).hp>0);
  let p={campaign:s,battle:enterSector(request,s.sectorStates.mendoza)},deathCheckpoint;
  const execute=a=>{const battle=a.type==='endTurn'?endTurn(p.battle):actBattle(p.battle,a);assert.equal(battle.lastError,null);p=sync({campaign:p.campaign,battle});};
  for(let i=0;i<orders.length;i++){execute(orders[i]);if(i===Math.floor(orders.length/2))p=saved(p);}
@@ -28,9 +23,11 @@ export function freshMendozaLoss(){
  // Use actual movement and fatal orders, without inserting a prepared casualty.
  const engineer=()=>p.battle.npcs.find(n=>n.operativeId===2);
  const actor=p.battle.units.filter(u=>u.side==='player'&&u.hp>0&&!u.unconscious&&!u.routed).sort((a,b)=>b.hp-a.hp)[0];assert.ok(actor);
+ if(actor.stance!=='standing')execute({type:'stance',unitId:actor.id,stance:'standing'});
+ if(p.battle.units.find(u=>u.id===actor.id).activeSlot!=='blade')execute({type:'weapon',unitId:actor.id,slot:'blade'});
  for(let i=0;i<20&&engineer().hp>0;i++){
-  const spot=getReachable(p.battle,actor.id).filter(t=>Math.abs(t.x-engineer().x)+Math.abs(t.y-engineer().y)===1).sort((a,b)=>a.cost-b.cost)[0];assert.ok(spot);if(spot.cost)execute({type:'move',unitId:actor.id,x:spot.x,y:spot.y});
-  const attempt=actBattle(p.battle,{type:'melee',unitId:actor.id,targetId:engineer().id});if(!attempt.lastError)p=sync({campaign:p.campaign,battle:attempt});
+  p=sync({campaign:p.campaign,battle:approachNPC(p.battle,actor.id,engineer().id)});
+  execute({type:'melee',unitId:actor.id,targetId:engineer().id,targetKind:'npc'});
  }
  assert.equal(engineer().hp,0);deathCheckpoint=saved(p);assert.ok(deathCheckpoint.campaign.defeated);
  s=saved({campaign:order(p.campaign,{type:'battleResult',battleId:request.id,outcome:'victory',sectorState:p.battle,survivors:p.battle.units.filter(u=>u.side==='player')})}).campaign;

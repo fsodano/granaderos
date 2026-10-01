@@ -1,9 +1,16 @@
+import {prepareCreatedCapitalReturn} from './created-capital-return.mjs';
+import {prepareSurvivorMarch} from './survivor-return-route.mjs';
+import {stagedBatteryController} from './staged-battery-driver.mjs';
+import {stableCrewController} from './stable-crew-driver.mjs';
+import {enterSector} from '../game/world.js';
+import {withdrawCommandToRear,rejoinCommandAfterExit,deployHighPassBattery} from './command-reserve-driver.mjs';
+import {survivorBatteryController} from './forward-survivor-battery.mjs';
+import {coastalSearchController} from './coastal-search-driver.mjs';
 import {artilleryCount} from '../game/economy.js';
-import {deployBatteryFlanks} from './battery-deployment-driver.mjs';
-import {prepareFinalAssault,reinforceFinalColumn,recoverFinalVeterans,restoreFinalMorale,supplyFinalGrenades} from './final-campaign-route.mjs';
-import {coastalCommandOrder,blockadeCommandOrder,santaFeBatteryOrder,humahuacaBatteryOrder} from './coastal-command-driver.mjs';
-import {mountainBatteryOrder,closeMountainBatteryOrder} from './mountain-battery-driver.mjs';
-import {prepareFreshTucumanRecapture,prepareFreshSaltaRecapture,prepareFreshJujuyAssault,prepareFreshFinalColumn,prepareFreshHumahuacaAssault} from './fresh-northern-return-route.mjs';
+import {deployInfantryLine} from './battery-deployment-driver.mjs';
+import {coastalBatteryController,blockadeCommandOrder} from './coastal-command-driver.mjs';
+import {mountainBatteryOrder,closeMountainBatteryOrder,mendozaBatteryOrder,assignedMountainBatteryController} from './mountain-battery-driver.mjs';
+import {prepareSurvivorHumahuaca} from './forward-survivor-final.mjs';
 import {prepareFreshCoastalCommand,prepareFreshEnsenadaAssault,recruitFreshNavalCommand,recoverFreshPort,prepareFreshBlockadeAssault,prepareFreshSantaFeAssault} from './fresh-coastal-route.mjs';
 import {prepareFreshUspallataAssault,recoverFreshUspallata,prepareFreshLosPatosAssault,completeFreshAndesPreparation} from './fresh-mountain-route.mjs';
 import {prepareFreshCuyoDefense,prepareFreshMendozaAssault,startFreshFoundry,prepareFreshArmyFunding,completeFreshArmyFunding} from './fresh-cuyo-route.mjs';
@@ -83,7 +90,10 @@ test('a Retiro-only campaign retains paid recovery and real losses through coord
  assert.deepEqual(cordoba.campaign,beforeCare);
  assert.equal(healed.location,cordoba.campaign.location,'local medical care does not require a retreat to Retiro');
  assert.ok(healed.hour>cordoba.campaign.hour);
- for(const id of cordoba.campaign.recruited.filter(id=>{const r=cordoba.campaign.operativeState[id];return r.alive&&r.hp<r.maxHp;})){assert.equal(healed.operativeState[id].hp,healed.operativeState[id].maxHp);assert.equal(healed.operativeState[id].bleeding,0);}
+ for(const id of cordoba.campaign.recruited.filter(id=>{const r=cordoba.campaign.operativeState[id];return r.alive&&r.hp<r.maxHp;})){
+  if(healed.operativeState[id].alive){assert.equal(healed.operativeState[id].hp,healed.operativeState[id].maxHp);assert.equal(healed.operativeState[id].bleeding,0);}
+  else assert.ok(careBattles.some(battle=>battle.units.some(unit=>unit.id===String(id)&&unit.side==='player'&&unit.hp<=0)),`patient ${id} can die only in the actual hospital defense`);
+ }
  for(const [id,record]of Object.entries(cordoba.campaign.operativeState))if(!record.alive)assert.equal(healed.operativeState[id].alive,false);
  assert.ok(careEvents[0].doctors.length>0);
  for(const id of careEvents[0].doctors)assert.ok(healed.contracts[id].paid>0,'every physician works under an actual paid contract');
@@ -94,10 +104,10 @@ test('a Retiro-only campaign retains paid recovery and real losses through coord
  assert.ok(healed.resources.treasury>=0);
  // The real counterattack can arrive during care at another location. Do
  // not wait for a second invasion after that same defense has already won.
- const defense=careBattles.length?{campaign:healed}:fightNorthernSector(prepareFreshCordobaDefense(healed),'cordoba',{controller:northernCombatOrder});
+ const defense=careBattles.length?{campaign:healed}:fightNorthernSector(prepareFreshCordobaDefense(healed),'cordoba',{controller:cautiousCombatOrder});
  assert.equal(defense.campaign.sectors.cordoba.owner,'patriot');
  assert.equal(defense.campaign.pendingEncounter,null);
- const beforeTucuman=structuredClone(defense.campaign),tucumanReady=prepareFreshTucumanAssault(defense.campaign);
+ const beforeTucuman=structuredClone(defense.campaign),tucumanReady=prepareFreshTucumanAssault(defense.campaign,{artillerySupport:true});
  assert.deepEqual(defense.campaign,beforeTucuman);
  const survivors=beforeTucuman.recruited.filter(id=>beforeTucuman.operativeState[id].alive&&!beforeTucuman.operativeState[id].captured);
  for(const id of survivors){
@@ -107,7 +117,7 @@ test('a Retiro-only campaign retains paid recovery and real losses through coord
  }
  for(const unit of tucumanReady.pendingBattle.squad){assert.equal(unit.hp,unit.maxHp);assert.equal(unit.bleeding,0);assert.ok(unit.loaded>0,'finish reloading before the march');assert.ok(unit.ammo>0,'carry compatible reserve ammunition');}
  for(const [id,record]of Object.entries(beforeTucuman.operativeState))if(!record.alive)assert.equal(tucumanReady.operativeState[id].alive,false);
- const tucuman=fightNorthernSector(tucumanReady,'tucuman',{controller:tucumanCombatOrder});
+ const tucuman=fightNorthernSector(tucumanReady,'tucuman',{controller:coastalBatteryController(enterSector(tucumanReady.pendingBattle,tucumanReady.sectorStates.tucuman),{sharedArtillerySight:true})});
  assert.equal(tucuman.campaign.sectors.tucuman.owner,'patriot');
  assert.ok(tucuman.campaign.resources.treasury>=0);
  assert.equal(tucuman.campaign.completed,false);
@@ -118,6 +128,7 @@ test('a Retiro-only campaign retains paid recovery and real losses through coord
  }
  for(const [id,r]of Object.entries(tucuman.campaign.operativeState))if(!r.alive)assert.equal(relief.operativeState[id].alive,false);
  assert.ok(relief.recruited.includes(10)&&relief.recruited.includes(4)&&relief.recruited.includes(1000));
+ // This relief fixture uses the legacy questionnaire, which still costs 300.
  assert.equal(relief.contracts[1000].paid,300);
  assert.ok(relief.hour>tucuman.campaign.hour);
  const reunited=reuniteFreshNorthernSquad(relief);
@@ -125,7 +136,8 @@ test('a Retiro-only campaign retains paid recovery and real losses through coord
  assert.ok(reunited.squad.includes(1));assert.ok(reunited.squad.every(id=>reunited.operativeState[id].alive));
  assert.equal(reunited.sectors.cordoba.owner,'patriot');
  for(const [id,r]of Object.entries(relief.operativeState))if(!r.alive)assert.equal(reunited.operativeState[id].alive,false);
- const salta=fightNorthernSector(prepareFreshSaltaAssault(reunited),'salta',{controller:tucumanCombatOrder});
+ const saltaReady=prepareFreshSaltaAssault(reunited);
+ const salta=fightNorthernSector(saltaReady,'salta',{controller:coastalBatteryController(enterSector(saltaReady.pendingBattle,saltaReady.sectorStates.salta),{sharedArtillerySight:true})});
  assert.equal(salta.campaign.sectors.salta.owner,'patriot');
  assert.equal(salta.campaign.completed,false);
  const handoverBattles=[],yatasto=finishFreshNorthernCampaign(salta.campaign,{report:event=>{if(event.event==='battleFinished')handoverBattles.push(event);}});
@@ -148,9 +160,16 @@ test('a Retiro-only campaign retains paid recovery and real losses through coord
  const mendozaReady=prepareFreshMendozaAssault(defended.campaign);
  assert.ok(mendozaReady.pendingBattle.squad.every(unit=>mendozaReady.operativeState[unit.id].alive));
  assert.ok(mendozaReady.pendingBattle.squad.every(unit=>mendozaReady.contracts[unit.id].expiresAt===null||mendozaReady.contracts[unit.id].expiresAt>mendozaReady.hour));
- const mendoza=fightNorthernSector(mendozaReady,'mendoza',{controller:cautiousCombatOrder});
+ const mendoza=fightNorthernSector(mendozaReady,'mendoza',{controller:coastalBatteryController(enterSector(mendozaReady.pendingBattle,mendozaReady.sectorStates.mendoza),{sharedArtillerySight:true})});
  assert.equal(mendoza.campaign.sectors.mendoza.owner,'patriot');
- const foundry=startFreshFoundry(mendoza.campaign);
+ // The day hire completed his assault assignment. Release him through the
+ // public command before a long foundry wait that cannot fund his renewal.
+ const supportReleased=dispatchCampaign(mendoza.campaign,{type:'dismiss',id:142});
+ assert.equal(supportReleased.lastError,null);
+ assert.equal(supportReleased.resources.treasury,mendoza.campaign.resources.treasury);
+ assert.equal(supportReleased.operativeState[142].alive,true);
+ assert.equal(supportReleased.recruited.includes(142),false);
+ const foundry=startFreshFoundry(supportReleased);
  assert.equal(foundry.flags.foundry,true);assert.equal(foundry.flags.emancipation,true);
  assert.ok(foundry.recruited.includes(2)&&foundry.recruited.includes(7));
  assert.equal(foundry.phase,3);assert.equal(foundry.completed,false);
@@ -163,59 +182,70 @@ test('a Retiro-only campaign retains paid recovery and real losses through coord
  assert.equal(initialArmy.flags.armyFunded,false);assert.equal(artilleryCount(initialArmy),2);
  assert.equal(army.flags.armyFunded,true);assert.equal(artilleryCount(army),3);
  assert.equal(army.phase,3);assert.equal(army.completed,false);
- const passReady=prepareFreshUspallataAssault(army);
- const passMedic=passReady.pendingBattle.squad[1].id;
- const pass=fightNorthernSector(passReady,'uspallata',{controller:(battle,unit)=>mountainBatteryOrder(battle,unit,{helperId:String(passMedic),screenDistance:3})});
+ const passReady=prepareFreshUspallataAssault(army,{guns:3});
+ const pass=fightNorthernSector(passReady,'uspallata',{controller:coastalBatteryController(enterSector(passReady.pendingBattle,passReady.sectorStates.uspallata),{sharedArtillerySight:true})});
  assert.equal(pass.campaign.sectors.uspallata.owner,'patriot');
  for(const [id,record]of Object.entries(army.operativeState))if(!record.alive)assert.equal(pass.campaign.operativeState[id].alive,false);
  const passRecovery=recoverFreshUspallata(pass.campaign);
  assert.equal(passRecovery.phase,3);assert.equal(passRecovery.completed,false);
  for(const [id,record]of Object.entries(pass.campaign.operativeState))if(!record.alive)assert.equal(passRecovery.operativeState[id].alive,false);
  for(const id of pass.campaign.recruited.filter(id=>pass.campaign.operativeState[id].alive&&pass.campaign.operativeState[id].location==='uspallata')){assert.equal(passRecovery.operativeState[id].alive,true);assert.equal(passRecovery.operativeState[id].hp,passRecovery.operativeState[id].maxHp);}
- const patosReady=prepareFreshLosPatosAssault(passRecovery),patosMedic=patosReady.pendingBattle.squad[1].id;
- const patos=fightNorthernSector(patosReady,'los_patos',{controller:(battle,unit)=>mountainBatteryOrder(battle,unit,{helperId:String(patosMedic),screenDistance:3})});
+ const patosReady=prepareFreshLosPatosAssault(passRecovery);
+ const patos=fightNorthernSector(patosReady,'los_patos',{controller:coastalBatteryController(enterSector(patosReady.pendingBattle,patosReady.sectorStates.los_patos),{sharedArtillerySight:true})});
  assert.equal(patos.campaign.sectors.los_patos.owner,'patriot');
  const andes=completeFreshAndesPreparation(patos.campaign);
  const coastal=prepareFreshCoastalCommand(andes);assert.equal(coastal.location,'retiro');assert.ok(coastal.squad.includes(3));
- const port=fightNorthernSector(prepareFreshEnsenadaAssault(coastal),'ensenada',{controller:coastalCommandOrder});
+ const portReady=prepareFreshEnsenadaAssault(coastal);
+ const portDeployment=withdrawCommandToRear(enterSector(portReady.pendingBattle,portReady.sectorStates.ensenada),57,'buenos_aires');
+ const port=fightNorthernSector(portReady,'ensenada',{deploy:portDeployment,controller:coastalSearchController(portDeployment(enterSector(portReady.pendingBattle,portReady.sectorStates.ensenada,{placement:true})))});
  assert.equal(port.campaign.sectors.ensenada.owner,'patriot');
- const navy=recruitFreshNavalCommand(port.campaign);assert.equal(navy.completed,false);
+ assert.equal(port.campaign.operativeState[57].location,'buenos_aires');
+ const navy=recruitFreshNavalCommand(rejoinCommandAfterExit(port.campaign,57,'ensenada'));assert.equal(navy.completed,false);
  const restedNavy=recoverFreshPort(navy);
  const portSurvivors=navy.recruited.filter(id=>navy.operativeState[id].alive&&['ensenada','buenos_aires'].includes(navy.operativeState[id].location));
  for(const id of portSurvivors){assert.ok(restedNavy.operativeState[id].alive);assert.equal(restedNavy.operativeState[id].bleeding,0);assert.equal(restedNavy.operativeState[id].hp,restedNavy.operativeState[id].maxHp);}
- const blockade=fightNorthernSector(prepareFreshBlockadeAssault(restedNavy),'buenos_aires',{controller:blockadeCommandOrder,report:r=>console.log(JSON.stringify(r))});
+ let blockade={campaign:restedNavy};
+ if(restedNavy.sectors.buenos_aires.owner!=='patriot'){
+  const blockadeReady=prepareFreshBlockadeAssault(restedNavy);
+  blockade=fightNorthernSector(blockadeReady,'buenos_aires',{controller:tucumanCombatOrder,deploy:deployInfantryLine});
+ }
  assert.equal(blockade.campaign.blockade,false);
  assert.equal(blockade.campaign.operativeState[57].alive,true);
  for(const [id,record]of Object.entries(restedNavy.operativeState))if(!record.alive)assert.equal(blockade.campaign.operativeState[id].alive,false);
- const santaFe=fightNorthernSector(prepareFreshSantaFeAssault(blockade.campaign),'santa_fe',{controller:santaFeBatteryOrder,report:r=>console.log(JSON.stringify(r))});
+ const santaFeReady=prepareFreshSantaFeAssault(blockade.campaign);
+ const santaFe=fightNorthernSector(santaFeReady,'santa_fe',{controller:coastalBatteryController(enterSector(santaFeReady.pendingBattle,santaFeReady.sectorStates.santa_fe),{sharedArtillerySight:true}),report:r=>console.log(JSON.stringify(r))});
  assert.equal(santaFe.campaign.sectors.santa_fe.owner,'patriot');assert.ok(santaFe.campaign.operativeState[57].alive);
  assert.equal(santaFe.campaign.completed,false);
- const recaptured=fightNorthernSector(prepareFreshTucumanRecapture(santaFe.campaign),'tucuman',{controller:santaFeBatteryOrder,report:r=>console.log(JSON.stringify(r))});
+ // The later naval occupation can block the road even while the city flag
+ // remains friendly. Clear it with the real living rear guard and field crew.
+ let returnStart=santaFe.campaign;
+ if(returnStart.blockade){
+  returnStart=fightNorthernSector(prepareCreatedCapitalReturn(returnStart),'buenos_aires',{controller:stagedBatteryController()}).campaign;
+ }
+ assert.equal(returnStart.blockade,false);
+ const recaptured=fightNorthernSector(prepareSurvivorMarch(returnStart,{staging:'cordoba',target:'tucuman'}),'tucuman',{controller:stableCrewController(),report:r=>console.log(JSON.stringify(r))});
  assert.equal(recaptured.campaign.sectors.tucuman.owner,'patriot');assert.equal(recaptured.campaign.defeated,false);
  assert.ok(recaptured.campaign.operativeState[57].alive);
  for(const [id,record]of Object.entries(santaFe.campaign.operativeState))if(!record.alive)assert.equal(recaptured.campaign.operativeState[id].alive,false);
- const returnedSalta=fightNorthernSector(prepareFreshSaltaRecapture(recaptured.campaign),'salta',{controller:santaFeBatteryOrder,report:r=>console.log(JSON.stringify(r))});
+ const returnedSalta=fightNorthernSector(prepareSurvivorMarch(recaptured.campaign,{staging:'tucuman',target:'salta'}),'salta',{controller:stableCrewController(),report:r=>console.log(JSON.stringify(r))});
  assert.equal(returnedSalta.campaign.sectors.salta.owner,'patriot');
- const jujuy=fightNorthernSector(prepareFreshJujuyAssault(returnedSalta.campaign),'jujuy',{controller:santaFeBatteryOrder});
+ const jujuy=fightNorthernSector(prepareSurvivorMarch(returnedSalta.campaign,{staging:'salta',target:'jujuy'}),'jujuy',{controller:stableCrewController()});
  assert.equal(jujuy.campaign.sectors.jujuy.owner,'patriot');
  assert.equal(jujuy.campaign.operativeState[57].alive,true);
  for(const [id,record]of Object.entries(returnedSalta.campaign.operativeState))if(!record.alive)assert.equal(jujuy.campaign.operativeState[id].alive,false);
  assert.equal(jujuy.campaign.completed,false);
- let finalColumn=prepareFreshFinalColumn(jujuy.campaign);
- // Strategic time continues during paid recovery. Resolve the actual new
- // occupation instead of attempting friendly travel through enemy territory.
- if(finalColumn.sectors.jujuy.owner!=='patriot'){
-  const reinforced=reinforceFinalColumn(finalColumn);
-  const counterattack=fightNorthernSector(prepareFinalAssault(reinforced.campaign,{staging:'salta',target:'jujuy',fieldIds:reinforced.fieldIds}),'jujuy',{controller:santaFeBatteryOrder,report:r=>console.log(JSON.stringify(r))});
-  finalColumn=supplyFinalGrenades(restoreFinalMorale(recoverFinalVeterans(counterattack.campaign)));
-  assert.equal(finalColumn.sectors.jujuy.owner,'patriot');
-  assert.equal(finalColumn.operativeState[57].alive,true);
- }
- if(finalColumn.sectors.tucuman.owner!=='patriot'){
-  finalColumn=fightNorthernSector(prepareFinalAssault(finalColumn,{staging:'cordoba',target:'tucuman'}),'tucuman',{controller:humahuacaBatteryOrder,deploy:deployBatteryFlanks,report:r=>console.log(JSON.stringify(r))}).campaign;
-  assert.equal(finalColumn.enemyGroups.find(g=>g.id==='enemy-group-11')?.status,'defeated');
- }
- const humahuaca=fightNorthernSector(prepareFreshHumahuacaAssault(finalColumn),'humahuaca',{controller:humahuacaBatteryOrder});
+ // The earlier battles determine the actual surviving final column. Keep
+ // those soldiers at Jujuy while a real rear courier brings unused guns.
+ const finalEvents=[],humahuacaReady=prepareSurvivorHumahuaca(jujuy.campaign,{report:event=>finalEvents.push(event)});
+ const finalColumn=finalEvents.find(event=>event.event==='survivorHumahuacaReady');assert.ok(finalColumn);
+ assert.equal(humahuacaReady.operativeState[57].location,'cordoba');
+ assert.equal(humahuacaReady.sectors.tucuman.owner,'patriot');assert.equal(humahuacaReady.sectors.salta.owner,'patriot');
+ assert.deepEqual(humahuacaReady.pendingBattle.artillery.filter(gun=>!gun.stationed).map(gun=>gun.type),['field8','swivel']);
+ for(const unit of humahuacaReady.pendingBattle.squad){assert.ok(jujuy.campaign.operativeState[unit.id].alive);assert.equal(unit.hp,unit.maxHp);assert.equal(unit.bleeding,0);}
+ const humahuaca=fightNorthernSector(humahuacaReady,'humahuaca',{
+  controller:survivorBatteryController({reserveId:finalColumn.reserve,lightId:finalColumn.light,heavyIds:finalColumn.field.filter(id=>id!==finalColumn.reserve&&id!==finalColumn.light)}),
+  deploy:battle=>deployHighPassBattery(battle,{reserveId:finalColumn.reserve,lightId:finalColumn.light}),
+ });
  assert.equal(humahuaca.campaign.sectors.humahuaca.owner,'patriot');
  assert.equal(humahuaca.campaign.operativeState[57].alive,true);
  for(const [id,record]of Object.entries(jujuy.campaign.operativeState))if(!record.alive)assert.equal(humahuaca.campaign.operativeState[id].alive,false);
@@ -231,8 +261,8 @@ test('a Retiro-only campaign retains paid recovery and real losses through coord
  for(const [id,record]of Object.entries(andes.operativeState))if(!record.alive)assert.equal(navy.operativeState[id].alive,false);
  assert.equal(andes.phase,4);assert.ok(andes.recruited.includes(57));assert.equal(andes.completed,false);
  assert.ok(['mendoza','uspallata','los_patos'].every(id=>andes.sectors[id].owner==='patriot'&&andes.sectors[id].fort>=1));
- for(const id of [147,143,118])assert.equal(andes.operativeState[id].alive,false);
- for(const id of [7,8,135])assert.equal(andes.operativeState[id].alive,true);
+ for(const unit of patos.summary.units.filter(u=>u.side==='player'&&u.hp<=0))assert.equal(andes.operativeState[unit.id].alive,false,'actual mountain casualties remain dead');
+ assert.ok(andes.squad.some(id=>andes.operativeState[id].alive&&id!==57),'a living envoy accompanies the recruited commander');
  for(const [id,record]of Object.entries(passRecovery.operativeState))if(!record.alive)assert.equal(andes.operativeState[id].alive,false);
  for(const [id,record]of Object.entries(army.operativeState))if(!record.alive)assert.equal(passRecovery.operativeState[id].alive,false);
  for(const [id,record]of Object.entries(foundry.operativeState))if(!record.alive)assert.equal(army.operativeState[id].alive,false);

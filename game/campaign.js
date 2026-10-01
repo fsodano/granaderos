@@ -658,7 +658,7 @@ export function dispatchCampaign(previous,action){
         const market=merchantStatus(s,null,isSupplied);requireThat(market.available,market.reason);
         const quote=resaleBreakdown(instance,s.location);requireThat(!quote.reason,quote.reason);const price=quote.total;requireThat(price>0,'El comerciante no compra armas sin valor de servicio.');const merchant=s.merchants[s.location];requireThat(merchant.cash>=price,'El comerciante no tiene fondos suficientes; su caja se repone con el tiempo.');
         requireThat((merchant.usedItems?.length??0)<USED_EQUIPMENT_LIMIT,'El comerciante no puede guardar más armas usadas.');
-        merchant.usedItems??=[];merchant.usedItems.push(takeEquipment(s,instance.item,instance.id));merchant.cash-=price;s.resources.treasury+=price;note(s,`Se vende ${equipmentLabel(instance)}, estado ${instance.condition}%, por ${price} pesos.`);break;
+        merchant.usedItems??=[];merchant.usedItems.push(takeEquipment(s,equipmentKey(instance),instance.id));merchant.cash-=price;s.resources.treasury+=price;note(s,`Se vende ${equipmentLabel(instance)}, estado ${instance.condition}%, por ${price} pesos.`);break;
       }
       case 'purchaseUsedEquipment':{
         requireThat(action.sector===s.location,'Debes estar en la maestranza que ofrece ese ejemplar.');
@@ -707,7 +707,17 @@ export function dispatchCampaign(previous,action){
       case 'cancelHireArrival':cancelHireArrival(s,action.id);note(s,'Se cancela la llegada y se devuelve el anticipo.');break;
       case 'recruit':throw Error('Los oficiales históricos se incorporan mediante encuentros personales.');
       case 'renewContract':{
-        const id=Number(action.id),op=rosterFor(s).find(o=>o.id===id),current=s.contracts[id];requireThat(op&&s.recruited.includes(id)&&current,'El combatiente no tiene un contrato activo.');requireThat(action.expectedExpiresAt===undefined||action.expectedExpiresAt===current.expiresAt,'El contrato cambió. Revisá la nueva fecha antes de renovar.');requireThat(current.kind!=='patriot','Este oficial sirve por la causa y no necesita renovación.');const quote=contractQuote(s,op,action.term??'day');requireThat(quote.available,quote.reason);pay(s,{treasury:quote.price});s.contracts[id]={kind:'paid',term:action.term??'day',started:s.hour,expiresAt:quote.expiresAt,paid:quote.price};recordPayMorale(s,[id],true);note(s,`${op.name} renueva su servicio por ${quote.hours/24} días.`);break;
+        const id=Number(action.id),op=rosterFor(s).find(o=>o.id===id),current=s.contracts[id];
+        requireThat(op&&s.recruited.includes(id)&&current,'El combatiente no tiene un contrato activo.');
+        requireThat(action.expectedExpiresAt===undefined||action.expectedExpiresAt===current.expiresAt,'El contrato cambió. Revisá la nueva fecha antes de renovar.');
+        requireThat(current.kind!=='patriot','Este oficial sirve por la causa y no necesita renovación.');
+        const quote=contractQuote(s,op,action.term??'day');requireThat(quote.available,quote.reason);
+        pay(s,{treasury:quote.price});s.contracts[id]={kind:'paid',term:action.term??'day',started:s.hour,expiresAt:quote.expiresAt,paid:quote.price};
+        // Modern paid contracts must retain the foreign-standing benefit of
+        // legacy payroll. Reuse the saved pay clock to cap repeat renewals.
+        const lastPay=s.operativeState[id].lastMoralePayAt;
+        if(op.foreign&&quote.price>0&&(lastPay==null||s.hour-lastPay>=24))standing(s,'foreign',5);
+        recordPayMorale(s,[id],true);note(s,`${op.name} renueva su servicio por ${quote.hours/24} días.`);break;
       }
       case 'dismiss':{const id=Number(action.id);requireThat(s.recruited.includes(id),'El combatiente no está contratado.');requireThat(id!==1000,'Tu oficial dirige la campaña y no puede ser despedido.');removeFromService(s,id);note(s,'El combatiente deja el servicio sin devolución del anticipo.');break;}
       case 'createSquad':case 'squad':{
@@ -799,6 +809,7 @@ export function dispatchCampaign(previous,action){
             for(let hour=0;hour<cellStepHours(next)&&s.squad.length&&!s.defeated;hour++)tick(s,1,{joinArrivals:false,traveling:[...s.squad],mountain:worldCell(next).biome==='mountain',travelLeg:[s.location,next]});
             if(!s.squad.length||s.defeated){note(s,'La marcha se interrumpe antes de alcanzar la siguiente celda.');break;}
             const blocked=cellTravelReason(s,next);if(blocked){note(s,`La marcha se detiene: ${blocked}`);break;}
+            recordStrategicArrival(s,s.squad,s.location,next);
             s.location=next;synchronizeSquad(s);
           }
           note(s,`La escuadra queda en ${campaignPlace(s.location).name}.`);break;

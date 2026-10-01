@@ -4,12 +4,13 @@ import {initialCampaign,dispatchCampaign,serializeCampaign} from '../game/campai
 import {defaultContentPackage} from '../game/content-package.js';
 import {operativeIdForCharacter} from '../game/content-character-ids.js';
 import {encountersFor} from '../game/encounters.js';
-import {actBattle,getReachable} from '../game/tactical.js';
+import {actBattle} from '../game/tactical.js';
 import {enterSector} from '../game/world.js';
 import {syncBattleTime} from '../game/time.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {civilianIncidents} from '../game/civilian-harm.js';
 import {synchronizeCampaignPresence} from '../game/campaign-presence.js';
+import {approachNPC} from './approach-npc.mjs';
 const A='cell-27-27';
 const order=(s,a)=>{const next=dispatchCampaign(s,a);assert.equal(next.lastError,null,`${a.type}: ${next.lastError}`);return next;};
 const saved=p=>decodeSave(encodeSave(p.campaign,p.battle??null));
@@ -36,8 +37,11 @@ function visit(s){const campaign=order(s,{type:'visitSector'});return{campaign,b
 function sync(p){const next=syncBattleTime(p.campaign,p.battle);assert.equal(next.error,null);return next;}
 function act(p,a){const battle=actBattle(p.battle,{unitId:p.battle.units.find(u=>u.side==='player').id,...a});assert.equal(battle.lastError,null);return sync({...p,battle});}
 function approach(p,target=npc(p)){
- const actor=p.battle.units.find(u=>u.side==='player'),spot=getReachable(p.battle,actor.id).find(t=>Math.abs(t.x-target.x)+Math.abs(t.y-target.y)===1);assert.ok(spot);
- return spot.cost?act(p,{type:'move',x:spot.x,y:spot.y}):p;
+ const actor=p.battle.units.find(u=>u.side==='player'),movement=actor.movementMode??'walk';
+ if(movement!=='run')p=act(p,{type:'movement',movement:'run'});
+ p=sync({...p,battle:approachNPC(p.battle,actor.id,target.id)});
+ if(movement!=='run')p=act(p,{type:'movement',movement});
+ return p;
 }
 function wound(p){p=approach(p);p=act(p,{type:'melee',targetId:npc(p).id});assert.ok(npc(p).hp>15&&npc(p).bleeding>0);return p;}
 function leave(p){p=sync(p);return order(p.campaign,{type:'leaveSector',battleId:p.campaign.pendingBattle.id,sectorState:p.battle,survivors:p.battle.units.filter(u=>u.side==='player')});}
@@ -70,7 +74,7 @@ test('one-second orders in another squad preserve the remaining wound interval a
 test('a loaded resident receives each wound interval once and first aid stops later off-screen damage',()=>{
  let p=wound(visit(ready())),before=structuredClone(npc(p));
  for(let i=0;i<6;i++)p=second(p);assert.equal(npc(p).hp,before.hp-before.bleeding);assert.equal(health(p.campaign).hp,npc(p).hp);
- p=approach(p);const supplies=p.battle.units[0].medkits;p=act(p,{type:'weapon',slot:'medical'});p=act(p,{type:'heal',targetId:npc(p).id});assert.equal(npc(p).bleeding,0);assert.equal(npc(p).civilianWoundSeconds,undefined);assert.ok(p.battle.units[0].medkits<supplies);
+ const supplies=p.battle.units[0].medkits;p=act(p,{type:'weapon',slot:'medical'});p=approach(p);p=act(p,{type:'heal',targetId:npc(p).id});assert.equal(npc(p).bleeding,0);assert.equal(npc(p).civilianWoundSeconds,undefined);assert.ok(p.battle.units[0].medkits<supplies);
  const hp=npc(p).hp;let s=order(leave(saved(p)),{type:'wait',hours:24});assert.equal(health(s).hp,hp);assert.equal(s.operativeState[id(s)].alive,true);assert.ok(saved({campaign:s}));
 });
 

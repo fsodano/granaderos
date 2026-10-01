@@ -1,4 +1,4 @@
-import {canSee,teamCanSee,getReachable,actionCosts,stanceCost} from '../game/tactical.js';
+import {canSee,teamCanSee,getReachable,actionCosts,stanceCost,firearmShotOptions} from '../game/tactical.js';
 import {chooseEnemyAction} from '../game/tactical-ai.js';
 import {combatOrder} from './opening-driver.mjs';
 import {sameCell,sameSurface,spacePoint} from '../game/tactical-space.js';
@@ -9,10 +9,14 @@ import {sameCell,sameSurface,spacePoint} from '../game/tactical-space.js';
 export function cautiousCombatOrder(state,unit){
  const target=state.units.find(other=>other.side!==unit.side&&other.hp>=15&&!other.departure&&!other.surrendered&&!other.unconscious&&canSee(state,unit,other));
  // The player squad deliberately fires from prone at contact. Pay the setup
- // only when the lowered gun can still fire with two aiming levels this turn.
+ // only when the lowered gun retains a useful shot with two aiming levels.
+ // A roof edge can hide a ground target from prone. Forcing that posture
+ // otherwise fights the AI's stand order and consumes the turn in a loop.
  if(target&&unit.activeSlot==='primary'&&unit.weaponMode!=='melee'&&unit.loaded>0&&!unit.jammed&&!unit.mounted&&!unit.knockedDown&&!unit.entangled&&unit.stance!=='prone'){
   const costs=actionCosts(state,{...unit,stance:'prone',weaponReady:false},target);
-  if(unit.ap>=stanceCost(unit,'prone')+costs.fire+2*costs.aim)return {type:'stance',unitId:unit.id,stance:'prone'};
+  const lowered={...unit,stance:'prone',weaponReady:false};
+  const aim=Math.min(4,Math.floor((unit.ap-stanceCost(unit,'prone')-costs.fire)/costs.aim));
+  if(aim>=2&&canSee(state,lowered,target)&&firearmShotOptions(state,lowered,target,aim).some(option=>option.chance>=25))return {type:'stance',unitId:unit.id,stance:'prone'};
  }
  const contact=state.units.some(other=>other.side!==unit.side&&other.hp>0&&!other.departure&&!other.surrendered&&!other.unconscious&&canSee(state,unit,other));
  const known=unit.lastKnownEnemy??unit.lastHeardNoise,age=state.turn-(known?.turn??-Infinity);

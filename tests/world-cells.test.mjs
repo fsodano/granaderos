@@ -13,7 +13,9 @@ import {campaignContentReport} from '../game/campaign-content.js';
 import {hiringArrivalReason} from '../game/hiring-arrivals.js';
 import {buildSectorMap} from '../game/maps.js';
 import {enterSector} from '../game/world.js';
-import {actBattle} from '../game/tactical.js';
+import {actBattle,getReachable,hasLineOfSight} from '../game/tactical.js';
+import {entryFromSector} from '../game/tactical-exits.js';
+import {sameSurface,spacePoint} from '../game/tactical-space.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {syncBattleTime} from '../game/time.js';
 import {expandCellScene} from '../game/cell-scene-storage.js';
@@ -30,6 +32,20 @@ test('each physical cell has one runtime identity; only the exact legacy anchor 
  assert.equal(locationId('cell-26-28'),'cell-26-28');assert.equal(locationId('cell-25-29'),'cell-25-29');
  for(const bad of ['cell-36-0','cell--1-0','cell-0-33','cell-01-1','constructor'])assert.equal(locationId(bad),null);
 });
+test('walking back after a real rural exit replaces the arrival record and permits time, save and reentry',()=>{
+ let p=visit(ready());const exit=p.battle.exits.find(e=>e.destination==='cell-27-27');assert.ok(exit);
+ const destination=getReachable(p.battle,p.battle.units.find(u=>u.id==='110')).filter(cell=>(cell.tacticalLevel??0)===0&&cell.y===0).sort((a,b)=>a.cost-b.cost)[0];assert.ok(destination);
+ p.battle=actBattle(p.battle,{type:'move',unitId:'110',x:destination.x,y:destination.y});assert.equal(p.battle.lastError,null);
+ p.battle=actBattle(p.battle,{type:'exit',unitIds:['110'],exitId:exit.id});assert.equal(p.battle.lastError,null);
+ let s=leave(p);assert.equal(s.operativeState[110].arrival.exitId,exit.id);assert.equal(s.location,'cell-27-27');
+ const hour=s.hour;s=travel(s,'retiro');assert.ok(s.hour>hour);
+ s=order(s,{type:'wait',hours:1});s=saved(s).campaign;
+ const record=s.operativeState[110],entry=entryFromSector('cell-27-27','retiro');
+ assert.equal(record.location,'retiro');assert.equal(record.arrival.fromSector,'cell-27-27');assert.equal(record.arrival.toSector,'retiro');
+ assert.equal(record.arrival.exitId,undefined);assert.equal(record.arrival.entryEdge,entry.entryEdge);assert.deepEqual(record.arrival.entryAnchor,entry.entryAnchor);
+ p=visit(s);const actor=p.battle.units.find(u=>u.id==='110');assert.equal(actor.y,0,'the return uses the actual northern boundary');
+ assert.deepEqual(saved(p.campaign,p.battle),p);
+});
 test('real travel and visits preserve two rural and two urban cells across campaign and active-scene saves',()=>{
  let s=ready();const income=dailyIncome(s),locations=['cell-27-27','cell-26-27','cell-26-28','cell-25-29'];
  for(const [index,id]of locations.entries()){
@@ -44,6 +60,11 @@ test('real travel and visits preserve two rural and two urban cells across campa
  }
  for(const [index,id]of locations.entries()){
   s=travel(s,id);let pair=visit(s);assert.equal(pair.battle.groundItems.length,1);assert.equal(pair.battle.groundItems[0].id,`supplies-${index}`);
+  // Reentry uses the boundary reached by this march, not the earlier visit's
+  // position. Walk back to the retained item before trying to collect it.
+  const item=pair.battle.groundItems[0],near=getReachable(pair.battle,pair.battle.units[0]).filter(p=>sameSurface(p,item)&&Math.hypot(p.x-item.x,p.y-item.y)<=1.5&&hasLineOfSight(pair.battle,p,item)).sort((a,b)=>a.cost-b.cost)[0];assert.ok(near);
+  if(near.cost){pair.battle=actBattle(pair.battle,{type:'move',unitId:'110',...spacePoint(near)});assert.equal(pair.battle.lastError,null);}
+  if(pair.battle.units[0].x!==item.x||pair.battle.units[0].y!==item.y){pair.battle=actBattle(pair.battle,{type:'look',unitId:'110',x:item.x,y:item.y});assert.equal(pair.battle.lastError,null);}
   const count=pair.battle.units[0].rations;pair.battle=actBattle(pair.battle,{type:'loot',unitId:'110',groundId:`supplies-${index}`});assert.equal(pair.battle.lastError,null);
   const collected=pair.battle.units[0].rations-count;assert.ok(collected>0&&collected<=index+1);const remainder=index+1-collected;assert.equal(pair.battle.groundItems[0].count,remainder);s=saved(leave(pair)).campaign;
   pair=visit(s);assert.equal(pair.battle.groundItems[0].count,remainder);s=leave(pair);

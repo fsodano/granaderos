@@ -30,3 +30,28 @@ test('elite renewals bank days at the daily price and dead recruits cannot be hi
  s=order(s,{type:'dismiss',id});s.operativeState[id].alive=false;s.operativeState[id].hp=0;
  assert.ok(dispatchCampaign(s,{type:'recruitCivic',id,term:'day'}).lastError);
 });
+
+test('paid foreign renewals restore foreign standing once per soldier per day and survive saves',()=>{
+ let s=order(initialCampaign(),{type:'recruitCivic',id:103,term:'week'});
+ const op=rosterFor(s).find(o=>o.id===103);assert.equal(op.foreign,true);
+ const initialStanding=s.reputation.foreign,expires=s.contracts[103].expiresAt,cash=s.resources.treasury;
+ const quote=contractQuote(s,op,'day');assert.ok(quote.price>0);
+ s=order(s,{type:'renewContract',id:103,term:'day',expectedExpiresAt:expires});
+ assert.equal(s.resources.treasury,cash-quote.price);assert.equal(s.reputation.foreign,initialStanding+5);
+ const stale=dispatchCampaign(s,{type:'renewContract',id:103,term:'day',expectedExpiresAt:expires});assert.ok(stale.lastError);assert.equal(stale.resources.treasury,s.resources.treasury);assert.equal(stale.reputation.foreign,s.reputation.foreign);
+ s=decodeSave(encodeSave(s)).campaign;
+ s=order(s,{type:'renewContract',id:103,term:'day',expectedExpiresAt:s.contracts[103].expiresAt});
+ assert.equal(s.reputation.foreign,initialStanding+5,'buying more days at the same time does not repeat the standing reward');
+ for(let i=0;i<30&&s.hour<24;i++)s=order(s,{type:'wait',hours:1});assert.equal(s.hour,24);
+ s=order(s,{type:'renewContract',id:103,term:'day',expectedExpiresAt:s.contracts[103].expiresAt});
+ assert.equal(s.reputation.foreign,initialStanding+10);
+ assert.deepEqual(decodeSave(encodeSave(s)).campaign,s);
+});
+
+test('domestic renewals and rejected permanent renewals do not add foreign standing',()=>{
+ let s=order(initialCampaign(),create);s=order(s,{type:'recruitCivic',id:100,term:'week'});
+ const standing=s.reputation.foreign;assert.ok(!rosterFor(s).find(o=>o.id===100).foreign);
+ s=order(s,{type:'renewContract',id:100,term:'day',expectedExpiresAt:s.contracts[100].expiresAt});
+ assert.equal(s.reputation.foreign,standing);
+ const rejected=dispatchCampaign(s,{type:'renewContract',id:1000,term:'day'});assert.ok(rejected.lastError);assert.equal(rejected.reputation.foreign,standing);assert.equal(rejected.resources.treasury,s.resources.treasury);
+});

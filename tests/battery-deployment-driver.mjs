@@ -1,6 +1,16 @@
 import assert from 'node:assert/strict';
 import {sectorDeploymentAction,sectorDeploymentModel} from '../game/sector-deployment.js';
 
+// Spread the arriving infantry with the same public command as the player.
+// Existing guns stay at their issued arrival positions.
+export function deployInfantryLine(start){
+ const placed=sectorDeploymentAction(start,{type:'spreadDeployment'});
+ assert.equal(placed.lastError,null,placed.lastError);
+ const confirmed=sectorDeploymentAction(placed,{type:'confirmDeployment'});
+ assert.equal(confirmed.lastError,null,confirmed.lastError);
+ return confirmed;
+}
+
 // Use only the legal arrival model. Keep the gun crew together while placing
 // the infantry on both flanks; no opposing coordinates enter this decision.
 export function deployBatteryFlanks(start){

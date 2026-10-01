@@ -1,0 +1,196 @@
+{
+  "schema": 1,
+  "status": "PARTIAL_LOCAL_VERIFICATION",
+  "checkedAt": "2026-10-01T02:32:11.536627+00:00",
+  "revision": "4938fd79835776a202273b09cf303fc7251ad392",
+  "runtimeSource": "44896436c754aa7c2dae54e7b1e62ff689db9fa3aaa51fc01151f61a7f43c989",
+  "unpublished": true,
+  "pushed": false,
+  "merged": false,
+  "previewReplaced": false,
+  "changes": [
+    "The cautious test controller lowers its firing posture only when a useful shot remains visible. This prevents repeated prone/standing orders at roof edges.",
+    "The Tucuman preparation helper waits for a paid reinforcement to arrive before forming and equipping the field squads.",
+    "Deployment morale stores the bounded bonus directly. Fractional personal morale no longer produces a bonus slightly above five and an unloadable save.",
+    "Older saves normalize only machine-scale bonus overflow consistent with the exact capped total. Invalid bonuses still fail validation.",
+    "Returning an unchanged deployment preserves personal morale without floating-point subtraction drift."
+  ],
+  "regression": {
+    "status": "PASS",
+    "tests": 120,
+    "pass": 120,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "duration_ms": 17069.379875,
+    "files": [
+      "tests/opening-driver.test.mjs",
+      "tests/elevation-planning.test.mjs",
+      "tests/hiring-arrivals.test.mjs",
+      "tests/local-contracts.test.mjs",
+      "tests/contract-attention.test.mjs",
+      "tests/medical-care.test.mjs",
+      "tests/campaign-care.test.mjs",
+      "tests/invader-arrival.test.mjs",
+      "tests/morale.test.mjs",
+      "tests/save-web.test.mjs",
+      "tests/save-size.test.mjs",
+      "tests/save-terrain.test.mjs",
+      "tests/battle-report.test.mjs"
+    ],
+    "log": {
+      "path": "/tmp/granaderos-local-northern-save-regression.tap",
+      "sha256": "f1df615877c4b7b644d574667c309ce8dd94e0126fe32799913f49af73870892"
+    },
+    "testSourcesSha256": "e4f07a50846261d00589612efd7a47599bd2b388e1664fa965a2e209a275164d",
+    "testSourceFiles": 691
+  },
+  "firstDefense": {
+    "status": "PASS_CHECKPOINT_ONLY",
+    "runtimeSource": "922000b4e109268f307a722f9df9cd731cbe99758b28c3b736874ac07b0fb0d7",
+    "summary": {
+      "sector": "cordoba",
+      "preparationSeconds": 0,
+      "startSeconds": 1061262,
+      "elapsedSeconds": 36,
+      "status": "victory",
+      "turns": 4,
+      "actions": 151
+    },
+    "campaignHour": 294,
+    "treasury": 2286,
+    "defeated": false,
+    "result": {
+      "path": "/tmp/granaderos-northern-garrison-result.json",
+      "sha256": "2f461fd9650e50a82c1012ddf3b5785ea9bd706c310be20b097af038b88b8110"
+    },
+    "log": {
+      "path": "/tmp/granaderos-garrison-valid-posture.log",
+      "sha256": "f45aaf45d4ff6b0c93583bdf14b8d439175863611227889abee4f3d494c26c91"
+    },
+    "checks": [
+      "Actual tactical victory",
+      "Deterministic full battle replay",
+      "Paired campaign and battle save round-trip",
+      "Settlement and permanent casualties",
+      "Nonterminal campaign",
+      "Final campaign save round-trip"
+    ]
+  },
+  "tucumanContinuation": {
+    "status": "PASS_CHECKPOINT_ONLY",
+    "runtimeSource": "922000b4e109268f307a722f9df9cd731cbe99758b28c3b736874ac07b0fb0d7",
+    "summary": {
+      "sector": "tucuman",
+      "preparationSeconds": 0,
+      "startSeconds": 1356522,
+      "elapsedSeconds": 78,
+      "status": "victory",
+      "turns": 11,
+      "actions": 300
+    },
+    "campaignHour": 376,
+    "treasury": 2955,
+    "defeated": false,
+    "result": {
+      "path": "/tmp/granaderos-defended-tucuman-result.json",
+      "sha256": "723846f80c9c18f617b7d74064ac4d9972c8fdd1759a56951f9bfbbd0497ccb6"
+    },
+    "log": {
+      "path": "/tmp/granaderos-defended-north.log",
+      "sha256": "a7094535fd84ff4e0dbf9fe7db5185ca6bfdd0efbdcc966fda15e7b85d4df66e"
+    },
+    "checks": [
+      "Actual tactical victory",
+      "Deterministic full battle replay",
+      "Paired campaign and battle save round-trip",
+      "Settlement and permanent casualties",
+      "Nonterminal campaign",
+      "Final campaign save round-trip"
+    ]
+  },
+  "secondDefense": {
+    "status": "PASS_CHECKPOINT_ONLY",
+    "runtimeSource": "44896436c754aa7c2dae54e7b1e62ff689db9fa3aaa51fc01151f61a7f43c989",
+    "summary": {
+      "sector": "cordoba",
+      "preparationSeconds": 0,
+      "startSeconds": 1579800,
+      "elapsedSeconds": 576,
+      "status": "victory",
+      "turns": 19,
+      "actions": 284
+    },
+    "campaignHour": 438,
+    "treasury": 3430,
+    "defeated": false,
+    "result": {
+      "path": "/tmp/granaderos-second-defense-result.json",
+      "sha256": "0c8ba9329770622c1f22624c76826622aeb981a87938080a947f14e13beb8dcc"
+    },
+    "log": {
+      "path": "/tmp/granaderos-second-defense.log",
+      "sha256": "78c651456648d69c5ee29a2d1196d8e56c1ce6e7d4336f2aaf45b761d20183e1"
+    },
+    "checks": [
+      "Actual tactical victory",
+      "Deterministic full battle replay",
+      "Paired campaign and battle save round-trip",
+      "Settlement and permanent casualties",
+      "Nonterminal campaign",
+      "Final campaign save round-trip"
+    ]
+  },
+  "saveFailureReproduction": {
+    "personalMorale": 30.850000000000005,
+    "formerBonus": 5.0000000000000036,
+    "expectedBonus": 5,
+    "failure": "El compañerismo del despliegue es inválido.",
+    "coveredBy": "tests/morale.test.mjs"
+  },
+  "typecheck": {
+    "status": "PASS",
+    "log": {
+      "path": "/tmp/granaderos-local-morale-typecheck.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "privateBuild": {
+    "status": "PASS",
+    "runtimeSource": "44896436c754aa7c2dae54e7b1e62ff689db9fa3aaa51fc01151f61a7f43c989",
+    "files": 1131,
+    "assetReferences": 1031,
+    "served": false,
+    "directory": "/var/folders/k2/r1ywdpdx5x513g1qp4m7m3340000gn/T/granaderos-consolidation-check-z50xv8nl",
+    "log": {
+      "path": "/tmp/granaderos-local-morale-private-build.log",
+      "sha256": "c323b751e7085af7fdbf2ea30f498dec552bc00d231b56ca3a1f4c26d39511e4"
+    }
+  },
+  "remaining": {
+    "knownFullTests": 5,
+    "countBasis": "Previous complete run plus later complete focused files; no new full-suite count.",
+    "northernRoute": "Temporary paid garrison and recovery diagnostics now reach a second defense. This revised route is not integrated into freshNorthernRoute. Salta and Yatasto remain unverified.",
+    "laterRecoveryCampaign": "Santa Fe still loses in saved-checkpoint diagnostics.",
+    "secondDefenseCasualties": "Doctor 139 died in the actual second defense. Survivors include critical and wounded actors; they must receive real care before another march.",
+    "fullCurrentSuite": "Not run after these changes.",
+    "browserAcceptance": "Not completed.",
+    "serviceEndEquipment": "Queued until PR139 is merged."
+  },
+  "documentationAudit": {
+    "status": "PASS",
+    "log": {
+      "path": "/tmp/granaderos-local-northern-docs.log",
+      "sha256": "c6c076f01cd351740dc7bcbe7b68361867248f3de019638f05f41f10bc855b66"
+    }
+  },
+  "baselineAudit": {
+    "status": "PASS",
+    "log": {
+      "path": "/tmp/granaderos-local-northern-baseline.log",
+      "sha256": "b0253c9a6234398c07902389ea05e44e807fe42debf6ed1785a3421d0225b24d"
+    }
+  },
+  "diffCheck": "PASS"
+}

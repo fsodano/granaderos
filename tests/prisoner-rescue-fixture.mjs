@@ -10,7 +10,7 @@ import {syncBattleTime} from '../game/time.js';
 import {refreshMilitaryCondition} from '../game/actor-condition.js';
 const order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,n.lastError);return n;};
 function captured({custodySupplies=2}={}){
- let s=initialCampaign();const funds=s.resources.treasury;s=order(s,{type:'purchaseEquipment',item:'swivel'});assert.equal(s.resources.treasury,funds-400);s=order(s,{type:'configureArtillery',types:[]});for(const id of [112,123,115,110,114,113])s=order(s,{type:'recruitCivic',id,term:'week'});s.operativeState[112].location=s.location;s=order(s,{type:'purchaseMedicalSupplies',operativeId:112,quantity:2});s=order(s,{type:'squad',ids:[3,4,10]});s.operativeState[112].location='buenos_aires';s.location='humahuaca';s.squads[0].location=s.location;s.sectors.humahuaca.owner='patriot';
+ let s=initialCampaign();const funds=s.resources.treasury;s=order(s,{type:'purchaseEquipment',item:'swivel'});s=order(s,{type:'purchaseEquipment',item:'bronze4'});assert.equal(s.resources.treasury,funds-1100);s=order(s,{type:'configureArtillery',types:[]});for(const id of [112,123,115,110,114,113])s=order(s,{type:'recruitCivic',id,term:'week'});s.operativeState[112].location=s.location;s=order(s,{type:'purchaseMedicalSupplies',operativeId:112,quantity:2});s=order(s,{type:'squad',ids:[3,4,10]});s.operativeState[112].location='buenos_aires';s.location='humahuaca';s.squads[0].location=s.location;s.sectors.humahuaca.owner='patriot';
  launchEnemyGroup(s,'north','humahuaca',{immediate:true});s=order(s,{type:'wait',hours:1});s=order(s,{type:'respondToEncounter',groupId:s.pendingEncounter.groupId,choice:'tactical'});
  let b=enterSector(s.pendingBattle);const u=b.units.find(u=>Number(u.id)===3);u.hp=11;u.bleeding=2;u.bandaged=20;u.unconscious=true;u.stance='prone';u.movementMode='prone';
  for(const u of b.units.filter(u=>u.side==='player')){u.surrendered=true;u.ap=0;u.medkits=custodySupplies;refreshMilitaryCondition(u);}b.status='defeat';
@@ -18,7 +18,7 @@ function captured({custodySupplies=2}={}){
  for(const id of ['cordoba','tucuman','salta','jujuy'])s.sectors[id].owner='patriot';s.location='jujuy';s.squad=[112,123,115,110,114,113];s.squads[0].members=[...s.squad];s.squads[0].location=s.location;
  // The purchased reserve gun remains outside the captured patrol. Issue it
  // to the relief force through the normal deployment selection.
- s=order(s,{type:'configureArtillery',types:['swivel']});return order(s,{type:'attack',sector:'humahuaca'});
+ s=order(s,{type:'configureArtillery',types:['swivel','bronze4']});return order(s,{type:'attack',sector:'humahuaca'});
 }
 function start(options){const next=prepareCampaignBattle(captured(options));assert.equal(next.error,null,next.error);return next;}
 function sync(campaign,battle){const next=syncBattleTime(campaign,battle);assert.equal(next.error,null,next.error);return next;}

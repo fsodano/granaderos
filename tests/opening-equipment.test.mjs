@@ -41,3 +41,14 @@ test('a missing source never strips a living owner or invents a replacement rifl
  const result=equipOpeningRifles(state,[131]);
  assert.deepEqual(result.battle,before);assert.deepEqual(state,before);assert.deepEqual(result.transfers,[]);assert.deepEqual(result.unfilled,['131']);
 });
+
+test('an unarmed survivor can recover a finite rifle without trying to store an empty hand',()=>{
+ const state=field([{id:9,x:2,y:3,weapon:0,blade:1810,loaded:0}],[{id:'enemy-body',x:6,y:3,hp:0,weapon:1801,loaded:1,condition:57,weaponInstanceId:'captured-rifle'}]);
+ const before=structuredClone(state),incoming=handRecord(state.units.find(u=>u.id==='enemy-body'),'primary');
+ const result=equipOpeningRifles(state,[9]),receiver=result.battle.units.find(u=>u.id==='9');
+ assert.deepEqual(state,before);assert.equal(result.transfers.length,1);assert.equal(result.transfers[0].outgoing,null);
+ assert.deepEqual(handRecord(receiver,'primary'),incoming);assert.equal(receiver.blade,state.units[0].blade);
+ assert.equal(result.battle.units.find(u=>u.id==='enemy-body').weaponDropped,true);
+ assert.ok(Object.values(receiver.inventory).every(item=>item.weapon!==0),'an empty hand is not an inventory object');
+ assert.doesNotThrow(()=>validateBattleSnapshot(result.battle));
+});

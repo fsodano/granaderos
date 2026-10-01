@@ -1,0 +1,70 @@
+{
+  "status": "source checkpoint diagnostics pass; complete uncached ending acceptance pending in final full suite",
+  "node": "22.23.3",
+  "source_only_diagnostics": {
+    "capital": {
+      "victory": true,
+      "turns": 15,
+      "orders": 296,
+      "hour": 7559,
+      "treasury": 1783,
+      "commander_alive": true,
+      "all_thirteen_localities_free": true,
+      "full_campaign_equal_to_accepted_diagnostic_except_log": true,
+      "log_sha256": "468c3f19942dcf1c2db477f28ab6cfa01482a7de15c4f6459f4965cfc54c867d"
+    },
+    "post_victory": {
+      "hours": 48,
+      "hour": 7607,
+      "treasury": 3937,
+      "actual_payments": [
+        1075,
+        1079
+      ],
+      "expired_alive_and_absent": [
+        146,
+        147
+      ],
+      "permanent_deaths": 59,
+      "saved_reentry": true,
+      "one_time_ending": true,
+      "log_sha256": "b901de82a60f1c8e0d8308291dbd2e487c928895dcf7dcb0ae3c0f00b62b98ec"
+    }
+  },
+  "integrated_sources": [
+    {
+      "path": "tests/created-ending-route.mjs",
+      "sha256": "9a8c81a93942f9f6b743789e8c824cc30db66fb8cd03703902dd42c9143f2c34",
+      "previous_sha256": "5d127149652bd1600f75a2766c0052f46ef01ec3bd96e2e4bb5ef1d8cfe66510"
+    },
+    {
+      "path": "tests/created-northern-return.mjs",
+      "sha256": "d43cd2311a941e8fc34d9b5b4daef8cbfde3c70c8c1caf5501db0594d741480b",
+      "previous_sha256": "612db64e3bf483d9cb333d7b195e6fde848cfb1bb580345ba330e69d41dc0c39"
+    },
+    {
+      "path": "tests/created-capital-return.mjs",
+      "sha256": "f9f9d2c1155ad468ac420873b58a810758e6668e6aaed98d847b3b19f5e24ea2",
+      "previous_sha256": "627e98a58147a89b0634c66485f9549b789d68d5071dc56d12dbde7fa9de3dfa"
+    },
+    {
+      "path": "tests/fresh-ending-fixture.mjs",
+      "sha256": "74151666afdeacc37d949a189f5bc3c8514ea5e840f9a6e260e8712f2f4e540d",
+      "previous_sha256": "0ad482230c87711f2d931f6bdb2b67847f24166bc167327858ca06e2fc36fa16"
+    },
+    {
+      "path": "tests/fresh-ending-route.test.mjs",
+      "sha256": "5b66442fb47e8208eb9f9095f19f212ff1c16b8f63448efd784624b3f7b74a14",
+      "previous_sha256": "6ee40deeea5aebfd8c8a31d82c240a14a081d065e9e3a35f611f7fa1058e93a7"
+    }
+  ],
+  "imported_sources": {
+    "count": 267,
+    "sha256": "c9a3314a0be23382be703302d75706a88fa4ec4f9c1ab703e925b5a0b757663a",
+    "all_integration_hashes_match": true
+  },
+  "full_fresh_ending_file_accepted": false,
+  "final_suite_pending": true,
+  "remote_push": false,
+  "merged": false
+}

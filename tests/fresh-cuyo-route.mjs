@@ -11,7 +11,6 @@ import {decodeSave,encodeSave} from '../game/save.js';
 import {dispatchCampaign,rosterFor,isSupplied} from '../game/campaign.js';
 import {sectorInventoryModel} from '../game/sector-inventory.js';
 import {weaponAmmoType,availableAmmunition} from '../game/ammunition-types.js';
-import {contractQuote} from '../game/contracts.js';
 
 // Actual transport, shop care and defense preparation after fresh Yatasto.
 export function prepareFreshCuyoDefense(start,{report=()=>{}}={}){
@@ -30,7 +29,7 @@ export function prepareFreshCuyoDefense(start,{report=()=>{}}={}){
 for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'rest'});
 for(let i=0;i<24&&c.squad.some(id=>c.operativeState[id].energy<100||c.operativeState[id].fatigue>0||c.operativeState[id].asleep);i++)order({type:'wait',hours:1});
 for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'active'});
-order({type:'transport',mode:'posta'});order({type:'travel',sector:'cordoba',mode:'posta'});assert.equal(c.pendingEncounter,null);
+if(!c.routes.posta)order({type:'transport',mode:'posta'});order({type:'travel',sector:'cordoba',mode:'posta'});assert.equal(c.pendingEncounter,null);
 // Bring the surviving northern reserve to the assembly point before paying
 // for the elite's short contract. Every reinforcement travels normally.
 const assemblySquad=c.activeSquadId,reinforcementSquads=[];
@@ -70,7 +69,10 @@ for(const patientId of patients){
 }
 c=sellSurplusEquipment(c,'cordoba',assembled,1400,{report});
 report({event:'cuyoFunding',hour:c.hour,treasury:c.resources.treasury,availableGuns:sectorInventoryModel(c,'cordoba',rosterFor(c),assembled[0]).entries.filter(row=>JSON.parse(row.expected).weapon).length});
-order({type:'recruitCivic',id:142,term:'day'});c=supplyRouteAmmunition(c,[142],{target:12}).campaign;
+order({type:'recruitCivic',id:142,term:'day'});
+for(let h=0;h<24&&!c.recruited.includes(142);h++){assert.equal(c.pendingEncounter,null);order({type:'wait',hours:1});}
+assert.ok(c.recruited.includes(142),'the paid defender must arrive before receiving ammunition');
+c=supplyRouteAmmunition(c,[142],{target:12}).campaign;
 for(const id of c.squad){const model=()=>sectorInventoryModel(c,'cordoba',rosterFor(c),id);const row=model().entries.find(r=>r.reachable&&[1800,1801,1802].includes(JSON.parse(r.expected).weapon));if(row&&![1800,1801,1802].includes(rosterFor(c).find(o=>o.id===id).weapon)){const gun=JSON.parse(row.expected);order({type:'sectorInventory',sector:'cordoba',operativeId:id,direction:'take',sourceKey:row.key,expected:row.expected,count:1});const item=model().carried.find(r=>r.expected&&JSON.parse(r.expected).weapon===gun.weapon);order({type:'sectorInventory',sector:'cordoba',operativeId:id,direction:'equip',inventoryKey:item.inventoryKey,expected:item.expected,slot:'primary'});}const type=weaponAmmoType(rosterFor(c).find(o=>o.id===id).weapon);for(const row of model().entries.filter(r=>r.reachable&&JSON.parse(r.expected).ammoType===type)){const count=Math.min(row.count,Math.max(0,10-availableAmmunition(c.operativeState[id],type)));if(count)order({type:'sectorInventory',sector:'cordoba',operativeId:id,direction:'take',sourceKey:row.key,expected:row.expected,count});}order({type:'assignCare',operativeId:id,assignment:'rest'});}
 // The stronger northern route leaves a real Salta garrison. Withdraw it
 // through the offered adjacent exit before the separate Córdoba defense.
@@ -92,29 +94,26 @@ export function prepareFreshMendozaAssault(start,{report=()=>{}}={}){
  let c=decodeSave(encodeSave(start)).campaign;
  const order=a=>{c=dispatchCampaign(c,a);assert.equal(c.lastError,null,JSON.stringify(a)+c.lastError);};
  const veterans=[...c.squad],main=c.activeSquadId,columns=[main];
- // Northern victories can leave healthy veterans close to panic. Add a paid
- // fresh soldier and keep the actual veterans in a separate supporting column.
- const reinforcement=145,available=c.operativeState[reinforcement]?.alive&&!c.operativeState[reinforcement]?.captured&&!c.recruited.includes(reinforcement);
- if(available&&veterans.some(id=>c.operativeState[id].morale<30)){
-  const quote=contractQuote(c,rosterFor(c).find(op=>op.id===reinforcement),'day');
-  c=sellSurplusEquipment(c,'cordoba',veterans,quote.price+70,{report,reserve:5});
-  if(c.squad.length>=6){
-   const field=c.squad.filter(id=>c.operativeState[id].morale>=50).slice(0,5);
-   assert.ok(field.length,'a living ready soldier must lead the relief column');
-   order({type:'squad',ids:field});
+ // Use the actual rear reserves rather than an unaffordable new contract.
+ // Leave every past casualty and every carried item unchanged.
+ const relief=c.recruited.filter(id=>!veterans.includes(id)&&c.operativeState[id].alive&&!c.operativeState[id].captured&&c.operativeState[id].location==='cordoba');
+ assert.ok(relief.length,'the actual surviving rear guard supports the battery');
+ for(const id of relief){
+  const model=()=>sectorInventoryModel(c,'cordoba',rosterFor(c),id);
+  if(![1800,1801,1802].includes(rosterFor(c).find(o=>o.id===id).weapon)){
+   const row=model().entries.find(r=>r.reachable&&[1800,1801,1802].includes(JSON.parse(r.expected).weapon));assert.ok(row);
+   const gun=JSON.parse(row.expected);order({type:'sectorInventory',sector:'cordoba',operativeId:id,direction:'take',sourceKey:row.key,expected:row.expected,count:1});
+   const item=model().carried.find(r=>r.expected&&JSON.parse(r.expected).weapon===gun.weapon);assert.ok(item);order({type:'sectorInventory',sector:'cordoba',operativeId:id,direction:'equip',inventoryKey:item.inventoryKey,expected:item.expected,slot:'primary'});
   }
-  const cash=c.resources.treasury;order({type:'recruitCivic',id:reinforcement,term:'day'});
-  assert.equal(c.resources.treasury,cash-quote.price);assert.ok(quote.price>0);
-  const model=()=>sectorInventoryModel(c,'cordoba',rosterFor(c),reinforcement);
-  const gun=model().entries.filter(row=>row.reachable&&JSON.parse(row.expected).weapon===1800).sort((a,b)=>JSON.parse(b.expected).condition-JSON.parse(a.expected).condition)[0];
-  assert.ok(gun,'the paid reinforcement needs an actual recovered long gun');
-  order({type:'sectorInventory',sector:'cordoba',operativeId:reinforcement,direction:'take',sourceKey:gun.key,expected:gun.expected,count:1});
-  const carried=model().carried.find(row=>row.expected&&JSON.parse(row.expected).weapon===1800);assert.ok(carried);
-  order({type:'sectorInventory',sector:'cordoba',operativeId:reinforcement,direction:'equip',inventoryKey:carried.inventoryKey,expected:carried.expected,slot:'primary'});
-  const reserve=veterans.filter(id=>!c.squad.includes(id));
-  if(reserve.length){order({type:'createSquad',name:'Apoyo de Mendoza',ids:reserve,sector:'cordoba'});columns.push(c.activeSquadId);}
-  report({event:'mendozaPaidRelief',id:reinforcement,cost:quote.price,reserve,hour:c.hour});
  }
+ const fieldIds=[...relief,...veterans.filter(id=>c.operativeState[id].morale>=50)].slice(0,6);
+ order({type:'squad',ids:fieldIds});const support=[...relief,...veterans].filter(id=>!fieldIds.includes(id));
+ for(let offset=0;offset<support.length;offset+=6){order({type:'createSquad',name:'Reserva de Mendoza',ids:support.slice(offset,offset+6),sector:'cordoba'});columns.push(c.activeSquadId);}
+ c=sellSurplusEquipment(c,'cordoba',[...fieldIds,...support],900,{report,reserve:0});
+ const gunPrice=equipmentCatalogItem('bronze4',c).price,cash=c.resources.treasury;
+ order({type:'purchaseEquipment',item:'bronze4'});assert.equal(c.resources.treasury,cash-gunPrice);
+ report({event:'mendozaReserveBattery',field:fieldIds,support,cost:gunPrice,hour:c.hour});order({type:'configureArtillery',types:[]});
+ c=supplyRouteAmmunition(c,[...fieldIds,...support],{target:12,report}).campaign;
  const field=columns.flatMap(id=>c.squads.find(q=>q.id===id).members);
  for(const operativeId of field)order({type:'assignCare',operativeId,assignment:'rest'});
  for(let i=0;i<24&&field.some(id=>c.operativeState[id].energy<100||c.operativeState[id].fatigue>0||c.operativeState[id].asleep);i++){
@@ -125,8 +124,9 @@ export function prepareFreshMendozaAssault(start,{report=()=>{}}={}){
   order({type:'selectSquad',id});
   for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'active'});
   c=finishReloadsBeforeMarch(c,{report});
-  order({type:'attack',sector:'mendoza',queue:true,mode:'posta'});
  }
+ order({type:'configureArtillery',types:['bronze4']});
+ for(const id of columns){order({type:'selectSquad',id});order({type:'attack',sector:'mendoza',queue:true,mode:'posta'});}
  for(let i=0;i<24&&columns.some(id=>c.squads.find(q=>q.id===id).journey?.status!=='ready');i++)order({type:'wait',hours:1});
  assert.ok(columns.every(id=>c.squads.find(q=>q.id===id).journey?.status==='ready'));
  // Hold at the assembly point until the troops can approach in daylight.
@@ -152,7 +152,7 @@ function purchaseFoundryCannons(start,target){
    assert.equal(c.resources.treasury,before-item.price);assert.equal(artilleryCount(c),count+1);
    assert.equal(c.merchants[market.sector].stock.bronze4,market.stock-1);
   }else{
-   for(const id of c.recruited)if(c.contracts[id]?.expiresAt!=null&&c.contracts[id].expiresAt<=c.hour+1)order({type:'renewContract',id,term:'day',expectedExpiresAt:c.contracts[id].expiresAt});
+   for(const id of c.recruited.filter(id=>c.operativeState[id].alive&&!c.operativeState[id].captured))if(c.contracts[id]?.expiresAt!=null&&c.contracts[id].expiresAt<=c.hour+1)order({type:'renewContract',id,term:'day',expectedExpiresAt:c.contracts[id].expiresAt});
    const before=c.hour;order({type:'wait',hours:1});assert.ok(c.hour>before||c.assignmentAttention.notice,'a paused wait must report its assignment notice');
   }
  }
@@ -162,8 +162,13 @@ function purchaseFoundryCannons(start,target){
 export function startFreshFoundry(start){
  let c=decodeSave(encodeSave(start)).campaign;
  const order=a=>{c=dispatchCampaign(c,a);assert.equal(c.lastError,null,JSON.stringify(a)+c.lastError);};
- const envoy=c.squad.find(id=>{const soldier=c.operativeState[id];return soldier.alive&&!soldier.captured&&soldier.hp>=15&&soldier.location==='mendoza';});
- assert.notEqual(envoy,undefined,'a living soldier in Mendoza must approach the recruits');
+ const local=rosterFor(c).filter(op=>{const r=c.operativeState[op.id];return c.recruited.includes(op.id)&&r.alive&&!r.captured&&r.hp>=15&&r.location==='mendoza';});
+ const envoy=local.filter(op=>op.leadership>=60).sort((a,b)=>b.leadership-a.leadership)[0]?.id;
+ assert.notEqual(envoy,undefined,'a living local leader must meet the actual recruitment requirement');
+ // The selected assault squad can have lost its leader. Use the surviving
+ // local command, leaving two real places for Beltrán and Barcala to join.
+ order({type:'squad',ids:[envoy,...local.map(op=>op.id).filter(id=>id!==envoy)].slice(0,4)});
+ c=sellSurplusEquipment(c,'mendoza',c.squad,foundryFor(c).setupCost+150);
  c=meetRecruits(c,['beltran'],envoy);
  const before=c.resources.treasury;order({type:'foundry'});
  assert.equal(c.resources.treasury,before-foundryFor(c).setupCost);
@@ -202,6 +207,9 @@ export function completeFreshArmyFunding(start){
   assert.equal(c.pendingBattle,null,'the ordinary automatic northern defense must settle');
   order({type:'selectSquad',id:selected});
  };
+ // The second cannon can consume nearly all available cash. Sell real
+ // battlefield surplus before paying for travel and the rear militia course.
+ c=sellSurplusEquipment(c,c.location,c.squad,200);
  for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'active'});
  order({type:'travel',sector:'cordoba',mode:'posta'});
  const trainer=rosterFor(c).find(op=>op.id===7&&c.recruited.includes(op.id)&&c.operativeState[op.id].alive&&c.operativeState[op.id].location==='cordoba');
@@ -221,7 +229,7 @@ export function completeFreshArmyFunding(start){
  c=purchaseFoundryCannons(c,3);
  for(let i=0;i<240&&c.resources.treasury<foundryFor(c).fundingCost;i++){
   resolveNorthernDefense();assert.equal(c.pendingEncounter,null);assert.equal(c.defeated,false);
-  for(const id of c.recruited)if(c.contracts[id]?.expiresAt!=null&&c.contracts[id].expiresAt<=c.hour+1)order({type:'renewContract',id,term:'day',expectedExpiresAt:c.contracts[id].expiresAt});
+  for(const id of c.recruited.filter(id=>c.operativeState[id].alive&&!c.operativeState[id].captured))if(c.contracts[id]?.expiresAt!=null&&c.contracts[id].expiresAt<=c.hour+1)order({type:'renewContract',id,term:'day',expectedExpiresAt:c.contracts[id].expiresAt});
   const before=c.hour;order({type:'wait',hours:1});assert.ok(c.hour>before||c.assignmentAttention.notice,'a paused wait must report its assignment notice');
  }
  const funding=c.resources.treasury;order({type:'fundArmy'});

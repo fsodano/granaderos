@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import {enterSector} from '../game/world.js';
-import {actBattle,endTurn,getReachable,hasLineOfSight,canSee,shotChance,actionCosts,interruptAvailable,stanceCost} from '../game/tactical.js';
+import {actBattle,endTurn,getReachable,hasLineOfSight,canSee,shotChance,actionCosts,interruptAvailable,stanceCost,hasFirearm} from '../game/tactical.js';
 import {chooseEnemyAction} from '../game/tactical-ai.js';
 import {sameSurface,spacePoint} from '../game/tactical-space.js';
 import {availableAmmunition} from '../game/ammunition-types.js';
@@ -23,7 +23,7 @@ export function combatOrder(b,u){
   if(u.activeSlot!=='medical'&&u.ap>=cost.heal+cost.weapon)return {type:'weapon',unitId:u.id,slot:'medical'};
  }
  if(['medical','tool','supply'].includes(u.activeSlot)&&u.weapon&&!u.weaponDropped&&u.ap>=cost.weapon)return {type:'weapon',unitId:u.id,slot:'primary'};
- if(u.jammed&&u.ap>=cost.reprime)return {type:'reprime',unitId:u.id};
+ if(u.jammed&&hasFirearm(u)&&u.ap>=cost.reprime)return {type:'reprime',unitId:u.id};
  const target=visible.filter(t=>hasLineOfSight(b,u,t)).sort((a,c)=>shotChance(b,u,c,4)-shotChance(b,u,a,4))[0];
  if(target)cost=actionCosts(b,u,target);
  if(target&&u.loaded&&!u.jammed&&u.ap>=cost.fire){

@@ -1,0 +1,107 @@
+{
+  "status": "complete focused files pass; full final suite still pending",
+  "node": "22.23.3",
+  "pass_total": 210,
+  "validation": [
+    {
+      "name": "resident callers",
+      "log_sha256": "80cfb956df925bbcb9558d4ec91582209f31d79899e83d9f2dc9a981dd2f4414",
+      "tests": 100,
+      "pass": 100,
+      "fail": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "todo": 0
+    },
+    {
+      "name": "story editor",
+      "log_sha256": "d7dfacd797840979b8ad618a58a008b94c38c1f54c10bdd44f25a78127c8a44b",
+      "tests": 74,
+      "pass": 74,
+      "fail": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "todo": 0
+    },
+    {
+      "name": "civilian weapons",
+      "log_sha256": "eceba1e2a64a5dd66dbf7e13aa777e98423f85262e27855fe8a3c88c9dc272e7",
+      "tests": 5,
+      "pass": 5,
+      "fail": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "todo": 0
+    },
+    {
+      "name": "unloaded civilian wounds",
+      "log_sha256": "73bdec0c4edc9a24b54432c93fb0d00b540dd6426582bf43779cb01d457435a8",
+      "tests": 8,
+      "pass": 8,
+      "fail": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "todo": 0
+    },
+    {
+      "name": "registered campaign tools",
+      "log_sha256": "53eefe86a40ffeac73554d0381de3c719200bcfad6c68a7784dfeb07893702f6",
+      "tests": 15,
+      "pass": 15,
+      "fail": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "todo": 0
+    },
+    {
+      "name": "complete southern opening",
+      "log_sha256": "15c46b4321e39d5ddab66d942c22ceecc1693d0a8dd18a7245b2ed02b13cfa3a",
+      "tests": 8,
+      "pass": 8,
+      "fail": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "todo": 0
+    }
+  ],
+  "integrated_source_sha256": {
+    "web/app/story/page.tsx": "64afe530d04326ccc8c7a8fd061c40fd664cc61316b7c45bc2e85a1e01a17766",
+    "tests/story-editor.test.mjs": "ec522146800ed8662f47077773a6a57916327cd3d280daf93a166a57795e30bd",
+    "tests/authored-residents.test.mjs": "0c33f95bb3157c2f72436fceb4549c87d034eeb8cde2fc587b4c98302cf17617",
+    "tests/campaign-cast.test.mjs": "be5f51842d2886a279cc38d3d637c5e2ef95e60db70186aa79d2dc4c8a4c4495",
+    "tests/campaign-presence.test.mjs": "228a13df49d2048c099abc4218281d61faed0bf22c56314a7a9686efa704737f",
+    "tests/local-contract-fixture.mjs": "8755020090328bffbe9712995766e6d8795833445025cb0cec4deecb0fb68cca",
+    "tests/civilian-breath-recovery.test.mjs": "0cad9b6c7c6275824a3ec3bec3f8ccd6b5ae188232da174b0807a365d0619b39",
+    "tests/civilian-weapons.test.mjs": "19b1f30f38bb3f9e435398b00b2c2126106a780d10d1c749bc649428a773a790",
+    "tests/unloaded-civilian-bleeding.test.mjs": "718bb8378445be788b88589f4f01672d1aeb7935c0bbcc8507d8b87cdc54f85c",
+    "tests/webmcp-campaign.test.mjs": "915ed573d4de435bd4d4191eb72af2bc7d988d5a8a68abad4f03fa5cd81094bc",
+    "tests/northern-route.mjs": "adf86b68e668216723bedf8a1a1f5b1653123929ce08d2cf2c8a57dd827b897c",
+    "tests/salta-route.mjs": "ac469d21eca947477cea701b0c9ae048eef78413df166f0c52767da41a726289",
+    "tests/opening-playthrough.test.mjs": "ca92c19e7ce86f7c6e9001ecc0862d3e6396d19924d510474bf825bcefb13b06"
+  },
+  "build": {
+    "version": "0.4.0-dev.1",
+    "id": "046c8dc01e62",
+    "source": "046c8dc01e622a82300f3028576c4269355080e05018cfca203f3c4f87b45f8d",
+    "revision": "4938fd79835776a202273b09cf303fc7251ad392"
+  },
+  "browser": [
+    "story export dialog retains visible copy result and full 61-character JSON",
+    "game and both editors show the same source build",
+    "active campaign reload conserves physical ammunition and saved cursor custody",
+    "night scene at 100 percent zoom has no failed images or browser errors"
+  ],
+  "full_remaining_files": [
+    "tests/fresh-campaign-recovery.test.mjs",
+    "tests/fresh-ending-route.test.mjs"
+  ],
+  "remote_push": false,
+  "merged": false,
+  "loaded_performance": "pending; other test processes still active",
+  "current_browser_preview": {
+    "url": "http://127.0.0.1:3135",
+    "source": "immutable 046c8dc01e62 export",
+    "saved_data": "same origin; preserved"
+  },
+  "isolated_verification_preview": "http://127.0.0.1:3136"
+}

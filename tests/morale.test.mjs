@@ -35,6 +35,31 @@ test('a deployment removes only the bonus actually added below the morale cap',(
  let s=order(initialCampaign(),{type:'wait',hours:120});s.operativeState[3].morale=98;s=order(s,{type:'visitSector'});const issued=s.pendingBattle.squad.find(u=>u.id===3);assert.equal(issued.morale,100);assert.equal(issued.cohesionBonus,2);const b=enterSector(s.pendingBattle);s=order(s,{type:'leaveSector',battleId:s.pendingBattle.id,sectorState:b,survivors:b.units.filter(u=>u.side==='player')});assert.equal(s.operativeState[3].morale,98);
 });
 
+test('fractional morale keeps its exact capped bonus and survives repeated saved deployments',()=>{
+ let s=order(initialCampaign(),{type:'wait',hours:120});
+ const personal=30.850000000000005;s.operativeState[3].morale=personal;
+ for(let i=0;i<3;i++){
+  s=order(s,{type:'visitSector'});const issued=s.pendingBattle.squad.find(u=>u.id===3);
+  assert.equal(issued.cohesionBonus,5);assert.equal(issued.morale,personal+5);
+  s=restoreCampaign(serializeCampaign(s));const b=enterSector(s.pendingBattle);
+  s=order(s,{type:'leaveSector',battleId:s.pendingBattle.id,sectorState:b,survivors:b.units.filter(u=>u.side==='player')});
+  assert.equal(s.operativeState[3].morale,personal,'an unchanged visit must not change personal morale');
+ }
+});
+
+test('old fractional deployment bonuses migrate only their rounding error and still reject values above the cap',()=>{
+ let s=order(initialCampaign(),{type:'wait',hours:120});s.operativeState[3].morale=30.850000000000005;s=order(s,{type:'visitSector'});
+ const issued=s.pendingBattle.squad.find(u=>u.id===3);issued.cohesionBonus=issued.morale-issued.personalMorale;assert.ok(issued.cohesionBonus>5);
+ const before=structuredClone(s),restored=restoreCampaign(serializeCampaign(s));assert.deepEqual(s,before);
+ const migrated=restored.pendingBattle.squad.find(u=>u.id===3);assert.equal(migrated.cohesionBonus,5);assert.equal(migrated.morale,issued.morale);assert.equal(migrated.personalMorale,issued.personalMorale);
+ for(const bonus of [5.000001,5.01,6]){
+  const invalid=structuredClone(s),unit=invalid.pendingBattle.squad.find(u=>u.id===3);unit.cohesionBonus=bonus;unit.morale=unit.personalMorale+bonus;
+  assert.throws(()=>restoreCampaign(serializeCampaign(invalid)),/compañerismo/);
+ }
+ const inconsistent=structuredClone(s);inconsistent.pendingBattle.squad.find(u=>u.id===3).morale+=1;
+ assert.throws(()=>restoreCampaign(serializeCampaign(inconsistent)),/compañerismo/);
+});
+
 test('losing a companion lowers morale and a long-serving companion causes a larger loss',()=>{
  const casualty=s=>{s=battle(s);return report(s,{survivors:s.pendingBattle.squad.map(u=>({...u,hp:u.id===4?0:u.hp}))});};
  const fresh=casualty(initialCampaign()),veteran=casualty(order(initialCampaign(),{type:'wait',hours:120}));assert.equal(fresh.operativeState[3].morale,80);assert.equal(veteran.operativeState[3].morale,77);assert.equal(veteran.operativeState[4].alive,false);

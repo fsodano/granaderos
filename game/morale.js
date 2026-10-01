@@ -18,6 +18,9 @@ export function migrateMorale(s,roster){
     if(unit.personalMorale===undefined)unit.personalMorale=unit.morale??s.operativeState[Number(unit.id)]?.morale;
     if(unit.cohesionBonus===undefined)unit.cohesionBonus=0;
     if(unit.morale===undefined)unit.morale=unit.personalMorale;
+    // Earlier deployments subtracted fractional morale to recover the bonus.
+    // Accept only that calculation's roundoff, with the exact capped total.
+    if(unit.cohesionBonus>5&&unit.cohesionBonus<=5+Number.EPSILON*100&&unit.morale===unit.personalMorale+5)unit.cohesionBonus=5;
   }
   return s;
 }
@@ -30,8 +33,8 @@ export function cohesionBonus(s,id){
 
 export function deploymentMorale(s,id){
   const personalMorale=s.operativeState[id].morale;
-  const morale=clamp(personalMorale+cohesionBonus(s,id));
-  return {morale,personalMorale,cohesionBonus:morale-personalMorale};
+  const bonus=Math.min(cohesionBonus(s,id),100-personalMorale);
+  return {morale:personalMorale+bonus,personalMorale,cohesionBonus:bonus};
 }
 
 export function returnMorale(s,id,report,issued){
@@ -40,7 +43,9 @@ export function returnMorale(s,id,report,issued){
   const bonus=issued?.cohesionBonus??0,personal=issued?.personalMorale??r.morale;
   // Preserve strategic events (such as pay) that occurred while this soldier was
   // deployed, and remove only the actual bonus added to this deployment.
-  r.morale=clamp(reported-bonus+(r.morale-personal));r.moraleRestHours=0;
+  // Apply the tactical change to the current personal value. Returning an
+  // unchanged deployment must not introduce a subtraction rounding error.
+  r.morale=clamp(r.morale+(reported-(issued?.morale??personal+bonus)));r.moraleRestHours=0;
 }
 
 export function recordPayMorale(s,ids,paid){

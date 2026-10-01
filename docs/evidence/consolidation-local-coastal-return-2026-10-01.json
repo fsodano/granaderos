@@ -1,0 +1,2251 @@
+{
+  "schema": 1,
+  "status": "PARTIAL_LOCAL_VERIFICATION",
+  "checkedAt": "2026-10-01T05:53:43.102886+00:00",
+  "revision": "4938fd79835776a202273b09cf303fc7251ad392",
+  "runtimeSource": "af9ec4318d546bd25378221e1152fc7772f0859d363676579c24e9022d14ebbc",
+  "unpublished": true,
+  "pushed": false,
+  "merged": false,
+  "previewReplaced": false,
+  "changes": [
+    "Mountain purchases use the actual authored or legacy catalog key. The recovery route uses three owned heavy guns at Uspallata and purchases the real Los Patos stock shortfall.",
+    "A paid coastal doctor must arrive before care. Long savings waits retain permanent regulars and preserve the health of departing short-term hires.",
+    "The commander uses the real boundary exit before Ensenada combat, then forms a new squad and pays for the return before naval recruitment.",
+    "When no target is visible and the battery has no order, the test controller searches known map quadrants without reading hidden enemy positions.",
+    "The recovery test uses the verified coastal preparation and commander return. The created coast helper joins preparation, Ensenada, naval recruitment, care and Santa Fe, but is not yet wired into the full ending fixture."
+  ],
+  "regression": {
+    "status": "PASS",
+    "tests": 44,
+    "pass": 44,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "duration_ms": 15208.8505,
+    "log": {
+      "path": "/tmp/granaderos-local-coastal-withdrawal-regression.tap",
+      "sha256": "ad1def4f2925f3bbd65cc835578c41f3a4ec0ea18ca88d4871177f8bf8624707"
+    }
+  },
+  "careAndBatteryRegression": {
+    "status": "PASS",
+    "tests": 46,
+    "pass": 46,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "duration_ms": 1231.847083,
+    "log": {
+      "path": "/tmp/granaderos-local-coastal-return-care-regression.tap",
+      "sha256": "53bc8adc46c3f3d203d15f9852cf0e16ccb2f0142f449fc8ebfe6f8e0084dfba"
+    }
+  },
+  "recoveryMountains": {
+    "status": "PASS_CHECKPOINT_ONLY",
+    "uspallata": {
+      "artifact": {
+        "path": "/tmp/granaderos-recovery-uspallata-three-result.json",
+        "sha256": "8fe585e46100abfada3b46e8e0168a4816b122029a4158c599a1d7373c937f3c"
+      },
+      "hour": 1284,
+      "treasury": 3479,
+      "squad": [
+        128,
+        132
+      ],
+      "summary": {
+        "sector": "uspallata",
+        "preparationSeconds": 0,
+        "startSeconds": 4623614,
+        "elapsedSeconds": 151,
+        "status": "victory",
+        "turns": 11,
+        "actions": 180,
+        "units": [
+          {
+            "id": "7",
+            "side": "player",
+            "hp": 0,
+            "ammo": 11,
+            "loaded": 0,
+            "routed": false
+          },
+          {
+            "id": "10",
+            "side": "player",
+            "hp": 0,
+            "ammo": 11,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "105",
+            "side": "player",
+            "hp": 0,
+            "ammo": 9,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "128",
+            "side": "player",
+            "hp": 79,
+            "ammo": 8,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "109",
+            "side": "player",
+            "hp": 0,
+            "ammo": 11,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "132",
+            "side": "player",
+            "hp": 78,
+            "ammo": 11,
+            "loaded": 0,
+            "routed": false
+          },
+          {
+            "id": "145",
+            "side": "player",
+            "hp": 0,
+            "ammo": 10,
+            "loaded": 0,
+            "routed": false
+          },
+          {
+            "id": "106",
+            "side": "player",
+            "hp": 0,
+            "ammo": 10,
+            "loaded": 0,
+            "routed": false
+          },
+          {
+            "id": "enemy-0",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 0,
+            "routed": false
+          },
+          {
+            "id": "enemy-1",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "enemy-2",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "enemy-3",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 10,
+            "loaded": 0,
+            "routed": false
+          },
+          {
+            "id": "enemy-4",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 11,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-5",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "enemy-6",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 9,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "enemy-7",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 11,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "enemy-8",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "enemy-9",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-10",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 0,
+            "routed": false
+          },
+          {
+            "id": "enemy-11",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "enemy-12",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 11,
+            "loaded": 0,
+            "routed": true
+          }
+        ]
+      }
+    },
+    "losPatos": {
+      "artifact": {
+        "path": "/tmp/granaderos-recovery-patos-result.json",
+        "sha256": "3c0605010464f5e15c7b26744868e125e4cec4f73e4a48c9c714a73a38704a46"
+      },
+      "hour": 1826,
+      "treasury": 7227,
+      "squad": [
+        118
+      ],
+      "summary": {
+        "sector": "los_patos",
+        "preparationSeconds": 0,
+        "startSeconds": 6574980,
+        "elapsedSeconds": 378,
+        "status": "victory",
+        "turns": 8,
+        "actions": 129,
+        "units": [
+          {
+            "id": "4",
+            "side": "player",
+            "hp": 84,
+            "ammo": 11,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "0",
+            "side": "player",
+            "hp": 82,
+            "ammo": 11,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "2",
+            "side": "player",
+            "hp": 0,
+            "ammo": 10,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "147",
+            "side": "player",
+            "hp": 78,
+            "ammo": 11,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "135",
+            "side": "player",
+            "hp": 0,
+            "ammo": 10,
+            "loaded": 0,
+            "routed": false
+          },
+          {
+            "id": "143",
+            "side": "player",
+            "hp": 76,
+            "ammo": 11,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "118",
+            "side": "player",
+            "hp": 82,
+            "ammo": 9,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "138",
+            "side": "player",
+            "hp": 0,
+            "ammo": 11,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "enemy-0",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "enemy-1",
+            "side": "enemy",
+            "hp": 10,
+            "ammo": 12,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-2",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "enemy-3",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "enemy-4",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 11,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "enemy-5",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "enemy-6",
+            "side": "enemy",
+            "hp": 24,
+            "ammo": 12,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-7",
+            "side": "enemy",
+            "hp": 47,
+            "ammo": 12,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-8",
+            "side": "enemy",
+            "hp": 34,
+            "ammo": 12,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-9",
+            "side": "enemy",
+            "hp": 34,
+            "ammo": 12,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-10",
+            "side": "enemy",
+            "hp": 56,
+            "ammo": 11,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-11",
+            "side": "enemy",
+            "hp": 14,
+            "ammo": 12,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-12",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "enemy-13",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "enemy-14",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 11,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "enemy-15",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 11,
+            "loaded": 1,
+            "routed": false
+          }
+        ]
+      }
+    },
+    "andes": {
+      "artifact": {
+        "path": "/tmp/granaderos-recovery-andes-result.json",
+        "sha256": "1205f631b0cf95469d01ffd65a144131c33b1e9475da650576aa7605f50eb949"
+      },
+      "hour": 1832,
+      "treasury": 3107,
+      "squad": [
+        4,
+        0,
+        147,
+        143,
+        57
+      ],
+      "summary": null
+    }
+  },
+  "createdCoast": {
+    "status": "PASS_SEPARATE_CHECKPOINTS",
+    "sourcePreparation": {
+      "artifact": {
+        "path": "/tmp/granaderos-created-coast-relief-source-result.json",
+        "sha256": "e7816598a72c91d5193d43a6192374ee5e08eeea20de34a972d5e5f0c7ddaeb3"
+      },
+      "hour": 3614,
+      "treasury": 9044,
+      "squad": [
+        10,
+        105,
+        128,
+        132,
+        145
+      ],
+      "summary": null
+    },
+    "sourceExitBattle": {
+      "artifact": {
+        "path": "/tmp/granaderos-ending-command-source-result.json",
+        "sha256": "abca17692231fa15a7ce3c1b007dfa932ba551270ad46d7745ae892a8c92cd79"
+      },
+      "hour": 3615,
+      "treasury": 9294,
+      "squad": [
+        10
+      ],
+      "summary": {
+        "sector": "ensenada",
+        "preparationSeconds": 0,
+        "startSeconds": 13013052,
+        "elapsedSeconds": 3084,
+        "status": "victory",
+        "turns": 13,
+        "actions": 671,
+        "units": [
+          {
+            "id": "57",
+            "side": "player",
+            "hp": 88,
+            "ammo": 14,
+            "loaded": 2,
+            "routed": false
+          },
+          {
+            "id": "107",
+            "side": "player",
+            "hp": 72,
+            "ammo": 15,
+            "loaded": 0,
+            "routed": false
+          },
+          {
+            "id": "114",
+            "side": "player",
+            "hp": 83,
+            "ammo": 15,
+            "loaded": 0,
+            "routed": false
+          },
+          {
+            "id": "139",
+            "side": "player",
+            "hp": 77,
+            "ammo": 15,
+            "loaded": 0,
+            "routed": false
+          },
+          {
+            "id": "146",
+            "side": "player",
+            "hp": 72,
+            "ammo": 11,
+            "loaded": 0,
+            "routed": false
+          },
+          {
+            "id": "4",
+            "side": "player",
+            "hp": 84,
+            "ammo": 14,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "10",
+            "side": "player",
+            "hp": 72,
+            "ammo": 14,
+            "loaded": 0,
+            "routed": false
+          },
+          {
+            "id": "105",
+            "side": "player",
+            "hp": 0,
+            "ammo": 15,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "128",
+            "side": "player",
+            "hp": 0,
+            "ammo": 14,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "132",
+            "side": "player",
+            "hp": 0,
+            "ammo": 14,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "145",
+            "side": "player",
+            "hp": 0,
+            "ammo": 10,
+            "loaded": 0,
+            "routed": false
+          },
+          {
+            "id": "enemy-0",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 11,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "enemy-1",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-2",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-3",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-4",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "enemy-5",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "enemy-6",
+            "side": "enemy",
+            "hp": 39,
+            "ammo": 12,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-7",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "enemy-8",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 11,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "enemy-9",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "enemy-10",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 11,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-11",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-12",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 11,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-13",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-14",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-15",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 10,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "enemy-16",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-17",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 0,
+            "routed": true
+          }
+        ]
+      }
+    },
+    "navalRecruitment": {
+      "artifact": {
+        "path": "/tmp/granaderos-ending-navy-result.json",
+        "sha256": "e3e40de1e210ddd46e93fda6351a7af3402a436c07396d176063407900f6f6a4"
+      },
+      "hour": 3619,
+      "treasury": 9284,
+      "squad": [
+        57,
+        5,
+        6
+      ],
+      "summary": null
+    },
+    "medicalRecovery": {
+      "artifact": {
+        "path": "/tmp/granaderos-ending-port-healed.json",
+        "sha256": "877eaf7c8512aea949d8ffdbac6ab6df44f89595f17ac01712339584497c6f4e"
+      },
+      "hour": 3627,
+      "treasury": 9990,
+      "squad": [
+        57,
+        5,
+        6,
+        114,
+        139
+      ],
+      "summary": null
+    },
+    "santaFe": {
+      "artifact": {
+        "path": "/tmp/granaderos-ending-santa-fe-result.json",
+        "sha256": "31379fd9f3af14e1494cf25291528a02019fc05d589faabd2b96d789e9b8d21a"
+      },
+      "hour": 4043,
+      "treasury": 14500,
+      "squad": [
+        57,
+        5,
+        114,
+        146
+      ],
+      "summary": {
+        "sector": "santa_fe",
+        "preparationSeconds": 0,
+        "startSeconds": 14553458,
+        "elapsedSeconds": 1753,
+        "status": "victory",
+        "turns": 13,
+        "actions": 283,
+        "units": [
+          {
+            "id": "57",
+            "side": "player",
+            "hp": 88,
+            "ammo": 8,
+            "loaded": 2,
+            "routed": false
+          },
+          {
+            "id": "5",
+            "side": "player",
+            "hp": 85,
+            "ammo": 12,
+            "loaded": 0,
+            "routed": false
+          },
+          {
+            "id": "6",
+            "side": "player",
+            "hp": 0,
+            "ammo": 14,
+            "loaded": 0,
+            "routed": false
+          },
+          {
+            "id": "114",
+            "side": "player",
+            "hp": 85,
+            "ammo": 12,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "139",
+            "side": "player",
+            "hp": 0,
+            "ammo": 13,
+            "loaded": 0,
+            "routed": false
+          },
+          {
+            "id": "146",
+            "side": "player",
+            "hp": 26,
+            "ammo": 13,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "enemy-0",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-1",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-2",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 11,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "enemy-3",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-4",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-5",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-6",
+            "side": "enemy",
+            "hp": 16,
+            "ammo": 12,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-7",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-8",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "enemy-9",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "enemy-10",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-11",
+            "side": "enemy",
+            "hp": 9,
+            "ammo": 12,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-12",
+            "side": "enemy",
+            "hp": 3,
+            "ammo": 12,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-13",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-14",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-15",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "enemy-16",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-17",
+            "side": "enemy",
+            "hp": 23,
+            "ammo": 12,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-18",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 11,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "enemy-19",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "enemy-20",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 1,
+            "routed": false
+          }
+        ]
+      }
+    },
+    "integratedHelperCheck": {
+      "status": "PASS_THROUGH_SANTA_FE",
+      "log": {
+        "path": "/tmp/granaderos-ending-coast-integrated-check.log",
+        "sha256": "6b9265753c53128fd1a3cec0eef4e7b497453299510bc140cd6d1e9e8f955ed6"
+      },
+      "result": {
+        "artifact": {
+          "path": "/tmp/granaderos-ending-coast-integrated-result.json",
+          "sha256": "f81793b7f2b1c741edd4f7d98ff78e46ce69f1113f58c07a76f3ee92e0d9d899"
+        },
+        "hour": 4043,
+        "treasury": 14500,
+        "squad": [
+          57,
+          5,
+          114,
+          146
+        ],
+        "summary": null
+      },
+      "inputUnchanged": true,
+      "matchedPreviousMilestones": true
+    },
+    "capitalReturn": {
+      "status": "PASS_CHECKPOINT_ONLY",
+      "sourceIntegrated": true,
+      "log": {
+        "path": "/tmp/granaderos-created-capital-source-check.log",
+        "sha256": "0dfab3f5f463730bc523a9c13b5b22a09c1dd2f7c379e6337a8098c21d4cd808"
+      },
+      "result": {
+        "artifact": {
+          "path": "/tmp/granaderos-created-capital-source-result.json",
+          "sha256": "892270987d31a45cf85d3f48536b884bc26d4e26d241c811b03a15bb25c21518"
+        },
+        "hour": 4430,
+        "treasury": 16531,
+        "squad": [
+          4
+        ],
+        "summary": {
+          "sector": "buenos_aires",
+          "preparationSeconds": 0,
+          "startSeconds": 15948426,
+          "elapsedSeconds": 334,
+          "status": "victory",
+          "turns": 21,
+          "actions": 191,
+          "units": [
+            {
+              "id": "5",
+              "side": "player",
+              "hp": 0,
+              "ammo": 15,
+              "loaded": 0,
+              "routed": false
+            },
+            {
+              "id": "146",
+              "side": "player",
+              "hp": 15,
+              "ammo": 14,
+              "loaded": 1,
+              "routed": false
+            },
+            {
+              "id": "114",
+              "side": "player",
+              "hp": 0,
+              "ammo": 14,
+              "loaded": 1,
+              "routed": false
+            },
+            {
+              "id": "107",
+              "side": "player",
+              "hp": 74,
+              "ammo": 14,
+              "loaded": 1,
+              "routed": false
+            },
+            {
+              "id": "4",
+              "side": "player",
+              "hp": 84,
+              "ammo": 13,
+              "loaded": 1,
+              "routed": false
+            },
+            {
+              "id": "10",
+              "side": "player",
+              "hp": 0,
+              "ammo": 12,
+              "loaded": 0,
+              "routed": false
+            },
+            {
+              "id": "enemy-group-5-0",
+              "side": "enemy",
+              "hp": 0,
+              "ammo": 5,
+              "loaded": 0,
+              "routed": true
+            },
+            {
+              "id": "enemy-group-5-1",
+              "side": "enemy",
+              "hp": 0,
+              "ammo": 5,
+              "loaded": 1,
+              "routed": false
+            },
+            {
+              "id": "enemy-group-5-2",
+              "side": "enemy",
+              "hp": 0,
+              "ammo": 5,
+              "loaded": 1,
+              "routed": false
+            },
+            {
+              "id": "enemy-group-5-3",
+              "side": "enemy",
+              "hp": 0,
+              "ammo": 3,
+              "loaded": 0,
+              "routed": true
+            },
+            {
+              "id": "enemy-group-5-4",
+              "side": "enemy",
+              "hp": 0,
+              "ammo": 5,
+              "loaded": 0,
+              "routed": true
+            },
+            {
+              "id": "enemy-group-5-5",
+              "side": "enemy",
+              "hp": 0,
+              "ammo": 5,
+              "loaded": 0,
+              "routed": true
+            },
+            {
+              "id": "enemy-group-5-6",
+              "side": "enemy",
+              "hp": 0,
+              "ammo": 5,
+              "loaded": 0,
+              "routed": true
+            },
+            {
+              "id": "enemy-group-5-7",
+              "side": "enemy",
+              "hp": 0,
+              "ammo": 5,
+              "loaded": 0,
+              "routed": true
+            },
+            {
+              "id": "enemy-group-5-8",
+              "side": "enemy",
+              "hp": 0,
+              "ammo": 4,
+              "loaded": 0,
+              "routed": true
+            },
+            {
+              "id": "enemy-group-5-9",
+              "side": "enemy",
+              "hp": 0,
+              "ammo": 5,
+              "loaded": 0,
+              "routed": true
+            },
+            {
+              "id": "enemy-group-5-10",
+              "side": "enemy",
+              "hp": 0,
+              "ammo": 5,
+              "loaded": 1,
+              "routed": false
+            },
+            {
+              "id": "enemy-group-5-11",
+              "side": "enemy",
+              "hp": 0,
+              "ammo": 5,
+              "loaded": 0,
+              "routed": true
+            },
+            {
+              "id": "enemy-group-5-12",
+              "side": "enemy",
+              "hp": 0,
+              "ammo": 5,
+              "loaded": 0,
+              "routed": true
+            },
+            {
+              "id": "enemy-group-5-13",
+              "side": "enemy",
+              "hp": 0,
+              "ammo": 5,
+              "loaded": 0,
+              "routed": true
+            },
+            {
+              "id": "enemy-group-5-14",
+              "side": "enemy",
+              "hp": 0,
+              "ammo": 5,
+              "loaded": 0,
+              "routed": true
+            },
+            {
+              "id": "enemy-group-5-15",
+              "side": "enemy",
+              "hp": 0,
+              "ammo": 5,
+              "loaded": 0,
+              "routed": true
+            },
+            {
+              "id": "enemy-group-5-16",
+              "side": "enemy",
+              "hp": 0,
+              "ammo": 5,
+              "loaded": 0,
+              "routed": true
+            },
+            {
+              "id": "enemy-group-5-17",
+              "side": "enemy",
+              "hp": 0,
+              "ammo": 5,
+              "loaded": 0,
+              "routed": true
+            },
+            {
+              "id": "enemy-group-5-18",
+              "side": "enemy",
+              "hp": 6,
+              "ammo": 5,
+              "loaded": 0,
+              "routed": true
+            },
+            {
+              "id": "enemy-group-5-19",
+              "side": "enemy",
+              "hp": 9,
+              "ammo": 4,
+              "loaded": 0,
+              "routed": true
+            },
+            {
+              "id": "enemy-group-5-20",
+              "side": "enemy",
+              "hp": 0,
+              "ammo": 5,
+              "loaded": 1,
+              "routed": false
+            },
+            {
+              "id": "3",
+              "side": "player",
+              "hp": 0,
+              "ammo": 0,
+              "loaded": 0,
+              "routed": false
+            },
+            {
+              "id": "136",
+              "side": "player",
+              "hp": 0,
+              "ammo": 8,
+              "loaded": 0,
+              "routed": false
+            },
+            {
+              "id": "141",
+              "side": "player",
+              "hp": 0,
+              "ammo": 8,
+              "loaded": 0,
+              "routed": false
+            },
+            {
+              "id": "enemy-0",
+              "side": "enemy",
+              "hp": 0,
+              "ammo": 11,
+              "loaded": 0,
+              "routed": false
+            },
+            {
+              "id": "enemy-1",
+              "side": "enemy",
+              "hp": 0,
+              "ammo": 11,
+              "loaded": 0,
+              "routed": true
+            },
+            {
+              "id": "enemy-2",
+              "side": "enemy",
+              "hp": 0,
+              "ammo": 11,
+              "loaded": 1,
+              "routed": false
+            },
+            {
+              "id": "enemy-3",
+              "side": "enemy",
+              "hp": 0,
+              "ammo": 10,
+              "loaded": 0,
+              "routed": false
+            },
+            {
+              "id": "137",
+              "side": "player",
+              "hp": 0,
+              "ammo": 8,
+              "loaded": 0,
+              "routed": true
+            }
+          ]
+        }
+      },
+      "inputUnchanged": true,
+      "matchedPreparationAndBattle": true,
+      "combinedCoastExtendedAfterCheck": true
+    },
+    "fullEndingFixtureIntegrated": false
+  },
+  "recoveryCoast": {
+    "status": "PASS_CHECKPOINT_ONLY",
+    "ensenada": {
+      "artifact": {
+        "path": "/tmp/granaderos-recovery-command-source-result.json",
+        "sha256": "4fc4357d039a16d24cea1b92cc608e84b7e9360309f039871a4c3ebc1cd2ca34"
+      },
+      "hour": 2411,
+      "treasury": 11964,
+      "squad": [
+        103,
+        147
+      ],
+      "summary": {
+        "sector": "ensenada",
+        "preparationSeconds": 0,
+        "startSeconds": 8663682,
+        "elapsedSeconds": 16311,
+        "status": "victory",
+        "turns": 29,
+        "actions": 1015,
+        "units": [
+          {
+            "id": "4",
+            "side": "player",
+            "hp": 0,
+            "ammo": 11,
+            "loaded": 0,
+            "routed": false
+          },
+          {
+            "id": "0",
+            "side": "player",
+            "hp": 0,
+            "ammo": 11,
+            "loaded": 0,
+            "routed": false
+          },
+          {
+            "id": "57",
+            "side": "player",
+            "hp": 88,
+            "ammo": 11,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "3",
+            "side": "player",
+            "hp": 96,
+            "ammo": 10,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "100",
+            "side": "player",
+            "hp": 0,
+            "ammo": 11,
+            "loaded": 0,
+            "routed": false
+          },
+          {
+            "id": "133",
+            "side": "player",
+            "hp": 93,
+            "ammo": 10,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "143",
+            "side": "player",
+            "hp": 0,
+            "ammo": 10,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "103",
+            "side": "player",
+            "hp": 15,
+            "ammo": 10,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "147",
+            "side": "player",
+            "hp": 78,
+            "ammo": 3,
+            "loaded": 0,
+            "routed": false
+          },
+          {
+            "id": "118",
+            "side": "player",
+            "hp": 0,
+            "ammo": 10,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-0",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 11,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-1",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-2",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-3",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-4",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-5",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-6",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "enemy-7",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-8",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "enemy-9",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "enemy-10",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-11",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-12",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-13",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-14",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-15",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "enemy-16",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "enemy-17",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 0,
+            "routed": true
+          }
+        ]
+      }
+    },
+    "navalRecruitment": {
+      "artifact": {
+        "path": "/tmp/granaderos-recovery-navy-result.json",
+        "sha256": "b0ddff0183661ddbd90091eeb4885c2fca0ec234cb37426dd4e93f232da1ca9d"
+      },
+      "hour": 2415,
+      "treasury": 11954,
+      "squad": [
+        57,
+        5,
+        6
+      ],
+      "summary": null
+    },
+    "medicalRecovery": {
+      "artifact": {
+        "path": "/tmp/granaderos-recovery-port-healed.json",
+        "sha256": "0597c1dff368ebd01bee6f354b998eaae281c51614de7ec45f42aa9a65646297"
+      },
+      "hour": 2423,
+      "treasury": 11924,
+      "squad": [
+        57,
+        5,
+        6,
+        3
+      ],
+      "summary": null
+    },
+    "santaFe": {
+      "artifact": {
+        "path": "/tmp/granaderos-recovery-new-santa-fe-result.json",
+        "sha256": "b9bd6a1a7064fab3f53426d202b5b90c999e8e29a79d24e9db95fbfd17bc9c17"
+      },
+      "hour": 2962,
+      "treasury": 18753,
+      "squad": [
+        57,
+        5,
+        123,
+        120
+      ],
+      "summary": {
+        "sector": "santa_fe",
+        "preparationSeconds": 0,
+        "startSeconds": 10663860,
+        "elapsedSeconds": 1932,
+        "status": "victory",
+        "turns": 23,
+        "actions": 350,
+        "units": [
+          {
+            "id": "57",
+            "side": "player",
+            "hp": 88,
+            "ammo": 0,
+            "loaded": 0,
+            "routed": false
+          },
+          {
+            "id": "5",
+            "side": "player",
+            "hp": 17,
+            "ammo": 10,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "6",
+            "side": "player",
+            "hp": 0,
+            "ammo": 7,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "123",
+            "side": "player",
+            "hp": 91,
+            "ammo": 12,
+            "loaded": 0,
+            "routed": false
+          },
+          {
+            "id": "134",
+            "side": "player",
+            "hp": 0,
+            "ammo": 8,
+            "loaded": 0,
+            "routed": false
+          },
+          {
+            "id": "120",
+            "side": "player",
+            "hp": 77,
+            "ammo": 14,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "enemy-0",
+            "side": "enemy",
+            "hp": 7,
+            "ammo": 10,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-1",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-2",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-3",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "enemy-4",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "enemy-5",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 11,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "enemy-6",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-7",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-8",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 11,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-9",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 9,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-10",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "enemy-11",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-12",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-13",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "enemy-14",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-15",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "enemy-16",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 11,
+            "loaded": 0,
+            "routed": false
+          },
+          {
+            "id": "enemy-17",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-18",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-19",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "enemy-20",
+            "side": "enemy",
+            "hp": 16,
+            "ammo": 12,
+            "loaded": 0,
+            "routed": true
+          }
+        ]
+      }
+    }
+  },
+  "previousFullRecovery": {
+    "status": "FAIL",
+    "tests": 1,
+    "pass": 0,
+    "fail": 1,
+    "cancelled": 0,
+    "skipped": 0,
+    "duration_ms": 238934.048,
+    "log": {
+      "path": "/tmp/granaderos-local-recovery-road-foundry-full.tap",
+      "sha256": "cc0cd50e173fa4904a42a8e2b5de6802aa7fecd3afe332bb6697f00fa3e8328a"
+    }
+  },
+  "currentFullRecovery": {
+    "status": "FAIL",
+    "tests": 1,
+    "pass": 0,
+    "fail": 1,
+    "cancelled": 0,
+    "skipped": 0,
+    "duration_ms": 523357.511958,
+    "log": {
+      "path": "/tmp/granaderos-local-recovery-coast-full.tap",
+      "sha256": "2769e6051231f33c9c10ae12967530b7a04286716798b47f1931f6a54b7e62cd"
+    },
+    "manifest": {
+      "path": "/tmp/granaderos-recovery-coast-full-sources.json",
+      "sha256": "d0f523d9cb14c2302ae3c5f5bb853faaa61799887b05ba81566dd993224ea9c7"
+    },
+    "sourceConfirmation": {
+      "path": "/tmp/granaderos-recovery-coast-full-source-confirmation.json",
+      "sha256": "e655dfd03109371300987720b3ba4ff1f8de4843c376861576c0efbe4062f4c1"
+    },
+    "passedThrough": "Santa Fe at hour 2962, including the new mountain and Ensenada steps",
+    "failure": "The next northern-return fixture requires dead officers, beginning with ID2. No victory or survival assertion was relaxed."
+  },
+  "remaining": [
+    "Both complete route files remain open. Checkpoint victories do not establish full fresh-start success.",
+    "The created route clears the real capital blockade after Santa Fe through ordinary care, finite equipment, two actual approach groups and combat. The remaining northern conquests are still open.",
+    "Old northern-return fixtures require named officers who actually died. Replace those assumptions with the real living roster, paid care, supplies and actual battles.",
+    "No new complete-suite result, browser acceptance, push, merge or preview replacement. Service-end equipment return remains queued after PR139 merge."
+  ],
+  "createdNorthernDiagnostic": {
+    "status": "PASS_TEMPORARY_DIAGNOSTIC",
+    "preparedFromActualCapitalVictory": true,
+    "funded": {
+      "artifact": {
+        "path": "/tmp/granaderos-ending-last-column-funded.json",
+        "sha256": "c856186dd862c8bf561a7716afad851dd177d4eee659b45c35a827f48a08dd02"
+      },
+      "hour": 7008,
+      "treasury": 60377,
+      "summary": null
+    },
+    "rested": {
+      "artifact": {
+        "path": "/tmp/granaderos-ending-last-column-rested.json",
+        "sha256": "6d5289c181931dcc812110f31cedef6d26a9e61da0c56aa2d6c3d8eb0dad8441"
+      },
+      "hour": 7254,
+      "treasury": 36607,
+      "summary": null
+    },
+    "tucuman": {
+      "artifact": {
+        "path": "/tmp/granaderos-ending-last-tucuman-result.json",
+        "sha256": "54d01a4d0aa540d5af5054c31d85dac218f67f30e126bdcca1dc8e6d972b6afa"
+      },
+      "hour": 7282,
+      "treasury": 32671,
+      "summary": {
+        "sector": "tucuman",
+        "preparationSeconds": 0,
+        "startSeconds": 26215967,
+        "elapsedSeconds": 154,
+        "status": "victory",
+        "turns": 13,
+        "actions": 151,
+        "units": [
+          {
+            "id": "4",
+            "side": "player",
+            "hp": 0,
+            "ammo": 15,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "146",
+            "side": "player",
+            "hp": 76,
+            "ammo": 14,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "107",
+            "side": "player",
+            "hp": 15,
+            "ammo": 14,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "143",
+            "side": "player",
+            "hp": 0,
+            "ammo": 15,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "147",
+            "side": "player",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "enemy-group-4-0",
+            "side": "enemy",
+            "hp": 9,
+            "ammo": 5,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-group-4-1",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 5,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-group-4-2",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 5,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-group-4-3",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 5,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "enemy-group-4-4",
+            "side": "enemy",
+            "hp": 4,
+            "ammo": 5,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-group-4-5",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 5,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-group-4-6",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 5,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "enemy-group-4-7",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 5,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-group-4-8",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 5,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-group-4-9",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 5,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "enemy-group-4-10",
+            "side": "enemy",
+            "hp": 37,
+            "ammo": 5,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-group-4-11",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 5,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-group-4-12",
+            "side": "enemy",
+            "hp": 4,
+            "ammo": 5,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-group-4-13",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 5,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "enemy-group-4-14",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 5,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-group-4-15",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 5,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "134",
+            "side": "player",
+            "hp": 0,
+            "ammo": 9,
+            "loaded": 0,
+            "routed": false
+          },
+          {
+            "id": "enemy-1",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-2",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-3",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-5",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-6",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 10,
+            "loaded": 0,
+            "routed": false
+          },
+          {
+            "id": "enemy-7",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 0,
+            "routed": true
+          },
+          {
+            "id": "enemy-8",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "enemy-9",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 1,
+            "routed": false
+          },
+          {
+            "id": "enemy-10",
+            "side": "enemy",
+            "hp": 0,
+            "ammo": 12,
+            "loaded": 0,
+            "routed": true
+          }
+        ]
+      }
+    },
+    "log": {
+      "path": "/tmp/granaderos-ending-last-column-notices-check.log",
+      "sha256": "edaeb200c3c5c6d020a33a7213fd7a815dcd5d40945e0e78790e3f6b9a4b655f"
+    },
+    "sourcePreparationCopiedTo": "tests/created-northern-return.mjs",
+    "fullEndingFixtureIntegrated": false,
+    "actualSurvivors": [
+      57,
+      146,
+      107
+    ],
+    "remainingTargets": [
+      "salta",
+      "jujuy",
+      "humahuaca"
+    ]
+  },
+  "documentationAudit": {
+    "status": "PASS",
+    "requirements": 274,
+    "originalRows": 50,
+    "parityRows": 87,
+    "evidenceRecords": 114
+  },
+  "diffCheck": "PASS",
+  "recoveryCapitalDiagnostic": {
+    "status": "FAIL",
+    "temporaryOnly": true,
+    "preparationPassed": {
+      "hour": 3398,
+      "treasury": 21416,
+      "field": [
+        5,
+        120,
+        123,
+        111,
+        133,
+        3
+      ]
+    },
+    "battle": {
+      "outcome": "retreat",
+      "turns": 69,
+      "actions": 3048
+    },
+    "log": {
+      "path": "/tmp/granaderos-recovery-capital-return-check.log",
+      "sha256": "782a42d96c7834d16b5a821e0ed20362f28ef5604297bf600e1bde89997dc780"
+    },
+    "reason": "The temporary six-person approach did not clear the actual naval occupation. No failed result was accepted or merged."
+  }
+}

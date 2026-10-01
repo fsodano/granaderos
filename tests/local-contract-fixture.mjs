@@ -23,7 +23,15 @@ export const sync=p=>{const n=syncBattleTime(p.campaign,p.battle);assert.equal(n
 export function tactical(p,action){const battle=actBattle(p.battle,{unitId:p.battle.units.find(u=>u.side==='player').id,...action});assert.equal(battle.lastError,null,battle.lastError);return sync({campaign:p.campaign,battle});}
 export function readyLocal(options,content=localPackage(options)){let s=order(initialCampaign(42,content),{type:'recruitCivic',id:110,term:'month'});s=order(s,{type:'travel',sector:A});const p=visit(s),n=localNPC(p.battle),unit=p.battle.units.find(u=>u.side==='player');return sync({campaign:p.campaign,battle:approachNPC(p.battle,unit.id,n.id)});}
 export const talk=(p,term='day',approach='recruit')=>({type:'talkNPC',npcId:localNPC(p.battle).id,unitId:p.battle.units.find(u=>u.side==='player').id,term,approach,sectorState:p.battle});
+export function approachLocal(p){
+ const actor=p.battle.units.find(u=>u.side==='player'),npc=localNPC(p.battle),movement=actor.movementMode??'walk';
+ if(movement!=='run')p=tactical(p,{type:'movement',unitId:actor.id,movement:'run'});
+ p=sync({campaign:p.campaign,battle:approachNPC(p.battle,actor.id,npc.id)});
+ if(movement!=='run')p=tactical(p,{type:'movement',unitId:actor.id,movement});
+ return p;
+}
 export function hireLocal(p,term='day'){
+ p=approachLocal(p);
  const npc=localNPC(p.battle),campaign=order(p.campaign,talk(p,term)),id=localId(campaign),op=campaign.pendingBattle.squad.find(u=>u.id===id),battle=structuredClone(p.battle);
  battle.npcs=battle.npcs.filter(n=>n.id!==npc.id);battle.units.push({...createBattle([op],{width:8,height:8,exploration:true,enemies:[]}).units[0],x:npc.x,y:npc.y});return saved({campaign,battle});
 }
