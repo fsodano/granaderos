@@ -3,8 +3,9 @@ import assert from 'node:assert/strict';
 import {DEFAULT_AMMUNITION_MARKET,validateAmmunitionMarket,ammunitionMarketRules} from '../game/ammunition-market-rules.js';
 import {defaultContentPackage,validateContentPackage,parseContentPackage} from '../game/content-package.js';
 import {initialCampaign,dispatchCampaign,deploymentCost,rosterFor} from '../game/campaign.js';
-import {ammunitionOrderQuote,restockAmmunitionShops,prepareCampaignAmmunition} from '../game/campaign-ammunition.js';
+import {ammunitionOrderQuote,restockAmmunitionShops,prepareCampaignAmmunition,syncCarriedAmmunition} from '../game/campaign-ammunition.js';
 import {order,saved,visit,leave} from './local-contract-fixture.mjs';
+import {addAmmunition} from '../game/ammunition-types.js';
 const profile=()=>structuredClone(DEFAULT_AMMUNITION_MARKET);
 const content=()=>{const d=defaultContentPackage();d.characters.find(c=>c.id==='person-110').arrivalHours=0;d.rules.cartridgePrice=3;d.ammunitionMarket={defaults:profile(),locations:{}};return d;};
 const hire=d=>order(initialCampaign(8,d),{type:'recruitCivic',id:110,term:'month'});
@@ -36,7 +37,7 @@ test('an initially empty supplier replenishes after actual supplied hours and re
 test('manual-only suppliers load owned ammunition without buying it again; disabled suppliers preserve storage',()=>{
  const d=content();d.ammunitionMarket.defaults.automaticPurchase=false;let s=hire(d),cash=s.resources.treasury;assert.equal(deploymentCost(s),0);s=buy(s,4);const p=visit(s);assert.equal(p.battle.units[0].loaded,1);assert.equal(p.battle.units[0].ammo,3);s=leave(p);assert.equal(s.resources.treasury,cash-12);
  // A disabled destination remains a place to keep owned rounds, never a vendor.
- d.ammunitionMarket.defaults.enabled=false;let closed=hire(d);closed.operativeState[110].ammunition={ammoMusket:4};closed.operativeState[110].ammo=4;
+ d.ammunitionMarket.defaults.enabled=false;let closed=hire(d);addAmmunition(closed.operativeState[110],'musket_75',4);syncCarriedAmmunition(closed.operativeState[110],rosterFor(closed).find(o=>o.id===110).weapon);
  closed=buy(closed,2,'ammoMusket','store');closed=buy(closed,1,'ammoMusket','take');const before=structuredClone(closed.ammunitionShops);restockAmmunitionShops(closed,()=>true);assert.deepEqual(closed.ammunitionShops,before);
  const rejected=dispatchCampaign(closed,{type:'ammunition',operativeId:110,family:'ammoMusket',quantity:1,direction:'buy'});assert.match(rejected.lastError,/proveedor habilitado/);assert.equal(rejected.resources.treasury,closed.resources.treasury);
  const prepared=prepareCampaignAmmunition(closed,rosterFor(closed),[110],{supplied:true});assert.equal(prepared.cost,0);assert.equal(prepared.allocation[110].loaded,1);assert.equal(prepared.allocation[110].ammo,2);assert.deepEqual(saved({campaign:closed}).campaign,closed);

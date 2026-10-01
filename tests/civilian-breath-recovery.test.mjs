@@ -4,7 +4,7 @@ import {runCivilianPhase,advanceCivilianTime} from '../game/npc-ai.js';
 import {applyCivilianHarm,civilianIncidents} from '../game/civilian-harm.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
 import {initialCampaign,dispatchCampaign} from '../game/campaign.js';
-import {order,saved,visit,leave,tactical,talk,localPackage,localNPC,localId,hireLocal} from './local-contract-fixture.mjs';
+import {order,saved,visit,leave,tactical,talk,localPackage,localNPC,localId,hireLocal,approachLocal} from './local-contract-fixture.mjs';
 
 const field=(condition={})=>createBattle([{id:'p',x:0,y:7}],{width:12,height:8,exploration:true,enemies:[],npcs:[{id:'resident',name:'Habitante',x:5,y:3,hp:60,maxHp:80,energy:0,...condition}]});
 
@@ -26,7 +26,7 @@ test('critical residents and bodies do not wake or heal, and loaded recovery kee
 });
 
 test('actual tactical time recovers civilians once per completed round or six exploration seconds, while field aid grants no breath',()=>{
- const original=field({hp:1,stance:'prone'}),treated=actBattle(createBattle([{id:'doc',x:4,y:3,medical:80,medkits:2}],{width:12,height:8,exploration:true,enemies:[],npcs:original.npcs}),{type:'heal',unitId:'doc',targetId:'resident'});
+ const original=field({hp:1,stance:'prone'}),treated=actBattle(createBattle([{id:'doc',x:4,y:3,medical:80,medkits:2,activeSlot:'medical'}],{width:12,height:8,exploration:true,enemies:[],npcs:original.npcs}),{type:'heal',unitId:'doc',targetId:'resident'});
  assert.equal(treated.lastError,null);assert.ok(treated.npcs[0].hp>1);assert.equal(treated.npcs[0].energy,0);assert.equal(treated.npcs[0].unconscious,true);
  const stabilized=actBattle(treated,{type:'heal',unitId:'doc',targetId:'resident'});assert.equal(stabilized.lastError,null);assert.equal(stabilized.npcs[0].hp,15);assert.equal(stabilized.npcs[0].energy,0);assert.equal(stabilized.npcs[0].unconscious,true);assert.equal(stabilized.units[0].medkits,0);
  const awake=actBattle(stabilized,{type:'ambient'});assert.equal(awake.npcs[0].energy,10);assert.equal(awake.npcs[0].unconscious,false);assert.equal(awake.npcs[0].hp,15);assert.equal(awake.npcs[0].stance,'prone');assert.equal(awake.units[0].medkits,0);
@@ -40,6 +40,6 @@ test('an authored exhausted resident stays unchanged off map, wakes in its loade
  let s=order(initialCampaign(42,d),{type:'recruitCivic',id:110,term:'month'}),id=localId(s);s=order(s,{type:'wait',hours:6});assert.equal(s.operativeState[id].energy,0);s=order(s,{type:'travel',sector:'cell-27-27'});let p=visit(s),n=localNPC(p.battle);assert.equal(n.energy,0);assert.equal(n.unconscious,true);assert.ok(dispatchCampaign(p.campaign,talk(p)).lastError);
  p=tactical(p,{type:'ambient'});assert.equal(localNPC(p.battle).energy,10);assert.equal(localNPC(p.battle).unconscious,false);p=saved(p);assert.equal(p.campaign.operativeState[id].energy,10);
  s=leave(p);s=order(s,{type:'wait',hours:6});assert.equal(s.operativeState[id].energy,10,'unloaded strategic time does not recover a resident');p=visit(saved({campaign:s}).campaign);assert.equal(localNPC(p.battle).energy,10);
- n=localNPC(p.battle);const u=p.battle.units.find(u=>u.side==='player'),spot=getReachable(p.battle,u.id).find(t=>Math.abs(t.x-n.x)+Math.abs(t.y-n.y)===1);assert.ok(spot);if(spot.cost)p=tactical(p,{type:'move',x:spot.x,y:spot.y});const recovered=localNPC(p.battle).energy;assert.ok(recovered>=10);p=hireLocal(saved(p));assert.equal(p.battle.units.find(u=>u.id===String(id)).energy,recovered);
+ p=approachLocal(saved(p));const recovered=localNPC(p.battle).energy;assert.ok(recovered>=10);p=hireLocal(p);assert.equal(p.battle.units.find(u=>u.id===String(id)).energy,recovered);
  s=order(leave(p),{type:'dismiss',id});p=visit(saved({campaign:s}).campaign);assert.equal(localNPC(p.battle).energy,recovered);assert.equal(localNPC(p.battle).hp,95);assert.equal(resident.startingCondition.energy,0);assert.ok(saved(p));
 });

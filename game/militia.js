@@ -1,6 +1,6 @@
 import {getCityStatus} from './cities.js';
 // Training cohorts reserve existing soldiers on promotion; no rank multiplication.
-export const MILITIA_NAMES=['Cívicos','Montoneras','Granaderos y línea'];
+export const MILITIA_NAMES=['Cívicos','Montoneras','Veteranos'];
 export const MILITIA_COHORT=3;
 export const MILITIA_LIMIT=60;
 export function militiaCourse(trainer,rank){

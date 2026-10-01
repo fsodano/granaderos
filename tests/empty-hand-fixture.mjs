@@ -9,5 +9,5 @@ export function disarmedArrival({secondary=true}={}){
  // Declared adjacent positions isolate actual recovery and paid first aid.
  wounded.x=doctor.x+1;wounded.y=doctor.y;assert.equal(wounded.unconscious,true);
  p=tactical(p,{unitId:'110',type:'loot',targetId:'111',item:'weapon'});if(!secondary)p=tactical(p,{unitId:'110',type:'loot',targetId:'111',item:'blade'});
- p=tactical(p,{unitId:'110',type:'heal',targetId:'111'});assert.equal(p.battle.units.find(u=>u.id==='111').unconscious,false);return saved(p);
+ p=tactical(p,{unitId:'110',type:'weapon',slot:'medical'});p=tactical(p,{unitId:'110',type:'heal',targetId:'111'});assert.equal(p.battle.units.find(u=>u.id==='111').unconscious,false);p=tactical(p,{unitId:'110',type:'weapon',slot:'primary'});return saved(p);
 }

@@ -5,12 +5,12 @@ import {initialCampaign,dispatchCampaign,restoreCampaign} from '../game/campaign
 import {tradeQuote} from '../game/politics.js';
 const order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null);return n;};
 test('actual import orders use reputation prices and retain shipping delay',()=>{
- let s=secureArea(initialCampaign(),'ensenada');s.reputation.foreign=60;const cash=s.resources.treasury;
+ let s=secureArea(initialCampaign(),'buenos_aires','ensenada');s.reputation.foreign=60;const cash=s.resources.treasury;
  s=order(s,{type:'purchaseEquipment',item:1802});assert.equal(cash-s.resources.treasury,336);assert.ok(s.equipmentShipments[0].due>=72&&s.equipmentShipments[0].due<=120);
  assert.equal(tradeQuote({...s,reputation:{foreign:0}},250),300);
 });
 test('national contribution is payable once per period and neglect loses support',()=>{
- let s=order(initialCampaign(),{type:'wait',hours:168});const before=s.reputation.directory;
+ let s=order(secureArea(initialCampaign()),{type:'wait',hours:168});const before=s.reputation.directory;
  const paid=order(s,{type:'policy',kind:'tax'});assert.equal(paid.reputation.directory,before+8);assert.equal(paid.resources.treasury,s.resources.treasury-120);
  assert.ok(dispatchCampaign(paid,{type:'policy',kind:'tax'}).lastError);
  s=order(s,{type:'wait',hours:168});assert.equal(s.reputation.directory,before-8);
@@ -25,10 +25,10 @@ test('cash cannot be requisitioned repeatedly and frontier betrayal breaks the p
  s=order(s,{type:'wait',hours:168});assert.ok(s.sectors.mendoza.damageUntil>s.hour);assert.ok(s.log.some(e=>e.text.includes('partida de frontera')));
 });
 test('neglect of emancipation and commissions has a weekly political consequence',()=>{
- let s=initialCampaign();s=order(s,{type:'wait',hours:168});assert.equal(s.reputation.pardos,7);
+ let s=secureArea(initialCampaign());s=order(s,{type:'wait',hours:168});assert.equal(s.reputation.pardos,7);
  s=order(s,{type:'diplomacy',kind:'emancipation'});s=order(s,{type:'diplomacy',kind:'commission'});const support=s.reputation.pardos;
  s=order(s,{type:'wait',hours:168});assert.equal(s.reputation.pardos,support);
 });
 test('policy save validation rejects invalid future tax periods',()=>{
- const s=initialCampaign();s.politics={taxPaidPeriod:100};assert.throws(()=>restoreCampaign(JSON.stringify(s)),/políticas/);
+ const s=secureArea(initialCampaign());s.politics={taxPaidPeriod:100};assert.throws(()=>restoreCampaign(JSON.stringify(s)),/políticas/);
 });

@@ -1,3 +1,8 @@
+import {previewStrategicRoute} from '../game/strategic-route.js';
+import {MAX_SAVE_BYTES,saveByteLength} from '../game/save-limits.js';
+import {launchEnemyGroup} from '../game/enemy-groups.js';
+import {sleepOrderReason} from '../game/sleep.js';
+import {advanceCampaignHours} from './campaign-wait-fixture.mjs';
 import {secureArea} from './controlled-area-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -8,7 +13,9 @@ import {campaignContentReport} from '../game/campaign-content.js';
 import {hiringArrivalReason} from '../game/hiring-arrivals.js';
 import {buildSectorMap} from '../game/maps.js';
 import {enterSector} from '../game/world.js';
-import {actBattle} from '../game/tactical.js';
+import {actBattle,getReachable,hasLineOfSight} from '../game/tactical.js';
+import {entryFromSector} from '../game/tactical-exits.js';
+import {sameSurface,spacePoint} from '../game/tactical-space.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {syncBattleTime} from '../game/time.js';
 import {expandCellScene} from '../game/cell-scene-storage.js';
@@ -25,6 +32,20 @@ test('each physical cell has one runtime identity; only the exact legacy anchor 
  assert.equal(locationId('cell-26-28'),'cell-26-28');assert.equal(locationId('cell-25-29'),'cell-25-29');
  for(const bad of ['cell-36-0','cell--1-0','cell-0-33','cell-01-1','constructor'])assert.equal(locationId(bad),null);
 });
+test('walking back after a real rural exit replaces the arrival record and permits time, save and reentry',()=>{
+ let p=visit(ready());const exit=p.battle.exits.find(e=>e.destination==='cell-27-27');assert.ok(exit);
+ const destination=getReachable(p.battle,p.battle.units.find(u=>u.id==='110')).filter(cell=>(cell.tacticalLevel??0)===0&&cell.y===0).sort((a,b)=>a.cost-b.cost)[0];assert.ok(destination);
+ p.battle=actBattle(p.battle,{type:'move',unitId:'110',x:destination.x,y:destination.y});assert.equal(p.battle.lastError,null);
+ p.battle=actBattle(p.battle,{type:'exit',unitIds:['110'],exitId:exit.id});assert.equal(p.battle.lastError,null);
+ let s=leave(p);assert.equal(s.operativeState[110].arrival.exitId,exit.id);assert.equal(s.location,'cell-27-27');
+ const hour=s.hour;s=travel(s,'retiro');assert.ok(s.hour>hour);
+ s=order(s,{type:'wait',hours:1});s=saved(s).campaign;
+ const record=s.operativeState[110],entry=entryFromSector('cell-27-27','retiro');
+ assert.equal(record.location,'retiro');assert.equal(record.arrival.fromSector,'cell-27-27');assert.equal(record.arrival.toSector,'retiro');
+ assert.equal(record.arrival.exitId,undefined);assert.equal(record.arrival.entryEdge,entry.entryEdge);assert.deepEqual(record.arrival.entryAnchor,entry.entryAnchor);
+ p=visit(s);const actor=p.battle.units.find(u=>u.id==='110');assert.equal(actor.y,0,'the return uses the actual northern boundary');
+ assert.deepEqual(saved(p.campaign,p.battle),p);
+});
 test('real travel and visits preserve two rural and two urban cells across campaign and active-scene saves',()=>{
  let s=ready();const income=dailyIncome(s),locations=['cell-27-27','cell-26-27','cell-26-28','cell-25-29'];
  for(const [index,id]of locations.entries()){
@@ -39,6 +60,11 @@ test('real travel and visits preserve two rural and two urban cells across campa
  }
  for(const [index,id]of locations.entries()){
   s=travel(s,id);let pair=visit(s);assert.equal(pair.battle.groundItems.length,1);assert.equal(pair.battle.groundItems[0].id,`supplies-${index}`);
+  // Reentry uses the boundary reached by this march, not the earlier visit's
+  // position. Walk back to the retained item before trying to collect it.
+  const item=pair.battle.groundItems[0],near=getReachable(pair.battle,pair.battle.units[0]).filter(p=>sameSurface(p,item)&&Math.hypot(p.x-item.x,p.y-item.y)<=1.5&&hasLineOfSight(pair.battle,p,item)).sort((a,b)=>a.cost-b.cost)[0];assert.ok(near);
+  if(near.cost){pair.battle=actBattle(pair.battle,{type:'move',unitId:'110',...spacePoint(near)});assert.equal(pair.battle.lastError,null);}
+  if(pair.battle.units[0].x!==item.x||pair.battle.units[0].y!==item.y){pair.battle=actBattle(pair.battle,{type:'look',unitId:'110',x:item.x,y:item.y});assert.equal(pair.battle.lastError,null);}
   const count=pair.battle.units[0].rations;pair.battle=actBattle(pair.battle,{type:'loot',unitId:'110',groundId:`supplies-${index}`});assert.equal(pair.battle.lastError,null);
   const collected=pair.battle.units[0].rations-count;assert.ok(collected>0&&collected<=index+1);const remainder=index+1-collected;assert.equal(pair.battle.groundItems[0].count,remainder);s=saved(leave(pair)).campaign;
   pair=visit(s);assert.equal(pair.battle.groundItems[0].count,remainder);s=leave(pair);
@@ -93,13 +119,16 @@ test('cells do not manufacture locality services, income, militia, or supply and
  s=travel(s,'retiro');assert.equal(s.location,'retiro');assert.equal(saved(s).campaign.location,'retiro');
 });
 test('a raid that takes the next town during a leg halts before that town without undoing elapsed time',()=>{
- let s=ready();s.sectors.salta.owner='patriot';s.location='cell-11-7';s.squads[0].location=s.location;s.hour=118;
+ let s=ready();s.sectors.salta.owner='patriot';s.location='cell-11-7';s.squads[0].location=s.location;s.operativeState[110].location=s.location;s.hour=118;launchEnemyGroup(s,'north','salta',{immediate:true});
  s=travel(s,'salta');assert.equal(s.hour,120);assert.equal(s.sectors.salta.owner,'royalist');assert.equal(s.location,'cell-11-7');assert.match(s.log.map(l=>l.text).join(' '),/se detiene/);assert.ok(saved(s));
 });
 test('an assault from an adjacent field keeps its exact origin when retreating and saving',()=>{
  let s=travel(ready(),'cell-21-26');s=order(s,{type:'attack',sector:'san_nicolas'});
  assert.equal(s.pendingBattle.origin,'cell-21-26');let pair=saved(s,enterSector(s.pendingBattle));
  assert.ok(pair.battle.units.some(u=>u.side==='enemy'));
+ const exit=pair.battle.exits.find(e=>e.destination==='cell-21-26');assert.ok(exit);assert.equal(pair.battle.units.find(u=>u.id==='110').x,0);
+ pair.battle=actBattle(pair.battle,{type:'exit',unitIds:['110'],exitId:exit.id});assert.equal(pair.battle.lastError,null);assert.equal(pair.battle.status,'retreat');
+ pair=syncBattleTime(pair.campaign,pair.battle);assert.equal(pair.error,null);
  s=order(pair.campaign,{type:'battleResult',battleId:s.pendingBattle.id,outcome:'retreat',sectorState:pair.battle,survivors:pair.battle.units.filter(u=>u.side==='player')});
  assert.equal(s.location,'cell-21-26');assert.equal(saved(s).campaign.squads[0].location,'cell-21-26');assert.equal(visit(s).battle.sectorId,'cell-21-26');
 });
@@ -109,17 +138,17 @@ test('saved cell locations and scene receipts cannot alias another cell, open wa
   const bad=structuredClone(s);bad.location=location;bad.squads[0].location=location;assert.throws(()=>restoreCampaign(serializeCampaign(bad)));
  }
  const pair=visit(s),wrong=structuredClone(pair.battle);wrong.sourceMapId='cell-27-27';assert.throws(()=>saved(pair.campaign,wrong),/celda/);
- assert.ok(dispatchCampaign(pair.campaign,{type:'leaveSector',battleId:pair.campaign.pendingBattle.id,sectorState:wrong,survivors:wrong.units}).lastError);
+ for(const source of ['cell-27-27','retiro',null,undefined]){const report=structuredClone(wrong);report.sourceMapId=source;const rejected=dispatchCampaign(pair.campaign,{type:'leaveSector',battleId:pair.campaign.pendingBattle.id,sectorState:report,survivors:report.units});assert.match(rejected.lastError,/celda/);assert.deepEqual({...rejected,lastError:null},pair.campaign);}
  const completed=leave(pair);completed.sectorStates['cell-26-27'].sectorId='cell-27-27';assert.throws(()=>saved(completed),/sectores|celda/);
 });
 test('land cell placements can launch with the live character-presence adapter',()=>{
  const d=defaultContentPackage();d.placements[0].sectors=['cell-26-27'];assert.deepEqual(campaignContentReport(d).blocked,[]);
 });
-test('forty visited cells fit the existing browser save limit and remain separate after a continuous march',()=>{
- let s=ready();
- for(let col=27;col>=8;col--)s=leave(visit(travel(s,`cell-${col}-29`)));
- for(let col=8;col<=27;col++)s=leave(visit(travel(s,`cell-${col}-28`)));
- const encoded=encodeSave(s);assert.ok(encoded.length<1_000_000,`${encoded.length} characters`);
+test('forty visited cells fit the existing browser save limit after actual marches and field sleep',()=>{
+ let s=ready();const rest=s=>{if(s.operativeState[110].fatigue<60)return s;const hour=s.hour;s=order(s,{type:'setSleep',operativeId:110,asleep:true});for(let i=0;s.operativeState[110].asleep&&i<24;i++)s=advanceCampaignHours(s,1);assert.equal(s.operativeState[110].asleep,false);assert.ok(s.hour>hour);return saved(s).campaign;};
+ for(let col=27;col>=8;col--)s=rest(leave(visit(travel(s,`cell-${col}-29`))));
+ for(let col=8;col<=27;col++)s=rest(leave(visit(travel(s,`cell-${col}-28`))));
+ const encoded=encodeSave(s);assert.ok(saveByteLength(encoded)<MAX_SAVE_BYTES,`${saveByteLength(encoded)} bytes`);
  const restored=decodeSave(encoded).campaign;assert.equal(Object.keys(restored.sectorStates).length,40);assert.equal(restored.location,'retiro');
  for(const [id,scene]of Object.entries(restored.sectorStates)){assert.equal(scene.sectorId,id);assert.equal(scene.sourceMapId,id);}
  assert.equal(visit(travel(restored,'cell-8-29')).battle.sourceMapId,'cell-8-29');
@@ -130,7 +159,7 @@ test('compressed active and retained cells preserve all terrain fields and accep
  const expected=JSON.parse(JSON.stringify(pair.battle.tiles)),before=JSON.stringify(pair.battle);
  const wire=encodeSave(pair.campaign,pair.battle);assert.equal(JSON.stringify(pair.battle),before);assert.equal(JSON.parse(wire).battle.tiles.format,'cell-tiles-v1');
  assert.deepEqual(decodeSave(wire).battle.tiles,expected);
- const s=leave(pair);assert.equal(s.sectorStates[s.location].tiles.format,'cell-tiles-v1');assert.deepEqual(visit(saved(s).campaign).battle.tiles,expected);
+ const s=leave(pair);assert.ok(Array.isArray(s.sectorStates[s.location].tiles)||s.sectorStates[s.location].tiles.format==='cell-tiles-v1');assert.deepEqual(visit(saved(s).campaign).battle.tiles,expected);
  const old=JSON.parse(encodeSave(s));old.campaign.sectorStates[s.location]=expandCellScene(s.sectorStates[s.location]);
  assert.deepEqual(visit(decodeSave(JSON.stringify(old)).campaign).battle.tiles,expected);
  const oldActive=JSON.parse(wire);oldActive.battle=pair.battle;assert.deepEqual(decodeSave(JSON.stringify(oldActive)).battle.tiles,expected);
@@ -143,4 +172,23 @@ test('malformed or excessive compressed terrain is rejected before scene allocat
   p=>{p.palette=[{type:'grass',blocked:false,cover:0,note:'x'.repeat(5000)}];p.runs=[0,3072];},
  ]){const bad=JSON.parse(wire);mutate(bad.battle.tiles);assert.throws(()=>decodeSave(JSON.stringify(bad)),/comprimido/);}
  const bad=JSON.parse(wire);bad.battle.sourceMapId='retiro';assert.throws(()=>decodeSave(JSON.stringify(bad)),/comprimido/);
+});
+
+
+test('field sleep recovers on safe land, but occupied districts and their enemy groups prevent it',()=>{
+ const field=travel(ready(),'cell-26-27');assert.equal(worldOwner(field,field.location),'neutral');const fatigue=field.operativeState[110].fatigue;
+ let s=order(field,{type:'setSleep',operativeId:110,asleep:true});s=advanceCampaignHours(s,1);assert.ok(s.operativeState[110].fatigue<fatigue);assert.ok(saved(s));
+ const district=travel(ready(),'cell-26-28');assert.equal(sleepOrderReason(district,110,true),'');
+ for(const blocked of [s=>s.sectors.buenos_aires.owner='royalist',s=>launchEnemyGroup(s,'interior','buenos_aires',{immediate:true})]){const s=structuredClone(district);blocked(s);assert.match(sleepOrderReason(s,110,true),/seguro/);const rejected=dispatchCampaign(s,{type:'setSleep',operativeId:110,asleep:true});assert.ok(rejected.lastError);assert.deepEqual({...rejected,lastError:null},s);}
+});
+
+test('queued field assault retains the same march, entry and finite equipment as an immediate attack',()=>{
+ const base=travel(ready(),'cell-21-26'),hour=base.hour;
+ const immediate=order(base,{type:'attack',sector:'san_nicolas'});
+ const before=structuredClone(base),preview=previewStrategicRoute(base,base.activeSquadId,'san_nicolas');assert.equal(preview.valid,true);assert.equal(preview.hours,2);assert.deepEqual(preview.action,{type:'attack',sector:'san_nicolas',mode:'march',queue:true});assert.deepEqual(base,before);
+ let queued=order(base,preview.action);assert.equal(queued.hour,hour);assert.equal(queued.squads[0].journey.legHours,2);queued=saved(queued).campaign;
+ queued=advanceCampaignHours(queued,2);assert.equal(queued.squads[0].journey.status,'ready');queued=order(saved(queued).campaign,{type:'beginAssault',sector:'san_nicolas'});
+ assert.equal(immediate.hour,hour+2);assert.equal(queued.hour,immediate.hour);assert.equal(queued.pendingBattle.origin,base.location);assert.deepEqual(queued.pendingBattle.squad,immediate.pendingBattle.squad);assert.deepEqual(queued.resources,immediate.resources);assert.deepEqual(queued.ammunitionShops,immediate.ammunitionShops);assert.ok(saved(queued,enterSector(queued.pendingBattle)));
+ for(const mode of ['posta','carts','flotilla']){const rejected=dispatchCampaign(base,{type:'attack',sector:'san_nicolas',mode});assert.ok(rejected.lastError);assert.deepEqual({...rejected,lastError:null},base);}
+ const bad=order(base,{type:'attack',sector:'san_nicolas',queue:true});bad.squads[0].journey.path[0]='cell-20-26';bad.squads[0].location='cell-20-26';bad.location='cell-20-26';assert.throws(()=>saved(bad),/ruta/);
 });

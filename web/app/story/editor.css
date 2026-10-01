@@ -344,3 +344,8 @@
 .content-editor .ammunition-market-rules .check {
   margin: 12px 0;
 }
+
+.content-export-dialog { background: #222b2d !important; color: #e8e5d8 !important; max-width: min(800px, 94vw) !important; padding: 24px !important; z-index: 60; }
+.content-export-dialog textarea { width: 100%; height: 45vh; resize: vertical; background: #131b1d; color: #e6d5ae; font: 13px/1.5 ui-monospace, monospace; border: 1px solid #52605f; padding: 12px; }
+.content-export-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+.content-export-actions a, .content-export-actions button { background: #dab66f; color: #172123; border: 0; border-radius: 5px; padding: 9px 13px; font: 14px system-ui; cursor: pointer; text-decoration: none; }

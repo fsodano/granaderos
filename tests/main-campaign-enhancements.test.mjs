@@ -1,0 +1,48 @@
+import {register} from 'node:module';
+register('./tactical-render-loader.mjs',import.meta.url);
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {initialCampaign,dispatchCampaign} from '../game/campaign.js';
+import {prepareCampaignBattle} from '../game/battle-handoff.js';
+import {syncBattleTime} from '../game/time.js';
+import {encodeSave,decodeSave} from '../game/save.js';
+import {runBattleJob} from '../game/battle-job.js';
+import {equipmentFingerprint} from '../game/tactical-inventory.js';
+import {ammunitionByType} from '../game/ammunition-types.js';
+import {getReachable} from '../game/tactical.js';
+const {createElement:h}=await import('../web/node_modules/react/index.js');
+const {renderToStaticMarkup:render}=await import('../web/node_modules/react-dom/server.node.js');
+const {default:Battlefield}=await import('../web/app/Battlefield.tsx');
+
+test('normal campaign entry, equipment, background movement and autosave use the same battle state',()=>{
+ let campaign=dispatchCampaign(initialCampaign(8),{type:'recruitCivic',id:110,term:'week'});
+ assert.equal(campaign.lastError,null);
+ campaign=dispatchCampaign(campaign,{type:'visitSector'});
+ assert.equal(campaign.lastError,null);
+ let pair=prepareCampaignBattle(campaign,{placement:false});
+ assert.equal(pair.error,null);
+ const id=String(campaign.recruited.find(id=>pair.battle.units.some(u=>u.id===String(id))));
+ const actor=()=>pair.battle.units.find(u=>u.id===id);
+ const before=ammunitionByType(actor()).musket_75??0,loaded=actor().loaded;
+ assert.ok(loaded>0);
+ const publish=action=>{
+  const next=runBattleJob({battle:pair.battle,action});
+  assert.equal(next.lastError,null);
+  pair=syncBattleTime(pair.campaign,next);assert.equal(pair.error,null);
+  const saved=decodeSave(encodeSave(pair.campaign,pair.battle));
+  assert.deepEqual(saved.battle,pair.battle);
+  pair={...pair,...saved};
+ };
+ publish({type:'unloadEquipment',unitId:id,hostId:'hand:right',expectedHost:equipmentFingerprint(actor(),'hand:right')});
+ assert.equal(actor().loaded,0);
+ assert.equal(ammunitionByType(actor()).musket_75,before+loaded);
+ const target=getReachable(pair.battle,actor()).find(p=>p.path?.length===1);
+ assert.ok(target,'normal sector entry offers a legal walking destination');
+ publish({type:'move',unitId:id,x:target.x,y:target.y,tacticalLevel:target.tacticalLevel??0});
+ assert.equal(actor().x,target.x);assert.equal(actor().y,target.y);
+ assert.equal(actor().loaded,0,'movement and campaign autosave retain the unloaded weapon');
+ const html=render(h(Battlefield,{battle:pair.battle,onChange:()=>{},onFinish:()=>{}}));
+ assert.match(html,/\/art\/illustrated\//);
+ assert.doesNotMatch(html,/ja2-orders-menu|<summary>Órdenes/);
+ assert.match(html,/>Equipo</);
+});

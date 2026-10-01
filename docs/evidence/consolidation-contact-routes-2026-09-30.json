@@ -1,0 +1,141 @@
+{
+  "source": {
+    "version": "0.4.0-dev.1",
+    "id": "b5cfe7592703",
+    "source": "b5cfe7592703ec1ddce17e43e897c1e376ab39edaf74c1343e21efb297cab1fe",
+    "revision": "978d5a77a4245558fefca88974f42a7b7b62e1d2"
+  },
+  "scope": "Working-branch contact/save regression plus actual created and hired coastal openings and the complete independent post campaign. Selected passing checks, not a passing full suite, browser check, performance claim or complete historical campaign. The local-only coastal route still fails. Includes 13 campaign reducer checks with explicitly scripted historical settlements.",
+  "totals": {
+    "tests": 93,
+    "pass": 93,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0
+  },
+  "testRuns": [
+    {
+      "tests": 78,
+      "pass": 78,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "logSha256": "4b3533ec7476517add49d39426f201ea645e3dc44b5e33ebead28a7aa3438eee",
+      "testFiles": [
+        "tests/exploration-step-time.test.mjs",
+        "tests/interrupt-chains.test.mjs",
+        "tests/contact-flow.test.mjs",
+        "tests/battle-opening.test.mjs",
+        "tests/exploration.test.mjs",
+        "tests/automatic-exploration.test.mjs",
+        "tests/interactive-interrupts.test.mjs",
+        "tests/reaction-audit.test.mjs",
+        "tests/militia-exploration.test.mjs",
+        "tests/military-remains.test.mjs",
+        "tests/campaign-reload-work.test.mjs",
+        "tests/post-campaign.test.mjs",
+        "tests/opening-driver.test.mjs",
+        "tests/opening-driver-control.test.mjs"
+      ]
+    },
+    {
+      "tests": 1,
+      "pass": 1,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "logSha256": "2a640805a9ade3d6e1cb25410900b025790a857a172da5c47de81c7e8c3ed754",
+      "testFiles": [
+        "tests/fresh-coastal-route.test.mjs"
+      ],
+      "selection": "fresh created force"
+    },
+    {
+      "tests": 1,
+      "pass": 1,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "logSha256": "69eea63f89021fa87a31284223da0b3d28abce56ae48c9ae6bd54feb60f8a286",
+      "testFiles": [
+        "tests/fresh-coastal-route.test.mjs"
+      ],
+      "selection": "fresh hired force"
+    },
+    {
+      "tests": 13,
+      "pass": 13,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "logSha256": "62ae52d69a967b737b8602d0276926e4ba6a26fccda110244b5d733c9d3a4305",
+      "testFiles": [
+        "tests/campaign-web.test.mjs"
+      ],
+      "scope": "Campaign reducer scenarios use explicitly scripted settlements; not a complete tactical playthrough."
+    }
+  ],
+  "regression": {
+    "before": {
+      "tests": 1,
+      "pass": 0,
+      "fail": 1,
+      "cancelled": 0,
+      "skipped": 0,
+      "logSha256": "c5a42d598eb2e267d0a0905c71bace22d503123c59a1aca5effe6aad0121b688"
+    },
+    "after": {
+      "tests": 28,
+      "pass": 28,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "logSha256": "8272978a229b7100dc6711ebf5861a00e133a7d47f2cf1060fb9ae4c577e48d2"
+    },
+    "finding": "A movement step crosses dawn or patrol contact during exploration. It must stop at first contact; it cannot also consume enemy combat reactions with an uncharged round. Subsequent combat movement still grants the normal paid reaction window.",
+    "liveRouteReplay": "The failing hired San Lorenzo step now synchronizes and round-trips the full campaign save."
+  },
+  "checks": {
+    "types": "passed",
+    "privateBuild": {
+      "files": 1131,
+      "assetReferences": 1031,
+      "source": "b5cfe7592703",
+      "served": false
+    },
+    "referenceAudit": {
+      "pass": 38
+    },
+    "documentation": "passed"
+  },
+  "latestCompleteCI": "consolidation-ci-978d5a77-2026-09-30.json",
+  "remainingRouteDiagnostics": {
+    "localCoastal": {
+      "tests": 1,
+      "pass": 0,
+      "fail": 1,
+      "cancelled": 0,
+      "skipped": 0,
+      "logSha256": "f0a281db46d0a8cf2cde7de10cc03480bb8a3f23e6247ca4482d439dd1425af9",
+      "error": "The local-only force still loses San Nicolas. Victory remains required."
+    },
+    "freshRecovery": {
+      "tests": 1,
+      "pass": 0,
+      "fail": 1,
+      "cancelled": 0,
+      "skipped": 0,
+      "logSha256": "2a3172b598b636afa9ece52a8fa33b39475856b3e6d5afcdbf733200fd29aa19",
+      "error": "Medical recovery uses real physical ammunition, but a subsequent Cordoba defense retreats. Victory remains required."
+    },
+    "freshNorthern": {
+      "tests": 1,
+      "pass": 0,
+      "fail": 1,
+      "cancelled": 0,
+      "skipped": 0,
+      "logSha256": "65485cf3982c7ab2dd0acd483202124aa2ced013661b3d97f6e9dabf5260d41d",
+      "error": "The six-person continuation loses Cordoba with the shared controller. Victory remains required."
+    }
+  }
+}

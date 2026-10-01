@@ -1,0 +1,77 @@
+{
+  "source": {
+    "version": "0.4.0-dev.1",
+    "id": "fda198d12b03",
+    "source": "fda198d12b03e5b6878cd29c22ea8cb68e077cde97fe83d7fd82a8a49c7d03c6",
+    "revision": "1306be6e543972e17083fb6394f206a63cea24ac"
+  },
+  "scope": "Working-branch focused regression. Not full-suite, browser, FPS or campaign acceptance.",
+  "tests": 220,
+  "pass": 220,
+  "fail": 0,
+  "skipped": 0,
+  "cancelled": 0,
+  "testFiles": [
+    "tests/adjacent-cartridge-transfer-render.test.mjs",
+    "tests/adjacent-cartridge-transfer.test.mjs",
+    "tests/adjacent-weapon-transfer-render.test.mjs",
+    "tests/adjacent-weapon-transfer.test.mjs",
+    "tests/artillery-crew-loading.test.mjs",
+    "tests/authored-cartridge-price.test.mjs",
+    "tests/authored-militia-patrol.test.mjs",
+    "tests/campaign-ammunition-custody.test.mjs",
+    "tests/campaign-story.test.mjs",
+    "tests/content-force-equipment.test.mjs",
+    "tests/content-roster.test.mjs",
+    "tests/content-weapons.test.mjs",
+    "tests/drop-held-weapons-render.test.mjs",
+    "tests/drop-held-weapons.test.mjs",
+    "tests/drop-recovered-weapons-render.test.mjs",
+    "tests/drop-recovered-weapons.test.mjs",
+    "tests/dropped-cartridges.test.mjs",
+    "tests/elevation-sector-inventory.test.mjs",
+    "tests/empty-hand-melee-render.test.mjs",
+    "tests/equipment-cursor-lifecycle.test.mjs",
+    "tests/held-weapon-transfer-render.test.mjs",
+    "tests/held-weapon-transfer.test.mjs",
+    "tests/meeting-arrivals-ui.test.mjs",
+    "tests/meeting-release-ui.test.mjs",
+    "tests/military-body-supply-validation.test.mjs",
+    "tests/militia-exploration.test.mjs",
+    "tests/mission-sector-inventory.test.mjs",
+    "tests/reattack-ammunition-budget.test.mjs",
+    "tests/retiro-start.test.mjs",
+    "tests/secondary-loot-render.test.mjs",
+    "tests/secondary-loot.test.mjs",
+    "tests/sector-inventory-render.test.mjs",
+    "tests/sector-inventory.test.mjs",
+    "tests/stationed-artillery.test.mjs",
+    "tests/strategic-route.test.mjs",
+    "tests/weapon-readiness-controls.test.mjs",
+    "tests/world-cells-render.test.mjs",
+    "tests/world-cells.test.mjs"
+  ],
+  "logSha256": "25448f291dc9b14a5e38ba7101f22abda25bc053f28a2d30eae87672b1ec6436",
+  "checks": {
+    "types": "passed",
+    "referenceAudit": {
+      "pass": 38
+    },
+    "privateBuild": {
+      "files": 1131,
+      "assetReferences": 1031,
+      "source": "fda198d12b03",
+      "served": false
+    }
+  },
+  "latestCompleteCI": "consolidation-ci-1306be6e-2026-09-30.json",
+  "remainingRouteDiagnostic": {
+    "logSha256": "0dd87edb11cd084bed7e7df515991dd919cccdcf1f801897fe533e0112512203",
+    "tests": 11,
+    "pass": 10,
+    "fail": 1,
+    "skipped": 0,
+    "cancelled": 0,
+    "failure": "The post campaign reaches Salta with real survivors and paid recovery, then loses the actual battle. Victory remains required. The route is not accepted."
+  }
+}

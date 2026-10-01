@@ -1,3 +1,4 @@
+import {BUILDING_VERTICAL_SCALE} from '../../game/building-scale.js';
 export const WALL_COLOURS: Record<
   string,
   { base: string; trim: string; shadow: string }
@@ -13,6 +14,10 @@ export const ARCHITECTURE_TEXTURE_SIZE: Record<string, [number, number]> = {
 };
 export function ArchitectureDefs(){return <defs>
  {Object.entries(ARCHITECTURE_TEXTURE_SIZE).map(([name,[width,height]])=><pattern key={name} id={`architecture-${name}`} patternUnits="userSpaceOnUse" width={width} height={height}><image href={`/art/architecture-${name}-v2.png`} width={width} height={height} preserveAspectRatio="none"/></pattern>)}
+ {Object.entries(WALL_COLOURS).flatMap(([finish,colours])=>[false,true].map(facade=><pattern key={`${finish}-${facade}`} id={`architecture-${facade?'facade-':''}finish-${finish}`} patternUnits="userSpaceOnUse" width="240" height="160" patternTransform={facade?`scale(1 ${1/BUILDING_VERTICAL_SCALE})`:undefined}>
+  <rect width="240" height="160" fill={colours.base}/><rect width="240" height="160" fill={`url(#architecture-${finish==='stone'?'stone':finish==='brick'?'brick':'plaster'})`} opacity=".85"/>
+  {['adobe','ochre'].includes(finish)&&<rect width="240" height="160" fill={colours.base} opacity={finish==='adobe'?.48:.34} style={{mixBlendMode:'multiply'}}/>}
+ </pattern>))}
  <linearGradient id="architecture-reveal" x1="0" y1="0" x2="1" y2=".6"><stop stopColor="#17170f"/><stop offset="1" stopColor="#4b4a36"/></linearGradient>
  <linearGradient id="architecture-edge-shadow" x1="0" y1="0" x2="0" y2="1"><stop stopColor="#211c11" stopOpacity=".6"/><stop offset="1" stopColor="#211c11" stopOpacity="0"/></linearGradient>
  </defs>;}

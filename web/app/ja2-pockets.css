@@ -1,0 +1,27 @@
+.battle-layout .slot-grid:has(.ja2-pockets) {display:block;overflow-y:auto;max-height:none}
+.ja2-pockets {grid-column:1/-1;min-width:0;color:#ded9bd}
+.ja2-pockets p {margin:0 0 .35rem;font-size:.68rem}
+.ja2-pockets small {display:block;min-height:24px;font-size:.6rem;line-height:1.25;margin-bottom:4px;color:#b7baa4}
+.ja2-pocket-row {display:grid;gap:3px;margin-bottom:3px}
+.ja2-pocket-row.large {grid-template-columns:repeat(2,minmax(0,1fr))}
+.ja2-pocket-row.small {grid-template-columns:repeat(4,minmax(0,1fr))}
+.ja2-pocket {position:relative;min-height:38px;height:38px;padding:3px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,#242a20,#141b15);border:1px solid #696044;border-radius:2px;box-shadow:inset 0 0 0 2px #10170f;color:#ded9bd}
+.ja2-pocket.occupied {cursor:grab;touch-action:none;user-select:none}
+.ja2-pocket[aria-pressed=true] {border-color:#e0c068;box-shadow:inset 0 0 0 2px #e0c068}
+.ja2-pocket:focus-visible {outline:2px solid #f6d881;outline-offset:2px}
+.ja2-pocket img {height:19px;width:90%;object-fit:contain;image-rendering:auto}
+.ja2-pocket svg {height:18px;color:#c7b379}
+.ja2-pocket span {display:block;width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:8px;text-align:center}
+.ja2-pocket b {position:absolute;top:1px;right:3px;font-size:9px;color:#f1d680;text-shadow:1px 1px #000}
+.ja2-pocket .empty {opacity:.4;font-size:9px}
+.ja2-pocket:disabled {opacity:.45;cursor:default}
+.ja2-pocket-overflow {border:1px solid #ae694e;padding:8px;margin-top:8px}
+.ja2-pocket-overflow button {font-size:.7rem;margin:3px;padding:4px}
+.ja2-pocket.drop-target{outline:2px solid #f6d881;background:#35432a;}
+
+.equipment-quantity {display:flex;align-items:center;gap:5px;margin:0 0 5px;font-size:.65rem;color:#ded9bd}
+.equipment-quantity label {display:flex;align-items:center;gap:5px}
+.equipment-quantity input {width:4em;min-height:25px;padding:2px 4px;background:#172019;color:#f1d680;border:1px solid #8b8058;border-radius:2px;font:inherit}
+.equipment-quantity button {min-height:25px;padding:2px 7px;background:#293425;color:#eee5c5;border:1px solid #8b8058;border-radius:2px;font:inherit}
+.equipment-quantity input:focus-visible,.equipment-quantity button:focus-visible {outline:2px solid #f6d881;outline-offset:2px}
+.equipment-quantity :disabled {opacity:.45}

@@ -1,0 +1,276 @@
+{
+  "schema": 1,
+  "status": "PARTIAL_LOCAL_VERIFICATION",
+  "checkedAt": "2026-10-01T04:55:03.626299+00:00",
+  "revision": "4938fd79835776a202273b09cf303fc7251ad392",
+  "runtimeSource": "af9ec4318d546bd25378221e1152fc7772f0859d363676579c24e9022d14ebbc",
+  "unpublished": true,
+  "pushed": false,
+  "merged": false,
+  "previewReplaced": false,
+  "changes": [
+    "The recovery route sends an equipped relief column to defend Tucuman, withdraws the actual rear guard, and recaptures Cordoba through a coordinated battle.",
+    "Paid care preserves the remaining wounded soldiers. An arriving doctor and an actual Retiro supply trip treat the routed patient.",
+    "The surviving gun receives one purchased round and travels by cart to Tucuman. The Salta assault retains its identity, ammunition, unfinished load and facing.",
+    "Urgent local care precedes the northern mission handover.",
+    "A new coastal preparation helper uses paid arrivals, recovery, finite rifles and two purchased guns. It is not yet connected to the complete ending fixture."
+  ],
+  "regression": {
+    "status": "PASS",
+    "tests": 65,
+    "pass": 65,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "duration_ms": 40959.634584,
+    "files": [
+      "tests/medical-care.test.mjs",
+      "tests/campaign-care.test.mjs",
+      "tests/hiring-arrivals.test.mjs",
+      "tests/artillery-transport.test.mjs",
+      "tests/artillery-depot-transport.test.mjs",
+      "tests/team-artillery-driver.test.mjs",
+      "tests/campaign-battery-driver.test.mjs"
+    ],
+    "log": {
+      "path": "/tmp/granaderos-local-recovery-road-regression.tap",
+      "sha256": "6b0c4563eea48a4303180ae84755276f600900f0c521567789c5ad91b294b06b"
+    }
+  },
+  "northernSavedPrefix": {
+    "status": "PASS_CHECKPOINT_ONLY",
+    "sourceIntegrated": true,
+    "start": {
+      "hour": 251,
+      "treasury": 577,
+      "squad": [
+        124,
+        139,
+        1000,
+        10,
+        4
+      ],
+      "artifact": {
+        "path": "/tmp/granaderos-tucuman-battery-healed.json",
+        "sha256": "15c7deae868246ca876b38f301f0e3c2f5d544a5c2f02914ce77ed2fbcb0a599"
+      }
+    },
+    "battles": [
+      {
+        "sector": "tucuman",
+        "outcome": "victory",
+        "turns": 16,
+        "actions": 435
+      },
+      {
+        "sector": "cordoba",
+        "outcome": "victory",
+        "turns": 8,
+        "actions": 230,
+        "actualDeaths": [
+          104,
+          1000
+        ]
+      },
+      {
+        "sector": "salta",
+        "outcome": "victory",
+        "turns": 7,
+        "actions": 345,
+        "actualDeaths": [
+          125
+        ]
+      }
+    ],
+    "checks": [
+      "Input state unchanged",
+      "Actual paid contracts, supplies, care and travel",
+      "Deterministic battle replay",
+      "Campaign and battle save round trips",
+      "Settlement preserves actual deaths",
+      "Actual NPC meetings and Yatasto completion"
+    ],
+    "finish": {
+      "hour": 369,
+      "treasury": 398,
+      "squad": [
+        1,
+        0,
+        8
+      ],
+      "artifact": {
+        "path": "/tmp/granaderos-recovery-source-yatasto.json",
+        "sha256": "99277bb23ef7fa680cf7c4d511df17e55a8af67ead24373b16fef07bff5c6bf0"
+      }
+    },
+    "log": {
+      "path": "/tmp/granaderos-recovery-north-source-check.log",
+      "sha256": "aa1601bb396da3d9c07252f9030abbf75a0a3101441ac7afa771dd82c3ebe683"
+    }
+  },
+  "recoveryCareHelper": {
+    "status": "PASS_CHECKPOINT_ONLY",
+    "sourceResult": {
+      "hour": 330,
+      "treasury": 489,
+      "squad": [
+        133,
+        139,
+        10,
+        4
+      ],
+      "artifact": {
+        "path": "/tmp/granaderos-recovery-road-source-result.json",
+        "sha256": "1ea9d4c215608710e74249fc6ad3deb7c5b6d6d33e5b038c788a8b9245a071af"
+      }
+    },
+    "log": {
+      "path": "/tmp/granaderos-recovery-road-source-check.log",
+      "sha256": "18a74c5702f252d151bcdff6b81a14434aca301a3bdf2655137c87d973aab72a"
+    }
+  },
+  "coastalPreparation": {
+    "status": "PASS_PREPARATION_ONLY",
+    "sourceResult": {
+      "hour": 2198,
+      "treasury": 10086,
+      "squad": [
+        10
+      ],
+      "artifact": {
+        "path": "/tmp/granaderos-created-coast-source-result.json",
+        "sha256": "ae5688eb4c31bb69ea37503a1b5666ccd0f661c4a13667e6b2485195d9ed3271"
+      }
+    },
+    "log": {
+      "path": "/tmp/granaderos-created-coast-source-check.log",
+      "sha256": "0ed71146b2062b34bf4abfb3ba2c7d95b5347c385bd83a40cc7a396a722956d3"
+    },
+    "battleAcceptance": "NOT_PASSED",
+    "failedTactics": [
+      "The seven-person force lost Ensenada with the ordinary coastal controller.",
+      "Spread arrival and holding the commander in reserve did not produce a valid victory."
+    ],
+    "sourceIntegratedIntoFullEnding": false
+  },
+  "fullRecoveryRun": {
+    "status": "FAIL",
+    "file": "tests/fresh-campaign-recovery.test.mjs",
+    "tests": 1,
+    "pass": 0,
+    "fail": 1,
+    "skipped": 0,
+    "cancelled": 0,
+    "duration_ms": 88346.681375,
+    "reason": "The legacy questionnaire relief officer costs 300 pesos. The assertion had incorrectly expected zero. The actual source and saved checkpoint both record a paid 300-peso officer.",
+    "assertionCorrected": true,
+    "manifest": {
+      "path": "/tmp/granaderos-recovery-road-full-sources.json",
+      "sha256": "901db261fc2d60a4f6a3b94cc67cd363751f5b7743fbf2b90bb419d03345d98d"
+    },
+    "log": {
+      "path": "/tmp/granaderos-local-recovery-road-full.tap",
+      "sha256": "8ce1208dcb0191b10aff1a8955113f3a2aee872933785aa8ca13d96236a0d7af"
+    }
+  },
+  "remaining": [
+    "The complete recovery route remains open. The third run failed at the mountain catalog key; see the later coastal-return evidence for the correction and next run.",
+    "The complete ending route remains open. Later coastal checkpoint victories are recorded in consolidation-local-coastal-return-2026-10-01.json.",
+    "No new all-suite count, final browser acceptance, push, merge or preview replacement.",
+    "Service-end equipment return remains queued after PR139 merge."
+  ],
+  "fullRecoveryRerun": {
+    "status": "FAIL",
+    "file": "tests/fresh-campaign-recovery.test.mjs",
+    "tests": 1,
+    "pass": 0,
+    "fail": 1,
+    "skipped": 0,
+    "cancelled": 0,
+    "duration_ms": 210167.923084,
+    "completedStages": [
+      "fresh opening",
+      "capital recovery",
+      "San Nicolas",
+      "San Lorenzo",
+      "Cordoba",
+      "Tucuman",
+      "northern relief",
+      "Tucuman defense",
+      "Cordoba recapture and care",
+      "Salta",
+      "Yatasto",
+      "Mendoza"
+    ],
+    "reason": "The foundry wait attempted to renew the unused day hire142 for1290 pesos with insufficient funds.",
+    "manifest": {
+      "path": "/tmp/granaderos-recovery-road-rerun-sources.json",
+      "sha256": "b8f5a56a0e45864acdbc6151ad702a835ccf3d905c71d31d33618b1b86796ed3"
+    },
+    "log": {
+      "path": "/tmp/granaderos-local-recovery-road-rerun.tap",
+      "sha256": "d3eef891dc24a0de0e1f0bdce2eb394b804b74c799a69f37f38bc3fa85c2163f"
+    }
+  },
+  "mendozaSavedPrefix": {
+    "status": "PASS_CHECKPOINT_ONLY",
+    "turns": 10,
+    "actions": 221,
+    "sourceChangesIntegratedAfterPrototype": true,
+    "preparation": "Reuse the organized post network, wait for the hired defender, and select the actual living rear guard rather than seven obsolete IDs.",
+    "log": {
+      "path": "/tmp/granaderos-recovery-mendoza-check.log",
+      "sha256": "77b68385236d4fa7eddaffd7bf2a91db450cfca01ef626632e0841780901f71c"
+    },
+    "result": {
+      "path": "/tmp/granaderos-recovery-mendoza-result.json",
+      "sha256": "207b06e086899201478c201ffe547cad617cf25b8039dc7d0c0f7b06c6da1e1a"
+    },
+    "hour": 416,
+    "treasury": 832
+  },
+  "documentationAudit": {
+    "status": "PASS",
+    "log": {
+      "path": "/tmp/granaderos-local-recovery-road-docs.log",
+      "sha256": "c6c076f01cd351740dc7bcbe7b68361867248f3de019638f05f41f10bc855b66"
+    }
+  },
+  "diffCheck": "PASS",
+  "foundryFollowup": {
+    "status": "PASS_CHECKPOINT_ONLY",
+    "sourceIntegrated": true,
+    "playerAction": {
+      "type": "dismiss",
+      "id": 142
+    },
+    "reason": "Release the healthy one-battle paid supporter before the foundry savings wait. Do not renew an unaffordable unused contract.",
+    "hour": 696,
+    "treasury": 251,
+    "armyFunded": true,
+    "log": {
+      "path": "/tmp/granaderos-recovery-funding-release-check.log",
+      "sha256": "be8c16a2f619e24f93b3343bd8f5cac3160ed890a6cd4d51e1dc9814add66caa"
+    }
+  },
+  "fullRecoveryFoundryRerun": {
+    "status": "FAIL",
+    "file": "tests/fresh-campaign-recovery.test.mjs",
+    "manifest": {
+      "path": "/tmp/granaderos-recovery-road-foundry-full-sources.json",
+      "sha256": "330a04e50a18b04c9fc02724a1c65691fa1a4c89c6af76ee3d3bd237c1e67002"
+    },
+    "logPath": "/tmp/granaderos-local-recovery-road-foundry-full.tap",
+    "tests": 1,
+    "pass": 0,
+    "fail": 1,
+    "cancelled": 0,
+    "skipped": 0,
+    "duration_ms": 238934.048,
+    "log": {
+      "path": "/tmp/granaderos-local-recovery-road-foundry-full.tap",
+      "sha256": "cc0cd50e173fa4904a42a8e2b5de6802aa7fecd3afe332bb6697f00fa3e8328a"
+    },
+    "reason": "The full route reached army funding, then failed because the mountain fixture used an authored firearm key with the legacy catalog. The subsequent fixture correction is recorded in consolidation-local-coastal-return-2026-10-01.json."
+  }
+}

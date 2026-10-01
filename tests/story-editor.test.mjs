@@ -1,14 +1,17 @@
+import {approachNPC} from './approach-npc.mjs';
+import {finishMilitiaTraining} from './campaign-wait-fixture.mjs';
 import {questPackage} from './content-quest-fixture.mjs';
 import {contentQuestJournal} from '../game/content-quests.js';
 import {dialoguePackage} from './dialogue-fixture.mjs';
 import {dialogueConditionsMet} from '../game/dialogue-conditions.js';
 import {secureArea} from './controlled-area-fixture.mjs';
 import {register} from 'node:module';
+import {resolveObjectURL} from 'node:buffer';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {JSDOM,VirtualConsole} from '../web/node_modules/jsdom/lib/api.js';
-import {createElement as h,act,useState} from '../web/node_modules/react/index.js';
-import {defaultContentPackage,parseContentPackage} from '../game/content-package.js';
+import {createElement as h,act,useState,StrictMode} from '../web/node_modules/react/index.js';
+import {defaultContentPackage,parseContentPackage,encodeContentPackage} from '../game/content-package.js';
 import {CONTENT_LAUNCH_KEY,CONTENT_SAVE_KEY} from '../game/content-launch.js';
 import {decodeSave,encodeSave} from '../game/save.js';
 import {initialCampaign,dispatchCampaign,rosterFor,CAMPAIGN_SECTORS,deploymentCost} from '../game/campaign.js';
@@ -100,7 +103,7 @@ test('the bulletin searches and hires a new identity without showing deleted cat
  assert.equal(decodeSave(encodeSave(m.campaign)).campaign.recruited.includes(id),false);
 });
 
-async function mount(t,stored,launch=null,recruitCampaign=null,view='recruitment'){
+async function mount(t,stored,launch=null,recruitCampaign=null,view='recruitment',{strict=false}={}){
  const console=new VirtualConsole();
  console.on('jsdomError',error=>{if(!error.message.includes('navigation'))throw error;});
  const dom=new JSDOM('<!doctype html><div id="root"></div>',{url:launch?'https://granaderos.test/?content=1&launch=1':'https://granaderos.test/story',pretendToBeVisual:true,virtualConsole:console});
@@ -118,13 +121,15 @@ async function mount(t,stored,launch=null,recruitCampaign=null,view='recruitment
  const {default:Treasury}=await import('../web/app/Treasury.tsx');
  const {createRoot}=await import('../web/node_modules/react-dom/client.js');
  const root=createRoot(dom.window.document.getElementById('root'));
- t.after(async()=>{try{await act(async()=>root.unmount());}finally{dom.window.close();for(const [key,descriptor]of previous){if(descriptor)Object.defineProperty(globalThis,key,descriptor);else delete globalThis[key];}}});
+ let mounted=true;
+ const unmount=async()=>{if(!mounted)return;await act(async()=>root.unmount());mounted=false;};
+ t.after(async()=>{try{await unmount();}finally{dom.window.close();for(const [key,descriptor]of previous){if(descriptor)Object.defineProperty(globalThis,key,descriptor);else delete globalThis[key];}}});
  let current=recruitCampaign;
  function HiringScreen(){const [campaign,setCampaign]=useState(recruitCampaign);current=campaign;return h(view==='armory'?Armory:view==='treasury'?Treasury:Recruitment,{state:campaign,dispatch:action=>setCampaign(s=>dispatchCampaign(s,action))});}
  const Component=recruitCampaign?HiringScreen:launch?(await import('../web/app/page.tsx')).default:StoryEditor;
- await act(async()=>root.render(h(Component)));
+ await act(async()=>root.render(strict?h(StrictMode,null,h(Component)):h(Component)));
  const document=dom.window.document;
- return {dom,document,get campaign(){return current;},
+ return {dom,document,unmount,get campaign(){return current;},
   button(text){const button=[...document.querySelectorAll('button')].find(b=>b.textContent.trim()===text);assert.ok(button,text);return button;},
   label(text){const label=[...document.querySelectorAll('label')].find(l=>l.firstChild?.textContent.trim()===text);assert.ok(label,text);return label.querySelector('input,select,textarea');},
   async click(element){await act(async()=>element.dispatchEvent(new dom.window.MouseEvent('click',{bubbles:true})));},
@@ -159,6 +164,49 @@ test('the mounted story editor authors a character, recovers the draft and launc
  assert.equal(restored.battle.units.find(u=>u.id==='100').name,'Lucía del Río');
  assert.equal(restored.battle.units.find(u=>u.id==='100').maxHp,59);
  assert.equal(m.dom.window.localStorage.getItem('granaderos.campaign.v1'),'ordinary save');
+});
+
+test('the mounted export dialog offers the edited canonical package for download and copy without changing the draft or edit history',async t=>{
+ const m=await mount(t);await m.input(m.document.querySelector('input[type="search"]'),'person-100');await m.click(m.document.querySelector('.entry-list button'));
+ const originalName=m.label('Nombre').value;await m.input(m.label('Nombre'),'Alma de la exportación');
+ const stored=m.dom.window.localStorage.getItem(draftKey),content=parseContentPackage(stored),canonical=encodeContentPackage(content),copied=[];
+ Object.defineProperty(m.dom.window.navigator,'clipboard',{configurable:true,value:{writeText:async text=>copied.push(text)}});
+ await m.click(m.button('Exportar contenido'));
+ const dialog=m.document.querySelector('[role="dialog"]');assert.ok(dialog);assert.match(dialog.textContent,/Guardá el archivo o copiá el JSON/);
+ const json=dialog.querySelector('textarea[aria-label="JSON del contenido"]');assert.ok(json);assert.equal(json.readOnly,true);assert.equal(json.value,canonical);assert.deepEqual(parseContentPackage(json.value),content);
+ const download=dialog.querySelector('a[download]');assert.ok(download);assert.equal(download.textContent,'Descargar JSON');assert.equal(download.download,`${content.id}.json`);assert.match(download.href,/^blob:/);
+ const file=resolveObjectURL(download.href);assert.ok(file);assert.equal(file.type,'application/json');assert.equal(await file.text(),canonical);
+ const status=dialog.querySelector('[role="status"]');assert.ok(status,'copy feedback is inside the active dialog');assert.equal(status.getAttribute('aria-live'),'polite');assert.equal(status.textContent,'');
+ await m.click(download);await m.click(m.button('Copiar JSON'));assert.deepEqual(copied,[canonical]);assert.equal(status.textContent,'JSON copiado.');
+ Object.defineProperty(m.dom.window.navigator,'clipboard',{configurable:true,value:{writeText:async()=>{throw Error('Clipboard denied');}}});
+ await m.click(m.button('Copiar JSON'));assert.equal(status.textContent,'Seleccioná el texto y copialo con el teclado.');assert.equal(json.value,canonical);assert.equal(await resolveObjectURL(download.href).text(),canonical);
+ assert.equal(m.dom.window.localStorage.getItem(draftKey),stored);assert.equal(m.dom.window.localStorage.getItem('granaderos.campaign.v1'),'ordinary save');
+ await m.click(m.button('Cerrar exportación'));assert.equal(m.document.querySelector('[role="dialog"]'),null);assert.equal(m.label('Nombre').value,'Alma de la exportación');assert.equal(m.dom.window.localStorage.getItem(draftKey),stored);
+ await m.click(m.button('Exportar contenido'));assert.equal(m.document.querySelector('[role="dialog"] [role="status"]').textContent,'');await m.click(m.button('Cerrar exportación'));assert.equal(m.dom.window.localStorage.getItem(draftKey),stored);
+ await m.click(m.button('Deshacer'));assert.equal(m.label('Nombre').value,originalName);await m.click(m.button('Rehacer'));assert.equal(m.label('Nombre').value,'Alma de la exportación');
+});
+
+test('Strict Mode exports keep their real files available only while open and release every URL after close or unmount',async t=>{
+ const create=URL.createObjectURL,revoke=URL.revokeObjectURL,created=[],revoked=[];
+ URL.createObjectURL=blob=>{const url=create.call(URL,blob);created.push(url);return url;};
+ URL.revokeObjectURL=url=>{revoked.push(url);revoke.call(URL,url);};
+ t.after(()=>{URL.createObjectURL=create;URL.revokeObjectURL=revoke;for(const url of created)revoke.call(URL,url);});
+ const m=await mount(t,undefined,null,null,'recruitment',{strict:true});
+ const stored=m.dom.window.localStorage.getItem(draftKey),canonical=encodeContentPackage(parseContentPackage(stored));
+ for(let i=0;i<3;i++){
+  await m.click(m.button('Exportar contenido'));
+  const url=m.document.querySelector('[role="dialog"] a[download]').href;
+  assert.equal(await resolveObjectURL(url).text(),canonical,'the offered file retains the actual canonical package');
+  await m.click(m.button('Cerrar exportación'));
+  assert.equal(resolveObjectURL(url),undefined);
+  assert.ok(created.every(url=>revoked.includes(url)),'closing releases discarded Strict Mode render URLs too');
+  assert.equal(m.dom.window.localStorage.getItem(draftKey),stored);
+ }
+ await m.click(m.button('Exportar contenido'));
+ const url=m.document.querySelector('[role="dialog"] a[download]').href;
+ assert.ok(resolveObjectURL(url));await m.unmount();
+ assert.ok(created.length>=4);
+ assert.ok(created.every(url=>revoked.includes(url)&&resolveObjectURL(url)===undefined),'unmount releases the final open file and every earlier allocation');
 });
 
 test('invalid stored data is retained for recovery instead of crashing or being overwritten',async t=>{
@@ -278,7 +326,7 @@ test('the mounted armory purchases and equips the selected authored firearm inst
  const m=await mount(t,undefined,null,s,'armory');
  const article=[...m.document.querySelectorAll('.armory-catalog article')].find(a=>a.textContent.includes('Pistola del editor'));assert.ok(article);assert.equal(article.querySelector('img').getAttribute('src'),'/art/weapon-1808.png');
  const treasury=m.campaign.resources.treasury;await m.click(article.querySelector('button'));assert.equal(m.campaign.lastError,null);assert.equal(m.campaign.resources.treasury,treasury-200);
- const item=m.campaign.armoryItems.find(i=>i.contentWeapon?.id==='pistola-editor');assert.ok(item);
+ const item=m.campaign.armoryItems.find(i=>i.itemMetadata?.contentWeapon?.id==='pistola-editor');assert.ok(item);
  await m.input(m.document.querySelector('#armory-weapon'),item.id);assert.equal(m.campaign.lastError,null);
  const saved=decodeSave(encodeSave(m.campaign)).campaign;assert.equal(saved.operativeState[100].weaponMetadata.contentWeapon.id,'pistola-editor');assert.equal(saved.armory['pistola-editor'],0);
  assert.match(m.document.querySelector('#armory-weapon').selectedOptions[0].textContent,/Pistola del editor/);
@@ -382,7 +430,7 @@ test('the editor builds connected dialogue passages with dependency protection, 
  const original=draft().characters.at(-1);await m.click(m.button('Duplicar personaje'));const copy=draft().characters.at(-1);assert.notEqual(copy.id,original.id);assert.deepEqual(copy.encounter.dialogue,original.encounter.dialogue);
  await m.input(m.label('Respuesta del personaje'),'Otra conversación.');assert.equal(draft().characters.find(c=>c.id===original.id).encounter.dialogue.nodes[0].text,'Elegí tu camino.');await m.click(m.button('Deshacer'));
  await m.click(m.button('Iniciar campaña con estas fichas'));let {campaign}=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY));campaign=dispatchCampaign(campaign,{type:'recruitCivic',id:110,term:'month'});campaign=dispatchCampaign(campaign,{type:'wait',hours:6});campaign=dispatchCampaign(campaign,{type:'visitSector'});assert.equal(campaign.lastError,null);
- let battle=enterSector({...campaign.pendingBattle,hour:campaign.hour}),npc=battle.npcs.find(n=>n.contentId===copy.id),unit=battle.units.find(u=>u.side==='player'),tile=getReachable(battle,unit.id).find(t=>Math.abs(t.x-npc.x)+Math.abs(t.y-npc.y)===1);assert.ok(tile);battle=actBattle(battle,{type:'move',unitId:unit.id,x:tile.x,y:tile.y});assert.equal(battle.lastError,null);({campaign,battle}=syncBattleTime(campaign,battle));
+ let battle=enterSector(campaign.pendingBattle),npc=battle.npcs.find(n=>n.contentId===copy.id),unit=battle.units.find(u=>u.side==='player');battle=approachNPC(battle,unit.id,npc.id);({campaign,battle}=syncBattleTime(campaign,battle));
  campaign=dispatchCampaign(campaign,{type:'talkNPC',npcId:npc.id,unitId:unit.id,approach:'dialogue',sectorState:battle});assert.equal(campaign.lastError,null);assert.equal(campaign.lastConversation.text,'Elegí tu camino.');
  campaign=dispatchCampaign(campaign,{type:'talkNPC',npcId:npc.id,unitId:unit.id,approach:'dialogue',dialogueNode:'start',dialogueChoice:'choice-1',sectorState:battle});assert.equal(campaign.lastError,null);assert.equal(decodeSave(encodeSave(campaign,battle)).campaign.lastConversation.text,'La posta está al norte.');
 });
@@ -404,7 +452,7 @@ test('the editor authors one-time payments, restores changes, copies them and la
  await m.input(m.document.querySelector('input[type="search"]'),'alma-contract');await m.click(m.document.querySelector('.entry-list button'));await m.click(m.document.querySelector('[aria-label="Pago o recompensa"] input[type="checkbox"]'));await m.input(m.label('Operación de pesos'),'pay');await m.input(m.label('Importe en pesos'),125);
  await m.click(m.button('Deshacer'));assert.equal(m.label('Importe en pesos').value,'100');await m.click(m.button('Rehacer'));assert.equal(m.label('Importe en pesos').value,'125');await m.click(m.button('Duplicar personaje'));const copy=draft().characters.at(-1);assert.deepEqual(copy.encounter.dialogue.nodes[0].choices[0].effects,[{type:'treasury',operation:'pay',amount:125}]);
  await m.click(m.button('Iniciar campaña con estas fichas'));let {campaign}=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY));campaign=dispatchCampaign(campaign,{type:'recruitCivic',id:110,term:'month'});campaign=dispatchCampaign(campaign,{type:'travel',sector:'cell-27-27'});campaign=dispatchCampaign(campaign,{type:'visitSector'});assert.equal(campaign.lastError,null);
- let battle=enterSector({...campaign.pendingBattle,hour:campaign.hour}),npc=battle.npcs.find(n=>n.contentId===copy.id),unit=battle.units.find(u=>u.side==='player'),tile=getReachable(battle,unit.id).find(t=>Math.abs(t.x-npc.x)+Math.abs(t.y-npc.y)===1);assert.ok(tile);if(tile.cost)battle=actBattle(battle,{type:'move',unitId:unit.id,x:tile.x,y:tile.y});assert.equal(battle.lastError,null);({campaign,battle}=syncBattleTime(campaign,battle));
+ let battle=enterSector({...campaign.pendingBattle,hour:campaign.hour}),npc=battle.npcs.find(n=>n.contentId===copy.id),unit=battle.units.find(u=>u.side==='player');battle=approachNPC(battle,unit.id,npc.id);({campaign,battle}=syncBattleTime(campaign,battle));
  const cash=campaign.resources.treasury;campaign=dispatchCampaign(campaign,{type:'talkNPC',npcId:npc.id,unitId:unit.id,approach:'dialogue',dialogueNode:'start',dialogueChoice:'north',sectorState:battle});assert.equal(campaign.lastError,null);assert.equal(campaign.resources.treasury,cash-125);const saved=decodeSave(encodeSave(campaign,battle));assert.equal(saved.campaign.conversations[npc.id].dialogueReceipts[0].amount,-125);
 });
 
@@ -413,7 +461,7 @@ test('the editor creates a quest, protects its references and launches an author
  await m.click(m.button('Personajes'));await m.input(m.document.querySelector('input[type="search"]'),'alma-contract');await m.click(m.document.querySelector('.entry-list button'));await m.click(m.button('Agregar condición'));await m.input(m.label('Tipo de condición'),'quest');await m.input(m.label('Estado del encargo requerido'),'not-started');await m.click(m.document.querySelector('[aria-label="Resultado del encargo"] input'));assert.deepEqual(draft().characters.at(-1).encounter.dialogue.nodes[0].choices[0].effects,[{type:'quest',quest:'quest-1',status:'active'}]);
  await m.click(m.button('Encargos'));assert.equal(m.button('Eliminar encargo').disabled,true);assert.match(m.document.body.textContent,/Usado por: Alma/);await m.click(m.button('Duplicar encargo'));assert.equal(m.button('Eliminar encargo').disabled,false);await m.click(m.button('Eliminar encargo'));assert.equal(draft().quests.length,1);await m.click(m.button('Deshacer'));assert.equal(draft().quests.length,2);await m.click(m.button('Rehacer'));assert.equal(draft().quests.length,1);
  await m.click(m.button('Iniciar campaña con estas fichas'));let {campaign}=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY));assert.deepEqual(contentQuestJournal(campaign),[]);campaign=dispatchCampaign(campaign,{type:'recruitCivic',id:110,term:'month'});campaign=dispatchCampaign(campaign,{type:'travel',sector:'cell-27-27'});campaign=dispatchCampaign(campaign,{type:'visitSector'});assert.equal(campaign.lastError,null);
- let battle=enterSector({...campaign.pendingBattle,hour:campaign.hour}),npc=battle.npcs.find(n=>n.contentId==='alma-contract'),unit=battle.units.find(u=>u.side==='player'),tile=getReachable(battle,unit.id).find(t=>Math.abs(t.x-npc.x)+Math.abs(t.y-npc.y)===1);assert.ok(tile);if(tile.cost)battle=actBattle(battle,{type:'move',unitId:unit.id,x:tile.x,y:tile.y});assert.equal(battle.lastError,null);({campaign,battle}=syncBattleTime(campaign,battle));
+ let battle=enterSector({...campaign.pendingBattle,hour:campaign.hour}),npc=battle.npcs.find(n=>n.contentId==='alma-contract'),unit=battle.units.find(u=>u.side==='player');battle=approachNPC(battle,unit.id,npc.id);({campaign,battle}=syncBattleTime(campaign,battle));
  campaign=dispatchCampaign(campaign,{type:'talkNPC',npcId:npc.id,unitId:unit.id,approach:'dialogue',dialogueNode:'start',dialogueChoice:'north',sectorState:battle});assert.equal(campaign.lastError,null);const saved=decodeSave(encodeSave(campaign,battle));assert.equal(contentQuestJournal(saved.campaign)[0].title,'La posta nueva');assert.equal(contentQuestJournal(saved.campaign)[0].status,'active');assert.equal(contentQuestJournal(saved.campaign)[0].remainingMinutes,60);
 });
 
@@ -465,7 +513,7 @@ test('the mounted armory sells an authored blade and keeps its displayed identit
  const d=defaultContentPackage();d.weapons.push({id:'sable-editor',template:1809,name:'Sable del editor',damage:29,ap:11,reach:1.6,price:73,art:'/art/weapon-1810.png'});
  let s=initialCampaign(5,d);s=dispatchCampaign(s,{type:'recruitCivic',id:110,term:'week'});s=dispatchCampaign(s,{type:'wait',hours:6});const before=s.resources.treasury;
  const m=await mount(t,undefined,null,s,'armory');const article=[...m.document.querySelectorAll('.armory-catalog article')].find(a=>a.textContent.includes('Sable del editor'));assert.ok(article);assert.equal(article.querySelector('img').getAttribute('src'),'/art/weapon-1810.png');await m.click(article.querySelector('button'));assert.equal(m.campaign.resources.treasury,before-73);
- const instance=m.campaign.armoryItems.find(i=>i.contentWeapon?.id==='sable-editor');await m.input(m.document.querySelector('#armory-blade'),instance.id);assert.match(m.document.querySelector('#armory-blade option[value="equipped"]').textContent,/Sable del editor/);assert.equal(decodeSave(encodeSave(m.campaign)).campaign.operativeState[110].bladeMetadata.contentWeapon.id,'sable-editor');
+ const instance=m.campaign.armoryItems.find(i=>i.itemMetadata?.contentWeapon?.id==='sable-editor');await m.input(m.document.querySelector('#armory-blade'),instance.id);assert.match(m.document.querySelector('#armory-blade option[value="equipped"]').textContent,/Sable del editor/);assert.equal(decodeSave(encodeSave(m.campaign)).campaign.operativeState[110].bladeMetadata.contentWeapon.id,'sable-editor');
 });
 
 test('the editor configures both troop slots, protects references and launches actual blade-equipped enemies',async t=>{
@@ -546,12 +594,12 @@ test('campaign objectives prevent deleting a referenced resident or quest',async
 });
 
 test('authored progression can copy and replace a historical actor with an independent resident through undo and actual local hiring',async t=>{
- const {defaultCampaignStory}=await import('../game/campaign-story.js');const {isHistoricalCharacter,legacyOperativeId}=await import('../game/content-character-ids.js');const {order,saved,visit,tactical,leave}=await import('./local-contract-fixture.mjs');const {createBattle}=await import('../game/tactical.js');
+ const {defaultCampaignStory}=await import('../game/campaign-story.js');const {isHistoricalCharacter,legacyOperativeId}=await import('../game/content-character-ids.js');const {order,saved,visit,sync,leave}=await import('./local-contract-fixture.mjs');const {createBattle}=await import('../game/tactical.js');
  const d=defaultContentPackage();d.campaignStory=defaultCampaignStory();d.campaignStory.chapters[0].conditions=[{type:'day',min:100,max:null}];d.placements.find(p=>p.character==='person-57').sectors=['cell-27-27'];const m=await mount(t,JSON.stringify(d));const draft=()=>parseContentPackage(m.dom.window.localStorage.getItem(draftKey));
  await m.input(m.document.querySelector('input[type="search"]'),'person-57');await m.click(m.document.querySelector('.entry-list button'));await m.click(m.button('Copiar como habitante independiente'));const copy=draft().characters.at(-1);assert.equal(isHistoricalCharacter(copy),false);assert.equal(legacyOperativeId(copy.id),undefined);assert.equal(copy.recruitmentSource,'encounter');assert.equal(copy.service,'permanent');assert.equal(copy.monthlyPay,0);assert.equal(copy.encounter.requiredLeadership,0);assert.equal(copy.encounter.requiredSector,null);assert.deepEqual(copy.attributes,d.characters.find(c=>c.id==='person-57').attributes);assert.equal(copy.portrait,d.characters.find(c=>c.id==='person-57').portrait);assert.deepEqual(draft().placements.at(-1).sectors,['cell-27-27']);await m.input(m.label('Nombre'),'Elena del Paso');
  await m.input(m.document.querySelector('input[type="search"]'),'person-57');await m.click(m.document.querySelector('.entry-list button'));await m.click(m.button('Eliminar'));assert.ok(!draft().characters.some(c=>c.id==='person-57'));await m.click(m.button('Deshacer'));assert.ok(draft().characters.some(c=>c.id==='person-57'));await m.click(m.button('Rehacer'));assert.ok(!draft().characters.some(c=>c.id==='person-57'));
  await m.click(m.button('Reglas'));const original=[...m.document.querySelectorAll('label')].find(l=>l.textContent.includes('Incluir habitantes genéricos del mapa original')).querySelector('input');await m.click(original);assert.equal(draft().includeOriginalResidents,false);await m.input(m.label('Avance de la historia'),'original');assert.equal(m.button('Iniciar campaña con estas fichas').disabled,true);await m.click(m.button('Deshacer'));assert.equal(m.button('Iniciar campaña con estas fichas').disabled,false);
- await m.click(m.button('Iniciar campaña con estas fichas'));let {campaign}=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY));const id=operativeIdForCharacter(campaign.contentCampaign.package,copy.id);campaign=order(campaign,{type:'recruitCivic',id:110,term:'week'});campaign=order(campaign,{type:'wait',hours:6});campaign=order(campaign,{type:'travel',sector:'cell-27-27'});let p=visit(campaign);const npc=p.battle.npcs.find(n=>n.contentId===copy.id),unit=p.battle.units.find(u=>u.side==='player'),spot=getReachable(p.battle,unit.id).find(t=>Math.abs(t.x-npc.x)+Math.abs(t.y-npc.y)===1);assert.ok(spot);if(spot.cost)p=tactical(p,{type:'move',x:spot.x,y:spot.y});
+ await m.click(m.button('Iniciar campaña con estas fichas'));let {campaign}=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY));const id=operativeIdForCharacter(campaign.contentCampaign.package,copy.id);campaign=order(campaign,{type:'recruitCivic',id:110,term:'week'});campaign=order(campaign,{type:'wait',hours:6});campaign=order(campaign,{type:'travel',sector:'cell-27-27'});let p=visit(campaign);const npcId=p.battle.npcs.find(n=>n.contentId===copy.id).id,unitId=p.battle.units.find(u=>u.side==='player').id;p=sync({campaign:p.campaign,battle:approachNPC(p.battle,unitId,npcId)});const npc=p.battle.npcs.find(n=>n.id===npcId),unit=p.battle.units.find(u=>u.id===unitId);
  campaign=order(p.campaign,{type:'talkNPC',npcId:npc.id,unitId:Number(unit.id),approach:'recruit',sectorState:p.battle});assert.ok(campaign.recruited.includes(id));assert.ok(!campaign.recruited.includes(57));assert.equal(campaign.operativeState[57],undefined);assert.equal(campaign.phase,0);assert.equal(campaign.flags.foundry,false);assert.equal(rosterFor(campaign).find(o=>o.id===id).name,'Elena del Paso');
  const joined=campaign.pendingBattle.squad.find(o=>o.id===id);p=saved({campaign,battle:{...p.battle,npcs:p.battle.npcs.filter(n=>n.id!==npc.id),units:[...p.battle.units,{...createBattle([joined],{width:8,height:8,enemies:[],exploration:true}).units[0],x:npc.x,y:npc.y}]}});campaign=leave(p);const fatigue=campaign.operativeState[id].fatigue;campaign=order(campaign,{type:'travel',sector:'retiro'});campaign=saved({campaign}).campaign;assert.ok(campaign.operativeState[id].fatigue>fatigue);assert.equal(campaign.operativeState[57],undefined);
 });
@@ -564,7 +612,7 @@ test('the editor assigns strategic functions with undo, protects assigned charac
  const {rolePackage}=await import('./campaign-roles-fixture.mjs');const {campaignRoleActive}=await import('../game/campaign-roles.js');const {order,saved,A}=await import('./local-contract-fixture.mjs');const d=rolePackage();delete d.campaignRoles;const m=await mount(t,JSON.stringify(d));const draft=()=>parseContentPackage(m.dom.window.localStorage.getItem(draftKey));await m.click(m.button('Reglas'));assert.equal(m.label('Responsable de fundición').value,'');await m.input(m.label('Responsable de fundición'),'engineer');await m.input(m.label('Responsable de marcha'),'engineer');await m.click(m.button('Deshacer'));assert.equal(m.label('Responsable de marcha').value,'');await m.click(m.button('Rehacer'));assert.equal(draft().campaignRoles.marchCommander,'engineer');
  await m.click(m.button('Personajes'));await m.input(m.document.querySelector('input[type="search"]'),'engineer');await m.click(m.document.querySelector('.entry-list button'));await m.click(m.button('Eliminar'));assert.match(m.document.body.textContent,/reasigná su función de campaña/);assert.ok(draft().characters.some(c=>c.id==='engineer'));
  await m.click(m.button('Reglas'));await m.click(m.button('Restaurar funciones originales'));assert.equal(draft().campaignRoles,undefined);assert.equal(m.label('Responsable de fundición').value,'');await m.click(m.button('Deshacer'));assert.equal(draft().campaignRoles.foundryEngineer,'engineer');await m.input(m.label('Responsable de fundición'),'');await m.input(m.label('Responsable de marcha'),'');await m.click(m.button('Personajes'));await m.click(m.document.querySelector('.entry-list button'));await m.click(m.button('Eliminar'));assert.ok(!draft().characters.some(c=>c.id==='engineer'));await m.click(m.button('Deshacer'));await m.click(m.button('Deshacer'));await m.click(m.button('Deshacer'));assert.deepEqual(draft().campaignRoles,{foundryEngineer:'engineer',marchCommander:'engineer'});
- await m.click(m.button('Iniciar campaña con estas fichas'));let {campaign}=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY));const id=operativeIdForCharacter(campaign.contentCampaign.package,'engineer');campaign=order(campaign,{type:'recruitCivic',id,term:'week'});assert.equal(campaignRoleActive(campaign,'foundryEngineer'),false);campaign=order(campaign,{type:'wait',hours:6});campaign=order(campaign,{type:'foundry'});campaign=order(campaign,{type:'travel',sector:A});campaign=saved({campaign}).campaign;assert.equal(campaign.flags.foundry,true);assert.equal(campaign.operativeState[id].fatigue,0);
+ await m.click(m.button('Iniciar campaña con estas fichas'));let {campaign}=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY));const id=operativeIdForCharacter(campaign.contentCampaign.package,'engineer');campaign=order(campaign,{type:'recruitCivic',id,term:'week'});assert.equal(campaignRoleActive(campaign,'foundryEngineer'),false);campaign=order(campaign,{type:'wait',hours:6});campaign=order(campaign,{type:'foundry'});campaign=order(campaign,{type:'travel',sector:A});campaign=saved({campaign}).campaign;assert.equal(campaign.flags.foundry,true);assert.equal(campaign.operativeState[id].fatigue,0);assert.equal(campaignRoleActive(campaign,'marchCommander'),true);
 });
 
 test('the actual treasury names the assigned engineer and blocks its pending arrival',async t=>{
@@ -703,7 +751,7 @@ test('the editor authors militia thresholds and gains with validation, undo, res
  const expected={regularThreshold:4,veteranThreshold:7,marksmanshipGain:3,leadershipGain:0,levelGain:2};assert.deepEqual(draft().militiaProgression,expected);await m.click(m.button('Deshacer'));assert.equal(m.label('Niveles de experiencia ganados por ascenso').value,'1');await m.click(m.button('Rehacer'));
  await m.input(m.label('Puntos para ascender a veterano'),4);assert.equal(m.button('Iniciar campaña con estas fichas').disabled,true);assert.match(m.document.body.textContent,/necesita más puntos/);await m.click(m.button('Deshacer'));await m.input(m.label('Niveles de experiencia ganados por ascenso'),10);assert.equal(m.button('Iniciar campaña con estas fichas').disabled,true);await m.click(m.button('Deshacer'));
  await m.click(m.button('Restaurar ascensos de milicias originales'));assert.equal(draft().militiaProgression,undefined);assert.equal(Number(m.label('Puntos para ascender a montonero').value),DEFAULT_MILITIA_PROGRESSION.regularThreshold);await m.click(m.button('Deshacer'));assert.deepEqual(draft().militiaProgression,expected);
- await m.click(m.button('Iniciar campaña con estas fichas'));let {campaign}=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY));campaign=order(campaign,{type:'createOfficer',name:'Isabel del Valle',answers:{origin:'cabildo',doctrine:'line_marksman',crisis:'rally'}});campaign=order(campaign,{type:'militia',trainerId:1000,rank:0});campaign=order(campaign,{type:'wait',hours:campaign.militiaTraining[0].remaining});campaign=order(campaign,{type:'militia',trainerId:1000,rank:1});const before=structuredClone(campaign.militiaTraining[0].trainees[0]);campaign=order(saved({campaign}).campaign,{type:'wait',hours:campaign.militiaTraining[0].remaining});const after=campaign.garrisons.retiro.find(u=>u.id===before.id);assert.equal(after.militiaRank,1);assert.equal(after.marksmanship,before.marksmanship+3);assert.equal(after.leadership,before.leadership);assert.equal(after.experienceLevel,(before.experienceLevel??4)+2);assert.equal(after.hp,before.hp);assert.equal(after.loaded,before.loaded);assert.deepEqual(militiaProgression(saved({campaign}).campaign),expected);
+ await m.click(m.button('Iniciar campaña con estas fichas'));let {campaign}=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY));campaign=order(campaign,{type:'createOfficer',name:'Isabel del Valle',answers:{origin:'cabildo',doctrine:'line_marksman',crisis:'rally'}});campaign=order(campaign,{type:'militia',trainerId:1000,rank:0});campaign=finishMilitiaTraining(campaign);campaign=order(campaign,{type:'militia',trainerId:1000,rank:1});const before=structuredClone(campaign.militiaTraining[0].trainees[0]);campaign=finishMilitiaTraining(saved({campaign}).campaign);const after=campaign.garrisons.retiro.find(u=>u.id===before.id);assert.equal(after.militiaRank,1);assert.equal(after.marksmanship,before.marksmanship+3);assert.equal(after.leadership,before.leadership);assert.equal(after.experienceLevel,(before.experienceLevel??4)+2);assert.equal(after.hp,before.hp);assert.equal(after.loaded,before.loaded);assert.deepEqual(militiaProgression(saved({campaign}).campaign),expected);
  await m.input(m.label('Puntería ganada por ascenso'),99);assert.equal(draft().militiaProgression.marksmanshipGain,99);assert.equal(militiaProgression(campaign).marksmanshipGain,3);assert.equal(m.dom.window.localStorage.getItem('granaderos.campaign.v1'),'ordinary save');
 });
 
@@ -760,7 +808,7 @@ test('the editor authors finite workshop cash and local gun prices with undo, re
  await m.click(m.button('Agregar precio local'));let row=m.document.querySelector('[data-artillery-trade-rate="buenos_aires"]');assert.ok(row);await m.input(row.querySelector('select'),'retiro');row=m.document.querySelector('[data-artillery-trade-rate="retiro"]');await m.input(row.querySelector('input'),29);await m.click(m.document.querySelector('[data-artillery-trade-rate="cordoba"] button'));
  const expected={enabled:false,initialCash:777,buyPercent:23,resalePercent:63,buyingOverrides:{mendoza:50,retiro:29}};assert.deepEqual(draft().artilleryTrading,expected);await m.click(m.button('Deshacer'));assert.equal(draft().artilleryTrading.buyingOverrides.cordoba,30);await m.click(m.button('Rehacer'));await m.input(m.document.querySelector('[data-artillery-trade-rate="retiro"] input'),101);assert.equal(m.button('Iniciar campaña con estas fichas').disabled,true);await m.click(m.button('Deshacer'));
  await m.click(m.button('Restaurar comercio de artillería original'));assert.equal(draft().artilleryTrading,undefined);await m.click(m.button('Deshacer'));assert.deepEqual(draft().artilleryTrading,expected);await m.click(m.label('Permitir venta y recompra de artillería'));expected.enabled=true;assert.equal(m.button('Iniciar campaña con estas fichas').disabled,false);await m.click(m.button('Iniciar campaña con estas fichas'));let {campaign}=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY));assert.deepEqual(artilleryTradingRules(campaign),expected);
- campaign=order(campaign,{type:'createOfficer',name:'Isabel del Valle',answers:{origin:'cabildo',doctrine:'line_marksman',crisis:'rally'}});campaign=order(campaign,{type:'purchaseEquipment',item:'swivel'});const cash=campaign.resources.treasury;campaign=order(campaign,{type:'sellArtillery',kind:'stock',model:'swivel',stockCount:1});assert.equal(campaign.resources.treasury,cash+116);assert.equal(campaign.artilleryMerchants.retiro.cash,661);const id=campaign.artilleryMerchants.retiro.guns[0].id;campaign=order(decodeSave(encodeSave(campaign)).campaign,{type:'repurchaseArtillery',artilleryId:id});assert.equal(campaign.resources.treasury,cash-136);assert.equal(campaign.artilleryMerchants.retiro.cash,913);assert.equal(campaign.artilleryDepots.retiro[0].id,id);
+ campaign=order(campaign,{type:'createOfficer',name:'Isabel del Valle',answers:{origin:'cabildo',doctrine:'line_marksman',crisis:'rally'}});campaign=order(campaign,{type:'purchaseEquipment',item:'swivel'});const cash=campaign.resources.treasury;campaign=order(campaign,{type:'sellArtillery',kind:'stock',model:'swivel',stockCount:1});assert.equal(campaign.resources.treasury,cash+116);assert.equal(campaign.merchants.retiro.cash,1061);const id=campaign.artilleryMerchants.retiro.guns[0].id;campaign=order(decodeSave(encodeSave(campaign)).campaign,{type:'repurchaseArtillery',artilleryId:id});assert.equal(campaign.resources.treasury,cash-136);assert.equal(campaign.merchants.retiro.cash,1313);assert.equal(campaign.artilleryDepots.retiro[0].id,id);
  await m.input(m.label('Fondos iniciales de cada taller (pesos)'),1);assert.equal(artilleryTradingRules(campaign).initialCash,777);assert.equal(m.dom.window.localStorage.getItem('granaderos.campaign.v1'),'ordinary save');
 });
 

@@ -1,3 +1,4 @@
+import {restForMarch} from './campaign-test-helpers.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {dispatchCampaign,rosterFor} from '../game/campaign.js';
@@ -19,8 +20,8 @@ test('a paid local militia doctor stops a real wound and restores the same soldi
 });
 
 test('two militia doctors cannot spend two dressings on one patient in the same hour and use authored care costs',()=>{
- let {campaign:s,patientId:id}=woundedGarrison({twoDoctors:true,careRules:{...DEFAULT_CARE_RULES,baseHealing:5,skillStep:40,energyCost:7,fatigueCost:9,dressingPrice:17}});const hp=patient(s,id).hp;
- for(const id of [D,D2])s=order(s,{type:'assignCare',id,assignment:'militia_doctor'});s=order(s,{type:'wait',hours:1});assert.equal(s.operativeState[D].medkits+s.operativeState[D2].medkits,3);assert.equal(s.operativeState[D].energy,93);assert.equal(s.operativeState[D].fatigue,9);assert.equal(s.operativeState[D2].energy??100,100);assert.equal(patient(s,id).hp,hp);
+ let {campaign:s,patientId:id}=woundedGarrison({twoDoctors:true,careRules:{...DEFAULT_CARE_RULES,baseHealing:5,skillStep:40,energyCost:7,fatigueCost:9,dressingPrice:17}});const hp=patient(s,id).hp,energy=s.operativeState[D].energy,fatigue=s.operativeState[D].fatigue;
+ for(const id of [D,D2])s=order(s,{type:'assignCare',id,assignment:'militia_doctor'});s=order(s,{type:'wait',hours:1});assert.equal(s.operativeState[D].medkits+s.operativeState[D2].medkits,3);assert.equal(s.operativeState[D].energy,Math.min(energy-7,Math.max(10,100-fatigue-9)));assert.equal(s.operativeState[D].fatigue,fatigue+9);assert.equal(s.operativeState[D2].energy??100,100);assert.equal(patient(s,id).hp,hp);
  s=order(s,{type:'wait',hours:1});assert.equal(patient(s,id).hp,Math.min(patient(s,id).maxHp,hp+7));assert.equal(s.operativeState[D2].medkits,2);const money=s.resources.treasury;s=order(s,{type:'purchaseMedicalSupplies',id:D,quantity:2});assert.equal(s.resources.treasury,money-34);assert.ok(saved({campaign:s}));
 });
 
@@ -29,7 +30,7 @@ test('militia medical work requires the exact location and blocks deployment or 
  for(const action of [{type:'visitSector'},{type:'travel',sector:'buenos_aires'},{type:'militia',trainerId:D,rank:0}])assert.match(dispatchCampaign(s,action).lastError,/servicio/);
  s=order(s,{type:'wait',hours:1});assert.equal(patient(s,id).bleeding,0);
  s=order(s,{type:'assignCare',id:D,assignment:'active'});s=order(s,{type:'travel',sector:'buenos_aires'});s=order(s,{type:'assignCare',id:D,assignment:'militia_doctor'});const stock=s.operativeState[D].medkits,hp=patient(s,id).hp;s=order(s,{type:'wait',hours:1});assert.equal(s.operativeState[D].medkits,stock);assert.equal(patient(s,id).hp,hp);assert.deepEqual(militiaCarePatients(s,'buenos_aires'),[]);assert.match(careStatus(s,doctor(s),rosterFor(s)),/Sin milicianos heridos/);assert.ok(saved({campaign:s}));
- s=order(s,{type:'assignCare',id:D,assignment:'active'});s=order(s,{type:'travel',sector:'retiro'});s=order(s,{type:'assignCare',id:D,assignment:'militia_doctor'});s=order(s,{type:'createSquad',name:'Patrulla de Isabel',ids:[1000]});s=order(s,{type:'travel',sector:'buenos_aires'});assert.equal(patient(s,id).hp,Math.min(patient(s,id).maxHp,hp+6),'the remaining dressing heals the soldier after earlier local stabilization');assert.equal(s.operativeState[D].medkits,0);assert.ok(saved({campaign:s}));
+ s=order(s,{type:'assignCare',id:D,assignment:'active'});s=order(s,{type:'travel',sector:'retiro'});s=order(s,{type:'assignCare',id:D,assignment:'militia_doctor'});s=order(s,{type:'createSquad',name:'Patrulla de Isabel',ids:[1000]});s=order(s,{type:'selectSquad',id:s.squads.find(q=>q.members.includes(1000)).id});s=order(restForMarch(s),{type:'travel',sector:'buenos_aires'});assert.equal(patient(s,id).hp,Math.min(patient(s,id).maxHp,hp+6),'the remaining dressing heals the soldier after earlier local stabilization');assert.equal(s.operativeState[D].medkits,0);assert.ok(saved({campaign:s}));
 });
 
 test('a deployed garrison owns its tactical wounds and receives no remote medical duplication',()=>{
@@ -44,5 +45,5 @@ test('real militia casualties cannot become patients or return as healed reinfor
 test('saved militia health and medical eligibility reject malformed records before care can normalize them',()=>{
  const {campaign:s,patientId:id}=woundedGarrison();for(const values of [{hp:101},{hp:61,maxHp:60},{bleeding:11},{bleeding:-1},{bandaged:1000},{energy:101},{fatigue:-1}]){const wire=JSON.parse(encodeSave(s));Object.assign(wire.campaign.garrisons.retiro.find(u=>u.id===id),values);assert.throws(()=>decodeSave(JSON.stringify(wire)),/guarniciones|heridas|físico/);}
  const unqualified=woundedGarrison({careRules:{...DEFAULT_CARE_RULES,minimumSkill:90}}).campaign;assert.match(dispatchCampaign(unqualified,{type:'assignCare',id:D,assignment:'militia_doctor'}).lastError,/medicina/);
- const wire=JSON.parse(encodeSave(s));wire.campaign.operativeState[110].assignment='militia_doctor';assert.throws(()=>decodeSave(JSON.stringify(wire)),/asignación/);assert.ok(saved({campaign:s}));
+ const wire=JSON.parse(encodeSave(s));wire.campaign.operativeState[110].assignment='militia_doctor';assert.throws(()=>decodeSave(JSON.stringify(wire)),/asignaci[oó]n/);assert.ok(saved({campaign:s}));
 });

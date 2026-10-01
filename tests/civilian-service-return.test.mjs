@@ -20,7 +20,7 @@ test('dismissal returns the actual military wound and spent supplies before any 
 
 test('the service record remains authoritative while still hired and expiry resumes the civilian wound once',()=>{
  let s=woundedService(),id=localId(s);const end=s.contracts[id].expiresAt;assert.ok(end>s.hour);
- s=order(s,{type:'wait',hours:end-s.hour});assert.ok(!s.recruited.includes(id));assert.equal(ledger(s).inService,undefined);assert.equal(ledger(s).health.hp,s.operativeState[id].hp);assert.ok(ledger(s).health.hp>0);assert.equal(ledger(s).health.bleeding,s.operativeState[id].bleeding);
+ for(let n=0;s.hour<end&&n<5;n++)s=order(s,{type:'wait',hours:end-s.hour});assert.ok(!s.recruited.includes(id));assert.equal(ledger(s).inService,undefined);assert.equal(ledger(s).health.hp,s.operativeState[id].hp);assert.ok(ledger(s).health.hp>0);assert.equal(ledger(s).health.bleeding,s.operativeState[id].bleeding);
  const remaining=s.operativeState[id].torches;s=saved({campaign:s}).campaign;s=order(s,{type:'wait',hours:1});assert.equal(ledger(s).health.hp,0);assert.equal(s.operativeState[id].torches,remaining);assert.equal(civilianIncidents(ledger(s).health).filter(e=>e.kind==='death').length,1);assert.ok(saved({campaign:s}));
 });
 
@@ -41,7 +41,7 @@ test('paid strategic care survives dismissal and rehire without restoring the ol
  s=order(s,{type:'dismiss',id});assert.equal(ledger(s).health.hp,healed);assert.equal(ledger(s).health.bleeding,0);assert.equal(ledger(s).health.civilianWoundSeconds,undefined);
  s=order(saved({campaign:s}).campaign,{type:'wait',hours:24});assert.equal(ledger(s).health.hp,healed);s=order(s,{type:'assignCare',id:110,assignment:'active'});s=order(s,{type:'travel',sector:A});let p=visit(s);
  const target=localNPC(p.battle),u=p.battle.units.find(u=>Number(u.id)===110),spot=getReachable(p.battle,u.id).find(t=>Math.abs(t.x-target.x)+Math.abs(t.y-target.y)===1);assert.ok(spot);if(spot.cost)p=tactical(p,{type:'move',x:spot.x,y:spot.y});
- p=hireLocal(p,'week');assert.equal(p.battle.units.find(u=>Number(u.id)===id).hp,healed);assert.equal(p.battle.units.find(u=>Number(u.id)===id).torches,torches);assert.equal(ledger(p.campaign).inService,true);assert.ok(saved(p));
+ assert.ok(p.campaign.operativeState[id].arrival,'the previous retreat still has a service entry receipt');p=hireLocal(p,'week');assert.equal(p.campaign.operativeState[id].arrival,null);assert.equal(p.campaign.operativeState[id].residentSector,A);assert.equal(p.battle.units.find(u=>Number(u.id)===id).hp,healed);assert.equal(p.battle.units.find(u=>Number(u.id)===id).torches,torches);assert.equal(ledger(p.campaign).inService,true);assert.ok(saved(p));
 });
 
 test('a real local-service casualty stays a military body after dismissal and never becomes a living resident',()=>{

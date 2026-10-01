@@ -7,7 +7,7 @@ export function hiringArrivalReason(state,destination){
   const site=arrivalSitesFor(state).find(s=>s.sector===destination);
   if(!site)return 'Elegí una posta, un cuartel, un puerto o un embarcadero habilitado.';
   if(state.sectors?.[destination]?.owner!=='patriot')return 'El destino de llegada debe estar bajo tu control.';
-  if((state.enemyGroups??[]).some(g=>g.target===destination&&['stationed','engaged'].includes(g.status)))return 'El destino de llegada está ocupado o en combate.';
+  if((state.enemyGroups??[]).some(g=>g.target===destination&&['waiting','stationed','engaged'].includes(g.status)))return 'El destino de llegada está ocupado o en combate.';
   if(state.blockade&&!site.facilities.some(f=>['post','barracks'].includes(f)))return 'El bloqueo impide llegar por agua. Elegí un destino con acceso terrestre.';
   return null;
 }

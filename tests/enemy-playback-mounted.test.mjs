@@ -7,7 +7,7 @@ import {createBattle,presentedEndTurn} from '../game/tactical.js';
 const {useEnemyPlayback}=await import('../web/lib/useEnemyPlayback.ts');
 const {default:Battlefield}=await import('../web/app/Battlefield.tsx');
 const hosts=n=>!n||typeof n!=='object'?[]:Array.isArray(n)?n.flatMap(hosts):[n,...hosts(n.props?.children)];
-const field=()=>createBattle([{id:'p',name:'Patriota',x:1,y:1,weapon:1801,marksmanship:70}],{width:24,height:12,seed:45,tiles:Array.from({length:288},(_,i)=>({x:i%24,y:Math.floor(i/24),type:'grass',blocked:false,cover:0})),enemies:[{id:'e',name:'Realista',x:7,y:1,weapon:1801,marksmanship:15,morale:100},{id:'sword',name:'Sable',x:7,y:4,weapon:1809,morale:100}]});
+const field=()=>{const s=createBattle([{id:'p',name:'Patriota',x:1,y:1,weapon:1801,marksmanship:70}],{width:24,height:12,seed:45,tiles:Array.from({length:288},(_,i)=>({x:i%24,y:Math.floor(i/24),type:'grass',blocked:false,cover:0})),enemies:[{id:'e',name:'Sable',x:7,y:1,weapon:1809,morale:100}]});s.units[0].ap=0;return s;};
 async function mount(t,render){
  const dom=new JSDOM('<div id="root"></div>',{url:'http://localhost/'}),workers=[],timers=new Map();let serial=0;
  class Worker{constructor(){workers.push(this);}postMessage(message){this.message=message;}terminate(){this.terminated=true;}reply(result){this.onmessage({data:{id:this.message.id,result}});}}
@@ -50,8 +50,9 @@ test('worker failure releases input and fallback errors do not leave a pending t
 test('mounted Battlefield shows steps and rejects invalid campaign transitions before playback',async t=>{
  for(const accepted of [true,false])await t.test(String(accepted),async t=>{
   const source=field(),result=presentedEndTurn(source);let tree,commits=[];
-  function Capture(){tree=Battlefield({battle:source,onChange:s=>commits.push(s),onFinish(){},onRetreat(){},onPlaybackValidate:()=>accepted});return null;}
-  const env=await mount(t,()=>h(Capture));
+  const wrapper=Battlefield({battle:source,onChange:s=>commits.push(s),onFinish(){},onPlaybackValidate:()=>accepted}),content=wrapper.props.children;
+  function Capture(){tree=content.type(content.props);return null;}
+  const env=await mount(t,()=>h(wrapper.type,null,h(Capture)));
   await act(async()=>hosts(tree).find(n=>n.props?.onEndTurn).props.onEndTurn());await act(async()=>env.workers[0].reply(result));
   if(!accepted){assert.deepEqual(commits,[]);assert.ok(!hosts(tree).some(n=>n.props?.['data-enemy-frame']));return;}
   for(let i=0;i<result.frames.length;i++){assert.ok(hosts(tree).some(n=>n.props?.['data-enemy-frame']?.startsWith(`${i}:`)));await env.step();}

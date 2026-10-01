@@ -1,3 +1,4 @@
+import {BUILDING_TYPES} from './building-types.js';
 import { WALL_FINISHES, ROOF_FINISHES, DOOR_STYLES, WINDOW_STYLES } from "./building-appearance.js";
 import {
   TERRAIN,
@@ -127,6 +128,14 @@ export function validateMap(input, { playable = false } = {}) {
       );
       keys.add(cellKey(t));
     }
+    if (d.boundaryRoads !== undefined) {
+      need(Array.isArray(d.boundaryRoads) && d.boundaryRoads.length <= 2*(d.width+d.height), "Accesos del camino no válidos.");
+      const roads = new Set();
+      for (const entry of d.boundaryRoads) {
+        need(coord(entry) && (entry.x===0 || entry.x===d.width-1 || entry.y===0 || entry.y===d.height-1) && !roads.has(cellKey(entry)), "Acceso del camino fuera del borde o duplicado.");
+        roads.add(cellKey(entry));
+      }
+    }
     const ids = new Set();
     for (const layer of LAYERS) {
       need(Array.isArray(d[layer]) && d[layer].length <= 2000, `Capa no válida: ${layer}`);
@@ -157,7 +166,8 @@ export function validateMap(input, { playable = false } = {}) {
           b.x + b.width <= d.width &&
           b.y + b.height <= d.height &&
           ["adobe", "stone"].includes(b.material) &&
-          b.roof === "tile" &&
+          ["tile", "thatch", "terrace"].includes(b.roof) &&
+          (b.architecture === undefined || Object.hasOwn(BUILDING_TYPES,b.architecture)) &&
           (b.kind === undefined || Object.hasOwn(BUILDING_KINDS, b.kind)) &&
           Array.isArray(b.walls) &&
           Array.isArray(b.rooms),

@@ -1,0 +1,229 @@
+{
+  "date": "2026-09-30",
+  "baseRevision": "4938fd79835776a202273b09cf303fc7251ad392",
+  "runtimeSource": "afe5dda42ea47b9c8297477ea47c967dcce64c5148245ccc637392b34bb7bd6b",
+  "testSourcesSha256": "874187accfd073a76f1427830eb5e9d23b7008a1ec57fdfc60192ca9d6518fd8",
+  "node": "22.23.3",
+  "scope": "Unpushed working-branch corrections. This is not release, browser, performance or complete campaign acceptance.",
+  "changes": [
+    "A new invader group enters through connected boundary terrain. Saved defenders and civilians keep their locations. Troop counts, wounds and finite equipment are unchanged.",
+    "Loaded prisoner breath recovery transfers the validated tactical energy to both the service record and custody receipt. Wound and custody save validation remains strict.",
+    "Route fixtures use paid capable support, actual treatment time, affordable doctors, quoted medical prices and interrupted travel. Remaining route failures are retained."
+  ],
+  "regressions": [
+    {
+      "case": "Prisoner breath transfer",
+      "beforeCorrection": {
+        "tests": 17,
+        "pass": 16,
+        "fail": 1,
+        "cancelled": 0,
+        "skipped": 0,
+        "duration_ms": 3249.985334,
+        "logSha256": "f9dc511af31ad108fc0a42d25900a7867bfb7073f2e239f365861697145644d1"
+      },
+      "afterCorrectionCoveredBy": "Focused checks below"
+    },
+    {
+      "case": "Invader entry",
+      "beforeCorrection": {
+        "tests": 9,
+        "pass": 1,
+        "fail": 8,
+        "cancelled": 0,
+        "skipped": 0,
+        "duration_ms": 1087.76125,
+        "logSha256": "6a8546f9c315409e5ddffb337afbf53d66926b99b3344355a54592bb53ea5571"
+      },
+      "afterCorrectionCoveredBy": "Focused checks below"
+    }
+  ],
+  "focusedChecks": {
+    "tests": 102,
+    "pass": 102,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "duration_ms": 5179.406209,
+    "logSha256": "7ebd05a5505117f74fcd91dde9360f829182f21399f15ff8329f7be5d6795768",
+    "files": [
+      "tests/invader-arrival.test.mjs",
+      "tests/invader-search.test.mjs",
+      "tests/defense-world.test.mjs",
+      "tests/enemy-groups.test.mjs",
+      "tests/enemy-reserves.test.mjs",
+      "tests/enemy-intelligence.test.mjs",
+      "tests/artillery-arrival.test.mjs",
+      "tests/sector-deployment.test.mjs",
+      "tests/sector-deployment-campaign.test.mjs",
+      "tests/campaign-gift-defense.test.mjs",
+      "tests/campaign-detention.test.mjs",
+      "tests/detention-health.test.mjs",
+      "tests/detention-care.test.mjs",
+      "tests/detention.test.mjs",
+      "tests/prisoner-custody.test.mjs",
+      "tests/prisoner-release.test.mjs",
+      "tests/civilian-breath-recovery.test.mjs"
+    ]
+  },
+  "otherChecks": {
+    "typecheck": {
+      "passed": true,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "baseline": {
+      "passed": true,
+      "logSha256": "1ed9779b5a9bf03ec011b0a317dddab77eefcc51c60f148601a952896d895191"
+    },
+    "testPartition": {
+      "passed": true,
+      "selfTests": 4,
+      "logSha256": "7444204f985cef3557ea26b7d6947ecf816d920b18848b1cee0665e7b7e0786c"
+    },
+    "privateProductionBuild": {
+      "passed": true,
+      "files": 1131,
+      "assetReferences": 1031,
+      "buildId": "afe5dda42ea4",
+      "served": false,
+      "logSha256": "5f6d57a3278645175dbe2a2ed78d247fc8b339fdd16feebc4373a854c8cab184"
+    },
+    "documentation": {
+      "passed": true,
+      "requirements": 274,
+      "originalRows": 50,
+      "parityRows": 87,
+      "evidenceRecords": 114,
+      "logSha256": "c6c076f01cd351740dc7bcbe7b68361867248f3de019638f05f41f10bc855b66"
+    },
+    "diffWhitespace": {
+      "passed": true
+    }
+  },
+  "localRouteDiagnostics": {
+    "southern": {
+      "status": "Partial",
+      "actualRescue": "Victory in 20 turns; deterministic replay, save and settlement pass. Three released captives receive finite care over three hours.",
+      "courier": "A diagnostic from the actual saved rescue prefix hires doctor 116 for 56 pesos. Courier buys 13 dressings for the current 130-peso quote. All released patients recover; checkpoint hour 223, treasury 2685.",
+      "nextFailure": "Salta preparation tries to hire a guard who is already employed. Full route not passed."
+    },
+    "freshLongCampaign": {
+      "status": "Partial",
+      "firstCordobaDefense": "Cautious ordinary combat orders win in 7 turns. Full fresh test reaches post-defense care, then fails on care at a routed survivor location. Return travel correction now reaches the next finite-care failure.",
+      "nextFailure": "One survivor still bleeds after the bounded available care. No healing or supply grant is used."
+    },
+    "preparedPrisonerRescue": {
+      "status": "Failed",
+      "detail": "The existing six-person rescue route loses after the invader entry change. Crew ordering, a closer screen and cautious infantry diagnostics also lose. Its earlier CI pass is historical."
+    },
+    "freshNorthern": "Earlier Salta failure remains unresolved; complete local rerun is in progress."
+  },
+  "completeLocalSuite": {
+    "status": "failed",
+    "command": "node --test --test-concurrency=2 tests/*.test.mjs",
+    "log": "/tmp/granaderos-local-complete-afe5dda4.tap",
+    "sessionId": 59869,
+    "exitCode": 1,
+    "totals": {
+      "tests": 4180,
+      "pass": 4169,
+      "fail": 10,
+      "cancelled": 0,
+      "skipped": 1,
+      "todo": 0,
+      "duration_ms": 1935960.225083
+    },
+    "logSha256": "ef7ec44502f9b7968c5d371f58236fe4b22079b1ce498ff19c4683257f804e50",
+    "failures": [
+      {
+        "test": "unguarded and defeated provinces fall while unresolved militia combat remains active",
+        "index": 808,
+        "nested": false,
+        "line": 9173,
+        "location": "/Users/fsodano/.codex/worktrees/typed-ammunition/granaderos/tests/campaign-web.test.mjs:58:1",
+        "error": "Expected values to be strictly equal:"
+      },
+      {
+        "test": "a Retiro-only campaign retains paid recovery and real losses through coordinated San Nicol\u00e1s, San Lorenzo, C\u00f3rdoba, Tucum\u00e1n and Salta victories through Yatasto, Mendoza funding and both mountain passes, Ensenada, naval recruitment, Santa Fe, Tucum\u00e1n and Salta recapture, Jujuy and Humahuaca",
+        "index": 1866,
+        "nested": false,
+        "line": 15582,
+        "location": "/Users/fsodano/.codex/worktrees/typed-ammunition/granaderos/tests/fresh-campaign-recovery.test.mjs:20:1",
+        "error": "Expected values to be strictly equal:"
+      },
+      {
+        "test": "a fresh campaign prepares Cuyo with real battles, living roles, purchases, funding and physical late recruitment",
+        "index": 1871,
+        "nested": false,
+        "line": 15632,
+        "location": "/Users/fsodano/.codex/worktrees/typed-ammunition/granaderos/tests/fresh-cuyo-route.test.mjs:2:1",
+        "error": "salta"
+      },
+      {
+        "test": "a fresh stock campaign wins all localities with actual combat and continues after saved victory and service expiry",
+        "index": 1872,
+        "nested": false,
+        "line": 15660,
+        "location": "/Users/fsodano/.codex/worktrees/typed-ammunition/granaderos/tests/fresh-ending-route.test.mjs:5:1",
+        "error": "salta"
+      },
+      {
+        "test": "a fresh Retiro force reaches Yatasto through paid replacements and actual northern victories with saved replay",
+        "index": 1873,
+        "nested": false,
+        "line": 15689,
+        "location": "/Users/fsodano/.codex/worktrees/typed-ammunition/granaderos/tests/fresh-northern-route.test.mjs:5:1",
+        "error": "salta"
+      },
+      {
+        "test": "a fresh Mendoza victory cannot conceal the subsequent death of its required engineer",
+        "index": 2021,
+        "nested": false,
+        "line": 16598,
+        "location": "/Users/fsodano/.codex/worktrees/typed-ammunition/granaderos/tests/historical-loss.test.mjs:7:1",
+        "error": "salta"
+      },
+      {
+        "test": "two paid squads arrive together and capture Salta with actual losses",
+        "index": 6,
+        "nested": true,
+        "line": 21555,
+        "location": "/Users/fsodano/.codex/worktrees/typed-ammunition/granaderos/tests/opening-playthrough.test.mjs:143:10",
+        "error": "{\"type\":\"recruitCivic\",\"id\":113,\"term\":\"week\"}: Ya se encuentra en tus filas."
+      },
+      {
+        "test": "established southern campaign reaches Yatasto through combat, defeat, rescue and paid recovery",
+        "index": 2838,
+        "nested": false,
+        "line": 21592,
+        "location": "/Users/fsodano/.codex/worktrees/typed-ammunition/granaderos/tests/opening-playthrough.test.mjs:18:1",
+        "error": "'1 subtest failed'"
+      },
+      {
+        "test": "paid relief starts at the real arrival edge, fights, releases prisoners and escorts them back with permanent losses",
+        "index": 3035,
+        "nested": false,
+        "line": 22778,
+        "location": "/Users/fsodano/.codex/worktrees/typed-ammunition/granaderos/tests/prisoner-rescue-route.test.mjs:5:1",
+        "error": "the entire relief force must physically leave or fall"
+      },
+      {
+        "test": "bounded automatic withdrawal keeps a synchronized pending battle when no exit can be reached",
+        "index": 3746,
+        "nested": false,
+        "line": 27085,
+        "location": "/Users/fsodano/.codex/worktrees/typed-ammunition/granaderos/tests/tactical-exit-campaign.test.mjs:82:1",
+        "error": "La incursi\u00f3n no tiene una entrada transitable."
+      }
+    ]
+  },
+  "delivery": {
+    "pushed": false,
+    "merged": false,
+    "pr": 139,
+    "prState": "OPEN DRAFT",
+    "userPreviewReplaced": false,
+    "browserChecked": false,
+    "serviceEndEquipmentReturn": "Queued after PR139 merges; not started."
+  }
+}

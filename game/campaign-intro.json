@@ -1,0 +1,41 @@
+{
+  "id": "granaderos-opening",
+  "version": 1,
+  "title": "El comienzo de la campaña",
+  "scenes": [
+    {
+      "id": "revolution",
+      "eyebrow": "BUENOS AIRES · 1812",
+      "title": "Una revolución por defender",
+      "text": "La revolución iniciada en mayo de 1810 sigue en guerra con las fuerzas realistas. San Martín organiza los Granaderos a Caballo. La independencia todavía está por conquistar.",
+      "visual": "map",
+      "durationMs": 10000
+    },
+    {
+      "id": "commission",
+      "eyebrow": "JOSÉ DE SAN MARTÍN · TENIENTE CORONEL",
+      "title": "Formemos una fuerza capaz",
+      "text": "Necesitamos soldados preparados y una fuerza disciplinada. Reuní a quienes puedan servir, cuidá de tus compañeros y asegurá los suministros. La libertad exige más que ganar una batalla.",
+      "portrait": "/art/portrait-57.webp",
+      "portraitAlt": "Ilustración de José de San Martín",
+      "visual": "letter",
+      "durationMs": 12000
+    },
+    {
+      "id": "objective",
+      "eyebrow": "TU OBJETIVO",
+      "title": "Abrir el camino a la independencia",
+      "text": "Organizá tu escuadra, derrotá a las guarniciones realistas y defendé los territorios recuperados. Conseguí aliados y recursos para sostener la campaña. Cada vida y cada decisión cuentan.",
+      "visual": "route",
+      "durationMs": 11000
+    },
+    {
+      "id": "first-step",
+      "eyebrow": "TU PRIMER PASO · RETIRO",
+      "title": "Todo empieza con una persona",
+      "text": "Elegí a tu primer combatiente o creá tu propio granadero. Con una sola persona ya podés partir. Después, explorá Retiro y prepará tu primera salida.",
+      "visual": "muster",
+      "durationMs": 0
+    }
+  ]
+}

@@ -1,3 +1,4 @@
+import {scriptedWithdrawal} from './scripted-battle-report.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {defaultContentPackage,validateContentPackage,parseContentPackage,encodeContentPackage} from '../game/content-package.js';
@@ -12,6 +13,7 @@ import {encodeSave,decodeSave} from '../game/save.js';
 import {secureArea} from './controlled-area-fixture.mjs';
 const order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,`${a.type}: ${n.lastError}`);return n;};
 const save=(s,b=null)=>decodeSave(encodeSave(s,b));
+const completeTurn=value=>{let b=endTurn(value);for(let i=0;i<8&&b.phase==='interrupt'&&b.status==='active';i++)b=endTurn(b);assert.equal(b.lastError,null);return b;};
 const tiles=Array.from({length:140},(_,i)=>({x:i%14,y:Math.floor(i/14),type:'grass',blocked:false,cover:0}));
 function content(){const d=defaultContentPackage();d.weapons.push({id:'lanza-de-tropa',template:1812,name:'Lanza de tropa',damage:13,ap:70,reach:3,weight:2,price:55,art:'/art/weapon-1810.png'});d.oppositionEquipment.line='lanza-de-tropa';d.oppositionBlades={officer:'lanza-de-tropa',line:'blade-1813',veteran:null};d.militiaEquipment.green='lanza-de-tropa';d.militiaBlades={green:'blade-1813',regular:'lanza-de-tropa',veteran:null};for(const c of d.characters.filter(c=>Number(c.id.slice(7))>=100))c.arrivalHours=0;return d;}
 function attack(d=content()){let s=secureArea(initialCampaign(8,d),'buenos_aires');for(const id of [110,111,112,113])s=order(s,{type:'recruitCivic',id,term:'week'});s=order(s,{type:'travel',sector:'buenos_aires'});return order(s,{type:'attack',sector:'san_nicolas'});}
@@ -26,19 +28,21 @@ test('actual attacks issue authored blades without cartridges and AI chooses the
  const s=attack(),b=enterSector(s.pendingBattle),enemies=save(s,b).battle.units.filter(u=>u.side==='enemy');
  for(const u of enemies.filter(u=>u.id==='enemy-1'||u.id==='enemy-2')){assert.equal(contentWeaponOf(u).id,'lanza-de-tropa');assert.equal(u.loaded,0);assert.equal(u.ammo,0);assert.equal(u.priming,undefined);assert.equal(contentWeaponOf(u,'blade').id,'blade-1813');}
  const officer=enemies.find(u=>u.id==='enemy-0');assert.equal(contentWeaponOf(officer,'blade').id,'lanza-de-tropa');assert.equal(officer.loaded+officer.ammo,13);assert.equal(enemies.find(u=>u.id==='enemy-3').bladeMetadata,undefined);
- let close=createBattle([{id:'p',x:1,y:1,weapon:1800}],{width:14,height:10,tiles,seed:45,enemies:[{...officer,x:3,y:1}]});close=endTurn(close);const switched=close.units.find(u=>u.side==='enemy');assert.equal(switched.activeSlot,'blade');assert.equal(switched.ap,26);assert.equal(switched.loaded,officer.loaded);assert.equal(close.units[0].hp,86);assert.equal(bladeFor(switched).id,1812);
- let far=createBattle([{id:'p',x:1,y:1,weapon:1800}],{width:14,height:10,tiles,seed:45,enemies:[{...officer,activeSlot:'blade',x:10,y:1}]});far=endTurn(far);const shooter=far.units.find(u=>u.side==='enemy');assert.equal(shooter.activeSlot,'primary');assert.ok(shooter.condition<officer.condition);assert.ok(shooter.loaded+shooter.ammo<13);
- let fallen=createBattle([{id:'p',x:1,y:1,weapon:1800}],{width:14,height:10,tiles,seed:45,enemies:[{...officer,x:3,y:1}]});fallen.units[1].knockedDown=true;fallen.units[1].stance='prone';fallen=endTurn(fallen);assert.equal(fallen.units[1].knockedDown,false);assert.equal(fallen.units[1].activeSlot,'blade');assert.equal(fallen.units[1].ap,14);
+ let close=createBattle([{id:'p',x:1,y:1,weapon:1800}],{width:14,height:10,tiles,seed:45,enemies:[{...officer,x:3,y:1}]});close=completeTurn(close);const switched=close.units.find(u=>u.side==='enemy');assert.equal(switched.activeSlot,'blade',JSON.stringify({log:close.log,ap:switched.ap,phase:close.phase}));assert.equal(switched.ap,26);assert.equal(switched.loaded,officer.loaded);assert.equal(close.units[0].hp,86);assert.equal(bladeFor(switched).id,1812);
+ let far=createBattle([{id:'p',x:1,y:1,weapon:1800}],{width:14,height:10,tiles,seed:45,enemies:[{...officer,activeSlot:'blade',x:10,y:1}]});far=completeTurn(far);const shooter=far.units.find(u=>u.side==='enemy');assert.equal(shooter.activeSlot,'primary');assert.ok(shooter.condition<officer.condition);assert.ok(shooter.loaded+shooter.ammo<13);
+ let fallen=createBattle([{id:'p',x:1,y:1,weapon:1800}],{width:14,height:10,tiles,seed:45,enemies:[{...officer,x:3,y:1}]});fallen.units[1].knockedDown=true;fallen.units[1].stance='prone';fallen=completeTurn(fallen);assert.equal(fallen.units[1].knockedDown,false);assert.equal(fallen.units[1].activeSlot,'blade');assert.equal(fallen.units[1].ap,14);
 });
 
 test('trained militia retain both chosen slots through switching, save and real campaign return',()=>{
- const d=content();d.militiaEquipment.green='firearm-1805';d.militiaBlades.green='lanza-de-tropa';d.rules.militiaCartridges=0;
+ const d=content();d.militiaEquipment.green='firearm-1805';d.militiaBlades.green='lanza-de-tropa';d.rules.militiaCartridges=0;d.weapons.find(w=>w.id==='lanza-de-tropa').ap=20;
  let s=order(secureArea(initialCampaign(8,d),'buenos_aires','ensenada'),{type:'createOfficer',name:'Isabel del Valle',answers:{origin:'cabildo',doctrine:'line_marksman',crisis:'rally'}});
  s=order(s,{type:'militia',trainerId:1000,rank:0});s=order(s,{type:'wait',hours:s.militiaTraining[0].remaining});if(s.hour%24<6||s.hour%24>=20)s=order(s,{type:'wait',hours:(30-s.hour%24)%24});s=order(s,{type:'visitSector'});const r=s.pendingBattle;
  // Paid soldiers meet a declared nearby raider; switching is an actual AI decision.
- let b=createBattle([...r.squad.map((u,i)=>({...u,x:1,y:8+i})),...r.garrison.map((u,i)=>({...u,x:1,y:1+i*3}))],{...r,exploration:false,width:14,height:10,tiles,enemies:[{id:'raider',x:4,y:1,weapon:1813,blade:1813,ammo:0,hp:100,maxHp:100,fatigue:100,patrol:false}]}),u=b.units.find(u=>u.militia),id=u.id;
+ r.enemies=createBattle([],{width:14,height:10,enemies:[{id:'raider',x:4,y:1,weapon:1813,blade:1813,ammo:0,hp:100,maxHp:100,fatigue:100,patrol:false}]}).units;
+ let b=createBattle([...r.squad.map((u,i)=>({...u,x:1,y:8+i})),...r.garrison.map((u,i)=>({...u,x:1,y:1+i*3}))],{...r,exploration:false,width:14,height:10,tiles,enemies:r.enemies}),u=b.units.find(u=>u.militia),id=u.id;
  assert.equal(contentWeaponOf(u).id,'firearm-1805');assert.equal(contentWeaponOf(u,'blade').id,'lanza-de-tropa');assert.deepEqual([u.loaded,u.ammo,u.priming],[0,0,undefined]);
- b=endTurn(b);assert.equal(b.lastError,null);u=b.units.find(u=>u.militia&&!u.routed&&u.activeSlot==='blade');assert.ok(u);id=u.id;assert.equal(weaponFor(u).contentId,'lanza-de-tropa');assert.ok(b.units.find(u=>u.id==='raider').hp<100);
+ b=completeTurn(b);assert.equal(b.lastError,null);u=b.units.find(u=>u.militia&&!u.routed&&u.activeSlot==='blade');assert.ok(u,JSON.stringify({log:b.log,units:b.units.map(u=>({id:u.id,hp:u.hp,ap:u.ap,slot:u.activeSlot}))}));id=u.id;assert.equal(weaponFor(u).contentId,'lanza-de-tropa');assert.ok(b.units.find(u=>u.id==='raider').hp<100);
+ for(let i=0;i<12&&b.status==='active';i++)b=completeTurn(b);assert.equal(b.status,'victory');
  const pair=syncBattleTime(s,b);assert.equal(pair.error,null);s=order(pair.campaign,{type:'leaveSector',battleId:s.pendingBattle.id,sectorState:pair.battle,survivors:pair.battle.units.filter(u=>u.side==='player')});s=save(s).campaign;s=order(s,{type:'visitSector'});b=enterSector(s.pendingBattle,s.sectorStates.retiro);u=b.units.find(u=>u.id===id);assert.equal(contentWeaponOf(u).id,'firearm-1805');assert.equal(contentWeaponOf(u,'blade').id,'lanza-de-tropa');assert.equal(u.activeSlot,'blade');assert.ok(save(s,b));
 });
 
@@ -57,6 +61,7 @@ test('a generated primary blade can be recovered without cartridges and kept thr
  for(let i=0;i<3&&b.units.find(u=>u.id==='enemy-1').hp>0;i++){b=actBattle(b,{type:'fire',unitId:'110',targetId:'enemy-1',aim:2});assert.equal(b.lastError,null);}assert.equal(b.units.find(u=>u.id==='enemy-1').hp,0);
  b=actBattle(b,{type:'loot',unitId:'110',targetId:'enemy-1',item:'weapon'});assert.equal(b.lastError,null);const key=Object.keys(b.units[0].inventory).find(k=>k.startsWith('weapon:'));assert.equal(b.units[0].inventory[key].loaded,0);
  b=actBattle(b,{type:'equipLoot',unitId:'110',inventoryKey:key});assert.equal(b.lastError,null);assert.equal(weaponFor(b.units[0]).contentId,'lanza-de-tropa');const reserve=b.units[0].ammo;
- const pair=syncBattleTime(s,b);assert.equal(pair.error,null);s=order(pair.campaign,{type:'battleResult',outcome:'retreat',battleId:request.id,sectorState:pair.battle,survivors:pair.battle.units.filter(u=>u.side==='player')});s=save(s).campaign;s=order(s,{type:'attack',sector:'san_nicolas'});b=enterSector(s.pendingBattle,s.sectorStates.san_nicolas);
+ // Prepared boundary exit isolates equipment custody, not the approach route.
+ b=scriptedWithdrawal(b);const pair=syncBattleTime(s,b);assert.equal(pair.error,null);s=order(pair.campaign,{type:'battleResult',outcome:'retreat',battleId:request.id,sectorState:pair.battle,survivors:pair.battle.units.filter(u=>u.side==='player')});s=save(s).campaign;s=order(s,{type:'attack',sector:'san_nicolas'});b=enterSector(s.pendingBattle,s.sectorStates.san_nicolas);
  assert.equal(weaponFor(b.units.find(u=>u.id==='110')).contentId,'lanza-de-tropa');assert.equal(b.units.find(u=>u.id==='110').ammo,reserve);assert.equal(b.units.find(u=>u.id==='enemy-1').weaponDropped,true);assert.ok(save(s,b));
 });

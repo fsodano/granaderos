@@ -78,6 +78,6 @@ test('older unseen wounds start at their saved time; current saves reject a miss
 test('first aid in the opening sector stops a newly seeded wound and does not reset it after saving or departure',()=>{
  const d=content(30);d.placements.find(p=>p.character===patient).sectors=['retiro'];d.characters.find(c=>c.id==='person-110').attributes.medical=80;let p=visit(ready(d));
  const n=p.battle.npcs.find(n=>n.contentId===patient),u=p.battle.units.find(u=>u.side==='player'),spot=getReachable(p.battle,u.id).find(t=>Math.abs(t.x-n.x)+Math.abs(t.y-n.y)===1);assert.ok(spot);if(spot.cost)p=tactical(p,{type:'move',x:spot.x,y:spot.y});
- const supplies=p.battle.units.find(u=>u.side==='player').medkits;p=tactical(p,{type:'heal',targetId:n.id});const hp=p.battle.npcs.find(n=>n.contentId===patient).hp;assert.equal(ledger(p.campaign).health.bleeding,0);assert.ok(p.battle.units.find(u=>u.side==='player').medkits<supplies);
+ const supplies=p.battle.units.find(u=>u.side==='player').medkits;p=tactical(p,{type:'weapon',slot:'medical'});p=tactical(p,{type:'heal',targetId:n.id});const hp=p.battle.npcs.find(n=>n.contentId===patient).hp;assert.equal(ledger(p.campaign).health.bleeding,0);assert.ok(p.battle.units.find(u=>u.side==='player').medkits<supplies);
  let s=order(leave(saved(p)),{type:'wait',hours:24});assert.equal(record(s).hp,hp);assert.equal(record(s).alive,true);assert.equal(ledger(s).health.bleeding,0);p=visit(s);assert.equal(p.battle.npcs.find(n=>n.contentId===patient).hp,hp);assert.ok(saved(p));
 });

@@ -1,0 +1,8 @@
+.assignment-attention{max-width:1500px;margin:0 auto 18px;padding:14px 16px;background:#26382e;border:1px solid #a39864;border-left:4px solid #d8c990;color:#e3dec3;font-size:13px;line-height:1.5;overflow-wrap:anywhere}
+.assignment-attention-heading{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:4px 16px}
+.assignment-attention h2{margin:0;font:19px Georgia}
+.assignment-attention-heading>span{color:#d8c990;white-space:nowrap}
+.assignment-attention p{margin:8px 0 0}
+.assignment-attention ul{margin:8px 0;padding-left:20px}
+.assignment-attention li+li{margin-top:5px}
+.assignment-attention .assignment-attention-resume{color:#bdc9b4}

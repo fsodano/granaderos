@@ -1,3 +1,4 @@
+import {advanceCampaignHours,finishMilitiaTraining} from './campaign-wait-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign} from '../game/campaign.js';
@@ -10,14 +11,14 @@ import {woundedGarrison,MILITIA_DOCTOR as D} from './militia-care-fixture.mjs';
 const militia=s=>s.garrisons.retiro??[];
 const save=s=>saved({campaign:s}).campaign;
 const promotion=(s,trainerId=1000,rank=1)=>order(s,{type:'militia',rank,trainerId});
-const finish=s=>order(s,{type:'wait',hours:s.militiaTraining[0].remaining});
-function trained({twoCohorts=false,woundedInstructor=false}={}){
- const d=defaultContentPackage();d.rules.startingTreasury=10000;
+const finish=finishMilitiaTraining;
+function trained({twoCohorts=false,woundedInstructor=false,headquarters='retiro'}={}){
+ const d=defaultContentPackage();d.rules.startingTreasury=10000;d.headquarters=headquarters;
  for(const at of ['buenos_aires','ensenada'])d.startingTerritory[at]={owner:'patriot',loyalty:65};
  for(const id of [D,137]){const c=d.characters.find(c=>c.id===`person-${id}`);c.arrivalHours=0;c.attributes.leadership=50;}
  if(woundedInstructor){d.careRules={...DEFAULT_CARE_RULES,bleedingDamagePercent:100};d.characters.find(c=>c.id==='person-137').startingCondition={hp:20,energy:100,fatigue:0,bleeding:10,bandaged:0};}
  let s=order(initialCampaign(42,d),{type:'createOfficer',name:'Isabel del Valle',answers:{origin:'cabildo',doctrine:'line_marksman',crisis:'rally'}});
- s=order(s,{type:'recruitCivic',id:D,term:'month'});
+ s=order(s,{type:'recruitCivic',id:D,term:'month'});if(s.location!=='retiro')s=order(s,{type:'travel',sector:'retiro'});
  for(let i=0;i<(twoCohorts?2:1);i++)s=finish(order(s,{type:'militia',rank:0,trainerId:1000}));
  return save(leave(visit(s)));
 }
@@ -51,11 +52,11 @@ test('cancelling or dismissing a paid instructor returns the exact reserved coho
 });
 
 test('actual contract expiry and an authored wound death each return their reserved soldiers once',()=>{
- for(const death of [false,true]){let s=trained({woundedInstructor:death});s=order(s,{type:'recruitCivic',id:137,term:death?'week':'day'});const before=structuredClone(militia(s));s=promotion(s,137);assert.ok(s.militiaTraining[0].remaining>24);const next=s.nextMilitiaId;s=order(s,{type:'wait',hours:death?2:24});assert.equal(s.militiaTraining.length,0);assert.deepEqual(militia(s),before);assert.equal(s.nextMilitiaId,next);assert.deepEqual(s.sectors.retiro.militia,[3,0,0]);if(death)assert.equal(s.operativeState[137].alive,false);else assert.ok(!s.recruited.includes(137));s=order(save(s),{type:'wait',hours:1});assert.deepEqual(militia(s),before);assert.ok(save(s));}
+ for(const death of [false,true]){let s=trained({woundedInstructor:death});s=order(s,{type:'recruitCivic',id:137,term:death?'week':'day'});const before=structuredClone(militia(s));s=promotion(s,137);assert.ok(s.militiaTraining[0].remaining>24);const next=s.nextMilitiaId;s=advanceCampaignHours(s,death?2:24);assert.equal(s.militiaTraining.length,0);assert.deepEqual(militia(s),before);assert.equal(s.nextMilitiaId,next);assert.deepEqual(s.sectors.retiro.militia,[3,0,0]);if(death)assert.equal(s.operativeState[137].alive,false);else assert.ok(!s.recruited.includes(137));s=order(save(s),{type:'wait',hours:1});assert.deepEqual(militia(s),before);assert.ok(save(s));}
 });
 
 test('a course completing during another squad deployment retains returning trainees alongside deployed survivors',()=>{
- let s=trained({twoCohorts:true}),original=structuredClone(militia(s));s=promotion(s);const traineeIds=s.militiaTraining[0].trainees.map(u=>u.id);s=order(s,{type:'wait',hours:s.militiaTraining[0].remaining-1});s=order(s,{type:'createSquad',name:'Patrulla local',ids:[D]});let p=visit(s);assert.equal(p.campaign.pendingBattle.garrison.length,3);assert.ok(p.battle.units.every(u=>!traineeIds.includes(Number(u.id))));const at=p.campaign.hour;
+ let s=trained({twoCohorts:true}),original=structuredClone(militia(s));s=promotion(s);const traineeIds=s.militiaTraining[0].trainees.map(u=>u.id);s=finishMilitiaTraining(s,{remaining:1});s=order(s,{type:'createSquad',name:'Patrulla local',ids:[D]});s=order(s,{type:'selectSquad',id:s.squads.find(q=>q.members.includes(D)).id});let p=visit(s);assert.equal(p.campaign.pendingBattle.garrison.length,3);assert.ok(p.battle.units.every(u=>!traineeIds.includes(Number(u.id))));const at=p.campaign.hour;
  while(p.campaign.hour===at)p=tactical(p,{type:'rest',seconds:600});assert.equal(p.campaign.militiaTraining.length,0);assert.equal(militia(p.campaign).length,6);p=saved(p);s=save(leave(p));assert.equal(militia(s).length,6);assert.deepEqual(militia(s).map(u=>u.id).sort(),original.map(u=>u.id).sort());for(const id of traineeIds)unchanged(militia(s).find(u=>u.id===id),original.find(u=>u.id===id));
  const again=visit(s);assert.equal(again.battle.units.filter(u=>u.militia&&u.hp>0).length,6);assert.ok(saved(again));
 });
@@ -73,9 +74,9 @@ test('older count-only paid courses remain readable and keep their original coun
 });
 
 test('territorial loss disperses a reserved cohort instead of returning it behind enemy lines',()=>{
- let s=promotion(trained());const ids=s.militiaTraining[0].trainees.map(u=>u.id);
+ let s=promotion(trained({headquarters:'buenos_aires'}));const ids=s.militiaTraining[0].trainees.map(u=>u.id);
  // Prepared territory boundary; this is not a claimed successful defense route.
- s.sectors.retiro.owner='royalist';s=order(s,{type:'wait',hours:1});assert.equal(s.militiaTraining.length,0);assert.deepEqual(s.sectors.retiro.militia,[0,0,0]);assert.ok(militia(s).every(u=>!ids.includes(u.id)));assert.ok(save(s));
+ s.sectors.retiro.owner='royalist';s=advanceCampaignHours(s,1);assert.equal(s.militiaTraining.length,0);assert.deepEqual(s.sectors.retiro.militia,[0,0,0]);assert.ok(militia(s).every(u=>!ids.includes(u.id)));assert.ok(save(s));
 });
 
 test('an older paid veteran course with saved individuals completes without replacing its participants',()=>{

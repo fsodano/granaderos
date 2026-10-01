@@ -205,7 +205,7 @@ gunsmith/assist reductions. The `reload` action (`tactical.js:81`) transfers rou
 credits looted rounds from dead/unconscious sources and caps returned rounds by each soldier's
 issued quantity and the total issued stock. This is the web analogue of the engine's
 `DeductAmmo` (`Weapons.cpp:2744,3573`) and the campaign's finite-cartridge handoff
-(`docs/development/WEB-SYSTEMS.md:35-37`).
+(`docs/development/WEB-SYSTEMS.md`).
 
 ---
 
@@ -605,7 +605,7 @@ Use this to verify a ported system against the engine. Each item cites the engin
    compatibility that does not exist.
 6. **The bayonet is not yet a mounted attachment** — it is an interchangeable secondary blade.
    Do not claim musket-mounted bayonet state.
-7. **Prices are game-balance values, not historical market claims** (`docs/development/WEB-SYSTEMS.md:83`).
+7. **Prices are game-balance values, not historical market claims** (`docs/development/WEB-SYSTEMS.md`).
    The engine's `usPrice`/`dSellModifier` are the *mechanism*; the web flat prices are the
    *balance*.
 8. **File names contain spaces** (e.g. `"Arms Dealer Init.cpp"`, `"ShopKeeper Interface.cpp"`).

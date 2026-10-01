@@ -1,0 +1,37 @@
+import {setTestAmmunition} from './typed-ammunition-fixture.mjs';
+import test from 'node:test';import assert from 'node:assert/strict';
+import {enterSector} from '../game/world.js';import {createBattle,actBattle,getReachable,canSee,visibleEnemies,endTurn} from '../game/tactical.js';import {validateBattleSnapshot} from '../game/validate-battle.js';import {battleFromRequest,prepareCampaignBattle} from '../game/battle-handoff.js';import {initialCampaign,dispatchCampaign} from '../game/campaign.js';import {syncBattleTime} from '../game/time.js';import {encodeSave,decodeSave} from '../game/save.js';
+const request={id:'entry',sector:'san_nicolas',hour:12,seed:127,squad:[{id:'p',weapon:1800,ammo:8,loaded:1}],enemies:[{id:'e',weapon:1800,ammo:3,loaded:1,patrol:false,overwatch:false}]};
+function local(player={},enemy={}){
+ const previous=createBattle([{id:'p',x:2,y:3,facing:2,...player}],{id:'old-entry',sector:'san_nicolas',width:28,height:9,seed:127,tiles:Array.from({length:252},(_,i)=>({x:i%28,y:Math.floor(i/28),type:'grass',blocked:false,cover:0})),enemies:[{id:'e',x:24,y:3,facing:6,patrol:false,overwatch:false,marksmanship:0,...enemy}]});
+ const nextRequest={...request,squad:[{...previous.units[0],entryReason:'resident'}]};return {previous,request:nextRequest,battle:enterSector(nextRequest,previous)};
+}
+test('an ordinary hostile entry begins exploration with living hidden enemies and zero AP movement cost',()=>{
+ const b=enterSector(request),u=b.units[0];assert.equal(b.mode,'exploration');assert.equal(b.status,'active');assert.equal(b.sectorCleared,false);assert.equal(b.phase,'player');assert.equal(b.elapsedSeconds,0);assert.equal(visibleEnemies(b).length,0);assert.equal(b.units.filter(u=>u.side==='enemy').length,1);
+ const next=getReachable(b,u).find(p=>p.path.length===1),m=actBattle(b,{type:'move',unitId:u.id,x:next.x,y:next.y});assert.equal(m.lastError,null);assert.equal(m.mode,'exploration');assert.equal(m.units[0].ap,u.ap);assert.ok(m.units[0].energy<u.energy);assert.ok(m.elapsedSeconds>0);assert.equal(m.units[1].ammo,3);assert.doesNotThrow(()=>validateBattleSnapshot(m));
+});
+test('contact is determined after resident placement, with player sight starting the first player turn once',()=>{
+ const {battle:b}=local({}, {x:7});assert.equal(b.mode,'combat');assert.equal(b.roundFirstSide,'player');assert.equal(b.turn,1);assert.equal(b.elapsedSeconds,0);assert.equal(b.units[0].ap,b.units[0].maxAP);assert.ok(b.log.some(line=>line.includes('Contacto visual')));
+ const moved=actBattle(b,{type:'look',unitId:'p',x:2,y:4});assert.equal(moved.lastError,null);assert.ok(moved.units[0].ap<b.units[0].ap);const saved=validateBattleSnapshot(moved);assert.equal(saved.units[0].ap,moved.units[0].ap);assert.equal(saved.log.filter(line=>line.includes('Contacto visual')).length,1);
+});
+test('enemy-only sight on entry gives the enemy the first round without granting another player turn',()=>{
+ const {battle:b}=local({facing:6}, {x:8});assert.equal(b.mode,'combat');assert.equal(b.roundFirstSide,'enemy');assert.equal(b.phase,'interrupt');assert.equal(b.enemyTurns,0);assert.equal(b.elapsedSeconds,6);const resumed=endTurn(validateBattleSnapshot(b));assert.equal(resumed.enemyTurns,1);assert.equal(resumed.turn,1);assert.equal(resumed.elapsedSeconds,6);assert.ok(b.log.some(line=>line.includes('toma la iniciativa')));assert.equal(b.contactInitiative,undefined);assert.doesNotThrow(()=>validateBattleSnapshot(b));
+});
+test('an unfinished hidden engagement is re-entered without erased enemies or false clearance',()=>{
+ const {request:r,previous:p}=local();Object.assign(p.units[1],{hp:62,energy:73,condition:44,ammo:2,loaded:0,reloadProgress:.5});setTestAmmunition(p.units[1],2);p.turn=8;p.units[1].lastKnownEnemy={x:2,y:3,turn:8};const b=enterSector(r,p),e=b.units[1];assert.equal(b.mode,'exploration');assert.equal(b.sectorCleared,false);for(const key of ['hp','energy','condition','ammo','loaded','reloadProgress'])assert.equal(e[key],p.units[1][key]);assert.equal(e.lastKnownEnemy,undefined);assert.doesNotThrow(()=>validateBattleSnapshot(b));
+});
+test('moving during initial exploration stops at first contact and does not charge combat AP for earlier steps',()=>{
+ const {battle:b}=local(),u=b.units[0],n=actBattle(b,{type:'move',unitId:'p',x:20,y:3});assert.equal(n.lastError,null);assert.equal(n.mode,'combat');assert.ok(n.units[0].x<20);assert.equal(n.units[0].ap,n.units[0].maxAP);assert.ok(n.units[0].energy<u.energy);assert.equal(n.log.filter(line=>line.includes('Contacto visual')).length,1);assert.match(n.log.find(line=>line.includes('avanza')),/casillas\./);
+});
+test('saving a real assault before contact preserves exploration and exact campaign time',()=>{
+ const step=(c,a)=>{const n=dispatchCampaign(c,a);assert.equal(n.lastError,null,n.lastError);return n;};let c=step(initialCampaign(8),{type:'createOfficer',name:'Vigía del Norte',answers:{origin:'cabildo',doctrine:'line_marksman',crisis:'rally'}});c=step(c,{type:'attack',sector:'buenos_aires'});let b=battleFromRequest(c.pendingBattle,c);assert.equal(c.pendingBattle.exploration,undefined);assert.equal(b.mode,'exploration');const u=b.units[0],p=getReachable(b,u).find(p=>p.path.length===1);b=actBattle(b,{type:'move',unitId:u.id,x:p.x,y:p.y});let pair=syncBattleTime(c,b);assert.equal(pair.error,null);const saved=decodeSave(encodeSave(pair.campaign,pair.battle));assert.deepEqual(saved.battle,pair.battle);assert.equal(saved.battle.mode,'exploration');assert.equal(saved.campaign.pendingBattle.syncedSeconds,saved.battle.elapsedSeconds);assert.equal(saved.battle.sectorCleared,false);
+ const resume={...saved.campaign.pendingBattle,resumeSnapshot:saved.battle};assert.deepEqual(battleFromRequest(resume,saved.campaign),saved.battle);
+});
+
+test('the first published campaign battle synchronizes immediate enemy initiative and can be saved before any input',()=>{
+ const step=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,n.lastError);return n;};let c=step(initialCampaign(8),{type:'createOfficer',name:'Vigía del Norte',answers:{origin:'cabildo',doctrine:'line_marksman',crisis:'rally'}});c=step(c,{type:'wait',hours:12});c=step(c,{type:'attack',sector:'buenos_aires'});
+ const r=c.pendingBattle,id=String(r.squad[0].id),source=local({id,facing:6},{x:8}).previous;source.units[1].id=String(r.enemies[0].id);source.battleId=r.id;source.enteredHour=c.hour;source.savedHour=c.hour;source.savedSecond=c.secondOfHour;source.startSeconds=r.hour*3600+r.secondOfHour;source.night=false;c.sectorStates[r.sector]=source;
+ delete r.squad[0].entryEdge;delete r.squad[0].entryAnchor;r.squad[0].entryReason='resident';r.squad[0].facing=6;
+ const pair=prepareCampaignBattle(c);assert.equal(pair.error,null);assert.equal(pair.battle.roundFirstSide,'enemy');assert.equal(pair.battle.elapsedSeconds,6);assert.equal(pair.battle.syncedSeconds,6);assert.equal(pair.campaign.pendingBattle.syncedSeconds,6);assert.equal(pair.campaign.secondOfHour,6);const saved=decodeSave(encodeSave(pair.campaign,pair.battle));assert.deepEqual(saved.battle,pair.battle);
+ const resume={...pair.campaign,pendingBattle:{...pair.campaign.pendingBattle,resumeSnapshot:pair.battle}};const again=prepareCampaignBattle(resume);assert.equal(again.error,null);assert.equal(again.campaign.secondOfHour,6);assert.deepEqual(again.battle,pair.battle);
+});

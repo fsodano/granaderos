@@ -1,3 +1,5 @@
+import {advanceCampaignHours} from './campaign-wait-fixture.mjs';
+import {approachNPC} from './approach-npc.mjs';
 import {firstAidPlan} from '../game/first-aid.js';
 import {doctorRate,careAssignmentReason} from '../game/medical-care.js';
 import assert from 'node:assert/strict';
@@ -8,7 +10,8 @@ import {operativeIdForCharacter} from '../game/content-character-ids.js';
 import {contentQuestStatus} from '../game/content-quests.js';
 import {actBattle,endTurn,getReachable} from '../game/tactical.js';
 import {enterSector} from '../game/world.js';
-import {fight} from './cuyo-route-driver.mjs';
+import {fight} from './opening-driver.mjs';
+import {hiredAssaultOrder} from './hired-assault-driver.mjs';
 import {order,saved,visit,leave,sync} from './local-contract-fixture.mjs';
 export const postContent=()=>parseContentPackage(readFileSync(new URL('../web/public/campaigns/la-ruta-de-las-postas.json',import.meta.url),'utf8'));
 const tactical=(p,a)=>{const battle=a.type==='endTurn'?endTurn(p.battle):actBattle(p.battle,a);assert.equal(battle.lastError,null,battle.lastError);return sync({campaign:p.campaign,battle});};
@@ -16,7 +19,7 @@ const summary=s=>({hour:s.hour,second:s.secondOfHour??0,funds:s.resources.treasu
 export function approachPost(s,person){
  let p=visit(s);const npc=p.battle.npcs.find(n=>n.contentId===person);assert.ok(npc,person);assert.ok(npc.hp>0,person);
  const candidates=p.battle.units.filter(u=>u.side==='player'&&u.hp>0&&!u.unconscious&&!u.routed).flatMap(u=>getReachable(p.battle,u).filter(t=>Math.abs(t.x-npc.x)+Math.abs(t.y-npc.y)===1).map(spot=>({u,spot}))).sort((a,b)=>a.spot.cost-b.spot.cost);assert.ok(candidates.length,person);
- const {u,spot}=candidates[0];if(spot.cost)p=tactical(p,{type:'move',unitId:u.id,x:spot.x,y:spot.y});return {...p,speaker:u.id,npc:npc.id};
+ const {u}=candidates[0];p=sync({campaign:p.campaign,battle:approachNPC(p.battle,u.id,npc.id)});return {...p,speaker:u.id,npc:npc.id};
 }
 export function choosePost(p,node,choice){return {...p,campaign:order(p.campaign,{type:'talkNPC',npcId:p.npc,unitId:p.speaker,approach:'dialogue',dialogueNode:node,dialogueChoice:choice,sectorState:p.battle})};}
 export function readyPostCampaign(){
@@ -30,7 +33,7 @@ export function finishPostCampaign({onCheckpoint}={}){
  let s=readyPostCampaign();const notes=[{stage:'accepted',...summary(s)}];onCheckpoint?.('accepted',s,notes);
  for(const [sector,contact,quest]of [['tucuman','mateo','posta-tucuman'],['salta','elena','posta-salta']]){
   s=order(s,{type:'attack',sector});const request={...s.pendingBattle,hour:s.hour,secondOfHour:s.secondOfHour??0},previous=s.sectorStates[sector];
-  const result=fight(request,previous,{scoutCostWeight:.01,avoidCivilians:true});assert.equal(result.battle.status,'victory',sector);
+  const result=fight(request,previous,{controller:hiredAssaultOrder});assert.equal(result.battle.status,'victory',JSON.stringify({sector,turn:result.battle.turn,mode:result.battle.mode,actions:result.actions,units:result.battle.units.map(u=>({id:u.id,hp:u.hp,side:u.side,x:u.x,y:u.y,ammo:u.ammo,loaded:u.loaded,weapon:u.weapon,activeSlot:u.activeSlot,unconscious:u.unconscious,routed:u.routed})),log:result.battle.log.slice(-8)}));
   let p={campaign:s,battle:enterSector(request,previous)};
   for(const [i,a]of result.orders.entries()){p=tactical(p,a);if(i===Math.floor(result.orders.length/2))p=saved(p);}
   assert.deepEqual(p.battle.units,result.battle.units);assert.deepEqual(p.battle.npcs,result.battle.npcs);assert.equal(p.battle.seed,result.battle.seed);assert.equal(p.battle.elapsedSeconds,result.battle.elapsedSeconds);
@@ -63,8 +66,14 @@ export function finishPostCampaign({onCheckpoint}={}){
    for(const id of s.squad)s=order(s,{type:'assignCare',id,assignment:'active'});
    assert.ok(rosterFor(s).filter(o=>s.squad.includes(o.id)).every(o=>s.operativeState[o.id].hp===o.maxHp&&!s.operativeState[o.id].bleeding),'all actual survivors must be healthy before departure');assert.equal(care.cost,care.dressingsBought*10);if(!care.hours)assert.equal(care.dressingsBought,0);
    for(const id of s.squad){const n=dispatchCampaign(s,{type:'resupply',operativeId:id});if(!n.lastError)s=n;}
-   for(const id of s.squad){s=order(s,{type:'purchaseEquipment',item:'firearm-1801',quantity:1});const item=s.armoryItems.find(i=>i.contentWeapon?.template===1801);assert.ok(item);s=order(s,{type:'equip',operativeId:id,slot:'weapon',itemId:'firearm-1801',instanceId:item.id});}
+   // Keep the survivors' and replacements' own rifles; repair and supply
+   // them above instead of assuming an unlimited merchant weapon stock.
    s=order(s,{type:'travel',sector:'tucuman'});
+   // Finish real sleep at the staging sector before starting another march.
+   // A medical assignment or a travel notice can pause the previous wait.
+   for(const id of s.squad)if(!s.operativeState[id].asleep&&(s.operativeState[id].fatigue>0||s.operativeState[id].energy<100))s=order(s,{type:'setSleep',operativeId:id,asleep:true});
+   for(let hour=0;s.squad.some(id=>s.operativeState[id].asleep)&&hour<72;hour++)s=advanceCampaignHours(s,1);
+   assert.ok(s.squad.every(id=>!s.operativeState[id].asleep&&s.operativeState[id].energy===100),'the actual column must finish recovery before Salta');
    // The attack approach takes 12 hours. Leave in time to reach Salta in
    // daylight after the medical delay; waiting spends real campaign time.
    const arrivalHour=(s.hour+12)%24,daylightWait=arrivalHour<6?6-arrivalHour:arrivalHour>=20?30-arrivalHour:0;

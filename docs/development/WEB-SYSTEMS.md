@@ -11,6 +11,8 @@ The requested delivery target is now a browser game. `game/campaign.js` is the s
 > See [compatible ammunition and implicit kit](../verification/typed-ammunition.md)
 > for the current inventory, reload and resupply rules.
 
+For current item controls, wounds and assignments, see [JA2 gameplay](../gameplay/ja2-gameplay.md). Earlier immediate-healing and automatic health-recovery descriptions are superseded.
+
 ## Source references
 
 - User-provided **GRANADEROS: Jagged Alliance 2 Engine Historical Conversion Specification**, sections 1 (five-phase San Martín arc and six factions), 2 (recruitment, stipends, transports, foundries, economy and militia), 4 (thirteen sector table, supply routes, biomes and strategic AI), 5 (thirteen operatives), and 6 (weapons and equipment). The original supplied attachment is the authoritative requested design. Map grid labels are the specification's campaign references, not real geographic coordinates.

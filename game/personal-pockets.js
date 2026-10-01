@@ -1,3 +1,4 @@
+import {inventoryUsage} from './tactical-inventory.js';
 import {AMMO_KEYS,AMMO_TYPES,supplyCount,changeSupply} from './ammo-types.js';
 import {allocatePockets, rearrangePockets} from './inventory-pockets.js';
 import {DEFAULT_CHARACTER_SUPPLIES, TRANSFER_SUPPLY_LABELS, SUPPLY_PRESENTATION} from './character-supplies.js';
@@ -9,6 +10,7 @@ export const SUPPLY_STACKS=Object.freeze({...Object.fromEntries(AMMO_KEYS.map(ke
 const compactWeapons=new Set([1805,1806,1808,1811,1813]);
 export const POCKET_FULL='No queda un bolsillo del tamaño necesario. Dejá o entregá equipo antes de recoger más.';
 export function pocketItems(unit){
+ if(unit.ammunitionVersion===2)return inventoryUsage(unit).items;
  const items=Object.entries(SUPPLY_STACKS).map(([item,stackLimit])=>({item,kind:'supply',name:TRANSFER_SUPPLY_LABELS[item],...(AMMO_TYPES[item]??SUPPLY_PRESENTATION[item]),count:Object.hasOwn(AMMO_TYPES,item)?supplyCount(unit,item):unit[item]??DEFAULT_CHARACTER_SUPPLIES[item]??0,stackLimit,slotSize:1}));
  const describe=(item,record,extra={})=>{
   const spec=weaponSpecification(record),money=item.startsWith('inventory:cash:');
@@ -24,7 +26,7 @@ export function pocketItems(unit){
  }
  return items.filter(item=>item.count>0);
 }
-export function personalPockets(unit){return allocatePockets(pocketItems(unit),unit.pocketOrder);}
+export function personalPockets(unit){return unit.ammunitionVersion===2?inventoryUsage(unit):allocatePockets(pocketItems(unit),unit.pocketOrder);}
 export function pocketsFit(unit){return personalPockets(unit).overflow.length===0;}
 // A legacy overfilled save must still allow removal and consumption. It cannot
 // use its existing excess as permission to acquire additional objects.

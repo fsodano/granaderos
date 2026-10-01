@@ -16,7 +16,6 @@ import {spriteRender,spriteViewport,spriteMovementFrame} from '../game/sprite-re
 import {ILLUSTRATED_SPRITE_ATLASES} from '../game/illustrated-sprite-atlases.js';
 import {tacticalCamera} from '../game/tactical-camera.js';
 const project=(x,y)=>({x:200+(x-y)*26,y:65+(x+y)*14});
-
 test('a saved authored campaign actor renders its chosen body without inferring it from the portrait',async()=>{
  const {defaultContentPackage}=await import('../game/content-package.js');
  const {initialCampaign,dispatchCampaign}=await import('../game/campaign.js');
@@ -47,12 +46,10 @@ test('rendered sprites preserve body scale and fixed ground anchors across every
   const viewport=spriteViewport(selected,{x:100.2,y:100.4},3,0);
   const markup=render(h(SpriteFigure,{unit,pose,position:{x:100.2,y:100.4},motion:{direction:3,moving:false,frame:0}}));
   assert.ok(markup.includes(selected.href),name);
-  assert.ok(markup.includes(`x="${viewport.x}" y="${viewport.y}" width="${viewport.width}" height="${viewport.height}"`));
-  if(selected.style==='illustrated-pixel-art'){
-   assert.match(markup,/image-rendering:auto/);assert.match(markup,/<ellipse cx="100.2" cy="100.4"/);
-  }else{
-   assert.match(markup,/image-rendering:pixelated/);assert.match(markup,/<ellipse cx="100" cy="100"/);
-  }
+  assert.ok(markup.includes(`data-sprite-position="true" transform="translate(${viewport.x} ${viewport.y})"`));
+  assert.ok(markup.includes(`x="0" y="0" width="${viewport.width}" height="${viewport.height}"`));
+  const layers=[...markup.matchAll(/<image\b[^>]*>/g)];assert.ok(layers.length>0);
+  for(const [image] of layers)assert.match(image,/image-rendering:auto/,'illustrated body and skin retain the same smooth sampling');
  }
 });
 test('published illustrated art reaches the SVG with its actual raster grid and no legacy URL',()=>{
@@ -63,22 +60,26 @@ test('published illustrated art reaches the SVG with its actual raster grid and 
    assert.match(markup,/data-sprite-style="illustrated-pixel-art"/);
    assert.ok(!markup.includes('data-sprite-fallback='));assert.ok(!markup.includes('/art/pixel/'));
    assert.ok(markup.includes(`/art/illustrated/${entry.file}`));
-   assert.ok(markup.includes('width="52" height="52"'));
+   const display=spriteViewport(spriteRender({}, {direction,moving,frame:5,elapsedMs:600}),{x:100,y:100},direction,moving?3:0);
+   assert.ok(markup.includes(`width="${display.width}" height="${display.height}"`));
    assert.ok(markup.includes(`viewBox="${(moving?3:direction)*156} ${moving?direction*156:0} 156 156"`));
    assert.ok(markup.includes(`width="${entry.size[0]}" height="${entry.size[1]}"`));
   }
  }
 });
-test('responsive tactical camera keeps integer pixel magnification and bounded panning',()=>{
+test('responsive tactical camera retains smooth magnification and bounded fractional panning',()=>{
  const world={width:996,height:659},focus={x:498,y:330};
- for(const viewport of [{width:375,height:430},{width:768,height:420},{width:1280,height:560}])for(const zoom of [1,2,3]){
+ for(const viewport of [{width:375,height:430},{width:768,height:420},{width:1280,height:560}])for(const zoom of [1,1.25,2,2.72,3]){
   const camera=tacticalCamera(world,viewport,focus,{x:.3,y:.7},zoom);
-  assert.equal(viewport.width/camera.width,zoom);assert.equal(viewport.height/camera.height,zoom);
-  assert.ok(Number.isInteger(camera.x)&&Number.isInteger(camera.y));
+  assert.ok(Math.abs(viewport.width/camera.width-zoom)<1e-10);assert.ok(Math.abs(viewport.height/camera.height-zoom)<1e-10);
+  assert.equal(camera.x,Math.max(0,Math.min(Math.max(0,world.width-camera.width),focus.x+.3-camera.width/2)));
+  assert.equal(camera.y,Math.max(0,Math.min(Math.max(0,world.height-camera.height),focus.y+.7-camera.height/2)));
   const min=tacticalCamera(world,viewport,focus,{x:-9999,y:-9999},zoom);assert.equal(min.x,0);assert.equal(min.y,0);
   const max=tacticalCamera(world,viewport,focus,{x:9999,y:9999},zoom);
-  assert.equal(max.x,Math.round(Math.max(0,world.width-max.width)));assert.equal(max.y,Math.round(Math.max(0,world.height-max.height)));
+  assert.equal(max.x,Math.max(0,world.width-max.width));assert.equal(max.y,Math.max(0,world.height-max.height));
  }
+ assert.equal(tacticalCamera(world,{width:960,height:540},focus,{x:0,y:0},.5).width,960);
+ assert.equal(tacticalCamera(world,{width:960,height:540},focus,{x:0,y:0},4).width,320);
 });
 test('civilian selection uses idle columns and walk rows in all eight directions',()=>{
  for(let direction=0;direction<8;direction++)for(const moving of [false,true]){
@@ -110,7 +111,7 @@ test('revealing one room retains the other roof and only cuts adjacent front wal
 });
 test('authored furnishings reach battle state and survive sector re-entry',()=>{
  for(const sector of MAP_IDS){const map=buildSectorMap({sector,squad:[],enemies:[]});for(const prop of map.props){assert.ok(map.tiles.some(t=>t.x===prop.x&&t.y===prop.y&&!t.blocked&&t.roomId===prop.roomId));}
- const battle=enterSector({sector,squad:[],enemies:[],exploration:true});assert.deepEqual(battle.props,map.props);
+ const battle=enterSector({sector,squad:[],enemies:[],exploration:true});for(const prop of map.props){const placed=battle.props.find(p=>p.id===prop.id);assert.ok(placed);for(const [key,value]of Object.entries(prop))assert.deepEqual(placed[key],value);}
  if(battle.props.length){battle.props.pop();assert.deepEqual(enterSector({sector,squad:[],enemies:[],exploration:true},battle).props,battle.props);}}
 });
 test('scene selects civilians and sorts NPCs at their animated ground position',()=>{

@@ -1,0 +1,153 @@
+{
+  "scope": "Advanced local checkout; not a full published-main acceptance",
+  "base": "eb39ef7e903fa33f1d463b2af0db2de3c66cf93c",
+  "files": {
+    "game/tactical.js": "cf4770384f19421aad86226d84516996de0a9712c66805aabd19027f71c281b1",
+    "web/app/Battlefield.tsx": "9720f9d7034e201d84d5cdd0cc9b48ae8c412f5aec008ad2c9b9adf84a20cce6",
+    "web/app/page.tsx": "3988aed8b764d7bd20dd11607268aa3975c517ad6d6c0907746b80b177fdcb3a",
+    "web/app/useUnitMotion.ts": "afc597ac220c0a942aeae51a50396e8afe6c57c069ac34e3e607de49ebba1983",
+    "tests/mounted-battlefield.mjs": "e8360b8bf96f2341954f0e09d0a38ef1293c92960ecd3570aa04b0a7fcaea129",
+    "tests/grenade-presentation.test.mjs": "741272b1cc1ad953fe993c62afd45018a6c5b30b83cd0ba0b1ed7812419176a0",
+    "game/battle-presentation.js": "f77dd127cbc6b86237c1abdbaf6b6be31acc3284e355f61e4c033d8999e0832d",
+    "web/lib/useEnemyPlayback.ts": "83d3af788d3672d741598c130afec698c4294f50eb00d56e7615ad8501fbb643",
+    "web/lib/enemy-turn-worker.ts": "5215e12a9920a677ef0980511e16f29011aee923d9190f9e4b4df4237c743524",
+    "tests/enemy-turn-presentation.test.mjs": "bc181a00dfe5e53907ea7348714c374a7f42a53e050c1a1d9037a448261ed8c9",
+    "tests/enemy-playback-mounted.test.mjs": "81a5b97d74fc0e3ea69fb1bfa912cb59cfba642296fa134fd7c70b72d0b67e20",
+    "tests/enemy-motion-gait.test.mjs": "dc3e54cda1054b81a6ffb226db2307ffc2b39464d4fb988d636927eecb63fe84",
+    "tests/enemy-playback-campaign.test.mjs": "803a974015e9ff237f0cdc369ca35f55397a20eba48684d1e55b73c7ff9f093f",
+    "tests/mounted-live-campaign-fixture.mjs": "a3e8a20f42987a9161c0b9d07d1621d9e9e3f337a59be4bce8b9cff2b0c050dc"
+  },
+  "focusedOriginal": {
+    "passed": 62,
+    "total": 62,
+    "failed": 0,
+    "skipped": 0
+  },
+  "isolatedFull": {
+    "passed": 3200,
+    "total": 3209,
+    "failed": 6,
+    "skipped": 3,
+    "durationMs": 462923.49975,
+    "limits": "Two missing source portrait manifests in the isolated copy; both checks pass against the original checkout. Four failed reports represent three campaign-route failure points."
+  },
+  "types": "PASS",
+  "build": {
+    "status": "PASS",
+    "files": 1099,
+    "assetReferences": 993
+  },
+  "browser": {
+    "origin": "http://localhost:3000",
+    "saveIsolation": "qa=1",
+    "intermediateFrame": "0:enemy-0:prepare:fire",
+    "inputDisabledDuringPlayback": true,
+    "finalTurn": 2,
+    "inputRestored": true,
+    "consoleErrors": 0
+  },
+  "logs": {
+    "originalTests": {
+      "sha256": "913bd876a91f072b37d925c64ce1bb50ed10619810b371769ae03a2f78c3c8e7"
+    },
+    "isolatedTests": {
+      "sha256": "a95dfa5c579015d664909c283f4549fe19e1adf359b83da20de89908fe7ac726"
+    },
+    "originalPortraitChecks": {
+      "sha256": "527da9fef7797724a5f396b01b259e4f18564e8e26e4dfd4329dbf2e06e31aef"
+    },
+    "types": {
+      "sha256": "618e2b7cc2f862b8b6b986380544b0379d2b322c250298a73c22eb1239b0ee30"
+    },
+    "build": {
+      "sha256": "d892c97fccaa5372e6d998bf02062112bbb2737f02023ef758ce815640e60562"
+    },
+    "preIntegrationRoutes": {
+      "sha256": "69cb40837e3f7c007419b82e32ccfdc9af00b7f5f9731d48826208545af76ebf"
+    }
+  },
+  "preIntegrationRouteCheck": {
+    "total": 10,
+    "passed": 3,
+    "failed": 4,
+    "skipped": 3,
+    "durationMs": 112442.44825,
+    "result": "The same northern-doctor, Córdoba recapture and paid prisoner-rescue failure points reproduce with the previous tactical.js."
+  },
+  "retainedWalk": {
+    "origin": "http://localhost:3000/?qa=1&performance=1",
+    "scalePercent": 100,
+    "captureSeconds": 20,
+    "sector": "retiro",
+    "actors": 1,
+    "mode": "walk",
+    "start": {
+      "x": 23,
+      "y": 20,
+      "energy": 99.4
+    },
+    "end": {
+      "x": 23,
+      "y": 14,
+      "energy": 99.1
+    },
+    "all": {
+      "frames": 2387,
+      "meanMs": 8.378759949727687,
+      "p95Ms": 9.299999999988358,
+      "maxMs": 34.30000000000291
+    },
+    "moving": {
+      "frames": 179,
+      "meanMs": 8.33296089385478,
+      "p95Ms": 9.19999999999709,
+      "maxMs": 9.39999999999418
+    },
+    "positionUpdates": {
+      "frames": 88,
+      "meanMs": 16.85454545454542,
+      "p95Ms": 24.20000000001164,
+      "maxMs": 25.89999999999418
+    },
+    "longTasks": [],
+    "consoleErrors": 0,
+    "limits": "Existing QA campaign and already discovered scenery; no test runners during capture. One-actor walking evidence, not loaded combat or artwork acceptance."
+  },
+  "combatCapture": {
+    "origin": "http://localhost:3000/?qa=1&performance=1",
+    "scenario": "Normal San Lorenzo start, first end-turn button",
+    "scalePercent": 100,
+    "captureSeconds": 20,
+    "finalTurn": 2,
+    "renderedActorsAtEnd": 7,
+    "all": {
+      "frames": 2395,
+      "meanMs": 8.354237995824633,
+      "p95Ms": 8.900000000001455,
+      "maxMs": 25
+    },
+    "moving": {
+      "frames": 196,
+      "meanMs": 8.329081632653061,
+      "p95Ms": 8.900000000001455,
+      "maxMs": 9.30000000000291
+    },
+    "positionUpdates": {
+      "frames": 91,
+      "meanMs": 17.48681318681318,
+      "p95Ms": 25,
+      "maxMs": 25.599999999998545
+    },
+    "longTasks": [],
+    "slowFrames": [],
+    "limits": "One ordinary combat turn at 100% with no test runners. Does not establish larger battles, complete campaign routes, all lighting or artwork parity."
+  },
+  "workerFixPublication": {
+    "pr": 126,
+    "head": "78fe01207022ed076bf73169aa01d9e2b2328872",
+    "merge": "554ceafe617aea03893f056b6b5ec6de48b32c23",
+    "ciRun": 36576665310,
+    "checks": 5,
+    "status": "PASS"
+  }
+}

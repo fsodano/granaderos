@@ -1,4 +1,5 @@
 import {secureArea} from './controlled-area-fixture.mjs';
+import {secondaryRetreat} from './secondary-loot-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {defaultContentPackage,validateContentPackage} from '../game/content-package.js';
@@ -69,19 +70,24 @@ test('new characters retain actual combat injuries and experience across return,
   s.operativeState[id].xp=95;s.operativeState[id].condition=50;s.operativeState[id].skillPractice={mechanical:39};
   s=save(s).campaign;
   secureArea(s,'buenos_aires');s=order(s,{type:'travel',sector:'buenos_aires'});s=order(s,{type:'attack',sector:'san_nicolas'});const request=s.pendingBattle;
-  // Compact combat fixture with actual campaign soldiers and return handlers.
-  let b=createBattle(request.squad.map(u=>({...u,x:1,y:1})),{width:12,height:8,id:request.id,sector:request.sector,npcs:request.npcs,seed:45,tiles:Array.from({length:96},(_,i)=>({x:i%12,y:Math.floor(i/12),type:'grass',blocked:false,cover:0})),enemies:[{id:'guard',x:10,y:1,weapon:1806,blade:1811,ammo:0,fatigue:100,marksmanship:100}]});
+  // Declared open-field fixture preserves every issued enemy and weapon.
+  // Real enemy fire and a paid boundary withdrawal establish wounds and XP.
+  const issued=enterSector(request),enemies=issued.units.filter(u=>u.side==='enemy'),width=20,height=20;
+  let b=createBattle(request.squad.map(u=>({...u,x:1,y:19})),{...request,width,height,seed:45,night:false,
+   tiles:Array.from({length:width*height},(_,i)=>({x:i%width,y:Math.floor(i/width),type:'grass',blocked:false,cover:0})),
+   npcs:request.npcs.map((n,i)=>({...n,x:10+i%3,y:5+Math.floor(i/3)})),
+   enemies:enemies.map((u,i)=>{const at={x:i?19:6,y:i?i:19};return {...u,...at,patrolOrigin:at,overwatch:false,patrol:false};})});
   b=actBattle(b,{type:'repair',unitId:String(id)});assert.equal(b.lastError,null);assert.equal(b.units[0].trainedStats.mechanical,1);
-  b=endTurn(b);
-  assert.equal(b.lastError,null);const hp=b.units.find(u=>u.id===String(id)).hp;assert.ok(hp>0&&hp<c.attributes.maxHp,JSON.stringify({hp,log:b.log}));
-  const pair=syncBattleTime(s,b);assert.equal(pair.error,null);
+  b=endTurn(b);assert.equal(b.lastError,null);
+  const wounded=b.units.find(u=>u.id===String(id));assert.ok(wounded.hp>0&&wounded.hp<c.attributes.maxHp,JSON.stringify({hp:wounded.hp,log:b.log}));
+  const synced=syncBattleTime(s,b);assert.equal(synced.error,null);const pair=secondaryRetreat(synced),hp=pair.battle.units.find(u=>u.id===String(id)).hp;
   s=order(pair.campaign,{type:'battleResult',outcome:'retreat',battleId:request.id,sectorState:pair.battle,survivors:pair.battle.units.filter(u=>u.side==='player')});
   const expectedMax=rosterFor(s).find(o=>o.id===id).maxHp;assert.equal(s.operativeState[id].maxHp,expectedMax);
   // Recover an older authored save that kept the starting health ceiling.
   s.operativeState[id].maxHp=c.attributes.maxHp;
-  s=save(s).campaign;const growth=progression==='experience'?2:0;assert.equal(s.operativeState[id].hp,hp+growth);assert.equal(s.operativeState[id].xp,progression==='experience'?105:95);
+  s=save(s).campaign;const growth=progression==='experience'?2:0;assert.equal(s.operativeState[id].hp,hp,'a level increase must not heal an existing wound');assert.equal(s.operativeState[id].xp,progression==='experience'?105:95);
   const op=rosterFor(s).find(o=>o.id===id);assert.equal(op.level,progression==='experience'?2:1);assert.equal(op.mechanical,c.attributes.mechanical+1+growth);
-  s=order(s,{type:'visitSector'});const back=enterSector(s.pendingBattle);assert.equal(back.units.find(u=>u.id===String(id)).hp,hp+growth);assert.equal(back.units.find(u=>u.id===String(id)).maxHp,c.attributes.maxHp+growth);assert.ok(save(s,back));
+  s=order(s,{type:'visitSector'});const back=enterSector(s.pendingBattle);assert.equal(back.units.find(u=>u.id===String(id)).hp,hp);assert.equal(back.units.find(u=>u.id===String(id)).maxHp,c.attributes.maxHp+growth);assert.ok(save(s,back));
  }
 });
 
@@ -90,7 +96,7 @@ test('explicit service, training traits and progress use the same campaign rules
  let s=initialCampaign(42,d);const op=rosterFor(s).find(o=>o.contentId===c.id);assert.equal(op.ridingSkill,80);
  assert.ok(movementEnergy({...op,mounted:true,movementMode:'run',weapon:0},{type:'grass'})<movementEnergy({...op,ridingSkill:0,mounted:true,movementMode:'run',weapon:0},{type:'grass'}));
  for(const [term,hours] of [['day',24],['week',168],['month',720]]){const q=contractQuote(s,op,term);assert.equal(q.permanent,false);assert.equal(q.price,0);assert.equal(q.hours,hours);}
- s=order(s,{type:'recruitCivic',id:op.id,term:'day'});s=order(s,{type:'wait',hours:26});assert.equal(s.recruited.includes(op.id),false);assert.ok(save(s));
+ s=order(s,{type:'recruitCivic',id:op.id,term:'day'});while(s.hour<26){const before=s.hour;s=order(s,{type:'wait',hours:26-s.hour});assert.ok(s.hour>before);}assert.equal(s.hour,26);assert.equal(s.recruited.includes(op.id),false);assert.ok(save(s));
  for(const mutate of [x=>delete x.characters.at(-1).service,x=>x.characters.at(-1).traits=['unknown'],x=>x.characters.at(-1).recruitmentSource='encounter',x=>x.characters.at(-1).service='permanent',x=>x.characters.shift()]){const copy=authored();mutate(copy);assert.throws(()=>initialCampaign(42,copy));}
 });
 

@@ -19,6 +19,7 @@ export const FURNITURE = {
   chest: { name: "Baúl", width: 1, height: 1 },
   barrels: { name: "Barriles", width: 1, height: 1 },
   hay: { name: "Heno", width: 1, height: 1 },
+  cart: { name: "Carreta", width: 3, height: 2 },
 };
 export const ITEM_TYPES = {
   ammo: "Cartuchos",
@@ -41,6 +42,8 @@ export function ground(x, y, type = "grass") {
 
 export const BUILDING_KINDS = {
   house: "Casa rural",
+  mansion: "Casa de altos",
+  estancia: "Casco de estancia",
   posta: "Posta",
   barracks: "Barraca",
   church: "Iglesia",

@@ -1,0 +1,104 @@
+{
+  "status": "complete fresh-start recovery file passes; complete final suite and ending file pending",
+  "node": "22.23.3",
+  "validation": {
+    "name": "fresh campaign recovery",
+    "tests": 1,
+    "pass": 1,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "todo": 0,
+    "duration_ms": 769134.754708,
+    "log_sha256": "53054e3bad66c1d761296a32462dd8adf64f511f2f4b92d7bb61739796c9511b"
+  },
+  "driver_regressions": {
+    "tests": 4,
+    "pass": 4,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "log_sha256": "3e44f059f1dccd6ac1705313805b84f030621116531d588200b56224aac91bec"
+  },
+  "imported_source_manifest": {
+    "inputs": 263,
+    "sha256": "e4865404db43cfd8f8df83c41ed58a6cab15baa9faa5cbd0aa25bd9c484ddd7a",
+    "integration_imports_match_validated_manifest": true
+  },
+  "integrated_sources": [
+    {
+      "path": "tests/survivor-return-route.mjs",
+      "sha256": "168e20423dfa28d353dbe65040a590792e15aa8e53649b397c0f1145a8f0cb7c",
+      "previous_sha256": "1c84b253d9d1352702b249f06839d15b1706910baefc3d3e53c369f3d8a0948a"
+    },
+    {
+      "path": "tests/fresh-campaign-recovery.test.mjs",
+      "sha256": "2bb78713c2b80f9d442a14ce60d2bac20dbe9b6ea8d027c3d24966171d892c71",
+      "previous_sha256": "81e317bee56387952c5996f465bddf250158030e6d15773c0710bfc891786348"
+    },
+    {
+      "path": "tests/forward-survivor-route.mjs",
+      "sha256": "09364b0b199dcb6d799d1c8553b53c4080d47b241e97092c3e582a41978dc91f",
+      "previous_sha256": null
+    },
+    {
+      "path": "tests/forward-survivor-advance.mjs",
+      "sha256": "b3d50bb210d2cd15c12713b1c94d827596cf4613f29698b5eced018311b247e6",
+      "previous_sha256": null
+    },
+    {
+      "path": "tests/forward-survivor-final.mjs",
+      "sha256": "1c48b6528d84c52e3050bf098f1fffcb06969cc32267c8a12e4a5ece522177cb",
+      "previous_sha256": null
+    },
+    {
+      "path": "tests/forward-survivor-battery.mjs",
+      "sha256": "1c60f36690f8d796e956ea3b01198962f690a86a2fc8c616ec9dd800aadd86be",
+      "previous_sha256": null
+    },
+    {
+      "path": "tests/command-reserve-driver.mjs",
+      "sha256": "694d90030afe3f6d7e91f3eeb0968b701f6f1dc445163e31ff02ec1cae7ae9e8",
+      "previous_sha256": "4a3bcbcfc72930e681d17fb258ca408f6dea37a1fe9a50111b39bd52408f3a57"
+    },
+    {
+      "path": "tests/stable-crew-driver.mjs",
+      "sha256": "376ffab8056599f0c87ff75347e09d68620d18f463bf7239d191b2aec27b8bb9",
+      "previous_sha256": "36fdf3a924bc5763c4ca591fa3bca70d871d7e3abe5e7e2ae4382d5ea413a6d6"
+    },
+    {
+      "path": "tests/heavy-contact-crew-driver.test.mjs",
+      "sha256": "87baaf81e136c8ab59aad5ce9f1cb0ad0b17c32b07907d91dc0d426bfd4d70b2",
+      "previous_sha256": null
+    }
+  ],
+  "route": [
+    "fresh Retiro",
+    "San Nicolas",
+    "San Lorenzo",
+    "Cordoba",
+    "Tucuman",
+    "Salta",
+    "Yatasto",
+    "Mendoza",
+    "Uspallata",
+    "Los Patos",
+    "Ensenada",
+    "Santa Fe",
+    "capital blockade",
+    "Tucuman recapture",
+    "Salta recapture and actual defense",
+    "Jujuy",
+    "Humahuaca"
+  ],
+  "acceptance": [
+    "actual permanent casualties remain dead",
+    "paid living relief and real rear courier",
+    "finite exact weapon families, ammunition and medical supplies",
+    "real three-person heavy gun crew and separate light operator",
+    "public travel, deployment, tactical orders, replay, save and settlement"
+  ],
+  "remaining_complete_file": "tests/fresh-ending-route.test.mjs",
+  "remote_push": false,
+  "merged": false
+}

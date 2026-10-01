@@ -101,6 +101,7 @@ export function compileMap(doc) {
     spawns: structuredClone(doc.spawns),
     exits: structuredClone(doc.exits),
     decor: structuredClone(doc.decor ?? []),
+    boundaryRoads: structuredClone(doc.boundaryRoads ?? doc.terrain.filter(t=>t.type === "road" && (t.x === 0 || t.x === doc.width-1 || t.y === 0 || t.y === doc.height-1))),
     sourceMapId: doc.id,
     sourceMapRevision: doc.revision,
     name: doc.metadata.title,

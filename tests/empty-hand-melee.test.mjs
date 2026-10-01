@@ -20,7 +20,7 @@ test('a lost primary and an empty selected secondary use fists while a retained 
 test('a missed punch still spends its AP but cannot reduce health, breath or finite equipment',()=>{
  let b=fixture({strength:0,dexterity:0,agility:0,energy:20});Object.assign(b.units[1],{strength:100,dexterity:100,agility:100,energy:100});
  // Choose a declared seed with a failing first roll, not an assigned outcome.
- b.seed=1000;const n=actBattle(b,{type:'melee',unitId:'p',targetId:'e'});assert.equal(n.lastError,null);assert.equal(n.units[0].ap,88);assert.equal(n.units[1].hp,b.units[1].hp);assert.equal(n.units[1].energy,100);assert.notEqual(n.seed,b.seed);assert.match(n.log.at(-1),/falla el golpe/);
+ b.seed=1000;const ap=b.units[0].ap,n=actBattle(b,{type:'melee',unitId:'p',targetId:'e'});assert.equal(n.lastError,null);assert.equal(n.units[0].ap,ap-12);assert.equal(n.units[1].hp,b.units[1].hp);assert.equal(n.units[1].energy,100);assert.notEqual(n.seed,b.seed);assert.match(n.log.at(-1),/falla el golpe/);
 });
 test('unarmed range, insufficient AP, brace and charge failures spend no resources or random roll',()=>{
  for(const [change,type]of [[b=>b.units[1].x=5,'melee'],[b=>b.units[0].ap=11,'melee'],[()=>{},'charge'],[()=>{},'brace']]){const b=fixture();change(b);const n=actBattle(b,{type,unitId:'p',targetId:'e'});assert.ok(n.lastError);assert.deepEqual(n.units,b.units);assert.equal(n.seed,b.seed);assert.equal(n.elapsedSeconds,b.elapsedSeconds);}
@@ -31,8 +31,8 @@ test('punch accuracy and impact depend on the declared attacker condition, attri
 });
 test('an actually disarmed paid arrival can recover, select the retained authored blade, save and return without restoring the primary',()=>{
  let p=disarmedArrival(),u=p.battle.units.find(u=>u.id==='111');assert.equal(u.weaponDropped,true);assert.equal(weaponFor(u).id,0);const weight=carriedWeight(u);p=tactical(p,{type:'weapon',unitId:'111',slot:'blade'});u=p.battle.units.find(u=>u.id==='111');assert.equal(weaponFor(u).name,'Sable conservado');assert.equal(weaponFor(u).art,'/art/weapon-1810.png');assert.equal(carriedWeight(u),weight);assert.ok(saved(p));
- p=visit(saved({campaign:leave(p)}).campaign);u=p.battle.units.find(u=>u.id==='111');assert.equal(u.weapon,0);assert.equal(hasFirearm(u),false);assert.equal(u.blade,1809);assert.equal(inventoryModel(p.battle,u).slots.blade.name,'Sable conservado');assert.ok(saved(p));
- p=disarmedArrival({secondary:false});assert.equal(p.battle.units.find(u=>u.id==='111').blade,0);assert.equal(weaponFor(p.battle.units.find(u=>u.id==='111')).id,0);assert.ok(saved(p));
+ p=visit(saved({campaign:leave(p)}).campaign);u=p.battle.units.find(u=>u.id==='111');assert.equal(u.weaponDropped,true);assert.equal(hasFirearm(u),false);assert.equal(u.blade,1809);assert.equal(inventoryModel(p.battle,u).slots.blade.name,'Sable conservado');assert.ok(saved(p));
+ p=disarmedArrival({secondary:false});assert.equal(p.battle.units.find(u=>u.id==='111').blade,undefined);assert.equal(weaponFor(p.battle.units.find(u=>u.id==='111')).id,0);assert.ok(saved(p));
 });
 
 

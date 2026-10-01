@@ -28,7 +28,7 @@ test('actual military wounds consume configured hourly health through waits and 
 test('finite doctor treatment precedes hourly loss and rest alone cannot stop an actual service wound',()=>{
  let s=woundedService({medical:80,term:'week',careRules:rules(100)}),id=localId(s),hp=current(s).hp;const stock=s.operativeState[110].medkits;
  s=order(s,{type:'assignCare',id,assignment:'patient'});s=order(s,{type:'assignCare',id:110,assignment:'doctor'});s=order(s,{type:'wait',hours:1});assert.equal(current(s).hp,hp);assert.equal(current(s).bleeding,0);assert.equal(s.operativeState[110].medkits,stock-1);assert.ok(saved({campaign:s}));
- s=woundedService({term:'week'});id=localId(s);hp=current(s).hp;const bleed=current(s).bleeding;s=order(s,{type:'assignCare',id,assignment:'rest'});s=order(s,{type:'wait',hours:2});assert.equal(current(s).hp,hp-2*Math.ceil(bleed/4));assert.equal(current(s).bleeding,bleed);assert.equal(current(s).recoveryHours,0);assert.ok(saved({campaign:s}));
+ s=woundedService({term:'week'});id=localId(s);hp=current(s).hp;const bleed=current(s).bleeding;s=order(s,{type:'assignCare',id,assignment:'rest'});const hour=s.hour;s=order(s,{type:'wait',hours:2});assert.equal(s.hour,hour);assert.equal(s.assignmentAttention.notice.events[0].code,'bleeding');s=order(s,{type:'wait',hours:2});assert.equal(s.hour,hour+2);assert.equal(current(s).hp,hp-2*Math.ceil(bleed/4));assert.equal(current(s).bleeding,bleed);assert.equal(current(s).recoveryHours,0);assert.ok(saved({campaign:s}));
 });
 
 test('a remote service wound advances once while another squad acts, without also damaging deployed troops',()=>{

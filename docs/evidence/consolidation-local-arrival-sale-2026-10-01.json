@@ -1,0 +1,278 @@
+{
+  "schema": 1,
+  "status": "PARTIAL_LOCAL_VERIFICATION",
+  "checkedAt": "2026-10-01T04:18:38.908378+00:00",
+  "revision": "4938fd79835776a202273b09cf303fc7251ad392",
+  "runtimeSource": "af9ec4318d546bd25378221e1152fc7772f0859d363676579c24e9022d14ebbc",
+  "testSourcesAtRegression": {
+    "runtime": {
+      "version": "0.4.0-dev.1",
+      "id": "af9ec4318d54",
+      "source": "af9ec4318d546bd25378221e1152fc7772f0859d363676579c24e9022d14ebbc",
+      "revision": "4938fd79835776a202273b09cf303fc7251ad392"
+    },
+    "testSourcesSha256": "10161bac2850cc8cc8c1d48e791d4d3fa5bcaceb0283e830def4bfaba02dc334",
+    "testSourceFiles": 696,
+    "checkedAt": "2026-10-01T03:48:48.948818+00:00"
+  },
+  "unpublished": true,
+  "pushed": false,
+  "merged": false,
+  "previewReplaced": false,
+  "changes": [
+    "Selling an authored weapon uses its catalog key while retaining the exact physical instance identity.",
+    "A completed rural-cell march records the physical arrival for each squad member. Later care and saving no longer retain the previous cell arrival.",
+    "A test artillery controller uses legal team sightings, finite gun loads and crew action points. It preserves friendly and civilian fire checks.",
+    "The created-officer Cuyo preparation uses actual paid care, defense, finite rifles, two purchased guns and normal coordinated travel. The historical-loss test approaches the moving civilian before each actual attack."
+  ],
+  "regression": {
+    "status": "PASS",
+    "tests": 183,
+    "pass": 183,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "duration_ms": 16508.906333,
+    "files": [
+      "tests/authored-weapon-sale.test.mjs",
+      "tests/armory-item-metadata.test.mjs",
+      "tests/merchant-buyback.test.mjs",
+      "tests/merchant-preferences.test.mjs",
+      "tests/merchants.test.mjs",
+      "tests/merchant-exchange.test.mjs",
+      "tests/sector-inventory.test.mjs",
+      "tests/campaign-carried-equip.test.mjs",
+      "tests/world-cells.test.mjs",
+      "tests/tactical-exit-campaign.test.mjs",
+      "tests/campaign-detention.test.mjs",
+      "tests/tactical-exits.test.mjs",
+      "tests/squad-travel.test.mjs",
+      "tests/team-artillery-driver.test.mjs",
+      "tests/campaign-battery-driver.test.mjs",
+      "tests/tactical-ai-artillery.test.mjs"
+    ],
+    "log": {
+      "path": "/tmp/granaderos-local-arrival-sale-regression.tap",
+      "sha256": "c4f30bb7a4b93b0a189c84f1405fe7abee283da0701b0b9fe666aae4770a148c"
+    },
+    "beforeFix": [
+      {
+        "path": "/tmp/granaderos-local-authored-sale-before.tap",
+        "sha256": "12f7afd4d21f6f29b5c03b63b8f19efd1ee37bf9b5eea422277727d4e286833f"
+      },
+      {
+        "path": "/tmp/granaderos-local-rural-return-before.tap",
+        "sha256": "d1ab63ae193246735ce6c85aaaa00acfd2819fcd8d75cdbc5864fc8759fd21ff"
+      }
+    ]
+  },
+  "typecheck": {
+    "status": "PASS",
+    "log": {
+      "path": "/tmp/granaderos-local-arrival-sale-types.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "privateBuild": {
+    "status": "PASS",
+    "runtimeSource": "af9ec4318d546bd25378221e1152fc7772f0859d363676579c24e9022d14ebbc",
+    "files": 1131,
+    "assetReferences": 1031,
+    "served": false,
+    "directory": "/var/folders/k2/r1ywdpdx5x513g1qp4m7m3340000gn/T/granaderos-consolidation-check-z50xv8nl",
+    "log": {
+      "path": "/tmp/granaderos-local-arrival-sale-private-build.log",
+      "sha256": "c7cba051f7fe025e8e41154783a6d2e8f9085626a287c66cb14199c6d8d8339e"
+    }
+  },
+  "savedCheckpoints": {
+    "santaFe": {
+      "status": "PASS_CHECKPOINT_ONLY",
+      "runtimeSource": "44896436c754aa7c2dae54e7b1e62ff689db9fa3aaa51fc01151f61a7f43c989",
+      "turns": 19,
+      "actions": 219,
+      "actualDeaths": [
+        11,
+        6
+      ],
+      "checks": [
+        "Actual tactical victory",
+        "Deterministic battle replay",
+        "Paired campaign and battle save round-trip",
+        "Settlement preserves actual casualties"
+      ],
+      "result": {
+        "path": "/tmp/granaderos-santa-fe-source-result.json",
+        "sha256": "9b3f99f9a3814b51631dc0ffcf61024d4b68e32e7e1b3164aa4b5b7373d1ab01"
+      },
+      "log": {
+        "path": "/tmp/granaderos-santa-fe-source-verify.log",
+        "sha256": "14316c7847d8d06b751520b798157940deca6504f952e1980d53d5696e8f1a78"
+      }
+    },
+    "mendozaEssentialLoss": {
+      "status": "PASS_CHECKPOINT_ONLY",
+      "runtimeSource": "af9ec4318d546bd25378221e1152fc7772f0859d363676579c24e9022d14ebbc",
+      "result": {
+        "path": "/tmp/granaderos-created-loss-checkpoint-result.json",
+        "sha256": "56600e589b9cb00935c928572a407f1e613fde2e4431af172e70db412351c99f"
+      },
+      "log": {
+        "path": "/tmp/granaderos-created-loss-checkpoint.log",
+        "sha256": "50a1ddfaed52a502a14b201754fee3b9072ee3aa005321a795b33dedbff9cba4"
+      }
+    },
+    "ruralPatientReturn": {
+      "status": "PASS_CHECKPOINT_ONLY",
+      "temporaryDriver": true,
+      "survivors": [
+        124,
+        134
+      ],
+      "assaultHour": 228,
+      "assaultSoldiers": 9,
+      "log": {
+        "path": "/tmp/granaderos-tucuman-care-recheck.log",
+        "sha256": "9dd2ef1ffae90135533eef085f461481252f61e060a2d95a2ea5760302fe4ab8"
+      }
+    },
+    "createdCuyoMountains": {
+      "status": "PASS_CHECKPOINT_ONLY",
+      "temporaryPreparationDriver": true,
+      "uspallata": {
+        "turns": 9,
+        "actions": 114,
+        "result": {
+          "path": "/tmp/granaderos-created-uspallata-shared-result.json",
+          "sha256": "0cd9c19fc65bbde8c4d165eea62a42dca40aa5d0fd93981b8f2053a6e05bc1eb"
+        }
+      },
+      "losPatos": {
+        "turns": 12,
+        "actions": 123,
+        "result": {
+          "path": "/tmp/granaderos-created-patos-result.json",
+          "sha256": "0897a4a96c2f4ad28b05ee6f8beb72d7f71194c0ed58be17449b52a16cce80e8"
+        }
+      },
+      "commander": {
+        "hour": 1864,
+        "treasury": 4406,
+        "squad": [
+          147,
+          143,
+          57
+        ],
+        "result": {
+          "path": "/tmp/granaderos-created-cuyo-complete.json",
+          "sha256": "e9145240b8df611ef1bfa3c491b690a7e5eb35467e5fd4976438319253ca51d2"
+        },
+        "log": {
+          "path": "/tmp/granaderos-created-commander-check.log",
+          "sha256": "1a5e78c61157512cad3ce454fabe2fad98cf6a109b50168ff7f341ae72ddac30"
+        }
+      }
+    }
+  },
+  "remaining": [
+    "Two previous full test files remain open: fresh-ending-route and fresh-campaign-recovery. No new all-suite result.",
+    "The complete fresh Cuyo route now passes. The ending route still contains old named-survivor and fixed-clock assumptions.",
+    "The separate recovery route still fails at the later northern relief/defense. Saved-prefix tactics are still under local investigation; the integrated full route has not passed.",
+    "No final browser acceptance or server replacement.",
+    "Service-end equipment remains queued until PR139 merges."
+  ],
+  "freshHistoricalLoss": {
+    "status": "PASS",
+    "file": "tests/historical-loss.test.mjs",
+    "tests": 4,
+    "pass": 4,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "duration_ms": 420913.082,
+    "testSourcesSha256": "94e9d47af8912a14419e6c3bf44a23cfba60261699c62bcf6550d943ddb1ff29",
+    "testSourceFiles": 696,
+    "checkedAt": "2026-10-01T04:01:47.437246+00:00",
+    "log": {
+      "path": "/tmp/granaderos-local-created-mendoza-loss.tap",
+      "sha256": "039a07aa817f3c92de8fc822272caeae9057bd1c74fb236108880d6d98b3a57a"
+    }
+  },
+  "documentationAudit": {
+    "status": "PASS",
+    "log": {
+      "path": "/tmp/granaderos-local-arrival-sale-docs-final.log",
+      "sha256": "c6c076f01cd351740dc7bcbe7b68361867248f3de019638f05f41f10bc855b66"
+    }
+  },
+  "baselineAudit": {
+    "status": "PASS",
+    "log": {
+      "path": "/tmp/granaderos-local-arrival-sale-baseline.log",
+      "sha256": "f3df51dae7b9b92d95473509b1ebcfeb3f2099db41b8824e5eb73981b6b58e9a"
+    }
+  },
+  "testPartition": {
+    "status": "PASS",
+    "files": 594,
+    "groups": [
+      149,
+      149,
+      148,
+      148
+    ],
+    "selfTests": 4,
+    "log": {
+      "path": "/tmp/granaderos-local-arrival-sale-partition.json",
+      "sha256": "424ae2e3341325bc0edc89b7c6921dfd90431b055aa2513a1c875fbd8782ad92"
+    }
+  },
+  "diffCheck": "PASS",
+  "routeCareRegression": {
+    "status": "PASS",
+    "tests": 50,
+    "pass": 50,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "duration_ms": 15785.100375,
+    "files": [
+      "tests/army-funding-route.test.mjs",
+      "tests/fresh-capital-recovery.test.mjs",
+      "tests/medical-care.test.mjs",
+      "tests/campaign-care.test.mjs",
+      "tests/auto-bandage.test.mjs",
+      "tests/hiring-arrivals.test.mjs"
+    ],
+    "log": {
+      "path": "/tmp/granaderos-local-route-care-regression.tap",
+      "sha256": "3b87112ca250fcc7e9ba39d1586f7d025c7691384cc3118fb8cf32ba1d2eb3a4"
+    }
+  },
+  "sourceIntegratedFollowup": [
+    "The Cuyo route now uses actual created-officer survivors, paid arrivals, finite artillery, full replay and recorded casualties. Its complete fresh-start run now passes.",
+    "Mountain care waits for the hired doctor. Returning mountain survivors receive actual first aid and paid contract renewals before meeting the commander.",
+    "The recovery route returns wounded rural soldiers together, assigns a present doctor and buys artillery support. Medical relief waits for its hired physician before dispatching the escort."
+  ],
+  "fullCuyoRun": {
+    "status": "PASS",
+    "file": "tests/fresh-cuyo-route.test.mjs",
+    "tests": 1,
+    "pass": 1,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "duration_ms": 690744.301125,
+    "testSourcesSha256": "8c8646d80c13a41938f00daa03ebfe5975e9c9c591d4e777a133a510c49c3fc5",
+    "testSourceFiles": 696,
+    "sourcesUnchangedDuringRun": true,
+    "manifest": {
+      "path": "/tmp/granaderos-local-created-cuyo-full-sources.json",
+      "sha256": "e0073d8f18cdb24eb546a473a06b1c8f47b02ef01adc1ac04aebf7e406d2c115"
+    },
+    "log": {
+      "path": "/tmp/granaderos-local-created-cuyo-full.tap",
+      "sha256": "de56d1ea49f7bef77220212b4f4970efafd9d5a5817035de83ad63d47ca846fd"
+    }
+  }
+}

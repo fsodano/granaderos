@@ -8,7 +8,9 @@ import {enterSector} from '../game/world.js';
 import {syncBattleTime} from '../game/time.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
-import {civilianIncidents} from '../game/civilian-harm.js';
+import {civilianIncidents,applyCivilianHarm} from '../game/civilian-harm.js';
+import {restForMarch} from './campaign-test-helpers.mjs';
+import {approachNPC} from './approach-npc.mjs';
 import {missionContacts,sanLorenzoAlly} from '../game/missions.js';
 const A='cell-27-27',B='cell-26-27';
 const order=(s,a)=>{const next=dispatchCampaign(s,a);assert.equal(next.lastError,null,`${a.type}: ${next.lastError}`);return next;};
@@ -22,17 +24,17 @@ function ready(daily=true,medical){
 const visit=s=>{const campaign=order(s,{type:'visitSector'});return{campaign,battle:enterSector({...campaign.pendingBattle,hour:campaign.hour},campaign.sectorStates[campaign.location])};};
 const npc=pair=>pair.battle.npcs.find(n=>n.id==='cabral');
 const synced=pair=>{const result=syncBattleTime(pair.campaign,pair.battle);assert.equal(result.error,null);return result;};
-function act(pair,action){pair.battle=actBattle(pair.battle,{unitId:'110',...action});assert.equal(pair.battle.lastError,null);return synced(pair);}
-function approach(pair,id='cabral'){
- const target=pair.battle.npcs.find(n=>n.id===id),p=getReachable(pair.battle,'110').find(p=>Math.abs(p.x-target.x)+Math.abs(p.y-target.y)===1);assert.ok(p);
- return p.cost?act(pair,{type:'move',x:p.x,y:p.y}):pair;
-}
+function act(pair,action){if(action.type==='heal'){pair.battle=actBattle(pair.battle,{type:'weapon',unitId:'110',slot:'medical'});assert.equal(pair.battle.lastError,null);}pair.battle=actBattle(pair.battle,{unitId:'110',...action});assert.equal(pair.battle.lastError,null);return synced(pair);}
+function approach(pair,id='cabral'){return synced({campaign:pair.campaign,battle:approachNPC(pair.battle,'110',id)});}
+// Explicit environmental injury for transfer tests. Player attacks are kept in
+// separate cases and must not permit later recruitment of the victim.
+function woundResident(pair){applyCivilianHarm(pair.battle,npc(pair),{damage:24});return synced(pair);}
 function leave(pair){pair=synced(pair);return order(pair.campaign,{type:'leaveSector',battleId:pair.campaign.pendingBattle.id,sectorState:pair.battle,survivors:pair.battle.units.filter(u=>u.side==='player')});}
-const clinical=(npcOverrides={},sector={})=>createBattle([{id:'doctor',name:'Médico',x:1,y:1,weapon:1809,medical:80,medkits:2}],{width:8,height:8,enemies:[],exploration:true,npcs:[{id:'patient',name:'Vecino',x:2,y:1,...npcOverrides}],...sector});
+const clinical=(npcOverrides={},sector={},unit={})=>createBattle([{id:'doctor',name:'Médico',x:1,y:1,weapon:1809,medical:80,medkits:2,...unit}],{width:8,height:8,enemies:[],exploration:true,npcs:[{id:'patient',name:'Vecino',x:2,y:1,...npcOverrides}],...sector});
 
-test('real NPC wounds persist through save, daily relocation, recruitment and a second deployment',()=>{
+test('NPC wounds persist through save, daily relocation, recruitment and a second deployment',()=>{
  let pair=approach(visit(ready()));const max=npc(pair).maxHp;
- pair=act(pair,{type:'melee',targetId:'cabral'});assert.ok(npc(pair).hp>0&&npc(pair).hp<max);assert.ok(npc(pair).bleeding>0);
+ pair=woundResident(pair);assert.ok(npc(pair).hp>0&&npc(pair).hp<max);assert.ok(npc(pair).bleeding>0);
  pair=act(pair,{type:'heal',targetId:'cabral'});const hp=npc(pair).hp;assert.equal(npc(pair).bleeding,0);assert.equal(pair.battle.units[0].medkits,1);
  pair=saved(pair);assert.equal(npc(pair).hp,hp);
  let s=leave(pair),old=s.location;assert.equal(s.operativeState[3].hp,hp);
@@ -46,7 +48,7 @@ test('real NPC wounds persist through save, daily relocation, recruitment and a 
 });
 
 test('death is global, leaves one body in its real cell and cannot be recruited, moved or resurrected',()=>{
- let pair=approach(visit(ready()));pair=act(pair,{type:'weapon',slot:'blade'});for(let i=0;i<3&&npc(pair).hp>0;i++)pair=act(pair,{type:'melee',targetId:'cabral'});
+ let pair=approach(visit(ready()));pair=act(pair,{type:'weapon',slot:'blade'});for(let i=0;i<8&&npc(pair).hp>0;i++)pair=act(pair,{type:'melee',targetId:'cabral'});
  assert.equal(npc(pair).hp,0);assert.equal(pair.campaign.operativeState[3].alive,false);assert.equal(pair.campaign.contentPresence.people['person-3'].alive,false);
  assert.equal(civilianIncidents(npc(pair)).at(-1).kind,'death');assert.ok(dispatchCampaign(pair.campaign,{type:'talkNPC',npcId:'cabral',unitId:110,approach:'recruit',sectorState:pair.battle}).lastError);
  const body={x:npc(pair).x,y:npc(pair).y};pair=saved(pair);let s=leave(pair);pair=visit(saved({campaign:s}).campaign);assert.equal(npc(pair).hp,0);assert.equal(npc(pair).stance,'prone');assert.deepEqual({x:npc(pair).x,y:npc(pair).y},body);
@@ -66,7 +68,7 @@ test('a finite medical charge stabilizes a critical resident without full healin
  let s=clinical({hp:18});s=actBattle(s,{type:'ambient'});
  // Start with a prior environmental wound, then use real medical action.
  s.npcs[0].hp=8;s.npcs[0].unconscious=true;
- s=actBattle(s,{type:'heal',unitId:'doctor',targetId:'patient'});assert.equal(s.lastError,null);assert.equal(s.npcs[0].hp,15);assert.equal(s.npcs[0].unconscious,false);assert.equal(s.units[0].medkits,1);assert.equal(s.npcs[0].civilianFirstAid.hpRestored,7);
+ s=actBattle(s,{type:'weapon',unitId:'doctor',slot:'medical'});assert.equal(s.lastError,null);s=actBattle(s,{type:'heal',unitId:'doctor',targetId:'patient'});assert.equal(s.lastError,null);assert.equal(s.npcs[0].hp,15);assert.equal(s.npcs[0].unconscious,false);assert.equal(s.units[0].medkits,1);assert.equal(s.npcs[0].civilianFirstAid.hpRestored,7);
  const retry=actBattle(s,{type:'heal',unitId:'doctor',targetId:'patient'});assert.ok(retry.lastError);assert.equal(retry.units[0].medkits,1);assert.ok(validateBattleSnapshot(s));
  const dead=clinical({hp:0});assert.ok(actBattle(dead,{type:'heal',unitId:'doctor',targetId:'patient'}).lastError);
 });
@@ -85,7 +87,7 @@ test('the first death applies city consequences once and closes an unfinished lo
  let s=order(initialCampaign(4),{type:'recruitCivic',id:110,term:'week'});let pair=approach(visit(s),'local-retiro');
  pair.campaign=order(pair.campaign,{type:'talkNPC',npcId:'local-retiro',unitId:110,approach:'quest',sectorState:pair.battle});
  pair=act(pair,{type:'weapon',slot:'blade'});const loyalty=pair.campaign.sectors.retiro.loyalty;
- for(let i=0;i<3&&pair.battle.npcs.find(n=>n.id==='local-retiro').hp>0;i++)pair=act(pair,{type:'melee',targetId:'local-retiro'});
+ for(let i=0;i<8&&pair.battle.npcs.find(n=>n.id==='local-retiro').hp>0;i++)pair=act(pair,{type:'melee',targetId:'local-retiro'});
  assert.equal(pair.campaign.sectors.retiro.loyalty,loyalty-10);assert.equal(pair.campaign.quests['retiro-uniformes'].status,'failed');
  pair=saved(pair);pair=synced(pair);assert.equal(pair.campaign.sectors.retiro.loyalty,loyalty-10);assert.equal(pair.campaign.cityLoyaltyEvents.filter(e=>e.eventId==='civilian:npc-local-retiro').length,1);
 });
@@ -98,12 +100,12 @@ test('an earlier uninjured save without a civilian ledger migrates without chang
 
 test('firearms and artillery can hit civilians with finite ammunition and valid wounds',()=>{
  for(const weapon of [1802,1807]){
-  let s=clinical({}, {seed:42});Object.assign(s.units[0],{weapon,loaded:1,marksmanship:100,condition:100});
+  let s=clinical({}, {seed:42},{weapon,loaded:1,marksmanship:100,condition:100});
   s=actBattle(s,{type:'fire',unitId:'doctor',targetId:'patient',aim:4});assert.equal(s.lastError,null);assert.equal(s.units[0].loaded,0);assert.ok(s.npcs[0].hp<100);assert.ok(validateBattleSnapshot(s));
  }
  for(const mode of ['solid','canister']){
   let s=clinical({x:4,y:1},{artillery:[{id:'gun',type:'swivel',x:2,y:1,loaded:true,ammo:1}]});
-  s=actBattle(s,{type:'artillery',unitId:'doctor',artilleryId:'gun',targetId:'patient',mode});assert.equal(s.lastError,null);assert.equal(s.artillery[0].loaded,false);assert.ok(s.npcs[0].hp<100);assert.ok(validateBattleSnapshot(s));
+  s=actBattle(s,{type:'artillery',unitId:'doctor',artilleryId:'gun',x:4,y:1,mode});assert.equal(s.lastError,null);assert.equal(s.artillery[0].loaded,false);assert.ok(s.npcs[0].hp<100);assert.ok(validateBattleSnapshot(s));
  }
 });
 
@@ -121,7 +123,7 @@ test('an incidental firearm hit hurts the resident in front of the target and re
 });
 
 test('a former recruit returns with the service record, rather than the old civilian health cache',()=>{
- let pair=approach(visit(ready(false,80)));pair=act(pair,{type:'melee',targetId:'cabral'});pair=act(pair,{type:'heal',targetId:'cabral'});
+ let pair=approach(visit(ready(false,80)));pair=woundResident(pair);pair=act(pair,{type:'heal',targetId:'cabral'});
  let s=order(pair.campaign,{type:'talkNPC',npcId:'cabral',unitId:110,approach:'recruit',sectorState:pair.battle});
  const local=npc(pair),record=s.pendingBattle.squad.find(u=>u.id===3);pair.battle.npcs=[];pair.battle.units.push({...createBattle([record],{width:8,height:8,enemies:[],exploration:true}).units[0],x:local.x,y:local.y});
  // Field aid has already bandaged this wound. Actual strategic treatment must
@@ -136,8 +138,8 @@ test('mission contacts share San Martín health and a dead essential speaker cau
  // Established northern-chapter fixture includes the retained earlier ally.
  s.missionAllies.san_lorenzo=createBattle([sanLorenzoAlly(s)],{width:8,height:8,enemies:[],exploration:true}).units[0];
  for(const id of ['buenos_aires','cordoba','mendoza','tucuman','salta'])s.sectors[id].owner='patriot';
- s=order(s,{type:'travel',sector:'mendoza'});s=leave(visit(s));assert.ok(s.sectorStates.mendoza.npcs.some(n=>n.id==='san-martin'));
- s=order(s,{type:'travel',sector:'tucuman'});s=order(s,{type:'visitMission',mission:'yatasto'});let pair={campaign:s,battle:enterSector(s.pendingBattle)};
+ s=order(s,{type:'travel',sector:'mendoza'});s=leave(visit(s));assert.ok(s.sectorStates.mendoza.npcs.some(n=>n.id==='san-martin'));s=restForMarch(s);
+ s=order(s,{type:'travel',sector:'tucuman'});for(let i=0;s.squads.find(q=>q.id===s.activeSquadId).journey&&i<12;i++){s=restForMarch(s);s=order(s,{type:'resumeTravel'});s=order(s,{type:'wait',hours:24});}s=restForMarch(s);s=order(s,{type:'visitMission',mission:'yatasto'});let pair={campaign:s,battle:enterSector(s.pendingBattle)};
  pair=approach(pair,'yatasto-san-martin');pair=act(pair,{type:'melee',targetId:'yatasto-san-martin'});assert.equal(pair.campaign.operativeState[57].hp,pair.battle.npcs.find(n=>n.id==='yatasto-san-martin').hp);
  const hp=pair.campaign.operativeState[57].hp;assert.equal(sanLorenzoAlly(pair.campaign).hp,hp);assert.equal(encountersFor(pair.campaign,'mendoza').find(n=>n.id==='san-martin').hp,hp);
  while(pair.battle.npcs.find(n=>n.id==='yatasto-san-martin').hp>0)pair=act(pair,{type:'melee',targetId:'yatasto-san-martin'});

@@ -1,0 +1,67 @@
+{
+  "completedIds": [
+    "avatar-woman-soldier-light-2",
+    "avatar-woman-soldier-light-5",
+    "avatar-woman-soldier-brown-3",
+    "avatar-woman-soldier-dark-2",
+    "avatar-woman-soldier-dark-5",
+    "avatar-woman-officer-light-3",
+    "avatar-woman-officer-brown-1",
+    "avatar-woman-officer-brown-4",
+    "avatar-woman-officer-dark-3",
+    "avatar-woman-scout-light-1",
+    "avatar-woman-scout-light-4",
+    "avatar-woman-scout-dark-2",
+    "avatar-woman-scout-dark-5",
+    "avatar-woman-gaucho-light-3",
+    "avatar-woman-gaucho-brown-2",
+    "avatar-woman-gaucho-brown-5",
+    "avatar-woman-gaucho-dark-3",
+    "avatar-woman-artisan-light-1",
+    "avatar-woman-artisan-light-4",
+    "avatar-woman-artisan-brown-3",
+    "avatar-woman-artisan-dark-2",
+    "avatar-woman-artisan-dark-5",
+    "avatar-woman-medic-light-4",
+    "avatar-woman-medic-brown-5",
+    "avatar-man-soldier-brown-4",
+    "avatar-man-officer-brown-3",
+    "avatar-man-officer-dark-2",
+    "avatar-man-officer-dark-5",
+    "avatar-man-scout-light-4",
+    "avatar-man-scout-brown-4",
+    "avatar-man-scout-dark-4",
+    "avatar-man-gaucho-light-2",
+    "avatar-man-gaucho-light-5"
+  ],
+  "failedIds": [],
+  "reviewSheets": [
+    "assets/previews/portrait-expansion/part-2-01.webp",
+    "assets/previews/portrait-expansion/part-2-02.webp",
+    "assets/previews/portrait-expansion/part-2-03.webp",
+    "assets/previews/portrait-expansion/part-2-04.webp",
+    "assets/previews/portrait-expansion/part-2-05.webp"
+  ],
+  "transferredIds": [
+    "avatar-man-gaucho-dark-3",
+    "avatar-man-artisan-light-4",
+    "avatar-man-artisan-brown-5",
+    "avatar-man-artisan-dark-5",
+    "avatar-man-medic-light-5",
+    "avatar-man-medic-brown-3",
+    "avatar-man-medic-dark-2",
+    "avatar-man-medic-dark-5"
+  ],
+  "validation": {
+    "sourceFormat": "png",
+    "sourceAspect": "square",
+    "outputFormat": "webp",
+    "outputSize": [
+      384,
+      384
+    ],
+    "uniqueOutputHashes": 33,
+    "matchingCopies": 33,
+    "totalWebpBytes": 705188
+  }
+}

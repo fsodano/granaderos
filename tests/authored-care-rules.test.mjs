@@ -8,6 +8,7 @@ import {encodeSave,decodeSave} from '../game/save.js';
 import {synchronizeCampaignPresence} from '../game/campaign-presence.js';
 import {preparedCare,DOCTOR,PATIENT} from './medical-care-fixture.mjs';
 import {order,saved,visit} from './local-contract-fixture.mjs';
+import {advanceCampaignHours} from './campaign-wait-fixture.mjs';
 const rules=values=>({...DEFAULT_CARE_RULES,...values});
 const op=(s,id)=>rosterFor(s).find(o=>o.id===id);
 
@@ -21,8 +22,8 @@ test('care rules are optional, portable and strict, retaining old package identi
 test('authored skill, healing and work costs drive actual assignments, safe hours and pinned saves',()=>{
  let s=preparedCare({careRules:rules({minimumSkill:90})});assert.ok(dispatchCampaign(s,{type:'assignCare',id:DOCTOR,assignment:'doctor'}).lastError);
  s=preparedCare({careRules:rules({minimumSkill:0,baseHealing:5,skillStep:40,energyCost:7,fatigueCost:9,restEnergy:4,restFatigue:3})});
- const hp=s.operativeState[PATIENT].hp;s=order(s,{type:'assignCare',id:DOCTOR,assignment:'doctor'});s=order(s,{type:'assignCare',id:PATIENT,assignment:'patient'});s=order(s,{type:'wait',hours:2});assert.equal(s.operativeState[PATIENT].hp,hp+7);assert.equal(s.operativeState[DOCTOR].energy,86);assert.equal(s.operativeState[DOCTOR].fatigue,18);assert.equal(s.operativeState[DOCTOR].medkits,2);
- s=order(s,{type:'assignCare',id:DOCTOR,assignment:'rest'});s=order(s,{type:'wait',hours:2});assert.equal(s.operativeState[DOCTOR].energy,94);assert.equal(s.operativeState[DOCTOR].fatigue,12);assert.equal(s.operativeState[DOCTOR].medkits,2);s=saved({campaign:s}).campaign;assert.equal(careRules(s).baseHealing,5);
+ const hp=s.operativeState[PATIENT].hp;s=order(s,{type:'assignCare',id:DOCTOR,assignment:'doctor'});s=order(s,{type:'assignCare',id:PATIENT,assignment:'patient'});s=order(s,{type:'wait',hours:2});assert.equal(s.operativeState[PATIENT].hp,hp+7);assert.equal(s.operativeState[DOCTOR].energy,82,'fatigue limits current breath to 100 minus fatigue');assert.equal(s.operativeState[DOCTOR].fatigue,18);assert.equal(s.operativeState[DOCTOR].medkits,2);
+ s=order(s,{type:'assignCare',id:DOCTOR,assignment:'rest'});s=advanceCampaignHours(s,2);assert.equal(s.hour,4);assert.equal(s.operativeState[DOCTOR].energy,86,'rest obeys the profile sleep need and fatigue ceiling');assert.equal(s.operativeState[DOCTOR].fatigue,14);assert.equal(s.operativeState[DOCTOR].medkits,2);s=saved({campaign:s}).campaign;assert.equal(careRules(s).baseHealing,5);
  const altered=structuredClone(s);altered.contentCampaign.package.careRules.baseHealing=99;assert.throws(()=>saved({campaign:altered}),/identidad/);
  s=order(s,{type:'assignCare',id:PATIENT,assignment:'doctor'});assert.equal(op(s,PATIENT).medical,0);assert.ok(saved({campaign:s}),'authored zero minimum also applies to saved doctor eligibility');
 });
@@ -30,7 +31,7 @@ test('authored skill, healing and work costs drive actual assignments, safe hour
 test('configured rest intervals above six preserve midpoint saves and award only the actual completed interval',()=>{
  let s=preparedCare({careRules:rules({restHealingHours:9,restEnergy:0,restFatigue:0})});Object.assign(s.operativeState[PATIENT],{bleeding:0,energy:30,fatigue:40});synchronizeCampaignPresence(s);s=order(saved({campaign:s}).campaign,{type:'assignCare',id:PATIENT,assignment:'rest'});const hp=s.operativeState[PATIENT].hp;
  s=order(s,{type:'wait',hours:8});assert.equal(s.operativeState[PATIENT].recoveryHours,8);s=saved({campaign:s}).campaign;assert.equal(s.operativeState[PATIENT].hp,hp);assert.equal(s.operativeState[PATIENT].energy,30);assert.equal(s.operativeState[PATIENT].fatigue,40);s=order(s,{type:'wait',hours:1});assert.equal(s.operativeState[PATIENT].hp,hp+1);assert.equal(s.operativeState[PATIENT].recoveryHours,0);
- const wire=JSON.parse(encodeSave(s));wire.campaign.operativeState[PATIENT].recoveryHours=9;assert.throws(()=>decodeSave(JSON.stringify(wire)),/descanso/);
+ const wire=JSON.parse(encodeSave(s));wire.campaign.operativeState[PATIENT].recoveryHours=9;assert.throws(()=>decodeSave(JSON.stringify(wire)),/asignaciones|descanso/);
  s=order(s,{type:'assignCare',id:PATIENT,assignment:'active'});const p=visit(s);assert.equal(p.battle.units.find(u=>u.id===String(PATIENT)).hp,hp+1);assert.ok(saved(p));
 });
 

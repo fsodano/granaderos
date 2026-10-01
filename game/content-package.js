@@ -25,6 +25,7 @@ import {SPEECH_LINE_LIMIT} from './content-character-presentation.js';
 import {SPRITE_APPEARANCES,spriteAppearance} from './sprite-appearances.js';
 import {CONTENT_TRAITS} from './content-character-options.js';
 import {BLADES} from "./blade-definitions.js";
+import {LOOSE_BAYONET} from './weapon-fittings.js';
 import { compileWeaponDefinition } from "./weapon-definition.js";
 // Versioned authoring data. No mutable campaign state or global catalog changes.
 import { defaultArrivalSites, validateArrivalSites } from "./arrival-sites.js";
@@ -96,7 +97,10 @@ export function defaultContentPackage() {
       reloadAP: w.reloadAP,
       range: w.range,
       readyAP: 0,
-    })),...Object.values(BLADES).map(w=>({id:`blade-${w.id}`,template:w.id,name:w.name,damage:w.damage,ap:w.ap,reach:w.reach}))],
+    })),...Object.values(BLADES).map(base=>{
+      const w=base.id===1811?LOOSE_BAYONET:base;
+      return {id:`blade-${w.id}`,template:w.id,name:base.name,damage:w.damage,ap:w.ap,reach:w.reach};
+    })],
     placements: ENCOUNTERS.filter((n) => n.operativeId !== undefined && n.operativeId < 100).map((n) => ({
       id: `placement-${n.id}`,
       character: `person-${n.operativeId}`,

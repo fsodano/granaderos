@@ -1,3 +1,5 @@
+import {handRecord} from './tactical-inventory.js';
+import {WEAPON_READY_AP} from './weapon-readiness.js';
 import {AMMO_TYPES,primaryAmmoTypeFor,selectedAmmunitionLoad,validateAmmunitionChoice} from './ammo-types.js';
 import {validateReloadProgress} from './weapon-reload.js';
 import {WEAPONS as ITEMS} from './data.js';
@@ -46,10 +48,10 @@ export function validateWeaponDefinition(value,host){
 export function contentWeaponOf(value,slot='primary'){return slot==='blade'?value?.bladeMetadata?.contentWeapon:value?.contentWeapon??value?.weaponMetadata?.contentWeapon;}
 export function weaponSpecification(value,slot='primary'){
  const raw=typeof value==='object'&&value!==null?slot==='blade'?value.blade:value.weapon??value.item??value.id:value;
- const id=typeof raw==='object'?raw.id:raw,definition=contentWeaponOf(value,slot);
+ const id=typeof raw==='object'?raw?.id:raw,definition=contentWeaponOf(value,slot);
  if(!ITEMS[id]&&!FIREARMS[id])return null;
  const load=slot==='primary'?selectedAmmunitionLoad(value):null;
- return {...ITEMS[id],...FIREARMS[id],...BLADES[id],...(FIREARMS[id]?{readyAP:0}:{}),...(BLADES[id]?{capacity:0}:{}),...(typeof raw==='object'?raw:{}),...definition,...(load?.damage?{damage:load.damage,range:load.range,loadPattern:load.pattern}:{}),id,...(definition?{contentId:definition.id}:{}),art:definition?.art??`/art/weapon-${id}.png`,price:definition?.price??FIREARM_PRICES[id]??BLADE_PRICES[id]};
+ return {...ITEMS[id],...FIREARMS[id],...BLADES[id],...(FIREARMS[id]?{readyAP:WEAPON_READY_AP[id]??0}:{}),...(BLADES[id]?{capacity:0}:{}),...(typeof raw==='object'?raw:{}),...definition,...(load?.damage?{damage:load.damage,range:load.range,loadPattern:load.pattern}:{}),id,...(definition?{contentId:definition.id}:{}),art:definition?.art??`/art/weapon-${id}.png`,price:definition?.price??FIREARM_PRICES[id]??BLADE_PRICES[id]};
 }
 export function weaponMetadata(definition){return {contentWeapon:compileWeaponDefinition(definition)};}
 export function validateWeaponCarrier(value){
@@ -60,9 +62,9 @@ export function validateWeaponCarrier(value){
  const host=typeof value.weapon==='object'?value.weapon.id:value.weapon;
  const definition=contentWeaponOf(value);validateWeaponDefinition(definition,host);
  validateReloadProgress(value.reloadProgress,weaponSpecification(value)?.capacity??0,value.loaded??0,Boolean(value.weaponDropped));
- if(value.weaponMetadata!==undefined)need(value.weaponMetadata&&typeof value.weaponMetadata==='object'&&Object.keys(value.weaponMetadata).length===1&&Object.hasOwn(value.weaponMetadata,'contentWeapon'),'Los datos del arma no son válidos.');
+ if(value.weaponMetadata!==undefined)need(value.weaponMetadata&&typeof value.weaponMetadata==='object'&&!Array.isArray(value.weaponMetadata)&&!['weapon','loaded','condition','jammed','count','reloadProgress','ammunitionChoice'].some(key=>Object.hasOwn(value.weaponMetadata,key)),'Los datos del arma no son válidos.');
  const blade=contentWeaponOf(value,'blade');validateWeaponDefinition(blade,value.blade);
- if(value.bladeMetadata!==undefined)need(BLADES[value.blade]&&value.bladeMetadata&&Object.keys(value.bladeMetadata).length===1&&Object.hasOwn(value.bladeMetadata,'contentWeapon')&&blade,'Los datos del arma blanca no son válidos.');
+ if(value.bladeMetadata!==undefined)need(BLADES[value.blade]&&value.bladeMetadata&&!Array.isArray(value.bladeMetadata)&&!['weapon','loaded','condition','jammed','count','reloadProgress','ammunitionChoice'].some(key=>Object.hasOwn(value.bladeMetadata,key)),'Los datos del arma blanca no son válidos.');
  if(definition&&value.loaded!==undefined)need(integer(value.loaded,0,definition.capacity??0),'La carga del arma no es válida.');
  if(definition&&value.weight!==undefined&&value.count!==undefined)need(value.weight===definition.weight,'El peso del arma no coincide con su definición.');
 }
@@ -79,11 +81,7 @@ export function validateWeaponReferences(state,value){
  }
  visit(value);
 }
-export function weaponRecord(carrier,slot='primary'){
- const raw=slot==='blade'?carrier.blade:carrier.weapon,weapon=typeof raw==='object'?raw.id:raw;
- const definition=contentWeaponOf(carrier,slot);
- return {...(slot==='primary'&&carrier.ammunitionChoice!==undefined?{ammunitionChoice:carrier.ammunitionChoice}:{}),count:1,weapon,weight:definition?.weight??(FIREARMS[weapon]?4:1.3),loaded:slot==='primary'?(carrier.loaded??0):0,condition:slot==='primary'?(carrier.condition??100):(carrier.bladeCondition??100),jammed:slot==='primary'?Boolean(carrier.jammed):Boolean(carrier.bladeJammed),...(slot==='primary'&&carrier.reloadProgress!==undefined?{reloadProgress:carrier.reloadProgress}:{}),...(definition?{contentWeapon:structuredClone(definition)}:{})};
-}
+export function weaponRecord(carrier,slot='primary'){return handRecord(carrier,slot);}
 export function setWeaponDefinition(carrier,source,slot='primary'){
  const definition=contentWeaponOf(source);
  if(slot==='blade'){delete carrier.bladeMetadata;carrier.bladeCondition=source.condition??100;carrier.bladeJammed=Boolean(source.jammed);if(definition)carrier.bladeMetadata={contentWeapon:structuredClone(definition)};return;}

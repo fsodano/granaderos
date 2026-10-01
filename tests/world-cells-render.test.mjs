@@ -7,6 +7,8 @@ import {createElement as h,act,useState} from '../web/node_modules/react/index.j
 import {initialCampaign,dispatchCampaign} from '../game/campaign.js';
 import {WORLD_CELLS} from '../game/world-cells.js';
 import {enterSector} from '../game/world.js';
+import {actBattle} from '../game/tactical.js';
+import {syncBattleTime} from '../game/time.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 register('./tactical-render-loader.mjs',import.meta.url);
 
@@ -25,19 +27,20 @@ test('the actual campaign map selects exact cells, previews the march, enters, s
  const cell=id=>dom.window.document.querySelector(`[data-map-cell="${id}"]`);
  await act(async()=>root.render(h(Screen)));
  assert.equal(dom.window.document.querySelectorAll('[data-map-cell]').length,1188);
- await click(cell('cell-26-27'));assert.equal(cell('cell-26-27').getAttribute('aria-pressed'),'true');assert.match(dom.window.document.body.textContent,/Marcha a pie · 4 horas/);
- assert.ok(dom.window.document.querySelector('[data-cell-route]'));await click(button('Mover escuadra aquí · 10 pesos de munición'));
+ await click(cell('cell-26-27'));assert.equal(cell('cell-26-27').getAttribute('aria-pressed'),'true');assert.match(dom.window.document.querySelector('.atlas-readout').textContent,/Marcha a pie: 4 h/);
+ assert.ok(dom.window.document.querySelector('[data-cell-route]'));await click(button('Mover escuadra aquí'));assert.equal(current.location,'retiro');await click(button('Confirmar ruta'));
  assert.equal(current.location,'cell-26-27');assert.equal(current.hour,4);assert.equal(current.lastError,null);
  assert.equal(dom.window.document.querySelector('[data-squad-cell]').getAttribute('data-squad-cell'),'cell-26-27');
  await click([...dom.window.document.querySelectorAll('button')].find(b=>b.textContent.startsWith('Entrar al sector ·')));
- const pair=decodeSave(encodeSave(current,enterSector(current.pendingBattle)));assert.equal(pair.battle.sourceMapId,'cell-26-27');
- const u=pair.battle.units[0];pair.battle.groundItems.push({id:'supplies',type:'rations',count:3,x:u.x,y:u.y});
+ let pair=decodeSave(encodeSave(current,enterSector(current.pendingBattle)));assert.equal(pair.battle.sourceMapId,'cell-26-27');
+ const u=pair.battle.units[0],rations=u.rations;assert.ok(rations>0);const dropped=actBattle(pair.battle,{type:'dropSupply',unitId:u.id,item:'rations',count:1});assert.equal(dropped.lastError,null);assert.equal(dropped.units.find(s=>s.id===u.id).rations,rations-1);pair=syncBattleTime(pair.campaign,dropped);assert.equal(pair.error,null);pair=decodeSave(encodeSave(pair.campaign,pair.battle));
+ await act(async()=>dispatch({type:'syncTacticalTime',battleId:current.pendingBattle.id,elapsedSeconds:pair.battle.elapsedSeconds,sectorState:pair.battle}));assert.equal(current.lastError,null);
  await act(async()=>dispatch({type:'leaveSector',battleId:current.pendingBattle.id,sectorState:pair.battle,survivors:pair.battle.units}));assert.equal(current.lastError,null);
- await click(dom.window.document.querySelector('button[aria-label="Objetos"]'));assert.match(dom.window.document.querySelector('.atlas-stock').textContent,/rations: 3/);
- await click(cell('cell-26-28'));assert.equal(cell('cell-26-28').getAttribute('aria-pressed'),'true');assert.ok(!dom.window.document.querySelector('.atlas-stock').textContent.includes('rations: 3'));
- await click(button('Mover escuadra aquí · 0 pesos de munición'));assert.equal(current.location,'cell-26-28');assert.equal(current.lastError,null);
- await click(dom.window.document.querySelector('button[aria-label="Escuadras"]'));assert.match(dom.window.document.querySelector('.squad-card').textContent,/Celda 27,29/);
- const water=WORLD_CELLS.find(c=>!c.land);await click(cell(water.id));assert.equal(button('Mover escuadra aquí · 0 pesos de munición').disabled,true);assert.match(dom.window.document.body.textContent,/agua abierta/i);
+ await click(dom.window.document.querySelector('button[aria-label="Objetos"]'));assert.match(dom.window.document.querySelector('[aria-label="Equipo descubierto"]').textContent,/Raciones · 1/);
+ await click(cell('cell-26-28'));assert.equal(cell('cell-26-28').getAttribute('aria-pressed'),'true');assert.ok(!dom.window.document.querySelector('[aria-label="Equipo descubierto"]').textContent.includes('Raciones · 1'));
+ await click(button('Mover escuadra aquí'));await click(button('Confirmar ruta'));assert.equal(current.location,'cell-26-28');assert.equal(current.lastError,null);
+ await click(dom.window.document.querySelector('button[aria-label="Escuadras"]'));await click(button('Administrar esta vista'));assert.match(dom.window.document.querySelector('.squad-card').textContent,/Celda 27,29/);
+ const water=WORLD_CELLS.find(c=>!c.land);await click(cell(water.id));assert.equal(button('Mover escuadra aquí').disabled,true);assert.match(dom.window.document.body.textContent,/agua abierta/i);
  await click(cell('cell-26-28'));await act(async()=>cell('cell-26-28').dispatchEvent(new dom.window.KeyboardEvent('keydown',{key:'ArrowDown',bubbles:true})));
  assert.equal(cell('cell-26-29').getAttribute('aria-pressed'),'true');assert.equal(cell('cell-26-29').getAttribute('tabindex'),'0');
 });

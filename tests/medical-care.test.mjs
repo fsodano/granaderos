@@ -3,6 +3,7 @@ import {dispatchCampaign,rosterFor} from '../game/campaign.js';
 import {doctorRate,careStatus,careAssignmentReason} from '../game/medical-care.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {order,saved,visit,leave} from './local-contract-fixture.mjs';
+import {advanceCampaignHours} from './campaign-wait-fixture.mjs';
 import {preparedCare,assignedCare,DOCTOR,PATIENT,OTHER_DOCTOR,OTHER_PATIENT} from './medical-care-fixture.mjs';
 const op=(s,id)=>rosterFor(s).find(o=>o.id===id);
 
@@ -33,23 +34,25 @@ test('care assignments block deployment and competing militia work, and reject u
 });
 
 test('expired and dismissed medical staff leave no hidden work, free supply or invalid assignment',()=>{
- let s=assignedCare({term:'day'});s=order(s,{type:'wait',hours:23});s=order(s,{type:'purchaseMedicalSupplies',id:DOCTOR,quantity:2});const hp=s.operativeState[PATIENT].hp;s=order(s,{type:'wait',hours:1});assert.ok(!s.recruited.includes(DOCTOR));assert.equal(s.operativeState[DOCTOR].assignment,'active');assert.equal(s.operativeState[DOCTOR].medkits,2);assert.equal(s.operativeState[PATIENT].hp,Math.min(op(s,PATIENT).maxHp,hp+5),'only the existing daily recovery applies after expiry');assert.ok(saved({campaign:s}));
+ let s=assignedCare({term:'day'});s=advanceCampaignHours(s,s.contracts[DOCTOR].expiresAt-1-s.hour);assert.equal(s.hour,23);s=order(s,{type:'purchaseMedicalSupplies',id:DOCTOR,quantity:2});const hp=s.operativeState[PATIENT].hp;s=order(s,{type:'wait',hours:1});assert.ok(!s.recruited.includes(DOCTOR));assert.equal(s.operativeState[DOCTOR].assignment,'active');assert.equal(s.operativeState[DOCTOR].medkits,2);assert.equal(s.operativeState[PATIENT].hp,hp,'the expired doctor cannot treat and an unattended patient does not heal');assert.ok(saved({campaign:s}));
  s=order(s,{type:'recruitCivic',id:DOCTOR,term:'week'});assert.equal(s.operativeState[DOCTOR].assignment,'active');assert.equal(s.operativeState[DOCTOR].medkits,2);s=order(s,{type:'assignCare',id:DOCTOR,assignment:'doctor'});s=order(s,{type:'dismiss',id:DOCTOR});assert.equal(s.operativeState[DOCTOR].assignment,'active');assert.ok(saved({campaign:s}));
 });
 
 test('medical supply purchases and saved assignments reject invalid quantities, funds and forged roles',()=>{
- const s=preparedCare();for(const quantity of [0,-1,1.5,21,'2',null]){const n=dispatchCampaign(s,{type:'purchaseMedicalSupplies',id:DOCTOR,quantity});assert.ok(n.lastError);assert.equal(n.resources.treasury,s.resources.treasury);assert.equal(n.operativeState[DOCTOR].medkits,4);}
+ const s=preparedCare();for(const quantity of [0,-1,1.5,21,'2',null]){const n=dispatchCampaign(s,{type:'purchaseMedicalSupplies',id:DOCTOR,quantity});assert.ok(n.lastError);assert.equal(n.resources.treasury,s.resources.treasury);assert.equal(n.operativeState[DOCTOR].medkits,4);assert.deepEqual(n.merchants,s.merchants);}
+ const one=order(s,{type:'purchaseMedicalSupplies',id:DOCTOR});assert.equal(one.operativeState[DOCTOR].medkits,5);assert.equal(one.resources.treasury,s.resources.treasury-10);assert.equal(one.merchants.retiro.supplies.medkits,s.merchants.retiro.supplies.medkits-1);
  const poor=structuredClone(s);poor.resources.treasury=5;assert.match(dispatchCampaign(poor,{type:'purchaseMedicalSupplies',id:DOCTOR,quantity:1}).lastError,/pesos/);
- for(const [id,assignment]of [[DOCTOR,'unknown'],[PATIENT,'doctor'],[108,'patient']]){const wire=JSON.parse(encodeSave(s));wire.campaign.operativeState[id].assignment=assignment;assert.throws(()=>decodeSave(JSON.stringify(wire)),/asignación|conocimientos/i);}
+ for(const [id,assignment]of [[DOCTOR,'unknown'],[PATIENT,'doctor'],[108,'patient']]){const wire=JSON.parse(encodeSave(s));wire.campaign.operativeState[id].assignment=assignment;assert.throws(()=>decodeSave(JSON.stringify(wire)),/asignaci[oó]n|conocimientos/i);}
  assert.ok(careAssignmentReason(s,op(s,PATIENT),'doctor'));
 });
 
 test('a wounded world resident receives strategic care after real recruitment and returns with the recovered health',async()=>{
  const {localPackage,readyLocal,tactical,localNPC,hireLocal,localId}=await import('./local-contract-fixture.mjs');
  const d=localPackage({pay:0,service:'permanent'}),physician=d.characters.find(c=>c.id==='person-110');physician.attributes.medical=80;physician.startingSupplies={priming:50,flints:4,rations:2,torches:2,medkits:10,boleadoras:1};
- let p=readyLocal(undefined,d);p=tactical(p,{type:'melee',targetId:localNPC(p.battle).id});p=tactical(p,{type:'heal',targetId:localNPC(p.battle).id});const wounded=localNPC(p.battle).hp;assert.ok(wounded<localNPC(p.battle).maxHp);
+ d.characters.at(-1).startingCondition={hp:60,energy:100,fatigue:0,bleeding:0,bandaged:0};
+ let p=readyLocal(undefined,d);p=tactical(p,{type:'weapon',slot:'medical'});p=tactical(p,{type:'heal',targetId:localNPC(p.battle).id});const wounded=localNPC(p.battle).hp;assert.ok(wounded<localNPC(p.battle).maxHp);
  p=hireLocal(p);const id=localId(p.campaign);let s=order(leave(p),{type:'travel',sector:'retiro'});s=order(s,{type:'assignCare',id:110,assignment:'doctor'});s=order(s,{type:'assignCare',id,assignment:'patient'});const stock=s.operativeState[110].medkits;
  s=saved({campaign:order(s,{type:'wait',hours:2})}).campaign;const recovered=s.operativeState[id].hp;assert.ok(recovered>wounded);assert.ok(s.operativeState[110].medkits<stock);
- const tired=s.operativeState[110].energy,remaining=s.operativeState[110].medkits;s=order(s,{type:'assignCare',id:110,assignment:'rest'});s=order(s,{type:'wait',hours:1});assert.ok(s.operativeState[110].energy>tired);assert.equal(s.operativeState[110].medkits,remaining);assert.equal(s.operativeState[id].hp,recovered);s=saved({campaign:s}).campaign;
+ const tired=s.operativeState[110].energy,remaining=s.operativeState[110].medkits;s=order(s,{type:'assignCare',id:110,assignment:'rest'});s=advanceCampaignHours(s,1);assert.ok(s.operativeState[110].energy>tired);assert.equal(s.operativeState[110].medkits,remaining);assert.equal(s.operativeState[id].hp,recovered);s=saved({campaign:s}).campaign;
  s=order(s,{type:'dismiss',id});assert.equal(s.operativeState[id].assignment,'active');s=order(s,{type:'assignCare',id:110,assignment:'active'});s=order(s,{type:'travel',sector:'cell-27-27'});p=visit(saved({campaign:s}).campaign);assert.equal(localNPC(p.battle).hp,recovered);assert.ok(saved(p));
 });

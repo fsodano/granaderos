@@ -1,0 +1,71 @@
+{
+  "status": "in-progress",
+  "reference": "Each family's existing idle atlas; do not replace approved idle art",
+  "coverage": {
+    "families": 8,
+    "sheets": 240,
+    "directions": 8,
+    "firstFrameContactReview": true,
+    "allFramesReviewed": false
+  },
+  "findings": [
+    {
+      "scope": "granadero",
+      "issue": "Walk and some actions change facial hair, head mass and cloth detail relative to idle"
+    },
+    {
+      "scope": "all families: interact",
+      "issue": "Simplified body/detail and palette drift from idle; worker and surgeon trouser colours change"
+    },
+    {
+      "scope": "all families: mounted-run and mounted-fire",
+      "issue": "Heavier outlines, simpler shading, changed rider proportions and saddle detail"
+    },
+    {
+      "scope": "all families: collapse/dead",
+      "issue": "Palette and body-detail differences; preserve collapse-to-dead continuity when correcting"
+    },
+    {
+      "scope": "royalist walk/run; woman-scout walk",
+      "issue": "Some directional silhouettes are 6-10 percent shorter than idle"
+    },
+    {
+      "scope": "several other walk sheets",
+      "issue": "Some directional silhouettes are 3-4 percent taller; torso/head bulk also differs"
+    },
+    {
+      "scope": "surgeon",
+      "issue": "Coat detail and head/hair silhouette drift in combat/mounted sheets"
+    },
+    {
+      "scope": "gaucho",
+      "issue": "Poncho shading and hat proportions vary between original and newer actions"
+    },
+    {
+      "scope": "friar",
+      "issue": "Head size, habit folds and mounted pose proportions drift"
+    },
+    {
+      "scope": "woman-shawl",
+      "issue": "Skirt hem and shawl detail change in interactions and mounted actions"
+    }
+  ],
+  "rejectedCandidates": [
+    {
+      "file": "/Users/fsodano/.codex/generated_images/01a09239-2af2-7ab0-82b4-271d70c55cea/exec-3deeb979-3bb0-4595-8d0b-8330b1ba0504.png",
+      "reason": "Heavier cartoon outline and facial hair do not match idle; directional layout also drifts; not installed"
+    },
+    {
+      "file": "exec-81a34711-23a2-4b53-809f-6f45dc13b8f5.png",
+      "reason": "Reference identity/proportions or shading not preserved; not installed"
+    },
+    {
+      "file": "exec-e4f56af2-29e9-434d-9e31-813c2562edfa.png",
+      "reason": "Reference identity/proportions or shading not preserved; not installed"
+    }
+  ],
+  "completedCorrections": [
+    "Direction-specific walking display width and height calibrated against idle for all eight families; base and skin overlay share the transform; one transform per cycle."
+  ],
+  "validation": "25 focused tests, typecheck and production build passed. Art consistency is not complete."
+}

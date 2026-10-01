@@ -3,16 +3,18 @@ import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign} from '../game/campaign.js';
 import {contentQuestStatus,contentQuestJournal} from '../game/content-quests.js';
 import {dialogueForNPC} from '../game/content-dialogue.js';
-import {actBattle,createBattle,endTurn,getReachable} from '../game/tactical.js';
+import {actBattle,createBattle,endTurn} from '../game/tactical.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {survivalPackage} from './quest-survival-fixture.mjs';
 import {questPackage} from './content-quest-fixture.mjs';
+import {approachNPC} from './approach-npc.mjs';
+import {initializeUnitAmmunition} from '../game/tactical-ammunition.js';
 import {secureArea} from './controlled-area-fixture.mjs';
 import {order,saved,sync,localNPC,localId,readyLocal,talk,leave,visit,hireLocal,tactical} from './local-contract-fixture.mjs';
 const choose=(p,node,id)=>({...p,campaign:order(p.campaign,{...talk(p,undefined,'dialogue'),dialogueNode:node,dialogueChoice:id})});
 const start=d=>choose(readyLocal(undefined,d??survivalPackage()),'start','accept');
 const victim=p=>p.battle.npcs.find(n=>n.contentId==='pablo');
-const approach=(p,n)=>{const u=p.battle.units.find(u=>u.side==='player'),tile=getReachable(p.battle,u.id).find(t=>Math.abs(t.x-n.x)+Math.abs(t.y-n.y)===1);assert.ok(tile);return tile.cost?tactical(p,{type:'move',x:tile.x,y:tile.y}):p;};
+const approach=(p,n)=>sync({campaign:p.campaign,battle:approachNPC(p.battle,p.battle.units.find(u=>u.side==='player').id,n.id)});
 function kill(p){p=approach(p,victim(p));for(let i=0;i<6&&victim(p).hp>0;i++)p=tactical(p,{type:'melee',targetId:victim(p).id});assert.equal(victim(p).hp,0);return p;}
 
 test('an actual required civilian death fails an active quest once and preserves its cause',()=>{
@@ -28,12 +30,15 @@ test('death after completion does not revoke a quest result or grant another rew
 });
 
 test('wounds, local recruitment and dismissal do not count as a required character death',()=>{
- const d=questPackage();d.quests[0].requiredAlive=['alma-contract'];let p=start(d);p=tactical(p,{type:'melee',targetId:localNPC(p.battle).id});assert.ok(localNPC(p.battle).hp>0&&localNPC(p.battle).hp<95);p=tactical(p,{type:'heal',targetId:localNPC(p.battle).id});p=hireLocal(p);assert.equal(contentQuestStatus(p.campaign,'river-post'),'active');let s=order(leave(p),{type:'dismiss',id:localId(p.campaign)});p=visit(saved({campaign:s}).campaign);assert.equal(contentQuestStatus(p.campaign,'river-post'),'active');assert.equal(p.campaign.contentQuestEvents.length,1);
+ const d=questPackage();d.quests[0].requiredAlive=['alma-contract'];d.characters.at(-1).startingCondition={hp:10,energy:100,fatigue:0,bleeding:0,bandaged:85};let p=readyLocal(undefined,d);assert.equal(localNPC(p.battle).hp,10);p=tactical(p,{type:'weapon',slot:'medical'});p=tactical(p,{type:'heal',targetId:localNPC(p.battle).id});assert.equal(localNPC(p.battle).hp,15);p=tactical(p,{type:'weapon',slot:'primary'});p=choose(p,'start','accept');p=hireLocal(p);assert.equal(contentQuestStatus(p.campaign,'river-post'),'active');let s=order(leave(p),{type:'dismiss',id:localId(p.campaign)});p=visit(saved({campaign:s}).campaign);assert.equal(contentQuestStatus(p.campaign,'river-post'),'active');assert.equal(p.campaign.contentQuestEvents.length,1);
 });
 
 test('an actual enemy kill in a prepared compact battle confirms a required serving character death before settlement',()=>{
  const d=questPackage();d.quests[0].requiredAlive=['person-110'];d.characters.find(c=>c.id==='person-110').attributes.maxHp=30;let p=hireLocal(start(d)),s=leave(p);secureArea(s,'buenos_aires');s=order(s,{type:'travel',sector:'retiro'});s=order(s,{type:'travel',sector:'buenos_aires'});s=order(s,{type:'attack',sector:'san_nicolas'});const r=s.pendingBattle;
- let battle=createBattle(r.squad.map(u=>({...u,x:1,y:u.id===110?1:6})),{width:12,height:8,id:r.id,sector:r.sector,npcs:r.npcs,seed:45,tiles:Array.from({length:96},(_,i)=>({x:i%12,y:Math.floor(i/12),type:'grass',blocked:false,cover:0})),enemies:[{id:'guard',x:7,y:1,weapon:1802,ammo:0,fatigue:100,marksmanship:100}]});battle=endTurn(battle);assert.equal(battle.units.find(u=>u.id==='110').hp,0);p=saved(sync({campaign:s,battle}));assert.equal(contentQuestStatus(p.campaign,'river-post'),'failed');assert.equal(p.campaign.operativeState[110].alive,false);assert.equal(p.campaign.contentQuestEvents.at(-1).death,'person-110');
+ // Declare a compact encounter before construction. Its actual enemy attack,
+ // rather than a fabricated casualty, must establish the quest death receipt.
+ Object.assign(r,{width:12,height:8,seed:45,tiles:Array.from({length:96},(_,i)=>({x:i%12,y:Math.floor(i/12),type:'grass',blocked:false,cover:0})),enemies:[initializeUnitAmmunition({id:'guard',x:2,y:1,weapon:1812,loaded:0,ammo:0,patrol:false})]});
+ let battle=createBattle(r.squad.map(u=>({...u,x:1,y:u.id===110?1:6})),r);battle=endTurn(battle);assert.equal(battle.units.find(u=>u.id==='110').hp,0);p=saved(sync({campaign:s,battle}));assert.equal(contentQuestStatus(p.campaign,'river-post'),'failed');assert.equal(p.campaign.operativeState[110].alive,false);assert.equal(p.campaign.contentQuestEvents.at(-1).death,'person-110');
  const forged=JSON.parse(encodeSave(p.campaign,p.battle));forged.battle.units.find(u=>u.id==='110').hp=1;assert.throws(()=>decodeSave(JSON.stringify(forged)));
 });
 

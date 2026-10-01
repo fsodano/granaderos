@@ -15,6 +15,10 @@ export function civilianSupplyLoot(npc,collector,{item='all',count}={}){
  if(npc.hp>0&&!isUnconscious(npc))return no('Solo puedes registrar un cuerpo o una persona inconsciente.');
  if(item!=='all'&&!CIVILIAN_SUPPLY_FIELDS.includes(item))return no('Elegí un suministro personal del habitante.');
  if(count!==undefined&&(!Number.isSafeInteger(count)||count<1))return no('La cantidad debe ser un número entero positivo.');
+ if(count!==undefined&&item!=='all'){
+  if(count>stock[item])return no('No queda esa cantidad del suministro.');
+  if(count>Math.max(0,limit(item)-(collector[item]??0)))return no('No cabe esa cantidad del suministro.');
+ }
  const fields=item==='all'?CIVILIAN_SUPPLY_FIELDS:[item],amounts=Object.fromEntries(fields.map(k=>[k,Math.min(stock[k],count??Infinity,Math.max(0,limit(k)-(collector[k]??0)))]).filter(([,n])=>n>0));
  if(!Object.keys(amounts).length)return no(fields.some(k=>stock[k]>0)?'No cabe otro suministro de ese tipo.':'No quedan suministros que recoger.');
  return {valid:true,reason:null,amounts};

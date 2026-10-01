@@ -1,0 +1,15 @@
+/* Smoke ages only when the simulation advances a round. */
+.powder-smoke-puff {
+  opacity: var(--smoke-opacity, .75);
+  transform: translate(calc(var(--smoke-dx) * var(--smoke-age, 0) / 2), calc(var(--smoke-dy) * var(--smoke-age, 0) / 2)) scale(calc(.85 + var(--smoke-age, 0) * .3));
+  transition: opacity 1.2s ease-out, transform 1.2s ease-out;
+}
+.powder-smoke-bloom { animation: powder-smoke-bloom .8s ease-out; }
+@keyframes powder-smoke-bloom {
+  from { opacity: .4; transform: translate(0, 5px) scale(.5); }
+  to { opacity: 1; transform: translate(0, 0) scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .powder-smoke-puff { transition: none; }
+  .powder-smoke-bloom { animation: none; }
+}

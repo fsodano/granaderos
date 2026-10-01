@@ -1,20 +1,31 @@
-# Typed handheld ammunition
+# Handheld ammunition
 
-> **Development-workspace record.** This note describes a separate development
-> checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+The combined game uses four ammunition families. A weapon has one primary family and can accept up to three configured alternatives. The story editor, tactical inventory and campaign armory share the same definitions. An implicit ignition kit replaces separate priming powder and flints.
+
+| Family | Default primary users |
+| --- | --- |
+| Musket cartridges | Brown Bess, Charleville, tercerola |
+| Rifle ammunition | Baker |
+| Pistol cartridges | Arzón, duel and double-barrel pistols |
+| Shot loads | Escopeta and trabuco |
+
+Smoothbores can use the configured shot alternative. Select a load only after unloading the gun. The selected family sets damage, range and shot pattern. Unloading returns the actual rounds to pockets and requires space; tactical unloading also spends AP. Partial loading, chosen family and loaded rounds stay with the physical weapon through hand changes, storage, drops, recovery and saves. See [alternative loads](../../verification/alternate-firearm-loads.md).
+
+Loose rounds have one owner: physical inventory stacks. A cursor stack, chamber, stored gun, body or ground cache owns its own contents. Display totals cannot create another reserve. Pocket stacks hold up to 20 rounds at 0.04 weight per round. Transfers, splitting and collection retain their family. Artillery uses its own finite ammunition.
+
+Campaign purchases spend pesos and reduce finite local supplier stock. The authored market sets price, initial stock, capacity, restock interval and automatic preparation. Automatic preparation can use carried rounds and local stores before buying missing rounds at an eligible supplied town. No production recipe or global material stock supplies cartridges. Returning from a sector retains owned rounds instead of refunding or issuing them again. See [persistent custody](../../verification/strategic-ammunition-custody.md) and [supplier rules](../../verification/authored-ammunition-markets.md).
+
+Historical caliber keys remain save identifiers and map to these four families. Known legacy schemas migrate once. Invalid or mixed ownership records are rejected. The consolidation also migrates the published personal reserve into physical pockets. Its combined save and UI checks remain in progress; [the integration record](../../verification/latest-build-consolidation.md) is the current working-branch status.
+
+## Historical evidence
+
+The record below describes the former nine-load development checkout. Its economy, quantities, compatibility and test claims are superseded by the rules above. It remains here to preserve the original evidence; it is not acceptance of the combined build.
+
+# Historical nine-load implementation
 
 The nine handheld firearms now use compatible prepared loads. Changing the gun does not change cartridges already in a soldier's pockets. A musket cannot reload with Baker rifle ammunition. An empty gun with no compatible reserve shows a crossed reticle and names the required load.
 
 Use **R**, or click to fire an empty gun, to start loading. Loading consumes compatible cartridges only when a charge is completed. Existing work stays on the physical gun across turns, hand changes, drops, campaign returns and saves. Two pistols use their own types and the same available AP budget. Exploration does not spend AP.
-
-> **Design change, 29 September 2026:** the published game groups these nine
-> historical loads into four compatible families and assumes an ignition kit.
-> The separate development checkout below now uses the implicit ignition kit,
-> but still needs the four-family conversion.
-> See the [integration evidence](../../verification/implicit-ignition-integration.md).
-> Use the [published ammunition record](../../verification/typed-ammunition.md)
-> for the current rule. Alternative loads for one firearm remain open.
 
 ## Loads and supply
 

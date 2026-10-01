@@ -1,3 +1,4 @@
+import {totalReserveAmmunition} from '../game/ammunition-types.js';
 import {setReserve} from './typed-ammo-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -6,6 +7,7 @@ import {enterSector} from '../game/world.js';
 import {actBattle,getReachable} from '../game/tactical.js';
 import {returnAmmunition} from '../game/ammunition.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
+import {refreshMilitaryCondition} from '../game/actor-condition.js';
 import {weaponSpecification} from '../game/weapon-definition.js';
 import {OPERATIVES} from '../game/data.js';
 import {fight} from './opening-driver.mjs';
@@ -17,23 +19,28 @@ test('actual military casualties persist through saved sector visits with finite
  const {campaign:before,id}=paidCasualty(),bodies=before.sectorStates.buenos_aires.units.filter(u=>u.hp===0),death=before.operativeState[id].deathMinute;
  assert.ok(bodies.some(u=>u.side==='enemy'));assert.ok(bodies.some(u=>Number(u.id)===id));
  let p=visit(order(before,{type:'squad',ids:before.squad.filter(id=>before.operativeState[id].hp>=20)}));
- for(const body of bodies)assert.deepEqual(p.battle.units.find(u=>u.id===body.id),body);
+ // Re-entry clears tactical memory and starts a new reaction clock. Every
+ // physical body field, including wounds and finite possessions, must survive.
+ for(const body of bodies){const {lastKnownEnemy,lastHeardNoise,lastTargetId,lastShotPosition,patrolTurn,lastInvestigatedTurn,...physical}=body;assert.deepEqual(p.battle.units.find(u=>u.id===body.id),{...physical,reactionTurn:0});}
  const body=p.battle.units.find(u=>Number(u.id)===id),actor=p.battle.units.find(u=>u.side==='player'&&u.hp>0&&!u.routed);
  const spot=getReachable(p.battle,actor).filter(t=>Math.hypot(t.x-body.x,t.y-body.y)<=1.5).sort((a,b)=>a.cost-b.cost)[0];assert.ok(spot);
  if(spot.cost)p=tactical(p,{type:'move',unitId:actor.id,x:spot.x,y:spot.y});
- const beforeLoot=p.battle.units.find(u=>u.id===body.id),ammo=beforeLoot.ammo,cartridges=actor.ammo+actor.loaded;
- assert.ok(ammo>0);p=tactical(p,{type:'loot',unitId:actor.id,targetId:body.id,item:'ammo'});
- assert.equal(p.battle.units.find(u=>u.id===body.id).ammo,0);
- assert.equal(p.battle.units.find(u=>u.id===actor.id).ammo+p.battle.units.find(u=>u.id===actor.id).loaded,cartridges+ammo);
- assert.ok(actBattle(p.battle,{type:'loot',unitId:actor.id,targetId:body.id,item:'ammo'}).lastError);
+ const beforeLoot=p.battle.units.find(u=>u.id===body.id),[ammoKey,ammoStack]=Object.entries(beforeLoot.inventory).find(([,item])=>item.kind==='ammunition'&&item.count>0),ammo=ammoStack.count,cartridges=totalReserveAmmunition(actor)+actor.loaded;
+ const ammunitionItem=`inventory:${ammoKey}`;
+ assert.ok(ammo>0);p=tactical(p,{type:'loot',unitId:actor.id,targetId:body.id,item:ammunitionItem});
+ assert.equal(p.battle.units.find(u=>u.id===body.id).inventory[ammoKey],undefined);
+ assert.equal(totalReserveAmmunition(p.battle.units.find(u=>u.id===actor.id))+p.battle.units.find(u=>u.id===actor.id).loaded,cartridges+ammo);
+ assert.ok(actBattle(p.battle,{type:'loot',unitId:actor.id,targetId:body.id,item:ammunitionItem}).lastError);
  p=tactical(p,{type:'loot',unitId:actor.id,targetId:body.id,item:'weapon'});
  const recovered=Object.values(p.battle.units.find(u=>u.id===actor.id).inventory).find(item=>item.weapon===body.weapon);assert.ok(recovered);assert.deepEqual(weaponSpecification(recovered),weaponSpecification(body));
  assert.equal(p.battle.units.find(u=>u.id===body.id).weaponDropped,true);
  const cash=p.campaign.resources.treasury,issued=p.campaign.pendingBattle.issuedCartridges;
- let s=saved({campaign:leave(p)}).campaign;assert.equal(s.resources.treasury,cash);assert.equal(s.operativeState[actor.id].ammo+s.operativeState[actor.id].carriedLoaded,cartridges+ammo);
+ let s=saved({campaign:leave(p)}).campaign;assert.equal(s.resources.treasury,cash);assert.equal(totalReserveAmmunition(s.operativeState[actor.id])+s.operativeState[actor.id].carriedLoaded,cartridges+ammo);
  assert.equal(s.operativeState[id].deathMinute,death);assert.equal(s.operativeState[id].alive,false);
- p=visit(s);assert.equal(p.battle.units.find(u=>u.id===body.id).ammo,0);assert.equal(p.battle.units.find(u=>u.id===body.id).weaponDropped,true);assert.ok(actBattle(p.battle,{type:'loot',unitId:actor.id,targetId:body.id,item:'weapon'}).lastError);assert.equal(p.battle.units.filter(u=>u.hp===0).length,bodies.length);
- s=saved({campaign:leave(p)}).campaign;assert.equal(s.resources.treasury,cash);assert.equal(s.operativeState[actor.id].ammo+s.operativeState[actor.id].carriedLoaded,cartridges+ammo);
+ const returnedBodies=s.sectorStates.buenos_aires.units.filter(u=>u.hp===0).map(u=>u.id).sort();
+ assert.ok(bodies.every(u=>returnedBodies.includes(u.id)),'all original deaths remain; a bleeding critical casualty can also die during recovery');
+ p=visit(s);assert.equal(p.battle.units.find(u=>u.id===body.id).ammo,0);assert.equal(p.battle.units.find(u=>u.id===body.id).weaponDropped,true);assert.ok(actBattle(p.battle,{type:'loot',unitId:actor.id,targetId:body.id,item:'weapon'}).lastError);assert.deepEqual(p.battle.units.filter(u=>u.hp===0).map(u=>u.id).sort(),returnedBodies);
+ s=saved({campaign:leave(p)}).campaign;assert.equal(s.resources.treasury,cash);assert.equal(totalReserveAmmunition(s.operativeState[actor.id])+s.operativeState[actor.id].carriedLoaded,cartridges+ammo);
  assert.deepEqual(s.contentPresence.events,before.contentPresence.events);
 });
 
@@ -54,7 +61,7 @@ test('fresh occupation keeps older enemy bodies separate from reused garrison id
 test('a retained casualty cannot rejoin a living deployment or disguise an unrelated or revived report',()=>{
  const {campaign:before,id}=paidCasualty(),p=visit(before),reports=p.battle.units.filter(u=>u.side==='player'),action={type:'leaveSector',battleId:p.campaign.pendingBattle.id,sectorState:p.battle,survivors:reports};
  assert.ok(reports.some(u=>Number(u.id)===id));
- assert.ok(dispatchCampaign(p.campaign,{...action,survivors:reports.map(u=>Number(u.id)===id?{...u,hp:1}:u)}).lastError);
+ const summary=dispatchCampaign(p.campaign,{...action,survivors:reports.map(u=>Number(u.id)===id?{...u,hp:1}:u)});assert.equal(summary.lastError,null);assert.equal(summary.operativeState[id].hp,0);assert.equal(summary.operativeState[id].deathMinute,before.operativeState[id].deathMinute);
  assert.ok(dispatchCampaign(p.campaign,{...action,survivors:[...reports,{id:'9999',hp:0}]}).lastError);
  const changed=structuredClone(p.battle);changed.units.find(u=>Number(u.id)===id).hp=1;
  assert.ok(dispatchCampaign(p.campaign,{...action,sectorState:changed}).lastError);
@@ -73,4 +80,22 @@ test('a real second battle settles and saves with the original player and enemy 
  const restored=saved(pair);s=order(restored.campaign,{type:'battleResult',battleId:request.id,outcome:restored.battle.status,sectorState:restored.battle,survivors:restored.battle.units.filter(u=>u.side==='player')});
  s=saved({campaign:s}).campaign;assert.equal(s.operativeState[id].deathMinute,oldDeath);assert.equal(s.operativeState[id].alive,false);
  assert.ok(s.sectorStates.buenos_aires.units.filter(u=>u.hp===0).length>=oldBodies.length);
+});
+
+// Prepared retained casualty: the case isolates revisiting a cleared sector.
+test('a saved critical enemy can remain or die during a visit without authorizing revival or extra enemies',()=>{
+ const {campaign:before}=paidCasualty();
+ const wounded=before.sectorStates.buenos_aires.units.find(u=>u.side==='enemy'&&u.hp===0);
+ assert.ok(wounded);Object.assign(wounded,{hp:8,bleeding:0,bandaged:wounded.maxHp-8,energy:0});refreshMilitaryCondition(wounded);
+ const p=visit(saved({campaign:before}).campaign),retained=p.battle.units.find(u=>u.id===wounded.id);
+ assert.equal(retained.hp,8);assert.equal(retained.unconscious,true);
+ const action={type:'leaveSector',battleId:p.campaign.pendingBattle.id,sectorState:p.battle,survivors:p.battle.units.filter(u=>u.side==='player')};
+ const returned=order(p.campaign,action);assert.equal(returned.sectorStates.buenos_aires.units.find(u=>u.id===wounded.id).hp,8);
+ assert.equal(visit(saved({campaign:returned}).campaign).battle.units.find(u=>u.id===wounded.id).hp,8);
+ for(const patch of [{hp:9},{hp:80,unconscious:false},{id:'extra-enemy'}]){
+  const forged=structuredClone(action),unit=forged.sectorState.units.find(u=>u.id===wounded.id);Object.assign(unit,patch);unit.bandaged=unit.maxHp-unit.hp;refreshMilitaryCondition(unit);
+  const rejected=dispatchCampaign(p.campaign,forged);assert.match(rejected.lastError,/enemigos del despliegue/);assert.deepEqual(rejected.sectorStates,p.campaign.sectorStates);
+ }
+ const died=structuredClone(action),dead=died.sectorState.units.find(u=>u.id===wounded.id);Object.assign(dead,{hp:0,bandaged:0});refreshMilitaryCondition(dead);
+ assert.equal(order(p.campaign,died).sectorStates.buenos_aires.units.find(u=>u.id===wounded.id).hp,0);
 });

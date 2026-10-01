@@ -1,0 +1,113 @@
+{
+  "schema": 1,
+  "status": "PARTIAL_LOCAL_VERIFICATION",
+  "checkedAt": "2026-10-01T03:14:35.261779+00:00",
+  "revision": "4938fd79835776a202273b09cf303fc7251ad392",
+  "runtimeSource": "44896436c754aa7c2dae54e7b1e62ff689db9fa3aaa51fc01151f61a7f43c989",
+  "testSourcesSha256": "c6ba8b3b7eabd3393ae8191ba7e9508281b720741e7c8f4dc6aac9edaa710937",
+  "testSourceFiles": 692,
+  "unpublished": true,
+  "pushed": false,
+  "merged": false,
+  "previewReplaced": false,
+  "changes": [
+    "The rifle recovery helper accepts an empty primary hand. It still transfers one real rifle and retains its identity, loading and condition.",
+    "The fresh northern route now defends Cordoba, recovers the actual field squad, recruits provincial officers through dialogue, buys a light gun and supplies, then stages the Salta assault.",
+    "The mission continuation stabilizes the critical survivor before sending a living envoy to Yatasto. Existing deaths remain permanent; it does not require an uninvolved doctor to die."
+  ],
+  "regression": {
+    "status": "PASS",
+    "tests": 34,
+    "pass": 34,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "duration_ms": 16269.788959,
+    "files": [
+      "tests/opening-equipment.test.mjs",
+      "tests/opening-driver.test.mjs",
+      "tests/local-contracts.test.mjs",
+      "tests/morale.test.mjs"
+    ],
+    "log": {
+      "path": "/tmp/granaderos-local-unarmed-regression.tap",
+      "sha256": "5f4f2e056ae09532ee77c5eac9461e94070b737f47e20e4aa33352e279340063"
+    },
+    "beforeFix": {
+      "path": "/tmp/granaderos-local-unarmed-repro.tap",
+      "sha256": "9080a11910b0a0d4c400cf450e1b77e56519f57fdb8678e762dc91c978a8a0c7"
+    }
+  },
+  "savedCheckpoint": {
+    "status": "PASS_CHECKPOINT_ONLY",
+    "salta": {
+      "sector": "salta",
+      "preparationSeconds": 0,
+      "startSeconds": 1404177,
+      "elapsedSeconds": 159,
+      "status": "victory",
+      "turns": 12,
+      "actions": 310
+    },
+    "result": {
+      "path": "/tmp/granaderos-northern-officer-salta-result.json",
+      "sha256": "0ea457cab6b8ef18d95f4b71b33eee55cea516fc2363c0cf667314dc9f1ecfd4"
+    },
+    "checks": [
+      "Tactical victory",
+      "Full deterministic battle replay",
+      "Paired campaign and battle save round-trip",
+      "Settlement and permanent casualties",
+      "Nonterminal campaign",
+      "Final campaign save round-trip"
+    ],
+    "yatasto": {
+      "hour": 394,
+      "phase": 3,
+      "treasury": 2129,
+      "missionComplete": true,
+      "createdOfficerAlive": false,
+      "doctor10Alive": true,
+      "result": {
+        "path": "/tmp/granaderos-northern-officer-yatasto-result.json",
+        "sha256": "1a5cbfbf103c5fd1a9871fe047f10dcf2bee54fa763f32ee27359403d8784cab"
+      }
+    }
+  },
+  "freshNorthernRun": {
+    "status": "PASS",
+    "file": "tests/fresh-northern-route.test.mjs",
+    "tests": 1,
+    "pass": 1,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "duration_ms": 253825.596833,
+    "testSourcesSha256": "c6ba8b3b7eabd3393ae8191ba7e9508281b720741e7c8f4dc6aac9edaa710937",
+    "sourcesUnchangedDuringRun": true,
+    "log": {
+      "path": "/tmp/granaderos-local-fresh-officer-northern.tap",
+      "sha256": "efa15d2bb148c7fd2c8f3576aef08f2c03203f5e55d4048ad309f1fadcddb00f"
+    }
+  },
+  "rejectedDiagnostics": [
+    "The longer 667-hour recovery requires recapturing Tucuman and still loses the following Salta assault. It is not the integrated route.",
+    "Roof-only Santa Fe approaches remain incomplete or lose. They are not integrated.",
+    "Imported rifle purchases cannot complete while the coastal blockade remains active. No stock, money or blockade state was fabricated."
+  ],
+  "remaining": [
+    "The full fresh northern test now passes. Four other previously failing full test files remain open; there is no new complete-suite count.",
+    "The dependent Cuyo, ending and historical-loss files have not yet passed with this route. Later stale assumptions may fail.",
+    "The separate long recovery campaign still fails at Santa Fe.",
+    "No final full-suite run or browser acceptance.",
+    "Service-end equipment remains queued until PR139 merges."
+  ],
+  "documentationAudit": {
+    "status": "PASS",
+    "log": {
+      "path": "/tmp/granaderos-local-officer-docs.log",
+      "sha256": "c6c076f01cd351740dc7bcbe7b68361867248f3de019638f05f41f10bc855b66"
+    }
+  },
+  "diffCheck": "PASS"
+}

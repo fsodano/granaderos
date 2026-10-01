@@ -1,0 +1,105 @@
+{
+  "revision": "4938fd79835776a202273b09cf303fc7251ad392",
+  "run": "https://github.com/fsodano/granaderos/actions/runs/36776925051",
+  "shards": [
+    {
+      "shard": 1,
+      "job": "110097059944",
+      "logSha256": "5d4b6280c5370caa20be395015319fafe22e9e6140a368e373206d9f67f8c091",
+      "tests": 1253,
+      "pass": 1245,
+      "fail": 3,
+      "cancelled": 0,
+      "skipped": 5
+    },
+    {
+      "shard": 2,
+      "job": "110097059901",
+      "logSha256": "ae9376a5614e417c01ce4205e002e073a8a23ad58b6537d63bea461345cb3214",
+      "tests": 947,
+      "pass": 945,
+      "fail": 2,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    {
+      "shard": 3,
+      "job": "110097059951",
+      "logSha256": "5c43dcb3b5c18a66117a2f6d9d082a82bfdde5dbc8bfe24c1d00c65ea382226e",
+      "tests": 1042,
+      "pass": 1040,
+      "fail": 2,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    {
+      "shard": 4,
+      "job": "110097060100",
+      "logSha256": "6a04a9de0754ba91db71f38474096bfd569390b91b35f555442606d666eef11f",
+      "tests": 926,
+      "pass": 926,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0
+    }
+  ],
+  "totals": {
+    "tests": 4168,
+    "pass": 4156,
+    "fail": 7,
+    "cancelled": 0,
+    "skipped": 5
+  },
+  "web": "passed",
+  "failures": [
+    {
+      "shard": 1,
+      "number": 623,
+      "name": "a fresh campaign prepares Cuyo with real battles, living roles, purchases, funding and physical late recruitment",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 363796.439986\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/fresh-cuyo-route.test.mjs:2:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    salta\n    + actual - expected\n    \n    + 'defeat'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'defeat'\n  operator: 'strictEqual'\n  stack: |-\n    freshNorthernRoute (file:///home/runner/work/granaderos/granaderos/tests/fresh-northern-fixture.mjs:47:95)\n    freshCuyoRoute (file:///home/runner/work/granaderos/granaderos/tests/fresh-cuyo-fixture.mjs:31:15)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/fresh-cuyo-route.test.mjs:3:27)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.start (node:internal/test_runner/test:944:17)\n    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)\n  ..."
+    },
+    {
+      "shard": 1,
+      "number": 2,
+      "name": "survivors recover with finite supplies and paid replacements capture C\u00f3rdoba",
+      "nested": true,
+      "diagnostic": "---\n      duration_ms: 12338.834598\n      type: 'test'\n      location: '/home/runner/work/granaderos/granaderos/tests/opening-playthrough.test.mjs:37:10'\n      failureType: 'testCodeFailure'\n      error: |-\n        {\"sector\":\"cordoba\",\"preparationSeconds\":3,\"startSeconds\":302689,\"elapsedSeconds\":87,\"status\":\"defeat\",\"turns\":9,\"actions\":91,\"units\":[{\"id\":\"110\",\"side\":\"player\",\"hp\":0,\"ammo\":7,\"loaded\":0,\"routed\":true},{\"id\":\"107\",\"side\":\"player\",\"hp\":1,\"ammo\":7,\"loaded\":1,\"routed\":false},{\"id\":\"120\",\"side\":\"player\",\"hp\":0,\"ammo\":6,\"loaded\":0,\"routed\":false},{\"id\":\"134\",\"side\":\"player\",\"hp\":8,\"ammo\":6,\"loaded\":1,\"routed\":false},{\"id\":\"136\",\"side\":\"player\",\"hp\":0,\"ammo\":8,\"loaded\":0,\"routed\":false},{\"id\":\"117\",\"side\":\"player\",\"hp\":6,\"ammo\":7,\"loaded\":0,\"routed\":false},{\"id\":\"enemy-0\",\"side\":\"enemy\",\"hp\":0,\"ammo\":12,\"loaded\":0,\"routed\":true},{\"id\":\"enemy-1\",\"side\":\"enemy\",\"hp\":19,\"ammo\":12,\"loaded\":0,\"routed\":true},{\"id\":\"enemy-2\",\"side\":\"enemy\",\"hp\":0,\"ammo\":11,\"loaded\":1,\"routed\":false},{\"id\":\"enemy-3\",\"side\":\"enemy\",\"hp\":100,\"ammo\":11,\"loaded\":1,\"routed\":false},{\"id\":\"enemy-4\",\"side\":\"enemy\",\"hp\":100,\"ammo\":12,\"loaded\":0,\"routed\":false},{\"id\":\"enemy-5\",\"side\":\"enemy\",\"hp\":0,\"ammo\":12,\"loaded\":1,\"routed\":false},{\"id\":\"enemy-6\",\"side\":\"enemy\",\"hp\":100,\"ammo\":12,\"loaded\":1,\"routed\":false},{\"id\":\"enemy-7\",\"side\":\"enemy\",\"hp\":100,\"ammo\":9,\"loaded\":1,\"routed\":false},{\"id\":\"enemy-8\",\"side\":\"enemy\",\"hp\":0,\"ammo\":10,\"loaded\":0,\"routed\":true},{\"id\":\"enemy-9\",\"side\":\"enemy\",\"hp\":0,\"ammo\":12,\"loaded\":1,\"routed\":false},{\"id\":\"enemy-10\",\"side\":\"enemy\",\"hp\":39,\"ammo\":12,\"loaded\":0,\"routed\":true}]}\n        + actual - expected\n        \n        + 'defeat'\n        - 'victory'\n        \n      code: 'ERR_ASSERTION'\n      name: 'AssertionError'\n      expected: 'victory'\n      actual: 'defeat'\n      operator: 'strictEqual'\n      stack: |-\n        fightNorthernSector (file:///home/runner/work/granaderos/granaderos/tests/northern-route.mjs:226:9)\n        TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/opening-playthrough.test.mjs:59:16)\n        Test.runInAsyncScope (node:async_hooks:214:14)\n        Test.run (node:internal/test_runner/test:1047:25)\n        Test.start (node:internal/test_runner/test:944:17)\n        TestContext.test (node:internal/test_runner/test:373:20)\n        TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/opening-playthrough.test.mjs:37:10)\n        async Test.run (node:internal/test_runner/test:1054:7)\n        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)\n      ..."
+    },
+    {
+      "shard": 1,
+      "number": 887,
+      "name": "established southern campaign reaches Yatasto through combat, defeat, rescue and paid recovery",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 35840.430229\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/opening-playthrough.test.mjs:17:1'\n  failureType: 'subtestsFailed'\n  error: '1 subtest failed'\n  code: 'ERR_TEST_FAILURE'\n  ..."
+    },
+    {
+      "shard": 2,
+      "number": 441,
+      "name": "a Retiro-only campaign retains paid recovery and real losses through coordinated San Nicol\u00e1s, San Lorenzo, C\u00f3rdoba, Tucum\u00e1n and Salta victories through Yatasto, Mendoza funding and both mountain passes, Ensenada, naval recruitment, Santa Fe, Tucum\u00e1n and Salta recapture, Jujuy and Humahuaca",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 204184.342487\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/fresh-campaign-recovery.test.mjs:20:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    {\"sector\":\"cordoba\",\"preparationSeconds\":0,\"startSeconds\":1061201,\"elapsedSeconds\":132,\"status\":\"retreat\",\"turns\":21,\"actions\":203,\"units\":[{\"id\":\"139\",\"side\":\"player\",\"hp\":0,\"ammo\":10,\"loaded\":1,\"routed\":false},{\"id\":\"1000\",\"side\":\"player\",\"hp\":28,\"ammo\":5,\"loaded\":0,\"routed\":true},{\"id\":\"10\",\"side\":\"player\",\"hp\":0,\"ammo\":7,\"loaded\":0,\"routed\":true},{\"id\":\"4\",\"side\":\"player\",\"hp\":0,\"ammo\":11,\"loaded\":1,\"routed\":false},{\"id\":\"11\",\"side\":\"player\",\"hp\":0,\"ammo\":7,\"loaded\":0,\"routed\":true},{\"id\":\"101\",\"side\":\"player\",\"hp\":0,\"ammo\":8,\"loaded\":0,\"routed\":false},{\"id\":\"102\",\"side\":\"player\",\"hp\":0,\"ammo\":6,\"loaded\":0,\"routed\":false},{\"id\":\"108\",\"side\":\"player\",\"hp\":0,\"ammo\":8,\"loaded\":1,\"routed\":false},{\"id\":\"enemy-group-3-0\",\"side\":\"enemy\",\"hp\":100,\"ammo\":4,\"loaded\":1,\"routed\":false},{\"id\":\"enemy-group-3-1\",\"side\":\"enemy\",\"hp\":0,\"ammo\":2,\"loaded\":0,\"routed\":true},{\"id\":\"enemy-group-3-2\",\"side\":\"enemy\",\"hp\":0,\"ammo\":5,\"loaded\":1,\"routed\":false},{\"id\":\"enemy-group-3-3\",\"side\":\"enemy\",\"hp\":0,\"ammo\":5,\"loaded\":1,\"routed\":false},{\"id\":\"enemy-group-3-4\",\"side\":\"enemy\",\"hp\":0,\"ammo\":2,\"loaded\":0,\"routed\":true},{\"id\":\"enemy-group-3-5\",\"side\":\"enemy\",\"hp\":0,\"ammo\":5,\"loaded\":1,\"routed\":false},{\"id\":\"enemy-group-3-6\",\"side\":\"enemy\",\"hp\":100,\"ammo\":5,\"loaded\":1,\"routed\":false},{\"id\":\"enemy-group-3-7\",\"side\":\"enemy\",\"hp\":0,\"ammo\":5,\"loaded\":1,\"routed\":false},{\"id\":\"enemy-group-3-8\",\"side\":\"enemy\",\"hp\":36,\"ammo\":5,\"loaded\":0,\"routed\":true},{\"id\":\"enemy-group-3-9\",\"side\":\"enemy\",\"hp\":100,\"ammo\":4,\"loaded\":1,\"routed\":false},{\"id\":\"enemy-group-3-10\",\"side\":\"enemy\",\"hp\":100,\"ammo\":5,\"loaded\":1,\"routed\":false},{\"id\":\"enemy-group-3-11\",\"side\":\"enemy\",\"hp\":100,\"ammo\":3,\"loaded\":1,\"routed\":false},{\"id\":\"enemy-group-3-12\",\"side\":\"enemy\",\"hp\":100,\"ammo\":2,\"loaded\":1,\"routed\":false},{\"id\":\"110\",\"side\":\"player\",\"hp\":0,\"ammo\":6,\"loaded\":0,\"routed\":true},{\"id\":\"127\",\"side\":\"player\",\"hp\":0,\"ammo\":0,\"loaded\":0,\"routed\":false},{\"id\":\"117\",\"side\":\"player\",\"hp\":0,\"ammo\":9,\"loaded\":0,\"routed\":true},{\"id\":\"121\",\"side\":\"player\",\"hp\":0,\"ammo\":0,\"loaded\":0,\"routed\":true},{\"id\":\"129\",\"side\":\"player\",\"hp\":0,\"ammo\":0,\"loaded\":0,\"routed\":false},{\"id\":\"144\",\"side\":\"player\",\"hp\":0,\"ammo\":0,\"loaded\":0,\"routed\":true},{\"id\":\"124\",\"side\":\"player\",\"hp\":0,\"ammo\":0,\"loaded\":0,\"routed\":false},{\"id\":\"136\",\"side\":\"player\",\"hp\":0,\"ammo\":6,\"loaded\":1,\"routed\":false},{\"id\":\"134\",\"side\":\"player\",\"hp\":0,\"ammo\":3,\"loaded\":0,\"routed\":false},{\"id\":\"enemy-group-1-0\",\"side\":\"enemy\",\"hp\":0,\"ammo\":5,\"loaded\":0,\"routed\":false},{\"id\":\"enemy-group-1-1\",\"side\":\"enemy\",\"hp\":0,\"ammo\":5,\"loaded\":0,\"routed\":true},{\"id\":\"enemy-group-1-2\",\"side\":\"enemy\",\"hp\":0,\"ammo\":8,\"loaded\":0,\"routed\":true},{\"id\":\"enemy-group-1-3\",\"side\":\"enemy\",\"hp\":0,\"ammo\":0,\"loaded\":0,\"routed\":false},{\"id\":\"enemy-group-1-4\",\"side\":\"enemy\",\"hp\":0,\"ammo\":0,\"loaded\":0,\"routed\":true},{\"id\":\"enemy-group-1-6\",\"side\":\"enemy\",\"hp\":0,\"ammo\":0,\"loaded\":0,\"routed\":false},{\"id\":\"enemy-group-1-7\",\"side\":\"enemy\",\"hp\":0,\"ammo\":0,\"loaded\":0,\"routed\":false},{\"id\":\"enemy-group-1-8\",\"side\":\"enemy\",\"hp\":0,\"ammo\":0,\"loaded\":1,\"routed\":false},{\"id\":\"enemy-group-1-10\",\"side\":\"enemy\",\"hp\":0,\"ammo\":0,\"loaded\":0,\"routed\":true},{\"id\":\"116\",\"side\":\"player\",\"hp\":0,\"ammo\":0,\"loaded\":0,\"routed\":false},{\"id\":\"122\",\"side\":\"player\",\"hp\":0,\"ammo\":9,\"loaded\":0,\"routed\":false},{\"id\":\"107\",\"side\":\"player\",\"hp\":0,\"ammo\":8,\"loaded\":0,\"routed\":false},{\"id\":\"126\",\"side\":\"player\",\"hp\":0,\"ammo\":9,\"loaded\":1,\"routed\":false},{\"id\":\"enemy-0\",\"side\":\"enemy\",\"hp\":0,\"ammo\":12,\"loaded\":1,\"routed\":false},{\"id\":\"enemy-1\",\"side\":\"enemy\",\"hp\":0,\"ammo\":0,\"loaded\":1,\"routed\":false},{\"id\":\"enemy-2\",\"side\":\"enemy\",\"hp\":0,\"ammo\":0,\"loaded\":0,\"routed\":true},{\"id\":\"enemy-3\",\"side\":\"enemy\",\"hp\":0,\"ammo\":2,\"loaded\":0,\"routed\":true},{\"id\":\"enemy-4\",\"side\":\"enemy\",\"hp\":0,\"ammo\":12,\"loaded\":1,\"routed\":false},{\"id\":\"enemy-5\",\"side\":\"enemy\",\"hp\":0,\"ammo\":12,\"loaded\":1,\"routed\":false},{\"id\":\"enemy-6\",\"side\":\"enemy\",\"hp\":0,\"ammo\":0,\"loaded\":0,\"routed\":false},{\"id\":\"enemy-7\",\"side\":\"enemy\",\"hp\":0,\"ammo\":11,\"loaded\":0,\"routed\":true},{\"id\":\"enemy-8\",\"side\":\"enemy\",\"hp\":0,\"ammo\":0,\"loaded\":0,\"routed\":false},{\"id\":\"125\",\"side\":\"player\",\"hp\":0,\"ammo\":9,\"loaded\":0,\"routed\":true},{\"id\":\"103\",\"side\":\"player\",\"hp\":0,\"ammo\":8,\"loaded\":0,\"routed\":true}]}\n    + actual - expected\n    \n    + 'retreat'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'retreat'\n  operator: 'strictEqual'\n  stack: |-\n    fightNorthernSector (file:///home/runner/work/granaderos/granaderos/tests/northern-route.mjs:226:9)\n    order (file:///home/runner/work/granaderos/granaderos/tests/fresh-northern-recovery.mjs:120:6)\n    reuniteFreshNorthernSquad (file:///home/runner/work/granaderos/granaderos/tests/fresh-northern-recovery.mjs:202:2)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/fresh-campaign-recovery.test.mjs:123:17)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.start (node:internal/test_runner/test:944:17)\n    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)\n  ..."
+    },
+    {
+      "shard": 2,
+      "number": 442,
+      "name": "a fresh stock campaign wins all localities with actual combat and continues after saved victory and service expiry",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 273405.334217\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/fresh-ending-route.test.mjs:5:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    salta\n    + actual - expected\n    \n    + 'defeat'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'defeat'\n  operator: 'strictEqual'\n  stack: |-\n    freshNorthernRoute (file:///home/runner/work/granaderos/granaderos/tests/fresh-northern-fixture.mjs:47:95)\n    freshCuyoRoute (file:///home/runner/work/granaderos/granaderos/tests/fresh-cuyo-fixture.mjs:31:15)\n    freshHistoricalEnding (file:///home/runner/work/granaderos/granaderos/tests/fresh-ending-fixture.mjs:55:80)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/fresh-ending-route.test.mjs:6:29)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.start (node:internal/test_runner/test:944:17)\n    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)\n  ..."
+    },
+    {
+      "shard": 3,
+      "number": 420,
+      "name": "a fresh Retiro force reaches Yatasto through paid replacements and actual northern victories with saved replay",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 305283.485978\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/fresh-northern-route.test.mjs:5:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    salta\n    + actual - expected\n    \n    + 'defeat'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'defeat'\n  operator: 'strictEqual'\n  stack: |-\n    freshNorthernRoute (file:///home/runner/work/granaderos/granaderos/tests/fresh-northern-fixture.mjs:47:95)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/fresh-northern-route.test.mjs:6:25)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.start (node:internal/test_runner/test:944:17)\n    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)\n  ..."
+    },
+    {
+      "shard": 3,
+      "number": 450,
+      "name": "a fresh Mendoza victory cannot conceal the subsequent death of its required engineer",
+      "nested": false,
+      "diagnostic": "---\n  duration_ms: 303804.497523\n  type: 'test'\n  location: '/home/runner/work/granaderos/granaderos/tests/historical-loss.test.mjs:7:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    salta\n    + actual - expected\n    \n    + 'defeat'\n    - 'victory'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'victory'\n  actual: 'defeat'\n  operator: 'strictEqual'\n  stack: |-\n    freshNorthernRoute (file:///home/runner/work/granaderos/granaderos/tests/fresh-northern-fixture.mjs:47:95)\n    freshMendozaLoss (file:///home/runner/work/granaderos/granaderos/tests/historical-loss-fixture.mjs:11:8)\n    TestContext.<anonymous> (file:///home/runner/work/granaderos/granaderos/tests/historical-loss.test.mjs:8:39)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.start (node:internal/test_runner/test:944:17)\n    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)\n  ..."
+    }
+  ]
+}

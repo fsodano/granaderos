@@ -1,0 +1,86 @@
+{
+  "date": "2026-09-30",
+  "baseRevision": "4938fd79835776a202273b09cf303fc7251ad392",
+  "runtimeSource": "afe5dda42ea47b9c8297477ea47c967dcce64c5148245ccc637392b34bb7bd6b",
+  "currentTestSourcesSha256": "ef1bee936d08bac078306f2ab87def2eb7e467ee4037d53c8fc14e7c278a0989",
+  "testSourceHashMethod": "Sorted tests/**/*.mjs relative paths, NUL, bytes, NUL.",
+  "scope": "Unpushed local Cuyo route repairs. No release, complete campaign, browser or performance acceptance.",
+  "focused": {
+    "log": "/tmp/granaderos-local-cuyo-focused.tap",
+    "logSha256": "6d4c81848e7753bb000834d4b52601ca172a7145ba89f89d5da22298f186fff5",
+    "tests": 21,
+    "pass": 21,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "duration_ms": 9804.522334,
+    "files": [
+      "tests/campaign-battery-driver.test.mjs",
+      "tests/artillery.test.mjs",
+      "tests/foundry-project.test.mjs",
+      "tests/contract-casualty-presence.test.mjs"
+    ]
+  },
+  "freshCampaignAfterMendozaRepair": {
+    "log": "/tmp/granaderos-local-fresh-recovery-after-mendoza.tap",
+    "logSha256": "e2328f93c16eab3a583a0104882246f2e05213e303f679727fdcca55cd3bf4aa",
+    "tests": 1,
+    "pass": 0,
+    "fail": 1,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "duration_ms": 227676.326417,
+    "testSourcesSha256": "454a939773119eee75ac90a7119f6de5745a3cd3c8ca30e9526a26d6e095c49e",
+    "sourceFrozenDuringRun": true,
+    "verifiedProgress": "A new campaign now passes actual Mendoza victory, recruitment of the living founder and artillery instructor, foundry setup, guarded army preparation and funding. All earlier stages and save/casualty assertions run from a fresh start.",
+    "failure": "Mountain preparation tries to pay the 200-peso parliament cost with insufficient funds.",
+    "laterChanges": "Subsequent mountain preparation sells actual surplus before the pact and fortification, buys compatible ammunition instead of retired production jobs, and performs real reloads. A saved-prefix diagnostic reaches the assault but loses. This is not a fresh-campaign pass."
+  },
+  "mendozaSavedPrefixReplay": {
+    "log": "/tmp/granaderos-integrated-mendoza-probe.log",
+    "logSha256": "2e230bd4f6d51ee9e68055fe6fa915abe08b20c862b02b7fa2b27a09e18fd34c",
+    "outcome": "victory",
+    "turns": 11,
+    "actions": 281,
+    "fieldSize": 13,
+    "survivors": [
+      125,
+      144,
+      1,
+      0,
+      11
+    ],
+    "hour": 448,
+    "treasury": 400,
+    "deterministicReplay": true,
+    "saveRoundTrip": true,
+    "normalPaidPurchasesTravelAndOrdersOnly": true
+  },
+  "changes": [
+    "Use seven existing rear soldiers and all six veterans in three normal squads; pay 700 pesos for a bronze cannon after selling finite surplus, buy compatible rounds, finish real reloads, and wait for each queued approach.",
+    "Keep the infantry clear of the cannon crew during approach and hold the gun position at contact. Existing route-controller defaults remain unchanged.",
+    "Choose a living local envoy with the actual leadership requirement and two free recruitment places. Sell finite recovered weapons to pay the foundry and emancipation costs.",
+    "Renew only living non-captured soldiers during cannon procurement. Reserve actual cash for travel and militia training by selling remaining surplus."
+  ],
+  "diagnosticsNotIntegrated": {
+    "northernHospital": "Paid post transport returns eight soldiers to Cordoba in four actual hours and saves critical soldier 114 through first aid. Seven paid guards reach the reception site and recover finite guns. A real 16-person defense wins at hour 294, treasury 519, but only two hired soldiers survive. It does not prove Salta, the northern pact or Yatasto.",
+    "mountain": "An eight-person force with one cannon loses Uspallata. Ten arrivals are correctly rejected because the approach has only eight legal boundary cells. A two-cannon diagnostic wins but loses Barcala and the physician; its later recovery and campaign roles are unverified. Three cannons and an alternate legal reserve deployment lose. These tactical variants are not merged into the route."
+  },
+  "remaining": [
+    "Repair the long fresh route through the mountain passes and later campaign without free funds, restored casualties or synthetic victories.",
+    "Repair the separate fresh northern fixture and its Cuyo, ending and historical-loss dependents.",
+    "Run the final complete local suite, audits, types, private production build and applicable browser checks before one batch push. Then wait for required CI, merge and update the existing preview origin."
+  ],
+  "delivery": {
+    "pushed": false,
+    "merged": false,
+    "pr": 139,
+    "prState": "OPEN DRAFT",
+    "verifiedHead": "4938fd79835776a202273b09cf303fc7251ad392",
+    "userPreviewReplaced": false,
+    "browserChecked": false,
+    "serviceEndEquipmentReturn": "Queued after PR139 merges; not started."
+  }
+}

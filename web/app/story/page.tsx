@@ -1,10 +1,12 @@
 'use client';
+import BuildIdentity from '../BuildIdentity';
 import AlternativeLoads from './AlternativeLoads';
 import {storyReferences} from '../../../game/campaign-story.js';
 import DialogueEditor from './DialogueEditor';
 import QuestEditor from './QuestEditor';
 import CampaignRules from './CampaignRules';
 import { useEffect, useRef, useState } from 'react';
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import {
   ATTRIBUTE_FIELDS,
   CONTENT_SECTORS,
@@ -79,22 +81,22 @@ const labels: Record<string, string> = {
 };
 const clock = (minute: number) =>
   `Día ${Math.floor(minute / 1440) + 1} · ${String(Math.floor((minute % 1440) / 60)).padStart(2, '0')}:${String(minute % 60).padStart(2, '0')}`;
-function download(text: string, name: string) {
-  const url = URL.createObjectURL(
-    new Blob([text], { type: 'application/json' }),
-  );
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = name;
-  a.click();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
-}
 function nextId(prefix: string, items: any[]) {
   let n = 1;
   while (items.some((i) => i.id === `${prefix}-${n}`)||(prefix==='person'&&legacyOperativeId(`${prefix}-${n}`)!==undefined)) n++;
   return `${prefix}-${n}`;
 }
 export default function ContentEditor() {
+  const [exportFile, setExportFile] = useState<{ text: string; name: string } | null>(null);
+  const [exportStatus, setExportStatus] = useState('');
+  const [exportUrl, setExportUrl] = useState<string>();
+  useEffect(() => {
+    if (!exportFile) { setExportUrl(undefined); return; }
+    const url = URL.createObjectURL(new Blob([exportFile.text], { type: 'application/json' }));
+    setExportUrl(url);
+    return () => URL.revokeObjectURL(url);
+  }, [exportFile]);
+  function download(text: string, name: string) { setExportStatus(''); setExportFile({ text, name }); }
   const [draft, setDraft] = useState<any>(() => defaultContentPackage());
   const [past, setPast] = useState<any[]>([]);
   const [future, setFuture] = useState<any[]>([]);
@@ -376,7 +378,7 @@ export default function ContentEditor() {
       <header>
         <div>
           <a href="/">← Volver al juego</a> · <a href="/editor">Editar sectores</a>
-          <p className="eyebrow">Taller de campañas</p>
+          <p className="eyebrow">Taller de campañas</p><BuildIdentity/>
           <h1>El mundo y sus protagonistas</h1>
           <p>Editá el contenido. Probá sus reglas en una sesión separada.</p>
         </div>
@@ -1299,6 +1301,24 @@ export default function ContentEditor() {
           </ul>
         )}
       </footer>
+      <Dialog open={Boolean(exportFile)} onOpenChange={(open) => { if (!open) setExportFile(null); }}>
+        <DialogContent className="content-export-dialog">
+          <DialogTitle>Exportar {exportFile?.name}</DialogTitle>
+          <DialogDescription>Guardá el archivo o copiá el JSON para conservar una copia de tu contenido.</DialogDescription>
+          <div role="status" aria-live="polite">{exportStatus}</div>
+          <textarea aria-label="JSON del contenido" readOnly value={exportFile?.text ?? ''} />
+          <div className="content-export-actions">
+            <a href={exportUrl} download={exportFile?.name}>Descargar JSON</a>
+            <button onClick={async () => {
+              try {
+                await navigator.clipboard.writeText(exportFile?.text ?? '');
+                setExportStatus('JSON copiado.');
+              } catch { setExportStatus('Seleccioná el texto y copialo con el teclado.'); }
+            }}>Copiar JSON</button>
+            <button onClick={() => setExportFile(null)}>Cerrar exportación</button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </main>
   );
 }

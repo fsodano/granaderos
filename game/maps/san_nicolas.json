@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "san_nicolas",
-  "revision": 2,
+  "revision": 3,
   "width": 20,
   "height": 16,
   "metadata": {
@@ -207,16 +207,16 @@
     {
       "x": 8,
       "y": 1,
-      "type": "forest",
+      "type": "grass",
       "blocked": false,
-      "cover": 20
+      "cover": 0
     },
     {
       "x": 9,
       "y": 1,
-      "type": "forest",
+      "type": "grass",
       "blocked": false,
-      "cover": 20
+      "cover": 0
     },
     {
       "x": 10,
@@ -347,16 +347,16 @@
     {
       "x": 8,
       "y": 2,
-      "type": "forest",
+      "type": "grass",
       "blocked": false,
-      "cover": 20
+      "cover": 0
     },
     {
       "x": 9,
       "y": 2,
-      "type": "forest",
+      "type": "grass",
       "blocked": false,
-      "cover": 20
+      "cover": 0
     },
     {
       "x": 10,
@@ -487,16 +487,16 @@
     {
       "x": 8,
       "y": 3,
-      "type": "forest",
+      "type": "grass",
       "blocked": false,
-      "cover": 20
+      "cover": 0
     },
     {
       "x": 9,
       "y": 3,
-      "type": "forest",
+      "type": "grass",
       "blocked": false,
-      "cover": 20
+      "cover": 0
     },
     {
       "x": 10,
@@ -1747,16 +1747,16 @@
     {
       "x": 8,
       "y": 12,
-      "type": "forest",
+      "type": "grass",
       "blocked": false,
-      "cover": 20
+      "cover": 0
     },
     {
       "x": 9,
       "y": 12,
-      "type": "forest",
+      "type": "grass",
       "blocked": false,
-      "cover": 20
+      "cover": 0
     },
     {
       "x": 10,
@@ -1887,16 +1887,16 @@
     {
       "x": 8,
       "y": 13,
-      "type": "forest",
+      "type": "grass",
       "blocked": false,
-      "cover": 20
+      "cover": 0
     },
     {
       "x": 9,
       "y": 13,
-      "type": "forest",
+      "type": "grass",
       "blocked": false,
-      "cover": 20
+      "cover": 0
     },
     {
       "x": 10,
@@ -2027,16 +2027,16 @@
     {
       "x": 8,
       "y": 14,
-      "type": "forest",
+      "type": "grass",
       "blocked": false,
-      "cover": 20
+      "cover": 0
     },
     {
       "x": 9,
       "y": 14,
-      "type": "forest",
+      "type": "grass",
       "blocked": false,
-      "cover": 20
+      "cover": 0
     },
     {
       "x": 10,
@@ -2256,10 +2256,11 @@
       "name": "Casa del sector",
       "x": 5,
       "y": 10,
-      "width": 3,
-      "height": 3,
-      "roof": "tile",
+      "width": 6,
+      "height": 5,
+      "roof": "terrace",
       "material": "adobe",
+      "architecture": "house",
       "rooms": [
         {
           "id": "san_nicolas:building:interior",
@@ -2267,10 +2268,55 @@
             {
               "x": 6,
               "y": 11
+            },
+            {
+              "x": 7,
+              "y": 11
+            },
+            {
+              "x": 8,
+              "y": 11
+            },
+            {
+              "x": 9,
+              "y": 11
+            },
+            {
+              "x": 6,
+              "y": 12
+            },
+            {
+              "x": 7,
+              "y": 12
+            },
+            {
+              "x": 8,
+              "y": 12
+            },
+            {
+              "x": 9,
+              "y": 12
+            },
+            {
+              "x": 6,
+              "y": 13
+            },
+            {
+              "x": 7,
+              "y": 13
+            },
+            {
+              "x": 8,
+              "y": 13
+            },
+            {
+              "x": 9,
+              "y": 13
             }
           ]
         }
       ],
+      "kind": "house",
       "walls": [
         {
           "x": 5,
@@ -2306,6 +2352,39 @@
           "roomId": null
         },
         {
+          "x": 8,
+          "y": 10,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "san_nicolas:building",
+          "roomId": null
+        },
+        {
+          "x": 9,
+          "y": 10,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "san_nicolas:building",
+          "roomId": null
+        },
+        {
+          "x": 10,
+          "y": 10,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "san_nicolas:building",
+          "roomId": null
+        },
+        {
           "x": 5,
           "y": 11,
           "type": "window",
@@ -2317,7 +2396,7 @@
           "roomId": null
         },
         {
-          "x": 7,
+          "x": 10,
           "y": 11,
           "type": "wall",
           "blocked": true,
@@ -2339,8 +2418,74 @@
           "roomId": null
         },
         {
-          "x": 6,
+          "x": 10,
           "y": 12,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "san_nicolas:building",
+          "roomId": null
+        },
+        {
+          "x": 5,
+          "y": 13,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "san_nicolas:building",
+          "roomId": null
+        },
+        {
+          "x": 10,
+          "y": 13,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "san_nicolas:building",
+          "roomId": null
+        },
+        {
+          "x": 5,
+          "y": 14,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "san_nicolas:building",
+          "roomId": null
+        },
+        {
+          "x": 6,
+          "y": 14,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "san_nicolas:building",
+          "roomId": null
+        },
+        {
+          "x": 7,
+          "y": 14,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "san_nicolas:building",
+          "roomId": null
+        },
+        {
+          "x": 8,
+          "y": 14,
           "type": "door",
           "blocked": true,
           "blocksSight": true,
@@ -2353,8 +2498,22 @@
           "locked": false
         },
         {
-          "x": 7,
-          "y": 12,
+          "x": 9,
+          "y": 14,
+          "type": "door",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 0,
+          "material": "adobe",
+          "buildingId": "san_nicolas:building",
+          "roomId": null,
+          "doorId": "san_nicolas:door-right",
+          "open": false,
+          "locked": false
+        },
+        {
+          "x": 10,
+          "y": 14,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2363,37 +2522,102 @@
           "buildingId": "san_nicolas:building",
           "roomId": null
         }
-      ],
-      "wallFinish": "stone",
-      "roofFinish": "aged",
-      "doorStyle": "barn",
-      "windowStyle": "small",
-      "kind": "warehouse"
+      ]
     },
     {
       "id": "san_nicolas:house-0",
-      "name": "Casa 2 del poblado",
-      "x": 5,
-      "y": 2,
-      "width": 3,
-      "height": 3,
+      "name": "Pulpería del poblado",
+      "x": 4,
+      "y": 0,
+      "width": 7,
+      "height": 5,
       "roof": "tile",
       "material": "adobe",
+      "architecture": "pulperia",
       "rooms": [
         {
           "id": "san_nicolas:house-0:interior",
           "cells": [
             {
+              "x": 5,
+              "y": 1
+            },
+            {
               "x": 6,
+              "y": 1
+            },
+            {
+              "x": 7,
+              "y": 1
+            },
+            {
+              "x": 8,
+              "y": 1
+            },
+            {
+              "x": 9,
+              "y": 1
+            },
+            {
+              "x": 5,
+              "y": 2
+            },
+            {
+              "x": 6,
+              "y": 2
+            },
+            {
+              "x": 7,
+              "y": 2
+            },
+            {
+              "x": 8,
+              "y": 2
+            },
+            {
+              "x": 9,
+              "y": 2
+            },
+            {
+              "x": 5,
+              "y": 3
+            },
+            {
+              "x": 6,
+              "y": 3
+            },
+            {
+              "x": 7,
+              "y": 3
+            },
+            {
+              "x": 8,
+              "y": 3
+            },
+            {
+              "x": 9,
               "y": 3
             }
           ]
         }
       ],
+      "purpose": "bar",
+      "kind": "pulperia",
       "walls": [
         {
+          "x": 4,
+          "y": 0,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "san_nicolas:house-0",
+          "roomId": null
+        },
+        {
           "x": 5,
-          "y": 2,
+          "y": 0,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2404,7 +2628,7 @@
         },
         {
           "x": 6,
-          "y": 2,
+          "y": 0,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2415,7 +2639,7 @@
         },
         {
           "x": 7,
-          "y": 2,
+          "y": 0,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2425,8 +2649,41 @@
           "roomId": null
         },
         {
-          "x": 5,
-          "y": 3,
+          "x": 8,
+          "y": 0,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "san_nicolas:house-0",
+          "roomId": null
+        },
+        {
+          "x": 9,
+          "y": 0,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "san_nicolas:house-0",
+          "roomId": null
+        },
+        {
+          "x": 10,
+          "y": 0,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "san_nicolas:house-0",
+          "roomId": null
+        },
+        {
+          "x": 4,
+          "y": 1,
           "type": "window",
           "blocked": true,
           "blocksSight": false,
@@ -2436,8 +2693,63 @@
           "roomId": null
         },
         {
-          "x": 7,
+          "x": 10,
+          "y": 1,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "san_nicolas:house-0",
+          "roomId": null
+        },
+        {
+          "x": 4,
+          "y": 2,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "san_nicolas:house-0",
+          "roomId": null
+        },
+        {
+          "x": 10,
+          "y": 2,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "san_nicolas:house-0",
+          "roomId": null
+        },
+        {
+          "x": 4,
           "y": 3,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "san_nicolas:house-0",
+          "roomId": null
+        },
+        {
+          "x": 10,
+          "y": 3,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "san_nicolas:house-0",
+          "roomId": null
+        },
+        {
+          "x": 4,
+          "y": 4,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2460,6 +2772,17 @@
         {
           "x": 6,
           "y": 4,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "san_nicolas:house-0",
+          "roomId": null
+        },
+        {
+          "x": 7,
+          "y": 4,
           "type": "door",
           "blocked": true,
           "blocksSight": true,
@@ -2467,12 +2790,34 @@
           "material": "adobe",
           "buildingId": "san_nicolas:house-0",
           "roomId": null,
-          "doorId": "san_nicolas:house-0:door:6:4",
+          "doorId": "san_nicolas:house-0:door:7:4",
           "open": false,
           "locked": false
         },
         {
-          "x": 7,
+          "x": 8,
+          "y": 4,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "san_nicolas:house-0",
+          "roomId": null
+        },
+        {
+          "x": 9,
+          "y": 4,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "san_nicolas:house-0",
+          "roomId": null
+        },
+        {
+          "x": 10,
           "y": 4,
           "type": "wall",
           "blocked": true,
@@ -2482,15 +2827,126 @@
           "buildingId": "san_nicolas:house-0",
           "roomId": null
         }
-      ],
-      "wallFinish": "ochre",
-      "roofFinish": "clay",
-      "doorStyle": "double",
-      "windowStyle": "lattice",
-      "kind": "pulperia"
+      ]
     }
   ],
-  "props": [],
+  "props": [
+    {
+      "id": "san_nicolas:building:table:6:11",
+      "type": "table",
+      "x": 6,
+      "y": 11,
+      "buildingId": "san_nicolas:building",
+      "roomId": "san_nicolas:building:interior",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "san_nicolas:building:bench:9:11",
+      "type": "bench",
+      "x": 9,
+      "y": 11,
+      "buildingId": "san_nicolas:building",
+      "roomId": "san_nicolas:building:interior",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "san_nicolas:building:bed:6:13",
+      "type": "bed",
+      "x": 6,
+      "y": 12,
+      "buildingId": "san_nicolas:building",
+      "roomId": "san_nicolas:building:interior",
+      "footprint": {
+        "width": 1,
+        "height": 2
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "san_nicolas:building:chest:9:13",
+      "type": "chest",
+      "x": 9,
+      "y": 12,
+      "buildingId": "san_nicolas:building",
+      "roomId": "san_nicolas:building:interior",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "san_nicolas:house-0:table:5:1",
+      "type": "table",
+      "x": 5,
+      "y": 1,
+      "buildingId": "san_nicolas:house-0",
+      "roomId": "san_nicolas:house-0:interior",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "san_nicolas:house-0:bench:9:1",
+      "type": "bench",
+      "x": 9,
+      "y": 1,
+      "buildingId": "san_nicolas:house-0",
+      "roomId": "san_nicolas:house-0:interior",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "san_nicolas:house-0:bed:5:3",
+      "type": "bed",
+      "x": 5,
+      "y": 2,
+      "buildingId": "san_nicolas:house-0",
+      "roomId": "san_nicolas:house-0:interior",
+      "footprint": {
+        "width": 1,
+        "height": 2
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "san_nicolas:house-0:chest:9:3",
+      "type": "chest",
+      "x": 9,
+      "y": 3,
+      "buildingId": "san_nicolas:house-0",
+      "roomId": "san_nicolas:house-0:interior",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "san_nicolas:house-0:cart",
+      "type": "cart",
+      "x": 4,
+      "y": 6,
+      "footprint": {
+        "width": 2,
+        "height": 1
+      },
+      "blocksMovement": true
+    }
+  ],
   "items": [],
   "spawns": [],
   "exits": [],
@@ -2498,11 +2954,37 @@
     {
       "id": "san_nicolas:lantern",
       "type": "lantern",
-      "x": 6,
-      "y": 13,
+      "x": 8,
+      "y": 15,
       "radius": 3,
       "intensity": 0.8
     }
   ],
-  "decor": []
+  "decor": [],
+  "boundaryRoads": [
+    {
+      "x": 11,
+      "y": 0
+    },
+    {
+      "x": 12,
+      "y": 0
+    },
+    {
+      "x": 0,
+      "y": 6
+    },
+    {
+      "x": 0,
+      "y": 7
+    },
+    {
+      "x": 11,
+      "y": 15
+    },
+    {
+      "x": 12,
+      "y": 15
+    }
+  ]
 }

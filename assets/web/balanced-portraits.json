@@ -1,0 +1,1588 @@
+[
+  {
+    "id": "avatar-woman-soldier-light-1",
+    "file": "/art/avatar-woman-soldier-light-1.webp",
+    "source": "assets/source/balanced-avatar-woman-soldier-light-1-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 18244,
+    "sha256": "f80daac96ca35b44502f5bdfd19173069d28a7e5acedb06d35f58eec606119c1",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-soldier-light-2",
+    "file": "/art/avatar-woman-soldier-light-2.webp",
+    "source": "assets/source/balanced-avatar-woman-soldier-light-2-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 14858,
+    "sha256": "4ed67111c07a607106b41c3e30330bdf60b1380935c1a6e2957fc166cf991742",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-soldier-light-3",
+    "file": "/art/avatar-woman-soldier-light-3.webp",
+    "source": "assets/source/balanced-avatar-woman-soldier-light-3-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 16302,
+    "sha256": "c2c2b9a0ccd4fbae501a28894dcfbe2f746e745d54534456bd5dbe89094f0a93",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-soldier-light-4",
+    "file": "/art/avatar-woman-soldier-light-4.webp",
+    "source": "assets/source/balanced-avatar-woman-soldier-light-4-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 19112,
+    "sha256": "1c42e2d18a1b7b76818683d2522285ef972fbe367b9c3dd0e29c6d5c30921bb8",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-soldier-light-5",
+    "file": "/art/avatar-woman-soldier-light-5.webp",
+    "source": "assets/source/balanced-avatar-woman-soldier-light-5-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 15666,
+    "sha256": "74c0d6d5aa3cdaea717a61b9e53997999cdf843dfdfba398b063ab4b71e63fe9",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-soldier-brown-1",
+    "file": "/art/avatar-woman-soldier-brown-1.webp",
+    "source": "assets/source/balanced-avatar-woman-soldier-brown-1-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 16620,
+    "sha256": "1d5fdcd0dcb132d4fffa5160699d2afb72d16afbbe6cc64075956e448adf28a1",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-soldier-brown-2",
+    "file": "/art/avatar-woman-soldier-brown-2.webp",
+    "source": "assets/source/balanced-avatar-woman-soldier-brown-2-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 15662,
+    "sha256": "be01d15596cb776442c02924c92edf046ca4bc77d5830d29874b30969600ea3f",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-soldier-brown-3",
+    "file": "/art/avatar-woman-soldier-brown-3.webp",
+    "source": "assets/source/balanced-avatar-woman-soldier-brown-3-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 17542,
+    "sha256": "92f573ca7b035f5ae3ed6eaa7d552641b9b19e5181f4b4469740c6d06afd395a",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-soldier-brown-4",
+    "file": "/art/avatar-woman-soldier-brown-4.webp",
+    "source": "assets/source/balanced-avatar-woman-soldier-brown-4-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 20298,
+    "sha256": "66eb2c04643dec5a04593f2da1841198377aba0134017ca3d5c0026731fffeef",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-soldier-brown-5",
+    "file": "/art/avatar-woman-soldier-brown-5.webp",
+    "source": "assets/source/balanced-avatar-woman-soldier-brown-5-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 16764,
+    "sha256": "1fb37bedca431814ac33944c1a6a4330eaa6ceddb4733f84b12d5d9c3afa8d72",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-soldier-dark-2",
+    "file": "/art/avatar-woman-soldier-dark-2.webp",
+    "source": "assets/source/balanced-avatar-woman-soldier-dark-2-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 17284,
+    "sha256": "2a214ae71ac5da264be34441f7ac82d3943ddce1c99318cf8e47248ba5142c07",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-soldier-dark-3",
+    "file": "/art/avatar-woman-soldier-dark-3.webp",
+    "source": "assets/source/balanced-avatar-woman-soldier-dark-3-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 13582,
+    "sha256": "00015e060ee9d46b1718fe1d81b0540febf47fce2c97fe6a1e68d7785af109b4",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-soldier-dark-4",
+    "file": "/art/avatar-woman-soldier-dark-4.webp",
+    "source": "assets/source/balanced-avatar-woman-soldier-dark-4-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 21688,
+    "sha256": "ebe190de41f37b8563c0b2b1870960e58a787a4d1ca934920897cff8113220f3",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-soldier-dark-5",
+    "file": "/art/avatar-woman-soldier-dark-5.webp",
+    "source": "assets/source/balanced-avatar-woman-soldier-dark-5-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 13658,
+    "sha256": "d695b2289228086056f0d72568199e0ae9bccb4aebe7461dbdf94d975f88c138",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-officer-light-1",
+    "file": "/art/avatar-woman-officer-light-1.webp",
+    "source": "assets/source/balanced-avatar-woman-officer-light-1-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 19808,
+    "sha256": "5a231fd324f8b957c096b661cd33f872c7bef6c632f6624ccb4c27b2cab4602a",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-officer-light-2",
+    "file": "/art/avatar-woman-officer-light-2.webp",
+    "source": "assets/source/balanced-avatar-woman-officer-light-2-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 17476,
+    "sha256": "edea79418b4322b3d9a18316cffbd320d7d2a7abb050b54f1983cfd52a4af87c",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-officer-light-3",
+    "file": "/art/avatar-woman-officer-light-3.webp",
+    "source": "assets/source/balanced-avatar-woman-officer-light-3-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 16774,
+    "sha256": "9fa65a4bfbe94d557d306402dc06942adca4e0212806c390efce86f17305c00a",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-officer-light-4",
+    "file": "/art/avatar-woman-officer-light-4.webp",
+    "source": "assets/source/balanced-avatar-woman-officer-light-4-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 24414,
+    "sha256": "1d7210863ac17ef72903207e45f0723dc6b235d688ee8955b20742be30f51796",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-officer-light-5",
+    "file": "/art/avatar-woman-officer-light-5.webp",
+    "source": "assets/source/balanced-avatar-woman-officer-light-5-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 20356,
+    "sha256": "0e2864563be0da54b7e332f9d58eab68d2e9d304c3feb8236f90630055e251a8",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-officer-brown-1",
+    "file": "/art/avatar-woman-officer-brown-1.webp",
+    "source": "assets/source/balanced-avatar-woman-officer-brown-1-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 22092,
+    "sha256": "3f9bd0b9faf730863475d38da51c3038aebb662a3fcf34e20993832ebe18858b",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-officer-brown-2",
+    "file": "/art/avatar-woman-officer-brown-2.webp",
+    "source": "assets/source/balanced-avatar-woman-officer-brown-2-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 19110,
+    "sha256": "069120ee2b30dde3ccfe672aa8c2f5bf454a0f61793ed74600a68663a976bb0f",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-officer-brown-3",
+    "file": "/art/avatar-woman-officer-brown-3.webp",
+    "source": "assets/source/balanced-avatar-woman-officer-brown-3-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 17032,
+    "sha256": "899edb7a2792a48c6ccf3d58e45734b157a00786647def6a406d2e92ae026071",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-officer-brown-4",
+    "file": "/art/avatar-woman-officer-brown-4.webp",
+    "source": "assets/source/balanced-avatar-woman-officer-brown-4-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 21574,
+    "sha256": "850611a5737495239e758635bb217b367ce2545d1dee3b381fe16f91f885dcdc",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-officer-brown-5",
+    "file": "/art/avatar-woman-officer-brown-5.webp",
+    "source": "assets/source/balanced-avatar-woman-officer-brown-5-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 16838,
+    "sha256": "ec193295db53c67d46d99bce5074a896c4e8b183857b8a1b49101558b7d08841",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-officer-dark-2",
+    "file": "/art/avatar-woman-officer-dark-2.webp",
+    "source": "assets/source/balanced-avatar-woman-officer-dark-2-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 16958,
+    "sha256": "10395b74c7cc09921b4f62076d08a3f52309a6ae517916bc600f1a4346da9d25",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-officer-dark-3",
+    "file": "/art/avatar-woman-officer-dark-3.webp",
+    "source": "assets/source/balanced-avatar-woman-officer-dark-3-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 20612,
+    "sha256": "cfc31955a89da586598782753ec68f83005db1386083b952007ffcf871b5b02f",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-officer-dark-4",
+    "file": "/art/avatar-woman-officer-dark-4.webp",
+    "source": "assets/source/balanced-avatar-woman-officer-dark-4-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 22078,
+    "sha256": "f27ca3850e31a99cff04fa01f7b62e1463687fca4d85b0259f84c5cec07c5b58",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-officer-dark-5",
+    "file": "/art/avatar-woman-officer-dark-5.webp",
+    "source": "assets/source/balanced-avatar-woman-officer-dark-5-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 18800,
+    "sha256": "a0a1a4fa1d8d528af6143b80a650e19a5f53c3c2b4eb52c5939266cd5fea0c05",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-scout-light-1",
+    "file": "/art/avatar-woman-scout-light-1.webp",
+    "source": "assets/source/balanced-avatar-woman-scout-light-1-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 20984,
+    "sha256": "885d83473669a033f34a52cd031aa990799e89845c524a132985474ccef78b9f",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-scout-light-2",
+    "file": "/art/avatar-woman-scout-light-2.webp",
+    "source": "assets/source/balanced-avatar-woman-scout-light-2-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 20382,
+    "sha256": "123b6e5dbb0a6405b59633257534d00b219c9748a32dd9b98c05fce8e028e4a4",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-scout-light-3",
+    "file": "/art/avatar-woman-scout-light-3.webp",
+    "source": "assets/source/balanced-avatar-woman-scout-light-3-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 22732,
+    "sha256": "3b75128190d4db11d9885e4b5b65aabd4c43d6080bcde1f43a627a9948fcb5db",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-scout-light-4",
+    "file": "/art/avatar-woman-scout-light-4.webp",
+    "source": "assets/source/balanced-avatar-woman-scout-light-4-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 24338,
+    "sha256": "b69d97393a05e426461f696a13e4f07d4a893eb6af76e1f7e049abe9c8ba0f70",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-scout-light-5",
+    "file": "/art/avatar-woman-scout-light-5.webp",
+    "source": "assets/source/balanced-avatar-woman-scout-light-5-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 20946,
+    "sha256": "b61964eafd3ea9db5ef2317c7e29ef0fb7d9655ca98cb5c5cb1de210619b628a",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-scout-brown-5",
+    "file": "/art/avatar-woman-scout-brown-5.webp",
+    "source": "assets/source/balanced-avatar-woman-scout-brown-5-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 22890,
+    "sha256": "e843a46eb895f87f5f5594a5c40781a5ce15711b39b4fd0c82195fc25898b39c",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-scout-dark-2",
+    "file": "/art/avatar-woman-scout-dark-2.webp",
+    "source": "assets/source/balanced-avatar-woman-scout-dark-2-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 19806,
+    "sha256": "11f5f29e63661c2c8096bd01ff34467d299d83fae676135d5f4ccd7a17dc5b3f",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-scout-dark-3",
+    "file": "/art/avatar-woman-scout-dark-3.webp",
+    "source": "assets/source/balanced-avatar-woman-scout-dark-3-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 17234,
+    "sha256": "79441b996ecfb11e53049bf3aceb83807aa79571dc046c6628fada1e8472893a",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-scout-dark-4",
+    "file": "/art/avatar-woman-scout-dark-4.webp",
+    "source": "assets/source/balanced-avatar-woman-scout-dark-4-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 22772,
+    "sha256": "9c246e8034834f07c57d571a4948cafae5734756b644dbd5b21c32fea7d225d0",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-scout-dark-5",
+    "file": "/art/avatar-woman-scout-dark-5.webp",
+    "source": "assets/source/balanced-avatar-woman-scout-dark-5-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 22862,
+    "sha256": "f18be2b07ed281251a27cc5b23e11f4a3daec5ae26acf4a5e67663258d9167bf",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-gaucho-light-1",
+    "file": "/art/avatar-woman-gaucho-light-1.webp",
+    "source": "assets/source/balanced-avatar-woman-gaucho-light-1-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 26000,
+    "sha256": "8633d415d93ea196f5395cbb88b9736e6305d8e3db0a27e0e5ac9ef794f0ede2",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-gaucho-light-2",
+    "file": "/art/avatar-woman-gaucho-light-2.webp",
+    "source": "assets/source/balanced-avatar-woman-gaucho-light-2-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 26282,
+    "sha256": "43b02a881e0f3177e77ca63463d3fa189700ddb86eaae468b7fecad61fa0b2dd",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-gaucho-light-3",
+    "file": "/art/avatar-woman-gaucho-light-3.webp",
+    "source": "assets/source/balanced-avatar-woman-gaucho-light-3-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 24816,
+    "sha256": "bd570ea0f8b2312cdc534f5790aacabdac3f9f883a1ff683c9145365dd04d01f",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-gaucho-light-4",
+    "file": "/art/avatar-woman-gaucho-light-4.webp",
+    "source": "assets/source/balanced-avatar-woman-gaucho-light-4-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 33786,
+    "sha256": "b5ad9820e75a228e6798d8f91c72d9601471af0c74f4afd5c960d39886703f8b",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-gaucho-light-5",
+    "file": "/art/avatar-woman-gaucho-light-5.webp",
+    "source": "assets/source/balanced-avatar-woman-gaucho-light-5-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 21808,
+    "sha256": "e3082b88ab457722516dcfec6a7689d1858553fcaa27d3d5ace4ae094a73c868",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-gaucho-brown-2",
+    "file": "/art/avatar-woman-gaucho-brown-2.webp",
+    "source": "assets/source/balanced-avatar-woman-gaucho-brown-2-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 27194,
+    "sha256": "ac4d9aabeff6dd1f150af3bce4c8565292f480b7c2ed7042068cbde77ac6278b",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-gaucho-brown-3",
+    "file": "/art/avatar-woman-gaucho-brown-3.webp",
+    "source": "assets/source/balanced-avatar-woman-gaucho-brown-3-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 24932,
+    "sha256": "639b63df5801429aa39c260f2ac7631a63cb17f79015ec50ac167a8f8c48d702",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-gaucho-brown-4",
+    "file": "/art/avatar-woman-gaucho-brown-4.webp",
+    "source": "assets/source/balanced-avatar-woman-gaucho-brown-4-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 28794,
+    "sha256": "f3d7ef71cb6096c4606a4e1b661ccca5961d802efc90b3884febf52d7417ca3b",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-gaucho-brown-5",
+    "file": "/art/avatar-woman-gaucho-brown-5.webp",
+    "source": "assets/source/balanced-avatar-woman-gaucho-brown-5-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 28572,
+    "sha256": "44ae6778e5909d91e9a9ab279c8fcbaf3ad4a6aebd13083ea430985ea551c5cf",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-gaucho-dark-1",
+    "file": "/art/avatar-woman-gaucho-dark-1.webp",
+    "source": "assets/source/balanced-avatar-woman-gaucho-dark-1-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 27604,
+    "sha256": "9142fb48e91fc859dba58510d7f962f493c2f2f93291107af0caacbda7582605",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-gaucho-dark-2",
+    "file": "/art/avatar-woman-gaucho-dark-2.webp",
+    "source": "assets/source/balanced-avatar-woman-gaucho-dark-2-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 23976,
+    "sha256": "f3ebf9944d9ab9a49746c1be6f0286fe388c524919ccbd06f808cc10d8fd3be6",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-gaucho-dark-3",
+    "file": "/art/avatar-woman-gaucho-dark-3.webp",
+    "source": "assets/source/balanced-avatar-woman-gaucho-dark-3-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 23256,
+    "sha256": "146ad2c83e838b3ec735fbff5fc8984d160a16c3e8d3631068b814f54b4c4cf6",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-gaucho-dark-4",
+    "file": "/art/avatar-woman-gaucho-dark-4.webp",
+    "source": "assets/source/balanced-avatar-woman-gaucho-dark-4-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 25932,
+    "sha256": "d2e542948b3aee6b505ed514fca6bd78b19a82a6957864c67eb154a179144e7a",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-gaucho-dark-5",
+    "file": "/art/avatar-woman-gaucho-dark-5.webp",
+    "source": "assets/source/balanced-avatar-woman-gaucho-dark-5-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 25220,
+    "sha256": "1d0a615197ed759771caa7a090b22b78f2ea73baa4facad304f1f437b9cd82b0",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-artisan-light-1",
+    "file": "/art/avatar-woman-artisan-light-1.webp",
+    "source": "assets/source/balanced-avatar-woman-artisan-light-1-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 21324,
+    "sha256": "666ed9e135cae299f174386621e409fb5499670852e9f1c3af2027aad77de272",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-artisan-light-2",
+    "file": "/art/avatar-woman-artisan-light-2.webp",
+    "source": "assets/source/balanced-avatar-woman-artisan-light-2-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 21054,
+    "sha256": "3b8190a7f9d5df6fc1a8dd8baf4783e5bbdf68f87e0927ee2db6059f266a053e",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-artisan-light-3",
+    "file": "/art/avatar-woman-artisan-light-3.webp",
+    "source": "assets/source/balanced-avatar-woman-artisan-light-3-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 23644,
+    "sha256": "2022f05d4ef46a78810ab2ed351e6308a8333daa1e7db6653fb21a8e7771f3f1",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-artisan-light-4",
+    "file": "/art/avatar-woman-artisan-light-4.webp",
+    "source": "assets/source/balanced-avatar-woman-artisan-light-4-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 24684,
+    "sha256": "86473dd920cbcf0860981f89d47ee948c7542593acdc23b706f9b3188e60c001",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-artisan-light-5",
+    "file": "/art/avatar-woman-artisan-light-5.webp",
+    "source": "assets/source/balanced-avatar-woman-artisan-light-5-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 22754,
+    "sha256": "31683ec4c1dcb9ec279186e10c307025ad757fe027cf4c065c99b27fcf32cdd5",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-artisan-brown-2",
+    "file": "/art/avatar-woman-artisan-brown-2.webp",
+    "source": "assets/source/balanced-avatar-woman-artisan-brown-2-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 21668,
+    "sha256": "1c9aa51beb3321a3996feeccfe3f5afa4fa34149242f96ae82a9e362d9964dc7",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-artisan-brown-3",
+    "file": "/art/avatar-woman-artisan-brown-3.webp",
+    "source": "assets/source/balanced-avatar-woman-artisan-brown-3-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 19378,
+    "sha256": "4ac969e48177777de5c1cb8dc52cec39e6d0e2a21c014fe8206eff8c3174ff4d",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-artisan-brown-4",
+    "file": "/art/avatar-woman-artisan-brown-4.webp",
+    "source": "assets/source/balanced-avatar-woman-artisan-brown-4-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 24140,
+    "sha256": "264164ea0bc4d2ba4c81a13f58b4741e61b028ddfb87752300a568f0baf14eb3",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-artisan-brown-5",
+    "file": "/art/avatar-woman-artisan-brown-5.webp",
+    "source": "assets/source/balanced-avatar-woman-artisan-brown-5-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 20856,
+    "sha256": "63d279c91f51a246affc8e093d33efd9b0710821efa583c1782e3b3ab5e6c8d1",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-artisan-dark-2",
+    "file": "/art/avatar-woman-artisan-dark-2.webp",
+    "source": "assets/source/balanced-avatar-woman-artisan-dark-2-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 21216,
+    "sha256": "269e0a239ed45ac24528b1a2733f779bbc56c8ccbc0dcc2d047d2aeb86292e93",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-artisan-dark-3",
+    "file": "/art/avatar-woman-artisan-dark-3.webp",
+    "source": "assets/source/balanced-avatar-woman-artisan-dark-3-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 19296,
+    "sha256": "e4ed3b5c1188f022aeea8d59f0d2601649c266f8d4f19305df9d761a318b17c1",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-artisan-dark-4",
+    "file": "/art/avatar-woman-artisan-dark-4.webp",
+    "source": "assets/source/balanced-avatar-woman-artisan-dark-4-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 25806,
+    "sha256": "a1548627920b2d3538e47c2d88f7b00a05cb8e03ac2fa95bd7cd7bccea4f0f14",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-artisan-dark-5",
+    "file": "/art/avatar-woman-artisan-dark-5.webp",
+    "source": "assets/source/balanced-avatar-woman-artisan-dark-5-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 23460,
+    "sha256": "6ee0465a89e341b114e7fb60830b13c78f40deab7e379bb31c1ff17a86281335",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-medic-light-2",
+    "file": "/art/avatar-woman-medic-light-2.webp",
+    "source": "assets/source/balanced-avatar-woman-medic-light-2-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 18288,
+    "sha256": "4c374913f8939fa3c9d8a0b78aceb2f28b5c4457a421413899324523231758b0",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-medic-light-3",
+    "file": "/art/avatar-woman-medic-light-3.webp",
+    "source": "assets/source/balanced-avatar-woman-medic-light-3-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 21086,
+    "sha256": "74a2daf917e1c3caecc03ede877117edfc64238094e3bca16e00e14f6017a077",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-medic-light-4",
+    "file": "/art/avatar-woman-medic-light-4.webp",
+    "source": "assets/source/balanced-avatar-woman-medic-light-4-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 24436,
+    "sha256": "af547e86f05bf3924311123e62d7094db4b3799336e3db93999e78e77e41e3da",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-medic-light-5",
+    "file": "/art/avatar-woman-medic-light-5.webp",
+    "source": "assets/source/balanced-avatar-woman-medic-light-5-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 21778,
+    "sha256": "d5b5647203372b00181010567eed35e07c367f35561d949db1f49f4c9d4bd41b",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-medic-brown-4",
+    "file": "/art/avatar-woman-medic-brown-4.webp",
+    "source": "assets/source/balanced-avatar-woman-medic-brown-4-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 22300,
+    "sha256": "bb10415e7a80b3dba4914639620c20e6b6f5843342ca56a12644a99eeeffe2ee",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-medic-brown-5",
+    "file": "/art/avatar-woman-medic-brown-5.webp",
+    "source": "assets/source/balanced-avatar-woman-medic-brown-5-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 21098,
+    "sha256": "947ed7ed7761bababee7a0eed674f50813304749beff21ae039fc198dc0ea1c1",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-medic-dark-4",
+    "file": "/art/avatar-woman-medic-dark-4.webp",
+    "source": "assets/source/balanced-avatar-woman-medic-dark-4-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 21514,
+    "sha256": "1c5e01e50932e1473826e09457dca63be21e15f0392daf7e743fec915568fe57",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-woman-medic-dark-5",
+    "file": "/art/avatar-woman-medic-dark-5.webp",
+    "source": "assets/source/balanced-avatar-woman-medic-dark-5-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 20408,
+    "sha256": "70b257b46082d07dddf65f0958c82950b19dce3a70a9d46dfaaa22e642f4a064",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-man-soldier-brown-4",
+    "file": "/art/avatar-man-soldier-brown-4.webp",
+    "source": "assets/source/balanced-avatar-man-soldier-brown-4-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 15340,
+    "sha256": "ade10168bf343170d63941195d288871f0930bfe139df768a3ef2ef3d88ba904",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-man-soldier-brown-5",
+    "file": "/art/avatar-man-soldier-brown-5.webp",
+    "source": "assets/source/balanced-avatar-man-soldier-brown-5-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 17118,
+    "sha256": "65c78a80189a0c8eda829f3b0901342c323a4f94ef01c1f91427e3f1a3bde044",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-man-soldier-dark-5",
+    "file": "/art/avatar-man-soldier-dark-5.webp",
+    "source": "assets/source/balanced-avatar-man-soldier-dark-5-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 15042,
+    "sha256": "87e46a2efa1f0a5c03e2b5fcd06fda3bb798f361bb45261e1cb7248afbc95643",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-man-officer-brown-3",
+    "file": "/art/avatar-man-officer-brown-3.webp",
+    "source": "assets/source/balanced-avatar-man-officer-brown-3-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 18618,
+    "sha256": "6e8f569e2e1427562c3b83bab4367aaac2d16bd1b09f113f1cf0396eb9ca8054",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-man-officer-brown-4",
+    "file": "/art/avatar-man-officer-brown-4.webp",
+    "source": "assets/source/balanced-avatar-man-officer-brown-4-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 20324,
+    "sha256": "38bda948112f8829fe1e1a7e9e15320c4a3bc94ef471388af8e55a6538b7cbde",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-man-officer-brown-5",
+    "file": "/art/avatar-man-officer-brown-5.webp",
+    "source": "assets/source/balanced-avatar-man-officer-brown-5-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 17530,
+    "sha256": "a1a70c003a720bbab8e3c7b5cc45109453cd810ddd5c1da8f587d7c805d6a753",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-man-officer-dark-2",
+    "file": "/art/avatar-man-officer-dark-2.webp",
+    "source": "assets/source/balanced-avatar-man-officer-dark-2-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 18402,
+    "sha256": "2628923fe69feab4381d09ab5c54cd32072effa801e7e40be9445eaf2418f9d8",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-man-officer-dark-3",
+    "file": "/art/avatar-man-officer-dark-3.webp",
+    "source": "assets/source/balanced-avatar-man-officer-dark-3-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 17746,
+    "sha256": "04ddd59533685da5a57beaf989fac59a335a669f00494618a86b5cc4522f96bb",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-man-officer-dark-4",
+    "file": "/art/avatar-man-officer-dark-4.webp",
+    "source": "assets/source/balanced-avatar-man-officer-dark-4-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 20798,
+    "sha256": "665cc3431b27dc7a56b0d06cbddda043d01611bd124a01813e89504d0cbf92b0",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-man-officer-dark-5",
+    "file": "/art/avatar-man-officer-dark-5.webp",
+    "source": "assets/source/balanced-avatar-man-officer-dark-5-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 18118,
+    "sha256": "ec0b7e95ace73271604ded580d0370db421371796af246f64f44cdfc4c3e5c1f",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-man-scout-light-2",
+    "file": "/art/avatar-man-scout-light-2.webp",
+    "source": "assets/source/balanced-avatar-man-scout-light-2-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 21342,
+    "sha256": "812f1a6468dde921db712f453640f47cb03a52d4ebe896be352b6e01cdc22f81",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-man-scout-light-3",
+    "file": "/art/avatar-man-scout-light-3.webp",
+    "source": "assets/source/balanced-avatar-man-scout-light-3-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 20522,
+    "sha256": "fc35f8ee54390d48f35aa50a264a6168345856165cc1555a4242a088d9d1e96b",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-man-scout-light-4",
+    "file": "/art/avatar-man-scout-light-4.webp",
+    "source": "assets/source/balanced-avatar-man-scout-light-4-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 25718,
+    "sha256": "d87bfb20c056d32bdd4b666d261b9925ba584f4d6359fc5988a14a14c6ea66d8",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-man-scout-light-5",
+    "file": "/art/avatar-man-scout-light-5.webp",
+    "source": "assets/source/balanced-avatar-man-scout-light-5-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 20636,
+    "sha256": "747e7f0a5f78d260ef58b48572df91e1dbac4bbefd07794363e14981f8bb750a",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-man-scout-brown-3",
+    "file": "/art/avatar-man-scout-brown-3.webp",
+    "source": "assets/source/balanced-avatar-man-scout-brown-3-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 20992,
+    "sha256": "05c04441d1fb23d064b57c3926b26b083d69148090e9c1682bb3a9814fd0a402",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-man-scout-brown-4",
+    "file": "/art/avatar-man-scout-brown-4.webp",
+    "source": "assets/source/balanced-avatar-man-scout-brown-4-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 24426,
+    "sha256": "1765c86b3ec299c70b286dd60eb5f13aba3a637428bf8b428d4e219f53877ae8",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-man-scout-brown-5",
+    "file": "/art/avatar-man-scout-brown-5.webp",
+    "source": "assets/source/balanced-avatar-man-scout-brown-5-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 20776,
+    "sha256": "6f60f34bbbda324187b05a38b45054ac1ecbab6b2f70c28a734cac270d200120",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-man-scout-dark-3",
+    "file": "/art/avatar-man-scout-dark-3.webp",
+    "source": "assets/source/balanced-avatar-man-scout-dark-3-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 18272,
+    "sha256": "faadcc090e2a1c643c7c63f5518e9e7d89ba816c32defc825477f3d96e70f5c8",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-man-scout-dark-4",
+    "file": "/art/avatar-man-scout-dark-4.webp",
+    "source": "assets/source/balanced-avatar-man-scout-dark-4-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 20508,
+    "sha256": "4de82be4225b9a5e138ede7c33ad69861c5f78f43fc07073968bdc3c73091603",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-man-scout-dark-5",
+    "file": "/art/avatar-man-scout-dark-5.webp",
+    "source": "assets/source/balanced-avatar-man-scout-dark-5-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 18130,
+    "sha256": "6176acd898f311b96ce58db38a77ad15bae08b46181dcc3561564e6c388f4a3d",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-man-gaucho-light-1",
+    "file": "/art/avatar-man-gaucho-light-1.webp",
+    "source": "assets/source/balanced-avatar-man-gaucho-light-1-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 24828,
+    "sha256": "afca6ebc9ab12c15fa0d4a2d92a666a78766efae4f701e68dc7fc2f882ad0299",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-man-gaucho-light-2",
+    "file": "/art/avatar-man-gaucho-light-2.webp",
+    "source": "assets/source/balanced-avatar-man-gaucho-light-2-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 25696,
+    "sha256": "cdebb428d2219425fcab0f496e78bbd95e2a31576e8d239796f8c8b568c6ee7e",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-man-gaucho-light-3",
+    "file": "/art/avatar-man-gaucho-light-3.webp",
+    "source": "assets/source/balanced-avatar-man-gaucho-light-3-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 25826,
+    "sha256": "018fb8b480d956a7ea2b80e58883d2f305a9ce5e4bf7f6a93bd3584f5f212585",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-man-gaucho-light-4",
+    "file": "/art/avatar-man-gaucho-light-4.webp",
+    "source": "assets/source/balanced-avatar-man-gaucho-light-4-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 30188,
+    "sha256": "6ea3c795c2ba8beefaad901be934ab5cbfdde649e11a1e6105fde0551709e6e9",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-man-gaucho-light-5",
+    "file": "/art/avatar-man-gaucho-light-5.webp",
+    "source": "assets/source/balanced-avatar-man-gaucho-light-5-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 30878,
+    "sha256": "6ccb81a179b7438be34350cbfd40ac59f15689e327fa8e7b5120c5b6e8d085ff",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-man-gaucho-dark-1",
+    "file": "/art/avatar-man-gaucho-dark-1.webp",
+    "source": "assets/source/balanced-avatar-man-gaucho-dark-1-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 26838,
+    "sha256": "d0f6e79b8bc0cc8cfc5fe0104533d5632f4f2a4ce3a775596a7fee7e0557b550",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-man-gaucho-dark-2",
+    "file": "/art/avatar-man-gaucho-dark-2.webp",
+    "source": "assets/source/balanced-avatar-man-gaucho-dark-2-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 26652,
+    "sha256": "7e5e58c304f4514ace3d9859a5573befb0922d07b9a660df00b52d99fba1a7da",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-man-gaucho-dark-3",
+    "file": "/art/avatar-man-gaucho-dark-3.webp",
+    "source": "assets/source/balanced-avatar-man-gaucho-dark-3-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 23894,
+    "sha256": "11b73cb146a962ab297ed7aca5b86914c53f5be57fc3384bd463f45f4e6ff265",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-man-gaucho-dark-4",
+    "file": "/art/avatar-man-gaucho-dark-4.webp",
+    "source": "assets/source/balanced-avatar-man-gaucho-dark-4-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 27070,
+    "sha256": "fc559aa83eb1bb714cad5772ed245eb8ef65fb7d70a2ee37e152c2b9244e5ebd",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-man-gaucho-dark-5",
+    "file": "/art/avatar-man-gaucho-dark-5.webp",
+    "source": "assets/source/balanced-avatar-man-gaucho-dark-5-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 27652,
+    "sha256": "39a4a69845575e8e898397b5c6ae7ce836cd6c1ec56ea9c734e41c494dc8919f",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-man-artisan-light-4",
+    "file": "/art/avatar-man-artisan-light-4.webp",
+    "source": "assets/source/balanced-avatar-man-artisan-light-4-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 24620,
+    "sha256": "0b6c32f52596f800d843de065e8288d7c1c36a0364bc0c5abfa0ef23df4c2293",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-man-artisan-light-5",
+    "file": "/art/avatar-man-artisan-light-5.webp",
+    "source": "assets/source/balanced-avatar-man-artisan-light-5-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 21344,
+    "sha256": "2d97c87c4f1da955a8668c7a664e19506f678a68422ce16ea0507bcc2afadc92",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-man-artisan-brown-4",
+    "file": "/art/avatar-man-artisan-brown-4.webp",
+    "source": "assets/source/balanced-avatar-man-artisan-brown-4-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 23362,
+    "sha256": "1baafd7baee6bc477bef58206a75dd9f28008115b0221fc8dd47b3ceda2495cb",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-man-artisan-brown-5",
+    "file": "/art/avatar-man-artisan-brown-5.webp",
+    "source": "assets/source/balanced-avatar-man-artisan-brown-5-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 22498,
+    "sha256": "c3d7191d165130ddf7c5de42a4d5bf0ff6314df5e3e5659b00ec9c188e536962",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-man-artisan-dark-3",
+    "file": "/art/avatar-man-artisan-dark-3.webp",
+    "source": "assets/source/balanced-avatar-man-artisan-dark-3-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 17274,
+    "sha256": "e2148d942458e63b09a48d9d231b21c3cd4bfc22c1c1fe9ab2244a44e2d039b0",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-man-artisan-dark-4",
+    "file": "/art/avatar-man-artisan-dark-4.webp",
+    "source": "assets/source/balanced-avatar-man-artisan-dark-4-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 25180,
+    "sha256": "c66a7ae4cbd677018c32a04a93f925ef67ece143adb1d8a177c27b6870a73bfc",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-man-artisan-dark-5",
+    "file": "/art/avatar-man-artisan-dark-5.webp",
+    "source": "assets/source/balanced-avatar-man-artisan-dark-5-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 18272,
+    "sha256": "6d9411427d1e0691dd19dd980fb908bcb4caf58fb4d5518dbfda9fdaca1bc8c3",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-man-medic-light-3",
+    "file": "/art/avatar-man-medic-light-3.webp",
+    "source": "assets/source/balanced-avatar-man-medic-light-3-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 18300,
+    "sha256": "06d5bacecc82c4eacff33dc1b811a63cd1d63921580c0e9ef180d7693bb4fed8",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-man-medic-light-4",
+    "file": "/art/avatar-man-medic-light-4.webp",
+    "source": "assets/source/balanced-avatar-man-medic-light-4-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 24558,
+    "sha256": "a5adf2c29c92786cef9dce07b7859f5a1dc963f2a402da261f04606b07bb4aeb",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-man-medic-light-5",
+    "file": "/art/avatar-man-medic-light-5.webp",
+    "source": "assets/source/balanced-avatar-man-medic-light-5-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 18192,
+    "sha256": "e8e740df3af4b6dfc58e329dae6e2a578486a5649dc50843541fb239f7a7ed3b",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-man-medic-brown-1",
+    "file": "/art/avatar-man-medic-brown-1.webp",
+    "source": "assets/source/balanced-avatar-man-medic-brown-1-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 20374,
+    "sha256": "99e84015c10ec287b29bfa4fa6cb18c6fea3d637de35a04650ed4bf4d0437194",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-man-medic-brown-2",
+    "file": "/art/avatar-man-medic-brown-2.webp",
+    "source": "assets/source/balanced-avatar-man-medic-brown-2-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 22490,
+    "sha256": "f635779fd4608e003546861c9d59bcebbaa8753b82ac09b34b37a5b19b920840",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-man-medic-brown-3",
+    "file": "/art/avatar-man-medic-brown-3.webp",
+    "source": "assets/source/balanced-avatar-man-medic-brown-3-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 18814,
+    "sha256": "6af49f2b353a2595a7401ce1d063d29f6585f59f5511e7b1cf9cd617d03a63aa",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-man-medic-brown-4",
+    "file": "/art/avatar-man-medic-brown-4.webp",
+    "source": "assets/source/balanced-avatar-man-medic-brown-4-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 24672,
+    "sha256": "89e9ae71cb8d070d3dfd9331b3c27fe3d5adc2b8822ffd9bc5a10633b6994e9a",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-man-medic-brown-5",
+    "file": "/art/avatar-man-medic-brown-5.webp",
+    "source": "assets/source/balanced-avatar-man-medic-brown-5-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 20986,
+    "sha256": "7bbc0e0758b15f9f96a45b6b2fbe4c1eedd97f30a29150b5ef6af232e9ce97ed",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-man-medic-dark-2",
+    "file": "/art/avatar-man-medic-dark-2.webp",
+    "source": "assets/source/balanced-avatar-man-medic-dark-2-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 21000,
+    "sha256": "75dbf85fbd306aed6b77e24433e6c59e0a2ea830129e594a0187a399a64bd4be",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-man-medic-dark-3",
+    "file": "/art/avatar-man-medic-dark-3.webp",
+    "source": "assets/source/balanced-avatar-man-medic-dark-3-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 20948,
+    "sha256": "0817732b91ecc505b4352db0a782b9eb25c925004ad6eee6c283b3420304c58b",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-man-medic-dark-4",
+    "file": "/art/avatar-man-medic-dark-4.webp",
+    "source": "assets/source/balanced-avatar-man-medic-dark-4-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 25276,
+    "sha256": "b4d5601145ab9eb86efd12cc300f6f76114eec7f2af44d903bb3dd3413a227a9",
+    "fictional": true,
+    "method": "built-in image_gen"
+  },
+  {
+    "id": "avatar-man-medic-dark-5",
+    "file": "/art/avatar-man-medic-dark-5.webp",
+    "source": "assets/source/balanced-avatar-man-medic-dark-5-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 20438,
+    "sha256": "ee80ad6212fd42c46b659e6d31363bbcf804ba6ee9b5ea7d0d6df6f0791e15fd",
+    "fictional": true,
+    "method": "built-in image_gen"
+  }
+]

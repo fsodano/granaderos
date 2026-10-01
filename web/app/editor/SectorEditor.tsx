@@ -1,4 +1,5 @@
 'use client';
+import BuildIdentity from '../BuildIdentity';
 import {
   buildingAppearance,
   WALL_FINISHES,
@@ -812,7 +813,7 @@ export default function SectorEditor() {
           battle={battle}
           onChange={setBattle}
           onFinish={() => setBattle(null)}
-          onRetreat={() => setBattle(null)}
+          onMap={() => setBattle(null)}
         />
       </main>
     );
@@ -822,7 +823,7 @@ export default function SectorEditor() {
         <a href="/" className="editor-brand">
           GRANADEROS <small>Constructor de sectores</small>
         </a>
-        <a href="/story">Editor de historia</a>
+        <a href="/story">Editor de historia</a><BuildIdentity/>
         <input
           aria-label="Nombre del sector"
           value={doc.metadata.title}

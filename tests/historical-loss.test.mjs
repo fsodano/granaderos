@@ -1,3 +1,4 @@
+import {scriptedWithdrawal} from './scripted-battle-report.mjs';
 import test from 'node:test';import assert from 'node:assert/strict';
 import {dispatchCampaign} from '../game/campaign.js';
 import {saved} from './local-contract-fixture.mjs';
@@ -33,7 +34,8 @@ test('a recruited historical commander killed by an enemy ends the campaign befo
  let s=order(secureArea(initialCampaign(8),'buenos_aires'),{type:'createOfficer',name:'Isabel',answers:{origin:'cabildo',doctrine:'line_marksman',crisis:'rally'}});
  s.phase=4;s.flags.foundry=true;s.recruited.push(57);s.squad.push(57);s.squads[0].members=[...s.squad];s.operativeState[57].hp=30;s.operativeState[57].location=s.location;s.contracts[57]={kind:'patriot',term:'month',started:s.hour,expiresAt:null,paid:0};
  s=order(s,{type:'travel',sector:'buenos_aires'});s=order(s,{type:'attack',sector:'san_nicolas'});const r=s.pendingBattle;
- let battle=createBattle(r.squad.map(u=>({...u,x:1,y:u.id===57?1:6})),{width:12,height:8,id:r.id,sector:r.sector,npcs:r.npcs,seed:45,hour:s.hour,tiles:Array.from({length:96},(_,i)=>({x:i%12,y:Math.floor(i/12),type:'grass',blocked:false,cover:0})),enemies:[{id:'guard',x:7,y:1,weapon:1802,ammo:0,fatigue:100,marksmanship:100}]});battle=endTurn(battle);assert.equal(battle.units.find(u=>u.id==='57').hp,0);
+ let battle=createBattle(r.squad.map(u=>({...u,x:u.id===57?5:1,y:u.id===57?1:6})),{...r,width:12,height:8,seed:45,tiles:Array.from({length:96},(_,i)=>({x:i%12,y:Math.floor(i/12),type:Math.floor(i/12)===4?'wall':'grass',blocked:Math.floor(i/12)===4,blocksSight:Math.floor(i/12)===4,cover:0})),enemies:r.enemies.map((u,i)=>({...u,x:7,y:i%8,...(i?{hp:0,bleeding:0,bandaged:0}:{y:1,marksmanship:100})}))});battle=endTurn(battle);assert.equal(battle.units.find(u=>u.id==='57').hp,0);
  const p=saved(sync({campaign:s,battle}));assert.equal(p.campaign.defeated,true);assert.equal(p.campaign.completed,false);assert.equal(p.campaign.operativeState[57].alive,false);
- s=saved({campaign:order(p.campaign,{type:'battleResult',battleId:r.id,outcome:'retreat',sectorState:p.battle,survivors:p.battle.units.filter(u=>u.side==='player')})}).campaign;assert.equal(s.defeated,true);assert.equal(s.completed,false);assert.match(s.log.find(e=>/ha muerto/.test(e.text)).text,/San Martín/);
+ const returned=sync({campaign:p.campaign,battle:scriptedWithdrawal(p.battle)});
+ s=saved({campaign:order(returned.campaign,{type:'battleResult',battleId:r.id,outcome:'retreat',sectorState:returned.battle,survivors:returned.battle.units.filter(u=>u.side==='player')})}).campaign;assert.equal(s.defeated,true);assert.equal(s.completed,false);assert.match(s.log.find(e=>/ha muerto/.test(e.text)).text,/San Martín/);
 });

@@ -1,0 +1,3403 @@
+{
+  "schema": 1,
+  "status": "failed",
+  "scope": "Unpublished consolidation branch; stable full run before the subsequent focused repairs. This is not release or complete-campaign evidence.",
+  "date": "2026-09-30",
+  "branch": "codex/consolidate-latest-gameplay",
+  "baseRevision": "7c274016a33e0679efca2966a59fdd7baa77cce6",
+  "sourceDigest": "74bddced910e9f9cbf50ceb7df443ae143746f2ed6224c76c64e4b0ed8cce08e",
+  "buildId": "74bddced910e",
+  "command": "node --test --test-concurrency=4 --test-reporter=tap tests/*.test.mjs",
+  "result": {
+    "tests": 4112,
+    "passed": 3561,
+    "failed": 551,
+    "cancelled": 0,
+    "skipped": 0,
+    "durationMs": 699613.186708
+  },
+  "logSha256": "8b5ab971d3e2bcce5aa00d4ba38f8662a0fe51325e1e3866f8349833c8eef222",
+  "files": [
+    {
+      "file": "tests/adjacent-supply-transfer-render.test.mjs",
+      "failures": 2
+    },
+    {
+      "file": "tests/adjacent-weapon-transfer-render.test.mjs",
+      "failures": 2
+    },
+    {
+      "file": "tests/adjacent-weapon-transfer.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/ammunition-family-migration.test.mjs",
+      "failures": 4
+    },
+    {
+      "file": "tests/ammunition-market-rules.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/armory-item-metadata.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/artillery-autonomy-render.test.mjs",
+      "failures": 2
+    },
+    {
+      "file": "tests/artillery-autonomy.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/artillery-crew-loading.test.mjs",
+      "failures": 2
+    },
+    {
+      "file": "tests/artillery-crew-render.test.mjs",
+      "failures": 2
+    },
+    {
+      "file": "tests/artillery-depot-transport-render.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/artillery-depot-transport.test.mjs",
+      "failures": 3
+    },
+    {
+      "file": "tests/artillery-profiles-render.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/artillery-profiles.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/artillery-reload-progress.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/artillery-sale-sources.test.mjs",
+      "failures": 4
+    },
+    {
+      "file": "tests/artillery-supply-render.test.mjs",
+      "failures": 2
+    },
+    {
+      "file": "tests/artillery-supply.test.mjs",
+      "failures": 6
+    },
+    {
+      "file": "tests/artillery-trade-render.test.mjs",
+      "failures": 3
+    },
+    {
+      "file": "tests/artillery-trade.test.mjs",
+      "failures": 4
+    },
+    {
+      "file": "tests/artillery-trading-render.test.mjs",
+      "failures": 3
+    },
+    {
+      "file": "tests/artillery-trading.test.mjs",
+      "failures": 5
+    },
+    {
+      "file": "tests/artillery-transport-render.test.mjs",
+      "failures": 4
+    },
+    {
+      "file": "tests/artillery-transport.test.mjs",
+      "failures": 10
+    },
+    {
+      "file": "tests/assault-travel-parity.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/assignment-attention-render.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/assignment-attention.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/assignment-wait.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/attribute-training-lifecycle.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/authored-artillery-trading.test.mjs",
+      "failures": 4
+    },
+    {
+      "file": "tests/authored-artillery-transport.test.mjs",
+      "failures": 3
+    },
+    {
+      "file": "tests/authored-care-rules.test.mjs",
+      "failures": 2
+    },
+    {
+      "file": "tests/authored-cartridge-price.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/authored-cartridge-save.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/authored-firearm-melee.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/authored-militia-patrol.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/authored-militia-progression-render.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/authored-residents.test.mjs",
+      "failures": 3
+    },
+    {
+      "file": "tests/authored-weapon-readiness.test.mjs",
+      "failures": 3
+    },
+    {
+      "file": "tests/auto-bandage.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/battle-integration.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/battle-opening.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/battle-report.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/battlefield-movement-input.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/campaign-ammunition-custody.test.mjs",
+      "failures": 6
+    },
+    {
+      "file": "tests/campaign-battery-driver.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/campaign-care.test.mjs",
+      "failures": 3
+    },
+    {
+      "file": "tests/campaign-carried-equip-render.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/campaign-carried-equip.test.mjs",
+      "failures": 5
+    },
+    {
+      "file": "tests/campaign-civilian-first-aid.test.mjs",
+      "failures": 7
+    },
+    {
+      "file": "tests/campaign-civilian-harm.test.mjs",
+      "failures": 12
+    },
+    {
+      "file": "tests/campaign-critical-first-aid.test.mjs",
+      "failures": 7
+    },
+    {
+      "file": "tests/campaign-cursor-ammunition.test.mjs",
+      "failures": 4
+    },
+    {
+      "file": "tests/campaign-equipment-placement.test.mjs",
+      "failures": 2
+    },
+    {
+      "file": "tests/campaign-escort.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/campaign-gift-defense.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/campaign-gun-loads.test.mjs",
+      "failures": 3
+    },
+    {
+      "file": "tests/campaign-headquarters.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/campaign-pockets-render.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/campaign-reload-work.test.mjs",
+      "failures": 3
+    },
+    {
+      "file": "tests/campaign-roles.test.mjs",
+      "failures": 4
+    },
+    {
+      "file": "tests/campaign-roof-lifecycle.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/campaign-rules-ui.test.mjs",
+      "failures": 2
+    },
+    {
+      "file": "tests/campaign-rules.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/campaign-story.test.mjs",
+      "failures": 2
+    },
+    {
+      "file": "tests/campaign-typed-ammunition.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/campaign-web.test.mjs",
+      "failures": 6
+    },
+    {
+      "file": "tests/character-condition.test.mjs",
+      "failures": 2
+    },
+    {
+      "file": "tests/character-supplies.test.mjs",
+      "failures": 3
+    },
+    {
+      "file": "tests/civilian-breath-recovery.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/civilian-first-aid-controls.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/civilian-first-aid.test.mjs",
+      "failures": 10
+    },
+    {
+      "file": "tests/civilian-interaction.test.mjs",
+      "failures": 2
+    },
+    {
+      "file": "tests/civilian-loss-log.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/civilian-service-return.test.mjs",
+      "failures": 5
+    },
+    {
+      "file": "tests/civilian-state.test.mjs",
+      "failures": 8
+    },
+    {
+      "file": "tests/civilian-supplies.test.mjs",
+      "failures": 4
+    },
+    {
+      "file": "tests/civilian-weapons-render.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/civilian-weapons.test.mjs",
+      "failures": 3
+    },
+    {
+      "file": "tests/cold-steel.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/content-abilities.test.mjs",
+      "failures": 4
+    },
+    {
+      "file": "tests/content-blades-ui.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/content-blades.test.mjs",
+      "failures": 5
+    },
+    {
+      "file": "tests/content-force-equipment.test.mjs",
+      "failures": 5
+    },
+    {
+      "file": "tests/content-presentation.test.mjs",
+      "failures": 4
+    },
+    {
+      "file": "tests/content-quests.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/content-roster.test.mjs",
+      "failures": 2
+    },
+    {
+      "file": "tests/contract-casualty-presence.test.mjs",
+      "failures": 3
+    },
+    {
+      "file": "tests/coordinated-assault.test.mjs",
+      "failures": 4
+    },
+    {
+      "file": "tests/critical-first-aid.test.mjs",
+      "failures": 7
+    },
+    {
+      "file": "tests/critical-military-condition.test.mjs",
+      "failures": 3
+    },
+    {
+      "file": "tests/death-successors.test.mjs",
+      "failures": 2
+    },
+    {
+      "file": "tests/deployment-clock.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/detention-health.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/dialogue-conditions.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/dialogue-payments.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/dialogue-replay.test.mjs",
+      "failures": 4
+    },
+    {
+      "file": "tests/drop-held-weapons-render.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/drop-held-weapons.test.mjs",
+      "failures": 4
+    },
+    {
+      "file": "tests/drop-personal-supplies-render.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/drop-recovered-weapons-render.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/drop-recovered-weapons.test.mjs",
+      "failures": 6
+    },
+    {
+      "file": "tests/economy-web.test.mjs",
+      "failures": 5
+    },
+    {
+      "file": "tests/editor-main-integration.test.mjs",
+      "failures": 3
+    },
+    {
+      "file": "tests/elevation-admission.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/elevation-known-state.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/empty-hand-melee-render.test.mjs",
+      "failures": 2
+    },
+    {
+      "file": "tests/empty-hand-melee.test.mjs",
+      "failures": 3
+    },
+    {
+      "file": "tests/encounters-web.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/ending-speech.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/enemy-groups.test.mjs",
+      "failures": 6
+    },
+    {
+      "file": "tests/equipment-cursor-lifecycle.test.mjs",
+      "failures": 3
+    },
+    {
+      "file": "tests/equipment-imports.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/equipment-web.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/firearm-bystander-risk.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/first-aid-render.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/force-blades.test.mjs",
+      "failures": 3
+    },
+    {
+      "file": "tests/fresh-campaign-recovery.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/fresh-capital-recovery.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/fresh-coastal-route.test.mjs",
+      "failures": 3
+    },
+    {
+      "file": "tests/fresh-cuyo-route.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/fresh-ending-route.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/fresh-northern-route.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/garrison-web.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/grenade-npc-lifecycle.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/held-firearm-buttstock-render.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/held-firearm-buttstock.test.mjs",
+      "failures": 2
+    },
+    {
+      "file": "tests/hiring-arrivals.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/historical-loss-render.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/historical-loss.test.mjs",
+      "failures": 4
+    },
+    {
+      "file": "tests/import-supply-rules.test.mjs",
+      "failures": 2
+    },
+    {
+      "file": "tests/integrated-building-editor.test.mjs",
+      "failures": 2
+    },
+    {
+      "file": "tests/inventory-relay.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/ja2-hud.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/large-sectors.test.mjs",
+      "failures": 2
+    },
+    {
+      "file": "tests/logistics-attention-render.test.mjs",
+      "failures": 3
+    },
+    {
+      "file": "tests/logistics-attention.test.mjs",
+      "failures": 13
+    },
+    {
+      "file": "tests/logistics-interruptions.test.mjs",
+      "failures": 8
+    },
+    {
+      "file": "tests/march-fatigue.test.mjs",
+      "failures": 2
+    },
+    {
+      "file": "tests/medical-care.test.mjs",
+      "failures": 3
+    },
+    {
+      "file": "tests/meeting-arrivals-ui.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/meeting-release-ui.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/mercenary-roster.test.mjs",
+      "failures": 2
+    },
+    {
+      "file": "tests/merchant-exchange.test.mjs",
+      "failures": 3
+    },
+    {
+      "file": "tests/merchant-preferences.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/merchants.test.mjs",
+      "failures": 4
+    },
+    {
+      "file": "tests/military-remains.test.mjs",
+      "failures": 3
+    },
+    {
+      "file": "tests/militia-autonomy-render.test.mjs",
+      "failures": 2
+    },
+    {
+      "file": "tests/militia-autonomy.test.mjs",
+      "failures": 5
+    },
+    {
+      "file": "tests/militia-combat-progression-render.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/militia-controls-render.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/militia-course-choice.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/militia-distribution-render.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/militia-experience.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/militia-exploration-render.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/militia-exploration.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/militia-medical-care.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/militia-training-identities-render.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/mission-ally-fitting-ownership.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/mission-assault.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/mission-sector-inventory.test.mjs",
+      "failures": 4
+    },
+    {
+      "file": "tests/missions-web.test.mjs",
+      "failures": 4
+    },
+    {
+      "file": "tests/morale.test.mjs",
+      "failures": 2
+    },
+    {
+      "file": "tests/movement-knowledge.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/narrative-web.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/new-start-stress.test.mjs",
+      "failures": 2
+    },
+    {
+      "file": "tests/npc-ai.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/npc-gifts.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/occupied-ground-collection-render.test.mjs",
+      "failures": 3
+    },
+    {
+      "file": "tests/opening-playthrough.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/outfit-equipment.test.mjs",
+      "failures": 3
+    },
+    {
+      "file": "tests/paired-pistol-campaign.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/paired-reload-campaign.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/partial-firearm-reloads.test.mjs",
+      "failures": 4
+    },
+    {
+      "file": "tests/partial-ground-supply-pickup-render.test.mjs",
+      "failures": 3
+    },
+    {
+      "file": "tests/partial-reload-controls.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/politics-web.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/post-campaign.test.mjs",
+      "failures": 2
+    },
+    {
+      "file": "tests/post-victory-mission.test.mjs",
+      "failures": 4
+    },
+    {
+      "file": "tests/prisoner-rescue-route.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/project-conditions.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/quest-journal.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/quest-survival.test.mjs",
+      "failures": 7
+    },
+    {
+      "file": "tests/quests-web.test.mjs",
+      "failures": 2
+    },
+    {
+      "file": "tests/recruitment-web.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/regional-weather.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/retiro-expansion.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/retiro-start.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/secondary-loot-render.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/secondary-loot.test.mjs",
+      "failures": 5
+    },
+    {
+      "file": "tests/sector-income.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/sector-inventory-render.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/sector-inventory.test.mjs",
+      "failures": 5
+    },
+    {
+      "file": "tests/selected-npc-gifts.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/shared-personal-pockets.test.mjs",
+      "failures": 7
+    },
+    {
+      "file": "tests/squad-travel.test.mjs",
+      "failures": 2
+    },
+    {
+      "file": "tests/stationed-artillery-render.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/stationed-artillery.test.mjs",
+      "failures": 8
+    },
+    {
+      "file": "tests/story-editor.test.mjs",
+      "failures": 6
+    },
+    {
+      "file": "tests/story-health-conditions.test.mjs",
+      "failures": 3
+    },
+    {
+      "file": "tests/story-supply-conditions.test.mjs",
+      "failures": 4
+    },
+    {
+      "file": "tests/strategic-map.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/strategic-military-wounds.test.mjs",
+      "failures": 5
+    },
+    {
+      "file": "tests/strategic-militia-care-render.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/strategic-rest.test.mjs",
+      "failures": 5
+    },
+    {
+      "file": "tests/tactical-ai-sharing.test.mjs",
+      "failures": 2
+    },
+    {
+      "file": "tests/tactical-assets-build.test.mjs",
+      "failures": 2
+    },
+    {
+      "file": "tests/tactical-exit-campaign.test.mjs",
+      "failures": 5
+    },
+    {
+      "file": "tests/tactical-space-reentry.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/tactical-web.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/time-bridge.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/treatment-speech.test.mjs",
+      "failures": 4
+    },
+    {
+      "file": "tests/two-hands.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/typed-ammunition-ui.test.mjs",
+      "failures": 2
+    },
+    {
+      "file": "tests/typed-ammunition.test.mjs",
+      "failures": 4
+    },
+    {
+      "file": "tests/unloaded-civilian-bleeding.test.mjs",
+      "failures": 3
+    },
+    {
+      "file": "tests/unloaded-militia-wounds-render.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/visit-report.test.mjs",
+      "failures": 3
+    },
+    {
+      "file": "tests/weapon-mode-input.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/weapon-readiness-controls.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/weapon-stealing.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/world-cells-render.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/world-cells.test.mjs",
+      "failures": 5
+    },
+    {
+      "file": "tests/world-exits.test.mjs",
+      "failures": 1
+    },
+    {
+      "file": "tests/world-web.test.mjs",
+      "failures": 1
+    }
+  ],
+  "failures": [
+    {
+      "title": "the production inventory selects a real supply, exact quantity and nearby recipient and persists both remaining amounts",
+      "location": "tests/adjacent-supply-transfer-render.test.mjs:8:1"
+    },
+    {
+      "title": "the supply controls show unavailable amounts and the registered order rechecks an attempted excess without committing it",
+      "location": "tests/adjacent-supply-transfer-render.test.mjs:13:1"
+    },
+    {
+      "title": "the production inventory passes an authored piece to the chosen adjacent companion, who can equip the saved weapon",
+      "location": "tests/adjacent-weapon-transfer-render.test.mjs:8:1"
+    },
+    {
+      "title": "a distant recipient exposes the real refusal and the registered tactical order rechecks changed geometry without transferring",
+      "location": "tests/adjacent-weapon-transfer-render.test.mjs:18:1"
+    },
+    {
+      "title": "an actually recovered authored blade moves once to a paid adjacent companion, survives campaign return and equips there",
+      "location": "tests/adjacent-weapon-transfer.test.mjs:15:1"
+    },
+    {
+      "title": "an actual version-one campaign and active sector migrate once with all finite stock intact",
+      "location": "tests/ammunition-family-migration.test.mjs:32:1"
+    },
+    {
+      "title": "campaign migration includes depots, paid work, transport and blocked delivery receipts",
+      "location": "tests/ammunition-family-migration.test.mjs:42:1"
+    },
+    {
+      "title": "malformed old stock and missing versions cannot become valid by grouping",
+      "location": "tests/ammunition-family-migration.test.mjs:53:1"
+    },
+    {
+      "title": "a migrated active sector can return, save and reenter without a second issue of cartridges",
+      "location": "tests/ammunition-family-migration.test.mjs:62:1"
+    },
+    {
+      "title": "manual-only suppliers load owned ammunition without buying it again; disabled suppliers preserve storage",
+      "location": "tests/ammunition-market-rules.test.mjs:36:1"
+    },
+    {
+      "title": "armory blade exchange preserves exact custom ownership through sale, purchase, save and deployment",
+      "location": "tests/armory-item-metadata.test.mjs:23:38"
+    },
+    {
+      "title": "mounted end-turn control advances a heavy enemy reload across saved real budgets",
+      "location": "tests/artillery-autonomy-render.test.mjs:20:1"
+    },
+    {
+      "title": "mounted allied turn shows actual autonomous artillery damage without manual militia orders",
+      "location": "tests/artillery-autonomy-render.test.mjs:27:1"
+    },
+    {
+      "title": "a paid local cohort operates a purchased retained gun and full campaign saves preserve both",
+      "location": "tests/artillery-autonomy.test.mjs:105:1"
+    },
+    {
+      "title": "a real purchased gun spends shots and partial work, saves the paired campaign and retains the fraction on withdrawal and reentry",
+      "location": "tests/artillery-crew-loading.test.mjs:49:1"
+    },
+    {
+      "title": "an actual emplaced gun exhausts its issued ammunition through seven peaceful shots and six reloads with synchronized saves",
+      "location": "tests/artillery-crew-loading.test.mjs:60:1"
+    },
+    {
+      "title": "mounted field controls show partial cost and saved work, then finish through the real next-turn reload",
+      "location": "tests/artillery-crew-render.test.mjs:19:1"
+    },
+    {
+      "title": "mounted artillery controls refuse a prone helper and keep the actual crew and cannon unchanged",
+      "location": "tests/artillery-crew-render.test.mjs:24:1"
+    },
+    {
+      "title": "the mounted depot sends its actual stored gun back to the front and saves one finite shipment",
+      "location": "tests/artillery-depot-transport-render.test.mjs:7:1"
+    },
+    {
+      "title": "a purchased fired gun returns from the home depot to the front and enters actual combat without fresh ammunition",
+      "location": "tests/artillery-depot-transport.test.mjs:15:1"
+    },
+    {
+      "title": "a repurchased exact gun with declared unfinished loading can leave its workshop depot and redeploy elsewhere",
+      "location": "tests/artillery-depot-transport.test.mjs:20:1"
+    },
+    {
+      "title": "depot forwarding charges its authored fee once and rejects wrong origin, stale identity and duplicated saved custody",
+      "location": "tests/artillery-depot-transport.test.mjs:24:1"
+    },
+    {
+      "title": "production battlefield renders the launched cannon image and its authored name after a full save",
+      "location": "tests/artillery-profiles-render.test.mjs:8:1"
+    },
+    {
+      "title": "a real authored emplacement retains finite configured ammunition and names through shots, return and saved reentry",
+      "location": "tests/artillery-profiles.test.mjs:68:1"
+    },
+    {
+      "title": "full campaign encoding resumes the remaining cost and finite gun ammunition",
+      "location": "tests/artillery-reload-progress.test.mjs:85:1"
+    },
+    {
+      "title": "each purchased cannon type can be sold once, repurchased and deployed without adding a second load",
+      "location": "tests/artillery-sale-sources.test.mjs:12:1"
+    },
+    {
+      "title": "generic and local depot bronze stock cannot consume special guns or a remote depot",
+      "location": "tests/artillery-sale-sources.test.mjs:23:1"
+    },
+    {
+      "title": "a secured workshop buys an actual emplaced gun and retains its exact remaining shot supplies",
+      "location": "tests/artillery-sale-sources.test.mjs:37:1"
+    },
+    {
+      "title": "materialized stock avoids an existing gun identity and keeps its sequence through saves",
+      "location": "tests/artillery-sale-sources.test.mjs:50:1"
+    },
+    {
+      "title": "mounted armory buys exactly one round for an actually depleted gun and the saved field crew loads it",
+      "location": "tests/artillery-supply-render.test.mjs:6:1"
+    },
+    {
+      "title": "the mounted supply control displays retained loading work and does not complete it when adding reserve",
+      "location": "tests/artillery-supply-render.test.mjs:11:1"
+    },
+    {
+      "title": "a truly exhausted emplaced gun buys one paid reserve, preserves full saves and loads only through its ordinary crew order",
+      "location": "tests/artillery-supply.test.mjs:18:1"
+    },
+    {
+      "title": "supply is limited by the pinned reserve cap and rejected orders preserve finite money and gun state",
+      "location": "tests/artillery-supply.test.mjs:22:1"
+    },
+    {
+      "title": "a lower authored supply cap preserves the initial bundle and permits buying only after real consumption falls below it",
+      "location": "tests/artillery-supply.test.mjs:25:1"
+    },
+    {
+      "title": "authored prices, zero-price supply and disabled replenishment apply to actual paid and fired campaign pieces",
+      "location": "tests/artillery-supply.test.mjs:29:1"
+    },
+    {
+      "title": "remote, hostile, disconnected, busy, unavailable and unaffordable prepared boundaries reject without changing custody",
+      "location": "tests/artillery-supply.test.mjs:34:1"
+    },
+    {
+      "title": "finite supply preserves prepared unfinished loading and uses each configured model quote without altering other pieces",
+      "location": "tests/artillery-supply.test.mjs:41:1"
+    },
+    {
+      "title": "armory trade controls sell the exact gun and retain its buyback offer when the depot is empty",
+      "location": "tests/artillery-trade-render.test.mjs:11:1"
+    },
+    {
+      "title": "insufficient merchant funds disable sale and display the reason",
+      "location": "tests/artillery-trade-render.test.mjs:16:1"
+    },
+    {
+      "title": "the armory exposes new stock and local emplaced guns with distinct sale sources",
+      "location": "tests/artillery-trade-render.test.mjs:19:1"
+    },
+    {
+      "title": "selling and repurchasing preserves exact gun custody, loading, ammunition and saved payments",
+      "location": "tests/artillery-trade.test.mjs:15:1"
+    },
+    {
+      "title": "trade rejects remote, unavailable, unsafe and unaffordable orders atomically",
+      "location": "tests/artillery-trade.test.mjs:22:1"
+    },
+    {
+      "title": "merchant gun saves reject duplicate custody and invalid cargo while old saves remain valid",
+      "location": "tests/artillery-trade.test.mjs:29:1"
+    },
+    {
+      "title": "shop refresh retains loaded guns and capacity limits reject transfers before payment",
+      "location": "tests/artillery-trade.test.mjs:33:1"
+    },
+    {
+      "title": "mounted production commerce sells and repurchases the actual depot gun without replacing its partial load",
+      "location": "tests/artillery-trading-render.test.mjs:8:1"
+    },
+    {
+      "title": "mounted finite merchant funds reject a sale without changing the gun or either balance",
+      "location": "tests/artillery-trading-render.test.mjs:14:1"
+    },
+    {
+      "title": "the mounted workshop displays and applies authored local percentages and its finite starting cash",
+      "location": "tests/artillery-trading-render.test.mjs:18:1"
+    },
+    {
+      "title": "an actually fired and transported depot gun sells and returns with finite funds, identity and ammunition before a real attack",
+      "location": "tests/artillery-trading.test.mjs:16:1"
+    },
+    {
+      "title": "a real configured workshop accepts its local fired emplacement, retaining declared unfinished work through repurchase",
+      "location": "tests/artillery-trading.test.mjs:24:1"
+    },
+    {
+      "title": "prepared access, cash, crew and hostile boundaries reject trades without changing custody",
+      "location": "tests/artillery-trading.test.mjs:36:1"
+    },
+    {
+      "title": "full saves reject invalid shop money, excessive stock, changed load and duplicated physical ownership",
+      "location": "tests/artillery-trading.test.mjs:44:1"
+    },
+    {
+      "title": "prepared store capacity, local buying rates and serial boundaries preserve finite inventory",
+      "location": "tests/artillery-trading.test.mjs:49:1"
+    },
+    {
+      "title": "mounted production armory sends one actual fired gun, rejects unavailable transport and displays finite saved cargo",
+      "location": "tests/artillery-transport-render.test.mjs:11:1"
+    },
+    {
+      "title": "mounted local depot preserves declared unfinished loading and selects its exact gun for a real attack",
+      "location": "tests/artillery-transport-render.test.mjs:21:1"
+    },
+    {
+      "title": "the mounted armory quotes the authored transport duration and charges its displayed fee exactly once",
+      "location": "tests/artillery-transport-render.test.mjs:30:1"
+    },
+    {
+      "title": "the mounted fee rejection keeps the actual gun in place and spends no money",
+      "location": "tests/artillery-transport-render.test.mjs:35:1"
+    },
+    {
+      "title": "an actually purchased and fired gun travels once, arrives in a local depot and redeploys without fresh ammunition",
+      "location": "tests/artillery-transport.test.mjs:15:1"
+    },
+    {
+      "title": "a prepared interruption keeps the exact shipment until control returns and delivery cannot replay",
+      "location": "tests/artillery-transport.test.mjs:23:1"
+    },
+    {
+      "title": "explicit empty, stale remote and duplicate depot selections cannot create or borrow a transported gun",
+      "location": "tests/artillery-transport.test.mjs:28:1"
+    },
+    {
+      "title": "prepared crew, control, hostile, route and mode boundaries reject atomically",
+      "location": "tests/artillery-transport.test.mjs:32:1"
+    },
+    {
+      "title": "a paid flotilla takes the coastal duration and a prepared blockade delays the same saved gun",
+      "location": "tests/artillery-transport.test.mjs:39:1"
+    },
+    {
+      "title": "full saves reject malformed routes and duplicate gun ownership across fields, transfers and depots",
+      "location": "tests/artillery-transport.test.mjs:43:1"
+    },
+    {
+      "title": "a declared unfinished-load boundary keeps exact work and facing through transport, save and redeployment",
+      "location": "tests/artillery-transport.test.mjs:51:1"
+    },
+    {
+      "title": "declared destination threats and full depots delay arrival, and occupied depots cannot supply a battery",
+      "location": "tests/artillery-transport.test.mjs:58:1"
+    },
+    {
+      "title": "prepared route geography and authored crew sizes constrain dispatch without changing the gun",
+      "location": "tests/artillery-transport.test.mjs:68:1"
+    },
+    {
+      "title": "saved transit and depot pieces reject invalid facing before they can poison a later deployment",
+      "location": "tests/artillery-transport.test.mjs:76:1"
+    },
+    {
+      "title": "both assault paths reject missing remounts without spending resources",
+      "location": "tests/assault-travel-parity.test.mjs:36:3"
+    },
+    {
+      "title": "a doctor who uses the last kit is identified with the blocked task and sector reason",
+      "location": "tests/assignment-attention-render.test.mjs:46:1"
+    },
+    {
+      "title": "typed eligibility retains the existing exact admission reasons and successful empty strings",
+      "location": "tests/assignment-attention.test.mjs:23:1"
+    },
+    {
+      "title": "kit exhaustion pauses further treatment at the exact depleted hour and a paid refill rearms the warning",
+      "location": "tests/assignment-wait.test.mjs:67:1"
+    },
+    {
+      "title": "strength study and a real XP level increase agree on visit, attack and defense after save and deployment",
+      "location": "tests/attribute-training-lifecycle.test.mjs:95:1"
+    },
+    {
+      "title": "an actual fired depot gun trades at its authored local rate and saved workshop money never resets",
+      "location": "tests/authored-artillery-trading.test.mjs:21:1"
+    },
+    {
+      "title": "disabled or underfunded commerce rejects atomically and zero-price exchange keeps both balances unchanged",
+      "location": "tests/authored-artillery-trading.test.mjs:26:1"
+    },
+    {
+      "title": "an authored subsidy spends finite workshop funds and stops when the next offer is unaffordable",
+      "location": "tests/authored-artillery-trading.test.mjs:35:1"
+    },
+    {
+      "title": "an actual authored headquarters uses its own named override instead of a hardcoded Mendoza preference",
+      "location": "tests/authored-artillery-trading.test.mjs:39:1"
+    },
+    {
+      "title": "actual paid and fired guns use pinned cart and flotilla rates and pay one dispatch fee only",
+      "location": "tests/authored-artillery-transport.test.mjs:21:1"
+    },
+    {
+      "title": "disabled transport, insufficient funds and repeated orders reject without moving a gun or charging twice",
+      "location": "tests/authored-artillery-transport.test.mjs:29:1"
+    },
+    {
+      "title": "a delayed paid shipment retains its authored schedule across full saves without another charge",
+      "location": "tests/authored-artillery-transport.test.mjs:35:1"
+    },
+    {
+      "title": "authored skill, healing and work costs drive actual assignments, safe hours and pinned saves",
+      "location": "tests/authored-care-rules.test.mjs:21:1"
+    },
+    {
+      "title": "configured rest intervals above six preserve midpoint saves and award only the actual completed interval",
+      "location": "tests/authored-care-rules.test.mjs:30:1"
+    },
+    {
+      "title": "an actual paid assault, discharge, saved checkpoint and retreat keep the six unspent cartridges",
+      "location": "tests/authored-cartridge-price.test.mjs:22:1"
+    },
+    {
+      "title": "every authored cartridge allocation can save an actual peaceful and combat deployment",
+      "location": "tests/authored-cartridge-save.test.mjs:12:1"
+    },
+    {
+      "title": "a paid authored gun keeps its stock profile after a real strike, drop, recovery, equip and full campaign saves",
+      "location": "tests/authored-firearm-melee.test.mjs:28:1"
+    },
+    {
+      "title": "disabling patrols keeps actual paid militia combat and finite reactions available",
+      "location": "tests/authored-militia-patrol.test.mjs:56:1"
+    },
+    {
+      "title": "tests/authored-militia-progression-render.test.mjs",
+      "location": "tests/authored-militia-progression-render.test.mjs:1:1"
+    },
+    {
+      "title": "an authored greeting, portrait and health survive relocation, local recruitment and deployment without duplication",
+      "location": "tests/authored-residents.test.mjs:50:1"
+    },
+    {
+      "title": "authored resident saves reject forged identities, ledger names, locations and missing health records",
+      "location": "tests/authored-residents.test.mjs:91:1"
+    },
+    {
+      "title": "authored residents keep growth policy and later soldier health after retreat, dismissal and a new encounter",
+      "location": "tests/authored-residents.test.mjs:97:1"
+    },
+    {
+      "title": "zero authored preparation preserves existing firearm costs and does not grant a ready state",
+      "location": "tests/authored-weapon-readiness.test.mjs:18:1"
+    },
+    {
+      "title": "accepted physical work lowers the weapon, while unavailable orders and free covering orders preserve it",
+      "location": "tests/authored-weapon-readiness.test.mjs:32:1"
+    },
+    {
+      "title": "enemy firing uses the same authored preparation and spends only the available AP",
+      "location": "tests/authored-weapon-readiness.test.mjs:59:1"
+    },
+    {
+      "title": "automatic care includes visible civilians through typed paid orders and exact replay",
+      "location": "tests/auto-bandage.test.mjs:140:1"
+    },
+    {
+      "title": "a controlled wet-weather battle connects campaign resources, deterministic tactics and survivors",
+      "location": "tests/battle-integration.test.mjs:52:1"
+    },
+    {
+      "title": "a peaceful opening publishes a loadable pair without advancing time or mutating its source",
+      "location": "tests/battle-opening.test.mjs:18:1"
+    },
+    {
+      "title": "a cleared flag cannot report active combat, an unfinished reaction or a capable enemy as victory",
+      "location": "tests/battle-report.test.mjs:61:1"
+    },
+    {
+      "title": "real map input redirects and runs with late speculative worker delivery",
+      "location": "tests/battlefield-movement-input.test.mjs:9:40"
+    },
+    {
+      "title": "deployment buys only a supplied town shortfall and return preserves physical rounds without a refund",
+      "location": "tests/campaign-ammunition-custody.test.mjs:25:1"
+    },
+    {
+      "title": "mixed reserves survive actual weapon replacement, deployment and repeated restoration",
+      "location": "tests/campaign-ammunition-custody.test.mjs:33:1"
+    },
+    {
+      "title": "family substitution or additional witnessed rounds cannot settle a battle",
+      "location": "tests/campaign-ammunition-custody.test.mjs:41:1"
+    },
+    {
+      "title": "actual partial loading survives retreat, storage, save and reentry without being completed",
+      "location": "tests/campaign-ammunition-custody.test.mjs:72:1"
+    },
+    {
+      "title": "old pending paid deployments settle once as physical stock and missing living reports reject",
+      "location": "tests/campaign-ammunition-custody.test.mjs:84:1"
+    },
+    {
+      "title": "equivalent report family order is accepted while unknown report families are rejected",
+      "location": "tests/campaign-ammunition-custody.test.mjs:100:1"
+    },
+    {
+      "title": "tests/campaign-battery-driver.test.mjs",
+      "location": "tests/campaign-battery-driver.test.mjs:1:1"
+    },
+    {
+      "title": "doctor treatment requires hours and consumes finite personal kits",
+      "location": "tests/campaign-care.test.mjs:15:1"
+    },
+    {
+      "title": "travel and deployment require active assignments and cannot grant recovery",
+      "location": "tests/campaign-care.test.mjs:50:1"
+    },
+    {
+      "title": "malformed medical assignments, wounds and supplies reject without changing the source",
+      "location": "tests/campaign-care.test.mjs:90:1"
+    },
+    {
+      "title": "an unscouted friendly town allows carried equipment while ground transfers remain disabled",
+      "location": "tests/campaign-carried-equip-render.test.mjs:13:1"
+    },
+    {
+      "title": "empty and partially loaded map guns enter visits, attacks and defenses without an automatic reload",
+      "location": "tests/campaign-carried-equip.test.mjs:29:1"
+    },
+    {
+      "title": "loaded map charge remains with its gun after visit without entering stock twice",
+      "location": "tests/campaign-carried-equip.test.mjs:39:1"
+    },
+    {
+      "title": "prepared load and unfinished work survive repeated returns and charge only the remaining reload",
+      "location": "tests/campaign-carried-equip.test.mjs:71:1"
+    },
+    {
+      "title": "capture and rescue retain prepared loading and keep captive rounds out of shared stock",
+      "location": "tests/campaign-carried-equip.test.mjs:88:1"
+    },
+    {
+      "title": "rescuing a captive who left his gun behind preserves loose rounds without inventing personal loading",
+      "location": "tests/campaign-carried-equip.test.mjs:98:1"
+    },
+    {
+      "title": "paid first aid keeps wounds and refusal through save, reentry, and paid service transfer",
+      "location": "tests/campaign-civilian-first-aid.test.mjs:52:1"
+    },
+    {
+      "title": "unattributed civilian bleeding survives paid hiring and dismissal without invented blame or respawn",
+      "location": "tests/campaign-civilian-first-aid.test.mjs:82:1"
+    },
+    {
+      "title": "first aid to an ordinary resident persists without a service record or health gain",
+      "location": "tests/campaign-civilian-first-aid.test.mjs:96:1"
+    },
+    {
+      "title": "invalid civilian wound fields and missing canonical medical records reject at save and report boundaries",
+      "location": "tests/campaign-civilian-first-aid.test.mjs:109:1"
+    },
+    {
+      "title": "a delayed civilian death retains its real absent attacker across sector reentry exactly once",
+      "location": "tests/campaign-civilian-first-aid.test.mjs:123:1"
+    },
+    {
+      "title": "a pristine or legacy contact cannot heal a dismissed soldier during synchronization",
+      "location": "tests/campaign-civilian-first-aid.test.mjs:137:1"
+    },
+    {
+      "title": "automatic civilian care retains named health, finite dressings and refusal through campaign saves",
+      "location": "tests/campaign-civilian-first-aid.test.mjs:159:1"
+    },
+    {
+      "title": "civilian death responsibility uses fixed civic weights, frozen control, and anonymous messages",
+      "location": "tests/campaign-civilian-harm.test.mjs:42:1"
+    },
+    {
+      "title": "rural and unknown-source deaths are acknowledged once without civic reward or player blame",
+      "location": "tests/campaign-civilian-harm.test.mjs:57:1"
+    },
+    {
+      "title": "the first surviving direct player wound records no loyalty cost and death adds only one later effect",
+      "location": "tests/campaign-civilian-harm.test.mjs:65:1"
+    },
+    {
+      "title": "a paid first visit cannot discard its civilian roster before the first damage acknowledgment",
+      "location": "tests/campaign-civilian-harm.test.mjs:89:1"
+    },
+    {
+      "title": "injured named NPC health reaches the real service record and only lawful recruited survivors may leave the NPC list",
+      "location": "tests/campaign-civilian-harm.test.mjs:95:1"
+    },
+    {
+      "title": "a critically wounded named volunteer stays unconscious through real remote hire and save, while a dead one cannot be hired",
+      "location": "tests/campaign-civilian-harm.test.mjs:105:1"
+    },
+    {
+      "title": "dismissal and real contract expiry preserve a wounded contact transfer across saves and revisits",
+      "location": "tests/campaign-civilian-harm.test.mjs:131:1"
+    },
+    {
+      "title": "a retained same-scene injury cannot lose its receipts even before an old direct report is acknowledged",
+      "location": "tests/campaign-civilian-harm.test.mjs:153:1"
+    },
+    {
+      "title": "legacy injuries never receive retroactive blame, and a missing canonical ledger cannot erase civic evidence",
+      "location": "tests/campaign-civilian-harm.test.mjs:161:1"
+    },
+    {
+      "title": "real paid grenade death survives synchronization, live save, final report, and same-hour reentry exactly once",
+      "location": "tests/campaign-civilian-harm.test.mjs:177:1"
+    },
+    {
+      "title": "an accepted errand fails once on contact death and retains that result through saves and reentry",
+      "location": "tests/campaign-civilian-harm.test.mjs:195:1"
+    },
+    {
+      "title": "contact death neither creates an unknown errand nor revokes a completed delivery",
+      "location": "tests/campaign-civilian-harm.test.mjs:214:1"
+    },
+    {
+      "title": "two paid strokes stabilize a named civilian on the service scale exactly once through save, reentry and hire",
+      "location": "tests/campaign-critical-first-aid.test.mjs:45:1"
+    },
+    {
+      "title": "an acknowledged stabilization cannot be removed, repeated, or used to hide a later injury",
+      "location": "tests/campaign-critical-first-aid.test.mjs:65:1"
+    },
+    {
+      "title": "legacy implicit health migrates once with unchanged harm receipts in a live save and a direct sector return",
+      "location": "tests/campaign-critical-first-aid.test.mjs:77:1"
+    },
+    {
+      "title": "legacy archived civilian bodies do not acquire a later soldier death during migration",
+      "location": "tests/campaign-critical-first-aid.test.mjs:104:1"
+    },
+    {
+      "title": "older stable named wounds migrate without fictional bleeding or retrospective blame",
+      "location": "tests/campaign-critical-first-aid.test.mjs:119:1"
+    },
+    {
+      "title": "later soldier health training preserves the retired civilian body and allows a repeated save",
+      "location": "tests/campaign-critical-first-aid.test.mjs:125:1"
+    },
+    {
+      "title": "a pristine contact can train in service, leave it and return on the current health scale",
+      "location": "tests/campaign-critical-first-aid.test.mjs:139:1"
+    },
+    {
+      "title": "a new officer loads three recovered cursor cartridges into an unissued gun and keeps the exact remainder through saves and deployment",
+      "location": "tests/campaign-cursor-ammunition.test.mjs:52:1"
+    },
+    {
+      "title": "a paid double-barrel pistol loads in either hand or its pocket without changing its physical state or consuming the general reserve",
+      "location": "tests/campaign-cursor-ammunition.test.mjs:78:1"
+    },
+    {
+      "title": "campaign cursor loading rejects stale and incompatible destinations atomically, including drag orders",
+      "location": "tests/campaign-cursor-ammunition.test.mjs:97:1"
+    },
+    {
+      "title": "saved unfinished loading belongs to the gun and completing it removes progress without losing cursor cartridges",
+      "location": "tests/campaign-cursor-ammunition.test.mjs:107:1"
+    },
+    {
+      "title": "a same-model empty replacement stays empty instead of receiving initial issue ammunition",
+      "location": "tests/campaign-equipment-placement.test.mjs:51:1"
+    },
+    {
+      "title": "campaign unloading stores real cartridges and keeps the gun empty after save and deployment",
+      "location": "tests/campaign-equipment-placement.test.mjs:58:1"
+    },
+    {
+      "title": "escort death permanently fails the accepted quest and saved directives cannot be forged",
+      "location": "tests/campaign-escort.test.mjs:46:1"
+    },
+    {
+      "title": "a later real defense keeps the NPC and exact poncho delivered during the previous visit",
+      "location": "tests/campaign-gift-defense.test.mjs:18:1"
+    },
+    {
+      "title": "a fully loaded issued firearm remains loaded through returns without crediting its charges to stock",
+      "location": "tests/campaign-gun-loads.test.mjs:20:1"
+    },
+    {
+      "title": "an empty issued gun stays empty after return and reloads only when the player uses it",
+      "location": "tests/campaign-gun-loads.test.mjs:25:1"
+    },
+    {
+      "title": "an exhausted issued gun remains exhausted through save and reentry and shows the empty cursor",
+      "location": "tests/campaign-gun-loads.test.mjs:31:1"
+    },
+    {
+      "title": "a hired squad launches and saves an actual frontier attack supplied from the alternate headquarters",
+      "location": "tests/campaign-headquarters.test.mjs:54:1"
+    },
+    {
+      "title": "campaign exposes twelve pockets, two hands and three body endpoints before a tactical visit",
+      "location": "tests/campaign-pockets-render.test.mjs:8:1"
+    },
+    {
+      "title": "ordinary held guns keep paid reload work and any completed barrel through return and repeated saves",
+      "location": "tests/campaign-reload-work.test.mjs:31:1"
+    },
+    {
+      "title": "no reserve ammunition blocks loading without discarding previously paid work",
+      "location": "tests/campaign-reload-work.test.mjs:42:1"
+    },
+    {
+      "title": "the route controller completes actual reload orders before marching and never erases work directly",
+      "location": "tests/campaign-reload-work.test.mjs:59:1"
+    },
+    {
+      "title": "a real paid arrival activates the assigned workshop and marching benefit without historical identities",
+      "location": "tests/campaign-roles.test.mjs:20:1"
+    },
+    {
+      "title": "actual contract expiry removes both role privileges, including when it occurs during a locality march",
+      "location": "tests/campaign-roles.test.mjs:27:1"
+    },
+    {
+      "title": "disabled roles grant no benefit, and prepared custody, death and occupation states block uncompleted services",
+      "location": "tests/campaign-roles.test.mjs:33:1"
+    },
+    {
+      "title": "an actual tactical death removes the assigned role after saved battle settlement without ending a custom campaign",
+      "location": "tests/campaign-roles.test.mjs:43:1"
+    },
+    {
+      "title": "real campaign return and reentry retain the roof resident, finite equipment and geometry before a legal descent",
+      "location": "tests/campaign-roof-lifecycle.test.mjs:52:1"
+    },
+    {
+      "title": "the campaign screen shows the configured entry price and saves the actual charge and return",
+      "location": "tests/campaign-rules-ui.test.mjs:8:1"
+    },
+    {
+      "title": "the campaign control charges the authored cartridge price and keeps purchased cartridges on saved return",
+      "location": "tests/campaign-rules-ui.test.mjs:16:1"
+    },
+    {
+      "title": "trained militia receive the configured total once and save their spent supply on return",
+      "location": "tests/campaign-rules.test.mjs:43:1"
+    },
+    {
+      "title": "an authored death condition uses an actual tactical death and historical names do not impose an implicit custom-story defeat",
+      "location": "tests/campaign-story.test.mjs:64:1"
+    },
+    {
+      "title": "a death condition on a serving character resolves from the actual enemy turn before battle settlement",
+      "location": "tests/campaign-story.test.mjs:86:1"
+    },
+    {
+      "title": "tests/campaign-typed-ammunition.test.mjs",
+      "location": "tests/campaign-typed-ammunition.test.mjs:1:1"
+    },
+    {
+      "title": "five-phase campaign cannot unlock San Mart\u00edn early",
+      "location": "tests/campaign-web.test.mjs:19:1"
+    },
+    {
+      "title": "an unguarded province falls while a reinforced militia garrison can hold the raid",
+      "location": "tests/campaign-web.test.mjs:28:1"
+    },
+    {
+      "title": "battle result IDs prevent stale victories and preserve casualties",
+      "location": "tests/campaign-web.test.mjs:49:1"
+    },
+    {
+      "title": "departure purchases physical rounds once and rejects a return that creates cartridges",
+      "location": "tests/campaign-web.test.mjs:63:1"
+    },
+    {
+      "title": "full campaign reaches liberation through money-only reducer orders",
+      "location": "tests/campaign-web.test.mjs:77:1"
+    },
+    {
+      "title": "southern winter closes Andean passes while northern gorge remains operational",
+      "location": "tests/campaign-web.test.mjs:93:1"
+    },
+    {
+      "title": "initial condition validates complete finite integer fields and coherent wounds without changing legacy content identity",
+      "location": "tests/character-condition.test.mjs:15:1"
+    },
+    {
+      "title": "an editor-authored critical resident is stabilized, recruited, treated with purchased supplies and returns without resetting",
+      "location": "tests/character-condition.test.mjs:39:1"
+    },
+    {
+      "title": "paid arrivals use the authored supplies and consumption survives saves, renewal, dismissal and rehire",
+      "location": "tests/character-supplies.test.mjs:26:1"
+    },
+    {
+      "title": "a physically recruited resident keeps the same finite allocation after leaving service and returning",
+      "location": "tests/character-supplies.test.mjs:43:1"
+    },
+    {
+      "title": "zero supplies also survive historical in-person recruitment",
+      "location": "tests/character-supplies.test.mjs:50:1"
+    },
+    {
+      "title": "actual tactical time recovers civilians once per completed round or six exploration seconds, while field aid grants no breath",
+      "location": "tests/civilian-breath-recovery.test.mjs:28:1"
+    },
+    {
+      "title": "public medical controls expose observed wounds without revealing harm attribution or hidden patients",
+      "location": "tests/civilian-first-aid-controls.test.mjs:65:1"
+    },
+    {
+      "title": "exploration pays walking time and energy, then one bandage, with no AP expense",
+      "location": "tests/civilian-first-aid.test.mjs:31:1"
+    },
+    {
+      "title": "raw medical commands distinguish civilian and soldier IDs while ambiguous saves still reject",
+      "location": "tests/civilian-first-aid.test.mjs:38:1"
+    },
+    {
+      "title": "equipment, skill, full action cost and availability are checked atomically",
+      "location": "tests/civilian-first-aid.test.mjs:68:1"
+    },
+    {
+      "title": "patient death or medic collapse during the approach stops treatment without spending a bandage",
+      "location": "tests/civilian-first-aid.test.mjs:75:1"
+    },
+    {
+      "title": "a final-tile hostile reaction cancels queued civilian first aid",
+      "location": "tests/civilian-first-aid.test.mjs:81:1"
+    },
+    {
+      "title": "a hidden civilian blocker does not alter the medical preview and stops the actual route",
+      "location": "tests/civilian-first-aid.test.mjs:86:1"
+    },
+    {
+      "title": "typed civilian treatment fits a saved player interrupt and preserves its continuation",
+      "location": "tests/civilian-first-aid.test.mjs:94:1"
+    },
+    {
+      "title": "unseen bleeding and death retain consequences without naming the hidden civilian",
+      "location": "tests/civilian-first-aid.test.mjs:102:1"
+    },
+    {
+      "title": "the same civilian wound clock advances once per complete combat round",
+      "location": "tests/civilian-first-aid.test.mjs:108:1"
+    },
+    {
+      "title": "saved wound metadata rejects impossible bleeding, missing sources and false present-actor blame",
+      "location": "tests/civilian-first-aid.test.mjs:142:1"
+    },
+    {
+      "title": "the actual battlefield routes NPC clicks and keyboard selection through attack and medical orders",
+      "location": "tests/civilian-interaction.test.mjs:9:1"
+    },
+    {
+      "title": "the actual battlefield collects finite resident supplies with pointer and keyboard without opening dialogue",
+      "location": "tests/civilian-interaction.test.mjs:32:1"
+    },
+    {
+      "title": "an essential resident death remains loadable when the campaign diary is already full",
+      "location": "tests/civilian-loss-log.test.mjs:9:1"
+    },
+    {
+      "title": "dismissal returns the actual military wound and spent supplies before any new civilian encounter",
+      "location": "tests/civilian-service-return.test.mjs:13:1"
+    },
+    {
+      "title": "the service record remains authoritative while still hired and expiry resumes the civilian wound once",
+      "location": "tests/civilian-service-return.test.mjs:21:1"
+    },
+    {
+      "title": "an older departed service bit resumes current health without healing or creating another stock allocation",
+      "location": "tests/civilian-service-return.test.mjs:27:1"
+    },
+    {
+      "title": "paid strategic care survives dismissal and rehire without restoring the older civilian wounds or supplies",
+      "location": "tests/civilian-service-return.test.mjs:37:1"
+    },
+    {
+      "title": "a real local-service casualty stays a military body after dismissal and never becomes a living resident",
+      "location": "tests/civilian-service-return.test.mjs:47:1"
+    },
+    {
+      "title": "real NPC wounds persist through save, daily relocation, recruitment and a second deployment",
+      "location": "tests/civilian-state.test.mjs:33:1"
+    },
+    {
+      "title": "a finite medical charge stabilizes a critical resident without full healing or resurrection",
+      "location": "tests/civilian-state.test.mjs:65:1"
+    },
+    {
+      "title": "civilian snapshots reject altered HP, wound histories, missing residents and unrelated deployment reports",
+      "location": "tests/civilian-state.test.mjs:74:1"
+    },
+    {
+      "title": "the first death applies city consequences once and closes an unfinished local errand",
+      "location": "tests/civilian-state.test.mjs:84:1"
+    },
+    {
+      "title": "firearms and artillery can hit civilians with finite ammunition and valid wounds",
+      "location": "tests/civilian-state.test.mjs:99:1"
+    },
+    {
+      "title": "a former recruit returns with the service record, rather than the old civilian health cache",
+      "location": "tests/civilian-state.test.mjs:123:1"
+    },
+    {
+      "title": "mission contacts share San Mart\u00edn health and a dead essential speaker causes a saved explicit defeat",
+      "location": "tests/civilian-state.test.mjs:134:1"
+    },
+    {
+      "title": "used medical charges can be bought again at a supplied workshop, with a real price and no free repeat",
+      "location": "tests/civilian-state.test.mjs:148:1"
+    },
+    {
+      "title": "actual recovery transfers finite authored supplies, funds first aid and persists through daily movement, recruitment and return",
+      "location": "tests/civilian-supplies.test.mjs:19:1"
+    },
+    {
+      "title": "civilian looting uses ordinary range and AP, validates quantity, preserves capacity and rejects conscious or departed residents",
+      "location": "tests/civilian-supplies.test.mjs:45:1"
+    },
+    {
+      "title": "the real temporary commander stock reaches its shared identity and later mission contact without a default refill",
+      "location": "tests/civilian-supplies.test.mjs:53:1"
+    },
+    {
+      "title": "authored and previously collected resident supplies remain finite when that identity becomes the mission ally",
+      "location": "tests/civilian-supplies.test.mjs:61:1"
+    },
+    {
+      "title": "ordinary resident loot controls recover authored weapons into real pockets and equip the blade with a saved empty source",
+      "location": "tests/civilian-weapons-render.test.mjs:7:1"
+    },
+    {
+      "title": "authored civilian weapons transfer once, keep images and definitions, and stay absent after recruitment and service return",
+      "location": "tests/civilian-weapons.test.mjs:11:1"
+    },
+    {
+      "title": "civilian gear respects unconsciousness, distance, AP and shared pockets and preserves a loaded alternative with unfinished work",
+      "location": "tests/civilian-weapons.test.mjs:30:1"
+    },
+    {
+      "title": "a returned resident keeps a paid alternative charge; recovery, saved return and reentry conserve it",
+      "location": "tests/civilian-weapons.test.mjs:38:1"
+    },
+    {
+      "title": "blunderbuss cone can injure an ally and suppress several targets with one charge",
+      "location": "tests/cold-steel.test.mjs:19:1"
+    },
+    {
+      "title": "authored bodyguards intercept real enemy fire and an explicit empty list removes the old identity power",
+      "location": "tests/content-abilities.test.mjs:44:1"
+    },
+    {
+      "title": "authored shot, movement, breach and medical costs control real low-AP admission and HUD values",
+      "location": "tests/content-abilities.test.mjs:65:1"
+    },
+    {
+      "title": "authored command holds morale only in the proper formation and support respects side and distance",
+      "location": "tests/content-abilities.test.mjs:92:1"
+    },
+    {
+      "title": "authored artillery abilities affect real crew costs, canister damage and solid-shot penetration",
+      "location": "tests/content-abilities.test.mjs:118:1"
+    },
+    {
+      "title": "the mounted inventory shows the authored secondary picture, changes hands and preserves the active save",
+      "location": "tests/content-blades-ui.test.mjs:10:1"
+    },
+    {
+      "title": "authored melee cost, damage, reach, weight and picture drive both equipped slots",
+      "location": "tests/content-blades.test.mjs:22:1"
+    },
+    {
+      "title": "authored bayonet interception and enemy melee use edited values while keeping family techniques",
+      "location": "tests/content-blades.test.mjs:33:1"
+    },
+    {
+      "title": "variants retain separate prices and stock through primary and secondary armory swaps",
+      "location": "tests/content-blades.test.mjs:41:1"
+    },
+    {
+      "title": "looted primary blades keep identity and condition through secondary swaps, campaign return and reentry",
+      "location": "tests/content-blades.test.mjs:52:1"
+    },
+    {
+      "title": "save validation pins blades in both slots, stock and inventory and compresses their images",
+      "location": "tests/content-blades.test.mjs:67:1"
+    },
+    {
+      "title": "an actual attack generates each authored role with finite ammunition and survives save",
+      "location": "tests/content-force-equipment.test.mjs:49:1"
+    },
+    {
+      "title": "generated enemy AI spends the edited firing cost and consumes its own ammunition",
+      "location": "tests/content-force-equipment.test.mjs:58:1"
+    },
+    {
+      "title": "a generated enemy firearm can be recovered and retained through campaign retreat and reentry",
+      "location": "tests/content-force-equipment.test.mjs:63:1"
+    },
+    {
+      "title": "trained militia retain their authored weapons, identity, wear and spent ammunition through promotion and reentry",
+      "location": "tests/content-force-equipment.test.mjs:78:1"
+    },
+    {
+      "title": "previously unmaterialized rank counts use each authored starting kit once",
+      "location": "tests/content-force-equipment.test.mjs:94:1"
+    },
+    {
+      "title": "actual tactical contact, wounds, exhaustion, clearance and death emit authored phrases; blank phrases stay silent",
+      "location": "tests/content-presentation.test.mjs:43:1"
+    },
+    {
+      "title": "local contacts and the mission commander use authored presentation and keep it when hired or retained",
+      "location": "tests/content-presentation.test.mjs:67:1"
+    },
+    {
+      "title": "an authored mission contact keeps its presentation through conversation, save and scene reentry",
+      "location": "tests/content-presentation.test.mjs:93:1"
+    },
+    {
+      "title": "local recruits require a meeting in explicitly controlled territory",
+      "location": "tests/content-presentation.test.mjs:119:1"
+    },
+    {
+      "title": "different residents can start and resolve the same quest without duplicating its state or reward",
+      "location": "tests/content-quests.test.mjs:26:1"
+    },
+    {
+      "title": "new characters retain actual combat injuries and experience across return, save and reentry; fixed progression does not grow",
+      "location": "tests/content-roster.test.mjs:64:1"
+    },
+    {
+      "title": "explicit service, training traits and progress use the same campaign rules; unsupported identity policies fail clearly",
+      "location": "tests/content-roster.test.mjs:88:1"
+    },
+    {
+      "title": "an actual hired casualty remains dead and saveable when its contract expires after a fresh capital victory",
+      "location": "tests/contract-casualty-presence.test.mjs:7:1"
+    },
+    {
+      "title": "removing a confirmed casualty from service clears only its roster presence and never restores its body",
+      "location": "tests/contract-casualty-presence.test.mjs:12:1"
+    },
+    {
+      "title": "older stale deceased-service flags can be repaired without accepting a living actor, health change or revived placement",
+      "location": "tests/contract-casualty-presence.test.mjs:16:1"
+    },
+    {
+      "title": "combined victory keeps squad membership, wounds and finite ammunition accounting",
+      "location": "tests/coordinated-assault.test.mjs:48:1"
+    },
+    {
+      "title": "insufficient attack supplies leave staged squads and the clock unchanged",
+      "location": "tests/coordinated-assault.test.mjs:75:1"
+    },
+    {
+      "title": "loss of the active column selects the existing surviving squad without duplicating its members",
+      "location": "tests/coordinated-assault.test.mjs:87:1"
+    },
+    {
+      "title": "a crowded mountain assault stays staged without consuming gear or committing an unusable battle",
+      "location": "tests/coordinated-assault.test.mjs:98:1"
+    },
+    {
+      "title": "actual critical treatment consumes skill-based work, AP and dressings and replays its second stroke after save",
+      "location": "tests/critical-first-aid.test.mjs:14:1"
+    },
+    {
+      "title": "ordinary field bandaging does not heal and incomplete, unavailable or unpaid care changes nothing",
+      "location": "tests/critical-first-aid.test.mjs:20:1"
+    },
+    {
+      "title": "stabilization does not grant breath, AP, fatigue relief or posture to an exhausted patient",
+      "location": "tests/critical-first-aid.test.mjs:26:1"
+    },
+    {
+      "title": "exploration treatment spends time and supplies with the same work while preserving AP",
+      "location": "tests/critical-first-aid.test.mjs:31:1"
+    },
+    {
+      "title": "civilian partial stabilization preserves wound history and records only actual restored health",
+      "location": "tests/critical-first-aid.test.mjs:35:1"
+    },
+    {
+      "title": "bandaged military wounds survive actual campaign return and require strategic care for further recovery",
+      "location": "tests/critical-first-aid.test.mjs:40:1"
+    },
+    {
+      "title": "saved bandaged wounds reject invalid quantities while older service records remain loadable",
+      "location": "tests/critical-first-aid.test.mjs:50:1"
+    },
+    {
+      "title": "critical combatants cannot act or wake through breath recovery and stabilization grants no immediate action points",
+      "location": "tests/critical-military-condition.test.mjs:15:1"
+    },
+    {
+      "title": "actual damage leaves an incapacitated enemy whose body, wounds and finite equipment persist after victory and new occupation",
+      "location": "tests/critical-military-condition.test.mjs:31:1"
+    },
+    {
+      "title": "an actually hired critical soldier arrives unconscious, receives finite field aid and preserves recovered health through campaign saves",
+      "location": "tests/critical-military-condition.test.mjs:48:1"
+    },
+    {
+      "title": "a daily successor starts its own routine after activation and carries its wounds into later cells",
+      "location": "tests/death-successors.test.mjs:58:1"
+    },
+    {
+      "title": "death during military service activates the same successor without restoring the former NPC",
+      "location": "tests/death-successors.test.mjs:73:1"
+    },
+    {
+      "title": "saved deployments reject malformed start times and a battle rebased to a different hour",
+      "location": "tests/deployment-clock.test.mjs:47:1"
+    },
+    {
+      "title": "critical care increases health once and saved acknowledgements cannot be spent again",
+      "location": "tests/detention-health.test.mjs:20:1"
+    },
+    {
+      "title": "confirmed civilian death opens a character-gated branch immediately without changing its owner identity",
+      "location": "tests/dialogue-conditions.test.mjs:36:1"
+    },
+    {
+      "title": "separate character identities retain separate reward receipts",
+      "location": "tests/dialogue-payments.test.mjs:35:1"
+    },
+    {
+      "title": "replay uses the last reply from that NPC and never reoffers or repays a quest",
+      "location": "tests/dialogue-replay.test.mjs:20:1"
+    },
+    {
+      "title": "fresh campaign dialogue can recruit Cabral, Dorrego and Paroissien after their local gates pass",
+      "location": "tests/dialogue-replay.test.mjs:28:1"
+    },
+    {
+      "title": "direct questions report the current leadership, territorial or regional requirement without recruiting",
+      "location": "tests/dialogue-replay.test.mjs:38:1"
+    },
+    {
+      "title": "replaying a mission report cannot advance the conference a second time",
+      "location": "tests/dialogue-replay.test.mjs:47:1"
+    },
+    {
+      "title": "the real inventory drops the selected issued gun, shows empty hands and recovers the same loaded piece under the soldier",
+      "location": "tests/drop-held-weapons-render.test.mjs:8:1"
+    },
+    {
+      "title": "dropping an actual issued loaded primary preserves the selected secondary and returns the same gun after campaign reentry",
+      "location": "tests/drop-held-weapons.test.mjs:14:1"
+    },
+    {
+      "title": "a selected authored secondary leaves an empty hand and keeps its independent definition and wear on the field",
+      "location": "tests/drop-held-weapons.test.mjs:22:1"
+    },
+    {
+      "title": "declared unfinished work, jam and wear follow a dropped primary through full save, pickup and equip",
+      "location": "tests/drop-held-weapons.test.mjs:27:1"
+    },
+    {
+      "title": "a legacy secondary has actual carried weight that moves once to the ground in one exploration second",
+      "location": "tests/drop-held-weapons.test.mjs:31:1"
+    },
+    {
+      "title": "the production supply quantity control leaves a saved bundle and another selected soldier collects it under its previous owner",
+      "location": "tests/drop-personal-supplies-render.test.mjs:7:1"
+    },
+    {
+      "title": "the production inventory leaves a recovered weapon at the soldiers feet and the field control collects it from the occupied cell",
+      "location": "tests/drop-recovered-weapons-render.test.mjs:7:1"
+    },
+    {
+      "title": "a recovered authored blade can be left at the soldiers feet, saved, revisited and equipped without replacing its source",
+      "location": "tests/drop-recovered-weapons.test.mjs:13:1"
+    },
+    {
+      "title": "drop and collection retain an actual recovered firearm with declared wear, jam and unfinished loading through full saves",
+      "location": "tests/drop-recovered-weapons.test.mjs:22:1"
+    },
+    {
+      "title": "one drop extracts one stored piece, preserves its weight and loaded rounds, and exploration advances once",
+      "location": "tests/drop-recovered-weapons.test.mjs:30:1"
+    },
+    {
+      "title": "dropping rejects an unavailable item, malformed mechanism, full field collection, enemy control or insufficient AP without changing custody",
+      "location": "tests/drop-recovered-weapons.test.mjs:36:1"
+    },
+    {
+      "title": "saved dropped weapons reject false quantities and weights while older omitted fields remain compatible",
+      "location": "tests/drop-recovered-weapons.test.mjs:50:1"
+    },
+    {
+      "title": "collecting the same local drop index in a later field retains the weapon carried from the previous field",
+      "location": "tests/drop-recovered-weapons.test.mjs:57:1"
+    },
+    {
+      "title": "fresh economy has one resource and retired orders cannot consume funds",
+      "location": "tests/economy-web.test.mjs:11:1"
+    },
+    {
+      "title": "daily income matches the screen, pays once at midnight, and survives a reload",
+      "location": "tests/economy-web.test.mjs:16:1"
+    },
+    {
+      "title": "control, damage and blockade change the same income used for payment",
+      "location": "tests/economy-web.test.mjs:23:1"
+    },
+    {
+      "title": "campaign purchases, diplomacy and transport only require pesos",
+      "location": "tests/economy-web.test.mjs:30:1"
+    },
+    {
+      "title": "cash is found through tactical looting and paid once after save and re-entry",
+      "location": "tests/economy-web.test.mjs:37:1"
+    },
+    {
+      "title": "every editor supply reaches its matching carried resource after the economy merge",
+      "location": "tests/editor-main-integration.test.mjs:29:1"
+    },
+    {
+      "title": "money remains inventory for treasury collection while authored supplies keep their type",
+      "location": "tests/editor-main-integration.test.mjs:60:1"
+    },
+    {
+      "title": "the merged scene draws cash once as a coin and ordinary editor items as bags",
+      "location": "tests/editor-main-integration.test.mjs:103:1"
+    },
+    {
+      "title": "ordinary civilians without hp need an unblocked upper surface and clear furniture footprint",
+      "location": "tests/elevation-admission.test.mjs:32:1"
+    },
+    {
+      "title": "roof container IDs and anonymous observed contacts preserve floor without private metadata",
+      "location": "tests/elevation-known-state.test.mjs:41:1"
+    },
+    {
+      "title": "the production controls show empty primary hands after actual recovery and allow the retained authored secondary",
+      "location": "tests/empty-hand-melee-render.test.mjs:10:1"
+    },
+    {
+      "title": "the real inventory puts an owned gun away, saves empty hands, and selects either actual hand explicitly",
+      "location": "tests/empty-hand-melee-render.test.mjs:17:1"
+    },
+    {
+      "title": "a missed punch still spends its AP but cannot reduce health, breath or finite equipment",
+      "location": "tests/empty-hand-melee.test.mjs:20:1"
+    },
+    {
+      "title": "unarmed range, insufficient AP, brace and charge failures spend no resources or random roll",
+      "location": "tests/empty-hand-melee.test.mjs:25:1"
+    },
+    {
+      "title": "an actually disarmed paid arrival can recover, select the retained authored blade, save and return without restoring the primary",
+      "location": "tests/empty-hand-melee.test.mjs:32:1"
+    },
+    {
+      "title": "visits issue and return finite ammunition instead of erasing or generating rounds",
+      "location": "tests/encounters-web.test.mjs:28:1"
+    },
+    {
+      "title": "a recruited commander who died cannot trigger the campaign ending",
+      "location": "tests/ending-speech.test.mjs:24:1"
+    },
+    {
+      "title": "travel completes its current leg and stops before further legs when a remote force arrives",
+      "location": "tests/enemy-groups.test.mjs:23:1"
+    },
+    {
+      "title": "defense includes all local hired soldiers across squads and preserves a remote selected squad",
+      "location": "tests/enemy-groups.test.mjs:26:1"
+    },
+    {
+      "title": "pre-combat retreat preserves troops and gear while coastal occupation remains attackable",
+      "location": "tests/enemy-groups.test.mjs:33:1"
+    },
+    {
+      "title": "survivors without an exit become prisoners and recapture restores their paused service",
+      "location": "tests/enemy-groups.test.mjs:37:1"
+    },
+    {
+      "title": "automatic defense records actual militia losses, equipment and the synchronized clock",
+      "location": "tests/enemy-groups.test.mjs:47:1"
+    },
+    {
+      "title": "full defense snapshot controls wounds and gear despite conflicting supplied reports",
+      "location": "tests/enemy-groups.test.mjs:82:1"
+    },
+    {
+      "title": "cursor cartridges remain finite through two reports and return to personal inventory only after placement",
+      "location": "tests/equipment-cursor-lifecycle.test.mjs:52:1"
+    },
+    {
+      "title": "two hands holding two ordinary cartridges retain both after a deployment report",
+      "location": "tests/equipment-cursor-lifecycle.test.mjs:105:1"
+    },
+    {
+      "title": "a known fallen soldier cursor can be collected through the strategic pool after its real return report",
+      "location": "tests/equipment-cursor-lifecycle.test.mjs:130:1"
+    },
+    {
+      "title": "imported personal rifles cannot be equipped before arrival and blockades delay them",
+      "location": "tests/equipment-imports.test.mjs:6:1"
+    },
+    {
+      "title": "all9 firearms and5blade models plus the matched bayonet variant are purchasable equipment",
+      "location": "tests/equipment-web.test.mjs:8:1"
+    },
+    {
+      "title": "a visible prisoner outside the aimed line is warned from a legal missed-shot trajectory",
+      "location": "tests/firearm-bystander-risk.test.mjs:12:1"
+    },
+    {
+      "title": "mounted field controls apply partial care by mouse and keyboard without granting health beyond stabilization",
+      "location": "tests/first-aid-render.test.mjs:8:1"
+    },
+    {
+      "title": "actual attacks issue authored blades without cartridges and AI chooses the configured secondary at its range",
+      "location": "tests/force-blades.test.mjs:25:1"
+    },
+    {
+      "title": "trained militia retain both chosen slots through switching, save and real campaign return",
+      "location": "tests/force-blades.test.mjs:34:1"
+    },
+    {
+      "title": "a generated primary blade can be recovered without cartridges and kept through retreat and a saved revisit",
+      "location": "tests/force-blades.test.mjs:52:1"
+    },
+    {
+      "title": "tests/fresh-campaign-recovery.test.mjs",
+      "location": "tests/fresh-campaign-recovery.test.mjs:1:1"
+    },
+    {
+      "title": "tests/fresh-capital-recovery.test.mjs",
+      "location": "tests/fresh-capital-recovery.test.mjs:1:1"
+    },
+    {
+      "title": "fresh created force wins the coastal opening with real losses, paid replacements and saved replay",
+      "location": "tests/fresh-coastal-route.test.mjs:6:39"
+    },
+    {
+      "title": "fresh hired force wins the coastal opening with real losses, paid replacements and saved replay",
+      "location": "tests/fresh-coastal-route.test.mjs:6:39"
+    },
+    {
+      "title": "a fresh free officer and local recruits complete the opening without bulletin hires, preserving paid recovery and permanent losses",
+      "location": "tests/fresh-coastal-route.test.mjs:13:1"
+    },
+    {
+      "title": "a fresh campaign prepares Cuyo with real battles, living roles, purchases, funding and physical late recruitment",
+      "location": "tests/fresh-cuyo-route.test.mjs:2:1"
+    },
+    {
+      "title": "a fresh stock campaign wins all localities with actual combat and continues after saved victory and service expiry",
+      "location": "tests/fresh-ending-route.test.mjs:5:1"
+    },
+    {
+      "title": "a fresh Retiro force reaches Yatasto through paid replacements and actual northern victories with saved replay",
+      "location": "tests/fresh-northern-route.test.mjs:5:1"
+    },
+    {
+      "title": "actual tactical militia casualties reduce strategic counts and never respawn on reload",
+      "location": "tests/garrison-web.test.mjs:11:1"
+    },
+    {
+      "title": "NPC health admission keeps healthy legacy defaults and the old dead-trap flag but rejects incoherent living state",
+      "location": "tests/grenade-npc-lifecycle.test.mjs:52:1"
+    },
+    {
+      "title": "the ordinary stock control attacks the selected live enemy and saves the actual firearm, then shows the selected hand action",
+      "location": "tests/held-firearm-buttstock-render.test.mjs:9:1"
+    },
+    {
+      "title": "stock range, AP, bayonet brace and charge failures leave all resources and the random stream unchanged",
+      "location": "tests/held-firearm-buttstock.test.mjs:19:1"
+    },
+    {
+      "title": "an actual paid hire can stock-strike with an authored gun, save, retreat and return with the same gun and secondary",
+      "location": "tests/held-firearm-buttstock.test.mjs:36:1"
+    },
+    {
+      "title": "same-hour naval raid is resolved before an arrival is admitted",
+      "location": "tests/hiring-arrivals.test.mjs:56:1"
+    },
+    {
+      "title": "the strategic view explains the assigned character and blocked project after confirmed death",
+      "location": "tests/historical-loss-render.test.mjs:5:1"
+    },
+    {
+      "title": "a fresh Mendoza victory cannot conceal the subsequent death of its required engineer",
+      "location": "tests/historical-loss.test.mjs:6:1"
+    },
+    {
+      "title": "a serving assigned engineer death fails the original campaign at the active checkpoint and rejects a revived active save",
+      "location": "tests/historical-loss.test.mjs:12:1"
+    },
+    {
+      "title": "an actual completed foundry or authored progression permits continued play after its engineer dies",
+      "location": "tests/historical-loss.test.mjs:21:1"
+    },
+    {
+      "title": "a recruited historical commander killed by an enemy ends the campaign before field-result settlement",
+      "location": "tests/historical-loss.test.mjs:29:1"
+    },
+    {
+      "title": "actual purchases pin a seeded deadline, pay once and deliver usable authored weapon instances at the chosen port",
+      "location": "tests/import-supply-rules.test.mjs:22:1"
+    },
+    {
+      "title": "a real same-hour naval raid blocks the due import before it enters the armory",
+      "location": "tests/import-supply-rules.test.mjs:44:1"
+    },
+    {
+      "title": "editor appearances modify the enlarged textured building without changing its collision plan",
+      "location": "tests/integrated-building-editor.test.mjs:15:1"
+    },
+    {
+      "title": "changing a campaign building type removes the previous silhouette and preserves finish choices",
+      "location": "tests/integrated-building-editor.test.mjs:32:1"
+    },
+    {
+      "title": "incapable, autonomous, exhausted or full-pack soldiers cannot forward an item",
+      "location": "tests/inventory-relay.test.mjs:49:1"
+    },
+    {
+      "title": "S4 orderDescriptors cover every order id with Spanish labels and kinds",
+      "location": "tests/ja2-hud.test.mjs:149:1"
+    },
+    {
+      "title": "larger authored landmarks apply only to new layouts and preserve the compact plans",
+      "location": "tests/large-sectors.test.mjs:61:1"
+    },
+    {
+      "title": "all fifteen expanded locations fit in the existing save limit and round-trip",
+      "location": "tests/large-sectors.test.mjs:100:1"
+    },
+    {
+      "title": "the operations map shows the delivered quantity and exact stopped duration beside the clock",
+      "location": "tests/logistics-attention-render.test.mjs:8:1"
+    },
+    {
+      "title": "receipts distinguish a local depot, general reserve and the armory, and escape task names",
+      "location": "tests/logistics-attention-render.test.mjs:12:1"
+    },
+    {
+      "title": "mixed receipts show the completed quantity alongside the separate obstruction",
+      "location": "tests/logistics-attention-render.test.mjs:26:1"
+    },
+    {
+      "title": "a real paid workshop order stops the clock on completion and credits its goods once",
+      "location": "tests/logistics-attention.test.mjs:18:1"
+    },
+    {
+      "title": "all deliveries in the completion hour are grouped after their actual credit",
+      "location": "tests/logistics-attention.test.mjs:25:1"
+    },
+    {
+      "title": "a paid convoy reports the destination depot and its return to the general reserve",
+      "location": "tests/logistics-attention.test.mjs:33:1"
+    },
+    {
+      "title": "a blockade or occupied port stops once for both pending imports and then permits continued waiting",
+      "location": "tests/logistics-attention.test.mjs:39:1"
+    },
+    {
+      "title": "blocked workshop and convoy routes do not report completion until supply access returns",
+      "location": "tests/logistics-attention.test.mjs:47:1"
+    },
+    {
+      "title": "production, contract and assignment attention retain the same fully processed hour",
+      "location": "tests/logistics-attention.test.mjs:55:1"
+    },
+    {
+      "title": "midnight revenue is applied before a production completion pauses the wait",
+      "location": "tests/logistics-attention.test.mjs:60:1"
+    },
+    {
+      "title": "blocking travel and tactical synchronization finish their complete durations despite deliveries",
+      "location": "tests/logistics-attention.test.mjs:64:1"
+    },
+    {
+      "title": "queued travel retains partial progress when a delivery stops explicit waiting",
+      "location": "tests/logistics-attention.test.mjs:68:1"
+    },
+    {
+      "title": "an encounter remains actionable when a delivery finishes in its arrival hour",
+      "location": "tests/logistics-attention.test.mjs:73:1"
+    },
+    {
+      "title": "public receipts expose delivered goods without queue internals or mutable references",
+      "location": "tests/logistics-attention.test.mjs:78:1"
+    },
+    {
+      "title": "invalid saved receipts are rejected and an absent old field defaults to no notice",
+      "location": "tests/logistics-attention.test.mjs:83:1"
+    },
+    {
+      "title": "a paid imported weapon and a paid cargo offer each stop at their actual arrival time",
+      "location": "tests/logistics-attention.test.mjs:91:1"
+    },
+    {
+      "title": "an already overdue blocked cargo stops at the current hour without credit or repeated pauses after saving",
+      "location": "tests/logistics-interruptions.test.mjs:15:1"
+    },
+    {
+      "title": "a real paid import is reported only when due, keeps its payment and cargo, then delivers exactly once",
+      "location": "tests/logistics-interruptions.test.mjs:21:1"
+    },
+    {
+      "title": "a changed obstruction is actionable once and a resolved route can report a later interruption",
+      "location": "tests/logistics-interruptions.test.mjs:31:1"
+    },
+    {
+      "title": "separate identical pending orders are acknowledged together and an added order still needs attention",
+      "location": "tests/logistics-interruptions.test.mjs:38:1"
+    },
+    {
+      "title": "completed and interrupted jobs share the same fully processed hour with separate meanings",
+      "location": "tests/logistics-interruptions.test.mjs:53:1"
+    },
+    {
+      "title": "a convoy snow closure uses its existing delayed status rather than inventing a material shortage",
+      "location": "tests/logistics-interruptions.test.mjs:58:1"
+    },
+    {
+      "title": "blocking travel finishes its duration and leaves an unseen overdue interruption for the next explicit wait",
+      "location": "tests/logistics-interruptions.test.mjs:65:1"
+    },
+    {
+      "title": "old saves migrate and malformed interruption notices or acknowledgement records are rejected",
+      "location": "tests/logistics-interruptions.test.mjs:75:1"
+    },
+    {
+      "title": "a long route stops at a real sector when the squad needs rest",
+      "location": "tests/march-fatigue.test.mjs:17:1"
+    },
+    {
+      "title": "contract departure stops charging a soldier who no longer travels",
+      "location": "tests/march-fatigue.test.mjs:25:1"
+    },
+    {
+      "title": "expired and dismissed medical staff leave no hidden work, free supply or invalid assignment",
+      "location": "tests/medical-care.test.mjs:35:1"
+    },
+    {
+      "title": "medical supply purchases and saved assignments reject invalid quantities, funds and forged roles",
+      "location": "tests/medical-care.test.mjs:40:1"
+    },
+    {
+      "title": "a wounded world resident receives strategic care after real recruitment and returns with the recovered health",
+      "location": "tests/medical-care.test.mjs:47:1"
+    },
+    {
+      "title": "the mounted meeting conversation waits for the guest before completing and saving its quest reward",
+      "location": "tests/meeting-arrivals-ui.test.mjs:8:1"
+    },
+    {
+      "title": "the mounted conversation finishes a meeting, frees the guest and saves one quest reward after a double click",
+      "location": "tests/meeting-release-ui.test.mjs:9:1"
+    },
+    {
+      "title": "older saves gain the expanded roster without changing existing volunteers",
+      "location": "tests/mercenary-roster.test.mjs:70:1"
+    },
+    {
+      "title": "replaced officer identities retain an existing weekly contract, injuries and experience",
+      "location": "tests/mercenary-roster.test.mjs:97:1"
+    },
+    {
+      "title": "artillery can fund a multiple-item purchase with exact retained loading and a net cash payout",
+      "location": "tests/merchant-exchange.test.mjs:23:1"
+    },
+    {
+      "title": "multiple undeployed cannons materialize once per exchanged piece",
+      "location": "tests/merchant-exchange.test.mjs:38:1"
+    },
+    {
+      "title": "insufficient merchant change and lost artillery crew reject all offered goods",
+      "location": "tests/merchant-exchange.test.mjs:46:1"
+    },
+    {
+      "title": "El Plumerillo pays its artillery preference through direct sales and the same exchange offer",
+      "location": "tests/merchant-preferences.test.mjs:30:1"
+    },
+    {
+      "title": "reported absent weapons and empty hands persist while their loose ammunition stays with the owner",
+      "location": "tests/merchants.test.mjs:73:1"
+    },
+    {
+      "title": "merchant clocks and exact stored items migrate and round-trip without stock renewal",
+      "location": "tests/merchants.test.mjs:79:1"
+    },
+    {
+      "title": "medical purchases and provision refills respect finite pockets and roll back payment",
+      "location": "tests/merchants.test.mjs:98:1"
+    },
+    {
+      "title": "automatic cartridge issue respects a full or legacy overfull pack in both deployment paths",
+      "location": "tests/merchants.test.mjs:104:1"
+    },
+    {
+      "title": "actual military casualties persist through saved sector visits with finite equipment and unchanged deaths",
+      "location": "tests/military-remains.test.mjs:16:1"
+    },
+    {
+      "title": "a retained casualty cannot rejoin a living deployment or disguise an unrelated or revived report",
+      "location": "tests/military-remains.test.mjs:54:1"
+    },
+    {
+      "title": "a real second battle settles and saves with the original player and enemy bodies in its report",
+      "location": "tests/military-remains.test.mjs:66:1"
+    },
+    {
+      "title": "mounted selection skips militia while the visible garrison remains a legal medical target",
+      "location": "tests/militia-autonomy-render.test.mjs:21:1"
+    },
+    {
+      "title": "mounted end-turn resolves an actual paid defender reaction and saves its wound, finite gear and earned rank",
+      "location": "tests/militia-autonomy-render.test.mjs:32:1"
+    },
+    {
+      "title": "a local defender independently loads and fires finite ammunition through normal combat rounds",
+      "location": "tests/militia-autonomy.test.mjs:11:1"
+    },
+    {
+      "title": "militia spend remaining AP after actual reactions without receiving another issue in the allied phase",
+      "location": "tests/militia-autonomy.test.mjs:15:1"
+    },
+    {
+      "title": "enemy-first contact defers the allied phase until the player responds and saved continuation is deterministic",
+      "location": "tests/militia-autonomy.test.mjs:19:1"
+    },
+    {
+      "title": "direct militia commands reject without spending health, gear, time or AP while medical treatment remains legal",
+      "location": "tests/militia-autonomy.test.mjs:23:1"
+    },
+    {
+      "title": "unconscious militia cannot attack or spend their finite equipment during the allied phase",
+      "location": "tests/militia-autonomy.test.mjs:28:1"
+    },
+    {
+      "title": "tests/militia-combat-progression-render.test.mjs",
+      "location": "tests/militia-combat-progression-render.test.mjs:1:1"
+    },
+    {
+      "title": "full regular garrisons cannot buy a veteran course and the map explains combat promotion",
+      "location": "tests/militia-controls-render.test.mjs:10:1"
+    },
+    {
+      "title": "the selected course reports its actual treasury shortage and cannot spend funds from a disabled control",
+      "location": "tests/militia-course-choice.test.mjs:18:1"
+    },
+    {
+      "title": "tests/militia-distribution-render.test.mjs",
+      "location": "tests/militia-distribution-render.test.mjs:1:1"
+    },
+    {
+      "title": "real paid kills promote a survivor through two ranks without a new soldier, healing or equipment",
+      "location": "tests/militia-experience.test.mjs:32:1"
+    },
+    {
+      "title": "mounted exploration pause and hidden-document guards stop patrols while an active tick saves their real movement",
+      "location": "tests/militia-exploration-render.test.mjs:7:1"
+    },
+    {
+      "title": "lost-contact combat uses the same map search and pays from the remaining allied budget",
+      "location": "tests/militia-exploration.test.mjs:54:1"
+    },
+    {
+      "title": "supply exhaustion interrupts a long wait, survives a save and resumes after paid resupply",
+      "location": "tests/militia-medical-care.test.mjs:48:1"
+    },
+    {
+      "title": "the campaign blocks an unstable promotion, displays its real trainees and cancels without healing or replacing them",
+      "location": "tests/militia-training-identities-render.test.mjs:9:1"
+    },
+    {
+      "title": "actual corpse loot supersedes a stale dead ally cache without duplicating the fitting on restore",
+      "location": "tests/mission-ally-fitting-ownership.test.mjs:38:1"
+    },
+    {
+      "title": "explicit local squads deploy together with one commander and complete save and return records",
+      "location": "tests/mission-assault.test.mjs:21:1"
+    },
+    {
+      "title": "completed Yatasto equipment can be collected and dropped without changing the separate town pool",
+      "location": "tests/mission-sector-inventory.test.mjs:13:1"
+    },
+    {
+      "title": "mission pickup retains parent occupation, local soldier, transit, consciousness and pending encounter guards",
+      "location": "tests/mission-sector-inventory.test.mjs:25:1"
+    },
+    {
+      "title": "mission sources retain finite quantity, stale-row and walking-path checks",
+      "location": "tests/mission-sector-inventory.test.mjs:31:1"
+    },
+    {
+      "title": "public map equipment includes distinct visited sites without hidden contents or snapshot data",
+      "location": "tests/mission-sector-inventory.test.mjs:40:1"
+    },
+    {
+      "title": "Yatasto requires physical reports and decision and persists separately from Tucum\u00e1n",
+      "location": "tests/missions-web.test.mjs:8:1"
+    },
+    {
+      "title": "unfinished conference cannot finish remotely or skip Belgrano, and can resume",
+      "location": "tests/missions-web.test.mjs:11:1"
+    },
+    {
+      "title": "San Mart\u00edn is a temporary combat ally and only verified surviving victory completes mission",
+      "location": "tests/missions-web.test.mjs:14:1"
+    },
+    {
+      "title": "fallen allied commander makes San Lorenzo an explicit terminal mission defeat",
+      "location": "tests/missions-web.test.mjs:19:1"
+    },
+    {
+      "title": "a casualty in an exploration report also affects the returning squad once",
+      "location": "tests/morale.test.mjs:43:1"
+    },
+    {
+      "title": "unpaid legacy payroll lowers morale and is not lost when a deployed soldier returns",
+      "location": "tests/morale.test.mjs:70:1"
+    },
+    {
+      "title": "an unseen civilian blocks actual passage without rejecting the distant plan",
+      "location": "tests/movement-knowledge.test.mjs:46:1"
+    },
+    {
+      "title": "loyalist interior raids seize the supply junction and sack convoy stores",
+      "location": "tests/narrative-web.test.mjs:19:1"
+    },
+    {
+      "title": "established-area mixed terms survive field visit, expires, save, and depleted-kit rehire",
+      "location": "tests/new-start-stress.test.mjs:9:1"
+    },
+    {
+      "title": "trainer contract expiry releases reserved promotions without duplicating militia",
+      "location": "tests/new-start-stress.test.mjs:16:1"
+    },
+    {
+      "title": "dialogue movement stops for incapacity, occupants and an alarmed door without losing its order",
+      "location": "tests/npc-ai.test.mjs:156:1"
+    },
+    {
+      "title": "issued ponchos leave local stock once, remain with the NPC through saves and visits, and reward once",
+      "location": "tests/npc-gifts.test.mjs:34:1"
+    },
+    {
+      "title": "a living residents figure opens the actual ground supply picker without taking that residents personal supplies",
+      "location": "tests/occupied-ground-collection-render.test.mjs:15:1"
+    },
+    {
+      "title": "a living residents figure also permits ordinary collection of the exact loaded gun underneath without searching its owner",
+      "location": "tests/occupied-ground-collection-render.test.mjs:18:1"
+    },
+    {
+      "title": "after the loose bundle is empty, the same figure still permits finite unconscious-resident collection and ignores held or container stock",
+      "location": "tests/occupied-ground-collection-render.test.mjs:21:1"
+    },
+    {
+      "title": "tests/opening-playthrough.test.mjs",
+      "location": "tests/opening-playthrough.test.mjs:1:1"
+    },
+    {
+      "title": "new recruits draw initial clothing once from finite stock, and reserve withdrawals remain physical pocket items",
+      "location": "tests/outfit-equipment.test.mjs:52:1"
+    },
+    {
+      "title": "an outfit returns, saves, stows on the map and redeploys without another stock issue",
+      "location": "tests/outfit-equipment.test.mjs:59:1"
+    },
+    {
+      "title": "six issued ponchos exhaust stock and the next recruit receives an empty outfit slot",
+      "location": "tests/outfit-equipment.test.mjs:76:1"
+    },
+    {
+      "title": "a bought pistol forms a pair through real pockets and retains spent loads through campaign return and reentry",
+      "location": "tests/paired-pistol-campaign.test.mjs:13:1"
+    },
+    {
+      "title": "a bought spare loads through one R order without swapping hands and preserves finite charges through campaign return",
+      "location": "tests/paired-reload-campaign.test.mjs:14:1"
+    },
+    {
+      "title": "partial progress belongs to the gun through actual swaps and finite corpse collection",
+      "location": "tests/partial-firearm-reloads.test.mjs:26:1"
+    },
+    {
+      "title": "invalid progress and unavailable reloads are rejected without creating charges or work",
+      "location": "tests/partial-firearm-reloads.test.mjs:32:1"
+    },
+    {
+      "title": "a paid campaign soldier saves actual partial weapon work and resumes without a cartridge or treasury grant",
+      "location": "tests/partial-firearm-reloads.test.mjs:39:1"
+    },
+    {
+      "title": "long exploration loading stops on actual contact or collapse and keeps only the elapsed work",
+      "location": "tests/partial-firearm-reloads.test.mjs:48:1"
+    },
+    {
+      "title": "the real ground selector chooses among colocated bundles, collects the requested quantity and saves the untouched remainder",
+      "location": "tests/partial-ground-supply-pickup-render.test.mjs:13:1"
+    },
+    {
+      "title": "opening the ground selector pauses the ordinary exploration clock and cancel or Escape spends nothing",
+      "location": "tests/partial-ground-supply-pickup-render.test.mjs:16:1"
+    },
+    {
+      "title": "the ground selector explains an overflowing whole bundle and accepts only the reduced exact quantity",
+      "location": "tests/partial-ground-supply-pickup-render.test.mjs:19:1"
+    },
+    {
+      "title": "the battlefield shows actual partial reload cost and remaining work through pointer, saved continuation and keyboard",
+      "location": "tests/partial-reload-controls.test.mjs:6:1"
+    },
+    {
+      "title": "actual import orders use reputation prices and retain shipping delay",
+      "location": "tests/politics-web.test.mjs:7:1"
+    },
+    {
+      "title": "the downloadable authored post campaign finishes its complete paid combat and dialogue route with saved casualties",
+      "location": "tests/post-campaign.test.mjs:9:1"
+    },
+    {
+      "title": "missing the authored seven-day deadline produces a saved loss instead of a false ending",
+      "location": "tests/post-campaign.test.mjs:17:1"
+    },
+    {
+      "title": "San Lorenzo settles after actual post-victory exploration, field care, loot and reload",
+      "location": "tests/post-victory-mission.test.mjs:22:1"
+    },
+    {
+      "title": "mission victory still requires a cleared result and no standing enemies",
+      "location": "tests/post-victory-mission.test.mjs:34:1"
+    },
+    {
+      "title": "a commander who dies during post-victory exploration still causes permanent mission defeat",
+      "location": "tests/post-victory-mission.test.mjs:43:1"
+    },
+    {
+      "title": "the mounted game can explore the won mission and use its ordinary return control",
+      "location": "tests/post-victory-mission.test.mjs:52:1"
+    },
+    {
+      "title": "paid relief starts at the real arrival edge, fights, releases prisoners and escorts them back with permanent losses",
+      "location": "tests/prisoner-rescue-route.test.mjs:5:1"
+    },
+    {
+      "title": "real preparation and funding complete ordered authored chapters once and survive the engineer contract expiry",
+      "location": "tests/project-conditions.test.mjs:16:1"
+    },
+    {
+      "title": "notebook receipts are acknowledged quantities and incomplete territorial requirements remain visible",
+      "location": "tests/quest-journal.test.mjs:14:1"
+    },
+    {
+      "title": "an actual required civilian death fails an active quest once and preserves its cause",
+      "location": "tests/quest-survival.test.mjs:18:1"
+    },
+    {
+      "title": "an already dead required character blocks accepting a quest without creating progress",
+      "location": "tests/quest-survival.test.mjs:22:1"
+    },
+    {
+      "title": "death after completion does not revoke a quest result or grant another reward",
+      "location": "tests/quest-survival.test.mjs:26:1"
+    },
+    {
+      "title": "wounds, local recruitment and dismissal do not count as a required character death",
+      "location": "tests/quest-survival.test.mjs:30:1"
+    },
+    {
+      "title": "an actual enemy kill in a prepared compact battle confirms a required serving character death before settlement",
+      "location": "tests/quest-survival.test.mjs:34:1"
+    },
+    {
+      "title": "survival references and saved death evidence reject missing, duplicate or inconsistent data",
+      "location": "tests/quest-survival.test.mjs:40:1"
+    },
+    {
+      "title": "a deadline already due at a batched death checkpoint resolves once with the earlier timed cause",
+      "location": "tests/quest-survival.test.mjs:45:1"
+    },
+    {
+      "title": "each local errand has exact goods and northern route conditions",
+      "location": "tests/quests-web.test.mjs:17:1"
+    },
+    {
+      "title": "partial physical delivery stays with a dead contact and cannot earn the completion reward",
+      "location": "tests/quests-web.test.mjs:19:1"
+    },
+    {
+      "title": "legacy version1 saves migrate without losing historical stats",
+      "location": "tests/recruitment-web.test.mjs:26:1"
+    },
+    {
+      "title": "Yatasto and San Lorenzo retain their regional weather on their real mission deployment paths",
+      "location": "tests/regional-weather.test.mjs:90:1"
+    },
+    {
+      "title": "a hired-only squad earns its first expansion from Retiro and retains injuries and equipment on return",
+      "location": "tests/retiro-expansion.test.mjs:14:1"
+    },
+    {
+      "title": "one created character can start and deploy with no treasury balance",
+      "location": "tests/retiro-start.test.mjs:39:1"
+    },
+    {
+      "title": "the ordinary body-loot control shows the recovered authored blade image and equips it through the production inventory",
+      "location": "tests/secondary-loot-render.test.mjs:7:1"
+    },
+    {
+      "title": "a killed issued soldier gives up its authored secondary once, with identity, wear, saved swaps and reentry",
+      "location": "tests/secondary-loot.test.mjs:16:1"
+    },
+    {
+      "title": "ordinary collect-all takes both slots once and a secondary-only body remains collectible",
+      "location": "tests/secondary-loot.test.mjs:24:1"
+    },
+    {
+      "title": "an unconscious hired soldier returns with an empty secondary slot; reentry and armory replacement do not restore the stolen blade",
+      "location": "tests/secondary-loot.test.mjs:29:1"
+    },
+    {
+      "title": "a wounded militia survivor keeps its empty secondary slot in finite garrison storage",
+      "location": "tests/secondary-loot.test.mjs:38:1"
+    },
+    {
+      "title": "secondary recovery preserves independent wear and definition and rejects distance, consciousness and insufficient AP",
+      "location": "tests/secondary-loot.test.mjs:45:1"
+    },
+    {
+      "title": "frontier requisition trades immediate horses for reduced later local contributions",
+      "location": "tests/sector-income.test.mjs:50:1"
+    },
+    {
+      "title": "visited mission sites appear as labelled inventory choices beside their parent sector",
+      "location": "tests/sector-inventory-render.test.mjs:23:1"
+    },
+    {
+      "title": "loose map cartridges stay with their selected carrier and enter a visit exactly once",
+      "location": "tests/sector-inventory.test.mjs:85:1"
+    },
+    {
+      "title": "a carrier without a firearm retains picked cartridges through deployment and campaign return",
+      "location": "tests/sector-inventory.test.mjs:91:1"
+    },
+    {
+      "title": "attack and forced defense each account for personal cartridges without charging shared stock twice",
+      "location": "tests/sector-inventory.test.mjs:96:1"
+    },
+    {
+      "title": "personal cartridges can be dropped on the map and recovered tactically without disappearing on return",
+      "location": "tests/sector-inventory.test.mjs:154:1"
+    },
+    {
+      "title": "a loaded gun carried into a visit can be equipped and returned without losing its charge",
+      "location": "tests/sector-inventory.test.mjs:177:1"
+    },
+    {
+      "title": "unavailable, concealed and wrong-cell NPCs do not reveal gift rules or consume anything",
+      "location": "tests/selected-npc-gifts.test.mjs:85:1"
+    },
+    {
+      "title": "supplies, recovered weapons and the unused loadout weapon share exactly four large and eight small pockets",
+      "location": "tests/shared-personal-pockets.test.mjs:17:1"
+    },
+    {
+      "title": "a blade switch refuses to hide the rifle when all large pockets are occupied; dropping one permits it",
+      "location": "tests/shared-personal-pockets.test.mjs:23:1"
+    },
+    {
+      "title": "full recipient previews and actual transfers reject without changing ownership, AP, loads or time",
+      "location": "tests/shared-personal-pockets.test.mjs:28:1"
+    },
+    {
+      "title": "whole ground pickup takes only the remaining stack space; explicit excess and insufficient AP are atomic",
+      "location": "tests/shared-personal-pockets.test.mjs:33:1"
+    },
+    {
+      "title": "collect all leaves an unfittable rifle and finite supply remainder on the body instead of losing them",
+      "location": "tests/shared-personal-pockets.test.mjs:39:1"
+    },
+    {
+      "title": "pocket placement and active hand persist through save, campaign return and re-entry",
+      "location": "tests/shared-personal-pockets.test.mjs:48:1"
+    },
+    {
+      "title": "an empty body reports no equipment without claiming that the collectors pockets are full",
+      "location": "tests/shared-personal-pockets.test.mjs:61:1"
+    },
+    {
+      "title": "posta charges a remount per started stage; save/reload does not charge twice",
+      "location": "tests/squad-travel.test.mjs:72:1"
+    },
+    {
+      "title": "invalid saved journey progress, routes and double deployment are rejected",
+      "location": "tests/squad-travel.test.mjs:78:1"
+    },
+    {
+      "title": "mounted production armory shows the actual fired emplacement separately from unissued battery stock",
+      "location": "tests/stationed-artillery-render.test.mjs:8:1"
+    },
+    {
+      "title": "paid stock is issued once and real victory retains the same owned physical cannon",
+      "location": "tests/stationed-artillery.test.mjs:13:1"
+    },
+    {
+      "title": "actual firing, return, full saves and repeated visits retain the unloaded gun, finite reserve and full-map position",
+      "location": "tests/stationed-artillery.test.mjs:18:1"
+    },
+    {
+      "title": "actual withdrawal leaves the issued gun to the occupation and a real return victory recaptures its exact reserve",
+      "location": "tests/stationed-artillery.test.mjs:30:1"
+    },
+    {
+      "title": "legacy repeated projections are reconciled against paid stock once and retain the latest actual load",
+      "location": "tests/stationed-artillery.test.mjs:36:1"
+    },
+    {
+      "title": "an actual reload spends reserve once and an empty battery choice leaves that saved emplacement in place",
+      "location": "tests/stationed-artillery.test.mjs:42:1"
+    },
+    {
+      "title": "a second paid piece joins the returned battlefield without replacing or overlapping the captured gun",
+      "location": "tests/stationed-artillery.test.mjs:48:1"
+    },
+    {
+      "title": "current full saves reject duplicate physical ownership, missing receipts and invalid serials or tactical identities",
+      "location": "tests/stationed-artillery.test.mjs:60:1"
+    },
+    {
+      "title": "the separate Yatasto conference does not copy stationed town artillery into its mission scene",
+      "location": "tests/stationed-artillery.test.mjs:68:1"
+    },
+    {
+      "title": "the mounted armory purchases and equips the selected authored firearm instance",
+      "location": "tests/story-editor.test.mjs:275:1"
+    },
+    {
+      "title": "the editor builds connected dialogue passages with dependency protection, undo, copy and a playable saved branch",
+      "location": "tests/story-editor.test.mjs:376:1"
+    },
+    {
+      "title": "the mounted armory sells an authored blade and keeps its displayed identity after equipping",
+      "location": "tests/story-editor.test.mjs:464:1"
+    },
+    {
+      "title": "the editor assigns strategic functions with undo, protects assigned characters and launches their actual services",
+      "location": "tests/story-editor.test.mjs:563:1"
+    },
+    {
+      "title": "the editor authors militia thresholds and gains with validation, undo, reset and actual pinned instruction",
+      "location": "tests/story-editor.test.mjs:699:1"
+    },
+    {
+      "title": "the editor authors finite workshop cash and local gun prices with undo, reset, validation and real saved trades",
+      "location": "tests/story-editor.test.mjs:757:1"
+    },
+    {
+      "title": "conditions see an actually deployed critical patient before settlement and reject unrelated scene health",
+      "location": "tests/story-health-conditions.test.mjs:26:1"
+    },
+    {
+      "title": "actual finite treatment opens an authored response and completes a rescue chapter only on saved departure",
+      "location": "tests/story-health-conditions.test.mjs:38:1"
+    },
+    {
+      "title": "an authored unconsciousness failure uses actual enemy damage immediately and never mistakes the deployed service sheet for current health",
+      "location": "tests/story-health-conditions.test.mjs:63:1"
+    },
+    {
+      "title": "actual tactical spending uses current deployed quantities rather than stale service stock, including after save and settlement",
+      "location": "tests/story-supply-conditions.test.mjs:25:1"
+    },
+    {
+      "title": "actual resident collection and finite care open a stock-gated response and settle a saved chapter without granting supplies",
+      "location": "tests/story-supply-conditions.test.mjs:31:1"
+    },
+    {
+      "title": "stock failure conditions read actual in-scene consumption immediately and references protect their character",
+      "location": "tests/story-supply-conditions.test.mjs:38:1"
+    },
+    {
+      "title": "a named mission ally condition reads its actually spent ration before the service record is acknowledged",
+      "location": "tests/story-supply-conditions.test.mjs:43:1"
+    },
+    {
+      "title": "income readout applies control, damage and blockade without mutation",
+      "location": "tests/strategic-map.test.mjs:32:1"
+    },
+    {
+      "title": "actual military wounds consume configured hourly health through waits and saves without a daily heal",
+      "location": "tests/strategic-military-wounds.test.mjs:20:1"
+    },
+    {
+      "title": "finite doctor treatment precedes hourly loss and rest alone cannot stop an actual service wound",
+      "location": "tests/strategic-military-wounds.test.mjs:28:1"
+    },
+    {
+      "title": "a remote service wound advances once while another squad acts, without also damaging deployed troops",
+      "location": "tests/strategic-military-wounds.test.mjs:34:1"
+    },
+    {
+      "title": "a real wound can end service during a march, preserving one death and the last reached cell",
+      "location": "tests/strategic-military-wounds.test.mjs:43:1"
+    },
+    {
+      "title": "a strategic death triggers an authored ending at that hour and remains a loss after saving",
+      "location": "tests/strategic-military-wounds.test.mjs:50:1"
+    },
+    {
+      "title": "the campaign screen assigns militia care, displays actual wounds, spends dressings and restores deployment after care",
+      "location": "tests/strategic-militia-care-render.test.mjs:9:1"
+    },
+    {
+      "title": "an exhausted doctor can rest through campaign time and resume finite treatment without a free assignment grant",
+      "location": "tests/strategic-rest.test.mjs:15:1"
+    },
+    {
+      "title": "rest does not stop bleeding or grant critical healing, and a patient without a doctor recovers only breath and fatigue",
+      "location": "tests/strategic-rest.test.mjs:28:1"
+    },
+    {
+      "title": "rest blocks deployment and militia work, and cancellation or occupation clears partial healing without a grant",
+      "location": "tests/strategic-rest.test.mjs:35:1"
+    },
+    {
+      "title": "contract expiry stops rest and clears partial hours without an extra recovery interval",
+      "location": "tests/strategic-rest.test.mjs:43:1"
+    },
+    {
+      "title": "a resting headquarters squad recovers while a different squad makes an actual march",
+      "location": "tests/strategic-rest.test.mjs:47:1"
+    },
+    {
+      "title": "a supplied medic treats an adjacent unconscious patient without taking the patient\u2019s equipment",
+      "location": "tests/tactical-ai-sharing.test.mjs:123:1"
+    },
+    {
+      "title": "a donor supplies stabilization when a critical patient has no remaining bleeding",
+      "location": "tests/tactical-ai-sharing.test.mjs:136:1"
+    },
+    {
+      "title": "every dynamic architecture renderer URL is registered by the static build verifier",
+      "location": "tests/tactical-assets-build.test.mjs:138:1"
+    },
+    {
+      "title": "all six architecture PNGs reject missing files, wrong dimensions and altered pixels",
+      "location": "tests/tactical-assets-build.test.mjs:172:1"
+    },
+    {
+      "title": "a hostile retreat keeps unconscious survivors and exact ammunition in captive custody until recapture",
+      "location": "tests/tactical-exit-campaign.test.mjs:42:1"
+    },
+    {
+      "title": "a partial exit saves without relocating the pending squad or inventing a legacy departure",
+      "location": "tests/tactical-exit-campaign.test.mjs:60:1"
+    },
+    {
+      "title": "later visits recover prior hired-body ammunition once without reusing the original issue credit",
+      "location": "tests/tactical-exit-campaign.test.mjs:85:1"
+    },
+    {
+      "title": "direct militia supply orders are rejected and a living garrison retains finite rounds across visits",
+      "location": "tests/tactical-exit-campaign.test.mjs:93:1"
+    },
+    {
+      "title": "equipping a loaded enemy gun preserves its chamber round when its new owner received no cartridges",
+      "location": "tests/tactical-exit-campaign.test.mjs:98:1"
+    },
+    {
+      "title": "paid squad save retains stacked soldiers, finite dropped ammunition, roof geometry and resident reentry",
+      "location": "tests/tactical-space-reentry.test.mjs:26:1"
+    },
+    {
+      "title": "authored firearm and blade values retain explicit loose-bayonet tuning",
+      "location": "tests/tactical-web.test.mjs:21:1"
+    },
+    {
+      "title": "mounted troops cross midnight without a separate horse simulation",
+      "location": "tests/time-bridge.test.mjs:35:1"
+    },
+    {
+      "title": "a paid deployed patient speaks after actual finite stabilization restores consciousness, with no replay after save or failed care",
+      "location": "tests/treatment-speech.test.mjs:22:1"
+    },
+    {
+      "title": "an authored resident responds to actual care and keeps the pinned voice and spent dressings through active save and return",
+      "location": "tests/treatment-speech.test.mjs:31:1"
+    },
+    {
+      "title": "only accepted care for another conscious patient emits the optional line; rejected, silent, exhausted and self-care boundaries stay silent",
+      "location": "tests/treatment-speech.test.mjs:45:1"
+    },
+    {
+      "title": "a resident that wakes in the following ambient phase does not retroactively speak for care received while exhausted",
+      "location": "tests/treatment-speech.test.mjs:52:1"
+    },
+    {
+      "title": "a second gun survives an actual campaign return, full save and redeployment with ammunition conserved",
+      "location": "tests/two-hands.test.mjs:41:1"
+    },
+    {
+      "title": "ammunition supply form shows compatible guns and submits a finite typed purchase",
+      "location": "tests/typed-ammunition-ui.test.mjs:11:1"
+    },
+    {
+      "title": "unavailable or exhausted ammunition supplies cannot submit a purchase",
+      "location": "tests/typed-ammunition-ui.test.mjs:19:1"
+    },
+    {
+      "title": "drop and pickup preserve the specific family, quantity and save roundtrip",
+      "location": "tests/typed-ammunition.test.mjs:17:1"
+    },
+    {
+      "title": "equipping a recovered gun changes compatibility without converting the carried reserves",
+      "location": "tests/typed-ammunition.test.mjs:20:1"
+    },
+    {
+      "title": "separate pocket stacks and legacy migration preserve quantity and reject forged reserves",
+      "location": "tests/typed-ammunition.test.mjs:26:1"
+    },
+    {
+      "title": "loaded legacy battle records migrate once without granting ammunition on a second restore",
+      "location": "tests/typed-ammunition.test.mjs:31:1"
+    },
+    {
+      "title": "one-second orders in another squad preserve the remaining wound interval across saves and sector reentry",
+      "location": "tests/unloaded-civilian-bleeding.test.mjs:58:1"
+    },
+    {
+      "title": "a batched remote checkpoint crossing midnight uses the actual wound delta and the earlier death minute",
+      "location": "tests/unloaded-civilian-bleeding.test.mjs:101:1"
+    },
+    {
+      "title": "batched and incremental tactical checkpoints produce identical off-screen death receipts and succession",
+      "location": "tests/unloaded-civilian-bleeding.test.mjs:133:1"
+    },
+    {
+      "title": "the campaign screen shows hourly militia bleeding and actual local treatment prevents the next loss",
+      "location": "tests/unloaded-militia-wounds-render.test.mjs:9:1"
+    },
+    {
+      "title": "actual visit supply consumption and drops survive caller overrides, save and reentry",
+      "location": "tests/visit-report.test.mjs:16:1"
+    },
+    {
+      "title": "full visit reports retain fallen soldiers and militia bodies without restoring their gear",
+      "location": "tests/visit-report.test.mjs:26:1"
+    },
+    {
+      "title": "finishing Yatasto uses the same authoritative visit report and cannot commit a partial scene",
+      "location": "tests/visit-report.test.mjs:29:1"
+    },
+    {
+      "title": "mounted close-combat targeting retains civilian conversation without an attack",
+      "location": "tests/weapon-mode-input.test.mjs:143:1"
+    },
+    {
+      "title": "the ordinary fire control shows paid preparation then the saved cheaper shot through pointer and keyboard",
+      "location": "tests/weapon-readiness-controls.test.mjs:6:1"
+    },
+    {
+      "title": "wrong hand, posture, missing held weapon and invalid participants reject without costs",
+      "location": "tests/weapon-stealing.test.mjs:43:1"
+    },
+    {
+      "title": "the actual campaign map selects exact cells, previews the march, enters, saves and shows cell-specific stock",
+      "location": "tests/world-cells-render.test.mjs:13:1"
+    },
+    {
+      "title": "a raid that takes the next town during a leg halts before that town without undoing elapsed time",
+      "location": "tests/world-cells.test.mjs:95:1"
+    },
+    {
+      "title": "an assault from an adjacent field keeps its exact origin when retreating and saving",
+      "location": "tests/world-cells.test.mjs:99:1"
+    },
+    {
+      "title": "saved cell locations and scene receipts cannot alias another cell, open water or a legacy anchor",
+      "location": "tests/world-cells.test.mjs:106:1"
+    },
+    {
+      "title": "forty visited cells fit the existing browser save limit and remain separate after a continuous march",
+      "location": "tests/world-cells.test.mjs:118:1"
+    },
+    {
+      "title": "compressed active and retained cells preserve all terrain fields and accept earlier tile arrays",
+      "location": "tests/world-cells.test.mjs:127:1"
+    },
+    {
+      "title": "queued destination remains appear once at the arrival edge and never refill after re-entry",
+      "location": "tests/world-exits.test.mjs:156:1"
+    },
+    {
+      "title": "re-entering a sector retains breaches and dropped gear without duplicating the squad",
+      "location": "tests/world-web.test.mjs:6:1"
+    }
+  ],
+  "subsequentFocusedRepairs": {
+    "tests": 67,
+    "passed": 67,
+    "failed": 0,
+    "command": "node --test --test-concurrency=3 --test-reporter=tap tests/logistics-attention.test.mjs tests/logistics-interruptions.test.mjs tests/critical-first-aid.test.mjs tests/mission-ally-fitting-ownership.test.mjs tests/authored-militia-progression-render.test.mjs tests/fittings-campaign.test.mjs tests/militia-distribution.test.mjs tests/adjacent-supply-transfer-render.test.mjs tests/adjacent-weapon-transfer-render.test.mjs tests/adjacent-weapon-transfer.test.mjs",
+    "logSha256": "a59e046d31a021f3f27b30980a4fff53cf1c745a774020872834fdebfa5ce09a",
+    "scope": "Later focused checks; do not subtract these from the earlier full-run failure count."
+  },
+  "storySaveRepair": {
+    "source": "da312e261805b430b075d6b47b8bf76f74c9b7379b8107622cc95bd0e1e81e3f",
+    "scope": "Focused repair verification, not a complete regression run or browser performance measurement",
+    "runs": [
+      {
+        "name": "story-save",
+        "passed": 130,
+        "failed": 0,
+        "sha256": "246a3eda42d34e677d850c0e4ea45c6ad618c97d7d484dcf08268c1e210959a5",
+        "log": "/tmp/granaderos-story-save-final.tap"
+      },
+      {
+        "name": "errand-death",
+        "passed": 4,
+        "failed": 0,
+        "sha256": "20c21377b59ed48b9fef0b183cb4cb3640e29a1fd3d614b488ade34a4e215d7b",
+        "log": "/tmp/granaderos-quest-death-consequences.tap"
+      }
+    ],
+    "otherChecks": {
+      "typecheck": "passed",
+      "documentation": "passed",
+      "referenceAudit": {
+        "passed": 38,
+        "failed": 0
+      },
+      "privateProductionBuild": {
+        "passed": true,
+        "files": 1131,
+        "assetReferences": 1031,
+        "buildId": "da312e261805",
+        "served": false
+      }
+    }
+  },
+  "referenceAuditCorrection": {
+    "originalPassed": 36,
+    "originalFailed": 1,
+    "reason": "The reporting shell command hid the failing exit code. The loose-bayonet audit read catalog values instead of the held profile. New authored packages also inherited fixed-bayonet values. Both are corrected.",
+    "currentPassed": 38,
+    "currentFailed": 0
+  },
+  "cleanBuildRepair": {
+    "source": "816544c971ded1005c2144a84f4d9455e83970302802718de63347a1c16f970b",
+    "failure": "CI clean build treated generated web/next-env.d.ts as source mutation",
+    "reproduction": {
+      "exit": 1,
+      "changedSourcePaths": [
+        "web/next-env.d.ts"
+      ],
+      "log": "/tmp/granaderos-cold-build-diagnostic.log"
+    },
+    "regressionTests": {
+      "passed": 1,
+      "failed": 0
+    },
+    "coldBuild": {
+      "passed": true,
+      "files": 1131,
+      "assetReferences": 1031,
+      "log": "/tmp/granaderos-cold-build-fixed.log",
+      "served": false
+    },
+    "ci": {
+      "revision": "28f7b24955e52c52066ecb0112237fdd3848277d",
+      "web": "passed",
+      "testSuite": "failed",
+      "result": {
+        "tests": 4111,
+        "pass": 3628,
+        "fail": 483,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "inventory": "consolidation-ci-2026-09-30.json"
+    }
+  },
+  "civilianDialogueRepair": {
+    "source": "6bbb1b7258d271731c515ce6556a8c352c72292ebf5594acbe3e0f90896f35ef",
+    "scope": "Focused repair and dependent-file verification; not a complete current regression or live performance check",
+    "runs": [
+      {
+        "name": "civilian-dialogue",
+        "log": "/tmp/granaderos-civilian-dialogue-final.tap",
+        "passed": 94,
+        "failed": 0,
+        "sha256": "57d39fddb44d84e7d8f69c6eaa0c79bdca7d49c0ca2584ea07c3bac73979f60f"
+      },
+      {
+        "name": "hiring-arrivals",
+        "log": "/tmp/granaderos-hire-reentry-final.tap",
+        "passed": 14,
+        "failed": 0,
+        "sha256": "2478ea5b874af6e7d9897a6ebebfc52f86e786fdf7da31b631bffb4c91da5d66"
+      },
+      {
+        "name": "withdrawal-dependents",
+        "log": "/tmp/granaderos-withdrawal-dependents.tap",
+        "passed": 39,
+        "failed": 20,
+        "sha256": "4aa2df6bce013b02d7bd8a555e801eb9acb921cf670efa38a823f4e92e2b9212"
+      }
+    ],
+    "otherChecks": {
+      "typecheck": "passed",
+      "referenceAudit": {
+        "passed": 38,
+        "failed": 0
+      },
+      "privateProductionBuild": {
+        "passed": true,
+        "files": 1131,
+        "assetReferences": 1031,
+        "served": false
+      }
+    }
+  },
+  "groundEquipmentRepair": {
+    "source": "50995fac34f9c4fcf666cbcfbab2621a0b8786f43f60bb2cb289297cfe9edd38",
+    "scope": "Exact-source focused inventory and HUD checks, including mounted game controls; not full regression or browser performance acceptance",
+    "runs": [
+      {
+        "name": "ground-equipment-final",
+        "log": "/tmp/granaderos-ground-final.tap",
+        "tests": 163,
+        "pass": 163,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "sha256": "be1127ab1046d856f0ffd88d334c333da9671f3c76f8f50c20ee2cb97c5760f6"
+      },
+      {
+        "name": "broader-garrison-diagnostic",
+        "log": "/tmp/granaderos-ground-garrison.tap",
+        "tests": 22,
+        "pass": 15,
+        "fail": 7,
+        "cancelled": 0,
+        "skipped": 0,
+        "sha256": "51f1e85d6f09772f37c50e2e408eeec5a98a685539180936e344b56bd093427c"
+      }
+    ],
+    "fixes": [
+      "Canonical empty secondary weapon on militia return",
+      "Authored weapon names in body, ground and container lists",
+      "Disable charge with empty hands to match tactical action validation"
+    ],
+    "otherChecks": {
+      "typecheck": "passed",
+      "referenceAudit": {
+        "passed": 38,
+        "failed": 0
+      },
+      "privateProductionBuild": {
+        "passed": true,
+        "files": 1131,
+        "assetReferences": 1031,
+        "served": false
+      }
+    }
+  },
+  "ammunitionReentryRepair": {
+    "source": "9a96fd0b5b076ff3a7d808ebe199ec1ec422cefe3c45189905a2d936952dcf4f",
+    "fix": "Retained hostile-field ammunition sources match the actual enemies reused by tactical reentry. New occupation and defense forces retain their own ammunition allowance.",
+    "runs": [
+      {
+        "scope": "Force equipment, militia, drop and secondary ownership",
+        "log": "/tmp/granaderos-garrison-repair-5.tap",
+        "pass": 38,
+        "fail": 0,
+        "skipped": 0,
+        "cancelled": 0,
+        "logSha256": "0dc4e2bd0e6f0145216a512f00bedf55ee1677cf7014df539271f30e82104387"
+      },
+      {
+        "scope": "Reattack budget, ammunition admission, published migration and loading",
+        "log": "/tmp/granaderos-reattack-budget.tap",
+        "pass": 19,
+        "fail": 0,
+        "skipped": 0,
+        "cancelled": 0,
+        "logSha256": "e85556958060df476b1591e0066fcf222894a867cc13318478c34fb2fb7b0fbf"
+      }
+    ],
+    "types": "PASS",
+    "docs": "PASS",
+    "privateBuild": {
+      "status": "PASS",
+      "served": false,
+      "files": 1131,
+      "assetReferences": 1031
+    }
+  },
+  "pickupRepair": {
+    "source": "05f1c8746c1441a2dfa67ca2302a3ac7707f64e360fe66ae5316151d9d1b65e4",
+    "fix": "Automatic pickup takes only what fits. Exact selected batches remain atomic. Civilian body and covered ground equipment use the shared picker; living resident stock and closed containers stay excluded. Stale civilian quantities reject without clipping. Control-click and Control-Enter reach covered ground equipment while ordinary clicks retain conversation.",
+    "run": {
+      "log": "/tmp/granaderos-pickup-current.tap",
+      "pass": 238,
+      "fail": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "logSha256": "6cadc5d8cf06bec1d2b56546b0fc3f4504a21d650f85dda0c7096a1178879b1e"
+    },
+    "types": "PASS",
+    "privateBuild": {
+      "status": "PASS",
+      "served": false,
+      "files": 1131,
+      "assetReferences": 1031
+    },
+    "limits": "Mounted DOM and domain tests; not a browser, full campaign, performance, or full-suite pass.",
+    "docs": "PASS"
+  },
+  "saveAssetRepair": {
+    "source": "72bd1ddcb455a82df25afd299cf7a66502ff63fda1a625bd49e38cd4bc23606f",
+    "fix": "Architecture verification identifies material errors and exercises the current catalog roof renderer. Retired economy imports report the required new-campaign boundary before ammunition conversion. Cursor loading tests conserve finite shop, store and carried rounds. Family migration tests preserve historical stock at the migration layer without claiming the retired full economy is supported.",
+    "run": {
+      "log": "/tmp/granaderos-save-assets-verified.tap",
+      "pass": 51,
+      "fail": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "logSha256": "4f930062b60061dad0ca2b9808ac3814db02d0985e8c5cf58fee8f64019644f9"
+    },
+    "types": "PASS",
+    "docs": "PASS",
+    "privateBuild": {
+      "status": "PASS",
+      "served": false,
+      "files": 1131,
+      "assetReferences": 1031
+    },
+    "limits": "No new full-suite or browser acceptance. Earlier material-economy saves remain unsupported, as documented on main."
+  },
+  "artilleryCustodyRepair": {
+    "source": "01e9090565fb61318e42dbdf81c62687448875eb307b0ab83ac7ce3ad355049b",
+    "fix": "Restores a lazy compact artillery menu, authored gun names and the legacy buy-back action through current physical stock and shared merchant cash. Fixtures use actual combat, boundary withdrawal, paid loading work, saved issued forces, real strategic rest and finite payments. Ammunition custody checks retain stored loaded weapons and reject forged physical stacks.",
+    "run": {
+      "log": "/tmp/granaderos-artillery-verified.tap",
+      "pass": 194,
+      "fail": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "durationMs": 282851.256125,
+      "logSha256": "4f6ee192aa84c71c289c7cba292aa1b273d42fa220d19c674e68ae8856ccdd5d"
+    },
+    "types": "PASS",
+    "docs": "PASS",
+    "privateBuild": {
+      "status": "PASS",
+      "served": false,
+      "files": 1131,
+      "assetReferences": 1031
+    },
+    "limits": "Domain and mounted DOM checks. This is not final-head CI, full campaign, browser or loaded-performance acceptance. Current complete CI baseline at b18fa515 still has 385 failures and predates this repair.",
+    "finalFollowup": {
+      "log": "/tmp/granaderos-artillery-custody-final.tap",
+      "pass": 51,
+      "fail": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "durationMs": 32801.163959,
+      "logSha256": "33d0613023446aa374464398a88f4f07aea67993709da4e51c76c54d7cfaaa4b",
+      "scope": "Final ammunition-family rejection, physical buy-back exhaustion, partial loading, direct/exchange pricing and compatibility purchase checks after the last test-only refinements."
+    }
+  }
+}

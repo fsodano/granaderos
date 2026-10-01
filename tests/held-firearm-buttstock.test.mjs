@@ -1,3 +1,5 @@
+import {scriptedWithdrawal} from './scripted-battle-report.mjs';
+import {sync} from './local-contract-fixture.mjs';
 import test from 'node:test';import assert from 'node:assert/strict';
 import {createBattle,actBattle,endTurn,bladeFor,weaponFor,hasFirearm,carriedWeight,actionCosts,WEAPONS} from '../game/tactical.js';
 import {BUTTSTOCK} from '../game/unarmed-combat.js';
@@ -17,7 +19,7 @@ test('all nine held firearm families strike with their stock and preserve each l
  }
 });
 test('stock range, AP, bayonet brace and charge failures leave all resources and the random stream unchanged',()=>{
- for(const [change,type]of [[b=>b.units[1].x=3,'melee'],[b=>b.units[0].ap=15,'melee'],[()=>{},'brace'],[()=>{},'charge']]){
+ for(const [change,type]of [[b=>{b.units[1].x=3;b.units[0].ap=16;},'melee'],[b=>b.units[0].ap=15,'melee'],[()=>{},'brace'],[()=>{},'charge']]){
   const b=fixture();change(b);const n=actBattle(b,{type,unitId:'p',targetId:'e'});assert.ok(n.lastError);assert.deepEqual(n.units,b.units);assert.equal(n.seed,b.seed);assert.equal(n.elapsedSeconds,b.elapsedSeconds);
  }
  const b=fixture(),controls=orderDescriptors(b,b.units[0]);assert.equal(controls.find(d=>d.id==='charge').disabled,true);assert.equal(controls.find(d=>d.id==='melee').label,'Golpear con la culata');assert.equal(controls.find(d=>d.id==='melee').pa,16);
@@ -34,7 +36,9 @@ test('an autonomous empty gun uses actual stock contact and reloads at distance 
  b=make(5);n=endTurn(b);assert.equal(n.lastError,null);assert.equal(n.units[1].ammo,0);assert.ok(n.log.some(t=>t.includes('recarga')));assert.ok(!n.log.some(t=>t.includes('ejecuta una carga')));assert.ok(validateBattleSnapshot(n));
 });
 test('an actual paid hire can stock-strike with an authored gun, save, retreat and return with the same gun and secondary',()=>{
- let p=buttstockField(),u=p.battle.units.find(u=>u.id==='110'),target=p.battle.units.find(u=>u.id===p.target);const targetId=target.id,hp=target.hp,record=weaponRecord(u),secondary=weaponRecord(u,'blade'),weight=carriedWeight(u);
- p=tactical(p,{type:'melee',unitId:'110',targetId});u=p.battle.units.find(u=>u.id==='110');target=p.battle.units.find(u=>u.id===targetId);assert.ok(target.hp<hp);assert.ok(target.hp>=hp-18);assert.equal(u.ap,84);assert.deepEqual(weaponRecord(u),record);assert.deepEqual(weaponRecord(u,'blade'),secondary);assert.equal(carriedWeight(u),weight);p=saved(p);
+ let p=buttstockField(),u=p.battle.units.find(u=>u.id==='110'),target=p.battle.units.find(u=>u.id===p.target);const targetId=target.id,hp=target.hp,ap=u.ap,record=weaponRecord(u),secondary=weaponRecord(u,'blade'),weight=carriedWeight(u);
+ p=tactical(p,{type:'melee',unitId:'110',targetId});u=p.battle.units.find(u=>u.id==='110');target=p.battle.units.find(u=>u.id===targetId);assert.ok(target.hp<hp);assert.ok(target.hp>=hp-18);assert.equal(u.ap,ap-16);assert.deepEqual(weaponRecord(u),record);assert.deepEqual(weaponRecord(u,'blade'),secondary);assert.equal(carriedWeight(u),weight);p=saved(p);
+ // Prepared boundary isolates equipment return after the actual strike.
+ p=sync({...p,battle:scriptedWithdrawal(p.battle)});
  let campaign=order(p.campaign,{type:'battleResult',battleId:p.campaign.pendingBattle.id,outcome:'retreat',sectorState:p.battle,survivors:p.battle.units.filter(u=>u.side==='player')});campaign=order(saved({campaign}).campaign,{type:'attack',sector:'buenos_aires'});p=saved({campaign,battle:enterSector(campaign.pendingBattle,campaign.sectorStates.buenos_aires)});u=p.battle.units.find(u=>u.id==='110');assert.deepEqual(weaponRecord(u),record);assert.deepEqual(weaponRecord(u,'blade'),secondary);assert.equal(bladeFor(u).id,-1);assert.equal(weaponFor(u).name,'Fusil de Acosta');assert.equal(weaponFor(u).art,'/art/weapon-1801.png');
 });

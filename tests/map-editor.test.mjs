@@ -24,21 +24,21 @@ const house = () =>
   execute(blankMap(), [
     { type: "addBuilding", building: { id: "house", x: 3, y: 3, width: 6, height: 6 } },
   ]);
-test("all converted sectors preserve terrain, room membership, props and lighting", () => {
+test("the consolidated sector plans preserve approved terrain, room membership, props and lighting", () => {
   const expected = JSON.parse(
     readFileSync(new URL("./fixtures/map-migration-hashes.json", import.meta.url)),
   );
   for (const [id, d] of Object.entries(MAP_LIBRARY)) {
     assert.deepEqual(validateMap(d).errors, []);
     const m = compileMap(d);
-    // Exclude new visual metadata; keep the original gameplay geometry reference unchanged.
+    // Revision 2 is the reviewed larger-building plan; keep its gameplay geometry stable.
     // Normalise derived room ordering without changing room membership.
     const data = {
       tiles: m.tiles
         .map((t) => Object.fromEntries(Object.entries(t).sort()))
         .sort((a, b) => a.y - b.y || a.x - b.x),
       buildings: m.buildings.map(
-        ({ walls, wallFinish, roofFinish, doorStyle, windowStyle, kind, ...b }) => ({
+        ({ walls, wallFinish, roofFinish, doorStyle, windowStyle, kind, architecture, ...b }) => ({
           ...b,
           rooms: b.rooms.map((r) => ({
             ...r,

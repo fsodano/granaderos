@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "yatasto",
-  "revision": 1,
+  "revision": 2,
   "width": 20,
   "height": 16,
   "metadata": {
@@ -2260,6 +2260,7 @@
       "height": 6,
       "roof": "tile",
       "material": "adobe",
+      "architecture": "estancia",
       "rooms": [
         {
           "id": "yatasto:building:interior",
@@ -2363,6 +2364,7 @@
           ]
         }
       ],
+      "kind": "estancia",
       "walls": [
         {
           "x": 5,
@@ -2634,12 +2636,7 @@
           "buildingId": "yatasto:building",
           "roomId": null
         }
-      ],
-      "kind": "posta",
-      "wallFinish": "ochre",
-      "roofFinish": "aged",
-      "doorStyle": "panelled",
-      "windowStyle": "shutters"
+      ]
     }
   ],
   "props": [
@@ -2709,5 +2706,39 @@
       "intensity": 0.8
     }
   ],
-  "decor": []
+  "decor": [],
+  "boundaryRoads": [
+    {
+      "x": 3,
+      "y": 0
+    },
+    {
+      "x": 4,
+      "y": 0
+    },
+    {
+      "x": 0,
+      "y": 12
+    },
+    {
+      "x": 19,
+      "y": 12
+    },
+    {
+      "x": 0,
+      "y": 13
+    },
+    {
+      "x": 19,
+      "y": 13
+    },
+    {
+      "x": 3,
+      "y": 15
+    },
+    {
+      "x": 4,
+      "y": 15
+    }
+  ]
 }

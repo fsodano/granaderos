@@ -1,11 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {getReachable} from '../game/tactical.js';
+import {approachNPC} from './approach-npc.mjs';
 import {initialCampaign,dispatchCampaign} from '../game/campaign.js';
 import {dialogueForNPC} from '../game/content-dialogue.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {dialoguePackage} from './dialogue-fixture.mjs';
-import {order,saved,localNPC,readyLocal,talk,leave,visit,hireLocal,localId,tactical} from './local-contract-fixture.mjs';
+import {order,saved,localNPC,readyLocal,talk,leave,visit,hireLocal,localId,tactical,sync} from './local-contract-fixture.mjs';
 const definition=(amount=175)=>{const d=dialoguePackage();d.characters.at(-1).encounter.dialogue.nodes[0].choices[0].effects=[{type:'treasury',operation:amount<0?'pay':'receive',amount:Math.abs(amount)}];return d;};
 const choose=(p,node='start',id='north')=>({...p,campaign:order(p.campaign,{...talk(p,undefined,'dialogue'),dialogueNode:node,dialogueChoice:id})});
 const again=p=>choose(choose(p,'north','back'));
@@ -15,7 +15,7 @@ test('a dialogue reward is paid once through a loop, save, departure and local s
  let p=readyLocal(undefined,definition()),cash=p.campaign.resources.treasury;p=saved(choose(p));assert.equal(p.campaign.resources.treasury,cash+175);assert.equal(p.campaign.lastConversation.dialogueEffect.applied,true);assert.equal(receipts(p).length,1);
  p=saved(again(p));assert.equal(p.campaign.resources.treasury,cash+175);assert.equal(p.campaign.lastConversation.dialogueEffect.applied,false);assert.equal(receipts(p).length,1);
  p=hireLocal(p);let s=leave(p);s=order(s,{type:'dismiss',id:localId(s)});p=visit(saved({campaign:s}).campaign);
- const npc=localNPC(p.battle),unit=p.battle.units.find(u=>u.side==='player'),tile=getReachable(p.battle,unit.id).find(t=>Math.abs(t.x-npc.x)+Math.abs(t.y-npc.y)===1);assert.ok(tile);if(tile.cost)p=tactical(p,{type:'move',x:tile.x,y:tile.y});
+ const npc=localNPC(p.battle),unit=p.battle.units.find(u=>u.side==='player');p=sync({campaign:p.campaign,battle:approachNPC(p.battle,unit.id,npc.id)});
  cash=p.campaign.resources.treasury;p=saved(again(p));assert.equal(p.campaign.resources.treasury,cash);assert.equal(receipts(p).length,1);
 });
 
@@ -35,7 +35,7 @@ test('conditions and stale inputs cannot apply a payment, while a self-loop rema
 test('separate character identities retain separate reward receipts',()=>{
  const d=definition(),original=d.characters.at(-1),copy={...structuredClone(original),id:'alma-copy',name:'Otra Alma'};d.characters.push(copy);d.placements.push({...structuredClone(d.placements.at(-1)),id:'copy-place',character:copy.id});
  let p=readyLocal(undefined,d),cash=p.campaign.resources.treasury;p=choose(p);assert.equal(p.campaign.resources.treasury,cash+175);
- const npc=p.battle.npcs.find(n=>n.contentId===copy.id),unit=p.battle.units.find(u=>u.side==='player'),tile=getReachable(p.battle,unit.id).find(t=>Math.abs(t.x-npc.x)+Math.abs(t.y-npc.y)===1);assert.ok(tile);if(tile.cost)p=tactical(p,{type:'move',x:tile.x,y:tile.y});
+ const npc=p.battle.npcs.find(n=>n.contentId===copy.id),unit=p.battle.units.find(u=>u.side==='player');p=sync({campaign:p.campaign,battle:approachNPC(p.battle,unit.id,npc.id)});
  cash=p.campaign.resources.treasury;p.campaign=order(p.campaign,{...talk(p,undefined,'dialogue'),npcId:npc.id,dialogueNode:'start',dialogueChoice:'north'});p=saved(p);assert.equal(p.campaign.resources.treasury,cash+175);assert.equal(Object.values(p.campaign.conversations).filter(c=>c.dialogueReceipts?.length===1).length,2);
 });
 

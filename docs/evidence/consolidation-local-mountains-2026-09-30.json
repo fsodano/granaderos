@@ -1,0 +1,159 @@
+{
+  "date": "2026-09-30",
+  "baseRevision": "4938fd79835776a202273b09cf303fc7251ad392",
+  "runtimeSource": "afe5dda42ea47b9c8297477ea47c967dcce64c5148245ccc637392b34bb7bd6b",
+  "testSourcesSha256": "3a967dd8a538b1ae72974ad9436fb719fa125e9e72e429fc638baf8d8f364a8b",
+  "testSourceHashMethod": "Sorted tests/**/*.mjs relative paths, NUL, bytes, NUL.",
+  "scope": "Unpushed mountain campaign test repairs. Saved-prefix results do not establish a complete fresh campaign or browser acceptance.",
+  "focused": {
+    "log": "/tmp/granaderos-local-cuyo-assigned.tap",
+    "logSha256": "d99e28bb234d03f876e2432263cb3e265901348cd6b089a4a2b6d5ebef6adaf4",
+    "tests": 22,
+    "pass": 22,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "duration_ms": 9563.871584,
+    "files": [
+      "tests/campaign-battery-driver.test.mjs",
+      "tests/artillery.test.mjs",
+      "tests/foundry-project.test.mjs",
+      "tests/contract-casualty-presence.test.mjs"
+    ],
+    "limit": "This batch preceded the later Los Patos route edit; these four files and their shared runtime/controller imports did not change."
+  },
+  "savedPrefix": {
+    "uspallata": {
+      "outcome": "victory",
+      "turns": 9,
+      "actions": 126,
+      "hour": 1284,
+      "treasury": 3528,
+      "survivors": [
+        105,
+        128,
+        132,
+        106
+      ],
+      "casualties": [
+        7,
+        1,
+        109,
+        145
+      ],
+      "result": "/tmp/granaderos-mountain-assigned-result.json",
+      "resultSha256": "fd52eb4130e38835269e0e980da0c215891e6dc290323457ae6576eebc0bce3f",
+      "deterministicReplay": true,
+      "saveRoundTrip": true
+    },
+    "paidRecovery": {
+      "hour": 1306,
+      "treasury": 1289,
+      "survivors": [
+        105,
+        106,
+        128,
+        132
+      ],
+      "allFullyHealed": true,
+      "firstAidAndPaidCare": true,
+      "result": "/tmp/granaderos-integrated-uspallata-recovery.json",
+      "resultSha256": "2c55f7239fbfb4e707220bb937ced0bdd4c7a93d90d5a274819ad41ded6facb9"
+    },
+    "losPatos": {
+      "outcome": "victory",
+      "turns": 9,
+      "actions": 168,
+      "hour": 1896,
+      "treasury": 8387,
+      "survivors": [
+        11,
+        0,
+        2,
+        147,
+        135,
+        118,
+        138
+      ],
+      "casualties": [
+        143
+      ],
+      "result": "/tmp/granaderos-los-patos-current-result.json",
+      "resultSha256": "d4c749f2ae030c1894b73731ac5cea84c67a19cb0e0bbb0d63eb399cf603584e",
+      "deterministicReplay": true,
+      "saveRoundTrip": true
+    },
+    "commanderRecruitment": {
+      "hour": 1902,
+      "treasury": 8215,
+      "phase": 4,
+      "squad": [
+        11,
+        0,
+        2,
+        57
+      ],
+      "commanderAlive": true,
+      "result": "/tmp/granaderos-integrated-andes-result.json",
+      "resultSha256": "cd88b1e335cf2caeafb60cce271320c31a0d0a8a84dafaeadbe2e75e9de2b752"
+    },
+    "coastalCommand": {
+      "hour": 1914,
+      "treasury": 8175,
+      "squad": [
+        11,
+        0,
+        2,
+        57,
+        3
+      ],
+      "result": "/tmp/granaderos-coast-live-command-result.json",
+      "resultSha256": "2505ed5816b1c9095e4c2ce3fa26b748d8b6937e35e0a615b21e563486e67b50"
+    }
+  },
+  "changes": [
+    "Bind test battery orders to an actual cannon identity when nearby guns overlap in reach. A regression verifies only the selected cannon moves.",
+    "Recover actual finite field dressings before departure; use first aid, paid travel, an available paid doctor and real hourly care. Renew only the patients and doctors still working.",
+    "Choose living command and medical roles for Los Patos. Wait for real shop stock before short contracts, purchase compatible ammunition and finish reloads. Keep actual battle casualties permanent.",
+    "Use an actual envoy with leadership at least 80 for physical recruitment of San Martin. Historical loss rules still require the commander and the founder before foundry setup."
+  ],
+  "freshCampaign": {
+    "status": "failed",
+    "sessionId": 51203,
+    "log": "/tmp/granaderos-local-fresh-recovery-after-mountains.tap",
+    "sourceFrozenDuringRun": true,
+    "tests": 1,
+    "pass": 0,
+    "fail": 1,
+    "cancelled": 0,
+    "skipped": 0,
+    "duration_ms": 298403.99425,
+    "testSourcesSha256": "3a967dd8a538b1ae72974ad9436fb719fa125e9e72e429fc638baf8d8f364a8b",
+    "logSha256": "5bdecc2bb438a483408ed650858d61b6087cb937b3a66dc66c17fb3c05a60af0",
+    "verifiedProgress": "A complete new game reaches both actual mountain victories, paid recovery, foundry/army requirements, phase4 and physical commander recruitment. Earlier campaign battles and casualty/save checks run from the beginning.",
+    "failure": "Coastal preparation explicitly requests dead characters7 and8 in squad[2,7,8,57].",
+    "laterChange": "Select the actual living command with room for Cabral. Saved-prefix travel/recruitment passes at1914h8175cash; a new complete fresh run is still required."
+  },
+  "remaining": [
+    "Finish fresh campaign checks through the coast, northern return and ending.",
+    "Repair the separate created-officer northern fixture and its dependent tests.",
+    "Run all final local tests, audits, types, private build and relevant browser checks before one combined push and required CI."
+  ],
+  "delivery": {
+    "pushed": false,
+    "merged": false,
+    "pr": 139,
+    "userPreviewReplaced": false,
+    "browserChecked": false,
+    "serviceEndEquipmentReturn": "Queued after PR139 merge; not started."
+  },
+  "coastalDiagnosticNotIntegrated": {
+    "preparation": "Actual patients0/2 finish local paid care by hour1934. Finite local rifles and two guns are purchased before short contracts. Eleven living soldiers carry real compatible loaded/reserve ammunition. A correctly paired campaign/battle save round-trips at hour2286, treasury8276.",
+    "ready": "/tmp/granaderos-coast-current-ready.json",
+    "readySha256": "dcabb4b0c99f926c1cc7fddfabe898074339db54b8642e2d25a3b75844353b6c",
+    "combatLog": "/tmp/granaderos-coast-current-fight-probe.log",
+    "combatLogSha256": "b8df0000178c0c08d32fb57f58970d121439b9aca5d920ae8fa1bbfd59f6178c",
+    "outcome": "active after81turns304orders; victory assertion fails. Commander cover and actual force tactics need repair. Not a completed coastal battle.",
+    "source": "/tmp/granaderos-coast-prep-probe.mjs and /tmp/granaderos-coast-current-fight-probe.mjs; not integrated."
+  }
+}

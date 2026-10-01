@@ -18,10 +18,11 @@ test('each enemy cannon model fires during a real turn and spends only its finit
 
 test('heavy helpers receive one AP issue per enemy phase and save partial work over real rounds',()=>{
  let b=field({loaded:false,hidden:true,crew:{fatigue:90}});const start=structuredClone(b);
- b=endTurn(b);assert.equal(b.artillery[0].ammo,2);assert.equal(b.artillery[0].loaded,false);assert.equal(b.artillery[0].reloadProgress,64/75);assert.ok(crewOf(b).every(u=>u.ap===0&&u.maxAP===64));
- const n=endTurn(b),saved=endTurn(restored(b));assert.deepEqual(saved,n);assert.equal(n.artillery[0].loaded,true);assert.equal(n.artillery[0].ammo,1);assert.equal(n.artillery[0].reloadProgress,undefined);assert.ok(crewOf(n).every(u=>u.ap===53));
- assert.ok(crewOf(n).every(u=>64+64-u.ap===75));assert.deepEqual(start.artillery[0],field({loaded:false,hidden:true,crew:{fatigue:90}}).artillery[0]);
- const held=endTurn(n);assert.equal(held.artillery[0].ammo,1);assert.ok(crewOf(held).every(u=>u.ap===64));assert.deepEqual(crewOf(held).map(position),crewOf(start).map(position));
+ b=endTurn(b);assert.equal(b.artillery[0].ammo,2);assert.equal(b.artillery[0].loaded,false);assert.equal(b.artillery[0].reloadProgress,42/75);assert.ok(crewOf(b).every(u=>u.ap===0&&u.maxAP===42));
+ const n=endTurn(b),saved=endTurn(restored(b));assert.deepEqual(saved,n);assert.equal(n.artillery[0].loaded,true);assert.equal(n.artillery[0].ammo,1);assert.equal(n.artillery[0].reloadProgress,undefined);assert.ok(crewOf(n).every(u=>u.ap===9));
+ assert.ok(crewOf(n).every(u=>42+42-u.ap===75));assert.deepEqual(start.artillery[0],field({loaded:false,hidden:true,crew:{fatigue:90}}).artillery[0]);
+ // Two rounds without contact return to exploration; resting does not issue a new enemy combat budget.
+ assert.equal(n.mode,'exploration');const held=endTurn(n);assert.equal(held.artillery[0].ammo,1);assert.ok(crewOf(held).every(u=>u.ap===9));assert.deepEqual(crewOf(held).map(position),crewOf(start).map(position));
 });
 
 test('already spent reaction AP reduces every crew member before shared loading',()=>{
@@ -31,8 +32,8 @@ test('already spent reaction AP reduces every crew member before shared loading'
 
 test('militia operate their own crew without using a hired soldier and reject direct cannon orders',()=>{
  const b=field({side:'player',type:'bronze4'}),officer=b.units.find(u=>u.id==='officer'),original=structuredClone(officer);
- for(const type of ['artillery','artilleryReload','artilleryPivot','artilleryMove']){const denied=actBattle(b,{type,unitId:'crew-1',artilleryId:'gun',x:11,y:3});assert.match(denied.lastError,/milicias actúan/);assert.deepEqual(denied.artillery,b.artillery);assert.deepEqual(denied.units,b.units);}
- const n=endTurn(b);assert.equal(n.lastError,null);assert.ok(n.units.find(u=>u.id==='target').hp<300);assert.ok(n.log.some(s=>s.includes('dispara una bala rasa')));for(const key of ['hp','loaded','ammo','priming','x','y','ap'])assert.equal(n.units.find(u=>u.id==='officer')[key],original[key],key);assert.ok(restored(n));
+ for(const type of ['artillery','artilleryReload','artilleryPivot','artilleryMove']){const denied=actBattle(b,{type,unitId:'crew-1',artilleryId:'gun',x:11,y:3});assert.match(denied.lastError,/milicia.*actúa/);assert.deepEqual(denied.artillery,b.artillery);assert.deepEqual(denied.units,b.units);}
+ const n=endTurn(b);assert.equal(n.lastError,null);assert.ok(n.units.find(u=>u.id==='target').hp<300);assert.ok(n.log.some(s=>s.includes('dispara una bala rasa')));for(const key of ['hp','loaded','ammo','priming','x','y'])assert.equal(n.units.find(u=>u.id==='officer')[key],original[key],key);const nextOfficer=n.units.find(u=>u.id==='officer');assert.equal(nextOfficer.carriedAP,20);assert.equal(nextOfficer.ap,nextOfficer.maxAP+20);assert.ok(restored(n));
  const short=structuredClone(b);short.units.find(u=>u.id==='crew-2').militia=false;assert.equal(choose(short),null);assert.equal(choose(short,'crew-2'),null);
 });
 
@@ -41,11 +42,11 @@ test('a militia crew uses remaining AP rather than receiving a second budget for
  const n=endTurn(b);assert.equal(n.artillery[0].reloadProgress,21/75);assert.equal(n.artillery[0].ammo,2);assert.equal(n.artillery[0].loaded,false);assert.ok(crewOf(n).every(u=>u.ap===100),'normal next player round follows allied work');assert.deepEqual(endTurn(restored(n)),endTurn(n));
 });
 
-test('short local approaches use legal paths and a prone gunner pays to stand before loading',()=>{
+test('short local approaches use legal paths and a prone gunner pays to crouch before loading',()=>{
  const b=field({type:'swivel',hidden:true,loaded:false});const u=crewOf(b)[0];u.x=0;u.y=3;
  const action=choose(b);assert.equal(action.type,'move');const path=getReachable(b,u).find(p=>p.x===action.x&&p.y===action.y);assert.ok(path.cost<=24&&path.path.length<=3);
  const approached=endTurn(b);assert.ok(artilleryContact(approached,crewOf(approached)[0],approached.artillery[0]));assert.equal(approached.artillery[0].loaded,true);assert.ok(crewOf(approached)[0].ap<=100-path.cost-35);
- const prone=field({type:'swivel',hidden:true,loaded:false});crewOf(prone)[0].stance='prone';assert.equal(choose(prone).type,'stance');const n=endTurn(prone);assert.equal(crewOf(n)[0].stance,'standing');assert.equal(crewOf(n)[0].ap,59);assert.equal(n.artillery[0].ammo,1);
+ const prone=field({type:'swivel',hidden:true,loaded:false});crewOf(prone)[0].stance='prone';assert.equal(choose(prone).type,'stance');const n=endTurn(prone);assert.equal(crewOf(n)[0].stance,'crouched');assert.equal(crewOf(n)[0].ap,62);assert.equal(n.artillery[0].ammo,1);
  const remote=field({type:'swivel',hidden:true});crewOf(remote)[0].x=0;crewOf(remote)[0].y=10;assert.equal(choose(remote),null);
 });
 
@@ -103,13 +104,17 @@ test('autonomous continuation after a full tactical save preserves finite shots,
 
 test('a paid local cohort operates a purchased retained gun and full campaign saves preserve both',async()=>{
  const {wonBattery}=await import('./stationed-artillery-fixture.mjs'),{order,saved,sync,leave,visit}=await import('./local-contract-fixture.mjs');
- let s=wonBattery(),treasury=s.resources.treasury;s=order(s,{type:'militia',trainerId:114,rank:0});assert.ok(s.resources.treasury<treasury);s=order(s,{type:'wait',hours:s.militiaTraining[0].remaining});s=order(s,{type:'visitSector'});
+ const {defaultContentPackage}=await import('../game/content-package.js'),{rosterFor}=await import('../game/campaign.js'),{finishMilitiaTraining}=await import('./campaign-wait-fixture.mjs');
+ const d=defaultContentPackage();d.startingTerritory.san_nicolas={owner:'royalist',loyalty:65};
+ let s=wonBattery(d),treasury=s.resources.treasury;const trainer=rosterFor(s).filter(o=>s.squad.includes(o.id)&&s.operativeState[o.id]?.alive&&o.leadership>=30).sort((a,b)=>b.leadership-a.leadership)[0];assert.ok(trainer);
+ s=order(s,{type:'militia',trainerId:trainer.id,rank:0});assert.ok(s.resources.treasury<treasury);s=finishMilitiaTraining(s);s=order(s,{type:'visitSector'});
  const r=s.pendingBattle,gun=structuredClone(s.sectorStates.san_nicolas.artillery[0]);assert.equal(r.garrison.length,3);assert.equal(gun.side,'player');assert.equal(gun.loaded,true);
  // Prepared local ambush geometry around the actual retained emplacement.
  // All hired people, paid militia identities, gun stock and supplies come from
  // ordinary campaign orders; the result follows a real autonomous allied turn.
  const width=64,height=48,tiles=Array.from({length:width*height},(_,i)=>({x:i%width,y:Math.floor(i/width),type:i%width===gun.x+2?'window':'grass',blocked:i%width===gun.x+2,blocksSight:false,cover:0}));
- let battle=createBattle([...r.squad.map((u,i)=>({...u,x:1,y:30+i})),...r.garrison.map((u,i)=>({...u,x:i?1+i:gun.x-1,y:i?36:gun.y}))],{...r,hour:s.hour,secondOfHour:s.secondOfHour??0,exploration:false,width,height,tiles,props:[],npcs:r.npcs,artillery:[gun],enemies:[{id:'battery-raider',x:gun.x+5,y:gun.y,weapon:1813,ammo:0,hp:30,maxHp:30,morale:100,patrol:false}]});
+ r.enemies=createBattle([],{width,height,enemies:[{id:'battery-raider',x:gun.x+5,y:gun.y,weapon:1813,ammo:0,hp:30,maxHp:30,morale:100,patrol:false}]}).units;
+ let battle=createBattle([...r.squad.map((u,i)=>({...u,x:1,y:30+i})),...r.garrison.map((u,i)=>({...u,x:i?1+i:gun.x-1,y:i?36:gun.y}))],{...r,hour:s.hour,secondOfHour:s.secondOfHour??0,exploration:false,width,height,tiles,props:[],npcs:r.npcs,artillery:[gun],enemies:r.enemies});
  const before=structuredClone(battle);battle=endTurn(battle);assert.equal(battle.lastError,null);assert.equal(battle.status,'victory');assert.ok(battle.log.some(line=>line.includes('dispara una bala rasa')));assert.equal(battle.artillery[0].loaded,false);assert.equal(battle.artillery[0].ammo,gun.ammo);
  const gunner=battle.units.find(u=>u.id===String(r.garrison[0].id));assert.ok(gunner.militiaExperience>0);for(const u of before.units.filter(u=>u.side==='player'&&!u.militia))assert.equal(battle.units.find(v=>v.id===u.id).hp,u.hp);
  const p=saved(sync({campaign:s,battle})),returned=visit(saved({campaign:leave(p)}).campaign);assert.equal(returned.battle.artillery[0].id,gun.id);assert.equal(returned.battle.artillery[0].loaded,false);assert.equal(returned.battle.artillery[0].ammo,gun.ammo);
@@ -120,12 +125,14 @@ test('a paid local cohort operates a purchased retained gun and full campaign sa
 test('a scattered heavy crew holds its post while helpers approach and then fires in a real phase',()=>{
  for(const side of ['enemy','player']){
   const b=field({side});crewOf(b)[1].x=0;crewOf(b)[2].x=1;crewOf(b)[2].y=5;
-  const first=position(crewOf(b)[0]),n=endTurn(b);assert.equal(n.lastError,null);assert.ok(n.log.some(line=>line.includes('dispara una bala rasa')),side);assert.ok(n.units.find(u=>u.id==='target').hp<300,side);assert.deepEqual(position(crewOf(n)[0]),first);assert.ok(crewOf(n).every(u=>artilleryContact(n,u,n.artillery[0])));
+  const first=position(crewOf(b)[0]);let n=endTurn(b);assert.deepEqual(position(crewOf(n)[0]),first);
+  if(n.phase==='interrupt'){assert.equal(n.artillery[0].loaded,true);const saved=restored(n);n=endTurn(n);assert.deepEqual(endTurn(saved),n);}
+  assert.equal(n.lastError,null);assert.ok(n.log.some(line=>line.includes('dispara una bala rasa')),side);assert.ok(n.units.find(u=>u.id==='target').hp<300,side);assert.deepEqual(position(crewOf(n)[0]),first);assert.ok(crewOf(n).every(u=>artilleryContact(n,u,n.artillery[0])));
   for(const line of n.log.filter(s=>s.includes('avanza (')))assert.ok(Number(line.match(/\((\d+) PA/)[1])<=24,line);
  }
 });
 
 test('a standing heavy operator waits for prone helpers to pay their own posture cost',()=>{
  const b=field({hidden:true,loaded:false});for(const u of crewOf(b).slice(1))u.stance='prone';
- const n=endTurn(b);assert.equal(n.lastError,null);assert.equal(n.artillery[0].loaded,true);assert.equal(n.artillery[0].ammo,1);assert.deepEqual(crewOf(n).map(u=>u.ap),[25,19,19]);assert.ok(crewOf(n).every(u=>u.stance==='standing'));assert.equal(n.log.filter(line=>line.includes('se pone de pie')).length,2);
+ const n=endTurn(b);assert.equal(n.lastError,null);assert.equal(n.artillery[0].loaded,true);assert.equal(n.artillery[0].ammo,1);assert.deepEqual(crewOf(n).map(u=>u.ap),[25,22,22]);assert.equal(crewOf(n)[0].stance,'standing');assert.ok(crewOf(n).slice(1).every(u=>u.stance==='crouched'));assert.equal(n.log.filter(line=>line.includes('se agacha')).length,0,'hidden crew actions must not disclose enemy preparation');
 });

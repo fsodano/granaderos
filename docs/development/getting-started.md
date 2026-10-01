@@ -39,7 +39,7 @@ Campaign progress and its active battle are saved in browser storage. **Continua
 
 Browser storage belongs to the current browser profile and site origin. A different hostname or port has separate storage. Export a save before moving between origins or clearing browser data. The export is the portable copy.
 
-The save implementation is in [`game/save.js`](../../game/save.js). [`web/app/page.tsx`](../../web/app/page.tsx) saves campaign and battle changes and reports storage errors through the game notice.
+The save implementation is in [`game/save.js`](../../game/save.js). [`useCampaignAutosave.ts`](../../web/lib/useCampaignAutosave.ts) saves campaign and battle changes and reports storage errors through the game notice.
 
 ## Checks
 
@@ -60,6 +60,27 @@ node --test tests/save-web.test.mjs
 
 The first command checks campaign and economy rules. The second checks save behavior. Run broader checks when the change affects shared systems. Report failures, skipped cases and the exact scope checked.
 
+### Before pushing
+
+Keep small fixes local. A push to an open pull request starts a paid GitHub Actions run. Use focused local tests to find and fix failures. Then run all checks below on the complete candidate before pushing it:
+
+```sh
+node --test tools/test-shard-selftest.mjs
+node tools/test-shard.mjs --check
+node --test --test-concurrency=2 tests/*.test.mjs
+npm run audit:docs
+npm run audit:baseline
+npm run typecheck
+npm run build
+git diff --check
+```
+
+Each command must finish successfully. The full test command includes every test file used by the four CI groups and limits concurrent test files to two. Record the source revision, test totals, failures and skips. A focused test result does not replace this full run. If a command fails, fix the problem locally; do not push to use CI as a diagnostic tool.
+
+Run the build in a private candidate folder if a preview serves this checkout's output. The build replaces both `web/dist/` and root `dist/`. Check the affected game or editor behavior in the browser before delivery. Keep the user's preview origin and saved progress intact.
+
+After all local checks pass on the final candidate, push the completed batch once. Keep required GitHub checks enabled and wait for them before merging. If the candidate changes after verification, repeat the affected checks and run the full final checks before the next push. Do not claim a complete campaign or smooth rendering from build and unit-test results alone.
+
 The [published progress ledger](../verification/published-progress.md) records delivered scope and remaining acceptance work on `main`. The [development-workspace acceptance record](../verification/gameplay-completion.md) and [JA2 parity audit](../verification/ja2-parity-audit.md) describe a separate integration checkout. Their results do not establish that the published checkout has those features or passes those checks.
 
 Documentation link checks and `git diff --check` verify documentation structure and formatting. They do not establish game health, browser behavior or a successful campaign. Automated scenarios also do not replace a complete gameplay acceptance run.
@@ -70,7 +91,7 @@ Documentation link checks and `git diff --check` verify documentation structure 
 npm run build
 ```
 
-[`web/next.config.ts`](../../web/next.config.ts) configures a static export. The web build writes its client output to `web/dist/client/`. [`tools/build-web.mjs`](../../tools/build-web.mjs) checks asset references, manifests and artwork checksums before replacing the root `dist/` directory with the verified export. It then checks the copied files.
+[`web/next.config.ts`](../../web/next.config.ts) configures a static export. The web build writes its client output to `web/dist/client/`. [`tools/build-web.mjs`](../../tools/build-web.mjs) checks asset references, manifests, artwork checksums and browser worker URLs before replacing the root `dist/` directory with the verified export. It then checks the copied files.
 
 Serve the root `dist/` directory through an HTTP server for production review. The repository has no dedicated root preview command. The web package's `start` script targets a Wrangler server configuration; it is separate from the root static-export workflow.
 
@@ -90,3 +111,5 @@ Build success establishes that the export and its checked assets were produced. 
 | [`docs/`](../README.md) | Guides, specifications and verification records |
 
 Earlier native conversion work remains in `engine/`, `native/`, `patches/` and `mod/`. Its Windows toolchain, packaging and original JA2 data requirements are described in the [native build reference](../reference/native-build.md). Those instructions apply to that separate implementation.
+
+The game, story editor and sector editor show the same source build ID. `/build-info.json` exposes its source digest. See [the consolidation record](../verification/latest-build-consolidation.md) before selecting a preview server; a running preview can still contain an earlier build.

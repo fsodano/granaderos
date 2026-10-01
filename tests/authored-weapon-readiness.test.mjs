@@ -1,3 +1,4 @@
+import {WEAPON_READY_AP} from '../game/weapon-readiness.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createBattle,actBattle,endTurn,actionCosts,WEAPONS} from '../game/tactical.js';
@@ -15,8 +16,14 @@ const field=(changes={},extra=[])=>createBattle([{id:'p',name:'Tirador',x:1,y:1,
 const act=(s,a)=>{const n=actBattle(s,{unitId:'p',...a});assert.equal(n.lastError,null,n.lastError);return n;};
 const shoot=s=>act(s,{type:'fire',targetId:'guard'});
 
-test('zero authored preparation preserves existing firearm costs and does not grant a ready state',()=>{
- for(const [id,w]of Object.entries(WEAPONS)){const s=field({weapon:Number(id),weaponMetadata:undefined}),before=actionCosts(s,s.units[0]);assert.equal(before.fire,w.fireAP);assert.equal(before.ready,0);assert.equal(before.discharge,w.fireAP);const n=shoot(s);assert.equal(n.units[0].weaponReady,undefined);assert.equal(actionCosts(n,n.units[0]).fire,w.fireAP);}
+test('default preparation retains the first-shot total and explicit authored zero removes the setup cost',()=>{
+ const originals=defaultContentPackage().weapons;
+ for(const [id,w]of Object.entries(WEAPONS)){
+  const s=field({weapon:Number(id),weaponMetadata:undefined}),before=actionCosts(s,s.units[0]);assert.equal(before.fire,w.fireAP);assert.equal(before.ready,WEAPON_READY_AP[id]);assert.equal(before.discharge,w.fireAP-WEAPON_READY_AP[id]);
+  const n=shoot(s);assert.equal(n.units[0].weaponReady,true);assert.equal(actionCosts(n,n.units[0]).fire,before.discharge);
+  const zero=field({weapon:Number(id),weaponMetadata:weaponMetadata({...originals.find(d=>d.template===Number(id)),readyAP:0})});assert.equal(actionCosts(zero,zero.units[0]).ready,0);assert.equal(actionCosts(zero,zero.units[0]).fire,w.fireAP);
+  const fired=shoot(zero);assert.equal(actionCosts(fired,fired.units[0]).fire,w.fireAP);
+ }
 });
 
 test('two actual discharges pay authored preparation once and conserve finite charges through a snapshot',()=>{
@@ -31,7 +38,7 @@ test('two actual discharges pay authored preparation once and conserve finite ch
 
 test('accepted physical work lowers the weapon, while unavailable orders and free covering orders preserve it',()=>{
  const base=shoot(field({medical:80,medkits:5}));
- for(const action of [{type:'move',x:2,y:1},{type:'reload'},{type:'stance',stance:'prone'},{type:'weapon',slot:'blade'},{type:'repair'},{type:'heal'}]){
+ for(const action of [{type:'move',x:2,y:1},{type:'reload'},{type:'stance',stance:'prone'},{type:'weapon',slot:'blade'},{type:'repair'},{type:'weapon',slot:'medical'}]){
   const s=structuredClone(base);s.units[0].ap=100;s.units[0].hp=80;s.units[0].bleeding=3;const n=act(s,action);assert.equal(n.units[0].weaponReady,undefined,action.type);if(n.units[0].activeSlot==='primary')assert.equal(actionCosts(n,n.units[0]).ready,7);
  }
  for(const action of [{type:'fire',targetId:'missing'},{type:'move',x:-1,y:0},{type:'weapon',slot:'missing'},{type:'reload'}]){const s=structuredClone(base);s.units[0].ap=0;const n=actBattle(s,{unitId:'p',...action});assert.ok(n.lastError);assert.deepEqual(n.units,s.units);}
@@ -57,7 +64,7 @@ test('incapacity removes readiness and impossible ready snapshots are rejected r
 });
 
 test('enemy firing uses the same authored preparation and spends only the available AP',()=>{
- let s=field({hp:1000,maxHp:1000});Object.assign(s.units[1],{weapon:1808,weaponMetadata:weaponMetadata(definition({fireAP:60,readyAP:30})),loaded:3,ammo:0});s=endTurn(s);const enemy=s.units.find(u=>u.id==='guard');assert.equal(enemy.loaded,1);assert.equal(enemy.ap,10);assert.equal(enemy.weaponReady,true);assert.ok(validateBattleSnapshot(s));
+ let s=field({hp:1000,maxHp:1000});Object.assign(s.units[1],{weapon:1808,weaponMetadata:weaponMetadata(definition({fireAP:60,readyAP:30})),loaded:3,ammo:0});s=endTurn(s);for(let i=0;s.phase!=='player'&&s.status==='active'&&i<20;i++){s=endTurn(s);assert.equal(s.lastError,null);}const enemy=s.units.find(u=>u.id==='guard');assert.equal(enemy.loaded,2);assert.equal(enemy.ap,28);assert.equal(actionCosts(s,enemy,s.units[0]).fire,30);assert.ok(enemy.ap<actionCosts(s,enemy,s.units[0]).fire,'four paid aim steps leave too little AP for a second discharge');assert.equal(enemy.weaponReady,true);assert.ok(validateBattleSnapshot(s));
 });
 
 test('a paid campaign saves the actual firing position and resumes the same cheaper discharge',()=>{

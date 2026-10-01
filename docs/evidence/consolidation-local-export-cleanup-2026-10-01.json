@@ -1,0 +1,57 @@
+{
+  "status": "complete story-editor file passes; final full suite pending",
+  "node": "22.23.3",
+  "validation": {
+    "tests": 75,
+    "pass": 75,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "todo": 0,
+    "duration_ms": 99282,
+    "log_sha256": "41ddc4253e7f16a3434cbc846e32adb162541f3e7c198494e6eb4c74ed249021"
+  },
+  "change": "Create export file URLs inside the effect that owns their cleanup. StrictMode close and unmount release every allocation while retaining exact canonical files and saved drafts.",
+  "integrated_sources": [
+    {
+      "path": "web/app/story/page.tsx",
+      "sha256": "2f0607c0d9794724d135b77dfd7ed1a42b760da5c3fb8cb7b6c47fb3e7306de6",
+      "previous_sha256": "64afe530d04326ccc8c7a8fd061c40fd664cc61316b7c45bc2e85a1e01a17766"
+    },
+    {
+      "path": "tests/story-editor.test.mjs",
+      "sha256": "1a642b5ea133443bff007b0bc4ea159ef236eed54768b93827a8bc5a104202ee",
+      "previous_sha256": "ec522146800ed8662f47077773a6a57916327cd3d280daf93a166a57795e30bd"
+    }
+  ],
+  "independent_review": "No additional actionable runtime findings",
+  "remote_push": false,
+  "merged": false,
+  "build": {
+    "version": "0.4.0-dev.1",
+    "id": "d5c4c44efab0",
+    "source": "d5c4c44efab0f355d7103fb9f6a97c8fee5300ff3a5d6a18438ceb74919e5feb",
+    "revision": "4938fd79835776a202273b09cf303fc7251ad392",
+    "verified_files": 1131,
+    "verified_asset_references": 1031
+  },
+  "browser": {
+    "private_url": "http://127.0.0.1:3136",
+    "game_and_both_editors_share_build": true,
+    "canonical_characters": 61,
+    "canonical_json_characters": 101569,
+    "read_only_export": true,
+    "repeated_exports_use_new_file_urls": true,
+    "copy_feedback_visible_in_dialog": true,
+    "original_character_preserved": "Martin Miguel de Guemes",
+    "browser_warnings_and_errors": [],
+    "saved_campaign": "actual five-survivor Jujuy campaign resumes with its finite equipment",
+    "screenshot_sha256": "515acdc54ba33f2f4177555c1663aafd8f13e3a8e55bed4edbfe35bb4d3379e7"
+  },
+  "checks": {
+    "typescript": "pass",
+    "production_export": "pass",
+    "documentation": "pass",
+    "reference_audit": "pass"
+  }
+}

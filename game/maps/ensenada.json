@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "ensenada",
-  "revision": 2,
+  "revision": 3,
   "width": 20,
   "height": 16,
   "metadata": {
@@ -221,9 +221,9 @@
     {
       "x": 10,
       "y": 1,
-      "type": "forest",
+      "type": "grass",
       "blocked": false,
-      "cover": 20
+      "cover": 0
     },
     {
       "x": 11,
@@ -361,9 +361,9 @@
     {
       "x": 10,
       "y": 2,
-      "type": "forest",
+      "type": "grass",
       "blocked": false,
-      "cover": 20
+      "cover": 0
     },
     {
       "x": 11,
@@ -1439,9 +1439,9 @@
     {
       "x": 4,
       "y": 10,
-      "type": "forest",
+      "type": "grass",
       "blocked": false,
-      "cover": 20
+      "cover": 0
     },
     {
       "x": 5,
@@ -1579,9 +1579,9 @@
     {
       "x": 4,
       "y": 11,
-      "type": "forest",
+      "type": "grass",
       "blocked": false,
-      "cover": 20
+      "cover": 0
     },
     {
       "x": 5,
@@ -1719,9 +1719,9 @@
     {
       "x": 4,
       "y": 12,
-      "type": "forest",
+      "type": "grass",
       "blocked": false,
-      "cover": 20
+      "cover": 0
     },
     {
       "x": 5,
@@ -2254,16 +2254,61 @@
     {
       "id": "ensenada:building",
       "name": "Casa del sector",
-      "x": 5,
-      "y": 2,
-      "width": 4,
-      "height": 3,
+      "x": 4,
+      "y": 0,
+      "width": 7,
+      "height": 6,
       "roof": "tile",
       "material": "adobe",
+      "architecture": "warehouse",
       "rooms": [
         {
           "id": "ensenada:building:interior",
           "cells": [
+            {
+              "x": 5,
+              "y": 1
+            },
+            {
+              "x": 6,
+              "y": 1
+            },
+            {
+              "x": 7,
+              "y": 1
+            },
+            {
+              "x": 8,
+              "y": 1
+            },
+            {
+              "x": 9,
+              "y": 1
+            },
+            {
+              "x": 5,
+              "y": 2
+            },
+            {
+              "x": 6,
+              "y": 2
+            },
+            {
+              "x": 7,
+              "y": 2
+            },
+            {
+              "x": 8,
+              "y": 2
+            },
+            {
+              "x": 9,
+              "y": 2
+            },
+            {
+              "x": 5,
+              "y": 3
+            },
             {
               "x": 6,
               "y": 3
@@ -2271,14 +2316,54 @@
             {
               "x": 7,
               "y": 3
+            },
+            {
+              "x": 8,
+              "y": 3
+            },
+            {
+              "x": 9,
+              "y": 3
+            },
+            {
+              "x": 5,
+              "y": 4
+            },
+            {
+              "x": 6,
+              "y": 4
+            },
+            {
+              "x": 7,
+              "y": 4
+            },
+            {
+              "x": 8,
+              "y": 4
+            },
+            {
+              "x": 9,
+              "y": 4
             }
           ]
         }
       ],
+      "kind": "warehouse",
       "walls": [
         {
+          "x": 4,
+          "y": 0,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "ensenada:building",
+          "roomId": null
+        },
+        {
           "x": 5,
-          "y": 2,
+          "y": 0,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2289,7 +2374,7 @@
         },
         {
           "x": 6,
-          "y": 2,
+          "y": 0,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2300,7 +2385,7 @@
         },
         {
           "x": 7,
-          "y": 2,
+          "y": 0,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2311,7 +2396,7 @@
         },
         {
           "x": 8,
-          "y": 2,
+          "y": 0,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2321,8 +2406,30 @@
           "roomId": null
         },
         {
-          "x": 5,
-          "y": 3,
+          "x": 9,
+          "y": 0,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "ensenada:building",
+          "roomId": null
+        },
+        {
+          "x": 10,
+          "y": 0,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "ensenada:building",
+          "roomId": null
+        },
+        {
+          "x": 4,
+          "y": 1,
           "type": "window",
           "blocked": true,
           "blocksSight": false,
@@ -2332,7 +2439,40 @@
           "roomId": null
         },
         {
-          "x": 8,
+          "x": 10,
+          "y": 1,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "ensenada:building",
+          "roomId": null
+        },
+        {
+          "x": 4,
+          "y": 2,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "ensenada:building",
+          "roomId": null
+        },
+        {
+          "x": 10,
+          "y": 2,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "ensenada:building",
+          "roomId": null
+        },
+        {
+          "x": 4,
           "y": 3,
           "type": "wall",
           "blocked": true,
@@ -2343,8 +2483,52 @@
           "roomId": null
         },
         {
-          "x": 5,
+          "x": 10,
+          "y": 3,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "ensenada:building",
+          "roomId": null
+        },
+        {
+          "x": 4,
           "y": 4,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "ensenada:building",
+          "roomId": null
+        },
+        {
+          "x": 10,
+          "y": 4,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "ensenada:building",
+          "roomId": null
+        },
+        {
+          "x": 4,
+          "y": 5,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "ensenada:building",
+          "roomId": null
+        },
+        {
+          "x": 5,
+          "y": 5,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2355,7 +2539,7 @@
         },
         {
           "x": 6,
-          "y": 4,
+          "y": 5,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2366,7 +2550,7 @@
         },
         {
           "x": 7,
-          "y": 4,
+          "y": 5,
           "type": "door",
           "blocked": true,
           "blocksSight": true,
@@ -2380,7 +2564,32 @@
         },
         {
           "x": 8,
-          "y": 4,
+          "y": 5,
+          "type": "door",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 0,
+          "material": "adobe",
+          "buildingId": "ensenada:building",
+          "roomId": null,
+          "doorId": "ensenada:door-right",
+          "open": false,
+          "locked": false
+        },
+        {
+          "x": 9,
+          "y": 5,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "ensenada:building",
+          "roomId": null
+        },
+        {
+          "x": 10,
+          "y": 5,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2389,26 +2598,54 @@
           "buildingId": "ensenada:building",
           "roomId": null
         }
-      ],
-      "wallFinish": "stone",
-      "roofFinish": "aged",
-      "doorStyle": "barn",
-      "windowStyle": "small",
-      "kind": "warehouse"
+      ]
     },
     {
       "id": "ensenada:house-0",
-      "name": "Casa 2 del poblado",
-      "x": 7,
-      "y": 11,
-      "width": 5,
-      "height": 3,
+      "name": "Pulpería del poblado",
+      "x": 4,
+      "y": 10,
+      "width": 7,
+      "height": 6,
       "roof": "tile",
       "material": "adobe",
+      "architecture": "pulperia",
       "rooms": [
         {
           "id": "ensenada:house-0:interior",
           "cells": [
+            {
+              "x": 5,
+              "y": 11
+            },
+            {
+              "x": 6,
+              "y": 11
+            },
+            {
+              "x": 7,
+              "y": 11
+            },
+            {
+              "x": 8,
+              "y": 11
+            },
+            {
+              "x": 9,
+              "y": 11
+            },
+            {
+              "x": 5,
+              "y": 12
+            },
+            {
+              "x": 6,
+              "y": 12
+            },
+            {
+              "x": 7,
+              "y": 12
+            },
             {
               "x": 8,
               "y": 12
@@ -2418,16 +2655,54 @@
               "y": 12
             },
             {
-              "x": 10,
-              "y": 12
+              "x": 5,
+              "y": 13
+            },
+            {
+              "x": 6,
+              "y": 13
+            },
+            {
+              "x": 7,
+              "y": 13
+            },
+            {
+              "x": 8,
+              "y": 13
+            },
+            {
+              "x": 9,
+              "y": 13
+            },
+            {
+              "x": 5,
+              "y": 14
+            },
+            {
+              "x": 6,
+              "y": 14
+            },
+            {
+              "x": 7,
+              "y": 14
+            },
+            {
+              "x": 8,
+              "y": 14
+            },
+            {
+              "x": 9,
+              "y": 14
             }
           ]
         }
       ],
+      "purpose": "bar",
+      "kind": "pulperia",
       "walls": [
         {
-          "x": 7,
-          "y": 11,
+          "x": 4,
+          "y": 10,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2437,8 +2712,44 @@
           "roomId": null
         },
         {
+          "x": 5,
+          "y": 10,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "ensenada:house-0",
+          "roomId": null
+        },
+        {
+          "x": 6,
+          "y": 10,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "ensenada:house-0",
+          "roomId": null
+        },
+        {
+          "x": 7,
+          "y": 10,
+          "type": "door",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 0,
+          "material": "adobe",
+          "buildingId": "ensenada:house-0",
+          "roomId": null,
+          "doorId": "ensenada:house-0:door:7:10",
+          "open": false,
+          "locked": false
+        },
+        {
           "x": 8,
-          "y": 11,
+          "y": 10,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2449,7 +2760,7 @@
         },
         {
           "x": 9,
-          "y": 11,
+          "y": 10,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2460,7 +2771,7 @@
         },
         {
           "x": 10,
-          "y": 11,
+          "y": 10,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2470,19 +2781,8 @@
           "roomId": null
         },
         {
-          "x": 11,
+          "x": 4,
           "y": 11,
-          "type": "wall",
-          "blocked": true,
-          "blocksSight": true,
-          "cover": 40,
-          "material": "adobe",
-          "buildingId": "ensenada:house-0",
-          "roomId": null
-        },
-        {
-          "x": 7,
-          "y": 12,
           "type": "window",
           "blocked": true,
           "blocksSight": false,
@@ -2492,7 +2792,18 @@
           "roomId": null
         },
         {
-          "x": 11,
+          "x": 10,
+          "y": 11,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "ensenada:house-0",
+          "roomId": null
+        },
+        {
+          "x": 4,
           "y": 12,
           "type": "wall",
           "blocked": true,
@@ -2503,8 +2814,8 @@
           "roomId": null
         },
         {
-          "x": 7,
-          "y": 13,
+          "x": 10,
+          "y": 12,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2514,7 +2825,7 @@
           "roomId": null
         },
         {
-          "x": 8,
+          "x": 4,
           "y": 13,
           "type": "wall",
           "blocked": true,
@@ -2523,20 +2834,6 @@
           "material": "adobe",
           "buildingId": "ensenada:house-0",
           "roomId": null
-        },
-        {
-          "x": 9,
-          "y": 13,
-          "type": "door",
-          "blocked": true,
-          "blocksSight": true,
-          "cover": 0,
-          "material": "adobe",
-          "buildingId": "ensenada:house-0",
-          "roomId": null,
-          "doorId": "ensenada:house-0:door:9:13",
-          "open": false,
-          "locked": false
         },
         {
           "x": 10,
@@ -2550,8 +2847,96 @@
           "roomId": null
         },
         {
-          "x": 11,
-          "y": 13,
+          "x": 4,
+          "y": 14,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "ensenada:house-0",
+          "roomId": null
+        },
+        {
+          "x": 10,
+          "y": 14,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "ensenada:house-0",
+          "roomId": null
+        },
+        {
+          "x": 4,
+          "y": 15,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "ensenada:house-0",
+          "roomId": null
+        },
+        {
+          "x": 5,
+          "y": 15,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "ensenada:house-0",
+          "roomId": null
+        },
+        {
+          "x": 6,
+          "y": 15,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "ensenada:house-0",
+          "roomId": null
+        },
+        {
+          "x": 7,
+          "y": 15,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "ensenada:house-0",
+          "roomId": null
+        },
+        {
+          "x": 8,
+          "y": 15,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "ensenada:house-0",
+          "roomId": null
+        },
+        {
+          "x": 9,
+          "y": 15,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "ensenada:house-0",
+          "roomId": null
+        },
+        {
+          "x": 10,
+          "y": 15,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
@@ -2560,20 +2945,15 @@
           "buildingId": "ensenada:house-0",
           "roomId": null
         }
-      ],
-      "wallFinish": "adobe",
-      "roofFinish": "thatch",
-      "doorStyle": "plank",
-      "windowStyle": "shutters",
-      "kind": "house"
+      ]
     }
   ],
   "props": [
     {
-      "id": "ensenada:building:barrels:6:3",
+      "id": "ensenada:building:barrels:5:1",
       "type": "barrels",
-      "x": 6,
-      "y": 3,
+      "x": 5,
+      "y": 1,
       "buildingId": "ensenada:building",
       "roomId": "ensenada:building:interior",
       "footprint": {
@@ -2583,10 +2963,49 @@
       "blocksMovement": true
     },
     {
-      "id": "ensenada:house-0:barrels:8:12",
+      "id": "ensenada:building:bench:9:1",
+      "type": "bench",
+      "x": 9,
+      "y": 1,
+      "buildingId": "ensenada:building",
+      "roomId": "ensenada:building:interior",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "ensenada:building:bed:5:4",
+      "type": "bed",
+      "x": 5,
+      "y": 3,
+      "buildingId": "ensenada:building",
+      "roomId": "ensenada:building:interior",
+      "footprint": {
+        "width": 1,
+        "height": 2
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "ensenada:building:chest:9:4",
+      "type": "chest",
+      "x": 9,
+      "y": 4,
+      "buildingId": "ensenada:building",
+      "roomId": "ensenada:building:interior",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "ensenada:house-0:barrels:5:11",
       "type": "barrels",
-      "x": 8,
-      "y": 12,
+      "x": 5,
+      "y": 11,
       "buildingId": "ensenada:house-0",
       "roomId": "ensenada:house-0:interior",
       "footprint": {
@@ -2596,14 +3015,51 @@
       "blocksMovement": true
     },
     {
-      "id": "ensenada:house-0:bench:10:12",
+      "id": "ensenada:house-0:bench:9:11",
       "type": "bench",
-      "x": 10,
-      "y": 12,
+      "x": 9,
+      "y": 11,
       "buildingId": "ensenada:house-0",
       "roomId": "ensenada:house-0:interior",
       "footprint": {
         "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "ensenada:house-0:bed:5:14",
+      "type": "bed",
+      "x": 5,
+      "y": 13,
+      "buildingId": "ensenada:house-0",
+      "roomId": "ensenada:house-0:interior",
+      "footprint": {
+        "width": 1,
+        "height": 2
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "ensenada:house-0:chest:9:14",
+      "type": "chest",
+      "x": 9,
+      "y": 14,
+      "buildingId": "ensenada:house-0",
+      "roomId": "ensenada:house-0:interior",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "ensenada:house-0:cart",
+      "type": "cart",
+      "x": 2,
+      "y": 14,
+      "footprint": {
+        "width": 2,
         "height": 1
       },
       "blocksMovement": true
@@ -2617,10 +3073,20 @@
       "id": "ensenada:lantern",
       "type": "lantern",
       "x": 7,
-      "y": 5,
+      "y": 6,
       "radius": 3,
       "intensity": 0.8
     }
   ],
-  "decor": []
+  "decor": [],
+  "boundaryRoads": [
+    {
+      "x": 0,
+      "y": 7
+    },
+    {
+      "x": 0,
+      "y": 8
+    }
+  ]
 }

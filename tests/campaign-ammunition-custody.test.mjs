@@ -2,9 +2,11 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign,rosterFor,deploymentCost,isSupplied} from '../game/campaign.js';
 import {defaultContentPackage} from '../game/content-package.js';
-import {createBattle,actBattle} from '../game/tactical.js';
+import {createBattle,actBattle,endTurn} from '../game/tactical.js';
 import {sync} from './local-contract-fixture.mjs';
-import {ammoCount,totalAmmo} from '../game/ammo-types.js';
+import {enterSector} from '../game/world.js';
+import {secondaryRetreat} from './secondary-loot-fixture.mjs';
+import {ammoCount,totalAmmo,changeAmmo} from '../game/ammo-types.js';
 import {ammunitionOrderQuote,ammunitionShopCapacity} from '../game/campaign-ammunition.js';
 import {order,visit,leave,saved,tactical} from './local-contract-fixture.mjs';
 
@@ -25,24 +27,26 @@ test('purchases and sector storage conserve each family, money and finite mercha
 test('deployment buys only a supplied town shortfall and return preserves physical rounds without a refund',()=>{
  let s=hired();const cash=s.resources.treasury;assert.equal(deploymentCost(s),30);
  let p=visit(s);assert.equal(p.campaign.resources.treasury,cash-30);const unit=p.battle.units.find(u=>u.id==='110');assert.equal(unit.loaded+unit.ammo,10);
- p=tactical(p,{type:'dropSupply',item:'ammoMusket',count:3});s=leave(saved(p));assert.equal(s.operativeState[110].carriedLoaded,1);assert.equal(totalAmmo(s.operativeState[110]),6);assert.equal(s.resources.treasury,cash-30);assert.equal(s.sectorStates.retiro.groundItems.filter(g=>g.type==='ammoMusket').reduce((n,g)=>n+g.count,0),3);
+ p=tactical(p,{type:'dropSupply',item:'ammoMusket',count:3});s=leave(saved(p));assert.equal(s.operativeState[110].carriedLoaded,1);assert.equal(totalAmmo(s.operativeState[110]),6);assert.equal(s.resources.treasury,cash-30);assert.equal(s.sectorStates.retiro.groundItems.filter(g=>g.ammoType==='musket_75').reduce((n,g)=>n+g.count,0),3);
  assert.equal(deploymentCost(s),9);p=visit(saved({campaign:s}).campaign);assert.equal(p.campaign.resources.treasury,cash-39);assert.equal(p.battle.units.find(u=>u.id==='110').ammo,9);const again=leave(p);assert.equal(again.resources.treasury,cash-39);assert.equal(deploymentCost(again),0);
  assert.ok(dispatchCampaign(again,{type:'leaveSector',battleId:p.campaign.pendingBattle.id,sectorState:p.battle,survivors:p.battle.units.filter(u=>u.side==='player')}).lastError);
 });
 
 test('mixed reserves survive actual weapon replacement, deployment and repeated restoration',()=>{
  let s=supply(hired(),'ammoPistol',8);s=leave(visit(s));const cash=s.resources.treasury,op=rosterFor(s).find(o=>o.id===110);assert.equal(op.weapon,1800);
- s=order(s,{type:'purchaseEquipment',item:'firearm-1805'});const instance=s.armoryItems.find(i=>i.contentWeapon.id==='firearm-1805');
- s=order(s,{type:'equip',operativeId:110,slot:'weapon',itemId:'firearm-1805',instanceId:instance.id});assert.equal(s.operativeState[110].carriedLoaded,0);assert.equal(ammoCount(s.operativeState[110],'ammoMusket'),10);assert.equal(ammoCount(s.operativeState[110],'ammoPistol'),8);
- const p=visit(s);assert.equal(p.battle.units[0].loaded,1);assert.equal(ammoCount(p.battle.units[0],'ammoPistol'),9);assert.equal(ammoCount(p.battle.units[0],'ammoMusket'),10);assert.equal(p.campaign.resources.treasury,cash-130-6);
- const returned=leave(p),restored=saved({campaign:returned}).campaign;assert.deepEqual(restored,returned);assert.deepEqual(saved({campaign:restored}).campaign,restored);
+ s=order(s,{type:'purchaseEquipment',item:'firearm-1805'});const instance=s.armoryItems.find(i=>i.itemMetadata?.contentWeapon?.id==='firearm-1805');
+ s=order(s,{type:'equip',operativeId:110,slot:'weapon',itemId:'firearm-1805',instanceId:instance.id});assert.equal(s.operativeState[110].carriedLoaded,0);assert.equal(ammoCount(s.operativeState[110],'ammoMusket'),9);assert.equal(ammoCount(s.operativeState[110],'ammoPistol'),8);
+ const storedMusket=s.armoryItems.find(i=>i.item===1800);assert.ok(storedMusket);assert.equal(storedMusket.loaded,1);
+ let p=visit(s);assert.equal(p.battle.units[0].loaded,0);assert.equal(ammoCount(p.battle.units[0],'ammoPistol'),10);assert.equal(ammoCount(p.battle.units[0],'ammoMusket'),9);assert.equal(p.campaign.resources.treasury,cash-130-6);
+ const elapsed=p.battle.elapsedSeconds,shops=structuredClone(p.campaign.ammunitionShops);p=tactical(p,{type:'reload'});assert.equal(p.battle.units[0].loaded,1);assert.equal(ammoCount(p.battle.units[0],'ammoPistol'),9);assert.ok(p.battle.elapsedSeconds>elapsed);assert.deepEqual(p.campaign.ammunitionShops,shops);assert.equal(p.campaign.resources.treasury,cash-130-6);
+ const returned=leave(p),restored=saved({campaign:returned}).campaign;assert.deepEqual(restored.armoryItems.find(i=>i.id===storedMusket.id),storedMusket);assert.deepEqual(restored,returned);assert.deepEqual(saved({campaign:restored}).campaign,restored);
 });
 
 test('family substitution or additional witnessed rounds cannot settle a battle',()=>{
  const p=visit(hired());
  for(const variant of ['create','convert']){
   const b=structuredClone(p.battle),u=b.units.find(u=>u.id==='110');
-  if(variant==='create'){u.ammunition.ammoMusket++;u.ammo++;}else{u.ammunition.ammoMusket--;u.ammunition.ammoPistol=1;}
+  if(variant==='create')changeAmmo(u,'ammoMusket',1);else{changeAmmo(u,'ammoMusket',-1);changeAmmo(u,'ammoPistol',1);}
   reject(p.campaign,{type:'leaveSector',battleId:p.campaign.pendingBattle.id,sectorState:b,survivors:b.units.filter(u=>u.side==='player')});
  }
 });
@@ -72,17 +76,24 @@ test('departure buys at the supplied town once and remote entry retains the same
 test('actual partial loading survives retreat, storage, save and reentry without being completed',()=>{
  const d=content();Object.assign(d.weapons.find(w=>w.id==='firearm-1800'),{reloadAP:250,damage:1});
  let s=order(initialCampaign(45,d),{type:'recruitCivic',id:110,term:'month'});s=order(s,{type:'attack',sector:'buenos_aires'});const r=s.pendingBattle;
- let b=createBattle(r.squad.map(u=>({...u,x:1,y:1})),{...r,width:12,height:8,tiles:Array.from({length:96},(_,i)=>({x:i%12,y:Math.floor(i/12),type:'grass',blocked:false,cover:0})),enemies:[{id:'guard',x:5,y:1,weapon:1813,ammo:0,overwatch:false,patrol:false}],npcs:r.npcs.map((n,i)=>({...n,x:8+i%3,y:4+Math.floor(i/3)}))});
- b=actBattle(b,{type:'fire',unitId:'110',targetId:'guard'});assert.equal(b.lastError,null);assert.equal(b.units[0].loaded,0);
+ const issued=enterSector(r),exit=issued.exits.find(e=>e.destination===r.origin);assert.ok(exit);
+ const point=exit.edge==='N'?{x:1,y:0}:exit.edge==='S'?{x:1,y:19}:exit.edge==='W'?{x:0,y:1}:{x:19,y:1};
+ const target={x:point.x===19?18:point.x===0?1:point.x+1,y:point.y};
+ // Retain every issued enemy in compact declared geometry. Fire at an empty
+ // nearby cell, perform actual partial work, then withdraw through the boundary.
+ const enemies=issued.units.filter(u=>u.side==='enemy').map((u,i)=>{const at={x:exit.edge==='E'?0:19-i,y:exit.edge==='S'?0:19-i};return {...u,...at,patrolOrigin:at,overwatch:false,patrol:false};});
+ let b=createBattle(r.squad.map(u=>({...u,...point})),{...r,width:20,height:20,tiles:Array.from({length:400},(_,i)=>({x:i%20,y:Math.floor(i/20),type:'grass',blocked:false,cover:0})),enemies,npcs:r.npcs.map((n,i)=>({...n,x:8+i%3,y:7+Math.floor(i/3)}))});
+ b=actBattle(b,{type:'firePoint',unitId:'110',...target});assert.equal(b.lastError,null);assert.equal(b.units[0].loaded,0);
  b=actBattle(b,{type:'reload',unitId:'110'});assert.equal(b.lastError,null);const progress=b.units[0].reloadProgress;assert.ok(progress>0&&progress<1);
- let p=saved(sync({campaign:s,battle:b}));s=order(p.campaign,{type:'battleResult',battleId:r.id,outcome:'retreat',sectorState:p.battle,survivors:p.battle.units.filter(u=>u.side==='player')});
+ b=endTurn(b);assert.equal(b.status,'active');assert.equal(b.units[0].reloadProgress,progress);
+ let p=secondaryRetreat(saved(sync({campaign:s,battle:b})));s=order(p.campaign,{type:'battleResult',battleId:r.id,outcome:'retreat',sectorState:p.battle,survivors:p.battle.units.filter(u=>u.side==='player')});
  assert.equal(s.operativeState[110].carriedReloadProgress,progress);s=supply(s,'ammoMusket',1,'store');s=saved({campaign:s}).campaign;assert.equal(s.operativeState[110].carriedReloadProgress,progress);
  p=visit(s);assert.equal(p.battle.units[0].loaded,0);assert.equal(p.battle.units[0].reloadProgress,progress);assert.equal(p.battle.units[0].ammo,10);assert.equal(p.campaign.ammunitionStores.retiro.ammoMusket,1);
  s=leave(p);assert.equal(s.operativeState[110].carriedReloadProgress,progress);assert.equal(s.operativeState[110].carriedLoaded,0);assert.deepEqual(saved({campaign:s}).campaign,s);
 });
 
 test('old pending paid deployments settle once as physical stock and missing living reports reject',()=>{
- const p=visit(hired()),old=structuredClone(p);delete old.campaign.ammunitionCustodyVersion;delete old.campaign.ammunitionStores;delete old.campaign.ammunitionShops;delete old.campaign.operativeState[110].ammunition;delete old.campaign.operativeState[110].ammo;delete old.campaign.operativeState[110].carriedLoaded;
+ const p=visit(hired()),old=structuredClone(p);delete old.campaign.ammunitionCustodyVersion;delete old.campaign.ammunitionStores;delete old.campaign.ammunitionShops;
  const restored=saved(old),s=leave(restored);assert.equal(s.resources.treasury,p.campaign.resources.treasury);assert.equal(s.operativeState[110].carriedLoaded+s.operativeState[110].ammo,10);assert.equal(deploymentCost(s),0);
  reject(p.campaign,{type:'leaveSector',battleId:p.campaign.pendingBattle.id,sectorState:p.battle,survivors:[]});
  const bad=structuredClone(p.battle);bad.units=bad.units.filter(u=>u.id!=='110');reject(p.campaign,{type:'leaveSector',battleId:p.campaign.pendingBattle.id,sectorState:bad,survivors:[]});
@@ -97,9 +108,9 @@ test('a depleted merchant cannot sell or reissue stored stock through a restored
  s=supply(s,'ammoRifle',20,'take');assert.equal(s.ammunitionShops.retiro.stock.ammoRifle,0);assert.equal(s.ammunitionStores.retiro.ammoRifle,40);assert.equal(ammoCount(s.operativeState[110],'ammoRifle'),20);assert.equal(s.resources.treasury,cash-180);
 });
 
-test('equivalent report family order is accepted while unknown report families are rejected',()=>{
- const p=visit(supply(hired(),'ammoPistol',4)),reports=p.battle.units.filter(u=>u.side==='player').map(u=>({...u,ammunition:Object.fromEntries(Object.entries(u.ammunition).reverse())}));
+test('equivalent report inventory order is accepted while unknown snapshot families are rejected',()=>{
+ const p=visit(supply(hired(),'ammoPistol',4)),reports=p.battle.units.filter(u=>u.side==='player').map(u=>({...u,inventory:Object.fromEntries(Object.entries(u.inventory).reverse())}));
  const action={type:'leaveSector',battleId:p.campaign.pendingBattle.id,sectorState:p.battle,survivors:reports};
  const s=order(p.campaign,action);assert.equal(ammoCount(s.operativeState[110],'ammoPistol'),4);assert.equal(ammoCount(s.operativeState[110],'ammoMusket'),9);
- const bad=structuredClone(action);bad.survivors[0].ammunition.unknown=0;reject(p.campaign,bad);
+ const bad=structuredClone(action);bad.sectorState.units.find(u=>u.id==='110').inventory.unknown={kind:'ammunition',ammoType:'unknown',count:1,weight:.04,name:'Inválido'};reject(p.campaign,bad);
 });

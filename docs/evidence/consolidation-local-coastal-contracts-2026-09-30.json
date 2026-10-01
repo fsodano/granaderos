@@ -1,0 +1,288 @@
+{
+  "schema": 1,
+  "status": "PARTIAL_LOCAL_VERIFICATION",
+  "checkedAt": "2026-10-01T01:05:44.741550+00:00",
+  "revision": "4938fd79835776a202273b09cf303fc7251ad392",
+  "runtimeSource": "922000b4e109268f307a722f9df9cd731cbe99758b28c3b736874ac07b0fb0d7",
+  "unpublished": true,
+  "pushed": false,
+  "merged": false,
+  "previewReplaced": false,
+  "changes": [
+    "Modern paid foreign renewals add five standing per recruit per 24 hours using the existing saved pay marker; positive payment required.",
+    "Battery test driver rejoins actual contact, clears infantry, repositions helpers and plans legal detours; optional flanking screen.",
+    "Coastal preparation uses actual living survivors, paid care, finite purchases, two ordinary squads and paired saves.",
+    "Naval route replaces removed contraband with actual eligible paid foreign renewals; full continuation still under test."
+  ],
+  "contracts": {
+    "log": "/tmp/granaderos-local-foreign-renewal.tap",
+    "sha256": "445d74b52db93e3af64d4cd169a3ac83b8f14820e7b823d2d3e4563a5e750d9e",
+    "tests": 47,
+    "pass": 47,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "duration_ms": 17994.760416
+  },
+  "battery": {
+    "log": "/tmp/granaderos-local-scoped-battery.tap",
+    "sha256": "2667fd879becfb639f14e0ac9cd5f7783309b4a0768c9e880f713a7634c535cf",
+    "tests": 29,
+    "pass": 29,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "duration_ms": 10045.249458
+  },
+  "beforeFix": {
+    "log": "/tmp/granaderos-foreign-renewal-before.tap",
+    "sha256": "d977fd5d85f841c803b6b130894e109b00c38587b1a62e67047301e1081164c7",
+    "tests": 2,
+    "pass": 1,
+    "fail": 1,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "duration_ms": 145.548959
+  },
+  "staticChecks": {
+    "typecheck": "PASS",
+    "docs": "PASS, 274 requirements, 50 original rows, 87 parity rows, 114 registered evidence records",
+    "baseline": "PASS, 38 checks",
+    "partition": "PASS, 592 files in four groups",
+    "whitespace": "PASS"
+  },
+  "coastalPreparation": {
+    "status": "PASS from a saved prefix; not fresh-start acceptance",
+    "checkpoint": "/tmp/granaderos-coast-integrated-ready.json",
+    "hour": 2286,
+    "treasury": 8276,
+    "foreignStanding": 20,
+    "troops": [
+      11,
+      0,
+      2,
+      57,
+      3,
+      147,
+      118,
+      138,
+      135,
+      132,
+      128
+    ],
+    "guns": 2
+  },
+  "coastalCombat": {
+    "status": "PASS from saved prefix; not fresh-start acceptance",
+    "log": "/tmp/granaderos-coastal-integrated-fight.log",
+    "logSha256": "1af5086cb8c126e727b378d4267a1fcb5f9a71c00cfb598042f486d3f94e3afb",
+    "summary": {
+      "sector": "ensenada",
+      "preparationSeconds": 0,
+      "startSeconds": 8230774,
+      "elapsedSeconds": 4118,
+      "status": "victory",
+      "turns": 17,
+      "actions": 548
+    },
+    "actualCasualties": [
+      2,
+      3,
+      118
+    ],
+    "checks": [
+      "Real completed victory",
+      "Deterministic replay of actual orders",
+      "Campaign and battle save checks",
+      "Actual campaign time synchronization and victory settlement"
+    ],
+    "result": "/tmp/granaderos-coastal-integrated-result.json",
+    "navy": {
+      "status": "PASS",
+      "hour": 2287,
+      "treasury": 5896,
+      "foreignStanding": 30,
+      "squad": [
+        57,
+        5,
+        6
+      ],
+      "result": "/tmp/granaderos-coastal-integrated-navy.json"
+    },
+    "recovery": {
+      "status": "PASS",
+      "hour": 2312,
+      "treasury": 5167,
+      "description": "Actual surviving patients recover through held dressings, paid renewals, travel and local doctors; all earlier deaths remain permanent.",
+      "result": "/tmp/granaderos-coastal-integrated-care.json"
+    },
+    "controllerLimit": "Earlier saved-prefix numbers belong to that earlier controller version. The subsequent complete fresh-start run now also passes Ensenada, naval recruitment and paid recovery with current source, then fails at the capital."
+  },
+  "remaining": [
+    "Complete capital recapture and subsequent campaign stages; rerun the whole fresh-start route on current runtime.",
+    "Repair the separate fresh northern route and its dependent checks.",
+    "Run the complete final local suite and all gates, including a private build and applicable browser checks.",
+    "Push once, wait for required CI, then merge PR139.",
+    "Service-end equipment return is queued after merge only."
+  ],
+  "limits": [
+    "The preceding complete local run remains 4169 pass, 10 fail, 1 skip. Focused batches overlap and must not be summed as distinct tests.",
+    "Current complete fresh campaign test fails at capital recapture. Final full-suite and browser/FPS acceptance remain open. Private production build passes but is not served.",
+    "No current evidence establishes published-main completion."
+  ],
+  "blockade": {
+    "status": "FAIL saved-prefix diagnostic",
+    "ready": "/tmp/granaderos-blockade-integrated-ready.json",
+    "hour": 3030,
+    "treasury": 7885,
+    "deployed": [
+      57,
+      5,
+      6,
+      11,
+      0,
+      138,
+      135,
+      147,
+      105,
+      106,
+      144
+    ],
+    "enemyCount": 21,
+    "attempts": [
+      {
+        "log": "/tmp/granaderos-blockade-integrated.log",
+        "status": "active at turn81; victory assertion failed"
+      },
+      {
+        "log": "/tmp/granaderos-blockade-relief.log",
+        "status": "retreat at turn22; commander died; victory assertion failed"
+      },
+      {
+        "log": "/tmp/granaderos-blockade-paid-relief.log",
+        "status": "defeat at turn9; victory assertion failed"
+      }
+    ],
+    "laterChange": "Current source preserves firing and care before replacement-gunner movement. Complete fresh run still loses BuenosAires18turns281orders.",
+    "currentFreshResult": {
+      "sector": "buenos_aires",
+      "status": "defeat",
+      "turns": 18,
+      "actions": 281
+    }
+  },
+  "recruitmentAndImports": {
+    "log": "/tmp/granaderos-local-foreign-recruitment.tap",
+    "sha256": "ef90a79f91d4a27b9829fdc603a482a94a173c1518111807c7f377e7527dfb34",
+    "tests": 15,
+    "pass": 15,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "duration_ms": 18685.417042
+  },
+  "partitionSelftest": {
+    "log": "/tmp/granaderos-local-partition-selftest.tap",
+    "sha256": "9b945f7818a1b4bc27609e503d7690bc84d70e20fb240f9dedd15b5411551179",
+    "tests": 4,
+    "pass": 4,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "duration_ms": 552.387792
+  },
+  "privateBuild": {
+    "status": "PASS",
+    "runtimeSource": "922000b4e109268f307a722f9df9cd731cbe99758b28c3b736874ac07b0fb0d7",
+    "files": 1131,
+    "assetReferences": 1031,
+    "directory": "/var/folders/k2/r1ywdpdx5x513g1qp4m7m3340000gn/T/granaderos-consolidation-check-z50xv8nl",
+    "log": "/tmp/granaderos-local-renewal-private-build.log",
+    "served": false,
+    "sourceMatchesIntegration": true
+  },
+  "freshCampaignBeforeScopeFix": {
+    "log": "/tmp/granaderos-local-fresh-coastal-current.tap",
+    "sha256": "aa5fbe764863153957525fac1be805cc945088bb92b4c771d1dda5fc961b3624",
+    "tests": 1,
+    "pass": 0,
+    "fail": 1,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "duration_ms": 294096.343292,
+    "source": {
+      "startedAt": "2026-10-01T00:47:52.564339+00:00",
+      "runtime": "922000b4e109268f307a722f9df9cd731cbe99758b28c3b736874ac07b0fb0d7",
+      "testSourcesSha256": "09f342a366d8088dff2b6e214aaeea26eab06157672d659c9f4cf2c572df816c",
+      "testFiles": 686,
+      "log": "/tmp/granaderos-local-fresh-coastal-current.tap"
+    },
+    "sourceFrozenDuringRun": true,
+    "failure": "Los Patos defeat, turn7,144orders. New shared crew-rejoin tactics changed the previously successful mountain route."
+  },
+  "scopeRepair": {
+    "change": "Crew rejoining and cart-side helper relocation now require keepCrewTogether. Coastal controller enables it; existing mountain controller retains its prior tactics.",
+    "savedPrefixStatus": "PASS actual Los Patos victory, deterministic replay, saves and settlement",
+    "turns": 9,
+    "actions": 168,
+    "hour": 1896,
+    "treasury": 8387,
+    "log": "/tmp/granaderos-patos-scoped-check.log",
+    "result": "/tmp/granaderos-patos-scoped-result.json",
+    "fullFreshStatus": "COMPLETE, exit1. Mountain regression resolved; current fullfresh reaches capital recapture and loses.",
+    "fullFreshLog": "/tmp/granaderos-local-fresh-coastal-scoped.tap",
+    "fullFreshSource": {
+      "startedAt": "2026-10-01T00:55:08.797794+00:00",
+      "runtime": "922000b4e109268f307a722f9df9cd731cbe99758b28c3b736874ac07b0fb0d7",
+      "testSourcesSha256": "52305769013f85b845698fbbf9dc6c7cd1a3289b7868f1da04e43143c5edbe50",
+      "log": "/tmp/granaderos-local-fresh-coastal-scoped.tap"
+    }
+  },
+  "combinedRegression": {
+    "log": "/tmp/granaderos-local-coastal-combined.tap",
+    "sha256": "5d7fb84f52c19267333be1ed1923091a82b5e2d1f8556bc75fed68468718aae6",
+    "tests": 88,
+    "pass": 88,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "duration_ms": 29623.541375,
+    "files": 12,
+    "testSourcesSha256": "52305769013f85b845698fbbf9dc6c7cd1a3289b7868f1da04e43143c5edbe50",
+    "sourceFrozenDuringRun": true
+  },
+  "fullFreshCampaign": {
+    "log": "/tmp/granaderos-local-fresh-coastal-scoped.tap",
+    "logSha256": "7188a315a3ea80c47479d97348c5c629c00345836c8260472faf11adaa10532e",
+    "tests": 1,
+    "pass": 0,
+    "fail": 1,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "duration_ms": 481106.301875,
+    "source": {
+      "startedAt": "2026-10-01T00:55:08.797794+00:00",
+      "runtime": "922000b4e109268f307a722f9df9cd731cbe99758b28c3b736874ac07b0fb0d7",
+      "testSourcesSha256": "52305769013f85b845698fbbf9dc6c7cd1a3289b7868f1da04e43143c5edbe50",
+      "log": "/tmp/granaderos-local-fresh-coastal-scoped.tap"
+    },
+    "sourceFrozenDuringRun": true,
+    "runtimeSource": "922000b4e109268f307a722f9df9cd731cbe99758b28c3b736874ac07b0fb0d7",
+    "verifiedThrough": "Complete fresh start passes actual northern battles, Mendoza, both mountain victories, paid care, phase4 and SanMartin recruitment, Ensenada victory, Brown/Bouchard recruitment and actual port recovery.",
+    "failure": {
+      "sector": "buenos_aires",
+      "status": "defeat",
+      "turns": 18,
+      "actions": 281
+    },
+    "limits": "Fails the subsequent capital recapture. No full campaign completion or full-suite pass."
+  }
+}

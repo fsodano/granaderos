@@ -1,0 +1,70 @@
+{
+  "source": {
+    "version": "0.4.0-dev.1",
+    "id": "ae1c451f2e00",
+    "source": "ae1c451f2e001ea1fad2becb50c321a46c4e1ddfcd6de8c4583d16857e6c18f8",
+    "revision": "c802dfe21158df063e558bb59987c3a0247f70c5"
+  },
+  "scope": "Focused working-branch regression, including prepared subsystem scenes. Not full-suite, browser, performance or complete campaign acceptance.",
+  "tests": 128,
+  "pass": 128,
+  "fail": 0,
+  "cancelled": 0,
+  "skipped": 0,
+  "testFiles": [
+    "tests/military-remains.test.mjs",
+    "tests/military-body-supply-validation.test.mjs",
+    "tests/departed-remains-dimensions.test.mjs",
+    "tests/critical-first-aid.test.mjs",
+    "tests/critical-military-condition.test.mjs",
+    "tests/campaign-critical-first-aid.test.mjs",
+    "tests/sector-deployment-campaign.test.mjs",
+    "tests/sector-deployment.test.mjs",
+    "tests/sector-deployment-render.test.mjs",
+    "tests/campaign-ammunition-custody.test.mjs",
+    "tests/campaign-ammunition-admission.test.mjs",
+    "tests/prisoner-custody.test.mjs",
+    "tests/prisoner-release.test.mjs",
+    "tests/garrison-web.test.mjs",
+    "tests/army-funding-route.test.mjs",
+    "tests/route-ammunition.test.mjs",
+    "tests/campaign-battery-driver.test.mjs",
+    "tests/fresh-capital-recovery.test.mjs",
+    "tests/opening-driver.test.mjs",
+    "tests/opening-driver-control.test.mjs",
+    "tests/opening-equipment.test.mjs",
+    "tests/sector-inventory.test.mjs",
+    "tests/mission-sector-inventory.test.mjs"
+  ],
+  "logSha256": "bcb4a91181de7c1b42f4dc5499bddc10613606f92c05f05eb752dda5c21399d9",
+  "checks": {
+    "types": "passed",
+    "privateBuild": {
+      "files": 1131,
+      "assetReferences": 1031,
+      "source": "ae1c451f2e00",
+      "served": false
+    },
+    "documentation": "passed",
+    "referenceAudit": {
+      "pass": 38
+    }
+  },
+  "latestCompleteCI": "consolidation-ci-c802dfe2-2026-09-30.json",
+  "routeStatus": {
+    "moduleImports": "Removed obsolete RECIPES imports. Formerly blocked modules now execute their tests.",
+    "capitalRecovery": "passes with real combat, paid replacements and preserved finite equipment",
+    "armyFunding": "prepared subsystem route passes real purchases, stock replenishment, militia training and funding; not fresh campaign proof",
+    "establishedSouthern": "San Lorenzo and paid recovery pass; subsequent real Cordoba assault loses, so the whole route remains unaccepted",
+    "freshRecovery": "Actual combat reaches Tucuman and the subsequent medical recovery; it then fails in recoverFreshNorthernDoctor on an obsolete depot ammunition lookup. The route is not accepted."
+  },
+  "remainingRouteDiagnostic": {
+    "tests": 1,
+    "pass": 0,
+    "fail": 1,
+    "skipped": 0,
+    "cancelled": 0,
+    "logSha256": "2d70ccdb1c18aead522e7c9ec4f353ac711f8e71e4da361628376775180444a2",
+    "error": "recoverFreshNorthernDoctor reads removed c.depots.cordoba"
+  }
+}

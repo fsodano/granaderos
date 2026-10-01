@@ -1,13 +1,19 @@
 /* Compact tactical HUD: field first, contextual kit instead of fixed sidebar. */
+/* Contact and interrupts must not resize the map while its actors move. */
+.battle-layout .tactical-notices{position:absolute;z-index:20;top:28px;left:0;right:0;pointer-events:none;max-height:45%;overflow:auto}
+.battle-layout .tactical-notices>*{pointer-events:auto}
+.battle-layout .tactical-notices .ja2-group-move{font-size:11px;gap:4px 8px;padding:5px 8px}
+.battle-layout .tactical-notices .ja2-group-move button{font-size:11px;min-height:24px;padding:4px 6px}
+.battle-layout .tactical-notices .ja2-group-preview[open]{max-height:110px;overflow:auto}
 .battle-layout{position:relative;display:flex;flex-direction:column;height:calc(100svh - 68px);min-height:500px;overflow:hidden;background:#20241e}
 .battle-layout .battle-header{height:42px;min-height:42px;padding:4px 12px;gap:12px;background:#242a24;border-bottom:1px solid #686e52;flex-shrink:0}
 .battle-layout .battle-header h1{font-size:17px;line-height:1.15;margin:0}.battle-layout .battle-header .eyebrow{font-size:8px;letter-spacing:1px;margin:0 0 2px}.battle-layout .battle-status{max-width:none;font-size:11px;gap:9px;flex-wrap:nowrap}.battle-layout .mobile-details{display:block;font-size:11px;padding:4px 8px}
-.battle-layout .battle-middle{position:relative;display:block;flex:1;min-height:180px;height:auto;overflow:hidden}.battle-layout .field-wrap{height:100%;min-height:0;overflow:auto}.battle-layout .tactical-field{height:calc(100% - 26px);width:100%;min-height:0;min-width:0;display:block}.battle-layout .map-caption{height:26px;min-width:0;padding:3px 10px;font-size:10px;background:#283328}.battle-layout .map-zoom button{padding:0 6px;min-height:20px}
+.battle-layout .battle-middle{position:relative;display:block;flex:1;min-height:180px;height:auto;overflow:hidden}.battle-layout .field-wrap{height:100%;min-height:0;overflow:auto}.battle-layout .tactical-field{height:100%;width:100%;min-height:0;min-width:0;display:block}.battle-layout .map-zoom button{padding:0 6px;min-height:20px}
 .battle-layout .battle-inspector{display:none}.battle-layout .battle-inspector.inspector-open{display:block;position:absolute;z-index:30;right:8px;top:8px;bottom:8px;width:min(340px,calc(100% - 16px));max-height:none;overflow:auto;background:#202c25;border:1px solid #93906a;padding:12px;box-shadow:0 5px 20px #0009}.battle-layout .inspector-close{float:right;font-size:11px;padding:4px 8px}.battle-layout .battle-inspector .soldier-heading{clear:both}.battle-layout .battle-inspector .field-supplies{font-size:12px;padding:8px 0}.battle-layout .battle-inspector h2{font-size:20px}.battle-layout .battle-inspector .weapon-icon{max-height:65px;object-fit:contain}.battle-layout .battle-inspector .field-log{max-height:170px;overflow:auto}
 .battle-layout .command-bar{flex-shrink:0;min-height:42px;padding:3px 8px;gap:6px;background:#31352a;border-top:2px solid #858163;border-bottom:1px solid #151d17;flex-direction:row}.battle-layout .commands{justify-content:flex-start;overflow-x:auto;flex:1;min-width:0;gap:2px}.battle-layout .commands button{min-width:49px!important;font-size:9px!important;padding:4px 5px;white-space:nowrap;gap:2px}.battle-layout .commands svg{width:16px;height:16px}.battle-layout .end-turn{font-size:13px;padding:6px 10px;white-space:nowrap;gap:5px}.battle-layout .end-turn svg{width:15px}
 .battle-layout .tactical-roster{flex-shrink:0;display:grid;grid-template-columns:repeat(6,minmax(72px,115px)) minmax(100px,1fr);gap:5px;padding:5px 8px;background:linear-gradient(#3e4435,#252c23);overflow-x:auto;border-top:1px solid #676c50;min-height:112px}.battle-layout .portrait-card{display:flex;flex-direction:column;align-items:stretch;gap:2px;min-width:72px;padding:3px;border:1px solid #747558;background:#18211d;color:#e3dfbf;border-radius:0}.battle-layout .portrait-card.active{border:2px solid #e0cf7c;padding:2px;background:#2f3b29}.battle-layout .portrait-name{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:10px;text-align:left;line-height:13px}.battle-layout .portrait-name b{color:#bdb17b;margin-right:3px}.battle-layout .portrait-vitals{display:flex;gap:4px;height:64px;min-width:0}.battle-layout .portrait-vitals img{height:64px;min-width:0;width:calc(100% - 23px);object-fit:cover;object-position:center 35%;border:1px solid #616148}.battle-layout .portrait-fallback{display:grid;place-items:center;width:calc(100% - 23px);background:#4c503b;font:20px Georgia}.battle-layout .hud-vitals{display:flex;gap:2px;align-items:stretch;width:19px}.battle-layout .hud-vitals>span{width:5px;position:relative;background:#111813;border:1px solid #515540}.battle-layout .hud-vitals i{position:absolute;bottom:0;left:0;width:100%}.battle-layout .hud-vitals .health{background:#ca574b}.battle-layout .hud-vitals .action{background:#b9ae61}.battle-layout .hud-vitals .energy{background:#65a5b1}.battle-layout .portrait-numbers{font:8px monospace;white-space:nowrap;text-align:center}.battle-layout .empty-portrait-slot{min-width:72px;border:1px inset #565d45;background:#1c251f;display:grid;place-items:center;color:#4e5d48}.battle-layout .hud-selection{display:flex;flex-direction:column;justify-content:center;gap:5px;padding:4px 10px;font-size:11px}.battle-layout .hud-selection>span{color:#b2b49a}.battle-layout .hud-selection .line-button{font-size:11px;padding:5px}
 .battle-layout .tactical-help-toggle{position:absolute;right:12px;top:46px;z-index:25}.battle-layout .tactical-help-toggle>button{font-size:10px;padding:3px 7px;background:#1d2a22dd}.battle-layout #tactical-key-reference{position:fixed;z-index:60;right:12px;top:110px;max-height:calc(100svh - 140px);overflow:auto;width:min(550px,calc(100vw - 24px));border:1px solid #aaa077;box-shadow:0 10px 40px #000a;font-size:12px}.battle-layout .hud-mission{flex-shrink:0;font-size:11px;background:#2c3528;border-bottom:1px solid #596346;padding:3px 12px}.battle-layout .hud-mission summary{cursor:pointer}.battle-layout .hud-mission[open]{max-height:150px;overflow:auto}.battle-layout .local-garrison{flex-shrink:0;background:#293126;font-size:11px;padding:2px 10px;max-height:100px;overflow:auto}.battle-layout .local-garrison .squad-strip{padding:3px;gap:4px}.battle-layout .local-garrison .squad-card{font-size:10px;min-width:100px;padding:4px}.battle-layout .local-garrison .eyebrow{margin:0;font-size:9px}.battle-layout .local-garrison small{display:none}.battle-layout>.notice{position:absolute;z-index:40;left:12px;bottom:160px;max-width:min(520px,calc(100% - 24px));max-height:50%;overflow:auto}
-@media(max-width:700px){.battle-layout{height:calc(100svh - 68px);min-height:420px}.battle-layout .battle-header h1{font-size:13px;max-width:180px}.battle-layout .battle-header .eyebrow{display:none}.battle-layout .battle-status{font-size:9px;gap:5px}.battle-layout .enemy-count{display:none}.battle-layout .tactical-roster{grid-template-columns:repeat(6,78px) 105px;min-height:104px}.battle-layout .portrait-vitals,.battle-layout .portrait-vitals img{height:58px}.battle-layout .map-caption>span:nth-child(2){max-width:55%;overflow:hidden;white-space:nowrap}.battle-layout .command-bar{min-height:42px}.battle-layout .hud-selection{padding:2px}.battle-layout .tactical-help-toggle{right:7px;bottom:calc(52svh + 8px)}.battle-layout .field-wrap{overflow:auto}}
+@media(max-width:700px){.battle-layout{height:calc(100svh - 68px);min-height:420px}.battle-layout .battle-header h1{font-size:13px;max-width:180px}.battle-layout .battle-header .eyebrow{display:none}.battle-layout .battle-status{font-size:9px;gap:5px}.battle-layout .enemy-count{display:none}.battle-layout .tactical-roster{grid-template-columns:repeat(6,78px) 105px;min-height:104px}.battle-layout .portrait-vitals,.battle-layout .portrait-vitals img{height:58px}.battle-layout .command-bar{min-height:42px}.battle-layout .hud-selection{padding:2px}.battle-layout .tactical-help-toggle{right:7px;bottom:calc(52svh + 8px)}.battle-layout .field-wrap{overflow:auto}}
 /* Keep save/menu access, without the campaign masthead occupying the field. */
 .game-shell:has(.battle-layout) .game-nav{height:28px;min-height:28px;padding:0 10px}.game-shell:has(.battle-layout) .wordmark{font-size:12px;letter-spacing:1px}.game-shell:has(.battle-layout) .wordmark span,.game-shell:has(.battle-layout) .nav-center{display:none}.game-shell:has(.battle-layout) .nav-tools{gap:14px}.game-shell:has(.battle-layout) .nav-tools button{font-size:10px}.game-shell:has(.battle-layout) .nav-tools svg{width:13px;height:13px}.game-shell:has(.battle-layout) .battle-layout{height:calc(100svh - 28px)}
 
@@ -15,10 +21,11 @@
 .battle-layout .tactical-minimap{width:136px;height:75px;border:1px solid #8c8963;cursor:crosshair;align-self:center;flex-shrink:0;background:#18211a}
 .battle-layout .hud-selection{display:grid;grid-template-columns:minmax(80px,1fr) auto;gap:3px 10px;padding:3px 6px}.battle-layout .hud-selection .tactical-minimap{grid-column:2;grid-row:1/4}.battle-layout .hud-selection strong,.battle-layout .hud-selection>span,.battle-layout .hud-selection>button{grid-column:1}
 .battle-layout .tactical-help-toggle{top:auto;bottom:max(calc(min(26svh,340px) + 8px),158px);right:12px}
-.battle-layout .map-caption{display:flex;gap:10px}.battle-layout .map-caption>span:nth-child(2){flex:1;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.battle-layout .map-zoom{flex-shrink:0;display:flex;align-items:center;gap:4px}
+.battle-layout .map-zoom{flex-shrink:0;display:flex;align-items:center;gap:4px}
 @media(max-width:1100px){.battle-layout .hud-selection{display:flex;padding:2px;gap:2px}.battle-layout .hud-selection strong,.battle-layout .hud-selection>span,.battle-layout .hud-selection>button{display:none}.battle-layout .tactical-minimap{width:100%;min-width:90px;height:89px}}
 
 /* JA2 bottom-strip disposition (DESIGN.md MODE A squad strip / MODE B inventory panel). */
+.battle-layout .ja2-hud{position:relative;flex-shrink:0;min-width:0}
 .battle-layout .ja2-strip{position:relative;flex-shrink:0;display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr) 230px;gap:6px;padding:5px 8px;background:linear-gradient(#3e4435,#252c23);border-top:1px solid #676c50;height:min(26svh,340px);min-height:150px;overflow:hidden}
 .battle-layout .ja2-roster{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:5px;min-width:0;min-height:0;overflow:hidden;margin:0;padding:0;list-style:none}
 .battle-layout .ja2-portrait-cell{display:flex;flex-direction:column;align-items:stretch;gap:2px;min-width:0;min-height:0;padding:3px;border:1px solid #747558;background:#18211d;color:#e3dfbf;border-radius:0;cursor:pointer;text-align:left;overflow:hidden}
@@ -33,15 +40,47 @@
 .battle-layout .ja2-vitals .health{background:#ca574b}
 .battle-layout .ja2-vitals .action{background:#b9ae61}
 .battle-layout .ja2-vitals .energy{background:#65a5b1}
+.battle-layout .ja2-vitals .bandaged{background:#e9b6a1}
+.battle-layout .ja2-portrait-face{position:relative}
+.battle-layout .ja2-bleeding-mark{position:absolute;bottom:2px;left:2px;background:#611e18e8;color:#ffe0cc;font:9px monospace;padding:2px}
+.battle-layout .ja2-action-readout{display:flex;flex-wrap:wrap;gap:2px 8px;font-size:10px;flex-shrink:0}
+.battle-layout .ja2-action-readout strong{color:#eee0a8}
+.battle-layout .ja2-action-readout small{flex-basis:100%;font-size:9px;color:#bdc3aa}
+.battle-layout .ja2-action-readout .ja2-noise-readout{color:#efd28c}
+.battle-layout .ja2-equipped-slots{display:flex;flex-wrap:wrap;gap:4px;flex-shrink:0}
+.battle-layout .ja2-equipped-slots button{padding:4px 7px;border:1px solid #778371;background:#1b2921;color:#efe5c9;font-size:10px}
+.battle-layout .ja2-equipped-slots button[aria-pressed="true"]{border-color:#e0cf7c;background:#39452f;opacity:1;color:#fff0b5}
+.battle-layout .ja2-equipped-help{margin:0;color:#d3d9bf;font-size:10px;line-height:1.35;flex-shrink:0}
+.battle-layout .ja2-target-preview{position:absolute;top:34px;left:12px;z-index:12;display:flex;flex-direction:column;gap:3px;max-width:min(360px,calc(100% - 24px));padding:8px 10px;background:#172a21ee;border:1px solid #b9ba85;color:#f0e7c9;font-size:11px;pointer-events:none}
+.battle-layout .ja2-target-preview.unavailable{border-color:#d28e70;color:#f1c7ad}
+.battle-layout .hand-slot.medical{grid-column:1/-1;min-height:50px}
+.battle-layout .hand-slot.medical>b{font-size:20px;color:#e0cfba}
+.battle-layout .ja2-equipped-slots button:disabled:not([aria-pressed="true"]),.battle-layout .ja2-order-grid button:disabled,.battle-layout .ja2-stance-grid button:disabled{opacity:.4;cursor:default}
 .battle-layout .ja2-weapon-line{font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#b2b49a;flex-shrink:0}
-.battle-layout .ja2-context{display:flex;flex-direction:column;gap:5px;min-width:0;min-height:0;overflow:hidden}
-.battle-layout .ja2-order-grid{flex:1;min-height:0;overflow-y:auto;display:flex;flex-wrap:wrap;gap:3px;align-content:flex-start}
+.battle-layout .ja2-context{display:flex;flex-direction:column;gap:5px;min-width:0;min-height:0;overflow-y:auto}
+.battle-layout .ja2-order-grid{flex:1 0 28px;min-height:28px;overflow-y:auto;display:flex;flex-wrap:wrap;gap:3px;align-content:flex-start}
 .battle-layout .ja2-order-grid button{font-size:9px;padding:4px 5px;display:inline-flex;align-items:center;gap:4px;background:transparent;border:1px solid #566366;color:#ece5d3;white-space:nowrap}
 .battle-layout .ja2-order-grid button svg{width:14px;height:14px;flex-shrink:0}
 .battle-layout .ja2-order-grid button.selected{border-color:#e0cf7c;background:#2f3b29}
-.battle-layout .ja2-order-grid span[aria-label="Puntería"]{display:inline-flex;gap:2px;align-items:center}
-.battle-layout .ja2-order-grid span[aria-label="Puntería"] button{padding:2px 5px;font-size:9px}
-.battle-layout .ja2-order-grid span[aria-label="Puntería"] button[aria-pressed="true"]{border-color:#e0cf7c;background:#2f3b29}
+.battle-layout .ja2-shot-locations{display:inline-flex;align-items:center;gap:3px}
+.battle-layout .ja2-shot-locations button[aria-pressed="true"]{border-color:#e0cf7c;background:#2f3b29}
+.battle-layout .ja2-shot-controls{display:flex;flex-wrap:wrap;gap:4px 8px;flex-shrink:0;font-size:9px}
+.battle-layout .ja2-shot-controls>span{display:inline-flex;align-items:center;gap:3px}
+.battle-layout .ja2-shot-controls button{padding:3px 5px;font-size:9px;background:transparent;border:1px solid #566366;color:#ece5d3}
+.battle-layout .ja2-shot-controls button[aria-pressed="true"]{border-color:#e0cf7c;background:#2f3b29}
+.battle-layout .ja2-shot-controls button:disabled{opacity:.4;cursor:default}
+.battle-layout .ja2-context-footer{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:4px;flex-shrink:0;margin-top:auto}
+.battle-layout .ja2-context-footer .line-button{padding:4px 8px;font-size:10px;width:auto}
+.battle-layout .ja2-context-footer .gold-button.end-turn{margin-top:0;align-self:center}
+.battle-layout .ja2-interrupt-banner{display:flex;align-items:center;flex-wrap:wrap;gap:6px 12px;padding:7px 12px;background:#4a3c20;color:#ffedbe;border-bottom:2px solid #d8af57;flex-shrink:0;font-size:11px}
+.battle-layout .ja2-interrupt-banner>div:first-child{display:flex;flex-direction:column;gap:2px}
+.battle-layout .ja2-interrupt-banner strong{font-size:15px;letter-spacing:.06em}
+.battle-layout .ja2-interrupt-banner>.line-button{margin-left:auto;font-size:11px;padding:5px 8px;background:#231e13}
+.battle-layout .ja2-interrupt-units{display:flex;flex-wrap:wrap;gap:4px}
+.battle-layout .ja2-interrupt-units button{font-size:10px;padding:4px 6px;color:#fff1c5;background:#2c291c;border:1px solid #b9a777}
+.battle-layout .ja2-interrupt-units button[aria-pressed="true"]{background:#675626;border-color:#ffe197}
+.battle-layout .ja2-portrait-cell.interrupt-ready{box-shadow:inset 0 0 0 1px #d8af57}
+.battle-layout .ja2-portrait-cell:disabled:not(.fallen){opacity:.5}
 .battle-layout .ja2-artillery{display:flex;flex-wrap:wrap;gap:4px;align-items:center;font-size:10px;flex-shrink:0}
 .battle-layout .ja2-artillery .eyebrow{font-size:8px;letter-spacing:1px;margin:0;flex-basis:100%}
 .battle-layout .ja2-artillery select{background:#182d2d;border:1px solid #667b6a;color:#e9dfc5;font-size:10px;padding:3px;max-width:100%}
@@ -76,10 +115,10 @@
 .battle-layout .ja2-inv-header .portrait span{display:grid;place-items:center;height:100%;font:22px Georgia}
 .battle-layout .ja2-inv-header h2{font:17px Georgia,serif;margin:2px 0 0}
 .battle-layout .ja2-inv-header span{font-size:10px;color:#b2b49a}
-.battle-layout .ja2-stats{display:grid;grid-template-columns:1fr 1fr;gap:2px 10px;font-size:10px;min-width:0;min-height:0;overflow-y:auto;align-content:start}
-.battle-layout .ja2-stats>div{display:flex;justify-content:space-between;gap:6px;white-space:nowrap}
+.battle-layout .ja2-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px 10px;font-size:10px;min-width:0;min-height:0;overflow-y:auto;align-content:start}
+.battle-layout .ja2-stats>div{display:flex;justify-content:space-between;gap:6px;white-space:normal;min-width:0}
 .battle-layout .ja2-stats span{color:#b2b49a}
-.battle-layout .ja2-stats b{font-weight:normal;color:#e3dfbf}
+.battle-layout .ja2-stats b{font-weight:normal;color:#e3dfbf;flex-shrink:0}
 .battle-layout .ja2-stats p{grid-column:1/-1;margin:2px 0}
 .battle-layout .ja2-stats details{grid-column:1/-1}
 .battle-layout .ja2-stance-grid{display:flex;flex-direction:column;gap:4px;min-width:0;min-height:0;overflow-y:auto}
@@ -135,49 +174,163 @@
 }
 @media(max-width:700px){.battle-layout .ja2-portrait-cell{min-height:120px}.battle-layout .ja2-inventory{flex-direction:row}.battle-layout .ja2-inv-header{min-height:115px}.battle-layout .ja2-inventory>*{flex-basis:100%;flex-grow:0;flex-shrink:0}.battle-layout .ja2-stats,.battle-layout .ja2-stance-grid,.battle-layout .paper-doll{overflow:visible}.battle-layout .ja2-inventory .ja2-right{flex-basis:100%}}
 .battle-layout .ja2-inventory .ja2-radar .tactical-minimap{height:48px}
+.battle-layout .ja2-hand-management{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:3px}
+.battle-layout .ja2-pocket-count{grid-column:1/-1;margin:0;font-size:10px;color:#d3cfb0}
+.battle-layout .ja2-hand-management button{font-size:9px;padding:3px 5px}
+.battle-layout .ja2-tool-selector{grid-column:1/-1;display:flex;flex-direction:column;gap:3px;font-size:10px;color:#d3cfb0}
+.battle-layout .ja2-tool-selector select{min-width:0;width:100%;font-size:10px;padding:4px;background:#18211d;color:#e3dfbf;border:1px solid #747558}
+.battle-layout .ja2-supply-items{display:flex;flex-wrap:wrap;gap:3px}
+.battle-layout .ja2-supply-items button{font-size:9px;padding:3px 5px}
+.battle-layout .ja2-supply-items button[aria-pressed="true"]{border-color:#e0cf7c;background:#2f3b29}
+.battle-layout .ja2-item-handling{display:flex;align-items:flex-end;flex-wrap:wrap;gap:5px;margin-top:5px}
+.battle-layout .ja2-item-handling label{display:flex;flex-direction:column;gap:2px;min-width:0;font-size:9px}
+.battle-layout .ja2-item-handling select,.battle-layout .ja2-item-handling input{height:26px;max-width:210px;min-width:0;padding:3px 5px;background:#18211d;color:#e3dfbf;border:1px solid #747558;font-size:10px}
+.battle-layout .ja2-item-handling input{width:62px}
+.battle-layout .ja2-item-handling button{height:26px;padding:3px 6px;font-size:10px}
+.battle-layout .ja2-item-feedback{font-size:10px;color:#d3cfb0;white-space:normal}
+.battle-layout .ja2-nearby-loot{border-top:1px solid #52645a;margin-top:5px;padding-top:4px;font-size:10px;max-height:120px;overflow:auto}
+.battle-layout .ja2-nearby-loot summary{cursor:pointer;color:#e3dfbf}
+.battle-layout .ja2-inventory .pertrechos{overflow-y:auto}
+@media(min-width:701px){.battle-layout .ja2-strip.inventory-open{height:min(48svh,420px);min-height:300px}}
+@media(min-width:1101px){.battle-layout .ja2-inventory{grid-template-rows:minmax(0,1fr) minmax(100px,auto)}}
+@media(max-width:700px){.battle-layout .ja2-inventory .pertrechos{overflow:visible}.battle-layout .ja2-item-handling label:first-child{flex-basis:calc(100% - 72px)}.battle-layout .ja2-item-handling label:first-child select{max-width:none}}
 @media(min-width:701px) and (max-width:1100px){.battle-layout .ja2-roster{grid-template-columns:repeat(6,78px);overflow-x:auto}}
+@media(max-width:700px){
+ .battle-layout .ja2-strip{grid-auto-rows:max-content}
+ .battle-layout .ja2-context{min-height:max-content;overflow:visible}
+ .battle-layout .ja2-order-grid{flex:none;overflow:visible;min-height:24px}
+ .battle-layout .ja2-context .gold-button.end-turn{margin-top:0}
+ .battle-layout .tactical-help-toggle{bottom:calc(52svh + 8px)}
+}
+.ja2-auto-bandage { border-top: 1px solid #766b4e; padding-top: .5rem; }
+.ja2-auto-bandage p { margin: .35rem 0; }
+.ja2-auto-bandage ul { padding-left: 1.1rem; }
+.ja2-group-move { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; padding: .6rem .8rem; color: #eee3c4; background: #253d35; border: 1px solid #8c9970; }
+.ja2-group-members { display: flex; flex-wrap: wrap; gap: .3rem; }
+.ja2-group-preview { flex: 0 0 100%; min-width: 0; overflow: auto; box-sizing: border-box; line-height: 1.25rem; }
+.ja2-group-move ul { margin: .25rem 0; padding-left: 1.1rem; }
+.ja2-group-move p { margin: .25rem 0; }
+.ja2-portrait-cell.group-selected { outline: 2px solid #aeca81; outline-offset: -3px; }
+.ja2-group-tag { color: #d6edb5; font-size: .65rem; }
+.ja2-campaign-return { display: flex; flex-wrap: wrap; align-items: center; flex-shrink: 0; gap: .3rem .75rem; padding: .3rem .75rem; background: #293126; border-bottom: 1px solid #596346; }
+.ja2-campaign-return .line-button { padding: .2rem .5rem; font-size: .75rem; }
+.ja2-campaign-return small { font-size: .7rem; }
+.ja2-bayonet-control { display: grid; gap: .25rem; padding: .35rem; border: 1px solid #76764f; }
+.ja2-bayonet-control small { display: block; }
 
-/* Field supply selection pauses exploration until the player confirms or closes it. */
-.field-supply-overlay{position:absolute;inset:0;z-index:80;background:#10181099;display:grid;place-items:center;padding:16px}.field-supply-picker{width:min(460px,100%);max-height:100%;overflow:auto;padding:20px;background:#253128;color:#f1e5c7;border:1px solid #aaa077;box-shadow:0 12px 35px #0009}.field-supply-picker h2{font-size:20px;margin-top:0}.field-supply-picker label{display:grid;gap:5px;margin:14px 0}.field-supply-picker input,.field-supply-picker select{width:100%;min-height:36px;padding:6px;color:inherit;background:#172019;border:1px solid #75836d}.field-supply-picker>div{display:flex;gap:12px;flex-wrap:wrap}.field-supply-picker [role=status]{color:#eed598}
+.ja2-exit-panel{margin:.5rem 0;padding:1rem;background:#24342d;color:#f1e5c7;border:1px solid #9e8b5c;display:grid;gap:.65rem}.ja2-exit-panel header{display:flex;justify-content:space-between;align-items:start;gap:1rem}.ja2-exit-panel p{margin:.3rem 0;font-size:.85rem}.ja2-exit-panel select{max-width:100%;margin-left:.5rem;background:#18251f;color:#f1e5c7;padding:.35rem;border:1px solid #9e8b5c}.ja2-exit-selection{display:flex;flex-wrap:wrap;gap:.4rem}.ja2-exit-panel fieldset{display:grid;gap:.35rem;border:1px solid #736f51;padding:.6rem}.ja2-exit-unit{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}.ja2-exit-unit small{margin-left:auto}.ja2-exit-note,.ja2-departure-notice{color:#d4c69f;font-size:.8rem}.ja2-departure-notice{padding:.5rem;background:#24342d}@media(max-width:600px){.ja2-exit-panel header{flex-wrap:wrap}.ja2-exit-unit small{flex-basis:100%;margin-left:1.5rem}}
 
-/* One physical store for all loose equipment and supplies. */
-.battle-layout .personal-pockets{min-width:0;min-height:0;overflow:auto;grid-column:1/5;grid-row:2;font-size:11px}
-.battle-layout .personal-pockets h3{font-size:12px;margin:0 0 6px}
-.battle-layout .personal-pockets p{margin:4px 0 8px}
-.battle-layout .pocket-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px}
-.battle-layout .pocket-cell{position:relative;min-width:0;min-height:64px;padding:6px 3px;border:1px solid #898261;background:#18211d;color:#e3dfbf;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer}
-.battle-layout .pocket-cell.large{grid-column:span 2}
-.battle-layout .pocket-cell.selected,.battle-layout .pocket-cell:focus-visible{outline:2px solid #e0cf7c;outline-offset:-2px}
-.battle-layout .pocket-cell img{max-width:100%;height:42px;object-fit:contain}
-.battle-layout .pocket-detail-art{width:96px;height:96px;object-fit:contain}
-.battle-layout .pocket-details>p{flex:1;min-width:180px;line-height:1.5}
-.battle-layout .pocket-cell b{position:absolute;right:5px;top:3px;color:#ffe694}
-.battle-layout .pocket-cell span{font-size:10px;max-width:100%;overflow-wrap:anywhere}
-.battle-layout .pocket-details{display:flex;flex-wrap:wrap;gap:7px;align-items:center;padding:10px 0}
-.battle-layout .pocket-details>strong,.battle-layout .pocket-details>small{flex-basis:100%}
-.battle-layout .pocket-details button,.battle-layout .pocket-overflow button{min-height:30px;padding:5px;border:1px solid #858663;background:#263029;color:#eee5c7;font-size:11px}
-.battle-layout .pocket-details input{width:65px}
-.battle-layout .pocket-details select{max-width:100%;min-width:0}
-.battle-layout .pocket-details label{max-width:100%}
-.battle-layout .pocket-overflow{border:1px solid #c7995d;padding:6px;margin-top:8px}
-.battle-layout .held-weapon{grid-column:1/-1}
-.battle-layout .paper-readouts{flex-wrap:wrap}
-/* Open equipment above the field so every pocket can be reached at short heights. */
-.battle-layout .ja2-strip.inventory-open{position:absolute;inset:auto 8px 8px;z-index:60;height:min(600px,calc(100% - 56px));max-height:none;min-height:0;border:1px solid #898261;box-shadow:0 8px 24px #0008}
-.battle-layout .ja2-inventory{display:grid;grid-template-columns:140px minmax(160px,1fr) minmax(270px,1.4fr) 150px;grid-template-rows:120px minmax(0,1fr);gap:12px;overflow:auto;padding:8px}
-.battle-layout .ja2-inv-header{grid-column:1;grid-row:1}
-.battle-layout .ja2-stats{grid-column:1;grid-row:2;grid-template-columns:1fr}
-.battle-layout .ja2-stance-grid{grid-column:2;grid-row:1}
-.battle-layout .paper-doll{grid-column:2;grid-row:2}
-.battle-layout .ja2-inventory>.personal-pockets{grid-column:3;grid-row:1/3;overflow:auto}
-.battle-layout .ja2-inventory .ja2-right{grid-column:4;grid-row:1/3}
-.battle-layout .paper-readouts{font-size:12px;align-content:start}
-.battle-layout .paper-readouts .line-button{font-size:12px;min-height:32px;padding:6px}
-.battle-layout .paper-readouts select{max-width:100%;min-width:0}
+/* A selected map pile uses a focused item/quantity choice before movement. */
+.ja2-loot-dialog{margin:auto;width:min(440px,calc(100vw - 32px));max-height:calc(100svh - 32px);overflow:auto;box-sizing:border-box;background:#263329;color:#f0e6c9;border:1px solid #b6a46c;padding:18px;box-shadow:0 16px 64px #0009}
+.ja2-loot-dialog::backdrop{background:#07140dbb}
+.ja2-loot-dialog header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:16px}
+.ja2-loot-dialog h2{margin:0;font-size:20px}.ja2-loot-dialog p{font-size:13px;line-height:1.5}.ja2-loot-dialog header p{margin:4px 0}
+.ja2-loot-dialog label{display:grid;gap:5px;margin:12px 0;font-size:13px}.ja2-loot-dialog select,.ja2-loot-dialog input{width:100%;min-width:0;box-sizing:border-box;background:#13251b;color:#f0e6c9;border:1px solid #8e956e;padding:8px;font:inherit}
+.ja2-loot-dialog :focus-visible{outline:2px solid #f4d882;outline-offset:3px}.ja2-loot-dialog .gold-button{width:100%;margin-top:8px}
 
-.battle-layout .ja2-stats>div{white-space:normal;align-items:baseline}
-.battle-layout .ja2-stats>div>span{min-width:0;overflow-wrap:anywhere}
-.battle-layout .ja2-stats>div>b{flex-shrink:0}
+.ja2-loot-select{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.ja2-loot-list{max-height:42svh;overflow:auto;overscroll-behavior:contain;border-block:1px solid #667353}
+.ja2-loot-row{display:grid;grid-template-columns:minmax(0,1fr) 76px;gap:12px;padding:10px 2px;border-bottom:1px solid #46583f}
+.ja2-loot-row:last-child{border-bottom:0}.ja2-loot-dialog .ja2-loot-choice{display:flex;align-items:flex-start;gap:8px;margin:0}
+.ja2-loot-dialog .ja2-loot-choice input{width:17px;height:17px;flex-shrink:0;margin:3px 0;accent-color:#cfbc7e}
+.ja2-loot-choice span{min-width:0}.ja2-loot-choice strong,.ja2-loot-choice small{display:block;line-height:1.5;overflow-wrap:anywhere}.ja2-loot-choice small{color:#d1d8bf}
+.ja2-loot-row p{margin:5px 0 0 25px;font-size:12px}.ja2-loot-dialog .ja2-loot-quantity{margin:0;align-content:start}.ja2-loot-dialog footer{padding-top:8px}
+
+.battle-layout .ja2-roster.multiple-squads{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:minmax(78px,calc((100% - 25px)/6));overflow-x:auto;overscroll-behavior-x:contain}
+
+/* Keep navigation in one row; detailed controls float above the map. */
+.battle-layout .tactical-notices { top: 0; }
+.battle-layout .battle-header.tactical-map-toolbar {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 8px;
+  height: auto;
+  min-height: 36px;
+  padding: 4px 8px;
+  flex: 0 0 auto;
+  background: #202e25;
+  color: #f1ead7;
+}
+.battle-layout .tactical-map-toolbar h1 {
+  grid-column: 2;
+  min-width: 0;
+  max-width: none;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #f3ead5;
+  font-size: 14px;
+  line-height: 1.2;
+}
+.battle-layout .tactical-map-toolbar .battle-status {
+  grid-column: 3;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 8px;
+  max-width: none;
+  color: #e9eddf;
+  font-size: 11px;
+  white-space: nowrap;
+}
+.battle-layout .battle-phase { display: inline-flex; align-items: center; gap: 5px; }
+.battle-layout .tactical-map-toolbar .enemy-count { display: inline; padding: 0 0 0 8px; margin: 0; border-left: 1px solid #6d7a64; color: #e9b99d; }
+.battle-layout .map-toolbar-actions { grid-column: 4; display: flex; align-items: center; gap: 6px; }
+.battle-layout .map-order-mode { max-width: 110px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #eddda8; font-size: 11px; }
+.battle-layout .tactical-map-toolbar .line-button {
+  min-height: 27px;
+  padding: 3px 7px;
+  border: 1px solid #839271;
+  border-radius: 3px;
+  background: #1a2a20;
+  color: #fff3cb;
+  font-size: 12px;
+  line-height: 1.25;
+  white-space: nowrap;
+}
+.battle-layout .tactical-map-toolbar button:hover:not(:disabled) { background: #42543a; border-color: #ddcf94; }
+.battle-layout .tactical-map-toolbar :focus-visible { outline: 2px solid #f4d882; outline-offset: 1px; }
+.battle-layout .tactical-map-toolbar .ja2-campaign-return { grid-column: 1; margin: 0; padding: 0; border: 0; background: none; }
+.battle-layout .tactical-map-toolbar .tactical-help-toggle { position: static; inset: auto; }
+.battle-layout #tactical-key-reference { top: 72px; right: 8px; max-height: calc(100svh - 88px); font-size: 13px; }
+.battle-layout #tactical-key-reference h2 { font-size: 20px; }
+.battle-layout #tactical-key-reference .map-order-help { border-left: 2px solid #d7bf7c; padding-left: 10px; }
+.battle-layout #tactical-camera-panel {
+  position: absolute;
+  z-index: 50;
+  top: calc(100% + 4px);
+  right: 8px;
+  width: max-content;
+  max-width: calc(100% - 16px);
+  max-height: min(280px, 60svh);
+  overflow: auto;
+  padding: 10px;
+  border: 1px solid #95a27f;
+  background: #20332c;
+  color: #f1e5c7;
+  box-shadow: 0 5px 20px #0008;
+  font-size: 12px;
+}
+.battle-layout .map-camera-controls, .battle-layout .map-camera, .battle-layout .map-zoom { display: flex; align-items: center; flex-wrap: wrap; gap: 4px; }
+.battle-layout .map-camera-controls { gap: 8px 12px; }
+.battle-layout .map-control-label { min-width: 0; width: auto; margin-right: 3px; color: #e0e5d3; }
+.battle-layout .map-camera-controls button { min-width: 28px; height: 28px; padding: 0 6px; border: 1px solid #839271; background: #1a2a20; color: #fff3cb; border-radius: 3px; font-size: 16px; }
+.battle-layout .map-camera-controls button.map-center { width: auto; font-size: 12px; }
+.battle-layout .map-zoom output { min-width: 38px; text-align: center; color: #fff0bb; font: 12px/1.2 ui-monospace, monospace; }
+.battle-layout .map-reference { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.battle-layout #tactical-camera-panel p { margin: 8px 0 0; font-size: 11px; color: #d5ddcb; }
+@media (max-width: 650px) {
+  .battle-layout .battle-header.tactical-map-toolbar { gap: 4px 8px; }
+  .battle-layout .tactical-map-toolbar h1 { grid-column: 2 / 5; }
+  .battle-layout .tactical-map-toolbar .battle-status { grid-column: 1 / 3; grid-row: 2; }
+  .battle-layout .map-toolbar-actions { grid-column: 3 / 5; grid-row: 2; justify-content: flex-end; }
+  .battle-layout .map-order-mode { max-width: 85px; }
+  .battle-layout .tactical-map-toolbar .enemy-count { display: none; }
+  .battle-layout #tactical-key-reference { top: 94px; max-height: calc(100svh - 110px); }
+}
 
 .ammunition-load-choice{display:flex;flex-direction:column;gap:6px;min-width:0;width:100%;text-align:left}
 .ammunition-load-choice label,.ammunition-load-choice select{display:block;max-width:100%;width:100%;box-sizing:border-box}

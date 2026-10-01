@@ -23,7 +23,7 @@ test('omitted family preserves old definitions and incompatible reserve cannot l
  const old=compileWeaponDefinition(original());assert.equal(Object.hasOwn(old,'ammunitionFamily'),false);assert.doesNotThrow(()=>validateWeaponDefinition(old,1800));assert.equal(ammoTypeFor(old),'ammoMusket');
  const b=createBattle([{id:'p',weapon:1800,weaponMetadata:weaponMetadata({...original(),ammunitionFamily:'ammoRifle'}),loaded:0,ammo:0}],{width:8,height:8,exploration:true,enemies:[]});
  changeAmmo(b.units[0],'ammoMusket',3);assert.equal(reloadPlan(b.units[0],b).rounds,0);
- const denied=actBattle(b,{type:'reload',unitId:'p'});assert.match(denied.lastError,/fusil/);assert.deepEqual(denied.units,b.units);
+ const denied=actBattle(b,{type:'reload',unitId:'p'});assert.match(denied.lastError,/cartuchos compatibles/);assert.deepEqual(denied.units,b.units);
 });
 
 test('invalid families, blade ammunition and changed pinned definitions are rejected',()=>{
@@ -41,7 +41,7 @@ test('paid deployment and recovered weapons retain the authored family through f
  let p=buttstockField({stock:{ammunitionFamily:'ammoRifle'}});const unit=()=>p.battle.units.find(u=>u.id==='110'),before=weaponRecord(unit());
  assert.equal(ammoTypeFor(unit()),'ammoRifle');assert.ok(ammoCount(unit(),'ammoRifle')>0);assert.equal(ammoCount(unit(),'ammoMusket'),0);
  const enemy=p.battle.units.find(u=>u.side==='enemy'&&u.weapon===1800);assert.ok(enemy);assert.equal(ammoTypeFor(enemy),'ammoRifle');assert.ok(ammoCount(enemy)>0);
- p=tactical(p,{type:'drop',unitId:'110',slot:'primary'});assert.equal(ammoTypeFor(p.battle.droppedWeapons[0]),'ammoRifle');p=saved(p);
- p=tactical(p,{type:'loot',unitId:'110',dropIndex:0});p=saved(p);const key=Object.keys(unit().inventory).find(k=>k.includes('drop0'));assert.equal(ammoTypeFor(unit().inventory[key]),'ammoRifle');
+ p=tactical(p,{type:'drop',unitId:'110',slot:'primary'});const dropped=p.battle.groundItems.find(g=>g.weapon===before.weapon&&g.count===1);assert.ok(dropped);assert.equal(ammoTypeFor(dropped),'ammoRifle');p=saved(p);
+ p=tactical(p,{type:'loot',unitId:'110',groundId:dropped.id});p=saved(p);assert.equal(p.battle.groundItems.find(g=>g.id===dropped.id).count,0);const key=Object.keys(unit().inventory).find(k=>unit().inventory[k].weapon===before.weapon);assert.equal(ammoTypeFor(unit().inventory[key]),'ammoRifle');
  p=tactical(p,{type:'equipLoot',unitId:'110',inventoryKey:key});p=saved(p);assert.deepEqual(weaponRecord(unit()),before);assert.equal(ammoTypeFor(unit()),'ammoRifle');
 });

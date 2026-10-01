@@ -19,12 +19,12 @@
 | Inspiration | **Jagged Alliance 2 v1.13** | `README.md` |
 | Engine | `engine/` is a **git submodule** pinned to `https://github.com/1dot13/source.git` at commit `ddb691318eb3dd0cdc6eab42139739b6d498c645` | `.gitmodules`, `git submodule status` |
 | Engine nature | 32-bit Windows C++17 (CMake, Win32, DirectDraw/FMOD/Bink legacy) | `engine/CMakeLists.txt:26`, `engine/CMakePresets.json:16` |
-| Web clone | Next.js app in `web/` + pure-JS rules in `game/` + `tests/` | `README.md`, `docs/development/WEB-SYSTEMS.md:3` |
+| Web clone | Next.js app in `web/` + pure-JS rules in `game/` + `tests/` | `README.md`, `docs/development/WEB-SYSTEMS.md` |
 | Version | `0.4.0-dev.1` | `VERSION` |
 | Language split | Player-facing content **Spanish**; code and docs **English** | `README.md` |
 
 The web clone **does not execute the Windows JA2 binary**; it reuses the historical structure and
-JA2-inspired data/mechanics as authored JavaScript (`docs/development/WEB-SYSTEMS.md:3`). The engine is
+JA2-inspired data/mechanics as authored JavaScript (`docs/development/WEB-SYSTEMS.md`). The engine is
 retained as the authoritative reference for rules, data shapes, and screen flow.
 
 ---
@@ -418,7 +418,7 @@ own split between `Ja2/`+`sgp/` (shell/platform) and `Tactical/`+`Strategic/` (r
    `initialCampaign`, `createBattle`, `actBattle`, `endTurn`, `encodeSave`).
 3. **State is serializable** — `encodeSave(campaign, battle)` round-trips through
    `decodeSave`; the engine's `czVersionString` save-compat key has no web equivalent, but
-   `save.js` schema-checks instead (`docs/development/WEB-SYSTEMS.md:43`).
+   `save.js` schema-checks instead (`docs/development/WEB-SYSTEMS.md`).
 4. **Determinism** — `game/tactical.js` uses a seeded PRNG (`random(s)` at line 19, LCG
    `Math.imul(seed,1664525)+1013904223`), mirroring the engine's `BMP_RANDOM` 32-bit PRNG
    requirement (`CMakeLists.txt:108-111`).
@@ -443,7 +443,7 @@ Use this to verify a ported system against the engine. Each item cites the engin
 ### 9.2 Strategic layer
 
 - [ ] Campaign clock matches `Strategic/Game Clock.cpp` semantics (web: `game/time.js`,
-      360-day year, 30-day months, 720-hour payroll — `docs/development/WEB-SYSTEMS.md:15`).
+      360-day year, 30-day months, 720-hour payroll — `docs/development/WEB-SYSTEMS.md`).
 - [ ] Strategic events are ordered and gated like `Strategic/Game Events.cpp` (web:
       `campaign.js` reducer actions).
 - [ ] Save/load round-trips without data loss (`Ja2/SaveLoadGame.cpp`; web: `game/save.js`).
@@ -462,9 +462,9 @@ Use this to verify a ported system against the engine. Each item cites the engin
 ### 9.4 Data
 
 - [ ] All authored content is Spanish and lives in `game/data.js` (engine `i18n/` has no
-      Spanish; `docs/development/WEB-SYSTEMS.md:9`).
+      Spanish; `docs/development/WEB-SYSTEMS.md`).
 - [ ] Item/weapon field separation follows `TableData/Items/Weapons.xml` semantics
-      (`docs/development/WEB-SYSTEMS.md:8`).
+      (`docs/development/WEB-SYSTEMS.md`).
 
 ### 9.5 Verification
 
@@ -494,13 +494,13 @@ Use this to verify a ported system against the engine. Each item cites the engin
    modeled as a screen, not a component overlay, to match engine behavior.
 7. **`czVersionString` is 15 chars + NUL** and is the savegame compatibility key
    (`Ja2/CMakeLists.txt:10-26`). The web clone has no binary save header, but `save.js` must
-   schema-validate instead (`docs/development/WEB-SYSTEMS.md:43`).
+   schema-validate instead (`docs/development/WEB-SYSTEMS.md`).
 8. **Bink/DirectDraw/FMOD are legacy and not portable** — the web clone replaces them with
    `<audio>`/canvas/WebGL. Do not port `sgp/` video or `ext/` code.
 9. **`LoadExternalGameplayData` (`Init.cpp:136`) loads ~100 XML files** with language-prefixed
    fallbacks (`AddLanguagePrefix`, `Init.cpp:92-114`). The web clone folds this into
    `game/data.js`; there is no runtime XML loading.
-10. **The engine's `i18n/` has no Spanish** (`docs/development/WEB-SYSTEMS.md:9`) — Spanish strings are
+10. **The engine's `i18n/` has no Spanish** (`docs/development/WEB-SYSTEMS.md`) — Spanish strings are
     authored directly in `game/data.js`.
 11. **File names contain spaces** (e.g. `"Fade Screen.cpp"`, `"Options Screen.cpp"`,
     `"Sys Globals.cpp"` — `Ja2/CMakeLists.txt:48,70,75`). Grep/glob patterns must quote them.

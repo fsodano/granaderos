@@ -3,14 +3,14 @@
 import {readFile} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
 import {SPRITE_APPEARANCES} from '../game/sprite-appearances.js';
-import {ILLUSTRATED_SEQUENCES} from './illustrated-sprite-prompts.mjs';
+import {REQUIRED_SPRITE_SEQUENCES} from '../game/sprite-action-requirements.js';
 
 const directory='assets/previews/illustrated-sprites/packed';
 const manifest=JSON.parse(await readFile(`${directory}/manifest.json`,'utf8'));
 const missing=[],invalid=[];
 let expected=0;
 for(const appearance of Object.keys(SPRITE_APPEARANCES)){
- const sequences=appearance==='civilian'?['idle','walk','dead-idle','unconscious-breathe']:ILLUSTRATED_SEQUENCES;
+ const sequences=REQUIRED_SPRITE_SEQUENCES;
  for(const sequence of sequences){
   expected++;
   const name=`${appearance}-${sequence}`,entry=manifest.atlases[name];

@@ -3,7 +3,10 @@ import {initialCampaign} from '../game/campaign.js';
 import {defaultContentPackage} from '../game/content-package.js';
 import {enterSector} from '../game/world.js';
 import {actBattle,getReachable} from '../game/tactical.js';
-import {fight} from './cuyo-route-driver.mjs';
+import {advanceCampaignHours} from './campaign-wait-fixture.mjs';
+import {needsCollapseRecovery} from '../game/fatigue.js';
+import {tooTiredToMarch} from '../game/march-fatigue.js';
+import {fight} from './battery-field-driver.mjs';
 import {order,saved,sync,leave} from './local-contract-fixture.mjs';
 export function issuedBattery(content){
  const d=content?structuredClone(content):defaultContentPackage();d.rules.startingTreasury=10000;d.startingTerritory.buenos_aires={owner:'patriot',loyalty:65};
@@ -12,7 +15,10 @@ export function issuedBattery(content){
  const money=s.resources.treasury;s=order(s,{type:'purchaseEquipment',item:'swivel'});assert.equal(s.resources.treasury,money-400);
  // Wait through the first night before departure; the ordinary travel clock
  // then starts this real assault in daylight.
- s=order(s,{type:'wait',hours:6});s=order(s,{type:'travel',sector:'buenos_aires'});return order(s,{type:'attack',sector:'san_nicolas'});
+ s=order(s,{type:'wait',hours:6});s=order(s,{type:'travel',sector:'buenos_aires'});
+ // Stage for two hours after the march. Recovery, light, casualties and the
+ // victory below all follow ordinary orders; no combat result is fabricated.
+ s=order(s,{type:'wait',hours:2});return order(s,{type:'attack',sector:'san_nicolas'});
 }
 let won;
 export function wonBattery(content){
@@ -30,4 +36,19 @@ export function fireStationed(p){
  // it does not edit cannon state or assign a combat outcome.
  const target=b.tiles.filter(t=>!t.blocked&&!t.buildingId&&Math.hypot(t.x-gun.x,t.y-gun.y)>=2&&Math.hypot(t.x-gun.x,t.y-gun.y)<=4&&!b.units.some(u=>Math.hypot(u.x-t.x,u.y-t.y)<2)&&!b.npcs.some(u=>Math.hypot(u.x-t.x,u.y-t.y)<2))[0];assert.ok(target);
  b=actBattle(b,{type:'artillery',unitId:approach.u.id,artilleryId:gun.id,x:target.x,y:target.y,mode:'solid'});assert.equal(b.lastError,null);assert.equal(b.artillery[0].loaded,false);return saved(sync({campaign:p.campaign,battle:b}));
+}
+
+// Travel may end with exhausted soldiers asleep. Wait for real recovery, then
+// issue wake orders before another departure; never edit fatigue or sleep state.
+export function wakeBatteryCrew(state){
+ let s=state;
+ for(let attempt=0;attempt<48;attempt++){
+  for(const id of s.squad)if(tooTiredToMarch(s.operativeState[id])&&!s.operativeState[id].asleep)s=order(s,{type:'setSleep',operativeId:id,asleep:true});
+  const sleeping=s.squad.filter(id=>s.operativeState[id]?.alive&&s.operativeState[id].asleep);
+  if(!sleeping.length)return s;
+  for(const id of sleeping)if(!needsCollapseRecovery(s.operativeState[id])&&!tooTiredToMarch(s.operativeState[id]))s=order(s,{type:'setSleep',operativeId:id,asleep:false});
+  if(s.squad.every(id=>!s.operativeState[id].asleep))return s;
+  s=advanceCampaignHours(s,1);
+ }
+ assert.fail('The battery crew did not recover after 48 actual hours.');
 }

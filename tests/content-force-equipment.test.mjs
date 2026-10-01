@@ -1,3 +1,5 @@
+import {initializeUnitAmmunition} from '../game/tactical-ammunition.js';
+import {secondaryRetreat} from './secondary-loot-fixture.mjs';
 import {DEFAULT_MILITIA_PROGRESSION} from '../game/militia-progression-rules.js';
 import {secureArea} from './controlled-area-fixture.mjs';
 import test from 'node:test';
@@ -5,7 +7,7 @@ import assert from 'node:assert/strict';
 import {defaultContentPackage,validateContentPackage,parseContentPackage,encodeContentPackage} from '../game/content-package.js';
 import {defaultForceEquipment,forceWeaponUsers} from '../game/content-force-equipment.js';
 import {initialCampaign,dispatchCampaign} from '../game/campaign.js';
-import {oppositionFor} from '../game/narrative.js';
+import {campaignEnemyCount,oppositionFor} from '../game/narrative.js';
 import {prepareGarrison} from '../game/garrison.js';
 import {weaponSpecification,contentWeaponOf} from '../game/weapon-definition.js';
 import {enterSector} from '../game/world.js';
@@ -27,7 +29,7 @@ function attack(d=content()){
  let s=secureArea(initialCampaign(8,d),'buenos_aires');for(const id of [110,111,112,113])s=order(s,{type:'recruitCivic',id,term:'week'});
  s=order(s,{type:'travel',sector:'buenos_aires'});return order(s,{type:'attack',sector:'san_nicolas'});
 }
-function train(s,rank){s=order(s,{type:'militia',trainerId:1000,rank});return order(s,{type:'wait',hours:s.militiaTraining[0].remaining});}
+function train(s,rank){s=order(s,{type:'militia',trainerId:1000,rank});for(let day=0;s.militiaTraining.length&&day<12;day++)s=order(s,{type:'wait',hours:s.militiaTraining[0].remaining+12});assert.equal(s.militiaTraining.length,0,'the course finishes after its sleep pauses');return s;}
 function leave(s,b){const pair=syncBattleTime(s,b);assert.equal(pair.error,null);return order(pair.campaign,{type:'leaveSector',battleId:s.pendingBattle.id,sectorState:pair.battle,survivors:pair.battle.units.filter(u=>u.side==='player')});}
 
 test('force assignments round-trip and reject missing, extra and invalid weapon references',()=>{
@@ -48,29 +50,30 @@ test('ordinary campaigns and older content without force assignments keep the or
 });
 test('an actual attack generates each authored role with finite ammunition and survives save',()=>{
  const s=attack(),b=enterSector(s.pendingBattle),restored=save(s,b);
- const enemies=restored.battle.units.filter(u=>u.side==='enemy');assert.equal(enemies.length,4);
- assert.deepEqual(enemies.map(u=>contentWeaponOf(u).id),['guard-pistol','line-pistol','line-pistol','veteran-pistol']);
- assert.deepEqual(enemies.map(u=>[u.loaded,u.ammo]),[[4,9],[8,5],[8,5],[3,10]]);
+ const enemies=restored.battle.units.filter(u=>u.side==='enemy');assert.equal(enemies.length,campaignEnemyCount(s));
+ const roles=enemies.map((_,i)=>i===0?'guard-pistol':i%3===0?'veteran-pistol':'line-pistol');
+ assert.deepEqual(enemies.map(u=>contentWeaponOf(u).id),roles);
+ assert.deepEqual(enemies.map(u=>[u.loaded,u.ammo]),roles.map(id=>{const capacity=s.contentCampaign.package.weapons.find(w=>w.id===id).capacity;return [capacity,13-capacity];}));
  for(const u of enemies){assert.equal(weaponFor(u).art,'/art/weapon-1808.png');assert.equal(u.loaded+u.ammo,13);}
  const d=content();d.oppositionEquipment={officer:null,line:null,veteran:null};const noGuns=attack(d),empty=enterSector(noGuns.pendingBattle);
  assert.ok(empty.units.filter(u=>u.side==='enemy').every(u=>u.weapon===0&&u.loaded===0&&u.ammo===0&&!('priming'in u)));assert.ok(save(noGuns,empty));
 });
 test('generated enemy AI spends the edited firing cost and consumes its own ammunition',()=>{
  const d=content();Object.assign(d.weapons.find(w=>w.id==='guard-pistol'),{fireAP:70,damage:1,range:100});const s=attack(d),enemy=s.pendingBattle.enemies[0];
- let b=createBattle([{id:'player',x:1,y:1,weapon:1800}],{width:14,height:10,seed:45,tiles,enemies:[{...enemy,x:4,y:1}]});
- b=endTurn(b);const fired=b.units.find(u=>u.side==='enemy');assert.equal(fired.loaded,3);assert.equal(fired.ammo,9);assert.equal(fired.ap,30);assert.ok(b.log.some(t=>t.includes('dispara')));
+ let b=createBattle([{id:'player',x:1,y:1,weapon:1800,facing:2}],{width:14,height:10,seed:45,tiles,enemies:[{...enemy,x:4,y:1}]});
+ b=endTurn(b);const fired=b.units.find(u=>u.side==='enemy');assert.equal(fired.loaded,3);assert.equal(fired.ammo,9);assert.equal(fired.ap,30);assert.ok(b.units.find(u=>u.id==='player').hp<100);assert.ok(b.log.some(t=>t.includes(`${fired.name} hiere`)));
 });
 test('a generated enemy firearm can be recovered and retained through campaign retreat and reentry',()=>{
  const d=content();d.weapons.push(definition('player-pistol',{capacity:3,damage:100,range:100,fireAP:6}));const c=d.characters.find(c=>c.id==='person-110');c.weapon='player-pistol';c.attributes.marksmanship=100;
  let s=attack(d);const request=s.pendingBattle;
  // Compact terrain isolates weapon ownership while using real generated soldiers.
- let b=createBattle(request.squad.map((u,i)=>({...u,x:1,y:1+i*2})),{...request,weather:{rain:0,humidity:0},width:14,height:10,tiles,seed:45,enemies:request.enemies.map((u,i)=>({...u,x:i===0?2:12,y:i===0?1:5+i}))});
+ let b=createBattle(request.squad.map((u,i)=>({...u,x:1+i*2,y:8})),{...request,weather:{rain:0,humidity:0},width:14,height:10,tiles,seed:45,enemies:request.enemies.map((u,i)=>({...u,x:i===0?2:12,y:i===0?8:2+i,overwatch:false}))});
  for(let i=0;i<3&&b.units.find(u=>u.id==='enemy-0').hp>0;i++){b=actBattle(b,{type:'fire',unitId:'110',targetId:'enemy-0',aim:2});assert.equal(b.lastError,null);}
  assert.equal(b.units.find(u=>u.id==='enemy-0').hp,0);
  b=actBattle(b,{type:'loot',unitId:'110',targetId:'enemy-0',item:'weapon'});assert.equal(b.lastError,null);
  const key=Object.keys(b.units[0].inventory).find(k=>k.startsWith('weapon:'));b=actBattle(b,{type:'equipLoot',unitId:'110',inventoryKey:key});assert.equal(b.lastError,null);
  assert.equal(weaponFor(b.units[0]).contentId,'guard-pistol');assert.equal(b.units[0].loaded,4);
- const pair=syncBattleTime(s,b);assert.equal(pair.error,null);const funds=pair.campaign.resources.treasury,returned=pair.battle.units.filter(u=>u.side==='player').reduce((n,u)=>n+u.ammo+u.loaded,0);s=order(pair.campaign,{type:'battleResult',outcome:'retreat',battleId:request.id,sectorState:pair.battle,survivors:pair.battle.units.filter(u=>u.side==='player')});
+ const pair=secondaryRetreat({campaign:s,battle:b});const funds=pair.campaign.resources.treasury,returned=pair.battle.units.filter(u=>u.side==='player').reduce((n,u)=>n+u.ammo+u.loaded,0);s=order(pair.campaign,{type:'battleResult',outcome:'retreat',battleId:request.id,sectorState:pair.battle,survivors:pair.battle.units.filter(u=>u.side==='player')});
  assert.equal(s.resources.treasury,funds);assert.equal(s.squad.reduce((n,id)=>n+s.operativeState[id].ammo+s.operativeState[id].carriedLoaded,0),returned);s=save(s).campaign;s=order(s,{type:'attack',sector:'san_nicolas'});assert.equal(s.pendingBattle.ammunitionSources.find(u=>u.id==='enemy-0').loaded,0);b=enterSector(s.pendingBattle,s.sectorStates.san_nicolas);
  assert.equal(b.units.find(u=>u.id==='enemy-0').hp,0);assert.equal(b.units.find(u=>u.id==='enemy-0').weaponDropped,true);
  assert.equal(weaponFor(b.units.find(u=>u.id==='110')).contentId,'guard-pistol');assert.ok(save(s,b));
@@ -80,7 +83,10 @@ test('trained militia retain their authored weapons, identity, wear and spent am
  let s=order(secureArea(initialCampaign(42,d),'buenos_aires','ensenada'),{type:'createOfficer',name:'Isabel del Valle',answers:{origin:'cabildo',doctrine:'line_marksman',crisis:'rally'}});
  s=train(s,0);if(s.hour%24<6||s.hour%24>=20)s=order(s,{type:'wait',hours:(30-s.hour%24)%24});s=order(s,{type:'visitSector'});let request=s.pendingBattle;assert.equal(request.garrison.length,3);
  assert.ok(request.garrison.every(u=>contentWeaponOf(u).id==='line-pistol'&&u.loaded===6&&u.ammo===0));
- let b=createBattle([...request.squad.map(u=>({...u,x:1,y:8})),...request.garrison.map((u,i)=>({...u,x:1,y:1+i*2}))],{...request,exploration:false,width:14,height:10,tiles,seed:request.seed,enemies:[{id:'raider',x:11,y:1,weapon:1813,blade:1813,ammo:0,hp:20,maxHp:20}]});
+ request.enemies=[initializeUnitAmmunition({id:'raider',x:3,y:1,weapon:1813,blade:1813,ammo:0,hp:20,maxHp:20},{defaultCount:0})];
+ let b=createBattle([...request.squad.map(u=>({...u,x:1,y:8})),...request.garrison.map((u,i)=>({...u,x:1,y:1+i*2}))],{...request,exploration:false,width:14,height:10,tiles,seed:request.seed,enemies:request.enemies});
+ // This declared raider has spent its actions; autonomous militia still spend real ammunition.
+ b.units.find(u=>u.side==='enemy').ap=0;
  const shooter=b.units.find(u=>u.militia),id=shooter.id;b=endTurn(b);assert.equal(b.lastError,null);
  const remaining=b.units.find(u=>u.id===id);assert.ok(remaining.loaded<6,JSON.stringify({night:b.night,log:b.log,units:b.units.map(u=>({id:u.id,hp:u.hp,loaded:u.loaded,condition:u.condition,rank:u.militiaRank}))}));assert.ok(remaining.condition<85);const loaded=remaining.loaded,condition=remaining.condition;
  s=save(leave(s,b)).campaign;s=order(s,{type:'visitSector'});b=enterSector(s.pendingBattle,s.sectorStates.retiro);
@@ -96,7 +102,7 @@ test('previously unmaterialized rank counts use each authored starting kit once'
  // Explicit older saved-count boundary; this does not claim a promotion grants a new kit.
  s.sectors.retiro.militia=[1,1,1];const units=prepareGarrison(s,'retiro');
  assert.deepEqual(units.map(u=>[u.militiaRank,contentWeaponOf(u)?.id??null,u.loaded,u.ammo]),[[0,'line-pistol',6,0],[1,'guard-pistol',4,2],[2,null,0,0]]);
- assert.deepEqual(prepareGarrison(save(s).campaign,'retiro'),units);
+ const loaded=save(s).campaign;assert.deepEqual(prepareGarrison(loaded,'retiro'),units.map(u=>({...u,weaponFittingPattern:null,bladeFittingPattern:null,weaponFittings:{}})));assert.equal(loaded.nextMilitiaId,s.nextMilitiaId);
 });
 test('saved pending forces and garrisons reject edited definitions, incompatible hosts and invalid ammunition',()=>{
  const s=attack();for(const mutate of [u=>u.weapon=1800,u=>u.loaded=99,u=>u.ammo=-1,u=>delete u.ammo,u=>u.weaponMetadata.contentWeapon.damage++]){

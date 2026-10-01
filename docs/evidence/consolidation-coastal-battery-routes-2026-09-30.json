@@ -1,0 +1,99 @@
+{
+  "source": {
+    "version": "0.4.0-dev.1",
+    "id": "b5cfe7592703",
+    "source": "b5cfe7592703ec1ddce17e43e897c1e376ab39edaf74c1343e21efb297cab1fe",
+    "revision": "70f75892ae18f52dced45d871b968080c782b5ed"
+  },
+  "scope": "Working-branch full coastal-opening test file and prepared artillery custody scenarios. Includes saved real combat, finite paid equipment and actor losses. These checks do not establish the complete historical campaign, full-suite acceptance, browser acceptance or performance.",
+  "totals": {
+    "tests": 127,
+    "pass": 127,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0
+  },
+  "testRuns": [
+    {
+      "tests": 3,
+      "pass": 3,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "testFiles": [
+        "tests/fresh-coastal-route.test.mjs"
+      ],
+      "logSha256": "1acab801173fe0951475e2e5786187a83ab7ec6ed7203b5d74c78c1de7b4e94a"
+    },
+    {
+      "tests": 107,
+      "pass": 107,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "testFiles": [
+        "tests/stationed-artillery.test.mjs",
+        "tests/stationed-artillery-render.test.mjs",
+        "tests/artillery-depot-transport.test.mjs",
+        "tests/artillery-depot-transport-render.test.mjs",
+        "tests/artillery-transport.test.mjs",
+        "tests/artillery-transport-render.test.mjs",
+        "tests/artillery-trading.test.mjs",
+        "tests/artillery-trading-render.test.mjs",
+        "tests/artillery-supply.test.mjs",
+        "tests/artillery-supply-render.test.mjs",
+        "tests/artillery-trade-render.test.mjs",
+        "tests/artillery-crew-loading.test.mjs",
+        "tests/artillery-autonomy.test.mjs",
+        "tests/integrated-artillery-custody.test.mjs",
+        "tests/authored-artillery-transport.test.mjs",
+        "tests/authored-artillery-trading.test.mjs",
+        "tests/artillery-profiles.test.mjs"
+      ],
+      "logSha256": "761c0408854f0594087212cfd4da40650d42714f4b001fd63c04a7ac24e9ceed"
+    },
+    {
+      "tests": 17,
+      "pass": 17,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "testFiles": [
+        "tests/opening-driver.test.mjs",
+        "tests/opening-driver-control.test.mjs",
+        "tests/exploration-step-time.test.mjs"
+      ],
+      "logSha256": "ebcc67cf760d16bcd7d327de5dab57621b1e74757dc2a22f1a1c13980202f490"
+    }
+  ],
+  "changes": [
+    "The local opening stages a daylight arrival using the actual march duration and loads existing guns before departure.",
+    "Reserves remain behind the field squad and act when no other capable field soldier remains. The actual local opening retains the officer and doctor, pays recovery and preserves both fallen recruits.",
+    "Prepared artillery fixtures retain their established individual/prone combat tactic through a helper that imports the current game engine and observes floor and interrupt constraints. Artillery remains purchased, fired, transported, traded and recaptured through ordinary orders.",
+    "The northern route pays for support and recovery before a real coordinated Cordoba victory, selects the actual local command after an evacuation and supplies physical ammunition. Its later Tucuman engagement still fails and is not acceptance."
+  ],
+  "runtimeValidation": {
+    "unchangedSource": true,
+    "matchingRuntimeCI": "https://github.com/fsodano/granaderos/actions/runs/36769694677",
+    "web": "passed",
+    "privateBuildPreviouslyPassed": true,
+    "served": false
+  },
+  "latestCompleteCI": "consolidation-ci-70f75892-2026-09-30.json",
+  "afterMergeRequest": {
+    "equipmentLeftAtServiceEnd": "queued after PR139 merge; not started"
+  },
+  "remainingRouteDiagnostic": {
+    "testFiles": [
+      "tests/fresh-northern-route.test.mjs"
+    ],
+    "tests": 1,
+    "pass": 0,
+    "fail": 1,
+    "cancelled": 0,
+    "skipped": 0,
+    "logSha256": "c7bec1bac3fd2bfaddddf58cbe3b0f73033e49a29377d65d5e9cf2bfed035196",
+    "finding": "The fresh route completes actual paid Cordoba combat and saved replay, then retreats at Tucuman. The victory requirement is unchanged."
+  },
+  "documentation": "passed"
+}

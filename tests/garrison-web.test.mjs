@@ -1,3 +1,5 @@
+import {refreshMilitaryCondition} from '../game/actor-condition.js';
+import {initializeUnitAmmunition} from '../game/tactical-ammunition.js';
 import {secureArea} from './controlled-area-fixture.mjs';
 import test from 'node:test';import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign,restoreCampaign,serializeCampaign} from '../game/campaign.js';
@@ -10,9 +12,13 @@ test('trained local militia become real allied soldiers and retain finite ammo a
 });
 test('actual tactical militia casualties reduce strategic counts and never respawn on reload',()=>{
  let s=trained();s=step(s,{type:'visitSector'});const request=s.pendingBattle;
+ // This encounter fixture declares the raider in the deployment itself; the return must retain that identity.
+ request.enemies=[initializeUnitAmmunition({id:'raider',name:'Asaltante realista',x:9,y:3,weapon:1812,blade:1812,strength:95,agility:95,hp:100,maxHp:100},{defaultCount:0})];
  const squad=[...request.squad.map(u=>({...u,x:1,y:1})),...request.garrison.map((u,i)=>({...u,x:8,y:3+i}))];
- let b=createBattle(squad,{id:request.id,sector:request.sector,npcs:request.npcs,width:14,height:10,tiles:Array.from({length:140},(_,i)=>({x:i%14,y:Math.floor(i/14),type:'grass',blocked:false,cover:0})),enemies:[{id:'raider',name:'Asaltante realista',x:9,y:3,weapon:1812,blade:1812,ammo:0,strength:95,agility:95,hp:100,maxHp:100}]});
- b=endTurn(b);const killed=b.units.filter(u=>u.militia&&u.hp<=0);assert.ok(killed.length>0,'The real enemy phase must kill at least one nearby militia soldier');s=leave(s,b);assert.equal(s.sectors.retiro.militia[0],3-killed.length);s=restoreCampaign(serializeCampaign(s));s=step(s,{type:'visitSector'});const next=enterSector(s.pendingBattle,s.sectorStates.retiro);assert.equal(next.units.filter(u=>u.militia&&u.hp>0).length,3-killed.length);assert.ok(killed.every(dead=>next.units.some(u=>u.id===dead.id&&u.hp===0)));
+ let b=createBattle(squad,{id:request.id,sector:request.sector,exits:request.exits,exitRulesVersion:1,width:20,height:16,tiles:Array.from({length:320},(_,i)=>({x:i%20,y:Math.floor(i/20),type:'grass',blocked:false,cover:0})),enemies:request.enemies,npcs:request.npcs.map((npc,i)=>({...npc,x:16-i,y:12}))});
+ b=endTurn(b);const killed=b.units.filter(u=>u.militia&&u.hp<=0);assert.ok(killed.length>0,'The real enemy phase must kill at least one nearby militia soldier');
+ // The settlement fixture closes only after the hostile field is cleared.
+ for(const u of b.units.filter(u=>u.side==='enemy')){Object.assign(u,{hp:0,bleeding:0,bandaged:0});refreshMilitaryCondition(u);}b.status='victory';b.sectorCleared=true;s=leave(s,b);assert.equal(s.sectors.retiro.militia[0],3-killed.length);s=restoreCampaign(serializeCampaign(s));s=step(s,{type:'visitSector'});const next=enterSector(s.pendingBattle,s.sectorStates.retiro);assert.equal(next.units.filter(u=>u.militia&&u.hp>0).length,3-killed.length);assert.ok(killed.every(dead=>next.units.some(u=>u.id===dead.id&&u.hp===0)));
 });
 test('garrison deployment requires complete casualty snapshots and validates saved records',()=>{
  let s=trained();s=step(s,{type:'visitSector'});const b=enterSector(s.pendingBattle);b.units=b.units.filter(u=>!u.militia);assert.ok(dispatchCampaign(s,{type:'leaveSector',battleId:s.pendingBattle.id,sectorState:b,survivors:b.units.map(u=>({...u,id:Number(u.id)}))}).lastError);const corrupted=structuredClone(s);corrupted.garrisons.retiro[0].ammo=-1;assert.throws(()=>restoreCampaign(serializeCampaign(corrupted)));

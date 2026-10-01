@@ -1,5 +1,7 @@
 # Tactical simulation verification
 
+This file retains earlier verification records. The [JA2 gameplay update](../gameplay/ja2-gameplay.md) supersedes the older healing, AP reset, and separate-action controls described below. Its opening test starts a fresh campaign and uses paid recruitment, finite medical supplies, and recovery between battles.
+
 Verified on 2026-09-05 against the JavaScript engine used by the browser.
 
 ```sh

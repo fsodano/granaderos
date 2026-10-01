@@ -56,6 +56,9 @@ test('campaign reports and active or retained saves reject changed, removed and 
 test('disabling patrols keeps actual paid militia combat and finite reactions available',()=>{
  const {s}=paid(rules({enabled:false})),p=visit(s),r=p.campaign.pendingBattle;
  // Declared flat combat boundary using the actual issued people and weapons.
- const b=createBattle([...r.squad.map(u=>({...u,x:1,y:7})),...r.garrison.map((u,i)=>({...u,x:2,y:1+i}))],{...r,exploration:false,width:20,height:10,hour:12,props:[],tiles:Array.from({length:200},(_,i)=>({x:i%20,y:Math.floor(i/20),type:'grass',blocked:false,cover:0})),enemies:[{id:'raider',x:8,y:2,hp:100,maxHp:100,weapon:1813,blade:1813,patrol:false}]});
- const before=b.units.filter(u=>u.militia).reduce((n,u)=>n+u.loaded+u.ammo,0),next=endTurn(b);assert.equal(next.lastError,null);assert.ok(next.units.filter(u=>u.militia).reduce((n,u)=>n+u.loaded+u.ammo,0)<before,JSON.stringify(next.log));assert.equal(next.militiaPatrol.enabled,false);assert.ok(saved(sync({campaign:p.campaign,battle:next})));
+ r.enemies=createBattle([],{width:20,height:10,enemies:[{id:'raider',x:5,y:1,hp:100,maxHp:100,weapon:1800,blade:0,ammo:0,loaded:1,patrol:false}]}).units;
+ let b=createBattle([...r.squad.map(u=>({...u,x:1,y:7})),...r.garrison.map((u,i)=>({...u,x:2,y:1+i}))],{...r,width:20,height:10,hour:p.campaign.hour,secondOfHour:p.campaign.secondOfHour??0,props:[],tiles:Array.from({length:200},(_,i)=>({x:i%20,y:Math.floor(i/20),type:'grass',blocked:false,cover:0})),enemies:r.enemies});
+ const stock=b=>b.units.filter(u=>u.militia).reduce((n,u)=>n+u.loaded+u.ammo,0),before=stock(b);
+ for(let turn=0;turn<8&&stock(b)===before;turn++){b=endTurn(b);assert.equal(b.lastError,null);}
+ assert.ok(stock(b)<before,JSON.stringify(b.log));assert.equal(b.militiaPatrol.enabled,false);assert.ok(saved(sync({campaign:p.campaign,battle:b})));
 });

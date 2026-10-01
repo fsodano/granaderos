@@ -1,15 +1,16 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {initialCampaign,dispatchCampaign} from '../game/campaign.js';
+import {initialCampaign,dispatchCampaign,serializeCampaign} from '../game/campaign.js';
 import {defaultContentPackage} from '../game/content-package.js';
 import {operativeIdForCharacter} from '../game/content-character-ids.js';
 import {encountersFor} from '../game/encounters.js';
-import {actBattle,getReachable} from '../game/tactical.js';
+import {actBattle} from '../game/tactical.js';
 import {enterSector} from '../game/world.js';
 import {syncBattleTime} from '../game/time.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {civilianIncidents} from '../game/civilian-harm.js';
 import {synchronizeCampaignPresence} from '../game/campaign-presence.js';
+import {approachNPC} from './approach-npc.mjs';
 const A='cell-27-27';
 const order=(s,a)=>{const next=dispatchCampaign(s,a);assert.equal(next.lastError,null,`${a.type}: ${next.lastError}`);return next;};
 const saved=p=>decodeSave(encodeSave(p.campaign,p.battle??null));
@@ -36,8 +37,11 @@ function visit(s){const campaign=order(s,{type:'visitSector'});return{campaign,b
 function sync(p){const next=syncBattleTime(p.campaign,p.battle);assert.equal(next.error,null);return next;}
 function act(p,a){const battle=actBattle(p.battle,{unitId:p.battle.units.find(u=>u.side==='player').id,...a});assert.equal(battle.lastError,null);return sync({...p,battle});}
 function approach(p,target=npc(p)){
- const actor=p.battle.units.find(u=>u.side==='player'),spot=getReachable(p.battle,actor.id).find(t=>Math.abs(t.x-target.x)+Math.abs(t.y-target.y)===1);assert.ok(spot);
- return spot.cost?act(p,{type:'move',x:spot.x,y:spot.y}):p;
+ const actor=p.battle.units.find(u=>u.side==='player'),movement=actor.movementMode??'walk';
+ if(movement!=='run')p=act(p,{type:'movement',movement:'run'});
+ p=sync({...p,battle:approachNPC(p.battle,actor.id,target.id)});
+ if(movement!=='run')p=act(p,{type:'movement',movement});
+ return p;
 }
 function wound(p){p=approach(p);p=act(p,{type:'melee',targetId:npc(p).id});assert.ok(npc(p).hp>15&&npc(p).bleeding>0);return p;}
 function leave(p){p=sync(p);return order(p.campaign,{type:'leaveSector',battleId:p.campaign.pendingBattle.id,sectorState:p.battle,survivors:p.battle.units.filter(u=>u.side==='player')});}
@@ -70,18 +74,18 @@ test('one-second orders in another squad preserve the remaining wound interval a
 test('a loaded resident receives each wound interval once and first aid stops later off-screen damage',()=>{
  let p=wound(visit(ready())),before=structuredClone(npc(p));
  for(let i=0;i<6;i++)p=second(p);assert.equal(npc(p).hp,before.hp-before.bleeding);assert.equal(health(p.campaign).hp,npc(p).hp);
- p=approach(p);const supplies=p.battle.units[0].medkits;p=act(p,{type:'heal',targetId:npc(p).id});assert.equal(npc(p).bleeding,0);assert.equal(npc(p).civilianWoundSeconds,undefined);assert.ok(p.battle.units[0].medkits<supplies);
+ const supplies=p.battle.units[0].medkits;p=act(p,{type:'weapon',slot:'medical'});p=approach(p);p=act(p,{type:'heal',targetId:npc(p).id});assert.equal(npc(p).bleeding,0);assert.equal(npc(p).civilianWoundSeconds,undefined);assert.ok(p.battle.units[0].medkits<supplies);
  const hp=npc(p).hp;let s=order(leave(saved(p)),{type:'wait',hours:24});assert.equal(health(s).hp,hp);assert.equal(s.operativeState[id(s)].alive,true);assert.ok(saved({campaign:s}));
 });
 
-test('off-screen civilian death fails offered or unoffered errands and applies the real responsibility once',()=>{
+test('off-screen civilian death fails only accepted errands and applies the real responsibility once',()=>{
  for(const offered of [true,false]){
  const d=defaultContentPackage();d.characters.find(c=>c.id==='person-110').arrivalHours=0;
  let p=visit(order(initialCampaign(42,d),{type:'recruitCivic',id:110,term:'month'}));p=approach(p,p.battle.npcs.find(n=>n.id==='local-retiro'));
  if(offered)p.campaign=order(p.campaign,{type:'talkNPC',npcId:'local-retiro',unitId:110,approach:'quest',sectorState:p.battle});
  p=act(p,{type:'melee',targetId:'local-retiro'});const target=p.battle.npcs.find(n=>n.id==='local-retiro');assert.ok(target.hp>0&&target.bleeding>0);
  const loyalty=p.campaign.sectors.retiro.loyalty;let s=order(leave(saved(p)),{type:'wait',hours:1});
- assert.equal(s.quests['retiro-uniformes'].status,'failed');assert.equal(s.sectors.retiro.loyalty,loyalty-10);assert.equal(s.cityLoyaltyEvents.filter(e=>e.eventId==='civilian:npc-local-retiro').length,1);
+ assert.equal(s.quests['retiro-uniformes']?.status,offered?'failed':undefined);assert.equal(s.sectors.retiro.loyalty,loyalty-10);assert.equal(s.cityLoyaltyEvents.filter(e=>e.eventId==='civilian:npc-local-retiro').length,1);
  const receipt=structuredClone(s.quests['retiro-uniformes']);s=order(saved({campaign:s}).campaign,{type:'wait',hours:1});assert.deepEqual(s.quests['retiro-uniformes'],receipt);assert.equal(s.sectors.retiro.loyalty,loyalty-10);assert.ok(saved({campaign:s}));
  }
 });
@@ -108,7 +112,7 @@ test('a batched remote checkpoint crossing midnight uses the actual wound delta 
  const before=now(p.campaign);let battle=actBattle(p.battle,{type:'rest',unitId:'111'});assert.equal(battle.lastError,null);assert.equal(battle.elapsedSeconds-p.battle.elapsedSeconds,600);
  p=sync({...p,battle});assert.equal(now(p.campaign),before+600);assert.equal(health(p.campaign).hp,0);
  assert.equal(p.campaign.contentPresence.receipts[0].minute,Math.floor(deathSecond/60));assert.ok(p.campaign.contentPresence.receipts[0].minute<p.campaign.contentPresence.minute);
- assert.equal(p.campaign.contentPresence.people.successor.appeared,true);assert.deepEqual(sync(saved(p)).campaign,p.campaign);assert.ok(saved(p));
+ assert.equal(p.campaign.contentPresence.people.successor.appeared,true);assert.equal(serializeCampaign(sync(saved(p)).campaign),serializeCampaign(p.campaign));assert.ok(saved(p));
 });
 
 
@@ -133,7 +137,8 @@ test('a historical command casualty outside the loaded sector preserves the expl
 test('batched and incremental tactical checkpoints produce identical off-screen death receipts and succession',()=>{
  let p=approach(visit(ready({successor:true,quest:true})));p.campaign=order(p.campaign,{type:'talkNPC',npcId:npc(p).id,unitId:110,approach:'dialogue',dialogueNode:'start',dialogueChoice:'accept',sectorState:p.battle});
  const initial=remote(wound(p));let immediate=saved(initial),battle=initial.battle;
- for(let i=0;i<40;i++){
+ const remoteWound=health(initial.campaign),duration=Math.ceil(remoteWound.hp/remoteWound.bleeding)*6-(remoteWound.civilianWoundSeconds??0)+60;
+ for(let i=0;i<duration;i++){
   battle=actBattle(battle,{type:'ambient'});assert.equal(battle.lastError,null);
   immediate=sync({campaign:immediate.campaign,battle});
  }

@@ -1,4 +1,5 @@
-import {CRITICAL_HEALTH,civilianMaxHp} from './civilian-health.js';
+import {CRITICAL_HEALTH} from './tactical-condition.js';
+import {civilianMaxHp} from './civilian-harm.js';
 
 const clamp=(value,low,high)=>Math.max(low,Math.min(high,value));
 const maxHealth=(patient,kind)=>kind==='npc'?civilianMaxHp(patient):patient?.maxHp??100;

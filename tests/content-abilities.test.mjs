@@ -41,17 +41,18 @@ test('a new hired identity keeps explicit abilities in the dossier, range, deplo
  assert.deepEqual(createContentTestRange(d,'alma-nueva').units[0].abilities,unit.abilities);
 });
 
-test('authored bodyguards intercept real enemy fire and an explicit empty list removes the old identity power',()=>{
- const make=(abilities,id=2000,commanderAbilities=['protected_commander'],leader=85)=>battle([
-  subject(abilities,{id,x:10,y:2,weapon:1811}),{id:'commander',name:'Mando',x:10,y:1,leadership:leader,abilities:commanderAbilities}
- ],[{id:'enemy',x:1,y:1,weapon:1800,loaded:1,marksmanship:100,ammo:0,fatigue:100,patrol:false}]);
+test('authored bodyguards intercept actual opposing fire and an explicit empty list removes the old identity power',()=>{
+ const make=(abilities,id=2000,commanderAbilities=['protected_commander'],leader=85)=>battle(
+  [{id:'shooter',x:1,y:1,facing:2,weapon:1800,loaded:1,marksmanship:100,ammo:0}],
+  [subject(abilities,{id,x:10,y:2,weapon:1811,facing:6}),{id:'commander',name:'Mando',x:10,y:1,facing:6,leadership:leader,abilities:commanderAbilities,overwatch:false}]);
+ const shoot=b=>act(b,{type:'fire',unitId:'shooter',targetId:'commander'});
  for(const id of [2000,3]){
-  const enabled=make(['bodyguard'],id),n=endTurn(enabled);assert.equal(n.units[1].hp,100);assert.ok(n.units[0].hp<100);assert.ok(n.log.some(l=>l.includes('se interpone')));
-  const disabled=endTurn(make([],id));assert.ok(disabled.units[1].hp<100);assert.equal(disabled.units[0].hp,100);
+  const n=shoot(make(['bodyguard'],id));assert.equal(n.units[2].hp,100);assert.ok(n.units[1].hp<100);assert.ok(n.log.some(l=>l.includes('se interpone')));
+  const disabled=shoot(make([],id));assert.ok(disabled.units[2].hp<100);assert.equal(disabled.units[1].hp,100);
  }
- const unprotected=endTurn(make(['bodyguard'],2000,[]));assert.ok(unprotected.units[1].hp<100);
- const highLeader=endTurn(make(['bodyguard'],2000,[],90));assert.equal(highLeader.units[1].hp,100,'The existing high-leadership protection rule remains valid');
- const far=make(['bodyguard']);far.units[0].y=6;assert.ok(endTurn(far).units[1].hp<100);
+ const unprotected=shoot(make(['bodyguard'],2000,[]));assert.ok(unprotected.units[2].hp<100);
+ const highLeader=shoot(make(['bodyguard'],2000,[],90));assert.equal(highLeader.units[2].hp,100,'The existing high-leadership protection rule remains valid');
+ const far=make(['bodyguard']);far.units[1].y=6;assert.ok(shoot(far).units[2].hp<100);
 });
 
 test('an independent counterattacker responds to actual melee; Cabral can lose this ability',()=>{
@@ -71,7 +72,7 @@ test('authored shot, movement, breach and medical costs control real low-AP admi
  }
  for(const [ability,oldId,action]of [['breaching',6,'breach'],['rapid_first_aid',10,'heal']]){
   for(const id of [2000,oldId]){
-   const make=abilities=>{const b=battle([subject(abilities,{id,x:1,y:1,hp:30,bleeding:4})],[{id:'enemy',x:12,y:8}]);b.units[0].ap=action==='heal'?18:25;Object.assign(b.tiles.find(t=>t.x===2&&t.y===1),{type:'wall',material:'adobe',blocked:true});return b;};
+   const make=abilities=>{let b=battle([subject(abilities,{id,x:1,y:1,hp:30,bleeding:4})],[{id:'enemy',x:12,y:8}]);if(action==='heal')b=act(b,{type:'weapon',unitId:id,slot:'medical'});b.units[0].ap=action==='heal'?18:25;Object.assign(b.tiles.find(t=>t.x===2&&t.y===1),{type:'wall',material:'adobe',blocked:true});return b;};
    const skilled=make([ability]),plain=make([]),a={type:action,unitId:id,x:2,y:1};const done=act(skilled,a);assert.equal(done.units[0].ap,0);assert.ok(actBattle(plain,a).lastError);
    if(action==='heal'){assert.equal(done.units[0].hp,30);assert.equal(done.units[0].bleeding,0);assert.equal(done.units[0].medkits,skilled.units[0].medkits-1);assert.equal(pa(skilled,'heal'),18);}else assert.equal(done.tiles.find(t=>t.x===2&&t.y===1).blocked,false);
   }
@@ -101,7 +102,7 @@ test('authored command holds morale only in the proper formation and support res
   b.units[1].side='enemy';assert.equal(shotChance(b,b.units[0],b.units[2]),shotChance(base,base.units[0],base.units[2]));b.units[1].side='player';b.units[1].y=9;assert.equal(shotChance(b,b.units[0],b.units[2]),shotChance(base,base.units[0],base.units[2]));
  }
  const b=battle([{id:'mover',x:1,y:1}],[{id:'fast',name:'Rápido',x:5,y:1,agility:90},{id:'trained',name:'Con apoyo',x:9,y:1,agility:80},subject(['tactical_command'],{x:9,y:3,loaded:0})]);
- const n=act(b,{type:'move',unitId:'mover',x:2,y:1});assert.ok(n.log.find(l=>l.includes('interrumpe el avance')).startsWith('Con apoyo'));
+ const n=act(b,{type:'move',unitId:'mover',x:2,y:1});assert.ok(n.log.find(l=>l.includes('interrumpen con sus PA restantes')).startsWith('Con apoyo'));
 });
 
 test('loading support changes actual firearm and artillery admission and the displayed reload cost',()=>{
@@ -113,7 +114,7 @@ test('loading support changes actual firearm and artillery admission and the dis
 });
 
 function battery(abilities,type='swivel'){
- return battle([subject(abilities,{x:1,y:2}),{id:'helper',x:2,y:2},{id:'helper-2',x:1,y:3}],[{id:'enemy',x:5,y:3,hp:100,morale:100,overwatch:false}],{artillery:[{id:'gun',type,side:'player',x:2,y:3,loaded:true,ammo:5}]});
+ return battle([subject(abilities,{x:1,y:2,explosives:50}),{id:'helper',x:2,y:2},{id:'helper-2',x:1,y:3}],[{id:'enemy',x:5,y:3,hp:100,morale:100,overwatch:false}],{artillery:[{id:'gun',type,side:'player',x:2,y:3,loaded:true,ammo:5}]});
 }
 test('authored artillery abilities affect real crew costs, canister damage and solid-shot penetration',()=>{
  const fast=battery(['artillery_fire']),plain=battery([]);fast.units[0].ap=17;plain.units[0].ap=17;

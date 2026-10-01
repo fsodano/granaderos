@@ -5,6 +5,13 @@
 Read the [published progress ledger](published-progress.md) first. It records
 accepted features on GitHub `main`, approved scope changes and open work.
 
+## Working integration
+
+- [Latest build consolidation](latest-build-consolidation.md) — local merge status and remaining release checks.
+- [Retiro walking and retained scenery](retained-scenery-movement-2026-09-29.md) — historical local checks.
+- [Local enemy presentation](local-enemy-playback-2026-09-29.md) — historical local checks.
+- [Local walking continuity](local-walking-continuity-2026-09-29.md) — historical local checks.
+
 ## Published baseline
 
 - [Persistent campaign ammunition](strategic-ammunition-custody.md).

@@ -4,7 +4,7 @@
 > checkout. Its implementation and test results are not published-main acceptance.
 > See [published progress](../../verification/published-progress.md) for the main branch baseline.
 
-The Retiro clothing errand asks for two usable wool ponchos. The player takes real garments from the local depot and selects a poncho in a pocket, hand or outfit slot. Clicking the sargento approaches and offers that exact garment. Preparing it in the main hand is optional. J still selects conversation. The newer [selected-gift flow](selected-npc-gifts.md) adds contact-time refusal and portrait responses; the original equipped-item command remains available.
+The Retiro clothing errand asks for two usable wool ponchos. The player buys real garments with pesos from the finite local shop stock and selects a poncho in a pocket, hand or outfit slot. Clicking the sargento approaches and offers that exact garment. Preparing it in the main hand is optional. J still selects conversation. The newer [selected-gift flow](selected-npc-gifts.md) adds contact-time refusal and portrait responses; the original equipped-item command remains available.
 
 A gift uses the normal equipped-item command. The preview checks the recipient, visibility, available actor, usable garment and remaining requested quantity before moving. A distant valid recipient gets an ordinary walking approach. Contact or a moving recipient can stop the approach without giving the item; the player must check and issue the order again. Delivery is available in exploration, advances time and spends no AP. The internal four-AP handling cost supplies the normal exploration duration; this is period-game tuning.
 
