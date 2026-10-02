@@ -8,6 +8,7 @@ import {needsCollapseRecovery} from '../game/fatigue.js';
 import {tooTiredToMarch} from '../game/march-fatigue.js';
 import {fight} from './battery-field-driver.mjs';
 import {order,saved,sync,leave} from './local-contract-fixture.mjs';
+import {contentFixtureCache} from './content-fixture-cache.mjs';
 export function issuedBattery(content){
  const d=content?structuredClone(content):defaultContentPackage();d.rules.startingTreasury=10000;d.startingTerritory.buenos_aires={owner:'patriot',loyalty:65};
  for(const id of [110,114,136,141,120,131])d.characters.find(c=>c.id===`person-${id}`).arrivalHours=0;
@@ -20,12 +21,10 @@ export function issuedBattery(content){
  // victory below all follow ordinary orders; no combat result is fabricated.
  s=order(s,{type:'wait',hours:2});return order(s,{type:'attack',sector:'san_nicolas'});
 }
-let won;
-export function wonBattery(content){
- if(!content&&won)return structuredClone(won);
+export const wonBattery=contentFixtureCache(content=>{
  const s=issuedBattery(content),result=fight({...s.pendingBattle,hour:s.hour,secondOfHour:s.secondOfHour??0},null,{scoutCostWeight:.01,avoidCivilians:true});assert.equal(result.battle.status,'victory');assert.ok(result.actions>0);
- const p=saved(sync({campaign:s,battle:result.battle}));const resultCampaign=saved({campaign:order(p.campaign,{type:'battleResult',battleId:p.campaign.pendingBattle.id,outcome:'victory',sectorState:p.battle,survivors:p.battle.units.filter(u=>u.side==='player')})}).campaign;if(!content)won=resultCampaign;return structuredClone(resultCampaign);
-}
+ const p=saved(sync({campaign:s,battle:result.battle}));return saved({campaign:order(p.campaign,{type:'battleResult',battleId:p.campaign.pendingBattle.id,outcome:'victory',sectorState:p.battle,survivors:p.battle.units.filter(u=>u.side==='player')})}).campaign;
+});
 export function fireStationed(p){
  const gun=p.battle.artillery[0];let approach;
  for(const u of p.battle.units.filter(u=>u.side==='player'&&!u.militia&&u.hp>=15&&!u.unconscious&&!u.routed)){
