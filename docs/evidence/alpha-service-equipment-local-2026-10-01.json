@@ -1,0 +1,404 @@
+{
+  "status": "passed",
+  "node": "22.23.3",
+  "revision": "67f6c7b5195d0cf946bf8c4c3134a84cabcf3702",
+  "source_manifest_sha256": "4a274f6645ac6107f6834cfd869506b812202f3d200359d9bec074077c425457",
+  "frozen_inputs": 9324,
+  "test_files": 600,
+  "started_at": "2026-10-02T03:01:02.363452+00:00",
+  "gates": [
+    {
+      "name": "partition-selftest",
+      "exit_code": 0,
+      "duration_seconds": 0.574,
+      "log": "/tmp/granaderos-alpha-final-partition-selftest.log",
+      "log_sha256": "8d250a4fce6a2430b74ba8714e284cf81ad67769f27d11481b09968a5901361b"
+    },
+    {
+      "name": "partition",
+      "exit_code": 0,
+      "duration_seconds": 0.032,
+      "log": "/tmp/granaderos-alpha-final-partition.log",
+      "log_sha256": "9dca947c389b6c9f4e8cb7615c82050e775b845f9957979ddf59ffabb354532d"
+    },
+    {
+      "name": "docs",
+      "exit_code": 0,
+      "duration_seconds": 0.198,
+      "log": "/tmp/granaderos-alpha-final-docs.log",
+      "log_sha256": "6958f4c6daf864b15910c9f6c2aba4a0b74ad808dd55ae6c6684bc29103359b0"
+    },
+    {
+      "name": "reference",
+      "exit_code": 0,
+      "duration_seconds": 0.231,
+      "log": "/tmp/granaderos-alpha-final-reference.log",
+      "log_sha256": "d8f1432f35199550c6eece7626f1af8ce222ddf8e939a23170ee770ea373a25f"
+    },
+    {
+      "name": "types",
+      "exit_code": 0,
+      "duration_seconds": 2.044,
+      "log": "/tmp/granaderos-alpha-final-types.log",
+      "log_sha256": "618e2b7cc2f862b8b6b986380544b0379d2b322c250298a73c22eb1239b0ee30"
+    },
+    {
+      "name": "build",
+      "exit_code": 0,
+      "duration_seconds": 7.054,
+      "log": "/tmp/granaderos-alpha-final-build.log",
+      "log_sha256": "2744b2ea91e448c439ad26d34cc7f5940ed5c07af258d84084589866b4d702e0"
+    },
+    {
+      "name": "complete-suite",
+      "exit_code": 0,
+      "duration_seconds": 4556.156,
+      "log": "/tmp/granaderos-alpha-final-complete-suite.log",
+      "log_sha256": "fcffe3423d0f61865920ad329ce765a1eeaeea6d1b6df114625b2d900294b619",
+      "tap_counts": {
+        "tests": 4251,
+        "pass": 4251,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      }
+    },
+    {
+      "name": "python",
+      "exit_code": 0,
+      "duration_seconds": 1.186,
+      "log": "/tmp/granaderos-alpha-final-python.log",
+      "log_sha256": "630bc70f300e0a4b74611bf781b34a5d6b473b727246f36a91a7988b6ea6d06b"
+    },
+    {
+      "name": "native-compile",
+      "exit_code": 0,
+      "duration_seconds": 0.769,
+      "log": "/tmp/granaderos-alpha-final-native-compile.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "native",
+      "exit_code": 0,
+      "duration_seconds": 0.815,
+      "log": "/tmp/granaderos-alpha-final-native.log",
+      "log_sha256": "b3d770b962de42ff28a533221b1d0ae81c2b7e79992a5dded57c5ba6ccbdc1b4"
+    },
+    {
+      "name": "local-doc-links",
+      "exit_code": 0,
+      "duration_seconds": 0.335,
+      "log": "/tmp/granaderos-alpha-final-local-doc-links.log",
+      "log_sha256": "a47dbc11c83cd28902b86705574a27a5e924cfd62bce0a3c6ee89164c1cd631e"
+    },
+    {
+      "name": "diff",
+      "exit_code": 0,
+      "duration_seconds": 0.273,
+      "log": "/tmp/granaderos-alpha-final-diff.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "all_source_inputs_unchanged": true,
+  "completed_at": "2026-10-02T04:17:29.897996+00:00",
+  "schema": 1,
+  "record_date": "2026-10-01",
+  "completed_local_date": "2026-10-02",
+  "scope": "Complete local alpha candidate included in the final alpha PR. No alpha CI result or merge is asserted.",
+  "test_summary": {
+    "tests": 4251,
+    "pass": 4251,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "duration_ms": 4556072.569084
+  },
+  "command": {
+    "executable": "/Users/fsodano/.npm/_npx/52027bd8fc0022aa/node_modules/node/bin/node",
+    "options": [
+      "--test",
+      "--test-reporter=tap",
+      "--test-concurrency=2"
+    ],
+    "files": "Sorted non-hidden tests/*.test.mjs, exactly 600 files",
+    "file_list_sha256": "1b81adfe05578bee82996d8096969aeb88ba15c5b10d5eaaa7a2d9f7bd307fba"
+  },
+  "gate_orchestrator": {
+    "path": "/tmp/granaderos-alpha-final-gates.py",
+    "sha256": "a96d6fc852673849b3b0cb6f2fec05a230bfb258773c1dd8c6cc9c325c274372"
+  },
+  "source_manifest_delta": "docs/evidence/alpha-source-inputs-delta-2026-10-01.json",
+  "source_manifest_delta_sha256": "47083a3fc4cfc741a8ab1145ce0d34f09c98430690e1c015ad7916a9488d138e",
+  "source_delta_reconstruction_verified": true,
+  "manifest_delta_counts": {
+    "base_inputs": 9310,
+    "target_inputs": 9324,
+    "unchanged": 9280,
+    "changed": 30,
+    "added": 14,
+    "removed": 0
+  },
+  "engine_revision": "ddb691318eb3dd0cdc6eab42139739b6d498c645",
+  "engine_clean": true,
+  "baseline_publication": "pr139-published-2026-10-01.json",
+  "complete_routes": [
+    {
+      "name": "a fresh stock campaign wins all localities with actual combat and continues after saved victory and service expiry",
+      "duration_ms": 2910704.39325
+    },
+    {
+      "name": "a Retiro-only campaign retains paid recovery and real losses through coordinated San Nicolás, San Lorenzo, Córdoba, Tucumán and Salta victories through Yatasto, Mendoza funding and both mountain passes, Ensenada, naval recruitment, Santa Fe, Tucumán and Salta recapture, Jujuy and Humahuaca",
+      "duration_ms": 909945.547209
+    }
+  ],
+  "reference_checks": {
+    "passed": 38,
+    "failed": 0
+  },
+  "build": {
+    "version": "0.4.0-dev.1",
+    "id": "59bdba25a3bb",
+    "source": "59bdba25a3bbd5e7e00fd5d2105ee3bf76f531244b168fa7f349cfb92244d0cf",
+    "revision": "67f6c7b5195d0cf946bf8c4c3134a84cabcf3702",
+    "export_files": 1131,
+    "asset_references": 1031
+  },
+  "browser_proof": {
+    "source_path": "/tmp/granaderos-alpha-browser-proof.json",
+    "source_sha256": "2ad4fe768ada7ab2701b18958b8cd49b547da4f220ac0576520d44ba97d52918",
+    "record": {
+      "status": "passed",
+      "candidate": "2035fa7702858123b454141ca0c9d26b00fb10fe",
+      "build": "59bdba25a3bb",
+      "origin": "http://127.0.0.1:3137",
+      "verified_at": "2026-10-01T14:01:54.522954+00:00",
+      "dismissal": {
+        "paid_contract": true,
+        "returned_physical_stacks": 10,
+        "collected_once": true,
+        "repair_points_sequence": [
+          0,
+          35,
+          100
+        ],
+        "remainder_sequence": [
+          100,
+          65,
+          0
+        ],
+        "treasury_unchanged": 2978,
+        "hour_unchanged": 12,
+        "unrelated_sources_untouched": 5,
+        "reload_campaign_state_identical": true
+      },
+      "expiry": {
+        "paid_daily_contract": true,
+        "before_hour": 23,
+        "after_hour": 24,
+        "returned_physical_stacks": 10,
+        "collected_once": true,
+        "repair_points_collected": 100,
+        "unrelated_sources_untouched": 5
+      },
+      "editors": {
+        "story": {
+          "same_build": true,
+          "console_errors": 0,
+          "console_warnings": 0
+        },
+        "sector": {
+          "same_build": true,
+          "console_errors": 0,
+          "console_warnings": 0
+        }
+      },
+      "game_console": {
+        "errors": 0,
+        "warnings": 0
+      },
+      "evidence": {
+        "/tmp/granaderos-alpha-browser-dismiss-before.txt": "e079ef11f83b09bba068e92eea5bd6cee081d588e99e69f212457a67453232ce",
+        "/tmp/granaderos-alpha-browser-editor.txt": "aa816ea5802b84375d2df80603bf3dc0a01cd0b342b4e7a9ae32576ccadcd88f",
+        "/tmp/granaderos-alpha-browser-expiry-collected.txt": "30a5220ab1282cd46dfb8d1ece89d80686cfdf9b9e46765d2380b7bdbb99fd11",
+        "/tmp/granaderos-alpha-browser-expiry.txt": "ccfff7df43930e39495f6411d99b267572001510fd53e1836d6f070086631d95",
+        "/tmp/granaderos-alpha-browser-reload.txt": "6c5c5e9562923759d3da0048f41789d8945ecf2a38a40115ad3411ddd8b23857",
+        "/tmp/granaderos-alpha-browser-repair100.txt": "79ba7908e01c37096b7f9df95a9b8fc170c5332ddc59b13d57b7745d8d127039",
+        "/tmp/granaderos-alpha-browser-repair35.txt": "7f6d1b8ef47a50ad7cb7fa7f7775962b16d5c3a75383c4eff0149e086b2c8f9d",
+        "/tmp/granaderos-alpha-browser-story.txt": "4d81e096e56339f277436f26741f6be0bdf4f4839846aab962d392d601bbbb0d",
+        "/tmp/granaderos-alpha-browser-dismiss-state.json": "4487b8c57e34351d6c18757e7ab25f433528e86310f3533b1c8e75fbd963145b",
+        "/tmp/granaderos-alpha-browser-expiry-state.json": "81d8d302d504714e9a25b2edd8921cda6fcd13ff5384e48c18f06dc1af91752a",
+        "/tmp/granaderos-alpha-browser-reload-state.json": "4487b8c57e34351d6c18757e7ab25f433528e86310f3533b1c8e75fbd963145b",
+        "/tmp/granaderos-alpha-browser-dismiss-collected.jpg": "11991f5e13e24deda2208d3fad0207aa9f4f4d309794e3532d3f05715f371d78"
+      },
+      "scope": "Public campaign actions, actual paid recruitment and finite local equipment; private test origin. This verifies inventory, save reload and shared editor build; it does not establish full campaign completion or sustained loaded performance."
+    }
+  },
+  "browser_source_relationship": {
+    "source_path": "/tmp/granaderos-alpha-browser-source-relationship.json",
+    "source_sha256": "f68edf1c8e1b110efb98c3bdf905b85a4a27f5414c33b3ace60592b5e1b145f9",
+    "record": {
+      "browser_tested_revision": "2035fa7702858123b454141ca0c9d26b00fb10fe",
+      "complete_suite_revision": "67f6c7b5195d0cf946bf8c4c3134a84cabcf3702",
+      "browser_build_source": "59bdba25a3bbd5e7e00fd5d2105ee3bf76f531244b168fa7f349cfb92244d0cf",
+      "runtime_and_tools_build_source_unchanged": true,
+      "only_changed_frozen_inputs": [
+        "tests/character-supplies.test.mjs",
+        "tests/created-capital-lane.mjs",
+        "tests/created-capital-return.mjs",
+        "tests/created-cuyo-route.mjs",
+        "tests/created-ending-preparation.mjs",
+        "tests/created-ending-route.mjs",
+        "tests/created-final-capital-battery.mjs",
+        "tests/created-final-capital-fight.mjs",
+        "tests/created-jujuy-defense-battery.mjs",
+        "tests/created-live-northern-route.mjs",
+        "tests/created-northern-care.mjs",
+        "tests/created-northern-return.mjs",
+        "tests/forward-survivor-final.mjs",
+        "tests/fresh-campaign-recovery.test.mjs",
+        "tests/fresh-coastal-route.mjs",
+        "tests/fresh-cuyo-fixture.mjs",
+        "tests/fresh-cuyo-route.mjs",
+        "tests/fresh-mountain-route.mjs",
+        "tests/medical-care.test.mjs",
+        "tests/new-start-stress.test.mjs",
+        "tests/recovery-jujuy-defense-driver.mjs",
+        "tests/recovery-paid-battery-driver.mjs",
+        "tests/recovery-paid-northern-route.mjs"
+      ],
+      "browser_proof_sha256": "2ad4fe768ada7ab2701b18958b8cd49b547da4f220ac0576520d44ba97d52918",
+      "note": "The browser exercise ran at the separately recorded revision. Only the listed test files changed afterward; game, tools and UI source remain identical. The complete suite executes at its own recorded revision. This relationship does not assert that suite has passed."
+    }
+  },
+  "documentation_closeout": {
+    "executing_source": "67f6c7b5195d0cf946bf8c4c3134a84cabcf3702",
+    "source_inputs_exclude_docs": true,
+    "note": "The complete suite and all 12 gates passed at the recorded executed revision. Final documentation and the timeout-only workflow change are checked separately before the single push; no later complete local rerun or CI pass is claimed."
+  },
+  "limits": [
+    "Extensive user alpha and wider force/seed/balance remain open.",
+    "Full JA2, art/audio and sustained loaded 60 FPS are not established.",
+    "No already-completed alpha CI or merge is claimed; root records actual publication externally after the one PR."
+  ],
+  "ci_timeout_closeout": {
+    "executed_revision": "67f6c7b5195d0cf946bf8c4c3134a84cabcf3702",
+    "change_after_complete_local_run": ".github/workflows/web.yml",
+    "change": "Only the test-job timeout increases from 90 to 120 minutes; the web-job timeout, four groups, two workers, Node version, test command and workflow triggers remain unchanged.",
+    "executed_workflow_sha256": "705d9134cc3d1096f80626b35aedb7dc8503315f909bbf7a8d51520872e798c8",
+    "final_workflow_sha256": "76fbbdaa027fcd56011007962ad7d2fb00e2f0cc18d9daec80488ef0785ec728",
+    "measured_ending_seconds": 2910.70439325,
+    "planning_factor": 1.8,
+    "setup_margin_seconds": 360,
+    "inferred_route_only_group_1_seconds": 5599.2679078500005,
+    "planning_is_inference_not_ci_measurement": true,
+    "other_frozen_inputs_unchanged": 9323,
+    "scope": "The complete suite and all 12 gates passed at the recorded executed revision. Final documentation and the timeout-only workflow change are checked separately before the single push; no later complete local rerun or CI pass is claimed.",
+    "passing_tap_plan_sha256": "8c7bb5a17f405153efe9a2117314aca37cc6ca0962fd55b32c8f0cd593c620c9",
+    "passing_tap_plan": {
+      "status": "read_only_planning_from_actual_complete_pass",
+      "candidate": "67f6c7b5195d0cf946bf8c4c3134a84cabcf3702",
+      "tap_sha256": "fcffe3423d0f61865920ad329ce765a1eeaeea6d1b6df114625b2d900294b619",
+      "summary": {
+        "tests": 4251,
+        "pass": 4251,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0,
+        "duration_ms": 4556072.569084
+      },
+      "current_ci": {
+        "groups": 4,
+        "workers": 2,
+        "timeout_minutes": 90,
+        "workflow_sha256": "705d9134cc3d1096f80626b35aedb7dc8503315f909bbf7a8d51520872e798c8",
+        "sharder_sha256": "5277789091a04d598fde39360dd090c2b5f00d1bed3f32b191612795eb33b386"
+      },
+      "planning_assumptions": {
+        "factor": 1.8,
+        "setup_seconds": 360,
+        "limits": "Only six campaign route cases are measured here. Other tests, file overhead, parallel scheduling and actual CI speed are not accepted or predicted by this lower bound. No workflow change is recommended from partial logs."
+      },
+      "groups": [
+        {
+          "group": 1,
+          "test_files": 150,
+          "measured_long_route_seconds_sum": 3820.649940459,
+          "measured_route_only_two_worker_lower_bound_seconds": 2910.70439325,
+          "planning_route_only_seconds_with_explicit_margin": 5599.2679078500005,
+          "exceeds_90_minutes_without_other_test_work": true,
+          "routes": [
+            {
+              "file": "tests/fresh-ending-route.test.mjs",
+              "title": "a fresh stock campaign wins all localities with actual combat and continues after saved victory and service expiry",
+              "duration_ms": 2910704.39325,
+              "group": 1
+            },
+            {
+              "file": "tests/fresh-campaign-recovery.test.mjs",
+              "title": "a Retiro-only campaign retains paid recovery and real losses through coordinated San Nicolás, San Lorenzo, Córdoba, Tucumán and Salta victories through Yatasto, Mendoza funding and both mountain passes, Ensenada, naval recruitment, Santa Fe, Tucumán and Salta recapture, Jujuy and Humahuaca",
+              "duration_ms": 909945.547209,
+              "group": 1
+            }
+          ]
+        },
+        {
+          "group": 2,
+          "test_files": 150,
+          "measured_long_route_seconds_sum": 289.92356025000004,
+          "measured_route_only_two_worker_lower_bound_seconds": 285.333845875,
+          "planning_route_only_seconds_with_explicit_margin": 873.600922575,
+          "exceeds_90_minutes_without_other_test_work": false,
+          "routes": [
+            {
+              "file": "tests/fresh-capital-recovery.test.mjs",
+              "title": "the fresh capital route pays for replacements and preserves fallen soldiers and displaced equipment",
+              "duration_ms": 4589.714375,
+              "group": 2
+            },
+            {
+              "file": "tests/fresh-northern-route.test.mjs",
+              "title": "a fresh Retiro force reaches Yatasto through paid replacements and actual northern victories with saved replay",
+              "duration_ms": 285333.845875,
+              "group": 2
+            }
+          ]
+        },
+        {
+          "group": 3,
+          "test_files": 150,
+          "measured_long_route_seconds_sum": 51.089164792000005,
+          "measured_route_only_two_worker_lower_bound_seconds": 51.089164792000005,
+          "planning_route_only_seconds_with_explicit_margin": 451.9604966256,
+          "exceeds_90_minutes_without_other_test_work": false,
+          "routes": [
+            {
+              "file": "tests/fresh-coastal-route.test.mjs",
+              "title": "a fresh free officer and local recruits complete the opening without bulletin hires, preserving paid recovery and permanent losses",
+              "duration_ms": 51089.164792,
+              "group": 3
+            }
+          ]
+        },
+        {
+          "group": 4,
+          "test_files": 150,
+          "measured_long_route_seconds_sum": 805.5290326669999,
+          "measured_route_only_two_worker_lower_bound_seconds": 805.5290326669999,
+          "planning_route_only_seconds_with_explicit_margin": 1809.9522588005998,
+          "exceeds_90_minutes_without_other_test_work": false,
+          "routes": [
+            {
+              "file": "tests/fresh-cuyo-route.test.mjs",
+              "title": "a fresh campaign prepares Cuyo with real battles, living roles, purchases, funding and physical late recruitment",
+              "duration_ms": 805529.032667,
+              "group": 4
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

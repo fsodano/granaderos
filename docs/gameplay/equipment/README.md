@@ -19,6 +19,10 @@ the [workspace acceptance record](../../verification/gameplay-completion.md) and
 - [Campaign body equipment — 26 September 2026](body-equipment-2026-09-26.md) *(workspace)*
 - [Weapon attachment slots](attachment-slots.md) *(workspace)*
 
+## Service equipment
+
+- [Ordinary service-end equipment and actual collection](../../verification/alpha-service-equipment-return-2026-10-01.md) — bounded local alpha acceptance, finite return and empty rehire; broader belongings and parity remain open.
+
 ## Placement and transfers
 
 - [Click placement](equipment-click-placement.md) *(workspace)*

@@ -9,6 +9,12 @@ results; they are not refreshed by a documentation update.
 Read the linked verification note for the setup, scope and limitations before
 using a result. Published acceptance is recorded in [published progress](../verification/published-progress.md).
 
+## Alpha local acceptance
+
+- [Complete alpha local receipt](alpha-service-equipment-local-2026-10-01.json): final gates, actual full TAP totals and log hashes, shared build, copied browser/UI source relationship.
+- [Compact executing-source delta](alpha-source-inputs-delta-2026-10-01.json): exact reconstruction over the immutable PR139 manifest.
+- [Bounded policy and limits](../verification/alpha-service-equipment-return-2026-10-01.md). These are local proof included in the alpha PR; no alpha CI or merge is asserted.
+
 ## Campaign and route records
 
 - [Campaign routes with partial firearm loading](partial-reload-routes-2026-09-28.json) and [verification scope](../verification/partial-firearm-reloads.md).

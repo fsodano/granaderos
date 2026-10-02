@@ -2,11 +2,11 @@
 
 <!-- Generated from requirements.json by npm run docs:progress. Edit the register, not this view. -->
 
-Updated 2026-10-01. **The complete game and story editor are not accepted.**
+Updated 2026-10-02. **The complete game and story editor are not accepted.**
 
 Read [the design](../specification/game-design.md) for the target and [the formal audit](formal-audit-2026-09-27.md) for evidence and limits.
 The published baseline assessed here is `7ac3c9d612cc5d46c846617e0686ef5b6b450184`. Later PRs must update this register.
-PR #139 merged at 7ac3c9d612cc5d46c846617e0686ef5b6b450184, consolidating the previously separate gameplay and editor sources on this published base. The dated formal audit and its original/prototype/presence snapshots remain unchanged historical evidence. Post-merge service-end equipment work is a separate local alpha candidate and is not part of this published proof.
+The dated published baseline and published-check row preserve PR #139 at 7ac3c9d612cc5d46c846617e0686ef5b6b450184. This alpha PR includes the later finite service-equipment return with separate complete local acceptance at 67f6c7b5195d0cf946bf8c4c3134a84cabcf3702. The compact delta identifies its unchanged executing inputs. No alpha CI result or merge is asserted in this pre-push record; actual publication is recorded in the PR body and final delivery report. Original/prototype/presence snapshots remain historical. The final pre-push workflow changes only the test-job timeout from 90 to 120 minutes after the complete run. All 9,323 other frozen inputs, including every game, test and tool source, remain byte-identical; the workflow and final documentation are checked separately. No later complete local run is claimed.
 
 ## Verified results and current failures
 
@@ -16,9 +16,9 @@ PR #139 merged at 7ac3c9d612cc5d46c846617e0686ef5b6b450184, consolidating the pr
 | original (2026-09-27 snapshot) | 3040 / 3047 | 4 | 3 | PASS / PASS |
 | prototype (2026-09-27 snapshot) | 2895 / 2896 | 1 | 0 | PASS / PASS |
 | presence (2026-09-27 snapshot) | 548 / 548 | 0 | 0 | PASS / PASS |
-| local-candidate | 4214 / 4214 | 0 | 0 | PASS / PASS |
+| local-candidate | 4251 / 4251 | 0 | 0 | PASS / PASS |
 
-The original, prototype and presence rows retain the 2026-09-27 audit results; their recorded failures and skips do not describe the consolidated PR #139 source. The local consolidation result and exact published-head CI result each pass 4214/4214 with no failures or skips. Their source relationship is recorded in the register and publication receipt. Later alpha evidence must be recorded separately. Full JA2 parity, balance, art/audio review and sustained loaded performance remain open.
+The 2026-09-27 audit snapshots and PR139 local/published 4214/4214 results remain unchanged dated evidence. The corrected alpha candidate passes 4,251/4,251 across 600 files with no failures, skips, cancellations or TODOs. It accepts the bounded return policy and preserves scripted routes. Extensive player alpha, wider force/seed balance, full JA2 parity, art/audio and sustained loaded 60 FPS remain open.
 
 ## Status and maintenance rules
 
@@ -30,7 +30,7 @@ The original, prototype and presence rows retain the 2026-09-27 audit results; t
 - UNVERIFIED: available evidence does not establish acceptance.
 - SUPERSEDED: an explicit design change replaced the old requirement.
 
-The register retains 274 entries: 130 VERIFIED, 106 PARTIAL, 31 LOCAL_ONLY, 2 MISSING, 2 FAILED, 2 UNVERIFIED, 1 SUPERSEDED.
+The register retains 275 entries: 131 VERIFIED, 106 PARTIAL, 31 LOCAL_ONLY, 2 MISSING, 2 FAILED, 2 UNVERIFIED, 1 SUPERSEDED.
 Rows overlap in scope. Neither these counts nor test totals are a completion percentage.
 
 Edit [requirements.json](requirements.json), record exact source/checks and remaining gaps, then run `npm run docs:progress` and `npm run audit:docs`. Update the design for policy changes. A dated audit stays an evidence snapshot. Do not mark a local branch as published or close a broad row from one passing fixture.
@@ -41,8 +41,8 @@ Edit [requirements.json](requirements.json), record exact source/checks and rema
 
 ## Delivery order
 
-1. **QA-01, REL-02, UX-01, UX-02** — Preserve the accepted consolidated stock victory, historical loss, paid recovery and rescue routes. Begin extensive alpha playthrough and record discrepancies across force starts, seeds, strategy, equipment and saves; keep the main game and tools on the same base. Do not infer full JA2 parity, balance or performance from passing automated tests.
-2. **STORY-02** — Extend world identities, health and successor activation into belongings, custody and explicit role/stock transfer, as separate deliveries.
+1. **QA-01, REL-02, UX-01, UX-02** — Preserve the accepted scripted stock victory, defeat, recovery and rescue routes and bounded finite service-equipment return. After this single alpha PR passes matching-head CI and merges, stop implementation for the requested user alpha session. Record discrepancies across starts, seeds, strategy, equipment and saves; do not infer full JA2, balance, art/audio or loaded performance from automated tests.
+2. **STORY-02** — Retain ordinary service-equipment return as one bounded delivery. Broader civilian armour, arbitrary belongings, custody and explicit role/stock transfer remain open. Resume further implementation only when the user requests it after their alpha issue session.
 3. **STORY-03, STORY-04, STORY-05, STORY-06, STORY-08** — Extend conditional dialogue and shared quest states with item/objective and historical role effects; extend local meetings with markers and arrival sequences, and deliver rules, equipment/merchants and portable content one feature at a time.
 4. **STORY-07, QA-01, QA-02, REL-01, REL-02, UX-02** — Close remaining parity and presentation gaps. Finish both the stock and independently authored campaigns and the release audit.
 
@@ -341,6 +341,7 @@ Finish one bounded feature, its controls and persistence, update evidence, pass 
 | UX-05 | Searchable characters/weapons and exact-cell appearance map | VERIFIED | Published story editor includes search, image previews and character-local cell selection. | Searchable characters/weapons and exact-cell appearance map. Use normal controls; retain state through saves; record exact release revision and any limitations. |
 | REL-01 | Release-scale visual, audio and historical review | UNVERIFIED | Art assets and provenance notes exist; prior reviews cover bounded samples. | Complete the declared animation target, equipment/side silhouettes, historical content and audio review. |
 | REL-02 | Fresh complete campaign plus defeat and recovery acceptance | PARTIAL | PR #139 accepts the complete fresh historical ending, actual defeat, paid recovery, persistent-garrison recapture and physical prisoner rescue in the combined full suite. Tactical actions, actual boundaries, wounds, contracts, finite supplies, casualties and save/reentry are preserved; no injected victory or free replenishment is accepted. | Record extensive manual alpha playthrough and remaining force/seed/balance cases on the merged build. The scripted route proofs do not certify release-scale usability, art/audio or loaded performance. |
+| SERVICEGEAR-01 | Return ordinary service-end equipment once at its physical location and rearm later service from real stock | VERIFIED | Included in this alpha PR; accepted locally at 67f6c7b5195d0cf946bf8c4c3134a84cabcf3702 through the complete unchanged-source suite and exact-source browser checks. This dated record asserts no alpha CI result or merge. PR139 remains the latest recorded publication snapshot. | Use actual paid dismissal and expiry, save/load and collect exact returned gear once. Reject stale or forged transfers and duplicate ownership; rehire with empty slots and collect existing compatible weapons or buy finite stock. Preserve current wounds, loaded/loose ammunition, outfit and spent supplies. Retain capture/death custody and independent horse rules. Accept actual legal campaign victory/recovery and mounted save/control checks. |
 
 ## Failed acceptance routes
 
@@ -477,5 +478,6 @@ Finish one bounded feature, its controls and persistence, update evidence, pass 
 | E-CIVILIAN-WEAPONS | [Record](../evidence/civilian-weapon-custody.json) | Finite civilian primary/secondary recovery, loaded states, service return, successor separation, save validation, mounted UI and controlled production browser check. Armour and arbitrary belongings remain open. |
 | E-CONSOLIDATION-FINAL-LOCAL | [Record](../evidence/consolidation-final-local-2026-10-01.json) | Final frozen PR #139 local candidate: 4214/4214 tests across all 597 root test files, zero failures/skips/cancelled/TODO, Node 22.23.3 and 9310 unchanged source inputs. Types, production export, docs, 38 reference comparisons, 15 Python checks and native rules pass. Includes an uncached complete fresh historical victory, saved 48-hour continuation, defeat, paid recovery and physical prisoner rescue. Broad gameplay balance, full JA2 parity, art/audio review and loaded 60 FPS remain open. |
 | E-CONSOLIDATION-PR139 | [Record](../evidence/pr139-published-2026-10-01.json) · [CI](https://github.com/fsodano/granaderos/actions/runs/36855720414) | PR #139 merged at 7ac3c9d612cc5d46c846617e0686ef5b6b450184 after exact-head CI run 36855720414 passed all five jobs: 4214/4214 tests in four complete groups, zero failures/skips/cancelled/TODO, plus web/types/export gates. The merged tree equals final head 04003dd1de15fffbe71ec0e06d953181ee77c229 and retains every executing input from the frozen local manifest. Full JA2 parity, balance, art/audio review and sustained loaded 60 FPS remain open. |
+| E-ALPHA-SERVICE-RETURN-LOCAL | [Record](../evidence/alpha-service-equipment-local-2026-10-01.json) | Separate corrected local alpha at 67f6c7b5195d0cf946bf8c4c3134a84cabcf3702: 4,251/4,251, 600 files, 9324 unchanged executing inputs, all required gates and exact-source browser checks. Ordinary live service end returns finite physical gear once; actual collection or paid stock rearms later service. PR139 publication remains immutable. No alpha CI/merge, broad parity, manual balance, art/audio or loaded performance is asserted. |
 
 Per-row acceptance, local assessment, source notes and test paths are retained in [the register](requirements.json). The full 87-row historical parity assessment is preserved in the audit; its old implementation claims are not fresh certification. Earlier milestones remain in [the historical log](../archive/published-progress-through-pr28.md).

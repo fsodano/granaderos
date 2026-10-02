@@ -20,6 +20,8 @@ Player-facing text is Spanish. Code and documentation are English.
 | Find art sources and visual decisions | [Art guide](art/README.md) and [decision records](adr/README.md) |
 | Review unpublished gameplay integration | [Development-workspace acceptance](verification/gameplay-completion.md) |
 
+The [dated alpha service-equipment record](verification/alpha-service-equipment-return-2026-10-01.md) describes bounded complete local acceptance included in the current alpha PR; it does not assert CI or merge. PR139 remains the dated publication snapshot.
+
 ## Documentation map
 
 | Folder | Contents |

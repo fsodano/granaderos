@@ -2,6 +2,12 @@
 
 Updated on 1 October 2026. [PR #139](https://github.com/fsodano/granaderos/pull/139) is merged on `main` at **`7ac3c9d612cc5d46c846617e0686ef5b6b450184`**. This record separates that accepted consolidation from earlier repair snapshots and subsequent local alpha work. The [published progress ledger](published-progress.md) remains the authority for accepted work on `main`.
 
+## Current alpha candidate — accepted locally
+
+This separate alpha PR includes finite ordinary service-equipment return, accepted locally at `67f6c7b5195d0cf946bf8c4c3134a84cabcf3702`: **4,251/4,251**, **600 files**, **9,324 unchanged executing inputs**, every required gate passing. The exact-source private UI/save checks pass on shared game/editor build **`59bdba25a3bb`**. Actual rehire preparation collects existing gear or purchases finite stock; it grants no replacement equipment. See [alpha scope](alpha-service-equipment-return-2026-10-01.md), [local receipt](../evidence/alpha-service-equipment-local-2026-10-01.json) and [source delta](../evidence/alpha-source-inputs-delta-2026-10-01.json).
+
+This dated pre-push record asserts no alpha CI result or merge. PR139 publication and its original-origin handover below stay immutable history. Root records actual alpha publication in the PR body and final report after one verified push; no post-merge documentation commit is required. After merge, stop implementation for the user's alpha issue session. Manual balance, full JA2, art/audio and sustained loaded 60 FPS remain open.
+
 ## Why the previews differ
 
 Parallel work used separate Git worktrees. Published work and newer local gameplay were not combined before the earlier preview at port 3134 started. The consolidation used `codex/consolidate-latest-gameplay`, from original published base `f5b6290f2e32a4e78bd78c928e1459a3be4213b3`, with the compact exploration control at `7c274016`. The original local gameplay source remains preserved as snapshot `377156af1b67e00946f83afa152ef215bb2f0a62`. PR #139 now puts the main game and developer tools on the same accepted base. The original working folders remain unchanged.
@@ -14,7 +20,7 @@ Exact-head [CI run `36855720414`](https://github.com/fsodano/granaderos/actions/
 
 The local complete test command executed at **`4938fd79835776a202273b09cf303fc7251ad392`**. The final PR head added audited documentation and evidence after that run; all **9,310 frozen executing source inputs** remained unchanged. The merged tree then matched that final head. The local command was not rerun after the final documentation commit. The receipt and frozen manifest preserve this source relationship.
 
-Service-end equipment return has now started on separate local branch **`codex/alpha-service-equipment-2026-10-01`** from the actual merge. It is outside PR #139 and is not accepted as implemented until its own local verification completes. Later alpha results must use separate evidence; they must not replace the immutable PR #139 local and published records. Full JA2 parity, art/audio review, extensive player alpha testing and sustained loaded 60 FPS remain open.
+The separate service-end equipment alpha candidate starts from this actual merge and is outside PR #139. Its completed local acceptance is recorded separately above; this dated record does not assert its CI or merge. Later alpha results must use separate evidence; they must not replace the immutable PR #139 local and published records. Full JA2 parity, art/audio review, extensive player alpha testing and sustained loaded 60 FPS remain open.
 
 ## Validation and push policy
 
@@ -24,7 +30,7 @@ Earlier run `36776925051` had already finished when cancellation was attempted. 
 
 The published consolidation raises only the test-job timeout from 30 to 90 minutes. Complete fresh campaign routes can exceed the former limit. The four complete groups, two-worker limit and required checks remain enabled. Jobs still finish as soon as their checks end; the higher ceiling avoids discarding a passing long route and paying for a repeat run.
 
-## Final local acceptance
+## PR #139 final local acceptance
 
 The final complete candidate passes **4,214/4,214 tests**, with **zero failures, skips, cancellations or TODOs**, across all **597 test files**. Node 22 used two file workers; the complete run took **3,956.9 seconds**. Every one of the **9,310 frozen source inputs** stayed unchanged. The pinned native engine checkout stayed clean.
 

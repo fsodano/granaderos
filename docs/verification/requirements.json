@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "updated": "2026-10-01",
+  "updated": "2026-10-02",
   "baseline": "7ac3c9d612cc5d46c846617e0686ef5b6b450184",
   "audit": "docs/verification/formal-audit-2026-09-27.md",
   "design": "docs/specification/game-design.md",
@@ -655,6 +655,11 @@
       "path": "docs/evidence/pr139-published-2026-10-01.json",
       "description": "PR #139 merged at 7ac3c9d612cc5d46c846617e0686ef5b6b450184 after exact-head CI run 36855720414 passed all five jobs: 4214/4214 tests in four complete groups, zero failures/skips/cancelled/TODO, plus web/types/export gates. The merged tree equals final head 04003dd1de15fffbe71ec0e06d953181ee77c229 and retains every executing input from the frozen local manifest. Full JA2 parity, balance, art/audio review and sustained loaded 60 FPS remain open.",
       "url": "https://github.com/fsodano/granaderos/actions/runs/36855720414"
+    },
+    {
+      "id": "E-ALPHA-SERVICE-RETURN-LOCAL",
+      "path": "docs/evidence/alpha-service-equipment-local-2026-10-01.json",
+      "description": "Separate corrected local alpha at 67f6c7b5195d0cf946bf8c4c3134a84cabcf3702: 4,251/4,251, 600 files, 9324 unchanged executing inputs, all required gates and exact-source browser checks. Ordinary live service end returns finite physical gear once; actual collection or paid stock rearms later service. PR139 publication remains immutable. No alpha CI/merge, broad parity, manual balance, art/audio or loaded performance is asserted."
     }
   ],
   "queue": [
@@ -666,14 +671,14 @@
         "UX-01",
         "UX-02"
       ],
-      "action": "Preserve the accepted consolidated stock victory, historical loss, paid recovery and rescue routes. Begin extensive alpha playthrough and record discrepancies across force starts, seeds, strategy, equipment and saves; keep the main game and tools on the same base. Do not infer full JA2 parity, balance or performance from passing automated tests."
+      "action": "Preserve the accepted scripted stock victory, defeat, recovery and rescue routes and bounded finite service-equipment return. After this single alpha PR passes matching-head CI and merges, stop implementation for the requested user alpha session. Record discrepancies across starts, seeds, strategy, equipment and saves; do not infer full JA2, balance, art/audio or loaded performance from automated tests."
     },
     {
       "order": 2,
       "ids": [
         "STORY-02"
       ],
-      "action": "Extend world identities, health and successor activation into belongings, custody and explicit role/stock transfer, as separate deliveries."
+      "action": "Retain ordinary service-equipment return as one bounded delivery. Broader civilian armour, arbitrary belongings, custody and explicit role/stock transfer remain open. Resume further implementation only when the user requests it after their alpha issue session."
     },
     {
       "order": 3,
@@ -3723,7 +3728,7 @@
       "status": "PARTIAL",
       "priority": "P0",
       "published": "The consolidated PR #139 suite accepts an uncached fresh mixed historical campaign through all 13 friendly localities, no blockade or active enemy group, a living commander and one terminal victory. Saved 48-hour continuation preserves two independently quoted income payments, actual paid-service expiry and 59 permanent deaths. Fresh historical loss, advanced paid recovery, physical rescue and the independent authored post campaign also pass.",
-      "local": "All 597 root test files pass 4214/4214 on the final unchanged PR #139 candidate. These are scripted public campaign/tactical actions with replay/save and mounted controls; they do not replace extensive player testing, broader force/seed combinations or balance review.",
+      "local": "The separate corrected alpha at 67f6c7b5195d0cf946bf8c4c3134a84cabcf3702 passes 4,251/4,251, zero fail/skip/cancelled/TODO, across 600 files and 9324 unchanged source inputs. Actual collection or finite paid resupply rearms empty rehires. Complete ending/recovery retain permanent losses, physical custody, treasury, ammunition, replay and saves. These scripted checks do not replace extensive user alpha, wider balance, JA2, art/audio or sustained loaded-performance acceptance.",
       "remaining": "Record extensive player alpha testing on the merged release and broaden force/seed and authored composition acceptance. Full JA2 parity, release visual/audio review and sustained loaded performance remain separate.",
       "acceptance": "Recorded playthrough covering phases, victory and defeat",
       "evidence": [
@@ -3736,7 +3741,8 @@
         "E-POST-CAMPAIGN",
         "E-PARALLEL-VERIFICATION",
         "E-CONSOLIDATION-FINAL-LOCAL",
-        "E-CONSOLIDATION-PR139"
+        "E-CONSOLIDATION-PR139",
+        "E-ALPHA-SERVICE-RETURN-LOCAL"
       ]
     },
     {
@@ -5735,14 +5741,15 @@
       "status": "PARTIAL",
       "priority": "P0",
       "published": "PR #139 accepts the complete fresh historical ending, actual defeat, paid recovery, persistent-garrison recapture and physical prisoner rescue in the combined full suite. Tactical actions, actual boundaries, wounds, contracts, finite supplies, casualties and save/reentry are preserved; no injected victory or free replenishment is accepted.",
-      "local": "The current complete candidate passes 4214/4214, zero failures/skips/cancelled/TODO. The independent authored post campaign retains its own saved victory and deadline loss. The former failing source snapshots remain dated history.",
+      "local": "The separate corrected alpha at 67f6c7b5195d0cf946bf8c4c3134a84cabcf3702 passes 4,251/4,251, zero fail/skip/cancelled/TODO, across 600 files and 9324 unchanged source inputs. Actual collection or finite paid resupply rearms empty rehires. Complete ending/recovery retain permanent losses, physical custody, treasury, ammunition, replay and saves. These scripted checks do not replace extensive user alpha, wider balance, JA2, art/audio or sustained loaded-performance acceptance.",
       "remaining": "Record extensive manual alpha playthrough and remaining force/seed/balance cases on the merged build. The scripted route proofs do not certify release-scale usability, art/audio or loaded performance.",
       "acceptance": "Fresh complete campaign plus defeat and recovery acceptance. Use normal controls; retain state through saves; record exact release revision and any limitations.",
       "evidence": [
         "E-PUBLISHED",
         "E-CONFLICTS",
         "E-CONSOLIDATION-FINAL-LOCAL",
-        "E-CONSOLIDATION-PR139"
+        "E-CONSOLIDATION-PR139",
+        "E-ALPHA-SERVICE-RETURN-LOCAL"
       ]
     },
     {
@@ -6560,6 +6567,35 @@
         "tests/civilian-supplies.test.mjs"
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/138"
+    },
+    {
+      "id": "SERVICEGEAR-01",
+      "group": "Player and release acceptance",
+      "requirement": "Return ordinary service-end equipment once at its physical location and rearm later service from real stock",
+      "status": "VERIFIED",
+      "priority": "P0",
+      "published": "Included in this alpha PR; accepted locally at 67f6c7b5195d0cf946bf8c4c3134a84cabcf3702 through the complete unchanged-source suite and exact-source browser checks. This dated record asserts no alpha CI result or merge. PR139 remains the latest recorded publication snapshot.",
+      "local": "4,251/4,251, 600 files and 9324 unchanged inputs. Dismissal and expiry return actual weapons, charges, pockets, outfit, finite consumables and repair points to one local source. Collection consumes existing stock; rehire creates no allocation. Loaded-sector deferral, real transit arrival, bounded full-map fallback, old-save checks and legal complete routes preserve conservation.",
+      "remaining": "",
+      "acceptance": "Use actual paid dismissal and expiry, save/load and collect exact returned gear once. Reject stale or forged transfers and duplicate ownership; rehire with empty slots and collect existing compatible weapons or buy finite stock. Preserve current wounds, loaded/loose ammunition, outfit and spent supplies. Retain capture/death custody and independent horse rules. Accept actual legal campaign victory/recovery and mounted save/control checks.",
+      "evidence": [
+        "E-ALPHA-SERVICE-RETURN-LOCAL"
+      ],
+      "parents": [
+        "LOCAL-01",
+        "CIVILIANRETURN-01",
+        "ITEM-01",
+        "QA-01"
+      ],
+      "testFiles": [
+        "tests/service-equipment-return.test.mjs",
+        "tests/service-return-inventory.test.mjs",
+        "tests/civilian-service-return.test.mjs",
+        "tests/civilian-weapons.test.mjs",
+        "tests/contracts-web.test.mjs",
+        "tests/fresh-ending-route.test.mjs",
+        "tests/fresh-campaign-recovery.test.mjs"
+      ]
     }
   ],
   "latestPublishedCheck": {
@@ -6577,23 +6613,23 @@
     "mergeCommit": "7ac3c9d612cc5d46c846617e0686ef5b6b450184"
   },
   "latestLocalCheck": {
-    "source": "04003dd1de15fffbe71ec0e06d953181ee77c229",
-    "total": 4214,
-    "passed": 4214,
+    "source": "67f6c7b5195d0cf946bf8c4c3134a84cabcf3702",
+    "testedRevision": "67f6c7b5195d0cf946bf8c4c3134a84cabcf3702",
+    "total": 4251,
+    "passed": 4251,
     "failed": 0,
     "skipped": 0,
     "cancelled": 0,
     "todo": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-CONSOLIDATION-FINAL-LOCAL",
-    "testedRevision": "4938fd79835776a202273b09cf303fc7251ad392",
-    "sourceManifest": "docs/evidence/consolidation-final-source-inputs-2026-10-01.json",
-    "sourceManifestSha256": "d44fac095e4eae1e8a8dc1c652665f39b989442544abb9a756ddf5e7c84c39f1",
-    "testFiles": 597,
-    "frozenInputs": 9310,
-    "sourceNote": "The complete local command executed at 4938fd79835776a202273b09cf303fc7251ad392. Final head 04003dd1de15fffbe71ec0e06d953181ee77c229 added audited documentation/evidence; all 9310 frozen executing inputs remained unchanged. Merge 7ac3c9d612cc5d46c846617e0686ef5b6b450184 has the same tree as that final head. The local command was not rerun after the final documentation commit. Later alpha work needs separate evidence."
+    "evidenceId": "E-ALPHA-SERVICE-RETURN-LOCAL",
+    "sourceManifestDelta": "docs/evidence/alpha-source-inputs-delta-2026-10-01.json",
+    "sourceManifestSha256": "4a274f6645ac6107f6834cfd869506b812202f3d200359d9bec074077c425457",
+    "testFiles": 600,
+    "frozenInputs": 9324,
+    "sourceNote": "Complete local execution at 67f6c7b5195d0cf946bf8c4c3134a84cabcf3702. The compact delta reconstructs its frozen manifest byte for byte over immutable PR139 evidence. Browser QA at 2035fa7702858123b454141ca0c9d26b00fb10fe has identical game/tools/UI build source; only the exact reviewed test-only preparation and expectation changes differ. Final pre-push documentation/evidence is audited separately; no later full rerun, alpha CI or merge is asserted. The final pre-push workflow changes only the test-job timeout from 90 to 120 minutes after the complete run. All 9,323 other frozen inputs, including every game, test and tool source, remain byte-identical; the workflow and final documentation are checked separately. No later complete local run is claimed."
   },
-  "sourceRelationship": "PR #139 merged at 7ac3c9d612cc5d46c846617e0686ef5b6b450184, consolidating the previously separate gameplay and editor sources on this published base. The dated formal audit and its original/prototype/presence snapshots remain unchanged historical evidence. Post-merge service-end equipment work is a separate local alpha candidate and is not part of this published proof.",
-  "snapshotSummary": "The original, prototype and presence rows retain the 2026-09-27 audit results; their recorded failures and skips do not describe the consolidated PR #139 source. The local consolidation result and exact published-head CI result each pass 4214/4214 with no failures or skips. Their source relationship is recorded in the register and publication receipt. Later alpha evidence must be recorded separately. Full JA2 parity, balance, art/audio review and sustained loaded performance remain open."
+  "sourceRelationship": "The dated published baseline and published-check row preserve PR #139 at 7ac3c9d612cc5d46c846617e0686ef5b6b450184. This alpha PR includes the later finite service-equipment return with separate complete local acceptance at 67f6c7b5195d0cf946bf8c4c3134a84cabcf3702. The compact delta identifies its unchanged executing inputs. No alpha CI result or merge is asserted in this pre-push record; actual publication is recorded in the PR body and final delivery report. Original/prototype/presence snapshots remain historical. The final pre-push workflow changes only the test-job timeout from 90 to 120 minutes after the complete run. All 9,323 other frozen inputs, including every game, test and tool source, remain byte-identical; the workflow and final documentation are checked separately. No later complete local run is claimed.",
+  "snapshotSummary": "The 2026-09-27 audit snapshots and PR139 local/published 4214/4214 results remain unchanged dated evidence. The corrected alpha candidate passes 4,251/4,251 across 600 files with no failures, skips, cancellations or TODOs. It accepts the bounded return policy and preserves scripted routes. Extensive player alpha, wider force/seed balance, full JA2 parity, art/audio and sustained loaded 60 FPS remain open."
 }

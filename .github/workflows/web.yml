@@ -11,8 +11,9 @@ jobs:
   tests:
     name: Tests (${{ matrix.group }}/4)
     runs-on: ubuntu-latest
-    # Complete fresh campaign routes can exceed the former 30-minute limit.
-    timeout-minutes: 90
+    # The complete ending route took 49 minutes locally before other shard work.
+    # Allow slower CI runners to finish without a paid timeout and repeat run.
+    timeout-minutes: 120
     strategy:
       fail-fast: false
       matrix:

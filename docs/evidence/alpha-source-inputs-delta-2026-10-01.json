@@ -1,0 +1,174 @@
+{
+  "schema": 1,
+  "scope": "Reconstructable corrected alpha executing-source manifest; acceptance is recorded separately.",
+  "base": {
+    "path": "docs/evidence/consolidation-final-source-inputs-2026-10-01.json",
+    "sha256": "d44fac095e4eae1e8a8dc1c652665f39b989442544abb9a756ddf5e7c84c39f1",
+    "executed_revision": "4938fd79835776a202273b09cf303fc7251ad392",
+    "published_merge": "7ac3c9d612cc5d46c846617e0686ef5b6b450184"
+  },
+  "target": {
+    "sha256": "4a274f6645ac6107f6834cfd869506b812202f3d200359d9bec074077c425457",
+    "metadata": {
+      "revision": "67f6c7b5195d0cf946bf8c4c3134a84cabcf3702",
+      "branch": "codex/alpha-service-equipment-2026-10-01",
+      "engine_revision": "ddb691318eb3dd0cdc6eab42139739b6d498c645",
+      "frozen_at": "2026-10-02T03:00:58.549577+00:00"
+    },
+    "key_order": [
+      "revision",
+      "branch",
+      "engine_revision",
+      "frozen_at",
+      "inputs"
+    ],
+    "serialization": "Python json.dumps(object, indent=2) + newline, UTF-8; input paths sorted lexicographically"
+  },
+  "counts": {
+    "base_inputs": 9310,
+    "target_inputs": 9324,
+    "unchanged": 9280,
+    "changed": 30,
+    "added": 14,
+    "removed": 0
+  },
+  "changed": {
+    "game/campaign-civilians.js": {
+      "before": "6226488e7efca573d287f76016471f0709184332715407542acb901649b8e11d",
+      "after": "b1a34d7ec3de77526a903d5e159895033eacc15ac3f1bdf54d34952115e2c1fc"
+    },
+    "game/campaign.js": {
+      "before": "b3180bd678952fcb0eca7541c9ce495373444c630a3c602f62ab4d66a63017cb",
+      "after": "5c1335897b8f35c62c68502b672cae730aae05f32d41d50c374ce87386df470d"
+    },
+    "game/civilian-weapons.js": {
+      "before": "d979728b5e0e31f55b59c52236ca94a31751f217add69acb4761ab69d8c4d87d",
+      "after": "8a8d6906bd386641865309f6aa34e269ef8b811093689e71de3ed834e7f067c3"
+    },
+    "game/contracts.js": {
+      "before": "0c112e164142a94bafa8e19f72543810e5f452840d3a2d77ccd0b25a4b530305",
+      "after": "8a649c3834d13f55796afca95fb73ef8cea5e9946e14851dcaf136534e620406"
+    },
+    "game/equipment.js": {
+      "before": "8cc768d324e8d672fa6b3485c39e8511dffabfdf2e3b2a79c93d2e7da00899a6",
+      "after": "d125386ea4c34f9b358ca9a64d552570163a0b9a4be7f656a244eb7bc657fccc"
+    },
+    "game/hiring-arrivals.js": {
+      "before": "62fca196ad457a50da7b9c3a53fae0ba65c24f3e24c16cf1c7f4bd130e9ec2c1",
+      "after": "86eb8c83eba05eeb259a5f785959f1fc4340a9b6e8fa6b681de735e07ff98bcc"
+    },
+    "game/physical-ammunition.js": {
+      "before": "6b2f5c59a9269cb2a0d1b2b7c70be09ad661feac26b5a5dad97ae56a9527061a",
+      "after": "aa31b5885a6c66201eb15fda601fc26ba54bda8023d3b59f6e31956d3c8b6cc7"
+    },
+    "game/player-known-state.js": {
+      "before": "f10e4ce1940d6ce6211e06e95ac978c0c23b850ab589fac9fd1701de19b7b79c",
+      "after": "117a6cf84d83a4c9285bc518a5731f705375cb63d5ab0e33da4fffd4ca744d40"
+    },
+    "game/recruitment.js": {
+      "before": "49256042323d47f4172e44c242688f4f23c1bc4b35e5b12b7897504471fecdca",
+      "after": "f8082975de48fdb893b726c60e16edef77e0b8883624f096f4a4d4d7653e7779"
+    },
+    "game/sector-inventory.js": {
+      "before": "771578e1482fa61539f4caf38cf4bc744cad8116e268b37bb6d131589cfa22ed",
+      "after": "e43375abc0367c09fb6af0459de183f88821bcd930c636294b148887c33effc5"
+    },
+    "tests/character-supplies.test.mjs": {
+      "before": "85c94098a16c83395feba105a74d97eddf7fdf211856196a58cd48cb02a72b2b",
+      "after": "7bf1c631b519789bf8b0db0b900ca893539f3e61760946c865f332e1880fc72f"
+    },
+    "tests/civilian-service-return.test.mjs": {
+      "before": "1a034401cf112f92d7264813e05a686d463f1b5a93c3e3ee550de4f98a58290e",
+      "after": "95a5523962fcadca12d05ac0fba77fec4c71ec8a262ec0dcf14eb95445f4e4c4"
+    },
+    "tests/civilian-weapons.test.mjs": {
+      "before": "19b1f30f38bb3f9e435398b00b2c2126106a780d10d1c749bc649428a773a790",
+      "after": "21ca882c3f762d46491acc8d7dbc28bb051bb99e02fe32c17681a0fc5c093d2d"
+    },
+    "tests/contracts-web.test.mjs": {
+      "before": "c14a9ee304036318788c46714fae57607fa637e62f1e0c2e8ca7f8ae271f826b",
+      "after": "cf58e789dfb8e5455d610cb62bd2c1cb874a9b8a568495f1d2a4b9e5379a07a8"
+    },
+    "tests/created-capital-return.mjs": {
+      "before": "f9f9d2c1155ad468ac420873b58a810758e6668e6aaed98d847b3b19f5e24ea2",
+      "after": "fe1a5c4a2b307e199c47ba8d866384fb583021bc41c5c45f31d7f5734cd1d0f2"
+    },
+    "tests/created-cuyo-route.mjs": {
+      "before": "b4559d1e3c0518b6d43987702f25ea0fc7d74b9f4c8b412f052adc658b27a46b",
+      "after": "3aa9cb7ec969e6d2c9bc33cba6cb551e4d78664324893086c89a62753fc917d8"
+    },
+    "tests/created-ending-route.mjs": {
+      "before": "9a8c81a93942f9f6b743789e8c824cc30db66fb8cd03703902dd42c9143f2c34",
+      "after": "f9848481f00880478ccd43f3e888c6b524833f79e19518b4ac1f90404351b91b"
+    },
+    "tests/created-northern-return.mjs": {
+      "before": "d43cd2311a941e8fc34d9b5b4daef8cbfde3c70c8c1caf5501db0594d741480b",
+      "after": "0e291522e66de2e13d65c84105fd12cefd659cf168c59d782a1dbc51c3e700bd"
+    },
+    "tests/equipment-cursor-lifecycle.test.mjs": {
+      "before": "d3fc26c640224c32588450d8a723311f1680f9d4b8b8d265c6aad398e6b7854b",
+      "after": "4c508cd2476b30ba940b97f888d451337f0219313ac41ae168ef8b27ec1e7529"
+    },
+    "tests/forward-survivor-final.mjs": {
+      "before": "1c48b6528d84c52e3050bf098f1fffcb06969cc32267c8a12e4a5ece522177cb",
+      "after": "f10dd8a68d52e010e6abe6b2d1da66f968e265bb27ab494f390deebe8c389d2f"
+    },
+    "tests/fresh-campaign-recovery.test.mjs": {
+      "before": "2bb78713c2b80f9d442a14ce60d2bac20dbe9b6ea8d027c3d24966171d892c71",
+      "after": "32a6adecd38c8d9f0dccccc1983b30d962ec1e50eec4dae1fb2b9ab40aaf54df"
+    },
+    "tests/fresh-coastal-route.mjs": {
+      "before": "7f6f47d50c28d584767e16297bdf87ca2c427936853d1a5074daa3f23f9bb6d6",
+      "after": "89260c6cd529f755462ae5aefd1196d50e2adccf0a5be371b395dc9064b63bd4"
+    },
+    "tests/fresh-cuyo-fixture.mjs": {
+      "before": "31e38207427417549c6c8bd5b31b364953021845ada9ae709942ddd997adc589",
+      "after": "41d3b68a6c84e3af5b16cf7883d012416bc4e43caf44fbfe9d3511adda4e07a5"
+    },
+    "tests/fresh-cuyo-route.mjs": {
+      "before": "ac5acd74db90c1837725e8f7cffe43da711b6ac7bdc715e1297275d4e46cae14",
+      "after": "11145622587f76b5775966477286246ece922fcfd6ddf4b9c66385d47399b84c"
+    },
+    "tests/fresh-mountain-route.mjs": {
+      "before": "6485b9996a3248c918838eb6497f1dfd569f04ed442cea5514fd54df02fd380c",
+      "after": "6fc2b136606fee6621cc0fd90fbd53462cabbc1af86cb9eefd954f8eb876a1b9"
+    },
+    "tests/medical-care.test.mjs": {
+      "before": "108138ebb1cab700c1286f8f27af42c9625ea8fc73af615b4a37042414f654c6",
+      "after": "a0192cb087911c47748e304320260678cc8fa8bad2b2d68a6277df3093241a59"
+    },
+    "tests/new-start-stress.test.mjs": {
+      "before": "f5d606c63b130920e54d1b245e508f9316261f45ab2fad49f78e8e856287c4a2",
+      "after": "b8cfd0257d5a9423f05c1de961111529fb89d30be7d05bc9c8b777c224c03d98"
+    },
+    "tests/sector-inventory-render.test.mjs": {
+      "before": "25073f6d1dcda7079218c0ad1855b15fed42a47d7751b04d94f60bc07b73a26b",
+      "after": "b8b2647ee23edaab30754ae741dc49a992b31df9c2f582942385399d1c0ede74"
+    },
+    "tools/audit-docs.mjs": {
+      "before": "7492d8b3404ea3a52218a4c4d04aa64fdeb52f4006b56c1772b276c01f891595",
+      "after": "7b4a8ba0151a8e99592fe94da3903fa10a99aa6efa3373ff87a2f25ffdf05fe5"
+    },
+    "web/app/SectorInventory.tsx": {
+      "before": "c6549ec6a397226375d9f20f2f0a0e002c601a650058694e27c9342bb21b9ed2",
+      "after": "d20e1303cefe2487a20fbbb22ff6a1c95f26ad5658f7d537647f24e4490530fe"
+    }
+  },
+  "added": {
+    "game/service-equipment-return.js": "9ba013b4d7742d674c37058e69e02d46cb237a0d0155f21948f9fc15a3f9a0ca",
+    "tests/audit-docs.test.mjs": "b8e01b3de54a87086382bf9e8768ae1bd7b72d8aaa505c460701c42d45a1c65e",
+    "tests/created-capital-lane.mjs": "5c63dc04974992afe3b2e4118c0552c44b12c22ba8ea3f51999b504ef79e84ce",
+    "tests/created-ending-preparation.mjs": "3736da14c0b7fe11cb1fbddbd008b8f9d6e83d7fb64d9b061c09c762ce43a529",
+    "tests/created-final-capital-battery.mjs": "d90b92a2d84b9ffd2fce56ba411c6c94ada701e80a45474cc5dbb40a7699fcb2",
+    "tests/created-final-capital-fight.mjs": "58f9692dcf2184c29a621fd2a0cbcdb06cffe516417622eca8447337ac17d43e",
+    "tests/created-jujuy-defense-battery.mjs": "e794777aa1787761e9fed6711f0a0fb884a3292bf807ff39766371f60e9558c9",
+    "tests/created-live-northern-route.mjs": "c7d09ae9f05af1c16e306fdae1c17075e48ae1e4d67788863b98a9cc3038520f",
+    "tests/created-northern-care.mjs": "e4c110fecccbe76bc78b3ad8cdd156aabcfa6e3ef6017ba5dc4d10d334b638d5",
+    "tests/recovery-jujuy-defense-driver.mjs": "ff67bbf32eac6934fae4860562a09a5ba31b424ea2d4ffacd6a8c953499d0a6f",
+    "tests/recovery-paid-battery-driver.mjs": "6051303cbab44920a27ec70a4884cd2788d7186af68144c6269e381e77686d7c",
+    "tests/recovery-paid-northern-route.mjs": "93aeae087a4f9c47ca036c0dcf0e7557963e04978365005069766ee70c96e614",
+    "tests/service-equipment-return.test.mjs": "0a2b6077cf7e0b19e4f5af6f70980d0ebbb4bc70fe809d16c8b586c1ceb890ee",
+    "tests/service-return-inventory.test.mjs": "f242ac48e9beb7e5643705d0f5388c41f05b4abd18d1960d5b150f80d1249edb"
+  },
+  "removed": {}
+}
