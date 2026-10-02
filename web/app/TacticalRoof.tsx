@@ -1,3 +1,4 @@
+import {sitePath} from '../lib/site-path.js';
 import type { ReactNode } from 'react';
 import { entranceFrame, getBuildingRenderProfile } from '../../game/building-profile.js';
 import { buildingAppearance } from '../../game/building-appearance.js';
@@ -103,7 +104,7 @@ export function buildingRoof(b: any, revealed: Set<string>, project: Project, br
     // tiles on hip trapezoids and uses the same physical scale on every face.
     const matrix = `${(pc.x - pa.x) / across} ${(pc.y - pa.y) / across} ${(pf.x - pt.x) / slope} ${(pf.y - pt.y) / slope} ${pa.x} ${pa.y}`;
     const pattern = `roof-material-${uid}-${side}`, w = straw ? 2.4 : 3.25, h = straw ? 2.8 : 3.5;
-    defs.push(<pattern key={side} id={pattern} patternUnits="userSpaceOnUse" width={w} height={h} patternTransform={`matrix(${matrix})`}><image href={`/art/architecture-roof-${straw ? 'thatch' : 'clay'}-v2.png`} width={w} height={h} preserveAspectRatio="none"/></pattern>);
+    defs.push(<pattern key={side} id={pattern} patternUnits="userSpaceOnUse" width={w} height={h} patternTransform={`matrix(${matrix})`}><image href={sitePath(`/art/architecture-roof-${straw ? 'thatch' : 'clay'}-v2.png`)} width={w} height={h} preserveAspectRatio="none"/></pattern>);
     const surface = path(points), shade = (top.x - foot.x) - (top.y - foot.y) > 0 ? .03 : .13;
     surfaces.push(<g key={side} data-roof-surface={side}>
       <path d={surface} fill={`url(#${pattern})`} style={aged ? { filter: 'saturate(.55) brightness(.84)' } : straw ? { filter: 'saturate(.55) brightness(.85)' } : undefined}/>

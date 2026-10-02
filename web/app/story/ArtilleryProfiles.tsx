@@ -1,4 +1,5 @@
 'use client';
+import {sitePath} from '../../lib/site-path.js';
 import {useRef,useState} from 'react';
 import {ARTILLERY,ARTILLERY_FIELDS} from '../../../game/artillery-definitions.js';
 const normalized=(s:string)=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase();
@@ -16,10 +17,10 @@ export default function ArtilleryProfiles({draft,onChange}:{draft:any;onChange:(
  }
  return <section aria-label="Modelos de artillería" className="editor-columns"><aside>
   <h2>Artillería <small>{types.length} / 3</small></h2><label>Buscar artillería<input type="search" value={search} onChange={e=>setSearch(e.target.value)} placeholder="Nombre del modelo"/></label>
-  <div className="entry-list">{types.map(type=><button key={type} aria-pressed={selected===type} onClick={()=>setSelected(type)}><img className="weapon-thumbnail" src={profiles[type].art} alt=""/>{profiles[type].name}</button>)}{types.length===0&&<p role="status">No hay resultados para esta búsqueda.</p>}</div>
+  <div className="entry-list">{types.map(type=><button key={type} aria-pressed={selected===type} onClick={()=>setSelected(type)}><img className="weapon-thumbnail" src={sitePath(profiles[type].art)} alt=""/>{profiles[type].name}</button>)}{types.length===0&&<p role="status">No hay resultados para esta búsqueda.</p>}</div>
   <button onClick={()=>{const next={...draft};delete next.artilleryProfiles;onChange(next);}}>Restaurar artillería original</button>
  </aside><div className="form-panel">
-  <h2>{profile.name}</h2><img className="weapon-preview" src={profile.art} alt={profile.name}/>
+  <h2>{profile.name}</h2><img className="weapon-preview" src={sitePath(profile.art)} alt={profile.name}/>
   <input ref={imageRef} type="file" hidden accept="image/png,image/jpeg,image/webp" aria-label="Imagen de artillería" onChange={e=>{void upload(e.target.files?.[0]);e.target.value='';}}/>
   <button onClick={()=>imageRef.current?.click()}>Cambiar imagen de artillería</button><button onClick={()=>update({art:ARTILLERY[selected as keyof typeof ARTILLERY].art})}>Usar imagen original de artillería</button>
   <label>Nombre del modelo<input value={profile.name} maxLength={80} onChange={e=>update({name:e.target.value})}/></label>

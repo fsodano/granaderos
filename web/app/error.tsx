@@ -1,2 +1,3 @@
 'use client';
-export default function GameError({reset}:{error:Error;reset:()=>void}){return <main className="missing-page"><p>GRANADEROS · CUARTEL GENERAL</p><h1>No se pudo mostrar el juego</h1><p>Intentá cargarlo nuevamente. Podés recuperar la partida si existe un guardado automático.</p><button className="gold-button" onClick={reset}>Volver a intentar</button><a href="/">Volver al menú principal</a></main>;}
+import {pagePath} from '../lib/site-path.js';
+export default function GameError({reset}:{error:Error;reset:()=>void}){return <main className="missing-page"><p>GRANADEROS · CUARTEL GENERAL</p><h1>No se pudo mostrar el juego</h1><p>Intentá cargarlo nuevamente. Podés recuperar la partida si existe un guardado automático.</p><button className="gold-button" onClick={reset}>Volver a intentar</button><a href={pagePath('/')}>Volver al menú principal</a></main>;}

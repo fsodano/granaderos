@@ -1,4 +1,5 @@
 'use client';
+import {sitePath} from '../lib/site-path.js';
 import {useId,useRef,useState} from 'react';
 import {OFFICER_QUESTIONS,PROFILE_QUESTIONS,PROFILE_ATTRIBUTES,PROFILE_POINTS,CHARACTER_CLASSES,CHARACTER_PORTRAITS,SELECTABLE_CHARACTER_PORTRAITS,PORTRAIT_GENDERS,PORTRAIT_ROLES,PORTRAIT_SKIN_TONES,defaultProfile,createOfficerRecord} from '../../game/recruitment.js';
 import './CharacterCreator.css';
@@ -22,12 +23,12 @@ function PortraitPicker({selectedId,onSelect}:{selectedId:string;onSelect:(id:st
   </div>
   <p id={helpId} className="creator-portrait-help">El tipo describe la ropa y el aspecto del retrato. Podés elegir cualquier oficio y habilidad.</p>
   <div className="creator-portrait-picker">
-   <figure className="creator-portrait-preview"><img src={selected.src} alt={`${selected.name}, retrato seleccionado`} width={160} height={190}/><figcaption aria-live="polite"><strong>{selected.name}</strong><span className="creator-portrait-details">{description(selected)}</span><small>Seleccionado{ready&&!selectedVisible&&' · de otro grupo'}</small></figcaption></figure>
+   <figure className="creator-portrait-preview"><img src={sitePath(selected.src)} alt={`${selected.name}, retrato seleccionado`} width={160} height={190}/><figcaption aria-live="polite"><strong>{selected.name}</strong><span className="creator-portrait-details">{description(selected)}</span><small>Seleccionado{ready&&!selectedVisible&&' · de otro grupo'}</small></figcaption></figure>
    <div className="creator-portrait-results">
     {!ready?<div id={galleryId} className="creator-portrait-prompt" role="status"><span aria-hidden="true">{gender?'2':'1'}</span><p>{gender?'Ahora elegí un tipo de retrato.':'Primero elegí un género.'}<small>Después verás los rostros disponibles, organizados por tono de piel.</small></p></div>:visible.length>0?<>
      <div id={galleryId} className="creator-portraits" role="group" aria-label="Retratos disponibles">
       {groups.map(group=><section key={group.id} className="creator-portrait-group" aria-labelledby={`${pickerId}-${group.id}`}><h3 id={`${pickerId}-${group.id}`}>Tono de piel · {group.name}</h3><div className="creator-portrait-grid">
-       {group.portraits.map(p=><button type="button" key={p.id} data-portrait-id={p.id} className={selectedId===p.id?'chosen':''} aria-label={`Elegir ${p.name}. ${description(p)}`} title={`${p.name} · ${description(p)}`} aria-pressed={selectedId===p.id} onClick={()=>onSelect(p.id)}><img src={p.src} alt="" loading="lazy" decoding="async" width={72} height={88}/><span className="creator-portrait-tone">{label(PORTRAIT_SKIN_TONES,p.skinTone)}</span>{selectedId===p.id&&<span className="creator-portrait-check" aria-hidden="true">✓</span>}</button>)}
+       {group.portraits.map(p=><button type="button" key={p.id} data-portrait-id={p.id} className={selectedId===p.id?'chosen':''} aria-label={`Elegir ${p.name}. ${description(p)}`} title={`${p.name} · ${description(p)}`} aria-pressed={selectedId===p.id} onClick={()=>onSelect(p.id)}><img src={sitePath(p.src)} alt="" loading="lazy" decoding="async" width={72} height={88}/><span className="creator-portrait-tone">{label(PORTRAIT_SKIN_TONES,p.skinTone)}</span>{selectedId===p.id&&<span className="creator-portrait-check" aria-hidden="true">✓</span>}</button>)}
       </div></section>)}
      </div>
      <button type="button" className="creator-portrait-reset" onClick={clearFilters}>Cambiar género y tipo</button>

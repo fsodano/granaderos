@@ -1,3 +1,4 @@
+import {sitePath} from '../lib/site-path.js';
 import {BUILDING_VERTICAL_SCALE} from '../../game/building-scale.js';
 export const WALL_COLOURS: Record<
   string,
@@ -13,7 +14,7 @@ export const ARCHITECTURE_TEXTURE_SIZE: Record<string, [number, number]> = {
  plaster: [240, 160], stone: [120, 50], brick: [120, 60], wood: [80, 100],
 };
 export function ArchitectureDefs(){return <defs>
- {Object.entries(ARCHITECTURE_TEXTURE_SIZE).map(([name,[width,height]])=><pattern key={name} id={`architecture-${name}`} patternUnits="userSpaceOnUse" width={width} height={height}><image href={`/art/architecture-${name}-v2.png`} width={width} height={height} preserveAspectRatio="none"/></pattern>)}
+ {Object.entries(ARCHITECTURE_TEXTURE_SIZE).map(([name,[width,height]])=><pattern key={name} id={`architecture-${name}`} patternUnits="userSpaceOnUse" width={width} height={height}><image href={sitePath(`/art/architecture-${name}-v2.png`)} width={width} height={height} preserveAspectRatio="none"/></pattern>)}
  {Object.entries(WALL_COLOURS).flatMap(([finish,colours])=>[false,true].map(facade=><pattern key={`${finish}-${facade}`} id={`architecture-${facade?'facade-':''}finish-${finish}`} patternUnits="userSpaceOnUse" width="240" height="160" patternTransform={facade?`scale(1 ${1/BUILDING_VERTICAL_SCALE})`:undefined}>
   <rect width="240" height="160" fill={colours.base}/><rect width="240" height="160" fill={`url(#architecture-${finish==='stone'?'stone':finish==='brick'?'brick':'plaster'})`} opacity=".85"/>
   {['adobe','ochre'].includes(finish)&&<rect width="240" height="160" fill={colours.base} opacity={finish==='adobe'?.48:.34} style={{mixBlendMode:'multiply'}}/>}

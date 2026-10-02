@@ -1,1 +1,2 @@
-export default function NotFound(){return <main className="missing-page"><p>GRANADEROS · CUARTEL GENERAL</p><h1>Este camino no figura en el mapa</h1><p>La página solicitada no está disponible.</p><a href="/">Volver al juego</a></main>;}
+import {pagePath} from '../lib/site-path.js';
+export default function NotFound(){return <main className="missing-page"><p>GRANADEROS · CUARTEL GENERAL</p><h1>Este camino no figura en el mapa</h1><p>La página solicitada no está disponible.</p><a href={pagePath('/')}>Volver al juego</a></main>;}

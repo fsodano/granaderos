@@ -1,4 +1,5 @@
 'use client';
+import {sitePath} from '../lib/site-path.js';
 import {memo,useEffect,useMemo,useRef,useState} from 'react';
 import {maximumEnergy} from '../../game/fatigue.js';
 // Every deployed squad remains accessible in the portrait strip.
@@ -47,7 +48,7 @@ export default function JA2Roster({battle, players, selected, groupIds = [], med
             onDoubleClick={() => { if (!medicalTargeting) onOpenInventory(u.id); }}
             onContextMenu={(e) => { e.preventDefault(); onOpenInventory(u.id); }}
           >
-            <span className="ja2-portrait-face">{portrait ? <img src={portrait} alt="" /> : <span className="portrait-fallback">{short(u).slice(0, 2).toUpperCase()}</span>}{cell.bleeding > 0 && <span className="ja2-bleeding-mark" title={`Hemorragia: ${cell.bleeding} salud por turno`}>−{cell.bleeding} SAL</span>}</span>
+            <span className="ja2-portrait-face">{portrait ? <img src={sitePath(portrait)} alt="" /> : <span className="portrait-fallback">{short(u).slice(0, 2).toUpperCase()}</span>}{cell.bleeding > 0 && <span className="ja2-bleeding-mark" title={`Hemorragia: ${cell.bleeding} salud por turno`}>−{cell.bleeding} SAL</span>}</span>
             <span className="portrait-name"><b>{cell.index + 1}</b> {cell.label}</span>
             {groupIds.includes(u.id) && <span className="ja2-group-tag">En el grupo</span>}
             <span className="ja2-vitals">
@@ -58,7 +59,7 @@ export default function JA2Roster({battle, players, selected, groupIds = [], med
             <span className="ja2-roster-hands" aria-hidden="true">{hands.map((hand:any)=>{
               const Icon=handIcons[hand.icon]??Package;
               return <span key={hand.side} className={`ja2-roster-hand ${hand.blocked?'blocked':hand.item?'held':'empty'}`} data-hand-side={hand.side} data-hand-item={hand.item??''} data-close-combat={hand.closeCombat} data-attachment={hand.attached} title={hand.description}>
-                {hand.weapon?<img src={hand.art??`/art/weapon-${hand.weapon}.png`} alt="" draggable={false}/>:<Icon size={16} strokeWidth={1.7}/>}
+                {hand.weapon?<img src={sitePath(hand.art??`/art/weapon-${hand.weapon}.png`)} alt="" draggable={false}/>:<Icon size={16} strokeWidth={1.7}/>}
                 {hand.loaded!==undefined&&<small className="roster-hand-load">{hand.loaded}</small>}
                 {(hand.closeCombat||hand.attached)&&<span className="roster-hand-status">{hand.closeCombat&&<b className="close-combat">*</b>}{hand.attached&&<b className="attachment">*</b>}</span>}
               </span>;

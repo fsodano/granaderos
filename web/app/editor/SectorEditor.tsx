@@ -1,4 +1,5 @@
 'use client';
+import {pagePath} from '../../lib/site-path.js';
 import BuildIdentity from '../BuildIdentity';
 import {
   buildingAppearance,
@@ -820,10 +821,10 @@ export default function SectorEditor() {
   return (
     <main className="sector-editor">
       <header>
-        <a href="/" className="editor-brand">
+        <a href={pagePath('/')} className="editor-brand">
           GRANADEROS <small>Constructor de sectores</small>
         </a>
-        <a href="/story">Editor de historia</a><BuildIdentity/>
+        <a href={pagePath('/story')}>Editor de historia</a><BuildIdentity/>
         <input
           aria-label="Nombre del sector"
           value={doc.metadata.title}

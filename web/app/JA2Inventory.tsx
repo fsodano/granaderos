@@ -1,4 +1,5 @@
 'use client';
+import {sitePath} from '../lib/site-path.js';
 import AmmunitionLoadChoice from './AmmunitionLoadChoice';
 import {outfitSlot} from '../../game/outfits.js';
 import './ja2-outfit.css';
@@ -148,7 +149,7 @@ export default function JA2Inventory({cursorLevel=0,onCursorLevelChange,unit, ba
   return (
     <EquipmentInteractionProvider key={unit.id}><div className="ja2-inventory" role="region" aria-label="Equipo y órdenes del combatiente">
       <div className="ja2-inv-header">
-        <div className="portrait">{portraitFor(unit.portraitId ?? unit.id) ? <img src={portraitFor(unit.portraitId ?? unit.id)!} alt={unit.name} /> : <span>{short(unit).slice(0, 2).toUpperCase()}</span>}</div>
+        <div className="portrait">{portraitFor(unit.portraitId ?? unit.id) ? <img src={sitePath(portraitFor(unit.portraitId ?? unit.id)!)} alt={unit.name} /> : <span>{short(unit).slice(0, 2).toUpperCase()}</span>}</div>
         <div><h2>{short(unit)}</h2><span>{unit.mounted ? 'Granadero a caballo' : 'Ejército patriota'} · Nivel {levelFor(unit)}</span></div>
 <details className="ja2-inventory-extra"><summary>Postura y órdenes</summary><div className="ja2-inventory-popup">      <div className="ja2-stance-grid">
         <div>

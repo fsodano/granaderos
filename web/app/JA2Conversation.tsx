@@ -1,4 +1,5 @@
 'use client';
+import {sitePath} from '../lib/site-path.js';
 import {useEffect,useRef,useState} from 'react';
 import {portraitFor} from '../lib/portraits';
 import {dialogueOptions} from '../../game/npc-dialogue.js';
@@ -14,7 +15,7 @@ export default function JA2Conversation({dialogue,hireTerms=[],npc,conversation,
  const refusal=availability?.code==='refused'?availability.reason:null;
  const choices=responseOnly?[]:[...(dialogue?[['dialogue','Conversar']]:[]),...dialogueOptions(npc,quest)].filter(([approach])=>(approach!=='recruit'||npc.recruitable!==false)&&(!current?.options||current.options.includes(approach)));
  return <section className="ja2-conversation" role="dialog" aria-label={`Conversación con ${npc.name}`} onKeyDown={event=>{if(event.key==='Escape'){event.preventDefault();event.stopPropagation();onClose();}}}>
-  <div className="ja2-conversation-head"><figure>{portrait&&<img src={portrait} alt={npc.name}/>}<figcaption>{npc.name}</figcaption></figure>
+  <div className="ja2-conversation-head"><figure>{portrait&&<img src={sitePath(portrait)} alt={npc.name}/>}<figcaption>{npc.name}</figcaption></figure>
    <div className="ja2-conversation-choices">{choices.map(([approach,label])=><button key={approach} disabled={Boolean(reason)||approach==='recruit'&&Boolean(quote&&!quote.available)} onClick={()=>onTalk(approach,approach==='recruit'?quote?.term:undefined)}>{approach==='recruit'&&quote?`Contratar · ${quote.price} pesos`:label}</button>)}<button ref={close} onClick={onClose}>Listo</button></div>
   </div>
   <p className="ja2-conversation-text" aria-live="polite">«{refusal??current?.text??npc.greeting??'Te escucho.'}»</p>

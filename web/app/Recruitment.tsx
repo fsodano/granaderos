@@ -1,4 +1,5 @@
 'use client';
+import {sitePath} from '../lib/site-path.js';
 import {useState} from 'react';
 import {CAMPAIGN_SECTORS,rosterFor,contractQuote,contractStatus,civicStatus} from '../../game/campaign.js';
 import {hiringArrivalOptions,hiringArrivalReason,hiringTravelHours,pendingHire} from '../../game/hiring-arrivals.js';
@@ -43,7 +44,7 @@ export default function Recruitment({state:s,dispatch}:Props){
    const hours=hiringTravelHours(s,o.id),remaining=arrival?Math.max(0,arrival.dueAt-s.hour):0;
    const held=arrival&&(hiringArrivalReason(s,arrival.destination)||(s.pendingBattle?.sector===arrival.destination?'La llegada espera a que salgas del sector.':null));
    return <article key={o.id} className="contract-card" data-operative-id={o.id}>
-    <button className="candidate-face" onClick={()=>setSelected(o.id)} aria-label={`Ver hoja de servicio de ${o.name}`}>{portraitFor((o as any).portraitId??o.id)?<img src={portraitFor((o as any).portraitId??o.id)!} alt={o.name} loading="lazy"/>:<span>{o.nickname.slice(0,2).toUpperCase()}</span>}<span>{o.name}</span></button>
+    <button className="candidate-face" onClick={()=>setSelected(o.id)} aria-label={`Ver hoja de servicio de ${o.name}`}>{portraitFor((o as any).portraitId??o.id)?<img src={sitePath(portraitFor((o as any).portraitId??o.id)!)} alt={o.name} loading="lazy"/>:<span>{o.nickname.slice(0,2).toUpperCase()}</span>}<span>{o.name}</span></button>
     <p className="eyebrow">{o.role}</p><p className="candidate-specialties">{profile.skills.join(' · ')}</p>
     <div className="candidate-stats"><span>Puntería <b>{o.marksmanship}</b></span><span>Liderazgo <b>{o.leadership}</b></span><span>Grado <b>{o.level}</b></span></div>
     <button className="dossier-link" onClick={()=>setSelected(o.id)}>Atributos, carácter y equipo →</button>

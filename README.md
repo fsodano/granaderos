@@ -10,7 +10,13 @@ The game interface is **Spanish**. Code and documentation are English.
 
 **Playable and in development.** The full game and story editor are not complete. Read the [published progress ledger](docs/verification/published-progress.md) for delivered features, verification evidence and open acceptance work. The [development-workspace acceptance record](docs/verification/gameplay-completion.md) covers separate work that has not all reached `main`.
 
-[Run locally](#run-locally) · [Gameplay](#gameplay) · [Development](#development) · [Documentation](docs/README.md)
+[Play in your browser](https://fsodano.github.io/granaderos/) · [Run locally](#run-locally) · [Gameplay](#gameplay) · [Development](#development) · [Documentation](docs/README.md)
+
+## Play in your browser
+
+Open [Granaderos on GitHub Pages](https://fsodano.github.io/granaderos/). No installation is required. Choose **Nueva campaña** to start a campaign or **Combate de San Lorenzo** to start a separate battle.
+
+The game saves progress in your browser. Use **Guardar** to export a save file and **Importar partida** to load it. Browser storage is separate for GitHub Pages and localhost. Export and import a save to move your campaign between them.
 
 ## Run locally
 

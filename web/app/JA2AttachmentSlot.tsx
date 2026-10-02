@@ -1,4 +1,5 @@
 'use client';
+import {sitePath} from '../lib/site-path.js';
 import {equipmentAttachmentHost} from '../../game/equipment-cursor.js';
 import {equipmentFingerprint} from '../../game/tactical-inventory.js';
 import {equipmentAttachmentPreview} from '../../game/tactical.js';
@@ -18,7 +19,7 @@ export default function JA2AttachmentSlot({battle,unit,hostId,disabled,onOrder}:
  const hint=!unit.equipmentCursor&&!fitting?'Tomá una bayoneta y colocala en esta ranura.':preview.reason??`${verb} · ${cost}`;
  return <section className="ja2-attachment-detail" aria-label="Accesorios del arma" data-equipment-scope={store.scope}>
   <button type="button" className={`ja2-attachment-slot${fitting?' occupied':''}`} data-attachment-host={hostId} aria-label={`${name}. ${verb} · ${cost}`} title={hint} disabled={disabled||!preview.valid} onClick={event=>{event.stopPropagation();store.dispatch(action,onOrder);}} onContextMenu={event=>{event.preventDefault();event.stopPropagation();}}>
-   <small>Bayoneta</small>{fitting?<><img src="/art/weapon-1811.png" alt=""/><span>{name}</span><small>Estado {fitting.condition}%</small></>:<span>Vacía</span>}
+   <small>Bayoneta</small>{fitting?<><img src={sitePath('/art/weapon-1811.png')} alt=""/><span>{name}</span><small>Estado {fitting.condition}%</small></>:<span>Vacía</span>}
   </button>
   <p>{hint}</p>
   {typeof fitting?.metadata?.name==='string'&&fitting.metadata.name&&<small>{fitting.metadata.name}</small>}

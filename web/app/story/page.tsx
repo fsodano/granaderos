@@ -1,4 +1,5 @@
 'use client';
+import {pagePath,sitePath} from '../../lib/site-path.js';
 import BuildIdentity from '../BuildIdentity';
 import AlternativeLoads from './AlternativeLoads';
 import {storyReferences} from '../../../game/campaign-story.js';
@@ -377,7 +378,7 @@ export default function ContentEditor() {
     <main className="content-editor">
       <header>
         <div>
-          <a href="/">← Volver al juego</a> · <a href="/editor">Editar sectores</a>
+          <a href={pagePath('/')}>← Volver al juego</a> · <a href={pagePath('/editor')}>Editar sectores</a>
           <p className="eyebrow">Taller de campañas</p><BuildIdentity/>
           <h1>El mundo y sus protagonistas</h1>
           <p>Editá el contenido. Probá sus reglas en una sesión separada.</p>
@@ -411,7 +412,7 @@ export default function ContentEditor() {
           setSearches(current=>({...current,characters:''}));
           setNotice('La ruta de las postas está cargada. Podés editarla o deshacer para recuperar el borrador anterior.');
         })}>Cargar La ruta de las postas</button>{' '}
-        <a href="/campaigns/la-ruta-de-las-postas.json" download>Descargar campaña de ejemplo</a>
+        <a href={sitePath('/campaigns/la-ruta-de-las-postas.json')} download>Descargar campaña de ejemplo</a>
         <p>Cargarla reemplaza el borrador y permite deshacer. Las partidas iniciadas conservan su contenido.</p>
       </details>
       <input
@@ -493,13 +494,13 @@ export default function ContentEditor() {
             safely(() => {
               const campaign = initialCampaign(seed, draft);
               sessionStorage.setItem(CONTENT_LAUNCH_KEY, encodeSave(campaign));
-              window.location.assign('/?content=1&launch=1');
+              window.location.assign(pagePath('/?content=1&launch=1'));
             })
           }
         >
           Iniciar campaña con estas fichas
         </button>{' '}
-        <a href="/?content=1">Continuar campaña del editor</a>
+        <a href={pagePath('/?content=1')}>Continuar campaña del editor</a>
       </section>
       <nav aria-label="Secciones del editor">
         {[
@@ -578,7 +579,7 @@ export default function ContentEditor() {
                     setSelected(i.id);
                   }}
                 >
-                  {tab === 'weapons' && <img className="weapon-thumbnail" src={i.art??`/art/weapon-${i.template}.png`} alt=""/>}
+                  {tab === 'weapons' && <img className="weapon-thumbnail" src={sitePath(i.art??`/art/weapon-${i.template}.png`)} alt=""/>}
                   {i.name ??
                     draft.characters.find((c: any) => c.id === i.character)
                       ?.name ??
@@ -605,7 +606,7 @@ export default function ContentEditor() {
                   <>
                     <div className="identity">
                       <img
-                        src={item.portrait}
+                        src={sitePath(item.portrait)}
                         alt={`Retrato de ${item.name}`}
                       />
                       <div>
@@ -767,7 +768,7 @@ export default function ContentEditor() {
                 )}
                 {tab === 'weapons' && (
                   <>
-                    <img className="weapon-preview" src={item.art??`/art/weapon-${item.template}.png`} alt={item.name}/>
+                    <img className="weapon-preview" src={sitePath(item.art??`/art/weapon-${item.template}.png`)} alt={item.name}/>
                     <button onClick={()=>weaponArtRef.current?.click()}>Cambiar imagen del arma</button>
                     <button disabled={!item.art} onClick={()=>update({art:undefined})}>Usar imagen de la familia</button>
                     <small>PNG, JPEG o WebP · hasta 250 KB</small>
