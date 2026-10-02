@@ -255,10 +255,13 @@ export function validateEquipmentOwnership(s,roster=[],battle=null){
  const record=r=>{if(r&&typeof r==='object'&&(r.count??1)>0)for(const id of fittingItemIds(r))claim(id);};
  const unit=u=>{validateHands(u);validateEquipmentCursor(u);if(u.pocketOrder?.some(slot=>slot.count!==undefined))inventoryUsage(u);validateUnitFittings(u);for(const id of heldItemIds(u))claim(id);for(const r of Object.values(u.inventory??{}))record(r);if(u.equipmentCursor)record(u.equipmentCursor.stack);};
  const livingPlayers=new Set();
- for(const op of roster){const r=s.operativeState[op.id];if(r?.alive&&r.hp>0){livingPlayers.add(String(op.id));if(!activePlayers.has(String(op.id)))unit(personalHandState(s,op,r));}}
+ for(const op of roster){const r=s.operativeState[op.id];if(r?.alive&&r.hp>0){livingPlayers.add(String(op.id));if(!r.serviceEquipmentReturn&&!activePlayers.has(String(op.id)))unit(personalHandState(s,op,r));}}
+ // A retired local return keeps its property even if its former carrier dies
+ // or the civilian identity later moves to another sector.
+ for(const op of roster){const r=s.operativeState[op.id];if(r?.serviceEquipmentReturn)unit(personalHandState(s,op,r));}
  // A strategic death can precede any physical corpse snapshot. Its cursor is
  // still finite property; once a body exists, that body supersedes this record.
- for(const op of roster){const r=s.operativeState[op.id];if(!r?.equipmentCursor||r.alive&&r.hp>0||activePlayers.has(String(op.id)))continue;
+ for(const op of roster){const r=s.operativeState[op.id];if(!r?.equipmentCursor||r.serviceEquipmentReturn||r.alive&&r.hp>0||activePlayers.has(String(op.id)))continue;
   const body=snapshots.some(snapshot=>(snapshot.units??[]).some(u=>String(u.id)===String(op.id)&&u.side==='player'&&u.hp<=0&&retainedOnField(snapshot,u)))||Object.values(s.sectorRemains??{}).some(records=>records.some(record=>String(record.unitId)===String(op.id)));
   if(!body){validateEquipmentCursor(personalHandState(s,op,r));record(r.equipmentCursor.stack);}
  }
@@ -274,6 +277,7 @@ export function validateEquipmentOwnership(s,roster=[],battle=null){
  }
  for(const r of s.armoryItems??[])record(r);
  for(const merchant of Object.values(s.merchants??{}))for(const r of merchant.usedItems??[])record(r);
+ for(const owner of s.serviceEquipmentReturns?.entries??[])for(const item of owner.items)record(item.stack);
  const field=(snapshot,current=false)=>{
   for(const u of snapshot.units??[]){
    if(current){unit(u);continue;}

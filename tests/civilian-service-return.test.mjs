@@ -7,13 +7,15 @@ import {encountersFor} from '../game/encounters.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {order,saved,localId,hireLocal,visit,localNPC,tactical,A} from './local-contract-fixture.mjs';
 import {woundedService} from './civilian-service-fixture.mjs';
+import {serviceReturnSources} from '../game/service-equipment-return.js';
 const ledger=s=>s.civilianState.people[`person-${localId(s)}`];
+const returnedTorches=(s,id)=>serviceReturnSources(s,s.operativeState[id].location).filter(row=>row.operativeId===id&&row.stack?.item==='torches').reduce((n,row)=>n+row.stack.count,0);
 
 
 test('dismissal returns the actual military wound and spent supplies before any new civilian encounter',()=>{
  let s=woundedService(),id=localId(s),actual=structuredClone(s.operativeState[id]);s=order(s,{type:'dismiss',id});
  assert.equal(ledger(s).inService,undefined);assert.equal(ledger(s).health.hp,actual.hp);assert.equal(ledger(s).health.bleeding,actual.bleeding);assert.equal(ledger(s).sector,A);
- assert.equal(ledger(s).health.bleedSource.side,'unknown');assert.equal(s.operativeState[id].torches,actual.torches);assert.equal(encountersFor(s,A).find(n=>n.operativeId===id).civilianSupplies.torches,actual.torches);
+ assert.equal(ledger(s).health.bleedSource.side,'unknown');assert.equal(s.operativeState[id].torches,0);assert.equal(encountersFor(s,A).find(n=>n.operativeId===id).civilianSupplies.torches,0);assert.equal(returnedTorches(s,id),actual.torches);
  s=saved({campaign:s}).campaign;const at=s.hour*3600+(s.secondOfHour??0),expectedMinute=Math.floor((at+Math.ceil(actual.hp/actual.bleeding)*6)/60);
  s=order(s,{type:'wait',hours:1});assert.equal(s.operativeState[id].alive,false);assert.equal(s.operativeState[id].deathMinute,expectedMinute);assert.equal(ledger(s).health.hp,0);assert.equal(civilianIncidents(ledger(s).health).at(-1).side,'unknown');assert.ok(saved({campaign:s}));
 });
@@ -41,7 +43,7 @@ test('paid strategic care survives dismissal and rehire without restoring the ol
  s=order(s,{type:'dismiss',id});assert.equal(ledger(s).health.hp,healed);assert.equal(ledger(s).health.bleeding,0);assert.equal(ledger(s).health.civilianWoundSeconds,undefined);
  s=order(saved({campaign:s}).campaign,{type:'wait',hours:24});assert.equal(ledger(s).health.hp,healed);s=order(s,{type:'assignCare',id:110,assignment:'active'});s=order(s,{type:'travel',sector:A});let p=visit(s);
  const target=localNPC(p.battle),u=p.battle.units.find(u=>Number(u.id)===110),spot=getReachable(p.battle,u.id).find(t=>Math.abs(t.x-target.x)+Math.abs(t.y-target.y)===1);assert.ok(spot);if(spot.cost)p=tactical(p,{type:'move',x:spot.x,y:spot.y});
- assert.ok(p.campaign.operativeState[id].arrival,'the previous retreat still has a service entry receipt');p=hireLocal(p,'week');assert.equal(p.campaign.operativeState[id].arrival,null);assert.equal(p.campaign.operativeState[id].residentSector,A);assert.equal(p.battle.units.find(u=>Number(u.id)===id).hp,healed);assert.equal(p.battle.units.find(u=>Number(u.id)===id).torches,torches);assert.equal(ledger(p.campaign).inService,true);assert.ok(saved(p));
+ assert.ok(p.campaign.operativeState[id].arrival,'the previous retreat still has a service entry receipt');assert.equal(returnedTorches(p.campaign,id),torches);p=hireLocal(p,'week');assert.equal(p.campaign.operativeState[id].arrival,null);assert.equal(p.campaign.operativeState[id].residentSector,A);assert.equal(p.battle.units.find(u=>Number(u.id)===id).hp,healed);assert.equal(p.battle.units.find(u=>Number(u.id)===id).torches,0);assert.equal(ledger(p.campaign).inService,true);assert.ok(saved(p));
 });
 
 test('a real local-service casualty stays a military body after dismissal and never becomes a living resident',()=>{

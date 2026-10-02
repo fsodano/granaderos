@@ -5,6 +5,10 @@
 Read the [published progress ledger](published-progress.md) first. It records
 accepted features on GitHub `main`, approved scope changes and open work.
 
+## Current alpha local acceptance
+
+- [Finite service-equipment return](alpha-service-equipment-return-2026-10-01.md) — complete local candidate and browser/save proof included in this alpha PR; no alpha CI or merge asserted.
+
 ## Working integration
 
 - [Latest build consolidation](latest-build-consolidation.md) — local merge status and remaining release checks.

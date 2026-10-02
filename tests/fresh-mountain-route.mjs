@@ -10,6 +10,7 @@ import {visit,sync,leave} from './local-contract-fixture.mjs';
 import {supplyRouteAmmunition} from './route-ammunition.mjs';
 import {finishReloadsBeforeMarch} from './pre-march-reload.mjs';
 import {equipmentCatalog,equipmentKey} from '../game/equipment-catalog.js';
+import {BLADES} from '../game/tactical.js';
 
 const rifleKey=campaign=>equipmentKey(equipmentCatalog(campaign).find(item=>item.id===1801));
 
@@ -92,9 +93,16 @@ return c;
 }
 
 // Bank ordinary income before signing new contracts; wait for finite shop stock.
-export function prepareFreshLosPatosAssault(start){
+export function prepareFreshLosPatosAssault(start,{report=()=>{}}={}){
  let c=decodeSave(encodeSave(start)).campaign;
  const order=a=>{c=dispatchCampaign(c,a);assert.equal(c.lastError,null,JSON.stringify(a)+c.lastError);};
+ const originalRoster=rosterFor(c);
+ const renewBeforeWait=hours=>{
+  for(const id of c.recruited){
+   const r=c.operativeState[id],contract=c.contracts[id];
+   if(r.alive&&!r.captured&&contract?.expiresAt!=null&&contract.expiresAt<=c.hour+hours&&field.includes(id))order({type:'renewContract',id,term:'day',expectedExpiresAt:contract.expiresAt});
+  }
+ };
  const permanent=rosterFor(c).filter(op=>{const r=c.operativeState[op.id];return c.recruited.includes(op.id)&&r.alive&&!r.captured&&r.location==='mendoza'&&c.contracts[op.id]?.expiresAt===null;});
  const commander=permanent.filter(op=>op.leadership>=80).sort((a,b)=>b.marksmanship-a.marksmanship)[0];
  const physician=permanent.filter(op=>op.id!==commander?.id&&op.medical>=20).sort((a,b)=>b.leadership-a.leadership)[0];
@@ -102,8 +110,12 @@ export function prepareFreshLosPatosAssault(start){
  order({type:'squad',ids:[commander.id,physician.id]});
  for(const operativeId of c.recruited.filter(id=>{const r=c.operativeState[id];return r.alive&&!r.captured&&r.location==='mendoza';}))order({type:'assignCare',operativeId,assignment:'rest'});
  for(let i=0;i<1200&&(c.resources.treasury<14000||c.hour%24<6||c.hour%24>10);i++){assert.equal(c.pendingEncounter,null);order({type:'wait',hours:1});}
- const recruits=[105,128,147,132,106,135,143,118,138].filter(id=>{const r=c.operativeState[id];return r.alive&&!r.captured&&!c.recruited.includes(id)&&r.hp===r.maxHp&&r.morale>=50;}).slice(0,8-permanent.length);
+ const priority=[105,128,147,132,106,135,143,118,138];
+ const ready=id=>{const r=c.operativeState[id],op=rosterFor(c).find(o=>o.id===id);return r.alive&&!r.captured&&!c.recruited.includes(id)&&r.hp===r.maxHp&&r.morale>=50&&contractQuote(c,op,'day').available;};
+ const local=rosterFor(c).filter(op=>op.id>=100&&op.id<1000&&!priority.includes(op.id)&&c.operativeState[op.id].location==='mendoza'&&ready(op.id)&&contractQuote(c,op,'day').price<=100).sort((a,b)=>b.marksmanship-a.marksmanship||b.medical-a.medical||a.id-b.id);
+ const recruits=[...priority.filter(ready),...local.map(op=>op.id)].slice(0,8-permanent.length);
  assert.equal(recruits.length,8-permanent.length,'available survivors or replacements accept actual contracts');
+ for(const id of recruits.filter(id=>!priority.includes(id)))report({event:'mountainLocalReplacement',operativeId:id,hour:c.hour,treasury:c.resources.treasury,quote:contractQuote(c,rosterFor(c).find(op=>op.id===id),'day')});
  const field=[commander.id,physician.id,...permanent.filter(o=>![commander.id,physician.id].includes(o.id)).map(o=>o.id),...recruits];
  const rearm=field.filter(id=>c.operativeState[id].weaponDropped||![1800,1801,1802].includes(rosterFor(c).find(o=>o.id===id).weapon));
  // Build the finite local stock before starting short paid contracts.
@@ -122,6 +134,33 @@ export function prepareFreshLosPatosAssault(start){
 for(let h=0;h<24&&recruits.some(id=>!c.recruited.includes(id));h++)order({type:'wait',hours:1});
 assert.ok(recruits.every(id=>c.recruited.includes(id)),'paid replacements must arrive before receiving equipment');
  for(const operativeId of rearm)order({type:'equip',operativeId,slot:'weapon',itemId:rifleKey(c)});
+ // Rehiring does not issue the returned kit again. Collect only missing
+ // recruit slots from actual carried equipment or reachable local sources.
+ for(const operativeId of recruits)for(const slot of ['headwear','outfit','legwear','blade']){
+  const operative=rosterFor(c).find(op=>op.id===operativeId);
+  const worn=slot==='blade'?operative.blade:c.operativeState[operativeId][slot];
+  if(slot==='blade'?worn>0:worn?.condition>0)continue;
+  const blade=originalRoster.find(op=>op.id===operativeId)?.blade;
+  const matches=record=>slot==='blade'?!!BLADES[record.weapon]&&(!blade||record.weapon===blade):record.kind==='outfit'&&record.outfit===({headwear:'hat',outfit:'poncho',legwear:'trousers'})[slot];
+  const usable=row=>row.inventoryKey&&matches(JSON.parse(row.expected))&&row.equip.some(choice=>choice.slot===slot&&choice.valid);
+  let model=sectorInventoryModel(c,'mendoza',rosterFor(c),operativeId),carried=model.carried.find(usable),receipt=null;
+  if(!carried){
+   const source=model.entries.filter(row=>row.reachable&&matches(JSON.parse(row.expected))).sort((a,b)=>Number(b.key.startsWith('ground:service-return-'))-Number(a.key.startsWith('ground:service-return-')))[0];
+   assert.ok(source,`a real local source must supply ${operativeId}'s missing ${slot}`);
+   const before={hour:c.hour,second:c.secondOfHour,treasury:c.resources.treasury};
+   order({type:'sectorInventory',sector:'mendoza',operativeId,direction:'take',sourceKey:source.key,expected:source.expected,count:1});
+   model=sectorInventoryModel(c,'mendoza',rosterFor(c),operativeId);carried=model.carried.find(usable);assert.ok(carried);
+   const {item,...record}=JSON.parse(source.expected);assert.deepEqual(JSON.parse(carried.expected),record,'collection preserves the actual returned item');
+   const remaining=model.entries.find(row=>row.key===source.key)?.count??0;assert.equal(remaining,source.count-1,'the finite local source is debited once');
+   assert.deepEqual({hour:c.hour,second:c.secondOfHour,treasury:c.resources.treasury},before,'local collection does not change time or treasury');
+   receipt={event:'mountainReturnedKit',operativeId,slot,sourceKey:source.key,record,sourceCount:source.count,remaining,...before};
+  }
+  const record=JSON.parse(carried.expected);
+  order({type:'sectorInventory',sector:'mendoza',operativeId,direction:'equip',inventoryKey:carried.inventoryKey,expected:carried.expected,slot});
+  if(slot==='blade')assert.equal(rosterFor(c).find(op=>op.id===operativeId).blade,record.weapon);
+  else assert.deepEqual(c.operativeState[operativeId][slot],record,'equipment retains the collected clothing metadata');
+  if(receipt)report(receipt);
+ }
  order({type:'squad',ids:field.slice(0,6)});const main=c.activeSquadId;
  order({type:'createSquad',name:'Apoyo de Los Patos',ids:field.slice(6),sector:'mendoza'});const support=c.activeSquadId;
  restockDressings(c,order,physician.id,10);
@@ -131,7 +170,15 @@ assert.ok(recruits.every(id=>c.recruited.includes(id)),'paid replacements must a
  order({type:'configureArtillery',types:['bronze4','bronze4']});
  for(const id of [main,support]){order({type:'selectSquad',id});order({type:'travel',sector:'uspallata',mode:'posta'});}
  for(const id of [main,support]){order({type:'selectSquad',id});order({type:'attack',sector:'los_patos',queue:true,mode:'posta'});}
- for(let i=0;i<16&&![main,support].every(id=>c.squads.find(q=>q.id===id).journey?.status==='ready');i++)order({type:'wait',hours:1});
+ for(let i=0;i<16&&![main,support].every(id=>c.squads.find(q=>q.id===id).journey?.status==='ready');i++){renewBeforeWait(1);order({type:'wait',hours:1});}
+ assert.ok([main,support].every(id=>c.squads.find(q=>q.id===id).journey?.status==='ready'),'both physical approaches finish before staging');
+ // Two sequential journeys and the assault approach can arrive after dark.
+ // Stage the real arrived squads until daylight, retaining their paid terms.
+ const arrivalHour=c.hour;
+ for(let i=0;i<24&&(c.hour%24<6||c.hour%24>10);i++){renewBeforeWait(1);order({type:'wait',hours:1});}
+ assert.ok(c.hour%24>=6&&c.hour%24<=10,'the mountain assault starts in daylight');
+ report({event:'mountainDaylightStaging',arrivalHour,hour:c.hour,second:c.secondOfHour,treasury:c.resources.treasury,field:[...field]});
+ assert.deepEqual(decodeSave(encodeSave(c)).campaign,c);
  order({type:'beginAssault',sector:'los_patos'});
  assert.equal(c.pendingBattle.squad.length,field.length);
  assert.ok(c.pendingBattle.squad.every(u=>u.entryEdge==='E'));

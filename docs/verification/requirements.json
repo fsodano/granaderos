@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "updated": "2026-09-29",
-  "baseline": "082ee305e239dbc1e6a2c53d446f2eca3ae9b15e",
+  "updated": "2026-10-02",
+  "baseline": "7ac3c9d612cc5d46c846617e0686ef5b6b450184",
   "audit": "docs/verification/formal-audit-2026-09-27.md",
   "design": "docs/specification/game-design.md",
   "evidence": [
@@ -644,27 +644,41 @@
       "id": "E-CIVILIAN-WEAPONS",
       "path": "docs/evidence/civilian-weapon-custody.json",
       "description": "Finite civilian primary/secondary recovery, loaded states, service return, successor separation, save validation, mounted UI and controlled production browser check. Armour and arbitrary belongings remain open."
+    },
+    {
+      "id": "E-CONSOLIDATION-FINAL-LOCAL",
+      "path": "docs/evidence/consolidation-final-local-2026-10-01.json",
+      "description": "Final frozen PR #139 local candidate: 4214/4214 tests across all 597 root test files, zero failures/skips/cancelled/TODO, Node 22.23.3 and 9310 unchanged source inputs. Types, production export, docs, 38 reference comparisons, 15 Python checks and native rules pass. Includes an uncached complete fresh historical victory, saved 48-hour continuation, defeat, paid recovery and physical prisoner rescue. Broad gameplay balance, full JA2 parity, art/audio review and loaded 60 FPS remain open."
+    },
+    {
+      "id": "E-CONSOLIDATION-PR139",
+      "path": "docs/evidence/pr139-published-2026-10-01.json",
+      "description": "PR #139 merged at 7ac3c9d612cc5d46c846617e0686ef5b6b450184 after exact-head CI run 36855720414 passed all five jobs: 4214/4214 tests in four complete groups, zero failures/skips/cancelled/TODO, plus web/types/export gates. The merged tree equals final head 04003dd1de15fffbe71ec0e06d953181ee77c229 and retains every executing input from the frozen local manifest. Full JA2 parity, balance, art/audio review and sustained loaded 60 FPS remain open.",
+      "url": "https://github.com/fsodano/granaderos/actions/runs/36855720414"
+    },
+    {
+      "id": "E-ALPHA-SERVICE-RETURN-LOCAL",
+      "path": "docs/evidence/alpha-service-equipment-local-2026-10-01.json",
+      "description": "Separate corrected local alpha at 67f6c7b5195d0cf946bf8c4c3134a84cabcf3702: 4,251/4,251, 600 files, 9324 unchanged executing inputs, all required gates and exact-source browser checks. Ordinary live service end returns finite physical gear once; actual collection or paid stock rearms later service. PR139 publication remains immutable. No alpha CI/merge, broad parity, manual balance, art/audio or loaded performance is asserted."
     }
   ],
   "queue": [
     {
       "order": 1,
       "ids": [
-        "INTEGRATION-01",
-        "START-01",
-        "FIX-01",
-        "FIX-02",
-        "FIX-03",
-        "FIX-04"
+        "QA-01",
+        "REL-02",
+        "UX-01",
+        "UX-02"
       ],
-      "action": "Preserve the accepted fresh mixed published historical route and post-victory continuation. Preserve the accepted independent post campaign, verify remaining force starts and broader authored composition; diagnose each advanced medical, recapture and prisoner-rescue failure. Import advanced systems with their tests and approved pesos/contract policies one capability at a time; do not replace the reducer wholesale."
+      "action": "Preserve the accepted scripted stock victory, defeat, recovery and rescue routes and bounded finite service-equipment return. After this single alpha PR passes matching-head CI and merges, stop implementation for the requested user alpha session. Record discrepancies across starts, seeds, strategy, equipment and saves; do not infer full JA2, balance, art/audio or loaded performance from automated tests."
     },
     {
       "order": 2,
       "ids": [
         "STORY-02"
       ],
-      "action": "Extend world identities, health and successor activation into belongings, custody and explicit role/stock transfer, as separate deliveries."
+      "action": "Retain ordinary service-equipment return as one bounded delivery. Broader civilian armour, arbitrary belongings, custody and explicit role/stock transfer remain open. Resume further implementation only when the user requests it after their alpha issue session."
     },
     {
       "order": 3,
@@ -3711,11 +3725,11 @@
       "id": "QA-01",
       "group": "Original design",
       "requirement": "Campaign end-to-end completion",
-      "status": "FAILED",
+      "status": "PARTIAL",
       "priority": "P0",
-      "published": "One full fresh mixed stock campaign covers all phases, actual final victory and saved continuation. A separate fresh Mendoza route verifies terminal defeat after an indispensable casualty. The hired-only coastal opening is also accepted. A fresh independent three-chapter scenario covers paid replacements, two battles, saved victory and a separate timed defeat.",
-      "local": "The preserved advanced recovery and prisoner-rescue audits still have unresolved acceptance failures. The new stock route covers the published care and equipment model only. CIVERIFY-01 tracks complete test coverage across parallel CI jobs; this does not establish missing gameplay or performance acceptance.",
-      "remaining": "Complete and record the combined advanced victory/defeat/recovery routes, including prisoner rescue and the remaining force starts; preserve the accepted published paths.",
+      "published": "The consolidated PR #139 suite accepts an uncached fresh mixed historical campaign through all 13 friendly localities, no blockade or active enemy group, a living commander and one terminal victory. Saved 48-hour continuation preserves two independently quoted income payments, actual paid-service expiry and 59 permanent deaths. Fresh historical loss, advanced paid recovery, physical rescue and the independent authored post campaign also pass.",
+      "local": "The separate corrected alpha at 67f6c7b5195d0cf946bf8c4c3134a84cabcf3702 passes 4,251/4,251, zero fail/skip/cancelled/TODO, across 600 files and 9324 unchanged source inputs. Actual collection or finite paid resupply rearms empty rehires. Complete ending/recovery retain permanent losses, physical custody, treasury, ammunition, replay and saves. These scripted checks do not replace extensive user alpha, wider balance, JA2, art/audio or sustained loaded-performance acceptance.",
+      "remaining": "Record extensive player alpha testing on the merged release and broaden force/seed and authored composition acceptance. Full JA2 parity, release visual/audio review and sustained loaded performance remain separate.",
       "acceptance": "Recorded playthrough covering phases, victory and defeat",
       "evidence": [
         "E-PUBLISHED",
@@ -3725,7 +3739,10 @@
         "E-FRESH-ENDING",
         "E-HISTORICAL-LOSS",
         "E-POST-CAMPAIGN",
-        "E-PARALLEL-VERIFICATION"
+        "E-PARALLEL-VERIFICATION",
+        "E-CONSOLIDATION-FINAL-LOCAL",
+        "E-CONSOLIDATION-PR139",
+        "E-ALPHA-SERVICE-RETURN-LOCAL"
       ]
     },
     {
@@ -3945,11 +3962,11 @@
       "id": "INTEGRATION-01",
       "group": "Story and integration",
       "requirement": "Consolidate published, prototype and advanced local gameplay",
-      "status": "FAILED",
+      "status": "VERIFIED",
       "priority": "P0",
-      "published": "The published rules now accept a complete fresh mixed historical route, a hired-only coastal opening, explicit historical loss and saved post-victory continuation. Editable content, paid arrivals, permanent casualties, story gates and treasury costs are exercised. Most advanced local gameplay is still outside this integrated release. A complete compact independent authored scenario is also accepted, with its own ending and real deadline failure.",
-      "local": "The preserved advanced/prototype audits contain failures and policy differences. Those source-specific results are not replaced by the published route; later concurrent local changes are not yet accepted in main. The advanced local implicit-kit migration and maintenance wiring pass focused checks; its full source-specific audit retains movement and campaign-route failures. AMMOFAMILIES-01 records the completed local four-family conversion and actual-save verification on port 3000. Its physical inventory adapter is not yet published; the full local run still has movement and campaign-route failures. AMMOCUSTODY-01 tracks strategic family custody, exact sector stores and finite town shops in the published runtime. It does not publish the advanced inventory adapter.",
-      "remaining": "Import one bounded capability at a time, preserve approved policy and carry its tests into main.",
+      "published": "PR #139 consolidates the published, prototype and advanced gameplay into one base shared by the main game and developer tools. The frozen combined candidate passes 4214/4214 tests across 597 files with no failures or skips. Complete fresh historical victory and 48-hour saved continuation, actual defeat, paid medical recovery, persistent-garrison recapture and physical prisoner rescue use real costs, finite equipment, casualties, replay and saves. This closes the bounded consolidation requirement; full gameplay parity, balance, visual/audio review and performance remain separate.",
+      "local": "The 2026-09-27 advanced/prototype failures remain historical source-specific evidence. The final PR #139 candidate replaces the unaccepted combined state with an unchanged 9310-input source manifest, complete local acceptance and passing types/export/reference/docs/native checks. Its actual publication is recorded only after all final-head CI jobs pass and the PR merges.",
+      "remaining": "",
       "acceptance": "One release has the full combined behavior, passing combined suite, legal complete routes and no undocumented policy regressions.",
       "evidence": [
         "E-LOCAL",
@@ -3964,8 +3981,20 @@
         "E-POST-CAMPAIGN",
         "E-IGNITION-MIGRATION",
         "E-AMMO-FAMILIES",
-        "E-AMMO-CUSTODY"
-      ]
+        "E-AMMO-CUSTODY",
+        "E-CONSOLIDATION-FINAL-LOCAL",
+        "E-CONSOLIDATION-PR139"
+      ],
+      "testFiles": [
+        "tests/fresh-campaign-recovery.test.mjs",
+        "tests/fresh-ending-route.test.mjs",
+        "tests/opening-playthrough.test.mjs",
+        "tests/prisoner-rescue-route.test.mjs",
+        "tests/historical-loss.test.mjs",
+        "tests/post-campaign.test.mjs",
+        "tests/story-editor.test.mjs"
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/139"
     },
     {
       "id": "START-01",
@@ -5709,73 +5738,98 @@
       "id": "REL-02",
       "group": "Player and release acceptance",
       "requirement": "Fresh complete campaign plus defeat and recovery acceptance",
-      "status": "FAILED",
+      "status": "PARTIAL",
       "priority": "P0",
-      "published": "The smaller main suite passes; both larger local suites fail.",
-      "local": "See dated audit for local-only evidence.",
-      "remaining": "Finish fresh campaign, actual ending, defeat, prisoner rescue and recovery without injected victories or free supplies.",
+      "published": "PR #139 accepts the complete fresh historical ending, actual defeat, paid recovery, persistent-garrison recapture and physical prisoner rescue in the combined full suite. Tactical actions, actual boundaries, wounds, contracts, finite supplies, casualties and save/reentry are preserved; no injected victory or free replenishment is accepted.",
+      "local": "The separate corrected alpha at 67f6c7b5195d0cf946bf8c4c3134a84cabcf3702 passes 4,251/4,251, zero fail/skip/cancelled/TODO, across 600 files and 9324 unchanged source inputs. Actual collection or finite paid resupply rearms empty rehires. Complete ending/recovery retain permanent losses, physical custody, treasury, ammunition, replay and saves. These scripted checks do not replace extensive user alpha, wider balance, JA2, art/audio or sustained loaded-performance acceptance.",
+      "remaining": "Record extensive manual alpha playthrough and remaining force/seed/balance cases on the merged build. The scripted route proofs do not certify release-scale usability, art/audio or loaded performance.",
       "acceptance": "Fresh complete campaign plus defeat and recovery acceptance. Use normal controls; retain state through saves; record exact release revision and any limitations.",
       "evidence": [
         "E-PUBLISHED",
-        "E-CONFLICTS"
+        "E-CONFLICTS",
+        "E-CONSOLIDATION-FINAL-LOCAL",
+        "E-CONSOLIDATION-PR139",
+        "E-ALPHA-SERVICE-RETURN-LOCAL"
       ]
     },
     {
       "id": "FIX-01",
       "group": "Failed acceptance routes",
       "requirement": "Fresh campaign has no fit northern relief medic",
-      "status": "FAILED",
+      "status": "VERIFIED",
       "priority": "P0",
-      "published": "A new published route reaches Yatasto using available survivors, paid replacements and existing field care. It does not run or repair the larger advanced doctor-assignment route, which remains failed on its recorded source.",
-      "local": "Fresh failure reproduced on the identified snapshot.",
-      "remaining": "Recover with actually available people, travel, purchases and care; pass the remaining fresh route.",
+      "published": "The consolidated fresh Retiro route recovers actual living doctors and patients with finite dressing custody, paid replacements, real couriers and retained contracts. It continues through the northern road, Yatasto, both mountain passes, coastal battles, recapture, Jujuy and Humahuaca with replay/save and permanent-loss checks.",
+      "local": "tests/fresh-campaign-recovery.test.mjs passes in the final 4214/4214 combined suite; no prerequisite or later route milestone is skipped. Earlier failing snapshots remain unchanged historical evidence.",
+      "remaining": "",
       "acceptance": "Reproduce the failure, diagnose its cause, implement a bounded fix and run the full route with save/replay and permanent-loss checks.",
       "evidence": [
         "E-LOCAL",
-        "E-FRESH-NORTHERN"
+        "E-FRESH-NORTHERN",
+        "E-CONSOLIDATION-FINAL-LOCAL",
+        "E-CONSOLIDATION-PR139"
+      ],
+      "testFiles": [
+        "tests/fresh-campaign-recovery.test.mjs",
+        "tests/fresh-northern-route.test.mjs"
       ]
     },
     {
       "id": "FIX-02",
       "group": "Failed acceptance routes",
       "requirement": "Established recovery loses Córdoba to its persistent garrison",
-      "status": "FAILED",
+      "status": "VERIFIED",
       "priority": "P0",
-      "published": "These larger acceptance routes are not present in the published suite.",
-      "local": "Fresh failure reproduced on the identified snapshot.",
-      "remaining": "Diagnose rules, balance or route-controller assumptions; win/recover through legal actions with real losses.",
+      "published": "The established route treats its actual survivors, pays for living relief, resolves real depot attacks and recaptures the persistent garrison before releasing captives. Contract renewals, courier travel, finite artillery/ammunition/dressings, permanent losses and saved return remain in the acceptance route.",
+      "local": "The complete opening-playthrough parent and every child pass in the final 4214/4214 combined suite without skips. The dated failed source is preserved for comparison.",
+      "remaining": "",
       "acceptance": "Reproduce the failure, diagnose its cause, implement a bounded fix and run the full route with save/replay and permanent-loss checks.",
       "evidence": [
-        "E-LOCAL"
+        "E-LOCAL",
+        "E-CONSOLIDATION-FINAL-LOCAL",
+        "E-CONSOLIDATION-PR139"
+      ],
+      "testFiles": [
+        "tests/opening-playthrough.test.mjs"
       ]
     },
     {
       "id": "FIX-03",
       "group": "Failed acceptance routes",
       "requirement": "Physical prisoner rescue ends in defeat instead of retreat",
-      "status": "FAILED",
+      "status": "VERIFIED",
       "priority": "P0",
-      "published": "These larger acceptance routes are not present in the published suite.",
-      "local": "Fresh failure reproduced on the identified snapshot.",
-      "remaining": "Preserve actual exit, wounds, finite gear and captive identity; complete paid rescue and return.",
+      "published": "Paid relief enters at its real arrival edge, fights and clears the actual guard force, frees three physical prisoners and escorts living survivors through actual Jujuy exits. The returned battle is a retreat; fallen relief stays dead, both finite guns fire, captivity and released health remain unchanged, and saved departure/custody receipts persist. This proves a cleared-field evacuation, not a stealth rescue through live hostile contact.",
+      "local": "tests/prisoner-rescue-route.test.mjs passes in the final 4214/4214 combined suite with no skips. The earlier defeat instead of retreat remains a dated historical result.",
+      "remaining": "",
       "acceptance": "Reproduce the failure, diagnose its cause, implement a bounded fix and run the full route with save/replay and permanent-loss checks.",
       "evidence": [
-        "E-LOCAL"
+        "E-LOCAL",
+        "E-CONSOLIDATION-FINAL-LOCAL",
+        "E-CONSOLIDATION-PR139"
+      ],
+      "testFiles": [
+        "tests/prisoner-rescue-route.test.mjs"
       ]
     },
     {
       "id": "FIX-04",
       "group": "Failed acceptance routes",
       "requirement": "Prototype fresh route loses at San Lorenzo",
-      "status": "FAILED",
+      "status": "VERIFIED",
       "priority": "P0",
-      "published": "Two fresh published routes now win the actual coastal opening under the supported economy, preserving real losses and saves. The separate prototype failing route has not been rerun or repaired on its own source.",
-      "local": "Fresh failure reproduced on the identified snapshot.",
-      "remaining": "Reconcile the failing route with the supported opening/economy; pass the battle and continue without overriding results.",
+      "published": "The fresh recovery acceptance route that failed at San Lorenzo in the 2026-09-27 prototype audit is reconciled in the consolidated PR #139 source. Its actual coordinated San Lorenzo victory retains mission allies, paid reinforcement and ammunition costs, prior deaths, replay and saves, then continues through the complete recovery route.",
+      "local": "The prototype snapshot remains unchanged and was not retrospectively relabelled as passing. The same acceptance route, tests/fresh-campaign-recovery.test.mjs, passes against the consolidated source in the final 4214/4214 suite.",
+      "remaining": "",
       "acceptance": "Reproduce the failure, diagnose its cause, implement a bounded fix and run the full route with save/replay and permanent-loss checks.",
       "evidence": [
         "E-PROTOTYPE",
-        "E-FRESH-COASTAL"
+        "E-FRESH-COASTAL",
+        "E-CONSOLIDATION-FINAL-LOCAL",
+        "E-CONSOLIDATION-PR139"
+      ],
+      "testFiles": [
+        "tests/fresh-campaign-recovery.test.mjs",
+        "tests/fresh-coastal-route.test.mjs"
       ]
     },
     {
@@ -6383,19 +6437,23 @@
       "id": "AMMOFAMILIES-01",
       "group": "Integration",
       "requirement": "Use four shared ammunition families in the advanced physical inventory game",
-      "status": "LOCAL_ONLY",
+      "status": "VERIFIED",
       "priority": "P1",
-      "published": "PR #134 publishes the shared catalog and existing public adapter at b6b081c9e206d8dda5cec00a10b24c1ebe02c67c. All five final-head checks pass, including 1294/1294 tests, types and build. The four IDs, images, default compatibility and authored family override are preserved. The larger physical-inventory adapter remains local.",
-      "local": "Physical stacks, hands, cursor, pockets, campaign stocks, delivery receipts and old saves migrate to four families. The actual eleven-unit Buenos Aires save preserves health, positions, loaded rounds and loose quantities. The 56-file integration is running on port 3000; exact hashes and limits are retained. The original-checkout regression has 3223/3231 passes, five failures (including a parent) and three skips. The later purchase-limit form guard passes both related cases, types and build. The fresh route now stops earlier at an unavailable recovered gun in Cordoba; recapture retreats instead of winning. Those changed outcomes are not accepted.",
-      "remaining": "Publish the advanced physical-inventory runtime and its dependencies. Integrate advanced authored family selection and alternative loads separately. The complete campaign and performance acceptance remain open.",
+      "published": "PR #139 publishes the advanced physical-inventory adapter on the common game/tool base. Four shared family IDs and default/authored compatibility are preserved across physical stacks, both hands, cursor and pockets, campaign/sector stocks, delivery receipts, paid purchases, compatible reloads and legacy saves. The completed full suite includes the existing alternative-load authoring and strategic custody tests.",
+      "local": "The former 56-file local integration is part of the final unchanged 9310-input candidate. All 4214 tests pass; no earlier movement or route failure remains in this combined acceptance run. The historical eleven-unit save audit and old failed snapshots remain dated evidence, not performance certification.",
+      "remaining": "",
       "acceptance": "Group historical loads without losing or adding rounds, changing ownership or reissuing stock; retain old saves, rejected invalid references, finite shops, compatible reloads and readable images.",
       "evidence": [
-        "E-AMMO-FAMILIES"
+        "E-AMMO-FAMILIES",
+        "E-CONSOLIDATION-FINAL-LOCAL",
+        "E-CONSOLIDATION-PR139"
       ],
       "testFiles": [
         "tests/ammunition-families.test.mjs",
         "tests/typed-ammunition.test.mjs",
-        "tests/authored-ammunition-family.test.mjs"
+        "tests/authored-ammunition-family.test.mjs",
+        "tests/fresh-ending-route.test.mjs",
+        "tests/dropped-cartridges.test.mjs"
       ],
       "parents": [
         "ITEM-01",
@@ -6403,7 +6461,7 @@
         "STORY-06",
         "INTEGRATION-01"
       ],
-      "pr": "https://github.com/fsodano/granaderos/pull/134"
+      "pr": "https://github.com/fsodano/granaderos/pull/139"
     },
     {
       "id": "AMMOCUSTODY-01",
@@ -6509,16 +6567,69 @@
         "tests/civilian-supplies.test.mjs"
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/138"
+    },
+    {
+      "id": "SERVICEGEAR-01",
+      "group": "Player and release acceptance",
+      "requirement": "Return ordinary service-end equipment once at its physical location and rearm later service from real stock",
+      "status": "VERIFIED",
+      "priority": "P0",
+      "published": "Included in this alpha PR; accepted locally at 67f6c7b5195d0cf946bf8c4c3134a84cabcf3702 through the complete unchanged-source suite and exact-source browser checks. This dated record asserts no alpha CI result or merge. PR139 remains the latest recorded publication snapshot.",
+      "local": "4,251/4,251, 600 files and 9324 unchanged inputs. Dismissal and expiry return actual weapons, charges, pockets, outfit, finite consumables and repair points to one local source. Collection consumes existing stock; rehire creates no allocation. Loaded-sector deferral, real transit arrival, bounded full-map fallback, old-save checks and legal complete routes preserve conservation.",
+      "remaining": "",
+      "acceptance": "Use actual paid dismissal and expiry, save/load and collect exact returned gear once. Reject stale or forged transfers and duplicate ownership; rehire with empty slots and collect existing compatible weapons or buy finite stock. Preserve current wounds, loaded/loose ammunition, outfit and spent supplies. Retain capture/death custody and independent horse rules. Accept actual legal campaign victory/recovery and mounted save/control checks.",
+      "evidence": [
+        "E-ALPHA-SERVICE-RETURN-LOCAL"
+      ],
+      "parents": [
+        "LOCAL-01",
+        "CIVILIANRETURN-01",
+        "ITEM-01",
+        "QA-01"
+      ],
+      "testFiles": [
+        "tests/service-equipment-return.test.mjs",
+        "tests/service-return-inventory.test.mjs",
+        "tests/civilian-service-return.test.mjs",
+        "tests/civilian-weapons.test.mjs",
+        "tests/contracts-web.test.mjs",
+        "tests/fresh-ending-route.test.mjs",
+        "tests/fresh-campaign-recovery.test.mjs"
+      ]
     }
   ],
   "latestPublishedCheck": {
-    "source": "590e657b35d79bbbe9c3ae912dc00ff27baadcec",
-    "total": 1323,
-    "passed": 1323,
+    "source": "04003dd1de15fffbe71ec0e06d953181ee77c229",
+    "total": 4214,
+    "passed": 4214,
     "failed": 0,
     "skipped": 0,
+    "cancelled": 0,
+    "todo": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-AMMO-LOADS"
-  }
+    "evidenceId": "E-CONSOLIDATION-PR139",
+    "verificationEnvironment": "All 597 root simulation files were partitioned once across four completed final-head CI jobs, with 4214/4214 tests and no failures, skips, cancellations or TODOs. The web job also passed. PR #139 is merged, and its tree is identical to the verified final head.",
+    "mergeCommit": "7ac3c9d612cc5d46c846617e0686ef5b6b450184"
+  },
+  "latestLocalCheck": {
+    "source": "67f6c7b5195d0cf946bf8c4c3134a84cabcf3702",
+    "testedRevision": "67f6c7b5195d0cf946bf8c4c3134a84cabcf3702",
+    "total": 4251,
+    "passed": 4251,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "todo": 0,
+    "types": "PASS",
+    "build": "PASS",
+    "evidenceId": "E-ALPHA-SERVICE-RETURN-LOCAL",
+    "sourceManifestDelta": "docs/evidence/alpha-source-inputs-delta-2026-10-01.json",
+    "sourceManifestSha256": "4a274f6645ac6107f6834cfd869506b812202f3d200359d9bec074077c425457",
+    "testFiles": 600,
+    "frozenInputs": 9324,
+    "sourceNote": "Complete local execution at 67f6c7b5195d0cf946bf8c4c3134a84cabcf3702. The compact delta reconstructs its frozen manifest byte for byte over immutable PR139 evidence. Browser QA at 2035fa7702858123b454141ca0c9d26b00fb10fe has identical game/tools/UI build source; only the exact reviewed test-only preparation and expectation changes differ. Final pre-push documentation/evidence is audited separately; no later full rerun, alpha CI or merge is asserted. The final pre-push workflow changes only the test-job timeout from 90 to 120 minutes after the complete run. All 9,323 other frozen inputs, including every game, test and tool source, remain byte-identical; the workflow and final documentation are checked separately. No later complete local run is claimed."
+  },
+  "sourceRelationship": "The dated published baseline and published-check row preserve PR #139 at 7ac3c9d612cc5d46c846617e0686ef5b6b450184. This alpha PR includes the later finite service-equipment return with separate complete local acceptance at 67f6c7b5195d0cf946bf8c4c3134a84cabcf3702. The compact delta identifies its unchanged executing inputs. No alpha CI result or merge is asserted in this pre-push record; actual publication is recorded in the PR body and final delivery report. Original/prototype/presence snapshots remain historical. The final pre-push workflow changes only the test-job timeout from 90 to 120 minutes after the complete run. All 9,323 other frozen inputs, including every game, test and tool source, remain byte-identical; the workflow and final documentation are checked separately. No later complete local run is claimed.",
+  "snapshotSummary": "The 2026-09-27 audit snapshots and PR139 local/published 4214/4214 results remain unchanged dated evidence. The corrected alpha candidate passes 4,251/4,251 across 600 files with no failures, skips, cancellations or TODOs. It accepts the bounded return policy and preserves scripted routes. Extensive player alpha, wider force/seed balance, full JA2 parity, art/audio and sustained loaded 60 FPS remain open."
 }

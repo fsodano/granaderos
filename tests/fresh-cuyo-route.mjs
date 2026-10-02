@@ -191,7 +191,7 @@ export function prepareFreshArmyFunding(start){
   for(let h=0;h<48&&(c.operativeState[patientId].bleeding>0||c.operativeState[patientId].hp<c.operativeState[patientId].maxHp);h++){assert.equal(c.pendingEncounter,null);order({type:'wait',hours:1});}
   assert.equal(c.operativeState[patientId].hp,c.operativeState[patientId].maxHp);assert.equal(c.operativeState[patientId].bleeding,0);
  }
- for(const operativeId of local)order({type:'assignCare',operativeId,assignment:'rest'});
+ for(const operativeId of c.recruited.filter(id=>{const r=c.operativeState[id];return r.alive&&!r.captured&&r.location==='mendoza';}))order({type:'assignCare',operativeId,assignment:'rest'});
  c=purchaseFoundryCannons(c,2);
  assert.equal(c.flags.armyFunded,false);assert.deepEqual(decodeSave(encodeSave(c)).campaign,c);return c;
 }

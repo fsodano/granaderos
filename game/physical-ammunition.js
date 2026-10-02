@@ -146,6 +146,7 @@ export function syncCampaignAmmunition(state,roster=[]){
 }
 export function validateCampaignAmmunition(state,roster=[]){
  need(state.ammunitionVersion===2,'La versión de munición no es válida.');
+ for(const owner of state.serviceEquipmentReturns?.entries??[])for(const item of owner.items){rejectLegacyStacks([item.stack]);stackAmmunitionByType(item.stack);}
  for(const key of Object.values(AMMUNITION_RESOURCE_KEYS))need(state.economyVersion===2?state.resources?.[key]===undefined:count(state.resources?.[key]),'La reserva de munición no es válida.');
  const unit=u=>{rejectLegacyStacks(Object.values(u?.inventory??{}));need(u?.ammunitionVersion===2,'La munición del combatiente no tiene versión.');const before=u.ammo;syncUnitAmmunition(u);need(count(before)&&before===u.ammo,'La reserva del combatiente no coincide con su inventario.');};
  for(const u of [...Object.values(state.garrisons??{}).flat(),...(state.militiaTraining??[]).flatMap(course=>course.trainees??[]),...(state.enemyGroups??[]).flatMap(group=>group.units??[]),...Object.values(state.missionAllies??{})])unit(u);

@@ -51,9 +51,15 @@ for(const q of data.queue??[]){need(nonempty(q.action),'Queue action missing');f
 const auditPath='docs/evidence/formal-audit-2026-09-27';
 const archivedChecks=JSON.parse(read(`${auditPath}/checks.json`));
 const checks={...archivedChecks,published:data.latestPublishedCheck??archivedChecks.published};
+if(data.latestLocalCheck)checks['local-candidate']=data.latestLocalCheck;
+for(const key of ['sourceRelationship','snapshotSummary'])if(data[key]!==undefined)need(nonempty(data[key]),`Invalid ${key}`);
 if(data.latestPublishedCheck){
  need(/^[0-9a-f]{40}$/.test(checks.published.source),'Latest published check needs an exact source commit');
  need(evidence.has(checks.published.evidenceId),'Latest published check needs registered evidence');
+}
+if(data.latestLocalCheck){
+ need(/^[0-9a-f]{40}$/.test(data.latestLocalCheck.source),'Latest local check needs an exact source commit');
+ need(evidence.has(data.latestLocalCheck.evidenceId),'Latest local check needs registered evidence');
 }
 for(const [name,c]of Object.entries(checks)){
  need(['total','passed','failed','skipped'].every(k=>Number.isSafeInteger(c[k])&&c[k]>=0),`${name}: invalid test counts`);
@@ -71,18 +77,19 @@ if(errors.length){console.error(errors.join('\n'));process.exit(1);}
 const cell=text=>String(text??'').replaceAll('|','&#124;').replaceAll('\n',' ').replace(/\[([^\]]+)\]\([^)]+\)/g,'$1');
 const link=path=>relative(resolve(root,'docs/verification'),resolve(root,path)).split(sep).join('/');
 const counts=Object.fromEntries(statuses.map(s=>[s,data.requirements.filter(r=>r.status===s).length]));
+const checkLabel=name=>data.latestLocalCheck&&['original','prototype','presence'].includes(name)?`${name} (2026-09-27 snapshot)`:name;
 const out=[
  '# Granaderos implementation and verification ledger','',
  '<!-- Generated from requirements.json by npm run docs:progress. Edit the register, not this view. -->','',
  `Updated ${data.updated}. **The complete game and story editor are not accepted.**`,'',
  `Read [the design](${link(data.design)}) for the target and [the formal audit](${link(data.audit)}) for evidence and limits.`,
  `The published baseline assessed here is \`${data.baseline}\`. Later PRs must update this register.`,
- 'The larger local sources and the editor prototype are separate from published main.','',
+ data.sourceRelationship??'The larger local sources and the editor prototype are separate from published main.','',
  '## Verified results and current failures','',
  '| Source | Passing / total | Failed | Skipped | Types / build |',
  '|---|---:|---:|---:|---|',
- ...Object.entries(checks).map(([name,c])=>`| ${name} | ${c.passed} / ${c.total} | ${c.failed} | ${c.skipped} | ${c.types} / ${c.build} |`),'',
- 'The advanced local suite has three independent failure points; a failed child also fails its parent. Three later route milestones are skipped. The prototype fails at San Lorenzo. Published CI runs a smaller suite and cannot close those failures. The presence row preserves the earlier local audit snapshot; newer published verification is recorded separately.','',
+ ...Object.entries(checks).map(([name,c])=>`| ${checkLabel(name)} | ${c.passed} / ${c.total} | ${c.failed} | ${c.skipped} | ${c.types} / ${c.build} |`),'',
+ data.snapshotSummary??'The advanced local suite has three independent failure points; a failed child also fails its parent. Three later route milestones are skipped. The prototype fails at San Lorenzo. Published CI runs a smaller suite and cannot close those failures. The presence row preserves the earlier local audit snapshot; newer published verification is recorded separately.','',
  '## Status and maintenance rules','',
  '- VERIFIED: the complete **bounded row** has specific accepted evidence. Parent requirements remain separate.',
  '- PARTIAL: a published subset exists; the row states the remaining work.',

@@ -20,6 +20,7 @@ const physical=n=>Object.fromEntries(fields.filter(k=>n[k]!==undefined).map(k=>[
 const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
 const operativeId=n=>n.id==='yatasto-san-martin'?57:n.operativeId;
 function supplies(s,n){
+ if(s.operativeState[operativeId(n)]?.serviceEquipmentReturn)return civilianSuppliesFor(null);
  const id=operativeId(n),result=civilianSuppliesFor(s.operativeState[id]);
  const prior=id===57?s.missionAllies?.san_lorenzo:null;
  if(prior&&s.operativeState[57]?.missionSuppliesVersion!==1&&!s.civilianState?.people['person-57']){const carried=civilianSuppliesFor(prior);for(const k of CIVILIAN_SUPPLY_FIELDS)result[k]=Math.min(result[k],carried[k]);}
@@ -101,7 +102,7 @@ function remember(s,n,scene,deathSecond){
  const id=operativeId(n);
  if(id!==undefined&&!s.recruited.includes(id)){
   Object.assign(s.operativeState[id],{hp:Math.ceil(n.hp),alive:n.hp>0,energy:n.energy,bleeding:n.bleeding??0,bandaged:n.bandaged??0});
-  if(n.civilianSupplies!==undefined){need(validCivilianSupplies(n.civilianSupplies),'Los suministros del habitante no son válidos.');for(const k of CIVILIAN_SUPPLY_FIELDS)s.operativeState[id][k]=n.civilianSupplies[k];}
+  if(n.civilianSupplies!==undefined){need(validCivilianSupplies(n.civilianSupplies),'Los suministros del habitante no son válidos.');if(!s.operativeState[id].serviceEquipmentReturn)for(const k of CIVILIAN_SUPPLY_FIELDS)s.operativeState[id][k]=n.civilianSupplies[k];}
  }
  if(n.hp===0&&before?.health.hp!==0){
   if(deathSecond!==undefined&&id!==undefined)s.operativeState[id].deathMinute=Math.floor(deathSecond/60);

@@ -24,7 +24,7 @@ export function advanceHireArrivals(state,arrive){
   if(state.defeated)return;
   for(const arrival of [...(state.hiringArrivals??[])]){
     const record=state.operativeState[arrival.operativeId];
-    if(!record?.alive||record.captured||state.recruited.includes(arrival.operativeId)||state.contracts[arrival.operativeId])continue;
+    if(!record?.alive||record.captured||record.serviceEquipmentReturn||state.recruited.includes(arrival.operativeId)||state.contracts[arrival.operativeId])continue;
     if(arrival.dueAt>state.hour||hiringArrivalReason(state,arrival.destination)||state.pendingBattle?.sector===arrival.destination)continue;
     // Grant service once, after all safety checks and after the hour's raids.
     arrive(arrival);
@@ -52,7 +52,7 @@ export function validateHireArrivals(state,roster){
     need(a&&typeof a==='object'&&!Array.isArray(a)&&Object.keys(a).length===keys.length&&keys.every(k=>Object.hasOwn(a,k)));
     const operative=roster.find(o=>o.id===a.operativeId);
     need(operative&&isContractOperative(state,operative)&&!ids.has(a.operativeId)&&!state.recruited.includes(a.operativeId)&&!state.contracts?.[a.operativeId]);ids.add(a.operativeId);
-    need(state.operativeState[a.operativeId]?.alive&&!state.operativeState[a.operativeId]?.captured&&arrivalSitesFor(state).some(site=>site.sector===a.destination));
+    need(state.operativeState[a.operativeId]?.alive&&!state.operativeState[a.operativeId]?.captured&&!state.operativeState[a.operativeId]?.serviceEquipmentReturn&&arrivalSitesFor(state).some(site=>site.sector===a.destination));
     need(integer(a.bookedAt,0,state.hour)&&integer(a.departedAt,a.bookedAt,state.hour)&&integer(a.travelHours,1,168)&&a.travelHours===hiringTravelHours(state,a.operativeId)&&a.dueAt===a.departedAt+a.travelHours);
     need(Object.hasOwn(CONTRACT_TERMS,a.term));
     const quote=contractQuote(state,operative,a.term);

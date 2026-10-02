@@ -1,6 +1,6 @@
 # Granaderos: current game design
 
-Updated 2026-09-28. This is the product contract. Implementation and acceptance
+Updated 2026-10-02. This is the product contract. Implementation and acceptance
 status live in [PROGRESS.md](../verification/published-progress.md), with evidence in [the audit](../verification/formal-audit-2026-09-27.md).
 A capability described here can still be missing from the published game.
 
@@ -223,6 +223,8 @@ An authored resident can offer permanent unpaid service or local day, week and
 month contracts with a visible price. Local service starts in place; it has no
 bulletin arrival. Historical encounter roles retain their original service policy. Independent squads have at most six members; reassignment requires
 real co-location. The player officer has one persistent identity.
+
+Ordinary live dismissal or contract expiry returns the person's current physical equipment once at the actual local cell. Loaded-battle changes defer to normal settlement; expiry in transit follows real arrival. Returning or rehiring cannot refill weapon slots, charges, pockets, outfit, consumables or repair stock. Rehire must collect its existing local property or buy finite stock. Capture/death custody and horses keep their separate policies. This is bounded service-equipment return, not full civilian belongings/armour or stock-transfer parity. See [alpha local acceptance](../verification/alpha-service-equipment-return-2026-10-01.md).
 
 Health, bleeding, breath, fatigue, morale, experience, learned skills, inventory,
 relationships, custody and service are separate state. Dead, unconscious, routed,
