@@ -275,6 +275,7 @@ export function finishCreatedCoast(prefix,{onCheckpoint}={}){
  if(campaign.blockade){
   let capital;
   if(prepared.roles.expeditionIds.includes(135)){
+   campaign=recoverFreshPort(campaign,{hospital:'cordoba',fieldIds:campaign.recruited.filter(id=>{const r=campaign.operativeState[id];return r.alive&&!r.captured&&r.location==='santa_fe';})});
    const staged=stageActualPaidCapitalRelief(campaign);
    campaign=prepareCreatedCapitalReturn(staged.campaign,{preparedFieldIds:staged.field,useStoredBattery:true});
    capital=fightNorthernSector(campaign,'buenos_aires',{deploy:deployCapitalLane,controller:stableCrewController()});
