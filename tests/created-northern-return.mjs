@@ -12,7 +12,7 @@ import {carriedAmmunition} from '../game/campaign-ammunition.js';
 import {ammoTypeFor,ammoCount} from '../game/ammo-types.js';
 import {doctorRate} from '../game/medical-care.js';
 import {enterSector} from '../game/world.js';
-import {actBattle,getReachable,artilleryContact,artilleryReloadPreview} from '../game/tactical.js';
+import {actBattle,getReachable,artilleryContact,artilleryReloadPreview,artilleryCrewPlan} from '../game/tactical.js';
 import {syncBattleTime} from '../game/time.js';
 // Recover the real capital survivors and pay for the remaining living relief.
 // The commander stays at the hospital while the field column returns north.
@@ -73,12 +73,13 @@ export function prepareCreatedNorthernRelief(start,{report=()=>{}}={}){
 // Keep the hospital command in Córdoba while the actual field doctors treat
 // the wounded northern survivors. A real courier brings finite shop stock;
 // the patients do not lose the road while making a long return journey.
-export function prepareCreatedSaltaReturn(start,{report=()=>{}}={}){
+export function prepareCreatedSaltaReturn(start,{report=()=>{},retainedIds=null}={}){
  let c=decodeSave(encodeSave(start)).campaign;
  assert.equal(c.location,'tucuman');
  const retained=c.recruited.filter(id=>{
-  const r=c.operativeState[id];return r.alive&&!r.captured;
+  const r=c.operativeState[id];return r.alive&&!r.captured&&(!retainedIds||retainedIds.includes(id));
  });
+ if(retainedIds)assert.deepEqual([...retained].sort((a,b)=>a-b),[...retainedIds].sort((a,b)=>a-b),'every selected current survivor must actually be serving');
  const forward=retained.filter(id=>c.operativeState[id].location==='tucuman');
  const rear=retained.filter(id=>c.operativeState[id].location==='cordoba');
  assert.ok(forward.length&&rear.includes(57));
@@ -336,6 +337,7 @@ export function prepareCreatedJujuyDefense(start,{report=()=>{}}={}){
  while(c.sectors.jujuy.fort<3)order({type:'fortify',sector:'jujuy'});
  const physical=c.sectorStates.jujuy.artillery.filter(g=>g.side==='player');assert.equal(physical.length,3);
  for(const gun of physical)if(gun.ammo<6)order({type:'supplyArtillery',sector:'jujuy',artilleryId:gun.id,count:6-gun.ammo});
+ const initialCharges=new Map(c.sectorStates.jujuy.artillery.filter(g=>g.side==='player').map(g=>[g.id,{loaded:g.loaded,ammo:g.ammo}]));
  assert.ok(field.includes(57));
  order({type:'createSquad',ids:field.filter(id=>id!==57),sector:'jujuy',name:'Defensa de Jujuy'});
  for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'rest'});
@@ -375,8 +377,10 @@ export function prepareCreatedJujuyDefense(start,{report=()=>{}}={}){
  for(const [index,gun]of physical.entries()){
   const id=crews[index].id;walk(id,gun,u=>artilleryContact(battle,u,gun));let unit=battle.units.find(u=>u.id===String(id));
   if(unit.stance==='prone')act({type:'stance',unitId:unit.id,stance:'crouched'});
-  unit=battle.units.find(u=>u.id===String(id));assert.equal(artilleryReloadPreview(battle,unit,battle.artillery.find(g=>g.id===gun.id)).valid,true);
-  act({type:'artilleryReload',unitId:unit.id,artilleryId:gun.id});assert.equal(battle.artillery.find(g=>g.id===gun.id).loaded,true);
+  unit=battle.units.find(u=>u.id===String(id));const actual=battle.artillery.find(g=>g.id===gun.id),before=structuredClone(actual);assert.equal(artilleryCrewPlan(battle,unit,actual,1,true).reason,null);
+  if(!actual.loaded){assert.equal(artilleryReloadPreview(battle,unit,actual).valid,true);act({type:'artilleryReload',unitId:unit.id,artilleryId:gun.id});}
+  const after=battle.artillery.find(g=>g.id===gun.id);assert.equal(after.loaded,true);assert.equal(after.ammo,before.ammo-Number(!before.loaded));assert.equal(Number(after.loaded)+after.ammo,Number(before.loaded)+before.ammo);
+  const metadata=g=>Object.fromEntries(Object.entries(g).filter(([key])=>!['loaded','ammo','reloadProgress'].includes(key)));assert.deepEqual(metadata(after),metadata(before));if(before.loaded)assert.deepEqual(after,before);
  }
  const pair=syncBattleTime(c,battle);assert.equal(pair.error,null);const restored=decodeSave(encodeSave(pair.campaign,pair.battle));c=restored.campaign;battle=restored.battle;
  const visitSeconds=battle.elapsedSeconds;
@@ -391,7 +395,7 @@ export function prepareCreatedJujuyDefense(start,{report=()=>{}}={}){
  }
  assert.equal(c.pendingEncounter?.sector,'jujuy');assert.ok(active);const groupId=c.pendingEncounter.groupId;
  order({type:'respondToEncounter',groupId,choice:'tactical'});
- assert.ok(c.pendingBattle.artillery.every(g=>g.loaded&&g.ammo===5));
+ assert.ok(c.pendingBattle.artillery.every(g=>g.loaded&&g.ammo===initialCharges.get(g.id).ammo-Number(!initialCharges.get(g.id).loaded)));
  assert.deepEqual({field8:c.armory.field8,swivel:c.armory.swivel},unused);
  for(const [id,r]of Object.entries(start.operativeState))if(!r.alive)assert.equal(c.operativeState[id].alive,false);
  report({event:'createdJujuyDefenseReady',hour:c.hour,treasury:c.resources.treasury,field,groupId,unused,events,visitOrders,visitSeconds});

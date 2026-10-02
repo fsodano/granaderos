@@ -11,6 +11,8 @@ import {visit,sync,leave} from './local-contract-fixture.mjs';
 import {supplyRouteAmmunition} from './route-ammunition.mjs';
 import {finishReloadsBeforeMarch} from './pre-march-reload.mjs';
 import {prepareFinalAssault} from './final-campaign-route.mjs';
+import {actBattle,getReachable} from '../game/tactical.js';
+import {sameCell,spacePoint} from '../game/tactical-space.js';
 
 // Actual transport, shop care and defense preparation after fresh Yatasto.
 export function assembleCreatedCuyo(start,{report=()=>{}}={}){
@@ -62,6 +64,34 @@ assert.equal(field.length,5,'keep five actual soldiers and a slot for the paid m
 order({type:'squad',ids:field});const main=c.activeSquadId;
 const reserve=assembled.filter(id=>!field.includes(id));
 for(let offset=0;offset<reserve.length;offset+=6)order({type:'createSquad',name:'Reserva de Cuyo',ids:reserve.slice(offset,offset+6),sector:'cordoba'});
+order({type:'selectSquad',id:main});
+
+// Finish the actual chambers and leave the arriving force on reachable roofs.
+// Hospital work may be interrupted before the wounded infantry can recover.
+for(const squad of c.squads.filter(q=>q.location==='cordoba'&&q.members.length)){
+ order({type:'selectSquad',id:squad.id});
+ for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'active'});
+ c=finishReloadsBeforeMarch(c,{report});
+ const p=visit(c);let battle=p.battle;
+ const cells=battle.upperSurfaces.filter(t=>!t.blocked).sort((a,b)=>Math.hypot(a.x-battle.width*.5,a.y-battle.height*.5)-Math.hypot(b.x-battle.width*.5,b.y-battle.height*.5)||a.y-b.y||a.x-b.x);
+ const positions=[];
+ const act=action=>{battle=actBattle(battle,action);assert.equal(battle.lastError,null,JSON.stringify(action)+battle.lastError);};
+ for(const id of c.squad){
+  let unit=battle.units.find(u=>u.id===String(id));assert.ok(unit&&unit.hp>=15&&!unit.unconscious);
+  const before=structuredClone(unit);
+  act({type:'movement',unitId:unit.id,movement:'walk'});unit=battle.units.find(u=>u.id===String(id));
+  const destination=cells.find(cell=>!battle.units.some(other=>other.id!==unit.id&&other.hp>0&&sameCell(other,cell))&&getReachable(battle,unit,{stopAt:point=>sameCell(point,cell)}).some(point=>sameCell(point,cell)));
+  assert.ok(destination,'each actual defender has an open route to a roof');
+  act({type:'move',unitId:unit.id,...spacePoint(destination)});
+  act({type:'stance',unitId:unit.id,stance:'crouched'});unit=battle.units.find(u=>u.id===String(id));
+  for(const key of ['hp','bleeding','weapon','condition','weaponInstanceId','weaponFittings','blade','bladeInstanceId','loaded','ammo','ammunition','medkits','inventory','headwear','outfit','legwear'])assert.deepEqual(unit[key],before[key],`defensive movement preserves ${id}'s ${key}`);
+  const point=spacePoint(unit);positions.push({id:unit.id,point});
+  report({event:'createdCuyoDefensePosition',id,before:spacePoint(before),after:point,hp:unit.hp,energy:unit.energy,fatigue:unit.fatigue,loaded:unit.loaded});
+ }
+ c=leave(sync({campaign:p.campaign,battle}));
+ for(const {id,point}of positions)assert.deepEqual(spacePoint(c.sectorStates.cordoba.units.find(u=>u.id===id)),point,'the accepted return keeps the paid defensive position');
+ assert.deepEqual(decodeSave(encodeSave(c)).campaign,c);
+}
 order({type:'selectSquad',id:main});
 
 // Budget care from actual wounds and carried dressings. A healthy party must
