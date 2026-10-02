@@ -1,9 +1,7 @@
 name: Web game build and tests
+# Run builds only when a maintainer starts them. PRs, pushes, and tags must not
+# start GitHub Actions jobs automatically.
 on:
-  push:
-    branches: [main]
-    tags: ['v*']
-  pull_request:
   workflow_dispatch:
 permissions:
   contents: read
