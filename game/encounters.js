@@ -1,4 +1,4 @@
-import {contractQuote,CONTRACT_TERMS} from './contracts.js';
+import {contractQuote,contractTermsFor} from './contracts.js';
 import {campaignCivilian,civilianDiedHere} from './campaign-civilians.js';
 import {campaignPlace} from './world-cells.js';
 import {legacyOperativeId,characterForOperative,isWorldCharacter,isContractOperative,operativeIdForCharacter} from './content-character-ids.js';
@@ -31,7 +31,7 @@ export function encounterDefinitions(s){
  return [...original,...(content?.characters??[]).filter(isWorldCharacter).map(c=>{
   const {dialogue,...encounter}=c.encounter;
   return {id:`authored-${c.id}`,contentId:c.id,operativeId:operativeIdForCharacter(content,c.id),name:c.name,sector:null,x:3,y:7,...encounter};
- })];
+ })].map(n=>content?.errands?.some(q=>q.npcId===n.id)?{...n,dialogue:'special'}:n);
 }
 export function encounterForOperative(id){return ENCOUNTERS.find(n=>n.operativeId===Number(id));}
 export function encountersFor(s,sector){
@@ -72,7 +72,7 @@ export function encounterHireTerms(s,npc){
  const c=characterForOperative(s,npc.operativeId);
  if(!c||!isWorldCharacter(c)||c.service!=='contract'||!canRecruitEncounter(npc))return [];
  const op=authoredOperative(s,{id:npc.operativeId});
- return Object.entries(CONTRACT_TERMS).map(([term,period])=>{
+ return Object.entries(contractTermsFor(s)).map(([term,period])=>{
   const q=contractQuote(s,op,term),funded=s.resources.treasury>=q.price;
   return {...q,name:period.name,available:q.available&&funded,reason:q.reason??(funded?null:`Necesitás ${q.price} pesos para este contrato.`)};
  });

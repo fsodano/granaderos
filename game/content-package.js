@@ -1,3 +1,4 @@
+import {validateContractRules} from './contract-rules.js';
 import {validateAmmunitionMarket} from './ammunition-market-rules.js';
 import {validateArtilleryTradingRules} from './artillery-trading-rules.js';
 import {validateArtilleryTransportRules} from './artillery-transport-rules.js';
@@ -15,6 +16,7 @@ import {DEFAULT_IMPORT_RULES,validateImportRules} from './campaign-imports.js';
 import {validateHeadquarters} from './campaign-headquarters.js';
 import {defaultStartingTerritory,validateStartingTerritory} from './content-territory.js';
 import {DEFAULT_CAMPAIGN_RULES,validateCampaignRules} from './campaign-rules.js';
+import {validateQuestDefinitions,validateErrandContacts} from './quest-definitions.js';
 import {validateContentQuests} from './content-quests.js';
 import {validateDialogue} from './content-dialogue.js';
 import {FORCE_EQUIPMENT,defaultForceEquipment,validateForceEquipment} from './content-force-equipment.js';
@@ -137,7 +139,8 @@ export function validateContentPackage(value) {
   check(value.includeOriginalResidents===undefined||typeof value.includeOriginalResidents==='boolean', "Habitantes originales", "elegí si se incluyen los habitantes genéricos del mapa.");
   try{validateCampaignStory(value.campaignStory,new Set((Array.isArray(value.characters)?value.characters:[]).map(c=>c?.id)),new Set((Array.isArray(value.quests)?value.quests:[]).map(q=>q?.id)));}catch(error){errors.push(error.message);}
   try{validateContentQuests(value.quests,new Set((Array.isArray(value.characters)?value.characters:[]).map(c=>c?.id)));}catch(error){errors.push(error.message);}
-  errors.push(...validateArtilleryTradingRules(value.artilleryTrading),...validateArtilleryTransportRules(value.artilleryTransport),...validateArtilleryProfiles(value.artilleryProfiles),...validateAmmunitionMarket(value.ammunitionMarket),...validateArtillerySupply(value.artillerySupply),...validateMilitiaPatrol(value.militiaPatrol),...validateMilitiaProgression(value.militiaProgression),...validateCareRules(value.careRules),...validateFoundry(value.foundry),...validateCampaignRoles(value.campaignRoles,Array.isArray(value.characters)?value.characters:[]),...validateImportRules(value.imports),...validateCampaignRules(value.rules),...validateHeadquarters(value.headquarters),...validateStartingTerritory(value.startingTerritory,value.headquarters));
+  errors.push(...validateContractRules(value.contractRules),...validateArtilleryTradingRules(value.artilleryTrading),...validateArtilleryTransportRules(value.artilleryTransport),...validateArtilleryProfiles(value.artilleryProfiles),...validateAmmunitionMarket(value.ammunitionMarket),...validateArtillerySupply(value.artillerySupply),...validateMilitiaPatrol(value.militiaPatrol),...validateMilitiaProgression(value.militiaProgression),...validateCareRules(value.careRules),...validateFoundry(value.foundry),...validateCampaignRoles(value.campaignRoles,Array.isArray(value.characters)?value.characters:[]),...validateImportRules(value.imports),...validateCampaignRules(value.rules),...validateHeadquarters(value.headquarters),...validateStartingTerritory(value.startingTerritory,value.headquarters));
+  if(value.errands!==undefined)errors.push(...validateQuestDefinitions(value.errands));
   if (value.arrivalSites !== undefined) errors.push(...validateArrivalSites(value.arrivalSites));
   for (const key of ["characters", "weapons", "placements"])
     check(
@@ -146,6 +149,7 @@ export function validateContentPackage(value) {
       "se necesita una lista de hasta 500 elementos.",
     );
   if (errors.length) return errors;
+  errors.push(...validateErrandContacts(value));
   const sets = {quests:new Set((value.quests??[]).map(q=>q.id))};
   for (const key of ["characters", "weapons", "placements"]) {
     sets[key] = new Set();

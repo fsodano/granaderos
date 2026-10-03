@@ -62,5 +62,5 @@ export default function Campaign({state:s,dispatch,onBattle,onOpenDesk}:{state:a
  <SectorEnvironment sector={selected} hour={s.hour} local={selected===s.location}/>
  {sector?<><SectorIncome state={s} definition={def}/><button className="line-button" disabled={sector.owner!=='patriot'||sector.fort>=3||s.resources.treasury<150||Boolean(s.pendingBattle)||s.defeated} onClick={()=>dispatch({type:'fortify',sector:selected})}>Fortificar · 150 pesos ({sector.fort}/3)</button><MilitiaTraining key={selected} state={s} sectorId={selected} dispatch={dispatch}/><MilitiaDistribution key={`distribution-${selected}`} state={s} sector={selected} dispatch={dispatch}/></>:<p>Esta celda conserva su propio terreno y sus objetos. Los servicios y las milicias se administran en el sector principal de la localidad.</p>}
  </>}</div></aside></div><StoryQuestJournal state={s}/>
- <CharacterDossier operative={hired.find((o:any)=>o.id===dossier)} record={s.operativeState[dossier??-1]} onClose={()=>setDossier(null)}/></section>;
+ <CharacterDossier state={s} operative={hired.find((o:any)=>o.id===dossier)} record={s.operativeState[dossier??-1]} onClose={()=>setDossier(null)}/></section>;
 }

@@ -18,6 +18,7 @@ import {validateSectorDeployment} from './sector-deployment.js';
 import {NOISE_KINDS} from './tactical-awareness.js';
 import {validateTacticalSpace} from './tactical-space.js';
 import {validateRegionalWeather} from './regional-weather.js';
+import {validateQuestDefinitions} from './quest-definitions.js';
 import {validateQuestGifts} from './quests.js';
 import {validatePocketOrder} from './inventory-pockets.js';
 import {validateWeaponReadiness} from './weapon-readiness.js';
@@ -42,7 +43,7 @@ const text=x=>typeof x==='string'&&x.length<=1000;
 function need(ok,label){if(!ok)throw Error(`La partida contiene ${label} inválidos.`);}
 function safeTree(value,depth=0){need(depth<=20,'objetos anidados');if(typeof value==='number')need(Number.isFinite(value),'números');if(value&&typeof value==='object'){need(Object.keys(value).length<=10000,'colecciones');for(const[k,v]of Object.entries(value)){need(!['__proto__','constructor','prototype'].includes(k),'claves');safeTree(v,depth+1);}}}
 export function validateBattleSnapshot(value){
-need(object(value),'datos tácticos');safeTree(value);need(JSON.stringify(value).length<=3000000,'tamaño táctico');const s=removeIgnitionSupplies(structuredClone(value));for(const u of s.units??[]){if(u.ammo!==undefined)need(integer(u.ammo,0,1000000),'suministros');validateHands(u.ammunitionVersion===1?groupUnitAmmunition(u):u);}migrateBattleAmmunition(s);validateRegionalWeather(s);if(s.bleedSeconds!==undefined)need(number(s.bleedSeconds,0,6)&&s.bleedSeconds<6,'reloj de hemorragia');for(const key of ['elapsedSeconds','syncedSeconds','startSeconds'])if(s[key]!==undefined)need(Number.isSafeInteger(s[key])&&s[key]>=0,'reloj táctico');if(s.roundTimeCharged!==undefined)need(typeof s.roundTimeCharged==='boolean','turno del reloj');for(const l of s.lights??[])if(l.remainingSeconds!==undefined)need(Number.isFinite(l.remainingSeconds)&&l.remainingSeconds>=0,'duración de luz');for(const u of s.units??[])validateTraining(u);
+need(object(value),'datos tácticos');safeTree(value);need(JSON.stringify(value).length<=3000000,'tamaño táctico');const s=removeIgnitionSupplies(structuredClone(value));if(s.errandDefinitions!==undefined)need(validateQuestDefinitions(s.errandDefinitions).length===0,'encargos del despliegue');for(const u of s.units??[]){if(u.ammo!==undefined)need(integer(u.ammo,0,1000000),'suministros');validateHands(u.ammunitionVersion===1?groupUnitAmmunition(u):u);}migrateBattleAmmunition(s);validateRegionalWeather(s);if(s.bleedSeconds!==undefined)need(number(s.bleedSeconds,0,6)&&s.bleedSeconds<6,'reloj de hemorragia');for(const key of ['elapsedSeconds','syncedSeconds','startSeconds'])if(s[key]!==undefined)need(Number.isSafeInteger(s[key])&&s[key]>=0,'reloj táctico');if(s.roundTimeCharged!==undefined)need(typeof s.roundTimeCharged==='boolean','turno del reloj');for(const l of s.lights??[])if(l.remainingSeconds!==undefined)need(Number.isFinite(l.remainingSeconds)&&l.remainingSeconds>=0,'duración de luz');for(const u of s.units??[])validateTraining(u);
 need(integer(s.width,4,128)&&integer(s.height,4,128),'dimensiones');const coord=p=>object(p)&&integer(p.x,0,s.width-1)&&integer(p.y,0,s.height-1);
 need(Array.isArray(s.tiles)&&s.tiles.length===s.width*s.height,'casillas');const seen=new Set();
 for(const t of s.tiles){validateCoverMetadata(t);need(coord(t)&&!seen.has(`${t.x},${t.y}`),'posiciones');seen.add(`${t.x},${t.y}`);need(['wall','grass','road','water','stone','mud','forest','scrub','floor','door','window','rubble','cliff'].includes(t.type)&&typeof t.blocked==='boolean'&&number(t.cover,0,100),'terreno');for(const key of ['blocksSight','open','locked'])if(t[key]!==undefined)need(typeof t[key]==='boolean','puertas');for(const key of ['buildingId','roomId','doorId'])if(t[key]!=null)need(text(t[key]),'habitaciones');}
@@ -151,7 +152,7 @@ for(const n of s.npcs){
  if(n.civilianSupplies!==undefined)need(validCivilianSupplies(n.civilianSupplies),'suministros civiles');
  if(n.abilities!==undefined)need(validCharacterAbilities(n.abilities),'habilidades del personaje');
  validateDetainedPrisoner(n);validatePrisonerRelease(n,s);validatePrisonerEscape(n,s);
- for(const gift of validateQuestGifts(n))claimStack(gift);
+ for(const gift of validateQuestGifts(n,s))claimStack(gift);
  need(coord(n)&&text(n.id)&&text(n.name)&&!ids.has(n.id)&&!npcIds.has(n.id),'personajes');npcIds.add(n.id);
  if(n.hp!==undefined)need(number(n.hp,0,100),'salud civil');
  if(n.energy!==undefined)need(number(n.energy,0,100),'energía civil');

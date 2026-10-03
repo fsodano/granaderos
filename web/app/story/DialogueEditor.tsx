@@ -29,7 +29,7 @@ export default function DialogueEditor({value,greeting,characters,quests,ownerId
     <button type="button" onClick={()=>changeNode({choices:node.choices.filter((c:any)=>c.id!==choice.id)})}>Quitar opción {i+1}</button>
    </fieldset>)}
    <button type="button" disabled={node.choices.length>=12} onClick={()=>changeNode({choices:[...node.choices,{id:nextId('choice',node.choices),label:'Continuar',next:value.nodes.find((n:any)=>n.id!==node.id)?.id??node.id}]})}>Agregar opción</button>
-   <small>Hasta 30 pasajes y 12 opciones por pasaje. Las condiciones deciden qué opciones aparecen. Podés agregar un pago o una recompensa en pesos. Los encargos pueden iniciarse, completarse o fallar con estas opciones. Los objetos todavía no están disponibles.</small>
+   <small>Hasta 30 pasajes y 12 opciones por pasaje. Las condiciones deciden qué opciones aparecen. Podés agregar un pago o una recompensa en pesos. Los encargos pueden iniciarse, completarse o fallar con estas opciones. Las entregas físicas se configuran en Encargos locales.</small>
   </>}
  </fieldset>;
 }

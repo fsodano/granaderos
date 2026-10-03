@@ -6,7 +6,7 @@ export function hasAuthoredDialogue(npc){
  return Boolean(npc&&(npc.dialogue==='special'||npc.operativeId!==undefined||npc.mission||NPC_QUESTS.some(q=>q.npcId===npc.id)));
 }
 export function dialogueOptions(npc,quest=null){
- if(!hasAuthoredDialogue(npc))return [];
+ if(!hasAuthoredDialogue(npc)&&!quest)return [];
  return [['repeat','Repetir respuesta'],...(npc.mission?[['mission','Conversar sobre la misión']]:[['friendly','Saludar'],['direct',npc.operativeId!==undefined?'Preguntar por sus condiciones':'Preguntar por la localidad']]),
  ...(quest&&!['completed','failed'].includes(quest.status)&&(!quest.carried||quest.status!=='offered')?[['quest',quest.status==='offered'?(quest.escort?'Confirmar llegada a la salida':'Entregar pertrechos'):(quest.escort?'Aceptar escolta':'Consultar encargo')]]:[]),
  ...(quest?.escort&&quest.status==='offered'?[['escortFollow','Seguir a este combatiente'],['escortWait','Esperar aquí']]:[]),

@@ -1412,7 +1412,7 @@ export function npcGiftPreview(s,u,npc){
  if(s.mode!=='exploration')return result('Terminá el combate antes de entregar el objeto.');
  if(!npc||!s.npcs.includes(npc)||npc.departure||npc.fled||npc.routed||(npc.hp??100)<=0||npc.unconscious||!canSee(s,u,npc))return result('El interlocutor debe estar disponible y a la vista.');
  if(civilianWoundedByPlayer(npc))return result('No quiere colaborar con quienes lo hirieron.');
- try{questGiftPlan(u,npc);}catch(error){return result(error.message);}
+ try{questGiftPlan(u,npc,s);}catch(error){return result(error.message);}
  const inReach=cell=>sameSurface(cell,npc)&&Math.abs(cell.x-npc.x)+Math.abs(cell.y-npc.y)===1&&hasLineOfSight(s,cell,npc);
  if(inReach(u))return result();
  if(u.entangled)return result('Primero debés liberarte de las boleadoras.');
@@ -1901,8 +1901,8 @@ else if(a.type==='steal'){
 }
 else if(a.type==='giveItem'){
  const preview=npcGiftPreview(s,u,target);if(!preview.valid||preview.path.length)return fail(preview.reason??'Acercate al interlocutor para entregar el objeto.');
- const plan=questGiftPlan(u,target);pay(preview.actionPa);plan.unit.ap=u.ap;replaceUnit(u,plan.unit);target.questGifts=plan.gifts;lowerWeapon(u);
- sayObserved(s,[u],`${u.name} entrega un poncho a ${target.name}. Recibidos: ${plan.gifts.length}/2.`);
+ const plan=questGiftPlan(u,target,s);pay(preview.actionPa);plan.unit.ap=u.ap;replaceUnit(u,plan.unit);target.questGifts=plan.gifts;lowerWeapon(u);
+ sayObserved(s,[u],`${u.name}: ${plan.label} a ${target.name}. Recibidos: ${plan.gifts.length}/${plan.required}.`);
 }
 else if(a.type==='equipLoot'){
   const preview=equipLootPreview(s,u,a.inventoryKey,a.slot??'primary');if(!preview.valid)return fail(preview.reason);
@@ -1922,7 +1922,7 @@ else if(a.type==='inventoryMap'){
  let plan;try{plan=planInventoryMap(s,u,a);}catch(error){return fail(error.message);}
  if(plan.kind==='gift'){
   if(plan.path.length)return fail('Acercate al interlocutor para entregar el objeto.');
-  let decision;try{decision=questGiftDecision(plan.target,plan.extraction.stack);}catch(error){return fail(error.message);}
+  let decision;try{decision=questGiftDecision(plan.target,plan.extraction.stack,s);}catch(error){return fail(error.message);}
   pay(plan.cost);
   if(decision.accepted){plan.extraction.unit.ap=u.ap;lowerWeapon(plan.extraction.unit);replaceUnit(u,plan.extraction.unit);plan.target.questGifts=decision.gifts;}
   recordNpcGiftResult(s,plan.action,plan.target,decision.accepted?'accepted':'refused',decision.text);

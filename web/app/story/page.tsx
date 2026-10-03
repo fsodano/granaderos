@@ -5,7 +5,10 @@ import AlternativeLoads from './AlternativeLoads';
 import {storyReferences} from '../../../game/campaign-story.js';
 import DialogueEditor from './DialogueEditor';
 import QuestEditor from './QuestEditor';
+import ErrandEditor from './ErrandEditor';
+import {errandContacts} from '../../../game/quest-definitions.js';
 import CampaignRules from './CampaignRules';
+import ContractPricePreview from './ContractPricePreview';
 import { useEffect, useRef, useState } from 'react';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import {
@@ -281,7 +284,7 @@ export default function ContentEditor() {
 
     if (
       collection === 'characters' &&
-      (storyReferences(draft.campaignStory,'character',item.id)||(draft.quests??[]).some((q:any)=>q.requiredAlive?.includes(item.id))||draft.placements.some((p:any)=>p.afterDeath===item.id)||draft.characters.some((owner:any)=>owner.id!==item.id&&owner.encounter?.dialogue?.nodes.some((n:any)=>n.choices.some((choice:any)=>choice.conditions?.some((c:any)=>['character','meeting','supply'].includes(c.type)&&c.character===item.id)||choice.effects?.some((e:any)=>e.type==='movement'&&e.character===item.id)))))
+      ((draft.errands??[]).some((q:any)=>errandContacts(draft).find(c=>c.id===q.npcId)?.characterId===item.id)||storyReferences(draft.campaignStory,'character',item.id)||(draft.quests??[]).some((q:any)=>q.requiredAlive?.includes(item.id))||draft.placements.some((p:any)=>p.afterDeath===item.id)||draft.characters.some((owner:any)=>owner.id!==item.id&&owner.encounter?.dialogue?.nodes.some((n:any)=>n.choices.some((choice:any)=>choice.conditions?.some((c:any)=>['character','meeting','supply'].includes(c.type)&&c.character===item.id)||choice.effects?.some((e:any)=>e.type==='movement'&&e.character===item.id)))))
     ) {
       setNotice(
         'Quitá primero las apariciones y condiciones, los movimientos y los encargos que usan este personaje.',
@@ -509,6 +512,7 @@ export default function ContentEditor() {
           ['arrivals', 'Llegadas'],
           ['rules', 'Reglas'],
           ['quests', 'Encargos'],
+          ['errands', 'Encargos locales'],
           ['test', 'Pruebas'],
         ].map(([id, name]) => (
           <button
@@ -524,7 +528,7 @@ export default function ContentEditor() {
         ))}
       </nav>
       {tab==='weapons'&&<nav aria-label="Tipos de armas"><button aria-pressed={weaponKind==='handheld'} onClick={()=>setWeaponKind('handheld')}>Armas portátiles</button><button aria-pressed={weaponKind==='artillery'} onClick={()=>setWeaponKind('artillery')}>Artillería</button></nav>}
-      {tab==='weapons'&&weaponKind==='artillery'?<ArtilleryProfiles draft={draft} onChange={change}/>:tab === 'rules' ? <CampaignRules draft={draft} onChange={change}/> : tab === 'quests' ? <QuestEditor draft={draft} onChange={change}/> : tab === 'arrivals' ? <ArrivalSites draft={draft} onChange={change}/> : tab !== 'test' ? (
+      {tab==='weapons'&&weaponKind==='artillery'?<ArtilleryProfiles draft={draft} onChange={change}/>:tab === 'rules' ? <CampaignRules draft={draft} onChange={change}/> : tab === 'errands' ? <ErrandEditor draft={draft} onChange={change}/> : tab === 'quests' ? <QuestEditor draft={draft} onChange={change}/> : tab === 'arrivals' ? <ArrivalSites draft={draft} onChange={change}/> : tab !== 'test' ? (
         <div className="editor-columns">
           <aside>
             <h2>
@@ -722,11 +726,11 @@ export default function ContentEditor() {
                         <label>Tipo de servicio
                           <select value={item.service} onChange={e=>update({service:e.target.value,...(e.target.value==='permanent'?{monthlyPay:0}:{})})}>
                             <option value="permanent">Permanente, sin paga</option>
-                            <option value="contract">Contrato diario, semanal o mensual</option>
+                            <option value="contract">Contrato por los plazos de la campaña</option>
                           </select>
                         </label>
                         <p>Se incorpora donde lo encontrás y conserva sus heridas. {item.service==='contract'?'La paga mensual define el precio de cada plazo. El jugador elige y paga antes de incorporarlo.':'Sirve sin paga y sin fecha de vencimiento.'}</p>
-                        {item.service==='contract'&&<small>Precio inicial: {Math.ceil(item.monthlyPay/30)} pesos por día, {Math.ceil(item.monthlyPay/30)*7} por semana y {Math.ceil(item.monthlyPay/30)*30} por mes. El día se redondea hacia arriba; la experiencia puede aumentar el precio futuro.</small>}
+                        {item.service==='contract'&&<ContractPricePreview draft={draft} monthlyPay={item.monthlyPay}/>}
                         <label>Liderazgo mínimo del interlocutor
                           <input type="number" min={0} max={100} value={item.encounter.requiredLeadership} onChange={e=>update({encounter:{...item.encounter,requiredLeadership:e.target.valueAsNumber}})}/>
                         </label>

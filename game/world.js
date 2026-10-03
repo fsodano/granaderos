@@ -62,6 +62,7 @@ export function enterSector(request,previous=null,{placement=false}={}){
  });
  // Deployment intent does not establish contact. Resolve sight only after final placement.
  let state=createBattle([...map.squad,...(map.garrison??[]),...(map.missionAllies??[])],{...map,exploration:true,deferContact:true});
+ if(request.errandDefinitions!==undefined)state.errandDefinitions=structuredClone(request.errandDefinitions);
  // Retained garrisons also start a new encounter clock. Their wounds and gear
  // persist, but remembered targets and reaction counters belong to the old visit.
  for(const unit of state.units)clearEncounter(unit);
@@ -108,7 +109,7 @@ export function enterSector(request,previous=null,{placement=false}={}){
  if(request.npcs===undefined)for(const npc of previous?.npcs??[]){
    if(npc.detention||residents.some(current=>current.id===npc.id))continue;
    const harmed=(civilianIncidents(npc).length>0||(npc.hp??civilianMaxHp(npc))<civilianMaxHp(npc)||(npc.energy??100)<100||npc.bleeding>0)&&!state.units.some(unit=>unit.side==='player'&&npc.operativeId!==undefined&&Number(unit.id)===npc.operativeId);
-   if(harmed||npc.escort||npc.operativeId===undefined&&npc.questGifts?.length&&validateQuestGifts(npc).length)residents.push(structuredClone(npc));
+   if(harmed||npc.escort||(npc.operativeId===undefined||npc.recruitable===false)&&npc.questGifts?.length&&validateQuestGifts(npc,state).length)residents.push(structuredClone(npc));
  }
  state.npcs=residents.map(npc=>{
    const old=previous?.npcs?.find(n=>n.id===npc.id&&n.presenceRevision===npc.presenceRevision),authored=state.npcs.find(n=>n.id===npc.id),resident=structuredClone({...npc,...authored,...old});

@@ -1,6 +1,7 @@
-// The classic renewal warning covers contracts ending within two hours.
+// The default renewal warning covers contracts ending within two hours.
 // Only explicit campaign waits pause; tactical time and blocking travel finish.
-export const CONTRACT_WARNING_HOURS=2;
+import {contractRules,DEFAULT_CONTRACT_RULES} from './contract-rules.js';
+export const CONTRACT_WARNING_HOURS=DEFAULT_CONTRACT_RULES.warningHours;
 export const initialContractAttention=()=>({version:1,reported:{},notice:null});
 export function migrateContractAttention(s){if(s.contractAttention===undefined)s.contractAttention=initialContractAttention();return s;}
 export function reconcileContractAttention(s){
@@ -12,7 +13,7 @@ export function reconcileContractAttention(s){
 export function contractAttentionStates(s){
  return s.recruited.flatMap(id=>{
   const r=s.operativeState[id],expiresAt=s.contracts[id]?.expiresAt;
-  if(!r?.alive||r.captured||!Number.isInteger(expiresAt)||expiresAt-s.hour>CONTRACT_WARNING_HOURS)return [];
+  if(!r?.alive||r.captured||!Number.isInteger(expiresAt)||expiresAt-s.hour>contractRules(s).warningHours)return [];
   return [{operativeId:id,expiresAt,code:expiresAt>s.hour?'expiring':'expired'}];
  });
 }
@@ -45,7 +46,7 @@ export function validateContractAttention(s,roster){
   const seen=new Set();
   for(const e of n.events){
    need(exact(e,['operativeId','expiresAt','code'])&&ids.has(e.operativeId)&&!seen.has(e.operativeId)&&marker({expiresAt:e.expiresAt,code:e.code}));seen.add(e.operativeId);
-   need(e.code==='expiring'?e.expiresAt>n.hour&&e.expiresAt-n.hour<=CONTRACT_WARNING_HOURS:e.expiresAt<=n.hour);
+   need(e.code==='expiring'?e.expiresAt>n.hour&&e.expiresAt-n.hour<=contractRules(s).warningHours:e.expiresAt<=n.hour);
   }
  }
  return s;

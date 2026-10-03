@@ -10,7 +10,7 @@ Nombres, apodos, retratos, biografías, función mostrada, diez atributos inicia
 
 “Iniciar campaña con estas fichas” crea una campaña real con una copia validada de las definiciones. La identidad SHA-256 acompaña al paquete y se comprueba al importar la partida. El perfil editado llega a la contratación, al despliegue táctico y al guardado. Las campañas del editor tienen su propio guardado; no reemplazan la campaña normal ni la de pruebas.
 
-Se conserva la economía publicada: `economyVersion: 2`, tesorería en pesos, compras y contratación por los plazos publicados, incluidos contratos semanales y mensuales de especialistas. No se restauran las antiguas cadenas de recursos estratégicos.
+Se conserva la economía publicada: `economyVersion: 2`, tesorería en pesos, compras y contratación por los plazos de la campaña, incluidos los plazos medio y largo para especialistas. No se restauran las antiguas cadenas de recursos estratégicos.
 
 Los contratables del boletín no generan encuentros antes de ser contratados. Sus fichas no muestran controles de aparición. El boletín permite elegir un destino de llegada controlado con infraestructura de recepción: posta, cuartel, puerto o embarcadero. Una celda de agua o un paso cordillerano no sirven por sí solos. Los puertos y embarcaderos solo se habilitan en localidades con acceso al río navegable.
 
@@ -23,6 +23,16 @@ Las identidades nuevas no reciben poderes por ocupar el número de un mando hist
 La ficha permite elegir especialidades aplicadas por las reglas actuales, equitación y progreso por experiencia o nivel fijo. Equitación experta garantiza una destreza ecuestre mínima de 80. Con ambas opciones de progreso se conserva el entrenamiento práctico de atributos. Las especialidades llegan al combate y a la instrucción de milicia; un instructor nuevo puede guardar y continuar un curso. Los contratables nuevos pueden tener carácter, frases y apariencia propios. Los habitantes nuevos tienen diálogos con opciones. Los encargos editables se conectan a las opciones de diálogo y tienen un registro en la carta de campaña.
 
 Todos estos candidatos se incorporan por contrato desde el boletín. Una paga de cero es un contrato gratuito con el plazo elegido, no servicio permanente. El avance histórico protege a sus mandos. Con capítulos propios, podés quitarlos o copiarlos como habitantes independientes, sin transferir sus funciones históricas. La ficha permite elegir el arma principal y el arma blanca inicial. Un paquete anterior sin esta selección conserva el equipo original del personaje.
+
+## Contratos y paga
+
+En **Reglas → Contratos y paga** podés configurar los plazos corto, medio y largo, de 1 a 90 días enteros y en orden creciente. Todos los contratables pueden elegir los tres, incluidos los especialistas de élite y los habitantes con servicio por contrato. Los valores originales son 1, 7 y 30 días.
+
+La paga mensual de la ficha se divide por los días de cálculo configurados (30 por defecto). Cada tramo completo de experiencia (100 por defecto) aumenta el resultado en el porcentaje indicado (10 % por defecto). La paga diaria se redondea hacia arriba y se multiplica por los días del contrato. Cero por ciento mantiene la paga inicial. Una ficha con servicio por contrato y paga cero conserva su vencimiento.
+
+El aviso de renovación admite de 0 a 24 horas antes del vencimiento; el valor original es 2. Cero avisa solamente al vencer. Una espera se detiene por el aviso; el viaje de llegada no consume días de servicio. Renovar suma el plazo elegido al tiempo que queda. El boletín, las conversaciones, las hojas de servicio y los avisos usan las reglas de esa campaña.
+
+Las reglas forman parte del paquete guardado. Editar el borrador solo cambia campañas nuevas. **Restaurar contratos originales** elimina la configuración opcional y recupera los valores originales. Los paquetes anteriores conservan sus precios, plazos y avisos.
 
 ## Suministros iniciales de cada personaje
 
@@ -48,7 +58,7 @@ Podés crear un habitante herido con 1 de salud y energía mayor que 0. Primero 
 
 La opción «Puede incorporarse a la escuadra» permite elegir entre un interlocutor civil y un recluta local. Para incorporarlo hay que encontrarlo y conversar junto a él. Su ficha define el liderazgo mínimo, la cantidad de localidades seguras y una localidad concreta que deba estar liberada, si corresponde. Retiro y Buenos Aires cuentan como una localidad para ese requisito. Un habitante muerto, inconsciente o cautivo no puede incorporarse.
 
-El «Tipo de servicio» permite elegir servicio permanente sin paga o contrato por un día, una semana o un mes. En el segundo caso, la paga mensual define el precio base. El editor muestra los tres precios iniciales: el importe diario se redondea hacia arriba, la semana usa siete días y el mes treinta. La experiencia puede aumentar el precio futuro. Un contrato de cero pesos conserva su vencimiento. El arma de la ficha se entrega al incorporarse; todavía no representa un inventario de NPC que se pueda saquear. El equipo blanco inicial conserva la regla general del juego.
+El «Tipo de servicio» permite elegir servicio permanente sin paga o contrato por los tres plazos de la campaña. Por defecto son un día, una semana y un mes. En el segundo caso, la paga mensual define el precio base. El editor muestra los tres precios iniciales con las reglas del borrador. El importe diario se redondea hacia arriba. La experiencia puede aumentar el precio futuro. Un contrato de cero pesos conserva su vencimiento. El arma de la ficha se entrega al incorporarse; todavía no representa un inventario de NPC que se pueda saquear. El equipo blanco inicial conserva la regla general del juego.
 
 La conversación muestra el plazo y el precio antes de contratar; el botón queda deshabilitado si faltan pesos. El servicio empieza en esa celda, sin viaje de llegada. Al vencer durante un despliegue, el personaje espera a que salgas del sector. Después vuelve según su aparición configurada, conservando su salud. Puede renovarse el contrato desde la campaña. Despedirlo no devuelve el anticipo.
 
@@ -115,7 +125,7 @@ Estar sano no significa estar en el mapa ni incorporado. Agregá condiciones de 
 
 El juego comprueba las condiciones al mostrar las opciones y al elegirlas. Una opción puede aparecer al pasar de día o después de la muerte de otro personaje. Las referencias a personajes impiden eliminarlos mientras una conversación los use. Las condiciones no cambian el estado por sí solas. Para cambiar el dinero disponible, agregá una operación en «Pago o recompensa».
 
-Activá «Cambiar los pesos al elegir esta opción», elegí si el jugador paga o recibe y escribí el importe. El juego muestra esas condiciones antes de elegir. Cada operación se aplica una sola vez por personaje y opción. Guardar, volver a la conversación o incorporar y luego despedir al personaje no la repite. Si faltan fondos, la opción queda desactivada y explica cuánto falta. Las copias de personajes tienen registros independientes. Una opción también puede cambiar un encargo. Si combina ese cambio con pesos, ambos se aplican juntos. Una opción también puede llamar a otro habitante. Las operaciones combinadas se aceptan juntas. La entrega de objetos sigue pendiente.
+Activá «Cambiar los pesos al elegir esta opción», elegí si el jugador paga o recibe y escribí el importe. El juego muestra esas condiciones antes de elegir. Cada operación se aplica una sola vez por personaje y opción. Guardar, volver a la conversación o incorporar y luego despedir al personaje no la repite. Si faltan fondos, la opción queda desactivada y explica cuánto falta. Las copias de personajes tienen registros independientes. Una opción también puede cambiar un encargo. Si combina ese cambio con pesos, ambos se aplican juntos. Una opción también puede llamar a otro habitante. Las operaciones combinadas se aceptan juntas. Para entregas físicas y escoltas, usá **Encargos locales**.
 
 ## Condiciones sobre suministros
 
@@ -860,3 +870,13 @@ Si no definís un valor, se usan 16 PA, 18 de daño base y 1,5 casillas. Las arm
 ya guardadas conservan su definición. El golpe no consume cartuchos; las heridas
 y la protección siguen las reglas de combate. Los accesorios físicos de bayoneta
 siguen pendientes. [Verificación](../verification/authored-firearm-melee.md).
+
+## Encargos locales con entregas y escoltas
+
+En **Encargos locales**, editá los cinco encargos históricos o creá uno para otro contacto. Podés configurar título, oferta, respuesta final, pago en pesos, recompensa y condiciones de control o encargos previos. Cada contacto admite un encargo local. Los encargos de diálogo de la sección **Encargos** conservan sus estados y conversaciones.
+
+El objetivo puede ser conversar y pagar pesos, entregar suministros o ropa desde el inventario, o acompañar al contacto hasta una salida hacia otra localidad. Para una entrega o escolta, el contacto debe estar fijo en esa localidad y no poder incorporarse a la escuadra. Los habitantes nuevos permiten desactivar esa incorporación en su ficha. Las salidas rurales sin localidad no se ofrecen para las escoltas.
+
+Las entregas pueden ser parciales. Cada objeto queda con su receptor. Guardar, salir y volver conservan su cantidad y estado. La recompensa se aplica una sola vez cuando se cumplen las condiciones. La muerte del contacto hace fallar un encargo pendiente sin devolver los objetos. Las conversaciones de un habitante pueden mantener sus propios encargos de diálogo mientras recibe objetos.
+
+Los borradores anteriores conservan los cinco encargos históricos sin cambios. Editar esta sección guarda una colección `errands` separada de `quests`. Los encargos locales no usan el antiguo inventario global de pólvora, armas o caballos. Se pueden deshacer los cambios y lanzar una campaña desde el mismo editor.

@@ -3,6 +3,7 @@ import {sitePath} from '../lib/site-path.js';
 import {useState} from 'react';
 import {CAMPAIGN_SECTORS,rosterFor,contractQuote,contractStatus,civicStatus} from '../../game/campaign.js';
 import {hiringArrivalOptions,hiringArrivalReason,hiringTravelHours,pendingHire} from '../../game/hiring-arrivals.js';
+import {contractTermsFor} from '../../game/contracts.js';
 import {filterMercenaries} from '../../game/mercenary-catalogue.js';
 import {isContractOperative} from '../../game/content-character-ids.js';
 import {characterProfile} from '../../game/characters.js';
@@ -10,11 +11,11 @@ import {portraitFor} from '../lib/portraits';
 import CharacterDossier from './CharacterDossier';
 import './recruitment.css';
 type Props={state:any;dispatch:(a:any)=>void};
-const terms=[['day','Un día'],['week','Una semana'],['month','Un mes']];
 export default function Recruitment({state:s,dispatch}:Props){
  const [selected,setSelected]=useState<number|null>(null),[periods,setPeriods]=useState<Record<number,string>>({});
  const [query,setQuery]=useState(''),[specialty,setSpecialty]=useState('all'),[availability,setAvailability]=useState('all'),[sort,setSort]=useState('name');
  const [chosenDestination,setDestination]=useState('');
+ const terms=Object.entries(contractTermsFor(s)).map(([id,period])=>[id,period.name]);
  const roster=rosterFor(s).filter(o=>isContractOperative(s,o));
  const serving=roster.filter(o=>{const r=s.operativeState[o.id];return s.recruited.includes(o.id)&&r?.alive&&r.hp>0&&!r.captured;}).length;
  const options=hiringArrivalOptions(s);
@@ -70,6 +71,6 @@ export default function Recruitment({state:s,dispatch}:Props){
     <small>Personaje ficticio · {profile.personality.split('.')[0]}.</small>
    </article>;
   })}</div>
-  <CharacterDossier operative={roster.find(o=>o.id===selected)} record={s.operativeState[selected??-1]} onClose={()=>setSelected(null)}/>
+  <CharacterDossier state={s} operative={roster.find(o=>o.id===selected)} record={s.operativeState[selected??-1]} onClose={()=>setSelected(null)}/>
  </section>;
 }

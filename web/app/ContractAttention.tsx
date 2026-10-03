@@ -1,5 +1,5 @@
 import {publicContractNotice} from '../../game/contract-attention.js';
-import {CONTRACT_TERMS,contractQuote} from '../../game/contracts.js';
+import {contractTermsFor,contractQuote} from '../../game/contracts.js';
 import './assignment-attention.css';
 
 export default function ContractAttention({state:s,roster,dispatch}:{state:any;roster:any[];dispatch:(action:any)=>void}){
@@ -16,7 +16,7 @@ export default function ContractAttention({state:s,roster,dispatch}:{state:any;r
    const unchanged=current?.expiresAt===event.expiresAt;
    const remaining=Math.max(0,event.expiresAt-s.hour);
    return <li key={event.operativeId}><strong>{name}</strong>: {!serving?'Ya no está en servicio.':!unchanged?'El contrato ya fue renovado.':remaining?`El contrato termina en ${remaining} ${remaining===1?'hora':'horas'}.`:'El contrato terminó. La salida queda pendiente hasta que pueda dejar la escuadra.'}
-    {serving&&unchanged&&op&&<div className="travel-actions">{Object.entries(CONTRACT_TERMS).map(([term,period])=>{
+    {serving&&unchanged&&op&&<div className="travel-actions">{Object.entries(contractTermsFor(s)).map(([term,period])=>{
      const quote=contractQuote(s,op,term),reason=blocked?'Resolvé el encuentro antes de renovar.':!quote.available?quote.reason:s.resources.treasury<quote.price?'No hay suficientes pesos.':'';
      return <button className="line-button" key={term} disabled={Boolean(reason)} title={reason||undefined} aria-label={`Renovar a ${name}: ${period.name} · ${quote.price} pesos`} onClick={()=>dispatch({type:'renewContract',id:event.operativeId,term,expectedExpiresAt:event.expiresAt})}>{period.name} · {quote.price} pesos</button>;
     })}</div>}
