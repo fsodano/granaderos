@@ -77,10 +77,13 @@ The images above are **game artwork, not gameplay screenshots**. AI-generated pa
 Run these commands from the repository root after installing the web dependencies:
 
 ```sh
-npm test             # Rules and integration checks
+npm run test:quick   # Routine development checks
+npm test             # All checks, including complete campaign routes
 npm run typecheck    # TypeScript validation
 npm run build        # Build and validate the static export in dist/
 ```
+
+Use the [development guide](docs/development/getting-started.md#checks) to select focused, quick or complete checks. Run the complete suite before a release or a change to shared gameplay rules.
 
 Start with the [published progress ledger](docs/verification/published-progress.md) for tested scope and remaining work. The [verification index](docs/verification/README.md) also preserves separate development-workspace records. Automated checks cover specific scenarios; complete campaign acceptance also requires gameplay evidence.
 

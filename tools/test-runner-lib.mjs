@@ -15,8 +15,8 @@ const firstRunPriority=[
  'tests/fresh-coastal-route.test.mjs',
  'tests/prisoner-rescue-route.test.mjs',
  'tests/army-funding-route.test.mjs',
- 'tests/historical-loss.test.mjs',
- 'tests/illustrated-sprite-packing.test.mjs',
+ 'tests/fresh-historical-loss.test.mjs',
+ 'tests/illustrated-sprite-repack.test.mjs',
  'tests/artillery-supply.test.mjs',
  'tests/artillery-transport.test.mjs',
  'tests/authored-artillery-transport.test.mjs',
@@ -78,12 +78,14 @@ function previousDurations(reportPath){
  }
 }
 
-export async function runTests({root,files,concurrency,cpus,reportName='full'}){
+export async function runTests({root,files,concurrency,cpus,reportName='full',selection}){
  assertFullTestSelection();
  const reportPath=resolve(root,'.cache/test-times',`${reportName}.json`);
- const scheduled=scheduleTests(files,previousDurations(reportPath));
+ const previous=previousDurations(reportPath);
+ const fallback=reportName==='full'||previous.length?previous:previousDurations(resolve(root,'.cache/test-times/full.json'));
+ const scheduled=scheduleTests(files,fallback);
  const expected=new Set(scheduled),records=new Map();
- const report={node:process.version,concurrency,cpus,expectedFiles:scheduled.length,scheduledFiles:scheduled,complete:false,files:[]};
+ const report={...selection,node:process.version,concurrency,cpus,expectedFiles:scheduled.length,scheduledFiles:scheduled,complete:false,files:[]};
  await mkdir(dirname(reportPath),{recursive:true});
  function save(){
   report.files=[...records.values()].sort((left,right)=>right.duration_ms-left.duration_ms||left.file.localeCompare(right.file));
@@ -92,7 +94,7 @@ export async function runTests({root,files,concurrency,cpus,reportName='full'}){
   renameSync(temporary,reportPath);
  }
  save();
- console.log(`Running ${scheduled.length} test files with ${concurrency} worker processes (${cpus} available CPUs). No file or test-name filters.`);
+ console.log(`Running all ${scheduled.length} selected test files with ${concurrency} worker processes (${cpus} available CPUs). No test-name filters.`);
  console.log(`Per-file timing report: ${reportPath}`);
  // Nested fixture runners otherwise inherit a context that suppresses execution.
  delete process.env.NODE_TEST_CONTEXT;

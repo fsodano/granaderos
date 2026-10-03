@@ -34,7 +34,11 @@ export function deployCuyoMountainBattery(start){
  for(;moves<6&&shared();moves++){
   const front=battle.artillery.find(g=>g.id===frontId),dx=Math.sign(goal.x-front.x);assert.notEqual(dx,0);
   const candidates=battle.units.filter(u=>u.side==='player'&&u.hp>=15&&artilleryContact(battle,u,front));
-  const valid=candidates.map(u=>actBattle(battle,{type:'artilleryMove',unitId:u.id,artilleryId:front.id,x:front.x+dx,y:front.y})).find(next=>!next.lastError);
+  let valid;
+  for(const unit of candidates){
+   const next=actBattle(battle,{type:'artilleryMove',unitId:unit.id,artilleryId:front.id,x:front.x+dx,y:front.y});
+   if(!next.lastError){valid=next;break;}
+  }
   assert.ok(valid,'an actual available crew must open the issued gun lane');battle=valid;
  }
  assert.equal(shared(),false,'the two paid crews must have separate gun lanes');

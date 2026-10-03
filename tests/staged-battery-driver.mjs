@@ -6,7 +6,7 @@ import {artilleryContact,artilleryCrewPlan,artilleryCosts} from '../game/tactica
 // the engine's actual crew, rather than reserving pairs that block each other.
 // The cache is only for an immutable state; replay makes the same decisions.
 export function stagedBatteryController(){
- const plans=new WeakMap();
+ const plans=new WeakMap(),controllers=new WeakMap();
  return (battle,unit)=>{
   if(battle.mode==='exploration'){
    if(!plans.has(battle)){
@@ -34,6 +34,7 @@ export function stagedBatteryController(){
    if(action)return action.unitId===unit.id?action:null;
   }
   // Once the arrival lane is clear, form crews from their current positions.
-  return coastalBatteryController(battle,{sharedArtillerySight:true})(battle,unit);
+  if(!controllers.has(battle))controllers.set(battle,coastalBatteryController(battle,{sharedArtillerySight:true}));
+  return controllers.get(battle)(battle,unit);
  };
 }

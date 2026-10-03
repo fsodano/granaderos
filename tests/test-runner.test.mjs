@@ -12,7 +12,8 @@ function fixture(t,files){
  t.after(()=>rmSync(root,{recursive:true,force:true}));
  mkdirSync(path.join(root,'tools'));
  mkdirSync(path.join(root,'tests'));
- for(const name of ['test-runner.mjs','test-runner-lib.mjs'])copyFileSync(fileURLToPath(new URL(`../tools/${name}`,import.meta.url)),path.join(root,'tools',name));
+ for(const name of ['test-runner.mjs','test-runner-lib.mjs','test-suites.mjs'])copyFileSync(fileURLToPath(new URL(`../tools/${name}`,import.meta.url)),path.join(root,'tools',name));
+ writeFileSync(path.join(root,'tools/test-suite-config.mjs'),'export default [];\n');
  for(const [name,contents]of Object.entries(files))writeFileSync(path.join(root,'tests',name),contents);
  return {
   root,

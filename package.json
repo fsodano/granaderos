@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "test": "node tools/test-runner.mjs",
+    "test:quick": "node tools/test-runner.mjs --suite quick",
+    "test:extended": "node tools/test-runner.mjs --suite extended",
     "dev": "npm --prefix web run dev",
     "build": "node tools/build-web.mjs",
     "typecheck": "node web/node_modules/typescript/bin/tsc --project web/tsconfig.json --noEmit",

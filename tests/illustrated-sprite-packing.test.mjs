@@ -1,10 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtemp,readFile,rm} from 'node:fs/promises';
-import {tmpdir} from 'node:os';
-import {join} from 'node:path';
-import sharp from '../web/node_modules/sharp/lib/index.js';
-import {removeExportKey,sheetRectangles,packIllustratedSources} from '../tools/pack-illustrated-sprites.mjs';
+import {removeExportKey,sheetRectangles} from '../tools/pack-illustrated-sprites.mjs';
 
 test('export key removal preserves red cloth, skin, iron, and navy',()=>{
  const source=Buffer.from([255,0,255,255, 223,10,230,255, 135,22,20,255, 154,93,52,255, 70,80,95,255, 25,40,61,255]);
@@ -53,22 +49,4 @@ test('white export extraction preserves enclosed cloth and rejects unknown keys'
  assert.ok(clean[edge]<90&&clean[edge+3]>0&&clean[edge+3]<255,'remove white halo from the dark contour');
  assert.throws(()=>removeExportKey(source,width,'blue'),/Unknown export key/);
  assert.throws(()=>removeExportKey(source,undefined,'white'),/source width/);
-});
-
-test('authored illustrated sheets pack as RGBA with all directions and intact margins',async()=>{
- const destination=await mkdtemp(join(tmpdir(),'granaderos-illustrated-test-'));
- try{
-  const manifest=await packIllustratedSources({destination});
-  for(const [name,entry] of Object.entries(manifest.atlases)){
-   const {data,info}=await sharp(await readFile(join(destination,entry.file))).raw().toBuffer({resolveWithObject:true});
-   assert.equal(info.channels,4,name);
-   assert.equal(entry.records.length,8*entry.framesPerDirection,name);
-   assert.equal(new Set(entry.records.map(r=>r.direction)).size,8,name);
-   assert.equal(new Set(entry.records.map(r=>r.sha256)).size,entry.records.length,`${name}: repeated raster frames`);
-   for(const r of entry.records){assert.ok(r.bounds[0]>0&&r.bounds[1]>0&&r.bounds[2]<entry.cell&&r.bounds[3]<entry.cell);}
-   let visible=0,transparent=0;
-   for(let i=0;i<data.length;i+=4){if(data[i+3])visible++;else transparent++;}
-   assert.ok(visible>0&&transparent>visible,name);
-  }
- }finally{await rm(destination,{recursive:true,force:true});}
 });

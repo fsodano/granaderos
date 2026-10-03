@@ -3,6 +3,23 @@ import assert from 'node:assert/strict';
 import {createBattle,actBattle} from '../game/tactical.js';
 import {stagedBatteryController} from './staged-battery-driver.mjs';
 import {stableCrewController} from './stable-crew-driver.mjs';
+import {coastalBatteryController} from './coastal-command-driver.mjs';
+
+test('the staged fallback uses current crew positions without retaining assignments from another battle state',()=>{
+ const units=[{id:'11',x:4,y:6},{id:'0',x:5,y:5},{id:'2',x:4,y:8},{id:'147',x:5,y:9},{id:'138',x:2,y:5},{id:'57',x:1,y:4}];
+ for(const exploration of [true,false]){
+  const options={width:20,height:12,tiles:Array.from({length:240},(_,i)=>({x:i%20,y:Math.floor(i/20),type:'grass'})),exploration,enemies:[],artillery:[
+   {id:'front',type:'bronze4',side:'player',x:5,y:6,loaded:!exploration,ammo:exploration?0:6},
+   {id:'rear',type:'bronze4',side:'player',x:5,y:8,loaded:!exploration,ammo:exploration?0:6},
+  ]};
+  const initial=createBattle(units,options),casualty=createBattle(units.map(u=>u.id==='11'?{...u,hp:0}:u),options),controller=stagedBatteryController();
+  for(const battle of [initial,casualty,initial]){
+   const before=structuredClone(battle),expected=coastalBatteryController(battle,{sharedArtillerySight:true});
+   for(const order of [battle.units,[...battle.units].reverse()])for(const unit of order)assert.deepEqual(controller(battle,unit),expected(battle,unit));
+   assert.deepEqual(battle,before);
+  }
+ }
+});
 
 test('three crowded arrival guns advance with real crews without overlapping living bodies',()=>{
  const initial=createBattle([
