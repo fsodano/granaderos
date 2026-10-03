@@ -1,5 +1,6 @@
 import {register} from 'node:module';register('./tactical-render-loader.mjs',import.meta.url);
 import test from 'node:test';import assert from 'node:assert/strict';
+import {NPC_QUESTS} from '../game/quests.js';
 import {createElement as h} from '../web/node_modules/react/index.js';import {renderToStaticMarkup as render} from '../web/node_modules/react-dom/server.node.js';
 const {default:Conversation,JA2Speech}=await import('../web/app/JA2Conversation.tsx');
 const base={npc:{id:'local-retiro',name:'Sargento del cuartel',greeting:'La instrucción continúa.'},conversation:null,quest:{status:'unoffered'},reason:null,canApproach:false,onApproach(){},onTalk(){},onClose(){}};
@@ -14,7 +15,12 @@ test('replay remains in the special panel after delivery and remains subject to 
  const blocked=render(h(Conversation,{...base,conversation,quest:{status:'completed'},reason:'Acercate.'}));assert.match(blocked,/<button disabled="">Repetir respuesta<\/button>/);
 });
 
-test('carried errands show physical receipts without a redundant confirmation',()=>{const html=render(h(Conversation,{...base,npc:{...base.npc,questGifts:[{outfit:'poncho'}]},quest:{status:'offered',carried:{outfit:'poncho',count:2}}}));assert.match(html,/Ponchos recibidos: 1\/2/);assert.doesNotMatch(html,/Confirmar entrega|Entregar pertrechos/);});
+test('carried errands show physical receipts without a redundant confirmation',()=>{
+ const original=NPC_QUESTS.find(q=>q.id==='retiro-uniformes');
+ for(const [quest,expected]of [[original,/Ponchos recibidos: 1\/2/],[{...original,carried:{...original.carried,label:'Abrigos de la posta',count:4}},/Abrigos de la posta recibidos: 1\/4/]]){
+  const html=render(h(Conversation,{...base,npc:{...base.npc,questGifts:[{outfit:'poncho'}]},quest:{...quest,status:'offered'}}));assert.match(html,expected);assert.doesNotMatch(html,/Confirmar entrega|Entregar pertrechos/);
+ }
+});
 
 test('a special character refusing an offered item gives a portrait response with only a close control',()=>{
  const html=render(h(Conversation,{...base,responseOnly:true,conversation:{npcId:'local-retiro',text:'No necesito ese objeto.'},reason:'La conversación necesita una campaña activa.',canApproach:true}));
