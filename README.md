@@ -1,26 +1,28 @@
 # Granaderos
 
-**Raise an army. Keep it supplied. Lead it into battle.**
+**Formá un ejército. Mantenelo abastecido. Conducilo a la batalla.**
 
-![Granaderos title artwork: mounted soldiers overlooking the Paraná and San Carlos convent at sunset](web/public/art/main-menu.webp)
+https://github.com/user-attachments/assets/a40025a0-ea01-4085-bcb4-ee8519b1f45e
 
-Granaderos is a browser strategy and turn-based tactical game set during the Argentine War of Independence. Recruit a force, manage funds and alliances, and command individual soldiers in battle. The game draws on **Jagged Alliance 2 v1.13** and adapts its systems to the weapons and conditions of the period.
+**Presentación · 45 segundos · Textos en español y música original.** [Leer los textos](assets/video/intro/captions.es.srt) · [Descargar el video](assets/video/intro/granaderos-intro.mp4) · [Fuentes del video](assets/video/intro/README.md)
 
-The game interface is **Spanish**. Code and documentation are English.
+Granaderos es un juego de estrategia y combate táctico por turnos para navegador, ambientado en la Guerra de la Independencia argentina. Reclutá combatientes, administrá fondos y alianzas, y dirigí a cada soldado en el campo de batalla. El juego toma como referencia **Jagged Alliance 2 v1.13** y adapta sus sistemas a las armas y condiciones de la época.
 
-**Playable and in development.** The full game and story editor are not complete. Read the [published progress ledger](docs/verification/published-progress.md) for delivered features, verification evidence and open acceptance work. The [development-workspace acceptance record](docs/verification/gameplay-completion.md) covers separate work that has not all reached `main`.
+La interfaz del juego y este README están en **español**. El código y la mayor parte de la documentación están en inglés.
 
-[Play in your browser](https://fsodano.github.io/granaderos/) · [Run locally](#run-locally) · [Gameplay](#gameplay) · [Development](#development) · [Documentation](docs/README.md)
+**Se puede jugar y sigue en desarrollo.** El juego y el editor de historia todavía no están completos. Consultá el [registro de avances publicados](docs/verification/published-progress.md) para conocer las funciones entregadas, las pruebas realizadas y las validaciones pendientes. El [registro histórico de validación del entorno de desarrollo](docs/verification/gameplay-completion.md) conserva pruebas y limitaciones de etapas anteriores. Sus resultados corresponden a las fechas y versiones indicadas.
 
-## Play in your browser
+[Jugar en el navegador](https://fsodano.github.io/granaderos/) · [Ejecutar en tu equipo](#ejecutar-en-tu-equipo) · [Cómo se juega](#cómo-se-juega) · [Desarrollo](#desarrollo) · [Documentación](docs/README.md)
 
-Open [Granaderos on GitHub Pages](https://fsodano.github.io/granaderos/). No installation is required. Choose **Nueva campaña** to start a campaign or **Combate de San Lorenzo** to start a separate battle.
+## Jugar en el navegador
 
-The game saves progress in your browser. Use **Guardar** to export a save file and **Importar partida** to load it. Browser storage is separate for GitHub Pages and localhost. Export and import a save to move your campaign between them.
+Abrí [Granaderos en GitHub Pages](https://fsodano.github.io/granaderos/). No requiere instalación. Elegí **Nueva campaña** para iniciar una campaña o **Combate de San Lorenzo** para jugar una batalla independiente.
 
-## Run locally
+El juego guarda el progreso en el navegador. Usá **Guardar** para exportar una partida y **Importar partida** para cargarla. GitHub Pages y localhost usan espacios de almacenamiento separados. Para trasladar una campaña entre ambos, exportá la partida e importala en el otro sitio.
 
-Install **Node.js 22.13.0 or newer** and npm. Then run:
+## Ejecutar en tu equipo
+
+Instalá **Node.js 22.13.0 o posterior** y npm. Después, ejecutá:
 
 ```sh
 git clone https://github.com/fsodano/granaderos.git
@@ -29,76 +31,76 @@ npm ci --prefix web
 npm run dev
 ```
 
-Open [localhost:3000](http://localhost:3000), or the address shown by the development server.
+Abrí [localhost:3000](http://localhost:3000) o la dirección que indique el servidor de desarrollo.
 
-Choose **Nueva campaña** to start at the Retiro desk. Retiro is the only controlled sector. Hire combatants or create your own free character; the first person in service advances the opening chapter without an extra academy payment. Hires use the quoted contract price and must arrive before joining the force. **Combate de San Lorenzo** starts a separate battle.
+Elegí **Nueva campaña** para comenzar en el despacho del Retiro. Retiro es el único sector bajo tu control. Contratá combatientes o creá tu propio personaje sin costo. La primera persona que entre en servicio permite avanzar el capítulo inicial, sin un pago adicional a la academia. Las contrataciones usan el precio indicado y los combatientes deben llegar antes de incorporarse a la fuerza. **Combate de San Lorenzo** inicia una batalla independiente.
 
-The game saves campaign progress in browser storage. Use **Guardar** to export a portable save file and **Importar partida** to load one.
+El juego guarda el progreso de la campaña en el navegador. Usá **Guardar** para exportar una partida a un archivo y **Importar partida** para cargarla.
 
-The title screen also opens the [story editor](docs/development/story-editor.md) at `/story` and the [sector editor](docs/development/sector-editor.md) at `/editor`.
+La pantalla de inicio también permite abrir el [editor de historia](docs/development/story-editor.md) en `/story` y el [editor de sectores](docs/development/sector-editor.md) en `/editor`.
 
-The browser game uses JavaScript and React. It does not require the engine submodule or an original JA2 installation.
+El juego para navegador usa JavaScript y React. No requiere el submódulo del motor ni una instalación original de JA2.
 
-## Gameplay
+## Cómo se juega
 
-The campaign connects strategic decisions to persistent tactical encounters. Soldiers retain their wounds and equipment. Casualties and spent ammunition affect later decisions.
+La campaña conecta las decisiones estratégicas con los combates tácticos. Las heridas y el equipo de los soldados se conservan entre encuentros. Las bajas y la munición utilizada afectan las decisiones posteriores.
 
-| On the campaign map | On the battlefield |
+| En el mapa de campaña | En el campo de batalla |
 | --- | --- |
-| Hire combatants, form squads and pay contracts. | Explore sectors and enter turn-based combat on contact. |
-| Secure routes, buy equipment and fund the army. | Manage action points, ammunition, reloads and weapon condition. |
-| Train militia, repair equipment and treat wounded soldiers. | Use terrain, lines of sight, smoke and posture. |
-| Negotiate alliances and defend captured sectors. | Fight with firearms, blades, cavalry and crew-served artillery. |
+| Contratá combatientes, formá escuadras y pagá contratos. | Explorá sectores y entrá en combate por turnos al encontrar enemigos. |
+| Asegurá rutas, comprá equipo y financiá el ejército. | Administrá puntos de acción, munición, recargas y el estado de las armas. |
+| Entrená milicias, repará equipo y atendé a los heridos. | Usá el terreno, las líneas de visión, el humo y la postura. |
+| Negociá alianzas y defendé los sectores capturados. | Combatí con armas de fuego, armas blancas, caballería y artillería con dotación. |
 
-The campaign uses pesos as its only strategic resource. Town income, paid quests and recovered cash fund recruitment, equipment and preparations. There are no material stockpiles, production chains, resource convoys or horse care. Start a new campaign after the economy update; earlier economy saves are not converted.
+La campaña usa pesos como único recurso estratégico. Los ingresos de las poblaciones, las misiones pagadas y el dinero recuperado financian el reclutamiento, el equipo y los preparativos. No hay reservas de materiales, cadenas de producción, convoyes de recursos ni cuidado de caballos. Iniciá una campaña nueva después de la actualización económica: las partidas con la economía anterior no se convierten.
 
-Land cells and city districts can be selected, reached and explored with their own saved scenes. Open-water cells do not support land travel.
+Podés seleccionar, visitar y explorar las casillas terrestres y los distritos urbanos. Cada uno conserva su propia escena. Las casillas de aguas abiertas no permiten el desplazamiento terrestre.
 
-The campaign begins with Retiro under your control. Its chapters follow San Lorenzo, the northern campaign and Yatasto, El Plumerillo, and preparations for the Army of the Andes. Maps and events are historical interpretations adapted for play.
+La campaña comienza con Retiro bajo tu control. Sus capítulos recorren San Lorenzo, la campaña del norte y Yatasto, El Plumerillo y los preparativos del Ejército de los Andes. Los mapas y los acontecimientos son interpretaciones históricas adaptadas al juego.
 
-Use the in-game **Manual de campaña** for an introduction. See the [tactical controls](docs/gameplay/tactical/TACTICAL-HOTKEYS.md) for keyboard and mouse commands, and the [documentation index](docs/README.md) for system guides and verification records.
+Consultá el **Manual de campaña** dentro del juego para comenzar. Los [controles tácticos](docs/gameplay/tactical/TACTICAL-HOTKEYS.md) explican los comandos de teclado y mouse. El [índice de documentación](docs/README.md) reúne las guías de los sistemas y los registros de verificación.
 
-## Faces of the campaign
+## Rostros de la campaña
 
 <table>
   <tr>
-    <td align="center"><img src="web/public/art/portrait-0.webp" width="180" alt="Painted in-game portrait of Martín Miguel de Güemes"><br><strong>Martín Miguel de Güemes</strong></td>
-    <td align="center"><img src="web/public/art/portrait-3.webp" width="180" alt="Painted in-game portrait of Juan Bautista Cabral"><br><strong>Juan Bautista Cabral</strong></td>
-    <td align="center"><img src="web/public/art/portrait-1.webp" width="180" alt="Painted in-game portrait of Juana Azurduy"><br><strong>Juana Azurduy</strong></td>
+    <td align="center"><img src="web/public/art/portrait-0.webp" width="180" alt="Retrato pintado de Martín Miguel de Güemes utilizado en el juego"><br><strong>Martín Miguel de Güemes</strong></td>
+    <td align="center"><img src="web/public/art/portrait-3.webp" width="180" alt="Retrato pintado de Juan Bautista Cabral utilizado en el juego"><br><strong>Juan Bautista Cabral</strong></td>
+    <td align="center"><img src="web/public/art/portrait-1.webp" width="180" alt="Retrato pintado de Juana Azurduy utilizado en el juego"><br><strong>Juana Azurduy</strong></td>
   </tr>
 </table>
 
-Historical figures serve alongside fictional paid volunteers and a custom character. Their attributes, equipment and recruitment conditions differ.
+Las figuras históricas sirven junto a voluntarios remunerados ficticios y un personaje personalizado. Sus atributos, equipo y condiciones de reclutamiento son diferentes.
 
-The images above are **game artwork, not gameplay screenshots**. AI-generated paintings and portraits have retained prompts and source files. Likenesses and uniform details are artistic interpretations. See the [artwork documentation](assets/README.md) and [portrait references](assets/portrait-references.md) for provenance and limitations.
+Las imágenes anteriores son **ilustraciones del juego, no capturas de una partida**. Se conservan las instrucciones de generación y los archivos fuente de las pinturas y los retratos creados con IA. Los rasgos de los personajes y los detalles de los uniformes son interpretaciones artísticas. Consultá la [documentación gráfica](assets/README.md) y las [referencias de los retratos](assets/portrait-references.md) para conocer sus fuentes y limitaciones.
 
-## Development
+## Desarrollo
 
-Run these commands from the repository root after installing the web dependencies:
+Después de instalar las dependencias de la interfaz web, ejecutá estos comandos desde la raíz del repositorio:
 
 ```sh
-npm run test:quick   # Routine development checks
-npm test             # All checks, including complete campaign routes
-npm run typecheck    # TypeScript validation
-npm run build        # Build and validate the static export in dist/
+npm run test:quick   # Pruebas para el trabajo habitual
+npm test             # Todas las pruebas, incluidas las rutas completas de campaña
+npm run typecheck    # Validación de TypeScript
+npm run build        # Compilación y validación de la exportación estática en dist/
 ```
 
-Use the [development guide](docs/development/getting-started.md#checks) to select focused, quick or complete checks. Run the complete suite before a release or a change to shared gameplay rules.
+La [guía de desarrollo](docs/development/getting-started.md#checks) explica cómo elegir pruebas específicas, rápidas o completas. Ejecutá todas las pruebas antes de una publicación o de un cambio en las reglas de juego compartidas.
 
-Start with the [published progress ledger](docs/verification/published-progress.md) for tested scope and remaining work. The [verification index](docs/verification/README.md) also preserves separate development-workspace records. Automated checks cover specific scenarios; complete campaign acceptance also requires gameplay evidence.
+Consultá primero el [registro de avances publicados](docs/verification/published-progress.md) para conocer el alcance probado y el trabajo pendiente. El [índice de verificación](docs/verification/README.md) también conserva registros históricos del entorno de desarrollo. Las pruebas automáticas cubren situaciones específicas. La validación completa de la campaña también requiere pruebas de juego.
 
-| Path | Contents |
+| Ruta | Contenido |
 | --- | --- |
-| [web/](web/) | Browser interface, editors and installed artwork |
-| [game/](game/) | Tactical rules, campaign systems, maps and save validation |
-| [assets/](assets/) | Artwork sources, prompts, references and exports |
-| [tests/](tests/) | Rules and integration checks |
-| [tools/](tools/) | Build, asset and verification tools |
-| [docs/](docs/README.md) | Guides, design documents and verification records |
-| `engine/`, `native/`, `patches/`, `mod/` | Upstream source and earlier native conversion work |
+| [web/](web/) | Interfaz para navegador, editores e ilustraciones utilizadas por el juego |
+| [game/](game/) | Reglas tácticas, sistemas de campaña, mapas y validación de partidas guardadas |
+| [assets/](assets/) | Fuentes gráficas, instrucciones de generación, referencias y exportaciones |
+| [tests/](tests/) | Pruebas de reglas e integración |
+| [tools/](tools/) | Herramientas de compilación, recursos gráficos y verificación |
+| [docs/](docs/README.md) | Guías, documentos de diseño y registros de verificación |
+| `engine/`, `native/`, `patches/`, `mod/` | Código del proyecto original y trabajo previo de conversión nativa |
 
-Read the [development guide](docs/development/getting-started.md) for setup, build outputs and verification guidance. The browser implementation is the primary game; the earlier native conversion has separate build and runtime requirements.
+La [guía de desarrollo](docs/development/getting-started.md) detalla la instalación, los archivos generados y las comprobaciones. La versión para navegador es el juego principal. La conversión nativa anterior tiene requisitos de compilación y ejecución separados.
 
-For contributions, identify the relevant acceptance criteria in the [published progress ledger](docs/verification/published-progress.md) and [documentation index](docs/README.md). Submit a focused pull request with verification evidence. Keep generated assets reproducible from their source inputs and state which behavior was checked in the browser.
+Para contribuir, identificá los criterios de aceptación pertinentes en el [registro de avances publicados](docs/verification/published-progress.md) y el [índice de documentación](docs/README.md). Presentá una solicitud de cambios con un alcance definido y pruebas de verificación. Los recursos generados deben poder reproducirse a partir de sus archivos fuente. Indicá qué comportamiento comprobaste en el navegador.
 
-[VERSION](VERSION) records the development version. A 1.0.0 release requires the supplied specification to pass its completion audit.
+[VERSION](VERSION) registra la versión de desarrollo. Para publicar la versión 1.0.0, la especificación suministrada debe superar su auditoría de finalización.

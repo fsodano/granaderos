@@ -2,7 +2,7 @@
 
 > **Earlier native conversion.** These instructions apply to the Windows JA2
 > engine and its package. The browser game has separate
-> [setup instructions](https://github.com/fsodano/granaderos#run-locally) and does
+> [setup instructions](https://github.com/fsodano/granaderos#ejecutar-en-tu-equipo) and does
 > not require the engine submodule or original JA2 data.
 
 ## Supported build

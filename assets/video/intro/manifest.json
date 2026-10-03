@@ -1,0 +1,107 @@
+{
+  "title": "Granaderos — Presentación",
+  "language": "es-AR",
+  "duration_seconds": 45,
+  "resolution": [
+    1280,
+    720
+  ],
+  "fps": 30,
+  "captured_revision": "b987d63140019b550f05dad2e5cbfdd37accef79",
+  "capture_date": "2026-10-03",
+  "capture_origin": "http://localhost:3141",
+  "visuals": "Capturas reales del juego y del editor; ilustración existente de San Lorenzo.",
+  "audio": "Música original sintetizada por score.py; sin muestras ni grabaciones externas.",
+  "fonts": {
+    "serif": "Georgia.ttf",
+    "sans": "Arial.ttf"
+  },
+  "inputs": [
+    {
+      "path": "web/public/art/san-lorenzo.webp",
+      "sha256": "e833d05f860805622243fd2d21e6dcfb7d752c97a5e869ba5dfda38e0e256e5d"
+    },
+    {
+      "path": "assets/video/intro/source/recruitment.jpg",
+      "sha256": "651aad84a590488070c70e360b9303b813264ee225fb35c46c499ecb3e46d079"
+    },
+    {
+      "path": "assets/video/intro/source/profile.jpg",
+      "sha256": "d9cd92fd3a1082e9d07060f1a21107dde9eb6fda827ebd853a2b069ede86cf8c"
+    },
+    {
+      "path": "assets/video/intro/source/map.jpg",
+      "sha256": "0cd4a1df13506e973800b6842d8805ef07350776406d3a5a9f49abdc40a5cd8a"
+    },
+    {
+      "path": "assets/video/intro/source/battle.jpg",
+      "sha256": "3c7d8e01446f365f6cb4db0a0c3a6b75c5e186e9633949c0c3882532d4307313"
+    },
+    {
+      "path": "assets/video/intro/source/equipment.jpg",
+      "sha256": "496a34e3c570a0085c0473a49f4ca1393cfed3fc9cff196c3b2e2e9afb88e30a"
+    },
+    {
+      "path": "assets/video/intro/source/errands.jpg",
+      "sha256": "dad5700af15cfbea071edf610da2bb48c8942613e9c3003a1180b5a278c7832c"
+    }
+  ],
+  "scenes": [
+    {
+      "start": 0,
+      "end": 6,
+      "capture": null,
+      "title": "GRANADEROS",
+      "caption": "Estrategia y combate por turnos\nen la independencia argentina."
+    },
+    {
+      "start": 6,
+      "end": 11,
+      "capture": "recruitment.jpg",
+      "title": "Formá tu tropa",
+      "caption": "Reclutá combatientes y elegí sus contratos."
+    },
+    {
+      "start": 11,
+      "end": 16,
+      "capture": "profile.jpg",
+      "title": "Conocé a cada combatiente",
+      "caption": "Atributos, especialidades y equipo propio."
+    },
+    {
+      "start": 16,
+      "end": 22,
+      "capture": "map.jpg",
+      "title": "Sostené la campaña",
+      "caption": "Organizá escuadras y decidí tu próximo destino."
+    },
+    {
+      "start": 22,
+      "end": 29,
+      "capture": "battle.jpg",
+      "title": "Cada decisión cuenta",
+      "caption": "Dirigí a cada soldado en combates por turnos."
+    },
+    {
+      "start": 29,
+      "end": 35,
+      "capture": "equipment.jpg",
+      "title": "Prepará tu equipo",
+      "caption": "Administrá armas, suministros y munición."
+    },
+    {
+      "start": 35,
+      "end": 40,
+      "capture": "errands.jpg",
+      "title": "Creá nuevas historias",
+      "caption": "Editá personajes, reglas y encargos."
+    },
+    {
+      "start": 40,
+      "end": 45,
+      "capture": null,
+      "title": "La campaña te espera.",
+      "caption": "Jugá en tu navegador\nfsodano.github.io/granaderos"
+    }
+  ]
+}

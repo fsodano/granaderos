@@ -1,0 +1,41 @@
+1
+00:00:00,000 --> 00:00:06,000
+GRANADEROS
+Estrategia y combate por turnos
+en la independencia argentina.
+
+2
+00:00:06,000 --> 00:00:11,000
+Formá tu tropa
+Reclutá combatientes y elegí sus contratos.
+
+3
+00:00:11,000 --> 00:00:16,000
+Conocé a cada combatiente
+Atributos, especialidades y equipo propio.
+
+4
+00:00:16,000 --> 00:00:22,000
+Sostené la campaña
+Organizá escuadras y decidí tu próximo destino.
+
+5
+00:00:22,000 --> 00:00:29,000
+Cada decisión cuenta
+Dirigí a cada soldado en combates por turnos.
+
+6
+00:00:29,000 --> 00:00:35,000
+Prepará tu equipo
+Administrá armas, suministros y munición.
+
+7
+00:00:35,000 --> 00:00:40,000
+Creá nuevas historias
+Editá personajes, reglas y encargos.
+
+8
+00:00:40,000 --> 00:00:45,000
+La campaña te espera.
+Jugá en tu navegador
+fsodano.github.io/granaderos
