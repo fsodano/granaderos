@@ -1,3 +1,4 @@
+import {sitePath} from '../lib/site-path.js';
 import type { ReactNode } from 'react';
 
 export type PlanPoint = { x: number; y: number };
@@ -181,7 +182,7 @@ export function ProjectedRoofSurface({
           patternTransform={`matrix(${matrix})`}
         >
           <image
-            href={`/art/architecture-roof-${straw ? 'thatch' : 'clay'}-v2.png`}
+            href={sitePath(`/art/architecture-roof-${straw ? 'thatch' : 'clay'}-v2.png`)}
             width={width}
             height={height}
             preserveAspectRatio="none"

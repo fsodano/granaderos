@@ -2,8 +2,9 @@ import {OPERATIVES} from './data.js';
 import {CIVIC_RECRUITS} from './civic-recruits.js';
 
 const originals=[...OPERATIVES,...CIVIC_RECRUITS];
+const legacyIds=new Map(originals.map(o=>[`person-${o.id}`,o.id]));
 const indexes=new WeakMap();
-export function legacyOperativeId(id){return originals.find(o=>`person-${o.id}`===id)?.id;}
+export function legacyOperativeId(id){return legacyIds.get(id);}
 export function isContractCharacter(definition){
  const id=legacyOperativeId(definition.id);
  return id===undefined?definition.recruitmentSource==='contract':id>=100;
@@ -11,13 +12,17 @@ export function isContractCharacter(definition){
 export function isWorldCharacter(definition){return legacyOperativeId(definition.id)===undefined&&definition.recruitmentSource==='encounter';}
 export function isHistoricalCharacter(definition){const id=legacyOperativeId(definition.id);return id!==undefined&&id<100;}
 function indexFor(content){
- if(indexes.has(content))return indexes.get(content);
+ const previous=indexes.get(content),characters=content.characters;
+ // Campaign copies lose Object.freeze. Reuse their index while membership and
+ // IDs match, including mutable editor/save snapshots. Definitions stay live
+ // by reference; replacements, reordering and in-place ID edits rebuild it.
+ if(previous&&previous.members.length===characters.length&&previous.members.every((member,i)=>member.definition===characters[i]&&member.id===characters[i].id))return previous.index;
  // The package is immutable during a campaign. Order in the editor cannot move
  // an identity into a historical slot, the player officer (1000), or militia.
  let next=2000;
- const entries=[...content.characters].sort((a,b)=>a.id<b.id?-1:a.id>b.id?1:0).map(c=>[c,legacyOperativeId(c.id)??next++]);
+ const entries=[...characters].sort((a,b)=>a.id<b.id?-1:a.id>b.id?1:0).map(c=>[c,legacyOperativeId(c.id)??next++]);
  const index={byCharacter:new Map(entries.map(([c,id])=>[c.id,id])),byOperative:new Map(entries.map(([c,id])=>[id,c]))};
- if(Object.isFrozen(content))indexes.set(content,index);
+ indexes.set(content,{members:characters.map(definition=>({definition,id:definition.id})),index});
  return index;
 }
 export function operativeIdForCharacter(content,id){return indexFor(content).byCharacter.get(id);}

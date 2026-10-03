@@ -1,4 +1,5 @@
 'use client';
+import {sitePath} from '../lib/site-path.js';
 import {useEffect,useRef,useState} from 'react';
 import opening from '../../game/campaign-intro.json';
 import './campaign-intro.css';
@@ -46,7 +47,7 @@ export default function CampaignIntro({onComplete,onBack,replay=false,content=op
   <header className="intro-topbar"><button onClick={onBack}>← Volver</button><span>GRANADEROS <i>1812</i></span><button onClick={()=>onComplete('hire')}>{replay?'Cerrar introducción':'Omitir introducción'} →</button></header>
   <div className={`intro-stage intro-stage-${scene.visual}`} data-intro-scene={scene.id}>
    <div className="intro-visual" key={scene.id} aria-hidden="true">
-    {scene.portrait?<div className="intro-portrait"><img src={scene.portrait} alt=""/><div className="intro-signature">José de San Martín</div><span>AL SERVICIO DE LA CAUSA AMERICANA</span></div>:<CampaignMap route={scene.visual==='route'||scene.visual==='muster'}/>}
+    {scene.portrait?<div className="intro-portrait"><img src={sitePath(scene.portrait)} alt=""/><div className="intro-signature">José de San Martín</div><span>AL SERVICIO DE LA CAUSA AMERICANA</span></div>:<CampaignMap route={scene.visual==='route'||scene.visual==='muster'}/>}
     {scene.visual==='muster'&&<div className="intro-seal"><span>G</span><small>RETIRO</small></div>}
    </div>
    <div className="intro-message"><div aria-live="polite" aria-atomic="true"><p className="intro-eyebrow">{scene.eyebrow}</p><h1>{scene.title}</h1><div className="intro-rule"/><p className="intro-body">{scene.text}</p></div>

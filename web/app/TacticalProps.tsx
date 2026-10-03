@@ -1,4 +1,5 @@
 'use client';
+import {sitePath} from '../lib/site-path.js';
 import {propSize} from '../../game/props.js';
 import {isInteriorVisible} from '../../game/tactical-visibility.js';
 import type {ReactNode} from 'react';
@@ -15,8 +16,8 @@ export function buildPropObjects({state, revealed, project, light}:Props){
   const bedPoint=(u:number,v:number,z:number)=>{const rotation=prop.rotation??0;const x=rotation===90?1-v:rotation===180?1-u:rotation===270?v:u,y=rotation===90?u:rotation===180?1-v:rotation===270?1-u:v;return at(x0+(x1-x0)*x,y0+(y1-y0)*y,z);};
   const surface=(z:number)=>`${at(x0,y0,z)} ${at(x1,y0,z)} ${at(x1,y1,z)} ${at(x0,y1,z)}`;
   const plank=(x:number,y:number,width:number,depth:number,height:number)=><g transform={`translate(${x} ${y})`}><path d={`M${-width},0l${width},${depth} ${width},${-depth}v${-height}l${-width},${-depth} ${-width},${depth}Z`} fill="url(#terrain-wood)" stroke="#3c3021" strokeWidth=".6"/><path d={`M0,${depth}v${-height}l${width},${-depth}v${height}Z`} fill="#171710" opacity=".4"/><path d={`M${-width},${-height}L0,${-height-depth} ${width},${-height} 0,${depth-height}Z`} fill="url(#terrain-wood)" stroke="#b4a076" strokeWidth=".45"/></g>;
-  if(prop.type==='cart')furniture=<image data-cart-art="true" href="/art/buildings/cart-v1.webp" x="-27" y="-48" width="90" height="60" style={{imageRendering:'pixelated'}}/>;
-  else if(prop.type==='barrels'||prop.type==='hay') furniture=<image href={`/art/scenery-${prop.type}-v1.webp`} x="-25" y="-40" width="50" height="48"/>;
+  if(prop.type==='cart')furniture=<image data-cart-art="true" href={sitePath('/art/buildings/cart-v1.webp')} x="-27" y="-48" width="90" height="60" style={{imageRendering:'pixelated'}}/>;
+  else if(prop.type==='barrels'||prop.type==='hay') furniture=<image href={sitePath(`/art/scenery-${prop.type}-v1.webp`)} x="-25" y="-40" width="50" height="48"/>;
   else if(prop.type==='table'||prop.type==='bench'){
    const width=prop.type==='bench'?20:22,depth=prop.type==='bench'?4:10,height=prop.type==='bench'?9:17;
    furniture=<><path d={`M${-width+3},-3v${-height+4}M${width-3},-3v${-height+4}M0,${depth}v${-height+4}`} stroke="#403323" strokeWidth="3"/>{plank(0,-height+2,width,depth,3)}{prop.type==='table'&&<><path d="M-8,-22l9,-5 9,5-9,5Z" fill="#d8cdae" stroke="#938668" strokeWidth=".4"/><path d="M-5,-22l7,-2m-4,4l5,-2" stroke="#666348" strokeWidth=".5"/></>}</>;

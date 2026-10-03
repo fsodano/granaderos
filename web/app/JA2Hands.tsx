@@ -1,4 +1,5 @@
 'use client';
+import {sitePath} from '../lib/site-path.js';
 import {handSlots,unitCanAct} from '../../game/ja2-hud.js';
 import {useEquipmentDrag} from '../lib/equipment-drag';
 import './ja2-hands.css';
@@ -10,7 +11,7 @@ export default function JA2Hands({battle,unit,busy,compact=false,onOrder,onPick}
   {...drag.handlers(`hand:${hand.side}`,{onInspect:onPick,selectOnClick:!compact})}
   {...(compact?{onClick:()=>{if(hand.disabled)return;if(hand.action)onOrder(hand.action);else onPick(hand.item||'primary');}}:{})}>
   <small>{hand.side==='right'?'Mano principal':'Segunda mano'}</small>
-  {!compact&&(hand.art||hand.weapon)&&<img src={hand.art??`/art/weapon-${hand.weapon}.png`} alt=""/>}
+  {!compact&&(hand.art||hand.weapon)&&<img src={sitePath(hand.art??`/art/weapon-${hand.weapon}.png`)} alt=""/>}
   <span>{hand.blocked?'↔ ':''}{hand.label}</span>
   {hand.loaded===undefined&&hand.condition!==undefined&&<small>Estado {hand.condition}%</small>}
   {hand.loaded!==undefined&&<small>{hand.loaded} carga(s) · {hand.condition}%</small>}

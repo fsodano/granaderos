@@ -1,3 +1,4 @@
+import {sitePath} from './site-path.js';
 // Static SVG scenery is expensive to repaint beside moving actors. Rasterize
 // only a noninteractive depth layer, with its exact textures and SVG filters.
 const assets=new Map<string,Promise<string>>();
@@ -63,7 +64,7 @@ function blobData(blob:Blob):Promise<string>{
 function imageData(url:string){
  let pending=assets.get(url);
  if(!pending){
-  pending=fetch(url).then(response=>{if(!response.ok)throw Error(`Scenery texture: ${response.status}`);return response.blob();}).then(blobData);
+  pending=fetch(sitePath(url)).then(response=>{if(!response.ok)throw Error(`Scenery texture: ${response.status}`);return response.blob();}).then(blobData);
   assets.set(url,pending);pending.catch(()=>assets.delete(url));
  }
  return pending;

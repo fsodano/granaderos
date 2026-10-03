@@ -1,3 +1,4 @@
+import {sitePath} from '../lib/site-path.js';
 import {getBuildingRenderProfile} from '../../game/building-profile.js';
 import {buildingAppearance} from '../../game/building-appearance.js';
 import {ArchitectureDefs,WallSurface,Opening,WALL_COLOURS} from './TacticalArchitectureMaterials';
@@ -94,7 +95,7 @@ export function createBuildingRenderer({state:s,revealed:knownRooms,project,ligh
    const palette=WALL_COLOURS[appearance.wallFinish];
    const top=(p:Point,z:number)=>`${p.x},${p.y-z}`;
    return {depth:t.x+t.y+wallInset+.015,node:<g data-wall-tile={`${t.x},${t.y}`} data-cutaway={Boolean(cut)} data-wall-height={height} data-visible-storeys={!cut&&(onX||onY)?legacyArchitecture(b)?(style.upper?2:1):profile.floors:1} pointerEvents="none" style={{filter:`brightness(${light(t.x,t.y)})`}}>
-    {legacyArchitecture(b)&&<defs><pattern id={textureId} patternUnits="userSpaceOnUse" width="128" height="128" x={-(t.x*37+t.y*23)%128} y={-(t.y*41+t.x*17)%128}><image href={`/art/buildings/${materialName}-v1.webp`} width="128" height="128" style={{imageRendering:'pixelated'}}/></pattern></defs>}
+    {legacyArchitecture(b)&&<defs><pattern id={textureId} patternUnits="userSpaceOnUse" width="128" height="128" x={-(t.x*37+t.y*23)%128} y={-(t.y*41+t.x*17)%128}><image href={sitePath(`/art/buildings/${materialName}-v1.webp`)} width="128" height="128" style={{imageRendering:'pixelated'}}/></pattern></defs>}
     {/* A shallow wall cap makes thickness readable without a full-tile cube. */}
     <polygon points={`${top(start,height)} ${top(end,height)} ${end.x+4},${end.y-height-2} ${start.x+4},${start.y-height-2}`} fill={authoredWall?palette.trim:cut?'#bda980':'#d2c49e'} stroke={authoredWall?palette.shadow:'#807459'} strokeWidth=".55"/>
     <path d={`M${end.x},${end.y}v-${height}l4,-2v${height}Z`} fill="#8b8163"/>

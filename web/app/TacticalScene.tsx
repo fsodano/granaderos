@@ -1,4 +1,5 @@
 'use client';
+import {sitePath} from '../lib/site-path.js';
 import {artilleryProfile} from '../../game/artillery-definitions.js';
 import {createSceneTerrainCache} from '../../game/scene-terrain.js';
 import {pointInViewport} from '../../game/tactical-viewport.js';
@@ -56,13 +57,13 @@ export default function TacticalScene({groundOverlay,terrainVisible=true,interac
  for(const t of terrain.tiles){
   const p=projectSurface(s,project,t);
   if(t.blocked&&!['wall','door','window','water'].includes(t.type)){
-   add(`rock-${t.x}-${t.y}`,t.x,t.y,<image href="/art/scenery-rocks-v1.webp" x={p.x-25} y={p.y-32} width="50" height="40" pointerEvents="none" style={{filter:`brightness(${light(t.x,t.y)})`}}/>);
+   add(`rock-${t.x}-${t.y}`,t.x,t.y,<image href={sitePath('/art/scenery-rocks-v1.webp')} x={p.x-25} y={p.y-32} width="50" height="40" pointerEvents="none" style={{filter:`brightness(${light(t.x,t.y)})`}}/>);
   }else if(t.type==='stone'&&t.material==='stone'&&!t.buildingId){
-   add(`loose-rock-${t.x}-${t.y}`,t.x,t.y,<image href="/art/scenery-rocks-v1.webp" x={p.x-14} y={p.y-14} width="28" height="22" pointerEvents="none" style={{filter:`brightness(${light(t.x,t.y)})`}}/>);
+   add(`loose-rock-${t.x}-${t.y}`,t.x,t.y,<image href={sitePath('/art/scenery-rocks-v1.webp')} x={p.x-14} y={p.y-14} width="28" height="22" pointerEvents="none" style={{filter:`brightness(${light(t.x,t.y)})`}}/>);
   }
   // Low ground decoration can share a static depth cache.
   if(t.type==='scrub'||t.type==='grass'&&!t.buildingId&&hash(t.x,t.y)%11===0){
-   add(`scrub-${t.x}-${t.y}`,t.x,t.y,<image href="/art/scenery-shrub-v1.webp" x={p.x-16} y={p.y-20} width="32" height="26" pointerEvents="none" opacity=".9" style={{filter:`brightness(${light(t.x,t.y)})`}}/>);
+   add(`scrub-${t.x}-${t.y}`,t.x,t.y,<image href={sitePath('/art/scenery-shrub-v1.webp')} x={p.x-16} y={p.y-20} width="32" height="26" pointerEvents="none" opacity=".9" style={{filter:`brightness(${light(t.x,t.y)})`}}/>);
   }
  }
  objects.push(...buildings());
@@ -91,7 +92,7 @@ export default function TacticalScene({groundOverlay,terrainVisible=true,interac
  const woodland=useMemo(()=>terrain.tiles.filter((t:any)=>t.type==='forest').map((t:any)=>{
   const p=projectSurface(terrain,project,t),h=hash(t.x,t.y),tree=h%4!==0,width=tree?75+h%28:40,height=tree?90+h%30:35;
   const brightness=terrain.night?.27+tileIllumination(terrain,t.x,t.y)*.73:1;
-  return {point:p,cell:`${t.x},${t.y}`,key:`woodland-${t.x}-${t.y}`,depth:t.x+t.y+.5,node:<SceneryImage href={`/art/scenery-${tree?(h%3?'tree':'poplar'):'shrub'}-v1.webp`} brightness={brightness} x={p.x-width*.5+6} y={p.y-height+10} width={width} height={height} opacity={1} pointerEvents="none"/>};
+  return {point:p,cell:`${t.x},${t.y}`,key:`woodland-${t.x}-${t.y}`,depth:t.x+t.y+.5,node:<SceneryImage href={sitePath(`/art/scenery-${tree?(h%3?'tree':'poplar'):'shrub'}-v1.webp`)} brightness={brightness} x={p.x-width*.5+6} y={p.y-height+10} width={width} height={height} opacity={1} pointerEvents="none"/>};
  }),[terrain,project]);
  const visibleWoodland=woodland.filter((tree:any)=>pointInViewport(viewport,tree.point,160)).map((tree:any)=>({...tree,node:softenedWoods.has(tree.cell)?cloneElement(tree.node,{opacity:.48}):tree.node}));
  const objects:{depth:number;key:string;node:ReactNode;members?:{depth:number;key:string;node:ReactNode}[]}[]=[...staticLayers,...visibleWoodland];
@@ -131,7 +132,7 @@ export default function TacticalScene({groundOverlay,terrainVisible=true,interac
  const lootPiles=useMemo(()=>groundLootPiles(s,players).filter((pile:any)=>isInteriorVisible(s,pile,revealed)),[s,players,revealed]);
  for(const v of visiblePeople){const at=positions[v.id]??v;objects.push({key:`unit-${v.id}`,depth:surfaceDrawDepth(s,{...v,...at},.05),node:drawPerson(v)});}
  for(const npc of visibleCivilians){const at=positions[npc.id]??npc;objects.push({key:`npc-${npc.id}`,depth:surfaceDrawDepth(s,{...npc,...at},.05),node:drawPerson({...npc,hp:npc.hp??100,maxHp:npc.maxHp??100,side:'player'},true)});}
- for(const a of s.artillery??[]){const p=projectSurface(s,project,a);add(`gun-${a.id}`,a.x,a.y,<g role={sceneInteractive?"button":undefined} tabIndex={sceneInteractive?0:-1} aria-label={`Seleccionar ${artilleryProfile(s,a).name}`} onClick={()=>onCannon(a.id)} onKeyDown={e=>{if(e.key==='Enter')onCannon(a.id);}}>{a.id===cannonId&&<ellipse cx={p.x} cy={p.y} rx="24" ry="10" fill="none" stroke="#d8bf7e"/>}<image href={artilleryProfile(s,a).art} x={p.x-38} y={p.y-58} width="76" height="76" pointerEvents="none" style={{filter:`brightness(${light(a.x,a.y,tacticalLevel(a))})`}}/></g>,0,tacticalLevel(a));}
+ for(const a of s.artillery??[]){const p=projectSurface(s,project,a);add(`gun-${a.id}`,a.x,a.y,<g role={sceneInteractive?"button":undefined} tabIndex={sceneInteractive?0:-1} aria-label={`Seleccionar ${artilleryProfile(s,a).name}`} onClick={()=>onCannon(a.id)} onKeyDown={e=>{if(e.key==='Enter')onCannon(a.id);}}>{a.id===cannonId&&<ellipse cx={p.x} cy={p.y} rx="24" ry="10" fill="none" stroke="#d8bf7e"/>}<image href={sitePath(artilleryProfile(s,a).art)} x={p.x-38} y={p.y-58} width="76" height="76" pointerEvents="none" style={{filter:`brightness(${light(a.x,a.y,tacticalLevel(a))})`}}/></g>,0,tacticalLevel(a));}
  for(const pile of lootPiles){
   const p=projectSurface(s,project,pile),point={x:pile.x,y:pile.y,...(pile.tacticalLevel===undefined?{}:{tacticalLevel:pile.tacticalLevel}),loot:true};
   add(`equipment-${spaceKey(pile)}`,pile.x,pile.y,<g data-ground-equipment="true" role={sceneInteractive?"button":undefined} pointerEvents={sceneInteractive&&tacticalLevel(pile)===cursorLevel?"auto":"none"} tabIndex={sceneInteractive&&tacticalLevel(pile)===cursorLevel?0:-1} aria-label={`Equipo en ${tacticalGridLabel(pile.x,pile.y)} · ${pile.count} objeto(s)`} onMouseEnter={()=>onHover(point)} onMouseLeave={()=>onHover(null)} onFocus={()=>onHover(point)} onBlur={()=>onHover(null)} onClick={()=>onTile(point)} onKeyDown={event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();onTile(point);}}}>
@@ -184,7 +185,7 @@ export default function TacticalScene({groundOverlay,terrainVisible=true,interac
   return tied?[cached,...object.members]:[cached];
  }).sort((a,b)=>a.depth-b.depth||a.key.localeCompare(b.key));
  return <>
-  <defs>{materials.map(name=><pattern key={name} id={`terrain-${name}`} patternUnits="userSpaceOnUse" width="128" height="128" patternTransform={['plaster','roof','wood'].includes(name)?undefined:'matrix(1 .538 -1 .538 0 0)'}><image href={`/art/terrain-${name}-v1.webp`} width="128" height="128"/></pattern>)}<radialGradient id="smokefill"><stop offset="0" stopColor="#d9dce0" stopOpacity=".72"/><stop offset=".45" stopColor="#aeb6bf" stopOpacity=".46"/><stop offset="1" stopColor="#84909d" stopOpacity="0"/></radialGradient></defs>
+  <defs>{materials.map(name=><pattern key={name} id={`terrain-${name}`} patternUnits="userSpaceOnUse" width="128" height="128" patternTransform={['plaster','roof','wood'].includes(name)?undefined:'matrix(1 .538 -1 .538 0 0)'}><image href={sitePath(`/art/terrain-${name}-v1.webp`)} width="128" height="128"/></pattern>)}<radialGradient id="smokefill"><stop offset="0" stopColor="#d9dce0" stopOpacity=".72"/><stop offset=".45" stopColor="#aeb6bf" stopOpacity=".46"/><stop offset="1" stopColor="#84909d" stopOpacity="0"/></radialGradient></defs>
   {terrainVisible&&<><StaticSceneLayer>{groundPaint}</StaticSceneLayer>{ground}</>}
   {terrainVisible&&hover&&!tacticalLevel(hover)&&pointInViewport(viewport,projectSurface(s,project,hover))&&<polygon points={diamond(projectSurface(s,project,hover).x,projectSurface(s,project,hover).y)} fill={mode==='move'&&routesPending?'#aaa99c':mode==='move'&&reachableSet.has(spaceKey(hover))?'#d8dca1':'#bd6f4d'} fillOpacity=".16" stroke="#ddd6a7" strokeWidth="1" pointerEvents="none"/>}
   {groundOverlay}

@@ -1,3 +1,4 @@
+import {sitePath} from '../../lib/site-path.js';
 import {AUTHORABLE_SPEECH_EVENTS,OPTIONAL_SPEECH_EVENTS} from '../../../game/characters.js';
 import {CHARACTER_PORTRAITS} from '../../../game/character-profile.js';
 import {APPEARANCE_LABELS,SPEECH_LABELS,SPEECH_LINE_LIMIT,characterPresentationDefaults} from '../../../game/content-character-presentation.js';
@@ -18,7 +19,7 @@ export default function CharacterPresentation({character,portraits,weapon,onChan
   </label>
   <div className="appearance-choice">
    <svg viewBox={viewport.viewBox} width="112" height="112" role="img" aria-label={`Apariencia: ${APPEARANCE_LABELS[values.spriteAppearance as keyof typeof APPEARANCE_LABELS]}`}>
-    <image href={sprite.href} width={sprite.size[0]} height={sprite.size[1]} style={{imageRendering:'pixelated'}}/>
+    <image href={sitePath(sprite.href)} width={sprite.size[0]} height={sprite.size[1]} style={{imageRendering:'pixelated'}}/>
    </svg>
    <label>Apariencia en combate
     <select value={values.spriteAppearance} onChange={e=>onChange({spriteAppearance:e.target.value})}>

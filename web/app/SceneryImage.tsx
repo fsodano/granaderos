@@ -1,4 +1,5 @@
 'use client';
+import {sitePath} from '../lib/site-path.js';
 import {memo,useEffect,useState,type SVGProps} from 'react';
 import {shadedSceneryImage} from '../lib/rasterize-svg';
 
@@ -11,7 +12,7 @@ function SceneryImage({href,brightness=1,...props}:SVGProps<SVGImageElement>&{hr
   return()=>{cancelled=true;};
  },[href,brightness]);
  const ready=prepared?.href===href&&prepared.brightness===brightness;
- return <image {...props} href={ready?prepared.image:href} style={brightness===1||ready?props.style:{...props.style,filter:`brightness(${brightness})`}}/>;
+ return <image {...props} href={sitePath(ready?prepared.image:href)} style={brightness===1||ready?props.style:{...props.style,filter:`brightness(${brightness})`}}/>;
 }
 
 export default memo(SceneryImage);

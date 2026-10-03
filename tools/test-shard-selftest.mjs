@@ -1,13 +1,14 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtempSync,mkdirSync,copyFileSync,writeFileSync,rmSync} from 'node:fs';
+import {mkdtempSync,mkdirSync,copyFileSync,writeFileSync,readFileSync,rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {spawnSync} from 'node:child_process';
 const source=fileURLToPath(new URL('./test-shard.mjs',import.meta.url));
+const runner=fileURLToPath(new URL('./test-runner-lib.mjs',import.meta.url));
 function fixture(t){
- const root=mkdtempSync(path.join(tmpdir(),'granaderos-shard-test-'));t.after(()=>rmSync(root,{recursive:true,force:true}));mkdirSync(path.join(root,'tools'));mkdirSync(path.join(root,'tests'));const script=path.join(root,'tools/test-shard.mjs');copyFileSync(source,script);
+ const root=mkdtempSync(path.join(tmpdir(),'granaderos-shard-test-'));t.after(()=>rmSync(root,{recursive:true,force:true}));mkdirSync(path.join(root,'tools'));mkdirSync(path.join(root,'tests'));const script=path.join(root,'tools/test-shard.mjs');copyFileSync(source,script);copyFileSync(runner,path.join(root,'tools/test-runner-lib.mjs'));
  for(let i=0;i<8;i++)writeFileSync(path.join(root,`tests/case-${i}.test.mjs`),"import test from 'node:test';test('fixture case',()=>{});\n");
  return {root,run:(...args)=>spawnSync(process.execPath,[script,...args],{encoding:'utf8',timeout:15000})};
 }
@@ -22,4 +23,9 @@ test('a matching non-file target fails coverage verification',t=>{
 });
 test('a selected failing test propagates failure while another complete group succeeds',t=>{
  const f=fixture(t);writeFileSync(path.join(f.root,'tests/case-0.test.mjs'),"import test from 'node:test';import assert from 'node:assert/strict';test('intentional fixture failure',()=>assert.fail('expected fixture failure'));\n");const failed=f.run('--run','1');assert.equal(failed.status,1,failed.stdout+failed.stderr);assert.match(failed.stdout,/intentional fixture failure/);const passed=f.run('--run','2');assert.equal(passed.status,0,passed.stderr);
+});
+test('shards use an explicit worker count and report every file in the selected group',t=>{
+ const f=fixture(t),result=f.run('--run','3','--concurrency','1');assert.equal(result.status,0,result.stdout+result.stderr);
+ const report=JSON.parse(readFileSync(path.join(f.root,'.cache/test-times/group-3.json'),'utf8'));
+ assert.equal(report.concurrency,1);assert.equal(report.complete,true);assert.deepEqual(report.files.map(entry=>entry.file).sort(),['tests/case-2.test.mjs','tests/case-6.test.mjs']);
 });

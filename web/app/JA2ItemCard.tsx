@@ -1,4 +1,5 @@
 'use client';
+import {sitePath} from '../lib/site-path.js';
 import {equipmentFingerprint} from '../../game/tactical-inventory.js';
 import {equipmentUnloadPreview} from '../../game/tactical.js';
 import {Package} from 'lucide-react';
@@ -12,7 +13,7 @@ export default function JA2ItemCard({battle,unit,reference,slotId='',disabled,on
  const unload=slotId&&item.loaded!==undefined?{type:'unloadEquipment',unitId:String(unit.id),hostId:slotId,expectedHost:equipmentFingerprint(unit,slotId)}:null;
  const preview=unload?equipmentUnloadPreview(battle,unit,unload):null;
  return <section className="ja2-item-card" aria-label={`Detalles de ${item.label}`}>
-  <div className="ja2-item-picture">{item.art||item.weapon>=1800&&item.weapon<=1813?<img src={item.art??`/art/weapon-${item.weapon}.png`} alt={item.label}/>:<Package size={54} aria-hidden="true"/>}
+  <div className="ja2-item-picture">{item.art||item.weapon>=1800&&item.weapon<=1813?<img src={sitePath(item.art??`/art/weapon-${item.weapon}.png`)} alt={item.label}/>:<Package size={54} aria-hidden="true"/>}
    {item.loaded!==undefined&&<button type="button" className="ja2-item-charge" aria-label="Descargar munición" title={preview?.reason??`Descargar · ${preview?.pa??0} PA`} disabled={disabled||!preview?.valid} onClick={()=>unload&&onOrder(unload)}>{item.loaded} / {item.capacity??1}</button>}
   </div>
   <dl>

@@ -1,4 +1,5 @@
 'use client';
+import {sitePath} from '../lib/site-path.js';
 import {useState} from 'react';
 import {AMMUNITION_TYPES} from '../../game/ammunition-types.js';
 import {ammunitionOrderQuote,AMMUNITION_ORDER_LIMIT} from '../../game/campaign-ammunition.js';
@@ -20,7 +21,7 @@ export default function AmmunitionSupplies({state:s,dispatch}:Props){
   <h3 id="ammunition-supplies-title">Munición compatible</h3>
   <label htmlFor="ammunition-recipient">Combatiente<select id="ammunition-recipient" value={operative?.id??''} disabled={!candidates.length} onChange={event=>setRecipient(event.target.value)}>{!candidates.length&&<option value="">Sin combatientes disponibles</option>}{candidates.map((op:any)=><option key={op.id} value={op.id}>{op.name}</option>)}</select></label>
   <label htmlFor="ammunition-type">Tipo de carga<select id="ammunition-type" value={ammoType} onChange={event=>setAmmoType(event.target.value)}>{Object.values(AMMUNITION_TYPES).map((type:any)=><option key={type.id} value={type.id}>{type.name}</option>)}</select></label>
-  <img src={spec.art} alt={spec.name} width={96} height={64} style={{objectFit:"contain"}}/>
+  <img src={sitePath(spec.art)} alt={spec.name} width={96} height={64} style={{objectFit:"contain"}}/>
   <p>Para: {spec.weaponIds.map((id:number)=>(WEAPONS as any)[id].name).join(', ')}.</p>
   <p>{quote.carried} en los bolsillos · {quote.stored} guardados en este sector · {quote.stock} disponibles en el comercio.</p>
   <label htmlFor="ammunition-quantity">Cantidad<input id="ammunition-quantity" type="number" min="1" max={maximum||1} step="1" value={quantity} onChange={event=>setQuantity(event.target.value)} required/></label>
