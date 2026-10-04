@@ -24,15 +24,15 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
 renderer.shadowMap.enabled=true;
 renderer.shadowMap.type=THREE.PCFShadowMap;
 renderer.outputColorSpace=THREE.SRGBColorSpace;
-renderer.toneMapping=THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure=1.15;
+renderer.toneMapping=THREE.AgXToneMapping;
+renderer.toneMappingExposure=1;
 const scene=new THREE.Scene();
 const environment=new RoomEnvironment(),pmrem=new THREE.PMREMGenerator(renderer);
 scene.environment=pmrem.fromScene(environment,.04).texture;
-scene.environmentIntensity=.35;
+scene.environmentIntensity=.24;
 environment.dispose();pmrem.dispose();
-scene.background=new THREE.Color('#24372b');
-scene.fog=new THREE.Fog('#24372b',12,35);
+scene.background=new THREE.Color('#55523e');
+scene.fog=new THREE.Fog('#55523e',18,45);
 const camera=new THREE.OrthographicCamera(-3,3,3,-3,.05,70);
 const controls=new OrbitControls(camera,canvas);
 controls.enableRotate=false;
@@ -46,7 +46,7 @@ controls.maxZoom=3.2;
 controls.minPolarAngle=.18;
 controls.maxPolarAngle=Math.PI/2-.08;
 function setCamera(){
- camera.position.set(6,6.92,6);
+ camera.position.set(6,5.82,6);
  controls.target.set(0,.92,0);
  camera.zoom=1;
  camera.updateProjectionMatrix();
@@ -55,38 +55,51 @@ function setCamera(){
 setCamera();
 function zoom(amount){camera.zoom=THREE.MathUtils.clamp(camera.zoom*amount,controls.minZoom,controls.maxZoom);camera.updateProjectionMatrix();controls.update();}
 
-const hemi=new THREE.HemisphereLight('#f5eed9','#536342',2.6);scene.add(hemi);
-const sunlight=new THREE.DirectionalLight('#fff1d5',3.1);
-sunlight.position.set(-3,7,5);sunlight.castShadow=true;
+const hemi=new THREE.HemisphereLight('#e2e7ed','#554631',1.15);scene.add(hemi);
+const sunlight=new THREE.DirectionalLight('#fff1d9',2.7);
+sunlight.position.set(-4,9,5);sunlight.castShadow=true;
 sunlight.shadow.mapSize.set(2048,2048);
 Object.assign(sunlight.shadow.camera,{left:-4,right:4,top:4,bottom:-4,near:.1,far:20});
 sunlight.shadow.normalBias=.025;sunlight.shadow.bias=-.0001;
 scene.add(sunlight);
-const fill=new THREE.DirectionalLight('#c3d8ec',1.5);fill.position.set(4,3,-4);scene.add(fill);
+const fill=new THREE.DirectionalLight('#c3d8ec',.55);fill.position.set(4,3,-4);scene.add(fill);
 const gunLight=new THREE.PointLight('#ffb25b',0,3,2);scene.add(gunLight);
 
-function pavingTexture(){
- const image=document.createElement('canvas');image.width=image.height=768;
+function terrainTexture(){
+ const image=document.createElement('canvas');image.width=image.height=1024;
  const ctx=image.getContext('2d');let seed=31;
  const random=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};
- ctx.fillStyle='#53594a';ctx.fillRect(0,0,768,768);
- for(let row=0;row<16;row++)for(let col=-1;col<17;col++){
-  const x=col*48+(row%2)*24,y=row*48,v=86+Math.floor(random()*23);
-  ctx.fillStyle=`rgb(${v+7},${v+8},${v-5})`;
-  ctx.beginPath();ctx.roundRect(x+2,y+2,44,44,5+random()*2);ctx.fill();
-  ctx.strokeStyle='#ffffff0e';ctx.stroke();
-  for(let grain=0;grain<38;grain++){ctx.fillStyle=random()>.5?'#ffffff09':'#0000000a';ctx.fillRect(x+3+random()*40,y+3+random()*40,1,1);}
+ const pixels=ctx.createImageData(1024,1024);
+ for(let y=0;y<1024;y++)for(let x=0;x<1024;x++){
+  const cloud=Math.sin(x*.024)*Math.cos(y*.018)*5+Math.sin((x+y)*.007)*4;
+  const grain=(random()-.5)*24,index=(y*1024+x)*4;
+  pixels.data[index]=101+cloud+grain;
+  pixels.data[index+1]=89+cloud+grain;
+  pixels.data[index+2]=64+cloud+grain*.7;
+  pixels.data[index+3]=255;
+ }
+ ctx.putImageData(pixels,0,0);
+ for(let i=0;i<18000;i++){
+  const x=random()*1024,y=random()*1024,r=.3+random()*1.6;
+  ctx.fillStyle=random()>.55?'#a293713d':'#443d2b35';
+  ctx.beginPath();ctx.ellipse(x,y,r,r*.55,random()*Math.PI,0,Math.PI*2);ctx.fill();
+ }
+ for(let patch=0;patch<80;patch++){
+  const x=random()*1024,y=random()*1024;
+  for(let blade=0;blade<30;blade++){
+   const px=x+(random()-.5)*30,py=y+(random()-.5)*30;
+   ctx.strokeStyle=random()>.5?'#58603f58':'#73704455';ctx.lineWidth=.6+random();
+   ctx.beginPath();ctx.moveTo(px,py);ctx.lineTo(px+random()*4-2,py-2-random()*5);ctx.stroke();
+  }
  }
  const texture=new THREE.CanvasTexture(image);texture.colorSpace=THREE.SRGBColorSpace;
- texture.wrapS=texture.wrapT=THREE.RepeatWrapping;texture.repeat.set(3,3);
+ texture.wrapS=texture.wrapT=THREE.RepeatWrapping;texture.repeat.set(16,16);
  texture.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());return texture;
 }
-const floor=new THREE.Mesh(new THREE.BoxGeometry(6.4,.18,6.4),new THREE.MeshStandardMaterial({map:pavingTexture(),roughness:.98}));
-floor.position.y=-.10;floor.receiveShadow=true;scene.add(floor);
-const ground=new THREE.Mesh(new THREE.PlaneGeometry(100,100),new THREE.MeshStandardMaterial({color:'#24372b',roughness:1}));
-ground.rotation.x=-Math.PI/2;ground.position.y=-.20;ground.receiveShadow=true;scene.add(ground);
-const grid=new THREE.GridHelper(6.4,16,'#cad4a6','#cad4a6');grid.position.y=.006;
-grid.material.transparent=true;grid.material.opacity=.10;grid.material.depthWrite=false;scene.add(grid);
+const floor=new THREE.Mesh(new THREE.PlaneGeometry(80,80),new THREE.MeshStandardMaterial({map:terrainTexture(),roughness:1}));
+floor.rotation.x=-Math.PI/2;floor.position.y=-.012;floor.receiveShadow=true;scene.add(floor);
+const grid=new THREE.GridHelper(12,24,'#ded0a8','#ded0a8');grid.position.y=.002;
+grid.material.transparent=true;grid.material.opacity=.07;grid.material.depthWrite=false;scene.add(grid);
 
 const target=new THREE.Group();target.position.set(0,0,2.68);scene.add(target);
 const wood=new THREE.MeshStandardMaterial({color:'#594a33',roughness:.88});
@@ -124,7 +137,7 @@ function updateControls(){
  $('#pause').setAttribute('aria-label',state.paused?'Continuar animación':'Pausar animación');
  $('#scene-state').textContent=state.attacking?(state.weapon==='sabre'?'Corte de sable':'Disparando'):`${labels[state.motion]} · ${labels[state.weapon]}`;
  if(state.paused)$('#scene-state').textContent+=' · Pausado';
- $('#motion-state').textContent=state.travel&&state.motion!=='idle'?'Recorriendo el patio':'En el sitio';
+ $('#motion-state').textContent=state.travel&&state.motion!=='idle'?'Recorriendo el terreno':'En el sitio';
  $('#status').textContent=state.ready?`${labels[state.weapon]} · Piel: ${skinLabels[state.skin]} · ${state.paused?'Pausado':'Listo para probar'}`:'Cargando el modelo…';
 }
 function clearEffects(){
@@ -162,7 +175,10 @@ function selectMotion(motion){
  if(motion!=='idle'&&state.weapon!=='none')selectWeapon('none');
  state.motion=motion;state.attacking=false;clearEffects();
  model.position.set(0,0,0);model.rotation.y=0;travelPhase=0;
- returnToSelectedPose();
+ if(state.paused){
+  mixer.stopAllAction();currentAction=null;
+  returnToSelectedPose(0);mixer.update(0);
+ }else returnToSelectedPose();
 }
 function attack(){
  if(!state.ready||state.weapon==='none'||state.paused)return;
@@ -251,9 +267,9 @@ $('#travel').addEventListener('change',event=>{state.travel=event.target.checked
 $('#grid').addEventListener('change',event=>grid.visible=event.target.checked);
 $('#night').addEventListener('change',event=>{
  state.night=event.target.checked;
- hemi.intensity=state.night?.85:2.6;sunlight.intensity=state.night?1.2:3.1;sunlight.color.set(state.night?'#a3b9dd':'#fff1d5');fill.intensity=state.night?.65:1.5;
- scene.background.set(state.night?'#172723':'#24372b');scene.fog.color.copy(scene.background);
- scene.environmentIntensity=state.night?.12:.35;
+ hemi.intensity=state.night?.55:1.15;sunlight.intensity=state.night?1:2.7;sunlight.color.set(state.night?'#a3b9dd':'#fff1d9');fill.intensity=state.night?.3:.55;
+ scene.background.set(state.night?'#172723':'#55523e');scene.fog.color.copy(scene.background);
+ scene.environmentIntensity=state.night?.10:.24;
 });
 canvas.addEventListener('keydown',event=>{
  if(event.code==='Space'){event.preventDefault();if(state.ready){state.paused=!state.paused;updateControls();}}
@@ -262,7 +278,7 @@ canvas.addEventListener('keydown',event=>{
 });
 function resize(){
  const {width,height}=viewport.getBoundingClientRect();if(!width||!height)return;
- const aspect=width/height,halfHeight=3.25;
+ const aspect=width/height,halfHeight=5;
  camera.left=-halfHeight*aspect;camera.right=halfHeight*aspect;camera.top=halfHeight;camera.bottom=-halfHeight;
  camera.updateProjectionMatrix();renderer.setSize(width,height,false);
 }

@@ -3,3 +3,4 @@ dist/
 test-results/
 *.blend1
 __pycache__/
+authoring/human-review/

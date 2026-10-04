@@ -9,10 +9,12 @@ rig = bpy.data.objects['Granadero_Rig']
 scene.render.resolution_x = 700
 scene.render.resolution_y = 700
 scene.cycles.samples = 16
-for name, frame, weapon in [('Walk', 9, None), ('Run', 6, None), ('RifleAim', 0, 'weapon_rifle'), ('PistolAim', 0, 'weapon_pistol'), ('SabreReady', 0, 'weapon_sabre'), ('SabreSlash', 15, 'weapon_sabre')]:
+for track in rig.animation_data.nla_tracks:
+    track.mute = True
+for name, frame, weapon in [('Walk', 9, None), ('Run', 6, None), ('RifleAim', 1, 'weapon_rifle'), ('PistolAim', 1, 'weapon_pistol'), ('SabreReady', 1, 'weapon_sabre'), ('SabreSlash', 16, 'weapon_sabre')]:
     rig.animation_data.action = bpy.data.actions[name]
     for groupname in ('weapon_rifle', 'weapon_pistol', 'weapon_sabre'):
-        for child in bpy.data.objects[groupname].children:
+        for child in bpy.data.objects[groupname].children_recursive:
             child.hide_render = groupname != weapon
     scene.frame_set(frame)
     scene.render.filepath = str(HERE / (name + '-review.png'))

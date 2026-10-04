@@ -1,2 +1,5 @@
 # Keep this upstream license byte-for-byte, including its Markdown underline.
 authoring/vendor/makehuman/LICENSE.md -whitespace conflict-marker-size=32
+# Preserve the motion converter's original notice and recorded hash.
+authoring/vendor/motion/READMEFIRST.txt -text -whitespace
+authoring/vendor/motion/*.bvh -text -whitespace

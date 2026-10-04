@@ -317,3 +317,25 @@ test('loop seams and one-shot return poses do not introduce skeletal jumps',asyn
  }
  mixer.stopAllAction();mixer.uncacheRoot(scene);
 });
+
+test('the adult rig retains human shoulder width and limb lengths',async()=>{
+ const loaded=await loadCpuAsset();
+ const mixer=new THREE.AnimationMixer(loaded.scene);
+ const idle=THREE.AnimationClip.findByName(loaded.animations,'Idle');
+ mixer.clipAction(idle).play();mixer.setTime(idle.duration*.25);
+ loaded.scene.updateMatrixWorld(true);
+ const joint=name=>{
+  const bone=loaded.scene.getObjectByName(name);
+  assert.ok(bone?.isBone,`Native anatomical joint ${name} exists`);
+  return bone.getWorldPosition(new THREE.Vector3());
+ };
+ const within=(value,min,max,label)=>assert.ok(value>=min&&value<=max,`${label}: ${value.toFixed(3)} m must be within ${min}–${max} m`);
+ within(joint('upperarm_l').distanceTo(joint('upperarm_r')),.32,.49,'Shoulder socket width');
+ for(const side of ['l','r']){
+  within(joint(`upperarm_${side}`).distanceTo(joint(`lowerarm_${side}`)),.23,.35,`${side} upper arm`);
+  within(joint(`lowerarm_${side}`).distanceTo(joint(`hand_${side}`)),.20,.32,`${side} forearm`);
+  within(joint(`thigh_${side}`).distanceTo(joint(`calf_${side}`)),.35,.50,`${side} thigh`);
+  within(joint(`calf_${side}`).distanceTo(joint(`foot_${side}`)),.34,.50,`${side} lower leg`);
+  within(joint(`hand_${side}`).distanceTo(joint(`middle_03_${side}`)),.11,.20,`${side} hand before fingertip`);
+ }
+});
