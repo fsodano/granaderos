@@ -44,6 +44,13 @@ for(const [name,patch] of [
  if(patch.weaponFittings)assert.equal(unit(r.state).weaponFittings.bayonet.condition,79);
 });
 
+test('a last-condition fixed bayonet retains its admitted attack style after the actual strike wears it to zero',()=>{
+ const fitting=socket();fitting.bayonet.condition=1;
+ const s=field({weapon:1800,weaponMode:'melee',loaded:1,ammo:9,weaponFittings:fitting}),r=present(s),contact=r.frames.find(frame=>frame.type==='contact'),impact=r.frames.find(frame=>frame.type==='impact');
+ assert.equal(unit(contact.state).weaponFittings.bayonet.condition,1);assert.equal(unit(impact.state).weaponFittings.bayonet.condition,0);assert.equal(contact.meleeStyle,'bayonet');assert.equal(impact.meleeStyle,'bayonet');assert.deepEqual(r.state,actBattle(s,order));
+ const hidden=captureBattlePresentation(s,()=>{recordBattleFrame(s,{type:'contact',action:'melee',unitId:'reserve',meleeStyle:'bayonet'});return s;},(_state,body)=>body.side==='player');assert.equal(hidden.frames.length,0);
+});
+
 test('a real punch shows the conscious defender before its finite breath loss and knockout',()=>{
  const s=field({weapon:0,activeSlot:'unarmed'},{energy:30}),r=present(s),contact=r.frames.find(f=>f.type==='contact'),impact=r.frames.find(f=>f.type==='impact');
  assert.equal(unit(contact.state,'e').energy,30);assert.equal(unit(contact.state,'e').unconscious,false);assert.equal(unit(contact.state,'e').hp,100);

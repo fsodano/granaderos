@@ -21,7 +21,7 @@ import {WEAPONS} from './firearm-definitions.js';
 import {BLADES} from './blade-definitions.js';
 export {ARTILLERY,WEAPONS,BLADES};
 import {removeIgnitionSupplies} from './ignition-kit.js';
-import {recordBattleFrame,captureBattlePresentation} from './battle-presentation.js';
+import {recordBattleFrame,captureBattlePresentation,withBattleShotHand} from './battle-presentation.js';
 import {RouteQueue} from './route-queue.js';
 import {crossPrisonerEscorts,prisonerCanExit} from './prisoner-escape.js';
 import {PRISONER_RELEASE_AP,PRISONER_ESCORT_AP,recordPrisonerRelease,recordPrisonerEscort} from './prisoner-release.js';
@@ -788,7 +788,7 @@ function wearBayonet(unit){const fitting=fixedBayonetFor(unit);if(fitting){fitti
 // Record the paid contact posture before the existing impact changes a body.
 // The recorder admits only known actors/targets and does not resolve an attack.
 function presentMeleeContact(s,attacker,target,action='melee'){
- const event={unitId:attacker.id,action,...(target?{targetId:target.id,...(isCivilianBody(s,target)?{targetKind:'npc'}:{})}:{})};
+ const event={unitId:attacker.id,action,meleeStyle:fixedBayonetFor(attacker)?'bayonet':'normal',...(target?{targetId:target.id,...(isCivilianBody(s,target)?{targetKind:'npc'}:{})}:{})};
  recordBattleFrame(s,{...event,type:'contact'});
  return ()=>recordBattleFrame(s,{...event,type:'impact'});
 }
@@ -1946,6 +1946,7 @@ else if(['fire','firePoint'].includes(a.type)&&pairedPistol(u)){
     if(random(s)*100<shot.risk){shot.record.jammed=true;sayObserved(s,[u],`${u.name}: fallo de chispa en la mano ${shot.hand}. La carga se conserva.`);continue;}
     shot.record.loaded--;shot.record.condition=Math.max(0,(shot.record.condition??100)-1);
     const notifyCivilians=emitNoise(s,u,'fire',u,{deferCivilians:true});
+    withBattleShotHand(shot.hand==='secundaria'?'offhand':'primary',()=>{
     if(pointShot)pointFireImpact(s,shot.view,point,aim,u,shot.chance,intent);
     else{
       practice(u,'marksmanship',2);
@@ -1955,6 +1956,7 @@ else if(['fire','firePoint'].includes(a.type)&&pairedPistol(u)){
        if(!hit&&!isCivilianBody(s,target)){target.morale=Math.max(0,target.morale-4);sayObserved(s,[u],`${u.name} falla con la mano ${shot.hand} (${shot.chance}%).`);}
       }
     }
+    });
     // Hearing this shot cannot change the silhouette that it already struck.
     notifyCivilians();s.smoke.push({...positionOf(u),radius:1,turns:3});
   }
@@ -2066,17 +2068,36 @@ if(!Number.isInteger(point.x)||!Number.isInteger(point.y)||!tile(s,point.x,point
 const facing=Math.atan2(point.y-gun.y,point.x-gun.x);if(Number.isFinite(gun.facing)&&Math.abs(Math.atan2(Math.sin(facing-gun.facing),Math.cos(facing-gun.facing)))>Math.PI/4)return fail('Gira la pieza antes de disparar fuera de su arco frontal.');
 const intended=target?null:intendedCivilian(s,u,point);
 gun.facing=facing;gun.loaded=false;const notifyCivilians=emitNoise(s,u,'explosion',gun,{deferCivilians:true});s.smoke.push({x:gun.x,y:gun.y,radius:2,turns:3});
-for(const event of artilleryShotTrace(s,u,gun,point,a.mode).events){
+const trace=artilleryShotTrace(s,u,gun,point,a.mode);
+// This second trace is read-only presentation, not a second shot. It uses
+// observed bodies/terrain with the existing grid rules and consumes no RNG.
+// Hidden force loss or a private stop cannot supply the display endpoint.
+const displayState={...s,units:s.units.filter(v=>playerObservedBody(s,v)),npcs:(s.npcs??[]).filter(v=>playerObservedBody(s,v)),tiles:s.tiles.map(t=>playerObservedBody(s,t)?t:{...t,blocked:false})};
+const displayTrace=artilleryShotTrace(displayState,u,gun,point,a.mode),displayEnd=displayTrace.cells.at(-1);
+// The grid trace has no metric trajectory height. Display height is explicit
+// ground-relative artwork, not a new collision or ballistics calculation.
+const displayPoint=p=>({...positionOf(p),tacticalLevel:tacticalLevel(p),height:(surfaceHeight(s,p)??0)+.65});
+const artilleryVisual={source:displayPoint(gun),destination:displayPoint(point),...(displayEnd?{displayEnd:displayPoint(displayEnd)}:{}),cannonId:gun.id,canister:a.mode==='canister',discharge:true,impacts:[]};
+const terminal=displayEnd&&displayState.tiles.find(t=>t.x===displayEnd.x&&t.y===displayEnd.y);
+if(displayTrace.events.some(event=>event.type==='stop')||terminal?.blocked&&['water','cliff'].includes(terminal.type))artilleryVisual.impacts.push({...displayPoint(displayEnd),outcome:'cover',material:terminal?.material??(terminal?.type==='cliff'?'stone':terminal?.type)});
+recordBattleFrame(s,{type:'projectile',unitId:u.id,action:'artillery',artilleryVisual});
+for(const event of trace.events){
  if(event.type==='impact'){
-  const victim=flightVictim(s,{...event,victimId:event.unitId});physicalImpact(s,victim,event.damage,u,{kind:'artillery',projectile:false,intentional:victim===intended});
+  const victim=flightVictim(s,{...event,victimId:event.unitId}),contact=displayPoint(victim),hp=victim.hp;physicalImpact(s,victim,event.damage,u,{kind:'artillery',projectile:false,intentional:victim===intended});
+  if(victim.hp<hp)artilleryVisual.impacts.push({...contact,outcome:'hit',victimId:victim.id,victimKind:event.victimKind??'unit'});
   if(event.victimKind!=='npc'&&a.mode==='canister'&&alive(victim)){victim.morale=Math.max(0,victim.morale-12);if(victim.morale<15)rout(s,victim);}
  }else if(event.type==='breach'){
-  const ground=tile(s,event.x,event.y);ground.blocked=false;ground.blocksSight=false;ground.type='rubble';ground.cover=20;delete ground.obstacleHeight;delete ground.projectileResistance;
+  const ground=tile(s,event.x,event.y),contact=displayPoint(ground),material=ground.material??(event.stone?'stone':'adobe');ground.blocked=false;ground.blocksSight=false;ground.type='rubble';ground.cover=20;delete ground.obstacleHeight;delete ground.projectileResistance;
+  artilleryVisual.impacts.push({...contact,outcome:'cover',material});
   say(s,`La bala abre una brecha en ${event.stone?'la piedra':'el adobe'}.`);
  }else say(s,'La bala se detiene contra la fortificación.');
 }
+recordBattleFrame(s,{type:'impact',unitId:u.id,action:'artillery',artilleryVisual});
 notifyCivilians();sayObserved(s,[u],a.mode==='canister'?`${spec.name} barre el frente con metralla.`:`${spec.name} dispara una bala rasa que atraviesa su línea de tiro.`);
 }
+// Metadata enriches this successful action's existing frames. It creates no
+// extra playback step and does not issue orders or spend another crew budget.
+recordBattleFrame(s,{type:'crew',unitId:u.id,action:a.type,crewIds:assigned.map(v=>v.id)});
 for(const v of assigned){lowerWeapon(v);if(s.mode!=='exploration')v.ap-=cost;if(a.type==='artillery'||a.type==='artilleryReload'&&loading.rounds)practice(v,'explosives',a.type==='artillery'?2:1);}
 if(s.mode==='exploration')s.actionDurationSeconds=Math.max(1,Math.ceil(cost*.06));
 }
