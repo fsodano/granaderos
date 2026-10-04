@@ -8,6 +8,7 @@ import {contractQuote,contractExpiresSeconds} from '../game/contracts.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {defaultContentPackage} from '../game/content-package.js';
 import {enterSector} from '../game/world.js';
+import {preparedConductArena,executePaidConductRoute} from './conduct-objections-fixture.mjs';
 
 const order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,n.lastError);return n;};
 const pair=()=>order(order(order(initialCampaign(),{type:'advanceStrategicTime',seconds:17}),{type:'recruitCivic',id:107,term:'day'}),{type:'recruitCivic',id:112,term:'week'});
@@ -20,15 +21,16 @@ async function mount(t,state,view){
  const {default:Recruitment}=await import('../web/app/Recruitment.tsx');
  const {default:StrategicPersonnelMenu}=await import('../web/app/StrategicPersonnelMenu.tsx');
  const {default:ContractAttention}=await import('../web/app/ContractAttention.tsx');
+ const {default:ReceivedCorrespondence}=await import('../web/app/ReceivedCorrespondence.tsx');
  const {createRoot}=await import('../web/node_modules/react-dom/client.js');
- const root=createRoot(dom.window.document.getElementById('root'));let current=state,closed=false,send,replace;
- function Screen(){const [s,setState]=useState(state),[show,setShow]=useState(true);current=s;send=a=>setState(old=>order(old,a));replace=next=>setState(next);const props={state:s,roster:rosterFor(s),dispatch:send};return view==='recruitment'?h(Recruitment,props):view==='attention'?h(ContractAttention,props):show?h(StrategicPersonnelMenu,{...props,id:107,kind:view==='assignment'?'assignment':'contract',onClose:()=>{closed=true;setShow(false);}}):null;}
+ const root=createRoot(dom.window.document.getElementById('root'));let current=state,closed=false,send,replace,changeView;
+ function Screen(){const [s,setState]=useState(state),[show,setShow]=useState(true),[currentView,setView]=useState(view);current=s;send=a=>setState(old=>order(old,a));replace=next=>setState(next);changeView=next=>{setView(next);setShow(true);closed=false;};const props={state:s,roster:rosterFor(s),dispatch:send};return currentView==='recruitment'?h(Recruitment,props):currentView==='attention'?h(ContractAttention,props):currentView==='inbox'?h(ReceivedCorrespondence,{state:s}):show?h(StrategicPersonnelMenu,{...props,id:107,kind:currentView==='assignment'?'assignment':'contract',onClose:()=>{closed=true;setShow(false);}}):null;}
  t.after(async()=>{try{await act(async()=>root.unmount());}finally{dom.window.close();for(const [key,descriptor]of previous){if(descriptor)Object.defineProperty(globalThis,key,descriptor);else delete globalThis[key];}}});
  await act(async()=>root.render(h(Screen)));
  return {doc:dom.window.document,state:()=>current,closed:()=>closed,
   button(text,scope=dom.window.document){const button=[...scope.querySelectorAll('button')].find(b=>b.textContent.trim()===text);assert.ok(button,text);return button;},
   async click(button){assert.equal(button.disabled,false);await act(async()=>button.dispatchEvent(new dom.window.MouseEvent('click',{bubbles:true})));},
-  async issue(action){await act(async()=>send(action));},async replace(next){await act(async()=>replace(next));}
+  async issue(action){await act(async()=>send(action));},async replace(next){await act(async()=>replace(next));},async view(next){await act(async()=>changeView(next));}
  };
 }
 
@@ -77,8 +79,9 @@ test('real hiring and saved deployment disclose the directed preference without 
  const content=defaultContentPackage();let state=initialCampaign(42,content);const m=await mount(t,state,'recruitment');
  const card=id=>m.doc.querySelector(`[data-operative-id="${id}"]`),preference=()=>card(107).querySelector('.companion-preferences');
  assert.match(preference().textContent,/Petrona Lagos.*hasta \+3.*no supera \+5.*No cambia la paga ni el contrato/);assert.doesNotMatch(preference().textContent,/Apoyo de/);assert.equal(card(116).querySelector('.companion-preferences'),null,'the authored default is directed');
+ assert.match(card(107).textContent,/Si ve directamente una orden intencional matar a un civil no combatiente.*rechaza nuevos contratos.*plazo ya pagado/);assert.equal(card(107).querySelector('[aria-label="Objeción de servicio"]'),null,'disclosure does not claim an event');
  assert.match(preference().textContent,/Si ve morir a un compañero preferido que participa en el despliegue, pierde hasta 6 puntos de moral adicionales/);
- await m.click(card(107).querySelector('.candidate-face'));const dossier=m.doc.querySelector('[role="dialog"]');assert.match(dossier.textContent,/Petrona Lagos: Confía en su ayuda para atender heridos/);await m.click(m.button('Cerrar hoja de servicio',dossier));assert.deepEqual(m.state(),state,'reading a preference does not perform an order');
+ await m.click(card(107).querySelector('.candidate-face'));const dossier=m.doc.querySelector('[role="dialog"]');assert.match(dossier.textContent,/Petrona Lagos: Confía en su ayuda para atender heridos/);assert.match(dossier.textContent,/civil no combatiente.*rechaza nuevos contratos.*plazo ya pagado/);await m.click(m.button('Cerrar hoja de servicio',dossier));assert.deepEqual(m.state(),state,'reading a preference does not perform an order');
  for(const id of [107,116]){
   const before=m.state(),quote=contractQuote(before,rosterFor(before).find(o=>o.id===id));await m.click([...card(id).querySelectorAll('button')].find(b=>b.textContent.startsWith('Contratar')));
   assert.equal(m.state().resources.treasury,before.resources.treasury-quote.price);assert.deepEqual(decodeSave(encodeSave(m.state())).campaign,m.state());
@@ -112,4 +115,24 @@ test('the hiring card and real dossier explain authored care composure while old
  const old=structuredClone(content);delete old.characters.find(c=>c.id==='person-130').abilities;await m.replace(decodeSave(encodeSave(initialCampaign(42,old))).campaign);
  assert.doesNotMatch(card().textContent,/Serenidad al cuidar|hasta 2 puntos de tensión/);await m.click(card().querySelector('.candidate-face'));
  assert.match(m.doc.querySelector('[role="dialog"]').textContent,/La rutina de atender a otros le devuelve la calma/);assert.doesNotMatch(m.doc.querySelector('[role="dialog"]').textContent,/Serenidad al cuidar|hasta 2 puntos de tensión/);
+});
+
+test('real saved conduct objection remains visible across paid service, renewal controls, correspondence and refused rehire',async t=>{
+ const fixture=preparedConductArena(),route=executePaidConductRoute(fixture.start),state=decodeSave(encodeSave(route.returned)).campaign;
+ const expiry=contractExpiresSeconds(fixture.start.campaign.contracts[107]),receipt=structuredClone(state.operativeState[107].serviceObjection),m=await mount(t,state,'recruitment');
+ assert.ok(receipt);assert.equal(contractExpiresSeconds(state.contracts[107]),expiry);assert.ok(state.recruited.includes(107));assert.equal(state.operativeState[107].hp,fixture.start.campaign.operativeState[107].hp);
+ const card=()=>m.doc.querySelector('[data-operative-id="107"]'),notice=scope=>scope.querySelector('[aria-label="Objeción de servicio"]');
+ assert.match(notice(card()).textContent,/Inés Aguirre.*no acepta contratarse ni renovar.*civil no combatiente.*plazo ya pagado/);assert.equal([...card().querySelectorAll('button')].find(b=>b.textContent.startsWith('Renovar')).disabled,true);
+ assert.equal([...card().querySelectorAll('button')].some(b=>b.textContent.startsWith('Finalizar servicio de ')),false,'there is no rival-dismissal remedy');
+ await m.click(card().querySelector('.candidate-face'));assert.match(notice(m.doc.querySelector('[role="dialog"]')).textContent,/Inés Aguirre.*plazo ya pagado/);await m.click(m.button('Cerrar hoja de servicio'));
+ await m.view('inbox');const complaint=[...m.doc.querySelectorAll('nav button')].find(button=>button.textContent.includes('Una objeción al mando'));assert.ok(complaint);await m.click(complaint);
+ assert.match(m.doc.querySelector('article').textContent,/Inés Aguirre.*plazo pagado.*contrato/);assert.equal(m.state().correspondence.filter(letter=>letter.id==='service-objection:107').length,1);assert.deepEqual(m.state(),state,'reading the actual received complaint does not alter service or receipt');
+ await m.view('menu');assert.ok(notice(m.doc));assert.ok([...m.doc.querySelectorAll('button')].filter(b=>/^(Un día|Una semana|Dos semanas)/.test(b.textContent)).every(b=>b.disabled));
+ const current=m.state(),rejected=dispatchCampaign(current,{type:'renewContract',id:107,term:'day',expectedExpiresAt:current.contracts[107].expiresAt,expectedExpiresSecond:current.contracts[107].expiresSecond??0});assert.match(rejected.lastError,/civil no combatiente/);assert.deepEqual({...rejected,lastError:null},{...current,lastError:null},'a refused renewal changes no money, deadline, items or receipt');
+ await m.issue({type:'wait',hours:24});assert.ok(m.state().recruited.includes(107));assert.equal(contractExpiresSeconds(m.state().contracts[107]),expiry);assert.deepEqual(m.state().operativeState[107].serviceObjection,receipt);
+ await m.replace(decodeSave(encodeSave(m.state())).campaign);await m.view('attention');const row=[...m.doc.querySelectorAll('li')].find(li=>li.textContent.startsWith('Aguirre'));assert.ok(row);assert.equal(expiry-m.state().hour*3600-(m.state().secondOfHour??0),2*3600-29);assert.match(row.textContent,/termina en 1 hora 59 minutos 31 segundos/);assert.ok(notice(row));const renewals=[...row.querySelectorAll('button')].filter(b=>b.getAttribute('aria-label')?.startsWith('Renovar a Aguirre'));assert.equal(renewals.length,3);assert.ok(renewals.every(b=>b.disabled));assert.ok(renewals.every(b=>/civil no combatiente/.test(b.title)));
+ await m.view('menu');await m.click(m.button('Despedir'));assert.equal(m.closed(),true);assert.equal(m.state().recruited.includes(107),false);assert.deepEqual(m.state().operativeState[107].serviceObjection,receipt);
+ await m.replace(decodeSave(encodeSave(m.state())).campaign);await m.view('recruitment');assert.ok(notice(card()));assert.equal([...card().querySelectorAll('button')].find(b=>b.textContent.startsWith('Contratar')).disabled,true);
+ const dismissed=m.state(),rehire=dispatchCampaign(dismissed,{type:'recruitCivic',id:107,term:'day'});assert.match(rehire.lastError,/civil no combatiente/);assert.deepEqual({...rehire,lastError:null},{...dismissed,lastError:null});
+ const old=executePaidConductRoute(preparedConductArena({oldPinned:true}).start).returned;await m.replace(decodeSave(encodeSave(old)).campaign);assert.equal(notice(card()),null);assert.doesNotMatch(card().textContent,/orden intencional matar|rechaza nuevos contratos/);assert.equal([...card().querySelectorAll('button')].find(b=>b.textContent.startsWith('Renovar')).disabled,false);assert.equal(m.state().correspondence.some(letter=>letter.id==='service-objection:107'),false);
 });

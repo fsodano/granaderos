@@ -56,12 +56,14 @@ test('the editor removes a historical ability and assigns abilities to a new ide
  assert.equal(ability('Serenidad al cuidar').checked,true);assert.match(ability('Serenidad al cuidar').parentElement.textContent,/otra persona.*hasta 2.*PA.*vendas.*sí mismo/);
  await m.click(ability('Serenidad al cuidar'));assert.deepEqual(draft().characters.find(c=>c.id==='person-130').abilities,[]);await m.click(m.button('Deshacer'));assert.equal(ability('Serenidad al cuidar').checked,true);
  await m.input(m.document.querySelector('input[type="search"]'),'person-3');await m.click(m.document.querySelector('.entry-list button'));
+ assert.equal(ability('Objeción por daño a civiles').disabled,true);assert.equal(ability('Objeción por daño a civiles').checked,false);assert.match(ability('Objeción por daño a civiles').title,/candidatos por contrato/);
  assert.equal(ability('Protección de compañeros').checked,true);await m.click(ability('Protección de compañeros'));assert.ok(!draft().characters.find(c=>c.id==='person-3').abilities.includes('bodyguard'));
  await m.click([...m.document.querySelectorAll('button')].find(b=>b.textContent.includes('Crear personaje')));
  assert.equal(m.document.querySelectorAll('fieldset[aria-label="Habilidades de combate"] input:checked').length,0);
  await m.input(m.label('Nombre'),'Alma Nueva');await m.click(ability('Protección de compañeros'));await m.click(ability('Atención rápida'));
  await m.click(m.button('Deshacer'));assert.equal(ability('Atención rápida').checked,false);await m.click(m.button('Rehacer'));assert.equal(ability('Atención rápida').checked,true);await m.click(ability('Serenidad al cuidar'));
- await m.click(m.button('Duplicar personaje'));const c=draft().characters.at(-1);assert.deepEqual(c.abilities,['bodyguard','rapid_first_aid','care_composure']);
+ assert.equal(ability('Objeción por daño a civiles').disabled,false);await m.click(ability('Objeción por daño a civiles'));await m.click(m.button('Deshacer'));assert.equal(ability('Objeción por daño a civiles').checked,false);await m.click(m.button('Rehacer'));assert.equal(ability('Objeción por daño a civiles').checked,true);
+ await m.click(m.button('Duplicar personaje'));const c=draft().characters.at(-1);assert.deepEqual(c.abilities,['bodyguard','rapid_first_aid','care_composure','civilian_conscience']);
  await m.click(m.button('Iniciar campaña con estas fichas'));let {campaign}=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY));
  assert.ok(!rosterFor(campaign).find(o=>o.id===3).abilities.includes('bodyguard'));
  const id=operativeIdForCharacter(campaign.contentCampaign.package,c.id);campaign=dispatchCampaign(campaign,{type:'recruitCivic',id,term:'week'});assert.equal(campaign.lastError,null);
@@ -418,6 +420,20 @@ test('the actual editor creates a world resident, copies its cell range, undoes 
  assert.ok(npc);assert.equal(npc.name,'Alma de la Posta');assert.equal(npc.greeting,'Conozco estas tierras.');assert.equal(npc.recruitable,true);assert.equal(npc.requiredLeadership,35);assert.equal(npc.requiredSector,'retiro');assert.equal(npc.hp,original.attributes.maxHp);
 });
 
+test('the editor declares a fixed unarmed noncombatant through eligibility, undo, copy and an official saved encounter',async t=>{
+ const m=await mount(t),draft=()=>parseContentPackage(m.dom.window.localStorage.getItem(draftKey));await m.click(m.button('Crear habitante'));await m.input(m.label('Nombre'),'Elena de la Posta');
+ const civilian=()=>[...m.document.querySelectorAll('label')].find(l=>l.textContent.includes('Civil no combatiente')).querySelector('input');
+ assert.equal(civilian().disabled,true,'an unplaced resident is ineligible');await m.click(m.button('Configurar aparición'));await m.input(m.label('Ubicación'),'fixed');assert.equal(civilian().disabled,true,'the new resident still carries its declared blade');await m.input(m.label('Arma blanca'),'');
+ assert.equal(civilian().disabled,false);await m.click(civilian());assert.equal(draft().characters.at(-1).encounter.noncombatant,true);
+ await m.click(m.button('Deshacer'));assert.equal(civilian().checked,false);await m.click(m.button('Rehacer'));assert.equal(civilian().checked,true);
+ const recruitable=[...m.document.querySelectorAll('label')].find(l=>l.textContent.includes('Puede incorporarse a la escuadra')).querySelector('input');await m.click(recruitable);assert.equal(m.button('Iniciar campaña con estas fichas').disabled,true,'a recruitable civilian declaration is rejected by the shared schema');
+ await m.click(m.button('Deshacer'));assert.equal(m.button('Iniciar campaña con estas fichas').disabled,false);await m.input(m.label('Arma principal'),'firearm-1800');assert.equal(m.button('Iniciar campaña con estas fichas').disabled,true,'an armed declaration is rejected');
+ await m.click(m.button('Deshacer'));assert.equal(civilian().checked,true);await m.click(m.button('Duplicar personaje'));const copy=draft().characters.at(-1);assert.equal(copy.encounter.noncombatant,true);assert.equal(copy.weapon,null);assert.equal(copy.encounter.recruitable,false);assert.equal(draft().placements.at(-1).mode,'fixed');
+ await m.click(m.button('Iniciar campaña con estas fichas'));let {campaign}=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY));const id=operativeIdForCharacter(campaign.contentCampaign.package,copy.id);
+ campaign=dispatchCampaign(campaign,{type:'recruitCivic',id:110,term:'week'});assert.equal(campaign.lastError,null);campaign=dispatchCampaign(campaign,{type:'wait',hours:6});assert.equal(campaign.lastError,null);campaign=dispatchCampaign(campaign,{type:'visitSector'});assert.equal(campaign.lastError,null);
+ const saved=decodeSave(encodeSave(campaign,enterSector(campaign.pendingBattle))),npc=saved.battle.npcs.find(n=>n.operativeId===id);assert.ok(npc);assert.equal(npc.noncombatant,true);assert.equal(npc.weapon,undefined);assert.equal(npc.recruitable,false);assert.equal(npc.name,copy.name);
+});
+
 test('the editor authors a death successor that appears once after an actual saved campaign death',async t=>{
  const m=await mount(t),draft=()=>parseContentPackage(m.dom.window.localStorage.getItem(draftKey));
  await m.click(m.button('Crear habitante'));await m.input(m.label('Nombre'),'Pablo');await m.input(m.label('Salud'),30);await m.click(m.button('Configurar aparición'));const source=draft().characters.at(-1).id;
@@ -445,10 +461,11 @@ test('the editor authors paid local service through price, copy, undo and campai
  const m=await mount(t),draft=()=>parseContentPackage(m.dom.window.localStorage.getItem(draftKey));await m.click(m.button('Crear habitante'));
  await m.input(m.label('Nombre'),'Alma del contrato');const field=m.document.querySelector('fieldset[aria-label="Encuentro del habitante"]');await m.click(field.querySelector('input[type="checkbox"]'));
  await m.input(m.label('Tipo de servicio'),'contract');assert.equal(m.label('Paga mensual').disabled,false);await m.input(m.label('Paga mensual'),90);
- await m.input(m.label('Tipo de servicio'),'permanent');assert.equal(m.label('Paga mensual').value,'0');assert.equal(m.label('Paga mensual').disabled,true);
+ const principle=[...m.document.querySelectorAll('fieldset[aria-label="Habilidades de combate"] label')].find(l=>l.textContent.startsWith('Objeción por daño a civiles')).querySelector('input');assert.equal(principle.disabled,false,'explicit paid world service is admitted by the same model predicate');await m.click(principle);
+ await m.input(m.label('Tipo de servicio'),'permanent');assert.equal(m.label('Paga mensual').value,'0');assert.equal(m.label('Paga mensual').disabled,true);assert.equal(m.button('Iniciar campaña con estas fichas').disabled,true,'the retained contract-only condition cannot launch with permanent service');
  await m.click(m.button('Deshacer'));assert.equal(m.label('Tipo de servicio').value,'contract');assert.equal(m.label('Paga mensual').value,'90');
- await m.click(m.button('Duplicar personaje'));const copy=draft().characters.at(-1);assert.equal(copy.service,'contract');assert.equal(copy.monthlyPay,90);assert.equal(copy.recruitmentSource,'encounter');assert.equal(copy.arrivalHours,undefined);
- await m.click(m.button('Iniciar campaña con estas fichas'));const {campaign}=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY));const id=operativeIdForCharacter(campaign.contentCampaign.package,copy.id),op=rosterFor(campaign).find(o=>o.id===id);assert.equal(op.service,'contract');assert.equal(op.monthlyPay,90);assert.equal(op.recruitmentSource,'encounter');
+ await m.click(m.button('Duplicar personaje'));const copy=draft().characters.at(-1);assert.equal(copy.service,'contract');assert.equal(copy.monthlyPay,90);assert.equal(copy.recruitmentSource,'encounter');assert.equal(copy.arrivalHours,undefined);assert.deepEqual(copy.abilities,['civilian_conscience']);
+ await m.click(m.button('Iniciar campaña con estas fichas'));const {campaign}=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY));const id=operativeIdForCharacter(campaign.contentCampaign.package,copy.id),op=rosterFor(campaign).find(o=>o.id===id);assert.equal(op.service,'contract');assert.equal(op.monthlyPay,90);assert.equal(op.recruitmentSource,'encounter');assert.deepEqual(op.abilities,['civilian_conscience']);
 });
 
 

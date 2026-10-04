@@ -11,6 +11,8 @@ import {campaignPlace} from '../../game/world-cells.js';
 import {travelTime} from '../lib/travel-time';
 import ServiceRefusalNotice from './ServiceRefusalNotice';
 import PreferredCompanionsSummary from './PreferredCompanionsSummary';
+import {serviceObjectionReason} from '../../game/service-objections.js';
+import ServiceObjectionNotice from './ServiceObjectionNotice';
 
 function visibleControl(control:HTMLElement){
  if(!control.isConnected||control.closest('[hidden],[inert]'))return false;
@@ -68,6 +70,7 @@ export default function StrategicPersonnelMenu({state:s,roster,id,kind,onClose,d
    </div>
   </>:<p>Sin ruta pendiente.</p>:kind==='contract'?<>
    <PreferredCompanionsSummary state={s} operative={op}/>
+   <ServiceObjectionNotice reason={serviceObjectionReason(s,op)}/>
    <p>{contract?.remaining===null?'Servicio permanente':`${Math.ceil((contract?.remaining??0)/24)} días hasta la salida`}</p>
    <ServiceRefusalNotice state={s} refusal={contractRefusal} disabled={blocked} dispatch={dispatch}/>
    {contract?.remaining!==null&&['day','week','fortnight'].map(term=>{const q=contractQuote(s,op,term);return <button key={term} className="line-button" disabled={blocked||!q.available||q.price>s.resources.treasury} onClick={()=>order({type:'renewContract',id,term,expectedExpiresAt:s.contracts[id]?.expiresAt,expectedExpiresSecond:s.contracts[id]?.expiresSecond??0})}>{term==='day'?'Un día':term==='week'?'Una semana':'Dos semanas'} · {q.price.toLocaleString('es-AR')} pesos</button>;})}

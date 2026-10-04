@@ -39,6 +39,7 @@ import { CONTENT_LAUNCH_KEY } from '../../../game/content-launch.js';
 import './editor.css';
 import {CHARACTER_ABILITIES,legacyCharacterAbilities} from '../../../game/character-abilities.js';
 import {isContractCharacter,isHistoricalCharacter,isWorldCharacter,legacyOperativeId} from '../../../game/content-character-ids.js';
+import {conductObserverDefinition,conductNoncombatantDefinition} from '../../../game/service-objections.js';
 import CharacterPresentation from './CharacterPresentation';
 import CharacterSupplies from './CharacterSupplies';
 import CharacterCondition from './CharacterCondition';
@@ -726,6 +727,9 @@ export default function ContentEditor() {
                         <textarea rows={3} maxLength={1000} value={item.encounter.greeting} onChange={e=>update({encounter:{...item.encounter,greeting:e.target.value}})}/>
                       </label>
                       <label><input type="checkbox" checked={item.encounter.recruitable} onChange={e=>update({encounter:{...item.encounter,recruitable:e.target.checked}})}/>Puede incorporarse a la escuadra</label>
+                      <label><input type="checkbox" checked={item.encounter.noncombatant===true} disabled={!conductNoncombatantDefinition(item,placement)&&item.encounter.noncombatant!==true} onChange={e=>{const encounter={...item.encounter};if(e.target.checked)encounter.noncombatant=true;else delete encounter.noncombatant;update({encounter});}}/>Civil no combatiente
+                        <small>Solo para un habitante fijo, sin armas y que no puede incorporarse. Esta condición no impide que reciba daño.</small>
+                      </label>
                       {item.encounter.recruitable&&<>
                         <label>Tipo de servicio
                           <select value={item.service} onChange={e=>update({service:e.target.value,...(e.target.value==='permanent'?{monthlyPay:0}:{})})}>
@@ -752,12 +756,13 @@ export default function ContentEditor() {
                     {isWorldCharacter(item)&&<DialogueEditor key={item.id} ownerId={item.id} characters={draft.characters} quests={draft.quests??[]} value={item.encounter.dialogue} greeting={item.encounter.greeting} onChange={dialogue=>update({encounter:{...item.encounter,dialogue}})}/>}
                     <fieldset aria-label="Habilidades de combate">
                       <legend>Habilidades de combate</legend>
-                      <p>Elegí las capacidades de este personaje. Sin casillas marcadas, no tendrá ninguna de estas ventajas. Las funciones de historia se conservan por ahora.</p>
+                      <p>Elegí las capacidades y condiciones de servicio de este personaje. Sin casillas marcadas, no tendrá ninguna de estas capacidades o condiciones. Las funciones de historia se conservan por ahora.</p>
                       <div className="fields">
                         {CHARACTER_ABILITIES.map(ability=>{
                           const abilities=item.abilities??legacyCharacterAbilities(legacyOperativeId(item.id));
+                          const incompatible=ability.contractOnly&&!conductObserverDefinition(item);
                           return <label key={ability.id}>
-                            <input type="checkbox" checked={abilities.includes(ability.id)} onChange={e=>update({abilities:e.target.checked?[...abilities,ability.id]:abilities.filter((id:string)=>id!==ability.id)})}/>
+                            <input type="checkbox" checked={abilities.includes(ability.id)} disabled={incompatible&&!abilities.includes(ability.id)} title={incompatible?'Solo para candidatos por contrato con servicio pagado explícito.':undefined} onChange={e=>update({abilities:e.target.checked?[...abilities,ability.id]:abilities.filter((id:string)=>id!==ability.id)})}/>
                             {ability.name}<small>{ability.description}</small>
                           </label>;
                         })}

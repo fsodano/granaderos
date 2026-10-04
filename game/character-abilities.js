@@ -17,11 +17,12 @@ export const CHARACTER_ABILITIES = [
  ['mounted_intimidation','Intimidación montada','Una carga montada puede amedrentar a enemigos cercanos.'],
  ['rapid_first_aid','Atención rápida','Reduce el coste de la atención médica.'],
  ['care_composure','Serenidad al cuidar','Al tratar una herida de otra persona a la vista, reduce hasta 2 puntos de tensión. Usa los PA y las vendas habituales. No se aplica al tratarse a sí mismo.'],
+ ['civilian_conscience','Objeción por daño a civiles','Si ve directamente una orden intencional matar a un civil no combatiente, protesta y rechaza nuevos contratos. Cumple el plazo ya pagado.'],
  ['tactical_command','Mando táctico','Mejora puntería, iniciativa y reacción de compañeros cercanos.'],
  ['strategic_command','Gran mando','Mejora puntería, iniciativa, reacción y moral de compañeros cercanos.'],
  ['protected_commander','Mando protegido','Puede recibir la protección de un compañero sin exigir 90 puntos de liderazgo.'],
  ['mounted_charge','Carga precisa','Aumenta el daño de una carga montada.'],
-].map(([id,name,description])=>Object.freeze({id,name,description}));
+].map(([id,name,description])=>Object.freeze({id,name,description,...(id==='civilian_conscience'?{contractOnly:true}:{})}));
 const legacy={0:['mud_rider'],1:['militia_command'],2:['loading_support'],3:['counterattack','bodyguard'],4:['quick_shot','quick_movement'],5:['artillery_fire'],6:['breaching','night_scout','scatter_concealment'],7:['artillery_loading','foot_morale'],9:['mounted_intimidation'],10:['rapid_first_aid'],11:['tactical_command'],57:['strategic_command','protected_commander','mounted_charge']};
 export const legacyCharacterAbilities=id=>[...(legacy[Number(id)]??[])];
 export function hasCharacterAbility(unit,ability){return (unit.abilities??legacy[Number(unit.id)]??[]).includes(ability);}
