@@ -5,7 +5,7 @@ import {mountBattlefield} from './mounted-battlefield.mjs';
 const {default:Battlefield}=await import('../web/app/Battlefield.tsx');
 const {default:JA2Strip}=await import('../web/app/JA2Strip.tsx');
 const {default:AimCursor}=await import('../web/app/AimCursor.tsx');
-const {default:TacticalScene}=await import('../web/app/TacticalScene.tsx');
+const {default:TacticalSceneControls}=await import('../web/app/TacticalSceneControls.tsx');
 const nodes=node=>!node||typeof node!=='object'?[]:[node,...(Array.isArray(node)?node:Array.isArray(node.props?.children)?node.props.children:[node.props?.children]).flatMap(nodes)];
 
 test('camera translation retains viewport dimensions and pointer world coordinates through pan and zoom',async t=>{
@@ -29,7 +29,7 @@ test('camera translation retains viewport dimensions and pointer world coordinat
   assert.deepEqual(get(AimCursor).props.point,{x:cameraRect.x+70/zoom,y:cameraRect.y+80/zoom});
  }
  await mounted.act(async()=>document.body.dispatchEvent(new window.KeyboardEvent('keydown',{key:'g',bubbles:true})));
- await mounted.act(async()=>get(TacticalScene).props.onTile({x:25,y:20}));
+ await mounted.act(async()=>get(TacticalSceneControls).props.onTile({x:25,y:20}));
  const job=mounted.jobs().find(message=>message.job.kind==='movement-step').job;
  assert.equal(job.action.type,'move');assert.equal(job.action.x,25);assert.equal(job.action.y,20);
 });

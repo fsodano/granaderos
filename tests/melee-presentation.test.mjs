@@ -6,7 +6,7 @@ import {battleFrameDuration,battleFramePose,battleFrameFocus} from '../game/batt
 import {validateBattleSnapshot} from '../game/validate-battle.js';
 import {mountBattlefield} from './mounted-battlefield.mjs';
 const {default:Battlefield}=await import('../web/app/Battlefield.tsx');
-const {default:TacticalScene}=await import('../web/app/TacticalScene.tsx');
+const {default:TacticalSceneControls}=await import('../web/app/TacticalSceneControls.tsx');
 const nodes=n=>!n||typeof n!=='object'?[]:Array.isArray(n)?n.flatMap(nodes):[n,...nodes(n.props?.children)];
 const floor=()=>Array.from({length:240},(_,i)=>({x:i%24,y:Math.floor(i/24),type:'grass',blocked:false,cover:0}));
 const unit=(s,id='p')=>s.units.find(u=>u.id===id);
@@ -146,7 +146,7 @@ for(const reducedMotion of [false,true])test(`mounted Battlefield holds input th
  const s=field(),expected=presentedActBattle(s,order),commits=[];
  const mounted=await mountBattlefield(t,Battlefield,{battle:s,onChange:next=>{commits.push(next);return next;},onFinish(){}},{virtualTimers:true});
  window.matchMedia=()=>({matches:reducedMotion,addEventListener(){},removeEventListener(){}});
- const strip=()=>nodes(mounted.tree()).find(n=>n.props?.onOrder&&n.props?.onEndTurn),scene=()=>nodes(mounted.tree()).find(n=>n.type===TacticalScene);
+ const strip=()=>nodes(mounted.tree()).find(n=>n.props?.onOrder&&n.props?.onEndTurn),scene=()=>nodes(mounted.tree()).find(n=>n.type===TacticalSceneControls);
  await mounted.act(async()=>strip().props.onOrder(order));let sawContact=false,sawImpact=false;
  for(const frame of expected.frames){
   assert.deepEqual(commits,[]);assert.equal(strip().props.busy,true);

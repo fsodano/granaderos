@@ -10,7 +10,7 @@ import {battleFrameDuration,battleFrameFocus,battleFramePose} from '../game/batt
 import {validateBattleSnapshot} from '../game/validate-battle.js';
 import {mountBattlefield} from './mounted-battlefield.mjs';
 const {default:Battlefield}=await import('../web/app/Battlefield.tsx');
-const {default:TacticalScene}=await import('../web/app/TacticalScene.tsx');
+const {default:TacticalSceneControls}=await import('../web/app/TacticalSceneControls.tsx');
 const {default:FirearmShotEffect}=await import('../web/app/FirearmShotEffect.tsx');
 const nodes=n=>!n||typeof n!=='object'?[]:Array.isArray(n)?n.flatMap(nodes):[n,...nodes(n.props?.children)];
 const project=(x,y)=>({x:300+(x-y)*26,y:70+(x+y)*14});
@@ -118,7 +118,7 @@ for(const reduced of [false,true])test(`mounted penetration holds all input and 
  const strip=()=>nodes(mounted.tree()).find(n=>n.props?.onOrder&&n.props?.onEndTurn);await mounted.act(async()=>strip().props.onOrder(action));
  let flashCount=0,seen=[];
  for(const frame of expected.frames){
-  assert.equal(strip().props.busy,true);assert.deepEqual(commits,[]);const scene=nodes(mounted.tree()).find(n=>n.type===TacticalScene),effect=nodes(mounted.tree()).find(n=>n.type===FirearmShotEffect);
+  assert.equal(strip().props.busy,true);assert.deepEqual(commits,[]);const scene=nodes(mounted.tree()).find(n=>n.type===TacticalSceneControls),effect=nodes(mounted.tree()).find(n=>n.type===FirearmShotEffect);
   assert.deepEqual(scene.props.state.units,frame.state.units);
   if(frame.shotVisual){assert.ok(effect);assert.deepEqual(effect.props.visual,frame.shotVisual);const markup=draw(s,frame);if(reduced)assert.doesNotMatch(markup,/animate|animateMotion|animateTransform/);if(frame.type==='projectile'&&frame.shotVisual.discharge!==false)flashCount++;}
   if(frame.impacts.length)seen.push(...frame.impacts.map(i=>i.unitId));

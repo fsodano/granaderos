@@ -7,7 +7,7 @@ import {groupMovementStep} from '../game/group-movement.js';
 import {movementStep} from '../game/movement-step.js';
 import {mountBattlefield} from './mounted-battlefield.mjs';
 const {default:Battlefield}=await import('../web/app/Battlefield.tsx');
-const {default:TacticalScene}=await import('../web/app/TacticalScene.tsx');
+const {default:TacticalSceneControls}=await import('../web/app/TacticalSceneControls.tsx');
 const nodes=node=>!node||typeof node!=='object'?[]:[node,...(Array.isArray(node)?node:Array.isArray(node.props?.children)?node.props.children:[node.props?.children]).flatMap(nodes)];
 
 test('actual R sets only the selected actor to run without loading or spending PA; Shift+R reloads',async t=>{
@@ -43,7 +43,7 @@ for(const delivery of ['early','late'])test(`real map input redirects and runs w
  const props=()=>({battle,onChange:next=>{battle=next;commits.push(next);return next;},onFinish(){}});
  const mounted=await mountBattlefield(t,Battlefield,props(),{clock});
  const get=type=>nodes(mounted.tree()).find(node=>node.type===type),svg=()=>nodes(mounted.tree()).find(node=>node.props?.className?.startsWith('tactical-field'));
- const click=async(point,detail=1)=>mounted.act(async()=>{svg().props.onClickCapture({detail,shiftKey:false,altKey:false,ctrlKey:false,metaKey:false});get(TacticalScene).props.onTile(point);});
+ const click=async(point,detail=1)=>mounted.act(async()=>{svg().props.onClickCapture({detail,shiftKey:false,altKey:false,ctrlKey:false,metaKey:false});get(TacticalSceneControls).props.onTile(point);});
  const frame=async elapsed=>{now+=elapsed;const callbacks=[...frames.values()];frames.clear();await mounted.act(async()=>{for(const callback of callbacks)callback(now);});};
  const jobs=()=>mounted.jobs().filter(message=>message.job.kind==='movement-step');
  await click({x:7,y:1});assert.equal(jobs().length,1,'the first click starts immediately');
@@ -51,7 +51,7 @@ for(const delivery of ['early','late'])test(`real map input redirects and runs w
  await mounted.deliver('movement-step');await mounted.render(props());
  assert.equal(commits.length,1);assert.equal(battle.units[0].x,2);assert.equal(battle.elapsedSeconds,3);
  assert.equal(jobs().length,1);assert.equal(jobs()[0].job.battle,battle,'the next pure calculation uses the accepted paid state');
- await frame(120);assert.equal(get(TacticalScene).props.positions.p.x,1.5);assert.equal(get(TacticalScene).props.positions.p.moving,true);
+ await frame(120);assert.equal(get(TacticalSceneControls).props.positions['unit:p'].x,1.5);assert.equal(get(TacticalSceneControls).props.positions['unit:p'].moving,true);
  await click({x:2,y:6});assert.equal(jobs().length,1,'a redirect never starts a second simultaneous worker');
  await click({x:2,y:6},2);await click({x:2,y:6},3);
  await mounted.deliver('movement-step');assert.equal(commits.length,1,'the abandoned speculative result has no effect');assert.equal(jobs().length,1);
@@ -59,19 +59,19 @@ for(const delivery of ['early','late'])test(`real map input redirects and runs w
  assert.equal(jobs()[0].job.continuation,undefined,'the abandoned destination cannot supply the next route');
  if(delivery==='early'){await mounted.deliver('movement-step');assert.equal(commits.length,1,'a prepared result cannot spend the next step before the endpoint');}
  await frame(120);
- assert.equal(get(TacticalScene).props.positions.p.moving,true,'the sprite keeps its gait between committed cells');
- if(delivery==='late'){assert.equal(commits.length,1);await frame(50);assert.equal(get(TacticalScene).props.positions.p.x,2);assert.equal(get(TacticalScene).props.positions.p.elapsedMs,240,'waiting for a worker holds the gait at the reached cell');await mounted.deliver('movement-step');}
+ assert.equal(get(TacticalSceneControls).props.positions['unit:p'].moving,true,'the sprite keeps its gait between committed cells');
+ if(delivery==='late'){assert.equal(commits.length,1);await frame(50);assert.equal(get(TacticalSceneControls).props.positions['unit:p'].x,2);assert.equal(get(TacticalSceneControls).props.positions['unit:p'].elapsedMs,240,'waiting for a worker holds the gait at the reached cell');await mounted.deliver('movement-step');}
  else assert.equal(commits.length,2,'the prepared step commits at the endpoint without waiting for a worker');
  await mounted.render(props());
  assert.equal(battle.units[0].x,2);assert.equal(battle.units[0].y,2);assert.equal(battle.elapsedSeconds,4);assert.equal(battle.units[0].movementMode,'run');
- await frame(75);assert.equal(get(TacticalScene).props.positions.p.y,1.5);assert.equal(get(TacticalScene).props.positions.p.elapsedMs,315);
+ await frame(75);assert.equal(get(TacticalSceneControls).props.positions['unit:p'].y,1.5);assert.equal(get(TacticalSceneControls).props.positions['unit:p'].elapsedMs,315);
  await mounted.act(async()=>document.body.dispatchEvent(new window.KeyboardEvent('keydown',{key:'Escape',bubbles:true})));
- await frame(75);assert.equal(get(TacticalScene).props.positions.p.y,2);assert.equal(get(TacticalScene).props.positions.p.moving,false);
+ await frame(75);assert.equal(get(TacticalSceneControls).props.positions['unit:p'].y,2);assert.equal(get(TacticalSceneControls).props.positions['unit:p'].moving,false);
  assert.equal(jobs().length,1);await mounted.deliver('movement-step');assert.equal(jobs().length,0);
  assert.equal(commits.length,2,'cancelled future steps never spend time or energy');
 });
 
-const renderScene=tree=>{const svg=nodes(tree).find(node=>node.props?.className?.startsWith('tactical-field')),scene=nodes(tree).find(node=>node.type===TacticalScene);return h('svg',{onClickCapture:svg.props.onClickCapture,onKeyDownCapture:svg.props.onKeyDownCapture},h(TacticalScene,scene.props));};
+const renderScene=tree=>{const svg=nodes(tree).find(node=>node.props?.className?.startsWith('tactical-field')),scene=nodes(tree).find(node=>node.type===TacticalSceneControls);return h('svg',{onClickCapture:svg.props.onClickCapture,onKeyDownCapture:svg.props.onKeyDownCapture},h(TacticalSceneControls,scene.props));};
 async function actualInput(t,{group=false,combat=false,enemies=[]}={}){
  let now=1000,sequence=0;const frames=new Map(),commits=[];
  const clock={now:()=>now,request:callback=>{frames.set(++sequence,callback);return sequence;},cancel:id=>frames.delete(id)};
@@ -94,7 +94,7 @@ for(const delivery of ['early','late'])test(`actual group scene clicks redirect 
   await env.frame(240);
  }
  const paid=env.battle;assert.equal(paid.units.find(unit=>unit.id==='p').x,7);assert.equal(paid.units.find(unit=>unit.id==='q').x,2);
- await env.frame(120);assert.equal(nodes(mounted.tree()).find(node=>node.type===TacticalScene).props.positions.q.x,1.5);
+ await env.frame(120);assert.equal(nodes(mounted.tree()).find(node=>node.type===TacticalSceneControls).props.positions['unit:q'].x,1.5);
  const count=env.commits.length;await env.click(env.tile(2,6));await mounted.deliver('group-step');
  assert.equal(env.commits.length,count,'the abandoned speculative follower step is unpaid');assert.equal(env.jobs('group-step').length,1);
  const job=env.jobs('group-step')[0].job;assert.equal(job.action.x,2);assert.equal(job.action.y,6);assert.equal(job.continuation,undefined);

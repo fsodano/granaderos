@@ -6,7 +6,7 @@ export type AnimationClockInput={clip:AnimationClockClip;action:string;cue?:Anim
 export type AnimationClockSample={time?:number;rate:number;complete:boolean;phaseComplete:boolean;cueControlsAction:boolean};
 const clamp=(value:number,min:number,max:number)=>Math.max(min,Math.min(max,value));
 const wrap=(time:number,duration:number)=>(time%duration+duration)%duration;
-const locomotion=new Set(['walk','run','crawl','artilleryMove']);
+const locomotion=new Set(['walk','run','crawl','strafeLeft','strafeRight','artilleryMove']);
 
 /** A queued gesture must not change the clock of movement or a life state. */
 export function cueControlsAction(action:string,cue?:Pick<AnimationClockCue,'action'>){return Boolean(cue&&cue.action===action);}

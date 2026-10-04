@@ -10,7 +10,7 @@ import {projectileFlight} from '../game/projectile-cover.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
 import {mountBattlefield} from './mounted-battlefield.mjs';
 const {default:Battlefield}=await import('../web/app/Battlefield.tsx');
-const {default:TacticalScene}=await import('../web/app/TacticalScene.tsx');
+const {default:TacticalSceneControls}=await import('../web/app/TacticalSceneControls.tsx');
 const {default:FirearmShotEffect}=await import('../web/app/FirearmShotEffect.tsx');
 const nodes=n=>!n||typeof n!=='object'?[]:Array.isArray(n)?n.flatMap(nodes):[n,...nodes(n.props?.children)];
 const project=(x,y)=>({x:300+(x-y)*26,y:70+(x+y)*14});
@@ -141,7 +141,7 @@ for(const mountedTarget of [false,true])test(`mounted paired leg shots keep the 
  let discharges=0;
  for(const frame of expected.frames){
   assert.equal(strip().props.busy,true);assert.deepEqual(commits,[]);
-  const scene=nodes(mounted.tree()).find(n=>n.type===TacticalScene),effect=nodes(mounted.tree()).find(n=>n.type===FirearmShotEffect);assert.deepEqual(scene.props.state.units,frame.state.units);
+  const scene=nodes(mounted.tree()).find(n=>n.type===TacticalSceneControls),effect=nodes(mounted.tree()).find(n=>n.type===FirearmShotEffect);assert.deepEqual(scene.props.state.units,frame.state.units);
   if(frame.shotVisual){assert.ok(effect);assert.deepEqual(effect.props.visual,frame.shotVisual);assert.equal(effect.props.stage,frame.type);
    const markup=render(h('svg',null,h(FirearmShotEffect,effect.props)));
    if(mountedTarget){assert.match(markup,/data-firearm-reduced-motion/);assert.doesNotMatch(markup,/animate|animateMotion|animateTransform/);}
@@ -170,7 +170,7 @@ for(const hit of [true,false])test(`mounted ${hit?'hit':'near miss'} holds input
  await mounted.act(async()=>strip().props.onOrder(action));let sawFlight=false,sawImpact=false;
  for(const frame of expected.frames){
   assert.deepEqual(commits,[]);assert.equal(strip().props.busy,true);
-  const effect=nodes(mounted.tree()).find(n=>n.type===FirearmShotEffect),scene=nodes(mounted.tree()).find(n=>n.type===TacticalScene);
+  const effect=nodes(mounted.tree()).find(n=>n.type===FirearmShotEffect),scene=nodes(mounted.tree()).find(n=>n.type===TacticalSceneControls);
   if(frame.type==='projectile'){sawFlight=true;assert.ok(effect);assert.equal(effect.props.stage,'projectile');assert.equal(actor(scene.props.state,'e').hp,100);await mounted.act(async()=>strip().props.onOrder(action));assert.deepEqual(commits,[]);}
   if(frame.type==='impact'){sawImpact=true;assert.ok(effect);assert.equal(effect.props.visual.outcome,hit?'hit':'miss');assert.equal(actor(scene.props.state,'e').hp,actor(expected.state,'e').hp);}
   const delay=await mounted.nextDelay();assert.equal(delay,battleFrameDuration(frame));
@@ -196,7 +196,7 @@ test('a mounted missed shot travels beyond the aim cell before its real downstre
  const strip=()=>nodes(mounted.tree()).find(n=>n.props?.onOrder&&n.props?.onEndTurn);await mounted.act(async()=>strip().props.onOrder(action));
  for(const frame of expected.frames){
   assert.equal(strip().props.busy,true);assert.deepEqual(commits,[]);
-  const scene=nodes(mounted.tree()).find(n=>n.type===TacticalScene),effect=nodes(mounted.tree()).find(n=>n.type===FirearmShotEffect);
+  const scene=nodes(mounted.tree()).find(n=>n.type===TacticalSceneControls),effect=nodes(mounted.tree()).find(n=>n.type===FirearmShotEffect);
   if(frame.type==='projectile'){assert.equal(effect.props.stage,'projectile');assert.equal(actor(scene.props.state,'friend').hp,actor(frame.state,'friend').hp);await mounted.act(async()=>strip().props.onOrder(action));assert.deepEqual(commits,[]);}
   if(frame.type==='impact'){assert.equal(effect.props.stage,'impact');assert.equal(actor(scene.props.state,'friend').hp,actor(expected.state,'friend').hp);}
   assert.equal(await mounted.nextDelay(),battleFrameDuration(frame));

@@ -27,7 +27,12 @@ import {rightClickAim} from '../../game/aim-cursor.js';
 import {canChooseShotLocation} from '../../game/targeted-combat.js';
 import {heldGrenade} from '../../game/grenade-throw.js';
 import {tacticalGridLabel} from '../../game/tactical-grid.js';
-import TacticalScene from './TacticalScene';
+import TacticalSceneControls from './TacticalSceneControls';
+import TacticalThreeScene from './TacticalThreeScene';
+import {sectorProject} from '../lib/three/projection';
+import {admittedActors,presentActors,presentWorld} from '../lib/three/presentation';
+import {useActorCues} from '../lib/three/useActorCues';
+import {createSceneTerrainCache} from '../../game/scene-terrain.js';
 import {tacticalCamera} from '../../game/tactical-camera.js';
 import JA2Strip from './JA2Strip';
 import JA2ExitPanel from './JA2ExitPanel';
@@ -84,7 +89,9 @@ function BattlefieldContents({battle:committed,onPlaybackBusy,onPlaybackValidate
   const renderedUnits=useMemo(()=>field.units.filter((v:any)=>v.side==='player'||players.some((p:any)=>canSee(s,p,v))),[s,field,players]);
   const revealedBuildingRooms=useMemo(()=>new Set<string>([...(s.revealedRooms||[]),...visibleRooms(s)]),[s]);
   const inventoryPeople=useMemo(()=>[...renderedUnits,...(field.npcs??[]).filter((person:any)=>visibleHover(s,person))].filter((person:any)=>isInteriorVisible(s,person,revealedBuildingRooms)),[s,field,renderedUnits,revealedBuildingRooms]);
-  const visibleActorIds=useMemo(()=>new Set<string>(inventoryPeople.map((person:any)=>person.id)),[inventoryPeople]);
+  const actorEntries=useMemo(()=>admittedActors(field,players,revealedBuildingRooms),[field,players,revealedBuildingRooms]);
+  const visibleActorIds=useMemo(()=>new Set(actorEntries.map(entry=>entry.key)),[actorEntries]);
+  const actorCues=useActorCues(`${s.battleId??''}:${s.sectorId??''}`,actorEntries);
   const continuingMotionIds=useMemo(()=>new Set<string>([...movement.continuingIds,...(presentation.frame?.type==='step'&&presentation.frame.unitId?[presentation.frame.unitId]:[])]),[movement.continuingIds,presentation.frame]);
   const motion=useUnitMotion(s,facingOverride,visibleActorIds,continuingMotionIds);
   useEffect(()=>movement.observe(s,motion.positions),[s,motion.positions,movement.observe]);
@@ -291,6 +298,7 @@ function BattlefieldContents({battle:committed,onPlaybackBusy,onPlaybackValidate
     }
     reportActionFailure(next,request,s);
     const accepted=onChange(next);
+    if(!alreadyPresented&&!next.lastError&&!preparationOnly&&accepted!==null)actorCues.accepted(selected,actionType,request);
     if(!next.lastError&&accepted!==null&&actionType==='move')setHover(null);
     if(giftResult&&accepted!==null){setTalking(null);setSpeech(null);setGiftReply(null);setPendingGift(giftResult);}
     if(!alreadyPresented&&knifeVisual&&accepted!==null)setKnifeEffect({id:++knifeEffectId.current,visual:knifeVisual});
@@ -347,7 +355,7 @@ function BattlefieldContents({battle:committed,onPlaybackBusy,onPlaybackValidate
     else if(shortcut==='aim-up'||shortcut==='aim-down')setAim(v=>Math.max(0,Math.min(maxAim,v+(shortcut==='aim-up'?1:-1))));
   };window.addEventListener('keydown',key);return()=>window.removeEventListener('keydown',key);});
 
-  const hw=26,hh=14,origin=s.height*hw+28,project=useCallback((x:number,y:number)=>({x:origin+(x-y)*hw,y:65+(x+y)*hh}),[origin]);
+  const hw=26,hh=14,project=useMemo(()=>sectorProject(s.height),[s.height]);
   const grenadeLanding=preview?.attackType==='throwGrenade'&&preview.blocked&&preview.landing?projectSurface(s,project,preview.landing):null;
   const vw=(s.width+s.height)*hw+60,vh=(s.width+s.height)*hh+155;
   const followed=presentation.frame?.cameraFocus?projectSurface(s,project,presentation.frame.cameraFocus):cameraFollowsSelection&&u?projectSurface(s,project,{...u,...motion.positions[u.id]}):{x:vw/2,y:vh/2};
@@ -356,6 +364,11 @@ function BattlefieldContents({battle:committed,onPlaybackBusy,onPlaybackValidate
   const {x:cameraX,y:cameraY,width:viewWidth,height:viewHeight}=tacticalCamera({width:vw,height:vh},fieldSize,followed,presentation.busy?{x:0,y:0}:cameraOffset,zoom);
   const viewBounds=tacticalViewport({x:cameraX,y:cameraY,width:viewWidth,height:viewHeight});
   const sceneViewport=useMemo(()=>viewBounds,[viewBounds.x,viewBounds.y,viewBounds.width,viewBounds.height]);
+  const terrainCache=useRef<ReturnType<typeof createSceneTerrainCache>|null>(null);
+  if(!terrainCache.current)terrainCache.current=createSceneTerrainCache();
+  const terrain=useMemo(()=>terrainCache.current!(s),[s]);
+  const worldVisual=useMemo(()=>presentWorld(s,terrain,players,revealedBuildingRooms,actorEntries,cursorLevel),[s,terrain,players,revealedBuildingRooms,actorEntries,cursorLevel]);
+  const actorVisual=useMemo(()=>presentActors(s,actorEntries,motion.actorPositions,revealedBuildingRooms,{selected,mode,cues:actorCues.cues,frame:presentation.frame,now:performance.now()}),[s,actorEntries,motion.actorPositions,revealedBuildingRooms,selected,mode,actorCues.cues,presentation.frame]);
   const manualCamera=useRef(false),gestureFrame=useRef<number|null>(null),cameraGestures=useRef<CameraGesture[]>([]),touchPinch=useRef<{distance:number;anchor:CameraAnchor}|null>(null);
   const limitCamera=(value:number,extent:number)=>Math.max(0,Math.min(Math.max(0,extent),value));
   const cameraState=useRef<CameraView>({x:0,y:0,width:viewWidth,height:viewHeight,worldWidth:vw,worldHeight:vh,zoom});
@@ -527,11 +540,11 @@ function BattlefieldContents({battle:committed,onPlaybackBusy,onPlaybackValidate
         <button title="Subir postura · RePág" aria-label="Subir postura" disabled={busy||!unitCanAct(s,u)||u?.stance==='standing'} onClick={()=>stepStance(-1)}><ChevronUp/></button>
         <button title="Bajar postura · AvPág" aria-label="Bajar postura" disabled={busy||!unitCanAct(s,u)||u?.stance==='prone'} onClick={()=>stepStance(1)}><ChevronDown/></button>
       </div>
-      <BattlePerformance/><svg data-enemy-frame={presentation.frame?`${presentation.frame.index}:${presentation.frame.unitId??"unseen"}:${presentation.frame.type}:${presentation.frame.action}`:undefined} ref={fieldRef} style={{touchAction:'none'}} onFocusCapture={event=>{const bounds=(event.target as SVGElement).getBoundingClientRect();setCursorPoint(svgPoint({currentTarget:event.currentTarget,clientX:bounds.left+bounds.width/2,clientY:bounds.top+bounds.height/2}));}} onMouseMoveCapture={event=>{if(!pickedItem)setCursorPoint(svgPoint(event));setMovementIntent(pointerMovementIntent(event));setItemIntent(pointerItemIntent(event));}} onClickCapture={event=>{clickCount.current=Math.max(1,event.detail);additiveClick.current=event.shiftKey;clickMovementIntent.current=pointerMovementIntent(event);setMovementIntent(clickMovementIntent.current);clickItemIntent.current=pointerItemIntent(event);setItemIntent(clickItemIntent.current);}} onKeyDownCapture={event=>{if(['Enter',' '].includes(event.key)){clickCount.current=1;if(event.shiftKey&&event.repeat){event.preventDefault();event.stopPropagation();return;}additiveClick.current=event.shiftKey;clickMovementIntent.current=pointerMovementIntent(event);setMovementIntent(clickMovementIntent.current);clickItemIntent.current=pointerItemIntent(event);}}} onContextMenu={aimAtPointer} onMouseLeave={()=>setCursorPoint(null)} className={`tactical-field ${!pickedItem&&aimedCursorMode(mode)&&cursorPoint&&!busy?'aiming':''}`} viewBox={`0 0 ${viewWidth} ${viewHeight}`} role="group" aria-label="Campo táctico. Seleccioná un soldado y una casilla. Rueda o panel táctil: desplazar mapa. Mayús+rueda: desplazar horizontalmente. Pellizcá con dos dedos para acercar o alejar.">
+      <BattlePerformance/><TacticalThreeScene sceneId={`${s.battleId??''}:${s.sectorId??''}`} world={worldVisual} actors={actorVisual} onCueComplete={actorCues.complete} view={{x:cameraX,y:cameraY,width:viewWidth,height:viewHeight,mapHeight:s.height}}/><svg data-enemy-frame={presentation.frame?`${presentation.frame.index}:${presentation.frame.unitId??"unseen"}:${presentation.frame.type}:${presentation.frame.action}`:undefined} ref={fieldRef} style={{touchAction:'none'}} onFocusCapture={event=>{const bounds=(event.target as SVGElement).getBoundingClientRect();setCursorPoint(svgPoint({currentTarget:event.currentTarget,clientX:bounds.left+bounds.width/2,clientY:bounds.top+bounds.height/2}));}} onMouseMoveCapture={event=>{if(!pickedItem)setCursorPoint(svgPoint(event));setMovementIntent(pointerMovementIntent(event));setItemIntent(pointerItemIntent(event));}} onClickCapture={event=>{clickCount.current=Math.max(1,event.detail);additiveClick.current=event.shiftKey;clickMovementIntent.current=pointerMovementIntent(event);setMovementIntent(clickMovementIntent.current);clickItemIntent.current=pointerItemIntent(event);setItemIntent(clickItemIntent.current);}} onKeyDownCapture={event=>{if(['Enter',' '].includes(event.key)){clickCount.current=1;if(event.shiftKey&&event.repeat){event.preventDefault();event.stopPropagation();return;}additiveClick.current=event.shiftKey;clickMovementIntent.current=pointerMovementIntent(event);setMovementIntent(clickMovementIntent.current);clickItemIntent.current=pointerItemIntent(event);}}} onContextMenu={aimAtPointer} onMouseLeave={()=>setCursorPoint(null)} className={`tactical-field ${!pickedItem&&aimedCursorMode(mode)&&cursorPoint&&!busy?'aiming':''}`} viewBox={`0 0 ${viewWidth} ${viewHeight}`} role="group" aria-label="Campo táctico. Seleccioná un soldado y una casilla. Rueda o panel táctil: desplazar mapa. Mayús+rueda: desplazar horizontalmente. Pellizcá con dos dedos para acercar o alejar.">
         {/* Camera motion changes one transform. The root viewport dimensions stay
-            fixed, so walking does not lay out every nested sprite SVG again. */}
+            fixed. Models render on the canvas below the input and HUD layer. */}
         <g data-scene-camera="true" transform={`translate(${-cameraX} ${-cameraY})`}>
-        <TacticalScene cursorLevel={cursorLevel} viewport={sceneViewport} state={field} selected={selected} unit={u} players={players} units={renderedUnits} positions={motion.positions} poses={presentation.frame?.unitId?{...poses,[presentation.frame.unitId]:battleFramePose(presentation.frame)}:poses} directions={directions} hover={hover} mode={pickedItem?'inventory':mode} aim={aim} hitLocation={hitLocation} reachable={reachable} routesPending={routePreview.working} showSight={showSight} sight={sight} revealed={revealedBuildingRooms} project={project} onTile={tileClick} onHover={hoverTarget} onTalk={openTalk} onCannon={(id)=>{const itemPoint=s.artillery?.find((gun:any)=>gun.id===id);if(itemPoint&&placeInventoryItem({...itemPoint,id:undefined}))return;if(mode==='throwKnife'||grenadeTargetingMode(u,mode)){const point=s.artillery?.find((gun:any)=>gun.id===id);if(point)tileClick(point);return;}setCannonId(id);setMode('artillery')}} cannonId={cannonId}/>
+        <TacticalSceneControls cursorLevel={cursorLevel} viewport={sceneViewport} state={field} selected={selected} unit={u} players={players} units={renderedUnits} positions={motion.actorPositions} poses={presentation.frame?.unitId?{...poses,[presentation.frame.unitId]:battleFramePose(presentation.frame)}:poses} directions={directions} hover={hover} mode={pickedItem?'inventory':mode} aim={aim} hitLocation={hitLocation} reachable={reachable} routesPending={routePreview.working} showSight={showSight} sight={sight} revealed={revealedBuildingRooms} project={project} onTile={tileClick} onHover={hoverTarget} onTalk={openTalk} onCannon={(id)=>{const itemPoint=s.artillery?.find((gun:any)=>gun.id===id);if(itemPoint&&placeInventoryItem({...itemPoint,id:undefined}))return;if(mode==='throwKnife'||grenadeTargetingMode(u,mode)){const point=s.artillery?.find((gun:any)=>gun.id===id);if(point)tileClick(point);return;}setCannonId(id);setMode('artillery')}} cannonId={cannonId}/>
         {!pickedItem&&!busy&&u&&<MovementCursor state={s} unit={u} preview={preview} project={project} scale={1/zoom}/>}
         {failedDestination&&<g key={failedDestination.id} className="tactical-action-failure" data-action-failed="true" aria-label="Orden no disponible" pointerEvents="none" transform={`translate(${projectSurface(s,project,failedDestination).x} ${projectSurface(s,project,failedDestination).y}) scale(${1/zoom})`}><path d="M-7-7L7 7M7-7L-7 7"/></g>}
         {(presentation.frame?.impacts??[]).map((impact:any)=>{const point=projectSurface(s,project,impact);return <g key={`${presentation.frame.index}:${impact.victimKind??'unit'}:${impact.unitId}`} data-hit-reaction={impact.unitId} className="tactical-hit-reaction" transform={`translate(${point.x} ${point.y-20})`}><path d="M-16-8l-5-6M16-8l5-6M-18 6l7 2M18 6l7 2"/><text y="-30" textAnchor="middle">−{Math.ceil(impact.damage)}</text></g>;})}

@@ -12,7 +12,7 @@ import {syncBattleTime} from '../game/time.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {mountBattlefield} from './mounted-battlefield.mjs';
 const {default:Battlefield}=await import('../web/app/Battlefield.tsx');
-const {default:TacticalScene}=await import('../web/app/TacticalScene.tsx');
+const {default:TacticalSceneControls}=await import('../web/app/TacticalSceneControls.tsx');
 
 const actor=p=>p.battle.units.find(u=>u.id==='110');
 const at=(s,p)=>s.tiles.find(t=>t.x===p.x&&t.y===p.y);
@@ -151,7 +151,7 @@ test('mounted ordinary wall input commits the acquired tool breach once with mat
  const expected=actBattle(state,{type:'useItem',unitId:'110',environment:{kind:'wall',id:ready.ref.id}});
  assert.equal(expected.lastError,null);
  const mounted=await mountBattlefield(t,Battlefield,{battle:state,onChange:next=>{commits.push(next);return next;},onFinish(){},peacefulVisit:true},{virtualTimers:true});
- const scene=()=>nodes(mounted.tree()).find(node=>node.type===TacticalScene);
+ const scene=()=>nodes(mounted.tree()).find(node=>node.type===TacticalSceneControls);
  await mounted.act(async()=>scene().props.onTile(ready.wall));
  assert.deepEqual(commits,[expected]);assert.deepEqual(state,original);
  assert.equal(heldTool(commits[0].units.find(u=>u.id==='110')).condition,97);

@@ -12,6 +12,7 @@ import {initialCampaign,dispatchCampaign,rosterFor,isSupplied} from '../game/cam
 import {grenadeOffer} from '../game/equipment.js';
 const {default:AimCursor}=await import('../web/app/AimCursor.tsx');
 const {default:TacticalScene}=await import('../web/app/TacticalScene.tsx');
+const {default:TacticalSceneControls}=await import('../web/app/TacticalSceneControls.tsx');
 const {default:GrenadeThrowEffect,GRENADE_EFFECT_DURATION}=await import('../web/app/GrenadeThrowEffect.tsx');
 const {default:GrenadeSupplies}=await import('../web/app/GrenadeSupplies.tsx');
 const {default:Battlefield}=await import('../web/app/Battlefield.tsx');
@@ -48,7 +49,7 @@ test('grenade sprite hit frames use one ground point and route NPC mouse and key
 for(const delivery of ['reply','messageerror'])test(`Battlefield movement after cursor cancellation keeps the grenade: ${delivery}`,async t=>{
  const s=field();s.mode='exploration';s.units=s.units.filter(unit=>unit.side==='player');let next;
  const mounted=await mountBattlefield(t,Battlefield,{battle:s,onChange:b=>{next=b;return b;},onFinish(){}});
- const scene=hosts(mounted.tree()).find(node=>node.type===TacticalScene);assert.ok(scene);assert.equal(scene.props.mode,'move');
+ const scene=hosts(mounted.tree()).find(node=>node.type===TacticalSceneControls);assert.ok(scene);assert.equal(scene.props.mode,'move');
  await mounted.act(async()=>scene.props.onTile({x:2,y:2}));
  assert.equal(next,undefined,'movement waits for the worker result');
  await mounted.act(async()=>scene.props.onTile({x:3,y:2}));
@@ -66,7 +67,7 @@ test('Battlefield movement-mode clicks on allies and NPCs never fall through to 
   const s=field();s.units.push({...structuredClone(s.units[0]),id:'ally',name:'Compañero',x:6,y:2});let next,tree;
   const wrapper=Battlefield({battle:s,onChange:b=>{next=b;return b;},onFinish(){}}),content=wrapper.props.children;
   function Capture(){tree=content.type(content.props);return null;}
-  render(h(wrapper.type,null,h(Capture)));const scene=hosts(tree).find(node=>node.type===TacticalScene);
+  render(h(wrapper.type,null,h(Capture)));const scene=hosts(tree).find(node=>node.type===TacticalSceneControls);
   if(pointKind==='npc')scene.props.onTalk(s.npcs[0]);else scene.props.onTile(s.units.find(unit=>unit.id==='ally'));
   assert.equal(next,undefined);assert.equal(s.units[0].inventory.grenade.count,1);
  }
@@ -89,7 +90,7 @@ for(const accepted of [true,false])test(`ending the turn presents an enemy grena
    const effect=hosts(mounted.tree()).find(node=>node.type===GrenadeThrowEffect);
    if(frame.type==='effect'){
     sawFlight=true;assert.ok(effect);assert.deepEqual(effect.props.visual,frame.grenadeVisual);
-    const scene=hosts(mounted.tree()).find(node=>node.type===TacticalScene);
+    const scene=hosts(mounted.tree()).find(node=>node.type===TacticalSceneControls);
     assert.equal(scene.props.state.units.find(u=>u.id==='p').hp,s.units[0].hp,'flight precedes injury');
    }
    await mounted.nextDelay();

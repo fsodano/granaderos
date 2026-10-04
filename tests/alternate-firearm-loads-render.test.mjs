@@ -14,7 +14,7 @@ import {createBattle,firearmVolleyPreview,shotChance,weaponFor} from '../game/ta
 import {targetPreview,chancePercent} from '../game/ja2-hud.js';
 import {mountBattlefield} from './mounted-battlefield.mjs';
 const {default:Battlefield}=await import('../web/app/Battlefield.tsx');
-const {default:TacticalScene}=await import('../web/app/TacticalScene.tsx');
+const {default:TacticalSceneControls}=await import('../web/app/TacticalSceneControls.tsx');
 const {default:JA2Strip}=await import('../web/app/JA2Strip.tsx');
 const nodes=node=>!node||typeof node!=='object'?[]:[node,...(Array.isArray(node)?node:Array.isArray(node.props?.children)?node.props.children:[node.props?.children]).flatMap(nodes)];
 const pair=()=>{const d=defaultContentPackage();d.characters.find(c=>c.id==='person-110').arrivalHours=0;let s=order(initialCampaign(8,d),{type:'recruitCivic',id:110,term:'week'});// Explicit finite carried shot in a subsystem save fixture.
@@ -38,7 +38,7 @@ test('mounted alternative shot forecast states at least one pellet contact and k
  assert.ok(preview.chance>0&&preview.chance<=100);assert.ok(preview.expectedForce>0&&preview.expectedForce<=weaponFor(player).damage);assert.ok(preview.damageFactor>0&&preview.damageFactor<=1);assert.equal(Number.isInteger(preview.pelletCount),true);
  for(const key of ['pellets','bodyImpacts','scatter','forecast'])assert.equal(Object.hasOwn(preview,key),false,'internal paths do not enter the public target preview');
  const mounted=await mountBattlefield(t,Battlefield,{battle,onChange:state=>state,onFinish(){}}),get=type=>nodes(mounted.tree()).find(node=>node.type===type);
- await mounted.act(async()=>{get(JA2Strip).props.onMode('fire');get(TacticalScene).props.onHover(target);});
+ await mounted.act(async()=>{get(JA2Strip).props.onMode('fire');get(TacticalSceneControls).props.onHover(target);});
  const html=renderToStaticMarkup(nodes(mounted.tree()).find(node=>node.props?.['aria-label']==='Vista previa de la orden'));
  assert.match(html,new RegExp(`${chancePercent(shot.chance)} de al menos un perdigón`));assert.match(html,/Carga de perdigones/);assert.match(html,/no garantiza varios impactos ni la zona del cuerpo/);assert.match(html,/consume una carga/);assert.doesNotMatch(html,/La bala puede atravesarlo|impacto con penetración/);
  assert.equal(mounted.jobs().filter(job=>job.job.kind==='action'||job.job.kind==='movement-step').length,0);assert.deepEqual(battle,before);
@@ -52,7 +52,7 @@ test('paired mixed loads disclose the pellet probability for its own hand and pr
  const [player,target]=battle.units,before=structuredClone(battle),volley=firearmVolleyPreview(battle,player,target);
  assert.equal(volley.paired,true);assert.equal(volley.shots[0].shotLoad,true);assert.equal(Boolean(volley.shots[1].shotLoad),false);
  const mounted=await mountBattlefield(t,Battlefield,{battle,onChange:state=>state,onFinish(){}}),get=type=>nodes(mounted.tree()).find(node=>node.type===type);
- await mounted.act(async()=>{get(JA2Strip).props.onMode('fire');get(TacticalScene).props.onHover(target);});
+ await mounted.act(async()=>{get(JA2Strip).props.onMode('fire');get(TacticalSceneControls).props.onHover(target);});
  const html=renderToStaticMarkup(nodes(mounted.tree()).find(node=>node.props?.['aria-label']==='Vista previa de la orden'));
  assert.match(html,new RegExp(`${chancePercent(volley.shots[0].chance)} de al menos un perdigón \\(mano principal\\)`));assert.match(html,new RegExp(`Mano principal: ${chancePercent(volley.shots[0].chance)} de al menos un perdigón`));assert.match(html,new RegExp(`Segunda mano: ${chancePercent(volley.shots[1].chance)}`));assert.match(html,/Un disparo por pistola/);
  assert.equal(mounted.jobs().filter(job=>job.job.kind==='action'||job.job.kind==='movement-step').length,0);assert.deepEqual(battle,before);

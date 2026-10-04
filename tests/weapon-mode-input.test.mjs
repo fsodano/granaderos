@@ -10,7 +10,7 @@ import {rightClickAim} from '../game/aim-cursor.js';
 import {componentTree} from './component-tree.mjs';
 import {battleTimers} from './battle-timers-fixture.mjs';
 const {default:Battlefield}=await import('../web/app/Battlefield.tsx');
-const {default:TacticalScene}=await import('../web/app/TacticalScene.tsx');
+const {default:TacticalSceneControls}=await import('../web/app/TacticalSceneControls.tsx');
 const {default:JA2Conversation}=await import('../web/app/JA2Conversation.tsx');
 
 const fitted={weapon:1800,weaponFittings:{bayonet:{weapon:1811,fittingPattern:'india_socket',instanceId:'input-bayonet',condition:80}}};
@@ -85,7 +85,7 @@ async function controller(t,patch,{npc=false,setup}={}){
  let battle=field(patch,3);if(npc)battle.npcs=[{id:'civilian',name:'Paisano',dialogue:'special',x:3,y:4,hp:100,maxHp:100,stance:'standing'}];
  if(setup)setup(battle);
  const commits=[],props=()=>({battle,onChange:next=>{battle=next;commits.push(next);return next;},onFinish(){},onTalk(){}});
- const mounted=await mountController(t,props()),find=type=>nodes(mounted.tree()).find(node=>node.type===type),scene=()=>find(TacticalScene),svg=()=>nodes(mounted.tree()).find(node=>node.props?.className?.startsWith('tactical-field'));
+ const mounted=await mountController(t,props()),find=type=>nodes(mounted.tree()).find(node=>node.type===type),scene=()=>find(TacticalSceneControls),svg=()=>nodes(mounted.tree()).find(node=>node.props?.className?.startsWith('tactical-field'));
  const render=()=>mounted.render(props());
  const presented=[];
  return {mounted,scene,find,commits,presented,battle:()=>battle,
@@ -94,7 +94,7 @@ async function controller(t,patch,{npc=false,setup}={}){
    const person=document.createElement('div');person.setAttribute('data-unit-id',id);const hit=document.createElement('span');hit.setAttribute('data-person-hit-target','true');person.append(hit);
    await mounted.act(async()=>svg().props.onContextMenu({preventDefault(){},target:hit,currentTarget:{getScreenCTM:()=>null},clientX:0,clientY:0}));
   },
-  async tile(point){await mounted.act(async()=>scene().props.onTile(point));await mounted.settle(()=>presented.push({frame:svg().props['data-enemy-frame'],pose:scene().props.poses.p,position:scene().props.positions.p,commits:commits.length}));await render();},
+  async tile(point){await mounted.act(async()=>scene().props.onTile(point));await mounted.settle(()=>presented.push({frame:svg().props['data-enemy-frame'],pose:scene().props.poses.p,position:scene().props.positions['unit:p'],commits:commits.length}));await render();},
  };
 }
 
@@ -140,12 +140,12 @@ test('mounted long empty-ground approach presents every paid step before the str
 
 test('mounted reaction-cancelled approach never plays a strike after the reached tile settles',async t=>{
  const c=await controller(t,{...variants[0][1],agility:30,experienceLevel:1},{setup:s=>Object.assign(enemy(s),{x:5,y:5,facing:0,weapon:1806,marksmanship:70,agility:100,experienceLevel:10,overwatch:true,ap:6})});await c.key('b');await c.key('f');const before=c.battle();await c.tile({x:6,y:3});
- assert.equal(c.battle().lastError,null);assert.equal(enemy(c.battle()).reactionTurn,before.turn);assert.equal(getMeleeAttackResult(before,c.battle(),'p'),false);assert.notEqual(c.scene().props.poses.p,'strike');await c.mounted.frame(10000);assert.equal(c.scene().props.positions.p.moving,false);assert.notEqual(c.scene().props.poses.p,'strike');assert.deepEqual(ammunition(actor(c.battle())),ammunition(actor(before)));
+ assert.equal(c.battle().lastError,null);assert.equal(enemy(c.battle()).reactionTurn,before.turn);assert.equal(getMeleeAttackResult(before,c.battle(),'p'),false);assert.notEqual(c.scene().props.poses.p,'strike');await c.mounted.frame(10000);assert.equal(c.scene().props.positions['unit:p'].moving,false);assert.notEqual(c.scene().props.poses.p,'strike');assert.deepEqual(ammunition(actor(c.battle())),ammunition(actor(before)));
 });
 
 test('mounted close-combat targeting retains civilian conversation without an attack',async t=>{
  const c=await controller(t,variants[0][1],{npc:true});await c.key('b');await c.key('f');const before=structuredClone(c.battle()),count=c.commits.length;
  await c.rightClick('civilian');assert.equal(c.scene().props.mode,'useItem');assert.equal(c.scene().props.aim,0);
- const sceneTree=componentTree(TacticalScene,c.scene().props),talk=nodes(sceneTree).find(node=>node.type==='rect'&&node.props['aria-label']?.startsWith('Hablar con Paisano ·'));assert.ok(talk,'a civilian keeps its conversation affordance');
+ const sceneTree=componentTree(TacticalSceneControls,c.scene().props),talk=nodes(sceneTree).find(node=>node.type==='rect'&&node.props['aria-label']?.startsWith('Hablar con Paisano ·'));assert.ok(talk,'a civilian keeps its conversation affordance');
  await c.mounted.act(async()=>talk.props.onClick({}));assert.equal(c.find(JA2Conversation)?.props.npc.id,'civilian');assert.equal(c.commits.length,count);assert.deepEqual(c.battle(),before);
 });
