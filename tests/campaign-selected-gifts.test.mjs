@@ -121,6 +121,8 @@ test('campaign-only saves retain acknowledged receipts in the stored sector whil
  const stopped=order(accepted.campaign,{type:'leaveSector',battleId:accepted.campaign.pendingBattle.id,sectorState:accepted.battle,survivors:accepted.battle.units.filter(u=>u.side==='player')});
  assert.equal(stopped.pendingBattle,null);assert.equal(stopped.sectorStates.retiro.npcs.find(n=>n.id===npcId).questGifts.length,1);
  assert.deepEqual(decodeSave(encodeSave(stopped)).campaign,stopped);
+ const noLocalReceiver={npcs:[],errandDefinitions:structuredClone(stopped.errandDefinitions),roadsideDiscoveryDefinitions:structuredClone(stopped.roadsideDiscoveryDefinitions)},beforeProbe=structuredClone(stopped);
+ assert.equal(hasPendingNpcGiftProgress(stopped,noLocalReceiver),false);assert.deepEqual(stopped,beforeProbe);
  for(const omit of [c=>c.sectorStates.retiro.npcs=c.sectorStates.retiro.npcs.filter(n=>n.id!==npcId),c=>c.sectorStates.retiro.npcs=[],c=>delete c.sectorStates.retiro]){
   const bad=structuredClone(stopped);omit(bad);const before=structuredClone(bad);
   assert.throws(()=>restoreCampaign(serializeCampaign(bad)),/Falta el interlocutor|Faltan habitantes/);

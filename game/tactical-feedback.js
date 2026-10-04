@@ -1,8 +1,24 @@
 import {canSee,weaponFor} from './tactical.js';
 import {speechFor} from './characters.js';
 import {TRAINING_LABELS} from './skill-training.js';
+import {COMPANION_GRIEF_MORALE} from './companion-grief.js';
+const griefLossFormat=new Intl.NumberFormat('es-AR',{maximumFractionDigits:2});
 export function tacticalFeedback(before,after){
  const messages=[];
+ // Only a newly admitted receipt can announce grief. Loading an existing
+ // receipt or rendering the same state does not discover another death.
+ for(const unit of after.units.filter(u=>u.side==='player')){
+  const old=before.units.find(u=>u.id===unit.id);if(!old)continue;
+  const received=new Set((old.companionGrief??[]).map(entry=>entry.companionId));
+  for(const receipt of unit.companionGrief??[]){
+   if(received.has(receipt.companionId))continue;
+   received.add(receipt.companionId);
+   const companion=after.units.find(other=>other.side==='player'&&Number(other.id)===receipt.companionId&&other.hp===0);
+   if(!companion||!Number.isSafeInteger(receipt.companionId)||!Number.isFinite(receipt.loss)||receipt.loss<0||receipt.loss>COMPANION_GRIEF_MORALE)continue;
+   const effect=receipt.loss===0?'Moral sin cambio.':receipt.loss<.01?'Moral baja menos de 0,01.':`Moral −${griefLossFormat.format(receipt.loss)}.`;
+   messages.push(`${unit.name} lamenta la muerte de ${companion.name}. ${effect}`);
+  }
+ }
  for(const unit of after.units.filter(u=>u.side==='player')){
   const old=before.units.find(u=>u.id===unit.id);if(!old)continue;
   for(const [skill,label]of Object.entries(TRAINING_LABELS)){const gain=(unit.trainedStats?.[skill]??0)-(old.trainedStats?.[skill]??0);if(gain>0)messages.push(`${unit.nickname||unit.name}: ${label} +${gain}`);}

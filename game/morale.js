@@ -3,6 +3,7 @@ import {OPERATIVES} from './data.js';
 import {CIVIC_RECRUITS} from './civic-recruits.js';
 import {CRITICAL_HEALTH,isUnconscious} from './actor-condition.js';
 import {preferredCompanions,PREFERRED_COMPANION_MORALE} from './service-relationships.js';
+import {issueCompanionGrief} from './companion-grief.js';
 
 const clamp=n=>Math.max(0,Math.min(100,n));
 const deployed=(s,id)=>Boolean(s.pendingBattle?.squad?.some(u=>Number(u.id)===Number(id)));
@@ -47,7 +48,7 @@ export function deploymentMorale(s,id,cohortIds=[]){
   // This receipt is fixed at issue. Later joins, wounds or contract expiry do
   // not refresh it or alter the personal morale returned from this deployment.
   const companionBonus=companion?available:0;
-  return {morale:personalMorale+bonus+companionBonus,personalMorale,cohesionBonus:bonus,...(companion?{companionBonus,companionId:companion.companionId}:{})};
+  return {morale:personalMorale+bonus+companionBonus,personalMorale,cohesionBonus:bonus,...(companion?{companionBonus,companionId:companion.companionId}:{}),...issueCompanionGrief(s,originals.get(Number(id))??{id:Number(id)})};
 }
 
 export function returnMorale(s,id,report,issued){

@@ -77,6 +77,7 @@ test('real hiring and saved deployment disclose the directed preference without 
  const content=defaultContentPackage();let state=initialCampaign(42,content);const m=await mount(t,state,'recruitment');
  const card=id=>m.doc.querySelector(`[data-operative-id="${id}"]`),preference=()=>card(107).querySelector('.companion-preferences');
  assert.match(preference().textContent,/Petrona Lagos.*hasta \+3.*no supera \+5.*No cambia la paga ni el contrato/);assert.doesNotMatch(preference().textContent,/Apoyo de/);assert.equal(card(116).querySelector('.companion-preferences'),null,'the authored default is directed');
+ assert.match(preference().textContent,/Si ve morir a un compañero preferido que participa en el despliegue, pierde hasta 6 puntos de moral adicionales/);
  await m.click(card(107).querySelector('.candidate-face'));const dossier=m.doc.querySelector('[role="dialog"]');assert.match(dossier.textContent,/Petrona Lagos: Confía en su ayuda para atender heridos/);await m.click(m.button('Cerrar hoja de servicio',dossier));assert.deepEqual(m.state(),state,'reading a preference does not perform an order');
  for(const id of [107,116]){
   const before=m.state(),quote=contractQuote(before,rosterFor(before).find(o=>o.id===id));await m.click([...card(id).querySelectorAll('button')].find(b=>b.textContent.startsWith('Contratar')));

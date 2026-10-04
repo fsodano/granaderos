@@ -26,6 +26,7 @@ import { initialCampaign, dispatchCampaign, OPERATIVES, questForNPC } from '../.
 import {withCharacterSpeech} from '../../game/character-events.js';
 import {battleFromRequest,prepareCampaignBattle} from '../../game/battle-handoff.js';
 import {createBattle,actBattle,endTurn} from '../../game/tactical.js';
+import {addIssuedGriefParticipant} from '../../game/companion-grief.js';
 import {encodeSave,decodeSave,SAVE_KEY} from '../../game/save.js';
 const VERSION='0.4.0-dev.1';
 const contentMode=()=>typeof window!=='undefined'&&new URLSearchParams(window.location.search).get('content')==='1';
@@ -79,7 +80,7 @@ export default function Home(){
     if(next.lastConversation?.outcome==='recruited'){
       const id=next.lastConversation.operativeId,npc=battle.npcs.find((n:any)=>n.id===npcId),record=next.pendingBattle.squad.find((o:any)=>o.id===id);
       updated=structuredClone(updated);updated.npcs=updated.npcs.filter((n:any)=>n.id!==npcId);
-      if(record&&!updated.units.some((u:any)=>Number(u.id)===id)){const unit:any=createBattle([record],{width:battle.width,height:battle.height,enemies:[],exploration:true}).units.find((u:any)=>u.side==='player');if(unit)updated.units.push({...unit,x:npc.x,y:npc.y});}
+      if(record&&!updated.units.some((u:any)=>Number(u.id)===id)){const unit:any=createBattle([record],{width:battle.width,height:battle.height,enemies:[],exploration:true}).units.find((u:any)=>u.side==='player');if(unit){const joined={...unit,x:npc.x,y:npc.y};updated.units.push(joined);addIssuedGriefParticipant(updated,joined);}}
     }
     latest.current={...current,campaign:next,battle:updated};setCampaign(next);setBattle(updated);
   }

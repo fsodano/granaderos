@@ -58,6 +58,32 @@ test('jam and skill feedback appears on the transition once and chatter uses aut
  assert.deepEqual(tacticalFeedback(s,after),['Patriota: Puntería +1','Patriota: Brown Bess atascada. Volvé a cebar la cazoleta.']);assert.deepEqual(tacticalFeedback(after,after),[]);
  after.units[0].hp-=5;assert.equal(contextualBanter(s,after,1),null);assert.match(contextualBanter(s,after,3).text,/herido|venda/i);
 });
+test('only new grief receipts show the named actual loss ahead of routine feedback',()=>{
+ // These synthetic receipt fixtures test display only. The death transition
+ // and physical witness admission are exercised by the core and mounted tests.
+ const before=field();before.units[0].name='Inés Aguirre';
+ before.units.push({...structuredClone(before.units[0]),id:'116',name:'Petrona Lagos'});
+ const original=structuredClone(before);
+ const after=structuredClone(before),speaker=after.units[0];after.units.at(-1).hp=0;
+ speaker.companionGrief=[{companionId:116,loss:2}];speaker.jammed=true;speaker.trainedStats={marksmanship:1};
+ const feedback=tacticalFeedback(before,after);
+ assert.equal(feedback[0],'Inés Aguirre lamenta la muerte de Petrona Lagos. Moral −2.');
+ assert.equal(feedback[1],'Inés Aguirre: Puntería +1');
+ const restored=structuredClone(after);assert.deepEqual(tacticalFeedback(after,restored),[]);
+ assert.deepEqual(tacticalFeedback(restored,restored),[]);
+ const zero=structuredClone(after);zero.units[0].companionGrief[0].loss=0;
+ assert.equal(tacticalFeedback(before,zero)[0],'Inés Aguirre lamenta la muerte de Petrona Lagos. Moral sin cambio.');
+ const fractional=structuredClone(after);fractional.units[0].companionGrief[0].loss=2.5000000000000004;
+ assert.equal(tacticalFeedback(before,fractional)[0],'Inés Aguirre lamenta la muerte de Petrona Lagos. Moral −2,5.');
+ assert.equal(fractional.units[0].companionGrief[0].loss,2.5000000000000004,'display formatting preserves the exact receipt');
+ fractional.units[0].companionGrief[0].loss=.001;
+ assert.match(tacticalFeedback(before,fractional)[0],/Moral baja menos de 0,01/);
+ const unadmitted=structuredClone(after);delete unadmitted.units[0].companionGrief;
+ assert.equal(tacticalFeedback(before,unadmitted).some(text=>text.includes('Petrona Lagos')),false,'a raw HP transition cannot discover or name grief');
+ const absent=structuredClone(after);absent.units=absent.units.filter(unit=>unit.id!=='116');
+ assert.equal(tacticalFeedback(before,absent).some(text=>text.includes('Petrona Lagos')),false);
+ assert.deepEqual(before,original,'reading the receipt cannot change the source');
+});
 test('the initial tuning leaves a torso-hit survivor more next-turn AP and modestly improves distant accuracy',()=>{
  const s=field(),u=s.units[0],fired=actBattle(s,{type:'fire',unitId:u.id,targetId:'e',aim:2}),victim=fired.units[1];assert.equal(fired.lastError,null);assert.ok(victim.hp>=15);assert.ok(maxActionPoints(fired,victim)>0);
  const wounds=effectiveWounds(victim),oldBudget=Math.round(100-wounds/100*50-(100-victim.energy)*.25);assert.ok(maxActionPoints(fired,victim)>oldBudget,'the smaller wound penalty must provide actual action opportunity');

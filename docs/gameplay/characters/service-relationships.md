@@ -31,7 +31,7 @@ squad, location or active march does not hide a serving rival.
 New default authored campaigns carry this rule in their pinned content. Older
 pinned packages without the optional field remain neutral. Plain campaigns use
 the current default rule for future quotes while retaining existing paid service.
-No save-version flag or relationship event history is added.
+The refusal adds no save-version flag or relationship event history.
 
 ## Authoring
 
@@ -102,7 +102,8 @@ This bounded deployment rule is Granaderos tuning. The reviewed
 instead averages profile opinions among eligible people present together and
 moves a team modifier toward that opinion each hour; moving groups only consider
 their own group. This change does not reproduce that formula, buddy recruitment
-overrides, evolving opinions or additional companion-specific death morale.
+overrides or evolving opinions. The separate witnessed-loss rule below supplies
+an additional companion-specific consequence.
 
 Authors may set up to three directed preferences with the same stable IDs and
 reason limits as refusals:
@@ -143,9 +144,43 @@ letters for past deaths.
 The existing received correspondence stores the named reaction. Its stable ID
 uses the sender and deceased identities. Reading it performs no campaign action.
 The ordinary team/casualty morale loss and removal of issued temporary support
-remain unchanged. No additional grief penalty, recorded voice, coordinates,
-attacker identity, contract change or equipment change is introduced.
+remain unchanged. This letter adds no further morale loss, recorded voice,
+coordinates, attacker identity, contract change or equipment change. The separate
+witnessed-loss rule below can already have affected the sender.
 
-Deaths confirmed only through detained or resident NPC records, immediate
-in-battle reactions, evolving opinions, contextual fears and forced departures
-remain open. This is a named text reaction, not complete JA2 relationship parity.
+Deaths confirmed only through detained or resident NPC records, evolving
+opinions, contextual fears and forced departures remain open. This letter is a
+named text reaction, not complete JA2 relationship parity.
+
+## Witnessed companion loss
+
+A capable issued participant who directly sees a preferred military companion
+from that deployment die loses up to **6 additional morale once**. The
+relationship is directed: Aguirre can react to Lagos without Lagos having a
+reciprocal preference. This number is
+Granaderos tuning, not a historical psychological measurement or the classic
+JA2 formula.
+
+The witness must be present, awake and conscious. Their own sight and the
+revealed room decide observation before the fatal hit or bleeding tick changes
+the companion's posture. Knowing that a friendly soldier exists elsewhere does
+not prove observation. A critical but living companion, a hidden death, an absent
+witness or an old corpse creates no new reaction.
+
+The deployment pins the full preference list even when the morale cap prevents
+temporary support. It also records the initially living participants. A real
+local recruit joins that authority without receiving new support or preference
+context. Extra bodies retained from an earlier visit do not become participants.
+A small saved receipt records the deceased identity and the actual clipped loss. Clock
+checkpoints retain only receipt progress on the pending request; issued health,
+morale and support stay fixed. The receipt survives the actual return and cannot
+repeat after loading, corpse reentry or a duplicate report. Older pending deployments without
+this optional context remain neutral; loading does not backfill past deaths.
+
+The existing accuracy rule uses the lower morale. Action costs and the AP budget
+do not change. Existing physical-hit and bleeding morale rules keep their
+different behavior; tactical bleeding gains no generic teammate penalty. Return removes the
+original temporary support only once. The separate confirmed-loss letter keeps
+its existing delivery rules. This adds a short named text notice; it does not
+supply a recorded voice, alter contracts or create equipment, ammunition or
+health.

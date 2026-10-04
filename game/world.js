@@ -83,7 +83,7 @@ export function enterSector(request,previous=null,{placement=false}={}){
    // createBattle has normalized the retained enemy conditions and new turn budget.
  }
  if(previous)for(const raw of retainedMilitaryBodies({...previous,units:previous.units.filter(u=>sourceRecord(previous,u,request.sector))},state.units,request.sector)){
-   if(!state.units.some(u=>u.id===raw.id))state.units.push(clearEncounter(raw));
+   if(!state.units.some(u=>u.id===raw.id)){const retained=clearEncounter(raw);delete retained.griefCompanionIds;state.units.push(retained);}
  }
  const queued=[];const remainsIds=new Set();
  for(const record of request.remains??[]){
@@ -91,7 +91,7 @@ export function enterSector(request,previous=null,{placement=false}={}){
    remainsIds.add(record.unitId);
    const existing=state.units.find(u=>u.id===record.unitId);
    if(existing){if(existing.hp>0)throw Error('El soldado figura vivo y entre los restos pendientes.');continue;}
-   const corpse=clearEncounter(structuredClone(record.unit));delete corpse.departure;
+   const corpse=clearEncounter(structuredClone(record.unit));delete corpse.departure;delete corpse.griefCompanionIds;
    const arrival=record.entryEdge?record:corpse.arrival??record.arrival;
    corpse.entryReason='arrival';corpse.entryEdge=arrival?.entryEdge??corpse.entryEdge;corpse.entryAnchor=arrival?.entryAnchor??corpse.entryAnchor;
    queued.push(corpse);state.units.push(corpse);

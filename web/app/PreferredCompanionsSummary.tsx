@@ -1,6 +1,7 @@
 import {preferredCompanions,PREFERRED_COMPANION_MORALE} from '../../game/service-relationships.js';
+import {COMPANION_GRIEF_MORALE} from '../../game/companion-grief.js';
 
-export const PREFERRED_COMPANION_EXPLANATION=`Al iniciar un despliegue con uno de estos compañeros en condiciones de combatir, recibe hasta +${PREFERRED_COMPANION_MORALE} de moral. El apoyo total con compañerismo no supera +5. No cambia la paga ni el contrato.`;
+export const PREFERRED_COMPANION_EXPLANATION=`Al iniciar un despliegue con uno de estos compañeros en condiciones de combatir, recibe hasta +${PREFERRED_COMPANION_MORALE} de moral. El apoyo total con compañerismo no supera +5. No cambia la paga ni el contrato. Si ve morir a un compañero preferido que participa en el despliegue, pierde hasta ${COMPANION_GRIEF_MORALE} puntos de moral adicionales.`;
 type CompanionPreference={character:string;reason:string;companionId:number|undefined;companionName:string};
 
 export default function PreferredCompanionsSummary({state,operative,details=false}:{state?:any;operative:any;details?:boolean}){

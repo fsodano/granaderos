@@ -1,6 +1,7 @@
 import {worldCell} from './world-cells.js';
 import {canonicalContent} from './content-identity.js';
 import {fieldCapable} from './actor-condition.js';
+import {issueGriefParticipants,captureCompanionGrief,applyCompanionGrief} from './companion-grief.js';
 export {fieldCapable};
 export {completedTacticalVictory} from './battle-outcome.js';
 import {AMMUNITION_FAMILIES} from './ammunition-families.js';
@@ -249,6 +250,7 @@ state.weather.rain=typeof state.weather.rain==='boolean'?(state.weather.rain?40:
 for(let y=0;y<height;y++)for(let x=0;x<width;x++){const edge=x===Math.floor(width*.56)&&y>1&&y<height-2&&y!==Math.floor(height/2);state.tiles.push({x,y,type:edge?'wall':sector.biome==='wetland'&&x>3&&x<width-3&&y%3===0?'mud':sector.biome==='mountain'||sector.biome==='foothills'?'stone':'grass',blocked:edge,cover:edge?40:sector.biome==='forest'&&x>3&&x<width-3&&y%3===0?20:0});}
 if(Array.isArray(sector.tiles))state.tiles=sector.tiles.map(t=>({blocked:false,cover:0,...t}));
 state.units=squad.map((u,i)=>makeUnit(u,'player',i,1+Math.floor(i/(height-2)),1+i%(height-2)));
+Object.assign(state,issueGriefParticipants(state.units));
 const enemies=Array.isArray(sector.enemies)?sector.enemies:Array.from({length:sector.exploration?0:sector.enemyCount||Math.max(3,squad.length+(sector.difficulty||1)-1)},(_,i)=>({id:`enemy-${i}`,name:`Realista ${i+1}`,weapon:i%3===0?1801:1800,marksmanship:50+(sector.difficulty||1)*5,morale:60+(sector.difficulty||1)*5}));
 state.units.push(...enemies.map((u,i)=>makeUnit(u,'enemy',i,width-2-Math.floor(i/(height-2)),1+i%(height-2))));
 if(!Array.isArray(sector.artillery)&&sector.cannons>0)state.artillery=Array.from({length:Math.min(sector.cannons,3)},(_,i)=>({id:`gun-${i}`,type:'bronze4',side:'player',x:2,y:2+i*3,loaded:artilleryProfile(sector,'bronze4').initialLoaded,ammo:artilleryProfile(sector,'bronze4').initialAmmo}));
@@ -761,6 +763,7 @@ function damage(s,target,amount,source,projectile=false,hitLocation='torso',extr
     const guard=s.units.find(v=>!excludedBodyguards?.has(`unit:${v.id}`)&&hasCharacterAbility(v,'bodyguard')&&v.side===target.side&&v.id!==target.id&&alive(v)&&v.hp>25&&v.ap>=8&&v.interceptTurn!==s.turn&&contactDistance(v,target)<=1.5);
     if(guard){guard.ap-=8;guard.interceptTurn=s.turn;if(report)sayObserved(s,[guard,target],`${guard.name} se interpone para proteger a ${target.name}.`);target=guard;}
   }
+  const grief=captureObservedCompanionGrief(s,target);
   report=report&&(projectile?observedBody(s,target):journalVisible(s,target));
   const sourceKnown=journalVisible(s,source);
   const creditEligible=target.hp>=CRITICAL_HEALTH&&!target.unconscious&&!target.routed&&!target.surrendered&&!target.departure;
@@ -781,6 +784,7 @@ function damage(s,target,amount,source,projectile=false,hitLocation='torso',extr
   target.morale=Math.max(0,target.morale-impact.damage*.45);
   if(report)say(s,`${sourceKnown?source.name+' hiere a': 'Un ataque alcanza a'} ${target.name}${projectile&&hitLocation!=='torso'?` (${getHitLocationProfile(hitLocation).label.toLowerCase()})`:''}: ${impact.damage} de daño.`);
   if(target.hp===0){if(report)say(s,`${target.name} cayó en combate.`);for(const u of s.units.filter(u=>u.side===target.side&&alive(u)))u.morale=Math.max(0,u.morale-18);}
+  reportCompanionGrief(s,grief);
   holdMorale(s,target);if(alive(target)&&target.morale<15)rout(s,target,report);
   return target;
 }
@@ -2237,12 +2241,21 @@ else if(a.type==='stance'){
   sayObserved(s,[u],`${u.name} ${a.stance==='prone'?'se tiende cuerpo a tierra':a.stance==='crouched'?'se agacha':'se pone de pie'}.`);
 }
 else return fail('Orden desconocida.');if(lowersWeapon(a.type)&&a.type!=='movement')lowerWeapon(u);checkEnd(s);if(!['move','climb','charge'].includes(a.type))reactionFire(s,u,observation);return true;}
+function captureObservedCompanionGrief(s,target){
+ const rooms=new Set(s.revealedRooms??[]);
+ return captureCompanionGrief(s,target,(witness,companion)=>isInteriorVisible(s,companion,rooms)&&canSee(s,witness,companion));
+}
+function reportCompanionGrief(s,captured){
+ for(const {unit,companion,loss} of applyCompanionGrief(s,captured))say(s,`${unit.name} lamenta la muerte de ${companion.name}. ${loss?`Moral −${loss}.`:'Moral sin cambio.'}`);
+}
 function advanceWounds(s,seconds){
   s.bleedSeconds=(s.bleedSeconds??0)+seconds;
   const ticks=Math.floor(s.bleedSeconds/COMBAT_ROUND_SECONDS);s.bleedSeconds%=COMBAT_ROUND_SECONDS;
   for(const u of s.units.filter(u=>u.hp>0)){
+    const grief=u.bleeding&&ticks>0?captureObservedCompanionGrief(s,u):null;
     if(u.bleeding){const loss=Math.min(u.hp,u.bleeding*ticks);u.hp-=loss;u.bandaged=Math.min(u.bandaged??0,u.maxHp-u.hp);if(u.side==='player'||teamCanSee(s,'player',u))sayObserved(s,[u],`${u.name} pierde ${loss} de salud por hemorragia.`);}
     refreshCondition(u);
+    reportCompanionGrief(s,grief);
   }
   for(const npc of s.npcs??[]){
     const before=npc.hp??100,visible=teamCanSee(s,'player',npc);
