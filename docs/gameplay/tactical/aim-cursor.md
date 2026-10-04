@@ -18,7 +18,7 @@ Implemented 11 September 2026 from the user request and supplied JA2 cursor scre
 - B switches a held firearm between Disparo and close combat. In close combat, F and right-click keep the stock strike or fitted bayonet attack, with zero extra aim. Empty or unprimed firearms can still strike; no reload is substituted. Switch back with B before aiming a shot.
 - Right-click with other equipment enters ordinary item use. Equipped dressings still treat the selected person or the acting soldier. The lower panel no longer has aim-level or body-region buttons.
 
-Ground shots use the existing fixed-height projectile rules and display Casilla. They can hit allies. A clicked hostile's body region comes from that click's position, not a prior panel choice. The simulation also rejects head/leg requests against prone or fallen targets, and enemy shot selection only considers torso for those targets.
+Ground shots capture an absolute aiming height, use the existing physical flight rules and display Casilla. Continued shots can fall below that original aiming height. They can hit allies. A clicked hostile's body region comes from that click's position, not a prior panel choice. The simulation also rejects head/leg requests against prone or fallen targets, and enemy shot selection only considers torso for those targets.
 
 ## Verification
 

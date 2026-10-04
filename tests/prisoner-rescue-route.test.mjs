@@ -1,7 +1,7 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import {runPrisonerRescue} from './prisoner-rescue-route.mjs';
 import {totalReserveAmmunition} from '../game/ammunition-types.js';
-import {actBattle,endTurn} from '../game/tactical.js';
+import {actBattle,endTurn,firearmShotOptions,actionCosts,teamCanSee} from '../game/tactical.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {sync,order} from './prisoner-rescue-fixture.mjs';
 import {firearmBystanderRisk} from '../game/firearm-bystander-risk.js';
@@ -34,15 +34,30 @@ test('paid relief starts at the real arrival edge, fights, releases prisoners an
  for(const choice of riskChoices){
   assert.ok([...choice.proposed.risk.direct,...choice.proposed.risk.scatter].some(v=>v.kind==='npc'));
   assert.ok(![...choice.selected.risk.direct,...choice.selected.risk.scatter].some(v=>v.kind==='npc'));
-  assert.ok(choice.selected.score>=choice.proposed.preview.chance*choice.proposed.preview.damageFactor*.9);
+  assert.ok(choice.selected.score>0,'a safe alternative must retain real useful force');
  }
  // Replay every paid order from the complete initial save, retaining each
  // intermediate evacuation save. A misfire keeps its loaded cartridge.
  let {campaign:replayCampaign,battle:replayBattle}=decodeSave(encodeSave(initial.campaign,initial.battle)),firedRounds=0;
- for(const recorded of orders){
+ for(const [orderIndex,recorded] of orders.entries()){
   const {turn,battleMode,...action}=recorded;assert.equal(replayBattle.turn,turn);assert.equal(replayBattle.mode,battleMode);
   const before=action.type==='fire'&&replayBattle.units.find(u=>u.id===action.unitId);
-  if(before){const target=replayBattle.units.find(u=>u.id===action.targetId),risk=firearmBystanderRisk(replayBattle,before,target,action.hitLocation??'torso');assert.ok(![...risk.direct,...risk.scatter].some(v=>v.kind==='npc'),'every actual relief shot must avoid known prisoner lanes');}
+  if(before){
+   const target=replayBattle.units.find(u=>u.id===action.targetId),risk=firearmBystanderRisk(replayBattle,before,target,action.hitLocation??'torso');assert.ok(![...risk.direct,...risk.scatter].some(v=>v.kind==='npc'),'every actual relief shot must avoid known prisoner lanes');
+   const choice=riskChoices.find(c=>c.orderIndex===orderIndex);
+   if(choice){
+    assert.deepEqual(action,choice.selected.action);
+    const scores=[];
+    for(const t of replayBattle.units.filter(u=>u.side==='enemy'&&u.hp>=15&&!u.routed&&!u.departure&&!u.unconscious&&!u.surrendered&&teamCanSee(replayBattle,'player',u))){
+     const cost=actionCosts(replayBattle,before,t);if(before.ap<cost.fire)continue;
+     for(const o of firearmShotOptions(replayBattle,before,t,Math.min(4,Math.floor((before.ap-cost.fire)/cost.aim)))){
+      const candidateRisk=firearmBystanderRisk(replayBattle,before,t,o.hitLocation);
+      if(o.chance>=5&&o.damageFactor>0&&![...candidateRisk.direct,...candidateRisk.scatter].some(v=>v.kind==='npc'))scores.push(o.chance*o.damageFactor);
+     }
+    }
+    assert.equal(choice.selected.score,Math.max(...scores),'the rescue selects the best affordable safe shot from the actual saved field');
+   }
+  }
   replayBattle=action.type==='endTurn'?endTurn(replayBattle):actBattle(replayBattle,action);assert.equal(replayBattle.lastError,null);
   if(before){const after=replayBattle.units.find(u=>u.id===action.unitId),spent=Number(!after.jammed);assert.equal(before.loaded-after.loaded,spent);firedRounds+=spent;}
   if(action.type==='exit'){const paired=sync(replayCampaign,replayBattle);({campaign:replayCampaign,battle:replayBattle}=decodeSave(encodeSave(paired.campaign,paired.battle)));}

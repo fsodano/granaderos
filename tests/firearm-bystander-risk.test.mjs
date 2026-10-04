@@ -40,9 +40,10 @@ test('unseen, departed and dead civilians cannot leak through the miss preview',
  }
 });
 
-test('a trabuco warns from its finite six-cell pellet paths, including a scattered center',()=>{
+test('a trabuco warns from its finite continued pellet paths, including a scattered center',()=>{
  const state=field(),[unit,target]=state.units;unit.weapon=1807;
- assert.deepEqual(firearmBystanderRisk(state,unit,target),{direct:[],scatter:[]},'a prisoner beyond the cone is not exposed');
+ assert.deepEqual(firearmBystanderRisk(state,unit,target),{direct:[],scatter:[{id:'prisoner',name:'Prisionero visible',kind:'npc'}]},'the continued scattered path can reach a prisoner beyond nominal range');
+ assert.match(targetPreview(state,unit,target,{mode:'fire'}).coverNote,/Un tiro desviado puede herir a Prisionero visible/);
  Object.assign(state.npcs[0],{x:6,y:5});const risk=firearmBystanderRisk(state,unit,target);assert.equal(risk.direct[0].id,'prisoner');assert.equal(risk.scatter[0].id,'prisoner');assert.equal(firearmBystanderWarning(risk).match(/Prisionero visible/g).length,1);
 });
 

@@ -106,10 +106,12 @@ test('real upper slabs still stop a falling shot and a hard corner contact costs
  const tangent=trace(diagonal,{x:7,y:7},{damage:42,range:1,loadPattern:'single'},{destinationHeight:1.4});assert.ok(tangent.trajectoryModel);assert.deepEqual(tangent.obstacles,[]);assert.equal(tangent.terminal.remainingImpact,42);
 });
 
-test('world bounds, capped pellets and legacy cone paths do not gain extra range or far drop',()=>{
+test('world bounds and explicit caps remain finite while physical pellets gain the falling tail',()=>{
  const s=field(),p=s.units[0],target={x:32,y:3,stance:'standing'},weapon={damage:42,range:8,loadPattern:'single'};
  const capped=projectileFlight(s,p,target,weapon,'torso',{maxDistance:12});assert.equal(capped.trajectoryModel,undefined);close(capped.terminal.impact.x,13);close(capped.terminal.impact.height,1.4+(1.1-1.4)*12/31);
- const pellet=shotLoadFlight(s,p,target,{...weapon,loadPattern:'cone'});assert.equal(pellet.pellets.length,9);assert.ok(pellet.pellets.every(p=>p.flight.trajectory===undefined));for(const p of pellet.pellets)close(Math.hypot(p.flight.destination.x-1,p.flight.destination.y-3),8);
+ const pellet=shotLoadFlight(s,p,target,{...weapon,loadPattern:'cone'});assert.equal(pellet.pellets.length,9);
+ const central=pellet.pellets[0].flight;close(Math.hypot(central.destination.x-1,central.destination.y-3),24);close(central.trajectoryModel.dropStart,2/3);close(central.destination.height,1.4+(1.1-1.4)*24/31-.1*8**2/(4*8));
+ for(const p of pellet.pellets)assert.ok(Math.hypot(p.flight.destination.x-1,p.flight.destination.y-3)<=24+1e-10,'the map edge can shorten the explicit pellet cap');
  const legacy=projectileFlight(s,p,target,{damage:42,range:8,loadPattern:'cone'});assert.equal(legacy.bodyImpacts,undefined);assert.equal(legacy.trajectoryModel,undefined);assert.equal(legacy.blocked,false);
  const ballLoad=weaponFor({...p,weapon:1807,ammunitionChoice:'ammoMusket'});assert.equal(ballLoad.range,8);assert.equal(ballLoad.loadPattern,'single');close(firearmRay(s,p,target,ballLoad).trajectoryModel.dropStart,16/31);
  const shotLoad=weaponFor({...p,weapon:1807,ammunitionChoice:'ammoShot'});assert.equal(shotLoad.range,6);assert.equal(shotLoad.loadPattern,'cone');assert.equal(projectileFlight(s,p,target,shotLoad).trajectoryModel,undefined);

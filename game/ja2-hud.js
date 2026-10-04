@@ -358,7 +358,7 @@ function targetPreviewWithCosts(state, unit, point, ctx = {}) {
   if(mode==='fire'&&(explicitPointShot(state,point)||!target||target.side===unit.side||target.hp<=0||target.surrendered)){
     const preview=pointFirePreview(state,unit,point,ctx.aim??0);
     const paired=pairedPistol(unit),shotLoad=weaponFor(unit).loadPattern==='cone'||paired&&weaponFor(secondaryPistolView(unit,paired)).loadPattern==='cone';
-    return {name:tacticalGridLabel(point.x,point.y),actionLabel:paired?'Disparar ambas pistolas a la casilla':'Disparar a la casilla',attackType:'fire',pa:preview.pa,remaining:Math.max(0,unit.ap-(state.mode==='exploration'?0:preview.pa)),valid:preview.valid,reason:preview.reason,coverNote:`${firearmCostText(state,unit,point)} ${paired?'Un disparo por pistola. ':''}${shotLoad?'Carga de perdigones. ':''}Sin objetivo confirmado. Altura fija; la cobertura y los cuerpos pueden interceptar el tiro. Puede herir aliados.`};
+    return {name:tacticalGridLabel(point.x,point.y),actionLabel:paired?'Disparar ambas pistolas a la casilla':'Disparar a la casilla',attackType:'fire',pa:preview.pa,remaining:Math.max(0,unit.ap-(state.mode==='exploration'?0:preview.pa)),valid:preview.valid,reason:preview.reason,coverNote:`${firearmCostText(state,unit,point)} ${paired?'Un disparo por pistola. ':''}${shotLoad?'Carga de perdigones. ':''}Sin objetivo confirmado. Altura de apuntado fija; la cobertura y los cuerpos pueden interceptar el tiro. Puede herir aliados.`};
   }
   if(!target&&!recipient&&meleePointTargetingMode(unit,mode)&&ctx.itemIntent!=='steal'){
     const preview=meleePointPreview(state,unit,point),label=unit.activeSlot==='unarmed'?'Puños':fixedBayonetFor(unit)?'Estocada de bayoneta':hasFirearm(unit)?'Culatazo':bladeFor(unit).name;

@@ -69,8 +69,17 @@ test('unloading requires pocket capacity and combat AP, and cannot clear a jam f
  b=field();b.units[0].ap=20;b.units[0].inventory=Object.fromEntries(Array.from({length:12},(_,i)=>['full'+i,{name:'Objeto '+i,count:1,weight:.1,instanceId:'full-'+i}]));const full=structuredClone(b.units);n=actBattle(b,{type:'unloadAmmunition',unitId:'p'});assert.ok(n.lastError);assert.deepEqual(n.units,full);
 });
 
-test('an empty AI firearm selects owned compatible shot and closes distance instead of discarding it',async()=>{
- const {endTurn,shotChance}=await import('../game/tactical.js');
+test('an empty AI firearm reloads owned shot and uses its finite tail before reaching nominal range',async()=>{
+ const {endTurn,shotChance,firearmFlightPreview,firearmVolleyPreview,firearmRangeProfile,firearmShotOptions}=await import('../game/tactical.js');
  const b=createBattle([{id:'p',x:1,y:1,weapon:1800,ammo:0,loaded:0}],{seed:45,width:12,height:10,tiles:Array.from({length:120},(_,i)=>({x:i%12,y:Math.floor(i/12),type:'grass',blocked:false,cover:0})),enemies:[{id:'e',x:8,y:5,weapon:1800,loaded:0,ammo:2,ammunition:{ammoShot:2},patrol:false,overwatch:false}]});
- assert.equal(shotChance(b,{...b.units[1],ammunitionChoice:'ammoShot'},b.units[0]),0);let n=endTurn(b);for(let i=0;n.phase==='interrupt'&&i<8;i++)n=endTurn(n);const enemy=n.units.find(u=>u.id==='e');assert.equal(enemy.ammunitionChoice,'ammoShot');assert.equal(enemy.loaded,0);assert.equal(ammoCount(enemy,'ammoShot'),1);assert.match(n.log.join(' '),/recarga/);assert.match(n.log.join(' '),/dispara una carga de perdigones/);assert.ok(n.units[0].hp<b.units[0].hp);assert.ok(Math.hypot(enemy.x-1,enemy.y-1)<6);assert.equal(n.lastError,null);
+ const before=structuredClone(b),view={...b.units[1],ammunitionChoice:'ammoShot'},target=b.units[0],weapon=weaponSpecification(view),range=firearmRangeProfile(b,view,target),path=firearmFlightPreview(b,view,target),prediction=firearmVolleyPreview(b,view,target).shots[0];
+ assert.equal(weapon.range,6);assert.equal(weapon.damage,28);assert.equal(range.beyondWeapon,true);
+ // The center accuracy remains zero beyond this selected load's range.
+ // Positive aggregate contact comes from legal scattered pellet paths.
+ assert.ok(path.forecast.miss.contact>0);assert.equal(prediction.chance,Math.round(path.forecast.miss.contact*100));assert.ok(Math.abs(prediction.expectedForce-path.forecast.miss.force)<1e-9);
+ assert.equal(shotChance(b,view,target),prediction.chance);assert.ok(firearmShotOptions(b,view,target,0).some(option=>option.chance>0&&option.expectedDamage>0&&!option.interveningFriendly));assert.deepEqual(b,before);
+ let n=endTurn(b);for(let i=0;n.phase==='interrupt'&&i<8;i++)n=endTurn(n);
+ const enemy=n.units.find(u=>u.id==='e'),distance=Math.hypot(enemy.x-target.x,enemy.y-target.y);
+ assert.equal(enemy.ammunitionChoice,'ammoShot');assert.equal(enemy.loaded,0);assert.equal(ammoCount(enemy,'ammoShot'),1);assert.match(n.log.join(' '),/recarga/);assert.match(n.log.join(' '),/dispara una carga de perdigones/);assert.ok(n.units[0].hp<target.hp);
+ assert.ok(distance<range.distance,'the AI still pays to advance closer');assert.ok(distance>weapon.range,'the actual discharge reaches through the tail before nominal range');assert.deepEqual(enemy.lastShotPosition,{x:enemy.x,y:enemy.y});assert.equal(enemy.condition,b.units[1].condition-1);assert.equal(n.lastError,null);
 });

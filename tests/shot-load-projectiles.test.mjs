@@ -13,6 +13,7 @@ import {initialCampaign} from '../game/campaign.js';
 import {order,visit,saved,sync,leave} from './local-contract-fixture.mjs';
 import {ammoCount} from '../game/ammo-types.js';
 import {targetPreview} from '../game/ja2-hud.js';
+import {COMBAT_BALANCE} from '../game/combat-balance.js';
 
 const tiles=(width=14,height=8)=>Array.from({length:width*height},(_,i)=>({x:i%width,y:Math.floor(i/width),type:'grass',cover:0,blocked:false,blocksSight:false}));
 const enemy=(id='e',x=4,y=3,extra={})=>({id,x,y,weapon:1813,hp:100,maxHp:100,morale:100,patrol:false,overwatch:false,...extra});
@@ -33,7 +34,7 @@ test('nine finite weighted rays share one load and spend cover force in physical
  assert.equal(flight.pellets.length,9);assert.equal(new Set(flight.pellets.map(p=>p.index)).size,9);
  assert.ok(Math.abs(SHOT_LOAD_PATTERN.reduce((n,p)=>n+p.weight,0)-1)<1e-12);
  for(const pellet of flight.pellets){
-  assert.ok(Math.hypot(pellet.flight.destination.x-u.x,pellet.flight.destination.y-u.y)<=w.range+1e-10);
+  assert.ok(Math.hypot(pellet.flight.destination.x-u.x,pellet.flight.destination.y-u.y)<=w.range*COMBAT_BALANCE.shotLoadFlightRangeMultiplier+1e-10);
   assert.ok(pellet.flight.bodyImpacts.every(hit=>hit.incomingImpact<=w.damage/9+1e-10));
   assert.equal(new Set(pellet.flight.bodyImpacts.map(h=>`${h.victimKind}:${h.victimId}`)).size,pellet.flight.bodyImpacts.length);
  }
@@ -41,7 +42,9 @@ test('nine finite weighted rays share one load and spend cover force in physical
  const weakened=shotLoadFlight(hay,body(hay),body(hay,'e'),w);
  assert.ok(weakened.bodyImpacts.length>0);
  for(const pellet of weakened.pellets){
-  const end=pellet.flight.destination,dx=end.x-u.x;
+  // This hay crossing precedes the drop onset. Use the original aim slope,
+  // not the lower chord to the new falling tail's endpoint.
+  const end=pellet.flight.trajectoryModel?.destination??pellet.flight.destination,dx=end.x-u.x;
   const depth=Math.hypot(1,(end.y-u.y)/dx,(end.height-absoluteBodyHeight(hay,u,'muzzle'))/dx);
   assert.ok(Math.abs(pellet.flight.obstacles[0].resistance-3*depth)<1e-10);
   for(const impact of pellet.flight.bodyImpacts)assert.ok(Math.abs(impact.incomingImpact-(w.damage/9-3*depth))<1e-10);

@@ -102,23 +102,28 @@ test('autonomous continuation after a full tactical save preserves finite shots,
  let b=field({type:'bronze4'}),saved=restored(b);for(let i=0;i<4&&b.status==='active';i++){b=endTurn(b);saved=endTurn(saved);assert.deepEqual(saved,b);saved=restored(saved);}assert.ok(b.units.find(u=>u.id==='target').hp<300);assert.ok(b.artillery[0].ammo<2);
 });
 
-test('a paid local cohort operates a finite retained gun and full campaign saves preserve both',async()=>{
+test('a paid local cohort operates a finite retained gun and full campaign saves preserve both',async t=>{
  const {wonBattery}=await import('./stationed-artillery-fixture.mjs'),{order,saved,sync,leave,visit}=await import('./local-contract-fixture.mjs');
  const {defaultContentPackage}=await import('../game/content-package.js'),{rosterFor}=await import('../game/campaign.js'),{finishMilitiaTraining}=await import('./campaign-wait-fixture.mjs');
  const d=defaultContentPackage();d.startingTerritory.san_nicolas={owner:'royalist',loyalty:65};
- let s=wonBattery(d),treasury=s.resources.treasury;const trainer=rosterFor(s).filter(o=>s.squad.includes(o.id)&&s.operativeState[o.id]?.alive&&o.leadership>=30).sort((a,b)=>b.leadership-a.leadership)[0];assert.ok(trainer);
+ let s=wonBattery(d),treasury=s.resources.treasury;const retainedGun=structuredClone(s.sectorStates.san_nicolas.artillery[0]),trainer=rosterFor(s).filter(o=>s.squad.includes(o.id)&&s.operativeState[o.id]?.alive&&o.leadership>=30).sort((a,b)=>b.leadership-a.leadership)[0];assert.ok(trainer);
  s=order(s,{type:'militia',trainerId:trainer.id,rank:0});assert.ok(s.resources.treasury<treasury);s=finishMilitiaTraining(s);s=order(s,{type:'visitSector'});
- const r=s.pendingBattle,gun=structuredClone(s.sectorStates.san_nicolas.artillery[0]);assert.equal(r.garrison.length,3);assert.equal(gun.side,'player');assert.equal(gun.loaded,false);assert.equal(gun.ammo,1);
+ const r=s.pendingBattle,gun=structuredClone(s.sectorStates.san_nicolas.artillery[0]);assert.equal(r.garrison.length,3);assert.equal(gun.side,'player');
+ // The earlier real victory may retain a loaded shot. Training cannot refill
+ // it, and the local crew spends that actual load or one existing reserve.
+ assert.equal(gun.id,retainedGun.id);assert.equal(gun.loaded,retainedGun.loaded);assert.equal(gun.ammo,retainedGun.ammo);assert.ok(Number(gun.loaded)+gun.ammo>0);
  // Prepared local ambush geometry around the actual retained emplacement.
  // All hired people and paid militia identities come from ordinary campaign
  // orders; the finite stored gun comes from the isolated battery fixture; the result follows a real autonomous allied turn.
  const width=64,height=48,tiles=Array.from({length:width*height},(_,i)=>({x:i%width,y:Math.floor(i/width),type:i%width===gun.x+2?'window':'grass',blocked:i%width===gun.x+2,blocksSight:false,cover:0}));
  r.enemies=createBattle([],{width,height,enemies:[{id:'battery-raider',x:gun.x+5,y:gun.y,weapon:1813,ammo:0,hp:30,maxHp:30,morale:100,patrol:false}]}).units;
  let battle=createBattle([...r.squad.map((u,i)=>({...u,x:1,y:30+i})),...r.garrison.map((u,i)=>({...u,x:i?1+i:gun.x-1,y:i?36:gun.y}))],{...r,hour:s.hour,secondOfHour:s.secondOfHour??0,exploration:false,width,height,tiles,props:[],npcs:r.npcs,artillery:[gun],enemies:r.enemies});
- const before=structuredClone(battle);battle=endTurn(battle);assert.equal(battle.lastError,null);assert.equal(battle.status,'victory');assert.ok(battle.log.some(line=>line.includes('dispara una bala rasa')));assert.equal(battle.artillery[0].loaded,false);assert.equal(battle.artillery[0].ammo,gun.ammo-1);
+ const before=structuredClone(battle);battle=endTurn(battle);assert.equal(battle.lastError,null);assert.equal(battle.status,'victory');assert.ok(battle.log.some(line=>line.includes('dispara una bala rasa')));assert.equal(battle.artillery[0].loaded,false);
+ assert.equal(battle.artillery[0].ammo,gun.ammo-(gun.loaded?0:1));assert.equal(Number(battle.artillery[0].loaded)+battle.artillery[0].ammo,Number(gun.loaded)+gun.ammo-1);
  const gunner=battle.units.find(u=>u.id===String(r.garrison[0].id));assert.ok(gunner.militiaExperience>0);for(const u of before.units.filter(u=>u.side==='player'&&!u.militia))assert.equal(battle.units.find(v=>v.id===u.id).hp,u.hp);
  const p=saved(sync({campaign:s,battle})),returned=visit(saved({campaign:leave(p)}).campaign);assert.equal(returned.battle.artillery[0].id,gun.id);assert.equal(returned.battle.artillery[0].loaded,false);assert.equal(returned.battle.artillery[0].ammo,battle.artillery[0].ammo);
  const retained=returned.battle.units.find(u=>u.id===gunner.id);for(const key of ['hp','loaded','ammo','condition','militiaExperience','militiaCombatCredit'])assert.deepEqual(retained[key],gunner[key],key);assert.equal(returned.campaign.armory.swivel??0,0);
+ t.diagnostic(JSON.stringify({trainingCost:treasury-returned.campaign.resources.treasury,treasury:returned.campaign.resources.treasury,hour:returned.campaign.hour,gunId:gun.id,before:{loaded:gun.loaded,reserve:gun.ammo},after:{loaded:battle.artillery[0].loaded,reserve:battle.artillery[0].ammo},gunner:{id:gunner.id,healthBefore:before.units.find(u=>u.id===gunner.id).hp,health:retained.hp,experience:retained.militiaExperience,credit:retained.militiaCombatCredit},outcome:battle.status}));
 });
 
 

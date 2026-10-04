@@ -6,7 +6,7 @@ import {deployedArtillery} from '../game/equipment.js';
 import {enterSector} from '../game/world.js';
 import {actBattle,endTurn,getReachable} from '../game/tactical.js';
 import {order,visit,leave,saved,sync} from './local-contract-fixture.mjs';
-import {issuedBattery,wonBattery,fireStationed,wakeBatteryCrew} from './stationed-artillery-fixture.mjs';
+import {issuedBattery,wonBattery,fireStationed,exhaustStationed,wakeBatteryCrew} from './stationed-artillery-fixture.mjs';
 import {fight} from './opening-driver.mjs';
 import {northernCombatOrder} from './northern-route.mjs';
 import {secondaryRetreat} from './secondary-loot-fixture.mjs';
@@ -20,7 +20,7 @@ test('declared finite stock is issued once and real victory retains the same own
  const won=wonBattery();assert.equal(won.armory.swivel,0);assert.equal(ownedArtilleryCount(won),1);assert.equal(won.sectorStates.san_nicolas.artillery[0].id,'piece-1');assert.deepEqual(saved({campaign:won}).campaign,won);
 });
 test('actual firing, return, full saves and repeated visits retain the unloaded gun, finite reserve and full-map position',()=>{
- let p=fireStationed(visit(wonBattery())),gun=structuredClone(p.battle.artillery[0]);assert.equal(gun.loaded,false);assert.equal(gun.ammo,0);assert.ok(gun.x>=20||gun.y>=16);
+ let p=exhaustStationed(visit(wonBattery())),gun=structuredClone(p.battle.artillery[0]);assert.equal(gun.loaded,false);assert.equal(gun.ammo,0);assert.ok(gun.x>=20||gun.y>=16);
  let s=leave(p);for(let i=0;i<3;i++){p=visit(saved({campaign:s}).campaign);assert.equal(p.battle.artillery.length,1);for(const key of ['id','type','x','y','loaded','ammo','facing'])assert.deepEqual(p.battle.artillery[0][key],gun[key],key);assert.equal(p.campaign.armory.swivel,0);s=leave(p);}
  assert.equal(ownedArtilleryCount(s),1);
 });
@@ -50,7 +50,7 @@ test('legacy repeated projections are reconciled against legacy paid stock once 
 });
 
 test('an actual reload spends reserve once and an empty battery choice leaves that saved emplacement in place',()=>{
- let p=visit(wonBattery());const gun=p.battle.artillery[0];assert.equal(gun.loaded,false);assert.equal(gun.ammo,1);
+ let p=visit(wonBattery());if(p.battle.artillery[0].loaded)p=fireStationed(p);const gun=structuredClone(p.battle.artillery[0]);assert.equal(gun.loaded,false);assert.equal(gun.ammo,1);
  const approach=p.battle.units.filter(u=>u.side==='player'&&u.hp>=15&&!u.unconscious&&!u.routed).flatMap(actor=>getReachable(p.battle,actor).filter(spot=>Math.hypot(spot.x-gun.x,spot.y-gun.y)<=1.5).map(spot=>({actor,spot}))).sort((a,b)=>a.spot.cost-b.spot.cost)[0];assert.ok(approach);
  let battle=p.battle;if(approach.spot.cost)battle=actBattle(battle,{type:'move',unitId:approach.actor.id,x:approach.spot.x,y:approach.spot.y});assert.equal(battle.lastError,null);
  battle=actBattle(battle,{type:'artilleryReload',unitId:approach.actor.id,artilleryId:gun.id});assert.equal(battle.lastError,null);assert.equal(battle.artillery[0].loaded,true);assert.equal(battle.artillery[0].ammo,0);assert.equal(battle.artillery[0].ammo+Number(battle.artillery[0].loaded),gun.ammo+Number(gun.loaded));
