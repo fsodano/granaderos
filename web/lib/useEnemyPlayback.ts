@@ -29,9 +29,10 @@ export function useEnemyPlayback(committed:any,onChange:(state:any)=>any,onBusy?
    for(const next of result.frames){
     if(!current())return;
     cameraFocus=battleFrameFocus(next)??cameraFocus;
-    if(next.grenadeVisual)grenadeEffect={id:index,visual:next.grenadeVisual};
+    const startedAt=performance.now();
+    if(next.grenadeVisual)grenadeEffect={id:index,startedAt,visual:next.grenadeVisual};
     if(next.type==='prepare'||index===0){actionId++;actionStartedAt=performance.now();actionDurationMs=0;for(let cursor=index;cursor<result.frames.length;cursor++){if(cursor>index&&result.frames[cursor].type==='prepare')break;actionDurationMs+=battleFrameDuration(result.frames[cursor]);}}
-    setFrame({...next,index:index++,cameraFocus,grenadeEffect,sequenceId,actionId,actionStartedAt,actionDurationMs,startedAt:performance.now(),durationMs:battleFrameDuration(next)});
+    setFrame({...next,index:index++,cameraFocus,grenadeEffect,sequenceId,actionId,actionStartedAt,actionDurationMs,startedAt,durationMs:battleFrameDuration(next)});
     onFrame?.(previous,next.state);previous=next.state;
     const delay=battleFrameDuration(next);
     await new Promise(resolve=>setTimeout(resolve,delay));

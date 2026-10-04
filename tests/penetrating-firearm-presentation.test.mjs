@@ -9,6 +9,7 @@ import {absoluteBodyHeight} from '../game/sight-geometry.js';
 import {battleFrameDuration,battleFrameFocus,battleFramePose} from '../game/battle-playback.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
 import {mountBattlefield} from './mounted-battlefield.mjs';
+const {default:TacticalThreeScene}=await import('../web/app/TacticalThreeScene.tsx');
 const {default:Battlefield}=await import('../web/app/Battlefield.tsx');
 const {default:TacticalSceneControls}=await import('../web/app/TacticalSceneControls.tsx');
 const {default:FirearmShotEffect}=await import('../web/app/FirearmShotEffect.tsx');
@@ -107,7 +108,7 @@ test('a rejected unseen-target shot cannot begin penetration playback or consume
  assert.ok(expected.lastError);assert.deepEqual(r.state,expected);assert.equal(flights(r).length,0);assert.deepEqual(losses(r),[]);
  const mounted=await mountBattlefield(t,Battlefield,{battle:s,onChange:next=>{commits.push(next);return next;},onFinish(){}},{virtualTimers:true});
  const strip=()=>nodes(mounted.tree()).find(n=>n.props?.onOrder&&n.props?.onEndTurn);await mounted.act(async()=>strip().props.onOrder(action));
- assert.deepEqual(commits,[expected]);assert.equal(strip().props.busy,false);assert.equal(nodes(mounted.tree()).some(n=>n.type===FirearmShotEffect),false);
+ assert.deepEqual(commits,[expected]);assert.equal(strip().props.busy,false);assert.equal(nodes(mounted.tree()).find(n=>n.type===TacticalThreeScene).props.effects.some(effect=>effect.kind==='firearm'),false);
  assert.equal(unit(expected,'p').loaded,unit(s,'p').loaded);assert.equal(unit(expected,'p').ammo,unit(s,'p').ammo);assert.equal(unit(expected,'p').ap,unit(s,'p').ap);assert.equal(expected.elapsedSeconds,s.elapsedSeconds);
 });
 
@@ -118,13 +119,13 @@ for(const reduced of [false,true])test(`mounted penetration holds all input and 
  const strip=()=>nodes(mounted.tree()).find(n=>n.props?.onOrder&&n.props?.onEndTurn);await mounted.act(async()=>strip().props.onOrder(action));
  let flashCount=0,seen=[];
  for(const frame of expected.frames){
-  assert.equal(strip().props.busy,true);assert.deepEqual(commits,[]);const scene=nodes(mounted.tree()).find(n=>n.type===TacticalSceneControls),effect=nodes(mounted.tree()).find(n=>n.type===FirearmShotEffect);
+  assert.equal(strip().props.busy,true);assert.deepEqual(commits,[]);const scene=nodes(mounted.tree()).find(n=>n.type===TacticalSceneControls),effect=nodes(mounted.tree()).find(n=>n.type===TacticalThreeScene)?.props.effects.find(effect=>effect.kind==='firearm');
   assert.deepEqual(scene.props.state.units,frame.state.units);
-  if(frame.shotVisual){assert.ok(effect);assert.deepEqual(effect.props.visual,frame.shotVisual);const markup=draw(s,frame);if(reduced)assert.doesNotMatch(markup,/animate|animateMotion|animateTransform/);if(frame.type==='projectile'&&frame.shotVisual.discharge!==false)flashCount++;}
+  if(frame.shotVisual){assert.ok(effect);assert.deepEqual(effect.visual,frame.shotVisual);const markup=draw(s,frame);if(reduced)assert.doesNotMatch(markup,/animate|animateMotion|animateTransform/);if(frame.type==='projectile'&&frame.shotVisual.discharge!==false)flashCount++;}
   if(frame.impacts.length)seen.push(...frame.impacts.map(i=>i.unitId));
   await mounted.act(async()=>strip().props.onOrder(action));assert.deepEqual(commits,[]);
   assert.equal(await mounted.nextDelay(),battleFrameDuration(frame));
  }
  assert.equal(flashCount,1);assert.deepEqual(seen,['a','b']);assert.deepEqual(commits,[expected.state]);assert.equal(strip().props.busy,false);
- assert.equal(nodes(mounted.tree()).some(n=>n.type===FirearmShotEffect),false);
+ assert.equal(nodes(mounted.tree()).find(n=>n.type===TacticalThreeScene).props.effects.some(effect=>effect.kind==='firearm'),false);
 });

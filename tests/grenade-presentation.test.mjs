@@ -15,6 +15,7 @@ const {default:TacticalScene}=await import('../web/app/TacticalScene.tsx');
 const {default:TacticalSceneControls}=await import('../web/app/TacticalSceneControls.tsx');
 const {default:GrenadeThrowEffect,GRENADE_EFFECT_DURATION}=await import('../web/app/GrenadeThrowEffect.tsx');
 const {default:GrenadeSupplies}=await import('../web/app/GrenadeSupplies.tsx');
+const {default:TacticalThreeScene}=await import('../web/app/TacticalThreeScene.tsx');
 const {default:Battlefield}=await import('../web/app/Battlefield.tsx');
 const {BattleAudio}=await import('../web/lib/battle-audio.ts');
 const hosts=node=>!node||typeof node!=='object'?[]:Array.isArray(node)?node.flatMap(hosts):[node,...hosts(node.props?.children)];
@@ -81,22 +82,22 @@ for(const accepted of [true,false])test(`ending the turn presents an enemy grena
   const mounted=await mountBattlefield(t,Battlefield,{battle:s,onChange:b=>{next=b;return b;},onPlaybackValidate:()=>accepted,onFinish(){}},{virtualTimers:true});
   await mounted.act(async()=>hosts(mounted.tree()).find(node=>node.props?.onEndTurn).props.onEndTurn());
   assert.equal(next,undefined,'the campaign receives no state before worker completion');
-  assert.equal(hosts(mounted.tree()).some(node=>node.type===GrenadeThrowEffect),false);
+  assert.equal(hosts(mounted.tree()).find(node=>node.type===TacticalThreeScene).props.effects.some(effect=>effect.kind==='grenade'),false);
   const result=presentedEndTurn(s);await mounted.deliver('presentation');
-  if(!accepted){assert.equal(next,undefined);assert.equal(hosts(mounted.tree()).some(node=>node.type===GrenadeThrowEffect),false);return;}
+  if(!accepted){assert.equal(next,undefined);assert.equal(hosts(mounted.tree()).find(node=>node.type===TacticalThreeScene).props.effects.some(effect=>effect.kind==='grenade'),false);return;}
   let sawFlight=false;
   for(const frame of result.frames){
    assert.equal(next,undefined,'intermediate animation states are never saved');
-   const effect=hosts(mounted.tree()).find(node=>node.type===GrenadeThrowEffect);
+   const effect=hosts(mounted.tree()).find(node=>node.type===TacticalThreeScene)?.props.effects.find(effect=>effect.kind==='grenade');
    if(frame.type==='effect'){
-    sawFlight=true;assert.ok(effect);assert.deepEqual(effect.props.visual,frame.grenadeVisual);
+    sawFlight=true;assert.ok(effect);const {kind:impactKind,...impact}=frame.grenadeVisual.impact;assert.deepEqual(effect.visual,{...frame.grenadeVisual,impact,landing:{...frame.grenadeVisual.landing,tacticalLevel:frame.grenadeVisual.landing.tacticalLevel??0,elevation:0}});assert.ok(Number.isFinite(effect.startedAtSeconds));
     const scene=hosts(mounted.tree()).find(node=>node.type===TacticalSceneControls);
     assert.equal(scene.props.state.units.find(u=>u.id==='p').hp,s.units[0].hp,'flight precedes injury');
    }
    await mounted.nextDelay();
   }
   assert.ok(sawFlight);assert.deepEqual(next,endTurn(s));
-  assert.equal(hosts(mounted.tree()).some(node=>node.type===GrenadeThrowEffect),false);
+  assert.equal(hosts(mounted.tree()).find(node=>node.type===TacticalThreeScene).props.effects.some(effect=>effect.kind==='grenade'),false);
 });
 test('grenade flight and blast use only the observed arc and expire after a finite animation',()=>{
  const s=field(),next=actBattle(s,{type:'throwGrenade',unitId:'p',x:6,y:2}),visual=getGrenadeThrowVisual(s,next);assert.equal(next.lastError,null);assert.ok(visual);

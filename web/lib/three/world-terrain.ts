@@ -50,7 +50,10 @@ export function buildUpperSurfaces(surfaces:readonly WorldTile[],input:WorldInpu
   const batch=new WorldBatch(geometry);
   for(const surface of surfaces){
     const height=surface.elevation??0,thickness=surface.slabThickness??.2,light=illuminationAt(input,surface),x=surface.x*T,z=surface.y*T;
-    const material=surface.material==='wood'?materials.terrain('wood'):surface.kind==='roof'?materials.terrain('roof'):materials.terrain('floor');
+    const finish=surface.material==='wood'?'wood':surface.kind==='roof'?'roof':'floor',material=materials.get(`upper-${finish}`,{colour:'#ffffff',texture:`/art/terrain-${finish}-v1.webp`});
+    // Wall tops share this exact metric height. A depth offset removes flicker
+    // without lifting the walking surface or changing the shared coordinates.
+    material.polygonOffset=true;material.polygonOffsetFactor=-1;material.polygonOffsetUnits=-1;
     batch.box(material,x,height-thickness*.5,z,T,thickness,T,light);
     if(surface.blocked){const h=surface.obstacleHeight??.45;batch.box(materials.get(surface.material==='wood'?'wood':'stone'),x,height+h*.5,z,T*.86,h,T*.86,light);}
   }

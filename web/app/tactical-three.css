@@ -2,3 +2,5 @@
 .battle-layout .tactical-field{position:relative;background:transparent}
 .tactical-three-status{position:absolute;z-index:5;left:50%;top:45%;transform:translate(-50%,-50%);background:#19261de8;border:1px solid #8a8565;color:#eee6c7;padding:10px 18px;font-size:13px;pointer-events:none}
 .tactical-three-status.failed{background:#412a22ed}
+.tactical-three-status.failed{pointer-events:auto}
+.tactical-three-status button{display:block;margin:10px auto 0;border:1px solid #b4a678;padding:6px 10px;background:#19261d;color:#eee6c7;cursor:pointer}
