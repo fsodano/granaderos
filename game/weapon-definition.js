@@ -51,7 +51,7 @@ export function weaponSpecification(value,slot='primary'){
  const id=typeof raw==='object'?raw?.id:raw,definition=contentWeaponOf(value,slot);
  if(!ITEMS[id]&&!FIREARMS[id])return null;
  const load=slot==='primary'?selectedAmmunitionLoad(value):null;
- return {...ITEMS[id],...FIREARMS[id],...BLADES[id],...(FIREARMS[id]?{readyAP:WEAPON_READY_AP[id]??0}:{}),...(BLADES[id]?{capacity:0}:{}),...(typeof raw==='object'?raw:{}),...definition,...(load?.damage?{damage:load.damage,range:load.range,loadPattern:load.pattern}:{}),id,...(definition?{contentId:definition.id}:{}),art:definition?.art??`/art/weapon-${id}.png`,price:definition?.price??FIREARM_PRICES[id]??BLADE_PRICES[id]};
+ return {...ITEMS[id],...FIREARMS[id],...BLADES[id],...(FIREARMS[id]?{readyAP:WEAPON_READY_AP[id]??0,loadPattern:load?.pattern??(load?.family==='ammoShot'?'cone':'single')}:{}),...(BLADES[id]?{capacity:0}:{}),...(typeof raw==='object'?raw:{}),...definition,...(load?.damage?{damage:load.damage,range:load.range,loadPattern:load.pattern}:{}),id,...(definition?{contentId:definition.id}:{}),art:definition?.art??`/art/weapon-${id}.png`,price:definition?.price??FIREARM_PRICES[id]??BLADE_PRICES[id]};
 }
 export function weaponMetadata(definition){return {contentWeapon:compileWeaponDefinition(definition)};}
 export function validateWeaponCarrier(value){

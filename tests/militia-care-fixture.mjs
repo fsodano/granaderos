@@ -9,15 +9,15 @@ export const MILITIA_DOCTOR=112,SECOND_MILITIA_DOCTOR=137;
 export function woundedGarrison({twoDoctors=false,casualty=false,careRules,injuryDamage=44,passage=false,headquarters='retiro',medicalKits=2,configure=()=>{}}={}){
  const d=defaultContentPackage();d.rules.startingTreasury=15000;for(const sector of ['buenos_aires','ensenada'])d.startingTerritory[sector]={owner:'patriot',loyalty:65};if(careRules)d.careRules=careRules;if(headquarters!=='retiro'){d.headquarters=headquarters;d.startingTerritory[headquarters]={owner:'patriot',loyalty:65};}
  for(const id of [MILITIA_DOCTOR,SECOND_MILITIA_DOCTOR]){const c=d.characters.find(c=>c.id===`person-${id}`);c.arrivalHours=0;c.attributes.medical=id===MILITIA_DOCTOR?80:60;c.attributes.leadership=50;c.startingSupplies={rations:2,torches:2,medkits:medicalKits,boleadoras:1};}
- // Pin the intended care-fixture injury through an authored weapon. The shot
- // still resolves through current balance, range, hit and saved wound rules.
- d.weapons.push({...d.weapons.find(w=>w.id==='firearm-1804'),id:'care-fixture-carbine',name:'Carabina de instrucción',damage:Math.round(injuryDamage/COMBAT_BALANCE.firearmDamageMultiplier)});
+ // A single musket ball establishes the care fixture's wound. Finite pellet
+ // shielding and body regions have separate shot-load coverage.
+ d.weapons.push({...d.weapons.find(w=>w.id==='firearm-1804'),id:'care-fixture-carbine',name:'Carabina de instrucción',ammunitionFamily:'ammoMusket',damage:Math.round(injuryDamage/COMBAT_BALANCE.firearmDamageMultiplier)});
  configure(d);
  let s=order(initialCampaign(42,d),{type:'createOfficer',name:'Isabel del Valle',answers:{origin:'cabildo',doctrine:'line_marksman',crisis:'rally'}});
  for(const id of twoDoctors?[MILITIA_DOCTOR,SECOND_MILITIA_DOCTOR]:[MILITIA_DOCTOR])s=order(s,{type:'recruitCivic',id,term:'month'});
  // This isolated care scenario owns one declared stored training gun and
  // twelve compatible cartridges. It does not exercise a new-player route.
- s=withStoredGear(s,'care-fixture-carbine');s=withCarriedAmmo(s,1000,'ammoShot',12);
+ s=withStoredGear(s,'care-fixture-carbine');s=withCarriedAmmo(s,1000,'ammoMusket',12);
  const cost=s.resources.treasury;s=order(s,{type:'militia',trainerId:1000,rank:0});assert.ok(s.resources.treasury<cost);const trainingCost=cost-s.resources.treasury;s=order(s,{type:'wait',hours:s.militiaTraining[0].remaining});s=order(s,{type:'equip',operativeId:1000,slot:'weapon',itemId:'care-fixture-carbine'});s=order(s,{type:'visitSector'});const r=s.pendingBattle;
  // Keep the paid campaign and actual equipment. An ordinary point shot wounds
  // the local militia without inventing an undeclared enemy in a peaceful visit.

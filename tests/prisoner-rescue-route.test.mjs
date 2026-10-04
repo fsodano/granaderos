@@ -4,6 +4,7 @@ import {totalReserveAmmunition} from '../game/ammunition-types.js';
 import {actBattle,endTurn} from '../game/tactical.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {sync,order} from './prisoner-rescue-fixture.mjs';
+import {firearmBystanderRisk} from '../game/firearm-bystander-risk.js';
 
 test('paid relief starts at the real arrival edge, fights, releases prisoners and escorts them back with persistent casualties',()=>{
  const {initial,campaign,battle,orders,savedDepartures,riskChoices}=runPrisonerRescue();
@@ -28,7 +29,8 @@ test('paid relief starts at the real arrival edge, fights, releases prisoners an
   assert.equal(returnedGun.ammo+Number(returnedGun.loaded),gun.ammo+Number(gun.loaded)-used.length);
  }
  const rounds=units=>units.reduce((sum,u)=>sum+(u.loaded??0)+totalReserveAmmunition(u),0);
- assert.ok(riskChoices.length>0,'the relief screen must use an actual known bystander warning');
+ // A safer tactic need not propose a dangerous shot. Check each actual shot
+ // below; dedicated shot-load tests establish that real warnings still occur.
  for(const choice of riskChoices){
   assert.ok([...choice.proposed.risk.direct,...choice.proposed.risk.scatter].some(v=>v.kind==='npc'));
   assert.ok(![...choice.selected.risk.direct,...choice.selected.risk.scatter].some(v=>v.kind==='npc'));
@@ -40,6 +42,7 @@ test('paid relief starts at the real arrival edge, fights, releases prisoners an
  for(const recorded of orders){
   const {turn,battleMode,...action}=recorded;assert.equal(replayBattle.turn,turn);assert.equal(replayBattle.mode,battleMode);
   const before=action.type==='fire'&&replayBattle.units.find(u=>u.id===action.unitId);
+  if(before){const target=replayBattle.units.find(u=>u.id===action.targetId),risk=firearmBystanderRisk(replayBattle,before,target,action.hitLocation??'torso');assert.ok(![...risk.direct,...risk.scatter].some(v=>v.kind==='npc'),'every actual relief shot must avoid known prisoner lanes');}
   replayBattle=action.type==='endTurn'?endTurn(replayBattle):actBattle(replayBattle,action);assert.equal(replayBattle.lastError,null);
   if(before){const after=replayBattle.units.find(u=>u.id===action.unitId),spent=Number(!after.jammed);assert.equal(before.loaded-after.loaded,spent);firedRounds+=spent;}
   if(action.type==='exit'){const paired=sync(replayCampaign,replayBattle);({campaign:replayCampaign,battle:replayBattle}=decodeSave(encodeSave(paired.campaign,paired.battle)));}

@@ -4,11 +4,11 @@ import {dispatchCampaign,restoreCampaign,serializeCampaign} from '../game/campai
 import {ownedArtilleryCount,prepareSectorArtillery,validateArtilleryReport} from '../game/campaign-artillery.js';
 import {deployedArtillery} from '../game/equipment.js';
 import {enterSector} from '../game/world.js';
-import {actBattle,endTurn} from '../game/tactical.js';
+import {actBattle,endTurn,getReachable} from '../game/tactical.js';
 import {order,visit,leave,saved,sync} from './local-contract-fixture.mjs';
 import {issuedBattery,wonBattery,fireStationed,wakeBatteryCrew} from './stationed-artillery-fixture.mjs';
 import {fight} from './opening-driver.mjs';
-import {cautiousCombatOrder} from './cautious-driver.mjs';
+import {northernCombatOrder} from './northern-route.mjs';
 import {secondaryRetreat} from './secondary-loot-fixture.mjs';
 import {advanceCampaignHours} from './campaign-wait-fixture.mjs';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
@@ -20,7 +20,7 @@ test('declared finite stock is issued once and real victory retains the same own
  const won=wonBattery();assert.equal(won.armory.swivel,0);assert.equal(ownedArtilleryCount(won),1);assert.equal(won.sectorStates.san_nicolas.artillery[0].id,'piece-1');assert.deepEqual(saved({campaign:won}).campaign,won);
 });
 test('actual firing, return, full saves and repeated visits retain the unloaded gun, finite reserve and full-map position',()=>{
- let p=fireStationed(visit(wonBattery())),gun=structuredClone(p.battle.artillery[0]);assert.equal(gun.loaded,false);assert.equal(gun.ammo,6);assert.ok(gun.x>=20||gun.y>=16);
+ let p=fireStationed(visit(wonBattery())),gun=structuredClone(p.battle.artillery[0]);assert.equal(gun.loaded,false);assert.equal(gun.ammo,0);assert.ok(gun.x>=20||gun.y>=16);
  let s=leave(p);for(let i=0;i<3;i++){p=visit(saved({campaign:s}).campaign);assert.equal(p.battle.artillery.length,1);for(const key of ['id','type','x','y','loaded','ammo','facing'])assert.deepEqual(p.battle.artillery[0][key],gun[key],key);assert.equal(p.campaign.armory.swivel,0);s=leave(p);}
  assert.equal(ownedArtilleryCount(s),1);
 });
@@ -38,7 +38,7 @@ test('actual withdrawal leaves the issued gun to the occupation and a real retur
  s=order(s,{type:'attack',sector:'san_nicolas'});const previous=s.sectorStates.san_nicolas,request={...s.pendingBattle,hour:s.hour,secondOfHour:s.secondOfHour??0};
  // Coordinate ordinary cover, body-region shots and aid against the unchanged
  // saved force. The abandoned gun remains enemy-owned until actual victory.
- const result=fight(request,previous,{controller:cautiousCombatOrder});assert.equal(result.battle.status,'victory');
+ const result=fight(request,previous,{controller:northernCombatOrder});assert.equal(result.battle.status,'victory');
  const replay=result.orders.reduce((battle,action)=>{const next=action.type==='endTurn'?endTurn(battle):actBattle(battle,action);assert.equal(next.lastError,null);return next;},enterSector(request,previous));assert.deepEqual(replay,result.battle);
  p=saved(sync({campaign:s,battle:result.battle}));s=saved({campaign:order(p.campaign,{type:'battleResult',battleId:s.pendingBattle.id,outcome:'victory',sectorState:p.battle,survivors:p.battle.units.filter(u=>u.side==='player')})}).campaign;
  const recovered=s.sectorStates.san_nicolas.artillery[0];assert.equal(recovered.side,'player');assert.equal(recovered.id,gun.id);assert.ok(recovered.ammo+Number(recovered.loaded)<=gun.ammo+Number(gun.loaded));for(const key of ['type','x','y','loaded','ammo'])assert.deepEqual(recovered[key],result.battle.artillery.find(g=>g.id===gun.id)[key],key);assert.equal(ownedArtilleryCount(s),1);
@@ -50,9 +50,11 @@ test('legacy repeated projections are reconciled against legacy paid stock once 
 });
 
 test('an actual reload spends reserve once and an empty battery choice leaves that saved emplacement in place',()=>{
- let p=fireStationed(visit(wonBattery()));const gun=p.battle.artillery[0],actor=p.battle.units.find(u=>u.side==='player'&&u.hp>=15&&!u.routed&&Math.hypot(u.x-gun.x,u.y-gun.y)<=1.5);
- const battle=actBattle(p.battle,{type:'artilleryReload',unitId:actor.id,artilleryId:gun.id});assert.equal(battle.lastError,null);assert.equal(battle.artillery[0].loaded,true);assert.equal(battle.artillery[0].ammo,5);
- p=saved(sync({campaign:p.campaign,battle}));let s=order(leave(p),{type:'configureArtillery',types:[]});p=visit(saved({campaign:s}).campaign);assert.equal(p.battle.artillery.length,1);assert.equal(p.battle.artillery[0].id,gun.id);assert.equal(p.battle.artillery[0].loaded,true);assert.equal(p.battle.artillery[0].ammo,5);assert.deepEqual(deployedArtillery(p.campaign),[]);
+ let p=visit(wonBattery());const gun=p.battle.artillery[0];assert.equal(gun.loaded,false);assert.equal(gun.ammo,1);
+ const approach=p.battle.units.filter(u=>u.side==='player'&&u.hp>=15&&!u.unconscious&&!u.routed).flatMap(actor=>getReachable(p.battle,actor).filter(spot=>Math.hypot(spot.x-gun.x,spot.y-gun.y)<=1.5).map(spot=>({actor,spot}))).sort((a,b)=>a.spot.cost-b.spot.cost)[0];assert.ok(approach);
+ let battle=p.battle;if(approach.spot.cost)battle=actBattle(battle,{type:'move',unitId:approach.actor.id,x:approach.spot.x,y:approach.spot.y});assert.equal(battle.lastError,null);
+ battle=actBattle(battle,{type:'artilleryReload',unitId:approach.actor.id,artilleryId:gun.id});assert.equal(battle.lastError,null);assert.equal(battle.artillery[0].loaded,true);assert.equal(battle.artillery[0].ammo,0);assert.equal(battle.artillery[0].ammo+Number(battle.artillery[0].loaded),gun.ammo+Number(gun.loaded));
+ p=saved(sync({campaign:p.campaign,battle}));let s=order(leave(p),{type:'configureArtillery',types:[]});p=visit(saved({campaign:s}).campaign);assert.equal(p.battle.artillery.length,1);assert.equal(p.battle.artillery[0].id,gun.id);assert.equal(p.battle.artillery[0].loaded,true);assert.equal(p.battle.artillery[0].ammo,0);assert.deepEqual(deployedArtillery(p.campaign),[]);
 });
 
 test('a second declared finite piece joins the returned battlefield without replacing or overlapping the captured gun',()=>{

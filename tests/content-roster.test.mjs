@@ -80,6 +80,9 @@ test('new characters retain actual combat injuries and experience across return,
    npcs:request.npcs.map((n,i)=>({...n,x:10+i%3,y:5+Math.floor(i/3)})),
    enemies:enemies.map((u,i)=>{const at={x:i?19:6,y:i?i:19};return {...u,...at,patrolOrigin:at,overwatch:false,patrol:false};})});
   b=actBattle(b,{type:'repair',unitId:String(id)});assert.equal(b.lastError,null);assert.equal(b.units[0].trainedStats.mechanical,1);
+  // Pay for one step out of the close firing lane before the enemy phase,
+  // then return to the same issued boundary with the actual wound.
+  b=actBattle(b,{type:'move',unitId:String(id),x:1,y:18});assert.equal(b.lastError,null);
   b=endTurn(b);assert.equal(b.lastError,null);
   const wounded=b.units.find(u=>u.id===String(id));assert.ok(wounded.hp>0&&wounded.hp<c.attributes.maxHp,JSON.stringify({hp:wounded.hp,log:b.log}));
   const synced=syncBattleTime(s,b);assert.equal(synced.error,null);const pair=secondaryRetreat(synced),hp=pair.battle.units.find(u=>u.id===String(id)).hp;

@@ -33,6 +33,13 @@ export function fireStationed(p){
   const spot=getReachable(p.battle,u).filter(q=>Math.hypot(q.x-gun.x,q.y-gun.y)<=1.5).sort((a,b)=>a.cost-b.cost)[0];if(spot&&(!approach||spot.cost<approach.spot.cost))approach={u,spot};
  }
  assert.ok(approach);let b=p.battle;if(approach.spot.cost)b=actBattle(b,{type:'move',unitId:approach.u.id,x:approach.spot.x,y:approach.spot.y});assert.equal(b.lastError,null);
+ // The real victory can spend the loaded shot. Prepare the next shot using
+ // only the surviving reserve; loading cannot create ammunition.
+ if(!b.artillery.find(piece=>piece.id===gun.id).loaded){
+  const remaining=b.artillery.find(piece=>piece.id===gun.id).ammo;
+  b=actBattle(b,{type:'artilleryReload',unitId:approach.u.id,artilleryId:gun.id});assert.equal(b.lastError,null);
+  const loaded=b.artillery.find(piece=>piece.id===gun.id);assert.equal(loaded.loaded,true);assert.equal(loaded.ammo,remaining-1);
+ }
  // Fire at a nearby empty exterior point. This spends an actual loaded shot;
  // it does not edit cannon state or assign a combat outcome.
  const target=b.tiles.filter(t=>!t.blocked&&!t.buildingId&&Math.hypot(t.x-gun.x,t.y-gun.y)>=2&&Math.hypot(t.x-gun.x,t.y-gun.y)<=4&&!b.units.some(u=>Math.hypot(u.x-t.x,u.y-t.y)<2)&&!b.npcs.some(u=>Math.hypot(u.x-t.x,u.y-t.y)<2))[0];assert.ok(target);

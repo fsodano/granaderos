@@ -56,7 +56,7 @@ function bestShot(state, unit, targets, budget = unit.ap) {
     const costs = actionCosts(state, unit, target);
     if (costs.fire > budget) continue;
     const maxAim = Math.min(4, Math.floor((budget - costs.fire) / costs.aim));
-    for (const {aim,hitLocation,chance,damageFactor,shots,interveningFriendly} of firearmShotOptions(state,unit,target,maxAim)) {
+    for (const {aim,hitLocation,chance,damageFactor,shots,interveningFriendly,shotLoad,expectedDamage:loadDamage} of firearmShotOptions(state,unit,target,maxAim)) {
       // One paired order discharges both hands. Never accept a known friendly
       // before or beyond the selected target on either potential ball ray.
       if(interveningFriendly||shots?.some(shot=>shot.interveningFriendly))continue;
@@ -67,13 +67,13 @@ function bestShot(state, unit, targets, budget = unit.ap) {
       // inspect a target's hidden AP, energy, supplies or future intentions.
       const secondary=target.hp-effect.damage<15?0:effect.breathLoss*.15+(effect.knockedDown?10:0)+(effect.unhorse?20:0);
       const value=Math.min(target.hp,effect.damage)+secondary;
-      let effectiveness=chance*value/Math.max(1,Math.min(target.hp,base));
+      let effectiveness=(shotLoad?100*Math.min(target.hp,loadDamage):chance*value)/Math.max(1,Math.min(target.hp,base));
       if(shots){
         let expectedDamage=0,expectedSecondary=0;
         for(const shot of shots){
           const impact=shotLocationEffects(hitLocation,shot.damage*shot.damageFactor,target),probability=shot.chance/100;
-          expectedDamage+=impact.damage*probability;
-          expectedSecondary+=(target.hp-impact.damage<15?0:impact.breathLoss*.15+(impact.knockedDown?10:0)+(impact.unhorse?20:0))*probability;
+          expectedDamage+=shot.shotLoad?shot.expectedDamage:impact.damage*probability;
+          if(!shot.shotLoad)expectedSecondary+=(target.hp-impact.damage<15?0:impact.breathLoss*.15+(impact.knockedDown?10:0)+(impact.unhorse?20:0))*probability;
         }
         effectiveness=100*(Math.min(target.hp,expectedDamage)+(expectedDamage>=target.hp?0:expectedSecondary))/Math.max(1,Math.min(target.hp,base));
       }

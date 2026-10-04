@@ -69,7 +69,10 @@ for(let window=0;window<400&&battle.turn<65&&!['defeat','retreat'].includes(batt
  if(battle.status==='victory'){orders.push({type:'explore',turn:battle.turn,battleMode:battle.mode});battle=actBattle(battle,{type:'explore'});assert.equal(battle.lastError,null);}
  for(let pass=0;pass<12&&battle.status==='active';pass++){
   let acted=false;
-  for(const id of ['112','123','115','110','114','113']){
+  // Let the strongest marksmen act first after contact. Exploration keeps
+  // the original crew approach; every selected order still pays its cost.
+  const actorIds=battle.mode==='combat'?battle.units.filter(u=>u.side==='player').sort((a,c)=>c.marksmanship-a.marksmanship||String(a.id).localeCompare(String(c.id))).map(u=>u.id):['112','123','115','110','114','113'];
+  for(const id of actorIds){
    const u=battle.units.find(u=>u.id===id);if(!interruptAvailable(battle,u)||battle.mode!=='exploration'&&u.ap<3)continue;
    const action=rescueOrder(battle,u);if(!action)continue;
    const next=actBattle(battle,action);assert.equal(next.lastError,null,JSON.stringify(action)+': '+next.lastError);

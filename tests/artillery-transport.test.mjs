@@ -19,7 +19,7 @@ test('an actually issued and fired gun travels once, arrives in a local depot an
  s=send(s);assert.equal(s.resources.treasury,cash);assert.equal(s.hour,at);assert.deepEqual(s.sectorStates.san_nicolas.artillery,[]);assert.equal(s.artilleryTransfers.length,1);assertSame(s.artilleryTransfers[0].gun,gun);assert.equal(ownedArtilleryCount(s),1);assert.ok(dispatchCampaign(s,{type:'transportArtillery',sector:'san_nicolas',artilleryId:gun.id,to:'buenos_aires',mode:'carts'}).lastError);
  s=saved({campaign:s}).campaign;s=advanceCampaignHours(s,17);assert.equal(s.artilleryTransfers.length,1);s=advanceCampaignHours(s,1);assert.equal(s.artilleryTransfers.length,0);assertSame(s.artilleryDepots.buenos_aires[0],gun);assert.deepEqual(localArtilleryDepot(s),[]);assert.equal(ownedArtilleryCount(s),1);
  s=order(saved({campaign:s}).campaign,{type:'travel',sector:'buenos_aires'});const token=depotSelection(gun);assert.equal(localArtilleryDepot(s).length,1);assert.equal(artillerySelectionReason(s,[token]),null);s=order(s,{type:'configureArtillery',types:[token]});s=saved({campaign:s}).campaign;assertSame(deployedArtillery(s)[0],gun);s=order(s,{type:'attack',sector:'ensenada'});assert.deepEqual(s.artilleryDepots.buenos_aires,[]);assertSame(s.pendingBattle.artillery[0],gun);assert.equal(s.pendingBattle.artillery[0].fromDepot,undefined);assert.equal(s.armory.swivel,0);
- const p=saved({campaign:s,battle:enterSector({...s.pendingBattle,hour:s.hour})});assertSame(p.battle.artillery[0],gun);assert.equal(p.battle.artillery[0].loaded,false);assert.equal(p.battle.artillery[0].ammo,6);assert.equal(ownedArtilleryCount(p.campaign),1);
+ const p=saved({campaign:s,battle:enterSector({...s.pendingBattle,hour:s.hour})});assertSame(p.battle.artillery[0],gun);assert.equal(p.battle.artillery[0].loaded,false);assert.equal(p.battle.artillery[0].ammo,gun.ammo);assert.equal(ownedArtilleryCount(p.campaign),1);
 });
 
 test('a prepared interruption keeps the exact shipment until control returns and delivery cannot replay',()=>{
@@ -54,7 +54,7 @@ test('a declared unfinished-load boundary keeps exact work and facing through tr
  // Crew loading has separate actual-AP coverage; this prepared fraction isolates custody.
  let s=fieldGun();s.sectorStates.san_nicolas.artillery[0].reloadProgress=.4;const gun=structuredClone(s.sectorStates.san_nicolas.artillery[0]);
  s=advanceCampaignHours(send(saved({campaign:s}).campaign),18);assertSame(s.artilleryDepots.buenos_aires[0],gun);s=order(saved({campaign:s}).campaign,{type:'travel',sector:'buenos_aires'});
- assert.equal(deployedArtillery(s)[0].reloadProgress,.4);s=order(s,{type:'attack',sector:'ensenada'});const p=saved({campaign:s,battle:enterSector(s.pendingBattle)});assertSame(p.battle.artillery[0],gun);assert.equal(p.battle.artillery[0].loaded,false);assert.equal(p.battle.artillery[0].ammo,6);
+ assert.equal(deployedArtillery(s)[0].reloadProgress,.4);s=order(s,{type:'attack',sector:'ensenada'});const p=saved({campaign:s,battle:enterSector(s.pendingBattle)});assertSame(p.battle.artillery[0],gun);assert.equal(p.battle.artillery[0].loaded,false);assert.equal(p.battle.artillery[0].ammo,gun.ammo);
 });
 
 test('declared destination threats and full depots delay arrival, and occupied depots cannot supply a battery',()=>{

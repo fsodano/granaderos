@@ -28,7 +28,7 @@ test('finite owned shot loads, deployment, unload and reselection preserve both 
  let p=visit(s);assert.equal(ammoTypeFor(unit(p)),'ammoShot');assert.equal(unit(p).loaded,0);assert.equal(ammoCount(unit(p),'ammoShot'),10);p=tactical(p,{type:'reload'});assert.equal(unit(p).loaded,1);assert.equal(ammoCount(unit(p),'ammoShot'),9);assert.equal(weaponSpecification(unit(p)).loadPattern,'cone');
  s=leave(saved(p));assert.equal(s.resources.treasury,cash);assert.equal(s.operativeState[110].ammunitionChoice,'ammoShot');
  assert.match(dispatchCampaign(s,{type:'selectAmmunitionLoad',operativeId:110,family:'ammoMusket'}).lastError,/Vaciá/);
- s=action(s,'unloadAmmunition');assert.equal(ammoCount(s.operativeState[110],'ammoShot'),10);s=choose(s,'ammoMusket');p=visit(saved({campaign:s}).campaign);assert.equal(unit(p).loaded,0);assert.equal(ammoCount(unit(p),'ammoMusket'),10);p=tactical(p,{type:'reload'});assert.equal(ammoCount(unit(p),'ammoShot'),10);assert.equal(ammoCount(unit(p),'ammoMusket'),9);assert.equal(unit(p).loaded,1);assert.equal(p.campaign.resources.treasury,cash);assert.equal(weaponSpecification(unit(p)).loadPattern,undefined);
+ s=action(s,'unloadAmmunition');assert.equal(ammoCount(s.operativeState[110],'ammoShot'),10);s=choose(s,'ammoMusket');p=visit(saved({campaign:s}).campaign);assert.equal(unit(p).loaded,0);assert.equal(ammoCount(unit(p),'ammoMusket'),10);p=tactical(p,{type:'reload'});assert.equal(ammoCount(unit(p),'ammoShot'),10);assert.equal(ammoCount(unit(p),'ammoMusket'),9);assert.equal(unit(p).loaded,1);assert.equal(p.campaign.resources.treasury,cash);assert.equal(weaponSpecification(unit(p)).loadPattern,'single');
 });
 
 test('tactical unload, choice and reload retain physical load on packed and recovered weapons',()=>{

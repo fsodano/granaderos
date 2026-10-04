@@ -102,7 +102,7 @@ export function firearmRay(state,attacker,target,weapon,hitLocation='torso',flig
  const aim={x:target.x,y:target.y,height:flight.destinationHeight??absoluteBodyHeight(state,target,hitLocation),tacticalLevel:tacticalLevel(target)};
  if(![source.x,source.y,source.height,aim.x,aim.y,aim.height].every(Number.isFinite))return null;
  const dx=aim.x-source.x,dy=aim.y-source.y,distance=Math.hypot(dx,dy);
- const limit=Math.max(distance,Number.isFinite(weapon.range)?Math.max(0,weapon.range)*COMBAT_BALANCE.firearmFlightRangeMultiplier:distance);
+ const limit=flight.maxDistance??Math.max(distance,Number.isFinite(weapon.range)?Math.max(0,weapon.range)*COMBAT_BALANCE.firearmFlightRangeMultiplier:distance);
  let scale=distance?limit/distance:1,termination='range';
  for(const [value,delta,size] of [[source.x,dx,state.width],[source.y,dy,state.height]]){
   const edge=delta>0?(size-.5-value)/delta:delta<0?(-.5-value)/delta:Infinity;
@@ -117,7 +117,7 @@ export function firearmRay(state,attacker,target,weapon,hitLocation='torso',flig
 // assume possible body passage without RNG; actual fire supplies resolveBody.
 // Body and cover force loss accumulate independently. The ray never ricochets.
 function continuedProjectileFlight(state,attacker,target,weapon,hitLocation,flight){
- const ray=firearmRay(state,attacker,target,weapon,hitLocation,flight),power=Math.max(1,weapon.damage??1);
+ const ray=firearmRay(state,attacker,target,weapon,hitLocation,flight),power=flight.forceBudget??Math.max(1,weapon.damage??1);
  if(!ray)return {blocked:true,damageFactor:0,obstacles:[],victimId:null,hitLocation};
  const {source,destination}=ray,events=[],columns=new Map(),elevated=usesElevationGeometry(state,attacker,target);
  const targetKind=flight.targetKind??((state.npcs??[]).includes(target)?'npc':'unit');
@@ -159,7 +159,7 @@ function continuedProjectileFlight(state,attacker,target,weapon,hitLocation,flig
   if(event.body){
    const {body,kind,base}=event,z=pointAt(event.fraction,tacticalLevel(body)).height-base;
    const selected=kind===targetKind&&body.id===target.id;
-   const location=selected?hitLocation:z>height(body,'torso')+.2?'head':z<height(body,'legs')+.15?'legs':'torso';
+   const location=selected&&!flight.physicalHitLocation?hitLocation:z>height(body,'torso')+.2?'head':z<height(body,'legs')+.15?'legs':'torso';
    const resistance=COMBAT_BALANCE.firearmBodyResistance[location],after=Math.max(0,remaining-resistance);
    const chance=Math.max(0,Math.min(COMBAT_BALANCE.firearmBodyPenetrationMaximumChance,remaining-COMBAT_BALANCE.firearmBodyPenetrationThreshold));
    const impact={victimId:body.id,victimKind:kind,hitLocation:location,impact:pointAt(event.fraction,tacticalLevel(body)),fraction:event.fraction,incomingImpact:remaining,damageFactor:remaining/power,coverDamageFactor:Math.max(0,1-coverLoss/power),bodyDamageReduction:bodyLoss/power,bodyResistance:resistance,penetrationChance:after>0?chance:0,reachChance,remainingImpact:after,continued:false};
@@ -171,7 +171,7 @@ function continuedProjectileFlight(state,attacker,target,weapon,hitLocation,flig
    continue;
   }
   const {volume,cell}=event,before=remaining;remaining=volume.solid?0:Math.max(0,remaining-volume.resistance);coverLoss+=before-remaining;
-  obstacles.push({x:cell.x,y:cell.y,tacticalLevel:volume.tacticalLevel,kind:volume.kind,material:volume.material,resistance:volume.solid?power:volume.resistance,stopped:remaining===0,fraction:event.fraction});
+  obstacles.push({x:cell.x,y:cell.y,tacticalLevel:volume.tacticalLevel,kind:volume.kind,sourceId:volume.id,material:volume.material,resistance:volume.solid?power:volume.resistance,stopped:remaining===0,fraction:event.fraction});
   if(!remaining)return finish(pointAt(event.fraction,volume.tacticalLevel),volume.kind,true);
  }
  return finish({...destination},ray.termination,false);

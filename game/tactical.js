@@ -50,6 +50,7 @@ import {shotRangeModifiers} from './shot-range.js';
 import {limitEnergy,maximumEnergy,recoverEnergy,recoverFatigue} from './fatigue.js';
 import {recordMilitiaHit} from './militia-experience.js';
 import {projectilePath,projectileFlight,pointProjectileFlight,physicalBodies,concealmentAt,concealmentSightPenalty} from './projectile-cover.js';
+import {isShotLoad,shotLoadFlight,shotLoadForecast,shotLoadChance} from './shot-load.js';
 import {applyCivilianHarm,civilianWoundedByPlayer,advanceCivilianWoundTime} from './civilian-harm.js';
 import {boundaryMatches} from './tactical-exits.js';
 import {HELD_SUPPLIES,heldSupply,clearEmptySupply} from './held-supplies.js';
@@ -67,7 +68,7 @@ export {AP_CARRY_LIMIT,CRITICAL_HEALTH,maxActionPoints,actionPointBudget,stanceC
 import {propBlocksAt,propCells} from './props.js';
 import {advanceBattleClock,COMBAT_ROUND_SECONDS,REST_SECONDS} from './time.js';
 import {fieldPractice as practice} from './skill-training.js';
-import {COMBAT_BALANCE,coveredFirearmDamage,penetratingFirearmDamage} from './combat-balance.js';
+import {COMBAT_BALANCE,penetratingFirearmDamage} from './combat-balance.js';
 import {practiceFirearmNearMiss} from './firearm-near-miss-practice.js';
 import {firstAidPlan} from './first-aid.js';
 // Deterministic, serializable tactical simulation. The browser uses this module directly.
@@ -93,10 +94,10 @@ function random(s){s.seed=(Math.imul(s.seed,1664525)+1013904223)>>>0;return s.se
 function say(s,text){s.log.push(text);s.log=s.log.slice(-80);}
 // Record names only while the squad can observe the event. Later contact must
 // not reveal earlier hidden actions through the saved journal.
-function journalVisible(s,unit){return unit.side!=='enemy'||teamCanSee(s,'player',unit);}
+function journalVisible(s,unit){return unit.side!=='enemy'||teamCanSee(s,'player',unit)&&isInteriorVisible(s,unit,new Set(s.revealedRooms??[]));}
 function sayObserved(s,subjects,text){if(subjects.every(unit=>journalVisible(s,unit)))say(s,text);}
 export function hasFirearm(unit){if(unit.weaponDropped)return false;if(unit.activeSlot&&unit.activeSlot!=='primary')return false;return typeof unit.weapon==='object'?unit.weapon.capacity>0:Boolean(WEAPONS[unit.weapon]);}
-export function weaponFor(unit){if(unit.activeSlot==='item')return {id:'item',name:carriedObject(unit)?.label??'Objeto',damage:0,fireAP:0,aimAP:0,reloadAP:0,capacity:0,range:0};if(unit.activeSlot==='supply'){const supply=heldSupply(unit);return {id:supply?.key??'supply',name:supply?.name??'Pertrecho',damage:0,fireAP:0,aimAP:0,reloadAP:0,capacity:0,range:supply?.range??0};}if(unit.activeSlot==='tool'){const tool=heldTool(unit);return {id:tool?.toolKey??'tool',name:tool?.label??'Herramienta',damage:0,fireAP:0,aimAP:0,reloadAP:0,capacity:0,range:1.5};}if(unit.activeSlot==='unarmed')return {...FISTS,fireAP:0,aimAP:0,reloadAP:0,capacity:0,range:FISTS.reach};if(unit.activeSlot==='medical')return {id:'medical',name:'Equipo de curación',damage:0,fireAP:0,aimAP:0,reloadAP:0,capacity:0,range:1.5};if(unit.activeSlot==='blade')return {...bladeFor(unit),fireAP:0,aimAP:0,reloadAP:0,capacity:0,range:bladeFor(unit).reach};if(unit.weaponDropped)return {...FISTS,fireAP:0,aimAP:0,reloadAP:0,capacity:0,range:FISTS.reach};return typeof unit.weapon==='object'?unit.weapon:WEAPONS[unit.weapon]?weaponSpecification(unit):{...bladeFor(unit),fireAP:0,aimAP:0,reloadAP:0,capacity:0,range:bladeFor(unit).reach};}
+export function weaponFor(unit){if(unit.activeSlot==='item')return {id:'item',name:carriedObject(unit)?.label??'Objeto',damage:0,fireAP:0,aimAP:0,reloadAP:0,capacity:0,range:0};if(unit.activeSlot==='supply'){const supply=heldSupply(unit);return {id:supply?.key??'supply',name:supply?.name??'Pertrecho',damage:0,fireAP:0,aimAP:0,reloadAP:0,capacity:0,range:supply?.range??0};}if(unit.activeSlot==='tool'){const tool=heldTool(unit);return {id:tool?.toolKey??'tool',name:tool?.label??'Herramienta',damage:0,fireAP:0,aimAP:0,reloadAP:0,capacity:0,range:1.5};}if(unit.activeSlot==='unarmed')return {...FISTS,fireAP:0,aimAP:0,reloadAP:0,capacity:0,range:FISTS.reach};if(unit.activeSlot==='medical')return {id:'medical',name:'Equipo de curación',damage:0,fireAP:0,aimAP:0,reloadAP:0,capacity:0,range:1.5};if(unit.activeSlot==='blade')return {...bladeFor(unit),fireAP:0,aimAP:0,reloadAP:0,capacity:0,range:bladeFor(unit).reach};if(unit.weaponDropped)return {...FISTS,fireAP:0,aimAP:0,reloadAP:0,capacity:0,range:FISTS.reach};return typeof unit.weapon==='object'?weaponSpecification(unit)??{...unit.weapon,loadPattern:unit.weapon.loadPattern??'single'}:WEAPONS[unit.weapon]?weaponSpecification(unit):{...bladeFor(unit),fireAP:0,aimAP:0,reloadAP:0,capacity:0,range:bladeFor(unit).reach};}
 export function misfireChance(condition=100,rain=0,humidity=0){return clamp(Math.round(2+(100-clamp(condition,0,100))*.2+clamp(rain,0,100)*.5+clamp(humidity,0,100)),0,95);}
 export function hasTrait(u,id){return Array.isArray(u.traits)&&u.traits.includes(id);}
 function nearbyTrait(s,u,id,radius=4){return s.units.some(v=>v.side===u.side&&alive(v)&&hasTrait(v,id)&&dist(u,v)<=radius);}
@@ -456,21 +457,31 @@ function smokeBetween(s,a,b){
  })).length;
 }
 export function hasLineOfSight(s,a,b){if(usesElevationGeometry(s,a,b))return elevationSightClear(s,a,b);return !line(a,b).slice(0,-1).some(p=>(tile(s,p.x,p.y)?.blocksSight??(tile(s,p.x,p.y)?.type==='window'?false:tile(s,p.x,p.y)?.blocked)));}
-export function firearmProjectilePath(s,attacker,target,hitLocation='torso'){return projectilePath(s,attacker,target,weaponFor(attacker),hitLocation);}
+export function firearmProjectilePath(s,attacker,target,hitLocation='torso'){return projectilePath(firearmPreviewScene(s,attacker,target),attacker,target,weaponFor(attacker),hitLocation);}
 // Forecast only known bodies; actual flight below checks every body. Hypothetical
 // target positions used by AI exposure replace that actor's old position.
 function firearmPreviewScene(s,attacker,target){
   const civilian=target.targetKind==='npc'||isCivilianBody(s,target);
-  const units=s.units.filter(u=>(civilian||u.id!==target.id)&&(u.side===attacker.side||(attacker.side==='player'?teamCanSee(s,'player',u):canSee(s,attacker,u))));
+  const rooms=new Set(s.revealedRooms??[]);
+  const units=s.units.filter(u=>(civilian||u.id!==target.id)&&(u.side===attacker.side||(attacker.side==='player'?teamCanSee(s,'player',u)&&isInteriorVisible(s,u,rooms):canSee(s,attacker,u))));
   if(!civilian&&target.id!==undefined)units.push(target);
   const npcs=knownCivilianBodies(s,attacker).filter(n=>!civilian||n.id!==target.id);
   if(civilian&&target.id!==undefined)npcs.push(target);
-  return {...s,units,npcs};
+  const props=(s.props??[]).filter(prop=>attacker.side==='player'?playerObservedBody(s,prop):canSee(s,attacker,prop));
+  return {...s,units,npcs,props};
+}
+function firearmForecastPath(scene,attacker,target,hitLocation){
+ const weapon=weaponFor(attacker),targetKind=target.targetKind==='npc'||isCivilianBody(scene,target)?'npc':'unit';
+ return isShotLoad(weapon)?shotLoadForecast(scene,attacker,target,weapon,hitLocation,{targetKind}):projectileFlight(scene,attacker,target,weapon,hitLocation,{targetKind});
 }
 export function firearmFlightPreview(s,attacker,target,hitLocation='torso'){
- return projectileFlight(firearmPreviewScene(s,attacker,target),attacker,target,weaponFor(attacker),hitLocation);
+ return firearmForecastPath(firearmPreviewScene(s,attacker,target),attacker,target,hitLocation);
 }
 function forecastTarget(s,attacker,target,path,accuracy){
+ if(path.shotLoad){
+  const interveningFriendly=path.bodyImpacts.some(entry=>entry.victimKind==='unit'&&entry.victimId!==attacker.id&&s.units.some(body=>body.id===entry.victimId&&body.side===attacker.side));
+  return {...shotLoadChance(path,accuracy),...(interveningFriendly?{interveningFriendly:true}:{})};
+ }
  const kind=target.targetKind==='npc'||isCivilianBody(s,target)?'npc':'unit';
  const impact=path.bodyImpacts?.find(entry=>entry.victimKind===kind&&entry.victimId===target.id);
  const rawChance=impact?accuracy*impact.reachChance:0,roundedChance=Math.round(rawChance);
@@ -501,8 +512,8 @@ export function firearmShotOptions(s,attacker,target,maxAim=4){
   // that finite forecast once per hand, without caching across game actions.
   const scene=firearmPreviewScene(s,attacker,target),otherScene=other?firearmPreviewScene(s,other,target):null;
   for(const hitLocation of shotLocationsFor(target)){
-    const path=projectileFlight(scene,attacker,target,weaponFor(attacker),hitLocation);
-    const otherPath=other?projectileFlight(otherScene,other,target,weaponFor(other),hitLocation):null;
+    const path=firearmForecastPath(scene,attacker,target,hitLocation);
+    const otherPath=other?firearmForecastPath(otherScene,other,target,hitLocation):null;
     for(let aim=0;aim<=limit;aim++){
       const forecast=forecastTarget(s,attacker,target,path,shotAccuracy(s,attacker,target,aim,hitLocation,false,second?pistolPairPenalty(attacker):0,true));
       const shots=other?[{hand:'primary',weapon:weaponFor(attacker).id,name:weaponFor(attacker).name,...forecast,damage:weaponFor(attacker).damage},
@@ -539,20 +550,17 @@ function shotAccuracy(s,attacker,target,aim=0,hitLocation='torso',pointShot=fals
     -(hasTrait(target,'guerrilla_tactician')&&!target.mounted&&((tile(s,target.x,target.y)?.cover||0)>=20||['forest','scrub'].includes(tile(s,target.x,target.y)?.type))?12:0);
   return Math.round(clamp((chance-pairPenalty-shotLocationPenalty(hitLocation,rangeProfile.effectiveSightRange))*rangeProfile.chanceFactor,1,95));
 }
-function firearmImpact(s,attacker,target,amount,hitLocation='torso',{source=attacker,intentional=false}={}){
-  const path=firearmProjectilePath(s,attacker,target,hitLocation),observed=observedBody(s,target);
-  if(path.blocked){if(observed)say(s,'La cobertura detiene el disparo.');return;}
-  if(path.damageFactor<1&&observed)say(s,'El disparo atraviesa la cobertura y pierde fuerza.');
-  physicalImpact(s,target,coveredFirearmDamage(amount,path.damageFactor),source,{hitLocation,intentional});
-}
 const isCivilianBody=(s,body)=>(s.npcs??[]).includes(body);
-const observedBody=(s,body)=>isCivilianBody(s,body)?teamCanSee(s,'player',body):journalVisible(s,body);
-const knownCivilianBodies=(s,actor)=>(s.npcs??[]).filter(n=>(n.hp??100)>0&&!n.departure&&!n.fled&&(actor.side==='player'?teamCanSee(s,actor.side,n):canSee(s,actor,n)));
+const playerObservedBody=(s,body)=>body.side==='player'||teamCanSee(s,'player',body)&&isInteriorVisible(s,body,new Set(s.revealedRooms??[]));
+const observedProjectileObstacle=(s,obstacle)=>obstacle.kind!=='prop'||(s.props??[]).some(prop=>obstacle.sourceId===`prop:${prop.id}`&&playerObservedBody(s,prop));
+const knownFirearmScene=s=>({...s,units:s.units.filter(body=>playerObservedBody(s,body)),npcs:(s.npcs??[]).filter(body=>playerObservedBody(s,body)),props:(s.props??[]).filter(prop=>playerObservedBody(s,prop))});
+const observedBody=(s,body)=>body.side==='player'||(isCivilianBody(s,body)?teamCanSee(s,'player',body):journalVisible(s,body))&&isInteriorVisible(s,body,new Set(s.revealedRooms??[]));
+const knownCivilianBodies=(s,actor)=>(s.npcs??[]).filter(n=>(n.hp??100)>0&&!n.departure&&!n.fled&&(actor.side==='player'?teamCanSee(s,actor.side,n)&&isInteriorVisible(s,n,new Set(s.revealedRooms??[])):canSee(s,actor,n)));
 const intendedCivilian=(s,actor,point)=>knownCivilianBodies(s,actor).find(n=>sameCell(n,point));
 const flightVictim=(s,flight)=>(flight.victimKind==='npc'?s.npcs??[]:s.units).find(v=>v.id===flight.victimId);
-function physicalImpact(s,target,amount,source,{kind='firearm',projectile=true,hitLocation='torso',extraBreath=0,report=true,intentional=false,excludedBodyguards=null}={}){
+function physicalImpact(s,target,amount,source,{kind='firearm',projectile=true,hitLocation='torso',extraBreath=0,report=true,intentional=false,excludedBodyguards=null,practiceImpact=true}={}){
  if(kind==='firearm'&&projectile)amount*=COMBAT_BALANCE.firearmDamageMultiplier;
- if(!isCivilianBody(s,target)){const before=target.hp,eligible=fieldCapable(target)&&!target.unconscious&&!target.routed&&!target.surrendered,result=damage(s,target,amount,source,projectile,hitLocation,extraBreath,report,excludedBodyguards);if(eligible&&kind==='firearm'&&projectile&&source?.side!==target.side&&target.hp<before)practice(source,'marksmanship',2);return result;}
+ if(!isCivilianBody(s,target)){const before=target.hp,eligible=fieldCapable(target)&&!target.unconscious&&!target.routed&&!target.surrendered,result=damage(s,target,amount,source,projectile,hitLocation,extraBreath,report,excludedBodyguards);if(practiceImpact&&eligible&&kind==='firearm'&&projectile&&source?.side!==target.side&&target.hp<before)practice(source,'marksmanship',2);return result;}
  // Civilian harm shares body effects but cannot enter soldier rewards, guards,
  // equipment handling or morale routs. Observe before the impact lowers them.
  const impact=shotLocationEffects(projectile?hitLocation:'torso',Math.max(0,amount),{...target,hp:target.hp??100}),observed=report&&observedBody(s,target);
@@ -570,13 +578,13 @@ function presentFirearmFlight(s,actor,destination,flight=null,hitLocation='torso
  if(Array.isArray(flight?.bodyImpacts)){
   const bodyFor=collision=>(collision.victimKind==='npc'?s.npcs??[]:s.units).find(body=>body.id===collision.victimId);
   const bodies=flight.bodyImpacts.map(collision=>({collision,body:bodyFor(collision)}));
-  const knownBody=body=>body&&(body.side==='player'||teamCanSee(s,'player',body));
+  const knownBody=body=>body&&playerObservedBody(s,body);
   const observed=bodies.filter(({body})=>knownBody(body));
   const knownHealth=[...s.units,...(s.npcs??[])].filter(knownBody).map(body=>({body,hp:body.hp}));
   // Hidden bodies cannot provide a display endpoint, segment origin, or cue.
   // Their real force loss can still change a later observed body's injury.
-  const hidden=bodies.some(({body})=>body&&!knownBody(body));
-  const known=hidden?projectileFlight({...flightState,units:flightState.units.filter(body=>body.side==='player'||teamCanSee(s,'player',body)),npcs:(flightState.npcs??[]).filter(body=>teamCanSee(s,'player',body))},actor,destination,weaponFor(actor),hitLocation,{destinationHeight,targetKind}):flight;
+  const hidden=bodies.some(({body})=>body&&!knownBody(body))||flight.obstacles.some(obstacle=>!observedProjectileObstacle(flightState,obstacle));
+  const known=hidden?projectileFlight(knownFirearmScene(flightState),actor,destination,weaponFor(actor),hitLocation,{destinationHeight,targetKind}):flight;
   const terminal=known.terminal??{impact:known.impact??known.destination,termination:known.termination};
   const obstacle=known.obstacles?.find(item=>item.stopped);
   const terminalOutcome=terminal.termination==='body'?null:obstacle?'cover':'miss';
@@ -614,8 +622,8 @@ function presentFirearmFlight(s,actor,destination,flight=null,hitLocation='torso
  // An unseen interception must not shorten the displayed path at that person.
  // Resolve its fallback using observed bodies only, retaining a miss's typed
  // selected-body exclusion. This does not roll accuracy or apply any damage.
- const victimObserved=victim&&teamCanSee(s,'player',victim);
- const knownFlight=victim&&!victimObserved?projectileFlight({...flightState,units:flightState.units.filter(body=>body.side==='player'||teamCanSee(s,'player',body)),npcs:(flightState.npcs??[]).filter(body=>teamCanSee(s,'player',body))},actor,destination,weaponFor(actor),hitLocation,{destinationHeight,targetKind}):null;
+ const victimObserved=victim&&playerObservedBody(s,victim);
+ const knownFlight=victim&&!victimObserved?projectileFlight({...flightState,units:flightState.units.filter(body=>playerObservedBody(flightState,body)),npcs:(flightState.npcs??[]).filter(body=>playerObservedBody(flightState,body))},actor,destination,weaponFor(actor),hitLocation,{destinationHeight,targetKind}):null;
  // A concealed body cannot remove the cue at a known wall reached by this
  // observed fallback. A known body is different: never invent its injury.
  const knownObstacle=knownFlight?.blocked&&knownFlight.impact&&teamCanSee(s,'player',{...knownFlight.impact,x:Math.round(knownFlight.impact.x),y:Math.round(knownFlight.impact.y)})?knownFlight.obstacles.find(item=>item.stopped):null;
@@ -628,18 +636,32 @@ function presentFirearmFlight(s,actor,destination,flight=null,hitLocation='torso
  recordBattleFrame(s,{...event,type:'projectile'});
  return ()=>recordBattleFrame(s,{...event,type:'impact'});
 }
-function coneFireImpact(s,attacker,target,aim,hitLocation,source=attacker){
- const w=weaponFor(attacker),length=dist(attacker,target),dx=(target.x-attacker.x)/length,dy=(target.y-attacker.y)/length;
- const finishFlight=presentFirearmFlight(s,attacker,target,null,hitLocation,source,{spread:true});
- for(const {body:victim,kind} of physicalBodies(s).filter(({body,kind})=>kind==='npc'||body.id!==attacker.id)){
-  const vx=victim.x-attacker.x,vy=victim.y-attacker.y,forward=vx*dx+vy*dy,across=Math.abs(vx*dy-vy*dx);
-  if(forward<=0||forward>w.range||across>Math.max(.5,forward*.25)||!hasLineOfSight(s,attacker,victim))continue;
-  const intended=victim.id===target.id,location=intended?hitLocation:'torso';
-  if(kind!=='npc')victim.morale=Math.max(0,victim.morale-18);
-  if(random(s)*100<Math.min(95,shotAccuracy(s,attacker,victim,aim,location)+20))firearmImpact(s,attacker,victim,w.damage*(1-forward/(w.range*2)),location,{source,intentional:intended});
-  else if(kind!=='npc'&&victim.morale<15)rout(s,victim);
+function shotLoadFireImpact(s,attacker,target,aim,hitLocation,source=attacker,preparedAccuracy,preparedIntent,{pointShot=false}={}){
+ const weapon=weaponFor(attacker),point=preparedIntent?.point??{...target},height=preparedIntent?.destinationHeight??absoluteBodyHeight(s,point,hitLocation);
+ const intended=preparedIntent?preparedIntent.intended:pointShot?intendedCivilian(s,source,point):target;
+ const accuracy=preparedAccuracy??shotAccuracy(s,attacker,point,aim,hitLocation,pointShot),hit=random(s)*100<accuracy;
+ const destination=hit?point:{...point,...scatteredShotDestination(s,attacker,point)},amount=weapon.damage*(.8+random(s)*.4);
+ // All pellets share this discharge's geometry. A body killed by the first
+ // accumulated injury cannot disappear from other simultaneously fired rays.
+ const flight=shotLoadFlight(s,attacker,destination,weapon,hitLocation,{destinationHeight:height,resolveBody:entry=>random(s)*100<entry.penetrationChance});
+ const finishFlight=presentFirearmFlight(s,attacker,destination,null,hitLocation,source,{pointShot,spread:true,destinationHeight:height});
+ const groups=new Map(),eligible=new Set(s.units.filter(u=>fieldCapable(u)&&!u.unconscious&&!u.routed&&!u.surrendered&&u.side!==source.side).map(u=>u.id));
+ for(const entry of flight.bodyImpacts){
+  const key=`${entry.victimKind}:${entry.victimId}:${entry.hitLocation}`,force=penetratingFirearmDamage(amount*entry.weight,entry);
+  const group=groups.get(key)??{entry,amount:0};group.amount+=force;groups.set(key,group);
  }
- sayObserved(s,[source],`${source.name} dispara una carga de perdigones con ${w.name}.`);
+ const learned=new Set(),contacted=new Set();
+ for(const {entry,amount:force} of [...groups.values()].sort((a,b)=>a.entry.fraction-b.entry.fraction||a.entry.pelletIndex-b.entry.pelletIndex)){
+  const victim=flightVictim(s,entry);if(!victim)continue;
+  const key=`${entry.victimKind}:${entry.victimId}`;
+  if(victim.hp<=0||shotLocationEffects(entry.hitLocation,force*COMBAT_BALANCE.firearmDamageMultiplier,victim).damage===0){contacted.add(key);continue;}
+  const before=new Map(s.units.map(u=>[u.id,u.hp]));
+  const actual=physicalImpact(s,victim,force,source,{hitLocation:entry.hitLocation,report:observedBody(s,victim),intentional:victim===intended,excludedBodyguards:contacted,practiceImpact:false});
+  contacted.add(key);if(actual)contacted.add(`${isCivilianBody(s,actual)?'npc':'unit'}:${actual.id}`);
+  if(actual&&!isCivilianBody(s,actual)&&eligible.has(actual.id)&&actual.hp<before.get(actual.id))learned.add(actual.id);
+ }
+ for(const id of learned)practice(source,'marksmanship',2);
+ sayObserved(s,[source],`${source.name} dispara una carga de perdigones con ${weapon.name}.`);
  finishFlight();
 }
 function directedFireImpact(s,u,target,hitLocation,hit,source=u,preparedIntent=null){
@@ -654,7 +676,7 @@ function directedFireImpact(s,u,target,hitLocation,hit,source=u,preparedIntent=n
   const amount=hit||victim?w.damage*(.8+random(s)*.4):0;
   const flight=victim?projectileFlight(flightState,u,destination,w,hitLocation,{...options,resolveBody:entry=>random(s)*100<entry.penetrationChance}):forecast;
   const finishFlight=presentFirearmFlight(s,u,destination,flight,hitLocation,source,{...options,aimHit:hit,flightState});
-  if(flight.blocked){if(journalVisible(s,target))say(s,'La cobertura detiene el disparo.');}
+  if(flight.blocked&&flight.obstacles.some(obstacle=>obstacle.stopped&&observedProjectileObstacle(flightState,obstacle))){if(journalVisible(s,target))say(s,'La cobertura detiene el disparo.');}
   const damagedBodies=applyFirearmBodyImpacts(s,flight,amount,source,finishFlight,{intended:target});
   finishFlight();
   practiceFirearmNearMiss(s,{attacker:u,target,weapon:w,flight,hit,discharged:true,source,damagedBodies});
@@ -667,7 +689,7 @@ function applyFirearmBodyImpacts(s,flight,amount,source,finishFlight,{intended=n
  for(const entry of entries){
   const victim=flightVictim(s,entry),key=`${entry.victimKind??'unit'}:${entry.victimId}`;
   if(!victim||processed.has(key)){finishFlight(entry);continue;}
-  if(entry.coverDamageFactor<1&&observedBody(s,victim))say(s,'El disparo atraviesa la cobertura y pierde fuerza.');
+  if(entry.coverDamageFactor<1&&observedBody(s,victim)&&flight.obstacles.some(obstacle=>obstacle.fraction<=entry.fraction&&observedProjectileObstacle(s,obstacle)))say(s,'El disparo atraviesa la cobertura y pierde fuerza.');
   if(entry.bodyDamageReduction>0&&knownPassage&&knownBodies.has(key))say(s,'La bala atraviesa un cuerpo y llega con menos fuerza.');
   const actual=physicalImpact(s,victim,penetratingFirearmDamage(amount,entry),source,{hitLocation:entry.hitLocation,report:!observeOnly||observedBody(s,victim),intentional:victim===intended,excludedBodyguards:processed});
   processed.add(key);
@@ -730,7 +752,7 @@ function damage(s,target,amount,source,projectile=false,hitLocation='torso',extr
     const guard=s.units.find(v=>!excludedBodyguards?.has(`unit:${v.id}`)&&hasCharacterAbility(v,'bodyguard')&&v.side===target.side&&v.id!==target.id&&alive(v)&&v.hp>25&&v.ap>=8&&v.interceptTurn!==s.turn&&contactDistance(v,target)<=1.5);
     if(guard){guard.ap-=8;guard.interceptTurn=s.turn;if(report)sayObserved(s,[guard,target],`${guard.name} se interpone para proteger a ${target.name}.`);target=guard;}
   }
-  report=report&&journalVisible(s,target);
+  report=report&&(projectile?observedBody(s,target):journalVisible(s,target));
   const sourceKnown=journalVisible(s,source);
   const creditEligible=target.hp>=CRITICAL_HEALTH&&!target.unconscious&&!target.routed&&!target.surrendered&&!target.departure;
   const impact=shotLocationEffects(projectile?hitLocation:'torso',Math.max(0,amount),target);
@@ -905,22 +927,7 @@ export function pointFirePreview(s,u,point,aim=0){
 }
 function pointFireImpact(s,u,point,aim,source=u,preparedAccuracy,preparedIntent=null){
   const w=weaponFor(u),accuracy=preparedAccuracy??shotAccuracy(s,u,{...point,stance:'standing'},aim,'torso',true),intended=preparedIntent?preparedIntent.intended:intendedCivilian(s,source,point);
-  const impact=(victim,amount,location)=>{
-    const visible=observedBody(s,victim);
-    physicalImpact(s,victim,amount,source,{hitLocation:location,report:visible,intentional:victim===intended});
-    // Real firearm hits receive their extra learning chances in physicalImpact.
-  };
-  if(w.loadPattern==='cone'||!w.loadPattern&&w.id===1807){
-    const length=dist(u,point),dx=(point.x-u.x)/length,dy=(point.y-u.y)/length;
-    const finishFlight=presentFirearmFlight(s,u,{...point,stance:'standing'},null,'torso',source,{pointShot:true,spread:true});
-    for(const {body:victim} of physicalBodies(s).filter(({body,kind})=>kind==='npc'||body.id!==u.id)){
-      const vx=victim.x-u.x,vy=victim.y-u.y,forward=vx*dx+vy*dy,across=Math.abs(vx*dy-vy*dx);
-      if(forward<=0||forward>w.range||across>Math.max(.5,forward*.25))continue;
-      const path=firearmProjectilePath(s,u,victim);
-      if(!path.blocked&&random(s)*100<Math.min(95,accuracy+20))impact(victim,coveredFirearmDamage(w.damage*(1-forward/(w.range*2)),path.damageFactor),'torso');
-    }
-    finishFlight();return;
-  }
+  if(isShotLoad(w)){shotLoadFireImpact(s,u,{...point,stance:'standing',mounted:false},aim,'torso',source,accuracy,preparedIntent,{pointShot:true});return;}
   let end=positionOf(point);
   if(random(s)*100>=accuracy){
     end=scatteredShotDestination(s,u,point);
@@ -1846,7 +1853,7 @@ else if(['fire','firePoint'].includes(a.type)&&pairedPistol(u)){
     if(pointShot)pointFireImpact(s,shot.view,point,aim,u,shot.chance,intent);
     else{
       practice(u,'marksmanship',2);
-      if(weaponFor(shot.view).loadPattern==='cone')coneFireImpact(s,shot.view,target,aim,hitLocation,u);
+      if(isShotLoad(weaponFor(shot.view)))shotLoadFireImpact(s,shot.view,target,aim,hitLocation,u,shot.chance,intent);
       else {
        const hit=random(s)*100<shot.chance;directedFireImpact(s,shot.view,target,hitLocation,hit,u,intent);
        if(!hit&&!isCivilianBody(s,target)){target.morale=Math.max(0,target.morale-4);sayObserved(s,[u],`${u.name} falla con la mano ${shot.hand} (${shot.chance}%).`);}
@@ -1868,7 +1875,7 @@ else if(a.type==='firePoint'){
     sayObserved(s,[u],`${u.name} dispara hacia ${a.x+1}, ${a.y+1}. El disparo puede alcanzar a cualquiera en su trayectoria.`);
   }
 }
-else if(a.type==='fire'){const hitLocation=a.hitLocation??'torso';if(!HIT_LOCATIONS.includes(hitLocation))return fail('Selecciona torso, cabeza o piernas.');if(!target||target.side===u.side||!targetable(target))return fail('Selecciona un enemigo activo.');if(!hasFirearm(u))return fail('Este soldado lleva un arma blanca: acércate para atacar.');if(!teamCanSee(s,u.side,target))return fail('Ningún compañero puede ver ese objetivo.');if(!shotLocationsFor(target).includes(hitLocation))return fail('Un objetivo cuerpo a tierra tiene una sola zona de tiro.');if(u.jammed)return fail('La cazoleta falló: vuelve a cebar el arma.');if(u.loaded<1)return fail('El arma está descargada.');if(!hasLineOfSight(s,u,target))return fail('No hay línea de tiro.');const aim=clamp(Math.floor(Number.isFinite(a.aim)?a.aim:0),0,4),w=weaponFor(u),chance=shotAccuracy(s,u,target,aim,hitLocation);if(!pay(actionCosts(s,u,target).fire+aim*actionCosts(s,u,target).aim))return fail('Faltan puntos de acción para disparar.');u.weaponReady=true;u.momentum=0;u.facing=directionTo(u,target);u.lastTargetId=target.id;u.lastShotPosition=positionOf(u);const risk=ignitionRisk(s,u);if(random(s)*100<risk){u.jammed=true;sayObserved(s,[u],`${u.name}: fallo de chispa. La carga se conserva${s.mode==='exploration'?'. Volvé a cebar la cazoleta.':`; cebar cuesta ${actionCosts(s,u).reprime} PA.`}`);}else{u.loaded--;const notifyCivilians=emitNoise(s,u,'fire',u,{deferCivilians:true});practice(u,'marksmanship',2);u.condition=Math.max(0,u.condition-1);s.smoke.push({...positionOf(u),radius:1,turns:3});if(w.loadPattern==='cone'||!w.loadPattern&&w.id===1807){coneFireImpact(s,u,target,aim,hitLocation);}else{const hit=random(s)*100<chance;directedFireImpact(s,u,target,hitLocation,hit);if(!hit&&!isCivilianBody(s,target)){target.morale=Math.max(0,target.morale-4);sayObserved(s,[u],`${u.name} dispara sin acertar al punto elegido (${chance}%).`);}}notifyCivilians(); }}
+else if(a.type==='fire'){const hitLocation=a.hitLocation??'torso';if(!HIT_LOCATIONS.includes(hitLocation))return fail('Selecciona torso, cabeza o piernas.');if(!target||target.side===u.side||!targetable(target))return fail('Selecciona un enemigo activo.');if(!hasFirearm(u))return fail('Este soldado lleva un arma blanca: acércate para atacar.');if(!teamCanSee(s,u.side,target))return fail('Ningún compañero puede ver ese objetivo.');if(!shotLocationsFor(target).includes(hitLocation))return fail('Un objetivo cuerpo a tierra tiene una sola zona de tiro.');if(u.jammed)return fail('La cazoleta falló: vuelve a cebar el arma.');if(u.loaded<1)return fail('El arma está descargada.');if(!hasLineOfSight(s,u,target))return fail('No hay línea de tiro.');const aim=clamp(Math.floor(Number.isFinite(a.aim)?a.aim:0),0,4),w=weaponFor(u),chance=shotAccuracy(s,u,target,aim,hitLocation);if(!pay(actionCosts(s,u,target).fire+aim*actionCosts(s,u,target).aim))return fail('Faltan puntos de acción para disparar.');u.weaponReady=true;u.momentum=0;u.facing=directionTo(u,target);u.lastTargetId=target.id;u.lastShotPosition=positionOf(u);const risk=ignitionRisk(s,u);if(random(s)*100<risk){u.jammed=true;sayObserved(s,[u],`${u.name}: fallo de chispa. La carga se conserva${s.mode==='exploration'?'. Volvé a cebar la cazoleta.':`; cebar cuesta ${actionCosts(s,u).reprime} PA.`}`);}else{u.loaded--;const notifyCivilians=emitNoise(s,u,'fire',u,{deferCivilians:true});practice(u,'marksmanship',2);u.condition=Math.max(0,u.condition-1);s.smoke.push({...positionOf(u),radius:1,turns:3});if(isShotLoad(w)){shotLoadFireImpact(s,u,target,aim,hitLocation,u,chance);}else{const hit=random(s)*100<chance;directedFireImpact(s,u,target,hitLocation,hit);if(!hit&&!isCivilianBody(s,target)){target.morale=Math.max(0,target.morale-4);sayObserved(s,[u],`${u.name} dispara sin acertar al punto elegido (${chance}%).`);}}notifyCivilians(); }}
 else if(a.type==='swapHands'){
   let next;try{next=planSwapHands(u);}catch(error){return fail(error.message);}
   if(!pay(4))return fail('Cambiar de mano requiere 4 PA.');next.ap=u.ap;replaceUnit(u,next);sayObserved(s,[u],`${u.name} prepara el arma de la otra mano.`);
@@ -2638,8 +2645,8 @@ function cleanActionTime(s){
  for(const unit of s.units)if(unit.equipmentCursor&&(!alive(unit)||unit.departure||unit.side==='player'&&!interruptAvailable(s,unit)))returnBattleEquipmentCursor(s,unit);
  return s;
 }
-export function presentedEndTurn(state){return captureBattlePresentation(state,()=>endTurn(state),(s,u)=>teamCanSee(s,'player',u));}
-export function presentedActBattle(state,action){return captureBattlePresentation(state,()=>actBattle(state,action),(s,u)=>teamCanSee(s,'player',u));}
+export function presentedEndTurn(state){return captureBattlePresentation(state,()=>endTurn(state),playerObservedBody);}
+export function presentedActBattle(state,action){return captureBattlePresentation(state,()=>actBattle(state,action),playerObservedBody);}
 export function endTurn(state){
  if(state.deployment)return sectorDeploymentAction(state,{type:'endTurn'});
  const ready=clone(state);

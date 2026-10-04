@@ -7,6 +7,8 @@ export const COMBAT_BALANCE=Object.freeze({
  firearmBodyResistance:Object.freeze({head:15,torso:30,legs:23}), // Lead-ball force spent passing through one body.
  firearmBodyPenetrationThreshold:20,
  firearmBodyPenetrationMaximumChance:95,
+ shotLoadHorizontalSpread:.25, // Tangent of lateral pellet spread; explicit game tuning.
+ shotLoadVerticalSpread:.08,
  rangePenaltyMultiplier:.98,
  sightPenaltyMultiplier:1,
  outsideWeaponChanceFactor:.5,

@@ -7,8 +7,9 @@ import {artillerySupplyQuote} from '../game/artillery-supply.js';
 import {order,saved,visit,leave} from './local-contract-fixture.mjs';
 import {assertTradeRejected} from './commerce-gear-fixture.mjs';
 import {actBattle} from '../game/tactical.js';
-import {wonBattery,fireStationed} from './stationed-artillery-fixture.mjs';
-import {emptyBattery,reloadPiece} from './artillery-supply-fixture.mjs';
+import {enterSector} from '../game/world.js';
+import {issuedBattery,wonBattery,fireStationed} from './stationed-artillery-fixture.mjs';
+import {emptyBattery} from './artillery-supply-fixture.mjs';
 const gun=s=>s.sectorStates.san_nicolas.artillery[0],buy=s=>({type:'resupplyArtillery',sector:'san_nicolas',artilleryId:gun(s).id});
 const quote=s=>artillerySupplyQuote(s,'san_nicolas',gun(s).id,isSupplied(s,s.location));
 test('optional artillery supply rules preserve older content identity and validate all prices, limits and permissions',()=>{
@@ -26,13 +27,13 @@ test('a truly exhausted emplaced gun stays empty through closed purchases, saves
 test('repeated old refill callbacks cannot create reserves, take money or change the saved gun',()=>{
  const s=emptyBattery();for(let i=0;i<6;i++)assertTradeRejected(s,buy(s));assert.equal(gun(s).ammo,0);assert.equal(saved({campaign:s}).campaign.sectorStates.san_nicolas.artillery[0].ammo,0);
 });
-test('a lower authored supply cap preserves the initial bundle and retains its old quote after real consumption without refilling',()=>{
- const d=defaultContentPackage();d.artillerySupply={...DEFAULT_ARTILLERY_SUPPLY,reserveLimit:2};let s=wonBattery(d);assert.equal(gun(s).ammo,6);assert.match(quote(s).reason,/límite/);assert.equal(saved({campaign:s}).campaign.sectorStates.san_nicolas.artillery[0].ammo,6);
- let p=visit(s);for(let i=0;i<5;i++)p=reloadPiece(fireStationed(p));s=leave(p);assert.equal(gun(s).ammo,1);assert.equal(quote(s).available,true);assertTradeRejected(s,buy(s));assert.equal(gun(s).ammo,1);assert.equal(quote(s).available,true);
+test('a lower authored supply cap preserves the initial bundle and quotes only the actual reserve left after real consumption without refilling',()=>{
+ const d=defaultContentPackage();d.artillerySupply={...DEFAULT_ARTILLERY_SUPPLY,reserveLimit:2};const issued=issuedBattery(d);assert.equal(issued.pendingBattle.artillery[0].ammo,6);assert.equal(saved({campaign:issued,battle:enterSector(issued.pendingBattle)}).campaign.pendingBattle.artillery[0].ammo,6);let s=wonBattery(d);assert.equal(gun(s).ammo,1);assert.equal(quote(s).available,true);assert.equal(saved({campaign:s}).campaign.sectorStates.san_nicolas.artillery[0].ammo,1);
+ s=leave(fireStationed(visit(s)));assert.equal(gun(s).ammo,0);assert.equal(quote(s).available,true);assertTradeRejected(s,buy(s));assert.equal(gun(s).ammo,0);assert.equal(quote(s).available,true);
 });
 test('authored, zero-price and disabled legacy quotes cannot refill actual fired campaign pieces',()=>{
- for(const [price,enabled]of [[37,true],[0,true],[11,false]]){const d=defaultContentPackage();d.artillerySupply={...DEFAULT_ARTILLERY_SUPPLY,swivel:price,enabled,reserveLimit:6};let s=leave(reloadPiece(fireStationed(visit(wonBattery(d)))));const funds=s.resources.treasury;assert.equal(gun(s).ammo,5);assert.equal(quote(s).cost,price);d.artillerySupply.swivel=999;
-  assertTradeRejected(s,buy(s));assert.equal(s.resources.treasury,funds);assert.equal(gun(s).ammo,5);assert.equal(saved({campaign:s}).campaign.contentCampaign.package.artillerySupply.swivel,price);
+ for(const [price,enabled]of [[37,true],[0,true],[11,false]]){const d=defaultContentPackage();d.artillerySupply={...DEFAULT_ARTILLERY_SUPPLY,swivel:price,enabled,reserveLimit:6};let s=leave(fireStationed(visit(wonBattery(d))));const funds=s.resources.treasury;assert.equal(gun(s).ammo,0);assert.equal(quote(s).cost,price);d.artillerySupply.swivel=999;
+  assertTradeRejected(s,buy(s));assert.equal(s.resources.treasury,funds);assert.equal(gun(s).ammo,0);assert.equal(saved({campaign:s}).campaign.contentCampaign.package.artillerySupply.swivel,price);
  }
 });
 test('remote, hostile, disconnected, busy, unavailable and unaffordable prepared boundaries reject without changing custody',()=>{

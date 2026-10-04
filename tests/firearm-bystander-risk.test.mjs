@@ -40,10 +40,10 @@ test('unseen, departed and dead civilians cannot leak through the miss preview',
  }
 });
 
-test('a trabuco warns from its actual six-cell cone rather than a rifle miss pattern',()=>{
+test('a trabuco warns from its finite six-cell pellet paths, including a scattered center',()=>{
  const state=field(),[unit,target]=state.units;unit.weapon=1807;
  assert.deepEqual(firearmBystanderRisk(state,unit,target),{direct:[],scatter:[]},'a prisoner beyond the cone is not exposed');
- Object.assign(state.npcs[0],{x:6,y:5});const risk=firearmBystanderRisk(state,unit,target);assert.equal(risk.direct[0].id,'prisoner');assert.deepEqual(risk.scatter,[]);
+ Object.assign(state.npcs[0],{x:6,y:5});const risk=firearmBystanderRisk(state,unit,target);assert.equal(risk.direct[0].id,'prisoner');assert.equal(risk.scatter[0].id,'prisoner');assert.equal(firearmBystanderWarning(risk).match(/Prisionero visible/g).length,1);
 });
 
 test('known cover blocks miss paths before a visible prisoner and lowered bodies use their actual silhouette',()=>{

@@ -5,7 +5,7 @@ import {saved} from './local-contract-fixture.mjs';
 
 test('an isolated legacy sale callback cannot change an actual depot gun, its partial work or either balance',async t=>{
  const s=depotTradeGun();s.artilleryDepots.buenos_aires[0].reloadProgress=.4;const m=await mountLegacyArmory(t,saved({campaign:s})),before=m.saved().campaign,gun=before.artilleryDepots.buenos_aires[0];
- const panel=m.document.querySelector(`[data-artillery-sale="${gun.id}"]`);assert.match(panel.textContent,/Recarga 40% · 6 en reserva/);assert.match(panel.textContent,/160 pesos/);
+ const panel=m.document.querySelector(`[data-artillery-sale="${gun.id}"]`);assert.match(panel.textContent,new RegExp(`Recarga 40% · ${gun.ammo} en reserva`));assert.match(panel.textContent,/160 pesos/);
  await m.click('Vender pieza');assert.match(m.read().campaign.lastError,/comercio de equipo no está disponible/);assert.deepEqual(m.saved().campaign,before);assert.equal(m.document.querySelector(`[data-artillery-repurchase="${gun.id}"]`),null);
 });
 test('the isolated legacy sale widget still describes a cash-poor historical merchant without a transaction',async t=>{

@@ -21,7 +21,7 @@ test('an actually fired and transported gun survives closed trades before finite
  assert.equal(artillerySaleQuote(s,offer,isSupplied(s,s.location)).price,160);assert.equal(artilleryMerchant(s).cash,1200);blockedSale(s,offer);assertTradeRejected(s,{type:'repurchaseArtillery',artilleryId:gun.id});
  s=saved({campaign:s}).campaign;same(s.artilleryDepots.buenos_aires[0],gun);assert.equal(ownedArtilleryCount(s),1);
  s=order(s,{type:'configureArtillery',types:[depotSelection(gun)]});s=order(s,{type:'travel',sector:'retiro'});s=wakeBatteryCrew(s);assert.equal(s.artilleryDepots.buenos_aires.length,1);s=order(s,{type:'travel',sector:'buenos_aires'});s=wakeBatteryCrew(s);s=order(s,{type:'attack',sector:'ensenada'});
- const p=saved({campaign:s,battle:enterSector(s.pendingBattle)});same(p.battle.artillery[0],gun);assert.equal(p.campaign.artilleryDepots.buenos_aires.length,0);assert.equal(p.battle.artillery[0].loaded,false);assert.equal(p.battle.artillery[0].ammo,6);
+ const p=saved({campaign:s,battle:enterSector(s.pendingBattle)});same(p.battle.artillery[0],gun);assert.equal(p.campaign.artilleryDepots.buenos_aires.length,0);assert.equal(p.battle.artillery[0].loaded,false);assert.equal(p.battle.artillery[0].ammo,gun.ammo);
 });
 
 test('a fired emplacement preserves unfinished work and old merchant custody remains save-compatible',()=>{

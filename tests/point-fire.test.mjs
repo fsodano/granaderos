@@ -71,10 +71,11 @@ test('seeded misses scatter to another cell and can strike someone outside the i
   const n=fire(s,{aim:0});assert.equal(n.lastError,null);assert.equal(n.units[1].hp,100);assert.ok(n.units[3].hp<s.units[3].hp);assert.equal(n.units[0].loaded,0);assert.deepEqual(fire(validateBattleSnapshot(JSON.parse(JSON.stringify(s))),{aim:0}),n);
 });
 
-test('directional blunderbuss discharge respects cover for friendly and hidden victims',()=>{
+test('finite blunderbuss pellets stop in wood and stone while pre-cover friendly injuries remain real',()=>{
   const s=field();s.units[0].weapon=1807;friend(s);s.units[1].x=6;barrier(s);
   const blocked=fire(s,{aim:0});assert.equal(blocked.lastError,null);assert.equal(blocked.units[1].hp,100);assert.ok(blocked.units[3].hp<s.units[3].hp);assert.equal(blocked.units[0].loaded,0);
-  const wall=s.tiles.find(t=>t.x===5&&t.y===3);wall.material='wood';const wood=fire(s,{aim:0});assert.ok(wood.units[1].hp<100);assert.ok(!wood.log.some(line=>line.includes('Oculto')));
+  const wall=s.tiles.find(t=>t.x===5&&t.y===3);wall.material='wood';const wood=fire(s,{aim:0});assert.equal(wood.units[1].hp,100);assert.equal(wood.units[3].hp,blocked.units[3].hp);assert.ok(!wood.log.some(line=>line.includes('Oculto')));
+  const hay=structuredClone(s);hay.units=hay.units.filter(u=>u.id!=='friend');hay.tiles.find(t=>t.x===5&&t.y===3).material='hay';const passed=fire(hay,{aim:4});assert.ok(passed.units[1].hp<100);assert.equal(passed.units[0].loaded,0);assert.deepEqual(fire(validateBattleSnapshot(JSON.parse(JSON.stringify(hay))),{aim:4}),passed);
 });
 
 test('diagonal corner cover and posture-dependent muzzle height still use the shared geometry',()=>{

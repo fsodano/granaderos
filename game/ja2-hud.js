@@ -16,7 +16,7 @@ import {tacticalGridLabel} from './tactical-grid.js';
 // Pure HUD model for the tactical battle inspector and squad strip.
 // Read-only descriptors plus action-object constructors; no game rules.
 import {mainItemPreview,swapHandsPreview, weaponFor, bladeFor, hasFirearm, carriedWeight, carryCapacity, actionCosts, actionPointBudget, stanceCost, shotChance, firearmVolleyPreview, firearmRangeProfile, firearmProjectilePath, firearmFlightPreview, canSee, hasLineOfSight, artilleryCosts, artilleryCrewPlan, artilleryReloadPreview, interruptAvailable, canEndCombat, fieldCapable, transferPreview, dropPreview, environmentTargetAt, environmentPreview, containerLootPreview, supplyUsePreview, getReachable, movementIntentReason, exitPreview, ARTILLERY, WEAPONS, BLADES} from './tactical.js';
-import {pairedPistol} from './paired-fire.js';
+import {pairedPistol,secondaryPistolView} from './paired-fire.js';
 import {directionTo} from './tactical-awareness.js';
 import {unarmedChance} from './unarmed-combat.js';
 import {inventoryUsage, carriedObject, itemDescriptor, INVENTORY_CAPACITY, SUPPLY_ITEMS} from './tactical-inventory.js';
@@ -31,6 +31,7 @@ const alive = u => u.hp > 0 && !u.routed && !u.unconscious && !u.departure && !u
 const shortName = u => u.nickname || String(u.name || '').split(' ').slice(-1)[0] || '';
 const distance = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
 export const chancePercent = value => value > 0 && value < 1 ? '<1%' : `${Math.round(value)}%`;
+const shotLoadText = shot => `Carga de perdigones (${shot.pelletCount} proyectiles). Probabilidad de al menos un contacto; no garantiza varios impactos ni la zona del cuerpo. ${shot.damageFactor===0?'Ningún perdigón puede llegar por las trayectorias previstas.':shot.damageFactor<1?`Fuerza media si llega algún perdigón: ${Math.round(shot.damageFactor*100)}% de la carga.`:''} Disparar consume una carga.`;
 const affordable = (state, unit, pa) => state.mode === 'exploration' || unit.ap >= pa;
 const hasPrimary = unit => Boolean(unit.weapon) && !unit.weaponDropped;
 export function toolItems(unit) {
@@ -355,8 +356,8 @@ function targetPreviewWithCosts(state, unit, point, ctx = {}) {
   const target = occupants.find(v => v.id === point.id) || occupants.find(v => v.hp > 0) || occupants[0];
   if(mode==='fire'&&(explicitPointShot(state,point)||!target||target.side===unit.side||target.hp<=0||target.surrendered)){
     const preview=pointFirePreview(state,unit,point,ctx.aim??0);
-    const paired=Boolean(pairedPistol(unit));
-    return {name:tacticalGridLabel(point.x,point.y),actionLabel:paired?'Disparar ambas pistolas a la casilla':'Disparar a la casilla',attackType:'fire',pa:preview.pa,remaining:Math.max(0,unit.ap-(state.mode==='exploration'?0:preview.pa)),valid:preview.valid,reason:preview.reason,coverNote:`${firearmCostText(state,unit,point)} ${paired?'Un disparo por pistola. ':''}Sin objetivo confirmado. Altura fija; la cobertura y los cuerpos pueden interceptar el tiro. Puede herir aliados.`};
+    const paired=pairedPistol(unit),shotLoad=weaponFor(unit).loadPattern==='cone'||paired&&weaponFor(secondaryPistolView(unit,paired)).loadPattern==='cone';
+    return {name:tacticalGridLabel(point.x,point.y),actionLabel:paired?'Disparar ambas pistolas a la casilla':'Disparar a la casilla',attackType:'fire',pa:preview.pa,remaining:Math.max(0,unit.ap-(state.mode==='exploration'?0:preview.pa)),valid:preview.valid,reason:preview.reason,coverNote:`${firearmCostText(state,unit,point)} ${paired?'Un disparo por pistola. ':''}${shotLoad?'Carga de perdigones. ':''}Sin objetivo confirmado. Altura fija; la cobertura y los cuerpos pueden interceptar el tiro. Puede herir aliados.`};
   }
   if(!target&&!recipient&&meleePointTargetingMode(unit,mode)&&ctx.itemIntent!=='steal'){
     const preview=meleePointPreview(state,unit,point),label=unit.activeSlot==='unarmed'?'Puños':fixedBayonetFor(unit)?'Estocada de bayoneta':hasFirearm(unit)?'Culatazo':bladeFor(unit).name;
@@ -395,7 +396,7 @@ function targetPreviewWithCosts(state, unit, point, ctx = {}) {
     return {name:target?.name||tacticalGridLabel(point.x,point.y),actionLabel:preview.movePa?'Acercarse y vendar':'Vendar',pa:preview.pa,remaining:Math.max(0,unit.ap-(state.mode==='exploration'?0:preview.pa)),coverNote:medicalTreatmentText(state,preview),treatment:preview.treatment,reason:preview.reason,valid:preview.valid};
   }
 
-  let pa, chance, chanceLabel, reason, actionLabel, attackType, attackLabel, coverNote;
+  let pa, chance, chanceLabel, reason, actionLabel, attackType, attackLabel, coverNote, shotLoadForecast;
   if (mode === 'look') {
     const preview=lookPreview(state,unit,point);
     pa=preview.pa;reason=preview.reason;actionLabel=preview.prepare?preview.actionLabel:`Mirar al ${COMPASS_LABELS[preview.facing]}`;
@@ -417,23 +418,28 @@ function targetPreviewWithCosts(state, unit, point, ctx = {}) {
     } else {
       const reload = emptyGunPreview(state, unit);
       if (reload) return reload;
-      chance = shotChance(state, unit, target, ctx.aim || 0, hitLocationFor(ctx.hitLocation));
-      const path=firearmProjectilePath(state,unit,target,hitLocationFor(ctx.hitLocation));
-      coverNote=path.blocked?'La cobertura detiene este tiro. Disparar consume la carga.':path.damageFactor<1?`La cobertura reduce el daño un ${Math.round((1-path.damageFactor)*100)}%.`:undefined;
-      const flight=firearmFlightPreview(state,unit,target,hitLocationFor(ctx.hitLocation));
-      const targetImpactIndex=flight.bodyImpacts?.findIndex(impact=>impact.victimKind==='unit'&&impact.victimId===target.id)??-1;
-      const selectedImpact=targetImpactIndex<0?null:flight.bodyImpacts[targetImpactIndex];
-      const interveningBody=(targetImpactIndex<0?flight.bodyImpacts?.length:targetImpactIndex)>0||flight.victimId&&((flight.victimKind??'unit')!=='unit'||flight.victimId!==target.id);
-      if(interveningBody){
-        const passage=selectedImpact&&selectedImpact.reachChance<1?`La bala puede atravesarlo: ${chancePercent(selectedImpact.reachChance*100)} de paso hasta el objetivo; daño reducido un ${Math.round((1-selectedImpact.damageFactor)*100)}% si llega.`:'La bala puede herirlo; el paso al objetivo no está asegurado.';
-        coverNote=`Un combatiente está en la trayectoria. ${passage} Disparar consume la carga.`;
-        if(selectedImpact?.reachChance<1)chanceLabel='impacto con penetración';
+      const volley=firearmVolleyPreview(state,unit,target,ctx.aim||0,hitLocationFor(ctx.hitLocation)),primaryShot=volley.shots[0];
+      chance=primaryShot.chance;
+      let interveningBody=false;
+      if(primaryShot.shotLoad){
+        shotLoadForecast=primaryShot;chanceLabel='al menos un perdigón';coverNote=shotLoadText(primaryShot);
+      }else{
+        const path=firearmProjectilePath(state,unit,target,hitLocationFor(ctx.hitLocation));
+        coverNote=path.blocked?'La cobertura detiene este tiro. Disparar consume la carga.':path.damageFactor<1?`La cobertura reduce el daño un ${Math.round((1-path.damageFactor)*100)}%.`:undefined;
+        const flight=firearmFlightPreview(state,unit,target,hitLocationFor(ctx.hitLocation));
+        const targetImpactIndex=flight.bodyImpacts?.findIndex(impact=>impact.victimKind==='unit'&&impact.victimId===target.id)??-1;
+        const selectedImpact=targetImpactIndex<0?null:flight.bodyImpacts[targetImpactIndex];
+        interveningBody=(targetImpactIndex<0?flight.bodyImpacts?.length:targetImpactIndex)>0||flight.victimId&&((flight.victimKind??'unit')!=='unit'||flight.victimId!==target.id);
+        if(interveningBody){
+          const passage=selectedImpact&&selectedImpact.reachChance<1?`La bala puede atravesarlo: ${chancePercent(selectedImpact.reachChance*100)} de paso hasta el objetivo; daño reducido un ${Math.round((1-selectedImpact.damageFactor)*100)}% si llega.`:'La bala puede herirlo; el paso al objetivo no está asegurado.';
+          coverNote=`Un combatiente está en la trayectoria. ${passage} Disparar consume la carga.`;
+          if(selectedImpact?.reachChance<1)chanceLabel='impacto con penetración';
+        }
       }
       coverNote=[shotRangeText(firearmRangeProfile(state,unit,target)),coverNote].filter(Boolean).join(' ');
-      if(pairedPistol(unit)){
-        const volley=firearmVolleyPreview(state,unit,target,ctx.aim||0,hitLocationFor(ctx.hitLocation));
-        attackLabel=actionLabel='Disparar ambas pistolas';chanceLabel='impacto (mano principal)';
-        const chances=volley.shots.map(shot=>`${shot.hand==='primary'?'Mano principal':'Segunda mano'}: ${chancePercent(shot.chance)}${shot.conditional?` (incluye ${chancePercent(shot.reachChance*100)} de paso)`:''}${shot.damageFactor===0?' (la cobertura detiene el tiro)':shot.damageFactor<1?` (daño reducido un ${Math.round((1-shot.damageFactor)*100)}%${shot.conditional?' si llega':''})`:''}`).join(' · ');
+      if(volley.paired){
+        attackLabel=actionLabel='Disparar ambas pistolas';chanceLabel=primaryShot.shotLoad?'al menos un perdigón (mano principal)':'impacto (mano principal)';
+        const chances=volley.shots.map(shot=>`${shot.hand==='primary'?'Mano principal':'Segunda mano'}: ${chancePercent(shot.chance)}${shot.shotLoad?` de al menos un perdigón. ${shotLoadText(shot)}`:`${shot.conditional?` (incluye ${chancePercent(shot.reachChance*100)} de paso)`:''}${shot.damageFactor===0?' (la cobertura detiene el tiro)':shot.damageFactor<1?` (daño reducido un ${Math.round((1-shot.damageFactor)*100)}%${shot.conditional?' si llega':''})`:''}`}`).join(' · ');
         coverNote=[`${chances}. Un disparo por pistola.`,`Mano principal: ${shotRangeText(firearmRangeProfile(state,unit,target))}`,interveningBody?'Un combatiente está en la trayectoria. La bala puede herirlo y atravesarlo con menos fuerza; consume las cargas.':undefined].filter(Boolean).join(' ');
       }
       coverNote=[coverNote,firearmBystanderWarning(firearmBystanderRisk(state,unit,target,hitLocationFor(ctx.hitLocation)))].filter(Boolean).join(' ');
@@ -449,7 +455,7 @@ function targetPreviewWithCosts(state, unit, point, ctx = {}) {
   if (unit.knockedDown) reason = 'Primero debés levantarte.';
   if (!reason && !unitCanAct(state, unit)) reason = state.phase === 'interrupt' ? 'Este combatiente no puede actuar en la interrupción.' : 'El combatiente no puede actuar.';
   if (!reason && pa !== undefined && !affordable(state, unit, pa)) reason = 'PA insuficientes.';
-  return {name: (attackType ? target?.name : actionLabel || target?.name) || `${tacticalGridLabel(point.x,point.y)}`, pa, chance,...(chanceLabel?{chanceLabel}:{}), coverNote, hitLocation: chance === undefined || attackType !== 'fire' ? undefined : HIT_LOCATIONS.find(([id]) => id === hitLocationFor(ctx.hitLocation))[1], attackType, attackLabel, actionLabel, remaining: pa === undefined ? undefined : Math.max(0, unit.ap - (state.mode === 'exploration' ? 0 : pa)), reason, valid: !reason};
+  return {name: (attackType ? target?.name : actionLabel || target?.name) || `${tacticalGridLabel(point.x,point.y)}`, pa, chance,...(chanceLabel?{chanceLabel}:{}),...(shotLoadForecast?{shotLoad:true,pelletCount:shotLoadForecast.pelletCount,expectedForce:shotLoadForecast.expectedForce,damageFactor:shotLoadForecast.damageFactor}:{}), coverNote, hitLocation: chance === undefined || attackType !== 'fire' ? undefined : HIT_LOCATIONS.find(([id]) => id === hitLocationFor(ctx.hitLocation))[1], attackType, attackLabel, actionLabel, remaining: pa === undefined ? undefined : Math.max(0, unit.ap - (state.mode === 'exploration' ? 0 : pa)), reason, valid: !reason};
 }
 
 export function fittingInventoryModel(state, unit) {
