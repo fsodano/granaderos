@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign} from '../game/campaign.js';
 import {defaultContentPackage} from '../game/content-package.js';
+import {defaultErrands} from '../game/quest-definitions.js';
 import {encountersFor} from '../game/encounters.js';
 import {createBattle,actBattle,endTurn,getReachable} from '../game/tactical.js';
 import {enterSector} from '../game/world.js';
@@ -87,7 +88,8 @@ test('civilian snapshots reject altered HP, wound histories, missing residents a
 });
 
 test('the first death applies city consequences once and closes an unfinished local errand',()=>{
- let s=order(initialCampaign(4),{type:'recruitCivic',id:110,term:'week'});let pair=approach(visit(s),'local-retiro');
+ const initial=initialCampaign(4);initial.errandDefinitions=defaultErrands();
+ let s=order(initial,{type:'recruitCivic',id:110,term:'week'});let pair=approach(visit(s),'local-retiro');
  pair.campaign=order(pair.campaign,{type:'talkNPC',npcId:'local-retiro',unitId:110,approach:'quest',sectorState:pair.battle});
  pair=act(pair,{type:'weapon',slot:'blade'});const loyalty=pair.campaign.sectors.retiro.loyalty;
  for(let i=0;i<8&&pair.battle.npcs.find(n=>n.id==='local-retiro').hp>0;i++)pair=act(pair,{type:'melee',targetId:'local-retiro'});

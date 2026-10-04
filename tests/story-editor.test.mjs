@@ -626,8 +626,9 @@ test('campaign objectives and local errands protect referenced residents through
  await m.click(m.button('Reglas'));await m.input(m.label('Introducción de campaña'),'Este borrador conserva sus encargos.');
  const before=m.dom.window.localStorage.getItem(draftKey);assert.equal(toggle().disabled,true);assert.equal(toggle().checked,true);
  const warning=m.document.getElementById(toggle().getAttribute('aria-describedby'));assert.ok(warning);assert.match(warning.textContent,/quitá o reasigná.*Encargos locales/);
- const dependent=[['Escolta hasta la salida de la Quebrada','Arriero de la posta'],['Vendas para la Ciudadela','Oficial de la Ciudadela'],['Abrigo para los nuevos reclutas','Sargento del cuartel'],['Asegurar la posta','Maestra de posta']];
+ const dependent=[['Escolta hasta la salida de la Quebrada','Arriero de la posta'],['Vendas para la Ciudadela','Oficial de la Ciudadela'],['Abrigo para el cuartel o el puerto','Sargento del cuartel'],['Asegurar la posta','Maestra de posta']];
  for(const [title,name]of dependent){assert.ok(warning.textContent.includes(title),title);assert.ok(warning.textContent.includes(name),`${name}: ${warning.textContent}`);}
+ assert.match(warning.textContent,/Capataz del puerto/,'the secondary generic beneficiary also prevents resident removal');
  assert.doesNotMatch(warning.textContent,/Macacha Güemes/);await m.click(toggle());assert.equal(toggle().checked,true);assert.equal(m.dom.window.localStorage.getItem(draftKey),before);assert.deepEqual(draft().errands,d.errands);assert.equal(m.button('Iniciar campaña con estas fichas').disabled,false);
  await m.click(m.button('Encargos locales'));for(const [title]of dependent){await m.click(m.button(title));await m.click(m.button('Quitar encargo'));}
  assert.deepEqual(draft().errands.map(q=>q.npcId),['macacha']);assert.deepEqual(draft().quests,d.quests);

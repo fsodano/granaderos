@@ -6,6 +6,7 @@ import {defaultContentPackage,parseContentPackage} from '../game/content-package
 import {defaultErrands} from '../game/quest-definitions.js';
 import {decodeSave} from '../game/save.js';
 import {CONTENT_LAUNCH_KEY} from '../game/content-launch.js';
+import {localPackage} from './local-contract-fixture.mjs';
 const draftKey='granaderos.content-draft.v1';
 async function mount(t,stored=defaultContentPackage()){
  const console=new VirtualConsole();console.on('jsdomError',e=>{if(!e.message.includes('navigation'))throw e;});
@@ -60,7 +61,8 @@ test('the editor authors an exclusive reward choice through undo, actual import 
 });
 
 test('reward choice is restricted to city physical delivery and disabling it restores ordinary reward controls',async t=>{
- const m=await mount(t);await m.click(m.button('Encargos locales'));assert.equal(m.checkbox('Elegir entre reintegro y apoyo local').disabled,true);
+ const d=defaultContentPackage();d.errands=defaultErrands().map(q=>q.id==='retiro-uniformes'?{...q,reward:{treasury:0,loyalty:false},rewardChoice:{reimbursement:40}}:q);
+ const m=await mount(t,d);await m.click(m.button('Encargos locales'));assert.equal(m.checkbox('Elegir entre reintegro y apoyo local').disabled,true);
  await m.click(m.button('Abrigo para los nuevos reclutas'));assert.equal(m.checkbox('Elegir entre reintegro y apoyo local').checked,true);
  await m.input(m.label('Objetivo'),'resources');assert.equal(m.draft().errands.find(q=>q.id==='retiro-uniformes').rewardChoice,undefined);assert.equal(m.checkbox('Elegir entre reintegro y apoyo local').disabled,true);
  await m.click(m.button('Deshacer'));assert.equal(m.checkbox('Elegir entre reintegro y apoyo local').checked,true);
@@ -68,4 +70,29 @@ test('reward choice is restricted to city physical delivery and disabling it res
  await m.click(m.button('Deshacer'));await m.click(m.checkbox('Elegir entre reintegro y apoyo local'));assert.equal(m.draft().errands.find(q=>q.id==='retiro-uniformes').rewardChoice,undefined);
  await m.input(m.label('Pesos de plata'),83);await m.click(m.checkbox('Mejorar lealtad de la localidad (+8)'));
  assert.deepEqual(m.draft().errands.find(q=>q.id==='retiro-uniformes').reward,{treasury:83,loyalty:true});assert.equal(m.button('Iniciar campaña con estas fichas').disabled,false);
+});
+
+test('the editor pins two fixed recipients, reserves both contacts and retains branch edits through undo and saved launch',async t=>{
+ const m=await mount(t);await m.click(m.button('Encargos locales'));await m.click(m.button('Abrigo para el cuartel o el puerto'));
+ const selected=()=>m.draft().errands.find(q=>q.id==='retiro-uniformes'),field=index=>m.document.querySelector(`fieldset[aria-label="Destinatario ${index}"]`);
+ assert.equal(m.checkbox('Elegir entre dos destinatarios').checked,true);assert.equal(m.document.querySelectorAll('fieldset[aria-label^="Destinatario "]').length,2);
+ assert.deepEqual(selected().beneficiaries.map(b=>[b.id,b.npcId,b.sector]),[['cuartel','local-retiro','retiro'],['puerto','local-ensenada','ensenada']]);
+ assert.equal(m.label('Localidad del encargo').disabled,true);assert.match(m.document.body.textContent,/primera entrega aceptada fija el destinatario/);assert.ok(![...m.document.querySelectorAll('label')].some(l=>l.firstChild?.textContent==='Reintegro en pesos'));
+ assert.equal(field(1).querySelector('option[value="local-ensenada"]').disabled,true);assert.equal(field(2).querySelector('option[value="local-retiro"]').disabled,true);assert.equal(field(2).querySelector('option[value="local-jujuy"]'),null,'another errand already reserves this contact');
+ await m.input(field(2).querySelector('select'),'local-santa_fe');assert.equal(selected().beneficiaries[1].sector,'santa_fe');assert.equal(selected().npcId,'local-retiro');
+ await m.input(field(2).querySelector('textarea'),'La guardia recibe los dos ponchos.');const intended=structuredClone(selected());
+ await m.click(m.button('Deshacer'));assert.notEqual(selected().beneficiaries[1].delivery,intended.beneficiaries[1].delivery);await m.click(m.button('Rehacer'));assert.deepEqual(selected(),intended);
+ await m.click(m.button('Crear encargo'));assert.equal(m.label('Contacto').querySelector('option[value="local-santa_fe"]').disabled,true);await m.click(m.button('Quitar encargo'));
+ await m.click(m.button('Abrigo para el cuartel o el puerto'));await m.click(m.checkbox('Elegir entre dos destinatarios'));assert.equal(selected().beneficiaries,undefined);await m.click(m.button('Deshacer'));assert.deepEqual(selected(),intended);
+ await m.click(m.button('Iniciar campaña con estas fichas'));const {campaign}=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY));assert.deepEqual(campaign.contentCampaign.package.errands.find(q=>q.id===intended.id),intended);assert.deepEqual(campaign.contentCampaign.package.quests,[]);
+});
+
+test('an authored secondary recipient cannot be deleted until its errand reference is reassigned',async t=>{
+ const d=localPackage({pay:0,service:'permanent',recruitable:false});d.placements.find(p=>p.character==='alma-contract').sectors=['ensenada'];
+ const q=d.errands.find(q=>q.id==='retiro-uniformes');q.beneficiaries[1].npcId='authored-alma-contract';
+ const m=await mount(t,d);await m.input(m.document.querySelector('input[type="search"]'),'alma-contract');await m.click(m.document.querySelector('.entry-list button'));
+ const before=m.draft();await m.click(m.button('Eliminar'));assert.deepEqual(m.draft(),before);assert.match(m.document.body.textContent,/Quitá primero.*encargos/);
+ await m.click(m.button('Encargos locales'));await m.click(m.button(q.title));await m.input(m.document.querySelector('fieldset[aria-label="Destinatario 2"] select'),'local-ensenada');
+ await m.click(m.button('Personajes'));await m.input(m.document.querySelector('input[type="search"]'),'alma-contract');await m.click(m.document.querySelector('.entry-list button'));await m.click(m.button('Eliminar'));assert.equal(m.draft().characters.some(c=>c.id==='alma-contract'),false);
+ await m.click(m.button('Deshacer'));assert.equal(m.draft().characters.some(c=>c.id==='alma-contract'),true);
 });

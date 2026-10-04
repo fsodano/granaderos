@@ -19,6 +19,7 @@ import {validateEquipmentOwnership} from './equipment.js';
 import {FITTING_RULES_VERSION} from './weapon-fittings.js';
 import {validateCompanionGriefContext} from './companion-grief.js';
 import {validateRoadsideDiscoveryContext} from './roadside-discoveries.js';
+import {validateQuestBeneficiaryContext} from './quest-beneficiaries.js';
 export const SAVE_KEY='granaderos.campaign.v1';
 export function encodeSave(campaign,battle=null){
  const replacer=cellSceneSaveReplacer(artillerySaveReplacer(campaign,weaponSaveReplacer(campaign)));
@@ -60,6 +61,7 @@ export function decodeSave(text){
   // A new receipt may still await its campaign reply. An acknowledged receipt
   // must remain physically present with its recipient in this deployment.
   if(battle)validateQuestEscortOrders(campaign,battle);
+  if(battle)validateQuestBeneficiaryContext(campaign,battle);
   if(battle)hasPendingNpcGiftProgress(campaign,battle);
   validateEquipmentOwnership(campaign,rosterFor(campaign),battle);
   return {campaign,battle};

@@ -40,6 +40,7 @@ import {itemFlight} from './item-flight.js';
 import {usesElevationGeometry,elevationSightClear,absoluteBodyHeight,geometryCells,rayHeightIntersection} from './sight-geometry.js';
 import {tacticalLevel,spaceKey,sameSurface,sameCell,surfaceAt,surfaceHeight,accessStepsFrom} from './tactical-space.js';
 import {questGiftPlan,questGiftDecision} from './quests.js';
+import {commitQuestBeneficiary,questBeneficiaryDeliveryPreview,initializeQuestBeneficiaries} from './quest-beneficiaries.js';
 import {BODY_SLOTS,wornBodyItems,OUTFIT_CHANGE_AP,normalizeOutfit,wornOutfit,hasPoncho,regionalGarmentWear} from './outfits.js';
 import {FIELD_DRESSINGS_AP,planFieldDressings} from './field-dressings.js';
 import {handsRequired,selectMainHand,handLayout} from './hand-layout.js';
@@ -244,6 +245,7 @@ function applyReloadPlan(unit,plan){
 }
 function makeUnit(raw,side,index,x,y){const stats=raw.stats||{};const weapon=raw.weapon??raw.primary??1800;const w=typeof weapon==='object'?weapon:weaponSpecification({...raw,weapon})||WEAPONS[1800];return initializeUnitAmmunition({...raw,id:String(raw.id??`${side}-${index}`),name:raw.name||raw.nickname||(side==='player'?'Granadero':'Realista'),side,facing:raw.facing??(side==='enemy'?6:2),stealthMode:Boolean(raw.stealthMode),x:raw.x??x,y:raw.y??y,maxHp:raw.maxHp??raw.health??stats.health??100,hp:raw.hp??raw.health??stats.health??100,ap:100,morale:raw.morale??Math.min(100,(raw.personality==='optimistic'?90:raw.personality==='pessimistic'?70:80)+((raw.traits||[]).includes('steadfast')?10:0)),marksmanship:raw.marksmanship??stats.marksmanship??70,agility:raw.agility??stats.agility??75,strength:raw.strength??stats.strength??75,medical:raw.medical??stats.medical??30,mechanical:raw.mechanical??stats.mechanical??0,stealth:raw.stealth??stats.stealth??0,weapon,loaded:raw.loaded??(WEAPONS[weapon]||typeof weapon==='object'?w.capacity:0),ammo:raw.ammo,condition:raw.condition??100,stance:raw.stance??movementStance(raw.movementMode??'walk'),mounted:Boolean(raw.mounted),horse:Boolean(raw.horse||raw.canMount||raw.mounted),jammed:raw.jammed??false,bleeding:raw.bleeding??0,bandaged:raw.bandaged??((raw.bleeding??0)>0?0:Math.max(0,(raw.maxHp??raw.health??stats.health??100)-(raw.hp??raw.health??stats.health??100))),shock:raw.shock??0,experienceLevel:raw.experienceLevel??stats.experienceLevel??Math.min(10,4+Math.floor((raw.xp??0)/100)),dexterity:raw.dexterity??stats.dexterity??75,wisdom:raw.wisdom??stats.wisdom??50,carriedAP:0,routed:raw.routed??false,medkits:raw.medkits??2,momentum:0,lastDirection:null,weaponMode:raw.weaponMode??'fire',activeSlot:raw.activeSlot||'primary',fatigue:raw.fatigue||0,rations:raw.rations??2,energy:raw.energy??100,unconscious:isUnconscious({hp:raw.hp??raw.health??stats.health??100,energy:raw.energy??100}),movementMode:raw.movementMode||'walk',inventory:{...raw.inventory},boleadoras:raw.boleadoras??1,torches:raw.torches??2,strengthTraining:raw.strengthTraining??0,interceptTurn:0,parryTurn:0,counterTurn:0,braceTurn:0,braced:false,knockedDown:Boolean(raw.knockedDown),overwatch:raw.overwatch??(side==='enemy'),reactionTurn:0,reactionSpent:0});}
 export function createBattle(squad=[],sector={}){const width=sector.width||16,height=sector.height||12;const state={version:1,conditionVersion:1,...(sector.sourceMapId?{sourceMapId:sector.sourceMapId,sourceMapRevision:sector.sourceMapRevision}:{}),...(sector.errandDefinitions!==undefined?{errandDefinitions:structuredClone(sector.errandDefinitions)}:{}),...(sector.roadsideDiscoveryDefinitions!==undefined?{roadsideDiscoveryDefinitions:structuredClone(sector.roadsideDiscoveryDefinitions)}:{}),...(sector.artilleryDefinitions!==undefined?{artilleryDefinitions:structuredClone(sector.artilleryDefinitions)}:{}),...(sector.militiaPatrol!==undefined?{militiaPatrol:structuredClone(sector.militiaPatrol)}:{}),ammunitionVersion:2,fittingRulesVersion:FITTING_RULES_VERSION,exits:structuredClone(sector.exits??[]),exitRulesVersion:sector.exitRulesVersion??1,enemyExits:['N','E','S','W'].map(edge=>({id:`enemy:${edge}`,edge,destination:'__offmap_enemy__'})),battleId:sector.id??null,startSeconds:(sector.hour??(sector.night||sector.weather?.night?0:12))*3600+(sector.secondOfHour??0),elapsedSeconds:0,syncedSeconds:0,roundTimeCharged:false,quietCombatTurns:sector.exploration?2:0,contactThisRound:false,sectorId:sector.sector||sector.id||'san-lorenzo',sectorName:sector.name||'San Lorenzo',width,height,biome:sector.biome||'grassland',altitude:sector.altitude||0,night:Boolean(sector.night||sector.weather?.night||(sector.hour!==undefined&&(sector.hour%24>=20||sector.hour%24<6))),enemyCommand:sector.enemyCommand||null,objective:sector.objective||null,npcs:structuredClone(sector.npcs||[]).map(initializeCivilianHealth),props:structuredClone(sector.props??[]),buildings:sector.buildings||[],revealedRooms:[],decor:sector.decor||[],turn:1,enemyTurns:0,roundFirstSide:sector.firstSide==='enemy'?'enemy':'player',phase:'player',mode:sector.exploration?'exploration':'combat',sectorCleared:false,status:'active',seed:(sector.seed??18130203)>>>0,weather:{rain:0,humidity:0,...sector.weather},tiles:[],units:[],droppedWeapons:[],groundItems:structuredClone(sector.groundItems??[]),lights:(sector.lights||[]).map((l,i)=>({id:`light-${i}`,type:'campfire',radius:4,intensity:1,...l})),artillery:(sector.artillery||[]).map((g,i)=>({id:`gun-${i}`,type:'bronze4',side:'player',loaded:artilleryProfile(sector,g.type??'bronze4').initialLoaded,ammo:artilleryProfile(sector,g.type??'bronze4').initialAmmo,...g})),smoke:[],log:[],lastError:null};
+const beneficiaryMap=sector.questBeneficiaries!==undefined?sector.questBeneficiaries:initializeQuestBeneficiaries(state);if(beneficiaryMap!==undefined)state.questBeneficiaries=structuredClone(beneficiaryMap);
 if(sector.upperSurfaces!==undefined)state.upperSurfaces=structuredClone(sector.upperSurfaces);
 if(sector.climbLinks!==undefined)state.climbLinks=structuredClone(sector.climbLinks);
 if(sector.regionalWeather){state.regionalWeather=true;state.weather=regionalWeatherAt(state.sectorId,state.startSeconds/3600);}
@@ -1206,7 +1208,7 @@ function planSelectedNpcGift(s,u,action,npc,extraction,point){
  const confirmed={type:'inventoryMap',unitId:u.id,sourceId:action.sourceId,expectedSource:action.expectedSource,count:action.count??1,intent:'auto',...point,targetId:npc.id,transferKind:'gift'};
  return {extraction,target:npc,received:null,cost:4,valid:true,reason:null,type:'inventoryMap',kind:'gift',pa:0,totalPA:0,actionPa:4,movePa:approach?.cost??0,chance:100,route:[],
   destination:approach?{...positionOf(approach),tacticalLevel:tacticalLevel(approach)}:{...positionOf(u),tacticalLevel:tacticalLevel(u)},landing:null,flight:null,path:approach?.path??[],action:confirmed,
-  name:itemDescriptor(u,extraction.source.item).label,actionLabel:'Entregar objeto'};
+  name:itemDescriptor(u,extraction.source.item).label,actionLabel:'Entregar objeto',...(questBeneficiaryDeliveryPreview(s,npc.id)?{beneficiaryDelivery:questBeneficiaryDeliveryPreview(s,npc.id)}:{})};
 }
 function groundStack(ground){
   if(ground.type==='money')return {item:`inventory:${ground.id}`,name:'Pesos',count:ground.count,weight:.01};
@@ -1655,10 +1657,12 @@ function knownApproachRoute(s,u,inReach){
     !units.some(other=>other.id!==u.id&&!other.departure&&other.hp>0&&sameCell(other,cell))})[0];
 }
 export function npcGiftPreview(s,u,npc){
- const actionPa=4,result=(reason=null,route=null)=>({type:'giveItem',label:'Entregar poncho',actionPa,movePa:route?.cost??0,pa:actionPa+(route?.cost??0),destination:route?positionOf(route):null,path:route?.path??[],valid:!reason,reason});
+ let beneficiaryDelivery;
+ const actionPa=4,result=(reason=null,route=null)=>({type:'giveItem',label:'Entregar poncho',actionPa,movePa:route?.cost??0,pa:actionPa+(route?.cost??0),destination:route?positionOf(route):null,path:route?.path??[],valid:!reason,reason,...(beneficiaryDelivery?{beneficiaryDelivery}:{})});
  const unavailable=inventoryOrderReason(s,u,actionPa);if(unavailable)return result(unavailable);
  if(s.mode!=='exploration')return result('Terminá el combate antes de entregar el objeto.');
- if(!npc||!s.npcs.includes(npc)||npc.departure||npc.fled||npc.routed||(npc.hp??100)<=0||npc.unconscious||!canSee(s,u,npc))return result('El interlocutor debe estar disponible y a la vista.');
+ if(!npc||!s.npcs.includes(npc)||npc.departure||npc.fled||npc.routed||(npc.hp??100)<=0||npc.unconscious||!canSee(s,u,npc)||!isInteriorVisible(s,npc,new Set(s.revealedRooms??[])))return result('El interlocutor debe estar disponible y a la vista.');
+ beneficiaryDelivery=questBeneficiaryDeliveryPreview(s,npc.id);
  if(civilianWoundedByPlayer(npc))return result('No quiere colaborar con quienes lo hirieron.');
  try{questGiftPlan(u,npc,s);}catch(error){return result(error.message);}
  const inReach=cell=>sameSurface(cell,npc)&&Math.abs(cell.x-npc.x)+Math.abs(cell.y-npc.y)===1&&hasLineOfSight(s,cell,npc);
@@ -2166,8 +2170,10 @@ else if(a.type==='steal'){
 }
 else if(a.type==='giveItem'){
  const preview=npcGiftPreview(s,u,target);if(!preview.valid||preview.path.length)return fail(preview.reason??'Acercate al interlocutor para entregar el objeto.');
- const plan=questGiftPlan(u,target,s);pay(preview.actionPa);plan.unit.ap=u.ap;replaceUnit(u,plan.unit);target.questGifts=plan.gifts;lowerWeapon(u);
- sayObserved(s,[u],`${u.name}: ${plan.label} a ${target.name}. Recibidos: ${plan.gifts.length}/${plan.required}.`);
+ const sourceId=u.activeItem,plan=questGiftPlan(u,target,s);pay(preview.actionPa);plan.unit.ap=u.ap;replaceUnit(u,plan.unit);lowerWeapon(u);
+ if(plan.accepted){target.questGifts=plan.gifts;commitQuestBeneficiary(s,plan.quest,target.id);}
+ if(plan.quest.beneficiaries)recordNpcGiftResult(s,{...a,sourceId,count:1,x:target.x,y:target.y},target,plan.accepted?'accepted':'refused',plan.text);
+ sayObserved(s,[u],plan.accepted?`${u.name}: ${plan.label} a ${target.name}. Recibidos: ${plan.gifts.length}/${plan.required}.`:`${target.name}: «${plan.text}»`);
 }
 else if(a.type==='equipLoot'){
   const preview=equipLootPreview(s,u,a.inventoryKey,a.slot??'primary');if(!preview.valid)return fail(preview.reason);
@@ -2196,7 +2202,7 @@ else if(a.type==='inventoryMap'){
   if(plan.path.length)return fail('Acercate al interlocutor para entregar el objeto.');
   let decision;try{decision=questGiftDecision(plan.target,plan.extraction.stack,s);}catch(error){return fail(error.message);}
   pay(plan.cost);
-  if(decision.accepted){plan.extraction.unit.ap=u.ap;lowerWeapon(plan.extraction.unit);replaceUnit(u,plan.extraction.unit);plan.target.questGifts=decision.gifts;}
+  if(decision.accepted){plan.extraction.unit.ap=u.ap;lowerWeapon(plan.extraction.unit);replaceUnit(u,plan.extraction.unit);plan.target.questGifts=decision.gifts;commitQuestBeneficiary(s,null,plan.target.id);}
   recordNpcGiftResult(s,plan.action,plan.target,decision.accepted?'accepted':'refused',decision.text);
   sayObserved(s,[u],`${plan.target.name}: «${decision.text}»`);
  }else{
