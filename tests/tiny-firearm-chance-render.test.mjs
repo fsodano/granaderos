@@ -1,5 +1,6 @@
 import {register} from 'node:module';register('./tactical-render-loader.mjs',import.meta.url);
 import test from 'node:test';import assert from 'node:assert/strict';
+import {createElement as h} from '../web/node_modules/react/index.js';
 import {renderToStaticMarkup} from '../web/node_modules/react-dom/server.node.js';
 import {shotChance} from '../game/tactical.js';
 import {mountBattlefield} from './mounted-battlefield.mjs';
@@ -14,5 +15,7 @@ test('actual Battlefield hover displays a physically possible tiny chance and pa
  const mounted=await mountBattlefield(t,Battlefield,{battle,onChange:next=>next,onFinish(){}}),get=type=>nodes(mounted.tree()).find(node=>node.type===type);
  await mounted.act(async()=>{get(JA2Strip).props.onMode('fire');get(TacticalScene).props.onHover({...target,aimLocation:'head'});});
  const preview=nodes(mounted.tree()).find(node=>node.props?.['aria-label']==='Vista previa de la orden');assert.ok(preview);const html=renderToStaticMarkup(preview);
- assert.match(html,/Cabeza · &lt;1% de impacto con penetración/);assert.match(html,/&lt;1% de paso hasta el objetivo/);assert.doesNotMatch(html,/0% de impacto|0% de paso|0\.0/);assert.equal(mounted.jobs().filter(job=>job.job.kind==='action'||job.job.kind==='movement-step').length,0);assert.deepEqual(battle,before);
+ assert.match(html,/Cabeza · &lt;1% de impacto con penetración/);assert.match(html,/&lt;1% de paso hasta el objetivo/);assert.doesNotMatch(html,/0% de impacto|0% de paso|0\.0/);
+ const sceneHtml=renderToStaticMarkup(h('svg',null,get(TacticalScene)));assert.match(sceneHtml,/&lt;1%<\/text>/);assert.ok(!sceneHtml.includes(`${shotChance(battle,player,target,0,'head')}%`),'the target label also formats the real tiny chance');
+ assert.equal(mounted.jobs().filter(job=>job.job.kind==='action'||job.job.kind==='movement-step').length,0);assert.deepEqual(battle,before);
 });

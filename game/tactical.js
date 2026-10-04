@@ -642,13 +642,13 @@ function coneFireImpact(s,attacker,target,aim,hitLocation,source=attacker){
  sayObserved(s,[source],`${source.name} dispara una carga de perdigones con ${w.name}.`);
  finishFlight();
 }
-function directedFireImpact(s,u,target,hitLocation,hit,source=u){
-  const w=weaponFor(u),end=hit?target:scatteredShotDestination(s,u,target);
+function directedFireImpact(s,u,target,hitLocation,hit,source=u,preparedIntent=null){
+  const aimPoint=preparedIntent?.point??target,w=weaponFor(u),end=hit?aimPoint:scatteredShotDestination(s,u,aimPoint);
   // A failed accuracy roll must remain a miss of the selected soldier. The
   // cell-wide approximation still checks every other body along that miss.
   const targetKind=isCivilianBody(s,target)?'npc':'unit';
   const flightState=hit?s:{...s,units:s.units.filter(v=>targetKind!=='unit'||v.id!==target.id),npcs:(s.npcs??[]).filter(v=>targetKind!=='npc'||v.id!==target.id)};
-  const destination={...end,tacticalLevel:tacticalLevel(target)},options={destinationHeight:absoluteBodyHeight(s,target,hitLocation),targetKind};
+  const destination={...end,tacticalLevel:tacticalLevel(aimPoint)},options={destinationHeight:preparedIntent?preparedIntent.destinationHeight:absoluteBodyHeight(s,target,hitLocation),targetKind};
   const forecast=projectileFlight(flightState,u,destination,w,hitLocation,options),victim=flightVictim(s,forecast);
   // Keep the established damage draw for aimed hits, including blocked ones.
   const amount=hit||victim?w.damage*(.8+random(s)*.4):0;
@@ -903,8 +903,8 @@ export function pointFirePreview(s,u,point,aim=0){
   // occupied coordinates have exactly the same public preflight.
   return {valid:!reason,reason,pa,aim:level};
 }
-function pointFireImpact(s,u,point,aim,source=u,preparedAccuracy){
-  const w=weaponFor(u),accuracy=preparedAccuracy??shotAccuracy(s,u,{...point,stance:'standing'},aim,'torso',true),intended=intendedCivilian(s,source,point);
+function pointFireImpact(s,u,point,aim,source=u,preparedAccuracy,preparedIntent=null){
+  const w=weaponFor(u),accuracy=preparedAccuracy??shotAccuracy(s,u,{...point,stance:'standing'},aim,'torso',true),intended=preparedIntent?preparedIntent.intended:intendedCivilian(s,source,point);
   const impact=(victim,amount,location)=>{
     const visible=observedBody(s,victim);
     physicalImpact(s,victim,amount,source,{hitLocation:location,report:visible,intentional:victim===intended});
@@ -925,7 +925,7 @@ function pointFireImpact(s,u,point,aim,source=u,preparedAccuracy){
   if(random(s)*100>=accuracy){
     end=scatteredShotDestination(s,u,point);
   }
-  const destination={...end,tacticalLevel:tacticalLevel(point)},options={destinationHeight:absoluteBodyHeight(s,{...point,stance:'standing',mounted:false},'torso')};
+  const destination={...end,tacticalLevel:tacticalLevel(point)},options={destinationHeight:preparedIntent?preparedIntent.destinationHeight:absoluteBodyHeight(s,{...point,stance:'standing',mounted:false},'torso')};
   const forecast=pointProjectileFlight(s,u,destination,w,options),victim=flightVictim(s,forecast);
   const amount=victim?w.damage*(.8+random(s)*.4):0;
   const flight=victim?pointProjectileFlight(s,u,destination,w,{...options,resolveBody:entry=>random(s)*100<entry.penetrationChance}):forecast;
@@ -1827,7 +1827,10 @@ else if(['fire','firePoint'].includes(a.type)&&pairedPistol(u)){
     if(!shotLocationsFor(target).includes(hitLocation))return fail('Un objetivo cuerpo a tierra tiene una sola zona de tiro.');
     if(!hasLineOfSight(s,u,target))return fail('No hay línea de tiro.');
   }
-  const point=pointShot?{...positionOf(a),stance:'standing',mounted:false}:{...target},aim=clamp(Math.floor(Number.isFinite(a.aim)?a.aim:0),0,4);
+  const point=Object.freeze(pointShot?{...positionOf(a),stance:'standing',mounted:false}:{...target}),aim=clamp(Math.floor(Number.isFinite(a.aim)?a.aim:0),0,4);
+  // Geometry belongs to this order's admitted intent. The second discharge
+  // still traces the current bodies, including a fallen or departed target.
+  const intent=Object.freeze({point,destinationHeight:absoluteBodyHeight(s,point,hitLocation),intended:pointShot?intendedCivilian(s,u,point):target});
   const costs=actionCosts(s,u,point),penalty=pistolPairPenalty(u),other=u.offHand;
   // Both shots commit to this aim before smoke, damage or repeat-target memory.
   const shots=[{record:u,view:{...u},hand:'principal'},{record:other,view:secondaryPistolView(u,other),hand:'secundaria'}].map(shot=>({...shot,
@@ -1840,12 +1843,12 @@ else if(['fire','firePoint'].includes(a.type)&&pairedPistol(u)){
     if(random(s)*100<shot.risk){shot.record.jammed=true;sayObserved(s,[u],`${u.name}: fallo de chispa en la mano ${shot.hand}. La carga se conserva.`);continue;}
     shot.record.loaded--;shot.record.condition=Math.max(0,(shot.record.condition??100)-1);
     const notifyCivilians=emitNoise(s,u,'fire',u,{deferCivilians:true});
-    if(pointShot)pointFireImpact(s,shot.view,point,aim,u,shot.chance);
+    if(pointShot)pointFireImpact(s,shot.view,point,aim,u,shot.chance,intent);
     else{
       practice(u,'marksmanship',2);
       if(weaponFor(shot.view).loadPattern==='cone')coneFireImpact(s,shot.view,target,aim,hitLocation,u);
       else {
-       const hit=random(s)*100<shot.chance;directedFireImpact(s,shot.view,target,hitLocation,hit,u);
+       const hit=random(s)*100<shot.chance;directedFireImpact(s,shot.view,target,hitLocation,hit,u,intent);
        if(!hit&&!isCivilianBody(s,target)){target.morale=Math.max(0,target.morale-4);sayObserved(s,[u],`${u.name} falla con la mano ${shot.hand} (${shot.chance}%).`);}
       }
     }

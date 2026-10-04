@@ -21,7 +21,7 @@ import {actorInteriorReadable,foregroundOccludesActor,corpseBloodShape} from '..
 import {roomDressings} from '../../game/room-dressing.js';
 import {buildPropObjects} from './TacticalProps';
 import {canSee,tileIllumination,shotChance,hasFirearm,contextualAttack} from '../../game/tactical.js';
-import {heardNoiseModel,groundLootPiles,civilianMedicalInputAction,aimedCursorMode,grenadeTargetingMode} from '../../game/ja2-hud.js';
+import {heardNoiseModel,groundLootPiles,civilianMedicalInputAction,aimedCursorMode,grenadeTargetingMode,chancePercent} from '../../game/ja2-hud.js';
 import {cloneElement,useMemo,useRef,useId,type CSSProperties,type ReactElement,type ReactNode} from 'react';
 import './tactical-readability.css';
 import {sameCell,spaceKey,tacticalLevel,surfaceHeight} from '../../game/tactical-space.js';
@@ -137,7 +137,7 @@ export default function TacticalScene({groundOverlay,terrainVisible=true,interac
    <g data-enemy-highlight={!npc&&v.side==='enemy'&&v.hp>0&&!v.surrendered||undefined} filter={!npc&&v.side==='enemy'&&v.hp>0&&!v.surrendered?`url(#${enemyGlow})`:undefined}><g style={{filter:`brightness(${light(moving.x,moving.y,tacticalLevel(v))})`}}><SpriteFigure unit={v} position={p} motion={{...moving,direction}} pose={poses[v.id]&&poses[v.id]!=='idle'?poses[v.id]:selectedUnit&&mode==='fire'?'aim':'idle'} drawSize={52} appearance={npc?'civilian':'soldier'}/></g></g>
    {v.hp>0&&(selectedUnit||hovered)&&<><rect x={p.x-14} y={top} width="28" height="2" fill="#191d14"/><rect x={p.x-14} y={top} width={28*v.hp/v.maxHp} height="2" fill={v.side==='player'?'#81a866':'#bf644b'}/></>}
    {(selectedUnit||npc&&hovered)&&<text x={p.x} y={top-4} textAnchor="middle" fill="#ede6c3" fontSize="8" stroke="#11180f" strokeWidth="2" paintOrder="stroke">{v.nickname||v.name}{npc&&!collapsed&&v.ai?.activity?` · ${(NPC_ACTIVITY_LABELS as any)[v.ai.activity]}`:""}</text>}
-   {mode!=='inventory'&&hovered&&v.side==='enemy'&&v.hp>0&&!v.surrendered&&u&&hasFirearm(u)&&contextualAttack(s,u,v,{type:mode,aim}).type==='fire'&&<text x={p.x} y={top-5} textAnchor="middle" fill="#f2d5a0" fontSize="10" stroke="#11180f" strokeWidth="2" paintOrder="stroke">{shotChance(s,u,v,aim,hitLocation)}%</text>}
+   {mode!=='inventory'&&hovered&&v.side==='enemy'&&v.hp>0&&!v.surrendered&&u&&hasFirearm(u)&&contextualAttack(s,u,v,{type:mode,aim}).type==='fire'&&<text x={p.x} y={top-5} textAnchor="middle" fill="#f2d5a0" fontSize="10" stroke="#11180f" strokeWidth="2" paintOrder="stroke">{chancePercent(shotChance(s,u,v,aim,hitLocation))}</text>}
   </g>;
  };
  const visiblePeople=useMemo(()=>sightAdmittedUnits.filter(v=>!v.fled&&!v.departure&&actorInteriorReadable(s,v,positions[v.id],revealed)),[s,sightAdmittedUnits,revealed,positions]);

@@ -102,6 +102,54 @@ test('each paired pistol presents its own real charge while pellets do not inven
  const markup=render(h('svg',null,h(FirearmShotEffect,{state:cone,visual,stage:'projectile',project})));assert.match(markup,/data-firearm-discharge/);assert.doesNotMatch(markup,/animateMotion|data-firearm-impact|data-firearm-flight/);
 });
 
+for(const mountedTarget of [false,true])test(`mounted paired leg shots keep the admitted aim after the first ${mountedTarget?'unhorses':'knocks down'} the target`,async t=>{
+ // This is the existing seed127 paired-pistol case. The standing leg ray can
+ // still touch the fallen body; the mounted leg ray passes above it instead.
+ const s=createBattle([{id:'p',name:'Tirador',x:2,y:2,facing:2,weapon:1805,loaded:1,ammo:8,condition:81,weaponInstanceId:'first',marksmanship:100,
+  offHand:{count:1,weapon:1808,weight:1.3,loaded:2,condition:100,jammed:false,instanceId:'second',name:'De familia'}}],
+  {width:20,height:8,seed:127,tiles:Array.from({length:160},(_,i)=>({x:i%20,y:Math.floor(i/20),type:'grass',cover:0,blocked:false})),
+   enemies:[{id:'e',x:5,y:2,mounted:mountedTarget,patrol:false,overwatch:false},{id:'reserve',x:18,y:6,patrol:false,overwatch:false}]});
+ for(const u of s.units.filter(u=>u.side==='enemy'))u.ap=0;
+ const before=structuredClone(s),action={type:'fire',unitId:'p',targetId:'e',aim:4,hitLocation:'legs'},expected=presentedActBattle(s,action),commits=[];
+ const flights=expected.frames.filter(f=>f.type==='projectile'),impacts=expected.frames.filter(f=>f.type==='impact');
+ const sourceHeight=absoluteBodyHeight(s,actor(s,'p'),'muzzle'),aimHeight=absoluteBodyHeight(s,actor(s,'e'),'legs'),slope=(aimHeight-sourceHeight)/3;
+ assert.deepEqual(expected.state,actBattle(s,action));assert.deepEqual(s,before);
+ assert.deepEqual(actBattle(validateBattleSnapshot(JSON.parse(JSON.stringify(s))),action),expected.state);
+ assert.deepEqual(validateBattleSnapshot(JSON.parse(JSON.stringify(expected.state))),expected.state);
+ assert.equal(flights.length,2);assert.equal(impacts.length,2);
+ for(const frame of flights){const v=frame.shotVisual;assert.notEqual(v.discharge,false);assert.deepEqual(v.source,{x:2,y:2,tacticalLevel:0,height:sourceHeight});
+  assert.ok(Math.abs((v.impact.height-sourceHeight)/(v.impact.x-2)-slope)<1e-12,'each gun follows the same originally admitted aim');assert.equal(v.impact.y,2);assert.deepEqual(frame.impacts,[]);}
+ assert.equal(actor(flights[0].state,'e').hp,100);assert.equal(actor(impacts[0].state,'e').hp,70);
+ assert.equal(actor(impacts[0].state,'e').stance,'prone');assert.equal(actor(impacts[0].state,'e').mounted,false);assert.equal(actor(flights[1].state,'e').hp,70);
+ assert.deepEqual(impacts.flatMap(f=>f.impacts).map(i=>[i.unitId,i.damage]),mountedTarget?[['e',30]]:[['e',30],['e',22]]);
+ assert.equal(actor(expected.state,'e').hp,mountedTarget?70:48);
+ assert.ok(Math.abs(flights[1].shotVisual.impact.x-(mountedTarget?16:5))<1e-12);assert.equal(flights[1].shotVisual.outcome,mountedTarget?'cover':'hit');
+ if(mountedTarget){assert.equal(flights[1].shotVisual.material,'earth');assert.equal(flights[1].shotVisual.impact.height,0);assert.deepEqual(impacts[1].impacts,[]);}
+ assert.equal(teamCanSee(s,'player',actor(s,'reserve')),false);
+ assert.deepEqual(actor(expected.state,'reserve'),{...actor(s,'reserve'),lastHeardNoise:{x:2,y:2,turn:1,kind:'fire',uncertainty:3}});
+ for(const frame of expected.frames){assert.ok(!frame.visibleIds.includes('reserve'));assert.ok(!frame.impacts.some(i=>i.unitId==='reserve'));assert.ok(!frame.targetPoint||frame.targetPoint.x!==18);assert.equal(frame.shotVisual?.victimId,undefined);}
+ const shooter=actor(expected.state,'p');assert.equal(shooter.ap,80);assert.equal(shooter.energy,100);assert.equal(shooter.loaded,0);assert.equal(shooter.offHand.loaded,1);assert.equal(shooter.ammo,8);
+ assert.equal(shooter.condition,80);assert.equal(shooter.offHand.condition,99);assert.equal(expected.state.smoke.length,2);assert.equal(expected.state.elapsedSeconds,6);assert.equal(expected.state.seed,mountedTarget?366914888:4258295815);
+ assert.equal(expected.state.preparedIntent,undefined);assert.equal(expected.state.shotVisual,undefined);
+ const mounted=await mountBattlefield(t,Battlefield,{battle:s,onChange:next=>{commits.push(next);return next;},onFinish(){}},{virtualTimers:true});
+ window.matchMedia=()=>({matches:mountedTarget,addEventListener(){},removeEventListener(){}});
+ const strip=()=>nodes(mounted.tree()).find(n=>n.props?.onOrder&&n.props?.onEndTurn);await mounted.act(async()=>strip().props.onOrder(action));
+ let discharges=0;
+ for(const frame of expected.frames){
+  assert.equal(strip().props.busy,true);assert.deepEqual(commits,[]);
+  const scene=nodes(mounted.tree()).find(n=>n.type===TacticalScene),effect=nodes(mounted.tree()).find(n=>n.type===FirearmShotEffect);assert.deepEqual(scene.props.state.units,frame.state.units);
+  if(frame.shotVisual){assert.ok(effect);assert.deepEqual(effect.props.visual,frame.shotVisual);assert.equal(effect.props.stage,frame.type);
+   const markup=render(h('svg',null,h(FirearmShotEffect,effect.props)));
+   if(mountedTarget){assert.match(markup,/data-firearm-reduced-motion/);assert.doesNotMatch(markup,/animate|animateMotion|animateTransform/);}
+   else if(frame.type==='projectile')assert.equal((markup.match(/data-muzzle-flash=/g)??[]).length,1);
+   if(frame.type==='projectile')discharges++;
+  }
+  await mounted.act(async()=>strip().props.onOrder(action));assert.deepEqual(commits,[]);
+  assert.equal(await mounted.nextDelay(),battleFrameDuration(frame));
+ }
+ assert.equal(discharges,2);assert.deepEqual(commits,[expected.state]);assert.equal(strip().props.busy,false);assert.equal(nodes(mounted.tree()).some(n=>n.type===FirearmShotEffect),false);assert.deepEqual(s,before);
+});
+
 test('the projectile is a finite muted moving speck and a bare miss creates no dust or surface strike',()=>{
  const s=field({weapon:1805,marksmanship:1}),visual=shot(presentedActBattle(s,{...order,aim:0})).shotVisual;
  const draw=(stage,v=visual)=>render(h('svg',null,h(FirearmShotEffect,{state:s,visual:v,stage,project}))),flight=draw('projectile'),miss=draw('impact');
