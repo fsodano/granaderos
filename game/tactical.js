@@ -573,7 +573,7 @@ function shotAccuracy(s,attacker,target,aim=0,hitLocation='torso',pointShot=fals
   const chance=effectiveSkill+support+repeat+(nearby(s,attacker,'strategic_command',6)?12:0)+(nearby(s,attacker,'tactical_command',4)?8:0)+clamp(Number.isFinite(aim)?Math.floor(aim):0,0,4)*8+rangeProfile.sightAdjustment-rangeProfile.weaponPenalty-effectiveWounds(attacker)*COMBAT_BALANCE.woundAccuracyPenaltyPerPoint-(100-(attacker.energy??100))*.15-(attacker.shock??0)*COMBAT_BALANCE.shockAccuracyPenaltyPerPoint+((attacker.morale??80)-80)*.1-targetPosture
     -(attacker.mounted&&![1803,1805,1806,1808].includes(w.id)?15:0)
     +(hasTrait(attacker,'guerrilla_tactician')&&!attacker.momentum&&((surfaceAt(s,attacker)?.cover||0)>=20||['forest','scrub'].includes(surfaceAt(s,attacker)?.type))?10:0)
-    -(hasTrait(target,'guerrilla_tactician')&&!target.mounted&&((tile(s,target.x,target.y)?.cover||0)>=20||['forest','scrub'].includes(tile(s,target.x,target.y)?.type))?12:0);
+    -(hasTrait(target,'guerrilla_tactician')&&!target.mounted&&((surfaceAt(s,target)?.cover||0)>=20||['forest','scrub'].includes(surfaceAt(s,target)?.type))?12:0);
   return Math.round(clamp((chance-pairPenalty-shotLocationPenalty(hitLocation,rangeProfile.effectiveSightRange))*rangeProfile.chanceFactor,1,95));
 }
 const isCivilianBody=(s,body)=>(s.npcs??[]).includes(body);
