@@ -4,7 +4,7 @@ export const PONCHO_PRICE=20;
 export const PONCHO_STOCK_CAP=6;
 export const PONCHO_DAILY_RESTOCK=1;
 export const BODY_SLOTS=Object.freeze(['headwear','outfit','legwear']);
-export const OUTFITS=Object.freeze({poncho:Object.freeze({name:'Poncho de lana',weight:2,slot:'outfit'}),hat:Object.freeze({name:'Sombrero de fieltro',weight:.3,slot:'headwear'}),trousers:Object.freeze({name:'Pantalón de campaña',weight:.7,slot:'legwear'})});
+export const OUTFITS=Object.freeze({poncho:Object.freeze({name:'Poncho de lana',weight:2,slot:'outfit'}),linen_shirt:Object.freeze({name:'Camisa de lino',weight:.6,slot:'outfit'}),hat:Object.freeze({name:'Sombrero de fieltro',weight:.3,slot:'headwear'}),trousers:Object.freeze({name:'Pantalón de campaña',weight:.7,slot:'legwear'})});
 export const outfitSlot=value=>OUTFITS[value?.outfit]?.slot??null;
 export function makeOutfit(kind='poncho',condition=100){const spec=Object.hasOwn(OUTFITS,kind)&&OUTFITS[kind];if(!spec)throw Error('La vestimenta no existe.');return {kind:'outfit',outfit:kind,count:1,weight:spec.weight,condition};}
 export function validateOutfit(value,{worn=false,slot=null}={}){
@@ -17,6 +17,21 @@ export function wornOutfit(unit,slot='outfit'){if(!BODY_SLOTS.includes(slot))thr
 export const wornBodyItems=unit=>BODY_SLOTS.filter(slot=>wornOutfit(unit,slot));
 export function normalizeOutfit(unit){for(const slot of BODY_SLOTS)unit[slot]=structuredClone(wornOutfit(unit,slot));delete unit.poncho;return unit;}
 export const hasPoncho=unit=>{const outfit=wornOutfit(unit);return outfit?.outfit==='poncho'&&outfit.condition>0;};
+// The caller supplies the actual recipient, physical region and real HP loss.
+// This pure result changes only that worn garment's condition. It never issues
+// legacy clothing, searches pockets, or reduces the injury itself.
+export function regionalGarmentWear(recipient,hitLocation,actualHPLoss){
+ if(!recipient||typeof recipient!=='object'||Array.isArray(recipient)||!Number.isFinite(actualHPLoss)||actualHPLoss<=0)return null;
+ const slot=hitLocation==='head'?'headwear':hitLocation==='torso'?'outfit':hitLocation==='legs'?'legwear':null;
+ if(!slot||!recipient[slot])return null;
+ const record=recipient[slot];
+ try{
+  validateOutfit(record,{worn:true,slot});
+  if(record.condition===0)return null;
+  const wear=Math.min(record.condition,Math.ceil(actualHPLoss/5));
+  return {slot,garment:{...structuredClone(record),condition:record.condition-wear},wear};
+ }catch{return null;}
+}
 // The recruit's personal clothing is issued once with their service equipment.
 // A saved empty slot is deliberate and must not be refilled on rehire or entry.
 export function issueInitialOutfit(campaign,id){const record=campaign.operativeState[id];if(record.outfit!==undefined)return;record.headwear??=makeOutfit('hat');record.legwear??=makeOutfit('trousers');record.outfit=makeOutfit();}

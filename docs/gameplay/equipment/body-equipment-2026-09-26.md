@@ -10,7 +10,7 @@ saved torso field, so old ponchos retain their existing meaning. `headwear` and
 mean empty slots, not free replacement equipment.
 
 New recruits receive a felt hat and campaign trousers with their initial service
-kit. Ponchos still consume the existing finite depot stock. Repeated initial
+kit, including one personal poncho. Repeated initial
 issue calls do not replace clothing after it has been removed. These garments
 have weight and condition; no new armor protection or clothing sprite variants
 are claimed.
@@ -25,6 +25,11 @@ Weight, corpse inventory, campaign return, prisoner escape custody, item identit
 validation and player-visible state include all three slots. Clothing still uses
 the existing equipment action costs and timing. Stored records retain condition
 and identity. Invalid placement must not consume or overwrite an item.
+
+The [October garment-care update](outfit-equipment.md#regional-wear-and-repair--4-october-2026)
+adds physical regional wear and finite carried repair. It also adds a torso linen
+shirt with a finite [field-dressing recipe](field-dressings.md). Clothing still
+provides no new ballistic armor or artwork.
 
 ## Verification
 

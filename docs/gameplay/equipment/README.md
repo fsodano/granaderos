@@ -16,6 +16,7 @@ the [workspace acceptance record](../../verification/gameplay-completion.md) and
 - [Physical inventory pockets](inventory-pockets.md) *(workspace)*
 - [Pocket stacks and quantity selection](pocket-stack-quantities.md) *(workspace)*
 - [Individual outfit equipment](outfit-equipment.md) *(workspace)*
+- [Finite field dressings](field-dressings.md) *(workspace)*
 - [Campaign body equipment — 26 September 2026](body-equipment-2026-09-26.md) *(workspace)*
 - [Weapon attachment slots](attachment-slots.md) *(workspace)*
 

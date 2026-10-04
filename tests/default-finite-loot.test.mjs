@@ -56,6 +56,9 @@ test('finite depot caches use existing chests and preserve the original Mendoza 
   assert.ok(cache,sector);assert.doesNotThrow(()=>validateEnvironment(cache));
   assert.equal(cache.contents.filter(item=>item.kind==='repair-kit').length,1);
   assert.equal(cache.contents.find(item=>item.item==='medkits').count,12);
+  const shirts=cache.contents.filter(item=>item.kind==='outfit');
+  assert.equal(shirts.length,sector==='retiro'?1:0);
+  if(sector==='retiro')assert.deepEqual(shirts[0],{item:'inventory:linen-shirt:retiro',kind:'outfit',outfit:'linen_shirt',count:1,weight:.6,condition:100,instanceId:'cache:retiro:linen-shirt'});
  }
  const m=authoredEnvironment('mendoza',buildSectorMap({sector:'mendoza',squad:[],enemies:[]}));
  assert.equal(m.containers.length,1);assert.equal(m.containers[0].contents.find(item=>item.item==='medkits').count,3);

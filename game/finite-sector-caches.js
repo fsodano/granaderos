@@ -1,6 +1,7 @@
 import {AMMUNITION_TYPES} from './ammunition-types.js';
 import {weaponItemWeight} from './weapon-fittings.js';
 import {REPAIR_KIT_WEIGHT,REPAIR_KIT_POINTS} from './repair-materials.js';
+import {makeOutfit} from './outfits.js';
 
 // Authored, one-time equipment caches. These are finite game balance amounts,
 // not historical inventories. Sector reentry restores saved container contents.
@@ -24,5 +25,6 @@ export function finiteSectorCache(sector,map){
   ...cache.guns.map((weapon,index)=>gun(sector,weapon,index)),
   ammo('musket_75',cache.musket),ammo('rifle_62',cache.rifle),ammo('pistol_69',cache.pistol),ammo('shot_16',cache.shot),
   {item:'medkits',count:cache.medical,weight:.2},kit(sector),
+  ...(sector==='retiro'?[{item:'inventory:linen-shirt:retiro',...makeOutfit('linen_shirt'),instanceId:'cache:retiro:linen-shirt'}]:[]),
  ]};
 }

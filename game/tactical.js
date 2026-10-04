@@ -38,7 +38,8 @@ import {itemFlight} from './item-flight.js';
 import {usesElevationGeometry,elevationSightClear,absoluteBodyHeight,geometryCells,rayHeightIntersection} from './sight-geometry.js';
 import {tacticalLevel,spaceKey,sameSurface,sameCell,surfaceAt,surfaceHeight,accessStepsFrom} from './tactical-space.js';
 import {questGiftPlan,questGiftDecision} from './quests.js';
-import {BODY_SLOTS,wornBodyItems,OUTFIT_CHANGE_AP,normalizeOutfit,wornOutfit,hasPoncho} from './outfits.js';
+import {BODY_SLOTS,wornBodyItems,OUTFIT_CHANGE_AP,normalizeOutfit,wornOutfit,hasPoncho,regionalGarmentWear} from './outfits.js';
+import {FIELD_DRESSINGS_AP,planFieldDressings} from './field-dressings.js';
 import {handsRequired,selectMainHand,handLayout} from './hand-layout.js';
 import {firearmPreparation,lowerWeapon,lowersWeapon,turnLowersWeapon} from './weapon-readiness.js';
 import {planReload,reloadRoundCost} from './weapon-reload.js';
@@ -765,6 +766,8 @@ function damage(s,target,amount,source,projectile=false,hitLocation='torso',extr
   const impact=shotLocationEffects(projectile?hitLocation:'torso',Math.max(0,amount),target);
   impact.breathLoss+=extraBreath;const loss=Math.min(target.hp,impact.damage);
   target.hp=Math.max(0,target.hp-loss);target.energy=Math.max(0,(target.energy??100)-impact.breathLoss);
+  const garmentWear=regionalGarmentWear(target,projectile?hitLocation:'torso',loss);
+  if(garmentWear)target[garmentWear.slot]=garmentWear.garment;
   target.shock=Math.min(20,(target.shock??0)+loss/10+impact.breathLoss/20);
   recordMilitiaHit(s,source,target,creditEligible,loss);
   if(projectile){
@@ -1449,6 +1452,11 @@ export function equipLootPreview(s,u,inventoryKey,slot='primary'){
   if(!reason)try{planEquipLoot(u,inventoryKey,slot);}catch(error){reason=error.message;}
   return {pa,reason,valid:!reason};
 }
+export function fieldDressingsPreview(s,u,inventoryKey,expectedSource){
+ const pa=FIELD_DRESSINGS_AP;let reason=inventoryOrderReason(s,u,pa);
+ if(!reason)try{planFieldDressings(u,inventoryKey,expectedSource);}catch(error){reason=error.message;}
+ return {pa,reason,valid:!reason};
+}
 export function lootPreview(s,u,action={}){
   const pa=8;let reason=inventoryOrderReason(s,u,pa);
   if(!reason)try{planLoot(s,u,action);}catch(error){reason=error.message;}
@@ -2079,6 +2087,13 @@ else if(a.type==='equipLoot'){
   const preview=equipLootPreview(s,u,a.inventoryKey,a.slot??'primary');if(!preview.valid)return fail(preview.reason);
   const next=planEquipLoot(u,a.inventoryKey,a.slot??'primary');pay(preview.pa);next.ap=u.ap;
   replaceUnit(u,next);sayObserved(s,[u],a.slot==='offhandItem'?`${u.name} ${a.inventoryKey===null?'guarda el objeto de la segunda mano':'sostiene '+itemDescriptor(u,a.inventoryKey).label+' en la segunda mano'}.`:BODY_SLOTS.includes(a.slot)?`${u.name} ${a.inventoryKey===null?'guarda su vestimenta en un bolsillo grande':'se pone '+itemDescriptor(u,a.slot).label}.`:`${u.name} equipa ${weaponFor(u).name} y guarda el arma desplazada.`);
+}
+else if(a.type==='craftDressings'){
+ const preview=fieldDressingsPreview(s,u,a.inventoryKey,a.expectedSource);if(!preview.valid)return fail(preview.reason);
+ const plan=planFieldDressings(u,a.inventoryKey,a.expectedSource);
+ if(!pay(preview.pa))return fail(`Preparar vendas requiere ${preview.pa} PA.`);
+ plan.unit.ap=u.ap;lowerWeapon(plan.unit);replaceUnit(u,plan.unit);
+ sayObserved(s,[u],`${u.name} prepara tres vendas con una camisa de lino.`);
 }
 else if(a.type==='moveEquipment'){
  const preview=equipmentPlacementPreview(s,u,a);if(!preview.valid)return fail(preview.reason);
