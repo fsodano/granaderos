@@ -4,13 +4,15 @@
 > checkout. Its implementation and test results are not published-main acceptance.
 > See [published progress](../../verification/published-progress.md) for the main branch baseline.
 
-Patusco's JA2 guide, printed page 13, distinguishes protection that stops shots from vegetation that hides a soldier. Granaderos now uses separate firearm-path and concealment rules at its current single playable elevation.
+Patusco's JA2 guide, printed page 13, distinguishes protection that stops shots from vegetation that hides a soldier. Granaderos uses separate firearm-path and concealment rules, now shared with the later playable elevation geometry.
 
 ## Behavior
 
 Ordinary firearms trace the line from the shooter's muzzle to the selected head, torso or legs. The trace includes diagonal corner contacts and checks height along each crossed cell. It considers solid terrain, window sills, low rubble and furniture. One furniture object incurs resistance once even when its footprint covers several cells. Multiple separate obstacles add resistance.
 
 Shots above an obstacle retain their ordinary damage. A penetrated obstacle reduces damage. An obstacle that exhausts the projectile allowance stops damage completely. Blunderbuss spread traces each affected person, including allies. Ordinary shot costs, ignition failure, loaded rounds, weapon wear, sound, smoke, wounds and time still use their existing rules. A deliberately blocked shot can be fired at a visible target and consumes its charge if ignition succeeds. A blocked preview is a warning, not a free attack or an automatic order cancellation.
+
+Single lead balls now also spend force on [conditional body passage](body-penetration.md). Bodies and cover share one ordered force budget; passing a body can expose a later person or obstacle. The cover-damage tuning setting cannot restore force spent on a body. Forecasts retain known-body conditional reach, while actual passage uses seeded rolls after the original shot damage draw.
 
 The existing body-region controls show the resulting impact chance and cover warning. A leg shot can be blocked while a head shot clears the same furniture. Penetrable cover displays its damage reduction separately from impact chance. The public order projection includes that warning without exposing internal obstruction records.
 
@@ -35,6 +37,6 @@ The older three-person battle controller rushed across the field during interrup
 
 Live verification used an imported, controlled three-barrel layout. The head preview showed 75% without an obstruction warning; the leg preview showed 0% and warned that firing spends the charge. An aimed leg shot spent 36 AP, consumed the loaded round, reduced weapon condition by one and left the target at 100 HP. Reloading the save retained these results. A paid reload and subsequent head shot passed above the barrels and dealt 79 damage. No browser warning/error was recorded.
 
-[Location fire](location-fire.md) now adds firing at unseen coordinates, seeded miss scatter and unintended body collisions to the F cursor. [Named-target shot paths](directed-projectiles.md) now also check intervening bodies and seeded missed-shot collisions, with knowledge-limited warnings and shared AI shot options. Playable roofs, full three-dimensional sight, destructible furniture, ricochet, material thickness and an exact JA2 projectile model remain absent. Artillery retains its separate penetration/blast rules. AI now ranks body regions using both impact chance and partial damage loss; incoming exposure still uses torso chance. See [AI shot selection](ai-shot-selection.md). See the parity audit for these remaining systems.
+[Location fire](location-fire.md) adds firing at unseen coordinates, seeded miss scatter and unintended body collisions to the F cursor. [Named-target shot paths](directed-projectiles.md) also check intervening bodies and seeded missed-shot collisions, with knowledge-limited warnings and shared AI shot options. The later elevation work supplies playable roofs and shared absolute-height rays. Destructible furniture, ricochet, material thickness and an exact JA2 projectile model remain open. Artillery retains its separate penetration/blast rules. AI ranks body regions using both impact chance and partial damage loss; incoming exposure still uses torso chance. See [AI shot selection](ai-shot-selection.md) and the parity audit for remaining systems.
 
 The original cover checkpoint was 904 passing logic tests, typecheck, production build and `git diff --check`. The unchanged illustrated-sprite packing suite was excluded from this run.
