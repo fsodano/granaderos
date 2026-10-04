@@ -54,7 +54,7 @@ import {isShotLoad,shotLoadFlight,shotLoadForecast,shotLoadChance} from './shot-
 import {applyCivilianHarm,civilianWoundedByPlayer,advanceCivilianWoundTime} from './civilian-harm.js';
 import {boundaryMatches} from './tactical-exits.js';
 import {HELD_SUPPLIES,heldSupply,clearEmptySupply} from './held-supplies.js';
-import {heldTool,environmentActionProfile,resolveEnvironmentInteraction,extractContainerItem} from './environment-interactions.js';
+import {heldTool,breachableWall,environmentActionProfile,resolveEnvironmentInteraction,extractContainerItem} from './environment-interactions.js';
 import {revealFiniteArsenal} from './finite-artillery-arsenals.js';
 import {SUPPLY_ITEMS,handMetadata,droppedWeaponStack,carriedObject,inventoryUsage,itemDescriptor,itemQuantity,extractItemQuantity,extractEquipmentSelection,applyItemQuantity,incomingItemRoom,transferItemQuantity,planFitBayonet,planRemoveBayonet,planPocketMove,planEquipOutfit,planStowOutfit,planHoldOffhand,equipmentEndpoint,equipmentFingerprint,planOutfitPlacement,pocketMergeCount} from './tactical-inventory.js';
 import {FITTING_RULES_VERSION,FIT_BAYONET_AP,REMOVE_BAYONET_AP,LOOSE_BAYONET,fixedBayonetFor,fixedBayonetProfile,fittingWeight,weaponItemWeight,normalizeUnitFittings} from './weapon-fittings.js';
@@ -1481,13 +1481,16 @@ export function lootSearchPreview(s,u,point){
 function environmentObject(s,ref){
   if(ref?.kind==='door')return s.tiles.find(t=>t.type==='door'&&(t.doorId??`door:${t.x}:${t.y}`)===ref.id);
   if(ref?.kind==='container')return s.props.find(p=>p.type==='chest'&&p.id===ref.id);
+  if(ref?.kind==='wall'&&(ref.tacticalLevel??0)===0)return s.tiles.find(t=>(t.tacticalLevel??0)===0&&`wall:${t.x}:${t.y}`===ref.id&&(ref.x===undefined||ref.x===t.x)&&(ref.y===undefined||ref.y===t.y));
   return null;
 }
 export function environmentTargetAt(s,point){
   const door=s.tiles.find(t=>sameCell(t,point)&&t.type==='door');
   if(door)return {...door,kind:'door',id:door.doorId??`door:${door.x}:${door.y}`};
   const chest=s.props.find(p=>p.type==='chest'&&propCells(p).some(t=>sameCell(t,point)));
-  return chest?{...chest,kind:'container'}:null;
+  if(chest)return {...chest,kind:'container'};
+  const wall=s.tiles.find(t=>sameCell(t,point)&&breachableWall(t));
+  return wall?{...wall,kind:'wall',id:`wall:${wall.x}:${wall.y}`,tacticalLevel:0}:null;
 }
 function environmentReachReason(s,u,object){
   if(!object)return 'El objeto ya no está en el sector.';
@@ -1498,9 +1501,10 @@ function environmentReachReason(s,u,object){
 }
 export function environmentPreview(s,u,ref,verb){
   const target=environmentObject(s,ref),tool=u&&heldTool(u);
-  verb??=tool?.toolKey==='pliers'?'disarm':target?.locked?(tool?.verb??'inspect'):target?.open?'close':'open';
-  const profile=environmentActionProfile(u??{},target,verb);
-  let reason=environmentReachReason(s,u,target)??profile.reason;
+  verb??=ref?.kind==='wall'?'breach':tool?.toolKey==='pliers'?'disarm':target?.locked?(tool?.verb??'inspect'):target?.open?'close':'open';
+  const unseenWall=ref?.kind==='wall'&&(!target||!u||!canSee(s,u,target));
+  const profile=environmentActionProfile(u??{},unseenWall?null:target,verb);
+  let reason=unseenWall?'La pared debe estar a la vista del soldado.':environmentReachReason(s,u,target)??profile.reason;
   if(!reason&&verb==='close'&&target.type==='door'&&(s.units.some(v=>onField(v)&&sameCell(v,target))||(s.npcs??[]).some(v=>onField(v)&&sameCell(v,target))||s.artillery.some(v=>sameCell(v,target))))reason='Hay una persona o una pieza en el paso de la puerta.';
   if(!reason&&s.mode!=='exploration'&&u.ap<profile.pa)reason=`Faltan ${profile.pa} PA para manejar el objeto.`;
   return {...profile,reason,valid:!reason,action:{type:'environment',unitId:u?.id,kind:ref?.kind,id:ref?.id,verb}};
@@ -1512,7 +1516,7 @@ export function environmentUsePreview(s,u,ref,verb){
   if(!target||!u||!alive(u)||!interruptAvailable(s,u)||u.knockedDown)return result();
   const cells=target.type==='chest'?propCells(target).map(point=>({...target,...point})):[target];
   const visible=cells.find(point=>canSee(s,u,point));
-  if(!visible)return result('El objeto debe estar a la vista del soldado.');
+  if(!visible)return result(ref?.kind==='wall'?local.reason:'El objeto debe estar a la vista del soldado.');
   if(!environmentReachReason(s,u,target))return result();
   // Check the held tool, lock, known trap and occupied doorway before spending
   // movement. Only position and the AP cap are relaxed in this pure preflight.
@@ -1910,7 +1914,7 @@ else if(a.type==='reprime'){
 }
 else if(a.type==='melee'||a.type==='meleePoint'){
   if(u.activeSlot==='item')return fail('Este objeto no sirve para atacar. Guardalo o elegí un arma.');
-  if(u.activeSlot==='tool')return fail('La herramienta se usa sobre una puerta o un cofre.');
+  if(u.activeSlot==='tool')return fail('La herramienta se usa sobre un objeto del entorno.');
   if(u.activeSlot==='supply')return fail('Usa el pertrecho que llevas en la mano.');
   if(u.activeSlot==='medical')return fail('El equipo de curación se usa sobre un compañero herido.');
   const pointStrike=a.type==='meleePoint',destination=pointStrike?positionOf(a):target;
@@ -1984,10 +1988,10 @@ notifyCivilians();sayObserved(s,[u],a.mode==='canister'?`${spec.name} barre el f
 for(const v of assigned){lowerWeapon(v);if(s.mode!=='exploration')v.ap-=cost;if(a.type==='artillery'||a.type==='artilleryReload'&&loading.rounds)practice(v,'explosives',a.type==='artillery'?2:1);}
 if(s.mode==='exploration')s.actionDurationSeconds=Math.max(1,Math.ceil(cost*.06));
 }
-else if(a.type==='door'||a.type==='environment'){
-  const ref=a.type==='door'?{kind:'door',id:a.doorId??environmentTargetAt(s,a)?.id}:a;
+else if(a.type==='door'||a.type==='environment'||a.type==='breach'){
+  const ref=a.type==='door'?{kind:'door',id:a.doorId??environmentTargetAt(s,a)?.id}:a.type==='breach'?{kind:'wall',id:`wall:${a.x}:${a.y}`,x:a.x,y:a.y,tacticalLevel:a.tacticalLevel??0}:a;
   const object=environmentObject(s,ref);
-  const verb=a.type==='door'?(typeof a.open==='boolean'?(a.open?'open':'close'):object?.open?'close':'open'):a.verb;
+  const verb=a.type==='breach'?'breach':a.type==='door'?(typeof a.open==='boolean'?(a.open?'open':'close'):object?.open?'close':'open'):a.verb;
   const preview=environmentPreview(s,u,ref,verb);if(!preview.valid)return fail(preview.reason);
   const result=resolveEnvironmentInteraction(u,object,{verb:preview.verb,...(preview.requiresRoll?{roll:random(s)}:{})});
   replaceUnit(u,result.unit);pay(result.pa);replaceUnit(object,result.target);u.facing=directionTo(u,object);
@@ -2151,7 +2155,6 @@ else if(a.type==='boleadoras'){const point=target??positionOf(a),preview=supplyU
 else if(a.type==='prisonerEscort'){const preview=prisonerReleasePreview(s,u,target,a.escortOrder??'invalid');if(!preview.valid)return fail(preview.reason);if(!pay(preview.cost))return fail('PA insuficientes.');recordPrisonerEscort(s,u,target,a.escortOrder==='wait');sayObserved(s,[u],`${u.name} indica a ${target.name} que ${a.escortOrder==='wait'?'espere aquí':'lo siga'}.`);}
 else if(a.type==='free'&&a.targetKind==='npc'){const preview=prisonerReleasePreview(s,u,target);if(!preview.valid)return fail(preview.reason);if(!pay(preview.cost))return fail('PA insuficientes.');lowerWeapon(u);recordPrisonerRelease(s,u,target);sayObserved(s,[u],`${u.name} libera de las ataduras a ${target.name}. Te seguirá cuando pueda caminar.`);}
 else if(a.type==='free'){if(!u.entangled)return fail('El soldado no está enredado.');if(!pay(15))return fail('Soltarse requiere 15 PA.');u.entangled=false;for(const g of s.groundItems)if(g.heldBy===u.id)g.heldBy=null;sayObserved(s,[u],`${u.name} se libera de las boleadoras.`);}
-else if(a.type==='breach'){if(tacticalLevel(u)!==0||tacticalLevel(a)!==0)return fail('La brecha manual requiere una pared al nivel del suelo.');const wall=tile(s,a.x,a.y);if(!wall?.blocked||dist(u,{x:a.x,y:a.y})>1.5)return fail('Acércate a una barricada o pared de adobe.');if(wall.material==='stone'||['stone','cliff','water'].includes(wall.type))return fail('La piedra requiere artillería; no puede abrirse a mano.');const cost=hasCharacterAbility(u,'breaching')?25:45;if(!pay(cost))return fail(`Abrir la brecha requiere ${cost} PA.`);wall.blocked=false;wall.blocksSight=false;wall.type='rubble';wall.cover=15;delete wall.obstacleHeight;delete wall.projectileResistance;emitNoise(s,u,'explosion',wall);sayObserved(s,[u],`${u.name} abre una brecha para el asalto.`);}
 else if(a.type==='repair'){if(!hasFirearm(u))return fail('Prepara primero el arma de fuego que quieres mantener.');if(u.condition>=100)return fail('El mecanismo ya está en buen estado.');const cost=actionCosts(s,u).repair;if(!pay(cost))return fail(`Mantener el mecanismo requiere ${cost} PA.`);practice(u,'mechanical',3);u.condition=Math.min(100,u.condition+(hasTrait(u,'gunsmith_artillerist')?45:hasTrait(u,'workshop_training')?40:30));sayObserved(s,[u],`${u.name} mantiene y ajusta el mecanismo.`);}
 else if(a.type==='ration'){
   const preview=supplyUsePreview(s,u,a.targetId===undefined?u:target,'rations');if(!preview.allowed)return fail(preview.reason);pay(preview.cost);

@@ -30,6 +30,7 @@ import {firearmBystanderRisk,firearmBystanderWarning} from './firearm-bystander-
 const alive = u => u.hp > 0 && !u.routed && !u.unconscious && !u.departure && !u.fled;
 const shortName = u => u.nickname || String(u.name || '').split(' ').slice(-1)[0] || '';
 const distance = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
+const toolTargets = unit => heldTool(unit)?.toolKey === 'crowbar' ? 'una puerta, un cofre, una pared de adobe o una barricada de madera' : 'una puerta o un cofre';
 export const chancePercent = value => value > 0 && value < 1 ? '<1%' : `${Math.round(value)}%`;
 const shotLoadText = shot => `Carga de perdigones (${shot.pelletCount} proyectiles). Probabilidad de al menos un contacto; no garantiza varios impactos ni la zona del cuerpo. ${shot.damageFactor===0?'Ningún perdigón puede llegar por las trayectorias previstas.':shot.damageFactor<1?`Fuerza media si llega algún perdigón: ${Math.round(shot.damageFactor*100)}% de la carga.`:''} Disparar consume una carga.`;
 const affordable = (state, unit, pa) => state.mode === 'exploration' || unit.ap >= pa;
@@ -262,7 +263,7 @@ export function targetingHelp(mode, unit, ctx = {}) {
   if (mode === 'move' && ctx.movementIntent === 'preserveFacing') return 'Alt: mové solo al seleccionado sin girar. Cancela el grupo. Caminar, agachado o cuerpo a tierra; no correr ni montar.';
   if (unit?.activeSlot === 'supply' && ['move', 'useItem'].includes(mode)) return ({torches: 'Seleccioná una casilla para arrojar la antorcha. Para avanzar, cambiá el objeto en mano.', boleadoras: 'Seleccioná un enemigo visible o una casilla para lanzar las boleadoras. Para avanzar, cambiá el objeto en mano.', rations: 'Seleccionate a vos para comer la ración. Recupera fuerzas; no detiene hemorragias.'})[unit.activeSupply] || 'Equipá un pertrecho disponible.';
   if (unit?.activeSlot === 'item' && ['move','useItem'].includes(mode)) return 'Objeto en mano: podés guardarlo, darlo o soltarlo. Para atacar, prepará un arma o las manos libres.';
-  if (unit?.activeSlot === 'tool' && ['move', 'useItem'].includes(mode)) return 'Seleccioná una puerta o un cofre para usar la herramienta. Las casillas libres permiten avanzar.';
+  if (unit?.activeSlot === 'tool' && ['move', 'useItem'].includes(mode)) return `Seleccioná ${toolTargets(unit)} para usar la herramienta. Las casillas libres permiten avanzar.`;
   if(hasFirearm(unit||{})&&unit.weaponMode==='melee'&&['move','useItem'].includes(mode))return `${fixedBayonetFor(unit)?'Bayoneta':'Culatazo'}: ${mode==='useItem'?'seleccioná un enemigo o una casilla para acercarte y golpear. Esc: caminar.':'clic en el suelo para caminar; F o botón derecho para golpear una casilla.'} B: volver a Disparo.`;
   if(heldThrowingKnife(unit)&&['move','useItem'].includes(mode))return 'Clic sobre un enemigo: acercarse y atacar con el facón. Botón derecho o F: apuntar para lanzarlo.';
   if (mode === 'useItem') return unit?.activeSlot === 'medical' ? 'Seleccionate a vos, a un aliado o a un civil herido. Se acerca y venda si hay ruta y PA suficientes. Reduce la hemorragia y estabiliza heridas críticas hasta 15 de salud. Puede necesitar más de una venda.' : hasFirearm(unit || {}) ? 'Seleccioná un enemigo. Apuntar consume PA adicionales.' : 'Seleccioná un enemigo para acercarte y usar el arma blanca.';
@@ -388,7 +389,8 @@ function targetPreviewWithCosts(state, unit, point, ctx = {}) {
   const environment = !target && ['move', 'useItem'].includes(mode) ? environmentTargetAt(state, point) : null;
   if (environment && canSee(state, unit, point)) {
     const summary = environmentTargetSummary(unit, environment), preview = environmentUsePreview(state, unit, environment);
-    return {name: summary.label, pa: preview.pa, chance: preview.chance ?? undefined, chanceLabel: 'éxito', attackLabel: preview.label, actionLabel: preview.label, remaining: Math.max(0, unit.ap - (state.mode === 'exploration' ? 0 : preview.pa)), coverNote:preview.movePa?`Desplazamiento: ${preview.movePa} PA · uso: ${preview.actionPa} PA. El contacto puede detener la acción.`:undefined, reason: preview.reason, valid: preview.valid};
+    const coverNote=[preview.movePa?`Desplazamiento: ${preview.movePa} PA · uso: ${preview.actionPa} PA. El contacto puede detener la acción.`:null,environment.kind==='wall'&&preview.toolWear>0?`Desgaste de la barreta: hasta ${preview.toolWear} puntos. Abre un paso permanente.`:null].filter(Boolean).join(' ');
+    return {name: summary.label, pa: preview.pa, chance: preview.chance ?? undefined, chanceLabel: 'éxito', attackLabel: preview.label, actionLabel: preview.label, remaining: Math.max(0, unit.ap - (state.mode === 'exploration' ? 0 : preview.pa)), coverNote:coverNote||undefined, reason: preview.reason, valid: preview.valid};
   }
   if (mode === 'heal' || unit.activeSlot === 'medical' && ['move', 'useItem'].includes(mode) && target) {
     const local=mode==='heal'?medicalUsePreview(state,unit,target??null):null;
@@ -404,7 +406,7 @@ function targetPreviewWithCosts(state, unit, point, ctx = {}) {
   } else if (target && target.side !== unit.side && ['move', 'useItem', 'fire', 'melee'].includes(mode)) {
     if (target.hp <= 0 || target.surrendered) return null;
     if (unit.activeSlot === 'item') return {name:target.name,reason:heldGrenade(unit)?'Botón derecho o F para lanzar la granada a una casilla.':'Este objeto no se puede usar sobre una persona. Guardalo o elegí otro objeto.',valid:false};
-    if (unit.activeSlot === 'tool') return {name: target.name, reason: 'La herramienta se usa sobre una puerta o un cofre.', valid: false};
+    if (unit.activeSlot === 'tool') return {name: target.name, reason: `La herramienta se usa sobre ${toolTargets(unit)}.`, valid: false};
     const attack = contextualAttack(state, unit, target, {type: mode, aim: ctx.aim || 0, hitLocation: hitLocationFor(ctx.hitLocation)});
     pa = attack.pa; attackType = attack.type;
     if (attack.type === 'melee') {
@@ -474,7 +476,7 @@ export function equippedItemHelp(state, unit, ctx = {}) {
   const weapon = weaponFor(unit), costs = actionCosts(state, unit), exploring=state.mode==='exploration';
   if (unit.activeSlot === 'supply') return `${weapon.name} · ${exploring?0:supplyUsePreview(state, unit, ctx.target).cost} PA. ${targetingHelp('useItem', unit)}`;
   if (unit.activeSlot === 'item') return `${weapon.name}. ${targetingHelp('useItem',unit)}`;
-  if (unit.activeSlot === 'tool') return `${weapon.name}. Seleccioná una puerta o un cofre para usarla.`;
+  if (unit.activeSlot === 'tool') return `${weapon.name}. Seleccioná ${toolTargets(unit)} para usarla.`;
   if (unit.activeSlot === 'medical' && exploring) return 'Vendas: sin coste de PA. Seleccionate a vos, a un aliado o a un civil herido. Consume tiempo y vendas. Reduce la hemorragia y estabiliza heridas críticas hasta 15 de salud. La recuperación completa requiere atención en campaña.';
   if (unit.activeSlot === 'medical') return `Vendas: ${costs.heal} PA, más el desplazamiento. Seleccionate a vos, a un aliado o a un civil herido. Se acerca y venda si hay PA suficientes. Reduce la hemorragia y estabiliza heridas críticas hasta 15 de salud. La recuperación completa requiere atención en campaña.`;
   const attack = contextualAttack(state, unit, ctx.target, {type: ctx.mode, aim: ctx.aim || 0});
@@ -732,18 +734,19 @@ export function nearbyEnvironmentModel(state, unit, ctx = {}) {
   if (unit) for (const point of state.tiles) {
     if (distance(unit, point) > 1.5 || !canSee(state, unit, point)) continue;
     const raw = environmentTargetAt(state, point);
-    if (raw) found.set(`${raw.kind}:${raw.id}`, raw);
+    if (raw && (raw.kind !== 'wall' || tacticalLevel(raw) === 0 && sameSurface(unit, raw))) found.set(`${raw.kind}:${raw.id}`, raw);
   }
   const targets = [...found].map(([key, raw]) => {
     const summary = environmentTargetSummary(unit, raw);
+    if (raw.kind === 'wall') return {key, kind: raw.kind, id: raw.id, x: raw.x, y: raw.y, tacticalLevel: 0, label: `${summary.label} · ${tacticalGridLabel(raw.x,raw.y)}`, material: summary.material};
     const arsenal=FINITE_ARTILLERY_ARSENALS[state.sectorId],arsenalAvailable=arsenal?.chest===raw.id&&(state.finiteArtilleryArsenal||raw.artilleryRecovered);
     return {key, kind: raw.kind, id: raw.id, label: `${summary.label} · ${tacticalGridLabel(raw.x,raw.y)}`, open: summary.open, locked: summary.locked, broken: summary.broken, trapKnown: Boolean(summary.trap), trapArmed: summary.trap?.armed,...(arsenalAvailable?{arsenalHint:raw.artilleryRecovered?'Las piezas recuperadas quedan emplazadas. Usá Artillería en la carta para guardarlas o trasladarlas.':`Abrí este cofre para recuperar ${arsenal.pieces.length} piezas del arsenal con munición finita.`}:{})};
   });
   const target = targets.find(entry => entry.key === ctx.targetKey) || targets[0];
   if (!target) return {targets, target: null, preview: null, contents: [], verbs: [], loot: null};
   const raw = found.get(target.key), preview = environmentPreview(state, unit, target, ctx.verb || undefined);
-  const contents = visibleContainerContents(raw).map((stack, index) => ({...stack, index, label: weaponSpecification(stack)?.name || OUTFITS[stack.outfit]?.name || TOOL_TYPES[stack.toolKey]?.label || SUPPLY_ITEMS[stack.item]?.label || stack.name || 'Pertrechos'}));
-  const verbs = ENVIRONMENT_VERBS.map(id => ({id, label: environmentPreview(state, unit, target, id).label}));
+  const contents = (target.kind === 'container' ? visibleContainerContents(raw) : []).map((stack, index) => ({...stack, index, label: weaponSpecification(stack)?.name || OUTFITS[stack.outfit]?.name || TOOL_TYPES[stack.toolKey]?.label || SUPPLY_ITEMS[stack.item]?.label || stack.name || 'Pertrechos'}));
+  const verbs = (target.kind === 'wall' ? ['breach'] : ENVIRONMENT_VERBS.filter(id => id !== 'breach')).map(id => ({id, label: environmentPreview(state, unit, target, id).label}));
   const loot = target.kind === 'container' ? containerLootPreview(state, unit, target, ctx.index ?? 0, ctx.count ?? 1) : null;
   return {targets, target, preview, contents, verbs, loot};
 }

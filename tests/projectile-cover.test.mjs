@@ -146,8 +146,10 @@ test('blunderbuss spread traces each victim and cannot damage a friend or enemy 
 
 test('a successful breach removes the original ballistic overrides and leaves only low rubble',()=>{
   const s=field(),wall=s.tiles.find(tile=>tile.x===2&&tile.y===3);
+  Object.assign(s.units[0],{activeSlot:'tool',activeTool:'inventory:bar',inventory:{...s.units[0].inventory,bar:{count:1,weight:2.5,itemType:'tool',toolKey:'crowbar',condition:100}}});
   Object.assign(wall,{type:'wall',blocked:true,blocksSight:true,material:'adobe',obstacleHeight:2.5,projectileResistance:500});
   const next=order(s,{type:'breach',x:2,y:3}),rubble=next.tiles.find(tile=>tile.x===2&&tile.y===3);
+  assert.equal(next.units[0].inventory.bar.condition,97);
   assert.equal(rubble.type,'rubble');assert.equal(rubble.obstacleHeight,undefined);assert.equal(rubble.projectileResistance,undefined);
   assert.equal(firearmProjectilePath(next,...next.units).blocked,false);assert.equal(firearmProjectilePath(next,...next.units).damageFactor,1);
 });

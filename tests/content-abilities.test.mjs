@@ -72,9 +72,9 @@ test('authored shot, movement, breach and medical costs control real low-AP admi
  }
  for(const [ability,oldId,action]of [['breaching',6,'breach'],['rapid_first_aid',10,'heal']]){
   for(const id of [2000,oldId]){
-   const make=abilities=>{let b=battle([subject(abilities,{id,x:1,y:1,hp:30,bleeding:4})],[{id:'enemy',x:12,y:8}]);if(action==='heal')b=act(b,{type:'weapon',unitId:id,slot:'medical'});b.units[0].ap=action==='heal'?18:25;Object.assign(b.tiles.find(t=>t.x===2&&t.y===1),{type:'wall',material:'adobe',blocked:true});return b;};
+   const make=abilities=>{let b=battle([subject(abilities,{id,x:1,y:1,hp:30,bleeding:4,...(action==='breach'?{activeSlot:'tool',activeTool:'inventory:bar',inventory:{bar:{count:1,weight:2.5,itemType:'tool',toolKey:'crowbar',condition:100}}}:{})})],[{id:'enemy',x:12,y:8}]);if(action==='heal')b=act(b,{type:'weapon',unitId:id,slot:'medical'});b.units[0].ap=action==='heal'?18:25;Object.assign(b.tiles.find(t=>t.x===2&&t.y===1),{type:'wall',material:'adobe',blocked:true});return b;};
    const skilled=make([ability]),plain=make([]),a={type:action,unitId:id,x:2,y:1};const done=act(skilled,a);assert.equal(done.units[0].ap,0);assert.ok(actBattle(plain,a).lastError);
-   if(action==='heal'){assert.equal(done.units[0].hp,30);assert.equal(done.units[0].bleeding,0);assert.equal(done.units[0].medkits,skilled.units[0].medkits-1);assert.equal(pa(skilled,'heal'),18);}else assert.equal(done.tiles.find(t=>t.x===2&&t.y===1).blocked,false);
+   if(action==='heal'){assert.equal(done.units[0].hp,30);assert.equal(done.units[0].bleeding,0);assert.equal(done.units[0].medkits,skilled.units[0].medkits-1);assert.equal(pa(skilled,'heal'),18);}else {assert.equal(done.tiles.find(t=>t.x===2&&t.y===1).blocked,false);assert.equal(done.units[0].inventory.bar.condition,97);}
   }
  }
  const rescuer=battle([subject([],{hp:30,traits:['field_rescuer']})]);assert.equal(pa(rescuer,'heal'),20);assert.equal(actionCosts(rescuer,rescuer.units[0]).heal,20);
