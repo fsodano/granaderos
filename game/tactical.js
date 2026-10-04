@@ -74,6 +74,7 @@ import {fieldPractice as practice} from './skill-training.js';
 import {COMBAT_BALANCE,penetratingFirearmDamage} from './combat-balance.js';
 import {practiceFirearmNearMiss} from './firearm-near-miss-practice.js';
 import {firstAidPlan} from './first-aid.js';
+import {careComposureRelief} from './care-composure.js';
 // Deterministic, serializable tactical simulation. The browser uses this module directly.
 export function bladeFor(unit){
  if(['unarmed','medical','tool','supply','item'].includes(unit.activeSlot))return FISTS;
@@ -1638,7 +1639,9 @@ export function medicalUsePreview(s,u,target=u,{targetKind='unit'}={}){
   if(!reason&&!u.medkits)reason='No quedan vendas.';
   if(!reason&&!(u.medical>0))reason='Este soldado no tiene conocimientos de primeros auxilios.';
   if(!reason){treatment=firstAidPlan(u,target,{baseCost,budgetAP:s.mode==='exploration'?Infinity:u.ap,targetKind});if(!treatment.valid)reason=treatment.reason;}
-  return {allowed:!reason,reason,cost:treatment?.paCost??baseCost,treatment};
+  const observed=!reason&&(civilian?s.npcs?.includes(target)&&isInteriorVisible(s,target,new Set(s.revealedRooms??[])):s.units.includes(target))&&canSee(s,u,target);
+  const composureRelief=careComposureRelief(u,target,treatment,{targetKind,observed});
+  return {allowed:!reason,reason,cost:treatment?.paCost??baseCost,treatment,...(composureRelief>0?{composureRelief}:{})};
 }
 
 // Ordinary held-item targeting can include an approach. Explicit heal/melee
@@ -1715,9 +1718,15 @@ export function meleePointPreview(s,u,point,{approach=true}={}){
 }
 const meleeAttackResults=new WeakMap();
 export function getMeleeAttackResult(before,after,unitId){return before!==after&&Boolean(meleeAttackResults.get(after)?.has(String(unitId)));}
+const careComposureResults=new WeakMap();
+export function getCareComposureResult(before,after){
+ const result=careComposureResults.get(after);return before!==after&&result?structuredClone(result):null;
+}
 function carryMeleeAttackResult(applied,resolved){
   const completed=meleeAttackResults.get(applied);
   if(applied!==resolved&&completed?.size)meleeAttackResults.set(resolved,new Set([...completed,...(meleeAttackResults.get(resolved)??[])]));
+  const care=careComposureResults.get(applied);
+  if(applied!==resolved&&care)careComposureResults.set(resolved,care);
   return resolved;
 }
 /** @param {string|null} [escortOrder] */
@@ -1739,8 +1748,8 @@ export function itemUsePreview(s,u,target,{targetKind='unit'}={}){
   const civilian=targetKind==='npc',type=u.activeSlot==='medical'||civilian?'heal':contextualAttack(s,u,target).type;
   if(!['heal','melee'].includes(type))return null;
   if(type==='melee')return meleePreview(s,u,target,{approach:true});
-  let actionPa=actionCosts(s,u).heal,treatment=null;const reach=1.5;
-  const result=(reason=null,route=null)=>({type,actionPa,movePa:route?.cost??0,pa:actionPa+(route?.cost??0),destination:route?positionOf(route):null,path:route?.path??[],valid:!reason,reason,treatment});
+  let actionPa=actionCosts(s,u).heal,treatment=null,composureRelief=0;const reach=1.5;
+  const result=(reason=null,route=null)=>({type,actionPa,movePa:route?.cost??0,pa:actionPa+(route?.cost??0),destination:route?positionOf(route):null,path:route?.path??[],valid:!reason,reason,treatment,...(!reason&&composureRelief>0?{composureRelief}:{})});
   if(!alive(u)||s.status!=='active'||(u.side==='player'?!interruptAvailable(s,u):s.phase!=='enemy'))return result('El combatiente no puede actuar ahora.');
   if(!['unit','npc'].includes(targetKind))return result('El tipo de herido no es válido.');
   if(civilian&&(!target||!s.npcs?.includes(target)||target.departure||target.fled||(target.hp??100)<=0||!canSee(s,u,target)))return result('El habitante herido debe estar vivo y a la vista.');
@@ -1756,12 +1765,12 @@ export function itemUsePreview(s,u,target,{targetKind='unit'}={}){
   const inReach=contactDistance(u,target)<=reach&&hasLineOfSight(s,u,target);
   if(u.knockedDown&&(type!=='heal'||!inReach))return result('El soldado está derribado: primero debés levantarte.');
   if(s.mode!=='exploration'&&u.ap<actionPa)return result('PA insuficientes para usar el objeto.');
-  if(inReach)return result();
+  if(inReach){composureRelief=medicalUsePreview(s,u,target,{targetKind}).composureRelief??0;return result();}
   if(u.entangled)return result('Primero debés liberarte de las boleadoras.');
   const route=knownApproachRoute(s,u,cell=>contactDistance(cell,target)>0&&contactDistance(cell,target)<=reach&&hasLineOfSight(s,cell,target));
   if(!route)return result('No hay una ruta para acercarse y usar el objeto.');
-  const arrived=medicalUsePreview(s,{...u,...positionOf(target),tacticalLevel:tacticalLevel(target),ap:Math.max(0,u.ap-route.cost)},target,{targetKind});
-  actionPa=arrived.cost;treatment=arrived.treatment;
+  const arrived=medicalUsePreview(s,{...u,...positionOf(route),tacticalLevel:tacticalLevel(route),ap:Math.max(0,u.ap-route.cost)},target,{targetKind});
+  actionPa=arrived.cost;treatment=arrived.treatment;composureRelief=arrived.composureRelief??0;
   return result(!arrived.allowed?s.mode!=='exploration'&&route.cost+actionPa>u.ap?'PA insuficientes para acercarse y usar el objeto.':arrived.reason:null,route);
 }
 
@@ -2277,6 +2286,10 @@ else if(a.type==='heal'){
   const preview=medicalUsePreview(s,u,t,{targetKind:a.targetKind});if(!preview.allowed)return fail(preview.reason);pay(preview.cost);
   const treatment=preview.treatment,bleedReduced=(t.bleeding??0)-treatment.bleedingAfter;u.medkits-=treatment.dressingsUsed;practice(u,'medical',3);
   t.hp=treatment.hpAfter;t.bleeding=treatment.bleedingAfter;t.bandaged=treatment.bandagedAfter;
+  if(preview.composureRelief>0){
+   u.shock-=preview.composureRelief;
+   careComposureResults.set(s,{unitId:u.id,targetId:t.id,targetKind:a.targetKind==='npc'?'npc':'unit',relief:preview.composureRelief});
+  }
   if(a.targetKind==='npc'){
     t.civilianWoundVersion=1;if(!t.bleeding){delete t.bleedSource;delete t.civilianWoundSeconds;}t.unconscious=isUnconscious(t);
     if(treatment.hpGain>0)t.civilianFirstAid={version:1,hpRestored:(t.civilianFirstAid?.hpRestored??0)+treatment.hpGain};

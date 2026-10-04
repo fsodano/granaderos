@@ -52,13 +52,16 @@ test('the editor authors named relationships with bounded choices, protected ref
 test('the editor removes a historical ability and assigns abilities to a new identity through undo, copy and campaign launch',async t=>{
  const m=await mount(t);const draft=()=>parseContentPackage(m.dom.window.localStorage.getItem(draftKey));
  const ability=name=>[...m.document.querySelectorAll('fieldset[aria-label="Habilidades de combate"] label')].find(l=>l.textContent.startsWith(name)).querySelector('input');
+ await m.input(m.document.querySelector('input[type="search"]'),'person-130');await m.click(m.document.querySelector('.entry-list button'));
+ assert.equal(ability('Serenidad al cuidar').checked,true);assert.match(ability('Serenidad al cuidar').parentElement.textContent,/otra persona.*hasta 2.*PA.*vendas.*sí mismo/);
+ await m.click(ability('Serenidad al cuidar'));assert.deepEqual(draft().characters.find(c=>c.id==='person-130').abilities,[]);await m.click(m.button('Deshacer'));assert.equal(ability('Serenidad al cuidar').checked,true);
  await m.input(m.document.querySelector('input[type="search"]'),'person-3');await m.click(m.document.querySelector('.entry-list button'));
  assert.equal(ability('Protección de compañeros').checked,true);await m.click(ability('Protección de compañeros'));assert.ok(!draft().characters.find(c=>c.id==='person-3').abilities.includes('bodyguard'));
  await m.click([...m.document.querySelectorAll('button')].find(b=>b.textContent.includes('Crear personaje')));
  assert.equal(m.document.querySelectorAll('fieldset[aria-label="Habilidades de combate"] input:checked').length,0);
  await m.input(m.label('Nombre'),'Alma Nueva');await m.click(ability('Protección de compañeros'));await m.click(ability('Atención rápida'));
- await m.click(m.button('Deshacer'));assert.equal(ability('Atención rápida').checked,false);await m.click(m.button('Rehacer'));assert.equal(ability('Atención rápida').checked,true);
- await m.click(m.button('Duplicar personaje'));const c=draft().characters.at(-1);assert.deepEqual(c.abilities,['bodyguard','rapid_first_aid']);
+ await m.click(m.button('Deshacer'));assert.equal(ability('Atención rápida').checked,false);await m.click(m.button('Rehacer'));assert.equal(ability('Atención rápida').checked,true);await m.click(ability('Serenidad al cuidar'));
+ await m.click(m.button('Duplicar personaje'));const c=draft().characters.at(-1);assert.deepEqual(c.abilities,['bodyguard','rapid_first_aid','care_composure']);
  await m.click(m.button('Iniciar campaña con estas fichas'));let {campaign}=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY));
  assert.ok(!rosterFor(campaign).find(o=>o.id===3).abilities.includes('bodyguard'));
  const id=operativeIdForCharacter(campaign.contentCampaign.package,c.id);campaign=dispatchCampaign(campaign,{type:'recruitCivic',id,term:'week'});assert.equal(campaign.lastError,null);

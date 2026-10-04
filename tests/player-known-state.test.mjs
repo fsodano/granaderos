@@ -109,14 +109,20 @@ test('order error responses preserve text admission reasons but never serialize 
 });
 
 test('a corpse-heavy sector emits only active-person order lists and preserves unconscious patient targets',()=>{
-  const state=fixture();state.units[0].activeSlot='medical';Object.assign(state.units[1],{hp:12,unconscious:true,bleeding:1});
+  const state=fixture();Object.assign(state.units[0],{activeSlot:'medical',abilities:['care_composure'],shock:1.5});Object.assign(state.units[1],{hp:12,unconscious:true,bleeding:1});
+  Object.assign(state.npcs.find(n=>n.id==='npc-visible'),{hp:30,bleeding:3,bandaged:0});
   for(let i=0;i<210;i++)state.units.push({...state.units[1],id:`old-corpse-${i}`,name:`Miliciano caído ${i}`,militia:true,hp:0,unconscious:false,bleeding:0,x:20+i%8,y:7+Math.floor(i/8)%4});
   const view=playerKnownBattle(state);
   assert.equal(view.units.filter(unit=>unit.id.startsWith('old-corpse-')).length,210);
   assert.deepEqual(view.orders.map(order=>order.unitId),['p']);
   assert.ok(view.orders[0].targets.some(target=>target.targetId==='q'&&target.valid));
+  const aid=view.orders[0].targets.find(target=>target.targetId==='q');assert.equal(aid.composureRelief,1.5);assert.match(aid.coverNote,/Tensión del sanitario: −1,5/);
+  assert.equal(view.orders[0].medicalTargets.find(target=>target.targetId==='npc-visible').composureRelief,1.5);assert.equal(view.units.find(unit=>unit.id==='p').abilities,undefined);
   assert.ok(!JSON.stringify(view.orders).includes('old-corpse-'));
   assert.ok(JSON.stringify(view.orders).length<15_000);assert.ok(JSON.stringify(view).length<400_000);
+  const privateRoom=structuredClone(state);Object.assign(privateRoom.npcs.find(n=>n.id==='npc-visible'),{roomId:'unknown-private-room'});const absent=structuredClone(privateRoom);absent.npcs=absent.npcs.filter(n=>n.id!=='npc-visible');
+  assert.deepEqual(playerKnownBattle(privateRoom),playerKnownBattle(absent),'a hidden patient cannot expose a care forecast, identity or relief');
+  assert.equal(state.units[0].shock,1.5);assert.equal(state.units[0].medkits,2);
 });
 
 

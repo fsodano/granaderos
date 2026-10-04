@@ -4,7 +4,7 @@ import {defaultContentPackage,validateContentPackage} from '../game/content-pack
 import {initialCampaign,dispatchCampaign,rosterFor} from '../game/campaign.js';
 import {operativeIdForCharacter} from '../game/content-character-ids.js';
 import {CHARACTER_ABILITIES,hasCharacterAbility} from '../game/character-abilities.js';
-import {characterProfile} from '../game/characters.js';
+import {characterProfile,characterAbilityDescriptions} from '../game/characters.js';
 import {createBattle,actBattle,endTurn,getReachable,shotChance,canSee,actionCosts} from '../game/tactical.js';
 import {orderDescriptors} from '../game/ja2-hud.js';
 import {enterSector} from '../game/world.js';
@@ -29,13 +29,13 @@ const act=(s,a)=>{const n=actBattle(s,a);assert.equal(n.lastError,null,n.lastErr
 const pa=(s,id)=>orderDescriptors(s,s.units[0]).find(o=>o.id===id).pa;
 
 test('a new hired identity keeps explicit abilities in the dossier, range, deployment and saved reentry',()=>{
- const d=content(['bodyguard','rapid_first_aid']),id=operativeIdForCharacter(d,'alma-nueva');
+ const d=content(['bodyguard','rapid_first_aid','care_composure']),id=operativeIdForCharacter(d,'alma-nueva');
  // Editor ordering and display names do not determine a runtime identity or power.
  const reordered=structuredClone(d);reordered.characters.reverse();reordered.characters.find(c=>c.id==='alma-nueva').name='Otra persona';assert.equal(operativeIdForCharacter(reordered,'alma-nueva'),id);
- assert.deepEqual(rosterFor(initialCampaign(42,reordered)).find(o=>o.id===id).abilities,['bodyguard','rapid_first_aid']);
+ assert.deepEqual(rosterFor(initialCampaign(42,reordered)).find(o=>o.id===id).abilities,['bodyguard','rapid_first_aid','care_composure']);
  let s=order(initialCampaign(42,d),{type:'recruitCivic',id,term:'week'});s=order(save(s).campaign,{type:'wait',hours:1});s=order(s,{type:'visitSector'});
- let pair=save(s,enterSector(s.pendingBattle)),unit=pair.battle.units.find(u=>u.id===String(id));assert.deepEqual(unit.abilities,['bodyguard','rapid_first_aid']);
- assert.deepEqual(characterProfile(unit).skills,['Protección de compañeros','Atención rápida']);assert.equal(actionCosts(pair.battle,unit).heal,18);
+ let pair=save(s,enterSector(s.pendingBattle)),unit=pair.battle.units.find(u=>u.id===String(id));assert.deepEqual(unit.abilities,['bodyguard','rapid_first_aid','care_composure']);
+ assert.deepEqual(characterProfile(unit).skills,['Protección de compañeros','Atención rápida','Serenidad al cuidar']);assert.match(characterAbilityDescriptions(unit).find(a=>a.id==='care_composure').description,/otra persona.*hasta 2.*PA.*vendas.*sí mismo/);assert.equal(actionCosts(pair.battle,unit).heal,18);
  s=order(pair.campaign,{type:'leaveSector',battleId:s.pendingBattle.id,sectorState:pair.battle,survivors:pair.battle.units.filter(u=>u.side==='player')});
  s=order(save(s).campaign,{type:'visitSector'});pair=save(s,enterSector(s.pendingBattle,s.sectorStates.retiro));assert.deepEqual(pair.battle.units[0].abilities,unit.abilities);
  assert.deepEqual(createContentTestRange(d,'alma-nueva').units[0].abilities,unit.abilities);
@@ -144,13 +144,15 @@ test('historical contacts and mission actors carry changed abilities; save valid
  const ally=structuredClone(s);ally.missionAllies.san_lorenzo=sanLorenzoAlly(ally);ally.missionAllies.san_lorenzo.abilities=[];assert.throws(()=>save(ally),/habilidades/);
  for(const abilities of [null,'bodyguard',['bad'],['bodyguard','bodyguard'],[{}]]){const invalid=content();invalid.characters.at(-1).abilities=abilities;assert.ok(validateContentPackage(invalid).length);assert.throws(()=>initialCampaign(42,invalid));}
  const malformed=battle([subject([])]);malformed.units[0].abilities=['bad'];assert.throws(()=>validateBattleSnapshot(malformed),/habilidades/);
- assert.equal(CHARACTER_ABILITIES.length,19);
+ const care=CHARACTER_ABILITIES.find(ability=>ability.id==='care_composure');assert.ok(care);assert.match(care.description,/otra persona.*hasta 2.*PA.*vendas.*sí mismo/);
+ const fresh=defaultContentPackage();assert.deepEqual(fresh.characters.filter(c=>c.abilities.includes('care_composure')).map(c=>c.id),['person-130']);
 });
 
 test('older authored and ordinary campaigns retain historical behavior without allowing saved capability injection',()=>{
  for(const authored of [false,true]){
   const d=defaultContentPackage();for(const c of d.characters)delete c.abilities;
   let s=initialCampaign(42,authored?d:undefined);assert.equal(hasCharacterAbility(rosterFor(s).find(o=>o.id===3),'bodyguard'),true);
+  const cejas=rosterFor(s).find(o=>o.id===130);assert.equal(hasCharacterAbility(cejas,'care_composure'),false);assert.deepEqual(characterAbilityDescriptions(cejas),[]);
   s=order(s,{type:'recruitCivic',id:100,term:'week'});if(authored)s=order(s,{type:'wait',hours:6});s=order(s,{type:'visitSector'});const b=enterSector(s.pendingBattle);assert.ok(save(s,b));
   b.units[0].abilities=['bodyguard'];assert.throws(()=>save(s,b),/habilidades/);
  }

@@ -101,3 +101,15 @@ test('assignment choices disclose prospective support without granting it merely
  await m.click(m.button('Escuadra ›'));await m.click(m.button('Escuadra 2'));
  assert.equal(m.closed(),true);assert.ok(m.state().squads.find(q=>q.name==='Escuadra 2').members.includes(107));assert.equal(m.state().operativeState[107].morale,personal);assert.equal(m.state().resources.treasury,cash);assert.deepEqual(m.state().contracts,contracts);assert.deepEqual(decodeSave(encodeSave(m.state())).campaign,m.state());
 });
+
+
+test('the hiring card and real dossier explain authored care composure while older pinned prose remains neutral',async t=>{
+ const content=defaultContentPackage(),state=initialCampaign(42,content),m=await mount(t,state,'recruitment');
+ const card=()=>m.doc.querySelector('[data-operative-id="130"]');
+ assert.match(card().textContent,/Serenidad al cuidar/);assert.match(card().textContent,/otra persona a la vista.*hasta 2 puntos de tensión.*PA.*vendas.*sí mismo/);
+ await m.click(card().querySelector('.candidate-face'));const dossier=m.doc.querySelector('[role="dialog"]');assert.match(dossier.textContent,/Serenidad al cuidar/);assert.match(dossier.textContent,/otra persona a la vista.*hasta 2 puntos de tensión.*PA.*vendas.*sí mismo/);
+ assert.match(dossier.textContent,/La rutina de atender a otros le devuelve la calma/);await m.click(m.button('Cerrar hoja de servicio',dossier));assert.deepEqual(m.state(),state,'reading the condition changes no money, contract, health or shock');
+ const old=structuredClone(content);delete old.characters.find(c=>c.id==='person-130').abilities;await m.replace(decodeSave(encodeSave(initialCampaign(42,old))).campaign);
+ assert.doesNotMatch(card().textContent,/Serenidad al cuidar|hasta 2 puntos de tensión/);await m.click(card().querySelector('.candidate-face'));
+ assert.match(m.doc.querySelector('[role="dialog"]').textContent,/La rutina de atender a otros le devuelve la calma/);assert.doesNotMatch(m.doc.querySelector('[role="dialog"]').textContent,/Serenidad al cuidar|hasta 2 puntos de tensión/);
+});

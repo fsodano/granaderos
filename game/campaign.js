@@ -37,6 +37,7 @@ import {dialogueForNPC,chooseDialogue,validateSavedDialogues} from './content-di
 import {advanceUnloadedCivilians,nextUnloadedCivilianDeath,migrateResidentWounds,resumeCivilianServiceReturns,hasPendingCivilians,acknowledgeCivilians,transferCivilian,validateCampaignCivilians,migrateCampaignCivilians,migrateCampaignCivilianSupplies} from './campaign-civilians.js';
 import {synchronizeCampaignPresence,nextCampaignPresenceChange,validateCampaignPresence,acknowledgeSuccessionDeaths} from './campaign-presence.js';
 import {isContractOperative,gainsExperience,characterForOperative,isWorldCharacter} from './content-character-ids.js';
+import {validateAbilityReferences} from './content-character-abilities.js';
 import {campaignPlace,worldCell,locationId,validWorldLocation,worldOwner,cellTravelPlan,cellTravelReason,cellStepHours,adjacentCells} from './world-cells.js';
 import {compactCellScene,expandCellScene,cellSceneSaveReplacer} from './cell-scene-storage.js';
 import {validateForceWeapon} from './content-force-equipment.js';
@@ -355,6 +356,7 @@ export function hasPendingNpcGiftProgress(campaign,battle){
 }
 function validatedInteractionSnapshot(s,raw){
  const snapshot=validateSectorSnapshot(raw),request=s.pendingBattle;validateQuestContext(s,snapshot);validateRoadsideDiscoveryContext(s,snapshot);validateCompanionGriefContext(s,snapshot,rosterFor(s));
+ validateAbilityReferences(s,snapshot);
  requireThat(snapshot.battleId===request.id&&snapshot.sectorId===request.sector&&(snapshot.sceneId??null)===(request.sceneId??null),'La entrega no corresponde al despliegue pendiente.');
  const ids=request.squad.map(u=>String(u.id)),allowed=new Set([...ids,...(request.garrison??[]).map(u=>String(u.id)),...(request.missionAllies??[]).map(u=>String(u.id))]);
  const previous=request.sceneId?s.sceneStates[request.sceneId]:s.sectorStates[request.sector],corpses=new Set([...(previous?.units??[]).filter(u=>u.side==='player'&&u.hp<=0).map(u=>u.id),...(request.remains??[]).map(r=>String(r.unitId))]);
@@ -418,6 +420,7 @@ function completeDeploymentReport(s,request,action){
   validateQuestContext(s,action.sectorState);
   validateRoadsideDiscoveryContext(s,action.sectorState);
   const raw=action.sectorState,snapshot=validateSectorSnapshot(raw),ids=request.squad.map(u=>String(u.id));
+  validateAbilityReferences(s,snapshot);
   validateCompanionGriefContext(s,snapshot,rosterFor(s),request);
   requireThat(snapshot.battleId===request.id&&snapshot.sectorId===request.sector&&(snapshot.sceneId??null)===(request.sceneId??null),'El estado táctico no corresponde al despliegue y sector pendientes.');
   requireThat(worldCell(request.sector)?.anchor!==false||snapshot.sourceMapId===request.sector,'El parte no corresponde a la celda del despliegue.');
@@ -618,6 +621,7 @@ export function dispatchCampaign(previous,action){
   try{
     initializeCampaignSystems(s);
     requireThat(action&&typeof action.type==='string','La orden no es válida.');
+    if(s.pendingBattle?.resumeSnapshot)validateAbilityReferences(s,s.pendingBattle.resumeSnapshot);
     const tradeOrders=['purchaseToolkits','purchaseAmmunition','purchaseGrenades','purchaseMedicalSupplies','purchaseEquipment','purchaseUsedEquipment','sellEquipment','exchangeEquipment','sellArtillery','purchaseUsedArtillery','repurchaseArtillery','resupplyArtillery','supplyArtillery','resupply','repairWeapon'];
     requireThat(!tradeOrders.includes(action.type)&&!(action.type==='ammunition'&&action.direction==='buy')&&!(action.type==='sectorInventory'&&action.direction==='issueOutfit')&&!(action.type==='horseAction'&&['acquire','hire','feed','breed'].includes(action.order?.type)),'El comercio de equipo no está disponible. Buscá objetos en los sectores y usá los que llevás.');
     if(action.sectorState){validateCampaignPatrol(s,action.sectorState);validateCampaignArtilleryProfiles(s,action.sectorState);validateArtilleryReport(s.pendingBattle,action.sectorState);}
