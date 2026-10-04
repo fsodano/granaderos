@@ -56,7 +56,10 @@ function bestShot(state, unit, targets, budget = unit.ap) {
     const costs = actionCosts(state, unit, target);
     if (costs.fire > budget) continue;
     const maxAim = Math.min(4, Math.floor((budget - costs.fire) / costs.aim));
-    for (const {aim,hitLocation,chance,damageFactor,shots} of firearmShotOptions(state,unit,target,maxAim)) {
+    for (const {aim,hitLocation,chance,damageFactor,shots,interveningFriendly} of firearmShotOptions(state,unit,target,maxAim)) {
+      // One paired order discharges both hands. Never accept a known friendly
+      // before or beyond the selected target on either potential ball ray.
+      if(interveningFriendly||shots?.some(shot=>shot.interveningFriendly))continue;
       if(!(shots?.some(shot=>shot.chance>0)??chance))continue;
       const cost = costs.fire + aim * costs.aim;
       const base=weaponFor(unit).damage,effect=shotLocationEffects(hitLocation,base*damageFactor,target);

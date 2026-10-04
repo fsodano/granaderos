@@ -4,6 +4,9 @@
 export const COMBAT_BALANCE=Object.freeze({
  firearmDamageMultiplier:1,
  firearmFlightRangeMultiplier:2, // Physical flight limit; effective aiming range is unchanged.
+ firearmBodyResistance:Object.freeze({head:15,torso:30,legs:23}), // Lead-ball force spent passing through one body.
+ firearmBodyPenetrationThreshold:20,
+ firearmBodyPenetrationMaximumChance:95,
  rangePenaltyMultiplier:.98,
  sightPenaltyMultiplier:1,
  outsideWeaponChanceFactor:.5,
@@ -17,7 +20,11 @@ export const COMBAT_BALANCE=Object.freeze({
  reloadAPMultiplier:1,
  coverDamageReductionMultiplier:1, // 1 preserves current physical cover.
 });
-export function coveredFirearmDamage(amount,coverFactor=1){
- const factor=Math.max(0,Math.min(1,1-(1-coverFactor)*COMBAT_BALANCE.coverDamageReductionMultiplier));
+export function coveredFirearmDamage(amount,coverFactor=1,coverMultiplier=COMBAT_BALANCE.coverDamageReductionMultiplier){
+ const factor=Math.max(0,Math.min(1,1-(1-coverFactor)*coverMultiplier));
  return amount*factor;
+}
+// Cover damage tuning cannot return force already spent passing through a body.
+export function penetratingFirearmDamage(amount,impact,coverMultiplier=COMBAT_BALANCE.coverDamageReductionMultiplier){
+ return Math.max(0,coveredFirearmDamage(amount,impact.coverDamageFactor??impact.damageFactor,coverMultiplier)-amount*(impact.bodyDamageReduction??0));
 }

@@ -4,5 +4,5 @@ import {fight as recordedFight} from './opening-driver.mjs';
 import {hiredAssaultOrder} from './hired-assault-driver.mjs';
 
 export function fight(request,previous=null){
- return recordedFight(request,previous,{controller:(battle,unit)=>hiredAssaultOrder(battle,unit,{reconBudget:16})});
+ return recordedFight(request,previous,{controller:hiredAssaultOrder});
 }

@@ -21,6 +21,7 @@ function observedShot(state,raw,known,canObserve){
  // In that case only the observed part of the original ray is shown.
  const hiddenVictim=raw.victimId&&(!raw.victimObserved||!known.has(bodyKey(raw.victimKind??'unit',raw.victimId))),end=hiddenVictim?raw.destination:raw.impact;
  if(![raw.source,end].every(point=>point&&[point.x,point.y,point.height].every(Number.isFinite)))return null;
+ if(raw.discharge===false&&!canObserve(state,{...raw.source,x:Math.round(raw.source.x),y:Math.round(raw.source.y)}))return null;
  const distance=Math.hypot(end.x-raw.source.x,end.y-raw.source.y),steps=Math.max(1,Math.ceil(distance*4));let last=raw.source,complete=true;
  for(let index=1;index<=steps;index++){
   const fraction=index/steps,point={x:raw.source.x+(end.x-raw.source.x)*fraction,y:raw.source.y+(end.y-raw.source.y)*fraction,height:raw.source.height+(end.height-raw.source.height)*fraction,tacticalLevel:fraction===1?end.tacticalLevel:raw.source.tacticalLevel};
@@ -29,7 +30,7 @@ function observedShot(state,raw,known,canObserve){
  }
  if(last===raw.source)return null;
  const outcome=!complete?null:hiddenVictim?(raw.pointShot||raw.aimHit?null:'miss'):raw.pointShot&&raw.outcome==='miss'?null:raw.outcome;
- return {source:snapshot(raw.source),impact:last,visible:true,outcome,spread:Boolean(raw.spread),...(outcome==='cover'&&raw.material?{material:raw.material}:{})};
+ return {source:snapshot(raw.source),impact:last,visible:true,outcome,spread:Boolean(raw.spread),...(raw.discharge===false?{discharge:false}:{}),...(outcome==='cover'&&raw.material?{material:raw.material}:{})};
 }
 export function captureBattlePresentation(before,execute,canObserve){
  const frames=[],parent=recorder,presentedShots=new Set();let prior=before,lastSignature=null;

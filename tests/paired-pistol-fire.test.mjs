@@ -12,8 +12,8 @@ const reject=(s,a)=>{const n=actBattle(s,{unitId:'p',type:'fire',targetId:'e',..
 test('one aiming order spends the slower pistol cost once and consumes exact independent charges',()=>{
  const s=field(),u=s.units[0],c=actionCosts(s,u,s.units[1]),before=structuredClone(s);
  assert.equal(c.fire,8);assert.equal(c.aim,3);const n=fire(s,{aim:1}),v=n.units[0];
- assert.equal(v.ap,89);assert.equal(v.loaded,0);assert.equal(v.condition,80);assert.equal(v.offHand.loaded,1);assert.equal(v.offHand.condition,56);assert.equal(v.ammo,8);
- assert.equal(v.weaponInstanceId,'first');assert.equal(v.offHand.instanceId,'second');assert.equal(v.offHand.name,'De familia');assert.equal(v.offHand.weapon,1808);assert.equal(v.weapon,1805);assert.equal(n.smoke.length,2);assert.equal(v.weaponReady,true);assert.deepEqual(s,before);
+ assert.equal(v.ap,89);assert.equal(v.loaded,0);assert.equal(v.condition,80);assert.equal(v.offHand.jammed,true);assert.equal(v.offHand.loaded,2);assert.equal(v.offHand.condition,57);assert.equal(v.ammo,8);
+ assert.equal(v.weaponInstanceId,'first');assert.equal(v.offHand.instanceId,'second');assert.equal(v.offHand.name,'De familia');assert.equal(v.offHand.weapon,1808);assert.equal(v.weapon,1805);assert.equal(n.smoke.length,1);assert.equal(v.weaponReady,true);assert.deepEqual(s,before);
 });
 test('readiness, mixed aim costs, turning and prone setup are included once and reject the whole pair if unaffordable',()=>{
  for(const patch of [{},{weaponReady:true},{facing:6},{stance:'prone',movementMode:'prone',facing:6},{mounted:true,horse:true}]){
@@ -52,9 +52,9 @@ test('main and second-hand ignition failures keep only their own charges and do 
  assert.deepEqual(Object.keys(found).sort(),['false:true','true:false','true:true']);
 });
 test('both shots retain the original aim and spend their loads when the first kills or knocks down the target',()=>{
- const lethal=field({marksmanship:100},{enemies:[{id:'e',x:5,y:2,hp:20,patrol:false,overwatch:false}]}),dead=fire(lethal,{aim:4});
+ const lethal=field({marksmanship:100,offHand:second({condition:100})},{enemies:[{id:'e',x:5,y:2,hp:20,patrol:false,overwatch:false}]}),dead=fire(lethal,{aim:4});
  assert.equal(dead.units[1].hp,0);assert.equal(dead.status,'victory');assert.equal(dead.units[0].loaded,0);assert.equal(dead.units[0].offHand.loaded,1);assert.equal(dead.smoke.length,2);
- const legs=field({marksmanship:100}),n=fire(legs,{hitLocation:'legs',aim:4});assert.equal(n.units[1].knockedDown,true);assert.equal(n.units[0].offHand.loaded,1);assert.equal(n.smoke.length,2);
+ const legs=field({marksmanship:100,offHand:second({condition:100})}),n=fire(legs,{hitLocation:'legs',aim:4});assert.equal(n.units[1].knockedDown,true);assert.equal(n.units[0].offHand.loaded,1);assert.equal(n.smoke.length,2);
  const prone=field({}, {enemies:[{id:'e',x:5,y:2,stance:'prone',movementMode:'prone',patrol:false,overwatch:false}]});reject(prone,{hitLocation:'head'});fire(prone,{hitLocation:'torso'});
 });
 test('exploration spends handling time without AP, and JSON restoration repeats the entire paired order',()=>{

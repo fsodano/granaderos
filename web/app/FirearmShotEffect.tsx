@@ -3,7 +3,7 @@ import {projectSurface} from '../lib/tactical-elevation';
 import {useEffect,useState} from 'react';
 
 type Point={x:number;y:number;height:number;tacticalLevel?:number};
-export type ShotVisual={source:Point;impact:Point;visible:boolean;outcome:'hit'|'cover'|'miss'|'pellets'|null;material?:string;spread?:boolean};
+export type ShotVisual={source:Point;impact:Point;visible:boolean;outcome:'hit'|'cover'|'miss'|'pellets'|null;material?:string;spread?:boolean;discharge?:boolean};
 // Draw only the admitted, resolved ray. This component neither looks up a
 // victim nor reads the complete roster to reconstruct a hidden shot.
 export default function FirearmShotEffect({state,visual,stage,project}:{state:any;visual:ShotVisual;stage:'projectile'|'impact';project:(x:number,y:number)=>{x:number;y:number}}){
@@ -13,13 +13,13 @@ export default function FirearmShotEffect({state,visual,stage,project}:{state:an
  const from=projectSurface(state,project,{...visual.source,renderedHeight:visual.source.height}),to=projectSurface(state,project,{...visual.impact,renderedHeight:visual.impact.height});
  const duration=`${firearmFlightDuration(visual)/1000}s`,angle=Math.atan2(to.y-from.y,to.x-from.x)*180/Math.PI;
  if(reduced)return <g data-firearm-reduced-motion={stage} pointerEvents="none" aria-hidden="true">
-  {stage==='projectile'?<><circle cx={from.x} cy={from.y} r="2" fill="#c8ac75"/><ellipse cx={to.x} cy={to.y} rx="1.8" ry=".8" fill="#b8b6a6"/></>:visual.outcome&&visual.outcome!=='pellets'?<circle cx={to.x} cy={to.y} r="2.5" fill={visual.outcome==='hit'?'#794d40':'#a89576'}/>:null}
+  {stage==='projectile'?<>{visual.discharge!==false&&<circle cx={from.x} cy={from.y} r="2" fill="#c8ac75"/>}<ellipse cx={to.x} cy={to.y} rx="1.8" ry=".8" fill="#b8b6a6"/></>:visual.outcome&&visual.outcome!=='pellets'?<circle cx={to.x} cy={to.y} r="2.5" fill={visual.outcome==='hit'?'#794d40':'#a89576'}/>:null}
  </g>;
- if(stage==='projectile')return <g data-firearm-flight={visual.spread?undefined:'true'} data-firearm-discharge={visual.spread?'true':undefined} pointerEvents="none" aria-hidden="true">
-  <g data-muzzle-flash="true" transform={`translate(${from.x} ${from.y}) rotate(${angle})`}>
+ if(stage==='projectile')return <g data-firearm-flight={visual.spread?undefined:'true'} data-firearm-discharge={visual.spread?'true':undefined} data-firearm-continuation={visual.discharge===false?'true':undefined} pointerEvents="none" aria-hidden="true">
+  {visual.discharge!==false&&<g data-muzzle-flash="true" transform={`translate(${from.x} ${from.y}) rotate(${angle})`}>
    <path d="M0-2L8-4L5-1L12 0L5 1L8 4L0 2Z" fill="#c8ac75" opacity=".7"/>
    <animate attributeName="opacity" values="1;0" dur="0.09s" fill="freeze"/>
-  </g>
+  </g>}
   {!visual.spread&&<g opacity=".85">
    <animateMotion path={`M${from.x},${from.y} L${to.x},${to.y}`} dur={duration} rotate="auto" fill="freeze"/>
    <ellipse rx="1.8" ry=".8" fill="#b8b6a6" stroke="#3a3c32" strokeWidth=".6"/>

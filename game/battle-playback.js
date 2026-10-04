@@ -1,7 +1,7 @@
 // Presentation timing is in milliseconds. It never changes simulation time.
 import {spriteOrderPose} from './sprite-order-pose.js';
 export const BATTLE_PLAYBACK=Object.freeze({step:210,prepare:420,action:300,contact:650,impact:900,effect:600,projectileMinimum:320,projectileMaximum:650});
-export function battleFramePose(frame){return frame.type==='prepare'||frame.type==='step'||frame.type==='impact'||frame.shotComplete||frame.contactComplete||frame.performed===false?'idle':spriteOrderPose(frame.action);}
+export function battleFramePose(frame){return frame.type==='prepare'||frame.type==='step'||frame.type==='impact'||frame.shotVisual?.discharge===false||frame.shotComplete||frame.contactComplete||frame.performed===false?'idle':spriteOrderPose(frame.action);}
 export function firearmFlightDuration(visual){return Math.min(BATTLE_PLAYBACK.projectileMaximum,Math.max(BATTLE_PLAYBACK.projectileMinimum,Math.round(Math.hypot(visual.impact.x-visual.source.x,visual.impact.y-visual.source.y)*35)));}
 const attacks=new Set(['fire','firePoint','melee','meleePoint','charge','artillery','throwKnife','throwGrenade','useItem']);
 export function battleFrameDuration(frame){

@@ -34,7 +34,10 @@ export function firearmBystanderRisk(state,attacker,target,hitLocation='torso'){
  const scene={...state,units,npcs},missScene={...scene,units:units.filter(body=>targetKind!=='unit'||body.id!==target.id),npcs:npcs.filter(body=>targetKind!=='npc'||body.id!==target.id)},direct=new Map(),scatter=new Map();
  const radius=Math.min(4,Math.max(1,Math.ceil(Math.hypot(target.x-attacker.x,target.y-attacker.y)/8)));
  const destinationHeight=absoluteBodyHeight(state,target,hitLocation),views=pairedPistol(attacker)?[attacker,secondaryPistolView(attacker)]:[attacker];
- const record=(flight,collection)=>{if(flight.blocked||!flight.victimId)return;const key=`${flight.victimKind??'unit'}:${flight.victimId}`,body=candidates.get(key);if(body)collection.set(key,body);};
+ const record=(flight,collection)=>{
+  const impacts=flight.bodyImpacts??(!flight.blocked&&flight.victimId?[flight]:[]);
+  for(const impact of impacts){const key=`${impact.victimKind??'unit'}:${impact.victimId}`,body=candidates.get(key);if(body)collection.set(key,body);}
+ };
  for(const view of views){
   const weapon=weaponFor(view);
   const couldHit=destination=>{const ray=firearmRay(state,view,destination,weapon,hitLocation,{destinationHeight});return ray&&candidateBodies.some(body=>crossesBodyCell(view,ray.destination,body));};

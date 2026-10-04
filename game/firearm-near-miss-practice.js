@@ -1,0 +1,35 @@
+import {fieldPractice,fieldPracticeChance} from './skill-training.js';
+import {CRITICAL_HEALTH} from './actor-condition.js';
+import {absoluteBodyHeight} from './sight-geometry.js';
+import {surfaceHeight} from './tactical-space.js';
+
+// Granaderos geometry tuning, not JA2's exact growth or distance formula.
+export const NEAR_MISS_DISTANCE=.9;
+export const NEAR_MISS_HEIGHT_MARGIN=.25;
+const completed=new WeakSet();
+const finitePoint=point=>point&&[point.x,point.y,point.height].every(Number.isFinite);
+const capable=unit=>unit?.hp>=CRITICAL_HEALTH&&(unit.energy??100)>0&&!['unconscious','knockedDown','routed','bound','captured','entangled','surrendered','departure','fled'].some(key=>unit[key]);
+const hitsTarget=(flight,target)=>[...(flight.bodyImpacts??[]),...(flight.victimId!=null?[flight]:[])].some(hit=>(hit.victimKind??'unit')==='unit'&&String(hit.victimId)===String(target.id));
+
+// Called only by the paid directed single-ball resolution, after physical
+// effects. Forecasts, point fire and presentation frames never call this.
+// Only the intended player may learn; the physical stop can remain hidden.
+export function practiceFirearmNearMiss(state,{attacker,target,weapon,flight,hit,discharged,damagedBodies,source=attacker}={}){
+ if(discharged!==true||hit!==false||!flight||completed.has(flight)||!state.units?.includes(source)||!state.units.includes(target))return 0;
+ if(source.side!=='enemy'||attacker?.side!=='enemy'||target.side!=='player'||!capable(target)||attacker.jammed)return 0;
+ if(!(damagedBodies instanceof Set)||damagedBodies.has(`unit:${target.id}`)||hitsTarget(flight,target))return 0;
+ if(!weapon||![weapon.fireAP,weapon.range,weapon.capacity].every(value=>Number.isFinite(value)&&value>0)||weapon.loadPattern!==undefined&&weapon.loadPattern!=='single'||(weapon.template??weapon.id)===1807&&!weapon.loadPattern)return 0;
+ if((target.trainedStats?.agility??0)>=10||!fieldPracticeChance(target,'agility'))return 0;
+ const from={x:attacker.x,y:attacker.y,height:absoluteBodyHeight(state,attacker,'muzzle')},stop=flight.terminal?.impact??flight.impact;
+ if(!finitePoint(from)||!finitePoint(stop))return 0;
+ const dx=stop.x-from.x,dy=stop.y-from.y,length=dx*dx+dy*dy;
+ if(!length)return 0;
+ const fraction=((target.x-from.x)*dx+(target.y-from.y)*dy)/length;
+ // A wall or intervening body before the target cannot create a near miss.
+ if(fraction<=0||fraction>=1)return 0;
+ const x=from.x+dx*fraction,y=from.y+dy*fraction,z=from.height+(stop.height-from.height)*fraction;
+ const base=surfaceHeight(state,target),top=absoluteBodyHeight(state,target,'head');
+ if(base===null||top===null||Math.hypot(target.x-x,target.y-y)>NEAR_MISS_DISTANCE||z<base-NEAR_MISS_HEIGHT_MARGIN||z>top+.15+NEAR_MISS_HEIGHT_MARGIN)return 0;
+ completed.add(flight);
+ return fieldPractice(target,'agility',1);
+}

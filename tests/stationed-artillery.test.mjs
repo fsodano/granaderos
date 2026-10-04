@@ -4,10 +4,11 @@ import {dispatchCampaign,restoreCampaign,serializeCampaign} from '../game/campai
 import {ownedArtilleryCount,prepareSectorArtillery,validateArtilleryReport} from '../game/campaign-artillery.js';
 import {deployedArtillery} from '../game/equipment.js';
 import {enterSector} from '../game/world.js';
-import {actBattle} from '../game/tactical.js';
+import {actBattle,endTurn} from '../game/tactical.js';
 import {order,visit,leave,saved,sync} from './local-contract-fixture.mjs';
 import {issuedBattery,wonBattery,fireStationed,wakeBatteryCrew} from './stationed-artillery-fixture.mjs';
-import {fight} from './battery-field-driver.mjs';
+import {fight} from './opening-driver.mjs';
+import {cautiousCombatOrder} from './cautious-driver.mjs';
 import {secondaryRetreat} from './secondary-loot-fixture.mjs';
 import {advanceCampaignHours} from './campaign-wait-fixture.mjs';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
@@ -34,7 +35,12 @@ test('actual withdrawal leaves the issued gun to the occupation and a real retur
  let s=issuedBattery(),p=saved(sync({campaign:s,battle:enterSector(s.pendingBattle)})),gun=structuredClone(p.battle.artillery[0]);
  p=secondaryRetreat(p);s=order(p.campaign,{type:'battleResult',battleId:s.pendingBattle.id,outcome:'retreat',sectorState:p.battle,survivors:p.battle.units.filter(u=>u.side==='player')});s=saved({campaign:s}).campaign;assert.equal(s.armory.swivel,0);assert.equal(ownedArtilleryCount(s),0);assert.equal(s.sectorStates.san_nicolas.artillery[0].side,'enemy');
  for(const id of s.squad)s=order(s,{type:'assignCare',id,assignment:'rest'});s=advanceCampaignHours(s,10);for(const id of s.squad)s=order(s,{type:'assignCare',id,assignment:'active'});
- s=order(s,{type:'attack',sector:'san_nicolas'});const previous=s.sectorStates.san_nicolas,result=fight({...s.pendingBattle,hour:s.hour,secondOfHour:s.secondOfHour??0},previous,{scoutCostWeight:.01,avoidCivilians:true});assert.equal(result.battle.status,'victory');p=saved(sync({campaign:s,battle:result.battle}));s=saved({campaign:order(p.campaign,{type:'battleResult',battleId:s.pendingBattle.id,outcome:'victory',sectorState:p.battle,survivors:p.battle.units.filter(u=>u.side==='player')})}).campaign;
+ s=order(s,{type:'attack',sector:'san_nicolas'});const previous=s.sectorStates.san_nicolas,request={...s.pendingBattle,hour:s.hour,secondOfHour:s.secondOfHour??0};
+ // Coordinate ordinary cover, body-region shots and aid against the unchanged
+ // saved force. The abandoned gun remains enemy-owned until actual victory.
+ const result=fight(request,previous,{controller:cautiousCombatOrder});assert.equal(result.battle.status,'victory');
+ const replay=result.orders.reduce((battle,action)=>{const next=action.type==='endTurn'?endTurn(battle):actBattle(battle,action);assert.equal(next.lastError,null);return next;},enterSector(request,previous));assert.deepEqual(replay,result.battle);
+ p=saved(sync({campaign:s,battle:result.battle}));s=saved({campaign:order(p.campaign,{type:'battleResult',battleId:s.pendingBattle.id,outcome:'victory',sectorState:p.battle,survivors:p.battle.units.filter(u=>u.side==='player')})}).campaign;
  const recovered=s.sectorStates.san_nicolas.artillery[0];assert.equal(recovered.side,'player');assert.equal(recovered.id,gun.id);assert.ok(recovered.ammo+Number(recovered.loaded)<=gun.ammo+Number(gun.loaded));for(const key of ['type','x','y','loaded','ammo'])assert.deepEqual(recovered[key],result.battle.artillery.find(g=>g.id===gun.id)[key],key);assert.equal(ownedArtilleryCount(s),1);
 });
 test('legacy repeated projections are reconciled against legacy paid stock once and retain the latest actual load',()=>{

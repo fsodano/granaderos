@@ -68,7 +68,7 @@ export function projectilePath(state,attacker,target,weapon,hitLocation='torso',
 
 // A shot retains its original destination height. Living bodies in
 // crossed cells can intercept it, including allies and unconscious soldiers.
-// Cell-wide silhouettes and the lack of body penetration are game tuning.
+// Cell-wide silhouettes and body resistance are explicit game tuning.
 export function projectileFlight(state,attacker,target,weapon,hitLocation='torso',flight={}){
   if(Number.isFinite(weapon.range)&&weapon.range>0&&weapon.loadPattern!=='cone'&&!(weapon.id===1807&&!weapon.loadPattern))return continuedProjectileFlight(state,attacker,target,weapon,hitLocation,flight);
   if(usesElevationGeometry(state,attacker,target))return elevatedProjectileFlight(state,attacker,target,weapon,hitLocation,flight);
@@ -113,8 +113,9 @@ export function firearmRay(state,attacker,target,weapon,hitLocation='torso',flig
 }
 
 // Resolve cover, solid ground/floors and bodies in physical intersection order.
-// The same ray serves actual fire and knowledge-filtered forecasts. It stops at
-// one body; the bullet does not penetrate that body or ricochet.
+// The same ray serves actual fire and knowledge-filtered forecasts. Forecasts
+// assume possible body passage without RNG; actual fire supplies resolveBody.
+// Body and cover force loss accumulate independently. The ray never ricochets.
 function continuedProjectileFlight(state,attacker,target,weapon,hitLocation,flight){
  const ray=firearmRay(state,attacker,target,weapon,hitLocation,flight),power=Math.max(1,weapon.damage??1);
  if(!ray)return {blocked:true,damageFactor:0,obstacles:[],victimId:null,hitLocation};
@@ -145,21 +146,35 @@ function continuedProjectileFlight(state,attacker,target,weapon,hitLocation,flig
   }
  }
  events.sort((a,b)=>a.fraction-b.fraction||a.priority-b.priority||a.key.localeCompare(b.key));
- let remaining=power;const obstacles=[],seen=new Set();
+ let remaining=power,coverLoss=0,bodyLoss=0,reachChance=1;const obstacles=[],bodyImpacts=[],seen=new Set();
  const pointAt=(fraction,level)=>({x:source.x+(destination.x-source.x)*fraction,y:source.y+(destination.y-source.y)*fraction,height:source.height+(destination.height-source.height)*fraction,tacticalLevel:level});
+ const finish=(impact,termination,blocked)=>{
+  const first=bodyImpacts[0],terminal={impact,termination,blocked,remainingImpact:remaining};
+  // Existing generic consumers still address the first physical intersection.
+  // Named-target forecasts select their own typed entry from bodyImpacts.
+  return {blocked:first?false:blocked,damageFactor:first?.damageFactor??remaining/power,obstacles,victimId:first?.victimId??null,...(first?.victimKind==='npc'?{victimKind:'npc'}:{}),hitLocation:first?.hitLocation??hitLocation,destination,impact:first?.impact??impact,termination:first?'body':termination,bodyImpacts,terminal};
+ };
  for(const event of events){
+  if(seen.has(event.key))continue;seen.add(event.key);
   if(event.body){
    const {body,kind,base}=event,z=pointAt(event.fraction,tacticalLevel(body)).height-base;
    const selected=kind===targetKind&&body.id===target.id;
    const location=selected?hitLocation:z>height(body,'torso')+.2?'head':z<height(body,'legs')+.15?'legs':'torso';
-   return {blocked:false,damageFactor:remaining/power,obstacles,victimId:body.id,...(kind==='npc'?{victimKind:'npc'}:{}),hitLocation:location,destination,impact:pointAt(event.fraction,tacticalLevel(body)),termination:'body'};
+   const resistance=COMBAT_BALANCE.firearmBodyResistance[location],after=Math.max(0,remaining-resistance);
+   const chance=Math.max(0,Math.min(COMBAT_BALANCE.firearmBodyPenetrationMaximumChance,remaining-COMBAT_BALANCE.firearmBodyPenetrationThreshold));
+   const impact={victimId:body.id,victimKind:kind,hitLocation:location,impact:pointAt(event.fraction,tacticalLevel(body)),fraction:event.fraction,incomingImpact:remaining,damageFactor:remaining/power,coverDamageFactor:Math.max(0,1-coverLoss/power),bodyDamageReduction:bodyLoss/power,bodyResistance:resistance,penetrationChance:after>0?chance:0,reachChance,remainingImpact:after,continued:false};
+   const continued=after>0&&chance>0&&flight.bodyPenetration!==false&&(!flight.resolveBody||flight.resolveBody(impact)===true);
+   impact.continued=continued;impact.remainingImpact=continued?after:0;bodyImpacts.push(impact);
+   remaining=impact.remainingImpact;
+   if(!continued)return finish(impact.impact,'body',false);
+   bodyLoss+=resistance;reachChance*=chance/100;
+   continue;
   }
-  if(seen.has(event.key))continue;seen.add(event.key);
-  const {volume,cell}=event;remaining=volume.solid?0:Math.max(0,remaining-volume.resistance);
+  const {volume,cell}=event,before=remaining;remaining=volume.solid?0:Math.max(0,remaining-volume.resistance);coverLoss+=before-remaining;
   obstacles.push({x:cell.x,y:cell.y,tacticalLevel:volume.tacticalLevel,kind:volume.kind,material:volume.material,resistance:volume.solid?power:volume.resistance,stopped:remaining===0,fraction:event.fraction});
-  if(!remaining)return {blocked:true,damageFactor:0,obstacles,victimId:null,hitLocation,destination,impact:pointAt(event.fraction,volume.tacticalLevel),termination:volume.kind};
+  if(!remaining)return finish(pointAt(event.fraction,volume.tacticalLevel),volume.kind,true);
  }
- return {blocked:false,damageFactor:remaining/power,obstacles,victimId:null,hitLocation,destination,impact:{...destination},termination:ray.termination};
+ return finish({...destination},ray.termination,false);
 }
 
 function elevatedProjectilePath(state,attacker,target,weapon,hitLocation,flight={}){

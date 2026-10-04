@@ -81,14 +81,16 @@ test('a hidden civilian sharing a visible soldier ID never inherits that soldier
  assert.equal(teamCanSee(s,'player',s.units[1]),true);assert.equal(teamCanSee(s,'player',s.npcs[0]),false);
  assert.equal(teamCanSee(s,'player',{x:12,y:3}),true,'visible terrain does not admit the hidden civilian body');
  const action={...order,aim:4},r=presentedActBattle(s,action);
- assert.deepEqual(r.state,actBattle(s,action));assert.ok(r.state.npcs[0].hp<100);assert.equal(r.state.units[1].hp,100);
- for(const frame of r.frames){assert.deepEqual(frame.impacts,[]);assert.ok(!frame.targetPoint||frame.targetPoint.x!==12);assert.ok(!frame.shotVisual||frame.shotVisual.outcome!=='hit');}
+ assert.deepEqual(r.state,actBattle(s,action));assert.ok(r.state.npcs[0].hp<100);assert.ok(r.state.units[1].hp<100);
+ const knownInjuries=r.frames.flatMap(frame=>frame.impacts);assert.deepEqual(knownInjuries.map(i=>[i.unitId,i.victimKind??'unit']),[['e','unit']]);assert.equal(knownInjuries[0].damage,100-r.state.units[1].hp);
+ for(const frame of r.frames){assert.ok(!frame.targetPoint||frame.targetPoint.x!==12);if(frame.shotVisual){assert.notEqual(frame.shotVisual.source.x,11.5);assert.notEqual(frame.shotVisual.impact.x,11.5);}}
  // When that exact civilian is visible, its own collection supplies one
  // reaction; the same-ID soldier is not substituted in preparation or damage.
  Object.assign(s.tiles.find(p=>p.x===12&&p.y===3),{type:'grass',cover:0,concealment:0});
  const publicAction={...action,targetKind:'npc'},visible=presentedActBattle(s,publicAction);
  assert.deepEqual(visible.state,actBattle(s,publicAction));assert.equal(visible.frames[0].targetPoint.x,12);
- const impacts=visible.frames.flatMap(f=>f.impacts);assert.equal(impacts.length,1);assert.equal(impacts[0].victimKind,'npc');assert.equal(impacts[0].x,12);assert.equal(impacts[0].damage,100-visible.state.npcs[0].hp);
+ const impacts=visible.frames.flatMap(f=>f.impacts),civilian=impacts.filter(i=>i.victimKind==='npc');assert.equal(civilian.length,1);assert.equal(civilian[0].x,12);assert.equal(civilian[0].damage,100-visible.state.npcs[0].hp);
+ const soldier=impacts.filter(i=>i.victimKind!=='npc');assert.equal(soldier.length,visible.state.units[1].hp<100?1:0);if(soldier.length)assert.equal(soldier[0].damage,100-visible.state.units[1].hp);
 });
 
 test('each paired pistol presents its own real charge while pellets do not invent individual flight paths',()=>{
@@ -143,7 +145,7 @@ test('a mounted missed shot travels beyond the aim cell before its real downstre
  for(const frame of expected.frames){
   assert.equal(strip().props.busy,true);assert.deepEqual(commits,[]);
   const scene=nodes(mounted.tree()).find(n=>n.type===TacticalScene),effect=nodes(mounted.tree()).find(n=>n.type===FirearmShotEffect);
-  if(frame.type==='projectile'){assert.equal(effect.props.stage,'projectile');assert.equal(actor(scene.props.state,'friend').hp,100);await mounted.act(async()=>strip().props.onOrder(action));assert.deepEqual(commits,[]);}
+  if(frame.type==='projectile'){assert.equal(effect.props.stage,'projectile');assert.equal(actor(scene.props.state,'friend').hp,actor(frame.state,'friend').hp);await mounted.act(async()=>strip().props.onOrder(action));assert.deepEqual(commits,[]);}
   if(frame.type==='impact'){assert.equal(effect.props.stage,'impact');assert.equal(actor(scene.props.state,'friend').hp,actor(expected.state,'friend').hp);}
   assert.equal(await mounted.nextDelay(),battleFrameDuration(frame));
  }

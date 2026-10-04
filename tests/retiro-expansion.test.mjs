@@ -3,7 +3,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign,isSupplied,rosterFor,contractQuote,deploymentCost} from '../game/campaign.js';
 import {fight} from './opening-driver.mjs';
-import {actBattle} from '../game/tactical.js';
+import {actBattle,endTurn,teamCanSee} from '../game/tactical.js';
+import {enterSector} from '../game/world.js';
+import {validateBattleSnapshot} from '../game/validate-battle.js';
 import {ammoCount} from '../game/ammo-types.js';
 import {ammunitionOrderQuote} from '../game/campaign-ammunition.js';
 import {sameCell} from '../game/tactical-space.js';
@@ -40,19 +42,26 @@ test('an explicitly funded hired-only squad earns its first expansion from Retir
  assert.equal(c.hour,12);assert.equal(c.officer,null);assert.deepEqual(owned(c),['retiro']);assert.equal(request.enemies.length,4);
  assert.ok(request.squad.every(u=>u.loaded===1&&u.ammo===9),'every hire draws its ten real matching loads');
  const orders=[];
- let {battle,actions}=fight(request,undefined,{controller:(b,u)=>{
+ const result=fight(request,undefined,{controller:(b,u)=>{
   const action=hiredAssaultOrder(b,u);
   if(action)orders.push(action);
   return action;
- }});
+ }});let {battle,actions}=result;
  assert.equal(battle.status,'victory');assert.ok(actions>0);assert.ok(battle.turn>1);
  assert.equal(battle.width,64);assert.equal(battle.height,48,'the squad must fight on the full authored map');
  assert.ok(orders.filter(a=>a.type==='fire').length>request.squad.length,'the assault requires more than the issued opening volley');
  assert.ok(orders.some(a=>a.type==='reload'),'finite ammunition must be reloaded during combat');
  assert.ok(orders.some(a=>a.type==='fire'&&a.hitLocation==='head'));
  assert.deepEqual(battle.npcs.map(n=>n.id).sort(),request.npcs.map(n=>n.id).sort(),'the assault retains every real civilian');
- assert.ok(orders.some(a=>a.type==='stance'&&a.stance==='crouched'));
- assert.ok(!orders.some(a=>a.type==='stance'&&a.stance==='prone'));
+ assert.ok(orders.some(a=>a.type==='stance'&&a.stance==='prone'),'the squad pays for its current useful firing posture');
+ let replay=enterSector(request);
+ for(let index=0;index<result.orders.length;index++){
+  const action=result.orders[index];
+  if(action.type==='fire')assert.equal(teamCanSee(replay,'player',replay.units.find(unit=>unit.id===action.targetId)),true);
+  replay=action.type==='endTurn'?endTurn(replay):actBattle(replay,action);assert.equal(replay.lastError,null,JSON.stringify(action));
+  if(index===Math.floor(result.orders.length/2))replay=validateBattleSnapshot(JSON.parse(JSON.stringify(replay)));
+ }
+ assert.deepEqual(replay,battle,'all real orders replay exactly across a tactical save');
  // The changed firing lanes need not produce the former rout. Exercise a
  // real field-weapon transaction after the earned victory instead of forcing
  // a particular survivor to panic or assigning a weapon directly to the map.

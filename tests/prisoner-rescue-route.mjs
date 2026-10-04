@@ -25,8 +25,8 @@ function riskAwareBatteryOrder(b,u){
  const direct=risk.direct.some(v=>v.kind==='npc');if(!direct&&!risk.scatter.some(v=>v.kind==='npc'))return action;
  const proposed=firearmShotOptions(b,u,target,action.aim??0).find(o=>o.aim===(action.aim??0)&&o.hitLocation===(action.hitLocation??'torso'));
  // Prefer a known safe shot within 10% of the proposed expected impact.
- // Keep calculated scatter risk when no comparable shot exists; a direct
- // prisoner interception always prevents this firearm order.
+ // Decline known prisoner risk when no comparable safe shot exists. A
+ // scattered ball can reach a prisoner beyond the selected guard.
  const minimum=direct?0:(proposed?.chance??0)*(proposed?.damageFactor??0)*.9,shots=[];
  for(const t of b.units.filter(v=>v.side==='enemy'&&v.hp>=15&&!v.routed&&!v.departure&&!v.unconscious&&!v.surrendered&&teamCanSee(b,'player',v))){
   const cost=actionCosts(b,u,t);if(u.ap<cost.fire)continue;
@@ -38,7 +38,7 @@ function riskAwareBatteryOrder(b,u){
  }
  const selected=shots.sort((a,c)=>c.score-a.score)[0];
  if(selected){riskChoices.push({turn:b.turn,proposed:{action,preview:proposed,risk},selected});return selected.action;}
- return direct?null:action;
+ return null;
 }
 function rescueOrder(b,u){
  // Clear the guards with the paid gun and its infantry screen before moving

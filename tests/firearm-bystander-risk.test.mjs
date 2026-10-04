@@ -98,12 +98,12 @@ test('cell prefilter retains every exact legal miss victim across long, diagonal
       if(!dx&&!dy)continue;
       const destination={x:tx+dx,y:ty+dy,stance:target.stance??'standing',mounted:Boolean(target.mounted)};
       const flight=projectileFlight(scene,unit,destination,weaponFor(unit),hitLocation,{destinationHeight:absoluteBodyHeight(state,target,hitLocation)});
-      if(!flight.blocked&&flight.victimId===friend.id)expected=true;
+      if(flight.bodyImpacts?.some(hit=>hit.victimKind==='unit'&&hit.victimId===friend.id)||!flight.bodyImpacts&&!flight.blocked&&flight.victimId===friend.id)expected=true;
      }
      const risk=firearmBystanderRisk(state,unit,target,hitLocation);
      assert.equal(risk.scatter.some(body=>body.id===friend.id),expected,JSON.stringify({elevated,tx,ty,fx,fy,hitLocation}));
      const direct=projectileFlight(state,unit,target,weaponFor(unit),hitLocation);
-     assert.equal(risk.direct.some(body=>body.id===friend.id),!direct.blocked&&direct.victimId===friend.id);
+     assert.equal(risk.direct.some(body=>body.id===friend.id),direct.bodyImpacts?direct.bodyImpacts.some(hit=>hit.victimKind==='unit'&&hit.victimId===friend.id):!direct.blocked&&direct.victimId===friend.id);
     }
    }
   }

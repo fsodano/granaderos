@@ -88,7 +88,7 @@ test('a gun taken in combat survives retreat, campaign save and redeployment',()
 });
 test('AI consumes the authored cost and a routed enemy leaves the exact gun on the ground',()=>{
  let b=field(),enemy=b.units[1];Object.assign(enemy,{weapon:1805,weaponMetadata:weaponMetadata(custom({fireAP:70,damage:1,capacity:4})),loaded:4,ammo:0});
- b=endTurn(b);enemy=b.units.find(u=>u.id==='e');assert.equal(enemy.loaded,3);assert.ok(enemy.ap<70);assert.ok(b.log.some(line=>line.includes('dispara')));
+ const playerHealth=b.units.find(u=>u.id==='p').hp;b=endTurn(b);enemy=b.units.find(u=>u.id==='e');assert.equal(enemy.loaded,3);assert.ok(enemy.ap<70);assert.ok(b.units.find(u=>u.id==='p').hp<playerHealth,'the enemy spends its authored firing cost and causes a real hit');
  b=field();Object.assign(b.units[1],{x:2,y:1,morale:16,weapon:1805,weaponMetadata:weaponMetadata(custom({id:'routed-gun',capacity:4})),loaded:4,condition:61,jammed:true});
  b=actBattle(b,{type:'fire',unitId:'p',targetId:'e'});assert.equal(b.lastError,null);assert.equal(b.units[1].routed,true);
  assert.equal(b.droppedWeapons.length,1);assert.equal(b.droppedWeapons[0].loaded,4);

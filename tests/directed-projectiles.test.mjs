@@ -14,16 +14,16 @@ function field(extra={}){
 function body(s,extra={}){const u={...structuredClone(s.units[0]),id:'friend',name:'Interpuesto',x:4,y:3,...extra};s.units.push(u);return u;}
 const fire=(s,extra={})=>actBattle(s,{type:'fire',unitId:'p',targetId:'e',aim:4,...extra});
 
-test('a named-target shot hits the first upright ally, spends one charge and retains the target',()=>{
+test('a named-target shot hits an upright ally and can continue with less force to the selected target',()=>{
  const s=field();body(s);const before=structuredClone(s),n=fire(s);
- assert.equal(n.lastError,null);assert.ok(n.units[2].hp<100);assert.equal(n.units[1].hp,100);
+ assert.equal(n.lastError,null);assert.ok(n.units[2].hp<100);assert.equal(n.units[1].hp,71);assert.ok(100-n.units[1].hp<100-n.units[2].hp);
  assert.equal(n.units[0].loaded,0);assert.equal(n.units[0].ap,64);assert.equal(n.units[0].condition,99);assert.equal(n.elapsedSeconds,6);
  assert.equal(n.units[0].lastTargetId,'e');assert.ok(n.log.some(l=>l.includes('hiere a Interpuesto')));assert.deepEqual(s,before);
 });
 
 test('a visible intervening body warns without cancelling a deliberate shot',()=>{
  const s=field();body(s);const before=structuredClone(s),p=targetPreview(s,s.units[0],s.units[1],{mode:'fire',aim:4});
- assert.equal(p.valid,true);assert.equal(p.pa,36);assert.equal(p.chance,0);assert.match(p.coverNote,/combatiente.*trayectoria/);assert.deepEqual(s,before);
+ assert.equal(p.valid,true);assert.equal(p.pa,36);assert.equal(p.chance,36);assert.match(p.coverNote,/combatiente.*trayectoria/);assert.deepEqual(s,before);
 });
 
 test('cover before the first body stops damage while cover behind it cannot protect it',()=>{
@@ -41,7 +41,7 @@ test('prone, dead and departed bodies do not intercept an upright torso trajecto
 test('an unconscious body can intercept a low shot and retains shared wound effects',()=>{
  const s=field();Object.assign(s.units[0],{stance:'prone',movementMode:'prone'});Object.assign(s.units[1],{stance:'prone',movementMode:'prone'});
  body(s,{unconscious:true,energy:0,hp:50,stance:'prone'});const n=fire(s);
- assert.equal(n.units[1].hp,100);assert.ok(n.units[2].hp<50);assert.equal(n.units[2].unconscious,true);
+ assert.equal(n.units[1].hp,63);assert.ok(n.units[2].hp<50);assert.equal(n.units[2].unconscious,true);
 });
 
 test('selected body regions remain the actual hit region on an unobstructed target',()=>{
@@ -71,7 +71,7 @@ test('an unseen intervening enemy does not change the named-target hit forecast'
  assert.equal(teamCanSee(s,'player',s.units[1]),true);assert.equal(teamCanSee(s,'player',s.units[2]),false);
  assert.equal(shotChance(s,s.units[0],s.units[1],4),shotChance(empty,empty.units[0],empty.units[1],4));
  assert.deepEqual(firearmFlightPreview(s,s.units[0],s.units[1]),firearmFlightPreview(empty,empty.units[0],empty.units[1]));
- const n=fire(s);assert.ok(n.units[2].hp<100);assert.equal(n.units[1].hp,100);assert.ok(!n.log.some(l=>l.includes('Secreto')));
+ const n=fire(s);assert.ok(n.units[2].hp<100);assert.equal(n.units[1].hp,71);assert.ok(!n.log.some(l=>l.includes('Secreto')));
 });
 
 test('enemy shot selection avoids its own intervening soldier and uses a clear target',()=>{

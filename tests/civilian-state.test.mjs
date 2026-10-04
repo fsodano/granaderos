@@ -120,9 +120,12 @@ test('legacy active injuries migrate to one physical scale without resetting the
  assert.equal(npc(restored).hp,npc(pair).maxHp-20);assert.equal(restored.campaign.operativeState[3].hp,npc(restored).hp);assert.equal(restored.campaign.contentPresence.people['person-3'].hp,npc(restored).hp);assert.ok(saved(restored));
 });
 
-test('an incidental firearm hit hurts the resident in front of the target and records its real cause',()=>{
+test('an incidental firearm hit records the resident’s real cause and can pass onward with reduced force',()=>{
  let s=clinical({x:3,y:1},{seed:42,enemies:[{id:'enemy',x:5,y:1,weapon:1800}],exploration:false});Object.assign(s.units[0],{weapon:1802,loaded:1,marksmanship:100,condition:100});
- s=actBattle(s,{type:'fire',unitId:'doctor',targetId:'enemy',aim:4});assert.equal(s.lastError,null);assert.ok(s.npcs[0].hp<100);assert.equal(s.units.find(u=>u.id==='enemy').hp,100);assert.equal(civilianIncidents(s.npcs[0])[0].intentional,false);assert.ok(validateBattleSnapshot(s));
+ const initial=structuredClone(s),action={type:'fire',unitId:'doctor',targetId:'enemy',aim:4};
+ s=actBattle(s,action);assert.equal(s.lastError,null);const residentDamage=100-s.npcs[0].hp,downstreamDamage=100-s.units.find(u=>u.id==='enemy').hp;
+ assert.ok(residentDamage>0&&downstreamDamage>0&&downstreamDamage<residentDamage);assert.equal(s.units[0].loaded,0);assert.equal(civilianIncidents(s.npcs[0])[0].intentional,false);assert.ok(validateBattleSnapshot(s));
+ assert.deepEqual(actBattle(validateBattleSnapshot(JSON.parse(JSON.stringify(initial))),action),s);
 });
 
 test('a former recruit returns with the service record, rather than the old civilian health cache',()=>{

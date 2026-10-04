@@ -68,6 +68,9 @@ test('a generated enemy firearm can be recovered and retained through campaign r
  let s=attack(d);const request=s.pendingBattle;
  // Compact terrain isolates weapon ownership while using real generated soldiers.
  let b=createBattle(request.squad.map((u,i)=>({...u,x:1+i*2,y:8})),{...request,weather:{rain:0,humidity:0},width:14,height:10,tiles,seed:45,enemies:request.enemies.map((u,i)=>({...u,x:i===0?2:12,y:i===0?8:2+i,overwatch:false}))});
+ // The strong authored ball can pass through the guard. Move the companions
+ // out of that visible lane through ordinary paid orders before firing.
+ for(const companion of b.units.filter(u=>u.side==='player'&&u.id!=='110')){b=actBattle(b,{type:'move',unitId:companion.id,x:companion.x,y:9});assert.equal(b.lastError,null);}
  for(let i=0;i<3&&b.units.find(u=>u.id==='enemy-0').hp>0;i++){b=actBattle(b,{type:'fire',unitId:'110',targetId:'enemy-0',aim:2});assert.equal(b.lastError,null);}
  assert.equal(b.units.find(u=>u.id==='enemy-0').hp,0);
  b=actBattle(b,{type:'loot',unitId:'110',targetId:'enemy-0',item:'weapon'});assert.equal(b.lastError,null);

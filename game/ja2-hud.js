@@ -30,6 +30,7 @@ import {firearmBystanderRisk,firearmBystanderWarning} from './firearm-bystander-
 const alive = u => u.hp > 0 && !u.routed && !u.unconscious && !u.departure && !u.fled;
 const shortName = u => u.nickname || String(u.name || '').split(' ').slice(-1)[0] || '';
 const distance = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
+export const chancePercent = value => value > 0 && value < 1 ? '<1%' : `${Math.round(value)}%`;
 const affordable = (state, unit, pa) => state.mode === 'exploration' || unit.ap >= pa;
 const hasPrimary = unit => Boolean(unit.weapon) && !unit.weaponDropped;
 export function toolItems(unit) {
@@ -420,13 +421,20 @@ function targetPreviewWithCosts(state, unit, point, ctx = {}) {
       const path=firearmProjectilePath(state,unit,target,hitLocationFor(ctx.hitLocation));
       coverNote=path.blocked?'La cobertura detiene este tiro. Disparar consume la carga.':path.damageFactor<1?`La cobertura reduce el daño un ${Math.round((1-path.damageFactor)*100)}%.`:undefined;
       const flight=firearmFlightPreview(state,unit,target,hitLocationFor(ctx.hitLocation));
-      if(flight.victimId&&flight.victimId!==target.id)coverNote='Un combatiente está en la trayectoria. Disparar puede herirlo y consume la carga.';
+      const targetImpactIndex=flight.bodyImpacts?.findIndex(impact=>impact.victimKind==='unit'&&impact.victimId===target.id)??-1;
+      const selectedImpact=targetImpactIndex<0?null:flight.bodyImpacts[targetImpactIndex];
+      const interveningBody=(targetImpactIndex<0?flight.bodyImpacts?.length:targetImpactIndex)>0||flight.victimId&&((flight.victimKind??'unit')!=='unit'||flight.victimId!==target.id);
+      if(interveningBody){
+        const passage=selectedImpact&&selectedImpact.reachChance<1?`La bala puede atravesarlo: ${chancePercent(selectedImpact.reachChance*100)} de paso hasta el objetivo; daño reducido un ${Math.round((1-selectedImpact.damageFactor)*100)}% si llega.`:'La bala puede herirlo; el paso al objetivo no está asegurado.';
+        coverNote=`Un combatiente está en la trayectoria. ${passage} Disparar consume la carga.`;
+        if(selectedImpact?.reachChance<1)chanceLabel='impacto con penetración';
+      }
       coverNote=[shotRangeText(firearmRangeProfile(state,unit,target)),coverNote].filter(Boolean).join(' ');
       if(pairedPistol(unit)){
         const volley=firearmVolleyPreview(state,unit,target,ctx.aim||0,hitLocationFor(ctx.hitLocation));
         attackLabel=actionLabel='Disparar ambas pistolas';chanceLabel='impacto (mano principal)';
-        const chances=volley.shots.map(shot=>`${shot.hand==='primary'?'Mano principal':'Segunda mano'}: ${shot.chance}%${shot.damageFactor===0?' (la cobertura detiene el tiro)':shot.damageFactor<1?` (daño reducido un ${Math.round((1-shot.damageFactor)*100)}%)`:''}`).join(' · ');
-        coverNote=[`${chances}. Un disparo por pistola.`,`Mano principal: ${shotRangeText(firearmRangeProfile(state,unit,target))}`,flight.victimId&&flight.victimId!==target.id?'Un combatiente está en la trayectoria. Disparar puede herirlo y consume las cargas.':undefined].filter(Boolean).join(' ');
+        const chances=volley.shots.map(shot=>`${shot.hand==='primary'?'Mano principal':'Segunda mano'}: ${chancePercent(shot.chance)}${shot.conditional?` (incluye ${chancePercent(shot.reachChance*100)} de paso)`:''}${shot.damageFactor===0?' (la cobertura detiene el tiro)':shot.damageFactor<1?` (daño reducido un ${Math.round((1-shot.damageFactor)*100)}%${shot.conditional?' si llega':''})`:''}`).join(' · ');
+        coverNote=[`${chances}. Un disparo por pistola.`,`Mano principal: ${shotRangeText(firearmRangeProfile(state,unit,target))}`,interveningBody?'Un combatiente está en la trayectoria. La bala puede herirlo y atravesarlo con menos fuerza; consume las cargas.':undefined].filter(Boolean).join(' ');
       }
       coverNote=[coverNote,firearmBystanderWarning(firearmBystanderRisk(state,unit,target,hitLocationFor(ctx.hitLocation)))].filter(Boolean).join(' ');
       if (!canChooseShotLocation(target)&&hitLocationFor(ctx.hitLocation)!=='torso') reason = 'Un objetivo cuerpo a tierra tiene una sola zona de tiro.';

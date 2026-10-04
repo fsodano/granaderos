@@ -35,7 +35,7 @@ test('cover beyond the aim cell reduces or stops the same missed ray before its 
  const clear=field();body(clear);const wood=structuredClone(clear),stone=structuredClone(clear),after=structuredClone(clear);wall(wood,8,'wood');wall(stone,8);wall(after,12);
  const a=fire(clear),b=fire(wood),c=fire(stone),d=fire(after);
  assert.ok(b.units[2].hp>a.units[2].hp&&b.units[2].hp<100);assert.equal(c.units[2].hp,100);assert.equal(d.units[2].hp,a.units[2].hp);
- assert.equal(b.seed,a.seed,'penetration does not draw another random result');
+ assert.notEqual(b.seed,a.seed,'the clear ball can roll body passage; after wood its remaining force cannot pass the body');
  for(const n of [a,b,c,d]){assert.equal(n.units[0].ap,89);assert.equal(n.units[0].loaded,0);assert.equal(n.elapsedSeconds,6);}
  const path=projectileFlight(missedScene(wood),wood.units[0],{x:8,y:3,stance:'standing'},weaponFor(wood.units[0]));
  assert.equal(path.obstacles[0].material,'wood');close(path.damageFactor,(52-24)/52);assert.equal(path.victimId,'friend');
@@ -83,7 +83,7 @@ test('a missed selected soldier excludes only that soldier and can strike a dist
 });
 
 test('a known downstream bystander is warned and hidden same-ID bodies cannot affect previews or visible effects',()=>{
- const s=field();body(s);const before=structuredClone(s),risk=firearmBystanderRisk(s,s.units[0],s.units[1]);assert.equal(risk.scatter[0].id,'friend');assert.deepEqual(risk.direct,[]);assert.deepEqual(s,before);
+ const s=field();body(s);const before=structuredClone(s),risk=firearmBystanderRisk(s,s.units[0],s.units[1]);assert.equal(risk.scatter[0].id,'friend');assert.equal(risk.direct[0].id,'friend');assert.deepEqual(s,before);
  const hidden=field({}, {npcs:[{id:'e',name:'Secreto',x:9,y:3,hp:100}]});Object.assign(hidden.tiles.find(t=>t.x===8&&t.y===3),{type:'wall',material:'wood',blocked:true,blocksSight:true,obstacleHeight:.8});
  const empty=structuredClone(hidden);empty.npcs=[];assert.equal(teamCanSee(hidden,'player',hidden.units[1]),true);assert.equal(teamCanSee(hidden,'player',hidden.npcs[0]),false);
  assert.equal(shotChance(hidden,hidden.units[0],hidden.units[1]),shotChance(empty,empty.units[0],empty.units[1]));assert.deepEqual(firearmFlightPreview(hidden,hidden.units[0],hidden.units[1]),firearmFlightPreview(empty,empty.units[0],empty.units[1]));
@@ -115,8 +115,9 @@ test('an unseen interception before a known wall retains the exact observed cove
  }
 });
 
-test('an unseen interception before a known person cannot borrow a later wall cue or invent that person injury',()=>{
+test('unseen body passage admits only the later real known-person injury and retains knowledge-only terminal cover',()=>{
  const s=hiddenProneScene(16),action={type:'fire',unitId:'p',targetId:'e',aim:4},r=presentedActBattle(s,action);
- assert.equal(teamCanSee(s,'player',s.npcs[0]),false);assert.deepEqual(r.state,actBattle(s,action));assert.equal(r.state.npcs[0].hp,60);assert.equal(r.state.units[1].hp,100);
- for(const frame of r.frames){assert.deepEqual(frame.impacts,[]);if(frame.shotVisual){assert.equal(frame.shotVisual.outcome,null);assert.equal(frame.shotVisual.material,undefined);assert.ok(frame.shotVisual.impact.x>12&&frame.shotVisual.impact.x<15);}}
+ assert.equal(teamCanSee(s,'player',s.npcs[0]),false);assert.deepEqual(r.state,actBattle(s,action));assert.equal(r.state.npcs[0].hp,60);assert.equal(r.state.units[1].hp,63);
+ const admitted=r.frames.flatMap(frame=>frame.impacts);assert.ok(admitted.some(hit=>hit.unitId==='e'&&hit.damage===37));assert.ok(admitted.every(hit=>hit.unitId==='e'&&hit.victimKind!=='npc'));
+ for(const frame of r.frames)if(frame.shotVisual){assert.notEqual(frame.shotVisual.victimId,'hidden');assert.ok(frame.shotVisual.impact.x>14&&frame.shotVisual.impact.x<16);if(frame.shotVisual.material){assert.equal(frame.shotVisual.material,'stone');assert.equal(frame.shotVisual.outcome,'cover');assert.deepEqual(frame.impacts,[]);}}
 });
