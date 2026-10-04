@@ -1,5 +1,6 @@
 // Transient presentation is separate from campaign/save state. Recording never
 // changes orders, randomness, AP, visibility or the returned authoritative state.
+import {projectileTrajectoryPoint} from './projectile-trajectory.js';
 let recorder=null;
 export function recordBattleFrame(state,event){recorder?.(state,event);}
 // Reuse unchanged branches between frames. Tiles and buildings normally share
@@ -22,9 +23,28 @@ function observedShot(state,raw,known,canObserve){
  const hiddenVictim=raw.victimId&&(!raw.victimObserved||!known.has(bodyKey(raw.victimKind??'unit',raw.victimId))),end=hiddenVictim?raw.destination:raw.impact;
  if(![raw.source,end].every(point=>point&&[point.x,point.y,point.height].every(Number.isFinite)))return null;
  if(raw.discharge===false&&!canObserve(state,{...raw.source,x:Math.round(raw.source.x),y:Math.round(raw.source.y)}))return null;
- const distance=Math.hypot(end.x-raw.source.x,end.y-raw.source.y),steps=Math.max(1,Math.ceil(distance*4));let last=raw.source,complete=true;
- for(let index=1;index<=steps;index++){
-  const fraction=index/steps,point={x:raw.source.x+(end.x-raw.source.x)*fraction,y:raw.source.y+(end.y-raw.source.y)*fraction,height:raw.source.height+(end.height-raw.source.height)*fraction,tacticalLevel:fraction===1?end.tacticalLevel:raw.source.tacticalLevel};
+ const distance=Math.hypot(end.x-raw.source.x,end.y-raw.source.y),points=[];
+ if(raw.trajectoryModel!==undefined){
+  const model=raw.trajectoryModel,start=projectileTrajectoryPoint(model,0),finish=projectileTrajectoryPoint(model,1);
+  if(!start||!finish||!Number.isFinite(model.horizontalDistance)||model.horizontalDistance<=0)return null;
+  const dx=finish.x-start.x,dy=finish.y-start.y,length=dx*dx+dy*dy;
+  const progress=point=>((point.x-start.x)*dx+(point.y-start.y)*dy)/length;
+  const from=progress(raw.source),to=progress(end);
+  if(!Number.isFinite(from)||!Number.isFinite(to)||from<0||to>1||to<from)return null;
+  // Sample the same fixed XY grid before any visibility boundary. A private
+  // stop or fallback endpoint cannot shift the visible sampling positions.
+  for(let step=Math.floor(from*model.horizontalDistance*4)+1;step/4<to*model.horizontalDistance;step++){
+   const point=projectileTrajectoryPoint(model,step/(4*model.horizontalDistance),raw.source.tacticalLevel);if(!point)return null;points.push(point);
+  }
+  const point=projectileTrajectoryPoint(model,to,end.tacticalLevel);if(!point)return null;points.push(point);
+ }else{
+  const steps=Math.max(1,Math.ceil(distance*4));
+  for(let index=1;index<=steps;index++){
+   const fraction=index/steps;points.push({x:raw.source.x+(end.x-raw.source.x)*fraction,y:raw.source.y+(end.y-raw.source.y)*fraction,height:raw.source.height+(end.height-raw.source.height)*fraction,tacticalLevel:fraction===1?end.tacticalLevel:raw.source.tacticalLevel});
+  }
+ }
+ let last=raw.source,complete=true;
+ for(const point of points){
   if(!canObserve(state,{...point,x:Math.round(point.x),y:Math.round(point.y)})){complete=false;break;}
   last=point;
  }

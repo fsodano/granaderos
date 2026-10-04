@@ -477,29 +477,30 @@ function firearmForecastPath(scene,attacker,target,hitLocation){
 export function firearmFlightPreview(s,attacker,target,hitLocation='torso'){
  return firearmForecastPath(firearmPreviewScene(s,attacker,target),attacker,target,hitLocation);
 }
-function forecastTarget(s,attacker,target,path,accuracy){
+function forecastTarget(s,attacker,target,path,accuracy,hitLocation='torso'){
  if(path.shotLoad){
   const interveningFriendly=path.bodyImpacts.some(entry=>entry.victimKind==='unit'&&entry.victimId!==attacker.id&&s.units.some(body=>body.id===entry.victimId&&body.side===attacker.side));
   return {...shotLoadChance(path,accuracy),...(interveningFriendly?{interveningFriendly:true}:{})};
  }
  const kind=target.targetKind==='npc'||isCivilianBody(s,target)?'npc':'unit';
  const impact=path.bodyImpacts?.find(entry=>entry.victimKind===kind&&entry.victimId===target.id);
+ const missedBody=Array.isArray(path.bodyImpacts)&&!impact;
  const rawChance=impact?accuracy*impact.reachChance:0,roundedChance=Math.round(rawChance);
- const chance=path.blocked?0:impact?roundedChance||rawChance:path.victimId&&(path.victimKind??'unit')!==kind||path.victimId&&path.victimId!==target.id?0:accuracy;
+ const chance=path.blocked||missedBody?0:impact?roundedChance||rawChance:path.victimId&&(path.victimKind??'unit')!==kind||path.victimId&&path.victimId!==target.id?0:accuracy;
  const interveningFriendly=path.bodyImpacts?.some(entry=>entry.victimKind==='unit'&&entry.victimId!==attacker.id&&s.units.some(body=>body.id===entry.victimId&&body.side===attacker.side))??false;
- return {chance,damageFactor:impact?.damageFactor??path.damageFactor,...(impact&&impact.reachChance<1?{conditional:true,reachChance:impact.reachChance}:{}),...(interveningFriendly?{interveningFriendly:true}:{})};
+ return {chance,damageFactor:missedBody?0:impact?.damageFactor??path.damageFactor,...(impact&&impact.hitLocation!==hitLocation?{physicalHitLocation:impact.hitLocation}:{}),...(impact&&impact.reachChance<1?{conditional:true,reachChance:impact.reachChance}:{}),...(interveningFriendly?{interveningFriendly:true}:{})};
 }
 export function shotChance(s,attacker,target,aim=0,hitLocation='torso'){
   const accuracy=shotAccuracy(s,attacker,target,aim,hitLocation);
   const path=firearmFlightPreview(s,attacker,target,hitLocation);
-  return forecastTarget(s,attacker,target,path,accuracy).chance;
+  return forecastTarget(s,attacker,target,path,accuracy,hitLocation).chance;
 }
 export function firearmVolleyPreview(s,unit,target,aim=0,hitLocation='torso'){
  const second=pairedPistol(unit),penalty=second?pistolPairPenalty(unit):0;
  const guns=[{hand:'primary',view:unit},...(second?[{hand:'offhand',view:secondaryPistolView(unit,second)}]:[])];
  return {paired:Boolean(second),shots:guns.map(({hand,view})=>{
   const w=weaponFor(view),path=firearmFlightPreview(s,view,target,hitLocation);
-  return {hand,weapon:w.id,name:w.name,...forecastTarget(s,view,target,path,shotAccuracy(s,view,target,aim,hitLocation,false,penalty)),damage:w.damage};
+  return {hand,weapon:w.id,name:w.name,...forecastTarget(s,view,target,path,shotAccuracy(s,view,target,aim,hitLocation,false,penalty),hitLocation),damage:w.damage};
  })};
 }
 // One geometry trace per body region serves all affordable aim increments.
@@ -515,9 +516,9 @@ export function firearmShotOptions(s,attacker,target,maxAim=4){
     const path=firearmForecastPath(scene,attacker,target,hitLocation);
     const otherPath=other?firearmForecastPath(otherScene,other,target,hitLocation):null;
     for(let aim=0;aim<=limit;aim++){
-      const forecast=forecastTarget(s,attacker,target,path,shotAccuracy(s,attacker,target,aim,hitLocation,false,second?pistolPairPenalty(attacker):0,true));
+      const forecast=forecastTarget(s,attacker,target,path,shotAccuracy(s,attacker,target,aim,hitLocation,false,second?pistolPairPenalty(attacker):0,true),hitLocation);
       const shots=other?[{hand:'primary',weapon:weaponFor(attacker).id,name:weaponFor(attacker).name,...forecast,damage:weaponFor(attacker).damage},
-        {hand:'offhand',weapon:weaponFor(other).id,name:weaponFor(other).name,...forecastTarget(s,other,target,otherPath,shotAccuracy(s,other,target,aim,hitLocation,false,pistolPairPenalty(attacker),true)),damage:weaponFor(other).damage}]:undefined;
+        {hand:'offhand',weapon:weaponFor(other).id,name:weaponFor(other).name,...forecastTarget(s,other,target,otherPath,shotAccuracy(s,other,target,aim,hitLocation,false,pistolPairPenalty(attacker),true),hitLocation),damage:weaponFor(other).damage}]:undefined;
       options.push({hitLocation,aim,...forecast,...(shots?{shots}:{})});
     }
   }
@@ -591,9 +592,15 @@ function presentFirearmFlight(s,actor,destination,flight=null,hitLocation='torso
   let origin={...positionOf(actor),tacticalLevel:tacticalLevel(actor),height:absoluteBodyHeight(s,actor,'muzzle')},index=0,discharged=false,waiting=false,visual;
   const samePoint=(a,b)=>a&&b&&['x','y','height'].every(key=>Math.abs(a[key]-b[key])<1e-8);
   const projectile=()=>{
-   const collision=observed[index]?.collision,impact=collision?.impact??terminal.impact;
+   const collision=observed[index]?.collision;
+   // With a concealed interception, stop the display segment at its next
+   // known possible body contact, just as the ordinary segment would. The
+   // projected contact supplies no injury, passage roll or hit cue.
+   const previous=observed[index-1]?.collision.fraction??-1;
+   const projected=known.trajectoryModel&&hidden&&!collision?known.bodyImpacts?.find(entry=>entry.fraction>previous):null;
+   const impact=collision?.impact??projected?.impact??terminal.impact;
    if(!impact||discharged&&samePoint(origin,impact)){waiting=false;return;}
-   visual={source:{...origin},destination:{...impact},impact:{...impact},outcome:collision?'hit':terminalOutcome,pointShot,spread:false,aimHit,...(!collision&&terminalOutcome==='cover'&&obstacle?.material?{material:obstacle.material}:{}),...(discharged?{discharge:false}:{})};
+   visual={source:{...origin},destination:{...impact},impact:{...impact},outcome:collision?'hit':projected?null:terminalOutcome,pointShot,spread:false,aimHit,...(known.trajectoryModel?{trajectoryModel:known.trajectoryModel}:{}),...(!collision&&!projected&&terminalOutcome==='cover'&&obstacle?.material?{material:obstacle.material}:{}),...(discharged?{discharge:false}:{})};
    waiting=true;recordBattleFrame(s,{unitId:source.id,action:pointShot?'firePoint':'fire',type:'projectile',shotVisual:visual});discharged=true;
   };
   projectile();

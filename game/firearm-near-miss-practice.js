@@ -2,6 +2,7 @@ import {fieldPractice,fieldPracticeChance} from './skill-training.js';
 import {CRITICAL_HEALTH} from './actor-condition.js';
 import {absoluteBodyHeight} from './sight-geometry.js';
 import {surfaceHeight} from './tactical-space.js';
+import {projectileTrajectoryPoint} from './projectile-trajectory.js';
 
 // Granaderos geometry tuning, not JA2's exact growth or distance formula.
 export const NEAR_MISS_DISTANCE=.9;
@@ -10,6 +11,20 @@ const completed=new WeakSet();
 const finitePoint=point=>point&&[point.x,point.y,point.height].every(Number.isFinite);
 const capable=unit=>unit?.hp>=CRITICAL_HEALTH&&(unit.energy??100)>0&&!['unconscious','knockedDown','routed','bound','captured','entangled','surrendered','departure','fled'].some(key=>unit[key]);
 const hitsTarget=(flight,target)=>[...(flight.bodyImpacts??[]),...(flight.victimId!=null?[flight]:[])].some(hit=>(hit.victimKind??'unit')==='unit'&&String(hit.victimId)===String(target.id));
+
+// Use the exact fired curve at the intended target's XY projection. Sampled
+// presentation points and the chord to a lower ground stop cannot create
+// practice. Fractions belong to the unchanged XY ray.
+function passageHeight(flight,from,stop,fraction){
+ const model=flight.trajectoryModel;
+ if(model===undefined)return flight.trajectory===undefined?from.height+(stop.height-from.height)*fraction:null;
+ const terminalFraction=flight.terminal?.fraction;
+ if(!finitePoint(model?.source)||!finitePoint(model.destination)||![model.horizontalDistance,model.rise,model.dropStart,model.curvature].every(Number.isFinite)||!Number.isFinite(terminalFraction)||terminalFraction<=0||terminalFraction>1)return null;
+ const first=projectileTrajectoryPoint(model,0),last=projectileTrajectoryPoint(model,terminalFraction);
+ if(!finitePoint(first)||!finitePoint(last))return null;
+ if(Math.hypot(first.x-from.x,first.y-from.y,first.height-from.height)>1e-8||Math.hypot(last.x-stop.x,last.y-stop.y,last.height-stop.height)>1e-8)return null;
+ return projectileTrajectoryPoint(model,terminalFraction*fraction)?.height??null;
+}
 
 // Called only by the paid directed single-ball resolution, after physical
 // effects. Forecasts, point fire and presentation frames never call this.
@@ -20,16 +35,16 @@ export function practiceFirearmNearMiss(state,{attacker,target,weapon,flight,hit
  if(!(damagedBodies instanceof Set)||damagedBodies.has(`unit:${target.id}`)||hitsTarget(flight,target))return 0;
  if(!weapon||![weapon.fireAP,weapon.range,weapon.capacity].every(value=>Number.isFinite(value)&&value>0)||weapon.loadPattern!==undefined&&weapon.loadPattern!=='single'||(weapon.template??weapon.id)===1807&&!weapon.loadPattern)return 0;
  if((target.trainedStats?.agility??0)>=10||!fieldPracticeChance(target,'agility'))return 0;
- const from={x:attacker.x,y:attacker.y,height:absoluteBodyHeight(state,attacker,'muzzle')},stop=flight.terminal?.impact??flight.impact;
+ const from=flight.trajectoryModel?.source??{x:attacker.x,y:attacker.y,height:absoluteBodyHeight(state,attacker,'muzzle')},stop=flight.terminal?.impact??flight.impact;
  if(!finitePoint(from)||!finitePoint(stop))return 0;
  const dx=stop.x-from.x,dy=stop.y-from.y,length=dx*dx+dy*dy;
  if(!length)return 0;
  const fraction=((target.x-from.x)*dx+(target.y-from.y)*dy)/length;
  // A wall or intervening body before the target cannot create a near miss.
  if(fraction<=0||fraction>=1)return 0;
- const x=from.x+dx*fraction,y=from.y+dy*fraction,z=from.height+(stop.height-from.height)*fraction;
+ const x=from.x+dx*fraction,y=from.y+dy*fraction,z=passageHeight(flight,from,stop,fraction);
  const base=surfaceHeight(state,target),top=absoluteBodyHeight(state,target,'head');
- if(base===null||top===null||Math.hypot(target.x-x,target.y-y)>NEAR_MISS_DISTANCE||z<base-NEAR_MISS_HEIGHT_MARGIN||z>top+.15+NEAR_MISS_HEIGHT_MARGIN)return 0;
+ if(base===null||top===null||!Number.isFinite(z)||Math.hypot(target.x-x,target.y-y)>NEAR_MISS_DISTANCE||z<base-NEAR_MISS_HEIGHT_MARGIN||z>top+.15+NEAR_MISS_HEIGHT_MARGIN)return 0;
  completed.add(flight);
  return fieldPractice(target,'agility',1);
 }
