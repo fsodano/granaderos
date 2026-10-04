@@ -18,6 +18,7 @@ import {validateHeadquarters} from './campaign-headquarters.js';
 import {defaultStartingTerritory,validateStartingTerritory} from './content-territory.js';
 import {DEFAULT_CAMPAIGN_RULES,validateCampaignRules} from './campaign-rules.js';
 import {validateQuestDefinitions,validateErrandContacts,freshDefaultErrands} from './quest-definitions.js';
+import {freshDefaultRoadsideDiscoveries,validateRoadsideDiscoveries} from './roadside-discoveries.js';
 import {validateContentQuests} from './content-quests.js';
 import {validateDialogue} from './content-dialogue.js';
 import {FORCE_EQUIPMENT,defaultForceEquipment,validateForceEquipment} from './content-force-equipment.js';
@@ -67,6 +68,7 @@ export function defaultContentPackage() {
     name: "Granaderos",
     quests: [],
     errands: freshDefaultErrands(),
+    roadsideDiscoveries: freshDefaultRoadsideDiscoveries(),
     rules: {...DEFAULT_CAMPAIGN_RULES},
     startingTerritory: defaultStartingTerritory(),
     headquarters: 'retiro',
@@ -145,6 +147,7 @@ export function validateContentPackage(value) {
   try{validateContentQuests(value.quests,new Set((Array.isArray(value.characters)?value.characters:[]).map(c=>c?.id)));}catch(error){errors.push(error.message);}
   errors.push(...validateContractRules(value.contractRules),...validateArtilleryTradingRules(value.artilleryTrading),...validateArtilleryTransportRules(value.artilleryTransport),...validateArtilleryProfiles(value.artilleryProfiles),...validateAmmunitionMarket(value.ammunitionMarket),...validateArtillerySupply(value.artillerySupply),...validateMilitiaPatrol(value.militiaPatrol),...validateMilitiaProgression(value.militiaProgression),...validateCareRules(value.careRules),...validateFoundry(value.foundry),...validateCampaignRoles(value.campaignRoles,Array.isArray(value.characters)?value.characters:[]),...validateImportRules(value.imports),...validateCampaignRules(value.rules),...validateHeadquarters(value.headquarters),...validateStartingTerritory(value.startingTerritory,value.headquarters));
   if(value.errands!==undefined)errors.push(...validateQuestDefinitions(value.errands));
+  errors.push(...validateRoadsideDiscoveries(value.roadsideDiscoveries));
   if (value.arrivalSites !== undefined) errors.push(...validateArrivalSites(value.arrivalSites));
   for (const key of ["characters", "weapons", "placements"])
     check(

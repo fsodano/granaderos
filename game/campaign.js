@@ -103,6 +103,7 @@ export {MISSION_SCENES,missionStatus} from './missions.js';
 export {dailyIncome,incomeSources,incomeSummary} from './economy.js';
 export {tradeQuote,policyStatus} from './politics.js';
 import {validateQuestContext,validateQuestDefinitions,freshDefaultErrands} from './quest-definitions.js';
+import {freshDefaultRoadsideDiscoveries,validateRoadsideDiscoveries,validateRoadsideDiscoveryContext} from './roadside-discoveries.js';
 export {questForNPC,NPC_QUESTS} from './quests.js';
 export {contractQuote,contractStatus,CONTRACT_TERMS} from './contracts.js';
 export {militiaCourse,militiaAssignment} from './militia.js';
@@ -190,7 +191,7 @@ function initializeCampaignSystems(s){
 export function initialCampaign(seed=1812,content=null){
   const state={artilleryVersion:1,artilleryCustodyVersion:1,nextArtilleryId:1,civilianState:{version:2,people:{}},hiringArrivals:[],equipmentShipments:[],missions:{},sceneStates:{},missionAllies:{},garrisons:{},nextMilitiaId:20000,quests:{},cityLoyaltyEvents:[],contracts:{},militiaTraining:[],foundMoney:[],skillLearningVersion:1,economyVersion:2,version:1,seed:seed>>>0,hour:0,phase:0,location:'retiro',activeSquadId:'squad-1',squads:[{id:'squad-1',name:'Primera escuadra',members:[],location:'retiro'}],sectorStates:{},resources:{treasury:3200},reputation:{directory:35,gauchos:0,pardos:10,foreign:20,indigenous:0,royalists:-100},sectors:Object.fromEntries(CAMPAIGN_SECTORS.map(x=>[x.id,{owner:x.id==='retiro'?'patriot':'royalist',loyalty:x.id==='retiro'?65:25,militia:[0,0,0],damageUntil:0,fort:0}])),artillerySelection:[],armory:{},loadouts:{},lastConversation:null,conversations:{},officer:null,recruited:[],squad:[],operativeState:Object.fromEntries([...OPERATIVES,...CIVIC_RECRUITS].map(o=>[o.id,{hp:o.maxHp,fatigue:0,alive:true,xp:0,rations:2,torches:2,condition:100,startingCartridgesIssued:false}])),flags:{armyFunded:false,academy:false,sanLorenzo:false,northPact:false,partisanSupply:false,foundry:false,parliament:false,emancipation:false,commission:false,mentoring:false},routes:{posta:false,flotilla:false,carts:false,mules:false},blockade:false,pendingBattle:null,completed:false,defeated:false,log:[{hour:0,text:'Retiro, 1812. Solo el cuartel está bajo tu control. Contratá combatientes, creá tu granadero o combiná ambas opciones para partir.'}],lastError:null};
   if(content!==null)attachCampaignContent(state,content);
-  else state.errandDefinitions=freshDefaultErrands();
+  else {state.errandDefinitions=freshDefaultErrands();state.roadsideDiscoveryDefinitions=freshDefaultRoadsideDiscoveries();}
   initializeCampaignSystems(state);return state;
 }
 export const isSupplied=isSectorSupplied;
@@ -337,6 +338,7 @@ function validateAcknowledgedNpcGiftReceipts(campaign,npcs,sectorId){
 }
 export function hasPendingNpcGiftProgress(campaign,battle){
  validateQuestContext(campaign,battle);
+ validateRoadsideDiscoveryContext(campaign,battle);
  const npcs=battle.npcs??[];requireThat(Array.isArray(npcs)&&npcs.length<=2000,'Los interlocutores del despliegue son inválidos.');
  validateAcknowledgedNpcGiftReceipts(campaign,npcs,campaign.pendingBattle?.sector);
  let changed=false;
@@ -350,7 +352,7 @@ export function hasPendingNpcGiftProgress(campaign,battle){
  return changed;
 }
 function validatedInteractionSnapshot(s,raw){
- const snapshot=validateSectorSnapshot(raw),request=s.pendingBattle;validateQuestContext(s,snapshot);
+ const snapshot=validateSectorSnapshot(raw),request=s.pendingBattle;validateQuestContext(s,snapshot);validateRoadsideDiscoveryContext(s,snapshot);
  requireThat(snapshot.battleId===request.id&&snapshot.sectorId===request.sector&&(snapshot.sceneId??null)===(request.sceneId??null),'La entrega no corresponde al despliegue pendiente.');
  const ids=request.squad.map(u=>String(u.id)),allowed=new Set([...ids,...(request.garrison??[]).map(u=>String(u.id)),...(request.missionAllies??[]).map(u=>String(u.id))]);
  const previous=request.sceneId?s.sceneStates[request.sceneId]:s.sectorStates[request.sector],corpses=new Set([...(previous?.units??[]).filter(u=>u.side==='player'&&u.hp<=0).map(u=>u.id),...(request.remains??[]).map(r=>String(r.unitId))]);
@@ -412,6 +414,7 @@ function resolveDefenseAutomatically(s,request){
 function completeDeploymentReport(s,request,action){
   requireThat(action.sectorState&&Array.isArray(action.survivors),'El despliegue necesita un estado táctico completo y un parte de todos los combatientes.');
   validateQuestContext(s,action.sectorState);
+  validateRoadsideDiscoveryContext(s,action.sectorState);
   const raw=action.sectorState,snapshot=validateSectorSnapshot(raw),ids=request.squad.map(u=>String(u.id));
   requireThat(snapshot.battleId===request.id&&snapshot.sectorId===request.sector&&(snapshot.sceneId??null)===(request.sceneId??null),'El estado táctico no corresponde al despliegue y sector pendientes.');
   requireThat(worldCell(request.sector)?.anchor!==false||snapshot.sourceMapId===request.sector,'El parte no corresponde a la celda del despliegue.');
@@ -833,6 +836,7 @@ export function dispatchCampaign(previous,action){
       case 'selectSquad':{const squad=s.squads.find(q=>q.id===action.id);requireThat(squad,'La escuadra no existe.');s.activeSquadId=squad.id;s.squad=[...squad.members];s.location=squad.location;break;}
       case 'talkNPC':{
         validateQuestContext(s,action.sectorState);
+        validateRoadsideDiscoveryContext(s,action.sectorState);
         requireThat(s.pendingBattle,'Primero entrá al sector.');const snapshot=validateSectorSnapshot(action.sectorState),npc=(s.pendingBattle.sceneId==='yatasto'?missionContacts(s):encountersFor(s,s.pendingBattle.sector)).find(n=>n.id===action.npcId&&n.sector===s.pendingBattle.sector),id=Number(action.unitId),actor=rosterFor(s).find(o=>o.id===id),unit=snapshot.units.find(u=>u.side==='player'&&Number(u.id)===id),local=snapshot.npcs?.find(n=>n.id===action.npcId);
         acknowledgeCivilians(s,snapshot);requireThat(npc&&actor&&unit&&local&&(local.hp??100)>0&&!local.unconscious&&s.squad.includes(id)&&unit.hp>0&&!unit.unconscious,'El interlocutor no está disponible en este sector.');requireThat(snapshot.mode==='exploration'||snapshot.status==='victory'||snapshot.sectorCleared,'Terminá el combate antes de conversar.');requireThat(Number.isInteger(local.x)&&Number.isInteger(local.y)&&Math.abs(unit.x-local.x)+Math.abs(unit.y-local.y)<=1,'Acercá al combatiente al interlocutor para hablar.');
         requireThat(['repeat','friendly','direct','threaten','recruit','quest','mission','dialogue','escortFollow','escortWait'].includes(action.approach),'La forma de dirigirse al interlocutor es inválida.');
@@ -1056,6 +1060,7 @@ export function restoreCampaignValue(s){
   const object=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
   requireThat(object(s)&&s.version===1&&integer(s.hour,0,24*365*100)&&integer(s.phase,0,4)&&integer(s.seed,0,4294967295)&&validWorldLocation(s.location),'El archivo de campaña no es compatible.');
   requireThat(s.errandDefinitions===undefined||validateQuestDefinitions(s.errandDefinitions).length===0,'Los encargos guardados son inválidos.');
+  requireThat(validateRoadsideDiscoveries(s.roadsideDiscoveryDefinitions).length===0,'Los hallazgos de camino guardados son inválidos.');
   requireThat(!['production','shipments','depots','convoys'].some(key=>key in s),'Esta partida contiene sistemas retirados. Iniciá una campaña nueva.');
   requireThat(s.economyVersion===2,'Esta partida usa la economía anterior. Iniciá una campaña nueva.');
   validateStoredFittingFields(s);validateStoredAmmo(s);migrateAmmunitionCustody(s);
@@ -1078,7 +1083,7 @@ export function restoreCampaignValue(s){
   s.garrisons??={};s.nextMilitiaId??=20000;requireThat(validGarrisons(s),'Las guarniciones guardadas son inválidas.');
   requireThat(s.militiaTraining.every(course=>validMilitiaTrainees(s,course)),'Los milicianos en instrucción son inválidos.');
   const traineeIds=s.militiaTraining.flatMap(course=>(course.trainees??[]).map(u=>u.id));requireThat(new Set(traineeIds).size===traineeIds.length,'Los milicianos en instrucción son inválidos.');
-  for(const snapshot of [s.pendingBattle,s.pendingBattle?.resumeSnapshot,...Object.values(s.sectorStates??{}),...Object.values(s.sceneStates??{})].filter(Boolean))validateQuestContext(s,snapshot);
+  for(const snapshot of [s.pendingBattle,s.pendingBattle?.resumeSnapshot,...Object.values(s.sectorStates??{}),...Object.values(s.sceneStates??{})].filter(Boolean)){validateQuestContext(s,snapshot);validateRoadsideDiscoveryContext(s,snapshot);}
   s.quests??={};requireThat(validateQuests(s.quests,s.hour,s),'Los encargos guardados son inválidos.');
   s.lastConversation??=null;s.conversations??={};
   requireThat(object(s.conversations)&&Object.entries(s.conversations).every(([id,c])=>[...encounterDefinitions(s),...YATASTO_NPCS].some(n=>n.id===id)&&object(c)&&c.met===true&&['repeat','friendly','direct','threaten','recruit','quest','mission','dialogue','gift','escortFollow','escortWait'].includes(c.lastApproach)&&integer(c.hour,0,s.hour)&&(c.secondOfHour===undefined||integer(c.secondOfHour,0,3599)&&c.hour*3600+c.secondOfHour<=s.hour*3600+(s.secondOfHour??0))&&(c.text===undefined||typeof c.text==='string'&&c.text.length>0&&c.text.length<2000)&&(c.giftCount===undefined?c.lastApproach!=='gift':questsFor(s).some(q=>q.npcId===id&&q.carried&&integer(c.giftCount,0,q.carried.count)))&&(c.sector===undefined||validWorldLocation(c.sector)||c.sector==='san_lorenzo')),'Las conversaciones guardadas son inválidas.');

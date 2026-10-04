@@ -1,4 +1,5 @@
 import {worldCell} from './world-cells.js';
+import {canonicalContent} from './content-identity.js';
 import {fieldCapable} from './actor-condition.js';
 export {fieldCapable};
 export {completedTacticalVictory} from './battle-outcome.js';
@@ -240,7 +241,7 @@ function applyReloadPlan(unit,plan){
   syncUnitAmmunition(unit);
 }
 function makeUnit(raw,side,index,x,y){const stats=raw.stats||{};const weapon=raw.weapon??raw.primary??1800;const w=typeof weapon==='object'?weapon:weaponSpecification({...raw,weapon})||WEAPONS[1800];return initializeUnitAmmunition({...raw,id:String(raw.id??`${side}-${index}`),name:raw.name||raw.nickname||(side==='player'?'Granadero':'Realista'),side,facing:raw.facing??(side==='enemy'?6:2),stealthMode:Boolean(raw.stealthMode),x:raw.x??x,y:raw.y??y,maxHp:raw.maxHp??raw.health??stats.health??100,hp:raw.hp??raw.health??stats.health??100,ap:100,morale:raw.morale??Math.min(100,(raw.personality==='optimistic'?90:raw.personality==='pessimistic'?70:80)+((raw.traits||[]).includes('steadfast')?10:0)),marksmanship:raw.marksmanship??stats.marksmanship??70,agility:raw.agility??stats.agility??75,strength:raw.strength??stats.strength??75,medical:raw.medical??stats.medical??30,mechanical:raw.mechanical??stats.mechanical??0,stealth:raw.stealth??stats.stealth??0,weapon,loaded:raw.loaded??(WEAPONS[weapon]||typeof weapon==='object'?w.capacity:0),ammo:raw.ammo,condition:raw.condition??100,stance:raw.stance??movementStance(raw.movementMode??'walk'),mounted:Boolean(raw.mounted),horse:Boolean(raw.horse||raw.canMount||raw.mounted),jammed:raw.jammed??false,bleeding:raw.bleeding??0,bandaged:raw.bandaged??((raw.bleeding??0)>0?0:Math.max(0,(raw.maxHp??raw.health??stats.health??100)-(raw.hp??raw.health??stats.health??100))),shock:raw.shock??0,experienceLevel:raw.experienceLevel??stats.experienceLevel??Math.min(10,4+Math.floor((raw.xp??0)/100)),dexterity:raw.dexterity??stats.dexterity??75,wisdom:raw.wisdom??stats.wisdom??50,carriedAP:0,routed:raw.routed??false,medkits:raw.medkits??2,momentum:0,lastDirection:null,weaponMode:raw.weaponMode??'fire',activeSlot:raw.activeSlot||'primary',fatigue:raw.fatigue||0,rations:raw.rations??2,energy:raw.energy??100,unconscious:isUnconscious({hp:raw.hp??raw.health??stats.health??100,energy:raw.energy??100}),movementMode:raw.movementMode||'walk',inventory:{...raw.inventory},boleadoras:raw.boleadoras??1,torches:raw.torches??2,strengthTraining:raw.strengthTraining??0,interceptTurn:0,parryTurn:0,counterTurn:0,braceTurn:0,braced:false,knockedDown:Boolean(raw.knockedDown),overwatch:raw.overwatch??(side==='enemy'),reactionTurn:0,reactionSpent:0});}
-export function createBattle(squad=[],sector={}){const width=sector.width||16,height=sector.height||12;const state={version:1,conditionVersion:1,...(sector.sourceMapId?{sourceMapId:sector.sourceMapId,sourceMapRevision:sector.sourceMapRevision}:{}),...(sector.errandDefinitions!==undefined?{errandDefinitions:structuredClone(sector.errandDefinitions)}:{}),...(sector.artilleryDefinitions!==undefined?{artilleryDefinitions:structuredClone(sector.artilleryDefinitions)}:{}),...(sector.militiaPatrol!==undefined?{militiaPatrol:structuredClone(sector.militiaPatrol)}:{}),ammunitionVersion:2,fittingRulesVersion:FITTING_RULES_VERSION,exits:structuredClone(sector.exits??[]),exitRulesVersion:sector.exitRulesVersion??1,enemyExits:['N','E','S','W'].map(edge=>({id:`enemy:${edge}`,edge,destination:'__offmap_enemy__'})),battleId:sector.id??null,startSeconds:(sector.hour??(sector.night||sector.weather?.night?0:12))*3600+(sector.secondOfHour??0),elapsedSeconds:0,syncedSeconds:0,roundTimeCharged:false,quietCombatTurns:sector.exploration?2:0,contactThisRound:false,sectorId:sector.sector||sector.id||'san-lorenzo',sectorName:sector.name||'San Lorenzo',width,height,biome:sector.biome||'grassland',altitude:sector.altitude||0,night:Boolean(sector.night||sector.weather?.night||(sector.hour!==undefined&&(sector.hour%24>=20||sector.hour%24<6))),enemyCommand:sector.enemyCommand||null,objective:sector.objective||null,npcs:structuredClone(sector.npcs||[]).map(initializeCivilianHealth),props:structuredClone(sector.props??[]),buildings:sector.buildings||[],revealedRooms:[],decor:sector.decor||[],turn:1,enemyTurns:0,roundFirstSide:sector.firstSide==='enemy'?'enemy':'player',phase:'player',mode:sector.exploration?'exploration':'combat',sectorCleared:false,status:'active',seed:(sector.seed??18130203)>>>0,weather:{rain:0,humidity:0,...sector.weather},tiles:[],units:[],droppedWeapons:[],groundItems:structuredClone(sector.groundItems??[]),lights:(sector.lights||[]).map((l,i)=>({id:`light-${i}`,type:'campfire',radius:4,intensity:1,...l})),artillery:(sector.artillery||[]).map((g,i)=>({id:`gun-${i}`,type:'bronze4',side:'player',loaded:artilleryProfile(sector,g.type??'bronze4').initialLoaded,ammo:artilleryProfile(sector,g.type??'bronze4').initialAmmo,...g})),smoke:[],log:[],lastError:null};
+export function createBattle(squad=[],sector={}){const width=sector.width||16,height=sector.height||12;const state={version:1,conditionVersion:1,...(sector.sourceMapId?{sourceMapId:sector.sourceMapId,sourceMapRevision:sector.sourceMapRevision}:{}),...(sector.errandDefinitions!==undefined?{errandDefinitions:structuredClone(sector.errandDefinitions)}:{}),...(sector.roadsideDiscoveryDefinitions!==undefined?{roadsideDiscoveryDefinitions:structuredClone(sector.roadsideDiscoveryDefinitions)}:{}),...(sector.artilleryDefinitions!==undefined?{artilleryDefinitions:structuredClone(sector.artilleryDefinitions)}:{}),...(sector.militiaPatrol!==undefined?{militiaPatrol:structuredClone(sector.militiaPatrol)}:{}),ammunitionVersion:2,fittingRulesVersion:FITTING_RULES_VERSION,exits:structuredClone(sector.exits??[]),exitRulesVersion:sector.exitRulesVersion??1,enemyExits:['N','E','S','W'].map(edge=>({id:`enemy:${edge}`,edge,destination:'__offmap_enemy__'})),battleId:sector.id??null,startSeconds:(sector.hour??(sector.night||sector.weather?.night?0:12))*3600+(sector.secondOfHour??0),elapsedSeconds:0,syncedSeconds:0,roundTimeCharged:false,quietCombatTurns:sector.exploration?2:0,contactThisRound:false,sectorId:sector.sector||sector.id||'san-lorenzo',sectorName:sector.name||'San Lorenzo',width,height,biome:sector.biome||'grassland',altitude:sector.altitude||0,night:Boolean(sector.night||sector.weather?.night||(sector.hour!==undefined&&(sector.hour%24>=20||sector.hour%24<6))),enemyCommand:sector.enemyCommand||null,objective:sector.objective||null,npcs:structuredClone(sector.npcs||[]).map(initializeCivilianHealth),props:structuredClone(sector.props??[]),buildings:sector.buildings||[],revealedRooms:[],decor:sector.decor||[],turn:1,enemyTurns:0,roundFirstSide:sector.firstSide==='enemy'?'enemy':'player',phase:'player',mode:sector.exploration?'exploration':'combat',sectorCleared:false,status:'active',seed:(sector.seed??18130203)>>>0,weather:{rain:0,humidity:0,...sector.weather},tiles:[],units:[],droppedWeapons:[],groundItems:structuredClone(sector.groundItems??[]),lights:(sector.lights||[]).map((l,i)=>({id:`light-${i}`,type:'campfire',radius:4,intensity:1,...l})),artillery:(sector.artillery||[]).map((g,i)=>({id:`gun-${i}`,type:'bronze4',side:'player',loaded:artilleryProfile(sector,g.type??'bronze4').initialLoaded,ammo:artilleryProfile(sector,g.type??'bronze4').initialAmmo,...g})),smoke:[],log:[],lastError:null};
 if(sector.upperSurfaces!==undefined)state.upperSurfaces=structuredClone(sector.upperSurfaces);
 if(sector.climbLinks!==undefined)state.climbLinks=structuredClone(sector.climbLinks);
 if(sector.regionalWeather){state.regionalWeather=true;state.weather=regionalWeatherAt(state.sectorId,state.startSeconds/3600);}
@@ -1507,19 +1508,27 @@ export function environmentTargetAt(s,point){
   const wall=s.tiles.find(t=>sameCell(t,point)&&breachableWall(t));
   return wall?{...wall,kind:'wall',id:`wall:${wall.x}:${wall.y}`,tacticalLevel:0}:null;
 }
+function observedContainerCells(s,u,object){
+  if(!u||object?.type!=='chest')return [];
+  const revealed=new Set(s.revealedRooms??[]);
+  return propCells(object).map(point=>({...object,...point})).filter(point=>isInteriorVisible(s,point,revealed)&&canSee(s,u,point));
+}
+// A rendered footprint alone does not disclose an unopened room's contents.
+export function environmentContainerVisible(s,u,object){return observedContainerCells(s,u,object).length>0;}
 function environmentReachReason(s,u,object){
   if(!object)return 'El objeto ya no está en el sector.';
   if(!u||!alive(u)||!interruptAvailable(s,u)||u.knockedDown)return 'El soldado no puede manejar el objeto ahora.';
-  const cells=object.type==='chest'?propCells(object).map(point=>({...object,...point})):[object];
+  const cells=object.type==='chest'?observedContainerCells(s,u,object):[object];
   if(!cells.some(p=>contactDistance(u,p)<=1.5&&canSee(s,u,p)))return 'Acércate al objeto y mira hacia él.';
   return null;
 }
 export function environmentPreview(s,u,ref,verb){
   const target=environmentObject(s,ref),tool=u&&heldTool(u);
-  verb??=ref?.kind==='wall'?'breach':tool?.toolKey==='pliers'?'disarm':target?.locked?(tool?.verb??'inspect'):target?.open?'close':'open';
+  const unseenContainer=ref?.kind==='container'&&!environmentContainerVisible(s,u,target),knownTarget=unseenContainer?null:target;
+  verb??=ref?.kind==='wall'?'breach':tool?.toolKey==='pliers'?'disarm':knownTarget?.locked?(tool?.verb??'inspect'):knownTarget?.open?'close':'open';
   const unseenWall=ref?.kind==='wall'&&(!target||!u||!canSee(s,u,target));
-  const profile=environmentActionProfile(u??{},unseenWall?null:target,verb);
-  let reason=unseenWall?'La pared debe estar a la vista del soldado.':environmentReachReason(s,u,target)??profile.reason;
+  const profile=environmentActionProfile(u??{},unseenWall?null:knownTarget,verb);
+  let reason=unseenContainer?'El cofre debe estar a la vista del soldado.':unseenWall?'La pared debe estar a la vista del soldado.':environmentReachReason(s,u,target)??profile.reason;
   if(!reason&&verb==='close'&&target.type==='door'&&(s.units.some(v=>onField(v)&&sameCell(v,target))||(s.npcs??[]).some(v=>onField(v)&&sameCell(v,target))||s.artillery.some(v=>sameCell(v,target))))reason='Hay una persona o una pieza en el paso de la puerta.';
   if(!reason&&s.mode!=='exploration'&&u.ap<profile.pa)reason=`Faltan ${profile.pa} PA para manejar el objeto.`;
   return {...profile,reason,valid:!reason,action:{type:'environment',unitId:u?.id,kind:ref?.kind,id:ref?.id,verb}};
@@ -1529,9 +1538,9 @@ export function environmentUsePreview(s,u,ref,verb){
   const result=(reason=local.reason,route=null)=>({...local,type:'environment',actionPa:local.pa,movePa:route?.cost??0,pa:local.pa+(route?.cost??0),
     label:route?.cost?`Acercarse y ${local.label.toLowerCase()}`:local.label,destination:route?positionOf(route):null,path:route?.path??[],reason,valid:!reason});
   if(!target||!u||!alive(u)||!interruptAvailable(s,u)||u.knockedDown)return result();
-  const cells=target.type==='chest'?propCells(target).map(point=>({...target,...point})):[target];
+  const cells=target.type==='chest'?observedContainerCells(s,u,target):[target];
   const visible=cells.find(point=>canSee(s,u,point));
-  if(!visible)return result(ref?.kind==='wall'?local.reason:'El objeto debe estar a la vista del soldado.');
+  if(!visible)return result(ref?.kind==='wall'||ref?.kind==='container'?local.reason:'El objeto debe estar a la vista del soldado.');
   if(!environmentReachReason(s,u,target))return result();
   // Check the held tool, lock, known trap and occupied doorway before spending
   // movement. Only position and the AP cap are relaxed in this pure preflight.
@@ -1542,12 +1551,21 @@ export function environmentUsePreview(s,u,ref,verb){
   if(!route)return result('No hay una ruta para acercarse y usar el objeto.');
   return result(s.mode!=='exploration'&&route.cost+local.pa>u.ap?'PA insuficientes para acercarse y usar el objeto.':null,route);
 }
-export function containerLootPreview(s,u,ref,index,count=1){
+/** @param {string | undefined} [expectedSource] */
+export function containerLootPreview(s,u,ref,index,count=1,expectedSource=undefined){
   const target=environmentObject(s,{...ref,kind:'container'}),pa=8;
-  let reason=environmentReachReason(s,u,target);
-  if(!reason&&s.mode!=='exploration'&&u.ap<pa)reason=`Recoger el objeto requiere ${pa} PA.`;
-  if(!reason)try{const {stack}=extractContainerItem(target,index,count);applyItemQuantity(u,stack);}catch(error){reason=error.message;}
-  return {pa,valid:!reason,reason,action:{type:'containerLoot',unitId:u?.id,kind:'container',id:ref?.id,index,count}};
+  let reason=environmentContainerVisible(s,u,target)?environmentReachReason(s,u,target):'El cofre debe estar a la vista del soldado.',source;
+  if(!reason)try{
+    // Only an observed open container can disclose its selected stack. Keep
+    // the full quantity/metadata so a shifted index cannot replace the item.
+    extractContainerItem(target,index,1);
+    source=canonicalContent({containerId:target.id,index,stack:target.contents[index]});
+    if(expectedSource!==undefined&&(typeof expectedSource!=='string'||expectedSource!==source))throw Error('Cambió el objeto del cofre. Seleccioná el objeto de nuevo.');
+    if(s.mode!=='exploration'&&u.ap<pa)throw Error(`Recoger el objeto requiere ${pa} PA.`);
+    const {stack}=extractContainerItem(target,index,count);applyItemQuantity(u,stack);
+  }catch(error){reason=error.message;}
+  return {pa,valid:!reason,reason,action:{type:'containerLoot',unitId:u?.id,kind:'container',id:ref?.id,index,count,
+    ...(expectedSource!==undefined?{expectedSource}:source?{expectedSource:source}:{})}};
 }
 
 export function medicalUsePreview(s,u,target=u,{targetKind='unit'}={}){
@@ -2016,7 +2034,7 @@ else if(a.type==='door'||a.type==='environment'||a.type==='breach'){
   sayObserved(s,[u],`${u.name}: ${result.message}`);
 }
 else if(a.type==='containerLoot'){
-  const preview=containerLootPreview(s,u,a,a.index,a.count??1);if(!preview.valid)return fail(preview.reason);
+  const preview=containerLootPreview(s,u,a,a.index,a.count??1,a.expectedSource);if(!preview.valid)return fail(preview.reason);
   const object=environmentObject(s,{...a,kind:'container'}),extracted=extractContainerItem(object,a.index,a.count??1);
   replaceUnit(u,applyItemQuantity(u,extracted.stack));replaceUnit(object,extracted.target);pay(preview.pa);
   sayObserved(s,[u],`${u.name} recoge el objeto del cofre.`);

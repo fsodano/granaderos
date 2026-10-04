@@ -24,7 +24,7 @@ export default function JA2EnvironmentPanel({targets, selected, target, preview,
       {target.arsenalHint&&<p className="ja2-item-feedback" role="status">{target.arsenalHint}</p>}
       {target.kind === 'container' && (target.open ? contents.length ? <>
         <div className="ja2-item-handling">
-          <label>Contenido<select aria-label="Objeto del cofre" value={contentIndex} disabled={busy} onChange={event => onContent(Number(event.target.value))}>{contents.map(entry => <option key={entry.index} value={entry.index}>{entry.label} · {entry.count}</option>)}</select></label>
+          <label>Contenido<select aria-label="Objeto del cofre" value={contentIndex} disabled={busy} onChange={event => onContent(Number(event.target.value))}>{!item&&<option value={-1}>Seleccioná un objeto</option>}{contents.map(entry => <option key={entry.index} value={entry.index}>{entry.label} · {entry.count}</option>)}</select></label>
           <label>Cantidad<input aria-label="Cantidad del cofre" type="number" min="1" step="1" max={item?.count || 1} value={count} disabled={busy || !item} onChange={event => onCount(Number(event.target.value))} /></label>
           <button className="line-button" disabled={busy || !loot?.valid} title={loot?.reason || undefined} onClick={onLoot}>Recoger{loot?.pa !== undefined ? ` · ${loot.pa} PA` : ''}</button>
         </div>

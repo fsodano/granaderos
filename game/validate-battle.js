@@ -20,6 +20,7 @@ import {NOISE_KINDS} from './tactical-awareness.js';
 import {validateTacticalSpace} from './tactical-space.js';
 import {validateRegionalWeather} from './regional-weather.js';
 import {validateQuestDefinitions} from './quest-definitions.js';
+import {validateRoadsideDiscoveries} from './roadside-discoveries.js';
 import {validateQuestGifts} from './quests.js';
 import {validatePocketOrder} from './inventory-pockets.js';
 import {validateWeaponReadiness} from './weapon-readiness.js';
@@ -138,6 +139,7 @@ if(s.phase==='interrupt'){
  checkInterruption(s.interrupt,queue,reaction);
 }else need(s.interrupt===undefined||s.interrupt===null,'interrupción fuera de turno');
 
+if(s.roadsideDiscoveryDefinitions!==undefined)need(validateRoadsideDiscoveries(s.roadsideDiscoveryDefinitions).length===0,'hallazgos de camino del despliegue');
 for(const key of ['smoke','artillery','log','decor','props','npcs','groundItems','droppedWeapons','lights','buildings','revealedRooms']){if(s[key]===undefined)s[key]=[];need(Array.isArray(s[key])&&s[key].length<=2000,key);}
 for(const k of ['night','sectorCleared'])if(s[k]!==undefined)need(typeof s[k]==='boolean','situación táctica');need(s.log.every(text),'diario');need(s.smoke.every(v=>coord(v)&&number(v.radius,0,20)&&integer(v.turns,1,100)),'humo');
 const gunIds=new Set();for(const g of s.artillery){need(coord(g)&&text(g.id)&&g.id.length>0&&!gunIds.has(g.id)&&Object.hasOwn(ARTILLERY,g.type)&&['player','enemy'].includes(g.side)&&typeof g.loaded==='boolean'&&integer(g.ammo,0,1000000)&&(g.facing===undefined||number(g.facing,-Math.PI*2,Math.PI*2)),'artillería');gunIds.add(g.id);validateReloadProgress(g.reloadProgress,1,Number(g.loaded));}

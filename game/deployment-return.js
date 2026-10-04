@@ -3,6 +3,7 @@ import {expandCellScene} from './cell-scene-storage.js';
 import {validWorldLocation,worldOwner,worldCell} from './world-cells.js';
 import {buildSectorMap} from './maps.js';
 import {authoredEnvironment} from './environment-interactions.js';
+import {roadsideDiscoveriesFor} from './roadside-discoveries.js';
 import {validateReloadProgress} from './weapon-reload.js';
 import {WEAPONS} from './data.js';
 import {sectorExits,validateSectorExits,boundaryMatches,entryFromSector,validEntry} from './tactical-exits.js';
@@ -30,6 +31,7 @@ export function recordStrategicArrival(s,ids,fromSector,toSector,sceneId=null){
 export function prepareDeploymentExits(s,request){
  const errands=s.contentCampaign?.package.errands??s.errandDefinitions;
  if(errands!==undefined)request.errandDefinitions=structuredClone(errands);
+ request.roadsideDiscoveryDefinitions=structuredClone(roadsideDiscoveriesFor(s));
   request.ammunitionVersion=2;
   for(const enemy of request.enemies??[]){enemy.weapon??=1800;enemy.loaded??=WEAPONS[enemy.weapon]?.capacity??0;initializeUnitAmmunition(enemy,{defaultCount:12});}
   request.fittingRulesVersion=FITTING_RULES_VERSION;

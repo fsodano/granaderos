@@ -7,13 +7,14 @@ import {enterSector} from '../game/world.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {compactSaveTerrain} from '../game/save-terrain.js';
 import {MAX_SAVE_BYTES,saveByteLength} from '../game/save-limits.js';
+import {roadsideDiscoveriesFor} from '../game/roadside-discoveries.js';
 
 function packed(pair){const value={format:'granaderos',schema:2,...structuredClone(pair)};assert.equal(compactSaveTerrain(value),true);return JSON.stringify(value);}
 function deployed(){const campaign=dispatchCampaign(initialCampaign(),{type:'visitSector'});assert.equal(campaign.lastError,null);return {campaign,battle:enterSector(campaign.pendingBattle)};}
 
 test('a campaign exceeding the old full-save budget keeps every map and the next tactical turn',()=>{
  const pair=deployed();
- for(const {id} of CAMPAIGN_SECTORS){const width=128,height=64,tiles=Array.from({length:width*height},(_,i)=>({x:i%width,y:Math.floor(i/width),type:'grass',blocked:false,cover:0}));pair.campaign.sectorStates[id]=createBattle([],{sector:id,width,height,tiles,enemies:[],errandDefinitions:pair.campaign.contentCampaign?.package.errands??pair.campaign.errandDefinitions});}
+ for(const {id} of CAMPAIGN_SECTORS){const width=128,height=64,tiles=Array.from({length:width*height},(_,i)=>({x:i%width,y:Math.floor(i/width),type:'grass',blocked:false,cover:0}));pair.campaign.sectorStates[id]=createBattle([],{sector:id,width,height,tiles,enemies:[],errandDefinitions:pair.campaign.contentCampaign?.package.errands??pair.campaign.errandDefinitions,roadsideDiscoveryDefinitions:structuredClone(roadsideDiscoveriesFor(pair.campaign))});}
  const before=structuredClone(pair),legacy=JSON.stringify({format:'granaderos',schema:1,...pair});assert.ok(saveByteLength(legacy)>MAX_SAVE_BYTES);
  const encoded=encodeSave(pair.campaign,pair.battle);assert.ok(saveByteLength(encoded)<MAX_SAVE_BYTES/2);assert.equal(JSON.parse(encoded).schema,2);
  const restored=decodeSave(encoded);assert.deepEqual(restored,pair);assert.deepEqual(pair,before);

@@ -1,9 +1,10 @@
 import {worldCell} from './world-cells.js';
 import {placeBuilding} from './buildings.js';
+import {roadsideDiscoveryProps} from './roadside-discoveries.js';
 
 // Schematic terrain, not a copy of the nearest locality's landmark or loot.
 // The cell key supplies stable geometry independent of the campaign's clock.
-export function worldCellPlan(id){
+export function worldCellPlan(id,roadsideDiscoveryDefinitions){
  const cell=worldCell(id);
  if(!cell?.land||cell.anchor)throw Error('La celda no tiene un plano terrestre independiente.');
  const width=20,height=16,seed=(cell.col+1)*7919+(cell.row+1)*104729;
@@ -17,5 +18,5 @@ export function worldCellPlan(id){
   const result=placeBuilding(tiles,{id:`${id}:house-${i}`,name:`Casa ${i+1}`,x,y:3,width:5,height:5,doors:[{x:x+2,y:7}],windows:[{x,y:5}],material:'adobe',roof:'tile'});
   tiles=result.tiles;buildings.push({...result.building,purpose:'home'});
  }
- return {worldCell:true,width,height,tiles,buildings,props:[],lights:[],groundItems:[],decor:[],sourceMapId:id,sourceMapRevision:1};
+ return {worldCell:true,width,height,tiles,buildings,props:roadsideDiscoveryProps(id,roadsideDiscoveryDefinitions),lights:[],groundItems:[],decor:[],sourceMapId:id,sourceMapRevision:1};
 }

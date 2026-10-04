@@ -132,6 +132,7 @@ export default function JA2Inventory({cursorLevel=0,onCursorLevelChange,unit, ba
   const [environmentVerb, setEnvironmentVerb] = useState('');
   const [contentIndex, setContentIndex] = useState(0);
   const [contentQuantity, setContentQuantity] = useState(1);
+  const [contentSource,setContentSource]=useState<{targetKey:string;expectedSource:string}|null>(null);
   // An emptied inspected slot must not silently select another possession.
   const item = inv.items.find((entry: any) => entry.item === managedItem) || (managedItem ? null : inv.items[0]);
   const count = Math.min(quantity, item?.count ?? 1);
@@ -141,9 +142,24 @@ export default function JA2Inventory({cursorLevel=0,onCursorLevelChange,unit, ba
   const lootCount = Math.min(lootQuantity, lootItem?.count ?? 1);
   const loot = lootPreview(battle, unit, {...lootItem?.action, count: lootCount});
   const environment = nearbyEnvironmentModel(battle, unit, {targetKey: environmentKey, verb: environmentVerb});
-  const content = environment.contents.find((entry: any) => entry.index === contentIndex) || environment.contents[0];
-  const contentCount = Math.min(contentQuantity, content?.count ?? 1);
-  const containerLoot = environment.target?.kind === 'container' ? containerLootPreview(battle, unit, environment.target, content?.index ?? 0, contentCount) : null;
+  const containerTarget=environment.target?.kind==='container'?environment.target:null;
+  const containerOpen=containerTarget&&'open'in containerTarget?containerTarget.open:undefined;
+  const selectedSource=containerTarget&&contentSource&&contentSource.targetKey===containerTarget.key?contentSource:null;
+  const candidate = environment.contents.find((entry: any) => entry.index === contentIndex);
+  const contentCount = Math.min(contentQuantity, candidate?.count ?? 1);
+  const currentLoot=containerTarget?containerLootPreview(battle,unit,containerTarget,contentIndex,contentCount):null;
+  const sourceMatches=selectedSource&&selectedSource.expectedSource===currentLoot?.action.expectedSource;
+  const content=sourceMatches?candidate:null;
+  const containerLoot=currentLoot&&containerTarget?(selectedSource
+    ?containerLootPreview(battle,unit,containerTarget,contentIndex,contentCount,selectedSource.expectedSource)
+    :{...currentLoot,valid:false,reason:'Seleccioná un objeto del cofre.'}):null;
+  // Pin the first disclosed item when a container is opened or selected.
+  // Ordinary state updates never repin a changed or removed stack.
+  useEffect(()=>{
+    const first=containerTarget?environment.contents[0]:null,preview=first&&containerTarget?containerLootPreview(battle,unit,containerTarget,first.index,1):null;
+    setContentIndex(first?.index??0);setContentQuantity(1);
+    setContentSource(containerTarget&&preview?.action.expectedSource?{targetKey:containerTarget.key,expectedSource:preview.action.expectedSource}:null);
+  },[unit.id,containerTarget?.key,containerOpen]);
   const [itemOpen,setItemOpen]=useState(false);
   const chooseItem = (id: string,slotId='') => {
     setManagedItem(id);setInspectedSlot(slotId);setQuantity(1);setItemOpen(true);
@@ -292,9 +308,9 @@ export default function JA2Inventory({cursorLevel=0,onCursorLevelChange,unit, ba
           </div>
           <p className="ja2-item-feedback">{lootItem?.condition !== undefined && `Estado ${lootItem.condition}%. `}{lootItem?.loaded !== undefined && `${lootItem.loaded} carga(s). `}{lootItem?.jammed && 'Necesita cebado. '}{loot.reason || 'Solo se recoge la cantidad indicada.'}</p>
         </> : <p>Acercate a un cuerpo o a un objeto visible en el suelo.</p>}</details>
-        <JA2EnvironmentPanel targets={environment.targets} selected={environment.target?.key || ''} target={environment.target} preview={environment.preview} verbs={environment.verbs} verb={environmentVerb} busy={busyDisabled} contents={environment.contents} contentIndex={content?.index ?? 0} count={contentCount} loot={containerLoot}
+        <JA2EnvironmentPanel targets={environment.targets} selected={environment.target?.key || ''} target={environment.target} preview={environment.preview} verbs={environment.verbs} verb={environmentVerb} busy={busyDisabled} contents={environment.contents} contentIndex={content?.index ?? -1} count={contentCount} loot={containerLoot}
           onTarget={key => { setEnvironmentKey(key); setEnvironmentVerb(''); setContentIndex(0); setContentQuantity(1); }} onVerb={setEnvironmentVerb} onUse={() => environment.preview && onOrder(environment.preview.action)}
-          onContent={index => { setContentIndex(index); setContentQuantity(1); }} onCount={setContentQuantity} onLoot={() => containerLoot && onOrder(containerLoot.action)} />
+          onContent={index => { if(!containerTarget)return;const preview=containerLootPreview(battle,unit,containerTarget,index,1);setContentIndex(index);setContentQuantity(1);setContentSource(preview.action.expectedSource?{targetKey:containerTarget.key,expectedSource:preview.action.expectedSource}:null); }} onCount={setContentQuantity} onLoot={() => containerLoot?.valid && onOrder(containerLoot.action)} />
       </div></details>
       <div className="ja2-right">
         <InventoryRadarCluster battle={battle} units={units} selected={selected} project={project} vw={vw} vh={vh} cameraRect={cameraRect} zoom={zoom} mode={mode} missionAllies={missionAllies} localMilitia={localMilitia} onSelect={onSelect} onRetreat={onRetreat} onCameraCenter={onCameraCenter} onCameraPan={onCameraPan} onZoom={onZoom} />

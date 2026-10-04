@@ -16,13 +16,13 @@ const WIDTH=20,HEIGHT=16;
 const clone=value=>JSON.parse(JSON.stringify(value));
 const names={yatasto:'Posta de Yatasto · Conferencia del Ejército del Norte',buenos_aires:'Plaza Mayor y Cabildo',retiro:'Cuartel de Retiro',ensenada:'Puerto de Ensenada',san_nicolas:'Paso de San Nicolás',santa_fe:'Puerto de Santa Fe',cordoba:'Talleres de Caroya',mendoza:'Campamento de El Plumerillo',uspallata:'Desfiladero de Uspallata',los_patos:'Senda de Los Patos',tucuman:'La Ciudadela de Tucumán',salta:'Quebradas de Salta',jujuy:'Posta de Jujuy',humahuaca:'Entrada a la Quebrada',san_lorenzo:'Convento de San Carlos · San Lorenzo'};
 
-function plan(id){const doc=MAP_LIBRARY[id];return doc?compileMap(doc):worldCellPlan(id);}
+function plan(id,definitions){const doc=MAP_LIBRARY[id];return doc?compileMap(doc):worldCellPlan(id,definitions);}
 const key=p=>`${p.x},${p.y}`;
 function connected(tiles,start,props=[]){
  const reached=new Set([key(start)]),queue=[start];while(queue.length){const p=queue.shift();for(const[dx,dy]of[[1,0],[-1,0],[0,1],[0,-1]]){const x=p.x+dx,y=p.y+dy,t=tiles[y*WIDTH+x];if(x>=0&&x<WIDTH&&y>=0&&y<HEIGHT&&t&&!t.blocked&&!propBlocksAt({props},x,y)&&!reached.has(key(t))){reached.add(key(t));queue.push(t);}}}return reached;
 }
 function buildCompactSectorMap(request={},restorePrevious=false){
- const id=request.sceneId??request.sector??request.id??'san_lorenzo';const authored=plan(id),tiles=authored.tiles;
+ const id=request.sceneId??request.sector??request.id??'san_lorenzo';const authored=plan(id,request.roadsideDiscoveryDefinitions),tiles=authored.tiles;
  const customSpace=request.upperSurfaces!==undefined||request.climbLinks!==undefined;
  const elevation=customSpace?{upperSurfaces:request.upperSurfaces,climbLinks:request.climbLinks}:restorePrevious?{}:campaignTerraces({...authored,width:WIDTH,height:HEIGHT});
  // Saved actors use the saved topology, restored by world.js after this scaffold.

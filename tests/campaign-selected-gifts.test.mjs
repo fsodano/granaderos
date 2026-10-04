@@ -128,7 +128,7 @@ test('campaign-only saves retain acknowledged receipts in the stored sector whil
  }
  // The cheap deployment probe checks the actual sector, never distant NPCs.
  const elsewhere={...accepted.campaign,pendingBattle:{...accepted.campaign.pendingBattle,sector:'san_nicolas'}};
- const distant={npcs:[],errandDefinitions:structuredClone(elsewhere.errandDefinitions)};Object.defineProperty(distant,'tiles',{get(){throw Error('receipt check scanned unrelated map');}});
+ const distant={npcs:[],errandDefinitions:structuredClone(elsewhere.errandDefinitions),roadsideDiscoveryDefinitions:structuredClone(elsewhere.roadsideDiscoveryDefinitions)};Object.defineProperty(distant,'tiles',{get(){throw Error('receipt check scanned unrelated map');}});
  assert.equal(hasPendingNpcGiftProgress(elsewhere,distant),false);
 });
 
