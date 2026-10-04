@@ -2,6 +2,7 @@ import {authoredRoster} from './content-roster.js';
 import {pendingHire} from './hiring-arrivals.js';
 import {gainsExperience,isContractOperative} from './content-character-ids.js';
 import {applyCharacterProfile} from './character-profile.js';
+import {serviceRelationshipRefusal} from './service-relationships.js';
 export * from './character-profile.js';
 import {OPERATIVES} from './data.js';
 import {CIVIC_RECRUITS,CIVIC_DEFAULTS} from './civic-recruits.js';
@@ -54,6 +55,6 @@ export function migrateLegacySkillLearning(state){
 export function civicStatus(state,id){
  id=Number(id);
  const op=rosterFor(state).find(o=>o.id===id&&isContractOperative(state,o)),record=state.operativeState[id];
- const reason=!op?'No existe ese voluntario.':state.recruited.includes(id)?'Ya se encuentra en tus filas.':pendingHire(state,id)?'Este contratado ya está en camino.':!record?.alive?'Ha caído en combate.':record.captured?'Este personaje está cautivo.':record.serviceEquipmentReturn?'Recogé todo el equipo que dejó esta persona antes de volver a contratarla.':null;
+ const reason=!op?'No existe ese voluntario.':state.recruited.includes(id)?'Ya se encuentra en tus filas.':pendingHire(state,id)?'Este contratado ya está en camino.':!record?.alive?'Ha caído en combate.':record.captured?'Este personaje está cautivo.':record.serviceEquipmentReturn?'Recogé todo el equipo que dejó esta persona antes de volver a contratarla.':serviceRelationshipRefusal(state,op)?.reason??null;
  return {available:!reason,reason:reason??'Disponible en el boletín del Cabildo.'};
 }

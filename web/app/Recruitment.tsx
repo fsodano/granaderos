@@ -9,6 +9,7 @@ import {isContractOperative} from '../../game/content-character-ids.js';
 import {characterProfile} from '../../game/characters.js';
 import {portraitFor} from '../lib/portraits';
 import CharacterDossier from './CharacterDossier';
+import ServiceRefusalNotice from './ServiceRefusalNotice';
 import './recruitment.css';
 type Props={state:any;dispatch:(a:any)=>void};
 export default function Recruitment({state:s,dispatch}:Props){
@@ -63,7 +64,7 @@ export default function Recruitment({state:s,dispatch}:Props){
     </>:<>
      {hired&&<p className="contract-remaining">{contract?.remaining===null?'Servicio permanente':`${contract?.remaining??0} horas de contrato restantes`}</p>}
      {!hired&&<small>{hours?`Viaje previsto: ${hours} horas.`:'Llegada inmediata a un destino seguro.'}</small>}
-     {quote.reason&&<small>{quote.reason}</small>}
+     {quote.serviceRefusal?<ServiceRefusalNotice state={s} refusal={quote.serviceRefusal} disabled={busy} dispatch={dispatch}/>:quote.reason&&<small>{quote.reason}</small>}
      <label>Duración<select aria-label={`Duración del contrato de ${o.name}`} value={term} onChange={e=>setPeriods({...periods,[o.id]:e.target.value})}>{terms.map(([id,name])=><option key={id} value={id}>{name}</option>)}</select></label>
      <button className="gold-button" disabled={!quote.available||s.resources.treasury<quote.price||record?.alive===false||busy||(!hired&&(!destination||!civicStatus(s,o.id).available))} onClick={()=>dispatch(hired?{type:'renewContract',id:o.id,term}:{type:'recruitCivic',id:o.id,term,destination})}>{record?.alive===false?'Caído en combate':`${hired?'Renovar':'Contratar'} · ${quote.price} pesos`}</button>
      {hired&&<button className="dossier-link" disabled={busy} onClick={()=>dispatch({type:'dismiss',id:o.id})}>Finalizar servicio</button>}

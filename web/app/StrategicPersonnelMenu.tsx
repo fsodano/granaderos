@@ -9,6 +9,7 @@ import {strategicSquadAssignments} from '../../game/strategic-squad-assignments.
 import {squadTravelStatus} from '../../game/squad-travel.js';
 import {campaignPlace} from '../../game/world-cells.js';
 import {travelTime} from '../lib/travel-time';
+import ServiceRefusalNotice from './ServiceRefusalNotice';
 
 function visibleControl(control:HTMLElement){
  if(!control.isConnected||control.closest('[hidden],[inert]'))return false;
@@ -37,6 +38,7 @@ export default function StrategicPersonnelMenu({state:s,roster,id,kind,onClose,d
  const [skill,setSkill]=useState('marksmanship'),[target,setTarget]=useState(String(id)),[teacher,setTeacher]=useState('');
  const [squadMenu,setSquadMenu]=useState(false);
  const blocked=Boolean(s.pendingBattle||s.pendingEncounter||s.defeated),contract=contractStatus(s,id);
+ const contractRefusal=kind==='contract'?contractQuote(s,op,'day').serviceRefusal:null;
  const local=roster.filter(o=>s.recruited.includes(o.id)&&s.operativeState[o.id]?.alive&&operativeLocation(s,o.id)===operativeLocation(s,id));
  const order=(action:any)=>{dispatch(action);onClose();};
  const options={skill,targetId:Number(target),instructorId:teacher?Number(teacher):undefined,repairScope:'equipment'};
@@ -65,6 +67,7 @@ export default function StrategicPersonnelMenu({state:s,roster,id,kind,onClose,d
    </div>
   </>:<p>Sin ruta pendiente.</p>:kind==='contract'?<>
    <p>{contract?.remaining===null?'Servicio permanente':`${Math.ceil((contract?.remaining??0)/24)} días hasta la salida`}</p>
+   <ServiceRefusalNotice state={s} refusal={contractRefusal} disabled={blocked} dispatch={dispatch}/>
    {contract?.remaining!==null&&['day','week','fortnight'].map(term=>{const q=contractQuote(s,op,term);return <button key={term} className="line-button" disabled={blocked||!q.available||q.price>s.resources.treasury} onClick={()=>order({type:'renewContract',id,term,expectedExpiresAt:s.contracts[id]?.expiresAt,expectedExpiresSecond:s.contracts[id]?.expiresSecond??0})}>{term==='day'?'Un día':term==='week'?'Una semana':'Dos semanas'} · {q.price.toLocaleString('es-AR')} pesos</button>;})}
    {id!==1000&&<button className="line-button" disabled={blocked} onClick={()=>order({type:'dismiss',id})}>Despedir</button>}
   </>:<>

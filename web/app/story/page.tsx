@@ -761,7 +761,7 @@ export default function ContentEditor() {
                     </fieldset>
       <CharacterSupplies character={item} onChange={update}/>
       <CharacterCondition character={item} onChange={update}/>
-                    <CharacterPresentation character={item} portraits={defaultContentPackage().characters} weapon={draft.weapons.find((w:any)=>w.id===item.weapon)?.template??0} onChange={update}/>
+                    <CharacterPresentation character={item} portraits={defaultContentPackage().characters} characters={draft.characters} weapon={draft.weapons.find((w:any)=>w.id===item.weapon)?.template??0} onChange={update}/>
                     <h3>Atributos</h3>
                     <div className="fields">
                       {ATTRIBUTE_FIELDS.map((k) =>

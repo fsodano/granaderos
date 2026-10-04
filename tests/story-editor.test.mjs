@@ -24,6 +24,18 @@ import {operativeIdForCharacter} from '../game/content-character-ids.js';
 register('./tactical-render-loader.mjs',import.meta.url);
 const draftKey='granaderos.content-draft.v1';
 
+test('the editor authors named service refusals through undo and saved campaign launch',async t=>{
+ const m=await mount(t),draft=()=>parseContentPackage(m.dom.window.localStorage.getItem(draftKey));
+ await m.input(m.document.querySelector('input[type="search"]'),'person-107');await m.click(m.document.querySelector('.entry-list button'));
+ const field=()=>m.document.querySelector('fieldset[aria-label="Rechazos de servicio"]');assert.ok(field());assert.equal(field().querySelector('select').value,'person-112');
+ await m.input(field().querySelector('select'),'person-3');await m.input(field().querySelector('textarea'),'Una diferencia de oficio dramatizada por el autor.');
+ let preference=draft().characters.find(c=>c.id==='person-107').serviceRefusals[0];assert.equal(preference.character,'person-3');assert.match(preference.reason,/dramatizada/);
+ await m.click(m.button('Deshacer'));assert.equal(field().querySelector('textarea').value,'Discrepan sobre el trato a los pacientes.');
+ await m.click(m.button('Rehacer'));assert.match(field().querySelector('textarea').value,/dramatizada/);
+ await m.click(m.button('Iniciar campaña con estas fichas'));const {campaign}=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY));
+ assert.deepEqual(campaign.contentCampaign.package.characters.find(c=>c.id==='person-107').serviceRefusals,[preference]);
+});
+
 test('the editor removes a historical ability and assigns abilities to a new identity through undo, copy and campaign launch',async t=>{
  const m=await mount(t);const draft=()=>parseContentPackage(m.dom.window.localStorage.getItem(draftKey));
  const ability=name=>[...m.document.querySelectorAll('fieldset[aria-label="Habilidades de combate"] label')].find(l=>l.textContent.startsWith(name)).querySelector('input');

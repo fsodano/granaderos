@@ -1,4 +1,5 @@
 import {validateContractRules} from './contract-rules.js';
+import {validateServiceRefusals} from './service-relationships.js';
 import {validateAmmunitionMarket} from './ammunition-market-rules.js';
 import {validateArtilleryTradingRules} from './artillery-trading-rules.js';
 import {validateArtilleryTransportRules} from './artillery-transport-rules.js';
@@ -81,6 +82,7 @@ export function defaultContentPackage() {
       portrait: portrait(o.id),
       abilities:legacyCharacterAbilities(o.id),
       personality:characterProfile(o).personality,
+      ...(o.serviceRefusals===undefined?{}:{serviceRefusals:structuredClone(o.serviceRefusals)}),
       speech:{...characterProfile(o).speech},
       spriteAppearance:spriteAppearance(o),
       monthlyPay: o.monthlyPay ?? 0,
@@ -171,6 +173,7 @@ export function validateContentPackage(value) {
     if(value[group.bladeField]!==undefined)errors.push(...validateForceEquipment(field,value[group.bladeField],new Set(value.weapons.filter(w=>BLADES[w?.template]).map(w=>w.id))));
   }
   for (const c of value.characters.filter(record)) {
+    errors.push(...validateServiceRefusals(c,sets.characters));
     if(legacyOperativeId(c.id)===undefined)check(['contract','encounter'].includes(c.recruitmentSource)&&['contract','permanent'].includes(c.service)&&['experience','fixed'].includes(c.progression)&&Array.isArray(c.traits),c.id,'los personajes nuevos necesitan origen, servicio, progreso y especialidades explícitos.');
     if(isWorldCharacter(c)){
       const e=c.encounter;

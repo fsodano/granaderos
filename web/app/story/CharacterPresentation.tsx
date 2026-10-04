@@ -3,8 +3,9 @@ import {AUTHORABLE_SPEECH_EVENTS,OPTIONAL_SPEECH_EVENTS} from '../../../game/cha
 import {CHARACTER_PORTRAITS} from '../../../game/character-profile.js';
 import {APPEARANCE_LABELS,SPEECH_LABELS,SPEECH_LINE_LIMIT,characterPresentationDefaults} from '../../../game/content-character-presentation.js';
 import {spriteRender,spriteViewport} from '../../../game/sprite-render.js';
+import ServiceRelationshipsEditor from './ServiceRelationshipsEditor';
 
-export default function CharacterPresentation({character,portraits,weapon,onChange}:{character:any;portraits:any[];weapon:number;onChange:(patch:any)=>void}){
+export default function CharacterPresentation({character,portraits,characters,weapon,onChange}:{character:any;portraits:any[];characters?:any[];weapon:number;onChange:(patch:any)=>void}){
  const values=characterPresentationDefaults(character);
  const choices=[...CHARACTER_PORTRAITS.filter(p=>p.id.startsWith('avatar-')),...portraits.map(c=>({src:c.portrait,name:c.name}))];
  const sprite=spriteRender({id:'preview',side:'player',hp:100,spriteAppearance:values.spriteAppearance,weapon},{direction:2,moving:false,frame:0});
@@ -33,6 +34,7 @@ export default function CharacterPresentation({character,portraits,weapon,onChan
    <textarea rows={3} maxLength={2000} value={values.personality} onChange={e=>onChange({personality:e.target.value})}/>
   </label>
   <small>Describe su personalidad en la hoja de servicio. La moral mantiene las reglas de combate.</small>
+  {characters&&<ServiceRelationshipsEditor character={character} characters={characters} onChange={onChange}/>}
   <p>Estas frases se usan cuando ocurre cada evento. Dejá una frase vacía para que no hable en esa situación.</p>
   {AUTHORABLE_SPEECH_EVENTS.map(event=><label key={event}>{SPEECH_LABELS[event as keyof typeof SPEECH_LABELS]}
    <textarea rows={2} maxLength={SPEECH_LINE_LIMIT} value={values.speech[event]??''} onChange={e=>{const speech={...values.speech,[event]:e.target.value};if(OPTIONAL_SPEECH_EVENTS.includes(event)&&!e.target.value)delete speech[event];onChange({speech});}}/>
