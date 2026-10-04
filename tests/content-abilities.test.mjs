@@ -80,14 +80,12 @@ test('authored shot, movement, breach and medical costs control real low-AP admi
  const rescuer=battle([subject([],{hp:30,traits:['field_rescuer']})]);assert.equal(pa(rescuer,'heal'),20);assert.equal(actionCosts(rescuer,rescuer.units[0]).heal,20);
 });
 
-test('mud riding, night scouting and scatter concealment follow authored abilities instead of names',()=>{
+test('mud riding and night scouting follow authored abilities instead of names',()=>{
  const rider=abilities=>{const b=battle([subject(abilities,{x:1,y:1,mounted:true})],[],{exploration:true});b.tiles.find(t=>t.x===2&&t.y===1).type='mud';return b;};
  const fast=rider(['mud_rider']),plain=rider([]);assert.ok(getReachable(fast,'2000').find(p=>p.x===2&&p.y===1).cost<getReachable(plain,'2000').find(p=>p.x===2&&p.y===1).cost);
  const dark=abilities=>battle([subject(abilities,{x:1,y:1,weapon:1800,marksmanship:60})],[{id:'enemy',x:8,y:1}],{night:true});
  const scout=dark(['night_scout']),ordinary=dark([]);assert.equal(canSee(scout,scout.units[0],scout.units[1]),true);assert.equal(canSee(ordinary,ordinary.units[0],ordinary.units[1]),false);
  assert.ok(shotChance(scout,scout.units[0],scout.units[1])>shotChance(ordinary,ordinary.units[0],ordinary.units[1]));
- const cover=abilities=>{const b=battle([subject(abilities,{x:1,y:1,weapon:1807,marksmanship:55})],[{id:'enemy',x:4,y:1}]);b.tiles.find(t=>t.x===4&&t.y===1).cover=60;return b;};
- const scatter=cover(['scatter_concealment']),bare=cover([]);assert.ok(shotChance(scatter,scatter.units[0],scatter.units[1])>shotChance(bare,bare.units[0],bare.units[1]));
 });
 
 test('authored command holds morale only in the proper formation and support respects side and distance',()=>{

@@ -18,9 +18,9 @@ The user's later instructions control adaptations. Use the Granaderos historical
 | V02 · 1:18–1:51 | Hiring, funds and correspondence belong to the world. | The period desk, prepaid contracts, visible funds and received letters implement this adaptation. Shops are deferred by the user. New communications must preserve real events and receipts, not grant equipment or outcomes through text. |
 | V03 · 1:55–2:44 | A custom character's answers affect attributes, specialties and later identity. | `character-profile.js` and creation orders provide the survey, budget and trait admission. New version-2 commissions now require at least 15 health, matching the existing consciousness threshold; the real creator uses that same bound while other attributes still admit zero and the budget stays 550. Public rejection is atomic, old valid low-health profiles remain unchanged, and a minimum-health officer can save, take a real paid step and return with finite owned equipment. Existing questionnaire checks cover movement, night vision, instruction and temperament; wider later consequences remain part of acceptance. |
 | V04 · 2:48–4:24 | Strength, dexterity, agility, wisdom and experience affect actions; use develops skills; experience affects salary and awareness. | Shared costs, load, fists, tools, care, initiative and contract quotes contain these effects. `skill-training.js` uses wisdom and a separate saved practice seed; practice and capped progress persist. Movement, shooting, care and work have events. A capable intended player now receives one ordinary agility-practice attempt after an actual paid hostile single-ball miss passes close before its physical stop. Hits, redirected injury, misfires, rays stopped before the player, distant rays, point fire, pellets and cannon fire give none. Ordinary/presented execution, saved replay and campaign settlement preserve the same result. The tighter distances and credit amount are declared Granaderos tuning; they do not claim the exact classic growth formula. |
-| V05 · 4:32–5:05 | Specialties make night work, stealth, paired weapons, roofs and blades useful alternatives. | Current character abilities, sight, paired-pistol and melee rules provide period choices. Check every exposed trait against a real action, costs and saves; unsupported trait text does not prove the mechanic. Modern automatic weapons are not a period substitute. |
+| V05 · 4:32–5:05 | Specialties make night work, stealth, paired weapons, roofs and blades useful alternatives. | Current character abilities, sight, paired-pistol and melee rules provide period choices. Check every exposed trait against a real action, costs and saves; unsupported trait text does not prove the mechanic. The existing concealment specialty now follows each resolved pellet load, including alternatives and authored firearms, rather than weapon ID 1807. A selected single-ball load is neutral; legacy fallback and explicit omission keep their existing admission rules. Exact load-choice, finite-fire, mixed-hand, public-forecast and saved-replay checks are recorded below. Modern automatic weapons are not a period substitute. |
 | V06 · 5:15–6:56 | A companion relationship can force a roster choice; contextual personality can affect performance. | Shared-service cohesion and temperament exist. Authored `serviceRefusals` prevent a new hire or renewal while a named rival actually serves. The fictional default Inés Aguirre/Gaspar Villalba disagreement gives a roster choice; the hiring, renewal and editor controls disclose it. Authored favorable preferences now give up to +3 temporary morale when a capable named companion actually deploys, within the existing total +5 team-support cap. The fictional Aguirre/Lagos preference and authoring rules are described in [service relationships](../gameplay/characters/service-relationships.md). Exact paid terms and already accepted arrivals remain valid; older pinned packages without a preference remain neutral. Confirmed deployment-return and strategic military-bleeding deaths admit one saved named companion-loss letter. A capable issued participant who directly witnesses a preferred military companion die now receives one saved, clipped additional morale loss of up to 6 and a short named notice. Fatal physical hits and untreated tactical bleeding use the same observed transition; hidden or old deaths do not backfill it. The original support receipt stays fixed, and the actual return retains the loss. New default Cejas content also gives one explicit contextual care effect: paid effective first aid to another directly observed living person reduces her current shock by up to 2, using ordinary dressing, action and treatment rules. Older pinned packages without the ability stay neutral. See [care composure](../gameplay/characters/care-composure.md). These amounts are declared Granaderos tuning. An explicitly authored contract conscience now records one complaint after a directly witnessed intentional noncombatant killing, preserves the paid term and rejects later renewal or rehire. The real return sends one named received letter. See [service objections](../gameplay/characters/service-objections.md). Fresh Cejas content also declares nervous isolation: below 50 morale and without a capable nearby military companion, a real new player combat turn adds up to 2 ordinary shock after normal recovery. Regrouping stops further additions without refunding shock. Existing accuracy and interruption rules use the actual result. See [nervous isolation](../gameplay/characters/nervous-isolation.md). Wider changing opinions, other death-notice paths, enclosed-room fear, strategic isolation, prolonged panic and early departures remain separate requirements. |
-| V07 · 7:00–8:19 | Weapon handling, weight, range, condition, fittings and regional protection have tradeoffs. | Physical carried weight, typed charges, readiness, condition, aim, range, bayonet custody and three worn regions exist. Actual physical injury now wears only the actual recipient's garment in the struck region, using clipped HP loss. Worn and packed garments use the existing finite hourly repair queue after weapons and tools. Condition-zero clothing remains owned; a serviceable packed linen shirt can instead be consumed for dressings. Historically supported ballistic protection remains open; cloth supplies no new bullet damage reduction. Modern scopes, suppressors, ceramics and ballistic vests are not copied into 1812. |
+| V07 · 7:00–8:19 | Weapon handling, weight, range, condition, fittings and regional protection have tradeoffs. | Physical carried weight, typed charges, readiness, condition, aim, range, bayonet custody and three worn regions exist. Actual physical injury now wears only the actual recipient's garment in the struck region, using clipped HP loss. Worn and packed garments use the existing finite hourly repair queue after weapons and tools. Condition-zero clothing remains owned; a serviceable packed linen shirt can instead be consumed for dressings. Historically supported ballistic protection remains open; cloth supplies no new bullet damage reduction. Tactical firearm maintenance currently restores condition without finite repair materials; that material-free repair route remains an open gameplay gap. Modern scopes, suppressors, ceramics and ballistic vests are not copied into 1812. |
 | V08 · 8:20–9:31 | Stance and cover change exposure and shooting; weak cover differs from hard cover. | Shared muzzle/body heights, posture, material resistance, furniture, window geometry and authored terraces affect real shots and forecasts. Smoke/concealment affect observation separately. Continue verifying UI, AI and actual orders against the same physical rules, including heights and hidden information. |
 | V09 · 9:32–10:26 | Head, torso and leg shots trade accuracy, injury and mobility; owned attachments change handling. | Three body regions, leg knockdown/unhorsing and the existing physical bayonet fitting are implemented. Wider period-appropriate attachments require an explicit choice and source, not renamed modern equipment. Live regional consequences and saved injuries remain part of acceptance. |
 | V10 · 10:53–11:48 | Each bullet has a real trajectory; intervening cover loses or stops damage; misses can injure unintended people. | Single-ball shots continue beyond the resolved aimed/scattered cell. One glancing contact with an exposed explicit vertical stone face can redirect the path with half its remaining force; cumulative distance and drop do not reset. Their original absolute-height slope remains through twice effective range; beyond it, shared deterministic drop can change the struck region or cause a ground stop. Ordered body contacts spend force and can permit seeded passage; a failed passage, material stop, solid floor/ground, finite range or map edge ends the shot. Paired single-ball shots capture their intended point and absolute height before either discharge; first-shot death, knockdown or unhorsing cannot move the second ray. Each shot still checks current physical bodies. Fixed-seed legal orders check successive injury, paid costs, exact intersections, typed civilian/soldier IDs and saved replay. Knowledge-filtered forecasts include conditional passage and warnings for known people beyond the first contact. One discharge presents successive observed impacts without exposing concealed bodies or changing the final order. Shot loads now resolve nine finite weighted pellet paths from the actual selected load, including cover, intervening bodies and unintended people. Forecasts, warnings and enemy choices use observed geometry; injuries retain finite costs and saved custody. Cannon work belongs to the separate 3D effort. The remaining physical requirements in V11 remain open. |
@@ -619,3 +619,56 @@ primary untracked references and separate 3D/cannon work remain untouched.
 V06 enclosed-room fear, strategic isolation, prolonged panic and wider evolving
 opinions remain open. V15 recorded voices and broader event speech remain open.
 Full finite campaign and full-video acceptance remain open.
+
+
+## Load-specialty checkpoint — 4 October 2026
+
+The existing `scatter_concealment` specialty now checks the resolved physical
+pellet load instead of weapon ID 1807. It halves the target-concealment term
+for a cone load in any firearm. A blunderbuss firing a single ball is neutral;
+a musket or pistol firing an alternative shot load can benefit. An authored
+single ray remains neutral even if it uses the shot ammunition family. Each
+hand in a pistol pair uses its own resolved load. Material resistance,
+visibility, charge ownership, AP, time and projectile rules remain unchanged.
+The shared Spanish description discloses that scope in hiring and dossiers.
+Legacy ability fallback is preserved; an explicit empty ability list overrides
+it. This is a correction to an existing Granaderos specialty, not a new claim
+about classic JA2 or historical shot accuracy.
+
+The declared finite subsystem arenas give native and authored pellet forecasts
+of 90% without the specialty and 92% with it. These are chances of at least one
+pellet contact, not center-hit or multiple-hit guarantees. In a mixed pistol
+pair, the ball hand stays at 36% while the pellet hand changes 86%→88%.
+Single-ball controls have identical forecasts and actual paid outcomes with or
+without the specialty. Ordinary and presented orders agree, and validated
+tactical snapshots replay the same finite discharge. Hidden bodies and private
+cover remain absent from public forecasts, warnings and projectile metadata.
+These prepared arenas do not prove a fresh paid campaign or a conquest.
+
+The mounted inventory case uses the actual unload, load-select, reload and
+map-click fire controls. A pistol starts with a ball, changes to shot, pays
+one real shot and returns to a ball. The forecast follows the current load;
+AP, condition and typed ammunition are debited normally. Saved replay retains
+the result. The old weapon-ID-only assertion was replaced by checks of selected
+loads while the separate mud-riding and night-scouting cases remain.
+Two early core setup failures incorrectly expected another six tactical
+seconds after the same round was already charged, and supplied an offhand
+weight that disagreed with its pinned definition. Their corrected fixtures
+and assertions follow the existing rules; no runtime rule or seed was changed.
+
+The affected engine checks pass **50/50** and the mounted UI checks pass
+**13/13** without React act warnings. These groups overlap the final complete
+short suite: **4,872/4,872**, all **698/706** selected files complete, eight
+declared extended files excluded, eight workers and no name filters. There
+are zero failures, cancellations, skips or pending checks; `complete: true`,
+elapsed **351.21 seconds**. Type checking, production build,
+documentation/baseline audits, five shard self-tests, complete 706-file shard
+coverage and whitespace checks pass. Static export contains **1,133 files and
+1,033 asset references**, source ID **efe31895022d**, equal to the frozen source.
+All **872** test/support paths retain SHA-256
+**0424475a2e9bc220590017b1b4d65b1ac474baf13de235c14eaccd74796ce3e1**.
+Production source and test inputs remain unchanged after validation. Extended
+simulations and live player-browser QA were not repeated. The player origin,
+primary untracked references and separate 3D/cannon work remain untouched.
+Tactical gun maintenance without repair materials, broader V05 physics and
+full finite campaign/video acceptance remain open.

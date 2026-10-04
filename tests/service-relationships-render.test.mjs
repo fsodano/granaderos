@@ -106,17 +106,20 @@ test('assignment choices disclose prospective support without granting it merely
 });
 
 
-test('the hiring card and real dossier explain authored care and isolation conditions while older pinned prose remains neutral',async t=>{
- const content=defaultContentPackage(),state=initialCampaign(42,content),m=await mount(t,state,'recruitment');
+test('the hiring card and real dossier explain authored care, isolation and load conditions while older pinned prose remains neutral',async t=>{
+ const content=defaultContentPackage();content.characters.find(person=>person.id==='person-130').abilities.push('scatter_concealment');
+ const state=initialCampaign(42,content),m=await mount(t,state,'recruitment');
  const card=()=>m.doc.querySelector('[data-operative-id="130"]');
  assert.match(card().textContent,/Serenidad al cuidar/);assert.match(card().textContent,/otra persona a la vista.*hasta 2 puntos de tensión.*PA.*vendas.*sí mismo/);
  assert.match(card().textContent,/Temor al aislamiento.*moral menor que 50.*compañero militar capaz.*cuatro casillas.*misma superficie.*hasta 2 puntos de tensión.*turno de combate.*recuperación habitual ocurre primero.*no devuelve la tensión/);
+ assert.match(card().textContent,/carga de perdigones en cualquier arma de fuego.*mitad.*ocultación.*puntería.*No reduce la resistencia.*ni revela blancos ocultos.*No se aplica.*bala única/);
  await m.click(card().querySelector('.candidate-face'));const dossier=m.doc.querySelector('[role="dialog"]');assert.match(dossier.textContent,/Serenidad al cuidar/);assert.match(dossier.textContent,/otra persona a la vista.*hasta 2 puntos de tensión.*PA.*vendas.*sí mismo/);
  assert.match(dossier.textContent,/Temor al aislamiento.*moral menor que 50.*compañero militar capaz.*cuatro casillas.*misma superficie.*turno de combate/);
+ assert.match(dossier.textContent,/carga de perdigones en cualquier arma de fuego.*mitad.*ocultación.*puntería.*No se aplica.*bala única/);
  assert.match(dossier.textContent,/La rutina de atender a otros le devuelve la calma/);await m.click(m.button('Cerrar hoja de servicio',dossier));assert.deepEqual(m.state(),state,'reading the condition changes no money, contract, health or shock');
  const old=structuredClone(content);delete old.characters.find(c=>c.id==='person-130').abilities;await m.replace(decodeSave(encodeSave(initialCampaign(42,old))).campaign);
- assert.doesNotMatch(card().textContent,/Serenidad al cuidar|Temor al aislamiento|hasta 2 puntos de tensión/);await m.click(card().querySelector('.candidate-face'));
- assert.match(m.doc.querySelector('[role="dialog"]').textContent,/La rutina de atender a otros le devuelve la calma/);assert.doesNotMatch(m.doc.querySelector('[role="dialog"]').textContent,/Serenidad al cuidar|Temor al aislamiento|hasta 2 puntos de tensión/);
+ assert.doesNotMatch(card().textContent,/Serenidad al cuidar|Temor al aislamiento|Tiro entre cobertura|hasta 2 puntos de tensión/);await m.click(card().querySelector('.candidate-face'));
+ assert.match(m.doc.querySelector('[role="dialog"]').textContent,/La rutina de atender a otros le devuelve la calma/);assert.doesNotMatch(m.doc.querySelector('[role="dialog"]').textContent,/Serenidad al cuidar|Temor al aislamiento|Tiro entre cobertura|hasta 2 puntos de tensión/);
 });
 
 test('real saved conduct objection remains visible across paid service, renewal controls, correspondence and refused rehire',async t=>{
