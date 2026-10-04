@@ -19,7 +19,7 @@ The user's later instructions control adaptations. Use the Granaderos historical
 | V03 · 1:55–2:44 | A custom character's answers affect attributes, specialties and later identity. | `character-profile.js` and creation orders provide the survey, budget and trait admission. New version-2 commissions now require at least 15 health, matching the existing consciousness threshold; the real creator uses that same bound while other attributes still admit zero and the budget stays 550. Public rejection is atomic, old valid low-health profiles remain unchanged, and a minimum-health officer can save, take a real paid step and return with finite owned equipment. Existing questionnaire checks cover movement, night vision, instruction and temperament; wider later consequences remain part of acceptance. |
 | V04 · 2:48–4:24 | Strength, dexterity, agility, wisdom and experience affect actions; use develops skills; experience affects salary and awareness. | Shared costs, load, fists, tools, care, initiative and contract quotes contain these effects. `skill-training.js` uses wisdom and a separate saved practice seed; practice and capped progress persist. Movement, shooting, care and work have events. A capable intended player now receives one ordinary agility-practice attempt after an actual paid hostile single-ball miss passes close before its physical stop. Hits, redirected injury, misfires, rays stopped before the player, distant rays, point fire, pellets and cannon fire give none. Ordinary/presented execution, saved replay and campaign settlement preserve the same result. The tighter distances and credit amount are declared Granaderos tuning; they do not claim the exact classic growth formula. |
 | V05 · 4:32–5:05 | Specialties make night work, stealth, paired weapons, roofs and blades useful alternatives. | Current character abilities, sight, paired-pistol and melee rules provide period choices. Check every exposed trait against a real action, costs and saves; unsupported trait text does not prove the mechanic. Modern automatic weapons are not a period substitute. |
-| V06 · 5:15–6:56 | A companion relationship can force a roster choice; contextual personality can affect performance. | Shared-service cohesion and temperament exist. Authored `serviceRefusals` prevent a new hire or renewal while a named rival actually serves. The fictional default Inés Aguirre/Gaspar Villalba disagreement gives a roster choice; the hiring, renewal and editor controls disclose it. Authored favorable preferences now give up to +3 temporary morale when a capable named companion actually deploys, within the existing total +5 team-support cap. The fictional Aguirre/Lagos preference and authoring rules are described in [service relationships](../gameplay/characters/service-relationships.md). Exact paid terms and already accepted arrivals remain valid; older pinned packages without a preference remain neutral. Complaints, evolving opinions, companion death reactions, contextual fears and later departures remain separate requirements. |
+| V06 · 5:15–6:56 | A companion relationship can force a roster choice; contextual personality can affect performance. | Shared-service cohesion and temperament exist. Authored `serviceRefusals` prevent a new hire or renewal while a named rival actually serves. The fictional default Inés Aguirre/Gaspar Villalba disagreement gives a roster choice; the hiring, renewal and editor controls disclose it. Authored favorable preferences now give up to +3 temporary morale when a capable named companion actually deploys, within the existing total +5 team-support cap. The fictional Aguirre/Lagos preference and authoring rules are described in [service relationships](../gameplay/characters/service-relationships.md). Exact paid terms and already accepted arrivals remain valid; older pinned packages without a preference remain neutral. Confirmed deployment-return and strategic military-bleeding deaths now admit one saved named companion-loss letter. Complaints, evolving opinions, immediate tactical grief, other death-notice paths, contextual fears and later departures remain separate requirements. |
 | V07 · 7:00–8:19 | Weapon handling, weight, range, condition, fittings and regional protection have tradeoffs. | Physical carried weight, typed charges, readiness, condition, aim, range, bayonet custody and three worn regions exist. Actual physical injury now wears only the actual recipient's garment in the struck region, using clipped HP loss. Worn and packed garments use the existing finite hourly repair queue after weapons and tools. Condition-zero clothing remains owned; a serviceable packed linen shirt can instead be consumed for dressings. Historically supported ballistic protection remains open; cloth supplies no new bullet damage reduction. Modern scopes, suppressors, ceramics and ballistic vests are not copied into 1812. |
 | V08 · 8:20–9:31 | Stance and cover change exposure and shooting; weak cover differs from hard cover. | Shared muzzle/body heights, posture, material resistance, furniture, window geometry and authored terraces affect real shots and forecasts. Smoke/concealment affect observation separately. Continue verifying UI, AI and actual orders against the same physical rules, including heights and hidden information. |
 | V09 · 9:32–10:26 | Head, torso and leg shots trade accuracy, injury and mobility; owned attachments change handling. | Three body regions, leg knockdown/unhorsing and the existing physical bayonet fitting are implemented. Wider period-appropriate attachments require an explicit choice and source, not renamed modern equipment. Live regional consequences and saved injuries remain part of acceptance. |
@@ -28,7 +28,7 @@ The user's later instructions control adaptations. Use the Granaderos historical
 | V12 · 11:53–12:18 | Travel can produce danger, discoveries and local opportunities. | Persistent strategic enemy groups and actual contact exist. Broader discoverable caches and optional encounter variety require authored, finite encounters and saved outcomes. Giant-cat encounters are not inferred as required Argentine content. |
 | V13 · 12:23–14:00 | The player chooses routes, daylight or night entry, specialists, retreat/recovery and alternate access. | Independent squads, timed approaches, placement, night sight, paid exits, care and persistent encounters exist. Campaign phases retain historical progression. An acquired crowbar can open a saved, traversable ground-level adobe/wood passage at the existing 25/45-AP cost. Explosive alternate building entry and broader route freedom remain open. A complete legal campaign must retain money, ammunition, wounds, casualties and paid travel; the short suite alone does not prove it. |
 | V14 · 14:09–14:56 | A quest can have competing resolutions with different persistent rewards and civic consequences. | Physical deliveries, escorts, failures and authored mission outcomes exist. Fresh Retiro poncho deliveries now wait for a choice between 40 pesos and local support (+8 loyalty), with exclusive saved rewards and real retained garments. Authored city deliveries can use this choice. Local support can affect militia eligibility; it does not alter port income. This is a first competing-reward slice. Different beneficiaries, broader quest outcomes and their territorial consequences remain incomplete; it does not copy the chalice quest. |
-| V15 · 16:37–17:00 | Individual lines, jokes, reactions and discontent give people a distinct presence. | Authored personal greetings, contextual text banter and event cooldowns exist. Distinct recorded voices, broader event-specific speech and meaningful discontent remain open. Text, a generic sound or the relationship rule alone does not prove voice-work acceptance. |
+| V15 · 16:37–17:00 | Individual lines, jokes, reactions and discontent give people a distinct presence. | Authored personal greetings, contextual text banter and event cooldowns exist. Confirmed companion-loss letters add a saved named text reaction. Distinct recorded voices, broader event-specific speech and meaningful discontent remain open. Text, a generic sound or the relationship rule alone does not prove voice-work acceptance. |
 
 ## Delivery and proof
 
@@ -208,3 +208,49 @@ Fresh Retiro's finite armory chest now contains one identified 0.6-kg linen shir
 A separate fresh native hire of 112 pays 1,050 pesos and retains 2,150 pesos. Real Retiro approach, opening and pickup acquire the one shirt. Four legal wear/stow/equip/preparation orders spend five seconds in total and change two owned dressings to five. Ordinary and presented execution, full official saved replay, actual return and reentry preserve the consumed shirt, ten rounds, health and money. A saved older opened chest without a shirt retains its contents. Prepared wounded-actor checks then prove ordinary hand preparation and first aid consume a dressing separately and stop bleeding without ordinary HP restoration. Mounted component checks exercise the actual inventory callback, 20 AP and stale-source refusal; no live browser campaign was changed.
 
 The affected twenty-file gate passes 138/138 checks, zero failures, cancellations or skips. Independent review finds no blocking issue. The final frozen source passes the complete short suite: **4,730/4,730 checks, zero failures, cancellations, skips or todos**, all 673 selected files complete in 311.25 seconds, `complete: true`, without name filters. Eight established extended files remain excluded from 681 total files. All 845 test/helper/fixture inputs remain byte-identical to the pre-run freeze. Typecheck and production export **269804ef9fd4** pass (1,133 files, 1,033 asset references), with unchanged production digest. Documentation and baseline audits, five shard self-tests, complete 681-file shard coverage and whitespace checks pass. Existing equipment-repair and cache checks were extended; no obsolete engine expectations needed removal. The combined #150 candidate is unchanged. Cannon, map and 3D graphics remain separately owned. Broader crafting, historical ballistic protection, extended campaign and full-video acceptance remain open.
+
+
+## Confirmed companion-loss checkpoint — 4 October 2026
+
+The directed Aguirre/Lagos preference now admits a named received letter after a
+validated deployment return or a newly confirmed strategic military-bleeding
+death. Pinned names and preferences decide the reaction, not the source of a
+temporary morale bonus. Actual serving, conscious senders are eligible; unresolved
+deployed health is not inferred from a stale campaign record. The existing
+correspondence system retains a stable sender/deceased identity. No migration or
+save-load scan generates retrospective letters.
+
+This is a bounded text reaction. Existing tactical team morale, ordinary casualty
+morale and support removal remain unchanged. There is no extra grief penalty or
+recorded voice. Immediate tactical reactions, detained/resident death notices,
+evolving opinions, fears and later departures remain open under V06/V15. Cannon,
+map and 3D presentation stay with the separate assistant.
+
+The paid native acceptance hires Aguirre for 588 pesos and Lagos for 336, then
+renews Aguirre for 84, retaining treasury 2,192. Two actual point shots and one
+reload spend two owned cartridges and six seconds. Eight rounds and condition 98
+remain. Lagos actually dies; validated return keeps Aguirre's existing morale 58
+and receives one letter at hour six. Ordinary and presented execution agree, and
+full official saved action replay matches. A stale settlement rejects atomically;
+two retained-corpse visits preserve the same letter, morale and ammunition.
+
+A second actual route spends 35 tactical orders and 36 seconds, returning Lagos
+alive at 14 HP with three bleeding. Fourteen ordinary hours cause death. Saved
+one-hour continuations equal a fourteen-hour batch, with one letter at hour 20.
+Aguirre retains morale 76, nine rounds, condition 99 and treasury 2,192. Two more
+saved hours do not repeat the death or reaction. No health, death, equipment,
+ammunition, money, outcome or random state is assigned during these routes.
+Mounted received-correspondence controls select an actual arrival letter and the
+loss letter without changing campaign state. Old pinned preferences and
+unconfirmed tactical losses provide no loss letter.
+
+The affected eleven-file gate passes 93/93 checks. Independent review finds no
+blocking issue. The final frozen source passes **4,741/4,741 short checks**, with
+zero failures, cancellations, skips or todos. All 675 selected files complete in
+314.64 seconds, with `complete: true`; eight established extended files remain
+excluded from 683 total files. All 847 test/helper/fixture inputs remain unchanged.
+Typecheck and production export **f3f8b951504a** pass (1,133 files, 1,033 asset
+references). Documentation and baseline audits, five shard self-tests, complete
+683-file shard coverage and whitespace checks pass. The existing paid companion
+casualty test was strengthened; no obsolete engine checks required removal. These
+results cover this bounded reaction, not the remaining full-video requirements.

@@ -102,7 +102,7 @@ This bounded deployment rule is Granaderos tuning. The reviewed
 instead averages profile opinions among eligible people present together and
 moves a team modifier toward that opinion each hour; moving groups only consider
 their own group. This change does not reproduce that formula, buddy recruitment
-overrides, evolving opinions or companion-specific death reactions.
+overrides, evolving opinions or additional companion-specific death morale.
 
 Authors may set up to three directed preferences with the same stable IDs and
 reason limits as refusals:
@@ -123,3 +123,29 @@ reassign the relationship before deleting its target. Copy, undo, import and new
 campaign launch retain the stable reference. Older pinned packages that omit
 preferences remain neutral, and an already issued older deployment does not
 receive new support on restore.
+
+
+## Confirmed companion-loss letters — 4 October 2026
+
+A serving soldier with an authored preferred companion can send a received
+letter after that companion dies. This first slice admits deaths from a validated
+deployment return or from actual hourly military bleeding. It uses the pinned
+relationship and character names, even if cohesion or the morale cap meant no
+temporary companion bonus was issued.
+
+The sender must be alive, awake, conscious, uncaptured and still in service at
+the exact confirmation time. An unresolved deployed sender is not inferred from
+stale strategic health. At return, the validated health and capture records decide
+eligibility. Unavailable senders do not receive a deferred reaction. Older pinned
+packages without preferences remain neutral; loading a save does not create
+letters for past deaths.
+
+The existing received correspondence stores the named reaction. Its stable ID
+uses the sender and deceased identities. Reading it performs no campaign action.
+The ordinary team/casualty morale loss and removal of issued temporary support
+remain unchanged. No additional grief penalty, recorded voice, coordinates,
+attacker identity, contract change or equipment change is introduced.
+
+Deaths confirmed only through detained or resident NPC records, immediate
+in-battle reactions, evolving opinions, contextual fears and forced departures
+remain open. This is a named text reaction, not complete JA2 relationship parity.

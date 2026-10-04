@@ -2,6 +2,7 @@ import {initializeTownIncome,activateTownIncome,validateTownIncome,collectTownIn
 import {recordFiniteArsenalRecovery} from './finite-artillery-arsenals.js';
 import {migrateLegacySkillLearning} from './recruitment.js';
 import {receiveCorrespondence,validateCorrespondence} from './correspondence.js';
+import {receiveCompanionLossCorrespondence} from './companion-loss.js';
 import {isSectorSupplied} from './sector-income.js';
 import {AMMUNITION_FAMILIES} from './ammunition-families.js';
 import {changeMerchantCash} from './equipment-merchants.js';
@@ -453,6 +454,7 @@ function commitDeploymentReturn(s,request,snapshot,plan){
   requireThat(Object.values(plan.ammunition.creditedAmmunition??{}).every(count=>count===0),'El parte intenta crear una reserva global de munición.');
   if(request.exploration)recordCasualtyMorale(s,plan.entries.filter(e=>e.kind==='dead').map(e=>Number(e.unitId)),request.squad.map(u=>Number(u.id)));else recordBattleMorale(s,request,plan.outcome,snapshot);
   const captured=plan.entries.filter(e=>e.kind==='captured').map(e=>Number(e.unitId));captureOperatives(s,captured,plan.sourceSector,plan.ammunition.custody);
+  receiveCompanionLossCorrespondence(s,rosterFor(s),plan.entries.filter(e=>e.kind==='dead').map(e=>Number(e.unitId)),{settledIds:plan.entries.map(e=>Number(e.unitId))});
   s.squads=clone(plan.squadChanges.squads);const selected=s.squads.find(q=>q.id===s.activeSquadId);s.squad=[...selected.members];s.location=selected.location;
   for(const change of plan.horseChanges)Object.assign(s.horseState.horses.find(h=>h.id===change.id),clone(change));
   for(const h of s.horseState.horses)if(h.custody?.kind==='field'&&s.sectors[h.location]?.owner==='patriot'&&!occupyingGroups(s,h.location).length&&plan.outcome!=='defeat')h.custody=null;
@@ -556,7 +558,7 @@ function tick(s,hours,options={}){
     }
     advanceMarchFatigue(s,rosterFor(s).map(op=>({...op,...(mountForOperative(s.horseState,op.id)??{})})),options);
     for(const message of advanceDetentionCare(s,rosterFor(s)))note(s,message);
-    const careOptions=assignmentContext(s,options);advanceMedicalCare(s,rosterFor(s),careOptions);const deaths=advanceMilitaryWounds(s,rosterFor(s));for(const death of advanceMilitiaWounds(s))note(s,`${death.name} fallece por sus heridas en ${sector(death.sector).name}.`);advanceAssignments(s,rosterFor(s),careOptions);recordCasualtyMorale(s,deaths);advanceMorale(s,rosterFor(s),careOptions);
+    const careOptions=assignmentContext(s,options);advanceMedicalCare(s,rosterFor(s),careOptions);const deaths=advanceMilitaryWounds(s,rosterFor(s));for(const death of advanceMilitiaWounds(s))note(s,`${death.name} fallece por sus heridas en ${sector(death.sector).name}.`);advanceAssignments(s,rosterFor(s),careOptions);recordCasualtyMorale(s,deaths);receiveCompanionLossCorrespondence(s,rosterFor(s),deaths);advanceMorale(s,rosterFor(s),careOptions);
     for(const id of deaths){
       s.operativeState[id].location=operativeLocation(s,id);
       for(const squad of s.squads)squad.members=squad.members.filter(member=>member!==id);
