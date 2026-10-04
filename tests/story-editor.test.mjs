@@ -24,16 +24,29 @@ import {operativeIdForCharacter} from '../game/content-character-ids.js';
 register('./tactical-render-loader.mjs',import.meta.url);
 const draftKey='granaderos.content-draft.v1';
 
-test('the editor authors named service refusals through undo and saved campaign launch',async t=>{
+test('the editor authors named relationships with bounded choices, protected references, undo and saved campaign launch',async t=>{
  const m=await mount(t),draft=()=>parseContentPackage(m.dom.window.localStorage.getItem(draftKey));
- await m.input(m.document.querySelector('input[type="search"]'),'person-107');await m.click(m.document.querySelector('.entry-list button'));
+ const choose=async id=>{await m.input(m.document.querySelector('input[type="search"]'),id);await m.click(m.document.querySelector('.entry-list button'));};
+ await choose('person-112');const before=draft();await m.click(m.button('Eliminar'));assert.deepEqual(draft(),before);assert.match(m.document.body.textContent,/Quitá o reasigná las relaciones de Inés Aguirre antes de eliminar a Gaspar Villalba/);
+ await choose('person-107');
  const field=()=>m.document.querySelector('fieldset[aria-label="Rechazos de servicio"]');assert.ok(field());assert.equal(field().querySelector('select').value,'person-112');
+ const preferred=()=>m.document.querySelector('fieldset[aria-label="Compañeros preferidos"]');assert.equal(preferred().querySelector('select').value,'person-116');assert.match(preferred().textContent,/Al iniciar un despliegue.*hasta \+3.*no supera \+5/);
+ assert.equal(field().querySelector('option[value="person-116"]').disabled,true);assert.equal(preferred().querySelector('option[value="person-112"]').disabled,true);assert.equal(preferred().querySelector('option[value="person-107"]'),null);
+ await m.click(m.button('Añadir compañero preferido'));await m.click(m.button('Añadir compañero preferido'));assert.equal(preferred().querySelectorAll('select').length,3);assert.equal(m.button('Añadir compañero preferido').disabled,true);assert.equal(preferred().querySelectorAll('select')[1].querySelector('option[value="person-116"]').disabled,true);
+ await m.click(m.button('Quitar compañero preferido 3'));await m.click(m.button('Quitar compañero preferido 2'));
  await m.input(field().querySelector('select'),'person-3');await m.input(field().querySelector('textarea'),'Una diferencia de oficio dramatizada por el autor.');
  let preference=draft().characters.find(c=>c.id==='person-107').serviceRefusals[0];assert.equal(preference.character,'person-3');assert.match(preference.reason,/dramatizada/);
  await m.click(m.button('Deshacer'));assert.equal(field().querySelector('textarea').value,'Discrepan sobre el trato a los pacientes.');
  await m.click(m.button('Rehacer'));assert.match(field().querySelector('textarea').value,/dramatizada/);
+ await m.input(preferred().querySelector('textarea'),'Confía en su ayuda, según la historia del autor.');const companion=draft().characters.find(c=>c.id==='person-107').preferredCompanions[0];
+ await m.input(preferred().querySelector('textarea'),'');assert.equal(m.button('Iniciar campaña con estas fichas').disabled,true);await m.click(m.button('Deshacer'));assert.equal(m.button('Iniciar campaña con estas fichas').disabled,false);assert.deepEqual(draft().characters.find(c=>c.id==='person-107').preferredCompanions,[companion]);
+ await choose('person-116');const protectedDraft=draft();await m.click(m.button('Eliminar'));assert.deepEqual(draft(),protectedDraft);assert.match(m.document.body.textContent,/Quitá o reasigná las relaciones de Inés Aguirre antes de eliminar a Petrona Lagos/);
+ await choose('person-107');await m.click(m.button('Quitar compañero preferido 1'));await choose('person-116');await m.click(m.button('Eliminar'));assert.equal(draft().characters.some(c=>c.id==='person-116'),false);
+ await m.click(m.button('Deshacer'));await m.click(m.button('Deshacer'));assert.ok(draft().characters.some(c=>c.id==='person-116'));assert.deepEqual(draft().characters.find(c=>c.id==='person-107').preferredCompanions,[companion]);
+ await choose('person-107');await m.click(m.button('Duplicar personaje'));const copy=draft().characters.at(-1);assert.deepEqual(copy.preferredCompanions,[companion]);assert.deepEqual(copy.serviceRefusals,[preference]);
  await m.click(m.button('Iniciar campaña con estas fichas'));const {campaign}=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY));
  assert.deepEqual(campaign.contentCampaign.package.characters.find(c=>c.id==='person-107').serviceRefusals,[preference]);
+ assert.deepEqual(campaign.contentCampaign.package.characters.find(c=>c.id==='person-107').preferredCompanions,[companion]);assert.deepEqual(campaign.contentCampaign.package.characters.find(c=>c.id===copy.id).preferredCompanions,[companion]);
 });
 
 test('the editor removes a historical ability and assigns abilities to a new identity through undo, copy and campaign launch',async t=>{

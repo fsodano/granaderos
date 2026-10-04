@@ -63,7 +63,63 @@ ordinary dismissal clears the refusal; renewed payment and exact expiry survive
 save/reload. Tests also cover accepted paid arrivals, stable new identities,
 legacy neutral content, marching rivals and editor undo/redo/launch.
 
-This is a bounded service refusal. Relationship complaints, friendly preferences,
-forced early departure, new morale effects, contextual fears and recorded voices
-remain open. A green affected batch does not prove full JA2 parity or an entire
-fresh campaign.
+This is a bounded service refusal. Relationship complaints, forced early
+departure, contextual fears and recorded voices remain open. A green affected
+batch does not prove full JA2 parity or an entire fresh campaign.
+
+## Preferred companions
+
+An authored favorable relationship gives a personnel choice before deployment.
+Inés Aguirre (`person-107`) trusts Petrona Lagos (`person-116`) to help with the
+wounded. This directed default relationship is fictional; Lagos does not gain a
+reciprocal preference. It does not cancel Aguirre's refusal to renew while Gaspar
+Villalba serves.
+
+When at least one preferred person actually deploys with the soldier, that
+soldier receives up to **+3 temporary morale**. The companion must be alive,
+awake, uncaptured and capable (at least 15 HP). Several preferred people do not
+multiply the benefit. Existing earned cohesion takes priority: cohesion plus
+preferred support cannot exceed +5, and total morale cannot exceed 100. The
+support changes the existing tactical morale rules, including firearm accuracy;
+integer rounding can leave a particular forecast unchanged.
+
+The actual issued deployment decides support. A different strategic squad can
+count during a coordinated assault if both people enter that encounter. Being
+hired, assigned to a nominal squad, awaiting arrival or elsewhere on the map is
+insufficient. The hiring, dossier and assignment controls disclose names and
+conditions before commitment.
+
+The issued request saves its actual positive `companionBonus` and `companionId`.
+Restoring a battle checks that receipt against its original cohort and pinned
+relationship, rather than later strategic health or contract expiry. Support is
+fixed for that deployment; it is not refreshed hourly or minted for late joins.
+Returning removes only the issued temporary support and preserves later paid
+morale or actual tactical changes. Salary, contract dates, equipment, ammunition,
+health, action costs and campaign randomness keep their ordinary rules.
+
+This bounded deployment rule is Granaderos tuning. The reviewed
+[classic JA2 morale source](https://github.com/ja2-stracciatella/ja2-stracciatella/blob/11e9430b67d788b73f7a57d22166e8b500c23dab/src/game/Tactical/Morale.cc#L664-L818)
+instead averages profile opinions among eligible people present together and
+moves a team modifier toward that opinion each hour; moving groups only consider
+their own group. This change does not reproduce that formula, buddy recruitment
+overrides, evolving opinions or companion-specific death reactions.
+
+Authors may set up to three directed preferences with the same stable IDs and
+reason limits as refusals:
+
+```json
+"preferredCompanions": [
+  {
+    "character": "person-116",
+    "reason": "Confía en su ayuda para atender heridos."
+  }
+]
+```
+
+The same person cannot be both preferred and refused by one owner. Unknown IDs,
+self-references, duplicate entries, excess entries and malformed records reject.
+The editor protects characters referenced by either relationship list; remove or
+reassign the relationship before deleting its target. Copy, undo, import and new
+campaign launch retain the stable reference. Older pinned packages that omit
+preferences remain neutral, and an already issued older deployment does not
+receive new support on restore.

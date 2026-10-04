@@ -12,6 +12,7 @@ export function authoredOperative(state, operative) {
     ...authoredPresentation(definition),
     // Do not inherit a newer default preference into an older pinned package.
     serviceRefusals:structuredClone(definition.serviceRefusals??[]),
+    preferredCompanions:structuredClone(definition.preferredCompanions??[]),
     ...(definition.abilities===undefined?{}:{abilities:[...definition.abilities]}),
     ...(definition.traits===undefined?{}:{traits:definition.traits}),
     ...(definition.service===undefined?{}:{service:definition.service}),

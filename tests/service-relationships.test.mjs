@@ -5,7 +5,7 @@ import {contractQuote,contractExpiresSeconds,contractStatus} from '../game/contr
 import {defaultContentPackage,validateContentPackage} from '../game/content-package.js';
 import {campaignContentReport} from '../game/campaign-content.js';
 import {operativeIdForCharacter} from '../game/content-character-ids.js';
-import {serviceRelationshipRefusal} from '../game/service-relationships.js';
+import {serviceRelationshipRefusal,preferredCompanions} from '../game/service-relationships.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 
 const order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,n.lastError);return n;};
@@ -21,6 +21,7 @@ test('a named fictional refusal blocks actual hiring atomically before any payme
  const rejected=dispatchCampaign(s,{type:'recruitCivic',id:107,term:'day'});
  assert.equal(rejected.lastError,quote.reason);assert.deepEqual({...rejected,lastError:null},s);assert.deepEqual(s,before);
  assert.equal(rejected.operativeState[107].startingCartridgesIssued,false);assert.equal(rejected.contracts[107],undefined);
+ assert.deepEqual(preferredCompanions(s,op(s,107)),[{character:'person-116',reason:'Confía en su ayuda para atender heridos.',companionId:116,companionName:'Petrona Lagos'}]);
 });
 
 test('refused renewal preserves all forty remaining paid seconds and expires through the ordinary public clock',()=>{
@@ -66,12 +67,13 @@ test('an already accepted paid arrival is honoured when a rival enters service b
 
 test('stable authored identities carry the rule through saved content, while older packages remain neutral',()=>{
  const d=defaultContentPackage(),template=d.characters.find(c=>c.id==='person-107');
- d.characters.push({...structuredClone(template),id:'alma-doctor',name:'Alma Nueva',nickname:'Alma',arrivalHours:0,serviceRefusals:[{character:'bea-doctor',reason:'Una disputa profesional.'}]},{...structuredClone(template),id:'bea-doctor',name:'Bea Nueva',nickname:'Bea',arrivalHours:0,serviceRefusals:[]});
- let s=initialCampaign(42,d);const a=operativeIdForCharacter(d,'alma-doctor'),b=operativeIdForCharacter(d,'bea-doctor');
+ d.characters.push({...structuredClone(template),id:'alma-doctor',name:'Alma Nueva',nickname:'Alma',arrivalHours:0,serviceRefusals:[{character:'bea-doctor',reason:'Una disputa profesional.'}],preferredCompanions:[{character:'cara-doctor',reason:'Confía en su trabajo.'}]},{...structuredClone(template),id:'bea-doctor',name:'Bea Nueva',nickname:'Bea',arrivalHours:0,serviceRefusals:[],preferredCompanions:[]},{...structuredClone(template),id:'cara-doctor',name:'Cara Nueva',nickname:'Cara',arrivalHours:0,serviceRefusals:[],preferredCompanions:[]});
+ let s=initialCampaign(42,d);const a=operativeIdForCharacter(d,'alma-doctor'),b=operativeIdForCharacter(d,'bea-doctor'),c=operativeIdForCharacter(d,'cara-doctor');
  s=order(s,{type:'recruitCivic',id:b,term:'day'});s=save(s);assert.equal(contractQuote(s,op(s,a)).serviceRefusal.rivalId,b);assert.match(contractQuote(s,op(s,a)).reason,/Alma Nueva.*Bea Nueva/);
- d.characters.find(c=>c.id==='alma-doctor').serviceRefusals=[];assert.equal(contractQuote(s,op(s,a)).available,false,'the running campaign keeps its pinned rule');
- const old=defaultContentPackage();for(const c of old.characters)delete c.serviceRefusals;old.characters.find(c=>c.id==='person-112').arrivalHours=0;
- const neutral=save(order(initialCampaign(42,old),{type:'recruitCivic',id:112,term:'day'}));assert.equal(contractQuote(neutral,op(neutral,107)).available,true);assert.deepEqual(op(neutral,107).serviceRefusals,[]);
+ assert.deepEqual(preferredCompanions(s,op(s,a)),[{character:'cara-doctor',reason:'Confía en su trabajo.',companionId:c,companionName:'Cara Nueva'}]);
+ d.characters.find(c=>c.id==='alma-doctor').serviceRefusals=[];d.characters.find(c=>c.id==='alma-doctor').preferredCompanions=[];assert.equal(contractQuote(s,op(s,a)).available,false,'the running campaign keeps its pinned rule');assert.equal(preferredCompanions(s,op(s,a))[0].companionId,c);
+ const old=defaultContentPackage();for(const c of old.characters){delete c.serviceRefusals;delete c.preferredCompanions;}old.characters.find(c=>c.id==='person-112').arrivalHours=0;
+ const neutral=save(order(initialCampaign(42,old),{type:'recruitCivic',id:112,term:'day'}));assert.equal(contractQuote(neutral,op(neutral,107)).available,true);assert.deepEqual(op(neutral,107).serviceRefusals,[]);assert.deepEqual(op(neutral,107).preferredCompanions,[]);assert.deepEqual(preferredCompanions(neutral,op(neutral,107)),[]);
 });
 
 test('relationship definitions reject unknown self duplicate and malformed references without restricting authored history',()=>{
@@ -80,4 +82,13 @@ test('relationship definitions reject unknown self duplicate and malformed refer
  const d=defaultContentPackage();d.characters.find(c=>c.id==='person-3').serviceRefusals=[{character:'person-112',reason:'Relación dramatizada por el autor.\nMotivo escrito en el editor.'}];
  assert.deepEqual(validateContentPackage(d),[]);assert.deepEqual(campaignContentReport(d).blocked,[]);assert.ok(save(initialCampaign(42,d)));
  const s=initialCampaign(42,d),bad=structuredClone(s);bad.contentCampaign.package.characters.find(c=>c.id==='person-3').serviceRefusals[0].reason='Un motivo reemplazado';assert.throws(()=>save(bad),/identidad/);
+});
+
+test('preferred companion definitions reject contradictory or malformed references and protect their pinned identity',()=>{
+ const invalid=[c=>c.preferredCompanions=null,c=>c.preferredCompanions=[{character:'missing',reason:'Motivo'}],c=>c.preferredCompanions=[{character:c.id,reason:'Motivo'}],c=>c.preferredCompanions=[...c.preferredCompanions,...c.preferredCompanions],c=>c.preferredCompanions[0].reason='',c=>c.preferredCompanions[0].reason='   ',c=>c.preferredCompanions[0].reason='x'.repeat(301),c=>c.preferredCompanions[0].reason='<b>Motivo</b>',c=>c.preferredCompanions[0].reason=42,c=>c.preferredCompanions[0].unexpected=true,c=>c.preferredCompanions=['person-116'],c=>c.preferredCompanions=['person-100','person-101','person-102','person-103'].map(character=>({character,reason:'Motivo'})),c=>c.preferredCompanions=[{character:'person-112',reason:'También lo prefiere.'}]];
+ for(const change of invalid){const d=defaultContentPackage();change(d.characters.find(c=>c.id==='person-107'));assert.ok(validateContentPackage(d).length,change.toString());assert.throws(()=>initialCampaign(42,d));}
+ const d=defaultContentPackage();d.characters.find(c=>c.id==='person-107').preferredCompanions=[{character:'person-3',reason:'Apoyo dramatizado por el autor.\nPuede elegir un mando permanente.'}];
+ assert.deepEqual(validateContentPackage(d),[]);assert.deepEqual(campaignContentReport(d).blocked,[]);const s=save(initialCampaign(42,d));assert.equal(preferredCompanions(s,op(s,107))[0].companionId,3);
+ const bad=structuredClone(s);bad.contentCampaign.package.characters.find(c=>c.id==='person-107').preferredCompanions[0].reason='Un motivo reemplazado';assert.throws(()=>save(bad),/identidad/);
+ const fresh=initialCampaign(),quote=contractQuote(fresh,op(fresh,107)),empty=defaultContentPackage();delete empty.characters.find(c=>c.id==='person-107').preferredCompanions;const old=initialCampaign(42,empty);assert.deepEqual(contractQuote(old,op(old,107)),quote,'a favorable preference does not change the quoted paid service');
 });

@@ -10,6 +10,7 @@ import {squadTravelStatus} from '../../game/squad-travel.js';
 import {campaignPlace} from '../../game/world-cells.js';
 import {travelTime} from '../lib/travel-time';
 import ServiceRefusalNotice from './ServiceRefusalNotice';
+import PreferredCompanionsSummary from './PreferredCompanionsSummary';
 
 function visibleControl(control:HTMLElement){
  if(!control.isConnected||control.closest('[hidden],[inert]'))return false;
@@ -66,11 +67,13 @@ export default function StrategicPersonnelMenu({state:s,roster,id,kind,onClose,d
     {journey.elapsed>0&&!journey.returning&&<button className="line-button" disabled={blocked} onClick={()=>order({type:'cancelTravel',squadId:squad.id,choice:'return'})}>Regresar · {travelTime(journey.elapsed)}</button>}
    </div>
   </>:<p>Sin ruta pendiente.</p>:kind==='contract'?<>
+   <PreferredCompanionsSummary state={s} operative={op}/>
    <p>{contract?.remaining===null?'Servicio permanente':`${Math.ceil((contract?.remaining??0)/24)} días hasta la salida`}</p>
    <ServiceRefusalNotice state={s} refusal={contractRefusal} disabled={blocked} dispatch={dispatch}/>
    {contract?.remaining!==null&&['day','week','fortnight'].map(term=>{const q=contractQuote(s,op,term);return <button key={term} className="line-button" disabled={blocked||!q.available||q.price>s.resources.treasury} onClick={()=>order({type:'renewContract',id,term,expectedExpiresAt:s.contracts[id]?.expiresAt,expectedExpiresSecond:s.contracts[id]?.expiresSecond??0})}>{term==='day'?'Un día':term==='week'?'Una semana':'Dos semanas'} · {q.price.toLocaleString('es-AR')} pesos</button>;})}
    {id!==1000&&<button className="line-button" disabled={blocked} onClick={()=>order({type:'dismiss',id})}>Despedir</button>}
   </>:<>
+   <PreferredCompanionsSummary state={s} operative={op}/>
    <button type="button" className="line-button" aria-expanded={squadMenu} aria-controls={`personnel-squads-${id}`} disabled={blocked||!record.alive||record.captured} onClick={()=>setSquadMenu(open=>!open)}>Escuadra ›</button>
    {squadMenu&&<div id={`personnel-squads-${id}`} className="strategic-menu-actions strategic-squad-options" aria-label={`Escuadra de ${op.nickname}`}>{strategicSquadAssignments(s,id,op).map(choice=><button type="button" key={choice.number??choice.squad!.id} className="line-button" aria-pressed={Boolean(choice.squad?.members.includes(id))} title={choice.reason??choice.squad?.name} disabled={Boolean(choice.reason)} onClick={()=>order(choice.action)}>{choice.label}</button>)}</div>}
    <div className="strategic-menu-actions">{Object.entries(CARE_ASSIGNMENTS).map(([assignment,label])=>{const why=careAssignmentReason(s,op,assignment);return <button key={assignment} className="line-button" title={why||undefined} disabled={blocked||Boolean(why)} onClick={()=>order({type:'assignCare',operativeId:id,assignment})}>{String(label)}</button>;})}</div>

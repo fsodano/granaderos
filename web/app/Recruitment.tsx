@@ -10,6 +10,7 @@ import {characterProfile} from '../../game/characters.js';
 import {portraitFor} from '../lib/portraits';
 import CharacterDossier from './CharacterDossier';
 import ServiceRefusalNotice from './ServiceRefusalNotice';
+import PreferredCompanionsSummary from './PreferredCompanionsSummary';
 import './recruitment.css';
 type Props={state:any;dispatch:(a:any)=>void};
 export default function Recruitment({state:s,dispatch}:Props){
@@ -50,6 +51,7 @@ export default function Recruitment({state:s,dispatch}:Props){
     <p className="eyebrow">{o.role}</p><p className="candidate-greeting">«{profile.speech.hired}»</p><p className="candidate-specialties">{profile.skills.join(' · ')}</p>
     <div className="candidate-stats"><span>Puntería <b>{o.marksmanship}</b></span><span>Liderazgo <b>{o.leadership}</b></span><span>Grado <b>{o.level}</b></span></div>
     <button className="dossier-link" onClick={()=>setSelected(o.id)}>Atributos, carácter y equipo →</button>
+    <PreferredCompanionsSummary state={s} operative={o}/>
     {quote.topTier&&<small className="elite-contract">Especialista de élite</small>}
     {arrival?<>
      <p className="contract-remaining">{remaining?`En viaje · faltan ${remaining} horas`:'Llegada pendiente'} · {CAMPAIGN_SECTORS.find(d=>d.id===arrival.destination)?.name}</p>
