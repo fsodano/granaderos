@@ -21,6 +21,14 @@ export function tacticalFeedback(before,after){
  }
  for(const unit of after.units.filter(u=>u.side==='player')){
   const old=before.units.find(u=>u.id===unit.id);if(!old)continue;
+  if(unit.nervousIsolationWarned===true&&old.nervousIsolationWarned===undefined&&
+     !unit.militia&&!unit.missionAlly&&Number.isSafeInteger(Number(unit.id))&&Number(unit.id)>=0&&
+     String(Number(unit.id))===unit.id&&Array.isArray(unit.abilities)&&unit.abilities.includes('nervous_isolation')){
+   messages.push(`${unit.name} siente temor al quedar sin apoyo.`);
+  }
+ }
+ for(const unit of after.units.filter(u=>u.side==='player')){
+  const old=before.units.find(u=>u.id===unit.id);if(!old)continue;
   for(const [skill,label]of Object.entries(TRAINING_LABELS)){const gain=(unit.trainedStats?.[skill]??0)-(old.trainedStats?.[skill]??0);if(gain>0)messages.push(`${unit.nickname||unit.name}: ${label} +${gain}`);}
   if(unit.jammed&&!old.jammed)messages.push(`${unit.nickname||unit.name}: ${weaponFor({...unit,activeSlot:'primary'}).name} atascada. Volvé a cebar la cazoleta.`);
   if(unit.offHand?.jammed&&!old.offHand?.jammed)messages.push(`${unit.nickname||unit.name}: ${weaponFor({...unit,...unit.offHand,activeSlot:'primary'}).name} atascada en la segunda mano.`);

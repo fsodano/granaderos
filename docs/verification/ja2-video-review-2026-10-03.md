@@ -19,7 +19,7 @@ The user's later instructions control adaptations. Use the Granaderos historical
 | V03 · 1:55–2:44 | A custom character's answers affect attributes, specialties and later identity. | `character-profile.js` and creation orders provide the survey, budget and trait admission. New version-2 commissions now require at least 15 health, matching the existing consciousness threshold; the real creator uses that same bound while other attributes still admit zero and the budget stays 550. Public rejection is atomic, old valid low-health profiles remain unchanged, and a minimum-health officer can save, take a real paid step and return with finite owned equipment. Existing questionnaire checks cover movement, night vision, instruction and temperament; wider later consequences remain part of acceptance. |
 | V04 · 2:48–4:24 | Strength, dexterity, agility, wisdom and experience affect actions; use develops skills; experience affects salary and awareness. | Shared costs, load, fists, tools, care, initiative and contract quotes contain these effects. `skill-training.js` uses wisdom and a separate saved practice seed; practice and capped progress persist. Movement, shooting, care and work have events. A capable intended player now receives one ordinary agility-practice attempt after an actual paid hostile single-ball miss passes close before its physical stop. Hits, redirected injury, misfires, rays stopped before the player, distant rays, point fire, pellets and cannon fire give none. Ordinary/presented execution, saved replay and campaign settlement preserve the same result. The tighter distances and credit amount are declared Granaderos tuning; they do not claim the exact classic growth formula. |
 | V05 · 4:32–5:05 | Specialties make night work, stealth, paired weapons, roofs and blades useful alternatives. | Current character abilities, sight, paired-pistol and melee rules provide period choices. Check every exposed trait against a real action, costs and saves; unsupported trait text does not prove the mechanic. Modern automatic weapons are not a period substitute. |
-| V06 · 5:15–6:56 | A companion relationship can force a roster choice; contextual personality can affect performance. | Shared-service cohesion and temperament exist. Authored `serviceRefusals` prevent a new hire or renewal while a named rival actually serves. The fictional default Inés Aguirre/Gaspar Villalba disagreement gives a roster choice; the hiring, renewal and editor controls disclose it. Authored favorable preferences now give up to +3 temporary morale when a capable named companion actually deploys, within the existing total +5 team-support cap. The fictional Aguirre/Lagos preference and authoring rules are described in [service relationships](../gameplay/characters/service-relationships.md). Exact paid terms and already accepted arrivals remain valid; older pinned packages without a preference remain neutral. Confirmed deployment-return and strategic military-bleeding deaths admit one saved named companion-loss letter. A capable issued participant who directly witnesses a preferred military companion die now receives one saved, clipped additional morale loss of up to 6 and a short named notice. Fatal physical hits and untreated tactical bleeding use the same observed transition; hidden or old deaths do not backfill it. The original support receipt stays fixed, and the actual return retains the loss. New default Cejas content also gives one explicit contextual care effect: paid effective first aid to another directly observed living person reduces her current shock by up to 2, using ordinary dressing, action and treatment rules. Older pinned packages without the ability stay neutral. See [care composure](../gameplay/characters/care-composure.md). These amounts are declared Granaderos tuning. An explicitly authored contract conscience now records one complaint after a directly witnessed intentional noncombatant killing, preserves the paid term and rejects later renewal or rehire. The real return sends one named received letter. See [service objections](../gameplay/characters/service-objections.md). Wider changing opinions, other death-notice paths, contextual fears and early departures remain separate requirements. |
+| V06 · 5:15–6:56 | A companion relationship can force a roster choice; contextual personality can affect performance. | Shared-service cohesion and temperament exist. Authored `serviceRefusals` prevent a new hire or renewal while a named rival actually serves. The fictional default Inés Aguirre/Gaspar Villalba disagreement gives a roster choice; the hiring, renewal and editor controls disclose it. Authored favorable preferences now give up to +3 temporary morale when a capable named companion actually deploys, within the existing total +5 team-support cap. The fictional Aguirre/Lagos preference and authoring rules are described in [service relationships](../gameplay/characters/service-relationships.md). Exact paid terms and already accepted arrivals remain valid; older pinned packages without a preference remain neutral. Confirmed deployment-return and strategic military-bleeding deaths admit one saved named companion-loss letter. A capable issued participant who directly witnesses a preferred military companion die now receives one saved, clipped additional morale loss of up to 6 and a short named notice. Fatal physical hits and untreated tactical bleeding use the same observed transition; hidden or old deaths do not backfill it. The original support receipt stays fixed, and the actual return retains the loss. New default Cejas content also gives one explicit contextual care effect: paid effective first aid to another directly observed living person reduces her current shock by up to 2, using ordinary dressing, action and treatment rules. Older pinned packages without the ability stay neutral. See [care composure](../gameplay/characters/care-composure.md). These amounts are declared Granaderos tuning. An explicitly authored contract conscience now records one complaint after a directly witnessed intentional noncombatant killing, preserves the paid term and rejects later renewal or rehire. The real return sends one named received letter. See [service objections](../gameplay/characters/service-objections.md). Fresh Cejas content also declares nervous isolation: below 50 morale and without a capable nearby military companion, a real new player combat turn adds up to 2 ordinary shock after normal recovery. Regrouping stops further additions without refunding shock. Existing accuracy and interruption rules use the actual result. See [nervous isolation](../gameplay/characters/nervous-isolation.md). Wider changing opinions, other death-notice paths, enclosed-room fear, strategic isolation, prolonged panic and early departures remain separate requirements. |
 | V07 · 7:00–8:19 | Weapon handling, weight, range, condition, fittings and regional protection have tradeoffs. | Physical carried weight, typed charges, readiness, condition, aim, range, bayonet custody and three worn regions exist. Actual physical injury now wears only the actual recipient's garment in the struck region, using clipped HP loss. Worn and packed garments use the existing finite hourly repair queue after weapons and tools. Condition-zero clothing remains owned; a serviceable packed linen shirt can instead be consumed for dressings. Historically supported ballistic protection remains open; cloth supplies no new bullet damage reduction. Modern scopes, suppressors, ceramics and ballistic vests are not copied into 1812. |
 | V08 · 8:20–9:31 | Stance and cover change exposure and shooting; weak cover differs from hard cover. | Shared muzzle/body heights, posture, material resistance, furniture, window geometry and authored terraces affect real shots and forecasts. Smoke/concealment affect observation separately. Continue verifying UI, AI and actual orders against the same physical rules, including heights and hidden information. |
 | V09 · 9:32–10:26 | Head, torso and leg shots trade accuracy, injury and mobility; owned attachments change handling. | Three body regions, leg knockdown/unhorsing and the existing physical bayonet fitting are implemented. Wider period-appropriate attachments require an explicit choice and source, not renamed modern equipment. Live regional consequences and saved injuries remain part of acceptance. |
@@ -28,7 +28,7 @@ The user's later instructions control adaptations. Use the Granaderos historical
 | V12 · 11:53–12:18 | Travel can produce danger, discoveries and local opportunities. | Persistent strategic enemy groups and actual contact exist. One optional [finite roadside chest](../gameplay/campaign/roadside-discoveries.md) now uses an explicit pinned definition, physical discovery and pickup. Its used crowbar and linen shirt remain owned through saves and return visits; old omitted packages stay neutral. It grants no arrival reward. Wider caches, optional encounters and local opportunities still require authored encounters and saved outcomes. Giant-cat encounters are not inferred as required Argentine content. |
 | V13 · 12:23–14:00 | The player chooses routes, daylight or night entry, specialists, retreat/recovery and alternate access. | Independent squads, timed approaches, placement, night sight, paid exits, care and persistent encounters exist. Campaign phases retain historical progression. An acquired crowbar can open a saved, traversable ground-level adobe/wood passage at the existing 25/45-AP cost. Broader route freedom and historically supported alternate access remain open. Door-mounted explosive charges are not planned without reliable evidence for the 1810–1820 setting; keys, locks, crowbars, windows and route choices are the current approach. A complete legal campaign must retain money, ammunition, wounds, casualties and paid travel; the short suite alone does not prove it. |
 | V14 · 14:09–14:56 | A quest can have competing resolutions with different persistent rewards and civic consequences. | Physical deliveries, escorts, failures and authored mission outcomes exist. Fresh two-poncho errands now offer two actual beneficiaries, Retiro or Ensenada. First accepted custody fixes the destination; full delivery and adjacent confirmation give eight points of support only to that town. Actual militia admission supplies a territorial consequence. Older pinned 40-peso-or-support definitions remain valid. See [competing beneficiaries](../gameplay/characters/competing-beneficiaries.md) and the checkpoint below for separate native-route and prepared-territory evidence. Port income is unchanged. Broader authored quest outcomes remain incomplete; this does not copy the chalice quest. |
-| V15 · 16:37–17:00 | Individual lines, jokes, reactions and discontent give people a distinct presence. | Authored personal greetings, contextual text banter and event cooldowns exist. Confirmed companion-loss letters and a brief witnessed-loss notice add saved named text reactions. The witnessed loss also changes existing morale and accuracy rules. Effective manual care by an explicitly capable caregiver now gives a brief named tension-relief notice from the actual paid result; loading does not replay that notice. See [care composure](../gameplay/characters/care-composure.md). An authored conduct objection supplies one saved named complaint, a received letter and a real future-service consequence. Distinct recorded voices, broader event-specific speech and wider discontent remain open. Text, a generic sound or the relationship rule alone does not prove voice-work acceptance. |
+| V15 · 16:37–17:00 | Individual lines, jokes, reactions and discontent give people a distinct presence. | Authored personal greetings, contextual text banter and event cooldowns exist. Confirmed companion-loss letters and a brief witnessed-loss notice add saved named text reactions. The witnessed loss also changes existing morale and accuracy rules. Effective manual care by an explicitly capable caregiver now gives a brief named tension-relief notice from the actual paid result; loading does not replay that notice. See [care composure](../gameplay/characters/care-composure.md). An authored conduct objection supplies one saved named complaint, a received letter and a real future-service consequence. The first actual nervous-isolation event in each deployment adds one brief named notice; loading or inspecting inventory creates none. Distinct recorded voices, broader event-specific speech and wider discontent remain open. Text, a generic sound or the relationship rule alone does not prove voice-work acceptance. |
 
 ## Delivery and proof
 
@@ -511,3 +511,111 @@ Ordinary and presented execution agree. Every order replays through official sav
 The core, context and native acceptance gate passes 18/18. The separate UI/editor gate passes 106/106, including real saved correspondence, visible renewal reasons, ordinary dismissal, refused rehire and the shared authoring predicate. During integration, combined checks caught an early-retention ordering error in the checkpoint wiring; retention now occurs at each actual acknowledgment boundary after context validation. Two initial guard cases also used a visit-only return command for an assault; they now use the actual combat-result path. No production rule or test expectation was weakened to hide those failures. Final frozen short-suite and build results follow below.
 
 The final frozen short suite passes **4,851/4,851**, with all **694/702** selected files complete, eight declared extended files excluded, eight workers, no name filters, and zero failures, cancellations, skips or pending checks, in **346.42 seconds**. The adjacent engine gate passes 75/75; the independent acceptance rerun passes 2/2. Type checking, production build, documentation/baseline audits, five shard self-tests, complete 702-file shard coverage and whitespace checks pass. The verified static export contains **1,133 files and 1,033 asset references**, with source ID **7c59f4a1391a**. All **867** test/support paths retain the frozen SHA-256 **43f577c8d8d0ae3cd0caa462d63c2ddfd772c513361af672e7ef74d254826a6a**. Production source and test inputs are unchanged after the run. Extended simulations and live player-browser QA were not repeated. This batch leaves the separate 3D renderer, player origin and primary untracked references untouched. Wider contextual reactions, recorded voices and full finite campaign acceptance remain open.
+
+
+## Nervous-isolation checkpoint — 4 October 2026
+
+Fresh default Ángela Cejas content declares `nervous_isolation`. A capable owned
+soldier with the explicit ability, morale below 50 and no capable friendly
+military companion within four same-surface tiles gains up to two ordinary
+shock points at a real new player combat turn. All actors complete normal
+recovery first. Regrouping stops new additions without refunding shock.
+Existing firearm accuracy and interruption calculations use the result. This
+changes no AP, HP, personal morale, experience, equipment cost or random draw.
+Older pinned ability lists that omit the condition remain neutral. The classic
+[source](https://github.com/ja2-stracciatella/ja2-stracciatella/blob/master/src/game/Tactical/Morale.cc#L154-L195)
+checks low morale and isolation, but these timing, range and shock values are
+declared Granaderos tuning. Underground and enclosed-room fear remain open.
+See [nervous isolation](../gameplay/characters/nervous-isolation.md).
+
+Hiring, dossier and authoring controls disclose the condition. The inventory
+separates current tension from the conditional next-turn forecast. The first
+actual fear event in a deployment shows one short named notice using the
+existing four-second popup. Inspecting inventory or loading a save creates no
+event. A successful file import starts a fresh Battlefield component session;
+a real mounted Page test imports a later earned save of the same battle without
+repeating its notice, then imports the pre-event save and plays the actual turn.
+A rejected import keeps the current battle and active message. New deployment
+clears the informational flag alongside the existing transient-shock reset.
+Active official saves and interrupted-turn continuation retain the real shock.
+
+The paid native acceptance hires Cejas for 36 pesos and Acosta for 60 on actual
+day contracts, leaving 3,104. Both arrive at hour six and reach Buenos Aires
+at hour eighteen through the ordinary twelve-hour march. The prepared 48×16
+observation arena, stone screen at 7,2, passive hostile posts and seed 42 are
+fixed before the first official save. Native force, health, skills, finite
+ammunition and dressings remain. Earlier actual probes lost Cejas, suffered
+untreated bleeding loss or failed to reach the condition; the outcomes were
+not patched. Their retained summaries are labelled as summaries rather than
+complete execution logs. This acceptance is not an opening conquest or a
+full-campaign balance claim.
+
+Real hostile fire, a further miss and paid self-care leave Cejas at 30 HP,
+zero bleeding and 48.7 morale. Acosta reaches an actual unconscious 3 HP and
+five bleeding, so he supplies no support. Cejas's normal shock recovery
+2.125→1.0625 precedes the real two-point fear addition, yielding 3.0625.
+The older pinned control stays at 1.0625. Actual finite pistol reload costs
+32 PA; the loaded aim-one forecast is 7% against the control's 17%, both clear
+of the chance floor. The paid 18-PA shot uses one cartridge and one condition
+point and naturally misses in both controls with equal combat randomness.
+
+The issued north exit and ordinary retreat leave Acosta in hostile custody
+at 3 HP and five bleeding, holding his nine remaining rounds. At hours 19 and
+20, existing finite custody care uses his two confiscated native dressings:
+3→9→15 HP, bleeding five→zero, dressings two→zero. The accepted test follows
+these actual receipts. A real 36-peso Sosa hire, six-hour arrival, 36-peso Cejas
+renewal and twelve-hour return leave 3,032 pesos. Cejas retains 30 HP and her
+ordinary 45.7 morale on reentry; deployment shock starts at zero. Paid
+separation earns two shock at the next actual combat turn while hostile fire
+leaves Sosa at 27 HP and three bleeding. His own dressing stops that bleeding
+without restoring HP. Runs costing 30 and 42 PA bring the two soldiers within
+three cells. Regrouping refunds nothing; the next real combat turn performs
+normal recovery, shock two→one, with no further fear addition.
+
+All 43 recorded events replay through official saves. Every tactical order
+agrees between ordinary and presented execution and preserves its input. Two
+actual Retiro visits retain wounds, personal gear, terms, captured custody and
+cash. Final survivors have 30/27 HP, zero bleeding and one dressing each;
+Cejas/Sosa retain seven/ten rounds and captured Acosta retains nine. One real
+enemy death remains saved; no player died in this accepted route. The final
+clock is hour 36, second 53, with seed 110225632. No enemy defeat or rescue is
+claimed.
+
+The acceptance exposed an existing save defect: dynamic prisoners were checked
+as authored residents and discarded by placement synchronization. The narrow
+presence fix validates prisoner shape and requires the exact capture identity
+and sector in an existing custody receipt or current issued prisoner manifest.
+Unknown prisoners, changed capture sequences, wrong sectors and duplicated
+weapons still reject. The real default-content capture/reentry test retains
+both legitimate sources and the exact health and custody receipts. Existing
+detention health and equipment checks remain active. Early focused failures
+also caught a test checkpoint that omitted the tactical scene for an issued
+attack and a menu test that clicked the campaign-return button instead of the
+menu-close button. Those tests now follow the actual admission and control;
+no production rule was weakened to satisfy them.
+
+
+The affected fear gate passes 60/60; the final UI/editor/feedback gate passes
+108/108, including the actual Page file-import regression. Presence and
+capture checks pass 12/12, nearby detention checks 30/30, and the independent
+43-event paid acceptance 1/1. These groups overlap the complete short suite.
+Two early core cases initially mistook a real interrupted enemy phase for a
+new player turn; they now preserve that phase and resume through ordinary
+orders and official saved continuation before asserting the exact fear or
+regroup result. Companion recovery is checked in both roster orders.
+
+The final frozen short suite passes **4,865/4,865**, all **697/705** selected
+files complete, eight declared extended files excluded, eight workers and no
+name filters. There are zero failures, cancellations, skips or pending checks;
+`complete: true`, elapsed **349.55 seconds**. Type checking, production build,
+documentation/baseline audits, five shard self-tests, complete 705-file shard
+coverage and whitespace checks pass. Static export contains **1,133 files and
+1,033 asset references**, source ID **2292bef41f82**, equal to the frozen source.
+All **871** test/support paths retain SHA-256
+**3e7f6ac80e64e305ef28f77935d84a78b7221057c2610d71dffdd01d4f8fc6f2**.
+Production source and test inputs remain unchanged after validation. Extended
+simulations and live player-browser QA were not repeated. The player origin,
+primary untracked references and separate 3D/cannon work remain untouched.
+V06 enclosed-room fear, strategic isolation, prolonged panic and wider evolving
+opinions remain open. V15 recorded voices and broader event speech remain open.
+Full finite campaign and full-video acceptance remain open.

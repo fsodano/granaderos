@@ -12,6 +12,8 @@ import {createBattle,actBattle} from '../game/tactical.js';
 import {syncBattleTime} from '../game/time.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {contentIdentity} from '../game/content-identity.js';
+import {synchronizeCampaignPresence,validatePresenceScene} from '../game/campaign-presence.js';
+import {earnNervousIsolation,nervousStep} from './nervous-isolation-fixture.mjs';
 const A='cell-27-27',B='cell-26-27';
 const order=(s,a)=>{const next=dispatchCampaign(s,a);assert.equal(next.lastError,null,`${a.type}: ${next.lastError}`);return next;};
 const saved=(s,b=null)=>decodeSave(encodeSave(s,b));
@@ -148,4 +150,46 @@ test('an actual hostile-sector assault deploys its authored resident and preserv
  assert.equal(contact(restored.battle).contentId,'person-3');
  assert.equal(contact(restored.battle).presenceRevision,person(restored.campaign).revision);
  assert.equal(encountersFor(restored.campaign,'retiro').some(n=>n.operativeId===3),false);
+});
+
+test('a real paid capture remains a source-backed prisoner through content presence sync and official reentry saves',()=>{
+ // Reuse the declared native observation arena and ordinary hostile orders.
+ // No health, capture, equipment or result is assigned during this route.
+ let {pair}=earnNervousIsolation();
+ pair=nervousStep(pair,{type:'move',unitId:'130',x:6,y:0});
+ pair=nervousStep(pair,{type:'exit',unitIds:['130'],exitId:pair.battle.exits.find(e=>e.destination==='retiro').id});
+ assert.equal(pair.battle.status,'retreat');
+ let campaign=order(pair.campaign,{type:'battleResult',battleId:pair.battle.battleId,outcome:pair.battle.status,sectorState:pair.battle,survivors:pair.battle.units.filter(u=>u.side==='player')});
+ assert.equal(campaign.operativeState[110].captured,true);assert.equal(campaign.operativeState[110].hp,3);
+ assert.equal(campaign.operativeState[110].capturedAmmunition.ammo,9);
+ campaign=saved(campaign).campaign;
+ campaign=order(campaign,{type:'recruitCivic',id:100,term:'day'});
+ campaign=order(campaign,{type:'wait',hours:6});
+ campaign=order(campaign,{type:'renewContract',id:130,term:'day'});
+ campaign=order(campaign,{type:'attack',sector:'buenos_aires'});
+ const battle=enterSector(campaign.pendingBattle,campaign.sectorStates.buenos_aires);
+ const prisoner=battle.npcs.find(n=>n.detention?.operativeId===110),receipt=campaign.detentionRecords[prisoner.id];
+ assert.equal(prisoner.id,'captive:110:18');assert.equal(prisoner.hp,15);assert.equal(prisoner.bleeding,0);
+ assert.deepEqual(receipt.care.map(c=>[c.hour,c.hpBefore,c.hpAfter,c.dressings]),[[19,3,9,1],[20,9,15,1]]);
+ assert.equal(campaign.operativeState[110].medkits,0);assert.equal(campaign.resources.treasury,3032);
+ assert.deepEqual(saved(campaign,battle).battle.npcs,battle.npcs);
+
+ // Presence has two legitimate sources: current issue or retained custody.
+ const manifestOnly=structuredClone(campaign);delete manifestOnly.detentionRecords[prisoner.id];
+ assert.doesNotThrow(()=>validatePresenceScene(manifestOnly,battle));
+ const retained=structuredClone(campaign);retained.pendingBattle=null;retained.sectorStates.buenos_aires=structuredClone(battle);
+ const source=structuredClone(retained);synchronizeCampaignPresence(retained);
+ assert.deepEqual(retained,source,'placement synchronization must retain the exact prisoner and all custody');
+ assert.doesNotThrow(()=>validatePresenceScene(retained,battle));
+ const unsupported=structuredClone(manifestOnly);unsupported.pendingBattle.detainedPrisoners=[];
+ assert.throws(()=>validatePresenceScene(unsupported,battle),/apariciones/);
+ for(const alter of [
+  n=>{n.detention.operativeId=100;n.id=`captive:100:${n.detention.capturedAt}`;},
+  n=>{n.detention.captureSequence=2;n.id+=':2';},
+  n=>{n.detention.sector='retiro';},
+  n=>{n.weapon=0;},
+ ]){
+  const forged=structuredClone(battle);alter(forged.npcs.find(n=>n.id===prisoner.id));
+  assert.throws(()=>saved(campaign,forged),'unsupported prisoner identity or duplicated equipment must not be admitted');
+ }
 });

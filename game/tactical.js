@@ -77,6 +77,7 @@ import {COMBAT_BALANCE,penetratingFirearmDamage} from './combat-balance.js';
 import {practiceFirearmNearMiss} from './firearm-near-miss-practice.js';
 import {firstAidPlan} from './first-aid.js';
 import {careComposureRelief} from './care-composure.js';
+import {applyNervousIsolation} from './nervous-isolation.js';
 // Deterministic, serializable tactical simulation. The browser uses this module directly.
 export function bladeFor(unit){
  if(['unarmed','medical','tool','supply','item'].includes(unit.activeSlot))return FISTS;
@@ -2712,7 +2713,18 @@ function finishCombatRound(s){
   s.quietCombatTurns=contact?0:Math.min(2,(s.quietCombatTurns??0)+1);s.contactThisRound=false;
   s.turn++;s.phase='player';s.roundTimeCharged=false;checkEnd(s);rememberContacts(s);revealRooms(s);
   if(canEndCombat(s))resumeExploration(s);
-  else if(s.status==='active')say(s,`Turno ${s.turn}: ¡órdenes, comandante!`);
+  else if(s.status==='active'){
+    // Every companion has recovered and refreshed before isolation is tested.
+    // A quiet round that already returned to exploration has no fear event.
+    for(const u of s.units){
+      const fear=applyNervousIsolation(s,u);
+      if(fear>0&&!u.nervousIsolationWarned){
+        u.nervousIsolationWarned=true;
+        say(s,`${u.name} siente temor al quedar sin apoyo. Tensión +${fear}.`);
+      }
+    }
+    say(s,`Turno ${s.turn}: ¡órdenes, comandante!`);
+  }
   s.lastError=null;return s;
 }
 function issueEnemyTurnBudgets(s,queue){

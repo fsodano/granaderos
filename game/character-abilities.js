@@ -17,6 +17,7 @@ export const CHARACTER_ABILITIES = [
  ['mounted_intimidation','Intimidación montada','Una carga montada puede amedrentar a enemigos cercanos.'],
  ['rapid_first_aid','Atención rápida','Reduce el coste de la atención médica.'],
  ['care_composure','Serenidad al cuidar','Al tratar una herida de otra persona a la vista, reduce hasta 2 puntos de tensión. Usa los PA y las vendas habituales. No se aplica al tratarse a sí mismo.'],
+ ['nervous_isolation','Temor al aislamiento','Con moral menor que 50 y sin un compañero militar capaz a cuatro casillas en la misma superficie, suma hasta 2 puntos de tensión al iniciar cada turno de combate. La recuperación habitual ocurre primero. Reunirse con compañeros evita nuevas subidas; no devuelve la tensión existente.'],
  ['civilian_conscience','Objeción por daño a civiles','Si ve directamente una orden intencional matar a un civil no combatiente, protesta y rechaza nuevos contratos. Cumple el plazo ya pagado.'],
  ['tactical_command','Mando táctico','Mejora puntería, iniciativa y reacción de compañeros cercanos.'],
  ['strategic_command','Gran mando','Mejora puntería, iniciativa, reacción y moral de compañeros cercanos.'],

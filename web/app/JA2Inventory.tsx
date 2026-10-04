@@ -15,6 +15,7 @@ import {handsRequired} from '../../game/hand-layout.js';
 import {accessStepsFrom,tacticalLevel} from '../../game/tactical-space.js';
 import {climbPreview,fieldDressingsPreview} from '../../game/tactical.js';
 import {maximumEnergy} from '../../game/fatigue.js';
+import {nervousIsolationStatus} from '../../game/nervous-isolation.js';
 // MODE B: single-merc inventory panel (header / stats / stance grid / paper-doll / slot-grid / pertrechos / far-right cluster).
 // Pure read model (game/ja2-hud.js inventoryModel/orderDescriptors); all mutations are caller-provided callbacks.
 import {useEffect, useState} from 'react';
@@ -33,6 +34,7 @@ const short = (u: any) => u.nickname || String(u.name || '').split(' ').slice(-1
 const alive = (u: any) => u.hp > 0 && !u.routed && !u.unconscious && !u.departure;
 const MOVEMENT = [['walk', 'Caminar'], ['run', 'Correr'], ['crouch', 'Agachado'], ['prone', 'Cuerpo a tierra']] as const;
 const STANCE_IDS = ['mount', 'free', 'brace', 'repair'];
+const shockFormat = new Intl.NumberFormat('es-AR', {maximumFractionDigits: 2});
 
 type RadarProps = {
   equipmentScope?:string;
@@ -107,6 +109,13 @@ type Props = {
 export default function JA2Inventory({cursorLevel=0,onCursorLevelChange,unit, battle, mode, showSight, busy, units, selected, missionAllies, localMilitia, vw, vh, cameraRect, project, zoom, onOrder, onMode, onToggleSight, onSelect, onInventoryUnit, onRetreat, onCameraCenter, onCameraPan, onZoom, onCloseInventory, onAutoBandage, bandageReport}: Props) {
   const cost=(n:number|undefined)=>battle.mode==='exploration'?'sin PA':`${n ?? 0} PA`;
   const inv: any = inventoryModel(battle, unit);
+  const isolation = nervousIsolationStatus(battle, {...unit, shock: (unit.shock ?? 0) / 2});
+  const isolationText = isolation.reason === 'companion' ? 'Compañía cercana: sin aumento.'
+    : isolation.reason === 'morale' ? 'Moral suficiente: sin aumento.'
+    : isolation.reason === 'incapable' ? 'Ahora no puede combatir.'
+    : battle.mode === 'combat' && battle.status === 'active'
+      ? `Si sigue aislado y con moral baja: tensión +${shockFormat.format(isolation.addedShock)} al comenzar su turno, tras la recuperación habitual.`
+      : 'Fuera de combate: sin aumento.';
   const vitals: any = rosterCells([unit],unit.id,battle)[0];
   const inventoryUnits = battle.units.filter((u:any)=>u.side==='player'&&!u.militia&&!u.missionAlly&&!u.departure&&!u.fled);
   const inventoryIndex = inventoryUnits.findIndex((u:any)=>u.id===unit.id);
@@ -218,6 +227,10 @@ export default function JA2Inventory({cursorLevel=0,onCursorLevelChange,unit, ba
         <div><span>Energía</span><b>{Math.round(unit.energy ?? 100)} / {maximumEnergy(unit)}</b></div>
         <div className="ja2-mobile-weight"><span>Peso</span><b>{inv.weight.toFixed(1)} / {inv.capacity.toFixed(1)} kg</b></div>
         <div><span>Moral</span><b>{unit.hp<=0?'—':`${Math.round(unit.morale ?? 0)}%`}</b></div>
+        {isolation.reason !== 'ability' && <>
+          <div><span>Tensión actual</span><b>{shockFormat.format(unit.shock ?? 0)}</b></div>
+          <p role="status" aria-label="Temor al aislamiento"><b>Temor al aislamiento.</b> {isolationText}</p>
+        </>}
 <details className="ja2-inventory-extra"><summary>Más detalles</summary><div className="ja2-inventory-popup">        <div><span>Carga / capacidad</span><b>{inv.weight.toFixed(1)} / {inv.capacity.toFixed(1)} kg</b></div>
         <div><span>Espacio del equipo</span><b>{inv.pockets.used ?? '—'} / {inv.pockets.capacity}</b></div>
         {inv.pockets.overloaded && <p className="danger-text">Falta espacio en el equipo. Soltá o entregá objetos antes de recibir más.</p>}
