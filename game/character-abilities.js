@@ -11,7 +11,7 @@ export const CHARACTER_ABILITIES = [
  ['artillery_fire','Tiro de artillería','Reduce el coste de disparar una pieza y aumenta el daño de la metralla.'],
  ['breaching','Apertura de brechas','Reduce el coste de abrir una brecha a mano.'],
  ['night_scout','Exploración nocturna','Mejora la visión nocturna y reduce la penalización de puntería en la oscuridad.'],
- ['scatter_concealment','Tiro entre cobertura','Reduce la ocultación del blanco al usar un trabuco.'],
+ ['scatter_concealment','Tiro entre cobertura','Con una carga de perdigones en cualquier arma de fuego, reduce a la mitad el efecto de la ocultación del blanco sobre la puntería. No reduce la resistencia de los obstáculos ni revela blancos ocultos. No se aplica a cargas de bala única.'],
  ['artillery_loading','Carga de artillería','Mejora la recarga y la penetración de las piezas.'],
  ['foot_morale','Mando de infantería','Sostiene la moral de combatientes cercanos a pie.'],
  ['mounted_intimidation','Intimidación montada','Una carga montada puede amedrentar a enemigos cercanos.'],

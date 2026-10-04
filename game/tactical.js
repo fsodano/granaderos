@@ -538,7 +538,7 @@ export function firearmRangeProfile(s,attacker,target){
   const smoke=smokeBetween(s,attacker,target);
   // Preserve period-game obscuration weights, expressed as apparent distance.
   // Night training improves both detection reach and aiming in poor light.
-  const concealment=concealmentAt(s,target)*(hasCharacterAbility(attacker,'scatter_concealment')&&w.id===1807?.5:1);
+  const concealment=concealmentAt(s,target)*(hasCharacterAbility(attacker,'scatter_concealment')&&isShotLoad(w)?.5:1);
   const darkness=s.night?(20-nightSightBonus(attacker)*7.5)*(1-tileIllumination(s,target.x,target.y,tacticalLevel(target))):0;
   const apparentRange=distance+(concealment+darkness+smoke*(hasTrait(attacker,'line_marksman')?6:12))/3;
   const base=shotRangeModifiers({distance,weaponRange:w.range,apparentRange,visibleRange:visibleDistance(s,attacker,target)});
