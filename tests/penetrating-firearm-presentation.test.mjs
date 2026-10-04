@@ -3,7 +3,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createElement as h} from '../web/node_modules/react/index.js';
 import {renderToStaticMarkup as render} from '../web/node_modules/react-dom/server.node.js';
-import {createBattle,actBattle,presentedActBattle,presentedEndTurn,endTurn,teamCanSee,actionCosts} from '../game/tactical.js';
+import {createBattle,actBattle,presentedActBattle,presentedEndTurn,endTurn,teamCanSee,actionCosts,weaponFor} from '../game/tactical.js';
+import {COMBAT_BALANCE} from '../game/combat-balance.js';
+import {absoluteBodyHeight} from '../game/sight-geometry.js';
 import {battleFrameDuration,battleFrameFocus,battleFramePose} from '../game/battle-playback.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
 import {mountBattlefield} from './mounted-battlefield.mjs';
@@ -43,9 +45,13 @@ test('one real musket ball presents its two ordered injuries without changing re
 
 test('the same ball reaches a real stone wall after its first injury and never strikes the person behind it',()=>{
  const s=field();Object.assign(s.tiles.find(t=>t.x===8&&t.y===3),{type:'wall',blocked:true,blocksSight:false,material:'stone',obstacleHeight:2});
+ const shooter=unit(s,'p'),target=unit(s,'a'),muzzle=absoluteBodyHeight(s,shooter,'muzzle'),slope=(absoluteBodyHeight(s,target,'torso')-muzzle)/(target.x-shooter.x);
+ // Passing the first torso spends 30 configured force before the remaining
+ // ball reaches stone at 7.5. Its actual stop lies within that wall.
+ const remaining=weaponFor(shooter).damage-COMBAT_BALANCE.firearmBodyResistance.torso,stopX=7.5+remaining/(120*Math.hypot(1,slope));
  const r=presentedActBattle(s,action);assert.deepEqual(r.state,actBattle(s,action));assert.deepEqual(losses(r).map(i=>i.unitId),['a']);assert.equal(unit(r.state,'b').hp,100);
  const last=r.frames.filter(f=>f.type==='impact').at(-1);assert.equal(last.shotVisual.outcome,'cover');assert.equal(last.shotVisual.material,'stone');assert.deepEqual(last.impacts,[]);
- assert.ok(Math.abs(last.shotVisual.impact.x-7.5)<1e-9);assert.deepEqual(flights(r)[1].shotVisual.source,flights(r)[0].shotVisual.impact);
+ assert.ok(stopX>7.5&&stopX<8.5);assert.ok(Math.abs(last.shotVisual.impact.x-stopX)<1e-10);assert.ok(Math.abs(last.shotVisual.impact.height-(muzzle+(stopX-shooter.x)*slope))<1e-10);assert.deepEqual(flights(r)[1].shotVisual.source,flights(r)[0].shotVisual.impact);
  assert.match(draw(s,last),/data-impact-material="stone"/);assert.doesNotMatch(draw(s,flights(r)[1]),/data-muzzle-flash/);
 });
 

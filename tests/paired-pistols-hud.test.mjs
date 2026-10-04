@@ -71,7 +71,11 @@ test('a paired preview distinguishes a blocked main shot from the second pistol 
  const s=field({weapon:1806,condition:100,offHand:pistol({weapon:1805,loaded:1,condition:100})});
  Object.assign(s.tiles.find(t=>t.x===6&&t.y===2),{type:'wall',blocked:true,blocksSight:false,obstacleHeight:3,projectileResistance:38});
  const p=targetPreview(s,s.units[0],s.units[1],{mode:'fire',aim:4});assert.equal(p.valid,true);assert.equal(p.chance,0);
- assert.match(p.coverNote,/Mano principal: 0% \(la cobertura detiene el tiro\)/);assert.match(p.coverNote,/Segunda mano: \d+% \(daño reducido un 90%\)/);assert.doesNotMatch(p.coverNote,/La cobertura detiene este tiro/);
+ // The second pistol has 42 force. One crossed wall unit includes the
+ // descending .3/5 slope, so its displayed loss rounds to 91 percent.
+ const loss=Math.round(38*Math.hypot(1,.3/5)/42*100),volley=firearmVolleyPreview(s,s.units[0],s.units[1],4);
+ assert.equal(volley.shots[1].damage,42);assert.equal(loss,91);assert.ok(Math.abs(volley.shots[1].damageFactor-(42-38*Math.hypot(1,.3/5))/42)<1e-10);
+ assert.match(p.coverNote,/Mano principal: 0% \(la cobertura detiene el tiro\)/);assert.match(p.coverNote,new RegExp(`Segunda mano: \\d+% \\(daño reducido un ${loss}%\\)`));assert.doesNotMatch(p.coverNote,/La cobertura detiene este tiro/);
 });
 
 test('exploration permits an empty-main reload at zero AP with finite reserve and rejects an exhausted reserve',()=>{

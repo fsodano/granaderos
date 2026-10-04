@@ -38,7 +38,7 @@ test('cover beyond the aim cell reduces or stops the same missed ray before its 
  assert.notEqual(b.seed,a.seed,'the clear ball can roll body passage; after wood its remaining force cannot pass the body');
  for(const n of [a,b,c,d]){assert.equal(n.units[0].ap,89);assert.equal(n.units[0].loaded,0);assert.equal(n.elapsedSeconds,6);}
  const path=projectileFlight(missedScene(wood),wood.units[0],{x:8,y:3,stance:'standing'},weaponFor(wood.units[0]));
- assert.equal(path.obstacles[0].material,'wood');close(path.damageFactor,(52-24)/52);assert.equal(path.victimId,'friend');
+ assert.equal(path.obstacles[0].material,'wood');close(path.damageFactor,(52-24*Math.hypot(1,.3/7))/52);assert.equal(path.victimId,'friend');
 });
 
 test('the separate flight range preserves farther legal aim points and clips at every world edge',()=>{
@@ -69,10 +69,11 @@ test('a real floor beyond the aim point stops an elevated continuation without i
  assert.equal(s.upperSurfaces.some(t=>t.x===8),false);assert.ok(flight.destination.height<4.1,'the original descending slope continues rather than aiming at a later floor');
 });
 
-test('continuation retains diagonal corner cover but does not hit a corner-touching body',()=>{
+test('continuation ignores zero-depth cover and bodies at a corner but stops in the next crossed wall',()=>{
  const s=field({x:1,y:1});s.units=s.units.slice(0,1);body(s,{id:'corner',x:4,y:3});body(s,{id:'ahead',x:5,y:5});
  const target={x:3,y:3,stance:'standing'},weapon=weaponFor(s.units[0]);assert.equal(projectileFlight(s,s.units[0],target,weapon).victimId,'ahead');
- Object.assign(s.tiles.find(t=>t.x===4&&t.y===3),{type:'wall',material:'stone',blocked:true});const stopped=projectileFlight(s,s.units[0],target,weapon);assert.equal(stopped.blocked,true);assert.equal(stopped.victimId,null);
+ Object.assign(s.tiles.find(t=>t.x===4&&t.y===3),{type:'wall',material:'stone',blocked:true});const tangent=projectileFlight(s,s.units[0],target,weapon);assert.equal(tangent.victimId,'ahead');
+ Object.assign(s.tiles.find(t=>t.x===4&&t.y===4),{type:'wall',material:'stone',blocked:true});const stopped=projectileFlight(s,s.units[0],target,weapon);assert.equal(stopped.blocked,true);assert.equal(stopped.victimId,null);
 });
 
 test('a missed selected soldier excludes only that soldier and can strike a distinct same-ID civilian',()=>{
@@ -95,6 +96,16 @@ test('a known downstream bystander is warned and hidden same-ID bodies cannot af
  assert.deepEqual(chooseEnemyAction(hidden,hidden.units[0]),chooseEnemyAction(empty,empty.units[0]),'enemy decisions remain limited to their observation');
 });
 
+test('private prop depth cannot alter public forecasts or reveal the physical interior stopping point',()=>{
+ const empty=field({marksmanship:100}),thin=field({marksmanship:100},{props:[{id:'private-screen',type:'barrels',x:3,y:3,footprint:{width:1,height:1},obstacleHeight:2,projectileResistance:24,blocksSight:false,roomId:'unrevealed'}]}),deep=field({marksmanship:100},{props:[{id:'private-screen',type:'barrels',x:3,y:3,footprint:{width:3,height:1},obstacleHeight:2,projectileResistance:24,blocksSight:false,roomId:'unrevealed'}]});
+ const preview=s=>firearmFlightPreview(s,s.units[0],s.units[1]),risk=s=>firearmBystanderRisk(s,s.units[0],s.units[1]);
+ for(const s of [thin,deep]){const before=structuredClone(s);assert.deepEqual(preview(s),preview(empty));assert.deepEqual(risk(s),risk(empty));assert.equal(shotChance(s,s.units[0],s.units[1],4),shotChance(empty,empty.units[0],empty.units[1],4));assert.deepEqual(s,before);}
+ const action={type:'fire',unitId:'p',targetId:'e',aim:4},weak=actBattle(thin,action),stopped=actBattle(deep,action),shown=presentedActBattle(deep,action);
+ assert.ok(weak.units[1].hp<100);assert.equal(stopped.units[1].hp,100);assert.deepEqual(shown.state,stopped);
+ assert.doesNotMatch(stopped.log.join(' '),/private-screen|cobertura/);assert.equal(stopped.units[0].loaded,0);assert.equal(stopped.units[0].ammo,deep.units[0].ammo);assert.equal(stopped.elapsedSeconds,6);
+ for(const frame of shown.frames){assert.deepEqual(frame.impacts,[]);if(frame.shotVisual){assert.equal(frame.shotVisual.material,undefined);assert.ok(frame.shotVisual.impact.x>=6.5,'the private interior stop is not a public endpoint');assert.equal(frame.shotVisual.sourceId,undefined);}}
+});
+
 const hiddenProneScene=wallX=>{
  const s=field({weapon:1800,marksmanship:100,stance:'prone',movementMode:'prone'},{enemies:[{id:'e',name:'Guardia visible',x:15,y:3,stance:'prone',movementMode:'prone',patrol:false,overwatch:false,morale:100}],npcs:[{id:'hidden',name:'Vecino oculto',x:12,y:3,stance:'prone',hp:100}]});
  Object.assign(s.tiles.find(t=>t.x===12&&t.y===3),{type:'forest',cover:100,concealment:100});wall(s,wallX);
@@ -110,7 +121,7 @@ test('an unseen interception before a known wall retains the exact observed cove
  for(const type of ['projectile','impact']){
   const shown=r.frames.find(f=>f.type===type),baseline=clean.frames.find(f=>f.type===type);
   assert.deepEqual(shown.shotVisual,baseline.shotVisual);assert.equal(shown.shotVisual.outcome,'cover');assert.equal(shown.shotVisual.material,'stone');
-  close(shown.shotVisual.impact.x,12.5);close(shown.shotVisual.impact.height,.25+(.2-.25)*11.5/14);assert.deepEqual(shown.impacts,[]);
+  const stopX=12.5+58/(120*Math.hypot(1,.05/14));close(shown.shotVisual.impact.x,stopX);close(shown.shotVisual.impact.height,.25+(.2-.25)*(stopX-1)/14);assert.deepEqual(shown.impacts,[]);
   assert.equal(shown.shotVisual.victimId,undefined);assert.equal(shown.shotVisual.victimKind,undefined);
  }
 });

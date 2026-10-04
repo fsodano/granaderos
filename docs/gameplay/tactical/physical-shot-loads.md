@@ -32,4 +32,4 @@ Existing saves retain finite guns, ammunition, health and RNG state without new 
 
 `tests/shot-load-projectiles.test.mjs` checks finite weighted force, cover and upper-floor stops, foreground shielding through death, fractional injury, typed civilian harm, actual bodyguard recipients, private-room bodies/props, frozen mixed-pistol intent, enemy orders, and a stock paid shot-load hire through actual fire, official save, return and reentry. Affected single-ball, point-fire, alternate-load, warning, paired and presentation tests retain their own contracts.
 
-Gravity, reflected ricochet, material thickness and a supported mass/velocity model remain open. Cannon and map/3D work are separate. This slice does not claim full JA2 or historical ballistic parity.
+Each ray now spends material force over crossed cover depth, including oblique and vertically clipped intervals. Same-object cells merge; separate overlapping obstacles add force loss. Gravity, reflected ricochet and a supported mass/velocity model remain open. Cannon and map/3D work are separate. This slice does not claim full JA2 or historical ballistic parity.

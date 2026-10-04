@@ -39,7 +39,17 @@ test('nine finite weighted rays share one load and spend cover force in physical
  }
  const hay=structuredClone(s);hay.props=[{id:'hay',type:'hay',x:2,y:0,footprint:{width:1,height:8},obstacleHeight:10,blocksSight:false}];
  const weakened=shotLoadFlight(hay,body(hay),body(hay,'e'),w);
- assert.ok(weakened.bodyImpacts.length>0);for(const impact of weakened.bodyImpacts)assert.ok(Math.abs(impact.incomingImpact-(w.damage/9-3))<1e-10);
+ assert.ok(weakened.bodyImpacts.length>0);
+ for(const pellet of weakened.pellets){
+  const end=pellet.flight.destination,dx=end.x-u.x;
+  const depth=Math.hypot(1,(end.y-u.y)/dx,(end.height-absoluteBodyHeight(hay,u,'muzzle'))/dx);
+  assert.ok(Math.abs(pellet.flight.obstacles[0].resistance-3*depth)<1e-10);
+  for(const impact of pellet.flight.bodyImpacts)assert.ok(Math.abs(impact.incomingImpact-(w.damage/9-3*depth))<1e-10);
+ }
+ assert.ok(new Set(weakened.bodyImpacts.map(impact=>impact.incomingImpact.toFixed(6))).size>1,'each pellet spends its own oblique material depth');
+ const paid=replay(hay),clear=actBattle(s,shot);
+ assert.ok(body(paid.next,'e').hp>body(clear,'e').hp&&body(paid.next,'e').hp<100,'crossed hay reduces the actual paid pellet injury');
+ assert.equal(body(paid.next).loaded,0);assert.equal(body(paid.next).ammo,2);assert.equal(body(paid.next).ap,body(clear).ap);assert.equal(paid.next.elapsedSeconds,6);assert.equal(paid.next.seed,clear.seed,'deterministic material geometry adds no RNG draw');
  hay.props[0].material='wood';const stopped=shotLoadFlight(hay,body(hay),body(hay,'e'),w);
  assert.equal(stopped.bodyImpacts.length,0);assert.ok(stopped.pellets.every(p=>p.flight.terminal.blocked&&p.flight.terminal.remainingImpact===0));
  const raised=structuredClone(s);body(raised).tacticalLevel=1;body(raised,'e').tacticalLevel=1;

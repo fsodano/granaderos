@@ -59,6 +59,7 @@ test('both single-ball pistols retain the admitted ray after death, knockdown or
   {name:'death',s:field(pair,{enemies:[enemy({hp:20})]}),location:'torso',hp:0,damage:[20],seed:366914888},
   {name:'standing legs',s:field(pair),location:'legs',hp:48,damage:[30,22],seed:4258295815},
   {name:'mounted legs',s:field(pair,{enemies:[enemy({mounted:true}),reserve]}),location:'legs',hp:70,damage:[30],seed:366914888},
+  {name:'mounted legs through clipped hay',s:field(pair,{props:[{id:'screen',type:'hay',x:3,y:2,blocksSight:false}],enemies:[enemy({mounted:true}),reserve]}),location:'legs',hp:71,damage:[29],seed:366914888,depth:.5*Math.hypot(1,.1)},
   {name:'roof legs',s:field({...pair,tacticalLevel:1},{upperSurfaces:roof,enemies:[enemy({tacticalLevel:1}),reserve]}),location:'legs',hp:48,damage:[30,22],seed:4258295815},
   // Seed11 hits the mounted legs first, then misses with the second pistol.
   // Its scatter is (4,3), still aimed at the original mounted leg height1.1.
@@ -67,6 +68,10 @@ test('both single-ball pistols retain the admitted ray after death, knockdown or
  for(const c of cases){
   const before=structuredClone(c.s),target=c.s.units[1],action={unitId:'p',type:'fire',targetId:'e',aim:4,hitLocation:c.location},n=fire(c.s,action),shown=presentedActBattle(c.s,action);
   assert.deepEqual(shown.state,n,c.name);assert.deepEqual(c.s,before,c.name);
+  if(c.depth){
+   const forecast=firearmVolleyPreview(c.s,c.s.units[0],target,4,c.location);
+   for(const shot of forecast.shots)assert.ok(Math.abs(shot.damageFactor-(shot.damage-3*c.depth)/shot.damage)<1e-10,`${c.name}: each hand pays the same frozen material depth`);
+  }
   assert.deepEqual(fire(validateBattleSnapshot(JSON.parse(JSON.stringify(c.s))),action),n,c.name);
   assert.deepEqual(validateBattleSnapshot(JSON.parse(JSON.stringify(n))),n,c.name);
   const flights=shown.frames.filter(f=>f.type==='projectile'&&f.shotVisual&&f.shotVisual.discharge!==false),injuries=shown.frames.flatMap(f=>f.impacts);

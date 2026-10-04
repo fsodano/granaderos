@@ -60,7 +60,7 @@ test('body resistance and cover spend force in collision order and later cover c
  const clearN=actBattle(clear,action),betweenN=actBattle(between,action),beforeN=actBattle(before,action);
  assert.equal(body(betweenN,'e').hp,body(clearN,'e').hp);assert.equal(body(betweenN,'behind').hp,100);assert.ok(body(beforeN,'e').hp>body(clearN,'e').hp);assert.equal(body(beforeN,'behind').hp,100);
  const path=projectileFlight(between,body(between,'p'),body(between,'e'),weaponFor(body(between,'p')));
- assert.equal(path.bodyImpacts[0].incomingImpact,52);assert.equal(path.bodyImpacts[0].remainingImpact,22);assert.equal(path.bodyImpacts.length,1);assert.equal(path.terminal.blocked,true);assert.equal(path.terminal.remainingImpact,0);assert.equal(path.terminal.termination,'cover');assert.equal(path.terminal.impact.x,7.5);
+ assert.equal(path.bodyImpacts[0].incomingImpact,52);assert.equal(path.bodyImpacts[0].remainingImpact,22);assert.equal(path.bodyImpacts.length,1);assert.equal(path.terminal.blocked,true);assert.equal(path.terminal.remainingImpact,0);assert.equal(path.terminal.termination,'cover');assert.ok(Math.abs(path.terminal.impact.x-(7.5+22/(24*Math.hypot(1,.3/6))))<1e-10);assert.ok(Math.abs(path.obstacles[0].resistance-22)<1e-10);
  const weak=field();wall(weak,8,'hay');const force=projectileFlight(weak,body(weak,'p'),body(weak,'e'),{damage:120,range:20});
  assert.ok(force.bodyImpacts[1].incomingImpact<force.bodyImpacts[0].remainingImpact);
  const hit=force.bodyImpacts[1];assert.ok(penetratingFirearmDamage(120,hit,0)<120);assert.equal(penetratingFirearmDamage(120,hit,0),90,'turning cover damage off cannot return the first body’s 30 spent force');
@@ -115,4 +115,17 @@ test('hidden body passage changes actual harm without changing observation-only 
  assert.equal(teamCanSee(s,'player',s.npcs[0]),false);assert.equal(teamCanSee(s,'player',body(s,'e')),true);
  assert.deepEqual(firearmFlightPreview(s,body(s,'p'),body(s,'e')),firearmFlightPreview(empty,body(empty,'p'),body(empty,'e')));assert.equal(shotChance(s,body(s,'p'),body(s,'e'),4),shotChance(empty,body(empty,'p'),body(empty,'e'),4));assert.deepEqual(firearmBystanderRisk(s,body(s,'p'),body(s,'e')),firearmBystanderRisk(empty,body(empty,'p'),body(empty,'e')));
  const n=actBattle(s,action);assert.ok(n.npcs[0].hp<100);assert.ok(body(n,'e').hp<100);assert.ok(!n.log.some(line=>/atraviesa un cuerpo|Oculto/.test(line)),'an observed reduced injury cannot reveal the hidden prior body');assert.deepEqual(presentedActBattle(s,action).state,n);assert.deepEqual(actBattle(validateBattleSnapshot(JSON.parse(JSON.stringify(s))),action),n);
+});
+
+// This force exactly pays one sloping wood cell. Different arithmetic order
+// must not leave a tiny injury or contact at its exit/body boundary.
+test('material exhaustion at a sloping exit stops before the body, while real positive remainder still reaches it',()=>{
+ const s=field(11,{enemies:[{id:'e',x:5,y:3,morale:100,patrol:false,overwatch:false}]}),p=body(s,'p'),e=body(s,'e');
+ s.props=[{id:'screen',type:'barrels',x:4,y:3,obstacleHeight:2}];
+ const power=24*Math.hypot(1,.3/4);let rolls=0;
+ const exact=projectileFlight(s,p,e,{damage:power,range:20},'torso',{resolveBody:()=>{rolls++;return true;}});
+ assert.equal(exact.bodyImpacts.length,0);assert.equal(exact.terminal.remainingImpact,0);assert.equal(exact.terminal.blocked,true);assert.equal(rolls,0);
+ assert.ok(Math.abs(exact.terminal.impact.x-4.5)<1e-12);assert.ok(Math.abs(exact.obstacles[0].resistance-power)<1e-12);
+ const positive=projectileFlight(s,p,e,{damage:power+1e-8,range:20});
+ assert.equal(positive.bodyImpacts.length,1);assert.ok(positive.bodyImpacts[0].incomingImpact>0);assert.ok(Math.abs(positive.bodyImpacts[0].incomingImpact-1e-8)<1e-12);
 });

@@ -2,7 +2,7 @@ import {register} from 'node:module';register('./tactical-render-loader.mjs',imp
 import test from 'node:test';import assert from 'node:assert/strict';
 import {createElement as h} from '../web/node_modules/react/index.js';
 import {renderToStaticMarkup as render} from '../web/node_modules/react-dom/server.node.js';
-import {createBattle,actBattle,presentedActBattle,presentedEndTurn,endTurn,teamCanSee} from '../game/tactical.js';
+import {createBattle,actBattle,presentedActBattle,presentedEndTurn,endTurn,teamCanSee,weaponFor} from '../game/tactical.js';
 import {captureBattlePresentation,recordBattleFrame} from '../game/battle-presentation.js';
 import {battleFrameDuration,battleFrameFocus,firearmFlightDuration} from '../game/battle-playback.js';
 import {absoluteBodyHeight} from '../game/sight-geometry.js';
@@ -35,12 +35,16 @@ for(const hit of [true,false])test(`real visible ${hit?'hit':'miss'} has a paid 
  assert.deepEqual(validateBattleSnapshot(JSON.parse(JSON.stringify(r.state))),r.state);
 });
 
-test('stopped cover uses the actual ray entry and material rather than a target-centre hit',()=>{
+test('stopped cover uses the exact interior ray point and material rather than a target-centre hit',()=>{
  const s=field(),cover=s.tiles.find(t=>t.x===4&&t.y===3);Object.assign(cover,{type:'wall',blocked:true,blocksSight:false,material:'stone',obstacleHeight:2});
- const raw=projectileFlight(s,actor(s,'p'),actor(s,'e'),{damage:58}),r=presentedActBattle(s,order),visual=shot(r).shotVisual;
+ const shooter=actor(s,'p'),target=actor(s,'e'),weapon=weaponFor(shooter),muzzle=absoluteBodyHeight(s,shooter,'muzzle'),aimHeight=absoluteBodyHeight(s,target,'torso'),slope=(aimHeight-muzzle)/(target.x-shooter.x);
+ // Stone spends 120 force per crossed 3D unit. The real configured ball enters
+ // at 3.5 and exhausts its force inside the wall, before reaching the target.
+ const stopX=3.5+weapon.damage/(120*Math.hypot(1,slope)),stopHeight=muzzle+(stopX-shooter.x)*slope;
+ const raw=projectileFlight(s,shooter,target,weapon),r=presentedActBattle(s,order),visual=shot(r).shotVisual;
  assert.deepEqual(r.state,actBattle(s,order));assert.equal(visual.outcome,'cover');assert.equal(visual.material,'stone');
- assert.equal(visual.impact.x,1+6*raw.obstacles[0].fraction);assert.equal(visual.impact.x,3.5);assert.equal(visual.impact.y,3);
- assert.equal(visual.impact.height,1.4+(1.1-1.4)*raw.obstacles[0].fraction);assert.equal(actor(r.state,'e').hp,100);
+ assert.ok(stopX>3.5&&stopX<4.5);assert.ok(Math.abs(visual.impact.x-stopX)<1e-10);assert.equal(visual.impact.y,3);
+ assert.ok(Math.abs(visual.impact.height-stopHeight)<1e-10);assert.deepEqual(visual.impact,raw.terminal.impact);assert.equal(actor(r.state,'e').hp,100);
  const markup=render(h('svg',null,h(FirearmShotEffect,{state:s,visual,stage:'impact',project})));assert.match(markup,/data-impact-material="stone"/);assert.match(markup,/data-firearm-impact="cover"/);
 });
 

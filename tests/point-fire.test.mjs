@@ -78,9 +78,11 @@ test('finite blunderbuss pellets stop in wood and stone while pre-cover friendly
   const hay=structuredClone(s);hay.units=hay.units.filter(u=>u.id!=='friend');hay.tiles.find(t=>t.x===5&&t.y===3).material='hay';const passed=fire(hay,{aim:4});assert.ok(passed.units[1].hp<100);assert.equal(passed.units[0].loaded,0);assert.deepEqual(fire(validateBattleSnapshot(JSON.parse(JSON.stringify(hay))),{aim:4}),passed);
 });
 
-test('diagonal corner cover and posture-dependent muzzle height still use the shared geometry',()=>{
+test('zero-depth corner cover, actual wall crossings and posture use the shared location geometry',()=>{
   const s=field();Object.assign(s.units[0],{x:1,y:1});Object.assign(s.units[1],{x:3,y:3});
   Object.assign(s.tiles.find(t=>t.x===2&&t.y===1),{blocked:true,type:'wall',material:'stone'});
+  const tangent=pointProjectileFlight(s,s.units[0],{x:3,y:3},{damage:58});assert.equal(tangent.blocked,false);assert.equal(tangent.victimId,'e');assert.equal(tangent.damageFactor,1);
+  Object.assign(s.tiles.find(t=>t.x===2&&t.y===2),{blocked:true,type:'wall',material:'stone'});
   const trace=pointProjectileFlight(s,s.units[0],{x:3,y:3},{damage:58});assert.equal(trace.blocked,true);assert.equal(trace.victimId,null);
   const window=field();Object.assign(window.tiles.find(t=>t.x===2&&t.y===3),{type:'window',blocked:true,blocksSight:false});
   assert.equal(pointProjectileFlight(window,window.units[0],{x:7,y:3},{damage:58}).blocked,false);
