@@ -75,7 +75,7 @@ test('a paired preview distinguishes a blocked main shot from the second pistol 
  // descending .3/5 slope, so its displayed loss rounds to 91 percent.
  const loss=Math.round(38*Math.hypot(1,.3/5)/42*100),volley=firearmVolleyPreview(s,s.units[0],s.units[1],4);
  assert.equal(volley.shots[1].damage,42);assert.equal(loss,91);assert.ok(Math.abs(volley.shots[1].damageFactor-(42-38*Math.hypot(1,.3/5))/42)<1e-10);
- assert.match(p.coverNote,/Mano principal: 0% \(la cobertura detiene el tiro\)/);assert.match(p.coverNote,new RegExp(`Segunda mano: \\d+% \\(daño reducido un ${loss}%\\)`));assert.doesNotMatch(p.coverNote,/La cobertura detiene este tiro/);
+ assert.match(p.coverNote,/Mano principal: 0% \(sin impacto previsto en el blanco\)/);assert.match(p.coverNote,new RegExp(`Segunda mano: \\d+% \\(daño reducido un ${loss}%\\)`));assert.doesNotMatch(p.coverNote,/La cobertura detiene este tiro/);
 });
 
 test('exploration permits an empty-main reload at zero AP with finite reserve and rejects an exhausted reserve',()=>{

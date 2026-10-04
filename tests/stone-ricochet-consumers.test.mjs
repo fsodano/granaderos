@@ -1,0 +1,114 @@
+import {register} from 'node:module';register('./tactical-render-loader.mjs',import.meta.url);
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {createBattle,actBattle,presentedActBattle,actionCosts,weaponFor,firearmFlightPreview,firearmVolleyPreview,firearmKnownTerrain,teamCanSee} from '../game/tactical.js';
+import {projectileFlight} from '../game/projectile-cover.js';
+import {firearmBystanderRisk} from '../game/firearm-bystander-risk.js';
+import {practiceFirearmNearMiss} from '../game/firearm-near-miss-practice.js';
+import {targetPreview} from '../game/ja2-hud.js';
+import {battleFrameDuration,battleFrameFocus} from '../game/battle-playback.js';
+import {validateBattleSnapshot} from '../game/validate-battle.js';
+import {mountBattlefield} from './mounted-battlefield.mjs';
+const {default:Battlefield}=await import('../web/app/Battlefield.tsx');
+
+// Isolated finite firing fixtures, not a fresh campaign win. The separate paid
+// integration retains real hiring, issued equipment, official saves and return.
+const tiles=(width,height)=>Array.from({length:width*height},(_,i)=>({x:i%width,y:Math.floor(i/width),type:'grass',blocked:false,blocksSight:false,cover:0}));
+const actor=(s,id='p')=>s.units.find(unit=>unit.id===id);
+const point={x:10,y:5,tacticalLevel:0,stance:'standing'};
+const action={type:'firePoint',unitId:'p',x:point.x,y:point.y,aim:4};
+const close=(actual,expected)=>assert.ok(Math.abs(actual-expected)<1e-8,`${actual} != ${expected}`);
+const saved=s=>validateBattleSnapshot(JSON.parse(JSON.stringify(s)));
+const publicFrame=frame=>({type:frame.type,action:frame.action,unitId:frame.unitId,visibleIds:frame.visibleIds,impacts:frame.impacts,targetPoint:frame.targetPoint,shotVisual:frame.shotVisual,duration:battleFrameDuration(frame),focus:battleFrameFocus(frame)});
+function field(extra={}){
+ const s=createBattle([{id:'p',name:'Tirador',x:1,y:3,facing:2,weapon:1805,loaded:1,ammo:9,condition:100,marksmanship:100}],{width:32,height:16,seed:8,tiles:tiles(32,16),weather:{rain:0,humidity:0},enemies:[{id:'e',name:'Enemigo observado',x:12,y:4,patrol:false,overwatch:false}],...extra});
+ Object.assign(s.tiles.find(tile=>tile.x===8&&tile.y===5),{type:'wall',material:'stone',blocked:true,blocksSight:true});return s;
+}
+function shoot(s,order=action){
+ const before=structuredClone(s),ordinary=actBattle(s,order),shown=presentedActBattle(s,order);
+ assert.equal(ordinary.lastError,null,ordinary.lastError);assert.deepEqual(shown.state,ordinary);assert.deepEqual(s,before);
+ assert.deepEqual(actBattle(saved(s),order),ordinary);assert.deepEqual(saved(ordinary),ordinary);return {ordinary,shown};
+}
+const flights=result=>result.shown.frames.filter(frame=>frame.type==='projectile'&&frame.shotVisual);
+
+test('a known stone reflection warns about an off-axis ally and does not promise the original selected body',()=>{
+ const s=field(),u=actor(s),target=actor(s,'e');Object.assign(target,{x:10,y:5});
+ // This declared stone cover permits sight, as existing cover fixtures do;
+ // the selected enemy can therefore use the ordinary named-target control.
+ s.tiles.find(tile=>tile.x===8&&tile.y===5).blocksSight=false;
+ s.units.push({...structuredClone(u),id:'ally',name:'Aliado tras el rebote',x:12,y:4});
+ const before=structuredClone(s),flight=firearmFlightPreview(s,u,target),impact=flight.bodyImpacts.find(entry=>entry.victimId==='ally');
+ assert.ok(impact);assert.equal(impact.segmentIndex,1);assert.equal(impact.hitLocation,'torso');close(impact.incomingImpact,weaponFor(u).damage/2);
+ const chordY=u.y+(target.y-u.y)*(12-u.x)/(target.x-u.x);assert.ok(Math.abs(chordY-4)>.5,'the friend is outside the original ray cell');
+ const risk=firearmBystanderRisk(s,u,target);assert.ok(risk.direct.some(body=>body.id==='ally'));
+ const forecast=firearmVolleyPreview(s,u,target,4).shots[0];assert.equal(forecast.chance,0);assert.equal(forecast.damageFactor,0);assert.equal(forecast.interveningFriendly,true);
+ const hud=targetPreview(s,u,target,{mode:'fire',aim:4});assert.equal(hud.valid,true);assert.match(hud.coverNote,/Riesgo de rebote en piedra/);assert.match(hud.coverNote,/Aliado tras el rebote/);assert.doesNotMatch(hud.coverNote,/La cobertura detiene este tiro/);
+ assert.deepEqual(s,before,'forecast and risk do not draw RNG or consume equipment');
+ // The second finite loaded pistol is declared before this read-only preview.
+ // A deflected path may continue even though neither gun reaches the target.
+ const paired=structuredClone(s);actor(paired).offHand={weapon:1808,count:1,loaded:1,condition:100,weight:1.3};
+ const pairedBefore=structuredClone(paired),pairedVolley=firearmVolleyPreview(paired,actor(paired),actor(paired,'e'),4),pairedHud=targetPreview(paired,actor(paired),actor(paired,'e'),{mode:'fire',aim:4});
+ assert.equal(pairedVolley.paired,true);assert.deepEqual(pairedVolley.shots.map(shot=>shot.chance),[0,0]);
+ assert.match(pairedHud.coverNote,/Mano principal: 0% \(sin impacto previsto en el blanco\)/);assert.match(pairedHud.coverNote,/Segunda mano: 0% \(sin impacto previsto en el blanco\)/);
+ assert.match(pairedHud.coverNote,/Riesgo de rebote en piedra/);assert.match(pairedHud.coverNote,/Aliado tras el rebote/);assert.doesNotMatch(pairedHud.coverNote,/la cobertura detiene el tiro/i);assert.deepEqual(paired,pairedBefore);
+});
+
+test('hidden bodies and stone furniture cannot alter complete public reflected flight, timing or camera',()=>{
+ const clear=field(),normal=shoot(clear),normalFlight=flights(normal).map(publicFrame);assert.equal(normalFlight.length,2);assert.ok(actor(normal.ordinary,'e').hp<100);
+ for(const kind of ['body','stone']){
+  const hidden=field();
+  if(kind==='body')hidden.npcs=[{id:'private-body',name:'Nombre privado',x:6,y:4,hp:100,stance:'standing',roomId:'unrevealed'}];
+  else hidden.props=[{id:'private-stone',type:'barrels',x:3,y:4,material:'stone',obstacleHeight:2,blocksSight:false,blocksMovement:false,roomId:'unrevealed'}];
+  assert.deepEqual(firearmVolleyPreview(hidden,actor(hidden),actor(hidden,'e'),4),firearmVolleyPreview(clear,actor(clear),actor(clear,'e'),4));
+  assert.deepEqual(firearmBystanderRisk(hidden,actor(hidden),actor(hidden,'e')),firearmBystanderRisk(clear,actor(clear),actor(clear,'e')));
+  const result=shoot(hidden);assert.deepEqual(flights(result).map(publicFrame),normalFlight);assert.equal(actor(result.ordinary,'e').hp,100,'the filtered display cannot invent downstream injury');
+  if(kind==='body')assert.ok(result.ordinary.npcs[0].hp<hidden.npcs[0].hp,'the hidden body still participates in actual physics');
+  assert.equal(actor(result.ordinary).loaded,0);assert.equal(actor(result.ordinary).ammo,actor(hidden).ammo);assert.equal(result.ordinary.elapsedSeconds,6);
+  for(const frame of result.shown.frames){assert.ok(!frame.impacts.some(impact=>impact.unitId==='private-body'));assert.doesNotMatch(JSON.stringify({visual:frame.shotVisual,impacts:frame.impacts,target:frame.targetPoint}),/private-body|private-stone|trajectoryModel|segments|ricochets|sourceId/);}
+  assert.doesNotMatch(result.ordinary.log.join(' '),/Nombre privado|private-stone/);
+ }
+});
+
+test('an unobserved stone tile cannot bend or shorten the admitted path, while known stone and supporting geometry stay intact',()=>{
+ const clear=createBattle([{id:'p',x:1,y:3,facing:2,weapon:1800,marksmanship:100}],{width:48,height:16,seed:8,tiles:tiles(48,16),weather:{rain:0,humidity:0},enemies:[{id:'e',x:46,y:15,patrol:false,overwatch:false}]}),hidden=structuredClone(clear),stone=hidden.tiles.find(tile=>tile.x===17&&tile.y===7);
+ Object.assign(stone,{type:'wall',material:'stone',blocked:true,blocksSight:true});assert.equal(teamCanSee(hidden,'player',stone),false);
+ const order={type:'firePoint',unitId:'p',x:28,y:9,aim:4},raw=projectileFlight(hidden,actor(hidden),{x:28,y:9,tacticalLevel:0,stance:'standing'},weaponFor(actor(hidden)));
+ assert.equal(raw.ricochets.length,1,'the private tile changes the actual path');
+ assert.deepEqual(flights(shoot(hidden,order)).map(publicFrame),flights(shoot(clear,order)).map(publicFrame));
+ const known=field(),terrain=firearmKnownTerrain(known,actor(known));assert.strictEqual(terrain.tiles.find(tile=>tile.x===8&&tile.y===5),known.tiles.find(tile=>tile.x===8&&tile.y===5),'an observed exterior stone face remains active');
+ const upper={id:'private-upper',x:30,y:14,tacticalLevel:1,elevation:3,kind:'roof',type:'wall',material:'stone',blocked:true};known.upperSurfaces=[upper];
+ const filtered=firearmKnownTerrain(known,actor(known)).upperSurfaces[0];assert.equal(filtered.elevation,upper.elevation);assert.equal(filtered.tacticalLevel,upper.tacticalLevel);assert.equal(filtered.obstacleHeight,0);assert.deepEqual(known.upperSurfaces,[upper]);
+});
+
+function missedReflection(y=4,blocked=false){
+ const s=createBattle([{id:'p',x:12,y,hp:100,energy:100,weapon:1800,agility:75,wisdom:50,practiceSeed:0,skillPractice:{agility:39}}],{width:32,height:16,seed:8,tiles:tiles(32,16),enemies:[{id:'e',x:1,y:3,facing:2,weapon:1805,patrol:false,overwatch:false}]});
+ Object.assign(s.tiles.find(tile=>tile.x===8&&tile.y===5),{type:'wall',material:'stone',blocked:true,blocksSight:true});
+ if(blocked)Object.assign(s.tiles.find(tile=>tile.x===10&&tile.y===4),{type:'wall',material:'wood',blocked:true,blocksSight:false,projectileResistance:1000});
+ const target=actor(s),attacker=actor(s,'e'),weapon=weaponFor(attacker),flight=projectileFlight({...s,units:[attacker]},attacker,point,weapon,'torso',{destinationHeight:1.1});
+ return {s,target,flight,event:{attacker,source:attacker,target,weapon,flight,hit:false,discharged:true,damagedBodies:new Set()}};
+}
+test('hostile near-miss practice uses exact reflected legs once and rejects the original chord, stopped legs and malformed models',()=>{
+ const real=missedReflection(),before=structuredClone(real.s);assert.equal(real.flight.segments.length,2);
+ assert.equal(practiceFirearmNearMiss(real.s,real.event),1);assert.equal(real.target.agility,76);assert.equal(real.s.seed,before.seed);assert.equal(real.target.hp,100);assert.deepEqual(real.s.log,before.log);
+ const learned=structuredClone(real.s);assert.equal(practiceFirearmNearMiss(real.s,real.event),0);assert.deepEqual(real.s,learned);
+ for(const r of [missedReflection(5),missedReflection(4,true)]){const before=structuredClone(r.s);assert.equal(practiceFirearmNearMiss(r.s,r.event),0);assert.deepEqual(r.s,before);}
+ for(const corrupt of [r=>{delete r.flight.segments;},r=>{r.flight.segments[1].trajectoryModel=null;},r=>{r.flight.segments[1].terminalFraction=NaN;},r=>{r.flight.segments[1].source.height+=.1;},r=>{r.flight.terminal.impact.x+=1;}]){
+  const r=missedReflection();corrupt(r);const before=structuredClone(r.s);assert.equal(practiceFirearmNearMiss(r.s,r.event),0);assert.deepEqual(r.s,before);
+ }
+});
+
+const nodes=node=>!node||typeof node!=='object'?[]:Array.isArray(node)?node.flatMap(nodes):[node,...nodes(node.props?.children)];
+test('mounted reflected playback holds input, presents one discharge and commits the paid final state once',async t=>{
+ const s=field(),expected=shoot(s),commits=[],mounted=await mountBattlefield(t,Battlefield,{battle:s,onChange:next=>{commits.push(next);return next;},onFinish(){}},{virtualTimers:true});
+ const strip=()=>nodes(mounted.tree()).find(node=>node.props?.onOrder&&node.props?.onEndTurn);
+ await mounted.act(async()=>strip().props.onOrder(action));let discharges=0;
+ for(const frame of expected.shown.frames){
+  assert.equal(strip().props.busy,true);assert.deepEqual(commits,[]);
+  if(frame.type==='projectile'&&frame.shotVisual?.discharge!==false)discharges++;
+  await mounted.act(async()=>strip().props.onOrder(action));assert.deepEqual(commits,[]);
+  assert.equal(await mounted.nextDelay(),battleFrameDuration(frame));
+ }
+ assert.equal(discharges,1);assert.deepEqual(commits,[expected.ordinary]);assert.equal(strip().props.busy,false);
+ assert.equal(actor(expected.ordinary).loaded,0);assert.equal(actor(expected.ordinary).ammo,actor(s).ammo);assert.equal(actor(expected.ordinary).condition,99);
+ assert.equal(actor(expected.ordinary).ap,actor(s).ap-actionCosts(s,actor(s),point).fire-4*actionCosts(s,actor(s),point).aim);assert.equal(expected.ordinary.elapsedSeconds,6);
+});

@@ -471,8 +471,7 @@ function firearmPreviewScene(s,attacker,target){
   if(!civilian&&target.id!==undefined)units.push(target);
   const npcs=knownCivilianBodies(s,attacker).filter(n=>!civilian||n.id!==target.id);
   if(civilian&&target.id!==undefined)npcs.push(target);
-  const props=(s.props??[]).filter(prop=>attacker.side==='player'?playerObservedBody(s,prop):canSee(s,attacker,prop));
-  return {...s,units,npcs,props};
+  return {...s,...firearmKnownTerrain(s,attacker),units,npcs};
 }
 function firearmForecastPath(scene,attacker,target,hitLocation){
  const weapon=weaponFor(attacker),targetKind=target.targetKind==='npc'||isCivilianBody(scene,target)?'npc':'unit';
@@ -557,8 +556,17 @@ function shotAccuracy(s,attacker,target,aim=0,hitLocation='torso',pointShot=fals
 }
 const isCivilianBody=(s,body)=>(s.npcs??[]).includes(body);
 const playerObservedBody=(s,body)=>body.side==='player'||teamCanSee(s,'player',body)&&isInteriorVisible(s,body,new Set(s.revealedRooms??[]));
-const observedProjectileObstacle=(s,obstacle)=>obstacle.kind!=='prop'||(s.props??[]).some(prop=>obstacle.sourceId===`prop:${prop.id}`&&playerObservedBody(s,prop));
-const knownFirearmScene=s=>({...s,units:s.units.filter(body=>playerObservedBody(s,body)),npcs:(s.npcs??[]).filter(body=>playerObservedBody(s,body)),props:(s.props??[]).filter(prop=>playerObservedBody(s,prop))});
+const stoneSurface=surface=>surface?.material==='stone'&&surface.blocked&&['wall','stone','cliff'].includes(surface.type);
+// Unknown reflecting cover cannot bend a public forecast. Keep the supporting
+// ground and upper slab, but remove that cover volume from this transient copy.
+// Exterior wall faces use point sight; room discovery still guards furniture.
+export function firearmKnownTerrain(s,attacker={side:'player'}){
+ const observed=point=>attacker.side==='player'?teamCanSee(s,'player',point):canSee(s,attacker,point);
+ const surface=point=>stoneSurface(point)&&!observed(point)?{...point,obstacleHeight:0,projectileResistance:0,cover:0}:point;
+ return {tiles:s.tiles.map(surface),...(s.upperSurfaces?{upperSurfaces:s.upperSurfaces.map(surface)}:{}),props:(s.props??[]).filter(prop=>observed(prop)&&(attacker.side!=='player'||isInteriorVisible(s,prop,new Set(s.revealedRooms??[]))))};
+}
+const observedProjectileObstacle=(s,obstacle)=>obstacle.kind==='prop'?(s.props??[]).some(prop=>obstacle.sourceId===`prop:${prop.id}`&&playerObservedBody(s,prop)):obstacle.material!=='stone'||teamCanSee(s,'player',obstacle);
+const knownFirearmScene=s=>({...s,...firearmKnownTerrain(s),units:s.units.filter(body=>playerObservedBody(s,body)),npcs:(s.npcs??[]).filter(body=>playerObservedBody(s,body))});
 const observedBody=(s,body)=>body.side==='player'||(isCivilianBody(s,body)?teamCanSee(s,'player',body):journalVisible(s,body))&&isInteriorVisible(s,body,new Set(s.revealedRooms??[]));
 const knownCivilianBodies=(s,actor)=>(s.npcs??[]).filter(n=>(n.hp??100)>0&&!n.departure&&!n.fled&&(actor.side==='player'?teamCanSee(s,actor.side,n)&&isInteriorVisible(s,n,new Set(s.revealedRooms??[])):canSee(s,actor,n)));
 const intendedCivilian=(s,actor,point)=>knownCivilianBodies(s,actor).find(n=>sameCell(n,point));
@@ -577,6 +585,52 @@ function scatteredShotDestination(s,u,target){
   const radius=Math.min(4,Math.max(1,Math.ceil(dist(u,target)/8))),dx=Math.floor(random(s)*(radius*2+1))-radius,dy=Math.floor(random(s)*(radius*2+1))-radius;
   return {x:target.x+(dx||dy?dx:1),y:target.y+dy,stance:target.unconscious||target.knockedDown?'prone':target.stance??'standing',mounted:!target.unconscious&&!target.knockedDown&&Boolean(target.mounted)};
 }
+// Reflected presentation follows only the admitted scene's legs. The actual
+// hidden path can still cause a known injury, but cannot supply a bend or cue.
+function presentReflectedFirearmFlight(s,actor,flight,known,source,{pointShot,aimHit,hidden}){
+ const bodyFor=entry=>(entry.victimKind==='npc'?s.npcs??[]:s.units).find(body=>body.id===entry.victimId);
+ const samePoint=(a,b)=>a&&b&&['x','y','height'].every(key=>Math.abs(a[key]-b[key])<1e-8);
+ const observed=flight.bodyImpacts.filter(entry=>playerObservedBody(s,bodyFor(entry)??{})&&known.bodyImpacts?.some(candidate=>candidate.victimId===entry.victimId&&candidate.victimKind===entry.victimKind&&samePoint(candidate.impact,entry.impact)));
+ const knownHealth=[...s.units,...(s.npcs??[])].filter(body=>playerObservedBody(s,body)).map(body=>({body,hp:body.hp}));
+ const muzzle={...positionOf(actor),tacticalLevel:tacticalLevel(actor),height:absoluteBodyHeight(s,actor,'muzzle')},terminal=known.terminal??{impact:known.impact??known.destination,termination:known.termination};
+ const segments=known.segments??[{source:muzzle,destination:terminal.impact,fromDistance:0,toDistance:Math.hypot(terminal.impact.x-muzzle.x,terminal.impact.y-muzzle.y),trajectoryModel:known.trajectoryModel}];
+ const distanceOf=entry=>entry.distance??Math.hypot(entry.impact.x-muzzle.x,entry.impact.y-muzzle.y);
+ const stopped=known.obstacles?.find(entry=>entry.stopped),terminalOutcome=terminal.termination==='body'?null:stopped?'cover':'miss';
+ let origin=muzzle,progress=0,index=0,discharged=false,waiting=false,visual;
+ const frame=(type,shotVisual)=>recordBattleFrame(s,{unitId:source.id,action:pointShot?'firePoint':'fire',type,shotVisual});
+ const projectile=()=>{
+  const collision=observed[index];
+  const projected=hidden&&!collision?known.bodyImpacts?.find(entry=>distanceOf(entry)>progress+1e-8):null;
+  const impact=collision?.impact??projected?.impact??terminal.impact,goal=collision||projected?distanceOf(collision??projected):segments.at(-1).toDistance;
+  if(!impact||discharged&&samePoint(origin,impact)){waiting=false;return;}
+  for(const segment of segments){
+   if(segment.toDistance<=progress+1e-8||segment.fromDistance>goal+1e-8)continue;
+   const end=segment.toDistance<goal-1e-8?segment.destination:impact;
+   const bounce=known.ricochets?.find(entry=>Math.abs(entry.distance-segment.toDistance)<1e-8)&&segment.toDistance<goal-1e-8;
+   visual={source:{...origin},destination:{...end},impact:{...end},outcome:bounce?'cover':collision||projected?null:terminalOutcome,pointShot,spread:false,aimHit,...(segment.trajectoryModel?{trajectoryModel:segment.trajectoryModel}:{}),...(bounce?{material:'stone'}:!collision&&!projected&&terminalOutcome==='cover'&&stopped?.material?{material:stopped.material}:{}),...(discharged?{discharge:false}:{})};
+   frame('projectile',visual);discharged=true;
+   if(bounce){frame('impact',visual);origin={...end};progress=segment.toDistance;}
+   else{waiting=true;break;}
+  }
+ };
+ projectile();
+ return collision=>{
+  if(collision){
+   const entry=observed[index];
+   if(entry!==collision){
+    if(knownHealth.some(record=>record.body.hp<record.hp))recordBattleFrame(s,{unitId:source.id,action:pointShot?'firePoint':'fire',type:'impact'});
+    for(const record of knownHealth)record.hp=record.body.hp;return;
+   }
+   const body=bodyFor(entry),injury=knownHealth.some(record=>record.body===body&&record.body.hp<record.hp),redirected=entry.actualVictimId!==undefined&&(entry.actualVictimId!==entry.victimId||entry.actualVictimKind!==entry.victimKind);
+   recordBattleFrame(s,{unitId:source.id,action:pointShot?'firePoint':'fire',type:'impact',...(!redirected?{shotVisual:{...visual,outcome:injury?'hit':null}}:{})});
+   for(const record of knownHealth)record.hp=record.body.hp;
+   origin={...entry.impact};progress=distanceOf(entry);index++;waiting=false;
+   if(entry.continued!==false)projectile();
+   return;
+  }
+  if(waiting){frame('impact',visual);waiting=false;}
+ };
+}
 // The resolved ray supplies presentation only. No second accuracy/damage draw
 // is made, and neither the flight nor its timing enters a saved battle.
 function presentFirearmFlight(s,actor,destination,flight=null,hitLocation='torso',source=actor,{pointShot=false,spread=false,destinationHeight,aimHit=false,flightState=s,targetKind}={}){
@@ -590,6 +644,7 @@ function presentFirearmFlight(s,actor,destination,flight=null,hitLocation='torso
   // Their real force loss can still change a later observed body's injury.
   const hidden=bodies.some(({body})=>body&&!knownBody(body))||flight.obstacles.some(obstacle=>!observedProjectileObstacle(flightState,obstacle));
   const known=hidden?projectileFlight(knownFirearmScene(flightState),actor,destination,weaponFor(actor),hitLocation,{destinationHeight,targetKind}):flight;
+  if(flight.segments||known.segments)return presentReflectedFirearmFlight(s,actor,flight,known,source,{pointShot,aimHit,hidden});
   const terminal=known.terminal??{impact:known.impact??known.destination,termination:known.termination};
   const obstacle=known.obstacles?.find(item=>item.stopped);
   const terminalOutcome=terminal.termination==='body'?null:obstacle?'cover':'miss';

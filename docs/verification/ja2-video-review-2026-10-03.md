@@ -23,8 +23,8 @@ The user's later instructions control adaptations. Use the Granaderos historical
 | V07 · 7:00–8:19 | Weapon handling, weight, range, condition, fittings and regional protection have tradeoffs. | Physical carried weight, typed charges, readiness, condition, aim, range, bayonet custody and three worn regions exist. Actual physical injury now wears only the actual recipient's garment in the struck region, using clipped HP loss. Worn and packed garments use the existing finite hourly repair queue after weapons and tools. Condition-zero clothing remains owned; a serviceable packed linen shirt can instead be consumed for dressings. Historically supported ballistic protection remains open; cloth supplies no new bullet damage reduction. Modern scopes, suppressors, ceramics and ballistic vests are not copied into 1812. |
 | V08 · 8:20–9:31 | Stance and cover change exposure and shooting; weak cover differs from hard cover. | Shared muzzle/body heights, posture, material resistance, furniture, window geometry and authored terraces affect real shots and forecasts. Smoke/concealment affect observation separately. Continue verifying UI, AI and actual orders against the same physical rules, including heights and hidden information. |
 | V09 · 9:32–10:26 | Head, torso and leg shots trade accuracy, injury and mobility; owned attachments change handling. | Three body regions, leg knockdown/unhorsing and the existing physical bayonet fitting are implemented. Wider period-appropriate attachments require an explicit choice and source, not renamed modern equipment. Live regional consequences and saved injuries remain part of acceptance. |
-| V10 · 10:53–11:48 | Each bullet has a real trajectory; intervening cover loses or stops damage; misses can injure unintended people. | Single-ball shots now continue beyond the resolved aimed/scattered cell in the same horizontal direction. Their original absolute-height slope remains through twice effective range; beyond it, shared deterministic drop can change the struck region or cause a ground stop. Ordered body contacts spend force and can permit seeded passage; a failed passage, material stop, solid floor/ground, finite range or map edge ends the shot. Paired single-ball shots capture their intended point and absolute height before either discharge; first-shot death, knockdown or unhorsing cannot move the second ray. Each shot still checks current physical bodies. Fixed-seed legal orders check successive injury, paid costs, exact intersections, typed civilian/soldier IDs and saved replay. Knowledge-filtered forecasts include conditional passage and warnings for known people beyond the first contact. One discharge presents successive observed impacts without exposing concealed bodies or changing the final order. Shot loads now resolve nine finite weighted pellet paths from the actual selected load, including cover, intervening bodies and unintended people. Forecasts, warnings and enemy choices use observed geometry; injuries retain finite costs and saved custody. Cannon work belongs to the separate 3D effort. The remaining physical requirements in V11 remain open. |
-| V11 · 11:15–11:42 | Surface deflection and projectile/cover properties affect the final impact. | Body penetration now follows the primary-source structure of spent force and a conditional passage roll. Granaderos uses explicit head/torso/leg resistance and passage-chance values; these are game tuning, not historical lead-ball measurements or the exact classic formula. Cover and body losses accumulate separately. Material force now falls progressively over actual crossed depth, including oblique paths and height clipping. Same-object intervals merge; separate overlapping objects add resistance. A body receives the remaining force at its actual contact, and force exhaustion stops inside the material. Resistance per tactical distance is explicit game tuning. Single-ball drop after twice effective range now uses exact quadratic height clipping and arc-length material debit in actual fire and observed forecasting. The range-scaled reference-height constant is explicit Granaderos tuning, informed by the verified classic/Stracciatella distance-stepped rule. Far contacts use their actual struck region; near-miss learning uses the actual curve before its terminal stop. Physical pellets now use the same exact drop after twice their actual selected effective range, with a finite three-range tail. Reflected ricochet and a supported mass/velocity model remain absent. The reviewed classic/Stracciatella source shows impact effects and body passage but did not confirm a reflected projectile path. The video's narration alone is not proof of that formula. |
+| V10 · 10:53–11:48 | Each bullet has a real trajectory; intervening cover loses or stops damage; misses can injure unintended people. | Single-ball shots continue beyond the resolved aimed/scattered cell. One glancing contact with an exposed explicit vertical stone face can redirect the path with half its remaining force; cumulative distance and drop do not reset. Their original absolute-height slope remains through twice effective range; beyond it, shared deterministic drop can change the struck region or cause a ground stop. Ordered body contacts spend force and can permit seeded passage; a failed passage, material stop, solid floor/ground, finite range or map edge ends the shot. Paired single-ball shots capture their intended point and absolute height before either discharge; first-shot death, knockdown or unhorsing cannot move the second ray. Each shot still checks current physical bodies. Fixed-seed legal orders check successive injury, paid costs, exact intersections, typed civilian/soldier IDs and saved replay. Knowledge-filtered forecasts include conditional passage and warnings for known people beyond the first contact. One discharge presents successive observed impacts without exposing concealed bodies or changing the final order. Shot loads now resolve nine finite weighted pellet paths from the actual selected load, including cover, intervening bodies and unintended people. Forecasts, warnings and enemy choices use observed geometry; injuries retain finite costs and saved custody. Cannon work belongs to the separate 3D effort. The remaining physical requirements in V11 remain open. |
+| V11 · 11:15–11:42 | Surface deflection and projectile/cover properties affect the final impact. | Body penetration now follows the primary-source structure of spent force and a conditional passage roll. Granaderos uses explicit head/torso/leg resistance and passage-chance values; these are game tuning, not historical lead-ball measurements or the exact classic formula. Cover and body losses accumulate separately. Material force now falls progressively over actual crossed depth, including oblique paths and height clipping. Same-object intervals merge; separate overlapping objects add resistance. A body receives the remaining force at its actual contact, and force exhaustion stops inside the material. Resistance per tactical distance is explicit game tuning. Single-ball drop after twice effective range now uses exact quadratic height clipping and arc-length material debit in actual fire and observed forecasting. The range-scaled reference-height constant is explicit Granaderos tuning, informed by the verified classic/Stracciatella distance-stepped rule. Far contacts use their actual struck region; near-miss learning uses the actual curve before its terminal stop. Physical pellets now use the same exact drop after twice their actual selected effective range, with a finite three-range tail. Single balls and physical pellets now share one bounded glancing reflection from an exposed vertical stone face. The 0.3 incidence threshold and half-force retention are explicit game tuning. Unique entry faces, cumulative range/drop, spent force, known off-axis bystanders and clipped observed presentation use the shared path. Other surfaces, fragmentation and a supported mass/velocity model remain open. See [stone ricochet](../gameplay/tactical/stone-ricochet.md). The reviewed classic/Stracciatella source shows impact effects and body passage but did not confirm a reflected projectile path. The video's narration alone is not proof of that formula. |
 | V12 · 11:53–12:18 | Travel can produce danger, discoveries and local opportunities. | Persistent strategic enemy groups and actual contact exist. One optional [finite roadside chest](../gameplay/campaign/roadside-discoveries.md) now uses an explicit pinned definition, physical discovery and pickup. Its used crowbar and linen shirt remain owned through saves and return visits; old omitted packages stay neutral. It grants no arrival reward. Wider caches, optional encounters and local opportunities still require authored encounters and saved outcomes. Giant-cat encounters are not inferred as required Argentine content. |
 | V13 · 12:23–14:00 | The player chooses routes, daylight or night entry, specialists, retreat/recovery and alternate access. | Independent squads, timed approaches, placement, night sight, paid exits, care and persistent encounters exist. Campaign phases retain historical progression. An acquired crowbar can open a saved, traversable ground-level adobe/wood passage at the existing 25/45-AP cost. Broader route freedom and historically supported alternate access remain open. Door-mounted explosive charges are not planned without reliable evidence for the 1810–1820 setting; keys, locks, crowbars, windows and route choices are the current approach. A complete legal campaign must retain money, ammunition, wounds, casualties and paid travel; the short suite alone does not prove it. |
 | V14 · 14:09–14:56 | A quest can have competing resolutions with different persistent rewards and civic consequences. | Physical deliveries, escorts, failures and authored mission outcomes exist. Fresh Retiro poncho deliveries now wait for a choice between 40 pesos and local support (+8 loyalty), with exclusive saved rewards and real retained garments. Authored city deliveries can use this choice. Local support can affect militia eligibility; it does not alter port income. This is a first competing-reward slice. Different beneficiaries, broader quest outcomes and their territorial consequences remain incomplete; it does not copy the chalice quest. |
@@ -337,3 +337,78 @@ The first complete short run passed 4,778/4,779 checks. Its one failure exposed 
 The final frozen source and tests pass **4,779/4,779 short checks, zero failures, cancellations or skips**, all 683 selected files complete in 290.52 seconds, with `complete: true` and no name filters. Eight established extended files remain excluded from 691 total files. Typecheck and production export **400b9e9c4764** pass (1,133 files and 1,033 asset references), and the current source digest matches the built digest. Documentation, baseline (38/38), shard self-tests/complete coverage and whitespace checks pass. Extended simulations and live player-browser QA were not repeated. The player origin at localhost:3141 was untouched.
 
 Door-mounted explosive charges are excluded under the user's period restriction. Current entry choices use keys, locks, lockpicks, crowbars and alternate routes. Future explosives require reliable evidence for this setting. Broader relationship complaints, contextual fears, departures, recorded voices and the full-video campaign acceptance remain open. Cannon, map and 3D presentation stay separately owned.
+
+## Glancing stone-flight checkpoint — 4 October 2026
+
+Single balls and each finite physical pellet now permit one reflection at a
+unique exposed vertical entry face of explicit stone cover. Ambiguous corners,
+zero-depth touches, shared interior faces and top/bottom contacts do not reflect.
+The maximum absolute incoming direction/normal dot product is 0.3; a qualifying
+entry retains half the current abstract force. The numbers are explicit game
+tuning. Reflection precedes penetration debit, keeps the actual height and
+vertical derivative, and spends the original total range and cumulative drop
+onset. Cover settings cannot restore body or reflection loss. Later physical
+contacts use actual regions and each typed body remains eligible only once per
+ray. Reflection geometry makes no random draw.
+
+The [primary lead-pellet experiment](https://kar.kent.ac.uk/107376/) supports a
+real rebound phenomenon. It does not establish natural-stone musket-ball
+coefficients for 1812. This is a bounded Granaderos adaptation; it does not claim
+the reviewed classic JA2 source implements a reflected trajectory. Other
+surface reflections, fragmentation and a supported mass/velocity model remain
+open under V11. See [the rule and evidence](../gameplay/tactical/stone-ricochet.md).
+
+Known forecasts and enemy choices trace the same rule. An off-axis known ally
+can receive a warning. Private stone cover, furnishings and bodies cannot
+provide a public bend, material cue, identity or endpoint. Supporting elevations
+and actual upper-floor slabs remain in the transient known scene. Near-miss
+learning evaluates the exact continued segments before their terminal stops,
+rather than the chord from the original muzzle to the final point. Observed
+single-ball playback emits successive clipped legs with one discharge; the
+real injury arrives after flight. Mounted execution admits one authoritative
+final result and holds input during playback.
+
+The paid acceptance hires native soldiers 107 and 110 for actual weekly prices
+588 and 420 pesos, waits for arrival and admits an assault. Its declared flat
+32×16 firing arena, passive hostile posts, dry weather and seed 8 precede official
+save admission. They are initial geometry, not an earned opening victory. One
+real empty-point shot reaches the exposed stone face at (7.75,4.5), height 1.175,
+with force 42, then retains 21. The same ball contacts the observed later torso
+at (11.5,3.6667), height 1.05, after 10.756 of its 16 horizontal-distance budget.
+The actual enemy falls from 100 to 81 HP. The shot spends 19 AP, six seconds,
+one charge and one condition point; rounds become ten to nine and condition
+100 to 99. Treasury remains 2,192 pesos. Two observed flight legs share one
+muzzle discharge and precede the actual injury.
+
+All four real fire/move/move/issued-exit orders agree through ordinary,
+presented and full official saved replay. Real retreat settlement and Retiro
+reentry retain contracts, enemy injury, pockets and finite equipment. Both paid
+actors return alive at their native 72/85 HP with no bleeding. No health, money,
+gear, successful outcome or RNG is assigned during execution.
+
+The 3D renderer can proceed in parallel against current cell-centred XY,
+tactical level and absolute body heights. It consumes normalized observed
+`shotVisual` frames; later legs use `discharge: false`. Raw private segments,
+obstacle IDs and force records stay in resolution and do not enter a save or
+renderer input. Models, terrain, camera and animation work need not wait for
+this gameplay merge. Cannon and 3D implementation remain separately owned.
+
+The ten new core cases and five consumer cases pass. The core affected gate
+passes 103/103; the eleven-file consumer/mounted gate passes 121/121; the
+independent paid acceptance passes 1/1. These groups overlap the complete suite.
+Independent core and consumer reviews find no blocking issue in this bounded
+scope. The first complete short run passed 4,795/4,795 checks. A final paired-HUD
+review then found that zero predicted target damage was described as a stopped
+shot, although both pistols could deflect. The text now says no predicted impact
+on the selected target. The existing consumer case checks both finite loaded
+pistols, their neutral labels, retained ricochet/known-ally warning and immutable
+preview. The same affected gate passes 121/121 after this two-file correction.
+
+The next complete short run passed 4,794/4,795. Its only failure was the older
+paired-pistol text assertion expecting the removed stopped-shot label. That
+assertion now expects the neutral selected-target wording; its zero main-hand
+chance, exact 42-force offhand remainder, 91% cover loss and different-hand
+checks remain intact. The expanded twelve-file affected gate passes 129/129.
+Production source remains unchanged by this test-only correction.
+
+The final frozen source and tests pass **4,795/4,795 short checks, zero failures, cancellations, skips or pending checks**, all 686 selected files complete in 589.86 seconds, with `complete: true` and no name filters. The established profile excludes eight extended files from 694 total. The final run uses four workers; selection remains complete. Typecheck and production export **8033caeb7f9f** pass (1,133 files and 1,033 asset references), with the built source digest equal to the frozen source. Documentation, baseline (38/38), five shard self-tests, complete 694-file shard coverage and whitespace checks pass. Extended simulations and live player-browser QA were not repeated. The player origin at localhost:3141 was untouched. Wider personality, discoveries/quests, voices and full campaign/video acceptance remain open.

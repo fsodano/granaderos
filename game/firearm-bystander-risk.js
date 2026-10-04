@@ -1,4 +1,4 @@
-import {canSee,teamCanSee,hasFirearm,weaponFor} from './tactical.js';
+import {canSee,teamCanSee,hasFirearm,weaponFor,firearmKnownTerrain} from './tactical.js';
 import {projectileFlight,firearmRay} from './projectile-cover.js';
 import {absoluteBodyHeight} from './sight-geometry.js';
 import {pairedPistol,secondaryPistolView} from './paired-fire.js';
@@ -32,7 +32,10 @@ export function firearmBystanderRisk(state,attacker,target,hitLocation='torso'){
  if(!candidates.size)return {direct:[],scatter:[]};
  const candidateBodies=[...units.filter(body=>body.side===attacker.side&&body.id!==attacker.id),...npcs];
  const targetKind=target.targetKind==='npc'||(state.npcs??[]).includes(target)?'npc':'unit';
- const scene={...state,units,npcs,props:(state.props??[]).filter(visible)},missScene={...scene,units:units.filter(body=>targetKind!=='unit'||body.id!==target.id),npcs:npcs.filter(body=>targetKind!=='npc'||body.id!==target.id)},direct=new Map(),scatter=new Map();
+ const scene={...state,...firearmKnownTerrain(state,attacker),units,npcs},missScene={...scene,units:units.filter(body=>targetKind!=='unit'||body.id!==target.id),npcs:npcs.filter(body=>targetKind!=='npc'||body.id!==target.id)},direct=new Map(),scatter=new Map();
+ // A known stone face can put a person outside the original aiming chord in
+ // danger. Preserve the cheap cell cull only when reflection is impossible.
+ const reflectingCover=[...scene.tiles,...(scene.upperSurfaces??[])].some(surface=>surface.material==='stone'&&surface.blocked&&['wall','stone','cliff'].includes(surface.type))||scene.props.some(prop=>prop.material==='stone'&&prop.type!=='hay');
  const radius=Math.min(4,Math.max(1,Math.ceil(Math.hypot(target.x-attacker.x,target.y-attacker.y)/8)));
  const destinationHeight=absoluteBodyHeight(state,target,hitLocation),views=pairedPistol(attacker)?[attacker,secondaryPistolView(attacker)]:[attacker];
  const record=(flight,collection)=>{
@@ -41,7 +44,7 @@ export function firearmBystanderRisk(state,attacker,target,hitLocation='torso'){
  };
  for(const view of views){
   const weapon=weaponFor(view);
-  const couldHit=destination=>{const ray=firearmRay(state,view,destination,weapon,hitLocation,{destinationHeight});return ray&&candidateBodies.some(body=>crossesBodyCell(view,ray.destination,body));};
+  const couldHit=destination=>{if(reflectingCover)return true;const ray=firearmRay(state,view,destination,weapon,hitLocation,{destinationHeight});return ray&&candidateBodies.some(body=>crossesBodyCell(view,ray.destination,body));};
   if(isShotLoad(weapon)){
    record(shotLoadFlight(scene,view,target,weapon,hitLocation,{destinationHeight,targetKind}),direct);
    for(const {point} of shotLoadScatter(view,target))record(shotLoadFlight(scene,view,point,weapon,hitLocation,{destinationHeight,targetKind}),scatter);

@@ -39,6 +39,7 @@ the [workspace acceptance record](../../verification/gameplay-completion.md) and
 - [Fire at a location](location-fire.md) *(workspace)*
 - [Named-target shot paths](directed-projectiles.md) *(workspace)*
 - [Projectile cover and concealment](projectile-cover.md) *(workspace)*
+- [Glancing shots against stone](stone-ricochet.md) *(workspace)*
 
 ## Close combat and thrown weapons
 

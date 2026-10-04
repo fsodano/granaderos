@@ -4,11 +4,17 @@ const epsilon=1e-10;
 
 // All dimensions are Granaderos tactical tuning. The original aim slope is
 // unchanged through two effective ranges. This pure shape reads no world data.
-export function projectileTrajectory(source,destination,{range,dropIncrement=0}={}){
+export function projectileTrajectory(source,destination,{range,dropIncrement=0,travelledDistance=0}={}){
  const horizontalDistance=Math.hypot(destination.x-source.x,destination.y-source.y),rise=destination.height-source.height;
- const dropStart=Number.isFinite(range)&&range>0&&horizontalDistance?2*range/horizontalDistance:1;
+ const dropStart=Number.isFinite(range)&&range>0&&horizontalDistance?Math.max(0,(2*range-travelledDistance)/horizontalDistance):1;
  const curvature=dropStart<1&&dropIncrement>0?dropIncrement*horizontalDistance**2/(4*range):0;
  return {source,destination,horizontalDistance,rise,dropStart,curvature};
+}
+
+// Vertical slope at a physical point, per horizontal tactical unit. A vertical
+// face changes XY direction only; the next leg retains this exact derivative.
+export function projectileTrajectorySlope(model,fraction){
+ return model.horizontalDistance?(model.rise-2*model.curvature*Math.max(0,fraction-model.dropStart))/model.horizontalDistance:0;
 }
 
 export function projectileTrajectoryPoint(model,fraction,level=model?.destination?.tacticalLevel){
