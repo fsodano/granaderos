@@ -59,7 +59,7 @@ test('two real queued squads keep their separate approach edges through group pl
 
 test('confirming a selected arrival resolves enemy-only initiative and publishes a loadable synchronized clock',()=>{
  const c=order(order(officer(),{type:'wait',hours:12}),{type:'attack',sector:'buenos_aires'}),r=c.pendingBattle,width=32,height=16;
- const source=createBattle(r.squad,{id:r.id,sector:r.sector,width,height,hour:r.hour,secondOfHour:r.secondOfHour,errandDefinitions:r.errandDefinitions,exploration:true,deferContact:true,
+ const source=createBattle(r.squad,{id:r.id,sector:r.sector,width,height,hour:r.hour,secondOfHour:r.secondOfHour,errandDefinitions:r.errandDefinitions,roadsideDiscoveryDefinitions:structuredClone(r.roadsideDiscoveryDefinitions),exploration:true,deferContact:true,
   tiles:Array.from({length:width*height},(_,i)=>({x:i%width,y:Math.floor(i/width),type:'grass',blocked:false,cover:0})),
   enemies:r.enemies.map((u,i)=>({...u,x:i?28:5,y:i?9+i:0,traits:['night_vision'],facing:2,loaded:0,ammo:0,patrol:false,overwatch:false}))});
  source.savedHour=c.hour;source.savedSecond=c.secondOfHour;c.sectorStates[r.sector]=source;

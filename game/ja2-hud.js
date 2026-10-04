@@ -26,6 +26,7 @@ import {planGroupMove} from './group-movement.js';
 import {npcGiftPreview,contextualAttack,meleePreview,meleePointPreview, fitBayonetPreview, removeBayonetPreview, medicalUsePreview,itemUsePreview,environmentUsePreview,lootApproachPreview,lootSearchPreview,lootBatchPreview,stealPreview,pointFirePreview} from './tactical.js';
 import {fixedBayonetFor, fittingLabel, weaponItemWeight} from './weapon-fittings.js';
 import {firearmBystanderRisk,firearmBystanderWarning} from './firearm-bystander-risk.js';
+import {environmentContainerVisible} from './tactical.js';
 
 const alive = u => u.hp > 0 && !u.routed && !u.unconscious && !u.departure && !u.fled;
 const shortName = u => u.nickname || String(u.name || '').split(' ').slice(-1)[0] || '';
@@ -387,7 +388,7 @@ function targetPreviewWithCosts(state, unit, point, ctx = {}) {
     return {name: target?.name || `${tacticalGridLabel(point.x,point.y)}`, actionLabel: label, attackLabel: label, pa: preview.cost, chance: preview.chance, remaining: Math.max(0, unit.ap - (state.mode === 'exploration' ? 0 : preview.cost)), reason: preview.reason, valid: preview.allowed};
   }
   const environment = !target && ['move', 'useItem'].includes(mode) ? environmentTargetAt(state, point) : null;
-  if (environment && canSee(state, unit, point)) {
+  if (environment && canSee(state, unit, point) && (environment.kind!=='container'||environmentContainerVisible(state,unit,environment))) {
     const summary = environmentTargetSummary(unit, environment), preview = environmentUsePreview(state, unit, environment);
     const coverNote=[preview.movePa?`Desplazamiento: ${preview.movePa} PA · uso: ${preview.actionPa} PA. El contacto puede detener la acción.`:null,environment.kind==='wall'&&preview.toolWear>0?`Desgaste de la barreta: hasta ${preview.toolWear} puntos. Abre un paso permanente.`:null].filter(Boolean).join(' ');
     return {name: summary.label, pa: preview.pa, chance: preview.chance ?? undefined, chanceLabel: 'éxito', attackLabel: preview.label, actionLabel: preview.label, remaining: Math.max(0, unit.ap - (state.mode === 'exploration' ? 0 : preview.pa)), coverNote:coverNote||undefined, reason: preview.reason, valid: preview.valid};
@@ -734,6 +735,7 @@ export function nearbyEnvironmentModel(state, unit, ctx = {}) {
   if (unit) for (const point of state.tiles) {
     if (distance(unit, point) > 1.5 || !canSee(state, unit, point)) continue;
     const raw = environmentTargetAt(state, point);
+    if(raw?.kind==='container'&&!environmentContainerVisible(state,unit,raw))continue;
     if (raw && (raw.kind !== 'wall' || tacticalLevel(raw) === 0 && sameSurface(unit, raw))) found.set(`${raw.kind}:${raw.id}`, raw);
   }
   const targets = [...found].map(([key, raw]) => {

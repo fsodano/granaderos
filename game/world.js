@@ -48,7 +48,9 @@ export function enterSector(request,previous=null,{placement=false}={}){
  if(previous){
    map.width=previous.width;map.height=previous.height;
    for(const field of ['sourceMapId','sourceMapRevision']){if(previous[field]!==undefined)map[field]=previous[field];else delete map[field];}
-   map.props=structuredClone(previous.props??map.props);map.tiles=structuredClone(previous.tiles);map.decor=structuredClone(previous.decor??map.decor);map.buildings=structuredClone(previous.buildings??map.buildings);
+   // Missing rural props never backfill a newly authored cache. Keep the
+   // existing legacy landmark fallback for maps outside physical world cells.
+   map.props=structuredClone(previous.props??(map.worldCell?[]:map.props));map.tiles=structuredClone(previous.tiles);map.decor=structuredClone(previous.decor??map.decor);map.buildings=structuredClone(previous.buildings??map.buildings);
    for(const field of ['upperSurfaces','climbLinks'])if(previous[field]!==undefined)map[field]=structuredClone(previous[field]);else delete map[field];
    // A new occupation creates a garrison. An unfinished engagement retains its survivors.
    if(!request.defenseGroupId&&!request.occupationGroupIds?.length&&!request.exploration&&!previous.sectorCleared)map.enemies=structuredClone(previous.units.filter(u=>u.side==='enemy'&&!u.departure)).map(clearEncounter);
@@ -64,6 +66,7 @@ export function enterSector(request,previous=null,{placement=false}={}){
  // Deployment intent does not establish contact. Resolve sight only after final placement.
  let state=createBattle([...map.squad,...(map.garrison??[]),...(map.missionAllies??[])],{...map,exploration:true,deferContact:true});
  if(request.errandDefinitions!==undefined)state.errandDefinitions=structuredClone(request.errandDefinitions);
+ if(request.roadsideDiscoveryDefinitions!==undefined)state.roadsideDiscoveryDefinitions=structuredClone(request.roadsideDiscoveryDefinitions);
  // Retained garrisons also start a new encounter clock. Their wounds and gear
  // persist, but remembered targets and reaction counters belong to the old visit.
  for(const unit of state.units)clearEncounter(unit);

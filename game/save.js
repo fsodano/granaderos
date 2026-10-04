@@ -17,6 +17,7 @@ import {validateSectorDeployment} from './sector-deployment.js';
 import {assertSaveSize,saveByteLength} from './save-limits.js';
 import {validateEquipmentOwnership} from './equipment.js';
 import {FITTING_RULES_VERSION} from './weapon-fittings.js';
+import {validateRoadsideDiscoveryContext} from './roadside-discoveries.js';
 export const SAVE_KEY='granaderos.campaign.v1';
 export function encodeSave(campaign,battle=null){
  const replacer=cellSceneSaveReplacer(artillerySaveReplacer(campaign,weaponSaveReplacer(campaign)));
@@ -53,6 +54,7 @@ export function decodeSave(text){
   if(battle&&b.exits===undefined){battle.exits=structuredClone(campaign.pendingBattle.exits);battle.exitRulesVersion=1;}
   if(battle&&JSON.stringify(battle.exits)!==JSON.stringify(campaign.pendingBattle.exits))throw Error('Las salidas guardadas no corresponden al despliegue.');
   if(battle)validateSectorDeployment(battle,campaign.pendingBattle);
+  if(battle)validateRoadsideDiscoveryContext(campaign,battle);
   // A new receipt may still await its campaign reply. An acknowledged receipt
   // must remain physically present with its recipient in this deployment.
   if(battle)validateQuestEscortOrders(campaign,battle);
