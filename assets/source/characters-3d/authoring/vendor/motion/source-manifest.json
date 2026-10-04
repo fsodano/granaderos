@@ -56,6 +56,18 @@
       "url": "https://raw.githubusercontent.com/una-dinosauria/cmu-mocap/09a07f54f3bbb58797325f009282d0b2048a2871/data/090/90_18.bvh",
       "bytes": 301072,
       "sha256": "32a6bcf85820af466fb141f7e05a7131fbb7d0b76a4f7d407379c6f9457cac10"
+    },
+    {
+      "file": "141_33.bvh",
+      "url": "https://raw.githubusercontent.com/una-dinosauria/cmu-mocap/09a07f54f3bbb58797325f009282d0b2048a2871/data/141/141_33.bvh",
+      "bytes": 805752,
+      "sha256": "46f9cb8efecbe4ed071df093e20dcaeb9b82fa8d14cfcfaa91079cfcd921bb54"
+    },
+    {
+      "file": "139_14.bvh",
+      "url": "https://raw.githubusercontent.com/una-dinosauria/cmu-mocap/09a07f54f3bbb58797325f009282d0b2048a2871/data/139/139_14.bvh",
+      "bytes": 761466,
+      "sha256": "52edb8ed5e6e51d7eda5df39caadca0e316001e7c5d6b261cecf96466eac11ee"
     }
   ],
   "clips": {
@@ -90,6 +102,38 @@
         614
       ],
       "description": "crouching, walking forward"
+    },
+    "strafeRightStanding": {
+      "file": "141_33.bvh",
+      "frames": [
+        156,
+        310
+      ],
+      "description": "sideways walk, foot to foot, right"
+    },
+    "strafeLeftStanding": {
+      "file": "141_33.bvh",
+      "frames": [
+        780,
+        922
+      ],
+      "description": "sideways walk, foot to foot, left"
+    },
+    "strafeRightCrouched": {
+      "file": "139_14.bvh",
+      "frames": [
+        172,
+        340
+      ],
+      "description": "sideways sneak, right"
+    },
+    "strafeLeftCrouched": {
+      "file": "139_14.bvh",
+      "frames": [
+        620,
+        814
+      ],
+      "description": "sideways sneak, left"
     },
     "crawl": {
       "file": "111_03.bvh",

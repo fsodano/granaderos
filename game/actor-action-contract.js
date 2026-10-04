@@ -15,10 +15,12 @@ for(const posture of ACTOR_POSTURES)for(const equipment of ACTOR_EQUIPMENT){
   add('idle',posture,equipment,'idle',{loop:true});
   add(posture==='prone'?'crawl':'walk',posture,equipment,posture==='prone'?'crawl':'walk',{loop:true});
   if(posture==='standing'||posture==='mounted')add('run',posture,equipment,'run',{loop:true});
+  if(posture==='standing'||posture==='crouched')for(const action of ['strafeLeft','strafeRight'])add(action,posture,equipment,action,{loop:true});
   if(equipment==='long-gun'||equipment==='short-gun')for(const action of ['aim','fire','reload','reprime','repair','unload'])
     add(action,posture,equipment,action,{loop:action==='aim'});
   if(posture!=='prone'){
     add('strike',posture,equipment,equipment==='unarmed'?'punch':equipment==='blade'?'slash':'butt');
+    if(equipment==='blade')add('brace',posture,equipment,'brace',{loop:true});
     if(equipment==='long-gun'){
       add('bayonet',posture,equipment,'bayonet');
       add('brace',posture,equipment,'brace',{loop:true});
@@ -49,6 +51,16 @@ for(const posture of ACTOR_POSTURES)for(const action of ['die','collapse','dead'
   add(action,posture,'any',action,{clip:`life.${prefix[posture]}.${action}`,loop:action==='dead'||action==='unconscious'});
 for(const action of ['artilleryFire','artilleryReload','artilleryMove','artilleryPivot'])
   add(action,'standing','any',action,{clip:`crew.${action}`,loop:action==='artilleryMove'});
+
+// A lance remains a blade in the rules. Only the item's visual binding
+// selects a long-shaft carry/brace/thrust instead of a sabre pose.
+const lanceOverrides={};
+for(const spec of [...clips.values()].filter(spec=>spec.equipment==='blade')){
+  const name=spec.name.replace('.slash.','.thrust.').replace(/\.blade$/,'.lance');
+  lanceOverrides[spec.name]=name;
+  clips.set(name,Object.freeze({...spec,name,equipment:'lance',gesture:spec.gesture==='slash'?'thrust':spec.gesture}));
+}
+export const ACTOR_ITEM_CLIP_OVERRIDES=Object.freeze({'1812':Object.freeze(lanceOverrides)});
 
 export const ACTOR_ACTION_CAPABILITIES = Object.freeze(entries);
 export const ACTOR_CLIP_SPECS = Object.freeze([...clips.values()]);
@@ -81,10 +93,10 @@ export function validateActorActionCapabilities(manifest,{required=ACTOR_CLIP_SP
     for(const [event,time] of Object.entries(clip.markers??clip.events??{}))
       if(!Number.isFinite(time)||time<0||time>duration)errors.push(`Invalid ${event} marker: ${spec.name}`);
     const marker=spec.gesture==='fire'||spec.gesture==='artilleryFire'?'shot':
-      ['slash','punch','butt','bayonet','breach'].includes(spec.gesture)?'contact':
+      ['slash','thrust','punch','butt','bayonet','breach'].includes(spec.gesture)?'contact':
       ['throw','throwKnife','bolas'].includes(spec.gesture)?'release':null;
     if(marker&&!Number.isFinite((clip.markers??clip.events)?.[marker]))errors.push(`Missing ${marker} marker: ${spec.name}`);
-    if(['walk','run','crawl'].includes(spec.gesture)&&!(clip.locomotionSpeed>0))errors.push(`Missing stride speed: ${spec.name}`);
+    if(['walk','run','crawl','strafeLeft','strafeRight'].includes(spec.gesture)&&!(clip.locomotionSpeed>0))errors.push(`Missing stride speed: ${spec.name}`);
   }
   return errors;
 }

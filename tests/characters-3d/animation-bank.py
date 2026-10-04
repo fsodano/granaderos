@@ -19,6 +19,16 @@ assert len(rig.data.bones)==53
 for b in rig.data.bones:assert abs(b.length-native[b.name])<1e-8
 for clip in meta['clips']:
  action=bpy.data.actions.get(clip['name']);assert action
+ if clip['gesture'].startswith('strafe'):
+  assert clip['source']['file'] in ('141_33.bvh','139_14.bvh')
+  assert clip['locomotionSpeed']>.1
+  assert clip['locomotionAxis']==('left' if clip['gesture']=='strafeLeft' else 'right')
+ if clip['gesture']=='throwKnife':
+  assert clip['handProps']==[{'hand':'handRight','categories':['knife'],'untilMarker':'release'}]
+  assert 0<clip['markers']['release']<clip['duration']
+ if clip['gesture']=='thrust':
+  assert clip['equipment']=='lance'
+  assert 0<clip['markers']['contact']<clip['duration']
  assert abs((action.frame_range[1]-action.frame_range[0])/30-clip['duration'])<.00001,(clip['name'],action.frame_range,clip['duration'])
  rig.animation_data.action=action
  for t in [0,.25,.5,.75,1]:

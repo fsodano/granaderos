@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {ACTOR_ACTION_CAPABILITIES,ACTOR_CLIP_SPECS,ACTOR_EQUIPMENT,ACTOR_POSTURES,actorActionKey,resolveActorAction,validateActorActionCapabilities} from '../game/actor-action-contract.js';
+import {ACTOR_ACTION_CAPABILITIES,ACTOR_CLIP_SPECS,ACTOR_EQUIPMENT,ACTOR_ITEM_CLIP_OVERRIDES,ACTOR_POSTURES,actorActionKey,resolveActorAction,validateActorActionCapabilities} from '../game/actor-action-contract.js';
 
 function validBank(){return {clips:ACTOR_CLIP_SPECS.map(spec=>({...spec,duration:2,locomotionSpeed:1.2,markers:{shot:.5,contact:.8,release:.7}}))};}
 test('every legal posture has motion and life capabilities, with distinct posture poses',()=>{
@@ -43,6 +43,36 @@ test('a model swap changes asset bindings while retaining semantic requests and 
   assert.notEqual(original.bindings[capability.clip],replacement.bindings[capability.clip]);
   assert.equal(resolveActorAction(request),capability);assert.equal(request.actionId,'order:17:attack:0');
   assert.equal(capability.action,'fire');assert.equal(capability.equipment,'long-gun');
+});
+
+test('preserved-facing lateral movement has distinct left and right source clips',()=>{
+  for(const posture of ['standing','crouched'])for(const equipment of ACTOR_EQUIPMENT){
+    const left=resolveActorAction({action:'strafeLeft',posture,equipment});
+    const right=resolveActorAction({action:'strafeRight',posture,equipment});
+    assert.ok(left?.loop);assert.ok(right?.loop);assert.notEqual(left.clip,right.clip);
+    assert.notEqual(left.clip,resolveActorAction({action:'walk',posture,equipment}).clip);
+  }
+  for(const posture of ['prone','mounted'])assert.equal(resolveActorAction({action:'strafeLeft',posture}),null);
+  const bank=validBank();bank.clips.find(c=>c.gesture==='strafeLeft').locomotionSpeed=0;
+  assert.match(validateActorActionCapabilities(bank).join('\n'),/Missing stride speed/);
+});
+
+test('lance item overrides preserve gameplay blade semantics and bind complete poses',()=>{
+  const overrides=ACTOR_ITEM_CLIP_OVERRIDES['1812'];
+  const specs=new Map(ACTOR_CLIP_SPECS.map(spec=>[spec.name,spec]));
+  assert.ok(Object.keys(overrides).length>=20);
+  for(const [base,binding]of Object.entries(overrides)){
+    assert.equal(specs.get(base)?.equipment,'blade');assert.equal(specs.get(binding)?.equipment,'lance');
+    assert.equal(specs.get(base).posture,specs.get(binding).posture);
+    assert.equal(specs.get(base).loop,specs.get(binding).loop);
+  }
+  for(const posture of ['standing','crouched','mounted']){
+    const strike=resolveActorAction({action:'strike',posture,equipment:'blade'});
+    assert.equal(specs.get(overrides[strike.clip]).gesture,'thrust');
+    assert.equal(strike.action,'strike');assert.equal(strike.equipment,'blade');
+    assert.ok(overrides[resolveActorAction({action:'brace',posture,equipment:'blade'}).clip]);
+  }
+  assert.equal(ACTOR_EQUIPMENT.includes('lance'),false);
 });
 
 test('motion sources have pinned identities and matching file hashes', async()=>{

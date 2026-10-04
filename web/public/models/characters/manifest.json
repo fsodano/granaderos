@@ -1794,8 +1794,8 @@
   "animationLibraries": {
     "male": {
       "url": "/models/characters/male-animations.glb",
-      "bytes": 6409012,
-      "sha256": "323a5316c74b8605c3fc80eba7df33ad0d4454998cda06e4fc864051d55a94f2",
+      "bytes": 7495956,
+      "sha256": "090ace1b4f97bd69404f0a6ef2992ad7af78b7ff978cd37f00e6286dbdac3fc1",
       "clips": [
         {
           "name": "stand.idle.unarmed",
@@ -1861,6 +1861,52 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "locomotionSpeed": 1.007
+        },
+        {
+          "name": "stand.strafeLeft.unarmed",
+          "duration": 1.183329,
+          "loop": true,
+          "events": {},
+          "gesture": "strafeLeft",
+          "posture": "standing",
+          "equipment": "unarmed",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "141_33.bvh",
+            "startFrame": 780,
+            "endFrame": 922,
+            "description": "sideways walk, foot to foot, left",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 1.1159,
+          "locomotionAxis": "left"
+        },
+        {
+          "name": "stand.strafeRight.unarmed",
+          "duration": 1.283328,
+          "loop": true,
+          "events": {},
+          "gesture": "strafeRight",
+          "posture": "standing",
+          "equipment": "unarmed",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "141_33.bvh",
+            "startFrame": 156,
+            "endFrame": 310,
+            "description": "sideways walk, foot to foot, right",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 1.1113,
+          "locomotionAxis": "right"
         },
         {
           "name": "stand.punch.unarmed",
@@ -1948,6 +1994,52 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "locomotionSpeed": 1.007
+        },
+        {
+          "name": "stand.strafeLeft.long-gun",
+          "duration": 1.183329,
+          "loop": true,
+          "events": {},
+          "gesture": "strafeLeft",
+          "posture": "standing",
+          "equipment": "long-gun",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "141_33.bvh",
+            "startFrame": 780,
+            "endFrame": 922,
+            "description": "sideways walk, foot to foot, left",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 1.1159,
+          "locomotionAxis": "left"
+        },
+        {
+          "name": "stand.strafeRight.long-gun",
+          "duration": 1.283328,
+          "loop": true,
+          "events": {},
+          "gesture": "strafeRight",
+          "posture": "standing",
+          "equipment": "long-gun",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "141_33.bvh",
+            "startFrame": 156,
+            "endFrame": 310,
+            "description": "sideways walk, foot to foot, right",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 1.1113,
+          "locomotionAxis": "right"
         },
         {
           "name": "stand.aim.long-gun",
@@ -2207,6 +2299,52 @@
           "locomotionSpeed": 1.007
         },
         {
+          "name": "stand.strafeLeft.short-gun",
+          "duration": 1.183329,
+          "loop": true,
+          "events": {},
+          "gesture": "strafeLeft",
+          "posture": "standing",
+          "equipment": "short-gun",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "141_33.bvh",
+            "startFrame": 780,
+            "endFrame": 922,
+            "description": "sideways walk, foot to foot, left",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 1.1159,
+          "locomotionAxis": "left"
+        },
+        {
+          "name": "stand.strafeRight.short-gun",
+          "duration": 1.283328,
+          "loop": true,
+          "events": {},
+          "gesture": "strafeRight",
+          "posture": "standing",
+          "equipment": "short-gun",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "141_33.bvh",
+            "startFrame": 156,
+            "endFrame": 310,
+            "description": "sideways walk, foot to foot, right",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 1.1113,
+          "locomotionAxis": "right"
+        },
+        {
           "name": "stand.aim.short-gun",
           "duration": 2,
           "loop": true,
@@ -2418,6 +2556,52 @@
           "locomotionSpeed": 1.007
         },
         {
+          "name": "stand.strafeLeft.blade",
+          "duration": 1.183329,
+          "loop": true,
+          "events": {},
+          "gesture": "strafeLeft",
+          "posture": "standing",
+          "equipment": "blade",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "141_33.bvh",
+            "startFrame": 780,
+            "endFrame": 922,
+            "description": "sideways walk, foot to foot, left",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 1.1159,
+          "locomotionAxis": "left"
+        },
+        {
+          "name": "stand.strafeRight.blade",
+          "duration": 1.283328,
+          "loop": true,
+          "events": {},
+          "gesture": "strafeRight",
+          "posture": "standing",
+          "equipment": "blade",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "141_33.bvh",
+            "startFrame": 156,
+            "endFrame": 310,
+            "description": "sideways walk, foot to foot, right",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 1.1113,
+          "locomotionAxis": "right"
+        },
+        {
           "name": "stand.slash.blade",
           "duration": 1.2,
           "loop": false,
@@ -2432,6 +2616,22 @@
             "contact": 0.58,
             "recover": 1.0
           },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place"
+        },
+        {
+          "name": "stand.brace.blade",
+          "duration": 2,
+          "loop": true,
+          "events": {},
+          "gesture": "brace",
+          "posture": "standing",
+          "equipment": "blade",
+          "markers": {},
           "source": {
             "type": "native-contact-authoring"
           },
@@ -2476,6 +2676,52 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "locomotionSpeed": 0.8403
+        },
+        {
+          "name": "crouch.strafeLeft.unarmed",
+          "duration": 1.61666,
+          "loop": true,
+          "events": {},
+          "gesture": "strafeLeft",
+          "posture": "crouched",
+          "equipment": "unarmed",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "139_14.bvh",
+            "startFrame": 620,
+            "endFrame": 814,
+            "description": "sideways sneak, left",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 0.7564,
+          "locomotionAxis": "left"
+        },
+        {
+          "name": "crouch.strafeRight.unarmed",
+          "duration": 1.399994,
+          "loop": true,
+          "events": {},
+          "gesture": "strafeRight",
+          "posture": "crouched",
+          "equipment": "unarmed",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "139_14.bvh",
+            "startFrame": 172,
+            "endFrame": 340,
+            "description": "sideways sneak, right",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 0.8492,
+          "locomotionAxis": "right"
         },
         {
           "name": "crouch.punch.unarmed",
@@ -2536,6 +2782,52 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "locomotionSpeed": 0.8403
+        },
+        {
+          "name": "crouch.strafeLeft.long-gun",
+          "duration": 1.61666,
+          "loop": true,
+          "events": {},
+          "gesture": "strafeLeft",
+          "posture": "crouched",
+          "equipment": "long-gun",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "139_14.bvh",
+            "startFrame": 620,
+            "endFrame": 814,
+            "description": "sideways sneak, left",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 0.7564,
+          "locomotionAxis": "left"
+        },
+        {
+          "name": "crouch.strafeRight.long-gun",
+          "duration": 1.399994,
+          "loop": true,
+          "events": {},
+          "gesture": "strafeRight",
+          "posture": "crouched",
+          "equipment": "long-gun",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "139_14.bvh",
+            "startFrame": 172,
+            "endFrame": 340,
+            "description": "sideways sneak, right",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 0.8492,
+          "locomotionAxis": "right"
         },
         {
           "name": "crouch.aim.long-gun",
@@ -2768,6 +3060,52 @@
           "locomotionSpeed": 0.8403
         },
         {
+          "name": "crouch.strafeLeft.short-gun",
+          "duration": 1.61666,
+          "loop": true,
+          "events": {},
+          "gesture": "strafeLeft",
+          "posture": "crouched",
+          "equipment": "short-gun",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "139_14.bvh",
+            "startFrame": 620,
+            "endFrame": 814,
+            "description": "sideways sneak, left",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 0.7564,
+          "locomotionAxis": "left"
+        },
+        {
+          "name": "crouch.strafeRight.short-gun",
+          "duration": 1.399994,
+          "loop": true,
+          "events": {},
+          "gesture": "strafeRight",
+          "posture": "crouched",
+          "equipment": "short-gun",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "139_14.bvh",
+            "startFrame": 172,
+            "endFrame": 340,
+            "description": "sideways sneak, right",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 0.8492,
+          "locomotionAxis": "right"
+        },
+        {
           "name": "crouch.aim.short-gun",
           "duration": 2,
           "loop": true,
@@ -2952,6 +3290,52 @@
           "locomotionSpeed": 0.8403
         },
         {
+          "name": "crouch.strafeLeft.blade",
+          "duration": 1.61666,
+          "loop": true,
+          "events": {},
+          "gesture": "strafeLeft",
+          "posture": "crouched",
+          "equipment": "blade",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "139_14.bvh",
+            "startFrame": 620,
+            "endFrame": 814,
+            "description": "sideways sneak, left",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 0.7564,
+          "locomotionAxis": "left"
+        },
+        {
+          "name": "crouch.strafeRight.blade",
+          "duration": 1.399994,
+          "loop": true,
+          "events": {},
+          "gesture": "strafeRight",
+          "posture": "crouched",
+          "equipment": "blade",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "139_14.bvh",
+            "startFrame": 172,
+            "endFrame": 340,
+            "description": "sideways sneak, right",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 0.8492,
+          "locomotionAxis": "right"
+        },
+        {
           "name": "crouch.slash.blade",
           "duration": 1.2,
           "loop": false,
@@ -2966,6 +3350,22 @@
             "contact": 0.58,
             "recover": 1.0
           },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place"
+        },
+        {
+          "name": "crouch.brace.blade",
+          "duration": 2,
+          "loop": true,
+          "events": {},
+          "gesture": "brace",
+          "posture": "crouched",
+          "equipment": "blade",
+          "markers": {},
           "source": {
             "type": "native-contact-authoring"
           },
@@ -4184,6 +4584,28 @@
           "seatAnchorSpace": "gltf-model-local"
         },
         {
+          "name": "mounted.brace.blade",
+          "duration": 2,
+          "loop": true,
+          "events": {},
+          "gesture": "brace",
+          "posture": "mounted",
+          "equipment": "blade",
+          "markers": {},
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "seatAnchor": [
+            0.0,
+            0.9451594948768616,
+            0.006795833352953196
+          ],
+          "seatAnchorSpace": "gltf-model-local"
+        },
+        {
           "name": "stand.gesture.heal",
           "duration": 1.4,
           "loop": false,
@@ -5286,7 +5708,16 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "handProps": [
+            {
+              "hand": "handRight",
+              "categories": [
+                "knife"
+              ],
+              "untilMarker": "release"
+            }
+          ]
         },
         {
           "name": "transition.stand.crouch",
@@ -6275,6 +6706,443 @@
           "sampleRate": 15,
           "timingAuthority": "simulation",
           "rootMotion": "in-place"
+        },
+        {
+          "name": "stand.idle.lance",
+          "duration": 1.999992,
+          "loop": true,
+          "events": {},
+          "gesture": "idle",
+          "posture": "standing",
+          "equipment": "lance",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "111_28.bvh",
+            "startFrame": 120,
+            "endFrame": 360,
+            "description": "standing still",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place"
+        },
+        {
+          "name": "stand.walk.lance",
+          "duration": 1.083329,
+          "loop": true,
+          "events": {},
+          "gesture": "walk",
+          "posture": "standing",
+          "equipment": "lance",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "07_01.bvh",
+            "startFrame": 100,
+            "endFrame": 230,
+            "description": "walk",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 1.4052
+        },
+        {
+          "name": "stand.run.lance",
+          "duration": 0.75833,
+          "loop": true,
+          "events": {},
+          "gesture": "run",
+          "posture": "standing",
+          "equipment": "lance",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "02_03.bvh",
+            "startFrame": 40,
+            "endFrame": 131,
+            "description": "run/jog",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 1.007
+        },
+        {
+          "name": "stand.strafeLeft.lance",
+          "duration": 1.183329,
+          "loop": true,
+          "events": {},
+          "gesture": "strafeLeft",
+          "posture": "standing",
+          "equipment": "lance",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "141_33.bvh",
+            "startFrame": 780,
+            "endFrame": 922,
+            "description": "sideways walk, foot to foot, left",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 1.1159,
+          "locomotionAxis": "left"
+        },
+        {
+          "name": "stand.strafeRight.lance",
+          "duration": 1.283328,
+          "loop": true,
+          "events": {},
+          "gesture": "strafeRight",
+          "posture": "standing",
+          "equipment": "lance",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "141_33.bvh",
+            "startFrame": 156,
+            "endFrame": 310,
+            "description": "sideways walk, foot to foot, right",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 1.1113,
+          "locomotionAxis": "right"
+        },
+        {
+          "name": "stand.thrust.lance",
+          "duration": 1.2,
+          "loop": false,
+          "events": {
+            "contact": 0.58,
+            "recover": 1.0
+          },
+          "gesture": "thrust",
+          "posture": "standing",
+          "equipment": "lance",
+          "markers": {
+            "contact": 0.58,
+            "recover": 1.0
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place"
+        },
+        {
+          "name": "stand.brace.lance",
+          "duration": 2,
+          "loop": true,
+          "events": {},
+          "gesture": "brace",
+          "posture": "standing",
+          "equipment": "lance",
+          "markers": {},
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place"
+        },
+        {
+          "name": "crouch.idle.lance",
+          "duration": 2,
+          "loop": true,
+          "events": {},
+          "gesture": "idle",
+          "posture": "crouched",
+          "equipment": "lance",
+          "markers": {},
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place"
+        },
+        {
+          "name": "crouch.walk.lance",
+          "duration": 1.533327,
+          "loop": true,
+          "events": {},
+          "gesture": "walk",
+          "posture": "crouched",
+          "equipment": "lance",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "136_09.bvh",
+            "startFrame": 430,
+            "endFrame": 614,
+            "description": "crouching, walking forward",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 0.8403
+        },
+        {
+          "name": "crouch.strafeLeft.lance",
+          "duration": 1.61666,
+          "loop": true,
+          "events": {},
+          "gesture": "strafeLeft",
+          "posture": "crouched",
+          "equipment": "lance",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "139_14.bvh",
+            "startFrame": 620,
+            "endFrame": 814,
+            "description": "sideways sneak, left",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 0.7564,
+          "locomotionAxis": "left"
+        },
+        {
+          "name": "crouch.strafeRight.lance",
+          "duration": 1.399994,
+          "loop": true,
+          "events": {},
+          "gesture": "strafeRight",
+          "posture": "crouched",
+          "equipment": "lance",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "139_14.bvh",
+            "startFrame": 172,
+            "endFrame": 340,
+            "description": "sideways sneak, right",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 0.8492,
+          "locomotionAxis": "right"
+        },
+        {
+          "name": "crouch.thrust.lance",
+          "duration": 1.2,
+          "loop": false,
+          "events": {
+            "contact": 0.58,
+            "recover": 1.0
+          },
+          "gesture": "thrust",
+          "posture": "crouched",
+          "equipment": "lance",
+          "markers": {
+            "contact": 0.58,
+            "recover": 1.0
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place"
+        },
+        {
+          "name": "crouch.brace.lance",
+          "duration": 2,
+          "loop": true,
+          "events": {},
+          "gesture": "brace",
+          "posture": "crouched",
+          "equipment": "lance",
+          "markers": {},
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place"
+        },
+        {
+          "name": "prone.idle.lance",
+          "duration": 2,
+          "loop": true,
+          "events": {},
+          "gesture": "idle",
+          "posture": "prone",
+          "equipment": "lance",
+          "markers": {},
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place"
+        },
+        {
+          "name": "prone.crawl.lance",
+          "duration": 1.966659,
+          "loop": true,
+          "events": {},
+          "gesture": "crawl",
+          "posture": "prone",
+          "equipment": "lance",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "111_03.bvh",
+            "startFrame": 450,
+            "endFrame": 686,
+            "description": "crawling; adapted to forearm/belly contact",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 0.0796
+        },
+        {
+          "name": "mounted.idle.lance",
+          "duration": 2,
+          "loop": true,
+          "events": {},
+          "gesture": "idle",
+          "posture": "mounted",
+          "equipment": "lance",
+          "markers": {},
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "seatAnchor": [
+            0.0,
+            0.9451594948768616,
+            0.006795833352953196
+          ],
+          "seatAnchorSpace": "gltf-model-local"
+        },
+        {
+          "name": "mounted.walk.lance",
+          "duration": 1.083329,
+          "loop": true,
+          "events": {},
+          "gesture": "walk",
+          "posture": "mounted",
+          "equipment": "lance",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "07_01.bvh",
+            "startFrame": 100,
+            "endFrame": 230,
+            "description": "walk",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 1.4052,
+          "seatAnchor": [
+            0.0,
+            0.9451594948768616,
+            0.006795833352953196
+          ],
+          "seatAnchorSpace": "gltf-model-local"
+        },
+        {
+          "name": "mounted.run.lance",
+          "duration": 0.75833,
+          "loop": true,
+          "events": {},
+          "gesture": "run",
+          "posture": "mounted",
+          "equipment": "lance",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "02_03.bvh",
+            "startFrame": 40,
+            "endFrame": 131,
+            "description": "run/jog",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 1.007,
+          "seatAnchor": [
+            0.0,
+            0.9451594948768616,
+            0.006795833352953196
+          ],
+          "seatAnchorSpace": "gltf-model-local"
+        },
+        {
+          "name": "mounted.thrust.lance",
+          "duration": 1.2,
+          "loop": false,
+          "events": {
+            "contact": 0.58,
+            "recover": 1.0
+          },
+          "gesture": "thrust",
+          "posture": "mounted",
+          "equipment": "lance",
+          "markers": {
+            "contact": 0.58,
+            "recover": 1.0
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "seatAnchor": [
+            0.0,
+            0.9451594948768616,
+            0.006795833352953196
+          ],
+          "seatAnchorSpace": "gltf-model-local"
+        },
+        {
+          "name": "mounted.brace.lance",
+          "duration": 2,
+          "loop": true,
+          "events": {},
+          "gesture": "brace",
+          "posture": "mounted",
+          "equipment": "lance",
+          "markers": {},
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "seatAnchor": [
+            0.0,
+            0.9451594948768616,
+            0.006795833352953196
+          ],
+          "seatAnchorSpace": "gltf-model-local"
         }
       ],
       "locomotionSpeed": {
@@ -6282,6 +7150,10 @@
         "walk": 1.4052,
         "run": 1.007,
         "crouch": 0.8403,
+        "strafeRightStanding": 1.1113,
+        "strafeLeftStanding": 1.1159,
+        "strafeRightCrouched": 0.8492,
+        "strafeLeftCrouched": 0.7564,
         "crawl": 0.0796,
         "climbUp": 0.4062,
         "climbDown": 0.4455,
@@ -6297,8 +7169,8 @@
     },
     "female": {
       "url": "/models/characters/female-animations.glb",
-      "bytes": 6357628,
-      "sha256": "bc5ee77c23a843afabab44fddf123ccc41cccdca559dbd6667f2a259555d1192",
+      "bytes": 7442340,
+      "sha256": "6ebc38f378f3cd4920317a75c5ff23b762ce4addf68962b84b878947eeca041e",
       "clips": [
         {
           "name": "stand.idle.unarmed",
@@ -6364,6 +7236,52 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "locomotionSpeed": 0.9754
+        },
+        {
+          "name": "stand.strafeLeft.unarmed",
+          "duration": 1.183329,
+          "loop": true,
+          "events": {},
+          "gesture": "strafeLeft",
+          "posture": "standing",
+          "equipment": "unarmed",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "141_33.bvh",
+            "startFrame": 780,
+            "endFrame": 922,
+            "description": "sideways walk, foot to foot, left",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 1.0544,
+          "locomotionAxis": "left"
+        },
+        {
+          "name": "stand.strafeRight.unarmed",
+          "duration": 1.283328,
+          "loop": true,
+          "events": {},
+          "gesture": "strafeRight",
+          "posture": "standing",
+          "equipment": "unarmed",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "141_33.bvh",
+            "startFrame": 156,
+            "endFrame": 310,
+            "description": "sideways walk, foot to foot, right",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 1.0316,
+          "locomotionAxis": "right"
         },
         {
           "name": "stand.punch.unarmed",
@@ -6451,6 +7369,52 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "locomotionSpeed": 0.9754
+        },
+        {
+          "name": "stand.strafeLeft.long-gun",
+          "duration": 1.183329,
+          "loop": true,
+          "events": {},
+          "gesture": "strafeLeft",
+          "posture": "standing",
+          "equipment": "long-gun",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "141_33.bvh",
+            "startFrame": 780,
+            "endFrame": 922,
+            "description": "sideways walk, foot to foot, left",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 1.0544,
+          "locomotionAxis": "left"
+        },
+        {
+          "name": "stand.strafeRight.long-gun",
+          "duration": 1.283328,
+          "loop": true,
+          "events": {},
+          "gesture": "strafeRight",
+          "posture": "standing",
+          "equipment": "long-gun",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "141_33.bvh",
+            "startFrame": 156,
+            "endFrame": 310,
+            "description": "sideways walk, foot to foot, right",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 1.0316,
+          "locomotionAxis": "right"
         },
         {
           "name": "stand.aim.long-gun",
@@ -6710,6 +7674,52 @@
           "locomotionSpeed": 0.9754
         },
         {
+          "name": "stand.strafeLeft.short-gun",
+          "duration": 1.183329,
+          "loop": true,
+          "events": {},
+          "gesture": "strafeLeft",
+          "posture": "standing",
+          "equipment": "short-gun",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "141_33.bvh",
+            "startFrame": 780,
+            "endFrame": 922,
+            "description": "sideways walk, foot to foot, left",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 1.0544,
+          "locomotionAxis": "left"
+        },
+        {
+          "name": "stand.strafeRight.short-gun",
+          "duration": 1.283328,
+          "loop": true,
+          "events": {},
+          "gesture": "strafeRight",
+          "posture": "standing",
+          "equipment": "short-gun",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "141_33.bvh",
+            "startFrame": 156,
+            "endFrame": 310,
+            "description": "sideways walk, foot to foot, right",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 1.0316,
+          "locomotionAxis": "right"
+        },
+        {
           "name": "stand.aim.short-gun",
           "duration": 2,
           "loop": true,
@@ -6921,6 +7931,52 @@
           "locomotionSpeed": 0.9754
         },
         {
+          "name": "stand.strafeLeft.blade",
+          "duration": 1.183329,
+          "loop": true,
+          "events": {},
+          "gesture": "strafeLeft",
+          "posture": "standing",
+          "equipment": "blade",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "141_33.bvh",
+            "startFrame": 780,
+            "endFrame": 922,
+            "description": "sideways walk, foot to foot, left",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 1.0544,
+          "locomotionAxis": "left"
+        },
+        {
+          "name": "stand.strafeRight.blade",
+          "duration": 1.283328,
+          "loop": true,
+          "events": {},
+          "gesture": "strafeRight",
+          "posture": "standing",
+          "equipment": "blade",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "141_33.bvh",
+            "startFrame": 156,
+            "endFrame": 310,
+            "description": "sideways walk, foot to foot, right",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 1.0316,
+          "locomotionAxis": "right"
+        },
+        {
           "name": "stand.slash.blade",
           "duration": 1.2,
           "loop": false,
@@ -6935,6 +7991,22 @@
             "contact": 0.58,
             "recover": 1.0
           },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place"
+        },
+        {
+          "name": "stand.brace.blade",
+          "duration": 2,
+          "loop": true,
+          "events": {},
+          "gesture": "brace",
+          "posture": "standing",
+          "equipment": "blade",
+          "markers": {},
           "source": {
             "type": "native-contact-authoring"
           },
@@ -6979,6 +8051,52 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "locomotionSpeed": 0.7993
+        },
+        {
+          "name": "crouch.strafeLeft.unarmed",
+          "duration": 1.61666,
+          "loop": true,
+          "events": {},
+          "gesture": "strafeLeft",
+          "posture": "crouched",
+          "equipment": "unarmed",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "139_14.bvh",
+            "startFrame": 620,
+            "endFrame": 814,
+            "description": "sideways sneak, left",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 0.9402,
+          "locomotionAxis": "left"
+        },
+        {
+          "name": "crouch.strafeRight.unarmed",
+          "duration": 1.399994,
+          "loop": true,
+          "events": {},
+          "gesture": "strafeRight",
+          "posture": "crouched",
+          "equipment": "unarmed",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "139_14.bvh",
+            "startFrame": 172,
+            "endFrame": 340,
+            "description": "sideways sneak, right",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 0.9318,
+          "locomotionAxis": "right"
         },
         {
           "name": "crouch.punch.unarmed",
@@ -7039,6 +8157,52 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "locomotionSpeed": 0.7993
+        },
+        {
+          "name": "crouch.strafeLeft.long-gun",
+          "duration": 1.61666,
+          "loop": true,
+          "events": {},
+          "gesture": "strafeLeft",
+          "posture": "crouched",
+          "equipment": "long-gun",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "139_14.bvh",
+            "startFrame": 620,
+            "endFrame": 814,
+            "description": "sideways sneak, left",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 0.9402,
+          "locomotionAxis": "left"
+        },
+        {
+          "name": "crouch.strafeRight.long-gun",
+          "duration": 1.399994,
+          "loop": true,
+          "events": {},
+          "gesture": "strafeRight",
+          "posture": "crouched",
+          "equipment": "long-gun",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "139_14.bvh",
+            "startFrame": 172,
+            "endFrame": 340,
+            "description": "sideways sneak, right",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 0.9318,
+          "locomotionAxis": "right"
         },
         {
           "name": "crouch.aim.long-gun",
@@ -7271,6 +8435,52 @@
           "locomotionSpeed": 0.7993
         },
         {
+          "name": "crouch.strafeLeft.short-gun",
+          "duration": 1.61666,
+          "loop": true,
+          "events": {},
+          "gesture": "strafeLeft",
+          "posture": "crouched",
+          "equipment": "short-gun",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "139_14.bvh",
+            "startFrame": 620,
+            "endFrame": 814,
+            "description": "sideways sneak, left",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 0.9402,
+          "locomotionAxis": "left"
+        },
+        {
+          "name": "crouch.strafeRight.short-gun",
+          "duration": 1.399994,
+          "loop": true,
+          "events": {},
+          "gesture": "strafeRight",
+          "posture": "crouched",
+          "equipment": "short-gun",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "139_14.bvh",
+            "startFrame": 172,
+            "endFrame": 340,
+            "description": "sideways sneak, right",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 0.9318,
+          "locomotionAxis": "right"
+        },
+        {
           "name": "crouch.aim.short-gun",
           "duration": 2,
           "loop": true,
@@ -7455,6 +8665,52 @@
           "locomotionSpeed": 0.7993
         },
         {
+          "name": "crouch.strafeLeft.blade",
+          "duration": 1.61666,
+          "loop": true,
+          "events": {},
+          "gesture": "strafeLeft",
+          "posture": "crouched",
+          "equipment": "blade",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "139_14.bvh",
+            "startFrame": 620,
+            "endFrame": 814,
+            "description": "sideways sneak, left",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 0.9402,
+          "locomotionAxis": "left"
+        },
+        {
+          "name": "crouch.strafeRight.blade",
+          "duration": 1.399994,
+          "loop": true,
+          "events": {},
+          "gesture": "strafeRight",
+          "posture": "crouched",
+          "equipment": "blade",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "139_14.bvh",
+            "startFrame": 172,
+            "endFrame": 340,
+            "description": "sideways sneak, right",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 0.9318,
+          "locomotionAxis": "right"
+        },
+        {
           "name": "crouch.slash.blade",
           "duration": 1.2,
           "loop": false,
@@ -7469,6 +8725,22 @@
             "contact": 0.58,
             "recover": 1.0
           },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place"
+        },
+        {
+          "name": "crouch.brace.blade",
+          "duration": 2,
+          "loop": true,
+          "events": {},
+          "gesture": "brace",
+          "posture": "crouched",
+          "equipment": "blade",
+          "markers": {},
           "source": {
             "type": "native-contact-authoring"
           },
@@ -8687,6 +9959,28 @@
           "seatAnchorSpace": "gltf-model-local"
         },
         {
+          "name": "mounted.brace.blade",
+          "duration": 2,
+          "loop": true,
+          "events": {},
+          "gesture": "brace",
+          "posture": "mounted",
+          "equipment": "blade",
+          "markers": {},
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "seatAnchor": [
+            0.0,
+            0.9131789803504944,
+            0.025762733072042465
+          ],
+          "seatAnchorSpace": "gltf-model-local"
+        },
+        {
           "name": "stand.gesture.heal",
           "duration": 1.4,
           "loop": false,
@@ -9789,7 +11083,16 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "handProps": [
+            {
+              "hand": "handRight",
+              "categories": [
+                "knife"
+              ],
+              "untilMarker": "release"
+            }
+          ]
         },
         {
           "name": "transition.stand.crouch",
@@ -10778,6 +12081,443 @@
           "sampleRate": 15,
           "timingAuthority": "simulation",
           "rootMotion": "in-place"
+        },
+        {
+          "name": "stand.idle.lance",
+          "duration": 1.999992,
+          "loop": true,
+          "events": {},
+          "gesture": "idle",
+          "posture": "standing",
+          "equipment": "lance",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "111_28.bvh",
+            "startFrame": 120,
+            "endFrame": 360,
+            "description": "standing still",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place"
+        },
+        {
+          "name": "stand.walk.lance",
+          "duration": 1.083329,
+          "loop": true,
+          "events": {},
+          "gesture": "walk",
+          "posture": "standing",
+          "equipment": "lance",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "07_01.bvh",
+            "startFrame": 100,
+            "endFrame": 230,
+            "description": "walk",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 1.3273
+        },
+        {
+          "name": "stand.run.lance",
+          "duration": 0.75833,
+          "loop": true,
+          "events": {},
+          "gesture": "run",
+          "posture": "standing",
+          "equipment": "lance",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "02_03.bvh",
+            "startFrame": 40,
+            "endFrame": 131,
+            "description": "run/jog",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 0.9754
+        },
+        {
+          "name": "stand.strafeLeft.lance",
+          "duration": 1.183329,
+          "loop": true,
+          "events": {},
+          "gesture": "strafeLeft",
+          "posture": "standing",
+          "equipment": "lance",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "141_33.bvh",
+            "startFrame": 780,
+            "endFrame": 922,
+            "description": "sideways walk, foot to foot, left",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 1.0544,
+          "locomotionAxis": "left"
+        },
+        {
+          "name": "stand.strafeRight.lance",
+          "duration": 1.283328,
+          "loop": true,
+          "events": {},
+          "gesture": "strafeRight",
+          "posture": "standing",
+          "equipment": "lance",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "141_33.bvh",
+            "startFrame": 156,
+            "endFrame": 310,
+            "description": "sideways walk, foot to foot, right",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 1.0316,
+          "locomotionAxis": "right"
+        },
+        {
+          "name": "stand.thrust.lance",
+          "duration": 1.2,
+          "loop": false,
+          "events": {
+            "contact": 0.58,
+            "recover": 1.0
+          },
+          "gesture": "thrust",
+          "posture": "standing",
+          "equipment": "lance",
+          "markers": {
+            "contact": 0.58,
+            "recover": 1.0
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place"
+        },
+        {
+          "name": "stand.brace.lance",
+          "duration": 2,
+          "loop": true,
+          "events": {},
+          "gesture": "brace",
+          "posture": "standing",
+          "equipment": "lance",
+          "markers": {},
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place"
+        },
+        {
+          "name": "crouch.idle.lance",
+          "duration": 2,
+          "loop": true,
+          "events": {},
+          "gesture": "idle",
+          "posture": "crouched",
+          "equipment": "lance",
+          "markers": {},
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place"
+        },
+        {
+          "name": "crouch.walk.lance",
+          "duration": 1.533327,
+          "loop": true,
+          "events": {},
+          "gesture": "walk",
+          "posture": "crouched",
+          "equipment": "lance",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "136_09.bvh",
+            "startFrame": 430,
+            "endFrame": 614,
+            "description": "crouching, walking forward",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 0.7993
+        },
+        {
+          "name": "crouch.strafeLeft.lance",
+          "duration": 1.61666,
+          "loop": true,
+          "events": {},
+          "gesture": "strafeLeft",
+          "posture": "crouched",
+          "equipment": "lance",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "139_14.bvh",
+            "startFrame": 620,
+            "endFrame": 814,
+            "description": "sideways sneak, left",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 0.9402,
+          "locomotionAxis": "left"
+        },
+        {
+          "name": "crouch.strafeRight.lance",
+          "duration": 1.399994,
+          "loop": true,
+          "events": {},
+          "gesture": "strafeRight",
+          "posture": "crouched",
+          "equipment": "lance",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "139_14.bvh",
+            "startFrame": 172,
+            "endFrame": 340,
+            "description": "sideways sneak, right",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 0.9318,
+          "locomotionAxis": "right"
+        },
+        {
+          "name": "crouch.thrust.lance",
+          "duration": 1.2,
+          "loop": false,
+          "events": {
+            "contact": 0.58,
+            "recover": 1.0
+          },
+          "gesture": "thrust",
+          "posture": "crouched",
+          "equipment": "lance",
+          "markers": {
+            "contact": 0.58,
+            "recover": 1.0
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place"
+        },
+        {
+          "name": "crouch.brace.lance",
+          "duration": 2,
+          "loop": true,
+          "events": {},
+          "gesture": "brace",
+          "posture": "crouched",
+          "equipment": "lance",
+          "markers": {},
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place"
+        },
+        {
+          "name": "prone.idle.lance",
+          "duration": 2,
+          "loop": true,
+          "events": {},
+          "gesture": "idle",
+          "posture": "prone",
+          "equipment": "lance",
+          "markers": {},
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place"
+        },
+        {
+          "name": "prone.crawl.lance",
+          "duration": 1.966659,
+          "loop": true,
+          "events": {},
+          "gesture": "crawl",
+          "posture": "prone",
+          "equipment": "lance",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "111_03.bvh",
+            "startFrame": 450,
+            "endFrame": 686,
+            "description": "crawling; adapted to forearm/belly contact",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 0.076
+        },
+        {
+          "name": "mounted.idle.lance",
+          "duration": 2,
+          "loop": true,
+          "events": {},
+          "gesture": "idle",
+          "posture": "mounted",
+          "equipment": "lance",
+          "markers": {},
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "seatAnchor": [
+            0.0,
+            0.9131789803504944,
+            0.025762733072042465
+          ],
+          "seatAnchorSpace": "gltf-model-local"
+        },
+        {
+          "name": "mounted.walk.lance",
+          "duration": 1.083329,
+          "loop": true,
+          "events": {},
+          "gesture": "walk",
+          "posture": "mounted",
+          "equipment": "lance",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "07_01.bvh",
+            "startFrame": 100,
+            "endFrame": 230,
+            "description": "walk",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 1.3273,
+          "seatAnchor": [
+            0.0,
+            0.9131789803504944,
+            0.025762733072042465
+          ],
+          "seatAnchorSpace": "gltf-model-local"
+        },
+        {
+          "name": "mounted.run.lance",
+          "duration": 0.75833,
+          "loop": true,
+          "events": {},
+          "gesture": "run",
+          "posture": "mounted",
+          "equipment": "lance",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "02_03.bvh",
+            "startFrame": 40,
+            "endFrame": 131,
+            "description": "run/jog",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 0.9754,
+          "seatAnchor": [
+            0.0,
+            0.9131789803504944,
+            0.025762733072042465
+          ],
+          "seatAnchorSpace": "gltf-model-local"
+        },
+        {
+          "name": "mounted.thrust.lance",
+          "duration": 1.2,
+          "loop": false,
+          "events": {
+            "contact": 0.58,
+            "recover": 1.0
+          },
+          "gesture": "thrust",
+          "posture": "mounted",
+          "equipment": "lance",
+          "markers": {
+            "contact": 0.58,
+            "recover": 1.0
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "seatAnchor": [
+            0.0,
+            0.9131789803504944,
+            0.025762733072042465
+          ],
+          "seatAnchorSpace": "gltf-model-local"
+        },
+        {
+          "name": "mounted.brace.lance",
+          "duration": 2,
+          "loop": true,
+          "events": {},
+          "gesture": "brace",
+          "posture": "mounted",
+          "equipment": "lance",
+          "markers": {},
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "seatAnchor": [
+            0.0,
+            0.9131789803504944,
+            0.025762733072042465
+          ],
+          "seatAnchorSpace": "gltf-model-local"
         }
       ],
       "locomotionSpeed": {
@@ -10785,6 +12525,10 @@
         "walk": 1.3273,
         "run": 0.9754,
         "crouch": 0.7993,
+        "strafeRightStanding": 1.0316,
+        "strafeLeftStanding": 1.0544,
+        "strafeRightCrouched": 0.9318,
+        "strafeLeftCrouched": 0.9402,
         "crawl": 0.076,
         "climbUp": 0.3498,
         "climbDown": 0.4242,
@@ -11075,7 +12819,29 @@
           0
         ],
         "scale": 1,
-        "stowedSocket": "hipLeft"
+        "stowedSocket": "hipLeft",
+        "clipOverrides": {
+          "stand.idle.blade": "stand.idle.lance",
+          "stand.walk.blade": "stand.walk.lance",
+          "stand.run.blade": "stand.run.lance",
+          "stand.strafeLeft.blade": "stand.strafeLeft.lance",
+          "stand.strafeRight.blade": "stand.strafeRight.lance",
+          "stand.slash.blade": "stand.thrust.lance",
+          "stand.brace.blade": "stand.brace.lance",
+          "crouch.idle.blade": "crouch.idle.lance",
+          "crouch.walk.blade": "crouch.walk.lance",
+          "crouch.strafeLeft.blade": "crouch.strafeLeft.lance",
+          "crouch.strafeRight.blade": "crouch.strafeRight.lance",
+          "crouch.slash.blade": "crouch.thrust.lance",
+          "crouch.brace.blade": "crouch.brace.lance",
+          "prone.idle.blade": "prone.idle.lance",
+          "prone.crawl.blade": "prone.crawl.lance",
+          "mounted.idle.blade": "mounted.idle.lance",
+          "mounted.walk.blade": "mounted.walk.lance",
+          "mounted.run.blade": "mounted.run.lance",
+          "mounted.slash.blade": "mounted.thrust.lance",
+          "mounted.brace.blade": "mounted.brace.lance"
+        }
       },
       "ramrod": {
         "node": "item_ramrod",

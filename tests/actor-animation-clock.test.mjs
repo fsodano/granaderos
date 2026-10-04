@@ -18,6 +18,17 @@ test('backward travel reverses the gait, including elapsed-time compatibility',(
  const later=sample({clip:walk,action:'walk',now:0,motion:{moving:true,elapsedDistance:.45,speed:3,signedForwardSpeed:-3}});nearly(later.time,.7);
  const legacy=sample({clip:walk,action:'walk',now:0,motion:{moving:true,elapsedMs:100,speed:3,signedForwardSpeed:-3}});nearly(legacy.time,.8);
 });
+test('lateral gait advances by distance and keeps its phase while forward speed is zero',()=>{
+ for(const action of ['strafeLeft','strafeRight']){
+  const clip={duration:1.4,loop:true,locomotionSpeed:.8};
+  const motion={moving:true,elapsedDistance:.32,speed:2,signedForwardSpeed:0};
+  const start=sample({clip,action,motion,now:500});
+  nearly(start.time,.4);assert.equal(start.rate,0);
+  const continued=sample({clip,action,motion:{...motion,elapsedDistance:.48},now:600});
+  nearly(continued.time,.6);
+  const boundary=sample({clip,action,motion:{...motion,speed:0},now:1000});nearly(boundary.time,start.time);
+ }
+});
 test('climb follows the recorded path fraction and is independent of clock delay',()=>{
  for(const action of ['climbUp','climbDown']){
   nearly(sample({clip:{duration:1.8,loop:false},action,now:9999,motion:{moving:true,segmentFraction:.5}}).time,.9);

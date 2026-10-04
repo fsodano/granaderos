@@ -474,6 +474,10 @@ SOURCE_RECIPES = {
     'walk': ('07_01.bvh', 100, 230, 'walk'),
     'run': ('02_03.bvh', 40, 131, 'run/jog'),
     'crouch': ('136_09.bvh', 430, 614, 'crouching, walking forward'),
+    'strafeRightStanding': ('141_33.bvh', 156, 310, 'sideways walk, foot to foot, right'),
+    'strafeLeftStanding': ('141_33.bvh', 780, 922, 'sideways walk, foot to foot, left'),
+    'strafeRightCrouched': ('139_14.bvh', 172, 340, 'sideways sneak, right'),
+    'strafeLeftCrouched': ('139_14.bvh', 620, 814, 'sideways sneak, left'),
     'crawl': ('111_03.bvh', 450, 686, 'crawling; adapted to forearm/belly contact'),
     'climbUp': ('143_37.bvh', 48, 232, 'ladder, climbing up'),
     'climbDown': ('143_37.bvh', 296, 465, 'ladder, climbing down'),
@@ -535,7 +539,7 @@ def _retarget_samples(ctx,recipe):
             # Surface-level travel is supplied by the game's movement path.
             height-=(source[-1]['Hips'][0].z-source[0]['Hips'][0].z)*scale*index/count
         _root_shift(rig,(0,0,height-rig.pose.bones['pelvis'].head.z))
-        if recipe in ('idle','walk','run','crouch'):
+        if recipe in ('idle','walk','run','crouch') or recipe.startswith('strafe'):
             for suffix in ('l','r'):
                 fore=rig.pose.bones['lowerarm_'+suffix]
                 _set_world_rotation(rig,'hand_'+suffix,_hand_rotation(rig,suffix,fore.tail-fore.head,Vector((-1 if suffix=='l' else 1,0,0))))
@@ -556,12 +560,15 @@ def _retarget_samples(ctx,recipe):
         knees.append({s:rig.pose.bones['calf_'+s].head.y-rig.pose.bones['pelvis'].head.y for s in ('l','r')})
         out.append(_collect(rig))
     speeds=[]
+    lateral=recipe.startswith('strafe');axis=0 if lateral else 1
+    displacement=alignment@(source[-1]['Hips'][0]-source[0]['Hips'][0])
+    reverse=-1 if displacement[axis]>0 else 1
     for i in range(1,len(feet)-1):
         for side in ('l','r'):
             a,p,b=feet[i-1][side],feet[i][side],feet[i+1][side]
-            if p.z<.05 and b.y>a.y:speeds.append((b.y-a.y)/(2*duration/count))
+            if p.z<.05 and (b[axis]-a[axis])*reverse>0:speeds.append((b[axis]-a[axis])*reverse/(2*duration/count))
     delta=alignment @ (source[-1]['Hips'][0]-source[0]['Hips'][0])
-    speed=float(np.median(speeds)) if speeds else abs(delta.y)*scale/duration
+    speed=float(np.median(speeds)) if speeds else abs(delta[axis])*scale/duration
     return out,{'kneeCenter':{side:sum(p[side] for p in knees)/len(knees) for side in ('l','r')},'duration':duration,'locomotionSpeed':round(max(.05,speed),4),'source':{'database':'CMU','file':file,'startFrame':start,'endFrame':end,'description':description,'sampleRate':round(1/bvh.dt)}}
 
 
@@ -632,6 +639,11 @@ def _gun_pose(ctx,base,key,offsets,mode='aim',recoil=0):
             position=chest+Vector((-.43,-.16,.08));rotation=Quaternion()
     elif mode=='carry':
         position=pelvis+Vector((-.12,-.20,.15));rotation=Quaternion(UP,-math.pi/2) @ Quaternion(Vector((0,1,0)),-.98 if key=='rifle' else .80)
+        if key=='rifle' and chest.z-pelvis.z<.34:
+            # A low, forward-leaning sneak cannot carry the barrel upright:
+            # it would cross the head. Keep the stock beside the shoulder
+            # and the barrel ahead, with both hands on the same rigid gun.
+            position=chest+Vector((-.16,-.28,-.08));rotation=Quaternion(UP,math.radians(-85)) @ Quaternion(Vector((0,1,0)),.08)
         if prone:
             position=chest+Vector((-.12,-.26,.07));rotation=Quaternion(UP,math.radians(-85))
     else:
@@ -664,9 +676,27 @@ def _blade_pose(ctx,base,offsets,phase=0):
     return _collect(rig)
 
 
+def _lance_pose(ctx,base,offsets,mode='carry',phase=0):
+    rig=ctx['rig'];_apply_sample(rig,base)
+    pelvis=rig.pose.bones['pelvis'].head.copy();chest=(rig.pose.bones['upperarm_l'].head+rig.pose.bones['upperarm_r'].head)*.5
+    prone=chest.z-pelvis.z<.13
+    level=mode in ('brace','thrust') or prone
+    rotation=Quaternion(Vector((1,0,0)),math.pi/2 if level else .10)
+    grip=chest+Vector((-.24,-.18-.22*phase,-.20)) if level else pelvis+Vector((-.25,-.07,.22))
+    if prone:grip=chest+Vector((-.19,-.22,.065))
+    local,offset=offsets['sabre'];hand_q=rotation@offset
+    _arm_ik(rig,'r',grip-hand_q@local,_head(rig,'upperarm_r')+Vector((-.24,.10,-.28)))
+    _set_world_rotation(rig,'hand_r',hand_q);_finger_curl(rig,1.28,'r')
+    if mode=='brace':
+        actual=rig.pose.bones['hand_r'].matrix@local
+        _reach(rig,'l',actual+rotation@Vector((0,0,.18)),long=rotation@Vector((1,0,0)),normal=rotation@Vector((0,-1,0)),curl=1.2)
+    return _collect(rig)
+
+
 def _equipment_pose(ctx,base,equipment,offsets,mode='carry'):
     if equipment in ('long-gun','short-gun'):return _gun_pose(ctx,base,'rifle' if equipment=='long-gun' else 'pistol',offsets,mode)[0]
     if equipment=='blade':return _blade_pose(ctx,base,offsets)
+    if equipment=='lance':return _lance_pose(ctx,base,offsets,mode)
     return _copy_pose(base)
 
 
@@ -754,13 +784,13 @@ def apply_animations(ctx, only=None):
         gesture=spec['gesture'];posture=spec['posture'];equipment=spec['equipment'];base=bases[posture]
         duration=1.4;markers={};source={'type':'native-contact-authoring'};speed=None
         if gesture in ('idle','aim','brace','dead','unconscious'):duration=2
-        if gesture in ('walk','run','crawl'):
-            recipe='crawl' if posture=='prone' else 'crouch' if posture=='crouched' else gesture
+        if gesture in ('walk','run','crawl','strafeLeft','strafeRight'):
+            recipe=gesture+posture.title() if gesture.startswith('strafe') else 'crawl' if posture=='prone' else 'crouch' if posture=='crouched' else gesture
             duration=source_meta[recipe]['duration'];speed=source_meta[recipe]['locomotionSpeed'];source=source_meta[recipe]['source']
         elif gesture=='idle' and posture=='standing':duration=source_meta['idle']['duration'];source=source_meta['idle']['source']
         elif gesture in ('climbUp','climbDown'):duration=source_meta[gesture]['duration'];source=source_meta[gesture]['source'];markers={'support':duration*.5}
         elif gesture=='fire':duration=1.1 if equipment=='long-gun' else .8;markers={'shot':.3 if equipment=='long-gun' else .2}
-        elif gesture in ('slash','punch','butt','bayonet'):duration=1.2;markers={'contact':.58,'recover':1.0}
+        elif gesture in ('slash','thrust','punch','butt','bayonet'):duration=1.2;markers={'contact':.58,'recover':1.0}
         elif gesture in ('reload','reprime','repair','unload'):duration=4.8 if gesture=='reload' else 2.0;markers={'contact':duration*.45,'ready':duration*.92}
         elif gesture in ('throw','throwKnife','bolas'):duration=1.3;markers={'release':duration*.58}
         elif gesture=='breach':duration=1.4;markers={'contact':duration*.58}
@@ -773,7 +803,7 @@ def apply_animations(ctx, only=None):
         samples=[]
         for time in times:
             t=time/duration;pose=_copy_pose(base)
-            if gesture in ('idle','walk','run','crawl'):
+            if gesture in ('idle','walk','run','crawl','strafeLeft','strafeRight'):
                 if gesture=='idle':
                     if posture=='standing':pose=_at(sources['idle'],t)
                     else:
@@ -782,8 +812,12 @@ def apply_animations(ctx, only=None):
                 elif posture=='mounted':
                     recorded=_at(sources[gesture],t);pose=_mounted_pose(ctx,recorded)
                     # Rider pelvis stays at the saddle; horse supplies travel.
-                else:pose=_at(sources['crouch' if posture=='crouched' else gesture],t)
+                else:pose=_at(sources[gesture+posture.title() if gesture.startswith('strafe') else 'crouch' if posture=='crouched' else gesture],t)
                 pose=_equipment_pose(ctx,pose,equipment,offsets)
+            elif gesture=='brace' and equipment in ('blade','lance'):
+                pose=_lance_pose(ctx,base,offsets,'brace') if equipment=='lance' else _blade_pose(ctx,base,offsets,-.15)
+            elif gesture=='thrust':
+                phase=_smooth_key([(0,0),(.25,-.25),(.483,1),(.70,.35),(1,0)],t);pose=_lance_pose(ctx,base,offsets,'thrust',phase)
             elif gesture in ('aim','fire','brace'):
                 recoil=0
                 if gesture=='fire':recoil=_smooth_key([(0,0),(markers['shot'],0),(markers['shot']+.045,.042 if equipment=='long-gun' else .07),(markers['shot']+.22,.004),(duration,0)],time)
@@ -848,7 +882,9 @@ def apply_animations(ctx, only=None):
         meta=_write_clip(rig,spec['name'],samples,duration,spec['loop'],times=times)
         meta.update(spec);meta.update({'duration':round(duration,6),'events':markers,'markers':markers,'source':source,'sampleRate':SAMPLE_FPS,'timingAuthority':'simulation','rootMotion':'in-place'})
         if gesture=='reload' and equipment=='long-gun':meta['propCues']=[{'item':'ramrod','socket':'socket_handLeft_tool','start':round(duration*.46,6),'end':round(duration*.86,6)}]
+        if gesture=='throwKnife':meta['handProps']=[{'hand':'handRight','categories':['knife'],'untilMarker':'release'}]
         if speed is not None:meta['locomotionSpeed']=speed
+        if gesture.startswith('strafe'):meta['locomotionAxis']='left' if gesture=='strafeLeft' else 'right'
         if posture=='mounted':meta['seatAnchor']=list(rig.data.bones['pelvis'].head_local)
         result.append(meta)
         if index%10==0:print('MOTION CLIP',index+1,'/',len(specs),spec['name'],flush=True)

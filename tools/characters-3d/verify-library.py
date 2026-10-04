@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """Validate published mesh, rig, texture and clip contracts with no Blender."""
 from pathlib import Path
-import json,struct,math,hashlib
+import json,struct,math,hashlib,subprocess
 ROOT=Path(__file__).resolve().parents[2];OUT=ROOT/'web/public/models/characters';m=json.loads((OUT/'manifest.json').read_text());assert m['complete'],'Library incomplete'
+contract=json.loads(subprocess.check_output(['node','--input-type=module','-e',"import {ACTOR_CLIP_SPECS,ACTOR_ITEM_CLIP_OVERRIDES} from './game/actor-action-contract.js';console.log(JSON.stringify({clips:ACTOR_CLIP_SPECS,overrides:ACTOR_ITEM_CLIP_OVERRIDES}));"],cwd=ROOT,text=True))
+required={c['name']for c in contract['clips']}
 
 def glb(url):
  path=OUT/Path(url).name;raw=path.read_bytes();magic,version,length=struct.unpack_from('<III',raw);assert(magic,version,length)==(0x46546c67,2,len(raw));n=struct.unpack_from('<I',raw,12)[0];doc=json.loads(raw[20:20+n]);data=raw[28+n:]
@@ -32,7 +34,8 @@ for appearance in m['appearances'].values():
     if'JOINTS_0'in p['attributes']:assert all(0<=j<53 for v in read(doc,data,p['attributes']['JOINTS_0'])for j in v)
   count+=1;triangles+=lod['triangles']
 for gender,bank in m['animationLibraries'].items():
- doc,data=glb(bank['url']);expected={c['name']:c for c in bank['clips']};assert len(expected)==205;assert {a['name']for a in doc['animations']}==set(expected)
+ doc,data=glb(bank['url']);expected={c['name']:c for c in bank['clips']};assert set(expected)==required;assert {a['name']for a in doc['animations']}==set(expected)
+ assert hashlib.sha256((OUT/Path(bank['url']).name).read_bytes()).hexdigest()==bank['sha256']
  for animation in doc['animations']:
   c=expected[animation['name']]
   for sample in animation['samplers']:
@@ -42,6 +45,10 @@ for gender,bank in m['animationLibraries'].items():
  for c in bank['clips']:
   for t in c.get('markers',{}).values():assert 0<=t<=c['duration']+.001
   if c['gesture']in('mount','dismount'):assert'seatWeight'in c and'seatAnchor'in c
+  if c['gesture'].startswith('strafe'):
+   assert c['source']['file']in('139_14.bvh','141_33.bvh') and c['locomotionSpeed']>0
+   assert c['locomotionAxis']in('left','right')
+  if c['gesture']=='throwKnife':assert c['handProps']==[{'hand':'handRight','categories':['knife'],'untilMarker':'release'}]
  names={n.get('name')for n in doc['nodes']};assert set(m['bones'].values())<=names
 for gender,garments in m['garments'].items():
  doc,_=glb(garments['url']);names={n.get('name')for n in doc['nodes']}
@@ -52,6 +59,9 @@ for key,item in m['equipment']['items'].items():
  assert item['node']in names,key
  if'muzzle'in item:assert item['muzzle']in names,key
 assert all(str(key)in m['equipment']['items']for key in range(1800,1814))
+for key,overrides in contract['overrides'].items():
+ assert m['equipment']['items'][key]['clipOverrides']==overrides
+ assert set(overrides.values())<=required
 for lod in m['horse']['lods']:
  doc,_=glb(lod['url']);assert len(doc['skins'][0]['joints'])==19;assert m['horse']['saddle']['node']in{n.get('name')for n in doc['nodes']};assert {c['name']for c in m['horse']['clips']}=={a['name']for a in doc['animations']}
-print(json.dumps({'appearanceLODs':count,'anatomies':list(rigs),'clipsPerAnatomy':205,'equipmentItems':len(m['equipment']['items']),'horseLODs':len(m['horse']['lods']),'result':'PASS'},indent=2))
+print(json.dumps({'appearanceLODs':count,'anatomies':list(rigs),'clipsPerAnatomy':len(required),'equipmentItems':len(m['equipment']['items']),'horseLODs':len(m['horse']['lods']),'result':'PASS'},indent=2))
