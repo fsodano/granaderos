@@ -48,9 +48,16 @@ export function returnMorale(s,id,report,issued){
   r.morale=clamp(r.morale+(reported-(issued?.morale??personal+bonus)));r.moraleRestHours=0;
 }
 
+export function payMoraleRewardEligible(s,id){
+  const r=s.operativeState[id];
+  if(!r?.alive)return false;
+  const last=r.lastMoralePayAt;
+  return last==null||(s.hour*3600+(s.secondOfHour??0))-(last*3600+(r.lastMoralePaySecond??0))>=86400;
+}
+
 export function recordPayMorale(s,ids,paid){
   for(const id of ids){const r=s.operativeState[id];if(!r?.alive)continue;
-    if(paid){if(r.lastMoralePayAt!==null&&s.hour-r.lastMoralePayAt<24)continue;r.morale=clamp(r.morale+2);r.lastMoralePayAt=s.hour;}
+    if(paid){if(!payMoraleRewardEligible(s,id))continue;r.morale=clamp(r.morale+2);r.lastMoralePayAt=s.hour;if(s.secondOfHour)r.lastMoralePaySecond=s.secondOfHour;else delete r.lastMoralePaySecond;}
     else r.morale=clamp(r.morale-10);
   }
 }
@@ -103,7 +110,8 @@ export function validateMorale(s,roster){
   for(const op of roster){const r=s.operativeState[op.id];
     need(Number.isFinite(r.morale)&&r.morale>=0&&r.morale<=100,'La moral guardada es inválida.');
     need(Number.isInteger(r.moraleRestHours)&&r.moraleRestHours>=0&&r.moraleRestHours<6,'La recuperación de moral guardada es inválida.');
-    need(r.lastMoralePayAt===null||(Number.isInteger(r.lastMoralePayAt)&&r.lastMoralePayAt>=0&&r.lastMoralePayAt<=s.hour),'El pago de moral guardado es inválido.');
+    need(r.lastMoralePayAt===null||(Number.isInteger(r.lastMoralePayAt)&&r.lastMoralePayAt>=0&&r.lastMoralePayAt*3600+(r.lastMoralePaySecond??0)<=s.hour*3600+(s.secondOfHour??0)),'El pago de moral guardado es inválido.');
+    if(Object.hasOwn(r,'lastMoralePaySecond'))need(r.lastMoralePayAt!==null&&Number.isInteger(r.lastMoralePaySecond)&&r.lastMoralePaySecond>=0&&r.lastMoralePaySecond<3600,'Los segundos del pago de moral guardado son inválidos.');
   }
   for(const unit of s.pendingBattle?.squad??[]){
     if(unit.morale!==undefined)need(Number.isFinite(unit.morale)&&unit.morale>=0&&unit.morale<=100,'La moral del despliegue es inválida.');

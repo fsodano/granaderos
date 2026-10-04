@@ -7,6 +7,7 @@ import {routeHiringCeiling} from './funded-route-fixture.mjs';
 import {sectorInventoryModel} from '../game/sector-inventory.js';
 import {prepareFinalAssault,restoreFinalMorale} from './final-campaign-route.mjs';
 import {contractQuote} from '../game/contracts.js';
+import {payMoraleRewardEligible} from '../game/morale.js';
 import {supplyRouteAmmunition} from './route-ammunition.mjs';
 import {autoBandageBattle} from '../game/auto-bandage.js';
 import {enterSector} from '../game/world.js';
@@ -206,7 +207,7 @@ export function recruitFreshNavalCommand(start,{report=()=>{}}={}){
  order({type:'squad',ids:[57]});
  const paidForeign=rosterFor(funded).filter(op=>{
   const r=funded.operativeState[op.id],contract=funded.contracts[op.id];
-  return op.foreign&&funded.recruited.includes(op.id)&&r.alive&&!r.captured&&contract?.kind!=='patriot'&&(r.lastMoralePayAt===null||funded.hour-r.lastMoralePayAt>=24);
+  return op.foreign&&funded.recruited.includes(op.id)&&r.alive&&!r.captured&&contract?.kind!=='patriot'&&payMoraleRewardEligible(funded,op.id);
  }).sort((a,b)=>contractQuote(funded,a,'day').price-contractQuote(funded,b,'day').price);
  for(const op of paidForeign){
   if(funded.reputation.foreign>=30)break;
