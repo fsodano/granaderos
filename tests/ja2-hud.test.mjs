@@ -1,6 +1,6 @@
 import {makeOutfit} from '../game/outfits.js';
 import test from 'node:test';import assert from 'node:assert/strict';
-import {createBattle,actBattle,endTurn,weaponFor,bladeFor,carriedWeight,carryCapacity,actionCosts,actionPointBudget,stanceCost,shotChance,getReachable,movementIntentReason,canSee,transferPreview,dropPreview,lootPreview,environmentTargetAt,environmentPreview,containerLootPreview,supplyUsePreview,BLADES} from '../game/tactical.js';
+import {createBattle,actBattle,endTurn,weaponFor,bladeFor,carriedWeight,carryCapacity,actionCosts,actionPointBudget,stanceCost,shotChance,getReachable,movementIntentReason,canSee,transferPreview,dropPreview,lootPreview,environmentTargetAt,environmentPreview,containerLootPreview,supplyUsePreview,firearmMaintenancePreview,BLADES} from '../game/tactical.js';
 import {OPERATIVES} from '../game/data.js';
 import {rosterCells,inventoryModel,inventoryHandlingModel,nearbyLootOptions,nearbyEnvironmentModel,toolItems,orderDescriptors,orderAction,slotAction,backpackEquipAction,levelFor,aimOptions,targetPreview,equipmentSlots,nextStance,shotLocationOptions,turnModel,unitCanAct,heardNoiseModel,facingLabel,visibleHover,interruptHover,supplyItems,heldSupplyAction,targetingHelp,groupSelectionMode,isGroupGround,isMovementGround,movementAction,toggleMovementGroup,movementGroupModel,exitModel,fieldUnits,fieldState} from '../game/ja2-hud.js';
 import {executeGroupMove} from '../game/group-movement.js';
@@ -227,6 +227,16 @@ test('HUD uses shared costs with specialist and nearby support modifiers',()=>{
   const result=actBattle(s,{unitId:u.id,type:'reload'});
   assert.equal(result.lastError,null);
   assert.equal(result.units[0].ap,u.ap-descriptors.reload.pa);
+});
+test('the maintenance order shows the shared finite gain and refuses an exhausted kit without mutating the read model',()=>{
+  const s=battle([merc(0,{condition:60,toolkitPoints:0,inventory:{kit:{kind:'repair-kit',count:1,weight:2,repairPoints:17}}})]);
+  const u=players(s)[0],before=structuredClone(s),preview=firearmMaintenancePreview(s,u),descriptor=orderDescriptors(s,u).find(order=>order.id==='repair');
+  assert.equal(preview.valid,true,preview.reason);assert.equal(descriptor.disabled,false);assert.equal(descriptor.label,'Mantener arma');
+  assert.equal(descriptor.pa,preview.pa);assert.deepEqual(descriptor.action,preview.action);assert.match(descriptor.detail,/Estado \+17 puntos.*materiales: 17 puntos/);assert.deepEqual(s,before);
+  const maintained=actBattle(s,descriptor.action);assert.equal(maintained.lastError,null);assert.equal(maintained.units[0].condition,77);
+  const empty=orderDescriptors(maintained,maintained.units[0]).find(order=>order.id==='repair');
+  assert.equal(empty.disabled,true);assert.equal(empty.detail,firearmMaintenancePreview(maintained,maintained.units[0]).reason);assert.match(empty.detail,/materiales/i);
+  assert.equal(orderDescriptors(s,u,{busy:true}).find(order=>order.id==='repair').disabled,true);
 });
 
 test('item slots expose medical supplies, skip missing equipment, and respect AP',()=>{

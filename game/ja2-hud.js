@@ -5,7 +5,7 @@ import {AMMUNITION_TYPES,availableAmmunition,totalReserveAmmunition,weaponAmmoTy
 import {tacticalLevel, sameCell, sameSurface, spaceKey} from './tactical-space.js';
 import {BODY_SLOTS,OUTFITS,wornOutfit,hasPoncho} from './outfits.js';
 import {handLayout,selectMainHand} from './hand-layout.js';
-import {reloadPlan,reprimePlan,lookPreview} from './tactical.js';
+import {reloadPlan,reprimePlan,lookPreview,firearmMaintenancePreview} from './tactical.js';
 import {reprimeLabel} from './weapon-reprime.js';
 import {shotRangeText} from './shot-range.js';
 import {heldThrowingKnife} from './thrown-knife.js';
@@ -35,6 +35,7 @@ const shortName = u => u.nickname || String(u.name || '').split(' ').slice(-1)[0
 const distance = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
 const toolTargets = unit => heldTool(unit)?.toolKey === 'crowbar' ? 'una puerta, un cofre, una pared de adobe o una barricada de madera' : 'una puerta o un cofre';
 export const chancePercent = value => value > 0 && value < 1 ? '<1%' : `${Math.round(value)}%`;
+const maintenanceGainFormat = new Intl.NumberFormat('es-AR', {maximumFractionDigits: 2});
 /** Public authored destinations and the accepted delivery's saved choice. */
 export function beneficiaryDeliveryNotice(delivery){
   if(!delivery?.beneficiaries?.length)return null;
@@ -783,7 +784,7 @@ const ORDER_DEFS = [
   {id: 'overwatch', label: 'Cubrir', kind: 'order'},
   {id: 'mount', label: 'Montar', kind: 'order'},
   {id: 'brace', label: 'Guardia de bayoneta', kind: 'order'},
-  {id: 'repair', label: 'Cambiar sílex', kind: 'order'},
+  {id: 'repair', label: 'Mantener arma', kind: 'order'},
   {id: 'ration', label: 'Comer tasajo', kind: 'order'},
   {id: 'torch', label: 'Arrojar antorcha', kind: 'mode'},
   {id: 'bolas', label: 'Lanzar boleadoras', kind: 'mode'},
@@ -810,6 +811,7 @@ export function orderDescriptors(state, unit, ctx = {}) {
   const gunPlans=Object.fromEntries(['artillery','artilleryMove','artilleryPivot','artilleryReload'].map(id=>[id,id==='artilleryReload'?gunLoading:artilleryCrewPlan(state,unit,gun,gunCosts?.[{artillery:'fire',artilleryMove:'move',artilleryPivot:'pivot'}[id]]??0)]));
   const loading = unit ? reloadPlan(unit, state) : null;
   const priming = unit ? reprimePlan(unit, state) : null;
+  const maintenance = firearmMaintenancePreview(state, unit);
   const pa = {...costs, reload: loading?.pa??0, fire: costs.fire + Math.max(0, Math.min(4, Math.floor(ctx.aim || 0))) * costs.aim, stance: unit ? stanceCost(u, nextStance(u)) : 0};
   const attack = unit && !['medical', 'tool', 'supply','item'].includes(u.activeSlot) ? contextualAttack(state, u, ctx.target, {aim: ctx.aim || 0}) : null;
   const medicalPreview = medicalUsePreview(state, unit, ctx.target ?? unit);
@@ -849,7 +851,7 @@ export function orderDescriptors(state, unit, ctx = {}) {
     overwatch: !u.overwatch && (!firearm || !(u.loaded > 0) || Boolean(u.jammed)),
     mount: !u.horse,
     brace: !fixedBayonetFor(u)||u.stance==='prone',
-    repair: !firearm || (u.condition ?? 100) >= 100,
+    repair: !maintenance.valid,
     ration: !supplyAliases.ration.allowed,
     torch: !supplyAliases.torch.allowed,
     bolas: !supplyAliases.bolas.allowed,
@@ -892,6 +894,10 @@ export function orderDescriptors(state, unit, ctx = {}) {
     }
     if(def.id==='fire'&&firearm&&(weaponFor(u).readyAP??0)>0){if(state.mode==='exploration'){d.seconds=Math.max(1,Math.ceil(costs.fire*.06));d.detail=costs.ready?'Levanta el arma antes de disparar.':'Arma en posición de tiro.';}else d.detail=costs.ready?`Preparar: ${costs.ready} PA · disparar: ${costs.discharge} PA.`:`Arma en posición de tiro · disparar: ${costs.discharge} PA.`;}
     if(def.id==='reload'&&loading){if(state.mode==='exploration')d.seconds=loading.pa?Math.max(1,Math.ceil(loading.pa*.06)):0;d.detail=loading.partial?`${loading.rounds} cartuchos; después faltan ${loading.remainingPA} PA.`:`${loading.rounds} cartuchos; recarga completa.`;}
+    if(def.id==='repair'){
+      d.action=maintenance.action;
+      d.detail=maintenance.reason||`Estado +${maintenanceGainFormat.format(maintenance.gain)} puntos · materiales: ${maintenance.materialCost} puntos.`;
+    }
     return d;
   });
 }

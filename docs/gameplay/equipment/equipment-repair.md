@@ -40,3 +40,33 @@ The earlier checkpoint was 890 passing logic tests, typecheck and a successful p
 The paid native hire of soldier 110 costs 420 pesos and retains 2,780 pesos. The declared initial wear affects only his native hat (96 condition) and poncho (93). Actual approach, chest opening and pickup acquire one finite shirt and one 100-point toolkit. Wearing the shirt packs the real damaged poncho. The public repair assignment restores eleven condition over six working hours at two points per hour, spending exactly eleven acquired toolkit points. The final hour spends only the one remaining point; no materials are charged for idle work. The hat and packed poncho finish at 100, while the shirt remains the exact original cache garment. HP, ten owned rounds and money remain unchanged.
 
 Official saved continuation, completion notice, return and reentry preserve the repaired identities, toolkit's remaining 89 points and depleted chest. A separate pre-shirt compatibility snapshot keeps its opened saved chest without a shirt. This is prepared native-wear and real finite acquisition/work evidence, not a combat route or full campaign proof.
+
+
+## Tactical firearm maintenance — 4 October 2026
+
+The inventory order **Mantener arma** services the prepared main firearm. Its
+preview states the condition gain and repair-material cost, or the reason it
+cannot run. It uses the existing carried physical kits and older saved numeric
+reserves. Fresh hires receive no free repair reserve; finite sector chests can
+supply an identified 100-point, two-kilogram kit.
+
+One order can restore up to 30 condition points, 40 with workshop training or
+45 with gunsmith training, capped by actual damage and available materials.
+Each condition point costs one material point; fractional final damage rounds
+the material debit up. Numeric reserves are spent first, followed by packed
+kits in stable key order. A depleted kit leaves the pack and any held reference.
+The original 25-AP cost (18 for a gunsmith), mechanical practice and exploration
+time apply. No materials or insufficient combat AP rejects before spending
+stock, action points or time. This order keeps the charge, cartridges, firearm
+identity, fittings and jam state. Clearing a misfire remains the separate
+implicit ignition operation; loose flint and priming powder are not issued.
+
+Official active saves, stored resumes, clock synchronization and campaign return
+retain finite materials. A numeric reserve can only decrease from the last
+accepted deployment checkpoint. Return stores its exact remainder, including
+zero. The stock native acceptance pays 420 pesos for soldier 110, acquires the
+Retiro kit physically and fires three actual rounds: ammunition 10→7 and gun
+condition 100→97→100. Maintenance spends three kit points; saved return and
+reentry retain the same kit at 97, HP 85, 2,780 pesos and the depleted chest.
+A separate declared older worn-gun checkpoint tests numeric reserves and kit
+exhaustion. Neither case proves a conquest or complete campaign.

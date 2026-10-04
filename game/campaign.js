@@ -1,4 +1,5 @@
 import {initializeTownIncome,activateTownIncome,validateTownIncome,collectTownIncome,townIncomeSourceForNPC} from './town-income.js';
+import {validateRepairReserve,validateRepairReserveContext,retainRepairReserves} from './repair-materials.js';
 import {recordFiniteArsenalRecovery} from './finite-artillery-arsenals.js';
 import {migrateLegacySkillLearning} from './recruitment.js';
 import {receiveCorrespondence,validateCorrespondence} from './correspondence.js';
@@ -360,6 +361,7 @@ export function hasPendingNpcGiftProgress(campaign,battle){
 }
 function validatedInteractionSnapshot(s,raw){
  const snapshot=validateSectorSnapshot(raw),request=s.pendingBattle;validateQuestContext(s,snapshot);validateRoadsideDiscoveryContext(s,snapshot);validateQuestBeneficiaryContext(s,snapshot);validateCompanionGriefContext(s,snapshot,rosterFor(s));
+ validateRepairReserveContext(request,snapshot);
  validateAbilityReferences(s,snapshot);
  validateServiceObjectionContext(s,snapshot,rosterFor(s));
  requireThat(snapshot.battleId===request.id&&snapshot.sectorId===request.sector&&(snapshot.sceneId??null)===(request.sceneId??null),'La entrega no corresponde al despliegue pendiente.');
@@ -384,6 +386,7 @@ function validatedInteractionSnapshot(s,raw){
  if(retainedRoster)request.npcs=clone(previous.npcs.filter(n=>n.detention===undefined));
  validateAcknowledgedNpcGiftReceipts(s,snapshot.npcs,request.sector);
  hasPendingCivilians(s,snapshot);
+ retainRepairReserves(request,snapshot);
  return snapshot;
 }
 function rewardQuest(s,quest,resolution=null){
@@ -428,6 +431,7 @@ function completeDeploymentReport(s,request,action){
   validateQuestBeneficiaryContext(s,action.sectorState,{request});
   validateRoadsideDiscoveryContext(s,action.sectorState);
   const raw=action.sectorState,snapshot=validateSectorSnapshot(raw),ids=request.squad.map(u=>String(u.id));
+  validateRepairReserveContext(request,snapshot);
   validateAbilityReferences(s,snapshot);
   validateCompanionGriefContext(s,snapshot,rosterFor(s),request);
   validateServiceObjectionContext(s,snapshot,rosterFor(s),request);
@@ -455,6 +459,7 @@ function completeDeploymentReport(s,request,action){
 }
 function applyReturnedOperative(s,request,report){
   const id=Number(report.id);returnMount(s,id,report);returnTraining(s,id,report);const op=rosterFor(s).find(o=>o.id===id);returnEquipment(s,id,report);returnMedicalCare(s,id,report,op);returnMorale(s,id,report,request.squad.find(u=>Number(u.id)===id));returnCompanionGrief(s,id,report);returnServiceObjection(s,id,report);
+  s.operativeState[id].toolkitPoints=validateRepairReserve(report);
   for(const [field,max]of Object.entries({energy:100,weight:1000,strength:100,strengthTraining:10000,rations:100000,torches:100000,condition:100,fatigue:100,boleadoras:100000}))if(report[field]!==undefined){requireThat(Number.isFinite(report[field])&&report[field]>=0&&report[field]<=max,'El estado del combatiente es inválido.');s.operativeState[id][field]=report[field];}
   if(s.operativeState[id].sleepCollapsed&&!needsCollapseRecovery(s.operativeState[id]))s.operativeState[id].sleepCollapsed=false;
   s.operativeState[id].inventory=clone(validatePersonalInventory(report.inventory));
@@ -633,7 +638,7 @@ export function dispatchCampaign(previous,action){
     requireThat(action&&typeof action.type==='string','La orden no es válida.');
     validateCampaignServiceObjections(s,rosterFor(s));
     if(s.pendingBattle)validateQuestBeneficiaryContext(s,s.pendingBattle,{request:null,issued:true});
-    if(s.pendingBattle?.resumeSnapshot){validateAbilityReferences(s,s.pendingBattle.resumeSnapshot);validateQuestBeneficiaryContext(s,s.pendingBattle.resumeSnapshot);validateServiceObjectionContext(s,s.pendingBattle.resumeSnapshot,rosterFor(s));}
+    if(s.pendingBattle?.resumeSnapshot){validateRepairReserveContext(s.pendingBattle,s.pendingBattle.resumeSnapshot);validateAbilityReferences(s,s.pendingBattle.resumeSnapshot);validateQuestBeneficiaryContext(s,s.pendingBattle.resumeSnapshot);validateServiceObjectionContext(s,s.pendingBattle.resumeSnapshot,rosterFor(s));}
     const tradeOrders=['purchaseToolkits','purchaseAmmunition','purchaseGrenades','purchaseMedicalSupplies','purchaseEquipment','purchaseUsedEquipment','sellEquipment','exchangeEquipment','sellArtillery','purchaseUsedArtillery','repurchaseArtillery','resupplyArtillery','supplyArtillery','resupply','repairWeapon'];
     requireThat(!tradeOrders.includes(action.type)&&!(action.type==='ammunition'&&action.direction==='buy')&&!(action.type==='sectorInventory'&&action.direction==='issueOutfit')&&!(action.type==='horseAction'&&['acquire','hire','feed','breed'].includes(action.order?.type)),'El comercio de equipo no está disponible. Buscá objetos en los sectores y usá los que llevás.');
     if(action.sectorState){validateCampaignPatrol(s,action.sectorState);validateCampaignArtilleryProfiles(s,action.sectorState);validateArtilleryReport(s.pendingBattle,action.sectorState);}
@@ -705,6 +710,7 @@ export function dispatchCampaign(previous,action){
         const snapshot=action.sectorState===undefined?null:validatedInteractionSnapshot(s,action.sectorState);
         if(snapshot)requireThat(snapshot.elapsedSeconds===elapsed,'El parte y el reloj no coinciden.');
         const griefProgress=snapshot??s.pendingBattle.resumeSnapshot;
+        if(griefProgress)retainRepairReserves(s.pendingBattle,griefProgress);
         if(griefProgress&&!snapshot)validateCompanionGriefContext(s,griefProgress,rosterFor(s));
         if(griefProgress)validateServiceObjectionContext(s,griefProgress,rosterFor(s));
         if(!snapshot&&griefProgress)requireThat(!hasPendingServiceObjections(s,griefProgress),'La objeción necesita un parte táctico completo antes de avanzar el reloj.');
@@ -1121,7 +1127,7 @@ export function restoreCampaignValue(s){
   for(const snapshot of [s.pendingBattle,s.pendingBattle?.resumeSnapshot,...Object.values(s.sectorStates??{}),...Object.values(s.sceneStates??{})].filter(Boolean)){validateQuestContext(s,snapshot);validateRoadsideDiscoveryContext(s,snapshot);}
   s.quests??={};requireThat(validateQuests(s.quests,s.hour,s),'Los encargos guardados son inválidos.');
   if(s.pendingBattle)validateQuestBeneficiaryContext(s,s.pendingBattle,{request:null,issued:true});
-  if(s.pendingBattle?.resumeSnapshot)validateQuestBeneficiaryContext(s,s.pendingBattle.resumeSnapshot);
+  if(s.pendingBattle?.resumeSnapshot){validateRepairReserveContext(s.pendingBattle,s.pendingBattle.resumeSnapshot);validateQuestBeneficiaryContext(s,s.pendingBattle.resumeSnapshot);retainRepairReserves(s.pendingBattle,s.pendingBattle.resumeSnapshot);}
   for(const snapshot of [...Object.values(s.sectorStates??{}),...Object.values(s.sceneStates??{})])validateQuestBeneficiaryContext(s,snapshot,{request:null,retained:true});
   s.lastConversation??=null;s.conversations??={};
   requireThat(object(s.conversations)&&Object.entries(s.conversations).every(([id,c])=>[...encounterDefinitions(s),...YATASTO_NPCS].some(n=>n.id===id)&&object(c)&&c.met===true&&['repeat','friendly','direct','threaten','recruit','quest','mission','dialogue','gift','escortFollow','escortWait'].includes(c.lastApproach)&&integer(c.hour,0,s.hour)&&(c.secondOfHour===undefined||integer(c.secondOfHour,0,3599)&&c.hour*3600+c.secondOfHour<=s.hour*3600+(s.secondOfHour??0))&&(c.text===undefined||typeof c.text==='string'&&c.text.length>0&&c.text.length<2000)&&(c.giftCount===undefined?c.lastApproach!=='gift':questsFor(s).some(q=>questContactIds(q).includes(id)&&q.carried&&integer(c.giftCount,0,q.carried.count)))&&(c.sector===undefined||validWorldLocation(c.sector)||c.sector==='san_lorenzo')),'Las conversaciones guardadas son inválidas.');

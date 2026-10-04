@@ -2,10 +2,12 @@ import {applyQuestEscortOrders} from './quest-escort.js';
 import {syncBattleTime} from './time.js';
 import {enterSector} from './world.js';
 import {validateQuestBeneficiaryContext} from './quest-beneficiaries.js';
+import {validateRepairReserveContext} from './repair-materials.js';
 
 // A timed-out encounter resumes its exact turn, AP, wounds and departure receipts.
 export function battleFromRequest(request, campaign = null, options = {}) {
   if (request.resumeSnapshot) {
+    validateRepairReserveContext(request,request.resumeSnapshot);
     if(campaign)validateQuestBeneficiaryContext(campaign,request.resumeSnapshot,{request});
     return structuredClone(request.resumeSnapshot);
   }
