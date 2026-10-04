@@ -69,6 +69,8 @@ for(const key of ['exits','enemyExits'])if(s[key]!==undefined){
 if(s.griefParticipantIds!==undefined)need(s.griefParticipantIds.every(id=>s.units.some(u=>u.side==='player'&&u.id===String(id))),'participantes del duelo');
 for(const npc of s.npcs??[])need(npc.griefCompanionIds===undefined&&npc.companionGrief===undefined,'duelo de civiles');
 for(const npc of s.npcs??[])need(npc.serviceObjection===undefined,'objeciones de civiles');
+for(const npc of s.npcs??[])need(npc.nervousIsolationWarned===undefined,'aviso de aislamiento de civiles');
+for(const u of s.units??[])if(Object.hasOwn(u,'nervousIsolationWarned'))need(u.nervousIsolationWarned===true&&u.side==='player'&&!u.militia&&!u.missionAlly&&Number.isSafeInteger(Number(u.id))&&Number(u.id)>=0&&String(Number(u.id))===u.id&&u.abilities?.includes('nervous_isolation'),'aviso de aislamiento');
 for(const u of s.units??[]){validateServiceObjection(u);need(u.serviceObjection===undefined||u.side==='player'&&!u.militia&&Number.isSafeInteger(Number(u.id))&&String(Number(u.id))===u.id,'objeciones de combatientes');}
 need(Array.isArray(s.units)&&s.units.length<=2000&&s.units.filter(u=>u.hp>0).length<=200,'combatientes');const ids=new Set(),instances=new Set();const claimInstance=id=>{if(id===undefined)return;need(validItemIdentity(id)&&!instances.has(id),'identidad del equipo');instances.add(id);};
 const claimStack=stack=>{for(const id of fittingItemIds(stack))claimInstance(id);};

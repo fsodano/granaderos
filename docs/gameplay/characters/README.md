@@ -13,6 +13,7 @@ the [workspace acceptance record](../../verification/gameplay-completion.md) and
 - [Paid mercenary roster](mercenary-roster.md)
 - [Authored service refusals and paid contracts](service-relationships.md) *(workspace)*
 - [Respeto a civiles y futuras contrataciones](service-objections.md)
+- [Nervios al quedar aislado](nervous-isolation.md)
 - [Descanso entre combates](strategic-rest.md)
 - [Attribute training and saved growth](attribute-training.md) *(workspace)*
 - [Militia experience and training](militia-combat-experience.md) *(workspace)*

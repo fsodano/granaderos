@@ -5,6 +5,8 @@ import {createContentSession,advancePlacementState,changePlacementStatus} from '
 import {isContractCharacter,operativeIdForCharacter,characterForOperative} from './content-character-ids.js';
 import {contentCellIds} from './content-map.js';
 import {locationId} from './world-cells.js';
+import {validateDetainedPrisoner} from './detention.js';
+import {captureSequence} from './capture-identity.js';
 const minuteOf=s=>s.hour*60+Math.floor((s.secondOfHour??0)/60);
 const strip=({content,history,...runtime})=>runtime;
 const need=ok=>{if(!ok)throw Error('Las apariciones guardadas son inválidas.');};
@@ -17,6 +19,16 @@ export function characterPresentInSector(state,characterId,sector){
   return Boolean(person?.alive&&!person.recruited&&!person.suspended&&person.appeared&&locationId(person.sector)===locationId(sector));
 }
 function currentResident(state,npc,sector){
+  if(npc.detention!==undefined){
+    validateDetainedPrisoner(npc);
+    const d=npc.detention,request=state.pendingBattle;
+    if(d.sector!==sector)return false;
+    const sources=[state.detentionRecords?.[npc.id]?.npc,
+      ...(request?.sector===sector&&!request.sceneId?request.detainedPrisoners??[]:[])];
+    return sources.some(source=>source?.id===npc.id&&source.detention&&
+      source.detention.operativeId===d.operativeId&&source.detention.capturedAt===d.capturedAt&&
+      source.detention.sector===d.sector&&captureSequence(source.detention)===captureSequence(d));
+  }
   const original=encounterDefinitions(state).find(n=>n.id===npc.id);
   if(!original||original.operativeId!==npc.operativeId||original.contentId!==undefined&&original.contentId!==npc.contentId)return false;
   if(npc.hp===0)return civilianDiedHere(state,npc,sector);

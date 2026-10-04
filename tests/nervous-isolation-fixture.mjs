@@ -1,0 +1,82 @@
+import assert from 'node:assert/strict';
+import {initialCampaign,dispatchCampaign,rosterFor} from '../game/campaign.js';
+import {defaultContentPackage} from '../game/content-package.js';
+import {contractQuote} from '../game/contracts.js';
+import {createBattle,actBattle,endTurn,presentedActBattle,presentedEndTurn} from '../game/tactical.js';
+import {encodeSave,decodeSave} from '../game/save.js';
+import {syncBattleTime} from '../game/time.js';
+
+export const nervousActor=(battle,id)=>battle.units.find(unit=>unit.id===String(id));
+export const nervousSaved=pair=>decodeSave(encodeSave(pair.campaign,pair.battle??null));
+export const nervousOrder=(campaign,action)=>{
+ const next=dispatchCampaign(campaign,action);assert.equal(next.lastError,null,`${action.type}: ${next.lastError}`);return next;
+};
+
+export function preparedNervousArena({oldPinned=false}={}){
+ const content=defaultContentPackage();
+ // Compatibility control is declared before campaign creation; care remains.
+ if(oldPinned){const cejas=content.characters.find(person=>person.id==='person-130');cejas.abilities=cejas.abilities.filter(ability=>ability!=='nervous_isolation');}
+ let campaign=initialCampaign(42,content);const prices=[];
+ for(const id of [130,110]){
+  const quote=contractQuote(campaign,rosterFor(campaign).find(person=>person.id===id),'day'),before=campaign.resources.treasury;
+  campaign=nervousOrder(campaign,{type:'recruitCivic',id,term:'day'});prices.push({id,price:quote.price});assert.equal(campaign.resources.treasury,before-quote.price);
+ }
+ campaign=nervousOrder(campaign,{type:'wait',hours:6});
+ assert.ok([130,110].every(id=>campaign.recruited.includes(id)));
+ assert.deepEqual(prices,[{id:130,price:36},{id:110,price:60}]);
+ assert.equal(campaign.resources.treasury,3104);
+ campaign=nervousOrder(campaign,{type:'attack',sector:'buenos_aires'});
+ const request=campaign.pendingBattle,width=48,height=16;
+ // Prepared initial observation arena, not a native opening victory. Positions,
+ // passive hostile posts and seed42 are fixed before the first official save.
+ // All native people, health, skills, terms and finite equipment are retained.
+ const battle=createBattle(request.squad.map(unit=>({...unit,x:1,y:unit.id===130?3:5,facing:2})),{
+  ...request,width,height,seed:42,props:[],
+  tiles:Array.from({length:width*height},(_,i)=>{const x=i%width,y=Math.floor(i/width);return x===7&&y===2?{x,y,type:'wall',material:'stone',blocked:true,blocksSight:true,cover:100}:{x,y,type:'grass',blocked:false,cover:0};}),
+  enemies:request.enemies.map((unit,i)=>({...unit,x:i===0?14:i===1?11:46,y:i===0?3:i===1?5:12+i,patrol:false,overwatch:false})),
+  npcs:request.npcs.map((npc,i)=>({...npc,x:40+i,y:15})),
+ });
+ if(request.finiteArtilleryArsenal)battle.finiteArtilleryArsenal=structuredClone(request.finiteArtilleryArsenal);
+ const start=nervousSaved({campaign,battle});return {start,prices,oldPinned};
+}
+
+export function nervousStep(pair,event,history){
+ const source=structuredClone(pair),ordinary=event.type==='enemyTurn'?endTurn(pair.battle):actBattle(pair.battle,event),presented=event.type==='enemyTurn'?presentedEndTurn(pair.battle):presentedActBattle(pair.battle,event);
+ assert.equal(ordinary.lastError,null,`${JSON.stringify(event)}: ${ordinary.lastError}`);assert.deepEqual(presented.state,ordinary);assert.deepEqual(pair,source);
+ const synced=syncBattleTime(pair.campaign,ordinary);assert.equal(synced.error,null,synced.error);history?.push(structuredClone(event));return nervousSaved(synced);
+}
+
+export const nervousInjuryOrders=[
+ {type:'move',unitId:'130',x:4,y:3},
+ {type:'fire',unitId:'130',targetId:'enemy-1',aim:4},
+ {type:'fire',unitId:'110',targetId:'enemy-1',aim:4},
+ {type:'enemyTurn'},
+ {type:'move',unitId:'110',x:5,y:3},
+ {type:'enemyTurn'},
+ {type:'move',unitId:'110',x:5,y:2},
+ {type:'move',unitId:'130',x:6,y:3},
+ {type:'reload',unitId:'130'},
+ {type:'fire',unitId:'130',targetId:'enemy-0',aim:4},
+ {type:'enemyTurn'},
+];
+
+// Hostile damage and one further real miss earn the threshold. The wounded
+// doctor spends her own dressing and moves behind the declared stone screen.
+// Acosta's resulting critical condition supplies no military support.
+export const nervousFearOrders=[...nervousInjuryOrders,
+ {type:'weapon',unitId:'130',slot:'medical'},
+ {type:'heal',unitId:'130',targetId:'130'},
+ {type:'move',unitId:'130',x:6,y:1},
+ {type:'enemyTurn'},
+];
+
+export function earnNervousIsolation(options={}){
+ const fixture=preparedNervousArena(options);let pair=fixture.start;
+ const history=[];let wounded,beforeFear;
+ for(let i=0;i<nervousFearOrders.length;i++){
+  if(i===nervousInjuryOrders.length)wounded=structuredClone(pair);
+  if(i===nervousFearOrders.length-1)beforeFear=structuredClone(pair);
+  pair=nervousStep(pair,nervousFearOrders[i],history);
+ }
+ return {...fixture,pair,history,wounded,beforeFear};
+}
