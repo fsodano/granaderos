@@ -39,14 +39,14 @@ export function captureBattlePresentation(before,execute,canObserve){
  recorder=(state,event)=>{
   const visible=visibleIn(state),known=knownIn(state),signature=visibleSignature(state,known),seen=visible.has(event.unitId);
   if(!seen&&signature===lastSignature)return;
-  if(event.type==='prepare'&&!seen)return;
+  if((event.type==='prepare'||event.type==='contact')&&!seen)return;
   const shotVisual=seen?observedShot(state,event.shotVisual,known,canObserve):null;
   if(event.type==='projectile'&&shotVisual)presentedShots.add(event.unitId);
   const impacts=bodyEntries(state).filter(({body,kind})=>known.has(bodyKey(kind,body.id))).flatMap(({body:u,kind})=>{const before=bodyEntries(prior).find(old=>old.kind===kind&&old.body.id===u.id)?.body,loss=before?before.hp-u.hp:0;return loss>0?[{unitId:u.id,...(kind==='npc'?{victimKind:'npc'}:{}),x:u.x,y:u.y,tacticalLevel:u.tacticalLevel,damage:loss,fatal:u.hp===0}]:[];});
   const target=event.targetId?bodyEntries(state).find(({body,kind})=>kind===(event.targetKind==='npc'?'npc':'unit')&&String(body.id)===String(event.targetId)&&known.has(bodyKey(kind,body.id)))?.body:null;
   const current=snapshot(state,prior);prior=current;lastSignature=signature;
   const shotComplete=event.type==='result'&&presentedShots.delete(event.unitId);
-  frames.push({state:current,visibleIds:[...visible],unitId:seen?event.unitId:null,type:event.type,action:event.action,impacts,...(shotVisual?{shotVisual}:{}),...(shotComplete?{shotComplete:true}:{}),...(event.performed===false?{performed:false}:{}),...(target?{targetPoint:{id:target.id,x:target.x,y:target.y,tacticalLevel:target.tacticalLevel}}:{}),...(event.grenadeVisual&&seen?{grenadeVisual:snapshot(event.grenadeVisual)}:{}),...(event.knifeVisual&&seen?{knifeVisual:snapshot(event.knifeVisual)}:{})});
+  frames.push({state:current,visibleIds:[...visible],unitId:seen?event.unitId:null,type:event.type,action:event.action,impacts,...(shotVisual?{shotVisual}:{}),...(shotComplete?{shotComplete:true}:{}),...(event.contactComplete&&seen?{contactComplete:true}:{}),...(event.performed===false?{performed:false}:{}),...(target?{targetPoint:{id:target.id,x:target.x,y:target.y,tacticalLevel:target.tacticalLevel}}:{}),...(event.grenadeVisual&&seen?{grenadeVisual:snapshot(event.grenadeVisual)}:{}),...(event.knifeVisual&&seen?{knifeVisual:snapshot(event.knifeVisual)}:{})});
  };
  try{const state=execute();return {state,frames};}finally{recorder=parent;}
 }

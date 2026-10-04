@@ -93,5 +93,5 @@ test('an observed resident receives target focus and a real hit reaction in comm
  assert.ok(result.frames.indexOf(prepare)<result.frames.indexOf(flight));assert.ok(result.frames.indexOf(flight)<result.frames.indexOf(impact));
  assert.equal(flight.state.npcs[0].hp,s.npcs[0].hp);assert.deepEqual(flight.impacts,[]);assert.equal(flight.shotVisual.outcome,'hit');assert.ok(battleFrameDuration(flight)>=BATTLE_PLAYBACK.projectileMinimum);
  assert.equal(impact.type,'impact');assert.equal(impact.impacts[0].victimKind,'npc');assert.equal(impact.impacts[0].damage,s.npcs[0].hp-result.state.npcs[0].hp);assert.equal(impact.state.npcs[0].hp,result.state.npcs[0].hp);assert.equal(battleFrameDuration(impact),BATTLE_PLAYBACK.impact);
- for(const frame of [prepare,flight,impact]){const focus=battleFrameFocus(frame);assert.equal(focus.x,(s.units[0].x+s.npcs[0].x)/2);assert.equal(focus.y,1);assert.ok(!frame.visibleIds.includes('resident'),'the existing unit visibility list remains a unit list');}
+ for(const frame of [prepare,flight,impact]){const focus=battleFrameFocus(frame),targetX=frame===flight?flight.shotVisual.impact.x:s.npcs[0].x;assert.equal(focus.x,(s.units[0].x+targetX)/2);assert.equal(focus.y,1);assert.ok(!frame.visibleIds.includes('resident'),'the existing unit visibility list remains a unit list');}
 });

@@ -3,6 +3,7 @@
 // These are Granaderos playtest settings, not claimed JA2 constants.
 export const COMBAT_BALANCE=Object.freeze({
  firearmDamageMultiplier:1,
+ firearmFlightRangeMultiplier:2, // Physical flight limit; effective aiming range is unchanged.
  rangePenaltyMultiplier:.98,
  sightPenaltyMultiplier:1,
  outsideWeaponChanceFactor:.5,

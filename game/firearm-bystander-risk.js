@@ -1,5 +1,5 @@
 import {canSee,teamCanSee,hasLineOfSight,hasFirearm,weaponFor,firearmProjectilePath} from './tactical.js';
-import {projectileFlight} from './projectile-cover.js';
+import {projectileFlight,firearmRay} from './projectile-cover.js';
 import {absoluteBodyHeight} from './sight-geometry.js';
 import {pairedPistol,secondaryPistolView} from './paired-fire.js';
 import {isInteriorVisible} from './tactical-visibility.js';
@@ -30,13 +30,14 @@ export function firearmBystanderRisk(state,attacker,target,hitLocation='torso'){
  const candidates=new Map([...units.filter(body=>body.side===attacker.side&&body.id!==attacker.id).map(body=>[`unit:${body.id}`,{id:body.id,name:body.name,kind:'unit'}]),...npcs.map(body=>[`npc:${body.id}`,{id:body.id,name:body.name,kind:'npc'}])]);
  if(!candidates.size)return {direct:[],scatter:[]};
  const candidateBodies=[...units.filter(body=>body.side===attacker.side&&body.id!==attacker.id),...npcs];
- const couldHit=destination=>candidateBodies.some(body=>crossesBodyCell(attacker,destination,body));
- const scene={...state,units,npcs},missScene={...scene,units:units.filter(body=>body.id!==target.id)},direct=new Map(),scatter=new Map();
+ const targetKind=target.targetKind==='npc'||(state.npcs??[]).includes(target)?'npc':'unit';
+ const scene={...state,units,npcs},missScene={...scene,units:units.filter(body=>targetKind!=='unit'||body.id!==target.id),npcs:npcs.filter(body=>targetKind!=='npc'||body.id!==target.id)},direct=new Map(),scatter=new Map();
  const radius=Math.min(4,Math.max(1,Math.ceil(Math.hypot(target.x-attacker.x,target.y-attacker.y)/8)));
  const destinationHeight=absoluteBodyHeight(state,target,hitLocation),views=pairedPistol(attacker)?[attacker,secondaryPistolView(attacker)]:[attacker];
  const record=(flight,collection)=>{if(flight.blocked||!flight.victimId)return;const key=`${flight.victimKind??'unit'}:${flight.victimId}`,body=candidates.get(key);if(body)collection.set(key,body);};
  for(const view of views){
   const weapon=weaponFor(view);
+  const couldHit=destination=>{const ray=firearmRay(state,view,destination,weapon,hitLocation,{destinationHeight});return ray&&candidateBodies.some(body=>crossesBodyCell(view,ray.destination,body));};
   if(weapon.id===1807){
    const length=Math.hypot(target.x-view.x,target.y-view.y);if(!length)continue;
    const dx=(target.x-view.x)/length,dy=(target.y-view.y)/length;
@@ -46,14 +47,14 @@ export function firearmBystanderRisk(state,attacker,target,hitLocation='torso'){
    }
    continue;
   }
-  if(couldHit(target))record(projectileFlight(scene,view,target,weapon,hitLocation),direct);
+  if(couldHit(target))record(projectileFlight(scene,view,target,weapon,hitLocation,{targetKind}),direct);
   // A failed roll removes the selected soldier and offsets the destination by
   // one legal scatter cell. The zero/zero draw becomes +1/0 in the shot rule.
   for(let dx=-radius;dx<=radius;dx++)for(let dy=-radius;dy<=radius;dy++){
    if(!dx&&!dy)continue;
    const destination={x:target.x+dx,y:target.y+dy,stance:target.unconscious||target.knockedDown?'prone':target.stance??'standing',mounted:!target.unconscious&&!target.knockedDown&&Boolean(target.mounted)};
    if(!couldHit(destination))continue;
-   record(projectileFlight(missScene,view,destination,weapon,hitLocation,{destinationHeight}),scatter);
+   record(projectileFlight(missScene,view,{...destination,tacticalLevel:target.tacticalLevel},weapon,hitLocation,{destinationHeight,targetKind}),scatter);
   }
  }
  const order=(a,b)=>String(a.name).localeCompare(String(b.name))||String(a.id).localeCompare(String(b.id));

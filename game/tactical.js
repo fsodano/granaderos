@@ -459,9 +459,11 @@ export function firearmProjectilePath(s,attacker,target,hitLocation='torso'){ret
 // Forecast only known bodies; actual flight below checks every body. Hypothetical
 // target positions used by AI exposure replace that actor's old position.
 function firearmPreviewScene(s,attacker,target){
-  const units=s.units.filter(u=>u.id!==target.id&&(u.side===attacker.side||(attacker.side==='player'?teamCanSee(s,'player',u):canSee(s,attacker,u))));
-  if(target.id!==undefined)units.push(target);
-  const npcs=knownCivilianBodies(s,attacker);
+  const civilian=target.targetKind==='npc'||isCivilianBody(s,target);
+  const units=s.units.filter(u=>(civilian||u.id!==target.id)&&(u.side===attacker.side||(attacker.side==='player'?teamCanSee(s,'player',u):canSee(s,attacker,u))));
+  if(!civilian&&target.id!==undefined)units.push(target);
+  const npcs=knownCivilianBodies(s,attacker).filter(n=>!civilian||n.id!==target.id);
+  if(civilian&&target.id!==undefined)npcs.push(target);
   return {...s,units,npcs};
 }
 export function firearmFlightPreview(s,attacker,target,hitLocation='torso'){
@@ -555,13 +557,22 @@ function scatteredShotDestination(s,u,target){
 }
 // The resolved ray supplies presentation only. No second accuracy/damage draw
 // is made, and neither the flight nor its timing enters a saved battle.
-function presentFirearmFlight(s,actor,destination,flight=null,hitLocation='torso',source=actor,{pointShot=false,spread=false,destinationHeight,aimHit=false}={}){
- const victim=flight&&flightVictim(s,flight),obstacle=flight?.obstacles?.find(item=>item.stopped);
+function presentFirearmFlight(s,actor,destination,flight=null,hitLocation='torso',source=actor,{pointShot=false,spread=false,destinationHeight,aimHit=false,flightState=s}={}){
+ const victim=flight&&flightVictim(s,flight),physicalObstacle=flight?.obstacles?.find(item=>item.stopped);
  const origin={...positionOf(actor),tacticalLevel:tacticalLevel(actor),height:absoluteBodyHeight(s,actor,'muzzle')};
- const end={...positionOf(destination),tacticalLevel:tacticalLevel(destination),height:destinationHeight??absoluteBodyHeight(s,destination,hitLocation)};
+ // An unseen interception must not shorten the displayed path at that person.
+ // Resolve its fallback using observed bodies only, retaining a miss's typed
+ // selected-body exclusion. This does not roll accuracy or apply any damage.
+ const victimObserved=victim&&teamCanSee(s,'player',victim);
+ const knownFlight=victim&&!victimObserved?projectileFlight({...flightState,units:flightState.units.filter(body=>body.side==='player'||teamCanSee(s,'player',body)),npcs:(flightState.npcs??[]).filter(body=>teamCanSee(s,'player',body))},actor,destination,weaponFor(actor),hitLocation,{destinationHeight}):null;
+ // A concealed body cannot remove the cue at a known wall reached by this
+ // observed fallback. A known body is different: never invent its injury.
+ const knownObstacle=knownFlight?.blocked&&knownFlight.impact&&teamCanSee(s,'player',{...knownFlight.impact,x:Math.round(knownFlight.impact.x),y:Math.round(knownFlight.impact.y)})?knownFlight.obstacles.find(item=>item.stopped):null;
+ const obstacle=knownObstacle??physicalObstacle;
+ const end=knownFlight?.impact??flight?.destination??{...positionOf(destination),tacticalLevel:tacticalLevel(destination),height:destinationHeight??absoluteBodyHeight(s,destination,hitLocation)};
  const fraction=obstacle?.fraction??1;
- const impact=victim?{...positionOf(victim),tacticalLevel:tacticalLevel(victim),height:absoluteBodyHeight(s,victim,flight.hitLocation)}:obstacle?{x:origin.x+(end.x-origin.x)*fraction,y:origin.y+(end.y-origin.y)*fraction,tacticalLevel:tacticalLevel(obstacle),height:origin.height+(end.height-origin.height)*fraction}:{...end};
- const shotVisual={source:origin,destination:end,impact,outcome:spread?'pellets':victim?'hit':obstacle?'cover':'miss',material:obstacle?.material,pointShot,spread,aimHit,...(victim?{victimId:victim.id,victimKind:flight.victimKind??'unit',victimObserved:teamCanSee(s,'player',victim)}:{})};
+ const impact=knownObstacle?knownFlight.impact:flight?.impact??(victim?{...positionOf(victim),tacticalLevel:tacticalLevel(victim),height:absoluteBodyHeight(s,victim,flight.hitLocation)}:obstacle?{x:origin.x+(end.x-origin.x)*fraction,y:origin.y+(end.y-origin.y)*fraction,tacticalLevel:tacticalLevel(obstacle),height:origin.height+(end.height-origin.height)*fraction}:{...end});
+ const shotVisual={source:origin,destination:end,impact,outcome:spread?'pellets':knownObstacle?'cover':victim?'hit':obstacle?'cover':'miss',material:obstacle?.material,pointShot,spread,aimHit,...(victim&&!knownObstacle?{victimId:victim.id,victimKind:flight.victimKind??'unit',victimObserved}:{})};
  const event={unitId:source.id,action:pointShot?'firePoint':'fire',shotVisual};
  recordBattleFrame(s,{...event,type:'projectile'});
  return ()=>recordBattleFrame(s,{...event,type:'impact'});
@@ -584,15 +595,16 @@ function directedFireImpact(s,u,target,hitLocation,hit,source=u){
   const w=weaponFor(u),end=hit?target:scatteredShotDestination(s,u,target);
   // A failed accuracy roll must remain a miss of the selected soldier. The
   // cell-wide approximation still checks every other body along that miss.
-  const flightState=hit?s:{...s,units:s.units.filter(v=>v.id!==target.id),npcs:(s.npcs??[]).filter(v=>v.id!==target.id)};
-  const flight=projectileFlight(flightState,u,end,w,hitLocation,{destinationHeight:absoluteBodyHeight(s,target,hitLocation)}),victim=flightVictim(s,flight);
+  const targetKind=isCivilianBody(s,target)?'npc':'unit';
+  const flightState=hit?s:{...s,units:s.units.filter(v=>targetKind!=='unit'||v.id!==target.id),npcs:(s.npcs??[]).filter(v=>targetKind!=='npc'||v.id!==target.id)};
+  const flight=projectileFlight(flightState,u,{...end,tacticalLevel:tacticalLevel(target)},w,hitLocation,{destinationHeight:absoluteBodyHeight(s,target,hitLocation),targetKind}),victim=flightVictim(s,flight);
   // Keep the established damage draw for aimed hits, including blocked ones.
   const amount=hit||victim?w.damage*(.8+random(s)*.4):0;
-  const finishFlight=presentFirearmFlight(s,u,{...end,tacticalLevel:tacticalLevel(target)},flight,hitLocation,source,{destinationHeight:absoluteBodyHeight(s,target,hitLocation),aimHit:hit});
+  const finishFlight=presentFirearmFlight(s,u,{...end,tacticalLevel:tacticalLevel(target)},flight,hitLocation,source,{destinationHeight:absoluteBodyHeight(s,target,hitLocation),aimHit:hit,flightState});
   if(flight.blocked){if(journalVisible(s,target))say(s,'La cobertura detiene el disparo.');finishFlight();return;}
   if(victim){
     if(flight.damageFactor<1&&observedBody(s,victim))say(s,'El disparo atraviesa la cobertura y pierde fuerza.');
-    physicalImpact(s,victim,coveredFirearmDamage(amount,flight.damageFactor),source,{hitLocation:flight.hitLocation,intentional:victim.id===target.id});
+    physicalImpact(s,victim,coveredFirearmDamage(amount,flight.damageFactor),source,{hitLocation:flight.hitLocation,intentional:victim===target});
   }
   finishFlight();
 }
@@ -612,8 +624,33 @@ function rout(s,u,report=true){
   if(report)sayObserved(s,[u],`${u.name} pierde la disciplina y abandona su arma. Intentará alcanzar una salida en su turno.`);
 }
 function wearBayonet(unit){const fitting=fixedBayonetFor(unit);if(fitting){fitting.condition=Math.max(0,fitting.condition-1);if(fitting.condition===0)unit.braced=false;}}
-function meleeStrike(s,attacker,target,amount,{counter=true}={}){const completed=meleeAttackResults.get(s)??new Set();completed.add(attacker.id);meleeAttackResults.set(s,completed);if(isCivilianBody(s,target)){physicalImpact(s,target,amount,attacker,{projectile:false,kind:'melee',intentional:true});return;}const blade=bladeFor(attacker),defense=bladeFor(target);wearBayonet(attacker);if([1809,1810].includes(defense.id)&&target.ap>=6&&target.parryTurn!==s.turn){target.parryTurn=s.turn;target.ap-=6;amount*=.75;sayObserved(s,[target],`${target.name} desvía parte del golpe con su sable.`);}if(defense.id===1813||hasPoncho(target))amount*=.8;damage(s,target,amount,attacker);if(alive(target)){if([1809,1810].includes(blade.id))target.bleeding=Math.min(10,target.bleeding+3);if(blade.id===1812){lowerWeapon(target);target.knockedDown=true;target.stance='prone';target.mounted=false;target.ap=Math.max(0,target.ap-20);sayObserved(s,[target],`${target.name} cae derribado por la lanza.`);}if(counter&&target.stance!=='prone'&&!target.knockedDown&&(defense.id===1813||hasCharacterAbility(target,'counterattack'))&&target.counterTurn!==s.turn&&target.ap>=defense.ap&&contactDistance(target,attacker)<=defense.reach&&alive(attacker)){lowerWeapon(target);target.counterTurn=s.turn;target.ap-=defense.ap;sayObserved(s,[target],`${target.name} responde con un contragolpe.`);wearBayonet(target);damage(s,attacker,defense.damage*.5,target);}}}
-function interceptCharge(s,mover,target){const blade=fixedBayonetProfile(target);if(!alive(target)||target.stance==='prone'||target.knockedDown||!target.braced||target.braceTurn===s.turn||!blade||target.ap<16||contactDistance(mover,target)>2||!hasLineOfSight(s,target,mover))return;target.braceTurn=s.turn;target.ap-=16;sayObserved(s,[target],`${target.name} recibe la carga con la bayoneta fijada.`);wearBayonet(target);damage(s,mover,blade.damage,target);}
+// Record the paid contact posture before the existing impact changes a body.
+// The recorder admits only known actors/targets and does not resolve an attack.
+function presentMeleeContact(s,attacker,target,action='melee'){
+ const event={unitId:attacker.id,action,...(target?{targetId:target.id,...(isCivilianBody(s,target)?{targetKind:'npc'}:{})}:{})};
+ recordBattleFrame(s,{...event,type:'contact'});
+ return ()=>recordBattleFrame(s,{...event,type:'impact'});
+}
+function meleeStrike(s,attacker,target,amount,{counter=true,action='melee'}={}){
+ const completed=meleeAttackResults.get(s)??new Set();completed.add(attacker.id);meleeAttackResults.set(s,completed);
+ const finishContact=presentMeleeContact(s,attacker,target,action);
+ if(isCivilianBody(s,target)){physicalImpact(s,target,amount,attacker,{projectile:false,kind:'melee',intentional:true});finishContact();return;}
+ const blade=bladeFor(attacker),defense=bladeFor(target);wearBayonet(attacker);
+ if([1809,1810].includes(defense.id)&&target.ap>=6&&target.parryTurn!==s.turn){target.parryTurn=s.turn;target.ap-=6;amount*=.75;sayObserved(s,[target],`${target.name} desvía parte del golpe con su sable.`);}
+ if(defense.id===1813||hasPoncho(target))amount*=.8;
+ damage(s,target,amount,attacker);
+ if(alive(target)){
+  if([1809,1810].includes(blade.id))target.bleeding=Math.min(10,target.bleeding+3);
+  if(blade.id===1812){lowerWeapon(target);target.knockedDown=true;target.stance='prone';target.mounted=false;target.ap=Math.max(0,target.ap-20);sayObserved(s,[target],`${target.name} cae derribado por la lanza.`);}
+ }
+ finishContact();
+ if(alive(target)&&counter&&target.stance!=='prone'&&!target.knockedDown&&(defense.id===1813||hasCharacterAbility(target,'counterattack'))&&target.counterTurn!==s.turn&&target.ap>=defense.ap&&contactDistance(target,attacker)<=defense.reach&&alive(attacker)){
+  lowerWeapon(target);target.counterTurn=s.turn;target.ap-=defense.ap;sayObserved(s,[target],`${target.name} responde con un contragolpe.`);
+  const finishCounter=presentMeleeContact(s,target,attacker);
+  wearBayonet(target);damage(s,attacker,defense.damage*.5,target);finishCounter();
+ }
+}
+function interceptCharge(s,mover,target){const blade=fixedBayonetProfile(target);if(!alive(target)||target.stance==='prone'||target.knockedDown||!target.braced||target.braceTurn===s.turn||!blade||target.ap<16||contactDistance(mover,target)>2||!hasLineOfSight(s,target,mover))return;target.braceTurn=s.turn;target.ap-=16;sayObserved(s,[target],`${target.name} recibe la carga con la bayoneta fijada.`);const finishContact=presentMeleeContact(s,target,mover);wearBayonet(target);damage(s,mover,blade.damage,target);finishContact();}
 function damage(s,target,amount,source,projectile=false,hitLocation='torso',extraBreath=0,report=true){
   if(isCivilianBody(s,target))return physicalImpact(s,target,amount,source,{projectile,hitLocation,extraBreath,report,intentional:true});
   if(projectile&&(hasCharacterAbility(target,'protected_commander')||(target.leadership||0)>=90)){
@@ -815,7 +852,7 @@ function pointFireImpact(s,u,point,aim,source=u,preparedAccuracy){
   if(random(s)*100>=accuracy){
     end=scatteredShotDestination(s,u,point);
   }
-  const flight=usesElevationGeometry(s,u,point)?projectileFlight(s,u,{...end,stance:'standing',mounted:false},w,'torso',{destinationHeight:absoluteBodyHeight(s,{...point,stance:'standing',mounted:false},'torso')}):pointProjectileFlight(s,u,end,w),victim=flightVictim(s,flight);
+  const flight=pointProjectileFlight(s,u,{...end,tacticalLevel:tacticalLevel(point)},w,{destinationHeight:absoluteBodyHeight(s,{...point,stance:'standing',mounted:false},'torso')}),victim=flightVictim(s,flight);
   const finishFlight=presentFirearmFlight(s,u,{...end,tacticalLevel:tacticalLevel(point),stance:'standing'},flight,'torso',source,{pointShot:true,destinationHeight:absoluteBodyHeight(s,{...point,stance:'standing',mounted:false},'torso')});
   if(victim)impact(victim,coveredFirearmDamage(w.damage*(.8+random(s)*.4),flight.damageFactor),flight.hitLocation);
   finishFlight();
@@ -1588,8 +1625,8 @@ function apply(s,a,enemy=false,movementPath=null){
  const frameAction=a.type!=='useItem'?a.type:actor&&heldGrenade(actor)?'throwGrenade':actor?.activeSlot==='medical'?'heal':actor?.activeSlot==='supply'?heldSupply(actor)?.action??'useItem':a.environment?'environment':actor?.activeSlot==='item'&&s.npcs?.some(n=>n.id===String(a.targetId))?'giveItem':actor?contextualAttack(s,actor,s.units.find(u=>u.id===String(a.targetId)),a).type:'useItem';
  if(!movement)recordBattleFrame(s,{type:'prepare',unitId:String(a.unitId),targetId:a.targetId,targetKind:a.targetKind,action:frameAction});
  const accepted=applyOrder(s,a,enemy,movementPath);
- const cancelledStrike=['melee','meleePoint','charge'].includes(frameAction)&&!meleeAttackResults.get(s)?.has(String(a.unitId));
- if(accepted!==false)recordBattleFrame(s,{type:'result',unitId:String(a.unitId),targetId:a.targetId,targetKind:a.targetKind,action:frameAction,...(cancelledStrike?{performed:false}:{})});
+ const closeCombat=['melee','meleePoint','charge'].includes(frameAction),completedStrike=closeCombat&&meleeAttackResults.get(s)?.has(String(a.unitId)),cancelledStrike=closeCombat&&!completedStrike;
+ if(accepted!==false)recordBattleFrame(s,{type:'result',unitId:String(a.unitId),targetId:a.targetId,targetKind:a.targetKind,action:frameAction,...(cancelledStrike?{performed:false}:completedStrike?{contactComplete:true}:{})});
  return accepted;
 }
 function applyOrder(s,a,enemy=false,movementPath=null){if(a.type==='useItem'){const user=s.units.find(v=>v.id===String(a.unitId));if(heldGrenade(user))a=grenadeUseOrder(s,a);else if(user?.activeSlot==='item'&&s.npcs?.some(n=>n.id===String(a.targetId)))a={...a,type:'giveItem'};else if(user?.activeSlot==='supply'){const point=s.units.find(v=>v.id===String(a.targetId));a={...a,type:heldSupply(user)?.action??'invalidSupply',...(point?positionOf(point):{}),targetId:a.targetId??(user.activeSupply==='rations'?'':undefined)};}else if(a.environment)a={...a,...a.environment,type:'environment'};else a={...a,type:user?.activeSlot==='medical'?'heal':user?contextualAttack(s,user,s.units.find(v=>v.id===String(a.targetId)),a).type:'melee'};}const fail=text=>{if(!enemy||u&&journalVisible(s,u)){s.lastError=text;say(s,text);}return false;};const u=s.units.find(u=>u.id===String(a.unitId));if(s.status!=='active')return fail('El combate ya terminó.');if(!u||!alive(u))return fail('El soldado no puede actuar.');if(u.side!==(enemy?'enemy':'player'))return fail('No puedes dar órdenes a ese soldado.');if(!enemy&&!interruptAvailable(s,u))return fail('Ese soldado no puede actuar en esta interrupción.');if(u.knockedDown&&!['stance','heal','ration'].includes(a.type))return fail('El soldado está derribado: debe ponerse de pie.');const observation=reactionObservation(s,u);if(a.targetKind==='npc'&&a.targetId!==undefined&&!['heal','giveItem','free','prisonerEscort','loot','fire','melee'].includes(a.type))return fail('Prepará las vendas para tratar al habitante.');const target=a.type==='giveItem'||['heal','free','prisonerEscort','loot','fire','melee'].includes(a.type)&&a.targetKind==='npc'?s.npcs?.find(n=>n.id===String(a.targetId)):s.units.find(u=>u.id===String(a.targetId)&&!u.departure);if(a.type!=='inventoryMap'&&a.targetId!==undefined&&!target)return fail('El objetivo no está disponible en este sector.');const pay=n=>{if(!Number.isFinite(n)||n<0||s.mode!=='exploration'&&u.ap<n)return false;if(n>0&&(lowersWeapon(a.type)||a.type==='look'&&u.stance==='prone'))lowerWeapon(u);if(s.mode==='exploration'){if(a.type!=='move'&&a.type!=='climb')s.actionDurationSeconds=Math.max(1,Math.ceil(n*.06));return true;}u.ap-=n;return true;};
@@ -1808,15 +1845,19 @@ else if(a.type==='melee'||a.type==='meleePoint'){
   const completed=meleeAttackResults.get(s)??new Set();completed.add(u.id);meleeAttackResults.set(s,completed);
   const direction=`${Math.sign(destination.x-u.x)},${Math.sign(destination.y-u.y)}`,bonus=1+(direction===u.lastDirection?Math.min(u.momentum,5)*.1:0);
   u.facing=directionTo(u,destination);emitNoise(s,u,'melee');
-  if(pointStrike)sayObserved(s,[u],`${u.name} golpea hacia la casilla con ${blade.name.toLowerCase()}.`);
-  else if(blade.id===FISTS.id){
-    const chance=unarmedChance(u,target,{aware:canSee(s,target,u)});
-    if(random(s)*100<chance){const impact=unarmedImpact(u);damage(s,target,impact.damage,u,false,'torso',Math.max(0,impact.breathLoss-Math.ceil(impact.damage/2)));practice(u,'agility');if(target.unconscious)sayObserved(s,[target],`${target.name} queda inconsciente por el golpe.`);}
-    else sayObserved(s,[u],`${u.name} falla el golpe (${chance}%).`);
+  if(pointStrike||blade.id===FISTS.id){
+    const finishContact=presentMeleeContact(s,u,pointStrike?null:target,a.type);
+    if(pointStrike)sayObserved(s,[u],`${u.name} golpea hacia la casilla con ${blade.name.toLowerCase()}.`);
+    else{
+      const chance=unarmedChance(u,target,{aware:canSee(s,target,u)});
+      if(random(s)*100<chance){const impact=unarmedImpact(u);damage(s,target,impact.damage,u,false,'torso',Math.max(0,impact.breathLoss-Math.ceil(impact.damage/2)));practice(u,'agility');if(target.unconscious)sayObserved(s,[target],`${target.name} queda inconsciente por el golpe.`);}
+      else sayObserved(s,[u],`${u.name} falla el golpe (${chance}%).`);
+    }
+    finishContact();
   }else meleeStrike(s,u,target,blade.damage*bonus);
   u.momentum=0;
 }
-else if(a.type==='charge'){if(u.stance==='prone')return fail('Primero debés levantarte para cargar.');if(tacticalLevel(u)!==0||target&&tacticalLevel(target)!==0)return fail('La carga requiere terreno al nivel del suelo.');if(['medical','tool','supply','item'].includes(u.activeSlot))return fail('Prepara un arma antes de atacar.');const blade=bladeFor(u);if(blade.id===-1)return fail('Prepará una hoja o una bayoneta fijada para cargar.');if(blade.id===0)return fail('Acércate al enemigo para golpear con las manos vacías.');if(!target||!targetable(target)||target.side===u.side)return fail('Selecciona un enemigo para cargar.');const dx=target.x-u.x,dy=target.y-u.y;if(dx!==0&&dy!==0&&Math.abs(dx)!==Math.abs(dy))return fail('La carga exige una línea recta.');let path=line(u,target);const contact=path.findIndex(p=>dist(p,target)<=blade.reach);path=dist(u,target)<=blade.reach?[]:path.slice(0,contact+1);if(!path.length&&dist(u,target)>blade.reach)return fail('No hay espacio para cargar.');let previous=u,cost=actionCosts(s,u).melee;for(const p of path){const t=tile(s,p.x,p.y);if(!t||t.blocked||occupied(s,p.x,p.y,u.id))return fail('La carga está bloqueada.');const step=movementStepCost(s,u,previous,p);if(!Number.isFinite(step))return fail('La carga no puede atravesar una esquina.');cost+=step;previous=p;}if(!hasLineOfSight(s,u,target))return fail('No hay un paso libre hasta el objetivo.');if(u.ap<Math.ceil(cost))return fail('Faltan puntos de acción para completar la carga.');u.lastMovePath=[];let stopped=false;for(const p of path){const stepObservation=reactionObservation(s,u);const factor=movementFactor(u,p),step=movementStepCost(s,u,u,p);if(u.ap<step){stopped=true;break;}u.ap-=step;lowerWeapon(u);u.facing=directionTo(u,p);u.x=p.x;u.y=p.y;u.lastMovePath.push({...p});investigateNoise(s,u);delete u.lastTargetId;delete u.lastShotPosition;exhaust(s,u,Math.ceil(movementEnergy({...u,movementMode:'run'},tile(s,p.x,p.y))*factor));emitNoise(s,{...u,movementMode:'run',stealthMode:false},'move');rememberContacts(s);recordBattleFrame(s,{type:'step',unitId:u.id,action:'charge'});if(!alive(u)){stopped=true;break;}const interrupted=reactionFire(s,u,stepObservation);interceptCharge(s,u,target);if(interrupted||!alive(u)||s.status!=='active'){stopped=true;break;}}if(stopped){sayObserved(s,[u],`${u.name} detiene la carga antes de alcanzar al enemigo.`);checkEnd(s);return true;}const impactObservation=reactionObservation(s,u);lowerWeapon(u);u.ap=0;if(!alive(u)){sayObserved(s,[u],`${u.name} no logra completar la carga.`);checkEnd(s);return true;}u.facing=directionTo(u,target);emitNoise(s,u,'melee');meleeStrike(s,u,target,blade.damage*(1+path.length*.1)*(u.mounted?1.25:1)*(hasCharacterAbility(u,'mounted_charge')&&u.mounted?1.2:1));if(hasCharacterAbility(u,'mounted_intimidation')&&u.mounted){for(const levy of s.units.filter(v=>v.side!==u.side&&alive(v)&&dist(v,u)<=4&&(v.militia||v.levy||v.marksmanship<60))){levy.morale=Math.max(0,levy.morale-25);if(levy.morale<15)rout(s,levy);}sayObserved(s,[u],`${u.name} aterroriza a las levas con su carga montada.`);}target.morale=Math.max(0,target.morale-15);holdMorale(s,target);if(alive(target)&&target.morale<15){rout(s,target);}u.momentum=0;sayObserved(s,[u],u.side==='player'?`${u.name} ejecuta una carga de ${path.length} casillas con ${blade.name}.`:`${u.name} ataca con ${blade.name}.`);checkEnd(s);reactionFire(s,u,impactObservation);}
+else if(a.type==='charge'){if(u.stance==='prone')return fail('Primero debés levantarte para cargar.');if(tacticalLevel(u)!==0||target&&tacticalLevel(target)!==0)return fail('La carga requiere terreno al nivel del suelo.');if(['medical','tool','supply','item'].includes(u.activeSlot))return fail('Prepara un arma antes de atacar.');const blade=bladeFor(u);if(blade.id===-1)return fail('Prepará una hoja o una bayoneta fijada para cargar.');if(blade.id===0)return fail('Acércate al enemigo para golpear con las manos vacías.');if(!target||!targetable(target)||target.side===u.side)return fail('Selecciona un enemigo para cargar.');const dx=target.x-u.x,dy=target.y-u.y;if(dx!==0&&dy!==0&&Math.abs(dx)!==Math.abs(dy))return fail('La carga exige una línea recta.');let path=line(u,target);const contact=path.findIndex(p=>dist(p,target)<=blade.reach);path=dist(u,target)<=blade.reach?[]:path.slice(0,contact+1);if(!path.length&&dist(u,target)>blade.reach)return fail('No hay espacio para cargar.');let previous=u,cost=actionCosts(s,u).melee;for(const p of path){const t=tile(s,p.x,p.y);if(!t||t.blocked||occupied(s,p.x,p.y,u.id))return fail('La carga está bloqueada.');const step=movementStepCost(s,u,previous,p);if(!Number.isFinite(step))return fail('La carga no puede atravesar una esquina.');cost+=step;previous=p;}if(!hasLineOfSight(s,u,target))return fail('No hay un paso libre hasta el objetivo.');if(u.ap<Math.ceil(cost))return fail('Faltan puntos de acción para completar la carga.');u.lastMovePath=[];let stopped=false;for(const p of path){const stepObservation=reactionObservation(s,u);const factor=movementFactor(u,p),step=movementStepCost(s,u,u,p);if(u.ap<step){stopped=true;break;}u.ap-=step;lowerWeapon(u);u.facing=directionTo(u,p);u.x=p.x;u.y=p.y;u.lastMovePath.push({...p});investigateNoise(s,u);delete u.lastTargetId;delete u.lastShotPosition;exhaust(s,u,Math.ceil(movementEnergy({...u,movementMode:'run'},tile(s,p.x,p.y))*factor));emitNoise(s,{...u,movementMode:'run',stealthMode:false},'move');rememberContacts(s);recordBattleFrame(s,{type:'step',unitId:u.id,action:'charge'});if(!alive(u)){stopped=true;break;}const interrupted=reactionFire(s,u,stepObservation);interceptCharge(s,u,target);if(interrupted||!alive(u)||s.status!=='active'){stopped=true;break;}}if(stopped){sayObserved(s,[u],`${u.name} detiene la carga antes de alcanzar al enemigo.`);checkEnd(s);return true;}const impactObservation=reactionObservation(s,u);lowerWeapon(u);u.ap=0;if(!alive(u)){sayObserved(s,[u],`${u.name} no logra completar la carga.`);checkEnd(s);return true;}u.facing=directionTo(u,target);emitNoise(s,u,'melee');meleeStrike(s,u,target,blade.damage*(1+path.length*.1)*(u.mounted?1.25:1)*(hasCharacterAbility(u,'mounted_charge')&&u.mounted?1.2:1),{action:'charge'});if(hasCharacterAbility(u,'mounted_intimidation')&&u.mounted){for(const levy of s.units.filter(v=>v.side!==u.side&&alive(v)&&dist(v,u)<=4&&(v.militia||v.levy||v.marksmanship<60))){levy.morale=Math.max(0,levy.morale-25);if(levy.morale<15)rout(s,levy);}sayObserved(s,[u],`${u.name} aterroriza a las levas con su carga montada.`);}target.morale=Math.max(0,target.morale-15);holdMorale(s,target);if(alive(target)&&target.morale<15){rout(s,target);}u.momentum=0;sayObserved(s,[u],u.side==='player'?`${u.name} ejecuta una carga de ${path.length} casillas con ${blade.name}.`:`${u.name} ataca con ${blade.name}.`);checkEnd(s);reactionFire(s,u,impactObservation);}
 else if(['artillery','artilleryReload','artilleryMove','artilleryPivot'].includes(a.type)){
 const gun=s.artillery.find(g=>g.id===a.artilleryId),spec=artilleryProfile(s,gun);
 if(!gun||!spec||gun.side!==u.side||contactDistance(u,gun)>1.5)return fail('Debes estar junto a una pieza de artillería propia.');

@@ -20,16 +20,16 @@ const actor=(s,id)=>s.units.find(u=>u.id===id);
 const shot=r=>r.frames.find(f=>f.type==='projectile');
 
 for(const hit of [true,false])test(`real visible ${hit?'hit':'miss'} has a paid flight before its consequence and preserves the reducer result`,()=>{
- const s=field({marksmanship:hit?100:1}),before=structuredClone(s),action={...order,aim:hit?2:0},r=presentedActBattle(s,action),flight=shot(r),impact=r.frames.find(f=>f.type==='impact');
+ const s=field({weapon:hit?1801:1805,marksmanship:hit?100:1}),before=structuredClone(s),action={...order,aim:hit?2:0},r=presentedActBattle(s,action),flight=shot(r),impact=r.frames.find(f=>f.type==='impact');
  assert.deepEqual(r.state,actBattle(s,action));assert.deepEqual(s,before);
  assert.ok(flight);assert.equal(actor(flight.state,'p').loaded,0);assert.equal(actor(flight.state,'p').ap,actor(r.state,'p').ap);
  assert.equal(actor(flight.state,'e').hp,100);assert.deepEqual(flight.impacts,[]);
  assert.equal(flight.shotVisual.outcome,hit?'hit':'miss');
- assert.deepEqual([flight.shotVisual.impact.x,flight.shotVisual.impact.y],hit?[7,3]:[8,3]);
+ assert.ok(Math.abs(flight.shotVisual.impact.x-(hit?6.5:17))<1e-10);assert.equal(flight.shotVisual.impact.y,3);
  assert.equal(impact.impacts.length,hit?1:0);assert.equal(actor(impact.state,'e').hp,actor(r.state,'e').hp);
- assert.equal(battleFrameDuration(flight),320);assert.equal(battleFrameDuration(impact),hit?900:600);
+ assert.equal(battleFrameDuration(flight),firearmFlightDuration(flight.shotVisual));assert.equal(battleFrameDuration(impact),hit?900:600);
  assert.equal(r.state.elapsedSeconds,6);assert.ok(battleFrameDuration(r.frames[0])+battleFrameDuration(flight)+battleFrameDuration(impact)>=1340);
- assert.deepEqual(battleFrameFocus(flight),{id:'p',x:hit?4:4.5,y:3,tacticalLevel:actor(s,'p').tacticalLevel});
+ assert.ok(Math.abs(battleFrameFocus(flight).x-(hit?3.75:9))<1e-10);assert.equal(battleFrameFocus(flight).y,3);
  assert.ok(r.frames.at(-1).shotComplete);assert.equal(battleFrameDuration(r.frames.at(-1)),0);
  assert.equal(r.state.shotVisual,undefined);assert.equal(JSON.stringify(r.state).includes('projectileMinimum'),false);
  assert.deepEqual(validateBattleSnapshot(JSON.parse(JSON.stringify(r.state))),r.state);
@@ -101,16 +101,16 @@ test('each paired pistol presents its own real charge while pellets do not inven
 });
 
 test('the projectile is a finite muted moving speck and a bare miss creates no dust or surface strike',()=>{
- const s=field({marksmanship:1}),visual=shot(presentedActBattle(s,{...order,aim:0})).shotVisual;
+ const s=field({weapon:1805,marksmanship:1}),visual=shot(presentedActBattle(s,{...order,aim:0})).shotVisual;
  const draw=(stage,v=visual)=>render(h('svg',null,h(FirearmShotEffect,{state:s,visual:v,stage,project}))),flight=draw('projectile'),miss=draw('impact');
- assert.match(flight,/data-muzzle-flash/);assert.match(flight,/animateMotion/);assert.match(flight,/dur="0.32s"/);assert.doesNotMatch(flight,/filter=|linearGradient|polyline|stroke-dasharray|#00ff|NaN|Infinity/);
+ assert.match(flight,/data-muzzle-flash/);assert.match(flight,/animateMotion/);assert.ok(flight.includes(`dur="${firearmFlightDuration(visual)/1000}s"`));assert.doesNotMatch(flight,/filter=|linearGradient|polyline|stroke-dasharray|#00ff|NaN|Infinity/);
  assert.match(miss,/data-firearm-impact="miss"/);assert.doesNotMatch(miss,/attributeName="rx"|animateTransform|data-impact-material/);
  assert.doesNotMatch(draw('projectile',{...visual,visible:false}),/data-firearm/);assert.doesNotMatch(draw('projectile',{...visual,impact:{x:NaN,y:3,height:1}}),/data-firearm/);
  assert.equal(firearmFlightDuration({...visual,impact:{...visual.impact,x:100}}),650);
 });
 
 for(const hit of [true,false])test(`mounted ${hit?'hit':'near miss'} holds input through travel and impact before its single commit`,async t=>{
- const s=field({marksmanship:hit?100:1}),action={...order,aim:hit?2:0},expected=presentedActBattle(s,action),commits=[];
+ const s=field({weapon:hit?1801:1805,marksmanship:hit?100:1}),action={...order,aim:hit?2:0},expected=presentedActBattle(s,action),commits=[];
  const mounted=await mountBattlefield(t,Battlefield,{battle:s,onChange:next=>{commits.push(next);return next;},onFinish(){}},{virtualTimers:true});
  const strip=()=>nodes(mounted.tree()).find(n=>n.props?.onOrder&&n.props?.onEndTurn);
  await mounted.act(async()=>strip().props.onOrder(action));let sawFlight=false,sawImpact=false;
@@ -130,4 +130,22 @@ test('reduced motion uses static finite cues with no SVG motion animation',async
  window.matchMedia=()=>({matches:true,addEventListener(){},removeEventListener(){}});
  for(const stage of ['projectile','impact']){const markup=render(h('svg',null,h(FirearmShotEffect,{state:s,visual,stage,project})));assert.match(markup,/data-firearm-reduced-motion/);assert.doesNotMatch(markup,/animate|animateMotion|animateTransform/);}
  assert.equal(nodes(mounted.tree()).some(n=>n.type===FirearmShotEffect),false);
+});
+
+test('a mounted missed shot travels beyond the aim cell before its real downstream injury and single commit',async t=>{
+ const s=field({marksmanship:1});s.units.push({...structuredClone(s.units[0]),id:'friend',name:'Compañero',x:9,y:3});
+ const action={...order,aim:0},expected=presentedActBattle(s,action),flight=shot(expected),impact=expected.frames.find(f=>f.type==='impact'),commits=[];
+ assert.deepEqual(expected.state,actBattle(s,action));assert.equal(actor(expected.state,'e').hp,100);assert.ok(actor(expected.state,'friend').hp<100);
+ assert.ok(Math.abs(flight.shotVisual.impact.x-8.5)<1e-10);assert.equal(flight.shotVisual.outcome,'hit');assert.equal(actor(flight.state,'friend').hp,100);assert.deepEqual(flight.impacts,[]);
+ assert.deepEqual(impact.impacts.map(i=>i.unitId),['friend']);assert.equal(impact.impacts[0].damage,100-actor(expected.state,'friend').hp);
+ const mounted=await mountBattlefield(t,Battlefield,{battle:s,onChange:next=>{commits.push(next);return next;},onFinish(){}},{virtualTimers:true});
+ const strip=()=>nodes(mounted.tree()).find(n=>n.props?.onOrder&&n.props?.onEndTurn);await mounted.act(async()=>strip().props.onOrder(action));
+ for(const frame of expected.frames){
+  assert.equal(strip().props.busy,true);assert.deepEqual(commits,[]);
+  const scene=nodes(mounted.tree()).find(n=>n.type===TacticalScene),effect=nodes(mounted.tree()).find(n=>n.type===FirearmShotEffect);
+  if(frame.type==='projectile'){assert.equal(effect.props.stage,'projectile');assert.equal(actor(scene.props.state,'friend').hp,100);await mounted.act(async()=>strip().props.onOrder(action));assert.deepEqual(commits,[]);}
+  if(frame.type==='impact'){assert.equal(effect.props.stage,'impact');assert.equal(actor(scene.props.state,'friend').hp,actor(expected.state,'friend').hp);}
+  assert.equal(await mounted.nextDelay(),battleFrameDuration(frame));
+ }
+ assert.deepEqual(commits,[expected.state]);assert.equal(strip().props.busy,false);assert.equal(actor(expected.state,'p').loaded,0);assert.equal(expected.state.elapsedSeconds,6);
 });
