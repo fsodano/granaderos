@@ -7,12 +7,13 @@ import './ja2-outfit.css';
 import JA2Hands from './JA2Hands';
 import JA2ItemCard from './JA2ItemCard';
 import {equipmentEndpoint} from '../../game/tactical-inventory.js';
+import {FIELD_DRESSINGS_AP,fieldDressingsSource} from '../../game/field-dressings.js';
 import JA2OutfitSlot from './JA2OutfitSlot';
 import {EquipmentInteractionProvider,useEquipmentInteraction} from '../lib/equipment-drag';
 import JA2WeaponMode from './JA2WeaponMode';
 import {handsRequired} from '../../game/hand-layout.js';
 import {accessStepsFrom,tacticalLevel} from '../../game/tactical-space.js';
-import {climbPreview} from '../../game/tactical.js';
+import {climbPreview,fieldDressingsPreview} from '../../game/tactical.js';
 import {maximumEnergy} from '../../game/fatigue.js';
 // MODE B: single-merc inventory panel (header / stats / stance grid / paper-doll / slot-grid / pertrechos / far-right cluster).
 // Pure read model (game/ja2-hud.js inventoryModel/orderDescriptors); all mutations are caller-provided callbacks.
@@ -121,6 +122,7 @@ export default function JA2Inventory({cursorLevel=0,onCursorLevelChange,unit, ba
   const busyDisabled = busy || !inv.unitReady;
   const [managedReference, setManagedItem] = useState('');
   const [inspectedSlot,setInspectedSlot]=useState('');
+  const [dressingsSelection,setDressingsSelection]=useState<{key:string;expectedSource:string}|null>(null);
   const managedItem=inspectedSlot?equipmentEndpoint(unit,inspectedSlot).item??managedReference:managedReference;
   const [quantity, setQuantity] = useState(1);
   const [recipient, setRecipient] = useState('');
@@ -143,8 +145,18 @@ export default function JA2Inventory({cursorLevel=0,onCursorLevelChange,unit, ba
   const contentCount = Math.min(contentQuantity, content?.count ?? 1);
   const containerLoot = environment.target?.kind === 'container' ? containerLootPreview(battle, unit, environment.target, content?.index ?? 0, contentCount) : null;
   const [itemOpen,setItemOpen]=useState(false);
-  const chooseItem = (id: string,slotId='') => { setManagedItem(id); setInspectedSlot(slotId); setQuantity(1); setItemOpen(true); };
-  useEffect(() => { setManagedItem(''); setInspectedSlot(''); setQuantity(1); setRecipient(''); setLootId(''); setLootQuantity(1); setEnvironmentKey(''); setEnvironmentVerb(''); setContentIndex(0); setContentQuantity(1); setItemOpen(false); }, [unit.id]);
+  const chooseItem = (id: string,slotId='') => {
+    setManagedItem(id);setInspectedSlot(slotId);setQuantity(1);setItemOpen(true);
+    let selection:{key:string;expectedSource:string}|null=null;
+    if(id.startsWith('inventory:'))try{const key=id.slice(10);selection={key,expectedSource:fieldDressingsSource(unit,key)};}catch{}
+    setDressingsSelection(selection);
+  };
+  useEffect(() => { setManagedItem(''); setInspectedSlot('');setDressingsSelection(null); setQuantity(1); setRecipient(''); setLootId(''); setLootQuantity(1); setEnvironmentKey(''); setEnvironmentVerb(''); setContentIndex(0); setContentQuantity(1); setItemOpen(false); }, [unit.id]);
+  const packedShirt=inv.backpack.find((record:any)=>`inventory:${record.key}`===managedItem&&record.outfit==='linen_shirt');
+  const wornShirt=['headwear','outfit','legwear'].includes(managedItem)&&unit[managedItem]?.outfit==='linen_shirt';
+  const dressings=packedShirt?fieldDressingsPreview(battle,unit,packedShirt.key,dressingsSelection?.expectedSource):null;
+  const dressingsReason=wornShirt?'Guardá la camisa de lino en un bolsillo antes de preparar vendas.':dressings?.reason||
+    (packedShirt&&dressingsSelection?.key!==packedShirt.key?'Seleccioná la camisa de lino de nuevo.':'');
   useEffect(() => {
     const key = (e: KeyboardEvent) => {
       const editing = Boolean((e.target as HTMLElement)?.closest('input,select,textarea,[contenteditable]:not([contenteditable="false"]),[role="textbox"]'));
@@ -256,6 +268,12 @@ export default function JA2Inventory({cursorLevel=0,onCursorLevelChange,unit, ba
         })}
 
 
+        {(packedShirt||wornShirt)&&<div className="ja2-item-handling" aria-label="Preparación de vendas">
+          <p>Consume una camisa de lino guardada para obtener 3 vendas. No cura heridas.</p>
+          <button className="line-button" disabled={busyDisabled||!dressings?.valid||Boolean(dressingsReason)} title={dressingsReason||undefined}
+            onClick={()=>{if(packedShirt&&dressingsSelection&&dressings?.valid&&!dressingsReason)onOrder({type:'craftDressings',inventoryKey:packedShirt.key,expectedSource:dressingsSelection.expectedSource});}}>Preparar vendas · {cost(dressings?.pa??FIELD_DRESSINGS_AP)}</button>
+          {dressingsReason&&<p role="status">{dressingsReason}</p>}
+        </div>}
         <div className="ja2-item-handling" aria-label="Dar o soltar equipo">
           <label>Objeto<select aria-label="Objeto para dar o soltar" disabled={busyDisabled || !inv.items.length} value={item?.item || ''} onChange={event => chooseItem(event.target.value)}>{!item && <option value="">{inv.items.length?'Elegir objeto':'Sin objetos'}</option>}{inv.items.map((entry: any) => <option key={entry.item} value={entry.item}>{entry.label} · {entry.count}</option>)}</select></label>
           <label>Cantidad<input aria-label="Cantidad de objetos" type="number" min="1" step="1" max={item?.count || 1} disabled={busyDisabled || !item} value={count} onChange={event => setQuantity(Number(event.target.value))} /></label>
