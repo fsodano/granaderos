@@ -12,6 +12,7 @@ import {takeFiniteCache,leaveFiniteCache} from './finite-cache-driver.mjs';
 import {transportPath} from '../game/logistics.js';
 import {contractExpiresSeconds} from '../game/contracts.js';
 import {completeTestTravel} from './campaign-test-helpers.mjs';
+import {workAssignmentReason} from '../game/assignments.js';
 
 // Public collection at the actual person's location. Temporarily return a
 // local squad to service only when it must physically discover its cache.
@@ -66,11 +67,20 @@ export function recoverRouteFirearm(state,operativeId){
 }
 
 export function repairRouteFirearms(state,ids,{maxHours=48}={}){
- let s=state;const targets=()=>ids.filter(id=>s.operativeState[id].alive&&!s.operativeState[id].weaponDropped&&(s.operativeState[id].condition<100||s.operativeState[id].jammed));
+ // Primary mechanical work restores wear. Ignition failures remain for the
+ // ordinary paid reprime in finishReloadsBeforeMarch.
+ let s=state;const targets=()=>ids.filter(id=>s.operativeState[id].alive&&!s.operativeState[id].weaponDropped&&s.operativeState[id].condition<100);
  for(let hour=0;targets().length&&hour<maxHours;hour++){
-  const target=targets()[0],site=operativeLocation(s,target),mechanic=rosterFor(s).filter(op=>s.recruited.includes(op.id)&&s.operativeState[op.id].alive&&!s.operativeState[op.id].captured&&operativeLocation(s,op.id)===site&&op.mechanical>=20&&s.operativeState[op.id].hp>=15&&!s.operativeState[op.id].bleeding&&!s.operativeState[op.id].asleep&&s.operativeState[op.id].energy>10).sort((a,b)=>b.mechanical-a.mechanical)[0];assert.ok(mechanic,'actual repair needs a qualified available local mechanic');
+  let target=targets()[0];const site=operativeLocation(s,target);
+  let roster=rosterFor(s),mechanic=roster.filter(op=>s.recruited.includes(op.id)&&s.operativeState[op.id].alive&&!s.operativeState[op.id].captured&&operativeLocation(s,op.id)===site&&op.mechanical>=20&&s.operativeState[op.id].hp>=15&&!s.operativeState[op.id].bleeding&&!s.operativeState[op.id].asleep&&s.operativeState[op.id].energy>10).sort((a,b)=>b.mechanical-a.mechanical)[0];assert.ok(mechanic,'actual repair needs a qualified available local mechanic');
   if(!repairMaterialPoints(s.operativeState[mechanic.id]))s=collectRouteItems(s,mechanic.id,{kind:'repair-kit'},1).campaign;
-  s=order(s,{type:'assignWork',operativeId:mechanic.id,assignment:'repair',targetId:target});const before=repairMaterialPoints(s.operativeState[mechanic.id]);s=advanceCampaignHours(s,1);assert.ok(repairMaterialPoints(s.operativeState[mechanic.id])<before,'real repair must consume carried material');s=order(s,{type:'assignCare',id:mechanic.id,assignment:'active'});
+  // Cache discovery spends real time. Other work may finish the target,
+  // and the selected carrier may no longer be awake or able to work.
+  target=targets()[0];if(target===undefined)continue;
+  const assignedToTarget=op=>{const r=s.operativeState[op.id];return r.assignment==='repair'&&r.repairTargetId===target&&r.repairScope!=='equipment';};
+  roster=rosterFor(s);mechanic=roster.filter(op=>op.mechanical>=20&&!workAssignmentReason(s,op,'repair',{targetId:target,repairScope:'primary'},roster)).sort((a,b)=>Number(assignedToTarget(b))-Number(assignedToTarget(a))||b.mechanical-a.mechanical)[0];
+  assert.ok(mechanic,'actual repair needs a current target and an awake local mechanic with finite materials');
+  s=order(s,{type:'assignWork',operativeId:mechanic.id,assignment:'repair',targetId:target,repairScope:'primary'});const before=repairMaterialPoints(s.operativeState[mechanic.id]);s=advanceCampaignHours(s,1);assert.ok(repairMaterialPoints(s.operativeState[mechanic.id])<before,'real repair must consume carried material');s=order(s,{type:'assignCare',id:mechanic.id,assignment:'active'});
  }
  assert.deepEqual(targets(),[],'the actual finite repair plan must finish before departure');return s;
 }
