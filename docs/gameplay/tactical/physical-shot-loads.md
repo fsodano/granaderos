@@ -14,7 +14,7 @@ Cover spends each pellet's remaining force. Bodies use their actual height and i
 
 The load uses one shared 0.8..1.2 damage variation. Fractional contributions are summed by typed recipient and physical body region before injury rounding. A very weak nine-pellet load therefore cannot acquire nine minimum injuries. Actual guards already contacted by this load cannot intercept a later group, but their distinct physical pellet injuries still apply. Hit practice occurs once per distinct eligible actual injured soldier, rather than once per pellet or nearby roster entry. Civilian harm retains real intentional-target identity and ordinary custody consequences.
 
-Current authored damage is bounded at 100, so one ninth of that force is below the existing body-passage threshold 20. These default pellets stop at their first body. The shared flight code retains ordered depleted-force/body-passage behavior if a later supported tuning changes that relationship. No cone-specific penetration, ricochet, explosion or cannon physics is invented.
+Current authored damage is bounded at 100, so one ninth of that force is below the existing body-passage threshold 20. These default pellets stop at their first body. The shared flight code retains ordered depleted-force/body-passage behavior if a later supported tuning changes that relationship. Each pellet also shares the bounded [stone-face reflection rule](stone-ricochet.md); there is no separate cone-specific reflection or explosion rule. Cannon physics remains separate.
 
 ## Forecasts, warnings and enemy choices
 
@@ -32,7 +32,7 @@ Existing saves retain finite guns, ammunition, health and RNG state without new 
 
 `tests/shot-load-projectiles.test.mjs` checks finite weighted force, cover and upper-floor stops, foreground shielding through death, fractional injury, typed civilian harm, actual bodyguard recipients, private-room bodies/props, frozen mixed-pistol intent, enemy orders, and a stock paid shot-load hire through actual fire, official save, return and reentry. Affected single-ball, point-fire, alternate-load, warning, paired and presentation tests retain their own contracts.
 
-Each ray now spends material force over crossed cover depth, including oblique and vertically clipped intervals. Same-object cells merge; separate overlapping obstacles add force loss. Pellets now share the exact range-scaled drop after twice the actual selected effective range. The longer finite tail can change a downstream body region, enter material or hit ground after the resolved aiming point. Intended geometry before that onset stays unchanged. Reflected ricochet and a supported mass/velocity model remain open. Cannon and map/3D work are separate. This slice does not claim full JA2 or historical ballistic parity.
+Each ray now spends material force over crossed cover depth, including oblique and vertically clipped intervals. Same-object cells merge; separate overlapping obstacles add force loss. Pellets share the exact range-scaled drop after twice the actual selected effective range. The longer finite tail can change a downstream body region, enter material or hit ground after the resolved aiming point. A qualifying glancing stone contact can redirect each pellet once with half its current force, while cumulative distance and drop remain spent. Reflection from other surfaces and a supported mass/velocity model remain open. Cannon and map/3D work are separate. This slice does not claim full JA2 or historical ballistic parity.
 
 
 ## Falling pellet tails — 4 October 2026

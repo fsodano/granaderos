@@ -26,6 +26,25 @@ function passageHeight(flight,from,stop,fraction){
  return projectileTrajectoryPoint(model,terminalFraction*fraction)?.height??null;
 }
 
+function firedPassages(flight,attacker,state){
+ if(flight.segments!==undefined||flight.ricochets!==undefined){
+  if(!Array.isArray(flight.segments)||!flight.segments.length)return null;
+  const passages=[];let previous=null,distance=0;
+  for(const segment of flight.segments){
+   const from=segment?.source,stop=segment?.destination,model=segment?.trajectoryModel;
+   if(!finitePoint(from)||!finitePoint(stop)||!Number.isFinite(segment.fromDistance)||!Number.isFinite(segment.toDistance)||Math.abs(segment.fromDistance-distance)>1e-8||segment.toDistance<=segment.fromDistance||previous&&Math.hypot(from.x-previous.x,from.y-previous.y,from.height-previous.height)>1e-8)return null;
+   const receipt={trajectoryModel:model,terminal:{fraction:segment.terminalFraction}};
+   if(passageHeight(receipt,from,stop,.5)===null||Math.abs(Math.hypot(stop.x-from.x,stop.y-from.y)-(segment.toDistance-segment.fromDistance))>1e-8)return null;
+   passages.push({from,stop,height:fraction=>passageHeight(receipt,from,stop,fraction)});previous=stop;distance=segment.toDistance;
+  }
+  const terminal=flight.terminal?.impact;
+  if(!finitePoint(terminal)||Math.hypot(previous.x-terminal.x,previous.y-terminal.y,previous.height-terminal.height)>1e-8)return null;
+  return passages;
+ }
+ const from=flight.trajectoryModel?.source??{x:attacker.x,y:attacker.y,height:absoluteBodyHeight(state,attacker,'muzzle')},stop=flight.terminal?.impact??flight.impact;
+ return finitePoint(from)&&finitePoint(stop)?[{from,stop,height:fraction=>passageHeight(flight,from,stop,fraction)}]:null;
+}
+
 // Called only by the paid directed single-ball resolution, after physical
 // effects. Forecasts, point fire and presentation frames never call this.
 // Only the intended player may learn; the physical stop can remain hidden.
@@ -35,16 +54,19 @@ export function practiceFirearmNearMiss(state,{attacker,target,weapon,flight,hit
  if(!(damagedBodies instanceof Set)||damagedBodies.has(`unit:${target.id}`)||hitsTarget(flight,target))return 0;
  if(!weapon||![weapon.fireAP,weapon.range,weapon.capacity].every(value=>Number.isFinite(value)&&value>0)||weapon.loadPattern!==undefined&&weapon.loadPattern!=='single'||(weapon.template??weapon.id)===1807&&!weapon.loadPattern)return 0;
  if((target.trainedStats?.agility??0)>=10||!fieldPracticeChance(target,'agility'))return 0;
- const from=flight.trajectoryModel?.source??{x:attacker.x,y:attacker.y,height:absoluteBodyHeight(state,attacker,'muzzle')},stop=flight.terminal?.impact??flight.impact;
- if(!finitePoint(from)||!finitePoint(stop))return 0;
- const dx=stop.x-from.x,dy=stop.y-from.y,length=dx*dx+dy*dy;
- if(!length)return 0;
- const fraction=((target.x-from.x)*dx+(target.y-from.y)*dy)/length;
- // A wall or intervening body before the target cannot create a near miss.
- if(fraction<=0||fraction>=1)return 0;
- const x=from.x+dx*fraction,y=from.y+dy*fraction,z=passageHeight(flight,from,stop,fraction);
+ const passages=firedPassages(flight,attacker,state);if(!passages)return 0;
  const base=surfaceHeight(state,target),top=absoluteBodyHeight(state,target,'head');
- if(base===null||top===null||!Number.isFinite(z)||Math.hypot(target.x-x,target.y-y)>NEAR_MISS_DISTANCE||z<base-NEAR_MISS_HEIGHT_MARGIN||z>top+.15+NEAR_MISS_HEIGHT_MARGIN)return 0;
+ if(base===null||top===null)return 0;
+ const near=passages.some(({from,stop,height})=>{
+  const dx=stop.x-from.x,dy=stop.y-from.y,length=dx*dx+dy*dy;if(!length)return false;
+  const fraction=((target.x-from.x)*dx+(target.y-from.y)*dy)/length;
+  // Only a real passage before a leg's physical stop can teach. In particular,
+  // the original source-to-terminal chord is not a reflected flight path.
+  if(fraction<=0||fraction>=1)return false;
+  const x=from.x+dx*fraction,y=from.y+dy*fraction,z=height(fraction);
+  return Number.isFinite(z)&&Math.hypot(target.x-x,target.y-y)<=NEAR_MISS_DISTANCE&&z>=base-NEAR_MISS_HEIGHT_MARGIN&&z<=top+.15+NEAR_MISS_HEIGHT_MARGIN;
+ });
+ if(!near)return 0;
  completed.add(flight);
  return fieldPractice(target,'agility',1);
 }

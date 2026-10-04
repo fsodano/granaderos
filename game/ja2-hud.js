@@ -423,12 +423,13 @@ function targetPreviewWithCosts(state, unit, point, ctx = {}) {
       if (reload) return reload;
       const volley=firearmVolleyPreview(state,unit,target,ctx.aim||0,hitLocationFor(ctx.hitLocation)),primaryShot=volley.shots[0];
       chance=primaryShot.chance;
-      let interveningBody=false;
+      let interveningBody=false,ricochet=false;
       if(primaryShot.shotLoad){
         shotLoadForecast=primaryShot;chanceLabel='al menos un perdigón';coverNote=shotLoadText(primaryShot);
       }else{
         const path=firearmProjectilePath(state,unit,target,hitLocationFor(ctx.hitLocation));
-        coverNote=path.blocked?'La cobertura detiene este tiro. Disparar consume la carga.':path.damageFactor<1?`La cobertura reduce el daño un ${Math.round((1-path.damageFactor)*100)}%.`:undefined;
+        ricochet=Boolean(path.ricochets?.length);
+        coverNote=ricochet?'Disparar consume la carga.':path.blocked?'La cobertura detiene este tiro. Disparar consume la carga.':path.damageFactor<1?`La cobertura reduce el daño un ${Math.round((1-path.damageFactor)*100)}%.`:undefined;
         const flight=firearmFlightPreview(state,unit,target,hitLocationFor(ctx.hitLocation));
         const targetImpactIndex=flight.bodyImpacts?.findIndex(impact=>impact.victimKind==='unit'&&impact.victimId===target.id)??-1;
         const selectedImpact=targetImpactIndex<0?null:flight.bodyImpacts[targetImpactIndex];
@@ -442,10 +443,10 @@ function targetPreviewWithCosts(state, unit, point, ctx = {}) {
       coverNote=[shotRangeText(firearmRangeProfile(state,unit,target)),coverNote].filter(Boolean).join(' ');
       if(volley.paired){
         attackLabel=actionLabel='Disparar ambas pistolas';chanceLabel=primaryShot.shotLoad?'al menos un perdigón (mano principal)':'impacto (mano principal)';
-        const chances=volley.shots.map(shot=>`${shot.hand==='primary'?'Mano principal':'Segunda mano'}: ${chancePercent(shot.chance)}${shot.shotLoad?` de al menos un perdigón. ${shotLoadText(shot)}`:`${shot.conditional?` (incluye ${chancePercent(shot.reachChance*100)} de paso)`:''}${shot.damageFactor===0?' (la cobertura detiene el tiro)':shot.damageFactor<1?` (daño reducido un ${Math.round((1-shot.damageFactor)*100)}%${shot.conditional?' si llega':''})`:''}`}`).join(' · ');
+        const chances=volley.shots.map(shot=>`${shot.hand==='primary'?'Mano principal':'Segunda mano'}: ${chancePercent(shot.chance)}${shot.shotLoad?` de al menos un perdigón. ${shotLoadText(shot)}`:`${shot.conditional?` (incluye ${chancePercent(shot.reachChance*100)} de paso)`:''}${shot.damageFactor===0?' (sin impacto previsto en el blanco)':shot.damageFactor<1?` (daño reducido un ${Math.round((1-shot.damageFactor)*100)}%${shot.conditional?' si llega':''})`:''}`}`).join(' · ');
         coverNote=[`${chances}. Un disparo por pistola.`,`Mano principal: ${shotRangeText(firearmRangeProfile(state,unit,target))}`,interveningBody?'Un combatiente está en la trayectoria. La bala puede herirlo y atravesarlo con menos fuerza; consume las cargas.':undefined].filter(Boolean).join(' ');
       }
-      coverNote=[coverNote,firearmBystanderWarning(firearmBystanderRisk(state,unit,target,hitLocationFor(ctx.hitLocation)))].filter(Boolean).join(' ');
+      coverNote=[ricochet?'Riesgo de rebote en piedra.':null,coverNote,firearmBystanderWarning(firearmBystanderRisk(state,unit,target,hitLocationFor(ctx.hitLocation)))].filter(Boolean).join(' ');
       if (!canChooseShotLocation(target)&&hitLocationFor(ctx.hitLocation)!=='torso') reason = 'Un objetivo cuerpo a tierra tiene una sola zona de tiro.';
       else if (unit.jammed) reason = 'Cebá el arma antes de disparar.';
       else if (!(unit.loaded > 0)) reason = 'Recargá el arma.';

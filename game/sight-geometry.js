@@ -84,13 +84,13 @@ export function obstacleVolumesAt(state,point){
   if(!surface)continue;
   const base=surface.elevation??0,level=tacticalLevel(surface),profile=terrainCoverProfile(surface);
   if(level>0)volumes.push({id:`slab:${surface.id}`,kind:'slab',tacticalLevel:level,bottom:base-(surface.slabThickness??DEFAULT_SLAB_THICKNESS),top:base,material:surface.material??'adobe',resistance:0,solid:true,blocksSight:true});
-  if(profile)volumes.push({id:`surface:${level}:${point.x},${point.y}`,kind:'cover',tacticalLevel:level,bottom:base,top:base+profile.height,...profile,blocksSight:surface.type==='window'||Boolean(surface.blocksSight??surface.blocked)});
+  if(profile)volumes.push({id:`surface:${level}:${point.x},${point.y}`,kind:'cover',tacticalLevel:level,bottom:base,top:base+profile.height,...profile,blocksSight:surface.type==='window'||Boolean(surface.blocksSight??surface.blocked),stoneFace:surface.material==='stone'&&Boolean(surface.blocked)&&['wall','stone','cliff'].includes(surface.type),bounds:{minX:point.x-.5,maxX:point.x+.5,minY:point.y-.5,maxY:point.y+.5}});
  }
  for(const prop of state.props??[]){
   const size=prop.footprint??{width:1,height:1};
   if(point.x<prop.x||point.y<prop.y||point.x>=prop.x+size.width||point.y>=prop.y+size.height)continue;
   const profile=propCoverProfile(prop),base=surfaceHeight(state,prop);if(!profile||base===null)continue;
-  volumes.push({id:`prop:${prop.id}`,kind:'prop',tacticalLevel:tacticalLevel(prop),bottom:base,top:base+profile.height,...profile,blocksSight:prop.blocksSight!==false});
+  volumes.push({id:`prop:${prop.id}`,kind:'prop',tacticalLevel:tacticalLevel(prop),bottom:base,top:base+profile.height,...profile,blocksSight:prop.blocksSight!==false,stoneFace:prop.material==='stone'&&prop.type!=='hay',bounds:{minX:prop.x-.5,maxX:prop.x+size.width-.5,minY:prop.y-.5,maxY:prop.y+size.height-.5}});
  }
  return volumes;
 }

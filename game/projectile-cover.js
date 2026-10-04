@@ -1,10 +1,11 @@
 import {surfaceAt,surfaceHeight,tacticalLevel} from './tactical-space.js';
 import {COMBAT_BALANCE} from './combat-balance.js';
 import {absoluteBodyHeight,relativeBodyHeight as height,usesElevationGeometry,groundTileAt,geometryCells,rayHeightIntersection,obstacleVolumesAt} from './sight-geometry.js';
-import {projectileTrajectory,projectileTrajectoryPoint,projectileTrajectoryIntervals,projectileTrajectoryLength,projectileTrajectoryAdvance,projectileTrajectorySamples} from './projectile-trajectory.js';
+import {projectileTrajectory,projectileTrajectoryPoint,projectileTrajectorySlope,projectileTrajectoryIntervals,projectileTrajectoryLength,projectileTrajectoryAdvance,projectileTrajectorySamples} from './projectile-trajectory.js';
 
 const continuedBall=weapon=>Number.isFinite(weapon.range)&&weapon.range>0&&weapon.loadPattern!=='cone'&&!(weapon.id===1807&&!weapon.loadPattern);
-const trajectoryFor=(source,destination,weapon)=>projectileTrajectory(source,destination,continuedBall(weapon)?{range:weapon.range,dropIncrement:COMBAT_BALANCE.firearmFarDropIncrement}:{});
+const trajectoryFor=(source,destination,weapon,travelledDistance=0)=>projectileTrajectory(source,destination,continuedBall(weapon)?{range:weapon.range,dropIncrement:COMBAT_BALANCE.firearmFarDropIncrement,travelledDistance}:{});
+const flightRangeLimit=(source,aim,weapon,flight)=>flight.maxDistance??Math.max(Math.hypot(aim.x-source.x,aim.y-source.y),Number.isFinite(weapon.range)?Math.max(0,weapon.range)*COMBAT_BALANCE.firearmFlightRangeMultiplier:0);
 
 // A body's storage collection does not change its physical silhouette. Keep
 // the collection tag separate from its ID: civilian and soldier IDs may match.
@@ -48,6 +49,11 @@ export function projectilePath(state,attacker,target,weapon,hitLocation='torso',
  const destination={x:target.x,y:target.y,height:flight.destinationHeight??absoluteBodyHeight(state,target,hitLocation),tacticalLevel:tacticalLevel(target)};
  const power=flight.forceBudget??Math.max(1,weapon.damage??1);
  if(!Number.isFinite(source.height)||!Number.isFinite(destination.height))return {blocked:true,damageFactor:0,obstacles:[]};
+ if(continuedBall(weapon)){
+  const distance=Math.hypot(destination.x-source.x,destination.y-source.y)*Math.max(0,Math.min(1,flight.stopFraction??1));
+  const trace=continuedProjectileFlight(state,attacker,target,weapon,hitLocation,{...flight,maxDistance:distance,ignoreBodies:true});
+  return {blocked:trace.blocked||Boolean(trace.ricochets?.length),damageFactor:trace.ricochets?.length?0:trace.damageFactor,obstacles:trace.obstacles,...(trace.ricochets?{ricochets:trace.ricochets,segments:trace.segments}:{})};
+ }
  // This bounded cover-only API ends at its requested point. Legacy short
  // flights use the same depth calculation, without gaining continued flight.
  const trace=traverseMaterialRay(state,source,destination,power,usesElevationGeometry(state,attacker,target),{stopFraction:flight.stopFraction,trajectory:trajectoryFor(source,destination,weapon)});
@@ -74,7 +80,7 @@ export function firearmRay(state,attacker,target,weapon,hitLocation='torso',flig
  const aim={x:target.x,y:target.y,height:flight.destinationHeight??absoluteBodyHeight(state,target,hitLocation),tacticalLevel:tacticalLevel(target)};
  if(![source.x,source.y,source.height,aim.x,aim.y,aim.height].every(Number.isFinite))return null;
  const dx=aim.x-source.x,dy=aim.y-source.y,distance=Math.hypot(dx,dy);
- const limit=flight.maxDistance??Math.max(distance,Number.isFinite(weapon.range)?Math.max(0,weapon.range)*COMBAT_BALANCE.firearmFlightRangeMultiplier:distance);
+ const limit=flightRangeLimit(source,aim,weapon,flight);
  let scale=distance?limit/distance:1,termination='range';
  for(const [value,delta,size] of [[source.x,dx,state.width],[source.y,dy,state.height]]){
   const edge=delta>0?(size-.5-value)/delta:delta<0?(-.5-value)/delta:Infinity;
@@ -88,12 +94,12 @@ export function firearmRay(state,attacker,target,weapon,hitLocation='torso',flig
 // A resistance value is force lost per one tactical unit of crossed material.
 // Merge one object's clipped intervals before sweeping; a wide prop must not
 // pay once per cell, nor lose its later depth through ID deduplication.
-function materialEvents(state,source,destination,elevated,stopFraction,trajectory){
+function materialEvents(state,source,destination,elevated,stopFraction,trajectory,originSource=source){
  const objects=new Map(),events=[];
  for(const cell of geometryCells(source,destination)){
   if(cell.entry>stopFraction)break;
   const ground=groundTileAt(state,cell);if(!ground)continue;
-  const origin=cell.x===Math.floor(source.x+.5)&&cell.y===Math.floor(source.y+.5);
+  const origin=originSource&&cell.x===Math.floor(originSource.x+.5)&&cell.y===Math.floor(originSource.y+.5);
   for(const volume of obstacleVolumesAt(state,cell)){
    // Preserve the established flat muzzle-cell cover rule. Floor slabs and
    // ground still stop a shot in the origin cell.
@@ -127,11 +133,30 @@ function materialEvents(state,source,destination,elevated,stopFraction,trajector
  return events;
 }
 
+// Only a unique, actually exposed vertical entry face can reflect a ball.
+// Adjacent stone columns do not manufacture internal reflecting surfaces.
+function stoneEntryFace(state,trajectory,span){
+ const {volume,entry,exit}=span,bounds=volume.bounds;
+ if(!volume.stoneFace||!bounds||exit<=entry+1e-10||entry<=1e-10)return null;
+ const point=projectileTrajectoryPoint(trajectory,entry),dx=trajectory.destination.x-trajectory.source.x,dy=trajectory.destination.y-trajectory.source.y,faces=[];
+ if(point.height<=volume.bottom+1e-10||point.height>=volume.top-1e-10)return null;
+ for(const [axis,delta] of [['x',dx],['y',dy]]){
+  if(!delta)continue;
+  const boundary=bounds[`${delta>0?'min':'max'}${axis.toUpperCase()}`];
+  if(Math.abs(point[axis]-boundary)<1e-8)faces.push({x:axis==='x'?-Math.sign(delta):0,y:axis==='y'?-Math.sign(delta):0,height:0});
+ }
+ if(faces.length!==1)return null;
+ const normal=faces[0],outside={x:Math.floor(point.x+normal.x*.25+.5),y:Math.floor(point.y+normal.y*.25+.5)};
+ if(obstacleVolumesAt(state,outside).some(other=>other.stoneFace&&point.height>other.bottom+1e-10&&point.height<other.top-1e-10))return null;
+ const distance=trajectory.horizontalDistance,slope=projectileTrajectorySlope(trajectory,entry),dot=Math.abs((normal.x*dx+normal.y*dy)/distance)/Math.hypot(1,slope);
+ return dot>0&&dot<=COMBAT_BALANCE.firearmRicochetMaximumNormalDot?{normal,impact:point}:null;
+}
+
 // Shared deterministic material sweep for continued balls, physical pellets,
 // and the bounded cover-only/legacy APIs. Body effects remain point events;
 // material loss up to each point is paid before its passage decision.
-function traverseMaterialRay(state,source,destination,power,elevated,{stopFraction=1,bodyEvents=[],onBody,trajectory=projectileTrajectory(source,destination)}={}){
- const limit=Math.max(0,Math.min(1,stopFraction??1)),events=[...materialEvents(state,source,destination,elevated,limit,trajectory),...bodyEvents.filter(event=>event.fraction<=limit)];
+function traverseMaterialRay(state,source,destination,power,elevated,{stopFraction=1,bodyEvents=[],onBody,onReflect,originSource=source,trajectory=projectileTrajectory(source,destination)}={}){
+ const limit=Math.max(0,Math.min(1,stopFraction??1)),events=[...materialEvents(state,source,destination,elevated,limit,trajectory,originSource),...bodyEvents.filter(event=>event.fraction<=limit)];
  events.sort((a,b)=>a.fraction-b.fraction||a.priority-b.priority||a.key.localeCompare(b.key));
  const active=new Map(),obstacles=[];
  let remaining=power,coverLoss=0,previous=0;
@@ -160,6 +185,13 @@ function traverseMaterialRay(state,source,destination,power,elevated,{stopFracti
   // The separate terminal impact records the exact interior stop position.
   if(event.type==='enter'){
    const {span}=event,{volume,cell}=span,receipt={x:cell.x,y:cell.y,tacticalLevel:volume.tacticalLevel,kind:volume.kind,sourceId:volume.id,material:volume.material,resistance:0,stopped:false,fraction:event.fraction};
+   if(onReflect&&volume.stoneFace){
+    const faces=events.filter(other=>other.type==='enter'&&Math.abs(other.fraction-event.fraction)<1e-10).map(other=>({event:other,face:stoneEntryFace(state,trajectory,other.span)})).filter(entry=>entry.face);
+    if(faces.length===1&&faces[0].event===event){
+     const reflected=onReflect(faces[0].face,remaining);
+     if(reflected){const incomingImpact=remaining;remaining=reflected.remainingImpact;receipt.reflected=true;obstacles.push(receipt);return {...finish(event.fraction,volume.tacticalLevel,'reflection',false),reflection:{...faces[0].face,sourceId:volume.id,material:volume.material,incomingImpact,remainingImpact:remaining}};}
+    }
+   }
    obstacles.push(receipt);active.set(event.key,{span,receipt});
   }else if(event.type==='exit')active.delete(event.key);
   else if(event.type==='solid'){
@@ -177,45 +209,71 @@ function traverseMaterialRay(state,source,destination,power,elevated,{stopFracti
 // Resolve cover, solid ground/floors and bodies in physical intersection order.
 // The same ray serves actual fire and knowledge-filtered forecasts. Forecasts
 // assume possible body passage without RNG; actual fire supplies resolveBody.
-// Body and cover force loss accumulate independently. The ray never ricochets.
+// Body, material and reflection force loss accumulate independently. Reflection
+// has one finite launch budget and never repeats the original muzzle exemption.
 function continuedProjectileFlight(state,attacker,target,weapon,hitLocation,flight){
  const ray=firearmRay(state,attacker,target,weapon,hitLocation,flight),power=flight.forceBudget??Math.max(1,weapon.damage??1);
  if(!ray)return {blocked:true,damageFactor:0,obstacles:[],victimId:null,hitLocation};
- const {source,destination}=ray,trajectory=ray.trajectoryModel??projectileTrajectory(source,destination),events=[],columns=new Map(),elevated=usesElevationGeometry(state,attacker,target);
+ const originalSource=ray.source,columns=new Map(),elevated=usesElevationGeometry(state,attacker,target),budget=flightRangeLimit(ray.source,ray.aim,weapon,flight);
  const targetKind=flight.targetKind??((state.npcs??[]).includes(target)?'npc':'unit');
- for(const entry of physicalBodies(state)){
+ for(const entry of flight.ignoreBodies?[]:physicalBodies(state)){
   if(entry.kind==='unit'&&entry.body.id===attacker.id)continue;
   const key=`${entry.body.x},${entry.body.y}`,column=columns.get(key)??[];column.push(entry);columns.set(key,column);
  }
- for(const cell of geometryCells(source,destination)){
-  if(!groundTileAt(state,cell))continue;
-  const origin=cell.x===Math.floor(source.x+.5)&&cell.y===Math.floor(source.y+.5);
-  if(cell.entry===cell.exit||origin&&!elevated)continue; // A body cannot be struck through a corner touch.
-  for(const {body,kind} of columns.get(`${cell.x},${cell.y}`)??[]){
-   const base=surfaceHeight(state,body),top=absoluteBodyHeight(state,body,'head');
-   const hits=base===null||top===null?[]:projectileTrajectoryIntervals(trajectory,cell,base,top+.15);
-   for(const hit of hits)events.push({fraction:hit.entry,priority:3,key:`${kind}:${body.id}`,cell,body,kind,base});
+ let leg=ray,remaining=power,bodyLoss=0,coverLoss=0,reflectionLoss=0,reachChance=1,travelled=0,trace;
+ const bodyImpacts=[],obstacles=[],segments=[],ricochets=[],seen=new Set();
+ for(let index=0;index<=COMBAT_BALANCE.firearmRicochetLimit;index++){
+  const {source,destination}=leg,trajectory=leg.trajectoryModel??projectileTrajectory(source,destination),events=[];
+  for(const cell of geometryCells(source,destination)){
+   if(!groundTileAt(state,cell))continue;
+   const origin=index===0&&cell.x===Math.floor(originalSource.x+.5)&&cell.y===Math.floor(originalSource.y+.5);
+   if(cell.entry===cell.exit||origin&&!elevated)continue;
+   for(const {body,kind} of columns.get(`${cell.x},${cell.y}`)??[]){
+    const base=surfaceHeight(state,body),top=absoluteBodyHeight(state,body,'head');
+    const hits=base===null||top===null?[]:projectileTrajectoryIntervals(trajectory,cell,base,top+.15);
+    for(const hit of hits)events.push({fraction:hit.entry,priority:3,key:`${kind}:${body.id}`,cell,body,kind,base});
+   }
   }
+  trace=traverseMaterialRay(state,source,destination,remaining,elevated,{trajectory,originSource:index===0?originalSource:null,bodyEvents:events,
+   onReflect:index<COMBAT_BALANCE.firearmRicochetLimit?(face,incoming)=>({remainingImpact:incoming*COMBAT_BALANCE.firearmRicochetForceRetention}):null,
+   onBody:(event,{remaining:incoming,coverLoss:legCoverLoss,pointAt})=>{
+    if(seen.has(event.key))return {remaining:incoming};seen.add(event.key);
+    const {body,kind,base}=event,z=pointAt(event.fraction,tacticalLevel(body)).height-base;
+    const selected=kind===targetKind&&body.id===target.id;
+    const dropped=trajectory.curvature>0&&event.fraction>trajectory.dropStart;
+    const location=selected&&!flight.physicalHitLocation&&!dropped&&!ricochets.length?hitLocation:z>height(body,'torso')+.2?'head':z<height(body,'legs')+.15?'legs':'torso';
+    const resistance=COMBAT_BALANCE.firearmBodyResistance[location],after=Math.max(0,incoming-resistance);
+    const chance=Math.max(0,Math.min(COMBAT_BALANCE.firearmBodyPenetrationMaximumChance,incoming-COMBAT_BALANCE.firearmBodyPenetrationThreshold));
+    const distance=travelled+trajectory.horizontalDistance*event.fraction;
+    const impact={victimId:body.id,victimKind:kind,hitLocation:location,impact:pointAt(event.fraction,tacticalLevel(body)),fraction:event.fraction,distance,segmentIndex:index,incomingImpact:incoming,damageFactor:incoming/power,coverDamageFactor:Math.max(0,1-(coverLoss+legCoverLoss)/power),bodyDamageReduction:bodyLoss/power,...(reflectionLoss?{ricochetDamageReduction:reflectionLoss/power}:{}),bodyResistance:resistance,penetrationChance:after>0?chance:0,reachChance,remainingImpact:after,continued:false};
+    const continued=after>0&&chance>0&&flight.bodyPenetration!==false&&(!flight.resolveBody||flight.resolveBody(impact)===true);
+    impact.continued=continued;impact.remainingImpact=continued?after:0;bodyImpacts.push(impact);
+    if(continued){bodyLoss+=resistance;reachChance*=chance/100;}
+    return {remaining:impact.remainingImpact,stopped:!continued};
+   }});
+  for(const obstacle of trace.obstacles)obstacles.push({...obstacle,distance:travelled+trajectory.horizontalDistance*obstacle.fraction,segmentIndex:index});
+  const endDistance=travelled+trajectory.horizontalDistance*trace.fraction;
+  segments.push({index,source,destination:trace.impact,trajectoryModel:trajectory,terminalFraction:trace.fraction,fromDistance:travelled,toDistance:endDistance});
+  remaining=trace.remaining;coverLoss+=trace.coverLoss;
+  if(!trace.reflection)break;
+  ricochets.push({...trace.reflection,distance:endDistance});reflectionLoss+=trace.reflection.incomingImpact-trace.reflection.remainingImpact;
+  const normal=trace.reflection.normal,dx=(trajectory.destination.x-source.x)/trajectory.horizontalDistance,dy=(trajectory.destination.y-source.y)/trajectory.horizontalDistance,dot=dx*normal.x+dy*normal.y;
+  const bearing={x:dx-2*dot*normal.x,y:dy-2*dot*normal.y},origin=trace.impact;
+  travelled=endDistance;let distance=Math.max(0,budget-travelled),termination='range';
+  for(const [value,delta,size]of [[origin.x,bearing.x,state.width],[origin.y,bearing.y,state.height]]){
+   const edge=delta>0?(size-.5-value)/delta:delta<0?(-.5-value)/delta:Infinity;
+   if(edge<distance){distance=Math.max(0,edge);termination='edge';}
+  }
+  const end={x:origin.x+bearing.x*distance,y:origin.y+bearing.y*distance,height:origin.height+projectileTrajectorySlope(trajectory,trace.fraction)*distance,tacticalLevel:origin.tacticalLevel};
+  const model=trajectoryFor(origin,end,weapon,travelled);
+  leg={source:origin,destination:projectileTrajectoryPoint(model,1),trajectoryModel:model,termination};
  }
- let bodyLoss=0,reachChance=1;const bodyImpacts=[],seen=new Set();
- const trace=traverseMaterialRay(state,source,destination,power,elevated,{trajectory,bodyEvents:events,onBody:(event,{remaining,coverLoss,pointAt})=>{
-  if(seen.has(event.key))return {remaining};seen.add(event.key);
-  const {body,kind,base}=event,z=pointAt(event.fraction,tacticalLevel(body)).height-base;
-  const selected=kind===targetKind&&body.id===target.id;
-  const dropped=trajectory.curvature>0&&event.fraction>trajectory.dropStart;
-  const location=selected&&!flight.physicalHitLocation&&!dropped?hitLocation:z>height(body,'torso')+.2?'head':z<height(body,'legs')+.15?'legs':'torso';
-  const resistance=COMBAT_BALANCE.firearmBodyResistance[location],after=Math.max(0,remaining-resistance);
-  const chance=Math.max(0,Math.min(COMBAT_BALANCE.firearmBodyPenetrationMaximumChance,remaining-COMBAT_BALANCE.firearmBodyPenetrationThreshold));
-  const impact={victimId:body.id,victimKind:kind,hitLocation:location,impact:pointAt(event.fraction,tacticalLevel(body)),fraction:event.fraction,incomingImpact:remaining,damageFactor:remaining/power,coverDamageFactor:Math.max(0,1-coverLoss/power),bodyDamageReduction:bodyLoss/power,bodyResistance:resistance,penetrationChance:after>0?chance:0,reachChance,remainingImpact:after,continued:false};
-  const continued=after>0&&chance>0&&flight.bodyPenetration!==false&&(!flight.resolveBody||flight.resolveBody(impact)===true);
-  impact.continued=continued;impact.remainingImpact=continued?after:0;bodyImpacts.push(impact);
-  if(continued){bodyLoss+=resistance;reachChance*=chance/100;}
-  return {remaining:impact.remainingImpact,stopped:!continued};
- }});
- const first=bodyImpacts[0],terminal={impact:trace.impact,termination:trace.termination??ray.termination,blocked:trace.blocked,remainingImpact:trace.remaining,...(trajectory.curvature?{fraction:trace.fraction}:{})};
+ const last=segments.at(-1),reflected=ricochets.length>0,first=bodyImpacts[0];
+ for(const entry of [...bodyImpacts,...obstacles]){if(reflected)entry.fraction=entry.distance/budget;else{delete entry.distance;delete entry.segmentIndex;}}
+ const terminal={impact:trace.impact,termination:trace.termination??leg.termination,blocked:trace.blocked,remainingImpact:trace.remaining,...(reflected?{fraction:last.toDistance/budget,distance:last.toDistance,segmentIndex:last.index}:leg.trajectoryModel?.curvature?{fraction:trace.fraction}:{})};
  // Existing generic consumers still address the first physical intersection.
  // Named-target forecasts select their own typed entry from bodyImpacts.
- return {blocked:first?false:trace.blocked,damageFactor:first?.damageFactor??trace.remaining/power,obstacles:trace.obstacles,victimId:first?.victimId??null,...(first?.victimKind==='npc'?{victimKind:'npc'}:{}),hitLocation:first?.hitLocation??hitLocation,destination,impact:first?.impact??trace.impact,termination:first?'body':terminal.termination,bodyImpacts,terminal,...(trajectory.curvature?{trajectoryModel:trajectory,trajectory:projectileTrajectorySamples(trajectory,trace.fraction)}:{})};
+ return {blocked:first?false:trace.blocked,damageFactor:first?.damageFactor??trace.remaining/power,obstacles,victimId:first?.victimId??null,...(first?.victimKind==='npc'?{victimKind:'npc'}:{}),hitLocation:first?.hitLocation??hitLocation,destination:leg.destination,impact:first?.impact??trace.impact,termination:first?'body':terminal.termination,bodyImpacts,terminal,...(reflected?{segments,ricochets}:leg.trajectoryModel?.curvature?{trajectoryModel:leg.trajectoryModel,trajectory:projectileTrajectorySamples(leg.trajectoryModel,trace.fraction)}:{})};
 }
 
 function boundedProjectileFlight(state,attacker,target,weapon,hitLocation,flight){
