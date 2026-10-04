@@ -87,6 +87,12 @@ Build terrain in cached chunks or instanced batches. Build walls on structural c
 
 Dynamic contents require visibility admission on their own level. A remembered building silhouette does not reveal its occupants, loot, lights, or controls. Foliage fading must depend only on admitted actors.
 
+The proposed world module is `createSectorWorld(scene, {tileMetres, assetUrl})`, with `update(input)`, `dispose()`, and `inspect()` methods. Its input contains terrain, revealed rooms, cursor level, admitted actor points, and filtered props/lights/loot/cannons/smoke. It receives no full unit or civilian roster. Expose stable cannon muzzle anchors for the recorded effects layer.
+
+Build current walls from `state.tiles`: a breach changes a structural cell to rubble while `building.walls` can still contain its original record. Use upper-surface slab thickness and actual elevation. Update and dispose changed chunks/structures without rebuilding the whole sector for a countdown tick.
+
+Ground loot requires the admitted source item identity and visual kind as well as the existing pile counts. Preserve that distinction in the adapter so the world can show actual equipment. Use the existing terrain/profile/appearance helpers to retain regional geography, architecture, material choice, prop footprints, rotation and damage state.
+
 Retain semantic SVG/HTML interaction and annotations where useful. They must not draw a second sprite world under or over the 3D scene. Keyboard selection, body-part targeting, civilian treatment, loot, and inventory cursor behavior must remain available.
 
 ## Effects
@@ -138,5 +144,20 @@ Support reduced motion, pause/background behavior, renderer disposal, context lo
 The [MakeHuman system asset pack](https://static.makehumancommunity.org/assets/assetpacks/makehuman_system_assets.html) lists CC0 female proxies, skin, and hair. These may support the missing native female anatomy and appearance modules. Its [core asset FAQ](https://static.makehumancommunity.org/makehuman/faq/are_makehuman_files_free.html) confirms CC0 for core mesh/target assets.
 
 The [Lyndon Daniels horse rig submitted by ChadM](https://opengameart.org/content/rigged-horse) is listed as CC0 and provides a Blender file. The source page describes a rigged mesh, not a completed animation bank. Inspect anatomy, weights, scale, textures and provenance before use; the page also reports missing weights on some separate details. This is a candidate, not an approved or downloaded asset.
+
+Additional CMU motion candidates, verified by catalogue description and file presence only:
+
+| Need | First candidate | Inspection required |
+| --- | --- | --- |
+| Crouch walk | [136_09](https://mocap.cs.cmu.edu/search.php?subjectnumber=136) | Session includes unusual gait styles. Check crouch depth and balance. |
+| Crawl | [111_03](https://mocap.cs.cmu.edu/search.php?subjectnumber=111) | Pregnancy-motion session; may not be a belly crawl. |
+| Ladder | [143_37](https://mocap.cs.cmu.edu/search.php?subjectnumber=143) | Fit hand and foot contacts to the actual access geometry. |
+| Ground recovery | [140_01](https://mocap.cs.cmu.edu/search.php?subjectnumber=140) | Preserve natural recovery; do not reverse it to claim a natural fall. |
+| Collapse | [90_16](https://mocap.cs.cmu.edu/search.php?subjectnumber=90) | Staged fall; check suitability and body contacts. |
+| Pickup | [143_10](https://mocap.cs.cmu.edu/search.php?subjectnumber=143) | Toolbox weight transfer requires different grips for small objects. |
+
+These BVHs are listed in the existing conversion mirror at commit `09a07f54f3bbb58797325f009282d0b2048a2871`, under `data/<three-digit subject>/<clip>.bvh`. They have not been downloaded or visually approved. [Conversion provenance](https://raw.githubusercontent.com/una-dinosauria/cmu-mocap/09a07f54f3bbb58797325f009282d0b2048a2871/READMEFIRST.txt).
+
+CMU's [source terms and capture notes](https://mocap.cs.cmu.edu/) permit use in commercial products but prohibit resale of the motion data itself. Do not label these motions CC0. Finger/thumb motion was not recorded. No period musket reload was found in the conversion index: cartridge, ramrod, priming, partial reload, and fine grips need native authoring.
 
 This file is a plan. It does not certify that any integration item has been implemented or tested.
