@@ -13,12 +13,13 @@ In **Asignaciones del personal**, select the equipment owner, choose **Todo el e
 1. The secondary weapon.
 2. The primary weapon and its fitted bayonet, with separate conditions.
 3. Pack weapons, their fitted bayonets, lockpicks, crowbars and pliers. Individual pack items precede old bulk stacks; otherwise pack order is stable by key.
+4. Worn head, torso and leg garments, then packed garments. Individual packed garments precede old bulk stacks.
 
 The queue follows the chosen person's current belongings. A gun moved into the armory is no longer part of it. Newly carried damaged equipment can join the continuing job. This is an owner assignment, not a reservation or remote repair of a particular item.
 
 Each working hour has one allowance of `1 + floor(mechanical / 15)` points, bounded by remaining toolkit points. The allowance can cross several items. Restoring one condition point costs one toolkit point; fractional final damage rounds the cost up. Clearing a firearm jam costs one point before condition work. Neither operation creates a charge, ammunition, flints, powder or a replacement item. The mechanic gains one mechanical practice credit, spends three energy, and gains two fatigue per actual working hour, regardless of the number of items serviced.
 
-Legacy weapon/tool stacks split one item at a time before repair. Quantity, existing loaded rounds and pocket use remain unchanged. If splitting would exceed the saved inventory's 1,000-entry limit, the job pauses without changing the stack or spending tools. Supplies, keys, generic trade goods and unsupported equipment are not repair targets.
+Legacy weapon, tool and garment stacks split one item at a time before repair. Quantity, existing loaded rounds and pocket use remain unchanged. If splitting would exceed the saved inventory's 1,000-entry limit, the job pauses without changing the stack or spending tools. A valid condition-zero garment remains repairable and retains its owner. Empty body slots receive no clothing. Supplies, keys, generic trade goods and unsupported equipment are not repair targets.
 
 ## Saves and time control
 
@@ -32,4 +33,10 @@ An explicit wait stops after the complete hour when the entire current queue fin
 
 Live UI verification used an imported controlled wear fixture, purchased tools through the UI, and repaired four items in two hours for eight toolkit points. Reload preserved all results; a new six-hour wait made no extra repair charge. See [live verification](../../verification/ja2-live-verification.md).
 
-The current checkpoint is 890 passing logic tests, typecheck and a successful production build. The unchanged illustrated-sprite packing suite was excluded from this run. Equipment in shared sector storage, artillery, vehicles and protection still need suitable repair models. Rates, jam cost and prices are Granaderos tuning; they are not exact JA2 formulas.
+The earlier checkpoint was 890 passing logic tests, typecheck and a successful production build. The unchanged illustrated-sprite packing suite was excluded from that run. Equipment in shared sector storage, artillery, vehicles and supported ballistic protection still need suitable repair models. Rates, jam cost and prices are Granaderos tuning; they are not exact JA2 formulas.
+
+## Garment-care acceptance — 4 October 2026
+
+The paid native hire of soldier 110 costs 420 pesos and retains 2,780 pesos. The declared initial wear affects only his native hat (96 condition) and poncho (93). Actual approach, chest opening and pickup acquire one finite shirt and one 100-point toolkit. Wearing the shirt packs the real damaged poncho. The public repair assignment restores eleven condition over six working hours at two points per hour, spending exactly eleven acquired toolkit points. The final hour spends only the one remaining point; no materials are charged for idle work. The hat and packed poncho finish at 100, while the shirt remains the exact original cache garment. HP, ten owned rounds and money remain unchanged.
+
+Official saved continuation, completion notice, return and reentry preserve the repaired identities, toolkit's remaining 89 points and depleted chest. A separate pre-shirt compatibility snapshot keeps its opened saved chest without a shirt. This is prepared native-wear and real finite acquisition/work evidence, not a combat route or full campaign proof.

@@ -15,6 +15,7 @@ export default function JA2ItemCard({battle,unit,reference,slotId='',disabled,on
  return <section className="ja2-item-card" aria-label={`Detalles de ${item.label}`}>
   <div className="ja2-item-picture">{item.art||item.weapon>=1800&&item.weapon<=1813?<img src={sitePath(item.art??`/art/weapon-${item.weapon}.png`)} alt={item.label}/>:<Package size={54} aria-hidden="true"/>}
    {item.loaded!==undefined&&<button type="button" className="ja2-item-charge" aria-label="Descargar munición" title={preview?.reason??`Descargar · ${preview?.pa??0} PA`} disabled={disabled||!preview?.valid} onClick={()=>unload&&onOrder(unload)}>{item.loaded} / {item.capacity??1}</button>}
+   {(item.ammoType||item.condition!==undefined)&&<span className={`ja2-item-bar ${item.ammoType?'ammunition':''}`} title={item.ammoType?`${item.count} cartuchos`:`Estado ${item.condition}%`} aria-hidden="true"><i style={{width:`${Math.max(0,Math.min(100,item.ammoType?item.count/Math.max(1,item.stackLimit)*100:item.condition))}%`}}/></span>}
   </div>
   <dl>
    {item.condition!==undefined&&<><dt>Estado</dt><dd>{item.condition}%</dd></>}

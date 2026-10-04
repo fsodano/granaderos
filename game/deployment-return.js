@@ -3,6 +3,7 @@ import {expandCellScene} from './cell-scene-storage.js';
 import {validWorldLocation,worldOwner,worldCell} from './world-cells.js';
 import {buildSectorMap} from './maps.js';
 import {authoredEnvironment} from './environment-interactions.js';
+import {roadsideDiscoveriesFor} from './roadside-discoveries.js';
 import {validateReloadProgress} from './weapon-reload.js';
 import {WEAPONS} from './data.js';
 import {sectorExits,validateSectorExits,boundaryMatches,entryFromSector,validEntry} from './tactical-exits.js';
@@ -28,7 +29,9 @@ export function recordStrategicArrival(s,ids,fromSector,toSector,sceneId=null){
 // Request routes are immutable authority. Later arrivals are queued while a
 // deployment is active and are resolved after the actual departures return.
 export function prepareDeploymentExits(s,request){
- if(s.contentCampaign?.package.errands!==undefined)request.errandDefinitions=structuredClone(s.contentCampaign.package.errands);
+ const errands=s.contentCampaign?.package.errands??s.errandDefinitions;
+ if(errands!==undefined)request.errandDefinitions=structuredClone(errands);
+ request.roadsideDiscoveryDefinitions=structuredClone(roadsideDiscoveriesFor(s));
   request.ammunitionVersion=2;
   for(const enemy of request.enemies??[]){enemy.weapon??=1800;enemy.loaded??=WEAPONS[enemy.weapon]?.capacity??0;initializeUnitAmmunition(enemy,{defaultCount:12});}
   request.fittingRulesVersion=FITTING_RULES_VERSION;

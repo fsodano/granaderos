@@ -1,3 +1,4 @@
+import {takeFiniteCache,leaveFiniteCache} from './finite-cache-driver.mjs';
 import test from 'node:test';import assert from 'node:assert/strict';
 import {defaultContentPackage,encodeContentPackage,parseContentPackage} from '../game/content-package.js';
 import {contentIdentity} from '../game/content-identity.js';
@@ -25,7 +26,7 @@ test('supply ranges validate six real personal quantities and preserve older pac
 test('actual tactical spending uses current deployed quantities rather than stale service stock, including after save and settlement',()=>{
  let p=patients();assert.equal(met(p,'person-110','medkits',2,2),true);p=tactical(p,{type:'heal',targetId:'112'});assert.equal(p.campaign.operativeState[110].medkits,2);assert.equal(met(p,'person-110','medkits',1,1),true);assert.equal(met(p,'person-110','medkits',2),false);p=saved(p);
  for(const battle of [null,{...p.battle,battleId:'other'},{...p.battle,sectorId:'cordoba'},{...p.battle,sceneId:'yatasto'}]){assert.equal(met(p,'person-110','medkits',0,null,battle),false);assert.equal(met(p,'person-110','medkits',0,0,battle),false,'unknown is not empty');}
- p=tactical(p,{type:'heal',targetId:'112'});assert.equal(met(p,'person-110','medkits',0,0),true);p=saved(p);assert.equal(met(p,'person-110','medkits',0,0),true);p=saved({campaign:leave(p)});assert.equal(met(p,'person-110','medkits',0,0),true);p.campaign=order(p.campaign,{type:'purchaseMedicalSupplies',id:110,quantity:3});assert.equal(met(p,'person-110','medkits',3,3),true);assert.equal(met(p,'person-110','medkits',0,0),false);assert.ok(saved(p));
+ p=tactical(p,{type:'heal',targetId:'112'});assert.equal(met(p,'person-110','medkits',0,0),true);p=saved(p);assert.equal(met(p,'person-110','medkits',0,0),true);p=saved({campaign:leave(p)});assert.equal(met(p,'person-110','medkits',0,0),true);p.campaign=leaveFiniteCache(takeFiniteCache(visit(p.campaign),110,[{item:'medkits',count:3}]));assert.equal(met(p,'person-110','medkits',3,3),true);assert.equal(met(p,'person-110','medkits',0,0),false);assert.ok(saved(p));
 });
 
 test('actual resident collection and finite care open a stock-gated response and settle a saved chapter without granting supplies',()=>{

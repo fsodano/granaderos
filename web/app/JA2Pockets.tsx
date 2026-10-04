@@ -23,7 +23,7 @@ export default function JA2Pockets({battle,unit,layout,disabled,onPick,onOrder}:
     const Icon=icons[slot.entry?.item]??Package;
     return <button key={slot.id} type="button" className={`ja2-pocket ${slot.entry?'occupied':''}${drag.target===slot.id?' drop-target':''}`} aria-label={`${slot.label}: ${slot.entry?`${slot.entry.label} · ${slot.entry.count}`:'vacío'}`} disabled={disabled} title={`${slot.label}${slot.entry?`: ${slot.entry.label} · ${slot.entry.count}${slot.entry.condition!==undefined?` · estado ${slot.entry.condition}%`:''}`:''}`}
      {...drag.handlers(slot.id,{onInspect:onPick})}>
-     {slot.entry?<>{slot.entry.art||slot.entry.weapon>=1800&&slot.entry.weapon<=1813?<img src={sitePath(slot.entry.art??`/art/weapon-${slot.entry.weapon}.png`)} alt=""/>:<Icon size={22} aria-hidden="true"/>}<span>{slot.entry.label}</span><b>{slot.entry.count}</b></>:<span className="empty">{size==='large'?'Grande':'Pequeño'}</span>}
+     {slot.entry?<>{slot.entry.art||slot.entry.weapon>=1800&&slot.entry.weapon<=1813?<img src={sitePath(slot.entry.art??`/art/weapon-${slot.entry.weapon}.png`)} alt=""/>:<Icon size={22} aria-hidden="true"/>}<span>{slot.entry.label}</span><b>{slot.entry.count}</b>{(slot.entry.ammoType||slot.entry.condition!==undefined)&&<span className={`ja2-item-bar ${slot.entry.ammoType?'ammunition':''}`} title={slot.entry.ammoType?`${slot.entry.count} cartuchos`:`Estado ${slot.entry.condition}%`} aria-hidden="true"><i style={{width:`${Math.max(0,Math.min(100,slot.entry.ammoType?slot.entry.count/Math.max(1,slot.entry.stackLimit??slot.entry.count)*100:slot.entry.condition))}%`}}/></span>}</>:<span className="empty">{size==='large'?'Grande':'Pequeño'}</span>}
     </button>;
    })}
   </div>)}

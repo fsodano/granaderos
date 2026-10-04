@@ -53,10 +53,11 @@ test('tagged ground rooms cannot hide a roof, while separate upper rooms remain 
 test('real doors and breaches change disclosure on fresh snapshots after the room index is warmed',()=>{
  const ground=Array.from({length:240},(_,i)=>({x:i%20,y:Math.floor(i/20),type:'grass',blocked:false,cover:0}));
  const built=placeBuilding(ground,{id:'house',x:4,y:2,width:6,height:6,doors:[{id:'door',x:6,y:2}]});
- for(const action of [{type:'door',doorId:'door'},{type:'breach',x:6,y:2}]){
-  const state=createBattle([{id:'p',x:6,y:1}],{width:20,height:12,tiles:built.tiles,buildings:[built.building],exploration:true,enemies:[]}),inside={x:6,y:3};
+ for(const action of [{type:'door',doorId:'door'},{type:'breach',x:5,y:2}]){
+  const x=action.x??6,state=createBattle([{id:'p',x,y:1,...(action.type==='breach'?{activeSlot:'tool',activeTool:'inventory:bar',inventory:{bar:{count:1,weight:2.5,itemType:'tool',toolKey:'crowbar',condition:100}}}:{})}],{width:20,height:12,tiles:built.tiles,buildings:[built.building],exploration:true,enemies:[]}),inside={x,y:3};
   assert.equal(roomAt(state,inside).id,'house:interior');assert.equal(isInteriorVisible(state,inside,new Set(visibleRooms(state))),false);
-  const next=actBattle(state,{unitId:'p',...action});assert.equal(next.lastError,null);assert.equal(next.tiles.find(t=>t.x===6&&t.y===2).blocked,false);
+  const next=actBattle(state,{unitId:'p',...action});assert.equal(next.lastError,null);assert.equal(next.tiles.find(t=>t.x===x&&t.y===2).blocked,false);
+  if(action.type==='breach')assert.equal(next.units[0].inventory.bar.condition,97);
   assert.equal(isInteriorVisible(next,inside,new Set(visibleRooms(next))),true);assert.equal(isInteriorVisible(state,inside,new Set(visibleRooms(state))),false);
  }
 });

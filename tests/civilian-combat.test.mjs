@@ -24,20 +24,27 @@ function field(actor={},civilian={},sector={}){
 }
 const issue=(s,action)=>{const next=actBattle(s,{unitId:'p',...action});assert.equal(next.lastError,null,next.lastError);return next;};
 const fire=(s,extra={})=>issue(s,{type:'firePoint',x:7,y:3,aim:4,...extra});
+function continuedCivilianImpact(before,next){
+ const firstDamage=before.npcs[0].hp-next.npcs[0].hp,enemy=next.units.find(u=>u.id==='e'),enemyBefore=before.units.find(u=>u.id==='e'),laterDamage=enemyBefore.hp-enemy.hp;
+ assert.ok(firstDamage>0&&laterDamage>0&&laterDamage<firstDamage,'the real downstream body receives reduced damage');
+ assert.equal(civilianIncidents(next.npcs[0])[0].attackerId,'p');assert.equal(civilianIncidents(next.npcs[0])[0].intentional,false);
+ assert.equal(next.units[0].hp,before.units[0].hp);assert.equal(next.units[0].loaded,before.units[0].loaded-1);assert.equal(next.units[0].ammo,before.units[0].ammo);
+}
+const savedShotReplay=(before,next,action)=>assert.deepEqual(issue(validateBattleSnapshot(JSON.parse(JSON.stringify(before))),action),next);
 const wall=(s,x,material='stone',y=3)=>Object.assign(s.tiles.find(t=>t.x===x&&t.y===y),{type:'wall',blocked:true,blocksSight:true,material});
 const practice=u=>({skillPractice:u.skillPractice,trainedStats:u.trainedStats,militiaExperience:u.militiaExperience,militiaCombatCredit:u.militiaCombatCredit,xp:u.xp});
 const knifeActor={weapon:1813,loaded:0,activeSlot:'primary',weaponInstanceId:'owned-knife',condition:83,marksmanship:85};
 
-test('an actual point shot strikes the first civilian body, spends one load, and earns no casualty credit',()=>{
+test('an actual point shot crosses the civilian and enemy with one load and no casualty credit',()=>{
  const s=field({marksmanship:85}),before=structuredClone(s),preview=pointFirePreview(s,s.units[0],{x:7,y:3},4),next=fire(s);
- assert.ok(next.npcs[0].hp<100);assert.equal(next.units[1].hp,100);assert.equal(next.units[0].loaded,0);assert.equal(next.units[0].ammo,8);assert.equal(next.units[0].condition,99);assert.equal(next.units[0].ap,100-preview.pa);
+ continuedCivilianImpact(s,next);savedShotReplay(s,next,{type:'firePoint',x:7,y:3,aim:4});assert.equal(next.units[0].condition,99);assert.equal(next.units[0].ap,100-preview.pa);
  assert.deepEqual(practice(next.units[0]),practice(s.units[0]));assert.equal(next.npcs[0].inventory,undefined);assert.equal(next.npcs[0].militiaCreditId,undefined);
  assert.equal(civilianIncidents(next.npcs[0])[0].intentional,false);assert.deepEqual(s,before);validateBattleSnapshot(next);
 });
 
 test('visible civilian interception changes only the known flight, while a named hostile order still fires physically',()=>{
  const s=field(),flight=firearmFlightPreview(s,s.units[0],s.units[1]);assert.equal(flight.victimId,'civil');assert.equal(flight.victimKind,'npc');
- const next=issue(s,{type:'fire',targetId:'e',aim:4});assert.ok(next.npcs[0].hp<100);assert.equal(next.units[1].hp,100);assert.equal(next.units[0].lastTargetId,'e');assert.equal(next.units[0].loaded,0);assert.equal(civilianIncidents(next.npcs[0])[0].intentional,false);
+ const action={type:'fire',targetId:'e',aim:4},next=issue(s,action);continuedCivilianImpact(s,next);savedShotReplay(s,next,action);assert.equal(next.units[0].lastTargetId,'e');
 });
 
 test('unknown civilians do not change point or named-target previews and remain unnamed after impact',()=>{
@@ -46,7 +53,7 @@ test('unknown civilians do not change point or named-target previews and remain 
  const empty=structuredClone(s);empty.npcs=[];
  assert.deepEqual(firearmFlightPreview(s,s.units[0],s.units[1]),firearmFlightPreview(empty,empty.units[0],empty.units[1]));
  assert.deepEqual(pointFirePreview(s,s.units[0],{x:7,y:3},4),pointFirePreview(empty,empty.units[0],{x:7,y:3},4));
- const next=issue(s,{type:'fire',targetId:'e',aim:4});assert.ok(next.npcs[0].hp<100);assert.equal(next.units[1].hp,100);assert.equal(civilianIncidents(next.npcs[0])[0].intentional,false);
+ const action={type:'fire',targetId:'e',aim:4},next=issue(s,action);continuedCivilianImpact(s,next);savedShotReplay(s,next,action);
  assert.ok(!next.log.some(line=>line.includes('Habitante oculto')));assert.ok(!JSON.stringify(playerKnownBattle(next)).includes('Habitante oculto'));
 });
 
@@ -71,7 +78,7 @@ test('living prone civilians intercept low rays while dead, departed and fled bo
  }
  for(const patch of [{hp:50,energy:0,unconscious:true},{hp:50,knockedDown:true,stance:'prone'}]){
   const s=field({stance:'prone',movementMode:'prone'},patch);Object.assign(s.units[1],{stance:'prone',movementMode:'prone'});
-  const next=issue(s,{type:'fire',targetId:'e',aim:4});assert.ok(next.npcs[0].hp<50);assert.equal(next.units[1].hp,100);assert.equal(next.npcs[0].stance,'prone');
+  const action={type:'fire',targetId:'e',aim:4},next=issue(s,action);continuedCivilianImpact(s,next);savedShotReplay(s,next,action);assert.equal(next.npcs[0].stance,'prone');
  }
 });
 
@@ -79,7 +86,11 @@ test('civilian and soldier IDs cannot redirect the impact to another collection 
  for(const id of ['p','e']){
   const s=field({}, {id});
   for(const trace of [projectileFlight(s,s.units[0],s.units[1],{damage:58}),knifeFlight(s,s.units[0],s.units[1])]){assert.equal(trace.victimKind,'npc');assert.equal(trace.victimId,id);}
-  const next=fire(s);assert.ok(next.npcs[0].hp<100);assert.equal(next.units[0].hp,100);assert.equal(next.units[1].hp,100);
+  const next=fire(s);continuedCivilianImpact(s,next);
+  // Deliberately colliding IDs exercise typed reducer dispatch. They remain
+  // inadmissible saved characters rather than a save-validation bypass.
+  assert.throws(()=>validateBattleSnapshot(JSON.parse(JSON.stringify(s))),/personajes/);
+  assert.deepEqual(fire(JSON.parse(JSON.stringify(s))),next);
  }
 });
 
@@ -88,7 +99,7 @@ test('roof projectiles hit the civilian on that physical floor and respect an in
  const s=field({tacticalLevel:1},{tacticalLevel:1},{upperSurfaces:Array.from({length:7},(_,i)=>roof(i+1))});s.units[1].tacticalLevel=1;s.npcs.push({id:'below',name:'Abajo',x:3,y:3});
  const traces=()=>[projectileFlight(s,s.units[0],s.units[1],{damage:58}),knifeFlight(s,s.units[0],s.units[1])];
  for(const trace of traces()){assert.equal(trace.victimId,'civil');assert.equal(trace.victimKind,'npc');}
- const next=fire(s,{tacticalLevel:1});assert.ok(next.npcs[0].hp<100);assert.equal(next.npcs[1].hp,undefined);assert.equal(next.units[1].hp,100);
+ const next=fire(s,{tacticalLevel:1});continuedCivilianImpact(s,next);savedShotReplay(s,next,{type:'firePoint',x:7,y:3,aim:4,tacticalLevel:1});assert.equal(next.npcs[1].hp,undefined);
  Object.assign(s.upperSurfaces.find(t=>t.x===3),{type:'wall',blocked:true,material:'stone'});for(const trace of traces()){assert.equal(trace.blocked,true);assert.equal(trace.victimId,null);}
 });
 
@@ -156,12 +167,14 @@ test('grenade damage remains exactly once per civilian with existing radial cove
  assert.equal(civilianIncidents(next.npcs[0])[0].intentional,true);assert.equal(civilianIncidents(next.npcs[1])[0].intentional,false);assert.deepEqual(next.npcs[2],s.npcs[2]);assert.deepEqual(next.npcs[3],s.npcs[3]);assert.equal(next.units[0].inventory.grenade,undefined);
 });
 
-test('civilian injury and death retain prone incapacity, and allied militia cannot gain rank from them',()=>{
+test('civilian casualties give no militia credit while a real downstream enemy injury earns its own point',()=>{
  for(const hp of [60,20]){
   const s=field({militia:true,militiaRank:0,marksmanship:85,x:0,ammo:0,blade:0},{hp,x:7},{night:true,lights:[{id:'lamp',x:10,y:3,radius:1,intensity:1,turns:10}]});s.units[0].ap=12;s.units[1].x=10;for(const enemy of s.units.filter(u=>u.side==='enemy')){enemy.loaded=0;enemy.ap=0;}
   assert.equal(teamCanSee(s,'player',s.npcs[0]),false);
   // A militia autonomous shot still traces the same intervening civilian.
-  const next=endTurn(s);assert.ok(next.npcs[0].hp<hp);assert.equal(next.npcs[0].stance,'prone');assert.equal(next.npcs[0].movementMode,'prone');assert.equal(next.units[0].militiaExperience,undefined);assert.equal(next.units[0].militiaCombatCredit,undefined);assert.equal(next.npcs[0].militiaCreditId,undefined);
+  const next=endTurn(s);assert.ok(next.npcs[0].hp<hp);assert.equal(next.npcs[0].stance,'prone');assert.equal(next.npcs[0].movementMode,'prone');assert.equal(next.npcs[0].militiaCreditId,undefined);
+  const enemy=next.units.find(u=>u.id==='e');assert.ok(enemy.hp<s.units.find(u=>u.id==='e').hp);assert.equal(next.units[0].militiaRank,0);assert.equal(next.units[0].militiaExperience,1);assert.deepEqual(next.units[0].militiaCombatCredit,[{id:enemy.militiaCreditId,points:1}]);
+  assert.equal(civilianIncidents(next.npcs[0])[0].attackerId,'p');assert.ok(!next.log.some(line=>line.includes('Vecina')));assert.deepEqual(endTurn(validateBattleSnapshot(JSON.parse(JSON.stringify(s)))),next);
   if(next.npcs[0].hp===0)assert.equal(civilianIncidents(next.npcs[0])[0].militia,true);validateBattleSnapshot(next);
  }
 });

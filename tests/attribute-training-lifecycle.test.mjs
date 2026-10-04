@@ -69,7 +69,7 @@ test('zero aptitude, dead actors, enemies, empty credit and capped skills produc
  for(const [skill,amount]of [['treasury',40],['dexterity',-1],['dexterity',.5],['dexterity',Infinity]]){assert.throws(()=>practice(idle,skill,amount));assert.deepEqual(idle,before);}
 });
 
-for(const skill of ['strength','dexterity','leadership','explosives','maxHp'])test(`${skill} study spends a real hour, preserves its earned point through a complete visit and does not apply it twice`,()=>{
+for(const skill of ['strength','dexterity','leadership','maxHp'])test(`${skill} study spends a real hour, preserves its earned point through a complete visit and does not apply it twice`,()=>{
  let campaign=hire(),baseline=op(campaign)[skill];campaign=order(campaign,{type:'assignWork',operativeId:110,assignment:'practice',skill});
  // Existing practice from prior hours; this hour must consume energy and
  // fractional study credit before the final point is earned.
@@ -139,7 +139,7 @@ test('a field health gain passes the medical return boundary without healing its
 });
 
 test('new attribute records retain the ten-point cap and reject values that could bypass it',()=>{
- for(const skill of ['strength','dexterity','leadership','explosives','maxHp']){
+ for(const skill of ['strength','dexterity','leadership','maxHp']){
   const unit={side:'player',hp:70,[skill]:80,trainedStats:{[skill]:9},skillPractice:{[skill]:39}};assert.equal(practice(unit,skill,81),1);assert.equal(unit[skill],81);assert.equal(unit.trainedStats[skill],10);assert.doesNotThrow(()=>validateTraining(unit));const before=structuredClone(unit);assert.equal(practice(unit,skill,40),0);assert.deepEqual(unit,before);
   assert.throws(()=>validateTraining({trainedStats:{[skill]:11}}));assert.throws(()=>validateTraining({skillPractice:{[skill]:40}}));
  }

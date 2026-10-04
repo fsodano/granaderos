@@ -1,3 +1,4 @@
+import {withStoredGear} from './commerce-gear-fixture.mjs';
 import {secureArea} from './secured-area-fixture.mjs';
 import test from 'node:test';import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign as reduce,rosterFor,contractQuote,operativeLocation} from '../game/campaign.js';
@@ -10,7 +11,7 @@ const start=()=>step(secureArea(initialCampaign()),{type:'createOfficer',name:'E
 const waitTo=(s,h)=>{while(s.hour<h)s=step(s,{type:'wait',hours:Math.min(240,h-s.hour)});return s;};
 const roundTrip=(s)=>{s=step(s,{type:'visitSector'});const b=enterSector(s.pendingBattle,s.sectorStates[s.location]);const restored=decodeSave(encodeSave(s,b));return step(restored.campaign,{type:'leaveSector',battleId:s.pendingBattle.id,sectorState:restored.battle,survivors:restored.battle.units.filter(u=>u.side==='player').map(u=>({...u,id:Number(u.id)}))});};
 test('established-area mixed terms survive field visit, expires, save, and depleted-kit rehire',()=>{
- let s=start();const terms=[[100,'day'],[101,'week'],[102,'month']];for(const[id,term]of terms)s=step(s,{type:'recruitCivic',id,term});s=step(s,{type:'purchaseEquipment',item:1803,quantity:1});s=step(s,{type:'equip',operativeId:100,slot:'weapon',itemId:1803});const storedOld=s.armory[1804];
+ let s=start();const terms=[[100,'day'],[101,'week'],[102,'month']];for(const[id,term]of terms)s=step(s,{type:'recruitCivic',id,term});s=withStoredGear(s,1803);s=step(s,{type:'equip',operativeId:100,slot:'weapon',itemId:1803});const storedOld=s.armory[1804];
  secureArea(s,['buenos_aires']);s=step(s,{type:'travel',sector:'buenos_aires'});assert.equal(s.hour,12);s=roundTrip(s);assert.deepEqual(s.recruited,[1000,100,101,102]);
  s=waitTo(s,23);
  const model=()=>sectorInventoryModel(s,'buenos_aires',rosterFor(s),100);
@@ -46,7 +47,13 @@ test('elite renewals bank days while funds last and week terms need real money',
  const weekPrice=contractQuote(s,elite,'week').price;
  assert.ok(weekPrice>s.resources.treasury);
  assert.ok(reduce(s,{type:'recruitCivic',id:elite.id,term:'week'}).lastError);
+ const dayPrice=contractQuote(s,elite,'day').price;
+ assert.ok(dayPrice>s.resources.treasury);assert.ok(reduce(s,{type:'recruitCivic',id:elite.id,term:'day'}).lastError);
+ // The starting budget cannot hire this elite even for one day. Fund only
+ // that first service to isolate renewal and expiry from affordability.
+ s.resources.treasury=dayPrice;
  s=step(s,{type:'recruitCivic',id:elite.id,term:'day'});
+ assert.equal(s.resources.treasury,0);
  s.resources.treasury=weekPrice;
  const quote=contractQuote(s,elite,'day');s=step(s,{type:'renewContract',id:elite.id,term:'day'});
  assert.equal(s.contracts[elite.id].expiresAt,48);assert.equal(s.resources.treasury,weekPrice-quote.price);

@@ -1,5 +1,20 @@
 import {weaponSpecification} from './weapon-definition.js';
 import {WEAPONS} from './data.js';
+import {repairMaterialPoints,isRepairKit} from './repair-materials.js';
+import {extractItemQuantity} from './tactical-inventory.js';
+import {BODY_SLOTS,OUTFITS,validateOutfit} from './outfits.js';
+
+export function spendRepairMaterials(record,points){
+ if(!Number.isSafeInteger(points)||points<0||points>repairMaterialPoints(record))throw Error('No quedan esos materiales de reparación.');
+ const reserve=Math.min(record.toolkitPoints??0,points);record.toolkitPoints=(record.toolkitPoints??0)-reserve;points-=reserve;
+ for(const key of Object.keys(record.inventory??{}).sort()){
+  if(!points)break;
+  const kit=record.inventory[key];if(!isRepairKit(kit)||kit.count<=0)continue;
+  const spent=Math.min(points,kit.repairPoints);points-=spent;
+  if(spent===kit.repairPoints){const next=extractItemQuantity(record,`inventory:${key}`,1).unit;for(const field of Object.keys(record))delete record[field];Object.assign(record,next);}
+  else kit.repairPoints-=spent;
+ }
+}
 
 const tools={lockpick:'Ganzúas',crowbar:'Barreta',pliers:'Alicates'};
 const handheld=id=>Number.isInteger(id)&&id>=1800&&id<=1813&&Object.hasOwn(WEAPONS,id);
@@ -31,6 +46,16 @@ function entries(record,op){
       add(`inventory:${key}`,tools[value.toolKey],value,'condition',value.count,false,key);
     }
   }
+  // Clothing follows the existing weapon, fitting and tool work. An empty
+  // body slot stays empty; repairing a ruined garment never reissues it.
+  for(const slot of BODY_SLOTS){
+    const value=record[slot];if(value==null)continue;
+    validateOutfit(value,{worn:true,slot});add(slot,OUTFITS[value.outfit].name,value);
+  }
+  for(const [key,value]of inventory){
+    if(value.kind!=='outfit')continue;
+    validateOutfit(value);add(`inventory:${key}`,OUTFITS[value.outfit].name,value,'condition',value.count,false,key);
+  }
   return result;
 }
 
@@ -44,7 +69,7 @@ export function repairEquipmentBlocked(record,op){
 
 function singleItem(record,entry){
   if(entry.count===1)return entry.value;
-  // Weapons and tools already occupy one pocket allocation per unit. Splitting
+  // Weapons, tools and garments occupy one pocket allocation per unit. Splitting
   // a legacy stack changes neither quantity nor occupied inventory space.
   const base=entry.packKey.slice(0,80);
   let index=1,key;

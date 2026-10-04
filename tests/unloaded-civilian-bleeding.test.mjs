@@ -19,7 +19,9 @@ const npc=p=>p.battle.npcs.find(n=>n.contentId==='patient');
 const id=s=>operativeIdForCharacter(s.contentCampaign.package,'patient');
 const health=s=>s.civilianState.people[`person-${id(s)}`].health;
 function ready({successor=false,quest=false}={}){
- const d=defaultContentPackage(),base=structuredClone(d.characters.find(c=>c.id==='person-100'));delete base.arrivalHours;
+ // These wound-clock tests need two separate paid observers for a month.
+ // Authored funds isolate wound timing from the opening hiring budget.
+ const d=defaultContentPackage();d.rules.startingTreasury=8000;const base=structuredClone(d.characters.find(c=>c.id==='person-100'));delete base.arrivalHours;
  for(const [name,label]of [['patient','Vecino herido'],...(successor?[['successor','Sucesor']]:[])]){
   d.characters.push({...structuredClone(base),id:name,name:label,nickname:label,monthlyPay:0,recruitmentSource:'encounter',service:'permanent',attributes:{...base.attributes,maxHp:100},weapon:null,abilities:[],traits:[],encounter:{recruitable:true,greeting:label,requiredLeadership:0,requiredLiberated:0,requiredSector:null}});
   d.placements.push({id:`place-${name}`,character:name,mode:'fixed',sectors:[A],moveChance:100,afterDeath:name==='successor'?'patient':null,delayMin:name==='successor'?1:0,delayMax:name==='successor'?1:0});

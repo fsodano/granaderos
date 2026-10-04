@@ -2,7 +2,7 @@
 import './ja2-compact.css';
 // JA2 bottom-strip disposition (DESIGN.md MODE A / MODE B). Root switches content on inventoryId.
 // Pure read model (game/ja2-hud.js orderDescriptors/orderAction); all mutations are caller-provided callbacks.
-import {memo,useMemo,useState} from 'react';
+import {useMemo} from 'react';
 import {StableJA2Roster as JA2Roster} from './JA2Roster';
 import JA2Inventory, {RadarCluster} from './JA2Inventory';
 import JA2ArtilleryMenu from './JA2ArtilleryMenu';
@@ -24,17 +24,6 @@ type Props = {
   onCannonChange: (id: any) => void; onShotTypeChange: (t: any) => void; onSetAim: (n: number) => void; onHitLocationChange: (location: string) => void;
 };
 
-const LogOverlay=memo(function LogOverlay({log}: { log: string[] }) {
-  const [open, setOpen] = useState(false);
-  const lines = log.slice(-5).reverse();
-  return (
-    <section className={`ja2-log-overlay ${open ? 'expanded' : 'collapsed'}`} aria-label="Diario de combate">
-      <button className="line-button" aria-expanded={open} onClick={() => setOpen(v => !v)}>Diario</button>
-      <div aria-live="polite">{(open ? lines : lines.slice(0, 1)).map((l, i) => <p className={i === 0 ? 'latest' : ''} key={`${log.length}-${i}`}>{l}</p>)}</div>
-    </section>
-  );
-});
-
 export default function JA2Strip({battle, ambientPaused, onToggleAmbientPause, selected, unit, players, missionAllies, localMilitia, mode, showSight, aim, hitLocation, costs, weapon, firearm, cannonId, shotType, gunCosts, artillery, busy, inventoryId, vw, vh, cameraRect, project, cameraX, cameraY, zoom, onSelect, onOrder, onMode, onToggleSight, onEndTurn, onRetreat, onOpenInventory, onCloseInventory, onCameraCenter, onCameraPan, onZoom, onCannonChange, onShotTypeChange, onSetAim, onHitLocationChange, onAutoBandage, bandageReport, groupIds, target, cursorLevel, onCursorLevelChange}: Props) {
   const units = useMemo(()=>battle.units.filter((v: any) => !v.departure && !v.fled && (v.side === 'player' || players.some((p: any) => canSee(battle, p, v)))),[battle,players]);
   const turn = useMemo(()=>turnModel(battle),[battle]);
@@ -43,9 +32,8 @@ export default function JA2Strip({battle, ambientPaused, onToggleAmbientPause, s
     return (
       <div className="ja2-hud">
       <section className="ja2-strip inventory-open">
-        {unit ? <JA2Inventory cursorLevel={cursorLevel} onCursorLevelChange={onCursorLevelChange} unit={unit} battle={battle} mode={mode} showSight={showSight} busy={busy} units={units} selected={selected} missionAllies={missionAllies} localMilitia={localMilitia} vw={vw} vh={vh} cameraRect={cameraRect} project={project} zoom={zoom} onOrder={onOrder} onMode={onMode} onToggleSight={onToggleSight} onSelect={onSelect} onRetreat={onRetreat} onCameraCenter={onCameraCenter} onCameraPan={onCameraPan} onZoom={onZoom} onCloseInventory={onCloseInventory} onAutoBandage={onAutoBandage} bandageReport={bandageReport} /> : <button className="gold-button" onClick={onCloseInventory}>Listo</button>}
+        {unit ? <JA2Inventory cursorLevel={cursorLevel} onCursorLevelChange={onCursorLevelChange} unit={unit} battle={battle} mode={mode} showSight={showSight} busy={busy} units={units} selected={selected} missionAllies={missionAllies} localMilitia={localMilitia} vw={vw} vh={vh} cameraRect={cameraRect} project={project} zoom={zoom} onOrder={onOrder} onMode={onMode} onToggleSight={onToggleSight} onSelect={onSelect} onInventoryUnit={onOpenInventory} onRetreat={onRetreat} onCameraCenter={onCameraCenter} onCameraPan={onCameraPan} onZoom={onZoom} onCloseInventory={onCloseInventory} onAutoBandage={onAutoBandage} bandageReport={bandageReport} /> : <button className="gold-button" onClick={onCloseInventory}>Listo</button>}
       </section>
-      <LogOverlay log={battle.log || []} />
       </div>
     );
   }
@@ -59,7 +47,6 @@ export default function JA2Strip({battle, ambientPaused, onToggleAmbientPause, s
         <div className="ja2-essential">{battle.mode==='exploration'&&battle.status==='active'&&onToggleAmbientPause&&<button className="line-button" disabled={busy} aria-pressed={Boolean(ambientPaused)} title={ambientPaused?'Reloj detenido entre órdenes.':'El tiempo, las heridas y los habitantes siguen activos.'} onClick={onToggleAmbientPause}>{ambientPaused?'Reanudar':'Pausar'}</button>}<button className="line-button" disabled={!unit} onClick={()=>unit && onOpenInventory(unit.id)}>Equipo</button>{battle.mode !== 'exploration' && <button className="gold-button" disabled={busy || battle.status !== 'active'} onClick={onEndTurn}>{turn.endLabel}</button>}</div>
       </div>
     </section>
-    <LogOverlay log={battle.log || []} />
     </div>
   );
 }

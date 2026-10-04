@@ -71,7 +71,7 @@ test('an elevated intervening ally intercepts the ray while downstairs bodies re
 test('elevated cover and furniture use their own floor offset and retain material resistance',()=>{
  const a=actor('a',1,1),b=actor('b',7,1),s=field([a,b],floorLine());
  s.props=[{id:'below',type:'barrels',x:3,y:3},{id:'above',type:'barrels',x:5,y:3,tacticalLevel:1}];
- const path=projectilePath(s,a,b,weapon);assert.equal(path.obstacles.length,1);assert.equal(path.obstacles[0].tacticalLevel,1);assert.equal(path.damageFactor,34/58);
+ const path=projectilePath(s,a,b,weapon);assert.equal(path.obstacles.length,1);assert.equal(path.obstacles[0].tacticalLevel,1);assert.ok(Math.abs(path.damageFactor-(58-24*.5*Math.hypot(1,.3/6))/58)<1e-10,'the descending ray crosses only the last half of the raised barrel');
  Object.assign(s.upperSurfaces.find(surface=>surface.x===6),{blocked:true,obstacleHeight:.8,material:'stone'});
  assert.equal(projectilePath(s,a,b,weapon,'legs').blocked,true);assert.equal(projectilePath(s,a,b,weapon,'head').blocked,false);assert.equal(elevationSightClear(s,a,b),true);
  s.props[1].obstacleHeight=2;assert.equal(elevationSightClear(s,a,b),false);

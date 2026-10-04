@@ -2,6 +2,7 @@ import {authoredRoster} from './content-roster.js';
 import {pendingHire} from './hiring-arrivals.js';
 import {gainsExperience,isContractOperative} from './content-character-ids.js';
 import {applyCharacterProfile} from './character-profile.js';
+import {serviceRelationshipRefusal} from './service-relationships.js';
 export * from './character-profile.js';
 import {OPERATIVES} from './data.js';
 import {CIVIC_RECRUITS,CIVIC_DEFAULTS} from './civic-recruits.js';
@@ -32,12 +33,28 @@ export function rosterFor(state){
  return base.map(op=>{
    const progress=state.operativeState?.[op.id],xp=progress?.xp??0,level=1+Math.min(9,Math.floor(xp/100));
    if(!gainsExperience(state,op))return {...op,xp,level:1};
-   const grown={...op,xp,level};for(const field of ['maxHp','agility','dexterity','strength','leadership','wisdom','marksmanship','mechanical','explosives','medical'])grown[field]=Math.min(state.contentCampaign?Math.max(95,op[field]):95,op[field]+(level-1)*(field==='marksmanship'?4:2));return grown;
+   const grown={...op,xp,level};for(const field of ['maxHp','agility','dexterity','strength','leadership','wisdom'])grown[field]=Math.min(state.contentCampaign?Math.max(95,op[field]):95,op[field]+(level-1)*2);
+   for(const field of EXPERIENCE_TECHNICAL_SKILLS)grown[field]=Math.min(100,op[field]+(progress?.legacySkillBonus?.[field]??0));
+   return grown;
  });
+}
+export const EXPERIENCE_TECHNICAL_SKILLS=Object.freeze(['marksmanship','mechanical','explosives','medical']);
+// Old saves already received these values through XP. Freeze that historical
+// amount once; new XP no longer teaches technical skills without practice.
+export function migrateLegacySkillLearning(state){
+ if(state.skillLearningVersion===1)return state;
+ if(state.skillLearningVersion!==undefined)throw Error('La versión de aprendizaje es inválida.');
+ const base=authoredRoster(state,[...OPERATIVES,...CIVIC_RECRUITS]);if(state.officer)base.push(createOfficerRecord(state.officer.name,state.officer.answers,state.officer.profile));
+ for(const op of base){
+  const record=state.operativeState?.[op.id];if(!record||!gainsExperience(state,op))continue;
+  const levels=Math.min(9,Math.floor((record.xp??0)/100));
+  record.legacySkillBonus=Object.fromEntries(EXPERIENCE_TECHNICAL_SKILLS.map(field=>[field,Math.min(state.contentCampaign?Math.max(95,op[field]):95,op[field]+levels*(field==='marksmanship'?4:2))-op[field]]));
+ }
+ state.skillLearningVersion=1;return state;
 }
 export function civicStatus(state,id){
  id=Number(id);
  const op=rosterFor(state).find(o=>o.id===id&&isContractOperative(state,o)),record=state.operativeState[id];
- const reason=!op?'No existe ese voluntario.':state.recruited.includes(id)?'Ya se encuentra en tus filas.':pendingHire(state,id)?'Este contratado ya está en camino.':!record?.alive?'Ha caído en combate.':record.captured?'Este personaje está cautivo.':record.serviceEquipmentReturn?'Recogé todo el equipo que dejó esta persona antes de volver a contratarla.':null;
+ const reason=!op?'No existe ese voluntario.':state.recruited.includes(id)?'Ya se encuentra en tus filas.':pendingHire(state,id)?'Este contratado ya está en camino.':!record?.alive?'Ha caído en combate.':record.captured?'Este personaje está cautivo.':record.serviceEquipmentReturn?'Recogé todo el equipo que dejó esta persona antes de volver a contratarla.':serviceRelationshipRefusal(state,op)?.reason??null;
  return {available:!reason,reason:reason??'Disponible en el boletín del Cabildo.'};
 }

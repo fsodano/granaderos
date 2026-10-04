@@ -5,6 +5,7 @@ import {readFileSync} from 'node:fs';
 import {MAP_PLACES,MAP_MODES,sectorPosition,sectorIncome,MAP_TILE_SIZE,mapTilesForSector,mapTileOutline} from '../game/strategic-map.js';
 import {CITIES} from '../game/cities.js';
 import {CAMPAIGN_SECTORS,initialCampaign,isSupplied,dispatchCampaign} from '../game/campaign.js';
+import {recordTownAgreement} from './town-income-fixture.mjs';
 
 test('every existing campaign sector has a geographic anchor inside the operational map',()=>{
  assert.deepEqual(Object.keys(MAP_PLACES).sort(),CAMPAIGN_SECTORS.map(s=>s.id).sort());
@@ -23,18 +24,18 @@ test('bottom view order preserves all six reference functions',()=>{
  assert.deepEqual(MAP_MODES.map(m=>m.id),['cities','resources','squads','militia','horses','items']);
 });
 test('income readout matches actual campaign daily payout',()=>{
- const s=initialCampaign();s.hour=23;
+ const s=secureArea(initialCampaign(),'buenos_aires');assert.equal(CAMPAIGN_SECTORS.reduce((sum,d)=>sum+sectorIncome(s,d),0),0);recordTownAgreement(s,'buenos_aires');s.hour=23;
  const expected=CAMPAIGN_SECTORS.reduce((n,d)=>n+sectorIncome(s,d,isSupplied),0);
  const next=dispatchCampaign(s,{type:'wait',hours:1});
  assert.equal(next.lastError,null);
  assert.equal(next.resources.treasury-s.resources.treasury,expected);
 });
-test('income readout applies control, damage and blockade without mutation',()=>{
+test('income readout requires an agreement and local control and ignores damage or blockade without mutation',()=>{
  const s=secureArea(initialCampaign(),'ensenada'),d=CAMPAIGN_SECTORS.find(d=>d.id==='ensenada');
+ assert.equal(sectorIncome(s,d),0);recordTownAgreement(s,'ensenada');
  s.sectors[d.id].damageUntil=10;s.blockade=true;
- // Established area with 65 loyalty: 3 pesos after damage and blockade limits.
  const before=JSON.stringify(s);
- assert.equal(sectorIncome(s,d),3);
+ assert.equal(sectorIncome(s,d),5000);
  assert.equal(JSON.stringify(s),before);
  s.sectors[d.id].owner='royalist';assert.equal(sectorIncome(s,d,()=>true),0);
 });

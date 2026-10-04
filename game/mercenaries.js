@@ -217,5 +217,7 @@ export const MERCENARY_ADDITIONS=recruits.map(([id,name,nickname,role,classId,se
  weapon:traits.includes('line_marksman')?1802:equipment[classId][0],blade:id===117?1812:equipment[classId][1],
  ridingSkill:classId==='gaucho'?80:20,rations:2,
  foreign:(id>=138&&id<=144)||FORMER_OFFICER_IDS.includes(id),tier:elites.has(id)?'elite':'regular',
+ // Original fictional disagreement; this is not a historical claim.
+ ...(id===107?{serviceRefusals:[{character:'person-112',reason:'Discrepan sobre el trato a los pacientes.'}],preferredCompanions:[{character:'person-116',reason:'Confía en su ayuda para atender heridos.'}]}:{}),
  biography:`Personaje ficticio. ${biography}`,personalityText:personality,lines,appearance,
 }));

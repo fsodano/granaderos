@@ -1,3 +1,4 @@
+import {assertTradeRejected} from './commerce-gear-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {HEADQUARTERS_OPTIONS,headquartersFor,campaignChapters} from '../game/campaign-headquarters.js';
@@ -7,7 +8,6 @@ import {initialCampaign,dispatchCampaign,isSupplied,campaignObjectives,available
 import {defaultProfile} from '../game/character-profile.js';
 import {hiringArrivalOptions} from '../game/hiring-arrivals.js';
 import {dailyIncome} from '../game/economy.js';
-import {refillCost,firearmRepairCost} from '../game/equipment.js';
 import {enterSector} from '../game/world.js';
 import {syncBattleTime} from '../game/time.js';
 import {encodeSave,decodeSave} from '../game/save.js';
@@ -24,21 +24,21 @@ test('headquarters validates plausible locality choices, controlled startup and 
  const implicit=content('mendoza');delete implicit.startingTerritory;const s=initialCampaign(8,implicit);assert.equal(s.location,'mendoza');assert.equal(s.sectors.mendoza.owner,'patriot');assert.equal(s.sectors.retiro.owner,'royalist');assert.ok(save(s));
 });
 
-test('an alternate headquarters starts a free officer, chapter, workshop and real peaceful scene with no Retiro control',()=>{
+test('an alternate headquarters starts a free officer, chapter and real peaceful scene with no Retiro control',()=>{
  let s=initialCampaign(8,content());assert.equal(s.phase,0);assert.match(campaignObjectives(s)[0].name,/Salta/);assert.match(availableActions(s).phase.objective,/Salta/);assert.match(s.log[0].text,/^Salta/);assert.deepEqual(hiringArrivalOptions(s).map(o=>o.id),['salta']);
  s=order(s,create);assert.equal(s.resources.treasury,3200);assert.equal(s.phase,1);assert.equal(s.operativeState[1000].location,'salta');assert.equal(s.cityLoyaltyEvents.find(e=>e.eventId==='quest-academy').sectorId,'salta');assert.equal(s.sectors.retiro.loyalty,25);
- s=order(s,{type:'purchaseEquipment',item:'firearm-1801'});assert.equal(s.armoryItems.length,1);assert.ok(s.resources.treasury<3200);assert.equal(s.sectors.retiro.owner,'royalist');
- // Prepared worn supplies isolate access and exact workshop payment.
- s.operativeState[1000].condition=40;s.operativeState[1000].rations=0;const repair=firearmRepairCost(s.operativeState[1000]),refill=refillCost(s.operativeState[1000]),funds=s.resources.treasury;
- s=order(s,{type:'repairWeapon',operativeId:1000});s=order(s,{type:'resupply',operativeId:1000});assert.equal(s.resources.treasury,funds-repair-refill);assert.equal(s.operativeState[1000].condition,100);assert.equal(s.operativeState[1000].rations,2);
+ assertTradeRejected(s,{type:'purchaseEquipment',item:'firearm-1801'});assert.equal(s.armoryItems.length,0);assert.equal(s.sectors.retiro.owner,'royalist');
+ // Used personal gear stays worn; town control cannot create paid repairs or stocks.
+ s.operativeState[1000].condition=40;s.operativeState[1000].rations=0;
+ assertTradeRejected(s,{type:'repairWeapon',operativeId:1000});assertTradeRejected(s,{type:'resupply',operativeId:1000});assert.equal(s.resources.treasury,3200);assert.equal(s.operativeState[1000].condition,40);assert.equal(s.operativeState[1000].rations,0);
  s=order(s,{type:'visitSector'});let b=enterSector(s.pendingBattle);assert.equal(b.mode,'exploration');assert.equal(b.sectorId,'salta');const active=save(s,b);const pair=syncBattleTime(active.campaign,active.battle);assert.equal(pair.error,null);s=order(pair.campaign,{type:'leaveSector',battleId:pair.campaign.pendingBattle.id,sectorState:pair.battle,survivors:pair.battle.units.filter(u=>u.side==='player')});assert.equal(save(s).campaign.location,'salta');
 });
 
-test('a real paid hire arrives at the chosen base and supply follows its connected controlled route',()=>{
+test('a real paid hire arrives at the chosen base and local control supports independent town operations',()=>{
  const d=content('mendoza');d.startingTerritory.cordoba.owner='patriot';d.startingTerritory.retiro.owner='patriot';let s=initialCampaign(8,d);
- assert.equal(isSupplied(s,'cordoba'),true);assert.equal(isSupplied(s,'retiro'),false);s=order(s,{type:'recruitCivic',id:110,term:'week'});assert.equal(s.hiringArrivals[0].destination,'mendoza');assert.equal(s.recruited.length,0);assert.equal(s.phase,0);s=order(save(s).campaign,{type:'wait',hours:6});assert.deepEqual(s.squad,[110]);assert.equal(s.operativeState[110].location,'mendoza');assert.equal(s.phase,1);assert.equal(s.contracts[110].started,6);s=order(s,{type:'travel',sector:'cordoba'});s=save(s).campaign;assert.equal(s.location,'cordoba');assert.equal(headquartersFor(s),'mendoza');assert.equal(s.squads[0].location,'cordoba');
+ assert.equal(isSupplied(s,'cordoba'),true);assert.equal(isSupplied(s,'retiro'),true);s=order(s,{type:'recruitCivic',id:110,term:'week'});assert.equal(s.hiringArrivals[0].destination,'mendoza');assert.equal(s.recruited.length,0);assert.equal(s.phase,0);s=order(save(s).campaign,{type:'wait',hours:6});assert.deepEqual(s.squad,[110]);assert.equal(s.operativeState[110].location,'mendoza');assert.equal(s.phase,1);assert.equal(s.contracts[110].started,6);s=order(s,{type:'travel',sector:'cordoba'});s=save(s).campaign;assert.equal(s.location,'cordoba');assert.equal(headquartersFor(s),'mendoza');assert.equal(s.squads[0].location,'cordoba');
  // Existing state may later open the route; the supply root stays in Mendoza.
- s.sectors.buenos_aires.owner='patriot';assert.equal(isSupplied(s,'retiro'),true);s.sectors.mendoza.owner='royalist';assert.equal(isSupplied(s,'retiro'),false);assert.equal(isSupplied(s,'cordoba'),false);
+ s.sectors.buenos_aires.owner='patriot';assert.equal(isSupplied(s,'retiro'),true);s.sectors.mendoza.owner='royalist';assert.equal(isSupplied(s,'retiro'),true);assert.equal(isSupplied(s,'cordoba'),true);
 });
 
 test('the selected headquarters receives the existing raid protection and its loss drives defeat instead of Retiro',()=>{
@@ -53,5 +53,5 @@ test('pinned headquarters survive travel and draft changes, while altered saved 
 });
 
 test('a hired squad launches and saves an actual frontier attack supplied from the alternate headquarters',()=>{
- let s=order(initialCampaign(8,content('mendoza')),{type:'recruitCivic',id:110,term:'week'});s=order(s,{type:'wait',hours:6});const funds=s.resources.treasury,income=dailyIncome(s);s=order(s,{type:'attack',sector:'uspallata'});assert.equal(s.pendingBattle.origin,'mendoza');assert.equal(s.pendingBattle.sector,'uspallata');assert.equal(s.hour,24);assert.equal(s.resources.treasury,funds+income-10);assert.equal(s.sectors.retiro.owner,'royalist');assert.equal(s.sectors.uspallata.owner,'royalist');const b=enterSector(s.pendingBattle),pair=save(s,b);assert.ok(b.units.some(u=>u.side==='enemy'));assert.equal(pair.campaign.location,'uspallata');assert.equal(headquartersFor(pair.campaign),'mendoza');assert.deepEqual(pair.battle,b);
+ let s=order(initialCampaign(8,content('mendoza')),{type:'recruitCivic',id:110,term:'week'});s=order(s,{type:'wait',hours:6});const funds=s.resources.treasury,income=dailyIncome(s);s=order(s,{type:'attack',sector:'uspallata'});assert.equal(s.pendingBattle.origin,'mendoza');assert.equal(s.pendingBattle.sector,'uspallata');assert.equal(s.hour,24);assert.equal(s.resources.treasury,funds+income);assert.equal(s.sectors.retiro.owner,'royalist');assert.equal(s.sectors.uspallata.owner,'royalist');const b=enterSector(s.pendingBattle),pair=save(s,b);assert.ok(b.units.some(u=>u.side==='enemy'));assert.equal(pair.campaign.location,'uspallata');assert.equal(headquartersFor(pair.campaign),'mendoza');assert.deepEqual(pair.battle,b);
 });

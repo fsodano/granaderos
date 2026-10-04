@@ -1,4 +1,4 @@
-// Individual mounts. Time is campaign hours; breeding never produces instant adults.
+// Individual mounts. Time is campaign hours; owned horses recover through rest.
 export const GESTATION_HOURS=330*24;
 export const MATURITY_HOURS=3*365*24;
 const clone=s=>structuredClone(s);
@@ -12,7 +12,9 @@ const cost=action.type==='hire'?35:180;need(Number.isFinite(action.funds)&&actio
 const id=`horse-${s.nextId++}`;s.horses.push({id,name:action.name||`Criollo ${id.split('-')[1]}`,sex:action.sex==='mare'?'mare':'stallion',location:action.location,bornAt:s.hour-MATURITY_HOURS,stamina:100,condition:100,feed:7,assignedTo:null,hired:action.type==='hire',hireUntil:action.type==='hire'?s.hour+30*24:null,pregnantUntil:null});s.cost=cost;note(s,action.type==='hire'?'Montura arrendada por treinta días.':'Caballo incorporado a la caballada.');
 }else if(action.type==='advance'){
 need(Number.isInteger(action.hour)&&action.hour>=s.hour,'El calendario de la caballada no puede retroceder.');const days=Math.floor(action.hour/24)-Math.floor(s.hour/24);s.cost=0;
-for(const horse of [...s.horses]){if(horse.custody)continue;const fed=Math.min(days,horse.feed),unfed=Math.max(0,days-horse.feed);horse.feed=Math.max(0,horse.feed-days);horse.condition=Math.max(0,Math.min(100,horse.condition+fed-unfed*2));horse.stamina=Math.min(horse.condition,horse.stamina+days*10);if(horse.hired&&action.hour>=horse.hireUntil){horse.assignedTo=null;horse.returned=true;}if(horse.pregnantUntil!==null&&action.hour>=horse.pregnantUntil){const bornAt=horse.pregnantUntil;horse.pregnantUntil=null;const id=`horse-${s.nextId++}`;s.horses.push({id,name:`Potrillo de ${horse.name}`,sex:s.nextId%2?'mare':'stallion',location:horse.location,bornAt,stamina:100,condition:100,feed:7,assignedTo:null,hired:false,hireUntil:null,pregnantUntil:null,motherId:horse.id});note(s,`Nace ${id}. Necesita tres años de crianza antes de la monta.`);}}
+// Legacy feed and pregnancy fields remain save data only. Rest has no stock
+// prerequisite and advancing the clock cannot produce additional horses.
+for(const horse of s.horses){if(horse.custody)continue;horse.condition=Math.min(100,horse.condition+days);horse.stamina=Math.min(horse.condition,horse.stamina+days*10);if(horse.hired&&action.hour>=horse.hireUntil){horse.assignedTo=null;horse.returned=true;}}
 s.hour=action.hour;
 }else{
 need(h&&!h.returned&&!h.custody,'La montura no está disponible.');s.cost=0;

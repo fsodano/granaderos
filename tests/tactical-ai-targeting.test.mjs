@@ -65,7 +65,7 @@ test('real enemy turns execute the selected body region with normal charge, wear
 });
 
 test('a critical head reaction stops movement at the paid step and removes the incapacitated target’s remaining AP',()=>{
-  const s=field({morale:100},{overwatch:true,ap:12}),next=actBattle(s,{type:'move',unitId:'p',x:10,y:3});
+  const s=field({morale:100,hp:85,bandaged:15},{overwatch:true,ap:12}),next=actBattle(s,{type:'move',unitId:'p',x:10,y:3});
   assert.equal(next.lastError,null);assert.equal(next.units[0].x,9);assert.equal(next.units[0].lastHitLocation,'head');
   assert.ok(next.units[0].hp<15);assert.equal(next.units[0].ap,0);assert.equal(actor(next).ap,0);assert.equal(actor(next).loaded,0);
   assert.doesNotThrow(()=>validateBattleSnapshot(next));

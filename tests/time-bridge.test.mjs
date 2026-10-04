@@ -1,3 +1,4 @@
+import {withOwnedMount} from './custody-gear-fixture.mjs';
 import {advanceCampaignHours} from './campaign-wait-fixture.mjs';
 import test from 'node:test';import assert from 'node:assert/strict';
 import {launchEnemyGroup} from '../game/enemy-groups.js';
@@ -34,7 +35,7 @@ test('torch lifetime uses elapsed seconds through resting and strategic re-entry
  let s=order(pair.campaign,{type:'leaveSector',battleId:pair.campaign.pendingBattle.id,sectorState:pair.battle,survivors:pair.battle.units.filter(u=>u.side==='player')});s=order(s,{type:'wait',hours:1});s=order(s,{type:'visitSector'});const b=enterSector(s.pendingBattle,s.sectorStates.retiro);assert.equal(b.lights.find(l=>l.id===torch.id)?.remainingSeconds,remaining-4200);
 });
 test('mounted troops retain their assigned horse through midnight and synchronized saves',()=>{
- let s=order(initialCampaign(),{type:'horseAction',order:{type:'acquire'}});const horse=s.horseState.horses.at(-1);s=order(s,{type:'horseAction',order:{type:'assign',horseId:horse.id,operativeId:3}});s=advanceCampaignHours(s,23);s.secondOfHour=3590;
+ let s=withOwnedMount(initialCampaign()).state;const horse=s.horseState.horses.at(-1);s=order(s,{type:'horseAction',order:{type:'assign',horseId:horse.id,operativeId:3}});s=advanceCampaignHours(s,23);s.secondOfHour=3590;
  let pair=visit(s);pair.battle=actBattle(pair.battle,{type:'mount',unitId:3});assert.equal(pair.battle.lastError,null);
  pair=syncBattleTime(pair.campaign,endTurn(pair.battle));assert.equal(pair.error,null);assert.equal(pair.battle.units.find(u=>u.id==='3').mounted,true);assert.equal(pair.campaign.hour,24);assert.equal(pair.campaign.horseState.horses.find(h=>h.id===horse.id).assignedTo,3);assert.deepEqual(decodeSave(encodeSave(pair.campaign,pair.battle)),{campaign:pair.campaign,battle:pair.battle});
 });

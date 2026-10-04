@@ -11,6 +11,7 @@ export {CARE_ASSIGNMENTS,ALL_ASSIGNMENTS} from './assignment-labels.js';
 import {sleepStatus} from './sleep.js';
 import {baseMorale} from './morale.js';
 import {refreshCondition} from './tactical-condition.js';
+import {fieldPractice} from './skill-training.js';
 
 export const MEDICAL_SUPPLY_PRICE=DEFAULT_CARE_RULES.dressingPrice;
 export const MEDICAL_KIT_PRICE=MEDICAL_SUPPLY_PRICE;
@@ -125,6 +126,13 @@ export function careStatus(s,op,roster){
   return record.bleeding?'El descanso no detiene la hemorragia. Necesita un médico.':record.hp<15?'Estado crítico: necesita un médico para recuperar salud.':`+${restRecovery(op,record,s).energy} energía/h · +1 salud cada ${careRules(s).restHealingHours} h de descanso.`;
 }
 
+function learnMedicine(record,doctor){
+  const unit={...doctor,hp:record.hp,side:'player',practiceSeed:record.practiceSeed,trainedStats:{...record.trainedStats},skillPractice:{...record.skillPractice}};
+  fieldPractice(unit,'medical');
+  if(unit.practiceSeed===record.practiceSeed)return;
+  record.practiceSeed=unit.practiceSeed;record.trainedStats=unit.trainedStats;record.skillPractice=unit.skillPractice;
+}
+
 export function advanceMedicalCare(s,roster,context={}){
   const treated=new Set();
   const present=op=>carePresent(s,op,context);
@@ -139,6 +147,7 @@ export function advanceMedicalCare(s,roster,context={}){
     medic.medkits--;medic.energy=Math.max(0,medic.energy-careRules(s).energyCost);gainFatigue(medic,careRules(s).fatigueCost);treated.add(patient.id);
     if(record.bleeding>0){record.bleeding=0;record.bandaged=record.maxHp-record.hp;}
     else {record.hp=Math.min(record.maxHp,record.hp+doctorRate(doctor,s));record.bandaged=Math.min(record.bandaged,record.maxHp-record.hp);}
+    learnMedicine(medic,doctor);
   }
   for(const doctor of roster.filter(op=>present(op)&&s.operativeState[op.id].assignment==='militia_doctor'&&!careAssignmentReason(s,op,'militia_doctor'))){
     const record=militiaCarePatients(s,operativeLocation(s,doctor.id)).find(u=>!treated.has(u.id));if(!record)continue;
@@ -146,6 +155,7 @@ export function advanceMedicalCare(s,roster,context={}){
     if(record.bleeding>0){record.bleeding=0;record.bandaged=record.maxHp-record.hp;}
     else {record.hp=Math.min(record.maxHp,record.hp+doctorRate(doctor,s));record.bandaged=Math.min(record.bandaged??record.maxHp-record.hp,record.maxHp-record.hp);}
     recoverAtRest(record,record,{state:s});refreshCondition(record);
+    learnMedicine(medic,doctor);
   }
   for(const op of roster){
     const record=s.operativeState[op.id];if(!s.recruited.includes(op.id)||!record?.alive||deployed(s,op.id))continue;

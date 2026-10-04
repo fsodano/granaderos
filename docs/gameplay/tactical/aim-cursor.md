@@ -13,12 +13,12 @@ Implemented 11 September 2026 from the user request and supplied JA2 cursor scre
 - Left-click confirms the shot. Changing the cursor costs no AP and advances no time. The ordinary shot pays the displayed base cost plus extra aim. A miss still spends AP and ammunition; an ignition failure retains the charge under the existing rules.
 - The cursor displays the region, total AP, remaining AP and four aim marks. Shared target help separates weapon preparation from discharge; keeping the weapon ready avoids paying preparation again. See [weapon readiness](weapon-readiness.md). Invalid shots use the warning color. Shot warnings remain in the shared target preview.
 - Changing target or region resets extra aim. Changing the shooter, held weapon, position or turn also resets it. A completed shot resets extra aim.
-- R reloads the equipped firearm or primes it after a misfire. Shift+R selects running. Alt+R remains a reload alias.
+- R selects running. Shift+R reloads the equipped firearm or primes it after a misfire. Alt+R remains a reload alias.
 - Escape returns to contextual use. L selects paid facing. Confirm the same direction again to prepare a held firearm without firing; the preview shows its AP cost. In Disparo mode, F and the bracket keys provide keyboard aiming; a focused target uses arrow keys for regions and Enter to confirm. Prone targets ignore region changes.
 - B switches a held firearm between Disparo and close combat. In close combat, F and right-click keep the stock strike or fitted bayonet attack, with zero extra aim. Empty or unprimed firearms can still strike; no reload is substituted. Switch back with B before aiming a shot.
 - Right-click with other equipment enters ordinary item use. Equipped dressings still treat the selected person or the acting soldier. The lower panel no longer has aim-level or body-region buttons.
 
-Ground shots use the existing fixed-height projectile rules and display Casilla. They can hit allies. A clicked hostile's body region comes from that click's position, not a prior panel choice. The simulation also rejects head/leg requests against prone or fallen targets, and enemy shot selection only considers torso for those targets.
+Ground shots capture an absolute aiming height, use the existing physical flight rules and display Casilla. Continued shots can fall below that original aiming height. They can hit allies. A clicked hostile's body region comes from that click's position, not a prior panel choice. The simulation also rejects head/leg requests against prone or fallen targets, and enemy shot selection only considers torso for those targets.
 
 ## Verification
 

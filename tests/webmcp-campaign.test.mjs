@@ -6,6 +6,8 @@ import {readyLocal,localPackage,localId,localNPC,tactical as localTactical,order
 import {playerKnownState,playerKnownBattle} from '../game/player-known-state.js';
 import {battleFromRequest} from '../game/battle-handoff.js';
 import {OPERATIVES} from '../game/campaign.js';
+import {encounterHireTerms} from '../game/encounters.js';
+import {contentQuestStatus,contentQuestJournal} from '../game/content-quests.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {act} from '../web/node_modules/react/index.js';
@@ -59,7 +61,7 @@ test('registered orders keep consecutive tactical actions, midnight, UI orders a
  // No React render between executions: each call must see the last accepted pair.
  await act(async()=>{for(const action of actions){want=expected(want,action);const result=m.issue(action);assert.equal(result.turn,want.battle.turn);observed(m,want);}});
  assert.ok(want.campaign.hour>=24);assert.equal(want.battle.syncedSeconds,want.battle.elapsedSeconds);assert.deepEqual(m.saved(),want);
- want=expected(want,{type:'endTurn'});await act(async()=>{m.document.body.dispatchEvent(new m.dom.window.KeyboardEvent('keydown',{key:'d',bubbles:true}));await new Promise(resolve=>setTimeout(resolve,500));});
+ want=expected(want,{type:'endTurn'});await act(async()=>m.document.body.dispatchEvent(new m.dom.window.KeyboardEvent('keydown',{key:'d',bubbles:true})));await m.settleUntil(()=>m.saved().battle.turn===want.battle.turn);
  assert.deepEqual(pair(m.saved()),want);assert.deepEqual(m.saved(),want);
  await m.click('Volver a la campaña');
  await act(async()=>assert.throws(()=>m.issue({type:'rest',unitId}),/No hay batalla activa/));
@@ -107,7 +109,7 @@ test('a pending visible UI turn rejects competing tool orders and commits one sy
  const m=await mount(t,fixture()),source=m.saved().battle,before=structuredClone(pair(m.saved()));const unitId=before.battle.units.find(u=>u.side==='player').id;
  const action={type:'movement',unitId,movement:'crouch'},turn=expected(before,{type:'endTurn'});
  await act(async()=>{m.document.body.dispatchEvent(new m.dom.window.KeyboardEvent('keydown',{key:'d',bubbles:true}));assert.throws(()=>m.issue(action),/termine el movimiento/);assert.deepEqual(pair(m.saved()),before);assert.deepEqual(m.saved(),before);});
- const deadline=Date.now()+10000;while(m.saved().battle.turn===source.turn&&Date.now()<deadline)await act(async()=>new Promise(resolve=>setTimeout(resolve,20)));
+ await m.settleUntil(()=>m.saved().battle.turn===turn.battle.turn);
  assert.deepEqual(pair(m.saved()),turn);assert.deepEqual(m.saved(),turn);
  const want=expected(turn,action);await act(async()=>m.issue(action));assert.deepEqual(pair(m.saved()),want);assert.deepEqual(m.saved(),want);
 });
@@ -116,16 +118,18 @@ test('the actual conversation displays a local contract price and hires the woun
  const d=localPackage();d.characters.at(-1).startingCondition={hp:10,energy:100,fatigue:0,bleeding:0,bandaged:85};let p=readyLocal(undefined,d);p=localTactical(p,{type:'weapon',slot:'medical'});p=localTactical(p,{type:'heal',targetId:localNPC(p.battle).id});p=localTactical(p,{type:'weapon',slot:'primary'});const hp=localNPC(p.battle).hp,id=localId(p.campaign),cash=p.campaign.resources.treasury;
  const m=await mount(t,p),npc=m.document.querySelector('[data-unit-id="authored-alma-contract"] [data-person-hit-target]');assert.ok(npc);
  await act(async()=>npc.dispatchEvent(new m.dom.window.MouseEvent('click',{bubbles:true})));
- const select=m.document.querySelector('[role="dialog"][aria-label^="Conversación con"] select');assert.ok(select);assert.deepEqual([...select.options].map(o=>o.textContent),['Un día · 10 pesos','Una semana · 70 pesos','Un mes · 300 pesos']);
+ const quotes=encounterHireTerms(p.campaign,localNPC(p.battle)),weekly=quotes.find(q=>q.term==='week');
+ const select=m.document.querySelector('[role="dialog"][aria-label^="Conversación con"] select');assert.ok(select);assert.deepEqual([...select.options].map(o=>o.textContent),quotes.map(q=>`${q.name} · ${q.price} pesos`));
  await act(async()=>{select.value='week';select.dispatchEvent(new m.dom.window.Event('change',{bubbles:true}));});
- await m.click('Contratar · 70 pesos');const state=m.saved();assert.equal(state.campaign.resources.treasury,cash-70);assert.equal(state.campaign.contracts[id].term,'week');assert.equal(state.campaign.contracts[id].expiresAt,p.campaign.hour+168);assert.equal(state.campaign.hiringArrivals.length,0);
+ await m.click(`Contratar · ${weekly.price} pesos`);const state=m.saved();assert.equal(state.campaign.resources.treasury,cash-weekly.price);assert.equal(state.campaign.contracts[id].term,'week');assert.equal(state.campaign.contracts[id].expiresAt,p.campaign.hour+168);assert.equal(state.campaign.hiringArrivals.length,0);
  assert.equal(state.battle.units.find(u=>u.id===String(id)).hp,hp);assert.equal(localNPC(state.battle),undefined);assert.deepEqual(m.saved(),pair(state));
 });
 
 test('the actual conversation shows missing funds and disables the local hiring action',async t=>{
  const p=readyLocal({pay:1000000}),m=await mount(t,p),npc=m.document.querySelector('[data-unit-id="authored-alma-contract"] [data-person-hit-target]');assert.ok(npc);
  await act(async()=>npc.dispatchEvent(new m.dom.window.MouseEvent('click',{bubbles:true})));
- const button=[...m.document.querySelectorAll('button')].find(b=>b.textContent==='Contratar · 33334 pesos');assert.ok(button);assert.equal(button.disabled,true);assert.match(m.document.querySelector('[role="dialog"][aria-label^="Conversación con"]').textContent,/Necesitás 33334 pesos/);assert.deepEqual(pair(m.saved()),p);
+ const quote=encounterHireTerms(p.campaign,localNPC(p.battle))[0];assert.ok(quote.price>p.campaign.resources.treasury);
+ const button=[...m.document.querySelectorAll('button')].find(b=>b.textContent===`Contratar · ${quote.price} pesos`);assert.ok(button);assert.equal(button.disabled,true);assert.ok(m.document.querySelector('[role="dialog"][aria-label^="Conversación con"]').textContent.includes(`Necesitás ${quote.price} pesos`));assert.deepEqual(pair(m.saved()),p);
 });
 
 test('the actual conversation follows authored choices, rejects a second stale click and saves the selected branch',async t=>{
@@ -160,26 +164,26 @@ test('the mounted conversation displays an unaffordable payment and cannot selec
  const button=[...m.document.querySelectorAll('[role="dialog"][aria-label^="Conversación con"] button')].find(b=>b.textContent.startsWith('Contame sobre el norte.'));assert.equal(button.disabled,true);assert.match(button.textContent,/Pagar 1000000 pesos/);assert.match(button.textContent,/Faltan/);await m.click('Contame sobre el norte.');assert.deepEqual(pair(m.saved()),before);assert.deepEqual(m.saved(),before);
 });
 
-test('the mounted conversation starts and completes a quest and the campaign journal shows its real saved status',async t=>{
+test('the mounted conversation starts and completes a quest and its status persists through strategic view',async t=>{
  const p=readyLocal(undefined,questPackage()),m=await mount(t,p),cash=p.campaign.resources.treasury;
  async function open(){const npc=m.document.querySelector('[data-unit-id="authored-alma-contract"] [data-person-hit-target]');assert.ok(npc);await act(async()=>npc.dispatchEvent(new m.dom.window.MouseEvent('click',{bubbles:true})));await m.click('Conversar');}
  async function map(){await m.click('Listo');await act(async()=>m.document.body.dispatchEvent(new m.dom.window.KeyboardEvent('keydown',{key:'m',bubbles:true})));}
- await open();await m.click('Acepto el encargo.');assert.match(m.document.querySelector('[role="dialog"][aria-label^="Conversación con"]').textContent,/El parte de la ribera: en curso/);await map();let journal=m.document.querySelector('[aria-label="Encargos de la historia"]');assert.ok(journal);assert.match(journal.textContent,/En curso/);assert.match(journal.textContent,/Volvé con el parte/);
- await m.click('Volver al sector táctico');if([...m.document.querySelectorAll('button')].some(b=>b.textContent.trim().startsWith('Pausar')))await m.click('Pausar');await open();await m.click('Aquí está el parte.');assert.equal(m.saved().campaign.resources.treasury,cash+175);assert.deepEqual(m.saved(),pair(m.saved()));await map();journal=m.document.querySelector('[aria-label="Encargos de la historia"]');assert.match(journal.textContent,/Completado/);assert.match(journal.textContent,/Resuelto el día/);assert.equal(m.saved().campaign.contentQuestEvents.length,2);
+ await open();await m.click('Acepto el encargo.');assert.match(m.document.querySelector('[role="dialog"][aria-label^="Conversación con"]').textContent,/El parte de la ribera: en curso/);await map();assert.equal(contentQuestStatus(m.saved().campaign,'river-post'),'active');assert.equal(m.document.querySelector('[aria-label="Encargos de la historia"]'),null);assert.deepEqual(m.saved(),pair(m.saved()));
+ await m.click('Volver al sector táctico');if([...m.document.querySelectorAll('button')].some(b=>b.textContent.trim().startsWith('Pausar')))await m.click('Pausar');await open();await m.click('Aquí está el parte.');assert.equal(m.saved().campaign.resources.treasury,cash+175);assert.match(m.document.querySelector('[role="dialog"][aria-label^="Conversación con"]').textContent,/El parte de la ribera: completado/);assert.deepEqual(m.saved(),pair(m.saved()));await map();assert.equal(contentQuestStatus(m.saved().campaign,'river-post'),'completed');assert.equal(m.saved().campaign.contentQuestEvents.length,2);assert.deepEqual(m.saved(),pair(m.saved()));
 });
 
 test('the mounted game displays a quest deadline and saves its automatic failure after actual tactical time',async t=>{
  const d=questPackage();d.quests[0].deadlineHours=1;const p=readyLocal(undefined,d),m=await mount(t,p),npc=m.document.querySelector('[data-unit-id="authored-alma-contract"] [data-person-hit-target]');
  await act(async()=>npc.dispatchEvent(new m.dom.window.MouseEvent('click',{bubbles:true})));await m.click('Conversar');assert.match(m.document.querySelector('[role="dialog"][aria-label^="Conversación con"]').textContent,/plazo de 1 h/);await m.click('Acepto el encargo.');
- await m.click('Listo');await act(async()=>m.document.body.dispatchEvent(new m.dom.window.KeyboardEvent('keydown',{key:'m',bubbles:true})));assert.match(m.document.querySelector('[aria-label="Encargos de la historia"]').textContent,/Plazo restante: 60 minutos/);await m.click('Volver al sector táctico');if([...m.document.querySelectorAll('button')].some(b=>b.textContent.trim().startsWith('Pausar')))await m.click('Pausar');
- await act(async()=>{for(let i=0;i<6;i++)m.issue({type:'rest',unitId:m.read().battle.units.find(u=>u.side==='player').id});});assert.equal(m.saved().campaign.contentQuestEvents.at(-1).to,'failed');assert.deepEqual(m.saved(),pair(m.saved()));await act(async()=>m.document.body.dispatchEvent(new m.dom.window.KeyboardEvent('keydown',{key:'m',bubbles:true})));const journal=m.document.querySelector('[aria-label="Encargos de la historia"]');assert.match(journal.textContent,/Fallido/);assert.match(journal.textContent,/vencimiento del plazo/);
+ await m.click('Listo');await act(async()=>m.document.body.dispatchEvent(new m.dom.window.KeyboardEvent('keydown',{key:'m',bubbles:true})));assert.equal(contentQuestJournal(m.saved().campaign)[0].remainingMinutes,60);await m.click('Volver al sector táctico');if([...m.document.querySelectorAll('button')].some(b=>b.textContent.trim().startsWith('Pausar')))await m.click('Pausar');
+ await act(async()=>{for(let i=0;i<6;i++)m.issue({type:'rest',unitId:m.read().battle.units.find(u=>u.side==='player').id});});assert.equal(m.saved().campaign.contentQuestEvents.at(-1).to,'failed');assert.deepEqual(m.saved(),pair(m.saved()));await act(async()=>m.document.body.dispatchEvent(new m.dom.window.KeyboardEvent('keydown',{key:'m',bubbles:true})));const journal=contentQuestJournal(m.saved().campaign)[0];assert.equal(journal.status,'failed');assert.equal(journal.expired,true);assert.equal(journal.remainingMinutes,0);assert.equal(m.document.querySelector('[aria-label="Encargos de la historia"]'),null);
 });
 
-test('the mounted game confirms a required resident death and reports the automatic quest failure in its saved journal',async t=>{
+test('the mounted game confirms a required resident death and saves the automatic quest failure',async t=>{
  const p=readyLocal(undefined,survivalPackage()),m=await mount(t,p),npc=m.document.querySelector('[data-unit-id="authored-alma-contract"] [data-person-hit-target]');await act(async()=>npc.dispatchEvent(new m.dom.window.MouseEvent('click',{bubbles:true})));await m.click('Conversar');await m.click('Acepto el encargo.');await m.click('Listo');
  const state=m.saved(),unit=state.battle.units.find(u=>u.side==='player'),victim=state.battle.npcs.find(n=>n.contentId==='pablo');await approachMounted(m,unit.id,victim.id);
  for(let i=0;i<6&&m.saved().battle.npcs.find(n=>n.id===victim.id).hp>0;i++){await approachMounted(m,unit.id,victim.id);await act(async()=>m.issue({type:'melee',unitId:unit.id,targetId:victim.id}));}assert.equal(m.saved().battle.npcs.find(n=>n.id===victim.id).hp,0);assert.equal(m.saved().campaign.contentQuestEvents.at(-1).death,'pablo');assert.deepEqual(m.saved(),pair(m.saved()));
- await act(async()=>m.document.body.dispatchEvent(new m.dom.window.KeyboardEvent('keydown',{key:'m',bubbles:true})));const journal=m.document.querySelector('[aria-label="Encargos de la historia"]');assert.match(journal.textContent,/Fallido/);assert.match(journal.textContent,/muerte de Pablo/);
+ await act(async()=>m.document.body.dispatchEvent(new m.dom.window.KeyboardEvent('keydown',{key:'m',bubbles:true})));const journal=contentQuestJournal(m.saved().campaign)[0];assert.equal(journal.status,'failed');assert.equal(journal.deathName,'Pablo');assert.equal(m.document.querySelector('[aria-label="Encargos de la historia"]'),null);assert.deepEqual(m.saved(),pair(m.saved()));
 });
 
 test('the mounted conversation starts movement in the active sector and autosaves its progress',async t=>{

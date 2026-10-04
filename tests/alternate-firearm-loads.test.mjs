@@ -1,3 +1,4 @@
+import {withCarriedAmmo} from './commerce-gear-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {defaultContentPackage,validateContentPackage} from '../game/content-package.js';
@@ -9,7 +10,8 @@ import {order,saved,visit,leave,tactical} from './local-contract-fixture.mjs';
 const content=()=>{const d=defaultContentPackage();d.characters.find(c=>c.id==='person-110').arrivalHours=0;d.rules.startingTreasury=9000;return d;};
 const hire=(d=content())=>order(initialCampaign(8,d),{type:'recruitCivic',id:110,term:'month'});
 const action=(s,type,extra={})=>order(s,{type,operativeId:110,...extra});
-const choose=(s,family)=>action(s,'selectAmmunitionLoad',{family});
+const choose=(s,family)=>{if(s.operativeState[110].carriedLoaded&&ammoTypeFor({...rosterFor(s).find(op=>op.id===110),...s.operativeState[110]})!==family)s=action(s,'unloadAmmunition');return action(s,'selectAmmunitionLoad',{family});};
+const shotHire=()=>choose(withCarriedAmmo(hire(),110,'ammoShot',10),'ammoShot');
 const unit=p=>p.battle.units.find(u=>u.id==='110');
 
 test('default smoothbores offer separate ball and shot loads and authored alternatives validate strictly',()=>{
@@ -21,17 +23,17 @@ test('default smoothbores offer separate ball and shot loads and authored altern
  assert.equal(ammunitionLoadsFor({...w,alternativeLoads:[]}).length,1);
 });
 
-test('chosen shot purchases, deployment, unload and reselection preserve both families and money through saves',()=>{
- let s=choose(hire(),'ammoShot'),cash=s.resources.treasury;assert.equal(deploymentCost(s),10);
+test('finite owned shot loads, deployment, unload and reselection preserve both families and money through saves',()=>{
+ let s=shotHire(),cash=s.resources.treasury;assert.equal(deploymentCost(s),0);
  let p=visit(s);assert.equal(ammoTypeFor(unit(p)),'ammoShot');assert.equal(unit(p).loaded,0);assert.equal(ammoCount(unit(p),'ammoShot'),10);p=tactical(p,{type:'reload'});assert.equal(unit(p).loaded,1);assert.equal(ammoCount(unit(p),'ammoShot'),9);assert.equal(weaponSpecification(unit(p)).loadPattern,'cone');
- s=leave(saved(p));assert.equal(s.resources.treasury,cash-10);assert.equal(s.operativeState[110].ammunitionChoice,'ammoShot');
+ s=leave(saved(p));assert.equal(s.resources.treasury,cash);assert.equal(s.operativeState[110].ammunitionChoice,'ammoShot');
  assert.match(dispatchCampaign(s,{type:'selectAmmunitionLoad',operativeId:110,family:'ammoMusket'}).lastError,/Vaciá/);
- s=action(s,'unloadAmmunition');assert.equal(ammoCount(s.operativeState[110],'ammoShot'),10);s=choose(s,'ammoMusket');p=visit(saved({campaign:s}).campaign);assert.equal(unit(p).loaded,0);assert.equal(ammoCount(unit(p),'ammoMusket'),10);p=tactical(p,{type:'reload'});assert.equal(ammoCount(unit(p),'ammoShot'),10);assert.equal(ammoCount(unit(p),'ammoMusket'),9);assert.equal(unit(p).loaded,1);assert.equal(p.campaign.resources.treasury,cash-20);assert.equal(weaponSpecification(unit(p)).loadPattern,undefined);
+ s=action(s,'unloadAmmunition');assert.equal(ammoCount(s.operativeState[110],'ammoShot'),10);s=choose(s,'ammoMusket');p=visit(saved({campaign:s}).campaign);assert.equal(unit(p).loaded,0);assert.equal(ammoCount(unit(p),'ammoMusket'),10);p=tactical(p,{type:'reload'});assert.equal(ammoCount(unit(p),'ammoShot'),10);assert.equal(ammoCount(unit(p),'ammoMusket'),9);assert.equal(unit(p).loaded,1);assert.equal(p.campaign.resources.treasury,cash);assert.equal(weaponSpecification(unit(p)).loadPattern,'single');
 });
 
 test('tactical unload, choice and reload retain physical load on packed and recovered weapons',()=>{
- let p=visit(choose(hire(),'ammoShot'));p=tactical(p,{type:'reload'});p=tactical(p,{type:'unloadAmmunition'});assert.equal(unit(p).loaded,0);assert.equal(ammoCount(unit(p),'ammoShot'),10);p=tactical(p,{type:'selectAmmunitionLoad',family:'ammoMusket'});assert.equal(ammoTypeFor(unit(p)),'ammoMusket');
- const denied=actBattle(p.battle,{type:'reload',unitId:'110'});assert.ok(denied.lastError);assert.equal(ammoCount(denied.units.find(u=>u.id==='110'),'ammoShot'),10);
+ let p=visit(shotHire());p=tactical(p,{type:'reload'});p=tactical(p,{type:'unloadAmmunition'});assert.equal(unit(p).loaded,0);assert.equal(ammoCount(unit(p),'ammoShot'),10);p=tactical(p,{type:'selectAmmunitionLoad',family:'ammoMusket'});assert.equal(ammoTypeFor(unit(p)),'ammoMusket');
+ p=tactical(p,{type:'reload'});assert.equal(unit(p).loaded,1);assert.equal(ammoCount(unit(p),'ammoMusket'),9);assert.equal(ammoCount(unit(p),'ammoShot'),10);p=tactical(p,{type:'unloadAmmunition'});
  p=tactical(p,{type:'selectAmmunitionLoad',family:'ammoShot'});p=tactical(p,{type:'reload'});const gun=weaponRecord(unit(p));assert.equal(gun.ammunitionChoice,'ammoShot');assert.equal(gun.loaded,1);assert.equal(weaponSpecification(gun).loadPattern,'cone');
  p=tactical(p,{type:'drop',item:'primary'});p=saved(p);const dropped=p.battle.groundItems.find(g=>g.weapon===gun.weapon&&g.count===1);assert.equal(dropped.ammunitionChoice,'ammoShot');assert.equal(dropped.loaded,1);
 });
@@ -67,8 +69,17 @@ test('unloading requires pocket capacity and combat AP, and cannot clear a jam f
  b=field();b.units[0].ap=20;b.units[0].inventory=Object.fromEntries(Array.from({length:12},(_,i)=>['full'+i,{name:'Objeto '+i,count:1,weight:.1,instanceId:'full-'+i}]));const full=structuredClone(b.units);n=actBattle(b,{type:'unloadAmmunition',unitId:'p'});assert.ok(n.lastError);assert.deepEqual(n.units,full);
 });
 
-test('an empty AI firearm selects owned compatible shot and closes distance instead of discarding it',async()=>{
- const {endTurn,shotChance}=await import('../game/tactical.js');
+test('an empty AI firearm reloads owned shot and uses its finite tail before reaching nominal range',async()=>{
+ const {endTurn,shotChance,firearmFlightPreview,firearmVolleyPreview,firearmRangeProfile,firearmShotOptions}=await import('../game/tactical.js');
  const b=createBattle([{id:'p',x:1,y:1,weapon:1800,ammo:0,loaded:0}],{seed:45,width:12,height:10,tiles:Array.from({length:120},(_,i)=>({x:i%12,y:Math.floor(i/12),type:'grass',blocked:false,cover:0})),enemies:[{id:'e',x:8,y:5,weapon:1800,loaded:0,ammo:2,ammunition:{ammoShot:2},patrol:false,overwatch:false}]});
- assert.equal(shotChance(b,{...b.units[1],ammunitionChoice:'ammoShot'},b.units[0]),0);let n=endTurn(b);for(let i=0;n.phase==='interrupt'&&i<8;i++)n=endTurn(n);const enemy=n.units.find(u=>u.id==='e');assert.equal(enemy.ammunitionChoice,'ammoShot');assert.equal(enemy.loaded,0);assert.equal(ammoCount(enemy,'ammoShot'),1);assert.match(n.log.join(' '),/recarga/);assert.match(n.log.join(' '),/dispara una carga de perdigones/);assert.ok(n.units[0].hp<b.units[0].hp);assert.ok(Math.hypot(enemy.x-1,enemy.y-1)<6);assert.equal(n.lastError,null);
+ const before=structuredClone(b),view={...b.units[1],ammunitionChoice:'ammoShot'},target=b.units[0],weapon=weaponSpecification(view),range=firearmRangeProfile(b,view,target),path=firearmFlightPreview(b,view,target),prediction=firearmVolleyPreview(b,view,target).shots[0];
+ assert.equal(weapon.range,6);assert.equal(weapon.damage,28);assert.equal(range.beyondWeapon,true);
+ // The center accuracy remains zero beyond this selected load's range.
+ // Positive aggregate contact comes from legal scattered pellet paths.
+ assert.ok(path.forecast.miss.contact>0);assert.equal(prediction.chance,Math.round(path.forecast.miss.contact*100));assert.ok(Math.abs(prediction.expectedForce-path.forecast.miss.force)<1e-9);
+ assert.equal(shotChance(b,view,target),prediction.chance);assert.ok(firearmShotOptions(b,view,target,0).some(option=>option.chance>0&&option.expectedDamage>0&&!option.interveningFriendly));assert.deepEqual(b,before);
+ let n=endTurn(b);for(let i=0;n.phase==='interrupt'&&i<8;i++)n=endTurn(n);
+ const enemy=n.units.find(u=>u.id==='e'),distance=Math.hypot(enemy.x-target.x,enemy.y-target.y);
+ assert.equal(enemy.ammunitionChoice,'ammoShot');assert.equal(enemy.loaded,0);assert.equal(ammoCount(enemy,'ammoShot'),1);assert.match(n.log.join(' '),/recarga/);assert.match(n.log.join(' '),/dispara una carga de perdigones/);assert.ok(n.units[0].hp<target.hp);
+ assert.ok(distance<range.distance,'the AI still pays to advance closer');assert.ok(distance>weapon.range,'the actual discharge reaches through the tail before nominal range');assert.deepEqual(enemy.lastShotPosition,{x:enemy.x,y:enemy.y});assert.equal(enemy.condition,b.units[1].condition-1);assert.equal(n.lastError,null);
 });

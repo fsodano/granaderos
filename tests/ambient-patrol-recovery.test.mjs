@@ -15,7 +15,7 @@ const tick=s=>{const n=actBattle(s,{type:'ambient'});assert.equal(n.lastError,nu
 const physical=u=>({x:u.x,y:u.y,tacticalLevel:tacticalLevel(u)});
 
 test('a real 600-second Buenos Aires wait cannot exhaust unseen enemy patrols',()=>{
- let campaign=initialCampaign(8);
+ let campaign=initialCampaign(8);campaign.resources.treasury=50000;
  for(const id of [128,142,123,115,131,110]){campaign=dispatchCampaign(campaign,{type:'recruitCivic',id,term:'day'});assert.equal(campaign.lastError,null);}
  campaign=dispatchCampaign(campaign,{type:'attack',sector:'buenos_aires'});assert.equal(campaign.lastError,null);
  const b=enterSector(campaign.pendingBattle),before=structuredClone(b),rested=actBattle(b,{type:'rest'});

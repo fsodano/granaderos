@@ -65,7 +65,7 @@ test('fresh map requests cannot bypass support, overlap, mounted or finite-heigh
 });
 
 test('saved full-map reentry restores upper residents and defenders against saved geometry before admission',()=>{
- let campaign=initialCampaign();for(const action of [{type:'recruitCivic',id:128,term:'day'},{type:'visitSector'}]){campaign=dispatchCampaign(campaign,action);assert.equal(campaign.lastError,null);}
+ let campaign=initialCampaign();campaign.resources.treasury=12000;for(const action of [{type:'recruitCivic',id:128,term:'day'},{type:'visitSector'}]){campaign=dispatchCampaign(campaign,action);assert.equal(campaign.lastError,null);}
  const authored=deployment(false),request={...campaign.pendingBattle,upperSurfaces:authored.upperSurfaces,climbLinks:authored.climbLinks,enemies:authored.enemies};
  const battle=enterSector(request),roof=battle.upperSurfaces.find(p=>p.id==='roof:16:3'),player=battle.units.find(u=>u.side==='player');Object.assign(player,{x:roof.x,y:roof.y,tacticalLevel:1});
  const loaded=decodeSave(encodeSave(campaign,battle)),before=structuredClone(loaded.battle);

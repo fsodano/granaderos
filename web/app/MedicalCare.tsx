@@ -2,29 +2,25 @@
 import {operativeInTransit} from '../../game/squads.js';
 import {maximumEnergy} from '../../game/fatigue.js';
 import {useState} from 'react';
-import {isSupplied,operativeLocation,rosterFor} from '../../game/campaign.js';
-import {CARE_ASSIGNMENTS,ALL_ASSIGNMENTS,medicalSupplyQuote,careAssignmentReason,careStatus} from '../../game/medical-care.js';
-import {WORK_ASSIGNMENTS,STUDY_SKILLS,TOOLKIT_PRICE,TOOLKIT_POINTS,workAssignmentReason,workStatus,repairEquipmentQueue} from '../../game/assignments.js';
+import {operativeLocation,rosterFor} from '../../game/campaign.js';
+import {CARE_ASSIGNMENTS,ALL_ASSIGNMENTS,careAssignmentReason,careStatus} from '../../game/medical-care.js';
+import {WORK_ASSIGNMENTS,STUDY_SKILLS,workAssignmentReason,workStatus,repairEquipmentQueue} from '../../game/assignments.js';
 import {sleepNeedStatus} from '../../game/sleep-needs.js';
 import {sleepOrderReason} from '../../game/sleep.js';
 import {moraleStatus} from '../../game/morale.js';
-import {equipmentInventoryUsage,medicalSupplyStock,MEDICAL_STOCK_CAP,MEDICAL_DAILY_RESTOCK} from '../../game/equipment.js';
+import {equipmentInventoryUsage} from '../../game/equipment.js';
+import {repairMaterialPoints} from '../../game/repair-materials.js';
 import './medical-care.css';
 import StudyForecast from './StudyForecast';
 import MilitiaCare from './MilitiaCare';
 import {weaponSpecification} from '../../game/weapon-definition.js';
 import {campaignPlace} from '../../game/world-cells.js';
-import {hasWorkshop} from '../../game/campaign-headquarters.js';
 
-export function MedicalSupplyPurchase({s,op,blocked,pharmacy,dispatch}:{s:any;op:any;blocked:boolean;pharmacy:boolean;dispatch:(action:any)=>void}){
-  const [chosenQuantity,setQuantity]=useState(()=>Math.max(1,Math.min(5,medicalSupplyStock(s))));
-  const record=s.operativeState[op.id],stock=medicalSupplyStock(s),quantity=chosenQuantity,quote=medicalSupplyQuote(s,op,quantity,isSupplied(s,s.location));
-  const fits=!equipmentInventoryUsage(s,op).overloaded&&!equipmentInventoryUsage(s,op,{medkits:(record.medkits??0)+quantity}).overloaded;
-  const reason=quantity>stock?'La maestranza no tiene suficientes vendas.':!fits?`No queda espacio para ${quantity} vendas.`:quote.reason;
-  return <div className="care-supplies"><span>{record.medkits??2} vendas</span><label>Cantidad a comprar<input aria-label={`Vendas para ${op.name}`} type="number" min={1} max={20} step={1} value={quantity} onChange={event=>setQuantity(event.target.valueAsNumber)}/></label><button className="line-button" disabled={blocked||Boolean(reason)||!quote.available} title={reason||undefined} onClick={()=>dispatch({type:'purchaseMedicalSupplies',operativeId:op.id,quantity})}>Comprar vendas · {Number.isFinite(quote.cost)?quote.cost:0} pesos</button>{reason&&<small>{reason}</small>}</div>;
+export function MedicalSupplyPurchase({s,op}:{s:any;op:any}){
+  return <div className="care-supplies"><span>{s.operativeState[op.id].medkits??0} vendas llevadas</span></div>;
 }
 
-function PersonnelCard({s,op,roster,blocked,pharmacy,dispatch}:{s:any;op:any;roster:any[];blocked:boolean;pharmacy:boolean;dispatch:(action:any)=>void}){
+function PersonnelCard({s,op,roster,blocked,dispatch}:{s:any;op:any;roster:any[];blocked:boolean;dispatch:(action:any)=>void}){
   const record=s.operativeState[op.id],maxHp=record.maxHp??op.maxHp;
   const [skill,setSkill]=useState(record.trainingSkill??'marksmanship'),[teacherId,setTeacherId]=useState(String(record.instructorId??'')),[targetId,setTargetId]=useState(String(record.repairTargetId??op.id)),[repairScope,setRepairScope]=useState(record.repairScope??(record.assignment==='repair'?'primary':'equipment'));
   const instructors=roster.filter(o=>o.id!==op.id&&s.recruited.includes(o.id)&&s.operativeState[o.id]?.alive&&!operativeInTransit(s,o.id)&&operativeLocation(s,o.id)===operativeLocation(s,op.id)&&s.operativeState[o.id].assignment==='instructor'&&s.operativeState[o.id].trainingSkill===skill&&o[skill]>op[skill]);
@@ -56,9 +52,9 @@ function PersonnelCard({s,op,roster,blocked,pharmacy,dispatch}:{s:any;op:any;ros
       {work&&<button className="line-button" disabled={blocked||Boolean(reason(record.assignment))} onClick={()=>assign(record.assignment)}>Aplicar selección</button>}
       <small>Primero asigná un instructor. Después elegí su alumno y la misma habilidad. Cada instructor atiende a un alumno.</small>
     </div></details>
-    <MedicalSupplyPurchase s={s} op={op} blocked={blocked} pharmacy={pharmacy} dispatch={dispatch}/>
+    <MedicalSupplyPurchase s={s} op={op}/>
     <p className="care-condition">Mochila: {usage.used}/{usage.capacity} espacios con la reserva de cartuchos.</p>
-    <div className="care-supplies"><span>{record.toolkitPoints??0} puntos de herramientas</span><button className="line-button" disabled={blocked||!record.alive||!pharmacy||s.resources.treasury<TOOLKIT_PRICE} title="Las herramientas se venden en las maestranzas abastecidas." onClick={()=>dispatch({type:'purchaseToolkits',operativeId:op.id})}>Comprar {TOOLKIT_POINTS} · {TOOLKIT_PRICE} pesos</button></div>
+    <div className="care-supplies"><span>{repairMaterialPoints(record)} puntos de herramientas llevadas</span></div>
     <p className="care-condition">{weaponSpecification(op)?.name??'Arma equipada'} · Condición {record.condition}%</p>
   </article>;
 }
@@ -66,12 +62,10 @@ function PersonnelCard({s,op,roster,blocked,pharmacy,dispatch}:{s:any;op:any;ros
 export default function MedicalCare({state:s,sectorId=s.location,dispatch}:{state:any;sectorId?:string;dispatch:(action:any)=>void}){
   const roster=rosterFor(s),personnel=roster.filter(o=>s.recruited.includes(o.id)&&!s.operativeState[o.id]?.captured&&!operativeInTransit(s,o.id)&&operativeLocation(s,o.id)===sectorId);
   const blocked=Boolean(s.pendingBattle||s.pendingEncounter)||s.defeated;
-  const pharmacy=sectorId===s.location&&hasWorkshop(s,sectorId)&&isSupplied(s,sectorId);
   const place=campaignPlace(sectorId);
   return <section className="medical-care" aria-label="Atención médica en campaña" aria-labelledby="medical-care-title">
     <header><div><p className="eyebrow">PERSONAL EN {place?.grid}</p><h2 id="medical-care-title">Asignaciones del personal</h2></div><p>Organizá la atención, el descanso, la práctica y las reparaciones. Cada trabajo necesita tiempo y personal presente en un sector seguro.</p></header>
-    {hasWorkshop(s,sectorId)&&<p className="care-condition" role="status">Maestranza: {medicalSupplyStock(s,sectorId)}/{MEDICAL_STOCK_CAP} botiquines disponibles. Repone {MEDICAL_DAILY_RESTOCK} cada 24 horas de abastecimiento; próxima reposición en {24-(s.merchants?.[sectorId]?.restockHours??0)} horas abastecidas.</p>}
-    {!personnel.length?<p className="care-empty">No hay combatientes contratados en {place?.name}.</p>:<div className="care-personnel">{personnel.map(op=><PersonnelCard key={op.id} s={s} op={op} roster={roster} blocked={blocked} pharmacy={pharmacy} dispatch={dispatch}/>)}</div>}
+    {!personnel.length?<p className="care-empty">No hay combatientes contratados en {place?.name}.</p>:<div className="care-personnel">{personnel.map(op=><PersonnelCard key={op.id} s={s} op={op} roster={roster} blocked={blocked} dispatch={dispatch}/>)}</div>}
     <MilitiaCare state={s} sectorId={sectorId} roster={roster}/>
     <p className="care-help">Las vendas reducen la hemorragia y estabilizan heridas críticas hasta 15 de salud; el médico continúa la recuperación con botiquines. El descanso recupera energía y 1 de salud cada 6 horas sin hemorragia, salvo heridas críticas. La práctica mejora habilidades de forma gradual; un instructor con más habilidad acelera el aprendizaje. Reparar consume herramientas para mantener armas, bayonetas y herramientas llevadas. Desatascar un arma también consume un punto; no repone munición. La fatiga limita la energía máxima. El personal agotado duerme automáticamente y retoma su tarea al recuperarse. Dormir conserva la asignación y recupera energía más rápido que estar en servicio sin actividad. Para marchar, despertá al personal y elegí «En servicio» o dejá al personal en otra escuadra.</p>
   </section>;

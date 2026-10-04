@@ -21,17 +21,16 @@ const quest=(patch={})=>({id:'pedido',npcId:'local-retiro',sector:'retiro',title
 const order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,n.lastError);return n;};
 const sync=pair=>{const n=syncBattleTime(pair.campaign,pair.battle);assert.equal(n.error,null,n.error);return decodeSave(encodeSave(n.campaign,n.battle));};
 function ready(quests,escort=false,configure=()=>{},d=defaultContentPackage()){
- d.errands=quests;d.characters.find(c=>c.id==='person-112').arrivalHours=0;configure(d);
+ d.errands=quests;const courier=d.characters.find(c=>c.id==='person-112');courier.arrivalHours=0;courier.startingSupplies={rations:2,torches:2,medkits:7,boleadoras:1};configure(d);
  let campaign=initialCampaign(8,parseContentPackage(encodeContentPackage(d)));
  // This controlled-area fixture isolates escort geometry; it is not campaign-route evidence.
  if(escort)campaign=secureArea(campaign,['buenos_aires']);
  campaign=order(campaign,{type:'recruitCivic',id:112,term:'week'});
- campaign=order(campaign,{type:'purchaseMedicalSupplies',operativeId:112,quantity:5});
  campaign=order(campaign,{type:'visitSector'});const pair=prepareCampaignBattle(campaign);assert.equal(pair.error,null);return sync(pair);
 }
 function approach(pair,npcId){return sync({...pair,battle:approachNPC(pair.battle,'112',npcId)});}
-function talk(pair,npcId,approach='quest'){
- const campaign=order(pair.campaign,{type:'talkNPC',npcId,unitId:112,approach,sectorState:pair.battle});
+function talk(pair,npcId,approach='quest',questResolution){
+ const campaign=order(pair.campaign,{type:'talkNPC',npcId,unitId:112,approach,sectorState:pair.battle,...(questResolution===undefined?{}:{questResolution})});
  return sync({campaign,battle:applyQuestEscortOrders(campaign,pair.battle)});
 }
 function give(pair,count,item='medkits',npcId='local-retiro'){
@@ -61,6 +60,30 @@ test('authored physical supply quantity, reply, reward and custody survive parti
  pair=give(pair,1).pair;assert.equal(pair.campaign.quests.pedido.status,'completed');assert.equal(pair.campaign.resources.treasury,cash+83);assert.equal(pair.battle.units.find(u=>u.id==='112').medkits,initial-2);assert.equal(pair.campaign.lastConversation.text,definition.delivery);
  pair=reenter(pair);assert.equal(pair.battle.npcs.find(n=>n.id==='local-retiro').questGifts.length,2);assert.equal(pair.campaign.resources.treasury,cash+83);
  const saved=JSON.parse(encodeSave(pair.campaign,pair.battle));saved.battle.errandDefinitions[0].carried.count=1;assert.throws(()=>decodeSave(JSON.stringify(saved)));
+});
+
+test('an authored physical reward choice waits for retained gifts and a real prerequisite conversation, then saves only the chosen reward',()=>{
+ const definition=quest({cost:{},requires:['enlace'],reward:{treasury:0,loyalty:false},rewardChoice:{reimbursement:40},carried:{item:'medkits',count:2,label:'Vendas de la posta',instruction:'Entregá dos vendas desde el inventario.'}});
+ let pair=approach(ready([definition,quest({id:'enlace',npcId:'cabral',cost:{},reward:{treasury:0,loyalty:false}})]),'local-retiro');
+ const cash=pair.campaign.resources.treasury,stock=pair.battle.units.find(u=>u.id==='112').medkits,income=structuredClone(pair.campaign.townIncome),events=pair.campaign.cityLoyaltyEvents.length;
+ const choose=(p,choice)=>({type:'talkNPC',npcId:'local-retiro',unitId:112,approach:'quest',sectorState:p.battle,...(choice===undefined?{}:{questResolution:choice})});
+ const rejected=(p,a)=>{const before=structuredClone(p),n=dispatchCampaign(p.campaign,a);assert.ok(n.lastError);assert.deepEqual({...n,lastError:p.campaign.lastError},p.campaign);assert.deepEqual(p,before);};
+ rejected(pair,choose(pair,'cash'));pair=give(pair,1).pair;rejected(pair,choose(pair,'cash'));pair=give(pair,1).pair;
+ assert.equal(pair.campaign.quests.pedido.status,'offered');assert.equal(pair.campaign.resources.treasury,cash);assert.equal(pair.campaign.cityLoyaltyEvents.length,events);assert.equal(pair.battle.units.find(u=>u.id==='112').medkits,stock-2);
+ rejected(pair,choose(pair,'civic'));pair=reenter(pair);assert.equal(pair.battle.npcs.find(n=>n.id==='local-retiro').questGifts.length,2);
+ pair=approach(pair,'cabral');pair=talk(pair,'cabral');pair=talk(pair,'cabral');pair=approach(pair,'local-retiro');
+ for(const change of [b=>b.units.find(u=>u.id==='112').energy=0,b=>b.units.find(u=>u.id==='112').routed=true,b=>b.units.find(u=>u.id==='112').unconscious=true,b=>b.units.find(u=>u.id==='112').knockedDown=true,b=>b.battleId='foreign',b=>b.npcs.find(n=>n.id==='local-retiro').questGifts.pop()]){const b=structuredClone(pair.battle);change(b);rejected(pair,{...choose(pair,'cash'),sectorState:b});}
+ rejected(pair,choose(pair));rejected(pair,choose(pair,'both'));rejected(pair,{...choose(pair,'cash'),approach:'friendly'});
+ for(const choice of ['cash','civic']){
+  const before=structuredClone(pair),result=talk(before,'local-retiro','quest',choice),loyalty=pair.campaign.sectors.retiro.loyalty;
+  assert.equal(result.campaign.resources.treasury,cash+(choice==='cash'?40:0));assert.equal(result.campaign.sectors.retiro.loyalty,loyalty+(choice==='civic'?8:0));assert.equal(result.campaign.cityLoyaltyEvents.length,events+(choice==='civic'?1:0));assert.deepEqual(result.campaign.townIncome,income);
+  assert.equal(result.campaign.quests.pedido.questResolution,choice);assert.equal(result.campaign.quests.pedido.completedAt,result.campaign.hour);assert.equal(result.battle.units.find(u=>u.id==='112').medkits,stock-2);
+  rejected(result,choose(result,choice));rejected(result,choose(result,choice==='cash'?'civic':'cash'));
+  const saved=reenter(result);assert.equal(saved.campaign.quests.pedido.questResolution,choice);assert.equal(saved.battle.npcs.find(n=>n.id==='local-retiro').questGifts.length,2);
+  const dead=structuredClone(saved);applyCivilianHarm(dead.battle,dead.battle.npcs.find(n=>n.id==='local-retiro'),{source:dead.battle.units.find(u=>u.id==='112'),damage:100,breathLoss:0,intentional:true});const later=sync(dead);
+  assert.equal(later.campaign.quests.pedido.status,'completed');assert.equal(later.campaign.quests.pedido.questResolution,choice);assert.equal(later.campaign.resources.treasury,result.campaign.resources.treasury);
+  later.campaign.sectors.retiro.owner='royalist';assert.equal(decodeSave(encodeSave(later.campaign,later.battle)).campaign.quests.pedido.questResolution,choice);
+ }
 });
 
 test('an authored southward escort follows paid movement to its actual exit and saves its arrival',()=>{

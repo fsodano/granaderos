@@ -45,13 +45,13 @@ test('authored merchant catalog uses the same weapon definition and price as its
  const duplicate=structuredClone(row);duplicate.id=`armory-${s.nextArmoryItemId++}`;s.merchants.retiro.usedItems.push(duplicate);assert.throws(()=>validateEquipmentOwnership(s,[]),/duplicada/);
 });
 
-test('weapon merchant restocking does not refill the independent ammunition shop clock',()=>{
+test('legacy catalog restock arithmetic keeps the independent ammunition custody unchanged',()=>{
  const s={...fresh(false),location:'retiro',sectors:{retiro:{owner:'patriot'}},resources:{treasury:1000}};migrateEquipment(s);
  s.merchants.retiro.restockHours=23;s.merchants.retiro.stock[1808]=0;
  s.ammunitionShops.retiro={stock:{ammoMusket:2,ammoPistol:3,ammoRifle:4,ammoShot:5},restockHours:23};
- const before=structuredClone(s.ammunitionShops);advanceMerchants(s,()=>true);
- assert.deepEqual(s.ammunitionShops,before);assert.equal(s.merchants.retiro.stock[1808],1);
- restockAmmunitionShops(s,()=>true);assert.equal(s.ammunitionShops.retiro.restockHours,0);assert.equal(s.ammunitionShops.retiro.stock.ammoMusket,20);
+ const before=structuredClone(s.ammunitionShops),merchant=structuredClone(s.merchants);advanceMerchants(s,()=>true);
+ assert.deepEqual(s.ammunitionShops,before);assert.equal(s.merchants.retiro.stock[1808],1);assert.equal(s.merchants.retiro.restockHours,0);
+ restockAmmunitionShops(s,()=>true);assert.deepEqual(s.ammunitionShops,before);
 });
 
 test('authored import shipments arrive once at the configured port with their image',()=>{
@@ -76,7 +76,7 @@ test('advanced fitting stock migrates to separate finite keys without losing att
  assert.equal(armoryInventory(s).find(i=>i.stockKey==='1811:india_socket').quantity,1);validateEquipmentStorage(s);
 });
 
-test('catalog purchase respects authored capacity and cannot create partial batches',()=>{
+test('finite catalog storage respects authored capacity and cannot create partial batches',()=>{
  const s=fresh();assert.equal(equipmentCatalog(s).find(w=>w.item===authored.id).art,authored.art);addEquipment(s,authored.id,2);validateEquipmentStorage(s);
  assert.equal(s.armoryItems.length,2);assert.equal(s.armoryItems[0].loaded,0);assert.equal(storedEquipmentStack(s.armoryItems[0]).contentWeapon.capacity,3);
  for(const quantity of [-1,.5,10001]){const before=structuredClone(s);assert.throws(()=>addEquipment(s,authored.id,quantity));assert.deepEqual(s,before);}

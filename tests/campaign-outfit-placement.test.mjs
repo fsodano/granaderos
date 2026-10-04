@@ -1,3 +1,4 @@
+import {withCarriedPonchos} from './custody-gear-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign,rosterFor} from '../game/campaign.js';
@@ -29,10 +30,10 @@ function leave(s,b){({s,b}=sync(s,b));return step(s,{type:'leaveSector',battleId
 
 test('a paid recruit keeps finite issued clothing in the selected hand and pockets through save, deployment, return and reentry',()=>{
  let s=fresh();assert.equal(s.merchants.retiro.supplies.ponchos,6);
- // The issued garment has prior wear and an identity; the spare is withdrawn
- // through the real finite depot action, not added by a tactical fixture.
+ // The issued garment has prior wear and an identity; the spare is declared
+ // finite preexisting property for this isolated placement fixture.
  s.operativeState[110].outfit={...makeOutfit('poncho',47),instanceId:'personal-poncho'};
- s=step(s,{type:'sectorInventory',sector:'retiro',operativeId:110,direction:'issueOutfit'});assert.equal(s.merchants.retiro.supplies.ponchos,5);
+ s=withCarriedPonchos(s,110);assert.equal(s.merchants.retiro.supplies.ponchos,6);
  const issued=garments(actor(s));assert.equal(issued.length,2);
  s=move(s,'hand:right','large-4');assert.equal(handLayout(actor(s)).right,null);
  s=move(s,'outfit','hand:right');assert.equal(actor(s).outfit,null);assert.equal(hand(actor(s)).instanceId,'personal-poncho');
@@ -40,18 +41,18 @@ test('a paid recruit keeps finite issued clothing in the selected hand and pocke
  s=move(s,pocket(actor(s),`inventory:${spare}`),'outfit');assert.equal(actor(s).outfit.condition,100);
  s=move(s,'hand:right','outfit');assert.equal(actor(s).outfit.instanceId,'personal-poncho');assert.equal(hand(actor(s)).condition,100);
  s=save(s).campaign;const arranged=actor(s),entered=enter(s);s=entered.s;let b=entered.b,unit=b.units.find(u=>u.id==='110');
- assert.deepEqual(unit.outfit,arranged.outfit);assert.deepEqual(hand(unit),hand(arranged));assert.deepEqual(unit.pocketOrder,arranged.pocketOrder);assert.equal(s.merchants.retiro.supplies.ponchos,5);save(s,b);
+ assert.deepEqual(unit.outfit,arranged.outfit);assert.deepEqual(hand(unit),hand(arranged));assert.deepEqual(unit.pocketOrder,arranged.pocketOrder);assert.equal(s.merchants.retiro.supplies.ponchos,6);save(s,b);
  const ap=unit.ap,elapsed=b.elapsedSeconds;
  b=actBattle(b,{type:'moveEquipment',unitId:'110',...placement(unit,'outfit','hand:right')});assert.equal(b.lastError,null,b.lastError);unit=b.units.find(u=>u.id==='110');
  assert.equal(unit.ap,ap);assert.equal(b.elapsedSeconds,elapsed+1);assert.equal(unit.outfit.condition,100);assert.equal(hand(unit).instanceId,'personal-poncho');assert.equal(hand(unit).condition,47);assert.deepEqual(garments(unit),issued);
- ({s,b}=sync(s,b));const resumed=save(s,b);s=leave(resumed.campaign,resumed.battle);assert.equal(s.merchants.retiro.supplies.ponchos,5);assert.deepEqual(garments(actor(s)),issued);
+ ({s,b}=sync(s,b));const resumed=save(s,b);s=leave(resumed.campaign,resumed.battle);assert.equal(s.merchants.retiro.supplies.ponchos,6);assert.deepEqual(garments(actor(s)),issued);
  s=move(s,'outfit','hand:right');assert.equal(actor(s).outfit.instanceId,'personal-poncho');
  const finalLayout=actor(s).pocketOrder,reentry=enter(save(s).campaign),returned=reentry.b.units.find(u=>u.id==='110');
- assert.equal(returned.outfit.instanceId,'personal-poncho');assert.equal(returned.outfit.condition,47);assert.equal(hand(returned).condition,100);assert.deepEqual(returned.pocketOrder,finalLayout);assert.deepEqual(garments(returned),issued);assert.equal(reentry.s.merchants.retiro.supplies.ponchos,5);save(reentry.s,reentry.b);
+ assert.equal(returned.outfit.instanceId,'personal-poncho');assert.equal(returned.outfit.condition,47);assert.equal(hand(returned).condition,100);assert.deepEqual(returned.pocketOrder,finalLayout);assert.deepEqual(garments(returned),issued);assert.equal(reentry.s.merchants.retiro.supplies.ponchos,6);save(reentry.s,reentry.b);
 });
 
 test('campaign clothing placement rejects invalid exchanges and delayed fingerprints without changing resources or saves',()=>{
- let s=fresh();s=step(s,{type:'sectorInventory',sector:'retiro',operativeId:110,direction:'issueOutfit'});
+ let s=fresh();s=withCarriedPonchos(s,110);
  const coat=pocket(actor(s),'inventory:outfit'),gesture=action(s,coat,'outfit');
  const reject=(state,a)=>{const before=structuredClone(state),n=dispatchCampaign(state,a);assert.ok(n.lastError);assert.deepEqual({...n,lastError:null},{...before,lastError:null});assert.deepEqual(state,before);save({...n,lastError:null},n.pendingBattle?enterSector(n.pendingBattle,n.sectorStates.retiro):null);};
  for(const [from,to]of [['outfit','small-8'],['outfit','hand:right'],['outfit','hand:left'],['hand:right','outfit']])reject(s,action(s,from,to));

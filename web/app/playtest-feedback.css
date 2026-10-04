@@ -1,0 +1,24 @@
+.movement-route{color:#fff;fill:currentColor;stroke:#121610;stroke-width:1;filter:drop-shadow(0 1px 1px #000)}
+.movement-route.stealth{color:#f5db45}
+.movement-route.insufficient{animation:movement-ap-warning .65s steps(1,end) infinite}
+@keyframes movement-ap-warning{50%{color:#111;stroke:#fff}}
+.movement-cost path,.movement-cost circle{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.movement-cost circle{fill:currentColor}
+.movement-cost text{fill:currentColor;stroke:#101610;stroke-width:3;paint-order:stroke;font:700 12px ui-monospace,monospace}
+.tactical-action-failure{stroke:#fff;stroke-width:3;filter:drop-shadow(0 1px 2px #000);animation:tactical-cross-fade 1.2s ease-out forwards}
+@keyframes tactical-cross-fade{65%{opacity:1}100%{opacity:0}}
+.tactical-hit-reaction{pointer-events:none;animation:tactical-impact .9s ease-out both}
+.tactical-hit-reaction path{stroke:#f15f54;stroke-width:4;fill:none;stroke-linecap:round}
+.tactical-hit-reaction text{fill:#fff;stroke:#681c1b;stroke-width:3;paint-order:stroke;font:bold 12px ui-monospace,monospace}
+@keyframes tactical-impact{0%{opacity:0}12%,65%{opacity:1}100%{opacity:0}}
+.tactical-turn-bar{position:absolute;top:0;left:0;right:0;height:5px;background:#449b52;pointer-events:none;z-index:6}
+.tactical-turn-bar.enemy{background:#ab4d42}.tactical-turn-bar.interrupt{height:22px;background:#ddc15b;color:#151b14;font:bold 11px ui-monospace,monospace;text-align:center;line-height:22px}
+.tactical-feedback-popup{position:absolute;top:32px;left:50%;transform:translateX(-50%);z-index:16;max-width:80%;padding:6px 10px;background:#17201bef;color:#f5ead4;border:1px solid #c9b982;box-shadow:0 2px 6px #0008;pointer-events:none;font-size:12px}
+.battle-middle>.tactical-notices{position:absolute;top:26px;left:8px;z-index:9;max-width:calc(100% - 16px)}
+.battle-middle{position:relative}
+.tactical-notices>.ja2-interrupt-banner{display:none}
+.tactical-quick-tools{position:absolute;top:12px;right:9px;z-index:8;display:flex;gap:2px;background:#19221bee;padding:3px;border:1px solid #748171}
+.tactical-quick-tools button{width:26px;height:26px;padding:3px;display:grid;place-items:center;border:1px solid #66735f;background:#253124;color:#eee6d0;cursor:pointer}
+.tactical-quick-tools button[aria-pressed=true]{background:#616c38}.tactical-quick-tools button:disabled{opacity:.4;cursor:default}
+.tactical-quick-tools svg{width:17px;height:17px}
+@media(prefers-reduced-motion:reduce){.movement-route.insufficient{animation:none;color:#fff;stroke:#000;stroke-dasharray:2 2}.tactical-hit-reaction{animation:none}.tactical-action-failure{animation:none}}

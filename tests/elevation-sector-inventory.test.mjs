@@ -7,7 +7,7 @@ import {encodeSave,decodeSave} from '../game/save.js';
 import {enterSector} from '../game/world.js';
 const order=(c,a)=>{const next=dispatchCampaign(c,a);assert.equal(next.lastError,null,JSON.stringify(a)+': '+next.lastError);return next;};
 function returned(){
- let campaign=initialCampaign(45);
+ let campaign=initialCampaign(45);campaign.resources.treasury=20000;
  for(const id of [128,142])campaign=order(campaign,{type:'recruitCivic',id,term:'day'});
  campaign=order(campaign,{type:'visitSector'});const request=campaign.pendingBattle;
  const tiles=Array.from({length:160},(_,i)=>({x:i%16,y:Math.floor(i/16),type:'grass',blocked:false,cover:0})),upperSurfaces=Array.from({length:12},(_,i)=>({id:`roof:${i}`,x:4+i%4,y:4+Math.floor(i/4),tacticalLevel:1,elevation:3,type:'floor',kind:'platform',blocked:false,cover:0}));

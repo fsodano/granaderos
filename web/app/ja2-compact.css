@@ -1,11 +1,11 @@
 /* Two tactical layouts: six portraits, or one merc's equipment. */
-.battle-layout .ja2-hud .ja2-strip.squad-view{position:relative;display:grid;grid-template-columns:minmax(0,1fr) 210px;gap:10px;height:162px;min-height:162px;max-height:none;padding:8px;overflow:visible;flex-shrink:0}
+.battle-layout .ja2-hud .ja2-strip.squad-view{position:relative;display:grid;grid-template-columns:minmax(0,1fr) 210px;gap:10px;height:186px;min-height:186px;max-height:none;padding:8px;overflow:visible;flex-shrink:0}
 .battle-layout .ja2-hud .ja2-roster-pages{min-width:0;position:relative;height:100%}
 .battle-layout .ja2-hud .ja2-roster{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));grid-auto-flow:row;gap:6px;height:100%;overflow:hidden}
 .battle-layout .ja2-hud .ja2-portrait-cell,.battle-layout .ja2-hud .empty-portrait-slot{min-width:0;min-height:0;height:100%;padding:4px;box-sizing:border-box}
 .battle-layout .ja2-hud .ja2-portrait-cell{grid-template-columns:minmax(0,1fr) 15px;grid-template-rows:minmax(0,1fr) 17px 28px 14px;gap:2px}
 .battle-layout .ja2-hud .ja2-portrait-face{min-height:0;overflow:hidden}
-.battle-layout .ja2-hud .ja2-portrait-face img{width:100%;height:100%;object-fit:cover;object-position:center 28%}
+.battle-layout .ja2-hud .ja2-portrait-face img{width:100%;height:100%;object-fit:contain;object-position:center;background:#121b16;box-sizing:border-box}
 .battle-layout .ja2-hud .ja2-portrait-cell .portrait-name{font-size:11px;line-height:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .battle-layout .ja2-hud .ja2-portrait-cell .portrait-numbers{font-size:9px;line-height:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .battle-layout .ja2-hud .ja2-roster-hands{grid-column:1/-1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:3px;min-width:0;min-height:0}
@@ -30,23 +30,21 @@
 .battle-layout .ja2-hud .ja2-orders-menu .ja2-context{position:absolute;bottom:100%;right:0;width:min(470px,calc(100vw - 32px));max-height:55svh;overflow:auto;background:#202c23;border:1px solid #9a8b59;padding:12px;display:flex;gap:8px;box-shadow:0 0 24px #0008}
 .battle-layout .ja2-hud .ja2-orders-menu .ja2-context .ja2-equipped-help,.battle-layout .ja2-hud .ja2-orders-menu .ja2-action-readout small{display:none}
 .battle-layout .ja2-hud .ja2-right{min-width:0;display:flex;flex-direction:column;gap:3px;overflow:visible}
-.battle-layout .ja2-hud .ja2-radar .tactical-minimap{width:100%;height:66px;margin:0}
+.battle-layout .ja2-hud .ja2-radar .tactical-minimap{width:100%;height:78px;margin:0}
 .battle-layout .ja2-hud .ja2-radar .map-zoom{display:none}
 .battle-layout .ja2-hud .ja2-locale h3{font-size:11px;line-height:15px;margin:0}.battle-layout .ja2-hud .ja2-locale p{font-size:10px;line-height:13px;margin:0}
 .battle-layout .ja2-hud .ja2-locale p:nth-last-child(2){display:none}
 .battle-layout .ja2-hud .ja2-essential{display:flex;gap:4px}.battle-layout .ja2-hud .ja2-essential button{flex:1;font-size:10px;padding:4px}
 .battle-layout .ja2-hud .ja2-garrison-toggle{position:relative;font-size:10px}.battle-layout .ja2-hud .ja2-garrison-toggle[open]>div{position:absolute;bottom:100%;right:0;max-height:50svh;overflow:auto;background:#202c23;z-index:15;width:260px}
-.battle-layout .ja2-hud .ja2-log-overlay{position:absolute;bottom:100%;left:8px;right:auto;max-width:calc(100% - 105px);width:auto;margin:0 0 6px;padding:3px 6px;border:0;background:#17231ed9;display:flex;align-items:center;gap:8px;font-size:11px;pointer-events:auto}
-.battle-layout .ja2-hud .ja2-log-overlay button{font-size:10px;padding:3px 7px;white-space:nowrap}.battle-layout .ja2-hud .ja2-log-overlay p{font-size:11px;line-height:16px;margin:0}.battle-layout .ja2-hud .ja2-log-overlay.collapsed p{max-width:75vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.battle-layout .ja2-hud .ja2-log-overlay.expanded{align-items:flex-start;max-width:600px}
-.battle-layout .ja2-hud .ja2-strip.inventory-open{height:260px;min-height:260px;max-height:none;padding:8px;overflow:visible}
+.battle-layout .ja2-hud .ja2-strip.inventory-open{height:280px;min-height:280px;max-height:none;padding:8px;overflow:visible}
 .battle-layout .ja2-hud .ja2-inventory{position:relative;display:grid;grid-template-columns:90px minmax(145px,.8fr) minmax(200px,1.1fr) minmax(225px,1.3fr) 160px;grid-template-rows:minmax(0,1fr) 25px;gap:8px;height:100%;min-height:0;overflow:visible;font-size:11px}
 .battle-layout .ja2-hud .ja2-inv-header{grid-column:1;grid-row:1/3;display:flex;flex-direction:column;min-height:0;gap:6px}
-.battle-layout .ja2-hud .ja2-inv-header .portrait{height:100px;width:76px;min-height:0}.battle-layout .ja2-hud .ja2-inv-header h2{font-size:14px;margin:0}.battle-layout .ja2-hud .ja2-inv-header span{font-size:9px}
-.battle-layout .ja2-hud .ja2-stats{grid-column:2;grid-row:1/3;overflow:visible;display:block;min-width:0}.battle-layout .ja2-hud .ja2-stats>div{display:flex;justify-content:space-between;font-size:10px;line-height:16px;gap:5px}.battle-layout .ja2-hud .ja2-stats>div span{white-space:nowrap}
+.battle-layout .ja2-hud .ja2-inv-header .portrait{height:128px;width:84px;min-height:0}.battle-layout .ja2-hud .ja2-inv-header h2{font-size:14px;margin:0}.battle-layout .ja2-hud .ja2-inv-header span{font-size:9px}
+.battle-layout .ja2-hud .ja2-stats{grid-column:2;grid-row:1/3;overflow:visible;display:block;min-width:0}.battle-layout .ja2-hud .ja2-stats>div{display:flex;justify-content:space-between;font-size:10px;line-height:15px;gap:5px}.battle-layout .ja2-hud .ja2-stats>div span{white-space:nowrap}
 .battle-layout .ja2-hud .paper-doll{grid-column:3;grid-row:1/3;overflow:visible;display:flex;flex-direction:column;gap:4px;min-width:0;background:none;padding:0}
 .battle-layout .ja2-hud .ja2-outfit-slot{padding:3px;gap:3px}.battle-layout .ja2-hud .ja2-outfit-slot>small{font-size:9px}.battle-layout .ja2-hud .ja2-outfit-slot button{font-size:10px;padding:3px;min-height:22px}
 .battle-layout .ja2-hud .ja2-hands{gap:4px}.battle-layout .ja2-hud .ja2-hands button{min-height:75px;padding:4px}.battle-layout .ja2-hud .ja2-hands img{height:26px}.battle-layout .ja2-hud .ja2-hands span{font-size:10px}.battle-layout .ja2-hud .ja2-hands small{font-size:9px}
-.battle-layout .ja2-hud .paper-readouts{display:flex;gap:8px;margin:0}.battle-layout .ja2-hud .paper-readouts .camo{display:none}.battle-layout .ja2-hud .paper-readouts small,.battle-layout .ja2-hud .paper-readouts b{font-size:10px}
+.battle-layout .ja2-hud .paper-readouts{display:flex;gap:8px;margin:0}.battle-layout .ja2-hud .paper-readouts small,.battle-layout .ja2-hud .paper-readouts b{font-size:10px}
 .battle-layout .ja2-hud .slot-grid{grid-column:4;grid-row:1;display:block;overflow:visible;max-height:none;min-height:0;padding:0}.battle-layout .ja2-hud .ja2-pocket{height:39px;min-height:39px}.battle-layout .ja2-hud .ja2-pockets small{min-height:0;margin:0 0 4px;font-size:9px}
 .battle-layout .ja2-hud .ja2-inventory .ja2-right{grid-column:5;grid-row:1/3;overflow:visible}.battle-layout .ja2-hud .ja2-inventory .ja2-radar .tactical-minimap{height:75px}.battle-layout .ja2-hud .ja2-done{margin-top:auto;padding:6px;font-size:12px}
 .battle-layout .ja2-hud .ja2-inventory-extra{font-size:10px;min-width:0;overflow:visible;border:0;padding:0}
@@ -55,18 +53,18 @@
 .battle-layout .ja2-hud .ja2-inventory-popup button{font-size:11px;padding:5px}.battle-layout .ja2-hud .ja2-inventory-popup p{font-size:11px;line-height:1.5}.battle-layout .ja2-hud .ja2-inventory-popup .ja2-stance-grid{display:flex;flex-wrap:wrap;overflow:visible}
 .battle-layout .ja2-hud .ja2-inventory .pertrechos{grid-column:4;grid-row:2;overflow:visible;margin:0}.battle-layout .ja2-hud .pertrechos .ja2-inventory-popup{left:auto;right:0}
 @media(max-width:950px){
- .battle-layout .ja2-hud .ja2-strip.squad-view{grid-template-columns:minmax(0,1fr) 165px;height:150px;min-height:150px;gap:6px}
+ .battle-layout .ja2-hud .ja2-strip.squad-view{grid-template-columns:minmax(0,1fr) 165px;height:174px;min-height:174px;gap:6px}
  .battle-layout .ja2-hud .ja2-portrait-cell .portrait-numbers{font-size:8px}.battle-layout .ja2-hud .ja2-roster{gap:3px}
  .battle-layout .ja2-hud .ja2-inventory{grid-template-columns:72px 145px minmax(165px,1fr) minmax(180px,1.1fr);gap:6px}
  .battle-layout .ja2-hud .ja2-inventory .ja2-right{grid-column:1;grid-row:2}.battle-layout .ja2-hud .ja2-inventory .ja2-right>:not(.ja2-done){display:none}
  .battle-layout .ja2-hud .ja2-inv-header{grid-row:1}.battle-layout .ja2-hud .ja2-inv-header .portrait{width:64px;height:90px}
 }
 @media(max-width:650px){
- .battle-layout .ja2-hud .ja2-strip.squad-view{grid-template-columns:minmax(0,1fr) 92px;height:127px;min-height:127px;padding:4px;gap:4px}
+ .battle-layout .ja2-hud .ja2-strip.squad-view{grid-template-columns:minmax(0,1fr) 92px;height:148px;min-height:148px;padding:4px;gap:4px}
  .battle-layout .ja2-hud .ja2-portrait-cell{padding:2px;grid-template-columns:minmax(0,1fr) 6px;grid-template-rows:minmax(0,1fr) 14px 23px 12px}.battle-layout .ja2-hud .ja2-portrait-cell .portrait-name{font-size:8px;line-height:12px}.battle-layout .ja2-hud .ja2-roster-hands{gap:2px}.battle-layout .ja2-hud .ja2-roster-hand img{max-height:21px}.battle-layout .ja2-hud .ja2-roster-hand>svg{width:13px;height:13px}.battle-layout .ja2-hud .roster-hand-status{right:1px;gap:1px;font-size:16px;line-height:16px}.battle-layout .ja2-hud .ja2-portrait-cell .portrait-numbers{font-size:7px;line-height:10px}.battle-layout .ja2-hud .ja2-vitals{gap:1px}.battle-layout .ja2-hud .ja2-vitals>span{min-width:1px}
  .battle-layout .ja2-hud .ja2-radar .tactical-minimap{height:40px}.battle-layout .ja2-hud .ja2-essential button,.battle-layout .ja2-hud .ja2-right>.retreat-button{font-size:9px;padding:3px}.battle-layout .ja2-hud .ja2-locale h3{font-size:9px}.battle-layout .ja2-hud .ja2-locale p{font-size:8px}
- .battle-layout .ja2-hud .ja2-strip.inventory-open{height:310px;min-height:310px;padding:5px}
- .battle-layout .ja2-hud .ja2-inventory{display:grid;grid-template-columns:64px minmax(105px,1fr) minmax(145px,1.2fr);grid-template-rows:145px 125px 20px;gap:4px}
+ .battle-layout .ja2-hud .ja2-strip.inventory-open{height:330px;min-height:330px;padding:5px}
+ .battle-layout .ja2-hud .ja2-inventory{display:grid;grid-template-columns:64px minmax(105px,1fr) minmax(145px,1.2fr);grid-template-rows:175px 125px 20px;gap:4px}
  .battle-layout .ja2-hud .ja2-inv-header{grid-column:1;grid-row:1}.battle-layout .ja2-hud .ja2-inventory .ja2-right{grid-column:1;grid-row:2;align-self:end}.battle-layout .ja2-hud .ja2-stats{grid-column:2;grid-row:1/3;overflow:auto}.battle-layout .ja2-hud .ja2-stats>div{font-size:9px;line-height:17px}.battle-layout .ja2-hud .ja2-stats>div span{white-space:normal}
  .battle-layout .ja2-hud .paper-doll{grid-column:3;grid-row:1;gap:2px}.battle-layout .ja2-hud .paper-readouts{display:none}.battle-layout .ja2-hud .ja2-outfit-slot{display:flex;flex-wrap:wrap}.battle-layout .ja2-hud .ja2-outfit-slot>small{display:none}.battle-layout .ja2-hud .ja2-hands button{min-height:58px}.battle-layout .ja2-hud .ja2-hands img{height:18px}.battle-layout .ja2-hud .ja2-hands small{font-size:7px}.battle-layout .ja2-hud .ja2-hands span{font-size:8px}
  .battle-layout .ja2-hud .slot-grid{grid-column:3;grid-row:2}.battle-layout .ja2-hud .ja2-pocket{height:26px;min-height:26px}.battle-layout .ja2-hud .ja2-pocket img{height:12px}.battle-layout .ja2-hud .ja2-pocket span{font-size:7px}.battle-layout .ja2-hud .ja2-pockets p,.battle-layout .ja2-hud .ja2-pockets small{display:none}.battle-layout .ja2-hud .ja2-inventory .pertrechos{grid-column:2/4;grid-row:3}.battle-layout .ja2-hud .ja2-inventory-extra>summary{font-size:9px;padding:3px}
@@ -74,3 +72,35 @@
 }
 
 .battle-layout .ja2-hud .squad-view,.battle-layout .ja2-hud .ja2-roster{grid-template-rows:minmax(0,1fr)}
+
+/* Portrait readouts remain inside each fixed card. */
+.battle-layout .ja2-hud .ja2-portrait-face.dead,.battle-layout .ja2-hud .ja2-inventory-portrait.dead{display:grid;place-items:center;background:radial-gradient(ellipse at bottom,#44221b,#111914 70%)}
+.battle-layout .ja2-hud .ja2-dead-skull{width:55%;height:75%;color:#dfd7b6;filter:drop-shadow(0 2px 2px #000)}
+.battle-layout .ja2-hud .ja2-portrait-blood{position:absolute;bottom:4px;left:30%;width:40%;height:8px;border-radius:50%;background:#9b201e;box-shadow:0 0 4px #641411;animation:portrait-blood 1.1s ease-out 2}
+@keyframes portrait-blood{from{transform:scale(.5);opacity:.3}to{transform:scale(1);opacity:1}}
+@media(prefers-reduced-motion:reduce){.battle-layout .ja2-hud .ja2-portrait-blood{animation:none}}
+.battle-layout .ja2-hud .ja2-personal-enemies{position:absolute;top:3px;right:3px;display:flex;align-items:center;gap:3px;padding:2px 3px;background:#18201ded;color:#f5c2ae;font:bold 12px/1 monospace;box-shadow:0 1px 3px #0008}
+.battle-layout .ja2-hud .ja2-ap-readout{position:absolute;bottom:3px;left:3px;display:flex;align-items:baseline;gap:3px;padding:2px 4px;background:#102719e8;color:#f4f2c8;font:bold 18px/1 monospace;text-shadow:0 1px #000}
+.battle-layout .ja2-hud .ja2-ap-readout small{font:9px/1 sans-serif}
+.battle-layout .ja2-hud .ja2-vitals .untreated{background:#f2d848}.battle-layout .ja2-hud .ja2-vitals .morale{background:#61c04d}
+.battle-layout .ja2-hud .ja2-vitals[aria-hidden=true]{opacity:.3}
+.battle-layout .ja2-hud .ja2-inventory-portrait{position:relative;padding:0;flex-shrink:0;border-radius:0;cursor:default}
+.battle-layout .ja2-hud .ja2-inv-header .ja2-inventory-portrait img{object-fit:contain;object-position:center;background:#121b16}
+.battle-layout .ja2-hud .ja2-inventory-paging{display:flex;align-items:center;justify-content:space-between;gap:3px;width:100%;font-size:10px}
+.battle-layout .ja2-hud .ja2-inventory-paging button{padding:3px 7px;color:#f1e6bf;background:#293b2d;border:1px solid #847b59;font-size:13px}
+.battle-layout .ja2-hud .ja2-inventory-vitals{display:grid;gap:3px;flex-shrink:0}
+.battle-layout .ja2-hud .ja2-inventory-vitals>span{position:relative;display:block;height:6px;background:#111813;border:1px solid #515540}
+.battle-layout .ja2-hud .ja2-inventory-vitals i{position:absolute;bottom:0;left:0;height:100%}
+.battle-layout .ja2-hud .ja2-inventory-vitals .health{background:#e23a39}.battle-layout .ja2-hud .ja2-inventory-vitals .bandaged{background:#f09eba}.battle-layout .ja2-hud .ja2-inventory-vitals .untreated{background:#f2d848}.battle-layout .ja2-hud .ja2-inventory-vitals .energy{background:#4a98e7}.battle-layout .ja2-hud .ja2-inventory-vitals .morale{background:#61c04d}
+.battle-layout .ja2-hud .ja2-stats>.ja2-mobile-weight{display:none}
+.battle-layout .ja2-hud .ja2-radar{position:relative}
+.battle-layout .ja2-hud .ja2-radar-caption{position:absolute;inset:auto 1px 1px;display:block;padding:2px 4px;background:#14271de8;color:#e9e5be;font:10px/1.2 monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;pointer-events:none}
+.battle-layout .ja2-hud .ja2-radar-caption small{display:block;font:inherit;color:#c6d6bc}
+.battle-layout .ja2-hud .ja2-locale .eyebrow,.battle-layout .ja2-hud .ja2-locale p:last-child{display:none}
+@media(max-width:650px){
+ .battle-layout .ja2-hud .ja2-ap-readout{font-size:13px;left:1px;bottom:1px;padding:2px;gap:1px}.battle-layout .ja2-hud .ja2-ap-readout small{font-size:7px}
+ .battle-layout .ja2-hud .ja2-personal-enemies{font-size:9px;right:1px;top:1px;padding:1px;gap:1px}.battle-layout .ja2-hud .ja2-personal-enemies svg{width:10px;height:10px}
+ .battle-layout .ja2-hud .ja2-radar-caption{font-size:7px;padding:1px 2px}
+ .battle-layout .ja2-hud .ja2-inventory-paging button{padding:2px 5px}.battle-layout .ja2-hud .ja2-inventory-paging{font-size:8px}
+ .battle-layout .ja2-hud .ja2-inv-header{grid-row:1/3}.battle-layout .ja2-hud .ja2-stats>div{line-height:16px}.battle-layout .ja2-hud .ja2-stats>.ja2-mobile-weight{display:flex}
+}

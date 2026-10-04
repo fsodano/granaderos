@@ -11,7 +11,8 @@ import {scriptedBattleReport} from './scripted-battle-report.mjs';
 const order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,n.lastError);return n;};
 function ready(){
  // Established-area fixture isolates multi-squad mission admission and return.
- let s=secureArea(initialCampaign(8));s.phase=1;s.flags.academy=true;s.sectors.san_nicolas.owner='patriot';
+ // Declared established-area funds cover the eight-person mission manifest.
+ let s=secureArea(initialCampaign(8));s.resources.treasury=8000;s.phase=1;s.flags.academy=true;s.sectors.san_nicolas.owner='patriot';
  for(const id of [100,101,102,103,104,107,108,112])s=order(s,{type:'recruitCivic',id,term:'week'});
  s=order(s,{type:'squad',ids:[100,101,102,103,104,107]});const first=s.activeSquadId;
  s=order(s,{type:'createSquad',ids:[108,112],name:'Apoyo del convento'});const second=s.activeSquadId;

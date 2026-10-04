@@ -54,7 +54,7 @@ test('taking a gun uses the free hands while the old stowed pistol keeps its exi
 });
 test('ordinary use still punches; pickup and control intent select a contested grab explicitly',()=>{
  const s=field(),u=s.units[0],target=s.units[1];assert.equal(pickupTargetAction(target,u).type,'steal');assert.equal(pickupTargetAction({...target,unconscious:true},u).type,'loot');
- assert.equal(pointerItemIntent({ctrlKey:true}),'steal');for(const key of ['shiftKey','altKey','metaKey'])assert.equal(pointerItemIntent({ctrlKey:true,[key]:true}),'use');
+ assert.equal(pointerItemIntent({ctrlKey:true}),'steal');assert.equal(pointerItemIntent({ctrlKey:true,shiftKey:true}),'moveOnly');for(const key of ['altKey','metaKey'])assert.equal(pointerItemIntent({ctrlKey:true,[key]:true}),'use');
  assert.equal(targetPreview(s,u,target).actionLabel,'Puños');for(const ctx of [{mode:'loot'},{mode:'move',itemIntent:'steal'}]){const preview=targetPreview(s,u,target,ctx);assert.equal(preview.actionLabel,'Quitar arma');assert.equal(preview.pa,u.ap);assert.equal(preview.remaining,0);assert.equal(preview.chance,undefined);assert.equal(preview.valid,true);}
  const n=actBattle(s,{type:'useItem',unitId:'p',targetId:'e'});assert.equal(n.units[1].weaponDropped,undefined);assert.equal(n.units[0].weapon,1806);
 });

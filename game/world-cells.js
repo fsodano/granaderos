@@ -1,3 +1,4 @@
+import {TRAVEL_BALANCE} from './travel-balance.js';
 import geography from './strategic-geography.json' with {type:'json'};
 import {CAMPAIGN_SECTORS} from './data.js';
 import {CONTENT_CELLS,CONTENT_MAP} from './content-map.js';
@@ -59,8 +60,24 @@ export function adjacentCells(a,b){
  const first=worldCell(a),second=worldCell(b);
  return Boolean(first&&second&&Math.abs(first.col-second.col)+Math.abs(first.row-second.row)===1);
 }
-export const cellStepHours=id=>worldCell(id)?.biome==='mountain'?4:2;
-export function cellTravelPlan(state,destination){
+// Project the existing town road links onto physical map cells.
+export const ROAD_CELLS=new Set();
+for(const town of CAMPAIGN_SECTORS)for(const target of town.neighbors){
+ const a=worldCell(town.id),b=worldCell(target);if(!a||!b)continue;
+ const steps=Math.max(Math.abs(b.col-a.col),Math.abs(b.row-a.row));
+ for(let i=0;i<=steps;i++){const cell=worldCell(`cell-${Math.round(a.col+(b.col-a.col)*i/(steps||1))}-${Math.round(a.row+(b.row-a.row)*i/(steps||1))}`);if(cell?.land)ROAD_CELLS.add(cell.id);}
+}
+export const cellStepHours=(id,mode='march')=>{
+ const cell=worldCell(id),base=cell?.biome==='mountain'?TRAVEL_BALANCE.mountainCellHours:ROAD_CELLS.has(cell?.id)?TRAVEL_BALANCE.roadCellHours:TRAVEL_BALANCE.plainCellHours;
+ return mode==='horse'?Math.max(1,Math.floor(base*TRAVEL_BALANCE.horseHours/TRAVEL_BALANCE.roadWalkHours)):base;
+};
+// Version-1 journeys store the duration chosen when that leg was queued.
+// Preserve only durations produced by the two earlier cost rules.
+export const legacyCellStepHours=(id,mode='march')=>{
+ const cell=worldCell(id),base=cell?.biome==='mountain'?4:ROAD_CELLS.has(cell?.id)?1:2;
+ return mode==='horse'?Math.max(1,Math.floor(base/2)):base;
+};
+export function cellTravelPlan(state,destination,mode='march'){
  const start=worldCell(state.location),end=worldCell(destination);
  const reason=cellTravelReason(state,destination);
  if(!start||!end||reason)return {path:[],hours:0,reason:reason??'La ubicación actual no existe.'};
@@ -79,7 +96,7 @@ export function cellTravelPlan(state,destination){
   for(const [dx,dy] of [[0,-1],[-1,0],[1,0],[0,1]]){
    const next=byCell.get(`cell-${cell.col+dx}-${cell.row+dy}`);
    if(!next||cellTravelReason(state,next.id))continue;
-   const cost=costs.get(id)+cellStepHours(next.id);
+   const cost=costs.get(id)+cellStepHours(next.id,mode);
    if(cost>=(costs.get(next.id)??Infinity))continue;
    costs.set(next.id,cost);parents.set(next.id,id);open.add(next.id);
   }

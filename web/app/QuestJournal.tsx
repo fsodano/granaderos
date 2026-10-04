@@ -1,5 +1,5 @@
 'use client';
-import {questJournal} from '../../game/quests.js';
+import {questJournal,questResolutionText} from '../../game/quests.js';
 import {CAMPAIGN_SECTORS} from '../../game/data.js';
 import {encounterDefinitions} from '../../game/encounters.js';
 import './quest-journal.css';
@@ -18,9 +18,10 @@ export default function QuestJournal({state}:{state:any}){
     {quest.status==='offered'?<>
      <p>{quest.escort&&state.contentCampaign?.package.errands===undefined?'Acompañá al arriero hasta la salida occidental hacia Humahuaca. Hablale allí para confirmar la llegada. Podés pedirle que espere o que siga a otro combatiente.':quest.carried?quest.carried.instruction:quest.offer}</p>
      {quest.escort&&<p>{quest.escortOrder?.waiting?'El arriero espera. Hablale para continuar.':'El arriero sigue al combatiente designado cuando el camino está libre.'}</p>}
+     {quest.rewardChoice&&<p>{quest.resolutionReady?'Entrega completa. Conversá con el contacto para elegir la recompensa.':'Completá la entrega y las condiciones para elegir la recompensa.'} Reintegro de {quest.rewardChoice.reimbursement} pesos o apoyo local (+8).</p>}
      {quest.missingQuests.length>0&&<p className="quest-blocker">Primero completá: {quest.missingQuests.join(', ')}.</p>}
      {quest.unsecured.length>0&&<p className="quest-blocker">Primero asegurá: {quest.unsecured.map(sectorName).join(', ')}.</p>}
-    </>:quest.status==='completed'?<p>{quest.delivery} <span className="quest-date">Cumplido: {stamp(quest.completedAt)}.</span></p>:<p>{quest.escort?'El arriero murió. La escolta terminó sin recompensa.':'El contacto murió. El encargo terminó sin recompensa. Los objetos ya entregados permanecen con el contacto.'} <span className="quest-date">Fallido: {stamp(quest.failedAt)}.</span></p>}
+    </>:quest.status==='completed'?<p>{quest.questResolution?questResolutionText(quest,quest.questResolution):quest.delivery} <span className="quest-date">Cumplido: {stamp(quest.completedAt)}.</span></p>:<p>{quest.escort?'El arriero murió. La escolta terminó sin recompensa.':'El contacto murió. El encargo terminó sin recompensa. Los objetos ya entregados permanecen con el contacto.'} <span className="quest-date">Fallido: {stamp(quest.failedAt)}.</span></p>}
    </article>
   </li>)}</ul>}
  </section>;

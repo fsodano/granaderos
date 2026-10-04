@@ -13,15 +13,16 @@ export default function ErrandEditor({draft,onChange}:{draft:any;onChange:(value
   const contacts=errandContacts(draft),quests=draft.errands??defaultErrands().filter(q=>contacts.some(c=>c.id===q.npcId));
   const quest=quests.find((q:any)=>q.id===selected)??quests[0];
   const change=(next:any[])=>onChange({...draft,errands:next});
-  const update=(patch:any)=>change(quests.map((q:any)=>q===quest?{...q,...patch}:q));
+  const update=(patch:any,remove:string[]=[])=>change(quests.map((q:any)=>{if(q!==quest)return q;const next={...q,...patch};for(const key of remove)delete next[key];return next;}));
   const id=()=>{let n=1;while(quests.some((q:any)=>q.id===`encargo-${n}`))n++;return `encargo-${n}`;};
   const freeContact=contacts.find(c=>!quests.some((q:any)=>q.npcId===c.id));
   const edges:Record<string,string>={N:'norte',E:'este',S:'sur',W:'oeste'};
   const kind=quest?.escort?'escort':quest?.carried?'carried':'resources';
   const contact=contacts.find(c=>c.id===quest?.npcId),physicalAllowed=Boolean(contact?.fixedSector)&&!contact?.canRecruit;
   const reward=quest?.reward??{treasury:0,loyalty:true};
+  const rewardChoiceAllowed=kind==='carried'&&physicalAllowed&&Boolean(cityForSector(quest?.sector));
   const setKind=(value:string)=>{
-    const {carried,escort,...base}=quest;
+    const {carried,escort,rewardChoice,...base}=quest;
     const exit=namedExits(quest.sector)[0];
     const next={...base,cost:{},...(value==='carried'?{carried:{item:'medkits',count:1,label:'Vendas',instruction:'Entregá las vendas desde el inventario al contacto.'}}:value==='escort'&&exit?{escort:{destination:exit.destination,edge:exit.edge}}:{})};
     change(quests.map((q:any)=>q===quest?next:q));
@@ -45,8 +46,8 @@ export default function ErrandEditor({draft,onChange}:{draft:any;onChange:(value
         {quests.some((q:any)=>q.requires?.includes(quest.id))&&<p>Otros encargos dependen de este. Quitá esas condiciones antes de borrarlo.</p>}
         <div className="fields">
           <label>Título<input value={quest.title} maxLength={120} onChange={e=>update({title:e.target.value})}/></label>
-          <label>Contacto<select value={quest.npcId} onChange={e=>{const contact=contacts.find(c=>c.id===e.target.value),sector=contact?.sector??quest.sector,exit=namedExits(sector)[0];update({npcId:e.target.value,sector,...(!cityForSector(sector)?{reward:{...reward,loyalty:false}}:{}),...(quest.escort&&exit?{escort:{destination:exit.destination,edge:exit.edge}}:{})});}}>{contacts.map(c=><option key={c.id} value={c.id} disabled={quests.some((q:any)=>q!==quest&&q.npcId===c.id)||kind!=='resources'&&(!c.fixedSector||c.canRecruit)}>{c.name}</option>)}</select></label>
-          <label>Localidad del encargo<select value={quest.sector} onChange={e=>{const destination=namedExits(e.target.value)[0];update({sector:e.target.value,...(!cityForSector(e.target.value)?{reward:{...reward,loyalty:false}}:{}),...(quest.escort&&destination?{escort:{destination:destination.destination,edge:destination.edge}}:{})});}}>{CAMPAIGN_SECTORS.map(s=><option key={s.id} value={s.id}>{s.name}</option>)}</select><small>Recibe la lealtad obtenida. La escolta usa las salidas de esta localidad.</small></label>
+          <label>Contacto<select value={quest.npcId} onChange={e=>{const contact=contacts.find(c=>c.id===e.target.value),sector=contact?.sector??quest.sector,exit=namedExits(sector)[0];update({npcId:e.target.value,sector,...(!cityForSector(sector)?{reward:{...reward,loyalty:false}}:{}),...(quest.escort&&exit?{escort:{destination:exit.destination,edge:exit.edge}}:{})},!cityForSector(sector)?['rewardChoice']:[]);}}>{contacts.map(c=><option key={c.id} value={c.id} disabled={quests.some((q:any)=>q!==quest&&q.npcId===c.id)||kind!=='resources'&&(!c.fixedSector||c.canRecruit)}>{c.name}</option>)}</select></label>
+          <label>Localidad del encargo<select value={quest.sector} onChange={e=>{const destination=namedExits(e.target.value)[0];update({sector:e.target.value,...(!cityForSector(e.target.value)?{reward:{...reward,loyalty:false}}:{}),...(quest.escort&&destination?{escort:{destination:destination.destination,edge:destination.edge}}:{})},!cityForSector(e.target.value)?['rewardChoice']:[]);}}>{CAMPAIGN_SECTORS.map(s=><option key={s.id} value={s.id}>{s.name}</option>)}</select><small>Recibe la lealtad obtenida. La escolta usa las salidas de esta localidad.</small></label>
           <label>Objetivo<select value={kind} onChange={e=>setKind(e.target.value)}><option value="resources">Conversar y entregar pesos</option><option value="carried" disabled={!physicalAllowed}>Entregar objetos del inventario</option><option value="escort" disabled={!physicalAllowed}>Escoltar hasta una salida</option></select></label>
         </div>
         <label>Texto al ofrecer el encargo<textarea value={quest.offer} maxLength={800} onChange={e=>update({offer:e.target.value})}/></label>
@@ -63,7 +64,11 @@ export default function ErrandEditor({draft,onChange}:{draft:any;onChange:(value
           <p>Localidades que deben estar bajo control:</p><div className="fields">{CAMPAIGN_SECTORS.map(s=><label key={s.id}><input type="checkbox" checked={quest.requiredSectors.includes(s.id)} onChange={()=>update({requiredSectors:quest.requiredSectors.includes(s.id)?quest.requiredSectors.filter((id:string)=>id!==s.id):[...quest.requiredSectors,s.id]})}/>{s.name}</label>)}</div>
           <p>Encargos que deben estar completos:</p><div className="fields">{quests.filter((q:any)=>q!==quest).map((q:any)=><label key={q.id}><input type="checkbox" checked={quest.requires?.includes(q.id)??false} onChange={()=>update({requires:quest.requires?.includes(q.id)?quest.requires.filter((id:string)=>id!==q.id):[...(quest.requires??[]),q.id]})}/>{q.title}</label>)}</div>
         </fieldset>
-        <fieldset><legend>Recompensa</legend><div className="fields"><label>Pesos de plata<input type="number" min={0} max={10000} value={reward.treasury} onChange={e=>update({reward:{...reward,treasury:e.target.valueAsNumber}})}/></label><label><input type="checkbox" disabled={!cityForSector(quest.sector)} checked={reward.loyalty} onChange={e=>update({reward:{...reward,loyalty:e.target.checked}})}/>Mejorar lealtad de la localidad (+8){!cityForSector(quest.sector)&&<small>Esta localidad rural no registra lealtad.</small>}</label></div></fieldset>
+        <fieldset><legend>Recompensa</legend>
+          <label><input type="checkbox" disabled={!rewardChoiceAllowed} checked={Boolean(quest.rewardChoice)} onChange={e=>e.target.checked?update({rewardChoice:{reimbursement:40},reward:{treasury:0,loyalty:false}}):update({},['rewardChoice'])}/>Elegir entre reintegro y apoyo local</label>
+          {!rewardChoiceAllowed&&<p>Esta elección necesita una entrega de objetos en una ciudad.</p>}
+          {quest.rewardChoice?<><p>Después de entregar todos los objetos, el jugador conversa con el contacto para cobrar el reintegro o renunciar a él y mejorar el apoyo local (+8). No hay recompensa automática.</p><label>Reintegro en pesos<input type="number" min={1} max={10000} value={quest.rewardChoice.reimbursement} onChange={e=>update({rewardChoice:{reimbursement:e.target.valueAsNumber}})}/></label></>:<div className="fields"><label>Pesos de plata<input type="number" min={0} max={10000} value={reward.treasury} onChange={e=>update({reward:{...reward,treasury:e.target.valueAsNumber}})}/></label><label><input type="checkbox" disabled={!cityForSector(quest.sector)} checked={reward.loyalty} onChange={e=>update({reward:{...reward,loyalty:e.target.checked}})}/>Mejorar lealtad de la localidad (+8){!cityForSector(quest.sector)&&<small>Esta localidad rural no registra lealtad.</small>}</label></div>}
+        </fieldset>
       </>}
     </section>
   </div></section>;

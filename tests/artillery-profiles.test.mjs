@@ -5,16 +5,17 @@ import {campaignContentReport} from '../game/campaign-content.js';
 import {contentIdentity} from '../game/content-identity.js';
 import {initialCampaign,dispatchCampaign,serializeCampaign,restoreCampaign,deploymentCost} from '../game/campaign.js';
 import {equipmentCatalog} from '../game/equipment.js';
-import {createBattle,actBattle,endTurn,artilleryCosts,artilleryShotTrace} from '../game/tactical.js';
+import {createBattle,actBattle,endTurn,artilleryCosts,artilleryShotTrace,artilleryContact,getReachable} from '../game/tactical.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
 import {enterSector} from '../game/world.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {crewField} from './artillery-crew-fixture.mjs';
 import {order,saved,sync,visit,leave} from './local-contract-fixture.mjs';
+import {withStoredGear,assertTradeRejected} from './commerce-gear-fixture.mjs';
 const profiles=()=>structuredClone(ARTILLERY);
 function authored(patch={}){const d=defaultContentPackage();d.artilleryProfiles=profiles();Object.assign(d.artilleryProfiles.swivel,patch);return d;}
 const officer=d=>order(initialCampaign(42,d),{type:'createOfficer',name:'Isabel del Valle',answers:{origin:'cabildo',doctrine:'line_marksman',crisis:'rally'}});
-function deployed(d){let campaign=order(officer(d),{type:'purchaseEquipment',item:'swivel'});campaign=order(campaign,{type:'attack',sector:'buenos_aires'});return {campaign,battle:enterSector({...campaign.pendingBattle,hour:campaign.hour})};}
+function deployed(d){let campaign=withStoredGear(officer(d),'swivel');campaign=order(campaign,{type:'attack',sector:'buenos_aires'});return {campaign,battle:enterSector({...campaign.pendingBattle,hour:campaign.hour})};}
 
 test('optional gun profiles preserve old content identity and reject incomplete, unknown or invalid definitions',()=>{
  const original=defaultContentPackage(),identity=contentIdentity(original);assert.equal(original.artilleryProfiles,undefined);assert.deepEqual(contentIdentity(saved({campaign:officer(original)}).campaign.contentCampaign.package),identity);assert.deepEqual(validateArtilleryProfiles(undefined),[]);
@@ -23,13 +24,13 @@ test('optional gun profiles preserve old content identity and reject incomplete,
  for(const mutate of mutations){const p=profiles();mutate(p);assert.ok(validateArtilleryProfiles(p).length);}assert.ok(validateArtilleryProfiles(null).length);
 });
 
-test('all three authored models charge the real catalog price, including zero, without changing identity',()=>{
- for(const [type,price]of [['bronze4',0],['field8',127],['swivel',231]]){const d=authored();Object.assign(d.artilleryProfiles[type],{price,name:`Modelo ${type}`,crew:1,art:'/art/weapon-1801.png'});let s=officer(d);const cash=s.resources.treasury,item=equipmentCatalog(s).find(w=>w.item===type);assert.equal(item.price,price);assert.equal(item.name,`Modelo ${type}`);assert.equal(item.art,'/art/weapon-1801.png');assert.equal(item.crew,1);s=order(s,{type:'purchaseEquipment',item:type});assert.equal(s.resources.treasury,cash-price);assert.equal(s.armory[type],1);assert.equal(restoreCampaign(serializeCampaign(s)).armory[type],1);}
+test('authored catalog prices remain save-compatible but cannot open a closed equipment shop',()=>{
+ for(const [type,price]of [['bronze4',0],['field8',127],['swivel',231]]){const d=authored();Object.assign(d.artilleryProfiles[type],{price,name:`Modelo ${type}`,crew:1,art:'/art/weapon-1801.png'});let s=officer(d);const cash=s.resources.treasury,item=equipmentCatalog(s).find(w=>w.item===type);assert.equal(item.price,price);assert.equal(item.name,`Modelo ${type}`);assert.equal(item.art,'/art/weapon-1801.png');assert.equal(item.crew,1);assertTradeRejected(s,{type:'purchaseEquipment',item:type});s=withStoredGear(s,type);assert.equal(s.resources.treasury,cash);assert.equal(s.armory[type],1);assert.equal(restoreCampaign(serializeCampaign(s)).armory[type],1);}
 });
 
-test('actual paid attack entry pins initial load and reserves and compact saves retain definitions once',()=>{
+test('actual stored-gun attack entry pins initial load and reserves and compact saves retain definitions once',()=>{
  const art='data:image/png;base64,'+'A'.repeat(20000),d=authored({name:'Pedrero del puerto',price:123,initialLoaded:false,initialAmmo:3,art});const p=deployed(d),wire=encodeSave(p.campaign,p.battle),parsed=JSON.parse(wire),restored=decodeSave(wire);
- const before=officer(d);assert.equal(p.campaign.resources.treasury,before.resources.treasury-123-deploymentCost(before));
+ const before=officer(d);assert.equal(p.campaign.resources.treasury,before.resources.treasury-deploymentCost(before));
  assert.equal(p.battle.artillery[0].loaded,false);assert.equal(p.battle.artillery[0].ammo,3);assert.equal(p.campaign.armory.swivel,0);assert.equal(p.campaign.pendingBattle.artilleryDefinitions.swivel.name,'Pedrero del puerto');
  assert.equal(parsed.campaign.contentCampaign.package.artilleryProfiles.swivel.art,art);assert.deepEqual(parsed.battle.artilleryDefinitions,{definitionRef:'artilleryProfiles'});assert.deepEqual(parsed.campaign.pendingBattle.artilleryDefinitions,{definitionRef:'artilleryProfiles'});assert.equal(wire.split(art).length-1,1);assert.deepEqual(restored.battle.artilleryDefinitions,d.artilleryProfiles);
  d.artilleryProfiles.swivel.damage=1;assert.equal(artilleryProfile(restored.battle,'swivel').damage,65);assert.equal(artilleryProfile(restored.campaign,'swivel').damage,65);assert.equal(artilleryProfile(restoreCampaign(serializeCampaign(p.campaign)),'swivel').price,123);
@@ -66,6 +67,13 @@ test('enemy crew selection and firing use the authored model rather than its ori
 });
 
 test('a real authored emplacement retains finite configured ammunition and names through shots, return and saved reentry',async()=>{
- const {wonBattery,fireStationed}=await import('./stationed-artillery-fixture.mjs');const d=authored({name:'Pedrero del Litoral',fireAP:12,initialAmmo:2});let p=visit(wonBattery(d));const gun=structuredClone(p.battle.artillery[0]);assert.equal(gun.ammo,2);p=fireStationed(p);assert.equal(p.battle.artillery[0].loaded,false);assert.equal(p.battle.artillery[0].ammo,2);
- const retained=visit(saved({campaign:leave(p)}).campaign);assert.equal(retained.battle.artillery[0].id,gun.id);assert.equal(retained.battle.artillery[0].loaded,false);assert.equal(retained.battle.artillery[0].ammo,2);assert.equal(artilleryProfile(retained.battle,gun).name,'Pedrero del Litoral');assert.equal(artilleryCosts(retained.battle,retained.battle.units[0],gun).fire,12);assert.ok(saved(retained));
+ const {issuedBattery,wonBattery}=await import('./stationed-artillery-fixture.mjs');const d=authored({name:'Pedrero del Litoral',fireAP:12,initialAmmo:2}),issued=issuedBattery(d).pendingBattle.artillery[0];assert.equal(issued.ammo,2);assert.equal(issued.loaded,true);let p=visit(wonBattery(d));const gun=structuredClone(p.battle.artillery[0]);assert.equal(gun.ammo,0);assert.equal(gun.loaded,false);assert.equal(gun.id,issued.id);
+ // Actual combat can leave every survivor away from this empty gun. Approach
+ // through ordinary movement before testing its finite-ammunition boundary.
+ const approach=p.battle.units.filter(u=>u.side==='player'&&u.hp>=15&&!u.routed&&!u.unconscious&&!u.asleep&&u.stance!=='prone').flatMap(u=>getReachable(p.battle,u).filter(spot=>artilleryContact(p.battle,{...u,...spot},gun)).map(spot=>({u,spot}))).sort((a,b)=>a.spot.cost-b.spot.cost)[0];assert.ok(approach);
+ const injuries=p.battle.units.filter(u=>u.side==='player').map(u=>({id:u.id,hp:u.hp,bleeding:u.bleeding,bandaged:u.bandaged}));
+ if(approach.spot.cost){const b=actBattle(p.battle,{type:'move',unitId:approach.u.id,x:approach.spot.x,y:approach.spot.y});assert.equal(b.lastError,null);assert.ok(b.elapsedSeconds>p.battle.elapsedSeconds);p=saved(sync({campaign:p.campaign,battle:b}));}
+ assert.deepEqual(p.battle.units.filter(u=>u.side==='player').map(u=>({id:u.id,hp:u.hp,bleeding:u.bleeding,bandaged:u.bandaged})),injuries,'approach and save preserve the actual battle deaths and injuries');
+ const denied=actBattle(p.battle,{type:'artilleryReload',unitId:approach.u.id,artilleryId:gun.id});assert.match(denied.lastError,/municiones/);assert.deepEqual(denied.artillery,p.battle.artillery);assert.deepEqual(denied.units,p.battle.units);
+ const retained=visit(saved({campaign:leave(p)}).campaign);assert.equal(retained.battle.artillery[0].id,gun.id);assert.equal(retained.battle.artillery[0].loaded,false);assert.equal(retained.battle.artillery[0].ammo,0);assert.equal(artilleryProfile(retained.battle,gun).name,'Pedrero del Litoral');assert.equal(artilleryCosts(retained.battle,retained.battle.units[0],gun).fire,12);assert.ok(saved(retained));
 });

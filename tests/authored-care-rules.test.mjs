@@ -9,6 +9,7 @@ import {synchronizeCampaignPresence} from '../game/campaign-presence.js';
 import {preparedCare,DOCTOR,PATIENT} from './medical-care-fixture.mjs';
 import {order,saved,visit} from './local-contract-fixture.mjs';
 import {advanceCampaignHours} from './campaign-wait-fixture.mjs';
+import {assertTradeRejected} from './commerce-gear-fixture.mjs';
 const rules=values=>({...DEFAULT_CARE_RULES,...values});
 const op=(s,id)=>rosterFor(s).find(o=>o.id===id);
 
@@ -35,15 +36,15 @@ test('configured rest intervals above six preserve midpoint saves and award only
  s=order(s,{type:'assignCare',id:PATIENT,assignment:'active'});const p=visit(s);assert.equal(p.battle.units.find(u=>u.id===String(PATIENT)).hp,hp+1);assert.ok(saved(p));
 });
 
-test('one authored dressing price applies to quantity purchases and workshop refill, including a legitimate free refill',()=>{
+test('old authored dressing quotes retain their pinned prices while all refill callbacks stay closed',()=>{
  for(const price of [0,17]){
   let s=preparedCare({careRules:rules({dressingPrice:price})});s.operativeState[DOCTOR].medkits=0;s=saved({campaign:s}).campaign;const before=s.resources.treasury;
   const bulk=medicalSupplyQuote(s,op(s,DOCTOR),4,isSupplied(s,s.location)),refill=workshopServiceQuote(s,op(s,DOCTOR),'resupply',isSupplied(s,s.location));assert.equal(bulk.cost,price*4);assert.equal(refill.cost,price*2);assert.equal(refill.available,true);
-  s=order(s,{type:'resupply',operativeId:DOCTOR});assert.equal(s.resources.treasury,before-price*2);assert.equal(s.operativeState[DOCTOR].medkits,2);assert.ok(dispatchCampaign(s,{type:'resupply',operativeId:DOCTOR}).lastError);s=order(s,{type:'purchaseMedicalSupplies',id:DOCTOR,quantity:4});assert.equal(s.resources.treasury,before-price*6);assert.equal(s.operativeState[DOCTOR].medkits,6);assert.ok(saved({campaign:s}));
+  assertTradeRejected(s,{type:'resupply',operativeId:DOCTOR});assertTradeRejected(s,{type:'purchaseMedicalSupplies',id:DOCTOR,quantity:4});assert.equal(s.resources.treasury,before);assert.equal(s.operativeState[DOCTOR].medkits,0);assert.ok(saved({campaign:s}));
  }
 });
 
 test('free authored work costs keep finite dressing consumption and changing an external draft cannot alter an active campaign',()=>{
- const d=defaultContentPackage();d.careRules=rules({energyCost:0,fatigueCost:0,dressingPrice:17});d.characters.find(c=>c.id==='person-110').arrivalHours=0;let s=order(initialCampaign(8,d),{type:'recruitCivic',id:110,term:'month'});d.careRules.dressingPrice=0;s=order(s,{type:'purchaseMedicalSupplies',id:110,quantity:1});assert.equal(careRules(s).dressingPrice,17);assert.ok(saved({campaign:s}));
+ const d=defaultContentPackage();d.careRules=rules({energyCost:0,fatigueCost:0,dressingPrice:17});d.characters.find(c=>c.id==='person-110').arrivalHours=0;let s=order(initialCampaign(8,d),{type:'recruitCivic',id:110,term:'month'});d.careRules.dressingPrice=0;assertTradeRejected(s,{type:'purchaseMedicalSupplies',id:110,quantity:1});assert.equal(careRules(s).dressingPrice,17);assert.ok(saved({campaign:s}));
  s=preparedCare({careRules:rules({energyCost:0,fatigueCost:0})});s=order(s,{type:'assignCare',id:DOCTOR,assignment:'doctor'});s=order(s,{type:'assignCare',id:PATIENT,assignment:'patient'});s=order(s,{type:'wait',hours:1});assert.equal(s.operativeState[DOCTOR].energy,100);assert.equal(s.operativeState[DOCTOR].fatigue,0);assert.equal(s.operativeState[DOCTOR].medkits,3);
 });

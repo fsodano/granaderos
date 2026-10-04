@@ -25,3 +25,4 @@
 .equipment-quantity button {min-height:25px;padding:2px 7px;background:#293425;color:#eee5c5;border:1px solid #8b8058;border-radius:2px;font:inherit}
 .equipment-quantity input:focus-visible,.equipment-quantity button:focus-visible {outline:2px solid #f6d881;outline-offset:2px}
 .equipment-quantity :disabled {opacity:.45}
+.ja2-pocket .ja2-item-bar{position:absolute;bottom:1px;left:3px;width:calc(100% - 6px);height:3px;min-height:3px}

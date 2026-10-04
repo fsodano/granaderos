@@ -21,17 +21,25 @@ function hired(){return order(initialCampaign(42,localPackage()),{type:'recruitC
 
 test('the shared strategic screen renders a squad in an arbitrary land cell and keeps every map cell selectable',()=>{
  let s=hired(),before=structuredClone(s),plan=previewStrategicRoute(s,s.activeSquadId,A);
- assert.equal(plan.valid,true);assert.equal(plan.action.queue,undefined);assert.deepEqual(plan.path,['retiro',A]);assert.equal(plan.hours,2);assert.deepEqual(s,before);
+ assert.equal(plan.valid,true);assert.equal(plan.action.queue,true);assert.deepEqual(plan.path,['retiro',A]);assert.ok(plan.hours>0);assert.deepEqual(s,before);
  assert.match(previewStrategicRoute(s,s.activeSquadId,A,'posta').reason,/marcha a pie/);
- s=order(s,plan.action);assert.equal(s.location,A);assert.equal(s.hour,2);
+ s=order(s,plan.action);assert.equal(s.location,'retiro');assert.equal(s.hour,0);assert.ok(s.squads.find(q=>q.id===s.activeSquadId).journey);
+ for(let hour=0;hour<plan.hours;hour++)s=order(s,{type:'advanceStrategicTime',seconds:3600});
+ assert.equal(s.location,A);assert.equal(s.hour,plan.hours);
+ assert.ok(s.travelNotice,'arrival interrupts the clock');s=order(s,{type:'advanceStrategicTime',seconds:1});
  s=decodeSave(encodeSave(s)).campaign;
  const screen=doc(render(h(Campaign,{state:s,dispatch:noop,onBattle:noop,onOpenDesk:noop})));
  assert.equal(screen.querySelectorAll('[data-map-cell]').length,WORLD_CELLS.length);
  assert.equal(screen.querySelector(`[data-map-cell="${A}"]`).getAttribute('aria-pressed'),'true');
- assert.ok(screen.querySelector('.strategy-orders').textContent.includes(worldCell(A).grid));
- assert.ok([...screen.querySelectorAll('button')].some(b=>b.textContent.startsWith('Entrar al sector')&&!b.disabled));
- assert.ok(screen.querySelector('.squad-map-table').textContent.includes(worldCell(A).grid));
- const back=previewStrategicRoute(s,s.activeSquadId,'retiro');assert.equal(back.valid,true);s=order(s,back.action);assert.equal(s.location,'retiro');
+ assert.equal(screen.querySelector('.strategy-orders'),null,'sector orders are requested explicitly');
+ assert.equal(screen.querySelector('[role="dialog"]'),null);
+ assert.equal(screen.querySelector('.atlas-readout'),null);
+ assert.ok(screen.querySelector(`[data-map-cell="${A}"]`).getAttribute('aria-label').includes(worldCell(A).grid));
+ assert.equal(screen.querySelector(`[data-sector-presence="${A}"]`).querySelectorAll('[data-presence-dot="player"]').length,1);
+ assert.ok(screen.querySelector('.merc-map-table').textContent.includes(worldCell(A).grid));
+ const back=previewStrategicRoute(s,s.activeSquadId,'retiro');assert.equal(back.valid,true);s=order(s,back.action);assert.equal(s.location,A);
+ for(let hour=0;hour<back.hours;hour++)s=order(s,{type:'advanceStrategicTime',seconds:3600});
+ assert.equal(s.location,'retiro');
 });
 
 test('rural map selection and preview use the same cells as the campaign rules',()=>{

@@ -532,6 +532,33 @@ test('ordinary environmental use follows the held key and shares unlock/open AP 
   assert.equal(s.tiles.find(t=>t.doorId==='store').open,true);
 });
 
+test('nearby wall controls expose only observed ground walls and the actual equipped crowbar action',()=>{
+  const s=createBattle([{id:'p',x:1,y:3,facing:2,activeSlot:'tool',activeTool:'inventory:bar',inventory:{bar:{kind:'tool',toolKey:'crowbar',count:1,condition:72,weight:2.5}}}],
+    {width:8,height:7,tiles:Array.from({length:56},(_,i)=>({x:i%8,y:Math.floor(i/8),type:'grass',blocked:false,cover:0})),enemies:[{id:'guard',x:7,y:6,patrol:false,overwatch:false}]});
+  const wall=s.tiles.find(t=>t.x===2&&t.y===3);
+  Object.assign(wall,{type:'wall',material:'adobe',blocked:true,blocksSight:true,buildingId:'private-building',roomId:null});
+  Object.assign(s.tiles.find(t=>t.x===3&&t.y===3),{type:'wall',material:'wood',blocked:true,blocksSight:true,roomId:'private-room'});
+  const u=s.units[0],before=structuredClone(s),model=nearbyEnvironmentModel(s,u),ref=environmentTargetAt(s,wall);
+  assert.equal(model.targets.length,1);assert.equal(model.target.kind,'wall');assert.match(model.target.label,/Pared de adobe/);
+  assert.deepEqual(model.verbs.map(verb=>verb.id),['breach']);assert.deepEqual(model.contents,[]);assert.equal(model.loot,null);
+  for(const field of ['open','locked','broken','trapKnown','contents','buildingId','roomId'])assert.equal(model.target[field],undefined,field);
+  assert.ok(!JSON.stringify(model).includes('private-'));
+  const shared=environmentPreview(s,u,ref,'breach'),hover=targetPreview(s,u,wall,{mode:'useItem'});
+  assert.equal(model.preview.valid,true);assert.deepEqual(model.preview.action,shared.action);assert.equal(model.preview.pa,shared.pa);
+  assert.equal(hover.actionLabel,shared.label);assert.equal(hover.pa,shared.pa);assert.match(hover.coverNote,new RegExp(`hasta ${shared.toolWear} puntos`));
+  assert.match(targetingHelp('useItem',u),/pared de adobe/);assert.deepEqual(s,before,'listing and forecasting do not mutate the field or tool');
+  assert.deepEqual(nearbyEnvironmentModel(s,{...u,x:0}).targets,[],'distant walls do not fill the panel');
+  assert.deepEqual(nearbyEnvironmentModel(s,{...u,tacticalLevel:1}).targets,[],'roof actors do not receive ground-wall actions');
+  const wood=structuredClone(s);Object.assign(wood.tiles.find(t=>t.x===2&&t.y===3),{material:'wood'});
+  assert.match(nearbyEnvironmentModel(wood,wood.units[0]).target.label,/Barricada de madera/);
+  for(const material of [undefined,'stone']){
+    const unsupported=structuredClone(s);unsupported.tiles.find(t=>t.x===2&&t.y===3).material=material;
+    assert.deepEqual(nearbyEnvironmentModel(unsupported,unsupported.units[0]).targets,[]);
+  }
+  const broken=structuredClone(s);broken.units[0].inventory.bar.condition=0;
+  assert.equal(nearbyEnvironmentModel(broken,broken.units[0]).preview.valid,false);
+});
+
 test('closed container contents and unknown traps stay absent from the HUD until revealed',()=>{
   let s=exchangeBattle(),u=s.units[0];s.units[1].y=3;
   s.props.push({id:'box',type:'chest',x:2,y:1,open:false,locked:true,trap:{type:'alarm',difficulty:73,armed:true,discoveredBy:[]},contents:[{item:ammoItem(u),kind:'ammunition',ammoType:weaponAmmoType(u.weapon),name:AMMUNITION_TYPES[weaponAmmoType(u.weapon)].name,count:137,weight:.04}]});

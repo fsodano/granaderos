@@ -1,8 +1,13 @@
 'use client';
 import {defaultCampaignStory} from '../../../game/campaign-story.js';
+import {errandContacts} from '../../../game/quest-definitions.js';
 import DialogueConditions from './DialogueConditions';
 export default function CampaignStory({draft,onChange}:{draft:any;onChange:(value:any)=>void}){
  const story=draft.campaignStory;
+ const residentsIncluded=draft.includeOriginalResidents!==false;
+ const retainedContacts=new Set(errandContacts({...draft,includeOriginalResidents:false}).map(contact=>contact.id));
+ const originalContacts=errandContacts({...draft,includeOriginalResidents:true}).filter(contact=>!retainedContacts.has(contact.id));
+ const dependentErrands=(draft.errands??[]).flatMap((quest:any)=>{const contact=originalContacts.find(contact=>contact.id===quest.npcId);return contact?[{quest,contact}]:[];});
  const update=(patch:any)=>onChange({...draft,campaignStory:{...story,...patch}});
  const chapter=(index:number,patch:any)=>update({chapters:story.chapters.map((c:any,i:number)=>i===index?{...c,...patch}:c)});
  const move=(index:number,step:number)=>{const chapters=[...story.chapters];[chapters[index],chapters[index+step]]=[chapters[index+step],chapters[index]];update({chapters});};
@@ -10,8 +15,9 @@ export default function CampaignStory({draft,onChange}:{draft:any;onChange:(valu
  return <section aria-label="Objetivos de campaña"><h2>Objetivos y final de campaña</h2>
   <label>Avance de la historia<select value={story?'authored':'original'} onChange={e=>onChange({...draft,campaignStory:e.target.value==='authored'?defaultCampaignStory():null})}><option value="original">Campaña histórica original</option><option value="authored">Capítulos propios</option></select></label>
   <p>Los capítulos propios reemplazan el avance y el final históricos. El mundo, las reglas de combate, la economía y los requisitos de los personajes históricos siguen vigentes. San Lorenzo y Yatasto pertenecen al avance original.</p>
-  <label><input type="checkbox" checked={draft.includeOriginalResidents!==false} onChange={e=>onChange({...draft,includeOriginalResidents:e.target.checked})}/>Incluir habitantes genéricos del mapa original</label>
+  <label><input type="checkbox" checked={residentsIncluded} disabled={residentsIncluded&&dependentErrands.length>0} aria-describedby={dependentErrands.length?'original-resident-dependencies':undefined} onChange={e=>{if(!e.target.checked&&dependentErrands.length)return;onChange({...draft,includeOriginalResidents:e.target.checked});}}/>Incluir habitantes genéricos del mapa original</label>
   <p>Incluye los contactos como el sargento del cuartel y los guías de las postas. Desactivalos para usar tus propios habitantes. Los personajes con ficha se administran desde Personajes.</p>
+  {dependentErrands.length>0&&<div id="original-resident-dependencies"><p>Antes de desactivar estos habitantes, quitá o reasigná sus encargos en «Encargos locales»:</p><ul>{dependentErrands.map(({quest,contact}:any)=><li key={quest.id}>{quest.title} · {contact.name}</li>)}</ul></div>}
   {story&&<><p>Podés eliminar personajes históricos desde sus fichas o copiarlos como habitantes independientes. La copia conserva su ficha, equipo, retrato y habilidades editables; tiene incorporación local sin requisitos históricos. Su diálogo, servicio y apariciones se editan como los de cualquier habitante nuevo. Las funciones históricas no se transfieren.</p>
    <label>Introducción de campaña<textarea maxLength={1000} value={story.introduction} onChange={e=>update({introduction:e.target.value})}/></label>
    <label>Texto de victoria<textarea maxLength={1000} value={story.victory} onChange={e=>update({victory:e.target.value})}/></label>

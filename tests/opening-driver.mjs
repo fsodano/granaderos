@@ -5,6 +5,7 @@ import {chooseEnemyAction} from '../game/tactical-ai.js';
 import {sameSurface,spacePoint} from '../game/tactical-space.js';
 import {availableAmmunition} from '../game/ammunition-types.js';
 import {criticalFirstAidNeeded} from '../game/first-aid.js';
+import {sectorSearchOrder} from './sector-search-driver.mjs';
 
 const alive=u=>u.hp>0&&!u.departure&&!u.surrendered&&!u.unconscious&&!u.routed;
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
@@ -39,6 +40,8 @@ export function combatOrder(b,u){
  // crouched reload fits. Do not leave an empty Baker waiting indefinitely.
  if(!u.loaded&&!u.jammed&&availableAmmunition(u)&&u.stance==='prone'&&cost.reload>u.ap&&u.ap>=stanceCost(u,'crouched')+actionCosts(b,{...u,stance:'crouched'}).reload)return {type:'stance',unitId:u.id,stance:'crouched'};
  if(!u.loaded&&!u.jammed&&availableAmmunition(u)&&cost.reload>0&&u.ap>=cost.reload)return {type:'reload',unitId:u.id};
+ const known=u.lastKnownEnemy??u.lastHeardNoise,age=b.turn-(known?.turn??-Infinity);
+ if(!visible.length&&age>3&&b.turn>=20)return sectorSearchOrder(b,u);
  const automatic=chooseEnemyAction(b,u);
  if(u.missionAlly&&players.length>1&&automatic?.type==='move')return null;
  if(automatic&&automatic.type!=='charge')return automatic;

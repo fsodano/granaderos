@@ -1,10 +1,10 @@
 import assert from 'node:assert/strict';
-import {dispatchCampaign,rosterFor,CIVIC_RECRUITS,isSupplied} from '../game/campaign.js';
+import {dispatchCampaign,rosterFor,CIVIC_RECRUITS} from '../game/campaign.js';
 import {sectorInventoryModel} from '../game/sector-inventory.js';
 import {decodeSave,encodeSave} from '../game/save.js';
 import {applyItemQuantity} from '../game/tactical-inventory.js';
 import {contractQuote} from '../game/contracts.js';
-import {medicalSupplyQuote} from '../game/medical-care.js';
+import {collectRouteItems} from './finite-route-equipment.mjs';
 
 export function recoverRescueForce(start,{patients,report=()=>{}}={}){
  let campaign=decodeSave(encodeSave(start)).campaign;const events=[],startHour=campaign.hour;
@@ -41,6 +41,7 @@ export function recoverRescueForce(start,{patients,report=()=>{}}={}){
  assert.equal(campaign.location,'tucuman');assert.equal(campaign.pendingBattle,null);
  for(const operativeId of [...local.map(op=>op.id),...patients])order({type:'assignCare',operativeId,assignment:'rest'});
  recovered+=gather(firstDoctor);
+ if(!campaign.operativeState[firstDoctor].medkits){const found=collectRouteItems(campaign,firstDoctor,{item:'medkits'},6);campaign=found.campaign;recovered+=found.collected;}
  const firstPatientHp=campaign.operativeState[firstPatient].hp,initialDressings=campaign.operativeState[firstDoctor].medkits;
  assert.ok(initialDressings>0,'the doctor needs actual carried or recovered supplies');
  order({type:'assignCare',operativeId:firstPatient,assignment:'patient'});order({type:'assignCare',operativeId:firstDoctor,assignment:'doctor'});
@@ -49,18 +50,15 @@ export function recoverRescueForce(start,{patients,report=()=>{}}={}){
  assert.ok(campaign.operativeState[firstPatient].hp>firstPatientHp,'the available supplies improve the first patient while the courier travels');assert.ok(campaign.operativeState[firstDoctor].medkits<initialDressings,'the initial treatment consumes actual carried or recovered dressings');
  order({type:'assignCare',operativeId:firstDoctor,assignment:'rest'});
  for(const item of ['torches','boleadoras']){const count=campaign.operativeState[courier][item];if(count)order({type:'sectorInventory',sector:'cordoba',operativeId:courier,direction:'drop',item,count});}
- const stock=campaign.merchants.cordoba.supplies.medkits,cash=campaign.resources.treasury,carried=campaign.operativeState[courier].medkits;
- const boughtDressings=Math.min(13,stock);assert.ok(boughtDressings>0);
- const quote=medicalSupplyQuote(campaign,rosterFor(campaign).find(op=>op.id===courier),boughtDressings,isSupplied(campaign,'cordoba'));assert.ok(quote.available,quote.reason);
- const cost=quote.cost,unitPrice=cost/boughtDressings;
- order({type:'purchaseMedicalSupplies',operativeId:courier,quantity:boughtDressings});
- assert.equal(campaign.merchants.cordoba.supplies.medkits,stock-boughtDressings);assert.equal(campaign.operativeState[courier].medkits,carried+boughtDressings);assert.equal(cash-campaign.resources.treasury,cost);
+ const cash=campaign.resources.treasury,carried=campaign.operativeState[courier].medkits,found=collectRouteItems(campaign,courier,{item:'medkits'},13);campaign=found.campaign;
+ const foundDressings=found.collected,boughtDressings=0,cost=0,unitPrice=0;
+ assert.equal(campaign.operativeState[courier].medkits,carried+foundDressings);assert.equal(campaign.resources.treasury,cash);
  renew(13);order({type:'travel',sector:'tucuman'});assert.equal(campaign.location,'tucuman');assert.equal(campaign.hour,startHour+24);assert.equal(campaign.pendingEncounter,null);
- order({type:'sectorInventory',sector:'tucuman',operativeId:courier,direction:'drop',item:'medkits',count:boughtDressings});
- const firstShare=Math.ceil(boughtDressings/2),secondShare=boughtDressings-firstShare;assert.equal(gather(firstDoctor,firstShare),firstShare);assert.equal(gather(secondDoctor,secondShare),secondShare);
+ order({type:'sectorInventory',sector:'tucuman',operativeId:courier,direction:'drop',item:'medkits',count:foundDressings});
+ const firstShare=Math.ceil(foundDressings/2),secondShare=foundDressings-firstShare;assert.equal(gather(firstDoctor,firstShare),firstShare);assert.equal(secondShare?gather(secondDoctor,secondShare):0,secondShare);
  for(const operativeId of patients)order({type:'assignCare',operativeId,assignment:'patient'});
  for(const operativeId of doctors)order({type:'assignCare',operativeId,assignment:'doctor'});
- report({event:'medicalCourierReturned',hour:campaign.hour,boughtDressings,cost,unitPrice,recoveredDressings:recovered});
+ report({event:'medicalCourierReturned',hour:campaign.hour,boughtDressings,foundDressings,cost,unitPrice,recoveredDressings:recovered});
  for(let i=0;patients.some(id=>campaign.operativeState[id].hp<campaign.operativeState[id].maxHp)&&i<80;i++){
   assert.equal(campaign.pendingEncounter,null,'resolve an actual encounter before continuing treatment');renew(2);
   for(const id of doctors)if(campaign.operativeState[id].medkits===0){
@@ -79,5 +77,5 @@ export function recoverRescueForce(start,{patients,report=()=>{}}={}){
  for(const id of dead)assert.equal(campaign.operativeState[id].alive,false);
  for(const id of patients){assert.equal(campaign.operativeState[id].bleeding,0);assert.equal(campaign.operativeState[id].captured,false);assert.ok(campaign.recruited.includes(id));}
  assert.deepEqual(decodeSave(encodeSave(campaign)).campaign,campaign);
- const recovery={startHour,endHour:campaign.hour,patients,doctors,hiredDoctors,hiringCost,courier,boughtDressings,cost,unitPrice,recoveredDressings:recovered,donatedDressings:donated};report({event:'rescueRecoveryComplete',...recovery});return {campaign,events,recovery};
+ const recovery={startHour,endHour:campaign.hour,patients,doctors,hiredDoctors,hiringCost,courier,boughtDressings,foundDressings,cost,unitPrice,recoveredDressings:recovered,donatedDressings:donated};report({event:'rescueRecoveryComplete',...recovery});return {campaign,events,recovery};
 }

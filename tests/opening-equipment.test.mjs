@@ -2,6 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createBattle} from '../game/tactical.js';
 import {handRecord} from '../game/tactical-inventory.js';
+import {ammunitionByType} from '../game/ammunition-types.js';
+import {changeAmmo} from '../game/ammo-types.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
 import {equipOpeningRifles} from './opening-equipment.mjs';
 
@@ -51,4 +53,14 @@ test('an unarmed survivor can recover a finite rifle without trying to store an 
  assert.equal(result.battle.units.find(u=>u.id==='enemy-body').weaponDropped,true);
  assert.ok(Object.values(receiver.inventory).every(item=>item.weapon!==0),'an empty hand is not an inventory object');
  assert.doesNotThrow(()=>validateBattleSnapshot(result.battle));
+});
+
+
+test('recovering a corpse rifle preserves mixed loose ammunition when its available hand changes',()=>{
+ const state=field([{id:131,x:2,y:3,weapon:1803}],[{id:'mixed-body',x:6,y:3,hp:0,weapon:1802,loaded:1,ammo:8,weaponInstanceId:'mixed-body-rifle',offHand:{weapon:1805,count:1,weight:1.3,loaded:1,condition:80}}]);
+ const body=state.units.find(u=>u.id==='mixed-body');changeAmmo(body,'ammoPistol',1);
+ const before=structuredClone(state),reserves=ammunitionByType(body),incoming=handRecord(body,'primary');
+ const result=equipOpeningRifles(state,[131]),remaining=result.battle.units.find(u=>u.id==='mixed-body');
+ assert.deepEqual(state,before);assert.equal(result.transfers.length,1);assert.deepEqual(ammunitionByType(remaining),reserves);assert.deepEqual(handRecord(result.battle.units.find(u=>u.id==='131'),'primary'),incoming);
+ assert.equal(remaining.weaponDropped,true);assert.deepEqual(remaining.offHand,body.offHand);assert.doesNotThrow(()=>validateBattleSnapshot(result.battle));
 });

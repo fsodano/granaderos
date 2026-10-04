@@ -1,4 +1,5 @@
 import {militiaArrivalTerrain} from './militia-arrival.js';
+import {revealFiniteArsenal} from './finite-artillery-arsenals.js';
 import {placeInvaders} from './invader-entry.js';
 import {sectorCash} from './economy.js';
 import {worldCell} from './world-cells.js';
@@ -47,7 +48,9 @@ export function enterSector(request,previous=null,{placement=false}={}){
  if(previous){
    map.width=previous.width;map.height=previous.height;
    for(const field of ['sourceMapId','sourceMapRevision']){if(previous[field]!==undefined)map[field]=previous[field];else delete map[field];}
-   map.props=structuredClone(previous.props??map.props);map.tiles=structuredClone(previous.tiles);map.decor=structuredClone(previous.decor??map.decor);map.buildings=structuredClone(previous.buildings??map.buildings);
+   // Missing rural props never backfill a newly authored cache. Keep the
+   // existing legacy landmark fallback for maps outside physical world cells.
+   map.props=structuredClone(previous.props??(map.worldCell?[]:map.props));map.tiles=structuredClone(previous.tiles);map.decor=structuredClone(previous.decor??map.decor);map.buildings=structuredClone(previous.buildings??map.buildings);
    for(const field of ['upperSurfaces','climbLinks'])if(previous[field]!==undefined)map[field]=structuredClone(previous[field]);else delete map[field];
    // A new occupation creates a garrison. An unfinished engagement retains its survivors.
    if(!request.defenseGroupId&&!request.occupationGroupIds?.length&&!request.exploration&&!previous.sectorCleared)map.enemies=structuredClone(previous.units.filter(u=>u.side==='enemy'&&!u.departure)).map(clearEncounter);
@@ -63,12 +66,15 @@ export function enterSector(request,previous=null,{placement=false}={}){
  // Deployment intent does not establish contact. Resolve sight only after final placement.
  let state=createBattle([...map.squad,...(map.garrison??[]),...(map.missionAllies??[])],{...map,exploration:true,deferContact:true});
  if(request.errandDefinitions!==undefined)state.errandDefinitions=structuredClone(request.errandDefinitions);
+ if(request.roadsideDiscoveryDefinitions!==undefined)state.roadsideDiscoveryDefinitions=structuredClone(request.roadsideDiscoveryDefinitions);
  // Retained garrisons also start a new encounter clock. Their wounds and gear
  // persist, but remembered targets and reaction counters belong to the old visit.
  for(const unit of state.units)clearEncounter(unit);
  for(const field of ['upperSurfaces','climbLinks'])if(map[field]!==undefined)state[field]=structuredClone(map[field]);
  if(previous){
-   for(const unit of state.units.filter(u=>u.side==='player'&&u.hp>0)){const old=previous.units.find(u=>u.id===unit.id&&u.side==='player');for(const key of ['practiceTiles','ridingPracticeTiles'])if(old?.[key])unit[key]=structuredClone(old[key]);}
+   // Tile histories belong to this sector. The person's practice RNG comes
+   // from the current request and can have advanced in another sector.
+   for(const unit of state.units.filter(u=>u.side==='player'&&u.hp>0)){const old=previous.units.find(u=>u.id===unit.id&&u.side==='player');for(const key of ['practiceTiles','ridingPracticeTiles'])if(old?.[key]!==undefined)unit[key]=structuredClone(old[key]);}
    for(const key of ['groundItems','droppedWeapons','revealedRooms'])state[key]=structuredClone(previous[key]??[]);
    const elapsed=Math.max(0,(request.hour??0)-(previous.savedHour??previous.enteredHour??request.hour??0));
    // One strategic hour advances six ten-minute tactical light intervals.
@@ -77,7 +83,7 @@ export function enterSector(request,previous=null,{placement=false}={}){
    // createBattle has normalized the retained enemy conditions and new turn budget.
  }
  if(previous)for(const raw of retainedMilitaryBodies({...previous,units:previous.units.filter(u=>sourceRecord(previous,u,request.sector))},state.units,request.sector)){
-   if(!state.units.some(u=>u.id===raw.id))state.units.push(clearEncounter(raw));
+   if(!state.units.some(u=>u.id===raw.id)){const retained=clearEncounter(raw);delete retained.griefCompanionIds;state.units.push(retained);}
  }
  const queued=[];const remainsIds=new Set();
  for(const record of request.remains??[]){
@@ -85,7 +91,7 @@ export function enterSector(request,previous=null,{placement=false}={}){
    remainsIds.add(record.unitId);
    const existing=state.units.find(u=>u.id===record.unitId);
    if(existing){if(existing.hp>0)throw Error('El soldado figura vivo y entre los restos pendientes.');continue;}
-   const corpse=clearEncounter(structuredClone(record.unit));delete corpse.departure;
+   const corpse=clearEncounter(structuredClone(record.unit));delete corpse.departure;delete corpse.griefCompanionIds;
    const arrival=record.entryEdge?record:corpse.arrival??record.arrival;
    corpse.entryReason='arrival';corpse.entryEdge=arrival?.entryEdge??corpse.entryEdge;corpse.entryAnchor=arrival?.entryAnchor??corpse.entryAnchor;
    queued.push(corpse);state.units.push(corpse);
@@ -175,6 +181,8 @@ export function enterSector(request,previous=null,{placement=false}={}){
    for(const npc of state.npcs)if(npc.hp>0&&!npc.departure)occupied.add(key(npc));
  }
  state.sceneId=request.sceneId??null;state.missionId=request.missionId??request.sceneId??null;
+ if(request.finiteArtilleryArsenal)state.finiteArtilleryArsenal=structuredClone(request.finiteArtilleryArsenal);
+ revealFiniteArsenal(state);
  if(!previous&&!request.sceneId&&sectorCash(request.sector)){
    const leader=state.units.find(u=>u.side==='player'&&u.hp>0),spot=leader&&state.tiles.find(t=>!t.blocked&&!propBlocksAt(state,t.x,t.y)&&!occupied.has(key(t))&&Math.abs(t.x-leader.x)+Math.abs(t.y-leader.y)===1);
    if(spot)state.groundItems.push({id:`cash:${request.sector}`,type:'money',x:spot.x,y:spot.y,count:sectorCash(request.sector)});

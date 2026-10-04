@@ -6,7 +6,7 @@ https://www.scribd.com/document/621229369/Ja2-113-Hotkeys-Alt-Mouse
 
 Retained recognizable mappings include Space to cycle soldiers, M for the map,
 D to finish a turn, R/S/C/P movement/posture, PageUp/PageDown posture changes,
-Z stealth and Alt+R reload. Number keys select the six active squad members
+Z stealth and Shift+R or Alt+R reload. Number keys select the six active squad members
 instead of browser-sensitive function keys. H opens the Spanish reference.
 Additional bindings adapt existing Granaderos commands: W cycles weapons, dressings,
 tools, each available held supply, and empty hands;
@@ -19,7 +19,7 @@ selects a shot or starts a reload. Press B to return to Disparo before aiming a 
 In shooting mode, F also lets you fire at a map cell, including a location outside sight. Click or press Enter on the cell. The preview shows AP without confirming a hidden target; the shot uses a fixed height and can hit allies. Body-region selection applies to visible enemy shots. See [location fire](location-fire.md). For other held items, F selects item use.
 G or Escape restores ordinary contextual targeting. Fitting and removal are paid
 inventory orders; B does not install a loose bayonet.
-R (or Alt+R) reloads the held firearm. If a loaded held pistol has a failed
+R selects running for the selected soldier. Pressing R again keeps running; it does not toggle back to walking. Shift+R (or Alt+R) reloads the held firearm. If a loaded held pistol has a failed
 cazoleta, the same key prepares it again; this includes the second hand without
 a hand swap. Two failed held pistols use separate action-point costs. The ignition kit is implicit. With AP for only one, the main hand is prepared first. An empty,
 usable main gun is loaded before a failed spare. See [paired priming](../equipment/paired-pistol-reprime.md).
@@ -53,15 +53,15 @@ Battlefield handler dispatches existing authoritative orders; shortcuts do not
 bypass AP, equipment or state checks. Held-key repeats and IME composition are
 ignored. Text/editable controls and open dialogs suspend shortcuts. Focused buttons,
 links, summaries and role-button tiles retain native Space/Enter activation;
-letter shortcuts remain available after clicking an action button. Ctrl/Command remain browser-owned; Alt modifies ground movement, and Alt+R reloads.
+letter shortcuts remain available after clicking an action button. Ctrl/Command remain browser-owned; Alt modifies ground movement, and Shift+R or Alt+R reloads.
 While help is expanded, gameplay shortcuts pause. Escape closes help or local
 conversation and otherwise returns to the movement cursor; it does not undo
 already committed game actions. Busy animation and inactive battles block
 orders. Cursor shortcuts select a mode and never attack an implicit target.
 
-Verification: four tests in `tests/hotkeys.test.mjs` cover mapping distinctions,
+Verification: `tests/hotkeys.test.mjs` covers mapping distinctions,
 modifier protection, editing/dialog suppression, repeat/IME guards and utility
-bindings. `web` TypeScript check passes. Browser interaction verification is
+bindings. Mounted Battlefield checks in `tests/battlefield-movement-input.test.mjs` cover selected-actor running, repeated R, normal reload costs and keyboard guards. `web` TypeScript check passes. Browser interaction verification is
 not claimed in this document. This is a useful adapted subset, not an assertion
 that every JA2 hotkey or mouse gesture is implemented.
 

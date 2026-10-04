@@ -1,3 +1,4 @@
+import {withCarriedAmmo} from './commerce-gear-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign} from '../game/campaign.js';
@@ -14,11 +15,12 @@ test('partial typed ammunition recovery conserves the ground remainder and perso
  const content=defaultContentPackage();
  for(const id of [110,111])content.characters.find(character=>character.id===`person-${id}`).arrivalHours=0;
  content.characters.find(character=>character.id==='person-111').weapon='firearm-1805';
- let campaign=initialCampaign(8,content);
+ // Prepared funds cover both monthly contracts; the additional six cartridges are declared finite preexisting property.
+ let campaign=initialCampaign(8,content);campaign.resources.treasury=15000;
  for(const id of [110,111])campaign=order(campaign,{type:'recruitCivic',id,term:'month'});
- campaign=order(campaign,{type:'ammunition',operativeId:110,family:'ammoRifle',quantity:6,direction:'buy'});
+ campaign=withCarriedAmmo(campaign,110,'ammoRifle',6);
  let pair=visit(campaign);
- const treasury=pair.campaign.resources.treasury,shop=pair.campaign.ammunitionShops.retiro.stock.ammoRifle;
+ const treasury=pair.campaign.resources.treasury,shops=structuredClone(pair.campaign.ammunitionShops);
  const loaded=Object.fromEntries([110,111].map(id=>[id,actor(pair,id).loaded]));
  const compatible=availableAmmunition(actor(pair,111));
  pair=tactical(pair,{type:'drop',unitId:'110',item:'inventory:ammo:rifle_62',count:6});
@@ -32,7 +34,7 @@ test('partial typed ammunition recovery conserves the ground remainder and perso
   assert.equal(availableAmmunition(actor(current,111)),compatible,'rifle rounds cannot refill the pistol reserve');
   for(const id of [110,111])assert.equal(actor(current,id).loaded,loaded[id]);
   assert.equal(current.campaign.resources.treasury,treasury);
-  assert.equal(current.campaign.ammunitionShops.retiro.stock.ammoRifle,shop);
+  assert.deepEqual(current.campaign.ammunitionShops,shops);
   assert.equal(current.campaign.ammunitionStores.retiro?.ammoRifle??0,0);
  };
  const redeploy=current=>{

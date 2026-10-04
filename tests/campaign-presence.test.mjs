@@ -52,7 +52,10 @@ test('initial random choice is permanent, survives active and campaign saves and
 });
 
 test('daily relocation clears old scene residents and local routines, while correspondence keeps the last encounter',()=>{
- let s=ready(definition({mode:'daily',sectors:[A,B],selection:'alternate'}));const first=person(s).sector;
+ let s=ready(definition({mode:'daily',sectors:[A,B],selection:'alternate'}));
+ // Rural arrival at 04:00 follows the real daily relocation. Begin the
+ // encounter trip after that decision, using the resident's current sector.
+ s=order(s,{type:'wait',hours:Math.ceil((s.contentPresence.nextDaily-s.contentPresence.minute)/60)});const first=person(s).sector;
  let pair=approach(visit(travel(s,first)));
  s=order(pair.campaign,{type:'talkNPC',npcId:'cabral',unitId:110,approach:'friendly',sectorState:pair.battle});
  const npc=contact(pair.battle);npc.ai={cycle:17,homeId:'old-home',activity:'home',wait:2,destination:{x:npc.x,y:npc.y}};npc.facing=6;
@@ -69,10 +72,12 @@ test('daily relocation clears old scene residents and local routines, while corr
 test('04:00 tactical time cannot move a resident out of a loaded cell or introduce one into it',()=>{
  for(const loadDestination of [false,true]){
   let s=ready(definition({mode:'daily',sectors:['retiro',A],selection:'alternate'}),42);
+  s=order(s,{type:'wait',hours:Math.ceil((s.contentPresence.nextDaily-s.contentPresence.minute)/60)});
   const at=person(s).sector,other=at==='retiro'?A:'retiro',loaded=loadDestination?other:at;
   if(s.location!==loaded)s=travel(s,loaded);
-  let pair=visit(s),before=structuredClone(person(s));pair.battle.elapsedSeconds=(4-s.hour)*3600;
-  pair=synced(pair);assert.equal(pair.campaign.hour,4);assert.equal(person(pair.campaign).sector,before.sector);assert.equal(person(pair.campaign).revision,before.revision);
+  assert.equal(person(s).sector,at,'Travel finishes before the next daily decision.');
+  let pair=visit(s),before=structuredClone(person(s)),boundary=s.contentPresence.nextDaily;pair.battle.elapsedSeconds=boundary*60-s.hour*3600-(s.secondOfHour??0);
+  pair=synced(pair);assert.equal(pair.campaign.hour,Math.floor(boundary/60));assert.equal(person(pair.campaign).sector,before.sector);assert.equal(person(pair.campaign).revision,before.revision);
   pair=saved(pair.campaign,pair.battle);s=leave(pair);assert.equal(person(s).sector,before.sector);
   s=order(s,{type:'wait',hours:24});assert.notEqual(person(s).sector,before.sector);
  }

@@ -1,3 +1,6 @@
+import {changeAmmo} from '../game/ammo-types.js';
+import {syncCarriedAmmunition} from '../game/physical-ammunition.js';
+import {withCarriedAmmo} from './commerce-gear-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createBattle,actBattle,endTurn,actionCosts,WEAPONS,planEquipLoot} from '../game/tactical.js';
@@ -114,7 +117,7 @@ test('a named shot and a point shot share the same ready state',()=>{
 });
 
 test('a complete campaign save preserves the cheaper follow-up shot',()=>{
- let c=initialCampaign(45);c.hour=12;c.loadouts[3]={weapon:1808,blade:1813};c=dispatchCampaign(c,{type:'visitSector'});assert.equal(c.lastError,null);const r=c.pendingBattle;
+ let c=initialCampaign(45);c.hour=12;c.loadouts[3]={weapon:1808,blade:1813};c=withCarriedAmmo(c,3,'ammoPistol',9);changeAmmo(c.operativeState[3],'ammoPistol',-1);c.operativeState[3].carriedLoaded=2;syncCarriedAmmunition(c.operativeState[3],1808);c=dispatchCampaign(c,{type:'visitSector'});assert.equal(c.lastError,null);const r=c.pendingBattle;
  let b=createBattle(r.squad.map((u,i)=>({...u,x:1,y:1+i})),{...r,width:32,height:8,tiles:tiles(),enemies:[],props:[],npcs:r.npcs.map((npc,i)=>({...npc,x:28-i,y:6}))});
  b=actBattle(b,{type:'firePoint',unitId:'3',x:6,y:1});assert.equal(b.lastError,null);const pair=syncBattleTime(c,b);assert.equal(pair.error,null);
  const saved=decodeSave(encodeSave(pair.campaign,pair.battle)),u=saved.battle.units.find(u=>u.id==='3');assert.equal(u.weaponReady,true);assert.equal(actionCosts(saved.battle,u).fire,6);

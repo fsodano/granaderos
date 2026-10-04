@@ -20,7 +20,8 @@ test('contract editor writes only the selected rule and restores optional defaul
 test('hiring choices display the active campaign periods',()=>{
  const draft=defaultContentPackage();draft.contractRules={...DEFAULT_CONTRACT_RULES,days:{day:2,week:10,month:40}};
  const html=render(h(Recruitment,{state:initialCampaign(42,draft),dispatch:()=>{}}));
- for(const [term,label]of [['day','2 días'],['week','10 días'],['month','40 días']])assert.match(html,new RegExp(`value="${term}"[^>]*>${label}</option>`));
+ for(const [term,label]of [['day','2 días'],['week','10 días'],['fortnight','Dos semanas']])assert.match(html,new RegExp(`value="${term}"[^>]*>${label}</option>`));
+ assert.doesNotMatch(html,/value="month"/);
 });
 
 test('renewal notices show authored labels and submit the corresponding stable term',()=>{
@@ -34,7 +35,7 @@ test('renewal notices show authored labels and submit the corresponding stable t
 test('local character preview shows authored prices and contract labels',async()=>{
  const {default:ContractPricePreview}=await import('../web/app/story/ContractPricePreview.tsx');
  const draft={contractRules:{...DEFAULT_CONTRACT_RULES,days:{day:2,week:10,month:40},salaryMonthDays:20}};
- const html=render(h(ContractPricePreview,{draft,monthlyPay:600}));assert.match(html,/2 días: 60 pesos; 10 días: 300 pesos; 40 días: 1200 pesos/);
+ const html=render(h(ContractPricePreview,{draft,monthlyPay:600}));assert.match(html,/2 días: 360 pesos; 10 días: 1800 pesos; 40 días: 7200 pesos; dos semanas: 2520 pesos/);
 });
 
 test('the dossier receives the active campaign daily rate instead of a baseline quote',async()=>{
@@ -42,5 +43,5 @@ test('the dossier receives the active campaign daily rate instead of a baseline 
  const draft=defaultContentPackage();draft.contractRules={...DEFAULT_CONTRACT_RULES,salaryMonthDays:20};draft.characters.find(c=>c.id==='person-110').monthlyPay=600;
  const state=initialCampaign(42,draft),operative=rosterFor(state).find(o=>o.id===110);state.operativeState[110].xp=100;
  const tree=CharacterDossier({state,operative,record:state.operativeState[110],onClose:()=>{}});
- assert.ok(nodes(tree).some(n=>n.type==='p'&&n.props.children==='33 pesos por día'));
+ assert.ok(nodes(tree).some(n=>n.type==='p'&&n.props.children==='198 pesos por día'));
 });

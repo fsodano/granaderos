@@ -1,5 +1,9 @@
 import {AMMUNITION_TYPES} from './ammunition-types.js';
 import {validateItemStack} from './tactical-inventory.js';
+import {finiteSectorCache} from './finite-sector-caches.js';
+import {hasCharacterAbility} from './character-abilities.js';
+import {makeOutfit} from './outfits.js';
+import {roadsideDiscoveryForMap,ROADSIDE_DISCOVERY_CHEST,ROADSIDE_CROWBAR_ID,ROADSIDE_SHIRT_ID} from './roadside-discoveries.js';
 
 // Classic JA2 manual, printed pp. 25–27: held tools, keys, lock picks,
 // crowbars, force, uncertain examination, disarming, and finite containers.
@@ -12,10 +16,10 @@ export const TOOL_TYPES = Object.freeze(Object.fromEntries([
   ['crowbar', 'Barreta', 2.5, 'pry', 20, 3],
   ['pliers', 'Alicates', .5, 'disarm', 18, 2],
 ].map(([toolKey, label, weight, verb, pa, wear]) => [toolKey, Object.freeze({toolKey, label, name: label, weight, verb, pa, wear})])));
-export const ENVIRONMENT_VERBS = Object.freeze(['inspect', 'open', 'close', 'unlock', 'pick', 'pry', 'force', 'disarm']);
-const LABELS = Object.freeze({inspect: 'Examinar', open: 'Abrir', close: 'Cerrar', unlock: 'Usar llave', pick: 'Forzar con ganzúas', pry: 'Hacer palanca', force: 'Forzar a golpes', disarm: 'Desarmar trampa'});
+export const ENVIRONMENT_VERBS = Object.freeze(['inspect', 'open', 'close', 'unlock', 'pick', 'pry', 'force', 'disarm', 'breach']);
+const LABELS = Object.freeze({inspect: 'Examinar', open: 'Abrir', close: 'Cerrar', unlock: 'Usar llave', pick: 'Forzar con ganzúas', pry: 'Hacer palanca', force: 'Forzar a golpes', disarm: 'Desarmar trampa', breach: 'Abrir brecha con barreta'});
 const COSTS = Object.freeze({inspect: 4, open: 4, close: 4, unlock: 4, pick: 16, pry: 20, force: 24, disarm: 18});
-const REQUIRED = Object.freeze({unlock: 'key', pick: 'lockpick', pry: 'crowbar', disarm: 'pliers'});
+const REQUIRED = Object.freeze({unlock: 'key', pick: 'lockpick', pry: 'crowbar', disarm: 'pliers', breach: 'crowbar'});
 const SIDES = ['player', 'enemy', 'neutral'];
 const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
 const object = value => value !== null && typeof value === 'object' && !Array.isArray(value);
@@ -30,6 +34,8 @@ function number(value, low, high, message) {
 function rollValue(value) {number(value, 0, 1, 'La tirada de interacción no es válida.'); return value;}
 const trapKnown = (unit, target) => Boolean(target.trap?.discoveredBy?.includes(unit.side ?? 'player'));
 const isArmed = target => Boolean(target.trap && target.trap.armed !== false);
+export const breachableWall = target => Boolean(target?.type === 'wall' && target.blocked === true &&
+  ['adobe', 'wood'].includes(target.material) && (target.tacticalLevel ?? 0) === 0 && !['floor', 'roof'].includes(target.kind));
 
 export function validateEnvironment(target) {
   if (!object(target) || !['door', 'chest', 'container'].includes(target.type)) fail('El objeto del entorno no es válido.');
@@ -69,11 +75,22 @@ export function heldTool(unit) {
   if (!Number.isFinite(condition) || condition < 0 || condition > 100 || record.keyId !== undefined && !safeKey(record.keyId)) return null;
   return {...TOOL_TYPES[record.toolKey], item: unit.activeTool, inventoryKey: key, condition, ...(record.keyId === undefined ? {} : {keyId: record.keyId})};
 }
+export function heldToolWearReason(unit) {
+  const tool = heldTool(unit);
+  return tool && unit.inventory[tool.inventoryKey].count > 1 && Object.keys(unit.inventory).length >= 1000
+    ? 'No hay espacio para separar la herramienta usada de las herramientas sin desgaste.' : null;
+}
 
 export function environmentActionProfile(unit, target, verb) {
-  const result = {verb, label: LABELS[verb] ?? 'Interactuar', pa: COSTS[verb] ?? 0, chance: null, requiresRoll: false, valid: false, reason: null};
+  const wall = target?.kind === 'wall' || target?.type === 'wall';
+  const result = {verb, label: LABELS[verb] ?? 'Interactuar', pa: verb === 'breach' ? hasCharacterAbility(unit, 'breaching') ? 25 : 45 : COSTS[verb] ?? 0, chance: null, requiresRoll: false, valid: false, reason: null,
+    ...(verb === 'breach' ? {toolWear: TOOL_TYPES.crowbar.wear} : {})};
   const reject = reason => ({...result, reason});
-  try {validateEnvironment(target);} catch (error) {return reject(error.message);}
+  if (wall || verb === 'breach') {
+    if (verb !== 'breach' || !breachableWall(target)) return reject('La brecha manual requiere una pared de adobe o una barricada de madera al nivel del suelo.');
+    if ((unit.tacticalLevel ?? 0) !== 0) return reject('La brecha manual requiere trabajar al nivel del suelo.');
+    if (unit.bound || unit.entangled || unit.mounted) return reject('El combatiente debe estar libre y desmontado para abrir la brecha.');
+  } else try {validateEnvironment(target);} catch (error) {return reject(error.message);}
   if (!ENVIRONMENT_VERBS.includes(verb)) return reject('Seleccioná una acción del entorno.');
   if (unit.hp !== undefined && unit.hp < 15 || unit.energy !== undefined && unit.energy <= 0 || unit.departure || unit.surrendered || unit.routed || unit.knockedDown) return reject('El combatiente no puede manipular el objeto.');
   if (verb === 'open' && target.open) return reject('El objeto ya está abierto.');
@@ -85,6 +102,10 @@ export function environmentActionProfile(unit, target, verb) {
   const tool = heldTool(unit), required = REQUIRED[verb];
   if (required && tool?.toolKey !== required) return reject(`Llevá ${TOOL_TYPES[required].label.toLowerCase()} en la mano.`);
   if (required && tool.condition <= 0) return reject('La herramienta está rota.');
+  if (verb === 'breach') {
+    const wearReason = heldToolWearReason(unit);
+    return wearReason ? reject(wearReason) : {...result, valid: true, chance: 100};
+  }
   if (verb === 'unlock' && (!target.keyId || tool.keyId !== target.keyId)) return reject('La llave no corresponde a este cierre.');
   const mechanical = stat(unit, 'mechanical'), dexterity = stat(unit, 'dexterity', 50), strength = stat(unit, 'strength', 50), experience = stat(unit, 'experienceLevel', 1);
   const difficulty = target.lockDifficulty ?? 35, wearPenalty = (100 - (tool?.condition ?? 100)) * .25;
@@ -141,6 +162,11 @@ export function resolveEnvironmentInteraction(unit, target, {verb, roll} = {}) {
   const success = !profile.requiresRoll || roll * 100 < profile.chance;
   const tool = heldTool(unit);
   if (REQUIRED[verb]) wornTool(result.unit, tool.wear);
+  if (verb === 'breach') {
+    Object.assign(next, {blocked: false, blocksSight: false, type: 'rubble', cover: 15});
+    delete next.obstacleHeight; delete next.projectileResistance;
+    return {...result, success: true, outcome: 'wall-breached', message: 'Abre una brecha con la barreta.', noiseKind: 'melee'};
+  }
   if (['pick', 'pry', 'disarm'].includes(verb)) result.practice.mechanical = 1;
   if (verb === 'inspect') {
     const chance = clamp(Math.round(stat(unit, 'experienceLevel', 1) * 5 + stat(unit, 'wisdom', 50) * .5 + stat(unit, 'dexterity', 50) * .1 - (next.trap?.difficulty ?? 0) * .7), 5, 95);
@@ -179,6 +205,7 @@ export function visibleContainerContents(target) {
   return target.open ? structuredClone(target.contents ?? []) : [];
 }
 export function environmentTargetSummary(unit, target) {
+  if (breachableWall(target)) return {id: target.id ?? `wall:${target.x}:${target.y}`, type: 'wall', label: target.material === 'wood' ? 'Barricada de madera' : 'Pared de adobe', material: target.material, broken: false};
   validateEnvironment(target);
   const summary = {id: target.id ?? target.doorId, type: target.type, label: target.type === 'door' ? 'Puerta' : 'Cofre', open: Boolean(target.open), locked: Boolean(target.locked), broken: Boolean(target.broken)};
   if (trapKnown(unit, target)) summary.trap = {type: target.trap.type, armed: isArmed(target)};
@@ -200,8 +227,14 @@ export function extractContainerItem(target, index, count = 1) {
 // the resulting objects. These caches reuse existing furniture and doors.
 export function authoredEnvironment(sector, map) {
   const doors = [], containers = [];
+  const cache=finiteSectorCache(sector,map);if(cache)containers.push(cache);
   const hasChest = id => (map.props ?? []).some(prop => prop.type === 'chest' && prop.id === id);
   const tool = (toolKey, keyId) => ({item: `inventory:${toolKey}`, count: 1, weight: TOOL_TYPES[toolKey].weight, itemType: 'tool', toolKey, condition: 100, ...(keyId ? {keyId} : {})});
+  const roadside=roadsideDiscoveryForMap(sector,map);
+  if(roadside)containers.push({id:ROADSIDE_DISCOVERY_CHEST,type:'chest',open:false,locked:false,contents:[
+    {...tool('crowbar'),condition:roadside.crowbarCondition,instanceId:ROADSIDE_CROWBAR_ID},
+    {item:'inventory:linen-shirt:roadside',...makeOutfit('linen_shirt',roadside.linenShirtCondition),instanceId:ROADSIDE_SHIRT_ID},
+  ]});
   if (sector === 'yatasto') {
     const id = 'yatasto:building:chest:11:8';
     if (hasChest(id)) containers.push({id, type: 'chest', open: false, locked: false, contents: [tool('lockpick'), tool('crowbar'), tool('pliers'), tool('key', 'yatasto-store')]});

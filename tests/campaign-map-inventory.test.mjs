@@ -1,3 +1,4 @@
+import {withStoredGear} from './commerce-gear-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign,rosterFor} from '../game/campaign.js';
@@ -35,11 +36,11 @@ function start(){
  for(const id of [110,131])campaign=order(campaign,{type:'recruitCivic',id,term:'day'});
  assert.ok(campaign.resources.treasury<cash);assert.deepEqual(campaign.squad,[110,131]);
  const hireCash=campaign.resources.treasury;
- campaign=order(campaign,{type:'purchaseMedicalSupplies',operativeId:110,quantity:3});
- campaign=order(campaign,{type:'purchaseEquipment',item:'1811:india_socket',quantity:1});
- assert.ok(campaign.resources.treasury<hireCash);
- const purchased=campaign.armoryItems.find(item=>item.fittingPattern==='india_socket');assert.ok(purchased?.instanceId);
- campaign=order(campaign,{type:'equip',operativeId:110,slot:'blade',itemId:'1811:india_socket',instanceId:purchased.id});
+ // Finite preexisting dressings and one stored fitting isolate physical custody.
+ campaign.operativeState[110].medkits=5;campaign=withStoredGear(campaign,'1811:india_socket');
+ assert.equal(campaign.resources.treasury,hireCash);
+ const owned=campaign.armoryItems.find(item=>item.fittingPattern==='india_socket');assert.ok(owned?.instanceId);
+ campaign=order(campaign,{type:'equip',operativeId:110,slot:'blade',itemId:'1811:india_socket',instanceId:owned.id});
  const personal=()=>sectorInventoryModel(campaign,'retiro',rosterFor(campaign),110).personal;
  const arrange=(item,destinationId,count)=>{
   const unit=personal(),sourceId=inventoryUsage(unit).slots.find(slot=>slot.entry?.item===item).id,before=structuredClone(campaign);
@@ -56,8 +57,8 @@ function start(){
  assert.equal(campaign.location,'retiro');assert.equal(battle.width,64);assert.equal(battle.height,48);assert.equal(battle.mode,'exploration');assert.equal(battle.status,'active');
  assert.deepEqual(Object.entries(campaign.sectors).filter(([,sector])=>sector.owner==='patriot').map(([id])=>id),['retiro']);
  assert.deepEqual(partitions(actor(battle),'medkits'),medical);assert.deepEqual(partitions(actor(battle),'torches'),torches);assert.equal(medicalTotal(battle),7);
- assert.equal(actor(battle).bladeInstanceId,purchased.instanceId);assert.equal(identityCount(battle,purchased.instanceId),1);
- return {campaign,battle,source,torches,purchased};
+ assert.equal(actor(battle).bladeInstanceId,owned.instanceId);assert.equal(identityCount(battle,owned.instanceId),1);
+ return {campaign,battle,source,torches,owned};
 }
 function mapOrder(battle,sourceId,count,point,intent='ground',targetId){
  const unit=actor(battle),request={sourceId,expectedSource:equipmentFingerprint(unit,sourceId),count,...spacePoint(point),intent,...(targetId?{targetId}:{})};
@@ -106,22 +107,22 @@ test('a canonical selected-pocket gift replays after save and explicit ground in
  assert.deepEqual(partitions(actor(battle),'medkits'),{[source]:3});assert.deepEqual(partitions(actor(battle),'torches'),torches);assert.deepEqual(battle.groundItems.find(item=>item.id===pile.id),pile);
 });
 
-test('a purchased bayonet keeps its identity and metadata through map drop, campaign custody and real recovery',()=>{
- let {campaign,battle,source,torches,purchased}=start();const unit=actor(battle),record=handRecord(unit,'blade');
+test('a finite owned bayonet keeps its identity and metadata through map drop, campaign custody and real recovery',()=>{
+ let {campaign,battle,source,torches,owned}=start();const unit=actor(battle),record=handRecord(unit,'blade');
  const sourceId=inventoryUsage(unit).slots.find(slot=>slot.entry?.item==='blade').id;
  const dropped=mapOrder(battle,sourceId,1,unit);battle=dropped.battle;
- assert.equal(dropped.preview.kind,'drop');assert.equal(actor(battle).blade??0,0);assert.equal(identityCount(battle,purchased.instanceId),1);
- const pile=battle.groundItems.find(item=>item.instanceId===purchased.instanceId);assert.ok(pile);
+ assert.equal(dropped.preview.kind,'drop');assert.equal(actor(battle).blade??0,0);assert.equal(identityCount(battle,owned.instanceId),1);
+ const pile=battle.groundItems.find(item=>item.instanceId===owned.instanceId);assert.ok(pile);
  assert.deepEqual(pile,{item:'weapon',...record,id:pile.id,type:'item',...spacePoint(unit),knownToPlayer:true});
- assert.equal(pile.fittingPattern,'india_socket');assert.equal(pile.condition,purchased.condition);
+ assert.equal(pile.fittingPattern,'india_socket');assert.equal(pile.condition,owned.condition);
  ({campaign,battle}=saved(campaign,battle));({campaign,battle}=revisit(campaign,battle));
- assert.equal(campaign.loadouts[110].blade,0);assert.equal(actor(battle).blade??0,0);assert.equal(identityCount(battle,purchased.instanceId),1);
+ assert.equal(campaign.loadouts[110].blade,0);assert.equal(actor(battle).blade??0,0);assert.equal(identityCount(battle,owned.instanceId),1);
  assert.deepEqual(battle.groundItems.find(item=>item.id===pile.id),pile);
  assert.deepEqual(partitions(actor(battle),'medkits'),{'large-4':2,[source]:3});assert.deepEqual(partitions(actor(battle),'torches'),torches);
- battle=act(battle,{type:'loot',groundId:pile.id,count:1});const key=Object.keys(actor(battle).inventory).find(key=>actor(battle).inventory[key].instanceId===purchased.instanceId);assert.ok(key);
+ battle=act(battle,{type:'loot',groundId:pile.id,count:1});const key=Object.keys(actor(battle).inventory).find(key=>actor(battle).inventory[key].instanceId===owned.instanceId);assert.ok(key);
  battle=act(battle,{type:'equipLoot',inventoryKey:key,slot:'blade'});
- assert.deepEqual(handRecord(actor(battle),'blade'),record);assert.equal(battle.groundItems.find(item=>item.id===pile.id).count,0);assert.equal(identityCount(battle,purchased.instanceId),1);
+ assert.deepEqual(handRecord(actor(battle),'blade'),record);assert.equal(battle.groundItems.find(item=>item.id===pile.id).count,0);assert.equal(identityCount(battle,owned.instanceId),1);
  ({campaign,battle}=saved(campaign,battle));({campaign,battle}=revisit(campaign,battle));
- assert.equal(campaign.loadouts[110].blade,1811);assert.equal(campaign.operativeState[110].bladeInstanceId,purchased.instanceId);
- assert.deepEqual(handRecord(actor(battle),'blade'),record);assert.equal(identityCount(battle,purchased.instanceId),1);assert.equal(medicalTotal(battle),7);
+ assert.equal(campaign.loadouts[110].blade,1811);assert.equal(campaign.operativeState[110].bladeInstanceId,owned.instanceId);
+ assert.deepEqual(handRecord(actor(battle),'blade'),record);assert.equal(identityCount(battle,owned.instanceId),1);assert.equal(medicalTotal(battle),7);
 });

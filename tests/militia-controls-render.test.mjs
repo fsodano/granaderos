@@ -5,8 +5,8 @@ import assert from 'node:assert/strict';
 import {createElement as h} from '../web/node_modules/react/index.js';
 import {renderToStaticMarkup as render} from '../web/node_modules/react-dom/server.node.js';
 import {initialCampaign} from './legacy-campaign-fixture.mjs';
-const {default:Campaign}=await import('../web/app/Campaign.tsx');
-const draw=militia=>{const s=initialCampaign();s.sectors.retiro.militia=militia;return render(h(Campaign,{state:s,dispatch:()=>{},onBattle:()=>{},onOpenDesk:()=>{}}));};
+const {default:MilitiaTraining}=await import('../web/app/MilitiaTraining.tsx'),{default:MilitiaDistribution}=await import('../web/app/MilitiaDistribution.tsx');
+const draw=militia=>{const s=initialCampaign();s.sectors.retiro.militia=militia;return render(h('div',null,h(MilitiaTraining,{state:s,sectorId:'retiro',dispatch(){}}),h(MilitiaDistribution,{state:s,sector:'retiro',dispatch(){}})));};
 test('full regular garrisons cannot buy a veteran course and the map explains combat promotion',()=>{
  const markup=draw([0,60,0]);assert.match(markup,/Cívicos: 0 · Montoneras: 60 · Veteranos: 0/);assert.match(markup,/Los veteranos ascienden por experiencia de combate/);assert.match(markup,/<button[^>]*disabled=""[^>]*>Entrenar milicias/);assert.match(markup,/no hay lugar para otros 3/);
 });

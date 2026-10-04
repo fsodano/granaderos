@@ -1,10 +1,10 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import {hasAuthoredDialogue,dialogueOptions,dialogueReason,dialogueApproach,ambientReply} from '../game/npc-dialogue.js';
+import {hasAuthoredDialogue,dialogueOptions,dialogueReason,dialogueApproach,ambientReply,contextualThreatReply} from '../game/npc-dialogue.js';
 import {ENCOUNTERS} from '../game/encounters.js';import {YATASTO_NPCS} from '../game/missions.js';
 import {createBattle} from '../game/tactical.js';import {targetingHelp} from '../game/ja2-hud.js';import {tacticalShortcut} from '../game/hotkeys.js';
 const actor={id:'p',side:'player',hp:100,energy:100,x:2,y:2};const civilian={id:'c',name:'Vecino',x:3,y:2};const state={phase:'player',mode:'exploration',status:'active'};
 test('authored dialogue includes non-recruitable quest and mission characters but excludes ordinary named civilians',()=>{
- const quest=ENCOUNTERS.find(n=>n.id==='local-retiro'),ordinary=ENCOUNTERS.find(n=>n.id==='local-uspallata');assert.ok(hasAuthoredDialogue(quest));assert.ok(hasAuthoredDialogue(YATASTO_NPCS[0]));assert.equal(hasAuthoredDialogue(ordinary),false);assert.equal(quest.operativeId,undefined);assert.deepEqual(dialogueOptions(ordinary),[]);assert.deepEqual(dialogueOptions(YATASTO_NPCS[0]).map(([id])=>id),['repeat','mission']);assert.ok(!dialogueOptions(quest).some(([id])=>id==='recruit'));
+ const quest=ENCOUNTERS.find(n=>n.id==='local-retiro'),ordinary=ENCOUNTERS.find(n=>n.id==='local-uspallata');assert.ok(hasAuthoredDialogue(quest));assert.ok(hasAuthoredDialogue(YATASTO_NPCS[0]));assert.equal(hasAuthoredDialogue(ordinary),false);assert.equal(quest.operativeId,undefined);assert.deepEqual(dialogueOptions(ordinary),[]);assert.deepEqual(dialogueOptions(YATASTO_NPCS[0]).map(([id])=>id),['repeat','friendly','direct','threaten','mission']);assert.ok(!dialogueOptions(quest).some(([id])=>id==='recruit'));
 });
 test('quest choices disappear after completion and a recruit retains the appropriate approaches',()=>{
  const npc=ENCOUNTERS.find(n=>n.id==='local-retiro');assert.ok(dialogueOptions(npc,{status:'offered'}).some(([id,label])=>id==='quest'&&label==='Entregar pertrechos'));assert.ok(!dialogueOptions(npc,{status:'completed'}).some(([id])=>id==='quest'));assert.ok(dialogueOptions(ENCOUNTERS.find(n=>n.id==='cabral')).some(([id])=>id==='recruit'));
@@ -21,7 +21,7 @@ test('an enemy can give one reply during combat while authored conversation wait
 test('ambient replies vary without changing battle RNG, inventory or conversation state',()=>{
  const b=createBattle([],{enemies:[],exploration:true}),before=structuredClone(b);const npc={...civilian,greeting:'El paso está abierto.'};assert.equal(new Set(Array.from({length:4},(_,i)=>ambientReply(npc,i))).size,4);assert.match(ambientReply({...civilian,side:'enemy',surrendered:true}),/arma|resistirme|vida/);assert.match(ambientReply({...civilian,ai:{activity:'hiding'}}),/refugio|fuego|salvo/);assert.deepEqual(b,before);
 });
-test('J selects talk without changing reload, mount or native input shortcuts',()=>{assert.equal(tacticalShortcut({key:'j'}),'talk');assert.equal(tacticalShortcut({key:'r'}),'reload');assert.equal(tacticalShortcut({key:'t'}),'mount');assert.equal(tacticalShortcut({key:'j'},{editing:true}),null);assert.match(targetingHelp('talk',actor),/Hablar/);});
+test('J selects talk without changing running, reload, mount or native input shortcuts',()=>{assert.equal(tacticalShortcut({key:'j'}),'talk');assert.equal(tacticalShortcut({key:'r'}),'run');assert.equal(tacticalShortcut({key:'R',shiftKey:true}),'reload');assert.equal(tacticalShortcut({key:'t'}),'mount');assert.equal(tacticalShortcut({key:'j'},{editing:true}),null);assert.match(targetingHelp('talk',actor),/Hablar/);});
 
 
 test('conversation and approach routes distinguish stacked ground and roof speakers',()=>{
@@ -32,4 +32,14 @@ test('conversation and approach routes distinguish stacked ground and roof speak
  assert.equal(dialogueApproach([lower,upper],speaker),upper);
  assert.equal(dialogueApproach([lower],speaker),undefined);
  assert.equal(dialogueApproach([upper,lower],{...speaker,tacticalLevel:0}),lower);
+});
+
+
+test('threat responses retain quest and service context without changing state',()=>{
+ const npc=ENCOUNTERS.find(n=>n.id==='cabral'),quest={status:'completed'},before=structuredClone({npc,quest});
+ assert.match(contextualThreatReply(npc),/voluntad propia/);
+ assert.match(contextualThreatReply(npc,quest),/Cumplí mi parte/);
+ assert.match(contextualThreatReply(YATASTO_NPCS[0]),/campaña/);
+ assert.equal(contextualThreatReply({...npc,threatenedReply:'Las armas no deciden mi palabra.'}), 'Las armas no deciden mi palabra.');
+ assert.deepEqual({npc,quest},before);
 });

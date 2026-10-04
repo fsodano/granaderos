@@ -30,7 +30,7 @@ test('presentation snapshots preserve old terrain and earlier injuries and do no
 
 test('a successful shot is shown before its injury, with the original result unchanged',()=>{
  const s=createBattle([{id:'p',x:1,y:1,weapon:1801}],{...map,enemies:[{id:'e',x:7,y:1,weapon:1801,marksmanship:70,morale:100}]});const r=presentedEndTurn(s);assert.deepEqual(r.state,endTurn(s));
- const hit=r.frames.findIndex((f,i)=>i>0&&f.type==='result'&&f.action==='fire'&&f.state.units.some((u,j)=>u.hp<r.frames[i-1].state.units[j].hp));assert.ok(hit>0);assert.equal(r.frames[hit-1].type,'prepare');assert.equal(r.frames[hit-1].action,'fire');
+ const hit=r.frames.findIndex((f,i)=>i>0&&f.type==='impact'&&f.action==='fire'&&f.state.units.some((u,j)=>u.hp<r.frames[i-1].state.units[j].hp));assert.ok(hit>1);assert.equal(r.frames[hit-1].type,'projectile');assert.equal(r.frames[hit-1].action,'fire');assert.equal(r.frames[hit-2].type,'prepare');assert.ok(r.frames[hit-1].shotVisual);
 });
 
 

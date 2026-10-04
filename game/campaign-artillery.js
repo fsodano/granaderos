@@ -1,4 +1,5 @@
 import {migrateMerchantWallets} from './equipment-merchants.js';
+import {initializeFiniteArtilleryArsenals,prepareFiniteArsenalRequest,finiteArsenalReportPieces,validateFiniteArtilleryArsenals} from './finite-artillery-arsenals.js';
 import {ARTILLERY} from './artillery-definitions.js';
 import {artilleryTransportPath,storedArtilleryRecord,artilleryCargoWeight,ARTILLERY_TRANSPORT_CAPACITY,validateArtilleryTransport} from './artillery-transport.js';
 import {artilleryTransportRules} from './artillery-transport-rules.js';
@@ -19,6 +20,7 @@ const nextId=s=>{need(Number.isSafeInteger(s.nextArtilleryId)&&s.nextArtilleryId
 // against paid stock once, taking an active battery first and then the most
 // recent observed pieces. Never turn historical copies into extra owned guns.
 export function migrateArtilleryState(s){
+ initializeFiniteArtilleryArsenals(s);
  if(s.artilleryVersion===1&&s.artilleryCustodyVersion===1){migrateArtilleryCustody(s);return s;}
  const next=structuredClone(s);if(s.contentCampaign)next.contentCampaign=s.contentCampaign;migrateArtilleryStateValue(next);
  for(const key of Object.keys(s))if(!Object.hasOwn(next,key))delete s[key];Object.assign(s,next);return s;
@@ -55,6 +57,7 @@ function migrateArtilleryStateValue(s){
 export function prepareSectorArtillery(s,request){
  const current=request===s.pendingBattle;migrateArtilleryState(s);if(current)request=s.pendingBattle;
  if(request.artilleryDeployment?.site===site(request))return request;
+ prepareFiniteArsenalRequest(s,request);
  const fresh=structuredClone(list(request.artillery??[])),old=structuredClone(list(previous(s,request)?.artillery??[]));
  const stockState={...s,armory:{...s.armory},artilleryDepots:structuredClone(s.artilleryDepots??{})};
  for(const gun of fresh){
@@ -79,8 +82,9 @@ export function validateArtilleryDeployment(request){
 export function validateArtilleryReport(request,battle){
  if(!request?.artilleryDeployment)return;
  validateArtilleryDeployment(request);
- if(!request.artillery.length&&!battle)return;
- need(battle&&Array.isArray(battle.artillery)&&battle.artillery.length===request.artillery.length,'El parte debe conservar todas las piezas de artillería.');list(battle.artillery);
+ if(!request.artillery.length&&!battle&&!request.finiteArtilleryArsenal)return;
+ const recovered=finiteArsenalReportPieces(request,battle);
+ need(battle&&Array.isArray(battle.artillery)&&battle.artillery.length===request.artillery.length+recovered.length,'El parte debe conservar todas las piezas de artillería.');list(battle.artillery);
  for(const source of request.artillery){const actual=battle.artillery.find(g=>g.id===source.id);need(actual&&actual.type===source.type&&actual.side===source.side,'El parte cambia la identidad o el bando de una pieza.');need(actual.ammo+Number(actual.loaded)<=source.ammo+Number(source.loaded),'El parte crea munición de artillería.');}
 }
 export function settleSectorArtillery(snapshot,outcome){
@@ -97,6 +101,7 @@ export function ownedArtilleryCount(s){
  return artilleryCount(s)+owned.size;
 }
 export function validateCampaignArtillery(s){
+ validateFiniteArtilleryArsenals(s);
  if(s.artilleryCustodyVersion!==undefined)need(s.artilleryCustodyVersion===1&&s.artilleryStores===undefined&&!(s.convoys??[]).some(c=>c.artillery!==undefined)&&!Object.values(s.merchants??{}).some(m=>m.usedArtillery!==undefined),'La artillería mezcla propietarios de dos versiones.');
  need(s.artilleryVersion===1&&Number.isSafeInteger(s.nextArtilleryId)&&s.nextArtilleryId>=1&&s.nextArtilleryId<=1e9,'El registro de piezas es inválido.');const ids=new Set();
  for(const b of [...Object.values(s.sectorStates??{}),...Object.values(s.sceneStates??{}),...Object.values(s.artilleryDepots??{}).map(artillery=>({artillery})),...(s.artilleryTransfers??[]).map(t=>({artillery:[t.gun]})),...Object.values(s.artilleryMerchants??{}).map(shop=>({artillery:shop.guns}))])for(const g of list(b.artillery??[])){if(/^piece-[1-9][0-9]*$/.test(g.id))need(Number(g.id.slice(6))<s.nextArtilleryId,'La secuencia de piezas es inválida.');need(!ids.has(g.id),'Una pieza no puede estar en dos sectores.');ids.add(g.id);}

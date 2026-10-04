@@ -3,6 +3,7 @@ import test from 'node:test';import assert from 'node:assert/strict';
 import {createElement as h} from '../web/node_modules/react/index.js';
 import {renderToStaticMarkup as render} from '../web/node_modules/react-dom/server.node.js';
 import {createBattle} from '../game/tactical.js';
+import {componentTree} from './component-tree.mjs';
 const {EquipmentInteractionProvider,useEquipmentInteraction}=await import('../web/lib/equipment-drag.ts');
 const {default:Inventory,RadarCluster}=await import('../web/app/JA2Inventory.tsx');
 const noop=()=>{};
@@ -37,4 +38,14 @@ test('inventory height and radar controls share the field cursor scope',()=>{
 
 test('the ordinary roster radar remains usable outside an equipment provider',()=>{
  const html=render(h(RadarCluster,props()));assert.match(html,/class="ja2-radar"/);assert.doesNotMatch(html,/data-equipment-scope/);
+});
+
+
+test('inventory previous and next preserve the inventory view and same portrait right-click closes it',()=>{
+ const p=props(),chosen=[],closed=[];p.battle.units.push({...p.unit,id:'second'},{...p.unit,id:'third'},{...p.unit,id:'ally',missionAlly:true});
+ const tree=componentTree(Inventory,{...p,onInventoryUnit:id=>chosen.push(id),onCloseInventory:()=>closed.push(true)});
+ const descendants=n=>!n||typeof n!=='object'?[]:[n,...(Array.isArray(n)?n:Array.isArray(n.props?.children)?n.props.children:[n.props?.children]).flatMap(descendants)];
+ const children=descendants(tree);children.find(n=>n.props?.['aria-label']==='Combatiente anterior').props.onClick();children.find(n=>n.props?.['aria-label']==='Combatiente siguiente').props.onClick();assert.deepEqual(chosen,['third','second']);
+ children.find(n=>n.props?.className?.includes('ja2-inventory-portrait')).props.onContextMenu({preventDefault(){}});assert.equal(closed.length,1);
+ const html=render(h(Inventory,p));assert.match(html,/Figura masculina|Figura femenina/);assert.doesNotMatch(html,/Camuflaje|Ranura de cara/);assert.match(html,/Día 1 · 12:00/);
 });

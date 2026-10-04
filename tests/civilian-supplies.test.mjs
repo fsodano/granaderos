@@ -13,7 +13,12 @@ const B='cell-26-27',person=(d,id)=>d.characters.find(c=>c.id===`person-${id}`);
 const stock={rations:3,torches:2,medkits:7,boleadoras:1};
 function content({daily=false,critical=true}={}){const d=localPackage();d.characters.at(-1).startingSupplies={...stock};if(critical)d.characters.at(-1).startingCondition={hp:1,energy:100,fatigue:0,bleeding:0,bandaged:0};person(d,110).attributes.medical=80;person(d,110).startingSupplies=Object.fromEntries(Object.keys(stock).map(k=>[k,0]));if(daily)Object.assign(d.placements.at(-1),{mode:'daily',sectors:[A,B],selection:'alternate'});return d;}
 function approach(p){const n=localNPC(p.battle),u=p.battle.units.find(u=>u.side==='player'),spot=getReachable(p.battle,u).find(t=>Math.abs(t.x-n.x)+Math.abs(t.y-n.y)===1);assert.ok(spot);return spot.cost?tactical(p,{type:'move',unitId:u.id,x:spot.x,y:spot.y}):p;}
-function ready(d=content()){let s=order(initialCampaign(42,d),{type:'recruitCivic',id:110,term:'month'});s=order(s,{type:'travel',sector:s.contentPresence.people['alma-contract'].sector});return approach(visit(s));}
+function ready(d=content()){
+ let s=order(initialCampaign(42,d),{type:'recruitCivic',id:110,term:'month'});
+ // Follow the actual daily move before planning the rural encounter trip.
+ if(d.placements.find(p=>p.character==='alma-contract').mode==='daily')s=order(s,{type:'wait',hours:Math.ceil((s.contentPresence.nextDaily-s.contentPresence.minute)/60)});
+ s=order(s,{type:'travel',sector:s.contentPresence.people['alma-contract'].sector});return approach(visit(s));
+}
 const loot=(p,extra={})=>tactical(p,{type:'loot',targetId:localNPC(p.battle).id,...extra});
 
 test('actual recovery transfers finite authored supplies, funds first aid and persists through daily movement, recruitment and return',()=>{

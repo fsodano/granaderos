@@ -11,6 +11,7 @@ import {enterSector} from '../game/world.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {portraitFor} from '../web/lib/portraits.ts';
 import {BALANCED_PORTRAITS} from '../game/portrait-expansion.js';
+import {CRITICAL_HEALTH} from '../game/actor-condition.js';
 
 register('./tactical-render-loader.mjs',import.meta.url);
 const {default:CharacterCreator}=await import('../web/app/CharacterCreator.tsx');
@@ -126,6 +127,13 @@ test('every portrait is reachable through gender and role while selection preser
  const selects=[...document.querySelectorAll('select')].filter(select=>!field.contains(select));await m.input(selects[0],'artesano');
  const questions=[...OFFICER_QUESTIONS,...PROFILE_QUESTIONS];for(let i=0;i<questions.length;i++)await m.input(selects[i+1],answers[questions[i].id]);
  const attributeInput=name=>[...document.querySelectorAll('.creator-attributes label')].find(label=>label.textContent.startsWith(name))?.querySelector('input');
+ const health=attributeInput('Salud');assert.equal(health.min,String(CRITICAL_HEALTH));assert.equal(health.max,'85');assert.equal(health.step,'1');
+ const healthHelp=document.getElementById(health.getAttribute('aria-describedby'));assert.match(healthHelp.textContent,/entre 15 y 85.*consciente/);
+ assert.ok([...document.querySelectorAll('.creator-attributes input')].filter(input=>input!==health).every(input=>input.min==='0'&&input.max==='85'),'zero remains available for all other allocated attributes');
+ await m.input(health,CRITICAL_HEALTH-1);assert.equal(health.value,String(CRITICAL_HEALTH),'the actual health range cannot select unconscious starting health');
+ const submit=[...document.querySelectorAll('button')].find(button=>button.textContent.includes('Comenzar mi campaña'));
+ await m.click(submit);assert.equal(m.created.length,0);assert.match(document.querySelector('[role="alert"]').textContent,/550 puntos/,'the remaining allocation must still total exactly 550');
+ await m.input(attributeInput('Fuerza'),85);await m.input(attributeInput('Agilidad'),65);await m.input(attributeInput('Medicina'),0);await m.input(attributeInput('Destreza'),85);await m.input(attributeInput('Liderazgo'),80);
  await m.input(attributeInput('Puntería'),75);await m.input(attributeInput('Mecánica'),35);
  const values=()=>[...document.querySelectorAll('.creator-attributes input')].map(input=>input.value),chosenAttributes=values();
  for(const portrait of SELECTABLE_CHARACTER_PORTRAITS){
@@ -142,5 +150,6 @@ test('every portrait is reachable through gender and role while selection preser
  }
  await m.click([...document.querySelectorAll('button')].find(button=>button.textContent.includes('Comenzar mi campaña')));
  assert.equal(document.querySelector('[role="alert"]'),null);assert.equal(m.created.length,1);
- const created=m.created[0];assert.equal(created.name,'Elena Testigo');assert.deepEqual(created.answers,answers);assert.equal(created.profile.nickname,'Luz');assert.equal(created.profile.classId,'artesano');assert.equal(created.profile.version,2);assert.equal(created.profile.portraitId,SELECTABLE_CHARACTER_PORTRAITS.at(-1).id);assert.deepEqual(created.profile.attributes,profileFor(SELECTABLE_CHARACTER_PORTRAITS.at(-1).id).attributes);
+ const created=m.created[0];assert.equal(created.name,'Elena Testigo');assert.deepEqual(created.answers,answers);assert.equal(created.profile.nickname,'Luz');assert.equal(created.profile.classId,'artesano');assert.equal(created.profile.version,2);assert.equal(created.profile.portraitId,SELECTABLE_CHARACTER_PORTRAITS.at(-1).id);assert.deepEqual(created.profile.attributes,{...profileFor(SELECTABLE_CHARACTER_PORTRAITS.at(-1).id).attributes,maxHp:CRITICAL_HEALTH,strength:85,agility:65,medical:0,dexterity:85,leadership:80});
+ const commissioned=order(starting,{type:'createOfficer',...created});assert.equal(commissioned.operativeState[1000].hp,CRITICAL_HEALTH);assert.deepEqual(decodeSave(encodeSave(commissioned)).campaign.officer.profile,created.profile);
 });

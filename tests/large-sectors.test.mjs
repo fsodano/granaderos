@@ -1,5 +1,6 @@
 import {tacticalGridLabel} from '../game/tactical-grid.js';
 import {initialCampaign} from '../game/campaign.js';
+import {roadsideDiscoveriesFor} from '../game/roadside-discoveries.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -100,7 +101,7 @@ test('expanded countryside can be crossed with the normal exploration pathfinder
 
 test('all fifteen expanded locations fit in the existing save limit and round-trip',()=>{
  const s=initialCampaign();
- for(const sector of MAP_IDS){const snapshot=enterSector({sector:sector==='yatasto'?'tucuman':sector,...(sector==='yatasto'?{sceneId:sector}:{}),squad:[],enemies:[],exploration:true});if(sector==='yatasto')s.sceneStates.yatasto=snapshot;else s.sectorStates[sector]=snapshot;}
+ for(const sector of MAP_IDS){const snapshot=enterSector({errandDefinitions:s.errandDefinitions,roadsideDiscoveryDefinitions:structuredClone(roadsideDiscoveriesFor(s)),sector:sector==='yatasto'?'tucuman':sector,...(sector==='yatasto'?{sceneId:sector}:{}),squad:[],enemies:[],exploration:true});if(sector==='yatasto')s.sceneStates.yatasto=snapshot;else s.sectorStates[sector]=snapshot;}
  const saved=encodeSave(s),restored=decodeSave(saved);
  assert.ok(new TextEncoder().encode(saved).length<5_000_000);
  assert.equal(Object.keys(restored.campaign.sectorStates).length,14);assert.equal(Object.keys(restored.campaign.sceneStates).length,1);

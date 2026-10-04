@@ -145,7 +145,7 @@ test('land cell placements can launch with the live character-presence adapter',
  const d=defaultContentPackage();d.placements[0].sectors=['cell-26-27'];assert.deepEqual(campaignContentReport(d).blocked,[]);
 });
 test('forty visited cells fit the existing browser save limit after actual marches and field sleep',()=>{
- let s=ready();const rest=s=>{if(s.operativeState[110].fatigue<60)return s;const hour=s.hour;s=order(s,{type:'setSleep',operativeId:110,asleep:true});for(let i=0;s.operativeState[110].asleep&&i<24;i++)s=advanceCampaignHours(s,1);assert.equal(s.operativeState[110].asleep,false);assert.ok(s.hour>hour);return saved(s).campaign;};
+ let s=order(ready(),{type:'renewContract',id:110,term:'fortnight'});const rest=s=>{if(s.operativeState[110].fatigue<60)return s;const hour=s.hour;s=order(s,{type:'setSleep',operativeId:110,asleep:true});for(let i=0;s.operativeState[110].asleep&&i<24;i++)s=advanceCampaignHours(s,1);assert.equal(s.operativeState[110].asleep,false);assert.ok(s.hour>hour);return saved(s).campaign;};
  for(let col=27;col>=8;col--)s=rest(leave(visit(travel(s,`cell-${col}-29`))));
  for(let col=8;col<=27;col++)s=rest(leave(visit(travel(s,`cell-${col}-28`))));
  const encoded=encodeSave(s);assert.ok(saveByteLength(encoded)<MAX_SAVE_BYTES,`${saveByteLength(encoded)} bytes`);

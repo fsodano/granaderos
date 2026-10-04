@@ -1,3 +1,4 @@
+import {ROUTE_STARTING_TREASURY} from './funded-route-fixture.mjs';
 import {sameSurface,spacePoint} from '../game/tactical-space.js';
 import {secureArea} from './secured-area-fixture.mjs';
 import assert from 'node:assert/strict';
@@ -5,12 +6,15 @@ import {initialCampaign,dispatchCampaign as dispatch,rosterFor} from '../game/ca
 import {enterSector} from '../game/world.js';
 import {actBattle,getReachable,hasLineOfSight} from '../game/tactical.js';
 import {fight} from './opening-driver.mjs';
-import {sanLorenzoCombatOrder} from './san-lorenzo-driver.mjs';
+import {openingBodyRegionOrder} from './opening-body-region-driver.mjs';
+import {fight as cautiousFight} from './cuyo-route-driver.mjs';
 import {equipOpeningRifles} from './opening-equipment.mjs';
 import {autoBandageBattle} from '../game/auto-bandage.js';
 import {syncBattleTime} from '../game/time.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {ammunitionByType,totalReserveAmmunition} from '../game/ammunition-types.js';
+import {collectRouteItems} from './finite-route-equipment.mjs';
+import {supplyRouteAmmunition} from './route-ammunition.mjs';
 
 const distance=(a,b)=>sameSurface(a,b)?Math.hypot(a.x-b.x,a.y-b.y):Infinity;
 const tacticalOrder=(b,action)=>{const next=actBattle(b,action);assert.equal(next.lastError,null,JSON.stringify(action)+': '+next.lastError);return next;};
@@ -19,7 +23,7 @@ export function runOpeningCampaign({report=()=>{}}={}){
  // This southern-front regression starts after Buenos Aires and Ensenada are secured.
  // The Retiro-only opening has separate acceptance tests; this is not a fresh-start proof.
  // Keep this seed and the actual casualties as maps and tactical rules evolve.
- let c=secureArea(initialCampaign(8));const transcript=[],casualties=new Set();
+ let c=secureArea(initialCampaign(8));c.resources.treasury=ROUTE_STARTING_TREASURY;const transcript=[],casualties=new Set();
  const order=a=>{c=dispatch(c,a);assert.equal(c.lastError,null,JSON.stringify(a)+': '+c.lastError);};
  const waitFor=hours=>{
   const until=c.hour+hours;
@@ -33,7 +37,8 @@ export function runOpeningCampaign({report=()=>{}}={}){
  };
  order({type:'createOfficer',name:'Inés del Norte',answers:{origin:'cabildo',doctrine:'line_marksman',crisis:'rally'}});
  for(const id of [110,114,115,123,107])order({type:'recruitCivic',id,term:'week'});
- assert.equal(c.squad.length,6);order({type:'purchaseMedicalSupplies',operativeId:107,quantity:20});
+ assert.equal(c.squad.length,6);c=collectRouteItems(c,107,{item:'medkits'},12).campaign;
+ c=supplyRouteAmmunition(c,c.squad,{target:20,report}).campaign;
  order({type:'academy'});order({type:'travel',sector:'buenos_aires'});
  // Sleep through staging until departure at midnight, then make the real
  // twelve-hour approach for a daylight battle. Notices may pause the wait.
@@ -75,13 +80,14 @@ export function runOpeningCampaign({report=()=>{}}={}){
     for(const id of c.squad)order({type:'assignCare',operativeId:id,assignment:'rest'});
     waitFor(6);
    }
-   if(patients.length){
-    const rested=Object.fromEntries(patients.map(id=>[id,c.operativeState[id].hp])),kits=c.operativeState[doctor].medkits;
+   const remainingPatients=c.squad.filter(id=>id!==doctor&&c.operativeState[id].alive&&c.operativeState[id].hp<c.operativeState[id].maxHp);
+   if(remainingPatients.length){
+    const rested=Object.fromEntries(remainingPatients.map(id=>[id,c.operativeState[id].hp])),kits=c.operativeState[doctor].medkits;
     order({type:'assignCare',operativeId:doctor,assignment:'doctor'});
     for(const id of c.squad)if(id!==doctor&&c.operativeState[id].hp<c.operativeState[id].maxHp)order({type:'assignCare',operativeId:id,assignment:'patient'});
     waitFor(18);
-    assert.ok(patients.some(id=>c.operativeState[id].hp>rested[id]),'hourly doctor treatment restores battlefield injuries');
-    assert.ok(c.operativeState[doctor].medkits<kits,'medical recovery consumes purchased supplies');
+    assert.ok(remainingPatients.some(id=>c.operativeState[id].hp>rested[id]),'hourly doctor treatment restores battlefield injuries');
+    assert.ok(c.operativeState[doctor].medkits<kits,'medical recovery consumes found finite supplies');
    }
    for(const id of c.squad)order({type:'assignCare',operativeId:id,assignment:'active'});
    // Survivors with broken morale recuperate in reserve. Replacements have
@@ -107,15 +113,18 @@ export function runOpeningCampaign({report=()=>{}}={}){
    const saved=decodeSave(encodeSave(c,null));assert.deepEqual(saved.campaign,c,'salvaged equipment and stripped bodies survive a campaign save');c=saved.campaign;
 
   }
+  c=supplyRouteAmmunition(c,c.squad,{target:6,report}).campaign;
   // San Lorenzo is local. Wait through darkness before starting its assault.
   if(sector==='san_lorenzo'&&(c.hour%24<6||c.hour%24>=20))waitFor((30-c.hour%24)%24);
   order({type:'attack',sector});const request=c.pendingBattle;
   const entry=enterSector(request);
   assert.equal(entry.startSeconds,c.hour*3600+(c.secondOfHour??0),'combat starts at the actual arrival time');
   assert.equal(entry.night,false,'ordinary departure and wait orders schedule daylight assaults');
-  const options=sector==='san_lorenzo'?{controller:sanLorenzoCombatOrder}:{};
-  let {battle:b,actions}=fight(request,undefined,options);
-  assert.deepEqual(b,fight(request,undefined,options).battle,'identical seed and legal orders replay deterministically');
+  // Keep the mission commander in reserve while the infantry handles contact.
+  // Every cover, shot, reload and medical order still spends the reducer's AP.
+  const engage=sector==='san_lorenzo'?()=>cautiousFight(request,undefined,{scoutCostWeight:.01,avoidCivilians:true,fallbackOrders:true,holdPosition:['57']}):()=>fight(request,undefined,{controller:openingBodyRegionOrder});
+  let {battle:b,actions}=engage();
+  assert.deepEqual(b,engage().battle,'identical seed and legal orders replay deterministically');
   assert.ok(actions>0);assert.ok(b.turn>1);
   assert.ok(b.units.filter(u=>u.side==='player').reduce((sum,u)=>sum+u.loaded+totalReserveAmmunition(u),0)<request.issuedCartridges+(request.missionAllies??[]).reduce((sum,u)=>sum+u.loaded+totalReserveAmmunition(u),0),'actual shots consume issued cartridges');
   transcript.push({sector,startSeconds:b.startSeconds,status:b.status,turn:b.turn,actions,units:b.units.map(u=>({id:u.id,hp:u.hp,energy:u.energy,ammo:u.ammo,reserve:ammunitionByType(u),loaded:u.loaded,routed:u.routed}))});
@@ -131,7 +140,8 @@ export function runOpeningCampaign({report=()=>{}}={}){
     const {bearer,approach}=candidates[0]??{};if(bearer)dressingBearer=Number(bearer.id);
     assert.ok(approach,'the surviving rifleman can reach the fallen doctor');
     if(approach.cost)b=tacticalOrder(b,{type:'move',unitId:bearer.id,...spacePoint(approach)});
-    b=tacticalOrder(b,{type:'loot',unitId:String(dressingBearer),targetId:'107',item:'medkits',count:10});
+    const quantity=Math.min(10,b.units.find(u=>u.id==='107').medkits);assert.ok(quantity>0,'the fallen doctor retains finite dressings');
+    b=tacticalOrder(b,{type:'loot',unitId:String(dressingBearer),targetId:'107',item:'medkits',count:quantity});
    } // A conscious surviving doctor keeps his supplies for actual patient care.
    const aid=autoBandageBattle(b);
    assert.deepEqual(aid.untreated,[],'immediate aid stops every surviving field hemorrhage');

@@ -54,6 +54,6 @@ test('a dead ordered resident stays dead and cannot resume moving after save and
 });
 
 test('a daily sector relocation ends the old local meeting order without deleting its receipt',()=>{
- const d=movementPackage();Object.assign(d.placements.find(p=>p.character==='pablo'),{mode:'daily',selection:'alternate',sectors:['cell-27-27','cell-26-27']});
- let p=saved(callGuest(readyLocal(undefined,d))),s=leave(p);s=order(s,{type:'wait',hours:4-s.hour});assert.equal(s.contentPresence.people.pablo.sector,'cell-26-27');s=order(s,{type:'travel',sector:'cell-26-27'});p=visit(s);assert.equal(guest(p).scriptedMove,undefined);assert.equal(p.campaign.dialogueMovements.length,1);assert.ok(guest(p).presenceRevision>p.campaign.dialogueMovements[0].revision);
+ const d=movementPackage();Object.assign(d.placements.find(p=>p.character==='pablo'),{mode:'daily',selection:'alternate',sectors:['cell-26-27','cell-27-27']});
+ let p=saved(callGuest(readyLocal(undefined,d))),s=leave(p);s=order(s,{type:'wait',hours:Math.ceil((s.contentPresence.nextDaily-s.contentPresence.minute)/60)});assert.equal(s.contentPresence.people.pablo.sector,'cell-26-27');s=order(s,{type:'travel',sector:'cell-26-27'});p=visit(s);assert.equal(guest(p).scriptedMove,undefined);assert.equal(p.campaign.dialogueMovements.length,1);assert.ok(guest(p).presenceRevision>p.campaign.dialogueMovements[0].revision);
 });

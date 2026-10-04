@@ -16,9 +16,9 @@ test('Romarate responds to actual customs revenue and suppresses that same econo
  let quiet=wait(initialCampaign(),168);assert.equal(quiet.blockade,false);assert.ok(coastalRevenue(quiet)<500);
  let s=initialCampaign();s.sectors.san_nicolas.owner='patriot';assert.ok(coastalRevenue(s)>=500);const before=coastalRevenue(s);s=wait(s,176);assert.equal(s.blockade,true);assert.ok(coastalRevenue(s)<before);assert.ok(s.enemyGroups.some(g=>g.command==='naval'&&g.units.some(u=>u.name.includes('Romarate'))));assert.equal(royalistIntel(s).find(c=>c.id==='naval').active,undefined);
 });
-test('loyalist interior raids seize the supply junction and sack convoy stores',()=>{
+test('loyalist interior raids seize Córdoba and sack its treasury',()=>{
  let s=initialCampaign();s.sectors.cordoba.owner='patriot';s.sectors.cordoba.loyalty=10;s.sectors.tucuman.owner='patriot';s.sectors.salta.owner='patriot';assert.equal(isSupplied(s,'salta'),true);const healthy={...s,sectors:JSON.parse(JSON.stringify(s.sectors))};healthy.sectors.cordoba.loyalty=70;
- s=wait(s,149);const beforeRaid=s.resources.treasury;assert.equal(s.sectors.cordoba.owner,'patriot');s=wait(s,1);const control=wait(healthy,150);assert.equal(s.sectors.cordoba.owner,'royalist');assert.equal(isSupplied(s,'salta'),false);assert.equal(control.sectors.cordoba.owner,'patriot');assert.equal(beforeRaid-s.resources.treasury,150);assert.ok(s.log.some(e=>e.text.includes('convoyes de Cuyo')));
+ s=wait(s,149);const beforeRaid=s.resources.treasury;assert.equal(s.sectors.cordoba.owner,'patriot');s=wait(s,1);const control=wait(healthy,150);assert.equal(s.sectors.cordoba.owner,'royalist');assert.equal(isSupplied(s,'salta'),true);assert.equal(control.sectors.cordoba.owner,'patriot');assert.equal(beforeRaid-s.resources.treasury,150);assert.ok(s.log.some(e=>e.text.includes('saquean 150 pesos')));
 });
 test('battle briefing and troop names identify the opposing command',()=>{
  const s=dispatch(dispatch(initialCampaign(),{type:'travel',sector:'buenos_aires'}),{type:'attack',sector:'san_nicolas'});assert.equal(s.lastError,null);assert.equal(s.pendingBattle.enemyCommand,'naval');assert.equal(s.pendingBattle.enemyCommander,'Jacinto de Romarate');assert.ok(s.pendingBattle.enemies.some(o=>o.name.includes('Romarate')));assert.ok(s.pendingBattle.enemies.every(o=>o.weapon>=1800&&o.weapon<=1808));

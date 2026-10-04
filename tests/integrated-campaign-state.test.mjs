@@ -1,3 +1,4 @@
+import {assertTradeRejected} from './commerce-gear-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign,restoreCampaign,serializeCampaign} from '../game/campaign.js';
@@ -12,7 +13,6 @@ import {hasPendingCivilianHarm} from '../game/campaign-civilian-harm.js';
 import {localPackage,localNPC,A} from './local-contract-fixture.mjs';
 import {collectLogisticsAttention,recordLogisticsNotice,validateLogisticsNotice,logisticsEventText} from '../game/logistics-attention.js';
 import {addEquipment,equipmentCatalog,isImportedEquipment} from '../game/equipment.js';
-import {artillerySaleQuote} from '../game/artillery-trading.js';
 const order=(s,a)=>{const next=dispatchCampaign(s,a);assert.equal(next.lastError,null,next.lastError);return next;};
 const save=(campaign,battle=null)=>decodeSave(encodeSave(campaign,battle));
 const sync=p=>{const next=syncBattleTime(p.campaign,p.battle);assert.equal(next.error,null,next.error);return next;};
@@ -52,7 +52,8 @@ test('artillery delivery notices retain actual custody and the configured equipm
  assert.deepEqual(collectLogisticsAttention(s,{isSupplied:()=>true}),[]);assert.equal(s.artilleryTransfers.length,1);assert.equal(s.artilleryDepots?.buenos_aires,undefined);
 });
 
-test('both artillery sale action shapes use one stock and merchant cash balance',()=>{
- let s=hired();addEquipment(s,'swivel',1);const cash=s.resources.treasury,quote=artillerySaleQuote(s,{kind:'stock',model:'swivel',stockCount:1},true);assert.equal(quote.available,true,quote.reason);
- s=order(s,{type:'sellArtillery',kind:'stock',model:'swivel',stockCount:1});assert.equal(s.resources.treasury,cash+quote.price);assert.equal(s.armory.swivel,0);assert.equal(s.artilleryMerchants.retiro.guns.length,1);assert.equal(s.artilleryMerchants.retiro.cash,undefined);assert.ok(save(s));
+test('both retired artillery sale action shapes reject without moving finite gear or merchant cash',()=>{
+ const s=hired();addEquipment(s,'swivel',1);const before=structuredClone(s);
+ for(const action of [{type:'sellArtillery',kind:'stock',model:'swivel',stockCount:1},{type:'sellArtillery',source:'stock',gunType:'swivel'}])assertTradeRejected(s,action);
+ assert.deepEqual(s,before);assert.equal(s.armory.swivel,1);assert.ok(save(s));
 });

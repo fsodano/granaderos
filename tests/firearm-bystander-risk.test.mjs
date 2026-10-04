@@ -40,10 +40,11 @@ test('unseen, departed and dead civilians cannot leak through the miss preview',
  }
 });
 
-test('a trabuco warns from its actual six-cell cone rather than a rifle miss pattern',()=>{
+test('a trabuco warns from its finite continued pellet paths, including a scattered center',()=>{
  const state=field(),[unit,target]=state.units;unit.weapon=1807;
- assert.deepEqual(firearmBystanderRisk(state,unit,target),{direct:[],scatter:[]},'a prisoner beyond the cone is not exposed');
- Object.assign(state.npcs[0],{x:6,y:5});const risk=firearmBystanderRisk(state,unit,target);assert.equal(risk.direct[0].id,'prisoner');assert.deepEqual(risk.scatter,[]);
+ assert.deepEqual(firearmBystanderRisk(state,unit,target),{direct:[],scatter:[{id:'prisoner',name:'Prisionero visible',kind:'npc'}]},'the continued scattered path can reach a prisoner beyond nominal range');
+ assert.match(targetPreview(state,unit,target,{mode:'fire'}).coverNote,/Un tiro desviado puede herir a Prisionero visible/);
+ Object.assign(state.npcs[0],{x:6,y:5});const risk=firearmBystanderRisk(state,unit,target);assert.equal(risk.direct[0].id,'prisoner');assert.equal(risk.scatter[0].id,'prisoner');assert.equal(firearmBystanderWarning(risk).match(/Prisionero visible/g).length,1);
 });
 
 test('known cover blocks miss paths before a visible prisoner and lowered bodies use their actual silhouette',()=>{
@@ -98,12 +99,12 @@ test('cell prefilter retains every exact legal miss victim across long, diagonal
       if(!dx&&!dy)continue;
       const destination={x:tx+dx,y:ty+dy,stance:target.stance??'standing',mounted:Boolean(target.mounted)};
       const flight=projectileFlight(scene,unit,destination,weaponFor(unit),hitLocation,{destinationHeight:absoluteBodyHeight(state,target,hitLocation)});
-      if(!flight.blocked&&flight.victimId===friend.id)expected=true;
+      if(flight.bodyImpacts?.some(hit=>hit.victimKind==='unit'&&hit.victimId===friend.id)||!flight.bodyImpacts&&!flight.blocked&&flight.victimId===friend.id)expected=true;
      }
      const risk=firearmBystanderRisk(state,unit,target,hitLocation);
      assert.equal(risk.scatter.some(body=>body.id===friend.id),expected,JSON.stringify({elevated,tx,ty,fx,fy,hitLocation}));
      const direct=projectileFlight(state,unit,target,weaponFor(unit),hitLocation);
-     assert.equal(risk.direct.some(body=>body.id===friend.id),!direct.blocked&&direct.victimId===friend.id);
+     assert.equal(risk.direct.some(body=>body.id===friend.id),direct.bodyImpacts?direct.bodyImpacts.some(hit=>hit.victimKind==='unit'&&hit.victimId===friend.id):!direct.blocked&&direct.victimId===friend.id);
     }
    }
   }

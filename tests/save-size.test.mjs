@@ -6,6 +6,7 @@ import {encodeSave,decodeSave} from '../game/save.js';
 import {MAX_SAVE_BYTES,saveByteLength,assertSaveSize} from '../game/save-limits.js';
 import {launchEnemyGroup,recordEnemyGroupResult} from '../game/enemy-groups.js';
 import {createBattle} from '../game/tactical.js';
+import {roadsideDiscoveriesFor} from '../game/roadside-discoveries.js';
 
 // A bounded long-history fixture. Each group and stored casualty remains below
 // the existing group/unit limits; no limit is enlarged to make the fixture fit.
@@ -19,7 +20,7 @@ function longCampaign(){
     // all 1,050 bodies so the new dispatch limit cannot weaken save-size QA.
     state.enemyReserves.remaining.coast=30;
     const group=launchEnemyGroup(state,'coast','retiro',{immediate:true});group.status='engaged';
-    const battle=createBattle([],{id:group.id,sector:'retiro',width:20,height:16,enemies:group.units.map(unit=>({...unit,hp:0}))});
+    const battle=createBattle([],{id:group.id,sector:'retiro',width:20,height:16,enemies:group.units.map(unit=>({...unit,hp:0})),errandDefinitions:state.contentCampaign?.package.errands??state.errandDefinitions,roadsideDiscoveryDefinitions:structuredClone(roadsideDiscoveriesFor(state))});
     recordEnemyGroupResult(state,group.id,battle,'victory');
     bodies.push(...battle.units);battle.units=structuredClone(bodies);state.sectorStates.retiro=battle;
   }

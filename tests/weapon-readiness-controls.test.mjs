@@ -1,20 +1,21 @@
 import {register} from 'node:module';import test from 'node:test';import assert from 'node:assert/strict';
 import {JSDOM} from '../web/node_modules/jsdom/lib/api.js';import {createElement as h,act} from '../web/node_modules/react/index.js';
 import {createBattle} from '../game/tactical.js';import {defaultContentPackage} from '../game/content-package.js';import {weaponMetadata} from '../game/weapon-definition.js';import {validateBattleSnapshot} from '../game/validate-battle.js';
+import {battleTimers} from './battle-timers-fixture.mjs';
 register('./tactical-render-loader.mjs',import.meta.url);
 
 test('the ordinary fire control shows paid preparation then the saved cheaper shot through pointer and keyboard',async t=>{
  const dom=new JSDOM('<!doctype html><div id="root"></div>',{url:'https://granaderos.test',pretendToBeVisual:true});
  const globals={window:dom.window,document:dom.window.document,navigator:dom.window.navigator,HTMLElement:dom.window.HTMLElement,Element:dom.window.Element,Node:dom.window.Node,ResizeObserver:class{observe(){}disconnect(){}},requestAnimationFrame:dom.window.requestAnimationFrame.bind(dom.window),cancelAnimationFrame:dom.window.cancelAnimationFrame.bind(dom.window),IS_REACT_ACT_ENVIRONMENT:true};const previous=new Map(Object.keys(globals).map(k=>[k,Object.getOwnPropertyDescriptor(globalThis,k)]));for(const[k,v]of Object.entries(globals))Object.defineProperty(globalThis,k,{configurable:true,writable:true,value:v});
- const {default:Battlefield}=await import('../web/app/Battlefield.tsx'),{createRoot}=await import('../web/node_modules/react-dom/client.js'),root=createRoot(document.getElementById('root'));
- t.after(async()=>{try{await act(async()=>root.unmount());}finally{dom.window.close();for(const[k,d]of previous){if(d)Object.defineProperty(globalThis,k,d);else delete globalThis[k];}}});
+ const {default:Battlefield}=await import('../web/app/Battlefield.tsx'),{createRoot}=await import('../web/node_modules/react-dom/client.js'),timers=battleTimers(act),root=createRoot(document.getElementById('root'));
+ t.after(async()=>{try{await act(async()=>root.unmount());}finally{timers.restore();dom.window.close();for(const[k,d]of previous){if(d)Object.defineProperty(globalThis,k,d);else delete globalThis[k];}}});
  const definition={...defaultContentPackage().weapons.find(w=>w.template===1808),id:'prepared-pistol',name:'Pistola preparada',fireAP:20,readyAP:7,capacity:3,damage:1,range:25};let battle=createBattle([{id:'p',name:'Tirador',x:1,y:1,weapon:1808,weaponMetadata:weaponMetadata(definition),ammo:6}],{seed:45,width:12,height:8,tiles:Array.from({length:96},(_,i)=>({x:i%12,y:Math.floor(i/12),type:i%12===3?'water':'grass',blocked:i%12===3,cover:0,blocksSight:false})),enemies:[{id:'guard',name:'Guardia',x:7,y:1,hp:1000,maxHp:1000,weapon:1813,ammo:0,patrol:false,overwatch:false}]});
  const draw=()=>root.render(h(Battlefield,{battle,onChange:next=>{battle=next;draw();},onFinish:()=>{},onRetreat:()=>{}}));
  const target=()=>document.querySelector('[data-unit-id="guard"] [data-person-hit-target]'),preview=()=>document.querySelector('[aria-label="Vista previa de la orden"]');
  const hover=async()=>act(async()=>target().dispatchEvent(new dom.window.MouseEvent('mouseover',{bubbles:true})));
  await act(async()=>draw());const source=structuredClone(battle);await act(async()=>document.body.dispatchEvent(new dom.window.KeyboardEvent('keydown',{key:'f',bubbles:true})));await hover();assert.match(preview().textContent,/Preparar: 7 PA/);assert.match(preview().textContent,/disparar: 13 PA/);assert.deepEqual(battle,source);
- await act(async()=>target().dispatchEvent(new dom.window.MouseEvent('click',{bubbles:true})));assert.equal(battle.lastError,null);assert.equal(battle.units[0].ap,80);assert.equal(battle.units[0].loaded,2);assert.equal(battle.units[0].weaponReady,true);await hover();assert.match(preview().textContent,/posición de tiro/);
+ await act(async()=>target().dispatchEvent(new dom.window.MouseEvent('click',{bubbles:true})));await timers.settle(document);assert.equal(battle.lastError,null);assert.equal(battle.units[0].ap,80);assert.equal(battle.units[0].loaded,2);assert.equal(battle.units[0].weaponReady,true);await hover();assert.match(preview().textContent,/posición de tiro/);
  battle=validateBattleSnapshot(JSON.parse(JSON.stringify(battle)));await act(async()=>draw());
- for(let i=0;i<100&&document.querySelector('.battle-phase').textContent.includes('Procesando');i++)await act(async()=>new Promise(resolve=>setTimeout(resolve,50)));assert.doesNotMatch(document.querySelector('.battle-phase').textContent,/Procesando/);
- await act(async()=>target().dispatchEvent(new dom.window.KeyboardEvent('keydown',{key:'Enter',bubbles:true})));assert.equal(battle.lastError,null);assert.equal(battle.units[0].ap,67);assert.equal(battle.units[0].loaded,1);assert.equal(battle.units[0].ammo,6);
+ assert.doesNotMatch(document.querySelector('.battle-phase').textContent,/Procesando/);
+ await act(async()=>target().dispatchEvent(new dom.window.KeyboardEvent('keydown',{key:'Enter',bubbles:true})));await timers.settle(document);assert.equal(battle.lastError,null);assert.equal(battle.units[0].ap,67);assert.equal(battle.units[0].loaded,1);assert.equal(battle.units[0].ammo,6);
 });

@@ -1,3 +1,4 @@
+import {hiringPriceMultiplier} from './economy-balance.js';
 import {characterForOperative,isContractOperative} from './content-character-ids.js';
 import {CAMPAIGN_SECTORS} from './data.js';
 import {arrivalSitesFor,arrivalSiteLabel} from './arrival-sites.js';
@@ -16,16 +17,26 @@ export function hiringArrivalOptions(state){
 }
 export function hiringTravelHours(state,id){return characterForOperative(state,id)?.arrivalHours??0;}
 export function pendingHire(state,id){return (state.hiringArrivals??[]).find(a=>a.operativeId===Number(id));}
+const campaignSeconds=state=>state.hour*3600+(state.secondOfHour??0);
+// Legacy receipts have whole-hour timestamps. New receipts retain the booking's second.
+export function hireArrivalDueSeconds(arrival){return arrival.dueAt*3600+(arrival.dueSecond??0);}
+// A positive countdown is suitable for bounding the next campaign clock step.
+// Overdue arrivals can remain blocked by combat/control; they do not stop time.
+export function nextHireArrivalSeconds(state){
+  if(state.defeated)return null;
+  const now=campaignSeconds(state),future=(state.hiringArrivals??[]).map(hireArrivalDueSeconds).filter(due=>due>now);
+  return future.length?Math.min(...future)-now:null;
+}
 export function hireArrivalOrder(state,operative,term,quote,destination){
-  const travelHours=hiringTravelHours(state,operative.id);
-  return {operativeId:operative.id,destination,bookedAt:state.hour,departedAt:state.hour,dueAt:state.hour+travelHours,travelHours,term,paid:quote.price,permanent:quote.permanent,serviceHours:quote.hours};
+  const travelHours=hiringTravelHours(state,operative.id),second=state.secondOfHour??0;
+  return {operativeId:operative.id,destination,bookedAt:state.hour,bookedSecond:second,departedAt:state.hour,departedSecond:second,dueAt:state.hour+travelHours,dueSecond:second,travelHours,term,priceScale:hiringPriceMultiplier(state),paid:quote.price,permanent:quote.permanent,serviceHours:quote.hours};
 }
 export function advanceHireArrivals(state,arrive){
   if(state.defeated)return;
   for(const arrival of [...(state.hiringArrivals??[])]){
     const record=state.operativeState[arrival.operativeId];
     if(!record?.alive||record.captured||record.serviceEquipmentReturn||state.recruited.includes(arrival.operativeId)||state.contracts[arrival.operativeId])continue;
-    if(arrival.dueAt>state.hour||hiringArrivalReason(state,arrival.destination)||state.pendingBattle?.sector===arrival.destination)continue;
+    if(hireArrivalDueSeconds(arrival)>campaignSeconds(state)||hiringArrivalReason(state,arrival.destination)||state.pendingBattle?.sector===arrival.destination)continue;
     // Grant service once, after all safety checks and after the hour's raids.
     arrive(arrival);
     state.hiringArrivals=state.hiringArrivals.filter(a=>a!==arrival);
@@ -35,7 +46,7 @@ export function redirectHire(state,id,destination){
   const arrival=pendingHire(state,id);if(!arrival)throw Error('No hay una llegada pendiente para este personaje.');
   const reason=hiringArrivalReason(state,destination);if(reason)throw Error(reason);
   if(arrival.destination===destination)throw Error('Ese ya es el destino elegido.');
-  arrival.destination=destination;arrival.departedAt=state.hour;arrival.dueAt=state.hour+arrival.travelHours;
+  arrival.destination=destination;arrival.departedAt=state.hour;arrival.departedSecond=state.secondOfHour??0;arrival.dueAt=state.hour+arrival.travelHours;arrival.dueSecond=arrival.departedSecond;
 }
 export function cancelHireArrival(state,id){
   const arrival=pendingHire(state,id);if(!arrival)throw Error('No hay una llegada pendiente para cancelar.');
@@ -46,16 +57,20 @@ export function validateHireArrivals(state,roster){
   const need=ok=>{if(!ok)throw Error('Las llegadas de contratados guardadas son inválidas.');};
   const integer=(n,min,max)=>Number.isSafeInteger(n)&&n>=min&&n<=max;
   const keys=['operativeId','destination','bookedAt','departedAt','dueAt','travelHours','term','paid','permanent','serviceHours'];
+  const seconds=['bookedSecond','departedSecond','dueSecond'];
   need(Array.isArray(state.hiringArrivals)&&state.hiringArrivals.length<=roster.length);
   const ids=new Set();
   for(const a of state.hiringArrivals){
-    need(a&&typeof a==='object'&&!Array.isArray(a)&&Object.keys(a).length===keys.length&&keys.every(k=>Object.hasOwn(a,k)));
+    need(a&&typeof a==='object'&&!Array.isArray(a)&&Object.keys(a).every(k=>keys.includes(k)||seconds.includes(k)||k==='priceScale')&&keys.every(k=>Object.hasOwn(a,k))&&(a.priceScale===undefined||Number.isFinite(a.priceScale)&&a.priceScale>0&&a.priceScale<=100));
+    need(seconds.every(k=>!Object.hasOwn(a,k)||integer(a[k],0,3599))&&Object.hasOwn(a,'departedSecond')===Object.hasOwn(a,'dueSecond'));
     const operative=roster.find(o=>o.id===a.operativeId);
     need(operative&&isContractOperative(state,operative)&&!ids.has(a.operativeId)&&!state.recruited.includes(a.operativeId)&&!state.contracts?.[a.operativeId]);ids.add(a.operativeId);
     need(state.operativeState[a.operativeId]?.alive&&!state.operativeState[a.operativeId]?.captured&&!state.operativeState[a.operativeId]?.serviceEquipmentReturn&&arrivalSitesFor(state).some(site=>site.sector===a.destination));
     need(integer(a.bookedAt,0,state.hour)&&integer(a.departedAt,a.bookedAt,state.hour)&&integer(a.travelHours,1,168)&&a.travelHours===hiringTravelHours(state,a.operativeId)&&a.dueAt===a.departedAt+a.travelHours);
+    const booked=a.bookedAt*3600+(a.bookedSecond??0),departed=a.departedAt*3600+(a.departedSecond??0);
+    need(booked<=departed&&departed<=campaignSeconds(state)&&hireArrivalDueSeconds(a)===departed+a.travelHours*3600);
     need(Object.hasOwn(CONTRACT_TERMS,a.term));
-    const quote=contractQuote(state,operative,a.term);
+    const quote=contractQuote({...state,hiringPriceMultiplier:a.priceScale??1},operative,a.term);
     need(a.permanent===quote.permanent&&a.serviceHours===quote.hours&&integer(a.paid,0,1e9)&&a.paid===quote.price);
   }
 }

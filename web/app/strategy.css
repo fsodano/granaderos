@@ -12,3 +12,145 @@
 @media(max-width:760px){.strategy-command-screen{height:auto;min-height:calc(100dvh - 82px);overflow:visible}.strategy-command-screen .strategy-top{flex-wrap:wrap}.strategy-command-screen .strategy-time{order:3;width:100%;flex-wrap:wrap}.strategy-command-screen .strategy-layout:has(.argentina-chart){grid-template-columns:minmax(0,1fr);display:grid}.strategy-command-screen .strategy-personnel{max-height:270px}.strategy-command-screen .argentina-chart{grid-row:2;max-height:none}.strategy-command-screen .argentina-chart .argentina-atlas{height:auto;flex:none;min-height:0}.strategy-command-screen .strategy-orders{grid-column:auto;max-height:none}.strategy-command-screen .strategy-panel-tabs{grid-template-columns:repeat(4,1fr)}.strategy-roster-scroll{min-height:70px}.roster-hint{margin:4px 0}}
 .strategy-command-screen .strategy-layout:has(.argentina-chart)>.strategy-orders{grid-column:auto;grid-row:auto}
 .merc-map-table tr[data-active-member=true]{background:#2c3f2f;color:#ece3bf}
+.strategy-command-screen .strategy-layout:has(.argentina-chart){grid-template-columns:minmax(380px,1.2fr) minmax(280px,1.5fr) minmax(210px,.7fr)}
+.merc-map-table small{display:block;font-size:9px;color:#c8bd93}.merc-map-table td{font-size:10px}.merc-map-table td button{font-size:inherit;text-decoration:underline;text-decoration-color:#82916a}.merc-map-table button:disabled{opacity:.45;cursor:default;text-decoration:none}
+.strategic-history{height:125px;min-height:70px;flex:0 1 125px;border-top:1px solid #52624d;display:flex;flex-direction:column;margin-top:6px}.strategic-history h3{margin:6px 0;font-size:11px;color:#d6c390}.strategic-history>div{min-height:0;overflow:auto}.strategic-history p{font-size:10px;line-height:1.4;margin:4px 0}.strategic-history time{color:#c5b479;white-space:nowrap}.strategy-clock-cause{height:20px;min-height:20px;font-size:11px;color:#e5d99f;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.strategic-menu-backdrop{position:fixed;inset:0;z-index:70;background:#0005;display:grid;place-items:center}.strategic-person-menu{width:min(420px,calc(100vw - 24px));max-height:calc(100dvh - 32px);overflow:auto;display:grid;gap:10px;background:#1d3128;color:#eee2be;border:2px solid #9d9466;padding:14px;box-shadow:0 6px 30px #000a}.strategic-person-menu header{display:flex;align-items:center;gap:12px;justify-content:space-between}.strategic-person-menu h2{font:17px Georgia;margin:0}.strategic-person-menu p{margin:0;font-size:12px}.strategic-person-menu button{font-size:12px}.strategic-person-menu label{display:grid;gap:4px;font-size:11px}.strategic-menu-actions{display:grid;grid-template-columns:1fr 1fr;gap:5px}.strategic-person-menu button:disabled{opacity:.35;cursor:not-allowed}.strategic-person-menu select{background:#243c35;color:#e3dec3;padding:6px;width:100%}
+@media(max-width:1100px) and (min-width:761px){.strategy-command-screen .strategy-layout:has(.argentina-chart){grid-template-columns:minmax(330px,1fr) minmax(220px,1fr) 200px}.merc-map-table img{display:none}}
+@media(max-width:760px){.strategy-command-screen .strategy-layout:has(.argentina-chart){grid-template-columns:minmax(0,1fr)}.strategy-command-screen .strategy-personnel{max-height:410px}.strategic-history{height:90px;flex-basis:90px}}
+.strategy-command-screen{position:relative}.strategy-command-screen>.notice.error{position:absolute;left:20px;top:74px;right:20px;z-index:35;box-shadow:0 3px 12px #0008}.strategy-command-screen .strategy-encounters{position:absolute;left:40%;right:20px;top:95px;z-index:30;max-height:50%;box-shadow:0 4px 20px #0008}.strategy-command-screen .strategy-encounters:empty{display:none}.sector-preparation{font-size:11px;display:grid;gap:5px}.sector-preparation summary{cursor:pointer;color:#dfcca0}.sector-preparation button{margin-top:5px;font-size:11px}
+.game-shell>.notice.dismissible{position:fixed;top:70px;left:20px;right:20px;z-index:65;box-shadow:0 4px 20px #0009}
+
+.strategic-local-services{width:min(1100px,calc(100vw - 24px));height:calc(100dvh - 32px);display:flex;flex-direction:column;background:#1d3128;color:#eee2be;border:2px solid #9d9466;box-shadow:0 6px 30px #000a}.strategic-local-services>header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px;border-bottom:1px solid #647359;flex:none}.strategic-local-services>header nav{display:flex;gap:6px;flex-wrap:wrap}.strategic-local-services>div{min-height:0;overflow:auto;padding:16px}.strategic-local-services .armory-layout{grid-template-columns:minmax(240px,1fr) minmax(240px,1.4fr)}@media(max-width:650px){.strategic-local-services .armory-layout{grid-template-columns:1fr}}
+
+/* Narrow command views scroll inside their panels and keep the clock in view. */
+@media(max-width:1100px) and (min-width:761px){.strategy-command-screen .strategy-layout:has(.argentina-chart){grid-template-columns:minmax(220px,.9fr) minmax(200px,1fr) 180px}.strategy-roster-scroll{overflow:auto}.merc-map-table{min-width:350px}}
+@media(max-width:760px){.strategy-command-screen{height:calc(100dvh - 82px);min-height:0;overflow:hidden;padding:6px;gap:4px}.strategy-command-screen .strategy-top{gap:5px;padding-bottom:4px}.strategy-command-screen .strategy-top h1{font-size:17px}.strategy-command-screen .strategy-top>button{padding:5px 8px}.strategy-command-screen .strategy-time{gap:5px;font-size:11px}.strategy-command-screen .strategy-time button,.strategy-command-screen .strategy-time select{padding:4px}.strategy-command-screen .strategy-layout:has(.argentina-chart){min-height:0;grid-template-rows:minmax(125px,.8fr) minmax(160px,1.3fr) minmax(100px,.7fr);gap:5px}.strategy-command-screen .strategy-personnel,.strategy-command-screen .strategy-orders{max-height:none;min-height:0;padding:6px;overflow:auto}.strategy-command-screen .argentina-chart{min-height:0;overflow:auto}.strategy-command-screen .argentina-chart .argentina-atlas{height:0;flex:1 1 auto;min-height:90px}.strategy-roster-scroll{min-height:25px;overflow:auto}.merc-map-table{min-width:350px}.roster-hint{font-size:10px}.strategic-history{height:45px;min-height:35px;flex-basis:45px}.roster-footer{margin-top:4px;padding-top:4px;gap:4px;grid-template-columns:1fr auto;align-items:center}.roster-footer button{padding:4px;font-size:10px}.strategy-clock-cause{font-size:10px}.strategy-command-screen .atlas-heading{padding:4px}.strategy-command-screen .atlas-readout{padding:4px}.strategy-command-screen .atlas-readout strong{font-size:12px}.strategy-command-screen .atlas-bottom{padding:2px}.strategy-command-screen .atlas-toolbar button{min-height:26px;padding:4px}.strategy-command-screen .atlas-note{padding:3px}.strategy-command-screen .strategy-panel-tabs button{padding:5px}}
+
+.strategy-command-screen .atlas-readout{height:88px;box-sizing:border-box;align-content:start;overflow:auto}
+@media(max-width:760px){.strategy-command-screen .atlas-readout{height:60px}}
+
+@media(max-width:760px){.strategy-command-screen .strategy-layout:has(.argentina-chart){grid-template-columns:minmax(170px,.8fr) minmax(0,1fr);grid-template-rows:minmax(210px,1fr) minmax(140px,.5fr)}.strategy-command-screen .strategy-personnel{grid-column:1;grid-row:1}.strategy-command-screen .argentina-chart{grid-column:2;grid-row:1}.strategy-command-screen .strategy-layout:has(.argentina-chart)>.strategy-orders{grid-column:1/-1;grid-row:2}.strategy-roster-scroll{min-height:65px}.roster-footer{grid-template-columns:1fr}.roster-footer strong{text-align:right}.strategy-command-screen .atlas-toolbar{grid-template-columns:repeat(3,minmax(0,1fr))}.strategy-command-screen .atlas-toolbar svg{width:16px;height:16px}.strategy-command-screen .atlas-toolbar button{gap:0;min-height:31px}.strategy-command-screen .atlas-toolbar button span:last-child{font-size:7px}.strategy-command-screen .atlas-heading span:last-child{display:none}}
+@media(max-width:400px){.strategy-command-screen .strategy-layout:has(.argentina-chart){grid-template-columns:minmax(140px,.8fr) minmax(0,1fr)}.strategy-command-screen .atlas-readout{font-size:9px}.personnel-title h2{font-size:15px}.personnel-title>span{font-size:8px}}
+
+/* Keep the map in the command view; open details only on request. */
+.strategy-command-screen .strategy-layout:has(.argentina-chart){grid-template-columns:clamp(240px,24vw,300px) minmax(0,1fr);grid-template-rows:minmax(0,1fr);gap:10px;max-width:none;margin:0}
+.strategy-command-screen .strategy-personnel{grid-column:1;grid-row:1;max-height:none;min-width:0}
+.strategy-command-screen .strategy-roster-scroll{overflow:auto}
+.strategy-command-screen .merc-map-table{min-width:350px}
+.strategy-command-screen .argentina-chart{grid-column:2;grid-row:1;max-width:none;min-width:0;width:100%;overflow:auto;justify-self:stretch}
+.strategy-command-screen .argentina-chart .argentina-atlas{height:0;min-height:160px;flex:1 1 auto;width:100%;max-height:none}
+.strategy-command-screen .atlas-readout{height:54px;padding:5px 9px;gap:3px}
+.strategy-command-screen .atlas-readout strong{font-size:15px}
+.strategy-tools{display:flex;align-items:center;gap:6px;flex:none}
+.strategy-tools button{font-size:11px;padding:5px 12px}
+.strategy-tools button[aria-expanded=true]{border-color:#d6bf79;color:#fff0b5}
+.strategic-panel-backdrop{position:fixed;inset:0;z-index:60;background:#0009;display:grid;place-items:center;padding:16px}
+.strategic-panel-dialog{width:min(720px,100%);max-height:calc(100dvh - 32px);min-height:0;display:flex;flex-direction:column;background:#1d3128;color:#eee2be;border:2px solid #9d9466;box-shadow:0 6px 30px #000a}
+.strategic-panel-dialog>header{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px;border-bottom:1px solid #647359;flex:none}
+.strategic-panel-dialog>header h2{font:20px Georgia;margin:0}
+.strategic-panel-dialog>header button{flex:none}
+.strategic-panel-body{min-height:0;overflow:auto;padding:12px}
+.strategy-command-screen .strategic-panel-dialog .strategy-orders{border:0;padding:0;overflow:visible}
+.strategy-command-screen .strategic-panel-dialog .strategy-panel-tabs{grid-template-columns:repeat(4,minmax(0,1fr))}
+.strategy-command-screen .strategic-panel-dialog .strategy-orders h2{font-size:20px}
+.strategic-route-overlay{position:absolute;z-index:36;right:24px;top:130px;width:min(280px,calc(100% - 32px));max-height:calc(100% - 145px);overflow:auto;box-shadow:0 5px 20px #0009}
+@media(max-width:900px) and (min-width:761px){.strategy-command-screen .strategy-layout:has(.argentina-chart){grid-template-columns:240px minmax(0,1fr)}}
+@media(max-width:760px){.strategy-command-screen .strategy-layout:has(.argentina-chart){grid-template-columns:minmax(170px,32%) minmax(0,1fr);grid-template-rows:minmax(0,1fr);gap:5px}.strategy-command-screen .strategy-personnel{grid-column:1;grid-row:1}.strategy-command-screen .argentina-chart{grid-column:2;grid-row:1;max-height:100%}.strategy-command-screen .argentina-chart .argentina-atlas{min-height:100px}.strategy-tools{gap:4px;flex-wrap:wrap}.strategy-tools button{padding:4px 8px;font-size:10px}.strategy-command-screen .atlas-readout{height:60px}.strategic-route-overlay{right:12px;top:140px;max-height:calc(100% - 155px)}.strategic-panel-backdrop{padding:8px}.strategic-panel-dialog{max-height:calc(100dvh - 16px)}.strategic-panel-dialog>header{padding:8px}.strategic-panel-dialog>header h2{font-size:17px}.strategic-panel-body{padding:8px}}
+@media(max-width:480px){.strategy-command-screen .strategy-layout:has(.argentina-chart){grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(105px,.35fr) minmax(220px,1fr)}.strategy-command-screen .strategy-personnel{grid-column:1;grid-row:1}.strategy-command-screen .argentina-chart{grid-column:1;grid-row:2}.strategy-command-screen .strategic-history{display:none}.strategy-command-screen .roster-hint{display:none}.strategy-command-screen .roster-footer{grid-template-columns:1fr auto}.strategy-command-screen .roster-subtitle{margin-top:7px}}
+
+/* Map controls sit in its frame, leaving the full chart height for geography. */
+.strategy-command-screen .strategy-top{gap:10px}
+.strategy-command-screen .strategy-tools{justify-content:flex-end;flex-wrap:nowrap}
+.strategy-command-screen .strategy-tools button{padding:6px 9px}
+.strategy-command-screen .argentina-chart{position:relative;overflow:hidden}
+.strategy-command-screen .argentina-chart .argentina-atlas{min-height:0;height:100%;flex:1 1 0}
+.strategy-command-screen .atlas-heading{position:absolute;top:0;left:0;right:0;z-index:1;padding:5px 8px;background:#1b2721e8;border-bottom:1px solid #716b4b;pointer-events:none}
+.strategy-command-screen .atlas-bottom{position:absolute;bottom:20px;left:8px;right:8px;z-index:2;padding:4px;gap:5px;background:#253124e8;border:1px solid #716b4b}
+.strategy-command-screen .atlas-toolbar button{min-height:32px;gap:1px;padding:2px}
+.strategy-command-screen .atlas-toolbar svg{width:18px;height:18px}
+.strategy-command-screen .atlas-toolbar button span:last-child{font-size:9px}
+.strategy-command-screen .atlas-depth{display:flex;min-width:0;gap:2px;align-items:center}
+.strategy-command-screen .atlas-depth button{padding:4px 5px}
+.strategy-command-screen .atlas-readout{position:absolute;left:10px;bottom:68px;z-index:1;height:auto;max-height:48px;max-width:calc(100% - 20px);padding:4px 7px;gap:2px;background:#1b2721de;border:1px solid #716b4b;font-size:10px;overflow:auto}
+.strategy-command-screen .atlas-readout strong{font-size:13px}
+.strategy-command-screen .atlas-note{position:absolute;bottom:0;left:8px;right:8px;z-index:3;padding:2px 4px;background:#1b2721ed;max-height:35%;overflow:auto}
+.strategy-command-screen .atlas-help{display:none}
+.strategy-command-screen .atlas-manage-toggle{position:absolute;right:12px;top:26px;z-index:2;font-size:10px;padding:5px 8px;margin:0}
+@media(max-width:1000px){.strategy-command-screen .strategy-top{flex-wrap:wrap;gap:5px}.strategy-command-screen .strategy-top>div:first-child{flex:1}.strategy-command-screen .strategy-time{order:2;width:auto}.strategy-command-screen .strategy-tools{order:3;width:auto}.strategy-command-screen .strategy-tools button{padding:4px 7px}}
+@media(max-width:760px){.strategy-command-screen .atlas-bottom{left:4px;right:4px;gap:3px}.strategy-command-screen .atlas-depth{display:none}.strategy-command-screen .atlas-toolbar{grid-template-columns:repeat(6,minmax(0,1fr));gap:2px}.strategy-command-screen .atlas-toolbar button{min-height:28px}.strategy-command-screen .atlas-toolbar svg{width:15px;height:15px}.strategy-command-screen .atlas-toolbar button span:last-child{font-size:6px}.strategy-command-screen .atlas-readout{left:5px;bottom:59px;max-width:calc(100% - 10px);max-height:44px;font-size:9px}.strategy-command-screen .atlas-note{left:4px;right:4px;font-size:9px}.strategy-command-screen .atlas-heading{font-size:7px}.strategy-command-screen .strategy-time{flex-wrap:nowrap}.strategy-command-screen .strategy-tools{flex-wrap:nowrap}}
+
+/* Small screens keep the map open; the roster has its own requested view. */
+.strategy-command-screen .strategy-roster-open{display:none}
+.strategy-command-screen .strategic-panel-dialog .strategy-personnel{display:flex;max-height:min(600px,70dvh);overflow:hidden}
+@media(max-width:760px){
+ .strategy-command-screen .strategy-layout:has(.argentina-chart){grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr)}
+ .strategy-command-screen .strategy-layout>.strategy-personnel{display:none}
+ .strategy-command-screen .argentina-chart{grid-column:1;grid-row:1}
+ .strategy-command-screen .strategy-roster-open{display:inline-flex}
+ .strategy-command-screen .strategy-tools{width:100%;justify-content:space-between}
+ .strategy-command-screen .strategy-tools button{flex:1}
+ .strategy-command-screen .strategic-panel-dialog .strategic-history{display:block}
+ .strategy-command-screen .strategic-route-overlay{top:145px;max-height:calc(100% - 160px);width:min(250px,calc(100% - 24px))}
+}
+
+/* A compact map desk leaves the roster and map in the main field of view. */
+.game-shell:has(.strategy-command-screen)>.game-nav{height:36px;min-height:36px;padding:0 14px}
+.game-shell:has(.strategy-command-screen) .wordmark{font-size:15px;letter-spacing:2px}
+.game-shell:has(.strategy-command-screen) .wordmark span,.game-shell:has(.strategy-command-screen) .nav-center{display:none}
+.game-shell:has(.strategy-command-screen) .nav-tools{gap:16px}
+.game-shell:has(.strategy-command-screen) .nav-tools button{font-size:11px}
+.strategy-command-screen{height:calc(100dvh - 36px);padding:8px 10px;gap:6px}
+.strategy-command-screen .strategy-top{min-height:34px;flex-wrap:nowrap;padding:0 0 5px;gap:10px}
+.strategy-command-screen .strategy-top h1{font-size:20px;white-space:nowrap}
+.strategy-command-screen .strategy-top button{padding:6px 10px;font-size:11px;flex:none}
+.strategy-funds{margin-left:auto;display:flex;align-items:baseline;gap:8px;color:#ddca91;white-space:nowrap}
+.strategy-funds>span{font-size:10px;letter-spacing:.5px;text-transform:uppercase}
+.strategy-funds>strong{font:21px Georgia,serif;color:#ffe4a1}
+.strategy-command-screen .strategy-layout:has(.argentina-chart){grid-template-columns:clamp(360px,33vw,430px) minmax(0,1fr);grid-template-rows:minmax(0,1fr);gap:8px}
+.strategy-command-screen .strategy-personnel{padding:7px;overflow:hidden}
+.strategy-command-screen .personnel-title{min-height:22px;margin-bottom:4px}
+.strategy-command-screen .personnel-title h2{font-size:17px}
+.strategy-command-screen .dense-personnel-table{width:100%;min-width:0;table-layout:fixed;font-size:11px}
+.dense-personnel-table .personnel-name-column{width:25%}
+.dense-personnel-table .personnel-assignment-column{width:23%}
+.dense-personnel-table .personnel-sleep-column{width:8%}
+.dense-personnel-table .personnel-location-column{width:12%}
+.dense-personnel-table .personnel-destination-column{width:13%}
+.dense-personnel-table .personnel-contract-column{width:19%}
+.strategy-command-screen .dense-personnel-table th,.strategy-command-screen .dense-personnel-table td{padding:2px 3px;font-size:11px;height:32px;overflow:hidden}
+.strategy-command-screen .dense-personnel-table thead th{height:24px;font-size:10px;line-height:1.1}
+.strategy-command-screen .dense-personnel-table tbody button{padding:0;gap:4px;font-size:11px;min-width:0;max-width:100%;height:27px}
+.dense-personnel-table tbody th button>span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.strategy-command-screen .dense-personnel-table img{display:block;width:20px;height:26px;object-fit:contain;flex:none}
+.strategy-command-screen .dense-personnel-table td button{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-decoration:none}
+.strategy-command-screen .dense-personnel-table small{font-size:9px;line-height:1.05}
+.strategy-command-screen .strategic-history{flex:0 0 105px;height:105px;min-height:60px;margin-top:5px}
+.strategy-command-screen .strategic-history h3{margin:5px 0;font-size:10px}
+.strategy-command-screen .strategic-history p{font-size:10px;line-height:1.35;margin:3px 0}
+.strategy-bottom-controls{display:flex;justify-content:space-between;align-items:center;gap:10px;border-top:1px solid #566951;padding-top:5px;flex:none;min-height:34px}
+.strategy-command-screen .strategy-bottom-controls .strategy-tools{width:auto;flex-wrap:nowrap;justify-content:flex-start;gap:5px}
+.strategy-bottom-controls .strategy-tools button{font-size:11px;padding:5px 12px;flex:none}
+.strategy-bottom-controls .strategy-time{order:initial;width:auto;flex-wrap:nowrap;gap:7px;font-size:12px}
+.strategy-bottom-controls .strategy-time button,.strategy-bottom-controls .strategy-time select{padding:5px 8px;font-size:11px}
+.strategy-bottom-controls .strategy-time>span:first-child{white-space:nowrap;font-variant-numeric:tabular-nums}
+.strategy-command-screen .strategic-panel-dialog .strategy-panel-tabs{grid-template-columns:repeat(3,minmax(0,1fr))}
+.strategy-command-screen .strategic-route-overlay{top:55px;max-height:calc(100% - 105px)}
+.strategic-squad-options{display:grid;gap:6px}
+@media(max-width:900px) and (min-width:761px){.strategy-command-screen .strategy-layout:has(.argentina-chart){grid-template-columns:360px minmax(0,1fr)}}
+@media(max-width:760px){
+ .strategy-command-screen{padding:5px;gap:4px}
+ .strategy-command-screen .strategy-top{gap:6px;min-height:30px}
+ .strategy-command-screen .strategy-top h1{font-size:15px}
+ .strategy-command-screen .strategy-top button{padding:4px 6px;font-size:10px}
+ .strategy-funds{gap:4px}.strategy-funds>span{font-size:9px}.strategy-funds>strong{font-size:16px}
+ .strategy-command-screen .strategy-layout:has(.argentina-chart){grid-template-columns:minmax(0,1fr)}
+ .strategy-bottom-controls{gap:5px;flex-wrap:wrap;min-height:30px}
+ .strategy-bottom-controls .strategy-tools button{padding:4px 7px;font-size:10px}
+ .strategy-bottom-controls .strategy-time{margin-left:auto;font-size:10px;gap:4px}
+ .strategy-bottom-controls .strategy-time button,.strategy-bottom-controls .strategy-time select{padding:4px;font-size:10px}
+ .strategy-command-screen .strategic-panel-dialog .strategy-personnel{max-height:calc(100dvh - 100px)}
+ .strategy-command-screen .strategic-panel-dialog .strategy-roster-scroll{min-height:0}
+ .strategy-command-screen .strategic-panel-dialog .strategic-history{height:80px;flex-basis:80px}
+}
+@media(max-width:480px){.strategy-funds>span{display:none}.strategy-command-screen .strategy-top h1{font-size:13px}.strategy-tactical-return{max-width:96px;white-space:normal}}

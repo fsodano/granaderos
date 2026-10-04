@@ -1,3 +1,4 @@
+import {withStoredGear} from './commerce-gear-fixture.mjs';
 import {refreshMilitaryCondition} from '../game/actor-condition.js';
 import {stockAmmo,stockAndCarriedAmmo} from './ammunition-balance.mjs';
 import test from 'node:test';
@@ -46,9 +47,9 @@ test('attacking now uses only ready squads; later squads return without joining 
  s=order(s,{type:'syncTacticalTime',battleId:s.pendingBattle.id,elapsedSeconds:8*3600});assert.equal(s.squads[1].journey,undefined);assert.equal(s.squads[1].location,'cordoba');assert.equal(s.pendingBattle.squad.length,6);roundtrip(s);
 });
 test('combined victory keeps squad membership, wounds and finite ammunition accounting',()=>{
- let s=wait(both(),12);const cash=s.resources.treasury;assert.equal(stockAndCarriedAmmo(s),0);s=begin(s);assert.equal(s.pendingBattle.issuedCartridges,110);assert.equal(stockAmmo(s),0);assert.equal(stockAndCarriedAmmo(s),110);assert.equal(s.resources.treasury,cash-110);assert.deepEqual(s.ammunitionShops.buenos_aires.stock,{ammoMusket:180,ammoRifle:60,ammoPistol:160,ammoShot:90});assert.deepEqual(s.ammunitionShops.cordoba.stock,{ammoMusket:170,ammoRifle:50,ammoPistol:170,ammoShot:90});
+ let s=wait(both(),12);const cash=s.resources.treasury,rounds=stockAndCarriedAmmo(s),stores=structuredClone(s.ammunitionStores);assert.equal(rounds,20);s=begin(s);assert.equal(s.pendingBattle.issuedCartridges,rounds);assert.equal(stockAmmo(s),0);assert.equal(stockAndCarriedAmmo(s),rounds);assert.equal(s.resources.treasury,cash);assert.deepEqual(s.ammunitionStores,stores);
  // Declared wounds isolate settlement; this is not a combat-playthrough claim.
- const memberships=s.squads.map(q=>[...q.members]),report=scriptedBattleReport(s,{units:[{id:4,hp:40,bleeding:0},{id:103,hp:42,bleeding:0}]});s=order(s,report);assert.equal(s.pendingBattle,null);assert.equal(s.sectors.san_nicolas.owner,'patriot');assert.deepEqual(s.squads.map(q=>q.members),memberships);assert.ok(s.squads.every(q=>q.location==='san_nicolas'));assert.equal(s.operativeState[4].hp,40);assert.equal(s.operativeState[103].hp,42);assert.equal(stockAndCarriedAmmo(s),110);roundtrip(s);
+ const memberships=s.squads.map(q=>[...q.members]),report=scriptedBattleReport(s,{units:[{id:4,hp:40,bleeding:0},{id:103,hp:42,bleeding:0}]});s=order(s,report);assert.equal(s.pendingBattle,null);assert.equal(s.sectors.san_nicolas.owner,'patriot');assert.deepEqual(s.squads.map(q=>q.members),memberships);assert.ok(s.squads.every(q=>q.location==='san_nicolas'));assert.equal(s.operativeState[4].hp,40);assert.equal(s.operativeState[103].hp,42);assert.equal(stockAndCarriedAmmo(s),rounds);roundtrip(s);
  assert.ok(dispatchCampaign(s,report).lastError,'the same report cannot credit equipment twice');
 });
 test('an actual tactical withdrawal returns both columns through separate exits',()=>{
@@ -73,8 +74,8 @@ test('all eight six-person squads fit the real deployment and remain separate',(
  s.squads=Array.from({length:8},(_,i)=>({id:`squad-${i+1}`,name:`Columna ${i+1}`,location:i%2?'cordoba':'buenos_aires',members:ids.slice(i*6,i*6+6)}));s.location='buenos_aires';s.squad=[...s.squads[0].members];for(const q of s.squads)for(const id of q.members)s.operativeState[id].location=q.location;
  for(const q of s.squads){s=order(s,{type:'selectSquad',id:q.id});s=queue(s);}s=begin(wait(s,12));roundtrip(s);const b=enterSector(s.pendingBattle);assert.equal(b.units.filter(u=>u.side==='player').length,48);assert.equal(new Set(b.units.map(u=>`${u.x},${u.y}`)).size,b.units.length);assert.equal(decodeSave(encodeSave(s,b)).campaign.pendingBattle.squad.length,48);
 });
-test('insufficient money for ammunition leaves staged squads and the clock unchanged',()=>{
- const s=wait(both(),12);s.resources.treasury=0;const before=serializeCampaign(s),next=dispatchCampaign(s,{type:'beginAssault',sector:'san_nicolas'});assert.ok(next.lastError);assert.equal(serializeCampaign(s),before);assert.deepEqual(next.squads,s.squads);assert.equal(next.hour,s.hour);assert.equal(next.pendingBattle,null);
+test('zero treasury still deploys staged squads with their finite owned cartridges',()=>{
+ const s=wait(both(),12);s.resources.treasury=0;const before=serializeCampaign(s),next=dispatchCampaign(s,{type:'beginAssault',sector:'san_nicolas'});assert.equal(next.lastError,null);assert.equal(serializeCampaign(s),before);assert.equal(next.hour,s.hour);assert.equal(next.resources.treasury,0);assert.equal(next.pendingBattle.issuedCartridges,stockAndCarriedAmmo(s));roundtrip(next);
 });
 
 test('travel orders cannot smuggle an assault intent past attack admission',()=>{
@@ -99,7 +100,7 @@ test('loss of the active column selects the existing surviving squad without dup
 test('a crowded mountain assault stays staged without consuming gear or committing an unusable battle',()=>{
  let s=front();s.sectors.mendoza.owner='patriot';s.location='mendoza';
  for(const q of s.squads){q.location='mendoza';for(const id of q.members)s.operativeState[id].location='mendoza';}
- s=order(s,{type:'purchaseEquipment',item:'bronze4'});
+ s=withStoredGear(s,'bronze4');
  for(const q of [...s.squads]){s=order(s,{type:'selectSquad',id:q.id});s=order(s,{type:'attack',sector:'uspallata',queue:true});}
  for(let i=0;i<48&&s.squads.some(q=>q.journey?.status!=='ready');i++)s=wait(s,1);
  assert.ok(s.squads.every(q=>q.journey?.status==='ready'));

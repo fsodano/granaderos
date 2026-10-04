@@ -3,19 +3,24 @@ const AMMO='inventory:ammo:musket_75';
 const ammoStack=count=>({item:AMMO,kind:'ammunition',ammoType:'musket_75',name:AMMUNITION_TYPES.musket_75.name,count,weight:.04});
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createBattle, actBattle, getReachable, environmentTargetAt, environmentPreview, containerLootPreview} from '../game/tactical.js';
+import {createBattle, actBattle, getReachable, environmentTargetAt, environmentPreview, environmentUsePreview, containerLootPreview, canSee} from '../game/tactical.js';
+import {nearbyEnvironmentModel,targetPreview} from '../game/ja2-hud.js';
+import {isInteriorVisible} from '../game/tactical-visibility.js';
 import {environmentTargetSummary, heldTool} from '../game/environment-interactions.js';
 import {inventoryUsage} from '../game/tactical-inventory.js';
+import {makeOutfit} from '../game/outfits.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
 import {enterSector} from '../game/world.js';
 import {initialCampaign} from './legacy-campaign-fixture.mjs';
 import {dispatchCampaign} from '../game/campaign.js';
 import {syncBattleTime} from '../game/time.js';
 import {encodeSave, decodeSave} from '../game/save.js';
+import {takeFiniteCache} from './finite-cache-driver.mjs';
 
 const keyRecord = {count: 1, weight: .2, itemType: 'tool', toolKey: 'key', condition: 73, keyId: 'store'};
 const toolRecord = toolKey => ({count: 1, weight: .5, itemType: 'tool', toolKey, condition: 100});
 const soldier = state => state.units.find(u => u.id === 'p');
+const storedRecord = stack => {const record=structuredClone(stack);delete record.item;return record;};
 function field(extra = {}, chestExtra = {}) {
   const tiles = Array.from({length: 216}, (_, i) => ({x: i % 24, y: Math.floor(i / 24), type: 'grass', blocked: false, cover: 0}));
   Object.assign(tiles.find(t => t.x === 2 && t.y === 3), {type: 'door', doorId: 'test-door', open: false, locked: true, keyId: 'store', lockDifficulty: 25, lockIntegrity: 100, blocked: true, blocksSight: true});
@@ -72,6 +77,44 @@ test('closed target summaries and inspection previews keep trap and contents pri
   assert.equal(environmentPreview(hidden, soldier(hidden), chestRef, 'inspect').chance, null);
 });
 
+test('unknown room tags disclose no container state, source token or approach until the interior is known',()=>{
+  // Declared restored legacy interior: the room tag is valid saved metadata
+  // without building topology. Geometry alone cannot reveal its container.
+  const source={item:'inventory:crowbar',itemType:'tool',toolKey:'crowbar',count:1,weight:2.5,condition:60,instanceId:'declared:private-crowbar'};
+  const hidden=createBattle([{id:'p',x:1,y:3,facing:2,weapon:1805}],{width:14,height:8,seed:45,
+    tiles:Array.from({length:112},(_,i)=>({x:i%14,y:Math.floor(i/14),type:'grass',blocked:false,blocksSight:false,cover:0})),
+    props:[{id:'private-chest',type:'chest',x:2,y:3,roomId:'private',open:true,locked:false,contents:[source]}],
+    enemies:[{id:'e',x:12,y:6,patrol:false,overwatch:false}]});
+  assert.doesNotThrow(()=>validateBattleSnapshot(hidden));
+  const ref={kind:'container',id:'private-chest'},absent={...hidden,props:[]};
+  assert.equal(canSee(hidden,soldier(hidden),hidden.props[0]),true);
+  assert.equal(isInteriorVisible(hidden,hidden.props[0],new Set(hidden.revealedRooms)),false);
+  for(const patch of [{},{open:false,locked:true,lockDifficulty:90,trap:{type:'alarm',difficulty:80,armed:true,discoveredBy:['player']}}]){
+    const privateState=structuredClone(hidden);Object.assign(privateState.props[0],patch);
+    assert.deepEqual(nearbyEnvironmentModel(privateState,soldier(privateState)),nearbyEnvironmentModel(absent,soldier(absent)));
+    const hover=targetPreview(privateState,soldier(privateState),{x:2,y:3},{mode:'move'});assert.notEqual(hover?.name,'Cofre');
+    for(const verb of [undefined,'inspect','open','pry','disarm']){
+      assert.deepEqual(environmentPreview(privateState,soldier(privateState),ref,verb),environmentPreview(absent,soldier(absent),ref,verb));
+      const approach=environmentUsePreview(privateState,soldier(privateState),ref,verb);
+      assert.deepEqual(approach,environmentUsePreview(absent,soldier(absent),ref,verb));
+      assert.equal(approach.valid,false);assert.deepEqual(approach.path,[]);assert.equal(approach.destination,null);
+      rejectUnchanged(privateState,{type:'useItem',environment:{...ref,...(verb?{verb}:{})}});
+    }
+    const pickup=containerLootPreview(privateState,soldier(privateState),ref,0,1);
+    assert.deepEqual(pickup,containerLootPreview(absent,soldier(absent),ref,0,1));
+    assert.equal(pickup.valid,false);assert.equal(pickup.action.expectedSource,undefined);
+    rejectUnchanged(privateState,{type:'containerLoot',...ref,index:0,count:1});
+  }
+  const known=structuredClone(hidden);known.revealedRooms=['private'];
+  assert.doesNotThrow(()=>validateBattleSnapshot(known));
+  const model=nearbyEnvironmentModel(known,soldier(known));assert.equal(model.contents[0].label,'Barreta');
+  const selected=containerLootPreview(known,soldier(known),ref,0,1);assert.equal(selected.valid,true);assert.ok(selected.action.expectedSource);
+  const taken=order(known,selected.action);assert.deepEqual(taken.props[0].contents,[]);
+  assert.deepEqual(Object.values(soldier(taken).inventory).find(record=>record.instanceId===source.instanceId),storedRecord(source));
+  assert.equal(soldier(taken).ap,soldier(known).ap-selected.pa);assert.equal(taken.seed,known.seed);
+  assert.equal(taken.elapsedSeconds,known.elapsedSeconds+6);
+});
+
 test('actual hidden injury trap uses shared wounds and breath once, with no free opening', () => {
   let state = field({}, {trap: {type: 'injury', difficulty: 40, armed: true, discoveredBy: [], damage: 18, breathLoss: 25}});
   state = order(state, {type: 'environment', ...chestRef, verb: 'open'});
@@ -103,13 +146,61 @@ test('partial container acquisition, capacity rejection and repeat pickup conser
   assert.equal(inventoryUsage(soldier(state)).used, 12);
   assert.equal(containerLootPreview(state, soldier(state), chestRef, 0, 3).valid, false);
   rejectUnchanged(state, {type: 'containerLoot', ...chestRef, index: 0, count: 3});
-  state = order(state, {type: 'containerLoot', ...chestRef, index: 0, count: 2});
+  const selected=containerLootPreview(state,soldier(state),chestRef,0,2).action;
+  state = order(state, selected);
   assert.equal(soldier(state).ammo, 240); assert.equal(state.props[0].contents[0].count, 10); assert.equal(soldier(state).ap, 88);
+  rejectUnchanged(state, selected);
   state = order(state, {type: 'drop', item: AMMO, count: 20});
   state = order(state, {type: 'containerLoot', ...chestRef, index: 0, count: 10});
   assert.equal(soldier(state).ammo, 230); assert.equal(state.groundItems[0].count, 20); assert.deepEqual(state.props[0].contents, []);
   assert.equal(soldier(state).ammo + state.groundItems[0].count, 250);
   rejectUnchanged(state, {type: 'containerLoot', ...chestRef, index: 0, count: 1});
+});
+
+test('a selected identified container object cannot be substituted by a shifted index or changed metadata',()=>{
+  const crowbar={item:'inventory:used-crowbar',itemType:'tool',toolKey:'crowbar',count:1,weight:2.5,condition:60,instanceId:'declared:used-crowbar'};
+  const shirt={item:'inventory:linen',...makeOutfit('linen_shirt',75),instanceId:'declared:linen'};
+  const initial=field({inventory:{}},{contents:[crowbar,shirt]}),closed=containerLootPreview(initial,soldier(initial),chestRef,0,1);
+  assert.equal(closed.valid,false);assert.equal(closed.action.expectedSource,undefined,'closed contents cannot enter a public source token');
+  const opened=order(initial,{type:'environment',...chestRef,verb:'open'}),selected=containerLootPreview(opened,soldier(opened),chestRef,0,1).action;
+  assert.equal(typeof selected.expectedSource,'string');
+  for(const change of [stack=>stack.condition--,stack=>stack.instanceId='declared:replacement']){
+    const changed=structuredClone(opened);change(changed.props[0].contents[0]);
+    assert.match(rejectUnchanged(changed,selected).lastError,/Cambió el objeto/);
+  }
+  for(const expectedSource of [null,42,'obsolete'])assert.match(rejectUnchanged(opened,{...selected,expectedSource}).lastError,/Cambió el objeto/);
+  const taken=order(opened,selected);assert.deepEqual(taken.props[0].contents,[shirt]);
+  assert.match(rejectUnchanged(taken,selected).lastError,/Cambió el objeto/);
+  assert.deepEqual(Object.values(soldier(taken).inventory).find(item=>item.instanceId===crowbar.instanceId),storedRecord(crowbar));
+  const renewed=containerLootPreview(taken,soldier(taken),chestRef,0,1);assert.equal(renewed.valid,true);assert.notEqual(renewed.action.expectedSource,selected.expectedSource);
+  const finished=order(validateBattleSnapshot(JSON.parse(JSON.stringify(taken))),renewed.action);
+  assert.deepEqual(finished.props[0].contents,[]);assert.deepEqual(Object.values(soldier(finished).inventory).find(item=>item.instanceId===shirt.instanceId),storedRecord(shirt));
+  assert.equal(soldier(finished).medkits,soldier(initial).medkits);assert.equal(soldier(finished).hp,soldier(initial).hp);
+  assert.deepEqual(validateBattleSnapshot(JSON.parse(JSON.stringify(finished))),finished);
+});
+
+test('an observed weapon selection survives property reordering and official campaign save normalization',()=>{
+  const campaign=dispatchCampaign(initialCampaign(),{type:'visitSector'});assert.equal(campaign.lastError,null);
+  // Use the actual finite Retiro cache and normal approach/open orders. No
+  // weapon, carrying room or scene result is added for the save boundary.
+  const pair=takeFiniteCache({campaign,battle:enterSector(campaign.pendingBattle)},4,[]);
+  const chest=pair.battle.props.find(prop=>prop.id==='retiro:armory-cache'),ref={kind:'container',id:chest.id};
+  const actor=battle=>battle.units.find(unit=>unit.id==='4'),source=structuredClone(chest.contents[0]);
+  assert.equal(source.item,'weapon');
+  const selected=containerLootPreview(pair.battle,actor(pair.battle),ref,0,1);assert.equal(selected.valid,true);
+  const reordered=structuredClone(pair),stack=reordered.battle.props.find(prop=>prop.id===chest.id).contents[0];
+  reordered.battle.props.find(prop=>prop.id===chest.id).contents[0]=Object.fromEntries(Object.entries(stack).reverse());
+  assert.notDeepEqual(Object.keys(reordered.battle.props.find(prop=>prop.id===chest.id).contents[0]),Object.keys(source));
+  assert.equal(containerLootPreview(reordered.battle,actor(reordered.battle),ref,0,1).action.expectedSource,selected.action.expectedSource);
+  const restored=decodeSave(encodeSave(reordered.campaign,reordered.battle));assert.deepEqual(restored,pair);
+  const ordinary=actBattle(pair.battle,selected.action),loaded=actBattle(restored.battle,selected.action);
+  assert.equal(loaded.lastError,null);assert.deepEqual(loaded,ordinary,'the pre-save guarded action admits only the same restored stack');
+  assert.deepEqual(Object.values(actor(loaded).inventory).find(record=>record.instanceId===source.instanceId),storedRecord(source));
+  assert.deepEqual(loaded.props.find(prop=>prop.id===chest.id).contents,chest.contents.slice(1));
+  assert.equal(pair.battle.mode,'exploration');assert.equal(actor(loaded).ap,actor(pair.battle).ap);
+  assert.equal(loaded.elapsedSeconds,pair.battle.elapsedSeconds+1);assert.equal(loaded.seed,pair.battle.seed);
+  const synced=syncBattleTime(restored.campaign,loaded);assert.equal(synced.error,null);
+  assert.deepEqual(decodeSave(encodeSave(synced.campaign,synced.battle)),{campaign:synced.campaign,battle:synced.battle});
 });
 
 test('dropping the actual equipped tool clears the hand and finite pickup retains its condition', () => {

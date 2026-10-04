@@ -3,8 +3,11 @@ import assert from 'node:assert/strict';
 import {initialCampaign} from './legacy-campaign-fixture.mjs';
 import {dispatchCampaign,rosterFor,serializeCampaign,restoreCampaign} from '../game/campaign.js';
 import {advanceAssignments,repairRate,workAssignmentProgress} from '../game/assignments.js';
-import {repairEquipmentQueue,repairEquipment} from '../game/equipment-repair.js';
+import {repairEquipmentQueue,repairEquipment,repairEquipmentBlocked} from '../game/equipment-repair.js';
+import {makeOutfit} from '../game/outfits.js';
 import {inventoryUsage} from '../game/tactical-inventory.js';
+import {fieldPractice} from '../game/skill-training.js';
+import {withStoredGear,assertTradeRejected} from './commerce-gear-fixture.mjs';
 
 const order=(s,action)=>{const next=dispatchCampaign(s,action);assert.equal(next.lastError,null,next.lastError);return next;};
 const opFor=(s,id)=>rosterFor(s).find(op=>op.id===id);
@@ -13,7 +16,8 @@ const tool=(condition,count=1)=>({itemType:'tool',toolKey:'pliers',count,weight:
 function equipmentTeam(){
   let s=initialCampaign();s.loadouts[4]={...s.loadouts[4],weapon:1800,blade:1811};
   Object.assign(s.operativeState[4],{condition:98,bladeCondition:99,weaponFittings:{bayonet:bayonet('repair-fixed',98)},inventory:{pliers:tool(97)}});
-  s=order(s,{type:'purchaseToolkits',operativeId:10});
+  // A declared finite legacy carried reserve isolates repair work.
+ s.operativeState[10].toolkitPoints=100;
   return order(s,{type:'assignWork',operativeId:10,assignment:'repair',targetId:4,repairScope:'equipment'});
 }
 const totals=record=>Object.values(record.inventory).reduce((sum,item)=>sum+item.count,0);
@@ -26,12 +30,23 @@ test('equipment queue previews are detached, deterministic and follow secondary,
   assert.deepEqual(s,before);
 });
 
+test('valid worn and packed garments follow existing equipment, including ruined clothing without reissue',()=>{
+ const record={hp:72,loaded:1,ammo:9,condition:99,inventory:{pliers:tool(99),shirt:{...makeOutfit('linen_shirt',96),instanceId:'packed-repair-shirt',note:'Costura conservada'}},headwear:{...makeOutfit('hat',0),instanceId:'ruined-repair-hat'},outfit:makeOutfit('poncho',98),legwear:makeOutfit('trousers',97)},op={weapon:1805};
+ const before=structuredClone(record),queue=repairEquipmentQueue(record,op);
+ assert.deepEqual(queue.map(item=>item.key),['primary','inventory:pliers','headwear','outfit','legwear','inventory:shirt']);
+ assert.equal(queue.find(item=>item.key==='headwear').condition,0);assert.deepEqual(record,before);
+ assert.equal(repairEquipment(record,op,5),5);assert.equal(record.condition,100);assert.equal(record.inventory.pliers.condition,100);assert.equal(record.headwear.condition,3);
+ assert.deepEqual(record.headwear,{...before.headwear,condition:3});assert.deepEqual(record.inventory.shirt,before.inventory.shirt);
+ for(const field of ['hp','loaded','ammo'])assert.equal(record[field],before[field]);
+ const empty={outfit:null,headwear:null,legwear:null,inventory:{}};assert.deepEqual(repairEquipmentQueue(empty,{}),[]);assert.equal(repairEquipment(empty,{},100),0);assert.deepEqual(empty,{outfit:null,headwear:null,legwear:null,inventory:{}});
+});
+
 test('one hourly allowance crosses items, spends finite tools and charges the mechanic once',()=>{
-  let s=equipmentTeam();const rate=repairRate(opFor(s,10)),before=structuredClone(s.operativeState);
+  let s=equipmentTeam();const rate=repairRate(opFor(s,10)),before=structuredClone(s.operativeState),expected={...opFor(s,10),side:'player',hp:s.operativeState[10].hp};fieldPractice(expected,'mechanical',1);
   s=order(s,{type:'wait',hours:1});const r=s.operativeState[4],mechanic=s.operativeState[10];
   const restored=(r.bladeCondition-99)+(r.condition-98)+(r.weaponFittings.bayonet.condition-98)+(r.inventory.pliers.condition-97);
   assert.equal(restored,rate);assert.equal(r.bladeCondition,100);assert.equal(r.condition,100);
-  assert.equal(mechanic.toolkitPoints,100-rate);assert.equal(mechanic.energy,before[10].energy-3);assert.equal(mechanic.fatigue,before[10].fatigue+2);assert.equal(mechanic.skillPractice.mechanical,1);
+  assert.equal(mechanic.toolkitPoints,100-rate);assert.equal(mechanic.energy,before[10].energy-3);assert.equal(mechanic.fatigue,before[10].fatigue+2);assert.equal(mechanic.skillPractice.mechanical??0,expected.skillPractice?.mechanical??0);assert.equal(mechanic.practiceSeed,expected.practiceSeed);
   for(const key of ['loaded','ammo','priming','flints','medkits'])assert.equal(r[key],before[4][key]);
 });
 
@@ -68,8 +83,8 @@ test('a jam at full condition is real work and consumes a point without ammuniti
 });
 
 test('legacy bulk stacks repair one unit at a time with conserved quantities, pocket use and total condition gain',()=>{
-  for(const kind of ['tool','weapon']){
-    const item=kind==='tool'?tool(90,3):{weapon:1800,count:3,weight:4,condition:90,jammed:false,loaded:1};
+  for(const kind of ['tool','weapon','garment']){
+    const item=kind==='tool'?tool(90,3):kind==='garment'?{...makeOutfit('linen_shirt',90),count:3,note:'Lote antiguo'}:{weapon:1800,count:3,weight:4,condition:90,jammed:false,loaded:1};
     const r={inventory:{bulk:item}},used=inventoryUsage(r).used;
     assert.equal(repairEquipment(r,{},4),4);assert.equal(totals(r),3);assert.equal(inventoryUsage(r).used,used);
     assert.equal(Object.values(r.inventory).reduce((sum,item)=>sum+item.condition*item.count,0),274);
@@ -77,6 +92,7 @@ test('legacy bulk stacks repair one unit at a time with conserved quantities, po
     assert.equal(repairEquipment(r,{},100),26);assert.equal(totals(r),3);assert.equal(inventoryUsage(r).used,used);
     assert.ok(Object.values(r.inventory).every(item=>item.condition===100));
     if(kind==='weapon')assert.equal(Object.values(r.inventory).reduce((sum,item)=>sum+item.loaded*item.count,0),3);
+    if(kind==='garment')assert.ok(Object.values(r.inventory).every(item=>item.kind==='outfit'&&item.outfit==='linen_shirt'&&item.weight===.6&&item.note==='Lote antiguo'));
   }
 });
 
@@ -95,8 +111,17 @@ test('a legacy pack at the saved-entry limit pauses before a stack split can mak
   assert.equal(s.assignmentAttention.notice.events[0].code,'repair_pack_full');assert.deepEqual(restoreCampaign(serializeCampaign(s)),s);
 });
 
+test('legacy bulk garments respect the saved-key split limit before any condition work',()=>{
+ const record={inventory:Object.fromEntries(Array.from({length:999},(_,i)=>[`empty-${i}`,{count:0,weight:0}]))};
+ record.inventory.bulk={...makeOutfit('linen_shirt',0),count:2};const before=structuredClone(record);
+ assert.equal(repairEquipmentBlocked(record,{}),true);assert.equal(repairEquipment(record,{},20),0);assert.deepEqual(record,before);
+ delete record.inventory['empty-0'];assert.equal(repairEquipmentBlocked(record,{}),false);assert.equal(repairEquipment(record,{},3),3);
+ assert.equal(Object.keys(record.inventory).length,1000);assert.equal(totals(record),2);assert.equal(record.inventory.bulk.condition,0);assert.equal(record.inventory.bulk.count,1);
+ assert.equal(Object.values(record.inventory).find(item=>item.condition===3).count,1);
+});
+
 test('the job follows current carried equipment, and cannot repair a swapped weapon in the armory',()=>{
-  let s=equipmentTeam();s=order(s,{type:'purchaseEquipment',item:1803});s=order(s,{type:'equip',operativeId:4,slot:'weapon',itemId:1803});
+  let s=equipmentTeam();s=withStoredGear(s,1803);s=order(s,{type:'equip',operativeId:4,slot:'weapon',itemId:1803});
   const stored=structuredClone(s.armoryItems);s=order(s,{type:'wait',hours:24});assert.deepEqual(s.armoryItems,stored);
   assert.equal(s.operativeState[4].inventory.pliers.condition,100);assert.equal(s.operativeState[4].bladeCondition,100);
   assert.equal(s.operativeState[10].toolkitPoints,96);assert.equal(s.assignmentAttention.notice.events[0].code,'repair_complete');

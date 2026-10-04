@@ -1,4 +1,4 @@
-import {TRAINABLE_SKILLS} from './skill-training.js';
+import {TRAINABLE_SKILLS,MINIMUM_LEARNABLE_SKILL} from './skill-training.js';
 
 // The guide describes progressively slower practice at high skill and faster
 // learning with a better teacher. Credit uses integers to survive save/reload.
@@ -13,9 +13,9 @@ export function studyRate(op,skill,instructor=null){
 // travel. Changing the selected skill cannot spend another skill's hour credit.
 export function studyForecast(record,op,skill,instructor=null){
  if(!TRAINABLE_SKILLS.includes(skill))return null;
- const value=op[skill]??0,earned=record.trainedStats?.[skill]??0,zero=value<=0;
+ const value=op[skill]??0,earned=record.trainedStats?.[skill]??0,zero=value<=0,ineligible=value<MINIMUM_LEARNABLE_SKILL;
  const remainingGains=Math.max(0,Math.min(10-earned,Math.ceil(100-value))),capped=remainingGains===0;
  const rate=studyRate(op,skill,instructor),credit=record.trainingSkill===skill?(record.trainingCredit??0):0;
- const hoursToNext=zero||capped?null:Math.max(1,Math.ceil(((40-(record.skillPractice?.[skill]??0))*1000-credit)/rate));
- return {skill,value,earned,remainingGains,zero,capped,hoursToNext,rate};
+ const hoursToNext=ineligible||capped?null:Math.max(1,Math.ceil(((40-(record.skillPractice?.[skill]??0))*1000-credit)/rate));
+ return {skill,value,earned,remainingGains,zero,ineligible,capped,hoursToNext,rate};
 }

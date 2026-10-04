@@ -4,5 +4,5 @@ import {servingEngineerLoss} from './historical-loss-fixture.mjs';import {campai
 const {default:Campaign}=await import('../web/app/Campaign.tsx');
 test('the strategic view explains the assigned character and blocked project after confirmed death',async()=>{
  const {campaign:s}=await servingEngineerLoss(),html=render(h(Campaign,{state:s,dispatch(){},onBattle(){},onOpenDesk(){}}));
- assert.ok(html.includes(`${campaignRole(s,'foundryEngineer').name} ha muerto antes de organizar Taller del Retiro.`));assert.match(html,/La campaña histórica no puede continuar sin su responsable de fundición/);assert.match(html,/disabled="">Avanzar/);
+ assert.ok(html.includes(`${campaignRole(s,'foundryEngineer').name} ha muerto antes de organizar Taller del Retiro.`));assert.match(html,/La campaña histórica no puede continuar sin su responsable de fundición/);assert.match(html,/disabled="">▶ Iniciar/);
 });

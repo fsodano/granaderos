@@ -27,7 +27,7 @@ test('a preflight assignment pause reports zero elapsed hours and keeps resume i
  const markup=draw(state),text=textOnly(markup);
  assert.match(markup,/role="status"/);assert.match(markup,/aria-live="polite"/);assert.match(markup,/aria-atomic="true"/);
  assert.match(text,/Tiempo avanzado: 0 de 24 horas solicitadas/);assert.match(text,/Día 1 · 00:00/);
- assert.match(text,/Al pulsar Avanzar de nuevo, comienza un nuevo período desde la hora actual/);
+ assert.match(text,/Al pulsar Iniciar de nuevo, comienza un nuevo período desde la hora actual/);
  assert.ok(text.includes(assignmentAttentionText(state,notice.events[0],rosterFor(state))));
  assert.doesNotMatch(markup,/<button|role="dialog"|reported|binding/);
  assert.equal(draw(state),markup,'the notice remains visible during ordinary rerenders');
@@ -60,7 +60,9 @@ test('Campaign shows the notice beside its time controls and an ordinary new adv
  state=order(state,{type:'wait',hours:6});
  const markup=render(h(Campaign,{state,dispatch:noop,onBattle:noop,onOpenDesk:noop}));
  assert.equal((markup.match(/aria-label="Avance detenido por asignaciones"/g)??[]).length,1);
- assert.equal((markup.match(/>Avanzar<\/button>/g)??[]).length,1);
+ assert.equal((markup.match(/>▶ Iniciar<\/button>/g)??[]).length,1);
+ assert.match(markup,/aria-label="Velocidad del tiempo"/);
+ assert.doesNotMatch(markup,/aria-label="Tiempo a avanzar"/);
  assert.ok(markup.indexOf('assignment-attention')>markup.indexOf('</header>'));
  assert.ok(markup.indexOf('assignment-attention')<markup.indexOf('strategy-layout'));
  const resumed=order(state,{type:'wait',hours:1});assert.equal(resumed.hour,state.hour+1);assert.equal(draw(resumed),'');

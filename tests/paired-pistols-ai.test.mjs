@@ -43,7 +43,7 @@ test('AI paired choices use known bodies and do not read hidden targets or priva
  other.units.push({...structuredClone(other.units[0]),id:'hidden',x:23,y:9,hp:100});assert.equal(canSee(other,enemy(other),other.units[2]),false);
  assert.deepEqual(chooseEnemyAction(other,enemy(other)),chooseEnemyAction(s,enemy(s)));
  const obstructed=field({stance:'prone',movementMode:'prone'},{ap:8});obstructed.units.push({...structuredClone(enemy(obstructed)),id:'friend',x:5,y:3,offHand:undefined,weaponInstanceId:'friend-gun'});
- const options=firearmShotOptions(obstructed,enemy(obstructed),obstructed.units[0],0);assert.ok(options.every(o=>o.shots.every(shot=>shot.chance===0)));assert.notEqual(chooseEnemyAction(obstructed,enemy(obstructed))?.type,'fire');
+ const options=firearmShotOptions(obstructed,enemy(obstructed),obstructed.units[0],0);assert.ok(options.every(o=>o.shots.every(shot=>shot.interveningFriendly)));assert.ok(options.some(o=>o.shots.some(shot=>shot.conditional&&shot.chance>0)));assert.notEqual(chooseEnemyAction(obstructed,enemy(obstructed))?.type,'fire');
 });
 
 test('a real enemy turn pays the paired order once and replays each physical gun across a save',()=>{

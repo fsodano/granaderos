@@ -1,0 +1,56 @@
+# Finite physical shot loads
+
+An equipped firearm's effective `loadPattern` determines its flight. A `single` load keeps the existing lead-ball rules. A `cone` load now discharges nine finite pellet rays around one resolved direction. This applies to native shot loads, authored primary shot ammunition, alternative musket loads and either held pistol. One successful discharge consumes one actual loaded charge.
+
+The released [classic JA2 source at revision 876ccf5d](https://github.com/dariusk/ja2/blob/876ccf5dfdad7e6821c5b26d6d783132ea1ab7a2/ja2/Build/Tactical/LOS.c#L3267) and [official Stracciatella source at revision 04869c8e](https://github.com/ja2-stracciatella/ja2-stracciatella/blob/04869c8e339ead1de9fefb25b7ad206b9b786825/src/game/Tactical/LOS.cc#L3094) create nine buckshot bullets around a shared adjusted firing direction. Their finite-projectile structure is the behavior evidence. Granaderos does not copy their damage adjustment, spread table, bullet dimensions or historical ammunition specification.
+
+## Physical resolution
+
+The load resolves one accuracy roll. A failed roll selects one bounded horizontal scatter point with the existing two draws; the zero/zero offset becomes +1/0. All nine rays share that center and its original absolute aiming height. Fixed lateral and vertical offsets then determine each ray. Each ray uses the same ordered cover, body, ground, floor and world-boundary intersections as a single ball.
+
+The nine pattern positions are the center and the eight combinations of lateral/vertical offsets -1, 0 and +1. Each receives one ninth of the configured load's force. Horizontal and vertical spread tangents are 0.25 and 0.08. Physical pellet flight is bounded by three times the actual selected load's effective range. The legacy trabuco retains aiming range 6 and gains a finite flight limit of 18; the native hire's authored shot load retains range 10 and a limit of 30. Single balls retain their separate finite flight rule. These weights, tangents, range, silhouettes and resistance values are **Granaderos tuning**, not measured 1812 ballistics or exact JA2 formulas.
+
+Cover spends each pellet's remaining force. Bodies use their actual height and intersected region; selecting the head does not make every pellet a head hit. A foreground body can shield another person. Geometry for all pellets is resolved before injuries are applied, so a casualty from the load cannot disappear and expose the rear person to another simultaneous pellet. A ray never injures the same typed body twice. A civilian and soldier remain distinct collision recipients even if an invalid synthetic scene gives their collections the same ID; ordinary saved scenes still require unique public IDs.
+
+The load uses one shared 0.8..1.2 damage variation. Fractional contributions are summed by typed recipient and physical body region before injury rounding. A very weak nine-pellet load therefore cannot acquire nine minimum injuries. Actual guards already contacted by this load cannot intercept a later group, but their distinct physical pellet injuries still apply. Hit practice occurs once per distinct eligible actual injured soldier, rather than once per pellet or nearby roster entry. Civilian harm retains real intentional-target identity and ordinary custody consequences.
+
+Current authored damage is bounded at 100, so one ninth of that force is below the existing body-passage threshold 20. These default pellets stop at their first body. The shared flight code retains ordered depleted-force/body-passage behavior if a later supported tuning changes that relationship. No cone-specific penetration, ricochet, explosion or cannon physics is invented.
+
+## Forecasts, warnings and enemy choices
+
+Previews trace observed bodies and props only. A hidden room occupant or furnishing cannot suppress a visible bystander warning, alter the displayed chance or become an impact/camera source. Physical fire still encounters that actual hidden object. Forecasts make no RNG draws and do not change the battle.
+
+The target probability means **at least one pellet contacts the target**, not independent accuracy for each resident or certainty of multiple injuries. It combines the shared center's accuracy with all possible weighted scatter outcomes and their actual geometry. The +1/0 scatter outcome retains its double probability. Expected force is unconditional incoming force; the damage factor is the conditional mean force divided by configured total load force. Nominal expected injury integrates the shared damage variation and actual region sums for enemy scoring. Enemy choices avoid known friendly pellet lanes and cannot inspect hidden bodies to improve their decision.
+
+Named warnings use the same direct and scattered pellet paths for the actual load, including alternative shot loads and each held pistol. Blind location fire keeps its occupant-independent admission and has no target probability. Paired fire freezes both intended point/silhouette and absolute height before either discharge, while each hand still checks the current bodies, its own selected load and its own ignition. First-shot death, knockdown or unhorsing cannot lower the second hand's intended height.
+
+## Paid effects, saves and limits
+
+AP/setup, ammunition ownership, independent hand ignition, weapon wear, noise, smoke, wounds and game-clock costs retain the existing firearm gates. Failed ignition retains that hand's charge. Invalid orders remain atomic. A valid shot load draws ignition, one center accuracy, two scatter draws only on a failed accuracy roll, and one load damage draw even if no pellet hits. Actual body-passage draws occur only when the shared flight permits passage. This deliberately replaces the former roster-dependent accuracy/damage lottery: adding a remote person no longer consumes a separate hit roll. A body merely lying within a former cone receives no automatic morale deduction; real injury retains normal morale effects.
+
+Existing saves retain finite guns, ammunition, health and RNG state without new saved pellet fields. Resuming a pre-change save under this engine can produce different future shot-load results because the old lottery and random draw order were replaced. The same saved input and orders under this engine reproduce the full result. Ordinary and presented execution remain equal. The current fan presentation describes one load; it does not invent an individual rendered impact path for every pellet.
+
+`tests/shot-load-projectiles.test.mjs` checks finite weighted force, cover and upper-floor stops, foreground shielding through death, fractional injury, typed civilian harm, actual bodyguard recipients, private-room bodies/props, frozen mixed-pistol intent, enemy orders, and a stock paid shot-load hire through actual fire, official save, return and reentry. Affected single-ball, point-fire, alternate-load, warning, paired and presentation tests retain their own contracts.
+
+Each ray now spends material force over crossed cover depth, including oblique and vertically clipped intervals. Same-object cells merge; separate overlapping obstacles add force loss. Pellets now share the exact range-scaled drop after twice the actual selected effective range. The longer finite tail can change a downstream body region, enter material or hit ground after the resolved aiming point. Intended geometry before that onset stays unchanged. Reflected ricochet and a supported mass/velocity model remain open. Cannon and map/3D work are separate. This slice does not claim full JA2 or historical ballistic parity.
+
+
+## Falling pellet tails — 4 October 2026
+
+The former one-range cap ended every pellet before the shared two-range drop
+onset. The explicit `shotLoadFlightRangeMultiplier: 3` setting now permits a
+falling tail on ordinary resolved near-centre shots. It changes physical reach,
+not aiming accuracy, the selected range, nine force shares or the random draws.
+Known-person warnings and enemy forecasts trace the same extended geometry.
+Actual concealed bodies still affect injury while the public spread descriptor
+uses its existing information boundary.
+
+The pinned Stracciatella source assigns [ordinary gun range to each buckshot
+bullet](https://github.com/ja2-stracciatella/ja2-stracciatella/blob/04869c8e339ead1de9fefb25b7ad206b9b786825/src/game/Tactical/LOS.cc#L3394-L3404)
+and applies the shared [two-range drop
+rule](https://github.com/ja2-stracciatella/ja2-stracciatella/blob/04869c8e339ead1de9fefb25b7ad206b9b786825/src/game/Tactical/LOS.cc#L4217-L4223).
+It supports shared flight and gravity; the three-range limit and continuous
+curve are explicit Granaderos tuning. This is not measured period ballistics or
+an exact classic formula. No new persistent trajectory record or graphical
+pellet asset is added. New physical contacts can change a resumed shot's outcome;
+the same saved input and orders under this engine still reproduce the result.

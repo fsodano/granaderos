@@ -1,16 +1,20 @@
 import assert from 'node:assert/strict';
+import {routeHiringCeiling} from './funded-route-fixture.mjs';
 import {finishReloadsBeforeMarch} from './pre-march-reload.mjs';
-import {dispatchCampaign,isSupplied,rosterFor} from '../game/campaign.js';
+import {dispatchCampaign,rosterFor} from '../game/campaign.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {enterSector} from '../game/world.js';
 import {sectorInventoryModel} from '../game/sector-inventory.js';
 import {attendYatasto} from './mission-helpers.mjs';
 import {contractQuote} from '../game/contracts.js';
 import {fightNorthernSector,northernCombatOrder} from './northern-route.mjs';
+import {collectRouteItems} from './finite-route-equipment.mjs';
+import {recoverRoutePrimary} from './route-owned-equipment.mjs';
+import {prepareRouteSupportBattery} from './route-support-battery.mjs';
 
 function orders(start){
  let campaign=decodeSave(encodeSave(start)).campaign;const events=[];
- return {get campaign(){return campaign;},events,prepareWeapons(report){campaign=finishReloadsBeforeMarch(campaign,{report});},resolveEncounter(report){
+ return {get campaign(){return campaign;},events,apply(transform){campaign=transform(campaign);},prepareWeapons(report){campaign=finishReloadsBeforeMarch(campaign,{report});},resolveEncounter(report){
   const encounter=structuredClone(campaign.pendingEncounter),group=structuredClone(campaign.enemyGroups.find(group=>group.id===encounter.groupId));
   const next=dispatchCampaign(campaign,{type:'respondToEncounter',groupId:encounter.groupId,choice:'tactical'});assert.equal(next.lastError,null,next.lastError);assert.deepEqual(next.pendingBattle.enemies,group.units);
   const result=fightNorthernSector(next,encounter.sector,{controller:northernCombatOrder,report});campaign=result.campaign;
@@ -31,21 +35,21 @@ function renew(route,ids,buffer){
 export function prepareSaltaAssault(start,{report=()=>{}}={}){
  const route=orders(start),{order}=route;
  assert.equal(start.location,'tucuman');assert.equal(start.pendingBattle,null);
- // Keep the supply depot defended while the northern force marches. Its
- // actual reserves reload their own guns; a paid guard buys a finite musket.
+ // Keep the rear depot defended while the northern force marches. Its
+ // actual reserves reload their own guns; a paid guard recovers finite gear.
  const selected=start.activeSquadId,reserves=start.recruited.filter(id=>{const r=start.operativeState[id];return r.alive&&!r.captured&&r.location==='cordoba';});
- assert.ok(reserves.length&&reserves.length<6);
- order({type:'createSquad',sector:'cordoba',name:'Reserva de Córdoba',ids:reserves});
- const reserveSquad=route.campaign.activeSquadId;
+ assert.ok(reserves.length<6);
  const guard=[113,140,144,146,108,101,102].find(id=>!route.campaign.recruited.includes(id)&&route.campaign.operativeState[id].alive&&!route.campaign.operativeState[id].captured),cashBeforeGuard=route.campaign.resources.treasury;
- order({type:'recruitCivic',id:guard,term:'week'});const guardCost=cashBeforeGuard-route.campaign.resources.treasury;
+ assert.ok(guard,'a living paid guard must be available for the rear depot');
+ order({type:'recruitCivic',id:guard,term:'week',destination:'cordoba'});const guardCost=cashBeforeGuard-route.campaign.resources.treasury;
  assert.equal(guardCost,route.campaign.contracts[guard].paid);
- const gunStock=route.campaign.merchants.cordoba.stock['1801'],weaponCash=route.campaign.resources.treasury;
- order({type:'purchaseEquipment',item:1801,quantity:1});order({type:'equip',operativeId:guard,itemId:1801,slot:'weapon'});
- assert.equal(route.campaign.merchants.cordoba.stock['1801'],gunStock-1);assert.equal(weaponCash-route.campaign.resources.treasury,230);
- const reservePreparation={ids:[...reserves,guard],hired:guard,hiringCost:guardCost,weapon:1801,weaponCost:230},defenses=[];
+ order({type:'createSquad',sector:'cordoba',name:'Reserva de Córdoba',ids:[...reserves,guard]});
+ const reserveSquad=route.campaign.activeSquadId;
+ const weaponCash=route.campaign.resources.treasury;route.apply(c=>recoverRoutePrimary(c,guard,{replace:true}));
+ assert.equal(route.campaign.resources.treasury,weaponCash);
+ const reservePreparation={ids:[...reserves,guard],hired:guard,hiringCost:guardCost,weapon:rosterFor(route.campaign).find(op=>op.id===guard).weapon,weaponCost:0,returning:[],care:{patients:[],hours:0,usedDressings:0,recoveredDressings:0}},defenses=[];
  // Stabilize the actual routed reserve before any tactical loading or march.
- // This care uses paid doctors, carried dressings and finite local restocks.
+ // This care uses paid doctors, carried dressings and finite local recovery.
  const rearPatients=reserves.filter(id=>route.campaign.operativeState[id].bleeding||route.campaign.operativeState[id].hp<route.campaign.operativeState[id].maxHp);
  if(rearPatients.length){
   const rearDoctors=rosterFor(route.campaign).filter(op=>[...reserves,guard].includes(op.id)&&!rearPatients.includes(op.id)&&op.medical>=20&&route.campaign.operativeState[op.id].hp>=15&&!route.campaign.operativeState[op.id].bleeding).sort((a,b)=>b.medical-a.medical).slice(0,2).map(op=>op.id);
@@ -55,10 +59,8 @@ export function prepareSaltaAssault(start,{report=()=>{}}={}){
   const supplyRearDoctor=operativeId=>{
    const recovered=rearInventory(operativeId).entries.find(row=>row.reachable&&JSON.parse(row.expected).item==='medkits');
    if(recovered){const count=Math.min(10,recovered.count);order({type:'sectorInventory',sector:'cordoba',operativeId,direction:'take',sourceKey:recovered.key,expected:recovered.expected,count});assert.equal(rearInventory(operativeId).entries.find(row=>row.key===recovered.key)?.count??0,recovered.count-count);recoveredDressings+=count;return count;}
-   const quantity=Math.min(10,route.campaign.merchants.cordoba.supplies.medkits);
-   if(quantity){order({type:'purchaseMedicalSupplies',operativeId,quantity});boughtDressings+=quantity;return quantity;}
    const donor=reserves.find(id=>!rearDoctors.includes(id)&&route.campaign.operativeState[id].medkits>0&&!rearInventory(id).reason);
-   if(!donor)return 0;
+   if(!donor){const found=collectRouteItems(route.campaign,operativeId,{item:'medkits'},10);route.apply(()=>found.campaign);recoveredDressings+=found.collected;return found.collected;}
    order({type:'sectorInventory',sector:'cordoba',operativeId:donor,direction:'drop',item:'medkits',count:1});
    const source=rearInventory(operativeId).entries.find(row=>row.reachable&&JSON.parse(row.expected).item==='medkits');assert.ok(source,'the local doctor reaches the donated finite dressing');
    order({type:'sectorInventory',sector:'cordoba',operativeId,direction:'take',sourceKey:source.key,expected:source.expected,count:1});donatedDressings++;return 1;
@@ -74,7 +76,9 @@ export function prepareSaltaAssault(start,{report=()=>{}}={}){
   reservePreparation.care={patients:rearPatients,doctors:rearDoctors,hours:route.campaign.hour-startHour,boughtDressings,donatedDressings,recoveredDressings,usedDressings:carriedDressings+boughtDressings+donatedDressings+recoveredDressings-rearDoctors.reduce((sum,id)=>sum+route.campaign.operativeState[id].medkits,0)};
   for(const operativeId of [...rearPatients,...rearDoctors]){assert.equal(route.campaign.operativeState[operativeId].bleeding,0);assert.equal(route.campaign.operativeState[operativeId].hp,route.campaign.operativeState[operativeId].maxHp);order({type:'assignCare',operativeId,assignment:'rest'});}
  }
- order({type:'purchaseEquipment',item:'swivel'});order({type:'configureArtillery',types:[]});
+ for(const operativeId of route.campaign.squad)order({type:'assignCare',operativeId,assignment:'active'});
+ const battery=prepareRouteSupportBattery(route.campaign,{destination:'tucuman',report});route.apply(()=>battery.campaign);order({type:'configureArtillery',types:[]});
+ order({type:'selectSquad',id:reserveSquad});
  for(const operativeId of [...reserves,guard])order({type:'assignCare',operativeId,assignment:'active'});
  route.prepareWeapons(report);for(const operativeId of [...reserves,guard])order({type:'assignCare',operativeId,assignment:'rest'});
  const originalLocal=start.recruited.filter(id=>{const r=start.operativeState[id];return r.alive&&!r.captured&&r.location==='tucuman';});
@@ -82,7 +86,7 @@ export function prepareSaltaAssault(start,{report=()=>{}}={}){
  if(returning.length){
   order({type:'createSquad',sector:'cordoba',name:'Socorro de la reserva',ids:returning});
   for(const operativeId of returning){
-   if(route.campaign.operativeState[operativeId].weaponDropped){order({type:'purchaseEquipment',item:1801});order({type:'equip',operativeId,slot:'weapon',itemId:1801});}
+   if(route.campaign.operativeState[operativeId].weaponDropped)route.apply(c=>recoverRoutePrimary(c,operativeId));
    order({type:'assignCare',operativeId,assignment:'active'});
   }
   route.prepareWeapons(report);renew(route,route.campaign.recruited,13);order({type:'travel',sector:'tucuman'});
@@ -102,7 +106,7 @@ export function prepareSaltaAssault(start,{report=()=>{}}={}){
   let source=careModel(id).entries.find(row=>row.reachable&&JSON.parse(row.expected).item==='medkits');
   if(!source){
    const donor=local.find(other=>other!==id&&route.campaign.operativeState[other].medkits>0&&!careModel(other).reason);
-   if(!donor)return false;
+   if(!donor){const found=collectRouteItems(route.campaign,id,{item:'medkits'},1);route.apply(()=>found.campaign);gatheredDressings+=found.collected;return true;}
    const carried=route.campaign.operativeState[donor].medkits;
    order({type:'sectorInventory',sector:'tucuman',operativeId:donor,direction:'drop',item:'medkits',count:1});
    assert.equal(route.campaign.operativeState[donor].medkits,carried-1);donatedDressings++;
@@ -138,13 +142,13 @@ export function prepareSaltaAssault(start,{report=()=>{}}={}){
  // stay dead; a living contracted rifleman can serve in the next assault.
  const hired=[],cash=route.campaign.resources.treasury;
  const available=(id,term)=>!route.campaign.recruited.includes(id)&&route.campaign.operativeState[id].alive&&!route.campaign.operativeState[id].captured&&contractQuote(route.campaign,rosterFor(route.campaign).find(op=>op.id===id),term).available;
- const specialist=rosterFor(route.campaign).filter(op=>op.id>=100&&op.id<1000&&available(op.id,'day')&&contractQuote(route.campaign,op,'day').price<=Math.max(0,route.campaign.resources.treasury-250)).sort((a,b)=>b.marksmanship-a.marksmanship||a.id-b.id)[0]?.id;assert.ok(specialist,'the next paid rifleman must be available and leave funds for ordinary relief');
+ const specialist=rosterFor(route.campaign).filter(op=>op.id>=100&&op.id<1000&&available(op.id,'day')&&contractQuote(route.campaign,op,'day').price<=Math.max(0,route.campaign.resources.treasury-250)).sort((a,b)=>b.marksmanship-a.marksmanship||contractQuote(route.campaign,a,'day').price-contractQuote(route.campaign,b,'day').price||a.id-b.id)[0]?.id;assert.ok(specialist,'the next paid rifleman must be available and leave funds for ordinary relief');
  order({type:'recruitCivic',id:specialist,term:'day'});hired.push(specialist);
- const replacementCount=Math.max(2,12-local.length-1);
- const replacements=rosterFor(route.campaign).filter(op=>op.id>=100&&op.id<1000&&available(op.id,'week')&&contractQuote(route.campaign,op,'week').price<=250).sort((a,b)=>b.marksmanship-a.marksmanship||contractQuote(route.campaign,a,'week').price-contractQuote(route.campaign,b,'week').price||a.id-b.id).slice(0,replacementCount).map(op=>op.id);assert.equal(replacements.length,replacementCount);
+ const replacementCount=Math.max(0,12-local.length-1);
+ const replacements=rosterFor(route.campaign).filter(op=>op.id>=100&&op.id<1000&&available(op.id,'week')&&contractQuote(route.campaign,op,'week').price<=routeHiringCeiling(route.campaign,250)).sort((a,b)=>b.marksmanship-a.marksmanship||contractQuote(route.campaign,a,'week').price-contractQuote(route.campaign,b,'week').price||a.id-b.id).slice(0,replacementCount).map(op=>op.id);assert.equal(replacements.length,replacementCount);
  for(const id of replacements){order({type:'recruitCivic',id,term:'week'});hired.push(id);}
  const present=id=>route.campaign.recruited.includes(id)&&route.campaign.operativeState[id].alive&&!route.campaign.operativeState[id].captured&&route.campaign.operativeState[id].location==='tucuman';
- const field=[...new Set([specialist,replacements[0],141,127,105,134,126,...local])].filter(id=>present(id)&&!doctors.includes(id)).slice(0,6);
+ const field=[...new Set([specialist,...replacements.slice(0,1),141,127,105,134,126,...local])].filter(id=>present(id)&&!doctors.includes(id)).slice(0,6);
  const support=[...new Set([...doctors,...replacements.slice(1),111,103,104,122,...local])].filter(id=>present(id)&&!field.includes(id)).slice(0,6);
  assert.equal(field.length,6);assert.equal(support.length,6);
  const hiringCost=cash-route.campaign.resources.treasury;assert.equal(hiringCost,hired.reduce((sum,id)=>sum+route.campaign.contracts[id].paid,0));
@@ -165,7 +169,7 @@ export function prepareSaltaAssault(start,{report=()=>{}}={}){
  for(const operativeId of field)order({type:'assignCare',operativeId,assignment:'active'});route.prepareWeapons(report);
  order({type:'createSquad',name:'Apoyo del norte',ids:support});const supportSquad=route.campaign.activeSquadId;
  for(const operativeId of support)order({type:'assignCare',operativeId,assignment:'active'});route.prepareWeapons(report);
- order({type:'configureArtillery',types:['swivel']});
+ order({type:'configureArtillery',types:battery.selections});
  order({type:'attack',sector:'salta',queue:true});order({type:'selectSquad',id:fieldSquad});order({type:'attack',sector:'salta',queue:true});
  const deploying=[fieldSquad,supportSquad];
  for(let i=0;i<24&&!deploying.every(id=>route.campaign.squads.find(s=>s.id===id)?.journey?.status==='ready');i++){
@@ -234,11 +238,12 @@ export function completeNorthernMission(start,{report=()=>{}}={}){
  // Keep the messenger paid for the actual journey. A healthy lone survivor
  // can carry the agreement even when the force has used its last dressing.
  const messengers=doctors.length?doctors:local.filter(op=>{const r=route.campaign.operativeState[op.id];return r.hp>=15&&!r.bleeding&&r.energy>10;}).map(op=>op.id);
- assert.ok(messengers.length,'an actual capable survivor carries the northern agreement');renew(route,messengers,20);
- const messenger=messengers[0];order({type:'squad',ids:[messenger]});order({type:'assignCare',operativeId:messenger,assignment:'active'});order({type:'travel',sector:'tucuman'});
+ assert.ok(messengers.length,'an actual capable survivor carries the northern agreement');
+ const messenger=messengers[0];renew(route,[messenger],20);
+ order({type:'squad',ids:[messenger]});order({type:'assignCare',operativeId:messenger,assignment:'active'});order({type:'travel',sector:'tucuman'});
  assert.equal(route.campaign.hour,start.hour+12+careHours);
  const campaign=attendYatasto(route.campaign);
- assert.equal(campaign.phase,3);assert.equal(campaign.missions.yatasto.completed,true);assert.equal(campaign.flags.northPact,true);assert.equal(isSupplied(campaign,'salta'),true);
+ assert.equal(campaign.phase,3);assert.equal(campaign.missions.yatasto.completed,true);assert.equal(campaign.flags.northPact,true);
  assert.equal(campaign.pendingBattle,null);assert.equal(campaign.completed,false);
  for(const [id,record] of Object.entries(start.operativeState))if(!record.alive)assert.equal(campaign.operativeState[id].alive,false);
  for(const {id} of local.filter(op=>op.id!==messenger)){assert.equal(campaign.operativeState[id].location,'salta');assert.ok(campaign.operativeState[id].hp>=treated.operativeState[id].hp);assert.equal(campaign.operativeState[id].bleeding,0);}

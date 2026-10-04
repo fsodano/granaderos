@@ -1,3 +1,4 @@
+import {withCarriedAmmo} from './commerce-gear-fixture.mjs';
 import {addAmmunition,weaponAmmoType} from '../game/ammunition-types.js';
 import {syncUnitAmmunition,initializeUnitAmmunition} from '../game/tactical-ammunition.js';
 import {setTestAmmunition} from './typed-ammunition-fixture.mjs';
@@ -118,7 +119,7 @@ test('an enemy partial reload can trigger a saved player interrupt and does not 
 });
 
 test('full campaign save resumes partial work and pack work survives report and reentry',()=>{
- let c=initialCampaign(45);c.hour=12;c.loadouts[3]={weapon:1802,blade:1813};c.loadouts[4]={weapon:1802,blade:1813};c=dispatchCampaign(c,{type:'visitSector'});assert.equal(c.lastError,null);const r=c.pendingBattle;r.enemies=[{id:'e',x:5,y:6,hp:15,bandaged:85,patrol:false,weapon:1813,loaded:0,ammo:0,agility:0,overwatch:false}];r.enemies.forEach(u=>initializeUnitAmmunition(u));
+ let c=initialCampaign(45);c.hour=12;c.loadouts[3]={weapon:1802,blade:1813};c.loadouts[4]={weapon:1802,blade:1813};c=withCarriedAmmo(withCarriedAmmo(c,3,'ammoRifle',9),4,'ammoRifle',9);c=dispatchCampaign(c,{type:'visitSector'});assert.equal(c.lastError,null);const r=c.pendingBattle;r.enemies=[{id:'e',x:5,y:6,hp:15,bandaged:85,patrol:false,weapon:1813,loaded:0,ammo:0,agility:0,overwatch:false}];r.enemies.forEach(u=>initializeUnitAmmunition(u));
  let b=createBattle(r.squad.map((u,i)=>{const actor={...structuredClone(u),x:1,y:1+i};if(i===0){if(actor.loaded)addAmmunition(actor,weaponAmmoType(actor.weapon),actor.loaded);actor.loaded=0;syncUnitAmmunition(actor);}return actor;}),{...r,width:32,height:8,tiles:grid(),exploration:false,enemies:r.enemies});
  const id=b.units[0].id;b.units[0].ap=20;b=actBattle(b,{type:'reload',unitId:id});assert.equal(b.lastError,null);
  const pair=syncBattleTime(c,b);assert.equal(pair.error,null);const saved=decodeSave(encodeSave(pair.campaign,pair.battle));assert.deepEqual(saved.battle,pair.battle);

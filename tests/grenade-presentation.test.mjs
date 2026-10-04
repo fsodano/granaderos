@@ -1,3 +1,4 @@
+import {assertTradeRejected} from './commerce-gear-fixture.mjs';
 import {register} from 'node:module';register('./tactical-render-loader.mjs',import.meta.url);
 import test from 'node:test';import assert from 'node:assert/strict';
 import {createElement as h} from '../web/node_modules/react/index.js';import {renderToStaticMarkup as render} from '../web/node_modules/react-dom/server.node.js';
@@ -114,10 +115,10 @@ function supplyState(){
  for(const action of [{type:'recruitCivic',id:110,term:'week'},{type:'travel',sector:'mendoza'}]){state=dispatchCampaign(state,action);assert.equal(state.lastError,null);}
  return state;
 }
-test('the arsenal row buys one grenade for the selected present operative using the real offer',()=>{
+test('an old arsenal component action cannot issue grenades through the campaign reducer',()=>{
  let state=supplyState(),action;const operative=rosterFor(state).find(person=>person.id===110),offer=grenadeOffer(state,operative,isSupplied),before=structuredClone(state);assert.equal(offer.available,true);
  const tree=componentTree(GrenadeSupplies,{state,operative,dispatch:a=>{action=a;state=dispatchCampaign(state,a);}}),button=hosts(tree).find(node=>node.type==='button');assert.equal(button.props.disabled,false);button.props.onClick();
- assert.deepEqual(action,offer.action);assert.equal(state.lastError,null);assert.equal(state.resources.treasury,before.resources.treasury-offer.price);assert.equal(state.merchants.mendoza.grenades.arsenal,before.merchants.mendoza.grenades.arsenal-1);assert.equal(state.operativeState[110].inventory['grenade:arsenal'].count,1);
+ assert.deepEqual(action,offer.action);assert.match(state.lastError,/comercio de equipo/);assert.deepEqual({...state,lastError:before.lastError},before);assertTradeRejected(before,offer.action);
  const markup=render(h(GrenadeSupplies,{state,operative,dispatch(){}}));assert.ok(markup.includes(operative.name));assert.match(markup,/no se reponen/);assert.match(markup,/mano principal/);
 });
 test('unavailable arsenal offers show the reason and cannot submit purchases',()=>{

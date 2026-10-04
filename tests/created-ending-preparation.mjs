@@ -1,7 +1,9 @@
+import {prepareRouteBattery,prepareRouteMixedBattery} from './route-battery.mjs';
+import {supplyRouteDressings} from './route-dressings.mjs';
+import {repairRouteFirearms,discoverRouteCache} from './finite-route-equipment.mjs';
 import assert from 'node:assert/strict';
 import {decodeSave,encodeSave} from '../game/save.js';
-import {dispatchCampaign,rosterFor,dailyIncome,isSupplied} from '../game/campaign.js';
-import {equipmentCatalog} from '../game/equipment-catalog.js';
+import {dispatchCampaign,rosterFor,dailyIncome} from '../game/campaign.js';
 import {contractQuote} from '../game/contracts.js';
 import {baseMorale} from '../game/morale.js';
 import {sectorInventoryModel} from '../game/sector-inventory.js';
@@ -29,13 +31,7 @@ export function stageActualPaidCapitalRelief(start,{report=()=>{}}={}){
  };
  for(const operativeId of [...permanent,57])order({type:'assignCare',operativeId,assignment:'rest'});
  const cordoba=c.squads.find(q=>q.members.includes(57));assert.ok(cordoba&&cordoba.location==='cordoba');order({type:'selectSquad',id:cordoba.id});order({type:'configureArtillery',types:[]});
- const gunsBefore=c.armory.bronze4??0,gunPrice=equipmentCatalog(c).find(item=>item.item==='bronze4').price;
- for(let n=0;n<3;n++){
-  for(let h=0;h<48&&!c.merchants.cordoba.stock.bronze4;h++){assert.equal(c.pendingEncounter,null);order({type:'wait',hours:1});}
-  const stock=c.merchants.cordoba.stock.bronze4,cash=c.resources.treasury;assert.ok(stock>0);
-  order({type:'purchaseEquipment',item:'bronze4'});assert.equal(c.resources.treasury,cash-gunPrice);assert.equal(c.merchants.cordoba.stock.bronze4,stock-1);
- }
- assert.equal(c.armory.bronze4,gunsBefore+3);
+ const battery=prepareRouteBattery(c,['bronze4','bronze4','bronze4'],{destination:'cordoba',report});c=battery.campaign;assert.equal(battery.selections.length,3);
  const fees=paid.reduce((sum,id)=>sum+contractQuote(c,rosterFor(c).find(op=>op.id===id),'day').price,0);
  const reserve=60000+18*fees+2000;
  report({event:'paidCapitalFundingStarted',hour:c.hour,treasury:c.resources.treasury,income:dailyIncome(c),dailyFees:fees,reserve,storedGuns:3});
@@ -104,7 +100,7 @@ export function stageActualPaidCapitalRelief(start,{report=()=>{}}={}){
 }
 
 
-// Recover all five actual high-pass survivors during the finite supplier wait.
+// Recover all five actual high-pass survivors during real finite local care.
 export function prepareCreatedFiveSurvivorCapitalReturn(start,{report=()=>{}}={}){
  let c=decodeSave(encodeSave(start)).campaign;
  const field=c.squad.filter(id=>{const r=c.operativeState[id];return r.alive&&!r.captured;});
@@ -132,7 +128,7 @@ export function prepareCreatedFiveSurvivorCapitalReturn(start,{report=()=>{}}={}
   for(const operativeId of field)order({type:'assignCare',operativeId,assignment:operativeId===patient?'patient':'rest'});
   for(let h=0;h<30&&c.operativeState[patient].hp<target;h++){
    assert.equal(c.pendingEncounter,null);
-   if(!c.operativeState[doctor].medkits)order({type:'purchaseMedicalSupplies',operativeId:doctor,quantity:1});
+   if(!c.operativeState[doctor].medkits)c=supplyRouteDressings(c,doctor,(c.operativeState[doctor].medkits??0)+(1),{report});
    order({type:'assignCare',operativeId:doctor,assignment:'doctor'});order({type:'wait',hours:1});
   }
   assert.ok(c.operativeState[patient].hp>=target,'finite local care must reach the stated partial health');
@@ -145,64 +141,63 @@ export function prepareCreatedFiveSurvivorCapitalReturn(start,{report=()=>{}}={}
   assert.equal(c.pendingEncounter,null);order({type:'wait',hours:1});
  }
  assert.equal(c.location,'cordoba');
- for(const item of ['bronze4','swivel']){
-  assert.ok(c.merchants.cordoba.stock[item]>0,'the final battery must be present in finite town stock');
-  order({type:'purchaseEquipment',item});
- }
+ const firstBattery=prepareRouteBattery(c,['bronze4','swivel'],{destination:'cordoba',report});c=firstBattery.campaign;
  treat(145,135,65);treat(135,57,65);rest(24);
  for(const operativeId of field){
-  if(c.operativeState[operativeId].condition<100)order({type:'repairWeapon',operativeId});
-  if(operativeId!==57&&c.operativeState[operativeId].medkits<2)order({type:'purchaseMedicalSupplies',operativeId,quantity:2-c.operativeState[operativeId].medkits});
+  if(c.operativeState[operativeId].condition<100)c=repairRouteFirearms(c,[operativeId]);
+  if(operativeId!==57&&c.operativeState[operativeId].medkits<2)c=supplyRouteDressings(c,operativeId,(c.operativeState[operativeId].medkits??0)+(2-c.operativeState[operativeId].medkits),{report});
   order({type:'assignCare',operativeId,assignment:'active'});
  }
- c=finishReloadsBeforeMarch(c);order({type:'configureArtillery',types:['bronze4','swivel']});
- // A second finite swivel restocks during the field treatment.
- order({type:'purchaseEquipment',item:'swivel'});
- // Doctor 135 spends his carried kits first, then buys each required dressing
- // from actual local stock. The others rest while the command wound heals.
+ c=finishReloadsBeforeMarch(c);order({type:'configureArtillery',types:firstBattery.selections});
+
+ // Doctor 135 spends his carried kits first, then recovers each required dressing
+ // from actual finite local stocks. The others rest while the command wound heals.
  for(const operativeId of field)order({type:'assignCare',operativeId,assignment:operativeId===57?'patient':operativeId===135?'doctor':'rest'});
  for(let h=0;h<12&&c.operativeState[57].hp<60;h++){
   assert.equal(c.pendingEncounter,null);
-  if(!c.operativeState[135].medkits)order({type:'purchaseMedicalSupplies',operativeId:135,quantity:1});
+  if(!c.operativeState[135].medkits)c=supplyRouteDressings(c,135,(c.operativeState[135].medkits??0)+(1),{report});
   order({type:'wait',hours:1});
  }
  assert.ok(c.operativeState[57].hp>=60);rest(8);
  for(const operativeId of field){
-  if(c.operativeState[operativeId].medkits<2)order({type:'purchaseMedicalSupplies',operativeId,quantity:2-c.operativeState[operativeId].medkits});
+  if(c.operativeState[operativeId].medkits<2)c=supplyRouteDressings(c,operativeId,(c.operativeState[operativeId].medkits??0)+(2-c.operativeState[operativeId].medkits),{report});
   order({type:'assignCare',operativeId,assignment:'active'});
  }
- report({event:'actualThirdSwivelSupply',hour:c.hour,treasury:c.resources.treasury,merchant:structuredClone(c.merchants.cordoba),contracts:structuredClone(c.contracts)});
+ report({event:'actualFinalBatteryCare',hour:c.hour,treasury:c.resources.treasury,contracts:structuredClone(c.contracts)});
  for(let h=0;h<24;h++){
   const reservePatients=[7,142].filter(id=>c.operativeState[id].hp<65),physicianPatient=!reservePatients.length&&c.operativeState[135].hp<c.operativeState[135].maxHp;
   const tired=field.some(id=>{const r=c.operativeState[id];return r.energy<100||r.fatigue>0||r.asleep;});
-  if(c.merchants.cordoba.stock.swivel&&!reservePatients.length&&!physicianPatient&&!tired)break;
-  assert.ok(isSupplied(c,'cordoba'),'the actual finite supplier must be supplied');assert.equal(c.pendingEncounter,null);assert.ok(c.hour+1+8<10440,'actual finite care and supply must leave time for the admitted return route');
+  if(!reservePatients.length&&!physicianPatient&&!tired)break;
+  assert.equal(c.pendingEncounter,null);assert.ok(c.hour+1+8<10440,'actual finite care and supply must leave time for the admitted return route');
   const doctor=reservePatients.length?135:physicianPatient?57:null;
-  if(doctor&&!c.operativeState[doctor].medkits)order({type:'purchaseMedicalSupplies',operativeId:doctor,quantity:1});
+  if(doctor&&!c.operativeState[doctor].medkits)c=supplyRouteDressings(c,doctor,(c.operativeState[doctor].medkits??0)+(1),{report});
   for(const operativeId of field)order({type:'assignCare',operativeId,assignment:operativeId===doctor?'doctor':reservePatients.includes(operativeId)||physicianPatient&&operativeId===135?'patient':'rest'});
   order({type:'wait',hours:1});
  }
  assert.ok([7,142].every(id=>c.operativeState[id].hp>=65));assert.equal(c.operativeState[135].hp,c.operativeState[135].maxHp);assert.ok(field.every(id=>{const r=c.operativeState[id];return r.energy===100&&!r.fatigue&&!r.asleep;}));
- assert.ok(c.merchants.cordoba.stock.swivel>0,'the third light gun must restock through actual elapsed care and waiting');
- order({type:'purchaseEquipment',item:'swivel'});
- order({type:'configureArtillery',types:['swivel','swivel','swivel']});
+ const finalBattery=prepareRouteMixedBattery(c,3,{destination:'san_nicolas',report});c=finalBattery.campaign;order({type:'configureArtillery',types:finalBattery.selections});
  // This five-person branch tops up a stated carried reserve instead of
  // adding seven kits to actors who already carry finite dressings.
  const medicalTargets=new Map(field.map(id=>[id,id===135?10:6]));
+ c=discoverRouteCache(c,field[0]);
  const medicalBefore=new Map(field.map(id=>[id,c.operativeState[id].medkits]));
- const medicalStockBefore=c.merchants.cordoba.supplies.medkits;
+ const medicalStock=()=>sectorInventoryModel(c,c.location,rosterFor(c),field[0]).entries.filter(row=>JSON.parse(row.expected).item==='medkits').reduce((sum,row)=>sum+row.count,0);
+ const localCarried=()=>c.recruited.filter(id=>{const r=c.operativeState[id];return r.alive&&!r.captured&&r.location===c.location;}).reduce((sum,id)=>sum+(c.operativeState[id].medkits??0),0);
+ const medicalStockBefore=medicalStock();
  const medicalNeed=field.reduce((n,id)=>n+Math.max(0,medicalTargets.get(id)-medicalBefore.get(id)),0);
- assert.ok(medicalNeed<=medicalStockBefore,'the exact five-person reserve must fit real medical stock');
+ const donatedReserve=c.recruited.filter(id=>{const r=c.operativeState[id];return r.alive&&!r.captured&&r.location===c.location;}).reduce((sum,id)=>sum+Math.max(0,(c.operativeState[id].medkits??0)-(medicalTargets.get(id)??0)),0);
+ assert.ok(medicalNeed<=medicalStockBefore+donatedReserve,'the exact five-person reserve must fit actual local stock and carried surplus');
+ const medicalTotalBefore=medicalStockBefore+localCarried(),medicalReceipts=[];
  const medicalCashBefore=c.resources.treasury,medicalHour=c.hour,medicalSecond=c.secondOfHour;
  for(const operativeId of field){
   const quantity=Math.max(0,medicalTargets.get(operativeId)-c.operativeState[operativeId].medkits);
-  if(quantity)order({type:'purchaseMedicalSupplies',operativeId,quantity});
-  assert.equal(c.operativeState[operativeId].medkits,Math.max(medicalBefore.get(operativeId),medicalTargets.get(operativeId)));
+  if(quantity)c=supplyRouteDressings(c,operativeId,medicalTargets.get(operativeId),{reserves:Object.fromEntries(medicalTargets),report:event=>{medicalReceipts.push(event);report(event);}});
  }
- assert.equal(c.merchants.cordoba.supplies.medkits,medicalStockBefore-medicalNeed);
- assert.equal(c.resources.treasury,medicalCashBefore-medicalNeed*10);
+ assert.ok(field.every(id=>c.operativeState[id].medkits>=medicalTargets.get(id)));
+ assert.equal(medicalStock()+localCarried(),medicalTotalBefore,'Actual distribution conserves finite local dressings.');
+ assert.equal(c.resources.treasury,medicalCashBefore);
  assert.equal(c.hour,medicalHour);assert.equal(c.secondOfHour,medicalSecond);
- report({event:'actualFivePersonMedicalReserve',hour:c.hour,second:c.secondOfHour,treasury:c.resources.treasury,stockBefore:medicalStockBefore,stockAfter:c.merchants.cordoba.supplies.medkits,purchased:medicalNeed,carried:field.map(id=>({id,before:medicalBefore.get(id),target:medicalTargets.get(id),after:c.operativeState[id].medkits}))});
+ report({event:'actualFivePersonMedicalReserve',hour:c.hour,second:c.secondOfHour,treasury:c.resources.treasury,stockBefore:medicalStockBefore,stockAfter:medicalStock(),collected:medicalReceipts.filter(event=>event.event==='routeDressingsCollected').reduce((sum,event)=>sum+event.count,0),receipts:medicalReceipts,carried:field.map(id=>({id,before:medicalBefore.get(id),target:medicalTargets.get(id),after:c.operativeState[id].medkits}))});
  for(const operativeId of field)order({type:'assignCare',operativeId,assignment:'active'});
  report({event:'actualFivePersonReturnDeparture',hour:c.hour,second:c.secondOfHour,treasury:c.resources.treasury});
  c=prepareFinalAssault(c,{staging:'san_nicolas',target:'buenos_aires'});

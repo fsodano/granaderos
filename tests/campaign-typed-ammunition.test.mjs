@@ -1,3 +1,4 @@
+import {withStoredGear,withCarriedAmmo,assertTradeRejected} from './commerce-gear-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign as createCampaign,dispatchCampaign,rosterFor,serializeCampaign,restoreCampaign} from '../game/campaign.js';
@@ -34,13 +35,15 @@ test('fresh campaigns keep treasury separate from finite merchant and personal a
  assert.ok(Object.values(s.operativeState).every(r=>r.ammunitionVersion===2&&r.carriedAmmo===0&&!Object.keys(ammunitionByType(r)).length));assert.equal(s.recruited.length,0);assert.deepEqual(save(s),s);
 });
 
-test('purchases debit exact funds and a finite merchant family; real supplied time replenishes it',()=>{
+test('closed ammunition purchases reject atomically and owned typed stock does not replenish on time',()=>{
  let s=hire(initialCampaign());const cash=s.resources.treasury,clock=[s.hour,s.secondOfHour];
- s=purchase(s,'ammoRifle',60);assert.equal(s.resources.treasury,cash-60);assert.equal(s.ammunitionShops.retiro.stock.ammoRifle,0);assert.deepEqual(ammunitionByType(s.operativeState[110]),{rifle_62:60});assert.deepEqual([s.hour,s.secondOfHour],clock);assert.deepEqual(save(s),s);
- for(const patch of [{family:'ammoRifle',quantity:1},{family:'universal',quantity:1},{quantity:-1},{quantity:1.5},{quantity:61}])reject(s,{type:'ammunition',operativeId:110,family:'ammoPistol',quantity:1,direction:'buy',...patch});
- const poor={...s,resources:{treasury:0}};reject(poor,{type:'ammunition',operativeId:110,family:'ammoPistol',quantity:1,direction:'buy'});
- const pending=order(s,{type:'visitSector'});reject(pending,{type:'ammunition',operativeId:110,family:'ammoPistol',quantity:1,direction:'buy'});
- s=advanceCampaignHours(s,23);assert.equal(s.ammunitionShops.retiro.stock.ammoRifle,0);s=advanceCampaignHours(save(s),1);assert.equal(s.ammunitionShops.retiro.stock.ammoRifle,6);assert.equal(s.ammunitionShops.retiro.stock.ammoMusket,180);
+ assertTradeRejected(s,{type:'ammunition',operativeId:110,family:'ammoRifle',quantity:60,direction:'buy'});
+ s=withCarriedAmmo(s,110,'ammoRifle',60);assert.equal(s.resources.treasury,cash);assert.deepEqual(s.ammunitionShops,{});assert.deepEqual(ammunitionByType(s.operativeState[110]),{musket_75:9,rifle_62:60});assert.deepEqual([s.hour,s.secondOfHour],clock);assert.deepEqual(save(s),s);
+ for(const patch of [{family:'ammoRifle',quantity:1},{family:'universal',quantity:1},{quantity:-1},{quantity:1.5},{quantity:61}])assertTradeRejected(s,{type:'ammunition',operativeId:110,family:'ammoPistol',quantity:1,direction:'buy',...patch});
+ const poor={...s,resources:{treasury:0}};assertTradeRejected(poor,{type:'ammunition',operativeId:110,family:'ammoPistol',quantity:1,direction:'buy'});
+ const pending=order(s,{type:'visitSector'});assertTradeRejected(pending,{type:'ammunition',operativeId:110,family:'ammoPistol',quantity:1,direction:'buy'});
+ const ammunition=ammunitionByType(s.operativeState[110]);s=advanceCampaignHours(s,24);assert.deepEqual(s.ammunitionShops,{});assert.deepEqual(ammunitionByType(s.operativeState[110]),ammunition);
+
 });
 
 test('retired material production cannot add ammunition or revive a global reserve',()=>{
@@ -49,32 +52,33 @@ test('retired material production cannot add ammunition or revive a global reser
  assert.deepEqual(Object.keys(s.resources),['treasury']);assert.deepEqual(save(s),s);
 });
 
-test('paid physical family stores remain at their own sector during saved travel',()=>{
- let s=hire(initialCampaign());s=purchase(s,'ammoPistol',7);s=purchase(s,'ammoRifle',3);const cash=s.resources.treasury;
+test('owned physical family stores remain at their own sector during saved travel',()=>{
+ let s=hire(initialCampaign());s=withCarriedAmmo(s,110,'ammoPistol',7);s=withCarriedAmmo(s,110,'ammoRifle',3);const cash=s.resources.treasury;
  s=purchase(s,'ammoPistol',7,'store');s=purchase(s,'ammoRifle',3,'store');assert.deepEqual(stock(s),{retiro:{ammoPistol:7,ammoRifle:3}});assert.equal(s.resources.treasury,cash);
  s=order(save(s),{type:'travel',sector:'cell-27-27'});const stores=stock(s);reject(s,{type:'ammunition',operativeId:110,family:'ammoPistol',quantity:1,direction:'take'});assert.deepEqual(stock(s),stores);
  s=order(save(s),{type:'travel',sector:'retiro'});s=purchase(s,'ammoPistol',4,'take');assert.deepEqual(stock(s),{retiro:{ammoPistol:3,ammoRifle:3}});assert.equal(ammunitionByType(s.operativeState[110]).pistol_69,4);assert.deepEqual(save(s),s);
 });
 
 test('a paid hire retains typed rounds across deployment, report, weapon swap, reload and reentry',()=>{
- let s=order(hire(initialCampaign()),{type:'visitSector'}),b=flat(s);assert.deepEqual(unitAmmunitionByType(b.units.find(u=>u.id==='110')),{musket_75:10});assert.equal(s.ammunitionShops.retiro.stock.ammoMusket,170);
+ let s=order(hire(initialCampaign()),{type:'visitSector'}),b=flat(s);assert.deepEqual(unitAmmunitionByType(b.units.find(u=>u.id==='110')),{musket_75:10});assert.deepEqual(s.ammunitionShops,{});
  ({campaign:s,battle:b}=decodeSave(encodeSave(s,b)));s=leave(s,b);assert.deepEqual(ammunitionByType(s.operativeState[110]),{musket_75:9});
- s=order(s,{type:'purchaseEquipment',item:'firearm-1805'});s=order(s,{type:'equip',operativeId:110,itemId:'firearm-1805',slot:'weapon'});const stored=s.armoryItems.find(i=>i.item===1800);assert.equal(stored.loaded,1);
- s=order(save(s),{type:'visitSector'});b=flat(s);const u=b.units.find(u=>u.id==='110');assert.equal(u.weapon,1805);assert.equal(u.loaded,0);assert.deepEqual(ammunitionByType(u),{musket_75:9,pistol_69:10});assert.equal(s.ammunitionShops.retiro.stock.ammoMusket,170);assert.equal(s.ammunitionShops.retiro.stock.ammoPistol,170);
+ s=withCarriedAmmo(s,110,'ammoPistol',10);s=withStoredGear(s,'firearm-1805');s=order(s,{type:'equip',operativeId:110,itemId:'firearm-1805',slot:'weapon'});const stored=s.armoryItems.find(i=>i.item===1800);assert.equal(stored.loaded,1);
+ s=order(save(s),{type:'visitSector'});b=flat(s);const u=b.units.find(u=>u.id==='110');assert.equal(u.weapon,1805);assert.equal(u.loaded,0);assert.deepEqual(ammunitionByType(u),{musket_75:9,pistol_69:10});assert.deepEqual(s.ammunitionShops,{});assert.deepEqual(s.ammunitionShops,{});
  b=actBattle(b,{type:'reload',unitId:'110'});assert.equal(b.lastError,null);assert.equal(b.units[0].loaded,1);s=leave(s,b);const shops=structuredClone(s.ammunitionShops),cash=s.resources.treasury;s=order(save(s),{type:'visitSector'});assert.deepEqual(ammunitionByType(s.pendingBattle.squad[0]),{musket_75:9,pistol_69:9});assert.deepEqual(s.ammunitionShops,shops);assert.equal(s.resources.treasury,cash);assert.deepEqual(restoreCampaign(serializeCampaign(s)),s);
 });
 
 test('finite in-sector transfers can retain more than ten compatible rounds through pending saves',()=>{
  let s=hire(hire(initialCampaign(8)),114);s=order(s,{type:'visitSector'});let b=flat(s);const totalBefore=b.units.filter(u=>u.side==='player').reduce((n,u)=>n+availableAmmunition(u),0);
  b=actBattle(b,{type:'transfer',unitId:'114',targetId:'110',item:'inventory:ammo:musket_75',count:4});assert.equal(b.lastError,null);assert.equal(availableAmmunition(b.units.find(u=>u.id==='110')),13);assert.equal(b.units.filter(u=>u.side==='player').reduce((n,u)=>n+availableAmmunition(u),0),totalBefore);
- s=leave(s,b);const stockBefore=s.ammunitionShops.retiro.stock.ammoMusket,cash=s.resources.treasury;s=order(save(s),{type:'visitSector'});assert.equal(s.pendingBattle.squad.find(u=>u.id===110).ammo,13);assert.equal(s.ammunitionShops.retiro.stock.ammoMusket,stockBefore-4,'only the donor buys its four missing rounds');assert.equal(s.resources.treasury,cash-4);assert.deepEqual(restoreCampaign(serializeCampaign(s)),s);
+ s=leave(s,b);const stockBefore=structuredClone(s.ammunitionShops),cash=s.resources.treasury;s=order(save(s),{type:'visitSector'});assert.equal(s.pendingBattle.squad.find(u=>u.id===110).ammo,13);assert.deepEqual(s.ammunitionShops,stockBefore);assert.equal(s.pendingBattle.squad.find(u=>u.id===114).ammo,5,'the donor retains only its actual remaining rounds');assert.equal(s.resources.treasury,cash);assert.deepEqual(restoreCampaign(serializeCampaign(s)),s);
 });
 
-test('initial issuance buys only matching finite supplier rounds and respects full pockets',()=>{
+test('initial allowance is issued once and preparation does not buy supplier rounds or replace full pockets',()=>{
  const d=content();d.ammunitionMarket={defaults:structuredClone(DEFAULT_AMMUNITION_MARKET),locations:{}};d.ammunitionMarket.defaults.families.ammoMusket.initial=2;
- const s=hire(initialCampaign(8,d));s.ammunitionStores.retiro={ammoMusket:3,ammoPistol:7};const stores=stock(s),cash=s.resources.treasury,pistol=s.ammunitionShops.retiro.stock.ammoPistol;
- const issue=prepareCampaignAmmunition(s,rosterFor(s),[110],{supplied:true,commit:true});assert.equal(issue.cost,2);assert.deepEqual(unitAmmunitionByType({...rosterFor(s).find(o=>o.id===110),...issue.allocation[110]}),{musket_75:2});assert.equal(s.resources.treasury,cash-2);assert.equal(s.ammunitionShops.retiro.stock.ammoMusket,0);assert.equal(s.ammunitionShops.retiro.stock.ammoPistol,pistol);assert.deepEqual(stock(s),stores);
- const full=hire(initialCampaign());full.operativeState[110].inventory=Object.fromEntries(Array.from({length:12},(_,i)=>[`ballast${i}`,{count:1,weight:4}]));const before=full.resources.treasury,none=prepareCampaignAmmunition(full,rosterFor(full),[110],{supplied:true,commit:true});assert.equal(none.allocation[110].loaded,1);assert.equal(none.allocation[110].ammo,0);assert.equal(none.cost,1);assert.equal(full.resources.treasury,before-1);assert.equal(full.ammunitionShops.retiro.stock.ammoMusket,179);
+ const s=hire(initialCampaign(8,d));s.ammunitionStores.retiro={ammoMusket:3,ammoPistol:7};const stores=stock(s),cash=s.resources.treasury,shops=structuredClone(s.ammunitionShops);
+ const issue=prepareCampaignAmmunition(s,rosterFor(s),[110],{supplied:true,commit:true});assert.equal(issue.cost,0);assert.deepEqual(unitAmmunitionByType({...rosterFor(s).find(o=>o.id===110),...issue.allocation[110]}),{musket_75:10});assert.equal(s.resources.treasury,cash);assert.deepEqual(s.ammunitionShops,shops);assert.deepEqual(stock(s),stores);
+ const full=hire(initialCampaign());Object.assign(full.operativeState[110].inventory,Object.fromEntries(Array.from({length:12},(_,i)=>[`ballast${i}`,{count:1,weight:4}])));const before=full.resources.treasury,none=prepareCampaignAmmunition(full,rosterFor(full),[110],{supplied:true,commit:true});assert.equal(none.allocation[110].loaded,1);assert.equal(none.allocation[110].ammo,9);assert.equal(none.cost,0);assert.equal(full.resources.treasury,before);assert.deepEqual(full.ammunitionShops,{});
+
 });
 
 test('paid militia retain the actual weapon family and never draw repeated merchant or personal issues',()=>{
@@ -90,9 +94,9 @@ test('return receipts reject an equal-count type conversion and retain captive c
  unit.inventory={};addAmmunition(unit,'pistol_69',9);assert.throws(()=>planReturnAmmunition(request,snapshot,[entry]),/más munición de ese tipo/);
 });
 
-function unmarkCampaign(s){delete s.ammunitionVersion;for(const r of Object.values(s.operativeState)){delete r.ammunitionVersion;delete r.carriedAmmo;}for(const key of Object.values(AMMUNITION_RESOURCE_KEYS))if(key!=='cartridges')delete s.resources[key];for(const m of Object.values(s.merchants))delete m.ammunition;return s;}
+function unmarkCampaign(s,{clearInventory=false}={}){delete s.ammunitionVersion;for(const r of Object.values(s.operativeState)){delete r.ammunitionVersion;delete r.carriedAmmo;if(clearInventory)r.inventory=Object.fromEntries(Object.entries(r.inventory??{}).filter(([,stack])=>stack.kind!=='ammunition'));}for(const key of Object.values(AMMUNITION_RESOURCE_KEYS))if(key!=='cartridges')delete s.resources[key];for(const m of Object.values(s.merchants))delete m.ammunition;return s;}
 test('legacy loose rounds migrate once to .75 while a different gun keeps its own loaded charge',()=>{
- const d=content();d.characters.find(c=>c.id==='person-110').weapon='firearm-1802';const old=unmarkCampaign(hire(initialCampaign(8,d)));Object.assign(old.operativeState[110],{carriedLoaded:1,carriedAmmo:8,carriedReloadProgress:undefined});
+ const d=content();d.characters.find(c=>c.id==='person-110').weapon='firearm-1802';const old=unmarkCampaign(hire(initialCampaign(8,d)),{clearInventory:true});Object.assign(old.operativeState[110],{carriedLoaded:1,carriedAmmo:8,carriedReloadProgress:undefined});
  const s=restoreCampaign(JSON.stringify(old));assert.deepEqual(ammunitionByType(s.operativeState[110]),{musket_75:7});assert.equal(s.operativeState[110].carriedLoaded,1);assert.equal(availableAmmunition({...s.operativeState[110],weapon:1802}),0);assert.equal(s.resources.cartridges,undefined);assert.deepEqual(stock(s),{});assert.match(s.log[0].text,/munición antigua/);assert.deepEqual(save(s),s);
  const twice=restoreCampaign(serializeCampaign(s));assert.deepEqual(twice,s);assert.equal(twice.log.filter(e=>/munición antigua/.test(e.text)).length,1);
 });

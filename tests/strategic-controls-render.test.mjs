@@ -5,8 +5,8 @@ import assert from 'node:assert/strict';
 import {createElement as h} from '../web/node_modules/react/index.js';
 import {renderToStaticMarkup as render} from '../web/node_modules/react-dom/server.node.js';
 import {initialCampaign} from './legacy-campaign-fixture.mjs';
-import {storeEquipment,resaleBreakdown,equipmentInventoryUsage} from '../game/equipment.js';
-import {dispatchCampaign,rosterFor} from '../game/campaign.js';
+import {storeEquipment,resaleBreakdown} from '../game/equipment.js';
+import {rosterFor} from '../game/campaign.js';
 const {default:Armory}=await import('../web/app/Armory.tsx');
 const {default:MedicalCare,MedicalSupplyPurchase}=await import('../web/app/MedicalCare.tsx');
 const noop=()=>{};
@@ -29,24 +29,16 @@ test('armory renders matched stock separately and itemizes the sale of an actual
   assert.ok(resale.includes(`Vender · ${quote.total} pesos`));
 });
 
-test('personnel shows finite medicine stock and the shared configured dressing price',()=>{
-  const state=initialCampaign();state.merchants.retiro.supplies.medkits=4;state.merchants.retiro.restockHours=7;
-  const op=rosterFor(state).find(op=>op.id===10);
-  const draw=s=>render(h(MedicalCare,{state:s,sectorId:'retiro',dispatch:noop}));
-  const buttons=html=>[...html.matchAll(/<button[^>]*>Comprar vendas · \d+ pesos<\/button>/g)].map(match=>match[0]);
-  let markup=draw(state);assert.match(markup,/4\/40 botiquines disponibles/);assert.match(markup,/Repone 5 cada 24 horas/);assert.match(markup,/17 horas abastecidas/);
-  assert.ok(buttons(markup).some(button=>button.includes('40 pesos')&&!button.includes('disabled')));
-  const next=dispatchCampaign(state,{type:'purchaseMedicalSupplies',operativeId:10,quantity:4});
-  assert.equal(next.lastError,null);assert.equal(next.merchants.retiro.supplies.medkits,0);assert.equal(next.operativeState[10].medkits,state.operativeState[10].medkits+4);assert.equal(next.resources.treasury,state.resources.treasury-40);
-  assert.ok(buttons(draw(next)).every(button=>button.includes('disabled')));assert.match(draw(next),/no tiene suficientes vendas/);
-  const packed=structuredClone(state);packed.operativeState[10].medkits=1;packed.operativeState[10].inventory??={};
-  const free=12-equipmentInventoryUsage(packed,op).used;
-  for(let index=0;index<free;index++)packed.operativeState[10].inventory[`filler-${index}`]={count:1,weight:0};
-  assert.equal(equipmentInventoryUsage(packed,op).used,12);
-  const supply=s=>render(h(MedicalSupplyPurchase,{s,op,blocked:false,pharmacy:true,dispatch:noop}));
-  assert.ok(buttons(supply(packed)).some(button=>!button.includes('disabled')),'four dressings fit the existing stack');
-  packed.merchants.retiro.supplies.medkits=5;assert.ok(buttons(supply(packed)).every(button=>button.includes('disabled')),'five dressings require another pocket');
-  state.pendingBattle={id:'pending'};assert.ok(buttons(draw(state)).every(button=>button.includes('disabled')));
+test('personnel keeps carried care and repair work without medical or toolkit purchases',()=>{
+  const state=initialCampaign();state.operativeState[10].medkits=4;state.operativeState[10].toolkitPoints=37;state.operativeState[10].inventory.tools={kind:'repair-kit',count:1,weight:2,repairPoints:17};
+  const before=structuredClone(state),op=rosterFor(state).find(op=>op.id===10);
+  const markup=render(h(MedicalCare,{state,sectorId:'retiro',dispatch:noop}));
+  assert.match(markup,/4 vendas llevadas/);assert.match(markup,/54 puntos de herramientas llevadas/);
+  assert.ok(markup.includes(`Asignación de ${op.nickname}`));assert.match(markup,/<option value="doctor"/);assert.match(markup,/<option value="patient"/);assert.match(markup,/<option value="repair"/);
+  assert.ok(markup.includes(`Equipo para reparar de ${op.nickname}`));assert.ok(markup.includes(`Alcance de reparación de ${op.nickname}`));
+  assert.doesNotMatch(markup,/Comprar|disponibles en la maestranza|botiquines disponibles|Repone|horas abastecidas/);
+  assert.match(render(h(MedicalSupplyPurchase,{s:state,op})),/4 vendas llevadas/);
+  assert.deepEqual(state,before);
 });
 
 
