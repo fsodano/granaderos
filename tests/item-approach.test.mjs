@@ -66,7 +66,7 @@ test('collapse or patient death during exploration preserves the walked cost and
 });
 
 test('a reaction on the final approach tile still cancels the queued treatment',()=>{
-  const s=field({agility:30,experienceLevel:1},{x:4,y:2},{enemies:[{id:'e',x:6,y:2,facing:6,weapon:1806,marksmanship:70,agility:100,experienceLevel:10,patrol:false}]});s.units[2].ap=6;
+  const s=field({agility:30,experienceLevel:1},{x:4,y:2,hp:25},{enemies:[{id:'e',x:6,y:2,facing:6,weapon:1806,marksmanship:70,agility:100,experienceLevel:10,patrol:false}]});s.units[2].ap=6;
   const n=use(s);assert.equal(n.lastError,null);assert.equal(n.units[0].x,3);assert.equal(n.units[2].reactionTurn,1);assert.equal(n.units[0].medkits,2);assert.equal(n.units[1].hp,0,'the intervening patient takes the reaction shot');assert.equal(n.units[1].bleeding,0);assert.ok(n.units[0].ap<60);assert.equal(n.elapsedSeconds,6);
 });
 

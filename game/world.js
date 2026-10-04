@@ -1,4 +1,5 @@
 import {militiaArrivalTerrain} from './militia-arrival.js';
+import {revealFiniteArsenal} from './finite-artillery-arsenals.js';
 import {placeInvaders} from './invader-entry.js';
 import {sectorCash} from './economy.js';
 import {worldCell} from './world-cells.js';
@@ -68,7 +69,9 @@ export function enterSector(request,previous=null,{placement=false}={}){
  for(const unit of state.units)clearEncounter(unit);
  for(const field of ['upperSurfaces','climbLinks'])if(map[field]!==undefined)state[field]=structuredClone(map[field]);
  if(previous){
-   for(const unit of state.units.filter(u=>u.side==='player'&&u.hp>0)){const old=previous.units.find(u=>u.id===unit.id&&u.side==='player');for(const key of ['practiceTiles','ridingPracticeTiles'])if(old?.[key])unit[key]=structuredClone(old[key]);}
+   // Tile histories belong to this sector. The person's practice RNG comes
+   // from the current request and can have advanced in another sector.
+   for(const unit of state.units.filter(u=>u.side==='player'&&u.hp>0)){const old=previous.units.find(u=>u.id===unit.id&&u.side==='player');for(const key of ['practiceTiles','ridingPracticeTiles'])if(old?.[key]!==undefined)unit[key]=structuredClone(old[key]);}
    for(const key of ['groundItems','droppedWeapons','revealedRooms'])state[key]=structuredClone(previous[key]??[]);
    const elapsed=Math.max(0,(request.hour??0)-(previous.savedHour??previous.enteredHour??request.hour??0));
    // One strategic hour advances six ten-minute tactical light intervals.
@@ -175,6 +178,8 @@ export function enterSector(request,previous=null,{placement=false}={}){
    for(const npc of state.npcs)if(npc.hp>0&&!npc.departure)occupied.add(key(npc));
  }
  state.sceneId=request.sceneId??null;state.missionId=request.missionId??request.sceneId??null;
+ if(request.finiteArtilleryArsenal)state.finiteArtilleryArsenal=structuredClone(request.finiteArtilleryArsenal);
+ revealFiniteArsenal(state);
  if(!previous&&!request.sceneId&&sectorCash(request.sector)){
    const leader=state.units.find(u=>u.side==='player'&&u.hp>0),spot=leader&&state.tiles.find(t=>!t.blocked&&!propBlocksAt(state,t.x,t.y)&&!occupied.has(key(t))&&Math.abs(t.x-leader.x)+Math.abs(t.y-leader.y)===1);
    if(spot)state.groundItems.push({id:`cash:${request.sector}`,type:'money',x:spot.x,y:spot.y,count:sectorCash(request.sector)});

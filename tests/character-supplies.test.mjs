@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import {defaultContentPackage,encodeContentPackage,parseContentPackage,validateContentPackage} from '../game/content-package.js';
 import {campaignContentReport} from '../game/campaign-content.js';
 import {DEFAULT_CHARACTER_SUPPLIES} from '../game/character-supplies.js';
-import {initialCampaign,refillCost,rosterFor,dispatchCampaign} from '../game/campaign.js';
+import {initialCampaign,rosterFor,dispatchCampaign} from '../game/campaign.js';
 import {encountersFor} from '../game/encounters.js';
 import {actBattle,getReachable} from '../game/tactical.js';
 import {sectorInventoryModel} from '../game/sector-inventory.js';
@@ -53,8 +53,7 @@ test('paid arrivals use the authored supplies and consumption survives saves, re
  const returned=returnedPackets(returnedSupplyRows(s,'retiro',110)),sequence=s.serviceEquipmentReturns.nextId;assert.deepEqual(returned,expectedPackets(consumed));s=saved({campaign:s}).campaign;assert.deepEqual(returnedPackets(returnedSupplyRows(s,'retiro',110)),returned);
  s=order(s,{type:'recruitCivic',id:110,term:'day'});s=order(s,{type:'wait',hours:6});p=visit(saved({campaign:s}).campaign);assert.deepEqual(supplies(unit(p,110)),emptySupplies);
  s=leave(p);assert.equal(s.serviceEquipmentReturns.nextId,sequence);assert.deepEqual(returnedPackets(returnedSupplyRows(s,'retiro',110)),returned);s=collectReturnedSupplies(s,'retiro',110);assert.deepEqual(supplies(s.operativeState[110]),consumed);
- p=visit(s);assert.deepEqual(supplies(unit(p,110)),consumed);s=leave(saved(p));const price=refillCost(s.operativeState[110]),money=s.resources.treasury;s=order(s,{type:'resupply',operativeId:110});assert.equal(s.resources.treasury,money-price);
- assert.deepEqual(supplies(s.operativeState[110]),{...DEFAULT_CHARACTER_SUPPLIES,rations:3,boleadoras:0});
+ p=visit(s);assert.deepEqual(supplies(unit(p,110)),consumed);s=leave(saved(p));const money=s.resources.treasury,rejectedRefill=dispatchCampaign(s,{type:'resupply',operativeId:110});assert.match(rejectedRefill.lastError,/comercio/);assert.equal(rejectedRefill.resources.treasury,money);assert.deepEqual(supplies(rejectedRefill.operativeState[110]),consumed);
  assert.deepEqual(person(d).startingSupplies,allocation,'mutable campaign supplies do not edit the content package');
 });
 

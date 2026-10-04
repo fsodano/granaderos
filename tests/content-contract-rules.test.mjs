@@ -5,6 +5,7 @@ import {defaultContentPackage,validateContentPackage,resolveContent} from '../ga
 import {campaignContentReport} from '../game/campaign-content.js';
 import {DEFAULT_CONTRACT_RULES,validateContractRules} from '../game/contract-rules.js';
 import {CONTRACT_TERMS,contractTermsFor,contractQuote} from '../game/contracts.js';
+import {HIRING_PRICE_MULTIPLIER} from '../game/economy-balance.js';
 import {contractAttentionStates} from '../game/contract-attention.js';
 import {filterMercenaries} from '../game/mercenary-catalogue.js';
 import {encounterHireTerms,encountersFor} from '../game/encounters.js';
@@ -17,7 +18,7 @@ const saved=s=>restoreCampaign(serializeCampaign(s));
 test('optional contract rules preserve existing packages, prices and unrestricted elite terms',()=>{
  const content=defaultContentPackage(),s=initialCampaign(42,content),op=rosterFor(s).find(o=>o.id===110);
  assert.equal(Object.hasOwn(content,'contractRules'),false);assert.deepEqual(resolveContent(content),content);
- assert.deepEqual(contractTermsFor(s),CONTRACT_TERMS);assert.equal(contractQuote(s,op,'week').price,Math.ceil(op.monthlyPay/30)*7);
+ assert.deepEqual(contractTermsFor(s),CONTRACT_TERMS);assert.equal(contractQuote(s,op,'week').price,Math.ceil(op.monthlyPay*HIRING_PRICE_MULTIPLIER/30)*7);
  assert.equal(saved(s).contentCampaign.identity.hash,s.contentCampaign.identity.hash);
  assert.deepEqual(validateContractRules(undefined),[]);
  const elite=rosterFor(s).find(o=>o.tier==='elite');assert.ok(elite);assert.equal(contractQuote(s,elite,'month').available,true);
@@ -27,8 +28,8 @@ test('optional contract rules preserve existing packages, prices and unrestricte
 test('authored contract duration, experience pay and roster prices use campaign-specific rules',()=>{
  const d=authored();d.characters.find(c=>c.id==='person-110').monthlyPay=600;
  const s=initialCampaign(42,d),op=rosterFor(s).find(o=>o.id===110);s.operativeState[110].xp=125;
- const quote=contractQuote(s,op,'week');assert.equal(quote.daily,45);assert.equal(quote.price,450);assert.equal(quote.hours,240);assert.equal(quote.expiresAt,240);
- assert.deepEqual(Object.values(contractTermsFor(s)).map(t=>t.name),['2 días','10 días','40 días']);
+ const quote=contractQuote(s,op,'week');assert.equal(quote.daily,270);assert.equal(quote.price,2700);assert.equal(quote.hours,240);assert.equal(quote.expiresAt,240);
+ assert.deepEqual(Object.values(contractTermsFor(s)).map(t=>t.name),['2 días','10 días','40 días','Dos semanas']);
  const sorted=filterMercenaries(rosterFor(s),s,{sort:'price'});assert.ok(sorted.every((o,i)=>!i||contractQuote(s,sorted[i-1]).daily<=contractQuote(s,o).daily));
  assert.equal(contractQuote(initialCampaign(42),op,'week').hours,168);
  d.contractRules.days.week=12;assert.equal(contractQuote(s,op,'week').hours,240);
@@ -61,7 +62,7 @@ test('a zero warning window reports only expiry',()=>{
 
 test('local paid residents share authored terms while free service remains free',()=>{
  const d=localPackage({pay:600});d.contractRules=rules();const s=initialCampaign(42,d),npc=encountersFor(s,A).find(n=>n.contentId==='alma-contract');assert.ok(npc);
- assert.deepEqual(encounterHireTerms(s,npc).map(q=>[q.name,q.hours,q.price]),[['2 días',48,60],['10 días',240,300],['40 días',960,1200]]);
+ assert.deepEqual(encounterHireTerms(s,npc).map(q=>[q.name,q.hours,q.price]),[['2 días',48,360],['10 días',240,1800],['40 días',960,7200],['Dos semanas',336,2520]]);
  const free={id:9999,service:'contract',monthlyPay:0};assert.equal(contractQuote(s,free,'month').price,0);assert.equal(contractQuote(s,{...free,service:'permanent'},'month').hours,null);
 });
 

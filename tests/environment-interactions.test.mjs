@@ -216,7 +216,7 @@ test('authored caches reuse existing map IDs and give tools before any required 
   const mendoza = authoredEnvironment('mendoza', buildSectorMap({sector: 'mendoza'}));
   assert.equal(mendoza.containers.length, 1); assert.equal(mendoza.containers[0].locked, true); assert.equal(mendoza.containers[0].trap.type, 'alarm');
   for (const record of [...authored.containers, ...authored.doors, ...mendoza.containers]) validateEnvironment(record);
-  assert.deepEqual(authoredEnvironment('retiro', buildSectorMap({sector: 'retiro'})), {doors: [], containers: []});
+  const retiroMap=buildSectorMap({sector:'retiro'}),retiro=authoredEnvironment('retiro',retiroMap);assert.deepEqual(retiro.doors,[]);assert.equal(retiro.containers.length,1);const cache=retiro.containers[0];assert.equal(cache.id,'retiro:armory-cache');assert.equal(cache.locked,false);assert.equal(cache.open,false);assert.equal(cache.contents.filter(item=>item.item==='weapon').length,3);assert.equal(cache.contents.find(item=>item.ammoType==='musket_75').count,120);assert.equal(cache.contents.find(item=>item.item==='medkits').count,12);assert.equal(cache.contents.find(item=>item.kind==='repair-kit').repairPoints,100);validateEnvironment(cache);
 });
 
 for (const compactLayout of [false, true]) test(`Mendoza supply cache binds one chest and persists depletion on ${compactLayout ? 'compact' : 'full-size'} maps`, () => {

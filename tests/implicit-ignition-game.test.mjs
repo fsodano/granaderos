@@ -1,3 +1,4 @@
+import {assertTradeRejected} from './commerce-gear-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createBattle,actBattle,endTurn,ignitionRisk,reprimePlan} from '../game/tactical.js';
@@ -28,9 +29,10 @@ test('AI clears a jam without a loose powder stock and retains its ammunition',(
  const n=endTurn(s);assert.equal(n.lastError,null);assert.equal(n.units[1].jammed,false);assert.deepEqual(unitAmmunitionByType(n.units[1]),before);
 });
 
-test('workshop replenishment charges only for missing personal supplies',()=>{
+test('retired workshop replenishment cannot issue supplies or change ignition stock',()=>{
  let s=order(initialCampaign(),{type:'recruitCivic',id:110,term:'week'});const u=s.operativeState[110];Object.assign(u,{priming:0,flints:0,rations:0,torches:0});
- const cash=s.resources.treasury;s=order(s,{type:'resupply',operativeId:110});assert.equal(s.resources.treasury,cash-36);assert.equal(s.operativeState[110].rations,2);assert.equal(s.operativeState[110].torches,2);assert.equal(s.operativeState[110].priming,undefined);assert.equal(s.operativeState[110].flints,undefined);
+ assertTradeRejected(s,{type:'resupply',operativeId:110});assert.equal(s.operativeState[110].rations,0);assert.equal(s.operativeState[110].torches,0);
+
 });
 
 test('an active legacy save removes obsolete cursor and pocket stock without changing cartridges or named objects',()=>{

@@ -98,6 +98,7 @@ test('a later soldier death does not rewrite the retained civilian treatment his
  // The later soldier death is the casualty input, reported through the
  // regular tactical boundary. It must not become a second civilian death.
  battle=createBattle(request.squad.map((u,i)=>({...u,x:2,y:2+i,...(Number(u.id)===PATIENT_ID?{hp:0,bleeding:0}:{})})),{...request});
+ if(request.finiteArtilleryArsenal)battle.finiteArtilleryArsenal=structuredClone(request.finiteArtilleryArsenal);
  campaign=finish(campaign,battle);assert.equal(campaign.operativeState[PATIENT_ID].alive,false);assert.equal(record(campaign).inService,true);
  assert.deepEqual(record(campaign).health,civilianHealth);assert.equal(npc(campaign.sectorStates.buenos_aires),undefined);
  const loaded=saved({campaign}).campaign;assert.equal(loaded.operativeState[PATIENT_ID].hp,0);assert.deepEqual(record(loaded).health,civilianHealth);assert.deepEqual(saved({campaign:loaded}).campaign,loaded);

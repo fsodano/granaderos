@@ -11,6 +11,7 @@ the [workspace acceptance record](../../verification/gameplay-completion.md) and
 ## Roster, training, and rest
 
 - [Paid mercenary roster](mercenary-roster.md)
+- [Authored service refusals and paid contracts](service-relationships.md) *(workspace)*
 - [Descanso entre combates](strategic-rest.md)
 - [Attribute training and saved growth](attribute-training.md) *(workspace)*
 - [Militia experience and training](militia-combat-experience.md) *(workspace)*

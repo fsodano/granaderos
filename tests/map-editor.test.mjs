@@ -31,7 +31,7 @@ test("the consolidated sector plans preserve approved terrain, room membership, 
   for (const [id, d] of Object.entries(MAP_LIBRARY)) {
     assert.deepEqual(validateMap(d).errors, []);
     const m = compileMap(d);
-    // Revision 2 is the reviewed larger-building plan; keep its gameplay geometry stable.
+    // Revision 2 is the reviewed building plan; Retiro revision 3 adds its finite armory chest.
     // Normalise derived room ordering without changing room membership.
     const data = {
       tiles: m.tiles
@@ -52,6 +52,9 @@ test("the consolidated sector plans preserve approved terrain, room membership, 
     };
     assert.equal(createHash("sha256").update(JSON.stringify(data)).digest("hex"), expected[id], id);
   }
+});
+test('Retiro revision three adds one exterior armory chest without changing its empty ground surface',()=>{
+ const d=MAP_LIBRARY.retiro,m=compileMap(d);assert.equal(d.revision,3);const cache=m.props.filter(p=>p.id==='retiro:armory-cache');assert.equal(cache.length,1);assert.deepEqual({type:cache[0].type,x:cache[0].x,y:cache[0].y,purpose:cache[0].purpose,blocksMovement:cache[0].blocksMovement},{type:'chest',x:4,y:5,purpose:'armory-cache',blocksMovement:true});const tile=m.tiles.find(t=>t.x===4&&t.y===5);assert.equal(tile.type,'grass');assert.equal(tile.buildingId,undefined);
 });
 test("commands are atomic, reject stale revisions and preserve exported data", () => {
   const d = house(),

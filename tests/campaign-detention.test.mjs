@@ -13,8 +13,9 @@ import {runCivilianPhase} from '../game/npc-ai.js';
 import {advanceCivilianBleeding,applyCivilianHarm} from '../game/civilian-harm.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 const order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,n.lastError);return n;};
-function captured({custodySupplies=0,sameSectorRescue=false,captiveEnergy=100}={}){
- let s=initialCampaign();s=order(s,{type:'recruitCivic',id:112,term:'week'});s.operativeState[112].location=s.location;s=order(s,{type:'purchaseMedicalSupplies',operativeId:112,quantity:2});s=order(s,{type:'squad',ids:[3,4,10]});s.operativeState[112].location='buenos_aires';s.location='humahuaca';s.squads[0].location=s.location;s.sectors.humahuaca.owner='patriot';
+function captured({custodySupplies=0,sameSectorRescue=false,captiveEnergy=100,captureSecond=0}={}){
+ let s=initialCampaign();if(captureSecond)s=order(s,{type:'advanceStrategicTime',seconds:captureSecond});s=order(s,{type:'recruitCivic',id:112,term:'week'});s.operativeState[112].location=s.location;s.operativeState[112].medkits=4; // Declared finite rescue dressings in the prepared detention scenario.
+s=order(s,{type:'squad',ids:[3,4,10]});s.operativeState[112].location='buenos_aires';s.location='humahuaca';s.squads[0].location=s.location;s.sectors.humahuaca.owner='patriot';
  launchEnemyGroup(s,'north','humahuaca',{immediate:true});s=order(s,{type:'wait',hours:1});s=order(s,{type:'respondToEncounter',groupId:s.pendingEncounter.groupId,choice:'tactical'});
  let b=enterSector(s.pendingBattle);const u=b.units.find(u=>Number(u.id)===3);u.hp=11;u.energy=captiveEnergy;u.bleeding=2;u.bandaged=20;u.unconscious=true;u.stance='prone';u.movementMode='prone';
  for(const u of b.units.filter(u=>u.side==='player')){u.surrendered=true;u.ap=0;u.medkits=custodySupplies;refreshMilitaryCondition(u);}b.status='defeat';
@@ -29,6 +30,13 @@ test('real capture deploys equipment-free prisoners and full saves retain wounds
  assert.ok(n);assert.equal(n.hp,11);assert.equal(n.bleeding,2);assert.equal(n.weapon,undefined);assert.equal(n.inventory,undefined);
  const restored=decodeSave(encodeSave(campaign,battle));assert.equal(restored.campaign.operativeState[3].hp,11);assert.deepEqual(restored.battle.npcs,battle.npcs);
  assert.deepEqual(restoreCampaign(serializeCampaign(campaign)),campaign);
+});
+test('capture settlement records seconds, validates them and admits earlier saves without that field',()=>{
+ const campaign=captured({captureSecond:121});assert.equal(campaign.operativeState[3].capturedAtSecond,121);
+ assert.deepEqual(restoreCampaign(serializeCampaign(campaign)),campaign);
+ const invalid=structuredClone(campaign);invalid.operativeState[3].capturedAtSecond=3600;assert.throws(()=>restoreCampaign(serializeCampaign(invalid)),/prisionero/);
+ const legacy=structuredClone(campaign);delete legacy.operativeState[3].capturedAtSecond;
+ assert.equal(restoreCampaign(serializeCampaign(legacy)).operativeState[3].capturedAtSecond,undefined);
 });
 test('loaded prisoner breath recovery keeps campaign health and save receipts in agreement',()=>{
  let {campaign,battle}=start({captiveEnergy:30});

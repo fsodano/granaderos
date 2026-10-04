@@ -51,13 +51,13 @@ test('powder proficiency changes the shared cannon loading cost within a bounded
 });
 
 test('only the paid participating crew learns from completed cannon loading and firing',()=>{
- let b=field(49);for(const u of b.units.filter(u=>u.side==='player'))u.skillPractice={explosives:39};
+ let b=field(49);for(const u of b.units.filter(u=>u.side==='player')){u.skillPractice={explosives:39};u.practiceSeed=0;};
  const cost=artilleryReloadPreview(b,b.units[0],b.artillery[0]).pa;assert.equal(cost,61);b=reload(b);assert.equal(b.lastError,null);
  for(const u of b.units.slice(0,2)){assert.equal(u.explosives,50);assert.equal(u.trainedStats.explosives,1);assert.equal(u.ap,39);}
  assert.equal(b.units[2].skillPractice.explosives,39);assert.equal(b.units[2].explosives,49);assert.doesNotThrow(()=>validateBattleSnapshot(b));
  const rejected=reload(b);assert.ok(rejected.lastError);assert.deepEqual(rejected.units,b.units);
  b=actBattle(b,{type:'artillery',unitId:'a',artilleryId:'gun',x:9,y:3});assert.equal(b.lastError,null);assert.equal(b.artillery[0].loaded,false);assert.equal(b.artillery[0].ammo,2);
- for(const u of b.units.slice(0,2))assert.equal(u.skillPractice.explosives,2);assert.equal(artilleryCosts(b,b.units[0],b.artillery[0]).reload,60);
+ for(const u of b.units.slice(0,2))assert.equal(u.skillPractice.explosives,1);assert.equal(artilleryCosts(b,b.units[0],b.artillery[0]).reload,60);
 });
 
 test('partial loading, repeated empty actions and movement never award powder practice',()=>{

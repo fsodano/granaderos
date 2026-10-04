@@ -99,11 +99,11 @@ test('idle sprite directions follow all eight grid facings and preserve active m
   assert.match(scene(s,{scout:{x:1.5,y:1,direction:3,frame:1,moving:true}}),/data-unit-id="scout" data-moving="true" data-direction="3"/);
 });
 
-test('noise rendering shows only an approximate marker and removes stale reports',()=>{
+test('noise rendering shows a brief direction hint and removes stale reports',()=>{
   const s=fixture();s.units[0].lastHeardNoise={x:7,y:3,turn:s.turn,kind:'fire',uncertainty:2,sourceId:'secret'};
-  const markup=scene(s);assert.match(markup,/class="ja2-noise-marker"/);assert.match(markup,/>\?<\/text>/);assert.match(markup,/stroke-dasharray="4 4"/);
+  const markup=scene(s);assert.match(markup,/class="tactical-noise-direction"/);assert.doesNotMatch(markup,/>\?<\/text>|class="ja2-noise-marker"/);assert.match(markup,/aria-label="Ruido en esa dirección"/);
   assert.ok(!markup.includes('secret'));assert.ok(!markup.includes('Enemigo oculto'));assert.ok(!markup.includes('data-unit-id="far"'));
-  s.turn+=4;assert.ok(!scene(s).includes('ja2-noise-marker'));
+  s.turn+=4;assert.ok(!scene(s).includes('tactical-noise-direction'));
 });
 
 test('equipment panel keeps quantity, give/drop and selective pickup controls out of the combat strip',()=>{

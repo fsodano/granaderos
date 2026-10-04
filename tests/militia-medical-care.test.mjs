@@ -5,6 +5,7 @@ import {prepareGarrison} from '../game/garrison.js';
 import {advanceMedicalCare,doctorRate} from '../game/medical-care.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {enterSector} from '../game/world.js';
+import {stageFiniteDressings,collectFiniteDressings} from './care-supply-source.mjs';
 const order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,`${a.type}: ${n.lastError}`);return n;};
 // Established garrison and starting wounds isolate medical rules, not conquest.
 export function militiaPatients(){const s=initialCampaign();s.sectors.retiro.militia=[3,0,0];prepareGarrison(s,'retiro');for(const u of s.garrisons.retiro)Object.assign(u,{hp:30,bleeding:0,bandaged:30,energy:40,fatigue:30,unconscious:false});return s;}
@@ -45,13 +46,13 @@ test('finished or empty militia care stops without spending supplies and saves i
  assert.ok(s.assignmentAttention.notice.events.some(e=>e.assignment==='militia_doctor'&&e.code==='no_militia_patients'));
  assert.deepEqual(decodeSave(encodeSave(s)).campaign,s);
 });
-test('supply exhaustion interrupts a long wait, survives a save and resumes after paid resupply',()=>{
- let s=assign(militiaPatients());s.operativeState[10].medkits=1;
+test('supply exhaustion interrupts a long wait, survives a save and resumes after collecting a finite local reserve',()=>{
+ let s=stageFiniteDressings(militiaPatients(),10,1);s=assign(s);
  s=order(s,{type:'wait',hours:6});assert.equal(s.hour,1);assert.equal(s.operativeState[10].medkits,0);
  assert.ok(s.assignmentAttention.notice.events.some(e=>e.assignment==='militia_doctor'&&e.code==='no_medkits'));
  s=decodeSave(encodeSave(s)).campaign;const before=structuredClone(s.garrisons.retiro);
  s=order(s,{type:'wait',hours:1});assert.deepEqual(s.garrisons.retiro,before);assert.equal(s.operativeState[10].medkits,0);
- const money=s.resources.treasury;s=order(s,{type:'purchaseMedicalSupplies',operativeId:10,quantity:1});assert.equal(s.resources.treasury,money-10);
+ const money=s.resources.treasury;s=collectFiniteDressings(s,10,1);assert.equal(s.resources.treasury,money);
  s=order(s,{type:'wait',hours:1});assert.equal(s.operativeState[10].medkits,0);assert.ok(s.garrisons.retiro.some((u,i)=>u.hp>before[i].hp));
  assert.deepEqual(decodeSave(encodeSave(s)).campaign,s);
 });

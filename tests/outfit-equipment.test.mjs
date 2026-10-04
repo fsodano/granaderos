@@ -1,3 +1,4 @@
+import {assertTradeRejected} from './commerce-gear-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {makeOutfit,hasPoncho} from '../game/outfits.js';
@@ -49,12 +50,9 @@ test('outfit validation rejects invented garments, mixed weapon records, invalid
  for(const extra of [{outfit:'constructor'},{outfit:'invented'},{weight:0},{count:2},{condition:101},{condition:-1},{loaded:0},{weapon:1800},{itemType:'tool'},{instanceId:'__proto__'}]){const b=field();b.units[0].outfit={...garment(),...extra};assert.throws(()=>validateBattleSnapshot(b));}
  const b=field({outfit:garment()});b.units[0].inventory={clone:garment()};assert.throws(()=>validateBattleSnapshot(b));assert.throws(()=>validatePersonalInventory({fake:{...garment(),fittings:{}}}));
 });
-test('recruits bring initial clothing while paid reserve purchases consume finite local stock',()=>{
- let c=campaign();assert.equal(c.merchants.retiro.supplies.ponchos,6);assert.equal(c.operativeState[1000].outfit.outfit,'poncho');c=step(c,{type:'recruitCivic',id:110,term:'day'});assert.equal(c.merchants.retiro.supplies.ponchos,6);
- const m=sectorInventoryModel(c,'retiro',rosterFor(c),1000);assert.equal(m.outfitStock,6);assert.equal(m.outfitIssueReason,null);
- const money=c.resources.treasury,shopCash=c.merchants.retiro.cash;c=step(c,{type:'sectorInventory',sector:'retiro',operativeId:1000,direction:'issueOutfit'});assert.equal(c.merchants.retiro.supplies.ponchos,5);assert.equal(c.resources.treasury,money-20);assert.equal(c.merchants.retiro.cash,shopCash+20);assert.equal(Object.values(c.operativeState[1000].inventory).filter(r=>r.kind==='outfit').length,1);
- const remote=sectorInventoryModel(c,'buenos_aires',rosterFor(c),1000);assert.ok(remote.outfitIssueReason);
- const blocked=structuredClone(c);blocked.merchants.retiro.supplies.ponchos=0;const n=dispatchCampaign(blocked,{type:'sectorInventory',sector:'retiro',operativeId:1000,direction:'issueOutfit'});assert.ok(n.lastError);assert.deepEqual({...n,lastError:null},blocked);
+test('recruits bring their own clothing while closed reserve trade preserves funds and future stock',()=>{
+ let c=campaign();assert.equal(c.operativeState[1000].outfit.outfit,'poncho');c=step(c,{type:'recruitCivic',id:110,term:'day'});assert.equal(c.operativeState[110].outfit.outfit,'poncho');
+ const stock=c.merchants.retiro.supplies.ponchos,money=c.resources.treasury;c=assertTradeRejected(c,{type:'sectorInventory',sector:'retiro',operativeId:1000,direction:'issueOutfit'});assert.equal(c.resources.treasury,money);assert.equal(c.merchants.retiro.supplies.ponchos,stock);assert.ok(!Object.values(c.operativeState[1000].inventory).some(record=>record.kind==='outfit'));assert.deepEqual(decodeSave(encodeSave(c)).campaign,{...c,lastError:null});
 });
 test('an outfit returns, saves, stows on the map and redeploys without another stock issue',()=>{
  let c=campaign();c.operativeState[1000].outfit=garment('personal',47);let v=visit(c);c=v.c;let b=v.b;assert.deepEqual(b.units.find(u=>u.id==='1000').outfit,garment('personal',47));c=leave(c,b);let m=sectorInventoryModel(c,'retiro',rosterFor(c),1000);let row=m.carried.find(r=>r.item==='outfit');assert.ok(row.equip[0].valid);
@@ -73,12 +71,15 @@ test('the public view describes owned clothing but does not reveal its internal 
  const c=campaign();c.operativeState[1000].outfit=garment('private-id');const known=playerKnownCampaign(c);assert.equal(known.operatives.find(u=>u.id===1000).outfit.condition,63);assert.ok(!JSON.stringify(known).includes('private-id'));
 });
 
-test('six paid reserve ponchos exhaust local stock while recruits retain their own clothing',()=>{
+test('six finite discovered ponchos are collected once while every recruit retains personal clothing',()=>{
  let c=campaign();for(const id of [110,114,115,123,107,116])c=step(c,{type:'recruitCivic',id,term:'day'});
- const money=c.resources.treasury;for(const id of c.recruited.slice(0,6))c=step(c,{type:'sectorInventory',sector:'retiro',operativeId:id,direction:'issueOutfit'});
- assert.equal(c.merchants.retiro.supplies.ponchos,0);assert.equal(c.resources.treasury,money-120);assert.equal(c.recruited.filter(id=>c.operativeState[id].outfit).length,7);
- const refused=dispatchCampaign(c,{type:'sectorInventory',sector:'retiro',operativeId:116,direction:'issueOutfit'});assert.ok(refused.lastError);assert.deepEqual({...refused,lastError:null},c);
- const v=visit(c);assert.equal(v.c.merchants.retiro.supplies.ponchos,0);for(const u of v.b.units.filter(u=>u.side==='player'))assert.deepEqual(u.outfit,c.operativeState[u.id].outfit);
+ let v=visit(c);c=leave(v.c,v.b);const money=c.resources.treasury,stock=c.merchants.retiro.supplies.ponchos;
+ // Declared finite discovered property isolates normal sector collection.
+ c.sectorStates.retiro.groundItems.push({...makeOutfit('poncho'),item:'inventory:outfit',id:'finite-reserve-ponchos',type:'item',count:6,x:c.sectorStates.retiro.units.find(unit=>unit.side==='player').x,y:c.sectorStates.retiro.units.find(unit=>unit.side==='player').y,knownToPlayer:true});
+ for(const id of c.squad){const row=sectorInventoryModel(c,'retiro',rosterFor(c),id).entries.find(row=>row.key==='ground:finite-reserve-ponchos');assert.ok(row);c=step(c,{type:'sectorInventory',sector:'retiro',operativeId:id,direction:'take',sourceKey:row.key,expected:row.expected,count:1});}
+ assert.equal(c.resources.treasury,money);assert.equal(c.merchants.retiro.supplies.ponchos,stock);assert.equal(c.recruited.filter(id=>c.operativeState[id].outfit).length,7);assert.equal(c.sectorStates.retiro.groundItems.find(item=>item.id==='finite-reserve-ponchos').count,0);
+ const refused=dispatchCampaign(c,{type:'sectorInventory',sector:'retiro',operativeId:116,direction:'issueOutfit'});assert.match(refused.lastError,/comercio de equipo/);assert.deepEqual({...refused,lastError:null},c);
+ v=visit(c);for(const u of v.b.units.filter(u=>u.side==='player'))assert.deepEqual(u.outfit,c.operativeState[u.id].outfit);assert.deepEqual(decodeSave(encodeSave(v.c,v.b)).battle,v.b);
 });
 
 test('wearing one garment from an equivalent stack consumes only one and keeps the spare in a large pocket',()=>{

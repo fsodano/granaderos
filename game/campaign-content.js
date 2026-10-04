@@ -18,7 +18,7 @@ export function campaignContentReport(content) {
     blocked = [],
     pending = [];
   const supported=new Set(['format','version','id','name','characters','weapons','placements','arrivalSites','oppositionEquipment','militiaEquipment','oppositionBlades','militiaBlades','quests','rules','startingTerritory','headquarters','imports','campaignStory','includeOriginalResidents','campaignRoles','foundry','careRules','militiaProgression','militiaPatrol','artillerySupply','artilleryProfiles','artilleryTransport','artilleryTrading','ammunitionMarket','contractRules','errands']);
-  const characterFields=new Set(['id','name','nickname','role','biography','portrait','monthlyPay','weapon','blade','attributes','arrivalHours','recruitmentSource','service','progression','traits','ridingSkill','personality','speech','spriteAppearance','abilities','encounter','startingSupplies','startingCondition']);
+  const characterFields=new Set(['id','name','nickname','role','biography','portrait','monthlyPay','weapon','blade','attributes','arrivalHours','recruitmentSource','service','progression','traits','ridingSkill','personality','speech','spriteAppearance','abilities','encounter','startingSupplies','startingCondition','serviceRefusals','preferredCompanions']);
   if(Object.keys(value).some(key=>!supported.has(key))||value.characters.some(c=>Object.keys(c).some(key=>!characterFields.has(key))))
     blocked.push('Este paquete incluye opciones de historia que esta versión todavía no puede aplicar.');
   if(value.characters.some(c=>!isContractCharacter(c)&&c.arrivalHours!==undefined))
@@ -59,7 +59,7 @@ export function attachCampaignContent(state, content) {
   state.armoryItems=[];state.nextArmoryItemId=1;
   for (const c of definitions.characters) {
     const id=operativeIdForCharacter(definitions,c.id);
-    const record=state.operativeState[id]??={hp:c.attributes.maxHp,fatigue:0,alive:true,xp:0,rations:2,torches:2,condition:100};
+    const record=state.operativeState[id]??={hp:c.attributes.maxHp,fatigue:0,alive:true,xp:0,rations:2,torches:2,condition:100,startingCartridgesIssued:false};
     Object.assign(record,startingCharacterSupplies(c));
     const weapon=definitions.weapons.find(w=>w.id===c.weapon);
     state.loadouts[id]={...state.loadouts[id],weapon:weapon?.template??0};

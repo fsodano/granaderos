@@ -7,6 +7,7 @@ import {squadTravelStatus} from '../game/squad-travel.js';
 import {localDefenderIds,launchEnemyGroup} from '../game/enemy-groups.js';
 import {playerKnownCampaign} from '../game/player-known-state.js';
 import {workAssignmentReason} from '../game/assignments.js';
+import {withOwnedMount} from './custody-gear-fixture.mjs';
 const order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,`${a.type}: ${n.lastError}`);return n;};
 const queue=(s,sector='buenos_aires',extra={})=>order(s,{type:'travel',sector,queue:true,...extra});
 const wait=(s,hours)=>order(s,{type:'wait',hours});
@@ -64,7 +65,7 @@ test('a raid cannot use travelers as defenders of their departure sector',()=>{
  let s=wait(queue(initialCampaign()),1);const group=launchEnemyGroup(s,'interior','retiro',{immediate:true});s=wait(s,1);assert.equal(s.pendingEncounter,null);assert.equal(s.enemyGroups.find(g=>g.id===group.id).status,'stationed');assert.equal(s.sectors.retiro.owner,'royalist');assert.ok(operativeInTransit(s,3));
 });
 test('mounted travelers lose stamina hourly and retain hired mounts until arrival',()=>{
- let s=split();s=order(s,{type:'horseAction',order:{type:'hire',name:'Alazán'}});const horse=s.horseState.horses.at(-1);s=order(s,{type:'horseAction',order:{type:'assign',horseId:horse.id,operativeId:3}});const h=()=>s.horseState.horses.find(h=>h.id===horse.id);h().hireUntil=3;const stamina=h().stamina;
+ let s=withOwnedMount(split(),{hired:true,name:'Alazán'}).state;const horse=s.horseState.horses.at(-1);s=order(s,{type:'horseAction',order:{type:'assign',horseId:horse.id,operativeId:3}});const h=()=>s.horseState.horses.find(h=>h.id===horse.id);h().hireUntil=3;const stamina=h().stamina;
  s=wait(queue(s),4);assert.equal(h().stamina,stamina-8);assert.equal(h().assignedTo,3);assert.equal(h().returned,false);roundtrip(s);
  s=order(s,{type:'selectSquad',id:'squad-1'});assert.equal(h().assignedTo,3);assert.ok(dispatchCampaign(s,{type:'horseAction',order:{type:'unassign',horseId:horse.id}}).lastError);
  s=wait(s,24);assert.equal(h().location,'buenos_aires');assert.equal(h().returned,true);roundtrip(s);
@@ -83,7 +84,7 @@ test('invalid saved journey progress, routes and double deployment are rejected'
 });
 
 test('an expired hired mount leaves at an intermediate arrival, before the next stage',()=>{
- let s=split();s=order(s,{type:'horseAction',order:{type:'hire',name:'Criollo'}});const id=s.horseState.horses.at(-1).id;s=order(s,{type:'horseAction',order:{type:'assign',horseId:id,operativeId:3}});s.horseState.horses.find(h=>h.id===id).hireUntil=2;
+ let s=withOwnedMount(split(),{hired:true,name:'Criollo'}).state;const id=s.horseState.horses.at(-1).id;s=order(s,{type:'horseAction',order:{type:'assign',horseId:id,operativeId:3}});s.horseState.horses.find(h=>h.id===id).hireUntil=2;
  s=wait(queue(s,'ensenada'),12);const horse=s.horseState.horses.find(h=>h.id===id);assert.equal(horse.location,'buenos_aires');assert.equal(horse.returned,true);assert.equal(horse.assignedTo,null);assert.equal(q(s).journey.status,'moving');roundtrip(s);
 });
 test('all same-hour arrivals appear in the saved player notice',()=>{

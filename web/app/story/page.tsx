@@ -281,6 +281,10 @@ export default function ContentEditor() {
     if(collection==='characters'&&isHistoricalCharacter(item)&&!draft.campaignStory){setNotice('El avance histórico necesita sus mandos. Elegí capítulos propios en Reglas para quitar este personaje.');return;}
     if(collection==='characters'&&Object.values(draft.campaignRoles??{}).includes(item.id)){setNotice('Quitá o reasigná su función de campaña en Reglas antes de eliminar este personaje.');return;}
     if(collection==='weapons'&&forceWeaponUsers(draft,item.id).length){setNotice('Asigná otra arma a las tropas que la usan.');return;}
+    if(collection==='characters'){
+      const owner=draft.characters.find((c:any)=>c.id!==item.id&&['serviceRefusals','preferredCompanions'].some(field=>Array.isArray(c[field])&&c[field].some((relationship:any)=>relationship.character===item.id)));
+      if(owner){setNotice(`Quitá o reasigná las relaciones de ${owner.name} antes de eliminar a ${item.name}.`);return;}
+    }
 
     if (
       collection === 'characters' &&
@@ -761,7 +765,7 @@ export default function ContentEditor() {
                     </fieldset>
       <CharacterSupplies character={item} onChange={update}/>
       <CharacterCondition character={item} onChange={update}/>
-                    <CharacterPresentation character={item} portraits={defaultContentPackage().characters} weapon={draft.weapons.find((w:any)=>w.id===item.weapon)?.template??0} onChange={update}/>
+                    <CharacterPresentation character={item} portraits={defaultContentPackage().characters} characters={draft.characters} weapon={draft.weapons.find((w:any)=>w.id===item.weapon)?.template??0} onChange={update}/>
                     <h3>Atributos</h3>
                     <div className="fields">
                       {ATTRIBUTE_FIELDS.map((k) =>

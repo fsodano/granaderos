@@ -12,6 +12,7 @@ import {buildingStyle} from '../../game/building-types.js';
 import {WallDetails} from './BuildingDetails';
 import {BuildingRoof} from './BuildingRoof';
 import {tacticalLevel} from '../../game/tactical-space.js';
+import {roomDecorProfile} from '../../game/room-dressing.js';
 import type {ReactNode} from 'react';
 type Point={x:number;y:number};
 type Args={viewport?:any;cursorLevel?:number;state:any;revealed:Set<string>;project:(x:number,y:number)=>Point;light:(x:number,y:number,level?:number)=>number};
@@ -55,7 +56,7 @@ export function createBuildingRenderer({state:s,revealed:knownRooms,project,ligh
   if(!axes.length){if(occupied.has(`${t.x-1},${t.y}`)||occupied.has(`${t.x+1},${t.y}`))axes.push('x');if(occupied.has(`${t.x},${t.y-1}`)||occupied.has(`${t.x},${t.y+1}`))axes.push('y');if(!axes.length)axes.push('x');}
   return {t,b,style,roomOpen,axes,onX,onY};
  });
- const rooms=buildings.flatMap((b:any)=>(b.rooms??[]).map((room:any)=>({b,room,cells:new Set((room.cells??[]).map((c:any)=>`${c.x},${c.y}`))})));
+ const rooms=buildings.flatMap((b:any)=>(b.rooms??[]).map((room:any,index:number)=>({b,room,decor:roomDecorProfile(b,room,index),cells:new Set((room.cells??[]).map((c:any)=>`${c.x},${c.y}`))})));
  let retained=new Map<string,SceneObject>();
  return (viewport?:Args['viewport']):SceneObject[]=>{
  const objects:SceneObject[]=[],next=new Map<string,SceneObject>();
@@ -77,7 +78,7 @@ export function createBuildingRenderer({state:s,revealed:knownRooms,project,ligh
   if(!pointInViewport(viewport,project(t.x,t.y),Math.max(100,legacyArchitecture(b)?style.height:profile.wallHeight)))continue;
   axes.forEach((axis:WallAxis,index:number)=>{
    add(`architecture-${t.x}-${t.y}-${axis}`,()=>{
-   const isFront=b&&(axis==='x'?t.y===b.y+b.height-1:t.x===b.x+b.width-1),cut=roomOpen&&(isFront||(!onX&&!onY)),height=cut?BUILDING_OPENINGS.cutawayHeight:legacyArchitecture(b)?style.height:onX||onY?profile.wallHeight:profile.groundFloorHeight;
+   const isFront=b&&(axis==='x'?t.y===b.y+b.height-1:t.x===b.x+b.width-1),cut=roomOpen&&(isFront||(!onX&&!onY)),fullHeight=legacyArchitecture(b)?style.height:onX||onY?profile.wallHeight:profile.groundFloorHeight,height=cut?BUILDING_OPENINGS.cutawayHeight:fullHeight;
    // Place each face near its southern tile edge. Clamp corners to the
    // shifted intersection so both wall axes remain joined.
    const along=axis==='x'?t.x:t.y;
@@ -100,6 +101,7 @@ export function createBuildingRenderer({state:s,revealed:knownRooms,project,ligh
     <polygon points={`${top(start,height)} ${top(end,height)} ${end.x+4},${end.y-height-2} ${start.x+4},${start.y-height-2}`} fill={authoredWall?palette.trim:cut?'#bda980':'#d2c49e'} stroke={authoredWall?palette.shadow:'#807459'} strokeWidth=".55"/>
     <path d={`M${end.x},${end.y}v-${height}l4,-2v${height}Z`} fill="#8b8163"/>
     <g transform={`matrix(${dx} ${dy} 0 1 ${start.x} ${start.y})`}>
+     {cut&&<g data-wall-outline="true"><path d={`M0,0V-${fullHeight}H40V0`} fill="none" stroke={authoredWall?palette.trim:'#d7c69c'} strokeOpacity=".4" strokeWidth="1" strokeDasharray="3 3"/>{isOpening&&<g data-cutaway-opening={t.type} data-door-open={t.type==='door'?Boolean(t.open):undefined}><path d={`M8,0V-${Math.min(fullHeight-3,33)}H32V0`} fill="none" stroke={t.type==='door'?'#c9a26a':'#a0c4c4'} strokeWidth="1.8" strokeOpacity=".8"/>{t.type==='door'&&!t.open&&<path d={`M9,-4L31,-${Math.min(fullHeight-4,31)}M31,-4L9,-${Math.min(fullHeight-4,31)}`} stroke="#9c7c4e" strokeOpacity=".35"/>}{t.type==='window'&&<path d={`M20,-${Math.min(fullHeight-3,33)}V-5M9,-18H31`} stroke="#9bbaba" strokeOpacity=".5"/>}</g>}</g>}
      {authoredWall?<WallSurface finish={appearance.wallFinish} height={height} x={t.x} y={t.y}/>:isOpening&&!openingStyle?<BuildingOpening tile={t} wallHeight={height} cut={Boolean(cut)} plaster={plaster}/>:<rect x="0" y={-height} width={width} height={height} fill={plaster}/>}
      {isOpening&&openingStyle&&(cut?<g data-opening-height={BUILDING_OPENINGS.cutawayHeight}><path d="M8,0H32" stroke={palette.trim} strokeWidth="3"/>{t.type==='door'&&!t.open&&<path d="M9,-3H31" stroke="#62452c" strokeWidth="4"/>}</g>:<g data-opening-height={legacyArchitecture(b)?BUILDING_OPENINGS.doorHeight:33*Math.min(1.35,profile.groundFloorHeight/46)} transform={`scale(1 ${legacyArchitecture(b)?BUILDING_OPENINGS.doorHeight/33:Math.min(1.35,profile.groundFloorHeight/46)})`}><Opening type={t.type} style={openingStyle} open={t.open} trim={palette.trim}/></g>)}
      {legacyArchitecture(b)&&<WallDetails building={b} front={Boolean(isFront&&axis==='x')} cut={Boolean(cut)} opening={isOpening}/> }
@@ -118,7 +120,7 @@ export function createBuildingRenderer({state:s,revealed:knownRooms,project,ligh
    });
   });
  }
- for(const {b,room,cells} of rooms){
+ for(const {b,room,cells,decor} of rooms){
   if(!room.cells?.length||!buildingInViewport(viewport,b,project))continue;
   if(revealed.has(room.id)){
    // Floor joints follow world coordinates, with perimeter wear and wall shadows.
@@ -140,8 +142,8 @@ export function createBuildingRenderer({state:s,revealed:knownRooms,project,ligh
       joints.push(`M${point(x,y)}L${point(x,y+.25)}`);
      }
     }
-    return {depth:-1000,node:<g data-building-floor={room.id} pointerEvents="none" style={{filter:`brightness(${light(c.x,c.y)})`}}>
-     <polygon data-floor-surface="true" points={[point(x0,y0),point(x1,y0),point(x1,y1),point(x0,y1)].join(' ')} fill="url(#terrain-floor)"/>
+    return {depth:-1000,node:<g data-building-floor={room.id} data-room-purpose={decor.purpose} pointerEvents="none" style={{filter:`brightness(${light(c.x,c.y)})`}}>
+     <polygon data-floor-surface="true" points={[point(x0,y0),point(x1,y0),point(x1,y1),point(x0,y1)].join(' ')} fill={`url(#terrain-${decor.floor})`}/>
      <path d={joints.join('')} fill="none" stroke="#514332" strokeWidth=".65" opacity=".36"/>
      {!cells.has(`${c.x-1},${c.y}`)&&<polygon points={[point(x0,y0),point(x0+.22,y0),point(x0+.22,y1),point(x0,y1)].join(' ')} fill="#332d20" opacity=".2"/>}
      {!cells.has(`${c.x},${c.y-1}`)&&<polygon points={[point(x0,y0),point(x1,y0),point(x1,y0+.2),point(x0,y0+.2)].join(' ')} fill="#332d20" opacity=".2"/>}

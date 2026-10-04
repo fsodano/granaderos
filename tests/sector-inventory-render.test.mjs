@@ -32,16 +32,17 @@ test('visited mission sites appear as labelled inventory choices beside their pa
  const unseen=draw(initialCampaign());assert.doesNotMatch(unseen,/Lugar del equipo|Conferencia de Yatasto|Combate de San Lorenzo/);
 });
 
-test('armory storage has a labelled control and is disabled when the active squad is elsewhere',()=>{
- const s=ready();
- assert.match(draw(s),/<button class="line-button" aria-label="Guardar en armería: [^"]+">Guardar en armería<\/button>/);
- s.location='buenos_aires';
- assert.match(draw(s),/<button class="line-button" disabled="" title="La escuadra activa debe estar en este sector\." aria-label="Guardar en armería:/);
+test('physical sector equipment has pickup and drop controls without clothing commerce or hidden armory storage',()=>{
+ const s=ready(),before=structuredClone(s),html=draw(s);
+ assert.match(html,/Recoger 1: Vendas/);assert.match(html,/aria-label="Dejar 1:/);
+ assert.doesNotMatch(html,/Comercio de vestimenta|Comprar poncho|Guardar en armería|para venderlas|repone sus existencias/);
+ assert.deepEqual(s,before);
 });
 
 function serviceReturn({unvisited=false}={}){
  let s=unvisited?initialCampaign(45):ready();
- s=dispatchCampaign(s,{type:'purchaseToolkits',operativeId:4,quantity:1});assert.equal(s.lastError,null);
+ // A restored finite carried kit isolates physical return and collection UI.
+ s.operativeState[4].toolkitPoints=100;
  if(!unvisited)s.sectorStates.retiro.groundItems=Array.from({length:2000},(_,i)=>({id:`occupied-${i}`,type:'item',item:'rations',count:1,weight:.5,x:1,y:1}));
  s=dispatchCampaign(s,{type:'dismiss',id:4});assert.equal(s.lastError,null);return s;
 }

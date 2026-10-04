@@ -1,3 +1,4 @@
+import {withStoredGear} from './commerce-gear-fixture.mjs';
 import test from 'node:test';import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign,rosterFor} from '../game/campaign.js';
 import {defaultProfile} from '../game/character-profile.js';
@@ -11,10 +12,10 @@ const actor=b=>b.units.find(u=>u.id==='1000');
 const personal=s=>sectorInventoryModel(s,'retiro',rosterFor(s),1000).personal;
 function arrange(s,type,sourceId,destinationId){const u=personal(s);return order(s,{type:'sectorInventory',sector:'retiro',operativeId:1000,direction:'arrange',kind:'cursor',cursorAction:type,sourceId,destinationId,expectedSource:equipmentFingerprint(u,type==='pickupEquipment'?sourceId:'cursor'),...(destinationId?{expectedDestination:equipmentFingerprint(u,destinationId)}:{})});}
 
-test('a bought spare loads through one R order without swapping hands and preserves finite charges through campaign return',()=>{
+test('an owned finite spare loads through one R order without swapping hands and preserves finite charges through campaign return',()=>{
  let c=order(initialCampaign(8),{type:'createOfficer',name:'Elena Testigo',answers:{origin:'estancia',doctrine:'cavalry_commander',crisis:'rescue',specialty:'ambidextrous',temperament:'steady'},profile:{...defaultProfile(),classId:'artesano'}});
  assert.deepEqual(c.recruited,[1000]);const cash=c.resources.treasury,stock=c.merchants.retiro.stock[1808];
- c=order(c,{type:'purchaseEquipment',item:1808});assert.equal(c.resources.treasury,cash-220);assert.equal(c.merchants.retiro.stock[1808],stock-1);
+ c=withStoredGear(c,1808);assert.equal(c.resources.treasury,cash);assert.equal(c.merchants.retiro.stock[1808],stock);
  c=order(c,{type:'equip',operativeId:1000,itemId:1808,slot:'weapon',instanceId:c.armoryItems.find(i=>i.item===1808).id});
  c=arrange(c,'pickupEquipment','hand:right');c=arrange(c,'placeEquipment',undefined,'large-4');
  c=order(c,{type:'equip',operativeId:1000,itemId:1805,slot:'weapon',instanceId:c.armoryItems.find(i=>i.item===1805).id});
@@ -34,5 +35,5 @@ test('a bought spare loads through one R order without swapping hands and preser
  c=order(c,{type:'leaveSector',battleId:c.pendingBattle.id,sectorState:b,survivors:b.units.filter(u=>u.side==='player')});c=decodeSave(encodeSave(c)).campaign;
  c=order(c,{type:'visitSector'});b=enterSector(c.pendingBattle,c.sectorStates.retiro);const returned=actor(b);
  for(const key of ['loaded','condition','jammed','offHand'])assert.deepEqual(returned[key],fired[key],key);
- assert.ok(returned.traits.includes('ambidextrous'));assert.equal(c.merchants.retiro.stock[1808],stock-1);assert.doesNotThrow(()=>decodeSave(encodeSave(c,b)));
+ assert.ok(returned.traits.includes('ambidextrous'));assert.equal(c.merchants.retiro.stock[1808],stock);assert.doesNotThrow(()=>decodeSave(encodeSave(c,b)));
 });

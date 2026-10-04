@@ -19,6 +19,7 @@ import { WEAPONS, actBattle, weaponFor, actionCosts } from "../game/tactical.js"
 const fixture = () => {
   const d = defaultContentPackage();
   d.characters = d.characters.slice(0, 3);
+  d.errands = [];
   d.placements = [
     {
       id: "first",

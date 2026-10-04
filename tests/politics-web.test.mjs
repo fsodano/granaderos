@@ -1,12 +1,13 @@
+import {assertTradeRejected} from './commerce-gear-fixture.mjs';
 import {secureArea} from './controlled-area-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign,restoreCampaign} from '../game/campaign.js';
 import {tradeQuote} from '../game/politics.js';
 const order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null);return n;};
-test('actual import orders use reputation prices and retain shipping delay',()=>{
- let s=secureArea(initialCampaign(),'buenos_aires','ensenada');s.reputation.foreign=60;const cash=s.resources.treasury;
- s=order(s,{type:'purchaseEquipment',item:1802});assert.equal(cash-s.resources.treasury,336);assert.ok(s.equipmentShipments[0].due>=72&&s.equipmentShipments[0].due<=120);
+test('ordinary import orders stay closed while future authored reputation quotes remain deterministic',()=>{
+ const s=secureArea(initialCampaign(),'buenos_aires','ensenada');s.reputation.foreign=60;
+ assertTradeRejected(s,{type:'purchaseEquipment',item:1802});assert.equal(s.equipmentShipments.length,0);
  assert.equal(tradeQuote({...s,reputation:{foreign:0}},250),300);
 });
 test('national contribution is payable once per period and neglect loses support',()=>{

@@ -13,7 +13,7 @@ function deployed(){const campaign=dispatchCampaign(initialCampaign(),{type:'vis
 
 test('a campaign exceeding the old full-save budget keeps every map and the next tactical turn',()=>{
  const pair=deployed();
- for(const {id} of CAMPAIGN_SECTORS){const width=128,height=64,tiles=Array.from({length:width*height},(_,i)=>({x:i%width,y:Math.floor(i/width),type:'grass',blocked:false,cover:0}));pair.campaign.sectorStates[id]=createBattle([],{sector:id,width,height,tiles,enemies:[]});}
+ for(const {id} of CAMPAIGN_SECTORS){const width=128,height=64,tiles=Array.from({length:width*height},(_,i)=>({x:i%width,y:Math.floor(i/width),type:'grass',blocked:false,cover:0}));pair.campaign.sectorStates[id]=createBattle([],{sector:id,width,height,tiles,enemies:[],errandDefinitions:pair.campaign.contentCampaign?.package.errands??pair.campaign.errandDefinitions});}
  const before=structuredClone(pair),legacy=JSON.stringify({format:'granaderos',schema:1,...pair});assert.ok(saveByteLength(legacy)>MAX_SAVE_BYTES);
  const encoded=encodeSave(pair.campaign,pair.battle);assert.ok(saveByteLength(encoded)<MAX_SAVE_BYTES/2);assert.equal(JSON.parse(encoded).schema,2);
  const restored=decodeSave(encoded);assert.deepEqual(restored,pair);assert.deepEqual(pair,before);

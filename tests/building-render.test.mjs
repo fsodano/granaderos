@@ -69,7 +69,7 @@ test('revealed room flooring reaches the structural wall planes without an indoo
  const floor=render(objects(true).find(o=>o.key==='architecture-floor-house:interior-6-5').node);
  const frontCorner=project(7.4,6.4);
  assert.ok(floor.includes(`${frontCorner.x},${frontCorner.y}`));
- assert.match(floor,/data-floor-surface="true"[^>]*fill="url\(#terrain-floor\)"/);
+ assert.match(floor,/data-floor-surface="true"[^>]*fill="url\(#terrain-cobble\)"/);
 });
 
 test('separate roof rooms keep independent facade texture scales',()=>{

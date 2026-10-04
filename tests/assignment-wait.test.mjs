@@ -7,6 +7,7 @@ import {repairRate} from '../game/assignments.js';
 import {launchEnemyGroup} from '../game/enemy-groups.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {playerKnownCampaign} from '../game/player-known-state.js';
+import {stageFiniteDressings,collectFiniteDressings} from './care-supply-source.mjs';
 
 const order=(s,action)=>{const n=dispatchCampaign(s,action);assert.equal(n.lastError,null,`${action.type}: ${n.lastError}`);return n;};
 const wait=(s,hours)=>order(s,{type:'wait',hours});
@@ -24,8 +25,8 @@ function stopped(s,requested,advanced,start=0){
  assert.ok(notice.events.length>0);assert.equal(new Set(notice.events.map(e=>e.subject)).size,notice.events.length);
  return notice;
 }
-function medicalTeam(deficit=6,{kits=2}={}){
- let s=initialCampaign();wound(s,3,deficit);record(s,10).medkits=kits;
+function medicalTeam(deficit=6,{kits=2,reserve=0}={}){
+ let s=initialCampaign();wound(s,3,deficit);record(s,10).medkits=kits+reserve;if(reserve)s=stageFiniteDressings(s,10,reserve);
  s=care(s,10,'doctor');return care(s,3,'patient');
 }
 function repairTeam({condition=95,tools=100}={}){
@@ -64,13 +65,13 @@ test('an already complete assigned patient stops before a new hour and rejects i
  for(const hours of [0,-1,1.5,241]){const saved=serializeCampaign(s),rejected=dispatchCampaign(s,{type:'wait',hours});assert.ok(rejected.lastError);assert.deepEqual({...rejected,lastError:null},JSON.parse(saved));assert.equal(serializeCampaign(s),saved);}
 });
 
-test('kit exhaustion pauses further treatment at the exact depleted hour and a paid refill rearms the warning',()=>{
- let s=medicalTeam(40),stock=s.merchants.retiro.supplies.medkits;
+test('kit exhaustion pauses further treatment at the exact depleted hour and collecting a finite reserve rearms the warning',()=>{
+ let s=medicalTeam(40,{reserve:1}),stock=s.merchants.retiro.supplies.medkits;
  s=wait(s,10);stopped(s,10,2);assert.equal(record(s,3).hp,68);assert.equal(record(s,10).medkits,0);
  assert.ok(event(s,10,'no_medkits'));assert.ok(event(s,3,'no_doctor'));
  const stable=wait(s,2);assert.equal(stable.hour,4);assert.equal(stable.assignmentAttention.notice,null);assert.equal(record(stable,3).hp,68);
- const money=stable.resources.treasury;s=order(stable,{type:'purchaseMedicalSupplies',operativeId:10,quantity:1});
- assert.equal(s.resources.treasury,money-10);assert.equal(s.merchants.retiro.supplies.medkits,stock-1);
+ const money=stable.resources.treasury;s=collectFiniteDressings(stable,10,1);
+ assert.equal(s.resources.treasury,money);assert.equal(s.merchants.retiro.supplies.medkits,stock);
  s=wait(s,6);stopped(s,6,1,4);assert.equal(record(s,3).hp,74);assert.equal(record(s,10).medkits,0);
  assert.ok(event(s,10,'no_medkits'));assert.equal(record(s,10).assignment,'doctor');
 });
@@ -126,7 +127,7 @@ test('rest stops when the last hour restores energy and fatigue without granting
 });
 
 test('patients waiting their turn behind a treatable wound do not generate a false missing-doctor stop',()=>{
- let s=medicalTeam(6);wound(s,4,12);s=care(s,4,'patient');s=order(s,{type:'purchaseMedicalSupplies',operativeId:10,quantity:1});
+ let s=medicalTeam(6,{kits:3});wound(s,4,12);s=care(s,4,'patient');
  s=wait(s,1);assert.equal(s.hour,1);assert.equal(s.assignmentAttention.notice,null);assert.equal(record(s,4).hp,78);assert.equal(record(s,3).hp,90);
  s=wait(s,5);stopped(s,5,1,1);assert.ok(event(s,4,'healing_complete'));assert.ok(!events(s).some(e=>e.code==='no_doctor'||e.code==='no_patients'));assert.equal(record(s,3).hp,90);
  s=wait(s,5);stopped(s,5,1,2);assert.ok(event(s,3,'healing_complete'));assert.equal(record(s,10).medkits,0);assert.equal(record(s,3).hp,96);assert.equal(record(s,4).hp,84);

@@ -1,6 +1,4 @@
 import {weaponAmmoType} from '../game/ammunition-types.js';
-import {ammoTypeFor} from '../game/ammo-types.js';
-import {ammunitionUnitPrice,ammunitionMarketRules} from '../game/ammunition-market-rules.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign} from '../game/campaign.js';
@@ -15,7 +13,8 @@ const soldier=battle=>battle.units.find(unit=>unit.side==='player'&&unit.id==='1
 const act=(battle,action)=>{const next=actBattle(battle,{unitId:'128',...action});assert.equal(next.lastError,null,JSON.stringify(action)+': '+next.lastError);return next;};
 const sync=(campaign,battle)=>{const next=syncBattleTime(campaign,battle);assert.equal(next.error,null);return next;};
 function start(){
- let campaign=initialCampaign(45);assert.equal(campaign.squad.length,0);assert.deepEqual(Object.entries(campaign.sectors).filter(([,s])=>s.owner==='patriot').map(([id])=>id),['retiro']);
+ // Prepared treasury funds the elite climber at the current published price.
+ let campaign=initialCampaign(45);campaign.resources.treasury=12000;assert.equal(campaign.squad.length,0);assert.deepEqual(Object.entries(campaign.sectors).filter(([,s])=>s.owner==='patriot').map(([id])=>id),['retiro']);
  // Strategic precondition: Buenos Aires has already been liberated. Roof use itself follows only real orders.
  campaign.sectors.buenos_aires.owner='patriot';
  const treasury=campaign.resources.treasury;campaign=order(campaign,{type:'recruitCivic',id:128,term:'day'});assert.ok(campaign.resources.treasury<treasury);assert.deepEqual(campaign.squad,[128]);
@@ -51,16 +50,16 @@ test('a paid recruit travels to controlled Buenos Aires, climbs a real roof, use
 });
 
 test('real campaign return and reentry retain the roof resident, finite equipment and geometry before a legal descent',()=>{
- let {campaign,battle}=start();const family=ammoTypeFor(soldier(battle)),initialReserve=campaign.ammunitionShops.buenos_aires?.stock[family]??ammunitionMarketRules(campaign,'buenos_aires').families[family].initial,initialCash=campaign.resources.treasury,price=ammunitionUnitPrice(campaign,'buenos_aires',family),originalAmmo=soldier(battle).ammo,originalLoaded=soldier(battle).loaded,originalTorches=soldier(battle).torches;
+ let {campaign,battle}=start();const initialShops=structuredClone(campaign.ammunitionShops),initialCash=campaign.resources.treasury,originalAmmo=soldier(battle).ammo,originalLoaded=soldier(battle).loaded,originalTorches=soldier(battle).torches;
  const approach=reachAccess(battle),link=approach.link;battle=climb(approach.battle,link);
  battle=act(battle,{type:'weapon',slot:'supply',supplyKey:'torches'});battle=act(battle,{type:'useItem',...spacePoint(soldier(battle))});battle=act(battle,{type:'drop',item:`inventory:ammo:${weaponAmmoType(soldier(battle).weapon)}`,count:2});
  const occupant=spaceKey(soldier(battle)),pile=battle.groundItems.find(item=>item.type==='item'&&item.item===`inventory:ammo:${weaponAmmoType(soldier(battle).weapon)}`&&sameCell(item,soldier(battle))),geometry=structuredClone({surfaces:battle.upperSurfaces,links:battle.climbLinks}),remaining=structuredClone(battle.lights.findLast(light=>light.type==='torch'));
  campaign=leave(campaign,battle);assert.equal(campaign.pendingBattle,null);assert.equal(spaceKey(campaign.sectorStates.buenos_aires.units.find(unit=>unit.id==='128')),occupant);assert.equal(campaign.sectorStates.buenos_aires.groundItems.find(item=>item.id===pile.id).count,2);
  campaign=decodeSave(encodeSave(campaign)).campaign;campaign=order(campaign,{type:'visitSector'});const pair=prepareCampaignBattle(campaign);assert.equal(pair.error,null);({campaign,battle}=pair);
  assert.equal(spaceKey(soldier(battle)),occupant);assert.deepEqual(battle.upperSurfaces,geometry.surfaces);assert.deepEqual(battle.climbLinks,geometry.links);assert.equal(battle.mode,'exploration');assert.equal(new Set(battle.units.map(unit=>unit.id)).size,battle.units.length);
- assert.equal(campaign.ammunitionShops.buenos_aires.stock[family],initialReserve-2,'reentry buys the carried deficit from finite local stock');assert.equal(campaign.resources.treasury,initialCash-2*price);assert.equal(soldier(battle).ammo,originalAmmo);assert.equal(campaign.ammunitionShops.buenos_aires.stock[family]+soldier(battle).ammo+soldier(battle).loaded+pile.count,initialReserve+originalAmmo+originalLoaded);assert.equal(soldier(battle).loaded,originalLoaded);assert.equal(soldier(battle).torches,originalTorches-1);assert.deepEqual(battle.groundItems.find(item=>item.id===pile.id),pile);assert.deepEqual(battle.lights.find(light=>light.id===remaining.id),remaining);
- const saved=decodeSave(encodeSave(campaign,battle));assert.deepEqual(saved.battle,battle);battle=act(saved.battle,{type:'loot',groundId:pile.id,count:2});assert.equal(soldier(battle).ammo,originalAmmo+2);assert.equal(battle.groundItems.find(item=>item.id===pile.id).count,0);assert.equal(campaign.ammunitionShops.buenos_aires.stock[family]+soldier(battle).ammo+soldier(battle).loaded,initialReserve+originalAmmo+originalLoaded);
+ assert.deepEqual(campaign.ammunitionShops,initialShops);assert.equal(campaign.resources.treasury,initialCash);assert.equal(soldier(battle).ammo,originalAmmo-2);assert.equal(soldier(battle).ammo+soldier(battle).loaded+pile.count,originalAmmo+originalLoaded);assert.equal(soldier(battle).loaded,originalLoaded);assert.equal(soldier(battle).torches,originalTorches-1);assert.deepEqual(battle.groundItems.find(item=>item.id===pile.id),pile);assert.deepEqual(battle.lights.find(light=>light.id===remaining.id),remaining);
+ const saved=decodeSave(encodeSave(campaign,battle));assert.deepEqual(saved.battle,battle);battle=act(saved.battle,{type:'loot',groundId:pile.id,count:2});assert.equal(soldier(battle).ammo,originalAmmo);assert.equal(battle.groundItems.find(item=>item.id===pile.id).count,0);assert.equal(soldier(battle).ammo+soldier(battle).loaded,originalAmmo+originalLoaded);
  const rejected=actBattle(battle,{type:'loot',unitId:'128',groundId:pile.id,count:1});assert.ok(rejected.lastError);assert.deepEqual(rejected.units,battle.units);assert.deepEqual(rejected.groundItems,battle.groundItems);assert.equal(rejected.elapsedSeconds,battle.elapsedSeconds);
  if(!sameCell(soldier(battle),link.to))battle=act(battle,{type:'move',...spacePoint(link.to)});battle=climb(battle,link);assert.equal(tacticalLevel(soldier(battle)),0);assert.ok(sameCell(soldier(battle),link.from));
- campaign=leave(campaign,battle);assert.equal(tacticalLevel(campaign.sectorStates.buenos_aires.units.find(unit=>unit.id==='128')),0);assert.equal(campaign.sectorStates.buenos_aires.groundItems.find(item=>item.id===pile.id).count,0);assert.equal(campaign.ammunitionShops.buenos_aires.stock[family]+(campaign.operativeState[128].carriedAmmo??0),initialReserve+originalAmmo+originalLoaded);assert.deepEqual(decodeSave(encodeSave(campaign)).campaign,campaign);
+ campaign=leave(campaign,battle);assert.equal(tacticalLevel(campaign.sectorStates.buenos_aires.units.find(unit=>unit.id==='128')),0);assert.equal(campaign.sectorStates.buenos_aires.groundItems.find(item=>item.id===pile.id).count,0);assert.equal(campaign.operativeState[128].carriedAmmo??0,originalAmmo+originalLoaded);assert.deepEqual(decodeSave(encodeSave(campaign)).campaign,campaign);
 });

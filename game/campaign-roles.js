@@ -1,6 +1,7 @@
 import {foundryFor,foundryLocationName} from './campaign-foundry.js';
 import {OPERATIVES} from './data.js';
 import {operativeIdForCharacter} from './content-character-ids.js';
+import {contractExpiresSeconds} from './contracts.js';
 
 export const ORIGINAL_CAMPAIGN_ROLES=Object.freeze({foundryEngineer:'person-2',marchCommander:'person-57'});
 export function rolesForContent(content){
@@ -22,7 +23,8 @@ export function campaignRole(state,key){
 }
 export function campaignRoleActive(state,key){
  const role=campaignRole(state,key),record=role&&state.operativeState[role.id],contract=role&&state.contracts?.[role.id];
- return Boolean(role&&state.recruited.includes(role.id)&&record?.alive&&record.hp>0&&!record.captured&&!contract?.departurePending&&(contract?.expiresAt==null||contract.expiresAt>state.hour));
+ const expiry=contractExpiresSeconds(contract),now=state.hour*3600+(state.secondOfHour??0);
+ return Boolean(role&&state.recruited.includes(role.id)&&record?.alive&&record.hp>0&&!record.captured&&!contract?.departurePending&&(expiry===null||expiry>now));
 }
 export function foundryReason(state){
  const role=campaignRole(state,'foundryEngineer');

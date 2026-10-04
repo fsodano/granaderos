@@ -3,10 +3,11 @@ export {studyRate,studyForecast} from './study-training.js';
 import {gainFatigue} from './fatigue.js';
 import {sleepStatus} from './sleep.js';
 import {operativeInTransit,operativeLocation} from './squads.js';
-import {TRAINABLE_SKILLS,TRAINING_LABELS,practice} from './skill-training.js';
+import {TRAINABLE_SKILLS,TRAINING_LABELS,practice,fieldPractice} from './skill-training.js';
 import {WEAPONS} from './data.js';
 import {militiaEligibility} from './militia.js';
-import {repairEquipmentQueue,repairEquipment,repairEquipmentBlocked} from './equipment-repair.js';
+import {repairEquipmentQueue,repairEquipment,repairEquipmentBlocked,spendRepairMaterials} from './equipment-repair.js';
+import {repairMaterialPoints} from './repair-materials.js';
 export {repairEquipmentQueue} from './equipment-repair.js';
 
 import {WORK_ASSIGNMENTS} from './assignment-labels.js';
@@ -77,7 +78,7 @@ export function workAssignmentIssue(s,op,assignment,options={},roster=[]){
     }
   }else{
     if((op.mechanical??0)<=0)return issue('no_mechanical_skill');
-    if(r.toolkitPoints<=0)return issue('no_tools');
+    if(repairMaterialPoints(r)<=0)return issue('no_tools');
     const targetIssue=repairTargetIssue(s,op,options,roster);if(targetIssue)return targetIssue;
     const target=roster.find(o=>o.id===Number(options.targetId??r.repairTargetId??op.id));
     if(repairComplete(s,target,repairScope(r,options)))return issue('repair_complete');
@@ -113,13 +114,11 @@ export function workAssignmentProgress(s,op,roster,context={}){
   return status('working');
 }
 
-export function militiaAssignmentIssue(s,course,{isSupplied}={}){
+export function militiaAssignmentIssue(s,course){
   if(s.operativeState[course.trainerId]?.asleep)return issue('sleeping');
   if((s.operativeState[course.trainerId]?.energy??100)<=10)return issue('unstable');
   if(s.sectors[course.sector]?.owner!=='patriot')return issue('militia_cancelled');
   if(operativeInTransit(s,course.trainerId)||deployed(s,course.trainerId)||!s.operativeState[course.trainerId]?.alive||operativeLocation(s,course.trainerId)!==course.sector)return issue('militia_trainer_unavailable');
-  need(typeof isSupplied==='function','Falta la regla de abastecimiento para la instrucción.');
-  if(!isSupplied(s,course.sector))return issue('militia_supply');
   const eligible=militiaEligibility(s,course.sector);
   return eligible.eligible?null:{code:`militia_${eligible.code}`,reason:eligible.reason};
 }
@@ -141,9 +140,10 @@ export function assignWork(s,op,action,roster){
   }
 }
 
-function learn(r,op,skill,amount){
-  const unit={...op,hp:r.hp,side:'player',trainedStats:{...r.trainedStats},skillPractice:{...r.skillPractice}};
-  const gain=practice(unit,skill,amount);r.trainedStats=unit.trainedStats;r.skillPractice=unit.skillPractice;
+function learn(r,op,skill,amount,field=false){
+  const unit={...op,hp:r.hp,side:'player',practiceSeed:r.practiceSeed,trainedStats:{...r.trainedStats},skillPractice:{...r.skillPractice}};
+  const gain=field?fieldPractice(unit,skill,amount):practice(unit,skill,amount);r.trainedStats=unit.trainedStats;r.skillPractice=unit.skillPractice;
+  if(unit.practiceSeed!==undefined)r.practiceSeed=unit.practiceSeed;
   if(gain&&skill==='maxHp'){r.maxHp=unit.maxHp;r.hp=unit.hp;}
   if(gain&&skill==='strength')r.strength=unit.strength;
 }
@@ -158,11 +158,11 @@ export function advanceAssignments(s,roster,{traveling=[]}={}){
     if(r.assignment==='instructor')continue;
     if(r.assignment==='repair'){
       if(moving.has(r.repairTargetId))continue;
-      const target=s.operativeState[r.repairTargetId],budget=Math.min(repairRate(op),r.toolkitPoints);
+      const target=s.operativeState[r.repairTargetId],budget=Math.min(repairRate(op),repairMaterialPoints(r));
       const points=repairScope(r)==='equipment'?repairEquipment(target,roster.find(o=>o.id===r.repairTargetId),budget):Math.min(budget,100-target.condition);
       if(points<=0)continue;
       if(repairScope(r)!=='equipment')target.condition+=points;
-      r.toolkitPoints-=Math.ceil(points);learn(r,op,'mechanical',1);workCost(r);continue;
+      spendRepairMaterials(r,Math.ceil(points));learn(r,op,'mechanical',1,true);workCost(r);continue;
     }
     const instructor=r.assignment==='student'?roster.find(o=>o.id===r.instructorId):null;
     if(instructor&&(moving.has(instructor.id)||taught.has(instructor.id)))continue;

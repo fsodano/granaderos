@@ -1,0 +1,5 @@
+.transient-notice{position:fixed;z-index:70;top:max(12px,env(safe-area-inset-top));left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:12px;width:max-content;max-width:min(400px,calc(100vw - 24px));box-sizing:border-box;padding:8px 9px 8px 13px;border:1px solid #8c846b;border-radius:4px;background:#192624f2;color:#eee4cb;box-shadow:0 4px 16px #0007;font:13px/1.35 Arial,sans-serif;overflow-wrap:anywhere}
+.transient-notice>span{min-width:0}
+.transient-notice>button{flex:none;display:grid;place-items:center;width:28px;height:28px;padding:0;border:0;border-radius:3px;background:transparent;color:inherit;font:22px/1 Arial,sans-serif;cursor:pointer}
+.transient-notice>button:hover{background:#ffffff1a}
+.transient-notice>button:focus-visible{outline:2px solid #ebd8a3;outline-offset:1px}

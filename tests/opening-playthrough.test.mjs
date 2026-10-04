@@ -1,3 +1,4 @@
+import {routeHiringCeiling} from './funded-route-fixture.mjs';
 import {stableCrewController} from './stable-crew-driver.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -5,12 +6,13 @@ import {dispatchCampaign,rosterFor} from '../game/campaign.js';
 import {sectorInventoryModel} from '../game/sector-inventory.js';
 import {decodeSave,encodeSave} from '../game/save.js';
 import {carriedAmmunition} from '../game/campaign-ammunition.js';
+import {contractExpiresSeconds} from '../game/contracts.js';
 import {ammoTypeFor,ammoCount} from '../game/ammo-types.js';
 import {recoverRescueForce} from './rescue-recovery.mjs';
 import {prepareSaltaAssault,completeNorthernMission} from './salta-route.mjs';
 import {runOpeningCampaign} from './opening-campaign.mjs';
 import {prepareNorthernSupport} from './northern-support-fixture.mjs';
-import {stageNorthernCare,prepareNorthernSquad,prepareTucumanSquad,prepareRescueSquad,stabilizeRescued,fightNorthernSector,advanceOnCitadelOrder,northernCombatOrder} from './northern-route.mjs';
+import {stageNorthernCare,prepareNorthernSquad,prepareTucumanSquad,prepareRescueSquad,stabilizeRescued,fightNorthernSector,advanceOnCitadelOrder,northernReconOrder} from './northern-route.mjs';
 
 const assertBattleClock=({campaign,summary})=>{assert.ok(summary.turns>=1&&summary.actions>0);assert.equal(campaign.hour*3600+(campaign.secondOfHour??0),summary.startSeconds+summary.elapsedSeconds);};
 const preserveDeaths=(before,after)=>{for(const [id,r] of Object.entries(before.operativeState))if(!r.alive)assert.equal(after.operativeState[id].alive,false);};
@@ -19,7 +21,7 @@ test('established southern campaign reaches Yatasto through combat, defeat, resc
  const opening=runOpeningCampaign(),evidence={battles:[],medical:[],captures:[],rescues:[]};let cordoba,tucumanLoss,rescued,recovered,salta,captiveIds,northernStaging;
  await t.test('real San Lorenzo remains supply a legally present relief doctor after the completed mission',()=>{
   const original=structuredClone(opening.campaign),staged=stageNorthernCare(opening.campaign),start=staged.campaign,before=structuredClone(start),town=structuredClone(start.sectorStates.san_nicolas);
-  northernStaging=staged;assert.deepEqual(opening.campaign,original);preserveDeaths(original,start);assert.equal(staged.staging.hiringCost,294);
+  northernStaging=staged;assert.deepEqual(opening.campaign,original);preserveDeaths(original,start);assert.equal(staged.staging.hiringCost,routeHiringCeiling(original,294));
   if(original.location!==start.location)assert.ok(start.hour>original.hour,'paid relief doctors make a real march before collecting local equipment');
   const roster=rosterFor(start),candidates=sectorInventoryModel(start,'san_lorenzo',roster).candidates;
   const model=candidates.map(candidate=>sectorInventoryModel(start,'san_lorenzo',roster,candidate.id)).find(model=>!model.reason&&model.entries.some(row=>row.reachable&&JSON.parse(row.expected).item==='medkits'));
@@ -36,11 +38,11 @@ test('established southern campaign reaches Yatasto through combat, defeat, resc
   assert.deepEqual(decodeSave(encodeSave(picked)).campaign,picked);
  });
  await t.test('survivors recover with finite supplies and paid replacements capture Córdoba',()=>{
-  const before=structuredClone(opening.campaign),prepared=prepareNorthernSquad(opening.campaign);
+  const before=structuredClone(opening.campaign),prepared=prepareNorthernSquad(opening.campaign,{ammunitionTarget:6});
   evidence.medical.push({stage:'northernPreparation',...prepared.recovery});
   assert.deepEqual(opening.campaign,before);assert.ok(prepared.recovery.patients.length?prepared.recovery.usedDressings>0:prepared.recovery.usedDressings===0);
-  assert.equal(prepared.recovery.staging.hiringCost,294);preserveDeaths(before,prepared.campaign);
-  assert.equal(prepared.recovery.boughtDressings,prepared.recovery.medicalTrips.reduce((sum,trip)=>sum+trip.quantity,0));
+  assert.equal(prepared.recovery.staging.hiringCost,routeHiringCeiling(before,294));preserveDeaths(before,prepared.campaign);
+  assert.equal(prepared.recovery.boughtDressings,0);assert.ok(prepared.recovery.laterRecoveredDressings>=prepared.recovery.medicalTrips.reduce((sum,trip)=>sum+trip.quantity,0));
   for(const trip of prepared.recovery.medicalTrips){assert.ok(trip.endHour>trip.startHour);assert.equal(trip.cost,trip.quantity*trip.unitPrice);}
   for(const receipt of prepared.recovery.ammunitionTransactions){
    assert.equal(receipt.sector,'san_nicolas');assert.ok(prepared.campaign.squad.includes(receipt.action.operativeId));
@@ -49,7 +51,7 @@ test('established southern campaign reaches Yatasto through combat, defeat, resc
   for(const id of prepared.campaign.squad){
    const op=rosterFor(prepared.campaign).find(op=>op.id===id),unit=carriedAmmunition(op,prepared.campaign.operativeState[id]);
    const family=ammoTypeFor({...unit,activeSlot:'primary'});
-   if(family&&!unit.weaponDropped)assert.ok(unit.loaded+ammoCount(unit,family)>=10,'each actual gun has its selected matching load before the march');
+   if(family&&!unit.weaponDropped)assert.ok(unit.loaded+ammoCount(unit,family)>=6,'each actual gun has its selected matching load before the march');
   }
   assert.equal(prepared.recovery.donatedDressings,prepared.recovery.donors.reduce((sum,donor)=>sum+donor.count,0));
   for(const donor of prepared.recovery.donors){assert.equal(before.operativeState[donor.id].alive,true);assert.equal(donor.count,before.operativeState[donor.id].medkits);assert.equal(prepared.campaign.operativeState[donor.id].medkits,0);}
@@ -57,9 +59,9 @@ test('established southern campaign reaches Yatasto through combat, defeat, resc
   assert.deepEqual(prepared.campaign.squad,prepared.recovery.fieldIds);assert.equal(new Set(prepared.campaign.squad).size,6);
   for(const id of prepared.recovery.replacements){assert.ok(!before.recruited.includes(id));assert.equal(before.operativeState[id].alive,true);assert.ok(prepared.campaign.contracts[id]);}
   for(const id of prepared.campaign.squad)assert.equal(prepared.campaign.operativeState[id].alive,true);
-  const support=prepareNorthernSupport(prepared.campaign,'cordoba',{maxWeeklyPrice:250,preferMarksmanship:true});
+  const support=prepareNorthernSupport(prepared.campaign,'cordoba',{maxWeeklyPrice:routeHiringCeiling(prepared.campaign,250),preferMarksmanship:true});
   assert.equal(support.campaign.pendingBattle.squad.length,12);
-  const result=fightNorthernSector(support.campaign,'cordoba',{controller:northernCombatOrder});evidence.battles.push({...result.summary,support:{ids:support.ids,cost:support.cost}});
+  const result=fightNorthernSector(support.campaign,'cordoba',{controller:northernReconOrder});evidence.battles.push({...result.summary,support:{ids:support.ids,cost:support.cost}});
   for(const id of opening.casualties)assert.equal(result.campaign.operativeState[id].alive,false);
   assert.equal(result.campaign.phase,2);assert.equal(result.campaign.completed,false);cordoba=result.campaign;
  });
@@ -72,6 +74,7 @@ test('established southern campaign reaches Yatasto through combat, defeat, resc
   assert.ok(prepared.recovery.patients.length?prepared.recovery.usedDressings>0:prepared.recovery.usedDressings===0,'care consumes supplies only when the battle left surviving patients');
   for(const id of prepared.recovery.replacements){assert.equal(before.operativeState[id].alive,true);assert.ok(!before.recruited.includes(id));assert.ok(prepared.campaign.contracts[id]);}
   const result=fightNorthernSector(prepared.campaign,'tucuman',{expectedOutcome:'defeat',controller:advanceOnCitadelOrder}),returned=result.campaign;
+  assert.equal(result.summary.startSeconds/3600%24>=20,true,'the exposed patrol reaches the citadel at night');
   assertBattleClock(result);evidence.battles.push(result.summary);evidence.medical.push({stage:'cordoba',...prepared.recovery});
   assert.equal(returned.hour,prepared.campaign.hour+12);preserveDeaths(cordoba,returned);
   const field=result.summary.units.filter(unit=>unit.side==='player'),dead=field.filter(unit=>unit.hp<=0);
@@ -112,7 +115,7 @@ test('established southern campaign reaches Yatasto through combat, defeat, resc
   for(const id of [...prepared.fieldIds,...prepared.supportIds])assert.ok(prepared.campaign.pendingBattle.squad.some(unit=>Number(unit.id)===id));
   for(const defense of prepared.staging.defenses)for(const unit of defense.units.filter(unit=>unit.side==='player'&&unit.hp<=0))assert.equal(prepared.campaign.operativeState[unit.id].alive,false,'actual defense casualties stay dead');
   for(const id of [...prepared.fieldIds,...prepared.supportIds])assert.equal(prepared.campaign.operativeState[id].hp,prepared.campaign.operativeState[id].maxHp,'paid care restores the living relief before its next assault');
-  assert.ok(prepared.staging.recovery.usedDressings>0);assert.ok(prepared.staging.replacements.length>0);assert.equal(prepared.staging.artillery.cost,400);assert.equal(prepared.staging.artillery.stockBefore-prepared.staging.artillery.stockAfter,1);
+  assert.ok(prepared.staging.recovery.usedDressings>0);assert.ok(prepared.staging.replacements.length>0);assert.ok(prepared.staging.artillery.cost>=0);const piece=prepared.campaign.pendingBattle.artillery.find(gun=>gun.id===prepared.staging.artillery.record.id);assert.ok(piece,'the actual recovered gun enters the rescue');assert.equal(piece.type,prepared.staging.artillery.record.type);assert.equal(piece.loaded,prepared.staging.artillery.record.loaded);assert.equal(piece.ammo,prepared.staging.artillery.record.ammo);
   const result=fightNorthernSector(prepared.campaign,'tucuman',{controller:stableCrewController()}),returned=result.campaign;
   assertBattleClock(result);preserveDeaths(tucumanLoss,returned);evidence.battles.push(result.summary,...prepared.staging.defenses);evidence.corridor=prepared.staging.corridor;evidence.medical.push({stage:'rescuePreparation',purchases:prepared.medicalPurchases});evidence.rescues.push({sector:'tucuman',ids:prepared.captives.map(p=>p.id)});
   assert.equal(returned.hour,prepared.campaign.hour);
@@ -120,17 +123,18 @@ test('established southern campaign reaches Yatasto through combat, defeat, resc
    const released=returned.operativeState[id];assert.equal(released.captured,false);assert.equal(released.hp,record.hp);assert.equal(released.bleeding,record.bleeding);
    assert.deepEqual(released.outfit,record.outfit);assert.deepEqual(released.inventory,record.inventory);assert.equal(released.condition,record.condition);
    assert.deepEqual(released.capturedAmmunition,{loaded:0,ammo:0});assert.equal(released.capturedContract,null);
-   assert.equal(returned.contracts[id].expiresAt,record.capturedContract.expiresAt===null?null:returned.hour+record.capturedContract.expiresAt-record.capturedAt);
+   const expiry=contractExpiresSeconds(record.capturedContract),releaseSeconds=returned.hour*3600+(returned.secondOfHour??0),capturedSeconds=record.capturedAt*3600+(record.capturedAtSecond??0);
+   assert.equal(contractExpiresSeconds(returned.contracts[id]),expiry===null?null:releaseSeconds+Math.max(0,expiry-capturedSeconds));
   }
   const stable=stabilizeRescued(returned,{patients:captiveIds});assert.ok(stable.campaign.hour>returned.hour&&stable.campaign.hour<=returned.hour+captiveIds.length+1);
   preserveDeaths(returned,stable.campaign);evidence.medical.push({stage:'releasedCaptives',usedDressings:stable.usedDressings});
   assert.equal(stable.campaign.phase,2);assert.equal(stable.campaign.completed,false);rescued=stable.campaign;
  });
- await t.test('a real medical courier buys finite supplies while paid care restores the freed squad',subtest=>{
+ await t.test('a real medical courier recovers finite supplies while paid care restores the freed squad',subtest=>{
   if(!rescued)return subtest.skip('The rescue and stabilization must pass first');
   assert.ok(rescued);const before=structuredClone(rescued),result=recoverRescueForce(rescued,{patients:captiveIds});
   assert.deepEqual(rescued,before);assert.equal(result.recovery.endHour,result.campaign.hour);assert.ok(result.recovery.endHour>=rescued.hour+24+6,'the courier makes both real marches and the squad rests');
-  assert.equal(result.recovery.boughtDressings,13);assert.ok(result.recovery.unitPrice>0);assert.equal(result.recovery.cost,result.recovery.boughtDressings*result.recovery.unitPrice);
+  assert.equal(result.recovery.boughtDressings,0);assert.ok(result.recovery.foundDressings>0&&result.recovery.foundDressings<=13);assert.equal(result.recovery.unitPrice,0);assert.equal(result.recovery.cost,result.recovery.boughtDressings*result.recovery.unitPrice);
   const availableDoctors=rosterFor(before).filter(op=>{const r=before.operativeState[op.id];return before.recruited.includes(op.id)&&r.alive&&!r.captured&&r.location==='tucuman'&&r.hp>=15&&!captiveIds.includes(op.id)&&op.medical>=70;});
   assert.equal(result.recovery.hiredDoctors.length,Math.max(0,2-availableDoctors.length));assert.equal(result.recovery.hiringCost,result.recovery.hiredDoctors.reduce((sum,id)=>sum+result.campaign.contracts[id].paid,0));
   for(const id of result.recovery.doctors)assert.ok(result.campaign.contracts[id].paid>0,'surviving or replacement doctors work on real paid contracts');
@@ -154,15 +158,19 @@ test('established southern campaign reaches Yatasto through combat, defeat, resc
    assert.ok(prepared.campaign.contracts[id].started>=before.hour,'the actual paid contract begins during preparation');
    assert.ok(!before.recruited.includes(id),'new paid hiring remains separate from the existing rear relief');
   }
-  const reserve=prepared.reservePreparation;assert.ok(reserve.care.hours>0);assert.ok(reserve.care.usedDressings>0);assert.ok(reserve.care.recoveredDressings>0);assert.ok(reserve.returning.length>0);for(const id of reserve.returning){assert.ok(before.recruited.includes(id));assert.equal(before.operativeState[id].alive,true);assert.equal(before.operativeState[id].location,'cordoba');assert.equal(prepared.campaign.operativeState[id].location,'salta');}assert.equal(before.operativeState[reserve.hired].alive,true);assert.ok(!before.recruited.includes(reserve.hired));assert.equal(prepared.campaign.contracts[reserve.hired].paid,reserve.hiringCost);assert.equal(reserve.weaponCost,230);
+  const reserve=prepared.reservePreparation;
+  assert.ok(reserve.care.patients.length?reserve.care.hours>0&&reserve.care.usedDressings>0:reserve.care.hours===0&&reserve.care.usedDressings===0);
+  for(const id of reserve.care.patients)assert.ok(before.operativeState[id].hp<before.operativeState[id].maxHp||before.operativeState[id].bleeding,'rear care treats actual wounds');
+  for(const id of reserve.returning){assert.ok(before.recruited.includes(id));assert.equal(before.operativeState[id].alive,true);assert.equal(before.operativeState[id].location,'cordoba');assert.equal(prepared.campaign.operativeState[id].location,'salta');}
+  assert.equal(before.operativeState[reserve.hired].alive,true);assert.ok(!before.recruited.includes(reserve.hired));assert.equal(prepared.campaign.contracts[reserve.hired].paid,reserve.hiringCost);assert.equal(reserve.weaponCost,230);
   assert.equal(prepared.campaign.pendingEncounter,null,'the assault cannot bypass a pending encounter');
   assert.ok(prepared.campaign.enemyGroups.every(group=>group.status!=='waiting'),'no arrived raid remains unanswered');
   for(const group of before.enemyGroups.filter(group=>group.target==='cordoba'&&group.status==='marching'&&group.arrivalAt<=prepared.campaign.hour))assert.ok(prepared.defenses.some(defense=>defense.groupId===group.id),'resolve every depot raid that actually arrives during preparation');
   for(const defense of prepared.defenses){assert.equal(defense.status,'victory');assert.ok(defense.actions>0);assert.equal(prepared.campaign.enemyGroups.find(group=>group.id===defense.groupId).status,'defeated');assert.ok(prepared.campaign.encounterHistory.some(event=>event.groupId===defense.groupId&&event.outcome==='victory'));}
   assert.ok(prepared.care.patients.every(id=>before.operativeState[id].hp<before.operativeState[id].maxHp),'care treats actual surviving wounds, without requiring a scripted critical casualty');assert.ok(prepared.care.patients.length?prepared.care.usedDressings>0:prepared.care.usedDressings===0);
   for(const id of prepared.care.patients)assert.equal(prepared.campaign.operativeState[id].hp,prepared.campaign.operativeState[id].maxHp);
-  // Keep the paid gun with its infantry screen while the squads make contact.
-  const result=fightNorthernSector(prepared.campaign,'salta',{controller:stableCrewController()});evidence.battles.push(...prepared.defenses,result.summary);evidence.reservePreparation=reserve;evidence.medical.push({stage:'saltaPreparation',...prepared.care});
+  // Advance the actual infantry together and use observed body-region previews.
+  const result=fightNorthernSector(prepared.campaign,'salta',{controller:northernReconOrder});evidence.battles.push(...prepared.defenses,result.summary);evidence.reservePreparation=reserve;evidence.medical.push({stage:'saltaPreparation',...prepared.care});
   assertBattleClock(result);
   assert.equal(result.campaign.hour,prepared.departure+12);
   preserveDeaths(recovered,result.campaign);

@@ -2,6 +2,7 @@ import {sameCell,sameSurface,spaceKey,surfaceAt,tacticalLevel} from './tactical-
 import {planningPoint,moveOrder} from './tactical-planning-space.js';
 import {actBattle,getReachable,teamCanSee} from './tactical.js';
 import {movementStance} from './tactical-condition.js';
+import {movementStep} from './movement-step.js';
 
 export const GROUP_FALLBACK_RADIUS=2;
 const point=planningPoint;
@@ -27,7 +28,7 @@ function movementView(state,unit,movement){
  const units=state.units.filter(u=>!u.departure&&(u.side==='player'||teamCanSee(state,'player',u)));
  const record=movement?{...unit,movementMode:movement,stance:movementStance(movement)}:unit;
  const bodies=units.filter(u=>!u.departure&&u.id!==unit.id&&(u.unconscious||u.hp<=0||u.routed)).map(u=>({id:`formation-body-${u.id}`,...point(u)}));
- return {...state,units:units.map(u=>u.id===unit.id?record:u),npcs:[...(state.npcs??[]),...bodies]};
+ return {...state,units:units.map(u=>u.id===unit.id?record:u),npcs:[...(state.npcs??[]).filter(npc=>teamCanSee(state,'player',npc)),...bodies]};
 }
 function destinationFor(state,unit,desired,reserved,movement){
  const view=movementView(state,unit,movement),occupied=new Set(view.units.filter(u=>u.id!==unit.id).map(key));
@@ -93,4 +94,54 @@ export function executeGroupMove(state,request){
  }
  const status=contact?'contact':members.every(m=>m.status==='arrived')?'completed':'partial';
  return {state:next,plan,members,status,reason:stopped?stopReason:status==='partial'?'Parte del grupo no pudo alcanzar su puesto.':'',elapsedSeconds:(next.elapsedSeconds??0)-(state.elapsedSeconds??0),actions:orders.length,orders};
+}
+
+/** Browser walking pays one actor's next cell, then waits for its animation.
+ * The initial formation goals stay fixed until the user replaces the command.
+ * A continuation contains planning/report data only; every paid cell still
+ * passes through movementStep and the ordinary collision/contact rules.
+ */
+export function groupMovementStep(state,request,continuation=null){
+ const invalidResult=reason=>({state,continuation:null,status:'invalid',report:{members:[],status:'invalid',reason,actions:0,orders:[],elapsedSeconds:0}});
+ let progress;
+ if(continuation){
+  if(!safe(state))return invalidResult('El movimiento en grupo requiere exploración sin combate ni interrupciones.');
+  const ids=Array.isArray(request?.unitIds)?request.unitIds.map(String):[],anchorId=String(request?.anchorId),ordered=[anchorId,...ids.filter(id=>id!==anchorId)],saved=continuation.request;
+  const requestedLevel=request?.tacticalLevel===undefined?tacticalLevel(continuation.members?.[0]?.from):request.tacticalLevel;
+  const sameRequest=saved&&JSON.stringify(saved.unitIds)===JSON.stringify(ids)&&saved.anchorId===anchorId&&tacticalLevel(saved)===requestedLevel&&['x','y','movement'].every(key=>saved[key]===request[key]);
+  const validPoint=p=>p&&Number.isInteger(p.x)&&Number.isInteger(p.y)&&surfaceAt(state,p);
+  const valid=sameRequest&&new Set(ids).size===ids.length&&ids.includes(anchorId)&&ids.every(id=>state.units.some(u=>u.id===id&&u.side==='player'&&!u.militia))&&Array.isArray(continuation.members)&&continuation.members.length===ids.length&&continuation.members.every((member,index)=>member.unitId===ordered[index]&&validPoint(member.from)&&member.desired&&Number.isInteger(member.desired.x)&&Number.isInteger(member.desired.y)&&(!member.destination||validPoint(member.destination)))&&Number.isInteger(continuation.index)&&continuation.index>=0&&continuation.index<=ids.length&&Array.isArray(continuation.orders)&&Number.isFinite(continuation.startSeconds)&&continuation.startSeconds<=(state.elapsedSeconds??0);
+  if(!valid)return invalidResult('La formación ya no corresponde a la orden de marcha.');
+  progress=structuredClone(continuation);
+ }else{
+  const plan=planGroupMove(state,request);if(!plan.ok)return invalidResult(plan.reason);
+  progress={request:plan.request,members:plan.members,index:0,route:null,orders:[],startSeconds:state.elapsedSeconds??0};
+ }
+ const report=(next,status,reason='')=>({members:progress.members,status,reason,actions:progress.orders.length,orders:progress.orders,elapsedSeconds:(next.elapsedSeconds??0)-progress.startSeconds});
+ while(progress.index<progress.members.length){
+  const entry=progress.members[progress.index],unit=state.units.find(u=>String(u.id)===entry.unitId),base={...entry,to:point(unit,Boolean(state.upperSurfaces?.length)),energyBefore:entry.energyBefore??unit.energy,energyAfter:unit.energy};
+  const reason=unableReason(unit,progress.request.movement);
+  if(reason){progress.members[progress.index]={...base,status:'skipped',reason};progress.index++;progress.route=null;continue;}
+  const reserved=new Set(progress.members.filter(m=>m.unitId!==entry.unitId&&m.destination).map(m=>key(m.destination)));
+  const destination=progress.route&&entry.destination?{...entry.destination,path:progress.route}:destinationFor(state,unit,entry.desired,reserved,progress.request.movement);
+  if(!destination){progress.members[progress.index]={...base,status:'blocked',reason:'La ruta hacia su puesto está bloqueada.'};progress.index++;progress.route=null;continue;}
+  if(!destination.path.length){progress.members[progress.index]={...base,destination:point(destination,Boolean(state.upperSurfaces?.length)),status:'arrived'};progress.index++;progress.route=null;continue;}
+  const action={type:'move',unitId:entry.unitId,...point(destination,Boolean(state.upperSurfaces?.length)),...(progress.request.movement!==undefined?{movement:progress.request.movement}:{})};
+  const result=movementStep(state,action,progress.route),next=result.state,actual=next.units.find(u=>String(u.id)===entry.unitId);
+  if(next.lastError||sameCell(unit,actual)){
+   progress.members[progress.index]={...base,destination:point(destination,Boolean(state.upperSurfaces?.length)),status:'blocked',reason:next.lastError??'La ruta hacia su puesto está bloqueada.'};progress.index++;progress.route=null;continue;
+  }
+  // Replay receipts name only the cell that was actually reached. A later
+  // redirect must never charge for the discarded formation destination.
+  progress.orders.push({...action,...point(actual,Boolean(next.upperSurfaces?.length))});
+  const contact=!safe(next),arrived=sameCell(actual,destination);
+  progress.members[progress.index]={...base,destination:point(destination,Boolean(next.upperSurfaces?.length)),to:point(actual,Boolean(next.upperSurfaces?.length)),moved:true,energyAfter:actual.energy,elapsedSeconds:(entry.elapsedSeconds??0)+(next.elapsedSeconds??0)-(state.elapsedSeconds??0),status:contact?'stopped':arrived?'arrived':result.status==='moving'?'moving':'partial',reason:contact?'Contacto enemigo: el movimiento del grupo se detuvo.':result.status==='stopped'?unableReason(actual,progress.request.movement):''};
+  progress.route=result.continuation;
+  if(contact){for(let index=progress.index+1;index<progress.members.length;index++)progress.members[index]={...progress.members[index],status:'stopped',reason:'Contacto enemigo: el movimiento del grupo se detuvo.'};return {state:next,unitId:entry.unitId,continuation:null,status:'contact',report:report(next,'contact','Contacto enemigo: el movimiento del grupo se detuvo.')};}
+  if(result.status!=='moving'){progress.index++;progress.route=null;}
+  const complete=progress.index>=progress.members.length,status=complete?(progress.members.every(m=>m.status==='arrived')?'completed':'partial'):'moving';
+  return {state:next,unitId:entry.unitId,continuation:complete?null:progress,status,report:report(next,status,status==='partial'?'Parte del grupo no pudo alcanzar su puesto.':'')};
+ }
+ const status=progress.members.every(m=>m.status==='arrived')?'completed':'partial';
+ return {state,continuation:null,status,report:report(state,status,status==='partial'?'Parte del grupo no pudo alcanzar su puesto.':'')};
 }

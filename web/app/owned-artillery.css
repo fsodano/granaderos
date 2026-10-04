@@ -1,0 +1,8 @@
+.owned-artillery {display:grid;gap:12px}
+.owned-artillery h3,.owned-artillery p {margin:0}
+.owned-artillery-selection {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.owned-artillery-selection label,.owned-artillery fieldset label {display:grid;gap:5px}
+.owned-artillery select {width:100%;min-width:0}
+.owned-artillery fieldset {display:grid;gap:10px;margin:10px 0 16px}
+.owned-artillery button {justify-self:start}
+@media(max-width:640px){.owned-artillery-selection {grid-template-columns:1fr}}

@@ -32,12 +32,12 @@ test('single and paired firearms record the initiating anonymous shot before it 
  }
 });
 
-test('a civilian remains in the initiating bullet path, then takes cover after the hit',()=>{
+test('a civilian remains in the initiating bullet path before it continues into the listener and cover begins',()=>{
  const s=field({},[{id:'civil',name:'Vecino',x:4,y:3,hp:100,energy:100,stance:'standing'}]);
  const flight=pointProjectileFlight(s,s.units[0],{x:7,y:3},weaponFor(s.units[0]));assert.equal(flight.victimKind,'npc');
  const next=issue(s,{type:'firePoint',x:7,y:3,aim:4}),npc=next.npcs[0];
- assert.ok(npc.hp<100&&npc.hp>15);assert.equal(next.units[1].hp,s.units[1].hp);assert.equal(npc.ai.activity,'hiding');assert.equal(npc.stance,'prone');
- assert.equal(next.units[1].lastHeardNoise?.kind,'fire');
+ assert.ok(npc.hp<100&&npc.hp>15);assert.equal(npc.ai.activity,'hiding');assert.equal(npc.stance,'prone');
+ heardBeforeIncapacity(s,next,'fire');assert.equal(next.units[0].loaded,0);assert.deepEqual(issue(validateBattleSnapshot(JSON.parse(JSON.stringify(s))),{type:'firePoint',x:7,y:3,aim:4}),next);
 });
 
 test('solid shot and canister preserve launch hearing for a casualty and still apply civilian impacts',()=>{

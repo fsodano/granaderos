@@ -1,3 +1,4 @@
+import {withStoredGear} from './commerce-gear-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign,rosterFor} from '../game/campaign.js';
@@ -25,11 +26,11 @@ function fresh(){
  let s=order(start,{type:'recruitCivic',id:110,term:'week'});
  assert.ok(s.resources.treasury<start.resources.treasury);assert.deepEqual(s.recruited,[110]);
  const stock=s.merchants.retiro.stock['1811:india_socket'],cash=s.resources.treasury;
- s=order(s,{type:'purchaseEquipment',item:'1811:india_socket'});
- assert.equal(s.merchants.retiro.stock['1811:india_socket'],stock-1);assert.equal(s.resources.treasury,cash-50);
- const purchased=s.armoryItems.find(item=>item.fittingPattern==='india_socket');assert.ok(purchased.instanceId);
- s=order(s,{type:'equip',operativeId:110,itemId:'1811:india_socket',slot:'blade',instanceId:purchased.id});
- assert.equal(s.operativeState[110].bladeInstanceId,purchased.instanceId);
+ s=withStoredGear(s,'1811:india_socket');
+ assert.equal(s.merchants.retiro.stock['1811:india_socket'],stock);assert.equal(s.resources.treasury,cash);
+ const owned=s.armoryItems.find(item=>item.fittingPattern==='india_socket');assert.ok(owned.instanceId);
+ s=order(s,{type:'equip',operativeId:110,itemId:'1811:india_socket',slot:'blade',instanceId:owned.id});
+ assert.equal(s.operativeState[110].bladeInstanceId,owned.instanceId);
  assert.equal(rosterFor(s).find(u=>u.id===110).weapon,1800);return s;
 }
 function cursorAction(u,type,options={}){
@@ -49,14 +50,14 @@ function pickBayonet(s){
  const u=personal(s),sourceId=['hand:right','hand:left',...inventoryUsage(u).slots.map(p=>p.id)].find(id=>{
   const endpoint=equipmentEndpoint(u,id);return endpoint.item&&readItemStack(u,endpoint.item,1).fittingPattern==='india_socket';
  });
- assert.ok(sourceId,'the purchased bayonet must occupy one real slot');return arrange(s,'pickupEquipment',{sourceId});
+ assert.ok(sourceId,'the owned bayonet must occupy one real slot');return arrange(s,'pickupEquipment',{sourceId});
 }
 const fitted=()=>attachment(pickBayonet(fresh()),'attach');
 const visit=s=>{s=order(s,{type:'visitSector'});return {s,b:enterSector(s.pendingBattle,s.sectorStates.retiro)};};
 const leave=(s,b)=>order(s,{type:'leaveSector',battleId:s.pendingBattle.id,sectorState:b,survivors:b.units.filter(u=>u.side==='player')});
 const act=(b,a)=>{const next=actBattle(b,a);assert.equal(next.lastError,null,next.lastError);return next;};
 
-test('a paid recruit mounts one purchased cursor bayonet, detaches it and selects its exact pocket without campaign charges',()=>{
+test('a paid recruit mounts one owned cursor bayonet, detaches it and selects its exact pocket without campaign charges',()=>{
  let s=fresh();const original=personal(s),identity=original.bladeInstanceId,weight=carriedWeight(original),stock=s.merchants.retiro.stock['1811:india_socket'];
  s=pickBayonet(s);assert.equal(personal(s).blade,0);assert.equal(personal(s).equipmentCursor.stack.instanceId,identity);assert.equal(carriedWeight(personal(s)),weight);
  s=attachment(save(s),'attach');assert.equal(personal(s).equipmentCursor,undefined);assert.equal(personal(s).weaponFittings.bayonet.instanceId,identity);assert.equal(carriedWeight(personal(s)),weight);
@@ -79,10 +80,10 @@ test('a stored Brown Bess accepts and releases its fitting without replacing the
  assert.equal(readItemStack(personal(s),equipmentEndpoint(personal(s),'large-2').item,1).fittings?.bayonet,undefined);assert.deepEqual(save(s),s);
 });
 
-test('exchanging two separately purchased fittings leaves the removed exact item on the cursor',()=>{
+test('exchanging two separately owned fittings leaves the removed exact item on the cursor',()=>{
  let s=fitted();const previous=structuredClone(personal(s).weaponFittings.bayonet),stock=s.merchants.retiro.stock['1811:india_socket'];
- s=order(s,{type:'purchaseEquipment',item:'1811:india_socket'});
- assert.equal(s.merchants.retiro.stock['1811:india_socket'],stock-1);
+ s=withStoredGear(s,'1811:india_socket');
+ assert.equal(s.merchants.retiro.stock['1811:india_socket'],stock);
  const purchase=s.armoryItems.find(item=>item.fittingPattern==='india_socket');assert.notEqual(purchase.instanceId,previous.instanceId);
  s=order(s,{type:'equip',operativeId:110,itemId:'1811:india_socket',slot:'blade',instanceId:purchase.id});s=pickBayonet(s);
  const before=structuredClone(personal(s)),sourceId=before.equipmentCursor.sourceId,weight=carriedWeight(before);
@@ -112,7 +113,7 @@ test('a full pack retains the detached bayonet on the saved cursor and rejects a
 
 test('custom fitting and detached cursor survive live deployment, exact reports, campaign saves and sector reentry',()=>{
  let s=fresh();
- // Authored provenance on the already purchased item is custody data, not a
+ // Authored provenance on the already owned item is custody data, not a
  // new object, charge, condition grant, or campaign resource.
  s.operativeState[110].bladeMetadata={name:'Bayoneta Acosta',proof:{mark:'BA-110',history:['compra en Retiro']}};
  s=attachment(pickBayonet(s),'attach');const fitting=structuredClone(personal(s).weaponFittings.bayonet);let b;

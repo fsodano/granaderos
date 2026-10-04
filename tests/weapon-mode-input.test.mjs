@@ -8,6 +8,7 @@ import {createBattle,actBattle,meleePreview,meleePointPreview,getMeleeAttackResu
 import {attackCursorMode,retainedAttackCursor,targetItemAction,targetPreview,tacticalInputAction,resolvedOrderType,targetingHelp} from '../game/ja2-hud.js';
 import {rightClickAim} from '../game/aim-cursor.js';
 import {componentTree} from './component-tree.mjs';
+import {battleTimers} from './battle-timers-fixture.mjs';
 const {default:Battlefield}=await import('../web/app/Battlefield.tsx');
 const {default:TacticalScene}=await import('../web/app/TacticalScene.tsx');
 const {default:JA2Conversation}=await import('../web/app/JA2Conversation.tsx');
@@ -45,10 +46,10 @@ async function mountController(t,props){
  for(const [key,value]of Object.entries(globals))Object.defineProperty(globalThis,key,{configurable:true,writable:true,value});
  let tree;const wrapper=Battlefield(props),content=wrapper.props.children;let current=content.props;
  function Capture(){tree=content.type(current);return null;}
- const root=createRoot(dom.window.document.getElementById('root'));
- t.after(async()=>{try{await act(async()=>root.unmount());}finally{dom.window.close();for(const [key,descriptor]of previous){if(descriptor)Object.defineProperty(globalThis,key,descriptor);else delete globalThis[key];}}});
+ const timers=battleTimers(act),root=createRoot(dom.window.document.getElementById('root'));
+ t.after(async()=>{try{await act(async()=>root.unmount());}finally{timers.restore();dom.window.close();for(const [key,descriptor]of previous){if(descriptor)Object.defineProperty(globalThis,key,descriptor);else delete globalThis[key];}}});
  const render=async props=>{current=props;await act(async()=>root.render(h(wrapper.type,null,h(Capture))));};
- await render(current);return {tree:()=>tree,act,render,async frame(ms){frameTime+=ms;const callbacks=[...frames.values()];frames.clear();await act(async()=>{for(const callback of callbacks)callback(frameTime);});}};
+ await render(current);return {tree:()=>tree,act,render,settle:observe=>timers.until(()=>!nodes(tree).some(n=>n.props?.['data-enemy-frame']),observe),async frame(ms){frameTime+=ms;const callbacks=[...frames.values()];frames.clear();await act(async()=>{for(const callback of callbacks)callback(frameTime);});}};
 }
 
 for(const [name,patch]of variants)for(const prone of [false,true])test(`${name}: F and repeated right-click retain melee and pay ${prone?'crawl, standing and strike':'approach and strike'} costs`,()=>{
@@ -86,13 +87,14 @@ async function controller(t,patch,{npc=false,setup}={}){
  const commits=[],props=()=>({battle,onChange:next=>{battle=next;commits.push(next);return next;},onFinish(){},onTalk(){}});
  const mounted=await mountController(t,props()),find=type=>nodes(mounted.tree()).find(node=>node.type===type),scene=()=>find(TacticalScene),svg=()=>nodes(mounted.tree()).find(node=>node.props?.className?.startsWith('tactical-field'));
  const render=()=>mounted.render(props());
- return {mounted,scene,find,commits,battle:()=>battle,
+ const presented=[];
+ return {mounted,scene,find,commits,presented,battle:()=>battle,
   async key(key){await mounted.act(async()=>document.body.dispatchEvent(new window.KeyboardEvent('keydown',{key,bubbles:true})));await render();},
   async rightClick(id='e'){
    const person=document.createElement('div');person.setAttribute('data-unit-id',id);const hit=document.createElement('span');hit.setAttribute('data-person-hit-target','true');person.append(hit);
    await mounted.act(async()=>svg().props.onContextMenu({preventDefault(){},target:hit,currentTarget:{getScreenCTM:()=>null},clientX:0,clientY:0}));
   },
-  async tile(point){await mounted.act(async()=>scene().props.onTile(point));await render();},
+  async tile(point){await mounted.act(async()=>scene().props.onTile(point));await mounted.settle(()=>presented.push({frame:svg().props['data-enemy-frame'],pose:scene().props.poses.p,position:scene().props.positions.p,commits:commits.length}));await render();},
  };
 }
 
@@ -120,19 +122,20 @@ for(const [name,patch,point,input]of [
  const before=c.battle(),copy=structuredClone(before),p=meleePointPreview(before,actor(before),point),preview=targetPreview(before,actor(before),point,{mode:'useItem'}),count=c.commits.length;
  assert.equal(p.valid,true);assert.equal(preview.valid,true);assert.equal(preview.attackType,'meleePoint');assert.equal(preview.pa,p.pa);assert.equal(preview.chance,undefined);assert.equal(preview.hitLocation,undefined);
  await c.tile(point);assert.equal(c.commits.length,count+1);assert.equal(c.battle().lastError,null);assert.equal(actor(c.battle()).ap,actor(before).ap-p.pa);assert.equal(getMeleeAttackResult(before,c.battle(),'p'),true);
- if(p.movePa){assert.equal(c.scene().props.positions.p.moving,true);assert.notEqual(c.scene().props.poses.p,'strike');await c.mounted.frame(10000);}
- assert.equal(c.scene().props.poses.p,'strike');assert.equal(c.scene().props.aim,0);assert.deepEqual(ammunition(actor(c.battle())),ammunition(actor(before)));assert.deepEqual(c.battle().smoke,before.smoke);assert.deepEqual(c.battle().units.filter(u=>u.id!=='p').map(physicalState),before.units.filter(u=>u.id!=='p').map(physicalState),'walking and swinging may reveal noise, but cannot damage or move another actor');assert.equal(c.battle().seed,before.seed);assert.deepEqual(before,copy);
+ if(p.movePa){assert.ok(c.presented.some(frame=>frame.frame.includes(':step:')));assert.ok(c.presented.filter(frame=>frame.frame.includes(':step:')).every(frame=>frame.pose!=='strike'));}
+ assert.ok(c.presented.some(frame=>frame.pose==='strike'));assert.equal(c.scene().props.aim,0);assert.deepEqual(ammunition(actor(c.battle())),ammunition(actor(before)));assert.deepEqual(c.battle().smoke,before.smoke);assert.deepEqual(c.battle().units.filter(u=>u.id!=='p').map(physicalState),before.units.filter(u=>u.id!=='p').map(physicalState),'walking and swinging may reveal noise, but cannot damage or move another actor');assert.equal(c.battle().seed,before.seed);assert.deepEqual(before,copy);
  if(p.destination)assert.deepEqual([actor(c.battle()).x,actor(c.battle()).y],[p.destination.x,p.destination.y]);else assert.deepEqual([actor(c.battle()).x,actor(c.battle()).y],[actor(before).x,actor(before).y]);
  if(p.stancePa)assert.equal(actor(c.battle()).stance,'standing');
  if(actor(before).weaponFittings)assert.deepEqual(actor(c.battle()).weaponFittings,actor(before).weaponFittings,'an empty swing causes no impact wear');
 });
 
-test('mounted long empty-ground approach keeps walking past one second and plays the strike only on arrival',async t=>{
+test('mounted long empty-ground approach presents every paid step before the strike and final commit',async t=>{
  const c=await controller(t,variants[0][1]);await c.key('b');assert.equal(c.scene().props.mode,'useItem','B alone prepares the selected close attack');const point={x:10,y:6},before=c.battle(),p=meleePointPreview(before,actor(before),point);assert.equal(p.valid,true);assert.ok(p.path.length*240>1200);
- await c.tile(point);assert.equal(getMeleeAttackResult(before,c.battle(),'p'),true);assert.equal(c.scene().props.positions.p.moving,true);assert.notEqual(c.scene().props.poses.p,'strike');
- await c.mounted.act(async()=>new Promise(resolve=>setTimeout(resolve,1100)));await c.mounted.frame(1200);assert.equal(c.scene().props.positions.p.moving,true);assert.notEqual(c.scene().props.poses.p,'strike','the strike timer must not run during the approach');
- await c.mounted.frame(10000);assert.equal(c.scene().props.positions.p.moving,false);assert.equal(c.scene().props.poses.p,'strike');
- await c.mounted.act(async()=>new Promise(resolve=>setTimeout(resolve,1100)));assert.equal(c.scene().props.poses.p,'idle','the strike has its full duration after arrival');
+ const count=c.commits.length;await c.tile(point);assert.equal(getMeleeAttackResult(before,c.battle(),'p'),true);
+ const steps=c.presented.filter(frame=>frame.frame.includes(':step:'));assert.ok(steps.length>=p.path.length-1);assert.ok(steps.every(frame=>frame.pose!=='strike'));
+ const strike=c.presented.findIndex(frame=>frame.pose==='strike'),lastStep=c.presented.findLastIndex(frame=>frame.frame.includes(':step:'));
+ assert.ok(strike>lastStep,'the actual strike is shown after the recorded approach');assert.ok(c.presented.every(frame=>frame.commits===count));assert.equal(c.commits.length,count+1);
+ assert.notEqual(c.scene().props.poses.p,'strike','the completed presentation releases its strike pose');
 });
 
 test('mounted reaction-cancelled approach never plays a strike after the reached tile settles',async t=>{

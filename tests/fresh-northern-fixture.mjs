@@ -1,3 +1,4 @@
+import {routeHiringCeiling} from './funded-route-fixture.mjs';
 import {prepareHiredNorthernDefense,prepareNorthernOfficerRelief,completeHiredNorthernMission} from './fresh-northern-command.mjs';
 import {prepareFreshTucumanAssault} from './fresh-campaign-route.mjs';
 import {fightNorthernSector} from './northern-route.mjs';
@@ -27,22 +28,28 @@ import {order,saved,sync,visit,leave} from './local-contract-fixture.mjs';
 const tactical=(p,a)=>{const battle=a.type==='endTurn'?endTurn(p.battle):actBattle(p.battle,a);assert.equal(battle.lastError,null,battle.lastError);return sync({campaign:p.campaign,battle});};
 const deadIds=s=>Object.entries(s.operativeState).filter(([,r])=>!r.alive).map(([id])=>Number(id));
 
-export function freshNorthernRoute({onCheckpoint}={}){
+export function freshNorthernRoute({onCheckpoint,report=()=>{}}={}){
  const prefix=freshCoastalRoute('created');let s=prefix.campaign;const notes=[];
+ const stagingUnits=ids=>ids.map(id=>{const r=s.operativeState[id];return {id,hp:r.hp,alive:r.alive,captured:r.captured,location:r.location,energy:r.energy,fatigue:r.fatigue,asleep:r.asleep,morale:r.morale,contract:s.contracts[id]};});
  // San Lorenzo leaves actual casualties. Keep surviving contracts, pay for
  // relief, recover finite rifles and finish care before the northern assault.
  for(const id of s.squad)if(s.contracts[id]?.expiresAt!=null&&s.contracts[id].expiresAt<s.hour+72)s=order(s,{type:'renewContract',id,term:'week',expectedExpiresAt:s.contracts[id].expiresAt});
- const relief=[115,123,114,137,113,124,112,108,139,111].filter(id=>s.operativeState[id].alive&&!s.recruited.includes(id)).slice(0,6-s.squad.length);
+ // Hire the available physician first so the actual wounded veterans have
+ // competent paid care before filling the remaining infantry positions.
+ const relief=[112,115,123,114,137,113,124,108,139,111].filter(id=>s.operativeState[id].alive&&!s.recruited.includes(id)).slice(0,6-s.squad.length);
  for(const id of relief)s=order(s,{type:'recruitCivic',id,term:'week',destination:s.location});
  s=advanceCampaignHours(s,6);
  const rearm=state=>{const depot=visit(state),rearmed=equipOpeningRifles(depot.battle,state.squad);return leave(sync({campaign:depot.campaign,battle:rearmed.battle}));};
  s=prepareLocalOpening(rearm(s),{buyWeapons:false}).campaign;
- const field=s.activeSquadId,supportIds=[119,127,103,104,111,140].filter(id=>s.operativeState[id].alive&&!s.recruited.includes(id));assert.equal(supportIds.length,6);
+ report({event:'fieldRecovered',hour:s.hour,ids:s.squad,units:stagingUnits(s.squad)});
+ const field=s.activeSquadId,supportIds=[119,127,103,104,111,140,100,101,102,105,106,117,118,121,122,126,129,130,133,134].filter(id=>s.operativeState[id].alive&&!s.operativeState[id].captured&&!s.recruited.includes(id)).slice(0,6);assert.equal(supportIds.length,6);
  for(const id of supportIds)s=order(s,{type:'recruitCivic',id,term:'week',destination:s.location});
  s=advanceCampaignHours(s,6);s=order(s,{type:'createSquad',ids:supportIds,name:'Apoyo de Córdoba',sector:s.location});const support=s.activeSquadId;s=rearm(s);
  for(const id of [field,support]){s=order(s,{type:'selectSquad',id});s=finishReloadsBeforeMarch(s);}
+ report({event:'columnsLoaded',hour:s.hour,squads:s.squads,units:stagingUnits([...s.squads.find(q=>q.id===field).members,...supportIds])});
  for(const id of [field,support]){s=order(s,{type:'selectSquad',id});s=order(s,{type:'attack',sector:'cordoba',queue:true});}
  for(let hour=0;hour<24&&![field,support].every(id=>s.squads.find(q=>q.id===id)?.journey?.status==='ready');hour++)s=order(s,{type:'wait',hours:1});
+ report({event:'columnsArrived',hour:s.hour,squads:s.squads,units:stagingUnits([...s.squads.find(q=>q.id===field).members,...supportIds])});
  s=order(s,{type:'beginAssault',sector:'cordoba'});assert.equal(s.pendingBattle.squad.length,12);
  for(const sector of ['cordoba']){
   const support=sector==='tucuman'?prepareNorthernSupport(s,sector):null;
@@ -73,7 +80,7 @@ export function freshNorthernRoute({onCheckpoint}={}){
   if(hasWorkshop(s,s.location))for(const id of s.squad)for(const type of ['resupply','repairWeapon']){
    const next=dispatchCampaign(s,{type,operativeId:id});if(!next.lastError){assert.ok(next.resources.treasury<s.resources.treasury);s=next;}
   }
-  const affordable=rosterFor(s).filter(o=>o.id>=100&&contractQuote(s,o,'week').price<=200).sort((a,b)=>contractQuote(s,a,'week').price-contractQuote(s,b,'week').price||a.id-b.id).map(o=>o.id);
+  const affordable=rosterFor(s).filter(o=>o.id>=100&&contractQuote(s,o,'week').price<=routeHiringCeiling(s,200)).sort((a,b)=>contractQuote(s,a,'week').price-contractQuote(s,b,'week').price||a.id-b.id).map(o=>o.id);
   const candidates=[...new Set([115,123,114,137,113,124,112,134,139,108,111,117,121,126,129,133,130,...affordable])].filter(id=>s.operativeState[id].alive&&!s.recruited.includes(id)),replacements=candidates.slice(0,6-s.squad.length);
   assert.ok(hiringArrivalOptions(s).some(o=>o.id===s.location));const at=s.location;
   for(const id of replacements)s=order(s,{type:'recruitCivic',id,term:'week',destination:at});

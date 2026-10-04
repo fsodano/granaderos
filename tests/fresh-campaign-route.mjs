@@ -1,3 +1,4 @@
+import {ROUTE_STARTING_TREASURY} from './funded-route-fixture.mjs';
 import {supplyRouteAmmunition} from './route-ammunition.mjs';
 import {finishReloadsBeforeMarch} from './pre-march-reload.mjs';
 import {fightNorthernSector} from './northern-route.mjs';
@@ -9,8 +10,7 @@ import {equipOpeningRifles} from './opening-equipment.mjs';
 import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign,rosterFor,deploymentCost} from '../game/campaign.js';
 import {weaponAmmoType,availableAmmunition} from '../game/ammunition-types.js';
-import {fight} from './opening-driver.mjs';
-import {hiredAssaultOrder} from './hired-assault-driver.mjs';
+import {fight as cautiousFight} from './cuyo-route-driver.mjs';
 import {syncBattleTime} from '../game/time.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {autoBandageBattle} from '../game/auto-bandage.js';
@@ -20,23 +20,27 @@ import {doctorRate} from '../game/medical-care.js';
 import {contractQuote} from '../game/contracts.js';
 import {operativeLocation} from '../game/squads.js';
 import {worldOwner} from '../game/world-cells.js';
+import {collectPhysicalCacheItems} from './finite-care-cache.mjs';
+import {prepareRouteBattery} from './route-battery.mjs';
+import {collectRouteItems,collectRouteMedicalSupplies,discoverRouteCache,recoverRouteFirearm} from './finite-route-equipment.mjs';
+import {meetLocalIncomeRepresentative} from './route-town-income.mjs';
 
-// Starts from the actual public new-game state. Checkpoints are outputs of
+// Starts from a declared funded Retiro-only campaign. Checkpoints are outputs of
 // ordinary orders, never authored victories or granted territory.
 export function beginFreshCampaign({seed=8,report=()=>{}}={}){
- let campaign=initialCampaign(seed);const orders=[];
+ let campaign=initialCampaign(seed);campaign.resources.treasury=ROUTE_STARTING_TREASURY;const orders=[];
  const order=action=>{const next=dispatchCampaign(campaign,action);assert.equal(next.lastError,null,JSON.stringify(action)+': '+next.lastError);campaign=next;orders.push(action);};
  assert.deepEqual(campaign.recruited,[]);
  assert.deepEqual(Object.keys(campaign.sectors).filter(id=>campaign.sectors[id].owner==='patriot'),['retiro']);
  for(const id of [110,114,115,123,137,107])order({type:'recruitCivic',id,term:'week'});
- order({type:'purchaseMedicalSupplies',operativeId:107,quantity:20});
+ campaign=collectPhysicalCacheItems(campaign,107,{item:'medkits'},6).campaign;
  campaign=supplyRouteAmmunition(campaign,campaign.squad).campaign;
  order({type:'attack',sector:'buenos_aires'});
  const request=structuredClone(campaign.pendingBattle);
  report({event:'battleStarted',sector:request.sector,hour:campaign.hour,treasury:campaign.resources.treasury});
- // Use the ordinary rooftop approach. Shorter legs leave this squad exposed
- // below the firing position when the first patrol makes contact.
- let {battle,actions}=fight(request,undefined,{controller:hiredAssaultOrder});
+ // Advance in short bounds, keep available cover and select observed body
+ // regions through the actual cursor previews before spending a loaded shot.
+ let {battle,actions}=cautiousFight(request,undefined,{scoutCostWeight:.01,avoidCivilians:true,fallbackOrders:true});
  assert.equal(battle.status,'victory','The fresh route must earn Buenos Aires through legal combat.');
  battle=actBattle(battle,{type:'explore'});assert.equal(battle.lastError,null);
  const aid=autoBandageBattle(battle);battle=aid.battle;
@@ -67,23 +71,21 @@ export function recoverFreshCapital(start,{report=()=>{}}={}){
   return total+(id!==doctor&&patient.alive?Math.ceil((patient.maxHp-patient.hp)/rate):0);
  },0));
  // Recover the finite dressings left with the fallen squad in this secured
- // sector. Buenos Aires has no workshop from which to buy replacements.
+ // sector, then open its real finite cache if those dressings are insufficient.
  const dressings=sectorInventoryModel(campaign,'buenos_aires',rosterFor(campaign),doctor).entries;
  for(const source of dressings.filter(row=>row.reachable&&JSON.parse(row.expected).item==='medkits')){
   const count=Math.min(source.count,requiredDressings-campaign.operativeState[doctor].medkits);if(count<=0)break;
   order({type:'sectorInventory',sector:'buenos_aires',operativeId:doctor,direction:'take',sourceKey:source.key,expected:source.expected,count});
  }
  if(campaign.operativeState[doctor].medkits<requiredDressings){
-  order({type:'travel',sector:'retiro'});
-  order({type:'purchaseMedicalSupplies',operativeId:doctor,quantity:requiredDressings-campaign.operativeState[doctor].medkits});
-  order({type:'travel',sector:'buenos_aires'});
+  campaign=collectPhysicalCacheItems(campaign,doctor,{item:'medkits'},requiredDressings-campaign.operativeState[doctor].medkits).campaign;
  }
  // A sole surviving medic still needs another person to treat her wounds.
  let treatingDoctor=doctor;
  if(campaign.operativeState[doctor].hp<campaign.operativeState[doctor].maxHp){
   treatingDoctor=116;
   if(!campaign.recruited.includes(treatingDoctor))order({type:'recruitCivic',id:treatingDoctor,term:'week'});
-  if(campaign.operativeState[treatingDoctor].medkits<10)order({type:'purchaseMedicalSupplies',operativeId:treatingDoctor,quantity:10-campaign.operativeState[treatingDoctor].medkits});
+  if(campaign.operativeState[treatingDoctor].medkits<10)campaign=collectPhysicalCacheItems(campaign,treatingDoctor,{item:'medkits'},10-campaign.operativeState[treatingDoctor].medkits).campaign;
  }
  const patients=campaign.squad.filter(id=>id!==treatingDoctor&&campaign.operativeState[id].hp<campaign.operativeState[id].maxHp);
  const before=campaign.operativeState[treatingDoctor].medkits;
@@ -91,6 +93,7 @@ export function recoverFreshCapital(start,{report=()=>{}}={}){
  for(const operativeId of patients)order({type:'assignCare',operativeId,assignment:'patient'});
  for(let hours=0;patients.some(id=>campaign.operativeState[id].hp<campaign.operativeState[id].maxHp)&&hours<48;hours++){
   assert.equal(campaign.pendingEncounter,null,'an actual encounter must be resolved before continuing recovery');
+  if(!campaign.operativeState[treatingDoctor].medkits)campaign=collectPhysicalCacheItems(campaign,treatingDoctor,{item:'medkits'},1).campaign;
   order({type:'wait',hours:1});
  }
  for(const id of patients)assert.equal(campaign.operativeState[id].hp,campaign.operativeState[id].maxHp);
@@ -142,6 +145,7 @@ export function recoverFreshCapital(start,{report=()=>{}}={}){
  const supportTime=syncBattleTime(campaign,supportSalvage.battle);assert.equal(supportTime.error,null);campaign=supportTime.campaign;
  order({type:'leaveSector',battleId:campaign.pendingBattle.id,sectorState:supportTime.battle,survivors:supportTime.battle.units.filter(u=>u.side==='player')});
  order({type:'selectSquad',id:fieldSquad});
+ campaign=meetLocalIncomeRepresentative(campaign,{sourceId:'buenos_aires',report});
  for(const id of dead)assert.equal(campaign.operativeState[id].alive,false);
  assert.deepEqual(decodeSave(encodeSave(campaign)).campaign,campaign);
  report({event:'freshCapitalRecovery',hour:campaign.hour,patients,field,treasury:campaign.resources.treasury,paid:cash-campaign.resources.treasury});
@@ -187,6 +191,9 @@ export function prepareFreshSanLorenzo(start,{report=()=>{}}={}){
   const count=Math.min(row.count,10-recovered);if(!count)break;
   order({type:'sectorInventory',sector:'san_nicolas',operativeId:112,direction:'take',sourceKey:row.key,expected:row.expected,count});recovered+=count;
  }
+ // Share the real recovered cartridge stock between both mission squads.
+ // Six total rounds per firearm fit this field plan without buying a shortage.
+ campaign=supplyRouteAmmunition(campaign,field,{target:6,report}).campaign;
  for(const id of dead)assert.equal(campaign.operativeState[id].alive,false);
  assert.deepEqual(decodeSave(encodeSave(campaign)).campaign,campaign);
  report({event:'freshSanLorenzoPreparation',hour:campaign.hour,field,paid:cash-campaign.resources.treasury,ammunitionCost,recoveredDressings:recovered,transfers:salvage.transfers,unfilled:salvage.unfilled});
@@ -216,7 +223,7 @@ export function prepareFreshMissionSupport(start,{report=()=>{}}={}){
  const salvage=equipOpeningRifles(enterSector(campaign.pendingBattle,campaign.sectorStates.san_nicolas),support);
  const synced=syncBattleTime(campaign,salvage.battle);assert.equal(synced.error,null);campaign=synced.campaign;
  order({type:'leaveSector',battleId:campaign.pendingBattle.id,sectorState:synced.battle,survivors:synced.battle.units.filter(u=>u.side==='player')});
- for(const id of [main,second]){order({type:'selectSquad',id});campaign=finishReloadsBeforeMarch(campaign,{report});}
+ for(const id of [main,second]){order({type:'selectSquad',id});campaign=supplyRouteAmmunition(campaign,campaign.squad,{target:6,report}).campaign;campaign=finishReloadsBeforeMarch(campaign,{report});}
  // Approach the convent in daylight after both squads finish loading.
  order({type:'wait',hours:2});
  for(const id of dead)assert.equal(campaign.operativeState[id].alive,false);
@@ -274,7 +281,7 @@ export function recoverFreshCordobaSurvivors(start,{report=()=>{}}={}){
   const patients=urgent(),physicians=rosterFor(c).filter(op=>{const r=c.operativeState[op.id];return c.recruited.includes(op.id)&&r.alive&&!r.captured&&r.location==='cordoba'&&!patients.includes(op.id)&&r.hp>=15&&!r.bleeding&&!r.asleep&&r.energy>10&&op.medical>=20;}).sort((a,b)=>b.medical-a.medical).slice(0,patients.length);
   assert.ok(physicians.length,'urgent wounds need an available local physician');
   for(const operativeId of patients)aidOrder({type:'assignCare',operativeId,assignment:'patient'});
-  for(const op of physicians){if(!c.operativeState[op.id].medkits)aidOrder({type:'purchaseMedicalSupplies',operativeId:op.id,quantity:1});aidOrder({type:'assignCare',operativeId:op.id,assignment:'doctor'});}
+  for(const op of physicians){if(!c.operativeState[op.id].medkits)c=collectRouteItems(c,op.id,{item:'medkits'},1).campaign;aidOrder({type:'assignCare',operativeId:op.id,assignment:'doctor'});}
   for(const id of [...patients,...physicians.map(op=>op.id)]){const contract=c.contracts[id];if(contract?.expiresAt!=null&&contract.expiresAt<=c.hour+1)aidOrder({type:'renewContract',id,term:'day',expectedExpiresAt:contract.expiresAt});}
   aidOrder({type:'wait',hours:1});
   for(const id of patients)assert.ok(c.operativeState[id].alive,`urgent care must preserve patient ${id}`);
@@ -322,17 +329,9 @@ export function recoverFreshCordobaSurvivors(start,{report=()=>{}}={}){
      const row=sectorInventoryModel(c,site,rosterFor(c),doctor.id).entries.find(row=>row.reachable&&JSON.parse(row.expected).item==='medkits');
      if(row)order({type:'sectorInventory',sector:site,operativeId:doctor.id,direction:'take',sourceKey:row.key,expected:row.expected,count:Math.min(row.count,4)});
      else {
-      if(!['retiro','cordoba','mendoza'].includes(c.location)){
-       // Route the actual patients and doctor to the stocked workshop. This
-       // ordinary journey can itself stop for an enemy encounter.
-       order({type:'createSquad',name:'Socorro de Córdoba',ids:[...patients,doctor.id],sector:site});
-       for(const operativeId of [...patients,doctor.id])order({type:'assignCare',operativeId,assignment:'active'});
-       order({type:'travel',sector:'retiro'});
-       if(c.pendingEncounter)break;
-       assert.equal(c.location,'retiro');
-       for(const operativeId of patients)order({type:'assignCare',operativeId,assignment:'patient'});
-      }
-      order({type:'purchaseMedicalSupplies',operativeId:doctor.id,quantity:4});
+      // Discover the actual local cache; patients remain at their clinic.
+      report({event:'careCollectionCheckpoint',site,doctor:doctor.id,campaign:structuredClone(c)});
+      c=collectRouteMedicalSupplies(c,doctor.id,12,{report}).campaign;
      }
     }
     order({type:'assignCare',operativeId:doctor.id,assignment:'doctor'});
@@ -419,13 +418,11 @@ for(const id of field.filter(id=>c.operativeState[id].weaponDropped)){
  const model=()=>sectorInventoryModel(c,c.location,rosterFor(c),id);
  let item=model().carried.find(r=>r.equip?.some(e=>e.slot==='primary'));
  // A routed survivor may have left the gun behind, not merely pocketed it.
- // Use reachable stock or pay for a replacement; never restore the lost gun.
+ // Recover reachable finite equipment; never restore or buy the lost gun.
  if(!item){
   const available=()=>model().entries.find(r=>{const weapon=JSON.parse(r.expected).weapon;return r.reachable&&weapon>=1800&&weapon<=1808;});
   if(!available()){
-   order({type:'purchaseEquipment',item:1801});
-   const bought=c.armoryItems.find(item=>item.item===1801);assert.ok(bought);
-   order({type:'equip',operativeId:id,slot:'weapon',itemId:1801,instanceId:bought.id});
+   c=recoverRouteFirearm(c,id);
    continue;
   }
   const row=available();assert.ok(row,'a replacement gun must exist in local stock');
@@ -481,7 +478,13 @@ for(const sector of medicalSectors){
  const doctor=candidates().find(op=>operativeLocation(c,op.id)===sector);
  if(!doctor)continue;
  doctors.set(sector,doctor.id);usedDoctors.add(doctor.id);
- for(const row of sectorInventoryModel(c,sector,rosterFor(c),doctor.id).entries.filter(row=>row.reachable&&JSON.parse(row.expected).item==='medkits'))order({type:'sectorInventory',sector,operativeId:doctor.id,direction:'take',sourceKey:row.key,expected:row.expected,count:row.count});
+ // A doctor cannot carry every dressing left on a large battlefield. Keep
+ // surplus in the real sector stock once the personal pockets are full.
+ for(const row of sectorInventoryModel(c,sector,rosterFor(c),doctor.id).entries.filter(row=>row.reachable&&JSON.parse(row.expected).item==='medkits')){
+  const action={type:'sectorInventory',sector,operativeId:doctor.id,direction:'take',sourceKey:row.key,expected:row.expected,count:row.count},next=dispatchCampaign(c,action);
+  if(next.lastError==='No queda espacio en el inventario.')break;
+  assert.equal(next.lastError,null,JSON.stringify(action)+next.lastError);c=next;
+ }
  order({type:'assignCare',operativeId:doctor.id,assignment:'doctor'});
 }
 for(const operativeId of wounded.filter(id=>worldOwner(c,operativeLocation(c,id))==='patriot'))order({type:'assignCare',operativeId,assignment:'patient'});
@@ -499,7 +502,7 @@ for(const [sector,ids] of ruralGroups)for(let offset=0;offset<ids.length;offset+
  if(!doctors.has('cordoba')){
   const doctor=rosterFor(c).filter(op=>c.recruited.includes(op.id)&&c.operativeState[op.id].alive&&!c.operativeState[op.id].captured&&c.operativeState[op.id].hp>=15&&!c.operativeState[op.id].bleeding&&op.medical>=20&&operativeLocation(c,op.id)==='cordoba').sort((a,b)=>b.medical-a.medical)[0];
   assert.ok(doctor,'a living local medic must receive the returning wounded');
-  if(!c.operativeState[doctor.id].medkits)order({type:'purchaseMedicalSupplies',operativeId:doctor.id,quantity:1});
+  if(!c.operativeState[doctor.id].medkits)c=collectRouteItems(c,doctor.id,{item:'medkits'},1).campaign;
   order({type:'assignCare',operativeId:doctor.id,assignment:'doctor'});
   doctors.set('cordoba',doctor.id);usedDoctors.add(doctor.id);
  }
@@ -519,7 +522,7 @@ for(let h=0;h<12&&wounded.some(id=>c.operativeState[id].bleeding>0||c.operativeS
    order({type:'sectorInventory',sector,operativeId:donor,direction:'drop',item:'medkits',count:1});
    const row=sectorInventoryModel(c,sector,rosterFor(c),id).entries.find(row=>row.reachable&&JSON.parse(row.expected).item==='medkits');assert.ok(row);
    order({type:'sectorInventory',sector,operativeId:id,direction:'take',sourceKey:row.key,expected:row.expected,count:1});
-  }else order({type:'purchaseMedicalSupplies',operativeId:id,quantity:1});
+  }else c=collectRouteItems(c,id,{item:'medkits'},1).campaign;
  }
  assert.equal(c.pendingEncounter,null);order({type:'wait',hours:1});
 }
@@ -568,8 +571,8 @@ for(const id of fieldIds){const model=()=>sectorInventoryModel(c,'cordoba',roste
  order({type:'assignCare',operativeId:id,assignment:'rest'});
 }
 c=sellSurplusEquipment(c,'cordoba',fieldIds,1000,{report});
-// Finish wound care in the supplied Córdoba hospital before sending the force
-// north. Use the actual healthy medic, local stock, and campaign treasury.
+// Finish wound care in Córdoba before sending the force north. Use an actual
+// healthy medic and finite local dressings through ordinary hourly work.
 const medic=rosterFor(c).filter(op=>fieldIds.includes(op.id)&&c.operativeState[op.id].hp>=15&&!c.operativeState[op.id].bleeding&&op.medical>=20).sort((a,b)=>Number(c.operativeState[b.id].hp===c.operativeState[b.id].maxHp)-Number(c.operativeState[a.id].hp===c.operativeState[a.id].maxHp)||b.medical-a.medical)[0];
 const patients=fieldIds.filter(id=>id!==medic?.id&&c.operativeState[id].hp<c.operativeState[id].maxHp);
 if(patients.length){
@@ -578,7 +581,7 @@ if(patients.length){
  for(let h=0;h<96&&patients.some(id=>c.operativeState[id].hp<c.operativeState[id].maxHp);h++){
   assert.equal(c.pendingEncounter,null);
   for(const id of fieldIds){const contract=c.contracts[id];assert.ok(contract,'keep a current contract during care');if(contract.expiresAt!==null&&contract.expiresAt<=c.hour+1)order({type:'renewContract',id,term:'day',expectedExpiresAt:contract.expiresAt});}
-  if(!c.operativeState[medic.id].medkits&&c.resources.treasury>=30)order({type:'purchaseMedicalSupplies',operativeId:medic.id,quantity:1});
+  if(!c.operativeState[medic.id].medkits)c=collectRouteItems(c,medic.id,{item:'medkits'},1).campaign;
   if(!c.operativeState[medic.id].asleep)order({type:'assignCare',operativeId:medic.id,assignment:c.operativeState[medic.id].medkits?'doctor':'rest'});order({type:'wait',hours:1});
  }
  report({event:'tucumanMedicalRecovery',hour:c.hour,treasury:c.resources.treasury,medic:medic.id,patients:patients.map(id=>({id,hp:c.operativeState[id].hp,maxHp:c.operativeState[id].maxHp,bleeding:c.operativeState[id].bleeding,expiresAt:c.contracts[id]?.expiresAt}))});
@@ -592,8 +595,8 @@ for(let i=0;i<24&&fieldIds.some(id=>c.operativeState[id].energy<100||c.operative
 }
 for(const operativeId of fieldIds)order({type:'assignCare',operativeId,assignment:'active'});
 for(const id of fieldIds){while(c.contracts[id]?.expiresAt!==null&&c.contracts[id]?.expiresAt<c.hour+30){const contract=c.contracts[id];order({type:'renewContract',id,term:'day',expectedExpiresAt:contract.expiresAt});}}
-// A paid support gun lets the recovering force cover its infantry approach.
-if(artillerySupport){order({type:'purchaseEquipment',item:'bronze4'});order({type:'configureArtillery',types:['bronze4']});}
+// A physically recovered support gun can cover the infantry approach.
+if(artillerySupport){const battery=prepareRouteBattery(c,['bronze4'],{report});c=battery.campaign;order({type:'configureArtillery',types:battery.selections});}
 // Stage the actual squads through the ordinary clock before the coordinated march.
 // Enemy movement and contract costs continue during this wait.
 order({type:'wait',hours:4});

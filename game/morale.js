@@ -1,9 +1,16 @@
 import {operativeLocation} from './squads.js';
+import {OPERATIVES} from './data.js';
+import {CIVIC_RECRUITS} from './civic-recruits.js';
+import {CRITICAL_HEALTH,isUnconscious} from './actor-condition.js';
+import {preferredCompanions,PREFERRED_COMPANION_MORALE} from './service-relationships.js';
 
 const clamp=n=>Math.max(0,Math.min(100,n));
 const deployed=(s,id)=>Boolean(s.pendingBattle?.squad?.some(u=>Number(u.id)===Number(id)));
 const pairKey=(a,b)=>[Number(a),Number(b)].sort((x,y)=>x-y).join(':');
 const need=(ok,message)=>{if(!ok)throw Error(message);};
+const originals=new Map([...OPERATIVES,...CIVIC_RECRUITS].map(o=>[o.id,o]));
+const preferences=(s,id)=>preferredCompanions(s,originals.get(Number(id))??{id:Number(id)});
+const ableCompanion=r=>Boolean(r&&r.alive!==false&&!r.asleep&&!r.captured&&!r.departure&&!r.surrendered&&r.hp>=CRITICAL_HEALTH&&!isUnconscious(r));
 export const COHESION_HOURS=120;
 export const baseMorale=op=>Math.min(100,(op.personality==='optimistic'?90:op.personality==='pessimistic'?70:80)+(op.traits?.includes('steadfast')?10:0));
 
@@ -31,16 +38,22 @@ export function cohesionBonus(s,id){
   return Math.min(5,Math.floor(Math.max(0,...partners.map(other=>s.cohesion?.[pairKey(id,other)]??0))/24));
 }
 
-export function deploymentMorale(s,id){
+export function deploymentMorale(s,id,cohortIds=[]){
   const personalMorale=s.operativeState[id].morale;
   const bonus=Math.min(cohesionBonus(s,id),100-personalMorale);
-  return {morale:personalMorale+bonus,personalMorale,cohesionBonus:bonus};
+  const available=Math.min(PREFERRED_COMPANION_MORALE,5-bonus,100-personalMorale-bonus);
+  const cohort=new Set(cohortIds.map(Number));
+  const companion=available>0&&preferences(s,id).find(p=>p.companionId!==Number(id)&&cohort.has(p.companionId)&&s.recruited.includes(p.companionId)&&ableCompanion(s.operativeState[p.companionId]));
+  // This receipt is fixed at issue. Later joins, wounds or contract expiry do
+  // not refresh it or alter the personal morale returned from this deployment.
+  const companionBonus=companion?available:0;
+  return {morale:personalMorale+bonus+companionBonus,personalMorale,cohesionBonus:bonus,...(companion?{companionBonus,companionId:companion.companionId}:{})};
 }
 
 export function returnMorale(s,id,report,issued){
   const r=s.operativeState[id],reported=report.morale??issued?.morale??r.morale;
   need(Number.isFinite(reported)&&reported>=0&&reported<=100,'La moral del parte es inválida.');
-  const bonus=issued?.cohesionBonus??0,personal=issued?.personalMorale??r.morale;
+  const bonus=(issued?.cohesionBonus??0)+(issued?.companionBonus??0),personal=issued?.personalMorale??r.morale;
   // Preserve strategic events (such as pay) that occurred while this soldier was
   // deployed, and remove only the actual bonus added to this deployment.
   // Apply the tactical change to the current personal value. Returning an
@@ -48,9 +61,16 @@ export function returnMorale(s,id,report,issued){
   r.morale=clamp(r.morale+(reported-(issued?.morale??personal+bonus)));r.moraleRestHours=0;
 }
 
+export function payMoraleRewardEligible(s,id){
+  const r=s.operativeState[id];
+  if(!r?.alive)return false;
+  const last=r.lastMoralePayAt;
+  return last==null||(s.hour*3600+(s.secondOfHour??0))-(last*3600+(r.lastMoralePaySecond??0))>=86400;
+}
+
 export function recordPayMorale(s,ids,paid){
   for(const id of ids){const r=s.operativeState[id];if(!r?.alive)continue;
-    if(paid){if(r.lastMoralePayAt!==null&&s.hour-r.lastMoralePayAt<24)continue;r.morale=clamp(r.morale+2);r.lastMoralePayAt=s.hour;}
+    if(paid){if(!payMoraleRewardEligible(s,id))continue;r.morale=clamp(r.morale+2);r.lastMoralePayAt=s.hour;if(s.secondOfHour)r.lastMoralePaySecond=s.secondOfHour;else delete r.lastMoralePaySecond;}
     else r.morale=clamp(r.morale-10);
   }
 }
@@ -103,10 +123,17 @@ export function validateMorale(s,roster){
   for(const op of roster){const r=s.operativeState[op.id];
     need(Number.isFinite(r.morale)&&r.morale>=0&&r.morale<=100,'La moral guardada es inválida.');
     need(Number.isInteger(r.moraleRestHours)&&r.moraleRestHours>=0&&r.moraleRestHours<6,'La recuperación de moral guardada es inválida.');
-    need(r.lastMoralePayAt===null||(Number.isInteger(r.lastMoralePayAt)&&r.lastMoralePayAt>=0&&r.lastMoralePayAt<=s.hour),'El pago de moral guardado es inválido.');
+    need(r.lastMoralePayAt===null||(Number.isInteger(r.lastMoralePayAt)&&r.lastMoralePayAt>=0&&r.lastMoralePayAt*3600+(r.lastMoralePaySecond??0)<=s.hour*3600+(s.secondOfHour??0)),'El pago de moral guardado es inválido.');
+    if(Object.hasOwn(r,'lastMoralePaySecond'))need(r.lastMoralePayAt!==null&&Number.isInteger(r.lastMoralePaySecond)&&r.lastMoralePaySecond>=0&&r.lastMoralePaySecond<3600,'Los segundos del pago de moral guardado son inválidos.');
   }
   for(const unit of s.pendingBattle?.squad??[]){
     if(unit.morale!==undefined)need(Number.isFinite(unit.morale)&&unit.morale>=0&&unit.morale<=100,'La moral del despliegue es inválida.');
-    if(unit.personalMorale!==undefined||unit.cohesionBonus!==undefined)need(Number.isFinite(unit.personalMorale)&&unit.personalMorale>=0&&unit.personalMorale<=100&&Number.isFinite(unit.cohesionBonus)&&unit.cohesionBonus>=0&&unit.cohesionBonus<=5&&unit.morale===unit.personalMorale+unit.cohesionBonus,'El compañerismo del despliegue es inválido.');
+    const hasCompanion=Object.hasOwn(unit,'companionBonus');
+    need(hasCompanion===Object.hasOwn(unit,'companionId'),'El apoyo del compañero desplegado está incompleto.');
+    if(hasCompanion){
+      const companion=s.pendingBattle.squad.find(other=>Number(other.id)===unit.companionId);
+      need(Number.isInteger(unit.companionId)&&unit.companionId!==Number(unit.id)&&Number.isFinite(unit.companionBonus)&&unit.companionBonus>0&&unit.companionBonus<=PREFERRED_COMPANION_MORALE&&ableCompanion(companion)&&preferences(s,unit.id).some(p=>p.companionId===unit.companionId),'El apoyo del compañero desplegado es inválido.');
+    }
+    if(unit.personalMorale!==undefined||unit.cohesionBonus!==undefined)need(Number.isFinite(unit.personalMorale)&&unit.personalMorale>=0&&unit.personalMorale<=100&&Number.isFinite(unit.cohesionBonus)&&unit.cohesionBonus>=0&&unit.cohesionBonus+(unit.companionBonus??0)<=5&&unit.morale===unit.personalMorale+unit.cohesionBonus+(unit.companionBonus??0),'El compañerismo del despliegue es inválido.');
   }
 }

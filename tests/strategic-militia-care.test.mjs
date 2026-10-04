@@ -7,14 +7,16 @@ import {careStatus} from '../game/medical-care.js';
 import {DEFAULT_CARE_RULES} from '../game/campaign-care-rules.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {order,saved,visit,tactical,leave} from './local-contract-fixture.mjs';
+import {stageFiniteDressings,collectFiniteDressings} from './care-supply-source.mjs';
+import {assertTradeRejected} from './commerce-gear-fixture.mjs';
 import {woundedGarrison,MILITIA_DOCTOR as D,SECOND_MILITIA_DOCTOR as D2} from './militia-care-fixture.mjs';
 const patient=(s,id)=>s.garrisons.retiro.find(u=>u.id===id);
 const doctor=s=>rosterFor(s).find(o=>o.id===D);
 
 test('a paid local militia doctor stops a real wound and restores the same soldier with finite dressings across saves and reentry',()=>{
- let {campaign:s,patientId:id}=woundedGarrison();const before=structuredClone(patient(s,id)),ids=s.garrisons.retiro.map(u=>u.id),counts=[...s.sectors.retiro.militia];s=order(s,{type:'assignCare',id:D,assignment:'militia_doctor'});s=order(s,{type:'wait',hours:1});assert.equal(patient(s,id).bleeding,0);assert.equal(patient(s,id).hp,before.hp);assert.equal(s.operativeState[D].medkits,1);assert.equal(s.operativeState[D].energy,97);assert.equal(s.operativeState[D].fatigue,2);
+ let {campaign:s,patientId:id}=woundedGarrison({medicalKits:12});s=stageFiniteDressings(s,D,10);const before=structuredClone(patient(s,id)),ids=s.garrisons.retiro.map(u=>u.id),counts=[...s.sectors.retiro.militia];s=order(s,{type:'assignCare',id:D,assignment:'militia_doctor'});s=order(s,{type:'wait',hours:1});assert.equal(patient(s,id).bleeding,0);assert.equal(patient(s,id).hp,before.hp);assert.equal(s.operativeState[D].medkits,1);assert.equal(s.operativeState[D].energy,97);assert.equal(s.operativeState[D].fatigue,2);
  s=order(saved({campaign:s}).campaign,{type:'wait',hours:1});assert.equal(patient(s,id).hp,Math.min(before.maxHp,before.hp+6));assert.equal(s.operativeState[D].medkits,0);const hp=patient(s,id).hp;s=order(s,{type:'wait',hours:1});assert.equal(patient(s,id).hp,hp);
- const money=s.resources.treasury;s=order(s,{type:'purchaseMedicalSupplies',id:D,quantity:10});assert.equal(s.resources.treasury,money-100);s=order(s,{type:'wait',hours:Math.ceil((before.maxHp-hp)/6)});assert.equal(patient(s,id).hp,before.maxHp);const stock=s.operativeState[D].medkits;s=order(s,{type:'wait',hours:1});assert.equal(s.operativeState[D].medkits,stock);assert.match(careStatus(s,doctor(s),rosterFor(s)),/Sin milicianos heridos/);
+ const money=s.resources.treasury;s=collectFiniteDressings(s,D,10);assert.equal(s.resources.treasury,money);s=order(s,{type:'wait',hours:Math.ceil((before.maxHp-hp)/6)});assert.equal(patient(s,id).hp,before.maxHp);const stock=s.operativeState[D].medkits;s=order(s,{type:'wait',hours:1});assert.equal(s.operativeState[D].medkits,stock);assert.match(careStatus(s,doctor(s),rosterFor(s)),/Sin milicianos heridos/);
  assert.deepEqual(s.garrisons.retiro.map(u=>u.id),ids);assert.deepEqual(s.sectors.retiro.militia,counts);for(const key of ['ammo','loaded','priming','flints','medkits','torches','inventory','weapon','blade'])assert.deepEqual(patient(s,id)[key],before[key],key);
  s=order(saved({campaign:s}).campaign,{type:'assignCare',id:D,assignment:'active'});const p=visit(s),field=p.battle.units.find(u=>Number(u.id)===id);assert.equal(field.hp,before.maxHp);assert.equal(field.bleeding,0);assert.equal(field.unconscious,false);assert.ok(field.ap>0);assert.deepEqual(p.campaign.pendingBattle.garrison.map(u=>u.id),ids);assert.ok(saved({campaign:leave(p)}));
 });
@@ -22,7 +24,7 @@ test('a paid local militia doctor stops a real wound and restores the same soldi
 test('two militia doctors cannot spend two dressings on one patient in the same hour and use authored care costs',()=>{
  let {campaign:s,patientId:id}=woundedGarrison({twoDoctors:true,careRules:{...DEFAULT_CARE_RULES,baseHealing:5,skillStep:40,energyCost:7,fatigueCost:9,dressingPrice:17}});const hp=patient(s,id).hp,energy=s.operativeState[D].energy,fatigue=s.operativeState[D].fatigue;
  for(const id of [D,D2])s=order(s,{type:'assignCare',id,assignment:'militia_doctor'});s=order(s,{type:'wait',hours:1});assert.equal(s.operativeState[D].medkits+s.operativeState[D2].medkits,3);assert.equal(s.operativeState[D].energy,Math.min(energy-7,Math.max(10,100-fatigue-9)));assert.equal(s.operativeState[D].fatigue,fatigue+9);assert.equal(s.operativeState[D2].energy??100,100);assert.equal(patient(s,id).hp,hp);
- s=order(s,{type:'wait',hours:1});assert.equal(patient(s,id).hp,Math.min(patient(s,id).maxHp,hp+7));assert.equal(s.operativeState[D2].medkits,2);const money=s.resources.treasury;s=order(s,{type:'purchaseMedicalSupplies',id:D,quantity:2});assert.equal(s.resources.treasury,money-34);assert.ok(saved({campaign:s}));
+ s=order(s,{type:'wait',hours:1});assert.equal(patient(s,id).hp,Math.min(patient(s,id).maxHp,hp+7));assert.equal(s.operativeState[D2].medkits,2);const money=s.resources.treasury;assertTradeRejected(s,{type:'purchaseMedicalSupplies',id:D,quantity:2});assert.equal(s.resources.treasury,money);assert.ok(saved({campaign:s}));
 });
 
 test('militia medical work requires the exact location and blocks deployment or simultaneous training',()=>{

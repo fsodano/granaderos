@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';import {freshCuyoRoute} from './fresh-cuyo-fixture.mjs';
-test('a fresh campaign prepares Cuyo with real battles, living roles, purchases, funding and physical late recruitment',()=>{
+test('a funded campaign prepares Cuyo with real battles, living roles, finite arsenal recovery, funding and physical late recruitment',()=>{
  const {campaign:s,notes}=freshCuyoRoute();
  assert.deepEqual(notes.filter(n=>n.actions).map(n=>n.stage),['mendoza','uspallata','los_patos']);assert.equal(notes.at(-1).stage,'commander');assert.equal(s.flags.armyFunded,true);assert.equal(s.phase,4);
  for(const id of ['mendoza','uspallata','los_patos']){assert.ok(s.sectors[id].fort>=1);assert.equal(s.sectors[id].owner,'patriot');}

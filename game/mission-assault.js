@@ -1,11 +1,12 @@
 import {tooTiredToMarch} from './march-fatigue.js';
+import {contractExpiresSeconds} from './contracts.js';
 
 export function missionAssaultSquads(state){
  return state.squads.filter(q=>q.members.length&&q.location==='san_nicolas').map(q=>{
   let reason=q.journey?'La escuadra está en marcha.':null;
   for(const id of q.members){
-   const r=state.operativeState[id],contract=state.contracts[id];
-   if(!state.recruited.includes(id)||!r?.alive||r.hp<15||r.unconscious||r.captured||r.location&&r.location!=='san_nicolas'||!contract||contract.expiresAt!==null&&contract.expiresAt<=state.hour)reason??='Hay combatientes no disponibles.';
+   const r=state.operativeState[id],contract=state.contracts[id],expiry=contractExpiresSeconds(contract);
+   if(!state.recruited.includes(id)||!r?.alive||r.hp<15||r.unconscious||r.captured||r.location&&r.location!=='san_nicolas'||!contract||expiry!==null&&expiry<=state.hour*3600+(state.secondOfHour??0))reason??='Hay combatientes no disponibles.';
    else if(tooTiredToMarch(r))reason??='La escuadra necesita descansar.';
    else if(r.asleep||r.assignment!=='active'||state.militiaTraining?.some(t=>t.trainerId===id))reason??='Hay combatientes con otra asignación.';
   }

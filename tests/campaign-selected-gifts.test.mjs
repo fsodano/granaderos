@@ -1,3 +1,4 @@
+import {withCarriedPonchos} from './custody-gear-fixture.mjs';
 import test from 'node:test';import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign,restoreCampaign,serializeCampaign,hasPendingNpcGiftProgress} from '../game/campaign.js';
 import {prepareCampaignBattle} from '../game/battle-handoff.js';
@@ -18,8 +19,8 @@ function ready(){
   let campaign=initialCampaign(8);assert.deepEqual(campaign.squad,[]);const cash=campaign.resources.treasury;
   campaign=order(campaign,{type:'recruitCivic',id:110,term:'day'});assert.ok(campaign.resources.treasury<cash);
   const stock=campaign.merchants.retiro.supplies.ponchos;
-  for(let i=0;i<2;i++)campaign=order(campaign,{type:'sectorInventory',sector:'retiro',operativeId:110,direction:'issueOutfit'});
-  assert.equal(campaign.merchants.retiro.supplies.ponchos,stock-2);
+  campaign=withCarriedPonchos(campaign,110,2);
+  assert.equal(campaign.merchants.retiro.supplies.ponchos,stock);
   campaign=order(campaign,{type:'visitSector'});let pair=prepareCampaignBattle(campaign);assert.equal(pair.error,null);
   pair.battle=approachNPC(pair.battle,'110',npcId);prepared=sync(pair.campaign,pair.battle);
   assert.equal(prepared.campaign.quests[questId],undefined);assert.equal(recipient(prepared.battle).questGifts?.length??0,0);
@@ -34,19 +35,22 @@ function offer(battle,item='outfit'){
  const next=actBattle(battle,preview.action);assert.equal(next.lastError,null,next.lastError);assert.deepEqual(battle,before);return next;
 }
 function save(pair){const restored=decodeSave(encodeSave(pair.campaign,pair.battle));assert.deepEqual(restored.campaign,pair.campaign);return restored;}
-function talk(pair,approach='direct'){
+function talk(pair,approach='direct',questResolution){
  pair.battle=approachNPC(pair.battle,'110',npcId);pair=sync(pair.campaign,pair.battle);
- return {...pair,campaign:order(pair.campaign,{type:'talkNPC',npcId,unitId:110,approach,sectorState:pair.battle})};
+ return {...pair,campaign:order(pair.campaign,{type:'talkNPC',npcId,unitId:110,approach,...(questResolution?{questResolution}:{}),sectorState:pair.battle})};
 }
 
-test('paid recruit delivers real selected ponchos, implicitly starts the errand and completes it once without confirmation',()=>{
+test('selected ponchos retain exact custody and await the chosen civic reward after the full delivery',()=>{
  let pair=ready();const before=structuredClone(pair.campaign),gun=actor(pair.battle).activeSlot;
  pair=save(sync(pair.campaign,offer(pair.battle)));
  assert.equal(pair.campaign.quests[questId].status,'offered');assert.equal(pair.campaign.conversations[npcId].giftCount,1);assert.equal(pair.campaign.conversations[npcId].lastApproach,'gift');assert.equal(pair.campaign.lastConversation.outcome,'questProgress');assert.match(pair.campaign.lastConversation.text,/1 de 2/);assert.ok(!pair.campaign.lastConversation.options.includes('quest'));assert.equal(actor(pair.battle).activeSlot,gun);
  assert.equal(pair.campaign.cityLoyaltyEvents.length,before.cityLoyaltyEvents.length);assert.equal(recipient(pair.battle).questGifts.length,1);
  pair=save(sync(pair.campaign,offer(pair.battle)));
- assert.equal(pair.campaign.quests[questId].status,'completed');assert.equal(pair.campaign.conversations[npcId].giftCount,2);assert.equal(pair.campaign.lastConversation.outcome,'questCompleted');assert.equal(recipient(pair.battle).questGifts.length,2);
- for(const sector of ['retiro','buenos_aires','ensenada'])assert.equal(pair.campaign.sectors[sector].loyalty,before.sectors[sector].loyalty+8);
+ assert.equal(pair.campaign.quests[questId].status,'offered');assert.equal(pair.campaign.conversations[npcId].giftCount,2);assert.equal(recipient(pair.battle).questGifts.length,2);
+ assert.deepEqual(pair.campaign.resources,before.resources);assert.deepEqual(pair.campaign.cityLoyaltyEvents,before.cityLoyaltyEvents);
+ assert.deepEqual(sync(pair.campaign,pair.battle).campaign,pair.campaign,'a full pending choice does not repeat acknowledgement');
+ pair=save(talk(pair,'quest','civic'));assert.equal(pair.campaign.quests[questId].status,'completed');assert.equal(pair.campaign.quests[questId].questResolution,'civic');assert.equal(pair.campaign.lastConversation.outcome,'questCompleted');
+ for(const sector of ['retiro','buenos_aires'])assert.equal(pair.campaign.sectors[sector].loyalty,before.sectors[sector].loyalty+8);assert.equal(pair.campaign.sectors.ensenada.loyalty,before.sectors.ensenada.loyalty);
  assert.equal(pair.campaign.cityLoyaltyEvents.filter(e=>e.id==='npc-retiro-uniformes'||e.eventId==='npc-retiro-uniformes').length,1);
  assert.deepEqual(pair.campaign.resources,before.resources);assert.deepEqual(pair.campaign.merchants,before.merchants);
  const again=sync(pair.campaign,pair.battle);assert.deepEqual(again.campaign,pair.campaign);
@@ -60,7 +64,7 @@ test('ordinary replies after a gift survive repeated sync, full save, leave and 
  let campaign=order(pair.campaign,{type:'leaveSector',battleId:pair.campaign.pendingBattle.id,sectorState:pair.battle,survivors:pair.battle.units.filter(u=>u.side==='player')});
  campaign=decodeSave(encodeSave(campaign)).campaign;campaign=order(campaign,{type:'visitSector'});pair=prepareCampaignBattle(campaign);assert.equal(pair.error,null);pair=sync(pair.campaign,pair.battle);
  assert.equal(recipient(pair.battle).questGifts.length,1);assert.equal(pair.campaign.lastConversation.text,reply);assert.equal(pair.campaign.conversations[npcId].giftCount,1);
- pair.battle=approachNPC(pair.battle,'110',npcId);pair=sync(pair.campaign,offer(pair.battle));assert.equal(pair.campaign.quests[questId].status,'completed');
+ pair.battle=approachNPC(pair.battle,'110',npcId);pair=sync(pair.campaign,offer(pair.battle));assert.equal(pair.campaign.quests[questId].status,'offered');pair=talk(pair,'quest','civic');assert.equal(pair.campaign.quests[questId].status,'completed');
  pair=talk(pair);const complete=structuredClone(pair.campaign);pair=save(sync(pair.campaign,pair.battle));assert.deepEqual(pair.campaign,complete);
 });
 
@@ -124,7 +128,7 @@ test('campaign-only saves retain acknowledged receipts in the stored sector whil
  }
  // The cheap deployment probe checks the actual sector, never distant NPCs.
  const elsewhere={...accepted.campaign,pendingBattle:{...accepted.campaign.pendingBattle,sector:'san_nicolas'}};
- const distant={npcs:[]};Object.defineProperty(distant,'tiles',{get(){throw Error('receipt check scanned unrelated map');}});
+ const distant={npcs:[],errandDefinitions:structuredClone(elsewhere.errandDefinitions)};Object.defineProperty(distant,'tiles',{get(){throw Error('receipt check scanned unrelated map');}});
  assert.equal(hasPendingNpcGiftProgress(elsewhere,distant),false);
 });
 
@@ -148,7 +152,7 @@ test('an omitted deployment NPC list admits only its existing nonrecruitable sam
  // Isolate admission for the omitted-roster request format used by defenses.
  // Both physical gifts and the prior sector snapshot came from real actions.
  const absent=structuredClone(pair.campaign);delete absent.pendingBattle.npcs;
- const completed=sync(absent,gift);assert.equal(completed.campaign.conversations[npcId].giftCount,2);assert.equal(completed.campaign.quests[questId].status,'completed');assert.deepEqual(recipient(completed.battle).questGifts.slice(0,1),oldReceipt);
+ const completed=sync(absent,gift);assert.equal(completed.campaign.conversations[npcId].giftCount,2);assert.equal(completed.campaign.quests[questId].status,'offered');assert.deepEqual(recipient(completed.battle).questGifts.slice(0,1),oldReceipt);
  assert.deepEqual(sync(completed.campaign,completed.battle).campaign,completed.campaign);
  for(const mutate of [
   c=>c.pendingBattle.npcs=[],c=>c.pendingBattle.npcs=null,

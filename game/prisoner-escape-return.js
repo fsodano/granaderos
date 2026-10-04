@@ -19,12 +19,12 @@ export function settlePrisonerEscapes(campaign,request,battle,roster){
    need(!battle.groundItems.some(g=>g.id===cacheId),'El equipo incautado ya existe en el campo.');
    battle.groundItems.push({...structuredClone(stack),type:'item',id:cacheId,x:origin.x,y:origin.y,tacticalLevel:origin.tacticalLevel??0});cacheIds.push(cacheId);
   }
-  const contract=restoredCaptiveContract(record,campaign.hour);
+  const contract=restoredCaptiveContract(record,campaign.hour,campaign.secondOfHour??0);
   for(const horse of campaign.horseState.horses)if(horse.custody?.kind==='captured'&&horse.custody.operativeId===id)horse.custody.kind='field';
   returnEquipment(campaign,id,{weapon:0,blade:0,activeSlot:'unarmed',weaponDropped:false,jammed:false,outfit:null,headwear:null,legwear:null,leftHandItem:null});clearCarriedLoading(record);
   for(const key of Object.keys(SUPPLY_ITEMS))record[key]=0;
   record.inventory={};delete record.pocketOrder;
-  Object.assign(record,{captured:false,capturedSector:null,capturedAt:null,capturedContract:null,capturedAmmunition:{loaded:0,ammo:0},location:exit.destination,arrival:{battleId:request.id,fromSector:request.sector,fromScene:null,exitId:exit.id,entryEdge:exit.entryEdge,entryAnchor:structuredClone(exit.entryAnchor)},residentSector:null,residentScene:null,asleep:false,sleepCollapsed:false,assignment:contract?(record.hp<record.maxHp||record.bleeding?'patient':'rest'):'active'});
+  Object.assign(record,{captured:false,capturedSector:null,capturedAt:null,capturedAtSecond:null,capturedContract:null,capturedAmmunition:{loaded:0,ammo:0},location:exit.destination,arrival:{battleId:request.id,fromSector:request.sector,fromScene:null,exitId:exit.id,entryEdge:exit.entryEdge,entryAnchor:structuredClone(exit.entryAnchor)},residentSector:null,residentScene:null,asleep:false,sleepCollapsed:false,assignment:contract?(record.hp<record.maxHp||record.bleeding?'patient':'rest'):'active'});
   if(contract){campaign.contracts[id]=contract;campaign.recruited.push(id);const squad=campaign.squads.find(q=>q.location===exit.destination&&!q.journey&&q.members.length<6);if(squad){squad.members.push(id);if(squad.id===campaign.activeSquadId)campaign.squad=[...squad.members];}}
   receipt.escape={battleId:request.id,hour:campaign.hour,destination:exit.destination,cacheIds};
   campaign.log.unshift({hour:campaign.hour,text:`${npc.name} escapa hacia ${exit.destination}. Conserva sus heridas; su equipo permanece en el lugar de cautiverio.${contract?' Retoma el servicio pendiente.':' Su contrato había terminado.'}`});campaign.log=campaign.log.slice(0,80);

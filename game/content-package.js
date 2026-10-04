@@ -1,4 +1,5 @@
 import {validateContractRules} from './contract-rules.js';
+import {validateServiceRefusals,validatePreferredCompanions} from './service-relationships.js';
 import {validateAmmunitionMarket} from './ammunition-market-rules.js';
 import {validateArtilleryTradingRules} from './artillery-trading-rules.js';
 import {validateArtilleryTransportRules} from './artillery-transport-rules.js';
@@ -16,7 +17,7 @@ import {DEFAULT_IMPORT_RULES,validateImportRules} from './campaign-imports.js';
 import {validateHeadquarters} from './campaign-headquarters.js';
 import {defaultStartingTerritory,validateStartingTerritory} from './content-territory.js';
 import {DEFAULT_CAMPAIGN_RULES,validateCampaignRules} from './campaign-rules.js';
-import {validateQuestDefinitions,validateErrandContacts} from './quest-definitions.js';
+import {validateQuestDefinitions,validateErrandContacts,freshDefaultErrands} from './quest-definitions.js';
 import {validateContentQuests} from './content-quests.js';
 import {validateDialogue} from './content-dialogue.js';
 import {FORCE_EQUIPMENT,defaultForceEquipment,validateForceEquipment} from './content-force-equipment.js';
@@ -65,6 +66,7 @@ export function defaultContentPackage() {
     id: "granaderos",
     name: "Granaderos",
     quests: [],
+    errands: freshDefaultErrands(),
     rules: {...DEFAULT_CAMPAIGN_RULES},
     startingTerritory: defaultStartingTerritory(),
     headquarters: 'retiro',
@@ -81,6 +83,8 @@ export function defaultContentPackage() {
       portrait: portrait(o.id),
       abilities:legacyCharacterAbilities(o.id),
       personality:characterProfile(o).personality,
+      ...(o.serviceRefusals===undefined?{}:{serviceRefusals:structuredClone(o.serviceRefusals)}),
+      ...(o.preferredCompanions===undefined?{}:{preferredCompanions:structuredClone(o.preferredCompanions)}),
       speech:{...characterProfile(o).speech},
       spriteAppearance:spriteAppearance(o),
       monthlyPay: o.monthlyPay ?? 0,
@@ -171,6 +175,8 @@ export function validateContentPackage(value) {
     if(value[group.bladeField]!==undefined)errors.push(...validateForceEquipment(field,value[group.bladeField],new Set(value.weapons.filter(w=>BLADES[w?.template]).map(w=>w.id))));
   }
   for (const c of value.characters.filter(record)) {
+    errors.push(...validateServiceRefusals(c,sets.characters));
+    errors.push(...validatePreferredCompanions(c,sets.characters));
     if(legacyOperativeId(c.id)===undefined)check(['contract','encounter'].includes(c.recruitmentSource)&&['contract','permanent'].includes(c.service)&&['experience','fixed'].includes(c.progression)&&Array.isArray(c.traits),c.id,'los personajes nuevos necesitan origen, servicio, progreso y especialidades explícitos.');
     if(isWorldCharacter(c)){
       const e=c.encounter;

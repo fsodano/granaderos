@@ -1,4 +1,5 @@
 import {CIVILIAN_SUPPLY_FIELDS} from './civilian-supplies.js';
+import {FINITE_ARTILLERY_ARSENALS} from './finite-artillery-arsenals.js';
 import {weaponSpecification} from './weapon-definition.js';
 import {AMMUNITION_TYPES,availableAmmunition,totalReserveAmmunition,weaponAmmoType} from './ammunition-types.js';
 import {tacticalLevel, sameCell, sameSurface, spaceKey} from './tactical-space.js';
@@ -15,7 +16,7 @@ import {tacticalGridLabel} from './tactical-grid.js';
 // Pure HUD model for the tactical battle inspector and squad strip.
 // Read-only descriptors plus action-object constructors; no game rules.
 import {mainItemPreview,swapHandsPreview, weaponFor, bladeFor, hasFirearm, carriedWeight, carryCapacity, actionCosts, actionPointBudget, stanceCost, shotChance, firearmVolleyPreview, firearmRangeProfile, firearmProjectilePath, firearmFlightPreview, canSee, hasLineOfSight, artilleryCosts, artilleryCrewPlan, artilleryReloadPreview, interruptAvailable, canEndCombat, fieldCapable, transferPreview, dropPreview, environmentTargetAt, environmentPreview, containerLootPreview, supplyUsePreview, getReachable, movementIntentReason, exitPreview, ARTILLERY, WEAPONS, BLADES} from './tactical.js';
-import {pairedPistol} from './paired-fire.js';
+import {pairedPistol,secondaryPistolView} from './paired-fire.js';
 import {directionTo} from './tactical-awareness.js';
 import {unarmedChance} from './unarmed-combat.js';
 import {inventoryUsage, carriedObject, itemDescriptor, INVENTORY_CAPACITY, SUPPLY_ITEMS} from './tactical-inventory.js';
@@ -29,6 +30,9 @@ import {firearmBystanderRisk,firearmBystanderWarning} from './firearm-bystander-
 const alive = u => u.hp > 0 && !u.routed && !u.unconscious && !u.departure && !u.fled;
 const shortName = u => u.nickname || String(u.name || '').split(' ').slice(-1)[0] || '';
 const distance = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
+const toolTargets = unit => heldTool(unit)?.toolKey === 'crowbar' ? 'una puerta, un cofre, una pared de adobe o una barricada de madera' : 'una puerta o un cofre';
+export const chancePercent = value => value > 0 && value < 1 ? '<1%' : `${Math.round(value)}%`;
+const shotLoadText = shot => `Carga de perdigones (${shot.pelletCount} proyectiles). Probabilidad de al menos un contacto; no garantiza varios impactos ni la zona del cuerpo. ${shot.damageFactor===0?'Ningún perdigón puede llegar por las trayectorias previstas.':shot.damageFactor<1?`Fuerza media si llega algún perdigón: ${Math.round(shot.damageFactor*100)}% de la carga.`:''} Disparar consume una carga.`;
 const affordable = (state, unit, pa) => state.mode === 'exploration' || unit.ap >= pa;
 const hasPrimary = unit => Boolean(unit.weapon) && !unit.weaponDropped;
 export function toolItems(unit) {
@@ -259,7 +263,7 @@ export function targetingHelp(mode, unit, ctx = {}) {
   if (mode === 'move' && ctx.movementIntent === 'preserveFacing') return 'Alt: mové solo al seleccionado sin girar. Cancela el grupo. Caminar, agachado o cuerpo a tierra; no correr ni montar.';
   if (unit?.activeSlot === 'supply' && ['move', 'useItem'].includes(mode)) return ({torches: 'Seleccioná una casilla para arrojar la antorcha. Para avanzar, cambiá el objeto en mano.', boleadoras: 'Seleccioná un enemigo visible o una casilla para lanzar las boleadoras. Para avanzar, cambiá el objeto en mano.', rations: 'Seleccionate a vos para comer la ración. Recupera fuerzas; no detiene hemorragias.'})[unit.activeSupply] || 'Equipá un pertrecho disponible.';
   if (unit?.activeSlot === 'item' && ['move','useItem'].includes(mode)) return 'Objeto en mano: podés guardarlo, darlo o soltarlo. Para atacar, prepará un arma o las manos libres.';
-  if (unit?.activeSlot === 'tool' && ['move', 'useItem'].includes(mode)) return 'Seleccioná una puerta o un cofre para usar la herramienta. Las casillas libres permiten avanzar.';
+  if (unit?.activeSlot === 'tool' && ['move', 'useItem'].includes(mode)) return `Seleccioná ${toolTargets(unit)} para usar la herramienta. Las casillas libres permiten avanzar.`;
   if(hasFirearm(unit||{})&&unit.weaponMode==='melee'&&['move','useItem'].includes(mode))return `${fixedBayonetFor(unit)?'Bayoneta':'Culatazo'}: ${mode==='useItem'?'seleccioná un enemigo o una casilla para acercarte y golpear. Esc: caminar.':'clic en el suelo para caminar; F o botón derecho para golpear una casilla.'} B: volver a Disparo.`;
   if(heldThrowingKnife(unit)&&['move','useItem'].includes(mode))return 'Clic sobre un enemigo: acercarse y atacar con el facón. Botón derecho o F: apuntar para lanzarlo.';
   if (mode === 'useItem') return unit?.activeSlot === 'medical' ? 'Seleccionate a vos, a un aliado o a un civil herido. Se acerca y venda si hay ruta y PA suficientes. Reduce la hemorragia y estabiliza heridas críticas hasta 15 de salud. Puede necesitar más de una venda.' : hasFirearm(unit || {}) ? 'Seleccioná un enemigo. Apuntar consume PA adicionales.' : 'Seleccioná un enemigo para acercarte y usar el arma blanca.';
@@ -310,6 +314,12 @@ function pendingMovementPreview(point,ctx){
   return {name:tacticalGridLabel(point.x,point.y),actionLabel:'Mover',valid:false,pending:Boolean(ctx.routesPending),
     reason:ctx.routesPending?'Calculando ruta…':'No se pudo calcular la vista previa. La ruta se comprobará al dar la orden.'};
 }
+function movementTargetPreview(state,unit,point,ctx){
+ const pending=pendingMovementPreview(point,ctx);if(pending)return pending;
+ const destination=(ctx.reachable??[]).find(p=>sameCell(p,point)),pa=destination?(state.mode==='exploration'?0:destination.cost):undefined;
+ const reason=!unitCanAct(state,unit)?'El combatiente no puede actuar.':unit.knockedDown?'Primero debés levantarte.':!destination?'Destino inaccesible.':state.mode!=='exploration'&&pa>unit.ap?'PA insuficientes.':null;
+ return {name:tacticalGridLabel(point.x,point.y),actionLabel:'Mover',movement:true,path:destination?.path,pa,remaining:pa===undefined?undefined:Math.max(0,unit.ap-pa),valid:!reason,reason};
+}
 function targetPreviewWithCosts(state, unit, point, ctx = {}) {
   if (!unit) return null;
   const mode = ctx.mode || 'move';
@@ -333,6 +343,7 @@ function targetPreviewWithCosts(state, unit, point, ctx = {}) {
   const reload = mode === 'fire' ? emptyGunPreview(state, unit) : null;
   if (reload) return reload;
   if (!point) return null;
+  if(ctx.itemIntent==='moveOnly'&&['move','useItem','loot'].includes(mode)&&isMovementGround(state,unit,point))return movementTargetPreview(state,unit,point,ctx);
   const civilianAid=civilianMedicalInputAction(state,unit,point,mode);
   if(civilianAid){
     const patient=state.npcs.find(n=>n.id===civilianAid.targetId),options={targetKind:'npc'};
@@ -346,8 +357,8 @@ function targetPreviewWithCosts(state, unit, point, ctx = {}) {
   const target = occupants.find(v => v.id === point.id) || occupants.find(v => v.hp > 0) || occupants[0];
   if(mode==='fire'&&(explicitPointShot(state,point)||!target||target.side===unit.side||target.hp<=0||target.surrendered)){
     const preview=pointFirePreview(state,unit,point,ctx.aim??0);
-    const paired=Boolean(pairedPistol(unit));
-    return {name:tacticalGridLabel(point.x,point.y),actionLabel:paired?'Disparar ambas pistolas a la casilla':'Disparar a la casilla',attackType:'fire',pa:preview.pa,remaining:Math.max(0,unit.ap-(state.mode==='exploration'?0:preview.pa)),valid:preview.valid,reason:preview.reason,coverNote:`${firearmCostText(state,unit,point)} ${paired?'Un disparo por pistola. ':''}Sin objetivo confirmado. Altura fija; la cobertura y los cuerpos pueden interceptar el tiro. Puede herir aliados.`};
+    const paired=pairedPistol(unit),shotLoad=weaponFor(unit).loadPattern==='cone'||paired&&weaponFor(secondaryPistolView(unit,paired)).loadPattern==='cone';
+    return {name:tacticalGridLabel(point.x,point.y),actionLabel:paired?'Disparar ambas pistolas a la casilla':'Disparar a la casilla',attackType:'fire',pa:preview.pa,remaining:Math.max(0,unit.ap-(state.mode==='exploration'?0:preview.pa)),valid:preview.valid,reason:preview.reason,coverNote:`${firearmCostText(state,unit,point)} ${paired?'Un disparo por pistola. ':''}${shotLoad?'Carga de perdigones. ':''}Sin objetivo confirmado. Altura fija; la cobertura y los cuerpos pueden interceptar el tiro. Puede herir aliados.`};
   }
   if(!target&&!recipient&&meleePointTargetingMode(unit,mode)&&ctx.itemIntent!=='steal'){
     const preview=meleePointPreview(state,unit,point),label=unit.activeSlot==='unarmed'?'Puños':fixedBayonetFor(unit)?'Estocada de bayoneta':hasFirearm(unit)?'Culatazo':bladeFor(unit).name;
@@ -363,7 +374,8 @@ function targetPreviewWithCosts(state, unit, point, ctx = {}) {
     const destination = (ctx.reachable || getReachable(state, unit, {movementIntent: 'preserveFacing'})).find(tile => sameCell(tile, point));
     const reason = movementIntentReason(unit, 'preserveFacing') || (!unitCanAct(state, unit) ? 'El combatiente no puede actuar.' : unit.knockedDown ? 'Primero debés levantarte.' : unit.entangled ? 'Primero debés liberarte de las boleadoras.' : !destination || !destination.path.length ? 'Destino inaccesible o PA insuficientes.' : null);
     const pa = destination ? state.mode === 'exploration' ? 0 : destination.cost : undefined;
-    return {name: `${tacticalGridLabel(point.x,point.y)}`, actionLabel: 'Mover sin girar', pa, remaining: pa === undefined ? undefined : Math.max(0, unit.ap - pa), reason, valid: !reason};
+    const insufficient=state.mode!=='exploration'&&pa>unit.ap;
+    return {name: `${tacticalGridLabel(point.x,point.y)}`, actionLabel: 'Mover sin girar', movement:true,path:destination?.path,pa, remaining: pa === undefined ? undefined : Math.max(0, unit.ap - pa), reason:reason||(insufficient?'PA insuficientes.':null), valid: !reason&&!insufficient};
   }
   const pickup=pickupSelection(state,unit,point,ctx);
   if(pickup.length){const p=pickup[0];return {name:'Equipo',actionLabel:p.movePa?'Acercarse al equipo':'Elegir qué recoger',pa:p.movePa,remaining:Math.max(0,unit.ap-(state.mode==='exploration'?0:p.movePa)),valid:p.valid,reason:p.reason,coverNote:state.mode==='exploration'?'Al llegar, elegí el objeto y la cantidad. Recoger consume tiempo.':'Al llegar, elegí el objeto y la cantidad. Recoger cuesta 8 PA adicionales. El contacto puede detener el desplazamiento.'};}
@@ -377,7 +389,8 @@ function targetPreviewWithCosts(state, unit, point, ctx = {}) {
   const environment = !target && ['move', 'useItem'].includes(mode) ? environmentTargetAt(state, point) : null;
   if (environment && canSee(state, unit, point)) {
     const summary = environmentTargetSummary(unit, environment), preview = environmentUsePreview(state, unit, environment);
-    return {name: summary.label, pa: preview.pa, chance: preview.chance ?? undefined, chanceLabel: 'éxito', attackLabel: preview.label, actionLabel: preview.label, remaining: Math.max(0, unit.ap - (state.mode === 'exploration' ? 0 : preview.pa)), coverNote:preview.movePa?`Desplazamiento: ${preview.movePa} PA · uso: ${preview.actionPa} PA. El contacto puede detener la acción.`:undefined, reason: preview.reason, valid: preview.valid};
+    const coverNote=[preview.movePa?`Desplazamiento: ${preview.movePa} PA · uso: ${preview.actionPa} PA. El contacto puede detener la acción.`:null,environment.kind==='wall'&&preview.toolWear>0?`Desgaste de la barreta: hasta ${preview.toolWear} puntos. Abre un paso permanente.`:null].filter(Boolean).join(' ');
+    return {name: summary.label, pa: preview.pa, chance: preview.chance ?? undefined, chanceLabel: 'éxito', attackLabel: preview.label, actionLabel: preview.label, remaining: Math.max(0, unit.ap - (state.mode === 'exploration' ? 0 : preview.pa)), coverNote:coverNote||undefined, reason: preview.reason, valid: preview.valid};
   }
   if (mode === 'heal' || unit.activeSlot === 'medical' && ['move', 'useItem'].includes(mode) && target) {
     const local=mode==='heal'?medicalUsePreview(state,unit,target??null):null;
@@ -385,7 +398,7 @@ function targetPreviewWithCosts(state, unit, point, ctx = {}) {
     return {name:target?.name||tacticalGridLabel(point.x,point.y),actionLabel:preview.movePa?'Acercarse y vendar':'Vendar',pa:preview.pa,remaining:Math.max(0,unit.ap-(state.mode==='exploration'?0:preview.pa)),coverNote:medicalTreatmentText(state,preview),treatment:preview.treatment,reason:preview.reason,valid:preview.valid};
   }
 
-  let pa, chance, chanceLabel, reason, actionLabel, attackType, attackLabel, coverNote;
+  let pa, chance, chanceLabel, reason, actionLabel, attackType, attackLabel, coverNote, shotLoadForecast;
   if (mode === 'look') {
     const preview=lookPreview(state,unit,point);
     pa=preview.pa;reason=preview.reason;actionLabel=preview.prepare?preview.actionLabel:`Mirar al ${COMPASS_LABELS[preview.facing]}`;
@@ -393,7 +406,7 @@ function targetPreviewWithCosts(state, unit, point, ctx = {}) {
   } else if (target && target.side !== unit.side && ['move', 'useItem', 'fire', 'melee'].includes(mode)) {
     if (target.hp <= 0 || target.surrendered) return null;
     if (unit.activeSlot === 'item') return {name:target.name,reason:heldGrenade(unit)?'Botón derecho o F para lanzar la granada a una casilla.':'Este objeto no se puede usar sobre una persona. Guardalo o elegí otro objeto.',valid:false};
-    if (unit.activeSlot === 'tool') return {name: target.name, reason: 'La herramienta se usa sobre una puerta o un cofre.', valid: false};
+    if (unit.activeSlot === 'tool') return {name: target.name, reason: `La herramienta se usa sobre ${toolTargets(unit)}.`, valid: false};
     const attack = contextualAttack(state, unit, target, {type: mode, aim: ctx.aim || 0, hitLocation: hitLocationFor(ctx.hitLocation)});
     pa = attack.pa; attackType = attack.type;
     if (attack.type === 'melee') {
@@ -407,17 +420,29 @@ function targetPreviewWithCosts(state, unit, point, ctx = {}) {
     } else {
       const reload = emptyGunPreview(state, unit);
       if (reload) return reload;
-      chance = shotChance(state, unit, target, ctx.aim || 0, hitLocationFor(ctx.hitLocation));
-      const path=firearmProjectilePath(state,unit,target,hitLocationFor(ctx.hitLocation));
-      coverNote=path.blocked?'La cobertura detiene este tiro. Disparar consume la carga.':path.damageFactor<1?`La cobertura reduce el daño un ${Math.round((1-path.damageFactor)*100)}%.`:undefined;
-      const flight=firearmFlightPreview(state,unit,target,hitLocationFor(ctx.hitLocation));
-      if(flight.victimId&&flight.victimId!==target.id)coverNote='Un combatiente está en la trayectoria. Disparar puede herirlo y consume la carga.';
+      const volley=firearmVolleyPreview(state,unit,target,ctx.aim||0,hitLocationFor(ctx.hitLocation)),primaryShot=volley.shots[0];
+      chance=primaryShot.chance;
+      let interveningBody=false;
+      if(primaryShot.shotLoad){
+        shotLoadForecast=primaryShot;chanceLabel='al menos un perdigón';coverNote=shotLoadText(primaryShot);
+      }else{
+        const path=firearmProjectilePath(state,unit,target,hitLocationFor(ctx.hitLocation));
+        coverNote=path.blocked?'La cobertura detiene este tiro. Disparar consume la carga.':path.damageFactor<1?`La cobertura reduce el daño un ${Math.round((1-path.damageFactor)*100)}%.`:undefined;
+        const flight=firearmFlightPreview(state,unit,target,hitLocationFor(ctx.hitLocation));
+        const targetImpactIndex=flight.bodyImpacts?.findIndex(impact=>impact.victimKind==='unit'&&impact.victimId===target.id)??-1;
+        const selectedImpact=targetImpactIndex<0?null:flight.bodyImpacts[targetImpactIndex];
+        interveningBody=(targetImpactIndex<0?flight.bodyImpacts?.length:targetImpactIndex)>0||flight.victimId&&((flight.victimKind??'unit')!=='unit'||flight.victimId!==target.id);
+        if(interveningBody){
+          const passage=selectedImpact&&selectedImpact.reachChance<1?`La bala puede atravesarlo: ${chancePercent(selectedImpact.reachChance*100)} de paso hasta el objetivo; daño reducido un ${Math.round((1-selectedImpact.damageFactor)*100)}% si llega.`:'La bala puede herirlo; el paso al objetivo no está asegurado.';
+          coverNote=`Un combatiente está en la trayectoria. ${passage} Disparar consume la carga.`;
+          if(selectedImpact?.reachChance<1)chanceLabel='impacto con penetración';
+        }
+      }
       coverNote=[shotRangeText(firearmRangeProfile(state,unit,target)),coverNote].filter(Boolean).join(' ');
-      if(pairedPistol(unit)){
-        const volley=firearmVolleyPreview(state,unit,target,ctx.aim||0,hitLocationFor(ctx.hitLocation));
-        attackLabel=actionLabel='Disparar ambas pistolas';chanceLabel='impacto (mano principal)';
-        const chances=volley.shots.map(shot=>`${shot.hand==='primary'?'Mano principal':'Segunda mano'}: ${shot.chance}%${shot.damageFactor===0?' (la cobertura detiene el tiro)':shot.damageFactor<1?` (daño reducido un ${Math.round((1-shot.damageFactor)*100)}%)`:''}`).join(' · ');
-        coverNote=[`${chances}. Un disparo por pistola.`,`Mano principal: ${shotRangeText(firearmRangeProfile(state,unit,target))}`,flight.victimId&&flight.victimId!==target.id?'Un combatiente está en la trayectoria. Disparar puede herirlo y consume las cargas.':undefined].filter(Boolean).join(' ');
+      if(volley.paired){
+        attackLabel=actionLabel='Disparar ambas pistolas';chanceLabel=primaryShot.shotLoad?'al menos un perdigón (mano principal)':'impacto (mano principal)';
+        const chances=volley.shots.map(shot=>`${shot.hand==='primary'?'Mano principal':'Segunda mano'}: ${chancePercent(shot.chance)}${shot.shotLoad?` de al menos un perdigón. ${shotLoadText(shot)}`:`${shot.conditional?` (incluye ${chancePercent(shot.reachChance*100)} de paso)`:''}${shot.damageFactor===0?' (la cobertura detiene el tiro)':shot.damageFactor<1?` (daño reducido un ${Math.round((1-shot.damageFactor)*100)}%${shot.conditional?' si llega':''})`:''}`}`).join(' · ');
+        coverNote=[`${chances}. Un disparo por pistola.`,`Mano principal: ${shotRangeText(firearmRangeProfile(state,unit,target))}`,interveningBody?'Un combatiente está en la trayectoria. La bala puede herirlo y atravesarlo con menos fuerza; consume las cargas.':undefined].filter(Boolean).join(' ');
       }
       coverNote=[coverNote,firearmBystanderWarning(firearmBystanderRisk(state,unit,target,hitLocationFor(ctx.hitLocation)))].filter(Boolean).join(' ');
       if (!canChooseShotLocation(target)&&hitLocationFor(ctx.hitLocation)!=='torso') reason = 'Un objetivo cuerpo a tierra tiene una sola zona de tiro.';
@@ -426,16 +451,13 @@ function targetPreviewWithCosts(state, unit, point, ctx = {}) {
       else if (!hasLineOfSight(state,unit,target)) reason = 'No hay línea de tiro.';
     }
   } else if (mode === 'move' && !target) {
-    const pending=pendingMovementPreview(point,ctx);if(pending)return pending;
-    const destination = (ctx.reachable || []).find(p => sameCell(p, point));
-    if (!destination) reason = 'Destino inaccesible o PA insuficientes.';
-    else pa = state.mode === 'exploration' ? 0 : destination.cost;
+    return movementTargetPreview(state,unit,point,ctx);
   } else return null;
   if(attackType==='fire')coverNote=[firearmCostText(state,unit,target),coverNote].filter(Boolean).join(' ');
   if (unit.knockedDown) reason = 'Primero debés levantarte.';
   if (!reason && !unitCanAct(state, unit)) reason = state.phase === 'interrupt' ? 'Este combatiente no puede actuar en la interrupción.' : 'El combatiente no puede actuar.';
   if (!reason && pa !== undefined && !affordable(state, unit, pa)) reason = 'PA insuficientes.';
-  return {name: (attackType ? target?.name : actionLabel || target?.name) || `${tacticalGridLabel(point.x,point.y)}`, pa, chance,...(chanceLabel?{chanceLabel}:{}), coverNote, hitLocation: chance === undefined || attackType !== 'fire' ? undefined : HIT_LOCATIONS.find(([id]) => id === hitLocationFor(ctx.hitLocation))[1], attackType, attackLabel, actionLabel, remaining: pa === undefined ? undefined : Math.max(0, unit.ap - (state.mode === 'exploration' ? 0 : pa)), reason, valid: !reason};
+  return {name: (attackType ? target?.name : actionLabel || target?.name) || `${tacticalGridLabel(point.x,point.y)}`, pa, chance,...(chanceLabel?{chanceLabel}:{}),...(shotLoadForecast?{shotLoad:true,pelletCount:shotLoadForecast.pelletCount,expectedForce:shotLoadForecast.expectedForce,damageFactor:shotLoadForecast.damageFactor}:{}), coverNote, hitLocation: chance === undefined || attackType !== 'fire' ? undefined : HIT_LOCATIONS.find(([id]) => id === hitLocationFor(ctx.hitLocation))[1], attackType, attackLabel, actionLabel, remaining: pa === undefined ? undefined : Math.max(0, unit.ap - (state.mode === 'exploration' ? 0 : pa)), reason, valid: !reason};
 }
 
 export function fittingInventoryModel(state, unit) {
@@ -454,7 +476,7 @@ export function equippedItemHelp(state, unit, ctx = {}) {
   const weapon = weaponFor(unit), costs = actionCosts(state, unit), exploring=state.mode==='exploration';
   if (unit.activeSlot === 'supply') return `${weapon.name} · ${exploring?0:supplyUsePreview(state, unit, ctx.target).cost} PA. ${targetingHelp('useItem', unit)}`;
   if (unit.activeSlot === 'item') return `${weapon.name}. ${targetingHelp('useItem',unit)}`;
-  if (unit.activeSlot === 'tool') return `${weapon.name}. Seleccioná una puerta o un cofre para usarla.`;
+  if (unit.activeSlot === 'tool') return `${weapon.name}. Seleccioná ${toolTargets(unit)} para usarla.`;
   if (unit.activeSlot === 'medical' && exploring) return 'Vendas: sin coste de PA. Seleccionate a vos, a un aliado o a un civil herido. Consume tiempo y vendas. Reduce la hemorragia y estabiliza heridas críticas hasta 15 de salud. La recuperación completa requiere atención en campaña.';
   if (unit.activeSlot === 'medical') return `Vendas: ${costs.heal} PA, más el desplazamiento. Seleccionate a vos, a un aliado o a un civil herido. Se acerca y venda si hay PA suficientes. Reduce la hemorragia y estabiliza heridas críticas hasta 15 de salud. La recuperación completa requiere atención en campaña.`;
   const attack = contextualAttack(state, unit, ctx.target, {type: ctx.mode, aim: ctx.aim || 0});
@@ -480,6 +502,11 @@ export function levelFor(unit) {
 export function rosterCells(players, selectedId, state) {
   const cells = fieldUnits({units: players}).map((unit, index) => {
     const fallen = unit.hp <= 0 || unit.routed || unit.unconscious;
+    const dead = unit.hp <= 0;
+    const hp = Math.max(0, unit.hp);
+    const wounds = Math.max(0, unit.maxHp - hp);
+    const bandaged = dead ? 0 : Math.min(wounds, Math.max(0, unit.bandaged || 0));
+    const untreated = dead ? 0 : wounds - bandaged;
     return {
       unit,
       portrait: unit.portrait ?? null,
@@ -488,7 +515,11 @@ export function rosterCells(players, selectedId, state) {
       ap: unit.ap,
       energy: unit.energy,
       bleeding: unit.bleeding || 0,
-      bandaged: unit.bandaged || 0,
+      bandaged,
+      untreated,
+      dead,
+      moralePct: dead ? 0 : Math.max(0, Math.min(100, unit.morale ?? 0)),
+      visibleEnemyCount: state && !dead ? state.units.filter(enemy => enemy.side === 'enemy' && enemy.hp > 0 && !enemy.departure && !enemy.fled && canSee(state, unit, enemy)).length : 0,
       apPct: Math.max(0, Math.min(100, unit.ap / Math.max(1, (unit.maxAP || 100) + (unit.carriedAP || 0)) * 100)),
       active: unit.id === selectedId,
       fallen,
@@ -534,7 +565,7 @@ export function handSlots(state,unit){
   else if(Object.hasOwn(HELD_SUPPLIES,reference))option=equipmentSlots(state,{...unit,activeSupply:reference}).find(o=>o.slot==='supply');
   else if(reference?.startsWith('inventory:')&&heldTool({...unit,activeSlot:'tool',activeTool:reference}))option=equipmentSlots(state,{...unit,activeTool:reference}).find(o=>o.slot==='tool');
   else if(reference&&carriedObject(unit,reference))option=mainItemPreview(state,unit,reference);
-  return {side,item:reference,blocked,label:descriptor?.label??(blocked?'Ocupada por el arma':'Vacía'),weapon:descriptor?.weapon,art:descriptor?.art,loaded:descriptor?.loaded,condition:descriptor?.condition,action:side==='left'?option?.action:null,pa:option?.pa,reason:option?.reason,disabled:blocked||side==='left'&&(option?.disabled||option?.valid===false)};
+  return {side,item:reference,blocked,label:descriptor?.label??(blocked?'Ocupada por el arma':'Vacía'),weapon:descriptor?.weapon,art:descriptor?.art,loaded:WEAPONS[descriptor?.weapon]?descriptor?.loaded:undefined,condition:descriptor?.condition,action:side==='left'?option?.action:null,pa:option?.pa,reason:option?.reason,disabled:blocked||side==='left'&&(option?.disabled||option?.valid===false)};
  });
 }
 
@@ -665,6 +696,7 @@ export function nearbyLootOptions(state, unit, point=/** @type {{x:number,y:numb
 }
 export function pickupSelection(state,unit,point,ctx={}){
   if(!unit||!point)return [];
+  if(ctx.itemIntent==='moveOnly')return [];
   const mode=ctx.mode??'move';
   if(mode!=='loot'){
     if(!['move','useItem'].includes(mode)||ctx.movementIntent==='preserveFacing'||ctx.itemIntent!=='steal'&&unit.activeSlot==='supply'&&unit.activeSupply==='torches')return [];
@@ -702,17 +734,19 @@ export function nearbyEnvironmentModel(state, unit, ctx = {}) {
   if (unit) for (const point of state.tiles) {
     if (distance(unit, point) > 1.5 || !canSee(state, unit, point)) continue;
     const raw = environmentTargetAt(state, point);
-    if (raw) found.set(`${raw.kind}:${raw.id}`, raw);
+    if (raw && (raw.kind !== 'wall' || tacticalLevel(raw) === 0 && sameSurface(unit, raw))) found.set(`${raw.kind}:${raw.id}`, raw);
   }
   const targets = [...found].map(([key, raw]) => {
     const summary = environmentTargetSummary(unit, raw);
-    return {key, kind: raw.kind, id: raw.id, label: `${summary.label} · ${tacticalGridLabel(raw.x,raw.y)}`, open: summary.open, locked: summary.locked, broken: summary.broken, trapKnown: Boolean(summary.trap), trapArmed: summary.trap?.armed};
+    if (raw.kind === 'wall') return {key, kind: raw.kind, id: raw.id, x: raw.x, y: raw.y, tacticalLevel: 0, label: `${summary.label} · ${tacticalGridLabel(raw.x,raw.y)}`, material: summary.material};
+    const arsenal=FINITE_ARTILLERY_ARSENALS[state.sectorId],arsenalAvailable=arsenal?.chest===raw.id&&(state.finiteArtilleryArsenal||raw.artilleryRecovered);
+    return {key, kind: raw.kind, id: raw.id, label: `${summary.label} · ${tacticalGridLabel(raw.x,raw.y)}`, open: summary.open, locked: summary.locked, broken: summary.broken, trapKnown: Boolean(summary.trap), trapArmed: summary.trap?.armed,...(arsenalAvailable?{arsenalHint:raw.artilleryRecovered?'Las piezas recuperadas quedan emplazadas. Usá Artillería en la carta para guardarlas o trasladarlas.':`Abrí este cofre para recuperar ${arsenal.pieces.length} piezas del arsenal con munición finita.`}:{})};
   });
   const target = targets.find(entry => entry.key === ctx.targetKey) || targets[0];
   if (!target) return {targets, target: null, preview: null, contents: [], verbs: [], loot: null};
   const raw = found.get(target.key), preview = environmentPreview(state, unit, target, ctx.verb || undefined);
-  const contents = visibleContainerContents(raw).map((stack, index) => ({...stack, index, label: weaponSpecification(stack)?.name || OUTFITS[stack.outfit]?.name || TOOL_TYPES[stack.toolKey]?.label || SUPPLY_ITEMS[stack.item]?.label || stack.name || 'Pertrechos'}));
-  const verbs = ENVIRONMENT_VERBS.map(id => ({id, label: environmentPreview(state, unit, target, id).label}));
+  const contents = (target.kind === 'container' ? visibleContainerContents(raw) : []).map((stack, index) => ({...stack, index, label: weaponSpecification(stack)?.name || OUTFITS[stack.outfit]?.name || TOOL_TYPES[stack.toolKey]?.label || SUPPLY_ITEMS[stack.item]?.label || stack.name || 'Pertrechos'}));
+  const verbs = (target.kind === 'wall' ? ['breach'] : ENVIRONMENT_VERBS.filter(id => id !== 'breach')).map(id => ({id, label: environmentPreview(state, unit, target, id).label}));
   const loot = target.kind === 'container' ? containerLootPreview(state, unit, target, ctx.index ?? 0, ctx.count ?? 1) : null;
   return {targets, target, preview, contents, verbs, loot};
 }

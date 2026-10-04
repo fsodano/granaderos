@@ -1,17 +1,37 @@
+import {TRAVEL_BALANCE} from './travel-balance.js';
 import {entryFromSector} from './tactical-exits.js';
 import {CAMPAIGN_SECTORS} from './data.js';
-import {validWorldLocation,campaignPlace,adjacentCells,cellStepHours} from './world-cells.js';
+import {validWorldLocation,campaignPlace,adjacentCells,cellStepHours,legacyCellStepHours,cellTravelPlan,worldOwner,worldCell} from './world-cells.js';
 import {tooTiredToMarch,advanceMarchFatigue} from './march-fatigue.js';
 import {mountForOperative} from './horses.js';
 import {recordStrategicArrival} from './deployment-return.js';
 
 const sector=id=>CAMPAIGN_SECTORS.find(d=>d.id===id);
 const need=(ok,message)=>{if(!ok)throw Error(message);};
-const modes=['march','posta','flotilla','carts'];
+const modes=['march','horse','posta','flotilla','carts'];
+const progressSeconds=j=>j.elapsed*3600+(j.elapsedSecond??0);
+const campaignSeconds=s=>s.hour*3600+(s.secondOfHour??0);
+const setProgressSeconds=(journey,seconds)=>{journey.elapsed=Math.floor(seconds/3600);if(seconds%3600)journey.elapsedSecond=seconds%3600;else delete journey.elapsedSecond;};
+// Continuous time stops at exact travel-hour work and locality boundaries.
+// Legacy journeys omit both fractions and retain their whole-hour cadence.
+export function nextSquadTravelBoundarySeconds(s){
+ const due=s.squads.filter(q=>q.journey?.status==='moving').map(({journey:j})=>Math.min(3600-(j.pendingSeconds??0),j.returning?progressSeconds(j):j.legHours*3600-progressSeconds(j))).filter(seconds=>seconds>0);
+ return due.length?Math.min(...due):null;
+}
 export const TRAVEL_REASONS={exhausted:'La escuadra necesita descansar.',assignment:'Hay combatientes durmiendo o con otra asignación.',blocked:'La ruta está ocupada.',winter:'La nieve cerró el paso.',transport:'El transporte no está disponible.',remounts:'Faltan pesos para la siguiente etapa de postas.',contact:'Hay un encuentro en este sector.',empty:'La escuadra no tiene combatientes.',unavailable:'Hay combatientes que no pueden marchar.',assault:'En el límite del sector. Puede atacar o esperar a otras escuadras.'};
 export const assaultNeighbor=(from,to)=>Boolean(sector(to)&&(sector(from)?.neighbors.includes(to)||validWorldLocation(from)&&adjacentCells(from,to)));
-export const travelLegHours=(from,to,mode='march')=>!sector(from)&&adjacentCells(from,to)?cellStepHours(to):Math.ceil(({march:12,posta:4,flotilla:5,carts:18}[mode])*([from,to].some(id=>sector(id)?.biome==='mountain')?1.5:1));
-function pathTo(s,from,to){
+export const travelLegHours=(from,to,mode='march')=>adjacentCells(from,to)?cellStepHours(to,mode):Math.ceil(({march:TRAVEL_BALANCE.roadWalkHours,horse:TRAVEL_BALANCE.horseHours,posta:4,flotilla:5,carts:18}[mode])*([from,to].some(id=>sector(id)?.biome==='mountain')?TRAVEL_BALANCE.mountainFactor:1));
+export function supportedTravelLegHours(from,to,mode='march'){
+ const hours=new Set([travelLegHours(from,to,mode)]);
+ if(adjacentCells(from,to))hours.add(legacyCellStepHours(to,mode));
+ if(!sector(from)&&adjacentCells(from,to)){
+  if(mode==='march')hours.add(worldCell(to)?.biome==='mountain'?4:2);
+ }else if(mode!=='horse')hours.add(Math.ceil(({march:12,posta:4,flotilla:5,carts:18}[mode])*([from,to].some(id=>sector(id)?.biome==='mountain')?1.5:1)));
+ return [...hours];
+}
+export const squadHasHorses=(s,q)=>Boolean(q?.members.length&&q.members.every(id=>mountForOperative(s.horseState,id)?.canMount));
+function pathTo(s,from,to,mode){
+ if(!sector(from)||!sector(to))return cellTravelPlan({...s,location:from},to,mode).path;
  const queue=[[from]],seen=new Set([from]);
  while(queue.length){const path=queue.shift(),last=path.at(-1);if(last===to)return path;for(const id of sector(last).neighbors)if(!seen.has(id)&&s.sectors[id].owner==='patriot'){seen.add(id);queue.push([...path,id]);}}
  return null;
@@ -23,10 +43,11 @@ function legIssue(s,q){
  if(q.members.some(id=>tooTiredToMarch(s.operativeState[id])))return 'exhausted';
  if(q.members.some(id=>s.operativeState[id].asleep||s.operativeState[id].assignment!=='active'||s.militiaTraining?.some(t=>t.trainerId===id)))return 'assignment';
  if(s.enemyGroups?.some(g=>g.target===from&&['waiting','engaged','stationed'].includes(g.status)))return 'contact';
- if(s.pendingBattle?.sector===to||j.intent!=='attack'&&(s.sectors[to].owner!=='patriot'||s.enemyGroups?.some(g=>g.target===to&&g.status==='stationed')))return 'blocked';
+ if(s.pendingBattle?.sector===to||j.intent!=='attack'&&(worldOwner(s,to)==='royalist'||s.enemyGroups?.some(g=>g.target===to&&g.status==='stationed')))return 'blocked';
  const month=(2+Math.floor(s.hour/720))%12+1;
  if([from,to].some(id=>['uspallata','los_patos'].includes(id))&&month>=6&&month<=8)return 'winter';
- if(j.mode!=='march'&&!s.routes[j.mode]||j.mode==='flotilla'&&s.blockade)return 'transport';
+ if(j.mode==='horse'&&!squadHasHorses(s,q))return 'transport';
+ if(!['march','horse'].includes(j.mode)&&!s.routes[j.mode]||j.mode==='flotilla'&&s.blockade)return 'transport';
  if(j.mode==='posta'&&s.resources.treasury<10)return 'remounts';
  return null;
 }
@@ -35,17 +56,18 @@ export function queueSquadTravel(s,q,{sector:destination,waypoints=[],mode='marc
  need(Array.isArray(waypoints)&&waypoints.length<=8,'Elegí hasta ocho escalas.');
  need(['travel','attack'].includes(intent),'La intención de marcha es inválida.');
  if(intent==='attack')need(waypoints.length===0&&assaultNeighbor(q.location,destination),'Prepará el ataque desde un sector vecino, sin escalas.');
- need(sector(q.location)||intent==='attack'&&mode==='march','Las celdas permiten preparar un ataque a pie desde un sector vecino.');
- let path=[q.location];for(const to of [...waypoints,destination]){need(sector(to)&&(intent==='attack'||s.sectors[to].owner==='patriot'),'Cada escala debe ser un sector propio.');const leg=intent==='attack'?[q.location,to]:pathTo(s,path.at(-1),to);need(leg,'Los realistas cortan la ruta de tránsito.');path.push(...leg.slice(1));}
+ need(validWorldLocation(q.location),'La ubicación de la escuadra no existe.');
+ let path=[q.location];for(const to of [...waypoints,destination]){need(validWorldLocation(to)&&(intent==='attack'||worldOwner(s,to)!=='royalist'),'Cada escala debe ser una celda terrestre accesible.');const leg=intent==='attack'?[q.location,to]:pathTo(s,path.at(-1),to,mode);need(leg?.length,'Los realistas cortan la ruta de tránsito.');path.push(...leg.slice(1));}
  need(path.length>1&&path.length<=65,'La ruta debe tener entre una y 64 etapas.');
+ need(['march','horse'].includes(mode)||path.every(id=>sector(id)),'Las celdas rurales requieren marcha a pie o caballos.');
  need(mode!=='flotilla'||path.every(id=>sector(id).theater==='coast'),'La flotilla requiere una ruta costera.');
- q.journey={version:1,path,mode,startedAt:s.hour,legHours:travelLegHours(path[0],path[1],mode),elapsed:0,status:'moving',returning:false,reason:null,...(intent==='attack'?{intent}:{})};
+ q.journey={version:1,path,mode,startedAt:s.hour,...(s.secondOfHour?{startedSecond:s.secondOfHour}:{}),legHours:travelLegHours(path[0],path[1],mode),elapsed:0,status:'moving',returning:false,reason:null,...(intent==='attack'?{intent}:{})};
  const reason=legIssue(s,q);need(!reason,TRAVEL_REASONS[reason]);return q.journey;
 }
 export function cancelSquadTravel(q,choice='stop'){
  need(q?.journey,'La escuadra no tiene una ruta pendiente.');need(['stop','return'].includes(choice),'Elegí detenerse o regresar.');
  const j=q.journey;
- if(j.elapsed===0){delete q.journey;return;}
+ if(progressSeconds(j)===0){delete q.journey;return;}
  if(choice==='return'||j.intent==='attack'){j.returning=true;j.status='moving';j.reason=null;}else if(!j.returning){j.path=j.path.slice(0,2);}
 }
 export function resumeSquadTravel(s,q){
@@ -53,12 +75,13 @@ export function resumeSquadTravel(s,q){
 }
 export function squadTravelStatus(q){
  const j=q.journey;if(!j)return null;
- const legRemaining=j.returning?j.elapsed:j.legHours-j.elapsed;
- return {status:j.status,intent:j.intent??'travel',mode:j.mode,from:j.path[0],to:j.returning?j.path[0]:j.path[1],destination:j.returning?j.path[0]:j.path.at(-1),returning:j.returning,elapsed:j.elapsed,legHours:j.legHours,legRemaining,remaining:legRemaining+(j.returning?0:j.path.slice(2).reduce((sum,to,i)=>sum+travelLegHours(j.path[i+1],to,j.mode),0)),path:[...j.path],reason:j.reason?TRAVEL_REASONS[j.reason]:null};
+ const covered=progressSeconds(j)/3600,legRemaining=j.returning?covered:j.legHours-covered;
+ return {status:j.status,intent:j.intent??'travel',mode:j.mode,from:j.path[0],to:j.returning?j.path[0]:j.path[1],destination:j.returning?j.path[0]:j.path.at(-1),returning:j.returning,elapsed:covered,elapsedSeconds:progressSeconds(j),legHours:j.legHours,legRemaining,remaining:legRemaining+(j.returning?0:j.path.slice(2).reduce((sum,to,i)=>sum+travelLegHours(j.path[i+1],to,j.mode),0)),path:[...j.path],reason:j.reason?TRAVEL_REASONS[j.reason]:null};
 }
 // One hour for every squad, independent of which squad the player selected.
 // Call after work/recovery, before enemy contacts. Arrivals stop explicit waits.
-export function advanceSquadTravel(s,roster,{note,releaseAtArrival,onArrival=()=>{}}){
+export function advanceSquadTravel(s,roster,{note,releaseAtArrival,onArrival=()=>{},stopAtEveryArrival=false,seconds=3600}){
+ need(Number.isSafeInteger(seconds)&&seconds>=1&&seconds<=3600,'El intervalo de marcha es inválido.');
  const events=[];
  const announce=(q,text)=>{note(s,`${q.name}: ${text}`);events.push({squadId:q.id,name:q.name,sector:q.location,text});};
  for(const q of s.squads){
@@ -66,39 +89,49 @@ export function advanceSquadTravel(s,roster,{note,releaseAtArrival,onArrival=()=
   if(!q.members.length){delete q.journey;announce(q,'se cancela la marcha; no quedan combatientes.');continue;}
   if(j.status==='ready')continue;
   if(j.status!=='moving')continue;
-  if(!j.returning&&j.elapsed===0){const reason=legIssue(s,q);if(reason){j.status='paused';j.reason=reason;announce(q,TRAVEL_REASONS[reason]);continue;}if(j.mode==='posta')s.resources.treasury-=10;}
-  const blocked=j.intent!=='attack'&&(s.sectors[j.path[1]].owner!=='patriot'||s.enemyGroups?.some(g=>g.target===j.path[1]&&g.status==='stationed'));
+  const covered=progressSeconds(j);
+  if(!j.returning&&covered===0){const reason=legIssue(s,q);if(reason){j.status='paused';j.reason=reason;announce(q,TRAVEL_REASONS[reason]);continue;}if(j.mode==='posta')s.resources.treasury-=10;}
+  const blocked=j.intent!=='attack'&&(worldOwner(s,j.path[1])==='royalist'||s.enemyGroups?.some(g=>g.target===j.path[1]&&g.status==='stationed'));
   // A changed front never moves soldiers instantly back to the departure sector.
-  if(!j.returning&&j.elapsed>0&&(blocked||s.pendingBattle?.sector===j.path[1])){j.returning=true;j.reason='blocked';announce(q,'el destino quedó cerrado; regresa por la etapa recorrida.');}
-  advanceMarchFatigue(s,roster.map(op=>({...op,...(mountForOperative(s.horseState,op.id)??{})})),{traveling:q.members,mode:j.mode,mountain:j.path.slice(0,2).some(id=>campaignPlace(id)?.biome==='mountain')});
-  for(const horse of s.horseState.horses)if(!horse.returned&&q.members.includes(horse.assignedTo))horse.stamina=Math.max(0,horse.stamina-2);
-  j.elapsed+=j.returning?-1:1;
-  if(j.returning?j.elapsed>0:j.elapsed<j.legHours)continue;
-  if(!j.returning&&j.intent==='attack'){j.status='ready';j.reason='assault';announce(q,`alcanza el límite de ${sector(j.path[1]).name}. Puede atacar o esperar a otras escuadras.`);continue;}
+  if(!j.returning&&covered>0&&(blocked||s.pendingBattle?.sector===j.path[1])){j.returning=true;j.reason='blocked';announce(q,'el destino quedó cerrado; regresa por la etapa recorrida.');}
+  const traveled=Math.min(seconds,j.returning?covered:j.legHours*3600-covered),work=(j.pendingSeconds??0)+traveled,hours=Math.floor(work/3600);
+  if(work%3600)j.pendingSeconds=work%3600;else delete j.pendingSeconds;
+  for(let hour=0;hour<hours;hour++){
+   advanceMarchFatigue(s,roster.map(op=>({...op,...(mountForOperative(s.horseState,op.id)??{})})),{traveling:q.members,mode:j.mode,mountain:j.path.slice(0,2).some(id=>campaignPlace(id)?.biome==='mountain')});
+   for(const horse of s.horseState.horses)if(!horse.returned&&q.members.includes(horse.assignedTo))horse.stamina=Math.max(0,horse.stamina-2);
+  }
+  setProgressSeconds(j,covered+(j.returning?-traveled:traveled));
+  if(j.returning?progressSeconds(j)>0:progressSeconds(j)<j.legHours*3600)continue;
+  if(!j.returning&&j.intent==='attack'){j.status='ready';j.reason='assault';announce(q,`alcanza el límite de ${campaignPlace(j.path[1]).name}. Puede atacar o esperar a otras escuadras.`);continue;}
   const from=q.location,to=j.returning?from:j.path[1];
   if(to!==from)recordStrategicArrival(s,q.members,from,to);
   q.location=to;for(const id of q.members)s.operativeState[id].location=to;
   for(const horse of s.horseState.horses)if(!horse.returned&&q.members.includes(horse.assignedTo))horse.location=to;
   if(q.id===s.activeSquadId)s.location=to;
-  j.status='paused';j.elapsed=0;
+  j.status='paused';setProgressSeconds(j,0);
   onArrival(q);
   for(const horse of s.horseState.horses)if(!horse.returned&&horse.hired&&horse.hireUntil<=s.hour&&q.members.includes(horse.assignedTo)){horse.returned=true;horse.assignedTo=null;}
   releaseAtArrival(q);
   if(j.returning||j.path.length===2||!q.members.length){delete q.journey;announce(q,`llega a ${campaignPlace(to).name}.`);continue;}
   j.path.shift();j.legHours=travelLegHours(j.path[0],j.path[1],j.mode);j.reason=legIssue(s,q);
-  if(j.reason)announce(q,`${campaignPlace(to).name}. ${TRAVEL_REASONS[j.reason]}`);else j.status='moving';
+  if(j.reason)announce(q,`${campaignPlace(to).name}. ${TRAVEL_REASONS[j.reason]}`);else{j.status='moving';if(stopAtEveryArrival)announce(q,`llega a ${campaignPlace(to).name}; la ruta continúa hacia ${campaignPlace(j.path.at(-1)).name}.`);}
  }
- if(events.length)s.travelNotice={hour:s.hour,events};
+ if(events.length)s.travelNotice={hour:s.hour,...(s.secondOfHour?{secondOfHour:s.secondOfHour}:{}),events};
  return events.length>0;
 }
 export function validateSquadTravel(s){
  const integer=(v,min,max)=>Number.isSafeInteger(v)&&v>=min&&v<=max;
  const notice=s.travelNotice;
- need(notice===undefined||notice===null||notice&&integer(notice.hour,0,s.hour)&&Array.isArray(notice.events)&&notice.events.length>0&&notice.events.length<=16&&notice.events.every(e=>e&&typeof e.squadId==='string'&&s.squads.some(q=>q.id===e.squadId)&&typeof e.name==='string'&&e.name.length<=30&&validWorldLocation(e.sector)&&typeof e.text==='string'&&e.text.length<=500),'El aviso de marcha guardado es inválido.');
+ need(notice===undefined||notice===null||notice&&integer(notice.hour,0,s.hour)&&(notice.secondOfHour===undefined||integer(notice.secondOfHour,0,3599))&&notice.hour*3600+(notice.secondOfHour??0)<=campaignSeconds(s)&&Array.isArray(notice.events)&&notice.events.length>0&&notice.events.length<=16&&notice.events.every(e=>e&&typeof e.squadId==='string'&&s.squads.some(q=>q.id===e.squadId)&&typeof e.name==='string'&&e.name.length<=30&&validWorldLocation(e.sector)&&typeof e.text==='string'&&e.text.length<=500),'El aviso de marcha guardado es inválido.');
  for(const q of s.squads){const j=q.journey;if(j===undefined)continue;
-  need(j&&typeof j==='object'&&!Array.isArray(j)&&j.version===1&&modes.includes(j.mode)&&['moving','paused','ready'].includes(j.status)&&typeof j.returning==='boolean'&&(j.reason===null||Object.hasOwn(TRAVEL_REASONS,j.reason))&&integer(j.startedAt,0,s.hour)&&Array.isArray(j.path)&&j.path.length>=2&&j.path.length<=65&&j.path[0]===q.location&&j.path.every((id,i)=>validWorldLocation(id)&&(i===0||sector(id)&&(sector(j.path[i-1])?.neighbors.includes(id)||j.intent==='attack'&&j.mode==='march'&&assaultNeighbor(j.path[i-1],id))))&&j.legHours===travelLegHours(j.path[0],j.path[1],j.mode)&&integer(j.elapsed,0,j.returning||j.status==='ready'?j.legHours:j.legHours-1),'La ruta guardada es inválida.');
-  need((j.intent===undefined||j.intent==='attack')&&(j.intent!=='attack'||j.path.length===2)&&(j.status!=='ready'||j.intent==='attack'&&j.elapsed===j.legHours&&!j.returning&&j.reason==='assault'),'La preparación de ataque guardada es inválida.');
-  need(q.members.length>0&&(j.mode!=='flotilla'||j.path.every(id=>sector(id).theater==='coast'))&&(j.status!=='paused'||j.elapsed===0&&!j.returning)&&(j.returning?j.elapsed>0:true),'El avance guardado es inválido.');
+  need(j&&typeof j==='object'&&!Array.isArray(j)&&j.version===1&&modes.includes(j.mode)&&['moving','paused','ready'].includes(j.status)&&typeof j.returning==='boolean'&&(j.reason===null||Object.hasOwn(TRAVEL_REASONS,j.reason))&&integer(j.startedAt,0,s.hour)&&Array.isArray(j.path)&&j.path.length>=2&&j.path.length<=65&&j.path[0]===q.location&&j.path.every((id,i)=>validWorldLocation(id)&&(i===0||sector(j.path[i-1])?.neighbors.includes(id)||adjacentCells(j.path[i-1],id)))&&integer(j.legHours,1,96)&&integer(j.elapsed,0,j.returning||j.status==='ready'?j.legHours:j.legHours-1),'La ruta guardada es inválida.');
+  need(['startedSecond','elapsedSecond','pendingSeconds'].every(key=>j[key]===undefined||integer(j[key],0,3599))&&j.startedAt*3600+(j.startedSecond??0)<=campaignSeconds(s),'Los segundos de la ruta guardada son inválidos.');
+  const covered=progressSeconds(j);
+  need(covered<=j.legHours*3600&&covered<=campaignSeconds(s)-(j.startedAt*3600+(j.startedSecond??0))&&(j.returning||(j.pendingSeconds??0)===(j.elapsedSecond??0)),'El tiempo recorrido de la ruta guardada es inválido.');
+  need(['march','horse'].includes(j.mode)||j.path.every(id=>sector(id)),'La ruta guardada usa transporte no disponible en celdas rurales.');
+  need(supportedTravelLegHours(j.path[0],j.path[1],j.mode).includes(j.legHours),'La duración de la etapa guardada es inválida.');
+  need((j.intent===undefined||j.intent==='attack')&&(j.intent!=='attack'||j.path.length===2)&&(j.status!=='ready'||j.intent==='attack'&&covered===j.legHours*3600&&!j.pendingSeconds&&!j.returning&&j.reason==='assault'),'La preparación de ataque guardada es inválida.');
+  need(q.members.length>0&&(j.mode!=='flotilla'||j.path.every(id=>sector(id).theater==='coast'))&&(j.status!=='paused'||covered===0&&!j.returning)&&(j.returning?covered>0:true),'El avance guardado es inválido.');
   need(q.members.every(id=>!s.pendingBattle?.squad?.some(u=>Number(u.id)===id)),'Una escuadra en ruta no puede estar desplegada.');
   if(['moving','ready'].includes(j.status))need(q.members.every(id=>s.operativeState[id].alive&&!s.operativeState[id].captured&&!s.operativeState[id].asleep&&s.operativeState[id].assignment==='active'&&!s.militiaTraining?.some(t=>t.trainerId===id)),'Los viajeros guardados no están disponibles.');
  }

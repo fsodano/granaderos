@@ -324,7 +324,7 @@ Named colors (`Font Control.h:123-175`): `FONT_MCOLOR_*` (black/white/dkwhite/lt
 
 The authoritative adapted hotkey table is `game/hotkeys.js`:
 - `TACTICAL_KEYS` (`hotkeys.js:2-11`) — the display table (Spanish labels) rendered by the help panel.
-- `tacticalShortcut(event, {editing, dialog, nativeControl})` (`hotkeys.js:12-19`) — the resolver. Guards: `editing`/`dialog`/`event.repeat`/`event.isComposing`/`ctrlKey`/`metaKey` return `null`; `nativeControl` blocks Space/Enter; `altKey` only allows `r` (reload); `shiftKey` only allows `?`/`+`/`{`/`}`. Returns action strings: `select:N`, `next`, `map`, `turn`, `move`, `fire`, `melee`, `run`, `walk`, `crouch`, `prone`, `sneak`, `stance-up/down`, `weapon`, `brace`, `overwatch`, `mount`, `sight`, `loot`, `heal`, `aim-up/down`, `zoom-in/out`, `help`, `cancel`.
+- `tacticalShortcut(event, {editing, dialog, nativeControl})` (`hotkeys.js:12-19`) — the resolver. Guards: `editing`/`dialog`/`event.repeat`/`event.isComposing`/`ctrlKey`/`metaKey` return `null`; `nativeControl` blocks Space/Enter; `altKey` only allows `r` (reload); `shiftKey` allows `R` (reload) and `?`/`+`/`{`/`}`. Plain `R` selects running. Returns action strings: `select:N`, `next`, `map`, `turn`, `move`, `fire`, `melee`, `run`, `walk`, `crouch`, `prone`, `sneak`, `stance-up/down`, `weapon`, `brace`, `overwatch`, `mount`, `sight`, `loot`, `heal`, `aim-up/down`, `zoom-in/out`, `help`, `cancel`.
 
 ### 12.2 Web recipe
 

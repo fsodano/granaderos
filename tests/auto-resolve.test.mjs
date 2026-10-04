@@ -5,16 +5,22 @@ import {validateBattleSnapshot} from '../game/validate-battle.js';
 import {enterSector} from '../game/world.js';
 import {completedTacticalVictory,createBattle,actBattle,endTurn,AP_CARRY_LIMIT,maxActionPoints,movementEnergy} from '../game/tactical.js';
 import {battleFromRequest} from '../game/battle-handoff.js';
+import {fieldAmmunitionByType,unitAmmunitionByType,totalAmmoCounts} from '../game/physical-ammunition.js';
 const request=(style='balanced')=>({id:'auto-defense',sector:'san_nicolas',seed:45,defenseGroupId:'enemy-group-1',defenseFort:1,
  squad:Array.from({length:style==='weak'?1:3},(_,i)=>({id:1000+i,name:`Defensor ${i}`,weapon:style==='blade'?1813:1800,marksmanship:style==='weak'?20:65,medical:50,agility:style==='blade'?95:70,experienceLevel:style==='blade'?9:4,hp:style==='weak'?30:90,maxHp:90,loaded:style==='blade'?0:1,ammo:style==='blade'?0:4,priming:5,flints:0,rations:0,torches:0,boleadoras:0,medkits:1,morale:100})),
  enemies:Array.from({length:3},(_,i)=>({id:`enemy-group-1-${i}`,name:`Realista ${i}`,weapon:style==='blade'?1813:1800,marksmanship:style==='weak'?95:65,agility:70,experienceLevel:4,hp:100,maxHp:100,loaded:style==='blade'?0:1,ammo:style==='blade'?0:2,priming:3,medkits:0,morale:100}))});
 const supply=b=>b.units.reduce((sum,u)=>sum+u.loaded+u.ammo,0);
+const physicalSupply=b=>totalAmmoCounts(fieldAmmunitionByType(b))+b.units.reduce((sum,u)=>sum+totalAmmoCounts(unitAmmunitionByType(u)),0);
 test('automatic defense on the authored map preserves deterministic outcomes, wounds and cartridges',()=>{
  const r=request(),original=structuredClone(r),initial=enterSector(r),first=autoResolve(r),second=autoResolve(JSON.parse(JSON.stringify(r)));
- assert.deepEqual(first,second);assert.deepEqual(r,original);assert.equal(first.outcome,'victory');assert.equal(first.timedOut,false);
+ assert.deepEqual(first,second);assert.deepEqual(r,original);assert.equal(first.outcome,'defeat');assert.equal(first.timedOut,false);
  assert.ok(first.actions>0);
  assert.ok(supply(first.battle)<supply(initial));assert.ok(first.battle.units.some(u=>u.side==='enemy'&&u.hp===0));
- for(const u of first.battle.units){const start=initial.units.find(v=>v.id===u.id);assert.ok(u.hp<=start.hp);assert.ok(u.ammo+u.loaded<=start.ammo+start.loaded);assert.ok(u.medkits<=start.medkits);}
+ assert.ok(physicalSupply(first.battle)<physicalSupply(initial),'carried, recovered, dropped and contained cartridges all retain finite custody');
+ assert.ok(first.battle.units.some(u=>u.side==='player'&&u.hp===0));assert.ok(first.battle.units.some(u=>u.side==='player'&&u.hp>0&&u.hp<15));
+ // Recovery can transfer a dead soldier's finite cartridges to another person.
+ // The whole force spends ammunition; a personal starting ceiling is not custody.
+ for(const u of first.battle.units){const start=initial.units.find(v=>v.id===u.id);assert.ok(u.hp<=start.hp);assert.ok(u.medkits<=start.medkits);}
  // Authored buildings determine contact, route length and whether a reaction occurs.
  // Exact round and reaction budgets are checked on the controlled encounter below.
  assert.ok(first.battle.elapsedSeconds>0);assert.doesNotThrow(()=>validateBattleSnapshot(first.battle));

@@ -1,11 +1,12 @@
 import {applyQuestEscortOrders} from './quest-escort.js';
 import {regionalWeatherAt,WEATHER_INTERVAL_HOURS} from './regional-weather.js';
 import {gainFatigue,recoverFatigue} from './fatigue.js';
-import {dispatchCampaign,hasPendingNpcGiftProgress} from './campaign.js';
+import {dispatchCampaign,hasPendingNpcGiftProgress,nextContractExpirySeconds} from './campaign.js';
 import {hasPendingCivilians,nextUnloadedCivilianDeath} from './campaign-civilians.js';
 import {campaignStory} from './campaign-story.js';
 import {nextContentQuestDeadline} from './content-quests.js';
 import {nextCampaignPresenceChange} from './campaign-presence.js';
+import {nextHireArrivalSeconds} from './hiring-arrivals.js';
 export const COMBAT_ROUND_SECONDS=6;
 export const REST_SECONDS=600;
 // Only dispatcher results establish trust. Decoded saves, campaign commands and
@@ -13,9 +14,10 @@ export const REST_SECONDS=600;
 // campaign can share its unchanged maps instead of cloning them for every step.
 const synchronizedCampaigns=new WeakSet();
 function syncSettledClock(campaign,battle,elapsed){
- if(!synchronizedCampaigns.has(campaign)||campaign.defeated||campaign.pendingEncounter||campaignStory(campaign))return null;
+ if(!synchronizedCampaigns.has(campaign)||campaign.defeated||campaign.pendingEncounter||campaignStory(campaign)||campaign.squads?.some(q=>q.journey))return null;
  const previous=campaign.pendingBattle.syncedSeconds??0,second=campaign.secondOfHour??0,delta=elapsed-previous;
  if(!Number.isSafeInteger(elapsed)||delta<0||!Number.isInteger(second)||second<0||second>=3600||Math.floor(second/60)!==Math.floor((second+delta)/60))return null;
+ if(delta>=(nextHireArrivalSeconds(campaign)??Infinity)||delta>=(nextContractExpirySeconds(campaign)??Infinity))return null;
  // These cases can change more than the clock, including events between hours.
  const end=campaign.hour*3600+second+delta;
  if(Number.isFinite(nextUnloadedCivilianDeath(campaign))||end>=nextContentQuestDeadline(campaign)||end>=nextCampaignPresenceChange(campaign)||battle.units.some(u=>u.side==='player'&&(u.hp<=0||u.missionAlly)))return null;

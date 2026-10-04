@@ -14,7 +14,7 @@ The existing IDs are retained. A save containing one of the replaced characters 
 
 ## Hiring
 
-Search by name, nickname, or occupation. Filter by specialty or service status. Sort by name, daily pay, marksmanship, or medical skill. Stat filters require 70 points; scouting and riding filters use tactical traits. Existing prepaid contract and experience rules remain in effect. Every specialist accepts day, weekly or monthly contracts; only the treasury limits the terms. Elite specialists charge premium daily rates, so the 3200-peso starting treasury cannot retain one for more than a day or two.
+Search by name, nickname, or occupation. Filter by specialty or service status. Sort by name, daily pay, marksmanship, or medical skill. Stat filters require 70 points; scouting and riding filters use tactical traits. Existing prepaid contract and experience rules remain in effect. Every specialist offers day, weekly or monthly terms, subject to funds and current availability. [Authored service refusals](service-relationships.md) can block the next hire or renewal while preserving paid service. Elite specialists charge premium daily rates, so the 3200-peso starting treasury cannot retain one for more than a day or two.
 
 | ID | Name | Role | Daily pay at level 1 | Terms |
 | --- | --- | --- | ---: | --- |

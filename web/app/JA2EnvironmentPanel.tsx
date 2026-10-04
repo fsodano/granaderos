@@ -10,15 +10,18 @@ type Props = {
 // This panel only accepts the public target summary and revealed contents.
 export default function JA2EnvironmentPanel({targets, selected, target, preview, verbs, verb, busy, contents, contentIndex, count, loot, onTarget, onVerb, onUse, onContent, onCount, onLoot}: Props) {
   const item = contents.find(entry => entry.index === contentIndex);
+  const wall = target?.kind === 'wall';
   return <details className="ja2-nearby-loot ja2-environment-panel">
-    <summary>Puertas y cofres cercanos · {targets.length}</summary>
+    <summary>Puertas, cofres y paredes cercanos · {targets.length}</summary>
     {target ? <>
       <div className="ja2-item-handling">
-        <label>Objetivo<select aria-label="Puerta o cofre cercano" value={selected} disabled={busy} onChange={event => onTarget(event.target.value)}>{targets.map(entry => <option key={entry.key} value={entry.key}>{entry.label}</option>)}</select></label>
+        <label>Objetivo<select aria-label="Puerta, cofre o pared cercana" value={selected} disabled={busy} onChange={event => onTarget(event.target.value)}>{targets.map(entry => <option key={entry.key} value={entry.key}>{entry.label}</option>)}</select></label>
         <label>Acción<select aria-label="Acción con el objeto equipado" value={verb} disabled={busy} onChange={event => onVerb(event.target.value)}><option value="">Usar objeto equipado</option>{verbs.map(entry => <option key={entry.id} value={entry.id}>{entry.label}</option>)}</select></label>
         <button className="line-button" disabled={busy || !preview?.valid} title={preview?.reason || undefined} onClick={onUse}>{preview?.label || 'Usar'}{preview?.pa !== undefined ? ` · ${preview.pa} PA` : ''}</button>
       </div>
-      <p className="ja2-item-feedback" aria-live="polite">{target.open ? 'Abierto. ' : 'Cerrado. '}{target.locked && 'Con cerradura. '}{target.trapKnown && (target.trapArmed === false ? 'Trampa desarmada. ' : 'Trampa detectada. ')}{preview?.chance !== null && preview?.chance !== undefined && `${preview.chance}% de éxito. `}{preview?.reason}</p>
+      <p className="ja2-item-feedback" aria-live="polite">{wall ? 'La brecha abre un paso y desgasta la barreta. ' : <>{target.open ? 'Abierto. ' : 'Cerrado. '}{target.locked && 'Con cerradura. '}{target.trapKnown && (target.trapArmed === false ? 'Trampa desarmada. ' : 'Trampa detectada. ')}</>}{!wall && preview?.chance !== null && preview?.chance !== undefined && `${preview.chance}% de éxito. `}{preview?.reason}</p>
+      {wall && preview?.toolWear>0 && <p className="ja2-item-feedback">Desgaste de la barreta: hasta {preview.toolWear} puntos.</p>}
+      {target.arsenalHint&&<p className="ja2-item-feedback" role="status">{target.arsenalHint}</p>}
       {target.kind === 'container' && (target.open ? contents.length ? <>
         <div className="ja2-item-handling">
           <label>Contenido<select aria-label="Objeto del cofre" value={contentIndex} disabled={busy} onChange={event => onContent(Number(event.target.value))}>{contents.map(entry => <option key={entry.index} value={entry.index}>{entry.label} · {entry.count}</option>)}</select></label>
@@ -27,6 +30,6 @@ export default function JA2EnvironmentPanel({targets, selected, target, preview,
         </div>
         <p className="ja2-item-feedback">{item?.condition !== undefined && `Estado ${item.condition}%. `}{item?.loaded !== undefined && `${item.loaded} carga(s). `}{loot?.reason}</p>
       </> : <p>El cofre está vacío.</p> : <p>El contenido permanece oculto hasta abrir el cofre.</p>)}
-    </> : <p>Acercate a una puerta o a un cofre visible.</p>}
+    </> : <p>Acercate a una puerta, un cofre o una pared de adobe o madera visible.</p>}
   </details>;
 }

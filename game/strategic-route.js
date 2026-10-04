@@ -4,7 +4,7 @@ import {worldCell,locationId,cellTravelPlan} from './world-cells.js';
 import {tooTiredToMarch} from './march-fatigue.js';
 
 // Preview only the small squad record. Never clone tactical sector snapshots on hover.
-export function previewStrategicRoute(s,squadId,destination,mode='march'){
+export function previewStrategicRoute(s,squadId,destination,mode='march',waypoints=[]){
  const q=s.squads.find(q=>q.id===squadId);
  const reject=reason=>({valid:false,reason,path:[],hours:0,action:null});
  if(!q)return reject('La escuadra no existe.');
@@ -19,25 +19,17 @@ export function previewStrategicRoute(s,squadId,destination,mode='march'){
  const cell=worldCell(destination);
  if(!cell)return reject('Elegí un destino en el mapa.');
  destination=locationId(destination);
- if(destination===q.location)return reject('La escuadra ya está en este sector.');
+ if(destination===q.location&&!waypoints.length)return reject('La escuadra ya está en este sector.');
  const target=CAMPAIGN_SECTORS.find(d=>d.id===destination);
  const intent=target&&(s.sectors[destination].owner==='royalist'||s.blockade&&target.theater==='coast')?'attack':'travel';
- if(!cell.anchor||!worldCell(q.location)?.anchor&&intent!=='attack'){
-  if(mode!=='march')return reject('Para esta celda, elegí marcha a pie.');
-  const plan=cellTravelPlan({...s,location:q.location},destination);
-  if(plan.reason)return reject(plan.reason);
-  return {valid:true,reason:null,path:plan.path,hours:plan.hours,action:{type:'travel',sector:destination,mode}};
- }
- if(!target)return reject('Elegí un destino en el mapa.');
- if(destination===q.location)return reject('La escuadra ya está en este sector.');
  if(intent==='attack'){
   if(s.completed)return reject('La campaña está ganada.');
   if(!target.neighbors.some(id=>s.sectors[id].owner==='patriot'&&isSupplied(s,id)))return reject('Debes abrir una ruta hasta el frente.');
  }
  try{
   const draft={...q,members:[...q.members]};
-  queueSquadTravel(s,draft,{sector:destination,mode,intent});
+  queueSquadTravel(s,draft,{sector:destination,mode,intent,waypoints});
   const status=squadTravelStatus(draft);
-  return {valid:true,reason:null,path:status.path,hours:status.remaining,action:{type:intent,sector:destination,mode,queue:true}};
+  return {valid:true,reason:null,path:status.path,hours:status.remaining,action:{type:intent,sector:destination,mode,...(waypoints.length?{waypoints}:{}),queue:true}};
  }catch(error){return reject(error.message);}
 }

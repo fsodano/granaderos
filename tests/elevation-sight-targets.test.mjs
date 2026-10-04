@@ -23,10 +23,11 @@ test('the selected door face is visible while generic points and actors stay blo
  assert.equal(elevationSightClear(s,observer,inner),false,'selecting a second door does not exempt the first');
 });
 
-test('seeing a door face does not change bullet resistance or grant a shot through it',()=>{
+test('seeing a door face does not exempt its partial depth or grant a shot through the closed door',()=>{
  const s=field(),door=closedDoor(s),observer=actor('observer',3),behind=actor('behind',5);s.units=[observer,behind];
  assert.equal(elevationSightClear(s,observer,door),true);
- assert.equal(projectilePath(s,observer,door,{damage:20}).blocked,true);
+ const face=projectilePath(s,observer,door,{damage:20});assert.equal(face.blocked,false);
+ assert.ok(Math.abs(face.damageFactor-(20-24*.5*Math.hypot(1,.3))/20)<1e-10,'the bounded ray spends force through the near half of the selected door');
  const blocked=projectileFlight(s,observer,behind,{damage:20});assert.equal(blocked.blocked,true);assert.equal(blocked.victimId,null);
  Object.assign(door,{open:true,blocked:false,blocksSight:false});
  assert.equal(elevationSightClear(s,observer,behind),true);

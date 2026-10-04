@@ -1,3 +1,4 @@
+import {withStoredGear} from './commerce-gear-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign} from '../game/campaign.js';
@@ -17,17 +18,18 @@ function knifeCount(battle){
  return battle.units.reduce((total,unit)=>total+Number(unit.blade===1813)+Number(unit.weapon===1813&&!unit.weaponDropped)+(unit.offHand?.weapon===1813?unit.offHand.count:0)+Object.values(unit.inventory??{}).reduce((sum,item)=>sum+(item.weapon===1813?item.count:0),0),0)+knifeStacks(battle).reduce((sum,item)=>sum+item.count,0);
 }
 function start(){
- let campaign=initialCampaign(45);
+ // Prepared treasury funds this elite recruit; the reducer still charges the full quote.
+ let campaign=initialCampaign(45);campaign.resources.treasury=12000;
  assert.deepEqual(campaign.squad,[]);assert.equal(campaign.location,'retiro');
  const treasury=campaign.resources.treasury;
  campaign=order(campaign,{type:'recruitCivic',id:128,term:'day'});
  assert.ok(campaign.resources.treasury<treasury);assert.deepEqual(campaign.squad,[128]);
  const hireBalance=campaign.resources.treasury;
- campaign=order(campaign,{type:'purchaseEquipment',item:1813,quantity:1});
- assert.ok(campaign.resources.treasury<hireBalance);assert.equal(campaign.armory[1813],1);
- const purchased=campaign.armoryItems.find(item=>item.item===1813);assert.ok(purchased);
- campaign=order(campaign,{type:'equip',operativeId:128,slot:'blade',itemId:1813,instanceId:purchased.id});
- assert.equal(campaign.armory[1813],0);assert.ok(!campaign.armoryItems.some(item=>item.id===purchased.id));
+ campaign=withStoredGear(campaign,1813);
+ assert.equal(campaign.resources.treasury,hireBalance);assert.equal(campaign.armory[1813],1);
+ const owned=campaign.armoryItems.find(item=>item.item===1813);assert.ok(owned);
+ campaign=order(campaign,{type:'equip',operativeId:128,slot:'blade',itemId:1813,instanceId:owned.id});
+ assert.equal(campaign.armory[1813],0);assert.ok(!campaign.armoryItems.some(item=>item.id===owned.id));
  campaign=order(campaign,{type:'visitSector'});
  const pair=prepareCampaignBattle(campaign);assert.equal(pair.error,null);
  let battle=pair.battle;campaign=pair.campaign;
@@ -35,8 +37,8 @@ function start(){
  assert.deepEqual(Object.entries(campaign.sectors).filter(([,sector])=>sector.owner==='patriot').map(([id])=>id),['retiro']);
  const before=actor(battle);assert.equal(before.activeSlot,'primary');assert.equal(before.blade,1813);
  battle=act(battle,{type:'weapon',slot:'blade'});
- const held=heldThrowingKnife(actor(battle));assert.equal(held.slot,'blade');assert.equal(held.record.weapon,1813);assert.equal(held.record.condition,purchased.condition);
- assert.equal(held.record.instanceId,purchased.instanceId);
+ const held=heldThrowingKnife(actor(battle));assert.equal(held.slot,'blade');assert.equal(held.record.weapon,1813);assert.equal(held.record.condition,owned.condition);
+ assert.equal(held.record.instanceId,owned.instanceId);
  assert.equal(actor(battle).ap,before.ap);assert.equal(knifeCount(battle),1);
  return {campaign,battle,record:structuredClone(held.record)};
 }
@@ -70,7 +72,7 @@ function reenter(campaign){
  campaign=order(campaign,{type:'visitSector'});const pair=prepareCampaignBattle(campaign);assert.equal(pair.error,null);return pair;
 }
 
-test('a paid recruit throws a purchased facon at real Retiro ground and resumes the exact finite pickup transaction',()=>{
+test('a paid recruit throws a finite owned facon at real Retiro ground and resumes the exact finite pickup transaction',()=>{
  let {campaign,battle,record}=start();const thrown=throwToGround(battle,record);battle=thrown.battle;
  ({campaign,battle}=sync(campaign,battle));
  const saved=decodeSave(encodeSave(campaign,battle));assert.deepEqual(saved.campaign,campaign);assert.deepEqual(saved.battle,battle);

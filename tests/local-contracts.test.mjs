@@ -9,11 +9,13 @@ import {approachNPC} from './approach-npc.mjs';
 import {applyCivilianHarm} from '../game/civilian-harm.js';
 
 test('local paid residents offer all terms and begin service in place without becoming bulletin arrivals',()=>{
- for(const [term,hours,price]of [['day',24,10],['week',168,70],['month',720,300]]){
-  let p=readyLocal(),id=localId(p.campaign),cash=p.campaign.resources.treasury,hour=p.campaign.hour;
-  const quotes=encounterHireTerms(p.campaign,localNPC(p.battle));assert.deepEqual(quotes.map(q=>[q.term,q.hours,q.price]),[['day',24,10],['week',168,70],['month',720,300]]);
+ for(const [term,hours,price]of [['day',24,60],['week',168,420],['month',720,1800],['fortnight',336,840]]){
+  // This term-admission fixture funds both the guide and the longest local hire.
+  const content=localPackage();content.rules.startingTreasury=4800;
+  let p=readyLocal(undefined,content),id=localId(p.campaign),cash=p.campaign.resources.treasury,hour=p.campaign.hour;
+  const quotes=encounterHireTerms(p.campaign,localNPC(p.battle));assert.deepEqual(quotes.map(q=>[q.term,q.hours,q.price]),[['day',24,60],['week',168,420],['month',720,1800],['fortnight',336,840]]);
   assert.equal(civicStatus(p.campaign,id).available,false);assert.ok(dispatchCampaign(p.campaign,{type:'recruitCivic',id,term}).lastError);
-  const direct=order(p.campaign,talk(p,term,'direct'));assert.match(direct.lastConversation.text,/un día, 10 pesos; una semana, 70 pesos; un mes, 300 pesos/);assert.ok(!direct.lastConversation.text.includes('sin paga'));
+  const direct=order(p.campaign,talk(p,term,'direct'));assert.match(direct.lastConversation.text,/un día, 60 pesos; una semana, 420 pesos; un mes, 1800 pesos/);assert.ok(!direct.lastConversation.text.includes('sin paga'));
   const repeated=talk(p,term);p=hireLocal(p,term);const duplicate=dispatchCampaign(p.campaign,repeated);assert.ok(duplicate.lastError);assert.equal(duplicate.resources.treasury,p.campaign.resources.treasury);assert.deepEqual(duplicate.recruited,p.campaign.recruited);assert.equal(p.campaign.resources.treasury,cash-price);assert.equal(p.campaign.contracts[id].kind,'paid');assert.equal(p.campaign.contracts[id].expiresAt,hour+hours);assert.equal(p.campaign.hiringArrivals.length,0);
   assert.ok(p.battle.units.some(u=>u.id===String(id)));assert.equal(localNPC(p.battle),undefined);assert.ok(!encountersFor(p.campaign,A).some(n=>n.operativeId===id));assert.ok(saved(p));
  }
@@ -44,9 +46,9 @@ test('bandaging a resident hurt by the player does not erase refusal or permit a
 
 test('renewal and dismissal preserve paid local identity and reject permanent-contract forgeries',()=>{
  let p=hireLocal(readyLocal(),'day'),id=localId(p.campaign),s=leave(p),until=s.contracts[id].expiresAt,cash=s.resources.treasury;
- s=order(s,{type:'renewContract',id,term:'week'});assert.equal(s.contracts[id].expiresAt,until+168);assert.equal(s.resources.treasury,cash-70);assert.ok(saved({campaign:s}));
- const wire=JSON.parse(encodeSave(s));Object.assign(wire.campaign.contracts[id],{kind:'patriot',expiresAt:null});assert.throws(()=>decodeSave(JSON.stringify(wire)),/servicio/);
- s=order(s,{type:'dismiss',id});assert.equal(s.resources.treasury,cash-70);assert.ok(!s.recruited.includes(id));assert.ok(encountersFor(s,A).some(n=>n.operativeId===id));assert.ok(saved({campaign:s}));
+ s=order(s,{type:'renewContract',id,term:'week'});assert.equal(s.contracts[id].expiresAt,until+168);assert.equal(s.resources.treasury,cash-420);assert.ok(saved({campaign:s}));
+ const wire=JSON.parse(encodeSave(s));Object.assign(wire.campaign.contracts[id],{kind:'patriot',expiresAt:null});delete wire.campaign.contracts[id].expiresSecond;assert.throws(()=>decodeSave(JSON.stringify(wire)),/servicio/);
+ s=order(s,{type:'dismiss',id});assert.equal(s.resources.treasury,cash-420);assert.ok(!s.recruited.includes(id));assert.ok(encountersFor(s,A).some(n=>n.operativeId===id));assert.ok(saved({campaign:s}));
 });
 
 test('zero-price local contracts still expire and unpaid permanent service remains explicit',()=>{

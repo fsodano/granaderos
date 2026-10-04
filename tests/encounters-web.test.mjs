@@ -7,10 +7,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {dispatchCampaign as dispatch,encountersFor,restoreCampaign,serializeCampaign,initialCampaign as freshCampaign} from '../game/campaign.js';
 import {initialCampaign} from './legacy-campaign-fixture.mjs';
-import {buildSectorMap} from '../game/maps.js';
-import {createBattle,actBattle} from '../game/tactical.js';
+import {enterSector} from '../game/world.js';
 const order=(s,a)=>{const n=dispatch(s,a);assert.equal(n.lastError,null,n.lastError);return n;};
-function visit(s,sector,actor=4){s=order(s,{type:'travel',sector});s=order(s,{type:'visitSector'});const map=buildSectorMap(s.pendingBattle);let battle=createBattle(map.squad,map);battle=approachNPC(battle,actor,sector==='ensenada'?'brown':'sosa');assert.equal(battle.lastError,null);return {s,battle};}
+function visit(s,sector,actor=4){s=order(s,{type:'travel',sector});s=order(s,{type:'visitSector'});let battle=enterSector(s.pendingBattle,s.sectorStates[s.location]);battle=approachNPC(battle,actor,sector==='ensenada'?'brown':'sosa');assert.equal(battle.lastError,null);return {s,battle};}
 test('each sector has a local encounter and local recruits cannot bypass the meeting',()=>{
  const s=freshCampaign();for(const id of Object.keys(s.sectors))assert.ok(encountersFor(s,id).length>0,id);assert.equal(dispatch(s,{type:'recruitCivic',id:100}).lastError,null);s.sectors.mendoza.owner='patriot';assert.ok(dispatch(s,{type:'recruit',id:2}).lastError);
 });
@@ -25,7 +24,7 @@ test('conversation requires adjacency and a cleared tactical situation',()=>{
  const result=visit(initialCampaign(),'ensenada'),s=result.s,battle=result.battle;assert.equal(dispatch(s,{type:'talkNPC',npcId:'brown',approach:'friendly',unitId:4,sectorState:battle}).lastError,null);const far=structuredClone(battle);far.units.find(u=>u.id==='4').x=10;assert.ok(dispatch(s,{type:'talkNPC',npcId:'brown',approach:'friendly',unitId:4,sectorState:far}).lastError);
  const fighting=structuredClone(battle);fighting.mode='combat';fighting.sectorCleared=false;fighting.status='active';assert.ok(dispatch(s,{type:'talkNPC',npcId:'brown',approach:'friendly',unitId:4,sectorState:fighting}).lastError);
 });
-test('visits issue and return finite ammunition instead of erasing or generating rounds',()=>{
- let s=initialCampaign();const total=s.resources.treasury;s=order(s,{type:'visitSector'});const issued=s.pendingBattle.issuedCartridges;assert.equal(issued,20);assert.equal(s.resources.treasury,total-issued);const map=buildSectorMap(s.pendingBattle),battle=createBattle(map.squad,map);
- s=order(s,{type:'leaveSector',battleId:s.pendingBattle.id,sectorState:battle,survivors:battle.units.filter(u=>u.side==='player').map(u=>({...u,id:Number(u.id)}))});assert.equal(s.resources.treasury,total-issued);assert.equal(s.squad.reduce((n,id)=>n+totalReserveAmmunition(s.operativeState[id])+(s.operativeState[id].carriedLoaded??0),0),issued);assert.deepEqual(restoreCampaign(serializeCampaign(s)),s);
+test('visits retain and return finite ammunition instead of erasing or generating rounds',()=>{
+ let s=initialCampaign();const total=s.resources.treasury;s=order(s,{type:'visitSector'});const issued=s.pendingBattle.issuedCartridges;assert.equal(issued,20);assert.equal(s.resources.treasury,total);const battle=enterSector(s.pendingBattle,s.sectorStates[s.location]);
+ s=order(s,{type:'leaveSector',battleId:s.pendingBattle.id,sectorState:battle,survivors:battle.units.filter(u=>u.side==='player').map(u=>({...u,id:Number(u.id)}))});assert.equal(s.resources.treasury,total);assert.equal(s.squad.reduce((n,id)=>n+totalReserveAmmunition(s.operativeState[id])+(s.operativeState[id].carriedLoaded??0),0),issued);assert.deepEqual(restoreCampaign(serializeCampaign(s)),s);
 });

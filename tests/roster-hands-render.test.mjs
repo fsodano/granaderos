@@ -1,7 +1,8 @@
 import {register} from 'node:module';register('./tactical-render-loader.mjs',import.meta.url);
 import test from 'node:test';import assert from 'node:assert/strict';
 import {createElement as h} from '../web/node_modules/react/index.js';import {renderToStaticMarkup as render} from '../web/node_modules/react-dom/server.node.js';
-import {componentTree} from './component-tree.mjs';import {createBattle} from '../game/tactical.js';
+import {componentTree} from './component-tree.mjs';import {createBattle,canSee} from '../game/tactical.js';
+import {rosterCells} from '../game/ja2-hud.js';
 const {default:Roster}=await import('../web/app/JA2Roster.tsx');
 const descendants=n=>!n||typeof n!=='object'?[]:[n,...(Array.isArray(n)?n:Array.isArray(n.props?.children)?n.props.children:[n.props?.children]).flatMap(descendants)];
 const noop=()=>{};
@@ -40,4 +41,27 @@ test('the squad strip uses an edited weapon image and its selected ammunition fa
  const battle=createBattle([{id:'edited',name:'Tirador',weapon:1808,blade:0,weaponMetadata:{contentWeapon:definition},ammunitionChoice:'ammoRifle',loaded:1,ammunition:{ammoMusket:8,ammoRifle:3},ammo:11}],{exploration:true,enemies:[]});
  const markup=render(h(Roster,{battle,players:battle.units,selected:'edited',onSelect:noop,onOpenInventory:noop}));
  assert.ok(markup.includes('src="/art/custom-pistol.png"'));assert.match(markup,/Pistola del editor/);assert.match(markup,/3 de reserva/);assert.ok(!markup.includes('11 de reserva'));
+});
+
+
+test('personal enemy counts follow each observer sight and AP remains explicit at zero',()=>{
+ const battle=createBattle([{id:'watcher',name:'Vigía',x:2,y:2,facing:2},{id:'away',name:'Retaguardia',x:2,y:6,facing:6}],{width:10,height:10,enemies:[{id:'one',x:5,y:2},{id:'two',x:6,y:2}]});
+ battle.tiles.forEach(t=>{t.type='grass';t.blocked=false;t.cover=0;});battle.units[0].ap=19;battle.units[1].ap=0;
+ const players=battle.units.filter(u=>u.side==='player'),cells=rosterCells(players,'watcher',battle);
+ assert.equal(cells[0].visibleEnemyCount,2);assert.equal(cells[1].visibleEnemyCount,0);
+ for(const cell of cells.filter(c=>c.unit))assert.equal(cell.visibleEnemyCount,battle.units.filter(e=>e.side==='enemy'&&e.hp>0&&canSee(battle,cell.unit,e)).length);
+ const html=render(h(Roster,{...props(battle),players,selected:'watcher'}));
+ assert.match(html,/Vigía ve 2 enemigos/);assert.match(html,/Retaguardia ve 0 enemigos/);
+ assert.match(html,/class="ja2-ap-readout"[^>]*>19<small>PA/);assert.match(html,/class="ja2-ap-readout"[^>]*>0<small>PA/);
+ battle.units.find(u=>u.id==='one').hp=0;assert.equal(rosterCells(players,'watcher',battle)[0].visibleEnemyCount,1);
+});
+
+test('treated and untreated wounds remain distinct and a dead card shows a skull with empty vitals',()=>{
+ const battle=createBattle([{id:'wounded',name:'Herido',x:1,y:1,maxHp:100,hp:50,bandaged:20,bleeding:3,morale:65},{id:'dead',name:'Caído',x:2,y:1,hp:0}],{width:8,height:8,enemies:[]});
+ const cells=rosterCells(battle.units,'wounded',battle);assert.equal(cells[0].bandaged,20);assert.equal(cells[0].untreated,30);assert.equal(cells[0].moralePct,65);assert.equal(cells[1].dead,true);assert.equal(cells[1].moralePct,0);
+ const tree=componentTree(Roster,{...props(battle),players:battle.units,selected:'wounded'}),cards=descendants(tree).filter(n=>n.props?.role==='listitem'),dead=cards[1];
+ assert.match(dead.props['aria-label'],/Muerto/);assert.doesNotMatch(dead.props['aria-label'],/Salud|energía|Ve \d/);
+ const vitals=descendants(dead).find(n=>n.props?.className==='ja2-vitals');assert.equal(vitals.props['aria-hidden'],true);
+ for(const fill of descendants(vitals).filter(n=>n.type==='i'))assert.equal(fill.props.style.height,'0%');
+ const html=render(h(Roster,{...props(battle),players:battle.units,selected:'wounded'}));assert.match(html,/ja2-dead-skull/);assert.match(html,/Heridas sin tratar: 30/);assert.match(html,/class="morale" style="height:65%"/);
 });

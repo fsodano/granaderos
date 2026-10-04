@@ -3,7 +3,7 @@ import test from 'node:test';import assert from 'node:assert/strict';
 import {JSDOM} from '../web/node_modules/jsdom/lib/api.js';
 import {createElement as h,act} from '../web/node_modules/react/index.js';
 import {createRoot} from '../web/node_modules/react-dom/client.js';
-import {createBattle,presentedEndTurn} from '../game/tactical.js';
+import {createBattle,presentedEndTurn,presentedActBattle} from '../game/tactical.js';
 const {useEnemyPlayback}=await import('../web/lib/useEnemyPlayback.ts');
 const {default:Battlefield}=await import('../web/app/Battlefield.tsx');
 const hosts=n=>!n||typeof n!=='object'?[]:Array.isArray(n)?n.flatMap(hosts):[n,...hosts(n.props?.children)];
@@ -16,7 +16,7 @@ async function mount(t,render){
  const root=createRoot(dom.window.document.getElementById('root'));
  t.after(async()=>{try{await act(async()=>root.unmount());}finally{dom.window.close();for(const [key,descriptor]of old){if(descriptor)Object.defineProperty(globalThis,key,descriptor);else delete globalThis[key];}}});
  const rerender=()=>act(async()=>root.render(render()));await rerender();
- return {workers,root,rerender,async step(){const entry=timers.entries().next().value;assert.ok(entry,'a presentation delay is pending');timers.delete(entry[0]);await act(async()=>entry[1].fn());return entry[1].ms;}};
+ return {workers,root,rerender,async step(){const entry=[...timers.entries()].sort((a,b)=>a[1].ms-b[1].ms)[0];assert.ok(entry,'a presentation delay is pending');timers.delete(entry[0]);await act(async()=>entry[1].fn());return entry[1].ms;}};
 }
 test('mounted enemy playback waits for each frame, prevents duplicate turns and commits once after the visible sequence',async t=>{
  let api,commits=[],busy=[],source=field();const result=presentedEndTurn(source);
@@ -31,6 +31,24 @@ test('mounted enemy playback waits for each frame, prevents duplicate turns and 
   await env.step();
  }
  await done;assert.ok(sawPrepare&&sawStep);assert.deepEqual(commits,[result.state]);assert.equal(api.busy,false);assert.equal(api.frame,null);assert.deepEqual(busy,[true,false]);assert.equal(commits[0].presentationVisibleIds,undefined);
+});
+test('commanded player shots show preparation and target impact before committing the final battle',async t=>{
+ let api,commits=[],source=field();source.units[0].ap=100;source.units[0].marksmanship=100;source.units[1].weapon=1800;
+ const result=presentedActBattle(source,{type:'fire',unitId:'p',targetId:'e',aim:2});
+ function Capture(){api=useEnemyPlayback(source,s=>commits.push(s));return null;}
+ const env=await mount(t,()=>h(Capture));let done;await act(async()=>{done=api.present(result,s=>commits.push(s));});
+ let reaction=false;for(let i=0;i<result.frames.length;i++){assert.equal(api.frame.index,i);assert.equal(commits.length,0);if(api.frame.impacts.length)reaction=true;await env.step();}
+ await done;assert.ok(reaction);assert.deepEqual(commits,[result.state]);assert.equal(api.busy,false);
+});
+test('the same portrait toggles inventory and failed target orders use a timed cross without a permanent error panel',async t=>{
+ const source=field();source.units[0].ap=0;let tree,commits=[];
+ const wrapper=Battlefield({battle:source,onChange:s=>commits.push(s),onFinish(){}}),content=wrapper.props.children;
+ function Capture(){tree=content.type(content.props);return null;}
+ const env=await mount(t,()=>h(wrapper.type,null,h(Capture))),strip=()=>hosts(tree).find(n=>n.props?.onOpenInventory);
+ await act(async()=>strip().props.onOpenInventory('p'));assert.equal(strip().props.inventoryId,'p');
+ await act(async()=>strip().props.onOpenInventory('p'));assert.equal(strip().props.inventoryId,null);
+ await act(async()=>strip().props.onOrder({type:'fire',targetId:'e'}));assert.ok(commits[0].lastError);assert.ok(hosts(tree).some(n=>n.props?.['data-action-failed']==='true'));assert.ok(!hosts(tree).some(n=>n.props?.className==='battle-error'));
+ await env.step();assert.ok(!hosts(tree).some(n=>n.props?.['data-action-failed']==='true'));
 });
 test('replaced battles and unmounted views discard worker results and never commit stale turns',async t=>{
  for(const unmount of [false,true])await t.test(String(unmount),async t=>{

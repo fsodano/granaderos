@@ -5,6 +5,8 @@ import {dispatchCampaign,rosterFor,serializeCampaign,restoreCampaign} from '../g
 import {advanceAssignments,repairRate,workAssignmentProgress} from '../game/assignments.js';
 import {repairEquipmentQueue,repairEquipment} from '../game/equipment-repair.js';
 import {inventoryUsage} from '../game/tactical-inventory.js';
+import {fieldPractice} from '../game/skill-training.js';
+import {withStoredGear,assertTradeRejected} from './commerce-gear-fixture.mjs';
 
 const order=(s,action)=>{const next=dispatchCampaign(s,action);assert.equal(next.lastError,null,next.lastError);return next;};
 const opFor=(s,id)=>rosterFor(s).find(op=>op.id===id);
@@ -13,7 +15,8 @@ const tool=(condition,count=1)=>({itemType:'tool',toolKey:'pliers',count,weight:
 function equipmentTeam(){
   let s=initialCampaign();s.loadouts[4]={...s.loadouts[4],weapon:1800,blade:1811};
   Object.assign(s.operativeState[4],{condition:98,bladeCondition:99,weaponFittings:{bayonet:bayonet('repair-fixed',98)},inventory:{pliers:tool(97)}});
-  s=order(s,{type:'purchaseToolkits',operativeId:10});
+  // A declared finite legacy carried reserve isolates repair work.
+ s.operativeState[10].toolkitPoints=100;
   return order(s,{type:'assignWork',operativeId:10,assignment:'repair',targetId:4,repairScope:'equipment'});
 }
 const totals=record=>Object.values(record.inventory).reduce((sum,item)=>sum+item.count,0);
@@ -27,11 +30,11 @@ test('equipment queue previews are detached, deterministic and follow secondary,
 });
 
 test('one hourly allowance crosses items, spends finite tools and charges the mechanic once',()=>{
-  let s=equipmentTeam();const rate=repairRate(opFor(s,10)),before=structuredClone(s.operativeState);
+  let s=equipmentTeam();const rate=repairRate(opFor(s,10)),before=structuredClone(s.operativeState),expected={...opFor(s,10),side:'player',hp:s.operativeState[10].hp};fieldPractice(expected,'mechanical',1);
   s=order(s,{type:'wait',hours:1});const r=s.operativeState[4],mechanic=s.operativeState[10];
   const restored=(r.bladeCondition-99)+(r.condition-98)+(r.weaponFittings.bayonet.condition-98)+(r.inventory.pliers.condition-97);
   assert.equal(restored,rate);assert.equal(r.bladeCondition,100);assert.equal(r.condition,100);
-  assert.equal(mechanic.toolkitPoints,100-rate);assert.equal(mechanic.energy,before[10].energy-3);assert.equal(mechanic.fatigue,before[10].fatigue+2);assert.equal(mechanic.skillPractice.mechanical,1);
+  assert.equal(mechanic.toolkitPoints,100-rate);assert.equal(mechanic.energy,before[10].energy-3);assert.equal(mechanic.fatigue,before[10].fatigue+2);assert.equal(mechanic.skillPractice.mechanical??0,expected.skillPractice?.mechanical??0);assert.equal(mechanic.practiceSeed,expected.practiceSeed);
   for(const key of ['loaded','ammo','priming','flints','medkits'])assert.equal(r[key],before[4][key]);
 });
 
@@ -96,7 +99,7 @@ test('a legacy pack at the saved-entry limit pauses before a stack split can mak
 });
 
 test('the job follows current carried equipment, and cannot repair a swapped weapon in the armory',()=>{
-  let s=equipmentTeam();s=order(s,{type:'purchaseEquipment',item:1803});s=order(s,{type:'equip',operativeId:4,slot:'weapon',itemId:1803});
+  let s=equipmentTeam();s=withStoredGear(s,1803);s=order(s,{type:'equip',operativeId:4,slot:'weapon',itemId:1803});
   const stored=structuredClone(s.armoryItems);s=order(s,{type:'wait',hours:24});assert.deepEqual(s.armoryItems,stored);
   assert.equal(s.operativeState[4].inventory.pliers.condition,100);assert.equal(s.operativeState[4].bladeCondition,100);
   assert.equal(s.operativeState[10].toolkitPoints,96);assert.equal(s.assignmentAttention.notice.events[0].code,'repair_complete');

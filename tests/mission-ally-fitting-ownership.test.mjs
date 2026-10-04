@@ -1,3 +1,4 @@
+import {withStoredGear} from './commerce-gear-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign} from './legacy-campaign-fixture.mjs';
@@ -9,10 +10,10 @@ import {sanLorenzoAlly} from '../game/missions.js';
 const order=(s,a)=>{const next=dispatchCampaign(s,a);assert.equal(next.lastError,null,next.lastError);return next;};
 const act=(b,a)=>{const next=actBattle(b,a);assert.equal(next.lastError,null,next.lastError);return next;};
 
-// The cleared combat fixture isolates ownership. Purchases, fitting, transfer,
+// The cleared combat fixture declares finite owned gear. Fitting, transfer,
 // equipping, and the complete campaign report all use the production reducers.
 function allyAssembly(){
- let s=order(initialCampaign(),{type:'purchaseEquipment',item:1800});s=order(s,{type:'wait',hours:s.equipmentShipments[0].due-s.hour});s=order(s,{type:'equip',operativeId:4,itemId:1800,slot:'weapon'});s=order(s,{type:'purchaseEquipment',item:'1811:india_socket'});const bayonet=s.armoryItems.find(i=>i.fittingPattern);s=order(s,{type:'equip',operativeId:4,itemId:'1811:india_socket',slot:'blade',instanceId:bayonet.id});
+ let s=withStoredGear(initialCampaign(),1800);s=order(s,{type:'equip',operativeId:4,itemId:1800,slot:'weapon'});s=withStoredGear(s,'1811:india_socket');const bayonet=s.armoryItems.find(i=>i.fittingPattern);s=order(s,{type:'equip',operativeId:4,itemId:'1811:india_socket',slot:'blade',instanceId:bayonet.id});
  s.phase=1;s.flags.academy=true;s.sectors.san_nicolas.owner='patriot';s=order(s,{type:'travel',sector:'san_nicolas'});s=order(s,{type:'attack',sector:'san_lorenzo'});const r=s.pendingBattle;
  let b=createBattle([...r.squad.map((u,i)=>({...u,x:2+i*2,y:2})),...r.missionAllies.map(u=>({...u,x:5,y:2}))],{...r,width:20,height:16,tiles:Array.from({length:320},(_,i)=>({x:i%20,y:Math.floor(i/20),type:'grass',blocked:false,cover:0})),props:[],npcs:r.npcs.map((npc,i)=>({...npc,x:16-i,y:12})),enemies:r.enemies.map((u,i)=>({...u,x:10+i,y:4,hp:0}))});
  b=act(b,{type:'explore'});b=act(b,{type:'fitBayonet',unitId:'4',item:'blade'});b=act(b,{type:'transfer',unitId:'4',targetId:'57',item:'primary',count:1});const inventoryKey=Object.keys(b.units.find(u=>u.id==='57').inventory).find(key=>b.units.find(u=>u.id==='57').inventory[key].fittings);b=act(b,{type:'equipLoot',unitId:'57',inventoryKey});

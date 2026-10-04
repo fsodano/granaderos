@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createBattle,actBattle,endTurn} from '../game/tactical.js';
+import {createBattle,actBattle,endTurn,actionCosts} from '../game/tactical.js';
 const tiles=()=>Array.from({length:80},(_,i)=>({x:i%10,y:Math.floor(i/10),type:'grass',blocked:false,cover:0}));
 function battle(weapon=1809,defense=1800){return createBattle([{id:'attacker',weapon,x:1,y:1}],{width:10,height:8,tiles:tiles(),enemies:[{id:'defender',weapon:defense,x:2,y:1,morale:100}],seed:45});}
 test('sabre leaves stronger bleeding and a defending sable parries using AP',()=>{const naked=actBattle(battle(1809),{type:'melee',unitId:'attacker',targetId:'defender'});const guarded=actBattle(battle(1809,1810),{type:'melee',unitId:'attacker',targetId:'defender'});assert.ok(guarded.units[1].hp>naked.units[1].hp);assert.equal(guarded.units[1].ap,94);assert.ok(naked.units[1].bleeding>=6);assert.ok(guarded.log.some(t=>t.includes('desvía')));});
@@ -16,4 +16,4 @@ test('routing drops its weapon in place and escapes only on its paid turn',()=>{
  n=endTurn(n);while(n.phase==='interrupt')n=endTurn(n);
  const escaped=n.units[1];assert.equal(escaped.departure.edge,'N');assert.equal(escaped.y,0);assert.equal(escaped.fled,true);assert.equal(n.droppedWeapons.length,1);assert.ok(escaped.ap<routed.ap);assert.equal(n.status,'victory');
 });
-test('blunderbuss cone can injure an ally and suppress several targets with one charge',()=>{const b=battle(1807);b.units[1].x=5;b.units.push({...b.units[0],id:'ally',x:4,y:1});const n=actBattle(b,{type:'fire',unitId:'attacker',targetId:'defender'});assert.equal(n.units[0].loaded,0);assert.ok(n.units[2].hp<100||n.units[2].morale<b.units[2].morale);assert.ok(n.units[1].morale<100);assert.ok(n.log.some(t=>t.includes('carga de perdigones')));});
+test('one finite shot load injures an intervening ally while shielding the rear target from injury and suppression',()=>{const b=battle(1807);b.units[1].x=5;b.units.push({...b.units[0],id:'ally',x:4,y:1});const before=structuredClone(b),cost=actionCosts(b,b.units[0],b.units[1]).fire,n=actBattle(b,{type:'fire',unitId:'attacker',targetId:'defender'});assert.equal(n.lastError,null);assert.equal(n.units[0].loaded,0);assert.equal(n.units[0].ammo,b.units[0].ammo);assert.equal(n.units[0].ap,b.units[0].ap-cost);assert.equal(n.elapsedSeconds,6);assert.ok(n.units[2].hp<b.units[2].hp);assert.ok(n.units[2].morale<b.units[2].morale);assert.equal(n.units[1].hp,b.units[1].hp);assert.equal(n.units[1].morale,b.units[1].morale);assert.ok(n.log.some(t=>t.includes('carga de perdigones')));assert.deepEqual(b,before);});

@@ -14,7 +14,11 @@ test('shared shot scene preserves each body-region flight and chance, including 
   if(ally)s.units.push({...u,id:'ally',x:5,y:5});
   const before=structuredClone(s),options=firearmShotOptions(s,u,target,4);
   assert.ok(options.length);
-  for(const option of options){assert.equal(option.chance,shotChance(s,u,target,option.aim,option.hitLocation));assert.equal(option.damageFactor,firearmFlightPreview(s,u,target,option.hitLocation).damageFactor);}
+  for(const option of options){
+   const flight=firearmFlightPreview(s,u,target,option.hitLocation),impact=flight.bodyImpacts?.find(hit=>hit.victimKind==='unit'&&hit.victimId===target.id);
+   assert.equal(option.chance,shotChance(s,u,target,option.aim,option.hitLocation));assert.equal(option.damageFactor,impact?.damageFactor??flight.damageFactor);
+   if(impact&&flight.bodyImpacts[0]!==impact)assert.ok(impact.damageFactor<flight.bodyImpacts[0].damageFactor,'the selected later target has its own reduced-force forecast');
+  }
   assert.deepEqual(s,before);
  }
 });

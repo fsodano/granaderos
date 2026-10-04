@@ -1,3 +1,4 @@
+import {withLegacyPaidCargo} from './legacy-paid-cargo-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign} from '../game/campaign.js';
@@ -11,14 +12,13 @@ import {syncBattleTime} from '../game/time.js';
 const order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,`${a.type}: ${n.lastError}`);return n;};
 const wait=(s,hours)=>order(s,{type:'wait',hours});
 const saved=s=>decodeSave(encodeSave(s)).campaign;
-const buy=(s=secureArea(initialCampaign()),item=1802)=>order(s,{type:'purchaseEquipment',item});
-// Prepared due times isolate attention boundaries. The cargo itself is bought
-// through the finite merchant; no removed material-economy jobs are invented.
+const buy=(s=secureArea(initialCampaign()),item=1802)=>withLegacyPaidCargo(s,item);
+// Existing paid cargo and prepared due times isolate old-save attention boundaries.
 const dueAt=(s,hour)=>{s.equipmentShipments.at(-1).due=hour;return s;};
 
-test('a real paid import stops waiting at delivery and credits the gun once',()=>{
+test("an old save's already-paid import stops waiting at delivery and credits the gun once",()=>{
  const start=secureArea(initialCampaign()),queued=buy(start),due=queued.equipmentShipments[0].due,n=wait(queued,120);
- assert.ok(queued.resources.treasury<start.resources.treasury);assert.deepEqual(Object.keys(queued.resources),['treasury']);
+ assert.equal(queued.resources.treasury,start.resources.treasury);assert.deepEqual(Object.keys(queued.resources),['treasury']);
  assert.equal(n.hour,due);assert.equal(n.armory[1802],1);assert.equal(n.equipmentShipments.length,0);
  assert.deepEqual(n.logisticsNotice,{hour:due,requestedHours:120,advancedHours:due,events:[{kind:'equipment',sector:'ensenada',item:1802,quantity:1}]});
  const again=wait(saved(n),6);assert.equal(again.hour,due+6);assert.equal(again.logisticsNotice,null);assert.equal(again.armory[1802],1);assert.deepEqual(n,wait(saved(queued),120));
@@ -36,9 +36,9 @@ test('a blocked or occupied port pauses once and delivers each paid gun after re
   s.blockade=false;s.sectors.ensenada.owner='patriot';s=wait(s,6);assert.equal(s.hour,8);assert.equal(s.logisticsNotice.events[0].state,undefined);assert.equal(s.equipmentShipments.length,0);assert.equal(s.armory[1802],1);assert.deepEqual(s.logisticsAttention.reported,{});assert.deepEqual(saved(s),s);
  }
 });
-test('midnight revenue and horse time complete before delivery pauses the clock',()=>{
+test('midnight without a port agreement preserves cash while horse time completes before delivery pauses',()=>{
  const s=dueAt(buy(),24),cash=s.resources.treasury,n=wait(s,48);
- assert.equal(n.hour,24);assert.equal(n.logisticsNotice.advancedHours,24);assert.ok(n.resources.treasury>cash);assert.ok(n.log.some(line=>line.text.includes('aportaron')));assert.equal(n.horseState.hour,24);assert.deepEqual(saved(n),n);
+ assert.equal(n.hour,24);assert.equal(n.logisticsNotice.advancedHours,24);assert.equal(n.resources.treasury,cash);assert.equal(n.townIncome.lastPaidDay,1);assert.equal(n.horseState.hour,24);assert.deepEqual(saved(n),n);
 });
 test('blocking travel finishes its duration despite a paid delivery',()=>{
  const s=dueAt(buy(staffed()),1),n=order(s,{type:'travel',sector:'buenos_aires'});

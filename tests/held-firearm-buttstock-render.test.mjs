@@ -10,7 +10,7 @@ test('the ordinary stock control attacks the selected live enemy and saves the a
  const p=buttstockField(),u=p.battle.units.find(u=>u.id==='110'),target=p.battle.units.find(u=>u.id===p.target),record=weaponRecord(u),m=await mountCampaign(t,p);
  const key=async key=>act(async()=>m.document.body.dispatchEvent(new m.dom.window.KeyboardEvent('keydown',{key,bubbles:true})));
  await key('b');assert.equal(m.read().battle.units.find(u=>u.id==='110').weaponMode,'melee');
- const enemy=m.document.querySelector(`[data-unit-id="${p.target}"] [data-person-hit-target]`);assert.ok(enemy);await act(async()=>enemy.dispatchEvent(new m.dom.window.MouseEvent('click',{bubbles:true})));
+ const enemy=m.document.querySelector(`[data-unit-id="${p.target}"] [data-person-hit-target]`);assert.ok(enemy);await act(async()=>enemy.dispatchEvent(new m.dom.window.MouseEvent('click',{bubbles:true})));await m.settle();
  let s=m.saved();assert.equal(s.battle.lastError,null);assert.equal(s.battle.units.find(u=>u.id==='110').ap,u.ap-16);assert.ok(s.battle.units.find(u=>u.id===p.target).hp<target.hp);assert.deepEqual(weaponRecord(s.battle.units.find(u=>u.id==='110')),record);assert.deepEqual(m.saved(),{campaign:s.campaign,battle:s.battle});
  await m.click('Equipo');const gun=m.document.querySelector('.ja2-inventory .ja2-hands [aria-label^="Mano principal:"]');assert.match(gun.textContent,/Fusil de Acosta/);assert.equal(gun.querySelector('img').getAttribute('src'),'/art/weapon-1801.png');
  await m.click('Listo');for(let i=0;i<12&&m.saved().battle.units.find(u=>u.id==='110').activeSlot!=='unarmed';i++)await key('w');assert.equal(m.saved().battle.units.find(u=>u.id==='110').activeSlot,'unarmed');await m.click('Equipo');

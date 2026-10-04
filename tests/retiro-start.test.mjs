@@ -13,7 +13,7 @@ test('fresh campaigns start with no recruits, no custom character and only Retir
 });
 test('hiring alone builds and deploys a paid squad while the custom character stays absent',()=>{
  let s=initialCampaign(8);for(const id of [110,114])s=order(s,{type:'recruitCivic',id,term:'week'});assert.equal(s.officer,null);assert.deepEqual(s.recruited,[110,114]);assert.deepEqual(s.squad,[110,114]);assert.ok(s.resources.treasury<3200);assert.deepEqual(own(s),['retiro']);save(s);
- s=order(s,{type:'purchaseMedicalSupplies',operativeId:110,quantity:2});s=order(s,{type:'visitSector'});const pair=prepareCampaignBattle(s);assert.equal(pair.error,null);assert.deepEqual(pair.battle.units.filter(u=>u.side==='player').map(u=>u.id).sort(),['110','114']);assert.deepEqual(decodeSave(encodeSave(pair.campaign,pair.battle)).battle,pair.battle);
+ assert.ok(dispatchCampaign(s,{type:'purchaseMedicalSupplies',operativeId:110,quantity:2}).lastError);s=order(s,{type:'visitSector'});const pair=prepareCampaignBattle(s);assert.equal(pair.error,null);assert.deepEqual(pair.battle.units.filter(u=>u.side==='player').map(u=>u.id).sort(),['110','114']);assert.deepEqual(decodeSave(encodeSave(pair.campaign,pair.battle)).battle,pair.battle);
 });
 test('custom-only and mixed squads can form before Buenos Aires is liberated, in either order',()=>{
  for(const orderOf of ['custom','hire-first','custom-first']){let s=initialCampaign(8);if(orderOf==='hire-first')s=order(s,{type:'recruitCivic',id:110,term:'week'});s=order(s,create);if(orderOf==='custom-first')s=order(s,{type:'recruitCivic',id:110,term:'week'});assert.equal(s.officer.name,'Testigo');assert.ok(s.recruited.includes(1000));assert.equal(s.recruited.length,orderOf==='custom'?1:2);assert.deepEqual(own(s),['retiro']);assert.equal(s.sectors.buenos_aires.owner,'royalist');assert.equal(s.defeated,false);save(s);const again=dispatchCampaign(s,create);assert.ok(again.lastError);assert.deepEqual(again.recruited,s.recruited);}
@@ -42,9 +42,9 @@ test('one created character can start at zero treasury and deploy without purcha
  const before=initialCampaign(8);before.resources.treasury=0;
  let s=order(before,create);assert.equal(s.resources.treasury,0);assert.equal(s.phase,1);assert.equal(s.flags.academy,true);assert.deepEqual(s.squad,[1000]);
  for(const key of ['horses','muskets','textiles'])assert.equal(s.resources[key],before.resources[key]);
- // Starting is free; cartridges are not. Stow the empty firearm with the
- // ordinary map equipment controls, then deploy with the existing blade.
- const denied=dispatchCampaign(s,{type:'visitSector'});assert.ok(denied.lastError);assert.equal(denied.resources.treasury,0);assert.equal(denied.pendingBattle,null);
+ // The original firearm and its one-time cartridges are already owned.
+ // A zero balance permits entry and ordinary weapon storage without refills.
+ const allowed=dispatchCampaign(s,{type:'visitSector'});assert.equal(allowed.lastError,null);assert.equal(allowed.resources.treasury,0);assert.equal(allowed.pendingBattle.issuedCartridges,10);
  const actor=sectorInventoryModel(s,'retiro',rosterFor(s),1000).personal;
  s=order(s,{type:'sectorInventory',sector:'retiro',operativeId:1000,direction:'arrange',kind:'cursor',cursorAction:'dragEquipment',sourceId:'hand:right',destinationId:'large-1',expectedSource:equipmentFingerprint(actor,'hand:right'),expectedDestination:equipmentFingerprint(actor,'large-1'),count:1});
  assert.equal(s.resources.treasury,0);assert.equal(s.operativeState[1000].weaponDropped,true);assert.ok(Object.values(s.operativeState[1000].inventory).some(i=>i.weapon===actor.weapon));

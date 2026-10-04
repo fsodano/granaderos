@@ -3,14 +3,15 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign} from './legacy-campaign-fixture.mjs';
 import {dispatchCampaign as dispatch,restoreCampaign,serializeCampaign,rosterFor} from '../game/campaign.js';
-import {advanceMedicalCare,doctorRate,MEDICAL_KIT_PRICE,careStatus} from '../game/medical-care.js';
+import {advanceMedicalCare,doctorRate,careStatus} from '../game/medical-care.js';
 import {enterSector} from '../game/world.js';
+import {assertTradeRejected} from './commerce-gear-fixture.mjs';
 import {marchToFront} from './campaign-test-helpers.mjs';
 
 const order=(s,action)=>{const next=dispatch(s,action);assert.equal(next.lastError,null,`${action.type}: ${next.lastError}`);return next;};
 const assign=(s,id,assignment)=>order(s,{type:'assignCare',operativeId:id,assignment});
 const wound=(s,id,values={})=>Object.assign(s.operativeState[id],{hp:30,bandaged:s.operativeState[id].maxHp-30,energy:20,fatigue:60},values);
-const medicalTeam=()=>{let s=initialCampaign();wound(s,3);s=assign(s,10,'doctor');return assign(s,3,'patient');};
+const medicalTeam=(kits=2)=>{let s=initialCampaign();s.operativeState[10].medkits=kits;wound(s,3);s=assign(s,10,'doctor');return assign(s,3,'patient');};
 
 test('doctor treatment requires hours and consumes finite personal kits',()=>{
  let s=medicalTeam();const rate=doctorRate(rosterFor(s).find(o=>o.id===10));assert.equal(s.operativeState[3].hp,30);
@@ -19,9 +20,9 @@ test('doctor treatment requires hours and consumes finite personal kits',()=>{
 });
 
 test('a critical bleeding patient is stabilized before health recovery',()=>{
- let s=medicalTeam();wound(s,3,{hp:8,bleeding:12,bandaged:0,energy:0});
+ let s=medicalTeam(3);wound(s,3,{hp:8,bleeding:12,bandaged:0,energy:0});
  s=order(s,{type:'wait',hours:1});assert.equal(s.operativeState[3].alive,true);assert.equal(s.operativeState[3].hp,8);assert.equal(s.operativeState[3].bleeding,0);assert.equal(s.operativeState[3].bandaged,s.operativeState[3].maxHp-8);assert.equal(s.operativeState[3].energy,8);
- s=order(s,{type:'wait',hours:1});assert.equal(s.operativeState[3].hp,14);s=order(s,{type:'purchaseMedicalSupplies',operativeId:10,quantity:1});s=order(s,{type:'wait',hours:1});assert.equal(s.operativeState[3].hp,20);
+ s=order(s,{type:'wait',hours:1});assert.equal(s.operativeState[3].hp,14);s=order(s,{type:'wait',hours:1});assert.equal(s.operativeState[3].hp,20);
 });
 
 test('medical skill changes recovery and one doctor cannot heal a whole squad each hour',()=>{
@@ -64,10 +65,10 @@ test('unattended bleeding can kill and dead personnel cannot be healed or reassi
  s=order(s,{type:'wait',hours:24});assert.equal(s.operativeState[3].hp,0);assert.deepEqual(restoreCampaign(serializeCampaign(s)),s);
 });
 
-test('medical supply purchase costs money, preserves wounds and requires a local supplied workshop',()=>{
- let s=medicalTeam();const money=s.resources.treasury;s=order(s,{type:'purchaseMedicalSupplies',operativeId:10,quantity:5});assert.equal(s.resources.treasury,money-MEDICAL_KIT_PRICE*5);assert.equal(s.operativeState[10].medkits,7);assert.equal(s.operativeState[3].hp,30);
- for(const quantity of [-1,0,1.5,21])assert.ok(dispatch(s,{type:'purchaseMedicalSupplies',operativeId:10,quantity}).lastError);
- s.resources.treasury=0;const before=JSON.stringify(s);assert.ok(dispatch(s,{type:'purchaseMedicalSupplies',operativeId:10}).lastError);assert.equal(JSON.stringify(s),before);
+test('medical commerce is closed atomically while carried dressings and wounds remain finite',()=>{
+ const s=medicalTeam();for(const quantity of [undefined,5,-1,0,1.5,21])assertTradeRejected(s,{type:'purchaseMedicalSupplies',operativeId:10,quantity});
+ assert.equal(s.operativeState[10].medkits,2);assert.equal(s.operativeState[3].hp,30);
+ s.resources.treasury=0;assertTradeRejected(s,{type:'purchaseMedicalSupplies',operativeId:10});
 });
 
 test('campaign health and personal medical supplies persist through battle reports and redeployment',()=>{

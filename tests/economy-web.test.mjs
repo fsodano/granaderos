@@ -7,6 +7,7 @@ import {enterSector} from '../game/world.js';
 import {actBattle} from '../game/tactical.js';
 import {syncBattleTime} from '../game/time.js';
 import {encodeSave,decodeSave} from '../game/save.js';
+import {recordTownAgreement} from './town-income-fixture.mjs';
 const step=(s,a)=>{const next=dispatchCampaign(s,a);assert.equal(next.lastError,null,next.lastError);return next;};
 const officer=()=>step(initialCampaign(),{type:'createOfficer',name:'Ana del Sur',answers:{origin:'cabildo',doctrine:'line_marksman',crisis:'rally'}});
 test('fresh economy has one resource and retired orders cannot consume funds',()=>{
@@ -15,25 +16,26 @@ test('fresh economy has one resource and retired orders cannot consume funds',()
  for(const type of ['produce','contraband','supplyTransfer']){const n=dispatchCampaign(s,{type});assert.ok(n.lastError);assert.deepEqual(n.resources,s.resources);}
 });
 test('daily income matches the screen, pays once at midnight, and survives a reload',()=>{
- let s=initialCampaign();const income=dailyIncome(s);assert.equal(income,52);assert.deepEqual(incomeSummary(s),{daily:52,hoursUntilPayment:24});
+ let s=initialCampaign();assert.equal(dailyIncome(s),0);s.sectors.buenos_aires.owner='patriot';assert.equal(dailyIncome(s),0);recordTownAgreement(s,'buenos_aires');
+ const income=dailyIncome(s);assert.equal(income,8000);assert.deepEqual(incomeSummary(s),{daily:8000,hoursUntilPayment:24,secondsUntilPayment:86400});
  s=step(s,{type:'wait',hours:23});assert.equal(s.resources.treasury,3200);assert.equal(incomeSummary(s).hoursUntilPayment,1);
  s=decodeSave(encodeSave(s)).campaign;s=step(s,{type:'wait',hours:1});assert.equal(s.resources.treasury,3200+income);
  s=step(s,{type:'wait',hours:1});assert.equal(s.resources.treasury,3200+income);
- for(const hours of [23,24]){const before=s.resources.treasury,nextIncome=incomeSummary(s).daily;s=step(s,{type:'wait',hours});assert.equal(s.resources.treasury,before+nextIncome);}assert.equal(s.hour,72);assert.equal(s.resources.treasury,3357);
+ for(const hours of [23,24]){const before=s.resources.treasury,nextIncome=incomeSummary(s).daily;s=step(s,{type:'wait',hours});assert.equal(s.resources.treasury,before+nextIncome);}assert.equal(s.hour,72);assert.equal(s.resources.treasury,27200);
 });
-test('control, damage and blockade change the same income used for payment',()=>{
- let s=initialCampaign();s.sectors.mendoza.owner='patriot';assert.equal(dailyIncome(s),64,'an isolated town earns half its loyalty-scaled base');
- s.sectors.mendoza.damageUntil=48;assert.equal(incomeSources(s).find(x=>x.id==='mendoza').income,3);
- s.blockade=true;const income=dailyIncome(s);s=step(s,{type:'wait',hours:24});assert.equal(s.resources.treasury,3200+income);
- s.sectors.mendoza.owner='royalist';assert.equal(incomeSources(s).find(x=>x.id==='mendoza').income,0);
- s.blockade=false;s.sectors.mendoza.owner='patriot';s=step(s,{type:'wait',hours:24});assert.equal(s.hour,48);assert.ok(incomeSources(s).find(x=>x.id==='mendoza').income>3,'expired damage restores the local contribution');
+test('only activated controlled ports earn money and damage or blockade do not change their flat payment',()=>{
+ let s=initialCampaign();s.sectors.mendoza.owner='patriot';assert.equal(dailyIncome(s),0);assert.equal(incomeSources(s).some(source=>source.id==='mendoza'),false);
+ assert.deepEqual(incomeSources(s).map(source=>source.id),['buenos_aires','ensenada','santa_fe']);s.sectors.ensenada.owner='patriot';recordTownAgreement(s,'ensenada');
+ s.sectors.ensenada.damageUntil=48;s.sectors.ensenada.loyalty=0;s.blockade=true;assert.equal(incomeSources(s).find(source=>source.id==='ensenada').income,5000);
+ s=step(s,{type:'wait',hours:24});assert.equal(s.resources.treasury,8200);
+ s.sectors.ensenada.owner='royalist';assert.equal(dailyIncome(s),0);s=step(s,{type:'wait',hours:24});assert.equal(s.resources.treasury,8200);
+ s.sectors.ensenada.owner='patriot';assert.equal(dailyIncome(s),5000);s=step(s,{type:'wait',hours:24});assert.equal(s.resources.treasury,13200);
 });
-test('campaign purchases, diplomacy and transport use treasury and finite stock',()=>{
+test('campaign diplomacy and transport use treasury while the equipment shop rejects purchases without changing finite stock',()=>{
  let s=initialCampaign();assert.ok(dispatchCampaign(s,{type:'academy'}).lastError);assert.equal(s.resources.treasury,3200);
  s=step(s,{type:'transport',mode:'posta'});s=step(s,{type:'fortify',sector:'retiro'});assert.equal(s.resources.treasury,2900);
  s.sectors.salta.owner='patriot';s=step(s,{type:'diplomacy',kind:'northPact'});assert.equal(s.resources.treasury,2600);
- s=step(s,{type:'purchaseEquipment',item:'bronze4',quantity:1});assert.equal(s.armory.bronze4,1);assert.equal(s.merchants.retiro.stock.bronze4,0);assert.deepEqual(s.resources,{treasury:1900});
- const before=structuredClone(s);const denied=dispatchCampaign(s,{type:'purchaseEquipment',item:'bronze4'});assert.ok(denied.lastError);assert.deepEqual(denied.armory,before.armory);assert.deepEqual(denied.resources,before.resources);
+ const before=structuredClone(s);const denied=dispatchCampaign(s,{type:'purchaseEquipment',item:'bronze4'});assert.ok(denied.lastError);assert.deepEqual(denied.armory,before.armory);assert.deepEqual(denied.resources,before.resources);assert.deepEqual(denied.merchants,before.merchants);
 });
 test('cash is found through tactical looting and paid once after save and re-entry',()=>{
  let s=step(officer(),{type:'visitSector'}),b=enterSector(s.pendingBattle);const ground=b.groundItems.find(g=>g.type==='money');assert.ok(ground);

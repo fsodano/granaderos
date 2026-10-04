@@ -1,6 +1,5 @@
+import {withStoredGear} from './commerce-gear-fixture.mjs';
 import {getCityStatus,CITY_LOYALTY_THRESHOLD} from '../game/cities.js';
-import {equipmentCatalogItem,merchantStatus} from '../game/equipment.js';
-import {artilleryCount} from '../game/economy.js';
 import {transportPath} from '../game/logistics.js';
 import {scriptedBattleReport} from './scripted-battle-report.mjs';
 import {attendYatasto} from './mission-helpers.mjs';
@@ -10,6 +9,7 @@ import assert from 'node:assert/strict';
 import {dispatchCampaign as dispatch,isSupplied,recruitmentStatus,restoreCampaign,serializeCampaign,OPERATIVES,CAMPAIGN_SECTORS,PHASES} from '../game/campaign.js';
 import {initialCampaign} from './legacy-campaign-fixture.mjs';
 import {enterSector} from '../game/world.js';
+import {completedTacticalVictory} from '../game/tactical.js';
 const order=(s,action)=>{const next=action.type==='travel'?completeTestTravel(s,action):meetLocalRecruit(s,action)??dispatch(marchToFront(s,action),action);assert.equal(next.lastError,null,`${action.type} ${action.sector??''} from ${s.location} at ${s.hour}: ${next.lastError}`);return action.type==='diplomacy'&&action.kind==='northPact'&&next.phase===2?attendYatasto(next):next;};
 // Progression-only fixtures settle declared battles; these are not combat playthroughs.
 function connectSupplyRoad(s){
@@ -53,10 +53,10 @@ test('five-phase campaign cannot unlock San Martín early',()=>{
  s=capture(s,'cordoba');s=capture(s,'tucuman');s=capture(s,'salta');s=order(s,{type:'diplomacy',kind:'northPact'});assert.equal(s.phase,3);assert.equal(recruitmentStatus(s,0,true).available,true);assert.equal(recruitmentStatus(s,57).available,false);
  s=capture(s,'mendoza');s=order(s,{type:'recruit',id:2});s=order(s,{type:'foundry'});assert.equal(s.phase,3);
 });
-test('captured crossroads cut the Camino Real; traversal respects control',()=>{
- const s=initialCampaign();for(const id of ['cordoba','tucuman','salta'])s.sectors[id].owner='patriot';assert.equal(isSupplied(s,'salta'),true);s.sectors.cordoba.owner='royalist';assert.equal(isSupplied(s,'salta'),false);assert.ok(dispatch(s,{type:'travel',sector:'salta'}).lastError);
+test('captured crossroads block traversal while owned towns retain local operations',()=>{
+ const s=initialCampaign();for(const id of ['cordoba','tucuman','salta'])s.sectors[id].owner='patriot';assert.equal(isSupplied(s,'salta'),true);s.sectors.cordoba.owner='royalist';assert.equal(isSupplied(s,'salta'),true);assert.ok(dispatch(s,{type:'travel',sector:'salta'}).lastError);
 });
-test('unguarded and defeated provinces fall while a stronger militia earns its victory with permanent losses',()=>{
+test('unguarded and defeated provinces fall while a supported garrison wins with actual local outcomes and permanent militia losses',()=>{
  let s=initialCampaign();s.sectors.jujuy.owner='patriot';s=order(s,{type:'wait',hours:144});assert.equal(s.sectors.jujuy.owner,'royalist');
  // One defender cannot hold against the actual arriving column. Keep the
  // defeated defender's critical wound instead of manufacturing a death.
@@ -66,16 +66,41 @@ test('unguarded and defeated provinces fall while a stronger militia earns its v
  assert.equal(s.enemyGroups[0].status,'stationed');assert.equal(s.sectors.jujuy.owner,'royalist');
  assert.equal(s.sectorStates.jujuy.status,'defeat');assert.deepEqual(s.sectors.jujuy.militia,[0,0,0]);
  assert.ok(s.sectorStates.jujuy.units.some(u=>u.militia&&u.hp<15));
- // This subsystem fixture starts with a larger existing garrison. It tests
- // real combat settlement; the campaign route must pay for its own training.
+ // This subsystem fixture authors an existing garrison with the three
+ // legacy locals physically supporting Jujuy. It does not grant combat stats,
+ // supplies or a result; campaign routes must earn their own force and travel.
  const defenders=16;
- s=initialCampaign();s.sectors.jujuy.owner='patriot';s.sectors.jujuy.militia=[0,0,defenders];s=order(s,{type:'wait',hours:144});
+ const supportedJujuyDefense=()=>{
+  const ready=initialCampaign();ready.sectors.jujuy.owner='patriot';ready.sectors.jujuy.militia=[0,0,defenders];
+  ready.location='jujuy';ready.squads[0].location='jujuy';for(const id of ready.squad)ready.operativeState[id].location='jujuy';
+  return ready;
+ };
+ s=order(supportedJujuyDefense(),{type:'wait',hours:144});
+ const issuedLocalIds=s.squad.map(String),startedSeconds=s.hour*3600+s.secondOfHour;
  assert.equal(s.enemyGroups.find(g=>g.id===s.pendingEncounter.groupId).units.length,attackingForce,'the reinforced defense faces the same enemy force');
  assert.equal(s.pendingEncounter.sector,'jujuy');s=order(s,{type:'respondToEncounter',groupId:s.pendingEncounter.groupId,choice:'auto'});
  assert.equal(s.enemyGroups[0].status,'defeated');assert.equal(s.sectors.jujuy.owner,'patriot');
- const b=s.sectorStates.jujuy;assert.equal(b.status,'victory');assert.equal(s.pendingBattle,null);
+ const b=s.sectorStates.jujuy;assert.equal(completedTacticalVictory(b),true);assert.equal(s.pendingBattle,null);
  const militia=b.units.filter(u=>u.militia);assert.equal(militia.length,defenders);assert.ok(militia.some(u=>u.hp<=0));
- assert.ok(militia.reduce((n,u)=>n+u.loaded+u.ammo,0)<defenders*6);assert.deepEqual(restoreCampaign(serializeCampaign(s)),s);
+ assert.ok(militia.reduce((n,u)=>n+u.loaded+u.ammo,0)<defenders*6);
+ const locals=b.units.filter(u=>u.side==='player'&&!u.militia),localLosses=locals.filter(u=>u.hp===0);
+ assert.deepEqual(locals.map(u=>u.id).sort(),[...issuedLocalIds].sort());
+ assert.deepEqual(issuedLocalIds.filter(id=>!s.operativeState[id].alive).sort(),localLosses.map(u=>u.id).sort());
+ for(const unit of locals){
+  const record=s.operativeState[unit.id];assert.equal(record.alive,unit.hp>0);
+  for(const key of ['hp','maxHp','bleeding','bandaged'])assert.equal(record[key]??0,unit[key]??0,`${unit.id} ${key}`);
+  if(record.alive){assert.equal(record.carriedLoaded??0,unit.loaded);assert.equal(record.ammo??0,unit.ammo);}
+ }
+ for(const unit of localLosses){assert.equal(s.operativeState[unit.id].alive,false);assert.equal(s.operativeState[unit.id].hp,0);assert.ok(!s.squad.includes(Number(unit.id)));}
+ for(const unit of b.units.filter(u=>u.side==='player'&&!u.militia&&u.departure)){
+  assert.equal(s.operativeState[unit.id].location,unit.departure.destination);assert.equal(s.operativeState[unit.id].hp,unit.hp);
+ }
+ for(const unit of militia.filter(u=>u.hp===0))assert.ok(!s.garrisons.jujuy.some(record=>String(record.id)===unit.id));
+ assert.ok(b.elapsedSeconds>0);assert.equal(s.hour*3600+s.secondOfHour,startedSeconds+b.elapsedSeconds);
+ assert.equal(b.savedHour,s.hour);assert.equal(b.savedSecond,s.secondOfHour);
+ assert.deepEqual(restoreCampaign(serializeCampaign(s)),s);
+ const duplicate=dispatch(s,{type:'battleResult',battleId:b.battleId,outcome:'victory',sectorState:b,survivors:b.units.filter(u=>u.side==='player')});
+ assert.match(duplicate.lastError,/No hay batalla/);duplicate.lastError=null;assert.deepEqual(duplicate,s);
 });
 test('an unreachable militia shelter retains the unresolved encounter and synchronized save',()=>{
  let s=initialCampaign();s.sectors.jujuy.owner='patriot';s.sectors.jujuy.militia=[0,0,4];s=order(s,{type:'wait',hours:144});
@@ -103,82 +128,37 @@ test('Plumerillo requires army funding, artillery, fortifications and parliament
  for(const id of ['cordoba','san_nicolas','tucuman'])s.sectors[id].owner='patriot';s=order(s,{type:'recruit',id:57});assert.equal(s.completed,false);for(const id of Object.keys(s.sectors))s.sectors[id].owner='patriot';s=order(s,{type:'wait',hours:1});assert.equal(s.completed,true);
 });
 test('save reload is deterministic and invalid version rejected',()=>{
- const s=order(initialCampaign(17),{type:'purchaseEquipment',item:1802});assert.deepEqual(restoreCampaign(serializeCampaign(s)),s);assert.deepEqual(dispatch(s,{type:'wait',hours:96}),dispatch(restoreCampaign(serializeCampaign(s)),{type:'wait',hours:96}));assert.throws(()=>restoreCampaign('{"version":99}'));
+ const s=withStoredGear(initialCampaign(17),1802);assert.deepEqual(restoreCampaign(serializeCampaign(s)),s);assert.deepEqual(dispatch(s,{type:'wait',hours:96}),dispatch(restoreCampaign(serializeCampaign(s)),{type:'wait',hours:96}));assert.throws(()=>restoreCampaign('{"version":99}'));
 });
 
-test('departure purchases physical rounds once and rejects a return that creates cartridges',()=>{
- let s=initialCampaign();const departure=s.resources.treasury;s=order(s,{type:'travel',sector:'buenos_aires'});const cash=s.resources.treasury;s=order(s,{type:'attack',sector:'san_nicolas'});const issued=s.pendingBattle.issuedCartridges;assert.equal(s.resources.treasury,cash+320-issued);assert.ok(issued>0);assert.equal(cash,departure);
+test('departure carries existing physical rounds without a charge and rejects a return that creates cartridges',()=>{
+ let s=initialCampaign();const departure=s.resources.treasury;s=order(s,{type:'travel',sector:'buenos_aires'});const cash=s.resources.treasury;s=order(s,{type:'attack',sector:'san_nicolas'});const issued=s.pendingBattle.issuedCartridges;assert.equal(s.resources.treasury,cash);assert.equal(issued,20);assert.equal(cash,departure);
  const before=s.resources.treasury,forged=dispatch(s,{type:'battleResult',battleId:s.pendingBattle.id,outcome:'retreat',survivors:s.pendingBattle.squad.map(o=>({id:String(o.id),hp:o.hp,loaded:100,ammo:100}))});assert.ok(forged.lastError);assert.equal(forged.resources.treasury,before);
  s=order(s,scriptedBattleReport(s,{outcome:'retreat'}));assert.equal(s.resources.treasury,before);assert.equal(s.squad.reduce((n,id)=>n+(s.operativeState[id].ammo??0)+(s.operativeState[id].carriedLoaded??0),0),issued);
  s.resources.treasury=0;assert.equal(dispatch(s,{type:'visitSector'}).lastError,null,'owned rounds need no second purchase');
 });
 test('monthly stipend is charged at30 days, no weekly deduction',()=>{
- let s=initialCampaign();
+ let s=initialCampaign();s.resources.treasury=10000; // Declared savings in this legacy payroll fixture.
  s=order(s,{type:'wait',hours:168});assert.ok(!s.log.some(x=>x.text.includes('estipendios mensuales')));
  s=order(s,{type:'wait',hours:240});s=order(s,{type:'wait',hours:240});s=order(s,{type:'wait',hours:72});assert.ok(s.log.some(x=>x.text.includes('estipendios mensuales')));
 });
 test('untrusted saves reject malformed resources, sectors, squads and pending battle',()=>{
  for(const alter of [s=>s.resources.powder=-1,s=>s.sectors.salta.militia=[-2,0,0],s=>s.squad=[3,999],s=>s.operativeState[3].hp=10000,s=>s.pendingBattle={id:'invalid'},s=>s.resources.treasury=-1]){const s=initialCampaign();alter(s);assert.throws(()=>restoreCampaign(JSON.stringify(s)));}
 });
-test('scripted combat settlements advance historical progression through money-only reducer orders',()=>{
- const settleDefense=s=>{
-  if(!s.pendingEncounter)return s;
-  s=order(s,{type:'respondToEncounter',groupId:s.pendingEncounter.groupId,choice:'tactical'});
-  return order(s,scriptedBattleReport(s));
- };
- const waitHere=(start,hours)=>{
-  let s=start;const until=s.hour+hours;
-  for(let attempt=0;s.hour<until&&attempt<hours*3+20;attempt++){
-   s=settleDefense(s);
-   for(const id of s.recruited){const contract=s.contracts[id];if(contract?.expiresAt!=null&&contract.expiresAt<=s.hour+1)s=order(s,{type:'renewContract',id,term:'day',expectedExpiresAt:contract.expiresAt});}
-   s=order(s,{type:'wait',hours:1});
-  }
-  assert.equal(s.hour,until);return settleDefense(s);
- };
- const train=(start,id)=>{
-  let s=start;if(s.sectors[id].owner==='royalist')s=capture(s,id);s=order(s,{type:'travel',sector:id});
-  // Wait for actual local cooperation and defend the town while it recovers.
-  // A conquest, a delay or a paused wait cannot manufacture training consent.
-  for(let hour=0;getCityStatus(s,id).loyalty<CITY_LOYALTY_THRESHOLD&&hour<24*40;hour++){
-   if(!isSupplied(s,id)){s=connectSupplyRoad(s);s=order(s,{type:'travel',sector:id});}
-   s=waitHere(s,1);
-  }
-  assert.ok(getCityStatus(s,id).loyalty>=CITY_LOYALTY_THRESHOLD);
-  s=order(s,{type:'militia',sector:id,rank:0,trainerId:4});
-  const course=s.militiaTraining.find(c=>c.sector===id);
-  for(let hour=0;s.militiaTraining.some(c=>c.sector===id&&c.started===course.started)&&hour<240;hour++)s=waitHere(s,1);
-  assert.ok(!s.militiaTraining.some(c=>c.sector===id&&c.started===course.started));return s;
- };
- let s=order(initialCampaign(),{type:'academy'});
- for(const id of ['san_nicolas','san_lorenzo','cordoba','tucuman','salta'])s=capture(s,id);
- s=order(s,{type:'diplomacy',kind:'northPact'});
- for(const id of ['santa_fe','jujuy','humahuaca','mendoza','uspallata','los_patos'])s=capture(s,id);
- s=order(s,{type:'travel',sector:'mendoza'});s=order(s,{type:'recruit',id:2});s=order(s,{type:'foundry'});
- for(const id of ['mendoza','uspallata','los_patos','san_nicolas','jujuy']){if(s.sectors[id].owner==='royalist')s=capture(s,id);s=order(s,{type:'fortify',sector:id});}
- for(const id of ['san_nicolas','jujuy','jujuy'])s=train(s,id);s=order(s,{type:'travel',sector:'mendoza'});
- s=order(s,{type:'diplomacy',kind:'parliament'});
- for(let day=0;s.resources.treasury<5100&&day<60;day++)s=waitHere(s,24);assert.ok(s.resources.treasury>=5100);
- s=order(s,{type:'fundArmy'});
- const artillery=equipmentCatalogItem('bronze4',s),pieces=artilleryCount(s);
- for(let hour=0;artilleryCount(s)<pieces+3&&hour<240;hour++){
-  const offer=merchantStatus(s,artillery,isSupplied);assert.equal(offer.available,true,offer.reason);
-  if(offer.stock&&s.resources.treasury>=artillery.price){const money=s.resources.treasury;s=order(s,{type:'purchaseEquipment',item:'bronze4',quantity:1});assert.equal(s.resources.treasury,money-artillery.price);}
-  else s=waitHere(s,1);
- }
- assert.equal(artilleryCount(s),pieces+3);
- assert.equal(s.flags.armyFunded,true);assert.equal(s.phase,4);for(const def of CAMPAIGN_SECTORS)if(s.sectors[def.id].owner==='royalist')s=capture(s,def.id);
- for(let i=0;i<2;i++)s=order(s,{type:'fortify',sector:'humahuaca'});s=order(s,{type:'travel',sector:'jujuy'});for(let i=0;i<3;i++)s=train(s,'jujuy');
- s=order(s,{type:'recruit',id:57});
- // Victory also requires resolving existing enemy columns. A single map sweep
- // cannot claim an ending while another raid is still marching toward a town.
- for(let step=0;!s.completed&&step<24*30;step++){
-  s=settleDefense(s);
-  const occupied=CAMPAIGN_SECTORS.find(d=>s.sectors[d.id].owner==='royalist'),blockaders=s.enemyGroups.find(g=>g.theater==='coast'&&g.status==='stationed');
-  if(occupied)s=capture(s,occupied.id);
-  else if(s.blockade&&blockaders)s=capture(s,blockaders.target);
-  else s=waitHere(s,1);
- }
- assert.equal(s.completed,true);assert.ok(s.hour<24*150,`Preparation took ${s.hour/24} days`);
+test('prepared Cuyo progression charges real preparation and funding while using three finite owned guns',()=>{
+ // This isolated historical-admission scenario declares an already captured
+ // province and its existing savings and guns. It is not a fresh campaign route.
+ let s=initialCampaign();s.phase=3;s.resources.treasury=10000;
+ for(const id of ['cordoba','mendoza','uspallata','los_patos'])s.sectors[id].owner='patriot';
+ s.location='mendoza';s.squads[0].location='mendoza';for(const id of s.squad)s.operativeState[id].location='mendoza';
+ s=withStoredGear(s,'bronze4',3);s=order(s,{type:'recruit',id:2});
+ const before=s.resources.treasury;s=order(s,{type:'foundry'});assert.equal(s.resources.treasury,before-500);
+ for(const id of ['mendoza','uspallata','los_patos'])s=order(s,{type:'fortify',sector:id});
+ s=order(s,{type:'diplomacy',kind:'parliament'});assert.equal(s.phase,3);
+ const funding=s.resources.treasury;s=order(s,{type:'fundArmy'});assert.equal(s.resources.treasury,funding-3000);
+ assert.equal(s.flags.armyFunded,true);assert.equal(s.phase,4);assert.equal(s.completed,false);
+ assert.deepEqual(restoreCampaign(serializeCampaign(s)),s);
+ const denied=dispatch(s,{type:'purchaseEquipment',item:'bronze4',quantity:1});assert.match(denied.lastError,/comercio/);assert.equal(denied.resources.treasury,s.resources.treasury);assert.deepEqual(denied.armoryItems,s.armoryItems);
 });
 
 test('southern winter closes Andean passes while northern gorge remains operational',()=>{

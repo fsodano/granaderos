@@ -3,16 +3,19 @@ import assert from 'node:assert/strict';
 import {tacticalShortcut,TACTICAL_KEYS,pointerMovementIntent} from '../game/hotkeys.js';
 const key=(key,extra={})=>({key,...extra});
 test('adapted actions distinguish reload from running and preserve browser chords',()=>{
- assert.equal(tacticalShortcut(key('r')),'reload');assert.equal(tacticalShortcut(key('R',{shiftKey:true})),'run');assert.equal(tacticalShortcut(key('r',{altKey:true})),'reload');
+ assert.equal(tacticalShortcut(key('r')),'run');assert.equal(tacticalShortcut(key('R')),'run');assert.equal(tacticalShortcut(key('R',{shiftKey:true})),'reload');assert.equal(tacticalShortcut(key('r',{altKey:true})),'reload');
  for(const extra of [{ctrlKey:true},{metaKey:true},{altKey:true,shiftKey:true}])assert.equal(tacticalShortcut(key('r',extra)),null);
  assert.equal(tacticalShortcut(key('m',{altKey:true})),null);
- assert.match(TACTICAL_KEYS.find(([keys])=>keys==='R')[1],/Recargar/);
+ assert.match(TACTICAL_KEYS.find(([keys])=>keys==='R / S / C / P')[1],/^Correr/);
+ assert.match(TACTICAL_KEYS.find(([keys])=>keys==='Mayús+R / Alt+R')[1],/Recargar/);
  assert.equal(tacticalShortcut(key('r'),{editing:true}),null);
  assert.equal(tacticalShortcut(key('r'),{dialog:true}),null);
 });
 test('editing, open dialogs, repeats and IME composition cannot issue tactical actions',()=>{
- for(const state of [{editing:true},{dialog:true}])assert.equal(tacticalShortcut(key('d'),state),null);
- for(const extra of [{repeat:true},{isComposing:true}])assert.equal(tacticalShortcut(key('d',extra)),null);
+ for(const keyName of ['d','r']){
+  for(const state of [{editing:true},{dialog:true}])for(const chord of [{},{shiftKey:true}])assert.equal(tacticalShortcut(key(keyName,chord),state),null);
+  for(const extra of [{repeat:true},{isComposing:true}])for(const chord of [{},{shiftKey:true}])assert.equal(tacticalShortcut(key(keyName,{...extra,...chord})),null);
+ }
 });
 test('selection, posture, equipment and utility shortcuts resolve independently',()=>{
  const actions={'1':'select:0','6':'select:5',' ':'next',PageUp:'stance-up',PageDown:'stance-down',w:'weapon',b:'weapon-mode',o:'overwatch',t:'mount',i:'loot',q:'heal',z:'stealth',l:'look',v:'sight',']':'aim-up','[':'aim-down','+':'zoom-in','-':'zoom-out',h:'help',Escape:'cancel'};
@@ -29,6 +32,8 @@ test('focused controls retain native activation while letter shortcuts remain av
  assert.equal(tacticalShortcut(key('Enter'),{nativeControl:true}),null);
  assert.equal(tacticalShortcut(key('z'),{nativeControl:true}),'stealth');
  assert.equal(tacticalShortcut(key('d'),{nativeControl:true}),'turn');
+ assert.equal(tacticalShortcut(key('r'),{nativeControl:true}),'run');
+ assert.equal(tacticalShortcut(key('R',{shiftKey:true}),{nativeControl:true}),'reload');
  assert.equal(tacticalShortcut(key('z'),{nativeControl:true,editing:true}),null);
 });
 

@@ -23,7 +23,7 @@ export function validateQuestDefinitions(quests) {
     if (!object(q)) {errors.push('Encargos: registro inválido.');continue;}
     check(identifier(q.id)&&!ids.has(q.id),q.id,'identificador inválido o repetido.');ids.add(q.id);
     check(identifier(q.npcId)&&!contacts.has(q.npcId),q.id,'elegí un contacto distinto para cada encargo.');contacts.add(q.npcId);
-    check(Object.keys(q).every(k=>['id','npcId','sector','title','offer','delivery','cost','requiredSectors','carried','escort','requires','reward'].includes(k)),q.id,'campo desconocido.');
+    check(Object.keys(q).every(k=>['id','npcId','sector','title','offer','delivery','cost','requiredSectors','carried','escort','requires','reward','rewardChoice'].includes(k)),q.id,'campo desconocido.');
     check(sector(q.sector),q.id,'localidad inexistente.');
     check(text(q.title,120)&&text(q.offer,800)&&text(q.delivery,800),q.id,'revisá el título y los textos (120 y 800 caracteres).');
     check(object(q.cost)&&Object.entries(q.cost).every(([k,v])=>QUEST_RESOURCES.includes(k)&&integer(v,1,10000)),q.id,'recursos de entrega inválidos.');
@@ -31,6 +31,11 @@ export function validateQuestDefinitions(quests) {
     check(q.requires===undefined||Array.isArray(q.requires)&&q.requires.every(identifier)&&new Set(q.requires).size===q.requires.length,q.id,'encargos previos inválidos.');
     check(q.reward===undefined||object(q.reward)&&Object.keys(q.reward).length===2&&integer(q.reward.treasury,0,10000)&&typeof q.reward.loyalty==='boolean',q.id,'recompensa inválida.');
     check(!q.reward?.loyalty||cityForSector(q.sector),q.id,'esa localidad no registra lealtad; desactivá esa recompensa.');
+    if(q.rewardChoice!==undefined){
+      check(object(q.rewardChoice)&&Object.keys(q.rewardChoice).length===1&&Object.hasOwn(q.rewardChoice,'reimbursement')&&integer(q.rewardChoice.reimbursement,1,10000),q.id,'el reintegro necesita un importe entero de 1 a 10000 pesos.');
+      check(Boolean(q.carried)&&!q.escort&&Boolean(cityForSector(q.sector)),q.id,'la elección de recompensa necesita una entrega física en una ciudad.');
+      check(q.reward===undefined||q.reward?.treasury===0&&q.reward?.loyalty===false,q.id,'la elección de recompensa no admite una recompensa automática.');
+    }
     if(q.carried!==undefined){
       const c=q.carried;
       check(object(c)&&Object.keys(c).length===4&&text(c.label,80)&&text(c.instruction,800)&&integer(c.count,1,100)&&
@@ -53,16 +58,23 @@ export function validateQuestDefinitions(quests) {
 // A tactical copy must match the campaign's pinned definition. A save or an
 // interaction cannot replace a cost, recipient or reward through its report.
 export function validateQuestContext(campaign,battle) {
-  const definitions=campaign.contentCampaign?.package.errands;
+  const definitions=campaign.contentCampaign?.package.errands??campaign.errandDefinitions;
   if(!battle||canonicalContent(battle.errandDefinitions)!==canonicalContent(definitions))throw Error('Los encargos del despliegue no coinciden con la campaña.');
 }
 
 // An omitted errands collection retains the historical tasks. Authored dialogue
 // quests keep their separate state and can coexist with physical deliveries.
 export function defaultErrands(){return structuredClone(NPC_QUESTS).map(q=>({...q,cost:q.cost??{},reward:typeof q.reward==='number'?{treasury:q.reward,loyalty:true}:{treasury:0,loyalty:true}}));}
+// Fictional local errand text and reward amounts are game tuning. Only fresh
+// campaigns pin these definitions; omitted legacy collections stay unchanged.
+export function freshDefaultErrands(){
+ return defaultErrands().map(q=>q.id==='retiro-uniformes'?{...q,reward:{treasury:0,loyalty:false},rewardChoice:{reimbursement:40},
+  offer:'Los nuevos reclutas pasan frío en el patio. Traé dos ponchos de lana en buen estado y entregámelos desde el inventario. Cuando lleguen ambos, podés cobrar 40 pesos de reintegro o renunciar al pago para mejorar el apoyo de la localidad.',
+  delivery:'Recibimos los dos ponchos. Los reclutas tendrán abrigo.'}:q);
+}
 export function errandContacts(content){
  const characters=Array.isArray(content.characters)?content.characters:[],placements=Array.isArray(content.placements)?content.placements:[];
- const contacts=ENCOUNTERS.filter(n=>n.operativeId===undefined?content.includeOriginalResidents!==false:characters.some(c=>c&&legacyOperativeId(c.id)===n.operativeId)&&n.operativeId<100).map(n=>({id:n.id,name:characters.find(c=>c&&legacyOperativeId(c.id)===n.operativeId)?.name??n.name,sector:n.sector,fixedSector:n.operativeId===undefined?n.sector:null,canRecruit:n.operativeId!==undefined,characterId:n.operativeId===undefined?undefined:`person-${n.operativeId}`}));
+ const contacts=ENCOUNTERS.filter(n=>n.operativeId===undefined?content.includeOriginalResidents!==false:characters.some(c=>c&&legacyOperativeId(c.id)===n.operativeId)&&n.operativeId<100).map(n=>({id:n.id,name:n.operativeId===undefined?n.name:characters.find(c=>c&&legacyOperativeId(c.id)===n.operativeId)?.name??n.name,sector:n.sector,fixedSector:n.operativeId===undefined?n.sector:null,canRecruit:n.operativeId!==undefined,characterId:n.operativeId===undefined?undefined:`person-${n.operativeId}`}));
  for(const c of characters.filter(c=>c&&isWorldCharacter(c))){
   const p=placements.find(p=>p?.character===c.id);if(!p)continue;
   const locality=CAMPAIGN_SECTORS.find(s=>contentCellIds([s.id])[0]===contentCellIds(Array.isArray(p.sectors)?p.sectors:[])[0])?.id??null;
