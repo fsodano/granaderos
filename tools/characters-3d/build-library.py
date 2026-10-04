@@ -5,7 +5,7 @@ Usage: python3 tools/characters-3d/build-library.py [--only appearance|garments|
 The approved playground is never read or changed by this production builder.
 """
 from pathlib import Path
-import argparse,subprocess,sys,json,os,concurrent.futures
+import argparse,subprocess,sys,json,os,struct,concurrent.futures
 ROOT=Path(__file__).resolve().parents[2];HERE=ROOT/'assets/source/characters-3d/authoring';OUT=ROOT/'web/public/models/characters';META=HERE/'.build'
 PRESETS=['granadero','royalist','worker','surgeon','gaucho','friar','woman-scout','woman-shawl']
 p=argparse.ArgumentParser();p.add_argument('--blender',default='/Applications/Blender.app/Contents/MacOS/Blender');p.add_argument('--only',choices=['appearance','garments','equipment','horse','animations']);p.add_argument('--preset',choices=PRESETS);p.add_argument('--lod',type=int,choices=[0,1,2]);p.add_argument('--review',action='store_true');p.add_argument('--jobs',type=int,default=2);p.add_argument('--manifest-only',action='store_true');a=p.parse_args()
@@ -30,6 +30,13 @@ records=[json.loads(f.read_text())for f in META.glob('*.json')]
 byname={f['url'].split('/')[-1]:f for f in records}
 bones={'root':'Root','hips':'pelvis','spine':'spine_02','chest':'spine_03','neck':'neck_01','head':'head','handRight':'hand_r','handLeft':'hand_l','footRight':'foot_r','footLeft':'foot_l'}
 manifest={'version':1,'units':'metres','up':'+Y','forward':'+Z','bodyHeight':1.76,'bones':bones,'skinTones':{'light':'#d5a07d','brown':'#9d6844','dark':'#623c29'},'appearances':{},'animationLibraries':{},'equipment':{'url':'/models/characters/equipment.glb','items':{}},'garments':{},'horse':{},'provenance':'assets/source/characters-3d/README.md'}
+native_path=OUT/'granadero-lod0.glb'
+if native_path.exists():
+ raw=native_path.read_bytes();document=json.loads(raw[20:20+struct.unpack_from('<I',raw,12)[0]])
+ native_names=[document['nodes'][index]['name']for index in document['skins'][0]['joints']]
+ mirror={name:name[:-2]+('_r'if name.endswith('_l')else'_l')if name.endswith(('_l','_r'))else name for name in native_names}
+ assert len(mirror)==53 and all(mirror.get(other)==name for name,other in mirror.items())
+ manifest['animationMirroring']={'axis':'x','bones':mirror}
 for preset in PRESETS:
  gender='female'if preset.startswith('woman-')else'male';lods=[byname[preset+'-lod'+str(i)+'.glb']for i in range(3)if preset+'-lod'+str(i)+'.glb'in byname]
  manifest['appearances'][preset]={'id':preset,'gender':gender,'height':1.76,'animationLibrary':gender,'lods':[{k:f[k]for k in ('lod','url','triangles','bytes','drawCalls','sha256')}for f in lods],'materials':{'skin':'Skin','apparel':'Apparel_Atlas'},'parts':{part:'Human_'+part+'_LOD{lod}'for part in ('skin','outfit','legwear','footwear','headwear')},'sockets':lods[0]['sockets']if lods else{},'lodPixelThresholds':[160,65,0],'baseAttire':{'headwear':'appearance','outfit':'appearance','legwear':'appearance'},'nullWornItem':'keepBaseAttire'}

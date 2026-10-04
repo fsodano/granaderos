@@ -33,6 +33,9 @@ for appearance in m['appearances'].values():
      weights=read(doc,data,p['attributes']['WEIGHTS_0']);assert all(abs(sum(w)-1)<2e-4 for w in weights),mesh['name']
     if'JOINTS_0'in p['attributes']:assert all(0<=j<53 for v in read(doc,data,p['attributes']['JOINTS_0'])for j in v)
   count+=1;triangles+=lod['triangles']
+mirroring=m['animationMirroring'];assert mirroring['axis']=='x'
+mirror=mirroring['bones'];assert len(mirror)==53 and all(mirror.get(other)==name for name,other in mirror.items())
+for signature in rigs.values():assert set(mirror)==set(signature)
 for gender,bank in m['animationLibraries'].items():
  doc,data=glb(bank['url']);expected={c['name']:c for c in bank['clips']};assert set(expected)==required;assert {a['name']for a in doc['animations']}==set(expected)
  assert hashlib.sha256((OUT/Path(bank['url']).name).read_bytes()).hexdigest()==bank['sha256']
