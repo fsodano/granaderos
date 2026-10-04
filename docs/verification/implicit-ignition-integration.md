@@ -5,6 +5,10 @@ and flint stocks do not occupy personal pockets or limit reloads and field
 maintenance. Prepared cartridges remain finite physical items. Weapon condition,
 misfires, action costs and elapsed time still apply.
 
+The [4 October finite-maintenance correction](../gameplay/equipment/equipment-repair.md#tactical-firearm-maintenance--4-october-2026)
+adds carried repair-material costs to **Mantener arma**. It does not restore loose
+flint or powder counters. The earlier validation counts below remain historical.
+
 ## Published save correction
 
 Runtime source: `20b21e38a87ad93a63bf3a1297b1dec13ee89f71`.

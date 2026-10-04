@@ -21,6 +21,7 @@ import {validateCompanionGriefContext} from './companion-grief.js';
 import {validateServiceObjectionContext} from './service-objections.js';
 import {validateRoadsideDiscoveryContext} from './roadside-discoveries.js';
 import {validateQuestBeneficiaryContext} from './quest-beneficiaries.js';
+import {validateRepairReserveContext,retainRepairReserves} from './repair-materials.js';
 export const SAVE_KEY='granaderos.campaign.v1';
 export function encodeSave(campaign,battle=null){
  const replacer=cellSceneSaveReplacer(artillerySaveReplacer(campaign,weaponSaveReplacer(campaign)));
@@ -57,6 +58,7 @@ export function decodeSave(text){
   if(battle&&b.exits===undefined){battle.exits=structuredClone(campaign.pendingBattle.exits);battle.exitRulesVersion=1;}
   if(battle&&JSON.stringify(battle.exits)!==JSON.stringify(campaign.pendingBattle.exits))throw Error('Las salidas guardadas no corresponden al despliegue.');
   if(battle)validateSectorDeployment(battle,campaign.pendingBattle);
+  if(battle)validateRepairReserveContext(campaign.pendingBattle,battle);
   if(battle)validateRoadsideDiscoveryContext(campaign,battle);
   if(battle)validateCompanionGriefContext(campaign,battle,rosterFor(campaign));
   if(battle)validateServiceObjectionContext(campaign,battle,rosterFor(campaign));
@@ -66,5 +68,6 @@ export function decodeSave(text){
   if(battle)validateQuestBeneficiaryContext(campaign,battle);
   if(battle)hasPendingNpcGiftProgress(campaign,battle);
   validateEquipmentOwnership(campaign,rosterFor(campaign),battle);
+  if(battle)retainRepairReserves(campaign.pendingBattle,battle);
   return {campaign,battle};
 }

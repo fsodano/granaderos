@@ -40,6 +40,7 @@ import {HIT_LOCATIONS} from './targeted-combat.js';
 import {AP_CARRY_LIMIT,isUnconscious} from './tactical-condition.js';
 import {PROP_TYPES,propBlocksAt,propCells,propSize} from './props.js';
 import {validateTraining} from './skill-training.js';
+import {validateRepairReserve} from './repair-materials.js';
 import {WEAPONS,BLADES,ARTILLERY,fieldCapable} from './tactical.js';
 const object=x=>x!==null&&typeof x==='object'&&!Array.isArray(x);
 const number=(x,lo,hi)=>typeof x==='number'&&Number.isFinite(x)&&x>=lo&&x<=hi;
@@ -84,6 +85,7 @@ need(integer(u.weapon,0,65535),'armas');validateWeaponCarrier(u);if(u.blade!==un
 validateWeaponReadiness(u,(weaponSpecification(u)?.capacity??0)>0);
 validateReloadProgress(u.reloadProgress,weaponSpecification(u)?.capacity??0,u.loaded,u.weaponDropped);
 for(const k of ['ammo','rations','torches','boleadoras','medkits','strengthTraining'])if(u[k]!==undefined)need(integer(u[k],0,1000000),'suministros');
+validateRepairReserve(u);
 if(u.facing===undefined)u.facing=u.side==='enemy'?6:2;need(integer(u.facing,0,7),'dirección de observación');if(u.stealthMode===undefined)u.stealthMode=false;need(typeof u.stealthMode==='boolean','sigilo');
 if(u.lastHeardNoise!==undefined){const n=u.lastHeardNoise;need(coord(n)&&integer(n.turn,1,s.turn)&&NOISE_KINDS.includes(n.kind)&&number(n.uncertainty,0,20),'ruido percibido');need(Object.keys(n).every(k=>['x','y','turn','kind','uncertainty'].includes(k)),'información del ruido');}
 if(u.patrolOrigin!==undefined)need(coord(u.patrolOrigin),'puesto de patrulla');if(u.patrol!==undefined)need(typeof u.patrol==='boolean','patrulla');for(const k of ['patrolTurn','lastInvestigatedTurn'])if(u[k]!==undefined)need(integer(u[k],0,1e9),'reloj de patrulla');

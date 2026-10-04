@@ -57,9 +57,10 @@ test('readiness survives a real turn boundary and permits an otherwise unafforda
 });
 
 test('movement, loading, stance, handling supplies and changing hands lower the weapon',()=>{
- const base=shoot(field({medical:80,hp:80,bandaged:20}));
+ const base=shoot(field({medical:80,hp:80,bandaged:20})),maintenance=shoot(field({medical:80,hp:80,bandaged:20,toolkitPoints:1}));
  for(const a of [{type:'move',x:2,y:1},{type:'reload'},{type:'stance',stance:'crouched'},{type:'weapon',slot:'medical'},{type:'drop',item:'inventory:ammo:pistol_69',count:1},{type:'repair'}]){
-  const s=structuredClone(base);s.units[0].ap=100;const n=act(s,a);assert.equal(n.units[0].weaponReady,undefined,JSON.stringify(a));
+  const s=structuredClone(a.type==='repair'?maintenance:base);s.units[0].ap=100;const n=act(s,a);assert.equal(n.units[0].weaponReady,undefined,JSON.stringify(a));
+  if(a.type==='repair'){assert.equal(n.units[0].condition,100);assert.equal(n.units[0].toolkitPoints,0);}
   if(n.units[0].activeSlot==='primary')assert.equal(actionCosts(n,n.units[0]).ready,2);
  }
 });

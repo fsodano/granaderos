@@ -209,7 +209,8 @@ export default function JA2Inventory({cursorLevel=0,onCursorLevelChange,unit, ba
         <div>
           <button disabled={def('stealth')?.disabled} aria-pressed={Boolean(unit.stealthMode)} className={unit.stealthMode ? 'active' : ''} title="Consume más PA al moverse y reduce el ruido. No cambia la postura." onClick={() => onOrder(orderAction(battle, unit, {}, 'stealth'))}>Sigilo · {unit.stealthMode ? 'Sí' : 'No'}</button>
           <button className={showSight ? 'active' : ''} aria-pressed={showSight} disabled={busyDisabled} onClick={onToggleSight}>{showSight ? 'Ocultar' : 'Mostrar'} campo de visión</button>
-          {STANCE_IDS.map(id => { const d = def(id); if (!d) return null; return <button key={id} disabled={d.disabled} aria-label={d.label} onClick={() => { if (d.kind === 'mode') onMode(id); else onOrder(orderAction(battle, unit, {}, id)); }}>{d.label}{d.pa !== undefined ? ` · ${cost(d.pa)}` : ''}</button>; })}
+          {STANCE_IDS.map(id => { const d = def(id); if (!d) return null; return <button key={id} disabled={d.disabled} aria-label={d.label} title={id==='repair'?d.detail:undefined} onClick={() => { if (d.kind === 'mode') onMode(id); else onOrder(id==='repair'?d.action:orderAction(battle, unit, {}, id)); }}>{d.label}{d.pa !== undefined ? ` · ${cost(d.pa)}` : ''}</button>; })}
+          {def('repair')?.detail && <small>{def('repair')?.detail}</small>}
         </div>
       </div>
 </div></details>      </div>

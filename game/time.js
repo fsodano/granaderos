@@ -10,6 +10,7 @@ import {nextHireArrivalSeconds} from './hiring-arrivals.js';
 import {validateAbilityReferences} from './content-character-abilities.js';
 import {validateQuestBeneficiaryContext} from './quest-beneficiaries.js';
 import {validateCampaignServiceObjections,validateServiceObjectionContext,hasPendingServiceObjections} from './service-objections.js';
+import {validateRepairReserveContext,retainRepairReserves} from './repair-materials.js';
 export const COMBAT_ROUND_SECONDS=6;
 export const REST_SECONDS=600;
 // Only dispatcher results establish trust. Decoded saves, campaign commands and
@@ -26,6 +27,7 @@ function syncSettledClock(campaign,battle,elapsed){
  if(Number.isFinite(nextUnloadedCivilianDeath(campaign))||end>=nextContentQuestDeadline(campaign)||end>=nextCampaignPresenceChange(campaign)||battle.units.some(u=>u.side==='player'&&(u.hp<=0||u.missionAlly)))return null;
  if(hasPendingServiceObjections(campaign,battle)||hasPendingNpcGiftProgress(campaign,battle)||hasPendingCivilians(campaign,battle))return null;
  const pendingBattle={...campaign.pendingBattle,syncedSeconds:elapsed};delete pendingBattle.resumeSnapshot;
+ retainRepairReserves(pendingBattle,battle);
  return {...campaign,pendingBattle,secondOfHour:second+delta,lastError:null};
 }
 export function advanceBattleClock(s,seconds,{resting=false}={}){
@@ -44,6 +46,8 @@ export function advanceBattleClock(s,seconds,{resting=false}={}){
 export function syncBattleTime(campaign,battle){
  try{
  if(!campaign.pendingBattle||battle.battleId&&battle.battleId!==campaign.pendingBattle.id)return {campaign,battle,error:'El reloj no corresponde al despliegue.'};
+ validateRepairReserveContext(campaign.pendingBattle,battle);
+ if(campaign.pendingBattle.resumeSnapshot)validateRepairReserveContext(campaign.pendingBattle,campaign.pendingBattle.resumeSnapshot);
  validateCampaignServiceObjections(campaign,rosterFor(campaign));
  validateServiceObjectionContext(campaign,battle,rosterFor(campaign));
  validateQuestBeneficiaryContext(campaign,campaign.pendingBattle,{request:null,issued:true});

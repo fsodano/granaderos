@@ -68,8 +68,9 @@ test('new characters retain actual combat injuries and experience across return,
  for(const progression of ['experience','fixed']){
   const d=authored(),c=d.characters.at(-1);c.progression=progression;c.arrivalHours=0;c.traits=[];
   const id=operativeIdForCharacter(d,c.id);let s=order(initialCampaign(8,d),{type:'recruitCivic',id,term:'week'});
-  // Saved veteran and practice fixture just below the next thresholds.
-  s.operativeState[id].xp=95;s.operativeState[id].condition=50;s.operativeState[id].skillPractice={mechanical:39};
+  // Prepared veteran subsystem checkpoint owns 30 finite repair points and
+  // starts immediately below the next level and practice thresholds.
+  s.operativeState[id].xp=95;s.operativeState[id].condition=50;s.operativeState[id].skillPractice={mechanical:39};s.operativeState[id].toolkitPoints=30;
   s=save(s).campaign;
   secureArea(s,'buenos_aires');s=order(s,{type:'travel',sector:'buenos_aires'});s=order(s,{type:'attack',sector:'san_nicolas'});const request=s.pendingBattle;
   // Declared open-field fixture preserves every issued enemy and weapon.
@@ -79,7 +80,7 @@ test('new characters retain actual combat injuries and experience across return,
    tiles:Array.from({length:width*height},(_,i)=>({x:i%width,y:Math.floor(i/width),type:'grass',blocked:false,cover:0})),
    npcs:request.npcs.map((n,i)=>({...n,x:10+i%3,y:5+Math.floor(i/3)})),
    enemies:enemies.map((u,i)=>{const at={x:i?19:6,y:i?i:19};return {...u,...at,patrolOrigin:at,overwatch:false,patrol:false};})});
-  b=actBattle(b,{type:'repair',unitId:String(id)});assert.equal(b.lastError,null);assert.equal(b.units[0].trainedStats.mechanical,1);
+  b=actBattle(b,{type:'repair',unitId:String(id)});assert.equal(b.lastError,null);assert.equal(b.units[0].trainedStats.mechanical,1);assert.equal(b.units[0].toolkitPoints,0);
   // Pay for one step out of the close firing lane before the enemy phase,
   // then return to the same issued boundary with the actual wound.
   b=actBattle(b,{type:'move',unitId:String(id),x:1,y:18});assert.equal(b.lastError,null);

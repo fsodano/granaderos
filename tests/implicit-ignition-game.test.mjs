@@ -9,15 +9,15 @@ import {enterSector} from '../game/world.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {unitAmmunitionByType} from '../game/campaign-ammunition.js';
 
-const field=(exploration=false)=>createBattle([{id:'p',x:2,y:2,weapon:1800,loaded:1,ammo:3,condition:60,priming:0,flints:0}],{width:24,height:8,seed:45,exploration,tiles:Array.from({length:192},(_,i)=>({x:i%24,y:Math.floor(i/24),type:'grass',cover:0,blocked:false})),enemies:exploration?[]:[{id:'e',x:22,y:6,weapon:1800,loaded:1,ammo:3,jammed:true,priming:0,patrol:false,overwatch:false}]});
+const field=(exploration=false,unit={})=>createBattle([{id:'p',x:2,y:2,weapon:1800,loaded:1,ammo:3,condition:60,priming:0,flints:0,...unit}],{width:24,height:8,seed:45,exploration,tiles:Array.from({length:192},(_,i)=>({x:i%24,y:Math.floor(i/24),type:'grass',cover:0,blocked:false})),enemies:exploration?[]:[{id:'e',x:22,y:6,weapon:1800,loaded:1,ammo:3,jammed:true,priming:0,patrol:false,overwatch:false}]});
 const order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,n.lastError);return n;};
 
-test('zero legacy ignition stock neither changes misfire risk nor prevents paid field maintenance',()=>{
+test('zero legacy ignition stock neither changes misfire risk nor prevents finite paid field maintenance',()=>{
  for(const exploring of [false,true]){
-  const s=field(exploring),u=s.units[0],before=unitAmmunitionByType(u);
+  const s=field(exploring,{toolkitPoints:30}),u=s.units[0],before=unitAmmunitionByType(u);
   assert.equal(ignitionRisk(s,{...u,priming:0}),ignitionRisk(s,{...u,priming:50}));
   assert.ok(!inventoryUsage(u).slots.some(slot=>['priming','flints'].includes(slot.entry?.item)));
-  const n=actBattle(s,{type:'repair',unitId:'p'});assert.equal(n.lastError,null);assert.equal(n.units[0].condition,90);assert.deepEqual(unitAmmunitionByType(n.units[0]),before);
+  const n=actBattle(s,{type:'repair',unitId:'p'});assert.equal(n.lastError,null);assert.equal(n.units[0].condition,90);assert.equal(n.units[0].toolkitPoints,0);assert.deepEqual(unitAmmunitionByType(n.units[0]),before);
   assert.equal(n.units[0].flints,undefined);assert.equal(n.units[0].priming,undefined);
   if(exploring){assert.equal(n.units[0].ap,u.ap);assert.ok(n.elapsedSeconds>s.elapsedSeconds);}else assert.ok(n.units[0].ap<u.ap);
  }

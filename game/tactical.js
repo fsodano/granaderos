@@ -48,6 +48,8 @@ import {handsRequired,selectMainHand,handLayout} from './hand-layout.js';
 import {firearmPreparation,lowerWeapon,lowersWeapon,turnLowersWeapon} from './weapon-readiness.js';
 import {planReload,reloadRoundCost} from './weapon-reload.js';
 import {planReprime,reprimeCost} from './weapon-reprime.js';
+import {repairMaterialPoints} from './repair-materials.js';
+import {spendRepairMaterials} from './equipment-repair.js';
 import {discoverInventory} from './inventory-discovery.js';
 import {isInteriorVisible} from './tactical-visibility.js';
 import {automaticOrder,searchOrder} from './autonomous-orders.js';
@@ -126,6 +128,20 @@ export function actionCosts(s,u,point){
     reprime:reprimePlan(u,s).pa||reprimeCost(u),repair:hasTrait(u,'gunsmith_artillerist')?18:25,
     reload:reloadCost(u,s),melee:meleeStrike+meleeStance,meleeStrike,meleeStance,
   };
+}
+export function firearmMaintenancePreview(s,u){
+ const pa=u?actionCosts(s,u).repair:25,action=u?{type:'repair',unitId:u.id}:null;
+ let reason=inventoryOrderReason(s,u,0),materialsAvailable=0;
+ if(!reason&&(u.militia||s.alliedTurn&&s.phase!=='interrupt'))reason='La milicia actúa por su cuenta. Da órdenes a los combatientes de tu escuadra.';
+ if(!reason&&!hasFirearm(u))reason='Prepara primero el arma de fuego que quieres mantener.';
+ if(!reason&&(!Number.isFinite(u.condition)||u.condition<0||u.condition>100))reason='El estado del mecanismo no es válido.';
+ if(!reason&&u.condition>=100)reason='El mecanismo ya está en buen estado.';
+ if(!reason)try{materialsAvailable=repairMaterialPoints(u);}catch(error){reason=error.message;}
+ if(!reason&&!materialsAvailable)reason='No quedan materiales de reparación.';
+ if(!reason&&s.mode!=='exploration'&&u.ap<pa)reason=`Mantener el mecanismo requiere ${pa} PA.`;
+ const capacity=u&&hasTrait(u,'gunsmith_artillerist')?45:u&&hasTrait(u,'workshop_training')?40:30;
+ const gain=reason?0:Math.min(capacity,100-u.condition,materialsAvailable);
+ return {pa,valid:!reason,reason,gain,materialCost:Math.ceil(gain),materialsAvailable,action};
 }
 // All ordinary hostile clicks, HUD previews and attack animations share this
 // choice. Gun mode is explicit; distance never silently changes fire into melee.
@@ -2276,7 +2292,7 @@ else if(a.type==='boleadoras'){const point=target??positionOf(a),preview=supplyU
 else if(a.type==='prisonerEscort'){const preview=prisonerReleasePreview(s,u,target,a.escortOrder??'invalid');if(!preview.valid)return fail(preview.reason);if(!pay(preview.cost))return fail('PA insuficientes.');recordPrisonerEscort(s,u,target,a.escortOrder==='wait');sayObserved(s,[u],`${u.name} indica a ${target.name} que ${a.escortOrder==='wait'?'espere aquí':'lo siga'}.`);}
 else if(a.type==='free'&&a.targetKind==='npc'){const preview=prisonerReleasePreview(s,u,target);if(!preview.valid)return fail(preview.reason);if(!pay(preview.cost))return fail('PA insuficientes.');lowerWeapon(u);recordPrisonerRelease(s,u,target);sayObserved(s,[u],`${u.name} libera de las ataduras a ${target.name}. Te seguirá cuando pueda caminar.`);}
 else if(a.type==='free'){if(!u.entangled)return fail('El soldado no está enredado.');if(!pay(15))return fail('Soltarse requiere 15 PA.');u.entangled=false;for(const g of s.groundItems)if(g.heldBy===u.id)g.heldBy=null;sayObserved(s,[u],`${u.name} se libera de las boleadoras.`);}
-else if(a.type==='repair'){if(!hasFirearm(u))return fail('Prepara primero el arma de fuego que quieres mantener.');if(u.condition>=100)return fail('El mecanismo ya está en buen estado.');const cost=actionCosts(s,u).repair;if(!pay(cost))return fail(`Mantener el mecanismo requiere ${cost} PA.`);practice(u,'mechanical',3);u.condition=Math.min(100,u.condition+(hasTrait(u,'gunsmith_artillerist')?45:hasTrait(u,'workshop_training')?40:30));sayObserved(s,[u],`${u.name} mantiene y ajusta el mecanismo.`);}
+else if(a.type==='repair'){const plan=firearmMaintenancePreview(s,u);if(!plan.valid)return fail(plan.reason);if(!pay(plan.pa))return fail(`Mantener el mecanismo requiere ${plan.pa} PA.`);spendRepairMaterials(u,plan.materialCost);practice(u,'mechanical',3);u.condition=Math.min(100,u.condition+plan.gain);sayObserved(s,[u],`${u.name} mantiene y ajusta el mecanismo.`);}
 else if(a.type==='ration'){
   const preview=supplyUsePreview(s,u,a.targetId===undefined?u:target,'rations');if(!preview.allowed)return fail(preview.reason);pay(preview.cost);
   u.rations--;clearEmptySupply(u);recoverFatigue(u,10,20);
