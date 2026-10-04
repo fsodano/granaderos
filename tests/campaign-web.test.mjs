@@ -56,7 +56,7 @@ test('five-phase campaign cannot unlock San Martín early',()=>{
 test('captured crossroads block traversal while owned towns retain local operations',()=>{
  const s=initialCampaign();for(const id of ['cordoba','tucuman','salta'])s.sectors[id].owner='patriot';assert.equal(isSupplied(s,'salta'),true);s.sectors.cordoba.owner='royalist';assert.equal(isSupplied(s,'salta'),true);assert.ok(dispatch(s,{type:'travel',sector:'salta'}).lastError);
 });
-test('unguarded and defeated provinces fall while a supported stronger garrison earns its victory with permanent losses',()=>{
+test('unguarded and defeated provinces fall while a supported garrison wins with actual local outcomes and permanent militia losses',()=>{
  let s=initialCampaign();s.sectors.jujuy.owner='patriot';s=order(s,{type:'wait',hours:144});assert.equal(s.sectors.jujuy.owner,'royalist');
  // One defender cannot hold against the actual arriving column. Keep the
  // defeated defender's critical wound instead of manufacturing a death.
@@ -76,19 +76,31 @@ test('unguarded and defeated provinces fall while a supported stronger garrison 
   return ready;
  };
  s=order(supportedJujuyDefense(),{type:'wait',hours:144});
+ const issuedLocalIds=s.squad.map(String),startedSeconds=s.hour*3600+s.secondOfHour;
  assert.equal(s.enemyGroups.find(g=>g.id===s.pendingEncounter.groupId).units.length,attackingForce,'the reinforced defense faces the same enemy force');
  assert.equal(s.pendingEncounter.sector,'jujuy');s=order(s,{type:'respondToEncounter',groupId:s.pendingEncounter.groupId,choice:'auto'});
  assert.equal(s.enemyGroups[0].status,'defeated');assert.equal(s.sectors.jujuy.owner,'patriot');
  const b=s.sectorStates.jujuy;assert.equal(completedTacticalVictory(b),true);assert.equal(s.pendingBattle,null);
  const militia=b.units.filter(u=>u.militia);assert.equal(militia.length,defenders);assert.ok(militia.some(u=>u.hp<=0));
  assert.ok(militia.reduce((n,u)=>n+u.loaded+u.ammo,0)<defenders*6);
- const localLosses=b.units.filter(u=>u.side==='player'&&!u.militia&&u.hp===0);assert.ok(localLosses.length>0);
+ const locals=b.units.filter(u=>u.side==='player'&&!u.militia),localLosses=locals.filter(u=>u.hp===0);
+ assert.deepEqual(locals.map(u=>u.id).sort(),[...issuedLocalIds].sort());
+ assert.deepEqual(issuedLocalIds.filter(id=>!s.operativeState[id].alive).sort(),localLosses.map(u=>u.id).sort());
+ for(const unit of locals){
+  const record=s.operativeState[unit.id];assert.equal(record.alive,unit.hp>0);
+  for(const key of ['hp','maxHp','bleeding','bandaged'])assert.equal(record[key]??0,unit[key]??0,`${unit.id} ${key}`);
+  if(record.alive){assert.equal(record.carriedLoaded??0,unit.loaded);assert.equal(record.ammo??0,unit.ammo);}
+ }
  for(const unit of localLosses){assert.equal(s.operativeState[unit.id].alive,false);assert.equal(s.operativeState[unit.id].hp,0);assert.ok(!s.squad.includes(Number(unit.id)));}
  for(const unit of b.units.filter(u=>u.side==='player'&&!u.militia&&u.departure)){
   assert.equal(s.operativeState[unit.id].location,unit.departure.destination);assert.equal(s.operativeState[unit.id].hp,unit.hp);
  }
  for(const unit of militia.filter(u=>u.hp===0))assert.ok(!s.garrisons.jujuy.some(record=>String(record.id)===unit.id));
+ assert.ok(b.elapsedSeconds>0);assert.equal(s.hour*3600+s.secondOfHour,startedSeconds+b.elapsedSeconds);
+ assert.equal(b.savedHour,s.hour);assert.equal(b.savedSecond,s.secondOfHour);
  assert.deepEqual(restoreCampaign(serializeCampaign(s)),s);
+ const duplicate=dispatch(s,{type:'battleResult',battleId:b.battleId,outcome:'victory',sectorState:b,survivors:b.units.filter(u=>u.side==='player')});
+ assert.match(duplicate.lastError,/No hay batalla/);duplicate.lastError=null;assert.deepEqual(duplicate,s);
 });
 test('an unreachable militia shelter retains the unresolved encounter and synchronized save',()=>{
  let s=initialCampaign();s.sectors.jujuy.owner='patriot';s.sectors.jujuy.militia=[0,0,4];s=order(s,{type:'wait',hours:144});

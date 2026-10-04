@@ -71,7 +71,9 @@ test('prepared local infantry regroup with the wounded commander and earn the au
  assert.equal(campaign.missionAllies.san_lorenzo.hp,settledCommander.hp);
  assert.equal(campaign.missionAllies.san_lorenzo.bleeding,settledCommander.bleeding);
  assert.ok(campaign.squad.some(id=>campaign.operativeState[id].alive&&campaign.operativeState[id].hp>=15),'the actual local force can continue after settlement');
- const fallen=result.battle.units.filter(u=>u.side==='player'&&!u.missionAlly&&u.hp===0).map(u=>Number(u.id));assert.ok(fallen.length>0);
+ const locals=result.battle.units.filter(u=>u.side==='player'&&!u.missionAlly),fallen=locals.filter(u=>u.hp===0).map(u=>Number(u.id));
+ const recordedFallen=locals.filter(u=>campaign.operativeState[Number(u.id)].alive===false).map(u=>Number(u.id));
+ assert.deepEqual(recordedFallen,fallen,'settlement retains exactly the actual local casualties');
  for(const id of fallen){assert.equal(campaign.operativeState[id].hp,0);assert.equal(campaign.operativeState[id].alive,false);assert.ok(!campaign.squad.includes(id));}
  assert.ok(dispatchCampaign(campaign,report).lastError,'the completed mission cannot settle or reward its report twice');
  assert.deepEqual(deployment,original);
