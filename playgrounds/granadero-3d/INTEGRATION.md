@@ -1,163 +1,85 @@
-# Full tactical-sector 3D integration
+# Integrated tactical-sector 3D renderer
 
-Status: implementation in progress in the isolated playground worktree. Models, terrain, camera, input and motion proceed in parallel with the other gameplay session. Ballistic effects wait for its tested ricochet merge. Integration base: `02eff792`, merged by `aa1f6aa3`.
+Status: the renderer is integrated in the isolated worktree and under review in [draft PR #156](https://github.com/fsodano/granaderos/pull/156). Ballistics from `origin/main` at `46ce4578` are merged. Renderer checks and the production build pass. The complete test suite has seven failing campaign files, all reproduced with identical assertions on clean `main`. The PR remains a draft; it has not been merged or deployed.
 
-This plan records the full requested scope. A character-only overlay, one working soldier, or an asset viewer is not completion.
+The combat sector uses Three.js geometry under a fixed isometric orthographic camera. Pan, zoom and keyboard controls remain. Portraits, inventory, statistics and orders remain in HTML. SVG supplies semantic input targets and annotations; it does not draw a second sprite world. The original one-character playground remains separate from the production library.
 
-## Delivery scope
+## Gameplay and visibility boundaries
 
-- Replace the combat sector's sprite world with actual 3D geometry under a fixed orthographic camera. Retain pan, zoom, keyboard access, and the HTML portraits, inventory, statistics, and orders.
-- Render all currently supported units, civilians, mounts, equipment, terrain, buildings, upper floors, doors, props, artillery, loot, lights, smoke, projectiles, and explosions.
-- Preserve the approved human proportions and reference-based uniform. Add the existing appearance families and save-safe character variation.
-- Preserve the simulation, saves, visibility, orders, AP, ammunition, health, randomness, and combat outcomes.
-- Permit later art replacements without changes to those rules.
+1. The ordinary reducer executes each order once and owns coordinates, body heights, collision, AP, ammunition, health, time, randomness and saved state.
+2. Battle presentation records the paid movement steps, intermediate states and disclosed combat events. Rendering consumes these records without resolving another attack.
+3. The presentation adapter admits actors and dynamic contents through sight and interior visibility. The scene receives no complete hidden roster. Unit and civilian identities use separate `unit:<id>` and `npc:<id>` namespaces.
+4. Hidden actors create no character meshes, shadows, labels or input targets. A newly observed actor starts at its observed position; hidden travel is not replayed. Visual foliage and wall cutaways must use only admitted actor positions.
+5. The existing controls submit the existing game orders. Mesh anatomy, raycasts, clip markers and animation completion cannot change combat results.
 
-## Starting point
+The shared projection retains `screenX = originX + 26(x-y)` and `screenY = 65 + 14(x+y)`. Grid cells map to `(x*T, height, y*T)`, where `T` is approximately 1.23606 metres. Camera pitch is approximately 32.579 degrees. Actors, terrain, upper surfaces, effects and input proxies use the same metric elevation. The old SVG facade inset is not applied to this projection.
 
-Read-only audit: main `90e5dfff`; prototype `47bc93fe`. These are audit references, not the eventual integration base.
+## Replaceable character library
 
-The prototype contains a licensed MakeHuman adult body with native weights and 53 bones. Its nine clips cover standing idle, walk, run, rifle and pistol aim/fire, and sabre ready/strike. Its 115,640 triangles and 123 meshes are review assets, not a validated per-unit production budget.
+The production manifest is `web/public/models/characters/manifest.json`; reproducible authoring is in `assets/source/characters-3d/`. See its [source and build documentation](../../assets/source/characters-3d/README.md).
 
-The existing game has seven active appearance families, eight active variants, nineteen legacy appearance IDs, and 93 declared logical animation sequences. Newer throw, climb, and equipment actions extend that inventory. The declared sequence count alone is not a complete acceptance check.
+There are eight appearance families: granadero, royalist, worker, surgeon, gaucho, friar, woman-scout and woman-shawl. They use two native MakeHuman anatomies, each with 53 bones, uniform body normalization and its own shared bank of **244 clips**. Skin palettes remain light, brown and dark. Clothing, hands and carried items follow current equipment ownership. The separate horse keeps its 19-bone rig.
 
-## Boundaries
+The versioned manifest declares axes and units, appearance IDs, rig roles, skin material roles, LODs, clothing replacement rules, hand/stowed/muzzle/saddle sockets, semantic clip bindings, duration, stride speed and event markers. It also declares native bone mirroring and the left-pistol socket frame. An item can override a visual clip without changing its rules class; the lance uses carry, brace and thrust poses through this mechanism.
 
-1. The ordinary reducer executes an order once. It controls all gameplay results.
-2. Existing battle-presentation recording supplies paid movement steps, admitted events, and intermediate states. It must not change the final state or random stream.
-3. A pure presentation adapter resolves visibility, actor identity, position, appearance, equipment, posture, readiness, and accepted action events.
-4. The Three.js scene consumes those records. Its meshes, clip completion, collision geometry, and raycasts do not modify combat.
-5. Semantic input proxies send the existing commands through the existing UI/controller path. Model anatomy does not define game hit chances or cover.
+Models can be replaced through these bindings without changing gameplay. Missing capabilities fail explicitly. Geometry, textures and immutable clips are shared; each actor has independent bones and playback state. Cosmetic variation does not consume simulation randomness.
 
-Do not give the character scene the complete hidden roster and conceal it with opacity. Hidden actors must not create meshes, shadows, picking targets, labels, animation tracks, or camera targets. Use `unit:<id>` and `npc:<id>` identities because their IDs can overlap.
+## Action and world coverage
 
-## Replaceable asset contract
+The integrated action contract covers:
 
-- Version the manifest independently of save data.
-- Use metres, one declared forward axis, a stable ground origin, and explicit height/bounds.
-- Map semantic rig roles to native bones. Game code must not refer to `hand_r` or `RifleFire`.
-- Declare material roles for skin, hair, cloth, leather, trim, and metal. A later material-name change must require only a manifest update.
-- Declare right/left grip, support grip, muzzle, scabbard, stowed item, saddle, and rider sockets.
-- Declare supported semantic actions, legal postures, clip/layer mapping, duration, stride speed, and visual event markers.
-- Animation markers may trigger visual effects. The recorded authoritative event remains the source of damage, ammunition use, and action completion.
-- Match playback to paid visual distance. Clip root motion must not move the simulation.
-- Validate missing capabilities explicitly. Do not quietly substitute idle for an unsupported action.
-- Share geometry, textures, and palette materials. Clone only per-actor skeleton and playback state.
-- Preserve stable appearance choices across load/save and asset updates. Never consume gameplay randomness for cosmetic variation.
+- Standing, crouched and prone postures; six transitions; death, unconsciousness, knockdown and recovery.
+- Walk, run, crouched walk, crawl, standing/crouched side steps, backward movement, climbing, mounted movement, mounting and dismounting.
+- Aim, fire, paired/offhand pistols, reload and partial reload, reprime, repair, unload, brace, bayonet, butt, lance, sabre, facón, punch and charge.
+- Knife, grenade, torch and bolas throws; healing, equipment and loot transfers, doors, containers, tools, breach, freeing, rations and gifts.
+- Artillery fire, loading, movement and pivoting, with the existing crew requirements and paid work.
 
-## Character coverage
+Recorded human gait is retargeted to native anatomy. Period weapon handling and contacts are authored. Playback follows paid visual distance and declared stride speed; climbing follows the recorded segment fraction. Action IDs and recorded phases control attack restarts. Mounted falls remove the saddle offset by their ground-contact marker. Animation never moves the simulation root.
 
-Existing families: military (granadero and royalist), worker, civilian man, poncho wearer, friar, woman combatant, and civilian woman. Preserve explicit authored appearance IDs and existing skin resolution. Enemy faction uniform remains authoritative.
+The world contains terrain, buildings, doors, breaches, roof slabs and access links, props, carried/dropped equipment, loot, artillery, lights and smoke. Current wall state comes from tactical tiles. Scene resources are cached and disposed when replaced; context loss and asset errors have a visible recovery control.
 
-Use native source anatomy for body variation and the female body. Do not stretch the approved body on one axis or attach mismatched limbs. Keep head, hand, shoulder, and leg proportions human at tactical scale.
+Firearm, knife, grenade and artillery effects use admitted recorder paths and outcomes. Penetration/ricochet continuation respects discharge suppression. No second ballistic trace or invented pellet hit determines the result. Artillery's **0.65 m ground-relative display height is a visual convention**: its existing rules trace uses grid coordinates. It does not add a new ballistic height rule.
 
-Clothing and physical hands come from current equipment state. Support worn headwear/outfits/legwear; two hands; paired pistols; stowed and dropped weapons; fitted bayonets; tools and held supplies. Preserve the HTML portraits.
+## Current asset sizes and budgets
 
-Weapon silhouettes include Brown Bess, Charleville, Baker, cavalry carbine, shotgun, blunderbuss, three pistol types, two sabres, socket bayonet, lance, and facón. Use the actual compatibility rules for fittings.
+These values come from the current manifest. Triangle counts cover the appearance body and base attire; held equipment, replacement garments, horses, shadows and scenery add work.
 
-Build merged, material-batched real-mesh LODs. Initial targets for investigation are 12–18k, 5–8k, and 2–3k triangles. These are proposed budgets, not measured acceptance. Preserve the human silhouette before removing detail.
+| Human LOD | Triangles across eight families | Material/mesh draw calls | GLB bytes per appearance |
+| --- | ---: | ---: | ---: |
+| 0 | 25,366–30,856 | 5–6 | 969,440–1,198,376 |
+| 1 | 10,722–17,050 | 5–6 | 457,796–713,544 |
+| 2 | 4,239–8,099 | 5–6 | 218,524–369,440 |
 
-## State and action coverage
+The earlier investigation targets of 12–18k, 5–8k and 2–3k triangles are **not met**. The current meshes preserve the human silhouette; further optimization needs visual review and measured scene cost.
 
-Keep separate life, posture, mobility, locomotion, readiness, and transient action dimensions.
+The male animation GLB is 7,495,956 bytes; the female bank is 7,442,340 bytes. The shared equipment GLB has 26 entries and is 611,508 bytes. Horse LODs contain 17,322 / 10,577 / 6,081 triangles. All production GLBs total 32,535,628 bytes, excluding shared external textures and the manifest. This total is not the download cost of every scene: assets load by appearance and LOD.
 
-- Alive, unconscious, and dead. Death takes priority over every pending action. A loaded corpse is already settled. A witnessed death may collapse once. Unconscious breathing is not a death loop.
-- Standing, crouched, prone, and all six posture transitions. Distinguish voluntary prone from knockdown and recovery.
-- Walk, run, crouch walk, armed/unarmed crawl, mounted idle/walk/run, climb, mount, dismount, and forced dismount.
-- Aim, fire, reload/partial reload, reprime, repair, unload, paired/offhand discharge, brace, bayonet/butt/lance strike, sabre/facón cut, punch, charge.
-- Knife, grenade, torch, and bolas throws; self/other healing; loot/equip/drop/transfer/steal; doors/containers/environment; breach; free; ration; gift.
-- Artillery fire/load/move/pivot and the assigned crew. Preserve partial crew work and authoritative crew movement.
+Native body/target assets and the horse are CC0. CMU motion uses its own terms, which permit use in commercial products but prohibit resale of raw motion data. Source URLs, hashes, original terms and adaptations are retained with the authoring sources.
 
-Use explicit action instance IDs. AP/ammunition changes are not a reliable action restart clock. Honour `performed`, `shotComplete`, `contactComplete`, and `discharge` so preparation or penetrating continuation does not create a second attack.
+## Validation and handover
 
-Preserve climb kind/link metadata and `tacticalLevel` independently of rank. Newly visible actors start at the observed position; never animate their hidden approach. Preserve-facing moves retain facing. Keep gait phase continuous across paid steps.
+The live test route is `http://localhost:3148/renderer-sandbox`. It offers **Combate**, **Montura y azotea**, **Noche**, 24/60/100-character scenes and the real Tucumán map. These scenes use valid battle snapshots, finite equipment and regular HUD orders. Reset creates a fresh repeatable battle.
 
-## World and camera
+Validation on 4 October 2026:
 
-The new world uses authored grid cells and metric elevations. Meshes do not become simulation obstacles.
+- The full runner completed 707/707 files: 700 passed and 7 failed. It reported 4,916 passing tests, 11 failures and 5 skipped tests. The skips follow failed campaign prerequisites.
+- All seven failed files were repeated on a clean archive of `46ce4578`. Its nine assertion reports match this branch in location, message, actual/expected values and project stack. Two enclosing failures account for the total of 11. No campaign assertion was relaxed.
+- A final crew-playback route correction followed that full run. The final affected controller/effect gate passed 51/51 tests. The separate artillery/crew/presentation gate passed 34/34. Typecheck and the production build passed after the correction.
+- Test-shard self-tests passed 5/5; the final shard audit reports complete coverage, including the added controller test. Documentation and baseline audits passed (38/38 baseline checks). The native asset verifier passed all 24 appearance LODs, 244 clips per anatomy, 26 equipment entries and 3 horse LODs. Diff checks passed.
+- Browser checks used ordinary controls for rifle fire, grenade release, cannon fire/reload, mounted running and roof climbing. They confirmed AP/ammunition updates, persistent smoke, night lighting, roof cutaways and the selected actor silhouette behind a wall. The actual San Lorenzo screen loaded with HTML portraits and inventory; a rifle discharge and road movement retained their normal costs. Paired-hand anatomy, hidden contacts, life transitions and asset replacement also have focused automated coverage.
 
-Ground compatibility can preserve the current projection `screenX = originX + 26(x-y)`, `screenY = 65 + 14(x+y)` with a fixed orthographic camera. Let `pitch = asin(14/26)` and choose world units per cell from the existing vertical pixels per metre. A shared projection helper must drive scene placement, overlays, hit proxies, minimap focus, and camera anchoring.
+Existing failing campaign files: `fresh-coastal-route`, `fresh-northern-route`, `fresh-cuyo-route`, `fresh-ending-route`, `fresh-historical-loss`, `fresh-campaign-recovery` and `opening-playthrough`. Their failures concern observed corpse loot, perfect-equipment repair requests, a lost battle, an active travel route and finite medical supplies/carrying space. These remain outside the renderer change.
 
-The old `surfaceRenderOffset` compensates for SVG building artwork. Do not copy it unchanged into the metric world. Roofs, platforms, actors, projectiles, and controls must use the same actual elevation. Test this before changing gameplay overlays.
+### Local performance sample
 
-For exact ground/elevation alignment, let `V` be the chosen vertical pixels per metre, `P = V / cos(pitch)` be camera pixels per world metre, and `T = 26 * sqrt(2) / P` be metres per grid cell. Map `(x,y,height)` to Three.js `(x*T,height,y*T)`. The fixed camera looks from positive X/Z with azimuth 45 degrees. Its frustum can be shifted by the existing camera's pixel offsets, converted through `P`. Unit tests must prove ground corners, elevated points, viewport resize, and zoom anchors against the shared projection.
+Apple M2 Max, Codex in-app browser, development build, 1280×720 viewport, 2560×940 drawing buffer, 100% map zoom and human LOD 2. Each row contains twenty one-second FPS readings after assets loaded. No test suite or build ran during the sample. The scenes contain animated idle characters, held equipment, terrain, scenery and shadows. Some edge actors are partly outside the view; all listed actors remain active in the renderer. No projectiles or explosions ran during these samples.
 
-A read-only Three.js calculation verified 180 projected points across three viewport sizes, four zoom values, three camera offsets, and ground/elevated positions. Maximum error was below `5e-12` pixels. With the currently audited vertical scale, pitch is `32.57897039280412` degrees, `P = 29.74742067872502`, and `T = 1.2360585147470482`. This verifies the projection equation only; it is not an integrated camera/input test.
+| Active/loaded actors | FPS range | Mean FPS | Draw calls | Rendered triangles | Geometries / textures |
+| ---: | ---: | ---: | ---: | ---: | ---: |
+| 24 / 24 | 91.0–105.1 | 97.1 | 435 | 567,374 | 207 / 115 |
+| 60 / 60 | 72.3–77.0 | 75.4 | 959 | 895,849 | 218 / 151 |
+| 100 / 100 | 55.0–60.0 | 59.1 | 1,505 | 1,433,472 | 218 / 191 |
 
-Build terrain in cached chunks or instanced batches. Build walls on structural cells, with real openings, current door state, damage and breaches. Preserve architectural profiles, roof cutaways, discovered rooms, upper surfaces, climbing links, props, and interior disclosure. Terrain textures may remain textures on real geometry; scenery and actors must not become sprite billboards.
+The resource columns are object counts, not GPU memory bytes. These short samples do **not** establish sustained 60 FPS in large battles, during effects, or on other hardware. The 100-character sample falls below 60 FPS. Further mesh/material optimization remains useful. See [recorded samples](sector-performance.json).
 
-Dynamic contents require visibility admission on their own level. A remembered building silhouette does not reveal its occupants, loot, lights, or controls. Foliage fading must depend only on admitted actors.
-
-The proposed world module is `createSectorWorld(scene, {tileMetres, assetUrl})`, with `update(input)`, `dispose()`, and `inspect()` methods. Its input contains terrain, revealed rooms, cursor level, admitted actor points, and filtered props/lights/loot/cannons/smoke. It receives no full unit or civilian roster. Expose stable cannon muzzle anchors for the recorded effects layer.
-
-Build current walls from `state.tiles`: a breach changes a structural cell to rubble while `building.walls` can still contain its original record. Use upper-surface slab thickness and actual elevation. Update and dispose changed chunks/structures without rebuilding the whole sector for a countdown tick.
-
-Ground loot requires the admitted source item identity and visual kind as well as the existing pile counts. Preserve that distinction in the adapter so the world can show actual equipment. Use the existing terrain/profile/appearance helpers to retain regional geography, architecture, material choice, prop footprints, rotation and damage state.
-
-Retain semantic SVG/HTML interaction and annotations where useful. They must not draw a second sprite world under or over the 3D scene. Keyboard selection, body-part targeting, civilian treatment, loot, and inventory cursor behavior must remain available.
-
-## Effects
-
-Consume the recorder's already admitted firearm segment, knife path, grenade arc and landing. Do not compute a second ballistic path or mesh-based hit.
-
-Respect `discharge:false` for penetration continuation. Do not expose hidden interception points or invent visible pellet paths. Use the recorded outcome/material only for the visual impact.
-
-Artillery needs presentation-only trace events from its existing resolved `artilleryShotTrace`. Never execute a second shot to make an effect. Confirm this gap against the refreshed main before editing.
-
-Support reduced motion, pause/background behavior, renderer disposal, context loss, and asset-load failure. Show a clear failure state rather than silently replacing unsupported actors with the granadero.
-
-## Implementation order
-
-1. Verify the other session is finished and merged. Fetch and safely update main. Preserve unrelated files and the prototype worktree.
-2. Create the integration worktree from the verified latest main. Record that commit. Import only the approved prototype sources and assets needed by this feature.
-3. Add the pure actor/world presentation contract and coordinate adapter, including visibility and input proxies.
-4. In parallel, build production human variants/equipment/LODs and the complete semantic motion library.
-5. Replace terrain/buildings/props/artillery and integrate the cached Three.js scene behind the retained HTML interface.
-6. Add recorded effects, upper floors, mounts, life states, transitions and all interaction states. Remove combat-sector sprite rendering only when equivalent coverage is present.
-7. Run contract/replay/input checks and visually inspect the actual game, not only the sandbox.
-8. Run the full local gate, record measured performance and any unresolved limits, and deliver the full feature for review.
-
-## Acceptance evidence
-
-- Replay parity: identical final state, random seed, AP, ammunition, health, time, terrain changes and saved data with rendering enabled or disabled.
-- Capability coverage: every supported current order/state maps to an explicit visual sequence, including interrupted and rejected preparation.
-- Model replacement: swap a model and its manifest without changing gameplay code. Replay results and semantic input targets remain identical.
-- Visibility: hidden actors create no world nodes, shadows, labels, targets or retained movement. Include overlapping NPC/unit IDs.
-- Input: unchanged movement, preserve-facing, grouped movement, body-part aim, equipment cursor, NPC treatment, loot, keyboard selection and pan/pinch anchors.
-- Elevation: actors and effects align on roofs/platforms; shared sight and selected cursor-level interaction remain distinct; climb and destruction transitions stay aligned.
-- Animation: standing/crouched/prone/mounted, life priority, repeated exploration actions, paired fire, partial reload, forced dismount, interrupts and counterattacks.
-- Art: compare people at roughly 60, 90 and 140 screen pixels, in all eight directions, with each skin choice and outfit family. Inspect foot contact, shoulders, hands, weapon grips and cloth fit.
-- Full scene: terrain, architecture, roof cutaway, props, doors, loot, artillery, smoke, light and projectile effects are actual working 3D content.
-- Performance: measure 24, 60 and 100 admitted actors with scenery/shadows/effects on the available machine. Report frame timings and draw calls; do not infer them from the one-character demo.
-- Local verification: focused new tests, existing reducer/playback suites, complete test runner, shard checks, documentation/baseline audits, typecheck, production build and diff checks. Green tests alone do not certify visual quality.
-- Browser handover: open the actual integrated game, exercise the controls and leave it available. Preserve the existing game origin when relevant to saves.
-
-## Preparation findings to verify on refreshed main
-
-- `useUnitMotion` currently keys units and civilians by bare IDs and loses climb/link metadata in samples.
-- `SpriteFigure` restarts actions using AP/loaded state; use explicit accepted-action IDs in the new renderer.
-- The coarse `spriteOrderPose` omits distinctions required by the full action contract.
-- The current hero asset must be reduced and batched before use across a full sector.
-- Artillery has resolved traces but lacks firearm-equivalent recorded visual stages.
-
-## Asset candidates for later inspection
-
-The [MakeHuman system asset pack](https://static.makehumancommunity.org/assets/assetpacks/makehuman_system_assets.html) lists CC0 female proxies, skin, and hair. These may support the missing native female anatomy and appearance modules. Its [core asset FAQ](https://static.makehumancommunity.org/makehuman/faq/are_makehuman_files_free.html) confirms CC0 for core mesh/target assets.
-
-The [Lyndon Daniels horse rig submitted by ChadM](https://opengameart.org/content/rigged-horse) is listed as CC0 and provides a Blender file. The source page describes a rigged mesh, not a completed animation bank. Inspect anatomy, weights, scale, textures and provenance before use; the page also reports missing weights on some separate details. This is a candidate, not an approved or downloaded asset.
-
-Additional CMU motion candidates, verified by catalogue description and file presence only:
-
-| Need | First candidate | Inspection required |
-| --- | --- | --- |
-| Crouch walk | [136_09](https://mocap.cs.cmu.edu/search.php?subjectnumber=136) | Session includes unusual gait styles. Check crouch depth and balance. |
-| Crawl | [111_03](https://mocap.cs.cmu.edu/search.php?subjectnumber=111) | Pregnancy-motion session; may not be a belly crawl. |
-| Ladder | [143_37](https://mocap.cs.cmu.edu/search.php?subjectnumber=143) | Fit hand and foot contacts to the actual access geometry. |
-| Ground recovery | [140_01](https://mocap.cs.cmu.edu/search.php?subjectnumber=140) | Preserve natural recovery; do not reverse it to claim a natural fall. |
-| Collapse | [90_16](https://mocap.cs.cmu.edu/search.php?subjectnumber=90) | Staged fall; check suitability and body contacts. |
-| Pickup | [143_10](https://mocap.cs.cmu.edu/search.php?subjectnumber=143) | Toolbox weight transfer requires different grips for small objects. |
-
-These BVHs are listed in the existing conversion mirror at commit `09a07f54f3bbb58797325f009282d0b2048a2871`, under `data/<three-digit subject>/<clip>.bvh`. They have not been downloaded or visually approved. [Conversion provenance](https://raw.githubusercontent.com/una-dinosauria/cmu-mocap/09a07f54f3bbb58797325f009282d0b2048a2871/READMEFIRST.txt).
-
-CMU's [source terms and capture notes](https://mocap.cs.cmu.edu/) permit use in commercial products but prohibit resale of the motion data itself. Do not label these motions CC0. Finger/thumb motion was not recorded. No period musket reload was found in the conversion index: cartridge, ramrod, priming, partial reload, and fine grips need native authoring.
-
-This file is a plan. It does not certify that any integration item has been implemented or tested.
+The preview remains at `http://localhost:3148/`; the prior playground at port 3147 is preserved. Saves are origin-bound. This is a functional renderer and replaceable art pipeline, not final art polish or a certification of JA2 parity.
