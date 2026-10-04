@@ -23,6 +23,7 @@ import {validateContentQuests} from './content-quests.js';
 import {validateDialogue} from './content-dialogue.js';
 import {FORCE_EQUIPMENT,defaultForceEquipment,validateForceEquipment} from './content-force-equipment.js';
 import {legacyCharacterAbilities,validCharacterAbilities} from './character-abilities.js';
+import {CIVILIAN_CONSCIENCE,conductObserverDefinition,conductNoncombatantDefinition} from './service-objections.js';
 import {legacyOperativeId,isWorldCharacter} from './content-character-ids.js';
 import {characterProfile,SPEECH_EVENTS,AUTHORABLE_SPEECH_EVENTS} from './characters.js';
 import {SPEECH_LINE_LIMIT} from './content-character-presentation.js';
@@ -83,7 +84,7 @@ export function defaultContentPackage() {
       role: o.role || "",
       biography: o.biography || "",
       portrait: portrait(o.id),
-      abilities:o.id===130?['care_composure']:legacyCharacterAbilities(o.id),
+      abilities:o.id===130?['care_composure']:o.id===107?[CIVILIAN_CONSCIENCE]:legacyCharacterAbilities(o.id),
       personality:characterProfile(o).personality,
       ...(o.serviceRefusals===undefined?{}:{serviceRefusals:structuredClone(o.serviceRefusals)}),
       ...(o.preferredCompanions===undefined?{}:{preferredCompanions:structuredClone(o.preferredCompanions)}),
@@ -184,8 +185,9 @@ export function validateContentPackage(value) {
     if(isWorldCharacter(c)){
       const e=c.encounter;
       check((c.service==='contract'||c.service==='permanent'&&c.monthlyPay===0)&&c.arrivalHours===undefined,c.id,'los habitantes se incorporan en el lugar; el servicio permanente no tiene paga ni demora de llegada.');
-      check(record(e)&&['recruitable','greeting','requiredLeadership','requiredLiberated','requiredSector'].every(k=>Object.hasOwn(e,k))&&Object.keys(e).every(k=>['recruitable','greeting','requiredLeadership','requiredLiberated','requiredSector','dialogue'].includes(k)),c.id,'la configuración del encuentro no es válida.');
+      check(record(e)&&['recruitable','greeting','requiredLeadership','requiredLiberated','requiredSector'].every(k=>Object.hasOwn(e,k))&&Object.keys(e).every(k=>['recruitable','greeting','requiredLeadership','requiredLiberated','requiredSector','dialogue','noncombatant'].includes(k)),c.id,'la configuración del encuentro no es válida.');
       if(record(e)){
+        if(e.noncombatant!==undefined)check(e.noncombatant===true&&conductNoncombatantDefinition(c,value.placements.find(p=>p.character===c.id)),c.id,'un civil no combatiente debe ser un habitante fijo, sin armas, no incorporable y de servicio permanente.');
         if(e.dialogue!==undefined)try{validateDialogue(e.dialogue,sets.characters,sets.quests);for(const node of e.dialogue.nodes)for(const choice of node.choices)for(const effect of choice.effects??[])if(effect.type==='movement')check((effect.destination==='routine'||effect.character!==c.id)&&value.characters.some(target=>target.id===effect.character&&isWorldCharacter(target)),c.id,'el movimiento necesita otro habitante del mundo.');for(const node of e.dialogue.nodes)for(const choice of node.choices)for(const condition of choice.conditions??[])if(condition.type==='meeting')check(value.characters.some(target=>target.id===condition.character&&isWorldCharacter(target)),c.id,'la condición del encuentro necesita un habitante del mundo.');}catch(error){errors.push(`${c.id}: ${error.message}`);}
         check(typeof e.recruitable==='boolean',c.id,'elegí si puede incorporarse.');
         text(e.greeting,`${c.id}.encounter.greeting`,1000,true);
@@ -203,6 +205,7 @@ export function validateContentPackage(value) {
     text(c.role, `${c.id}.role`, 200, true);
     text(c.biography, `${c.id}.biography`, 5000, true);
     if(c.abilities!==undefined)check(validCharacterAbilities(c.abilities),c.id,'habilidades no válidas.');
+    if(c.abilities?.includes?.(CIVILIAN_CONSCIENCE))check(conductObserverDefinition(c),c.id,'la objeción civil requiere un candidato por contrato con servicio pagado explícito.');
     if(c.startingSupplies!==undefined)check(validStartingSupplies(c.startingSupplies),`${c.id}.startingSupplies`,'los seis suministros iniciales necesitan cantidades enteras de 0 a 1000.');
     if(c.startingCondition!==undefined)check(validStartingCondition(c.startingCondition,c.attributes?.maxHp),`${c.id}.startingCondition`,'el estado inicial necesita cinco valores enteros: salud de 1 al máximo, energía y fatiga de 0 a 100, sangrado de 0 a 10 y heridas vendadas dentro de la salud perdida. El sangrado necesita una herida sin vendar.');
     if(c.personality!==undefined)text(c.personality,`${c.id}.personality`,2000,true);

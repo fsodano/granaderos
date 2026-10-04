@@ -20,6 +20,7 @@ import {validateQuestGifts} from './quests.js';
 import {validateQuestBeneficiaries,validateQuestBeneficiaryContext} from './quest-beneficiaries.js';
 import {migrateCivilianHealth,civilianMaxHp} from './civilian-health.js';
 import {civilianIncidents} from './civilian-harm.js';
+import {issueConductObservers} from './service-objections.js';
 
 const key=spaceKey;
 const clearEncounter=unit=>{
@@ -66,6 +67,9 @@ export function enterSector(request,previous=null,{placement=false}={}){
  });
  // Deployment intent does not establish contact. Resolve sight only after final placement.
  let state=createBattle([...map.squad,...(map.garrison??[]),...(map.missionAllies??[])],{...map,exploration:true,deferContact:true});
+ // Only the owned issued squad carries this service consequence. Auxiliary
+ // actors and retained bodies do not gain authority from scene membership.
+ delete state.conductObserverIds;Object.assign(state,issueConductObservers(request.squad??[]));
  if(request.errandDefinitions!==undefined)state.errandDefinitions=structuredClone(request.errandDefinitions);
  if(request.questBeneficiaries!==undefined)state.questBeneficiaries=structuredClone(request.questBeneficiaries);
  validateQuestBeneficiaries(state.questBeneficiaries,state);

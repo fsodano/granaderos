@@ -2,6 +2,7 @@ import {worldCell} from './world-cells.js';
 import {canonicalContent} from './content-identity.js';
 import {fieldCapable} from './actor-condition.js';
 import {issueGriefParticipants,captureCompanionGrief,applyCompanionGrief} from './companion-grief.js';
+import {issueConductObservers,captureServiceObjection,applyServiceObjection} from './service-objections.js';
 export {fieldCapable};
 export {completedTacticalVictory} from './battle-outcome.js';
 import {AMMUNITION_FAMILIES} from './ammunition-families.js';
@@ -254,6 +255,7 @@ for(let y=0;y<height;y++)for(let x=0;x<width;x++){const edge=x===Math.floor(widt
 if(Array.isArray(sector.tiles))state.tiles=sector.tiles.map(t=>({blocked:false,cover:0,...t}));
 state.units=squad.map((u,i)=>makeUnit(u,'player',i,1+Math.floor(i/(height-2)),1+i%(height-2)));
 Object.assign(state,issueGriefParticipants(state.units));
+Object.assign(state,sector.conductObserverIds===undefined?issueConductObservers(state.units):{conductObserverIds:structuredClone(sector.conductObserverIds)});
 const enemies=Array.isArray(sector.enemies)?sector.enemies:Array.from({length:sector.exploration?0:sector.enemyCount||Math.max(3,squad.length+(sector.difficulty||1)-1)},(_,i)=>({id:`enemy-${i}`,name:`Realista ${i+1}`,weapon:i%3===0?1801:1800,marksmanship:50+(sector.difficulty||1)*5,morale:60+(sector.difficulty||1)*5}));
 state.units.push(...enemies.map((u,i)=>makeUnit(u,'enemy',i,width-2-Math.floor(i/(height-2)),1+i%(height-2))));
 if(!Array.isArray(sector.artillery)&&sector.cannons>0)state.artillery=Array.from({length:Math.min(sector.cannons,3)},(_,i)=>({id:`gun-${i}`,type:'bronze4',side:'player',x:2,y:2+i*3,loaded:artilleryProfile(sector,'bronze4').initialLoaded,ammo:artilleryProfile(sector,'bronze4').initialAmmo}));
@@ -580,7 +582,9 @@ function physicalImpact(s,target,amount,source,{kind='firearm',projectile=true,h
  // Civilian harm shares body effects but cannot enter soldier rewards, guards,
  // equipment handling or morale routs. Observe before the impact lowers them.
  const impact=shotLocationEffects(projectile?hitLocation:'torso',Math.max(0,amount),{...target,hp:target.hp??100}),observed=report&&observedBody(s,target);
+ const objection=captureServiceObjection(s,target,source,{intentional,canObserve:(actor,body)=>(actor===body||canSee(s,actor,body))&&isInteriorVisible(s,body,new Set(s.revealedRooms??[]))});
  applyCivilianHarm(s,target,{source,damage:impact.damage,breathLoss:impact.breathLoss+extraBreath,hitLocation,kind,observed,knockedDown:impact.knockedDown,intentional});
+ for(const reaction of applyServiceObjection(s,objection))say(s,reaction.text);
  if(observed)say(s,`${target.name} ${target.hp>0?'queda herido por el impacto.':'muere por el impacto.'}`);
  return target;
 }
@@ -938,7 +942,9 @@ function grenadeBlast(s,source,origin,intended){
     const {multiplier}=grenadeBlastExposure(s,origin,npc,GRENADE_THROW.radius);
     if(multiplier<=0)continue;
     const visible=teamCanSee(s,'player',npc);
+    const objection=captureServiceObjection(s,npc,source,{intentional:npc===intended,canObserve:(actor,body)=>(actor===body||canSee(s,actor,body))&&isInteriorVisible(s,body,new Set(s.revealedRooms??[]))});
     applyCivilianHarm(s,npc,{source,damage:Math.round(GRENADE_THROW.damage*multiplier),breathLoss:Math.round(GRENADE_THROW.energyDamage*multiplier),hitLocation:'torso',kind:'grenade',observed:visible,intentional:npc===intended});
+    for(const reaction of applyServiceObjection(s,objection))say(s,reaction.text);
     if(visible)say(s,`${npc.name} ${npc.hp>0?'queda herido por la explosión.':'muere por la explosión.'}`);
   }
   // Sound can make survivors take cover only after this blast is resolved.

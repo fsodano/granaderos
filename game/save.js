@@ -18,6 +18,7 @@ import {assertSaveSize,saveByteLength} from './save-limits.js';
 import {validateEquipmentOwnership} from './equipment.js';
 import {FITTING_RULES_VERSION} from './weapon-fittings.js';
 import {validateCompanionGriefContext} from './companion-grief.js';
+import {validateServiceObjectionContext} from './service-objections.js';
 import {validateRoadsideDiscoveryContext} from './roadside-discoveries.js';
 import {validateQuestBeneficiaryContext} from './quest-beneficiaries.js';
 export const SAVE_KEY='granaderos.campaign.v1';
@@ -58,6 +59,7 @@ export function decodeSave(text){
   if(battle)validateSectorDeployment(battle,campaign.pendingBattle);
   if(battle)validateRoadsideDiscoveryContext(campaign,battle);
   if(battle)validateCompanionGriefContext(campaign,battle,rosterFor(campaign));
+  if(battle)validateServiceObjectionContext(campaign,battle,rosterFor(campaign));
   // A new receipt may still await its campaign reply. An acknowledged receipt
   // must remain physically present with its recipient in this deployment.
   if(battle)validateQuestEscortOrders(campaign,battle);

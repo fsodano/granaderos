@@ -11,6 +11,8 @@ import {portraitFor} from '../lib/portraits';
 import CharacterDossier from './CharacterDossier';
 import ServiceRefusalNotice from './ServiceRefusalNotice';
 import PreferredCompanionsSummary from './PreferredCompanionsSummary';
+import {serviceObjectionReason} from '../../game/service-objections.js';
+import ServiceObjectionNotice from './ServiceObjectionNotice';
 import './recruitment.css';
 type Props={state:any;dispatch:(a:any)=>void};
 export default function Recruitment({state:s,dispatch}:Props){
@@ -44,7 +46,7 @@ export default function Recruitment({state:s,dispatch}:Props){
   {!visible.length&&<p className="catalogue-empty">No hay mercenarios con estos filtros. <button className="dossier-link" onClick={()=>{setQuery('');setSpecialty('all');setAvailability('all');}}>Mostrar todos</button></p>}
   <div className="recruit-catalogue">{visible.map(o=>{
    const hired=s.recruited.includes(o.id),arrival=pendingHire(s,o.id),term=periods[o.id]||'day',quote=contractQuote(s,o,term),contract=contractStatus(s,o.id),profile=characterProfile(o),record=s.operativeState[o.id];
-   const hours=hiringTravelHours(s,o.id),remaining=arrival?Math.max(0,arrival.dueAt-s.hour):0;
+   const hours=hiringTravelHours(s,o.id),remaining=arrival?Math.max(0,arrival.dueAt-s.hour):0,objection=serviceObjectionReason(s,o);
    const held=arrival&&(hiringArrivalReason(s,arrival.destination)||(s.pendingBattle?.sector===arrival.destination?'La llegada espera a que salgas del sector.':null));
    return <article key={o.id} className="contract-card" data-operative-id={o.id}>
     <button className="candidate-face" onClick={()=>setSelected(o.id)} aria-label={`Ver hoja de servicio de ${o.name}`}>{portraitFor((o as any).portraitId??o.id)?<img src={sitePath(portraitFor((o as any).portraitId??o.id)!)} alt={o.name} loading="lazy"/>:<span>{o.nickname.slice(0,2).toUpperCase()}</span>}<span>{o.name}</span></button>
@@ -67,7 +69,8 @@ export default function Recruitment({state:s,dispatch}:Props){
     </>:<>
      {hired&&<p className="contract-remaining">{contract?.remaining===null?'Servicio permanente':`${contract?.remaining??0} horas de contrato restantes`}</p>}
      {!hired&&<small>{hours?`Viaje previsto: ${hours} horas.`:'Llegada inmediata a un destino seguro.'}</small>}
-     {quote.serviceRefusal?<ServiceRefusalNotice state={s} refusal={quote.serviceRefusal} disabled={busy} dispatch={dispatch}/>:quote.reason&&<small>{quote.reason}</small>}
+     <ServiceObjectionNotice reason={objection}/>
+     {quote.serviceRefusal?<ServiceRefusalNotice state={s} refusal={quote.serviceRefusal} disabled={busy} dispatch={dispatch}/>:quote.reason&&quote.reason!==objection&&<small>{quote.reason}</small>}
      <label>Duración<select aria-label={`Duración del contrato de ${o.name}`} value={term} onChange={e=>setPeriods({...periods,[o.id]:e.target.value})}>{terms.map(([id,name])=><option key={id} value={id}>{name}</option>)}</select></label>
      <button className="gold-button" disabled={!quote.available||s.resources.treasury<quote.price||record?.alive===false||busy||(!hired&&(!destination||!civicStatus(s,o.id).available))} onClick={()=>dispatch(hired?{type:'renewContract',id:o.id,term}:{type:'recruitCivic',id:o.id,term,destination})}>{record?.alive===false?'Caído en combate':`${hired?'Renovar':'Contratar'} · ${quote.price} pesos`}</button>
      {hired&&<button className="dossier-link" disabled={busy} onClick={()=>dispatch({type:'dismiss',id:o.id})}>Finalizar servicio</button>}
