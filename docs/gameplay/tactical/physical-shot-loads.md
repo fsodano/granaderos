@@ -8,7 +8,7 @@ The released [classic JA2 source at revision 876ccf5d](https://github.com/darius
 
 The load resolves one accuracy roll. A failed roll selects one bounded horizontal scatter point with the existing two draws; the zero/zero offset becomes +1/0. All nine rays share that center and its original absolute aiming height. Fixed lateral and vertical offsets then determine each ray. Each ray uses the same ordered cover, body, ground, floor and world-boundary intersections as a single ball.
 
-The nine pattern positions are the center and the eight combinations of lateral/vertical offsets -1, 0 and +1. Each receives one ninth of the configured load's force. Horizontal and vertical spread tangents are 0.25 and 0.08. Physical flight is bounded by the selected shot load's effective range, including native trabuco range 6. Single balls retain their separate finite 2× range rule. These weights, tangents, range, silhouettes and resistance values are **Granaderos tuning**, not measured 1812 ballistics or exact JA2 formulas.
+The nine pattern positions are the center and the eight combinations of lateral/vertical offsets -1, 0 and +1. Each receives one ninth of the configured load's force. Horizontal and vertical spread tangents are 0.25 and 0.08. Physical pellet flight is bounded by three times the actual selected load's effective range. The legacy trabuco retains aiming range 6 and gains a finite flight limit of 18; the native hire's authored shot load retains range 10 and a limit of 30. Single balls retain their separate finite flight rule. These weights, tangents, range, silhouettes and resistance values are **Granaderos tuning**, not measured 1812 ballistics or exact JA2 formulas.
 
 Cover spends each pellet's remaining force. Bodies use their actual height and intersected region; selecting the head does not make every pellet a head hit. A foreground body can shield another person. Geometry for all pellets is resolved before injuries are applied, so a casualty from the load cannot disappear and expose the rear person to another simultaneous pellet. A ray never injures the same typed body twice. A civilian and soldier remain distinct collision recipients even if an invalid synthetic scene gives their collections the same ID; ordinary saved scenes still require unique public IDs.
 
@@ -32,4 +32,25 @@ Existing saves retain finite guns, ammunition, health and RNG state without new 
 
 `tests/shot-load-projectiles.test.mjs` checks finite weighted force, cover and upper-floor stops, foreground shielding through death, fractional injury, typed civilian harm, actual bodyguard recipients, private-room bodies/props, frozen mixed-pistol intent, enemy orders, and a stock paid shot-load hire through actual fire, official save, return and reentry. Affected single-ball, point-fire, alternate-load, warning, paired and presentation tests retain their own contracts.
 
-Each ray now spends material force over crossed cover depth, including oblique and vertically clipped intervals. Same-object cells merge; separate overlapping obstacles add force loss. Pellet gravity, reflected ricochet and a supported mass/velocity model remain open. Single balls now use range-scaled far-shot drop; these pellets retain their effective-range cap and cannot reach that drop onset. Cannon and map/3D work are separate. This slice does not claim full JA2 or historical ballistic parity.
+Each ray now spends material force over crossed cover depth, including oblique and vertically clipped intervals. Same-object cells merge; separate overlapping obstacles add force loss. Pellets now share the exact range-scaled drop after twice the actual selected effective range. The longer finite tail can change a downstream body region, enter material or hit ground after the resolved aiming point. Intended geometry before that onset stays unchanged. Reflected ricochet and a supported mass/velocity model remain open. Cannon and map/3D work are separate. This slice does not claim full JA2 or historical ballistic parity.
+
+
+## Falling pellet tails — 4 October 2026
+
+The former one-range cap ended every pellet before the shared two-range drop
+onset. The explicit `shotLoadFlightRangeMultiplier: 3` setting now permits a
+falling tail on ordinary resolved near-centre shots. It changes physical reach,
+not aiming accuracy, the selected range, nine force shares or the random draws.
+Known-person warnings and enemy forecasts trace the same extended geometry.
+Actual concealed bodies still affect injury while the public spread descriptor
+uses its existing information boundary.
+
+The pinned Stracciatella source assigns [ordinary gun range to each buckshot
+bullet](https://github.com/ja2-stracciatella/ja2-stracciatella/blob/04869c8e339ead1de9fefb25b7ad206b9b786825/src/game/Tactical/LOS.cc#L3394-L3404)
+and applies the shared [two-range drop
+rule](https://github.com/ja2-stracciatella/ja2-stracciatella/blob/04869c8e339ead1de9fefb25b7ad206b9b786825/src/game/Tactical/LOS.cc#L4217-L4223).
+It supports shared flight and gravity; the three-range limit and continuous
+curve are explicit Granaderos tuning. This is not measured period ballistics or
+an exact classic formula. No new persistent trajectory record or graphical
+pellet asset is added. New physical contacts can change a resumed shot's outcome;
+the same saved input and orders under this engine still reproduce the result.

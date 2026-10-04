@@ -5,7 +5,7 @@ import {campaignContentReport} from '../game/campaign-content.js';
 import {contentIdentity} from '../game/content-identity.js';
 import {initialCampaign,dispatchCampaign,serializeCampaign,restoreCampaign,deploymentCost} from '../game/campaign.js';
 import {equipmentCatalog} from '../game/equipment.js';
-import {createBattle,actBattle,endTurn,artilleryCosts,artilleryShotTrace} from '../game/tactical.js';
+import {createBattle,actBattle,endTurn,artilleryCosts,artilleryShotTrace,artilleryContact,getReachable} from '../game/tactical.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
 import {enterSector} from '../game/world.js';
 import {encodeSave,decodeSave} from '../game/save.js';
@@ -68,6 +68,12 @@ test('enemy crew selection and firing use the authored model rather than its ori
 
 test('a real authored emplacement retains finite configured ammunition and names through shots, return and saved reentry',async()=>{
  const {issuedBattery,wonBattery}=await import('./stationed-artillery-fixture.mjs');const d=authored({name:'Pedrero del Litoral',fireAP:12,initialAmmo:2}),issued=issuedBattery(d).pendingBattle.artillery[0];assert.equal(issued.ammo,2);assert.equal(issued.loaded,true);let p=visit(wonBattery(d));const gun=structuredClone(p.battle.artillery[0]);assert.equal(gun.ammo,0);assert.equal(gun.loaded,false);assert.equal(gun.id,issued.id);
- const actor=p.battle.units.find(u=>u.side==='player'&&u.hp>=15&&!u.routed&&Math.hypot(u.x-gun.x,u.y-gun.y)<=1.5);assert.ok(actor);const denied=actBattle(p.battle,{type:'artilleryReload',unitId:actor.id,artilleryId:gun.id});assert.match(denied.lastError,/municiones/);assert.deepEqual(denied.artillery,p.battle.artillery);assert.deepEqual(denied.units,p.battle.units);
+ // Actual combat can leave every survivor away from this empty gun. Approach
+ // through ordinary movement before testing its finite-ammunition boundary.
+ const approach=p.battle.units.filter(u=>u.side==='player'&&u.hp>=15&&!u.routed&&!u.unconscious&&!u.asleep&&u.stance!=='prone').flatMap(u=>getReachable(p.battle,u).filter(spot=>artilleryContact(p.battle,{...u,...spot},gun)).map(spot=>({u,spot}))).sort((a,b)=>a.spot.cost-b.spot.cost)[0];assert.ok(approach);
+ const injuries=p.battle.units.filter(u=>u.side==='player').map(u=>({id:u.id,hp:u.hp,bleeding:u.bleeding,bandaged:u.bandaged}));
+ if(approach.spot.cost){const b=actBattle(p.battle,{type:'move',unitId:approach.u.id,x:approach.spot.x,y:approach.spot.y});assert.equal(b.lastError,null);assert.ok(b.elapsedSeconds>p.battle.elapsedSeconds);p=saved(sync({campaign:p.campaign,battle:b}));}
+ assert.deepEqual(p.battle.units.filter(u=>u.side==='player').map(u=>({id:u.id,hp:u.hp,bleeding:u.bleeding,bandaged:u.bandaged})),injuries,'approach and save preserve the actual battle deaths and injuries');
+ const denied=actBattle(p.battle,{type:'artilleryReload',unitId:approach.u.id,artilleryId:gun.id});assert.match(denied.lastError,/municiones/);assert.deepEqual(denied.artillery,p.battle.artillery);assert.deepEqual(denied.units,p.battle.units);
  const retained=visit(saved({campaign:leave(p)}).campaign);assert.equal(retained.battle.artillery[0].id,gun.id);assert.equal(retained.battle.artillery[0].loaded,false);assert.equal(retained.battle.artillery[0].ammo,0);assert.equal(artilleryProfile(retained.battle,gun).name,'Pedrero del Litoral');assert.equal(artilleryCosts(retained.battle,retained.battle.units[0],gun).fire,12);assert.ok(saved(retained));
 });

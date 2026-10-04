@@ -24,20 +24,20 @@ function riskAwareBatteryOrder(b,u){
  const target=b.units.find(v=>v.id===action.targetId),risk=firearmBystanderRisk(b,u,target,action.hitLocation??'torso');
  const direct=risk.direct.some(v=>v.kind==='npc');if(!direct&&!risk.scatter.some(v=>v.kind==='npc'))return action;
  const proposed=firearmShotOptions(b,u,target,action.aim??0).find(o=>o.aim===(action.aim??0)&&o.hitLocation===(action.hitLocation??'torso'));
- // Prefer a known safe shot within 10% of the proposed expected impact.
- // Decline known prisoner risk when no comparable safe shot exists. A
- // scattered ball can reach a prisoner beyond the selected guard.
- const minimum=direct?0:(proposed?.chance??0)*(proposed?.damageFactor??0)*.9,shots=[];
+ // Prefer the best affordable known safe shot, even when it has less force
+ // than the proposed shot. Waiting for comparable damage can expose the
+ // scout while a scattered pellet can reach a prisoner beyond the guard.
+ const shots=[];
  for(const t of b.units.filter(v=>v.side==='enemy'&&v.hp>=15&&!v.routed&&!v.departure&&!v.unconscious&&!v.surrendered&&teamCanSee(b,'player',v))){
   const cost=actionCosts(b,u,t);if(u.ap<cost.fire)continue;
   for(const o of firearmShotOptions(b,u,t,Math.min(4,Math.floor((u.ap-cost.fire)/cost.aim)))){
-   const score=o.chance*o.damageFactor;if(o.chance<5||o.damageFactor<=0||score<minimum)continue;
+   const score=o.chance*o.damageFactor;if(o.chance<5||o.damageFactor<=0)continue;
    const knownRisk=firearmBystanderRisk(b,u,t,o.hitLocation);if([...knownRisk.direct,...knownRisk.scatter].some(v=>v.kind==='npc'))continue;
    shots.push({score,preview:o,risk:knownRisk,action:{type:'fire',unitId:u.id,targetId:t.id,aim:o.aim,hitLocation:o.hitLocation}});
   }
  }
  const selected=shots.sort((a,c)=>c.score-a.score)[0];
- if(selected){riskChoices.push({turn:b.turn,proposed:{action,preview:proposed,risk},selected});return selected.action;}
+ if(selected){riskChoices.push({orderIndex:orders.length,turn:b.turn,proposed:{action,preview:proposed,risk},selected});return selected.action;}
  return null;
 }
 function rescueOrder(b,u){

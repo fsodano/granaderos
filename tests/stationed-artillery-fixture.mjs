@@ -46,6 +46,24 @@ export function fireStationed(p){
  b=actBattle(b,{type:'artillery',unitId:approach.u.id,artilleryId:gun.id,x:target.x,y:target.y,mode:'solid'});assert.equal(b.lastError,null);assert.equal(b.artillery[0].loaded,false);return saved(sync({campaign:p.campaign,battle:b}));
 }
 
+// Depleted-boundary tests must spend the actual retained stock. A real victory
+// can end before the gun fires, so its starting loaded round cannot be assumed.
+export function exhaustStationed(pair){
+ const initial=pair.battle.artillery[0],count=Number(initial.loaded)+initial.ammo;
+ assert.ok(Number.isInteger(count)&&count>0,'the retained piece must own a finite charge to spend');
+ let next=pair;
+ for(let shot=0;shot<count;shot++){
+  const before=structuredClone(next.battle.artillery.find(piece=>piece.id===initial.id));
+  next=fireStationed(next);
+  const after=next.battle.artillery.find(piece=>piece.id===initial.id);
+  assert.ok(after);assert.equal(after.loaded,false);
+  assert.equal(Number(after.loaded)+after.ammo,Number(before.loaded)+before.ammo-1);
+  assert.equal(after.ammo,before.ammo-(before.loaded?0:1));
+ }
+ assert.equal(next.battle.artillery.find(piece=>piece.id===initial.id).ammo,0);
+ return next;
+}
+
 // Travel may end with exhausted soldiers asleep. Wait for real recovery, then
 // issue wake orders before another departure; never edit fatigue or sleep state.
 export function wakeBatteryCrew(state){

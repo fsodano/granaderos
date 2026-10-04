@@ -15,7 +15,7 @@ export function shotLoadFlight(state,actor,target,weapon,hitLocation='torso',opt
   const nx=dx/distance,ny=dy/distance,side=pattern.side*COMBAT_BALANCE.shotLoadHorizontalSpread;
   const vx=nx-ny*side,vy=ny+nx*side;
   const destination={...target,x:actor.x+vx*distance,y:actor.y+vy*distance};
-  const flight=projectileFlight(state,actor,destination,{...weapon,damage:weapon.damage*pattern.weight,loadPattern:'single'},hitLocation,{...options,forceBudget:weapon.damage*pattern.weight,destinationHeight:height+pattern.up*COMBAT_BALANCE.shotLoadVerticalSpread*distance,maxDistance:weapon.range,physicalHitLocation:true});
+  const flight=projectileFlight(state,actor,destination,{...weapon,damage:weapon.damage*pattern.weight,loadPattern:'single'},hitLocation,{...options,forceBudget:weapon.damage*pattern.weight,destinationHeight:height+pattern.up*COMBAT_BALANCE.shotLoadVerticalSpread*distance,maxDistance:weapon.range*COMBAT_BALANCE.shotLoadFlightRangeMultiplier,physicalHitLocation:true});
   pellets.push({index,weight:pattern.weight,flight});
  }
  const bodyImpacts=pellets.flatMap(p=>p.flight.bodyImpacts.map(entry=>({...entry,pelletIndex:p.index,weight:p.weight})));

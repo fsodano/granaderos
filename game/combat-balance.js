@@ -4,6 +4,7 @@
 export const COMBAT_BALANCE=Object.freeze({
  firearmDamageMultiplier:1,
  firearmFlightRangeMultiplier:2, // Physical flight limit; effective aiming range is unchanged.
+ shotLoadFlightRangeMultiplier:3, // Finite pellet travel; keeps a falling tail beyond the shared 2-range onset.
  firearmFarDropIncrement:.1, // Beyond 2 effective ranges, slope falls by this / (2*range) per cell; tactical tuning.
  firearmBodyResistance:Object.freeze({head:15,torso:30,legs:23}), // Lead-ball force spent passing through one body.
  firearmBodyPenetrationThreshold:20,
