@@ -86,7 +86,7 @@ import {prepareDeploymentExits,planDeploymentReturn,recordStrategicArrival,migra
 import {validateSectorExits} from './tactical-exits.js';
 import {WORK_ASSIGNMENTS,TOOLKIT_PRICE,TOOLKIT_POINTS,migrateAssignments,assignWork,advanceAssignments,validateAssignments,militiaAssignmentIssue} from './assignments.js';
 import {assignmentStates,migrateAssignmentAttention,validateAssignmentAttention,collectAssignmentAttention,reconcileAssignmentAttention,militiaCompletionAttention,militiaCancellationAttention,sleepAttention} from './assignment-attention.js';
-import {migrateMorale,deploymentMorale,returnMorale,recordPayMorale,recordCasualtyMorale,recordBattleMorale,advanceMorale,validateMorale} from './morale.js';
+import {migrateMorale,deploymentMorale,returnMorale,payMoraleRewardEligible,recordPayMorale,recordCasualtyMorale,recordBattleMorale,advanceMorale,validateMorale} from './morale.js';
 import {migrateEnemyGroups,launchEnemyGroup,advanceEnemyGroups,delayCrossingEnemyGroups,haltEnemyGroupsAt,queueEnemyEncounter,localDefenderIds,localDefenderCount,retreatDestinations,occupyingGroups,recordEnemyGroupResult,validateEnemyGroups} from './enemy-groups.js';
 import {setSleep,prepareSleep,finishSleepHour,SLEEP_ISSUE_TEXT} from './sleep.js';
 import {autoResolve} from './auto-resolve.js';
@@ -800,8 +800,7 @@ export function dispatchCampaign(previous,action){
         pay(s,{treasury:quote.price});s.contracts[id]={kind:'paid',term:action.term??'day',...contractStartedFields(s,quote.expiresSecond),expiresAt:quote.expiresAt,paid:quote.price};
         // Modern paid contracts must retain the foreign-standing benefit of
         // legacy payroll. Reuse the saved pay clock to cap repeat renewals.
-        const lastPay=s.operativeState[id].lastMoralePayAt;
-        if(op.foreign&&quote.price>0&&(lastPay==null||s.hour-lastPay>=24))standing(s,'foreign',5);
+        if(op.foreign&&quote.price>0&&payMoraleRewardEligible(s,id))standing(s,'foreign',5);
         recordPayMorale(s,[id],true);note(s,`${op.name} renueva su servicio por ${quote.hours/24} días.`);break;
       }
       case 'dismiss':{const id=Number(action.id);requireThat(s.recruited.includes(id),'El combatiente no está contratado.');requireThat(id!==1000,'Tu oficial dirige la campaña y no puede ser despedido.');endOperativeService(s,id);note(s,'El combatiente deja el servicio sin devolución del anticipo.');break;}
