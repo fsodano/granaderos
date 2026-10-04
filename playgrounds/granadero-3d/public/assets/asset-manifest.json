@@ -1,0 +1,157 @@
+{
+  "version": 1,
+  "asset": "granadero.glb",
+  "title": "Argentine Granadero \u2014 live skeletal 3D study",
+  "source": {
+    "type": "Original Granaderos clothing, equipment and animations fitted to a CC0 MakeHuman human base",
+    "script": "authoring/build_granadero.py",
+    "humanFittingScript": "authoring/human_details.py",
+    "editableScene": "authoring/granadero.blend",
+    "blenderVersion": "5.0.0 Alpha",
+    "units": "metres",
+    "license": "Original project clothing/equipment/actions plus MakeHuman hm08 topology, male target, rig/weight data and Mindfront Aksel skin maps under CC0 1.0",
+    "vendorManifest": "authoring/vendor/makehuman/source-manifest.json",
+    "vendorLicense": "authoring/vendor/makehuman/LICENSE.ASSETS.md",
+    "humanDetails": {
+      "source": "MakeHuman hm08 adult male morphology + Mindfront Aksel CC0 skin details",
+      "scale": 0.10193749686314679,
+      "vertices": 8879,
+      "headVertices": 4420,
+      "fingerBones": 30
+    }
+  },
+  "sha256": "9abba1b60ef6bd97d2a6b8dc2d8d257e52cb86b61c49358a44a9621eeae733b9",
+  "byteLength": 3274116,
+  "coordinates": {
+    "up": "+Y",
+    "forward": "+Z",
+    "groundY": 0,
+    "authoringUp": "+Z",
+    "authoringForward": "-Y",
+    "adultBodyHeightMetres": 1.782,
+    "heightWithShakoAndPlumeMetres": 2.0205
+  },
+  "bounds": {
+    "space": "gltf, rest/Idle frame 0; weapons excluded",
+    "min": [
+      -0.31078,
+      0.0041,
+      -0.15911
+    ],
+    "max": [
+      0.33053,
+      2.02054,
+      0.16509
+    ]
+  },
+  "statistics": {
+    "triangles": 37460,
+    "meshes": 35,
+    "nodes": 91,
+    "skins": 1,
+    "bones": 50,
+    "materials": 16,
+    "animationClips": 9
+  },
+  "materials": {
+    "skin": "Skin",
+    "uniform": "Navy_Wool",
+    "facings": "Crimson_Facings",
+    "crossbelts": "Cream_Crossbelts"
+  },
+  "nodes": {
+    "rig": "Granadero_Rig",
+    "rifle": "weapon_rifle",
+    "sabre": "weapon_sabre",
+    "pistol": "weapon_pistol",
+    "rifleMuzzle": "muzzle_rifle",
+    "pistolMuzzle": "muzzle_pistol"
+  },
+  "weaponForwardLocal": {
+    "rifle": "-Y",
+    "pistol": "-Y",
+    "sabreBlade": "+Z"
+  },
+  "locomotionSpeed": {
+    "Walk": 0.6833333333333333,
+    "Run": 1.575
+  },
+  "clips": [
+    {
+      "name": "Idle",
+      "durationSeconds": 3,
+      "loop": true,
+      "events": {},
+      "channels": 150
+    },
+    {
+      "name": "Walk",
+      "durationSeconds": 1.2,
+      "loop": true,
+      "events": {},
+      "channels": 150
+    },
+    {
+      "name": "Run",
+      "durationSeconds": 0.8,
+      "loop": true,
+      "events": {},
+      "channels": 150
+    },
+    {
+      "name": "RifleAim",
+      "durationSeconds": 2,
+      "loop": true,
+      "events": {},
+      "channels": 150
+    },
+    {
+      "name": "RifleFire",
+      "durationSeconds": 1.2,
+      "loop": false,
+      "events": {
+        "shot": 0.4
+      },
+      "channels": 150
+    },
+    {
+      "name": "SabreReady",
+      "durationSeconds": 2,
+      "loop": true,
+      "events": {},
+      "channels": 150
+    },
+    {
+      "name": "SabreSlash",
+      "durationSeconds": 1.2,
+      "loop": false,
+      "events": {
+        "hit": 0.5
+      },
+      "channels": 150
+    },
+    {
+      "name": "PistolAim",
+      "durationSeconds": 2,
+      "loop": true,
+      "events": {},
+      "channels": 150
+    },
+    {
+      "name": "PistolFire",
+      "durationSeconds": 1,
+      "loop": false,
+      "events": {
+        "shot": 0.3333333333333333
+      },
+      "channels": 150
+    }
+  ],
+  "notes": [
+    "Hide all weapon groups for Idle, Walk and Run. Only reveal the group for the selected armed action.",
+    "Weapons are child groups of hand.R. Muzzle locator world transforms follow the exported skeletal animation.",
+    "Aim/ready actions hold their pose with a small breathing cycle. Fire/slash clips begin and end at the matching ready pose.",
+    "The model is an original art study, not a claim of exact historical-uniform reconstruction.",
+    "The runtime should interpolate glTF skeletal tracks with AnimationMixer; it does not need an authored direction bank."
+  ]
+}

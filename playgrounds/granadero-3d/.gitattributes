@@ -1,0 +1,2 @@
+# Keep this upstream license byte-for-byte, including its Markdown underline.
+authoring/vendor/makehuman/LICENSE.md -whitespace conflict-marker-size=32
