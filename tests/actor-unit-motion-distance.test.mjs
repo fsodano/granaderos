@@ -25,6 +25,7 @@ test('real movement publishes cumulative distance through paid cells and station
  const step=(x,y)=>({...state,presentationMovingUnitId:'e',units:state.units.map(u=>u.id==='e'?{...u,x,y}:u)});
  state=step(4,1);await env.draw(state);await env.tick(120);
  assert.equal(env.motion.actorPositions['unit:e'].elapsedDistance,1);
+ assert.equal(env.motion.actorPositions['unit:e'].segmentFraction,1);assert.equal(env.motion.actorPositions['unit:e'].climbDirection,0);
  assert.equal(env.motion.positions.e,env.motion.actorPositions['unit:e'],'legacy alias points at the same namespaced sample');
  await env.tick(300);assert.equal(env.motion.positions.e.elapsedDistance,1,'waiting cannot advance foot phase');
  state=step(5,2);await env.draw(state);assert.equal(env.motion.positions.e.elapsedDistance,1);
@@ -36,4 +37,14 @@ test('real movement publishes cumulative distance through paid cells and station
  await env.draw({...state,presentationMovingUnitId:null});
  state=step(4,2);await env.draw(state);assert.equal(env.motion.positions.e.elapsedDistance,0,'a separate order starts a new travel phase');
  await env.tick(60);assert.equal(env.motion.positions.e.travelX,-1);assert.equal(env.motion.positions.e.travelY,0);assert.equal(env.motion.positions.e.elapsedTravelX,-.5);
+});
+
+test('presented climb keeps its link and final segment fraction',async t=>{
+ const env=await mount(t);const ground=field();
+ const platform={x:4,y:1,tacticalLevel:1,elevation:3,kind:'platform'};
+ let state={...ground,upperSurfaces:[platform],presentationVisibleIds:['p','e'],presentationStepMs:120};await env.draw(state);
+ state={...state,presentationMovingUnitId:'e',units:state.units.map(u=>u.id==='e'?{...u,x:4,y:1,tacticalLevel:1,lastMovePath:[{x:4,y:1,tacticalLevel:1,kind:'climb',linkId:'ladder'}]}:u)};
+ await env.draw(state);await env.tick(60);
+ assert.equal(env.motion.positions.e.kind,'climb');assert.equal(env.motion.positions.e.linkId,'ladder');assert.equal(env.motion.positions.e.segmentFraction,.5);assert.equal(env.motion.positions.e.climbDirection,1);
+ await env.tick(60);assert.equal(env.motion.positions.e.segmentFraction,1);assert.equal(env.motion.positions.e.climbDirection,1);assert.equal(env.motion.positions.e.kind,'climb');
 });

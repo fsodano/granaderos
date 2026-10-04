@@ -11417,39 +11417,54 @@
         "lod": 0,
         "url": "/models/characters/horse-lod0.glb",
         "triangles": 17322,
-        "bytes": 667376,
-        "sha256": "75dc16a7dc1cfe4f38f94b830b3d7bee08c6aa875fc9e51948af5ee8fff60df5"
+        "bytes": 676556,
+        "sha256": "b83f48c9dd231ca5d4fd7c44115be540e2aa8459c94aef89e65ca849ade9bc04"
       },
       {
         "lod": 1,
         "url": "/models/characters/horse-lod1.glb",
         "triangles": 10577,
-        "bytes": 451184,
-        "sha256": "1c3f29cf760b86939d87aa7c6fed29543158ff43be010b510e210d7e8fb71ac3"
+        "bytes": 460360,
+        "sha256": "edaa79079ae8dc5109ec30f43dccc1a66a667c75456ac5d59e18a89fe3f9aec1"
       },
       {
         "lod": 2,
         "url": "/models/characters/horse-lod2.glb",
         "triangles": 6081,
-        "bytes": 300992,
-        "sha256": "8ec08518156d68af87c1c810b11e132853e1d02e2e2a7a1946bb6af1e94ca9e3"
+        "bytes": 310032,
+        "sha256": "6b232850ead3ebc220087c23c3405cc85991d03dfc7b130ee80493b6a7502993"
       }
     ],
     "clips": [
       {
         "name": "HorseIdle",
         "duration": 2.4,
-        "loop": true
+        "loop": true,
+        "locomotionSpeed": 0,
+        "strideDistance": 0.0,
+        "strideMeasurement": "median rearward sole velocity below 4.5 cm",
+        "gait": "idle",
+        "nativeBoneCount": 19
       },
       {
         "name": "HorseWalk",
         "duration": 1.1,
-        "loop": true
+        "loop": true,
+        "locomotionSpeed": 0.87949,
+        "strideDistance": 0.96744,
+        "strideMeasurement": "median rearward sole velocity below 4.5 cm",
+        "gait": "walk",
+        "nativeBoneCount": 19
       },
       {
         "name": "HorseRun",
-        "duration": 0.72,
-        "loop": true
+        "duration": 0.7333333333333333,
+        "loop": true,
+        "locomotionSpeed": 2.22906,
+        "strideDistance": 1.63464,
+        "strideMeasurement": "median rearward sole velocity below 4.5 cm",
+        "gait": "trot",
+        "nativeBoneCount": 19
       }
     ],
     "actions": {
