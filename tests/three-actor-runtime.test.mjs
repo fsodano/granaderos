@@ -211,7 +211,7 @@ test('actor removal releases cloned human, garment and horse bone textures while
   const a=new ActorRuntime(f.asset,visual(f,{mounted:true,garments:{headwear:null,outfit:'poncho',legwear:null}}));
   const b=new ActorRuntime(f.asset,visual(f,{key:'unit:remaining',mounted:true}));
   const actorSkeletons=runtime=>{const found=new Set();runtime.root.traverse(node=>{if(node instanceof SkinnedMesh)found.add(node.skeleton);});return found;};
-  const ownedA=actorSkeletons(a),ownedB=actorSkeletons(b);assert.ok(ownedA.size>=5,'fixture covers body parts, garment and horse skeletons');
+  const ownedA=actorSkeletons(a),ownedB=actorSkeletons(b);assert.equal(ownedA.size,2,'human parts and garment share one palette; horse has its own palette');
   let disposedA=0,disposedB=0;
   for(const skeleton of ownedA){assert.ok(!sourceSkeletons.has(skeleton));skeleton.computeBoneTexture();skeleton.boneTexture.addEventListener('dispose',()=>disposedA++);}
   for(const skeleton of ownedB){assert.ok(!ownedA.has(skeleton));skeleton.computeBoneTexture();skeleton.boneTexture.addEventListener('dispose',()=>disposedB++);}
@@ -336,4 +336,42 @@ test('locomotion uses total path length through turns and positive native strafe
   runtime.update(visual(f,{action:'walk',yaw:Math.PI/2,motion:{...motion,travelX:-1}}),10);runtime.tick(0,10);close(actorHead(runtime,f).position.x,2-.7*TILE_METRES,'backward uses negative cumulative distance');
   for(const action of ['strafeLeft','strafeRight']){runtime.update(visual(f,{action,motion:{...motion,travelX:0,travelY:-1}}),20);settle(runtime,30);close(actorHead(runtime,f).position.x,.7*TILE_METRES,action);}
   runtime.dispose();
+});
+
+test('all compatible body parts and rebound garments share one skeleton per actor',()=>{
+  const f=fixture(),a=new ActorRuntime(f.asset,visual(f,{garments:{outfit:'poncho'}})),b=new ActorRuntime(f.asset,visual(f,{key:'second'}));
+  const skeleton=a.model.getObjectByName(f.body.name).skeleton;
+  for(const name of [f.coat.name,f.headwear.name,f.garment.name])assert.equal(a.model.getObjectByName(name).skeleton,skeleton,name);
+  assert.notEqual(b.model.getObjectByName(f.body.name).skeleton,skeleton);assert.notEqual(f.body.skeleton,skeleton);
+  skeleton.computeBoneTexture();assert.equal(a.model.getObjectByName(f.coat.name).skeleton.boneTexture,skeleton.boneTexture);
+  a.dispose();b.dispose();
+});
+
+test('parts with distinct inverse bind transforms retain distinct palettes',()=>{
+  const f=fixture(),inverses=f.coat.skeleton.boneInverses.map(matrix=>matrix.clone());inverses[0].elements[12]+=.01;
+  f.coat.skeleton=new Skeleton(f.coat.skeleton.bones,inverses);
+  const runtime=new ActorRuntime(f.asset,visual(f));
+  const body=runtime.model.getObjectByName(f.body.name),coat=runtime.model.getObjectByName(f.coat.name),headwear=runtime.model.getObjectByName(f.headwear.name);
+  assert.notEqual(coat.skeleton,body.skeleton);assert.equal(headwear.skeleton,body.skeleton);assert.equal(coat.skeleton.bones[0],body.skeleton.bones[0]);
+  close(coat.skeleton.boneInverses[0].elements[12]-body.skeleton.boneInverses[0].elements[12],.01);runtime.dispose();
+});
+
+test('a thrown knife stays in its hand until release and visibility resets on interruption or completion',()=>{
+  const f=fixture();addClip(f,'stand.gesture.throwKnife',{gesture:'throwKnife',markers:{release:1},handProps:[{hand:'handRight',categories:['knife'],untilMarker:'release'}]});
+  f.asset.manifest.equipment.items.knife={...f.asset.manifest.equipment.items['1809'],category:'knife'};
+  const items=[{id:'knife',reference:'primary',socket:'handRight'}],v=visual(f,{action:'throwKnife',equipment:'blade',items,cue:{id:'throw',action:'throwKnife',startedAt:0,durationMs:1000}});
+  const runtime=new ActorRuntime(f.asset,v),knife=attached(runtime,'primary','knife');
+  runtime.tick(0,400);assert.equal(knife.parent.name,f.sockets.handRight_sabre.node);assert.ok(knife.visible);
+  runtime.tick(0,600);assert.equal(knife.visible,false);assert.equal(v.items[0].id,'knife','release does not remove gameplay inventory');
+  runtime.update(visual(f,{equipment:'blade',items}),650);assert.ok(knife.visible,'interrupted clip restores visibility');
+  runtime.update({...v,cue:{...v.cue,id:'throw-next',startedAt:1000}},1000);runtime.tick(0,1600);assert.equal(knife.visible,false);
+  runtime.tick(0,2001);assert.ok(knife.visible,'completed clip defers equipment ownership to the next presentation');assert.equal(attached(runtime,'primary','knife'),knife);runtime.dispose();
+});
+
+test('a different held weapon still stows during a knife throw and a missing release marker is explicit',()=>{
+  const f=fixture(),clip=addClip(f,'stand.gesture.throwKnife',{gesture:'throwKnife',markers:{release:1},handProps:[{hand:'handRight',categories:['knife'],untilMarker:'release'}]});
+  const v=visual(f,{action:'throwKnife',equipment:'blade',items:[{id:'1809',reference:'primary',socket:'handRight'}]});
+  const runtime=new ActorRuntime(f.asset,v);assert.equal(attached(runtime,'primary','1809').parent.name,f.sockets.hipLeft.node);runtime.dispose();
+  f.asset.manifest.equipment.items['1809'].category='knife';delete clip.markers.release;
+  assert.throws(()=>new ActorRuntime(f.asset,v),/Missing held prop marker: release/);
 });

@@ -14,6 +14,19 @@ const gestureHands:Record<string,HandRole[]>={
   offer:['handRight'],grab:['handRight'],pickup:['handRight'],equip:['handRight'],door:['handRight'],ration:['handRight'],throw:['handRight'],throwKnife:['handRight'],bolas:['handRight'],signal:['handRight'],
 };
 
+/** Separate mesh parts can share one palette when their bind data is equal.
+ * Bone identity is checked, so another actor or a horse can never share it. */
+function shareSkeletons(root:Object3D){
+  const palettes:Skeleton[]=[];
+  root.traverse(node=>{
+    if(!(node instanceof SkinnedMesh))return;
+    const source=node.skeleton;
+    const shared=palettes.find(other=>other===source||other.bones.length===source.bones.length&&other.boneInverses.length===source.boneInverses.length&&other.bones.every((bone,index)=>bone===source.bones[index]&&other.boneInverses[index].equals(source.boneInverses[index])));
+    if(shared){if(shared!==source){node.skeleton=shared;source.dispose();}}
+    else palettes.push(source);
+  });
+}
+
 /** This object consumes presentation records. It cannot issue orders. */
 export class ActorRuntime {
   readonly root=new Group();readonly model:Object3D;private mixer:AnimationMixer;private action:AnimationAction|null=null;private actionKey='';private clipSpec:any;private ownedMaterials=new Set<Material>();private equipment=new Group();private equipmentKey='';private clothesKey='';private colorKey='';private horse?:Object3D;private horseMixer?:AnimationMixer;private horseAction?:AnimationAction;private horseClip='';private visual:ActorVisual;private bones=new Map<string,Object3D>();private clothing?:Object3D;private ghost?:Group;private cueStartedAt=0;private temporaryProps=new Map<string,Object3D>();private completedCues=new Set<string>();
@@ -32,6 +45,7 @@ export class ActorRuntime {
       this.clothing.userData.meshes=meshes;
     }
     if(asset.horse){this.horse=clone(asset.horse.scene);this.root.add(this.horse);this.horse.traverse(node=>{if(node instanceof Mesh){node.castShadow=true;node.receiveShadow=true;node.frustumCulled=false;}});this.horseMixer=new AnimationMixer(this.horse);}
+    shareSkeletons(this.root);
     this.update(visual,performance.now());
   }
   private socket(role:string,grip?:string){
@@ -100,9 +114,15 @@ export class ActorRuntime {
       const hand=object.userData.hand as string,item=this.itemSpec(object.userData.itemId);if(!item)continue;
       const held=hand==='handRight'||hand==='handLeft';
       const weapon=['rifle','pistol','sabre','knife','lance'].includes(item.category??'')||['rifle','pistol','sabre'].includes(item.grip??'');
-      // The active tool or supply remains visible for its own gesture. A timed
-      // prop temporarily claims its hand even if the current item is a tool.
-      const stow=held&&(propHands.has(hand as HandRole)||weapon&&free.has(hand as HandRole));
+      const handProp=spec.handProps?.find(prop=>prop.hand===hand&&prop.categories.includes(item.category??''));
+      const release=handProp?.untilMarker?spec.markers?.[handProp.untilMarker]:undefined;
+      if(handProp?.untilMarker&&!Number.isFinite(release))throw Error(`Missing held prop marker: ${handProp.untilMarker}`);
+      // A thrown item stays in the hand through preparation, then leaves at
+      // the authored release marker. This changes visibility, never ownership.
+      object.visible=release===undefined||time<release;
+      // Active tools and supplies remain visible for their own gestures. Timed
+      // props claim their hand even when the current item is a tool.
+      const stow=held&&(propHands.has(hand as HandRole)||weapon&&free.has(hand as HandRole)&&!handProp);
       const role=stow?(item.stowedSocket??'hipLeft'):hand==='hip'?(item.stowedSocket??'hipLeft'):hand;
       const target=this.socket(role,['handRight','handLeft'].includes(role)?item.grip:undefined);
       if(!target)throw Error(`Missing ${role} socket for presentation item: ${object.userData.itemId}`);
