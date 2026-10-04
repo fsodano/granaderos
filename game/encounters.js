@@ -6,6 +6,7 @@ import {characterPresentInSector} from './campaign-presence.js';
 import {authoredOperative} from './content-roster.js';
 import {CAMPAIGN_SECTORS,OPERATIVES} from './data.js';
 import {CIVIC_RECRUITS} from './recruitment.js';
+import {questContactIds} from './quest-beneficiaries.js';
 const local=[
  {id:'cabral',operativeId:3,sector:'retiro',requiredLeadership:30,requiredLiberated:1,requiredSector:'retiro',greeting:'Estoy dispuesto a servir. Quiero conocer al oficial que marchará con nosotros.'},
  {id:'dorrego',operativeId:4,sector:'buenos_aires',requiredLeadership:40,requiredLiberated:1,requiredSector:'buenos_aires',greeting:'Hablemos de la campaña. La causa necesita hombres resueltos.'},
@@ -31,7 +32,7 @@ export function encounterDefinitions(s){
  return [...original,...(content?.characters??[]).filter(isWorldCharacter).map(c=>{
   const {dialogue,...encounter}=c.encounter;
   return {id:`authored-${c.id}`,contentId:c.id,operativeId:operativeIdForCharacter(content,c.id),name:c.name,sector:null,x:3,y:7,...encounter};
- })].map(n=>content?.errands?.some(q=>q.npcId===n.id)?{...n,dialogue:'special'}:n);
+ })].map(n=>content?.errands?.some(q=>questContactIds(q).includes(n.id))?{...n,dialogue:'special'}:n);
 }
 export function encounterForOperative(id){return ENCOUNTERS.find(n=>n.operativeId===Number(id));}
 export function encountersFor(s,sector){

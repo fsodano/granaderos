@@ -121,7 +121,7 @@ test('save, load and suspended battle resume preserve the exact next regional we
  const start=initialCampaign();start.hour=transitionHour()-1;start.secondOfHour=3599;
  const pair=assertDeployment(order(start,{type:'visitSector'}),'retiro');
  const saved=decodeSave(encodeSave(pair.campaign,pair.battle));
- const resumed=battleFromRequest({resumeSnapshot:saved.battle},{hour:99999});
+ const resumed=battleFromRequest({...saved.campaign.pendingBattle,resumeSnapshot:saved.battle},{...saved.campaign,hour:99999});
  assert.deepEqual(resumed,saved.battle);assert.notEqual(resumed,saved.battle);
  const advanced=structuredClone(pair.battle);advanceBattleClock(advanced,1);advanceBattleClock(resumed,1);
  assert.deepEqual(resumed,advanced);assert.deepEqual(resumed.weather,currentWeather(resumed));

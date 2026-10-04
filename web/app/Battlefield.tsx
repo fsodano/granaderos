@@ -1,7 +1,7 @@
 'use client';
 import BattlePerformance from './BattlePerformance';
 import {useEnemyPlayback} from '../lib/useEnemyPlayback';
-import {firearmMaintenanceAction,chancePercent} from '../../game/ja2-hud.js';
+import {firearmMaintenanceAction,chancePercent,beneficiaryDeliveryNotice} from '../../game/ja2-hud.js';
 import {useBattleExecutor} from '../lib/useBattleExecutor';
 import {useMovementController} from '../lib/useMovementController';
 import {useBattlePreview} from '../lib/useBattlePreview';
@@ -209,7 +209,7 @@ function BattlefieldContents({battle:committed,onPlaybackBusy,onPlaybackValidate
   const mapItemTarget=hover?(inventoryPeople.find((person:any)=>sameCell(person,hover))??hover):null;
   const inventoryMapIntent=inventoryIntentAt(inventoryMapOverride,mapItemTarget);
   const itemPreview=useMemo(()=>selectedItemMapPreview(s,u,pickedItem,mapItemTarget,inventoryMapIntent),[s,u,pickedItem,mapItemTarget?.id,mapItemTarget?.x,mapItemTarget?.y,mapItemTarget?.tacticalLevel,inventoryMapIntent]);
-  const preview=useMemo(()=>pickedItem?itemPreview:mode==='talk'||movementGroup.request?null:targetPreview(s,u,hover,{mode,aim,hitLocation,reachable,routesPending:routePreview.working,routesFailed:routePreview.failed,movementIntent,itemIntent}),[pickedItem,itemPreview,mode,movementGroup.request,routePreview.working,routePreview.failed,s,u,hover,aim,hitLocation,reachable,movementIntent,itemIntent]);
+  const preview=useMemo(()=>pickedItem?itemPreview?.beneficiaryDelivery?{...itemPreview,coverNote:[beneficiaryDeliveryNotice(itemPreview.beneficiaryDelivery),itemPreview.coverNote].filter(Boolean).join(' ')}:itemPreview:mode==='talk'||movementGroup.request?null:targetPreview(s,u,hover,{mode,aim,hitLocation,reachable,routesPending:routePreview.working,routesFailed:routePreview.failed,movementIntent,itemIntent}),[pickedItem,itemPreview,mode,movementGroup.request,routePreview.working,routePreview.failed,s,u,hover,aim,hitLocation,reachable,movementIntent,itemIntent]);
   useEffect(()=>{
     if(s.mode!=='exploration'||s.status!=='active'||s.phase!=='player'||busy||talking||inventoryId||lootPoint||exitOpen||ambientPaused)return;
     const timer=setInterval(()=>{

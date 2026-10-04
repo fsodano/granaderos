@@ -4,6 +4,7 @@ import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign,rosterFor,isSupplied,restoreCampaign,serializeCampaign,recruitmentStatus} from '../game/campaign.js';
 import {acknowledgeCivilianHarm,hasPendingCivilianHarm,validateCampaignCivilianHarm} from '../game/campaign-civilian-harm.js';
 import {defaultContentPackage} from '../game/content-package.js';
+import {defaultErrands} from '../game/quest-definitions.js';
 import {transferCivilian} from '../game/campaign-civilians.js';
 import {applyCivilianHarm,civilianIncidents} from '../game/civilian-harm.js';
 import {ENCOUNTERS,encountersFor} from '../game/encounters.js';
@@ -25,7 +26,7 @@ const snapshot=s=>decodeSave(encodeSave(s)).campaign;
 const sync=(s,b)=>{const pair=syncBattleTime(s,b);assert.equal(pair.error,null,pair.error);return pair;};
 const finish=(s,b)=>order(s,{type:'leaveSector',battleId:s.pendingBattle.id,sectorState:b,survivors:b.units.filter(unit=>unit.side==='player')});
 
-function visit(){let s=order(initialCampaign(8),{type:'recruitCivic',id:110,term:'week'});s=order(s,{type:'visitSector'});return {s,b:enterSector(s.pendingBattle)};}
+function visit({legacyErrands=false}={}){const initial=initialCampaign(8);if(legacyErrands)initial.errandDefinitions=defaultErrands();let s=order(initial,{type:'recruitCivic',id:110,term:'week'});s=order(s,{type:'visitSector'});return {s,b:enterSector(s.pendingBattle)};}
 function injury(b,npc,damage,{side='player',militia=false,intentional=false}={}){
  let source=null;
  if(side!=='unknown'){
@@ -186,7 +187,7 @@ test('real finite grenade death survives synchronization, live save, final repor
 });
 
 test('an accepted errand fails once on contact death and retains that result through saves and reentry',()=>{
- let {s,b}=visit();
+ let {s,b}=visit({legacyErrands:true});
  const priorQuestRewards=s.cityLoyaltyEvents.filter(e=>e.kind==='quest').length;
  // Accepted-errand fixture isolates consequences; existing quest tests cover
  // the adjacent conversation and physical delivery controls.
@@ -207,7 +208,7 @@ test('an accepted errand fails once on contact death and retains that result thr
 
 test('contact death neither creates an unknown errand nor revokes a completed delivery',()=>{
  for(const status of ['unoffered','completed']){
-  const {s,b}=visit();if(status==='completed')s.quests['retiro-uniformes']={status,offeredAt:0,completedAt:0};
+  const {s,b}=visit({legacyErrands:true});if(status==='completed')s.quests['retiro-uniformes']={status,offeredAt:0,completedAt:0};
   injury(b,b.npcs.find(n=>n.id==='local-retiro'),100);
   acknowledgeCivilianHarm(s,b);
   assert.equal(s.quests['retiro-uniformes']?.status,status==='unoffered'?undefined:status);
@@ -215,7 +216,7 @@ test('contact death neither creates an unknown errand nor revokes a completed de
 });
 
 test('a remote contact death dates the accepted errand at the wound clock and keeps a bounded diary',()=>{
- let {s,b}=visit();s.quests['retiro-uniformes']={status:'offered',offeredAt:s.hour,completedAt:null};
+ let {s,b}=visit({legacyErrands:true});s.quests['retiro-uniformes']={status:'offered',offeredAt:s.hour,completedAt:null};
  const npc=b.npcs.find(n=>n.id==='local-retiro');injury(b,npc,98,{intentional:true});
  ({campaign:s,battle:b}=sync(s,b));s=finish(s,b);
  const deathHour=Math.floor((s.hour*3600+(s.secondOfHour??0)+6)/3600);
@@ -229,7 +230,7 @@ test('a remote contact death dates the accepted errand at the wound clock and ke
 });
 
 test('failed-errand saves require a matching death receipt and bounded failure date',()=>{
- let {s,b}=visit();s.quests['retiro-uniformes']={status:'offered',offeredAt:0,completedAt:null};
+ let {s,b}=visit({legacyErrands:true});s.quests['retiro-uniformes']={status:'offered',offeredAt:0,completedAt:null};
  injury(b,b.npcs.find(n=>n.id==='local-retiro'),100);({campaign:s,battle:b}=sync(s,b));s=finish(s,b);
  assert.equal(snapshot(s).quests['retiro-uniformes'].status,'failed');
  for(const change of [

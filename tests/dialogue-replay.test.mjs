@@ -8,8 +8,13 @@ import {initialCampaign as legacyCampaign} from './legacy-campaign-fixture.mjs';
 import {syncBattleTime} from '../game/time.js';
 import {createBattle} from '../game/tactical.js';
 import {approachNPC} from './approach-npc.mjs';
+import {defaultErrands} from '../game/quest-definitions.js';
 const order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,n.lastError);return n;};
-const officer=()=>order(initialCampaign(8),{type:'createOfficer',name:'Testigo',answers:{origin:'cabildo',doctrine:'line_marksman',crisis:'rally'}});
+const officer=(oldChoice=false)=>{
+ const initial=initialCampaign(8);
+ if(oldChoice)initial.errandDefinitions=defaultErrands().map(q=>q.id==='retiro-uniformes'?{...q,reward:{treasury:0,loyalty:false},rewardChoice:{reimbursement:40}}:q);
+ return order(initial,{type:'createOfficer',name:'Testigo',answers:{origin:'cabildo',doctrine:'line_marksman',crisis:'rally'}});
+};
 function meet(npcId='local-retiro',sector='retiro',campaign=officer()){
  let s=campaign;if(sector!=='retiro')secureArea(s);if(s.location!==sector)s=order(s,{type:'travel',sector});s=order(s,{type:'visitSector'});const b=approachNPC(enterSector(s.pendingBattle),'1000',npcId),pair=syncBattleTime(s,b);assert.equal(pair.error,null);return {s:pair.campaign,b:pair.battle};
 }
@@ -19,7 +24,7 @@ function fullSave(s,b){const pair=syncBattleTime(s,b);assert.equal(pair.error,nu
 function repeatUnchanged(s,b,npcId,text){const pair=syncBattleTime(s,b);assert.equal(pair.error,null);s=pair.campaign;b=pair.battle;const n=talk(s,b,npcId,'repeat');assert.equal(n.lastConversation.text,text);assert.equal(n.lastConversation.outcome,'repeated');const omit=c=>{const{conversations,lastConversation,...rest}=c;return rest;};assert.deepEqual(omit(n),omit(s));save(n);return n;}
 
 test('replay uses the last reply from that NPC and never reoffers or repays a quest',()=>{
- let supplied=withCarriedPonchos(officer(),1000,2);let {s,b}=meet('local-retiro','retiro',supplied);const npc=b.npcs.find(n=>n.id==='local-retiro');s=repeatUnchanged(s,b,npc.id,npc.greeting);assert.equal(s.quests['retiro-uniformes'],undefined);
+ let supplied=withCarriedPonchos(officer(true),1000,2);let {s,b}=meet('local-retiro','retiro',supplied);const npc=b.npcs.find(n=>n.id==='local-retiro');s=repeatUnchanged(s,b,npc.id,npc.greeting);assert.equal(s.quests['retiro-uniformes'],undefined);
  s=talk(s,b,npc.id,'quest');const offer=s.lastConversation.text;s=repeatUnchanged(s,b,npc.id,offer);assert.equal(s.quests['retiro-uniformes'].status,'offered');
  b=deliverPonchos(b);const synced=syncBattleTime(s,b);assert.equal(synced.error,null);s=synced.campaign;b=synced.battle;const pending=s.lastConversation.text,cash=s.resources.treasury,gifts=structuredClone(b.npcs.find(n=>n.id===npc.id).questGifts);assert.equal(gifts.length,2);assert.equal(s.quests['retiro-uniformes'].status,'offered');s=repeatUnchanged(s,b,npc.id,pending);
  s=order(s,{type:'talkNPC',unitId:1000,npcId:npc.id,approach:'quest',questResolution:'civic',sectorState:b});const delivered=s.lastConversation.text;assert.equal(s.quests['retiro-uniformes'].status,'completed');assert.equal(s.quests['retiro-uniformes'].questResolution,'civic');s=repeatUnchanged(s,b,npc.id,delivered);assert.ok(!s.lastConversation.options.includes('quest'));

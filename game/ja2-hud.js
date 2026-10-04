@@ -27,12 +27,23 @@ import {npcGiftPreview,contextualAttack,meleePreview,meleePointPreview, fitBayon
 import {fixedBayonetFor, fittingLabel, weaponItemWeight} from './weapon-fittings.js';
 import {firearmBystanderRisk,firearmBystanderWarning} from './firearm-bystander-risk.js';
 import {environmentContainerVisible} from './tactical.js';
+import {CAMPAIGN_SECTORS} from './data.js';
+import {CITY_LOYALTY_REWARDS} from './cities.js';
 
 const alive = u => u.hp > 0 && !u.routed && !u.unconscious && !u.departure && !u.fled;
 const shortName = u => u.nickname || String(u.name || '').split(' ').slice(-1)[0] || '';
 const distance = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
 const toolTargets = unit => heldTool(unit)?.toolKey === 'crowbar' ? 'una puerta, un cofre, una pared de adobe o una barricada de madera' : 'una puerta o un cofre';
 export const chancePercent = value => value > 0 && value < 1 ? '<1%' : `${Math.round(value)}%`;
+/** Public authored destinations and the accepted delivery's saved choice. */
+export function beneficiaryDeliveryNotice(delivery){
+  if(!delivery?.beneficiaries?.length)return null;
+  const place=id=>CAMPAIGN_SECTORS.find(sector=>sector.id===id)?.name??id;
+  const selected=delivery.beneficiaries.find(recipient=>recipient.id===delivery.selectedBeneficiaryId);
+  if(selected)return `Destino fijado: ${place(selected.sector)}. ${delivery.beneficiaryId&&delivery.beneficiaryId!==selected.id?'Este contacto rechazará el objeto; seguirá en tu equipo.':'Todos los objetos deben ir al mismo contacto.'}`;
+  const destinations=delivery.beneficiaries.map(recipient=>`${place(recipient.sector)}: ${[recipient.reward.treasury>0?`${recipient.reward.treasury} pesos`:null,recipient.reward.loyalty?`apoyo local +${CITY_LOYALTY_REWARDS.quest}`:null].filter(Boolean).join(' y ')||'sin recompensa'}`);
+  return `${destinations.join(' · ')}. La primera entrega aceptada fija el destino. No podrás cambiarlo.`;
+}
 const shotLoadText = shot => `Carga de perdigones (${shot.pelletCount} proyectiles). Probabilidad de al menos un contacto; no garantiza varios impactos ni la zona del cuerpo. ${shot.damageFactor===0?'Ningún perdigón puede llegar por las trayectorias previstas.':shot.damageFactor<1?`Fuerza media si llega algún perdigón: ${Math.round(shot.damageFactor*100)}% de la carga.`:''} Disparar consume una carga.`;
 const affordable = (state, unit, pa) => state.mode === 'exploration' || unit.ap >= pa;
 const hasPrimary = unit => Boolean(unit.weapon) && !unit.weaponDropped;
@@ -354,7 +365,7 @@ function targetPreviewWithCosts(state, unit, point, ctx = {}) {
     return {name:patient.name,actionLabel:preview.movePa?'Acercarse y vendar':'Vendar',pa:preview.pa,remaining:Math.max(0,unit.ap-(state.mode==='exploration'?0:preview.pa)),valid:preview.valid,reason:preview.reason,treatment:preview.treatment,...(preview.composureRelief>0?{composureRelief:preview.composureRelief}:{}),coverNote:medicalTreatmentText(state,preview)};
   }
   const recipient=state.npcs?.find(n=>!n.departure&&!n.fled&&sameCell(n,point)&&canSee(state,unit,n));
-  if(recipient&&unit.activeSlot==='item'&&!heldGrenade(unit)&&['move','useItem'].includes(mode)){const gift=npcGiftPreview(state,unit,recipient);return {name:recipient.name,actionLabel:gift.label,pa:gift.pa,remaining:unit.ap,valid:gift.valid,reason:gift.reason,coverNote:'Se entrega el objeto que está en la mano. No se usa la reserva del cuartel.'};}
+  if(recipient&&unit.activeSlot==='item'&&!heldGrenade(unit)&&['move','useItem'].includes(mode)){const gift=npcGiftPreview(state,unit,recipient);return {name:recipient.name,actionLabel:gift.label,pa:gift.pa,remaining:unit.ap,valid:gift.valid,reason:gift.reason,coverNote:[beneficiaryDeliveryNotice(gift.beneficiaryDelivery),'Se entrega el objeto que está en la mano. No se usa la reserva del cuartel.'].filter(Boolean).join(' ')};}
   const occupants = state.units.filter(v => sameCell(v, point) && !v.fled && !v.departure && (v.side === unit.side || state.units.some(p => p.side === unit.side && canSee(state, p, v))));
   const target = occupants.find(v => v.id === point.id) || occupants.find(v => v.hp > 0) || occupants[0];
   if(mode==='fire'&&(explicitPointShot(state,point)||!target||target.side===unit.side||target.hp<=0||target.surrendered)){

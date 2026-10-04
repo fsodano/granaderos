@@ -12,6 +12,7 @@ import {contextualAttack,fitBayonetPreview,removeBayonetPreview} from '../game/t
 import {medicalUsePreview} from '../game/tactical.js';
 import {AMMUNITION_TYPES,isAmmunitionStack,totalReserveAmmunition,weaponAmmoType} from '../game/ammunition-types.js';
 import {setTestAmmunition} from './typed-ammunition-fixture.mjs';
+import {freshDefaultErrands} from '../game/quest-definitions.js';
 const tiles=()=>Array.from({length:80},(_,i)=>({x:i%10,y:Math.floor(i/10),type:'grass',blocked:false,cover:0}));
 const merc=(id,extra={})=>({...OPERATIVES[id],...extra});
 function battle(units=[merc(0)],extra={}){return createBattle(units,{width:10,height:8,tiles:tiles(),enemies:[{id:'enemy-0',x:5,y:1,hp:100,weapon:1800,condition:63}],seed:45,...extra});}
@@ -41,6 +42,21 @@ test('campaign return accepts settled victory care and peaceful visits without d
   const departed=structuredClone(cleared);departed.units[0].departure={destination:'retiro'};
   assert.equal(campaignReturnModel(departed,true).available,false);
   assert.match(campaignReturnModel(departed,true).note,/Quienes siguen aquí/);
+});
+test('held physical delivery discloses both destinations before its first paid gift and then shows the actual locked destination',()=>{
+  // Declared finite garment and local contact isolate the real held-item HUD.
+  const s=battle([merc(0,{x:1,y:1,facing:2,inventory:{gift:{item:'inventory:gift',...makeOutfit('poncho',75),instanceId:'hud-delivery:one'},spare:{item:'inventory:spare',...makeOutfit('poncho',75),instanceId:'hud-delivery:two'}},activeSlot:'item',activeItem:'inventory:gift'})],{id:'retiro',sector:'retiro',exploration:true,enemies:[],errandDefinitions:freshDefaultErrands(),questBeneficiaries:{},npcs:[{id:'local-retiro',name:'Sargento del cuartel',x:2,y:1,hp:100}]});
+  const u=players(s)[0],npc=s.npcs[0],before=structuredClone(s),preview=targetPreview(s,u,npc,{mode:'useItem'});
+  assert.equal(preview.valid,true,preview.reason);assert.equal(preview.pa,0);assert.match(preview.coverNote,/Retiro: apoyo local \+8/);assert.match(preview.coverNote,/Ensenada de Barragán: apoyo local \+8/);assert.match(preview.coverNote,/primera entrega aceptada fija el destino.*No podrás cambiarlo/);assert.deepEqual(s,before);
+  const delivered=actBattle(s,{type:'useItem',unitId:u.id,targetId:npc.id});assert.equal(delivered.lastError,null);assert.equal(delivered.elapsedSeconds-s.elapsedSeconds,1);assert.equal(delivered.units[0].ap,u.ap);assert.equal(delivered.questBeneficiaries['retiro-uniformes'],'cuartel');assert.equal(delivered.npcs[0].questGifts[0].condition,75);assert.equal(delivered.units[0].inventory.gift,undefined);
+  const held=actBattle(delivered,{type:'weapon',unitId:u.id,slot:'item',item:'inventory:spare'});assert.equal(held.lastError,null);
+  const locked=targetPreview(held,held.units[0],held.npcs[0],{mode:'useItem'});assert.match(locked.coverNote,/Destino fijado: Buenos Aires · Fuerte y Retiro/);assert.doesNotMatch(locked.coverNote,/primera entrega aceptada/);assert.equal(held.units[0].inventory.spare.instanceId,'hud-delivery:two');
+  // This distinct prepared contact scene starts with the already fixed choice.
+  // Its public held-item order remains a paid refusal, not an item transfer.
+  const other=battle([merc(0,{x:1,y:1,facing:2,inventory:{spare:before.units[0].inventory.spare},activeSlot:'item',activeItem:'inventory:spare'})],{id:'ensenada',sector:'ensenada',exploration:true,enemies:[],errandDefinitions:freshDefaultErrands(),questBeneficiaries:{'retiro-uniformes':'cuartel'},npcs:[{id:'local-ensenada',name:'Capataz del puerto',x:2,y:1,hp:100}]});
+  const refusal=targetPreview(other,other.units[0],other.npcs[0],{mode:'useItem'});assert.equal(refusal.valid,true,refusal.reason);assert.match(refusal.coverNote,/Destino fijado: Buenos Aires · Fuerte y Retiro.*Este contacto rechazará el objeto; seguirá en tu equipo/);
+  const refused=actBattle(other,{type:'useItem',unitId:other.units[0].id,targetId:other.npcs[0].id});assert.equal(refused.lastError,null);assert.ok(refused.elapsedSeconds>other.elapsedSeconds);assert.deepEqual(refused.units[0].inventory,other.units[0].inventory);assert.equal(refused.npcs[0].questGifts,undefined);assert.deepEqual(refused.questBeneficiaries,other.questBeneficiaries);
+
 });
 test('bayonet inventory controls share paid fit/removal admission and retain incompatible loose choices',()=>{
   const s=battle([merc(0,{weapon:1800,blade:1811,bladeCondition:73,bladeFittingPattern:'india_socket',bladeInstanceId:'socket-hud-1',activeSlot:'primary'})]);

@@ -6,6 +6,7 @@ import {initialCampaign,dispatchCampaign,restoreCampaign,serializeCampaign,quest
 import {enterSector} from '../game/world.js';import {actBattle} from '../game/tactical.js';
 import {syncBattleTime} from '../game/time.js';
 import {approachNPC} from './approach-npc.mjs';
+import {defaultErrands} from '../game/quest-definitions.js';
 const order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,n.lastError);return n;};
 const sync=(s,b)=>{const pair=syncBattleTime(s,b);assert.equal(pair.error,null,pair.error);return {s:pair.campaign,b:pair.battle};};
 const saved=({s,b})=>{const pair=decodeSave(encodeSave(s,b));return {s:pair.campaign,b:pair.battle};};
@@ -13,7 +14,10 @@ const questId='retiro-uniformes',npcId='local-retiro',ids=['1000','113'];
 let prepared;
 function meeting(legacy=false){
  if(!prepared){
-  let s=order(initialCampaign(),{type:'createOfficer',name:'Juana del Sur',answers:{origin:'cabildo',doctrine:'line_marksman',crisis:'rally'}});
+  const initial=initialCampaign();
+  // A pre-beneficiary authored save keeps its original cash/civic contract.
+  initial.errandDefinitions=defaultErrands().map(q=>q.id===questId?{...q,reward:{treasury:0,loyalty:false},rewardChoice:{reimbursement:40}}:q);
+  let s=order(initial,{type:'createOfficer',name:'Juana del Sur',answers:{origin:'cabildo',doctrine:'line_marksman',crisis:'rally'}});
   s=order(s,{type:'recruitCivic',id:113,term:'week'});assert.deepEqual(s.recruited,[1000,113]);
   const issued=ids.map(id=>structuredClone(s.operativeState[id].outfit));assert.ok(issued.every(g=>g.outfit==='poncho'&&g.count===1));
   prepared={s,issued};

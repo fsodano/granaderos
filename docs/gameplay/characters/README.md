@@ -36,6 +36,7 @@ the [workspace acceptance record](../../verification/gameplay-completion.md) and
 - [NPC routines and civilian turns](npc-routines.md)
 - [Selected inventory gifts](selected-npc-gifts.md) *(workspace)*
 - [Carried quest deliveries](carried-quest-deliveries.md) *(workspace)*
+- [Competing physical beneficiaries](competing-beneficiaries.md)
 - [Errand failure after contact death](quest-failures.md) *(workspace)*
 - [Local escort gameplay](escort-gameplay.md) *(workspace)*
 - [Civilian combat and campaign consequences](civilian-consequences.md) *(workspace)*
