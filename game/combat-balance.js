@@ -6,6 +6,9 @@ export const COMBAT_BALANCE=Object.freeze({
  firearmFlightRangeMultiplier:2, // Physical flight limit; effective aiming range is unchanged.
  shotLoadFlightRangeMultiplier:3, // Finite pellet travel; keeps a falling tail beyond the shared 2-range onset.
  firearmFarDropIncrement:.1, // Beyond 2 effective ranges, slope falls by this / (2*range) per cell; tactical tuning.
+ firearmRicochetMaximumNormalDot:.3, // Unique exposed vertical stone face; shallow incidence only.
+ firearmRicochetForceRetention:.5, // Remaining force after reflection, not historical measurements.
+ firearmRicochetLimit:1,
  firearmBodyResistance:Object.freeze({head:15,torso:30,legs:23}), // Lead-ball force spent passing through one body.
  firearmBodyPenetrationThreshold:20,
  firearmBodyPenetrationMaximumChance:95,
@@ -28,7 +31,7 @@ export function coveredFirearmDamage(amount,coverFactor=1,coverMultiplier=COMBAT
  const factor=Math.max(0,Math.min(1,1-(1-coverFactor)*coverMultiplier));
  return amount*factor;
 }
-// Cover damage tuning cannot return force already spent passing through a body.
+// Cover tuning cannot return force spent on a body or reflected stone surface.
 export function penetratingFirearmDamage(amount,impact,coverMultiplier=COMBAT_BALANCE.coverDamageReductionMultiplier){
- return Math.max(0,coveredFirearmDamage(amount,impact.coverDamageFactor??impact.damageFactor,coverMultiplier)-amount*(impact.bodyDamageReduction??0));
+ return Math.max(0,coveredFirearmDamage(amount,impact.coverDamageFactor??impact.damageFactor,coverMultiplier)-amount*((impact.bodyDamageReduction??0)+(impact.ricochetDamageReduction??0)));
 }
