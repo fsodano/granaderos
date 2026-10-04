@@ -1,3 +1,5 @@
+import {withOwnedMount} from './custody-gear-fixture.mjs';
+import {withCarriedPonchos} from './custody-gear-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign,hasPendingNpcGiftProgress} from '../game/campaign.js';
@@ -13,8 +15,8 @@ const order=(s,a)=>{const next=dispatchCampaign(s,a);assert.equal(next.lastError
 function ready({horse=false,gift=false,midnight=false,escort=false}={}){
  let campaign=order(initialCampaign(8),{type:'recruitCivic',id:110,term:midnight?'day':'week'});
  if(midnight){campaign=order(campaign,{type:'recruitCivic',id:113,term:'day'});campaign=order(campaign,{type:'squad',ids:[110]});campaign.hour=23;campaign.secondOfHour=3598;}
- if(horse){campaign=order(campaign,{type:'horseAction',order:{type:'acquire'}});campaign=order(campaign,{type:'horseAction',order:{type:'assign',horseId:'horse-1',operativeId:110}});}
- if(gift)campaign=order(campaign,{type:'sectorInventory',sector:'retiro',operativeId:110,direction:'issueOutfit'});
+ if(horse){campaign=withOwnedMount(campaign).state;campaign=order(campaign,{type:'horseAction',order:{type:'assign',horseId:'horse-1',operativeId:110}});}
+ if(gift)campaign=withCarriedPonchos(campaign,110);
  if(escort){
   // An established escort checkpoint isolates clock/order reconciliation.
   campaign.location='jujuy';campaign.squads[0].location='jujuy';campaign.operativeState[110].location='jujuy';campaign.sectors.jujuy.owner='patriot';

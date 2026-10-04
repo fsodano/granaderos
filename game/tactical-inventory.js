@@ -9,6 +9,7 @@ import {lowerWeapon} from './weapon-readiness.js';
 import {validateReloadProgress} from './weapon-reload.js';
 import {WEAPONS} from './data.js';
 import {clearEmptySupply} from './held-supplies.js';
+import {isRepairKit,validateRepairKit} from './repair-materials.js';
 import {validateFitting,validateFittingPattern,validateWeaponFittings,validateUnitFittings,fittingItemIds,heldItemIds,fittingWeight,weaponItemWeight,fittingLabel,fittingFromItem,fittingToItem} from './weapon-fittings.js';
 
 // JA2 manual pp. 21–25: separate hands and pack, finite inventory slots,
@@ -59,6 +60,7 @@ function record(value) {
   validateAmmunitionStack(result);
   if(result.grenadeType!==undefined&&!isGrenadeStack(result))fail('El tipo de granada requiere una pila de granadas.');
   validateGrenadeStack(result);
+  validateRepairKit(result);
   if (result.weapon !== undefined) {
     const spec = weaponSpecification(result)??weapon(result.weapon);validateWeaponCarrier(result);
     result.loaded = quantity(result.loaded ?? 0);
@@ -138,6 +140,7 @@ export function handRecord(unit, slot) {
     ...((primary?unit.weaponFittingPattern:unit.bladeFittingPattern)!=null ? {fittingPattern:primary?unit.weaponFittingPattern:unit.bladeFittingPattern} : {})});
 }
 function recordDescriptor(item, value) {
+  if(isRepairKit(value))return {item,label:`Herramientas · ${value.repairPoints} puntos`,name:'Juego de herramientas',stackLimit:1,slotSize:2,weight:value.weight,kind:'repair-kit'};
   if (isAmmunitionStack(value)) {const spec=AMMUNITION_TYPES[value.ammoType];return {...SUPPLY_PRESENTATION.ammo,art:spec.art,item,label:value.name,name:value.name,ammoType:value.ammoType,stackLimit:value.instanceId?1:spec.stackLimit,slotSize:1,weight:spec.weight,kind:'ammunition'};}
   if (isGrenadeStack(value)) {const spec=GRENADE_TYPES[value.grenadeType];return {item,label:value.name,name:value.name,grenadeType:value.grenadeType,condition:value.condition,stackLimit:value.instanceId?1:spec.stackLimit,slotSize:1,weight:spec.weight,kind:'grenade'};}
   const spec = value.weapon === undefined ? null : weaponSpecification(value)??weapon(value.weapon);
@@ -298,7 +301,9 @@ function retainOtherHand(before,next){
 function incoming(stack) {
   if (!object(stack) || typeof stack.item !== 'string') fail('El objeto transferido no es válido.');
   quantity(stack.count, 1);
+  validateRepairKit(stack);
   if (own(SUPPLY_ITEMS, stack.item)) {
+    if(isRepairKit(stack))fail('El juego de herramientas debe conservar su inventario físico.');
     if (isAmmunitionStack(stack)||stack.ammoType!==undefined) fail('La munición debe conservar su pila de inventario.');
     if (isGrenadeStack(stack)||stack.grenadeType!==undefined) fail('La granada debe conservar su pila de inventario.');
     if (['weapon', 'loaded', 'reloadProgress', 'condition', 'jammed', 'instanceId','fittings','fittingPattern'].some(key => stack[key] !== undefined)) fail('Los suministros no pueden contener datos de un arma.');

@@ -1,4 +1,5 @@
 import {CIVILIAN_SUPPLY_FIELDS} from './civilian-supplies.js';
+import {FINITE_ARTILLERY_ARSENALS} from './finite-artillery-arsenals.js';
 import {weaponSpecification} from './weapon-definition.js';
 import {AMMUNITION_TYPES,availableAmmunition,totalReserveAmmunition,weaponAmmoType} from './ammunition-types.js';
 import {tacticalLevel, sameCell, sameSurface, spaceKey} from './tactical-space.js';
@@ -310,6 +311,12 @@ function pendingMovementPreview(point,ctx){
   return {name:tacticalGridLabel(point.x,point.y),actionLabel:'Mover',valid:false,pending:Boolean(ctx.routesPending),
     reason:ctx.routesPending?'Calculando ruta…':'No se pudo calcular la vista previa. La ruta se comprobará al dar la orden.'};
 }
+function movementTargetPreview(state,unit,point,ctx){
+ const pending=pendingMovementPreview(point,ctx);if(pending)return pending;
+ const destination=(ctx.reachable??[]).find(p=>sameCell(p,point)),pa=destination?(state.mode==='exploration'?0:destination.cost):undefined;
+ const reason=!unitCanAct(state,unit)?'El combatiente no puede actuar.':unit.knockedDown?'Primero debés levantarte.':!destination?'Destino inaccesible.':state.mode!=='exploration'&&pa>unit.ap?'PA insuficientes.':null;
+ return {name:tacticalGridLabel(point.x,point.y),actionLabel:'Mover',movement:true,path:destination?.path,pa,remaining:pa===undefined?undefined:Math.max(0,unit.ap-pa),valid:!reason,reason};
+}
 function targetPreviewWithCosts(state, unit, point, ctx = {}) {
   if (!unit) return null;
   const mode = ctx.mode || 'move';
@@ -333,6 +340,7 @@ function targetPreviewWithCosts(state, unit, point, ctx = {}) {
   const reload = mode === 'fire' ? emptyGunPreview(state, unit) : null;
   if (reload) return reload;
   if (!point) return null;
+  if(ctx.itemIntent==='moveOnly'&&['move','useItem','loot'].includes(mode)&&isMovementGround(state,unit,point))return movementTargetPreview(state,unit,point,ctx);
   const civilianAid=civilianMedicalInputAction(state,unit,point,mode);
   if(civilianAid){
     const patient=state.npcs.find(n=>n.id===civilianAid.targetId),options={targetKind:'npc'};
@@ -363,7 +371,8 @@ function targetPreviewWithCosts(state, unit, point, ctx = {}) {
     const destination = (ctx.reachable || getReachable(state, unit, {movementIntent: 'preserveFacing'})).find(tile => sameCell(tile, point));
     const reason = movementIntentReason(unit, 'preserveFacing') || (!unitCanAct(state, unit) ? 'El combatiente no puede actuar.' : unit.knockedDown ? 'Primero debés levantarte.' : unit.entangled ? 'Primero debés liberarte de las boleadoras.' : !destination || !destination.path.length ? 'Destino inaccesible o PA insuficientes.' : null);
     const pa = destination ? state.mode === 'exploration' ? 0 : destination.cost : undefined;
-    return {name: `${tacticalGridLabel(point.x,point.y)}`, actionLabel: 'Mover sin girar', pa, remaining: pa === undefined ? undefined : Math.max(0, unit.ap - pa), reason, valid: !reason};
+    const insufficient=state.mode!=='exploration'&&pa>unit.ap;
+    return {name: `${tacticalGridLabel(point.x,point.y)}`, actionLabel: 'Mover sin girar', movement:true,path:destination?.path,pa, remaining: pa === undefined ? undefined : Math.max(0, unit.ap - pa), reason:reason||(insufficient?'PA insuficientes.':null), valid: !reason&&!insufficient};
   }
   const pickup=pickupSelection(state,unit,point,ctx);
   if(pickup.length){const p=pickup[0];return {name:'Equipo',actionLabel:p.movePa?'Acercarse al equipo':'Elegir qué recoger',pa:p.movePa,remaining:Math.max(0,unit.ap-(state.mode==='exploration'?0:p.movePa)),valid:p.valid,reason:p.reason,coverNote:state.mode==='exploration'?'Al llegar, elegí el objeto y la cantidad. Recoger consume tiempo.':'Al llegar, elegí el objeto y la cantidad. Recoger cuesta 8 PA adicionales. El contacto puede detener el desplazamiento.'};}
@@ -426,10 +435,7 @@ function targetPreviewWithCosts(state, unit, point, ctx = {}) {
       else if (!hasLineOfSight(state,unit,target)) reason = 'No hay línea de tiro.';
     }
   } else if (mode === 'move' && !target) {
-    const pending=pendingMovementPreview(point,ctx);if(pending)return pending;
-    const destination = (ctx.reachable || []).find(p => sameCell(p, point));
-    if (!destination) reason = 'Destino inaccesible o PA insuficientes.';
-    else pa = state.mode === 'exploration' ? 0 : destination.cost;
+    return movementTargetPreview(state,unit,point,ctx);
   } else return null;
   if(attackType==='fire')coverNote=[firearmCostText(state,unit,target),coverNote].filter(Boolean).join(' ');
   if (unit.knockedDown) reason = 'Primero debés levantarte.';
@@ -480,6 +486,11 @@ export function levelFor(unit) {
 export function rosterCells(players, selectedId, state) {
   const cells = fieldUnits({units: players}).map((unit, index) => {
     const fallen = unit.hp <= 0 || unit.routed || unit.unconscious;
+    const dead = unit.hp <= 0;
+    const hp = Math.max(0, unit.hp);
+    const wounds = Math.max(0, unit.maxHp - hp);
+    const bandaged = dead ? 0 : Math.min(wounds, Math.max(0, unit.bandaged || 0));
+    const untreated = dead ? 0 : wounds - bandaged;
     return {
       unit,
       portrait: unit.portrait ?? null,
@@ -488,7 +499,11 @@ export function rosterCells(players, selectedId, state) {
       ap: unit.ap,
       energy: unit.energy,
       bleeding: unit.bleeding || 0,
-      bandaged: unit.bandaged || 0,
+      bandaged,
+      untreated,
+      dead,
+      moralePct: dead ? 0 : Math.max(0, Math.min(100, unit.morale ?? 0)),
+      visibleEnemyCount: state && !dead ? state.units.filter(enemy => enemy.side === 'enemy' && enemy.hp > 0 && !enemy.departure && !enemy.fled && canSee(state, unit, enemy)).length : 0,
       apPct: Math.max(0, Math.min(100, unit.ap / Math.max(1, (unit.maxAP || 100) + (unit.carriedAP || 0)) * 100)),
       active: unit.id === selectedId,
       fallen,
@@ -534,7 +549,7 @@ export function handSlots(state,unit){
   else if(Object.hasOwn(HELD_SUPPLIES,reference))option=equipmentSlots(state,{...unit,activeSupply:reference}).find(o=>o.slot==='supply');
   else if(reference?.startsWith('inventory:')&&heldTool({...unit,activeSlot:'tool',activeTool:reference}))option=equipmentSlots(state,{...unit,activeTool:reference}).find(o=>o.slot==='tool');
   else if(reference&&carriedObject(unit,reference))option=mainItemPreview(state,unit,reference);
-  return {side,item:reference,blocked,label:descriptor?.label??(blocked?'Ocupada por el arma':'Vacía'),weapon:descriptor?.weapon,art:descriptor?.art,loaded:descriptor?.loaded,condition:descriptor?.condition,action:side==='left'?option?.action:null,pa:option?.pa,reason:option?.reason,disabled:blocked||side==='left'&&(option?.disabled||option?.valid===false)};
+  return {side,item:reference,blocked,label:descriptor?.label??(blocked?'Ocupada por el arma':'Vacía'),weapon:descriptor?.weapon,art:descriptor?.art,loaded:WEAPONS[descriptor?.weapon]?descriptor?.loaded:undefined,condition:descriptor?.condition,action:side==='left'?option?.action:null,pa:option?.pa,reason:option?.reason,disabled:blocked||side==='left'&&(option?.disabled||option?.valid===false)};
  });
 }
 
@@ -665,6 +680,7 @@ export function nearbyLootOptions(state, unit, point=/** @type {{x:number,y:numb
 }
 export function pickupSelection(state,unit,point,ctx={}){
   if(!unit||!point)return [];
+  if(ctx.itemIntent==='moveOnly')return [];
   const mode=ctx.mode??'move';
   if(mode!=='loot'){
     if(!['move','useItem'].includes(mode)||ctx.movementIntent==='preserveFacing'||ctx.itemIntent!=='steal'&&unit.activeSlot==='supply'&&unit.activeSupply==='torches')return [];
@@ -706,7 +722,8 @@ export function nearbyEnvironmentModel(state, unit, ctx = {}) {
   }
   const targets = [...found].map(([key, raw]) => {
     const summary = environmentTargetSummary(unit, raw);
-    return {key, kind: raw.kind, id: raw.id, label: `${summary.label} · ${tacticalGridLabel(raw.x,raw.y)}`, open: summary.open, locked: summary.locked, broken: summary.broken, trapKnown: Boolean(summary.trap), trapArmed: summary.trap?.armed};
+    const arsenal=FINITE_ARTILLERY_ARSENALS[state.sectorId],arsenalAvailable=arsenal?.chest===raw.id&&(state.finiteArtilleryArsenal||raw.artilleryRecovered);
+    return {key, kind: raw.kind, id: raw.id, label: `${summary.label} · ${tacticalGridLabel(raw.x,raw.y)}`, open: summary.open, locked: summary.locked, broken: summary.broken, trapKnown: Boolean(summary.trap), trapArmed: summary.trap?.armed,...(arsenalAvailable?{arsenalHint:raw.artilleryRecovered?'Las piezas recuperadas quedan emplazadas. Usá Artillería en la carta para guardarlas o trasladarlas.':`Abrí este cofre para recuperar ${arsenal.pieces.length} piezas del arsenal con munición finita.`}:{})};
   });
   const target = targets.find(entry => entry.key === ctx.targetKey) || targets[0];
   if (!target) return {targets, target: null, preview: null, contents: [], verbs: [], loot: null};

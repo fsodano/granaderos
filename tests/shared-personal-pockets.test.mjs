@@ -54,9 +54,9 @@ test('pocket placement and active hand persist through save, campaign return and
  p=visit(saved({campaign:leave(p)}).campaign);const after=p.battle.units.find(u=>u.id==='110');assert.equal(after.activeSlot,'unarmed');assert.equal(personalPockets(after).slots.find(p=>p.id==='large-4').entry.item,'medkits');
  const bad=structuredClone(p);bad.battle.units[0].pocketOrder=[{slotId:'small-99',item:'ammo',index:0}];assert.throws(()=>saved(bad));
 });
-test('campaign medical purchases cannot bypass pockets or charge a rejected purchase, and legacy full packs can enter to unload',()=>{
+test('closed medical commerce cannot change full pockets or charge a rejected order, and legacy full packs can enter to unload',()=>{
  let p=supplyCareField(),s=leave(p);const id=110;s.operativeState[id].medkits=100;
- const rejected=dispatchCampaign(s,{type:'purchaseMedicalSupplies',id,quantity:1});assert.match(rejected.lastError,/bolsillo|espacio/);assert.deepEqual(rejected.resources,s.resources);assert.deepEqual(rejected.operativeState,s.operativeState);
+ const rejected=dispatchCampaign(s,{type:'purchaseMedicalSupplies',id,quantity:1});assert.match(rejected.lastError,/comercio de equipo/);assert.deepEqual(rejected.resources,s.resources);assert.deepEqual(rejected.operativeState,s.operativeState);
  s.operativeState[id].medkits=1000000;const cost=deploymentCost(s),entered=dispatchCampaign(s,{type:'visitSector'});assert.equal(entered.lastError,null);const unit=entered.pendingBattle.squad.find(u=>u.id===id);assert.equal(unit.ammo,s.operativeState[id].ammo);assert.equal(unit.medkits,1000000);assert.equal(s.resources.treasury-entered.resources.treasury,cost);
 });
 

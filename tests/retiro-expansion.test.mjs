@@ -12,26 +12,29 @@ import {prepareCampaignBattle} from '../game/battle-handoff.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 
 const owned=c=>Object.entries(c.sectors).filter(([,s])=>s.owner==='patriot').map(([id])=>id).sort();
+const assaultHireIds=[128,142,123,115,131,110];
+function explicitlyFundedAssaultCampaign(){
+ const campaign=initialCampaign(8),workingReserve=campaign.resources.treasury;
+ const quotedCost=assaultHireIds.reduce((sum,id)=>sum+contractQuote(campaign,rosterFor(campaign).find(o=>o.id===id),'day').price,0);
+ assert.ok(quotedCost>workingReserve,'the stock starting budget cannot buy this six-person specialist force');
+ // This combat/return fixture prepays the actual hiring quotes and retains
+ // the stock budget as a finite supply reserve. It is not a new-start claim.
+ campaign.resources.treasury=quotedCost+workingReserve;
+ return {campaign,quotedCost,workingReserve};
+}
 
-test('a hired-only squad earns its first expansion from Retiro and retains injuries and equipment on return',()=>{
- let c=initialCampaign(8);
+test('an explicitly funded hired-only squad earns its first expansion from Retiro and retains injuries and equipment on return',()=>{
+ const prepared=explicitlyFundedAssaultCampaign();let c=prepared.campaign;const fundedTreasury=c.resources.treasury;
  const order=action=>{c=dispatchCampaign(c,action);assert.equal(c.lastError,null,JSON.stringify(action)+': '+c.lastError);};
  assert.deepEqual(owned(c),['retiro']);assert.deepEqual(c.recruited,[]);
- // Ordinary day contracts and issued finite equipment; no free areas, custom
- // super-soldier, edited enemy stats, clock changes or post-hoc casualty removal.
- const hireIds=[128,142,123,115,131,110],quotedCost=hireIds.reduce((sum,id)=>sum+contractQuote(c,rosterFor(c).find(o=>o.id===id),'day').price,0);
- for(const id of hireIds)order({type:'recruitCivic',id,term:'day'});
+ // Ordinary paid day contracts and issued finite equipment. The declared
+ // force still earns expansion through real orders on the authored map.
+ for(const id of assaultHireIds)order({type:'recruitCivic',id,term:'day'});
  const hiredTreasury=c.resources.treasury;
- assert.equal(3200-hiredTreasury,quotedCost,'all six day contracts are paid from the starting treasury');
- // Buy physical cartridges for a present rifleman before the ordinary assault.
- // The other hires buy their finite marching allowance when they depart.
- const rifleman=rosterFor(c).find(o=>o.id===128),quote=ammunitionOrderQuote(c,rifleman,'ammoRifle',10,'buy',true);
- assert.equal(quote.available,true,quote.reason);
- order({type:'ammunition',operativeId:128,family:'ammoRifle',quantity:10,direction:'buy'});
- const stagingTreasury=c.resources.treasury;
- assert.equal(hiredTreasury-stagingTreasury,quote.cost);
- assert.equal(ammoCount(c.operativeState[128],'ammoRifle'),quote.carried+10);
- assert.equal(c.ammunitionShops.retiro.stock.ammoRifle,quote.stock-10);
+ assert.equal(fundedTreasury-hiredTreasury,prepared.quotedCost,'all six day contracts pay their actual quotes');assert.equal(hiredTreasury,prepared.workingReserve);
+ // Each initial hire carries one finite service allowance; entry buys nothing.
+ const stagingTreasury=c.resources.treasury,carriedBefore=Object.fromEntries(c.squad.map(id=>[id,c.operativeState[id].carriedAmmo]));
+ assert.ok(Object.values(carriedBefore).every(count=>count===10));
  order({type:'attack',sector:'buenos_aires'});
  const request=structuredClone(c.pendingBattle);
  assert.equal(c.hour,12);assert.equal(c.officer,null);assert.deepEqual(owned(c),['retiro']);assert.equal(request.enemies.length,4);
@@ -75,7 +78,7 @@ test('a hired-only squad earns its first expansion from Retiro and retains injur
  order({type:'battleResult',battleId:request.id,outcome:'victory',survivors:saved.battle.units.filter(u=>u.side==='player'),sectorState:saved.battle});
  assert.deepEqual(owned(c),['buenos_aires','retiro']);assert.equal(c.location,'buenos_aires');assert.equal(c.officer,null);
  assert.equal(isSupplied(c,'buenos_aires'),true);assert.equal(c.sectors.ensenada.owner,'royalist');
- assert.ok(c.resources.treasury>=0&&stagingTreasury<3200);
+ assert.ok(c.resources.treasury>=0&&stagingTreasury===prepared.workingReserve);
  for(const u of dead){assert.equal(c.operativeState[u.id].alive,false);assert.ok(!c.squad.includes(Number(u.id)));}
  for(const u of survivors){
   const r=c.operativeState[u.id];assert.equal(r.hp,u.hp);
@@ -98,6 +101,6 @@ test('a hired-only squad earns its first expansion from Retiro and retains injur
  for(const u of survivors){const actor=visit.battle.units.find(v=>v.id===u.id);assert.equal(actor.hp,u.hp);assert.equal(actor.loaded,u.loaded);assert.equal(Boolean(actor.weaponDropped),Boolean(u.weaponDropped));assert.equal(actor.condition,u.condition);assert.equal(actor.jammed,u.jammed);}
  const visitSave=decodeSave(encodeSave(visit.campaign,visit.battle));c=visitSave.campaign;
  order({type:'leaveSector',battleId:c.pendingBattle.id,survivors:visitSave.battle.units.filter(u=>u.side==='player'),sectorState:visitSave.battle});
- assert.equal(c.resources.treasury,treasury-reentryCost,'reentry pays only its finite ammunition shortfall, without another victory reward');
+ assert.equal(c.resources.treasury,treasury-reentryCost,'reentry has no charge and cannot refill spent ammunition');
  assert.deepEqual(owned(c),['buenos_aires','retiro']);assert.deepEqual(decodeSave(encodeSave(c)).campaign,c);
 });

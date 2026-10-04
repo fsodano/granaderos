@@ -43,10 +43,11 @@ test('new content identities are stable, separate from legacy powers, and absent
 
 test('a newly authored candidate has one paid saved arrival, actual deployment and no inherited officer profile',()=>{
  const d=authored(),id=operativeIdForCharacter(d,'lucia-del-rio');let s=initialCampaign(42,d);
+ const cash=s.resources.treasury,quote=contractQuote(s,rosterFor(s).find(o=>o.id===id),'week');
  s=order(s,{type:'recruitCivic',id,term:'week',destination:'retiro'});
- assert.equal(s.resources.treasury,3130);assert.equal(s.recruited.includes(id),false);assert.equal(s.contracts[id],undefined);
+ assert.equal(s.resources.treasury,cash-quote.price);assert.equal(s.recruited.includes(id),false);assert.equal(s.contracts[id],undefined);
  assert.ok(dispatchCampaign(s,{type:'recruitCivic',id,term:'week'}).lastError);
- s=order(save(s).campaign,{type:'wait',hours:2});assert.equal(s.resources.treasury,3130);assert.equal(s.contracts[id].started,2);assert.equal(s.contracts[id].expiresAt,170);
+ s=order(save(s).campaign,{type:'wait',hours:2});assert.equal(s.resources.treasury,cash-quote.price);assert.equal(s.contracts[id].started,2);assert.equal(s.contracts[id].expiresAt,170);
  const op=rosterFor(s).find(o=>o.id===id);assert.equal(characterProfile(op).registry,'Boletín Revolucionario Cívico');assert.equal(characterProfile(op).personality,'Exploradora del río.');assert.ok(characterProfile(op).skills.includes('Instrucción'));
  s=order(s,{type:'visitSector'});const b=enterSector(s.pendingBattle);const u=b.units.find(u=>u.id===String(id));
  assert.equal(u.name,'Lucía del Río');assert.equal(u.portraitId,d.characters.at(-1).portrait);assert.equal(u.marksmanship,85);assert.deepEqual(u.traits,['teacher','line_marksman']);
@@ -56,10 +57,11 @@ test('a newly authored candidate has one paid saved arrival, actual deployment a
 });
 
 test('new arrivals can redirect and cancel once, and malformed identity or record saves are rejected',()=>{
- const d=authored(),id=operativeIdForCharacter(d,'lucia-del-rio');let s=order(initialCampaign(42,d),{type:'recruitCivic',id,term:'day'});
- secureArea(s,'ensenada');s=order(save(s).campaign,{type:'redirectHire',id,destination:'ensenada'});assert.equal(s.hiringArrivals[0].destination,'ensenada');assert.equal(s.resources.treasury,3190);
+ const d=authored(),id=operativeIdForCharacter(d,'lucia-del-rio');let s=initialCampaign(42,d);
+ const cash=s.resources.treasury,quote=contractQuote(s,rosterFor(s).find(o=>o.id===id),'day');s=order(s,{type:'recruitCivic',id,term:'day'});
+ secureArea(s,'ensenada');s=order(save(s).campaign,{type:'redirectHire',id,destination:'ensenada'});assert.equal(s.hiringArrivals[0].destination,'ensenada');assert.equal(s.resources.treasury,cash-quote.price);
  for(const mutate of [v=>v.hiringArrivals[0].operativeId=100,v=>delete v.operativeState[id],v=>v.hiringArrivals[0].paid++,v=>v.recruited.push(100)]){const copy=structuredClone(s);mutate(copy);assert.throws(()=>save(copy));}
- s=order(save(s).campaign,{type:'cancelHireArrival',id});assert.equal(s.resources.treasury,3200);assert.ok(dispatchCampaign(s,{type:'cancelHireArrival',id}).lastError);assert.equal(save(s).campaign.recruited.length,0);
+ s=order(save(s).campaign,{type:'cancelHireArrival',id});assert.equal(s.resources.treasury,cash);assert.ok(dispatchCampaign(s,{type:'cancelHireArrival',id}).lastError);assert.equal(save(s).campaign.recruited.length,0);
 });
 
 test('new characters retain actual combat injuries and experience across return, save and reentry; fixed progression does not grow',()=>{
@@ -86,7 +88,7 @@ test('new characters retain actual combat injuries and experience across return,
   // Recover an older authored save that kept the starting health ceiling.
   s.operativeState[id].maxHp=c.attributes.maxHp;
   s=save(s).campaign;const growth=progression==='experience'?2:0;assert.equal(s.operativeState[id].hp,hp,'a level increase must not heal an existing wound');assert.equal(s.operativeState[id].xp,progression==='experience'?105:95);
-  const op=rosterFor(s).find(o=>o.id===id);assert.equal(op.level,progression==='experience'?2:1);assert.equal(op.mechanical,c.attributes.mechanical+1+growth);
+  const op=rosterFor(s).find(o=>o.id===id);assert.equal(op.level,progression==='experience'?2:1);assert.equal(op.mechanical,c.attributes.mechanical+1,'technical growth comes from practice rather than rank');
   s=order(s,{type:'visitSector'});const back=enterSector(s.pendingBattle);assert.equal(back.units.find(u=>u.id===String(id)).hp,hp);assert.equal(back.units.find(u=>u.id===String(id)).maxHp,c.attributes.maxHp+growth);assert.ok(save(s,back));
  }
 });

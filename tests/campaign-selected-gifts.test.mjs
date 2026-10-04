@@ -1,3 +1,4 @@
+import {withCarriedPonchos} from './custody-gear-fixture.mjs';
 import test from 'node:test';import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign,restoreCampaign,serializeCampaign,hasPendingNpcGiftProgress} from '../game/campaign.js';
 import {prepareCampaignBattle} from '../game/battle-handoff.js';
@@ -18,8 +19,8 @@ function ready(){
   let campaign=initialCampaign(8);assert.deepEqual(campaign.squad,[]);const cash=campaign.resources.treasury;
   campaign=order(campaign,{type:'recruitCivic',id:110,term:'day'});assert.ok(campaign.resources.treasury<cash);
   const stock=campaign.merchants.retiro.supplies.ponchos;
-  for(let i=0;i<2;i++)campaign=order(campaign,{type:'sectorInventory',sector:'retiro',operativeId:110,direction:'issueOutfit'});
-  assert.equal(campaign.merchants.retiro.supplies.ponchos,stock-2);
+  campaign=withCarriedPonchos(campaign,110,2);
+  assert.equal(campaign.merchants.retiro.supplies.ponchos,stock);
   campaign=order(campaign,{type:'visitSector'});let pair=prepareCampaignBattle(campaign);assert.equal(pair.error,null);
   pair.battle=approachNPC(pair.battle,'110',npcId);prepared=sync(pair.campaign,pair.battle);
   assert.equal(prepared.campaign.quests[questId],undefined);assert.equal(recipient(prepared.battle).questGifts?.length??0,0);
@@ -46,7 +47,7 @@ test('paid recruit delivers real selected ponchos, implicitly starts the errand 
  assert.equal(pair.campaign.cityLoyaltyEvents.length,before.cityLoyaltyEvents.length);assert.equal(recipient(pair.battle).questGifts.length,1);
  pair=save(sync(pair.campaign,offer(pair.battle)));
  assert.equal(pair.campaign.quests[questId].status,'completed');assert.equal(pair.campaign.conversations[npcId].giftCount,2);assert.equal(pair.campaign.lastConversation.outcome,'questCompleted');assert.equal(recipient(pair.battle).questGifts.length,2);
- for(const sector of ['retiro','buenos_aires','ensenada'])assert.equal(pair.campaign.sectors[sector].loyalty,before.sectors[sector].loyalty+8);
+ for(const sector of ['retiro','buenos_aires'])assert.equal(pair.campaign.sectors[sector].loyalty,before.sectors[sector].loyalty+8);assert.equal(pair.campaign.sectors.ensenada.loyalty,before.sectors.ensenada.loyalty);
  assert.equal(pair.campaign.cityLoyaltyEvents.filter(e=>e.id==='npc-retiro-uniformes'||e.eventId==='npc-retiro-uniformes').length,1);
  assert.deepEqual(pair.campaign.resources,before.resources);assert.deepEqual(pair.campaign.merchants,before.merchants);
  const again=sync(pair.campaign,pair.battle);assert.deepEqual(again.campaign,pair.campaign);

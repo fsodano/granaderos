@@ -11,10 +11,11 @@ import {enterSector} from '../game/world.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {crewField} from './artillery-crew-fixture.mjs';
 import {order,saved,sync,visit,leave} from './local-contract-fixture.mjs';
+import {withStoredGear,assertTradeRejected} from './commerce-gear-fixture.mjs';
 const profiles=()=>structuredClone(ARTILLERY);
 function authored(patch={}){const d=defaultContentPackage();d.artilleryProfiles=profiles();Object.assign(d.artilleryProfiles.swivel,patch);return d;}
 const officer=d=>order(initialCampaign(42,d),{type:'createOfficer',name:'Isabel del Valle',answers:{origin:'cabildo',doctrine:'line_marksman',crisis:'rally'}});
-function deployed(d){let campaign=order(officer(d),{type:'purchaseEquipment',item:'swivel'});campaign=order(campaign,{type:'attack',sector:'buenos_aires'});return {campaign,battle:enterSector({...campaign.pendingBattle,hour:campaign.hour})};}
+function deployed(d){let campaign=withStoredGear(officer(d),'swivel');campaign=order(campaign,{type:'attack',sector:'buenos_aires'});return {campaign,battle:enterSector({...campaign.pendingBattle,hour:campaign.hour})};}
 
 test('optional gun profiles preserve old content identity and reject incomplete, unknown or invalid definitions',()=>{
  const original=defaultContentPackage(),identity=contentIdentity(original);assert.equal(original.artilleryProfiles,undefined);assert.deepEqual(contentIdentity(saved({campaign:officer(original)}).campaign.contentCampaign.package),identity);assert.deepEqual(validateArtilleryProfiles(undefined),[]);
@@ -23,13 +24,13 @@ test('optional gun profiles preserve old content identity and reject incomplete,
  for(const mutate of mutations){const p=profiles();mutate(p);assert.ok(validateArtilleryProfiles(p).length);}assert.ok(validateArtilleryProfiles(null).length);
 });
 
-test('all three authored models charge the real catalog price, including zero, without changing identity',()=>{
- for(const [type,price]of [['bronze4',0],['field8',127],['swivel',231]]){const d=authored();Object.assign(d.artilleryProfiles[type],{price,name:`Modelo ${type}`,crew:1,art:'/art/weapon-1801.png'});let s=officer(d);const cash=s.resources.treasury,item=equipmentCatalog(s).find(w=>w.item===type);assert.equal(item.price,price);assert.equal(item.name,`Modelo ${type}`);assert.equal(item.art,'/art/weapon-1801.png');assert.equal(item.crew,1);s=order(s,{type:'purchaseEquipment',item:type});assert.equal(s.resources.treasury,cash-price);assert.equal(s.armory[type],1);assert.equal(restoreCampaign(serializeCampaign(s)).armory[type],1);}
+test('authored catalog prices remain save-compatible but cannot open a closed equipment shop',()=>{
+ for(const [type,price]of [['bronze4',0],['field8',127],['swivel',231]]){const d=authored();Object.assign(d.artilleryProfiles[type],{price,name:`Modelo ${type}`,crew:1,art:'/art/weapon-1801.png'});let s=officer(d);const cash=s.resources.treasury,item=equipmentCatalog(s).find(w=>w.item===type);assert.equal(item.price,price);assert.equal(item.name,`Modelo ${type}`);assert.equal(item.art,'/art/weapon-1801.png');assert.equal(item.crew,1);assertTradeRejected(s,{type:'purchaseEquipment',item:type});s=withStoredGear(s,type);assert.equal(s.resources.treasury,cash);assert.equal(s.armory[type],1);assert.equal(restoreCampaign(serializeCampaign(s)).armory[type],1);}
 });
 
-test('actual paid attack entry pins initial load and reserves and compact saves retain definitions once',()=>{
+test('actual stored-gun attack entry pins initial load and reserves and compact saves retain definitions once',()=>{
  const art='data:image/png;base64,'+'A'.repeat(20000),d=authored({name:'Pedrero del puerto',price:123,initialLoaded:false,initialAmmo:3,art});const p=deployed(d),wire=encodeSave(p.campaign,p.battle),parsed=JSON.parse(wire),restored=decodeSave(wire);
- const before=officer(d);assert.equal(p.campaign.resources.treasury,before.resources.treasury-123-deploymentCost(before));
+ const before=officer(d);assert.equal(p.campaign.resources.treasury,before.resources.treasury-deploymentCost(before));
  assert.equal(p.battle.artillery[0].loaded,false);assert.equal(p.battle.artillery[0].ammo,3);assert.equal(p.campaign.armory.swivel,0);assert.equal(p.campaign.pendingBattle.artilleryDefinitions.swivel.name,'Pedrero del puerto');
  assert.equal(parsed.campaign.contentCampaign.package.artilleryProfiles.swivel.art,art);assert.deepEqual(parsed.battle.artilleryDefinitions,{definitionRef:'artilleryProfiles'});assert.deepEqual(parsed.campaign.pendingBattle.artilleryDefinitions,{definitionRef:'artilleryProfiles'});assert.equal(wire.split(art).length-1,1);assert.deepEqual(restored.battle.artilleryDefinitions,d.artilleryProfiles);
  d.artilleryProfiles.swivel.damage=1;assert.equal(artilleryProfile(restored.battle,'swivel').damage,65);assert.equal(artilleryProfile(restored.campaign,'swivel').damage,65);assert.equal(artilleryProfile(restoreCampaign(serializeCampaign(p.campaign)),'swivel').price,123);

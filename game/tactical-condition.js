@@ -1,5 +1,6 @@
 import {hasPoncho} from './outfits.js';
 import {lowerWeapon} from './weapon-readiness.js';
+import {COMBAT_BALANCE} from './combat-balance.js';
 // JA2-inspired condition rules on Granaderos' existing 100-point AP scale.
 export const AP_CARRY_LIMIT = 20;
 export const CRITICAL_HEALTH = 15;
@@ -15,8 +16,8 @@ export function maxActionPoints(s, u) {
   const traits = u.traits ?? [];
   const stats = clamp(Math.round(4 * (5 + (u.maxHp ?? 100) / 20 + (u.agility ?? 75) / 10 + (u.dexterity ?? 75) / 20 + (u.experienceLevel ?? 4))), 40, 100);
   const high = s.altitude >= 2500 || s.biome === 'mountain';
-  const injury = effectiveWounds(u) / (u.maxHp ?? 100) * 50;
-  const breath = (100 - (u.energy ?? 100)) * .25;
+  const injury = effectiveWounds(u) / (u.maxHp ?? 100) * COMBAT_BALANCE.woundAPMaximumPenalty;
+  const breath = (100 - (u.energy ?? 100)) * COMBAT_BALANCE.energyAPPenaltyPerPoint;
   const fatigue = (u.fatigue ?? 0) * (traits.includes('guerrilla_tactician') ? .25 : .4);
   return Math.round(clamp(stats - injury - breath - fatigue - (high ? 15 : 0) - ((high || s.weather?.rain > 0) && !hasPoncho(u) ? 10 : 0), 15, 100));
 }

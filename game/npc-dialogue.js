@@ -7,10 +7,21 @@ export function hasAuthoredDialogue(npc){
 }
 export function dialogueOptions(npc,quest=null){
  if(!hasAuthoredDialogue(npc)&&!quest)return [];
- return [['repeat','Repetir respuesta'],...(npc.mission?[['mission','Conversar sobre la misión']]:[['friendly','Saludar'],['direct',npc.operativeId!==undefined?'Preguntar por sus condiciones':'Preguntar por la localidad']]),
+ return [['repeat','Repetir respuesta'],['friendly','Saludar'],['direct',npc.operativeId!==undefined?'Preguntar por sus condiciones':'Preguntar por la localidad'],['threaten','Amenazar'],...(npc.mission?[['mission','Conversar sobre la misión']]:[]),
  ...(quest&&!['completed','failed'].includes(quest.status)&&(!quest.carried||quest.status!=='offered')?[['quest',quest.status==='offered'?(quest.escort?'Confirmar llegada a la salida':'Entregar pertrechos'):(quest.escort?'Aceptar escolta':'Consultar encargo')]]:[]),
  ...(quest?.escort&&quest.status==='offered'?[['escortFollow','Seguir a este combatiente'],['escortWait','Esperar aquí']]:[]),
  ...(npc.operativeId!==undefined?[['recruit','Proponer incorporación']]:[])];
+}
+// Threats are an authored response, not a free recruitment or quest shortcut.
+export function contextualThreatReply(npc,quest=null){
+ if(npc.threatenedReply)return npc.threatenedReply;
+ if(npc.mission)return 'Bajá la voz. Tenemos una campaña que conducir; las amenazas no sirven aquí.';
+ if(quest?.status==='completed')return 'Cumplí mi parte del trato. No voy a responder a amenazas.';
+ if(quest?.status==='failed')return 'El encargo ya terminó. Una amenaza no va a cambiar lo ocurrido.';
+ if(quest?.escort)return 'Necesito llegar a salvo. Hablame con respeto si querés que te acompañe.';
+ if(quest)return 'Los vecinos necesitan ayuda. Las amenazas no van a resolver este encargo.';
+ if(npc.operativeId!==undefined)return 'Puedo servir por voluntad propia. No vas a contratarme con amenazas.';
+ return npc.sector?`En esta localidad tratamos con respeto a quien llega. Guardá tus amenazas.`:'Guardá tus amenazas. Podemos conversar con respeto.';
 }
 export function dialogueApproach(reachable,target){
  return target?reachable.filter(point=>sameSurface(point,target)&&Math.abs(point.x-target.x)+Math.abs(point.y-target.y)===1).sort((a,b)=>(a.cost??0)-(b.cost??0))[0]:undefined;

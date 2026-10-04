@@ -1,3 +1,4 @@
+import {withStoredGear,assertTradeRejected} from './commerce-gear-fixture.mjs';
 import {storedEquipmentStack} from '../game/stored-equipment.js';
 import {secondaryRetreat} from './secondary-loot-fixture.mjs';
 import {secureArea} from './controlled-area-fixture.mjs';
@@ -31,8 +32,8 @@ test('the same compiled definition drives live shots, free aiming, capacity, wei
 });
 test('authored variants own separate shop prices, stock and exact used armory instances',()=>{
  let s=initialCampaign(8,content());const funds=s.resources.treasury;
- s=order(s,{type:'purchaseEquipment',item:'pistola-del-sur',quantity:2});s=order(s,{type:'purchaseEquipment',item:'pistola-del-norte'});
- assert.equal(s.resources.treasury,funds-610);assert.equal(armoryInventory(s).find(w=>w.item==='pistola-del-sur').quantity,2);
+ s=withStoredGear(s,'pistola-del-sur',2);s=withStoredGear(s,'pistola-del-norte');
+ assert.equal(s.resources.treasury,funds);assert.equal(armoryInventory(s).find(w=>w.item==='pistola-del-sur').quantity,2);
  s=order(s,{type:'recruitCivic',id:110,term:'week'});const first=s.armoryItems.find(w=>contentWeaponOf(storedEquipmentStack(w))?.id==='pistola-del-norte');
  s.operativeState[110].condition=55;s.operativeState[110].jammed=true;
  s=order(s,{type:'equip',operativeId:110,slot:'weapon',itemId:'pistola-del-norte',instanceId:first.id});
@@ -42,11 +43,11 @@ test('authored variants own separate shop prices, stock and exact used armory in
  s=order(s,{type:'equip',operativeId:110,slot:'weapon',itemId:'pistola-del-sur',instanceId:worn.id});assert.equal(s.operativeState[110].condition,55);assert.equal(s.operativeState[110].jammed,true);
  assert.equal(save(s).campaign.armoryItems.length,3);assert.equal(initialCampaign().armoryItems.length,0);
 });
-test('imported edited guns retain identity through saved shipment and blockade delays',()=>{
+test('already-paid edited imports retain identity through saved cargo and blockade delays',()=>{
  const d=content(),w=d.weapons.find(w=>w.id==='firearm-1800');w.damage=81;w.name='Fusil del puerto';w.price=450;
- let s=order(secureArea(initialCampaign(8,d),'buenos_aires','ensenada'),{type:'purchaseEquipment',item:w.id});assert.equal(s.resources.treasury,2750);
+ let s=secureArea(initialCampaign(8,d),'buenos_aires','ensenada');s.equipmentShipments=[{item:w.id,quantity:1,due:72}];const money=s.resources.treasury;assertTradeRejected(s,{type:'purchaseEquipment',item:w.id});
  const due=s.equipmentShipments[0].due;s.blockade=true;s=order(save(s).campaign,{type:'wait',hours:due});assert.equal(s.equipmentShipments.length,1);assert.equal(s.armoryItems.length,0);
- s.blockade=false;s=order(s,{type:'wait',hours:1});assert.equal(s.equipmentShipments.length,0);assert.equal(contentWeaponOf(storedEquipmentStack(s.armoryItems[0])).damage,81);assert.ok(save(s));
+ s.blockade=false;s=order(s,{type:'wait',hours:1});assert.equal(s.equipmentShipments.length,0);assert.equal(contentWeaponOf(storedEquipmentStack(s.armoryItems[0])).damage,81);assert.equal(s.resources.treasury,money);assert.ok(save(s));
 });
 test('a hired character deploys the authored firearm and keeps its definition on campaign reentry',()=>{
  let s=order(initialCampaign(8,content()),{type:'recruitCivic',id:110,term:'week'});s=order(s,{type:'visitSector'});
@@ -97,14 +98,14 @@ test('AI consumes the authored cost and a routed enemy leaves the exact gun on t
 test('custom weapon pictures are stored once and restore across all weapon copies',()=>{
  const d=content(),gun=d.weapons.find(w=>w.id==='pistola-del-sur');gun.art='data:image/png;base64,'+'A'.repeat(320000);
  for(const c of d.characters)c.weapon=gun.id;
- let s=order(initialCampaign(8,d),{type:'recruitCivic',id:110,term:'week'});s=order(s,{type:'purchaseEquipment',item:gun.id,quantity:3});
+ let s=order(initialCampaign(8,d),{type:'recruitCivic',id:110,term:'week'});s=withStoredGear(s,gun.id,3);
  const serialized=serializeCampaign(s);assert.ok(serialized.length<600000);assert.equal(contentWeaponOf(storedEquipmentStack(restoreCampaign(serialized).armoryItems[0])).art,gun.art);
  s=order(s,{type:'visitSector'});const b=enterSector(s.pendingBattle),encoded=encodeSave(s,b);assert.equal(encoded.split(gun.art).length-1,1,'the uploaded picture is stored once, including larger sector geometry');
  const restored=decodeSave(encoded);assert.equal(weaponFor(restored.battle.units[0]).art,gun.art);assert.equal(contentWeaponOf(storedEquipmentStack(restored.campaign.armoryItems[0])).art,gun.art);
  const invalid=JSON.parse(encoded);invalid.battle.units[0].weaponMetadata.contentWeapon.definitionRef='missing-gun';assert.throws(()=>decodeSave(JSON.stringify(invalid)),/arma/);
 });
 test('saved definitions cannot diverge from the pinned package in hands, inventory, stock or battles',()=>{
- let s=order(initialCampaign(8,content()),{type:'recruitCivic',id:110,term:'week'});s=order(s,{type:'purchaseEquipment',item:'pistola-del-sur'});
+ let s=order(initialCampaign(8,content()),{type:'recruitCivic',id:110,term:'week'});s=withStoredGear(s,'pistola-del-sur');
  for(const mutate of [v=>v.operativeState[110].weaponMetadata.contentWeapon.damage++,v=>v.armoryItems[0].itemMetadata.contentWeapon.template=1800,v=>v.armory['pistola-del-sur']++,v=>v.armoryItems[0].loaded=4]){const altered=structuredClone(s);mutate(altered);assert.throws(()=>save(altered));}
  s=order(s,{type:'visitSector'});const b=enterSector(s.pendingBattle),altered=structuredClone(b);altered.units[0].weaponMetadata.contentWeapon.name='Otra arma';assert.throws(()=>save(s,altered),/arma guardada/);
  assert.equal(campaignContentReport(content()).blocked.length,0);

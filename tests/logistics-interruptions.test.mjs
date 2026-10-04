@@ -1,3 +1,4 @@
+import {withLegacyPaidCargo} from './legacy-paid-cargo-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign,isSupplied} from '../game/campaign.js';
@@ -10,7 +11,7 @@ import {reconcileLogisticsAttention,logisticsEventText} from '../game/logistics-
 const order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,`${a.type}: ${n.lastError}`);return n;};
 const wait=(s,hours=24)=>order(s,{type:'wait',hours});
 const saved=s=>decodeSave(encodeSave(s)).campaign;
-const buy=(s=secureArea(initialCampaign()))=>order(s,{type:'purchaseEquipment',item:1802});
+const buy=(s=secureArea(initialCampaign()))=>withLegacyPaidCargo(s);
 const overdue=()=>{const s=buy();s.equipmentShipments[0].due=0;s.blockade=true;return s;};
 
 test('already overdue paid cargo stops at the current hour without credit or repeated pauses after saving',()=>{
@@ -18,7 +19,7 @@ test('already overdue paid cargo stops at the current hour without credit or rep
  assert.equal(n.hour,0);assert.equal(n.logisticsNotice.advancedHours,0);assert.equal(n.logisticsNotice.events[0].code,'blockade');assert.equal(n.armory[1802]??0,0);assert.deepEqual(n.equipmentShipments,before.equipmentShipments);assert.deepEqual(s,before);
  assert.deepEqual(saved(n),n);const continued=wait(saved(n),6);assert.equal(continued.hour,6);assert.equal(continued.logisticsNotice,null);assert.equal(continued.armory[1802]??0,0);
 });
-test('a real paid import reports only when due, keeps its cargo and delivers exactly once',()=>{
+test("an old save's already-paid import reports only when due, keeps its cargo and delivers exactly once",()=>{
  let s=buy();const due=s.equipmentShipments[0].due,cargo=structuredClone(s.equipmentShipments);s.blockade=true;s=wait(s,10);assert.equal(s.hour,10);assert.equal(s.logisticsNotice,null);
  s=wait(s,120);assert.equal(s.hour,due);assert.equal(s.logisticsNotice.events[0].code,'blockade');assert.equal(s.armory[1802]??0,0);assert.deepEqual(s.equipmentShipments,cargo);
  s=wait(saved(s),1);assert.equal(s.hour,due+1);assert.equal(s.logisticsNotice,null);
@@ -41,7 +42,7 @@ test('identical paid orders are acknowledged together and a later paid order sti
 test('a full armory keeps a paid gun until an actual storage slot is available',()=>{
  let s=buy();addEquipment(s,1800,10000);s.equipmentShipments[0].due=1;
  s=wait(s,6);assert.equal(s.hour,1);assert.equal(s.logisticsNotice.events[0].code,'armory_full');assert.equal(s.armoryItems.length,10000);assert.equal(s.armory[1802]??0,0);assert.equal(s.equipmentShipments.length,1);
- assert.match(logisticsEventText(s.logisticsNotice.events[0]),/Retirá o vendé/);s=wait(saved(s),1);assert.equal(s.hour,2);assert.equal(s.logisticsNotice,null);
+ assert.match(logisticsEventText(s.logisticsNotice.events[0]),/Retirá/);s=wait(saved(s),1);assert.equal(s.hour,2);assert.equal(s.logisticsNotice,null);
  takeEquipment(s,1800);s=wait(saved(s),6);assert.equal(s.hour,3);assert.equal(s.armoryItems.length,10000);assert.equal(s.armory[1800],9999);assert.equal(s.armory[1802],1);assert.equal(s.equipmentShipments.length,0);
 });
 test('blocking travel finishes and leaves an unseen overdue interruption for the next explicit wait',()=>{

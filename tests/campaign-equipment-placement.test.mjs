@@ -26,19 +26,19 @@ test('campaign dragging stores and restores a fitted gun with its exact unfinish
  s=order(save(s),{type:'visitSector'});const b=enterSector(s.pendingBattle),u=b.units.find(u=>u.id==='110');assert.equal(u.loaded,0);assert.equal(u.reloadProgress,.5);assert.equal(u.weaponFittings.bayonet.instanceId,'drag-bayonet');assert.deepEqual(decodeSave(encodeSave(s,b)).battle,b);
 });
 test('pockets and both hands can hold supplies and ordinary objects, with layout retained on deployment',()=>{
- let s=fresh();s.operativeState[110].inventory={note:{name:'Carta',count:1,weight:.1,condition:47,instanceId:'drag-note'}};
+ let s=fresh();s.operativeState[110].inventory={...s.operativeState[110].inventory,note:{name:'Carta',count:1,weight:.1,condition:47,instanceId:'drag-note'}};
  s=move(s,pocket(s,'medkits'),'hand:right');s=move(s,pocket(s,'torches'),'hand:left');s=move(s,pocket(s,'inventory:note'),'hand:right');
  assert.equal(handLayout(actor(s)).right,'inventory:note');assert.equal(handLayout(actor(s)).left,'torches');assert.equal(s.operativeState[110].inventory.note.condition,47);
  s=move(s,'hand:right','small-8');assert.equal(handLayout(actor(s)).right,null);assert.equal(model(s).usage.slots.find(p=>p.id==='small-8').entry.item,'inventory:note');
  s=move(s,'small-8','small-7','pocket');const layout=s.operativeState[110].pocketOrder;s=save(s);
- assert.equal(s.operativeState[110].carriedLoaded,undefined,'rearranging ordinary objects must not cancel initial loading');
+ assert.equal(s.operativeState[110].carriedLoaded,1,'rearranging ordinary objects must not cancel initial loading');
  s=order(s,{type:'visitSector'});const b=enterSector(s.pendingBattle),u=b.units.find(u=>u.id==='110');assert.deepEqual(u.pocketOrder,layout);assert.ok(u.loaded>0);assert.equal(handLayout(u).left,'torches');
 });
 test('second-pistol swaps retain independent charges and conditions',()=>{
  let s=fresh();s.loadouts[110]={weapon:1805,blade:0};Object.assign(s.operativeState[110],{carriedAmmo:4,carriedLoaded:1,condition:81,weaponInstanceId:'drag-first',offHand:{weapon:1808,count:1,weight:1.3,loaded:2,condition:57,instanceId:'drag-second'}});
  addAmmunition(s.operativeState[110],'pistol_69',3);syncCarriedAmmunition(s.operativeState[110]);
- s=move(s,'hand:left','hand:right');const r=s.operativeState[110];assert.equal(r.carriedLoaded,2);assert.equal(r.carriedAmmo,5);assert.equal(r.condition,57);assert.equal(r.offHand.loaded,1);assert.equal(r.offHand.condition,81);assert.equal(r.offHand.instanceId,'drag-first');save(s);
- assert.deepEqual(ammunitionByType(r),{pistol_69:3},'swapping unlike pistols does not change prepared cartridge types');
+ s=move(s,'hand:left','hand:right');const r=s.operativeState[110];assert.equal(r.carriedLoaded,2);assert.equal(r.carriedAmmo,14);assert.equal(r.condition,57);assert.equal(r.offHand.loaded,1);assert.equal(r.offHand.condition,81);assert.equal(r.offHand.instanceId,'drag-first');save(s);
+ assert.deepEqual(ammunitionByType(r),{musket_75:9,pistol_69:3},'swapping unlike pistols does not change prepared cartridge types');
 });
 test('incompatible pockets, blocked hands, stale gestures and unavailable soldiers reject without effects',()=>{
  let s=fresh();reject(s,action(s,'hand:right','small-8'));reject(s,action(s,pocket(s,'medkits'),'hand:left'));
@@ -50,7 +50,7 @@ test('incompatible pockets, blocked hands, stale gestures and unavailable soldie
 
 test('a same-model empty replacement stays empty instead of receiving initial issue ammunition',()=>{
  let s=fresh();s.operativeState[110].inventory={replacement:{weapon:1800,count:1,weight:4,loaded:0,condition:100}};
- assert.equal(s.operativeState[110].carriedLoaded,undefined);
+ assert.equal(s.operativeState[110].carriedLoaded,1);
  s=move(s,pocket(s,'inventory:replacement'),'hand:right');assert.equal(s.operativeState[110].carriedLoaded,0);
  s=order(save(s),{type:'visitSector'});const b=enterSector(s.pendingBattle);assert.equal(b.units.find(u=>u.id==='110').loaded,0);
 });

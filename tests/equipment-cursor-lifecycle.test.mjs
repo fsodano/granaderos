@@ -34,7 +34,7 @@ const cartridges=s=>stockAmmo(s)+Object.values(s.operativeState).filter(r=>r.ali
 
 test('a paid recruit physically picks a finite stack; free campaign save and cancellation restore it once',()=>{
  let s=fresh();const before=structuredClone(s),u=personal(s),sourceId=pocket(u,'medkits'),weight=carriedWeight(u);
- s=arrange(s,'pickupEquipment',{sourceId,count:1});assert.equal(s.operativeState[110].medkits,1);assert.equal(s.operativeState[110].equipmentCursor.stack.count,1);assert.equal(s.operativeState[110].equipmentCursor.sourceId,sourceId);assert.equal(carriedWeight(personal(s)),weight);
+ s=arrange(s,'pickupEquipment',{sourceId,count:1});assert.equal(s.operativeState[110].medkits,1);assert.equal(s.operativeState[110].equipmentCursor.stack.count,1);assert.equal(s.operativeState[110].equipmentCursor.sourceId,sourceId);assert.ok(Math.abs(carriedWeight(personal(s))-weight)<1e-9);
  assert.equal(playerKnownCampaign(s).operatives.find(u=>u.id===110).equipmentCursor.stack.count,1);
  s=arrange(save(s),'returnEquipmentCursor');assert.equal(s.operativeState[110].equipmentCursor,undefined);assert.equal(s.operativeState[110].medkits,2);
  for(const key of ['resources','hour','secondOfHour','seed','sectorStates'])assert.deepEqual(s[key],before[key],key);
@@ -52,10 +52,10 @@ test('a loaded gun cursor survives live save, report, campaign save and reentry;
 });
 
 test('cursor cartridges remain finite through two reports and return to personal inventory only after placement',()=>{
- let {s,b}=visit(fresh());const total=cartridges(s),cash=s.resources.treasury,shop=s.ammunitionShops.retiro.stock.ammoMusket,u=actor(b);
+ let {s,b}=visit(fresh());const total=cartridges(s),cash=s.resources.treasury,shops=structuredClone(s.ammunitionShops),u=actor(b);
  b=act(b,cursorAction(u,'pickupEquipment',{sourceId:pocket(u,'inventory:ammo:musket_75'),count:5}));s=leave(s,b);assert.equal(cartridges(s),total);assert.equal(s.operativeState[110].equipmentCursor.stack.count,5);
  s=order(save(s),{type:'visitSector'});assert.equal(s.pendingBattle.storedCartridges,5);b=enterSector(s.pendingBattle,s.sectorStates.retiro);
- b=act(b,cursorAction(actor(b),'returnEquipmentCursor'));assert.equal(actor(b).equipmentCursor,undefined);s=leave(s,b);assert.equal(cartridges(s),total+5);assert.equal(s.ammunitionShops.retiro.stock.ammoMusket,shop-5);assert.equal(s.resources.treasury,cash-5);assert.equal(s.operativeState[110].equipmentCursor,undefined);save(s);
+ b=act(b,cursorAction(actor(b),'returnEquipmentCursor'));assert.equal(actor(b).equipmentCursor,undefined);s=leave(s,b);assert.equal(cartridges(s),total);assert.deepEqual(s.ammunitionShops,shops);assert.equal(s.resources.treasury,cash);assert.equal(s.operativeState[110].equipmentCursor,undefined);save(s);
 });
 
 function displacedBulky(s){
@@ -118,7 +118,7 @@ test('an identified fitted rifle keeps its separate bayonet, wear and unfinished
  let s=fresh();Object.assign(s.operativeState[110],{carriedAmmo:3,carriedLoaded:0,carriedReloadProgress:.5,condition:61,weaponInstanceId:'cursor-rifle',weaponFittings:{bayonet:{weapon:1811,fittingPattern:'india_socket',condition:73,instanceId:'cursor-bayonet'}}});
  addAmmunition(s.operativeState[110],'musket_75',3);syncCarriedAmmunition(s.operativeState[110],1800);
  const before=structuredClone(s.operativeState[110]),weight=carriedWeight(personal(s));s=arrange(s,'pickupEquipment',{sourceId:'hand:right'});const cursor=s.operativeState[110].equipmentCursor;
- assert.equal(cursor.stack.instanceId,'cursor-rifle');assert.equal(cursor.stack.fittings.bayonet.instanceId,'cursor-bayonet');assert.equal(cursor.stack.reloadProgress,.5);assert.equal(carriedWeight(personal(s)),weight);
+ assert.equal(cursor.stack.instanceId,'cursor-rifle');assert.equal(cursor.stack.fittings.bayonet.instanceId,'cursor-bayonet');assert.equal(cursor.stack.reloadProgress,.5);assert.ok(Math.abs(carriedWeight(personal(s))-weight)<1e-9);
  const duplicate=structuredClone(s);duplicate.operativeState[110].inventory.copy={weapon:1811,count:1,weight:.5,loaded:0,condition:73,instanceId:'cursor-bayonet',fittingPattern:'india_socket'};assert.throws(()=>decodeSave(encodeSave(duplicate)),/identidad/);
  s=arrange(save(s),'placeEquipment',{destinationId:'hand:right'});for(const key of ['carriedAmmo','carriedLoaded','carriedReloadProgress','condition','weaponInstanceId','weaponFittings'])assert.deepEqual(s.operativeState[110][key],before[key],key);save(s);
 });

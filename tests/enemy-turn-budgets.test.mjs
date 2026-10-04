@@ -65,15 +65,15 @@ test('a real wounded cannon crew keeps its second-round shared expenditure throu
   tiles:Array.from({length:200},(_,i)=>({x:i%20,y:Math.floor(i/20),type:'grass',blocked:false,cover:0})),
   // Finite field fixture: a cannon that needs sixty points per crew member,
   // and two wounded operators whose normal budgets cannot complete it once.
-  enemies:[{id:'leader',x:1,y:2},{id:'helper',x:2,y:2}].map(u=>({...u,facing:4,hp:20,maxHp:100,bandaged:80,energy:30,fatigue:90,medical:0,loaded:0,ammo:0,blade:0,patrol:false})),
+  enemies:[{id:'leader',x:1,y:2},{id:'helper',x:2,y:2}].map(u=>({...u,facing:4,hp:20,maxHp:100,bandaged:80,energy:30,fatigue:90,agility:40,dexterity:40,experienceLevel:1,medical:0,loaded:0,ammo:0,blade:0,patrol:false})),
   artillery:[{id:'gun',type:'bronze4',side:'enemy',x:2,y:3,loaded:false,ammo:3}],seed:45});
  const rate=artilleryCosts(battle,actor(battle,'leader'),battle.artillery[0]).reload,spent={leader:0,helper:0};
- for(let round=0;round<3;round++){
+ for(let round=0;round<6&&!battle.artillery[0].loaded;round++){
   const budgets=Object.fromEntries(['leader','helper'].map(id=>[id,round?actionPointBudget(battle,actor(battle,id)).total:actor(battle,id).ap]));
   const paused=endTurn(battle);assert.equal(paused.phase,'interrupt');assert.equal(paused.enemyTurn.unitIndex,0);assert.equal(paused.enemyTurn.budgetsIssued,true);
   for(const id of ['leader','helper'])spent[id]+=budgets[id]-actor(paused,id).ap;
   assert.equal(spent.leader,spent.helper);assert.equal(paused.artillery[0].ammo+Number(paused.artillery[0].loaded),3);
-  if(round<2){assert.equal(paused.artillery[0].loaded,false);assert.ok(paused.artillery[0].reloadProgress>0);assert.equal(actor(paused,'helper').ap,0);}
+  if(spent.leader<rate){assert.equal(paused.artillery[0].loaded,false);assert.ok(paused.artillery[0].reloadProgress>0);assert.equal(actor(paused,'helper').ap,0);}
   const saved=restore(paused);battle=endTurn(saved);assert.deepEqual(battle,endTurn(paused));
   assert.equal(battle.phase,'player');assert.equal(actor(battle,'helper').ap,actor(paused,'helper').ap,'the later helper slot cannot replace spent shared AP');
   assert.equal(battle.elapsedSeconds,paused.elapsedSeconds);assert.equal(battle.turn,round+2);

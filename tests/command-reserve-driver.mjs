@@ -55,7 +55,13 @@ export function deployHighPassBattery(start,{lightId='147',reserveId='57'}={}){
  assert.ok(infantry.length>=4,'the battery requires four real arriving field soldiers');
  assert.ok(infantry.some(u=>u.id===String(lightId)),'the light operator must actually arrive');
  const occupied=new Set();
- for(const unit of [...(command?[command]:[]),...infantry]){
+ // The packed light gun can share its closest entry cell with a heavy-crew
+ // contact cell. Reserve the three heavy contact positions first, then give
+ // the light operator the remaining adjacent cell; one person cannot staff
+ // both guns at once.
+ const lightOperator=infantry.find(unit=>unit.id===String(lightId));
+ const heavyCandidates=infantry.filter(unit=>unit!==lightOperator),heavyCrew=heavyCandidates.slice(0,3),spare=heavyCandidates.slice(3);
+ for(const unit of [...(command?[command]:[]),...heavyCrew,lightOperator,...spare]){
   const options=model.entryCells[unit.edge].filter(point=>!occupied.has(`${point.x},${point.y}`)),gun=unit.id===String(lightId)?light:heavy;
   const distance=(point,piece)=>Math.hypot(point.x-piece.x,point.y-piece.y);
   options.sort((a,b)=>unit.id===String(reserveId)?Math.min(distance(b,heavy),distance(b,light))-Math.min(distance(a,heavy),distance(a,light))||a.y-b.y:distance(a,gun)-distance(b,gun)||a.y-b.y);

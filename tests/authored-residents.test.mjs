@@ -26,6 +26,9 @@ const idFor=s=>operativeIdForCharacter(s.contentCampaign.package,'alma-posta');
 const resident=b=>b.npcs.find(n=>n.contentId==='alma-posta');
 function ready(d=authored()){
  let s=order(initialCampaign(42,d),{type:'recruitCivic',id:110,term:'month'});
+ // Start after an actual daily relocation so the slower march can reach
+ // the resident before the next scheduled move.
+ if(d.placements.find(p=>p.character==='alma-posta').mode==='daily')s=order(s,{type:'wait',hours:Math.ceil((s.contentPresence.nextDaily-s.contentPresence.minute)/60)});
  return order(s,{type:'travel',sector:s.contentPresence.people['alma-posta'].sector});
 }
 const visit=s=>{const campaign=order(s,{type:'visitSector'});return {campaign,battle:enterSector({...campaign.pendingBattle,hour:campaign.hour},campaign.sectorStates[campaign.location])};};
@@ -107,6 +110,8 @@ test('authored resident saves reject forged identities, ledger names, locations 
 test('authored residents keep growth policy and later soldier health after retreat, dismissal and a new encounter',()=>{
  for(const progression of ['experience','fixed']){
   const d=authored();d.characters.at(-1).progression=progression;
+  // This wound-preservation fixture needs a qualified surviving doctor.
+  d.characters.find(c=>c.id==='person-110').attributes.medical=20;
   let p=transfer(approach(visit(ready(d)))),s=leave(p),id=idFor(s);
   // Established service fixture just below a level boundary. A real tactical
   // retreat awards the existing ten experience points; no victory is injected.
@@ -117,9 +122,14 @@ test('authored residents keep growth policy and later soldier health after retre
   // resident. The gunner has a limited prepared action budget, not a new gun.
   let b=createBattle(request.squad.map(u=>({...u,x:u.id===id?5:1,y:u.id===id?1:6,...(u.id===id?{stance:'prone',movementMode:'prone'}:{})})),{...request,width:12,height:8,seed:45,tiles:Array.from({length:96},(_,i)=>({x:i%12,y:Math.floor(i/12),type:Math.floor(i/12)===4?'wall':'grass',blocked:Math.floor(i/12)===4,blocksSight:Math.floor(i/12)===4,cover:0})),enemies:request.enemies.map((u,i)=>({...u,x:7,y:i%8,...(i?{hp:0,bleeding:0,bandaged:0}:{y:1,marksmanship:100})}))});
   b.units.find(u=>u.side==='enemy'&&u.hp>0).ap=30;b=endTurn(b);assert.equal(b.lastError,null);const hurt=b.units.find(u=>u.id===String(id));assert.ok(hurt.hp>=15&&hurt.hp<hurt.maxHp,JSON.stringify({hp:hurt.hp,log:b.log}));
-  b=actBattle(b,{type:'weapon',unitId:String(id),slot:'medical'});assert.equal(b.lastError,null);b=actBattle(b,{type:'heal',unitId:String(id)});assert.equal(b.lastError,null);
+  b=actBattle(b,{type:'movement',unitId:String(id),movement:'walk'});assert.equal(b.lastError,null);
   p=synced({campaign:s,battle:scriptedWithdrawal(b)});s=order(p.campaign,{type:'battleResult',battleId:request.id,outcome:'retreat',sectorState:p.battle,survivors:p.battle.units.filter(u=>u.side==='player')});
   assert.equal(s.operativeState[id].xp,progression==='experience'?105:95);assert.equal(rosterFor(s).find(o=>o.id===id).maxHp,progression==='experience'?77:75);
+  // Keep enough real AP for withdrawal. Treat the bleeding through finite
+  // campaign care afterwards instead of manufacturing a fresh turn budget.
+  s=order(s,{type:'assignCare',id:110,assignment:'doctor'});s=order(s,{type:'assignCare',id,assignment:'patient'});
+  const dressings=s.operativeState[110].medkits;s=order(s,{type:'wait',hours:1});assert.equal(s.operativeState[110].medkits,dressings-1);assert.equal(s.operativeState[id].bleeding,0);
+  for(const patient of [110,id])s=order(s,{type:'assignCare',id:patient,assignment:'active'});
   s=order(s,{type:'travel',sector:'retiro'});s=order(s,{type:'travel',sector:A});p=visit(save(s).campaign);
   const wounded=p.battle.units.find(u=>u.id===String(id));assert.ok(wounded.hp<wounded.maxHp);
   const hp=wounded.hp;s=leave(p);assert.equal(s.operativeState[id].hp,hp);s=order(s,{type:'dismiss',id});p=visit(save(s).campaign);

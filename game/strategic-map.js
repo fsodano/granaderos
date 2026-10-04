@@ -23,7 +23,7 @@ export function sectorIncome(state,def){
 }
 export const MAP_MODES=Object.freeze([
  {id:'cities',label:'Ciudades'}, {id:'resources',label:'Recursos'},
- {id:'squads',label:'Escuadras'}, {id:'militia',label:'Milicias'},
+ {id:'squads',label:'Tropas'}, {id:'militia',label:'Milicias'},
  {id:'horses',label:'Caballos'}, {id:'items',label:'Objetos'},
 ]);
 

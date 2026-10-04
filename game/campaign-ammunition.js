@@ -1,3 +1,4 @@
+import {enterSector} from './world.js';
 export * from './physical-ammunition.js';
 import {syncCarriedAmmunition,unitAmmunitionByType,fieldAmmunitionByType} from './physical-ammunition.js';
 import {initializeUnitAmmunition,syncUnitAmmunition} from './tactical-ammunition.js';
@@ -116,25 +117,27 @@ export function moveCampaignAmmunition(s,op,key,quantity,direction,supplied){
  return quote;
 }
 
-// A supplied town may buy the configured marching allowance. Only an untracked
-// initial weapon receives a prepared charge: returning or explicitly equipped
-// guns keep their actual load and work. Remote deployment buys nothing.
-export function prepareCampaignAmmunition(s,roster,ids,{at=s.location,supplied=false,commit=false}={}){
+// A first hire owns a finite initial allowance with their service equipment.
+// The campaign marks this issue once; renewal, rehire and sector entry do not refill it.
+export function issueStartingCartridges(s,op){
+ const record=s.operativeState[op.id];if(record.startingCartridgesIssued!==false)return;
+ const unit=carriedAmmunition(op,record),key=ammoTypeFor(unit);
+ if(key&&!unit.weaponDropped){const quantity=Math.min(campaignRules(s).deploymentCartridges,supplyRoom(unit,key,campaignRules(s).deploymentCartridges));changeAmmo(unit,key,quantity);const charges=Math.min(quantity,Math.max(0,(weaponSpecification(unit)?.capacity??0)-unit.loaded));unit.loaded+=charges;changeAmmo(unit,key,-charges);keep(record,unit);}
+ record.startingCartridgesIssued=true;
+}
+
+// Deployment uses only carried cartridges. An untracked initial firearm can
+// receive a charge from its owner's pockets; later loads keep their real work.
+export function prepareCampaignAmmunition(s,roster,ids,{commit=false}={}){
  const state=commit?s:structuredClone(s);migrateAmmunitionCustody(state);
- const allocation={};let cost=0,issued=0;
+ const allocation={};let issued=0;
  for(const id of ids){
   const op=roster.find(o=>o.id===id),record=state.operativeState[id],unit=carriedAmmunition(op,record),key=ammoTypeFor(unit),capacity=weaponSpecification({...op,...record})?.capacity??0,initialLoad=record.carriedLoaded===undefined&&!record.carriedReloadProgress;
-  if(key&&!unit.weaponDropped&&arrivalFacilityOptions(at).length>0&&worldOwner(state,at)==='patriot'&&supplied){
-   if(initialLoad){const charges=Math.min(capacity-unit.loaded,ammoCount(unit,key));unit.loaded+=charges;changeAmmo(unit,key,-charges);}
-   const wanted=Math.max(0,campaignRules(state).deploymentCartridges-unit.loaded-ammoCount(unit,key)),roomInGun=initialLoad?Math.min(wanted,capacity-unit.loaded):0,quantity=!hasAmmunitionMarket(state,at)||!ammunitionMarketRules(state,at).automaticPurchase?0:Math.min(shop(state,at).stock[key],roomInGun+supplyRoom(unit,key,wanted-roomInGun));
-   if(quantity){state.ammunitionShops[at]??=freshShop(state,at);state.ammunitionShops[at].stock[key]-=quantity;const charges=Math.min(roomInGun,quantity);unit.loaded+=charges;changeAmmo(unit,key,quantity-charges);cost+=quantity*ammunitionUnitPrice(state,at,key);}
-  }
+  if(key&&!unit.weaponDropped&&initialLoad){const charges=Math.min(capacity-unit.loaded,ammoCount(unit,key));unit.loaded+=charges;changeAmmo(unit,key,-charges);}
   allocation[id]={...(unit.ammunitionChoice!==undefined?{ammunitionChoice:unit.ammunitionChoice}:{}),loaded:unit.loaded,ammo:unit.ammo,ammunitionVersion:2,inventory:structuredClone(unit.inventory),...(record.carriedReloadProgress?{reloadProgress:record.carriedReloadProgress}:{})};
   issued+=unit.loaded+totalAmmo(unit);keep(record,unit);
  }
- need(Number.isSafeInteger(cost)&&(!commit||state.resources.treasury>=cost),'No hay suficientes pesos para completar la munición de la escuadra.');
- state.resources.treasury-=cost;
- return {allocation,issued,cost};
+ return {allocation,issued,cost:0};
 }
 
 // Changing a firearm does not convert or sell its charges. Unload its actual
@@ -160,7 +163,7 @@ export function assertAmmunitionConservation(request,snapshot,previous){
  const enemies=request.exploration?[]:previous&&!previous.sectorCleared?previous.units.filter(u=>u.side==='enemy'):request.enemies??[];
  const deployed=[...(request.squad??[]),...(request.garrison??[]),...(request.missionAllies??[]),...enemies.map(u=>({...u,weapon:u.weapon??u.primary??1800,ammo:u.ammo??12,loaded:u.loaded??weaponSpecification({...u,weapon:u.weapon??u.primary??1800})?.capacity??0}))];
  const bodies=retainedMilitaryBodies(previous,deployed,request.sector);
- const initial=fieldCounts([...deployed,...bodies],previous??{}),current=fieldCounts(snapshot.units,snapshot);
+ const initial=fieldCounts([...deployed,...bodies],previous??enterSector(request)),current=fieldCounts(snapshot.units,snapshot);
  for(const receipt of request.civilianWeaponRecoveries??[]){const key=ammoTypeFor(receipt.gun);if(key)initial[key]+=receipt.gun.loaded??0;}
  for(const key of AMMO_KEYS)need(current[key]<=initial[key],`El parte añade ${AMMO_TYPES[key].name.toLowerCase()} sin una fuente física.`);
 }

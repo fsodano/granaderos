@@ -6,7 +6,7 @@ export function createMovementController({execute,commit,canMove}){
  let enabled=true,battle=null,positions={},intent=null,waiting=null,prepared=null,pending=false,revision=0;
  let snapshot=null;const listeners=new Set();
  const notify=()=>{
-  snapshot=intent?{unitId:intent.action.unitId,action:intent.action,finishing:intent.finishing}:null;
+  snapshot=intent?{unitId:intent.action.unitId,movingUnitId:intent.movingUnitId??intent.action.unitId,action:intent.action,finishing:intent.finishing}:null;
   for(const listener of listeners)listener();
  };
  const stop=()=>{revision++;intent=null;waiting=null;prepared=null;notify();};
@@ -28,20 +28,20 @@ export function createMovementController({execute,commit,canMove}){
    if(prepared.source!==battle||prepared.epoch!==revision){stop();return;}
    if(waiting)return;
    const {source,request,result}=prepared;prepared=null;
-   const next=result.state,unit=next?.units.find(unit=>unit.id===request.action.unitId);
+   const next=result.state,unitId=result.unitId??request.action.unitId,unit=next?.units.find(unit=>unit.id===unitId);
    if(!unit){stop();return;}
-   const previous=source.units.find(unit=>unit.id===request.action.unitId),moved=previous&&!sameCell(previous,unit);
+   const previous=source.units.find(unit=>unit.id===unitId),moved=previous&&!sameCell(previous,unit);
    // A commit can synchronously notify an embedding host. Keep the controller
    // locked until the accepted state and its visual boundary are registered.
    pending=true;
-   let accepted;try{accepted=commit(next,request.action,source);}catch{pending=false;stop();return;}
+   let accepted;try{accepted=commit(next,request.action,source,result);}catch{pending=false;stop();return;}
    if(accepted===null){pending=false;stop();return;}
    if(next.lastError||!moved){pending=false;stop();return;}
-   intent={...request,continuation:result.continuation,finishing:result.status!=='moving'};
+   intent={...request,movingUnitId:unit.id,continuation:result.continuation,finishing:result.status!=='moving'};
    waiting={source,battle:accepted??next,unitId:unit.id};
    pending=false;notify();pump();return;
   }
-  if(!canMove(battle,intent.action.unitId)){stop();return;}
+  if(!canMove(battle,intent.action.unitId,intent.action)){stop();return;}
   const source=battle,request=intent,epoch=revision;
   // Prepare just one pure step while the current paid tile animates. It has
   // no clock, energy, contact or campaign effect until the visual endpoint.
@@ -60,10 +60,10 @@ export function createMovementController({execute,commit,canMove}){
   getSnapshot:()=>snapshot,
   observe(next,visual){battle=next;positions=visual;pump();},
   request(action){
-   if(!enabled||!battle||!canMove(battle,action.unitId))return false;
-   const same=intent&&intent.action.unitId===action.unitId&&sameCell(intent.action,action)&&intent.action.movement===action.movement&&intent.action.movementIntent===action.movementIntent;
+   if(!enabled||!battle||!canMove(battle,action.unitId,action))return false;
+   const same=intent&&intent.action.type===action.type&&intent.action.unitId===action.unitId&&JSON.stringify(intent.action.unitIds)===JSON.stringify(action.unitIds)&&sameCell(intent.action,action)&&intent.action.movement===action.movement&&intent.action.movementIntent===action.movementIntent;
    if(same)return true;
-   revision++;prepared=null;intent={action:{...action},continuation:null,finishing:false};notify();pump();return true;
+   revision++;prepared=null;intent={action:{...action},movingUnitId:waiting?.unitId??action.unitId,continuation:null,finishing:false};notify();pump();return true;
   },
   cancel:stop,
   setEnabled(value){enabled=value;if(!value)stop();else pump();},

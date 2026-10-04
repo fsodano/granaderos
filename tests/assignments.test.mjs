@@ -2,12 +2,15 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign} from './legacy-campaign-fixture.mjs';
 import {dispatchCampaign as dispatch,rosterFor,restoreCampaign,serializeCampaign,OPERATIVES} from '../game/campaign.js';
-import {advanceAssignments,studyRate,repairRate,TOOLKIT_PRICE,TOOLKIT_POINTS,workStatus} from '../game/assignments.js';
+import {advanceAssignments,studyRate,repairRate,TOOLKIT_POINTS,workStatus} from '../game/assignments.js';
 import {enterSector} from '../game/world.js';
+import {fieldPractice} from '../game/skill-training.js';
+import {withStoredGear,assertTradeRejected} from './commerce-gear-fixture.mjs';
 const order=(s,a)=>{const next=dispatch(s,a);assert.equal(next.lastError,null,`${a.type}: ${next.lastError}`);return next;};
 const job=(s,id,assignment,extra={})=>order(s,{type:'assignWork',operativeId:id,assignment,...extra});
 const studentTeam=()=>{let s=initialCampaign();s=job(s,10,'instructor',{skill:'mechanical'});return job(s,3,'student',{skill:'mechanical',instructorId:10});};
-const repairTeam=()=>{let s=initialCampaign();s.operativeState[4].condition=40;s=order(s,{type:'purchaseToolkits',operativeId:10});return job(s,10,'repair',{targetId:4});};
+const repairTeam=()=>{let s=initialCampaign();s.operativeState[4].condition=40;// A declared finite legacy carried reserve isolates repair work.
+ s.operativeState[10].toolkitPoints=100;return job(s,10,'repair',{targetId:4});};
 
 test('self-practice requires real hours, advances earned stats and keeps authored profiles unchanged',()=>{
  const authored=JSON.stringify(OPERATIVES);let s=job(initialCampaign(),3,'practice',{skill:'mechanical'});const base=rosterFor(s).find(o=>o.id===3).mechanical;
@@ -37,16 +40,37 @@ test('zero skills and capped growth cannot be improved through strategic practic
  s=job(initialCampaign(),3,'practice',{skill:'mechanical'});s.operativeState[3].trainedStats={mechanical:9};s.operativeState[3].skillPractice={mechanical:39};s=order(s,{type:'wait',hours:24});assert.equal(s.operativeState[3].trainedStats.mechanical,10);
 });
 
-test('repair restores the actual equipped gun over hours with finite paid toolkit points',()=>{
- let s=repairTeam();const rate=repairRate(rosterFor(s).find(o=>o.id===10));assert.equal(s.resources.treasury,3200-TOOLKIT_PRICE);assert.equal(s.operativeState[10].toolkitPoints,TOOLKIT_POINTS);assert.equal(s.operativeState[4].condition,40);
- s=order(s,{type:'wait',hours:1});assert.equal(s.operativeState[4].condition,40+rate);assert.equal(s.operativeState[10].toolkitPoints,TOOLKIT_POINTS-rate);assert.equal(s.operativeState[10].skillPractice.mechanical,1);
+test('repair restores the actual equipped gun over hours with finite carried toolkit points',()=>{
+ let s=repairTeam();const rate=repairRate(rosterFor(s).find(o=>o.id===10));assert.equal(s.resources.treasury,3200);assert.equal(s.operativeState[10].toolkitPoints,TOOLKIT_POINTS);assert.equal(s.operativeState[4].condition,40);
+ const expected={...rosterFor(s).find(o=>o.id===10),side:'player',hp:s.operativeState[10].hp};fieldPractice(expected,'mechanical',1);
+ s=order(s,{type:'wait',hours:1});assert.equal(s.operativeState[4].condition,40+rate);assert.equal(s.operativeState[10].toolkitPoints,TOOLKIT_POINTS-rate);assert.equal(s.operativeState[10].skillPractice.mechanical??0,expected.skillPractice?.mechanical??0);assert.equal(s.operativeState[10].practiceSeed,expected.practiceSeed);
  s=order(s,{type:'wait',hours:20});assert.equal(s.operativeState[4].condition,100);assert.equal(s.operativeState[10].toolkitPoints,40);const after=structuredClone(s.operativeState);s=order(s,{type:'wait',hours:1});assert.deepEqual(s.operativeState,after);
 });
 
 test('repair stops when tools run out, the target leaves, or its equipped gun changes',()=>{
  let s=repairTeam();s.operativeState[10].toolkitPoints=2;s=order(s,{type:'wait',hours:4});assert.equal(s.operativeState[4].condition,42);assert.equal(s.operativeState[10].toolkitPoints,0);
- s=repairTeam();s=order(s,{type:'purchaseEquipment',item:1803});s=order(s,{type:'equip',operativeId:4,slot:'weapon',itemId:1803});const tools=s.operativeState[10].toolkitPoints;s=order(s,{type:'wait',hours:4});assert.equal(s.operativeState[4].condition,100);assert.ok(s.armoryItems.some(item=>item.item===1808&&item.condition===40));assert.equal(s.operativeState[10].toolkitPoints,tools);assert.match(workStatus(s,rosterFor(s).find(o=>o.id===10),rosterFor(s)),/ya no está equipada/);
+ s=repairTeam();s=withStoredGear(s,1803);s=order(s,{type:'equip',operativeId:4,slot:'weapon',itemId:1803});const tools=s.operativeState[10].toolkitPoints;s=order(s,{type:'wait',hours:4});assert.equal(s.operativeState[4].condition,100);assert.ok(s.armoryItems.some(item=>item.item===1808&&item.condition===40));assert.equal(s.operativeState[10].toolkitPoints,tools);assert.match(workStatus(s,rosterFor(s).find(o=>o.id===10),rosterFor(s)),/ya no está equipada/);
  s=repairTeam();s=order(s,{type:'createSquad',name:'Otra escuadra',ids:[4]});s=order(s,{type:'travel',sector:'ensenada'});assert.equal(s.operativeState[4].condition,40);
+});
+
+test('actual repair work gives Wisdom-dependent practice chances without changing repair, tool or energy costs',()=>{
+ const repaired=wisdom=>{
+  const s=repairTeam(),r=s.operativeState[10];r.practiceSeed=512;r.skillPractice={mechanical:39};
+  const roster=rosterFor(s).map(op=>op.id===10?{...op,mechanical:35,wisdom}:op),seed=s.seed;
+  advanceAssignments(s,roster);assert.equal(s.seed,seed);return s;
+ };
+ const slow=repaired(0),fast=repaired(100);
+ assert.equal(slow.operativeState[10].trainedStats.mechanical??0,0);assert.equal(fast.operativeState[10].trainedStats.mechanical,1);
+ assert.equal(slow.operativeState[10].skillPractice.mechanical,39);assert.equal(fast.operativeState[10].skillPractice.mechanical,0);
+ assert.equal(slow.operativeState[10].practiceSeed,fast.operativeState[10].practiceSeed);
+ for(const s of [slow,fast]){assert.equal(s.operativeState[4].condition,43);assert.equal(s.operativeState[10].toolkitPoints,97);assert.equal(s.operativeState[10].energy,97);assert.deepEqual(restoreCampaign(serializeCampaign(s)),s);}
+});
+
+test('repair can still fix equipment below the learning floor and completed repairs give no additional chance',()=>{
+ const s=repairTeam(),r=s.operativeState[10];r.practiceSeed=512;r.skillPractice={mechanical:39};
+ const roster=rosterFor(s).map(op=>op.id===10?{...op,mechanical:34,wisdom:100}:op);
+ advanceAssignments(s,roster);assert.equal(s.operativeState[4].condition,43);assert.equal(r.skillPractice.mechanical,39);assert.equal(r.trainedStats.mechanical??0,0);assert.equal(r.practiceSeed,512);
+ s.operativeState[4].condition=100;const before=structuredClone(s);advanceAssignments(s,roster);assert.deepEqual(s,before);
 });
 
 test('work excludes movement, militia and simultaneous medical recovery',()=>{
@@ -57,8 +81,8 @@ test('work excludes movement, militia and simultaneous medical recovery',()=>{
  s=initialCampaign();s.militiaTraining=[{trainerId:3,sector:'retiro',rank:0,count:3,duration:8,remaining:8,started:0}];assert.ok(dispatch(s,{type:'assignWork',operativeId:3,assignment:'practice',skill:'medical'}).lastError);
 });
 
-test('toolkits are finite, local workshop purchases and are preserved through deployment reports',()=>{
- let s=order(initialCampaign(),{type:'purchaseToolkits',operativeId:10});s=order(s,{type:'visitSector'});assert.equal(s.pendingBattle.squad.find(o=>o.id===10).toolkitPoints,TOOLKIT_POINTS);const b=enterSector(s.pendingBattle);
+test('finite carried repair points survive deployment while toolkit commerce stays closed',()=>{
+ let s=initialCampaign();s.operativeState[10].toolkitPoints=TOOLKIT_POINTS;assertTradeRejected(s,{type:'purchaseToolkits',operativeId:10});s=order(s,{type:'visitSector'});assert.equal(s.pendingBattle.squad.find(o=>o.id===10).toolkitPoints,TOOLKIT_POINTS);const b=enterSector(s.pendingBattle);
  s=order(s,{type:'leaveSector',battleId:s.pendingBattle.id,sectorState:b,survivors:b.units.filter(u=>u.side==='player')});assert.equal(s.operativeState[10].toolkitPoints,TOOLKIT_POINTS);s=order(s,{type:'travel',sector:'ensenada'});assert.ok(dispatch(s,{type:'purchaseToolkits',operativeId:10}).lastError);
 });
 

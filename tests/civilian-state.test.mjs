@@ -19,6 +19,9 @@ function ready(daily=true,medical){
  const d=defaultContentPackage();Object.assign(d.placements.find(p=>p.character==='person-3'),{mode:daily?'daily':'fixed',sectors:daily?[A,B]:[A],selection:daily?'alternate':'random'});
  Object.assign(d.characters.find(c=>c.id==='person-110'),{arrivalHours:0});if(medical!==undefined)d.characters.find(c=>c.id==='person-110').attributes.medical=medical;d.characters.find(c=>c.id==='person-110').attributes.leadership=100;
  let s=order(initialCampaign(42,d),{type:'recruitCivic',id:110,term:'month'});
+ // Start after the first daily move so the planned rural trip does not
+ // arrive at the same 04:00 boundary that changes the resident's sector.
+ if(daily)s=order(s,{type:'wait',hours:Math.ceil((s.contentPresence.nextDaily-s.contentPresence.minute)/60)});
  return order(s,{type:'travel',sector:s.contentPresence.people['person-3'].sector});
 }
 const visit=s=>{const campaign=order(s,{type:'visitSector'});return{campaign,battle:enterSector({...campaign.pendingBattle,hour:campaign.hour},campaign.sectorStates[campaign.location])};};
@@ -147,10 +150,10 @@ test('mission contacts share San Martín health and a dead essential speaker cau
 });
 
 
-test('used medical charges can be bought again at a supplied workshop, with a real price and no free repeat',()=>{
+test('used medical charges stay spent after closed shop orders, save and reentry',()=>{
  let pair=approach(visit(ready(false)));pair=act(pair,{type:'melee',targetId:'cabral'});pair=act(pair,{type:'heal',targetId:'cabral'});
  let s=leave(pair);s=order(s,{type:'travel',sector:'retiro'});assert.equal(s.operativeState[110].medkits,1);
  const poor=structuredClone(s);poor.resources.treasury=0;const rejected=dispatchCampaign(poor,{type:'resupply',operativeId:110});assert.ok(rejected.lastError);assert.equal(rejected.operativeState[110].medkits,1);assert.equal(rejected.resources.treasury,0);
- const cash=s.resources.treasury;s=order(s,{type:'resupply',operativeId:110});assert.equal(s.resources.treasury,cash-10);assert.equal(s.operativeState[110].medkits,2);assert.ok(dispatchCampaign(s,{type:'resupply',operativeId:110}).lastError);
- pair=visit(saved({campaign:s}).campaign);assert.equal(pair.battle.units[0].medkits,2);
+ const cash=s.resources.treasury,closed=dispatchCampaign(s,{type:'resupply',operativeId:110});assert.ok(closed.lastError);assert.equal(closed.resources.treasury,cash);assert.equal(closed.operativeState[110].medkits,1);
+ pair=visit(saved({campaign:s}).campaign);assert.equal(pair.battle.units[0].medkits,1);
 });

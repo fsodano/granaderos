@@ -15,7 +15,7 @@ export default function Recruitment({state:s,dispatch}:Props){
  const [selected,setSelected]=useState<number|null>(null),[periods,setPeriods]=useState<Record<number,string>>({});
  const [query,setQuery]=useState(''),[specialty,setSpecialty]=useState('all'),[availability,setAvailability]=useState('all'),[sort,setSort]=useState('name');
  const [chosenDestination,setDestination]=useState('');
- const terms=Object.entries(contractTermsFor(s)).map(([id,period])=>[id,period.name]);
+ const terms=Object.entries(contractTermsFor(s)).filter(([id])=>['day','week','fortnight'].includes(id)).map(([id,period])=>[id,period.name]);
  const roster=rosterFor(s).filter(o=>isContractOperative(s,o));
  const serving=roster.filter(o=>{const r=s.operativeState[o.id];return s.recruited.includes(o.id)&&r?.alive&&r.hp>0&&!r.captured;}).length;
  const options=hiringArrivalOptions(s);
@@ -46,7 +46,7 @@ export default function Recruitment({state:s,dispatch}:Props){
    const held=arrival&&(hiringArrivalReason(s,arrival.destination)||(s.pendingBattle?.sector===arrival.destination?'La llegada espera a que salgas del sector.':null));
    return <article key={o.id} className="contract-card" data-operative-id={o.id}>
     <button className="candidate-face" onClick={()=>setSelected(o.id)} aria-label={`Ver hoja de servicio de ${o.name}`}>{portraitFor((o as any).portraitId??o.id)?<img src={sitePath(portraitFor((o as any).portraitId??o.id)!)} alt={o.name} loading="lazy"/>:<span>{o.nickname.slice(0,2).toUpperCase()}</span>}<span>{o.name}</span></button>
-    <p className="eyebrow">{o.role}</p><p className="candidate-specialties">{profile.skills.join(' · ')}</p>
+    <p className="eyebrow">{o.role}</p><p className="candidate-greeting">«{profile.speech.hired}»</p><p className="candidate-specialties">{profile.skills.join(' · ')}</p>
     <div className="candidate-stats"><span>Puntería <b>{o.marksmanship}</b></span><span>Liderazgo <b>{o.leadership}</b></span><span>Grado <b>{o.level}</b></span></div>
     <button className="dossier-link" onClick={()=>setSelected(o.id)}>Atributos, carácter y equipo →</button>
     {quote.topTier&&<small className="elite-contract">Especialista de élite</small>}

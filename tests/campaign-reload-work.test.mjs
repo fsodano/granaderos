@@ -1,3 +1,4 @@
+import {withCarriedAmmo} from './commerce-gear-fixture.mjs';
 import {stockAndCarriedAmmo,stockAmmo} from './ammunition-balance.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -19,7 +20,7 @@ const act=(b,a)=>{const n=actBattle(b,a);assert.equal(n.lastError,null,n.lastErr
 const save=c=>decodeSave(encodeSave(c)).campaign;
 const leave=(c,b)=>{const pair=syncBattleTime(c,b);assert.equal(pair.error,null);return order(pair.campaign,{type:'leaveSector',battleId:c.pendingBattle.id,sectorState:pair.battle,survivors:pair.battle.units.filter(u=>u.side==='player')});};
 function partial(weapon=1802,ap=20,{finiteStock=false}={}){
- let c=initialCampaign(45);if(finiteStock)c.ammunitionShops.retiro={stock:Object.fromEntries(AMMO_KEYS.map(key=>[key,10])),restockHours:0};c.hour=12;c.loadouts[3]={weapon,blade:1813};c=order(c,{type:'visitSector'});const r=c.pendingBattle;
+ let c=initialCampaign(45);if(finiteStock)c.ammunitionShops.retiro={stock:Object.fromEntries(AMMO_KEYS.map(key=>[key,10])),restockHours:0};c.hour=12;c.loadouts[3]={weapon,blade:1813};c=withCarriedAmmo(c,3,weapon===1808?'ammoPistol':'ammoRifle',9);c=order(c,{type:'visitSector'});const r=c.pendingBattle;
  assert.equal(r.squad.find(u=>u.id===3).preserveLoading,undefined);
  r.enemies=[initializeUnitAmmunition({id:'e',x:5,y:6,hp:15,bandaged:85,patrol:false,weapon:1813,loaded:0,ammo:0,agility:0,overwatch:false})];
  // Start an unfinished-loading scenario without destroying the previously
@@ -35,14 +36,14 @@ test('ordinary held guns keep paid reload work and any completed barrel through 
   let {c,b,worker}=partial(weapon,ap);const stock=stockAmmo(c),returned=b.units.filter(u=>u.side==='player').reduce((n,u)=>n+totalReserveAmmunition(u)+u.loaded,0);
   c=leave(c,b);assert.equal(stockAndCarriedAmmo(c),stock+returned);assert.equal(c.operativeState[3].carriedLoaded,worker.loaded);assert.equal(c.operativeState[3].carriedAmmo,totalReserveAmmunition(worker)+worker.loaded);assert.deepEqual(ammunitionByType(c.operativeState[3]),ammunitionByType(worker));assert.equal(c.operativeState[3].carriedReloadProgress,worker.reloadProgress);
   for(let i=0;i<3;i++){
-   const before=stockAndCarriedAmmo(c),cash=c.resources.treasury,shop=merchantAmmo(c);c=order(save(c),{type:'visitSector'});b=enterSector(c.pendingBattle,c.sectorStates.retiro);const u=b.units.find(u=>u.id==='3');assert.equal(u.reloadProgress,worker.reloadProgress);assert.equal(u.loaded,worker.loaded);c=leave(c,b);assert.equal(stockAndCarriedAmmo(c)+merchantAmmo(c),before+shop);assert.equal(c.resources.treasury,cash-(stockAndCarriedAmmo(c)-before));assert.equal(stockAndCarriedAmmo(c)-before,i===0?1:0);
+   const before=stockAndCarriedAmmo(c),cash=c.resources.treasury,shop=merchantAmmo(c);c=order(save(c),{type:'visitSector'});b=enterSector(c.pendingBattle,c.sectorStates.retiro);const u=b.units.find(u=>u.id==='3');assert.equal(u.reloadProgress,worker.reloadProgress);assert.equal(u.loaded,worker.loaded);c=leave(c,b);assert.equal(stockAndCarriedAmmo(c)+merchantAmmo(c),before+shop);assert.equal(c.resources.treasury,cash);assert.equal(stockAndCarriedAmmo(c),before);
   }
   c=order(save(c),{type:'visitSector'});b=enterSector(c.pendingBattle,c.sectorStates.retiro);const u=b.units.find(u=>u.id==='3'),cost=reloadCost(u,b),before=b.elapsedSeconds,ammo=u.ammo;
   b=act(b,{type:'reload',unitId:'3'});assert.equal(b.elapsedSeconds-before,Math.max(1,Math.ceil(cost*.06)));const loaded=b.units.find(u=>u.id==='3');assert.equal(loaded.reloadProgress,undefined);assert.equal(loaded.loaded,worker.loaded+1);assert.equal(loaded.ammo,ammo-1);c=leave(c,b);assert.equal(c.operativeState[3].carriedReloadProgress,undefined);assert.equal(c.operativeState[3].carriedLoaded,worker.loaded+1);save(c);
  }
 });
 test('no reserve ammunition blocks loading without discarding previously paid work',()=>{
- let {c,b,worker}=partial(1802,20,{finiteStock:true});assert.equal(c.ammunitionShops.retiro.stock.ammoRifle,0);const item=`inventory:${Object.entries(worker.inventory).find(([,stack])=>stack.ammoType===weaponAmmoType(worker.weapon))[0]}`;b=act(b,{type:'drop',unitId:'3',item,count:totalReserveAmmunition(worker)});c=leave(c,b);c=order(save(c),{type:'visitSector'});b=enterSector(c.pendingBattle,c.sectorStates.retiro);const u=b.units.find(u=>u.id==='3');assert.equal(u.ammo,0);assert.equal(u.reloadProgress,worker.reloadProgress);
+ let {c,b,worker}=partial(1802,20,{finiteStock:true});assert.equal(c.ammunitionShops.retiro.stock.ammoRifle,10);const item=`inventory:${Object.entries(worker.inventory).find(([,stack])=>stack.ammoType===weaponAmmoType(worker.weapon))[0]}`;b=act(b,{type:'drop',unitId:'3',item,count:worker.ammo});c=leave(c,b);c=order(save(c),{type:'visitSector'});b=enterSector(c.pendingBattle,c.sectorStates.retiro);const u=b.units.find(u=>u.id==='3');assert.equal(u.ammo,0);assert.equal(u.reloadProgress,worker.reloadProgress);
  const failed=actBattle(b,{type:'reload',unitId:'3'});assert.ok(failed.lastError);assert.deepEqual(failed.units,b.units);assert.equal(failed.elapsedSeconds,b.elapsedSeconds);c=leave(c,b);assert.equal(c.operativeState[3].carriedReloadProgress,worker.reloadProgress);save(c);
  const before=structuredClone(c),events=[],prepared=finishReloadsBeforeMarch(c,{report:event=>events.push(event)});
  assert.deepEqual(c,before);assert.equal(prepared.operativeState[3].carriedReloadProgress,worker.reloadProgress);assert.equal(prepared.operativeState[3].carriedLoaded,worker.loaded);
@@ -60,5 +61,5 @@ test('captured ordinary partial work enters custody while departed work remains 
 });
 test('the route controller completes actual reload orders before marching and never erases work directly',()=>{
  const {c,b}=partial();const returned=leave(c,b),before=structuredClone(returned),events=[];const ready=finishReloadsBeforeMarch(returned,{report:e=>events.push(e)});
- assert.deepEqual(returned,before);assert.equal(ready.operativeState[3].carriedLoaded,1);assert.equal(ready.operativeState[3].carriedReloadProgress,undefined);assert.ok(ready.secondOfHour>returned.secondOfHour);assert.equal(stockAndCarriedAmmo(ready),stockAndCarriedAmmo(returned)+1);assert.equal(merchantAmmo(ready),merchantAmmo(returned)-1);assert.equal(ready.resources.treasury,returned.resources.treasury-1);assert.deepEqual(events[0],{event:'reloadDeployment',ammunitionCost:1});const reloads=events.filter(e=>e.event==='finishedReload');assert.deepEqual(reloads.map(e=>e.id),[3,4]);assert.equal(ready.operativeState[4].carriedLoaded,2);assert.ok(reloads[0].paidPAEquivalent>0);assert.equal(finishReloadsBeforeMarch(ready),ready);save(ready);
+ assert.deepEqual(returned,before);assert.equal(ready.operativeState[3].carriedLoaded,1);assert.equal(ready.operativeState[3].carriedReloadProgress,undefined);assert.ok(ready.secondOfHour>returned.secondOfHour);assert.equal(stockAndCarriedAmmo(ready),stockAndCarriedAmmo(returned));assert.equal(merchantAmmo(ready),merchantAmmo(returned));assert.equal(ready.resources.treasury,returned.resources.treasury);assert.deepEqual(events[0],{event:'reloadDeployment',ammunitionCost:0});const reloads=events.filter(e=>e.event==='finishedReload');assert.deepEqual(reloads.map(e=>e.id),[3,4]);assert.equal(ready.operativeState[4].carriedLoaded,2);assert.ok(reloads[0].paidPAEquivalent>0);assert.equal(finishReloadsBeforeMarch(ready),ready);save(ready);
 });

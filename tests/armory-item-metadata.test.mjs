@@ -1,3 +1,4 @@
+import {withStoredGear,assertTradeRejected} from './commerce-gear-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign,rosterFor} from '../game/campaign.js';
@@ -20,7 +21,7 @@ function placeCarried(s,key,destinationId){
  return s;
 }
 
-for(const slot of ['weapon','blade'])test(`armory ${slot} exchange preserves exact custom ownership through sale, purchase, save and deployment`,()=>{
+for(const slot of ['weapon','blade'])test(`armory ${slot} exchange preserves exact custom ownership through closed trade, save and deployment`,()=>{
  let s=fresh();
  // An admitted recovered item has finite identity and extensions; every move
  // after this inventory precondition uses the same player-facing orders.
@@ -32,12 +33,11 @@ for(const slot of ['weapon','blade'])test(`armory ${slot} exchange preserves exa
  const before=handRecord(personal(s),slot==='weapon'?'primary':'blade');
  assert.equal(before.instanceId,owned.instanceId);assert.deepEqual(s.operativeState[110][`${slot}Metadata`],metadata);
  const replacement=slot==='weapon'?1805:1812;
- s=order(s,{type:'purchaseEquipment',item:replacement,quantity:1});const stock=structuredClone(s.ammunitionStores);
+ s=withStoredGear(s,replacement,1);const stock=structuredClone(s.ammunitionStores);
  s=equip(s,replacement,slot);assert.equal(s.operativeState[110][`${slot}Metadata`],undefined,'replacement must not inherit the previous owner data');
  let stored=s.armoryItems.find(i=>i.instanceId===owned.instanceId);assert.ok(stored);assert.deepEqual(stored.itemMetadata,metadata);assert.notEqual(stored.id,metadata.id);
  assert.equal(stored.loaded,owned.loaded);assert.equal(stored.reloadProgress,owned.reloadProgress);
- s=save(s);s=order(s,{type:'sellEquipment',instanceId:stored.id});assert.deepEqual(s.merchants.retiro.usedItems.find(i=>i.id===stored.id),stored);
- s=order(save(s),{type:'purchaseUsedEquipment',sector:'retiro',instanceId:stored.id});assert.deepEqual(s.armoryItems.find(i=>i.id===stored.id),stored);
+ s=save(s);assertTradeRejected(s,{type:'sellEquipment',instanceId:stored.id});assertTradeRejected(s,{type:'purchaseUsedEquipment',sector:'retiro',instanceId:stored.id});assert.deepEqual(s.armoryItems.find(i=>i.id===stored.id),stored);
  s=equip(save(s),owned.weapon,slot,stored.id);assert.deepEqual(handRecord(personal(s),slot==='weapon'?'primary':'blade'),before);assert.deepEqual(s.ammunitionStores,stock);
  s=order(save(s),{type:'visitSector'});const b=enterSector(s.pendingBattle,s.sectorStates.retiro),u=b.units.find(u=>u.id==='110');
  assert.deepEqual(handRecord(u,slot==='weapon'?'primary':'blade'),before);assert.doesNotThrow(()=>decodeSave(encodeSave(s,b)));
@@ -56,10 +56,10 @@ test('stored item extensions cannot override the replacement canonical fields or
 });
 
 test('armory admission validates extensions and preserves older flat custom records',()=>{
- let s=fresh();s=order(s,{type:'purchaseEquipment',item:1805,quantity:1});const original=s.armoryItems[0];
+ let s=fresh();s=withStoredGear(s,1805,1);const original=s.armoryItems[0];
  assert.equal(original.itemMetadata,undefined,'ordinary catalog records keep the legacy representation');
  Object.assign(original,{name:'Pistola heredada',weight:1.8,engraving:{initials:'AM'}});s=save(s);
  s=equip(s,1805,'weapon',original.id);assert.deepEqual(s.operativeState[110].weaponMetadata,{name:'Pistola heredada',weight:1.8,engraving:{initials:'AM'}});
- s=order(s,{type:'purchaseEquipment',item:1806,quantity:1});s=equip(s,1806,'weapon');const stored=s.armoryItems.find(i=>i.itemMetadata?.name==='Pistola heredada');assert.ok(stored);save(s);
+ s=withStoredGear(s,1806,1);s=equip(s,1806,'weapon');const stored=s.armoryItems.find(i=>i.itemMetadata?.name==='Pistola heredada');assert.ok(stored);save(s);
  for(const bad of [null,[],{weight:null},{condition:0},{count:2},{weight:-1},{weight:'heavy'}]){const invalid=structuredClone(s);invalid.armoryItems.find(i=>i.id===stored.id).itemMetadata=bad;assert.throws(()=>decodeSave(encodeSave(invalid)));}
 });

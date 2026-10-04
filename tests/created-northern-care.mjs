@@ -1,12 +1,13 @@
 import assert from 'node:assert/strict';
-import {dispatchCampaign,rosterFor,isSupplied} from '../game/campaign.js';
+import {dispatchCampaign,rosterFor} from '../game/campaign.js';
+import {supplyRouteDressings} from './route-dressings.mjs';
 import {sectorInventoryModel} from '../game/sector-inventory.js';
 import {BLADES} from '../game/tactical.js';
 import {decodeSave,encodeSave} from '../game/save.js';
 import {enterSector} from '../game/world.js';
 import {syncBattleTime} from '../game/time.js';
 import {autoBandageBattle} from '../game/auto-bandage.js';
-import {doctorRate,medicalSupplyQuote} from '../game/medical-care.js';
+import {doctorRate} from '../game/medical-care.js';
 import {contractQuote} from '../game/contracts.js';
 
 export function recoverNorthernLocalKit(start,{doctorId=135,report=()=>{}}={}){
@@ -69,11 +70,7 @@ export function recoverActualNorthernLocal(start,{doctorId=135,activateAfterCare
   if(!row){
    const donorId=ids.find(id=>id!==doctorId&&!patients.includes(id)&&c.operativeState[id].hp>=15&&(c.operativeState[id].medkits??0)>0);
    if(donorId===undefined){
-    const quantity=Math.min(20,target-c.operativeState[doctorId].medkits),action={type:'purchaseMedicalSupplies',operativeId:doctorId,quantity};
-    for(let h=0;h<48&&dispatchCampaign(c,action).lastError==='La maestranza no tiene suficientes vendas.';h++){assert.equal(c.pendingEncounter,null);order({type:'wait',hours:1});}
-    const quote=medicalSupplyQuote(c,rosterFor(c).find(o=>o.id===doctorId),quantity,isSupplied(c,c.location)),stock=c.merchants[c.location].supplies.medkits,money=c.resources.treasury,kitsBefore=c.operativeState[doctorId].medkits;assert.equal(quote.available,true,quote.reason);
-    order(action);assert.equal(c.resources.treasury,money-quote.cost);assert.equal(c.merchants[c.location].supplies.medkits,stock-quantity);assert.equal(c.operativeState[doctorId].medkits,kitsBefore+quantity);
-    report({event:'northernFiniteCarePurchase',operativeId:doctorId,quantity,hour:c.hour,cost:quote.cost,stockBefore:stock,stockAfter:c.merchants[c.location].supplies.medkits});continue;
+    c=supplyRouteDressings(c,doctorId,target,{report});continue;
    }
    const quantity=Math.min(c.operativeState[donorId].medkits,target-c.operativeState[doctorId].medkits),donorBefore=c.operativeState[donorId].medkits,keys=new Set(inventory().entries.map(r=>r.key)),clock={hour:c.hour,second:c.secondOfHour,treasury:c.resources.treasury};
    order({type:'sectorInventory',sector:c.location,operativeId:donorId,direction:'drop',item:'medkits',count:quantity});assert.equal(c.operativeState[donorId].medkits,donorBefore-quantity);

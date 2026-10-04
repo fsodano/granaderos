@@ -1,14 +1,14 @@
 import {baseMorale} from '../game/morale.js';
 import assert from 'node:assert/strict';
-import {dispatchCampaign,rosterFor,refillCost,firearmRepairCost} from '../game/campaign.js';
-import {weaponAmmoType,availableAmmunition} from '../game/ammunition-types.js';
-import {ammoResourceKey} from '../game/campaign-ammunition.js';
+import {dispatchCampaign,rosterFor} from '../game/campaign.js';
 import {finishReloadsBeforeMarch} from './pre-march-reload.mjs';
 import {decodeSave,encodeSave} from '../game/save.js';
+import {supplyRouteAmmunition} from './route-ammunition.mjs';
+import {collectRouteItems,recoverRouteFirearm,repairRouteFirearms} from './finite-route-equipment.mjs';
 
 // Advance a supplied column through friendly provinces, then stage the real
 // adjacent assault. Short contracts are renewed with their actual expiry.
-export function prepareFinalAssault(start,{staging,target,fieldIds=start.squad}){
+export function prepareFinalAssault(start,{staging,target,fieldIds=start.squad,daylight=false}){
  let c=decodeSave(encodeSave(start)).campaign;
  const field=[...fieldIds];
  const order=action=>{
@@ -26,6 +26,11 @@ export function prepareFinalAssault(start,{staging,target,fieldIds=start.squad})
   order({type:'attack',sector:target,queue:true,mode:'posta'});
  }
  for(let h=0;h<24&&!groups.every(id=>c.squads.find(q=>q.id===id).journey?.status==='ready');h++)order({type:'wait',hours:1});
+ if(daylight){
+  assert.ok(groups.every(id=>c.squads.find(q=>q.id===id).journey?.status==='ready'),'each actual approach must finish before daylight staging');
+  for(let h=0;h<24&&(c.hour%24<6||c.hour%24>10);h++){assert.equal(c.pendingEncounter,null);order({type:'wait',hours:1});}
+  assert.ok(c.hour%24>=6&&c.hour%24<=10);
+ }
  order({type:'beginAssault',sector:target});
  assert.equal(c.pendingBattle.sector,target);assert.equal(c.pendingBattle.squad.length,field.length);
  for(const [id,record]of Object.entries(start.operativeState))if(!record.alive)assert.equal(c.operativeState[id].alive,false);
@@ -40,15 +45,14 @@ export function reinforceFinalColumn(start){
  for(const id of [104,127,144]){
   assert.ok(c.operativeState[id].alive);assert.equal(c.operativeState[id].hp,c.operativeState[id].maxHp);
   order({type:'recruitCivic',id,term:'day'});
-  if(c.operativeState[id].weaponDropped){order({type:'purchaseEquipment',item:1801});order({type:'equip',operativeId:id,slot:'weapon',itemId:1801});}
+  if(c.operativeState[id].weaponDropped)c=recoverRouteFirearm(c,id);
  }
- const needed={};
- for(const op of rosterFor(c).filter(op=>fieldIds.includes(op.id))){const type=weaponAmmoType(op.weapon);if(type)needed[type]=(needed[type]??0)+Math.max(0,15-availableAmmunition(c.operativeState[op.id],type));}
- for(const [ammoType,amount]of Object.entries(needed)){const quantity=Math.max(0,amount-(c.resources[ammoResourceKey(ammoType)]??0)-(c.depots.cordoba?.[ammoResourceKey(ammoType)]??0));if(quantity)order({type:'purchaseAmmunition',ammoType,quantity});}
- for(const operativeId of [1000,139])if(c.operativeState[operativeId].medkits<10)order({type:'purchaseMedicalSupplies',operativeId,quantity:10-c.operativeState[operativeId].medkits});
+ c=supplyRouteAmmunition(c,fieldIds,{target:15}).campaign;
+ for(const operativeId of [1000,139])if(c.operativeState[operativeId].medkits<10)c=collectRouteItems(c,operativeId,{item:'medkits'},10-c.operativeState[operativeId].medkits).campaign;
+ c=repairRouteFirearms(c,fieldIds);
  for(let offset=0;offset<fieldIds.length;offset+=6){
   order({type:'createSquad',name:'Refuerzos finales',ids:fieldIds.slice(offset,offset+6),sector:'cordoba'});
-  for(const operativeId of c.squad){if(refillCost(c.operativeState[operativeId]))order({type:'resupply',operativeId});if(firearmRepairCost(c.operativeState[operativeId]))order({type:'repairWeapon',operativeId});order({type:'assignCare',operativeId,assignment:'active'});}
+  for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'active'});
   c=finishReloadsBeforeMarch(c);
  }
  assert.ok(c.resources.treasury>=0);assert.equal(c.operativeState[57].location,'cordoba');
@@ -71,20 +75,20 @@ export function recoverFinalVeterans(start){
  for(let h=0;h<180&&(c.squads.find(q=>q.id===column).journey||patients.some(id=>c.operativeState[id].hp<c.operativeState[id].maxHp));h++){
   assert.equal(c.pendingEncounter,null);
   const doctors=[57,...(!c.squads.find(q=>q.id===column).journey?[139,1000]:[])];
-  for(const operativeId of doctors){if(!c.operativeState[operativeId].medkits)order({type:'purchaseMedicalSupplies',operativeId,quantity:1});order({type:'assignCare',operativeId,assignment:'doctor'});}
+  for(const operativeId of doctors){if(!c.operativeState[operativeId].medkits)c=collectRouteItems(c,operativeId,{item:'medkits'},1).campaign;order({type:'assignCare',operativeId,assignment:'doctor'});}
   order({type:'wait',hours:1});
  }
  for(const id of fieldIds){assert.equal(c.operativeState[id].location,'cordoba');assert.equal(c.operativeState[id].hp,c.operativeState[id].maxHp);}
  order({type:'createSquad',name:'Veteranos recuperados',ids:fieldIds,sector:'cordoba'});
  for(const operativeId of fieldIds){
-  if(c.operativeState[operativeId].weaponDropped){order({type:'purchaseEquipment',item:1801});order({type:'equip',operativeId,slot:'weapon',itemId:1801});}
+  if(c.operativeState[operativeId].weaponDropped)c=recoverRouteFirearm(c,operativeId);
   order({type:'assignCare',operativeId,assignment:'rest'});
  }
  for(let h=0;h<48&&(c.hour%24!==6||fieldIds.some(id=>c.operativeState[id].fatigue>0));h++)order({type:'wait',hours:1});
- const needed={};for(const op of rosterFor(c).filter(op=>fieldIds.includes(op.id))){const type=weaponAmmoType(op.weapon);if(type)needed[type]=(needed[type]??0)+Math.max(0,15-availableAmmunition(c.operativeState[op.id],type));}
- for(const [ammoType,amount]of Object.entries(needed)){const quantity=Math.max(0,amount-(c.resources[ammoResourceKey(ammoType)]??0)-(c.depots.cordoba?.[ammoResourceKey(ammoType)]??0));if(quantity)order({type:'purchaseAmmunition',ammoType,quantity});}
- for(const operativeId of [1000,139])if(c.operativeState[operativeId].medkits<10)order({type:'purchaseMedicalSupplies',operativeId,quantity:10-c.operativeState[operativeId].medkits});
- for(const operativeId of fieldIds){if(refillCost(c.operativeState[operativeId]))order({type:'resupply',operativeId});if(firearmRepairCost(c.operativeState[operativeId]))order({type:'repairWeapon',operativeId});order({type:'assignCare',operativeId,assignment:'active'});}
+ c=supplyRouteAmmunition(c,fieldIds,{target:15}).campaign;
+ for(const operativeId of [1000,139])if(c.operativeState[operativeId].medkits<10)c=collectRouteItems(c,operativeId,{item:'medkits'},10-c.operativeState[operativeId].medkits).campaign;
+ c=repairRouteFirearms(c,fieldIds);
+ for(const operativeId of fieldIds)order({type:'assignCare',operativeId,assignment:'active'});
  c=finishReloadsBeforeMarch(c);order({type:'configureArtillery',types:['bronze4']});
  assert.ok(c.operativeState[57].alive);assert.equal(c.operativeState[57].location,'cordoba');
  for(const [id,record]of Object.entries(start.operativeState))if(!record.alive)assert.equal(c.operativeState[id].alive,false);
@@ -115,10 +119,10 @@ export function supplyFinalGrenades(start){
  };
  const travel=sector=>{order({type:'travel',sector,queue:true,mode:'posta'});for(let h=0;h<48&&c.squads.find(q=>q.id===c.activeSquadId).journey;h++)order({type:'wait',hours:1});assert.equal(c.location,sector);};
  travel('mendoza');
- for(const operativeId of [1000,144,141])order({type:'purchaseGrenades',grenadeType:'arsenal',operativeId,quantity:2});
+ for(const operativeId of [1000,144,141])c=collectRouteItems(c,operativeId,{kind:'grenade',grenadeType:'arsenal'},2).campaign;
  travel('cordoba');
  for(const operativeId of ids)order({type:'assignCare',operativeId,assignment:'rest'});
  for(let h=0;h<48&&(c.hour%24!==6||ids.some(id=>c.operativeState[id].fatigue>0));h++)order({type:'wait',hours:1});
  for(const operativeId of ids)order({type:'assignCare',operativeId,assignment:'active'});
- assert.equal(c.merchants.mendoza.grenades.arsenal,0);assert.deepEqual(decodeSave(encodeSave(c)).campaign,c);return c;
+ assert.deepEqual(decodeSave(encodeSave(c)).campaign,c);return c;
 }

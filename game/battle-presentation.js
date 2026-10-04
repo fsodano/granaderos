@@ -12,17 +12,21 @@ function snapshot(value,previous){
  for(const key of keys){next[key]=snapshot(value[key],sameKind?previous[key]:undefined);if(!sameKind||next[key]!==previous[key])same=false;}
  return same?previous:next;
 }
-function visibleSignature(state,visible){return JSON.stringify(state.units.filter(u=>u.side==='player'||visible.has(u.id)).map(u=>[u.id,u.x,u.y,u.tacticalLevel,u.hp,u.energy,u.loaded,u.stance,u.unconscious,u.departure,u.fled]));}
+const bodies=state=>[...state.units,...(state.npcs??[])];
+function visibleSignature(state,visible){return JSON.stringify(bodies(state).filter(u=>u.side==='player'||visible.has(u.id)).map(u=>[u.id,u.x,u.y,u.tacticalLevel,u.hp,u.energy,u.loaded,u.stance,u.unconscious,u.departure,u.fled]));}
 export function captureBattlePresentation(before,execute,canObserve){
  const frames=[],parent=recorder;let prior=before,lastSignature=null;
  const visibleIn=s=>new Set(s.units.filter(u=>u.side==='player'||canObserve(s,u)).map(u=>u.id));
- lastSignature=visibleSignature(before,visibleIn(before));
+ const knownIn=s=>new Set(bodies(s).filter(u=>u.side==='player'||canObserve(s,u)).map(u=>u.id));
+ lastSignature=visibleSignature(before,knownIn(before));
  recorder=(state,event)=>{
-  const visible=visibleIn(state),signature=visibleSignature(state,visible),seen=visible.has(event.unitId);
+  const visible=visibleIn(state),known=knownIn(state),signature=visibleSignature(state,known),seen=visible.has(event.unitId);
   if(!seen&&signature===lastSignature)return;
   if(event.type==='prepare'&&!seen)return;
+  const impacts=bodies(state).filter(u=>known.has(u.id)).flatMap(u=>{const before=bodies(prior).find(old=>old.id===u.id),loss=before?before.hp-u.hp:0;return loss>0?[{unitId:u.id,x:u.x,y:u.y,tacticalLevel:u.tacticalLevel,damage:loss,fatal:u.hp===0}]:[];});
+  const target=event.targetId?bodies(state).find(u=>u.id===String(event.targetId)&&known.has(u.id)):null;
   const current=snapshot(state,prior);prior=current;lastSignature=signature;
-  frames.push({state:current,visibleIds:[...visible],unitId:seen?event.unitId:null,type:event.type,action:event.action,...(event.grenadeVisual&&seen?{grenadeVisual:snapshot(event.grenadeVisual)}:{})});
+  frames.push({state:current,visibleIds:[...visible],unitId:seen?event.unitId:null,type:event.type,action:event.action,impacts,...(event.performed===false?{performed:false}:{}),...(target?{targetPoint:{id:target.id,x:target.x,y:target.y,tacticalLevel:target.tacticalLevel}}:{}),...(event.grenadeVisual&&seen?{grenadeVisual:snapshot(event.grenadeVisual)}:{}),...(event.knifeVisual&&seen?{knifeVisual:snapshot(event.knifeVisual)}:{})});
  };
  try{const state=execute();return {state,frames};}finally{recorder=parent;}
 }

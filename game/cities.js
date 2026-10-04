@@ -1,8 +1,9 @@
 // Operational settlement areas, not surveyed nineteenth-century city limits.
-// Buenos Aires includes Retiro and its Ensenada supply port for regional control.
+// Buenos Aires and Retiro form one town; Ensenada has its own port agreement.
 export const CITY_LOYALTY_THRESHOLD=50;
 export const CITIES=Object.freeze([
- {id:'buenos_aires',name:'Buenos Aires y su puerto',sectors:['buenos_aires','retiro','ensenada']},
+ {id:'buenos_aires',name:'Buenos Aires y su puerto',sectors:['buenos_aires','retiro']},
+ {id:'ensenada',name:'Ensenada',sectors:['ensenada']},
  {id:'san_nicolas',name:'San Nicolás',sectors:['san_nicolas']},
  {id:'santa_fe',name:'Santa Fe',sectors:['santa_fe']},
  {id:'cordoba',name:'Córdoba y Caroya',sectors:['cordoba']},
@@ -31,7 +32,7 @@ export function recordCityLoyalty(state,{sectorId,kind,eventId}){
  if(!Object.hasOwn(CITY_LOYALTY_REWARDS,kind)||typeof eventId!=='string'||!eventId.trim()||eventId.length>160)throw Error('Registro de lealtad inválido.');
  const key=`${city.id}:${kind}:${eventId}`;
  state.cityLoyaltyEvents??=[];
- if(state.cityLoyaltyEvents.some(event=>event.key===key))return {applied:false,reason:'duplicate',city:city.id};
+ if(state.cityLoyaltyEvents.some(event=>event.key===key||(event.sectorId===sectorId&&event.kind===kind&&event.eventId===eventId)))return {applied:false,reason:'duplicate',city:city.id};
  if(state.cityLoyaltyEvents.length>=30000)throw Error('El registro de lealtad está completo.');
  const before=getCityStatus(state,city.id).loyalty,delta=CITY_LOYALTY_REWARDS[kind];
  for(const id of city.sectors){const region=state.sectors?.[id];if(region)region.loyalty=Math.max(0,Math.min(100,(Number(region.loyalty)||0)+delta));}
@@ -40,9 +41,11 @@ export function recordCityLoyalty(state,{sectorId,kind,eventId}){
  state.cityLoyaltyEvents.push(event);
  return {applied:true,city:city.id,delta:after-before,event};
 }
+// Earlier saves grouped Ensenada under Buenos Aires. Keep those receipts as
+// history; new Ensenada outcomes use its own town and cannot repeat old rewards.
 export function validCityLoyaltyEvents(events){
  return Array.isArray(events)&&events.length<=30000&&new Set(events.map(e=>e?.key)).size===events.length&&events.every(e=>
-  e&&typeof e.eventId==='string'&&e.eventId.trim()&&e.eventId.length<=160&&cityForSector(e.sectorId)?.id===e.cityId&&
+  e&&typeof e.eventId==='string'&&e.eventId.trim()&&e.eventId.length<=160&&(cityForSector(e.sectorId)?.id===e.cityId||(e.sectorId==='ensenada'&&e.cityId==='buenos_aires'))&&
   Object.hasOwn(CITY_LOYALTY_REWARDS,e.kind)&&e.key===`${e.cityId}:${e.kind}:${e.eventId}`&&e.delta===CITY_LOYALTY_REWARDS[e.kind]&&
   Number.isInteger(e.hour)&&e.hour>=0&&Number.isInteger(e.before)&&e.before>=0&&e.before<=100&&Number.isInteger(e.after)&&e.after>=0&&e.after<=100);
 }

@@ -42,8 +42,9 @@ test('quest failure defeats the campaign inside a scene, preserves the actual fa
 });
 
 test('an actual quest deadline and headquarters loss take priority over a simultaneous chapter victory',()=>{
- const d=fixture();d.quests[0].deadlineHours=22;d.campaignStory.failureConditions=[{type:'quest',quest:'river-post',status:'failed'}];d.campaignStory.chapters=[chapter('survive',[day(2)])];let p=choose(readyLocal(undefined,d),'start','accept');
- let s=order(leave(p),{type:'wait',hours:24});assert.equal(s.defeated,true);assert.equal(s.completed,false);assert.equal(s.hour,24);assert.equal(s.contentQuestEvents.at(-1).to,'failed');assert.ok(saved({campaign:s}));
+ const d=fixture();d.quests[0].deadlineHours=22;d.campaignStory.failureConditions=[{type:'quest',quest:'river-post',status:'failed'}];d.campaignStory.chapters=[chapter('survive',[{type:'quest',quest:'river-post',status:'failed'}])];let p=choose(readyLocal(undefined,d),'start','accept');
+ const accepted=p.campaign.contentQuestEvents.at(-1),deadline=accepted.hour*3600+(accepted.secondOfHour??0)+d.quests[0].deadlineHours*3600;
+ let s=order(leave(p),{type:'wait',hours:24});assert.equal(s.defeated,true);assert.equal(s.completed,false);assert.equal(s.contentQuestEvents.at(-1).deadline,deadline);assert.equal(s.campaignProgress.completed.length,0);assert.equal(s.contentQuestEvents.at(-1).to,'failed');assert.ok(saved({campaign:s}));
  const h=content();h.campaignStory.chapters=[chapter('owned',[day(1)])];s=initialCampaign(42,h);s.sectors.retiro.owner='royalist';s=order(s,{type:'wait',hours:1});assert.equal(s.completed,false);assert.equal(s.defeated,true);assert.deepEqual(s.campaignProgress.completed,[]);assert.ok(saved({campaign:s}));
 });
 

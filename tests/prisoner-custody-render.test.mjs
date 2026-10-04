@@ -17,3 +17,9 @@ test('prisoner panel reports actual finite custody care',()=>{
  s.detentionRecords={'captive:112:18':{care:[{hour:19,dressings:1},{hour:20,dressings:1}]}};
  const html=render(h(EnemyEncounters,{state:s,dispatch(){}}));assert.match(html,/Atención en cautiverio: 2 venda/);assert.match(html,/Última atención: día 1, 20:00/);assert.doesNotMatch(html,/Estado crítico/);
 });
+test('prisoner panel shows fractional custody and paid seconds without rounding away service',()=>{
+ const s=initialCampaign();s.hour=25;s.secondOfHour=20;
+ Object.assign(s.operativeState[112],{captured:true,capturedSector:'tucuman',capturedAt:24,capturedAtSecond:3590,hp:15,maxHp:64,capturedContract:{expiresAt:25,expiresSecond:30}});
+ const html=render(h(EnemyEncounters,{state:s,dispatch(){}}));
+ assert.match(html,/0:59:50/);assert.match(html,/30 s en cautiverio/);assert.match(html,/quedan 40 s de servicio/);assert.doesNotMatch(html,/contrato había terminado/);
+});

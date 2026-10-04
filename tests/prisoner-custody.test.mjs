@@ -17,3 +17,17 @@ test('prisoner status shows known wounds and elapsed detention without reducing 
  const p=prisonerStatus(s,op);assert.equal(p.heldHours,54);assert.equal(p.serviceHours,6);assert.equal(p.needsCare,true);assert.equal(p.critical,true);assert.equal(p.hp,11);assert.deepEqual(s,before);
  s.operativeState[112].captured=false;assert.equal(prisonerStatus(s,op),null);
 });
+test('capture preserves the final paid minute and release carries it across an hour boundary',()=>{
+ const r=record();r.capturedAt=24;r.capturedAtSecond=900;r.capturedContract.expiresAt=24;r.capturedContract.expiresSecond=960;
+ const before=structuredClone(r);assert.equal(captiveServiceHours(r),1/60);
+ const restored=restoredCaptiveContract(r,500,3590);
+ assert.equal(restored.expiresAt,501);assert.equal(restored.expiresSecond,50);assert.equal(restored.paid,20);assert.deepEqual(r,before);
+ const status=prisonerStatus({hour:25,secondOfHour:920,operativeState:{112:r}},{id:112,maxHp:80});
+ assert.equal(status.heldHours,3620/3600);assert.equal(status.serviceHours,1/60);
+});
+test('fractional capture removes exactly elapsed service and never restores an expired second',()=>{
+ const r=record();r.capturedAt=24;r.capturedAtSecond=3590;r.capturedContract.expiresAt=25;r.capturedContract.expiresSecond=30;
+ assert.equal(captiveServiceHours(r),40/3600);
+ const restored=restoredCaptiveContract(r,500,15);assert.equal(restored.expiresAt,500);assert.equal(restored.expiresSecond,55);
+ r.capturedAt=25;r.capturedAtSecond=30;assert.equal(captiveServiceHours(r),0);assert.equal(restoredCaptiveContract(r,500,15),null);
+});

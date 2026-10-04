@@ -1,5 +1,6 @@
 'use client';
 import {sitePath} from '../lib/site-path.js';
+import {Skull} from 'lucide-react';
 import AmmunitionLoadChoice from './AmmunitionLoadChoice';
 import {outfitSlot} from '../../game/outfits.js';
 import './ja2-outfit.css';
@@ -17,11 +18,12 @@ import {maximumEnergy} from '../../game/fatigue.js';
 // Pure read model (game/ja2-hud.js inventoryModel/orderDescriptors); all mutations are caller-provided callbacks.
 import {useEffect, useState} from 'react';
 import TacticalMinimap from './TacticalMinimap';
+import {tacticalMinimapLabel} from '../../game/tactical-minimap-label.js';
 import JA2Pockets from './JA2Pockets';
 import TrainingProgress from './TrainingProgress';
 import JA2EnvironmentPanel from './JA2EnvironmentPanel';
 import {LooseBayonetControl, AttachedBayonetControl, FittingReadout} from './JA2Bayonet';
-import {inventoryModel, inventoryHandlingModel, nearbyLootOptions, nearbyEnvironmentModel, orderDescriptors, orderAction, backpackEquipAction, levelFor, targetingHelp, stanceLabel, equipmentSlots, turnModel, unitCanAct, facingLabel} from '../../game/ja2-hud.js';
+import {inventoryModel, inventoryHandlingModel, nearbyLootOptions, nearbyEnvironmentModel, orderDescriptors, orderAction, backpackEquipAction, levelFor, targetingHelp, stanceLabel, equipmentSlots, turnModel, unitCanAct, facingLabel, rosterCells} from '../../game/ja2-hud.js';
 import {mainItemPreview,swapHandsPreview, WEAPONS, BLADES, hasFirearm, ignitionRisk, visibleEnemies, stanceCost, lootPreview, equipLootPreview, containerLootPreview, AP_CARRY_LIMIT} from '../../game/tactical.js';
 import {portraitFor} from '../lib/portraits';
 import {autoBandageStatus} from '../../game/auto-bandage.js';
@@ -44,10 +46,12 @@ export function RadarCluster({equipmentScope,battle, units, selected, project, v
   const actor = battle.units.find((u: any) => u.id === selected);
   const medicalTargeting = actor?.activeSlot === 'medical' && unitCanAct(battle, actor);
   const selectable = (p: any) => medicalTargeting ? p.hp > 0 && !p.routed : unitCanAct(battle, p);
+  const radarLabel = tacticalMinimapLabel(battle);
   return (
     <>
       <div className="ja2-radar" data-equipment-scope={equipmentScope}>
         <TacticalMinimap state={battle} units={units} selected={selected} project={project} width={vw} height={vh} camera={cameraRect} onCenter={(x, y) => onCameraPan(x - (cameraRect.x + cameraRect.width / 2), y - (cameraRect.y + cameraRect.height / 2))} />
+        <span className="ja2-radar-caption" title={`${radarLabel.sectorCode} · ${radarLabel.sectorName} · Día ${radarLabel.day} · ${radarLabel.time}`}>{radarLabel.sectorCode} · {radarLabel.sectorName}<small>Día {radarLabel.day} · {radarLabel.time}</small></span>
         <span className="map-zoom">
           <button aria-label="Desplazar cámara a la izquierda" onClick={() => onCameraPan(-90, 0)}>←</button>
           <button aria-label="Desplazar cámara hacia arriba" onClick={() => onCameraPan(0, -65)}>↑</button>
@@ -61,7 +65,7 @@ export function RadarCluster({equipmentScope,battle, units, selected, project, v
       </div>
       <div className="ja2-locale">
         <p className="eyebrow">OPERACIÓN TERRESTRE · {battle.night ? 'NOCHE' : 'DÍA'} · {battle.weather?.rain ? 'LLUVIA' : 'CIELO DESPEJADO'}</p>
-        <h3>{battle.sectorName}</h3>
+        <h3 title={`Sector ${radarLabel.sectorCode}`}>{battle.sectorName}</h3>
         <p>{turnModel(battle).label}</p>
         <p>{enemies.length} avistados</p>
         <p>{targetingHelp(mode, battle.units.find((u: any) => u.id === selected))}</p>
@@ -95,12 +99,20 @@ type Props = {
   missionAllies: any[]; localMilitia: any[];
   vw: number; vh: number; cameraRect: any; project: (x: number, y: number) => { x: number; y: number }; zoom: number;
   onOrder: (a: any) => void; onMode: (id: any) => void; onToggleSight: () => void; onSelect: (id: any, additive?: boolean) => void;
+  onInventoryUnit?: (id: any) => void;
   onRetreat: () => void; onCameraCenter: () => void; onCameraPan: (dx: number, dy: number) => void; onZoom: (delta: number) => void; onCloseInventory: () => void;
   onAutoBandage?: () => void; bandageReport?: any;
 };
-export default function JA2Inventory({cursorLevel=0,onCursorLevelChange,unit, battle, mode, showSight, busy, units, selected, missionAllies, localMilitia, vw, vh, cameraRect, project, zoom, onOrder, onMode, onToggleSight, onSelect, onRetreat, onCameraCenter, onCameraPan, onZoom, onCloseInventory, onAutoBandage, bandageReport}: Props) {
+export default function JA2Inventory({cursorLevel=0,onCursorLevelChange,unit, battle, mode, showSight, busy, units, selected, missionAllies, localMilitia, vw, vh, cameraRect, project, zoom, onOrder, onMode, onToggleSight, onSelect, onInventoryUnit, onRetreat, onCameraCenter, onCameraPan, onZoom, onCloseInventory, onAutoBandage, bandageReport}: Props) {
   const cost=(n:number|undefined)=>battle.mode==='exploration'?'sin PA':`${n ?? 0} PA`;
   const inv: any = inventoryModel(battle, unit);
+  const vitals: any = rosterCells([unit],unit.id,battle)[0];
+  const inventoryUnits = battle.units.filter((u:any)=>u.side==='player'&&!u.militia&&!u.missionAlly&&!u.departure&&!u.fled);
+  const inventoryIndex = inventoryUnits.findIndex((u:any)=>u.id===unit.id);
+  const navigateInventory = (offset:number) => {
+    const next = inventoryUnits[(inventoryIndex + offset + inventoryUnits.length) % inventoryUnits.length];
+    if(next)(onInventoryUnit ?? onSelect)?.(next.id);
+  };
   const bandaging = autoBandageStatus(battle);
   const descriptors: any[] = orderDescriptors(battle, unit, {busy});
   const def = (id: string) => descriptors.find((d: any) => d.id === id);
@@ -132,7 +144,7 @@ export default function JA2Inventory({cursorLevel=0,onCursorLevelChange,unit, ba
   const containerLoot = environment.target?.kind === 'container' ? containerLootPreview(battle, unit, environment.target, content?.index ?? 0, contentCount) : null;
   const [itemOpen,setItemOpen]=useState(false);
   const chooseItem = (id: string,slotId='') => { setManagedItem(id); setInspectedSlot(slotId); setQuantity(1); setItemOpen(true); };
-  useEffect(() => { setManagedItem(''); setInspectedSlot(''); setQuantity(1); setRecipient(''); setLootId(''); setLootQuantity(1); setEnvironmentKey(''); setEnvironmentVerb(''); setContentIndex(0); setContentQuantity(1); }, [unit.id]);
+  useEffect(() => { setManagedItem(''); setInspectedSlot(''); setQuantity(1); setRecipient(''); setLootId(''); setLootQuantity(1); setEnvironmentKey(''); setEnvironmentVerb(''); setContentIndex(0); setContentQuantity(1); setItemOpen(false); }, [unit.id]);
   useEffect(() => {
     const key = (e: KeyboardEvent) => {
       const editing = Boolean((e.target as HTMLElement)?.closest('input,select,textarea,[contenteditable]:not([contenteditable="false"]),[role="textbox"]'));
@@ -149,8 +161,10 @@ export default function JA2Inventory({cursorLevel=0,onCursorLevelChange,unit, ba
   return (
     <EquipmentInteractionProvider key={unit.id}><div className="ja2-inventory" role="region" aria-label="Equipo y órdenes del combatiente">
       <div className="ja2-inv-header">
-        <div className="portrait">{portraitFor(unit.portraitId ?? unit.id) ? <img src={sitePath(portraitFor(unit.portraitId ?? unit.id)!)} alt={unit.name} /> : <span>{short(unit).slice(0, 2).toUpperCase()}</span>}</div>
+        <button className={`portrait ja2-inventory-portrait ${unit.hp<=0?'dead':''}`} aria-label={`${unit.name}${unit.hp<=0?' · muerto':''}. Botón derecho: cerrar equipo`} onContextMenu={event=>{event.preventDefault();onCloseInventory();}}>{unit.hp<=0?<><Skull className="ja2-dead-skull" aria-hidden="true"/><span className="ja2-portrait-blood" aria-hidden="true"/></>:portraitFor(unit.portraitId ?? unit.id) ? <img src={sitePath(portraitFor(unit.portraitId ?? unit.id)!)} alt={unit.name} /> : <span>{short(unit).slice(0, 2).toUpperCase()}</span>}</button>
         <div><h2>{short(unit)}</h2><span>{unit.mounted ? 'Granadero a caballo' : 'Ejército patriota'} · Nivel {levelFor(unit)}</span></div>
+        <nav className="ja2-inventory-paging" aria-label="Combatiente del inventario"><button disabled={busy||inventoryUnits.length<2} aria-label="Combatiente anterior" onClick={()=>navigateInventory(-1)}>←</button><span>{inventoryIndex+1}/{inventoryUnits.length}</span><button disabled={busy||inventoryUnits.length<2} aria-label="Combatiente siguiente" onClick={()=>navigateInventory(1)}>→</button></nav>
+        {!vitals.dead&&<div className="ja2-inventory-vitals" aria-label="Salud, energía y moral"><span title={`Salud ${Math.ceil(unit.hp)}/${unit.maxHp} · heridas vendadas ${vitals.bandaged} · sin tratar ${vitals.untreated}`}><i className="untreated" style={{width:'100%'}}/><i className="bandaged" style={{width:`${Math.min(100,vitals.hpPct+vitals.bandaged/unit.maxHp*100)}%`}}/><i className="health" style={{width:`${vitals.hpPct}%`}}/></span><span title={`Energía ${Math.round(unit.energy??100)}/${maximumEnergy(unit)}`}><i className="energy" style={{width:`${Math.max(0,Math.min(100,unit.energy??100))}%`}}/></span><span title={`Moral ${Math.round(unit.morale??0)}%`}><i className="morale" style={{width:`${vitals.moralePct}%`}}/></span></div>}
 <details className="ja2-inventory-extra"><summary>Postura y órdenes</summary><div className="ja2-inventory-popup">      <div className="ja2-stance-grid">
         <div>
           {MOVEMENT.map(([id, label]) => { const targetStance = id === 'prone' ? 'prone' : id === 'crouch' ? 'crouched' : 'standing'; const pa = battle.mode === 'exploration' ? 0 : stanceCost(unit, targetStance); return <button key={id} className={movementActive(id) ? 'active' : ''} aria-pressed={movementActive(id)} aria-label={`Cambiar a ${label}: ${battle.mode === 'exploration' ? 'sin PA' : `${pa} PA`}`} disabled={busyDisabled || unit.knockedDown || (unit.mounted && ['prone', 'crouch'].includes(id)) || (battle.mode !== 'exploration' && unit.ap < pa)} onClick={() => onOrder(orderAction(battle, unit, {movement: id}, 'movement'))}>{label} · {pa} PA</button>; })}
@@ -169,11 +183,13 @@ export default function JA2Inventory({cursorLevel=0,onCursorLevelChange,unit, ba
       </div>}
       <div className="ja2-stats">
         {inv.stats.map((st: any) => <div key={st.id}><span>{st.label}</span><b>{st.value}</b></div>)}
-        <div><span>Salud</span><b>{Math.ceil(unit.hp)} / {unit.maxHp}</b></div>
+        <div className="inventory-health"><span>Salud</span><b>{unit.hp<=0?'Muerto':`${Math.ceil(unit.hp)} / ${unit.maxHp}`}</b></div>
         {battle.mode !== 'exploration' && <div><span>Puntos de acción</span><b>{unit.ap} / {inv.currentAPLimit}</b></div>}
         <div><span>Postura</span><b>{stanceLabel(unit.stance)}</b></div>
         <div><span>Orientación</span><b>{facingLabel(unit)}</b></div>
         <div><span>Energía</span><b>{Math.round(unit.energy ?? 100)} / {maximumEnergy(unit)}</b></div>
+        <div className="ja2-mobile-weight"><span>Peso</span><b>{inv.weight.toFixed(1)} / {inv.capacity.toFixed(1)} kg</b></div>
+        <div><span>Moral</span><b>{unit.hp<=0?'—':`${Math.round(unit.morale ?? 0)}%`}</b></div>
 <details className="ja2-inventory-extra"><summary>Más detalles</summary><div className="ja2-inventory-popup">        <div><span>Carga / capacidad</span><b>{inv.weight.toFixed(1)} / {inv.capacity.toFixed(1)} kg</b></div>
         <div><span>Espacio del equipo</span><b>{inv.pockets.used ?? '—'} / {inv.pockets.capacity}</b></div>
         {inv.pockets.overloaded && <p className="danger-text">Falta espacio en el equipo. Soltá o entregá objetos antes de recibir más.</p>}
@@ -197,15 +213,15 @@ export default function JA2Inventory({cursorLevel=0,onCursorLevelChange,unit, ba
       <div className="paper-doll">
         <JA2OutfitSlot battle={battle} unit={unit} disabled={busyDisabled} onPick={chooseItem} onOrder={onOrder}/>
         <JA2Hands battle={battle} unit={unit} busy={busy} onOrder={onOrder} onPick={chooseItem}/>
+<details className="ja2-inventory-extra"><summary>Cargas y accesorios</summary><div className="ja2-inventory-popup">
         <AmmunitionLoadChoice unit={unit} disabled={busyDisabled} unloadCost={battle.mode==='exploration'?' · 1 s':' · 4 PA'} onUnload={()=>onOrder({type:'unloadAmmunition',unitId:unit.id})} onSelect={family=>onOrder({type:'selectAmmunitionLoad',unitId:unit.id,family})}/>
-<details className="ja2-inventory-extra"><summary>Equipo y accesorios</summary><div className="ja2-inventory-popup">        {unit.leftHandItem!=null&&<button className="line-button ja2-stow-hand" disabled={busyDisabled||!stowSecond.valid} title={stowSecond.reason||undefined} onClick={()=>onOrder({type:'equipLoot',slot:'offhandItem',inventoryKey:null})}>Guardar objeto de segunda mano · {battle.mode==='exploration'?'sin PA':'4 PA'}</button>}
+        {unit.leftHandItem!=null&&<button className="line-button ja2-stow-hand" disabled={busyDisabled||!stowSecond.valid} title={stowSecond.reason||undefined} onClick={()=>onOrder({type:'equipLoot',slot:'offhandItem',inventoryKey:null})}>Guardar objeto de segunda mano · {battle.mode==='exploration'?'sin PA':'4 PA'}</button>}
         <JA2WeaponMode battle={battle} unit={unit} busy={busy} onOrder={onOrder} onMode={onMode}/>
         <div className="ja2-hand-management">{inv.items.filter((entry: any) => ['primary', 'blade', 'offhand'].includes(entry.item)).map((entry: any) => <button key={entry.item} className="line-button" disabled={busyDisabled} aria-pressed={item?.item === entry.item} onClick={() => chooseItem(entry.item)}>Dar o soltar {entry.label}</button>)}</div>
         <AttachedBayonetControl freeActions={battle.mode==='exploration'} attached={inv.fittings.attached} busy={busyDisabled} onOrder={onOrder}/>
         <LooseBayonetControl freeActions={battle.mode==='exploration'} source={inv.fittings.sources.find((source: any) => source.item === 'blade')} busy={busyDisabled} onOrder={onOrder}/>
 </div></details>        <div className="paper-readouts">
           <span className="weight"><small>Peso</small><b>{inv.weight.toFixed(1)} / {inv.capacity.toFixed(1)} kg</b></span>
-          <span className="camo"><small>Camuflaje</small><b>—</b></span>
         </div>
       </div>
       <div className="slot-grid">

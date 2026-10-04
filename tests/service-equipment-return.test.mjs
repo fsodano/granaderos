@@ -1,3 +1,5 @@
+import {withCarriedAmmo} from './commerce-gear-fixture.mjs';
+import {withLegacyRepairReserve,withOwnedMount} from './custody-gear-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign as freshCampaign,dispatchCampaign,rosterFor,recruitmentStatus} from '../game/campaign.js';
@@ -40,7 +42,7 @@ const leave=({s,b})=>order(s,{type:'leaveSector',battleId:s.pendingBattle.id,sec
 function rich(s=hire()){
  s.loadouts[110]={weapon:1800,blade:1811};
  Object.assign(s.operativeState[110],{weaponInstanceId:'retired-rifle',condition:61,carriedLoaded:0,carriedReloadProgress:.5,bladeInstanceId:'retired-knife',bladeCondition:47,weaponFittings:{bayonet:{weapon:1811,fittingPattern:'india_socket',instanceId:'retired-bayonet',condition:73}},inventory:{key:{kind:'tool',toolKey:'key',keyId:'granary',count:1,weight:.1,condition:83,instanceId:'retired-key',provenance:{owner:'Correo'}}}});
- return order(order(s,{type:'purchaseAmmunition',operativeId:110,family:'ammoMusket',quantity:6}),{type:'purchaseToolkits',operativeId:110,quantity:1});
+ return withLegacyRepairReserve(withCarriedAmmo(s,110,'ammoMusket',6),110);
 }
 function expectedGear(s,id=110){
  return unitGear(personal(s,id));
@@ -111,7 +113,7 @@ test('canonical UTF8 cache ceiling uses the bounded fallback without losing equi
 });
 
 test('queued expiry returns only at a real arrival and leaves the individual owned horse at that sector',()=>{
- let s=rich();s=order(s,{type:'horseAction',order:{type:'acquire',name:'Correo'}});const horseId=s.horseState.horses.at(-1).id;s=order(s,{type:'horseAction',order:{type:'assign',horseId,operativeId:110}});
+ const mounted=withOwnedMount(rich());let s=mounted.state;const horseId=mounted.id;s=order(s,{type:'horseAction',order:{type:'assign',horseId,operativeId:110}});
  s=order(s,{type:'wait',hours:20});s=order(s,{type:'travel',sector:'buenos_aires',queue:true});s=order(s,{type:'wait',hours:10});s=order(s,{type:'wait',hours:10});assert.equal(s.hour,24);assert.ok(s.contracts[110].departurePending);assert.ok(s.recruited.includes(110));assert.equal(rows(s).length,0);reject(s,{type:'dismiss',id:110});
  s=order(saved(s),{type:'wait',hours:10});assert.equal(s.hour,32);assert.ok(!s.recruited.includes(110));assert.equal(s.operativeState[110].location,'buenos_aires');assert.equal(rows(s).length,0);assert.ok(rows(s,'buenos_aires').length>0);const horse=s.horseState.horses.find(h=>h.id===horseId);assert.equal(horse.location,'buenos_aires');assert.equal(horse.assignedTo,null);assert.equal(horse.returned,false);assert.equal(horse.custody??null,null);assert.ok(!rows(s,'buenos_aires').some(row=>row.stack?.kind==='horse'));assert.deepEqual(saved(s),s);
 });
@@ -134,7 +136,7 @@ test('a staged expired contract enters a newly friendly target peacefully and re
 
 test('ordinary dismissal keeps mount custody independent, including a leased mount that returns at its own due time',()=>{
  for(const type of ['acquire','hire']){
-  let s=hire();s=order(s,{type:'horseAction',order:{type,name:'Retorno'}});const id=s.horseState.horses.at(-1).id;s=order(s,{type:'horseAction',order:{type:'assign',horseId:id,operativeId:110}});const before=structuredClone(s.horseState.horses.find(h=>h.id===id));s=order(s,{type:'dismiss',id:110});assert.deepEqual(s.horseState.horses.find(h=>h.id===id),{...before,assignedTo:null});assert.deepEqual(saved(s),s);
+  const mounted=withOwnedMount(hire(),{hired:type==='hire',name:'Retorno'});let s=mounted.state;const id=mounted.id;s=order(s,{type:'horseAction',order:{type:'assign',horseId:id,operativeId:110}});const before=structuredClone(s.horseState.horses.find(h=>h.id===id));s=order(s,{type:'dismiss',id:110});assert.deepEqual(s.horseState.horses.find(h=>h.id===id),{...before,assignedTo:null});assert.deepEqual(saved(s),s);
   if(type==='hire'){while(s.hour<before.hireUntil)s=order(s,{type:'wait',hours:Math.min(72,before.hireUntil-s.hour)});assert.equal(s.horseState.horses.find(h=>h.id===id).returned,true);assert.equal(s.horseState.horses.find(h=>h.id===id).location,'retiro');}
  }
 });

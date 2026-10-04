@@ -14,7 +14,7 @@ import {fieldGun} from './artillery-transport-fixture.mjs';
 const send=s=>order(s,{type:'transportArtillery',sector:'san_nicolas',artilleryId:s.sectorStates.san_nicolas.artillery[0].id,to:'buenos_aires',mode:'carts'});
 const assertSame=(a,b)=>{for(const key of ['id','type','side','loaded','ammo','reloadProgress','facing'])assert.deepEqual(a[key],b[key],key);};
 
-test('an actually purchased and fired gun travels once, arrives in a local depot and redeploys without fresh ammunition',()=>{
+test('an actually issued and fired gun travels once, arrives in a local depot and redeploys without fresh ammunition',()=>{
  let s=fieldGun();const gun=structuredClone(s.sectorStates.san_nicolas.artillery[0]),cash=s.resources.treasury,at=s.hour;const quote=artilleryTransportQuote(s,'san_nicolas',gun.id,'buenos_aires','carts');assert.equal(quote.available,true,quote.reason);assert.equal(quote.hours,18);assert.equal(quote.crew,1);
  s=send(s);assert.equal(s.resources.treasury,cash);assert.equal(s.hour,at);assert.deepEqual(s.sectorStates.san_nicolas.artillery,[]);assert.equal(s.artilleryTransfers.length,1);assertSame(s.artilleryTransfers[0].gun,gun);assert.equal(ownedArtilleryCount(s),1);assert.ok(dispatchCampaign(s,{type:'transportArtillery',sector:'san_nicolas',artilleryId:gun.id,to:'buenos_aires',mode:'carts'}).lastError);
  s=saved({campaign:s}).campaign;s=advanceCampaignHours(s,17);assert.equal(s.artilleryTransfers.length,1);s=advanceCampaignHours(s,1);assert.equal(s.artilleryTransfers.length,0);assertSame(s.artilleryDepots.buenos_aires[0],gun);assert.deepEqual(localArtilleryDepot(s),[]);assert.equal(ownedArtilleryCount(s),1);

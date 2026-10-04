@@ -8,7 +8,7 @@ import {enterSector} from '../game/world.js';
 import {addAmmunition,ammunitionByType,weaponAmmoType} from '../game/ammunition-types.js';
 import {syncCarriedAmmunition} from '../game/campaign-ammunition.js';
 const order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,n.lastError);return n;};
-function fresh(){const s=order(initialCampaign(8),{type:'createOfficer',name:'Testigo',answers:{origin:'cabildo',doctrine:'line_marksman',crisis:'rally'}});Object.assign(s.operativeState[1000],{inventory:{note:{name:'Carta',count:1,weight:.1,condition:44,instanceId:'map-note'},key:{kind:'tool',toolKey:'key',keyId:'gate',count:1,weight:.2,condition:57,instanceId:'map-key'}}});return s;}
+function fresh(){const s=order(initialCampaign(8),{type:'createOfficer',name:'Testigo',answers:{origin:'cabildo',doctrine:'line_marksman',crisis:'rally'}});Object.assign(s.operativeState[1000],{inventory:{...s.operativeState[1000].inventory,note:{name:'Carta',count:1,weight:.1,condition:44,instanceId:'map-note'},key:{kind:'tool',toolKey:'key',keyId:'gate',count:1,weight:.2,condition:57,instanceId:'map-key'}}});return s;}
 const model=s=>sectorInventoryModel(s,'retiro',rosterFor(s),1000);
 const row=(s,item)=>model(s).carried.find(row=>row.item===item);
 const action=(s,item)=>({type:'sectorInventory',sector:'retiro',operativeId:1000,direction:'equip',...row(s,item).mainhand.action});
@@ -37,15 +37,15 @@ test('main-hand choices survive full save, deployment and return with the same o
 test('prepared partial reload remains exact when a tool is readied and the gun is selected again',()=>{
  let s=fresh();Object.assign(s.operativeState[1000],{carriedLoaded:0,carriedAmmo:2,carriedReloadProgress:.5});const stock=s.resources.cartridges;
  addAmmunition(s.operativeState[1000],weaponAmmoType(model(s).personal.weapon),2);syncCarriedAmmunition(s.operativeState[1000]);
- s=prepare(s,'inventory:key');s=prepare(s,'primary');save(s);assert.equal(s.operativeState[1000].carriedReloadProgress,.5);assert.equal(s.operativeState[1000].carriedAmmo,2);assert.equal(s.resources.cartridges,stock);
+ s=prepare(s,'inventory:key');s=prepare(s,'primary');save(s);assert.equal(s.operativeState[1000].carriedReloadProgress,.5);assert.equal(s.operativeState[1000].carriedAmmo,11);assert.equal(s.resources.cartridges,stock);
  s=order(s,{type:'visitSector'});const u=enterSector(s.pendingBattle).units.find(u=>u.id==='1000');assert.equal(u.loaded,0);assert.equal(u.reloadProgress,.5);
 });
 
 test('moving a second pistol into the main hand preserves each gun and its load',()=>{
  let s=fresh();s.loadouts[1000]={weapon:1805,blade:1813};Object.assign(s.operativeState[1000],{carriedLoaded:1,carriedAmmo:3,condition:81,weaponInstanceId:'first-pistol',offHand:{weapon:1808,count:1,weight:1.3,loaded:2,condition:57,instanceId:'second-pistol'}});
  addAmmunition(s.operativeState[1000],'pistol_69',2);syncCarriedAmmunition(s.operativeState[1000]);
- s=prepare(s,'offhand');const r=s.operativeState[1000];assert.equal(s.loadouts[1000].weapon,1808);assert.equal(r.weaponInstanceId,'second-pistol');assert.equal(r.carriedLoaded,2);assert.equal(r.carriedAmmo,4);assert.equal(r.condition,57);assert.equal(r.offHand.instanceId,'first-pistol');assert.equal(r.offHand.loaded,1);assert.equal(r.offHand.condition,81);save(s);
- assert.deepEqual(ammunitionByType(r),{pistol_69:2},'prepared cartridges stay with their original type across a gun swap');
+ s=prepare(s,'offhand');const r=s.operativeState[1000];assert.equal(s.loadouts[1000].weapon,1808);assert.equal(r.weaponInstanceId,'second-pistol');assert.equal(r.carriedLoaded,2);assert.equal(r.carriedAmmo,13);assert.equal(r.condition,57);assert.equal(r.offHand.instanceId,'first-pistol');assert.equal(r.offHand.loaded,1);assert.equal(r.offHand.condition,81);save(s);
+ assert.deepEqual(ammunitionByType(r),{rifle_62:9,pistol_69:2},'prepared cartridges stay with their original type across a gun swap');
 });
 
 test('missing or changed objects, incapacitation, absence, occupation and pending visits reject atomically',()=>{

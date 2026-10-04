@@ -1,3 +1,4 @@
+import {withStoredGear} from './commerce-gear-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {defaultContentPackage,validateContentPackage} from '../game/content-package.js';
@@ -42,7 +43,7 @@ test('authored loose bayonet and enemy melee use edited values without acquiring
 
 test('variants retain separate prices and stock through primary and secondary armory swaps',()=>{
  let s=order(initialCampaign(8,content()),{type:'recruitCivic',id:110,term:'week'});const funds=s.resources.treasury;
- s=order(s,{type:'purchaseEquipment',item:'lanza-del-sur'});s=order(s,{type:'purchaseEquipment',item:'lanza-del-norte'});assert.equal(s.resources.treasury,funds-218);
+ s=withStoredGear(s,'lanza-del-sur');s=withStoredGear(s,'lanza-del-norte');assert.equal(s.resources.treasury,funds);
  assert.equal(equipmentCatalog(s).find(w=>w.item==='lanza-del-sur').category,'blade');assert.equal(equipmentCatalog(s).some(w=>w.item===1812),false);
  const item=s.armoryItems.find(w=>contentWeaponOf(storedEquipmentStack(w))?.id==='lanza-del-norte');
  s=order(s,{type:'equip',operativeId:110,slot:'blade',itemId:'lanza-del-norte',instanceId:item.id});
@@ -68,7 +69,7 @@ test('looted primary blades keep identity and condition through secondary swaps,
 
 test('save validation pins blades in both slots, stock and inventory and compresses their images',()=>{
  const d=content(),w=d.weapons.find(w=>w.id==='lanza-del-sur');w.art='data:image/png;base64,'+'A'.repeat(320000);for(const c of d.characters)c.blade=w.id;
- let s=order(initialCampaign(8,d),{type:'recruitCivic',id:110,term:'week'});s=order(s,{type:'purchaseEquipment',item:w.id,quantity:5});s=order(s,{type:'visitSector'});const b=enterSector(s.pendingBattle),text=encodeSave(s,b);assert.equal(text.split(w.art).length-1,1,'uploaded artwork is stored once in the pinned package');assert.equal(contentWeaponOf(decodeSave(text).battle.units[0],'blade').art,w.art);
+ let s=order(initialCampaign(8,d),{type:'recruitCivic',id:110,term:'week'});s=withStoredGear(s,w.id,5);s=order(s,{type:'visitSector'});const b=enterSector(s.pendingBattle),text=encodeSave(s,b);assert.equal(text.split(w.art).length-1,1,'uploaded artwork is stored once in the pinned package');assert.equal(contentWeaponOf(decodeSave(text).battle.units[0],'blade').art,w.art);
  for(const mutate of [v=>v.operativeState[110].bladeMetadata.contentWeapon.damage++,v=>v.loadouts[110].blade=1813,v=>v.armoryItems[0].loaded=1,v=>v.operativeState[110].bladeCondition=-1]){const bad=structuredClone(s);mutate(bad);assert.throws(()=>save(bad,b));}
  const bad=JSON.parse(text);bad.battle.units[0].bladeMetadata.contentWeapon.definitionRef='firearm-1800';assert.throws(()=>decodeSave(JSON.stringify(bad)),/arma/);
 });

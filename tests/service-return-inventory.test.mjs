@@ -1,3 +1,4 @@
+import {withLegacyRepairReserve} from './custody-gear-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign} from './legacy-campaign-fixture.mjs';
@@ -26,7 +27,7 @@ function prepared({full=true,unvisited=false,overflow=false,content=null,extraSt
  delete s.operativeState[4].weaponMetadata;
  if(extraStack){const {item,...record}=extraStack;s.operativeState[4].inventory??={};s.operativeState[4].inventory.authored=record;}
  Object.assign(s.operativeState[4],{weaponInstanceId:'service-musket',condition:62,weaponFittings:{bayonet:{weapon:1811,fittingPattern:'india_socket',instanceId:'service-bayonet',condition:47}}});
- s=order(s,{type:'purchaseToolkits',operativeId:4,quantity:1});
+ s=withLegacyRepairReserve(s,4);
  if(!unvisited){
   s=order(s,{type:'visitSector'});const request=s.pendingBattle;
   const tiles=Array.from({length:120},(_,i)=>({x:i%12,y:Math.floor(i/12),type:'grass',cover:0,blocked:false}));

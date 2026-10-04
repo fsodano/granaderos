@@ -1,3 +1,4 @@
+import {routeHiringCeiling} from './funded-route-fixture.mjs';
 import {restoreNorthernRoad,prepareRestoredSalta} from './recovery-road-route.mjs';
 import {operativeLocation} from '../game/squads.js';
 import {contractQuote} from '../game/contracts.js';
@@ -44,7 +45,7 @@ export function recoverFreshNorthernDoctor(start,{report=()=>{}}={}){
  for(const at of new Set(patients.map(id=>c.operativeState[id].location))){
   let medic=rosterFor(c).filter(op=>c.recruited.includes(op.id)&&c.operativeState[op.id].alive&&!c.operativeState[op.id].captured&&c.operativeState[op.id].location===at&&c.operativeState[op.id].hp>=15&&!c.operativeState[op.id].bleeding&&op.medical>=20).sort((a,b)=>b.medical-a.medical)[0];
   if(!medic){
-   const candidate=rosterFor(c).filter(op=>op.id>=100&&op.id<1000&&op.medical>=20&&!c.recruited.includes(op.id)&&c.operativeState[op.id].alive&&!c.operativeState[op.id].captured&&contractQuote(c,op,'week').available&&contractQuote(c,op,'week').price<=Math.min(250,c.resources.treasury)).sort((a,b)=>b.medical-a.medical||contractQuote(c,a,'week').price-contractQuote(c,b,'week').price)[0];assert.ok(candidate);
+   const candidate=rosterFor(c).filter(op=>op.id>=100&&op.id<1000&&op.medical>=20&&!c.recruited.includes(op.id)&&c.operativeState[op.id].alive&&!c.operativeState[op.id].captured&&contractQuote(c,op,'week').available&&contractQuote(c,op,'week').price<=Math.min(routeHiringCeiling(c,250),c.resources.treasury)).sort((a,b)=>b.medical-a.medical||contractQuote(c,a,'week').price-contractQuote(c,b,'week').price)[0];assert.ok(candidate);
    order({type:'recruitCivic',id:candidate.id,term:'week',destination:at});for(let h=0;h<24&&!c.recruited.includes(candidate.id);h++)order({type:'wait',hours:1});assert.ok(c.recruited.includes(candidate.id));medic=rosterFor(c).find(op=>op.id===candidate.id);
   }
   const localPatients=patients.filter(id=>c.operativeState[id].location===at);
@@ -68,7 +69,7 @@ export function recoverFreshNorthernDoctor(start,{report=()=>{}}={}){
   const local=c.recruited.filter(id=>c.operativeState[id].alive&&!c.operativeState[id].captured&&c.operativeState[id].location===at);
   let medic=rosterFor(c).filter(op=>local.includes(op.id)&&c.operativeState[op.id].hp>=15&&!c.operativeState[op.id].bleeding&&op.medical>=20).sort((a,b)=>b.medical-a.medical)[0];
   if(!medic){
-   const candidate=rosterFor(c).filter(op=>op.id>=100&&op.id<1000&&op.medical>=20&&!c.recruited.includes(op.id)&&c.operativeState[op.id].alive&&!c.operativeState[op.id].captured&&contractQuote(c,op,'week').available&&contractQuote(c,op,'week').price<=Math.min(250,c.resources.treasury)).sort((a,b)=>b.medical-a.medical||contractQuote(c,a,'week').price-contractQuote(c,b,'week').price)[0];assert.ok(candidate,'a real available paid medic must reach the isolated patient');
+   const candidate=rosterFor(c).filter(op=>op.id>=100&&op.id<1000&&op.medical>=20&&!c.recruited.includes(op.id)&&c.operativeState[op.id].alive&&!c.operativeState[op.id].captured&&contractQuote(c,op,'week').available&&contractQuote(c,op,'week').price<=Math.min(routeHiringCeiling(c,250),c.resources.treasury)).sort((a,b)=>b.medical-a.medical||contractQuote(c,a,'week').price-contractQuote(c,b,'week').price)[0];assert.ok(candidate,'a real available paid medic must reach the isolated patient');
    order({type:'recruitCivic',id:candidate.id,term:'week',destination:at});
    medic=rosterFor(c).find(op=>op.id===candidate.id);assert.ok(c.recruited.includes(medic.id)&&c.operativeState[medic.id].location===at);
   }

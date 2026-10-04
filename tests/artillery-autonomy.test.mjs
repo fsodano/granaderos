@@ -102,7 +102,7 @@ test('autonomous continuation after a full tactical save preserves finite shots,
  let b=field({type:'bronze4'}),saved=restored(b);for(let i=0;i<4&&b.status==='active';i++){b=endTurn(b);saved=endTurn(saved);assert.deepEqual(saved,b);saved=restored(saved);}assert.ok(b.units.find(u=>u.id==='target').hp<300);assert.ok(b.artillery[0].ammo<2);
 });
 
-test('a paid local cohort operates a purchased retained gun and full campaign saves preserve both',async()=>{
+test('a paid local cohort operates a finite retained gun and full campaign saves preserve both',async()=>{
  const {wonBattery}=await import('./stationed-artillery-fixture.mjs'),{order,saved,sync,leave,visit}=await import('./local-contract-fixture.mjs');
  const {defaultContentPackage}=await import('../game/content-package.js'),{rosterFor}=await import('../game/campaign.js'),{finishMilitiaTraining}=await import('./campaign-wait-fixture.mjs');
  const d=defaultContentPackage();d.startingTerritory.san_nicolas={owner:'royalist',loyalty:65};
@@ -110,8 +110,8 @@ test('a paid local cohort operates a purchased retained gun and full campaign sa
  s=order(s,{type:'militia',trainerId:trainer.id,rank:0});assert.ok(s.resources.treasury<treasury);s=finishMilitiaTraining(s);s=order(s,{type:'visitSector'});
  const r=s.pendingBattle,gun=structuredClone(s.sectorStates.san_nicolas.artillery[0]);assert.equal(r.garrison.length,3);assert.equal(gun.side,'player');assert.equal(gun.loaded,true);
  // Prepared local ambush geometry around the actual retained emplacement.
- // All hired people, paid militia identities, gun stock and supplies come from
- // ordinary campaign orders; the result follows a real autonomous allied turn.
+ // All hired people and paid militia identities come from ordinary campaign
+ // orders; the finite stored gun comes from the isolated battery fixture; the result follows a real autonomous allied turn.
  const width=64,height=48,tiles=Array.from({length:width*height},(_,i)=>({x:i%width,y:Math.floor(i/width),type:i%width===gun.x+2?'window':'grass',blocked:i%width===gun.x+2,blocksSight:false,cover:0}));
  r.enemies=createBattle([],{width,height,enemies:[{id:'battery-raider',x:gun.x+5,y:gun.y,weapon:1813,ammo:0,hp:30,maxHp:30,morale:100,patrol:false}]}).units;
  let battle=createBattle([...r.squad.map((u,i)=>({...u,x:1,y:30+i})),...r.garrison.map((u,i)=>({...u,x:i?1+i:gun.x-1,y:i?36:gun.y}))],{...r,hour:s.hour,secondOfHour:s.secondOfHour??0,exploration:false,width,height,tiles,props:[],npcs:r.npcs,artillery:[gun],enemies:r.enemies});

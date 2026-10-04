@@ -4,7 +4,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {contractQuote,rosterFor,dispatchCampaign as dispatch,serializeCampaign,restoreCampaign} from '../game/campaign.js';
 import {initialCampaign} from './legacy-campaign-fixture.mjs';
-import {chooseEnemyAction} from '../game/tactical-ai.js';
+import {hiredAssaultOrder} from './hired-assault-driver.mjs';
 import {createBattle,actBattle,endTurn,interruptAvailable} from '../game/tactical.js';
 const order=(c,a)=>{const next=dispatch(c,a);assert.equal(next.lastError,null,next.lastError);return next;};
 function stage(seed,{reinforce=false}={}){
@@ -39,7 +39,7 @@ function fight(seed=1812){
    for(const id of ids){
     if(b.status!=='active')break;
     const u=b.units.find(u=>u.id===id);if(u.hp<=0||u.routed||u.ap<3||!interruptAvailable(b,u))continue;
-    const action=chooseEnemyAction(b,u);if(!action)continue;
+    const action=hiredAssaultOrder(b,u,{reconBudget:16});if(!action)continue;
     b=actBattle(b,{...action,unitId:id});assert.equal(b.lastError,null,JSON.stringify(action));actions++;acted=true;
    }
    if(!acted)break;

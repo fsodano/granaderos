@@ -18,12 +18,19 @@ test('the real ground selector chooses among colocated bundles, collects the req
  const s=savedField(m);assert.equal(s.battle.groundItems.find(g=>g.id===ration.id).count,1);assert.equal(s.battle.groundItems.find(g=>g.id===vendas.id).count,3);assert.equal(s.battle.units.find(u=>u.id==='111').rations,3);assert.equal(m.document.querySelector('.ja2-loot-dialog'),null);
 });
 test('opening the ground selector pauses the ordinary exploration clock and cancel or close spends nothing',async t=>{
- const p=supplies(),m=await mountCampaign(t,p);await m.click('Reanudar');await openPicker(m,p);const before=savedField(m);
- await act(async()=>new Promise(resolve=>setTimeout(resolve,6250)));assert.deepEqual(savedField(m).battle,before.battle);
+ const intervals=new Map();let intervalId=0;
+ t.mock.method(globalThis,'setInterval',(fn,delay)=>{const id=++intervalId;intervals.set(id,{fn,delay});return id;});
+ t.mock.method(globalThis,'clearInterval',id=>intervals.delete(id));
+ const ambientCallbacks=()=>[...intervals.values()].filter(timer=>timer.delay===6000);
+ const p=supplies(),m=await mountCampaign(t,p);await m.click('Reanudar');assert.equal(ambientCallbacks().length,1,'exploration has a live clock before opening equipment');await openPicker(m,p);const before=savedField(m);
+ assert.equal(ambientCallbacks().length,0,'the open picker removes the ambient clock callback');
+ // Advance past the next expected ambient tick without a wall-clock wait.
+ for(const {fn}of ambientCallbacks())await act(async()=>fn());
+ assert.deepEqual(savedField(m).battle,before.battle);
  const first=m.document.querySelector('.ja2-loot-choice input');assert.equal(m.document.activeElement,first);
  // Browsers dispatch cancel on a modal dialog when Escape is pressed.
  await act(async()=>m.document.querySelector('.ja2-loot-dialog').dispatchEvent(new m.dom.window.Event('cancel',{bubbles:false,cancelable:true})));
- assert.equal(m.document.querySelector('.ja2-loot-dialog'),null);assert.deepEqual(savedField(m).battle,before.battle);await m.click('Pausar');await openPicker(m,p);await m.click('Cerrar equipo');assert.deepEqual(savedField(m).battle,before.battle);
+ assert.equal(m.document.querySelector('.ja2-loot-dialog'),null);assert.deepEqual(savedField(m).battle,before.battle);assert.equal(ambientCallbacks().length,1,'cancel resumes the previously running exploration clock');await m.click('Pausar');assert.equal(ambientCallbacks().length,0);await openPicker(m,p);await m.click('Cerrar equipo');assert.deepEqual(savedField(m).battle,before.battle);
 });
 test('the ground selector explains an overflowing whole bundle and accepts only the reduced exact quantity',async t=>{
  let p=supplyCareField();const recipient=p.battle.units.find(u=>u.id==='111');recipient.medkits=4;fillSparePockets(recipient);p=saved(p);p=tactical(p,{type:'dropSupply',unitId:'110',item:'medkits',count:3});const m=await mountCampaign(t,p);

@@ -48,7 +48,7 @@ export function acknowledgeDetentionHealth(campaign,battle){
   Object.assign(record,plan.health);
   if(!record.alive){
    receipt.ammunition??=structuredClone(record.capturedAmmunition??{loaded:0,ammo:0});
-   Object.assign(record,{captured:false,capturedSector:null,capturedAt:null,capturedContract:null,capturedAmmunition:{loaded:0,ammo:0},assignment:'active',asleep:false,sleepCollapsed:false});
+   Object.assign(record,{captured:false,capturedSector:null,capturedAt:null,capturedAtSecond:null,capturedContract:null,capturedAmmunition:{loaded:0,ammo:0},assignment:'active',asleep:false,sleepCollapsed:false});
    for(const horse of campaign.horseState?.horses??[])if(horse.custody?.kind==='captured'&&horse.custody.operativeId===npc.detention.operativeId)horse.custody.kind='field';
   }
   campaign.detentionRecords[npc.id]=receipt;

@@ -29,8 +29,8 @@ test('the existing order panel exposes the second pan and both pans with actual 
 test('actual R input prepares the held second pistol and a later R resumes ordinary loading',async t=>{
  let battle=field(),commits=[];
  const props=()=>({battle,onChange:next=>{battle=next;commits.push(next);return next;},onFinish(){}});
- const mounted=await mountBattlefield(t,Battlefield,props());
- const pressR=()=>mounted.act(async()=>document.body.dispatchEvent(new window.KeyboardEvent('keydown',{key:'r',bubbles:true})));
+ const mounted=await mountBattlefield(t,Battlefield,props(),{virtualTimers:true});
+ const pressR=async()=>{await mounted.act(async()=>document.body.dispatchEvent(new window.KeyboardEvent('keydown',{key:'r',bubbles:true})));await mounted.settle();};
  await pressR();assert.equal(commits.length,1);assert.equal(battle.units[0].offHand.jammed,false);assert.equal(battle.units[0].jammed,false);
  assert.equal(battle.units[0].priming,undefined);assert.equal(battle.units[0].ap,85);assert.equal(battle.units[0].loaded,1);assert.equal(battle.units[0].offHand.loaded,1);
  await mounted.render(props());await pressR();assert.equal(commits.length,2);assert.match(battle.lastError,/No falta carga/);
@@ -39,7 +39,7 @@ test('actual R input prepares the held second pistol and a later R resumes ordin
 
 test('R cannot service a hidden pocket pistol or act while editing text',async t=>{
  let battle=field({leftHandItem:null}),commits=[];
- const mounted=await mountBattlefield(t,Battlefield,{battle,onChange:next=>{battle=next;commits.push(next);return next;},onFinish(){}});
+ const mounted=await mountBattlefield(t,Battlefield,{battle,onChange:next=>{battle=next;commits.push(next);return next;},onFinish(){}},{virtualTimers:true});
  const input=document.createElement('input');document.body.append(input);
  await mounted.act(async()=>input.dispatchEvent(new window.KeyboardEvent('keydown',{key:'r',bubbles:true})));assert.equal(commits.length,0);
  await mounted.act(async()=>document.body.dispatchEvent(new window.KeyboardEvent('keydown',{key:'r',bubbles:true})));assert.equal(commits.length,1);
@@ -50,8 +50,9 @@ test('a failed spare with no priming does not block R or the control from loadin
  let battle=field({loaded:0,priming:0}),commits=[];
  const buttons=nodes(componentTree(JA2OrdersPanel,panel(battle,()=>{}))).filter(n=>n.type==='button');
  assert.ok(buttons.some(n=>n.props['aria-label']==='Recargar'&&!n.props.disabled));
- const mounted=await mountBattlefield(t,Battlefield,{battle,onChange:next=>{battle=next;commits.push(next);return next;},onFinish(){}});
+ const mounted=await mountBattlefield(t,Battlefield,{battle,onChange:next=>{battle=next;commits.push(next);return next;},onFinish(){}},{virtualTimers:true});
  await mounted.act(async()=>document.body.dispatchEvent(new window.KeyboardEvent('keydown',{key:'r',bubbles:true})));
+ await mounted.settle();
  assert.equal(commits.length,1);assert.equal(battle.lastError,null);assert.equal(battle.units[0].loaded,1);
  assert.equal(battle.units[0].offHand.jammed,true);assert.equal(battle.units[0].offHand.loaded,1);assert.equal(battle.units[0].priming,undefined);
 });

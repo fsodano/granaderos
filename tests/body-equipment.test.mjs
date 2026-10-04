@@ -26,7 +26,7 @@ test('normal recruit body equipment survives campaign placement, battle cursor, 
  const html=render(h(CampaignPockets,{unit:issued,disabled:false,onOrder:()=>{}}));
  for(const name of ['Cabeza: Sombrero','Torso: Poncho','Piernas: Pantalón'])assert.ok(html.includes(name));
  campaign=step(campaign,{type:'sectorInventory',sector:'retiro',operativeId:110,direction:'arrange',kind:'cursor',cursorAction:'dragEquipment',...move(issued,'headwear','large-4')});
- assert.equal(personal(campaign).headwear,null);assert.deepEqual(garments(personal(campaign)),original);assert.equal(carriedWeight(personal(campaign)),weight);
+ assert.equal(personal(campaign).headwear,null);assert.deepEqual(garments(personal(campaign)),original);assert.ok(Math.abs(carriedWeight(personal(campaign))-weight)<1e-9);
  campaign=decodeSave(encodeSave(campaign)).campaign;
  campaign=step(campaign,{type:'visitSector'});
  let pair=prepareCampaignBattle(campaign,{placement:false});assert.equal(pair.error,null);

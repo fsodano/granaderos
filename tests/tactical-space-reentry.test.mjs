@@ -19,7 +19,7 @@ function authoredTerrace(state){
  return {x:below.x,y:below.y};
 }
 function paidVisit(){
- let campaign=initialCampaign();const treasury=campaign.resources.treasury;
+ let campaign=initialCampaign();campaign.resources.treasury=20000;const treasury=campaign.resources.treasury;
  for(const action of [{type:'recruitCivic',id:128,term:'day'},{type:'recruitCivic',id:142,term:'day'},{type:'visitSector'}]){campaign=dispatchCampaign(campaign,action);assert.equal(campaign.lastError,null);}
  assert.ok(campaign.resources.treasury<treasury);const pair=prepareCampaignBattle(campaign);assert.equal(pair.error,null);return pair;
 }

@@ -11,7 +11,7 @@ const sectors=new Set(CAMPAIGN_SECTORS.map(s=>s.id));
 const keys={production:['kind','sector','name','goods'],shipment:['kind','sector','goods'],equipment:['kind','sector','item','quantity'],convoy:['kind','sector','goods'],artillery:['kind','sector','id','quantity']};
 const need=value=>{if(!value)throw Error('Los avisos de producción y entregas guardados son inválidos.');};
 const LIMIT=3009;
-const issueText={occupied:'El destino está bajo control realista.',unsupplied:'La maestranza no tiene una ruta de abastecimiento desde Retiro.',blockade:'El bloqueo impide la entrada al puerto.',armory_full:'La sala de armas no tiene espacio. Retirá o vendé armas para recibir el pedido.'};
+const issueText={occupied:'El destino está bajo control realista.',unsupplied:'La sala de armas está bajo control realista.',blockade:'El bloqueo impide la entrada al puerto.',armory_full:'La sala de armas no tiene espacio. Retirá armas para recibir el pedido.'};
 const compatibleCode=(kind,code)=>kind==='artillery'?Object.hasOwn(ARTILLERY_DELIVERY_ISSUES,code):kind==='convoy'?Object.hasOwn(TRANSPORT_ISSUES,code):kind==='production'?['occupied','unsupplied'].includes(code):['occupied','blockade',...(kind==='equipment'?['armory_full']:[])].includes(code);
 const eventKeys=event=>[...(keys[event.kind]??[]),...(event.state==='blocked'?['state','code']:[])];
 

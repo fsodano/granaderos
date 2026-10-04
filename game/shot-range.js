@@ -11,5 +11,5 @@ export function shotRangeModifiers({distance,weaponRange,apparentRange=distance,
 }
 export function shotRangeText(profile){
  const n=value=>Number(value.toFixed(1));
- return `Distancia: ${n(profile.distance)} casillas · alcance del arma: ${n(profile.weaponRange)}.${profile.beyondWeapon?' Fuera del alcance eficaz: probabilidad ×½.':''}${profile.beyondSight?' Visión difícil: probabilidad ×½.':''}`;
+ return `Distancia: ${n(profile.distance)} casillas · alcance del arma: ${n(profile.weaponRange)}.${profile.beyondWeapon?` Fuera del alcance eficaz: probabilidad al ${Math.round((profile.weaponChanceFactor??.5)*100)}%.`:''}${profile.beyondSight?` Visión difícil: probabilidad al ${Math.round((profile.sightChanceFactor??.5)*100)}%.`:''}`;
 }

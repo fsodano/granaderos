@@ -12,7 +12,7 @@ const {default:MedicalCare}=await import('../web/app/MedicalCare.tsx');
 test('personal progress displays all eleven attributes, earned gains, zero aptitude and completed practice',()=>{
  const html=render(h(TrainingProgress,{unit:{hp:70,maxHp:80,strength:70,dexterity:60,agility:60,leadership:50,marksmanship:60,medical:0,mechanical:40,explosives:50,stealth:30,ridingSkill:100,trainedStats:{dexterity:2},skillPractice:{dexterity:19}}}));
  for(const label of ['Salud','Fuerza','Destreza','Agilidad','Liderazgo','Puntería','Medicina','Mecánica','Pólvora y artillería','Sigilo','Equitación'])assert.ok(html.includes(label));
- assert.equal((html.match(/<dt /g)??[]).length,11);assert.match(html,/\(\+2\)/);assert.match(html,/19\/40 prácticas/);assert.match(html,/Sin aptitud/);assert.match(html,/Límite alcanzado/);assert.doesNotMatch(html,/Sabiduría/);
+ assert.equal((html.match(/<dt /g)??[]).length,11);assert.match(html,/\(\+2\)/);assert.match(html,/19\/40 prácticas/);assert.match(html,/Sin aptitud/);assert.match(html,/Límite alcanzado/);assert.doesNotMatch(html,/<span>Sabiduría<\/span>/);assert.match(html,/al menos 35/);
 });
 
 test('study forecast exposes slower solo work, teacher comparison and rest-qualified hours',()=>{

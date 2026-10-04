@@ -16,7 +16,7 @@ function ready(){
  // Established-sector fixture isolates delivery. It is not campaign-route evidence.
  let campaign=secureArea(initialCampaign(8),['tucuman']);
  campaign=order(campaign,{type:'recruitCivic',id:112,term:'week'});
- campaign=order(campaign,{type:'purchaseMedicalSupplies',operativeId:112,quantity:5});
+ campaign.operativeState[112].medkits=7; // Declared carried stock for this isolated delivery scenario.
  campaign.location='tucuman';campaign.squads.find(s=>s.id===campaign.activeSquadId).location='tucuman';campaign.operativeState[112].location='tucuman';
  campaign=decodeSave(encodeSave(campaign)).campaign;
  campaign=order(campaign,{type:'visitSector'});let pair=prepareCampaignBattle(campaign);assert.equal(pair.error,null);

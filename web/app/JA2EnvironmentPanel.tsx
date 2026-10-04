@@ -19,6 +19,7 @@ export default function JA2EnvironmentPanel({targets, selected, target, preview,
         <button className="line-button" disabled={busy || !preview?.valid} title={preview?.reason || undefined} onClick={onUse}>{preview?.label || 'Usar'}{preview?.pa !== undefined ? ` · ${preview.pa} PA` : ''}</button>
       </div>
       <p className="ja2-item-feedback" aria-live="polite">{target.open ? 'Abierto. ' : 'Cerrado. '}{target.locked && 'Con cerradura. '}{target.trapKnown && (target.trapArmed === false ? 'Trampa desarmada. ' : 'Trampa detectada. ')}{preview?.chance !== null && preview?.chance !== undefined && `${preview.chance}% de éxito. `}{preview?.reason}</p>
+      {target.arsenalHint&&<p className="ja2-item-feedback" role="status">{target.arsenalHint}</p>}
       {target.kind === 'container' && (target.open ? contents.length ? <>
         <div className="ja2-item-handling">
           <label>Contenido<select aria-label="Objeto del cofre" value={contentIndex} disabled={busy} onChange={event => onContent(Number(event.target.value))}>{contents.map(entry => <option key={entry.index} value={entry.index}>{entry.label} · {entry.count}</option>)}</select></label>

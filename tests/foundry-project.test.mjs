@@ -4,7 +4,7 @@ import {defaultContentPackage,validateContentPackage} from '../game/content-pack
 import {DEFAULT_FOUNDRY,FOUNDRY_LOCATIONS,foundryFor} from '../game/campaign-foundry.js';
 import {hasWorkshop,campaignChapters} from '../game/campaign-headquarters.js';
 import {operativeIdForCharacter} from '../game/content-character-ids.js';
-import {refillCost,firearmRepairCost} from '../game/equipment.js';
+import {assertTradeRejected} from './commerce-gear-fixture.mjs';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {foundryPackage} from './foundry-project-fixture.mjs';
 import {order,saved,visit,leave} from './local-contract-fixture.mjs';
@@ -17,10 +17,10 @@ test('foundry definitions validate plausible locations, whole costs, bounded nam
  assert.deepEqual(foundryFor(initialCampaign()),DEFAULT_FOUNDRY);assert.deepEqual(foundryFor(initialCampaign(42,defaultContentPackage())),DEFAULT_FOUNDRY);
 });
 
-test('an authored foundry charges its two costs once and unlocks an actual supplied repair workshop outside Mendoza',()=>{
- const d=foundryPackage();let {s,id}=setup(d);s=order(s,{type:'travel',sector:'jujuy'});assert.equal(s.sectors.mendoza.owner,'royalist');assert.equal(hasWorkshop(s,'jujuy'),false);assert.match(dispatchCampaign(s,{type:'repairWeapon',operativeId:id}).lastError,/taller/);const before=s.resources.treasury;s=order(s,{type:'foundry'});assert.equal(s.resources.treasury,before-137);assert.equal(hasWorkshop(s,'jujuy'),true);assert.match(s.log[0].text,/Elena organiza Taller del Norte/);assert.equal(s.cityLoyaltyEvents.find(e=>e.eventId==='quest-foundry').sectorId,'jujuy');assert.equal(s.cityLoyaltyEvents.filter(e=>e.eventId==='quest-foundry').length,1);assert.equal(dispatchCampaign(s,{type:'foundry'}).resources.treasury,s.resources.treasury);
- // Prepared wear isolates actual repair/resupply access and exact existing prices.
- s.operativeState[id].condition=40;s.operativeState[id].rations=0;const repair=firearmRepairCost(s.operativeState[id]),resupply=refillCost(s.operativeState[id]),funds=s.resources.treasury;s=order(s,{type:'repairWeapon',operativeId:id});s=order(s,{type:'resupply',operativeId:id});assert.equal(s.resources.treasury,funds-repair-resupply);assert.equal(s.operativeState[id].condition,100);assert.equal(s.operativeState[id].rations,2);
+test('an authored foundry charges its two costs once while equipment commerce remains closed',()=>{
+ const d=foundryPackage();let {s,id}=setup(d);s=order(s,{type:'travel',sector:'jujuy'});assert.equal(s.sectors.mendoza.owner,'royalist');assert.equal(hasWorkshop(s,'jujuy'),false);assertTradeRejected(s,{type:'repairWeapon',operativeId:id});const before=s.resources.treasury;s=order(s,{type:'foundry'});assert.equal(s.resources.treasury,before-137);assert.equal(hasWorkshop(s,'jujuy'),true);assert.match(s.log[0].text,/Elena organiza Taller del Norte/);assert.equal(s.cityLoyaltyEvents.find(e=>e.eventId==='quest-foundry').sectorId,'jujuy');assert.equal(s.cityLoyaltyEvents.filter(e=>e.eventId==='quest-foundry').length,1);assert.equal(dispatchCampaign(s,{type:'foundry'}).resources.treasury,s.resources.treasury);
+ // Preexisting wear and empty rations do not permit new paid equipment services.
+ s.operativeState[id].condition=40;s.operativeState[id].rations=0;const funds=s.resources.treasury;assertTradeRejected(s,{type:'repairWeapon',operativeId:id});assertTradeRejected(s,{type:'resupply',operativeId:id});assert.equal(s.resources.treasury,funds);assert.equal(s.operativeState[id].condition,40);assert.equal(s.operativeState[id].rations,0);
  const treasury=s.resources.treasury;s=order(saved({campaign:s}).campaign,{type:'fundArmy'});assert.equal(s.resources.treasury,treasury-809);assert.match(s.log[0].text,/809 pesos.*Ejército del Norte Libre/);assert.ok(dispatchCampaign(s,{type:'fundArmy'}).lastError);s=leave(visit(s));assert.equal(saved({campaign:s}).campaign.flags.armyFunded,true);assert.equal(s.sectors.mendoza.owner,'royalist');
 });
 
@@ -29,7 +29,7 @@ test('foundry costs allow free preparation and reject insufficient funds without
  const paid=foundryPackage();let p=setup(paid).s;p.resources.treasury=136;const denied=dispatchCampaign(p,{type:'foundry'});assert.ok(denied.lastError);assert.equal(denied.resources.treasury,136);assert.equal(denied.flags.foundry,false);assert.equal(denied.cityLoyaltyEvents.some(e=>e.eventId==='quest-foundry'),false);p.resources.treasury=137;p=order(p,{type:'foundry'});assert.equal(p.resources.treasury,0);assert.ok(dispatchCampaign(p,{type:'fundArmy'}).lastError);assert.equal(p.flags.armyFunded,false);
 });
 
-test('prepared occupation and broken supply prevent service without deleting completed preparation',()=>{
+test('occupation blocks preparation and closed services retain the completed foundry',()=>{
  const d=foundryPackage(),{id}=setup(d);let s=setup(d).s;const occupied=structuredClone(s);occupied.sectors.jujuy.owner='royalist';assert.match(dispatchCampaign(occupied,{type:'foundry'}).lastError,/Jujuy/);s=order(s,{type:'foundry'});s=order(s,{type:'travel',sector:'jujuy'});s.sectors.jujuy.owner='royalist';assert.ok(dispatchCampaign(s,{type:'resupply',operativeId:id}).lastError);assert.equal(s.flags.foundry,true);s.sectors.jujuy.owner='patriot';s.sectors.salta.owner='royalist';assert.ok(dispatchCampaign(s,{type:'resupply',operativeId:id}).lastError);
 });
 

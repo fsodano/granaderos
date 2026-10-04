@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createBattle,actBattle,getReachable} from '../game/tactical.js';
-import {validateTraining} from '../game/skill-training.js';
+import {fieldPractice,validateTraining} from '../game/skill-training.js';
 const make=(raw={},sector={})=>createBattle([{id:1000,x:1,y:1,weapon:1800,marksmanship:70,medical:40,mechanical:40,...raw}],{exploration:true,width:20,height:16,seed:7,enemies:[],...sector});
 test('a real discharged round advances marksmanship while invalid repeat fire cannot farm practice',()=>{
  let s=make({skillPractice:{marksmanship:39}},{enemies:[{id:'e',x:4,y:1}]});
@@ -18,7 +18,7 @@ test('finite successful healing and maintenance train relevant skills only',()=>
  s=actBattle(s,{type:'repair',unitId:1000});const before=structuredClone(s.units[0]);const n=actBattle(s,{type:'repair',unitId:1000});assert.ok(n.lastError);assert.deepEqual(n.units[0],before);
 });
 test('sneaking past unseen nearby enemies practices each tile only once',()=>{
- let s=make({stealth:40,stealthMode:true,skillPractice:{agility:39,stealth:39}},{night:true,enemies:[{id:'e',x:12,y:1}]});
+ let s=make({stealth:40,stealthMode:true,practiceSeed:0,skillPractice:{agility:39,stealth:39}},{night:true,enemies:[{id:'e',x:12,y:1}]});
  s=actBattle(s,{type:'move',unitId:1000,x:2,y:1,movement:'crouch'});assert.equal(s.lastError,null);assert.equal(s.units[0].agility,76);assert.equal(s.units[0].trainedStats.stealth,1);
  s=actBattle(s,{type:'move',unitId:1000,x:1,y:1,movement:'crouch'});const p=s.units[0].skillPractice.agility;s=actBattle(s,{type:'move',unitId:1000,x:2,y:1,movement:'crouch'});assert.equal(s.units[0].skillPractice.agility,p);
 });
@@ -44,4 +44,17 @@ test('sector re-entry preserves separate sneaking and riding tile histories',asy
  const request={sector:'retiro',exploration:true,squad:[{id:1000,weapon:1803,ridingSkill:41,trainedStats:{ridingSkill:1},skillPractice:{ridingSkill:2}}]};
  const previous=enterSector(request);previous.units[0].practiceTiles=['2,1'];previous.units[0].ridingPracticeTiles=['3,1'];
  const current=enterSector(request,JSON.parse(JSON.stringify(previous)));assert.deepEqual(current.units[0].practiceTiles,['2,1']);assert.deepEqual(current.units[0].ridingPracticeTiles,['3,1']);assert.equal(current.units[0].ridingSkill,41);assert.equal(current.units[0].skillPractice.ridingSkill,2);
+});
+test('sector re-entry retains the current person practice RNG after practice elsewhere and a tactical save',async()=>{
+ const {enterSector}=await import('../game/world.js');
+ const {validateBattleSnapshot}=await import('../game/validate-battle.js');
+ const request={sector:'retiro',exploration:true,squad:[{id:1000,weapon:1803,ridingSkill:40,practiceSeed:0,skillPractice:{ridingSkill:39}}]};
+ const previous=enterSector(request);previous.units[0].practiceTiles=['2,1'];previous.units[0].ridingPracticeTiles=['3,1'];
+ const person=structuredClone(previous.units[0]);fieldPractice(person,'ridingSkill',5);
+ assert.notEqual(person.practiceSeed,previous.units[0].practiceSeed);
+ const current=enterSector({...request,squad:[person]},JSON.parse(JSON.stringify(previous)));
+ assert.equal(current.units[0].practiceSeed,person.practiceSeed);assert.deepEqual(current.units[0].practiceTiles,['2,1']);assert.deepEqual(current.units[0].ridingPracticeTiles,['3,1']);
+ const restored=validateBattleSnapshot(JSON.parse(JSON.stringify(current)));
+ const expected=structuredClone(person);fieldPractice(expected,'ridingSkill',3);fieldPractice(restored.units[0],'ridingSkill',3);
+ assert.equal(restored.units[0].practiceSeed,expected.practiceSeed);assert.deepEqual(restored.units[0].skillPractice,expected.skillPractice);assert.deepEqual(restored.units[0].trainedStats,expected.trainedStats);assert.equal(restored.units[0].ridingSkill,expected.ridingSkill);
 });

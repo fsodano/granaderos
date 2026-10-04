@@ -1,5 +1,19 @@
 import {weaponSpecification} from './weapon-definition.js';
 import {WEAPONS} from './data.js';
+import {repairMaterialPoints,isRepairKit} from './repair-materials.js';
+import {extractItemQuantity} from './tactical-inventory.js';
+
+export function spendRepairMaterials(record,points){
+ if(!Number.isSafeInteger(points)||points<0||points>repairMaterialPoints(record))throw Error('No quedan esos materiales de reparación.');
+ const reserve=Math.min(record.toolkitPoints??0,points);record.toolkitPoints=(record.toolkitPoints??0)-reserve;points-=reserve;
+ for(const key of Object.keys(record.inventory??{}).sort()){
+  if(!points)break;
+  const kit=record.inventory[key];if(!isRepairKit(kit)||kit.count<=0)continue;
+  const spent=Math.min(points,kit.repairPoints);points-=spent;
+  if(spent===kit.repairPoints){const next=extractItemQuantity(record,`inventory:${key}`,1).unit;for(const field of Object.keys(record))delete record[field];Object.assign(record,next);}
+  else kit.repairPoints-=spent;
+ }
+}
 
 const tools={lockpick:'Ganzúas',crowbar:'Barreta',pliers:'Alicates'};
 const handheld=id=>Number.isInteger(id)&&id>=1800&&id<=1813&&Object.hasOwn(WEAPONS,id);

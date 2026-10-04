@@ -21,12 +21,11 @@ const quest=(patch={})=>({id:'pedido',npcId:'local-retiro',sector:'retiro',title
 const order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,n.lastError);return n;};
 const sync=pair=>{const n=syncBattleTime(pair.campaign,pair.battle);assert.equal(n.error,null,n.error);return decodeSave(encodeSave(n.campaign,n.battle));};
 function ready(quests,escort=false,configure=()=>{},d=defaultContentPackage()){
- d.errands=quests;d.characters.find(c=>c.id==='person-112').arrivalHours=0;configure(d);
+ d.errands=quests;const courier=d.characters.find(c=>c.id==='person-112');courier.arrivalHours=0;courier.startingSupplies={rations:2,torches:2,medkits:7,boleadoras:1};configure(d);
  let campaign=initialCampaign(8,parseContentPackage(encodeContentPackage(d)));
  // This controlled-area fixture isolates escort geometry; it is not campaign-route evidence.
  if(escort)campaign=secureArea(campaign,['buenos_aires']);
  campaign=order(campaign,{type:'recruitCivic',id:112,term:'week'});
- campaign=order(campaign,{type:'purchaseMedicalSupplies',operativeId:112,quantity:5});
  campaign=order(campaign,{type:'visitSector'});const pair=prepareCampaignBattle(campaign);assert.equal(pair.error,null);return sync(pair);
 }
 function approach(pair,npcId){return sync({...pair,battle:approachNPC(pair.battle,'112',npcId)});}

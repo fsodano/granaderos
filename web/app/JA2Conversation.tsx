@@ -13,7 +13,7 @@ export default function JA2Conversation({dialogue,hireTerms=[],npc,conversation,
  const portrait=portraitFor(npc.portraitId??npc.operativeId??(npc.id==='yatasto-san-martin'?57:npc.id==='local-san_nicolas'?'avatar-woman-civilian':'avatar-man-soldier'));
  const current=conversation?.npcId===npc.id?conversation:null;
  const refusal=availability?.code==='refused'?availability.reason:null;
- const choices=responseOnly?[]:[...(dialogue?[['dialogue','Conversar']]:[]),...dialogueOptions(npc,quest)].filter(([approach])=>(approach!=='recruit'||npc.recruitable!==false)&&(!current?.options||current.options.includes(approach)));
+ const choices=responseOnly?[]:[...(dialogue?[['dialogue','Conversar']]:[]),...dialogueOptions(npc,quest)].filter(([approach])=>approach!=='recruit'||npc.recruitable!==false);
  return <section className="ja2-conversation" role="dialog" aria-label={`Conversación con ${npc.name}`} onKeyDown={event=>{if(event.key==='Escape'){event.preventDefault();event.stopPropagation();onClose();}}}>
   <div className="ja2-conversation-head"><figure>{portrait&&<img src={sitePath(portrait)} alt={npc.name}/>}<figcaption>{npc.name}</figcaption></figure>
    <div className="ja2-conversation-choices">{choices.map(([approach,label])=><button key={approach} disabled={Boolean(reason)||approach==='recruit'&&Boolean(quote&&!quote.available)} onClick={()=>onTalk(approach,approach==='recruit'?quote?.term:undefined)}>{approach==='recruit'&&quote?`Contratar · ${quote.price} pesos`:label}</button>)}<button ref={close} onClick={onClose}>Listo</button></div>

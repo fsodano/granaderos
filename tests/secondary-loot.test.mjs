@@ -1,3 +1,4 @@
+import {withStoredGear} from './commerce-gear-fixture.mjs';
 import test from 'node:test';import assert from 'node:assert/strict';
 import {inventoryModel} from '../game/ja2-hud.js';
 import {actBattle,createBattle,weaponFor} from '../game/tactical.js';
@@ -32,7 +33,7 @@ test('an unconscious hired soldier returns with an empty secondary slot; reentry
  // Declared adjacent opening positions isolate a carried-item transfer. The
  // wounded paid arrival and its inability to act are the authored game state.
  target.x=u.x+1;target.y=u.y;target.activeSlot='blade';const b=actBattle(p.battle,{type:'loot',unitId:'110',targetId:'111',item:'blade'});assert.equal(b.lastError,null);assert.equal(b.units.find(u=>u.id==='111').blade,undefined);assert.equal(b.units.find(u=>u.id==='111').activeSlot,'unarmed');p=sync({campaign:p.campaign,battle:b});s=leave(saved(p));assert.equal(s.loadouts[111].blade,0);s=saved({campaign:s}).campaign;p=visit(s);assert.equal(p.battle.units.find(u=>u.id==='111').blade,0);assert.equal(p.battle.units.find(u=>u.id==='111').bladeMetadata,undefined);s=leave(p);
- s=order(s,{type:'purchaseEquipment',item:'blade-1809'});s=order(s,{type:'equip',operativeId:111,slot:'blade',itemId:'blade-1809'});assert.equal(s.loadouts[111].blade,1809);assert.equal(s.armory['blade-1811']??0,0);assert.ok(saved({campaign:s}));
+ s=withStoredGear(s,'blade-1809');s=order(s,{type:'equip',operativeId:111,slot:'blade',itemId:'blade-1809'});assert.equal(s.loadouts[111].blade,1809);assert.equal(s.armory['blade-1811']??0,0);assert.ok(saved({campaign:s}));
 });
 
 test('a wounded militia survivor keeps its empty secondary slot in finite garrison storage',()=>{

@@ -4,7 +4,7 @@ import {saved,visit,leave} from './local-contract-fixture.mjs';
 import {advanceCampaignHours} from './campaign-wait-fixture.mjs';
 import {freshHistoricalEnding,stabilizeBeforeMarch} from './fresh-ending-fixture.mjs';
 
-test('a fresh stock campaign wins all localities with actual combat and continues after saved victory and service expiry',t=>{
+test('a funded Retiro-only campaign wins all localities with actual combat and continues after saved victory and service expiry',t=>{
  const {campaign:won,notes}=freshHistoricalEnding({onCheckpoint:(stage,campaign)=>t.diagnostic(JSON.stringify({routeCheckpoint:stage,hour:campaign.hour,treasury:campaign.resources.treasury}))});
  const battles=notes.filter(n=>n.actions>0);
  for(const sector of ['ensenada','santa_fe','tucuman','salta','jujuy','humahuaca','buenos_aires']){

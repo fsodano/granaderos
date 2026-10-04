@@ -5,6 +5,7 @@ import {createElement as h,act} from '../web/node_modules/react/index.js';
 import {createRoot} from '../web/node_modules/react-dom/client.js';
 import {createBattle} from '../game/tactical.js';
 import {runBattleJob} from '../game/battle-job.js';
+import {battleTimers} from './battle-timers-fixture.mjs';
 const {default:Battlefield}=await import('../web/app/Battlefield.tsx');
 const {default:JA2Strip}=await import('../web/app/JA2Strip.tsx');
 const nodes=node=>!node||typeof node!=='object'?[]:[node,...(Array.isArray(node)?node:Array.isArray(node.props?.children)?node.props.children:[node.props?.children]).flatMap(nodes)];
@@ -28,15 +29,16 @@ async function mountMap(t,{width=64,height=48}={}){
  for(const tile of battle.tiles){tile.blocked=false;tile.blocksSight=false;tile.type='grass';}
  const props={battle,onChange:state=>{changes.push(state);return state;},onFinish(){}},wrapper=Battlefield(props),Contents=wrapper.props.children.type;
  function Capture({battle}){tree=Contents({...props,battle});const field=nodes(tree).find(node=>node.props?.className?.startsWith('tactical-field'));return h('svg',{...field.props,children:null});}
- const root=createRoot(document.getElementById('root'));
+ const timers=battleTimers(act),root=createRoot(document.getElementById('root'));
  const unmount=async()=>{if(!unmounted){unmounted=true;await act(async()=>root.unmount());}};
- t.after(async()=>{try{await unmount();}finally{dom.window.close();for(const [key,descriptor] of previous){if(descriptor)Object.defineProperty(globalThis,key,descriptor);else delete globalThis[key];}}});
+ t.after(async()=>{try{await unmount();}finally{timers.restore();dom.window.close();for(const [key,descriptor] of previous){if(descriptor)Object.defineProperty(globalThis,key,descriptor);else delete globalThis[key];}}});
  const draw=async state=>act(async()=>root.render(h(wrapper.type,null,h(Capture,{battle:state}))));
  await draw(battle);
  const svg=document.querySelector('svg');
  svg.getBoundingClientRect=()=>({left:30,top:50,width:960,height:540});
  const strip=()=>nodes(tree).find(node=>node.type===JA2Strip).props;
  return {battle,draw,svg,strip,jobs,changes,listeners,unmount,
+  settle:()=>timers.until(()=>!nodes(tree).some(n=>n.props?.['data-enemy-frame'])),
   camera:()=>({...strip().cameraRect}),pending:()=>frames.size,
   async wheel(init){const event=new window.WheelEvent('wheel',{bubbles:true,cancelable:true,...init});await act(async()=>svg.dispatchEvent(event));return event;},
   async touch(type,points){const event=new window.Event(type,{bubbles:true,cancelable:true});Object.defineProperty(event,'touches',{value:points.map(([clientX,clientY],identifier)=>({clientX,clientY,identifier}))});await act(async()=>svg.dispatchEvent(event));return event;},
@@ -152,7 +154,7 @@ test('Shift group selection and medical targeting do not recenter or change the 
  const map=await mountMap(t);await map.pan(90,65);let panned=map.camera();
  await act(async()=>map.strip().onSelect('q',true));assert.equal(map.strip().selected,'p');assert.deepEqual(map.camera(),panned);assert.ok(map.strip().groupIds.includes('q'));
  const medical=structuredClone(map.battle);medical.units.find(unit=>unit.id==='p').activeSlot='medical';Object.assign(medical.units.find(unit=>unit.id==='q'),{hp:80,bleeding:4,bandaged:0});await map.draw(medical);panned=map.camera();
- await act(async()=>map.strip().onSelect('q'));assert.equal(map.strip().selected,'p');assert.deepEqual(map.camera(),panned);
+ await act(async()=>map.strip().onSelect('q'));assert.equal(map.strip().selected,'p');await map.settle();assert.deepEqual(map.camera(),panned);
  assert.equal(map.changes.length,1);assert.equal(map.changes[0].lastError,null);assert.equal(map.changes[0].units.find(unit=>unit.id==='q').bleeding,0,'medical selection retains its treatment order');
 });
 

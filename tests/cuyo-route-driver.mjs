@@ -13,6 +13,7 @@ import {enterSector} from '../game/world.js';
 import {actBattle,endTurn,reloadPlan,getReachable,bladeFor,weaponFor,actionCosts,hasFirearm,shotChance,teamCanSee,interruptAvailable,firearmShotOptions,stanceCost} from '../game/tactical.js';
 import {spacePoint,spaceKey,sameSurface} from '../game/tactical-space.js';
 import {shotLocationEffects} from '../game/targeted-combat.js';
+import {sectorSearchOrder} from './sector-search-driver.mjs';
 const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y),live=u=>u.hp>0&&!u.routed&&!u.unconscious;
 const clearOfCivilians=(b,u,t)=>{const dx=t.x-u.x,dy=t.y-u.y,length=dx*dx+dy*dy;return !b.npcs.some(n=>{if(n.hp<=0||!teamCanSee(b,'player',n))return false;const f=((n.x-u.x)*dx+(n.y-u.y)*dy)/length;return f>0&&f<1&&Math.hypot(n.x-u.x-f*dx,n.y-u.y-f*dy)<.8;});};
 export function fight(request,previous=null,{scoutCostWeight=.1,avoidCivilians=false,holdPosition=[],fallbackOrders=false}={}){let b=enterSector(request,previous),actions=0;const orders=[];let known=[];
@@ -55,6 +56,7 @@ for(let window=0;window<600&&b.turn<=80&&b.status==='active';window++){
      if(shots[0])yield ({type:'fire',targetId:shots[0].t.id,aim:shots[0].aim,hitLocation:shots[0].hitLocation});
     }
     if(hasFirearm(u)&&!u.loaded&&u.ammo&&visible.length&&!reloadPlan(u,b).partial)yield ({type:'reload'});
+    if(!hold&&!visible.length&&!known.length&&b.turn>=20){const search=sectorSearchOrder(b,u);if(search)yield search;}
     const goal=visible.length?visible:known.length?known:[{x:b.width-3,y:Math.round(b.height/2)}];
     const currentDistance=Math.min(...goal.map(t=>dist(u,t)));
     const moves=(hold?[]:getReachable(b,u)).filter(p=>p.cost>0&&p.cost<=Math.min(32,Math.max(0,u.ap-30))&&!visited.has(spaceKey(p)));

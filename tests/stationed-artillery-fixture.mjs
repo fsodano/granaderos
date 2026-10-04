@@ -9,11 +9,13 @@ import {tooTiredToMarch} from '../game/march-fatigue.js';
 import {fight} from './battery-field-driver.mjs';
 import {order,saved,sync,leave} from './local-contract-fixture.mjs';
 import {contentFixtureCache} from './content-fixture-cache.mjs';
+import {withStoredGear} from './commerce-gear-fixture.mjs';
 export function issuedBattery(content){
  const d=content?structuredClone(content):defaultContentPackage();d.rules.startingTreasury=10000;d.startingTerritory.buenos_aires={owner:'patriot',loyalty:65};
  for(const id of [110,114,136,141,120,131])d.characters.find(c=>c.id===`person-${id}`).arrivalHours=0;
  let s=initialCampaign(8,d);for(const id of [110,114,136,141,120,131])s=order(s,{type:'recruitCivic',id,term:'week'});
- const money=s.resources.treasury;s=order(s,{type:'purchaseEquipment',item:'swivel'});assert.equal(s.resources.treasury,money-400);
+ // Declared finite isolated battery stock, issued once by ordinary deployment.
+ const money=s.resources.treasury;s=withStoredGear(s,'swivel');assert.equal(s.resources.treasury,money);
  // Wait through the first night before departure; the ordinary travel clock
  // then starts this real assault in daylight.
  s=order(s,{type:'wait',hours:6});s=order(s,{type:'travel',sector:'buenos_aires'});

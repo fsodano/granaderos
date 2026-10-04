@@ -13,9 +13,14 @@ import {coastalBatteryController} from './coastal-command-driver.mjs';
 import {meetRecruits} from './campaign-recruitment-route.mjs';
 import {prepareFinalAssault} from './final-campaign-route.mjs';
 import {recoverRecapturedRoad} from './recovery-road-care.mjs';
+import {canReassignOperative,operativeLocation} from '../game/squads.js';
+import {prepareRouteSupportBattery} from './route-support-battery.mjs';
+import {collectRouteItems} from './finite-route-equipment.mjs';
+
+const localMembers=(c,preferred,limit=6)=>[...new Set([...preferred,...c.squad,...c.recruited])].filter(id=>canReassignOperative(c,id)&&operativeLocation(c,id)===c.location).slice(0,limit);
 
 // Defend with a real relief column, withdraw the threatened rear guard, then
-// recapture the supply road with both forces. Losses persist through local care.
+// recapture the occupied road with both forces. Losses persist through local care.
 export function restoreNorthernRoad(start,{report=()=>{}}={}){
  let c=decodeSave(encodeSave(start)).campaign;
  const order=a=>{
@@ -27,14 +32,16 @@ export function restoreNorthernRoad(start,{report=()=>{}}={}){
   const n=dispatchCampaign(c,a);assert.equal(n.lastError,null,JSON.stringify(a)+n.lastError);c=n;
  };
  {
- const field=[9,11,1000,10,4,139];order({type:'squad',ids:field});
+ // Use surviving local members; a named relief physician may be dead, unpaid
+ // or still treating another town and cannot be teleported into this column.
+ const field=localMembers(c,[9,11,1000,10,4]);assert.ok(field.length);order({type:'squad',ids:field});
  let p=visit(c);c=leave(sync({campaign:p.campaign,battle:equipOpeningRifles(p.battle,field).battle}));
  c=supplyRouteAmmunition(c,field,{target:12}).campaign;
- order({type:'purchaseEquipment',item:'swivel'});if(!c.routes.posta)order({type:'transport',mode:'posta'});order({type:'configureArtillery',types:[]});
+ const battery=prepareRouteSupportBattery(c,{report});c=battery.campaign;if(!c.routes.posta)order({type:'transport',mode:'posta'});order({type:'configureArtillery',types:[]});
  for(const operativeId of field)order({type:'assignCare',operativeId,assignment:'rest'});
  for(let h=0;h<24&&field.some(id=>c.operativeState[id].energy<100||c.operativeState[id].fatigue>0||c.operativeState[id].asleep);h++)order({type:'wait',hours:1});
  for(const operativeId of field)order({type:'assignCare',operativeId,assignment:'active'});
- c=finishReloadsBeforeMarch(c);order({type:'configureArtillery',types:['swivel']});order({type:'travel',sector:'tucuman',mode:'posta'});
+ c=finishReloadsBeforeMarch(c);order({type:'configureArtillery',types:battery.selections});order({type:'travel',sector:'tucuman',mode:'posta'});
  for(const operativeId of c.recruited.filter(id=>c.operativeState[id].alive&&c.operativeState[id].location==='tucuman'))order({type:'assignCare',operativeId,assignment:'rest'});
  for(let h=0;h<48&&!c.pendingEncounter;h++){for(const id of c.recruited.filter(id=>c.operativeState[id].alive)){const contract=c.contracts[id];if(contract.expiresAt!=null&&contract.expiresAt<=c.hour+1)order({type:'renewContract',id,term:'day',expectedExpiresAt:contract.expiresAt});}order({type:'wait',hours:1});}
  assert.equal(c.pendingEncounter.sector,'tucuman');order({type:'respondToEncounter',groupId:c.pendingEncounter.groupId,choice:'tactical'});
@@ -47,7 +54,7 @@ export function restoreNorthernRoad(start,{report=()=>{}}={}){
   const injured=field.filter(id=>c.operativeState[id].hp<c.operativeState[id].maxHp);
   const doctors=rosterFor(c).filter(o=>field.includes(o.id)&&!injured.includes(o.id)&&o.medical>=20&&c.operativeState[o.id].energy>10&&!c.operativeState[o.id].asleep).sort((a,b)=>b.medical-a.medical).slice(0,injured.length);
   for(const doctor of doctors){
-   if(!c.operativeState[doctor.id].medkits){const donor=field.find(id=>id!==doctor.id&&c.operativeState[id].medkits>0);if(donor!==undefined){order({type:'sectorInventory',sector:'tucuman',operativeId:donor,direction:'drop',item:'medkits',count:1});const row=sectorInventoryModel(c,'tucuman',rosterFor(c),doctor.id).entries.find(r=>r.reachable&&JSON.parse(r.expected).item==='medkits');order({type:'sectorInventory',sector:'tucuman',operativeId:doctor.id,direction:'take',sourceKey:row.key,expected:row.expected,count:1});}else order({type:'purchaseMedicalSupplies',operativeId:doctor.id,quantity:1});}
+   if(!c.operativeState[doctor.id].medkits){const donor=field.find(id=>id!==doctor.id&&c.operativeState[id].medkits>0);if(donor!==undefined){order({type:'sectorInventory',sector:'tucuman',operativeId:donor,direction:'drop',item:'medkits',count:1});const row=sectorInventoryModel(c,'tucuman',rosterFor(c),doctor.id).entries.find(r=>r.reachable&&JSON.parse(r.expected).item==='medkits');order({type:'sectorInventory',sector:'tucuman',operativeId:doctor.id,direction:'take',sourceKey:row.key,expected:row.expected,count:1});}else c=collectRouteItems(c,doctor.id,{item:'medkits'},1).campaign;}
    order({type:'assignCare',operativeId:doctor.id,assignment:'doctor'});
   }
   for(const id of injured)order({type:'assignCare',operativeId:id,assignment:'patient'});order({type:'wait',hours:1});
@@ -64,6 +71,7 @@ export function restoreNorthernRoad(start,{report=()=>{}}={}){
  order({type:'beginAssault',sector:'cordoba'});
  c=fightNorthernSector(c,'cordoba',{controller:coastalBatteryController(enterSector(c.pendingBattle,c.sectorStates.cordoba),{sharedArtillerySight:true}),report}).campaign;
  }
+ report({event:'roadRecaptured',campaign:decodeSave(encodeSave(c)).campaign});
  const recovered=recoverRecapturedRoad(c);c=recovered.campaign;
  report({event:'northernRoadRecovered',hour:c.hour,treasury:c.resources.treasury,careEvents:recovered.events});
  return returnNorthernOfficers(c);
@@ -83,14 +91,16 @@ export function returnNorthernOfficers(start){
  const field=c.recruited.filter(id=>c.operativeState[id].alive&&c.operativeState[id].location==='cordoba'),groups=[];
  for(let i=0;i<field.length;i+=6){order({type:'createSquad',ids:field.slice(i,i+6),sector:'cordoba',name:'Regreso del norte'});groups.push(c.activeSquadId);for(const id of c.squad)order({type:'assignCare',operativeId:id,assignment:'active'});}
  if(!c.routes.carts)order({type:'transport',mode:'carts'});
- const gun=c.sectorStates.cordoba.artillery.find(g=>g.side==='player');assert.ok(gun);if(gun.ammo<6)order({type:'supplyArtillery',sector:'cordoba',artilleryId:gun.id,count:6-gun.ammo});
+ const gun=c.sectorStates.cordoba.artillery.find(g=>g.side==='player');assert.ok(gun);assert.ok(gun.loaded||gun.ammo>0,'the transported battery needs actual remaining shots');
  order({type:'transportArtillery',sector:'cordoba',artilleryId:gun.id,to:'tucuman',mode:'carts'});
  for(const id of groups){order({type:'selectSquad',id});order({type:'travel',sector:'tucuman',queue:true,mode:'posta'});}
  for(let h=0;h<36&&groups.some(id=>c.squads.find(q=>q.id===id).journey);h++){assert.equal(c.pendingEncounter,null);order({type:'wait',hours:1});}
- order({type:'squad',ids:[9,11,10,139,4]});for(const id of field)order({type:'assignCare',operativeId:id,assignment:'rest'});
+ order({type:'squad',ids:localMembers(c,[9,11,10,4],5)});for(const id of field)order({type:'assignCare',operativeId:id,assignment:'rest'});
  for(let h=0;h<72&&((c.artilleryTransfers??[]).length||c.resources.treasury<300);h++){assert.equal(c.pendingEncounter,null);order({type:'wait',hours:1});}
  for(const id of c.squad)order({type:'assignCare',operativeId:id,assignment:'active'});
- order({type:'diplomacy',kind:'partisanSupply'});c=meetRecruits(c,['azurduy'],9);field.push(1);
+ order({type:'diplomacy',kind:'partisanSupply'});
+ const envoy=rosterFor(c).filter(op=>c.squad.includes(op.id)&&canReassignOperative(c,op.id)).sort((a,b)=>b.leadership-a.leadership||a.id-b.id)[0];assert.ok(envoy);
+ c=meetRecruits(c,['azurduy'],envoy.id);field.push(1);
 
  assert.equal(c.location,'tucuman');assert.ok(c.squad.includes(1));
  return c;

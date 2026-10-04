@@ -134,7 +134,8 @@ test('militia status shares the hourly checks and exact removed-course events ar
   const s=initialCampaign(),c=course();s.militiaTraining=[c];
   assert.equal(militiaAssignmentIssue(s,c,{isSupplied}),null);
   assert.equal(states(s).find(v=>v.assignment==='militia').state,'working');
-  assert.equal(assignmentStates(s,roster(s),{isSupplied:()=>false})[0].code,'militia_supply');
+  assert.equal(assignmentStates(s,roster(s),{isSupplied:()=>false})[0].state,'working');
+  assert.equal(militiaAssignmentIssue(s,c),null);
   s.sectors.retiro.loyalty=0;assert.equal(militiaAssignmentIssue(s,c,{isSupplied}).code,'militia_loyalty');
   s.sectors.retiro.owner='royalist';assert.equal(militiaAssignmentIssue(s,c,{isSupplied}).code,'militia_cancelled');
   s.militiaTraining=[];const cancelled=militiaCancellationAttention(c),complete=militiaCompletionAttention(c);
@@ -151,6 +152,18 @@ test('migration and validation preserve historical notices and JSON replay witho
   const before=structuredClone(s);assert.doesNotThrow(()=>validateAssignmentAttention(s,roster(s)));assert.deepEqual(s,before,'historical state is not reconciled during save validation');
   const resumed=JSON.parse(JSON.stringify(s));validateAssignmentAttention(resumed,roster(resumed));
   assert.deepEqual(collectAssignmentAttention(resumed,states(resumed)),collectAssignmentAttention(s,states(s)));assert.deepEqual(resumed,s);
+});
+
+test('old militia supply notices remain valid while the ongoing course resumes without a supply rule',()=>{
+  const s=initialCampaign(),c=course();s.militiaTraining=[c];
+  const event={...assignmentStates(s,roster(s))[0],state:'blocked',code:'militia_supply'};
+  const events=collectAssignmentAttention(s,[],[event]);notice(s,events);
+  const restored=JSON.parse(JSON.stringify(s));validateAssignmentAttention(restored,roster(restored));
+  assert.deepEqual(restored.assignmentAttention,s.assignmentAttention);
+  assert.match(assignmentAttentionText(restored,events[0],roster(restored)),/abastecimiento/);
+  assert.equal(assignmentStates(restored,roster(restored))[0].state,'working');
+  assert.deepEqual(collectAssignmentAttention(restored,assignmentStates(restored,roster(restored))),[]);
+  assert.deepEqual(restored.assignmentAttention.reported,{});
 });
 
 test('strict notice validation rejects malformed, mismatched and unbounded data without normalizing it',()=>{

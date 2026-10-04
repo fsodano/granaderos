@@ -2,7 +2,8 @@
 export const TACTICAL_KEYS=[
  ['1–6 / Espacio','Seleccionar combatiente / siguiente'],['M / D','Carta de operaciones / terminar turno'],
  ['Mayús+clic','Agregar o quitar un aliado del grupo durante exploración'],
- ['Ctrl+clic / Ctrl+Enter sobre un enemigo','Con manos libres: intentar quitar el arma; consume los PA restantes'],
+ ['Ctrl+clic / Ctrl+Enter','Recoger equipo; sobre un enemigo con manos libres: intentar quitar el arma'],
+ ['Mayús+clic en suelo','Mover hasta la casilla sin recoger equipo'],
  ['Alt+clic en suelo libre','Mover solo al seleccionado sin girar; caminar, agachado o cuerpo a tierra'],
  ['G / F / A','Uso contextual / usar el objeto o arma en el modo elegido con B / equipar arma blanca'],['Mayús+R / S / C / P','Correr / caminar / agacharse / cuerpo a tierra'],
  ['RePág / AvPág','Subir / bajar postura'],['Z','Activar o desactivar sigilo sin cambiar de postura'],['L','Mirar hacia una casilla; en la misma dirección, preparar el arma sin disparar'],['Botón derecho / clic izquierdo','Preparar el ataque elegido; en Disparo, ajustar puntería / confirmar ataque'],['↑ / ↓ sobre un objetivo con foco','Elegir cabeza, torso o piernas; cuerpo a tierra usa una sola zona'],
@@ -14,7 +15,7 @@ export const TACTICAL_KEYS=[
  ['Esc','Volver al cursor de movimiento o cerrar ayuda'],
  ['Tab sobre el campo','Cambiar el cursor entre suelo y nivel superior'],
 ];
-export function pointerItemIntent(event){return event.ctrlKey&&!event.altKey&&!event.metaKey&&!event.shiftKey?'steal':'use';}
+export function pointerItemIntent(event){return event.shiftKey?'moveOnly':event.ctrlKey&&!event.altKey&&!event.metaKey?'steal':'use';}
 export function pointerMovementIntent(event){
  return event.altKey&&!event.ctrlKey&&!event.metaKey?'preserveFacing':'forward';
 }

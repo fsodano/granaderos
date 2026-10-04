@@ -41,7 +41,9 @@ test('48 distinct paid volunteers coexist with every historical operative',()=>{
 });
 test('every paid volunteer can be hired, saved, restored, dismissed and rehired',()=>{
  for(const op of CIVIC_RECRUITS){
-  let s=initialCampaign();const before=s.resources.treasury,quote=contractQuote(s,op);
+  let s=initialCampaign();const quote=contractQuote(s,op);
+  // Identity/custody coverage needs both initial hire and rehire, independent of starting-budget balance.
+  s.resources.treasury=Math.max(s.resources.treasury,quote.price*2);const before=s.resources.treasury;
   s=order(s,{type:'recruitCivic',id:op.id,term:'day'});
   assert.ok(s.recruited.includes(op.id));assert.ok(s.squad.includes(op.id));
   assert.equal(s.resources.treasury,before-quote.price);
@@ -73,10 +75,11 @@ test('older saves gain the expanded roster without changing existing volunteers'
  for(const op of MERCENARY_ADDITIONS)delete s.operativeState[op.id];
  assert.throws(()=>restoreCampaign(serializeCampaign(s)),/munición/);
  // A genuine older roster predates the physical-ammunition version marker.
- delete s.ammunitionVersion;for(const record of Object.values(s.operativeState))delete record.ammunitionVersion;
+ delete s.ammunitionVersion;for(const record of Object.values(s.operativeState)){delete record.ammunitionVersion;for(const [key,item]of Object.entries(record.inventory??{}))if(item.kind==='ammunition')delete record.inventory[key];delete record.ammunition;}
  s=restoreCampaign(serializeCampaign(s));
- assert.deepEqual(s.operativeState[100],original);assert.deepEqual(s.contracts[100],contract);
+ for(const key of ['hp','fatigue','alive','xp','carriedLoaded','carriedAmmo','condition','startingCartridgesIssued'])assert.equal(s.operativeState[100][key],original[key]);assert.deepEqual(s.contracts[100],contract);
  for(const op of MERCENARY_ADDITIONS){assert.equal(s.operativeState[op.id].hp,op.maxHp);assert.equal(s.operativeState[op.id].alive,true);}
+ s.resources.treasury=Math.max(s.resources.treasury,contractQuote(s,rosterFor(s).find(o=>o.id===147)).price);
  s=order(s,{type:'recruitCivic',id:147});assert.ok(s.recruited.includes(147));
 });
 test('catalogue searches accents, filters live candidates and sorts actual experienced wages',()=>{
@@ -98,7 +101,8 @@ test('catalogue searches accents, filters live candidates and sorts actual exper
  assert.equal(CIVIC_RECRUITS[0].id,100);
 });
 test('replaced officer identities retain an existing weekly contract, injuries and experience',()=>{
- let s=order(initialCampaign(),{type:'recruitCivic',id:109});
+ let s=initialCampaign();s.resources.treasury=Math.max(s.resources.treasury,contractQuote(s,rosterFor(s).find(o=>o.id===109)).price);
+ s=order(s,{type:'recruitCivic',id:109});
  // A pre-replacement volunteer could already have a weekly contract.
  s.contracts[109]={kind:'paid',term:'week',started:0,expiresAt:168,paid:77};
  s.operativeState[109].hp=40;s.operativeState[109].xp=120;

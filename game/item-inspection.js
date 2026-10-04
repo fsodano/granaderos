@@ -10,7 +10,7 @@ export function inspectEquipmentItem(unit,reference,slotId=''){
  const description=itemDescriptor(unit,item),count=endpoint?endpoint.count:itemQuantity(unit,item);
  const weapon=WEAPONS[description.weapon],ammunition=AMMUNITION_TYPES[description.ammoType];
  return {...description,count,totalWeight:description.weight*count,
-  ...(weapon?{capacity:weapon.capacity,damage:weapon.damage,range:weapon.range}:{}),
+  ...(weapon?{...(weapon.type==='firearm'?{capacity:weapon.capacity}:{loaded:undefined}),damage:weapon.damage,range:weapon.range}:{}),
   help:(description.description?`${description.description} `:'')+(ammunition?'Colocá estos cartuchos sobre una pila compatible para combinarlos, o sobre un arma compatible para cargarla.':
    description.slotSize>1?'Necesita un bolsillo grande.':'Cabe en un bolsillo pequeño o grande.'),
  };

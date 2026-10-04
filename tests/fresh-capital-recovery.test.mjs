@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {beginFreshCampaign,recoverFreshCapital} from './fresh-campaign-route.mjs';
 import {decodeSave,encodeSave} from '../game/save.js';
 
-test('the fresh capital route pays for replacements and preserves fallen soldiers and displaced equipment',()=>{
+test('the funded capital route pays for replacements and preserves fallen soldiers and displaced equipment',()=>{
  const events=[],report=event=>events.push(event);
  const opening=beginFreshCampaign({report}),before=structuredClone(opening.campaign);
  const recovered=recoverFreshCapital(opening.campaign,{report}),campaign=recovered.campaign;

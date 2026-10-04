@@ -1,6 +1,10 @@
 import {register} from 'node:module';register('./tactical-render-loader.mjs',import.meta.url);
 import test from 'node:test';import assert from 'node:assert/strict';
 import {createBattle} from '../game/tactical.js';
+import {createElement as h} from '../web/node_modules/react/index.js';
+import {tacticalGridLabel} from '../game/tactical-grid.js';
+import {groupMovementStep} from '../game/group-movement.js';
+import {movementStep} from '../game/movement-step.js';
 import {mountBattlefield} from './mounted-battlefield.mjs';
 const {default:Battlefield}=await import('../web/app/Battlefield.tsx');
 const {default:TacticalScene}=await import('../web/app/TacticalScene.tsx');
@@ -39,4 +43,62 @@ for(const delivery of ['early','late'])test(`real map input redirects and runs w
  await frame(75);assert.equal(get(TacticalScene).props.positions.p.y,2);assert.equal(get(TacticalScene).props.positions.p.moving,false);
  assert.equal(jobs().length,1);await mounted.deliver('movement-step');assert.equal(jobs().length,0);
  assert.equal(commits.length,2,'cancelled future steps never spend time or energy');
+});
+
+const renderScene=tree=>{const svg=nodes(tree).find(node=>node.props?.className?.startsWith('tactical-field')),scene=nodes(tree).find(node=>node.type===TacticalScene);return h('svg',{onClickCapture:svg.props.onClickCapture,onKeyDownCapture:svg.props.onKeyDownCapture},h(TacticalScene,scene.props));};
+async function actualInput(t,{group=false,combat=false,enemies=[]}={}){
+ let now=1000,sequence=0;const frames=new Map(),commits=[];
+ const clock={now:()=>now,request:callback=>{frames.set(++sequence,callback);return sequence;},cancel:id=>frames.delete(id)};
+ let battle=createBattle([{id:'p',name:'Caminante',x:1,y:1},...(group?[{id:'q',name:'Compañero',x:1,y:2}]:[])],{width:24,height:8,tiles:Array.from({length:192},(_,i)=>({x:i%24,y:Math.floor(i/24),type:'grass',blocked:false,cover:0})),exploration:!combat,enemies});
+ const props=()=>({battle,onChange:next=>{battle=next;commits.push(next);return next;},onFinish(){}}),mounted=await mountBattlefield(t,Battlefield,props(),{clock,virtualTimers:true,renderTree:renderScene});
+ const click=async(node,extra={})=>{assert.ok(node,'the actual scene contains the clicked target');await mounted.act(async()=>node.dispatchEvent(new window.MouseEvent('click',{bubbles:true,detail:1,...extra})));};
+ const tile=(x,y)=>document.querySelector(`[data-surface-level="0"][aria-label="${tacticalGridLabel(x,y)}, accesible"]`),person=id=>document.querySelector(`[data-unit-id="${id}"] [data-person-hit-target]`);
+ const frame=async elapsed=>{now+=elapsed;const callbacks=[...frames.values()];frames.clear();await mounted.act(async()=>{for(const callback of callbacks)callback(now);});};
+ return {mounted,commits,props,click,tile,person,frame,get battle(){return battle;},jobs:kind=>mounted.jobs().filter(message=>message.job?.kind===kind)};
+}
+
+for(const delivery of ['early','late'])test(`actual group scene clicks redirect a follower's walk at its paid boundary with ${delivery} worker delivery`,async t=>{
+ const env=await actualInput(t,{group:true}),{mounted}=env;
+ await env.click(env.person('q'),{shiftKey:true});await env.click(env.tile(7,1));
+ assert.equal(env.jobs('group-step').length,1);assert.deepEqual(env.jobs('group-step')[0].job.action.unitIds,['p','q']);
+ // Reach the first follower step through ordinary visible cell boundaries.
+ for(let i=0;i<10;i++){
+  await mounted.deliver('group-step');await mounted.render(env.props());
+  if(env.battle.units.find(unit=>unit.id==='q').x>1)break;
+  await env.frame(240);
+ }
+ const paid=env.battle;assert.equal(paid.units.find(unit=>unit.id==='p').x,7);assert.equal(paid.units.find(unit=>unit.id==='q').x,2);
+ await env.frame(120);assert.equal(nodes(mounted.tree()).find(node=>node.type===TacticalScene).props.positions.q.x,1.5);
+ const count=env.commits.length;await env.click(env.tile(2,6));await mounted.deliver('group-step');
+ assert.equal(env.commits.length,count,'the abandoned speculative follower step is unpaid');assert.equal(env.jobs('group-step').length,1);
+ const job=env.jobs('group-step')[0].job;assert.equal(job.action.x,2);assert.equal(job.action.y,6);assert.equal(job.continuation,undefined);
+ const expected=groupMovementStep(paid,job.action).state;
+ if(delivery==='early'){await mounted.deliver('group-step');assert.equal(env.commits.length,count);}
+ await env.frame(120);
+ if(delivery==='late'){assert.equal(env.commits.length,count);await mounted.deliver('group-step');}
+ await mounted.render(env.props());assert.deepEqual(env.battle,expected,'redirect retains paid follower time/energy and pays one legal replacement cell');
+ assert.equal(new Set(env.battle.units.map(unit=>`${unit.x},${unit.y}`)).size,2);
+ // Clicking the selected actor stops the remaining formation; it does not
+ // undo the replacement cell whose sprite is still visibly approaching it.
+ const stopped=env.battle,stoppedCount=env.commits.length;await env.click(env.person('p'));await env.frame(400);
+ if(env.jobs('group-step').length)await mounted.deliver('group-step');
+ assert.equal(env.commits.length,stoppedCount);assert.strictEqual(env.battle,stopped);
+});
+
+test('actual combat scene clicks redirect with normal PA costs and stop at the last paid cell',async t=>{
+ const env=await actualInput(t,{combat:true,enemies:[{id:'e',x:23,y:7,weapon:1800}]});await env.click(env.tile(5,1));await env.mounted.deliver('movement-step');await env.mounted.render(env.props());
+ const paid=env.battle,paidAP=paid.units[0].ap;assert.ok(paidAP<100);await env.frame(120);
+ await env.click(env.tile(2,4));await env.mounted.deliver('movement-step');assert.equal(env.commits.length,1);
+ const job=env.jobs('movement-step')[0].job,expected=movementStep(paid,job.action).state;await env.mounted.deliver('movement-step');assert.equal(env.commits.length,1);
+ await env.frame(120);await env.mounted.render(env.props());assert.deepEqual(env.battle,expected);assert.ok(env.battle.units[0].ap<paidAP);
+ const stopped=env.battle,count=env.commits.length;await env.click(env.person('p'));await env.frame(240);
+ if(env.jobs('movement-step').length)await env.mounted.deliver('movement-step');assert.equal(env.commits.length,count);assert.strictEqual(env.battle,stopped);
+});
+
+test('actual map movement clicks remain blocked throughout enemy action playback',async t=>{
+ const env=await actualInput(t,{combat:true,enemies:[{id:'e',name:'Guardia',x:7,y:1,weapon:1809,morale:100}]}),turn=nodes(env.mounted.tree()).find(node=>node.props?.onEndTurn);
+ await env.mounted.act(async()=>turn.props.onEndTurn());await env.click(env.tile(2,4));assert.equal(env.jobs('movement-step').length,0);assert.equal(env.jobs('group-step').length,0);
+ await env.mounted.deliver('presentation');assert.ok(nodes(env.mounted.tree()).some(node=>node.props?.['data-enemy-frame']));
+ await env.click(env.tile(2,4));assert.equal(env.jobs('movement-step').length,0);assert.equal(env.commits.length,0);
+ await env.mounted.settle();assert.equal(env.commits.length,1,'only the actual enemy-turn result commits');
 });

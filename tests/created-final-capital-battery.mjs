@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import {finiteBatteryDriver} from './finite-battery-driver.mjs';
 import {actBattle,getReachable,teamCanSee,stanceCost,lookPreview,artilleryContact,artilleryCrewPlan,supplyTransferPreview,supplyUsePreview,tileIllumination} from '../game/tactical.js';
 import {playerKnownBattle} from '../game/player-known-state.js';
 import {sectorDeploymentModel,sectorDeploymentAction} from '../game/sector-deployment.js';
@@ -214,4 +215,7 @@ function lastLivingCapitalScoutOrder(b,u,normal,started){
  const distance=p=>Math.hypot(p.x-goal.x,p.y-goal.y),points=getReachable(known,unit).filter(p=>p.cost>0&&p.cost<=80&&(p.tacticalLevel??0)===0&&distance(p)<distance(unit)&&p.path.every(c=>known.tiles.some(t=>t.x===c.x&&t.y===c.y&&!t.blocked&&(t.tacticalLevel??0)===(c.tacticalLevel??0)))).sort((a,z)=>distance(a)-distance(z)||a.cost-z.cost);const point=points[0];
  return {action:point?{type:'move',unitId:u.id,x:point.x,y:point.y,tacticalLevel:0}:null,started:true};
 }
-export function createdFiveSupportCapitalBattery(initial,options){const base=createCapitalSupportBattery(initial,options);let started=false;return {deploy:b=>{started=false;return base.deploy(b);},controller:(b,u)=>{const result=lastLivingCapitalScoutOrder(b,u,base.controller(b,u),started);started=result.started;return result.action;}};}
+export function createdFiveSupportCapitalBattery(initial,options){
+ if(options.arrivalIds.some(id=>initial.artillery.find(gun=>gun.id===id)?.type!=='swivel'))return finiteBatteryDriver(initial,{gunIds:options.arrivalIds,report:options.report});
+ const base=createCapitalSupportBattery(initial,options);let started=false;return {deploy:b=>{started=false;return base.deploy(b);},controller:(b,u)=>{const result=lastLivingCapitalScoutOrder(b,u,base.controller(b,u),started);started=result.started;return result.action;}};
+}

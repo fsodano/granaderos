@@ -1,20 +1,22 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import {act} from '../web/node_modules/react/index.js';
-import {mountCampaign} from './mounted-campaign-fixture.mjs';
+import {mountLegacyArmory} from './mounted-legacy-armory-fixture.mjs';
 import {depotTradeGun} from './artillery-trading-fixture.mjs';
-import {visit,saved} from './local-contract-fixture.mjs';
-const armory=async m=>{await m.click('Volver a la campaña');await m.click('Escritorio');await m.click('Tesorería');const summary=[...m.document.querySelectorAll('summary')].find(s=>s.textContent==='Comprar armas y revisar equipo');assert.ok(summary);await act(async()=>summary.dispatchEvent(new m.dom.window.MouseEvent('click',{bubbles:true})));};
+import {saved} from './local-contract-fixture.mjs';
 
-test('mounted production commerce sells and repurchases the actual depot gun without replacing its partial load',async t=>{
- const s=depotTradeGun();s.artilleryDepots.buenos_aires[0].reloadProgress=.4;const gun=structuredClone(s.artilleryDepots.buenos_aires[0]);const m=await mountCampaign(t,visit(saved({campaign:s}).campaign));await armory(m);const before=m.saved().campaign,panel=m.document.querySelector(`[data-artillery-sale="${gun.id}"]`);assert.match(panel.textContent,/Recarga 40% · 6 en reserva/);assert.match(panel.textContent,/160 pesos/);const sell=panel.querySelector('button');await m.click('Vender pieza');
- const sold=saved({campaign:m.saved().campaign}).campaign;assert.equal(sold.resources.treasury,before.resources.treasury+160);assert.equal(sold.merchants.buenos_aires.cash,1040);assert.equal(sold.artilleryDepots.buenos_aires.length,0);const stock=m.document.querySelector(`[data-artillery-repurchase="${gun.id}"]`);assert.match(stock.textContent,/Recarga 40% · 6 en reserva/);assert.match(stock.textContent,/320 pesos/);
- await act(async()=>sell.dispatchEvent(new m.dom.window.MouseEvent('click',{bubbles:true})));assert.deepEqual(m.saved().campaign,sold);await m.click('Recomprar pieza');const bought=saved({campaign:m.saved().campaign}).campaign;assert.equal(bought.resources.treasury,before.resources.treasury-160);assert.equal(bought.merchants.buenos_aires.cash,1360);assert.equal(bought.artilleryMerchants.buenos_aires.guns.length,0);for(const key of ['id','type','side','ammo','loaded','reloadProgress','facing'])assert.deepEqual(bought.artilleryDepots.buenos_aires[0][key],gun[key]);assert.equal(m.document.querySelector(`[data-artillery-repurchase="${gun.id}"]`),null);assert.match(m.document.querySelector(`[data-stored-artillery-id="${gun.id}"]`).textContent,/Recarga 40% · 6 en reserva/);
+test('an isolated legacy sale callback cannot change an actual depot gun, its partial work or either balance',async t=>{
+ const s=depotTradeGun();s.artilleryDepots.buenos_aires[0].reloadProgress=.4;const m=await mountLegacyArmory(t,saved({campaign:s})),before=m.saved().campaign,gun=before.artilleryDepots.buenos_aires[0];
+ const panel=m.document.querySelector(`[data-artillery-sale="${gun.id}"]`);assert.match(panel.textContent,/Recarga 40% · 6 en reserva/);assert.match(panel.textContent,/160 pesos/);
+ await m.click('Vender pieza');assert.match(m.read().campaign.lastError,/comercio de equipo no está disponible/);assert.deepEqual(m.saved().campaign,before);assert.equal(m.document.querySelector(`[data-artillery-repurchase="${gun.id}"]`),null);
 });
-
-test('mounted finite merchant funds reject a sale without changing the gun or either balance',async t=>{
- const s=depotTradeGun();s.merchants.buenos_aires.cash=159;const m=await mountCampaign(t,visit(saved({campaign:s}).campaign));await armory(m);const before=m.saved().campaign,panel=m.document.querySelector('[data-artillery-sale]');assert.equal(panel.querySelector('button').disabled,true);assert.match(panel.textContent,/El taller no tiene suficientes pesos/);await m.click('Vender pieza');assert.deepEqual(m.saved().campaign,before);
+test('the isolated legacy sale widget still describes a cash-poor historical merchant without a transaction',async t=>{
+ const s=depotTradeGun();s.merchants.buenos_aires.cash=159;const m=await mountLegacyArmory(t,saved({campaign:s})),before=m.saved().campaign,panel=m.document.querySelector('[data-artillery-sale]');
+ assert.equal(panel.querySelector('button').disabled,true);assert.match(panel.textContent,/El taller no tiene suficientes pesos/);await m.click('Vender pieza');assert.deepEqual(m.saved().campaign,before);
 });
-
-test('the mounted workshop displays and applies authored local percentages and its finite starting cash',async t=>{
- const {defaultContentPackage}=await import('../game/content-package.js'),{DEFAULT_ARTILLERY_TRADING}=await import('../game/artillery-trading-rules.js');const d=defaultContentPackage();d.artilleryTrading={...DEFAULT_ARTILLERY_TRADING,initialCash:2000,buyPercent:25,resalePercent:70,buyingOverrides:{buenos_aires:29}};const m=await mountCampaign(t,visit(depotTradeGun(d)));await armory(m);const before=m.saved().campaign,gun=before.artilleryDepots.buenos_aires[0],panel=m.document.querySelector('[aria-label="Comercio de artillería"]');assert.match(panel.textContent,/2000 pesos/);assert.match(panel.textContent,/Paga el 29%/);assert.match(panel.textContent,/recomprar al 70%/);assert.match(m.document.querySelector(`[data-artillery-sale="${gun.id}"]`).textContent,/116 pesos/);await m.click('Vender pieza');assert.equal(m.saved().campaign.resources.treasury,before.resources.treasury+116);assert.match(m.document.querySelector(`[data-artillery-repurchase="${gun.id}"]`).textContent,/280 pesos/);await m.click('Recomprar pieza');const next=saved({campaign:m.saved().campaign}).campaign;assert.equal(next.resources.treasury,before.resources.treasury-164);assert.equal(next.merchants.buenos_aires.cash,2164);assert.equal(next.artilleryDepots.buenos_aires[0].id,gun.id);
+test('a saved merchant-owned offer retains its authored quote but the isolated buyback callback is publicly blocked',async t=>{
+ const {defaultContentPackage}=await import('../game/content-package.js'),{DEFAULT_ARTILLERY_TRADING}=await import('../game/artillery-trading-rules.js');const d=defaultContentPackage();d.artilleryTrading={...DEFAULT_ARTILLERY_TRADING,initialCash:2000,buyPercent:25,resalePercent:70,buyingOverrides:{buenos_aires:29}};
+ const s=depotTradeGun(d),gun=s.artilleryDepots.buenos_aires.shift();
+ // Explicit old-save custody: one gun belongs to the merchant, not the depot.
+ s.artilleryMerchants??={};s.artilleryMerchants.buenos_aires={guns:[gun]};const m=await mountLegacyArmory(t,saved({campaign:s})),before=m.saved().campaign,panel=m.document.querySelector('[aria-label="Comercio de artillería"]');
+ assert.match(panel.textContent,/2000 pesos/);assert.match(panel.textContent,/Paga el 29%/);assert.match(panel.textContent,/recomprar al 70%/);assert.match(m.document.querySelector(`[data-artillery-repurchase="${gun.id}"]`).textContent,/280 pesos/);
+ await m.click('Recomprar pieza');assert.match(m.read().campaign.lastError,/comercio de equipo no está disponible/);assert.deepEqual(m.saved().campaign,before);
 });

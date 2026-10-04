@@ -12,3 +12,12 @@
 .ja2-body-slots{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;width:100%}
 .ja2-body-slots button{display:flex;flex-direction:column;gap:3px;min-width:0}
 .ja2-body-slots button small{color:#ded3a3;text-transform:uppercase;font-size:9px}
+.ja2-body-layout{display:grid;grid-template-columns:62px minmax(0,1fr);align-items:stretch;gap:2px;min-width:0}
+.ja2-body-figure{display:block;width:100%;height:86px;align-self:center}
+.ja2-body-layout .ja2-body-slots{grid-template-columns:minmax(0,1fr);grid-template-rows:repeat(3,minmax(0,1fr));gap:3px}
+.ja2-body-layout .ja2-body-slots button{flex-direction:row;align-items:center;gap:5px}
+.ja2-body-layout .ja2-body-slots button small{flex:0 0 42px}
+.ja2-body-slots button{position:relative;padding-bottom:7px!important}
+.ja2-body-slots button span:not(.ja2-item-bar){white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%;font-size:9px}
+.ja2-body-slots .ja2-item-bar{position:absolute;bottom:2px;left:3px;width:calc(100% - 6px)}
+@media(max-width:650px){.ja2-body-layout{grid-template-columns:40px minmax(0,1fr);width:100%}.ja2-body-figure{height:74px}.ja2-body-layout .ja2-body-slots{gap:2px}.ja2-body-slots button{gap:1px;min-height:22px!important;padding-bottom:5px!important}.ja2-body-slots button small{font-size:7px}.ja2-body-layout .ja2-body-slots button small{flex-basis:30px}.ja2-body-slots button span:not(.ja2-item-bar){font-size:7px}}

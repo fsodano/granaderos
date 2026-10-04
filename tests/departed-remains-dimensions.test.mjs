@@ -1,3 +1,4 @@
+import {withStoredGear,withCarriedAmmo} from './commerce-gear-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign} from './legacy-campaign-fixture.mjs';
@@ -11,8 +12,8 @@ const order=(s,a)=>{const next=dispatchCampaign(s,a);assert.equal(next.lastError
 const act=(b,a)=>{const next=actBattle(b,a);assert.equal(next.lastError,null,next.lastError);return next;};
 const report=(s,b)=>({type:'leaveSector',battleId:s.pendingBattle.id,outcome:b.status,sectorState:b,survivors:b.units.filter(u=>u.side==='player')});
 function departedBody(){
- let campaign=order(initialCampaign(),{type:'purchaseEquipment',item:1801});
- campaign=order(campaign,{type:'equip',operativeId:3,itemId:1801,slot:'weapon'});
+ let campaign=withStoredGear(initialCampaign(),1801);
+ campaign=order(campaign,{type:'equip',operativeId:3,itemId:1801,slot:'weapon'});campaign=withCarriedAmmo(campaign,3,'ammoMusket',10);
  campaign=order(campaign,{type:'visitSector'});
  const request=campaign.pendingBattle,width=64,height=48;
  // A full-size boundary and an existing bleeding wound isolate return custody.

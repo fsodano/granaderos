@@ -15,6 +15,8 @@ content.characters.push({...base,id:'aid-patient',name:'Paciente de la posta',ni
  encounter:{recruitable:true,greeting:'Puedo servir por un plazo acordado.',requiredLeadership:0,requiredLiberated:0,requiredSector:null}});
 content.placements.push({id:'aid-location',character:'aid-patient',mode:'fixed',sectors:['buenos_aires'],moveChance:100,afterDeath:null,delayMin:0,delayMax:0});
 for(const id of ['person-110','person-112'])content.characters.find(c=>c.id===id).arrivalHours=0;
+// This isolated first-aid scenario declares three finite carried dressings.
+content.characters.find(c=>c.id==='person-112').startingSupplies={rations:2,torches:2,medkits:3,boleadoras:1};
 export const PATIENT='authored-aid-patient';
 export const PATIENT_ID=operativeIdForCharacter(content,'aid-patient');
 export const order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,`${a.type}: ${n.lastError}`);return n;};
@@ -33,15 +35,16 @@ export function paidVisit({sector='buenos_aires',target=PATIENT}={}){
  if(sector!=='retiro')campaign.sectors[sector].owner='patriot';
  const cash=campaign.resources.treasury,stock=campaign.merchants.retiro.supplies.medkits;
  campaign=order(campaign,{type:'recruitCivic',id:112,term:'week'});
- campaign=order(campaign,{type:'purchaseMedicalSupplies',operativeId:112,quantity:1});
- assert.equal(campaign.resources.treasury,cash-campaign.contracts[112].paid-10);
- assert.equal(campaign.merchants.retiro.supplies.medkits,stock-1);
+ assert.equal(campaign.resources.treasury,cash-campaign.contracts[112].paid);
+ assert.equal(campaign.merchants.retiro.supplies.medkits,stock);
  assert.equal(campaign.operativeState[112].medkits,3);
  if(sector!=='retiro')campaign=order(campaign,{type:'travel',sector});
  campaign=order(campaign,{type:'visitSector'});const request=campaign.pendingBattle;
  let battle=createBattle(request.squad.map((u,i)=>({...u,x:2,y:2+i})),{...request,width:12,height:10,props:[],enemies:[],
   tiles:Array.from({length:120},(_,i)=>({x:i%12,y:Math.floor(i/12),type:'grass',blocked:false,cover:0})),
   npcs:request.npcs.map((n,i)=>({...n,x:n.id===target?3:8,y:n.id===target?2:5+i}))});
+ // The treatment fixture leaves its conquered arsenal unopened.
+ if(request.finiteArtilleryArsenal)battle.finiteArtilleryArsenal=structuredClone(request.finiteArtilleryArsenal);
  assert.ok(npc(battle,target));assert.equal(npc(battle,'sosa'),undefined,'bulletin candidates do not become encounters');
  battle=act(battle,{type:'weapon',unitId:'112',slot:'medical'});
  return {campaign,battle};

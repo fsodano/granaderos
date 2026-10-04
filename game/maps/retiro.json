@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "retiro",
-  "revision": 2,
+  "revision": 3,
   "width": 20,
   "height": 16,
   "metadata": {
@@ -3206,6 +3206,18 @@
       "y": 13,
       "buildingId": "retiro:house-1",
       "roomId": "retiro:house-1:interior",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "retiro:armory-cache",
+      "type": "chest",
+      "x": 4,
+      "y": 5,
+      "purpose": "armory-cache",
       "footprint": {
         "width": 1,
         "height": 1

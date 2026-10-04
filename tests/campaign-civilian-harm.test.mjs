@@ -1,3 +1,4 @@
+import {withCarriedGrenades,assertTradeRejected} from './commerce-gear-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign,rosterFor,isSupplied,restoreCampaign,serializeCampaign,recruitmentStatus} from '../game/campaign.js';
@@ -166,13 +167,13 @@ test('a scene-keyed legacy death migrates without a second loyalty charge or dia
  const repeated=sync(loaded.campaign,loaded.battle);assert.deepEqual(deathEvents(repeated.campaign),[effect]);assert.deepEqual(repeated.campaign.log,s.log);assert.deepEqual(decodeSave(encodeSave(repeated.campaign,repeated.battle)).campaign,repeated.campaign);
 });
 
-test('real paid grenade death survives synchronization, live save, final report, and same-hour reentry exactly once',()=>{
+test('real finite grenade death survives synchronization, live save, final report, and same-hour reentry exactly once',()=>{
  let s=initialCampaign(8);
  // The liberated Cuyo corridor and old wound are this late-campaign fixture.
- // Hire, travel, grenade purchase, main-hand equip and the lethal throw are real.
+ // The grenade is declared finite carried property. Hire, travel, equip and throw use real orders.
  s.phase=3;for(const id of ['buenos_aires','cordoba','mendoza'])s.sectors[id].owner='patriot';
  s=order(s,{type:'recruitCivic',id:110,term:'week'});s=order(s,{type:'travel',sector:'mendoza'});
- const cash=s.resources.treasury;s=order(s,grenadeOffer(s,rosterFor(s).find(op=>op.id===110),isSupplied,1).action);assert.equal(s.resources.treasury,cash-80);
+ const cash=s.resources.treasury;assertTradeRejected(s,grenadeOffer(s,rosterFor(s).find(op=>op.id===110),isSupplied,1).action);s=withCarriedGrenades(s,110,1);assert.equal(s.resources.treasury,cash);
  const personal=sectorInventoryModel(s,'mendoza',rosterFor(s),110).personal,item='inventory:grenade:arsenal';
  s=order(s,{type:'sectorInventory',sector:'mendoza',operativeId:110,direction:'equip',slot:'mainhand',inventoryKey:item,expected:JSON.stringify(extractItemQuantity(personal,item,1).stack)});
  s=order(s,{type:'visitSector'});const request=s.pendingBattle,loyalty=s.sectors.mendoza.loyalty;

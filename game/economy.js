@@ -1,16 +1,13 @@
-import {sectorIncomeDetails} from './sector-income.js';
+import {townIncomeSources,dailyTownIncome} from './town-income.js';
 import {CAMPAIGN_SECTORS} from './data.js';
 
 // Town trade and local contributions funded the independence armies.
 // Amounts are game balance values, not reconstructed historical revenue.
 export function incomeSources(state){
- return CAMPAIGN_SECTORS.map(sector=>{
-  const details=sectorIncomeDetails(state,sector);
-  return {id:sector.id,name:sector.name,source:sector.theater==='coast'?'Comercio y aduana':'Contribución local',base:details.base,income:details.daily,status:details.limits.length?details.limits.join(' · '):'Activa'};
- });
+ return townIncomeSources(state);
 }
-export function dailyIncome(state){return incomeSources(state).reduce((sum,site)=>sum+site.income,0);}
-export function incomeSummary(state){return {daily:dailyIncome(state),hoursUntilPayment:24-state.hour%24};}
+export const dailyIncome=dailyTownIncome;
+export function incomeSummary(state){const secondsUntilPayment=86400-(state.hour%24)*3600-(state.secondOfHour??0);return {daily:dailyIncome(state),hoursUntilPayment:secondsUntilPayment/3600,secondsUntilPayment};}
 export function artilleryCount(state){return ['bronze4','field8','swivel'].reduce((sum,key)=>sum+(state.armory?.[key]??0),0);}
 
 

@@ -304,7 +304,7 @@ export function chooseEnemyAction(state, unit) {
   const backup = backupWeapon(state, unit, costs, targets);
   if (backup) return backup;
   if (['medical','tool','supply','item'].includes(unit.activeSlot)) {
-    const slot = !unit.weaponDropped ? 'primary' : unit.blade ? 'blade' : null;
+    const slot = !unit.weaponDropped && unit.weapon ? 'primary' : unit.blade ? 'blade' : 'unarmed';
     return slot && unit.ap >= (costs.weapon ?? 4) ? {type: 'weapon', unitId: unit.id, slot} : null;
   }
 

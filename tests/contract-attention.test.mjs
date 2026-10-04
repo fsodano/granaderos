@@ -37,7 +37,7 @@ test('a loaded campaign inside the warning window pauses once without spending a
 });
 
 test('multiple contracts and assignment completion share the same fully processed hour',()=>{
- let s=hire(hire(),106);s=wait(s,21);Object.assign(s.operativeState[3],{assignment:'rest',energy:90,fatigue:1});s=wait(s,6);
+ const funds=initialCampaign();funds.resources.treasury=20000;let s=hire(hire(funds),106);s=wait(s,21);Object.assign(s.operativeState[3],{assignment:'rest',energy:90,fatigue:1});s=wait(s,6);
  assert.equal(s.hour,22);assert.equal(notice(s).events.length,2);assert.deepEqual(notice(s).events.map(e=>e.operativeId),[103,106]);assert.equal(s.operativeState[3].energy,100);assert.equal(s.assignmentAttention.notice.advancedHours,1);
  s=wait(s,1);assert.equal(s.hour,23);assert.equal(notice(s),null);assert.equal(s.assignmentAttention.notice,null);
 });

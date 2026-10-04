@@ -8,6 +8,7 @@ const parent=id=>id==='san_lorenzo'?'san_nicolas':id;
 const place=id=>CAMPAIGN_SECTORS.find(s=>s.id===id);
 const need=(ok,message)=>{if(!ok)throw Error(message);};
 const capable=u=>u.hp>=15&&(u.energy??100)>0&&!u.routed&&!u.surrendered&&!u.departure&&!u.fled&&!u.asleep&&!u.unconscious;
+const availableCrew=(s,at)=>(s.squad??[]).filter(id=>{const r=s.operativeState[id];return r?.alive&&capable(r)&&!r.captured&&!operativeInTransit(s,id)&&!careAssignmentBusy(r.assignment)&&!s.militiaTraining?.some(c=>c.trainerId===id)&&operativeLocation(s,id)===at;});
 const hostile=(s,at)=>s.enemyGroups?.some(g=>g.target===at&&['waiting','engaged','stationed'].includes(g.status))||Object.entries(s.sectorStates??{}).some(([key,b])=>parent(key)===at&&b.units?.some(u=>u.side==='enemy'&&capable(u)));
 const accepts=(id,mode)=>mode==='flotilla'?place(id)?.theater==='coast':place(id)?.biome!=='mountain';
 const hours=(s,path,mode)=>(path.length-1)*(artilleryTransportRules(s)[`${mode}Hours`]??0);
@@ -26,7 +27,7 @@ export function artilleryTransferDelayCode(s,transfer){
 export function artilleryTransferDelay(s,transfer){return ARTILLERY_DELIVERY_ISSUES[artilleryTransferDelayCode(s,transfer)]??'';}
 export function artilleryTransportQuote(s,sector,gunId,to,mode,source='field'){
  const rules=artilleryTransportRules(s),cost=rules[`${mode}Fee`]??0,from=parent(sector),gun=(source==='depot'?s.artilleryDepots?.[sector]:s.sectorStates?.[sector]?.artillery)?.find(g=>g.id===gunId),spec=gun&&artilleryProfile(s,gun),path=artilleryTransportPath(s,from,to,mode);
- const crew=(s.squad??[]).filter(id=>{const r=s.operativeState[id];return r?.alive&&capable(r)&&!r.captured&&!operativeInTransit(s,id)&&!careAssignmentBusy(r.assignment)&&!s.militiaTraining?.some(c=>c.trainerId===id)&&operativeLocation(s,id)===from;});
+ const crew=availableCrew(s,from);
  const reason=s.defeated?'La campaña ha terminado.':s.pendingBattle||s.pendingEncounter?'Salí de la escena táctica antes de enviar la pieza.':!rules.enabled?'Esta campaña no permite trasladar piezas de artillería.':!['field','depot'].includes(source)?'El origen de la pieza no es válido.':!gun||from!==s.location||!place(from)||source==='depot'&&sector!==s.location?'La pieza debe estar emplazada o guardada en esta localidad.':
   gun.side!=='player'||s.sectors[from]?.owner!=='patriot'?'La pieza y su localidad deben estar bajo tu control.':hostile(s,from)?'Aún quedan enemigos capaces de combatir junto a la pieza.':
   crew.length<spec.crew?`Se necesitan ${spec.crew} combatientes disponibles de la escuadra para cargar esta pieza.`:!place(to)||to===from?'Elegí otra localidad como destino.':s.sectors[to]?.owner!=='patriot'?'El destino debe estar bajo tu control.':
@@ -40,6 +41,16 @@ export const ARTILLERY_TRANSPORT_CAPACITY=Object.freeze({carts:1000,flotilla:400
 export const artilleryCargoWeight=gun=>500+(gun.ammo+Number(gun.loaded))*(gun.type==='field8'?4:2);
 export function storedArtilleryRecord(gun){return Object.fromEntries(['id','type','side','loaded','ammo','reloadProgress','facing'].filter(key=>gun[key]!==undefined).map(key=>[key,structuredClone(gun[key])]));}
 const stored=storedArtilleryRecord;
+export function artilleryStorageQuote(s,sector,gunId){
+ const from=parent(sector),gun=s.sectorStates?.[sector]?.artillery?.find(g=>g.id===gunId),spec=gun&&artilleryProfile(s,gun);
+ const reason=s.defeated?'La campaña ha terminado.':s.pendingBattle||s.pendingEncounter?'Salí de la escena táctica antes de guardar la pieza.':!gun||from!==s.location||!place(from)?'La pieza debe estar emplazada en esta localidad.':gun.side!=='player'||s.sectors[from]?.owner!=='patriot'?'La pieza y su localidad deben estar bajo tu control.':hostile(s,from)?'Aún quedan enemigos capaces de combatir junto a la pieza.':availableCrew(s,from).length<spec.crew?`Se necesitan ${spec.crew} combatientes disponibles de la escuadra para guardar esta pieza.`:(s.artilleryDepots?.[from]?.length??0)>=2000?'El depósito local no tiene lugar.':'';
+ return {available:!reason,reason,sector,from,gun,crew:spec?.crew??0};
+}
+export function storeStationedArtillery(s,action){
+ const quote=artilleryStorageQuote(s,action.sector,action.artilleryId);need(quote.available,quote.reason);
+ const source=s.sectorStates[action.sector].artillery,index=source.findIndex(g=>g.id===action.artilleryId),gun=stored(source[index]);
+ s.artilleryDepots??={};s.artilleryDepots[quote.from]??=[];s.artilleryDepots[quote.from].push(gun);source.splice(index,1);return quote;
+}
 export function dispatchArtilleryTransport(s,action){
  const q=artilleryTransportQuote(s,action.sector,action.artilleryId,action.to,action.mode,action.source);need(q.available,q.reason);s.resources.treasury-=q.cost;
  const guns=action.source==='depot'?s.artilleryDepots[action.sector]:s.sectorStates[action.sector].artillery,index=guns.findIndex(g=>g.id===action.artilleryId),gun=stored(guns[index]);guns.splice(index,1);

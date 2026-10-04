@@ -32,7 +32,7 @@ test("new campaign applies authored sheets without changing the ordinary campaig
   assert.equal(op.strength, 44);
   assert.equal(s.operativeState[100].hp, 55);
   assert.equal(s.operativeState[100].maxHp, 55);
-  assert.equal(contractQuote(s, op, "day").price, 30);
+  assert.equal(contractQuote(s, op, "day").price, 180);
   d.characters.find((c) => c.id === "person-100").name = "Otro borrador";
   assert.equal(rosterFor(s).find((o) => o.id === 100).name, "Clara del Río");
   assert.notEqual(rosterFor(initialCampaign()).find((o) => o.id === 100).name, op.name);
@@ -43,9 +43,10 @@ test("new campaign applies authored sheets without changing the ordinary campaig
 });
 test("authored campaign can hire, deploy, save and restore with exact identity and health", () => {
   let s = initialCampaign(81, authored());
+  const cash=s.resources.treasury,quote=contractQuote(s,rosterFor(s).find(o=>o.id===100),"day");
   s = dispatchCampaign(s, { type: "recruitCivic", id: 100, term: "day" });
   assert.equal(s.lastError, null);
-  assert.equal(s.resources.treasury, 3170);
+  assert.equal(s.resources.treasury, cash-quote.price);
   assert.equal(s.recruited.includes(100), false);
   s=dispatchCampaign(s,{type:"wait",hours:6});assert.equal(s.lastError,null);
   s = dispatchCampaign(s, { type: "visitSector" });

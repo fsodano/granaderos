@@ -37,10 +37,10 @@
 .battle-layout .ja2-vitals{display:flex;gap:3px;height:24px;flex-shrink:0}
 .battle-layout .ja2-vitals>span{flex:1;min-width:0;position:relative;background:#111813;border:1px solid #515540}
 .battle-layout .ja2-vitals i{position:absolute;bottom:0;left:0;width:100%}
-.battle-layout .ja2-vitals .health{background:#ca574b}
+.battle-layout .ja2-vitals .health{background:#e23a39}
 .battle-layout .ja2-vitals .action{background:#b9ae61}
-.battle-layout .ja2-vitals .energy{background:#65a5b1}
-.battle-layout .ja2-vitals .bandaged{background:#e9b6a1}
+.battle-layout .ja2-vitals .energy{background:#4a98e7}
+.battle-layout .ja2-vitals .bandaged{background:#f09eba}
 .battle-layout .ja2-portrait-face{position:relative}
 .battle-layout .ja2-bleeding-mark{position:absolute;bottom:2px;left:2px;background:#611e18e8;color:#ffe0cc;font:9px monospace;padding:2px}
 .battle-layout .ja2-action-readout{display:flex;flex-wrap:wrap;gap:2px 8px;font-size:10px;flex-shrink:0}

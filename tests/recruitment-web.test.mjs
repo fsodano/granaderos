@@ -2,7 +2,7 @@ import {scriptedBattleReport} from './scripted-battle-report.mjs';
 import {marchToFront,meetLocalRecruit} from './campaign-test-helpers.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {dispatchCampaign as dispatch,restoreCampaign,serializeCampaign,rosterFor} from '../game/campaign.js';
+import {dispatchCampaign as dispatch,restoreCampaign,serializeCampaign,rosterFor,contractQuote} from '../game/campaign.js';
 import {initialCampaign} from './legacy-campaign-fixture.mjs';
 import {OFFICER_TRAITS,OFFICER_QUESTIONS,CIVIC_RECRUITS} from '../game/recruitment.js';
 const order=(s,a)=>{const n=meetLocalRecruit(s,a)??dispatch(marchToFront(s,a),a);assert.equal(n.lastError,null,n.lastError);return n;};
@@ -15,22 +15,24 @@ test('incomplete examination and markup names roll back',()=>{
  for(const action of [{...officer(),name:'<img>'},{...officer(),answers:{origin:'estancia'}},{...officer(),name:'A'}]){const s=dispatch(initialCampaign(),action);assert.ok(s.lastError);assert.equal(s.resources.treasury,3200);assert.equal(s.officer,null);}
 });
 test('civic bulletin offers prepaid recruits without regional ownership gates',()=>{
- let s=initialCampaign();assert.equal(dispatch(s,{type:'recruitCivic',id:101}).lastError,null);s=order(s,{type:'recruitCivic',id:100});assert.equal(s.resources.treasury,3194);assert.ok(s.squad.includes(100));assert.ok(dispatch(s,{type:'recruitCivic',id:100}).lastError);assert.ok(CIVIC_RECRUITS.filter(o=>o.id<=102).every(o=>o.monthlyPay<=220));
+ let s=initialCampaign();const cash=s.resources.treasury,quote=contractQuote(s,rosterFor(s).find(o=>o.id===100));assert.equal(dispatch(s,{type:'recruitCivic',id:101}).lastError,null);s=order(s,{type:'recruitCivic',id:100});assert.equal(s.resources.treasury,cash-quote.price);assert.ok(s.squad.includes(100));assert.ok(dispatch(s,{type:'recruitCivic',id:100}).lastError);assert.ok(CIVIC_RECRUITS.filter(o=>o.id<=102).every(o=>o.monthlyPay<=220));
 });
-test('civic combat experience actually improves battle statistics and persists',()=>{
- let s=order(initialCampaign(),{type:'recruitCivic',id:100,term:'month'});s=order(s,{type:'squad',ids:[3,100]});const original=rosterFor(s).find(o=>o.id===100).marksmanship;
+test('declared combat results advance rank without granting technical practice and persist',()=>{
+ let s=order(initialCampaign(),{type:'recruitCivic',id:100,term:'month'});s=order(s,{type:'squad',ids:[3,100]});const original=rosterFor(s).find(o=>o.id===100);
  for(const sector of ['san_nicolas','cordoba']){s=order(s,{type:'attack',sector});assert.ok(s.pendingBattle.squad.find(o=>o.id===100));s=order(s,scriptedBattleReport(s,{units:s.pendingBattle.squad.map(o=>({id:o.id,priming:20,flints:2,rations:1,condition:80,fatigue:10}))}));}
- const trained=rosterFor(s).find(o=>o.id===100);assert.equal(trained.xp,120);assert.equal(trained.level,2);assert.equal(trained.marksmanship,original+4);assert.equal(rosterFor(s).find(o=>o.id===3).marksmanship,68);
- s=restoreCampaign(serializeCampaign(s));s=order(s,{type:'attack',sector:'santa_fe'});const soldier=s.pendingBattle.squad.find(o=>o.id===100);assert.equal(soldier.marksmanship,original+4);assert.equal(soldier.priming,undefined);assert.equal(soldier.flints,undefined);assert.equal(soldier.rations,1);assert.equal(soldier.condition,80);
+ const trained=rosterFor(s).find(o=>o.id===100);assert.equal(trained.xp,120);assert.equal(trained.level,2);assert.equal(trained.maxHp,original.maxHp+2);
+ for(const skill of ['marksmanship','medical','mechanical','explosives'])assert.equal(trained[skill],original[skill],`${skill} must not improve from result XP alone`);
+ assert.equal(rosterFor(s).find(o=>o.id===3).marksmanship,68);
+ s=restoreCampaign(serializeCampaign(s));s=order(s,{type:'attack',sector:'santa_fe'});const soldier=s.pendingBattle.squad.find(o=>o.id===100);assert.equal(soldier.marksmanship,original.marksmanship);assert.equal(soldier.priming,undefined);assert.equal(soldier.flints,undefined);assert.equal(soldier.rations,1);assert.equal(soldier.condition,80);
 });
 test('legacy version1 saves migrate without losing historical stats',()=>{
  const old=initialCampaign();delete old.officer;for(const id of [100,101,102])delete old.operativeState[id];for(const op of Object.values(old.operativeState)){delete op.xp;delete op.priming;delete op.flints;delete op.rations;delete op.condition;}
  // A partial current-format ammunition record is invalid; declare the older format explicitly.
- assert.throws(()=>restoreCampaign(JSON.stringify(old)),/munición/);delete old.ammunitionVersion;for(const op of Object.values(old.operativeState))delete op.ammunitionVersion;
+ assert.throws(()=>restoreCampaign(JSON.stringify(old)),/munición/);delete old.ammunitionVersion;for(const record of Object.values(old.operativeState)){delete record.ammunitionVersion;for(const [key,item]of Object.entries(record.inventory??{}))if(item.kind==='ammunition')delete record.inventory[key];delete record.ammunition;}
  const s=restoreCampaign(JSON.stringify(old));assert.equal(s.officer,null);assert.equal(s.operativeState[100].xp,0);assert.equal(s.operativeState[3].priming,undefined);assert.equal(rosterFor(s).find(o=>o.id===57).leadership,99);
 });
 
 test('fictional foreign volunteers have finite contracts and persist in legacy-compatible saves',()=>{
  let s=initialCampaign();
- for(const o of CIVIC_RECRUITS.filter(o=>o.foreign)){s.resources.treasury=1000000;const daily=Math.ceil(o.monthlyPay/30);s=dispatch(s,{type:'recruitCivic',id:o.id});assert.equal(s.lastError,null);assert.ok(s.recruited.includes(o.id));assert.equal(s.resources.treasury,1000000-daily);s=restoreCampaign(serializeCampaign(s));assert.ok(s.recruited.includes(o.id));const paid=s.resources.treasury;s=dispatch(s,{type:'recruitCivic',id:o.id});assert.ok(s.lastError);assert.equal(s.resources.treasury,paid);}
+ for(const o of CIVIC_RECRUITS.filter(o=>o.foreign)){s.resources.treasury=1000000;const daily=contractQuote(s,o).price;s=dispatch(s,{type:'recruitCivic',id:o.id});assert.equal(s.lastError,null);assert.ok(s.recruited.includes(o.id));assert.equal(s.resources.treasury,1000000-daily);s=restoreCampaign(serializeCampaign(s));assert.ok(s.recruited.includes(o.id));const paid=s.resources.treasury;s=dispatch(s,{type:'recruitCivic',id:o.id});assert.ok(s.lastError);assert.equal(s.resources.treasury,paid);}
 });

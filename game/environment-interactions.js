@@ -1,5 +1,6 @@
 import {AMMUNITION_TYPES} from './ammunition-types.js';
 import {validateItemStack} from './tactical-inventory.js';
+import {finiteSectorCache} from './finite-sector-caches.js';
 
 // Classic JA2 manual, printed pp. 25–27: held tools, keys, lock picks,
 // crowbars, force, uncertain examination, disarming, and finite containers.
@@ -200,6 +201,7 @@ export function extractContainerItem(target, index, count = 1) {
 // the resulting objects. These caches reuse existing furniture and doors.
 export function authoredEnvironment(sector, map) {
   const doors = [], containers = [];
+  const cache=finiteSectorCache(sector,map);if(cache)containers.push(cache);
   const hasChest = id => (map.props ?? []).some(prop => prop.type === 'chest' && prop.id === id);
   const tool = (toolKey, keyId) => ({item: `inventory:${toolKey}`, count: 1, weight: TOOL_TYPES[toolKey].weight, itemType: 'tool', toolKey, condition: 100, ...(keyId ? {keyId} : {})});
   if (sector === 'yatasto') {

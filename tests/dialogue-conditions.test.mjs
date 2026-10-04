@@ -1,10 +1,10 @@
 import {refreshMilitaryCondition} from '../game/actor-condition.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {initialCampaign,dispatchCampaign} from '../game/campaign.js';
+import {initialCampaign,dispatchCampaign,rosterFor} from '../game/campaign.js';
 import {dialogueForNPC} from '../game/content-dialogue.js';
 import {dialogueConditionsMet} from '../game/dialogue-conditions.js';
-import {equipmentCatalog} from '../game/equipment.js';
+import {contractQuote} from '../game/contracts.js';
 import {approachNPC} from './approach-npc.mjs';
 import {dialoguePackage} from './dialogue-fixture.mjs';
 import {secureArea} from './controlled-area-fixture.mjs';
@@ -21,9 +21,9 @@ test('day intervals hide a choice until the actual campaign day and close it aft
  s=order(leave(p),{type:'wait',hours:24});p=visit(s);assert.equal(visible(p),false);assert.ok(saved(p));
 });
 
-test('treasury conditions use real paid purchases and are checked again when a hidden choice is requested',()=>{
+test('treasury conditions use a real paid contract extension and are checked again when a hidden choice is requested',()=>{
  const cash=ready([]).campaign.resources.treasury;let p=ready([{type:'treasury',min:cash,max:cash}]);assert.equal(visible(p),true);
- let s=order(leave(p),{type:'travel',sector:'retiro'});const item=equipmentCatalog(s).find(w=>w.category==='blade'&&w.price>0);assert.ok(item);const beforePurchase=s.resources.treasury;s=order(s,{type:'purchaseEquipment',item:item.item,quantity:1});assert.equal(s.resources.treasury,beforePurchase-item.price);s=order(s,{type:'travel',sector:A});p=visit(saved({campaign:s}).campaign);p=approach(p,localNPC(p.battle));assert.equal(visible(p),false);
+ let s=order(leave(p),{type:'travel',sector:'retiro'});const id=110,quote=contractQuote(s,rosterFor(s).find(o=>o.id===id),'day');assert.ok(quote.price>0);const beforeRenewal=s.resources.treasury;s=order(s,{type:'renewContract',id,term:'day'});assert.equal(s.resources.treasury,beforeRenewal-quote.price);s=order(s,{type:'travel',sector:A});p=visit(saved({campaign:s}).campaign);p=approach(p,localNPC(p.battle));assert.equal(visible(p),false);
  const before=structuredClone(p.campaign.conversations);assert.match(select(p).lastError,/no está disponible/);assert.deepEqual(p.campaign.conversations,before);
 });
 

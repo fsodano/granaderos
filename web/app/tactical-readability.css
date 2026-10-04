@@ -1,0 +1,5 @@
+.corpse-blood-spread{transform-box:fill-box;transform-origin:center;animation:corpse-blood-settle .7s ease-out both}
+.tactical-noise-direction{animation:tactical-noise-fade 2.4s ease-out both}
+@keyframes corpse-blood-settle{from{transform:scale(.45);opacity:.45}to{transform:scale(1);opacity:1}}
+@keyframes tactical-noise-fade{0%{opacity:0}15%,55%{opacity:.7}100%{opacity:0}}
+@media(prefers-reduced-motion:reduce){.corpse-blood-spread{animation:none}.tactical-noise-direction{animation-duration:.01s}}
