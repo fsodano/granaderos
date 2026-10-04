@@ -8,6 +8,8 @@ import {enterSector} from '../game/world.js';
 import {createBattle,actBattle,shotChance,presentedActBattle} from '../game/tactical.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {launchEnemyGroup} from '../game/enemy-groups.js';
+import {totalReserveAmmunition} from '../game/ammunition-types.js';
+import {strategicBleedingPercent} from '../game/campaign-care-rules.js';
 
 const order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,`${a.type}: ${n.lastError}`);return n;};
 const now=s=>s.hour*3600+(s.secondOfHour??0);
@@ -24,6 +26,20 @@ const checkpoint=(s,b)=>{
 };
 const leave=(s,b)=>order(s,{type:'leaveSector',battleId:s.pendingBattle.id,sectorState:b,survivors:b.units.filter(u=>u.side==='player')});
 const noSupport=u=>{assert.equal(Object.hasOwn(u,'companionBonus'),false);assert.equal(Object.hasOwn(u,'companionId'),false);};
+const lossLetters=s=>(s.correspondence??[]).filter(m=>m.id.startsWith('companion-loss:'));
+const assertLossLetter=s=>{
+ const messages=lossLetters(s);assert.equal(messages.length,1);
+ assert.deepEqual(messages[0],{id:'companion-loss:107:116',sender:'Inés Aguirre',subject:'Una pérdida en el destacamento',text:'Lamento la muerte de Petrona Lagos. Confiaba en su ayuda.',hour:s.operativeState[116].deathMinute===undefined?s.hour:Math.floor(s.operativeState[116].deathMinute/60),received:true});
+ return structuredClone(messages[0]);
+};
+const tactical=(p,action)=>{
+ const actual=actBattle(p.battle,action);assert.equal(actual.lastError,null,JSON.stringify(action));assert.deepEqual(presentedActBattle(p.battle,action).state,actual);
+ return checkpoint(p.campaign,actual);
+};
+const replayVisit=(initial,actions)=>{
+ const s=order(saved(initial).campaign,{type:'visitSector'});let p=checkpoint(s,enterSector(s.pendingBattle,s.sectorStates.retiro));
+ for(const action of actions)p=tactical(p,action);return p;
+};
 
 test('real paid companions improve a normal shot and retain only personal morale after saved physical returns',()=>{
  let s=paidPair();const cash=s.resources.treasury,quote=contractQuote(s,rosterFor(s).find(o=>o.id===107),'day');s=order(s,{type:'renewContract',id:107,term:'day'});assert.equal(s.resources.treasury,cash-quote.price);assert.equal(s.operativeState[107].morale,82);
@@ -66,15 +82,37 @@ test('earned cohesion keeps priority, preferences never stack, and the applied s
  const d=defaultContentPackage();d.characters.find(c=>c.id==='person-107').preferredCompanions.push({character:'person-103',reason:'Otra preferencia ficticia.'});let pair=paidPair(d);pair=order(pair,{type:'recruitCivic',id:103,term:'day'});pair=advanceTo(pair,12*3600);pair=order(pair,{type:'visitSector'});assert.equal(issued(pair).companionBonus,3);assert.equal(issued(pair).companionId,116);
 });
 
-test('real injury, critical health and death after issue preserve the saved receipt and actual casualty morale',()=>{
- let s=order(paidPair(),{type:'renewContract',id:107,term:'day'});s=order(s,{type:'visitSector'});let b=enterSector(s.pendingBattle),buddy=b.units.find(u=>u.id==='116');
+test('real paid companion death sends one saved letter and preserves actual casualty morale through corpse reentries',t=>{
+ let s=paidPair();const hirePrices=Object.fromEntries([107,116].map(id=>[id,s.contracts[id].paid])),quote=contractQuote(s,rosterFor(s).find(o=>o.id===107),'day'),cash=s.resources.treasury;
+ s=order(s,{type:'renewContract',id:107,term:'day'});assert.equal(s.resources.treasury,cash-quote.price);const initial=structuredClone(s);s=order(s,{type:'visitSector'});let b=enterSector(s.pendingBattle),buddy=b.units.find(u=>u.id==='116');
+ ({campaign:s,battle:b}=checkpoint(s,b));const before=structuredClone(b),firstShot={type:'firePoint',unitId:'107',x:buddy.x,y:buddy.y,aim:4};
  // Legal point fire can harm anyone in its ray; this spends one owned charge.
- b=actBattle(b,{type:'firePoint',unitId:'107',x:buddy.x,y:buddy.y,aim:4});assert.equal(b.lastError,null);assert.equal(b.units.find(u=>u.id==='107').loaded,0);assert.equal(b.units.find(u=>u.id==='116').hp,32);const wounded=checkpoint(s,b);
- for(let i=0;i<40&&b.units.find(u=>u.id==='116').hp>=15;i++){const p=b.units.find(u=>u.id==='107');b=actBattle(b,{type:'look',unitId:p.id,x:p.x+(i%2?-1:1),y:p.y});assert.equal(b.lastError,null);}
+ ({campaign:s,battle:b}=tactical({campaign:s,battle:b},firstShot));assert.equal(b.units.find(u=>u.id==='107').loaded,0);assert.equal(b.units.find(u=>u.id==='116').hp,32);const wounded=saved(s,b);assert.equal(lossLetters(s).length,0);
+ for(let i=0;i<40&&b.units.find(u=>u.id==='116').hp>=15;i++){const p=b.units.find(u=>u.id==='107');({campaign:s,battle:b}=tactical({campaign:s,battle:b},{type:'look',unitId:p.id,x:p.x+(i%2?-1:1),y:p.y}));}
  buddy=b.units.find(u=>u.id==='116');assert.equal(buddy.hp,14);assert.equal(buddy.unconscious,true);({campaign:s,battle:b}=checkpoint(s,b));assert.equal(issued(s).companionBonus,3);assert.equal(issued(s).companionId,116);
- const criticalReturn=leave(s,b);assert.equal(criticalReturn.operativeState[116].hp,14);assert.equal(criticalReturn.operativeState[107].morale,82);assert.deepEqual(saved(criticalReturn).campaign,criticalReturn);
- ({campaign:s,battle:b}=wounded);b=actBattle(b,{type:'reload',unitId:'107'});assert.equal(b.lastError,null);buddy=b.units.find(u=>u.id==='116');b=actBattle(b,{type:'firePoint',unitId:'107',x:buddy.x,y:buddy.y,aim:4});assert.equal(b.lastError,null);assert.equal(b.units.find(u=>u.id==='116').hp,0);assert.equal(b.units.find(u=>u.id==='107').morale,67);({campaign:s,battle:b}=checkpoint(s,b));assert.equal(issued(s).companionBonus,3);
- s=leave(s,b);assert.equal(s.operativeState[107].morale,58,'remove initial support once, retain the real tactical and ordinary casualty loss');assert.equal(s.operativeState[116].alive,false);assert.equal(s.operativeState[116].hp,0);assert.deepEqual(saved(s).campaign,s);s=order(s,{type:'visitSector'});noSupport(issued(s));
+ const criticalReturn=leave(s,b);assert.equal(criticalReturn.operativeState[116].hp,14);assert.equal(criticalReturn.operativeState[107].morale,82);assert.equal(lossLetters(criticalReturn).length,0);assert.deepEqual(saved(criticalReturn).campaign,criticalReturn);
+ ({campaign:s,battle:b}=wounded);const reload={type:'reload',unitId:'107'};({campaign:s,battle:b}=tactical({campaign:s,battle:b},reload));buddy=b.units.find(u=>u.id==='116');const secondShot={type:'firePoint',unitId:'107',x:buddy.x,y:buddy.y,aim:4};({campaign:s,battle:b}=tactical({campaign:s,battle:b},secondShot));assert.equal(b.units.find(u=>u.id==='116').hp,0);assert.equal(b.units.find(u=>u.id==='107').morale,67);assert.equal(issued(s).companionBonus,3);assert.equal(lossLetters(s).length,0,'an unreturned tactical casualty has no delivered letter');
+ const replay=replayVisit(initial,[firstShot,reload,secondShot]);assert.deepEqual(replay,{campaign:s,battle:b});const request=structuredClone(s.pendingBattle),finalBattle=structuredClone(b),seed=s.seed;
+ const actor=b.units.find(u=>u.id==='107'),issuedActor=before.units.find(u=>u.id==='107');assert.equal(actor.loaded+totalReserveAmmunition(actor),issuedActor.loaded+totalReserveAmmunition(issuedActor)-2);assert.equal(actor.condition,issuedActor.condition-2);assert.equal(actor.ap,issuedActor.ap,'ordinary exploration pays real time while retaining its AP budget');assert.ok(b.elapsedSeconds>before.elapsedSeconds);
+ s=leave(s,b);assert.deepEqual(leave(replay.campaign,replay.battle),s);assert.equal(s.operativeState[107].morale,58,'remove initial support once, retain only the real tactical and ordinary casualty loss');assert.equal(s.operativeState[116].alive,false);assert.equal(s.operativeState[116].hp,0);assert.equal(s.resources.treasury,initial.resources.treasury);assert.equal(s.seed,seed);const letter=assertLossLetter(s);assert.deepEqual(saved(s).campaign,s);
+ const stale=dispatchCampaign(s,{type:'leaveSector',battleId:request.id,sectorState:finalBattle,survivors:finalBattle.units.filter(u=>u.side==='player')});assert.ok(stale.lastError);assert.deepEqual({...stale,lastError:null},s);
+ for(let i=0;i<2;i++){
+  s=order(saved(s).campaign,{type:'visitSector'});noSupport(issued(s));b=enterSector(s.pendingBattle,s.sectorStates.retiro);assert.equal(b.units.find(u=>u.id==='116').hp,0,'the actual corpse stays in the scene');({campaign:s,battle:b}=checkpoint(s,b));assert.deepEqual(lossLetters(s),[letter]);
+  s=leave(s,b);assert.equal(s.operativeState[107].morale,58);assert.equal(s.operativeState[116].alive,false);assert.equal(s.operativeState[107].carriedAmmo,actor.loaded+totalReserveAmmunition(actor));assert.deepEqual(lossLetters(saved(s).campaign),[letter]);
+ }
+ t.diagnostic(JSON.stringify({hirePrices,renewalPrice:quote.price,treasury:s.resources.treasury,orders:3,actionSeconds:finalBattle.elapsedSeconds,rounds:actor.loaded+totalReserveAmmunition(actor),weaponCondition:actor.condition,seed:finalBattle.seed,returnedMorale:s.operativeState[107].morale,letter}));
+});
+
+test('a native paid companion dies from the real untreated wound once through saved hourly and batched waiting',t=>{
+ let s=order(paidPair(),{type:'renewContract',id:107,term:'day'});const initial=structuredClone(s);s=order(s,{type:'visitSector'});let p=checkpoint(s,enterSector(s.pendingBattle)),buddy=p.battle.units.find(u=>u.id==='116'),actions=[{type:'firePoint',unitId:'107',x:buddy.x,y:buddy.y,aim:4}];
+ p=tactical(p,actions[0]);for(let i=0;i<40&&p.battle.units.find(u=>u.id==='116').hp>=15;i++){const actor=p.battle.units.find(u=>u.id==='107'),action={type:'look',unitId:actor.id,x:actor.x+(i%2?-1:1),y:actor.y};actions.push(action);p=tactical(p,action);}
+ buddy=p.battle.units.find(u=>u.id==='116');assert.equal(buddy.hp,14);assert.ok(buddy.bleeding>0);assert.equal(lossLetters(p.campaign).length,0);assert.deepEqual(replayVisit(initial,actions),p);
+ s=leave(p.campaign,p.battle);assert.equal(s.pendingBattle,null);assert.equal(s.operativeState[116].alive,true);assert.equal(s.operativeState[107].morale,82);assert.equal(lossLetters(s).length,0);const returned=saved(s).campaign,ammo=returned.operativeState[107].carriedAmmo,condition=returned.operativeState[107].condition,seed=returned.seed,cash=returned.resources.treasury;
+ const loss=Math.ceil(returned.operativeState[116].bleeding*strategicBleedingPercent(returned)/100),hours=Math.ceil(returned.operativeState[116].hp/loss);assert.ok(loss>0&&hours<24);
+ const batch=order(saved(returned).campaign,{type:'wait',hours});for(let i=0;i<hours;i++){s=order(saved(s).campaign,{type:'wait',hours:1});if(i<hours-1){assert.equal(s.operativeState[116].alive,true);assert.equal(lossLetters(s).length,0);}}
+ assert.deepEqual(s,batch);assert.equal(s.operativeState[116].hp,0);assert.equal(s.operativeState[116].alive,false);assert.equal(s.operativeState[107].morale,76,'only the existing six-point ordinary casualty loss applies');assert.equal(s.operativeState[107].carriedAmmo,ammo);assert.equal(s.operativeState[107].condition,condition);assert.equal(s.resources.treasury,cash);assert.equal(s.seed,seed);const letter=assertLossLetter(s),deathMinute=s.operativeState[116].deathMinute;
+ s=order(saved(s).campaign,{type:'wait',hours:2});assert.equal(s.operativeState[116].deathMinute,deathMinute);assert.equal(s.operativeState[107].morale,76);assert.deepEqual(lossLetters(s),[letter]);assert.deepEqual(saved(s).campaign,s);
+ t.diagnostic(JSON.stringify({tacticalOrders:actions.length,actionSeconds:p.battle.elapsedSeconds,returnedHp:returned.operativeState[116].hp,bleeding:returned.operativeState[116].bleeding,hourlyLoss:loss,hoursToDeath:hours,rounds:ammo,weaponCondition:condition,treasury:cash,morale:s.operativeState[107].morale,letter}));
 });
 
 test('an issued companion whose paid term expires remains a valid saved source until the actual return',()=>{
