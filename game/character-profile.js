@@ -1,7 +1,9 @@
 export const PROFILE_ATTRIBUTES=[['maxHp','Salud'],['agility','Agilidad'],['dexterity','Destreza'],['strength','Fuerza'],['leadership','Liderazgo'],['wisdom','Sabiduría'],['marksmanship','Puntería'],['mechanical','Mecánica'],['explosives','Pólvora y artillería'],['medical','Medicina']].map(([id,name])=>({id,name}));
 import {CHARACTER_PORTRAITS} from './character-portraits.js';
+import {CRITICAL_HEALTH} from './actor-condition.js';
 export {CHARACTER_PORTRAITS,SELECTABLE_CHARACTER_PORTRAITS,PORTRAIT_GENDERS,PORTRAIT_ROLES,PORTRAIT_SKIN_TONES,PORTRAITS_PER_COMBINATION} from './character-portraits.js';
 export const PROFILE_POINTS=550;
+export const MIN_OFFICER_HEALTH=CRITICAL_HEALTH;
 export const CHARACTER_CLASSES=[
  {id:'gaucho',name:'Gaucho',description:'Facón, carabina y experiencia ecuestre.',weapon:1803,blade:1813},
  {id:'soldado',name:'Soldado de línea',description:'Mosquete y bayoneta para la infantería.',weapon:1800,blade:1811},
@@ -13,6 +15,11 @@ export const PROFILE_QUESTIONS=[
  {id:'temperament',label:'Tras un revés, ¿cómo juzgas la próxima jornada?',choices:[{id:'optimistic',name:'Confío en que podremos recuperarnos'},{id:'pessimistic',name:'Preveo lo peor para no exponer a mis compañeros'},{id:'steady',name:'Me concentro en la tarea inmediata'}]},
 ];
 export const defaultProfile=()=>({version:2,classId:'gaucho',portraitId:'avatar-man-gaucho',attributes:Object.fromEntries(PROFILE_ATTRIBUTES.map(a=>[a.id,55]))});
+// Apply this only to new commissions. Earlier valid profiles remain unchanged
+// when the roster or a saved campaign reconstructs their officer.
+export function validateOfficerCreationHealth(profile){
+ if(profile?.version===2&&(!Number.isInteger(profile.attributes?.maxHp)||profile.attributes.maxHp<MIN_OFFICER_HEALTH))throw Error(`La salud inicial debe tener al menos ${MIN_OFFICER_HEALTH} puntos para que tu personaje esté consciente.`);
+}
 export function applyCharacterProfile(op,answers,profile){
  if(profile===undefined)return op;
  if(profile?.nickname!==undefined&&(typeof profile.nickname!=='string'||profile.nickname.length>16||/[<>\x00-\x1f]/u.test(profile.nickname)))throw Error('El apodo debe tener hasta 16 caracteres, sin símbolos de marcado.');
