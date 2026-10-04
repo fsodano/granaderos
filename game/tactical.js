@@ -267,11 +267,15 @@ function occupied(s,x,y,except,level=0){const point={x,y,tacticalLevel:level};re
 export function carryCapacity(u){return Math.max(10,(u.strength||50)*.5);}
 export function carriedWeight(u){const inventory=Object.values(u.inventory||{}).reduce((sum,item)=>sum+(item&&typeof item==='object'?(item.count||0)*((item.weight||0)+fittingWeight(item))+(item.count||0)*(item.loaded||0)*.04:0),0);const cursor=u.equipmentCursor?.stack;return (cursor?cursor.count*((cursor.weight??0)+fittingWeight(cursor)+(cursor.loaded??0)*.04):0)+Number(u.weight??u.carryWeight??0)+BODY_SLOTS.reduce((sum,slot)=>sum+(wornOutfit(u,slot)?.weight??0),0)+inventory+(u.loaded||0)*.04+Object.entries(SUPPLY_ITEMS).reduce((sum,[key,item])=>sum+(key==='ammo'&&u.ammunitionVersion===2?0:(u[key]??0)*item.weight),0)+(u.weaponDropped?0:(contentWeaponOf(u)?.weight??u.weaponMetadata?.weight??weaponItemWeight(u.weapon))+fittingWeight(u))+(contentWeaponOf(u,'blade')?.weight??u.bladeMetadata?.weight??weaponItemWeight(u.blade))+(u.offHand?(u.offHand.weight??weaponItemWeight(u.offHand.weapon))+fittingWeight(u.offHand)+(u.offHand.loaded??0)*.04:0);}
 function weightPenalty(u){return Math.max(1,carriedWeight(u)/carryCapacity(u));}
-// Ordinary exploration walking spends one breath point per twenty light-load
-// grass tiles; crouched exploration costs five times as much. Running,
-// crawling, load and mud retain their exertion;
-// combat costs and the separate fatigue ceiling are unchanged.
-export function movementEnergy(u,t,exploring=false){const style=u.movementMode||'walk',base=(exploring?{walk:.05,run:1.5,crouch:.25,prone:1.5}:{walk:1,run:3,crouch:2,prone:3})[style]??1,cost=base*weightPenalty(u)*(u.mounted?1-Math.min(100,u.ridingSkill||0)*.005:1)*(t?.type==='mud'?1.5:1)*(hasTrait(u,'guerrilla_tactician')?.75:1);return exploring?Math.max(.001,Math.round(cost*1000)/1000):Math.max(1,Math.ceil(cost));}
+// Scale only the additional effort of running above walking. Load, mud,
+// riding, traits, diagonal steps and combat integer costs retain their rules.
+// Hourly fatigue and the separate maximum-energy ceiling are unchanged.
+export function movementEnergy(u,t,exploring=false){
+ const style=u.movementMode||'walk',costs=exploring?{walk:.05,run:1.5,crouch:.25,prone:1.5}:{walk:1,run:3,crouch:2,prone:3};
+ const base=style==='run'?costs.walk+(costs.run-costs.walk)*COMBAT_BALANCE.runningExcessEnergyMultiplier:costs[style]??1;
+ const cost=base*weightPenalty(u)*(u.mounted?1-Math.min(100,u.ridingSkill||0)*.005:1)*(t?.type==='mud'?1.5:1)*(hasTrait(u,'guerrilla_tactician')?.75:1);
+ return exploring?Math.max(.001,Math.round(cost*1000)/1000):Math.max(1,Math.ceil(cost));
+}
 function movementStepEnergy(s,u,t,factor=1){const exploring=s.mode==='exploration',cost=movementEnergy(u,t,exploring)*factor;return exploring?cost:Math.ceil(cost);}
 function exhaust(s,u,cost){limitEnergy(u);if(u.mounted&&u.mount){u.mount.stamina=Math.max(0,u.mount.stamina-Math.max(1,Math.ceil(cost*(1-Math.min(100,u.ridingSkill||0)*.005))));if(u.mount.stamina===0){u.mounted=false;sayObserved(s,[u],`${u.name} desmonta: su caballo está agotado.`);}}u.energy=Math.max(0,Math.round(((u.energy??100)-cost)*1000)/1000);if(u.energy===0){lowerWeapon(u);u.unconscious=true;u.ap=0;u.mounted=false;sayObserved(s,[u],`${u.name} cae inconsciente por agotamiento.`);}}
 export function tileIllumination(s,x,y,level=0){if(!s.night)return 1;let light=.08;for(const lamp of s.lights||[]){if(lamp.turns===0||lamp.extinguished)continue;const point={x,y,tacticalLevel:level},distance=Math.hypot(lamp.x-x,lamp.y-y,(surfaceHeight(s,lamp)??0)-(surfaceHeight(s,point)??0));if(distance>lamp.radius||!hasLineOfSight(s,lamp,point))continue;light=Math.max(light,(lamp.intensity??1)*(1-distance/(lamp.radius+1)));}return clamp(light,0,1);}

@@ -33,7 +33,7 @@ test('a new destination discards the old remainder and running charges only late
  assert.equal(actor(result.state).x,3);assert.equal(actor(result.state).y,3);assert.equal(actor(result.state).movementMode,'run');
  while(result.status==='moving')result=movementStep(result.state,changed,result.continuation);
  assert.equal(result.status,'completed');assert.equal(actor(result.state).x,3);assert.equal(actor(result.state).y,6);
- assert.equal(actor(result.state).energy,93.9);assert.equal(result.state.elapsedSeconds,10);
+ assert.equal(actor(result.state).energy,96.8);assert.equal(result.state.elapsedSeconds,10);
 });
 
 test('continuation rechecks changed terrain and rejects nonadjacent injected steps',()=>{

@@ -96,7 +96,8 @@ test('new characters retain actual combat injuries and experience across return,
 test('explicit service, training traits and progress use the same campaign rules; unsupported identity policies fail clearly',()=>{
  const d=authored(),c=d.characters.at(-1);c.monthlyPay=0;c.traits=['expert_rider'];c.ridingSkill=10;
  let s=initialCampaign(42,d);const op=rosterFor(s).find(o=>o.contentId===c.id);assert.equal(op.ridingSkill,80);
- assert.ok(movementEnergy({...op,mounted:true,movementMode:'run',weapon:0},{type:'grass'})<movementEnergy({...op,ridingSkill:0,mounted:true,movementMode:'run',weapon:0},{type:'grass'}));
+ // Mud keeps the rider's effort reduction observable after whole-point combat rounding.
+ assert.ok(movementEnergy({...op,mounted:true,movementMode:'run',weapon:0},{type:'mud'})<movementEnergy({...op,ridingSkill:0,mounted:true,movementMode:'run',weapon:0},{type:'mud'}));
  for(const [term,hours] of [['day',24],['week',168],['month',720]]){const q=contractQuote(s,op,term);assert.equal(q.permanent,false);assert.equal(q.price,0);assert.equal(q.hours,hours);}
  s=order(s,{type:'recruitCivic',id:op.id,term:'day'});while(s.hour<26){const before=s.hour;s=order(s,{type:'wait',hours:26-s.hour});assert.ok(s.hour>before);}assert.equal(s.hour,26);assert.equal(s.recruited.includes(op.id),false);assert.ok(save(s));
  for(const mutate of [x=>delete x.characters.at(-1).service,x=>x.characters.at(-1).traits=['unknown'],x=>x.characters.at(-1).recruitmentSource='encounter',x=>x.characters.at(-1).service='permanent',x=>x.characters.shift()]){const copy=authored();mutate(copy);assert.throws(()=>initialCampaign(42,copy));}

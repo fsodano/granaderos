@@ -54,7 +54,7 @@ test('real contact stops the unpaid formation and leaves other members at their 
 });
 
 test('a member exhausted by paid running stops while the remaining capable formation can finish',()=>{
- const start=field();start.units[0].energy=5;const result=complete(start,{...request,movement:'run'});
+ const start=field();start.units[0].energy=3;const result=complete(start,{...request,movement:'run'});
  assert.equal(result.status,'partial');assert.equal(result.state.units[0].energy,0);assert.equal(result.state.units[0].unconscious,true);
  assert.equal(result.state.units[0].hp,start.units[0].hp);assert.ok(result.report.members.slice(1).every(member=>member.status==='arrived'));
 });

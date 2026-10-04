@@ -11,7 +11,7 @@ test('the battlefield shows actual partial reload cost and remaining work throug
  t.after(async()=>{try{await act(async()=>root.unmount());}finally{timers.restore();dom.window.close();for(const[k,d]of previous){if(d)Object.defineProperty(globalThis,k,d);else delete globalThis[k];}}});
  const definition={...defaultContentPackage().weapons.find(w=>w.template===1800),id:'slow-loader',name:'Mosquete lento',reloadAP:250};let battle=createBattle([{id:'p',name:'Soldado',x:1,y:1,weapon:1800,weaponMetadata:weaponMetadata(definition),loaded:0,ammo:3}],{width:12,height:8,tiles:Array.from({length:96},(_,i)=>({x:i%12,y:Math.floor(i/12),type:i%12===3?'water':'grass',blocked:i%12===3,cover:0,blocksSight:false})),enemies:[{id:'guard',x:5,y:1,weapon:1813,ammo:0,patrol:false,overwatch:false}]});
  const draw=()=>root.render(h(Battlefield,{battle,onChange:next=>{battle=next;draw();},onFinish:()=>{},onRetreat:()=>{}}));
- const key=async key=>{await act(async()=>document.body.dispatchEvent(new dom.window.KeyboardEvent('keydown',{key,bubbles:true})));await timers.settle(document);};
+ const key=async(key,extra={})=>{await act(async()=>document.body.dispatchEvent(new dom.window.KeyboardEvent('keydown',{key,bubbles:true,...extra})));await timers.settle(document);};
  const target=()=>document.querySelector('[data-unit-id="guard"] [data-person-hit-target]');
  const preview=()=>document.querySelector('[aria-label="Vista previa de la orden"]');
  const hover=async()=>act(async()=>target().dispatchEvent(new dom.window.MouseEvent('mouseover',{bubbles:true})));
@@ -22,7 +22,7 @@ test('the battlefield shows actual partial reload cost and remaining work throug
   for(let i=0;i<8;i++){battle=endTurn(battle);assert.equal(battle.lastError,null);if(battle.phase==='player'&&!battle.interrupt)break;assert.ok(i<7,'the enemy turn must complete');}
   await act(async()=>draw());for(let frame=0;/Procesando/.test(document.querySelector('.battle-phase').textContent);frame++){assert.ok(frame<100,'real movement animation must settle');await act(async()=>timers.wait(20));}await hover();const plan=reloadPlan(battle.units[0],battle),before=battle.units[0].ap;assert.ok(plan.available>0);assert.ok(preview().textContent.includes(`${plan.pa} PA`));
   assert.doesNotMatch(document.querySelector('.battle-phase').textContent,/Procesando/);
-  await key('r');assert.equal(battle.lastError,null);assert.equal(battle.units[0].ap,before-plan.pa);assert.ok(++turns<5);battle=validateBattleSnapshot(JSON.parse(JSON.stringify(battle)));
+  await key('R',{shiftKey:true});assert.equal(battle.lastError,null);assert.equal(battle.units[0].ap,before-plan.pa);assert.ok(++turns<5);battle=validateBattleSnapshot(JSON.parse(JSON.stringify(battle)));
  }
  assert.equal(battle.units[0].ammo,2);assert.equal(battle.units[0].loaded,1);assert.equal(battle.units[0].reloadProgress,undefined);
 });

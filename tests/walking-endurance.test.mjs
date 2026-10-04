@@ -19,7 +19,7 @@ test('running, crawling, mud and overload retain meaningful endurance costs',()=
  const u=field().units[0],walk=movementEnergy(u,{type:'grass'},true);
  for(const movementMode of ['run','prone','crouch'])assert.ok(movementEnergy({...u,movementMode},{type:'grass'},true)>walk);
  assert.ok(movementEnergy(u,{type:'mud'},true)>walk);assert.ok(movementEnergy({...u,weight:80},{type:'grass'},true)>walk);
- const running=move(field({movementMode:'run'}),41);assert.equal(running.units[0].energy,40);assert.equal(running.elapsedSeconds,40);
+ const running=move(field({movementMode:'run'}),41);assert.equal(running.units[0].energy,69);assert.equal(running.elapsedSeconds,40);
  for(const [movementMode,expected] of [['crouch',90],['prone',40]])assert.equal(move(field({movementMode}),41).units[0].energy,expected);
 });
 test('crouched exploration can cross 200 tiles while retaining its higher walking cost',()=>{
@@ -60,8 +60,8 @@ test('route estimates match walk execution on mud and diagonals while rejected m
  const n=actBattle(s,{type:'move',unitId:u.id,x:6,y:2});assert.equal(n.lastError,null);assert.equal(n.units[0].energy,energy);assert.equal(n.units[0].ap,u.ap);
  const blocked=actBattle(n,{type:'move',unitId:u.id,x:-1,y:2});assert.ok(blocked.lastError);assert.deepEqual(blocked.units,n.units);assert.equal(blocked.elapsedSeconds,n.elapsedSeconds);
 });
-test('combat walking, running and low postures retain their existing breath and action costs',()=>{
- for(const [movementMode,energy] of [['walk',99],['run',97],['crouch',98],['prone',97]]){
+test('combat running uses the reduced breath cost while walking, low postures and action costs remain unchanged',()=>{
+ for(const [movementMode,energy] of [['walk',99],['run',98],['crouch',98],['prone',97]]){
   const s=field({movementMode});s.mode='combat';s.sectorCleared=false;const before=s.units[0],route=getReachable(s,before).find(point=>point.x===2&&point.y===1),n=move(s,2);
   assert.equal(n.units[0].energy,energy);assert.equal(n.units[0].ap,before.ap-route.cost);assert.equal(n.units[0].hp,before.hp);
  }

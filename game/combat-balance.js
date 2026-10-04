@@ -9,6 +9,7 @@ export const COMBAT_BALANCE=Object.freeze({
  outsideSightChanceFactor:.5,
  woundAPMaximumPenalty:35,
  energyAPPenaltyPerPoint:.25,
+ runningExcessEnergyMultiplier:.5, // 0 = walking effort; 1 = earlier running effort.
  woundAccuracyPenaltyPerPoint:.3,
  shockAccuracyPenaltyPerPoint:5,
  fireAPMultiplier:1,

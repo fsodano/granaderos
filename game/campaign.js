@@ -7,7 +7,7 @@ import {AMMUNITION_FAMILIES} from './ammunition-families.js';
 import {changeMerchantCash} from './equipment-merchants.js';
 import {equipmentKey} from './equipment-catalog.js';
 import {migrateServiceEquipmentReturns,validateServiceEquipmentReturns,returnServiceEquipment} from './service-equipment-return.js';
-import {unloadOwnedCampaignAmmunition,selectCampaignAmmunitionLoad,migrateAmmunitionCustody,validateAmmunitionCustody,prepareCampaignAmmunition,issueStartingCartridges,retainReturnedAmmunition,moveCampaignAmmunition,unloadCampaignWeapon,carriedAmmunition,ammoResourceKey,initialAmmunitionStock,migrateCampaignAmmunition,syncCampaignAmmunition,validateCampaignAmmunition,syncCarriedAmmunition} from './campaign-ammunition.js';
+import {unloadOwnedCampaignAmmunition,selectCampaignAmmunitionLoad,migrateAmmunitionCustody,validateAmmunitionCustody,prepareCampaignAmmunition,issueStartingCartridges,migrateStartingCartridges,retainReturnedAmmunition,moveCampaignAmmunition,unloadCampaignWeapon,carriedAmmunition,ammoResourceKey,initialAmmunitionStock,migrateCampaignAmmunition,syncCampaignAmmunition,validateCampaignAmmunition,syncCarriedAmmunition} from './campaign-ammunition.js';
 import {removeIgnitionSupplies,validateStoredAmmo} from './ammo-types.js';
 import {personalPockets,pocketChangeReason,POCKET_FULL} from './personal-pockets.js';
 import {sellArtillery,repurchaseArtillery,validateArtilleryMerchants} from './artillery-trading.js';
@@ -176,7 +176,7 @@ const standing = (s,id,value) => {if(id!=='royalists')s.reputation[id]=clamp(s.r
 function initializeCampaignSystems(s){
   migrateLegacySkillLearning(s);
  const roster=rosterFor(s);
- for(const record of Object.values(s.operativeState)){if(record.startingCartridgesIssued===undefined)record.startingCartridgesIssued=true;requireThat(typeof record.startingCartridgesIssued==='boolean','La entrega inicial de cartuchos no es válida.');}
+ migrateStartingCartridges(s);
  migrateServiceEquipmentReturns(s);
  s.horseState??={...initialHorseState(),hour:s.hour};
  migrateMedicalCare(s,roster);migrateAssignments(s,roster);migrateMorale(s,roster);

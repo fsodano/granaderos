@@ -13,6 +13,7 @@ The October 3 playtest reported that a shot could remove too much health and lea
 | `outsideSightChanceFactor` | Multiplies accuracy beyond personal sight. A teammate must still see a targeted enemy. | 0.5 |
 | `woundAPMaximumPenalty` | Sets the maximum injury deduction from next-turn AP. Earlier value: 50. | 35 |
 | `energyAPPenaltyPerPoint` | Deducts next-turn AP per missing energy point. Earlier value: 0.25. | 0.25 |
+| `runningExcessEnergyMultiplier` | Scales running effort above walking effort. 0 uses walking effort; 1 uses the earlier running effort. | 0.5 |
 | `woundAccuracyPenaltyPerPoint` | Deducts shooting accuracy per effective wound point. Earlier value: 0.3. | 0.3 |
 | `shockAccuracyPenaltyPerPoint` | Deducts shooting accuracy per shock point. Earlier value: 5. | 5 |
 | `fireAPMultiplier` | Scales firearm discharge cost. Preparation and turning retain their own costs. | 1 |
@@ -20,6 +21,8 @@ The October 3 playtest reported that a shot could remove too much health and lea
 | `coverDamageReductionMultiplier` | Scales damage lost when a shot penetrates cover. 1 preserves current cover protection. Opaque barriers still block shots. | 1 |
 
 Weapon-specific values are in [`game/firearm-definitions.js`](../../game/firearm-definitions.js). Authored campaign weapons can also have their own values. To test the shooting loop, compare a healthy mercenary and a wounded mercenary with the same gun: fire, move into cover, reload, and fire again. Check daytime and night conditions separately. These values are an initial playtest adjustment, not a completed campaign balance assessment. Controlled wet-weather and paid artillery battles retain real finite-stock victories at these settings. Campaign route tests and further manual playtests must also assess the effects on survivors, supplies and later battles.
+
+The later running playtest reported excessive breath loss. Running now pays half its earlier excess over walking: light-load grass movement costs 2 breath per combat tile (earlier: 3), or 0.775 per exploration tile (earlier: 1.5). Walking remains 1 and 0.05 respectively. Existing load, mud, riding, trait and diagonal modifiers still apply; combat charges remain whole numbers. Climbing, posture costs, AP, speed, strategic travel, hourly fatigue, recovery ceilings and collapse rules retain their existing settings. Running steps during a charge use the same breath setting. Saved energy and fatigue are not refilled or recalculated. `running-energy.test.mjs` checks real paid movement, finite custody, modifiers, exhaustion, recovery limits and saved continuation.
 
 Presentation timing is separate. [`game/battle-playback.js`](../../game/battle-playback.js) uses milliseconds for preparation, walking steps, impacts, and effects. A longer presentation does not consume more game time or change damage, AP, or visibility.
 

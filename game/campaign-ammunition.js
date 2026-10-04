@@ -117,6 +117,28 @@ export function moveCampaignAmmunition(s,op,key,quantity,direction,supplied){
  return quote;
 }
 
+// The old admission marked every absent flag as issued, including candidates
+// who had never served. Recover only those candidates. A service location or
+// any actual equipment/deployment history makes an empty reserve ambiguous;
+// it must not be refilled on load, renewal, rehire or another sector entry.
+export function migrateStartingCartridges(s){
+ const served=new Set((s.recruited??[]).map(String));
+ for(const id of Object.keys(s.contracts??{}))served.add(id);
+ for(const owner of s.serviceEquipmentReturns?.entries??[])served.add(String(owner.operativeId));
+ const scenes=[...Object.values(s.sectorStates??{}),...Object.values(s.sceneStates??{}),s.pendingBattle?.resumeSnapshot];
+ for(const scene of scenes)for(const unit of scene?.units??[])if(unit.side==='player')served.add(String(unit.id));
+ for(const unit of s.pendingBattle?.squad??[])served.add(String(unit.id));
+ for(const remains of Object.values(s.sectorRemains??{}))for(const entry of remains)if(entry.unit?.side==='player')served.add(String(entry.unit.id));
+ for(const [id,record]of Object.entries(s.operativeState??{})){
+  need(record.startingCartridgesIssued===undefined||typeof record.startingCartridgesIssued==='boolean','La entrega inicial de cartuchos no es válida.');
+  const serviceFields=['location','arrival','residentSector','residentScene','carriedLoaded','carriedReloadProgress','outfit','headwear','legwear','weaponDropped','weaponMode','weaponInstanceId','bladeInstanceId','offHand','leftHandItem','equipmentCursor','pocketOrder','activeItem','serviceEquipmentReturn'];
+  const pristine=!served.has(id)&&record.alive&&!record.captured&&!(record.captureSequence>0)&&!serviceFields.some(key=>record[key]!==undefined)&&!(record.xp>0)&&record.lastMoralePayAt==null&&!(record.ammo>0)&&!(record.carriedAmmo>0)&&!Object.values(record.inventory??{}).some(item=>typeof item==='number'?item>0:item?.count>0)&&!Object.values(record.ammunition??{}).some(n=>n>0)&&!(record.capturedAmmunition?.loaded>0||record.capturedAmmunition?.ammo>0);
+  if(record.startingCartridgesIssued===undefined)record.startingCartridgesIssued=!pristine;
+  else if(record.startingCartridgesIssued&&pristine)record.startingCartridgesIssued=false;
+ }
+ return s;
+}
+
 // A first hire owns a finite initial allowance with their service equipment.
 // The campaign marks this issue once; renewal, rehire and sector entry do not refill it.
 export function issueStartingCartridges(s,op){

@@ -1,6 +1,6 @@
 import {register} from 'node:module';register('./tactical-render-loader.mjs',import.meta.url);
 import test from 'node:test';import assert from 'node:assert/strict';
-import {createBattle} from '../game/tactical.js';
+import {createBattle,reloadPlan} from '../game/tactical.js';
 import {createElement as h} from '../web/node_modules/react/index.js';
 import {tacticalGridLabel} from '../game/tactical-grid.js';
 import {groupMovementStep} from '../game/group-movement.js';
@@ -9,6 +9,32 @@ import {mountBattlefield} from './mounted-battlefield.mjs';
 const {default:Battlefield}=await import('../web/app/Battlefield.tsx');
 const {default:TacticalScene}=await import('../web/app/TacticalScene.tsx');
 const nodes=node=>!node||typeof node!=='object'?[]:[node,...(Array.isArray(node)?node:Array.isArray(node.props?.children)?node.props.children:[node.props?.children]).flatMap(nodes)];
+
+test('actual R sets only the selected actor to run without loading or spending PA; Shift+R reloads',async t=>{
+ let battle=createBattle([{id:'p',name:'Primero',x:1,y:1,loaded:0,ammo:3},{id:'q',name:'Segundo',x:1,y:2,loaded:0,ammo:3}],{width:24,height:8,tiles:Array.from({length:192},(_,i)=>({x:i%24,y:Math.floor(i/24),type:'grass',blocked:false,cover:0})),enemies:[{id:'e',x:23,y:7,patrol:false,overwatch:false}]}),commits=[];
+ const props=()=>({battle,onChange:next=>{battle=next;commits.push(next);return next;},onFinish(){}}),mounted=await mountBattlefield(t,Battlefield,props(),{virtualTimers:true});
+ const key=async(key,extra={})=>mounted.act(async()=>document.body.dispatchEvent(new window.KeyboardEvent('keydown',{key,bubbles:true,...extra})));
+ await key('2');const before=structuredClone(battle),original=before.units[0],selected=before.units[1];
+ await key('r');assert.equal(commits.length,1);assert.equal(battle.lastError,null);assert.equal(battle.units[1].movementMode,'run');assert.deepEqual(battle.units[0],original);
+ for(const field of ['ap','loaded','ammo','jammed','energy','x','y'])assert.equal(battle.units[1][field],selected[field],`${field} is unchanged by selecting running`);
+ assert.equal(battle.elapsedSeconds,before.elapsedSeconds+6,'the first action retains the existing combat round charge');assert.equal(mounted.jobs().length,0,'selecting a gait does not start an attack or a route');
+ await mounted.render(props());await key('R');assert.equal(commits.length,2);assert.equal(battle.units[1].movementMode,'run','a second key press keeps running');assert.equal(battle.elapsedSeconds,before.elapsedSeconds+6,'another R does not charge the same round again');
+ const running=battle,plan=reloadPlan(battle.units[1],battle);await mounted.render(props());await key('R',{shiftKey:true});await mounted.settle();
+ assert.equal(battle.lastError,null);assert.equal(battle.units[1].movementMode,'run');assert.equal(battle.units[1].loaded,1);assert.equal(battle.units[1].ammo,2);assert.equal(battle.units[1].ap,running.units[1].ap-plan.pa);assert.equal(battle.elapsedSeconds,running.elapsedSeconds,'reload retains the already charged combat round');assert.deepEqual(battle.units[0],original);
+});
+
+test('run and reload keyboard chords retain editing, dialog and help guards',async t=>{
+ const env=await actualInput(t,{combat:true,enemies:[{id:'e',x:23,y:7,patrol:false,overwatch:false}]}),{mounted}=env;
+ const input=document.createElement('input');document.body.append(input);
+ const key=async(key,extra={},target=document.body)=>mounted.act(async()=>target.dispatchEvent(new window.KeyboardEvent('keydown',{key,bubbles:true,...extra})));
+ for(const chord of [{key:'r'},{key:'R',shiftKey:true}]){
+  const {key:name,...extra}=chord;await key(name,extra,input);
+  for(const guard of [{repeat:true},{isComposing:true},{ctrlKey:true},{metaKey:true}])await key(name,{...extra,...guard});
+ }
+ const dialog=document.createElement('div');dialog.setAttribute('role','dialog');document.body.append(dialog);await key('r');await key('R',{shiftKey:true});dialog.remove();
+ await key('h');await key('r');await key('R',{shiftKey:true});await key('Escape');assert.equal(env.commits.length,0);assert.equal(env.jobs('movement-step').length,0);
+ await key('r');assert.equal(env.commits.length,1);assert.equal(env.battle.units[0].movementMode,'run');
+});
 
 for(const delivery of ['early','late'])test(`real map input redirects and runs with ${delivery} speculative worker delivery`,async t=>{
  let now=1000,sequence=0;const frames=new Map(),commits=[];
@@ -99,6 +125,7 @@ test('actual map movement clicks remain blocked throughout enemy action playback
  const env=await actualInput(t,{combat:true,enemies:[{id:'e',name:'Guardia',x:7,y:1,weapon:1809,morale:100}]}),turn=nodes(env.mounted.tree()).find(node=>node.props?.onEndTurn);
  await env.mounted.act(async()=>turn.props.onEndTurn());await env.click(env.tile(2,4));assert.equal(env.jobs('movement-step').length,0);assert.equal(env.jobs('group-step').length,0);
  await env.mounted.deliver('presentation');assert.ok(nodes(env.mounted.tree()).some(node=>node.props?.['data-enemy-frame']));
+ await env.mounted.act(async()=>{document.body.dispatchEvent(new window.KeyboardEvent('keydown',{key:'r',bubbles:true}));document.body.dispatchEvent(new window.KeyboardEvent('keydown',{key:'R',shiftKey:true,bubbles:true}));});
  await env.click(env.tile(2,4));assert.equal(env.jobs('movement-step').length,0);assert.equal(env.commits.length,0);
  await env.mounted.settle();assert.equal(env.commits.length,1,'only the actual enemy-turn result commits');
 });

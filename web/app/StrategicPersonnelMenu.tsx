@@ -6,6 +6,9 @@ import {WORK_ASSIGNMENTS,STUDY_SKILLS,workAssignmentReason} from '../../game/ass
 import {operativeLocation} from '../../game/squads.js';
 import {mountForOperative,MATURITY_HOURS} from '../../game/horses.js';
 import {strategicSquadAssignments} from '../../game/strategic-squad-assignments.js';
+import {squadTravelStatus} from '../../game/squad-travel.js';
+import {campaignPlace} from '../../game/world-cells.js';
+import {travelTime} from '../lib/travel-time';
 
 function visibleControl(control:HTMLElement){
  if(!control.isConnected||control.closest('[hidden],[inert]'))return false;
@@ -17,7 +20,7 @@ function visibleControl(control:HTMLElement){
  return true;
 }
 
-export default function StrategicPersonnelMenu({state:s,roster,id,kind,onClose,dispatch}:{state:any;roster:any[];id:number;kind:'assignment'|'contract';onClose:()=>void;dispatch:(a:any)=>void}){
+export default function StrategicPersonnelMenu({state:s,roster,id,kind,onClose,dispatch}:{state:any;roster:any[];id:number;kind:'assignment'|'contract'|'destination';onClose:()=>void;dispatch:(a:any)=>void}){
  const op=roster.find(o=>o.id===id),record=s.operativeState[id];
  const dialog=useRef<HTMLElement>(null);
  useEffect(()=>{
@@ -25,7 +28,7 @@ export default function StrategicPersonnelMenu({state:s,roster,id,kind,onClose,d
   dialog.current?.querySelector<HTMLElement>('button')?.focus();
   return ()=>{
    if(previous&&previous.tabIndex>=0&&visibleControl(previous)&&!previous.matches(':disabled')){previous.focus();return;}
-   const label=kind==='contract'?'Fin contrato:':'Asignación:';
+   const label=kind==='contract'?'Fin contrato:':kind==='destination'?'Destino:':'Asignación:';
    const person=Array.from(document.querySelectorAll<HTMLElement>(`[data-operative-id="${id}"] button`)).find(control=>control.getAttribute('aria-label')?.startsWith(label)&&visibleControl(control)&&!control.matches(':disabled'));
    const roster=Array.from(document.querySelectorAll<HTMLElement>('.strategy-roster-open')).find(visibleControl);
    (person??roster)?.focus();
@@ -38,7 +41,9 @@ export default function StrategicPersonnelMenu({state:s,roster,id,kind,onClose,d
  const order=(action:any)=>{dispatch(action);onClose();};
  const options={skill,targetId:Number(target),instructorId:teacher?Number(teacher):undefined,repairScope:'equipment'};
  const mount=mountForOperative(s.horseState,id)?.mount;
- return <div className="strategic-menu-backdrop" onClick={onClose}><section ref={dialog} tabIndex={-1} className="strategic-person-menu" role="dialog" aria-modal="true" aria-label={`${kind==='contract'?'Contrato':'Asignación'} de ${op.nickname}`} onClick={e=>e.stopPropagation()} onKeyDown={e=>{
+ const squad=s.squads.find((q:any)=>q.members.includes(id)),journey=squad?squadTravelStatus(squad):null,title=kind==='contract'?'Contrato':kind==='destination'?'Destino':'Asignación';
+ const place=(sector:string)=>campaignPlace(sector)?.name??sector;
+ return <div className="strategic-menu-backdrop" onClick={onClose}><section ref={dialog} tabIndex={-1} className="strategic-person-menu" role="dialog" aria-modal="true" aria-label={`${title} de ${op.nickname}`} onClick={e=>e.stopPropagation()} onKeyDown={e=>{
   if(e.key==='Escape'){e.preventDefault();e.stopPropagation();onClose();}
   if(e.key==='Tab'){
    const controls=Array.from(dialog.current?.querySelectorAll<HTMLElement>('button:not(:disabled),select:not(:disabled),input:not(:disabled):not([type="hidden"]),textarea:not(:disabled),[tabindex="0"],a[href],summary')??[]).filter(visibleControl).sort((left,right)=>left.compareDocumentPosition(right)&window.Node.DOCUMENT_POSITION_FOLLOWING?-1:1),first=controls[0],last=controls.at(-1);
@@ -47,8 +52,18 @@ export default function StrategicPersonnelMenu({state:s,roster,id,kind,onClose,d
    else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}
   }
  }}>
-  <header><h2>{op.nickname} · {kind==='contract'?'Contrato':'Asignación'}</h2><button className="line-button" aria-label="Cerrar" onClick={onClose}>×</button></header>
-  {kind==='contract'?<>
+  <header><h2>{op.nickname} · {title}</h2><button className="line-button" aria-label="Cerrar" onClick={onClose}>×</button></header>
+  {kind==='destination'?journey&&squad?<>
+   <p>{squad.name} · {journey.status==='ready'?'En el límite del sector':journey.status==='paused'?'Detenida':journey.returning?'De regreso':'En camino'}</p>
+   <p>Destino: <strong>{place(journey.destination)}</strong> · {travelTime(journey.remaining)}</p>
+   {journey.reason&&<p>{journey.reason}</p>}
+   <div className="strategic-menu-actions">
+    {journey.status==='paused'&&<button className="gold-button" disabled={blocked} onClick={()=>order({type:'resumeTravel',squadId:squad.id})}>Retomar marcha</button>}
+    {journey.intent!=='attack'&&<button className="line-button" disabled={blocked||journey.returning} onClick={()=>order({type:'cancelTravel',squadId:squad.id,choice:'stop'})}>{journey.elapsed===0?'Cancelar ruta':'Detenerse en el próximo sector'}</button>}
+    {journey.intent==='attack'&&journey.elapsed===0&&<button className="line-button" disabled={blocked} onClick={()=>order({type:'cancelTravel',squadId:squad.id})}>Cancelar ataque</button>}
+    {journey.elapsed>0&&!journey.returning&&<button className="line-button" disabled={blocked} onClick={()=>order({type:'cancelTravel',squadId:squad.id,choice:'return'})}>Regresar · {travelTime(journey.elapsed)}</button>}
+   </div>
+  </>:<p>Sin ruta pendiente.</p>:kind==='contract'?<>
    <p>{contract?.remaining===null?'Servicio permanente':`${Math.ceil((contract?.remaining??0)/24)} días hasta la salida`}</p>
    {contract?.remaining!==null&&['day','week','fortnight'].map(term=>{const q=contractQuote(s,op,term);return <button key={term} className="line-button" disabled={blocked||!q.available||q.price>s.resources.treasury} onClick={()=>order({type:'renewContract',id,term,expectedExpiresAt:s.contracts[id]?.expiresAt,expectedExpiresSecond:s.contracts[id]?.expiresSecond??0})}>{term==='day'?'Un día':term==='week'?'Una semana':'Dos semanas'} · {q.price.toLocaleString('es-AR')} pesos</button>;})}
    {id!==1000&&<button className="line-button" disabled={blocked} onClick={()=>order({type:'dismiss',id})}>Despedir</button>}
@@ -64,6 +79,6 @@ export default function StrategicPersonnelMenu({state:s,roster,id,kind,onClose,d
    <label>Montura disponible<select aria-label={`Montura de ${op.nickname}`} value={mount?.id??''} disabled={blocked||Boolean(mount)||operativeLocation(s,id)!==s.location} onChange={e=>order({type:'horseAction',order:{type:'assign',horseId:e.target.value,operativeId:id}})}><option value="" disabled>Elegir caballo</option>{s.horseState.horses.filter((h:any)=>!h.returned&&!h.custody&&h.location===operativeLocation(s,id)&&(h.assignedTo===null||h.assignedTo===id)).map((h:any)=><option key={h.id} value={h.id} disabled={s.horseState.hour-h.bornAt<MATURITY_HOURS||h.condition<30||h.stamina<20}>{h.name}</option>)}</select></label>
    {mount&&<button className="line-button" disabled={blocked||operativeLocation(s,id)!==s.location} onClick={()=>order({type:'horseAction',order:{type:'unassign',horseId:mount.id}})}>Liberar montura</button>}
   </>}
-  <button className="line-button" onClick={onClose}>Cancelar</button>
+  <button className="line-button" onClick={onClose}>{kind==='destination'?'Cerrar':'Cancelar'}</button>
  </section></div>;
 }

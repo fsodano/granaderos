@@ -21,7 +21,7 @@ test('an enemy can give one reply during combat while authored conversation wait
 test('ambient replies vary without changing battle RNG, inventory or conversation state',()=>{
  const b=createBattle([],{enemies:[],exploration:true}),before=structuredClone(b);const npc={...civilian,greeting:'El paso está abierto.'};assert.equal(new Set(Array.from({length:4},(_,i)=>ambientReply(npc,i))).size,4);assert.match(ambientReply({...civilian,side:'enemy',surrendered:true}),/arma|resistirme|vida/);assert.match(ambientReply({...civilian,ai:{activity:'hiding'}}),/refugio|fuego|salvo/);assert.deepEqual(b,before);
 });
-test('J selects talk without changing reload, mount or native input shortcuts',()=>{assert.equal(tacticalShortcut({key:'j'}),'talk');assert.equal(tacticalShortcut({key:'r'}),'reload');assert.equal(tacticalShortcut({key:'t'}),'mount');assert.equal(tacticalShortcut({key:'j'},{editing:true}),null);assert.match(targetingHelp('talk',actor),/Hablar/);});
+test('J selects talk without changing running, reload, mount or native input shortcuts',()=>{assert.equal(tacticalShortcut({key:'j'}),'talk');assert.equal(tacticalShortcut({key:'r'}),'run');assert.equal(tacticalShortcut({key:'R',shiftKey:true}),'reload');assert.equal(tacticalShortcut({key:'t'}),'mount');assert.equal(tacticalShortcut({key:'j'},{editing:true}),null);assert.match(targetingHelp('talk',actor),/Hablar/);});
 
 
 test('conversation and approach routes distinguish stacked ground and roof speakers',()=>{
