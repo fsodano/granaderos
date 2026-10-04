@@ -47,7 +47,8 @@ export function projectilePath(state,attacker,target,weapon,hitLocation='torso',
     const low=Math.min(muzzle+(destination-muzzle)*point.entry,muzzle+(destination-muzzle)*point.exit);
     if(low>obstacle.height)return;
     seen.add(id);remaining=Math.max(0,remaining-obstacle.resistance);
-    obstacles.push({x:point.x,y:point.y,material:obstacle.material,resistance:obstacle.resistance,stopped:remaining===0});
+    const fraction=rayHeightIntersection(muzzle,destination,point,0,obstacle.height)?.entry??point.entry;
+    obstacles.push({x:point.x,y:point.y,material:obstacle.material,resistance:obstacle.resistance,stopped:remaining===0,fraction});
   };
   for(const point of projectileCells(attacker,target)){
     if(point.entry>(flight.stopFraction??1))break;
@@ -98,10 +99,10 @@ function elevatedProjectilePath(state,attacker,target,weapon,hitLocation,flight=
  for(const cell of geometryCells(attacker,target)){
   if(cell.entry>stopFraction)break;
   const hits=obstacleVolumesAt(state,cell).map(volume=>({volume,hit:rayHeightIntersection(muzzle,destination,cell,volume.bottom,volume.top,stopFraction)})).filter(entry=>entry.hit).sort((a,b)=>a.hit.entry-b.hit.entry||a.volume.id.localeCompare(b.volume.id));
-  for(const {volume} of hits){
+  for(const {volume,hit} of hits){
    if(seen.has(volume.id))continue;seen.add(volume.id);
    remaining=volume.solid?0:Math.max(0,remaining-volume.resistance);
-   obstacles.push({x:cell.x,y:cell.y,tacticalLevel:volume.tacticalLevel,kind:volume.kind,material:volume.material,resistance:volume.solid?power:volume.resistance,stopped:remaining===0});
+   obstacles.push({x:cell.x,y:cell.y,tacticalLevel:volume.tacticalLevel,kind:volume.kind,material:volume.material,resistance:volume.solid?power:volume.resistance,stopped:remaining===0,fraction:hit.entry});
    if(!remaining)return {blocked:true,damageFactor:0,obstacles};
   }
  }

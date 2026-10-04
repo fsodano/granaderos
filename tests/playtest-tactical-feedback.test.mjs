@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createBattle,actBattle,presentedActBattle,getReachable,actionCosts,shotChance,maxActionPoints,hasLineOfSight} from '../game/tactical.js';
+import {createBattle,actBattle,presentedActBattle,getReachable,actionCosts,shotChance,maxActionPoints,hasLineOfSight,teamCanSee} from '../game/tactical.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
 import {fieldPractice,fieldPracticeChance,practice,validateTraining} from '../game/skill-training.js';
 import {targetPreview,pickupSelection} from '../game/ja2-hud.js';
@@ -86,6 +86,12 @@ test('a wounded mercenary can aim, fire, take opaque cover and complete a finite
 });
 test('an observed resident receives target focus and a real hit reaction in commanded playback',()=>{
  const s=createBattle([{id:'p',x:1,y:1,weapon:1805,loaded:1,marksmanship:100}],{width:12,height:8,seed:45,exploration:true,enemies:[],npcs:[{id:'resident',name:'Vecino',x:3,y:1}]});
+ assert.equal(teamCanSee(s,'player',s.npcs[0]),true);
  const action={type:'fire',unitId:'p',targetId:'resident',targetKind:'npc'},result=presentedActBattle(s,action);assert.deepEqual(result.state,actBattle(s,action));assert.equal(result.state.lastError,null);
- const impact=result.frames.find(frame=>frame.impacts.some(hit=>hit.unitId==='resident'));assert.ok(impact);assert.equal(impact.targetPoint.id,'resident');assert.equal(impact.impacts[0].damage,s.npcs[0].hp-result.state.npcs[0].hp);assert.ok(battleFrameFocus(impact).x>s.units[0].x);assert.ok(!impact.visibleIds.includes('resident'),'the existing unit visibility list remains a unit list');
+ const prepare=result.frames.find(frame=>frame.type==='prepare'),flight=result.frames.find(frame=>frame.type==='projectile'),impact=result.frames.find(frame=>frame.impacts.some(hit=>hit.unitId==='resident'));
+ assert.ok(prepare&&flight&&impact);assert.equal(prepare.targetPoint.id,'resident');assert.equal(prepare.targetPoint.x,s.npcs[0].x);
+ assert.ok(result.frames.indexOf(prepare)<result.frames.indexOf(flight));assert.ok(result.frames.indexOf(flight)<result.frames.indexOf(impact));
+ assert.equal(flight.state.npcs[0].hp,s.npcs[0].hp);assert.deepEqual(flight.impacts,[]);assert.equal(flight.shotVisual.outcome,'hit');assert.ok(battleFrameDuration(flight)>=BATTLE_PLAYBACK.projectileMinimum);
+ assert.equal(impact.type,'impact');assert.equal(impact.impacts[0].victimKind,'npc');assert.equal(impact.impacts[0].damage,s.npcs[0].hp-result.state.npcs[0].hp);assert.equal(impact.state.npcs[0].hp,result.state.npcs[0].hp);assert.equal(battleFrameDuration(impact),BATTLE_PLAYBACK.impact);
+ for(const frame of [prepare,flight,impact]){const focus=battleFrameFocus(frame);assert.equal(focus.x,(s.units[0].x+s.npcs[0].x)/2);assert.equal(focus.y,1);assert.ok(!frame.visibleIds.includes('resident'),'the existing unit visibility list remains a unit list');}
 });
