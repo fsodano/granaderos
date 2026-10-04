@@ -1,7 +1,7 @@
 import {Color, DoubleSide, MeshStandardMaterial, RepeatWrapping, SRGBColorSpace, Texture, TextureLoader} from 'three';
 import type {WorldInput,WorldOptions,WorldPoint} from './world-types';
 
-const colours:Record<string,string>={wood:'#76503a',darkwood:'#443227',iron:'#41494b',brass:'#b19650',stone:'#918a76',adobe:'#b49676',limewash:'#d3cbb3',ochre:'#c7ac72',brick:'#a37057',trim:'#e0d2ad',clay:'#9e624d',aged:'#786a59',thatch:'#a18c58',leather:'#4b3b2f',linen:'#c4b99a',water:'#547b78',grass:'#6e754d',leaf:'#586746',poplar:'#66764a',trunk:'#66503c',rubble:'#978772',wax:'#ddcfb1',flame:'#ffbd61',ember:'#aa5233',smoke:'#b8b8ad',rug:'#845547',ceramic:'#ae7951',glass:'#94b8b1',food:'#91805c'};
+const colours:Record<string,string>={wood:'#76503a',darkwood:'#443227',iron:'#41494b',brass:'#b19650',stone:'#918a76',adobe:'#b49676',limewash:'#d3cbb3',ochre:'#c7ac72',brick:'#a37057',trim:'#e0d2ad',clay:'#9e624d',aged:'#786a59',thatch:'#a18c58',leather:'#4b3b2f',linen:'#c4b99a',water:'#547b78',grass:'#6e754d',leaf:'#45553a',poplar:'#596745',trunk:'#66503c',rubble:'#978772',wax:'#ddcfb1',flame:'#ffbd61',ember:'#aa5233',smoke:'#b8b8ad',rug:'#845547',ceramic:'#ae7951',glass:'#94b8b1',food:'#91805c'};
 const texturePaths:Record<string,string>={adobe:'/art/architecture-plaster-v2.png',limewash:'/art/architecture-plaster-v2.png',ochre:'/art/architecture-plaster-v2.png',brick:'/art/architecture-brick-v2.png',stone:'/art/architecture-stone-v2.png',wood:'/art/architecture-wood-v2.png',clay:'/art/architecture-roof-clay-v2.png',aged:'/art/architecture-roof-clay-v2.png',thatch:'/art/architecture-roof-thatch-v2.png'};
 export class WorldMaterials {
   private materials=new Map<string,MeshStandardMaterial>();

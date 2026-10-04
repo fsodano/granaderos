@@ -10,7 +10,17 @@ export class WorldGeometry {
     else if(kind==='cone')geometry=new ConeGeometry(1,1,10);
     else if(kind==='cylinder')geometry=new CylinderGeometry(1,1,1,12);
     else if(kind==='taper')geometry=new CylinderGeometry(.82,1,1,12);
+    else if(kind==='flare')geometry=new CylinderGeometry(1,.35,1,12);
     else if(kind==='sphere')geometry=new IcosahedronGeometry(1,1);
+    else if(kind.startsWith('crown-')){
+      geometry=new IcosahedronGeometry(1,1);const position=geometry.getAttribute('position'),colours=new Float32Array(position.count*3),variant=Number(kind.slice(6));
+      for(let n=0;n<position.count;n++){
+        const x=position.getX(n),y=position.getY(n),z=position.getZ(n),noise=Math.sin(x*8.3+y*4.7+variant*2.1)*Math.cos(z*7.2-y*3.1+variant),radius=.84+.19*noise;
+        position.setXYZ(n,x*radius,y*(radius+.05*Math.sin(z*11)),z*(radius+.06*Math.cos(x*9)));
+        const shade=.81+.16*(.5+.5*Math.sin(x*6.1+y*5.8+z*3.2+variant*7));colours[n*3]=shade*(.92+.06*Math.sin(y*9+variant));colours[n*3+1]=shade;colours[n*3+2]=shade*.88;
+      }
+      geometry.setAttribute('color',new BufferAttribute(colours,3));
+    }
     else if(kind==='rock')geometry=new IcosahedronGeometry(1,0);
     else if(kind==='torus')geometry=new TorusGeometry(1,.09,6,16);
     else throw Error(`Unknown world primitive ${kind}`);

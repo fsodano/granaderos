@@ -3,7 +3,7 @@ import {WorldBatch,seeded} from './world-geometry';
 import {illuminationAt} from './world-materials';
 import type {WorldGeometry} from './world-geometry';
 import type {WorldMaterials} from './world-materials';
-import type {WorldInput,WorldLight,WorldSmoke} from './world-types';
+import type {WorldInput,WorldLight,WorldPoint,WorldSmoke} from './world-types';
 
 export function lightActive(light:WorldLight){return !light.extinguished&&light.turns!==0&&light.remainingSeconds!==0;}
 export function buildLight(id:string,source:WorldLight,input:WorldInput,T:number,geometry:WorldGeometry,materials:WorldMaterials,pointLight=true){
@@ -53,8 +53,9 @@ export function animateWorldNode(group:Group,time:number,reducedMotion:boolean){
 
 export function buildClimbLinks(input:WorldInput,T:number,geometry:WorldGeometry,materials:WorldMaterials){
   const batch=new WorldBatch(geometry),wood=materials.get('wood'),iron=materials.get('iron');
+  const elevation=(point:WorldPoint)=>point.elevation??(point.tacticalLevel?input.terrain.upperSurfaces:input.terrain.tiles)?.find(surface=>surface.x===point.x&&surface.y===point.y&&(surface.tacticalLevel??0)===(point.tacticalLevel??0))?.elevation??0;
   for(const link of input.terrain.climbLinks??[]){
-    const a=new Vector3(link.from.x*T,link.from.elevation??0,link.from.y*T),b=new Vector3(link.to.x*T,link.to.elevation??3,link.to.y*T),delta=b.clone().sub(a),light=illuminationAt(input,link.from);
+    const a=new Vector3(link.from.x*T,elevation(link.from),link.from.y*T),b=new Vector3(link.to.x*T,elevation(link.to),link.to.y*T),delta=b.clone().sub(a),light=illuminationAt(input,link.from);
     const across=new Vector3(-delta.z,0,delta.x);if(across.lengthSq()<.001)across.set(1,0,0);across.normalize().multiplyScalar(.23);
     if(/stair/.test(link.kind)){
       const steps=Math.max(3,Math.ceil(Math.abs(delta.y)/.23));for(let n=0;n<steps;n++){const p=a.clone().addScaledVector(delta,(n+.5)/steps),y=a.y+delta.y*(n+1)/steps;batch.box(wood,p.x,(a.y+y)*.5,p.z,Math.max(.5,Math.abs(delta.x)/steps+.02),Math.max(.08,y-a.y),Math.max(.5,Math.abs(delta.z)/steps+.02),light);}

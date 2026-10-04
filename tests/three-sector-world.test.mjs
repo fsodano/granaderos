@@ -4,6 +4,7 @@ import {register} from 'node:module';
 register('./tactical-render-loader.mjs',import.meta.url);
 const {Scene,Box3,Mesh,Raycaster,Vector3}=await import('../web/node_modules/three/build/three.module.js');
 const {createSectorWorld}=await import('../web/lib/three/sector-world.ts');
+const {worldItemKind}=await import('../web/lib/three/world-items.ts');
 const T=1.2360585147470482;
 const ground=(width=12,height=8)=>Array.from({length:width*height},(_,n)=>({x:n%width,y:Math.floor(n/width),type:'grass',elevation:0}));
 const terrain=(overrides={})=>({width:12,height:8,tiles:ground(),...overrides});
@@ -53,6 +54,11 @@ test('roof cutaways remove only revealed rooms and preserve the selected upper l
  world.update({...input,revealedRooms:['west','east'],cursorLevel:1});assert.equal(root.getObjectByName('upper-surfaces').userData.surfaceIds.length,all);assert.equal(root.getObjectByName('building:house').userData.cutawayRooms.length,0);world.dispose();
 });
 
+test('an upper room disclosure does not cut unopened ground rooms',()=>{
+ const input=buildingInput({rooms:true,upper:true});input.terrain.buildings[0].rooms.push({id:'upper-room',tacticalLevel:1,cells:[{x:2,y:3,tacticalLevel:1}]});input.revealedRooms=['upper-room'];
+ const {world,root}=setup(input);assert.equal(root.getObjectByName('building:house').userData.cutawayRooms.length,0);assert.equal(root.getObjectByName('upper-surfaces').userData.surfaceIds.length,25);world.dispose();
+});
+
 test('world admission removes stale objects and rejects gameplay rosters',()=>{
  const input={terrain:terrain({props:[{id:'chest',type:'chest',x:2,y:3}],lights:[{id:'fire',type:'campfire',x:3,y:3}]}),loot:[{id:'rifle',weapon:'musket',x:4,y:3}],cannons:[{id:'gun',type:'bronze4',x:5,y:3}],smoke:[{id:'cloud',x:6,y:3,radius:1}]},{world}=setup(input);
  for(const id of ['prop:chest','light:fire','loot:rifle','cannon:gun','smoke:cloud'])assert.ok(world.inspect().semanticIds.includes(id));
@@ -86,4 +92,32 @@ test('world disposal releases every retained mesh/material once and detaches the
  root.traverse(object=>{if(object instanceof Mesh){geometries.add(object.geometry);for(const material of Array.isArray(object.material)?object.material:[object.material])materials.add(material);}});
  for(const geometry of geometries)geometry.addEventListener('dispose',()=>geometryDisposals++);for(const material of materials)material.addEventListener('dispose',()=>materialDisposals++);
  world.dispose();world.dispose();assert.equal(geometryDisposals,geometries.size);assert.equal(materialDisposals,materials.size);assert.equal(scene.getObjectByName('sector-world'),undefined);assert.equal(world.inspect().disposed,true);assert.throws(()=>world.update({terrain:terrain()}),/disposed/);
+});
+
+test('all current architectural profiles retain distinct real massing',()=>{
+ const kinds=['house','posta','barracks','church','chapel','cabildo','townhall','palace','pulperia','warehouse','depot','farmhouse','smithy','stable'],heights=new Map();
+ for(const kind of kinds){
+  const input=buildingInput();input.terrain.buildings[0].kind=kind;const {world,root}=setup(input),building=root.getObjectByName('building:house'),bounds=new Box3().setFromObject(building);heights.set(kind,bounds.max.y);
+  assert.ok(world.inspect().triangles>100);assert.ok(bounds.max.y>2.5);building.traverse(object=>{if(object instanceof Mesh)for(const value of object.geometry.getAttribute('position').array)assert.ok(Number.isFinite(value));});world.dispose();
+ }
+ assert.ok(heights.get('church')>heights.get('house')+1.3);assert.ok(heights.get('palace')>heights.get('house')+.7);assert.ok(heights.get('smithy')>heights.get('house'));
+});
+
+test('numeric and authored ground equipment IDs render the proper weapon families',()=>{
+ const expected=['brown-bess','charleville','baker-rifle','cavalry-carbine','shotgun','saddle-pistol','duelling-pistol','blunderbuss','double-pistol','curved-sabre','caroya-sabre','socket-bayonet','lance','facon'];
+ assert.deepEqual(expected.map((_,n)=>worldItemKind({weapon:1800+n})),expected);assert.equal(worldItemKind({weapon:'authored-id',weaponMetadata:{contentWeapon:{template:1802}}}),'baker-rifle');assert.equal(worldItemKind({item:'weapon',itemMetadata:{contentWeapon:{template:1808}}}),'double-pistol');
+ const {world,root}=setup({terrain:terrain(),loot:expected.map((_,n)=>({id:String(n),weapon:1800+n,x:n%7,y:Math.floor(n/7)}))});
+ for(const [n,kind]of expected.entries())assert.deepEqual(root.getObjectByName(`loot:${n}`).userData.itemKinds,[kind]);
+ const musket=new Box3().setFromObject(root.getObjectByName('loot:0')).getSize(new Vector3()).length(),pistol=new Box3().setFromObject(root.getObjectByName('loot:5')).getSize(new Vector3()).length();assert.ok(musket>pistol*2);world.dispose();
+});
+
+test('climbing geometry resolves endpoint heights from exact authored surfaces',()=>{
+ const {world,root}=setup({terrain:terrain({tiles:ground().map(tile=>tile.x===1&&tile.y===2?{...tile,elevation:.4}:tile),upperSurfaces:[{id:'platform',x:2,y:2,type:'floor',kind:'platform',tacticalLevel:1,elevation:4.2}],climbLinks:[{id:'access',kind:'climb',from:{x:1,y:2},to:{x:2,y:2,tacticalLevel:1}}]})}),bounds=new Box3().setFromObject(root.getObjectByName('climb-links'));
+ assert.ok(bounds.max.y>4.19&&bounds.max.y<4.3);assert.ok(bounds.min.y>.3);world.dispose();
+});
+
+test('light extinction removes illumination emitters while smoke expiry removes its volumes',()=>{
+ const input={terrain:terrain({lights:[{id:'fire',x:2,y:2,type:'campfire',intensity:1,radius:4}]}),smoke:[{id:'smoke',x:3,y:2,radius:2,turns:3}]},{world,root}=setup(input);let emitters=0;root.traverse(object=>{if(object.isPointLight)emitters++;});assert.equal(emitters,1);
+ const terrainUuid=root.getObjectByName('terrain:0,0').uuid;world.tick(.016,2);assert.equal(root.getObjectByName('terrain:0,0').uuid,terrainUuid);
+ world.update({terrain:{...input.terrain,lights:[{...input.terrain.lights[0],extinguished:true}]},smoke:[{...input.smoke[0],turns:0}]});emitters=0;root.traverse(object=>{if(object.isPointLight)emitters++;});assert.equal(emitters,0);assert.equal(root.getObjectByName('smoke:smoke'),undefined);world.dispose();
 });

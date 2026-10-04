@@ -12,6 +12,17 @@ import type {WorldBuilding,WorldInput,WorldTile} from './world-types';
 
 const V=25.066666666666666,wallInset=.4;
 type Axis='x'|'y';
+/** Masonry fills the rectangle above the arch, leaving a true curved opening. */
+function openingArch(batch:WorldBatch,wall:ReturnType<WorldMaterials['get']>,trim:ReturnType<WorldMaterials['get']>,axis:Axis,mid:number,cross:number,base:number,top:number,width:number,thickness:number,light:number){
+  const radius=width*.5,spring=top-radius;
+  const at=(u:number,y:number,d:number)=>axis==='x'?new Vector3(mid+u,base+y,cross+d):new Vector3(cross+d,base+y,mid+u);
+  for(let n=0;n<12;n++){
+    const a=n*Math.PI/12,b=(n+1)*Math.PI/12,ua=Math.cos(a)*radius,ub=Math.cos(b)*radius,ya=spring+Math.sin(a)*radius,yb=spring+Math.sin(b)*radius;
+    for(const side of [-1,1])batch.polygon(wall,[at(ua,ya,side*thickness*.5),at(ub,yb,side*thickness*.5),at(ub,top,side*thickness*.5),at(ua,top,side*thickness*.5)],light);
+    batch.polygon(wall,[at(ua,ya,-thickness*.5),at(ua,ya,thickness*.5),at(ub,yb,thickness*.5),at(ub,yb,-thickness*.5)],light);
+    batch.cylinder(trim,at(ua,ya,-thickness*.53),at(ub,yb,-thickness*.53),.039,light);batch.cylinder(trim,at(ua,ya,thickness*.53),at(ub,yb,thickness*.53),.039,light);
+  }
+}
 export function normalizedBuilding(b:WorldBuilding){const kind=b.kind??b.architecture;return {...b,kind:kind==='estancia'?'farmhouse':kind==='mansion'?'palace':kind};}
 function appearanceFor(b:WorldBuilding){return buildingAppearance({...b,roofFinish:b.roofFinish??(b.roof==='thatch'?'thatch':undefined)});}
 export function effectiveRooms(input:WorldInput){
@@ -21,7 +32,7 @@ export function effectiveRooms(input:WorldInput){
 }
 export function roofOwners(b:WorldBuilding){
   const owners=new Map<string,string>(),queue:{x:number;y:number}[]=[];
-  for(const room of b.rooms??[])for(const cell of room.cells){const key=`${cell.x},${cell.y}`;if(!owners.has(key)){owners.set(key,room.id);queue.push(cell);}}
+  for(const room of b.rooms??[])if(!(room.tacticalLevel??room.cells[0]?.tacticalLevel??0))for(const cell of room.cells){const key=`${cell.x},${cell.y}`;if(!owners.has(key)){owners.set(key,room.id);queue.push(cell);}}
   for(let head=0;head<queue.length;head++){
     const cell=queue[head],owner=owners.get(`${cell.x},${cell.y}`)!;
     for(const [dx,dy]of [[1,0],[-1,0],[0,1],[0,-1]]){const x=cell.x+dx,y=cell.y+dy,key=`${x},${y}`;if(x<b.x||y<b.y||x>=b.x+b.width||y>=b.y+b.height||owners.has(key))continue;owners.set(key,owner);queue.push({x,y});}
@@ -61,7 +72,7 @@ export function buildBuilding(b0:WorldBuilding,input:WorldInput,T:number,geometr
   const b=normalizedBuilding(b0),known=effectiveRooms(input),profile=getBuildingProfile(b),appearance=appearanceFor(b),legacy=Boolean(b0.architecture&&(!b0.kind||b0.roof==='terrace'));
   const walls=input.terrain.tiles.filter(tile=>tile.buildingId===b.id&&['wall','door','window'].includes(tile.type)),allWalls=input.terrain.tiles.filter(tile=>['wall','door','window'].includes(tile.type)),occupied=new Set(allWalls.map(tile=>`${tile.x},${tile.y}`));
   const roofs=(input.terrain.upperSurfaces??[]).filter(surface=>surface.kind==='roof'&&surface.buildingId===b.id),base=input.terrain.tiles.find(tile=>tile.x===b.x&&tile.y===b.y)?.elevation??0;
-  const allOpen=(b.rooms?.length??0)>0&&b.rooms!.every(room=>known.has(room.id)),someOpen=b.rooms?.some(room=>known.has(room.id))??false;
+  const groundRooms=(b.rooms??[]).filter(room=>!(room.tacticalLevel??room.cells[0]?.tacticalLevel??0)),allOpen=groundRooms.length>0&&groundRooms.every(room=>known.has(room.id)),someOpen=groundRooms.some(room=>known.has(room.id));
   // Existing metric slabs and cover metadata win over artwork pixel heights.
   const fullHeight=roofs.length?Math.min(...roofs.map(surface=>(surface.elevation??3)-base)):Math.max(2.5,(legacy?buildingStyle(b).height:profile.wallHeight)/V);
   const floorHeight=roofs.length?fullHeight:Math.min(fullHeight,Math.max(2.5,profile.groundFloorHeight/V));
@@ -71,7 +82,7 @@ export function buildBuilding(b0:WorldBuilding,input:WorldInput,T:number,geometr
   const openingRecords:{id:string;type:string;open:boolean;axis:Axis;height:number;width:number}[]=[];
   for(const tile of walls){
     const onX=tile.x===b.x||tile.x===b.x+b.width-1,onY=tile.y===b.y||tile.y===b.y+b.height-1,corner=onX&&onY;
-    const roomOpen=allOpen||b.rooms?.some(room=>known.has(room.id)&&room.cells.some(cell=>corner?Math.abs(cell.x-tile.x)<=1&&Math.abs(cell.y-tile.y)<=1:Math.abs(cell.x-tile.x)+Math.abs(cell.y-tile.y)===1));
+    const roomOpen=allOpen||groundRooms.some(room=>known.has(room.id)&&room.cells.some(cell=>corner?Math.abs(cell.x-tile.x)<=1&&Math.abs(cell.y-tile.y)<=1:Math.abs(cell.x-tile.x)+Math.abs(cell.y-tile.y)===1));
     const light=illuminationAt(input,tile),tileBase=tile.elevation??base;
     for(const [index,axis]of buildingWallAxes(tile,b,occupied).entries()){
       const front=axis==='x'?tile.y===b.y+b.height-1:tile.x===b.x+b.width-1,cut=Boolean(roomOpen&&(front||!onX&&!onY)),h=cut?cutaway:onX||onY?height:floorHeight;
@@ -88,6 +99,7 @@ export function buildBuilding(b0:WorldBuilding,input:WorldInput,T:number,geometr
       if(tile.type!=='door'||!opening){box(mid,.065,len,.13,thickness+.045,materials.get('stone'));box(mid,h-.045,len,.09,thickness+.04,trim);}
       if(opening){
         const id=tile.doorId??`${tile.type}:${tile.x},${tile.y}`,openingHeight=cut?Math.min(h,.28):top-sill;
+        if(!cut&&(tile.style??(tile.type==='door'?appearance.doorStyle:appearance.windowStyle))==='arched')openingArch(batch,wallMat,trim,axis,mid,cross,tileBase,top,ow,thickness,light);
         openingRecords.push({id,type:tile.type,open:Boolean(tile.open),axis,height:openingHeight,width:ow});
         if(tile.type==='door'){
           const leafGroup=new Group();leafGroup.name=`door:${id}`;leafGroup.userData.semanticId=`door:${id}`;leafGroup.userData.open=Boolean(tile.open);leafGroup.userData.broken=Boolean(tile.broken);
@@ -126,14 +138,14 @@ export function buildBuilding(b0:WorldBuilding,input:WorldInput,T:number,geometr
       const inset=Math.min(frame.width*.44,frame.depth*.3),a=at(mid,inset,height+rise),c=at(mid,frame.depth-inset,height+rise),corners=[at(lo,front,height),at(lo,back,height),at(hi,back,height),at(hi,front,height)];panels.push([corners[0],corners[1],c,a],[corners[2],corners[3],a,c],[corners[3],corners[0],a],[corners[1],corners[2],c]);
     }else if(profile.roofShape==='shed')panels.push([at(lo,front,height),at(lo,back,height+rise),at(hi,back,height+rise),at(hi,front,height)]);
     else{const a=at(mid,front,height+rise),c=at(mid,back,height+rise);panels.push([at(lo,front,height),at(lo,back,height),c,a],[at(hi,back,height),at(hi,front,height),a,c]);for(const d of [0,frame.depth])batch.polygon(wallMat,[at(0,d,height),at(frame.width,d,height),at(mid,d,height+rise)],illuminationAt(input,b));}
-    const owners=roofOwners(b),hidden=(b.rooms??[]).filter(room=>!known.has(room.id)),whole=!someOpen;
+    const owners=roofOwners(b),hidden=groundRooms.filter(room=>!known.has(room.id)),whole=!someOpen;
     for(const panel of panels){
       if(whole)batch.polygon(roofMat,panel,illuminationAt(input,b));
       else for(let y=b.y;y<b.y+b.height;y++)for(let x=b.x;x<b.x+b.width;x++)if(hidden.some(room=>room.id===owners.get(`${x},${y}`))){const clipped=clipRoofCell(panel,(x-.5+wallInset)*T,(y-.5+wallInset)*T,(x+.5+wallInset)*T,(y+.5+wallInset)*T);batch.polygon(roofMat,clipped,illuminationAt(input,{x,y}));}
     }
   }
   if(!someOpen)architecturalDetails(batch,b,input,T,height,base,materials,legacy);
-  group.add(batch.finish(`building-fabric:${b.id}`));group.userData.kind='building';group.userData.openings=openingRecords;group.userData.cutawayRooms=(b.rooms??[]).filter(room=>known.has(room.id)).map(room=>room.id);group.userData.height=height;return group;
+  group.add(batch.finish(`building-fabric:${b.id}`));group.userData.kind='building';group.userData.openings=openingRecords;group.userData.cutawayRooms=groundRooms.filter(room=>known.has(room.id)).map(room=>room.id);group.userData.height=height;return group;
 }
 
 function architecturalDetails(batch:WorldBatch,b:WorldBuilding,input:WorldInput,T:number,height:number,base:number,materials:WorldMaterials,legacy:boolean){
