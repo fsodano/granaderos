@@ -50,7 +50,7 @@ import {isInteriorVisible} from '../../game/tactical-visibility.js';
 import {projectSurface} from '../lib/tactical-elevation';
 import {fixedBayonetFor} from '../../game/weapon-fittings.js';
 import { ChevronRight,Hand,RotateCcw,RotateCw,MessageCircle,Eye,ChevronUp,ChevronDown } from 'lucide-react';
-import { actBattle, presentedActBattle, getKnifeThrowVisual, getGrenadeThrowVisual, getMeleeAttackResult, getNpcGiftResult, endTurn, weaponFor, hasFirearm, bladeFor, actionCosts, artilleryCosts, visibleEnemies, visibleTiles, visibleRooms, canSee, environmentTargetAt, lootSearchPreview, approachCompleted } from '../../game/tactical.js';
+import { actBattle, presentedActBattle, getKnifeThrowVisual, getGrenadeThrowVisual, getMeleeAttackResult, getNpcGiftResult, getCareComposureResult, endTurn, weaponFor, hasFirearm, bladeFor, actionCosts, artilleryCosts, visibleEnemies, visibleTiles, visibleRooms, canSee, environmentTargetAt, lootSearchPreview, approachCompleted } from '../../game/tactical.js';
 
 type Props = {onPlaybackBusy?:(busy:boolean)=>void;onPlaybackValidate?:(state:any)=>boolean;onPlaybackFrame?:(before:any,after:any)=>void;battle:any; onChange:(s:any)=>any; onFinish:()=>void; peacefulVisit?:boolean; onMap?:()=>void; onMissionFinish?:()=>void; mission?:any; conversation?:any; quests?:any; onTalk?:(npcId:string,approach:string,unitId:string,term?:string,choice?:ConversationChoice)=>void; dialogues?:Record<string,any>; hireTerms?:Record<string,any[]>};
 type CameraView={x:number;y:number;width:number;height:number;worldWidth:number;worldHeight:number;zoom:number};
@@ -58,15 +58,18 @@ type CameraAnchor={x:number;y:number};
 type CameraGesture={dx:number;dy:number}|{scale:number;from:CameraAnchor;to:CameraAnchor};
 const isAlive=(u:any)=>u.hp>0&&!u.routed&&!u.unconscious;
 const EMPTY_ROUTES:any[]=[];
+const composureFormat=new Intl.NumberFormat('es-AR',{maximumFractionDigits:2});
 export default function Battlefield(props:Props){
  return <EquipmentInteractionProvider key={`${props.battle.battleId??''}:${props.battle.sectorId??''}`}><BattlefieldContents {...props}/></EquipmentInteractionProvider>;
 }
 function BattlefieldContents({battle:committed,onPlaybackBusy,onPlaybackValidate,onPlaybackFrame,onChange,onFinish,peacefulVisit=false,conversation,onTalk,onMap,quests,onMissionFinish,mission,hireTerms,dialogues}:Props){
   const presentation=useEnemyPlayback(committed,onChange,onPlaybackBusy,onPlaybackValidate,onPlaybackFrame),s=presentation.state;
   const calculation=useBattleExecutor(committed);
-  const [failedDestination,setFailedDestination]=useState<any>(null),[feedbackPopup,setFeedbackPopup]=useState<string|null>(null);
+  const [failedDestination,setFailedDestination]=useState<any>(null),[feedbackPopup,setFeedbackPopup]=useState<{message:string;id:number}|null>(null);
+  const feedbackId=useRef(0);
+  const showFeedback=(message:string)=>setFeedbackPopup({message,id:++feedbackId.current});
   const failedId=useRef(0),lastFeedback=useRef(s),lastChatter=useRef(0),chatterCount=useRef(0);
-  const reportActionFailure=(next:any,action:any,source:any)=>{if(!next.lastError)return;const target=[...source.units,...(source.npcs??[])].find((person:any)=>person.id===action.targetId)??action;if(Number.isFinite(target.x)&&Number.isFinite(target.y))setFailedDestination({...target,id:++failedId.current});else setFeedbackPopup(next.lastError);};
+  const reportActionFailure=(next:any,action:any,source:any)=>{if(!next.lastError)return;const target=[...source.units,...(source.npcs??[])].find((person:any)=>person.id===action.targetId)??action;if(Number.isFinite(target.x)&&Number.isFinite(target.y))setFailedDestination({...target,id:++failedId.current});else showFeedback(next.lastError);};
   useEffect(()=>{if(!failedDestination)return;const timer=setTimeout(()=>setFailedDestination(null),1200);return()=>clearTimeout(timer);},[failedDestination]);
   useEffect(()=>{if(!feedbackPopup)return;const timer=setTimeout(()=>setFeedbackPopup(null),4000);return()=>clearTimeout(timer);},[feedbackPopup]);
   const {store:equipmentStore,current:equipmentState}=useEquipmentInteraction();
@@ -130,7 +133,7 @@ function BattlefieldContents({battle:committed,onPlaybackBusy,onPlaybackValidate
   const [pendingGift,setPendingGift]=useState<any>(null),[giftReply,setGiftReply]=useState<any>(null);
   const [speech,setSpeech]=useState<any>(null);const replyCounts=useRef<Record<string,number>>({});
   useEffect(()=>{if(!speech)return;const timer=setTimeout(()=>setSpeech(null),10000);return()=>clearTimeout(timer);},[speech]);
-  useEffect(()=>{const before=lastFeedback.current;lastFeedback.current=s;if(before.battleId!==s.battleId||before.sectorId!==s.sectorId)return;const messages=tacticalFeedback(before,s);if(messages.length)setFeedbackPopup(messages.slice(0,3).join(' · '));if(talking||speech||Date.now()-lastChatter.current<12000)return;const line=contextualBanter(before,s,++chatterCount.current);if(line){lastChatter.current=Date.now();setSpeech(line);}},[s]);
+  useEffect(()=>{const before=lastFeedback.current;lastFeedback.current=s;if(before.battleId!==s.battleId||before.sectorId!==s.sectorId)return;const messages=tacticalFeedback(before,s);if(messages.length)showFeedback(messages.slice(0,3).join(' · '));if(talking||speech||Date.now()-lastChatter.current<12000)return;const line=contextualBanter(before,s,++chatterCount.current);if(line){lastChatter.current=Date.now();setSpeech(line);}},[s]);
   useEffect(()=>{setSpeech(null);setTalking(null);setPendingGift(null);setGiftReply(null);},[s.battleId,s.sectorId]);
   const talking=talkingSelection?(s.npcs??[]).find((n:any)=>n.id===talkingSelection.id&&(n.hp??100)>0&&!n.unconscious&&!n.departure&&!n.fled&&!n.routed)??null:null;
   useEffect(()=>{if(talkingSelection&&!talking){setTalking(null);setGiftReply(null);}},[talkingSelection,talking]);
@@ -278,7 +281,7 @@ function BattlefieldContents({battle:committed,onPlaybackBusy,onPlaybackValidate
     }
     const accept=(next:any,alreadyPresented=false)=>{
     if(!next)return null;
-    const knifeVisual=getKnifeThrowVisual(s,next),grenadeVisual=getGrenadeThrowVisual(s,next),giftResult=getNpcGiftResult(s,next);
+    const knifeVisual=getKnifeThrowVisual(s,next),grenadeVisual=getGrenadeThrowVisual(s,next),giftResult=getNpcGiftResult(s,next),careResult=getCareComposureResult(s,next);
     const preparationOnly=actionType==='throwKnife'&&!knifeVisual||actionType==='throwGrenade'&&!grenadeVisual||['melee','meleePoint'].includes(actionType)&&!getMeleeAttackResult(s,next,selected);
     if(!next.lastError&&['fire','firePoint','throwKnife','throwGrenade'].includes(actionType))setAim(0);
     if(!alreadyPresented&&!next.lastError&&!['pickupEquipment','placeEquipment','returnEquipmentCursor','dragEquipment'].includes(a.type)){
@@ -299,6 +302,10 @@ function BattlefieldContents({battle:committed,onPlaybackBusy,onPlaybackValidate
     reportActionFailure(next,request,s);
     const accepted=onChange(next);
     if(!alreadyPresented&&!next.lastError&&!preparationOnly&&accepted!==null)actorCues.accepted(selected,actionType,request);
+    if(!next.lastError&&careResult&&accepted!==null){
+      const caregiver=next.units.find((unit:any)=>unit.id===careResult.unitId);
+      if(caregiver)showFeedback(`${caregiver.nickname||caregiver.name} recupera la calma. ${careResult.relief<.01?'Tensión baja menos de 0,01.':`Tensión −${composureFormat.format(careResult.relief)}.`}`);
+    }
     if(!next.lastError&&accepted!==null&&actionType==='move')setHover(null);
     if(giftResult&&accepted!==null){setTalking(null);setSpeech(null);setGiftReply(null);setPendingGift(giftResult);}
     if(!alreadyPresented&&knifeVisual&&accepted!==null)setKnifeEffect({id:++knifeEffectId.current,startedAt:performance.now(),visual:knifeVisual});
@@ -531,7 +538,7 @@ function BattlefieldContents({battle:committed,onPlaybackBusy,onPlaybackValidate
       </div>
       <div className="field-wrap">
       <div className={`tactical-turn-bar ${turn.interrupted?'interrupt':s.phase==='enemy'?'enemy':'player'}`} role={turn.interrupted?'status':undefined} aria-label={turn.interrupted?'Interrupción':s.phase==='enemy'?'Turno enemigo':'Turno del jugador'}>{turn.interrupted?'Interrupción · Actuá con los PA restantes':''}</div>
-      {feedbackPopup&&<aside className="tactical-feedback-popup" role="status">{feedbackPopup}</aside>}
+      {feedbackPopup&&<aside key={feedbackPopup.id} className="tactical-feedback-popup" role="status">{feedbackPopup.message}</aside>}
       <div className="tactical-quick-tools" role="toolbar" aria-label="Acciones tácticas">
         <button title="Recoger o interactuar · Ctrl+clic" aria-label="Recoger o interactuar" aria-pressed={mode==='loot'} disabled={busy||!unitCanAct(s,u)} onClick={()=>setMode(mode==='loot'?'move':'loot')}><Hand/></button>
         <button title="Girar a la izquierda" aria-label="Girar a la izquierda" disabled={busy||!unitCanAct(s,u)} onClick={()=>turnUnit(-1)}><RotateCcw/></button>

@@ -83,7 +83,7 @@ export function defaultContentPackage() {
       role: o.role || "",
       biography: o.biography || "",
       portrait: portrait(o.id),
-      abilities:legacyCharacterAbilities(o.id),
+      abilities:o.id===130?['care_composure']:legacyCharacterAbilities(o.id),
       personality:characterProfile(o).personality,
       ...(o.serviceRefusals===undefined?{}:{serviceRefusals:structuredClone(o.serviceRefusals)}),
       ...(o.preferredCompanions===undefined?{}:{preferredCompanions:structuredClone(o.preferredCompanions)}),

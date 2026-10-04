@@ -7,6 +7,7 @@ import {campaignStory} from './campaign-story.js';
 import {nextContentQuestDeadline} from './content-quests.js';
 import {nextCampaignPresenceChange} from './campaign-presence.js';
 import {nextHireArrivalSeconds} from './hiring-arrivals.js';
+import {validateAbilityReferences} from './content-character-abilities.js';
 export const COMBAT_ROUND_SECONDS=6;
 export const REST_SECONDS=600;
 // Only dispatcher results establish trust. Decoded saves, campaign commands and
@@ -41,6 +42,8 @@ export function advanceBattleClock(s,seconds,{resting=false}={}){
 export function syncBattleTime(campaign,battle){
  try{
  if(!campaign.pendingBattle||battle.battleId&&battle.battleId!==campaign.pendingBattle.id)return {campaign,battle,error:'El reloj no corresponde al despliegue.'};
+ validateAbilityReferences(campaign,battle);
+ if(campaign.pendingBattle.resumeSnapshot)validateAbilityReferences(campaign,campaign.pendingBattle.resumeSnapshot);
  const elapsed=battle.elapsedSeconds??0;
  const next=syncSettledClock(campaign,battle,elapsed)??dispatchCampaign(campaign,{type:'syncTacticalTime',battleId:campaign.pendingBattle.id,elapsedSeconds:elapsed,sectorState:battle});
  if(next.lastError)return {campaign,battle,error:next.lastError};

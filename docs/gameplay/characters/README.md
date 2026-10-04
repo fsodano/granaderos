@@ -21,6 +21,7 @@ the [workspace acceptance record](../../verification/gameplay-completion.md) and
 ## Health and care
 
 - [Primeros auxilios en el campo](field-first-aid.md)
+- [Serenidad al cuidar](care-composure.md)
 
 - [Atención médica en campaña](strategic-medical-care.md)
 - [Critical first aid](critical-first-aid.md) *(workspace)*

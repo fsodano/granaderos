@@ -41,6 +41,9 @@ export function characterProfile(operative){
  return operative.abilities===undefined?profile:{...profile,skills:[...new Set([...operative.abilities.map(id=>CHARACTER_ABILITIES.find(a=>a.id===id)?.name??id),...(operative.traits??[]).map(id=>CONTENT_TRAITS.find(t=>t.id===id)?.name??id)])]};
 }
 export function speechFor(operative,event){return characterProfile(operative).speech[event]??null;}
+// Descriptions follow explicit pinned capabilities. Personality prose and
+// omitted older definitions cannot advertise a newly added gameplay effect.
+export function characterAbilityDescriptions(operative){return CHARACTER_ABILITIES.filter(ability=>(operative?.abilities??[]).includes(ability.id));}
 
 function customProfile(operative){
  const temper=operative.personality||'steady';
