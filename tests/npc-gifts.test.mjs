@@ -32,8 +32,9 @@ test('gift ownership validates quantities, recipients and duplicate identities a
 test('approach preview and contextual use spend real movement before handing over the garment',()=>{
  let b=field();npc(b).x=6;b.units[0].facing=2;const plan=npcGiftPreview(b,b.units[0],npc(b));assert.equal(plan.valid,true);assert.ok(plan.path.length);const n=give(b);assert.equal(n.lastError,null);assert.ok(n.units[0].x>2);assert.equal(npc(n).questGifts.length,1);assert.ok(n.elapsedSeconds>b.elapsedSeconds);
 });
-test('finite owned ponchos remain with the NPC through saves and visits and reward once without a trade',()=>{
- let c=step(initialCampaign(8),{type:'createOfficer',name:'Juana',answers:{origin:'cabildo',doctrine:'line_marksman',crisis:'rally'}});
+test('legacy omitted-definition ponchos retain their automatic reward and exact custody across saves and visits',()=>{
+ const old=initialCampaign(8);delete old.errandDefinitions;
+ let c=step(old,{type:'createOfficer',name:'Juana',answers:{origin:'cabildo',doctrine:'line_marksman',crisis:'rally'}});
  const stock=c.merchants.retiro.supplies.ponchos,cash=c.resources.treasury;
  c=withCarriedPonchos(c,1000,2);
  assert.equal(c.merchants.retiro.supplies.ponchos,stock);assert.equal(c.resources.treasury,cash);c=step(c,{type:'visitSector'});let pair=prepareCampaignBattle(c),b=pair.battle;c=pair.campaign;const cashBeforeGifts=c.resources.treasury;

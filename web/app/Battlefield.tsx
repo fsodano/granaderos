@@ -20,7 +20,7 @@ import FirearmShotEffect from './FirearmShotEffect';
 import InventoryMapCursor from './InventoryMapCursor';
 import {EquipmentInteractionProvider,useEquipmentInteraction} from '../lib/equipment-drag';
 import {selectedItemMapPreview,placeSelectedItemOnMap,inventoryIntentAt,toggleInventoryDestination,retainInventoryDestination,type InventoryMapOverride} from '../lib/inventory-map-controls';
-import JA2Conversation,{JA2Speech} from './JA2Conversation';
+import JA2Conversation,{JA2Speech,type ConversationChoice} from './JA2Conversation';
 import {npcGiftFeedback} from '../lib/npc-gift-feedback';
 import {hasAuthoredDialogue,dialogueReason,dialogueAvailability,dialogueApproach,ambientReply} from '../../game/npc-dialogue.js';
 import {rightClickAim} from '../../game/aim-cursor.js';
@@ -47,7 +47,7 @@ import {fixedBayonetFor} from '../../game/weapon-fittings.js';
 import { ChevronRight,Hand,RotateCcw,RotateCw,MessageCircle,Eye,ChevronUp,ChevronDown } from 'lucide-react';
 import { actBattle, presentedActBattle, getKnifeThrowVisual, getGrenadeThrowVisual, getMeleeAttackResult, getNpcGiftResult, endTurn, weaponFor, hasFirearm, bladeFor, actionCosts, artilleryCosts, visibleEnemies, visibleTiles, visibleRooms, canSee, environmentTargetAt, lootSearchPreview, approachCompleted } from '../../game/tactical.js';
 
-type Props = {onPlaybackBusy?:(busy:boolean)=>void;onPlaybackValidate?:(state:any)=>boolean;onPlaybackFrame?:(before:any,after:any)=>void;battle:any; onChange:(s:any)=>any; onFinish:()=>void; peacefulVisit?:boolean; onMap?:()=>void; onMissionFinish?:()=>void; mission?:any; conversation?:any; quests?:any; onTalk?:(npcId:string,approach:string,unitId:string,term?:string,choice?:{node:string;id:string})=>void; dialogues?:Record<string,any>; hireTerms?:Record<string,any[]>};
+type Props = {onPlaybackBusy?:(busy:boolean)=>void;onPlaybackValidate?:(state:any)=>boolean;onPlaybackFrame?:(before:any,after:any)=>void;battle:any; onChange:(s:any)=>any; onFinish:()=>void; peacefulVisit?:boolean; onMap?:()=>void; onMissionFinish?:()=>void; mission?:any; conversation?:any; quests?:any; onTalk?:(npcId:string,approach:string,unitId:string,term?:string,choice?:ConversationChoice)=>void; dialogues?:Record<string,any>; hireTerms?:Record<string,any[]>};
 type CameraView={x:number;y:number;width:number;height:number;worldWidth:number;worldHeight:number;zoom:number};
 type CameraAnchor={x:number;y:number};
 type CameraGesture={dx:number;dy:number}|{scale:number;from:CameraAnchor;to:CameraAnchor};

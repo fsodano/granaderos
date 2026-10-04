@@ -14,9 +14,11 @@ A special character answers through the existing portrait panel. A refusal shows
 
 The Retiro sargento accepts two usable wool ponchos. Each accepted garment retains its condition and identity in the NPC's physical inventory. Wrong objects, ruined garments and excess ponchos are refused without changing ownership. A selected dressing is offered as an object; it does not treat the NPC.
 
-The first physical delivery starts the errand if needed. The second completes it and applies the existing regional loyalty reward once, provided Retiro remains controlled. The panel shows received progress without a redundant confirmation button. Campaign acknowledgement counts are separate from item ownership: items exist only in the NPC's `questGifts`. Later dialogue, repeated clock synchronization, full saves and sector reentry preserve both progress and custody. Missing or decreased acknowledged receipts reject atomically. Ordinary clock checks inspect the bounded NPC receipt lists, not the terrain map.
+The first physical delivery starts the errand if needed. In a fresh campaign, the second waits for a conversation and an explicit reward choice: collect 40 pesos or waive the payment for local support (+8 loyalty, capped at 100). Both delivered garments stay with the sargento. The player can close the panel and decide later. The journal records the pending choice and the completed branch. Cash and civic rewards are exclusive. Retiro's control condition still applies. Older campaigns with omitted definitions and ordinary authored deliveries retain automatic completion.
 
-This adds no new accepted quest goods. Bulk powder and cavalry-supply errands still use campaign resources. It does not implement arbitrary NPC inventories, barter, money gifts, relationship-driven acceptance or JA2's full authored quest catalogue.
+Campaign acknowledgement counts are separate from item ownership: items exist only in the NPC's `questGifts`. Later dialogue, repeated clock synchronization, full saves and sector reentry preserve progress, custody and the chosen outcome. Missing or decreased acknowledged receipts reject atomically. A pending choice fails if the recipient dies, including death before the first campaign checkpoint. Completed outcomes remain credited. Gift replies save their actual hour and seconds, including after a conversation crosses an hour boundary. Ordinary clock checks inspect the bounded NPC receipt lists, not the terrain map.
+
+This choice adds no accepted goods. The current errands also include physical medical supplies, escorts and control reports. Arbitrary NPC inventories, barter, money gifts, relationship-driven acceptance and JA2's full authored quest catalogue remain open.
 
 Defensive deployments can omit the usual civilian roster. In that case, the previous nonrecruitable gift owner and his exact items remain in the same sector. Explicit NPC rosters remain authoritative, and named recruits are not restored as duplicate civilians. A real paid-gift → sector return → finite enemy column → tactical defense → full save test covers this transition; omitted or invalid gift owners still reject.
 
@@ -29,6 +31,8 @@ The ordinary-civilian refusal, fixed display timeout and period-game handling co
 ## Verification
 
 Core cases cover exact pockets, both hands, worn garments, wrong and excess offers, unchanged source metadata, concealed NPCs, stale positions, real routes, blocked approaches, roofs, exhaustion, moving NPCs and enemy contact. Campaign cases use a fresh paid recruit, finite depot issue, actual deployment, direct pocket gifts, saves, later dialogue and reentry. Component and controller cases cover cursor priority, zero-AP approach display, matching saved replies, refusals and parent rejection.
+
+The following historical checks predate reward choices and the retirement of depot shops. Current choice verification is in the [video review](../../verification/ja2-video-review-2026-10-03.md).
 
 A separate live preview on 12 September 2026 used the production Battlefield, campaign reducers and full save codec in the authored Retiro sector. Its starting state used a paid Acosta contract and two ponchos issued from finite depot stock. NPC movement interrupted the first approaches: energy fell, both ponchos stayed packed and no acceptance panel appeared. Reissuing the offer after reaching the recipient delivered the first poncho, opened the errand and displayed the saved 1/2 reply. Offering a dressing showed a portrait refusal with only a close control and retained both dressings.
 

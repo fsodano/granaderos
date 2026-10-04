@@ -23,9 +23,9 @@ test('notebook receipts are acknowledged quantities and incomplete territorial r
 });
 test('completed and failed errands retain their terminal outcome without delivery instructions',()=>{
  for(const status of ['completed','failed']){
-  const s=initialCampaign();s.quests['retiro-uniformes']={status,offeredAt:0,completedAt:status==='completed'?26:null,...(status==='failed'?{failedAt:26,failureReason:'contact-dead'}:{})};s.conversations['local-retiro']={giftCount:status==='completed'?2:1};
+  const s=initialCampaign();s.quests['retiro-uniformes']={status,offeredAt:0,completedAt:status==='completed'?26:null,...(status==='failed'?{failedAt:26,failureReason:'contact-dead'}:{questResolution:'civic'})};s.conversations['local-retiro']={giftCount:status==='completed'?2:1};
   const html=render(h(QuestJournal,{state:s}));assert.doesNotMatch(html,/Llevá los ponchos restantes|Primero asegurá/);
-  assert.match(html,/Día 2 · 2:00/);assert.match(html,status==='completed'?/Los reclutas tendrán abrigo/:/El contacto murió/);
+  assert.match(html,/Día 2 · 2:00/);assert.match(html,status==='completed'?/reintegro|apoyo local/:/El contacto murió/);
  }
 });
 

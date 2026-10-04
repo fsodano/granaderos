@@ -17,7 +17,7 @@ import {DEFAULT_IMPORT_RULES,validateImportRules} from './campaign-imports.js';
 import {validateHeadquarters} from './campaign-headquarters.js';
 import {defaultStartingTerritory,validateStartingTerritory} from './content-territory.js';
 import {DEFAULT_CAMPAIGN_RULES,validateCampaignRules} from './campaign-rules.js';
-import {validateQuestDefinitions,validateErrandContacts} from './quest-definitions.js';
+import {validateQuestDefinitions,validateErrandContacts,freshDefaultErrands} from './quest-definitions.js';
 import {validateContentQuests} from './content-quests.js';
 import {validateDialogue} from './content-dialogue.js';
 import {FORCE_EQUIPMENT,defaultForceEquipment,validateForceEquipment} from './content-force-equipment.js';
@@ -66,6 +66,7 @@ export function defaultContentPackage() {
     id: "granaderos",
     name: "Granaderos",
     quests: [],
+    errands: freshDefaultErrands(),
     rules: {...DEFAULT_CAMPAIGN_RULES},
     startingTerritory: defaultStartingTerritory(),
     headquarters: 'retiro',

@@ -1,6 +1,7 @@
 import {extractItemQuantity,SUPPLY_ITEMS} from './tactical-inventory.js';
 import {boundaryMatches} from './tactical-exits.js';
 import {validateOutfit} from './outfits.js';
+import {cityForSector,CITY_LOYALTY_REWARDS} from './cities.js';
 // Authored errands use physical delivery receipts or adjacent NPC dialogue.
 export const NPC_QUESTS=[
  {id:'jujuy-arriero',npcId:'local-jujuy',sector:'jujuy',title:'Escolta hasta la salida de la Quebrada',cost:{},escort:{edge:'W',destination:'humahuaca'},requiredSectors:['jujuy','humahuaca'],offer:'Acompañame hasta la salida occidental de Jujuy, hacia Humahuaca. Allí me reuniré con la recua. Seguiré al combatiente que acepte; hablame si debo esperar o seguir a otra persona. El camino debe estar bajo control patriota.',delivery:'Llegamos a la salida de la Quebrada. Esperaré aquí a la recua. El pueblo recordará tu ayuda.'},
@@ -10,12 +11,44 @@ export const NPC_QUESTS=[
  {id:'salta-correos',npcId:'macacha',sector:'salta',title:'Abrir la ruta del norte',reward:400,requiredSectors:['salta','jujuy'],offer:'Asegurá Salta y Jujuy y volvé a informarme. Pagaré 400 pesos cuando los enlaces puedan recorrer ambas localidades.',delivery:'Salta y Jujuy están seguras. Recibís 400 pesos por abrir la ruta.'},
 ];
 export function questsFor(state={}){return state.contentCampaign?.package.errands??state.errandDefinitions??NPC_QUESTS;}
-export function questForNPC(state,npcId){const q=questsFor(state).find(q=>q.npcId===npcId);return q?{...q,status:state.quests?.[q.id]?.status??'unoffered',conditionMet:q.requiredSectors.every(id=>state.sectors[id]?.owner==='patriot')&&(q.requires??[]).every(id=>state.quests?.[id]?.status==='completed')}:null;}
+export function questForNPC(state,npcId){
+ const q=questsFor(state).find(q=>q.npcId===npcId);if(!q)return null;
+ const record=state.quests?.[q.id],status=record?.status??'unoffered';
+ const conditionMet=q.requiredSectors.every(id=>state.sectors[id]?.owner==='patriot')&&(q.requires??[]).every(id=>state.quests?.[id]?.status==='completed');
+ return {...q,status,conditionMet,...(q.rewardChoice?{resolutionReady:status==='offered'&&conditionMet&&state.conversations?.[npcId]?.giftCount===q.carried.count,...(record?.questResolution!==undefined?{questResolution:record.questResolution}:{})}:{})};
+}
+// New physical receipts need acknowledgement. A complete legacy delivery can
+// also finish after its conditions change; a reward choice waits for speech.
+export function questGiftProgressPending(quest,count,acknowledged){
+ return count>acknowledged||count>0&&count===quest?.carried?.count&&!['completed','failed'].includes(quest.status)&&quest.conditionMet&&quest.rewardChoice===undefined;
+}
+export function questResolutionReward(quest,choice){
+ const reimbursement=quest?.rewardChoice?.reimbursement;
+ if(!quest?.carried||!cityForSector(quest.sector)||Object.keys(quest.rewardChoice??{}).length!==1||!Object.hasOwn(quest.rewardChoice??{},'reimbursement')||!Number.isSafeInteger(reimbursement)||reimbursement<1||reimbursement>10000||quest.reward!==undefined&&(quest.reward?.treasury!==0||quest.reward?.loyalty!==false)||!['cash','civic'].includes(choice))throw Error('La resolución del encargo es inválida.');
+ return choice==='cash'?{treasury:reimbursement,loyalty:false}:{treasury:0,loyalty:true};
+}
+export function questResolutionText(quest,choice){
+ const reward=questResolutionReward(quest,choice);
+ return `${quest.delivery} ${choice==='cash'?`Recibís un reintegro de ${reward.treasury} pesos.`:`Renunciás al reintegro. El apoyo de la localidad aumenta ${CITY_LOYALTY_REWARDS.quest} puntos, hasta un máximo de 100.`}`;
+}
+export function questDeliveryText(quest,count){
+ if(count<quest.carried.count)return `Recibimos ${count} de ${quest.carried.count} ${quest.carried.label.toLowerCase()}. Todavía faltan objetos para completar el encargo.`;
+ if(quest.rewardChoice){
+  if(quest.status==='failed')return 'Recibimos todos los objetos. El encargo terminó sin recompensa.';
+  if(quest.status==='completed')return questResolutionText(quest,quest.questResolution);
+  if(quest.conditionMet===false)return 'Recibimos todos los objetos. Falta asegurar las localidades y completar los encargos previos antes de elegir la recompensa.';
+  return `Recibimos todos los objetos. Hablá conmigo para cobrar ${quest.rewardChoice.reimbursement} pesos de reintegro o renunciar al pago para mejorar el apoyo local.`;
+ }
+ return quest.conditionMet===false?'Recibimos todos los objetos. Falta asegurar las localidades del encargo.':quest.delivery;
+}
 export function validateQuests(quests,hour,state={}){
  const definitions=questsFor(state);
  return quests&&typeof quests==='object'&&!Array.isArray(quests)&&Object.entries(quests).every(([id,q])=>{
   if(!definitions.some(n=>n.id===id)||!q||!['offered','completed','failed'].includes(q.status)||!Number.isInteger(q.offeredAt)||q.offeredAt<0||q.offeredAt>hour)return false;
   const definition=definitions.find(n=>n.id===id);
+  if(definition.rewardChoice&&q.status==='completed'){
+   if(!['cash','civic'].includes(q.questResolution))return false;
+  }else if(Object.hasOwn(q,'questResolution'))return false;
   if(definition.escort){
    const order=q.escortOrder;
    if(order===undefined?q.status!=='failed':!order||typeof order.leaderId!=='string'||!/^\d+$/.test(order.leaderId)||typeof order.waiting!=='boolean'||Object.keys(order).some(k=>!['leaderId','waiting'].includes(k)))return false;
@@ -70,11 +103,11 @@ export function questGiftDecision(npc,stack,state={}){
   const remaining=quest.carried.count-gifts.length;
   if(stack.count>remaining)return refuse(`Solo faltan ${remaining} ${quest.carried.label.toLowerCase()}. Seleccioná esa cantidad o una menor.`);
   const supply=SUPPLY_ITEMS[quest.carried.item],received=Array.from({length:stack.count},()=>({item:supply.item,count:1,weight:supply.weight}));
-  return {accepted:true,gifts:[...structuredClone(gifts),...received],text:stack.count===remaining?quest.delivery:`Gracias por la entrega. Todavía faltan ${remaining-stack.count} ${quest.carried.label.toLowerCase()}.`};
+  return {accepted:true,gifts:[...structuredClone(gifts),...received],text:stack.count===remaining?(quest.rewardChoice?questDeliveryText(quest,quest.carried.count):quest.delivery):`Gracias por la entrega. Todavía faltan ${remaining-stack.count} ${quest.carried.label.toLowerCase()}.`};
  }
  if(stack?.kind!=='outfit'||stack.outfit!==quest.carried.outfit||!(stack.condition>0)||stack.count!==1)return refuse(`Necesitamos ${quest.carried.label.toLowerCase()} en buen estado.`);
  const {item,...gift}=structuredClone(stack);validateOutfit(gift,{worn:true});
- return {accepted:true,gifts:[...structuredClone(gifts),gift],text:state.errandDefinitions!==undefined?(gifts.length+1===quest.carried.count?quest.delivery:`Gracias por la entrega. Todavía faltan ${quest.carried.count-gifts.length-1}.`):(gifts.length+1===quest.carried.count?'Gracias. Ya tenemos los dos ponchos para los reclutas.':'Gracias por el poncho. Todavía necesitamos uno más.')};
+ return {accepted:true,gifts:[...structuredClone(gifts),gift],text:quest.rewardChoice?questDeliveryText(quest,gifts.length+1):state.errandDefinitions!==undefined?(gifts.length+1===quest.carried.count?quest.delivery:`Gracias por la entrega. Todavía faltan ${quest.carried.count-gifts.length-1}.`):(gifts.length+1===quest.carried.count?'Gracias. Ya tenemos los dos ponchos para los reclutas.':'Gracias por el poncho. Todavía necesitamos uno más.')};
 }
 export function questGiftPlan(unit,npc,state={}){
  const quest=questsFor(state).find(q=>q.npcId===npc?.id);
@@ -93,7 +126,7 @@ export function questGiftPlan(unit,npc,state={}){
 export function questJournal(state){
  return questsFor(state).flatMap(quest=>{
   const record=state.quests?.[quest.id];if(!record)return [];
-  return [{...quest,...record,delivered:quest.carried?Math.min(quest.carried.count,state.conversations?.[quest.npcId]?.giftCount??0):null,
+  return [{...quest,...record,...(quest.rewardChoice?{resolutionReady:questForNPC(state,quest.npcId).resolutionReady}:{}),delivered:quest.carried?Math.min(quest.carried.count,state.conversations?.[quest.npcId]?.giftCount??0):null,
    missingQuests:(quest.requires??[]).filter(id=>state.quests?.[id]?.status!=='completed').map(id=>questsFor(state).find(q=>q.id===id)?.title??id),unsecured:record.status==='offered'?quest.requiredSectors.filter(id=>state.sectors[id]?.owner!=='patriot'):[]}];
  }).sort((a,b)=>(a.status==='offered'?0:1)-(b.status==='offered'?0:1)||b.offeredAt-a.offeredAt);
 }
