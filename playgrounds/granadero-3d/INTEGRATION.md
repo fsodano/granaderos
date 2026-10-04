@@ -1,6 +1,6 @@
 # Full tactical-sector 3D integration
 
-Status: preparation only. The other active gameplay session must finish and merge before implementation starts from refreshed `origin/main`.
+Status: implementation in progress in the isolated playground worktree. Models, terrain, camera, input and motion proceed in parallel with the other gameplay session. Ballistic effects wait for its tested ricochet merge. Integration base: `02eff792`, merged by `aa1f6aa3`.
 
 This plan records the full requested scope. A character-only overlay, one working soldier, or an asset viewer is not completion.
 
