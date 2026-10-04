@@ -6,7 +6,7 @@ export function validateAbilityReferences(state,value=state){
  // Progress records are mutable and get overlaid on roster entries at deployment.
  // Capabilities belong only to the immutable character definition.
  for(const record of Object.values(value.operativeState??{}))need(record.abilities===undefined);
- for(const actor of campaignActors(value)){
+ for(const actor of [...campaignActors(value),...campaignActors(value.pendingBattle?.resumeSnapshot??{})]){
   const definition=characterForActor(state,actor),expected=definition?.abilities;
   if(definition&&actor.contentId!==undefined)need(actor.contentId===definition.id);
   if(expected===undefined){need(actor.abilities===undefined);continue;}

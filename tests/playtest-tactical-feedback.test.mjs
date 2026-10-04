@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createBattle,actBattle,presentedActBattle,getReachable,actionCosts,shotChance,maxActionPoints,hasLineOfSight,teamCanSee} from '../game/tactical.js';
+import {createBattle,actBattle,presentedActBattle,getReachable,actionCosts,shotChance,maxActionPoints,hasLineOfSight,teamCanSee,getCareComposureResult} from '../game/tactical.js';
+import {runBattleJob} from '../game/battle-job.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
 import {fieldPractice,fieldPracticeChance,practice,validateTraining} from '../game/skill-training.js';
 import {targetPreview,pickupSelection} from '../game/ja2-hud.js';
@@ -120,4 +121,15 @@ test('an observed resident receives target focus and a real hit reaction in comm
  assert.equal(flight.state.npcs[0].hp,s.npcs[0].hp);assert.deepEqual(flight.impacts,[]);assert.equal(flight.shotVisual.outcome,'hit');assert.ok(battleFrameDuration(flight)>=BATTLE_PLAYBACK.projectileMinimum);
  assert.equal(impact.type,'impact');assert.equal(impact.impacts[0].victimKind,'npc');assert.equal(impact.impacts[0].damage,s.npcs[0].hp-result.state.npcs[0].hp);assert.equal(impact.state.npcs[0].hp,result.state.npcs[0].hp);assert.equal(battleFrameDuration(impact),BATTLE_PLAYBACK.impact);
  for(const frame of [prepare,flight,impact]){const focus=battleFrameFocus(frame),targetX=frame===flight?flight.shotVisual.impact.x:s.npcs[0].x;assert.equal(focus.x,(s.units[0].x+targetX)/2);assert.equal(focus.y,1);assert.ok(!frame.visibleIds.includes('resident'),'the existing unit visibility list remains a unit list');}
+});
+
+
+test('care composure feedback is an actual action result and cannot be manufactured by worker or saved-state shock deltas',()=>{
+ const before=createBattle([{id:'caregiver',name:'Sanitario',x:1,y:1,facing:2,activeSlot:'medical',medical:60,medkits:2,abilities:['care_composure'],shock:3},{id:'patient',name:'Herido',x:2,y:1,hp:30,bleeding:3,bandaged:0}],{width:8,height:8,seed:45,enemies:[{id:'enemy',x:7,y:7,patrol:false,overwatch:false}]});
+ const action={type:'useItem',unitId:'caregiver',targetId:'patient'},ordinary=actBattle(before,action),presented=presentedActBattle(before,action);assert.equal(ordinary.lastError,null);assert.deepEqual(presented.state,ordinary);
+ const expected={unitId:'caregiver',targetId:'patient',targetKind:'unit',relief:2};assert.deepEqual(getCareComposureResult(before,ordinary),expected);assert.deepEqual(getCareComposureResult(before,presented.state),expected);
+ const changed=getCareComposureResult(before,ordinary);changed.relief=99;assert.deepEqual(getCareComposureResult(before,ordinary),expected,'reading or altering a returned result cannot alter the accepted event');
+ assert.equal(getCareComposureResult(ordinary,ordinary),null);assert.equal(getCareComposureResult(before,structuredClone(ordinary)),null);assert.equal(getCareComposureResult(before,JSON.parse(JSON.stringify(ordinary))),null);
+ const worker=structuredClone(runBattleJob({battle:before,action}));assert.deepEqual(worker,ordinary);assert.equal(getCareComposureResult(before,worker),null,'structured clone retains authoritative shock, never a fabricated presentation receipt');
+ assert.equal(ordinary.units[0].shock,1);assert.equal(ordinary.units[0].medkits,1);assert.equal(ordinary.units[1].bleeding,0);assert.ok(!JSON.stringify(ordinary).includes('composureRelief'));assert.deepEqual(tacticalFeedback(before,worker),[],'generic feedback does not infer care from shock or dressing changes');
 });

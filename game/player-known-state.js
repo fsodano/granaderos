@@ -15,6 +15,7 @@ import {enemyIntelligenceReports} from './enemy-intelligence.js';
 import {publicAssignmentNotice} from './assignment-attention.js';
 import {spaceKey} from './tactical-space.js';
 import {heldGrenade,grenadeThrowCosts,grenadeThrowRange,GRENADE_THROW} from './grenade-throw.js';
+import {CARE_COMPOSURE_RELIEF} from './care-composure.js';
 
 // Explicit allowlists: new simulation fields remain private until reviewed here.
 const scalar=value=>value===null||['string','number','boolean'].includes(typeof value);
@@ -31,7 +32,7 @@ const item=stack=>typeof stack==='number'?{count:stack}:{...pick(stack,ITEM),...
 const cursor=unit=>unit.equipmentCursor?{equipmentCursor:{sourceId:unit.equipmentCursor.sourceId,stack:item(unit.equipmentCursor.stack)}}:{};
 const handMetadata=unit=>Object.fromEntries(['weaponMetadata','bladeMetadata'].filter(key=>unit[key]!==undefined).map(key=>[key,item(unit[key])]));
 const inventory=unit=>Object.fromEntries(Object.entries(unit.inventory??{}).map(([key,stack])=>[key,item(stack)]));
-const treatmentPreview=preview=>preview?.treatment?{treatment:pick(preview.treatment,['critical','targetHP','hpGain','hpAfter','work','remainingWork','capacity','dressingsUsed','bleedingAfter','bandagedAfter','complete','partial'])}:{};
+const treatmentPreview=preview=>preview?.treatment?{treatment:pick(preview.treatment,['critical','targetHP','hpGain','hpAfter','work','remainingWork','capacity','dressingsUsed','bleedingAfter','bandagedAfter','complete','partial']),...(preview.valid&&Number.isFinite(preview.composureRelief)&&preview.composureRelief>0&&preview.composureRelief<=CARE_COMPOSURE_RELIEF?{composureRelief:preview.composureRelief}:{})}:{};
 const fresh=(state,contact)=>contact&&Number.isInteger(contact.turn)&&contact.turn<=state.turn&&state.turn-contact.turn<=3;
 const departure=unit=>({...pick(unit,['id','name','nickname','hp','maxHp']),...pick(unit.departure,['edge','destination','elapsedSeconds','mountId'])});
 

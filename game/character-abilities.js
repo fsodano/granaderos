@@ -16,6 +16,7 @@ export const CHARACTER_ABILITIES = [
  ['foot_morale','Mando de infantería','Sostiene la moral de combatientes cercanos a pie.'],
  ['mounted_intimidation','Intimidación montada','Una carga montada puede amedrentar a enemigos cercanos.'],
  ['rapid_first_aid','Atención rápida','Reduce el coste de la atención médica.'],
+ ['care_composure','Serenidad al cuidar','Al tratar una herida de otra persona a la vista, reduce hasta 2 puntos de tensión. Usa los PA y las vendas habituales. No se aplica al tratarse a sí mismo.'],
  ['tactical_command','Mando táctico','Mejora puntería, iniciativa y reacción de compañeros cercanos.'],
  ['strategic_command','Gran mando','Mejora puntería, iniciativa, reacción y moral de compañeros cercanos.'],
  ['protected_commander','Mando protegido','Puede recibir la protección de un compañero sin exigir 90 puntos de liderazgo.'],

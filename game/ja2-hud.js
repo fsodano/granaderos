@@ -308,6 +308,7 @@ function medicalTreatmentText(state, preview) {
   return [approach,'Usa una venda.',treatment.hpGain>0?`Salud: +${treatment.hpGain}, hasta ${treatment.hpAfter}.`:null,
     treatment.bleedingAfter>0?`Hemorragia restante: ${treatment.bleedingAfter}.`:'Sin hemorragia al terminar.',
     treatment.partial?'Tratamiento parcial: necesita más vendas.':treatment.critical?'Estabilizado. La recuperación completa requiere atención en campaña.':'Las heridas quedan vendadas; la recuperación de salud requiere atención en campaña.',
+    preview.composureRelief>0?(preview.composureRelief<.01?'La tensión del sanitario baja menos de 0,01.':`Tensión del sanitario: −${new Intl.NumberFormat('es-AR',{maximumFractionDigits:2}).format(preview.composureRelief)}.`):null,
     preview.movePa?'El contacto puede detener la acción.':null].filter(Boolean).join(' ');
 }
 function pendingMovementPreview(point,ctx){
@@ -349,8 +350,8 @@ function targetPreviewWithCosts(state, unit, point, ctx = {}) {
   if(civilianAid){
     const patient=state.npcs.find(n=>n.id===civilianAid.targetId),options={targetKind:'npc'};
     const local=mode==='heal'?medicalUsePreview(state,unit,patient,options):null;
-    const preview=local?{pa:local.cost,valid:local.allowed,reason:local.reason,movePa:0,actionPa:local.cost,treatment:local.treatment}:itemUsePreview(state,unit,patient,options);
-    return {name:patient.name,actionLabel:preview.movePa?'Acercarse y vendar':'Vendar',pa:preview.pa,remaining:Math.max(0,unit.ap-(state.mode==='exploration'?0:preview.pa)),valid:preview.valid,reason:preview.reason,treatment:preview.treatment,coverNote:medicalTreatmentText(state,preview)};
+    const preview=local?{pa:local.cost,valid:local.allowed,reason:local.reason,movePa:0,actionPa:local.cost,treatment:local.treatment,...(local.composureRelief>0?{composureRelief:local.composureRelief}:{})}:itemUsePreview(state,unit,patient,options);
+    return {name:patient.name,actionLabel:preview.movePa?'Acercarse y vendar':'Vendar',pa:preview.pa,remaining:Math.max(0,unit.ap-(state.mode==='exploration'?0:preview.pa)),valid:preview.valid,reason:preview.reason,treatment:preview.treatment,...(preview.composureRelief>0?{composureRelief:preview.composureRelief}:{}),coverNote:medicalTreatmentText(state,preview)};
   }
   const recipient=state.npcs?.find(n=>!n.departure&&!n.fled&&sameCell(n,point)&&canSee(state,unit,n));
   if(recipient&&unit.activeSlot==='item'&&!heldGrenade(unit)&&['move','useItem'].includes(mode)){const gift=npcGiftPreview(state,unit,recipient);return {name:recipient.name,actionLabel:gift.label,pa:gift.pa,remaining:unit.ap,valid:gift.valid,reason:gift.reason,coverNote:'Se entrega el objeto que está en la mano. No se usa la reserva del cuartel.'};}
@@ -395,8 +396,8 @@ function targetPreviewWithCosts(state, unit, point, ctx = {}) {
   }
   if (mode === 'heal' || unit.activeSlot === 'medical' && ['move', 'useItem'].includes(mode) && target) {
     const local=mode==='heal'?medicalUsePreview(state,unit,target??null):null;
-    const preview=local?{pa:local.cost,valid:local.allowed,reason:local.reason,movePa:0,actionPa:local.cost,treatment:local.treatment}:itemUsePreview(state,unit,target);
-    return {name:target?.name||tacticalGridLabel(point.x,point.y),actionLabel:preview.movePa?'Acercarse y vendar':'Vendar',pa:preview.pa,remaining:Math.max(0,unit.ap-(state.mode==='exploration'?0:preview.pa)),coverNote:medicalTreatmentText(state,preview),treatment:preview.treatment,reason:preview.reason,valid:preview.valid};
+    const preview=local?{pa:local.cost,valid:local.allowed,reason:local.reason,movePa:0,actionPa:local.cost,treatment:local.treatment,...(local.composureRelief>0?{composureRelief:local.composureRelief}:{})}:itemUsePreview(state,unit,target);
+    return {name:target?.name||tacticalGridLabel(point.x,point.y),actionLabel:preview.movePa?'Acercarse y vendar':'Vendar',pa:preview.pa,remaining:Math.max(0,unit.ap-(state.mode==='exploration'?0:preview.pa)),coverNote:medicalTreatmentText(state,preview),treatment:preview.treatment,...(preview.composureRelief>0?{composureRelief:preview.composureRelief}:{}),reason:preview.reason,valid:preview.valid};
   }
 
   let pa, chance, chanceLabel, reason, actionLabel, attackType, attackLabel, coverNote, shotLoadForecast;

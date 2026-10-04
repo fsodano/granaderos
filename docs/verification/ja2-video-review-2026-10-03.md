@@ -19,7 +19,7 @@ The user's later instructions control adaptations. Use the Granaderos historical
 | V03 · 1:55–2:44 | A custom character's answers affect attributes, specialties and later identity. | `character-profile.js` and creation orders provide the survey, budget and trait admission. New version-2 commissions now require at least 15 health, matching the existing consciousness threshold; the real creator uses that same bound while other attributes still admit zero and the budget stays 550. Public rejection is atomic, old valid low-health profiles remain unchanged, and a minimum-health officer can save, take a real paid step and return with finite owned equipment. Existing questionnaire checks cover movement, night vision, instruction and temperament; wider later consequences remain part of acceptance. |
 | V04 · 2:48–4:24 | Strength, dexterity, agility, wisdom and experience affect actions; use develops skills; experience affects salary and awareness. | Shared costs, load, fists, tools, care, initiative and contract quotes contain these effects. `skill-training.js` uses wisdom and a separate saved practice seed; practice and capped progress persist. Movement, shooting, care and work have events. A capable intended player now receives one ordinary agility-practice attempt after an actual paid hostile single-ball miss passes close before its physical stop. Hits, redirected injury, misfires, rays stopped before the player, distant rays, point fire, pellets and cannon fire give none. Ordinary/presented execution, saved replay and campaign settlement preserve the same result. The tighter distances and credit amount are declared Granaderos tuning; they do not claim the exact classic growth formula. |
 | V05 · 4:32–5:05 | Specialties make night work, stealth, paired weapons, roofs and blades useful alternatives. | Current character abilities, sight, paired-pistol and melee rules provide period choices. Check every exposed trait against a real action, costs and saves; unsupported trait text does not prove the mechanic. Modern automatic weapons are not a period substitute. |
-| V06 · 5:15–6:56 | A companion relationship can force a roster choice; contextual personality can affect performance. | Shared-service cohesion and temperament exist. Authored `serviceRefusals` prevent a new hire or renewal while a named rival actually serves. The fictional default Inés Aguirre/Gaspar Villalba disagreement gives a roster choice; the hiring, renewal and editor controls disclose it. Authored favorable preferences now give up to +3 temporary morale when a capable named companion actually deploys, within the existing total +5 team-support cap. The fictional Aguirre/Lagos preference and authoring rules are described in [service relationships](../gameplay/characters/service-relationships.md). Exact paid terms and already accepted arrivals remain valid; older pinned packages without a preference remain neutral. Confirmed deployment-return and strategic military-bleeding deaths admit one saved named companion-loss letter. A capable issued participant who directly witnesses a preferred military companion die now receives one saved, clipped additional morale loss of up to 6 and a short named notice. Fatal physical hits and untreated tactical bleeding use the same observed transition; hidden or old deaths do not backfill it. The original support receipt stays fixed, and the actual return retains the loss. This is declared Granaderos tuning. Complaints, evolving opinions, other death-notice paths, contextual fears and later departures remain separate requirements. |
+| V06 · 5:15–6:56 | A companion relationship can force a roster choice; contextual personality can affect performance. | Shared-service cohesion and temperament exist. Authored `serviceRefusals` prevent a new hire or renewal while a named rival actually serves. The fictional default Inés Aguirre/Gaspar Villalba disagreement gives a roster choice; the hiring, renewal and editor controls disclose it. Authored favorable preferences now give up to +3 temporary morale when a capable named companion actually deploys, within the existing total +5 team-support cap. The fictional Aguirre/Lagos preference and authoring rules are described in [service relationships](../gameplay/characters/service-relationships.md). Exact paid terms and already accepted arrivals remain valid; older pinned packages without a preference remain neutral. Confirmed deployment-return and strategic military-bleeding deaths admit one saved named companion-loss letter. A capable issued participant who directly witnesses a preferred military companion die now receives one saved, clipped additional morale loss of up to 6 and a short named notice. Fatal physical hits and untreated tactical bleeding use the same observed transition; hidden or old deaths do not backfill it. The original support receipt stays fixed, and the actual return retains the loss. New default Cejas content also gives one explicit contextual care effect: paid effective first aid to another directly observed living person reduces her current shock by up to 2, using ordinary dressing, action and treatment rules. Older pinned packages without the ability stay neutral. See [care composure](../gameplay/characters/care-composure.md). These amounts are declared Granaderos tuning. Complaints, evolving opinions, other death-notice paths, contextual fears and later departures remain separate requirements. |
 | V07 · 7:00–8:19 | Weapon handling, weight, range, condition, fittings and regional protection have tradeoffs. | Physical carried weight, typed charges, readiness, condition, aim, range, bayonet custody and three worn regions exist. Actual physical injury now wears only the actual recipient's garment in the struck region, using clipped HP loss. Worn and packed garments use the existing finite hourly repair queue after weapons and tools. Condition-zero clothing remains owned; a serviceable packed linen shirt can instead be consumed for dressings. Historically supported ballistic protection remains open; cloth supplies no new bullet damage reduction. Modern scopes, suppressors, ceramics and ballistic vests are not copied into 1812. |
 | V08 · 8:20–9:31 | Stance and cover change exposure and shooting; weak cover differs from hard cover. | Shared muzzle/body heights, posture, material resistance, furniture, window geometry and authored terraces affect real shots and forecasts. Smoke/concealment affect observation separately. Continue verifying UI, AI and actual orders against the same physical rules, including heights and hidden information. |
 | V09 · 9:32–10:26 | Head, torso and leg shots trade accuracy, injury and mobility; owned attachments change handling. | Three body regions, leg knockdown/unhorsing and the existing physical bayonet fitting are implemented. Wider period-appropriate attachments require an explicit choice and source, not renamed modern equipment. Live regional consequences and saved injuries remain part of acceptance. |
@@ -28,7 +28,7 @@ The user's later instructions control adaptations. Use the Granaderos historical
 | V12 · 11:53–12:18 | Travel can produce danger, discoveries and local opportunities. | Persistent strategic enemy groups and actual contact exist. One optional [finite roadside chest](../gameplay/campaign/roadside-discoveries.md) now uses an explicit pinned definition, physical discovery and pickup. Its used crowbar and linen shirt remain owned through saves and return visits; old omitted packages stay neutral. It grants no arrival reward. Wider caches, optional encounters and local opportunities still require authored encounters and saved outcomes. Giant-cat encounters are not inferred as required Argentine content. |
 | V13 · 12:23–14:00 | The player chooses routes, daylight or night entry, specialists, retreat/recovery and alternate access. | Independent squads, timed approaches, placement, night sight, paid exits, care and persistent encounters exist. Campaign phases retain historical progression. An acquired crowbar can open a saved, traversable ground-level adobe/wood passage at the existing 25/45-AP cost. Broader route freedom and historically supported alternate access remain open. Door-mounted explosive charges are not planned without reliable evidence for the 1810–1820 setting; keys, locks, crowbars, windows and route choices are the current approach. A complete legal campaign must retain money, ammunition, wounds, casualties and paid travel; the short suite alone does not prove it. |
 | V14 · 14:09–14:56 | A quest can have competing resolutions with different persistent rewards and civic consequences. | Physical deliveries, escorts, failures and authored mission outcomes exist. Fresh Retiro poncho deliveries now wait for a choice between 40 pesos and local support (+8 loyalty), with exclusive saved rewards and real retained garments. Authored city deliveries can use this choice. Local support can affect militia eligibility; it does not alter port income. This is a first competing-reward slice. Different beneficiaries, broader quest outcomes and their territorial consequences remain incomplete; it does not copy the chalice quest. |
-| V15 · 16:37–17:00 | Individual lines, jokes, reactions and discontent give people a distinct presence. | Authored personal greetings, contextual text banter and event cooldowns exist. Confirmed companion-loss letters and a brief witnessed-loss notice add saved named text reactions. The witnessed loss also changes existing morale and accuracy rules. Distinct recorded voices, broader event-specific speech and meaningful discontent remain open. Text, a generic sound or the relationship rule alone does not prove voice-work acceptance. |
+| V15 · 16:37–17:00 | Individual lines, jokes, reactions and discontent give people a distinct presence. | Authored personal greetings, contextual text banter and event cooldowns exist. Confirmed companion-loss letters and a brief witnessed-loss notice add saved named text reactions. The witnessed loss also changes existing morale and accuracy rules. Effective manual care by an explicitly capable caregiver now gives a brief named tension-relief notice from the actual paid result; loading does not replay that notice. See [care composure](../gameplay/characters/care-composure.md). Distinct recorded voices, broader event-specific speech and meaningful discontent remain open. Text, a generic sound or the relationship rule alone does not prove voice-work acceptance. |
 
 ## Delivery and proof
 
@@ -412,3 +412,68 @@ checks remain intact. The expanded twelve-file affected gate passes 129/129.
 Production source remains unchanged by this test-only correction.
 
 The final frozen source and tests pass **4,795/4,795 short checks, zero failures, cancellations, skips or pending checks**, all 686 selected files complete in 589.86 seconds, with `complete: true` and no name filters. The established profile excludes eight extended files from 694 total. The final run uses four workers; selection remains complete. Typecheck and production export **8033caeb7f9f** pass (1,133 files and 1,033 asset references), with the built source digest equal to the frozen source. Documentation, baseline (38/38), five shard self-tests, complete 694-file shard coverage and whitespace checks pass. Extended simulations and live player-browser QA were not repeated. The player origin at localhost:3141 was untouched. Wider personality, discoveries/quests, voices and full campaign/video acceptance remain open.
+
+## Contextual care checkpoint — 4 October 2026
+
+New default Cejas content now carries explicit `care_composure`. Effective first
+aid to another directly observed living person reduces the caregiver's current
+shock by up to two. Military patients must be on the same side; any room containing a civilian
+patient must also be disclosed. A real owned dressing and the normal
+medical action remain necessary. HP, bleeding or bandaged coverage must improve.
+Self-care, ineffective care and rejected actions grant nothing. These are
+Granaderos personality rules, not verified JA2 or historical numerical rules.
+
+Recruitment, dossier, editor and allowed medical previews disclose the condition
+and cap. Accepted manual care can show a short named notice with actual relief.
+Its UI identity restarts the existing four-second timer even for equal messages.
+The action-local notice is absent after a saved or worker clone; the current
+manual care UI uses synchronous presented execution. No saved reaction ledger,
+voice, strategic reward, extra morale, energy or AP is introduced. Older pinned
+packages that omit the ability stay neutral. Pinned capabilities are checked
+before active clock synchronization, settled clock updates and full return.
+Stored resume snapshots are checked during restoration and before they can be
+discarded by a later campaign or clock action.
+
+The paid acceptance hires native Cejas (130) for 252 pesos and Acosta (110) for 420,
+retaining 2,528. Real arrivals occur at hour six and the assault at hour eighteen.
+Its prepared 48×16 arena declares a stone screen at 7,2, passive enemy posts and
+representative seed 42 before initial official save admission. The original
+four-enemy force, native health, skills and finite equipment remain. Two earlier
+open-lane probes failed before care. This screened acceptance does not establish
+a fresh opening victory or full-campaign balance.
+
+Nineteen legal events and 24 tactical seconds produce one real enemy death and
+no player deaths. Hostile attacks leave Cejas at 30 HP and Acosta at 36 HP, each with
+three bleeding. Cejas's actual external care costs 20 PA and one dressing, leaves
+Acosta at 36 HP, stops his bleeding and lowers her shock 2.125→0.125. Medical
+practice and its random seed match ordinary care. Her conditional aim-one next-shot calculation
+is 2% against the older pinned control's 1%, for an enemy directly visible to
+her and her team. The pistol is empty: the actual public preview offers the
+normal 32 PA reload and shows no attack chance yet. No paid post-care reload or
+further discharge is claimed. Acosta's normal reciprocal care
+costs 25 PA and one dressing and stops Cejas's bleeding without restoring HP.
+
+The pistol and musket retain eight and nine of their original ten rounds,
+condition 98/99, and one of each person's original two dressings. Ordinary and
+presented execution agree. Every event replays through official saved orders;
+the issued north exits charge 8 PA each. Validated Retiro return, stale-settlement
+rejection and two actual visits/leaves preserve wounds, gear, terms and money.
+Return-to-sector shock uses the existing transient rule; no saved calm reward
+is inferred. The old pinned control has identical clinical costs, practice,
+combat randomness, actual casualties and returned custody.
+
+The core affected gate passes 82/82; the consumer/editor gate passes 173/173;
+nearby unchanged feedback/civilian checks pass 18/18; the final context/clock gate
+passes 34/34; and the independent paid acceptance passes 1/1. These groups overlap
+the complete suite. The final frozen run passes **4,810/4,810 short checks**, with zero failures,
+cancellations, skips or pending checks. All 689 selected files finish in 384.36
+seconds with `complete: true`, eight workers and no name filters. The established
+profile excludes eight extended files from 697 total. Typecheck and production
+export **44a5c9460438** pass (1,133 files, 1,033 asset references); the built source
+identity matches the frozen input. Documentation, baseline 38/38, five shard
+self-tests, complete 697-file shard coverage and whitespace checks pass. Source
+and all 861 test/support paths retain their frozen hashes. Extended simulations
+and live player-browser QA were not repeated. The player origin at localhost:3141 remains untouched.
+V06 fears, complaints, evolving opinions and later departures remain open. V15
+recorded voices and broader discontent remain open. Cannon and 3D presentation
+remain separately owned.
