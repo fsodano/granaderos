@@ -153,7 +153,11 @@
             0,
             0
           ],
-          "scale": 1
+          "scale": 1,
+          "mirror": {
+            "socket": "handRight_pistol",
+            "localAxis": "z"
+          }
         },
         "handLeft_sabre": {
           "node": "socket_handLeft_sabre",
@@ -374,7 +378,11 @@
             0,
             0
           ],
-          "scale": 1
+          "scale": 1,
+          "mirror": {
+            "socket": "handRight_pistol",
+            "localAxis": "z"
+          }
         },
         "handLeft_sabre": {
           "node": "socket_handLeft_sabre",
@@ -595,7 +603,11 @@
             0,
             0
           ],
-          "scale": 1
+          "scale": 1,
+          "mirror": {
+            "socket": "handRight_pistol",
+            "localAxis": "z"
+          }
         },
         "handLeft_sabre": {
           "node": "socket_handLeft_sabre",
@@ -816,7 +828,11 @@
             0,
             0
           ],
-          "scale": 1
+          "scale": 1,
+          "mirror": {
+            "socket": "handRight_pistol",
+            "localAxis": "z"
+          }
         },
         "handLeft_sabre": {
           "node": "socket_handLeft_sabre",
@@ -1037,7 +1053,11 @@
             0,
             0
           ],
-          "scale": 1
+          "scale": 1,
+          "mirror": {
+            "socket": "handRight_pistol",
+            "localAxis": "z"
+          }
         },
         "handLeft_sabre": {
           "node": "socket_handLeft_sabre",
@@ -1258,7 +1278,11 @@
             0,
             0
           ],
-          "scale": 1
+          "scale": 1,
+          "mirror": {
+            "socket": "handRight_pistol",
+            "localAxis": "z"
+          }
         },
         "handLeft_sabre": {
           "node": "socket_handLeft_sabre",
@@ -1479,7 +1503,11 @@
             0,
             0
           ],
-          "scale": 1
+          "scale": 1,
+          "mirror": {
+            "socket": "handRight_pistol",
+            "localAxis": "z"
+          }
         },
         "handLeft_sabre": {
           "node": "socket_handLeft_sabre",
@@ -1700,7 +1728,11 @@
             0,
             0
           ],
-          "scale": 1
+          "scale": 1,
+          "mirror": {
+            "socket": "handRight_pistol",
+            "localAxis": "z"
+          }
         },
         "handLeft_sabre": {
           "node": "socket_handLeft_sabre",
@@ -6462,7 +6494,21 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "seatWeight": [
+            {
+              "time": 0,
+              "weight": 1
+            },
+            {
+              "time": 0.872663176,
+              "weight": 0
+            },
+            {
+              "time": 1.283328,
+              "weight": 0
+            }
+          ]
         },
         {
           "name": "life.mounted.collapse",
@@ -6494,7 +6540,21 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "seatWeight": [
+            {
+              "time": 0,
+              "weight": 1
+            },
+            {
+              "time": 0.872663176,
+              "weight": 0
+            },
+            {
+              "time": 1.283328,
+              "weight": 0
+            }
+          ]
         },
         {
           "name": "life.mounted.dead",
@@ -6627,7 +6687,21 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "seatWeight": [
+            {
+              "time": 0,
+              "weight": 1
+            },
+            {
+              "time": 0.872663176,
+              "weight": 0
+            },
+            {
+              "time": 1.283328,
+              "weight": 0
+            }
+          ]
         },
         {
           "name": "crew.artilleryFire",
@@ -11837,7 +11911,21 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "seatWeight": [
+            {
+              "time": 0,
+              "weight": 1
+            },
+            {
+              "time": 0.872663176,
+              "weight": 0
+            },
+            {
+              "time": 1.283328,
+              "weight": 0
+            }
+          ]
         },
         {
           "name": "life.mounted.collapse",
@@ -11869,7 +11957,21 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "seatWeight": [
+            {
+              "time": 0,
+              "weight": 1
+            },
+            {
+              "time": 0.872663176,
+              "weight": 0
+            },
+            {
+              "time": 1.283328,
+              "weight": 0
+            }
+          ]
         },
         {
           "name": "life.mounted.dead",
@@ -12002,7 +12104,21 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "seatWeight": [
+            {
+              "time": 0,
+              "weight": 1
+            },
+            {
+              "time": 0.872663176,
+              "weight": 0
+            },
+            {
+              "time": 1.283328,
+              "weight": 0
+            }
+          ]
         },
         {
           "name": "crew.artilleryFire",

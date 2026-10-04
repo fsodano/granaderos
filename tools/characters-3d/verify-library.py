@@ -18,6 +18,7 @@ def read(doc,data,index):
 count=0;triangles=0;seen=set();rigs={}
 for appearance in m['appearances'].values():
  assert len(appearance['lods'])==3
+ assert appearance['sockets']['handLeft_pistol']['mirror']=={'socket':'handRight_pistol','localAxis':'z'}
  for lod in appearance['lods']:
   doc,data=glb(lod['url']);path=OUT/Path(lod['url']).name;assert hashlib.sha256(path.read_bytes()).hexdigest()==lod['sha256'];nodes=doc['nodes'];names={n.get('name')for n in nodes};assert set(m['bones'].values())<=names
   assert len(doc['skins'])==1 and len(doc['skins'][0]['joints'])==53
@@ -48,6 +49,8 @@ for gender,bank in m['animationLibraries'].items():
  for c in bank['clips']:
   for t in c.get('markers',{}).values():assert 0<=t<=c['duration']+.001
   if c['gesture']in('mount','dismount'):assert'seatWeight'in c and'seatAnchor'in c
+  if c.get('posture')=='mounted'and c['gesture']in('die','collapse','knockdown'):
+   assert c['seatWeight']==[{'time':0,'weight':1},{'time':c['markers']['ground'],'weight':0},{'time':c['duration'],'weight':0}]
   if c['gesture'].startswith('strafe'):
    assert c['source']['file']in('139_14.bvh','141_33.bvh') and c['locomotionSpeed']>0
    assert c['locomotionAxis']in('left','right')

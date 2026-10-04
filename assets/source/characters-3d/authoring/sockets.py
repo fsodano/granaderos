@@ -19,6 +19,10 @@ def create_sockets(ctx):
    h=_hand_rotation(rig,side,Vector(direction),Vector((0,1,0)))
    name='socket_'+role+'_'+grip;matrix=Matrix.LocRotScale(local,h.inverted(),Vector((1,1,1)))
    result[role+'_'+grip]={'node':marker(name,'hand_'+side,matrix),'bone':'hand_'+side,'position':[0,0,0],'rotation':[0,0,0],'scale':1}
+   if role=='handLeft'and grip=='pistol':
+    # Keep the barrel and upper frame symmetric through native hand rolls.
+    # glTF uses +Y up, so reverse local Z to restore a proper reflected frame.
+    result[role+'_'+grip]['mirror']={'socket':'handRight_pistol','localAxis':'z'}
  for role,bone_name,point,rot in [('back','spine_03',(.09,.19,.84),(0,-1.570796,-.23)),('hipLeft','pelvis',(.18,.01,.99),(3.141593,0,0)),('hipRight','pelvis',(-.18,.01,.99),(0,0,0))]:
   from mathutils import Euler
   matrix=rig.data.bones[bone_name].matrix_local.inverted()@Matrix.LocRotScale(Vector(point),Euler(rot).to_quaternion(),Vector((1,1,1)))

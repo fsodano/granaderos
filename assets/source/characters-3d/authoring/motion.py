@@ -886,6 +886,10 @@ def apply_animations(ctx, only=None):
         if speed is not None:meta['locomotionSpeed']=speed
         if gesture.startswith('strafe'):meta['locomotionAxis']='left' if gesture=='strafeLeft' else 'right'
         if posture=='mounted':meta['seatAnchor']=list(rig.data.bones['pelvis'].head_local)
+        if posture=='mounted' and gesture in ('die','collapse','knockdown'):
+            # Native collapse samples already reach the ground. Remove the
+            # saddle offset as the rider falls, before the ground contact.
+            meta['seatWeight']=[{'time':0,'weight':1},{'time':markers['ground'],'weight':0},{'time':round(duration,6),'weight':0}]
         result.append(meta)
         if index%10==0:print('MOTION CLIP',index+1,'/',len(specs),spec['name'],flush=True)
     for modifier in disabled:modifier.show_viewport=True

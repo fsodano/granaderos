@@ -3,6 +3,7 @@ import {spriteAppearance} from '../../../game/sprite-appearances.js';
 import {spriteSkinTone} from '../../../game/sprite-skin.js';
 import {spriteEquipment} from '../../../game/sprite-equipment.js';
 import {handLayout} from '../../../game/hand-layout.js';
+import {fixedBayonetFor} from '../../../game/weapon-fittings.js';
 import {wornOutfit} from '../../../game/outfits.js';
 import {canSee,tileIllumination} from '../../../game/tactical.js';
 import {relativeBodyHeight} from '../../../game/sight-geometry.js';
@@ -19,7 +20,7 @@ import type {WorldInput} from './world-types';
 
 export type ActorKind='unit'|'npc';
 export type ActorEntry={key:string;kind:ActorKind;actor:any};
-export type ActorCue={id:string;action:string;startedAt:number;durationMs?:number;phase?:string;phaseStartedAt?:number;phaseDurationMs?:number;fromPosture?:string;toPosture?:string};
+export type ActorCue={id:string;action:string;shotHand?:'primary'|'offhand';hand?:'handRight'|'handLeft';startedAt:number;durationMs?:number;phase?:string;phaseStartedAt?:number;phaseDurationMs?:number;fromPosture?:string;toPosture?:string};
 export type VisualItem={id:string;reference:string;socket:'handRight'|'handLeft'|'back'|'hip';fittings?:any};
 export type ActorVisual={key:string;id:string;kind:ActorKind;appearance:string;skin:string;side:string;tacticalLevel:number;position:[number,number,number];yaw:number;posture:string;mounted:boolean;action:string;idleAction:string;equipment:string;items:VisualItem[];garments:Record<string,string|null>;cue?:ActorCue;motion?:Motion;selected:boolean;bodyHeights:Record<string,number>};
 export const actorKey=(kind:ActorKind,id:string)=>`${kind}:${id}`;
@@ -55,30 +56,67 @@ export function actorItems(unit:any):VisualItem[]{
   return result;
 }
 export function actorPosture(unit:any){return unit.stance==='prone'||unit.movementMode==='prone'?'prone':unit.stance==='crouched'||unit.movementMode==='crouch'?'crouched':'standing';}
-export function semanticOrder(type:string,request:any={}):string|null{
+export function semanticOrder(type:string,request:any={},actor?:any):string|null{
   const aliases:Record<string,string>={craftDressings:'heal',moveEquipment:'equip',movePocket:'equip',unloadEquipment:'unload',selectAmmunitionLoad:'equip',dropSupply:'drop',transferSupply:'transfer',inventoryMap:'equip',overwatch:'aim',firePoint:'fire',melee:'strike',meleePoint:'strike',charge:'strike',unloadAmmunition:'unload',lootBatch:'loot',pickupEquipment:'pickup',placeEquipment:'drop',dragEquipment:'equip',returnEquipmentCursor:'equip',prisonerFree:'free',torch:'throwTorch'};
   if(type==='artillery')return request.mode==='reload'?'artilleryReload':'artilleryFire';
   if(['move','groupMove','look','climb','endTurn','deployment','stance','mount','movement','stealth','weaponMode'].includes(type))return null;
-  const action=aliases[type]??type;return ACTOR_ACTION_CAPABILITIES.some(capability=>capability.action===action)?action:null;
+  const action=aliases[type]??type;
+  if(action==='strike'&&(request.meleeStyle==='bayonet'||fixedBayonetFor(actor)))return 'bayonet';
+  return ACTOR_ACTION_CAPABILITIES.some(capability=>capability.action===action)?action:null;
 }
+/** Compare only actors admitted on both sides of an observed state change.
+ * Missing/reappearing actors supply no evidence about when an injury occurred. */
+export function observedActorTransitions(previous:readonly ActorEntry[],current:readonly ActorEntry[]){
+  const before=new Map(previous.map(entry=>[entry.key,entry.actor]));
+  return current.flatMap(({key,actor})=>{
+    const old=before.get(key);if(!old)return [];
+    const fromPosture=old.mounted?'mounted':actorPosture(old);
+    let action:string|undefined,extra:Partial<ActorCue>={};
+    if(actor.hp<=0&&old.hp>0){action='die';extra={fromPosture};}
+    else if(actor.hp>0&&actor.unconscious&&!old.unconscious){action='collapse';extra={fromPosture};}
+    else if(!actor.unconscious&&old.unconscious&&actor.hp>0)action='recover';
+    else if(actor.hp>0&&!actor.unconscious&&actor.knockedDown&&!old.knockedDown){action='knockdown';extra={fromPosture,toPosture:actorPosture(actor)};}
+    else if(actor.hp>0&&!actor.unconscious&&!actor.knockedDown&&Number.isFinite(actor.hp)&&Number.isFinite(old.hp)&&actor.hp<old.hp){action='hit';extra={fromPosture};}
+    else if(actor.hp>0&&!actor.unconscious&&actor.mounted!==old.mounted){action=actor.mounted?'mount':'dismount';extra={fromPosture};}
+    else if(actor.hp>0&&!actor.unconscious&&actorPosture(actor)!==actorPosture(old)){action=`stance:${actorPosture(old)}:${actorPosture(actor)}`;extra={fromPosture:actorPosture(old),toPosture:actorPosture(actor)};}
+    return action?[{key,action,extra}]:[];
+  });
+}
+const lifeCue=(cue?:ActorCue)=>Boolean(cue&&['die','dead','collapse','unconscious','recover','knockdown'].includes(cue.action));
+/** Caller supplies an admitted actor; raw world bodies never enter this helper. */
+export function admittedImpactCue({key,kind,actor}:ActorEntry,frame:any,now=0):ActorCue|undefined{
+  if(!(actor.hp>0)||actor.unconscious||actor.knockedDown)return;
+  const impact=frame?.impacts?.find((impact:any)=>(impact.victimKind??'unit')===kind&&String(impact.unitId)===String(actor.id)&&Number.isFinite(impact.damage)&&impact.damage>0&&!impact.fatal);
+  if(impact)return {id:`${frame.sequenceId}:${frame.index??frame.actionId}:impact:${key}`,action:'hit',startedAt:frame.startedAt??now,durationMs:frame.durationMs??450};
+}
+
 export function presentActors(state:any,entries:readonly ActorEntry[],positions:Record<string,Motion>,revealed:ReadonlySet<string>,options:{selected?:string;mode?:string;cues?:Readonly<Record<string,ActorCue>>;frame?:any;now?:number}={}):ActorVisual[]{
   const result:ActorVisual[]=[];
   for(const {key,kind,actor}of entries){
     const motion=positions[key];if(!actorInteriorReadable(state,actor,motion,revealed))continue;
     const posture=actorPosture(actor),dead=actor.hp<=0,unconscious=Boolean(actor.unconscious),mounted=Boolean(actor.mounted&&!dead&&!unconscious);
-    const equipment=spriteEquipment(actor),at=motion??actor;
+    const equipment=spriteEquipment(actor),items=actorItems(actor),at=motion??actor;
     const idleAction=actor.braced&&equipment==='long-gun'?'brace':(actor.weaponReady||options.selected===actor.id&&kind==='unit'&&options.mode==='fire')&&['long-gun','short-gun'].includes(equipment)?'aim':'idle';
     let cue=options.cues?.[key],action=idleAction;
     const frame=options.frame;
-    if(kind==='unit'&&frame?.unitId===actor.id&&frame.performed!==false){
-      const semantic=semanticOrder(frame.action);
+    const assignedCrew=frame&&['artillery','artilleryReload','artilleryMove','artilleryPivot'].includes(frame.action)&&frame.crewIds?.includes(actor.id);
+    if(kind==='unit'&&(frame?.unitId===actor.id||assignedCrew)&&frame.performed!==false&&!lifeCue(cue)){
+      const semantic=semanticOrder(frame.action,frame,actor);
       if(semantic&&frame.type!=='step'&&!(frame.shotComplete||frame.contactComplete)&&frame.shotVisual?.discharge!==false){
-        cue={id:`${frame.sequenceId}:${frame.actionId}:${key}`,action:frame.type==='prepare'&&['fire','firePoint'].includes(frame.action)?'aim':semantic,phase:frame.type,phaseStartedAt:frame.startedAt,phaseDurationMs:frame.durationMs,startedAt:['fire','firePoint'].includes(frame.action)?frame.startedAt:frame.actionStartedAt??frame.startedAt,durationMs:['fire','firePoint'].includes(frame.action)?frame.durationMs:frame.actionDurationMs??frame.durationMs};
+        const shotHand=frame.shotHand??frame.shotVisual?.shotHand,shotId=frame.shotId??frame.shotVisual?.shotId;
+        const held=items.find(item=>item.reference===shotHand&&['handRight','handLeft'].includes(item.socket));
+        if(shotHand&&!held)throw Error(`Missing admitted firing hand: ${key}:${shotHand}`);
+        cue={id:`${frame.sequenceId}:${frame.actionId}${shotId===undefined?'':`:shot:${shotId}`}:${key}`,action:frame.type==='prepare'&&['fire','firePoint'].includes(frame.action)?'aim':semantic,...(held?{shotHand,hand:held.socket as 'handRight'|'handLeft'}:{}),phase:frame.type,phaseStartedAt:frame.startedAt,phaseDurationMs:frame.durationMs,startedAt:['fire','firePoint'].includes(frame.action)?frame.startedAt:frame.actionStartedAt??frame.startedAt,durationMs:['fire','firePoint'].includes(frame.action)?frame.durationMs:frame.actionDurationMs??frame.durationMs};
       }
     }
+    // Frame impacts are already disclosure-filtered by the recorder. The
+    // current entry/readability checks provide the second admission boundary.
+    const impactCue=admittedImpactCue({key,kind,actor},frame,options.now);
+    if(impactCue&&!lifeCue(cue))cue=impactCue;
     if(dead)action=cue?.action==='die'?'die':'dead';
     else if(unconscious)action=cue?.action==='collapse'?'collapse':'unconscious';
-    else if(actor.knockedDown)action='knockdown';
+    else if(actor.knockedDown)action=cue?.action==='knockdown'?'knockdown':'idle';
+    else if(cue?.action==='hit'||cue?.action==='recover')action=cue.action;
     else if(motion?.moving)action=motion.kind==='climb'?(motion.climbDirection!<0?'climbDown':'climbUp'):posture==='prone'?'crawl':actor.movementMode==='run'?'run':'walk';
     else if(cue)action=cue.action;
     else if(options.selected===actor.id&&kind==='unit'&&options.mode==='fire'&&['long-gun','short-gun'].includes(equipment))action='aim';
@@ -87,15 +125,17 @@ export function presentActors(state:any,entries:readonly ActorEntry[],positions:
       const yaw=actorYaw(direction),x=motion.travelX??0,y=motion.travelY??0,forward=x*Math.sin(yaw)+y*Math.cos(yaw),left=x*Math.cos(yaw)-y*Math.sin(yaw);
       if(Math.abs(left)>Math.abs(forward)+.01)action=left>0?'strafeLeft':'strafeRight';
     }
-    result.push({key,id:actor.id,kind,appearance:spriteAppearance(actor,kind==='npc'?'civilian':'soldier'),skin:spriteSkinTone(actor),side:actor.side??'civilian',tacticalLevel:tacticalLevel(actor),position:[at.x*TILE_METRES,renderedSurfaceHeight(state,at),at.y*TILE_METRES],yaw:actorYaw(direction),posture,mounted,action,idleAction,equipment,items:actorItems(actor),garments:Object.fromEntries(['headwear','outfit','legwear'].map(slot=>[slot,wornOutfit(actor,slot)?.outfit??null])),cue,motion,selected:kind==='unit'&&actor.id===options.selected,bodyHeights:Object.fromEntries(['head','torso','legs','muzzle'].map(part=>[part,relativeBodyHeight(actor,part)]))});
+    result.push({key,id:actor.id,kind,appearance:spriteAppearance(actor,kind==='npc'?'civilian':'soldier'),skin:spriteSkinTone(actor),side:actor.side??'civilian',tacticalLevel:tacticalLevel(actor),position:[at.x*TILE_METRES,renderedSurfaceHeight(state,at),at.y*TILE_METRES],yaw:actorYaw(direction),posture,mounted,action,idleAction,equipment,items,garments:Object.fromEntries(['headwear','outfit','legwear'].map(slot=>[slot,wornOutfit(actor,slot)?.outfit??null])),cue,motion,selected:kind==='unit'&&actor.id===options.selected,bodyHeights:Object.fromEntries(['head','torso','legs','muzzle'].map(part=>[part,relativeBodyHeight(actor,part)]))});
   }
   return result;
 }
 /** Dynamic world records cross the same disclosure boundary as the old scene. */
 export function presentWorld(state:any,terrain:any,players:any[],revealed:ReadonlySet<string>,entries:readonly ActorEntry[],cursorLevel:number):WorldInput{
   const visible=(point:any)=>isInteriorVisible(state,point,revealed)&&(!tacticalLevel(point)||players.some(player=>canSee(state,player,point)));
+  const seenPoints=new Map<string,boolean>();
+  const observed=(point:any)=>{const key=spaceKey(point);if(!seenPoints.has(key))seenPoints.set(key,isInteriorVisible(state,point,revealed)&&players.some(player=>canSee(state,player,point)));return seenPoints.get(key)!;};
   const height=(point:any)=>({...point,elevation:surfaceHeight(state,point)??0});
   const lootKeys=new Set(groundLootPiles(state,players).filter(visible).map(spaceKey));
   const loot=[...(state.droppedWeapons??[]).filter((item:any)=>!item.taken),...(state.groundItems??[]).filter((item:any)=>item.count>0&&!item.heldBy&&!item.containerId)].filter((item:any)=>lootKeys.has(spaceKey(item))).map(height);
-  return {terrain:{...terrain,climbLinks:state.climbLinks,props:[...(terrain.props??[]),...roomDressings(terrain)].filter(visible).map(height),lights:(state.lights??[]).filter(visible).map(height)},revealedRooms:revealed,cursorLevel,admittedActorPoints:entries.map(({actor})=>height(actor)),loot,cannons:(state.artillery??[]).filter(visible).map((gun:any)=>({...height(gun),profile:artilleryProfile(state,gun)})),smoke:(state.smoke??[]).filter(visible).map(height),illumination:new Map([...state.tiles,...(state.upperSurfaces??[])].map((tile:any)=>[spaceKey(tile),tileIllumination(state,tile.x,tile.y,tacticalLevel(tile))]))};
+  return {terrain:{...terrain,climbLinks:state.climbLinks,props:[...(terrain.props??[]),...roomDressings(terrain)].filter(visible).map(height),lights:(state.lights??[]).filter(observed).map(height)},revealedRooms:revealed,cursorLevel,admittedActorPoints:entries.map(({actor})=>height(actor)),loot,cannons:(state.artillery??[]).filter(observed).map((gun:any)=>({...height(gun),profile:artilleryProfile(state,gun)})),smoke:(state.smoke??[]).filter(observed).map(height),illumination:new Map([...state.tiles,...(state.upperSurfaces??[])].map((tile:any)=>[spaceKey(tile),observed(tile)?tileIllumination(state,tile.x,tile.y,tacticalLevel(tile)):state.night?.08:1]))};
 }

@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import {
   AnimationClip,Bone,BoxGeometry,Float32BufferAttribute,Group,Mesh,
   MeshStandardMaterial,NumberKeyframeTrack,Object3D,Skeleton,SkinnedMesh,
-  Uint16BufferAttribute,Vector3,
+  Uint16BufferAttribute,Vector3,VectorKeyframeTrack,
 } from '../web/node_modules/three/build/three.module.js';
 const {ActorRuntime}=await import('../web/lib/three/actor-runtime.ts');
 const {TILE_METRES}=await import('../web/lib/three/projection.ts');
@@ -374,4 +374,34 @@ test('a different held weapon still stows during a knife throw and a missing rel
   const runtime=new ActorRuntime(f.asset,v);assert.equal(attached(runtime,'primary','1809').parent.name,f.sockets.hipLeft.node);runtime.dispose();
   f.asset.manifest.equipment.items['1809'].category='knife';delete clip.markers.release;
   assert.throws(()=>new ActorRuntime(f.asset,v),/Missing held prop marker: release/);
+});
+
+test('recorded offhand pistol fire aims the left arm and resolves the left instance muzzle',()=>{
+ const f=fixture();f.asset.manifest.animationMirroring={axis:'x',bones:Object.fromEntries(Object.entries(f.names).map(([role,name])=>[name,f.names[role.replace('Left','TEMP').replace('Right','Left').replace('TEMP','Right')]]))};
+ addClip(f,'stand.fire.short-gun');
+ const name=f.asset.clips.at(-1).name;
+ f.asset.animation.animations[f.asset.animation.animations.length-1]=new AnimationClip(name,2,[
+  new VectorKeyframeTrack(`${f.names.handRight}.position`,[0,.5,2],[-.3,-.1,.25,-.3,-.1,.35,-.3,-.1,.25]),
+  new VectorKeyframeTrack(`${f.names.handLeft}.position`,[0,2],[.3,-.1,.05,.3,-.1,.05]),
+ ]);
+ const items=[{id:'1805',reference:'primary',socket:'handRight'},{id:'1805',reference:'offhand',socket:'handLeft'}];
+ const v=visual(f,{equipment:'short-gun',action:'fire',items,cue:{id:'first-shot',action:'fire',hand:'handRight',shotHand:'primary',startedAt:0,durationMs:1000}});
+ const runtime=new ActorRuntime(f.asset,v);runtime.tick(0,125);
+ close(runtime.model.getObjectByName(f.names.handRight).position.z,.3);close(runtime.model.getObjectByName(f.names.handLeft).position.z,.05);
+ runtime.update({...v,cue:{...v.cue,id:'second-shot',hand:'handLeft',shotHand:'offhand',startedAt:1000}},1000);runtime.tick(0,1125);
+ close(runtime.model.getObjectByName(f.names.handLeft).position.z,.3);close(runtime.model.getObjectByName(f.names.handRight).position.z,.05);
+ runtime.root.updateMatrixWorld(true);const left=attached(runtime,'offhand','1805').getObjectByName(f.asset.manifest.equipment.items['1805'].muzzle).getWorldPosition(new Vector3());closeVector(runtime.anchor('muzzle'),left.toArray());
+ assert.deepEqual(f.asset.animation.animations.at(-1).tracks[0].values,new Float32Array([-.3,-.1,.25,-.3,-.1,.35,-.3,-.1,.25]),'shared right-hand source remains unchanged');
+ runtime.dispose();delete f.asset.manifest.animationMirroring;
+ assert.throws(()=>new ActorRuntime(f.asset,{...v,cue:{...v.cue,hand:'handLeft',shotHand:'offhand'}}),/Missing left-hand animation mapping/);
+});
+
+test('mounted falls blend the saddle offset to zero by ground contact and keep the horse through the exit',()=>{
+ for(const action of ['die','collapse','knockdown']){
+  const f=fixture();addClip(f,`life.mounted.${action}`,{seatAnchor:[.02,.9,.03],markers:{ground:1.2},seatWeight:[{time:0,weight:1},{time:1.2,weight:0},{time:2,weight:0}]});addClip(f,'prone.idle.unarmed',{loop:true});
+  const runtime=new ActorRuntime(f.asset,visual(f,{mounted:false,posture:action==='knockdown'?'prone':'standing',action,idleAction:'aim',cue:{id:'fall',action,fromPosture:'mounted',startedAt:0,durationMs:1000}}));
+  const horse=runtime.root.getObjectByName('A_horse_scene');runtime.tick(0,0);closeVector(runtime.model.position,[.08,.7,-.13]);
+  runtime.tick(0,300);closeVector(runtime.model.position,[.04,.35,-.065]);runtime.tick(0,600);closeVector(runtime.model.position,[0,0,0]);assert.ok(horse.visible);
+  runtime.tick(0,1001);assert.equal(horse.visible,false);closeVector(runtime.model.position,[0,0,0]);runtime.dispose();
+ }
 });

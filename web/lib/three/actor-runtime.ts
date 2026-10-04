@@ -2,6 +2,7 @@ import {AnimationMixer,AnimationAction,Group,Mesh,SkinnedMesh,Skeleton,Material,
 import {clone} from 'three/addons/utils/SkeletonUtils.js';
 import {resolveActorAction} from '../../../game/actor-action-contract.js';
 import {boundClip,type LoadedActor,type SocketSpec,type ClipSpec,type EquipmentSpec} from './actor-assets';
+import {mirroredClip,fitMirroredSockets} from './clip-mirroring';
 import {sampleAnimationTime,cueControlsAction} from './animation-clock';
 import {TILE_METRES} from './projection';
 import type {ActorVisual} from './presentation';
@@ -33,6 +34,7 @@ export class ActorRuntime {
   constructor(readonly asset:LoadedActor,visual:ActorVisual,private onCueComplete?:(key:string,id:string)=>void){
     this.visual=visual;this.model=clone(asset.body.scene);this.root.add(this.model);this.root.name=visual.key;
     this.model.traverse(node=>{this.bones.set(node.name,node);if(node instanceof Mesh){node.castShadow=true;node.receiveShadow=true;node.frustumCulled=false;}});
+    fitMirroredSockets(this.model,asset.appearance.sockets??asset.manifest.sockets??asset.manifest.rig?.sockets??{});
     this.mixer=new AnimationMixer(this.model);
     if(asset.garments){
       this.clothing=clone(asset.garments.scene);
@@ -140,11 +142,14 @@ export class ActorRuntime {
     const spec=resolveActorAction(request);if(!spec)throw Error(`Unsupported character action: ${JSON.stringify(request)}`);
     const mainItem=visual.items.find(item=>item.socket==='handRight');
     const semantic=(mainItem&&this.itemSpec(mainItem.id)?.clipOverrides?.[spec.clip])??spec.clip;
-    const {spec:clipSpec,clip}=boundClip(this.asset.clips,this.asset.animation.animations,semantic);
-    const key=`${semantic}:${visual.cue?.id??''}`;
+    const {spec:clipSpec,clip:sourceClip}=boundClip(this.asset.clips,this.asset.animation.animations,semantic);
+    const hand=visual.cue?.hand??'handRight',mirror=hand==='handLeft'&&visual.equipment==='short-gun'&&['aim','fire'].includes(visual.action);
+    if(mirror&&!this.asset.manifest.animationMirroring)throw Error(`Missing left-hand animation mapping: ${this.asset.appearance.id}`);
+    const clip=mirror?mirroredClip(sourceClip,this.asset.body.scene,this.asset.manifest.animationMirroring!):sourceClip;
+    const key=`${semantic}:${hand}:${visual.cue?.id??''}`;
     if(key!==this.actionKey){
       const previous=this.action;this.action=this.mixer.clipAction(clip);this.action.reset();this.action.enabled=true;this.action.clampWhenFinished=!clipSpec.loop;this.action.setLoop(clipSpec.loop?LoopRepeat:LoopOnce,clipSpec.loop?Infinity:1);this.action.play();
-      if(previous&&previous!==this.action){this.action.crossFadeFrom(previous,.12,false);}this.actionKey=key;this.clipSpec=clipSpec;this.cueStartedAt=visual.cue?.startedAt??now;
+      if(previous&&previous!==this.action){if(visual.action==='fire'&&visual.cue?.shotHand)previous.stop();else this.action.crossFadeFrom(previous,.12,false);}this.actionKey=key;this.clipSpec=clipSpec;this.cueStartedAt=visual.cue?.startedAt??now;
     }
     if(this.horse&&this.horseMixer){
       const horseAction=visual.action==='run'?'run':visual.action==='walk'?'walk':'idle',horseClip=this.asset.manifest.horse?.actions?.[horseAction];
@@ -155,7 +160,7 @@ export class ActorRuntime {
     this.placeEquipment(this.action?.time??0);
   }
   private restVisual(visual:ActorVisual):ActorVisual{
-    const life=visual.action==='die'?'dead':visual.action==='collapse'?'unconscious':visual.action==='dead'||visual.action==='unconscious'?visual.action:visual.idleAction;
+    const life=visual.action==='die'?'dead':visual.action==='collapse'?'unconscious':visual.action==='knockdown'?'idle':visual.action==='dead'||visual.action==='unconscious'?visual.action:visual.idleAction;
     return {...visual,action:life,cue:undefined};
   }
   private timedProps(time:number){
@@ -197,8 +202,8 @@ export class ActorRuntime {
     }
   }
   anchor(role:string){
-    const right=this.visual.items.find(item=>item.socket==='handRight'),spec=right&&this.itemSpec(right.id);
-    const instance=(this.equipment.userData.attached as Object3D[]).find(item=>item.userData.hand==='handRight');
+    const hand=this.visual.cue?.hand??'handRight',held=this.visual.items.find(item=>item.socket===hand),spec=held&&this.itemSpec(held.id);
+    const instance=(this.equipment.userData.attached as Object3D[]).find(item=>item.userData.hand===hand);
     const node=role==='muzzle'&&spec?.muzzle?instance?.getObjectByName(spec.muzzle):this.socket(role);
     return node?.getWorldPosition(new Vector3())??null;
   }

@@ -40,6 +40,8 @@ if native_path.exists():
 for preset in PRESETS:
  gender='female'if preset.startswith('woman-')else'male';lods=[byname[preset+'-lod'+str(i)+'.glb']for i in range(3)if preset+'-lod'+str(i)+'.glb'in byname]
  manifest['appearances'][preset]={'id':preset,'gender':gender,'height':1.76,'animationLibrary':gender,'lods':[{k:f[k]for k in ('lod','url','triangles','bytes','drawCalls','sha256')}for f in lods],'materials':{'skin':'Skin','apparel':'Apparel_Atlas'},'parts':{part:'Human_'+part+'_LOD{lod}'for part in ('skin','outfit','legwear','footwear','headwear')},'sockets':lods[0]['sockets']if lods else{},'lodPixelThresholds':[160,65,0],'baseAttire':{'headwear':'appearance','outfit':'appearance','legwear':'appearance'},'nullWornItem':'keepBaseAttire'}
+ sockets=manifest['appearances'][preset]['sockets']
+ if 'handLeft_pistol'in sockets:sockets['handLeft_pistol']['mirror']={'socket':'handRight_pistol','localAxis':'z'}
 for gender in ('male','female'):
  name=gender+'-animations.glb'
  if name in byname:manifest['animationLibraries'][gender]={k:byname[name][k]for k in ('url','bytes','sha256','clips','locomotionSpeed')}
@@ -51,6 +53,8 @@ for gender in ('male','female'):
     x,y,z=clip.get('seatAnchor',anchor);clip['seatAnchor']=[x,z,-y];clip['seatAnchorSpace']='gltf-model-local'
    if clip.get('gesture')in ('mount','dismount'):
     mount=clip['gesture']=='mount';clip['seatWeight']=[{'time':0,'weight':0 if mount else 1},{'time':clip['markers']['seat'],'weight':1 if mount else 0},{'time':clip['duration'],'weight':1 if mount else 0}]
+   if clip.get('posture')=='mounted'and clip.get('gesture')in ('die','collapse','knockdown'):
+    clip['seatWeight']=[{'time':0,'weight':1},{'time':clip['markers']['ground'],'weight':0},{'time':clip['duration'],'weight':0}]
  name=gender+'-garments.glb'
  if name in byname:manifest['garments'][gender]={'url':byname[name]['url'],'items':{'poncho':{'node':'garment_poncho','slot':'outfit','hideAppearanceParts':[]},'linen_shirt':{'node':'garment_linen_shirt','slot':'outfit','hideAppearanceParts':['outfit']},'trousers':{'node':'garment_trousers','slot':'legwear','hideAppearanceParts':['legwear']},'hat':{'node':'garment_hat','slot':'headwear','hideAppearanceParts':['headwear']}}}
 if 'equipment.glb'in byname:manifest['equipment'].update({k:byname['equipment.glb'][k]for k in ('bytes','sha256','items')})
