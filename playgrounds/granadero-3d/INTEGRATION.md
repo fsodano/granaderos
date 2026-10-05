@@ -1,6 +1,6 @@
 # Integrated tactical-sector 3D renderer
 
-Status: the renderer is integrated in the isolated worktree and under review in [draft PR #156](https://github.com/fsodano/granaderos/pull/156). Ballistics and the subsequent first-aid composure change from `origin/main` at `64a919bc` are merged. Renderer checks and the production build pass. The complete test suite has seven failing campaign files, all reproduced with identical assertions on clean `main`. The PR remains a draft; it has not been merged or deployed.
+The renderer is delivered through [PR #156](https://github.com/fsodano/granaderos/pull/156). Its integration includes `origin/main` through `e4215f4a`, including the later ballistic energy, near-miss feedback, campaign and editor changes. The user approved the merge on 5 October 2026. The validation records below distinguish renderer checks from existing campaign failures. Deployment is separate from this pull request.
 
 The combat sector uses Three.js geometry under a fixed isometric orthographic camera. Pan, zoom and keyboard controls remain. Portraits, inventory, statistics and orders remain in HTML. SVG supplies semantic input targets and annotations; it does not draw a second sprite world. The original one-character playground remains separate from the production library.
 
@@ -60,7 +60,13 @@ Native body/target assets and the horse are CC0. CMU motion uses its own terms, 
 
 The live test route is `http://localhost:3148/renderer-sandbox`. It offers **Combate**, **Montura y azotea**, **Noche**, 24/60/100-character scenes and the real Tucumán map. These scenes use valid battle snapshots, finite equipment and regular HUD orders. Reset creates a fresh repeatable battle.
 
-Validation on 4 October 2026:
+Merge validation on 5 October 2026, against main `e4215f4a`:
+
+- The final full runner completed **737/737 files: 5,098 tests passed, 10 failed and 5 were skipped**. Only the seven campaign files listed below fail. All nine direct assertion blocks match a clean archive of current main in test location, assertion message, expected/actual values and project stack. One enclosing test accounts for the tenth failure. These are existing campaign failures, not a clean full gate.
+- The merge retains the new near-miss feedback, kinetic and air-drag rules, campaign changes and editor changes. A crew metadata guard now handles anonymous near-miss frames without an action or crew record. The 66 affected tests passed before the final full run. The newer alternate-load UI test now uses the integrated scene controls.
+- Typecheck and the production build passed on the final corrected source (`8975ffed`); static export verified 1,210 files and 1,037 asset references. Documentation and baseline audits, shard self-tests (5/5), full shard coverage and diff checks also passed. No renderer asset changed during this merge.
+
+Historical validation on 4 October 2026, against main `64a919bc`:
 
 - The final merged runner completed 711/711 files. Its raw result was 4,936 passing tests, 12 failures and 5 skipped tests. Seven campaign files account for 11 failures and the prerequisite skips. One additional UI test assumed synchronous cannon reload; its assertion ran before the new playback completed. That test is corrected to wait for playback while retaining its gameplay assertions, and is covered by the follow-up gate below.
 - All seven campaign files were repeated on a clean archive of current main `64a919bc`. Its nine assertion reports match this branch in location, message, actual/expected values and project stack. Two enclosing failures account for the total of 11. No campaign assertion was relaxed.
