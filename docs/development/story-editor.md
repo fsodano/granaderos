@@ -4,13 +4,15 @@ El editor de historia se abre en `/story`, desde el menú del juego o desde el c
 
 El ejemplo **La ruta de las postas** se puede cargar, editar y descargar desde el editor. Su [guía](example-post-campaign.md) explica el recorrido y cómo recuperar el borrador anterior.
 
+El comercio de equipo está desactivado. El editor no ofrece proveedores, precios de cartuchos o vendas, importaciones, reposición ni venta de artillería. Los paquetes importados conservan sus valores anteriores al editar otras reglas, restaurarlas, exportar e iniciar una campaña; esos valores no habilitan compras. El equipo disponible se contrata con su dueño o se encuentra físicamente en los sectores. La munición inicial, la atención médica y los traslados siguen siendo configurables.
+
 ## Fichas aplicadas a la campaña
 
 Nombres, apodos, retratos, biografías, función mostrada, diez atributos iniciales y paga mensual. El catálogo permite crear, duplicar y quitar contratables y habitantes nuevos. Se pueden buscar personajes, deshacer y rehacer cambios, recuperar el borrador e importar o exportar el paquete. Los retratos pueden usar imágenes locales o archivos PNG, JPEG y WebP de hasta 250 KB.
 
 “Iniciar campaña con estas fichas” crea una campaña real con una copia validada de las definiciones. La identidad SHA-256 acompaña al paquete y se comprueba al importar la partida. El perfil editado llega a la contratación, al despliegue táctico y al guardado. Las campañas del editor tienen su propio guardado; no reemplazan la campaña normal ni la de pruebas.
 
-Se conserva la economía publicada: `economyVersion: 2`, tesorería en pesos, compras y contratación por los plazos de la campaña, incluidos los plazos medio y largo para especialistas. No se restauran las antiguas cadenas de recursos estratégicos.
+Se conserva la economía publicada: `economyVersion: 2`, tesorería en pesos y contratación por los plazos de la campaña, incluidos los plazos medio y largo para especialistas. No se restauran las antiguas cadenas de recursos estratégicos.
 
 Los contratables del boletín no generan encuentros antes de ser contratados. Sus fichas no muestran controles de aparición. El boletín permite elegir un destino de llegada controlado con infraestructura de recepción: posta, cuartel, puerto o embarcadero. Una celda de agua o un paso cordillerano no sirven por sí solos. Los puertos y embarcaderos solo se habilitan en localidades con acceso al río navegable.
 
@@ -40,7 +42,7 @@ En la ficha, **Suministros iniciales** permite configurar raciones, antorchas, v
 
 La campaña asigna esas cantidades una sola vez. El personaje las lleva al incorporarse, tanto por llegada contratada como por reclutamiento en el lugar. Guardar, renovar, despedir y volver a contratar conservan lo que quede; no entregan otro lote. Duplicar copia las cantidades con una identidad distinta. Los paquetes anteriores conservan los valores originales. Deshacer, rehacer, importar y exportar incluyen esta configuración.
 
-La munición inicial del despliegue se configura en **Reglas**. La reposición pagada del taller conserva sus cantidades y precios publicados; no usa la dotación inicial como objetivo. Tampoco cambia el equipo del granadero creado por el jugador.
+La munición inicial se configura en **Reglas** y se entrega una sola vez al incorporarse. No hay reposición pagada del taller. Esta regla tampoco cambia el equipo del granadero creado por el jugador.
 
 Los habitantes con ficha llevan estos suministros desde su aparición. Con **Recoger equipo**, podés seleccionarlos cuando estén muertos o inconscientes y junto al combatiente. La acción cuesta 8 PA en combate y muestra las cantidades recogidas. Lo que retirás deja de pertenecer al habitante. Cambiar de celda, incorporarse, salir del servicio o cargar la partida conserva lo que queda. Un sucesor usa sus propias cantidades; no copia las del cuerpo anterior. Las armas, armaduras, regalos e inventarios completos de habitantes siguen pendientes. Véase la [verificación de suministros civiles](../verification/civilian-finite-supplies.md).
 
@@ -96,7 +98,7 @@ La localidad debe estar bajo tu control y el responsable de fundición debe esta
 
 Una fundición organizada ofrece reparación y abastecimiento en su localidad mientras esté bajo tu control y comunicada con el cuartel. Los talleres que ya existían siguen disponibles. Una ocupación o un corte de suministro bloquean esos servicios; no borran la preparación pagada. Podés deshacer cambios, restaurar los valores originales y probarlos en una campaña nueva.
 
-Esta opción no mueve edificios tácticos ni cambia los nombres del mapa. La campaña histórica todavía requiere controlar y fortificar Mendoza y los pasos de Cuyo, comprar tres cañones y acordar el paso con los pehuenches. Sus textos de preparación muestran el proyecto y precio elegidos. Para otra historia, usá capítulos propios. Podés usar la organización y la financiación como condiciones de capítulos o diálogos. La edición de otros servicios sigue pendiente.
+Esta opción no mueve edificios tácticos ni cambia los nombres del mapa. La campaña histórica todavía requiere controlar y fortificar Mendoza y los pasos de Cuyo, disponer de tres cañones propios y acordar el paso con los pehuenches. Sus textos de preparación muestran el proyecto y precio elegidos. Para otra historia, usá capítulos propios. Podés usar la organización y la financiación como condiciones de capítulos o diálogos. La edición de otros servicios sigue pendiente.
 
 ## Diálogos con opciones
 
@@ -131,7 +133,7 @@ Activá «Cambiar los pesos al elegir esta opción», elegí si el jugador paga 
 
 En una condición de diálogo, capítulo o derrota, elegí **Suministros de un personaje**. Seleccioná el personaje, el suministro, la cantidad mínima y un máximo opcional. Podés comprobar raciones, antorchas, vendas o boleadoras. Las condiciones de paquetes anteriores sobre cebo o pedernales conservan valores implícitos de 50 y 4, respectivamente; el editor ya no ofrece esas condiciones para contenido nuevo. Los límites son inclusivos. Para exigir que no queden vendas, usá mínimo 0 y máximo 0. Un máximo vacío no tiene tope adicional.
 
-Por ejemplo, una respuesta puede exigir que el sanitario conserve cinco vendas después de atender al habitante. Un capítulo puede exigir una compra real de suministros. La condición consulta la cantidad actual y no entrega ni consume objetos. Si también exigís que la persona viva, esté presente o esté incorporada, agregá esas condiciones.
+Por ejemplo, una respuesta puede exigir que el sanitario conserve cinco vendas después de atender al habitante. Las condiciones anteriores de compra siguen admitidas en paquetes importados, pero el comercio desactivado no permite cumplirlas mediante pedidos nuevos. La condición consulta la cantidad actual y no entrega ni consume objetos. Si también exigís que la persona viva, esté presente o esté incorporada, agregá esas condiciones.
 
 Durante una escena se usa el inventario actual del actor. Fuera de ella se usa lo que conserva su ficha. Un soldado desplegado sin su escena actual no cumple la condición: una cantidad desconocida no significa cero. Las derrotas pueden activarse al confirmar el gasto en la escena; los capítulos esperan hasta cerrarla. El editor protege los personajes usados por estas condiciones. Véase la [verificación de condiciones de suministros](../verification/story-supply-conditions.md).
 
@@ -211,7 +213,7 @@ Los **PA para levantar el arma** están incluidos en los **PA de disparo**. Por 
 
 Las partidas nuevas del editor guardan estas definiciones por referencia al paquete incluido. La imagen no se repite por cada ejemplar. Al cargar se comprueba la identidad del paquete y cada referencia; también se admiten las definiciones completas guardadas anteriormente. Las campañas normales y las campañas antiguas con solo fichas conservan su catálogo publicado.
 
-La munición mantiene la economía existente: se compra la cantidad de cartuchos configurada en **Reglas** por arma de fuego al entrar al sector (diez por defecto) y se devuelve el valor de los cartuchos restantes al salir. Los cartuchos de un arma guardada en la mochila siguen en esa arma. Cambiar un arma en la armería se hace fuera del sector y devuelve el arma descargada. La disponibilidad comercial sigue siendo ilimitada; todavía no hay cantidades y reposición configurables por comerciante.
+La cantidad de cartuchos configurada en **Reglas** se entrega una sola vez al incorporarse, con un valor original de diez. Entrar o salir conserva la munición propia; no compra cargas ni devuelve dinero. Los cartuchos de un arma guardada en la mochila siguen en esa arma. El comercio está desactivado; el equipo adicional requiere objetos físicos compatibles.
 
 Los accesorios y los tipos de munición siguen pendientes de edición. Los tres modelos de artillería se editan en Armas → Artillería. Las opciones de manejo todavía no integradas bloquean el inicio de campaña.
 
@@ -221,7 +223,7 @@ La sección **Armas** incluye las nueve familias de fuego y las cinco de armas b
 
 En la ficha del personaje, **Arma principal** admite un arma de fuego o blanca. **Arma blanca** elige su equipo secundario. **Equipo original del personaje** conserva el valor general para paquetes anteriores. El editor impide eliminar una variante asignada a cualquiera de los dos espacios. Copiar el personaje, deshacer, rehacer y lanzar la campaña conservan estas selecciones. El campo de prueba sigue siendo una prueba de tiro; un personaje con arma principal blanca debe probarse en la campaña.
 
-Cada variante tiene su propio precio y existencias en la armería. Al equiparla, el arma anterior vuelve como un ejemplar separado. El nombre y la imagen propios aparecen en la hoja de servicio, la armería, los dos espacios del inventario y la mochila. Las armas blancas recuperadas del espacio principal de un cuerpo pueden equiparse en cualquiera de los dos espacios. Los cambios, el regreso a campaña y el guardado conservan su definición y estado. El peso de las armas blancas editadas cuenta mientras están equipadas o guardadas; cambiar de mano activa no modifica ese peso.
+Cada variante conserva su definición y precio anterior; ese precio no habilita compras. Los ejemplares disponibles pertenecen al inventario físico. Al equiparla, el arma anterior vuelve como un ejemplar separado. El nombre y la imagen propios aparecen en la hoja de servicio, la armería, los dos espacios del inventario y la mochila. Las armas blancas recuperadas del espacio principal de un cuerpo pueden equiparse en cualquiera de los dos espacios. Los cambios, el regreso a campaña y el guardado conservan su definición y estado. El peso de las armas blancas editadas cuenta mientras están equipadas o guardadas; cambiar de mano activa no modifica ese peso.
 
 Los residentes todavía no tienen inventario civil: esta asignación se aplica a su equipo militar al incorporarse. El saqueo del espacio secundario de un cuerpo, el desgaste cuerpo a cuerpo, los accesorios y la edición de técnicas especiales requieren entregas separadas. Esta entrega no acredita el sistema completo de inventario o combate sin armas.
 
@@ -253,9 +255,9 @@ Este control reemplaza el avance, los objetivos y el final originales. San Loren
 
 En **Reglas** podés definir los fondos iniciales y los cartuchos por combatiente de la escuadra, enemigo nuevo y miliciano nuevo. Los fondos permiten entre 0 y 1.000.000 de pesos; cada cantidad permite entre 0 y 100 cartuchos enteros. **Restaurar fondos y cartuchos originales** vuelve a 3.200 pesos y 10, 13 y 6 cartuchos, respectivamente. Deshacer recupera los valores anteriores.
 
-Los fondos se entregan una sola vez al crear la campaña. Cada entrada o ataque compra la cantidad indicada por cada arma principal de fuego de la escuadra, al precio configurado (1 peso por defecto). La carga nunca supera la capacidad del arma; el resto queda en reserva. Salir devuelve el valor de los cartuchos restantes según las reglas de recuperación existentes. La pantalla de campaña muestra el precio real antes de entrar.
+Los fondos se entregan una sola vez al crear la campaña. En **Fondos y munición inicial**, la cantidad por combatiente define la entrega compatible con su arma al incorporarse por primera vez. La carga no supera la capacidad del arma; el resto queda en sus bolsillos, dentro del espacio disponible. Entrar, salir, renovar o volver a contratar no compra ni repone cartuchos. La munición restante conserva su dueño y no se convierte en dinero.
 
-Cero deja las armas descargadas y sin reserva. Las armas principales blancas no reciben cartuchos. Las tropas guardadas conservan lo que les queda; la regla de enemigos y milicias solo se aplica al crear soldados. Los aliados temporales de misiones conservan su abastecimiento propio. El precio por cartucho se configura en la misma sección. El cebo, las piedras y los tipos de munición aún no son configurables.
+Cero omite la entrega inicial; no retira munición que ya existe. Las armas principales blancas no reciben cartuchos. Las tropas guardadas conservan lo que les queda; la regla de enemigos y milicias solo se aplica al crear soldados. Los aliados temporales de misiones conservan su abastecimiento propio. Las cargas gastadas requieren una fuente física compatible.
 
 Un borrador anterior usa los valores originales. La campaña guarda su propia copia de las reglas: cambiar el borrador no cambia una partida existente, y cargar una partida no vuelve a entregar los fondos iniciales.
 
@@ -263,19 +265,18 @@ Un borrador anterior usa los valores originales. La campaña guarda su propia co
 
 En **Reglas → Atención médica y descanso** podés configurar la medicina mínima,
 la salud base por hora, cuántos puntos de medicina suman un punto de curación,
-el precio de las vendas, la energía y fatiga del médico, la recuperación base
+la energía y fatiga del médico, la recuperación base
 por descanso y las horas necesarias para recuperar un punto de salud estable.
 
 Cada campo admite solo enteros dentro del rango indicado. La medicina mínima va
-de 0 a 100; la salud base y el intervalo de habilidad, de 1 a 100; el precio,
-de 0 a 10.000 pesos; los costos y ritmos de energía/fatiga, de 0 a 100; y el
-intervalo de curación por descanso, de 1 a 168 horas. Cero permite vendas
-gratuitas, elimina ese costo de trabajo o desactiva ese ritmo de recuperación.
+de 0 a 100; la salud base y el intervalo de habilidad, de 1 a 100;
+los costos y ritmos de energía/fatiga, de 0 a 100; y el
+intervalo de curación por descanso, de 1 a 168 horas. Cero elimina ese costo
+de trabajo o desactiva ese ritmo de recuperación; no crea vendas.
 Las heridas y la visión nocturna modifican los ritmos base de descanso.
 
-El precio de las vendas rige tanto para la compra por cantidad como para la
-reposición de provisiones del taller. La atención sigue gastando una venda por
-hora de trabajo. Detener la hemorragia tiene prioridad sobre recuperar salud.
+La atención gasta una venda propia por hora de trabajo. El editor no ofrece
+un precio ni una compra de vendas. Detener la hemorragia tiene prioridad sobre recuperar salud.
 La atención necesita presencia segura y real en la misma celda. Los mismos
 valores rigen para **Médico de milicias**, que atiende a los heridos de la
 guarnición con sus propias vendas. La pantalla de campaña muestra su salud y la pérdida horaria por hemorragia. La milicia herida fuera del sector abierto usa el mismo porcentaje de daño horario; el médico trabaja antes de ese daño. Abrir la conferencia de Yatasto no detiene las heridas ni la atención de la guarnición que quedó en la ciudad. Si un soldado muere, deja de contar como defensor. Su cuerpo y sus objetos permanecen en la escena guardada conocida. [Heridas de milicias verificadas](../verification/unloaded-militia-wounds.md).
@@ -401,8 +402,8 @@ el combate captura las piezas. Retirarse puede dejarlas en manos realistas.
 **Piezas emplazadas en este sector** muestra el dueño, la carga y las reservas.
 Preparar una batería vacía no retira los cañones que ya están allí.
 
-La recuperación estratégica y el transporte de esas piezas siguen pendientes
-de integración. La reposición se configura en las reglas que se describen abajo. Los tres modelos se editan en Armas → Artillería. [Verificación](../verification/stationed-artillery.md).
+La recuperación y el transporte usan piezas que ya tienen dueño. No hay
+reposición automática de munición. Los tres modelos se editan en Armas → Artillería. [Verificación](../verification/stationed-artillery.md).
 
 ## Territorio inicial
 
@@ -412,19 +413,13 @@ En **Cuartel general** podés elegir una de las once localidades con acceso comp
 
 El control inicial habilita los destinos de contratación que también tengan infraestructura de recepción. No abre una ruta de abastecimiento a través de localidades enemigas: una Mendoza patriota puede seguir incomunicada con un cuartel situado en Retiro. Los ingresos y los requisitos de instrucción de milicia usan el control y la lealtad reales. Comenzar con una localidad no entrega una recompensa de conquista, tropas ni una misión completada.
 
-El escritorio muestra las localidades iniciales; la carta muestra el control actual. La campaña guarda una copia de las opciones y aplica el territorio solo al comenzar. Las conquistas, pérdidas y cambios de lealtad posteriores se conservan al cargar. Los borradores anteriores mantienen el inicio original. El cuartel elegido es el origen de abastecimiento y dispone de sala de armas y taller. Las compras locales, la creación del personaje, las reparaciones y la reposición funcionan con sus reglas de control y comunicación. La pérdida del cuartel termina la campaña. Las incursiones por calendario conservan la protección que antes tenía Retiro.
+El escritorio muestra las localidades iniciales; la carta muestra el control actual. La campaña guarda una copia de las opciones y aplica el territorio solo al comenzar. Las conquistas, pérdidas y cambios de lealtad posteriores se conservan al cargar. Los borradores anteriores mantienen el inicio original. El cuartel elegido es el origen de abastecimiento y dispone de sala de armas y taller. La creación del personaje y las reparaciones conservan sus reglas de control y comunicación. El comercio y la reposición de suministros están desactivados. La pérdida del cuartel termina la campaña. Las incursiones por calendario conservan la protección que antes tenía Retiro.
 
-Revisá **Llegadas** para habilitar la recepción en la nueva base. La contratación conserva sus requisitos de control, infraestructura y bloqueo. Los talleres históricos de Retiro, Córdoba y Mendoza siguen existiendo y requieren comunicación con el cuartel. El puerto de importaciones se configura por separado. La selección del cuartel no mueve a los contactos históricos. Los capítulos y el final se configuran por separado en **Objetivos y final de campaña**.
+Revisá **Llegadas** para habilitar la recepción en la nueva base. La contratación conserva sus requisitos de control, infraestructura y bloqueo. Los talleres históricos de Retiro, Córdoba y Mendoza siguen existiendo y requieren comunicación con el cuartel. Los valores de importación anteriores no habilitan compras. La selección del cuartel no mueve a los contactos históricos. Los capítulos y el final se configuran por separado en **Objetivos y final de campaña**.
 
 ## Puerto y plazos de importación
 
-En **Reglas → Importaciones de armas** podés elegir Buenos Aires, Ensenada, San Nicolás o Santa Fe. **Sin importaciones** impide nuevos pedidos de armas importadas. Las compras locales siguen disponibles y los personajes conservan las armas que ya tienen. Esta regla afecta las familias Brown Bess y Baker y sus variantes; elegir qué familias se importan todavía no está disponible.
-
-Los plazos mínimo y máximo permiten entre 1 y 720 horas enteras. El mínimo no puede superar al máximo. Usá valores iguales para una entrega de plazo fijo. El plazo se sortea una sola vez al comprar y queda guardado con el pedido. **Restaurar importaciones originales** vuelve a Ensenada y al intervalo de 72 a 120 horas; deshacer recupera los valores anteriores.
-
-El pedido necesita el puerto bajo control patriota, comerciantes dispuestos a negociar y la sala de armas del cuartel comunicada. Se paga por adelantado. Un bloqueo permite encargar, pero demora la entrega. La pérdida del puerto también retiene los pedidos. Las incursiones de esa misma hora se resuelven antes de entregar las armas. Al recuperar las condiciones, el pedido se entrega una vez sin cambiar el plazo ni cobrar de nuevo.
-
-La armería muestra el puerto, los plazos y las demoras por bloqueo u ocupación. Deshabilita los pedidos que no se pueden aceptar y conserva las compras locales. Cada variante importada llega como un ejemplar con su propia definición e imagen. El abastecimiento usa la armería general publicada; no hay todavía almacenes portuarios físicos ni transporte de estos pedidos hasta el cuartel. La recepción de contratados se configura por separado en **Llegadas**.
+Las importaciones de equipo están desactivadas y sus controles se retiraron de **Reglas**. Un paquete importado conserva sus plazos y puerto anteriores al editar otras reglas; no admite pedidos nuevos. Los objetos y pedidos anteriores que ya pertenecen a una partida conservan sus reglas de guardado. La recepción de contratados sigue en **Llegadas**.
 
 ## Recorrer celdas del mapa
 
@@ -454,7 +449,7 @@ Las partidas anteriores mantienen sus encuentros originales. Las nuevas campaña
 
 Las heridas pertenecen al personaje. Guardar, cambiar de celda o incorporarlo a la escuadra no restaura su salud. La salud máxima usa su ficha. Al incorporarse deja de existir como NPC en las escenas guardadas. Si luego deja el servicio, conserva su estado de soldado.
 
-En el campo táctico podés usar los cursores normales para atacar o atender a un habitante. Las armas y las trampas pueden herirlo. La hemorragia continúa al salir del sector y mientras usás otra escuadra. Volver a entrar o cargar una partida no reinicia el intervalo. Un personaje inconsciente no puede caminar ni conversar. Los [primeros auxilios](../gameplay/characters/field-first-aid.md) gastan una venda por aplicación efectiva y estabilizan a un herido crítico hasta 15 puntos de salud. Pueden requerir varias aplicaciones según la habilidad del sanitario. No recuperan la salud restante. Las heridas vendadas y los suministros gastados se conservan al volver a entrar y al reclutar al habitante. En un taller abastecido podés comprar vendas por cantidad o reponer las que falten de la dotación inicial del personaje. Ambas opciones usan el precio de esta campaña: 10 pesos por venda con las reglas originales.
+En el campo táctico podés usar los cursores normales para atacar o atender a un habitante. Las armas y las trampas pueden herirlo. La hemorragia continúa al salir del sector y mientras usás otra escuadra. Volver a entrar o cargar una partida no reinicia el intervalo. Un personaje inconsciente no puede caminar ni conversar. Los [primeros auxilios](../gameplay/characters/field-first-aid.md) gastan una venda por aplicación efectiva y estabilizan a un herido crítico hasta 15 puntos de salud. Pueden requerir varias aplicaciones según la habilidad del sanitario. No recuperan la salud restante. Las heridas vendadas y los suministros gastados se conservan al volver a entrar y al reclutar al habitante. Las vendas gastadas requieren otra fuente física; no se compran ni reponen en un taller.
 
 La muerte cancela los traslados y el reclutamiento. El cuerpo queda en su escena. La campaña aplica una vez la consecuencia local de lealtad y marca como fallido un encargo pendiente de ese contacto. Si muere un mando indispensable de la historia original, la campaña termina. San Martín comparte su salud entre sus funciones de contacto y aliado.
 
@@ -537,7 +532,7 @@ Los mandos históricos conservan su servicio permanente, requisitos de reclutami
 
 `tests/campaign-headquarters.test.mjs` comprueba los once destinos, el inicio y suministro alternativos, creación, compra, taller, contratación y viaje reales, entrada y ataque, protección ante incursiones, derrota y guardados. La pérdida del cuartel y el desgaste para probar el taller usan estados preparados, sin afirmar victorias enemigas ni desgaste obtenido en combate. El editor montado configura y lanza la base; el escritorio y cuaderno muestran su nombre. Ver [cuartel general](../verification/campaign-headquarters.md).
 
-`tests/import-supply-rules.test.mjs` verifica puertos, plazos, pedidos deshabilitados, cobro único, plazo guardado, entrega, bloqueo y ocupación, variantes equipadas y guardados. Una incursión naval real que coincide con la entrega conserva el pedido pendiente. El editor y la armería montados cubren los controles, deshacer, lanzar, comprar y mostrar las demoras. Ver [importaciones configurables](../verification/import-supply-rules.md).
+`tests/import-supply-rules.test.mjs` comprueba las definiciones anteriores, los guardados y el rechazo del comercio. El editor montado conserva los valores importados al editar reglas activas, exportar y lanzar la campaña; no ofrece controles de compra ni de importación. Ver [importaciones configurables](../verification/import-supply-rules.md).
 
 `tests/campaign-story.test.mjs` verifica capítulos ordenados, llegada pagada, vencimiento de contrato, encargos resueltos por diálogo, derrota por plazo y muerte táctica real, finales simultáneos, interrupción de viajes y guardados inválidos. El editor montado cubre orden, condiciones, referencias, deshacer y lanzamiento; las vistas muestran el objetivo y el final propios. La [verificación de capítulos](../verification/campaign-story.md) distingue estas rutas breves de la campaña completa pendiente.
 
@@ -558,17 +553,7 @@ reglas separadas. Véase la [verificación de recargas](../verification/partial-
 
 ### Precio de los cartuchos
 
-En **Reglas → Fondos y abastecimiento**, el **Precio del cartucho** acepta un
-importe entero entre cero y un millón de pesos. Si no se configura, vale un
-peso, igual que antes. La escuadra paga al entrar o atacar un sector. La salida
-devuelve el valor de los cartuchos que realmente quedan. Por ejemplo, siete
-cartuchos a tres pesos cuestan 21; si se dispara uno, se devuelven 18.
-
-El precio queda guardado con la campaña. Cambiar el borrador no modifica una
-partida en curso. Restaurar las reglas originales devuelve el precio a un peso
-y restaura los fondos y cantidades iniciales. El precio cero conserva las
-cantidades y permite abastecer sin pago. La armería y el botón de entrada muestran
-el precio de esa partida. Véase la [verificación](../verification/authored-cartridge-price.md).
+El precio anterior se conserva en paquetes importados, pero no tiene un control en el editor ni cobra al entrar o devuelve dinero al salir. Restaurar fondos y cantidades iniciales conserva ese valor importado. La dotación inicial se entrega una vez; los cartuchos gastados no se reponen por compra. La [verificación anterior](../verification/authored-cartridge-price.md) es un registro histórico.
 
 ## Recargar una pieza entre turnos
 
@@ -585,20 +570,7 @@ el trabajo consume tiempo y no resta puntos de combate.
 
 ## Reponer munición de artillería
 
-En **Reglas → Munición de artillería** podés permitir o impedir la reposición,
-fijar el precio por modelo y elegir el límite de reserva para nuevas compras.
-Cero pesos permite comprar gratis. Estos valores quedan guardados con cada
-campaña. Cambiar el borrador no cambia partidas iniciadas.
-
-En la armería, **Comprar 1 munición** paga el precio y agrega una reserva al cañón
-local. La pieza y el sector deben ser propios. Se necesita una conexión al cuartel,
-un combatiente disponible y ningún enemigo capaz de combatir en el lugar.
-La pantalla indica por qué una compra no está disponible.
-
-Comprar no carga la pieza ni borra una recarga parcial. La dotación debe cargarla
-en el campo. El límite no elimina munición que ya existe, ni cambia la entrega
-inicial de cada modelo (una carga y seis reservas por defecto). [Verificación](../verification/authored-artillery-supply.md).
-
+La compra y reposición de munición de artillería están desactivadas. El editor conserva los valores anteriores de los paquetes importados y no muestra controles para habilitarlas. La reserva inicial de cada modelo sigue en **Armas → Artillería**. Una pieza conserva su carga, munición y recarga incompleta; la dotación debe usar sus reservas reales. La [verificación anterior](../verification/authored-artillery-supply.md) conserva el alcance histórico y el rechazo actual del comercio.
 
 ## Dotaciones automáticas
 
@@ -619,7 +591,7 @@ Guardar conserva los recursos reales. El traslado estratégico sigue pendiente. 
 En **Armas → Artillería** podés buscar y editar los tres modelos. Cada uno tiene
 nombre, imagen, precio, dotación, PA por acción, alcance, daño, penetración y
 escala de metralla. También podés definir si se entrega cargado y cuántas
-municiones lleva en reserva al comprarlo. Las recargas de más de un turno
+municiones lleva en su reserva inicial. Las recargas de más de un turno
 conservan el trabajo de toda la dotación.
 
 La imagen y el nombre aparecen en la armería y en el campo. **Cambiar imagen de
@@ -627,8 +599,8 @@ artillería** admite PNG, JPEG o WebP de hasta 250 KB. Podés restaurar la image
 restaurar los modelos o deshacer los cambios. El inicio de campaña se bloquea si
 un dato no es válido. La partida conserva los modelos con los que fue iniciada.
 
-Las piezas compradas reciben su munición inicial una sola vez. Volver al sector
-conserva la carga real. Las reglas de reposición siguen en **Reglas**. La edición
+Cada pieza recibe su munición inicial una sola vez. Volver al sector
+conserva la carga real. No hay reposición por compra. La edición
 se aplica tanto a los cañones propios como a los enemigos de ese modelo. No crea
 familias adicionales. [Verificación](../verification/authored-artillery-profiles.md).
 
@@ -669,24 +641,12 @@ solo se aplican a nuevas campañas. [Verificación](../verification/authored-art
 
 ## Vender y recomprar artillería
 
-En un taller controlado y comunicado con el cuartel general, la armería muestra
-**Comercio de piezas**. Podés vender una pieza sin emplazar, del depósito local
-o emplazada junto al taller. Para esta última, la escuadra necesita su dotación
-completa disponible. El taller muestra sus fondos, su precio y el motivo de un
-rechazo. Las escenas pendientes y los enemigos presentes impiden la operación.
-
-El taller guarda cada pieza con su munición y su recarga. Recomprarla la devuelve
-al depósito local. Una venta o compra repetida no duplica la pieza ni el pago.
-Los precios de cada modelo se toman de **Armas → Artillería**. Por ahora, el taller
-empieza con 1.200 pesos, paga 40% del precio (30% en Córdoba, 50% en Mendoza) y
-cobra 80% para recomprar. Estos porcentajes y fondos se pueden cambiar en las reglas siguientes. No hay
-venta a distancia ni renovación automática de caja. [Verificación](../verification/finite-artillery-trading.md).
-
+La venta y recompra de artillería están desactivadas. Los controles actuales gestionan piezas propias, depósitos y traslados. La [verificación anterior](../verification/finite-artillery-trading.md) conserva el alcance histórico; no habilita operaciones en la campaña actual.
 
 ## Reenviar piezas guardadas
 
 Cada pieza del depósito local también muestra **Trasladar pieza**. Podés enviar
-una pieza recuperada o recomprada a otra localidad controlada, con la dotación y
+una pieza propia recuperada a otra localidad controlada, con la dotación y
 el transporte disponibles. Se aplican las horas y el precio que definiste en las
 reglas de traslado. No hace falta emplazarla primero en un combate. Al llegar,
 conserva su identidad, carga, reservas y recarga incompleta. Elegila en la batería
@@ -695,18 +655,7 @@ cuando la escuadra alcance el nuevo depósito. [Verificación](../verification/d
 
 ## Reglas de comercio de artillería
 
-En **Reglas → Comercio de artillería** podés permitir las operaciones, definir
-los fondos iniciales de cada taller y elegir los porcentajes de compra y recompra.
-**Agregar precio local** permite elegir una localidad y un porcentaje distinto de
-compra; también podés cambiarla o quitarla. Esa excepción solo se usa si existe
-un taller allí. No crea instalaciones.
-
-El taller recibe los fondos una vez. Las operaciones cambian su caja y guardar
-no la restaura. Cero pesos o cero por ciento permite operaciones sin pago. Si el
-taller paga más al comprar que al revender, beneficia al jugador hasta agotar sus
-fondos. La armería muestra el pago local y la caja reales. Deshacer, rehacer,
-restaurar y la validación funcionan; los cambios del borrador no alteran partidas
-iniciadas. [Verificación](../verification/authored-artillery-trading.md).
+El editor no muestra los fondos, porcentajes ni precios locales del antiguo comercio. Un paquete importado conserva esos datos cuando se editan otras reglas, se deshace, se exporta o se inicia la campaña. El control de comercio de la campaña sigue rechazando las operaciones. La [verificación anterior](../verification/authored-artillery-trading.md) es un registro histórico.
 
 ### Recuperar el arma secundaria
 
