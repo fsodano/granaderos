@@ -1,6 +1,7 @@
 // Transient presentation is separate from campaign/save state. Recording never
 // changes orders, randomness, AP, visibility or the returned authoritative state.
 import {projectileTrajectoryPoint} from './projectile-trajectory.js';
+import {markFirearmNearMissPresented} from './firearm-near-miss-feedback.js';
 let recorder=null;
 export function recordBattleFrame(state,event){recorder?.(state,event);}
 // Reuse unchanged branches between frames. Tiles and buildings normally share
@@ -59,7 +60,8 @@ export function captureBattlePresentation(before,execute,canObserve){
  lastSignature=visibleSignature(before,knownIn(before));
  recorder=(state,event)=>{
   const visible=visibleIn(state),known=knownIn(state),signature=visibleSignature(state,known),seen=visible.has(event.unitId);
-  if(!seen&&signature===lastSignature)return;
+  const nearMissIds=Array.isArray(event.nearMissIds)?[...new Set(event.nearMissIds)].filter(id=>typeof id==='string'&&state.units.some(unit=>unit.id===id&&unit.side==='player'&&unit.hp>0&&!unit.unconscious)):[];
+  if(!seen&&signature===lastSignature&&!nearMissIds.length)return;
   if((event.type==='prepare'||event.type==='contact')&&!seen)return;
   const shotVisual=seen?observedShot(state,event.shotVisual,known,canObserve):null;
   if(event.type==='projectile'&&shotVisual)presentedShots.add(event.unitId);
@@ -67,7 +69,7 @@ export function captureBattlePresentation(before,execute,canObserve){
   const target=event.targetId?bodyEntries(state).find(({body,kind})=>kind===(event.targetKind==='npc'?'npc':'unit')&&String(body.id)===String(event.targetId)&&known.has(bodyKey(kind,body.id)))?.body:null;
   const current=snapshot(state,prior);prior=current;lastSignature=signature;
   const shotComplete=event.type==='result'&&presentedShots.delete(event.unitId);
-  frames.push({state:current,visibleIds:[...visible],unitId:seen?event.unitId:null,type:event.type,action:event.action,impacts,...(shotVisual?{shotVisual}:{}),...(shotComplete?{shotComplete:true}:{}),...(event.contactComplete&&seen?{contactComplete:true}:{}),...(event.performed===false?{performed:false}:{}),...(target?{targetPoint:{id:target.id,x:target.x,y:target.y,tacticalLevel:target.tacticalLevel}}:{}),...(event.grenadeVisual&&seen?{grenadeVisual:snapshot(event.grenadeVisual)}:{}),...(event.knifeVisual&&seen?{knifeVisual:snapshot(event.knifeVisual)}:{})});
+  frames.push({state:current,visibleIds:[...visible],unitId:seen?event.unitId:null,type:event.type,action:event.action,impacts,...(nearMissIds.length?{nearMissIds}:{}),...(shotVisual?{shotVisual}:{}),...(shotComplete?{shotComplete:true}:{}),...(event.contactComplete&&seen?{contactComplete:true}:{}),...(event.performed===false?{performed:false}:{}),...(target?{targetPoint:{id:target.id,x:target.x,y:target.y,tacticalLevel:target.tacticalLevel}}:{}),...(event.grenadeVisual&&seen?{grenadeVisual:snapshot(event.grenadeVisual)}:{}),...(event.knifeVisual&&seen?{knifeVisual:snapshot(event.knifeVisual)}:{})});
  };
- try{const state=execute();return {state,frames};}finally{recorder=parent;}
+ try{const state=execute();if(frames.some(frame=>frame.nearMissIds))markFirearmNearMissPresented(state);return {state,frames};}finally{recorder=parent;}
 }

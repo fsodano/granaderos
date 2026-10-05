@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createBattle,actBattle,presentedActBattle,getReachable,actionCosts,shotChance,maxActionPoints,hasLineOfSight,teamCanSee,getCareComposureResult} from '../game/tactical.js';
+import {createBattle,actBattle,presentedActBattle,endTurn,getReachable,actionCosts,shotChance,maxActionPoints,hasLineOfSight,teamCanSee,getCareComposureResult} from '../game/tactical.js';
 import {runBattleJob} from '../game/battle-job.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
 import {fieldPractice,fieldPracticeChance,practice,validateTraining} from '../game/skill-training.js';
@@ -99,10 +99,19 @@ test('an unarmed enemy can put away medical supplies through a legal free-hands 
  const s=field();s.phase='enemy';const enemy=s.units[1];Object.assign(enemy,{weapon:0,blade:0,activeSlot:'medical',hp:100,bleeding:0,medkits:1,ap:100,loaded:0,ammo:0});
  const order=chooseEnemyAction(s,enemy);assert.deepEqual(order,{type:'weapon',unitId:enemy.id,slot:'unarmed'});
 });
-test('near misses and interrupts use the character contact line only on sparse events',()=>{
- const s=field({storyProfile:{speech:{contact:'A cubierto, compañeros.'}}}),near=structuredClone(s);near.units[1].lastTargetId='p';near.units[1].loaded=0;
- assert.equal(contextualBanter(s,near,1),null);assert.equal(contextualBanter(s,near,3).text,'A cubierto, compañeros.');
- const interrupt=structuredClone(s);interrupt.phase='interrupt';interrupt.interrupt={unitIds:['p']};assert.equal(contextualBanter(s,interrupt,1),null);assert.equal(contextualBanter(s,interrupt,3).text,'A cubierto, compañeros.');
+test('actual close passages and interrupts use distinct optional lines on sparse events without contact fallback',()=>{
+ // Initial bounded combat fixture: one affordable hostile discharge. The paid
+ // integration separately proves issued native equipment and campaign custody.
+ const s=createBattle([{id:'p',name:'Defensor',x:7,y:3,facing:6,weapon:1800,loaded:0,storyProfile:{speech:{contact:'Contacto nuevo.',near:'Esa bala pasó cerca.',interrupt:'Ahora puedo actuar.'}}}],{width:20,height:8,seed:3,tiles:Array.from({length:160},(_,i)=>({x:i%20,y:Math.floor(i/20),type:'grass',blocked:false,cover:0})),enemies:[{id:'e',x:1,y:3,facing:2,weapon:1800,marksmanship:42,loaded:1,ammo:0,condition:100,patrol:false,overwatch:false}]});
+ s.units[0].ap=0;s.units[1].ap=12;
+ const silent=endTurn(s);assert.equal(silent.units[0].hp,s.units[0].hp);assert.equal(silent.units[1].loaded,0);
+ assert.equal(contextualBanter(s,silent,1),null);assert.equal(contextualBanter(s,silent,3),null,'a silent event is consumed, never backfilled');
+ const near=endTurn(s);assert.equal(contextualBanter(s,near,3).text,'Esa bala pasó cerca.');assert.equal(contextualBanter(s,near,6),null);
+ const invented=structuredClone(s);invented.units[1].lastTargetId='p';invented.units[1].loaded=0;assert.equal(contextualBanter(s,invented,3),null,'a charge delta cannot prove a close passage');
+ const interrupt=structuredClone(s);interrupt.phase='interrupt';interrupt.interrupt={unitIds:['p']};assert.equal(contextualBanter(s,interrupt,1),null);assert.equal(contextualBanter(s,interrupt,3).text,'Ahora puedo actuar.');
+ const omitted=structuredClone(s);delete omitted.units[0].storyProfile.speech.near;delete omitted.units[0].storyProfile.speech.interrupt;
+ assert.equal(contextualBanter(omitted,endTurn(omitted),3),null);
+ const oldInterrupt=structuredClone(omitted);oldInterrupt.phase='interrupt';oldInterrupt.interrupt={unitIds:['p']};assert.equal(contextualBanter(omitted,oldInterrupt,3),null);
 });
 test('a wounded mercenary can aim, fire, take opaque cover and complete a finite reload in one budget',()=>{
  const s=field({hp:39,maxHp:100,bandaged:0,energy:69,loaded:1,ammo:3});Object.assign(s.tiles.find(tile=>tile.x===2&&tile.y===3),{type:'wall',blocked:true,blocksSight:true});

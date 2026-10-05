@@ -126,7 +126,7 @@ function BattlefieldContents({battle:committed,onPlaybackBusy,onPlaybackValidate
   const [pendingGift,setPendingGift]=useState<any>(null),[giftReply,setGiftReply]=useState<any>(null);
   const [speech,setSpeech]=useState<any>(null);const replyCounts=useRef<Record<string,number>>({});
   useEffect(()=>{if(!speech)return;const timer=setTimeout(()=>setSpeech(null),10000);return()=>clearTimeout(timer);},[speech]);
-  useEffect(()=>{const before=lastFeedback.current;lastFeedback.current=s;if(before.battleId!==s.battleId||before.sectorId!==s.sectorId)return;const messages=tacticalFeedback(before,s);if(messages.length)showFeedback(messages.slice(0,3).join(' · '));if(talking||speech||Date.now()-lastChatter.current<12000)return;const line=contextualBanter(before,s,++chatterCount.current);if(line){lastChatter.current=Date.now();setSpeech(line);}},[s]);
+  useEffect(()=>{const before=lastFeedback.current;lastFeedback.current=s;if(before.battleId!==s.battleId||before.sectorId!==s.sectorId)return;const messages=tacticalFeedback(before,s);if(messages.length)showFeedback(messages.slice(0,3).join(' · '));if(talking||speech||Date.now()-lastChatter.current<12000)return;const line=contextualBanter(before,s,()=>chatterCount.current++,presentation.frame);if(line){lastChatter.current=Date.now();setSpeech(line);}},[s]);
   useEffect(()=>{setSpeech(null);setTalking(null);setPendingGift(null);setGiftReply(null);},[s.battleId,s.sectorId]);
   const talking=talkingSelection?(s.npcs??[]).find((n:any)=>n.id===talkingSelection.id&&(n.hp??100)>0&&!n.unconscious&&!n.departure&&!n.fled&&!n.routed)??null:null;
   useEffect(()=>{if(talkingSelection&&!talking){setTalking(null);setGiftReply(null);}},[talkingSelection,talking]);
@@ -177,7 +177,7 @@ function BattlefieldContents({battle:committed,onPlaybackBusy,onPlaybackValidate
   const costs=useMemo(()=>u?actionCosts(s,u):null,[s,u]);const weapon=u?weaponFor(u):null;const firearm=u&&hasFirearm(u);const [cannonId,setCannonId]=useState('');const [shotType,setShotType]=useState('solid');const gun=s.artillery?.find((g:any)=>g.id===cannonId);const gunCosts=u&&gun?artilleryCosts(s,u,gun):null;
   const maxAim=useMemo(()=>aimOptions(s,u,{mode,target:hover,hitLocation}).filter((option:any)=>!option.disabled).at(-1)?.level??0,[s,u,mode,hover,hitLocation]);
   useEffect(()=>setAim(value=>Math.min(value,maxAim)),[maxAim]);
-  useEffect(()=>{setTalking(null);setSpeech(null);setPendingGift(null);setGiftReply(null);},[selected]);
+  useEffect(()=>{setTalking(null);setPendingGift(null);setGiftReply(null);},[selected]);
   useEffect(()=>{
     if(!pendingGift||busy)return;
     const actor=s.units.find((person:any)=>person.id===pendingGift.unitId),position=motion.positions[pendingGift.unitId];
