@@ -3,6 +3,7 @@ import test from 'node:test';import assert from 'node:assert/strict';
 import {createElement as h} from '../web/node_modules/react/index.js';import {renderToStaticMarkup as render} from '../web/node_modules/react-dom/server.node.js';
 import {componentTree} from './component-tree.mjs';import {createBattle,canSee} from '../game/tactical.js';
 import {rosterCells} from '../game/ja2-hud.js';
+import {validateBattleSnapshot} from '../game/validate-battle.js';
 const {default:Roster}=await import('../web/app/JA2Roster.tsx');
 const descendants=n=>!n||typeof n!=='object'?[]:[n,...(Array.isArray(n)?n:Array.isArray(n.props?.children)?n.props.children:[n.props?.children]).flatMap(descendants)];
 const noop=()=>{};
@@ -15,6 +16,15 @@ const field=()=>createBattle([
  {id:'f',name:'Mensajero',weapon:0,blade:0,activeSlot:'unarmed'},
 ].map((u,i)=>({...u,x:1+i,y:1})),{width:12,height:8,exploration:true,enemies:[]});
 const props=b=>({battle:b,players:b.units,selected:'a',onSelect:noop,onOpenInventory:noop});
+test('portrait loading progress survives admitted restoration and stays distinct from ready charges in each hand',()=>{
+ // Current saved-state fixture; it makes no native wounded-cycle claim.
+ const battle=validateBattleSnapshot(createBattle([{id:'a',name:'Cargador',weapon:1808,loaded:1,reloadProgress:.71,ammo:9,offHand:{weapon:1805,count:1,weight:1.3,loaded:0,condition:61,reloadProgress:.43},leftHandItem:'offhand'}],{exploration:true,enemies:[]})),before=structuredClone(battle);
+ const tree=componentTree(Roster,props(battle)),card=descendants(tree).find(n=>n.props?.role==='listitem'),hands=descendants(card).filter(n=>n.props?.['data-hand-side']);
+ assert.match(card.props['aria-label'],/Mano principal.*1 carga\(s\).*71% del próximo cartucho/);assert.match(card.props['aria-label'],/Segunda mano.*0 carga\(s\).*43% del próximo cartucho/);
+ assert.match(hands[0].props.title,/71% del próximo cartucho/);assert.match(hands[1].props.title,/43% del próximo cartucho/);
+ const markup=render(h(Roster,props(battle)));assert.match(markup,/class="roster-hand-load">1<span class="roster-hand-loading"[^>]*> ·71%/);assert.match(markup,/class="roster-hand-load">0<span class="roster-hand-loading"[^>]*> ·43%/);assert.deepEqual(battle,before);
+ for(const loaded of [0,2]){const old=createBattle([{id:'a',weapon:1808,loaded,ammo:9}],{exploration:true,enemies:[]});assert.doesNotMatch(render(h(Roster,props(old))),/Recarga en curso/);}
+});
 
 test('six occupied cards contain twelve noninteractive hand slots, real art, icons and independent status stars',()=>{
  const b=field(),html=render(h(Roster,props(b))),tree=componentTree(Roster,props(b)),cards=descendants(tree).filter(n=>n.props?.role==='listitem');

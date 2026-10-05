@@ -1,10 +1,22 @@
 import {register} from 'node:module';register('./tactical-render-loader.mjs',import.meta.url);
 import test from 'node:test';import assert from 'node:assert/strict';import {createElement as h} from '../web/node_modules/react/index.js';import {renderToStaticMarkup as render} from '../web/node_modules/react-dom/server.node.js';import {createBattle} from '../game/tactical.js';
+import {validateBattleSnapshot} from '../game/validate-battle.js';import {componentTree} from './component-tree.mjs';
 const {default:Roster}=await import('../web/app/JA2Roster.tsx');
 const {default:Hands}=await import('../web/app/JA2Hands.tsx');
 const html=(unit={})=>{const battle=createBattle([{id:'p',...unit}],{exploration:true,enemies:[]});return render(h(Hands,{battle,unit:battle.units[0],busy:false,onPick(){},onOrder(){}}));};
 test('inventory shows exactly two hand slots and locks the second while holding a long gun',()=>{const text=html({weapon:1800,blade:1813});assert.equal((text.match(/<button/g)||[]).length,2);assert.match(text,/Segunda mano: Ocupada por el arma/);assert.match(text,/class="blocked" disabled/);assert.doesNotMatch(text,/weapon-1813/);});
 test('each held pistol shows its own load and condition',()=>{const text=html({weapon:1805,condition:81,loaded:1,offHand:{count:1,weapon:1808,weight:1.3,loaded:2,condition:57}});assert.match(text,/weapon-1805/);assert.match(text,/weapon-1808/);assert.match(text,/1 carga\(s\) · 81%/);assert.match(text,/2 carga\(s\) · 57%/);assert.doesNotMatch(text,/disabled/);});
+test('both physical hands display retained loading work at zero AP without declaring a ready charge',()=>{
+ // Declared physical loading states; the native wounded route is tested separately.
+ const s=createBattle([{id:'loader',weapon:1808,condition:81,loaded:1,reloadProgress:.71,ammo:9,offHand:{count:1,weapon:1805,weight:1.3,loaded:0,condition:57,reloadProgress:.43},leftHandItem:'offhand'}],{exploration:true,enemies:[]});
+ const battle=validateBattleSnapshot({...s,units:s.units.map(u=>({...u,ap:0}))}),unit=battle.units[0],before=structuredClone(battle);
+ const props={battle,unit,busy:false,onPick(){},onOrder(){}},text=render(h(Hands,props)),tree=componentTree(Hands,props),buttons=tree.props.children[0];
+ assert.match(text,/1 carga\(s\) · 81%/);assert.match(text,/0 carga\(s\) · 57%/);
+ assert.match(buttons[0].props['aria-label'],/Mano principal.*71% del próximo cartucho/);assert.match(buttons[1].props['aria-label'],/Segunda mano.*43% del próximo cartucho/);
+ assert.match(text,/Recarga en curso: 71%/);assert.match(text,/Recarga en curso: 43%/);assert.doesNotMatch(text,/carga lista|cartucho listo/);assert.deepEqual(battle,before);
+ const compact=render(h(Hands,{...props,compact:true}));assert.match(compact,/Recarga en curso: 71%/);assert.match(compact,/Recarga en curso: 43%/);
+ const complete=html({weapon:1808,loaded:2,ammo:9});const oldEmpty=html({weapon:1805,loaded:0,ammo:9});assert.doesNotMatch(complete,/Recarga en curso/);assert.doesNotMatch(oldEmpty,/Recarga en curso/);
+});
 test('a medkit uses a hand and the long gun appears only after putting it back in the hand',()=>{const text=html({weapon:1800,activeSlot:'medical',medkits:1,blade:1813});assert.match(text,/Mano principal: Vendas/);assert.match(text,/weapon-1813/);assert.doesNotMatch(text,/weapon-1800|Ocupada por el arma/);});
 
 test('an ordinary object shows its condition in the main hand with the second hand available',()=>{const text=html({weapon:1805,activeSlot:'item',activeItem:'inventory:keepsake',inventory:{keepsake:{name:'Recuerdo',count:1,weight:.3,condition:44}}});assert.match(text,/Mano principal: Recuerdo/);assert.match(text,/Estado 44%/);assert.doesNotMatch(text,/Ocupada por el arma/);});

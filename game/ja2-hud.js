@@ -19,7 +19,7 @@ import {mainItemPreview,swapHandsPreview, weaponFor, bladeFor, hasFirearm, carri
 import {pairedPistol,secondaryPistolView} from './paired-fire.js';
 import {directionTo} from './tactical-awareness.js';
 import {unarmedChance} from './unarmed-combat.js';
-import {inventoryUsage, carriedObject, itemDescriptor, INVENTORY_CAPACITY, SUPPLY_ITEMS} from './tactical-inventory.js';
+import {inventoryUsage, carriedObject, itemDescriptor, readItemStack, INVENTORY_CAPACITY, SUPPLY_ITEMS} from './tactical-inventory.js';
 import {TOOL_TYPES, heldTool, ENVIRONMENT_VERBS, environmentTargetSummary, visibleContainerContents} from './environment-interactions.js';
 import {HELD_SUPPLIES, heldSupply} from './held-supplies.js';
 import {planGroupMove} from './group-movement.js';
@@ -569,6 +569,15 @@ export function equipmentSlots(state, unit, ctx = {}) {
   });
 }
 
+// Retained work on the next charge, independent of ready ammunition or a future order.
+export function firearmLoadingProgress(unit,item){
+ if(!item)return null;
+ const stack=readItemStack(unit,item,1),progress=stack.reloadProgress;
+ if(weaponSpecification(stack)?.type!=='firearm'||!(progress>0&&progress<1))return null;
+ const percent=progress<.01?'<1%':`${Math.min(99,Math.round(progress*100))}%`;
+ return {progress,percent,label:`Recarga en curso: ${percent}`,description:`Recarga en curso: ${percent} del próximo cartucho.`};
+}
+
 export function handSlots(state,unit){
  const layout=handLayout(unit),options=equipmentSlots(state,unit);
  return ['right','left'].map(side=>{
@@ -580,7 +589,8 @@ export function handSlots(state,unit){
   else if(Object.hasOwn(HELD_SUPPLIES,reference))option=equipmentSlots(state,{...unit,activeSupply:reference}).find(o=>o.slot==='supply');
   else if(reference?.startsWith('inventory:')&&heldTool({...unit,activeSlot:'tool',activeTool:reference}))option=equipmentSlots(state,{...unit,activeTool:reference}).find(o=>o.slot==='tool');
   else if(reference&&carriedObject(unit,reference))option=mainItemPreview(state,unit,reference);
-  return {side,item:reference,blocked,label:descriptor?.label??(blocked?'Ocupada por el arma':'Vacía'),weapon:descriptor?.weapon,art:descriptor?.art,loaded:WEAPONS[descriptor?.weapon]?descriptor?.loaded:undefined,condition:descriptor?.condition,action:side==='left'?option?.action:null,pa:option?.pa,reason:option?.reason,disabled:blocked||side==='left'&&(option?.disabled||option?.valid===false)};
+  const loading=firearmLoadingProgress(unit,reference);
+  return {side,item:reference,blocked,label:descriptor?.label??(blocked?'Ocupada por el arma':'Vacía'),weapon:descriptor?.weapon,art:descriptor?.art,loaded:WEAPONS[descriptor?.weapon]?descriptor?.loaded:undefined,condition:descriptor?.condition,...(loading?{loading}:{}),action:side==='left'?option?.action:null,pa:option?.pa,reason:option?.reason,disabled:blocked||side==='left'&&(option?.disabled||option?.valid===false)};
  });
 }
 
