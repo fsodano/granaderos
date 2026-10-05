@@ -11,7 +11,7 @@ export function woundedGarrison({twoDoctors=false,casualty=false,careRules,injur
  for(const id of [MILITIA_DOCTOR,SECOND_MILITIA_DOCTOR]){const c=d.characters.find(c=>c.id===`person-${id}`);c.arrivalHours=0;c.attributes.medical=id===MILITIA_DOCTOR?80:60;c.attributes.leadership=50;c.startingSupplies={rations:2,torches:2,medkits:medicalKits,boleadoras:1};}
  // A single musket ball establishes the care fixture's wound. Finite pellet
  // shielding and body regions have separate shot-load coverage.
- d.weapons.push({...d.weapons.find(w=>w.id==='firearm-1804'),id:'care-fixture-carbine',name:'Carabina de instrucción',ammunitionFamily:'ammoMusket',damage:Math.round(injuryDamage/COMBAT_BALANCE.firearmDamageMultiplier)});
+ d.weapons.push({...d.weapons.find(w=>w.id==='firearm-1804'),id:'care-fixture-carbine',name:'Carabina de instrucción',ammunitionFamily:'ammoMusket',alternativeLoads:[],damage:Math.round(injuryDamage/COMBAT_BALANCE.firearmDamageMultiplier)});
  configure(d);
  let s=order(initialCampaign(42,d),{type:'createOfficer',name:'Isabel del Valle',answers:{origin:'cabildo',doctrine:'line_marksman',crisis:'rally'}});
  for(const id of twoDoctors?[MILITIA_DOCTOR,SECOND_MILITIA_DOCTOR]:[MILITIA_DOCTOR])s=order(s,{type:'recruitCivic',id,term:'month'});

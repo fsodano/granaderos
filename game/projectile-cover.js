@@ -1,5 +1,6 @@
 import {surfaceAt,surfaceHeight,tacticalLevel} from './tactical-space.js';
 import {COMBAT_BALANCE} from './combat-balance.js';
+import {materialRangeResistanceFactor} from './material-range-penetration.js';
 import {absoluteBodyHeight,relativeBodyHeight as height,usesElevationGeometry,groundTileAt,geometryCells,rayHeightIntersection,obstacleVolumesAt} from './sight-geometry.js';
 import {projectileTrajectory,projectileTrajectoryPoint,projectileTrajectorySlope,projectileTrajectoryIntervals,projectileTrajectoryLength,projectileTrajectoryAdvance,projectileTrajectorySamples} from './projectile-trajectory.js';
 
@@ -56,7 +57,7 @@ export function projectilePath(state,attacker,target,weapon,hitLocation='torso',
  }
  // This bounded cover-only API ends at its requested point. Legacy short
  // flights use the same depth calculation, without gaining continued flight.
- const trace=traverseMaterialRay(state,source,destination,power,usesElevationGeometry(state,attacker,target),{stopFraction:flight.stopFraction,trajectory:trajectoryFor(source,destination,weapon)});
+ const trace=traverseMaterialRay(state,source,destination,power,usesElevationGeometry(state,attacker,target),{weapon,stopFraction:flight.stopFraction,trajectory:trajectoryFor(source,destination,weapon)});
  return {blocked:trace.blocked,damageFactor:trace.remaining/power,obstacles:trace.obstacles};
 }
 
@@ -155,7 +156,7 @@ function stoneEntryFace(state,trajectory,span){
 // Shared deterministic material sweep for continued balls, physical pellets,
 // and the bounded cover-only/legacy APIs. Body effects remain point events;
 // material loss up to each point is paid before its passage decision.
-function traverseMaterialRay(state,source,destination,power,elevated,{stopFraction=1,bodyEvents=[],onBody,onReflect,originSource=source,trajectory=projectileTrajectory(source,destination)}={}){
+function traverseMaterialRay(state,source,destination,power,elevated,{weapon={},distanceOffset=0,continuingMaterials,stopFraction=1,bodyEvents=[],onBody,onReflect,originSource=source,trajectory=projectileTrajectory(source,destination)}={}){
  const limit=Math.max(0,Math.min(1,stopFraction??1)),events=[...materialEvents(state,source,destination,elevated,limit,trajectory,originSource),...bodyEvents.filter(event=>event.fraction<=limit)];
  events.sort((a,b)=>a.fraction-b.fraction||a.priority-b.priority||a.key.localeCompare(b.key));
  const active=new Map(),obstacles=[];
@@ -163,13 +164,13 @@ function traverseMaterialRay(state,source,destination,power,elevated,{stopFracti
  const pointAt=(fraction,level)=>trajectory.curvature?projectileTrajectoryPoint(trajectory,fraction,level):({x:source.x+(destination.x-source.x)*fraction,y:source.y+(destination.y-source.y)*fraction,height:source.height+(destination.height-source.height)*fraction,tacticalLevel:level});
  const finish=(fraction,level,termination,blocked)=>({remaining,coverLoss,obstacles,impact:pointAt(fraction,level),fraction,termination,blocked});
  const advance=fraction=>{
-  const density=[...active.values()].reduce((sum,entry)=>sum+entry.span.volume.resistance,0),distance=projectileTrajectoryLength(trajectory,previous,fraction);
+  const density=[...active.values()].reduce((sum,entry)=>sum+entry.resistance,0),distance=projectileTrajectoryLength(trajectory,previous,fraction);
   if(density>0&&distance>0){
    const debit=density*distance,roundoff=8*Number.EPSILON*Math.max(power,remaining,debit);
    // A mathematically exhausted boundary must not leave rounding dust that
    // can reach a body or cause a passage roll. Preserve real positive force.
    const exhausted=debit>=remaining||remaining-debit<=roundoff,traveled=exhausted?Math.min(distance,remaining/density):distance;
-   for(const {span,receipt} of active.values())receipt.resistance+=span.volume.resistance*traveled;
+   for(const {resistance,receipt} of active.values())receipt.resistance+=resistance*traveled;
    const loss=exhausted?remaining:density*distance;remaining-=loss;coverLoss+=loss;
    if(exhausted){
     const at=projectileTrajectoryAdvance(trajectory,previous,fraction,traveled),{span,receipt}=[...active.entries()].sort(([a],[b])=>a.localeCompare(b))[0][1];
@@ -189,10 +190,13 @@ function traverseMaterialRay(state,source,destination,power,elevated,{stopFracti
     const faces=events.filter(other=>other.type==='enter'&&Math.abs(other.fraction-event.fraction)<1e-10).map(other=>({event:other,face:stoneEntryFace(state,trajectory,other.span)})).filter(entry=>entry.face);
     if(faces.length===1&&faces[0].event===event){
      const reflected=onReflect(faces[0].face,remaining);
-     if(reflected){const incomingImpact=remaining;remaining=reflected.remainingImpact;receipt.reflected=true;obstacles.push(receipt);return {...finish(event.fraction,volume.tacticalLevel,'reflection',false),reflection:{...faces[0].face,sourceId:volume.id,material:volume.material,incomingImpact,remainingImpact:remaining}};}
+     if(reflected){const incomingImpact=remaining;remaining=reflected.remainingImpact;receipt.reflected=true;obstacles.push(receipt);return {...finish(event.fraction,volume.tacticalLevel,'reflection',false),continuingMaterials:new Map([...active].map(([key,entry])=>[key,entry.factor])),reflection:{...faces[0].face,sourceId:volume.id,material:volume.material,incomingImpact,remainingImpact:remaining}};}
     }
    }
-   obstacles.push(receipt);active.set(event.key,{span,receipt});
+   // A reflected leg can begin inside material that was already entered.
+   // Keep its entry factor until a real exit; a later span recomputes it.
+   const factor=span.entry===0&&continuingMaterials?.has(event.key)?continuingMaterials.get(event.key):materialRangeResistanceFactor(weapon,distanceOffset+trajectory.horizontalDistance*span.entry);
+   obstacles.push(receipt);active.set(event.key,{span,receipt,factor,resistance:volume.resistance*factor});
   }else if(event.type==='exit')active.delete(event.key);
   else if(event.type==='solid'){
    const {volume,cell}=event;
@@ -220,7 +224,7 @@ function continuedProjectileFlight(state,attacker,target,weapon,hitLocation,flig
   if(entry.kind==='unit'&&entry.body.id===attacker.id)continue;
   const key=`${entry.body.x},${entry.body.y}`,column=columns.get(key)??[];column.push(entry);columns.set(key,column);
  }
- let leg=ray,remaining=power,bodyLoss=0,coverLoss=0,reflectionLoss=0,reachChance=1,travelled=0,trace;
+ let leg=ray,remaining=power,bodyLoss=0,coverLoss=0,reflectionLoss=0,reachChance=1,travelled=0,trace,continuingMaterials;
  const bodyImpacts=[],obstacles=[],segments=[],ricochets=[],seen=new Set();
  for(let index=0;index<=COMBAT_BALANCE.firearmRicochetLimit;index++){
   const {source,destination}=leg,trajectory=leg.trajectoryModel??projectileTrajectory(source,destination),events=[];
@@ -234,7 +238,7 @@ function continuedProjectileFlight(state,attacker,target,weapon,hitLocation,flig
     for(const hit of hits)events.push({fraction:hit.entry,priority:3,key:`${kind}:${body.id}`,cell,body,kind,base});
    }
   }
-  trace=traverseMaterialRay(state,source,destination,remaining,elevated,{trajectory,originSource:index===0?originalSource:null,bodyEvents:events,
+  trace=traverseMaterialRay(state,source,destination,remaining,elevated,{weapon,distanceOffset:travelled,continuingMaterials,trajectory,originSource:index===0?originalSource:null,bodyEvents:events,
    onReflect:index<COMBAT_BALANCE.firearmRicochetLimit?(face,incoming)=>({remainingImpact:incoming*COMBAT_BALANCE.firearmRicochetForceRetention}):null,
    onBody:(event,{remaining:incoming,coverLoss:legCoverLoss,pointAt})=>{
     if(seen.has(event.key))return {remaining:incoming};seen.add(event.key);
@@ -256,6 +260,7 @@ function continuedProjectileFlight(state,attacker,target,weapon,hitLocation,flig
   segments.push({index,source,destination:trace.impact,trajectoryModel:trajectory,terminalFraction:trace.fraction,fromDistance:travelled,toDistance:endDistance});
   remaining=trace.remaining;coverLoss+=trace.coverLoss;
   if(!trace.reflection)break;
+  continuingMaterials=trace.continuingMaterials;
   ricochets.push({...trace.reflection,distance:endDistance});reflectionLoss+=trace.reflection.incomingImpact-trace.reflection.remainingImpact;
   const normal=trace.reflection.normal,dx=(trajectory.destination.x-source.x)/trajectory.horizontalDistance,dy=(trajectory.destination.y-source.y)/trajectory.horizontalDistance,dot=dx*normal.x+dy*normal.y;
   const bearing={x:dx-2*dot*normal.x,y:dy-2*dot*normal.y},origin=trace.impact;

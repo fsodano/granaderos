@@ -32,6 +32,8 @@ import {CONTENT_TRAITS} from './content-character-options.js';
 import {BLADES} from "./blade-definitions.js";
 import {LOOSE_BAYONET} from './weapon-fittings.js';
 import { compileWeaponDefinition } from "./weapon-definition.js";
+import {DEFAULT_ALTERNATIVE_LOADS} from './firearm-loads.js';
+import {DEFAULT_MATERIAL_RANGE_SLOPE} from './material-range-penetration.js';
 // Versioned authoring data. No mutable campaign state or global catalog changes.
 import { defaultArrivalSites, validateArrivalSites } from "./arrival-sites.js";
 import { CONTENT_CELLS, contentCellIds } from "./content-map.js";
@@ -105,6 +107,8 @@ export function defaultContentPackage() {
       aimAP: w.aimAP,
       reloadAP: w.reloadAP,
       range: w.range,
+      materialRangeSlope:DEFAULT_MATERIAL_RANGE_SLOPE,
+      alternativeLoads:(DEFAULT_ALTERNATIVE_LOADS[w.id]??[]).map(load=>({...load,materialRangeSlope:DEFAULT_MATERIAL_RANGE_SLOPE})),
       readyAP: 0,
     })),...Object.values(BLADES).map(base=>{
       const w=base.id===1811?LOOSE_BAYONET:base;
