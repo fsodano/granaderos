@@ -8,6 +8,14 @@ import {A,order,saved,localId,localNPC,localPackage,visit,sync,tactical,readyLoc
 import {approachNPC} from './approach-npc.mjs';
 import {applyCivilianHarm} from '../game/civilian-harm.js';
 
+function directReply(p){
+ const before=saved(p),action=talk(before,'day','direct'),campaign=order(before.campaign,action),after=saved({campaign,battle:before.battle});
+ for(const field of ['resources','contracts','recruited','operativeState','hiringArrivals','seed','hour','secondOfHour'])assert.deepEqual(after.campaign[field],before.campaign[field],`asking for terms preserves ${field}`);
+ assert.deepEqual(after.battle,before.battle);
+ assert.deepEqual(saved({campaign:order(before.campaign,action),battle:before.battle}),after,'the direct reply replays exactly from the official saved boundary');
+ return after;
+}
+
 test('local paid residents offer all terms and begin service in place without becoming bulletin arrivals',()=>{
  for(const [term,hours,price]of [['day',24,60],['week',168,420],['month',720,1800],['fortnight',336,840]]){
   // This term-admission fixture funds both the guide and the longest local hire.
@@ -15,7 +23,7 @@ test('local paid residents offer all terms and begin service in place without be
   let p=readyLocal(undefined,content),id=localId(p.campaign),cash=p.campaign.resources.treasury,hour=p.campaign.hour;
   const quotes=encounterHireTerms(p.campaign,localNPC(p.battle));assert.deepEqual(quotes.map(q=>[q.term,q.hours,q.price]),[['day',24,60],['week',168,420],['month',720,1800],['fortnight',336,840]]);
   assert.equal(civicStatus(p.campaign,id).available,false);assert.ok(dispatchCampaign(p.campaign,{type:'recruitCivic',id,term}).lastError);
-  const direct=order(p.campaign,talk(p,term,'direct'));assert.match(direct.lastConversation.text,/un día, 60 pesos; una semana, 420 pesos; un mes, 1800 pesos/);assert.ok(!direct.lastConversation.text.includes('sin paga'));
+  const direct=directReply(p).campaign;assert.match(direct.lastConversation.text,/un día, 60 pesos; una semana, 420 pesos; un mes, 1800 pesos; dos semanas, 840 pesos/);assert.ok(!direct.lastConversation.text.includes('sin paga'));
   const repeated=talk(p,term);p=hireLocal(p,term);const duplicate=dispatchCampaign(p.campaign,repeated);assert.ok(duplicate.lastError);assert.equal(duplicate.resources.treasury,p.campaign.resources.treasury);assert.deepEqual(duplicate.recruited,p.campaign.recruited);assert.equal(p.campaign.resources.treasury,cash-price);assert.equal(p.campaign.contracts[id].kind,'paid');assert.equal(p.campaign.contracts[id].expiresAt,hour+hours);assert.equal(p.campaign.hiringArrivals.length,0);
   assert.ok(p.battle.units.some(u=>u.id===String(id)));assert.equal(localNPC(p.battle),undefined);assert.ok(!encountersFor(p.campaign,A).some(n=>n.operativeId===id));assert.ok(saved(p));
  }
@@ -23,8 +31,34 @@ test('local paid residents offer all terms and begin service in place without be
 
 test('insufficient money and invalid terms cannot charge or transfer a local resident',()=>{
  const p=readyLocal({pay:1000000}),id=localId(p.campaign),cash=p.campaign.resources.treasury;
- assert.equal(encounterHireTerms(p.campaign,localNPC(p.battle)).every(q=>!q.available),true);
- for(const term of ['day','year']){const n=dispatchCampaign(p.campaign,talk(p,term));assert.ok(n.lastError);assert.equal(n.resources.treasury,cash);assert.ok(!n.recruited.includes(id));assert.equal(n.contracts[id],undefined);assert.ok(saved({campaign:n,battle:p.battle}));}
+ const quotes=encounterHireTerms(p.campaign,localNPC(p.battle));assert.equal(quotes.every(q=>!q.available),true);
+ const direct=directReply(p);assert.equal(direct.campaign.lastConversation.text,quotes[0].reason);assert.ok(!direct.campaign.lastConversation.text.includes('Estoy dispuesto a servir'));
+ for(const term of ['day','year']){const before=structuredClone(direct.campaign),n=dispatchCampaign(direct.campaign,talk(direct,term));assert.ok(n.lastError);if(term==='day')assert.match(n.lastError,/Faltan recursos.*200000/);assert.deepEqual({...n,lastError:null},before);assert.equal(n.resources.treasury,cash);assert.ok(!n.recruited.includes(id));assert.equal(n.contracts[id],undefined);assert.ok(saved({campaign:n,battle:p.battle}));}
+});
+
+test('the direct paid offer lists affordable terms and preserves an actual local hire',()=>{
+ const content=localPackage();content.rules.startingTreasury=2400;
+ let p=readyLocal(undefined,content);assert.equal(p.campaign.resources.treasury,600,'the guide actually costs 1800 pesos');
+ const quotes=encounterHireTerms(p.campaign,localNPC(p.battle));assert.deepEqual(quotes.map(q=>[q.term,q.available]),[['day',true],['week',true],['month',false],['fortnight',false]]);
+ p=directReply(p);assert.equal(p.campaign.lastConversation.text,'Estoy dispuesto a servir. Puedo incorporarme por contrato: un día, 60 pesos; una semana, 420 pesos.');
+ const before=structuredClone(p.campaign),rejected=dispatchCampaign(p.campaign,talk(p,'month'));assert.match(rejected.lastError,/Faltan recursos.*1800/);assert.deepEqual({...rejected,lastError:null},before);
+ p=hireLocal(p,'day');assert.equal(p.campaign.resources.treasury,540);assert.equal(p.campaign.contracts[localId(p.campaign)].paid,60);assert.equal(p.campaign.hiringArrivals.length,0);assert.ok(saved(p));
+});
+
+test('a pinned rival refusal governs direct local replies and paid or permanent recruitment',()=>{
+ for(const service of ['contract','permanent']){
+  const content=localPackage({service,pay:service==='contract'?300:0});content.characters.find(c=>c.id==='alma-contract').serviceRefusals=[{character:'person-110',reason:'No quiere compartir el mando con Acosta.'}];
+  let p=readyLocal(undefined,content);assert.equal(p.campaign.contracts[110].paid,1800);assert.equal(p.campaign.resources.treasury,1400);assert.equal(p.campaign.operativeState[110].hp,85);
+  // The running package keeps the relationship that was declared before admission.
+  delete content.characters.find(c=>c.id==='alma-contract').serviceRefusals;
+  p=directReply(p);const reason=p.campaign.lastConversation.text;
+  assert.match(reason,/Alma Contratada.*Baltasar Acosta.*No quiere compartir el mando con Acosta/);assert.ok(!reason.includes('Estoy dispuesto a servir'));
+  const quotes=encounterHireTerms(p.campaign,localNPC(p.battle));if(service==='contract'){assert.equal(quotes.length,4);assert.ok(quotes.every(q=>!q.available&&q.reason===reason));assert.equal(quotes[0].price,60);}else assert.deepEqual(quotes,[]);
+  const before=structuredClone(p.campaign),rejected=dispatchCampaign(p.campaign,talk(p));assert.equal(rejected.lastError,reason);assert.deepEqual({...rejected,lastError:null},before);assert.deepEqual(p.campaign,before);assert.deepEqual(saved({campaign:rejected,battle:p.battle}).battle,p.battle);
+ }
+ // Omitted refusal stays neutral and the same affordable day service succeeds.
+ let control=directReply(readyLocal());assert.match(control.campaign.lastConversation.text,/Estoy dispuesto a servir.*un día, 60 pesos/);assert.ok(!control.campaign.lastConversation.text.includes('un mes, 1800 pesos'));
+ control=hireLocal(control);assert.equal(control.campaign.resources.treasury,1340);assert.equal(control.campaign.contracts[localId(control.campaign)].paid,60);
 });
 
 test('wounded local recruits retain health through deferred expiry, return and rehire',()=>{
@@ -40,7 +74,7 @@ test('wounded local recruits retain health through deferred expiry, return and r
 
 test('bandaging a resident hurt by the player does not erase refusal or permit a paid hire',()=>{
  let p=readyLocal();p=tactical(p,{type:'melee',targetId:localNPC(p.battle).id});p=tactical(p,{type:'weapon',slot:'medical'});p=tactical(p,{type:'heal',targetId:localNPC(p.battle).id});p=saved(p);
- const before=structuredClone(p.campaign),rejected=dispatchCampaign(p.campaign,talk(p));assert.match(rejected.lastError,/Me heriste/);assert.deepEqual({...rejected,lastError:null},before);assert.deepEqual(p.campaign,before);assert.ok(saved(p));
+ for(const approach of ['direct','recruit']){const before=structuredClone(p.campaign),rejected=dispatchCampaign(p.campaign,talk(p,'day',approach));assert.match(rejected.lastError,/Me heriste/);assert.deepEqual({...rejected,lastError:null},before);assert.deepEqual(p.campaign,before);assert.ok(saved(p));}
 });
 
 
@@ -54,6 +88,7 @@ test('renewal and dismissal preserve paid local identity and reject permanent-co
 test('zero-price local contracts still expire and unpaid permanent service remains explicit',()=>{
  let p=hireLocal(readyLocal({pay:0})),id=localId(p.campaign),s=leave(p);assert.equal(s.contracts[id].kind,'paid');assert.equal(s.contracts[id].paid,0);assert.ok(Number.isInteger(s.contracts[id].expiresAt));
  const expires=s.contracts[id].expiresAt;while(s.hour<expires){const before=s.hour;s=order(s,{type:'wait',hours:expires-s.hour});assert.ok(s.hour>before,'time must advance after each notice');}assert.ok(!s.recruited.includes(id));assert.ok(saved({campaign:s}));
- p=readyLocal({pay:0,service:'permanent'});assert.deepEqual(encounterHireTerms(p.campaign,localNPC(p.battle)),[]);p=hireLocal(p);assert.equal(p.campaign.contracts[localId(p.campaign)].expiresAt,null);
+ p=directReply(readyLocal({pay:0,service:'permanent'}));assert.deepEqual(encounterHireTerms(p.campaign,localNPC(p.battle)),[]);assert.equal(p.campaign.lastConversation.text,'Estoy dispuesto a servir. Puedo incorporarme sin paga.');p=hireLocal(p);assert.equal(p.campaign.contracts[localId(p.campaign)].expiresAt,null);
+ p=directReply(readyLocal({pay:0,service:'permanent',recruitable:false}));assert.equal(p.campaign.lastConversation.text,localNPC(p.battle).greeting);
  const bad=localPackage({pay:10,service:'permanent'});assert.throws(()=>initialCampaign(42,bad));
 });

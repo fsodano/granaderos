@@ -900,9 +900,10 @@ export function dispatchCampaign(previous,action){
         if(action.approach==='repeat'){text=s.conversations?.[npc.id]?.text??npc.greeting;outcome='repeated';}
         if(action.approach==='dialogue'){dialogue=chooseDialogue(s,npc,action.dialogueChoice,action.dialogueNode,snapshot);text=dialogue.text;outcome='dialogue';if(dialogue.effect?.applied){if(dialogue.effect.amount)note(s,`${npc.name}: ${dialogue.effect.amount>0?'entrega':'recibe'} ${Math.abs(dialogue.effect.amount)} pesos.`);if(dialogue.effect.movement)note(s,dialogue.effect.movement.destination==='routine'?`${npc.name} termina el encuentro con ${dialogue.effect.movement.name}.`:`${npc.name} llama a ${dialogue.effect.movement.name} para un encuentro en este sector.`);if(dialogue.effect.quest)note(s,`Encargo «${dialogue.effect.quest.title}»: ${dialogue.effect.quest.status==='active'?'en curso':dialogue.effect.quest.status==='completed'?'completado':'fallido'}.`);}}
         if(action.approach==='direct'){
-          const hireTerms=encounterHireTerms(s,npc),gate=recruitmentStatus(s,npc.operativeId,true);
-          const reason=encounterRequirements(s,npc,actor)||(!gate.available?gate.reason:null);
-          const service=hireTerms.length?`Puedo incorporarme por contrato: ${hireTerms.map(q=>`${q.name.toLowerCase()}, ${q.price} pesos`).join('; ')}.`:'Puedo incorporarme sin paga.';
+          const hireTerms=encounterHireTerms(s,npc),availableTerms=hireTerms.filter(q=>q.available),gate=recruitmentStatus(s,npc.operativeId,true);
+          const serviceReason=hireTerms.length?(availableTerms.length?null:hireTerms[0].reason):canRecruitEncounter(npc)?contractQuote(s,rosterFor(s).find(op=>op.id===npc.operativeId)).reason:null;
+          const reason=encounterRequirements(s,npc,actor)||(!gate.available?gate.reason:null)||serviceReason;
+          const service=hireTerms.length?`Puedo incorporarme por contrato: ${availableTerms.map(q=>`${q.name.toLowerCase()}, ${q.price} pesos`).join('; ')}.`:'Puedo incorporarme sin paga.';
           text=!canRecruitEncounter(npc)?npc.greeting:reason??`Estoy dispuesto a servir. ${service}`;
         }
         if(action.approach==='mission'){requireThat(s.pendingBattle.sceneId==='yatasto','No hay una conferencia pendiente.');text=talkMission(s,npc.id,isSupplied(s,'salta'));outcome='mission';}
