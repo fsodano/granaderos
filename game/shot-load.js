@@ -1,3 +1,4 @@
+import {hasProjectileEnergy,projectileEnergyJ,projectileLaunchImpact,kineticNominalImpact} from './projectile-energy.js';
 import {COMBAT_BALANCE} from './combat-balance.js';
 import {projectileFlight} from './projectile-cover.js';
 import {absoluteBodyHeight} from './sight-geometry.js';
@@ -10,13 +11,17 @@ export const isShotLoad=weapon=>weapon?.loadPattern==='cone';
 
 export function shotLoadFlight(state,actor,target,weapon,hitLocation='torso',options={}){
  const dx=target.x-actor.x,dy=target.y-actor.y,distance=Math.hypot(dx,dy),height=options.destinationHeight??absoluteBodyHeight(state,target,hitLocation);
- const pellets=[];
+ const pellets=[],kinetic=hasProjectileEnergy(weapon),launch=projectileLaunchImpact(weapon),energy=kinetic?projectileEnergyJ(weapon.projectileEnergy):0;let spentWeight=0,spentForce=0,spentMass=0,spentEnergy=0;
  if(distance>0&&Number.isFinite(height))for(const [index,pattern] of SHOT_LOAD_PATTERN.entries()){
   const nx=dx/distance,ny=dy/distance,side=pattern.side*COMBAT_BALANCE.shotLoadHorizontalSpread;
   const vx=nx-ny*side,vy=ny+nx*side;
   const destination={...target,x:actor.x+vx*distance,y:actor.y+vy*distance};
-  const flight=projectileFlight(state,actor,destination,{...weapon,damage:weapon.damage*pattern.weight,loadPattern:'single'},hitLocation,{...options,forceBudget:weapon.damage*pattern.weight,destinationHeight:height+pattern.up*COMBAT_BALANCE.shotLoadVerticalSpread*distance,maxDistance:weapon.range*COMBAT_BALANCE.shotLoadFlightRangeMultiplier,physicalHitLocation:true});
-  pellets.push({index,weight:pattern.weight,flight});
+  const weight=kinetic&&index===SHOT_LOAD_PATTERN.length-1?1-spentWeight:pattern.weight,force=kinetic?(index===SHOT_LOAD_PATTERN.length-1?launch-spentForce:launch*weight):weapon.damage*weight;
+  const massGrams=kinetic?(index===SHOT_LOAD_PATTERN.length-1?weapon.projectileEnergy.massGrams-spentMass:weapon.projectileEnergy.massGrams*weight):0,energyJ=kinetic?(index===SHOT_LOAD_PATTERN.length-1?energy-spentEnergy:energy*weight):0;
+  spentMass+=massGrams;spentEnergy+=energyJ;
+  spentWeight+=weight;spentForce+=force;
+  const flight=projectileFlight(state,actor,destination,{...weapon,damage:weapon.damage*weight,loadPattern:'single'},hitLocation,{...options,forceBudget:force,destinationHeight:height+pattern.up*COMBAT_BALANCE.shotLoadVerticalSpread*distance,maxDistance:weapon.range*COMBAT_BALANCE.shotLoadFlightRangeMultiplier,physicalHitLocation:true});
+  pellets.push({index,weight,flight,...(kinetic?{massGrams,energyJ,launchImpact:force}:{})});
  }
  const bodyImpacts=pellets.flatMap(p=>p.flight.bodyImpacts.map(entry=>({...entry,pelletIndex:p.index,weight:p.weight})));
  return {shotLoad:true,pelletCount:SHOT_LOAD_PATTERN.length,totalForce:weapon.damage,pellets,bodyImpacts};
@@ -33,11 +38,11 @@ export function shotLoadScatter(actor,target){
  return [...counts.values()];
 }
 
-function targetResult(flight,kind,target){
+function targetResult(flight,kind,target,weapon){
  let none=1,force=0;const regions=new Map();
  for(const pellet of flight.pellets){
   const entry=pellet.flight.bodyImpacts.find(body=>body.victimKind===kind&&body.victimId===target.id);
-  if(entry){const incoming=entry.incomingImpact*entry.reachChance;none*=1-entry.reachChance;force+=incoming;regions.set(entry.hitLocation,(regions.get(entry.hitLocation)??0)+incoming);}
+  if(entry){const incoming=(hasProjectileEnergy(weapon)?kineticNominalImpact(weapon,entry,pellet.weight,COMBAT_BALANCE.coverDamageReductionMultiplier):entry.incomingImpact)*entry.reachChance;none*=1-entry.reachChance;force+=incoming;regions.set(entry.hitLocation,(regions.get(entry.hitLocation)??0)+incoming);}
  }
  // Nominal region sums share the actual discharge's .8..1.2 force draw.
  // Integrate its injury rounding without adding preview RNG or pretending
@@ -56,9 +61,9 @@ function targetResult(flight,kind,target){
 export function shotLoadForecast(state,actor,target,weapon,hitLocation='torso',options={}){
  const kind=options.targetKind??((state.npcs??[]).includes(target)?'npc':'unit'),height=options.destinationHeight??absoluteBodyHeight(state,target,hitLocation);
  const direct=shotLoadFlight(state,actor,target,weapon,hitLocation,{...options,destinationHeight:height});
- const hit=targetResult(direct,kind,target),miss={contact:0,force:0,expectedDamage:0};
+ const hit=targetResult(direct,kind,target,weapon),miss={contact:0,force:0,expectedDamage:0};
  const scatter=shotLoadScatter(actor,target).map(outcome=>{
-  const flight=shotLoadFlight(state,actor,outcome.point,weapon,hitLocation,{...options,destinationHeight:height}),result=targetResult(flight,kind,target);
+  const flight=shotLoadFlight(state,actor,outcome.point,weapon,hitLocation,{...options,destinationHeight:height}),result=targetResult(flight,kind,target,weapon);
   miss.contact+=result.contact*outcome.weight;miss.force+=result.force*outcome.weight;miss.expectedDamage+=result.expectedDamage*outcome.weight;
   return {...outcome,flight};
  });

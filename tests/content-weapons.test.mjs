@@ -120,3 +120,25 @@ test('a character without a firearm and the mission ally remain valid after depl
  s=order(save(s).campaign,{type:'visitSector'});const b=enterSector(s.pendingBattle);assert.equal(b.units[0].weapon,0);assert.equal(b.units[0].loaded,0);assert.ok(save(s,b));
  const ordinary=initialCampaign();ordinary.operativeState[110].weaponMetadata=weaponMetadata(custom());assert.throws(()=>save(ordinary),/arma/);
 });
+
+
+test('energy profiles validate finite projectile mass, retain independent selected loads and reject altered pinned copies',()=>{
+ const profile={model:'kinetic-energy-v1',massGrams:32,muzzleVelocityMps:265};
+ const gun=custom({projectileEnergy:profile,alternativeLoads:[{family:'ammoShot',damage:19,range:7,pattern:'cone'}]});
+ const definition=compileWeaponDefinition(gun),carrier={weapon:1805,weaponMetadata:{contentWeapon:definition}};
+ assert.deepEqual(weaponSpecification(carrier).projectileEnergy,profile);
+ assert.equal(Object.hasOwn(weaponSpecification({...carrier,ammunitionChoice:'ammoShot'}),'projectileEnergy'),false,'an omitted alternative never inherits the primary energy');
+ const alternative={model:'kinetic-energy-v1',massGrams:16,muzzleVelocityMps:200};gun.alternativeLoads[0].projectileEnergy=alternative;
+ assert.deepEqual(weaponSpecification({...carrier,weaponMetadata:weaponMetadata(gun),ammunitionChoice:'ammoShot'}).projectileEnergy,alternative);
+ for(const bad of [{...profile,model:'unknown'},{...profile,massGrams:40.01},{...profile,massGrams:0},{...profile,muzzleVelocityMps:Infinity},{...profile,muzzleVelocityMps:601},{...profile,energyJ:123}]){
+  assert.throws(()=>compileWeaponDefinition(custom({projectileEnergy:bad})),/energía/);
+  assert.throws(()=>compileWeaponDefinition(custom({alternativeLoads:[{family:'ammoShot',damage:19,range:7,pattern:'cone',projectileEnergy:bad}]})),/alternativas/);
+ }
+ const blade=defaultContentPackage().weapons.find(w=>w.template===1813);assert.throws(()=>compileWeaponDefinition({...blade,projectileEnergy:profile}),/munición/);
+ const d=content();d.weapons.find(w=>w.id==='pistola-del-sur').projectileEnergy=profile;
+ let state=order(initialCampaign(8,d),{type:'recruitCivic',id:110,term:'week'});state=withStoredGear(state,'pistola-del-sur');
+ const restored=save(state).campaign;assert.deepEqual(contentWeaponOf(restored.operativeState[110]).projectileEnergy,profile);assert.deepEqual(contentWeaponOf(storedEquipmentStack(restored.armoryItems[0])).projectileEnergy,profile);
+ for(const where of [v=>v.operativeState[110].weaponMetadata.contentWeapon,v=>v.armoryItems[0].itemMetadata.contentWeapon]){const changed=structuredClone(restored);where(changed).projectileEnergy.massGrams=31;assert.throws(()=>save(changed),/arma guardada/);}
+ const legacy=custom();assert.equal(Object.hasOwn(compileWeaponDefinition(legacy),'projectileEnergy'),false);
+ const defaults=defaultContentPackage();assert.deepEqual(defaults.weapons.filter(w=>w.projectileEnergy).map(w=>w.template),[1800]);assert.deepEqual(defaults.weapons.find(w=>w.template===1800).alternativeLoads[0].projectileEnergy,{...profile,massGrams:16});
+});

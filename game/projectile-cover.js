@@ -1,5 +1,6 @@
 import {surfaceAt,surfaceHeight,tacticalLevel} from './tactical-space.js';
 import {COMBAT_BALANCE} from './combat-balance.js';
+import {projectileLaunchImpact,projectileDamageFactor,hasProjectileEnergy} from './projectile-energy.js';
 import {materialRangeResistanceFactor} from './material-range-penetration.js';
 import {absoluteBodyHeight,relativeBodyHeight as height,usesElevationGeometry,groundTileAt,geometryCells,rayHeightIntersection,obstacleVolumesAt} from './sight-geometry.js';
 import {projectileTrajectory,projectileTrajectoryPoint,projectileTrajectorySlope,projectileTrajectoryIntervals,projectileTrajectoryLength,projectileTrajectoryAdvance,projectileTrajectorySamples} from './projectile-trajectory.js';
@@ -48,7 +49,7 @@ export function concealmentSightPenalty(state,target){
 export function projectilePath(state,attacker,target,weapon,hitLocation='torso',flight={}){
  const source={x:attacker.x,y:attacker.y,height:absoluteBodyHeight(state,attacker,'muzzle'),tacticalLevel:tacticalLevel(attacker)};
  const destination={x:target.x,y:target.y,height:flight.destinationHeight??absoluteBodyHeight(state,target,hitLocation),tacticalLevel:tacticalLevel(target)};
- const power=flight.forceBudget??Math.max(1,weapon.damage??1);
+ const power=flight.forceBudget??projectileLaunchImpact(weapon);
  if(!Number.isFinite(source.height)||!Number.isFinite(destination.height))return {blocked:true,damageFactor:0,obstacles:[]};
  if(continuedBall(weapon)){
   const distance=Math.hypot(destination.x-source.x,destination.y-source.y)*Math.max(0,Math.min(1,flight.stopFraction??1));
@@ -58,7 +59,7 @@ export function projectilePath(state,attacker,target,weapon,hitLocation='torso',
  // This bounded cover-only API ends at its requested point. Legacy short
  // flights use the same depth calculation, without gaining continued flight.
  const trace=traverseMaterialRay(state,source,destination,power,usesElevationGeometry(state,attacker,target),{weapon,stopFraction:flight.stopFraction,trajectory:trajectoryFor(source,destination,weapon)});
- return {blocked:trace.blocked,damageFactor:trace.remaining/power,obstacles:trace.obstacles};
+ return {blocked:trace.blocked,damageFactor:projectileDamageFactor(trace.remaining,weapon,power),obstacles:trace.obstacles,...(hasProjectileEnergy(weapon)?{incomingImpact:trace.remaining,coverDamageFactor:trace.remaining/power}:{})};
 }
 
 // A shot retains its original destination height. Living bodies in
@@ -216,7 +217,7 @@ function traverseMaterialRay(state,source,destination,power,elevated,{weapon={},
 // Body, material and reflection force loss accumulate independently. Reflection
 // has one finite launch budget and never repeats the original muzzle exemption.
 function continuedProjectileFlight(state,attacker,target,weapon,hitLocation,flight){
- const ray=firearmRay(state,attacker,target,weapon,hitLocation,flight),power=flight.forceBudget??Math.max(1,weapon.damage??1);
+ const ray=firearmRay(state,attacker,target,weapon,hitLocation,flight),power=flight.forceBudget??projectileLaunchImpact(weapon);
  if(!ray)return {blocked:true,damageFactor:0,obstacles:[],victimId:null,hitLocation};
  const originalSource=ray.source,columns=new Map(),elevated=usesElevationGeometry(state,attacker,target),budget=flightRangeLimit(ray.source,ray.aim,weapon,flight);
  const targetKind=flight.targetKind??((state.npcs??[]).includes(target)?'npc':'unit');
@@ -249,7 +250,7 @@ function continuedProjectileFlight(state,attacker,target,weapon,hitLocation,flig
     const resistance=COMBAT_BALANCE.firearmBodyResistance[location],after=Math.max(0,incoming-resistance);
     const chance=Math.max(0,Math.min(COMBAT_BALANCE.firearmBodyPenetrationMaximumChance,incoming-COMBAT_BALANCE.firearmBodyPenetrationThreshold));
     const distance=travelled+trajectory.horizontalDistance*event.fraction;
-    const impact={victimId:body.id,victimKind:kind,hitLocation:location,impact:pointAt(event.fraction,tacticalLevel(body)),fraction:event.fraction,distance,segmentIndex:index,incomingImpact:incoming,damageFactor:incoming/power,coverDamageFactor:Math.max(0,1-(coverLoss+legCoverLoss)/power),bodyDamageReduction:bodyLoss/power,...(reflectionLoss?{ricochetDamageReduction:reflectionLoss/power}:{}),bodyResistance:resistance,penetrationChance:after>0?chance:0,reachChance,remainingImpact:after,continued:false};
+    const impact={victimId:body.id,victimKind:kind,hitLocation:location,impact:pointAt(event.fraction,tacticalLevel(body)),fraction:event.fraction,distance,segmentIndex:index,incomingImpact:incoming,damageFactor:projectileDamageFactor(incoming,weapon,power),coverDamageFactor:Math.max(0,1-(coverLoss+legCoverLoss)/power),bodyDamageReduction:bodyLoss/power,...(reflectionLoss?{ricochetDamageReduction:reflectionLoss/power}:{}),bodyResistance:resistance,penetrationChance:after>0?chance:0,reachChance,remainingImpact:after,continued:false};
     const continued=after>0&&chance>0&&flight.bodyPenetration!==false&&(!flight.resolveBody||flight.resolveBody(impact)===true);
     impact.continued=continued;impact.remainingImpact=continued?after:0;bodyImpacts.push(impact);
     if(continued){bodyLoss+=resistance;reachChance*=chance/100;}
@@ -278,7 +279,7 @@ function continuedProjectileFlight(state,attacker,target,weapon,hitLocation,flig
  const terminal={impact:trace.impact,termination:trace.termination??leg.termination,blocked:trace.blocked,remainingImpact:trace.remaining,...(reflected?{fraction:last.toDistance/budget,distance:last.toDistance,segmentIndex:last.index}:leg.trajectoryModel?.curvature?{fraction:trace.fraction}:{})};
  // Existing generic consumers still address the first physical intersection.
  // Named-target forecasts select their own typed entry from bodyImpacts.
- return {blocked:first?false:trace.blocked,damageFactor:first?.damageFactor??trace.remaining/power,obstacles,victimId:first?.victimId??null,...(first?.victimKind==='npc'?{victimKind:'npc'}:{}),hitLocation:first?.hitLocation??hitLocation,destination:leg.destination,impact:first?.impact??trace.impact,termination:first?'body':terminal.termination,bodyImpacts,terminal,...(reflected?{segments,ricochets}:leg.trajectoryModel?.curvature?{trajectoryModel:leg.trajectoryModel,trajectory:projectileTrajectorySamples(leg.trajectoryModel,trace.fraction)}:{})};
+ return {blocked:first?false:trace.blocked,damageFactor:first?.damageFactor??projectileDamageFactor(trace.remaining,weapon,power),obstacles,victimId:first?.victimId??null,...(first?.victimKind==='npc'?{victimKind:'npc'}:{}),hitLocation:first?.hitLocation??hitLocation,destination:leg.destination,impact:first?.impact??trace.impact,termination:first?'body':terminal.termination,bodyImpacts,terminal,...(reflected?{segments,ricochets}:leg.trajectoryModel?.curvature?{trajectoryModel:leg.trajectoryModel,trajectory:projectileTrajectorySamples(leg.trajectoryModel,trace.fraction)}:{})};
 }
 
 function boundedProjectileFlight(state,attacker,target,weapon,hitLocation,flight){

@@ -819,6 +819,11 @@ export default function ContentEditor() {
                       <label>Pérdida de penetración por distancia<input type="number" min={0} max={1} step={.05} value={item.materialRangeSlope??''} onChange={e=>update({materialRangeSlope:e.target.value===''?undefined:e.target.valueAsNumber})}/></label>
                       <p>Más allá del alcance de esta carga, aumenta la resistencia de la cobertura. El valor 0,25 añade un 25 % de resistencia al entrar en material al doble del alcance. Vacío o cero conserva la resistencia original. Cada alternativa tiene su propio valor. Es una regla de juego, no una velocidad medida.</p>
                     </fieldset>}
+                    {!isBladeDefinition(item)&&<fieldset><legend>Energía de la carga principal</legend>
+                      <label><input type="checkbox" checked={item.projectileEnergy!==undefined} onChange={e=>update({projectileEnergy:e.target.checked?{model:'kinetic-energy-v1',massGrams:32,muzzleVelocityMps:265}:undefined})}/>Usar masa y velocidad para el impacto</label>
+                      {item.projectileEnergy&&<><label>Masa total de la carga principal (g)<input type="number" min={.1} max={40} step={.1} value={item.projectileEnergy.massGrams} onChange={e=>update({projectileEnergy:{...item.projectileEnergy,massGrams:e.target.valueAsNumber}})}/></label><label>Velocidad inicial de la carga principal (m/s)<input type="number" min={25} max={600} step={1} value={item.projectileEnergy.muzzleVelocityMps} onChange={e=>update({projectileEnergy:{...item.projectileEnergy,muzzleVelocityMps:e.target.valueAsNumber}})}/></label></>}
+                      <p>La energía inicial depende de la masa total y del cuadrado de la velocidad. La cobertura, los cuerpos y los rebotes gastan esa energía. El daño conserva su límite; un impacto débil puede no herir. La conversión de 20 J por punto es ajuste de Granaderos, sin escala física para la trayectoria. Cada cartucho completo pesa 40 g; la masa del proyectil no puede superarlo. Cada alternativa usa su propio modelo.</p>
+                    </fieldset>}
                     <p>
                       La familia conserva sus técnicas de combate. El nombre, la imagen y estos valores se usan en la campaña, la armería y el equipo recuperado. La prueba de tiro admite armas de fuego.
                     </p>
