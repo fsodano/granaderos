@@ -17,6 +17,7 @@ import {battleFrameDuration,battleFrameFocus} from '../game/battle-playback.js';
 
 const close=(actual,expected,tolerance=1e-9)=>assert.ok(Math.abs(actual-expected)<=tolerance,`${actual} != ${expected}`);
 const energy=(massGrams,muzzleVelocityMps)=>({model:'kinetic-energy-v1',massGrams,muzzleVelocityMps});
+const drag=retentionAtRange=>({model:'range-energy-retention-v1',retentionAtRange});
 const flat=(width=32,height=16)=>Array.from({length:width*height},(_,i)=>({x:i%width,y:Math.floor(i/width),type:'grass',blocked:false,cover:0}));
 const enemy=(id,x,y,extra={})=>({id,name:id,x,y,weapon:1813,hp:100,maxHp:100,morale:100,patrol:false,overwatch:false,...extra});
 const body=(s,id='p')=>s.units.find(u=>u.id===id);
@@ -25,8 +26,8 @@ function definition(profile,template=1805,extra={}){
  const w=structuredClone(defaultContentPackage().weapons.find(w=>w.template===template));
  // Prepared subsystem content: omit distance tuning so each energy comparison
  // isolates launch force. This fixture is not earned campaign equipment.
- delete w.materialRangeSlope;delete w.projectileEnergy;
- for(const load of w.alternativeLoads??[]){delete load.materialRangeSlope;delete load.projectileEnergy;}
+ delete w.materialRangeSlope;delete w.projectileEnergy;delete w.projectileAirDrag;
+ for(const load of w.alternativeLoads??[]){delete load.materialRangeSlope;delete load.projectileEnergy;delete load.projectileAirDrag;}
  if(profile!==undefined)w.projectileEnergy=profile;
  return {...w,...extra};
 }
@@ -52,7 +53,7 @@ function paidShot(s,next,action=shot,count=1){
 }
 function withoutEnergy(value){
  if(Array.isArray(value))return value.map(withoutEnergy);
- if(value&&typeof value==='object')return Object.fromEntries(Object.entries(value).filter(([key])=>key!=='projectileEnergy').map(([key,child])=>[key,withoutEnergy(child)]));
+ if(value&&typeof value==='object')return Object.fromEntries(Object.entries(value).filter(([key])=>!['projectileEnergy','projectileAirDrag'].includes(key)).map(([key,child])=>[key,withoutEnergy(child)]));
  return value;
 }
 function pureScene(){return {width:32,height:16,tiles:flat(),units:[{id:'p',side:'player',x:1,y:3,hp:100}],npcs:[],props:[],seed:45};}
@@ -131,6 +132,32 @@ test('merged material depth and successive typed bodies spend the launch budget 
  const second=two.bodyImpacts[1];close(second.incomingImpact,80-cover.resistance-30);
  close(kineticNominalImpact(w,second),second.incomingImpact);close(penetratingFirearmDamage(42,second,1,w),second.incomingImpact);
  assert.equal(penetratingFirearmDamage(42,second,0,w),42,'cover tuning may restore cover loss but cannot restore the first body cost');
+ // The same finite ray now opts into air loss. Only the free intervals decay;
+ // occupied wood retains its existing linear depth cost, even across cells.
+ const airWeapon={...w,damage:100,projectileAirDrag:drag(.8)},curved=projectileFlight(s,s.units[0],point,airWeapon);
+ const arc=Math.hypot(1,.3/9),expectedFirst=80*.8**(2.5*arc/8)-24*arc;
+ const expectedAtBody=expectedFirst*.8**(2*arc/8),firstAir=curved.bodyImpacts[0],secondAir=curved.bodyImpacts[1];
+ close(curved.obstacles[0].resistance,24*arc);close(firstAir.incomingImpact,expectedAtBody);
+ close(secondAir.incomingImpact,(expectedAtBody-30)*.8**(2*arc/8));
+ close(kineticNominalImpact(airWeapon,secondAir,1,0),secondAir.incomingImpact+24*arc);
+ assert.ok(kineticNominalImpact(airWeapon,secondAir,1,0)<80-30,'cover tuning cannot refund air loss');
+ const direct=projectilePath(s,s.units[0],point,airWeapon),bounded=projectilePath(s,s.units[0],point,{...airWeapon,loadPattern:'cone'});
+ for(const coverOnly of [direct,bounded]){close(coverOnly.coverDamageFactor,1-24*arc/80);assert.ok(coverOnly.airDamageReduction>0);close(kineticNominalImpact(airWeapon,coverOnly,1,0),coverOnly.incomingImpact+24*arc);}
+ // A second independent overlapping object adds density; it does not add a
+ // second air charge over the same occupied span.
+ const overlap=pureScene();overlap.props=[{id:'one',type:'chest',x:4,y:3,footprint:{width:2,height:1},obstacleHeight:2,projectileResistance:4},{id:'two',type:'hay',x:5,y:3,obstacleHeight:2,projectileResistance:5}];
+ const overlapping=projectileFlight(overlap,overlap.units[0],point,airWeapon,'torso',{maxDistance:9});
+ const beforeMaterial=80*.8**(2.5*arc/8),afterMaterial=beforeMaterial-(4*2+5)*arc;
+ close(overlapping.terminal.remainingImpact,afterMaterial*.8**(4.5*arc/8));
+ close(overlapping.obstacles.reduce((sum,o)=>sum+o.resistance,0),13*arc);
+ const zero=field(undefined,{}, {enemies:[enemy('reserve',28,12)],props:[{id:'zero-density',type:'hay',x:4,y:3,footprint:{width:2,height:1},obstacleHeight:2,projectileResistance:0}]});
+ const admitted=validateBattleSnapshot(JSON.parse(JSON.stringify(zero))),zeroPath=projectileFlight(admitted,body(admitted),point,airWeapon,'torso',{maxDistance:9});
+ close(zeroPath.terminal.remainingImpact,80*.8**(7*arc/8));assert.deepEqual(zeroPath.obstacles,[]);
+ assert.deepEqual(projectileFlight(admitted,body(admitted),point,w,'torso',{maxDistance:9}),projectileFlight({...admitted,props:[]},body(admitted),point,w,'torso',{maxDistance:9}),'omitted drag retains exact zero-resistance neutrality');
+ const mixed=field(undefined,{}, {enemies:[enemy('reserve',28,12)],props:[{...zero.props[0],id:'a-zero'},{...zero.props[0],id:'z-resistant',projectileResistance:100}]});
+ const mixedFlight=projectileFlight(validateBattleSnapshot(JSON.parse(JSON.stringify(mixed))),body(mixed),point,airWeapon,'torso',{maxDistance:9});
+ assert.equal(mixedFlight.terminal.remainingImpact,0);assert.equal(mixedFlight.obstacles.length,1);assert.equal(mixedFlight.obstacles[0].sourceId,'prop:z-resistant');assert.equal(mixedFlight.obstacles[0].stopped,true);
+ close(mixedFlight.obstacles[0].resistance,80*.8**(2.5*arc/8));close(Math.hypot(mixedFlight.terminal.impact.x-3.5,mixedFlight.terminal.impact.height-(1.4-.3*2.5/9)),mixedFlight.obstacles[0].resistance/100);
 });
 
 test('reflection and cover have separate kinetic debits, exact arc exhaustion and no extra geometry RNG',()=>{
@@ -143,6 +170,16 @@ test('reflection and cover have separate kinetic debits, exact arc exhaustion an
  const reflectionLoss=bounce.incomingImpact-bounce.remainingImpact;
  close(80,cover.resistance+reflectionLoss+hit.incomingImpact);
  close(kineticNominalImpact(w,hit,1,0),80-reflectionLoss);assert.ok(kineticNominalImpact(w,hit,1,0)<80,'cover tuning cannot refund reflection');
+ const airWeapon={...w,projectileAirDrag:drag(.8)},air=projectileFlight(s,s.units[0],aim,airWeapon),airBounce=air.ricochets[0],airHit=air.bodyImpacts[0];
+ const airCover=air.obstacles.find(o=>o.sourceId==='prop:prior-wood');
+ close(airCover.resistance,cover.resistance);
+ const firstLeg=air.segments[0],coveredLength=airCover.resistance/5,firstLength=projectileTrajectoryLength(firstLeg.trajectoryModel,0,firstLeg.terminalFraction);
+ assert.ok(airBounce.incomingImpact<bounce.incomingImpact);assert.ok(firstLength>coveredLength);
+ close(airBounce.remainingImpact,airBounce.incomingImpact*.5);
+ const nextLeg=air.segments[1],contactFraction=(airHit.distance-nextLeg.fromDistance)/nextLeg.trajectoryModel.horizontalDistance;
+ close(airHit.incomingImpact,airBounce.remainingImpact*.8**(projectileTrajectoryLength(nextLeg.trajectoryModel,0,contactFraction)/22));
+ close(kineticNominalImpact(airWeapon,airHit,1,0),airHit.incomingImpact+airCover.resistance);
+ assert.ok(kineticNominalImpact(airWeapon,airHit,1,0)<80-(airBounce.incomingImpact-airBounce.remainingImpact));
  const blocked=pureScene();blocked.props=[{id:'deep',type:'chest',x:4,y:3,footprint:{width:3,height:1},obstacleHeight:2}];blocked.units.push({id:'beyond',side:'enemy',x:7,y:3,hp:100});
  const small=pureWeapon(energy(5,400)),stop=projectileFlight(blocked,blocked.units[0],point,small);assert.equal(stop.bodyImpacts.length,0);assert.equal(stop.terminal.remainingImpact,0);assert.equal(stop.obstacles[0].resistance,20);
  const horizontal=Math.hypot(point.x-1,point.y-3),entry=2.5/horizontal,end=(stop.terminal.impact.x-1)/horizontal;
@@ -166,6 +203,13 @@ test('kinetic force changes exact curved material exhaustion without changing dr
  close(projectileTrajectoryLength(stopped.trajectoryModel,entry,stopped.terminal.fraction),20/24);
  close(continued.obstacles[0].resistance,24*projectileTrajectoryLength(continued.trajectoryModel,entry,1));
  close(continued.obstacles[0].resistance+continued.terminal.remainingImpact,80);
+ const clear=pureScene(),dragged={...strong,projectileAirDrag:drag(.8)},free=projectileFlight(clear,clear.units[0],aim,dragged);
+ assert.deepEqual(free.terminal.impact,air[1].terminal.impact);assert.deepEqual(free.trajectoryModel,air[1].trajectoryModel);
+ const length=projectileTrajectoryLength(free.trajectoryModel,0,free.terminal.fraction);
+ close(free.terminal.remainingImpact,80*.8**(length/3));close(free.airLoss+free.terminal.remainingImpact,80);
+ const stoppedAir=projectileFlight(s,s.units[0],aim,{...weak,projectileAirDrag:drag(.8)}),forceAtEntry=20*.8**(projectileTrajectoryLength(stoppedAir.trajectoryModel,0,entry)/3);
+ close(projectileTrajectoryLength(stoppedAir.trajectoryModel,entry,stoppedAir.terminal.fraction),forceAtEntry/24);
+ close(stoppedAir.obstacles[0].resistance+stoppedAir.airLoss,20);assert.equal(stoppedAir.bodyImpacts.length,0);
 });
 
 test('nine pellets divide total mass, joules and launch force exactly while each recipient injury keeps its authored share',()=>{
@@ -183,14 +227,18 @@ test('nine pellets divide total mass, joules and launch force exactly while each
  const a=execute(actual).next,b=execute(control).next;paidShot(actual,a);
  assert.equal(body(a,'e').hp,body(b,'e').hp,'higher total energy cannot multiply injury by nine');
  assert.equal(body(a).practiceSeed,body(b).practiceSeed);assert.deepEqual(body(a).skillPractice,body(b).skillPractice);
+ const airWeapon={...w,projectileAirDrag:drag(.65)},air=shotLoadFlight(s,s.units[0],s.units[1],airWeapon);
+ for(const pellet of air.pellets){const entry=pellet.flight.bodyImpacts[0],length=Math.hypot(entry.impact.x-1,entry.impact.y-3,entry.impact.height-1.4);close(entry.incomingImpact,pellet.launchImpact*.65**(length/10));assert.ok(entry.airDamageReduction>0);}
+ assert.equal(air.pellets.reduce((n,p)=>n+p.launchImpact,0),80,'air loss does not create a second launch or multiply the load budget');
 });
 
 test('a paired ball and pellet load use their own selected kinetic profiles and retain exact finite hand custody',()=>{
- const primary=definition(energy(5,200),1805),other=definition(energy(20,600),1806,{alternativeLoads:[{family:'ammoShot',damage:36,range:6,pattern:'cone',projectileEnergy:energy(20,400)}]});
+ const primary=definition(energy(5,200),1805,{projectileAirDrag:drag(.8)}),other=definition(energy(20,600),1806,{projectileAirDrag:drag(.9),alternativeLoads:[{family:'ammoShot',damage:36,range:6,pattern:'cone',projectileEnergy:energy(20,400),projectileAirDrag:drag(.65)}]});
  const otherMetadata=weaponMetadata(other),offHand={weapon:1806,count:1,weight:otherMetadata.contentWeapon.weight,loaded:1,condition:100,jammed:false,instanceId:'second-pistol',ammunitionChoice:'ammoShot',weaponMetadata:otherMetadata};
  const s=field(undefined,{weaponMetadata:weaponMetadata(primary),traits:['ambidextrous'],offHand}, {enemies:[enemy('e',3,3),enemy('reserve',28,12)]}),u=body(s),off=secondaryPistolView(u),preview=firearmVolleyPreview(s,u,body(s,'e'),4);
  assert.equal(projectileLaunchImpact(weaponFor(u)),5);assert.equal(projectileLaunchImpact(weaponFor(off)),80,'the selected alternative cannot inherit the other pistol’s primary energy');
- assert.equal(weaponFor(off).range,6);assert.equal(weaponFor(off).damage,36);assert.equal(preview.paired,true);close(preview.shots[0].damageFactor,5/42);assert.ok(preview.shots[1].expectedForce>0&&preview.shots[1].expectedForce<=36);
+ assert.equal(weaponFor(off).range,6);assert.equal(weaponFor(off).damage,36);assert.equal(preview.paired,true);close(preview.shots[0].damageFactor,5*.8**(Math.hypot(1.5,.3*1.5/2)/8)/42);assert.ok(preview.shots[1].expectedForce>0&&preview.shots[1].expectedForce<=36);
+ assert.deepEqual(weaponFor(off).projectileAirDrag,drag(.65));
  const pellets=shotLoadFlight(s,off,body(s,'e'),weaponFor(off));assert.equal(pellets.pellets.reduce((sum,p)=>sum+p.launchImpact,0),80);
  const {next}=execute(s);paidShot(s,next,shot,2);assert.ok(body(next,'e').hp<100);assert.equal(body(next).offHand.loaded,0);assert.equal(body(next).offHand.condition,99);
  assert.equal(body(next).offHand.instanceId,'second-pistol');assert.deepEqual(body(next).offHand.weaponMetadata,offHand.weaponMetadata);assert.deepEqual(body(next).ammunition,u.ammunition);
@@ -200,16 +248,18 @@ test('omitted primary and alternative profiles preserve legacy flights, damage a
  const s=pureScene();s.units.push({id:'e',side:'enemy',x:6,y:3,hp:100});const w=pureWeapon(),f=projectileFlight(s,s.units[0],s.units[1],w);
  assert.equal(projectileLaunchImpact(w),42);assert.equal(f.bodyImpacts[0].incomingImpact,42);assert.equal(f.bodyImpacts[0].damageFactor,1);
  assert.deepEqual(projectileFlight(s,s.units[0],s.units[1],{...w,projectileEnergy:undefined}),f);
+ const energetic=pureWeapon(energy(20,400));assert.deepEqual(projectileFlight(s,s.units[0],s.units[1],{...energetic,projectileAirDrag:drag(1)}),projectileFlight(s,s.units[0],s.units[1],energetic));
  const legacyImpact={coverDamageFactor:.7,bodyDamageReduction:.2,ricochetDamageReduction:.1};close(penetratingFirearmDamage(42,legacyImpact),42*.4);close(penetratingFirearmDamage(42,legacyImpact,0),42*.7);
- const selected={family:'ammoShot',damage:22,range:6,pattern:'cone'},newPrimary=definition(energy(20,600),1805,{alternativeLoads:[selected]}),oldPrimary=definition(undefined,1805,{alternativeLoads:[selected]});
+ const selected={family:'ammoShot',damage:22,range:6,pattern:'cone'},newPrimary=definition(energy(20,600),1805,{projectileAirDrag:drag(.8),alternativeLoads:[selected]}),oldPrimary=definition(undefined,1805,{alternativeLoads:[selected]});
  const opted=field(undefined,{ammunitionChoice:'ammoShot',weaponMetadata:weaponMetadata(newPrimary)}),old=field(undefined,{ammunitionChoice:'ammoShot',weaponMetadata:weaponMetadata(oldPrimary)});
  assert.equal(weaponFor(body(opted)).projectileEnergy,undefined);assert.deepEqual(firearmVolleyPreview(opted,body(opted),body(opted,'e'),4),firearmVolleyPreview(old,body(old),body(old,'e'),4));
+ assert.equal(weaponFor(body(opted)).projectileAirDrag,undefined);
  const a=execute(opted).next,b=execute(old).next;assert.deepEqual(withoutEnergy(a),withoutEnergy(b));
  const pellet=shotLoadFlight(old,body(old),body(old,'e'),weaponFor(body(old))).pellets[0];assert.equal(Object.hasOwn(pellet,'massGrams'),false);assert.equal(Object.hasOwn(pellet,'energyJ'),false);assert.equal(Object.hasOwn(pellet,'launchImpact'),false);
 });
 
 test('private material cannot alter public kinetic forecasts or flight when real passage changes but known injury does not',()=>{
- const profile=energy(20,400),clear=field(profile),hidden=field(profile,{}, {props:[{id:'private-cover',type:'chest',x:4,y:3,blocksSight:false,obstacleHeight:2,projectileResistance:30,roomId:'unrevealed'}]});
+ const profile=energy(20,400),metadata=weaponMetadata(definition(profile,1805,{projectileAirDrag:drag(.8)})),clear=field(profile,{weaponMetadata:metadata}),hidden=field(profile,{weaponMetadata:metadata}, {props:[{id:'private-cover',type:'chest',x:4,y:3,blocksSight:false,obstacleHeight:2,projectileResistance:30,roomId:'unrevealed'}]});
  const before=structuredClone(hidden),preview=s=>firearmVolleyPreview(s,body(s),body(s,'e'),4);
  assert.deepEqual(preview(hidden),preview(clear));assert.deepEqual(firearmShotOptions(hidden,body(hidden),body(hidden,'e')),firearmShotOptions(clear,body(clear),body(clear,'e')));
  assert.deepEqual(targetPreview(hidden,body(hidden),body(hidden,'e'),{mode:'fire'}),targetPreview(clear,body(clear),body(clear,'e'),{mode:'fire'}));
@@ -221,7 +271,7 @@ test('private material cannot alter public kinetic forecasts or flight when real
 });
 
 test('a private body changes actual weak-ball shielding without disclosing its geometry, timing or camera focus',()=>{
- const profile=energy(5,200),clear=field(profile),hidden=field(profile,{}, {npcs:[{id:'private',name:'Persona secreta',x:4,y:3,hp:100,roomId:'unrevealed'}]});
+ const profile=energy(5,200),metadata=weaponMetadata(definition(profile,1805,{projectileAirDrag:drag(.8)})),clear=field(profile,{weaponMetadata:metadata}),hidden=field(profile,{weaponMetadata:metadata}, {npcs:[{id:'private',name:'Persona secreta',x:4,y:3,hp:100,roomId:'unrevealed'}]});
  assert.deepEqual(firearmVolleyPreview(hidden,body(hidden),body(hidden,'e'),4),firearmVolleyPreview(clear,body(clear),body(clear,'e'),4));
  assert.deepEqual(firearmBystanderRisk(hidden,body(hidden),body(hidden,'e')),firearmBystanderRisk(clear,body(clear),body(clear,'e')));
  const a=execute(hidden),b=execute(clear);paidShot(hidden,a.next);

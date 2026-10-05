@@ -21,8 +21,8 @@ function paidArena({oldPinned=false}={}){
  // balance before campaign creation. The separate kinetic acceptance tests the
  // fresh default energy profile; no executed health, gear or RNG is reset here.
  const clinicalGun=content.weapons.find(weapon=>weapon.template===1800);
- delete clinicalGun.projectileEnergy;
- for(const load of clinicalGun.alternativeLoads??[])delete load.projectileEnergy;
+ delete clinicalGun.projectileEnergy;delete clinicalGun.projectileAirDrag;
+ for(const load of clinicalGun.alternativeLoads??[]){delete load.projectileEnergy;delete load.projectileAirDrag;}
  // Labelled compatibility control: an older pinned package omits the ability
  // before campaign creation. It receives no later catalogue backfill.
  if(oldPinned)delete content.characters.find(character=>character.id==='person-130').abilities;
@@ -55,8 +55,8 @@ function paidArena({oldPinned=false}={}){
  if(request.finiteArtilleryArsenal)battle.finiteArtilleryArsenal=structuredClone(request.finiteArtilleryArsenal);
  const pair=saved({campaign,battle});
  const pinnedGun=pair.campaign.contentCampaign.package.weapons.find(weapon=>weapon.template===1800);
- assert.equal(Object.hasOwn(pinnedGun,'projectileEnergy'),false);
- assert.ok((pinnedGun.alternativeLoads??[]).every(load=>!Object.hasOwn(load,'projectileEnergy')));
+ assert.equal(Object.hasOwn(pinnedGun,'projectileEnergy'),false);assert.equal(Object.hasOwn(pinnedGun,'projectileAirDrag'),false);
+ assert.ok((pinnedGun.alternativeLoads??[]).every(load=>!Object.hasOwn(load,'projectileEnergy')&&!Object.hasOwn(load,'projectileAirDrag')));
  assert.equal(weaponFor(actor(pair.battle,110)).projectileEnergy,undefined,'the official saved clinical load retains its explicit legacy profile');
  assert.equal(actor(pair.battle,130).hp,67);assert.equal(actor(pair.battle,110).hp,85);
  for(const id of [130,110]){

@@ -18,8 +18,8 @@ export function preparedNervousArena({oldPinned=false}={}){
  // balance before campaign creation. The separate kinetic acceptance tests the
  // fresh default energy profile; no executed health, gear or RNG is reset here.
  const clinicalGun=content.weapons.find(weapon=>weapon.template===1800);
- delete clinicalGun.projectileEnergy;
- for(const load of clinicalGun.alternativeLoads??[])delete load.projectileEnergy;
+ delete clinicalGun.projectileEnergy;delete clinicalGun.projectileAirDrag;
+ for(const load of clinicalGun.alternativeLoads??[]){delete load.projectileEnergy;delete load.projectileAirDrag;}
  // Compatibility control is declared before campaign creation; care remains.
  if(oldPinned){const cejas=content.characters.find(person=>person.id==='person-130');cejas.abilities=cejas.abilities.filter(ability=>ability!=='nervous_isolation');}
  let campaign=initialCampaign(42,content);const prices=[];
@@ -46,8 +46,8 @@ export function preparedNervousArena({oldPinned=false}={}){
  if(request.finiteArtilleryArsenal)battle.finiteArtilleryArsenal=structuredClone(request.finiteArtilleryArsenal);
  const start=nervousSaved({campaign,battle});
  const pinnedGun=start.campaign.contentCampaign.package.weapons.find(weapon=>weapon.template===1800);
- assert.equal(Object.hasOwn(pinnedGun,'projectileEnergy'),false);
- assert.ok((pinnedGun.alternativeLoads??[]).every(load=>!Object.hasOwn(load,'projectileEnergy')));
+ assert.equal(Object.hasOwn(pinnedGun,'projectileEnergy'),false);assert.equal(Object.hasOwn(pinnedGun,'projectileAirDrag'),false);
+ assert.ok((pinnedGun.alternativeLoads??[]).every(load=>!Object.hasOwn(load,'projectileEnergy')&&!Object.hasOwn(load,'projectileAirDrag')));
  assert.equal(weaponFor(nervousActor(start.battle,110)).projectileEnergy,undefined,'the official saved clinical load retains its explicit legacy profile');
  return {start,prices,oldPinned};
 }

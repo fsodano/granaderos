@@ -8,6 +8,7 @@ import {BLADES} from './blade-definitions.js';
 import {canonicalContent} from './content-identity.js';
 import {validMaterialRangeSlope} from './material-range-penetration.js';
 import {validProjectileEnergy} from './projectile-energy.js';
+import {validProjectileAirDrag} from './projectile-air-drag.js';
 export const FIREARM_PRICES={1800:240,1801:230,1802:420,1803:180,1804:100,1805:130,1806:180,1807:160,1808:220};
 export const BLADE_PRICES={1809:160,1810:110,1811:50,1812:70,1813:40};
 export const isBladeDefinition=value=>Object.hasOwn(BLADES,value?.template);
@@ -17,28 +18,29 @@ const need=(ok,message)=>{if(!ok)throw Error(message);};
 export const validWeaponArt=value=>typeof value==='string'&&(/^\/art\/[a-zA-Z0-9_-]+\.(webp|png|jpg)$/.test(value)||(/^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(value)&&value.length<350000));
 export function compileWeaponDefinition(authored){
  if(isBladeDefinition(authored)){
-  need(authored.ammunitionFamily===undefined&&authored.alternativeLoads===undefined&&authored.materialRangeSlope===undefined&&authored.projectileEnergy===undefined,'La munición solo se configura en armas de fuego.');
+  need(authored.ammunitionFamily===undefined&&authored.alternativeLoads===undefined&&authored.materialRangeSlope===undefined&&authored.projectileEnergy===undefined&&authored.projectileAirDrag===undefined,'La munición solo se configura en armas de fuego.');
   need(!FIREARM_MELEE_FIELDS.some(key=>Object.hasOwn(authored,key)),'El golpe con la culata solo se configura en armas de fuego.');
   const result={version:1,id:authored.id,template:authored.template,name:authored.name,damage:authored.damage,ap:authored.ap,reach:authored.reach,weight:authored.weight??ITEMS[authored.template].weight,price:authored.price??BLADE_PRICES[authored.template],art:authored.art??`/art/weapon-${authored.template}.png`};
   validateWeaponDefinition(result,authored.template);return result;
  }
  const base=FIREARMS[authored.template];need(base,'La familia del arma no es válida.');
  const melee=Object.fromEntries(FIREARM_MELEE_FIELDS.filter(key=>Object.hasOwn(authored,key)).map(key=>[key,authored[key]]));
- const result={...melee,...(authored.projectileEnergy!==undefined?{projectileEnergy:structuredClone(authored.projectileEnergy)}:{}),...(authored.materialRangeSlope!==undefined?{materialRangeSlope:authored.materialRangeSlope}:{}),...(authored.alternativeLoads!==undefined?{alternativeLoads:structuredClone(authored.alternativeLoads)}:{}),...(authored.ammunitionFamily!==undefined?{ammunitionFamily:authored.ammunitionFamily}:{}),version:1,id:authored.id,template:base.id,name:authored.name,damage:authored.damage,fireAP:authored.fireAP,aimAP:authored.aimAP,reloadAP:authored.reloadAP,range:authored.range,readyAP:authored.readyAP??0,capacity:authored.capacity??base.capacity,weight:authored.weight??ITEMS[base.id].weight,price:authored.price??FIREARM_PRICES[base.id],art:authored.art??`/art/weapon-${base.id}.png`};
+ const result={...melee,...(authored.projectileAirDrag!==undefined?{projectileAirDrag:structuredClone(authored.projectileAirDrag)}:{}),...(authored.projectileEnergy!==undefined?{projectileEnergy:structuredClone(authored.projectileEnergy)}:{}),...(authored.materialRangeSlope!==undefined?{materialRangeSlope:authored.materialRangeSlope}:{}),...(authored.alternativeLoads!==undefined?{alternativeLoads:structuredClone(authored.alternativeLoads)}:{}),...(authored.ammunitionFamily!==undefined?{ammunitionFamily:authored.ammunitionFamily}:{}),version:1,id:authored.id,template:base.id,name:authored.name,damage:authored.damage,fireAP:authored.fireAP,aimAP:authored.aimAP,reloadAP:authored.reloadAP,range:authored.range,readyAP:authored.readyAP??0,capacity:authored.capacity??base.capacity,weight:authored.weight??ITEMS[base.id].weight,price:authored.price??FIREARM_PRICES[base.id],art:authored.art??`/art/weapon-${base.id}.png`};
  validateWeaponDefinition(result,base.id);return result;
 }
 export function validateWeaponDefinition(value,host){
  if(value===undefined)return;
  const blade=Boolean(BLADES[host]);
  const keys=blade?['version','id','template','name','damage','ap','reach','weight','price','art']:['version','id','template','name','damage','fireAP','aimAP','reloadAP','range','readyAP','capacity','weight','price','art'];
- need(value&&typeof value==='object'&&!Array.isArray(value)&&Object.keys(value).every(k=>keys.includes(k)||!blade&&(FIREARM_MELEE_FIELDS.includes(k)||['ammunitionFamily','alternativeLoads','materialRangeSlope','projectileEnergy'].includes(k)))&&keys.every(k=>Object.hasOwn(value,k)),'La definición del arma no es válida.');
+ need(value&&typeof value==='object'&&!Array.isArray(value)&&Object.keys(value).every(k=>keys.includes(k)||!blade&&(FIREARM_MELEE_FIELDS.includes(k)||['ammunitionFamily','alternativeLoads','materialRangeSlope','projectileEnergy','projectileAirDrag'].includes(k)))&&keys.every(k=>Object.hasOwn(value,k)),'La definición del arma no es válida.');
  if(Object.hasOwn(value,'projectileEnergy'))need(!blade&&validProjectileEnergy(value.projectileEnergy),'El perfil de energía del proyectil no es válido.');
+ if(Object.hasOwn(value,'projectileAirDrag'))need(!blade&&validProjectileAirDrag(value.projectileAirDrag,value.projectileEnergy),'La pérdida de energía en el aire no es válida.');
  if(Object.hasOwn(value,'materialRangeSlope'))need(!blade&&validMaterialRangeSlope(value.materialRangeSlope),'La pérdida de penetración por distancia no es válida.');
  need(value.version===1&&(FIREARMS[host]||BLADES[host])&&value.template===host,'La definición del arma no coincide con su familia.');
  if(Object.hasOwn(value,'ammunitionFamily'))need(!blade&&typeof value.ammunitionFamily==='string'&&Object.hasOwn(AMMO_TYPES,value.ammunitionFamily),'La familia de munición no es válida.');
  if(Object.hasOwn(value,'alternativeLoads')){
   const primary=primaryAmmoTypeFor(value),loads=value.alternativeLoads;
-  need(!blade&&Array.isArray(loads)&&loads.length<=3&&new Set(loads.map(l=>l?.family)).size===loads.length&&loads.every(l=>l&&typeof l==='object'&&!Array.isArray(l)&&Object.keys(l).every(k=>['family','damage','range','pattern','materialRangeSlope','projectileEnergy'].includes(k))&&['family','damage','range','pattern'].every(k=>Object.hasOwn(l,k))&&(!Object.hasOwn(l,'materialRangeSlope')||validMaterialRangeSlope(l.materialRangeSlope))&&(!Object.hasOwn(l,'projectileEnergy')||validProjectileEnergy(l.projectileEnergy))&&Object.hasOwn(AMMO_TYPES,l.family)&&l.family!==primary&&integer(l.damage,1,100)&&integer(l.range,1,100)&&['single','cone'].includes(l.pattern)),'Las cargas alternativas no son válidas.');
+  need(!blade&&Array.isArray(loads)&&loads.length<=3&&new Set(loads.map(l=>l?.family)).size===loads.length&&loads.every(l=>l&&typeof l==='object'&&!Array.isArray(l)&&Object.keys(l).every(k=>['family','damage','range','pattern','materialRangeSlope','projectileEnergy','projectileAirDrag'].includes(k))&&['family','damage','range','pattern'].every(k=>Object.hasOwn(l,k))&&(!Object.hasOwn(l,'materialRangeSlope')||validMaterialRangeSlope(l.materialRangeSlope))&&(!Object.hasOwn(l,'projectileEnergy')||validProjectileEnergy(l.projectileEnergy))&&(!Object.hasOwn(l,'projectileAirDrag')||validProjectileAirDrag(l.projectileAirDrag,l.projectileEnergy))&&Object.hasOwn(AMMO_TYPES,l.family)&&l.family!==primary&&integer(l.damage,1,100)&&integer(l.range,1,100)&&['single','cone'].includes(l.pattern)),'Las cargas alternativas no son válidas.');
  }
  need(typeof value.id==='string'&&/^[a-z][a-z0-9-]{0,79}$/.test(value.id)&&!['constructor','prototype','bronze4','field8','swivel'].includes(value.id),'La identidad del arma no es válida.');
  need(typeof value.name==='string'&&value.name.trim().length>0&&value.name.length<=100,'El nombre del arma no es válido.');
@@ -60,6 +62,8 @@ export function weaponSpecification(value,slot='primary'){
  if(load&&load.family!==primaryAmmoTypeFor(value)){
   delete specification.materialRangeSlope;
   delete specification.projectileEnergy;
+  delete specification.projectileAirDrag;
+  if(load.projectileAirDrag!==undefined)specification.projectileAirDrag=structuredClone(load.projectileAirDrag);
   if(load.projectileEnergy!==undefined)specification.projectileEnergy=structuredClone(load.projectileEnergy);
   if(load.materialRangeSlope!==undefined)specification.materialRangeSlope=load.materialRangeSlope;
  }

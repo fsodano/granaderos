@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {act,createElement as h} from '../web/node_modules/react/index.js';
 import {defaultContentPackage} from '../game/content-package.js';
-import {initialCampaign} from '../game/campaign.js';
+import {initialCampaign,rosterFor} from '../game/campaign.js';
 import {ammoCount,totalAmmo,changeAmmo} from '../game/ammo-types.js';
 import {syncCarriedAmmunition} from '../game/campaign-ammunition.js';
 import {mountLegacyArmory} from './mounted-legacy-armory-fixture.mjs';
@@ -18,17 +18,25 @@ const {default:Battlefield}=await import('../web/app/Battlefield.tsx');
 const {default:TacticalScene}=await import('../web/app/TacticalScene.tsx');
 const {default:JA2Strip}=await import('../web/app/JA2Strip.tsx');
 const nodes=node=>!node||typeof node!=='object'?[]:[node,...(Array.isArray(node)?node:Array.isArray(node.props?.children)?node.props.children:[node.props?.children]).flatMap(nodes)];
-const pair=()=>{const d=defaultContentPackage();d.characters.find(c=>c.id==='person-110').arrivalHours=0;let s=order(initialCampaign(8,d),{type:'recruitCivic',id:110,term:'week'});// Explicit finite carried shot in a subsystem save fixture.
+const pair=({oldPinned=false,withoutAlternativeDrag=false}={})=>{const d=defaultContentPackage();d.characters.find(c=>c.id==='person-110').arrivalHours=0;const gun=d.weapons.find(w=>w.id==='firearm-1800');if(oldPinned)delete gun.projectileAirDrag;if(oldPinned||withoutAlternativeDrag)for(const load of gun.alternativeLoads??[])delete load.projectileAirDrag;let s=order(initialCampaign(8,d),{type:'recruitCivic',id:110,term:'week'});// Explicit finite carried shot in a subsystem save fixture.
  changeAmmo(s.operativeState[110],'ammoShot',3);syncCarriedAmmunition(s.operativeState[110],1800);return visit(s);};
 const choose=async(m,family)=>act(async()=>{const select=m.document.querySelector('[aria-label="Carga para esta arma"]');select.value=family;select.dispatchEvent(new m.dom.window.Event('change',{bubbles:true}));});
 
 test('isolated retained ammunition widget unloads, selects a new load and saves the selected family for departure',async t=>{
  const m=await mountLegacyArmory(t,pair());
- assert.equal(m.document.querySelector('[aria-label="Carga para esta arma"]').disabled,true);assert.match(m.document.querySelector('[aria-label="Energía de la carga"]').textContent,/32 g.*265 m\/s.*1\.123,6 J/);await m.click('Descargar arma');assert.equal(m.document.querySelector('[aria-label="Carga para esta arma"]').disabled,false);await choose(m,'ammoShot');assert.match(m.document.querySelector('[aria-label="Energía de la carga"]').textContent,/16 g.*265 m\/s.*561,8 J/);const s=m.saved().campaign;assert.equal(s.operativeState[110].ammunitionChoice,'ammoShot');assert.equal(ammoCount(s.operativeState[110],'ammoMusket'),10);assert.equal(ammoCount(s.operativeState[110],'ammoShot'),3);assert.equal(s.operativeState[110].carriedLoaded,0);
+ assert.equal(m.document.querySelector('[aria-label="Carga para esta arma"]').disabled,true);assert.match(m.document.querySelector('[aria-label="Energía de la carga"]').textContent,/32 g.*265 m\/s.*1\.123,6 J/);assert.match(m.document.querySelector('[aria-label="Energía en el aire"]').textContent,/vuelo libre.*80 %.*daño.*penetración/);await m.click('Descargar arma');assert.equal(m.document.querySelector('[aria-label="Carga para esta arma"]').disabled,false);await choose(m,'ammoShot');assert.match(m.document.querySelector('[aria-label="Energía de la carga"]').textContent,/16 g.*265 m\/s.*561,8 J/);assert.match(m.document.querySelector('[aria-label="Energía en el aire"]').textContent,/65 %/);const s=m.saved().campaign;assert.equal(s.operativeState[110].ammunitionChoice,'ammoShot');assert.equal(ammoCount(s.operativeState[110],'ammoMusket'),10);assert.equal(ammoCount(s.operativeState[110],'ammoShot'),3);assert.equal(s.operativeState[110].carriedLoaded,0);
 });
 
 test('mounted tactical inventory unloads and selects shot through the actual controls and registered reload',async t=>{
- const m=await mountCampaign(t,pair());await m.click('Equipo');assert.equal(m.document.querySelector('[aria-label="Carga para esta arma"]').disabled,true);await m.click('Descargar arma');await choose(m,'ammoShot');await act(async()=>m.issue({type:'reload',unitId:'110'}));await m.settle();const u=m.saved().battle.units.find(u=>u.id==='110');assert.equal(u.ammunitionChoice,'ammoShot');assert.equal(u.loaded,1);assert.equal(ammoCount(u,'ammoShot'),2);assert.equal(ammoCount(u,'ammoMusket'),10);assert.equal(weaponSpecification(u).loadPattern,'cone');assert.equal(m.document.querySelector('[aria-label="Carga para esta arma"]').disabled,true);
+ const m=await mountCampaign(t,pair());await m.click('Equipo');assert.equal(m.document.querySelector('[aria-label="Carga para esta arma"]').disabled,true);assert.match(m.document.querySelector('[aria-label="Energía en el aire"]').textContent,/80 %/);await m.click('Descargar arma');await choose(m,'ammoShot');assert.match(m.document.querySelector('[aria-label="Energía en el aire"]').textContent,/65 %/);await act(async()=>m.issue({type:'reload',unitId:'110'}));await m.settle();const u=m.saved().battle.units.find(u=>u.id==='110');assert.equal(u.ammunitionChoice,'ammoShot');assert.equal(u.loaded,1);assert.equal(ammoCount(u,'ammoShot'),2);assert.equal(ammoCount(u,'ammoMusket'),10);assert.equal(weaponSpecification(u).loadPattern,'cone');assert.equal(weaponSpecification(u).projectileAirDrag.retentionAtRange,.65);assert.equal(u.weaponMetadata.contentWeapon.projectileAirDrag.retentionAtRange,.8);assert.equal(m.document.querySelector('[aria-label="Carga para esta arma"]').disabled,true);
+});
+
+test('mounted saved load choices do not inherit primary air loss or backfill an older omitted package',async t=>{
+ for(const oldPinned of [false,true])await t.test(oldPinned?'older package omits both profiles':'alternative omits its own profile',async t=>{
+  const m=await mountLegacyArmory(t,pair({oldPinned,withoutAlternativeDrag:true}));
+  assert.equal(Boolean(m.document.querySelector('[aria-label="Energía en el aire"]')),!oldPinned);await m.click('Descargar arma');await choose(m,'ammoShot');assert.equal(m.document.querySelector('[aria-label="Energía en el aire"]'),null);assert.ok(m.document.querySelector('[aria-label="Energía de la carga"]'),'omitted drag does not remove the selected energy model');
+  const {campaign}=m.saved(),actor={...rosterFor(campaign).find(u=>u.id===110),...campaign.operativeState[110]};assert.equal(weaponSpecification(actor).projectileAirDrag,undefined);assert.equal(Object.hasOwn(actor.weaponMetadata.contentWeapon.alternativeLoads[0],'projectileAirDrag'),false);assert.equal(Object.hasOwn(actor.weaponMetadata.contentWeapon,'projectileAirDrag'),!oldPinned);assert.equal(campaign.operativeState[110].ammunitionChoice,'ammoShot');assert.equal(campaign.operativeState[110].carriedLoaded,0);assert.equal(ammoCount(campaign.operativeState[110],'ammoMusket'),10);assert.equal(ammoCount(campaign.operativeState[110],'ammoShot'),3);
+ });
 });
 
 test('mounted inventory load changes apply authored concealment skill to a pistol shot and return to neutral ball fire',async t=>{
