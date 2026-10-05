@@ -3,7 +3,7 @@ import test from 'node:test';import assert from 'node:assert/strict';
 import {JSDOM,VirtualConsole} from '../web/node_modules/jsdom/lib/api.js';
 import {createElement as h,act} from '../web/node_modules/react/index.js';
 import {defaultContentPackage,parseContentPackage} from '../game/content-package.js';
-import {defaultErrands} from '../game/quest-definitions.js';
+import {defaultErrands,validateQuestDefinitions} from '../game/quest-definitions.js';
 import {decodeSave} from '../game/save.js';
 import {CONTENT_LAUNCH_KEY} from '../game/content-launch.js';
 import {localPackage} from './local-contract-fixture.mjs';
@@ -95,4 +95,23 @@ test('an authored secondary recipient cannot be deleted until its errand referen
  await m.click(m.button('Encargos locales'));await m.click(m.button(q.title));await m.input(m.document.querySelector('fieldset[aria-label="Destinatario 2"] select'),'local-ensenada');
  await m.click(m.button('Personajes'));await m.input(m.document.querySelector('input[type="search"]'),'alma-contract');await m.click(m.document.querySelector('.entry-list button'));await m.click(m.button('Eliminar'));assert.equal(m.draft().characters.some(c=>c.id==='alma-contract'),false);
  await m.click(m.button('Deshacer'));assert.equal(m.draft().characters.some(c=>c.id==='alma-contract'),true);
+});
+
+
+test('the editor authors and imports withdrawal only for physical city deliveries, with undo and saved launch',async t=>{
+ const d=defaultContentPackage();delete d.errands.find(q=>q.id==='retiro-uniformes').withdrawal;const m=await mount(t,d);
+ await m.click(m.button('Encargos locales'));await m.click(m.button('Abrigo para el cuartel o el puerto'));const selected=()=>m.draft().errands.find(q=>q.id==='retiro-uniformes');
+ assert.equal(selected().withdrawal,undefined);await m.click(m.checkbox('Permitir retirar una entrega incompleta'));assert.deepEqual(selected().withdrawal,{supportCost:4});
+ assert.equal(m.label('Costo de apoyo local').min,'1');assert.equal(m.label('Costo de apoyo local').max,'20');await m.input(m.label('Costo de apoyo local'),7);assert.deepEqual(selected().withdrawal,{supportCost:7});
+ await m.click(m.button('Deshacer'));assert.equal(selected().withdrawal.supportCost,4);await m.click(m.button('Rehacer'));assert.equal(selected().withdrawal.supportCost,7);
+ await m.input(m.label('Costo de apoyo local'),0);assert.equal(m.button('Iniciar campaña con estas fichas').disabled,true);await m.input(m.label('Costo de apoyo local'),21);assert.equal(m.button('Iniciar campaña con estas fichas').disabled,true);await m.input(m.label('Costo de apoyo local'),7);
+ const single=structuredClone(selected());single.carried.count=1;assert.match(validateQuestDefinitions([single]).join(' '),/al menos dos objetos/);
+ await m.input(m.label('Cantidad'),1);assert.equal(m.button('Iniciar campaña con estas fichas').disabled,true);assert.match(m.document.body.textContent,/al menos dos objetos/);
+ await m.click(m.checkbox('Permitir retirar una entrega incompleta'));assert.equal(selected().withdrawal,undefined);assert.equal(m.button('Iniciar campaña con estas fichas').disabled,false);assert.equal(m.checkbox('Permitir retirar una entrega incompleta').disabled,true);
+ await m.input(m.label('Cantidad'),2);assert.equal(m.checkbox('Permitir retirar una entrega incompleta').disabled,false);await m.click(m.checkbox('Permitir retirar una entrega incompleta'));
+ const imported=m.draft();delete imported.errands.find(q=>q.id==='retiro-uniformes').beneficiaries;imported.errands.find(q=>q.id==='retiro-uniformes').rewardChoice={reimbursement:40};imported.errands.find(q=>q.id==='retiro-uniformes').withdrawal.supportCost=9;
+ const raw=JSON.stringify(imported),file=new m.dom.window.File([raw],'retiro.json',{type:'application/json'});file.text=async()=>raw;
+ const input=m.document.querySelectorAll('input[type="file"][accept="application/json,.json"]')[1];Object.defineProperty(input,'files',{configurable:true,value:[file]});await act(async()=>input.dispatchEvent(new m.dom.window.Event('change',{bubbles:true})));
+ assert.equal(selected().withdrawal.supportCost,9);assert.equal(m.checkbox('Permitir retirar una entrega incompleta').disabled,false);assert.deepEqual(selected().rewardChoice,{reimbursement:40});
+ await m.click(m.button('Iniciar campaña con estas fichas'));const {campaign}=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY));assert.deepEqual(campaign.contentCampaign.package.errands.find(q=>q.id==='retiro-uniformes').withdrawal,{supportCost:9});
 });

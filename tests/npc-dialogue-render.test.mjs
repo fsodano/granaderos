@@ -10,6 +10,9 @@ import {rosterFor} from '../game/campaign.js';
 import {syncBattleTime} from '../game/time.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {campaignStorageKey} from '../game/content-launch.js';
+import {defaultContentPackage} from '../game/content-package.js';
+import {enterSector} from '../game/world.js';
+import {applyQuestWithdrawalOrders} from '../game/quest-withdrawal.js';
 import {defaultErrands} from '../game/quest-definitions.js';
 import {withCarriedPonchos} from './custody-gear-fixture.mjs';
 import {deliverPonchos} from './npc-gift-helpers.mjs';
@@ -128,4 +131,32 @@ test('the mounted native couriers disclose both recipients, save the first accep
  assert.equal(after.campaign.quests['retiro-uniformes'].status,'completed');assert.equal(after.campaign.resources.treasury,complete.campaign.resources.treasury);for(const at of ['retiro','buenos_aires'])assert.equal(after.campaign.sectors[at].loyalty,loyalty[at]+8);assert.equal(after.campaign.sectors.ensenada.loyalty,loyalty.ensenada);
  journal=render(h(QuestJournal,{state:after.campaign}));assert.match(journal,/El apoyo de Buenos Aires y su puerto aumenta 8 puntos/);assert.doesNotMatch(journal,/primera entrega aceptada|Completá la entrega|Conversá con el destinatario/);
  await m.click('Listo');await clickPerson();assert.ok(![...m.document.querySelectorAll('.ja2-conversation button')].some(b=>b.textContent==='Confirmar entrega'));assert.deepEqual(saved(),after);
+});
+
+
+test('the mounted paid partial delivery discloses withdrawal cost, seals custody through the real talk callback, and imports without charging again',async t=>{
+ let campaign=initialCampaign(42,defaultContentPackage());
+ for(const [id,price]of [[100,36],[110,60]]){const quote=contractQuote(campaign,rosterFor(campaign).find(o=>o.id===id),'day');assert.equal(quote.price,price);campaign=dispatchCampaign(campaign,{type:'recruitCivic',id,term:'day'});assert.equal(campaign.lastError,null);}
+ campaign=dispatchCampaign(campaign,{type:'wait',hours:6});assert.equal(campaign.lastError,null);assert.equal(campaign.resources.treasury,3104);
+ campaign=dispatchCampaign(campaign,{type:'visitSector'});let battle=enterSector(campaign.pendingBattle,campaign.sectorStates.retiro);
+ battle=actBattle(battle,{type:'equipLoot',unitId:'100',slot:'outfit',inventoryKey:null});assert.equal(battle.lastError,null);
+ const key=Object.keys(battle.units.find(u=>u.id==='100').inventory).find(k=>battle.units.find(u=>u.id==='100').inventory[k].outfit==='poncho');
+ battle=actBattle(battle,{type:'weapon',unitId:'100',slot:'item',item:`inventory:${key}`});assert.equal(battle.lastError,null);battle=approachNPC(battle,'100','local-retiro');
+ battle=actBattle(battle,{type:'useItem',unitId:'100',targetId:'local-retiro'});assert.equal(battle.lastError,null);
+ const synced=syncBattleTime(campaign,battle);assert.equal(synced.error,null);const pair=decodeSave(encodeSave(synced.campaign,synced.battle));
+ const m=await mountCampaign(t,pair),saved=()=>decodeSave(m.dom.window.localStorage.getItem(campaignStorageKey(pair.campaign)));
+ async function open(){await m.click('Hablar');const person=m.document.querySelector('[data-unit-id="local-retiro"] [data-person-hit-target]');assert.ok(person);await act(async()=>person.dispatchEvent(new m.dom.window.MouseEvent('click',{bubbles:true})));await m.settle();}
+ await open();const before=saved(),dialog=m.document.querySelector('.ja2-conversation');assert.ok(dialog);assert.match(dialog.textContent,/Retirar el compromiso · apoyo local −4/);assert.match(dialog.textContent,/hasta 4 puntos, sin bajar de cero/);assert.match(dialog.textContent,/objetos entregados quedan.*conservás los restantes.*sin recompensa ni reintegro/);
+ assert.equal([...dialog.querySelectorAll('button')].filter(b=>b.textContent.startsWith('Retirar el compromiso')).length,1);
+ await m.click('Listo');assert.deepEqual(saved(),before);await open();
+ const choice=questForNPC(before.campaign,'local-retiro').withdrawalChoice,expected=dispatchCampaign(before.campaign,{type:'talkNPC',npcId:'local-retiro',unitId:'100',approach:'questWithdraw',questWithdrawal:choice,sectorState:before.battle});assert.equal(expected.lastError,null);
+ await m.click('Retirar el compromiso');const after=saved();assert.deepEqual(after.campaign,expected);assert.deepEqual(after.battle,applyQuestWithdrawalOrders(expected,before.battle));
+ assert.equal(after.campaign.quests['retiro-uniformes'].status,'withdrawn');assert.deepEqual(after.battle.npcs.find(n=>n.id==='local-retiro').questGifts,before.battle.npcs.find(n=>n.id==='local-retiro').questGifts);
+ assert.deepEqual(after.battle.units,before.battle.units);assert.equal(after.campaign.resources.treasury,3104);
+ assert.ok(![...m.document.querySelectorAll('.ja2-conversation button')].some(b=>/Retirar el compromiso|Confirmar entrega/.test(b.textContent)));
+ const journal=render(h(QuestJournal,{state:after.campaign}));assert.match(journal,/Retirado/);assert.match(journal,/disminuyó 4 puntos/);assert.doesNotMatch(journal,/contacto murió|Fallido|Completá la entrega/);
+ await m.click('Listo');await open();assert.deepEqual(saved(),after);await m.click('Listo');
+ const text=encodeSave(after.campaign,after.battle),file=new m.dom.window.File([text],'retiro-retirado.json',{type:'application/json'});file.text=async()=>text;
+ const input=m.document.querySelector('input[type="file"][accept="application/json,.json"]');Object.defineProperty(input,'files',{configurable:true,value:[file]});await act(async()=>input.dispatchEvent(new m.dom.window.Event('change',{bubbles:true})));await m.settle();
+ assert.deepEqual(saved(),after,'actual import/remount retains one civic event and exact terminal physical custody');
 });

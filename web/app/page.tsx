@@ -1,4 +1,5 @@
 'use client';
+import {applyQuestWithdrawalOrders} from '../../game/quest-withdrawal.js';
 import {sitePath,pagePath} from '../lib/site-path.js';
 import BuildIdentity from './BuildIdentity';
 import {projectDialogueMovements} from '../../game/dialogue-movement.js';
@@ -72,12 +73,12 @@ export default function Home(){
   function resume(){if(campaign){setScreen(battle?'battle':campaign.recruited.length?'campaign':'desk');return;}try{const saved=decodeSave(localStorage.getItem(storageKey())||'');setCampaign(saved.campaign);setBattle(saved.battle);setScreen(saved.battle?'battle':saved.campaign.recruited.length?'campaign':'desk');setNotice('');}catch(e:any){setNotice(e.message);}}
   function openCampaignBattle(state:any){const pair=prepareCampaignBattle(state,{placement:true});if(pair.error){setNotice(pair.error);return;}latest.current={...latest.current,campaign:pair.campaign,battle:pair.battle,screen:'battle'};setCampaign(pair.campaign);setBattle(pair.battle);setScreen('battle');}
   function dispatch(action:any){const current=latest.current,next=dispatchCampaign(current.campaign,action);if(next.pendingBattle&&!next.lastError&&!current.battle){openCampaignBattle(next);return;}latest.current={...current,campaign:next};setCampaign(next);}
-  function talkNPC(npcId:string,approach:string,unitId:string,term?:string,choice?:{node?:string;id?:string;questResolution?:'cash'|'civic'}){
+  function talkNPC(npcId:string,approach:string,unitId:string,term?:string,choice?:{node?:string;id?:string;questResolution?:'cash'|'civic';questWithdrawal?:{questId:string;beneficiaryId?:string;deliveredCount:number}}){
     const current=latest.current,{campaign,battle}=current;
     if(!campaign||!battle||current.screen!=='battle'){setNotice('Primero entrá al sector para conversar.');return;}
-    const next=dispatchCampaign(campaign,{type:'talkNPC',npcId,approach,unitId,term,...(choice?.node&&choice.id?{dialogueNode:choice.node,dialogueChoice:choice.id}:{}),...(choice?.questResolution?{questResolution:choice.questResolution}:{}),sectorState:battle});
+    const next=dispatchCampaign(campaign,{type:'talkNPC',npcId,approach,unitId,term,...(choice?.node&&choice.id?{dialogueNode:choice.node,dialogueChoice:choice.id}:{}),...(choice?.questResolution?{questResolution:choice.questResolution}:{}),...(choice?.questWithdrawal?{questWithdrawal:choice.questWithdrawal}:{}),sectorState:battle});
     if(next.lastError){setNotice(next.lastError);return;}
-    let updated=projectDialogueMovements(next,applyQuestEscortOrders(next,battle));
+    let updated=applyQuestWithdrawalOrders(next,projectDialogueMovements(next,applyQuestEscortOrders(next,battle)));
     if(next.lastConversation?.outcome==='recruited'){
       const id=next.lastConversation.operativeId,npc=battle.npcs.find((n:any)=>n.id===npcId),record=next.pendingBattle.squad.find((o:any)=>o.id===id);
       updated=structuredClone(updated);updated.npcs=updated.npcs.filter((n:any)=>n.id!==npcId);

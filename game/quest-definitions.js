@@ -24,7 +24,7 @@ export function validateQuestDefinitions(quests) {
     if (!object(q)) {errors.push('Encargos: registro inválido.');continue;}
     check(identifier(q.id)&&!ids.has(q.id),q.id,'identificador inválido o repetido.');ids.add(q.id);
     check(identifier(q.npcId),q.id,'contacto inválido.');
-    check(Object.keys(q).every(k=>['id','npcId','sector','title','offer','delivery','cost','requiredSectors','carried','escort','requires','reward','rewardChoice','beneficiaries'].includes(k)),q.id,'campo desconocido.');
+    check(Object.keys(q).every(k=>['id','npcId','sector','title','offer','delivery','cost','requiredSectors','carried','escort','requires','reward','rewardChoice','beneficiaries','withdrawal'].includes(k)),q.id,'campo desconocido.');
     check(sector(q.sector),q.id,'localidad inexistente.');
     check(text(q.title,120)&&text(q.offer,800)&&text(q.delivery,800),q.id,'revisá el título y los textos (120 y 800 caracteres).');
     check(object(q.cost)&&Object.entries(q.cost).every(([k,v])=>QUEST_RESOURCES.includes(k)&&integer(v,1,10000)),q.id,'recursos de entrega inválidos.');
@@ -36,6 +36,10 @@ export function validateQuestDefinitions(quests) {
       check(object(q.rewardChoice)&&Object.keys(q.rewardChoice).length===1&&Object.hasOwn(q.rewardChoice,'reimbursement')&&integer(q.rewardChoice.reimbursement,1,10000),q.id,'el reintegro necesita un importe entero de 1 a 10000 pesos.');
       check(Boolean(q.carried)&&!q.escort&&Boolean(cityForSector(q.sector)),q.id,'la elección de recompensa necesita una entrega física en una ciudad.');
       check(q.reward===undefined||q.reward?.treasury===0&&q.reward?.loyalty===false,q.id,'la elección de recompensa no admite una recompensa automática.');
+    }
+    if(q.withdrawal!==undefined){
+      check(object(q.withdrawal)&&Object.keys(q.withdrawal).length===1&&integer(q.withdrawal.supportCost,1,20),q.id,'el retiro necesita un costo entero de apoyo local de 1 a 20.');
+      check(Boolean(q.carried)&&integer(q.carried.count,2,100)&&!q.escort&&(q.beneficiaries?Array.isArray(q.beneficiaries)&&q.beneficiaries.every(b=>object(b)&&cityForSector(b.sector)):Boolean(cityForSector(q.sector))),q.id,'el retiro necesita una entrega física de al menos dos objetos con destinatarios en ciudades.');
     }
     if(q.beneficiaries!==undefined){
       check(Array.isArray(q.beneficiaries)&&q.beneficiaries.length===2&&[...q.beneficiaries].every(object),q.id,'elegí exactamente dos destinatarios distintos.');
@@ -83,7 +87,7 @@ export function defaultErrands(){return structuredClone(NPC_QUESTS).map(q=>({...
 // Fictional local errand text and reward amounts are game tuning. Only fresh
 // campaigns pin these definitions; omitted legacy collections stay unchanged.
 export function freshDefaultErrands(){
- return defaultErrands().map(q=>q.id==='retiro-uniformes'?{...q,title:'Abrigo para el cuartel o el puerto',reward:{treasury:0,loyalty:false},
+ return defaultErrands().map(q=>q.id==='retiro-uniformes'?{...q,title:'Abrigo para el cuartel o el puerto',withdrawal:{supportCost:4},reward:{treasury:0,loyalty:false},
   beneficiaries:[{id:'cuartel',npcId:'local-retiro',sector:'retiro',delivery:'Recibimos los dos ponchos. Los reclutas del cuartel tendrán abrigo.',reward:{treasury:0,loyalty:true}},
    {id:'puerto',npcId:'local-ensenada',sector:'ensenada',delivery:'Recibimos los dos ponchos. La guardia del puerto tendrá abrigo.',reward:{treasury:0,loyalty:true}}],
   offer:'Traé dos ponchos de lana en buen estado. Podés entregarlos al sargento de Retiro para los nuevos reclutas o al capataz de Ensenada para la guardia del puerto. La localidad elegida gana 8 puntos de apoyo. La primera entrega fija el destino; no podrás cambiarlo. Entregá ambos allí y hablá con el destinatario para confirmar.',

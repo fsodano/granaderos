@@ -2,6 +2,7 @@ import {extractItemQuantity,SUPPLY_ITEMS} from './tactical-inventory.js';
 import {boundaryMatches} from './tactical-exits.js';
 import {validateOutfit} from './outfits.js';
 import {cityForSector,CITY_LOYALTY_REWARDS} from './cities.js';
+import {questWithdrawalChoice} from './quest-withdrawal.js';
 import {questContactIds,questBeneficiaryForNPC,selectedQuestBeneficiary} from './quest-beneficiaries.js';
 // Authored errands use physical delivery receipts or adjacent NPC dialogue.
 export const NPC_QUESTS=[
@@ -18,11 +19,12 @@ export function questForNPC(state,npcId){
  const record=state.quests?.[q.id],status=record?.status??'unoffered';
  const beneficiary=questBeneficiaryForNPC(q,npcId),beneficiaryId=selectedQuestBeneficiary(state,q);
  const conditionMet=q.requiredSectors.every(id=>state.sectors?.[id]?.owner==='patriot')&&(q.requires??[]).every(id=>state.quests?.[id]?.status==='completed')&&(!beneficiary||state.sectors?.[beneficiary.sector]?.owner==='patriot');
- return {...q,status,conditionMet,...(beneficiary?{beneficiary,...(beneficiaryId===undefined?{}:{beneficiaryId}),resolutionReady:status==='offered'&&beneficiaryId===beneficiary.id&&conditionMet&&state.conversations?.[npcId]?.giftCount===q.carried.count}:{}),...(q.rewardChoice?{resolutionReady:status==='offered'&&conditionMet&&state.conversations?.[npcId]?.giftCount===q.carried.count,...(record?.questResolution!==undefined?{questResolution:record.questResolution}:{})}:{})};
+ return {...q,status,conditionMet,...(q.withdrawal?{withdrawalChoice:questWithdrawalChoice(state,q,npcId)}:{}),...(beneficiary?{beneficiary,...(beneficiaryId===undefined?{}:{beneficiaryId}),resolutionReady:status==='offered'&&beneficiaryId===beneficiary.id&&conditionMet&&state.conversations?.[npcId]?.giftCount===q.carried.count}:{}),...(q.rewardChoice?{resolutionReady:status==='offered'&&conditionMet&&state.conversations?.[npcId]?.giftCount===q.carried.count,...(record?.questResolution!==undefined?{questResolution:record.questResolution}:{})}:{})};
 }
 // New physical receipts need acknowledgement. A complete legacy delivery can
 // also finish after its conditions change; a reward choice waits for speech.
 export function questGiftProgressPending(quest,count,acknowledged){
+ if(quest.status==='withdrawn')return false;
  return count>acknowledged||count>0&&count===quest?.carried?.count&&!['completed','failed'].includes(quest.status)&&quest.conditionMet&&quest.rewardChoice===undefined&&quest.beneficiaries===undefined;
 }
 export function questResolutionReward(quest,choice){
@@ -58,7 +60,7 @@ export function questDeliveryText(quest,count){
 export function validateQuests(quests,hour,state={}){
  const definitions=questsFor(state);
  return quests&&typeof quests==='object'&&!Array.isArray(quests)&&Object.entries(quests).every(([id,q])=>{
-  if(!definitions.some(n=>n.id===id)||!q||!['offered','completed','failed'].includes(q.status)||!Number.isInteger(q.offeredAt)||q.offeredAt<0||q.offeredAt>hour)return false;
+  if(!definitions.some(n=>n.id===id)||!q||!['offered','completed','failed','withdrawn'].includes(q.status)||!Number.isInteger(q.offeredAt)||q.offeredAt<0||q.offeredAt>hour)return false;
   const definition=definitions.find(n=>n.id===id);
   if(definition.beneficiaries){
    if(q.beneficiaryId!==undefined&&!definition.beneficiaries.some(b=>b.id===q.beneficiaryId))return false;
@@ -74,6 +76,8 @@ export function validateQuests(quests,hour,state={}){
     const a=q.arrival;if(!a||Object.keys(a).length!==6||!['x','y','leaderX','leaderY','width','height'].every(k=>Number.isInteger(a[k]))||a.width<1||a.width>512||a.height<1||a.height>512||(a.x<0||a.x>=a.width||!boundaryMatches(a,a,definition.escort.edge)&&!boundaryMatches(a,{x:a.leaderX,y:a.leaderY},definition.escort.edge))||a.y<0||a.y>=a.height||a.leaderX<0||a.leaderX>=a.width||a.leaderY<0||a.leaderY>=a.height||Math.abs(a.x-a.leaderX)+Math.abs(a.y-a.leaderY)>1)return false;
    }else if(q.arrival!==undefined)return false;
   }else if(q.escortOrder!==undefined||q.arrival!==undefined)return false;
+  if(q.status==='withdrawn')return Object.keys(q).every(k=>['status','offeredAt','completedAt','beneficiaryId','withdrawnAt','withdrawnSecond','withdrawal'].includes(k))&&Boolean(definition.withdrawal)&&q.completedAt===null&&q.failedAt===undefined&&q.failureReason===undefined&&Number.isInteger(q.withdrawnAt)&&q.withdrawnAt>=q.offeredAt&&q.withdrawnAt<=hour&&Number.isInteger(q.withdrawnSecond)&&q.withdrawnSecond>=0&&q.withdrawnSecond<3600&&q.withdrawal!==undefined;
+  if(q.withdrawnAt!==undefined||q.withdrawnSecond!==undefined||q.withdrawal!==undefined)return false;
   const date=value=>Number.isInteger(value)&&value>=q.offeredAt&&value<=hour;
   if(q.status==='failed')return q.completedAt===null&&date(q.failedAt)&&(definition.beneficiaries?q.beneficiaryId===undefined?q.failureReason==='contacts-dead':q.failureReason==='contact-dead':q.failureReason===undefined||q.failureReason==='contact-dead');
   return q.failedAt===undefined&&q.failureReason===undefined&&(q.status==='offered'?q.completedAt===null:date(q.completedAt));
@@ -132,6 +136,7 @@ export function questGiftDecision(npc,stack,state={}){
  const quest=definitionForNPC(state,npc?.id);
  const refuse=text=>({accepted:false,text});
  if(!quest?.carried)return refuse('Gracias, pero no necesito ese objeto.');
+ if(state.quests?.[quest.id]?.status==='withdrawn'||Object.hasOwn(state.questWithdrawals??{},quest.id))return refuse('El compromiso fue retirado. No acepto más objetos para este encargo.');
  const branch=questBeneficiaryForNPC(quest,npc.id),selected=selectedQuestBeneficiary(state,quest);
  if(branch&&selected!==undefined&&branch.id!==selected)return refuse('La primera entrega fijó otro destinatario. Los objetos restantes deben ir a esa persona.');
  const gifts=validateQuestGifts(npc,state);

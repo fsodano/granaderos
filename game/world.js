@@ -1,3 +1,4 @@
+import {validateQuestWithdrawals} from './quest-withdrawal.js';
 import {militiaArrivalTerrain} from './militia-arrival.js';
 import {revealFiniteArsenal} from './finite-artillery-arsenals.js';
 import {placeInvaders} from './invader-entry.js';
@@ -71,6 +72,8 @@ export function enterSector(request,previous=null,{placement=false}={}){
  // actors and retained bodies do not gain authority from scene membership.
  delete state.conductObserverIds;Object.assign(state,issueConductObservers(request.squad??[]));
  if(request.errandDefinitions!==undefined)state.errandDefinitions=structuredClone(request.errandDefinitions);
+ if(request.questWithdrawals!==undefined)state.questWithdrawals=structuredClone(request.questWithdrawals);else delete state.questWithdrawals;
+ validateQuestWithdrawals(state.questWithdrawals,state);
  if(request.questBeneficiaries!==undefined)state.questBeneficiaries=structuredClone(request.questBeneficiaries);
  validateQuestBeneficiaries(state.questBeneficiaries,state);
  if(request.roadsideDiscoveryDefinitions!==undefined)state.roadsideDiscoveryDefinitions=structuredClone(request.roadsideDiscoveryDefinitions);
@@ -209,6 +212,7 @@ export function enterSector(request,previous=null,{placement=false}={}){
  // Campaign admission binds the issued choices to saved records. This scene
  // builder has only that request; use its admitted map to check local custody.
  const issuedQuests=Object.fromEntries(Object.entries(request.questBeneficiaries??{}).map(([id,beneficiaryId])=>[id,{beneficiaryId}]));
+ for(const [id,deliveredCount]of Object.entries(request.questWithdrawals??{}))issuedQuests[id]={...issuedQuests[id],status:'withdrawn',withdrawal:{deliveredCount}};
  validateQuestBeneficiaryContext({errandDefinitions:request.errandDefinitions,quests:issuedQuests},state,{request});
  if(selecting)return validateBattleSnapshot(state);
  return initializeBattlePerception(validateBattleSnapshot(state));

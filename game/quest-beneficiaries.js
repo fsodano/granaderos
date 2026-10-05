@@ -1,3 +1,4 @@
+import {validateQuestWithdrawalContext} from './quest-withdrawal.js';
 // Optional authored physical-delivery choices. Omitted definitions stay neutral.
 const object=value=>value!==null&&typeof value==='object'&&!Array.isArray(value)&&[Object.prototype,null].includes(Object.getPrototypeOf(value));
 const need=(ok,message)=>{if(!ok)throw Error(message);};
@@ -30,6 +31,7 @@ export function validateQuestBeneficiaries(value,state){
 // This accepts new physical custody, never a remote choice. Old retained scenes
 // may precede a later commitment, but cannot contradict it or own opposite gifts.
 export function validateQuestBeneficiaryContext(campaign,battle,{request=campaign.pendingBattle,retained=false,issued=false}={}){
+ validateQuestWithdrawalContext(campaign,battle,{request,retained,issued});
  need(battle,'Falta el estado de la entrega.');validateQuestBeneficiaries(battle.questBeneficiaries,campaign);
  const quests=definitions(campaign).filter(q=>q.beneficiaries);if(!quests.length)return true;
  if(request)validateQuestBeneficiaries(request.questBeneficiaries,campaign);
