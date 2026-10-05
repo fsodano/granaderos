@@ -76,6 +76,12 @@ function continueRoute(execution){
  assert.equal(sosaQuote.price,36);const cash=pair.campaign.resources.treasury,hireAt=stamp(pair.campaign);
  campaign({type:'recruitCivic',id:100,term:'day'});
  assert.equal(pair.campaign.resources.treasury,cash-sosaQuote.price);assert.equal(pair.campaign.recruited.includes(100),false);
+ const pendingArrival=structuredClone(pair);
+ if(nervousActor(firstBattle,130).abilities.includes('nervous_isolation')){
+  const beforeArrival=nervousSaved({campaign:nervousOrder(pendingArrival.campaign,{type:'wait',hours:5})});
+  assert.equal(beforeArrival.campaign.operativeState[130].strategicIsolation.loss,5);
+  assert.equal(beforeArrival.campaign.operativeState[130].morale,firstReturn.operativeState[130].morale-5,'five real eligible hours precede the replacement arrival');
+ }
  campaign({type:'wait',hours:6});
  assert.equal(stamp(pair.campaign)-hireAt,6*3600);assert.ok(pair.campaign.recruited.includes(100));
  const captiveCare=Object.values(pair.campaign.detentionRecords).find(entry=>entry.npc.detention.operativeId===110);
@@ -94,7 +100,7 @@ function continueRoute(execution){
  assert.equal(stamp(pair.campaign)-marchAt,12*3600);
  assert.equal(nervousActor(pair.battle,130).hp,30);assert.equal(nervousActor(pair.battle,130).shock,0);
  assert.equal(nervousActor(pair.battle,130).nervousIsolationWarned,undefined,'normal reentry resets the deployment notice with transient shock');
- assert.equal(nervousActor(pair.battle,130).morale,45.7,'the actual first paid renewal adds its ordinary two morale');
+ assert.equal(nervousActor(pair.battle,130).morale,nervousActor(firstBattle,130).abilities.includes('nervous_isolation')?40.7:45.7,'five earned strategic losses remain; the actual first paid renewal adds its ordinary two morale');
  assert.equal(nervousActor(pair.battle,100).hp,70);assert.equal(rounds(nervousActor(pair.battle,100)),10);
  assert.equal(nervousActor(pair.battle,100).medkits,2);
  assert.equal(pair.battle.units.some(unit=>unit.id==='110'&&unit.side==='player'),false,'captured Acosta is not a fresh friendly support body');
@@ -106,7 +112,7 @@ function continueRoute(execution){
  tactical({type:'move',unitId:'130',x:26,y:0});
  const separated=structuredClone(pair);tactical({type:'enemyTurn'});
  const secondFear=structuredClone(pair),secondDoctor=nervousActor(pair.battle,130);
- assert.equal(secondDoctor.hp,30);assert.equal(secondDoctor.morale,45.7);
+ assert.equal(secondDoctor.hp,30);assert.equal(secondDoctor.morale,secondDoctor.abilities.includes('nervous_isolation')?40.7:45.7);
  assert.equal(nervousActor(pair.battle,100).hp,27);assert.equal(nervousActor(pair.battle,100).bleeding,3);
  if(secondDoctor.abilities.includes('nervous_isolation')){
   assert.equal(nervousIsolationStatus(separated.battle,nervousActor(separated.battle,130)).active,true);
@@ -138,7 +144,7 @@ function continueRoute(execution){
  assert.equal(pair.campaign.resources.treasury,3032);assert.equal(pair.campaign.operativeState[110].captured,true);
  assert.equal(pair.campaign.operativeState[110].hp,captiveCare.npc.hp);assert.equal(pair.campaign.operativeState[110].bleeding,captiveCare.npc.bleeding);
  assert.equal(pair.campaign.operativeState[110].medkits,0);assert.deepEqual(pair.campaign.detentionRecords[captiveCare.npc.id].care,captiveCare.care);
- assert.equal(pair.campaign.operativeState[130].morale,40.7);
+ assert.equal(pair.campaign.operativeState[130].morale,secondDoctor.abilities.includes('nervous_isolation')?35.7:40.7);
  const returned=structuredClone(pair.campaign),contracts=structuredClone(pair.campaign.contracts);
  for(let visit=0;visit<2;visit++){
   campaign({type:'visitSector'});

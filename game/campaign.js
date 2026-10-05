@@ -127,7 +127,8 @@ function deploymentOperative(s,id){
   const op=rosterFor(s).find(o=>o.id===id);
   // Stored strength is a legacy floor. New XP can raise the current value
   // above that floor; persistent wounds and supplies still use the record.
-  return {...clone(op),...clone(s.operativeState[id]),strength:op.strength};
+  const record=clone(s.operativeState[id]);delete record.strategicIsolation;
+  return {...clone(op),...record,strength:op.strength};
 }
 function returnMount(s,id,report){if(!report.mount)return;const horse=s.horseState?.horses.find(h=>h.id===report.mount.id&&h.assignedTo===id&&!h.returned);requireThat(horse,'La montura no pertenece al combatiente.');for(const field of ['stamina','condition']){requireThat(Number.isFinite(report.mount[field])&&report.mount[field]>=0&&report.mount[field]<=100,'El estado de la montura es inválido.');horse[field]=report.mount[field];}}
 function returnTraining(s,id,report){validateTraining(report);for(const field of ['trainedStats','skillPractice','practiceSeed'])if(report[field]!==undefined)s.operativeState[id][field]=clone(report[field]);}
@@ -583,7 +584,7 @@ function tick(s,hours,options={}){
     }
     advanceMarchFatigue(s,rosterFor(s).map(op=>({...op,...(mountForOperative(s.horseState,op.id)??{})})),options);
     for(const message of advanceDetentionCare(s,rosterFor(s)))note(s,message);
-    const careOptions=assignmentContext(s,options);advanceMedicalCare(s,rosterFor(s),careOptions);const deaths=advanceMilitaryWounds(s,rosterFor(s));for(const death of advanceMilitiaWounds(s))note(s,`${death.name} fallece por sus heridas en ${sector(death.sector).name}.`);advanceAssignments(s,rosterFor(s),careOptions);recordCasualtyMorale(s,deaths);receiveCompanionLossCorrespondence(s,rosterFor(s),deaths);advanceMorale(s,rosterFor(s),careOptions);
+    const careOptions=assignmentContext(s,options);advanceMedicalCare(s,rosterFor(s),careOptions);const deaths=advanceMilitaryWounds(s,rosterFor(s));for(const death of advanceMilitiaWounds(s))note(s,`${death.name} fallece por sus heridas en ${sector(death.sector).name}.`);advanceAssignments(s,rosterFor(s),careOptions);recordCasualtyMorale(s,deaths);receiveCompanionLossCorrespondence(s,rosterFor(s),deaths);for(const message of advanceMorale(s,rosterFor(s),{...careOptions,strategicTraveling:options.traveling??[]}))note(s,message);
     for(const id of deaths){
       s.operativeState[id].location=operativeLocation(s,id);
       for(const squad of s.squads)squad.members=squad.members.filter(member=>member!==id);

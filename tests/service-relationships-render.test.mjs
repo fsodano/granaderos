@@ -111,10 +111,10 @@ test('the hiring card and real dossier explain authored care, isolation and load
  const state=initialCampaign(42,content),m=await mount(t,state,'recruitment');
  const card=()=>m.doc.querySelector('[data-operative-id="130"]');
  assert.match(card().textContent,/Serenidad al cuidar/);assert.match(card().textContent,/otra persona a la vista.*hasta 2 puntos de tensión.*PA.*vendas.*sí mismo/);
- assert.match(card().textContent,/Temor al aislamiento.*moral menor que 50.*compañero militar capaz.*cuatro casillas.*misma superficie.*hasta 2 puntos de tensión.*turno de combate.*recuperación habitual ocurre primero.*no devuelve la tensión/);
+ assert.match(card().textContent,/Temor al aislamiento.*moral menor que 50.*compañero militar capaz.*cuatro casillas.*misma superficie.*hasta 2 puntos de tensión.*turno de combate.*tras la recuperación habitual.*Fuera del despliegue.*hasta 1 punto de moral por hora.*misma escuadra durante la marcha.*mismo sector al detenerse.*máximo 20 puntos.*impide recuperar moral mediante descanso.*no devuelve moral ni tensión/);
  assert.match(card().textContent,/carga de perdigones en cualquier arma de fuego.*mitad.*ocultación.*puntería.*No reduce la resistencia.*ni revela blancos ocultos.*No se aplica.*bala única/);
  await m.click(card().querySelector('.candidate-face'));const dossier=m.doc.querySelector('[role="dialog"]');assert.match(dossier.textContent,/Serenidad al cuidar/);assert.match(dossier.textContent,/otra persona a la vista.*hasta 2 puntos de tensión.*PA.*vendas.*sí mismo/);
- assert.match(dossier.textContent,/Temor al aislamiento.*moral menor que 50.*compañero militar capaz.*cuatro casillas.*misma superficie.*turno de combate/);
+ assert.match(dossier.textContent,/Temor al aislamiento.*moral menor que 50.*compañero militar capaz.*cuatro casillas.*misma superficie.*turno de combate.*Fuera del despliegue.*hasta 1 punto de moral por hora.*máximo 20 puntos.*no devuelve moral ni tensión/);
  assert.match(dossier.textContent,/carga de perdigones en cualquier arma de fuego.*mitad.*ocultación.*puntería.*No se aplica.*bala única/);
  assert.match(dossier.textContent,/La rutina de atender a otros le devuelve la calma/);await m.click(m.button('Cerrar hoja de servicio',dossier));assert.deepEqual(m.state(),state,'reading the condition changes no money, contract, health or shock');
  const old=structuredClone(content);delete old.characters.find(c=>c.id==='person-130').abilities;await m.replace(decodeSave(encodeSave(initialCampaign(42,old))).campaign);
