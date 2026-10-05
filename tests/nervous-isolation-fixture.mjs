@@ -12,7 +12,7 @@ export const nervousOrder=(campaign,action)=>{
  const next=dispatchCampaign(campaign,action);assert.equal(next.lastError,null,`${action.type}: ${next.lastError}`);return next;
 };
 
-export function preparedNervousArena({oldPinned=false}={}){
+export function preparedNervousArena({oldPinned=false,oldRenewal=false,term='day'}={}){
  const content=defaultContentPackage();
  // This declared clinical experiment pins the original pre-kinetic Brown Bess
  // balance before campaign creation. The separate kinetic acceptance tests the
@@ -22,16 +22,19 @@ export function preparedNervousArena({oldPinned=false}={}){
  for(const load of clinicalGun.alternativeLoads??[]){delete load.projectileEnergy;delete load.projectileAirDrag;}
  // Compatibility control is declared before campaign creation; care remains.
  if(oldPinned){const cejas=content.characters.find(person=>person.id==='person-130');cejas.abilities=cejas.abilities.filter(ability=>ability!=='nervous_isolation');}
- let campaign=initialCampaign(42,content);const prices=[];
+ if(oldRenewal){const cejas=content.characters.find(person=>person.id==='person-130');cejas.abilities=cejas.abilities.filter(ability=>ability!=='low_morale_refusal');}
+ let campaign=initialCampaign(42,content);const prices=[],campaignHistory=[],campaignStart=nervousSaved({campaign});
+ const campaignStep=action=>{campaign=nervousOrder(campaign,action);campaignHistory.push(structuredClone(action));};
  for(const id of [130,110]){
-  const quote=contractQuote(campaign,rosterFor(campaign).find(person=>person.id===id),'day'),before=campaign.resources.treasury;
-  campaign=nervousOrder(campaign,{type:'recruitCivic',id,term:'day'});prices.push({id,price:quote.price});assert.equal(campaign.resources.treasury,before-quote.price);
+  const quote=contractQuote(campaign,rosterFor(campaign).find(person=>person.id===id),term),before=campaign.resources.treasury;
+  campaignStep({type:'recruitCivic',id,term});prices.push({id,price:quote.price});assert.equal(campaign.resources.treasury,before-quote.price);
  }
- campaign=nervousOrder(campaign,{type:'wait',hours:6});
+ campaignStep({type:'wait',hours:6});
  assert.ok([130,110].every(id=>campaign.recruited.includes(id)));
- assert.deepEqual(prices,[{id:130,price:36},{id:110,price:60}]);
- assert.equal(campaign.resources.treasury,3104);
- campaign=nervousOrder(campaign,{type:'attack',sector:'buenos_aires'});
+ if(term==='day')assert.deepEqual(prices,[{id:130,price:36},{id:110,price:60}]);
+ if(term==='week')assert.deepEqual(prices,[{id:130,price:252},{id:110,price:420}]);
+ assert.equal(campaign.resources.treasury,3200-prices.reduce((sum,item)=>sum+item.price,0));
+ campaignStep({type:'attack',sector:'buenos_aires'});
  const request=campaign.pendingBattle,width=48,height=16;
  // Prepared initial observation arena, not a native opening victory. Positions,
  // passive hostile posts and seed42 are fixed before the first official save.
@@ -49,7 +52,7 @@ export function preparedNervousArena({oldPinned=false}={}){
  assert.equal(Object.hasOwn(pinnedGun,'projectileEnergy'),false);assert.equal(Object.hasOwn(pinnedGun,'projectileAirDrag'),false);
  assert.ok((pinnedGun.alternativeLoads??[]).every(load=>!Object.hasOwn(load,'projectileEnergy')&&!Object.hasOwn(load,'projectileAirDrag')));
  assert.equal(weaponFor(nervousActor(start.battle,110)).projectileEnergy,undefined,'the official saved clinical load retains its explicit legacy profile');
- return {start,prices,oldPinned};
+ return {start,prices,oldPinned,campaignStart,campaignHistory};
 }
 
 export function nervousStep(pair,event,history){

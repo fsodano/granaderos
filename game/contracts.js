@@ -2,6 +2,7 @@ import {hiringPriceMultiplier} from './economy-balance.js';
 import {contractRules} from './contract-rules.js';
 import {serviceRelationshipRefusal} from './service-relationships.js';
 import {serviceObjectionReason} from './service-objections.js';
+import {lowMoraleRenewalReason} from './morale-renewal.js';
 const termName=days=>days===1?'Un día':days===7?'Una semana':days===14?'Dos semanas':days===30?'Un mes':`${days} días`;
 export function contractTermsFor(state){return Object.fromEntries(Object.entries({...contractRules(state).days,fortnight:14}).map(([id,days])=>[id,{name:termName(days),hours:days*24,days}]));}
 export const CONTRACT_TERMS=Object.freeze(Object.fromEntries(Object.entries(contractTermsFor()).map(([id,period])=>[id,Object.freeze(period)])));
@@ -22,6 +23,12 @@ export function contractQuote(state,operative,term='day'){
  const daily=Math.max(operative.service==='contract'?0:1,Math.ceil((operative.monthlyPay??0)*hiringPriceMultiplier(state)*salaryPercent/(rules.salaryMonthDays*100)));
  const now=campaignSeconds(state),expiry=Math.max(now,contractExpiresSeconds(state.contracts?.[operative.id])??now)+(period?.hours??0)*3600;
  return {expiresAt:permanent?null:Math.floor(expiry/3600),expiresSecond:permanent?null:expiry%3600,available:!reason,reason,...(reason===refusal?.reason?{serviceRefusal:refusal}:{}),topTier,permanent,term,hours:permanent?null:period?.hours??0,price:permanent?0:daily*(period?.days??0),daily:permanent?0:daily};
+}
+// Hiring and re-hiring retain their existing admission. Only a requested
+// extension consults the authored morale rule, after existing refusal reasons.
+export function contractRenewalQuote(state,operative,term='day'){
+ const quote=contractQuote(state,operative,term),reason=quote.reason??lowMoraleRenewalReason(state,operative);
+ return {...quote,available:!reason,reason};
 }
 export function contractStatus(state,id){const c=state.contracts?.[id],expiry=contractExpiresSeconds(c),now=campaignSeconds(state);return c?{...c,remaining:expiry===null?null:Math.max(0,(expiry-now)/3600),active:expiry===null||expiry>now}:null;}
 export function migrateContracts(state){

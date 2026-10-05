@@ -110,7 +110,7 @@ test('a quiet round ending combat adds no fear and an old omitted capability rem
  const b=field({enemyX:46,width:48,height:16,quiet:1}),after=endTurn(b);
  assert.equal(after.mode,'exploration');assert.equal(actor(after).shock,3);assert.equal(notices(after).length,0);assert.equal(actor(after).nervousIsolationWarned,undefined);
  const old=field({unit:{abilities:undefined}});assert.equal(actor(endTurn(old)).shock,3);assert.deepEqual(legacyCharacterAbilities(130),[]);assert.equal(hasCharacterAbility({id:130},'nervous_isolation'),false);
- const content=defaultContentPackage();assert.deepEqual(content.characters.find(c=>c.id==='person-130').abilities,['care_composure','nervous_isolation']);assert.deepEqual(validateContentPackage(content),[]);
+ const content=defaultContentPackage();assert.deepEqual(content.characters.find(c=>c.id==='person-130').abilities,['care_composure','nervous_isolation','low_morale_refusal']);assert.deepEqual(validateContentPackage(content),[]);
  const neutral=structuredClone(content);neutral.characters.find(c=>c.id==='person-130').abilities=['care_composure'];assert.deepEqual(validateContentPackage(neutral),[],'older explicit capability lists stay valid');
 });
 

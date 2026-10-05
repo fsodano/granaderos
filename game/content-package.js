@@ -24,6 +24,7 @@ import {validateDialogue} from './content-dialogue.js';
 import {FORCE_EQUIPMENT,defaultForceEquipment,validateForceEquipment} from './content-force-equipment.js';
 import {legacyCharacterAbilities,validCharacterAbilities} from './character-abilities.js';
 import {CIVILIAN_CONSCIENCE,conductObserverDefinition,conductNoncombatantDefinition} from './service-objections.js';
+import {LOW_MORALE_REFUSAL} from './morale-renewal.js';
 import {legacyOperativeId,isWorldCharacter} from './content-character-ids.js';
 import {characterProfile,SPEECH_EVENTS,AUTHORABLE_SPEECH_EVENTS} from './characters.js';
 import {SPEECH_LINE_LIMIT} from './content-character-presentation.js';
@@ -86,7 +87,7 @@ export function defaultContentPackage() {
       role: o.role || "",
       biography: o.biography || "",
       portrait: portrait(o.id),
-      abilities:o.id===126?['enclosed_room_fear']:o.id===130?['care_composure','nervous_isolation']:o.id===107?[CIVILIAN_CONSCIENCE]:legacyCharacterAbilities(o.id),
+      abilities:o.id===126?['enclosed_room_fear']:o.id===130?['care_composure','nervous_isolation',LOW_MORALE_REFUSAL]:o.id===107?[CIVILIAN_CONSCIENCE]:legacyCharacterAbilities(o.id),
       personality:characterProfile(o).personality,
       ...(o.serviceRefusals===undefined?{}:{serviceRefusals:structuredClone(o.serviceRefusals)}),
       ...(o.preferredCompanions===undefined?{}:{preferredCompanions:structuredClone(o.preferredCompanions)}),
@@ -211,6 +212,7 @@ export function validateContentPackage(value) {
     text(c.biography, `${c.id}.biography`, 5000, true);
     if(c.abilities!==undefined)check(validCharacterAbilities(c.abilities),c.id,'habilidades no válidas.');
     if(c.abilities?.includes?.(CIVILIAN_CONSCIENCE))check(conductObserverDefinition(c),c.id,'la objeción civil requiere un candidato por contrato con servicio pagado explícito.');
+    if(c.abilities?.includes?.(LOW_MORALE_REFUSAL))check(conductObserverDefinition(c),c.id,'el rechazo de renovación por moral requiere un candidato por contrato con servicio pagado explícito.');
     if(c.startingSupplies!==undefined)check(validStartingSupplies(c.startingSupplies),`${c.id}.startingSupplies`,'los seis suministros iniciales necesitan cantidades enteras de 0 a 1000.');
     if(c.startingCondition!==undefined)check(validStartingCondition(c.startingCondition,c.attributes?.maxHp),`${c.id}.startingCondition`,'el estado inicial necesita cinco valores enteros: salud de 1 al máximo, energía y fatiga de 0 a 100, sangrado de 0 a 10 y heridas vendadas dentro de la salud perdida. El sangrado necesita una herida sin vendar.');
     if(c.personality!==undefined)text(c.personality,`${c.id}.personality`,2000,true);

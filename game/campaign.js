@@ -81,7 +81,7 @@ import {tradeQuote,applyPolicy,dailyPolitics,validatePolitics,policyStatus} from
 import {questForNPC,validateQuests,validateQuestFailures,validateQuestGifts,questsFor,NPC_QUESTS,questGiftProgressPending,questDeliveryText,questResolutionReward,questResolutionText,questBeneficiaryResolutionText,failQuestsForDeadContact} from './quests.js';
 import {questContactIds,questBeneficiaryForNPC,validateQuestBeneficiaryContext,retainQuestBeneficiaries} from './quest-beneficiaries.js';
 import {recordCityLoyalty,validCityLoyaltyEvents} from './cities.js';
-import {contractQuote,contractStatus,migrateContracts,contractExpiresSeconds,contractStartedFields} from './contracts.js';
+import {contractQuote,contractRenewalQuote,contractStatus,migrateContracts,contractExpiresSeconds,contractStartedFields} from './contracts.js';
 import {validateTraining,TRAINABLE_SKILLS} from './skill-training.js';
 import {militiaCourse,militiaAssignment,MILITIA_COHORT,MILITIA_LIMIT,militiaEligibility} from './militia.js';
 import {ENCOUNTERS,encounterDefinitions,canRecruitEncounter,encounterForOperative,encountersFor,encounterRequirements,encounterHireTerms} from './encounters.js';
@@ -111,7 +111,7 @@ import {validateCampaignCompanionGrief,validateCompanionGriefContext,retainCompa
 import {validateCampaignServiceObjections,validateServiceObjectionContext,retainServiceObjections,returnServiceObjection,hasPendingServiceObjections,receiveServiceObjectionCorrespondence} from './service-objections.js';
 import {freshDefaultRoadsideDiscoveries,validateRoadsideDiscoveries,validateRoadsideDiscoveryContext} from './roadside-discoveries.js';
 export {questForNPC,NPC_QUESTS} from './quests.js';
-export {contractQuote,contractStatus,CONTRACT_TERMS} from './contracts.js';
+export {contractQuote,contractRenewalQuote,contractStatus,CONTRACT_TERMS} from './contracts.js';
 export {militiaCourse,militiaAssignment} from './militia.js';
 export {ENCOUNTERS,encountersFor} from './encounters.js';
 export {activeSquad,operativeLocation} from './squads.js';
@@ -839,7 +839,7 @@ export function dispatchCampaign(previous,action){
         requireThat(action.expectedExpiresAt===undefined||action.expectedExpiresAt===current.expiresAt,'El contrato cambió. Revisá la nueva fecha antes de renovar.');
         requireThat(action.expectedExpiresSecond===undefined||action.expectedExpiresSecond===(current.expiresSecond??0),'El contrato cambió. Revisá la nueva fecha antes de renovar.');
         requireThat(current.kind!=='patriot','Este oficial sirve por la causa y no necesita renovación.');
-        const quote=contractQuote(s,op,action.term??'day');requireThat(quote.available,quote.reason);
+        const quote=contractRenewalQuote(s,op,action.term??'day');requireThat(quote.available,quote.reason);
         pay(s,{treasury:quote.price});s.contracts[id]={kind:'paid',term:action.term??'day',...contractStartedFields(s,quote.expiresSecond),expiresAt:quote.expiresAt,paid:quote.price};
         // Modern paid contracts must retain the foreign-standing benefit of
         // legacy payroll. Reuse the saved pay clock to cap repeat renewals.
