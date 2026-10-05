@@ -4,6 +4,7 @@ import {CIVIC_RECRUITS} from './civic-recruits.js';
 import {CRITICAL_HEALTH,isUnconscious} from './actor-condition.js';
 import {preferredCompanions,PREFERRED_COMPANION_MORALE} from './service-relationships.js';
 import {issueCompanionGrief} from './companion-grief.js';
+import {advanceStrategicIsolation,validateStrategicIsolation} from './strategic-isolation.js';
 
 const clamp=n=>Math.max(0,Math.min(100,n));
 const deployed=(s,id)=>Boolean(s.pendingBattle?.squad?.some(u=>Number(u.id)===Number(id)));
@@ -95,11 +96,12 @@ export function recordBattleMorale(s,request,outcome,snapshot){
   if((snapshot?.elapsedSeconds??0)>0)for(let i=0;i<living.length;i++)for(let j=i+1;j<living.length;j++)addCohesion(s,living[i],living[j],12);
 }
 
-export function advanceMorale(s,roster,{traveling=[]}={}){
+export function advanceMorale(s,roster,options={}){
+  const {traveling=[]}=options,{active,messages}=advanceStrategicIsolation(s,roster,options);
   const moving=new Set(traveling);
   const safe=id=>s.recruited.includes(id)&&s.operativeState[id]?.alive&&!deployed(s,id)&&!moving.has(id)&&s.sectors[operativeLocation(s,id)]?.owner==='patriot'&&s.pendingBattle?.sector!==operativeLocation(s,id);
   for(const op of roster){const r=s.operativeState[op.id];if(!r)continue;
-    if(safe(op.id)&&['rest','patient'].includes(r.assignment)&&r.hp>=15&&!r.bleeding&&r.energy>=60&&r.morale<baseMorale(op)){
+    if(!active.has(op.id)&&safe(op.id)&&['rest','patient'].includes(r.assignment)&&r.hp>=15&&!r.bleeding&&r.energy>=60&&r.morale<baseMorale(op)){
       r.moraleRestHours++;
       if(r.moraleRestHours>=6){r.morale=Math.min(baseMorale(op),r.morale+1);r.moraleRestHours=0;}
     }else r.moraleRestHours=0;
@@ -107,6 +109,7 @@ export function advanceMorale(s,roster,{traveling=[]}={}){
   for(const squad of s.squads??[]){const ids=squad.members.filter(safe);
     for(let i=0;i<ids.length;i++)for(let j=i+1;j<ids.length;j++)addCohesion(s,ids[i],ids[j],1);
   }
+  return messages;
 }
 
 export function moraleStatus(s,id){
@@ -116,6 +119,7 @@ export function moraleStatus(s,id){
 
 export function validateMorale(s,roster){
   migrateMorale(s,roster);const ids=new Set(roster.map(o=>o.id));
+  validateStrategicIsolation(s,roster);
   need(s.cohesion&&typeof s.cohesion==='object'&&!Array.isArray(s.cohesion)&&Object.keys(s.cohesion).length<=4000,'El compañerismo guardado es inválido.');
   for(const [key,hours] of Object.entries(s.cohesion)){
     const pair=key.split(':').map(Number);
