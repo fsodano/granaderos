@@ -77,7 +77,7 @@ export function heldTool(unit) {
 }
 export function heldToolWearReason(unit) {
   const tool = heldTool(unit);
-  return tool && unit.inventory[tool.inventoryKey].count > 1 && Object.keys(unit.inventory).length >= 1000
+  return tool && tool.wear > 0 && tool.condition > 0 && unit.inventory[tool.inventoryKey].count > 1 && Object.keys(unit.inventory).length >= 1000
     ? 'No hay espacio para separar la herramienta usada de las herramientas sin desgaste.' : null;
 }
 
@@ -102,10 +102,11 @@ export function environmentActionProfile(unit, target, verb) {
   const tool = heldTool(unit), required = REQUIRED[verb];
   if (required && tool?.toolKey !== required) return reject(`Llevá ${TOOL_TYPES[required].label.toLowerCase()} en la mano.`);
   if (required && tool.condition <= 0) return reject('La herramienta está rota.');
-  if (verb === 'breach') {
+  if (required) {
     const wearReason = heldToolWearReason(unit);
-    return wearReason ? reject(wearReason) : {...result, valid: true, chance: 100};
+    if (wearReason) return reject(wearReason);
   }
+  if (verb === 'breach') return {...result, valid: true, chance: 100};
   if (verb === 'unlock' && (!target.keyId || tool.keyId !== target.keyId)) return reject('La llave no corresponde a este cierre.');
   const mechanical = stat(unit, 'mechanical'), dexterity = stat(unit, 'dexterity', 50), strength = stat(unit, 'strength', 50), experience = stat(unit, 'experienceLevel', 1);
   const difficulty = target.lockDifficulty ?? 35, wearPenalty = (100 - (tool?.condition ?? 100)) * .25;
