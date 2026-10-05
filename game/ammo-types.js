@@ -19,7 +19,7 @@ export function primaryAmmoTypeFor(value){
 export function ammunitionLoadsFor(value){
  const primary=primaryAmmoTypeFor(value);if(!primary)return [];
  const definition=value?.contentWeapon??value?.weaponMetadata?.contentWeapon??value;
- return [{family:primary,...(definition?.materialRangeSlope!==undefined?{materialRangeSlope:definition.materialRangeSlope}:{})},...alternativeLoadsFor(value)];
+ return [{family:primary,...(definition?.projectileEnergy!==undefined?{projectileEnergy:definition.projectileEnergy}:{}),...(definition?.materialRangeSlope!==undefined?{materialRangeSlope:definition.materialRangeSlope}:{})},...alternativeLoadsFor(value)];
 }
 export function ammoTypeFor(value){return value?.ammunitionChoice??primaryAmmoTypeFor(value);}
 export function selectedAmmunitionLoad(value){return ammunitionLoadsFor(value).find(load=>load.family===ammoTypeFor(value));}

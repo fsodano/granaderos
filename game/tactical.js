@@ -1,3 +1,4 @@
+import {hasProjectileEnergy} from './projectile-energy.js';
 import {worldCell} from './world-cells.js';
 import {canonicalContent} from './content-identity.js';
 import {fieldCapable} from './actor-condition.js';
@@ -659,7 +660,63 @@ function presentReflectedFirearmFlight(s,actor,flight,known,source,{pointShot,ai
 }
 // The resolved ray supplies presentation only. No second accuracy/damage draw
 // is made, and neither the flight nor its timing enters a saved battle.
+function presentKineticFlight(s,actor,destination,hitLocation,source,{pointShot,aimHit,destinationHeight,flightState,targetKind}){
+ // This trail projects the observed scene's possible flight. Private material
+ // and seeded body passage must not schedule public extra legs or shorten them.
+ // Actual known injuries are recorded separately after the physical effects.
+ const known=projectileFlight(knownFirearmScene(flightState),actor,destination,weaponFor(actor),hitLocation,{destinationHeight,targetKind});
+ const health=physicalBodies(s).filter(({body})=>playerObservedBody(s,body)).map(({body})=>({body,hp:body.hp??100}));
+ const muzzle={...positionOf(actor),tacticalLevel:tacticalLevel(actor),height:absoluteBodyHeight(s,actor,'muzzle')},terminal=known.terminal??{impact:known.impact??known.destination,termination:known.termination};
+ const distanceOf=entry=>entry.distance??Math.hypot(entry.impact.x-muzzle.x,entry.impact.y-muzzle.y);
+ const segments=known.segments??[{source:muzzle,destination:terminal.impact,fromDistance:0,toDistance:Math.hypot(terminal.impact.x-muzzle.x,terminal.impact.y-muzzle.y),trajectoryModel:known.trajectoryModel}];
+ const stopped=known.obstacles?.find(entry=>entry.stopped),schedule=[];let discharged=false;
+ for(const segment of segments){
+  const bodies=(known.bodyImpacts??[]).filter(entry=>distanceOf(entry)>segment.fromDistance+1e-8&&distanceOf(entry)<=segment.toDistance+1e-8);
+  const endpoints=bodies.map(entry=>({point:entry.impact,distance:distanceOf(entry),outcome:null,bodyKey:`${entry.victimKind}:${entry.victimId}`}));
+  const last=endpoints.at(-1),bounce=known.ricochets?.some(entry=>Math.abs(entry.distance-segment.toDistance)<1e-8);
+  if(!last||Math.abs(last.distance-segment.toDistance)>1e-8)endpoints.push({point:segment.destination,distance:segment.toDistance,outcome:bounce?'cover':terminal.termination==='body'?null:stopped?'cover':'miss'});
+  let origin=segment.source;
+  for(const endpoint of endpoints){
+   if(Math.hypot(endpoint.point.x-origin.x,endpoint.point.y-origin.y)<1e-8)continue;
+   const visual={source:{...origin},destination:{...endpoint.point},impact:{...endpoint.point},outcome:endpoint.outcome,pointShot,spread:false,aimHit,...(endpoint.outcome==='cover'?{material:bounce&&Math.abs(endpoint.distance-segment.toDistance)<1e-8?'stone':stopped?.material}:{}),...(segment.trajectoryModel?{trajectoryModel:segment.trajectoryModel}:{}),...(discharged?{discharge:false}:{})};
+   schedule.push({visual,bodyKey:endpoint.bodyKey});discharged=true;origin=endpoint.point;
+  }
+ }
+ let cursor=0,waiting=null,displayed=structuredClone(s);
+ const frame=(type,visual,state=displayed)=>recordBattleFrame(state,{unitId:source.id,action:pointShot?'firePoint':'fire',type,...(visual?{shotVisual:visual}:{})});
+ const updateHealth=()=>{for(const record of health)record.hp=record.body.hp??100;displayed=structuredClone(s);};
+ const changedHealth=()=>health.some(record=>(record.body.hp??100)<record.hp);
+ const drain=()=>{
+  while(cursor<schedule.length){
+   waiting=schedule[cursor++];frame('projectile',waiting.visual);
+   if(waiting.bodyKey)return;
+   frame('impact',waiting.visual);waiting=null;
+  }
+ };
+ const matches=(entry,collision)=>entry?.bodyKey===`${collision.victimKind??'unit'}:${collision.victimId}`&&collision.impact&&['x','y','height'].every(k=>Math.abs(collision.impact[k]-entry.visual.impact[k])<1e-8);
+ drain();
+ return collision=>{
+  if(collision){
+   // If an earlier projected body was not actually reached, drain it neutrally
+   // from the last displayed state before publishing this later real injury.
+   // Current physical HP must never first appear in a projectile frame.
+   if(!matches(waiting,collision)&&schedule.slice(cursor).some(entry=>matches(entry,collision))){
+    while(waiting&&!matches(waiting,collision)){frame('impact',waiting.visual);waiting=null;drain();}
+   }
+   if(matches(waiting,collision)){
+    const redirected=collision.actualVictimId!==undefined&&(collision.actualVictimId!==collision.victimId||collision.actualVictimKind!==collision.victimKind);
+    frame('impact',redirected?null:{...waiting.visual,outcome:changedHealth()?'hit':null},s);updateHealth();waiting=null;drain();
+   }else if(changedHealth()){frame('impact',null,s);updateHealth();}
+   return;
+  }
+  // A private stop may prevent an expected physical callback. Complete its
+  // public projection without inventing injury, then drain the same tail.
+  while(waiting||cursor<schedule.length){if(waiting){frame('impact',waiting.visual);waiting=null;}drain();}
+  if(changedHealth()){frame('impact',null,s);updateHealth();}
+ };
+}
 function presentFirearmFlight(s,actor,destination,flight=null,hitLocation='torso',source=actor,{pointShot=false,spread=false,destinationHeight,aimHit=false,flightState=s,targetKind}={}){
+ if(Array.isArray(flight?.bodyImpacts)&&hasProjectileEnergy(weaponFor(actor)))return presentKineticFlight(s,actor,destination,hitLocation,source,{pointShot,aimHit,destinationHeight,flightState,targetKind});
  if(Array.isArray(flight?.bodyImpacts)){
   const bodyFor=collision=>(collision.victimKind==='npc'?s.npcs??[]:s.units).find(body=>body.id===collision.victimId);
   const bodies=flight.bodyImpacts.map(collision=>({collision,body:bodyFor(collision)}));
@@ -739,7 +796,7 @@ function shotLoadFireImpact(s,attacker,target,aim,hitLocation,source=attacker,pr
  const finishFlight=presentFirearmFlight(s,attacker,destination,null,hitLocation,source,{pointShot,spread:true,destinationHeight:height});
  const groups=new Map(),eligible=new Set(s.units.filter(u=>fieldCapable(u)&&!u.unconscious&&!u.routed&&!u.surrendered&&u.side!==source.side).map(u=>u.id));
  for(const entry of flight.bodyImpacts){
-  const key=`${entry.victimKind}:${entry.victimId}:${entry.hitLocation}`,force=penetratingFirearmDamage(amount*entry.weight,entry);
+  const key=`${entry.victimKind}:${entry.victimId}:${entry.hitLocation}`,force=penetratingFirearmDamage(amount*entry.weight,entry,undefined,weapon,entry.weight);
   const group=groups.get(key)??{entry,amount:0};group.amount+=force;groups.set(key,group);
  }
  const learned=new Set(),contacted=new Set();
@@ -769,11 +826,11 @@ function directedFireImpact(s,u,target,hitLocation,hit,source=u,preparedIntent=n
   const flight=victim?projectileFlight(flightState,u,destination,w,hitLocation,{...options,resolveBody:entry=>random(s)*100<entry.penetrationChance}):forecast;
   const finishFlight=presentFirearmFlight(s,u,destination,flight,hitLocation,source,{...options,aimHit:hit,flightState});
   if(flight.blocked&&flight.obstacles.some(obstacle=>obstacle.stopped&&observedProjectileObstacle(flightState,obstacle))){if(journalVisible(s,target))say(s,'La cobertura detiene el disparo.');}
-  const damagedBodies=applyFirearmBodyImpacts(s,flight,amount,source,finishFlight,{intended:target});
+  const damagedBodies=applyFirearmBodyImpacts(s,flight,amount,source,finishFlight,{intended:target,weapon:w});
   finishFlight();
   practiceFirearmNearMiss(s,{attacker:u,target,weapon:w,flight,hit,discharged:true,source,damagedBodies});
 }
-function applyFirearmBodyImpacts(s,flight,amount,source,finishFlight,{intended=null,observeOnly=false}={}){
+function applyFirearmBodyImpacts(s,flight,amount,source,finishFlight,{intended=null,observeOnly=false,weapon=null}={}){
  const entries=flight.bodyImpacts??(!flight.blocked&&flight.victimId?[flight]:[]),processed=new Set(),damagedBodies=new Set();
  const beforeHealth=new Map(physicalBodies(s).map(({body,kind})=>[`${kind}:${body.id}`,body.hp??100]));
  const knownBodies=new Set(physicalBodies(s).filter(({body})=>observedBody(s,body)).map(({body,kind})=>`${kind}:${body.id}`));
@@ -783,7 +840,9 @@ function applyFirearmBodyImpacts(s,flight,amount,source,finishFlight,{intended=n
   if(!victim||processed.has(key)){finishFlight(entry);continue;}
   if(entry.coverDamageFactor<1&&observedBody(s,victim)&&flight.obstacles.some(obstacle=>obstacle.fraction<=entry.fraction&&observedProjectileObstacle(s,obstacle)))say(s,'El disparo atraviesa la cobertura y pierde fuerza.');
   if(entry.bodyDamageReduction>0&&knownPassage&&knownBodies.has(key))say(s,'La bala atraviesa un cuerpo y llega con menos fuerza.');
-  const actual=physicalImpact(s,victim,penetratingFirearmDamage(amount,entry),source,{hitLocation:entry.hitLocation,report:!observeOnly||observedBody(s,victim),intentional:victim===intended,excludedBodyguards:processed});
+  const injury=penetratingFirearmDamage(amount,entry,undefined,weapon);
+  if(hasProjectileEnergy(weapon)&&shotLocationEffects(entry.hitLocation,injury*COMBAT_BALANCE.firearmDamageMultiplier,victim).damage===0){processed.add(key);finishFlight(entry);continue;}
+  const actual=physicalImpact(s,victim,injury,source,{hitLocation:entry.hitLocation,report:!observeOnly||observedBody(s,victim),intentional:victim===intended,excludedBodyguards:processed});
   processed.add(key);
   if(actual){
    const actualKind=isCivilianBody(s,actual)?'npc':'unit',actualKey=`${actualKind}:${actual.id}`;processed.add(actualKey);
@@ -1035,7 +1094,7 @@ function pointFireImpact(s,u,point,aim,source=u,preparedAccuracy,preparedIntent=
   const amount=victim?w.damage*(.8+random(s)*.4):0;
   const flight=victim?pointProjectileFlight(s,u,destination,w,{...options,resolveBody:entry=>random(s)*100<entry.penetrationChance}):forecast;
   const finishFlight=presentFirearmFlight(s,u,{...destination,stance:'standing'},flight,'torso',source,{...options,pointShot:true});
-  applyFirearmBodyImpacts(s,flight,amount,source,finishFlight,{intended,observeOnly:true});
+  applyFirearmBodyImpacts(s,flight,amount,source,finishFlight,{intended,observeOnly:true,weapon:w});
   finishFlight();
 }
 export function dropPreview(s,u,item,count=1){

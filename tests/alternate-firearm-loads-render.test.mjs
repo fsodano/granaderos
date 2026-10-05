@@ -24,7 +24,7 @@ const choose=async(m,family)=>act(async()=>{const select=m.document.querySelecto
 
 test('isolated retained ammunition widget unloads, selects a new load and saves the selected family for departure',async t=>{
  const m=await mountLegacyArmory(t,pair());
- assert.equal(m.document.querySelector('[aria-label="Carga para esta arma"]').disabled,true);await m.click('Descargar arma');assert.equal(m.document.querySelector('[aria-label="Carga para esta arma"]').disabled,false);await choose(m,'ammoShot');const s=m.saved().campaign;assert.equal(s.operativeState[110].ammunitionChoice,'ammoShot');assert.equal(ammoCount(s.operativeState[110],'ammoMusket'),10);assert.equal(ammoCount(s.operativeState[110],'ammoShot'),3);assert.equal(s.operativeState[110].carriedLoaded,0);
+ assert.equal(m.document.querySelector('[aria-label="Carga para esta arma"]').disabled,true);assert.match(m.document.querySelector('[aria-label="Energía de la carga"]').textContent,/32 g.*265 m\/s.*1\.123,6 J/);await m.click('Descargar arma');assert.equal(m.document.querySelector('[aria-label="Carga para esta arma"]').disabled,false);await choose(m,'ammoShot');assert.match(m.document.querySelector('[aria-label="Energía de la carga"]').textContent,/16 g.*265 m\/s.*561,8 J/);const s=m.saved().campaign;assert.equal(s.operativeState[110].ammunitionChoice,'ammoShot');assert.equal(ammoCount(s.operativeState[110],'ammoMusket'),10);assert.equal(ammoCount(s.operativeState[110],'ammoShot'),3);assert.equal(s.operativeState[110].carriedLoaded,0);
 });
 
 test('mounted tactical inventory unloads and selects shot through the actual controls and registered reload',async t=>{

@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign,rosterFor} from '../game/campaign.js';
 import {defaultContentPackage} from '../game/content-package.js';
 import {contractQuote} from '../game/contracts.js';
-import {createBattle,actBattle,endTurn,presentedActBattle,presentedEndTurn} from '../game/tactical.js';
+import {createBattle,actBattle,endTurn,presentedActBattle,presentedEndTurn,weaponFor} from '../game/tactical.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {syncBattleTime} from '../game/time.js';
 
@@ -14,6 +14,12 @@ export const nervousOrder=(campaign,action)=>{
 
 export function preparedNervousArena({oldPinned=false}={}){
  const content=defaultContentPackage();
+ // This declared clinical experiment pins the original pre-kinetic Brown Bess
+ // balance before campaign creation. The separate kinetic acceptance tests the
+ // fresh default energy profile; no executed health, gear or RNG is reset here.
+ const clinicalGun=content.weapons.find(weapon=>weapon.template===1800);
+ delete clinicalGun.projectileEnergy;
+ for(const load of clinicalGun.alternativeLoads??[])delete load.projectileEnergy;
  // Compatibility control is declared before campaign creation; care remains.
  if(oldPinned){const cejas=content.characters.find(person=>person.id==='person-130');cejas.abilities=cejas.abilities.filter(ability=>ability!=='nervous_isolation');}
  let campaign=initialCampaign(42,content);const prices=[];
@@ -29,7 +35,8 @@ export function preparedNervousArena({oldPinned=false}={}){
  const request=campaign.pendingBattle,width=48,height=16;
  // Prepared initial observation arena, not a native opening victory. Positions,
  // passive hostile posts and seed42 are fixed before the first official save.
- // All native people, health, skills, terms and finite equipment are retained.
+ // Native people, health, skills, terms and finite kit remain; only the
+ // pre-admission Brown Bess profile exception above is declared.
  const battle=createBattle(request.squad.map(unit=>({...unit,x:1,y:unit.id===130?3:5,facing:2})),{
   ...request,width,height,seed:42,props:[],
   tiles:Array.from({length:width*height},(_,i)=>{const x=i%width,y=Math.floor(i/width);return x===7&&y===2?{x,y,type:'wall',material:'stone',blocked:true,blocksSight:true,cover:100}:{x,y,type:'grass',blocked:false,cover:0};}),
@@ -37,7 +44,12 @@ export function preparedNervousArena({oldPinned=false}={}){
   npcs:request.npcs.map((npc,i)=>({...npc,x:40+i,y:15})),
  });
  if(request.finiteArtilleryArsenal)battle.finiteArtilleryArsenal=structuredClone(request.finiteArtilleryArsenal);
- const start=nervousSaved({campaign,battle});return {start,prices,oldPinned};
+ const start=nervousSaved({campaign,battle});
+ const pinnedGun=start.campaign.contentCampaign.package.weapons.find(weapon=>weapon.template===1800);
+ assert.equal(Object.hasOwn(pinnedGun,'projectileEnergy'),false);
+ assert.ok((pinnedGun.alternativeLoads??[]).every(load=>!Object.hasOwn(load,'projectileEnergy')));
+ assert.equal(weaponFor(nervousActor(start.battle,110)).projectileEnergy,undefined,'the official saved clinical load retains its explicit legacy profile');
+ return {start,prices,oldPinned};
 }
 
 export function nervousStep(pair,event,history){

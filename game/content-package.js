@@ -108,7 +108,8 @@ export function defaultContentPackage() {
       reloadAP: w.reloadAP,
       range: w.range,
       materialRangeSlope:DEFAULT_MATERIAL_RANGE_SLOPE,
-      alternativeLoads:(DEFAULT_ALTERNATIVE_LOADS[w.id]??[]).map(load=>({...load,materialRangeSlope:DEFAULT_MATERIAL_RANGE_SLOPE})),
+      ...(w.id===1800?{projectileEnergy:{model:'kinetic-energy-v1',massGrams:32,muzzleVelocityMps:265}}:{}),
+      alternativeLoads:(DEFAULT_ALTERNATIVE_LOADS[w.id]??[]).map(load=>({...load,materialRangeSlope:DEFAULT_MATERIAL_RANGE_SLOPE,...(w.id===1800&&load.family==='ammoShot'?{projectileEnergy:{model:'kinetic-energy-v1',massGrams:16,muzzleVelocityMps:265}}:{})})),
       readyAP: 0,
     })),...Object.values(BLADES).map(base=>{
       const w=base.id===1811?LOOSE_BAYONET:base;
