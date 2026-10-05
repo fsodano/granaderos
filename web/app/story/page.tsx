@@ -815,6 +815,10 @@ export default function ContentEditor() {
                       <p>Esta es la familia principal del arma. Cambiar de arma no convierte los cartuchos que ya lleva el soldado. La elección se conserva en la campaña guardada.</p>
                     </fieldset>}
                     {!isBladeDefinition(item)&&<AlternativeLoads weapon={item} onChange={update}/>}
+                    {!isBladeDefinition(item)&&<fieldset><legend>Penetración de la carga principal</legend>
+                      <label>Pérdida de penetración por distancia<input type="number" min={0} max={1} step={.05} value={item.materialRangeSlope??''} onChange={e=>update({materialRangeSlope:e.target.value===''?undefined:e.target.valueAsNumber})}/></label>
+                      <p>Más allá del alcance de esta carga, aumenta la resistencia de la cobertura. El valor 0,25 añade un 25 % de resistencia al entrar en material al doble del alcance. Vacío o cero conserva la resistencia original. Cada alternativa tiene su propio valor. Es una regla de juego, no una velocidad medida.</p>
+                    </fieldset>}
                     <p>
                       La familia conserva sus técnicas de combate. El nombre, la imagen y estos valores se usan en la campaña, la armería y el equipo recuperado. La prueba de tiro admite armas de fuego.
                     </p>

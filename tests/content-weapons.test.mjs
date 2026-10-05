@@ -106,7 +106,7 @@ test('custom weapon pictures are stored once and restore across all weapon copie
 });
 test('saved definitions cannot diverge from the pinned package in hands, inventory, stock or battles',()=>{
  let s=order(initialCampaign(8,content()),{type:'recruitCivic',id:110,term:'week'});s=withStoredGear(s,'pistola-del-sur');
- for(const mutate of [v=>v.operativeState[110].weaponMetadata.contentWeapon.damage++,v=>v.armoryItems[0].itemMetadata.contentWeapon.template=1800,v=>v.armory['pistola-del-sur']++,v=>v.armoryItems[0].loaded=4]){const altered=structuredClone(s);mutate(altered);assert.throws(()=>save(altered));}
+ for(const mutate of [v=>v.operativeState[110].weaponMetadata.contentWeapon.damage++,v=>v.operativeState[110].weaponMetadata.contentWeapon.materialRangeSlope=.5,v=>v.armoryItems[0].itemMetadata.contentWeapon.materialRangeSlope=.5,v=>v.armoryItems[0].itemMetadata.contentWeapon.template=1800,v=>v.armory['pistola-del-sur']++,v=>v.armoryItems[0].loaded=4]){const altered=structuredClone(s);mutate(altered);assert.throws(()=>save(altered));}
  s=order(s,{type:'visitSector'});const b=enterSector(s.pendingBattle),altered=structuredClone(b);altered.units[0].weaponMetadata.contentWeapon.name='Otra arma';assert.throws(()=>save(s,altered),/arma guardada/);
  assert.equal(campaignContentReport(content()).blocked.length,0);
  const prepared=content();prepared.weapons[0].readyAP=2;assert.equal(campaignContentReport(prepared).blocked.length,0);

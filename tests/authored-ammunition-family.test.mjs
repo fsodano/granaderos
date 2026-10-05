@@ -11,7 +11,7 @@ const original=()=>defaultContentPackage().weapons.find(w=>w.id==='firearm-1800'
 
 test('authored firearm families issue and consume only the selected ammunition',()=>{
  for(const family of AMMO_KEYS){
-  const gun={...original(),ammunitionFamily:family};
+  const gun={...original(),ammunitionFamily:family,alternativeLoads:original().alternativeLoads.filter(load=>load.family!==family)};
   let b=createBattle([{id:'p',weapon:1800,weaponMetadata:weaponMetadata(gun),loaded:0,ammo:3}],{width:8,height:8,exploration:true,enemies:[]});
   assert.equal(ammoTypeFor(b.units[0]),family);assert.equal(ammoTypeFor(compileWeaponDefinition(gun)),family);
   const other=AMMO_KEYS.find(key=>key!==family);changeAmmo(b.units[0],other,7);

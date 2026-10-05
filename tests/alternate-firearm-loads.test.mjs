@@ -18,6 +18,16 @@ test('default smoothbores offer separate ball and shot loads and authored altern
  for(const id of [1800,1801,1803,1804,1805,1806,1807,1808])assert.equal(ammunitionLoadsFor(id).length,2);
  assert.equal(ammunitionLoadsFor(1802).length,1);assert.deepEqual(ammunitionLoadsFor(1809),[]);
  const d=content(),w=d.weapons.find(w=>w.id==='firearm-1800');w.alternativeLoads=[{family:'ammoShot',damage:17,range:4,pattern:'cone'}];assert.deepEqual(validateContentPackage(d),[]);assert.doesNotThrow(()=>initialCampaign(8,d));
+ const carrier={weapon:w.template,weaponMetadata:weaponMetadata(w)};
+ assert.equal(weaponSpecification(carrier).materialRangeSlope,w.materialRangeSlope);
+ assert.equal(weaponSpecification({...carrier,ammunitionChoice:'ammoShot'}).materialRangeSlope,undefined,'an omitted alternative remains neutral despite an opted-in primary');
+ for(const value of [0,1,.4]){const definition={...w,materialRangeSlope:value,alternativeLoads:[{...w.alternativeLoads[0],materialRangeSlope:value}]};assert.equal(weaponSpecification({weapon:w.template,weaponMetadata:weaponMetadata(definition),ammunitionChoice:'ammoShot'}).materialRangeSlope,value);}
+ for(const value of [-.01,1.01,NaN,Infinity,null,'0.25',true]){
+  assert.throws(()=>compileWeaponDefinition({...w,materialRangeSlope:value}),/penetración/);
+  assert.throws(()=>compileWeaponDefinition({...w,alternativeLoads:[{...w.alternativeLoads[0],materialRangeSlope:value}]}),/alternativas/);
+ }
+ const omitted={...w};delete omitted.materialRangeSlope;const old=compileWeaponDefinition(omitted);assert.equal(Object.hasOwn(old,'materialRangeSlope'),false);assert.equal(ammunitionLoadsFor(old)[0].materialRangeSlope,undefined);
+ assert.throws(()=>compileWeaponDefinition({...d.weapons.find(w=>w.id==='blade-1809'),materialRangeSlope:.25}),/munición/);
  for(const loads of [null,{},[{family:'ammoMusket',damage:17,range:4,pattern:'single'}],[{family:'bad',damage:17,range:4,pattern:'single'}],[{family:'ammoShot',damage:0,range:4,pattern:'cone'}],[{family:'ammoShot',damage:17,range:4.5,pattern:'cone'}],[{family:'ammoShot',damage:17,range:4,pattern:'bad'}],[...w.alternativeLoads,...w.alternativeLoads],[{...w.alternativeLoads[0],extra:true}]])assert.throws(()=>compileWeaponDefinition({...w,alternativeLoads:loads}));
  assert.throws(()=>compileWeaponDefinition({...d.weapons.find(w=>w.id==='blade-1809'),alternativeLoads:[]}));
  assert.equal(ammunitionLoadsFor({...w,alternativeLoads:[]}).length,1);
@@ -33,7 +43,7 @@ test('finite owned shot loads, deployment, unload and reselection preserve both 
 
 test('tactical unload, choice and reload retain physical load on packed and recovered weapons',()=>{
  let p=visit(shotHire());p=tactical(p,{type:'reload'});p=tactical(p,{type:'unloadAmmunition'});assert.equal(unit(p).loaded,0);assert.equal(ammoCount(unit(p),'ammoShot'),10);p=tactical(p,{type:'selectAmmunitionLoad',family:'ammoMusket'});assert.equal(ammoTypeFor(unit(p)),'ammoMusket');
- p=tactical(p,{type:'reload'});assert.equal(unit(p).loaded,1);assert.equal(ammoCount(unit(p),'ammoMusket'),9);assert.equal(ammoCount(unit(p),'ammoShot'),10);p=tactical(p,{type:'unloadAmmunition'});
+ p=tactical(p,{type:'reload'});assert.equal(unit(p).loaded,1);assert.equal(ammoCount(unit(p),'ammoMusket'),9);assert.equal(ammoCount(unit(p),'ammoShot'),10);assert.equal(weaponSpecification(unit(p)).materialRangeSlope,.25);p=tactical(p,{type:'unloadAmmunition'});
  p=tactical(p,{type:'selectAmmunitionLoad',family:'ammoShot'});p=tactical(p,{type:'reload'});const gun=weaponRecord(unit(p));assert.equal(gun.ammunitionChoice,'ammoShot');assert.equal(gun.loaded,1);assert.equal(weaponSpecification(gun).loadPattern,'cone');
  p=tactical(p,{type:'drop',item:'primary'});p=saved(p);const dropped=p.battle.groundItems.find(g=>g.weapon===gun.weapon&&g.count===1);assert.equal(dropped.ammunitionChoice,'ammoShot');assert.equal(dropped.loaded,1);
 });
