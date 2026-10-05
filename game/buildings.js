@@ -1,5 +1,6 @@
 import {MAX_TACTICAL_LEVEL,DEFAULT_SLAB_THICKNESS} from './tactical-space.js';
 import {BUILDING_TYPES} from './building-types.js';
+export const DEFAULT_TERRACE_ELEVATION=3;
 // Multi-tile buildings with walkable interiors and independently operated door leaves.
 export function buildBuilding({id,x,y,width,height,name=id,doors=[],windows=[],material='adobe',architecture='house',roof=BUILDING_TYPES[architecture]?.roof??'tile'}){
   if(!id||![x,y,width,height].every(Number.isInteger)||width<3||height<3)throw Error('Building needs an ID and an integer footprint of at least 3×3.');
@@ -17,7 +18,7 @@ export function buildBuilding({id,x,y,width,height,name=id,doors=[],windows=[],m
 export function placeBuilding(ground,options){const result=buildBuilding(options),overrides=new Map(result.tiles.map(t=>[`${t.x},${t.y}`,t]));if(result.tiles.some(t=>!ground.some(g=>g.x===t.x&&g.y===t.y)))throw Error('Building footprint is outside the sector.');return{tiles:ground.map(t=>overrides.get(`${t.x},${t.y}`)||{...t}),building:result.building};}
 
 // Explicit geometry authoring; campaign-terraces.js selects supported house roofs.
-export function buildTerrace(building,{elevation=3,tacticalLevel=1,slabThickness=DEFAULT_SLAB_THICKNESS,climbPoints=[]}={}){
+export function buildTerrace(building,{elevation=DEFAULT_TERRACE_ELEVATION,tacticalLevel=1,slabThickness=DEFAULT_SLAB_THICKNESS,climbPoints=[]}={}){
  if(building.roof!=='terrace')throw Error('A walkable terrace needs a flat terrace roof.');
  if(!Number.isFinite(elevation)||elevation<=0||!Number.isInteger(tacticalLevel)||tacticalLevel<1||tacticalLevel>MAX_TACTICAL_LEVEL||!Number.isFinite(slabThickness)||slabThickness<=0||slabThickness>=elevation)throw Error('Invalid terrace height or level.');
  if(!Array.isArray(climbPoints)||climbPoints.some(point=>!point||typeof point.id!=='string'||!point.id.length||!point.from||!point.to||![point.from.x,point.from.y,point.to.x,point.to.y].every(Number.isInteger)))throw Error('A terrace access needs a stable ID and integer endpoints.');

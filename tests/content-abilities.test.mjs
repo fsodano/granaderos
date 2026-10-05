@@ -29,13 +29,13 @@ const act=(s,a)=>{const n=actBattle(s,a);assert.equal(n.lastError,null,n.lastErr
 const pa=(s,id)=>orderDescriptors(s,s.units[0]).find(o=>o.id===id).pa;
 
 test('a new hired identity keeps explicit abilities in the dossier, range, deployment and saved reentry',()=>{
- const d=content(['bodyguard','rapid_first_aid','care_composure']),id=operativeIdForCharacter(d,'alma-nueva');
+ const d=content(['bodyguard','rapid_first_aid','care_composure','enclosed_room_fear']),id=operativeIdForCharacter(d,'alma-nueva');
  // Editor ordering and display names do not determine a runtime identity or power.
  const reordered=structuredClone(d);reordered.characters.reverse();reordered.characters.find(c=>c.id==='alma-nueva').name='Otra persona';assert.equal(operativeIdForCharacter(reordered,'alma-nueva'),id);
- assert.deepEqual(rosterFor(initialCampaign(42,reordered)).find(o=>o.id===id).abilities,['bodyguard','rapid_first_aid','care_composure']);
+ assert.deepEqual(rosterFor(initialCampaign(42,reordered)).find(o=>o.id===id).abilities,['bodyguard','rapid_first_aid','care_composure','enclosed_room_fear']);
  let s=order(initialCampaign(42,d),{type:'recruitCivic',id,term:'week'});s=order(save(s).campaign,{type:'wait',hours:1});s=order(s,{type:'visitSector'});
- let pair=save(s,enterSector(s.pendingBattle)),unit=pair.battle.units.find(u=>u.id===String(id));assert.deepEqual(unit.abilities,['bodyguard','rapid_first_aid','care_composure']);
- assert.deepEqual(characterProfile(unit).skills,['Protección de compañeros','Atención rápida','Serenidad al cuidar']);assert.match(characterAbilityDescriptions(unit).find(a=>a.id==='care_composure').description,/otra persona.*hasta 2.*PA.*vendas.*sí mismo/);assert.equal(actionCosts(pair.battle,unit).heal,18);
+ let pair=save(s,enterSector(s.pendingBattle)),unit=pair.battle.units.find(u=>u.id===String(id));assert.deepEqual(unit.abilities,['bodyguard','rapid_first_aid','care_composure','enclosed_room_fear']);
+ assert.deepEqual(characterProfile(unit).skills,['Protección de compañeros','Atención rápida','Serenidad al cuidar','Temor a lugares cerrados']);assert.match(characterAbilityDescriptions(unit).find(a=>a.id==='care_composure').description,/otra persona.*hasta 2.*PA.*vendas.*sí mismo/);assert.equal(actionCosts(pair.battle,unit).heal,18);
  s=order(pair.campaign,{type:'leaveSector',battleId:s.pendingBattle.id,sectorState:pair.battle,survivors:pair.battle.units.filter(u=>u.side==='player')});
  s=order(save(s).campaign,{type:'visitSector'});pair=save(s,enterSector(s.pendingBattle,s.sectorStates.retiro));assert.deepEqual(pair.battle.units[0].abilities,unit.abilities);
  assert.deepEqual(createContentTestRange(d,'alma-nueva').units[0].abilities,unit.abilities);

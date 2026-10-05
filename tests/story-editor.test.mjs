@@ -58,6 +58,9 @@ test('the editor removes a historical ability and assigns abilities to a new ide
  const cejasAbilities=[...draft().characters.find(c=>c.id==='person-130').abilities];
  await m.click(ability('Serenidad al cuidar'));assert.deepEqual(draft().characters.find(c=>c.id==='person-130').abilities,cejasAbilities.filter(id=>id!=='care_composure'));await m.click(m.button('Deshacer'));assert.equal(ability('Serenidad al cuidar').checked,true);
  await m.click(ability('Temor al aislamiento'));assert.deepEqual(draft().characters.find(c=>c.id==='person-130').abilities,cejasAbilities.filter(id=>id!=='nervous_isolation'));await m.click(m.button('Deshacer'));assert.equal(ability('Temor al aislamiento').checked,true);
+ await m.input(m.document.querySelector('input[type="search"]'),'person-126');await m.click(m.document.querySelector('.entry-list button'));
+ assert.equal(ability('Temor a lugares cerrados').checked,true);assert.match(ability('Temor a lugares cerrados').parentElement.textContent,/paredes y techo intactos.*hasta 2.*recuperación habitual.*brecha/);
+ await m.click(ability('Temor a lugares cerrados'));assert.deepEqual(draft().characters.find(c=>c.id==='person-126').abilities,[]);await m.click(m.button('Deshacer'));assert.equal(ability('Temor a lugares cerrados').checked,true);
  await m.input(m.document.querySelector('input[type="search"]'),'person-3');await m.click(m.document.querySelector('.entry-list button'));
  assert.equal(ability('Objeción por daño a civiles').disabled,true);assert.equal(ability('Objeción por daño a civiles').checked,false);assert.match(ability('Objeción por daño a civiles').title,/candidatos por contrato/);
  assert.equal(ability('Protección de compañeros').checked,true);await m.click(ability('Protección de compañeros'));assert.ok(!draft().characters.find(c=>c.id==='person-3').abilities.includes('bodyguard'));
@@ -65,9 +68,9 @@ test('the editor removes a historical ability and assigns abilities to a new ide
  assert.equal(m.document.querySelectorAll('fieldset[aria-label="Habilidades de combate"] input:checked').length,0);
  await m.input(m.label('Nombre'),'Alma Nueva');await m.click(ability('Protección de compañeros'));await m.click(ability('Atención rápida'));
  await m.click(m.button('Deshacer'));assert.equal(ability('Atención rápida').checked,false);await m.click(m.button('Rehacer'));assert.equal(ability('Atención rápida').checked,true);await m.click(ability('Serenidad al cuidar'));
- await m.click(ability('Temor al aislamiento'));
+ await m.click(ability('Temor al aislamiento'));await m.click(ability('Temor a lugares cerrados'));
  assert.equal(ability('Objeción por daño a civiles').disabled,false);await m.click(ability('Objeción por daño a civiles'));await m.click(m.button('Deshacer'));assert.equal(ability('Objeción por daño a civiles').checked,false);await m.click(m.button('Rehacer'));assert.equal(ability('Objeción por daño a civiles').checked,true);
- await m.click(m.button('Duplicar personaje'));const c=draft().characters.at(-1);assert.deepEqual(c.abilities,['bodyguard','rapid_first_aid','care_composure','nervous_isolation','civilian_conscience']);
+ await m.click(m.button('Duplicar personaje'));const c=draft().characters.at(-1);assert.deepEqual(c.abilities,['bodyguard','rapid_first_aid','care_composure','nervous_isolation','enclosed_room_fear','civilian_conscience']);
  await m.click(m.button('Iniciar campaña con estas fichas'));let {campaign}=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY));
  assert.ok(!rosterFor(campaign).find(o=>o.id===3).abilities.includes('bodyguard'));
  const id=operativeIdForCharacter(campaign.contentCampaign.package,c.id);campaign=dispatchCampaign(campaign,{type:'recruitCivic',id,term:'week'});assert.equal(campaign.lastError,null);
