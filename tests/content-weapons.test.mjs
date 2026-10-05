@@ -124,21 +124,37 @@ test('a character without a firearm and the mission ally remain valid after depl
 
 test('energy profiles validate finite projectile mass, retain independent selected loads and reject altered pinned copies',()=>{
  const profile={model:'kinetic-energy-v1',massGrams:32,muzzleVelocityMps:265};
- const gun=custom({projectileEnergy:profile,alternativeLoads:[{family:'ammoShot',damage:19,range:7,pattern:'cone'}]});
+ const air={model:'range-energy-retention-v1',retentionAtRange:.8};
+ const gun=custom({projectileEnergy:profile,projectileAirDrag:air,alternativeLoads:[{family:'ammoShot',damage:19,range:7,pattern:'cone'}]});
  const definition=compileWeaponDefinition(gun),carrier={weapon:1805,weaponMetadata:{contentWeapon:definition}};
  assert.deepEqual(weaponSpecification(carrier).projectileEnergy,profile);
+ assert.deepEqual(weaponSpecification(carrier).projectileAirDrag,air);
  assert.equal(Object.hasOwn(weaponSpecification({...carrier,ammunitionChoice:'ammoShot'}),'projectileEnergy'),false,'an omitted alternative never inherits the primary energy');
+ assert.equal(Object.hasOwn(weaponSpecification({...carrier,ammunitionChoice:'ammoShot'}),'projectileAirDrag'),false,'an omitted alternative never inherits primary drag');
  const alternative={model:'kinetic-energy-v1',massGrams:16,muzzleVelocityMps:200};gun.alternativeLoads[0].projectileEnergy=alternative;
+ gun.alternativeLoads[0].projectileAirDrag={...air,retentionAtRange:.65};
  assert.deepEqual(weaponSpecification({...carrier,weaponMetadata:weaponMetadata(gun),ammunitionChoice:'ammoShot'}).projectileEnergy,alternative);
+ assert.deepEqual(weaponSpecification({...carrier,weaponMetadata:weaponMetadata(gun),ammunitionChoice:'ammoShot'}).projectileAirDrag,{...air,retentionAtRange:.65});
  for(const bad of [{...profile,model:'unknown'},{...profile,massGrams:40.01},{...profile,massGrams:0},{...profile,muzzleVelocityMps:Infinity},{...profile,muzzleVelocityMps:601},{...profile,energyJ:123}]){
   assert.throws(()=>compileWeaponDefinition(custom({projectileEnergy:bad})),/energía/);
   assert.throws(()=>compileWeaponDefinition(custom({alternativeLoads:[{family:'ammoShot',damage:19,range:7,pattern:'cone',projectileEnergy:bad}]})),/alternativas/);
  }
+ for(const bad of [{...air,model:'unknown'},{...air,retentionAtRange:0},{...air,retentionAtRange:-.1},{...air,retentionAtRange:1.01},{...air,retentionAtRange:NaN},{...air,retentionAtRange:Infinity},{...air,extra:0}]){
+  assert.throws(()=>compileWeaponDefinition(custom({projectileEnergy:profile,projectileAirDrag:bad})),/aire/);
+  assert.throws(()=>compileWeaponDefinition(custom({alternativeLoads:[{family:'ammoShot',damage:19,range:7,pattern:'cone',projectileEnergy:alternative,projectileAirDrag:bad}]})),/alternativas/);
+ }
+ assert.throws(()=>compileWeaponDefinition(custom({projectileAirDrag:air})),/aire/);
+ assert.throws(()=>compileWeaponDefinition(custom({projectileEnergy:profile,alternativeLoads:[{family:'ammoShot',damage:19,range:7,pattern:'cone',projectileAirDrag:air}]})),/alternativas/,'an alternative cannot borrow primary energy to enable drag');
+ assert.equal(compileWeaponDefinition(custom({projectileEnergy:profile,projectileAirDrag:{...air,retentionAtRange:1}})).projectileAirDrag.retentionAtRange,1);
  const blade=defaultContentPackage().weapons.find(w=>w.template===1813);assert.throws(()=>compileWeaponDefinition({...blade,projectileEnergy:profile}),/munición/);
- const d=content();d.weapons.find(w=>w.id==='pistola-del-sur').projectileEnergy=profile;
+ const d=content();Object.assign(d.weapons.find(w=>w.id==='pistola-del-sur'),{projectileEnergy:profile,projectileAirDrag:air});
  let state=order(initialCampaign(8,d),{type:'recruitCivic',id:110,term:'week'});state=withStoredGear(state,'pistola-del-sur');
  const restored=save(state).campaign;assert.deepEqual(contentWeaponOf(restored.operativeState[110]).projectileEnergy,profile);assert.deepEqual(contentWeaponOf(storedEquipmentStack(restored.armoryItems[0])).projectileEnergy,profile);
+ assert.deepEqual(contentWeaponOf(restored.operativeState[110]).projectileAirDrag,air);assert.deepEqual(contentWeaponOf(storedEquipmentStack(restored.armoryItems[0])).projectileAirDrag,air);
  for(const where of [v=>v.operativeState[110].weaponMetadata.contentWeapon,v=>v.armoryItems[0].itemMetadata.contentWeapon]){const changed=structuredClone(restored);where(changed).projectileEnergy.massGrams=31;assert.throws(()=>save(changed),/arma guardada/);}
+ for(const where of [v=>v.operativeState[110].weaponMetadata.contentWeapon,v=>v.armoryItems[0].itemMetadata.contentWeapon]){const changed=structuredClone(restored);where(changed).projectileAirDrag.retentionAtRange=.7;assert.throws(()=>save(changed),/arma guardada/);}
  const legacy=custom();assert.equal(Object.hasOwn(compileWeaponDefinition(legacy),'projectileEnergy'),false);
+ assert.equal(Object.hasOwn(compileWeaponDefinition(legacy),'projectileAirDrag'),false);
  const defaults=defaultContentPackage();assert.deepEqual(defaults.weapons.filter(w=>w.projectileEnergy).map(w=>w.template),[1800]);assert.deepEqual(defaults.weapons.find(w=>w.template===1800).alternativeLoads[0].projectileEnergy,{...profile,massGrams:16});
+ assert.deepEqual(defaults.weapons.filter(w=>w.projectileAirDrag).map(w=>w.template),[1800]);assert.deepEqual(defaults.weapons.find(w=>w.template===1800).projectileAirDrag,air);assert.deepEqual(defaults.weapons.find(w=>w.template===1800).alternativeLoads[0].projectileAirDrag,{...air,retentionAtRange:.65});
 });

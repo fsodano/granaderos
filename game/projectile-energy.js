@@ -20,6 +20,6 @@ export function projectileDamageFactor(remaining,weapon,power){
 export function kineticNominalImpact(weapon,impact,share=1,coverMultiplier=1){
  const launch=projectileLaunchImpact(weapon)*share,cap=weapon.damage*share;
  const coverLoss=launch*(1-(impact.coverDamageFactor??1));
- const incoming=impact.incomingImpact??Math.max(0,launch-coverLoss-launch*((impact.bodyDamageReduction??0)+(impact.ricochetDamageReduction??0)));
+ const incoming=impact.incomingImpact??Math.max(0,launch-coverLoss-launch*((impact.bodyDamageReduction??0)+(impact.ricochetDamageReduction??0)+(impact.airDamageReduction??0)));
  return Math.max(0,Math.min(cap,incoming+(1-coverMultiplier)*coverLoss));
 }
