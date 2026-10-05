@@ -39,6 +39,7 @@ import { CONTENT_LAUNCH_KEY } from '../../../game/content-launch.js';
 import './editor.css';
 import {CHARACTER_ABILITIES,legacyCharacterAbilities} from '../../../game/character-abilities.js';
 import {isContractCharacter,isHistoricalCharacter,isWorldCharacter,legacyOperativeId} from '../../../game/content-character-ids.js';
+import {conductObserverDefinition,conductNoncombatantDefinition} from '../../../game/service-objections.js';
 import CharacterPresentation from './CharacterPresentation';
 import CharacterSupplies from './CharacterSupplies';
 import CharacterCondition from './CharacterCondition';
@@ -288,7 +289,7 @@ export default function ContentEditor() {
 
     if (
       collection === 'characters' &&
-      ((draft.errands??[]).some((q:any)=>errandContacts(draft).find(c=>c.id===q.npcId)?.characterId===item.id)||storyReferences(draft.campaignStory,'character',item.id)||(draft.quests??[]).some((q:any)=>q.requiredAlive?.includes(item.id))||draft.placements.some((p:any)=>p.afterDeath===item.id)||draft.characters.some((owner:any)=>owner.id!==item.id&&owner.encounter?.dialogue?.nodes.some((n:any)=>n.choices.some((choice:any)=>choice.conditions?.some((c:any)=>['character','meeting','supply'].includes(c.type)&&c.character===item.id)||choice.effects?.some((e:any)=>e.type==='movement'&&e.character===item.id)))))
+      ((draft.errands??[]).some((q:any)=>[q.npcId,...(q.beneficiaries??[]).map((recipient:any)=>recipient.npcId)].some(id=>errandContacts(draft).find(c=>c.id===id)?.characterId===item.id))||storyReferences(draft.campaignStory,'character',item.id)||(draft.quests??[]).some((q:any)=>q.requiredAlive?.includes(item.id))||draft.placements.some((p:any)=>p.afterDeath===item.id)||draft.characters.some((owner:any)=>owner.id!==item.id&&owner.encounter?.dialogue?.nodes.some((n:any)=>n.choices.some((choice:any)=>choice.conditions?.some((c:any)=>['character','meeting','supply'].includes(c.type)&&c.character===item.id)||choice.effects?.some((e:any)=>e.type==='movement'&&e.character===item.id)))))
     ) {
       setNotice(
         'Quitá primero las apariciones y condiciones, los movimientos y los encargos que usan este personaje.',
@@ -726,6 +727,9 @@ export default function ContentEditor() {
                         <textarea rows={3} maxLength={1000} value={item.encounter.greeting} onChange={e=>update({encounter:{...item.encounter,greeting:e.target.value}})}/>
                       </label>
                       <label><input type="checkbox" checked={item.encounter.recruitable} onChange={e=>update({encounter:{...item.encounter,recruitable:e.target.checked}})}/>Puede incorporarse a la escuadra</label>
+                      <label><input type="checkbox" checked={item.encounter.noncombatant===true} disabled={!conductNoncombatantDefinition(item,placement)&&item.encounter.noncombatant!==true} onChange={e=>{const encounter={...item.encounter};if(e.target.checked)encounter.noncombatant=true;else delete encounter.noncombatant;update({encounter});}}/>Civil no combatiente
+                        <small>Solo para un habitante fijo, sin armas y que no puede incorporarse. Esta condición no impide que reciba daño.</small>
+                      </label>
                       {item.encounter.recruitable&&<>
                         <label>Tipo de servicio
                           <select value={item.service} onChange={e=>update({service:e.target.value,...(e.target.value==='permanent'?{monthlyPay:0}:{})})}>
@@ -752,12 +756,13 @@ export default function ContentEditor() {
                     {isWorldCharacter(item)&&<DialogueEditor key={item.id} ownerId={item.id} characters={draft.characters} quests={draft.quests??[]} value={item.encounter.dialogue} greeting={item.encounter.greeting} onChange={dialogue=>update({encounter:{...item.encounter,dialogue}})}/>}
                     <fieldset aria-label="Habilidades de combate">
                       <legend>Habilidades de combate</legend>
-                      <p>Elegí las capacidades de este personaje. Sin casillas marcadas, no tendrá ninguna de estas ventajas. Las funciones de historia se conservan por ahora.</p>
+                      <p>Elegí las capacidades y condiciones de servicio de este personaje. Sin casillas marcadas, no tendrá ninguna de estas capacidades o condiciones. Las funciones de historia se conservan por ahora.</p>
                       <div className="fields">
                         {CHARACTER_ABILITIES.map(ability=>{
                           const abilities=item.abilities??legacyCharacterAbilities(legacyOperativeId(item.id));
+                          const incompatible=ability.contractOnly&&!conductObserverDefinition(item);
                           return <label key={ability.id}>
-                            <input type="checkbox" checked={abilities.includes(ability.id)} onChange={e=>update({abilities:e.target.checked?[...abilities,ability.id]:abilities.filter((id:string)=>id!==ability.id)})}/>
+                            <input type="checkbox" checked={abilities.includes(ability.id)} disabled={incompatible&&!abilities.includes(ability.id)} title={incompatible?'Solo para candidatos por contrato con servicio pagado explícito.':undefined} onChange={e=>update({abilities:e.target.checked?[...abilities,ability.id]:abilities.filter((id:string)=>id!==ability.id)})}/>
                             {ability.name}<small>{ability.description}</small>
                           </label>;
                         })}
@@ -810,6 +815,18 @@ export default function ContentEditor() {
                       <p>Esta es la familia principal del arma. Cambiar de arma no convierte los cartuchos que ya lleva el soldado. La elección se conserva en la campaña guardada.</p>
                     </fieldset>}
                     {!isBladeDefinition(item)&&<AlternativeLoads weapon={item} onChange={update}/>}
+                    {!isBladeDefinition(item)&&<fieldset><legend>Penetración de la carga principal</legend>
+                      <label>Pérdida de penetración por distancia<input type="number" min={0} max={1} step={.05} value={item.materialRangeSlope??''} onChange={e=>update({materialRangeSlope:e.target.value===''?undefined:e.target.valueAsNumber})}/></label>
+                      <p>Más allá del alcance de esta carga, aumenta la resistencia de la cobertura. El valor 0,25 añade un 25 % de resistencia al entrar en material al doble del alcance. Vacío o cero conserva la resistencia original. Cada alternativa tiene su propio valor. Es una regla de juego, no una velocidad medida.</p>
+                    </fieldset>}
+                    {!isBladeDefinition(item)&&<fieldset><legend>Energía de la carga principal</legend>
+                      <label><input type="checkbox" checked={item.projectileEnergy!==undefined} onChange={e=>update(e.target.checked?{projectileEnergy:{model:'kinetic-energy-v1',massGrams:32,muzzleVelocityMps:265}}:{projectileEnergy:undefined,projectileAirDrag:undefined})}/>Usar masa y velocidad para el impacto</label>
+                      {item.projectileEnergy&&<><label>Masa total de la carga principal (g)<input type="number" min={.1} max={40} step={.1} value={item.projectileEnergy.massGrams} onChange={e=>update({projectileEnergy:{...item.projectileEnergy,massGrams:e.target.valueAsNumber}})}/></label><label>Velocidad inicial de la carga principal (m/s)<input type="number" min={25} max={600} step={1} value={item.projectileEnergy.muzzleVelocityMps} onChange={e=>update({projectileEnergy:{...item.projectileEnergy,muzzleVelocityMps:e.target.valueAsNumber}})}/></label></>}
+                      <p>La energía inicial depende de la masa total y del cuadrado de la velocidad. La cobertura, los cuerpos y los rebotes gastan esa energía. El daño conserva su límite; un impacto débil puede no herir. La conversión de 20 J por punto es ajuste de Granaderos, sin escala física para la trayectoria. Cada cartucho completo pesa 40 g; la masa del proyectil no puede superarlo. Cada alternativa usa su propio modelo.</p>
+                      <label><input type="checkbox" checked={item.projectileAirDrag!==undefined} disabled={!item.projectileEnergy} onChange={e=>update({projectileAirDrag:e.target.checked?{model:'range-energy-retention-v1',retentionAtRange:.8}:undefined})}/>Pérdida de energía en el aire de la carga principal</label>
+                      {item.projectileAirDrag&&<label>Energía restante al alcance principal (%)<input type="number" min={0} max={100} step={1} value={Number((item.projectileAirDrag.retentionAtRange*100).toPrecision(15))} onChange={e=>update({projectileAirDrag:{...item.projectileAirDrag,retentionAtRange:e.target.valueAsNumber/100}})}/></label>}
+                      <p>Requiere masa y velocidad en esta carga. El porcentaje indica la energía que conserva tras una distancia de vuelo libre igual a su alcance, antes de otras pérdidas. Debe ser mayor que cero y no superar 100; 100 no pierde energía en el aire. Un valor menor puede reducir el daño y la penetración. Desactivado conserva la energía original. Cada alternativa se configura por separado. Es ajuste de juego; no cambia el tiempo de vuelo ni la trayectoria.</p>
+                    </fieldset>}
                     <p>
                       La familia conserva sus técnicas de combate. El nombre, la imagen y estos valores se usan en la campaña, la armería y el equipo recuperado. La prueba de tiro admite armas de fuego.
                     </p>

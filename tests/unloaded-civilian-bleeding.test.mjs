@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign,serializeCampaign} from '../game/campaign.js';
 import {defaultContentPackage} from '../game/content-package.js';
+import {defaultErrands} from '../game/quest-definitions.js';
 import {operativeIdForCharacter} from '../game/content-character-ids.js';
 import {encountersFor} from '../game/encounters.js';
 import {actBattle} from '../game/tactical.js';
@@ -82,7 +83,7 @@ test('a loaded resident receives each wound interval once and first aid stops la
 
 test('off-screen civilian death fails only accepted errands and applies the real responsibility once',()=>{
  for(const offered of [true,false]){
- const d=defaultContentPackage();d.characters.find(c=>c.id==='person-110').arrivalHours=0;
+ const d=defaultContentPackage();d.errands=defaultErrands();d.characters.find(c=>c.id==='person-110').arrivalHours=0;
  let p=visit(order(initialCampaign(42,d),{type:'recruitCivic',id:110,term:'month'}));p=approach(p,p.battle.npcs.find(n=>n.id==='local-retiro'));
  if(offered)p.campaign=order(p.campaign,{type:'talkNPC',npcId:'local-retiro',unitId:110,approach:'quest',sectorState:p.battle});
  p=act(p,{type:'melee',targetId:'local-retiro'});const target=p.battle.npcs.find(n=>n.id==='local-retiro');assert.ok(target.hp>0&&target.bleeding>0);

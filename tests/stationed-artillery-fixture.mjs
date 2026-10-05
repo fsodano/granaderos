@@ -43,6 +43,12 @@ export function fireStationed(p){
  // Fire at a nearby empty exterior point. This spends an actual loaded shot;
  // it does not edit cannon state or assign a combat outcome.
  const target=b.tiles.filter(t=>!t.blocked&&!t.buildingId&&Math.hypot(t.x-gun.x,t.y-gun.y)>=2&&Math.hypot(t.x-gun.x,t.y-gun.y)<=4&&!b.units.some(u=>Math.hypot(u.x-t.x,u.y-t.y)<2)&&!b.npcs.some(u=>Math.hypot(u.x-t.x,u.y-t.y)<2))[0];assert.ok(target);
+ const current=b.artillery.find(piece=>piece.id===gun.id),facing=Math.atan2(target.y-current.y,target.x-current.x);
+ if(Number.isFinite(current.facing)&&Math.abs(Math.atan2(Math.sin(facing-current.facing),Math.cos(facing-current.facing)))>Math.PI/4){
+  const before=structuredClone(current),seconds=b.elapsedSeconds;
+  b=actBattle(b,{type:'artilleryPivot',unitId:approach.u.id,artilleryId:gun.id,x:target.x,y:target.y});assert.equal(b.lastError,null);
+  const pivoted=b.artillery.find(piece=>piece.id===gun.id);assert.deepEqual({...pivoted,facing:before.facing},before);assert.ok(b.elapsedSeconds>seconds,'the ordinary pivot pays actual exploration work time');
+ }
  b=actBattle(b,{type:'artillery',unitId:approach.u.id,artilleryId:gun.id,x:target.x,y:target.y,mode:'solid'});assert.equal(b.lastError,null);assert.equal(b.artillery[0].loaded,false);return saved(sync({campaign:p.campaign,battle:b}));
 }
 

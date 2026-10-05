@@ -1,33 +1,91 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {act} from '../web/node_modules/react/index.js';
+import {act,createElement as h} from '../web/node_modules/react/index.js';
 import {defaultContentPackage} from '../game/content-package.js';
-import {initialCampaign} from '../game/campaign.js';
-import {ammoCount,changeAmmo} from '../game/ammo-types.js';
+import {initialCampaign,rosterFor} from '../game/campaign.js';
+import {ammoCount,totalAmmo,changeAmmo} from '../game/ammo-types.js';
 import {syncCarriedAmmunition} from '../game/campaign-ammunition.js';
 import {mountLegacyArmory} from './mounted-legacy-armory-fixture.mjs';
 import {weaponSpecification} from '../game/weapon-definition.js';
 import {order,visit} from './local-contract-fixture.mjs';
 import {mountCampaign} from './mounted-campaign-fixture.mjs';
 import {renderToStaticMarkup} from '../web/node_modules/react-dom/server.node.js';
-import {createBattle,firearmVolleyPreview,shotChance,weaponFor} from '../game/tactical.js';
+import {createBattle,actBattle,presentedActBattle,firearmVolleyPreview,shotChance,weaponFor,actionCosts} from '../game/tactical.js';
+import {validateBattleSnapshot} from '../game/validate-battle.js';
 import {targetPreview,chancePercent} from '../game/ja2-hud.js';
 import {mountBattlefield} from './mounted-battlefield.mjs';
 const {default:Battlefield}=await import('../web/app/Battlefield.tsx');
 const {default:TacticalSceneControls}=await import('../web/app/TacticalSceneControls.tsx');
 const {default:JA2Strip}=await import('../web/app/JA2Strip.tsx');
 const nodes=node=>!node||typeof node!=='object'?[]:[node,...(Array.isArray(node)?node:Array.isArray(node.props?.children)?node.props.children:[node.props?.children]).flatMap(nodes)];
-const pair=()=>{const d=defaultContentPackage();d.characters.find(c=>c.id==='person-110').arrivalHours=0;let s=order(initialCampaign(8,d),{type:'recruitCivic',id:110,term:'week'});// Explicit finite carried shot in a subsystem save fixture.
+const pair=({oldPinned=false,withoutAlternativeDrag=false}={})=>{const d=defaultContentPackage();d.characters.find(c=>c.id==='person-110').arrivalHours=0;const gun=d.weapons.find(w=>w.id==='firearm-1800');if(oldPinned)delete gun.projectileAirDrag;if(oldPinned||withoutAlternativeDrag)for(const load of gun.alternativeLoads??[])delete load.projectileAirDrag;let s=order(initialCampaign(8,d),{type:'recruitCivic',id:110,term:'week'});// Explicit finite carried shot in a subsystem save fixture.
  changeAmmo(s.operativeState[110],'ammoShot',3);syncCarriedAmmunition(s.operativeState[110],1800);return visit(s);};
 const choose=async(m,family)=>act(async()=>{const select=m.document.querySelector('[aria-label="Carga para esta arma"]');select.value=family;select.dispatchEvent(new m.dom.window.Event('change',{bubbles:true}));});
 
 test('isolated retained ammunition widget unloads, selects a new load and saves the selected family for departure',async t=>{
  const m=await mountLegacyArmory(t,pair());
- assert.equal(m.document.querySelector('[aria-label="Carga para esta arma"]').disabled,true);await m.click('Descargar arma');assert.equal(m.document.querySelector('[aria-label="Carga para esta arma"]').disabled,false);await choose(m,'ammoShot');const s=m.saved().campaign;assert.equal(s.operativeState[110].ammunitionChoice,'ammoShot');assert.equal(ammoCount(s.operativeState[110],'ammoMusket'),10);assert.equal(ammoCount(s.operativeState[110],'ammoShot'),3);assert.equal(s.operativeState[110].carriedLoaded,0);
+ assert.equal(m.document.querySelector('[aria-label="Carga para esta arma"]').disabled,true);assert.match(m.document.querySelector('[aria-label="Energía de la carga"]').textContent,/32 g.*265 m\/s.*1\.123,6 J/);assert.match(m.document.querySelector('[aria-label="Energía en el aire"]').textContent,/vuelo libre.*80 %.*daño.*penetración/);await m.click('Descargar arma');assert.equal(m.document.querySelector('[aria-label="Carga para esta arma"]').disabled,false);await choose(m,'ammoShot');assert.match(m.document.querySelector('[aria-label="Energía de la carga"]').textContent,/16 g.*265 m\/s.*561,8 J/);assert.match(m.document.querySelector('[aria-label="Energía en el aire"]').textContent,/65 %/);const s=m.saved().campaign;assert.equal(s.operativeState[110].ammunitionChoice,'ammoShot');assert.equal(ammoCount(s.operativeState[110],'ammoMusket'),10);assert.equal(ammoCount(s.operativeState[110],'ammoShot'),3);assert.equal(s.operativeState[110].carriedLoaded,0);
 });
 
 test('mounted tactical inventory unloads and selects shot through the actual controls and registered reload',async t=>{
- const m=await mountCampaign(t,pair());await m.click('Equipo');assert.equal(m.document.querySelector('[aria-label="Carga para esta arma"]').disabled,true);await m.click('Descargar arma');await choose(m,'ammoShot');await act(async()=>m.issue({type:'reload',unitId:'110'}));await m.settle();const u=m.saved().battle.units.find(u=>u.id==='110');assert.equal(u.ammunitionChoice,'ammoShot');assert.equal(u.loaded,1);assert.equal(ammoCount(u,'ammoShot'),2);assert.equal(ammoCount(u,'ammoMusket'),10);assert.equal(weaponSpecification(u).loadPattern,'cone');assert.equal(m.document.querySelector('[aria-label="Carga para esta arma"]').disabled,true);
+ const m=await mountCampaign(t,pair());await m.click('Equipo');assert.equal(m.document.querySelector('[aria-label="Carga para esta arma"]').disabled,true);assert.match(m.document.querySelector('[aria-label="Energía en el aire"]').textContent,/80 %/);await m.click('Descargar arma');await choose(m,'ammoShot');assert.match(m.document.querySelector('[aria-label="Energía en el aire"]').textContent,/65 %/);await act(async()=>m.issue({type:'reload',unitId:'110'}));await m.settle();const u=m.saved().battle.units.find(u=>u.id==='110');assert.equal(u.ammunitionChoice,'ammoShot');assert.equal(u.loaded,1);assert.equal(ammoCount(u,'ammoShot'),2);assert.equal(ammoCount(u,'ammoMusket'),10);assert.equal(weaponSpecification(u).loadPattern,'cone');assert.equal(weaponSpecification(u).projectileAirDrag.retentionAtRange,.65);assert.equal(u.weaponMetadata.contentWeapon.projectileAirDrag.retentionAtRange,.8);assert.equal(m.document.querySelector('[aria-label="Carga para esta arma"]').disabled,true);
+});
+
+test('mounted saved load choices do not inherit primary air loss or backfill an older omitted package',async t=>{
+ for(const oldPinned of [false,true])await t.test(oldPinned?'older package omits both profiles':'alternative omits its own profile',async t=>{
+  const m=await mountLegacyArmory(t,pair({oldPinned,withoutAlternativeDrag:true}));
+  assert.equal(Boolean(m.document.querySelector('[aria-label="Energía en el aire"]')),!oldPinned);await m.click('Descargar arma');await choose(m,'ammoShot');assert.equal(m.document.querySelector('[aria-label="Energía en el aire"]'),null);assert.ok(m.document.querySelector('[aria-label="Energía de la carga"]'),'omitted drag does not remove the selected energy model');
+  const {campaign}=m.saved(),actor={...rosterFor(campaign).find(u=>u.id===110),...campaign.operativeState[110]};assert.equal(weaponSpecification(actor).projectileAirDrag,undefined);assert.equal(Object.hasOwn(actor.weaponMetadata.contentWeapon.alternativeLoads[0],'projectileAirDrag'),false);assert.equal(Object.hasOwn(actor.weaponMetadata.contentWeapon,'projectileAirDrag'),!oldPinned);assert.equal(campaign.operativeState[110].ammunitionChoice,'ammoShot');assert.equal(campaign.operativeState[110].carriedLoaded,0);assert.equal(ammoCount(campaign.operativeState[110],'ammoMusket'),10);assert.equal(ammoCount(campaign.operativeState[110],'ammoShot'),3);
+ });
+});
+
+test('mounted inventory load changes apply authored concealment skill to a pistol shot and return to neutral ball fire',async t=>{
+ // Prepared UI subsystem: this finite kit and terrain are declared before
+ // the first tactical snapshot. No campaign acquisition or victory is claimed.
+ const initial=createBattle([{id:'p',name:'Tiradora preparada',x:1,y:4,facing:2,weapon:1805,loaded:1,ammunition:{ammoPistol:2,ammoShot:2},abilities:['scatter_concealment'],marksmanship:55}],{
+  width:12,height:9,seed:45,weather:{rain:0,wind:0},
+  tiles:Array.from({length:108},(_,i)=>({x:i%12,y:Math.floor(i/12),type:'grass',blocked:false,cover:0,...(i%12===4&&Math.floor(i/12)===4?{concealment:60}:{})})),
+  enemies:[{id:'e',x:4,y:4,weapon:1813,patrol:false,overwatch:false}],
+ });
+ let current=validateBattleSnapshot(JSON.parse(JSON.stringify(initial)));const history=[];
+ const actor=()=>current.units[0],target=()=>current.units[1],rounds=unit=>unit.loaded+totalAmmo(unit);
+ const props=()=>({battle:current,onChange:next=>{assert.equal(next.lastError,null,next.lastError);current=next;return next;},onFinish(){}});
+ const mounted=await mountBattlefield(t,Battlefield,props(),{virtualTimers:true,renderTree:tree=>h('div',null,nodes(tree).find(node=>node.type===JA2Strip),nodes(tree).find(node=>node.props?.['aria-label']==='Vista previa de la orden'))});
+ const get=type=>nodes(mounted.tree()).find(node=>node.type===type),doc=document;
+ async function action(order,dispatch){
+  const before=structuredClone(current),expected=actBattle(before,order);assert.equal(expected.lastError,null,expected.lastError);assert.deepEqual(presentedActBattle(before,order).state,expected);
+  await mounted.act(async()=>{dispatch();});await mounted.settle();await mounted.act(async()=>{});assert.deepEqual(current,expected,'the mounted callback commits the ordinary finite order');
+  current=validateBattleSnapshot(JSON.parse(JSON.stringify(current)));assert.deepEqual(current,expected);history.push(order);await mounted.render(props());
+ }
+ const withoutSkill=()=>{const plain=structuredClone(current);delete plain.units[0].abilities;return plain;};
+ const preview=()=>targetPreview(current,actor(),target(),{mode:'fire',aim:1});
+ const chanceWithoutSkill=()=>{const plain=withoutSkill();return shotChance(plain,plain.units[0],plain.units[1],1);};
+ await mounted.act(async()=>{get(JA2Strip).props.onOpenInventory('p');get(JA2Strip).props.onMode('fire');get(TacticalSceneControls).props.onHover(target());get(JA2Strip).props.onSetAim(1);});
+ assert.equal(weaponFor(actor()).loadPattern,'single');assert.equal(preview().chance,chanceWithoutSkill(),'the loaded pistol ball does not receive the specialty');
+ assert.equal(doc.querySelector('[aria-label="Carga para esta arma"]').disabled,true);
+ const unload=[...doc.querySelectorAll('button')].find(button=>button.textContent.startsWith('Descargar arma'));assert.ok(unload);assert.equal(unload.disabled,false);
+ const loadedBefore=rounds(actor());await action({type:'unloadAmmunition',unitId:'p'},()=>unload.dispatchEvent(new window.MouseEvent('click',{bubbles:true})));
+ assert.equal(rounds(actor()),loadedBefore);assert.equal(doc.querySelector('[aria-label="Carga para esta arma"]').disabled,false);
+ const select=family=>{const control=doc.querySelector('[aria-label="Carga para esta arma"]');assert.equal(control.disabled,false);control.value=family;control.dispatchEvent(new window.Event('change',{bubbles:true}));};
+ await action({type:'selectAmmunitionLoad',unitId:'p',family:'ammoShot'},()=>select('ammoShot'));
+ const beforeReload=structuredClone(actor()),reloadCost=actionCosts(current,actor()).reload;
+ await action({type:'reload',unitId:'p'},()=>get(JA2Strip).props.onOrder({type:'reload'}));
+ assert.equal(actor().ap,beforeReload.ap-reloadCost);assert.equal(actor().loaded,1);assert.equal(ammoCount(actor(),'ammoShot'),1);assert.equal(rounds(actor()),loadedBefore);
+ assert.equal(weaponFor(actor()).id,1805);assert.equal(weaponFor(actor()).loadPattern,'cone');assert.equal(weaponFor(actor()).damage,14);assert.equal(weaponFor(actor()).range,3);
+ await mounted.act(async()=>get(JA2Strip).props.onSetAim(1));
+ const forecast=preview();assert.equal(forecast.chance,shotChance(current,actor(),target(),1));assert.ok(forecast.chance>chanceWithoutSkill(),'the same observed concealment now gives a real pellet forecast benefit');
+ assert.match(doc.querySelector('[aria-label="Vista previa de la orden"]').textContent,new RegExp(`${chancePercent(forecast.chance)} de al menos un perdigón`));
+ assert.equal(doc.querySelector('[aria-label="Carga para esta arma"]').disabled,true);
+ const beforeFire=structuredClone(actor()),fireCost=actionCosts(current,actor(),target()).fire+actionCosts(current,actor(),target()).aim;
+ await action({type:'fire',unitId:'p',targetId:'e',aim:1,hitLocation:'torso'},()=>get(TacticalSceneControls).props.onTile(target()));
+ assert.equal(actor().ap,beforeFire.ap-fireCost);assert.equal(actor().condition,beforeFire.condition-1);assert.equal(actor().loaded,0);assert.equal(rounds(actor()),loadedBefore-1);assert.equal(ammoCount(actor(),'ammoShot'),1);
+ await action({type:'selectAmmunitionLoad',unitId:'p',family:'ammoPistol'},()=>select('ammoPistol'));
+ const beforeBall=structuredClone(actor()),ballCost=actionCosts(current,actor()).reload;
+ await action({type:'reload',unitId:'p'},()=>get(JA2Strip).props.onOrder({type:'reload'}));
+ assert.equal(actor().ap,beforeBall.ap-ballCost);assert.equal(actor().loaded,1);assert.equal(weaponFor(actor()).loadPattern,'single');assert.equal(rounds(actor()),loadedBefore-1);assert.equal(ammoCount(actor(),'ammoPistol'),2);
+ await mounted.act(async()=>{get(TacticalSceneControls).props.onHover(target());get(JA2Strip).props.onSetAim(1);});
+ assert.equal(preview().chance,chanceWithoutSkill(),'returning to a loaded ball removes the benefit without changing authored ability');assert.doesNotMatch(doc.querySelector('[aria-label="Vista previa de la orden"]').textContent,/al menos un perdigón/);
+ let replay=validateBattleSnapshot(JSON.parse(JSON.stringify(initial)));for(const order of history)replay=validateBattleSnapshot(JSON.parse(JSON.stringify(actBattle(replay,order))));assert.deepEqual(replay,current,'all finite load choices, reloads and the real shot survive tactical saved replay');
 });
 
 test('mounted alternative shot forecast states at least one pellet contact and keeps only bounded aggregate metadata',async t=>{

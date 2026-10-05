@@ -1,3 +1,4 @@
+import {hasProjectileEnergy,kineticNominalImpact} from './projectile-energy.js';
 // Edit this file to tune combat. Weapon-specific damage, range and AP live in
 // firearm-definitions.js. Both sides use these same settings.
 // These are Granaderos playtest settings, not claimed JA2 constants.
@@ -32,6 +33,7 @@ export function coveredFirearmDamage(amount,coverFactor=1,coverMultiplier=COMBAT
  return amount*factor;
 }
 // Cover tuning cannot return force spent on a body or reflected stone surface.
-export function penetratingFirearmDamage(amount,impact,coverMultiplier=COMBAT_BALANCE.coverDamageReductionMultiplier){
+export function penetratingFirearmDamage(amount,impact,coverMultiplier=COMBAT_BALANCE.coverDamageReductionMultiplier,weapon=null,share=1){
+ if(hasProjectileEnergy(weapon))return amount/(weapon.damage*share)*kineticNominalImpact(weapon,impact,share,coverMultiplier);
  return Math.max(0,coveredFirearmDamage(amount,impact.coverDamageFactor??impact.damageFactor,coverMultiplier)-amount*((impact.bodyDamageReduction??0)+(impact.ricochetDamageReduction??0)));
 }

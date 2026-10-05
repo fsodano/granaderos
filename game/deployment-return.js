@@ -1,3 +1,4 @@
+import {initializeQuestWithdrawals} from './quest-withdrawal.js';
 import {completedTacticalVictory} from './battle-outcome.js';
 import {expandCellScene} from './cell-scene-storage.js';
 import {validWorldLocation,worldOwner,worldCell} from './world-cells.js';
@@ -14,6 +15,7 @@ import {initializeUnitAmmunition} from './tactical-ammunition.js';
 import {fieldCapable} from './tactical.js';
 import {validateBattleSnapshot} from './validate-battle.js';
 import {FITTING_RULES_VERSION,normalizeUnitFittings} from './weapon-fittings.js';
+import {initializeQuestBeneficiaries,validateQuestBeneficiaryContext} from './quest-beneficiaries.js';
 
 const clone=value=>structuredClone(value);
 const need=(ok,message)=>{if(!ok)throw Error(message);};
@@ -31,6 +33,10 @@ export function recordStrategicArrival(s,ids,fromSector,toSector,sceneId=null){
 export function prepareDeploymentExits(s,request){
  const errands=s.contentCampaign?.package.errands??s.errandDefinitions;
  if(errands!==undefined)request.errandDefinitions=structuredClone(errands);
+ const withdrawals=initializeQuestWithdrawals(s);if(withdrawals!==undefined)request.questWithdrawals=withdrawals;else delete request.questWithdrawals;
+ const choices=initializeQuestBeneficiaries(s);
+ if(choices!==undefined)request.questBeneficiaries=choices;
+ else delete request.questBeneficiaries;
  request.roadsideDiscoveryDefinitions=structuredClone(roadsideDiscoveriesFor(s));
   request.ammunitionVersion=2;
   for(const enemy of request.enemies??[]){enemy.weapon??=1800;enemy.loaded??=WEAPONS[enemy.weapon]?.capacity??0;initializeUnitAmmunition(enemy,{defaultCount:12});}
@@ -76,6 +82,7 @@ function departureFor(s,request,snapshot,u){
 }
 
 export function planDeploymentReturn(s,request,snapshot,outcome){
+ if(snapshot)validateQuestBeneficiaryContext(s,snapshot,{request});
   need(request.exitRulesVersion===1&&Array.isArray(request.exits),'El despliegue no contiene rutas de salida válidas.');
   need(validateSectorExits(request.sector,request.sceneId??null,request.exits),'Las rutas del despliegue son inválidas.');
   need(validateSectorExits(request.sector,request.sceneId??null,snapshot.exits),'Las rutas tácticas son inválidas.');

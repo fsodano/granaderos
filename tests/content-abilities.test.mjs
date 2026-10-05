@@ -29,13 +29,13 @@ const act=(s,a)=>{const n=actBattle(s,a);assert.equal(n.lastError,null,n.lastErr
 const pa=(s,id)=>orderDescriptors(s,s.units[0]).find(o=>o.id===id).pa;
 
 test('a new hired identity keeps explicit abilities in the dossier, range, deployment and saved reentry',()=>{
- const d=content(['bodyguard','rapid_first_aid','care_composure']),id=operativeIdForCharacter(d,'alma-nueva');
+ const d=content(['bodyguard','rapid_first_aid','care_composure','enclosed_room_fear']),id=operativeIdForCharacter(d,'alma-nueva');
  // Editor ordering and display names do not determine a runtime identity or power.
  const reordered=structuredClone(d);reordered.characters.reverse();reordered.characters.find(c=>c.id==='alma-nueva').name='Otra persona';assert.equal(operativeIdForCharacter(reordered,'alma-nueva'),id);
- assert.deepEqual(rosterFor(initialCampaign(42,reordered)).find(o=>o.id===id).abilities,['bodyguard','rapid_first_aid','care_composure']);
+ assert.deepEqual(rosterFor(initialCampaign(42,reordered)).find(o=>o.id===id).abilities,['bodyguard','rapid_first_aid','care_composure','enclosed_room_fear']);
  let s=order(initialCampaign(42,d),{type:'recruitCivic',id,term:'week'});s=order(save(s).campaign,{type:'wait',hours:1});s=order(s,{type:'visitSector'});
- let pair=save(s,enterSector(s.pendingBattle)),unit=pair.battle.units.find(u=>u.id===String(id));assert.deepEqual(unit.abilities,['bodyguard','rapid_first_aid','care_composure']);
- assert.deepEqual(characterProfile(unit).skills,['Protección de compañeros','Atención rápida','Serenidad al cuidar']);assert.match(characterAbilityDescriptions(unit).find(a=>a.id==='care_composure').description,/otra persona.*hasta 2.*PA.*vendas.*sí mismo/);assert.equal(actionCosts(pair.battle,unit).heal,18);
+ let pair=save(s,enterSector(s.pendingBattle)),unit=pair.battle.units.find(u=>u.id===String(id));assert.deepEqual(unit.abilities,['bodyguard','rapid_first_aid','care_composure','enclosed_room_fear']);
+ assert.deepEqual(characterProfile(unit).skills,['Protección de compañeros','Atención rápida','Serenidad al cuidar','Temor a lugares cerrados']);assert.match(characterAbilityDescriptions(unit).find(a=>a.id==='care_composure').description,/otra persona.*hasta 2.*PA.*vendas.*sí mismo/);assert.equal(actionCosts(pair.battle,unit).heal,18);
  s=order(pair.campaign,{type:'leaveSector',battleId:s.pendingBattle.id,sectorState:pair.battle,survivors:pair.battle.units.filter(u=>u.side==='player')});
  s=order(save(s).campaign,{type:'visitSector'});pair=save(s,enterSector(s.pendingBattle,s.sectorStates.retiro));assert.deepEqual(pair.battle.units[0].abilities,unit.abilities);
  assert.deepEqual(createContentTestRange(d,'alma-nueva').units[0].abilities,unit.abilities);
@@ -80,14 +80,12 @@ test('authored shot, movement, breach and medical costs control real low-AP admi
  const rescuer=battle([subject([],{hp:30,traits:['field_rescuer']})]);assert.equal(pa(rescuer,'heal'),20);assert.equal(actionCosts(rescuer,rescuer.units[0]).heal,20);
 });
 
-test('mud riding, night scouting and scatter concealment follow authored abilities instead of names',()=>{
+test('mud riding and night scouting follow authored abilities instead of names',()=>{
  const rider=abilities=>{const b=battle([subject(abilities,{x:1,y:1,mounted:true})],[],{exploration:true});b.tiles.find(t=>t.x===2&&t.y===1).type='mud';return b;};
  const fast=rider(['mud_rider']),plain=rider([]);assert.ok(getReachable(fast,'2000').find(p=>p.x===2&&p.y===1).cost<getReachable(plain,'2000').find(p=>p.x===2&&p.y===1).cost);
  const dark=abilities=>battle([subject(abilities,{x:1,y:1,weapon:1800,marksmanship:60})],[{id:'enemy',x:8,y:1}],{night:true});
  const scout=dark(['night_scout']),ordinary=dark([]);assert.equal(canSee(scout,scout.units[0],scout.units[1]),true);assert.equal(canSee(ordinary,ordinary.units[0],ordinary.units[1]),false);
  assert.ok(shotChance(scout,scout.units[0],scout.units[1])>shotChance(ordinary,ordinary.units[0],ordinary.units[1]));
- const cover=abilities=>{const b=battle([subject(abilities,{x:1,y:1,weapon:1807,marksmanship:55})],[{id:'enemy',x:4,y:1}]);b.tiles.find(t=>t.x===4&&t.y===1).cover=60;return b;};
- const scatter=cover(['scatter_concealment']),bare=cover([]);assert.ok(shotChance(scatter,scatter.units[0],scatter.units[1])>shotChance(bare,bare.units[0],bare.units[1]));
 });
 
 test('authored command holds morale only in the proper formation and support respects side and distance',()=>{

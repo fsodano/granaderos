@@ -1,6 +1,6 @@
 import {makeOutfit} from '../game/outfits.js';
 import test from 'node:test';import assert from 'node:assert/strict';
-import {createBattle,actBattle,endTurn,weaponFor,bladeFor,carriedWeight,carryCapacity,actionCosts,actionPointBudget,stanceCost,shotChance,getReachable,movementIntentReason,canSee,transferPreview,dropPreview,lootPreview,environmentTargetAt,environmentPreview,containerLootPreview,supplyUsePreview,BLADES} from '../game/tactical.js';
+import {createBattle,actBattle,endTurn,weaponFor,bladeFor,carriedWeight,carryCapacity,actionCosts,actionPointBudget,stanceCost,shotChance,getReachable,movementIntentReason,canSee,transferPreview,dropPreview,lootPreview,environmentTargetAt,environmentPreview,containerLootPreview,supplyUsePreview,firearmMaintenancePreview,BLADES} from '../game/tactical.js';
 import {OPERATIVES} from '../game/data.js';
 import {rosterCells,inventoryModel,inventoryHandlingModel,nearbyLootOptions,nearbyEnvironmentModel,toolItems,orderDescriptors,orderAction,slotAction,backpackEquipAction,levelFor,aimOptions,targetPreview,equipmentSlots,nextStance,shotLocationOptions,turnModel,unitCanAct,heardNoiseModel,facingLabel,visibleHover,interruptHover,supplyItems,heldSupplyAction,targetingHelp,groupSelectionMode,isGroupGround,isMovementGround,movementAction,toggleMovementGroup,movementGroupModel,exitModel,fieldUnits,fieldState} from '../game/ja2-hud.js';
 import {executeGroupMove} from '../game/group-movement.js';
@@ -12,12 +12,30 @@ import {contextualAttack,fitBayonetPreview,removeBayonetPreview} from '../game/t
 import {medicalUsePreview} from '../game/tactical.js';
 import {AMMUNITION_TYPES,isAmmunitionStack,totalReserveAmmunition,weaponAmmoType} from '../game/ammunition-types.js';
 import {setTestAmmunition} from './typed-ammunition-fixture.mjs';
+import {freshDefaultErrands} from '../game/quest-definitions.js';
+import {handSlots,firearmLoadingProgress} from '../game/ja2-hud.js';
+import {validateBattleSnapshot} from '../game/validate-battle.js';
 const tiles=()=>Array.from({length:80},(_,i)=>({x:i%10,y:Math.floor(i/10),type:'grass',blocked:false,cover:0}));
 const merc=(id,extra={})=>({...OPERATIVES[id],...extra});
 function battle(units=[merc(0)],extra={}){return createBattle(units,{width:10,height:8,tiles:tiles(),enemies:[{id:'enemy-0',x:5,y:1,hp:100,weapon:1800,condition:63}],seed:45,...extra});}
 const players=s=>s.units.filter(u=>u.side==='player');
 const ammoItem=u=>`inventory:${Object.entries(u.inventory).find(([,stack])=>isAmmunitionStack(stack)&&stack.ammoType===weaponAmmoType(u.weapon))[0]}`;
 const ORDER_IDS=['move','look','stealth','useItem','fire','melee','charge','heal','loot','reload','reprime','weapon','stance','overwatch','mount','brace','repair','ration','torch','bolas','free','sight','endTurn','artillery','artilleryMove','artilleryPivot','artilleryReload'];
+test('held loading work belongs to the next physical charge, separate from ready barrels and future AP',()=>{
+  // Declared current-state fixtures exercise the read model, not earned wounds.
+  const s=validateBattleSnapshot(battle([{id:'loader',weapon:1808,loaded:1,reloadProgress:.71,ammo:9,offHand:{weapon:1805,count:1,weight:1.3,loaded:0,condition:61,reloadProgress:.43},leftHandItem:'offhand'}],{exploration:true,enemies:[]}));
+  const u=s.units[0],before=structuredClone(s),hands=handSlots(s,u);
+  assert.equal(hands[0].loaded,1);assert.equal(hands[0].loading.progress,.71);assert.equal(hands[0].loading.percent,'71%');
+  assert.equal(hands[1].loaded,0);assert.equal(hands[1].loading.progress,.43);assert.match(hands[1].loading.description,/próximo cartucho/);
+  assert.doesNotMatch(hands[0].loading.description,/PA|lista|listo/);assert.deepEqual(s,before,'reading the current work must not spend or change equipment');
+  const stowed={...u,activeSlot:'unarmed',leftHandItem:null};assert.ok(handSlots(s,stowed).every(hand=>!hand.loading),'unheld guns do not appear in hand readouts');
+  const complete=validateBattleSnapshot(battle([{id:'complete',weapon:1808,loaded:2,ammo:9}],{exploration:true,enemies:[]}));
+  assert.equal(firearmLoadingProgress(complete.units[0],'primary'),null);assert.ok(handSlots(complete,complete.units[0]).every(hand=>!hand.loading));
+  const empty=validateBattleSnapshot(battle([{id:'old',weapon:1805,loaded:0,ammo:9}],{exploration:true,enemies:[]}));
+  assert.equal(empty.units[0].reloadProgress,undefined);assert.equal(firearmLoadingProgress(empty.units[0],'primary'),null);
+  assert.equal(firearmLoadingProgress({...u,reloadProgress:.9999},'primary').percent,'99%','unfinished work must not look complete');
+  assert.equal(firearmLoadingProgress({...u,reloadProgress:.005},'primary').percent,'<1%','small positive work must not look absent');
+});
 test('campaign return accepts settled victory care and peaceful visits without declaring hidden enemies cleared',()=>{
   const visit=battle([merc(0)],{exploration:true,enemies:[]});
   visit.sectorCleared=false;
@@ -41,6 +59,21 @@ test('campaign return accepts settled victory care and peaceful visits without d
   const departed=structuredClone(cleared);departed.units[0].departure={destination:'retiro'};
   assert.equal(campaignReturnModel(departed,true).available,false);
   assert.match(campaignReturnModel(departed,true).note,/Quienes siguen aquí/);
+});
+test('held physical delivery discloses both destinations before its first paid gift and then shows the actual locked destination',()=>{
+  // Declared finite garment and local contact isolate the real held-item HUD.
+  const s=battle([merc(0,{x:1,y:1,facing:2,inventory:{gift:{item:'inventory:gift',...makeOutfit('poncho',75),instanceId:'hud-delivery:one'},spare:{item:'inventory:spare',...makeOutfit('poncho',75),instanceId:'hud-delivery:two'}},activeSlot:'item',activeItem:'inventory:gift'})],{id:'retiro',sector:'retiro',exploration:true,enemies:[],errandDefinitions:freshDefaultErrands(),questBeneficiaries:{},npcs:[{id:'local-retiro',name:'Sargento del cuartel',x:2,y:1,hp:100}]});
+  const u=players(s)[0],npc=s.npcs[0],before=structuredClone(s),preview=targetPreview(s,u,npc,{mode:'useItem'});
+  assert.equal(preview.valid,true,preview.reason);assert.equal(preview.pa,0);assert.match(preview.coverNote,/Retiro: apoyo local \+8/);assert.match(preview.coverNote,/Ensenada de Barragán: apoyo local \+8/);assert.match(preview.coverNote,/primera entrega aceptada fija el destino.*No podrás cambiarlo/);assert.deepEqual(s,before);
+  const delivered=actBattle(s,{type:'useItem',unitId:u.id,targetId:npc.id});assert.equal(delivered.lastError,null);assert.equal(delivered.elapsedSeconds-s.elapsedSeconds,1);assert.equal(delivered.units[0].ap,u.ap);assert.equal(delivered.questBeneficiaries['retiro-uniformes'],'cuartel');assert.equal(delivered.npcs[0].questGifts[0].condition,75);assert.equal(delivered.units[0].inventory.gift,undefined);
+  const held=actBattle(delivered,{type:'weapon',unitId:u.id,slot:'item',item:'inventory:spare'});assert.equal(held.lastError,null);
+  const locked=targetPreview(held,held.units[0],held.npcs[0],{mode:'useItem'});assert.match(locked.coverNote,/Destino fijado: Buenos Aires · Fuerte y Retiro/);assert.doesNotMatch(locked.coverNote,/primera entrega aceptada/);assert.equal(held.units[0].inventory.spare.instanceId,'hud-delivery:two');
+  // This distinct prepared contact scene starts with the already fixed choice.
+  // Its public held-item order remains a paid refusal, not an item transfer.
+  const other=battle([merc(0,{x:1,y:1,facing:2,inventory:{spare:before.units[0].inventory.spare},activeSlot:'item',activeItem:'inventory:spare'})],{id:'ensenada',sector:'ensenada',exploration:true,enemies:[],errandDefinitions:freshDefaultErrands(),questBeneficiaries:{'retiro-uniformes':'cuartel'},npcs:[{id:'local-ensenada',name:'Capataz del puerto',x:2,y:1,hp:100}]});
+  const refusal=targetPreview(other,other.units[0],other.npcs[0],{mode:'useItem'});assert.equal(refusal.valid,true,refusal.reason);assert.match(refusal.coverNote,/Destino fijado: Buenos Aires · Fuerte y Retiro.*Este contacto rechazará el objeto; seguirá en tu equipo/);
+  const refused=actBattle(other,{type:'useItem',unitId:other.units[0].id,targetId:other.npcs[0].id});assert.equal(refused.lastError,null);assert.ok(refused.elapsedSeconds>other.elapsedSeconds);assert.deepEqual(refused.units[0].inventory,other.units[0].inventory);assert.equal(refused.npcs[0].questGifts,undefined);assert.deepEqual(refused.questBeneficiaries,other.questBeneficiaries);
+
 });
 test('bayonet inventory controls share paid fit/removal admission and retain incompatible loose choices',()=>{
   const s=battle([merc(0,{weapon:1800,blade:1811,bladeCondition:73,bladeFittingPattern:'india_socket',bladeInstanceId:'socket-hud-1',activeSlot:'primary'})]);
@@ -211,6 +244,16 @@ test('HUD uses shared costs with specialist and nearby support modifiers',()=>{
   const result=actBattle(s,{unitId:u.id,type:'reload'});
   assert.equal(result.lastError,null);
   assert.equal(result.units[0].ap,u.ap-descriptors.reload.pa);
+});
+test('the maintenance order shows the shared finite gain and refuses an exhausted kit without mutating the read model',()=>{
+  const s=battle([merc(0,{condition:60,toolkitPoints:0,inventory:{kit:{kind:'repair-kit',count:1,weight:2,repairPoints:17}}})]);
+  const u=players(s)[0],before=structuredClone(s),preview=firearmMaintenancePreview(s,u),descriptor=orderDescriptors(s,u).find(order=>order.id==='repair');
+  assert.equal(preview.valid,true,preview.reason);assert.equal(descriptor.disabled,false);assert.equal(descriptor.label,'Mantener arma');
+  assert.equal(descriptor.pa,preview.pa);assert.deepEqual(descriptor.action,preview.action);assert.match(descriptor.detail,/Estado \+17 puntos.*materiales: 17 puntos/);assert.deepEqual(s,before);
+  const maintained=actBattle(s,descriptor.action);assert.equal(maintained.lastError,null);assert.equal(maintained.units[0].condition,77);
+  const empty=orderDescriptors(maintained,maintained.units[0]).find(order=>order.id==='repair');
+  assert.equal(empty.disabled,true);assert.equal(empty.detail,firearmMaintenancePreview(maintained,maintained.units[0]).reason);assert.match(empty.detail,/materiales/i);
+  assert.equal(orderDescriptors(s,u,{busy:true}).find(order=>order.id==='repair').disabled,true);
 });
 
 test('item slots expose medical supplies, skip missing equipment, and respect AP',()=>{

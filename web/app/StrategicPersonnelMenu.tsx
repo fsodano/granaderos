@@ -1,6 +1,6 @@
 'use client';
 import {useEffect,useRef,useState} from 'react';
-import {contractQuote,contractStatus} from '../../game/contracts.js';
+import {contractRenewalQuote,contractStatus} from '../../game/contracts.js';
 import {CARE_ASSIGNMENTS,careAssignmentReason} from '../../game/medical-care.js';
 import {WORK_ASSIGNMENTS,STUDY_SKILLS,workAssignmentReason} from '../../game/assignments.js';
 import {operativeLocation} from '../../game/squads.js';
@@ -11,6 +11,10 @@ import {campaignPlace} from '../../game/world-cells.js';
 import {travelTime} from '../lib/travel-time';
 import ServiceRefusalNotice from './ServiceRefusalNotice';
 import PreferredCompanionsSummary from './PreferredCompanionsSummary';
+import {serviceObjectionReason} from '../../game/service-objections.js';
+import ServiceObjectionNotice from './ServiceObjectionNotice';
+import {lowMoraleRenewalStatus} from '../../game/morale-renewal.js';
+import ContractMoraleNotice from './ContractMoraleNotice';
 
 function visibleControl(control:HTMLElement){
  if(!control.isConnected||control.closest('[hidden],[inert]'))return false;
@@ -39,7 +43,7 @@ export default function StrategicPersonnelMenu({state:s,roster,id,kind,onClose,d
  const [skill,setSkill]=useState('marksmanship'),[target,setTarget]=useState(String(id)),[teacher,setTeacher]=useState('');
  const [squadMenu,setSquadMenu]=useState(false);
  const blocked=Boolean(s.pendingBattle||s.pendingEncounter||s.defeated),contract=contractStatus(s,id);
- const contractRefusal=kind==='contract'?contractQuote(s,op,'day').serviceRefusal:null;
+ const contractRefusal=kind==='contract'?contractRenewalQuote(s,op,'day').serviceRefusal:null;
  const local=roster.filter(o=>s.recruited.includes(o.id)&&s.operativeState[o.id]?.alive&&operativeLocation(s,o.id)===operativeLocation(s,id));
  const order=(action:any)=>{dispatch(action);onClose();};
  const options={skill,targetId:Number(target),instructorId:teacher?Number(teacher):undefined,repairScope:'equipment'};
@@ -68,9 +72,11 @@ export default function StrategicPersonnelMenu({state:s,roster,id,kind,onClose,d
    </div>
   </>:<p>Sin ruta pendiente.</p>:kind==='contract'?<>
    <PreferredCompanionsSummary state={s} operative={op}/>
+   <ServiceObjectionNotice reason={serviceObjectionReason(s,op)}/>
+   <ContractMoraleNotice status={lowMoraleRenewalStatus(s,op)}/>
    <p>{contract?.remaining===null?'Servicio permanente':`${Math.ceil((contract?.remaining??0)/24)} días hasta la salida`}</p>
    <ServiceRefusalNotice state={s} refusal={contractRefusal} disabled={blocked} dispatch={dispatch}/>
-   {contract?.remaining!==null&&['day','week','fortnight'].map(term=>{const q=contractQuote(s,op,term);return <button key={term} className="line-button" disabled={blocked||!q.available||q.price>s.resources.treasury} onClick={()=>order({type:'renewContract',id,term,expectedExpiresAt:s.contracts[id]?.expiresAt,expectedExpiresSecond:s.contracts[id]?.expiresSecond??0})}>{term==='day'?'Un día':term==='week'?'Una semana':'Dos semanas'} · {q.price.toLocaleString('es-AR')} pesos</button>;})}
+   {contract?.remaining!==null&&['day','week','fortnight'].map(term=>{const q=contractRenewalQuote(s,op,term),reason=blocked?'Resolvé el encuentro antes de renovar.':!q.available?q.reason:q.price>s.resources.treasury?'No hay suficientes pesos.':null;return <button key={term} className="line-button" disabled={Boolean(reason)} title={reason||undefined} onClick={()=>order({type:'renewContract',id,term,expectedExpiresAt:s.contracts[id]?.expiresAt,expectedExpiresSecond:s.contracts[id]?.expiresSecond??0})}>{term==='day'?'Un día':term==='week'?'Una semana':'Dos semanas'} · {q.price.toLocaleString('es-AR')} pesos</button>;})}
    {id!==1000&&<button className="line-button" disabled={blocked} onClick={()=>order({type:'dismiss',id})}>Despedir</button>}
   </>:<>
    <PreferredCompanionsSummary state={s} operative={op}/>

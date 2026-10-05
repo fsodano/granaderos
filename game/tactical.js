@@ -1,7 +1,9 @@
+import {hasProjectileEnergy} from './projectile-energy.js';
 import {worldCell} from './world-cells.js';
 import {canonicalContent} from './content-identity.js';
 import {fieldCapable} from './actor-condition.js';
 import {issueGriefParticipants,captureCompanionGrief,applyCompanionGrief} from './companion-grief.js';
+import {issueConductObservers,captureServiceObjection,applyServiceObjection} from './service-objections.js';
 export {fieldCapable};
 export {completedTacticalVictory} from './battle-outcome.js';
 import {AMMUNITION_FAMILIES} from './ammunition-families.js';
@@ -40,12 +42,15 @@ import {itemFlight} from './item-flight.js';
 import {usesElevationGeometry,elevationSightClear,absoluteBodyHeight,geometryCells,rayHeightIntersection} from './sight-geometry.js';
 import {tacticalLevel,spaceKey,sameSurface,sameCell,surfaceAt,surfaceHeight,accessStepsFrom} from './tactical-space.js';
 import {questGiftPlan,questGiftDecision} from './quests.js';
+import {commitQuestBeneficiary,questBeneficiaryDeliveryPreview,initializeQuestBeneficiaries} from './quest-beneficiaries.js';
 import {BODY_SLOTS,wornBodyItems,OUTFIT_CHANGE_AP,normalizeOutfit,wornOutfit,hasPoncho,regionalGarmentWear} from './outfits.js';
 import {FIELD_DRESSINGS_AP,planFieldDressings} from './field-dressings.js';
 import {handsRequired,selectMainHand,handLayout} from './hand-layout.js';
 import {firearmPreparation,lowerWeapon,lowersWeapon,turnLowersWeapon} from './weapon-readiness.js';
 import {planReload,reloadRoundCost} from './weapon-reload.js';
 import {planReprime,reprimeCost} from './weapon-reprime.js';
+import {repairMaterialPoints} from './repair-materials.js';
+import {spendRepairMaterials} from './equipment-repair.js';
 import {discoverInventory} from './inventory-discovery.js';
 import {isInteriorVisible} from './tactical-visibility.js';
 import {automaticOrder,searchOrder} from './autonomous-orders.js';
@@ -73,8 +78,11 @@ import {advanceBattleClock,COMBAT_ROUND_SECONDS,REST_SECONDS} from './time.js';
 import {fieldPractice as practice} from './skill-training.js';
 import {COMBAT_BALANCE,penetratingFirearmDamage} from './combat-balance.js';
 import {practiceFirearmNearMiss} from './firearm-near-miss-practice.js';
+import {captureFirearmNearMissFeedback,recordFirearmNearMissFeedback} from './firearm-near-miss-feedback.js';
 import {firstAidPlan} from './first-aid.js';
 import {careComposureRelief} from './care-composure.js';
+import {applyEnclosedRoomFear} from './enclosed-room-fear.js';
+import {applyNervousIsolation} from './nervous-isolation.js';
 // Deterministic, serializable tactical simulation. The browser uses this module directly.
 export function bladeFor(unit){
  if(['unarmed','medical','tool','supply','item'].includes(unit.activeSlot))return FISTS;
@@ -123,6 +131,20 @@ export function actionCosts(s,u,point){
     reprime:reprimePlan(u,s).pa||reprimeCost(u),repair:hasTrait(u,'gunsmith_artillerist')?18:25,
     reload:reloadCost(u,s),melee:meleeStrike+meleeStance,meleeStrike,meleeStance,
   };
+}
+export function firearmMaintenancePreview(s,u){
+ const pa=u?actionCosts(s,u).repair:25,action=u?{type:'repair',unitId:u.id}:null;
+ let reason=inventoryOrderReason(s,u,0),materialsAvailable=0;
+ if(!reason&&(u.militia||s.alliedTurn&&s.phase!=='interrupt'))reason='La milicia actúa por su cuenta. Da órdenes a los combatientes de tu escuadra.';
+ if(!reason&&!hasFirearm(u))reason='Prepara primero el arma de fuego que quieres mantener.';
+ if(!reason&&(!Number.isFinite(u.condition)||u.condition<0||u.condition>100))reason='El estado del mecanismo no es válido.';
+ if(!reason&&u.condition>=100)reason='El mecanismo ya está en buen estado.';
+ if(!reason)try{materialsAvailable=repairMaterialPoints(u);}catch(error){reason=error.message;}
+ if(!reason&&!materialsAvailable)reason='No quedan materiales de reparación.';
+ if(!reason&&s.mode!=='exploration'&&u.ap<pa)reason=`Mantener el mecanismo requiere ${pa} PA.`;
+ const capacity=u&&hasTrait(u,'gunsmith_artillerist')?45:u&&hasTrait(u,'workshop_training')?40:30;
+ const gain=reason?0:Math.min(capacity,100-u.condition,materialsAvailable);
+ return {pa,valid:!reason,reason,gain,materialCost:Math.ceil(gain),materialsAvailable,action};
 }
 // All ordinary hostile clicks, HUD previews and attack animations share this
 // choice. Gun mode is explicit; distance never silently changes fire into melee.
@@ -244,6 +266,8 @@ function applyReloadPlan(unit,plan){
 }
 function makeUnit(raw,side,index,x,y){const stats=raw.stats||{};const weapon=raw.weapon??raw.primary??1800;const w=typeof weapon==='object'?weapon:weaponSpecification({...raw,weapon})||WEAPONS[1800];return initializeUnitAmmunition({...raw,id:String(raw.id??`${side}-${index}`),name:raw.name||raw.nickname||(side==='player'?'Granadero':'Realista'),side,facing:raw.facing??(side==='enemy'?6:2),stealthMode:Boolean(raw.stealthMode),x:raw.x??x,y:raw.y??y,maxHp:raw.maxHp??raw.health??stats.health??100,hp:raw.hp??raw.health??stats.health??100,ap:100,morale:raw.morale??Math.min(100,(raw.personality==='optimistic'?90:raw.personality==='pessimistic'?70:80)+((raw.traits||[]).includes('steadfast')?10:0)),marksmanship:raw.marksmanship??stats.marksmanship??70,agility:raw.agility??stats.agility??75,strength:raw.strength??stats.strength??75,medical:raw.medical??stats.medical??30,mechanical:raw.mechanical??stats.mechanical??0,stealth:raw.stealth??stats.stealth??0,weapon,loaded:raw.loaded??(WEAPONS[weapon]||typeof weapon==='object'?w.capacity:0),ammo:raw.ammo,condition:raw.condition??100,stance:raw.stance??movementStance(raw.movementMode??'walk'),mounted:Boolean(raw.mounted),horse:Boolean(raw.horse||raw.canMount||raw.mounted),jammed:raw.jammed??false,bleeding:raw.bleeding??0,bandaged:raw.bandaged??((raw.bleeding??0)>0?0:Math.max(0,(raw.maxHp??raw.health??stats.health??100)-(raw.hp??raw.health??stats.health??100))),shock:raw.shock??0,experienceLevel:raw.experienceLevel??stats.experienceLevel??Math.min(10,4+Math.floor((raw.xp??0)/100)),dexterity:raw.dexterity??stats.dexterity??75,wisdom:raw.wisdom??stats.wisdom??50,carriedAP:0,routed:raw.routed??false,medkits:raw.medkits??2,momentum:0,lastDirection:null,weaponMode:raw.weaponMode??'fire',activeSlot:raw.activeSlot||'primary',fatigue:raw.fatigue||0,rations:raw.rations??2,energy:raw.energy??100,unconscious:isUnconscious({hp:raw.hp??raw.health??stats.health??100,energy:raw.energy??100}),movementMode:raw.movementMode||'walk',inventory:{...raw.inventory},boleadoras:raw.boleadoras??1,torches:raw.torches??2,strengthTraining:raw.strengthTraining??0,interceptTurn:0,parryTurn:0,counterTurn:0,braceTurn:0,braced:false,knockedDown:Boolean(raw.knockedDown),overwatch:raw.overwatch??(side==='enemy'),reactionTurn:0,reactionSpent:0});}
 export function createBattle(squad=[],sector={}){const width=sector.width||16,height=sector.height||12;const state={version:1,conditionVersion:1,...(sector.sourceMapId?{sourceMapId:sector.sourceMapId,sourceMapRevision:sector.sourceMapRevision}:{}),...(sector.errandDefinitions!==undefined?{errandDefinitions:structuredClone(sector.errandDefinitions)}:{}),...(sector.roadsideDiscoveryDefinitions!==undefined?{roadsideDiscoveryDefinitions:structuredClone(sector.roadsideDiscoveryDefinitions)}:{}),...(sector.artilleryDefinitions!==undefined?{artilleryDefinitions:structuredClone(sector.artilleryDefinitions)}:{}),...(sector.militiaPatrol!==undefined?{militiaPatrol:structuredClone(sector.militiaPatrol)}:{}),ammunitionVersion:2,fittingRulesVersion:FITTING_RULES_VERSION,exits:structuredClone(sector.exits??[]),exitRulesVersion:sector.exitRulesVersion??1,enemyExits:['N','E','S','W'].map(edge=>({id:`enemy:${edge}`,edge,destination:'__offmap_enemy__'})),battleId:sector.id??null,startSeconds:(sector.hour??(sector.night||sector.weather?.night?0:12))*3600+(sector.secondOfHour??0),elapsedSeconds:0,syncedSeconds:0,roundTimeCharged:false,quietCombatTurns:sector.exploration?2:0,contactThisRound:false,sectorId:sector.sector||sector.id||'san-lorenzo',sectorName:sector.name||'San Lorenzo',width,height,biome:sector.biome||'grassland',altitude:sector.altitude||0,night:Boolean(sector.night||sector.weather?.night||(sector.hour!==undefined&&(sector.hour%24>=20||sector.hour%24<6))),enemyCommand:sector.enemyCommand||null,objective:sector.objective||null,npcs:structuredClone(sector.npcs||[]).map(initializeCivilianHealth),props:structuredClone(sector.props??[]),buildings:sector.buildings||[],revealedRooms:[],decor:sector.decor||[],turn:1,enemyTurns:0,roundFirstSide:sector.firstSide==='enemy'?'enemy':'player',phase:'player',mode:sector.exploration?'exploration':'combat',sectorCleared:false,status:'active',seed:(sector.seed??18130203)>>>0,weather:{rain:0,humidity:0,...sector.weather},tiles:[],units:[],droppedWeapons:[],groundItems:structuredClone(sector.groundItems??[]),lights:(sector.lights||[]).map((l,i)=>({id:`light-${i}`,type:'campfire',radius:4,intensity:1,...l})),artillery:(sector.artillery||[]).map((g,i)=>({id:`gun-${i}`,type:'bronze4',side:'player',loaded:artilleryProfile(sector,g.type??'bronze4').initialLoaded,ammo:artilleryProfile(sector,g.type??'bronze4').initialAmmo,...g})),smoke:[],log:[],lastError:null};
+if(sector.questWithdrawals!==undefined)state.questWithdrawals=structuredClone(sector.questWithdrawals);
+const beneficiaryMap=sector.questBeneficiaries!==undefined?sector.questBeneficiaries:initializeQuestBeneficiaries(state);if(beneficiaryMap!==undefined)state.questBeneficiaries=structuredClone(beneficiaryMap);
 if(sector.upperSurfaces!==undefined)state.upperSurfaces=structuredClone(sector.upperSurfaces);
 if(sector.climbLinks!==undefined)state.climbLinks=structuredClone(sector.climbLinks);
 if(sector.regionalWeather){state.regionalWeather=true;state.weather=regionalWeatherAt(state.sectorId,state.startSeconds/3600);}
@@ -252,6 +276,7 @@ for(let y=0;y<height;y++)for(let x=0;x<width;x++){const edge=x===Math.floor(widt
 if(Array.isArray(sector.tiles))state.tiles=sector.tiles.map(t=>({blocked:false,cover:0,...t}));
 state.units=squad.map((u,i)=>makeUnit(u,'player',i,1+Math.floor(i/(height-2)),1+i%(height-2)));
 Object.assign(state,issueGriefParticipants(state.units));
+Object.assign(state,sector.conductObserverIds===undefined?issueConductObservers(state.units):{conductObserverIds:structuredClone(sector.conductObserverIds)});
 const enemies=Array.isArray(sector.enemies)?sector.enemies:Array.from({length:sector.exploration?0:sector.enemyCount||Math.max(3,squad.length+(sector.difficulty||1)-1)},(_,i)=>({id:`enemy-${i}`,name:`Realista ${i+1}`,weapon:i%3===0?1801:1800,marksmanship:50+(sector.difficulty||1)*5,morale:60+(sector.difficulty||1)*5}));
 state.units.push(...enemies.map((u,i)=>makeUnit(u,'enemy',i,width-2-Math.floor(i/(height-2)),1+i%(height-2))));
 if(!Array.isArray(sector.artillery)&&sector.cannons>0)state.artillery=Array.from({length:Math.min(sector.cannons,3)},(_,i)=>({id:`gun-${i}`,type:'bronze4',side:'player',x:2,y:2+i*3,loaded:artilleryProfile(sector,'bronze4').initialLoaded,ammo:artilleryProfile(sector,'bronze4').initialAmmo}));
@@ -533,7 +558,7 @@ export function firearmRangeProfile(s,attacker,target){
   const smoke=smokeBetween(s,attacker,target);
   // Preserve period-game obscuration weights, expressed as apparent distance.
   // Night training improves both detection reach and aiming in poor light.
-  const concealment=concealmentAt(s,target)*(hasCharacterAbility(attacker,'scatter_concealment')&&w.id===1807?.5:1);
+  const concealment=concealmentAt(s,target)*(hasCharacterAbility(attacker,'scatter_concealment')&&isShotLoad(w)?.5:1);
   const darkness=s.night?(20-nightSightBonus(attacker)*7.5)*(1-tileIllumination(s,target.x,target.y,tacticalLevel(target))):0;
   const apparentRange=distance+(concealment+darkness+smoke*(hasTrait(attacker,'line_marksman')?6:12))/3;
   const base=shotRangeModifiers({distance,weaponRange:w.range,apparentRange,visibleRange:visibleDistance(s,attacker,target)});
@@ -552,7 +577,7 @@ function shotAccuracy(s,attacker,target,aim=0,hitLocation='torso',pointShot=fals
   const chance=effectiveSkill+support+repeat+(nearby(s,attacker,'strategic_command',6)?12:0)+(nearby(s,attacker,'tactical_command',4)?8:0)+clamp(Number.isFinite(aim)?Math.floor(aim):0,0,4)*8+rangeProfile.sightAdjustment-rangeProfile.weaponPenalty-effectiveWounds(attacker)*COMBAT_BALANCE.woundAccuracyPenaltyPerPoint-(100-(attacker.energy??100))*.15-(attacker.shock??0)*COMBAT_BALANCE.shockAccuracyPenaltyPerPoint+((attacker.morale??80)-80)*.1-targetPosture
     -(attacker.mounted&&![1803,1805,1806,1808].includes(w.id)?15:0)
     +(hasTrait(attacker,'guerrilla_tactician')&&!attacker.momentum&&((surfaceAt(s,attacker)?.cover||0)>=20||['forest','scrub'].includes(surfaceAt(s,attacker)?.type))?10:0)
-    -(hasTrait(target,'guerrilla_tactician')&&!target.mounted&&((tile(s,target.x,target.y)?.cover||0)>=20||['forest','scrub'].includes(tile(s,target.x,target.y)?.type))?12:0);
+    -(hasTrait(target,'guerrilla_tactician')&&!target.mounted&&((surfaceAt(s,target)?.cover||0)>=20||['forest','scrub'].includes(surfaceAt(s,target)?.type))?12:0);
   return Math.round(clamp((chance-pairPenalty-shotLocationPenalty(hitLocation,rangeProfile.effectiveSightRange))*rangeProfile.chanceFactor,1,95));
 }
 const isCivilianBody=(s,body)=>(s.npcs??[]).includes(body);
@@ -578,7 +603,9 @@ function physicalImpact(s,target,amount,source,{kind='firearm',projectile=true,h
  // Civilian harm shares body effects but cannot enter soldier rewards, guards,
  // equipment handling or morale routs. Observe before the impact lowers them.
  const impact=shotLocationEffects(projectile?hitLocation:'torso',Math.max(0,amount),{...target,hp:target.hp??100}),observed=report&&observedBody(s,target);
+ const objection=captureServiceObjection(s,target,source,{intentional,canObserve:(actor,body)=>(actor===body||canSee(s,actor,body))&&isInteriorVisible(s,body,new Set(s.revealedRooms??[]))});
  applyCivilianHarm(s,target,{source,damage:impact.damage,breathLoss:impact.breathLoss+extraBreath,hitLocation,kind,observed,knockedDown:impact.knockedDown,intentional});
+ for(const reaction of applyServiceObjection(s,objection))say(s,reaction.text);
  if(observed)say(s,`${target.name} ${target.hp>0?'queda herido por el impacto.':'muere por el impacto.'}`);
  return target;
 }
@@ -634,7 +661,63 @@ function presentReflectedFirearmFlight(s,actor,flight,known,source,{pointShot,ai
 }
 // The resolved ray supplies presentation only. No second accuracy/damage draw
 // is made, and neither the flight nor its timing enters a saved battle.
+function presentKineticFlight(s,actor,destination,hitLocation,source,{pointShot,aimHit,destinationHeight,flightState,targetKind}){
+ // This trail projects the observed scene's possible flight. Private material
+ // and seeded body passage must not schedule public extra legs or shorten them.
+ // Actual known injuries are recorded separately after the physical effects.
+ const known=projectileFlight(knownFirearmScene(flightState),actor,destination,weaponFor(actor),hitLocation,{destinationHeight,targetKind});
+ const health=physicalBodies(s).filter(({body})=>playerObservedBody(s,body)).map(({body})=>({body,hp:body.hp??100}));
+ const muzzle={...positionOf(actor),tacticalLevel:tacticalLevel(actor),height:absoluteBodyHeight(s,actor,'muzzle')},terminal=known.terminal??{impact:known.impact??known.destination,termination:known.termination};
+ const distanceOf=entry=>entry.distance??Math.hypot(entry.impact.x-muzzle.x,entry.impact.y-muzzle.y);
+ const segments=known.segments??[{source:muzzle,destination:terminal.impact,fromDistance:0,toDistance:Math.hypot(terminal.impact.x-muzzle.x,terminal.impact.y-muzzle.y),trajectoryModel:known.trajectoryModel}];
+ const stopped=known.obstacles?.find(entry=>entry.stopped),schedule=[];let discharged=false;
+ for(const segment of segments){
+  const bodies=(known.bodyImpacts??[]).filter(entry=>distanceOf(entry)>segment.fromDistance+1e-8&&distanceOf(entry)<=segment.toDistance+1e-8);
+  const endpoints=bodies.map(entry=>({point:entry.impact,distance:distanceOf(entry),outcome:null,bodyKey:`${entry.victimKind}:${entry.victimId}`}));
+  const last=endpoints.at(-1),bounce=known.ricochets?.some(entry=>Math.abs(entry.distance-segment.toDistance)<1e-8);
+  if(!last||Math.abs(last.distance-segment.toDistance)>1e-8)endpoints.push({point:segment.destination,distance:segment.toDistance,outcome:bounce?'cover':terminal.termination==='body'?null:stopped?'cover':'miss'});
+  let origin=segment.source;
+  for(const endpoint of endpoints){
+   if(Math.hypot(endpoint.point.x-origin.x,endpoint.point.y-origin.y)<1e-8)continue;
+   const visual={source:{...origin},destination:{...endpoint.point},impact:{...endpoint.point},outcome:endpoint.outcome,pointShot,spread:false,aimHit,...(endpoint.outcome==='cover'?{material:bounce&&Math.abs(endpoint.distance-segment.toDistance)<1e-8?'stone':stopped?.material}:{}),...(segment.trajectoryModel?{trajectoryModel:segment.trajectoryModel}:{}),...(discharged?{discharge:false}:{})};
+   schedule.push({visual,bodyKey:endpoint.bodyKey});discharged=true;origin=endpoint.point;
+  }
+ }
+ let cursor=0,waiting=null,displayed=structuredClone(s);
+ const frame=(type,visual,state=displayed)=>recordBattleFrame(state,{unitId:source.id,action:pointShot?'firePoint':'fire',type,...(visual?{shotVisual:visual}:{})});
+ const updateHealth=()=>{for(const record of health)record.hp=record.body.hp??100;displayed=structuredClone(s);};
+ const changedHealth=()=>health.some(record=>(record.body.hp??100)<record.hp);
+ const drain=()=>{
+  while(cursor<schedule.length){
+   waiting=schedule[cursor++];frame('projectile',waiting.visual);
+   if(waiting.bodyKey)return;
+   frame('impact',waiting.visual);waiting=null;
+  }
+ };
+ const matches=(entry,collision)=>entry?.bodyKey===`${collision.victimKind??'unit'}:${collision.victimId}`&&collision.impact&&['x','y','height'].every(k=>Math.abs(collision.impact[k]-entry.visual.impact[k])<1e-8);
+ drain();
+ return collision=>{
+  if(collision){
+   // If an earlier projected body was not actually reached, drain it neutrally
+   // from the last displayed state before publishing this later real injury.
+   // Current physical HP must never first appear in a projectile frame.
+   if(!matches(waiting,collision)&&schedule.slice(cursor).some(entry=>matches(entry,collision))){
+    while(waiting&&!matches(waiting,collision)){frame('impact',waiting.visual);waiting=null;drain();}
+   }
+   if(matches(waiting,collision)){
+    const redirected=collision.actualVictimId!==undefined&&(collision.actualVictimId!==collision.victimId||collision.actualVictimKind!==collision.victimKind);
+    frame('impact',redirected?null:{...waiting.visual,outcome:changedHealth()?'hit':null},s);updateHealth();waiting=null;drain();
+   }else if(changedHealth()){frame('impact',null,s);updateHealth();}
+   return;
+  }
+  // A private stop may prevent an expected physical callback. Complete its
+  // public projection without inventing injury, then drain the same tail.
+  while(waiting||cursor<schedule.length){if(waiting){frame('impact',waiting.visual);waiting=null;}drain();}
+  if(changedHealth()){frame('impact',null,s);updateHealth();}
+ };
+}
 function presentFirearmFlight(s,actor,destination,flight=null,hitLocation='torso',source=actor,{pointShot=false,spread=false,destinationHeight,aimHit=false,flightState=s,targetKind}={}){
+ if(Array.isArray(flight?.bodyImpacts)&&hasProjectileEnergy(weaponFor(actor)))return presentKineticFlight(s,actor,destination,hitLocation,source,{pointShot,aimHit,destinationHeight,flightState,targetKind});
  if(Array.isArray(flight?.bodyImpacts)){
   const bodyFor=collision=>(collision.victimKind==='npc'?s.npcs??[]:s.units).find(body=>body.id===collision.victimId);
   const bodies=flight.bodyImpacts.map(collision=>({collision,body:bodyFor(collision)}));
@@ -714,10 +797,10 @@ function shotLoadFireImpact(s,attacker,target,aim,hitLocation,source=attacker,pr
  const finishFlight=presentFirearmFlight(s,attacker,destination,null,hitLocation,source,{pointShot,spread:true,destinationHeight:height});
  const groups=new Map(),eligible=new Set(s.units.filter(u=>fieldCapable(u)&&!u.unconscious&&!u.routed&&!u.surrendered&&u.side!==source.side).map(u=>u.id));
  for(const entry of flight.bodyImpacts){
-  const key=`${entry.victimKind}:${entry.victimId}:${entry.hitLocation}`,force=penetratingFirearmDamage(amount*entry.weight,entry);
+  const key=`${entry.victimKind}:${entry.victimId}:${entry.hitLocation}`,force=penetratingFirearmDamage(amount*entry.weight,entry,undefined,weapon,entry.weight);
   const group=groups.get(key)??{entry,amount:0};group.amount+=force;groups.set(key,group);
  }
- const learned=new Set(),contacted=new Set();
+ const learned=new Set(),contacted=new Set(),beforeHealth=new Map(s.units.map(unit=>[unit.id,unit.hp]));
  for(const {entry,amount:force} of [...groups.values()].sort((a,b)=>a.entry.fraction-b.entry.fraction||a.entry.pelletIndex-b.entry.pelletIndex)){
   const victim=flightVictim(s,entry);if(!victim)continue;
   const key=`${entry.victimKind}:${entry.victimId}`;
@@ -730,6 +813,11 @@ function shotLoadFireImpact(s,attacker,target,aim,hitLocation,source=attacker,pr
  for(const id of learned)practice(source,'marksmanship',2);
  sayObserved(s,[source],`${source.name} dispara una carga de perdigones con ${weapon.name}.`);
  finishFlight();
+ const damagedBodies=new Set(s.units.filter(unit=>unit.hp<beforeHealth.get(unit.id)).map(unit=>`unit:${unit.id}`));
+ firearmNearMissFeedback(s,{attacker,source,weapon,flight,damagedBodies});
+}
+function firearmNearMissFeedback(s,details){
+ recordFirearmNearMissFeedback(s,{...details,discharged:true},nearMissIds=>recordBattleFrame(s,{type:'impact',nearMissIds}));
 }
 function directedFireImpact(s,u,target,hitLocation,hit,source=u,preparedIntent=null){
   const aimPoint=preparedIntent?.point??target,w=weaponFor(u),end=hit?aimPoint:scatteredShotDestination(s,u,aimPoint);
@@ -744,11 +832,12 @@ function directedFireImpact(s,u,target,hitLocation,hit,source=u,preparedIntent=n
   const flight=victim?projectileFlight(flightState,u,destination,w,hitLocation,{...options,resolveBody:entry=>random(s)*100<entry.penetrationChance}):forecast;
   const finishFlight=presentFirearmFlight(s,u,destination,flight,hitLocation,source,{...options,aimHit:hit,flightState});
   if(flight.blocked&&flight.obstacles.some(obstacle=>obstacle.stopped&&observedProjectileObstacle(flightState,obstacle))){if(journalVisible(s,target))say(s,'La cobertura detiene el disparo.');}
-  const damagedBodies=applyFirearmBodyImpacts(s,flight,amount,source,finishFlight,{intended:target});
+  const damagedBodies=applyFirearmBodyImpacts(s,flight,amount,source,finishFlight,{intended:target,weapon:w});
   finishFlight();
   practiceFirearmNearMiss(s,{attacker:u,target,weapon:w,flight,hit,discharged:true,source,damagedBodies});
+  firearmNearMissFeedback(s,{attacker:u,source,weapon:w,flight,damagedBodies});
 }
-function applyFirearmBodyImpacts(s,flight,amount,source,finishFlight,{intended=null,observeOnly=false}={}){
+function applyFirearmBodyImpacts(s,flight,amount,source,finishFlight,{intended=null,observeOnly=false,weapon=null}={}){
  const entries=flight.bodyImpacts??(!flight.blocked&&flight.victimId?[flight]:[]),processed=new Set(),damagedBodies=new Set();
  const beforeHealth=new Map(physicalBodies(s).map(({body,kind})=>[`${kind}:${body.id}`,body.hp??100]));
  const knownBodies=new Set(physicalBodies(s).filter(({body})=>observedBody(s,body)).map(({body,kind})=>`${kind}:${body.id}`));
@@ -758,7 +847,9 @@ function applyFirearmBodyImpacts(s,flight,amount,source,finishFlight,{intended=n
   if(!victim||processed.has(key)){finishFlight(entry);continue;}
   if(entry.coverDamageFactor<1&&observedBody(s,victim)&&flight.obstacles.some(obstacle=>obstacle.fraction<=entry.fraction&&observedProjectileObstacle(s,obstacle)))say(s,'El disparo atraviesa la cobertura y pierde fuerza.');
   if(entry.bodyDamageReduction>0&&knownPassage&&knownBodies.has(key))say(s,'La bala atraviesa un cuerpo y llega con menos fuerza.');
-  const actual=physicalImpact(s,victim,penetratingFirearmDamage(amount,entry),source,{hitLocation:entry.hitLocation,report:!observeOnly||observedBody(s,victim),intentional:victim===intended,excludedBodyguards:processed});
+  const injury=penetratingFirearmDamage(amount,entry,undefined,weapon);
+  if(hasProjectileEnergy(weapon)&&shotLocationEffects(entry.hitLocation,injury*COMBAT_BALANCE.firearmDamageMultiplier,victim).damage===0){processed.add(key);finishFlight(entry);continue;}
+  const actual=physicalImpact(s,victim,injury,source,{hitLocation:entry.hitLocation,report:!observeOnly||observedBody(s,victim),intentional:victim===intended,excludedBodyguards:processed});
   processed.add(key);
   if(actual){
    const actualKind=isCivilianBody(s,actual)?'npc':'unit',actualKey=`${actualKind}:${actual.id}`;processed.add(actualKey);
@@ -936,7 +1027,9 @@ function grenadeBlast(s,source,origin,intended){
     const {multiplier}=grenadeBlastExposure(s,origin,npc,GRENADE_THROW.radius);
     if(multiplier<=0)continue;
     const visible=teamCanSee(s,'player',npc);
+    const objection=captureServiceObjection(s,npc,source,{intentional:npc===intended,canObserve:(actor,body)=>(actor===body||canSee(s,actor,body))&&isInteriorVisible(s,body,new Set(s.revealedRooms??[]))});
     applyCivilianHarm(s,npc,{source,damage:Math.round(GRENADE_THROW.damage*multiplier),breathLoss:Math.round(GRENADE_THROW.energyDamage*multiplier),hitLocation:'torso',kind:'grenade',observed:visible,intentional:npc===intended});
+    for(const reaction of applyServiceObjection(s,objection))say(s,reaction.text);
     if(visible)say(s,`${npc.name} ${npc.hp>0?'queda herido por la explosión.':'muere por la explosión.'}`);
   }
   // Sound can make survivors take cover only after this blast is resolved.
@@ -1008,8 +1101,9 @@ function pointFireImpact(s,u,point,aim,source=u,preparedAccuracy,preparedIntent=
   const amount=victim?w.damage*(.8+random(s)*.4):0;
   const flight=victim?pointProjectileFlight(s,u,destination,w,{...options,resolveBody:entry=>random(s)*100<entry.penetrationChance}):forecast;
   const finishFlight=presentFirearmFlight(s,u,{...destination,stance:'standing'},flight,'torso',source,{...options,pointShot:true});
-  applyFirearmBodyImpacts(s,flight,amount,source,finishFlight,{intended,observeOnly:true});
+  const damagedBodies=applyFirearmBodyImpacts(s,flight,amount,source,finishFlight,{intended,observeOnly:true,weapon:w});
   finishFlight();
+  firearmNearMissFeedback(s,{attacker:u,source,weapon:w,flight,damagedBodies});
 }
 export function dropPreview(s,u,item,count=1){
   const pa=4;let reason=inventoryOrderReason(s,u,pa);
@@ -1206,7 +1300,7 @@ function planSelectedNpcGift(s,u,action,npc,extraction,point){
  const confirmed={type:'inventoryMap',unitId:u.id,sourceId:action.sourceId,expectedSource:action.expectedSource,count:action.count??1,intent:'auto',...point,targetId:npc.id,transferKind:'gift'};
  return {extraction,target:npc,received:null,cost:4,valid:true,reason:null,type:'inventoryMap',kind:'gift',pa:0,totalPA:0,actionPa:4,movePa:approach?.cost??0,chance:100,route:[],
   destination:approach?{...positionOf(approach),tacticalLevel:tacticalLevel(approach)}:{...positionOf(u),tacticalLevel:tacticalLevel(u)},landing:null,flight:null,path:approach?.path??[],action:confirmed,
-  name:itemDescriptor(u,extraction.source.item).label,actionLabel:'Entregar objeto'};
+  name:itemDescriptor(u,extraction.source.item).label,actionLabel:'Entregar objeto',...(questBeneficiaryDeliveryPreview(s,npc.id)?{beneficiaryDelivery:questBeneficiaryDeliveryPreview(s,npc.id)}:{})};
 }
 function groundStack(ground){
   if(ground.type==='money')return {item:`inventory:${ground.id}`,name:'Pesos',count:ground.count,weight:.01};
@@ -1655,10 +1749,12 @@ function knownApproachRoute(s,u,inReach){
     !units.some(other=>other.id!==u.id&&!other.departure&&other.hp>0&&sameCell(other,cell))})[0];
 }
 export function npcGiftPreview(s,u,npc){
- const actionPa=4,result=(reason=null,route=null)=>({type:'giveItem',label:'Entregar poncho',actionPa,movePa:route?.cost??0,pa:actionPa+(route?.cost??0),destination:route?positionOf(route):null,path:route?.path??[],valid:!reason,reason});
+ let beneficiaryDelivery;
+ const actionPa=4,result=(reason=null,route=null)=>({type:'giveItem',label:'Entregar poncho',actionPa,movePa:route?.cost??0,pa:actionPa+(route?.cost??0),destination:route?positionOf(route):null,path:route?.path??[],valid:!reason,reason,...(beneficiaryDelivery?{beneficiaryDelivery}:{})});
  const unavailable=inventoryOrderReason(s,u,actionPa);if(unavailable)return result(unavailable);
  if(s.mode!=='exploration')return result('Terminá el combate antes de entregar el objeto.');
- if(!npc||!s.npcs.includes(npc)||npc.departure||npc.fled||npc.routed||(npc.hp??100)<=0||npc.unconscious||!canSee(s,u,npc))return result('El interlocutor debe estar disponible y a la vista.');
+ if(!npc||!s.npcs.includes(npc)||npc.departure||npc.fled||npc.routed||(npc.hp??100)<=0||npc.unconscious||!canSee(s,u,npc)||!isInteriorVisible(s,npc,new Set(s.revealedRooms??[])))return result('El interlocutor debe estar disponible y a la vista.');
+ beneficiaryDelivery=questBeneficiaryDeliveryPreview(s,npc.id);
  if(civilianWoundedByPlayer(npc))return result('No quiere colaborar con quienes lo hirieron.');
  try{questGiftPlan(u,npc,s);}catch(error){return result(error.message);}
  const inReach=cell=>sameSurface(cell,npc)&&Math.abs(cell.x-npc.x)+Math.abs(cell.y-npc.y)===1&&hasLineOfSight(s,cell,npc);
@@ -2187,8 +2283,10 @@ else if(a.type==='steal'){
 }
 else if(a.type==='giveItem'){
  const preview=npcGiftPreview(s,u,target);if(!preview.valid||preview.path.length)return fail(preview.reason??'Acercate al interlocutor para entregar el objeto.');
- const plan=questGiftPlan(u,target,s);pay(preview.actionPa);plan.unit.ap=u.ap;replaceUnit(u,plan.unit);target.questGifts=plan.gifts;lowerWeapon(u);
- sayObserved(s,[u],`${u.name}: ${plan.label} a ${target.name}. Recibidos: ${plan.gifts.length}/${plan.required}.`);
+ const sourceId=u.activeItem,plan=questGiftPlan(u,target,s);pay(preview.actionPa);plan.unit.ap=u.ap;replaceUnit(u,plan.unit);lowerWeapon(u);
+ if(plan.accepted){target.questGifts=plan.gifts;commitQuestBeneficiary(s,plan.quest,target.id);}
+ if(plan.quest.beneficiaries)recordNpcGiftResult(s,{...a,sourceId,count:1,x:target.x,y:target.y},target,plan.accepted?'accepted':'refused',plan.text);
+ sayObserved(s,[u],plan.accepted?`${u.name}: ${plan.label} a ${target.name}. Recibidos: ${plan.gifts.length}/${plan.required}.`:`${target.name}: «${plan.text}»`);
 }
 else if(a.type==='equipLoot'){
   const preview=equipLootPreview(s,u,a.inventoryKey,a.slot??'primary');if(!preview.valid)return fail(preview.reason);
@@ -2217,7 +2315,7 @@ else if(a.type==='inventoryMap'){
   if(plan.path.length)return fail('Acercate al interlocutor para entregar el objeto.');
   let decision;try{decision=questGiftDecision(plan.target,plan.extraction.stack,s);}catch(error){return fail(error.message);}
   pay(plan.cost);
-  if(decision.accepted){plan.extraction.unit.ap=u.ap;lowerWeapon(plan.extraction.unit);replaceUnit(u,plan.extraction.unit);plan.target.questGifts=decision.gifts;}
+  if(decision.accepted){plan.extraction.unit.ap=u.ap;lowerWeapon(plan.extraction.unit);replaceUnit(u,plan.extraction.unit);plan.target.questGifts=decision.gifts;commitQuestBeneficiary(s,null,plan.target.id);}
   recordNpcGiftResult(s,plan.action,plan.target,decision.accepted?'accepted':'refused',decision.text);
   sayObserved(s,[u],`${plan.target.name}: «${decision.text}»`);
  }else{
@@ -2284,7 +2382,7 @@ else if(a.type==='boleadoras'){const point=target??positionOf(a),preview=supplyU
 else if(a.type==='prisonerEscort'){const preview=prisonerReleasePreview(s,u,target,a.escortOrder??'invalid');if(!preview.valid)return fail(preview.reason);if(!pay(preview.cost))return fail('PA insuficientes.');recordPrisonerEscort(s,u,target,a.escortOrder==='wait');sayObserved(s,[u],`${u.name} indica a ${target.name} que ${a.escortOrder==='wait'?'espere aquí':'lo siga'}.`);}
 else if(a.type==='free'&&a.targetKind==='npc'){const preview=prisonerReleasePreview(s,u,target);if(!preview.valid)return fail(preview.reason);if(!pay(preview.cost))return fail('PA insuficientes.');lowerWeapon(u);recordPrisonerRelease(s,u,target);sayObserved(s,[u],`${u.name} libera de las ataduras a ${target.name}. Te seguirá cuando pueda caminar.`);}
 else if(a.type==='free'){if(!u.entangled)return fail('El soldado no está enredado.');if(!pay(15))return fail('Soltarse requiere 15 PA.');u.entangled=false;for(const g of s.groundItems)if(g.heldBy===u.id)g.heldBy=null;sayObserved(s,[u],`${u.name} se libera de las boleadoras.`);}
-else if(a.type==='repair'){if(!hasFirearm(u))return fail('Prepara primero el arma de fuego que quieres mantener.');if(u.condition>=100)return fail('El mecanismo ya está en buen estado.');const cost=actionCosts(s,u).repair;if(!pay(cost))return fail(`Mantener el mecanismo requiere ${cost} PA.`);practice(u,'mechanical',3);u.condition=Math.min(100,u.condition+(hasTrait(u,'gunsmith_artillerist')?45:hasTrait(u,'workshop_training')?40:30));sayObserved(s,[u],`${u.name} mantiene y ajusta el mecanismo.`);}
+else if(a.type==='repair'){const plan=firearmMaintenancePreview(s,u);if(!plan.valid)return fail(plan.reason);if(!pay(plan.pa))return fail(`Mantener el mecanismo requiere ${plan.pa} PA.`);spendRepairMaterials(u,plan.materialCost);practice(u,'mechanical',3);u.condition=Math.min(100,u.condition+plan.gain);sayObserved(s,[u],`${u.name} mantiene y ajusta el mecanismo.`);}
 else if(a.type==='ration'){
   const preview=supplyUsePreview(s,u,a.targetId===undefined?u:target,'rations');if(!preview.allowed)return fail(preview.reason);pay(preview.cost);
   u.rations--;clearEmptySupply(u);recoverFatigue(u,10,20);
@@ -2511,6 +2609,9 @@ function processRout(s,u){
 }
 
 export function actBattle(state,action,movementPath=null){
+ return captureFirearmNearMissFeedback(state,()=>actBattleResolved(state,action,movementPath));
+}
+function actBattleResolved(state,action,movementPath=null){
   if(state.deployment)return sectorDeploymentAction(state,action);
   const ids=[action.unitId,...(Array.isArray(action.unitIds)?action.unitIds:[])].filter(id=>id!==undefined).map(String);
   if(state.units.some(u=>u.militia&&ids.includes(u.id))||state.alliedTurn&&state.phase!=='interrupt'){
@@ -2721,7 +2822,25 @@ function finishCombatRound(s){
   s.quietCombatTurns=contact?0:Math.min(2,(s.quietCombatTurns??0)+1);s.contactThisRound=false;
   s.turn++;s.phase='player';s.roundTimeCharged=false;checkEnd(s);rememberContacts(s);revealRooms(s);
   if(canEndCombat(s))resumeExploration(s);
-  else if(s.status==='active')say(s,`Turno ${s.turn}: ¡órdenes, comandante!`);
+  else if(s.status==='active'){
+    // Every companion has recovered and refreshed before isolation is tested.
+    // A quiet round that already returned to exploration has no fear event.
+    for(const u of s.units){
+      const fear=applyNervousIsolation(s,u);
+      if(fear>0&&!u.nervousIsolationWarned){
+        u.nervousIsolationWarned=true;
+        say(s,`${u.name} siente temor al quedar sin apoyo. Tensión +${fear}.`);
+      }
+    }
+    for(const u of s.units){
+      const fear=applyEnclosedRoomFear(s,u);
+      if(fear>0&&!u.enclosedRoomFearWarned){
+        u.enclosedRoomFearWarned=true;
+        say(s,`${u.name} siente temor dentro de una habitación cerrada. Tensión +${fear}.`);
+      }
+    }
+    say(s,`Turno ${s.turn}: ¡órdenes, comandante!`);
+  }
   s.lastError=null;return s;
 }
 function issueEnemyTurnBudgets(s,queue){
@@ -2793,6 +2912,9 @@ function cleanActionTime(s){
 export function presentedEndTurn(state){return captureBattlePresentation(state,()=>endTurn(state),playerObservedBody);}
 export function presentedActBattle(state,action){return captureBattlePresentation(state,()=>actBattle(state,action),playerObservedBody);}
 export function endTurn(state){
+ return captureFirearmNearMissFeedback(state,()=>endTurnResolved(state));
+}
+function endTurnResolved(state){
  if(state.deployment)return sectorDeploymentAction(state,{type:'endTurn'});
  const ready=clone(state);
  for(const unit of ready.units)if(!returnBattleEquipmentCursor(ready,unit)){

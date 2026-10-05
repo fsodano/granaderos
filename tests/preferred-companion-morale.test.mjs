@@ -5,11 +5,12 @@ import {defaultContentPackage} from '../game/content-package.js';
 import {deploymentMorale,validateMorale} from '../game/morale.js';
 import {contractQuote} from '../game/contracts.js';
 import {enterSector} from '../game/world.js';
-import {createBattle,actBattle,shotChance,presentedActBattle} from '../game/tactical.js';
+import {createBattle,actBattle,shotChance,presentedActBattle,getReachable} from '../game/tactical.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {launchEnemyGroup} from '../game/enemy-groups.js';
 import {totalReserveAmmunition} from '../game/ammunition-types.js';
 import {strategicBleedingPercent} from '../game/campaign-care-rules.js';
+import {syncBattleTime} from '../game/time.js';
 
 const order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,`${a.type}: ${n.lastError}`);return n;};
 const now=s=>s.hour*3600+(s.secondOfHour??0);
@@ -28,9 +29,9 @@ const leave=(s,b)=>order(s,{type:'leaveSector',battleId:s.pendingBattle.id,secto
 const noSupport=u=>{assert.equal(Object.hasOwn(u,'companionBonus'),false);assert.equal(Object.hasOwn(u,'companionId'),false);};
 const lossLetters=s=>(s.correspondence??[]).filter(m=>m.id.startsWith('companion-loss:'));
 const griefLine='Inés Aguirre lamenta la muerte de Petrona Lagos. Moral −6.';
-const assertLossLetter=s=>{
+const assertLossLetter=(s,hour=s.operativeState[116].deathMinute===undefined?s.hour:Math.floor(s.operativeState[116].deathMinute/60))=>{
  const messages=lossLetters(s);assert.equal(messages.length,1);
- assert.deepEqual(messages[0],{id:'companion-loss:107:116',sender:'Inés Aguirre',subject:'Una pérdida en el destacamento',text:'Lamento la muerte de Petrona Lagos. Confiaba en su ayuda.',hour:s.operativeState[116].deathMinute===undefined?s.hour:Math.floor(s.operativeState[116].deathMinute/60),received:true});
+ assert.deepEqual(messages[0],{id:'companion-loss:107:116',sender:'Inés Aguirre',subject:'Una pérdida en el destacamento',text:'Lamento la muerte de Petrona Lagos. Confiaba en su ayuda.',hour,received:true});
  return structuredClone(messages[0]);
 };
 const tactical=(p,action)=>{
@@ -135,6 +136,107 @@ test('a native paid companion dies from the real untreated wound once through sa
  assert.deepEqual(s,batch);assert.equal(s.operativeState[116].hp,0);assert.equal(s.operativeState[116].alive,false);assert.equal(s.operativeState[107].morale,76,'only the existing six-point ordinary casualty loss applies');assert.equal(s.operativeState[107].carriedAmmo,ammo);assert.equal(s.operativeState[107].condition,condition);assert.equal(s.resources.treasury,cash);assert.equal(s.seed,seed);const letter=assertLossLetter(s),deathMinute=s.operativeState[116].deathMinute;
  s=order(saved(s).campaign,{type:'wait',hours:2});assert.equal(s.operativeState[116].deathMinute,deathMinute);assert.equal(s.operativeState[107].morale,76);assert.deepEqual(lossLetters(s),[letter]);assert.deepEqual(saved(s).campaign,s);
  t.diagnostic(JSON.stringify({tacticalOrders:actions.length,actionSeconds:p.battle.elapsedSeconds,returnedHp:returned.operativeState[116].hp,bleeding:returned.operativeState[116].bleeding,hourlyLoss:loss,hoursToDeath:hours,rounds:ammo,weaponCondition:condition,treasury:cash,morale:s.operativeState[107].morale,letter}));
+});
+
+test('a native paid sleeping survivor saves the confirmed loss and sends once after actual wake or sleep recovery',t=>{
+ // Every condition comes from paid service, native Retiro orders and the wound
+ // clock. Running before the shot earns enough tiredness to remain asleep at
+ // the fatal strategic hour; no clinical health or energy is assigned.
+ const initial=saved(initialCampaign(42,defaultContentPackage()));let pair=initial;
+ const history=[];
+ const perform=(entry,input)=>{
+  if(entry.kind==='enter'){
+   const campaign=order(input.campaign,{type:'visitSector'});
+   return checkpoint(campaign,enterSector(campaign.pendingBattle,campaign.sectorStates[campaign.pendingBattle.sector]));
+  }
+  if(entry.kind==='tactical')return tactical(input,entry.action);
+  if(entry.kind==='leave')return saved(leave(input.campaign,input.battle));
+  if(entry.kind==='sync'){
+   const synced=syncBattleTime(input.campaign,input.battle);assert.equal(synced.error,null);
+   const restored=saved(synced.campaign,synced.battle);assert.deepEqual(restored,{campaign:synced.campaign,battle:synced.battle});return restored;
+  }
+  return saved(order(input.campaign,entry.action));
+ };
+ const step=entry=>{pair=perform(entry,pair);history.push({entry:structuredClone(entry),pair:structuredClone(pair)});return pair;};
+ for(const id of [107,116]){
+  const quote=contractQuote(pair.campaign,rosterFor(pair.campaign).find(o=>o.id===id),'week'),cash=pair.campaign.resources.treasury;
+  step({kind:'campaign',action:{type:'recruitCivic',id,term:'week'}});assert.equal(pair.campaign.resources.treasury,cash-quote.price);
+ }
+ for(let i=0;i<6;i++)step({kind:'campaign',action:{type:'advanceStrategicTime',seconds:3600}});
+ assert.deepEqual(pair.campaign.recruited,[107,116]);
+ const renewal=contractQuote(pair.campaign,rosterFor(pair.campaign).find(o=>o.id===107),'day'),cashBeforeRenewal=pair.campaign.resources.treasury;
+ step({kind:'campaign',action:{type:'renewContract',id:107,term:'day'}});assert.equal(pair.campaign.resources.treasury,cashBeforeRenewal-renewal.price);
+ step({kind:'enter'});const native=structuredClone(pair.battle),start=pair.battle.units.find(u=>u.id==='107');
+ const origin={x:start.x,y:start.y,tacticalLevel:start.tacticalLevel??0};
+ const neighbor=getReachable(pair.battle,start).find(point=>point.path.length===1&&(point.tacticalLevel??0)===origin.tacticalLevel);
+ assert.ok(neighbor,'the native safe scene admits a neighboring run step');
+ for(let i=0;i<80&&(pair.battle.units.find(u=>u.id==='107').energy>60||i%2);i++)step({kind:'tactical',action:{type:'move',unitId:'107',x:i%2?origin.x:neighbor.x,y:i%2?origin.y:neighbor.y,tacticalLevel:origin.tacticalLevel,movement:'run'}});
+ assert.deepEqual({x:pair.battle.units.find(u=>u.id==='107').x,y:pair.battle.units.find(u=>u.id==='107').y},{x:origin.x,y:origin.y});
+ assert.ok(pair.battle.units.find(u=>u.id==='107').energy<80);
+ const companion=pair.battle.units.find(u=>u.id==='116');
+ step({kind:'tactical',action:{type:'firePoint',unitId:'107',x:companion.x,y:companion.y,aim:4}});
+ assert.ok(pair.battle.units.find(u=>u.id==='116').bleeding>0);
+ for(let i=0;i<80;i++){
+  const buddy=pair.battle.units.find(u=>u.id==='116');if(buddy.hp<=buddy.bleeding)break;
+  const actor=pair.battle.units.find(u=>u.id==='107');
+  step({kind:'tactical',action:{type:'look',unitId:'107',x:actor.x+(i%2?-1:1),y:actor.y}});
+ }
+ const wounded=pair.battle.units.find(u=>u.id==='116'),actor=pair.battle.units.find(u=>u.id==='107');
+ assert.ok(wounded.hp>0&&wounded.hp<15&&wounded.bleeding>0);assert.equal(actor.companionGrief,undefined);
+ assert.equal(actor.loaded+totalReserveAmmunition(actor),native.units.find(u=>u.id==='107').loaded+totalReserveAmmunition(native.units.find(u=>u.id==='107'))-1);
+ assert.equal(actor.condition,native.units.find(u=>u.id==='107').condition-1);
+ const actionSeconds=pair.battle.elapsedSeconds;step({kind:'leave'});const returned=structuredClone(pair.campaign),sender=returned.operativeState[107];
+ assert.equal(returned.operativeState[116].alive,true);assert.equal(lossLetters(returned).length,0);assert.equal(sender.morale,82);
+ const finite={treasury:returned.resources.treasury,seed:returned.seed,contracts:structuredClone(returned.contracts),ammo:sender.carriedAmmo,condition:sender.condition,inventory:structuredClone(sender.inventory),medkits:sender.medkits};
+ step({kind:'campaign',action:{type:'setSleep',operativeId:107,asleep:true}});assert.equal(pair.campaign.operativeState[107].asleep,true);
+ const loss=Math.ceil(returned.operativeState[116].bleeding*strategicBleedingPercent(returned)/100),hours=Math.ceil(returned.operativeState[116].hp/loss);
+ assert.ok(hours>0&&hours<=3);for(let i=0;i<hours;i++)step({kind:'campaign',action:{type:'wait',hours:1}});
+ const pending=structuredClone(pair),r=pending.campaign.operativeState[107],dead=pending.campaign.operativeState[116];
+ assert.equal(dead.alive,false);assert.equal(dead.hp,0);assert.equal(r.asleep,true);assert.equal(r.morale,76,'only the existing ordinary casualty loss applies');assert.equal(r.companionGrief,undefined);assert.equal(lossLetters(pending.campaign).length,0);
+ assert.deepEqual(r.pendingCompanionLoss,[{companionId:116,hour:pending.campaign.hour,secondOfHour:pending.campaign.secondOfHour,serviceKind:'paid',serviceStarted:pending.campaign.contracts[107].started,serviceStartedSecond:pending.campaign.contracts[107].startedSecond??0}]);
+ assert.deepEqual(dead.companionLossConfirmation,{hour:pending.campaign.hour,secondOfHour:pending.campaign.secondOfHour,source:'bleeding'});
+ assert.deepEqual(saved(pending.campaign),pending,'official restoration must retain the queue without sending');
+ for(const change of [s=>s.operativeState[107].pendingCompanionLoss[0].hour++,s=>s.operativeState[107].pendingCompanionLoss[0].serviceStarted++,s=>s.operativeState[107].pendingCompanionLoss[0].extra=true,s=>delete s.operativeState[116].companionLossConfirmation]){
+  const invalid=structuredClone(pending.campaign);change(invalid);assert.throws(()=>saved(invalid),/aviso pendiente/);
+ }
+ // An explicit wake is a separate legal control from the same earned pending
+ // checkpoint. It spends no additional morale, charge, dressing or wage.
+ const woke=saved(order(saved(pending.campaign).campaign,{type:'setSleep',operativeId:107,asleep:false})).campaign;
+ assert.equal(woke.operativeState[107].asleep,false);assert.equal(woke.operativeState[107].pendingCompanionLoss,undefined);assertLossLetter(woke,woke.hour);
+ assert.equal(woke.operativeState[107].morale,76);assert.equal(woke.operativeState[107].energy,r.energy);assert.deepEqual(woke.contracts,finite.contracts);
+ const control=entries=>{
+  let current=structuredClone(pending);const expected=[];for(const entry of entries){current=perform(entry,current);expected.push(structuredClone(current));}
+  let repeated=structuredClone(pending);for(let i=0;i<entries.length;i++){repeated=perform(entries[i],repeated);assert.deepEqual(repeated,expected[i]);}return current.campaign;
+ };
+ const pendingQuote=contractQuote(pending.campaign,rosterFor(pending.campaign).find(o=>o.id===107),'day');
+ const renewed=control([{kind:'campaign',action:{type:'renewContract',id:107,term:'day'}}]);
+ assert.equal(renewed.resources.treasury,finite.treasury-pendingQuote.price);assert.equal(renewed.operativeState[107].asleep,true);assert.equal(lossLetters(renewed).length,0);
+ assert.deepEqual(renewed.operativeState[107].pendingCompanionLoss,[{...r.pendingCompanionLoss[0],serviceKind:renewed.contracts[107].kind,serviceStarted:renewed.contracts[107].started,serviceStartedSecond:renewed.contracts[107].startedSecond??0}]);
+ const renewedWake=saved(order(renewed,{type:'setSleep',operativeId:107,asleep:false})).campaign;assertLossLetter(renewedWake,renewedWake.hour);assert.equal(renewedWake.operativeState[107].morale,76);assert.equal(renewedWake.operativeState[107].pendingCompanionLoss,undefined);
+ const dismissed=control([{kind:'campaign',action:{type:'dismiss',id:107}}]);assert.equal(dismissed.operativeState[107].pendingCompanionLoss,undefined);assert.equal(lossLetters(dismissed).length,0);
+ const rehireQuote=contractQuote(dismissed,rosterFor(dismissed).find(o=>o.id===107),'day');assert.equal(rehireQuote.available,true);
+ const rehired=control([{kind:'campaign',action:{type:'dismiss',id:107}},{kind:'campaign',action:{type:'recruitCivic',id:107,term:'day'}},...Array.from({length:6},()=>({kind:'campaign',action:{type:'advanceStrategicTime',seconds:3600}}))]);
+ assert.equal(rehired.resources.treasury,finite.treasury-rehireQuote.price);assert.equal(rehired.recruited.includes(107),true);assert.equal(rehired.operativeState[107].pendingCompanionLoss,undefined);assert.equal(lossLetters(rehired).length,0);assert.deepEqual(rehired.operativeState[116].companionLossConfirmation,dead.companionLossConfirmation);
+ for(let i=0;i<8&&pair.campaign.operativeState[107].asleep;i++)step({kind:'campaign',action:{type:'wait',hours:1}});
+ const recovered=pair.campaign;assert.equal(recovered.operativeState[107].asleep,false);assert.equal(recovered.operativeState[107].energy,100);assert.equal(recovered.operativeState[107].pendingCompanionLoss,undefined);
+ const letter=assertLossLetter(recovered,recovered.hour);assert.deepEqual(recovered.operativeState[116].companionLossConfirmation,dead.companionLossConfirmation);
+ step({kind:'campaign',action:{type:'wait',hours:1}});assert.deepEqual(lossLetters(pair.campaign),[letter]);
+ const final=pair.campaign;assert.equal(final.operativeState[107].morale,76);assert.equal(final.resources.treasury,finite.treasury);assert.equal(final.seed,finite.seed);assert.deepEqual(final.contracts,finite.contracts);
+ assert.equal(final.operativeState[107].carriedAmmo,finite.ammo);assert.equal(final.operativeState[107].condition,finite.condition);assert.deepEqual(final.operativeState[107].inventory,finite.inventory);assert.equal(final.operativeState[107].medkits,finite.medkits);assert.equal(final.operativeState[116].deathMinute,dead.deathMinute);
+ // Move through the public adjacent neutral route so the new live scene has
+ // no retained player corpse. That permits the actual trusted clock fast path.
+ step({kind:'campaign',action:{type:'travel',sector:'cell-24-27'}});assert.equal(pair.campaign.location,'cell-24-27');step({kind:'enter'});
+ assert.equal(pair.battle.units.some(u=>u.side==='player'&&(u.hp<=0||u.missionAlly)),false);
+ step({kind:'sync'});
+ // Keep the exact object returned by syncBattleTime: official restore removes
+ // its WeakSet trust, so a decoded clone would not exercise this boundary.
+ const warm=syncBattleTime(pair.campaign,pair.battle);assert.equal(warm.error,null);
+ const zero=syncBattleTime(warm.campaign,warm.battle);assert.equal(zero.error,null);assert.equal(zero.campaign.operativeState,warm.campaign.operativeState,'zero-delta synchronization actually uses the trusted path');
+ let replay=saved(initialCampaign(42,defaultContentPackage()));for(const {entry,pair:expected}of history){replay=perform(entry,replay);assert.deepEqual(replay,expected);}assert.deepEqual(replay,pair);assert.deepEqual(initial,saved(initialCampaign(42,defaultContentPackage())));
+ zero.campaign.operativeState[116].companionLossConfirmation.secondOfHour=3600;
+ const rejectedBefore=structuredClone(zero.campaign),rejected=syncBattleTime(zero.campaign,zero.battle);
+ assert.match(rejected.error,/aviso pendiente/);assert.equal(rejected.campaign,zero.campaign);assert.equal(rejected.battle,zero.battle);assert.deepEqual(zero.campaign,rejectedBefore,'the zero-delta rejection is atomic');
+ t.diagnostic(JSON.stringify({nativeRetiro:true,preparedConditions:false,paidRenewal:renewal.price,orders:history.length,actionSeconds,returnedHp:returned.operativeState[116].hp,bleeding:returned.operativeState[116].bleeding,hourlyLoss:loss,hoursToDeath:hours,sleepEnergy:sender.energy,pendingEnergy:r.energy,confirmed:dead.companionLossConfirmation,letter,rounds:finite.ammo,condition:finite.condition,treasury:finite.treasury,morale:final.operativeState[107].morale}));
 });
 
 test('an issued companion whose paid term expires remains a valid saved source until the actual return',()=>{

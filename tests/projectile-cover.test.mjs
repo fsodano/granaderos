@@ -1,6 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {projectileCells,projectileFlight,concealmentAt} from '../game/projectile-cover.js';
+import {projectileTrajectoryLength} from '../game/projectile-trajectory.js';
+import {shotLoadFlight} from '../game/shot-load.js';
 import {createBattle,actBattle,presentedActBattle,shotChance,canSee,hasLineOfSight,firearmProjectilePath} from '../game/tactical.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
 import {targetPreview} from '../game/ja2-hud.js';
@@ -158,4 +160,51 @@ test('the public order projection explains visible cover without exposing intern
   const s=field();lowWall(s,{obstacleHeight:1.3});
   const known=playerKnownBattle(s),target=known.orders.find(order=>order.unitId==='p').targets.find(target=>target.targetId==='e');
   assert.equal(target.chance,0);assert.match(target.coverNote,/cobertura detiene/);assert.equal(target.obstacles,undefined);
+});
+
+test('an opted-in load weakens only beyond its own range and freezes resistance across a merged footprint and embedded body',()=>{
+ const scene=(x,propX)=>field({width:32,height:12,tiles:Array.from({length:384},(_,i)=>({x:i%32,y:Math.floor(i/32),type:'grass',blocked:false,blocksSight:false,cover:0})),props:[{id:'wide-wood',type:'chest',x:propX,y:3,footprint:{width:2,height:1},obstacleHeight:2}],enemies:[{id:'e',x,y:3,patrol:false,overwatch:false}]});
+ const weapon={damage:52,range:8,loadPattern:'single',materialRangeSlope:.25},trace=(s,w=weapon)=>projectileFlight(s,...s.units,w,'torso',{destinationHeight:1.4,bodyPenetration:false});
+ const near=scene(6,3),far=scene(15,11),before=structuredClone(far),old={...weapon};delete old.materialRangeSlope;
+ close(trace(near).bodyImpacts[0].incomingImpact,trace(near,old).bodyImpacts[0].incomingImpact);
+ const flight=trace(far);assert.equal(flight.obstacles.length,1);close(flight.obstacles[0].resistance,50.25);close(flight.bodyImpacts[0].incomingImpact,1.75);
+ close(trace(far,old).bodyImpacts[0].incomingImpact,4);assert.deepEqual(far,before);
+ const embedded=scene(12,11);close(trace(embedded).bodyImpacts[0].incomingImpact,26.875,'the entry factor does not grow again at a body inside the same material');
+ const depleted=trace(far,{...weapon,damage:50});assert.equal(depleted.bodyImpacts.length,0);assert.equal(depleted.terminal.termination,'prop');close(depleted.terminal.impact.x,10.5+50/25.125);close(depleted.obstacles[0].resistance,50);assert.equal(depleted.terminal.remainingImpact,0);
+ const clear=scene(15,11);clear.props=[];close(trace(clear).bodyImpacts[0].incomingImpact,52,'free flight alone does not debit impact force');
+});
+
+test('range-scaled oblique material keeps exact crossed depth and adds distinct overlapping sources',()=>{
+ const s=field({width:32,height:12,tiles:Array.from({length:384},(_,i)=>({x:i%32,y:Math.floor(i/32),type:'grass',blocked:false,blocksSight:false,cover:0})),props:[{id:'a',type:'hay',x:10,y:4,footprint:{width:3,height:3},obstacleHeight:2,projectileResistance:2}],enemies:[{id:'e',x:17,y:7,patrol:false,overwatch:false}]}),w={damage:80,range:8,loadPattern:'single',materialRangeSlope:.5};
+ const fire=()=>projectileFlight(s,...s.units,w,'torso',{destinationHeight:1.4,bodyPenetration:false}),one=fire(),hit=one.bodyImpacts[0],entry=Math.hypot(8.5,8.5*.25),length=Math.hypot(3,3*.25);
+ close(one.obstacles[0].resistance,2*length*(1+.5*(entry/8-1)));assert.equal(one.obstacles.length,1);
+ s.props.push({...s.props[0],id:'b'});const two=fire();assert.equal(two.obstacles.length,2);close(two.obstacles.reduce((sum,o)=>sum+o.resistance,0),one.obstacles[0].resistance*2);close(two.bodyImpacts[0].incomingImpact,hit.incomingImpact-one.obstacles[0].resistance);
+});
+
+test('a reflection inside material retains its original entry factor and new downstream material uses cumulative distance',()=>{
+ const width=40,height=16,s={width,height,tiles:Array.from({length:width*height},(_,i)=>({x:i%width,y:Math.floor(i/width),type:'grass',blocked:false,cover:0})),units:[{id:'p',side:'player',x:1,y:3,hp:100},{id:'e',side:'enemy',x:12,y:4,hp:100}],npcs:[],props:[{id:'overlap',type:'hay',x:7,y:3,footprint:{width:5,height:4},obstacleHeight:2.5,projectileResistance:2}]};
+ Object.assign(s.tiles.find(t=>t.x===8&&t.y===5),{type:'wall',blocked:true,blocksSight:false,material:'stone'});
+ const aim={x:28,y:9,stance:'standing'},w={damage:100,range:4,loadPattern:'single',materialRangeSlope:.5},flight=projectileFlight(s,s.units[0],aim,w,'torso',{bodyPenetration:false}),[first,second]=flight.segments,receipts=flight.obstacles.filter(o=>o.sourceId==='prop:overlap');
+ assert.equal(flight.ricochets.length,1);assert.equal(receipts.length,2);close(receipts[1].fraction,first.toDistance/Math.hypot(27,6));
+ const entryFraction=(6.5-1)/(first.trajectoryModel.destination.x-1),factor=1+.5*(first.trajectoryModel.horizontalDistance*entryFraction/4-1);
+ close(receipts[0].resistance,2*factor*projectileTrajectoryLength(first.trajectoryModel,entryFraction,first.terminalFraction));
+ close(receipts[1].resistance,2*factor*projectileTrajectoryLength(second.trajectoryModel,0,second.terminalFraction));
+ const isolated=structuredClone(s);isolated.props=[{id:'later',type:'hay',x:11,y:3,footprint:{width:1,height:2},obstacleHeight:2.5,projectileResistance:2}];
+ const later=projectileFlight(isolated,isolated.units[0],aim,w,'torso',{bodyPenetration:false}),segment=later.segments[1],receipt=later.obstacles.find(o=>o.sourceId==='prop:later'),entry=receipt.distance;
+ const at=(entry-segment.fromDistance)/segment.trajectoryModel.horizontalDistance;close(receipt.resistance,2*(1+.5*(entry/4-1))*projectileTrajectoryLength(segment.trajectoryModel,at,segment.terminalFraction));assert.ok(entry>w.range);
+ const reentered=structuredClone(s);reentered.units=[reentered.units[0]];reentered.props=[{id:'twice',type:'hay',x:2,y:3,footprint:{width:14,height:1},obstacleHeight:2.5,projectileResistance:1}];
+ const twice=projectileFlight(reentered,reentered.units[0],aim,w,'torso'),crossings=twice.obstacles.filter(o=>o.sourceId==='prop:twice');
+ assert.equal(crossings.length,2);assert.equal(crossings[0].segmentIndex,0);assert.equal(crossings[1].segmentIndex,1);
+ for(const crossing of crossings){const leg=twice.segments[crossing.segmentIndex],from=(crossing.distance-leg.fromDistance)/leg.trajectoryModel.horizontalDistance;
+  const to=crossing.segmentIndex===0?(3.5-leg.source.y)/(leg.trajectoryModel.destination.y-leg.source.y):(15.5-leg.source.x)/(leg.trajectoryModel.destination.x-leg.source.x);
+  close(crossing.resistance,(1+.5*Math.max(0,crossing.distance/4-1))*projectileTrajectoryLength(leg.trajectoryModel,from,to));
+ }
+ assert.ok(crossings[1].distance>crossings[0].distance+4,'a real exit and later reentry obtains a new cumulative entry factor');
+});
+
+test('each of nine finite pellet shares uses the selected range without granting force or changing the spread',()=>{
+ const s=field({width:24,height:12,tiles:Array.from({length:288},(_,i)=>({x:i%24,y:Math.floor(i/24),type:'grass',blocked:false,cover:0})),props:[{id:'screen',type:'hay',x:6,y:1,footprint:{width:1,height:6},obstacleHeight:3,projectileResistance:.2}],enemies:[{id:'e',x:8,y:3,patrol:false,overwatch:false}]}),w={damage:45,range:3,loadPattern:'cone',materialRangeSlope:.5},old={...w};delete old.materialRangeSlope;
+ const current=shotLoadFlight(s,...s.units,w),neutral=shotLoadFlight(s,...s.units,old);assert.equal(current.pellets.length,9);
+ for(let i=0;i<9;i++){const now=current.pellets[i],prior=neutral.pellets[i];assert.equal(now.weight,prior.weight);for(const key of ['x','y','height'])assert.ok(Number.isFinite(now.flight.destination[key]));assert.deepEqual(now.flight.destination,prior.flight.destination);assert.deepEqual(now.flight.source,prior.flight.source);assert.ok(now.flight.terminal.remainingImpact<=prior.flight.terminal.remainingImpact);}
+ assert.ok(current.pellets[0].flight.bodyImpacts[0].incomingImpact<neutral.pellets[0].flight.bodyImpacts[0].incomingImpact);assert.equal(s.units[0].loaded,1);
 });

@@ -5,7 +5,7 @@ import {legacyOperativeId,isContractCharacter,characterForActor,campaignActors} 
 import {spriteAppearance} from './sprite-appearances.js';
 import {canonicalContent} from './content-identity.js';
 
-export const SPEECH_LABELS={hired:'Al incorporarse',contact:'Al detectar enemigos',cleared:'Al asegurar el sector',wounded:'Al recibir una herida',exhausted:'Al caer por agotamiento',death:'Al morir',ending:'Al terminar la campaña',treated:'Al recibir primeros auxilios de otra persona'};
+export const SPEECH_LABELS={hired:'Al incorporarse',contact:'Al detectar enemigos',cleared:'Al asegurar el sector',wounded:'Al recibir una herida',exhausted:'Al caer por agotamiento',death:'Al morir',ending:'Al terminar la campaña',treated:'Al recibir primeros auxilios de otra persona',near:'Al pasar un disparo cerca sin herirlo',interrupt:'Al poder actuar en una interrupción'};
 export const SPEECH_LINE_LIMIT=800;
 export const APPEARANCE_LABELS={granadero:'Uniforme de granadero',royalist:'Uniforme realista',worker:'Trabajador',surgeon:'Civil',gaucho:'Poncho',friar:'Fraile','woman-scout':'Combatiente','woman-shawl':'Civil con mantón'};
 

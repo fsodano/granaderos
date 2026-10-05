@@ -4,7 +4,7 @@ import {createBattle,actBattle,reloadPlan,ignitionRisk,supplyTransferPreview} fr
 import {AMMO_KEYS,ammoTypeFor,ammoCount,totalAmmo,normalizeAmmo,validateAmmo,changeAmmo} from '../game/ammo-types.js';
 import {personalPockets} from '../game/personal-pockets.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
-const make=(weapon=1800)=>createBattle([{id:'a',x:1,y:1,weapon,loaded:0,ammo:3},{id:'b',x:2,y:1,weapon:1805,loaded:0,ammo:0}],{width:8,height:8,exploration:true,enemies:[]});
+const make=(weapon=1800,unit={})=>createBattle([{id:'a',x:1,y:1,weapon,loaded:0,ammo:3,...unit},{id:'b',x:2,y:1,weapon:1805,loaded:0,ammo:0}],{width:8,height:8,exploration:true,enemies:[]});
 const order=(b,a)=>actBattle(b,{unitId:'a',...a});
 test('all nine firearms use one of four families and legacy rounds follow their weapon',()=>{
  const expected={1800:'ammoMusket',1801:'ammoMusket',1802:'ammoRifle',1803:'ammoMusket',1804:'ammoShot',1805:'ammoPistol',1806:'ammoPistol',1807:'ammoShot',1808:'ammoPistol'};
@@ -21,7 +21,7 @@ test('equipping a recovered gun changes compatibility without converting the car
  let b=make(1800);const u=b.units[0];changeAmmo(u,'ammoPistol',2);u.inventory.pistol={weapon:1805,count:1,weight:1.3,loaded:0,condition:80};b=order(b,{type:'equipLoot',inventoryKey:'pistol',slot:'primary'});assert.equal(b.lastError,null);assert.equal(ammoCount(b.units[0]),2);assert.equal(ammoCount(b.units[0],'ammoMusket'),3);b=order(b,{type:'reload'});assert.equal(b.lastError,null);assert.equal(ammoCount(b.units[0],'ammoPistol'),1);assert.equal(ammoCount(b.units[0],'ammoMusket'),3);
 });
 test('maintenance and misfire recovery need action time but no tracked ignition supplies',()=>{
- let b=make();b.units[0].condition=40;b.units[0].jammed=true;b.units[0].priming=0;b.units[0].flints=0;const risk=ignitionRisk(b,b.units[0]);assert.equal(risk,ignitionRisk(b,{...b.units[0],priming:999}));b=order(b,{type:'reprime'});assert.equal(b.lastError,null);assert.equal(b.units[0].jammed,false);b=order(b,{type:'repair'});assert.equal(b.lastError,null);assert.ok(b.units[0].condition>40);assert.ok(b.elapsedSeconds>0);assert.equal('priming'in b.units[0],false);
+ let b=make(1800,{condition:40,jammed:true,priming:0,flints:0,toolkitPoints:30});const risk=ignitionRisk(b,b.units[0]);assert.equal(risk,ignitionRisk(b,{...b.units[0],priming:999}));b=order(b,{type:'reprime'});assert.equal(b.lastError,null);assert.equal(b.units[0].jammed,false);assert.equal(b.units[0].toolkitPoints,30);b=order(b,{type:'repair'});assert.equal(b.lastError,null);assert.equal(b.units[0].condition,70);assert.equal(b.units[0].toolkitPoints,0);assert.ok(b.elapsedSeconds>0);assert.equal('priming'in b.units[0],false);
 });
 test('separate pocket stacks and legacy migration preserve quantity and reject forged reserves',()=>{
  const u=normalizeAmmo({weapon:1802,ammo:21,priming:50,flints:4,pocketOrder:[{slotId:'large-1',item:'ammo',index:0,count:20}]});assert.equal(u.pocketOrder[0].item,'inventory:ammo:rifle_62');changeAmmo(u,'ammoShot',2);const l=personalPockets(u);assert.equal(l.slots.find(p=>p.id==='large-1').entry.item,'inventory:ammo:rifle_62');assert.equal(l.slots.filter(p=>p.entry?.ammoType==='rifle_62').length,2);assert.ok(l.slots.some(p=>p.entry?.ammoType==='shot_16'));

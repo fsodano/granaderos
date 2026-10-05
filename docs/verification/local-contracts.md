@@ -13,9 +13,13 @@ The existing contract calculation rounds the daily base upward; one week is seve
 daily payments and one month is thirty. Experience can raise later prices. A
 zero-price contract still has a finite term. Permanent service requires zero pay.
 
-The actual conversation displays all three terms and their current prices. Its
+The actual conversation displays the configured terms and their current prices. Its
 hiring button identifies the selected charge and is disabled when funds are
-insufficient. Asking for conditions also lists the prices. The authoritative
+insufficient or service is refused. Asking for conditions lists only available
+terms and prices. If every term is refused, the reply uses the existing refusal
+reason. Unpaid permanent service uses the same service quote for this reply.
+See [current dialogue acceptance](local-recruitment-dialogue-2026-10-05.md).
+The authoritative
 campaign action still checks proximity, availability, authored requirements,
 term and funds before charging or transferring the person.
 
@@ -29,12 +33,12 @@ changing only their contract record.
 
 ## Evidence
 
-Runtime source: `ce371e5af7a5925fc84e5a8fed9b7d836e62f5e2`.
+Original checkpoint runtime source: `ce371e5af7a5925fc84e5a8fed9b7d836e62f5e2`.
 The full local suite passed **611/611 tests**, with no failures or skips. Types,
 production export (721 files and 631 asset references) and all 36 baseline
 comparisons passed. The documentation audit retains 175 requirements, including
-all 50 original and 87 parity rows, with 14 evidence records. Exact-head CI must
-pass before merge.
+all 50 original and 87 parity rows, with 14 evidence records. These are historical
+validation counts; current local acceptance is linked above.
 
 - `tests/local-contracts.test.mjs`: all three terms, price and service start,
   no bulletin admission or arrival ticket, duplicate-hire rejection, insufficient

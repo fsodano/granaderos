@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign,rosterFor} from '../game/campaign.js';
 import {defaultContentPackage} from '../game/content-package.js';
 import {contractQuote} from '../game/contracts.js';
-import {createBattle,actBattle,endTurn,presentedActBattle,presentedEndTurn,medicalUsePreview,getCareComposureResult,shotChance,canSee} from '../game/tactical.js';
+import {createBattle,actBattle,endTurn,presentedActBattle,presentedEndTurn,medicalUsePreview,getCareComposureResult,shotChance,canSee,weaponFor} from '../game/tactical.js';
 import {fieldPractice} from '../game/skill-training.js';
 import {ammoCount} from '../game/ammo-types.js';
 import {syncBattleTime} from '../game/time.js';
@@ -17,6 +17,12 @@ const order=(campaign,action)=>{const next=dispatchCampaign(campaign,action);ass
 
 function paidArena({oldPinned=false}={}){
  const content=defaultContentPackage();
+ // This declared clinical experiment pins the original pre-kinetic Brown Bess
+ // balance before campaign creation. The separate kinetic acceptance tests the
+ // fresh default energy profile; no executed health, gear or RNG is reset here.
+ const clinicalGun=content.weapons.find(weapon=>weapon.template===1800);
+ delete clinicalGun.projectileEnergy;delete clinicalGun.projectileAirDrag;
+ for(const load of clinicalGun.alternativeLoads??[]){delete load.projectileEnergy;delete load.projectileAirDrag;}
  // Labelled compatibility control: an older pinned package omits the ability
  // before campaign creation. It receives no later catalogue backfill.
  if(oldPinned)delete content.characters.find(character=>character.id==='person-130').abilities;
@@ -35,7 +41,8 @@ function paidArena({oldPinned=false}={}){
  const request=campaign.pendingBattle,width=48,height=16;
  // Prepared hostile care arena, not an earned opening victory. Geometry,
  // passive enemy posts, the initial stone screen and seed42 are fixed before
- // official save admission. Native force, health, skills and finite kit stay.
+ // official save admission. Native force, health, skills and finite kit stay,
+ // with the pre-admission Brown Bess profile exception stated above.
  const battle=createBattle(request.squad.map(unit=>({...unit,x:1,y:unit.id===130?3:5,facing:2})),{
   ...request,width,height,seed:42,props:[],
   tiles:Array.from({length:width*height},(_,i)=>{
@@ -47,6 +54,10 @@ function paidArena({oldPinned=false}={}){
  });
  if(request.finiteArtilleryArsenal)battle.finiteArtilleryArsenal=structuredClone(request.finiteArtilleryArsenal);
  const pair=saved({campaign,battle});
+ const pinnedGun=pair.campaign.contentCampaign.package.weapons.find(weapon=>weapon.template===1800);
+ assert.equal(Object.hasOwn(pinnedGun,'projectileEnergy'),false);assert.equal(Object.hasOwn(pinnedGun,'projectileAirDrag'),false);
+ assert.ok((pinnedGun.alternativeLoads??[]).every(load=>!Object.hasOwn(load,'projectileEnergy')&&!Object.hasOwn(load,'projectileAirDrag')));
+ assert.equal(weaponFor(actor(pair.battle,110)).projectileEnergy,undefined,'the official saved clinical load retains its explicit legacy profile');
  assert.equal(actor(pair.battle,130).hp,67);assert.equal(actor(pair.battle,110).hp,85);
  for(const id of [130,110]){
   const unit=actor(pair.battle,id);assert.equal(unit.loaded+ammoCount(unit),10);assert.equal(unit.medkits,2);

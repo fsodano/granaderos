@@ -23,6 +23,8 @@ import {validateContentQuests} from './content-quests.js';
 import {validateDialogue} from './content-dialogue.js';
 import {FORCE_EQUIPMENT,defaultForceEquipment,validateForceEquipment} from './content-force-equipment.js';
 import {legacyCharacterAbilities,validCharacterAbilities} from './character-abilities.js';
+import {CIVILIAN_CONSCIENCE,conductObserverDefinition,conductNoncombatantDefinition} from './service-objections.js';
+import {LOW_MORALE_REFUSAL} from './morale-renewal.js';
 import {legacyOperativeId,isWorldCharacter} from './content-character-ids.js';
 import {characterProfile,SPEECH_EVENTS,AUTHORABLE_SPEECH_EVENTS} from './characters.js';
 import {SPEECH_LINE_LIMIT} from './content-character-presentation.js';
@@ -31,6 +33,8 @@ import {CONTENT_TRAITS} from './content-character-options.js';
 import {BLADES} from "./blade-definitions.js";
 import {LOOSE_BAYONET} from './weapon-fittings.js';
 import { compileWeaponDefinition } from "./weapon-definition.js";
+import {DEFAULT_ALTERNATIVE_LOADS} from './firearm-loads.js';
+import {DEFAULT_MATERIAL_RANGE_SLOPE} from './material-range-penetration.js';
 // Versioned authoring data. No mutable campaign state or global catalog changes.
 import { defaultArrivalSites, validateArrivalSites } from "./arrival-sites.js";
 import { CONTENT_CELLS, contentCellIds } from "./content-map.js";
@@ -59,6 +63,16 @@ export const CONTENT_SECTORS = [
 ];
 export const BLADE_TEMPLATES=Object.values(BLADES).map(w=>({id:w.id,name:w.name}));
 export const FIREARM_TEMPLATES = Object.values(WEAPONS).map((w) => ({ id: w.id, name: w.name }));
+// Fresh authored text only. Runtime profiles never infer these optional lines
+// from an operative ID, so older pinned omissions remain silent.
+const freshCombatSpeech={
+  104:{near:'¡Esa pasó cerca! Prefiero contar la historia de pie.',interrupt:'Un respiro. Aprovechemos este momento.'},
+  105:{near:'Pasó cerca. Conservo el pulso.',interrupt:'Tengo un momento para preparar el tiro.'},
+  107:{near:'Pasó cerca. Primero busquemos abrigo.',interrupt:'Un momento. Puedo ayudar sin precipitarme.'},
+  110:{near:'Bajemos la cabeza y sigamos con calma.',interrupt:'Con calma. Todavía puedo actuar.'},
+  126:{near:'¡Por poco! Necesito espacio para moverme.',interrupt:'Ahora puedo moverme. No quiero quedar encerrada.'},
+  130:{near:'¡Cerca, muy cerca! No me dejen sola.',interrupt:'Un momento. Reunámonos antes de seguir.'},
+};
 const portrait = (id) => `/art/portrait-${id}.${[103, 104].includes(id) ? "png" : "webp"}`;
 export function defaultContentPackage() {
   return {
@@ -83,11 +97,11 @@ export function defaultContentPackage() {
       role: o.role || "",
       biography: o.biography || "",
       portrait: portrait(o.id),
-      abilities:o.id===130?['care_composure']:legacyCharacterAbilities(o.id),
+      abilities:o.id===126?['enclosed_room_fear']:o.id===130?['care_composure','nervous_isolation',LOW_MORALE_REFUSAL]:o.id===107?[CIVILIAN_CONSCIENCE]:legacyCharacterAbilities(o.id),
       personality:characterProfile(o).personality,
       ...(o.serviceRefusals===undefined?{}:{serviceRefusals:structuredClone(o.serviceRefusals)}),
       ...(o.preferredCompanions===undefined?{}:{preferredCompanions:structuredClone(o.preferredCompanions)}),
-      speech:{...characterProfile(o).speech},
+      speech:{...characterProfile(o).speech,...freshCombatSpeech[o.id]},
       spriteAppearance:spriteAppearance(o),
       monthlyPay: o.monthlyPay ?? 0,
       ...(o.id >= 100 ? {arrivalHours:6,recruitmentSource:'contract',service:'contract',progression:'experience',traits:[...(o.traits??[])],ridingSkill:o.ridingSkill??((o.traits??[]).includes('expert_rider')?80:0)} : {}),
@@ -104,6 +118,9 @@ export function defaultContentPackage() {
       aimAP: w.aimAP,
       reloadAP: w.reloadAP,
       range: w.range,
+      materialRangeSlope:DEFAULT_MATERIAL_RANGE_SLOPE,
+      ...(w.id===1800?{projectileEnergy:{model:'kinetic-energy-v1',massGrams:32,muzzleVelocityMps:265},projectileAirDrag:{model:'range-energy-retention-v1',retentionAtRange:.80}}:{}),
+      alternativeLoads:(DEFAULT_ALTERNATIVE_LOADS[w.id]??[]).map(load=>({...load,materialRangeSlope:DEFAULT_MATERIAL_RANGE_SLOPE,...(w.id===1800&&load.family==='ammoShot'?{projectileEnergy:{model:'kinetic-energy-v1',massGrams:16,muzzleVelocityMps:265},projectileAirDrag:{model:'range-energy-retention-v1',retentionAtRange:.65}}:{})})),
       readyAP: 0,
     })),...Object.values(BLADES).map(base=>{
       const w=base.id===1811?LOOSE_BAYONET:base;
@@ -184,8 +201,9 @@ export function validateContentPackage(value) {
     if(isWorldCharacter(c)){
       const e=c.encounter;
       check((c.service==='contract'||c.service==='permanent'&&c.monthlyPay===0)&&c.arrivalHours===undefined,c.id,'los habitantes se incorporan en el lugar; el servicio permanente no tiene paga ni demora de llegada.');
-      check(record(e)&&['recruitable','greeting','requiredLeadership','requiredLiberated','requiredSector'].every(k=>Object.hasOwn(e,k))&&Object.keys(e).every(k=>['recruitable','greeting','requiredLeadership','requiredLiberated','requiredSector','dialogue'].includes(k)),c.id,'la configuración del encuentro no es válida.');
+      check(record(e)&&['recruitable','greeting','requiredLeadership','requiredLiberated','requiredSector'].every(k=>Object.hasOwn(e,k))&&Object.keys(e).every(k=>['recruitable','greeting','requiredLeadership','requiredLiberated','requiredSector','dialogue','noncombatant'].includes(k)),c.id,'la configuración del encuentro no es válida.');
       if(record(e)){
+        if(e.noncombatant!==undefined)check(e.noncombatant===true&&conductNoncombatantDefinition(c,value.placements.find(p=>p.character===c.id)),c.id,'un civil no combatiente debe ser un habitante fijo, sin armas, no incorporable y de servicio permanente.');
         if(e.dialogue!==undefined)try{validateDialogue(e.dialogue,sets.characters,sets.quests);for(const node of e.dialogue.nodes)for(const choice of node.choices)for(const effect of choice.effects??[])if(effect.type==='movement')check((effect.destination==='routine'||effect.character!==c.id)&&value.characters.some(target=>target.id===effect.character&&isWorldCharacter(target)),c.id,'el movimiento necesita otro habitante del mundo.');for(const node of e.dialogue.nodes)for(const choice of node.choices)for(const condition of choice.conditions??[])if(condition.type==='meeting')check(value.characters.some(target=>target.id===condition.character&&isWorldCharacter(target)),c.id,'la condición del encuentro necesita un habitante del mundo.');}catch(error){errors.push(`${c.id}: ${error.message}`);}
         check(typeof e.recruitable==='boolean',c.id,'elegí si puede incorporarse.');
         text(e.greeting,`${c.id}.encounter.greeting`,1000,true);
@@ -203,6 +221,8 @@ export function validateContentPackage(value) {
     text(c.role, `${c.id}.role`, 200, true);
     text(c.biography, `${c.id}.biography`, 5000, true);
     if(c.abilities!==undefined)check(validCharacterAbilities(c.abilities),c.id,'habilidades no válidas.');
+    if(c.abilities?.includes?.(CIVILIAN_CONSCIENCE))check(conductObserverDefinition(c),c.id,'la objeción civil requiere un candidato por contrato con servicio pagado explícito.');
+    if(c.abilities?.includes?.(LOW_MORALE_REFUSAL))check(conductObserverDefinition(c),c.id,'el rechazo de renovación por moral requiere un candidato por contrato con servicio pagado explícito.');
     if(c.startingSupplies!==undefined)check(validStartingSupplies(c.startingSupplies),`${c.id}.startingSupplies`,'los seis suministros iniciales necesitan cantidades enteras de 0 a 1000.');
     if(c.startingCondition!==undefined)check(validStartingCondition(c.startingCondition,c.attributes?.maxHp),`${c.id}.startingCondition`,'el estado inicial necesita cinco valores enteros: salud de 1 al máximo, energía y fatiga de 0 a 100, sangrado de 0 a 10 y heridas vendadas dentro de la salud perdida. El sangrado necesita una herida sin vendar.');
     if(c.personality!==undefined)text(c.personality,`${c.id}.personality`,2000,true);

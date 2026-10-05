@@ -1,3 +1,4 @@
+import {validateQuestWithdrawals} from './quest-withdrawal.js';
 import {validateCivilianWeapons} from './civilian-weapons.js';
 import {validateFiniteArsenalScene} from './finite-artillery-arsenals.js';
 import {validateAmmo} from './ammo-types.js';
@@ -22,7 +23,9 @@ import {validateRegionalWeather} from './regional-weather.js';
 import {validateQuestDefinitions} from './quest-definitions.js';
 import {validateRoadsideDiscoveries} from './roadside-discoveries.js';
 import {validateCompanionGrief,validateGriefParticipants} from './companion-grief.js';
+import {validateServiceObjection,validateConductObservers} from './service-objections.js';
 import {validateQuestGifts} from './quests.js';
+import {validateQuestBeneficiaries} from './quest-beneficiaries.js';
 import {validatePocketOrder} from './inventory-pockets.js';
 import {validateWeaponReadiness} from './weapon-readiness.js';
 import {validateReloadProgress} from './weapon-reload.js';
@@ -38,6 +41,7 @@ import {HIT_LOCATIONS} from './targeted-combat.js';
 import {AP_CARRY_LIMIT,isUnconscious} from './tactical-condition.js';
 import {PROP_TYPES,propBlocksAt,propCells,propSize} from './props.js';
 import {validateTraining} from './skill-training.js';
+import {validateRepairReserve} from './repair-materials.js';
 import {WEAPONS,BLADES,ARTILLERY,fieldCapable} from './tactical.js';
 const object=x=>x!==null&&typeof x==='object'&&!Array.isArray(x);
 const number=(x,lo,hi)=>typeof x==='number'&&Number.isFinite(x)&&x>=lo&&x<=hi;
@@ -46,7 +50,9 @@ const text=x=>typeof x==='string'&&x.length<=1000;
 function need(ok,label){if(!ok)throw Error(`La partida contiene ${label} inválidos.`);}
 function safeTree(value,depth=0){need(depth<=20,'objetos anidados');if(typeof value==='number')need(Number.isFinite(value),'números');if(value&&typeof value==='object'){need(Object.keys(value).length<=10000,'colecciones');for(const[k,v]of Object.entries(value)){need(!['__proto__','constructor','prototype'].includes(k),'claves');safeTree(v,depth+1);}}}
 export function validateBattleSnapshot(value){
-need(object(value),'datos tácticos');validateGriefParticipants(value);safeTree(value);need(JSON.stringify(value).length<=3000000,'tamaño táctico');const s=removeIgnitionSupplies(structuredClone(value));if(s.errandDefinitions!==undefined)need(validateQuestDefinitions(s.errandDefinitions).length===0,'encargos del despliegue');for(const u of s.units??[]){if(u.ammo!==undefined)need(integer(u.ammo,0,1000000),'suministros');validateHands(u.ammunitionVersion===1?groupUnitAmmunition(u):u);}migrateBattleAmmunition(s);validateRegionalWeather(s);if(s.bleedSeconds!==undefined)need(number(s.bleedSeconds,0,6)&&s.bleedSeconds<6,'reloj de hemorragia');for(const key of ['elapsedSeconds','syncedSeconds','startSeconds'])if(s[key]!==undefined)need(Number.isSafeInteger(s[key])&&s[key]>=0,'reloj táctico');if(s.roundTimeCharged!==undefined)need(typeof s.roundTimeCharged==='boolean','turno del reloj');for(const l of s.lights??[])if(l.remainingSeconds!==undefined)need(Number.isFinite(l.remainingSeconds)&&l.remainingSeconds>=0,'duración de luz');for(const u of s.units??[])validateTraining(u);
+ validateQuestWithdrawals(value?.questWithdrawals,value??{});
+ validateQuestBeneficiaries(value?.questBeneficiaries,value??{});
+need(object(value),'datos tácticos');validateGriefParticipants(value);validateConductObservers(value);safeTree(value);need(JSON.stringify(value).length<=3000000,'tamaño táctico');const s=removeIgnitionSupplies(structuredClone(value));if(s.errandDefinitions!==undefined)need(validateQuestDefinitions(s.errandDefinitions).length===0,'encargos del despliegue');for(const u of s.units??[]){if(u.ammo!==undefined)need(integer(u.ammo,0,1000000),'suministros');validateHands(u.ammunitionVersion===1?groupUnitAmmunition(u):u);}migrateBattleAmmunition(s);validateRegionalWeather(s);if(s.bleedSeconds!==undefined)need(number(s.bleedSeconds,0,6)&&s.bleedSeconds<6,'reloj de hemorragia');for(const key of ['elapsedSeconds','syncedSeconds','startSeconds'])if(s[key]!==undefined)need(Number.isSafeInteger(s[key])&&s[key]>=0,'reloj táctico');if(s.roundTimeCharged!==undefined)need(typeof s.roundTimeCharged==='boolean','turno del reloj');for(const l of s.lights??[])if(l.remainingSeconds!==undefined)need(Number.isFinite(l.remainingSeconds)&&l.remainingSeconds>=0,'duración de luz');for(const u of s.units??[])validateTraining(u);
 need(integer(s.width,4,128)&&integer(s.height,4,128),'dimensiones');const coord=p=>object(p)&&integer(p.x,0,s.width-1)&&integer(p.y,0,s.height-1);
 need(Array.isArray(s.tiles)&&s.tiles.length===s.width*s.height,'casillas');const seen=new Set();
 for(const t of s.tiles){validateCoverMetadata(t);need(coord(t)&&!seen.has(`${t.x},${t.y}`),'posiciones');seen.add(`${t.x},${t.y}`);need(['wall','grass','road','water','stone','mud','forest','scrub','floor','door','window','rubble','cliff'].includes(t.type)&&typeof t.blocked==='boolean'&&number(t.cover,0,100),'terreno');for(const key of ['blocksSight','open','locked'])if(t[key]!==undefined)need(typeof t[key]==='boolean','puertas');for(const key of ['buildingId','roomId','doorId'])if(t[key]!=null)need(text(t[key]),'habitaciones');}
@@ -65,6 +71,12 @@ for(const key of ['exits','enemyExits'])if(s[key]!==undefined){
 }
 if(s.griefParticipantIds!==undefined)need(s.griefParticipantIds.every(id=>s.units.some(u=>u.side==='player'&&u.id===String(id))),'participantes del duelo');
 for(const npc of s.npcs??[])need(npc.griefCompanionIds===undefined&&npc.companionGrief===undefined,'duelo de civiles');
+for(const npc of s.npcs??[])need(npc.serviceObjection===undefined,'objeciones de civiles');
+for(const npc of s.npcs??[])need(npc.nervousIsolationWarned===undefined,'aviso de aislamiento de civiles');
+for(const u of s.units??[])if(Object.hasOwn(u,'nervousIsolationWarned'))need(u.nervousIsolationWarned===true&&u.side==='player'&&!u.militia&&!u.missionAlly&&Number.isSafeInteger(Number(u.id))&&Number(u.id)>=0&&String(Number(u.id))===u.id&&u.abilities?.includes('nervous_isolation'),'aviso de aislamiento');
+for(const npc of s.npcs??[])need(npc.enclosedRoomFearWarned===undefined,'aviso de temor de civiles');
+for(const u of s.units??[])if(Object.hasOwn(u,'enclosedRoomFearWarned'))need(u.enclosedRoomFearWarned===true&&u.side==='player'&&!u.militia&&!u.missionAlly&&Number.isSafeInteger(Number(u.id))&&Number(u.id)>=0&&String(Number(u.id))===u.id&&u.abilities?.includes('enclosed_room_fear'),'aviso de temor a lugares cerrados');
+for(const u of s.units??[]){validateServiceObjection(u);need(u.serviceObjection===undefined||u.side==='player'&&!u.militia&&Number.isSafeInteger(Number(u.id))&&String(Number(u.id))===u.id,'objeciones de combatientes');}
 need(Array.isArray(s.units)&&s.units.length<=2000&&s.units.filter(u=>u.hp>0).length<=200,'combatientes');const ids=new Set(),instances=new Set();const claimInstance=id=>{if(id===undefined)return;need(validItemIdentity(id)&&!instances.has(id),'identidad del equipo');instances.add(id);};
 const claimStack=stack=>{for(const id of fittingItemIds(stack))claimInstance(id);};
 for(const u of s.units){validateCompanionGrief(u);need((u.side==='player'&&!u.militia&&Number.isSafeInteger(Number(u.id))&&Number(u.id)>=0&&String(Number(u.id))===u.id)||(u.griefCompanionIds===undefined&&u.companionGrief===undefined),'duelo de combatientes');need(validMilitiaArrival(u,s.sectorId),'llegada de milicia');need(validMilitiaExperience(u),'experiencia de milicia');if(u.militiaCreditId!==undefined)need(typeof u.militiaCreditId==='string'&&u.militiaCreditId.length>0&&u.militiaCreditId.length<=2400,'identidad de experiencia');need(coord(u)&&text(u.id)&&!ids.has(u.id)&&text(u.name)&&['player','enemy'].includes(u.side),'combatientes');ids.add(u.id);
@@ -77,6 +89,7 @@ need(integer(u.weapon,0,65535),'armas');validateWeaponCarrier(u);if(u.blade!==un
 validateWeaponReadiness(u,(weaponSpecification(u)?.capacity??0)>0);
 validateReloadProgress(u.reloadProgress,weaponSpecification(u)?.capacity??0,u.loaded,u.weaponDropped);
 for(const k of ['ammo','rations','torches','boleadoras','medkits','strengthTraining'])if(u[k]!==undefined)need(integer(u[k],0,1000000),'suministros');
+validateRepairReserve(u);
 if(u.facing===undefined)u.facing=u.side==='enemy'?6:2;need(integer(u.facing,0,7),'dirección de observación');if(u.stealthMode===undefined)u.stealthMode=false;need(typeof u.stealthMode==='boolean','sigilo');
 if(u.lastHeardNoise!==undefined){const n=u.lastHeardNoise;need(coord(n)&&integer(n.turn,1,s.turn)&&NOISE_KINDS.includes(n.kind)&&number(n.uncertainty,0,20),'ruido percibido');need(Object.keys(n).every(k=>['x','y','turn','kind','uncertainty'].includes(k)),'información del ruido');}
 if(u.patrolOrigin!==undefined)need(coord(u.patrolOrigin),'puesto de patrulla');if(u.patrol!==undefined)need(typeof u.patrol==='boolean','patrulla');for(const k of ['patrolTurn','lastInvestigatedTurn'])if(u[k]!==undefined)need(integer(u[k],0,1e9),'reloj de patrulla');

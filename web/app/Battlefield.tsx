@@ -1,7 +1,7 @@
 'use client';
 import BattlePerformance from './BattlePerformance';
 import {useEnemyPlayback} from '../lib/useEnemyPlayback';
-import {firearmMaintenanceAction,chancePercent} from '../../game/ja2-hud.js';
+import {firearmMaintenanceAction,chancePercent,beneficiaryDeliveryNotice} from '../../game/ja2-hud.js';
 import {useBattleExecutor} from '../lib/useBattleExecutor';
 import {useMovementController} from '../lib/useMovementController';
 import {useBattlePreview} from '../lib/useBattlePreview';
@@ -133,7 +133,7 @@ function BattlefieldContents({battle:committed,onPlaybackBusy,onPlaybackValidate
   const [pendingGift,setPendingGift]=useState<any>(null),[giftReply,setGiftReply]=useState<any>(null);
   const [speech,setSpeech]=useState<any>(null);const replyCounts=useRef<Record<string,number>>({});
   useEffect(()=>{if(!speech)return;const timer=setTimeout(()=>setSpeech(null),10000);return()=>clearTimeout(timer);},[speech]);
-  useEffect(()=>{const before=lastFeedback.current;lastFeedback.current=s;if(before.battleId!==s.battleId||before.sectorId!==s.sectorId)return;const messages=tacticalFeedback(before,s);if(messages.length)showFeedback(messages.slice(0,3).join(' · '));if(talking||speech||Date.now()-lastChatter.current<12000)return;const line=contextualBanter(before,s,++chatterCount.current);if(line){lastChatter.current=Date.now();setSpeech(line);}},[s]);
+  useEffect(()=>{const before=lastFeedback.current;lastFeedback.current=s;if(before.battleId!==s.battleId||before.sectorId!==s.sectorId)return;const messages=tacticalFeedback(before,s);if(messages.length)showFeedback(messages.slice(0,3).join(' · '));if(talking||speech||Date.now()-lastChatter.current<12000)return;const line=contextualBanter(before,s,()=>chatterCount.current++,presentation.frame);if(line){lastChatter.current=Date.now();setSpeech(line);}},[s]);
   useEffect(()=>{setSpeech(null);setTalking(null);setPendingGift(null);setGiftReply(null);},[s.battleId,s.sectorId]);
   const talking=talkingSelection?(s.npcs??[]).find((n:any)=>n.id===talkingSelection.id&&(n.hp??100)>0&&!n.unconscious&&!n.departure&&!n.fled&&!n.routed)??null:null;
   useEffect(()=>{if(talkingSelection&&!talking){setTalking(null);setGiftReply(null);}},[talkingSelection,talking]);
@@ -184,7 +184,7 @@ function BattlefieldContents({battle:committed,onPlaybackBusy,onPlaybackValidate
   const costs=useMemo(()=>u?actionCosts(s,u):null,[s,u]);const weapon=u?weaponFor(u):null;const firearm=u&&hasFirearm(u);const [cannonId,setCannonId]=useState('');const [shotType,setShotType]=useState('solid');const gun=s.artillery?.find((g:any)=>g.id===cannonId);const gunCosts=u&&gun?artilleryCosts(s,u,gun):null;
   const maxAim=useMemo(()=>aimOptions(s,u,{mode,target:hover,hitLocation}).filter((option:any)=>!option.disabled).at(-1)?.level??0,[s,u,mode,hover,hitLocation]);
   useEffect(()=>setAim(value=>Math.min(value,maxAim)),[maxAim]);
-  useEffect(()=>{setTalking(null);setSpeech(null);setPendingGift(null);setGiftReply(null);},[selected]);
+  useEffect(()=>{setTalking(null);setPendingGift(null);setGiftReply(null);},[selected]);
   useEffect(()=>{
     if(!pendingGift||busy)return;
     const actor=s.units.find((person:any)=>person.id===pendingGift.unitId),position=motion.positions[pendingGift.unitId];
@@ -216,7 +216,7 @@ function BattlefieldContents({battle:committed,onPlaybackBusy,onPlaybackValidate
   const mapItemTarget=hover?(inventoryPeople.find((person:any)=>sameCell(person,hover))??hover):null;
   const inventoryMapIntent=inventoryIntentAt(inventoryMapOverride,mapItemTarget);
   const itemPreview=useMemo(()=>selectedItemMapPreview(s,u,pickedItem,mapItemTarget,inventoryMapIntent),[s,u,pickedItem,mapItemTarget?.id,mapItemTarget?.x,mapItemTarget?.y,mapItemTarget?.tacticalLevel,inventoryMapIntent]);
-  const preview=useMemo(()=>pickedItem?itemPreview:mode==='talk'||movementGroup.request?null:targetPreview(s,u,hover,{mode,aim,hitLocation,reachable,routesPending:routePreview.working,routesFailed:routePreview.failed,movementIntent,itemIntent}),[pickedItem,itemPreview,mode,movementGroup.request,routePreview.working,routePreview.failed,s,u,hover,aim,hitLocation,reachable,movementIntent,itemIntent]);
+  const preview=useMemo(()=>pickedItem?itemPreview?.beneficiaryDelivery?{...itemPreview,coverNote:[beneficiaryDeliveryNotice(itemPreview.beneficiaryDelivery),itemPreview.coverNote].filter(Boolean).join(' ')}:itemPreview:mode==='talk'||movementGroup.request?null:targetPreview(s,u,hover,{mode,aim,hitLocation,reachable,routesPending:routePreview.working,routesFailed:routePreview.failed,movementIntent,itemIntent}),[pickedItem,itemPreview,mode,movementGroup.request,routePreview.working,routePreview.failed,s,u,hover,aim,hitLocation,reachable,movementIntent,itemIntent]);
   useEffect(()=>{
     if(s.mode!=='exploration'||s.status!=='active'||s.phase!=='player'||busy||talking||inventoryId||lootPoint||exitOpen||ambientPaused)return;
     const timer=setInterval(()=>{

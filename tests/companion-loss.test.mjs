@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {receiveCompanionLossCorrespondence} from '../game/companion-loss.js';
+import {receiveCompanionLossCorrespondence,deliverPendingCompanionLossCorrespondence,validatePendingCompanionLoss,cancelPendingCompanionLoss,renewPendingCompanionLossService} from '../game/companion-loss.js';
 import {defaultContentPackage} from '../game/content-package.js';
 import {authoredRoster} from '../game/content-roster.js';
 import {OPERATIVES} from '../game/data.js';
@@ -49,7 +49,7 @@ test('preferences are directed and absent or older pinned definitions remain neu
  assert.deepEqual(receive(f),[]);assert.equal(f.state.correspondence,undefined);
 });
 
-test('dismissed, captive, surrendered, dead or incapacitated speakers cannot send the reaction',()=>{
+test('permanently invalid speakers remain neutral and incapacity without a new death source cannot backfill',()=>{
  for(const change of [f=>f.state.recruited=[116],f=>delete f.state.contracts[107],
   f=>f.state.operativeState[107].captured=true,f=>f.state.operativeState[107].surrendered=true,
   f=>{f.state.operativeState[107].alive=false;f.state.operativeState[107].hp=0;},
@@ -72,16 +72,118 @@ test('active permanent and legacy service can react without a fabricated wage or
  for(const kind of ['patriot','legacy']){
   const f=fixture();f.state.contracts[107]={kind,term:'month',started:0,expiresAt:null,paid:0};const before=structuredClone(f.state.contracts);
   assert.deepEqual(receive(f),['companion-loss:107:116']);assert.deepEqual(f.state.contracts,before);assert.equal(f.state.resources.treasury,2192);
+  const deferred=deferredFixture(f=>{f.state.contracts[107]={kind,term:'month',started:0,expiresAt:null,paid:0};f.state.operativeState[107].asleep=true;});
+  assert.deepEqual(deferred.state.operativeState[107].pendingCompanionLoss,[pendingReceipt(deferred)]);assert.doesNotThrow(()=>validatePendingCompanionLoss(deferred.state,deferred.roster));
+  deferred.state.operativeState[107].asleep=false;assert.deepEqual(deliverPendingCompanionLossCorrespondence(deferred.state,deferred.roster),['companion-loss:107:116']);
+  assert.equal(deferred.state.resources.treasury,2192);assert.deepEqual(deferred.state.contracts[107],before[107]);
  }
 });
 
-test('unknown still-deployed health is excluded until the caller explicitly confirms that speaker as settled',()=>{
+test('unknown still-deployed health without new death evidence stays neutral until the caller confirms settlement',()=>{
  const f=fixture();f.state.pendingBattle={id:'admission-fixture',squad:[{id:'107',hp:1}]};const before=structuredClone(f.state);
  assert.deepEqual(receive(f),[]);assert.deepEqual(f.state,before);
  assert.deepEqual(receive(f,[116],{settledIds:['107']}),[]);assert.deepEqual(f.state,before);
  assert.deepEqual(receive(f,[116],{settledIds:[116]}),[]);assert.deepEqual(f.state,before);
  assert.deepEqual(receive(f,[116],{settledIds:[107,116]}),['companion-loss:107:116']);
  assert.deepEqual(f.state.pendingBattle,before.pendingBattle);
+});
+
+const deferredFixture=(change=f=>{f.state.operativeState[107].asleep=true;})=>{
+ const f=fixture();f.state.operativeState[116].deathMinute=f.state.hour*60+Math.floor(f.state.secondOfHour/60);change(f);
+ assert.deepEqual(receive(f),[]);assert.doesNotThrow(()=>validatePendingCompanionLoss(f.state,f.roster));return f;
+};
+const pendingReceipt=f=>({companionId:116,hour:6,secondOfHour:17,serviceKind:f.state.contracts[107].kind,serviceStarted:0,serviceStartedSecond:0});
+
+test('new confirmed loss survives each temporary writing barrier and delivers only after that barrier clears',()=>{
+ const cases=[
+  {block:r=>r.asleep=true,recover:r=>r.asleep=false},
+  {block:r=>r.hp=14,recover:r=>r.hp=15},
+  {block:r=>r.energy=0,recover:r=>r.energy=1},
+  {block:r=>r.unconscious=true,recover:r=>r.unconscious=false},
+  {block:r=>r.sleepCollapsed=true,recover:r=>r.sleepCollapsed=false}
+ ];
+ // These are declared pure-helper eligibility boundaries. Actual recovery,
+ // finite costs and official campaign save/replay are tested in the paid route.
+ for(const {block,recover}of cases){
+  const f=deferredFixture(f=>block(f.state.operativeState[107]));
+  assert.deepEqual(f.state.operativeState[107].pendingCompanionLoss,[pendingReceipt(f)]);
+  assert.deepEqual(f.state.operativeState[116].companionLossConfirmation,{hour:6,secondOfHour:17,source:'bleeding'});
+  const before=structuredClone(f.state);validatePendingCompanionLoss(f.state,f.roster);assert.deepEqual(f.state,before);
+  assert.deepEqual(receive(f,[116,116]),[]);assert.deepEqual(f.state,before,'a repeated confirmation cannot replace the source or queue');
+  assert.deepEqual(deliverPendingCompanionLossCorrespondence(f.state,f.roster),[]);assert.deepEqual(f.state,before);
+  f.state=JSON.parse(JSON.stringify(f.state));recover(f.state.operativeState[107]);f.state.hour=7;
+  const ready=structuredClone(f.state);assert.deepEqual(deliverPendingCompanionLossCorrespondence(f.state,f.roster),['companion-loss:107:116']);
+  assert.equal(f.state.operativeState[107].pendingCompanionLoss,undefined);assert.equal(f.state.correspondence[0].hour,7);assert.equal(f.state.operativeState[107].morale,80);
+  const expected=structuredClone(ready);delete expected.operativeState[107].pendingCompanionLoss;expected.correspondence=f.state.correspondence;
+  assert.deepEqual(f.state,expected);assert.doesNotThrow(()=>validatePendingCompanionLoss(f.state,f.roster));
+  const delivered=structuredClone(f.state);assert.deepEqual(deliverPendingCompanionLossCorrespondence(f.state,f.roster),[]);assert.deepEqual(receive(f),[]);assert.deepEqual(f.state,delivered);
+ }
+ const f=deferredFixture(f=>{f.state.pendingBattle={id:'issued-fixture',squad:[{id:107,hp:72}]};});
+ const before=structuredClone(f.state);assert.deepEqual(deliverPendingCompanionLossCorrespondence(f.state,f.roster,{settledIds:['107']}),[]);assert.deepEqual(f.state,before);
+ assert.deepEqual(deliverPendingCompanionLossCorrespondence(f.state,f.roster,{settledIds:[107]}),['companion-loss:107:116']);assert.deepEqual(f.state.pendingBattle,before.pendingBattle);
+});
+
+test('a deferred return requires the matching issued casualty and hourly death requires its exact new wound minute',()=>{
+ for(const deathMinute of [undefined,359,361,'360'])silent(f=>{f.state.operativeState[107].asleep=true;f.state.operativeState[116].deathMinute=deathMinute;});
+ const returned=()=>{const f=fixture();f.state.pendingBattle={id:'actual-return-fixture',squad:[{id:107,hp:72},{id:116,hp:32}]};f.state.operativeState[107].hp=14;return f;};
+ for(const [battleId,modify]of [['other-return',()=>{}],['actual-return-fixture',f=>f.state.pendingBattle.squad[1].hp=0],['actual-return-fixture',f=>f.state.pendingBattle.squad.pop()]]){
+  const f=returned();modify(f);const before=structuredClone(f.state);assert.deepEqual(receive(f,[116],{battleId}),[]);assert.deepEqual(f.state,before);
+ }
+ const f=returned();assert.deepEqual(receive(f,[116],{battleId:f.state.pendingBattle.id}),[]);
+ assert.deepEqual(f.state.operativeState[107].pendingCompanionLoss,[pendingReceipt(f)]);
+ assert.deepEqual(f.state.operativeState[116].companionLossConfirmation,{hour:6,secondOfHour:17,source:'return',battleId:'actual-return-fixture'});
+ assert.doesNotThrow(()=>validatePendingCompanionLoss(f.state,f.roster));
+});
+
+test('pending validation is read-only and rejects forged preference, death, date, service and receipt shapes',()=>{
+ const original=deferredFixture(),valid=structuredClone(original.state);validatePendingCompanionLoss(original.state,original.roster);assert.deepEqual(original.state,valid);
+ const changes=[
+  f=>f.state.operativeState[107].pendingCompanionLoss=[],
+  f=>f.state.operativeState[107].pendingCompanionLoss={},
+  f=>f.state.operativeState[107].pendingCompanionLoss.push({...pendingReceipt(f)}),
+  f=>f.state.operativeState[107].pendingCompanionLoss=new Array(1),
+  f=>{const rows=f.state.operativeState[107].pendingCompanionLoss;delete rows[0];rows.extra=pendingReceipt(f);},
+  f=>f.state.operativeState[107].pendingCompanionLoss[0].companionId='116',
+  f=>f.state.operativeState[107].pendingCompanionLoss[0].companionId=107,
+  f=>f.state.operativeState[107].pendingCompanionLoss[0].companionId=9999,
+  f=>f.state.operativeState[107].pendingCompanionLoss[0].hour=7,
+  f=>f.state.operativeState[107].pendingCompanionLoss[0].secondOfHour=16,
+  f=>f.state.operativeState[107].pendingCompanionLoss[0].secondOfHour=3600,
+  f=>f.state.operativeState[107].pendingCompanionLoss[0].serviceKind='legacy',
+  f=>f.state.operativeState[107].pendingCompanionLoss[0].serviceStarted=1,
+  f=>f.state.operativeState[107].pendingCompanionLoss[0].serviceStartedSecond=18,
+  f=>f.state.operativeState[107].pendingCompanionLoss[0].extra=true,
+  f=>delete f.state.operativeState[116].companionLossConfirmation,
+  f=>f.state.operativeState[116].companionLossConfirmation.source='unconfirmed',
+  f=>f.state.operativeState[116].companionLossConfirmation.secondOfHour=18,
+  f=>f.state.operativeState[116].companionLossConfirmation.extra=true,
+  f=>f.state.operativeState[116].deathMinute=359,
+  f=>{f.state.operativeState[116].alive=true;f.state.operativeState[116].hp=14;},
+  f=>delete f.state.contentCampaign.package.characters.find(c=>c.id==='person-107').preferredCompanions,
+  f=>f.state.recruited=[116],f=>f.state.operativeState[107].captured=true,
+  f=>f.state.operativeState[107].surrendered=true,
+  f=>f.state.contracts[107].expiresAt=6,
+  f=>f.state.correspondence=[{id:'companion-loss:107:116'}]
+ ];
+ for(const change of changes){const f={state:structuredClone(valid),roster:original.roster};change(f);const before=structuredClone(f.state);assert.throws(()=>validatePendingCompanionLoss(f.state,f.roster),/aviso pendiente/);assert.deepEqual(f.state,before);}
+});
+
+test('renewal keeps a valid pending loss but expiry or service removal cannot revive it on rehire',()=>{
+ const f=deferredFixture(),cash=f.state.resources.treasury;
+ f.state.contracts[107]={kind:'paid',term:'day',started:6,startedSecond:17,expiresAt:174,expiresSecond:17,paid:84};
+ assert.throws(()=>validatePendingCompanionLoss(f.state,f.roster),/aviso pendiente/);
+ renewPendingCompanionLossService(f.state,107);assert.doesNotThrow(()=>validatePendingCompanionLoss(f.state,f.roster));
+ assert.deepEqual(f.state.operativeState[107].pendingCompanionLoss,[{...pendingReceipt(f),serviceStarted:6,serviceStartedSecond:17}]);assert.equal(f.state.resources.treasury,cash);
+ for(const reason of ['expiry','dismissal','capture']){
+  const invalid=deferredFixture(),confirmation=structuredClone(invalid.state.operativeState[116].companionLossConfirmation);
+  if(reason==='expiry'){invalid.state.hour=168;assert.deepEqual(deliverPendingCompanionLossCorrespondence(invalid.state,invalid.roster),[]);}
+  else {if(reason==='dismissal')invalid.state.recruited=[116];else invalid.state.operativeState[107].captured=true;cancelPendingCompanionLoss(invalid.state,107);}
+  assert.equal(invalid.state.operativeState[107].pendingCompanionLoss,undefined);
+  invalid.state.recruited=[107,116];delete invalid.state.operativeState[107].captured;invalid.state.operativeState[107].asleep=false;
+  invalid.state.contracts[107]={kind:'paid',term:'week',started:invalid.state.hour,startedSecond:17,expiresAt:invalid.state.hour+168,expiresSecond:17,paid:588};
+  assert.deepEqual(deliverPendingCompanionLossCorrespondence(invalid.state,invalid.roster),[]);assert.equal(invalid.state.correspondence,undefined);assert.deepEqual(invalid.state.operativeState[116].companionLossConfirmation,confirmation);
+  assert.doesNotThrow(()=>validatePendingCompanionLoss(invalid.state,invalid.roster));
+ }
 });
 
 test('pinned authored names override later roster labels and the existing saved inbox deduplicates the loss',()=>{

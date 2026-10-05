@@ -2,6 +2,7 @@ import {canSee,weaponFor} from './tactical.js';
 import {speechFor} from './characters.js';
 import {TRAINING_LABELS} from './skill-training.js';
 import {COMPANION_GRIEF_MORALE} from './companion-grief.js';
+import {consumeFirearmNearMissFeedback} from './firearm-near-miss-feedback.js';
 const griefLossFormat=new Intl.NumberFormat('es-AR',{maximumFractionDigits:2});
 export function tacticalFeedback(before,after){
  const messages=[];
@@ -21,6 +22,19 @@ export function tacticalFeedback(before,after){
  }
  for(const unit of after.units.filter(u=>u.side==='player')){
   const old=before.units.find(u=>u.id===unit.id);if(!old)continue;
+  if(unit.enclosedRoomFearWarned===true&&old.enclosedRoomFearWarned===undefined&&
+     !unit.militia&&!unit.missionAlly&&Number.isSafeInteger(Number(unit.id))&&Number(unit.id)>=0&&
+     String(Number(unit.id))===unit.id&&Array.isArray(unit.abilities)&&unit.abilities.includes('enclosed_room_fear')){
+   messages.push(`${unit.name} siente temor dentro de una habitación cerrada.`);
+  }
+  if(unit.nervousIsolationWarned===true&&old.nervousIsolationWarned===undefined&&
+     !unit.militia&&!unit.missionAlly&&Number.isSafeInteger(Number(unit.id))&&Number(unit.id)>=0&&
+     String(Number(unit.id))===unit.id&&Array.isArray(unit.abilities)&&unit.abilities.includes('nervous_isolation')){
+   messages.push(`${unit.name} siente temor al quedar sin apoyo.`);
+  }
+ }
+ for(const unit of after.units.filter(u=>u.side==='player')){
+  const old=before.units.find(u=>u.id===unit.id);if(!old)continue;
   for(const [skill,label]of Object.entries(TRAINING_LABELS)){const gain=(unit.trainedStats?.[skill]??0)-(old.trainedStats?.[skill]??0);if(gain>0)messages.push(`${unit.nickname||unit.name}: ${label} +${gain}`);}
   if(unit.jammed&&!old.jammed)messages.push(`${unit.nickname||unit.name}: ${weaponFor({...unit,activeSlot:'primary'}).name} atascada. Volvé a cebar la cazoleta.`);
   if(unit.offHand?.jammed&&!old.offHand?.jammed)messages.push(`${unit.nickname||unit.name}: ${weaponFor({...unit,...unit.offHand,activeSlot:'primary'}).name} atascada en la segunda mano.`);
@@ -29,14 +43,17 @@ export function tacticalFeedback(before,after){
 }
 // Chatter uses authored personality lines. A UI cooldown and a sparse event
 // choice prevent one quote for every hit, contact or interrupt.
-export function contextualBanter(before,after,eventNumber=0){
+/** @param {number | (() => number)} eventNumber */
+export function contextualBanter(before,after,eventNumber=0,frame=null){
  const players=after.units.filter(u=>u.side==='player'&&u.hp>0&&!u.unconscious),enemies=after.units.filter(u=>u.side==='enemy'&&u.hp>0&&!u.departure&&!u.fled);
  const wounded=players.find(u=>{const old=before.units.find(v=>v.id===u.id);return old&&u.hp<old.hp;});
  const contact=players.find(u=>{const old=before.units.find(v=>v.id===u.id);return old&&enemies.some(e=>canSee(after,u,e)&&!canSee(before,old,before.units.find(v=>v.id===e.id)??e));});
- const near=players.find(u=>enemies.some(e=>e.lastTargetId===u.id&&e.loaded<(before.units.find(v=>v.id===e.id)?.loaded??e.loaded)));
+ const nearMissIds=consumeFirearmNearMissFeedback(before,after,frame),near=players.find(u=>nearMissIds.includes(u.id));
  const interrupt=after.phase==='interrupt'&&before.phase!=='interrupt'?players.find(u=>after.interrupt?.unitIds.includes(u.id)):null;
  const event=wounded?'wounded':contact?'contact':near?'near':interrupt?'interrupt':null,unit=wounded??contact??near??interrupt;
- if(!event||!unit||event!=='contact'&&eventNumber%3!==0)return null;
- const text=speechFor(unit,event==='near'||event==='interrupt'?'contact':event);
+ if(!event||!unit)return null;
+ const sequence=typeof eventNumber==='function'?eventNumber():eventNumber;
+ if(event!=='contact'&&sequence%3!==0)return null;
+ const text=speechFor(unit,event);
  return text?{id:unit.id,name:unit.nickname||unit.name,x:unit.x,y:unit.y,tacticalLevel:unit.tacticalLevel,text}:null;
 }

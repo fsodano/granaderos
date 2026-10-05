@@ -8,6 +8,7 @@ import {syncBattleTime} from '../game/time.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {approachNPC} from './approach-npc.mjs';
 import {secureArea} from './secured-area-fixture.mjs';
+import {defaultErrands} from '../game/quest-definitions.js';
 
 const npcId='local-retiro',questId='retiro-uniformes';
 const actor=b=>b.units.find(u=>u.id==='110'),recipient=b=>b.npcs.find(n=>n.id===npcId);
@@ -17,6 +18,8 @@ let prepared;
 function ready(){
  if(!prepared){
   let campaign=initialCampaign(8);assert.deepEqual(campaign.squad,[]);const cash=campaign.resources.treasury;
+  // Preserve the saved single-recipient cash/civic subsystem contract.
+  campaign.errandDefinitions=defaultErrands().map(q=>q.id===questId?{...q,reward:{treasury:0,loyalty:false},rewardChoice:{reimbursement:40}}:q);
   campaign=order(campaign,{type:'recruitCivic',id:110,term:'day'});assert.ok(campaign.resources.treasury<cash);
   const stock=campaign.merchants.retiro.supplies.ponchos;
   campaign=withCarriedPonchos(campaign,110,2);

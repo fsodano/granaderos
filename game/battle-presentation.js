@@ -1,6 +1,7 @@
 // Transient presentation is separate from campaign/save state. Recording never
 // changes orders, randomness, AP, visibility or the returned authoritative state.
 import {projectileTrajectoryPoint} from './projectile-trajectory.js';
+import {markFirearmNearMissPresented} from './firearm-near-miss-feedback.js';
 let recorder=null,recordingShotHand=null;
 export function withBattleShotHand(hand,execute){const previous=recordingShotHand;recordingShotHand=hand==='offhand'?'offhand':'primary';try{return execute();}finally{recordingShotHand=previous;}}
 export function recordBattleFrame(state,event){
@@ -90,7 +91,8 @@ export function captureBattlePresentation(before,execute,canObserve){
    for(let n=actionStarts.get(event.unitId)??frames.length;n<frames.length;n++)if(frames[n].action===event.action){const observed=knownIn(frames[n].state),admitted=crewIds.filter(id=>observed.has(bodyKey('unit',id)));if(admitted.length)frames[n].crewIds=admitted;}
    return;
   }
-  if(!seen&&signature===lastSignature)return;
+  const nearMissIds=Array.isArray(event.nearMissIds)?[...new Set(event.nearMissIds)].filter(id=>typeof id==='string'&&state.units.some(unit=>unit.id===id&&unit.side==='player'&&unit.hp>0&&!unit.unconscious)):[];
+  if(!seen&&signature===lastSignature&&!nearMissIds.length)return;
   if((event.type==='prepare'||event.type==='contact')&&!seen)return;
   const shotVisual=seen?observedShot(state,event.shotVisual,known,canObserve):null;
   if(shotVisual){if(event.type==='projectile'&&shotVisual.discharge!==false||!shotIds.has(event.unitId))shotIds.set(event.unitId,`${event.unitId}:${++shotSequence}`);shotVisual.shotId=shotIds.get(event.unitId);}
@@ -104,8 +106,8 @@ export function captureBattlePresentation(before,execute,canObserve){
   if(shotComplete)shotIds.delete(event.unitId);
   const artilleryComplete=event.type==='result'&&presentedArtillery.delete(event.unitId);
   const crew=actionCrews.get(event.unitId),crewIds=crew?.action===event.action?crew.crewIds.filter(id=>known.has(bodyKey('unit',id))):[];
-  frames.push({state:current,visibleIds:[...visible],unitId:seen?event.unitId:null,type:event.type,action:event.action,impacts,...(crewIds.length?{crewIds:[...crewIds]}:{}),...(seen&&['bayonet','normal'].includes(event.meleeStyle)?{meleeStyle:event.meleeStyle}:{}),...(shotVisual?{shotVisual,shotHand:shotVisual.shotHand,shotId:shotVisual.shotId}:{}),...(artilleryVisual?{artilleryVisual}:{}),...(shotComplete?{shotComplete:true}:{}),...(artilleryComplete?{artilleryComplete:true}:{}),...(event.contactComplete&&seen?{contactComplete:true}:{}),...(event.performed===false?{performed:false}:{}),...(target?{targetPoint:{id:target.id,x:target.x,y:target.y,tacticalLevel:target.tacticalLevel}}:{}),...(event.grenadeVisual&&seen?{grenadeVisual:snapshot(event.grenadeVisual)}:{}),...(event.knifeVisual&&seen?{knifeVisual:snapshot(event.knifeVisual)}:{})});
+  frames.push({state:current,visibleIds:[...visible],unitId:seen?event.unitId:null,type:event.type,action:event.action,impacts,...(nearMissIds.length?{nearMissIds}:{}),...(crewIds.length?{crewIds:[...crewIds]}:{}),...(seen&&['bayonet','normal'].includes(event.meleeStyle)?{meleeStyle:event.meleeStyle}:{}),...(shotVisual?{shotVisual,shotHand:shotVisual.shotHand,shotId:shotVisual.shotId}:{}),...(artilleryVisual?{artilleryVisual}:{}),...(shotComplete?{shotComplete:true}:{}),...(artilleryComplete?{artilleryComplete:true}:{}),...(event.contactComplete&&seen?{contactComplete:true}:{}),...(event.performed===false?{performed:false}:{}),...(target?{targetPoint:{id:target.id,x:target.x,y:target.y,tacticalLevel:target.tacticalLevel}}:{}),...(event.grenadeVisual&&seen?{grenadeVisual:snapshot(event.grenadeVisual)}:{}),...(event.knifeVisual&&seen?{knifeVisual:snapshot(event.knifeVisual)}:{})});
   if(event.type==='result'){actionCrews.delete(event.unitId);actionStarts.delete(event.unitId);}
  };
- try{const state=execute();return {state,frames};}finally{recorder=parent;}
+ try{const state=execute();if(frames.some(frame=>frame.nearMissIds))markFirearmNearMissPresented(state);return {state,frames};}finally{recorder=parent;}
 }

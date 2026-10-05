@@ -18,25 +18,26 @@ import {applyCivilianHarm} from '../game/civilian-harm.js';
 import {approachNPC} from './approach-npc.mjs';
 import {secureArea} from './secured-area-fixture.mjs';
 const quest=(patch={})=>({id:'pedido',npcId:'local-retiro',sector:'retiro',title:'Sostener la posta',offer:'Necesito provisiones para la posta.',delivery:'La posta tiene provisiones.',cost:{treasury:5},requiredSectors:['retiro'],requires:[],reward:{treasury:83,loyalty:false},...patch});
+const competing=()=>quest({cost:{},reward:{treasury:0,loyalty:false},carried:{item:'medkits',count:2,label:'Vendas de la posta',instruction:'Entregá dos vendas desde el inventario.'},beneficiaries:[{id:'cuartel',npcId:'local-retiro',sector:'retiro',delivery:'El cuartel recibe las vendas.',reward:{treasury:0,loyalty:true}},{id:'puerto',npcId:'local-ensenada',sector:'ensenada',delivery:'El puerto recibe las vendas.',reward:{treasury:0,loyalty:true}}]});
 const order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,n.lastError);return n;};
 const sync=pair=>{const n=syncBattleTime(pair.campaign,pair.battle);assert.equal(n.error,null,n.error);return decodeSave(encodeSave(n.campaign,n.battle));};
-function ready(quests,escort=false,configure=()=>{},d=defaultContentPackage()){
+function ready(quests,escort=false,configure=()=>{},d=defaultContentPackage(),configureRequest=()=>{}){
  d.errands=quests;const courier=d.characters.find(c=>c.id==='person-112');courier.arrivalHours=0;courier.startingSupplies={rations:2,torches:2,medkits:7,boleadoras:1};configure(d);
  let campaign=initialCampaign(8,parseContentPackage(encodeContentPackage(d)));
  // This controlled-area fixture isolates escort geometry; it is not campaign-route evidence.
  if(escort)campaign=secureArea(campaign,['buenos_aires']);
  campaign=order(campaign,{type:'recruitCivic',id:112,term:'week'});
- campaign=order(campaign,{type:'visitSector'});const pair=prepareCampaignBattle(campaign);assert.equal(pair.error,null);return sync(pair);
+ campaign=order(campaign,{type:'visitSector'});configureRequest(campaign.pendingBattle);const pair=prepareCampaignBattle(campaign);assert.equal(pair.error,null);return sync(pair);
 }
 function approach(pair,npcId){return sync({...pair,battle:approachNPC(pair.battle,'112',npcId)});}
 function talk(pair,npcId,approach='quest',questResolution){
  const campaign=order(pair.campaign,{type:'talkNPC',npcId,unitId:112,approach,sectorState:pair.battle,...(questResolution===undefined?{}:{questResolution})});
  return sync({campaign,battle:applyQuestEscortOrders(campaign,pair.battle)});
 }
-function give(pair,count,item='medkits',npcId='local-retiro'){
+function give(pair,count,item='medkits',npcId='local-retiro',acknowledge=true){
  const u=pair.battle.units.find(u=>u.id==='112'),npc=pair.battle.npcs.find(n=>n.id===npcId),slot=inventoryUsage(u).slots.find(s=>s.entry?.item===item&&s.entry.count>=count);assert.ok(slot);
  const battle=actBattle(pair.battle,{type:'inventoryMap',unitId:u.id,sourceId:slot.id,expectedSource:equipmentFingerprint(u,slot.id),count,intent:'auto',x:npc.x,y:npc.y,tacticalLevel:npc.tacticalLevel??0,targetId:npc.id});assert.equal(battle.lastError,null,battle.lastError);
- return {pair:sync({...pair,battle}),result:getNpcGiftResult(pair.battle,battle)};
+ return {pair:acknowledge?sync({...pair,battle}):{...pair,battle},result:getNpcGiftResult(pair.battle,battle)};
 }
 function reenter(pair){let c=order(pair.campaign,{type:'leaveSector',battleId:pair.campaign.pendingBattle.id,sectorState:pair.battle,survivors:pair.battle.units.filter(u=>u.side==='player')});c=decodeSave(encodeSave(c)).campaign;c=order(c,{type:'visitSector'});const next=prepareCampaignBattle(c);assert.equal(next.error,null);return sync(next);}
 
@@ -84,6 +85,67 @@ test('an authored physical reward choice waits for retained gifts and a real pre
   assert.equal(later.campaign.quests.pedido.status,'completed');assert.equal(later.campaign.quests.pedido.questResolution,choice);assert.equal(later.campaign.resources.treasury,result.campaign.resources.treasury);
   later.campaign.sectors.retiro.owner='royalist';assert.equal(decodeSave(encodeSave(later.campaign,later.battle)).campaign.quests.pedido.questResolution,choice);
  }
+});
+
+test('accepted physical supplies lock the actual receiver before acknowledgement and confirmation pays only that town once',()=>{
+ let pair=approach(ready([competing()]),'local-retiro');const before=structuredClone(pair),cash=pair.campaign.resources.treasury,stock=pair.battle.units.find(u=>u.id==='112').medkits;
+ const refused=give(pair,1,'rations');assert.equal(refused.result.status,'refused');pair=refused.pair;assert.deepEqual(pair.battle.questBeneficiaries,{});assert.equal(pair.campaign.quests.pedido,undefined);
+ pair=give(pair,1).pair;assert.equal(pair.battle.questBeneficiaries.pedido,'cuartel');assert.equal(pair.campaign.pendingBattle.questBeneficiaries.pedido,'cuartel');assert.equal(pair.campaign.quests.pedido.beneficiaryId,'cuartel');
+ const partial=structuredClone(pair);
+ for(const change of [p=>p.campaign.pendingBattle.questBeneficiaries.pedido='puerto',p=>delete p.campaign.pendingBattle.questBeneficiaries.pedido,p=>delete p.campaign.quests.pedido.beneficiaryId]){
+  const invalid=structuredClone(partial);change(invalid);assert.throws(()=>decodeSave(encodeSave(invalid.campaign,invalid.battle)));
+  const rejected=dispatchCampaign(invalid.campaign,{type:'syncTacticalTime',battleId:invalid.campaign.pendingBattle.id,elapsedSeconds:invalid.campaign.pendingBattle.syncedSeconds});assert.ok(rejected.lastError);assert.deepEqual({...rejected,lastError:invalid.campaign.lastError},invalid.campaign);
+ }
+ const forged=structuredClone(before);forged.campaign.pendingBattle.questBeneficiaries.pedido='cuartel';
+ const rejected=dispatchCampaign(forged.campaign,{type:'syncTacticalTime',battleId:forged.campaign.pendingBattle.id,elapsedSeconds:forged.campaign.pendingBattle.syncedSeconds});assert.ok(rejected.lastError);assert.deepEqual({...rejected,lastError:forged.campaign.lastError},forged.campaign);
+ pair=give(pair,1).pair;assert.equal(pair.campaign.quests.pedido.status,'offered');assert.equal(pair.campaign.resources.treasury,cash);
+ pair=talk(pair,'local-retiro');assert.equal(pair.campaign.quests.pedido.status,'completed');assert.equal(pair.campaign.resources.treasury,cash);assert.equal(pair.battle.units.find(u=>u.id==='112').medkits,stock-2);
+ assert.match(pair.campaign.lastConversation.text,/8 puntos/);assert.equal(pair.campaign.cityLoyaltyEvents.filter(e=>e.eventId==='npc-pedido').length,1);assert.equal(pair.campaign.cityLoyaltyEvents.at(-1).sectorId,'retiro');
+ const repeated=dispatchCampaign(pair.campaign,{type:'talkNPC',npcId:'local-retiro',unitId:112,approach:'quest',sectorState:pair.battle});assert.ok(repeated.lastError);assert.deepEqual({...repeated,lastError:pair.campaign.lastError},pair.campaign);
+ pair=reenter(pair);assert.equal(pair.battle.npcs.find(n=>n.id==='local-retiro').questGifts.length,2);assert.equal(pair.battle.questBeneficiaries.pedido,'cuartel');
+});
+
+test('clock-only resume cannot acknowledge a new physical gift and discard its custody before a full report',()=>{
+ let pair=approach(ready([competing()]),'local-retiro');const stock=pair.battle.units.find(u=>u.id==='112').medkits,cash=pair.campaign.resources.treasury;
+ pair=give(pair,1,'medkits','local-retiro',false).pair;assert.equal(pair.battle.questBeneficiaries.pedido,'cuartel');assert.equal(pair.campaign.quests.pedido,undefined);
+ // The existing public clock call records the actual elapsed second before
+ // feedback. It cannot infer or acknowledge the active scene's new custody.
+ pair.campaign=order(pair.campaign,{type:'syncTacticalTime',battleId:pair.campaign.pendingBattle.id,elapsedSeconds:pair.battle.elapsedSeconds});
+ pair.battle={...pair.battle,syncedSeconds:pair.battle.elapsedSeconds,savedHour:pair.campaign.hour,savedSecond:pair.campaign.secondOfHour??0};
+ // Store the exact accepted scene as a pending scheduler checkpoint. Its
+ // receipt is admitted by the official save, without strategic acknowledgement.
+ pair.campaign.pendingBattle.resumeSnapshot=structuredClone(pair.battle);pair=decodeSave(encodeSave(pair.campaign,pair.battle));
+ const original=structuredClone(pair),elapsed=pair.battle.elapsedSeconds;
+ const clock=dispatchCampaign(pair.campaign,{type:'syncTacticalTime',battleId:pair.campaign.pendingBattle.id,elapsedSeconds:elapsed});
+ assert.match(clock.lastError,/parte táctico completo/);assert.deepEqual({...clock,lastError:pair.campaign.lastError},pair.campaign);assert.deepEqual(pair,original);
+ pair=sync(pair);assert.equal(pair.campaign.pendingBattle.resumeSnapshot,undefined);assert.equal(pair.campaign.quests.pedido.beneficiaryId,'cuartel');assert.equal(pair.campaign.conversations['local-retiro'].giftCount,1);
+ assert.equal(pair.battle.units.find(u=>u.id==='112').medkits,stock-1);assert.equal(pair.battle.npcs.find(n=>n.id==='local-retiro').questGifts.length,1);assert.equal(pair.campaign.resources.treasury,cash);
+ const acknowledged=structuredClone(pair);acknowledged.campaign.pendingBattle.resumeSnapshot=structuredClone(acknowledged.battle);
+ const restored=decodeSave(encodeSave(acknowledged.campaign,acknowledged.battle));
+ const discarded=dispatchCampaign(restored.campaign,{type:'syncTacticalTime',battleId:restored.campaign.pendingBattle.id,elapsedSeconds:restored.battle.elapsedSeconds});assert.match(discarded.lastError,/parte táctico completo/);assert.deepEqual({...discarded,lastError:restored.campaign.lastError},restored.campaign);
+ pair=sync(restored);assert.equal(pair.campaign.pendingBattle.resumeSnapshot,undefined);assert.equal(pair.battle.npcs.find(n=>n.id==='local-retiro').questGifts.length,1);
+ const quiet=dispatchCampaign(pair.campaign,{type:'syncTacticalTime',battleId:pair.campaign.pendingBattle.id,elapsedSeconds:pair.campaign.pendingBattle.syncedSeconds});assert.equal(quiet.lastError,null);
+ pair=reenter(pair);assert.equal(pair.battle.npcs.find(n=>n.id==='local-retiro').questGifts.length,1);assert.equal(pair.battle.questBeneficiaries.pedido,'cuartel');
+});
+
+for(const count of [1,2])test(`first ${count} accepted supplies and a real selected-contact death in one checkpoint fail without a quest reward`,()=>{
+ // A declared clinical scene starts with a living 20-HP contact, before the
+ // initial battle admission. The native pistol earns the later death.
+ let pair=approach(ready([competing()],false,()=>{},defaultContentPackage(),request=>Object.assign(request.npcs.find(n=>n.id==='local-retiro'),{hp:20,bandaged:80,civilianWoundVersion:1})),'local-retiro');
+ const cash=pair.campaign.resources.treasury,stock=pair.battle.units.find(u=>u.id==='112').medkits,npc=pair.battle.npcs.find(n=>n.id==='local-retiro'),u=pair.battle.units.find(u=>u.id==='112'),slot=inventoryUsage(u).slots.find(s=>s.entry?.item==='medkits'&&s.entry.count>=count);
+ const action={type:'inventoryMap',unitId:u.id,sourceId:slot.id,expectedSource:equipmentFingerprint(u,slot.id),count,intent:'auto',x:npc.x,y:npc.y,tacticalLevel:0,targetId:npc.id};
+ let battle=actBattle(pair.battle,action);assert.equal(battle.lastError,null);assert.equal(battle.questBeneficiaries.pedido,'cuartel');assert.equal(pair.campaign.quests.pedido,undefined);
+ const issuedRounds=u.loaded+u.ammo;
+ for(let attempt=0;attempt<3&&battle.npcs.find(n=>n.id===npc.id).hp>0;attempt++){
+  const shooter=battle.units.find(u=>u.id==='112');if(!shooter.loaded){battle=actBattle(battle,{type:'reload',unitId:'112'});assert.equal(battle.lastError,null);}
+  battle=actBattle(battle,{type:'firePoint',unitId:'112',x:npc.x,y:npc.y,tacticalLevel:0,aim:4,hitLocation:'torso'});assert.equal(battle.lastError,null);
+ }
+ assert.equal(battle.npcs.find(n=>n.id===npc.id).hp,0);assert.ok(battle.units.find(u=>u.id==='112').loaded+battle.units.find(u=>u.id==='112').ammo<issuedRounds);
+ pair=sync({...pair,battle});assert.equal(pair.campaign.quests.pedido.beneficiaryId,'cuartel');assert.equal(pair.campaign.quests.pedido.status,'failed');assert.equal(pair.campaign.quests.pedido.failureReason,'contact-dead');
+ assert.equal(pair.campaign.conversations[npc.id].giftCount,count);assert.equal(pair.battle.units.find(u=>u.id==='112').medkits,stock-count);assert.equal(pair.battle.npcs.find(n=>n.id===npc.id).questGifts.length,count);assert.equal(pair.campaign.resources.treasury,cash);
+ assert.equal(pair.campaign.cityLoyaltyEvents.filter(e=>e.eventId==='npc-pedido').length,0);
+ pair=reenter(pair);assert.equal(pair.campaign.quests.pedido.status,'failed');
+ assert.equal(pair.battle.npcs.find(n=>n.id===npc.id).hp,0);
 });
 
 test('an authored southward escort follows paid movement to its actual exit and saves its arrival',()=>{

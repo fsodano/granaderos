@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {initialCampaign} from './legacy-campaign-fixture.mjs';
 import {dispatchCampaign,operativeLocation} from '../game/campaign.js';
 import {encodeSave,decodeSave} from '../game/save.js';
+import {strategicClockInterrupt} from '../game/strategic-clock.js';
 const order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,JSON.stringify(a)+': '+n.lastError);return n;};
 export function remoteReserve(){let s=order(initialCampaign(),{type:'squad',ids:[3,4]});return order(s,{type:'travel',sector:'buenos_aires'});}
 const form={type:'createSquad',name:'Reserva médica',ids:[10],sector:'retiro'};
@@ -40,17 +41,48 @@ test('a departing squad stays intact until its requested stop takes effect',()=>
  assert.equal(n.location,'ensenada');assert.deepEqual(n.squad,[3]);assert.deepEqual(n.squads[0].members,[4]);
 });
 
-test('formation replaces an unused empty record at the limit without disturbing a marching squad',()=>{
- let s=order(initialCampaign(),{type:'squad',ids:[3,4]});
- for(let i=0;i<7;i++)s=order(s,{...form,name:`Reserva ${i}`});
- s=order(s,{type:'selectSquad',id:'squad-1'});s=order(s,{type:'travel',sector:'buenos_aires',queue:true});
- assert.equal(s.squads.length,8);const before=structuredClone(s);
- const n=order(s,form);
+test('capacity replacement retires only its arrival notice and preserves the other squad route',()=>{
+ const start=initialCampaign(),history=[];let s=start;
+ const issue=a=>{history.push(a);s=order(s,a);assert.deepEqual(decodeSave(encodeSave(s)).campaign,s);};
+ issue({type:'createSquad',name:'Primera llegada',ids:[3]});
+ issue({type:'travel',sector:'buenos_aires',queue:true});
+ issue({type:'selectSquad',id:'squad-1'});issue({type:'travel',sector:'buenos_aires',queue:true});
+ const beforeArrival=structuredClone(s);issue({type:'wait',hours:24});
+ assert.equal(s.hour,12);assert.equal(s.travelNotice.events.length,2);assert.match(strategicClockInterrupt(beforeArrival,s),/llega a/);
+ const arrival=structuredClone(s.travelNotice);
+ issue({type:'selectSquad',id:'squad-2'});issue({type:'squad',ids:[3,4,10]});
+ for(let i=0;i<6;i++)issue({...form,name:`Reserva ${i}`,sector:'buenos_aires'});
+ issue({type:'selectSquad',id:'squad-2'});issue({type:'travel',sector:'ensenada',queue:true});
+ assert.equal(s.squads.length,8);assert.deepEqual(s.travelNotice,arrival);const before=structuredClone(s);
+ issue({...form,sector:'buenos_aires'});const n=s;
  assert.equal(n.squads.length,8);assert.equal(n.activeSquadId,'squad-9');
- assert.deepEqual(n.squads.find(q=>q.id==='squad-1'),s.squads[0]);
- assert.deepEqual(n.operativeState,s.operativeState);assert.deepEqual(n.resources,s.resources);
- assert.equal(n.location,'retiro');assert.deepEqual(n.squad,[10]);assert.deepEqual(s,before);
- assert.deepEqual(decodeSave(encodeSave(n)).campaign,n);
+ assert.ok(!n.squads.some(q=>q.id==='squad-1'));
+ assert.deepEqual(n.squads.find(q=>q.id==='squad-2'),before.squads.find(q=>q.id==='squad-2'));
+ assert.deepEqual(n.travelNotice,{...arrival,events:arrival.events.filter(e=>e.squadId==='squad-2')});
+ assert.deepEqual(n.operativeState,before.operativeState);assert.deepEqual(n.resources,before.resources);assert.deepEqual(n.log,before.log);
+ assert.equal(n.hour,before.hour);assert.equal(n.secondOfHour,before.secondOfHour);assert.equal(n.seed,before.seed);
+ assert.equal(n.location,'buenos_aires');assert.deepEqual(n.squad,[10]);
+ let replay=start;for(const a of history)replay=order(decodeSave(encodeSave(replay)).campaign,a);assert.deepEqual(replay,n);
+ assert.deepEqual(start,initialCampaign());
+});
+
+test('retiring the only noticed arrival leaves no empty notice and preserves its log',()=>{
+ let s=order(initialCampaign(),{type:'travel',sector:'buenos_aires'});
+ assert.equal(s.travelNotice.events.length,1);const notice=structuredClone(s.travelNotice);
+ for(let i=0;i<7;i++)s=order(s,{...form,name:`Reserva ${i}`,ids:[3,4,10],sector:'buenos_aires'});
+ assert.equal(s.squads.length,8);assert.deepEqual(s.travelNotice,notice);const before=structuredClone(s);
+ const n=order(s,{...form,ids:[3,4,10],sector:'buenos_aires'});
+ assert.ok(!n.squads.some(q=>q.id===notice.events[0].squadId));assert.equal(n.travelNotice,null);
+ assert.deepEqual(n.log,before.log);assert.ok(n.log.some(entry=>entry.text.includes(notice.events[0].text)));
+ assert.deepEqual(n.operativeState,before.operativeState);assert.deepEqual(n.resources,before.resources);
+ assert.equal(n.hour,before.hour);assert.equal(n.seed,before.seed);assert.deepEqual(decodeSave(encodeSave(n)).campaign,n);
+});
+
+test('save admission still rejects an unknown squad in a real arrival notice',()=>{
+ const s=order(initialCampaign(),{type:'travel',sector:'buenos_aires'}),bad=structuredClone(s);
+ bad.travelNotice.events[0].squadId='squad-999';
+ assert.throws(()=>decodeSave(encodeSave(bad)),/aviso de marcha/);
+ assert.deepEqual(decodeSave(encodeSave(s)).campaign,s);
 });
 
 test('eight occupied squads still reject another formation without losing personnel',()=>{

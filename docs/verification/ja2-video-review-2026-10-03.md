@@ -15,20 +15,20 @@ The user's later instructions control adaptations. Use the Granaderos historical
 | ID and video time | Player choice or consequence | Current evidence and outstanding acceptance |
 | --- | --- | --- |
 | V01 · 0:48–1:11 | Different soldiers, physical gear, house/corpse loot, locks, traps and optional objectives support different approaches. | Roster, physical inventory, paid environment interactions and persistent loot exist. `environment-interactions.js` supports keys, picks, prying and discovered alarm/injury traps. Manual adobe/wood passage now requires a real equipped crowbar, paid approach/use, finite tool wear and observed ground-level contact; rubble and custody persist. This is declared period game tuning, not a claim about classic JA2 crowbar demolition. One packed, serviceable linen shirt now becomes three actual dressings through a paid 20-AP preparation order. Fresh Retiro supplies one identified shirt through its real chest; ownership, source debit, staleness and saves remain finite. This is explicit game tuning, not a historical medical claim. Broader period-appropriate crafting and trap choices remain open, subject to reliable support for this setting. Door-mounted explosives are not an active requirement; the user explicitly ruled out copying that approach without period evidence. Preserve actual approach, discovery and saved custody. |
-| V02 · 1:18–1:51 | Hiring, funds and correspondence belong to the world. | The period desk, prepaid contracts, visible funds and received letters implement this adaptation. Shops are deferred by the user. New communications must preserve real events and receipts, not grant equipment or outcomes through text. |
+| V02 · 1:18–1:51 | Hiring, funds and correspondence belong to the world. | The period desk, prepaid contracts, visible funds and received letters implement this adaptation. Shops are deferred by the user. The reachable story editor now exposes finite initial ammunition and care without inactive shop controls; imported older commerce fields remain preserved. See [finite campaign editor](finite-campaign-editor-2026-10-05.md). New communications must preserve real events and receipts, not grant equipment or outcomes through text. |
 | V03 · 1:55–2:44 | A custom character's answers affect attributes, specialties and later identity. | `character-profile.js` and creation orders provide the survey, budget and trait admission. New version-2 commissions now require at least 15 health, matching the existing consciousness threshold; the real creator uses that same bound while other attributes still admit zero and the budget stays 550. Public rejection is atomic, old valid low-health profiles remain unchanged, and a minimum-health officer can save, take a real paid step and return with finite owned equipment. Existing questionnaire checks cover movement, night vision, instruction and temperament; wider later consequences remain part of acceptance. |
 | V04 · 2:48–4:24 | Strength, dexterity, agility, wisdom and experience affect actions; use develops skills; experience affects salary and awareness. | Shared costs, load, fists, tools, care, initiative and contract quotes contain these effects. `skill-training.js` uses wisdom and a separate saved practice seed; practice and capped progress persist. Movement, shooting, care and work have events. A capable intended player now receives one ordinary agility-practice attempt after an actual paid hostile single-ball miss passes close before its physical stop. Hits, redirected injury, misfires, rays stopped before the player, distant rays, point fire, pellets and cannon fire give none. Ordinary/presented execution, saved replay and campaign settlement preserve the same result. The tighter distances and credit amount are declared Granaderos tuning; they do not claim the exact classic growth formula. |
-| V05 · 4:32–5:05 | Specialties make night work, stealth, paired weapons, roofs and blades useful alternatives. | Current character abilities, sight, paired-pistol and melee rules provide period choices. Check every exposed trait against a real action, costs and saves; unsupported trait text does not prove the mechanic. Modern automatic weapons are not a period substitute. |
-| V06 · 5:15–6:56 | A companion relationship can force a roster choice; contextual personality can affect performance. | Shared-service cohesion and temperament exist. Authored `serviceRefusals` prevent a new hire or renewal while a named rival actually serves. The fictional default Inés Aguirre/Gaspar Villalba disagreement gives a roster choice; the hiring, renewal and editor controls disclose it. Authored favorable preferences now give up to +3 temporary morale when a capable named companion actually deploys, within the existing total +5 team-support cap. The fictional Aguirre/Lagos preference and authoring rules are described in [service relationships](../gameplay/characters/service-relationships.md). Exact paid terms and already accepted arrivals remain valid; older pinned packages without a preference remain neutral. Confirmed deployment-return and strategic military-bleeding deaths admit one saved named companion-loss letter. A capable issued participant who directly witnesses a preferred military companion die now receives one saved, clipped additional morale loss of up to 6 and a short named notice. Fatal physical hits and untreated tactical bleeding use the same observed transition; hidden or old deaths do not backfill it. The original support receipt stays fixed, and the actual return retains the loss. New default Cejas content also gives one explicit contextual care effect: paid effective first aid to another directly observed living person reduces her current shock by up to 2, using ordinary dressing, action and treatment rules. Older pinned packages without the ability stay neutral. See [care composure](../gameplay/characters/care-composure.md). These amounts are declared Granaderos tuning. Complaints, evolving opinions, other death-notice paths, contextual fears and later departures remain separate requirements. |
-| V07 · 7:00–8:19 | Weapon handling, weight, range, condition, fittings and regional protection have tradeoffs. | Physical carried weight, typed charges, readiness, condition, aim, range, bayonet custody and three worn regions exist. Actual physical injury now wears only the actual recipient's garment in the struck region, using clipped HP loss. Worn and packed garments use the existing finite hourly repair queue after weapons and tools. Condition-zero clothing remains owned; a serviceable packed linen shirt can instead be consumed for dressings. Historically supported ballistic protection remains open; cloth supplies no new bullet damage reduction. Modern scopes, suppressors, ceramics and ballistic vests are not copied into 1812. |
-| V08 · 8:20–9:31 | Stance and cover change exposure and shooting; weak cover differs from hard cover. | Shared muzzle/body heights, posture, material resistance, furniture, window geometry and authored terraces affect real shots and forecasts. Smoke/concealment affect observation separately. Continue verifying UI, AI and actual orders against the same physical rules, including heights and hidden information. |
+| V05 · 4:32–5:05 | Specialties make night work, stealth, paired weapons, roofs and blades useful alternatives. | Current character abilities, sight, paired-pistol and melee rules provide period choices. Check every exposed trait against a real action, costs and saves; unsupported trait text does not prove the mechanic. The existing concealment specialty now follows each resolved pellet load, including alternatives and authored firearms, rather than weapon ID 1807. A selected single-ball load is neutral; legacy fallback and explicit omission keep their existing admission rules. Exact load-choice, finite-fire, mixed-hand, public-forecast and saved-replay checks are recorded below. Guerrilla defense now uses the target's actual tactical surface; a paid roof-arena shot and official replay verify actual upper cover and neutrality of unseen ground beneath it. See [upper-surface specialty evidence](elevated-specialty-cover-2026-10-04.md). Modern automatic weapons are not a period substitute. |
+| V06 · 5:15–6:56 | A companion relationship can force a roster choice; contextual personality can affect performance. | Shared-service cohesion and temperament exist. Authored `serviceRefusals` prevent a new hire or renewal while a named rival actually serves. The fictional default Inés Aguirre/Gaspar Villalba disagreement gives a roster choice; the hiring, renewal and editor controls disclose it. Authored favorable preferences now give up to +3 temporary morale when a capable named companion actually deploys, within the existing total +5 team-support cap. The fictional Aguirre/Lagos preference and authoring rules are described in [service relationships](../gameplay/characters/service-relationships.md). Exact paid terms and already accepted arrivals remain valid; older pinned packages without a preference remain neutral. Confirmed deployment-return and strategic military-bleeding deaths admit one saved named companion-loss letter. A confirmed notice now survives temporary sleep, critical injury, exhaustion or an unresolved deployment; actual eligible recovery delivers the existing letter once. Saved admission, continuous paid renewal and cancellation on ended service are recorded in [confirmed-loss recovery](confirmed-companion-loss-recovery-2026-10-05.md), with no old-death backfill or additional morale penalty. A capable issued participant who directly witnesses a preferred military companion die now receives one saved, clipped additional morale loss of up to 6 and a short named notice. Fatal physical hits and untreated tactical bleeding use the same observed transition; hidden or old deaths do not backfill it. The original support receipt stays fixed, and the actual return retains the loss. New default Cejas content also gives one explicit contextual care effect: paid effective first aid to another directly observed living person reduces her current shock by up to 2, using ordinary dressing, action and treatment rules. Older pinned packages without the ability stay neutral. See [care composure](../gameplay/characters/care-composure.md). These amounts are declared Granaderos tuning. An explicitly authored contract conscience now records one complaint after a directly witnessed intentional noncombatant killing, preserves the paid term and rejects later renewal or rehire. The real return sends one named received letter. See [service objections](../gameplay/characters/service-objections.md). Fresh Cejas content also declares nervous isolation: below 50 morale and without a capable nearby military companion, a real new player combat turn adds up to 2 ordinary shock after normal recovery. Regrouping stops further additions without refunding shock. Existing accuracy and interruption rules use the actual result. See [nervous isolation](../gameplay/characters/nervous-isolation.md). Fresh fictional Teresa Godoy (126) content now declares enclosed-room fear: at an actual new player combat turn inside an intact supported room, normal recovery runs first and the actor gains up to 2 ordinary shock. Exiting or opening a real wall breach stops further additions without refunding shock; older pinned omissions stay neutral. Supported ground and explicitly authored upper platform rooms use current structural geometry. See [enclosed-room fear](enclosed-room-fear-2026-10-04.md). The same explicit nervous ability now also has a bounded strategic consequence: a capable serving actor below 50 morale loses up to one point at an actual hourly transition without an actual same-party moving companion or same-cell stationary companion. A saved episode loses at most 20 points, suppresses active morale-rest recovery and resets only on real capable regrouping, without a refund. Exact positive charges are at least 3600 seconds apart; deployed actors are excluded. See [strategic isolation](strategic-isolation-2026-10-05.md) for declared tuning, paid-route evidence and legacy neutrality. An explicitly authored paid-contract ability now refuses renewal while saved personal morale is below 30. Ordinary recovery to 30 clears that reason; the full paid term remains valid. Fresh fictional Cejas content opts in, and old pinned omissions remain neutral. Hiring uses its existing quote, while actual renewal controls use the shared renewal quote and disclose the reason. Temporary deployment support cannot replace personal morale. See [poor-morale renewal](../gameplay/characters/poor-morale-renewal.md) and its [verification record](poor-morale-renewal-2026-10-05.md). The fixed threshold and lack of a buddy override are explicit game tuning. Underground fear, wider changing opinions, other death-notice paths, prolonged panic and early departures remain separate requirements. |
+| V07 · 7:00–8:19 | Weapon handling, weight, range, condition, fittings and regional protection have tradeoffs. | Physical carried weight, typed charges, readiness, condition, aim, range, bayonet custody and three worn regions exist. Unfinished loading is now visible separately from ready charges in the hands and roster, using each physical gun's retained work rather than a forecast of the next order. See [retained loading display](retained-reload-display-2026-10-05.md). Actual physical injury now wears only the actual recipient's garment in the struck region, using clipped HP loss. Worn and packed garments use the existing finite hourly repair queue after weapons and tools. Condition-zero clothing remains owned; a serviceable packed linen shirt can instead be consumed for dressings. Historically supported ballistic protection remains open; cloth supplies no new bullet damage reduction. Tactical firearm maintenance now spends finite carried repair materials, capped by actual wear and available stock. The real inventory control shows the gain, material cost and refusal reason. A fresh paid native hire acquires the Retiro kit, earns three condition points of wear through three real discharges and restores them for three kit points. Saved continuation, return and reentry preserve the remaining 97 points and depleted chest. An explicitly declared older reserve plus real kit reaches zero through actual maintenance without a refill; numeric reserve custody is checked at active/save/resume/return boundaries. This proves bounded maintenance, not a full campaign. Modern scopes, suppressors, ceramics and ballistic vests are not copied into 1812. |
+| V08 · 8:20–9:31 | Stance and cover change exposure and shooting; weak cover differs from hard cover. | Shared muzzle/body heights, posture, material resistance, furniture, window geometry and authored terraces affect real shots and forecasts. Smoke/concealment affect observation separately. The guerrilla defense correction uses occupied surface cover, with bounded paid-shot/save evidence; it changes no cover material or projectile rule. Continue verifying UI, AI and actual orders against the same physical rules, including heights and hidden information. |
 | V09 · 9:32–10:26 | Head, torso and leg shots trade accuracy, injury and mobility; owned attachments change handling. | Three body regions, leg knockdown/unhorsing and the existing physical bayonet fitting are implemented. Wider period-appropriate attachments require an explicit choice and source, not renamed modern equipment. Live regional consequences and saved injuries remain part of acceptance. |
 | V10 · 10:53–11:48 | Each bullet has a real trajectory; intervening cover loses or stops damage; misses can injure unintended people. | Single-ball shots continue beyond the resolved aimed/scattered cell. One glancing contact with an exposed explicit vertical stone face can redirect the path with half its remaining force; cumulative distance and drop do not reset. Their original absolute-height slope remains through twice effective range; beyond it, shared deterministic drop can change the struck region or cause a ground stop. Ordered body contacts spend force and can permit seeded passage; a failed passage, material stop, solid floor/ground, finite range or map edge ends the shot. Paired single-ball shots capture their intended point and absolute height before either discharge; first-shot death, knockdown or unhorsing cannot move the second ray. Each shot still checks current physical bodies. Fixed-seed legal orders check successive injury, paid costs, exact intersections, typed civilian/soldier IDs and saved replay. Knowledge-filtered forecasts include conditional passage and warnings for known people beyond the first contact. One discharge presents successive observed impacts without exposing concealed bodies or changing the final order. Shot loads now resolve nine finite weighted pellet paths from the actual selected load, including cover, intervening bodies and unintended people. Forecasts, warnings and enemy choices use observed geometry; injuries retain finite costs and saved custody. Cannon work belongs to the separate 3D effort. The remaining physical requirements in V11 remain open. |
-| V11 · 11:15–11:42 | Surface deflection and projectile/cover properties affect the final impact. | Body penetration now follows the primary-source structure of spent force and a conditional passage roll. Granaderos uses explicit head/torso/leg resistance and passage-chance values; these are game tuning, not historical lead-ball measurements or the exact classic formula. Cover and body losses accumulate separately. Material force now falls progressively over actual crossed depth, including oblique paths and height clipping. Same-object intervals merge; separate overlapping objects add resistance. A body receives the remaining force at its actual contact, and force exhaustion stops inside the material. Resistance per tactical distance is explicit game tuning. Single-ball drop after twice effective range now uses exact quadratic height clipping and arc-length material debit in actual fire and observed forecasting. The range-scaled reference-height constant is explicit Granaderos tuning, informed by the verified classic/Stracciatella distance-stepped rule. Far contacts use their actual struck region; near-miss learning uses the actual curve before its terminal stop. Physical pellets now use the same exact drop after twice their actual selected effective range, with a finite three-range tail. Single balls and physical pellets now share one bounded glancing reflection from an exposed vertical stone face. The 0.3 incidence threshold and half-force retention are explicit game tuning. Unique entry faces, cumulative range/drop, spent force, known off-axis bystanders and clipped observed presentation use the shared path. Other surfaces, fragmentation and a supported mass/velocity model remain open. See [stone ricochet](../gameplay/tactical/stone-ricochet.md). The reviewed classic/Stracciatella source shows impact effects and body passage but did not confirm a reflected projectile path. The video's narration alone is not proof of that formula. |
-| V12 · 11:53–12:18 | Travel can produce danger, discoveries and local opportunities. | Persistent strategic enemy groups and actual contact exist. One optional [finite roadside chest](../gameplay/campaign/roadside-discoveries.md) now uses an explicit pinned definition, physical discovery and pickup. Its used crowbar and linen shirt remain owned through saves and return visits; old omitted packages stay neutral. It grants no arrival reward. Wider caches, optional encounters and local opportunities still require authored encounters and saved outcomes. Giant-cat encounters are not inferred as required Argentine content. |
+| V11 · 11:15–11:42 | Surface deflection and projectile/cover properties affect the final impact. | Body penetration now follows the primary-source structure of spent force and a conditional passage roll. Granaderos uses explicit head/torso/leg resistance and passage-chance values; these are game tuning, not historical lead-ball measurements or the exact classic formula. Cover and body losses accumulate separately. Material force now falls progressively over actual crossed depth, including oblique paths and height clipping. Same-object intervals merge; separate overlapping objects add resistance. A body receives the remaining force at its actual contact, and force exhaustion stops inside the material. Resistance per tactical distance is explicit game tuning. Authored primary and alternative loads can now increase material resistance beyond their selected range. Fresh defaults opt in; older pinned omissions remain neutral, and an omitted alternative value does not inherit the primary value. The factor stays fixed through a continuous material span and retains spent distance after reflection. Paid shots, observed-only forecasts, editor controls and exact saved replay establish this scoped rule in [range-dependent penetration](range-material-penetration-2026-10-04.md). Single-ball drop after twice effective range now uses exact quadratic height clipping and arc-length material debit in actual fire and observed forecasting. The range-scaled reference-height constant is explicit Granaderos tuning, informed by the verified classic/Stracciatella distance-stepped rule. Far contacts use their actual struck region; near-miss learning uses the actual curve before its terminal stop. Physical pellets now use the same exact drop after twice their actual selected effective range, with a finite three-range tail. Single balls and physical pellets now share one bounded glancing reflection from an exposed vertical stone face. The 0.3 incidence threshold and half-force retention are explicit game tuning. Unique entry faces, cumulative range/drop, spent force, known off-axis bystanders and clipped observed presentation use the shared path. Optional pinned mass and muzzle-speed profiles now set a kinetic-energy launch budget, with a separate authored injury cap. Fresh Brown Bess ball and shot profiles opt in; older pinned omissions and omitted alternatives remain neutral. The conversion of 20 joules per reference impact point is declared Granaderos tuning. It does not calibrate tactical distances, material strength or wounds in SI units, and mass or speed does not set flight time, range or drop. See [kinetic impact scope and evidence](kinetic-projectile-impact-2026-10-05.md). Optional same-load air retention now reduces energy over exact free-flight arc intervals while active material keeps its independent linear resistance. Fresh Brown Bess ball/shot coefficients are explicit range-normalized game tuning; old pinned omissions remain neutral. Known forecasts, paid finite firing and saved return cover the bounded rule; see [air-energy scope and evidence](firearm-air-drag-2026-10-05.md). SI atmosphere/distance calibration, other surface reflections, fragmentation and the wider physical acceptance remain open. See [stone ricochet](../gameplay/tactical/stone-ricochet.md). The reviewed classic/Stracciatella source shows impact effects and body passage but did not confirm a reflected projectile path. The video's narration alone is not proof of that formula. |
+| V12 · 11:53–12:18 | Travel can produce danger, discoveries and local opportunities. | Persistent strategic enemy groups and actual contact exist. One optional [finite roadside chest](../gameplay/campaign/roadside-discoveries.md) now uses an explicit pinned definition, physical discovery and pickup. Its used crowbar and linen shirt remain owned through saves and return visits; old omitted packages stay neutral. It grants no arrival reward. A local recruit's [direct reply now follows actual service terms and refusals](local-recruitment-dialogue-2026-10-05.md), including unpaid service; it cannot promise a contract that every quote rejects. Wider caches, optional encounters and local opportunities still require authored encounters and saved outcomes. Giant-cat encounters are not inferred as required Argentine content. |
 | V13 · 12:23–14:00 | The player chooses routes, daylight or night entry, specialists, retreat/recovery and alternate access. | Independent squads, timed approaches, placement, night sight, paid exits, care and persistent encounters exist. Campaign phases retain historical progression. An acquired crowbar can open a saved, traversable ground-level adobe/wood passage at the existing 25/45-AP cost. Broader route freedom and historically supported alternate access remain open. Door-mounted explosive charges are not planned without reliable evidence for the 1810–1820 setting; keys, locks, crowbars, windows and route choices are the current approach. A complete legal campaign must retain money, ammunition, wounds, casualties and paid travel; the short suite alone does not prove it. |
-| V14 · 14:09–14:56 | A quest can have competing resolutions with different persistent rewards and civic consequences. | Physical deliveries, escorts, failures and authored mission outcomes exist. Fresh Retiro poncho deliveries now wait for a choice between 40 pesos and local support (+8 loyalty), with exclusive saved rewards and real retained garments. Authored city deliveries can use this choice. Local support can affect militia eligibility; it does not alter port income. This is a first competing-reward slice. Different beneficiaries, broader quest outcomes and their territorial consequences remain incomplete; it does not copy the chalice quest. |
-| V15 · 16:37–17:00 | Individual lines, jokes, reactions and discontent give people a distinct presence. | Authored personal greetings, contextual text banter and event cooldowns exist. Confirmed companion-loss letters and a brief witnessed-loss notice add saved named text reactions. The witnessed loss also changes existing morale and accuracy rules. Effective manual care by an explicitly capable caregiver now gives a brief named tension-relief notice from the actual paid result; loading does not replay that notice. See [care composure](../gameplay/characters/care-composure.md). Distinct recorded voices, broader event-specific speech and meaningful discontent remain open. Text, a generic sound or the relationship rule alone does not prove voice-work acceptance. |
+| V14 · 14:09–14:56 | A quest can have competing resolutions with different persistent rewards and civic consequences. | Physical deliveries, escorts, failures and authored mission outcomes exist. Fresh two-poncho errands now offer two actual beneficiaries, Retiro or Ensenada. First accepted custody fixes the destination; full delivery and adjacent confirmation give eight points of support only to that town. Actual militia admission supplies a territorial consequence. Older pinned 40-peso-or-support definitions remain valid. A physical partial delivery can now opt into adjacent withdrawal: delivered objects stay with the selected recipient, remaining objects stay owned, and one disclosed clipped local-support cost seals the errand without reward or refund. Fresh Retiro uses four points; older omitted definitions stay neutral. See [competing beneficiaries](../gameplay/characters/competing-beneficiaries.md) and [withdrawal acceptance](errand-withdrawal-2026-10-04.md) for separate native-route and declared-boundary evidence. Port income is unchanged. Broader authored quest outcomes remain incomplete; this does not copy the chalice quest. |
+| V15 · 16:37–17:00 | Individual lines, jokes, reactions and discontent give people a distinct presence. | Authored personal greetings, contextual text banter and event cooldowns exist. Confirmed companion-loss letters and a brief witnessed-loss notice add saved named text reactions. The witnessed loss also changes existing morale and accuracy rules. Effective manual care by an explicitly capable caregiver now gives a brief named tension-relief notice from the actual paid result; loading does not replay that notice. See [care composure](../gameplay/characters/care-composure.md). An authored conduct objection supplies one saved named complaint, a received letter and a real future-service consequence. The first actual nervous-isolation event in each deployment adds one brief named notice; loading or inspecting inventory creates none. The first actual enclosed-room fear addition in a deployment gives one brief named notice. Initial loads, saved imports and unchanged receipts create none. See [enclosed-room fear](enclosed-room-fear-2026-10-04.md). Actual firearm close passages now admit transient own-player reactions only after physical resolution; distant cover stops, ignition failures and hits cannot supply that near event. Optional authored near/interrupt lines have no enemy-contact fallback, and event sampling no longer counts animation frames. Six fresh paid characters opt in; older pinned omissions stay silent. See [physical near-miss feedback](physical-near-miss-feedback-2026-10-05.md). Distinct recorded voices, broader event-specific speech and wider discontent remain open. Text, a generic sound or the relationship rule alone does not prove voice-work acceptance. |
 
 ## Delivery and proof
 
@@ -477,3 +477,316 @@ and live player-browser QA were not repeated. The player origin at localhost:314
 V06 fears, complaints, evolving opinions and later departures remain open. V15
 recorded voices and broader discontent remain open. Cannon and 3D presentation
 remain separately owned.
+
+
+## Competing-beneficiary checkpoint — 4 October 2026
+
+Fresh Retiro errands now let the same two finite ponchos go to either the sargento at Retiro or the port foreman at Ensenada. The first accepted garment fixes the recipient. The offer, held-item preview, selected-item preview and notebook disclose the decision. The other contact can refuse an actual physical offer without taking its garment. Full custody waits for adjacent quest confirmation and the selected sector's control before one reward. Retiro supports the Buenos Aires town; Ensenada supports its own town. This is fictional period content and declared game tuning, not a historical allocation claim. See [competing beneficiaries](../gameplay/characters/competing-beneficiaries.md).
+
+The native seed-42 default campaign pays 252 and 420 pesos for soldiers 100 and 110 and waits for their actual six-hour arrivals. Eighteen recorded events stow, hold, approach and deliver their two original, 100%-condition ponchos, confirm through the actual contact, leave and reenter. Delivery takes nineteen tactical seconds. Treasury remains 2,528 pesos, both original health values remain 70/85 with zero bleeding, both retain ten cartridges and their actual contract terms, and every original pocket record remains owned. The exact garments remain at Retiro. Ordinary and presented execution agree on every tactical order; official saves and complete replay reproduce the result. This proves a fresh paid visit, not conquest or a full campaign victory.
+
+The territorial checks declare a separate starting checkpoint before any paid order: Buenos Aires, Retiro and Ensenada are controlled; Buenos Aires/Retiro start at 34 support and Ensenada at 42. Actual academy progression during arrival adds eight points to the Buenos Aires town and keeps its real event. The Retiro delivery then moves 42 to 50 while Ensenada stays below the threshold. The Ensenada route instead spends the actual 24-hour march; ordinary daily politics move its support to 43 before delivery, which then reaches 51. Buenos Aires/Retiro remain below 50. These values are never reset during play. Only the chosen town admits the ordinary 60-peso course for three pending trainees; the other course rejects. No garrison is granted. Treasury is 2,468 pesos after the course, health and ammunition remain unchanged, and the port agreement remains unset. Both actual reentries retain the exact garments and single reward. The nineteen-event Retiro and ninety-one-event Ensenada replays prove this prepared checkpoint, not earned territory.
+
+A fourth, separately declared secured checkpoint sends the same two paid hires to their ordinary Retiro and Ensenada arrival destinations. Normal squad selection, visits and physical approaches let soldier 100 fix the Retiro branch with one poncho. Soldier 110 then offers his original poncho to the actual other contact, who refuses it. The one-second exploration attempt retains that garment at 100%, creates no opposite receipt and retains 2,528 pesos. Twenty recorded events reproduce the result through official saves. This prepared courier route proves cross-sector refusal and finite ownership; it does not claim a native Ensenada conquest.
+
+The same accepted choice is bound in the quest record, issued request and battle. Partial-choice deletion, a changed branch, conflicting resume maps and a forged choice through an already trusted zero-delta clock reject without changing time or items. A resume cannot authorize its own unsupported choice, including through a matching clone. Actual new and acknowledged supply receipts require a full tactical report before a clock-only call can discard the resume; refusal preserves the exact snapshot, time and items. Scene construction uses the already issued map for local custody checks, while campaign admission checks that map against the saved quest records. Older explicitly pinned cash-or-support and omitted legacy definitions keep their previous behavior. Authoring and mounted-control checks cover both contact references, saved launch, pending delivery and actual confirmation. The full-video objective, wider quest outcomes and extended campaign acceptance remain open.
+
+Separate declared clinical arenas earn selected, unselected and both-unselected contact deaths with finite real pistol orders. They check failure identity and missing death evidence without claiming a native conquest. Partial and complete receipts acknowledged together with a selected death fail without a quest reward. Authored fixed contacts retain their stable death identity after a temporary relocation. The journal distinguishes an unchosen errand whose two recipients died.
+
+The first frozen short-suite run completed all 691 selected files and reported seven failures in five files (4,824/4,831 checks passed). Three files still instantiated fresh dual-recipient definitions while asserting older single-contact death behavior. Those cases now pin the older definitions before their first orders; their death, health, seed, loyalty and save assertions remain. The expanded-map fixture now carries its actual initialized choice map, and the weather-resume fixture now supplies its actual campaign/request context. No production rule was relaxed to repair these fixtures. The failed log and timing report remain available separately from the final run.
+
+The final frozen short suite passes **4,831/4,831**, with all **691/699** selected files complete, eight declared extended files excluded, eight workers, zero failures, cancellations or skips, in **305.05 seconds**. Type checking, production build, documentation/baseline audits, shard self-test/coverage and whitespace checks pass. The verified static export contains **1,133 files and 1,033 asset references**, with source ID **d3d829c2ac20**. All **863** test/support paths retain the final frozen SHA-256 **8178cbb61cb7c48faace6d99750670dc88f583cc49af8cd26bca2a88a4546b91**. Final production source and test inputs are unchanged after the run. Extended simulations and the separate 3D renderer were not rerun. The player origin and primary untracked references remain untouched.
+
+
+## Conduct-objection checkpoint — 4 October 2026
+
+Fresh default Inés Aguirre content now declares `civilian_conscience`. The condition is disclosed in hiring, dossier and authoring controls. A capable owned issued observer must directly see both attacker and a living explicitly classified noncombatant, with the interior revealed, before an actual intentional nonmilitia player impact takes the victim to zero HP. Common physical impacts and an existing intentional grenade target use the same consequence without changing their damage, ammunition, action cost, randomness or presentation rules. The perpetrator can also object to continuing such orders when capable and directly observing the victim. Military residents, armed people, prisoners, accidental or enemy attacks, delayed bleeding, hidden events and old corpses do not create it. NPC membership alone is insufficient. This is a fictional Granaderos character rule, rather than exact classic JA2 conduct parity or a historical psychology claim.
+
+The first objection is immutable and retains typed civilian and attacker identities. It blocks future renewal and hiring, while accepted paid service continues. Full clock reports, conversations, stored resumes, actual returns and official saves validate retained evidence and pinned classification. A resume cannot authorize its own unsupported receipt; a clock-only action cannot erase the sole unreturned event. Only the owned issued squad gains witness authority. An actual newly paid local recruit with an explicit capability can join it; scene auxiliaries and retained bodies cannot. Older pinned definitions with the capability omitted remain neutral. A capable serving witness receives one named inbox letter on validated return. The ordinary deadline and equipment-return rules decide departure.
+
+The native acceptance pays actual day contracts: Aguirre 84 pesos and Sosa 36, retaining treasury 3,080. Both arrive normally at hour 6 and travel normally for 12 hours to Buenos Aires. Flat geometry, passive posts and seed 42 are declared before the first official arena save. The native hostile force, resident, health, gear and terms remain finite; this is not an earned opening victory. Four real facón strikes take the port resident from 100 to 68, 36, 4 and zero HP. Eight legal orders, including movement and the issued Retiro exit, spend 29 tactical seconds. Both hires keep their original 72/70 HP and ten cartridges each; seed 42 and firearm condition remain unchanged.
+
+Ordinary and presented execution agree. Every order replays through official saves. The real retreat settlement retains one complaint and one received letter, refuses renewal atomically and survives two ordinary Retiro entries. Service continues to the original hour-30 deadline, including its final second. Thirteen actual strategic clock actions pass through the warning and exact expiry; all twenty original equipment stacks return once at Retiro. The saved objection still refuses a later hire. Older pinned and screened-witness controls perform the same lethal actions without a reaction; later corpse sight does not backfill one. A separate actual paid local hire proves witness admission, save, synchronization and return. A real friendly conversation after an unsynchronized fatal impact proves that civilian acknowledgment cannot lose the admitted reaction.
+
+The core, context and native acceptance gate passes 18/18. The separate UI/editor gate passes 106/106, including real saved correspondence, visible renewal reasons, ordinary dismissal, refused rehire and the shared authoring predicate. During integration, combined checks caught an early-retention ordering error in the checkpoint wiring; retention now occurs at each actual acknowledgment boundary after context validation. Two initial guard cases also used a visit-only return command for an assault; they now use the actual combat-result path. No production rule or test expectation was weakened to hide those failures. Final frozen short-suite and build results follow below.
+
+The final frozen short suite passes **4,851/4,851**, with all **694/702** selected files complete, eight declared extended files excluded, eight workers, no name filters, and zero failures, cancellations, skips or pending checks, in **346.42 seconds**. The adjacent engine gate passes 75/75; the independent acceptance rerun passes 2/2. Type checking, production build, documentation/baseline audits, five shard self-tests, complete 702-file shard coverage and whitespace checks pass. The verified static export contains **1,133 files and 1,033 asset references**, with source ID **7c59f4a1391a**. All **867** test/support paths retain the frozen SHA-256 **43f577c8d8d0ae3cd0caa462d63c2ddfd772c513361af672e7ef74d254826a6a**. Production source and test inputs are unchanged after the run. Extended simulations and live player-browser QA were not repeated. This batch leaves the separate 3D renderer, player origin and primary untracked references untouched. Wider contextual reactions, recorded voices and full finite campaign acceptance remain open.
+
+
+## Nervous-isolation checkpoint — 4 October 2026
+
+Fresh default Ángela Cejas content declares `nervous_isolation`. A capable owned
+soldier with the explicit ability, morale below 50 and no capable friendly
+military companion within four same-surface tiles gains up to two ordinary
+shock points at a real new player combat turn. All actors complete normal
+recovery first. Regrouping stops new additions without refunding shock.
+Existing firearm accuracy and interruption calculations use the result. This
+changes no AP, HP, personal morale, experience, equipment cost or random draw.
+Older pinned ability lists that omit the condition remain neutral. The classic
+[source](https://github.com/ja2-stracciatella/ja2-stracciatella/blob/master/src/game/Tactical/Morale.cc#L154-L195)
+checks low morale and isolation, but these timing, range and shock values are
+declared Granaderos tuning. Underground and enclosed-room fear remain open.
+See [nervous isolation](../gameplay/characters/nervous-isolation.md).
+
+Hiring, dossier and authoring controls disclose the condition. The inventory
+separates current tension from the conditional next-turn forecast. The first
+actual fear event in a deployment shows one short named notice using the
+existing four-second popup. Inspecting inventory or loading a save creates no
+event. A successful file import starts a fresh Battlefield component session;
+a real mounted Page test imports a later earned save of the same battle without
+repeating its notice, then imports the pre-event save and plays the actual turn.
+A rejected import keeps the current battle and active message. New deployment
+clears the informational flag alongside the existing transient-shock reset.
+Active official saves and interrupted-turn continuation retain the real shock.
+
+The paid native acceptance hires Cejas for 36 pesos and Acosta for 60 on actual
+day contracts, leaving 3,104. Both arrive at hour six and reach Buenos Aires
+at hour eighteen through the ordinary twelve-hour march. The prepared 48×16
+observation arena, stone screen at 7,2, passive hostile posts and seed 42 are
+fixed before the first official save. Native force, health, skills, finite
+ammunition and dressings remain. Earlier actual probes lost Cejas, suffered
+untreated bleeding loss or failed to reach the condition; the outcomes were
+not patched. Their retained summaries are labelled as summaries rather than
+complete execution logs. This acceptance is not an opening conquest or a
+full-campaign balance claim.
+
+Real hostile fire, a further miss and paid self-care leave Cejas at 30 HP,
+zero bleeding and 48.7 morale. Acosta reaches an actual unconscious 3 HP and
+five bleeding, so he supplies no support. Cejas's normal shock recovery
+2.125→1.0625 precedes the real two-point fear addition, yielding 3.0625.
+The older pinned control stays at 1.0625. Actual finite pistol reload costs
+32 PA; the loaded aim-one forecast is 7% against the control's 17%, both clear
+of the chance floor. The paid 18-PA shot uses one cartridge and one condition
+point and naturally misses in both controls with equal combat randomness.
+
+The issued north exit and ordinary retreat leave Acosta in hostile custody
+at 3 HP and five bleeding, holding his nine remaining rounds. At hours 19 and
+20, existing finite custody care uses his two confiscated native dressings:
+3→9→15 HP, bleeding five→zero, dressings two→zero. The accepted test follows
+these actual receipts. A real 36-peso Sosa hire, six-hour arrival, 36-peso Cejas
+renewal and twelve-hour return leave 3,032 pesos. Cejas retains 30 HP and her
+ordinary 45.7 morale on reentry; deployment shock starts at zero. Paid
+separation earns two shock at the next actual combat turn while hostile fire
+leaves Sosa at 27 HP and three bleeding. His own dressing stops that bleeding
+without restoring HP. Runs costing 30 and 42 PA bring the two soldiers within
+three cells. Regrouping refunds nothing; the next real combat turn performs
+normal recovery, shock two→one, with no further fear addition.
+
+All 43 recorded events replay through official saves. Every tactical order
+agrees between ordinary and presented execution and preserves its input. Two
+actual Retiro visits retain wounds, personal gear, terms, captured custody and
+cash. Final survivors have 30/27 HP, zero bleeding and one dressing each;
+Cejas/Sosa retain seven/ten rounds and captured Acosta retains nine. One real
+enemy death remains saved; no player died in this accepted route. The final
+clock is hour 36, second 53, with seed 110225632. No enemy defeat or rescue is
+claimed.
+
+The acceptance exposed an existing save defect: dynamic prisoners were checked
+as authored residents and discarded by placement synchronization. The narrow
+presence fix validates prisoner shape and requires the exact capture identity
+and sector in an existing custody receipt or current issued prisoner manifest.
+Unknown prisoners, changed capture sequences, wrong sectors and duplicated
+weapons still reject. The real default-content capture/reentry test retains
+both legitimate sources and the exact health and custody receipts. Existing
+detention health and equipment checks remain active. Early focused failures
+also caught a test checkpoint that omitted the tactical scene for an issued
+attack and a menu test that clicked the campaign-return button instead of the
+menu-close button. Those tests now follow the actual admission and control;
+no production rule was weakened to satisfy them.
+
+
+The affected fear gate passes 60/60; the final UI/editor/feedback gate passes
+108/108, including the actual Page file-import regression. Presence and
+capture checks pass 12/12, nearby detention checks 30/30, and the independent
+43-event paid acceptance 1/1. These groups overlap the complete short suite.
+Two early core cases initially mistook a real interrupted enemy phase for a
+new player turn; they now preserve that phase and resume through ordinary
+orders and official saved continuation before asserting the exact fear or
+regroup result. Companion recovery is checked in both roster orders.
+
+The final frozen short suite passes **4,865/4,865**, all **697/705** selected
+files complete, eight declared extended files excluded, eight workers and no
+name filters. There are zero failures, cancellations, skips or pending checks;
+`complete: true`, elapsed **349.55 seconds**. Type checking, production build,
+documentation/baseline audits, five shard self-tests, complete 705-file shard
+coverage and whitespace checks pass. Static export contains **1,133 files and
+1,033 asset references**, source ID **2292bef41f82**, equal to the frozen source.
+All **871** test/support paths retain SHA-256
+**3e7f6ac80e64e305ef28f77935d84a78b7221057c2610d71dffdd01d4f8fc6f2**.
+Production source and test inputs remain unchanged after validation. Extended
+simulations and live player-browser QA were not repeated. The player origin,
+primary untracked references and separate 3D/cannon work remain untouched.
+V06 enclosed-room fear, strategic isolation, prolonged panic and wider evolving
+opinions remain open. V15 recorded voices and broader event speech remain open.
+Full finite campaign and full-video acceptance remain open.
+
+
+## Load-specialty checkpoint — 4 October 2026
+
+The existing `scatter_concealment` specialty now checks the resolved physical
+pellet load instead of weapon ID 1807. It halves the target-concealment term
+for a cone load in any firearm. A blunderbuss firing a single ball is neutral;
+a musket or pistol firing an alternative shot load can benefit. An authored
+single ray remains neutral even if it uses the shot ammunition family. Each
+hand in a pistol pair uses its own resolved load. Material resistance,
+visibility, charge ownership, AP, time and projectile rules remain unchanged.
+The shared Spanish description discloses that scope in hiring and dossiers.
+Legacy ability fallback is preserved; an explicit empty ability list overrides
+it. This is a correction to an existing Granaderos specialty, not a new claim
+about classic JA2 or historical shot accuracy.
+
+The declared finite subsystem arenas give native and authored pellet forecasts
+of 90% without the specialty and 92% with it. These are chances of at least one
+pellet contact, not center-hit or multiple-hit guarantees. In a mixed pistol
+pair, the ball hand stays at 36% while the pellet hand changes 86%→88%.
+Single-ball controls have identical forecasts and actual paid outcomes with or
+without the specialty. Ordinary and presented orders agree, and validated
+tactical snapshots replay the same finite discharge. Hidden bodies and private
+cover remain absent from public forecasts, warnings and projectile metadata.
+These prepared arenas do not prove a fresh paid campaign or a conquest.
+
+The mounted inventory case uses the actual unload, load-select, reload and
+map-click fire controls. A pistol starts with a ball, changes to shot, pays
+one real shot and returns to a ball. The forecast follows the current load;
+AP, condition and typed ammunition are debited normally. Saved replay retains
+the result. The old weapon-ID-only assertion was replaced by checks of selected
+loads while the separate mud-riding and night-scouting cases remain.
+Two early core setup failures incorrectly expected another six tactical
+seconds after the same round was already charged, and supplied an offhand
+weight that disagreed with its pinned definition. Their corrected fixtures
+and assertions follow the existing rules; no runtime rule or seed was changed.
+
+The affected engine checks pass **50/50** and the mounted UI checks pass
+**13/13** without React act warnings. These groups overlap the final complete
+short suite: **4,872/4,872**, all **698/706** selected files complete, eight
+declared extended files excluded, eight workers and no name filters. There
+are zero failures, cancellations, skips or pending checks; `complete: true`,
+elapsed **351.21 seconds**. Type checking, production build,
+documentation/baseline audits, five shard self-tests, complete 706-file shard
+coverage and whitespace checks pass. Static export contains **1,133 files and
+1,033 asset references**, source ID **efe31895022d**, equal to the frozen source.
+All **872** test/support paths retain SHA-256
+**0424475a2e9bc220590017b1b4d65b1ac474baf13de235c14eaccd74796ce3e1**.
+Production source and test inputs remain unchanged after validation. Extended
+simulations and live player-browser QA were not repeated. The player origin,
+primary untracked references and separate 3D/cannon work remain untouched.
+Tactical gun maintenance without repair materials, broader V05 physics and
+full finite campaign/video acceptance remain open.
+
+
+## Finite firearm-maintenance checkpoint — 4 October 2026
+
+The exposed tactical repair order now uses the existing finite materials.
+**Mantener arma** shows the actual condition gain, rounded-up material debit
+and refusal reason through the same read-only preview used by the dispatcher.
+It restores up to the original 30/40/45 points for ordinary, workshop-trained
+or gunsmith-trained soldiers, bounded by damage and remaining material points.
+The original 25/18 AP, exploration time and mechanical practice remain.
+Numeric reserves are spent first, then physical packed kits in stable key
+order. Exhaustion removes the kit and clears its held references. Failed
+admission changes no stock, AP, time, practice or ballistic RNG. Charges,
+ammunition, jam state, firearm identity and fittings remain unchanged.
+Misfire clearing retains the separate implicit ignition operation; this change
+does not issue loose flints or powder. Rates and kit sizes are game tuning.
+
+A fresh default seed-45 campaign pays 420 pesos for native soldier 110 and
+waits for his real six-hour arrival. Actual approach, opening and pickup acquire
+the identified Retiro toolkit once. Three real empty-ground discharges spend
+three owned cartridges and earn three condition points of wear, threatening
+no observed bystander. Maintenance restores 97→100 condition for three points:
+the kit keeps 97, rounds keep seven of ten, HP stays 85 and treasury stays
+2,780 pesos. The native route spends eleven field seconds after pickup,
+including two for maintenance, and ends at hour 6, second 22. Official saved
+replay, return and reentry retain the same kit, gun, depleted chest and costs.
+This is a bounded native acquisition/maintenance route, not a conquest.
+
+A separate explicitly declared older checkpoint starts after the same paid
+arrival, before its first official admission, with condition zero and two
+existing numeric repair points. All later materials come from the real
+100-point chest kit. Actual repairs and three finite discharges exhaust all
+102 points; the final gun has condition 99 and seven rounds. A further repair
+rejects without a refill. Return and reentry preserve numeric zero, the absent
+kit and the depleted source. The scenario changes no resources after initial
+admission and does not claim the worn checkpoint was earned in combat.
+
+Accepted active checkpoints retain the last numeric remainder in the pending
+deployment. Official saves, clock synchronization (including the settled fast
+path), return and independently stored continuation snapshots reject invalid,
+missing positive or increased reserves. A reserve of two that has actually
+been spent cannot return as one at a later accepted checkpoint. Stored resumes
+are checked before handoff or clock-only disposal. These are bounded custody
+checks, not a claim that arbitrary save editing is fully prevented.
+
+The old implicit free-maintenance assertions now declare finite stock in their
+existing progression/readiness subsystem fixtures and check exact spending.
+Their skill, ignition, charge and readiness assertions remain. The mounted
+inventory cases exercise a 17-point physical kit and an eight-point old reserve
+through the actual control, including explanations and disabled exhausted
+stock. The mounted kit case checks a complete official save and action replay;
+the numeric control preserves its validated tactical snapshot. Two early acceptance
+diagnostics identified the normal refusal log and the initially weaker numeric
+custody bounds; the assertion respects that log, and production validation now
+closes both restoration and stored-resume gaps. No test expectation was relaxed
+to admit free materials.
+
+The older extended northern-route helper still assumes a free one-point repair
+and unchanged material inventory. That top-up needs removal with its actual
+wear retained, or actual kit acquisition and debit. Either choice needs its
+time/practice consequences checked in a complete route rerun; this batch does not
+claim that extended route passes. Full stock campaign/video acceptance, wider
+physics, personality behavior and recorded voices remain open. Map and cannon
+presentation remain with the separately owned 3D effort.
+
+The final frozen source passes the complete short suite: **4,883/4,883**, all
+**700/708** selected files complete, eight declared extended files excluded,
+eight workers and no name filters. Failures, cancellations, skips and pending
+checks are zero; `complete: true`, elapsed **351.25 seconds**. Affected engine
+checks pass 121/121, mounted UI checks 57/57, strengthened custody/resume checks
+41/41 and the two actual campaign acceptance cases 2/2; these groups overlap the
+short suite. Type checking, production build, documentation/baseline audits,
+five shard self-tests, complete 708-file shard coverage and whitespace checks
+pass. Static export contains **1,133 files and 1,033 asset references**, source
+ID **43cd0b3fc3cd**, equal to the frozen production source. All **874**
+test/support paths retain SHA-256
+**746654cba904d6d99b5a127b7a59dce131acdcc59f433f791b4fa05134995187**.
+Production source and test inputs remain unchanged after validation. Extended
+simulations and live player-browser QA were not repeated. The player origin,
+primary untracked references and separate 3D/cannon work remain untouched.
+
+## Enclosed-room fear checkpoint — 4 October 2026
+
+[PR #166](https://github.com/fsodano/granaderos/pull/166) merged as
+`b87e09319eedc733cf97c8b2210030e25a0b80b5`. Its reviewed head is
+`5214ebf8e297d36780938888f97195a6c9a5b93c`; the merge retains the exact tested
+tree `b6ff92395c3c07b2b7d3590a9826fa18a2b09e56`. The optional fresh Godoy
+condition adds up to two ordinary shock after normal recovery in an intact
+occupied room. Actual exit or wall breach prevents further additions. Its
+brief named notice does not repeat on saved import. Older pinned omissions
+remain neutral. See the [scoped evidence](enclosed-room-fear-2026-10-04.md) for
+the ground roof metadata limits and supported upper platform geometry.
+
+The paid acceptance uses Godoy's actual 294-peso weekly hire, six-hour arrival
+and finite native equipment. It acquires the real roadside crowbar, spends a
+real firearm charge, opens a paid wall breach and retains exact costs through
+official saved replay, physical return and reentry. Separate paid climbs
+exercise an enclosed upper platform and its open-air roof. The encounter room,
+passive enemy screen and starting positions are declared before admission.
+These are bounded prepared encounters, not a conquest or full-campaign proof.
+
+The frozen gameplay tree passes **147/147** affected checks and the complete
+short suite: **4,895/4,895** tests, all **702/702** selected files complete out
+of 710, eight declared extended files excluded, six workers and no name
+filters. Failures, cancellations, skips and pending checks are zero;
+`complete: true`, elapsed **420.265 seconds**. Type checking, production build,
+documentation/baseline audits, five shard self-tests, full partition coverage
+and whitespace checks passed. The tested and built source is **a5441536eba7**
+(full SHA-256
+`a5441536eba7f7d28f90bc973e78346656c34ade723e3bd534545c8cd7d04b96`); all
+878 test/support paths retain SHA-256
+`79e7e18f86c20a60ae132689783b817fc89422d276adf371ff0edb3aff9a2580`.
+
+The amounts and enclosure rules are Granaderos tuning, not an exact JA2
+formula or a historical personality claim. Underground fear, strategic
+isolation, broader personality consequences, recorded voices and full-video
+acceptance remain open. This documentation follow-up changes no game or test
+input and does not repeat the already-passed gameplay gates.

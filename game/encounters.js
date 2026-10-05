@@ -6,6 +6,7 @@ import {characterPresentInSector} from './campaign-presence.js';
 import {authoredOperative} from './content-roster.js';
 import {CAMPAIGN_SECTORS,OPERATIVES} from './data.js';
 import {CIVIC_RECRUITS} from './recruitment.js';
+import {questContactIds} from './quest-beneficiaries.js';
 const local=[
  {id:'cabral',operativeId:3,sector:'retiro',requiredLeadership:30,requiredLiberated:1,requiredSector:'retiro',greeting:'Estoy dispuesto a servir. Quiero conocer al oficial que marchará con nosotros.'},
  {id:'dorrego',operativeId:4,sector:'buenos_aires',requiredLeadership:40,requiredLiberated:1,requiredSector:'buenos_aires',greeting:'Hablemos de la campaña. La causa necesita hombres resueltos.'},
@@ -23,7 +24,10 @@ const local=[
  {id:'sosa',operativeId:100,sector:'buenos_aires',requiredLeadership:30,requiredLiberated:1,requiredSector:'buenos_aires',greeting:'Sé cuidar caballos y usar el facón. Si el Cabildo responde por ustedes, estoy dispuesto a aprender el oficio de soldado.'},
 ];
 const civilians={buenos_aires:['Administrador del puerto','Cuando toda Buenos Aires esté bajo tu control, podemos acordar el ingreso diario del puerto.'],ensenada:['Capataz del puerto','Asegurá Ensenada y hablá conmigo para iniciar el ingreso diario del puerto.'],retiro:['Sargento del cuartel','La instrucción continúa en el patio. Revisá las provisiones de cada hombre antes de marchar.'],san_nicolas:['Maestra de posta','Los desembarcos amenazan las comunicaciones. Quien custodie este paso mantendrá abierto el camino del río.'],santa_fe:['Consignatario del puerto','El comercio trae recursos, pero también atrae a los corsarios. Una guarnición firme protege la recaudación.'],uspallata:['Guía de la cordillera','No suban sin ponchos ni animales de carga. En invierno la nieve decide qué caminos quedan abiertos.'],los_patos:['Enlace pehuenche','Los pasos se abren con acuerdos y respeto. La palabra empeñada aquí debe valer también en el campamento.'],tucuman:['Oficial de la Ciudadela','El norte puede resistir si el Camino Real permanece abierto. Ninguna fortaleza se sostiene sin abastecimiento.'],jujuy:['Arriero de la posta','Las recuas traen provisiones desde Salta. Si cae la Quebrada, habrá que defender cada tramo del camino.'],humahuaca:['Vigía de la quebrada','Desde estas alturas vemos las columnas que bajan del Alto Perú. Avisaremos antes de que alcancen Jujuy.'],san_lorenzo:['Fraile de San Carlos','El convento ofrece abrigo. Afuera, las barrancas dominan el camino que sube desde el río.']};
-export const ENCOUNTERS=[...local.map(n=>({...n,name:[...OPERATIVES,...CIVIC_RECRUITS].find(o=>o.id===n.operativeId).name,x:n.x??3,y:n.y??7})),...Object.entries(civilians).map(([sector,[name,greeting]])=>({id:`local-${sector}`,sector,name,greeting,x:3,y:7,requiredLeadership:0,requiredLiberated:0,requiredSector:sector,...(['buenos_aires','ensenada','santa_fe'].includes(sector)?{dialogue:'special'}:{})}))];
+// These fixed game residents are explicitly unarmed civilians. Military
+// sergeants, officers, sentries and named historical recruits are excluded.
+const noncombatantSectors=new Set(['buenos_aires','ensenada','san_nicolas','santa_fe','uspallata','los_patos','jujuy','san_lorenzo']);
+export const ENCOUNTERS=[...local.map(n=>({...n,name:[...OPERATIVES,...CIVIC_RECRUITS].find(o=>o.id===n.operativeId).name,x:n.x??3,y:n.y??7})),...Object.entries(civilians).map(([sector,[name,greeting]])=>({id:`local-${sector}`,sector,name,greeting,x:3,y:7,requiredLeadership:0,requiredLiberated:0,requiredSector:sector,...(noncombatantSectors.has(sector)?{noncombatant:true}:{}),...(['buenos_aires','ensenada','santa_fe'].includes(sector)?{dialogue:'special'}:{})}))];
 export const canRecruitEncounter=n=>n.operativeId!==undefined&&n.recruitable!==false;
 export function encounterDefinitions(s){
  const content=s.contentCampaign?.package;
@@ -31,7 +35,7 @@ export function encounterDefinitions(s){
  return [...original,...(content?.characters??[]).filter(isWorldCharacter).map(c=>{
   const {dialogue,...encounter}=c.encounter;
   return {id:`authored-${c.id}`,contentId:c.id,operativeId:operativeIdForCharacter(content,c.id),name:c.name,sector:null,x:3,y:7,...encounter};
- })].map(n=>content?.errands?.some(q=>q.npcId===n.id)?{...n,dialogue:'special'}:n);
+ })].map(n=>content?.errands?.some(q=>questContactIds(q).includes(n.id))?{...n,dialogue:'special'}:n);
 }
 export function encounterForOperative(id){return ENCOUNTERS.find(n=>n.operativeId===Number(id));}
 export function encountersFor(s,sector){

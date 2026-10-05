@@ -3,10 +3,10 @@ const AMMO='inventory:ammo:musket_75';
 const ammoStack=count=>({item:AMMO,kind:'ammunition',ammoType:'musket_75',name:AMMUNITION_TYPES.musket_75.name,count,weight:.04});
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createBattle, actBattle, getReachable, environmentTargetAt, environmentPreview, environmentUsePreview, containerLootPreview, canSee} from '../game/tactical.js';
+import {createBattle, actBattle, presentedActBattle, getReachable, environmentTargetAt, environmentPreview, environmentUsePreview, containerLootPreview, canSee} from '../game/tactical.js';
 import {nearbyEnvironmentModel,targetPreview} from '../game/ja2-hud.js';
 import {isInteriorVisible} from '../game/tactical-visibility.js';
-import {environmentTargetSummary, heldTool} from '../game/environment-interactions.js';
+import {TOOL_TYPES, environmentTargetSummary, heldTool} from '../game/environment-interactions.js';
 import {inventoryUsage} from '../game/tactical-inventory.js';
 import {makeOutfit} from '../game/outfits.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
@@ -66,6 +66,87 @@ test('illegal environment commands reject atomically before RNG, wear, AP, conte
   rejectUnchanged({...state, units: state.units.map(u => u.id === 'p' ? {...u, ap: 3} : u)}, {type: 'environment', ...doorRef, verb: 'unlock'});
   rejectUnchanged({...state, units: state.units.map(u => u.id === 'p' ? {...u, x: 10} : u)}, {type: 'environment', ...doorRef, verb: 'unlock'});
   rejectUnchanged(state, {type: 'containerLoot', ...chestRef, index: 0, count: 1});
+});
+
+// Declared legacy save boundary, not acquired tool stock or a campaign win.
+// Native health, skills, weapons, charges and funds remain unchanged. The
+// selected tool stack and zero-quantity historical keys exist before the first
+// visit/save admission. No inventory or geometry is changed after admission.
+function heldToolCapacityPair(toolKey,{keys=1000,count=2,remote=false}={}){
+  const declared=initialCampaign(45),record=declared.operativeState[10];
+  record.inventory={...record.inventory,work:{count,weight:TOOL_TYPES[toolKey].weight,itemType:'tool',toolKey,condition:63,...(toolKey==='key'?{keyId:'store'}:{})}};
+  const empty=keys-Object.keys(record.inventory).length;
+  for(let i=0;i<empty;i++)record.inventory[`empty-${i}`]=0;
+  record.activeSlot='tool';record.activeTool='inventory:work';
+  const campaign=dispatchCampaign(declared,{type:'visitSector'});assert.equal(campaign.lastError,null);
+  const request=campaign.pendingBattle,width=24,height=9;
+  const tiles=Array.from({length:width*height},(_,i)=>({x:i%width,y:Math.floor(i/width),type:'grass',blocked:false,cover:0}));
+  Object.assign(tiles.find(t=>t.x===2&&t.y===3),{type:'door',doorId:'test-door',open:false,locked:true,keyId:'store',lockDifficulty:25,lockIntegrity:1,blocked:true,blocksSight:true});
+  const battle=createBattle(request.squad.map((u,i)=>({...u,x:u.id===10?(remote?6:1):19+i,y:u.id===10?3:1,facing:u.id===10?(remote?6:2):6})),{
+    ...request,width,height,tiles,buildings:[],decor:[],
+    props:[{id:'test-chest',type:'chest',x:1,y:4,open:false,locked:false,contents:[],trap:{type:'alarm',difficulty:25,armed:true,discoveredBy:['player']}}],
+    npcs:request.npcs.map((n,i)=>({...n,x:19+i,y:7})),
+  });
+  const pair=decodeSave(encodeSave(campaign,battle));
+  assert.equal(Object.keys(pair.battle.units.find(u=>u.id==='10').inventory).length,keys);
+  assert.deepEqual(pair,{campaign,battle});
+  return pair;
+}
+const capacityActor=pair=>pair.battle.units.find(u=>u.id==='10');
+const capacityRef=verb=>verb==='disarm'?chestRef:doorRef;
+function capacityStep(pair,action){
+  const before=structuredClone(pair),ordinary=actBattle(pair.battle,action);
+  assert.equal(ordinary.lastError,null,ordinary.lastError);
+  assert.deepEqual(presentedActBattle(pair.battle,action).state,ordinary);
+  assert.deepEqual(pair,before);
+  const synced=syncBattleTime(pair.campaign,ordinary);assert.equal(synced.error,null,synced.error);
+  const restored=decodeSave(encodeSave(synced.campaign,synced.battle));
+  assert.deepEqual(restored,{campaign:synced.campaign,battle:synced.battle});
+  const replayed=syncBattleTime(before.campaign,actBattle(before.battle,action));assert.equal(replayed.error,null);
+  assert.deepEqual(decodeSave(encodeSave(replayed.campaign,replayed.battle)),restored);
+  return restored;
+}
+
+test('official 1000-key legacy tool stacks reject pick, pry and disarm before local use or paid approach',()=>{
+  for(const [verb,toolKey]of [['pick','lockpick'],['pry','crowbar'],['disarm','pliers']])for(const remote of [false,true]){
+    const pair=heldToolCapacityPair(toolKey,{remote}),before=structuredClone(pair),ref=capacityRef(verb);
+    const preview=environmentUsePreview(pair.battle,capacityActor(pair),ref,verb);
+    assert.equal(preview.valid,false);assert.match(preview.reason,/separar la herramienta/);
+    assert.deepEqual(preview.path,[]);assert.equal(preview.movePa,0);
+    const actions=[{type:'useItem',unitId:'10',environment:{...ref,verb}},...(!remote?[{type:'environment',unitId:'10',...ref,verb}]:[])];
+    for(const action of actions){
+      const after=actBattle(pair.battle,action);assert.match(after.lastError,/separar la herramienta/);
+      assert.deepEqual(presentedActBattle(pair.battle,action).state,after);
+      assert.deepEqual(after.log,[...pair.battle.log,after.lastError]);
+      assert.deepEqual({...after,lastError:pair.battle.lastError,log:pair.battle.log},pair.battle,'only the ordinary refusal message may change');
+      assert.deepEqual(decodeSave(encodeSave(pair.campaign,after)),{campaign:pair.campaign,battle:after});
+    }
+    assert.deepEqual(pair,before);
+  }
+});
+
+test('official saves retain one-tool wear at the key cap, a legal last-slot split, and zero-wear keys without a split',()=>{
+  for(const [verb,toolKey,wear]of [['pick','lockpick',2],['pry','crowbar',3],['disarm','pliers',2],['unlock','key',0]]){
+    const ref=capacityRef(verb);
+    for(const [keys,count]of wear?[[1000,1],[999,2]]:[[1000,2]]){
+      const start=heldToolCapacityPair(toolKey,{keys,count}),before=capacityActor(start),preview=environmentPreview(start.battle,before,ref,verb);
+      assert.equal(preview.valid,true,preview.reason);
+      const action={type:'environment',unitId:'10',...ref,verb},after=capacityStep(start,action),actual=capacityActor(after);
+      const selected=actual.activeTool.slice(10),split=wear>0&&count>1;
+      assert.equal(Object.keys(actual.inventory).length,keys+Number(split));
+      assert.equal(selected==='work',!split);
+      assert.equal(actual.inventory[selected].condition,63-wear);assert.equal(actual.inventory[selected].toolKey,toolKey);
+      assert.equal(actual.inventory[selected].weight,before.inventory.work.weight);
+      assert.equal(actual.inventory.work.count,count-Number(split));
+      if(split)assert.equal(actual.inventory.work.condition,63);
+      assert.equal(Object.values(actual.inventory).filter(r=>r?.toolKey===toolKey).reduce((sum,r)=>sum+r.count,0),count);
+      for(const [key,value]of Object.entries(before.inventory))if(key!=='work')assert.deepEqual(actual.inventory[key],value);
+      for(const key of ['hp','energy','loaded','ammo','ammunition','condition'])assert.deepEqual(actual[key],before[key]);
+      assert.equal(after.campaign.resources.treasury,start.campaign.resources.treasury);
+      assert.equal(after.battle.elapsedSeconds,start.battle.elapsedSeconds+Math.max(1,Math.ceil(preview.pa*.06)));
+      if(wear)assert.notEqual(after.battle.seed,start.battle.seed);else assert.equal(after.battle.seed,start.battle.seed);
+    }
+  }
 });
 
 test('closed target summaries and inspection previews keep trap and contents private', () => {

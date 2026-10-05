@@ -5,7 +5,7 @@ import {AMMUNITION_TYPES,availableAmmunition,totalReserveAmmunition,weaponAmmoTy
 import {tacticalLevel, sameCell, sameSurface, spaceKey} from './tactical-space.js';
 import {BODY_SLOTS,OUTFITS,wornOutfit,hasPoncho} from './outfits.js';
 import {handLayout,selectMainHand} from './hand-layout.js';
-import {reloadPlan,reprimePlan,lookPreview} from './tactical.js';
+import {reloadPlan,reprimePlan,lookPreview,firearmMaintenancePreview} from './tactical.js';
 import {reprimeLabel} from './weapon-reprime.js';
 import {shotRangeText} from './shot-range.js';
 import {heldThrowingKnife} from './thrown-knife.js';
@@ -19,7 +19,7 @@ import {mainItemPreview,swapHandsPreview, weaponFor, bladeFor, hasFirearm, carri
 import {pairedPistol,secondaryPistolView} from './paired-fire.js';
 import {directionTo} from './tactical-awareness.js';
 import {unarmedChance} from './unarmed-combat.js';
-import {inventoryUsage, carriedObject, itemDescriptor, INVENTORY_CAPACITY, SUPPLY_ITEMS} from './tactical-inventory.js';
+import {inventoryUsage, carriedObject, itemDescriptor, readItemStack, INVENTORY_CAPACITY, SUPPLY_ITEMS} from './tactical-inventory.js';
 import {TOOL_TYPES, heldTool, ENVIRONMENT_VERBS, environmentTargetSummary, visibleContainerContents} from './environment-interactions.js';
 import {HELD_SUPPLIES, heldSupply} from './held-supplies.js';
 import {planGroupMove} from './group-movement.js';
@@ -27,12 +27,24 @@ import {npcGiftPreview,contextualAttack,meleePreview,meleePointPreview, fitBayon
 import {fixedBayonetFor, fittingLabel, weaponItemWeight} from './weapon-fittings.js';
 import {firearmBystanderRisk,firearmBystanderWarning} from './firearm-bystander-risk.js';
 import {environmentContainerVisible} from './tactical.js';
+import {CAMPAIGN_SECTORS} from './data.js';
+import {CITY_LOYALTY_REWARDS} from './cities.js';
 
 const alive = u => u.hp > 0 && !u.routed && !u.unconscious && !u.departure && !u.fled;
 const shortName = u => u.nickname || String(u.name || '').split(' ').slice(-1)[0] || '';
 const distance = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
 const toolTargets = unit => heldTool(unit)?.toolKey === 'crowbar' ? 'una puerta, un cofre, una pared de adobe o una barricada de madera' : 'una puerta o un cofre';
 export const chancePercent = value => value > 0 && value < 1 ? '<1%' : `${Math.round(value)}%`;
+const maintenanceGainFormat = new Intl.NumberFormat('es-AR', {maximumFractionDigits: 2});
+/** Public authored destinations and the accepted delivery's saved choice. */
+export function beneficiaryDeliveryNotice(delivery){
+  if(!delivery?.beneficiaries?.length)return null;
+  const place=id=>CAMPAIGN_SECTORS.find(sector=>sector.id===id)?.name??id;
+  const selected=delivery.beneficiaries.find(recipient=>recipient.id===delivery.selectedBeneficiaryId);
+  if(selected)return `Destino fijado: ${place(selected.sector)}. ${delivery.beneficiaryId&&delivery.beneficiaryId!==selected.id?'Este contacto rechazará el objeto; seguirá en tu equipo.':'Todos los objetos deben ir al mismo contacto.'}`;
+  const destinations=delivery.beneficiaries.map(recipient=>`${place(recipient.sector)}: ${[recipient.reward.treasury>0?`${recipient.reward.treasury} pesos`:null,recipient.reward.loyalty?`apoyo local +${CITY_LOYALTY_REWARDS.quest}`:null].filter(Boolean).join(' y ')||'sin recompensa'}`);
+  return `${destinations.join(' · ')}. La primera entrega aceptada fija el destino. No podrás cambiarlo.`;
+}
 const shotLoadText = shot => `Carga de perdigones (${shot.pelletCount} proyectiles). Probabilidad de al menos un contacto; no garantiza varios impactos ni la zona del cuerpo. ${shot.damageFactor===0?'Ningún perdigón puede llegar por las trayectorias previstas.':shot.damageFactor<1?`Fuerza media si llega algún perdigón: ${Math.round(shot.damageFactor*100)}% de la carga.`:''} Disparar consume una carga.`;
 const affordable = (state, unit, pa) => state.mode === 'exploration' || unit.ap >= pa;
 const hasPrimary = unit => Boolean(unit.weapon) && !unit.weaponDropped;
@@ -354,7 +366,7 @@ function targetPreviewWithCosts(state, unit, point, ctx = {}) {
     return {name:patient.name,actionLabel:preview.movePa?'Acercarse y vendar':'Vendar',pa:preview.pa,remaining:Math.max(0,unit.ap-(state.mode==='exploration'?0:preview.pa)),valid:preview.valid,reason:preview.reason,treatment:preview.treatment,...(preview.composureRelief>0?{composureRelief:preview.composureRelief}:{}),coverNote:medicalTreatmentText(state,preview)};
   }
   const recipient=state.npcs?.find(n=>!n.departure&&!n.fled&&sameCell(n,point)&&canSee(state,unit,n));
-  if(recipient&&unit.activeSlot==='item'&&!heldGrenade(unit)&&['move','useItem'].includes(mode)){const gift=npcGiftPreview(state,unit,recipient);return {name:recipient.name,actionLabel:gift.label,pa:gift.pa,remaining:unit.ap,valid:gift.valid,reason:gift.reason,coverNote:'Se entrega el objeto que está en la mano. No se usa la reserva del cuartel.'};}
+  if(recipient&&unit.activeSlot==='item'&&!heldGrenade(unit)&&['move','useItem'].includes(mode)){const gift=npcGiftPreview(state,unit,recipient);return {name:recipient.name,actionLabel:gift.label,pa:gift.pa,remaining:unit.ap,valid:gift.valid,reason:gift.reason,coverNote:[beneficiaryDeliveryNotice(gift.beneficiaryDelivery),'Se entrega el objeto que está en la mano. No se usa la reserva del cuartel.'].filter(Boolean).join(' ')};}
   const occupants = state.units.filter(v => sameCell(v, point) && !v.fled && !v.departure && (v.side === unit.side || state.units.some(p => p.side === unit.side && canSee(state, p, v))));
   const target = occupants.find(v => v.id === point.id) || occupants.find(v => v.hp > 0) || occupants[0];
   if(mode==='fire'&&(explicitPointShot(state,point)||!target||target.side===unit.side||target.hp<=0||target.surrendered)){
@@ -557,6 +569,15 @@ export function equipmentSlots(state, unit, ctx = {}) {
   });
 }
 
+// Retained work on the next charge, independent of ready ammunition or a future order.
+export function firearmLoadingProgress(unit,item){
+ if(!item)return null;
+ const stack=readItemStack(unit,item,1),progress=stack.reloadProgress;
+ if(weaponSpecification(stack)?.type!=='firearm'||!(progress>0&&progress<1))return null;
+ const percent=progress<.01?'<1%':`${Math.min(99,Math.round(progress*100))}%`;
+ return {progress,percent,label:`Recarga en curso: ${percent}`,description:`Recarga en curso: ${percent} del próximo cartucho.`};
+}
+
 export function handSlots(state,unit){
  const layout=handLayout(unit),options=equipmentSlots(state,unit);
  return ['right','left'].map(side=>{
@@ -568,7 +589,8 @@ export function handSlots(state,unit){
   else if(Object.hasOwn(HELD_SUPPLIES,reference))option=equipmentSlots(state,{...unit,activeSupply:reference}).find(o=>o.slot==='supply');
   else if(reference?.startsWith('inventory:')&&heldTool({...unit,activeSlot:'tool',activeTool:reference}))option=equipmentSlots(state,{...unit,activeTool:reference}).find(o=>o.slot==='tool');
   else if(reference&&carriedObject(unit,reference))option=mainItemPreview(state,unit,reference);
-  return {side,item:reference,blocked,label:descriptor?.label??(blocked?'Ocupada por el arma':'Vacía'),weapon:descriptor?.weapon,art:descriptor?.art,loaded:WEAPONS[descriptor?.weapon]?descriptor?.loaded:undefined,condition:descriptor?.condition,action:side==='left'?option?.action:null,pa:option?.pa,reason:option?.reason,disabled:blocked||side==='left'&&(option?.disabled||option?.valid===false)};
+  const loading=firearmLoadingProgress(unit,reference);
+  return {side,item:reference,blocked,label:descriptor?.label??(blocked?'Ocupada por el arma':'Vacía'),weapon:descriptor?.weapon,art:descriptor?.art,loaded:WEAPONS[descriptor?.weapon]?descriptor?.loaded:undefined,condition:descriptor?.condition,...(loading?{loading}:{}),action:side==='left'?option?.action:null,pa:option?.pa,reason:option?.reason,disabled:blocked||side==='left'&&(option?.disabled||option?.valid===false)};
  });
 }
 
@@ -772,7 +794,7 @@ const ORDER_DEFS = [
   {id: 'overwatch', label: 'Cubrir', kind: 'order'},
   {id: 'mount', label: 'Montar', kind: 'order'},
   {id: 'brace', label: 'Guardia de bayoneta', kind: 'order'},
-  {id: 'repair', label: 'Cambiar sílex', kind: 'order'},
+  {id: 'repair', label: 'Mantener arma', kind: 'order'},
   {id: 'ration', label: 'Comer tasajo', kind: 'order'},
   {id: 'torch', label: 'Arrojar antorcha', kind: 'mode'},
   {id: 'bolas', label: 'Lanzar boleadoras', kind: 'mode'},
@@ -799,6 +821,7 @@ export function orderDescriptors(state, unit, ctx = {}) {
   const gunPlans=Object.fromEntries(['artillery','artilleryMove','artilleryPivot','artilleryReload'].map(id=>[id,id==='artilleryReload'?gunLoading:artilleryCrewPlan(state,unit,gun,gunCosts?.[{artillery:'fire',artilleryMove:'move',artilleryPivot:'pivot'}[id]]??0)]));
   const loading = unit ? reloadPlan(unit, state) : null;
   const priming = unit ? reprimePlan(unit, state) : null;
+  const maintenance = firearmMaintenancePreview(state, unit);
   const pa = {...costs, reload: loading?.pa??0, fire: costs.fire + Math.max(0, Math.min(4, Math.floor(ctx.aim || 0))) * costs.aim, stance: unit ? stanceCost(u, nextStance(u)) : 0};
   const attack = unit && !['medical', 'tool', 'supply','item'].includes(u.activeSlot) ? contextualAttack(state, u, ctx.target, {aim: ctx.aim || 0}) : null;
   const medicalPreview = medicalUsePreview(state, unit, ctx.target ?? unit);
@@ -838,7 +861,7 @@ export function orderDescriptors(state, unit, ctx = {}) {
     overwatch: !u.overwatch && (!firearm || !(u.loaded > 0) || Boolean(u.jammed)),
     mount: !u.horse,
     brace: !fixedBayonetFor(u)||u.stance==='prone',
-    repair: !firearm || (u.condition ?? 100) >= 100,
+    repair: !maintenance.valid,
     ration: !supplyAliases.ration.allowed,
     torch: !supplyAliases.torch.allowed,
     bolas: !supplyAliases.bolas.allowed,
@@ -881,6 +904,10 @@ export function orderDescriptors(state, unit, ctx = {}) {
     }
     if(def.id==='fire'&&firearm&&(weaponFor(u).readyAP??0)>0){if(state.mode==='exploration'){d.seconds=Math.max(1,Math.ceil(costs.fire*.06));d.detail=costs.ready?'Levanta el arma antes de disparar.':'Arma en posición de tiro.';}else d.detail=costs.ready?`Preparar: ${costs.ready} PA · disparar: ${costs.discharge} PA.`:`Arma en posición de tiro · disparar: ${costs.discharge} PA.`;}
     if(def.id==='reload'&&loading){if(state.mode==='exploration')d.seconds=loading.pa?Math.max(1,Math.ceil(loading.pa*.06)):0;d.detail=loading.partial?`${loading.rounds} cartuchos; después faltan ${loading.remainingPA} PA.`:`${loading.rounds} cartuchos; recarga completa.`;}
+    if(def.id==='repair'){
+      d.action=maintenance.action;
+      d.detail=maintenance.reason||`Estado +${maintenanceGainFormat.format(maintenance.gain)} puntos · materiales: ${maintenance.materialCost} puntos.`;
+    }
     return d;
   });
 }

@@ -37,9 +37,9 @@ test('two actual discharges pay authored preparation once and conserve finite ch
 });
 
 test('accepted physical work lowers the weapon, while unavailable orders and free covering orders preserve it',()=>{
- const base=shoot(field({medical:80,medkits:5}));
+ const base=shoot(field({medical:80,medkits:5})),maintenance=shoot(field({medical:80,medkits:5,toolkitPoints:1}));
  for(const action of [{type:'move',x:2,y:1},{type:'reload'},{type:'stance',stance:'prone'},{type:'weapon',slot:'blade'},{type:'repair'},{type:'weapon',slot:'medical'}]){
-  const s=structuredClone(base);s.units[0].ap=100;s.units[0].hp=80;s.units[0].bleeding=3;const n=act(s,action);assert.equal(n.units[0].weaponReady,undefined,action.type);if(n.units[0].activeSlot==='primary')assert.equal(actionCosts(n,n.units[0]).ready,7);
+  const s=structuredClone(action.type==='repair'?maintenance:base);s.units[0].ap=100;s.units[0].hp=80;s.units[0].bleeding=3;const n=act(s,action);assert.equal(n.units[0].weaponReady,undefined,action.type);if(action.type==='repair'){assert.equal(n.units[0].condition,100);assert.equal(n.units[0].toolkitPoints,0);}if(n.units[0].activeSlot==='primary')assert.equal(actionCosts(n,n.units[0]).ready,7);
  }
  for(const action of [{type:'fire',targetId:'missing'},{type:'move',x:-1,y:0},{type:'weapon',slot:'missing'},{type:'reload'}]){const s=structuredClone(base);s.units[0].ap=0;const n=actBattle(s,{unitId:'p',...action});assert.ok(n.lastError);assert.deepEqual(n.units,s.units);}
  const covered=act(base,{type:'overwatch'});assert.equal(covered.units[0].weaponReady,true);assert.equal(covered.units[0].ap,base.units[0].ap);const unprepared=act(field(),{type:'overwatch'});assert.equal(unprepared.units[0].weaponReady,undefined);

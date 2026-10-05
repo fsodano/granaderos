@@ -1,3 +1,4 @@
+import {validateQuestWithdrawals} from './quest-withdrawal.js';
 import {militiaArrivalTerrain} from './militia-arrival.js';
 import {revealFiniteArsenal} from './finite-artillery-arsenals.js';
 import {placeInvaders} from './invader-entry.js';
@@ -17,12 +18,14 @@ import {createBattle,initializeBattlePerception} from './tactical.js';
 import {validEntry,validateSectorExits} from './tactical-exits.js';
 import {validateBattleSnapshot} from './validate-battle.js';
 import {validateQuestGifts} from './quests.js';
+import {validateQuestBeneficiaries,validateQuestBeneficiaryContext} from './quest-beneficiaries.js';
 import {migrateCivilianHealth,civilianMaxHp} from './civilian-health.js';
 import {civilianIncidents} from './civilian-harm.js';
+import {issueConductObservers} from './service-objections.js';
 
 const key=spaceKey;
 const clearEncounter=unit=>{
- for(const field of ['lastKnownEnemy','lastHeardNoise','lastTargetId','lastShotPosition','patrolTurn','lastInvestigatedTurn'])delete unit[field];
+ for(const field of ['lastKnownEnemy','lastHeardNoise','lastTargetId','lastShotPosition','patrolTurn','lastInvestigatedTurn','nervousIsolationWarned','enclosedRoomFearWarned'])delete unit[field];
  for(const field of ['reactionTurn','reactionSpent','interceptTurn','parryTurn','counterTurn','braceTurn'])unit[field]=0;
  return unit;
 };
@@ -65,7 +68,14 @@ export function enterSector(request,previous=null,{placement=false}={}){
  });
  // Deployment intent does not establish contact. Resolve sight only after final placement.
  let state=createBattle([...map.squad,...(map.garrison??[]),...(map.missionAllies??[])],{...map,exploration:true,deferContact:true});
+ // Only the owned issued squad carries this service consequence. Auxiliary
+ // actors and retained bodies do not gain authority from scene membership.
+ delete state.conductObserverIds;Object.assign(state,issueConductObservers(request.squad??[]));
  if(request.errandDefinitions!==undefined)state.errandDefinitions=structuredClone(request.errandDefinitions);
+ if(request.questWithdrawals!==undefined)state.questWithdrawals=structuredClone(request.questWithdrawals);else delete state.questWithdrawals;
+ validateQuestWithdrawals(state.questWithdrawals,state);
+ if(request.questBeneficiaries!==undefined)state.questBeneficiaries=structuredClone(request.questBeneficiaries);
+ validateQuestBeneficiaries(state.questBeneficiaries,state);
  if(request.roadsideDiscoveryDefinitions!==undefined)state.roadsideDiscoveryDefinitions=structuredClone(request.roadsideDiscoveryDefinitions);
  // Retained garrisons also start a new encounter clock. Their wounds and gear
  // persist, but remembered targets and reaction counters belong to the old visit.
@@ -199,6 +209,11 @@ export function enterSector(request,previous=null,{placement=false}={}){
  // Residents receive their cover now; arriving defenders receive it only at
  // their committed cells, never at the unused automatic arrival positions.
  if(request.defenseGroupId&&request.defenseFort>0)for(const unit of state.units.filter(u=>u.side==='player'&&u.hp>0&&!deferred.has(u.id))){const tile=state.tiles.find(t=>t.x===unit.x&&t.y===unit.y);tile.cover=Math.max(tile.cover??0,Math.min(3,request.defenseFort)*10);}
+ // Campaign admission binds the issued choices to saved records. This scene
+ // builder has only that request; use its admitted map to check local custody.
+ const issuedQuests=Object.fromEntries(Object.entries(request.questBeneficiaries??{}).map(([id,beneficiaryId])=>[id,{beneficiaryId}]));
+ for(const [id,deliveredCount]of Object.entries(request.questWithdrawals??{}))issuedQuests[id]={...issuedQuests[id],status:'withdrawn',withdrawal:{deliveredCount}};
+ validateQuestBeneficiaryContext({errandDefinitions:request.errandDefinitions,quests:issuedQuests},state,{request});
  if(selecting)return validateBattleSnapshot(state);
  return initializeBattlePerception(validateBattleSnapshot(state));
 }
