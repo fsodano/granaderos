@@ -105,7 +105,7 @@ export function captureBattlePresentation(before,execute,canObserve){
   const shotComplete=event.type==='result'&&presentedShots.delete(event.unitId);
   if(shotComplete)shotIds.delete(event.unitId);
   const artilleryComplete=event.type==='result'&&presentedArtillery.delete(event.unitId);
-  const crew=actionCrews.get(event.unitId),crewIds=crew?.action===event.action?crew.crewIds.filter(id=>known.has(bodyKey('unit',id))):[];
+  const crew=actionCrews.get(event.unitId),crewIds=crew&&crew.action===event.action?crew.crewIds.filter(id=>known.has(bodyKey('unit',id))):[];
   frames.push({state:current,visibleIds:[...visible],unitId:seen?event.unitId:null,type:event.type,action:event.action,impacts,...(nearMissIds.length?{nearMissIds}:{}),...(crewIds.length?{crewIds:[...crewIds]}:{}),...(seen&&['bayonet','normal'].includes(event.meleeStyle)?{meleeStyle:event.meleeStyle}:{}),...(shotVisual?{shotVisual,shotHand:shotVisual.shotHand,shotId:shotVisual.shotId}:{}),...(artilleryVisual?{artilleryVisual}:{}),...(shotComplete?{shotComplete:true}:{}),...(artilleryComplete?{artilleryComplete:true}:{}),...(event.contactComplete&&seen?{contactComplete:true}:{}),...(event.performed===false?{performed:false}:{}),...(target?{targetPoint:{id:target.id,x:target.x,y:target.y,tacticalLevel:target.tacticalLevel}}:{}),...(event.grenadeVisual&&seen?{grenadeVisual:snapshot(event.grenadeVisual)}:{}),...(event.knifeVisual&&seen?{knifeVisual:snapshot(event.knifeVisual)}:{})});
   if(event.type==='result'){actionCrews.delete(event.unitId);actionStarts.delete(event.unitId);}
  };
