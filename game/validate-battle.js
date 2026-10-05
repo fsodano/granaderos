@@ -72,6 +72,8 @@ for(const npc of s.npcs??[])need(npc.griefCompanionIds===undefined&&npc.companio
 for(const npc of s.npcs??[])need(npc.serviceObjection===undefined,'objeciones de civiles');
 for(const npc of s.npcs??[])need(npc.nervousIsolationWarned===undefined,'aviso de aislamiento de civiles');
 for(const u of s.units??[])if(Object.hasOwn(u,'nervousIsolationWarned'))need(u.nervousIsolationWarned===true&&u.side==='player'&&!u.militia&&!u.missionAlly&&Number.isSafeInteger(Number(u.id))&&Number(u.id)>=0&&String(Number(u.id))===u.id&&u.abilities?.includes('nervous_isolation'),'aviso de aislamiento');
+for(const npc of s.npcs??[])need(npc.enclosedRoomFearWarned===undefined,'aviso de temor de civiles');
+for(const u of s.units??[])if(Object.hasOwn(u,'enclosedRoomFearWarned'))need(u.enclosedRoomFearWarned===true&&u.side==='player'&&!u.militia&&!u.missionAlly&&Number.isSafeInteger(Number(u.id))&&Number(u.id)>=0&&String(Number(u.id))===u.id&&u.abilities?.includes('enclosed_room_fear'),'aviso de temor a lugares cerrados');
 for(const u of s.units??[]){validateServiceObjection(u);need(u.serviceObjection===undefined||u.side==='player'&&!u.militia&&Number.isSafeInteger(Number(u.id))&&String(Number(u.id))===u.id,'objeciones de combatientes');}
 need(Array.isArray(s.units)&&s.units.length<=2000&&s.units.filter(u=>u.hp>0).length<=200,'combatientes');const ids=new Set(),instances=new Set();const claimInstance=id=>{if(id===undefined)return;need(validItemIdentity(id)&&!instances.has(id),'identidad del equipo');instances.add(id);};
 const claimStack=stack=>{for(const id of fittingItemIds(stack))claimInstance(id);};

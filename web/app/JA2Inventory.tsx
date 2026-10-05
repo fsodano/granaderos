@@ -15,6 +15,7 @@ import {handsRequired} from '../../game/hand-layout.js';
 import {accessStepsFrom,tacticalLevel} from '../../game/tactical-space.js';
 import {climbPreview,fieldDressingsPreview} from '../../game/tactical.js';
 import {maximumEnergy} from '../../game/fatigue.js';
+import {enclosedRoomFearStatus} from '../../game/enclosed-room-fear.js';
 import {nervousIsolationStatus} from '../../game/nervous-isolation.js';
 // MODE B: single-merc inventory panel (header / stats / stance grid / paper-doll / slot-grid / pertrechos / far-right cluster).
 // Pure read model (game/ja2-hud.js inventoryModel/orderDescriptors); all mutations are caller-provided callbacks.
@@ -115,6 +116,12 @@ export default function JA2Inventory({cursorLevel=0,onCursorLevelChange,unit, ba
     : isolation.reason === 'incapable' ? 'Ahora no puede combatir.'
     : battle.mode === 'combat' && battle.status === 'active'
       ? `Si sigue aislado y con moral baja: tensión +${shockFormat.format(isolation.addedShock)} al comenzar su turno, tras la recuperación habitual.`
+      : 'Fuera de combate: sin aumento.';
+  const enclosedFear = enclosedRoomFearStatus(battle, {...unit, shock: (unit.shock ?? 0) / 2});
+  const enclosedFearText = enclosedFear.reason === 'incapable' ? 'Ahora no puede combatir.'
+    : enclosedFear.reason === 'open' ? 'Fuera de una habitación intacta: sin aumento.'
+    : battle.mode === 'combat' && battle.status === 'active'
+      ? `Si sigue dentro y puede combatir: tensión +${shockFormat.format(enclosedFear.addedShock)} al comenzar su turno, tras la recuperación habitual.`
       : 'Fuera de combate: sin aumento.';
   const vitals: any = rosterCells([unit],unit.id,battle)[0];
   const inventoryUnits = battle.units.filter((u:any)=>u.side==='player'&&!u.militia&&!u.missionAlly&&!u.departure&&!u.fled);
@@ -228,8 +235,9 @@ export default function JA2Inventory({cursorLevel=0,onCursorLevelChange,unit, ba
         <div><span>Energía</span><b>{Math.round(unit.energy ?? 100)} / {maximumEnergy(unit)}</b></div>
         <div className="ja2-mobile-weight"><span>Peso</span><b>{inv.weight.toFixed(1)} / {inv.capacity.toFixed(1)} kg</b></div>
         <div><span>Moral</span><b>{unit.hp<=0?'—':`${Math.round(unit.morale ?? 0)}%`}</b></div>
+        {(isolation.reason !== 'ability' || enclosedFear.reason !== 'ability') && <div><span>Tensión actual</span><b>{shockFormat.format(unit.shock ?? 0)}</b></div>}
+        {enclosedFear.reason !== 'ability' && <p role="status" aria-label="Temor a lugares cerrados"><b>Temor a lugares cerrados.</b> {enclosedFearText}</p>}
         {isolation.reason !== 'ability' && <>
-          <div><span>Tensión actual</span><b>{shockFormat.format(unit.shock ?? 0)}</b></div>
           <p role="status" aria-label="Temor al aislamiento"><b>Temor al aislamiento.</b> {isolationText}</p>
         </>}
 <details className="ja2-inventory-extra"><summary>Más detalles</summary><div className="ja2-inventory-popup">        <div><span>Carga / capacidad</span><b>{inv.weight.toFixed(1)} / {inv.capacity.toFixed(1)} kg</b></div>

@@ -24,7 +24,7 @@ import {issueConductObservers} from './service-objections.js';
 
 const key=spaceKey;
 const clearEncounter=unit=>{
- for(const field of ['lastKnownEnemy','lastHeardNoise','lastTargetId','lastShotPosition','patrolTurn','lastInvestigatedTurn','nervousIsolationWarned'])delete unit[field];
+ for(const field of ['lastKnownEnemy','lastHeardNoise','lastTargetId','lastShotPosition','patrolTurn','lastInvestigatedTurn','nervousIsolationWarned','enclosedRoomFearWarned'])delete unit[field];
  for(const field of ['reactionTurn','reactionSpent','interceptTurn','parryTurn','counterTurn','braceTurn'])unit[field]=0;
  return unit;
 };

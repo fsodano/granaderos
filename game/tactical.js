@@ -79,6 +79,7 @@ import {COMBAT_BALANCE,penetratingFirearmDamage} from './combat-balance.js';
 import {practiceFirearmNearMiss} from './firearm-near-miss-practice.js';
 import {firstAidPlan} from './first-aid.js';
 import {careComposureRelief} from './care-composure.js';
+import {applyEnclosedRoomFear} from './enclosed-room-fear.js';
 import {applyNervousIsolation} from './nervous-isolation.js';
 // Deterministic, serializable tactical simulation. The browser uses this module directly.
 export function bladeFor(unit){
@@ -2737,6 +2738,13 @@ function finishCombatRound(s){
       if(fear>0&&!u.nervousIsolationWarned){
         u.nervousIsolationWarned=true;
         say(s,`${u.name} siente temor al quedar sin apoyo. Tensión +${fear}.`);
+      }
+    }
+    for(const u of s.units){
+      const fear=applyEnclosedRoomFear(s,u);
+      if(fear>0&&!u.enclosedRoomFearWarned){
+        u.enclosedRoomFearWarned=true;
+        say(s,`${u.name} siente temor dentro de una habitación cerrada. Tensión +${fear}.`);
       }
     }
     say(s,`Turno ${s.turn}: ¡órdenes, comandante!`);

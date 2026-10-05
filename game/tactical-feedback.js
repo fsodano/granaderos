@@ -21,6 +21,11 @@ export function tacticalFeedback(before,after){
  }
  for(const unit of after.units.filter(u=>u.side==='player')){
   const old=before.units.find(u=>u.id===unit.id);if(!old)continue;
+  if(unit.enclosedRoomFearWarned===true&&old.enclosedRoomFearWarned===undefined&&
+     !unit.militia&&!unit.missionAlly&&Number.isSafeInteger(Number(unit.id))&&Number(unit.id)>=0&&
+     String(Number(unit.id))===unit.id&&Array.isArray(unit.abilities)&&unit.abilities.includes('enclosed_room_fear')){
+   messages.push(`${unit.name} siente temor dentro de una habitación cerrada.`);
+  }
   if(unit.nervousIsolationWarned===true&&old.nervousIsolationWarned===undefined&&
      !unit.militia&&!unit.missionAlly&&Number.isSafeInteger(Number(unit.id))&&Number(unit.id)>=0&&
      String(Number(unit.id))===unit.id&&Array.isArray(unit.abilities)&&unit.abilities.includes('nervous_isolation')){
