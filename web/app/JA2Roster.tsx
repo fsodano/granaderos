@@ -4,7 +4,7 @@ import {memo,useEffect,useMemo,useRef,useState} from 'react';
 import {maximumEnergy} from '../../game/fatigue.js';
 // Every deployed squad remains accessible in the portrait strip.
 // Pure read model (game/ja2-hud.js rosterCells); all mutations are caller-provided callbacks.
-import {rosterCells} from '../../game/ja2-hud.js';
+import {rosterCells,firearmLoadingProgress} from '../../game/ja2-hud.js';
 import {rosterHands} from '../../game/roster-hands.js';
 import {Package,Flame,Utensils,Cross,Link,KeyRound,Wrench,Hammer,Scissors,Shirt,Hand,Ban,Skull,Eye} from 'lucide-react';
 import {portraitFor} from '../lib/portraits';
@@ -36,7 +36,7 @@ export default function JA2Roster({battle, players, selected, groupIds = [], med
         if (cell.empty) return <div className="empty-portrait-slot" key={`empty-${i}`} aria-hidden="true"><span>—</span></div>;
         const u = cell.unit;
         const portrait = cell.portrait || portraitFor(u.portraitId ?? u.id);
-        const hands = rosterHands(u);
+        const hands = rosterHands(u).map(hand=>{const loading=firearmLoadingProgress(u,hand.item);return {...hand,loading,description:`${hand.description}${loading?` ${loading.description}`:''}`};});
         return (
           <button
             key={u.id}
@@ -60,7 +60,7 @@ export default function JA2Roster({battle, players, selected, groupIds = [], med
               const Icon=handIcons[hand.icon]??Package;
               return <span key={hand.side} className={`ja2-roster-hand ${hand.blocked?'blocked':hand.item?'held':'empty'}`} data-hand-side={hand.side} data-hand-item={hand.item??''} data-close-combat={hand.closeCombat} data-attachment={hand.attached} title={hand.description}>
                 {hand.weapon?<img src={sitePath(hand.art??`/art/weapon-${hand.weapon}.png`)} alt="" draggable={false}/>:<Icon size={16} strokeWidth={1.7}/>}
-                {hand.loaded!==undefined&&<small className="roster-hand-load">{hand.loaded}</small>}
+                {hand.loaded!==undefined&&<small className="roster-hand-load">{hand.loaded}{hand.loading&&<span className="roster-hand-loading" title={hand.loading.description}> ·{hand.loading.percent}</span>}</small>}
                 {(hand.closeCombat||hand.attached)&&<span className="roster-hand-status">{hand.closeCombat&&<b className="close-combat">*</b>}{hand.attached&&<b className="attachment">*</b>}</span>}
               </span>;
             })}</span>

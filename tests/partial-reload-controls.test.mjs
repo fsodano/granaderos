@@ -17,7 +17,9 @@ test('the battlefield shows actual partial reload cost and remaining work throug
  const hover=async()=>act(async()=>target().dispatchEvent(new dom.window.MouseEvent('mouseover',{bubbles:true})));
  await act(async()=>draw());await key('f');await hover();assert.match(preview().textContent,/100 PA/);assert.match(preview().textContent,/Faltan 150 PA/);
  await act(async()=>target().dispatchEvent(new dom.window.MouseEvent('click',{bubbles:true})));await timers.settle(document);assert.equal(battle.lastError,null);assert.equal(battle.units[0].ap,0);assert.equal(battle.units[0].ammo,3);assert.equal(battle.units[0].reloadProgress,.4);
- battle=validateBattleSnapshot(JSON.parse(JSON.stringify(battle)));let turns=0;
+ const storedWork=()=>document.querySelector('.ja2-roster-hand[data-hand-side="right"]');
+ assert.match(storedWork().title,/Recarga en curso: 40% del próximo cartucho/);assert.match(storedWork().textContent,/0 ·40%/);
+ battle=validateBattleSnapshot(JSON.parse(JSON.stringify(battle)));await act(async()=>draw());assert.match(storedWork().title,/Recarga en curso: 40% del próximo cartucho/);let turns=0;
  while(!battle.units[0].loaded){
   for(let i=0;i<8;i++){battle=endTurn(battle);assert.equal(battle.lastError,null);if(battle.phase==='player'&&!battle.interrupt)break;assert.ok(i<7,'the enemy turn must complete');}
   await act(async()=>draw());for(let frame=0;/Procesando/.test(document.querySelector('.battle-phase').textContent);frame++){assert.ok(frame<100,'real movement animation must settle');await act(async()=>timers.wait(20));}await hover();const plan=reloadPlan(battle.units[0],battle),before=battle.units[0].ap;assert.ok(plan.available>0);assert.ok(preview().textContent.includes(`${plan.pa} PA`));
@@ -25,4 +27,5 @@ test('the battlefield shows actual partial reload cost and remaining work throug
   await key('R',{shiftKey:true});assert.equal(battle.lastError,null);assert.equal(battle.units[0].ap,before-plan.pa);assert.ok(++turns<5);battle=validateBattleSnapshot(JSON.parse(JSON.stringify(battle)));
  }
  assert.equal(battle.units[0].ammo,2);assert.equal(battle.units[0].loaded,1);assert.equal(battle.units[0].reloadProgress,undefined);
+ await act(async()=>draw());assert.doesNotMatch(storedWork().title,/Recarga en curso/);assert.equal(storedWork().querySelector('.roster-hand-load').textContent,'1');
 });

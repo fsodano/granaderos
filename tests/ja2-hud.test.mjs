@@ -13,12 +13,29 @@ import {medicalUsePreview} from '../game/tactical.js';
 import {AMMUNITION_TYPES,isAmmunitionStack,totalReserveAmmunition,weaponAmmoType} from '../game/ammunition-types.js';
 import {setTestAmmunition} from './typed-ammunition-fixture.mjs';
 import {freshDefaultErrands} from '../game/quest-definitions.js';
+import {handSlots,firearmLoadingProgress} from '../game/ja2-hud.js';
+import {validateBattleSnapshot} from '../game/validate-battle.js';
 const tiles=()=>Array.from({length:80},(_,i)=>({x:i%10,y:Math.floor(i/10),type:'grass',blocked:false,cover:0}));
 const merc=(id,extra={})=>({...OPERATIVES[id],...extra});
 function battle(units=[merc(0)],extra={}){return createBattle(units,{width:10,height:8,tiles:tiles(),enemies:[{id:'enemy-0',x:5,y:1,hp:100,weapon:1800,condition:63}],seed:45,...extra});}
 const players=s=>s.units.filter(u=>u.side==='player');
 const ammoItem=u=>`inventory:${Object.entries(u.inventory).find(([,stack])=>isAmmunitionStack(stack)&&stack.ammoType===weaponAmmoType(u.weapon))[0]}`;
 const ORDER_IDS=['move','look','stealth','useItem','fire','melee','charge','heal','loot','reload','reprime','weapon','stance','overwatch','mount','brace','repair','ration','torch','bolas','free','sight','endTurn','artillery','artilleryMove','artilleryPivot','artilleryReload'];
+test('held loading work belongs to the next physical charge, separate from ready barrels and future AP',()=>{
+  // Declared current-state fixtures exercise the read model, not earned wounds.
+  const s=validateBattleSnapshot(battle([{id:'loader',weapon:1808,loaded:1,reloadProgress:.71,ammo:9,offHand:{weapon:1805,count:1,weight:1.3,loaded:0,condition:61,reloadProgress:.43},leftHandItem:'offhand'}],{exploration:true,enemies:[]}));
+  const u=s.units[0],before=structuredClone(s),hands=handSlots(s,u);
+  assert.equal(hands[0].loaded,1);assert.equal(hands[0].loading.progress,.71);assert.equal(hands[0].loading.percent,'71%');
+  assert.equal(hands[1].loaded,0);assert.equal(hands[1].loading.progress,.43);assert.match(hands[1].loading.description,/próximo cartucho/);
+  assert.doesNotMatch(hands[0].loading.description,/PA|lista|listo/);assert.deepEqual(s,before,'reading the current work must not spend or change equipment');
+  const stowed={...u,activeSlot:'unarmed',leftHandItem:null};assert.ok(handSlots(s,stowed).every(hand=>!hand.loading),'unheld guns do not appear in hand readouts');
+  const complete=validateBattleSnapshot(battle([{id:'complete',weapon:1808,loaded:2,ammo:9}],{exploration:true,enemies:[]}));
+  assert.equal(firearmLoadingProgress(complete.units[0],'primary'),null);assert.ok(handSlots(complete,complete.units[0]).every(hand=>!hand.loading));
+  const empty=validateBattleSnapshot(battle([{id:'old',weapon:1805,loaded:0,ammo:9}],{exploration:true,enemies:[]}));
+  assert.equal(empty.units[0].reloadProgress,undefined);assert.equal(firearmLoadingProgress(empty.units[0],'primary'),null);
+  assert.equal(firearmLoadingProgress({...u,reloadProgress:.9999},'primary').percent,'99%','unfinished work must not look complete');
+  assert.equal(firearmLoadingProgress({...u,reloadProgress:.005},'primary').percent,'<1%','small positive work must not look absent');
+});
 test('campaign return accepts settled victory care and peaceful visits without declaring hidden enemies cleared',()=>{
   const visit=battle([merc(0)],{exploration:true,enemies:[]});
   visit.sectorCleared=false;
