@@ -30,7 +30,7 @@ const rows=[
 ];
 export const SPEECH_EVENTS=['hired','contact','cleared','wounded','exhausted','death','ending'];
 // Optional additions do not change older packages or their saved content identity.
-export const OPTIONAL_SPEECH_EVENTS=['treated'];
+export const OPTIONAL_SPEECH_EVENTS=['treated','near','interrupt'];
 export const AUTHORABLE_SPEECH_EVENTS=[...SPEECH_EVENTS,...OPTIONAL_SPEECH_EVENTS];
 for(const op of MERCENARY_ADDITIONS)rows.push([op.id,op.personalityText,[op.role,...op.traits.map(trait=>({field_rescuer:'Socorro bajo fuego',teacher:'Instrucción de reclutas',expert_rider:'Equitación experta',steadfast:'Ánimo firme',guerrilla_tactician:'Táctica de guerrillas',night_vision:'Reconocimiento nocturno',gunsmith_artillerist:'Armería y artillería',line_marksman:'Tiro de línea',cavalry_commander:'Mando de caballería',workshop_training:'Formación de taller'})[trait])],op.lines]);
 export const CHARACTER_PROFILES=Object.fromEntries(rows.map(([id,personality,skills,lines])=>[id,{personality,skills,speech:Object.fromEntries(SPEECH_EVENTS.map((event,i)=>[event,lines[i]])),registry:[5,6,10,103,104,105].includes(id)||MERCENARY_ADDITIONS.some(op=>op.id===id&&op.foreign)?'Registro de voluntarios extranjeros':id>=100?'Boletín Revolucionario Cívico':'Logia Lautaro y mandos provinciales'}]));

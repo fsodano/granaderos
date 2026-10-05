@@ -63,6 +63,16 @@ export const CONTENT_SECTORS = [
 ];
 export const BLADE_TEMPLATES=Object.values(BLADES).map(w=>({id:w.id,name:w.name}));
 export const FIREARM_TEMPLATES = Object.values(WEAPONS).map((w) => ({ id: w.id, name: w.name }));
+// Fresh authored text only. Runtime profiles never infer these optional lines
+// from an operative ID, so older pinned omissions remain silent.
+const freshCombatSpeech={
+  104:{near:'¡Esa pasó cerca! Prefiero contar la historia de pie.',interrupt:'Un respiro. Aprovechemos este momento.'},
+  105:{near:'Pasó cerca. Conservo el pulso.',interrupt:'Tengo un momento para preparar el tiro.'},
+  107:{near:'Pasó cerca. Primero busquemos abrigo.',interrupt:'Un momento. Puedo ayudar sin precipitarme.'},
+  110:{near:'Bajemos la cabeza y sigamos con calma.',interrupt:'Con calma. Todavía puedo actuar.'},
+  126:{near:'¡Por poco! Necesito espacio para moverme.',interrupt:'Ahora puedo moverme. No quiero quedar encerrada.'},
+  130:{near:'¡Cerca, muy cerca! No me dejen sola.',interrupt:'Un momento. Reunámonos antes de seguir.'},
+};
 const portrait = (id) => `/art/portrait-${id}.${[103, 104].includes(id) ? "png" : "webp"}`;
 export function defaultContentPackage() {
   return {
@@ -91,7 +101,7 @@ export function defaultContentPackage() {
       personality:characterProfile(o).personality,
       ...(o.serviceRefusals===undefined?{}:{serviceRefusals:structuredClone(o.serviceRefusals)}),
       ...(o.preferredCompanions===undefined?{}:{preferredCompanions:structuredClone(o.preferredCompanions)}),
-      speech:{...characterProfile(o).speech},
+      speech:{...characterProfile(o).speech,...freshCombatSpeech[o.id]},
       spriteAppearance:spriteAppearance(o),
       monthlyPay: o.monthlyPay ?? 0,
       ...(o.id >= 100 ? {arrivalHours:6,recruitmentSource:'contract',service:'contract',progression:'experience',traits:[...(o.traits??[])],ridingSkill:o.ridingSkill??((o.traits??[]).includes('expert_rider')?80:0)} : {}),

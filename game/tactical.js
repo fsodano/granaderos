@@ -78,6 +78,7 @@ import {advanceBattleClock,COMBAT_ROUND_SECONDS,REST_SECONDS} from './time.js';
 import {fieldPractice as practice} from './skill-training.js';
 import {COMBAT_BALANCE,penetratingFirearmDamage} from './combat-balance.js';
 import {practiceFirearmNearMiss} from './firearm-near-miss-practice.js';
+import {captureFirearmNearMissFeedback,recordFirearmNearMissFeedback} from './firearm-near-miss-feedback.js';
 import {firstAidPlan} from './first-aid.js';
 import {careComposureRelief} from './care-composure.js';
 import {applyEnclosedRoomFear} from './enclosed-room-fear.js';
@@ -799,7 +800,7 @@ function shotLoadFireImpact(s,attacker,target,aim,hitLocation,source=attacker,pr
   const key=`${entry.victimKind}:${entry.victimId}:${entry.hitLocation}`,force=penetratingFirearmDamage(amount*entry.weight,entry,undefined,weapon,entry.weight);
   const group=groups.get(key)??{entry,amount:0};group.amount+=force;groups.set(key,group);
  }
- const learned=new Set(),contacted=new Set();
+ const learned=new Set(),contacted=new Set(),beforeHealth=new Map(s.units.map(unit=>[unit.id,unit.hp]));
  for(const {entry,amount:force} of [...groups.values()].sort((a,b)=>a.entry.fraction-b.entry.fraction||a.entry.pelletIndex-b.entry.pelletIndex)){
   const victim=flightVictim(s,entry);if(!victim)continue;
   const key=`${entry.victimKind}:${entry.victimId}`;
@@ -812,6 +813,11 @@ function shotLoadFireImpact(s,attacker,target,aim,hitLocation,source=attacker,pr
  for(const id of learned)practice(source,'marksmanship',2);
  sayObserved(s,[source],`${source.name} dispara una carga de perdigones con ${weapon.name}.`);
  finishFlight();
+ const damagedBodies=new Set(s.units.filter(unit=>unit.hp<beforeHealth.get(unit.id)).map(unit=>`unit:${unit.id}`));
+ firearmNearMissFeedback(s,{attacker,source,weapon,flight,damagedBodies});
+}
+function firearmNearMissFeedback(s,details){
+ recordFirearmNearMissFeedback(s,{...details,discharged:true},nearMissIds=>recordBattleFrame(s,{type:'impact',nearMissIds}));
 }
 function directedFireImpact(s,u,target,hitLocation,hit,source=u,preparedIntent=null){
   const aimPoint=preparedIntent?.point??target,w=weaponFor(u),end=hit?aimPoint:scatteredShotDestination(s,u,aimPoint);
@@ -829,6 +835,7 @@ function directedFireImpact(s,u,target,hitLocation,hit,source=u,preparedIntent=n
   const damagedBodies=applyFirearmBodyImpacts(s,flight,amount,source,finishFlight,{intended:target,weapon:w});
   finishFlight();
   practiceFirearmNearMiss(s,{attacker:u,target,weapon:w,flight,hit,discharged:true,source,damagedBodies});
+  firearmNearMissFeedback(s,{attacker:u,source,weapon:w,flight,damagedBodies});
 }
 function applyFirearmBodyImpacts(s,flight,amount,source,finishFlight,{intended=null,observeOnly=false,weapon=null}={}){
  const entries=flight.bodyImpacts??(!flight.blocked&&flight.victimId?[flight]:[]),processed=new Set(),damagedBodies=new Set();
@@ -1094,8 +1101,9 @@ function pointFireImpact(s,u,point,aim,source=u,preparedAccuracy,preparedIntent=
   const amount=victim?w.damage*(.8+random(s)*.4):0;
   const flight=victim?pointProjectileFlight(s,u,destination,w,{...options,resolveBody:entry=>random(s)*100<entry.penetrationChance}):forecast;
   const finishFlight=presentFirearmFlight(s,u,{...destination,stance:'standing'},flight,'torso',source,{...options,pointShot:true});
-  applyFirearmBodyImpacts(s,flight,amount,source,finishFlight,{intended,observeOnly:true,weapon:w});
+  const damagedBodies=applyFirearmBodyImpacts(s,flight,amount,source,finishFlight,{intended,observeOnly:true,weapon:w});
   finishFlight();
+  firearmNearMissFeedback(s,{attacker:u,source,weapon:w,flight,damagedBodies});
 }
 export function dropPreview(s,u,item,count=1){
   const pa=4;let reason=inventoryOrderReason(s,u,pa);
@@ -2580,6 +2588,9 @@ function processRout(s,u){
 }
 
 export function actBattle(state,action,movementPath=null){
+ return captureFirearmNearMissFeedback(state,()=>actBattleResolved(state,action,movementPath));
+}
+function actBattleResolved(state,action,movementPath=null){
   if(state.deployment)return sectorDeploymentAction(state,action);
   const ids=[action.unitId,...(Array.isArray(action.unitIds)?action.unitIds:[])].filter(id=>id!==undefined).map(String);
   if(state.units.some(u=>u.militia&&ids.includes(u.id))||state.alliedTurn&&state.phase!=='interrupt'){
@@ -2880,6 +2891,9 @@ function cleanActionTime(s){
 export function presentedEndTurn(state){return captureBattlePresentation(state,()=>endTurn(state),playerObservedBody);}
 export function presentedActBattle(state,action){return captureBattlePresentation(state,()=>actBattle(state,action),playerObservedBody);}
 export function endTurn(state){
+ return captureFirearmNearMissFeedback(state,()=>endTurnResolved(state));
+}
+function endTurnResolved(state){
  if(state.deployment)return sectorDeploymentAction(state,{type:'endTurn'});
  const ready=clone(state);
  for(const unit of ready.units)if(!returnBattleEquipmentCursor(ready,unit)){

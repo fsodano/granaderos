@@ -35,10 +35,12 @@ export default function CharacterPresentation({character,portraits,characters,we
   </label>
   <small>Describe su personalidad en la hoja de servicio. La moral mantiene las reglas de combate.</small>
   {characters&&<ServiceRelationshipsEditor character={character} characters={characters} onChange={onChange}/>}
-  <p>Estas frases se usan cuando ocurre cada evento. Dejá una frase vacía para que no hable en esa situación.</p>
+  <p>Estas frases se usan cuando ocurre cada evento. Dejá una frase vacía para que no hable en esa situación. Las reacciones breves no se repiten en cada evento.</p>
   {AUTHORABLE_SPEECH_EVENTS.map(event=><label key={event}>{SPEECH_LABELS[event as keyof typeof SPEECH_LABELS]}
    <textarea rows={2} maxLength={SPEECH_LINE_LIMIT} value={values.speech[event]??''} onChange={e=>{const speech={...values.speech,[event]:e.target.value};if(OPTIONAL_SPEECH_EVENTS.includes(event)&&!e.target.value)delete speech[event];onChange({speech});}}/>
    {event==='treated'&&<small>Habla después de recibir vendas de otra persona si está consciente. No habla al vendarse solo, durante un tratamiento que lo deja inconsciente ni al recuperarse con el tiempo.</small>}
+   {event==='near'&&<small>Reacciona a un disparo que pasó cerca. Esta frase no indica que haya visto al tirador.</small>}
+   {event==='interrupt'&&<small>Reacciona cuando tiene una oportunidad de actuar. No usa la frase de detección de enemigos.</small>}
   </label>)}
  </section>;
 }
