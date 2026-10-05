@@ -1,3 +1,4 @@
+import {withdrawQuest,validateQuestWithdrawalReceipts} from './quest-withdrawal.js';
 import {initializeTownIncome,activateTownIncome,validateTownIncome,collectTownIncome,townIncomeSourceForNPC} from './town-income.js';
 import {validateRepairReserve,validateRepairReserveContext,retainRepairReserves} from './repair-materials.js';
 import {recordFiniteArsenalRecovery} from './finite-artillery-arsenals.js';
@@ -402,7 +403,7 @@ function acknowledgeNpcGifts(s,snapshot){
   let quest=questForNPC(s,local.id);if(!quest?.carried)continue;
   const count=validateQuestGifts(local,s).length,previous=s.conversations?.[local.id],acknowledged=previous?.giftCount??0;
   requireThat(count>=acknowledged,'El parte perdió objetos que el interlocutor ya recibió.');
-  const complete=!quest.rewardChoice&&!quest.beneficiaries&&count===quest.carried.count&&!['completed','failed'].includes(quest.status)&&quest.conditionMet;
+  const complete=!quest.rewardChoice&&!quest.beneficiaries&&count===quest.carried.count&&!['completed','failed','withdrawn'].includes(quest.status)&&quest.conditionMet;
   if(!questGiftProgressPending(quest,count,acknowledged))continue;
   if(!count)continue;
   const npc=encounterDefinitions(s).find(n=>n.id===local.id);
@@ -870,16 +871,18 @@ export function dispatchCampaign(previous,action){
       }
       case 'selectSquad':{const squad=s.squads.find(q=>q.id===action.id);requireThat(squad,'La escuadra no existe.');s.activeSquadId=squad.id;s.squad=[...squad.members];s.location=squad.location;break;}
       case 'talkNPC':{
+        if(action.approach==='questWithdraw')requireThat(questForNPC(s,action.npcId)?.withdrawalChoice,'Registrá la entrega parcial antes de retirar el compromiso.');
         validateQuestContext(s,action.sectorState);
         validateRoadsideDiscoveryContext(s,action.sectorState);
         requireThat(s.pendingBattle,'Primero entrá al sector.');const snapshot=validatedInteractionSnapshot(s,action.sectorState),npc=(s.pendingBattle.sceneId==='yatasto'?missionContacts(s):encountersFor(s,s.pendingBattle.sector)).find(n=>n.id===action.npcId&&n.sector===s.pendingBattle.sector),id=Number(action.unitId),actor=rosterFor(s).find(o=>o.id===id),unit=snapshot.units.find(u=>u.side==='player'&&Number(u.id)===id),local=snapshot.npcs?.find(n=>n.id===action.npcId);
         retainQuestBeneficiaries(s,s.pendingBattle,snapshot);retainServiceObjections(s.pendingBattle,snapshot);acknowledgeCivilians(s,snapshot);acknowledgeNpcGifts(s,snapshot);requireThat(npc&&actor&&unit&&local&&(local.hp??100)>0&&!local.unconscious&&s.squad.includes(id)&&unit.hp>0&&!unit.unconscious,'El interlocutor no está disponible en este sector.');requireThat(snapshot.mode==='exploration'||snapshot.status==='victory'||snapshot.sectorCleared,'Terminá el combate antes de conversar.');requireThat(Number.isInteger(local.x)&&Number.isInteger(local.y)&&Math.abs(unit.x-local.x)+Math.abs(unit.y-local.y)<=1,'Acercá al combatiente al interlocutor para hablar.');
-        requireThat(['repeat','friendly','direct','threaten','recruit','quest','mission','dialogue','escortFollow','escortWait'].includes(action.approach),'La forma de dirigirse al interlocutor es inválida.');
+        requireThat(['repeat','friendly','direct','threaten','recruit','quest','questWithdraw','mission','dialogue','escortFollow','escortWait'].includes(action.approach),'La forma de dirigirse al interlocutor es inválida.');
         const unavailable=dialogueReason(snapshot,unit,{...npc,...local},{visible:canSee(snapshot,unit,local)});requireThat(!unavailable,unavailable);
         const quest=questForNPC(s,npc.id),authored=hasAuthoredDialogue(npc)||Boolean(quest);
+        requireThat(action.questWithdrawal===undefined||action.approach==='questWithdraw','La orden de retiro no corresponde a esta conversación.');
         requireThat(action.questResolution===undefined||action.approach==='quest'&&quest?.rewardChoice&&['cash','civic'].includes(action.questResolution),'La elección de recompensa no es válida para esta conversación.');
         requireThat(action.approach==='dialogue'?Boolean(dialogueForNPC(s,npc)):authored?dialogueOptions(npc,quest).some(([option])=>option===action.approach):action.approach==='friendly','Este interlocutor no ofrece esa conversación.');
-        let text=(authored?npc.greeting:ambientReply(local,s.conversations?.[npc.id]?1:0))+(quest&&!['completed','failed'].includes(quest.status)?` ${quest.offer}`:''),outcome='conversation',dialogue=null;
+        let text=(authored?npc.greeting:ambientReply(local,s.conversations?.[npc.id]?1:0))+(quest&&!['completed','failed','withdrawn'].includes(quest.status)?` ${quest.offer}`:''),outcome='conversation',dialogue=null;
         if(action.approach==='threaten')text=contextualThreatReply(npc,quest);
         if(action.approach==='repeat'){text=s.conversations?.[npc.id]?.text??npc.greeting;outcome='repeated';}
         if(action.approach==='dialogue'){dialogue=chooseDialogue(s,npc,action.dialogueChoice,action.dialogueNode,snapshot);text=dialogue.text;outcome='dialogue';if(dialogue.effect?.applied){if(dialogue.effect.amount)note(s,`${npc.name}: ${dialogue.effect.amount>0?'entrega':'recibe'} ${Math.abs(dialogue.effect.amount)} pesos.`);if(dialogue.effect.movement)note(s,dialogue.effect.movement.destination==='routine'?`${npc.name} termina el encuentro con ${dialogue.effect.movement.name}.`:`${npc.name} llama a ${dialogue.effect.movement.name} para un encuentro en este sector.`);if(dialogue.effect.quest)note(s,`Encargo «${dialogue.effect.quest.title}»: ${dialogue.effect.quest.status==='active'?'en curso':dialogue.effect.quest.status==='completed'?'completado':'fallido'}.`);}}
@@ -895,8 +898,12 @@ export function dispatchCampaign(previous,action){
           s.quests[quest.id].escortOrder={leaderId:unit.id,waiting:action.approach==='escortWait'};
           text=action.approach==='escortWait'?'Esperaré aquí. Volvé a hablarme cuando podamos seguir.':`Seguiré a ${unit.name} hasta la salida hacia ${sector(quest.escort.destination).name}.`;outcome='escortOrder';
         }
+        if(action.approach==='questWithdraw'){
+          requireThat(quest,'Este interlocutor no tiene un encargo pendiente.');
+          text=withdrawQuest(s,quest,local,unit,action.questWithdrawal);outcome='questWithdrawn';note(s,`Compromiso retirado: ${quest.title}. ${text}`);
+        }
         if(action.approach==='quest'){
-          requireThat(quest,'Este interlocutor no tiene un encargo pendiente.');requireThat(!['completed','failed'].includes(quest.status),'El encargo ya terminó.');
+          requireThat(quest,'Este interlocutor no tiene un encargo pendiente.');requireThat(!['completed','failed','withdrawn'].includes(quest.status),'El encargo ya terminó.');
           if(quest.status==='unoffered'){requireThat(action.questResolution===undefined,'Entregá los objetos del encargo antes de elegir la recompensa.');s.quests[quest.id]={status:'offered',offeredAt:s.hour,completedAt:null,...(quest.escort?{escortOrder:{leaderId:unit.id,waiting:false}}:{})};text=quest.offer;outcome='questOffered';}
           else if(quest.beneficiaries){
             const delivery=snapshot.npcs.find(n=>n.id===npc.id);
@@ -1130,8 +1137,8 @@ export function restoreCampaignValue(s){
   if(s.pendingBattle?.resumeSnapshot){validateRepairReserveContext(s.pendingBattle,s.pendingBattle.resumeSnapshot);validateQuestBeneficiaryContext(s,s.pendingBattle.resumeSnapshot);retainRepairReserves(s.pendingBattle,s.pendingBattle.resumeSnapshot);}
   for(const snapshot of [...Object.values(s.sectorStates??{}),...Object.values(s.sceneStates??{})])validateQuestBeneficiaryContext(s,snapshot,{request:null,retained:true});
   s.lastConversation??=null;s.conversations??={};
-  requireThat(object(s.conversations)&&Object.entries(s.conversations).every(([id,c])=>[...encounterDefinitions(s),...YATASTO_NPCS].some(n=>n.id===id)&&object(c)&&c.met===true&&['repeat','friendly','direct','threaten','recruit','quest','mission','dialogue','gift','escortFollow','escortWait'].includes(c.lastApproach)&&integer(c.hour,0,s.hour)&&(c.secondOfHour===undefined||integer(c.secondOfHour,0,3599)&&c.hour*3600+c.secondOfHour<=s.hour*3600+(s.secondOfHour??0))&&(c.text===undefined||typeof c.text==='string'&&c.text.length>0&&c.text.length<2000)&&(c.giftCount===undefined?c.lastApproach!=='gift':questsFor(s).some(q=>questContactIds(q).includes(id)&&q.carried&&integer(c.giftCount,0,q.carried.count)))&&(c.sector===undefined||validWorldLocation(c.sector)||c.sector==='san_lorenzo')),'Las conversaciones guardadas son inválidas.');
-  requireThat(s.lastConversation===null||(object(s.lastConversation)&&[...encounterDefinitions(s),...YATASTO_NPCS].some(n=>n.id===s.lastConversation.npcId)&&typeof s.lastConversation.text==='string'&&s.lastConversation.text.length<2000&&typeof s.lastConversation.speaker==='string'&&s.lastConversation.speaker.length<=100&&Array.isArray(s.lastConversation.options)&&s.lastConversation.options.every(o=>['repeat','friendly','direct','threaten','recruit','quest','mission','dialogue','escortFollow','escortWait'].includes(o))&&(s.lastConversation.giftCount===undefined||questsFor(s).some(q=>questContactIds(q).includes(s.lastConversation.npcId)&&q.carried&&integer(s.lastConversation.giftCount,1,q.carried.count)&&s.lastConversation.giftCount===s.conversations[s.lastConversation.npcId]?.giftCount))),'El diálogo guardado es inválido.');
+  requireThat(object(s.conversations)&&Object.entries(s.conversations).every(([id,c])=>[...encounterDefinitions(s),...YATASTO_NPCS].some(n=>n.id===id)&&object(c)&&c.met===true&&['repeat','friendly','direct','threaten','recruit','quest','questWithdraw','mission','dialogue','gift','escortFollow','escortWait'].includes(c.lastApproach)&&integer(c.hour,0,s.hour)&&(c.secondOfHour===undefined||integer(c.secondOfHour,0,3599)&&c.hour*3600+c.secondOfHour<=s.hour*3600+(s.secondOfHour??0))&&(c.text===undefined||typeof c.text==='string'&&c.text.length>0&&c.text.length<2000)&&(c.giftCount===undefined?c.lastApproach!=='gift':questsFor(s).some(q=>questContactIds(q).includes(id)&&q.carried&&integer(c.giftCount,0,q.carried.count)))&&(c.sector===undefined||validWorldLocation(c.sector)||c.sector==='san_lorenzo')),'Las conversaciones guardadas son inválidas.');
+  requireThat(s.lastConversation===null||(object(s.lastConversation)&&[...encounterDefinitions(s),...YATASTO_NPCS].some(n=>n.id===s.lastConversation.npcId)&&typeof s.lastConversation.text==='string'&&s.lastConversation.text.length<2000&&typeof s.lastConversation.speaker==='string'&&s.lastConversation.speaker.length<=100&&Array.isArray(s.lastConversation.options)&&s.lastConversation.options.every(o=>['repeat','friendly','direct','threaten','recruit','quest','questWithdraw','mission','dialogue','escortFollow','escortWait'].includes(o))&&(s.lastConversation.giftCount===undefined||questsFor(s).some(q=>questContactIds(q).includes(s.lastConversation.npcId)&&q.carried&&integer(s.lastConversation.giftCount,1,q.carried.count)&&s.lastConversation.giftCount===s.conversations[s.lastConversation.npcId]?.giftCount))),'El diálogo guardado es inválido.');
   validateSavedDialogues(s,encounterDefinitions(s));validateTownIncome(s);
   for(const quest of questsFor(s))for(const npcId of questContactIds(quest)){
     const at=questBeneficiaryForNPC(quest,npcId)?.sector??quest.sector;
@@ -1141,6 +1148,7 @@ export function restoreCampaignValue(s){
   requireThat(object(s.armory)&&Object.entries(s.armory).every(([key,v])=>[...equipmentCatalog(s),...EQUIPMENT_CATALOG].some(o=>String(o.stockKey??o.item)===key)&&integer(v,0,100000)),'La armería guardada es inválida.');validateArmoryItems(s);
   requireThat(object(s.loadouts)&&Object.entries(s.loadouts).every(([id,slots])=>baseRosterFor(s).some(o=>o.id===Number(id))&&object(slots)&&Object.entries(slots).every(([slot,v])=>['weapon','blade'].includes(slot)&&(v===0||integer(v,slot==='blade'?1809:1800,1813)))),'Los equipos guardados son inválidos.');
   s.cityLoyaltyEvents??=[];requireThat(validCityLoyaltyEvents(s.cityLoyaltyEvents),'El registro de lealtad es inválido.');
+  validateQuestWithdrawalReceipts(s,rosterFor(s));
   for(const quest of questsFor(s))if(quest.rewardChoice&&s.quests[quest.id]?.status==='completed'){
     const resolution=s.quests[quest.id].questResolution,event=s.cityLoyaltyEvents.find(e=>e.kind==='quest'&&e.eventId===`npc-${quest.id}`);
     requireThat(s.conversations[quest.npcId]?.giftCount===quest.carried.count&&(resolution==='civic'?event?.sectorId===quest.sector&&event.hour===s.quests[quest.id].completedAt:!event),'La resolución del encargo no coincide con la entrega y su recompensa.');

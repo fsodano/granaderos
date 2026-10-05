@@ -8,7 +8,8 @@ export function hasAuthoredDialogue(npc){
 export function dialogueOptions(npc,quest=null){
  if(!hasAuthoredDialogue(npc)&&!quest)return [];
  return [['repeat','Repetir respuesta'],['friendly','Saludar'],['direct',npc.operativeId!==undefined?'Preguntar por sus condiciones':'Preguntar por la localidad'],['threaten','Amenazar'],...(npc.mission?[['mission','Conversar sobre la misión']]:[]),
- ...(quest&&!['completed','failed'].includes(quest.status)&&(!quest.carried||quest.status!=='offered'||(quest.rewardChoice||quest.beneficiaries)&&quest.resolutionReady)?[['quest',quest.status==='offered'?(quest.beneficiaries?'Confirmar entrega':quest.rewardChoice?'Elegir recompensa':quest.escort?'Confirmar llegada a la salida':'Entregar pertrechos'):(quest.escort?'Aceptar escolta':'Consultar encargo')]]:[]),
+ ...(quest&&!['completed','failed','withdrawn'].includes(quest.status)&&(!quest.carried||quest.status!=='offered'||(quest.rewardChoice||quest.beneficiaries)&&quest.resolutionReady)?[['quest',quest.status==='offered'?(quest.beneficiaries?'Confirmar entrega':quest.rewardChoice?'Elegir recompensa':quest.escort?'Confirmar llegada a la salida':'Entregar pertrechos'):(quest.escort?'Aceptar escolta':'Consultar encargo')]]:[]),
+ ...(quest?.withdrawalChoice?[['questWithdraw','Retirar el compromiso']]:[]),
  ...(quest?.escort&&quest.status==='offered'?[['escortFollow','Seguir a este combatiente'],['escortWait','Esperar aquí']]:[]),
  ...(npc.operativeId!==undefined?[['recruit','Proponer incorporación']]:[])];
 }

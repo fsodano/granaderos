@@ -1,3 +1,4 @@
+import {initializeQuestWithdrawals} from './quest-withdrawal.js';
 import {completedTacticalVictory} from './battle-outcome.js';
 import {expandCellScene} from './cell-scene-storage.js';
 import {validWorldLocation,worldOwner,worldCell} from './world-cells.js';
@@ -32,6 +33,7 @@ export function recordStrategicArrival(s,ids,fromSector,toSector,sceneId=null){
 export function prepareDeploymentExits(s,request){
  const errands=s.contentCampaign?.package.errands??s.errandDefinitions;
  if(errands!==undefined)request.errandDefinitions=structuredClone(errands);
+ const withdrawals=initializeQuestWithdrawals(s);if(withdrawals!==undefined)request.questWithdrawals=withdrawals;else delete request.questWithdrawals;
  const choices=initializeQuestBeneficiaries(s);
  if(choices!==undefined)request.questBeneficiaries=choices;
  else delete request.questBeneficiaries;
