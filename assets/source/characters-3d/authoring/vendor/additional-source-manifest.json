@@ -1,0 +1,20 @@
+{
+  "sources": [
+    {
+      "url": "https://raw.githubusercontent.com/makehumancommunity/mpfb2/afb9f530a7c2741dedb8df0ebae2e0b183caec21/src/mpfb/data/targets/macrodetails/caucasian-female-young.target.gz",
+      "file": "assets/source/characters-3d/authoring/vendor/makehuman/caucasian-female-young.target",
+      "sha256": "efdb17514632b2b3f549bf0095cb965a25023ac303d0d6a02a7f7e25dee6c62e",
+      "bytes": 419955
+    },
+    {
+      "url": "https://opengameart.org/sites/default/files/riggedHorse.blend",
+      "file": "assets/source/characters-3d/authoring/vendor/horse/riggedHorse.blend",
+      "sha256": "9cca670b93a74d50e89263e50d55ab035a6c46aa7d2b21e354bdac6987037f4a",
+      "bytes": 20194164
+    }
+  ],
+  "licenses": {
+    "femaleTarget": "MakeHuman core assets CC0; pinned upstream source",
+    "horse": "CC0; https://opengameart.org/content/rigged-horse; author Lyndon Daniels, submitted by ChadM"
+  }
+}

@@ -5,7 +5,7 @@ import {createBattle} from '../game/tactical.js';
 import {targetPreview} from '../game/ja2-hud.js';
 import {mountBattlefield} from './mounted-battlefield.mjs';
 const {default:Battlefield}=await import('../web/app/Battlefield.tsx');
-const {default:TacticalScene}=await import('../web/app/TacticalScene.tsx');
+const {default:TacticalSceneControls}=await import('../web/app/TacticalSceneControls.tsx');
 const {default:JA2Strip}=await import('../web/app/JA2Strip.tsx');
 const nodes=node=>!node||typeof node!=='object'?[]:[node,...(Array.isArray(node)?node:Array.isArray(node.props?.children)?node.props.children:[node.props?.children]).flatMap(nodes)];
 
@@ -13,7 +13,7 @@ test('hovering a guarded prisoner firing lane presents the miss warning in the a
  const battle=createBattle([{id:'p',x:1,y:4,weapon:1802}],{width:12,height:8,enemies:[{id:'e',x:8,y:4,patrol:false}],npcs:[{id:'n',name:'Prisionero a la vista',x:8,y:5,hp:100,stance:'standing'}]});
  for(const tile of battle.tiles){tile.type='grass';tile.blocked=false;tile.blocksSight=false;}
  const mounted=await mountBattlefield(t,Battlefield,{battle,onChange:state=>state,onFinish(){}}),get=type=>nodes(mounted.tree()).find(node=>node.type===type);
- await mounted.act(async()=>{get(JA2Strip).props.onMode('fire');get(TacticalScene).props.onHover(battle.units[1]);});
+ await mounted.act(async()=>{get(JA2Strip).props.onMode('fire');get(TacticalSceneControls).props.onHover(battle.units[1]);});
  const preview=nodes(mounted.tree()).find(node=>node.props?.['aria-label']==='Vista previa de la orden');
  assert.ok(preview);assert.match(renderToStaticMarkup(preview),/Un tiro desviado puede herir a Prisionero a la vista/);
  assert.match(renderToStaticMarkup(preview),/Cambiá de posición o elegí otro blanco/);
@@ -26,7 +26,7 @@ test('an alternative shot load names a visible pellet bystander without revealin
  const [player,target]=battle.units,before=structuredClone(battle),withoutHidden=structuredClone(battle);withoutHidden.npcs=withoutHidden.npcs.filter(n=>n.id!=='hidden');
  assert.deepEqual(targetPreview(battle,player,target,{mode:'fire'}),targetPreview(withoutHidden,withoutHidden.units[0],withoutHidden.units[1],{mode:'fire'}),'an unseen body cannot alter the public forecast or warning');
  const mounted=await mountBattlefield(t,Battlefield,{battle,onChange:state=>state,onFinish(){}}),get=type=>nodes(mounted.tree()).find(node=>node.type===type);
- await mounted.act(async()=>{get(JA2Strip).props.onMode('fire');get(TacticalScene).props.onHover(target);});
+ await mounted.act(async()=>{get(JA2Strip).props.onMode('fire');get(TacticalSceneControls).props.onHover(target);});
  const html=renderToStaticMarkup(nodes(mounted.tree()).find(node=>node.props?.['aria-label']==='Vista previa de la orden'));
  assert.match(html,/Carga de perdigones/);assert.match(html,/Personas en la trayectoria: Vecino visible/);assert.doesNotMatch(html,/Nombre privado|hidden|unrevealed|La bala puede atravesarlo/);
  assert.equal(mounted.jobs().filter(job=>job.job.kind==='action'||job.job.kind==='movement-step').length,0);assert.deepEqual(battle,before);

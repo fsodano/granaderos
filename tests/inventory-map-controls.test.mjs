@@ -9,7 +9,7 @@ const {EquipmentInteractionProvider,useEquipmentInteraction,useEquipmentDrag}=aw
 const {selectedItemMapPreview,placeSelectedItemOnMap,inventoryIntentAt,toggleInventoryDestination,retainInventoryDestination}=await import('../web/lib/inventory-map-controls.ts');
 const {default:InventoryMapCursor}=await import('../web/app/InventoryMapCursor.tsx');
 const {default:Battlefield}=await import('../web/app/Battlefield.tsx');
-const {default:TacticalScene}=await import('../web/app/TacticalScene.tsx');
+const {default:TacticalSceneControls}=await import('../web/app/TacticalSceneControls.tsx');
 const field=()=>createBattle([{id:'p',name:'Emisor',x:2,y:2,weapon:1805,ammo:0,medkits:7},{id:'q',name:'Receptor',x:3,y:2,weapon:1805,ammo:0,medkits:0}],{width:10,height:8,exploration:true,enemies:[],tiles:Array.from({length:80},(_,i)=>({x:i%10,y:Math.floor(i/10),type:'grass',blocked:false,cover:0}))});
 function pick(initial=field(),all=false){
  let battle=initial;const store=createEquipmentInteraction('map'),owner=Symbol('source'),slot=inventoryUsage(battle.units[0]).slots.find(s=>s.entry?.item==='medkits').id,orders=[];
@@ -90,7 +90,7 @@ test('production map and NPC callbacks give durable cursor placement priority ov
   const props={battle:b,onChange:next=>{changes.push(next);store.revalidate(next.units[0],false);return next;},onFinish(){},onTalk:(...args)=>talks.push(args)};
   const contents=Battlefield(props).props.children;function Capture(){store=useEquipmentInteraction().store;tree=contents.type(props);return null;}
   render(h(EquipmentInteractionProvider,null,h(Capture)));store.revalidate(b.units[0],false);
-  const scene=nodes(tree).find(node=>node.type===TacticalScene);assert.ok(scene);if(route==='npc')scene.props.onTalk(b.npcs[0]);else scene.props.onTile(route==='ally'?b.units[1]:{x:1,y:2});
+  const scene=nodes(tree).find(node=>node.type===TacticalSceneControls);assert.ok(scene);if(route==='npc')scene.props.onTalk(b.npcs[0]);else scene.props.onTile(route==='ally'?b.units[1]:{x:1,y:2});
   assert.deepEqual(talks,[]);assert.equal(changes.length,1);const actual=changes[0];assert.equal(actual.lastError,null);assert.equal(actual.units[0].x,b.units[0].x);assert.equal(actual.units[0].y,b.units[0].y);
   if(route==='npc'){assert.equal(actual.units[0].medkits,6);assert.equal(actual.units[0].equipmentCursor.stack.count,1);assert.ok(store.getSnapshot().selection,'a refused gift stays owned');assert.equal(actual.npcs[0].hp,100);assert.ok(actual.log.some(line=>line.includes('Vecino:')));}else{assert.equal(actual.units[0].medkits,6);assert.equal(actual.units[0].equipmentCursor,undefined);assert.equal(store.getSnapshot().selection,null);}
  }

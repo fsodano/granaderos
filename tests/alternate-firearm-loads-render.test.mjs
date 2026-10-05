@@ -15,7 +15,7 @@ import {validateBattleSnapshot} from '../game/validate-battle.js';
 import {targetPreview,chancePercent} from '../game/ja2-hud.js';
 import {mountBattlefield} from './mounted-battlefield.mjs';
 const {default:Battlefield}=await import('../web/app/Battlefield.tsx');
-const {default:TacticalScene}=await import('../web/app/TacticalScene.tsx');
+const {default:TacticalSceneControls}=await import('../web/app/TacticalSceneControls.tsx');
 const {default:JA2Strip}=await import('../web/app/JA2Strip.tsx');
 const nodes=node=>!node||typeof node!=='object'?[]:[node,...(Array.isArray(node)?node:Array.isArray(node.props?.children)?node.props.children:[node.props?.children]).flatMap(nodes)];
 const pair=({oldPinned=false,withoutAlternativeDrag=false}={})=>{const d=defaultContentPackage();d.characters.find(c=>c.id==='person-110').arrivalHours=0;const gun=d.weapons.find(w=>w.id==='firearm-1800');if(oldPinned)delete gun.projectileAirDrag;if(oldPinned||withoutAlternativeDrag)for(const load of gun.alternativeLoads??[])delete load.projectileAirDrag;let s=order(initialCampaign(8,d),{type:'recruitCivic',id:110,term:'week'});// Explicit finite carried shot in a subsystem save fixture.
@@ -60,7 +60,7 @@ test('mounted inventory load changes apply authored concealment skill to a pisto
  const withoutSkill=()=>{const plain=structuredClone(current);delete plain.units[0].abilities;return plain;};
  const preview=()=>targetPreview(current,actor(),target(),{mode:'fire',aim:1});
  const chanceWithoutSkill=()=>{const plain=withoutSkill();return shotChance(plain,plain.units[0],plain.units[1],1);};
- await mounted.act(async()=>{get(JA2Strip).props.onOpenInventory('p');get(JA2Strip).props.onMode('fire');get(TacticalScene).props.onHover(target());get(JA2Strip).props.onSetAim(1);});
+ await mounted.act(async()=>{get(JA2Strip).props.onOpenInventory('p');get(JA2Strip).props.onMode('fire');get(TacticalSceneControls).props.onHover(target());get(JA2Strip).props.onSetAim(1);});
  assert.equal(weaponFor(actor()).loadPattern,'single');assert.equal(preview().chance,chanceWithoutSkill(),'the loaded pistol ball does not receive the specialty');
  assert.equal(doc.querySelector('[aria-label="Carga para esta arma"]').disabled,true);
  const unload=[...doc.querySelectorAll('button')].find(button=>button.textContent.startsWith('Descargar arma'));assert.ok(unload);assert.equal(unload.disabled,false);
@@ -77,13 +77,13 @@ test('mounted inventory load changes apply authored concealment skill to a pisto
  assert.match(doc.querySelector('[aria-label="Vista previa de la orden"]').textContent,new RegExp(`${chancePercent(forecast.chance)} de al menos un perdigón`));
  assert.equal(doc.querySelector('[aria-label="Carga para esta arma"]').disabled,true);
  const beforeFire=structuredClone(actor()),fireCost=actionCosts(current,actor(),target()).fire+actionCosts(current,actor(),target()).aim;
- await action({type:'fire',unitId:'p',targetId:'e',aim:1,hitLocation:'torso'},()=>get(TacticalScene).props.onTile(target()));
+ await action({type:'fire',unitId:'p',targetId:'e',aim:1,hitLocation:'torso'},()=>get(TacticalSceneControls).props.onTile(target()));
  assert.equal(actor().ap,beforeFire.ap-fireCost);assert.equal(actor().condition,beforeFire.condition-1);assert.equal(actor().loaded,0);assert.equal(rounds(actor()),loadedBefore-1);assert.equal(ammoCount(actor(),'ammoShot'),1);
  await action({type:'selectAmmunitionLoad',unitId:'p',family:'ammoPistol'},()=>select('ammoPistol'));
  const beforeBall=structuredClone(actor()),ballCost=actionCosts(current,actor()).reload;
  await action({type:'reload',unitId:'p'},()=>get(JA2Strip).props.onOrder({type:'reload'}));
  assert.equal(actor().ap,beforeBall.ap-ballCost);assert.equal(actor().loaded,1);assert.equal(weaponFor(actor()).loadPattern,'single');assert.equal(rounds(actor()),loadedBefore-1);assert.equal(ammoCount(actor(),'ammoPistol'),2);
- await mounted.act(async()=>{get(TacticalScene).props.onHover(target());get(JA2Strip).props.onSetAim(1);});
+ await mounted.act(async()=>{get(TacticalSceneControls).props.onHover(target());get(JA2Strip).props.onSetAim(1);});
  assert.equal(preview().chance,chanceWithoutSkill(),'returning to a loaded ball removes the benefit without changing authored ability');assert.doesNotMatch(doc.querySelector('[aria-label="Vista previa de la orden"]').textContent,/al menos un perdigón/);
  let replay=validateBattleSnapshot(JSON.parse(JSON.stringify(initial)));for(const order of history)replay=validateBattleSnapshot(JSON.parse(JSON.stringify(actBattle(replay,order))));assert.deepEqual(replay,current,'all finite load choices, reloads and the real shot survive tactical saved replay');
 });
@@ -96,7 +96,7 @@ test('mounted alternative shot forecast states at least one pellet contact and k
  assert.ok(preview.chance>0&&preview.chance<=100);assert.ok(preview.expectedForce>0&&preview.expectedForce<=weaponFor(player).damage);assert.ok(preview.damageFactor>0&&preview.damageFactor<=1);assert.equal(Number.isInteger(preview.pelletCount),true);
  for(const key of ['pellets','bodyImpacts','scatter','forecast'])assert.equal(Object.hasOwn(preview,key),false,'internal paths do not enter the public target preview');
  const mounted=await mountBattlefield(t,Battlefield,{battle,onChange:state=>state,onFinish(){}}),get=type=>nodes(mounted.tree()).find(node=>node.type===type);
- await mounted.act(async()=>{get(JA2Strip).props.onMode('fire');get(TacticalScene).props.onHover(target);});
+ await mounted.act(async()=>{get(JA2Strip).props.onMode('fire');get(TacticalSceneControls).props.onHover(target);});
  const html=renderToStaticMarkup(nodes(mounted.tree()).find(node=>node.props?.['aria-label']==='Vista previa de la orden'));
  assert.match(html,new RegExp(`${chancePercent(shot.chance)} de al menos un perdigón`));assert.match(html,/Carga de perdigones/);assert.match(html,/no garantiza varios impactos ni la zona del cuerpo/);assert.match(html,/consume una carga/);assert.doesNotMatch(html,/La bala puede atravesarlo|impacto con penetración/);
  assert.equal(mounted.jobs().filter(job=>job.job.kind==='action'||job.job.kind==='movement-step').length,0);assert.deepEqual(battle,before);
@@ -110,7 +110,7 @@ test('paired mixed loads disclose the pellet probability for its own hand and pr
  const [player,target]=battle.units,before=structuredClone(battle),volley=firearmVolleyPreview(battle,player,target);
  assert.equal(volley.paired,true);assert.equal(volley.shots[0].shotLoad,true);assert.equal(Boolean(volley.shots[1].shotLoad),false);
  const mounted=await mountBattlefield(t,Battlefield,{battle,onChange:state=>state,onFinish(){}}),get=type=>nodes(mounted.tree()).find(node=>node.type===type);
- await mounted.act(async()=>{get(JA2Strip).props.onMode('fire');get(TacticalScene).props.onHover(target);});
+ await mounted.act(async()=>{get(JA2Strip).props.onMode('fire');get(TacticalSceneControls).props.onHover(target);});
  const html=renderToStaticMarkup(nodes(mounted.tree()).find(node=>node.props?.['aria-label']==='Vista previa de la orden'));
  assert.match(html,new RegExp(`${chancePercent(volley.shots[0].chance)} de al menos un perdigón \\(mano principal\\)`));assert.match(html,new RegExp(`Mano principal: ${chancePercent(volley.shots[0].chance)} de al menos un perdigón`));assert.match(html,new RegExp(`Segunda mano: ${chancePercent(volley.shots[1].chance)}`));assert.match(html,/Un disparo por pistola/);
  assert.equal(mounted.jobs().filter(job=>job.job.kind==='action'||job.job.kind==='movement-step').length,0);assert.deepEqual(battle,before);

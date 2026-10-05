@@ -1,0 +1,91 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {createRendererSandboxBattle,RENDERER_SCENARIOS} from '../web/app/renderer-sandbox/fixtures.js';
+import {validateBattleSnapshot} from '../game/validate-battle.js';
+import {actBattle,canSee,climbPreview,tileIllumination,artilleryCosts,artilleryCrewPlan} from '../game/tactical.js';
+import {tacticalLevel,sameCell} from '../game/tactical-space.js';
+const actor=(battle,id)=>battle.units.find(unit=>unit.id===id);
+function order(battle,action){
+  const before=structuredClone(battle),next=actBattle(battle,action);
+  assert.equal(next.lastError,null,`${JSON.stringify(action)}: ${next.lastError}`);
+  assert.deepEqual(battle,before,'fixture actions use the ordinary immutable reducer');
+  assert.doesNotThrow(()=>validateBattleSnapshot(JSON.parse(JSON.stringify(next))));
+  return next;
+}
+
+test('all sandbox choices are fresh, valid real battle snapshots with legal equipment states',()=>{
+  for(const {id}of RENDERER_SCENARIOS){
+    const battle=createRendererSandboxBattle(id),again=createRendererSandboxBattle(id);
+    assert.deepEqual(again,battle,`${id} resets to a repeatable state`);
+    assert.notEqual(again,battle);assert.notEqual(again.units[0],battle.units[0]);
+    assert.doesNotThrow(()=>validateBattleSnapshot(JSON.parse(JSON.stringify(battle))),id);
+    assert.equal(battle.phase,'player');assert.equal(battle.status,'active');
+    assert.ok(battle.units.filter(unit=>unit.side==='player').every(unit=>unit.ap>0&&unit.ap<=100));
+  }
+  for(const count of [24,60,100])assert.equal(createRendererSandboxBattle(`performance${count}`).units.length,count);
+  const tucuman=createRendererSandboxBattle('tucuman');assert.equal(tucuman.sectorId,'tucuman');assert.equal(tucuman.units.length,8);assert.ok(tucuman.buildings.length>1);
+  assert.throws(()=>createRendererSandboxBattle('unknown'));
+});
+
+test('combat starts with visible targets and real usable rifle, pistol, sabre, grenade and knife',()=>{
+  const actions=[
+    {type:'fire',unitId:'rifle',targetId:'target-rifle'},
+    {type:'fire',unitId:'pistol',targetId:'target-pistol'},
+    {type:'melee',unitId:'sabre',targetId:'target-sabre'},
+    {type:'throwGrenade',unitId:'grenade',x:9,y:13},
+    {type:'throwKnife',unitId:'knife',targetId:'target-knife'},
+  ];
+  for(const action of actions){
+    const battle=createRendererSandboxBattle('combat');
+    const unit=actor(battle,action.unitId),target=actor(battle,action.targetId??'target-grenade');
+    assert.ok(canSee(battle,unit,target),action.unitId);
+    const next=order(battle,action);assert.ok(actor(next,unit.id).ap<unit.ap);
+    if(action.type==='fire')assert.equal(actor(next,unit.id).loaded,0);
+    if(action.type==='throwGrenade')assert.equal(actor(next,unit.id).inventory.grenade.count,1);
+    if(action.type==='throwKnife')assert.equal(actor(next,unit.id).weaponDropped,true);
+  }
+  const battle=createRendererSandboxBattle('combat');
+  assert.equal(battle.tiles.find(tile=>tile.doorId==='sandbox-door').open,true);
+  const fired=order(battle,actions[0]),reloaded=order(fired,{type:'reload',unitId:'rifle'});
+  assert.equal(actor(reloaded,'rifle').loaded,1);assert.ok(actor(reloaded,'rifle').ammo<actor(fired,'rifle').ammo);
+});
+
+test('the loaded cannon has a complete adjacent crew and finite ammunition',()=>{
+  const battle=createRendererSandboxBattle('combat'),gun=battle.artillery[0],gunner=actor(battle,'gunner');
+  const crew=artilleryCrewPlan(battle,gunner,gun,artilleryCosts(battle,gunner,gun).fire);
+  assert.equal(crew.reason,null);assert.deepEqual(new Set(crew.crew),new Set(['gunner','loader']));
+  const fired=order(battle,{type:'artillery',unitId:'gunner',artilleryId:gun.id,targetId:'target-cannon',mode:'solid'});
+  assert.equal(fired.artillery[0].loaded,false);assert.ok(fired.smoke.length>0);
+  const reloaded=order(fired,{type:'artilleryReload',unitId:'gunner',artilleryId:gun.id});
+  assert.equal(reloaded.artillery[0].loaded,true);assert.equal(reloaded.artillery[0].ammo,gun.ammo-1);
+});
+
+test('mounted movement, dismount, real roof ascent/descent and the open door use legal game orders',()=>{
+  let battle=createRendererSandboxBattle('mounted');
+  battle=order(battle,{type:'move',unitId:'rider',x:6,y:7});
+  assert.ok(actor(battle,'rider').mounted);assert.equal(actor(battle,'rider').x,6);
+  battle=order(battle,{type:'movement',unitId:'rider',movement:'run'});
+  battle=order(battle,{type:'move',unitId:'rider',x:8,y:7});
+  assert.equal(actor(battle,'rider').movementMode,'run');
+  battle=order(battle,{type:'mount',unitId:'rider'});assert.equal(actor(battle,'rider').mounted,false);
+  battle=order(battle,{type:'mount',unitId:'rider'});assert.equal(actor(battle,'rider').mounted,true);
+  const link=battle.climbLinks[0];assert.ok(sameCell(actor(battle,'climber'),link.from));
+  const preview=climbPreview(battle,actor(battle,'climber'),{linkId:link.id});assert.equal(preview.valid,true,preview.reason);
+  battle=order(battle,{type:'climb',unitId:'climber',linkId:link.id});assert.equal(tacticalLevel(actor(battle,'climber')),1);
+  battle=order(battle,{type:'move',unitId:'climber',x:12,y:8,tacticalLevel:1});
+  battle=order(battle,{type:'move',unitId:'climber',...link.to});
+  battle=order(battle,{type:'climb',unitId:'climber',linkId:link.id});assert.equal(tacticalLevel(actor(battle,'climber')),0);
+  battle=order(battle,{type:'door',unitId:'door-guard',doorId:'sandbox-door'});assert.equal(battle.tiles.find(tile=>tile.doorId==='sandbox-door').open,false);
+});
+
+test('night uses actual lights, shot-produced smoke, reload supplies and usable torches',()=>{
+  let battle=createRendererSandboxBattle('night');
+  assert.equal(battle.night,true);assert.equal(actor(battle,'rifle').loaded,0);assert.ok(battle.smoke.some(cloud=>cloud.x===4&&cloud.y===5&&cloud.turns>0));
+  assert.ok(tileIllumination(battle,10,5)>.25);assert.ok(tileIllumination(battle,0,19)<.25);
+  battle=order(battle,{type:'reload',unitId:'rifle'});assert.equal(actor(battle,'rifle').loaded,1);
+  const torches=actor(battle,'grenade').torches;
+  battle=order(battle,{type:'weapon',unitId:'grenade',slot:'supply',supplyKey:'torches'});
+  battle=order(battle,{type:'useItem',unitId:'grenade',x:5,y:13});
+  assert.equal(actor(battle,'grenade').torches,torches-1);
+  assert.ok(battle.lights.some(light=>light.type==='torch'&&light.x===5&&light.y===13));
+});

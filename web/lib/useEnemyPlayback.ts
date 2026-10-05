@@ -6,7 +6,7 @@ import enemyWorkerUrl from './enemy-turn-worker.ts?worker&url';
 const stepMs=BATTLE_PLAYBACK.step;
 export function useEnemyPlayback(committed:any,onChange:(state:any)=>any,onBusy?:(busy:boolean)=>void,validate?:(state:any)=>boolean,onFrame?:(before:any,after:any)=>void){
  const [frame,setFrame]=useState<any>(null),[busy,setBusy]=useState(false);
- const live=useRef(false),pending=useRef(false),epoch=useRef(0),sequence=useRef(0),latest=useRef(committed),worker=useRef<Worker|null>(null),request=useRef<any>(null);
+ const live=useRef(false),pending=useRef(false),epoch=useRef(0),sequence=useRef(0),presentationSequence=useRef(0),latest=useRef(committed),worker=useRef<Worker|null>(null),request=useRef<any>(null);
  latest.current=committed;
  useEffect(()=>{
   live.current=true;epoch.current++;
@@ -24,12 +24,15 @@ export function useEnemyPlayback(committed:any,onChange:(state:any)=>any,onBusy?
   try{
    const result:any=await execute();
    if(!current()||validate?.(result.state)===false)return;
-   let cameraFocus:any=null,index=0,previous=source,grenadeEffect:any=null;
+   let cameraFocus:any=null,index=0,previous=source,grenadeEffect:any=null,actionId=0,actionStartedAt=0,actionDurationMs=0;
+   const sequenceId=`${generation}:${++presentationSequence.current}`;
    for(const next of result.frames){
     if(!current())return;
     cameraFocus=battleFrameFocus(next)??cameraFocus;
-    if(next.grenadeVisual)grenadeEffect={id:index,visual:next.grenadeVisual};
-    setFrame({...next,index:index++,cameraFocus,grenadeEffect});
+    const startedAt=performance.now();
+    if(next.grenadeVisual)grenadeEffect={id:index,startedAt,visual:next.grenadeVisual};
+    if(next.type==='prepare'||index===0){actionId++;actionStartedAt=performance.now();actionDurationMs=0;for(let cursor=index;cursor<result.frames.length;cursor++){if(cursor>index&&result.frames[cursor].type==='prepare')break;actionDurationMs+=battleFrameDuration(result.frames[cursor]);}}
+    setFrame({...next,index:index++,cameraFocus,grenadeEffect,sequenceId,actionId,actionStartedAt,actionDurationMs,startedAt,durationMs:battleFrameDuration(next)});
     onFrame?.(previous,next.state);previous=next.state;
     const delay=battleFrameDuration(next);
     await new Promise(resolve=>setTimeout(resolve,delay));

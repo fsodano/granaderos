@@ -1,0 +1,170 @@
+{
+  "version": 2,
+  "asset": "granadero.glb",
+  "title": "Granadero \u2014 native human anatomy and recorded movement",
+  "source": {
+    "type": "Original uniform and equipment on native MakeHuman anatomy; CMU recorded locomotion",
+    "script": "authoring/build_human.py",
+    "characterScript": "authoring/human_character.py",
+    "motionScript": "authoring/human_motion.py",
+    "editableScene": "authoring/granadero.blend",
+    "blenderVersion": "5.0.0 Alpha",
+    "units": "metres",
+    "vendorManifest": "authoring/vendor/makehuman/source-manifest.json",
+    "motionManifest": "authoring/vendor/motion/source-manifest.json"
+  },
+  "sha256": "b5c072e0c59bb89ae485477709415c9ac61d10da0756e5007ad766edd0eb97e6",
+  "byteLength": 5702004,
+  "coordinates": {
+    "up": "+Y",
+    "forward": "+Z",
+    "groundY": 0,
+    "authoringUp": "+Z",
+    "authoringForward": "-Y",
+    "adultBodyHeightMetres": 1.76,
+    "heightWithShakoAndPlumeMetres": 1.942
+  },
+  "bounds": {
+    "space": "gltf, Idle frame 1; weapons excluded",
+    "min": [
+      -0.26854,
+      0.002,
+      -0.20699
+    ],
+    "max": [
+      0.26857,
+      1.942,
+      0.20174
+    ]
+  },
+  "statistics": {
+    "triangles": 115640,
+    "meshes": 123,
+    "nodes": 182,
+    "skins": 1,
+    "bones": 53,
+    "materials": 17,
+    "animationClips": 9
+  },
+  "materials": {
+    "skin": "Skin",
+    "uniform": "Navy_Wool",
+    "facings": "Crimson_Facings",
+    "crossbelts": "Cream_Crossbelts"
+  },
+  "nodes": {
+    "rig": "Granadero_Rig",
+    "rifle": "weapon_rifle",
+    "sabre": "weapon_sabre",
+    "pistol": "weapon_pistol",
+    "rifleMuzzle": "muzzle_rifle",
+    "pistolMuzzle": "muzzle_pistol"
+  },
+  "weaponForwardLocal": {
+    "rifle": "+X",
+    "pistol": "+X",
+    "sabreBlade": "+Y"
+  },
+  "locomotionSpeed": {
+    "Walk": 1.448,
+    "Run": 2.242
+  },
+  "clips": [
+    {
+      "name": "Idle",
+      "durationSeconds": 2,
+      "loop": true,
+      "events": {},
+      "channels": 159,
+      "source": {
+        "database": "CMU",
+        "file": "111_28.bvh",
+        "startFrame": 120,
+        "endFrame": 360,
+        "sampleRate": 120
+      }
+    },
+    {
+      "name": "Walk",
+      "durationSeconds": 1.066667,
+      "loop": true,
+      "events": {},
+      "channels": 159,
+      "source": {
+        "database": "CMU",
+        "file": "07_01.bvh",
+        "startFrame": 100,
+        "endFrame": 230,
+        "sampleRate": 120
+      }
+    },
+    {
+      "name": "Run",
+      "durationSeconds": 0.766667,
+      "loop": true,
+      "events": {},
+      "channels": 159,
+      "source": {
+        "database": "CMU",
+        "file": "02_03.bvh",
+        "startFrame": 40,
+        "endFrame": 131,
+        "sampleRate": 120
+      }
+    },
+    {
+      "name": "RifleAim",
+      "durationSeconds": 2,
+      "loop": true,
+      "events": {},
+      "channels": 159
+    },
+    {
+      "name": "RifleFire",
+      "durationSeconds": 1.1,
+      "loop": false,
+      "events": {
+        "shot": 0.3
+      },
+      "channels": 159
+    },
+    {
+      "name": "PistolAim",
+      "durationSeconds": 2,
+      "loop": true,
+      "events": {},
+      "channels": 159
+    },
+    {
+      "name": "PistolFire",
+      "durationSeconds": 0.8,
+      "loop": false,
+      "events": {
+        "shot": 0.2
+      },
+      "channels": 159
+    },
+    {
+      "name": "SabreReady",
+      "durationSeconds": 2,
+      "loop": true,
+      "events": {},
+      "channels": 159
+    },
+    {
+      "name": "SabreSlash",
+      "durationSeconds": 1.2,
+      "loop": false,
+      "events": {
+        "hit": 0.5
+      },
+      "channels": 159
+    }
+  ],
+  "notes": [
+    "Original body proportions, source joint positions and native weights are preserved.",
+    "Walk and Run are retargeted from recorded human movement.",
+    "The camera is fixed orthographic, with a 30 degree tactical viewing pitch.",
+    "Weapon groups are attached to hand_r; only the selected equipment is visible."
+  ]
+}

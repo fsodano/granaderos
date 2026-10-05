@@ -7,7 +7,7 @@ import {surfaceAt, surfaceHeight, tacticalLevel} from '../../game/tactical-space
 export const ELEVATION_PIXELS_PER_METRE = (BUILDING_TYPES.house.height + BUILDING_VERTICAL_SCALE) / 3;
 export type SurfaceRenderOffset = {x:number;y:number;height:number};
 type Point = {x:number;y:number;tacticalLevel?:number;renderedHeight?:number;renderedOffset?:SurfaceRenderOffset};
-type Project = (x:number,y:number)=>{x:number;y:number};
+type Project = ((x:number,y:number)=>{x:number;y:number})&{metric?:boolean};
 export function surfaceRenderOffset(state:any, point:Point):SurfaceRenderOffset {
   const surface=surfaceAt(state,{x:Math.round(point.x),y:Math.round(point.y),tacticalLevel:tacticalLevel(point)});
   const building=surface?.kind==='roof'&&surface.buildingId&&(state.buildings??[]).find((b:any)=>b.id===surface.buildingId);
@@ -23,7 +23,7 @@ export function renderedSurfaceHeight(state:any, point:Point) {
   return point.renderedHeight ?? surfaceHeight(state,{x:Math.round(point.x),y:Math.round(point.y),tacticalLevel:tacticalLevel(point)}) ?? 0;
 }
 export function projectSurface(state:any, project:Project, point:Point) {
-  const offset=point.renderedOffset??surfaceRenderOffset(state,point),p=project(point.x+offset.x,point.y+offset.y);
+  const offset=project.metric?{x:0,y:0,height:0}:point.renderedOffset??surfaceRenderOffset(state,point),p=project(point.x+offset.x,point.y+offset.y);
   return {...p,y:p.y-renderedSurfaceHeight(state,point)*ELEVATION_PIXELS_PER_METRE-offset.height};
 }
 // A building roof is drawn as one detailed object after its front walls.

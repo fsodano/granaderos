@@ -1,0 +1,182 @@
+{
+  "source": "CMU Graphics Lab Motion Capture Database; Bruce Hahne MotionBuilder BVH conversion (2010), mirror pinned to commit 09a07f54f3bbb58797325f009282d0b2048a2871",
+  "license": "CMU custom use terms; BVH converter imposes no additional restrictions",
+  "terms_url": "https://mocap.cs.cmu.edu/",
+  "files": [
+    {
+      "file": "111_28.bvh",
+      "url": "https://raw.githubusercontent.com/una-dinosauria/cmu-mocap/09a07f54f3bbb58797325f009282d0b2048a2871/data/111/111_28.bvh",
+      "sha256": "b44410be23d5895756b97960e0e40e78365f71a00ca4400edec6ea806d1a085d",
+      "bytes": 1457989
+    },
+    {
+      "file": "READMEFIRST.txt",
+      "url": "https://raw.githubusercontent.com/una-dinosauria/cmu-mocap/09a07f54f3bbb58797325f009282d0b2048a2871/READMEFIRST.txt",
+      "sha256": "8e6fe2e640b3728ef2e43e722cb5ae9cdf0010028c0517c4226ed165f9037930",
+      "bytes": 13248
+    },
+    {
+      "file": "07_01.bvh",
+      "url": "https://raw.githubusercontent.com/una-dinosauria/cmu-mocap/09a07f54f3bbb58797325f009282d0b2048a2871/data/007/07_01.bvh",
+      "sha256": "f8d82ea6ed1aab0cb7d9ee680f476b65471e2322e1da84add8a8527a2cb0b9a2",
+      "bytes": 241649
+    },
+    {
+      "file": "02_03.bvh",
+      "url": "https://raw.githubusercontent.com/una-dinosauria/cmu-mocap/09a07f54f3bbb58797325f009282d0b2048a2871/data/002/02_03.bvh",
+      "sha256": "6f4d38b92b041221030de2e1058903e0f7a8fa08f9c6c9efabf7df9a128011ac",
+      "bytes": 135012
+    },
+    {
+      "file": "136_09.bvh",
+      "url": "https://raw.githubusercontent.com/una-dinosauria/cmu-mocap/09a07f54f3bbb58797325f009282d0b2048a2871/data/136/136_09.bvh",
+      "sha256": "f958ad4cfc516b025da94eb1085b7ded2f34e0fad2c0520fb554a29794b28c33",
+      "bytes": 858754
+    },
+    {
+      "file": "111_03.bvh",
+      "url": "https://raw.githubusercontent.com/una-dinosauria/cmu-mocap/09a07f54f3bbb58797325f009282d0b2048a2871/data/111/111_03.bvh",
+      "sha256": "9f084cc4cf1203ba6a1c0a24e86205af3400a169ff6bad161ed343570a783482",
+      "bytes": 1171031
+    },
+    {
+      "file": "143_37.bvh",
+      "url": "https://raw.githubusercontent.com/una-dinosauria/cmu-mocap/09a07f54f3bbb58797325f009282d0b2048a2871/data/143/143_37.bvh",
+      "sha256": "534c04ac1f8299551407d127accef2421da0b5bfaa31b2934573abb5cecec235",
+      "bytes": 418726
+    },
+    {
+      "file": "140_01.bvh",
+      "url": "https://raw.githubusercontent.com/una-dinosauria/cmu-mocap/09a07f54f3bbb58797325f009282d0b2048a2871/data/140/140_01.bvh",
+      "sha256": "0e877369973888a526fc9230661ab53c12cd1a20023a71e0a3abcc8c1507bbc5",
+      "bytes": 635166
+    },
+    {
+      "file": "90_18.bvh",
+      "url": "https://raw.githubusercontent.com/una-dinosauria/cmu-mocap/09a07f54f3bbb58797325f009282d0b2048a2871/data/090/90_18.bvh",
+      "bytes": 301072,
+      "sha256": "32a6bcf85820af466fb141f7e05a7131fbb7d0b76a4f7d407379c6f9457cac10"
+    },
+    {
+      "file": "141_33.bvh",
+      "url": "https://raw.githubusercontent.com/una-dinosauria/cmu-mocap/09a07f54f3bbb58797325f009282d0b2048a2871/data/141/141_33.bvh",
+      "bytes": 805752,
+      "sha256": "46f9cb8efecbe4ed071df093e20dcaeb9b82fa8d14cfcfaa91079cfcd921bb54"
+    },
+    {
+      "file": "139_14.bvh",
+      "url": "https://raw.githubusercontent.com/una-dinosauria/cmu-mocap/09a07f54f3bbb58797325f009282d0b2048a2871/data/139/139_14.bvh",
+      "bytes": 761466,
+      "sha256": "52edb8ed5e6e51d7eda5df39caadca0e316001e7c5d6b261cecf96466eac11ee"
+    }
+  ],
+  "clips": {
+    "idle": {
+      "file": "111_28.bvh",
+      "frames": [
+        120,
+        360
+      ],
+      "description": "standing still"
+    },
+    "walk": {
+      "file": "07_01.bvh",
+      "frames": [
+        100,
+        230
+      ],
+      "description": "walk"
+    },
+    "run": {
+      "file": "02_03.bvh",
+      "frames": [
+        40,
+        131
+      ],
+      "description": "run/jog"
+    },
+    "crouch": {
+      "file": "136_09.bvh",
+      "frames": [
+        430,
+        614
+      ],
+      "description": "crouching, walking forward"
+    },
+    "strafeRightStanding": {
+      "file": "141_33.bvh",
+      "frames": [
+        156,
+        310
+      ],
+      "description": "sideways walk, foot to foot, right"
+    },
+    "strafeLeftStanding": {
+      "file": "141_33.bvh",
+      "frames": [
+        780,
+        922
+      ],
+      "description": "sideways walk, foot to foot, left"
+    },
+    "strafeRightCrouched": {
+      "file": "139_14.bvh",
+      "frames": [
+        172,
+        340
+      ],
+      "description": "sideways sneak, right"
+    },
+    "strafeLeftCrouched": {
+      "file": "139_14.bvh",
+      "frames": [
+        620,
+        814
+      ],
+      "description": "sideways sneak, left"
+    },
+    "crawl": {
+      "file": "111_03.bvh",
+      "frames": [
+        450,
+        686
+      ],
+      "description": "crawling; adapted to forearm/belly contact"
+    },
+    "climbUp": {
+      "file": "143_37.bvh",
+      "frames": [
+        48,
+        232
+      ],
+      "description": "ladder, climbing up"
+    },
+    "climbDown": {
+      "file": "143_37.bvh",
+      "frames": [
+        296,
+        465
+      ],
+      "description": "ladder, climbing down"
+    },
+    "recover": {
+      "file": "140_01.bvh",
+      "frames": [
+        130,
+        536
+      ],
+      "description": "getting up from face down"
+    },
+    "fall": {
+      "file": "90_18.bvh",
+      "frames": [
+        58,
+        212
+      ],
+      "description": "rug pull, falling backwards"
+    }
+  },
+  "terms_checked": "2026-10-04",
+  "terms_summary": "CMU allows use in research and commercially sold products. It does not allow selling the motion data itself, including converted raw data. Bruce Hahne adds no restrictions to the BVH conversion. This project uses short retargeted clips within its animated granadero; source files are preserved as development provenance.",
+  "adaptation": "Native MakeHuman joint positions and lengths are preserved. Hands, fingers, weapon contacts, prone crawl support, mounted seat, gestures, and period reload phases are authored. Fall and recovery use recorded body movement. Source joint recordings have no captured fingers. Animation markers are visual timing metadata, never simulation events."
+}

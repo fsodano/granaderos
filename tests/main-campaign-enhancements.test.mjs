@@ -42,7 +42,9 @@ test('normal campaign entry, equipment, background movement and autosave use the
  assert.equal(actor().x,target.x);assert.equal(actor().y,target.y);
  assert.equal(actor().loaded,0,'movement and campaign autosave retain the unloaded weapon');
  const html=render(h(Battlefield,{battle:pair.battle,onChange:()=>{},onFinish:()=>{}}));
- assert.match(html,/\/art\/illustrated\//);
+ assert.match(html,/data-sector-renderer="three"/);
+ assert.match(html,/data-person-hit-target="true"/);
+ assert.doesNotMatch(html,/\/art\/illustrated\//,'the sector no longer draws a second sprite world');
  assert.doesNotMatch(html,/ja2-orders-menu|<summary>Órdenes/);
  assert.match(html,/>Equipo</);
 });

@@ -6,7 +6,7 @@ import {battleFrameDuration,battleFramePose,battleFrameFocus} from '../game/batt
 import {validateBattleSnapshot} from '../game/validate-battle.js';
 import {mountBattlefield} from './mounted-battlefield.mjs';
 const {default:Battlefield}=await import('../web/app/Battlefield.tsx');
-const {default:TacticalScene}=await import('../web/app/TacticalScene.tsx');
+const {default:TacticalSceneControls}=await import('../web/app/TacticalSceneControls.tsx');
 const nodes=n=>!n||typeof n!=='object'?[]:Array.isArray(n)?n.flatMap(nodes):[n,...nodes(n.props?.children)];
 const floor=()=>Array.from({length:240},(_,i)=>({x:i%24,y:Math.floor(i/24),type:'grass',blocked:false,cover:0}));
 const unit=(s,id='p')=>s.units.find(u=>u.id===id);
@@ -42,6 +42,13 @@ for(const [name,patch] of [
  assert.equal(r.frames.at(-1).contactComplete,true);assert.equal(battleFramePose(r.frames.at(-1)),'idle');assert.equal(battleFrameDuration(r.frames.at(-1)),0);
  assert.equal(r.state.elapsedSeconds,6);assert.equal(unit(r.state).ammo,unit(s).ammo);assert.equal(unit(r.state).loaded,unit(s).loaded);
  if(patch.weaponFittings)assert.equal(unit(r.state).weaponFittings.bayonet.condition,79);
+});
+
+test('a last-condition fixed bayonet retains its admitted attack style after the actual strike wears it to zero',()=>{
+ const fitting=socket();fitting.bayonet.condition=1;
+ const s=field({weapon:1800,weaponMode:'melee',loaded:1,ammo:9,weaponFittings:fitting}),r=present(s),contact=r.frames.find(frame=>frame.type==='contact'),impact=r.frames.find(frame=>frame.type==='impact');
+ assert.equal(unit(contact.state).weaponFittings.bayonet.condition,1);assert.equal(unit(impact.state).weaponFittings.bayonet.condition,0);assert.equal(contact.meleeStyle,'bayonet');assert.equal(impact.meleeStyle,'bayonet');assert.deepEqual(r.state,actBattle(s,order));
+ const hidden=captureBattlePresentation(s,()=>{recordBattleFrame(s,{type:'contact',action:'melee',unitId:'reserve',meleeStyle:'bayonet'});return s;},(_state,body)=>body.side==='player');assert.equal(hidden.frames.length,0);
 });
 
 test('a real punch shows the conscious defender before its finite breath loss and knockout',()=>{
@@ -146,7 +153,7 @@ for(const reducedMotion of [false,true])test(`mounted Battlefield holds input th
  const s=field(),expected=presentedActBattle(s,order),commits=[];
  const mounted=await mountBattlefield(t,Battlefield,{battle:s,onChange:next=>{commits.push(next);return next;},onFinish(){}},{virtualTimers:true});
  window.matchMedia=()=>({matches:reducedMotion,addEventListener(){},removeEventListener(){}});
- const strip=()=>nodes(mounted.tree()).find(n=>n.props?.onOrder&&n.props?.onEndTurn),scene=()=>nodes(mounted.tree()).find(n=>n.type===TacticalScene);
+ const strip=()=>nodes(mounted.tree()).find(n=>n.props?.onOrder&&n.props?.onEndTurn),scene=()=>nodes(mounted.tree()).find(n=>n.type===TacticalSceneControls);
  await mounted.act(async()=>strip().props.onOrder(order));let sawContact=false,sawImpact=false;
  for(const frame of expected.frames){
   assert.deepEqual(commits,[]);assert.equal(strip().props.busy,true);
