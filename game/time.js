@@ -10,6 +10,7 @@ import {nextHireArrivalSeconds} from './hiring-arrivals.js';
 import {validateAbilityReferences} from './content-character-abilities.js';
 import {validateQuestBeneficiaryContext} from './quest-beneficiaries.js';
 import {validateCampaignServiceObjections,validateServiceObjectionContext,hasPendingServiceObjections} from './service-objections.js';
+import {validatePendingCompanionLoss} from './companion-loss.js';
 import {validateRepairReserveContext,retainRepairReserves} from './repair-materials.js';
 export const COMBAT_ROUND_SECONDS=6;
 export const REST_SECONDS=600;
@@ -49,6 +50,7 @@ export function syncBattleTime(campaign,battle){
  validateRepairReserveContext(campaign.pendingBattle,battle);
  if(campaign.pendingBattle.resumeSnapshot)validateRepairReserveContext(campaign.pendingBattle,campaign.pendingBattle.resumeSnapshot);
  validateCampaignServiceObjections(campaign,rosterFor(campaign));
+ validatePendingCompanionLoss(campaign,rosterFor(campaign));
  validateServiceObjectionContext(campaign,battle,rosterFor(campaign));
  validateQuestBeneficiaryContext(campaign,campaign.pendingBattle,{request:null,issued:true});
  validateAbilityReferences(campaign,battle);
