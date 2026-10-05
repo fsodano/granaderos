@@ -134,15 +134,20 @@ deployment return or from actual hourly military bleeding. It uses the pinned
 relationship and character names, even if cohesion or the morale cap meant no
 temporary companion bonus was issued.
 
-The sender must be alive, awake, conscious, uncaptured and still in service at
-the exact confirmation time. An unresolved deployed sender is not inferred from
-stale strategic health. At return, the validated health and capture records decide
-eligibility. Unavailable senders do not receive a deferred reaction. Older pinned
-packages without preferences remain neutral; loading a save does not create
-letters for past deaths.
+The sender must be alive, uncaptured and still in service at the exact
+confirmation time. A sleeping, critical or exhausted sender can retain that
+actual confirmed notice and write after recovery. An unresolved deployed sender
+is not inferred to be capable from stale strategic health; the notice waits for
+the validated return. Actual dismissal, expiry, death or capture cancels it,
+while an accepted renewal during continuous service retains it. Later rehiring
+cannot revive a cancelled notice. Older pinned packages without preferences
+remain neutral; loading a save creates neither letters nor notices for past
+deaths. See [confirmed-loss recovery evidence](../../verification/confirmed-companion-loss-recovery-2026-10-05.md).
 
-The existing received correspondence stores the named reaction. Its stable ID
-uses the sender and deceased identities. Reading it performs no campaign action.
+The existing received correspondence stores the named reaction at actual
+delivery. Its stable ID uses the sender and deceased identities. Reading it
+performs no campaign action. The optional pending notice and its confirmed
+source are saved separately; they do not become tactical speech.
 The ordinary team/casualty morale loss and removal of issued temporary support
 remain unchanged. This letter adds no further morale loss, recorded voice,
 coordinates, attacker identity, contract change or equipment change. The separate

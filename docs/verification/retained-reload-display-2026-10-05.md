@@ -42,8 +42,39 @@ and public questionnaire without a hiring fee. Five actual weekly hires cost
 316 pesos at hour 24, second 204. Its full 40-order saved replay is exact.
 The accepted pair has digest
 `f988e3bbeaedb0cc7419ae254b2b7eae30f4c00356cbeb625c1c146aa6c32ff7`.
-Further native fighting continues from that outcome; no favorable reset
-substitutes for it.
+The second native assault continues from that exact outcome; no favorable reset
+substitutes for it. Its 292 accepted campaign and tactical records replay
+exactly. Ordinary and presented execution agree for every tactical order.
+The unchanged native Buenos Aires battle ends in victory at turn 20. The
+normal return retains the original two deaths and four new deaths (the officer,
+Ferreyra, Silva and Ferreira). Sosa survives at 47/70 HP and Cejas at 67/67 HP,
+both without bleeding. Actual victory funds leave 566 pesos at hour 37,
+second 219. The accepted settled pair has digest
+`b58518698ca3bd6f292abb7e91ee0f305d257b83e1873f49ca97cc963176f910`.
+
+Silva earns the wounded loading check in that battle. At order 204, hostile
+fire lowers him from 90 to 11 HP with six bleeding. At order 206, Ferreira's
+actual first aid spends one dressing, stabilizes him at 15 HP and stops the
+bleeding. At order 211, he pays 36 AP for a four-increment aimed shot. The
+observed enemy falls from 100 to 36 HP; Silva retains 19 AP, an empty gun,
+nine reserve rounds and condition 99. Order 212 spends those 19 AP on loading.
+The chamber stays empty and the reserves stay at nine; retained work is
+19/45 and the actual hand model reads `Recarga en curso: 42%`. On the next
+real turn, order 222 pays the remaining 26 AP, leaves 34 AP and finishes one
+charge, reducing the reserves to eight and removing unfinished work. Official
+save boundaries preserve each result. An independent read-only check replays
+orders 211, 212 and 222 from their immediate saved predecessors and matches
+the admitted pairs exactly.
+
+All current-party finite charges fall from 60 to 45, including one charge in
+Ferreyra's dropped gun; four actual care orders reduce twelve dressings to
+eight. No refill, health grant, terrain change or enemy reduction occurs.
+No affordable covered-cell move was admitted for Silva at that point. This
+proves a wounded shot and loading across real turns, with actual campaign
+losses; the full wounded shoot/cover/load sequence and campaign balance remain
+open. The native run uses the previously validated production digest below.
+Its complete acceptance log, saved history and terminal pairs remain separate
+from the short regression suite.
 
 An earlier harness attempt stopped before tactical admission because it tried
 to save a pending campaign without its required battle. The corrected harness
