@@ -856,7 +856,14 @@ export function dispatchCampaign(previous,action){
         // newly formed squad. Other squads and their routes stay in place.
         if(!creating)for(const id of s.squad)if(!ids.includes(id))s.operativeState[id].location=s.location;
         for(const squad of s.squads)if(squad.id!==s.activeSquadId||creating){squad.members=squad.members.filter(id=>!ids.includes(id));if(!squad.members.length)delete squad.journey;}
-        if(creating){const id=`squad-${Math.max(0,...s.squads.map(q=>Number(q.id.split('-')[1])))+1}`;if(s.squads.length>=8){const vacant=vacantSquad(s);s.squads=s.squads.filter(q=>q!==vacant);}s.squads.push({id,name:action.name.trim(),members:[...ids],location:at});s.activeSquadId=id;s.location=at;}
+        if(creating){
+          const id=`squad-${Math.max(0,...s.squads.map(q=>Number(q.id.split('-')[1])))+1}`;
+          if(s.squads.length>=8){
+            const vacant=vacantSquad(s);s.squads=s.squads.filter(q=>q!==vacant);
+            if(s.travelNotice){const events=s.travelNotice.events.filter(event=>event.squadId!==vacant.id);s.travelNotice=events.length?{...s.travelNotice,events}:null;}
+          }
+          s.squads.push({id,name:action.name.trim(),members:[...ids],location:at});s.activeSquadId=id;s.location=at;
+        }
         s.squad=[...ids];
         if(action.returnToService===true)for(const id of ids)assignMedicalCare(s,rosterFor(s).find(op=>op.id===id),'active');
         break;
