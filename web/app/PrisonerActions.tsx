@@ -1,10 +1,12 @@
 'use client';
+import {formatAP} from '../../game/action-points.js';
+
 import {prisonerReleasePreview,teamCanSee} from '../../game/tactical.js';
 export default function PrisonerActions({state,unit,busy,onRelease,onEscort}:{state:any;unit:any;busy:boolean;onRelease:(id:string)=>void;onEscort:(id:string,order:'follow'|'wait')=>void}){
  const prisoners=(state.npcs??[]).filter((npc:any)=>npc.detention&&npc.hp>0&&teamCanSee(state,'player',npc));
  const escaped=(state.npcs??[]).filter((npc:any)=>npc.detentionEscape&&npc.departure);
  if(!prisoners.length&&!escaped.length)return null;
- const cost=(preview:any)=>state.mode==='exploration'?' · 1 s':` · ${preview.cost} PA`;
+ const cost=(preview:any)=>state.mode==='exploration'?' · 1 s':` · ${formatAP(preview.cost)} PA`;
  return <section className="hud-mission" aria-label="Prisioneros a la vista"><h2>Prisioneros a la vista</h2><p>Soltá sus ataduras para que te sigan. Para escapar, llevá a cada prisionero junto a su rescatista al mismo borde y usá Retirada. Necesita poder caminar y la orden de seguir. El equipo queda en el lugar de cautiverio.</p><ul>{prisoners.map((npc:any)=>{
   const preview=prisonerReleasePreview(state,unit,npc),leader=state.units.find((u:any)=>u.id===npc.escort?.leaderId);
   const able=leader&&leader.hp>=15&&!leader.unconscious&&!leader.departure&&!leader.fled&&!leader.routed&&!leader.surrendered&&leader.energy>0;

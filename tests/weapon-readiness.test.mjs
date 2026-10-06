@@ -38,8 +38,8 @@ test('two real shots pay the raising cost once, use two charges, and preserve th
 
 test('the target preview and aim budget expose preparation and discharge separately',()=>{
  let s=field();const point={x:6,y:1},before=targetPreview(s,s.units[0],point,{mode:'fire',aim:2});
- assert.equal(before.pa,14);assert.match(before.coverNote,/Preparar: 2 PA · disparar: 6 PA/);
- assert.match(equippedItemHelp(s,s.units[0],{mode:'fire'}),/Preparar: 2 PA/);
+ assert.equal(before.pa,14);assert.match(before.coverNote,/Preparar: 0,5 PA · disparar: 1,5 PA/);
+ assert.match(equippedItemHelp(s,s.units[0],{mode:'fire'}),/Preparar: 0,5 PA/);
  s=shoot(s);const u=s.units[0],after=targetPreview(s,u,point,{mode:'fire',aim:2});assert.equal(after.pa,12);assert.match(after.coverNote,/Arma en posición de tiro/);
  assert.equal(aimOptions(s,u)[2].pa,after.pa);assert.match(equippedItemHelp(s,u,{mode:'fire'}),/Arma en posición de tiro/);
 });

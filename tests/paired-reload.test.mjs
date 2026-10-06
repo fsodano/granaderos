@@ -93,7 +93,7 @@ test('empty-fire input loads both guns without firing and exploration charges on
  const s=field({weapon:1808,offHand:second({weapon:1808,weight:1.3})},{exploration:true,enemies:[]});s.units[0].ap=7;
  const order=tacticalInputAction(s,s.units[0],{type:'firePoint',unitId:'p',x:10,y:2,aim:4});assert.equal(order.type,'reload');
  const n=actBattle(s,order);assert.equal(n.lastError,null);assert.equal(n.units[0].ap,7);assert.equal(n.units[0].loaded,2);assert.equal(n.units[0].offHand.loaded,2);assert.equal(totalReserveAmmunition(n.units[0]),4);
- assert.equal(n.elapsedSeconds-s.elapsedSeconds,7);assert.deepEqual(n.smoke,[]);assert.equal(n.seed,s.seed);assert.doesNotMatch(n.log.at(-1),/\d+ PA/);assert.deepEqual(actBattle(restore(s),order),n);
+ assert.equal(n.elapsedSeconds-s.elapsedSeconds,7);assert.deepEqual(n.smoke,[]);assert.equal(n.seed,s.seed);assert.doesNotMatch(n.log.at(-1),/\d+(?:,\d+)? PA/);assert.deepEqual(actBattle(restore(s),order),n);
 });
 
 test('contact stops a paired exploration reload in the second hand and saved continuation spends only remaining work',()=>{

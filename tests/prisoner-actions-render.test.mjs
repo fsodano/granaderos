@@ -13,9 +13,9 @@ test('visible prisoner controls show action costs, wait state and a fallen leade
  const npc=detentionManifest({operativeState:{3:{captured:true,alive:true,capturedAt:1,capturedSector:'tucuman',hp:40,maxHp:80,energy:80,bleeding:0,bandaged:40}}},[{id:3,name:'Prisionero',maxHp:80}],'tucuman')[0];
  let state=createBattle([{id:'rescuer',x:2,y:2,ap:50}],{width:12,height:8,enemies:[{id:'guard',x:10,y:6,weapon:0}],npcs:[{...npc,x:3,y:2}]});state.battleId='render-prison';state.sectorId='tucuman';
  const html=()=>render(h(PrisonerActions,{state,unit:state.units[0],busy:false,onRelease(){},onEscort(){}}));
- assert.match(html(),/Soltar ataduras · 15 PA/);
+ assert.match(html(),/Soltar ataduras · 3,75 PA/);
  state=actBattle(state,{type:'free',unitId:'rescuer',targetKind:'npc',targetId:npc.id});assert.equal(state.lastError,null);
- assert.match(html(),/Seguirme · 2 PA/);assert.match(html(),/Esperar aquí · 2 PA/);
+ assert.match(html(),/Seguirme · 0,5 PA/);assert.match(html(),/Esperar aquí · 0,5 PA/);
  state=actBattle(state,{type:'prisonerEscort',unitId:'rescuer',targetKind:'npc',targetId:npc.id,escortOrder:'wait'});assert.match(html(),/Espera aquí/);
  state=actBattle(state,{type:'prisonerEscort',unitId:'rescuer',targetKind:'npc',targetId:npc.id,escortOrder:'follow'});state.units.push({...structuredClone(state.units[0]),id:'replacement',x:3,y:3});state.units[0].unconscious=true;assert.match(html(),/Necesita otro rescatista/);
  state.units[0].unconscious=false;state.units[0].x=2;state.units[0].y=0;state.npcs[0].x=3;state.npcs[0].y=0;state.exits=sectorExits('tucuman');

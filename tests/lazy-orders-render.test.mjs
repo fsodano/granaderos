@@ -1,3 +1,4 @@
+import {formatAP} from '../game/action-points.js';
 import {register} from 'node:module';
 register('./tactical-render-loader.mjs',import.meta.url);
 register('./orders-work-loader.mjs',import.meta.url);
@@ -61,7 +62,7 @@ test('mounted orders use current selection, AP, equipment, targets and callbacks
  const props=fixture(),before=structuredClone(props.battle),{html,calls}=counted(Panel,props);
  assert.equal(calls.orderDescriptors,1);assert.equal(calls.handSlots,1);assert.equal(calls.equippedItemHelp,1);
  assert.ok(calls.medicalUsePreview>0&&calls.supplyUsePreview>0);
- assert.match(html,/Soldado 1 · 100 PA/);assert.match(html,/0 carga\(s\)/);
+ assert.match(html,/Soldado 1 · 25 PA/);assert.match(html,/0 carga\(s\)/);
  let action;const tree=componentTree(Panel,{...props,onOrder:value=>{action=value;}});
  const reload=nodes(tree).find(node=>node.type==='button'&&node.props['aria-label']==='Recargar');
  assert.ok(reload);assert.equal(reload.props.disabled,false);reload.props.onClick();
@@ -69,9 +70,9 @@ test('mounted orders use current selection, AP, equipment, targets and callbacks
  const battle=actBattle(props.battle,{...action,unitId:props.unit.id});assert.equal(battle.lastError,null);
  const updated={...props,battle,unit:battle.units[0],players:battle.units.filter(u=>u.side==='player')};
  const after=counted(Panel,updated).html;
- assert.match(after,new RegExp(`Soldado 1 · ${updated.unit.ap} PA`));assert.match(after,/1 carga\(s\)/);
+ assert.match(after,new RegExp(`Soldado 1 · ${formatAP(updated.unit.ap)} PA`));assert.match(after,/1 carga\(s\)/);
  const selected={...updated,unit:updated.players[1],selected:updated.players[1].id};
- assert.match(counted(Panel,selected).html,/Soldado 2 · 100 PA/);
+ assert.match(counted(Panel,selected).html,/Soldado 2 · 25 PA/);
  const medical={...selected,unit:{...selected.unit,activeSlot:'medical'},target:selected.players[0]};
  assert.match(counted(Panel,medical).html,/Reduce la hemorragia y estabiliza heridas críticas hasta 15 de salud/);
  assert.deepEqual(props.battle,before,'rendering and callbacks do not mutate the input battle');

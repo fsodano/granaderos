@@ -1,4 +1,5 @@
 'use client';
+import {displayedAP,storedAP,isAPField} from '../../../game/action-points.js';
 import {sitePath} from '../../lib/site-path.js';
 import {useRef,useState} from 'react';
 import {ARTILLERY,ARTILLERY_FIELDS} from '../../../game/artillery-definitions.js';
@@ -24,7 +25,7 @@ export default function ArtilleryProfiles({draft,onChange}:{draft:any;onChange:(
   <input ref={imageRef} type="file" hidden accept="image/png,image/jpeg,image/webp" aria-label="Imagen de artillería" onChange={e=>{void upload(e.target.files?.[0]);e.target.value='';}}/>
   <button onClick={()=>imageRef.current?.click()}>Cambiar imagen de artillería</button><button onClick={()=>update({art:ARTILLERY[selected as keyof typeof ARTILLERY].art})}>Usar imagen original de artillería</button>
   <label>Nombre del modelo<input value={profile.name} maxLength={80} onChange={e=>update({name:e.target.value})}/></label>
-  <div className="fields">{ARTILLERY_FIELDS.map(([key,label,min,max]:any)=><label key={key}>{label}<input type="number" min={min} max={max} step={1} value={Number.isFinite(profile[key])?profile[key]:''} onChange={e=>update({[key]:e.target.valueAsNumber})}/></label>)}</div>
+  <div className="fields">{ARTILLERY_FIELDS.map(([key,label,min,max]:any)=><label key={key}>{label}<input type="number" min={isAPField(key)?displayedAP(min):min} max={isAPField(key)?displayedAP(max):max} step={isAPField(key)?displayedAP(1):1} value={Number.isFinite(profile[key])?(isAPField(key)?displayedAP(profile[key]):profile[key]):''} onChange={e=>update({[key]:isAPField(key)?storedAP(e.target.valueAsNumber):e.target.valueAsNumber})}/></label>)}</div>
   <label>Se entrega cargada<input type="checkbox" checked={profile.initialLoaded} onChange={e=>update({initialLoaded:e.target.checked})}/></label>
   <p>Los cambios se aplican a las piezas propias y enemigas de este modelo. Cada artillero paga los PA indicados. Una recarga puede continuar en varios turnos.</p>
   <p>La metralla alcanza hasta dos veces su escala y se abre en abanico. La bala rasa pierde penetración al atravesar personas o muros. Las reservas iniciales se entregan una sola vez; volver al sector conserva la munición restante.</p>

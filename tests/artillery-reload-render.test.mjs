@@ -13,8 +13,8 @@ function props(battle,onOrder=noop){const unit=battle.units[0],players=battle.un
 const nodes=n=>!n||typeof n!=='object'?[]:[n,...(Array.isArray(n)?n:Array.isArray(n.props?.children)?n.props.children:[n.props?.children]).flatMap(nodes)];
 test('the production artillery strip shows partial work, per-person costs and the confirmed real reload',()=>{
  const s=field();let action;const tree=componentTree(Strip,props(s,a=>action=a));const button=nodes(tree).find(n=>n.type==='button'&&render(n).includes('Recargar pieza'));assert.ok(button);assert.equal(button.props.disabled,false);button.props.onClick();
- assert.deepEqual(action,{type:'artilleryReload',artilleryId:'gun'});let html=render(h(Strip,props(s)));assert.match(html,/25 PA por artillero ahora; faltan 50 PA por artillero/);
- const next=actBattle(s,{unitId:'20',...action});assert.equal(next.lastError,null);html=render(h(Strip,props(next)));assert.match(html,/recarga 33%/);assert.match(html,/1 PA cada uno/);assert.equal(next.artillery[0].ammo,3);
+ assert.deepEqual(action,{type:'artilleryReload',artilleryId:'gun'});let html=render(h(Strip,props(s)));assert.match(html,/6,25 PA por artillero ahora; faltan 12,5 PA por artillero/);
+ const next=actBattle(s,{unitId:'20',...action});assert.equal(next.lastError,null);html=render(h(Strip,props(next)));assert.match(html,/recarga 33%/);assert.match(html,/0,25 PA cada uno/);assert.equal(next.artillery[0].ammo,3);
 });
 test('the production reload button is disabled when a required crew member cannot act',()=>{
  const s=field();s.units[1].ap=0;const tree=componentTree(Strip,props(s));const button=nodes(tree).find(n=>n.type==='button'&&render(n).includes('Recargar pieza'));assert.equal(button.props.disabled,true);

@@ -1,4 +1,6 @@
 'use client';
+import {formatAP} from '../../game/action-points.js';
+
 import {sitePath} from '../lib/site-path.js';
 import {ammoTypeFor,AMMO_TYPES,ammunitionForWeapon} from '../../game/ammo-types.js';
 import {useState} from 'react';
@@ -12,11 +14,11 @@ export default function PersonalPockets({unit,battle,busy,onOrder}: {unit:any;ba
  const disabled=busy||battle.status!=='active'||unit.hp<=0||unit.unconscious||unit.routed;
  const recipients=battle.units.filter((u:any)=>u.side===unit.side&&u.id!==unit.id&&!u.militia&&!u.fled&&!u.departure),target=recipients.find((u:any)=>u.id===recipient);
  const isSupply=entry?.kind==='supply',isWeapon=Boolean(entry?.weapon),stowed=entry?.kind==='stowed',count=Number(amount);
- const drop=isSupply?supplyDropPreview(battle,unit,entry.item,count):{reason:!isWeapon?'Este objeto se conserva hasta salir del sector.':battle.mode!=='exploration'&&unit.ap<4?'Requiere 4 PA.':null};
+ const drop=isSupply?supplyDropPreview(battle,unit,entry.item,count):{reason:!isWeapon?'Este objeto se conserva hasta salir del sector.':battle.mode!=='exploration'&&unit.ap<4?'Requiere 1 PA.':null};
  const transfer=isSupply?supplyTransferPreview(battle,unit,target,entry.item,count):weaponTransferPreview(battle,unit,target,stowed?undefined:entry?.key,stowed?entry.slot:undefined);
  const select=(id:string)=>{if(moving){onOrder({type:'pocket',source:moving,destination:id});setMoving('');}else{setSelection(id);setSelectedItem(layout.slots.find((p:any)=>p.id===id)?.entry?.item??layout.overflow.find((p:any)=>`overflow:${p.item}`===id)?.item??'');setAmount('1');}};
  const icon=(item:any)=>item.art?<img src={sitePath(item.art)} alt=""/>:<Package aria-hidden="true" size={22}/>;
- const cost=(ap:number)=>battle.mode==='exploration'?'1 s':`${ap} PA`;
+ const cost=(ap:number)=>battle.mode==='exploration'?'1 s':`${formatAP(ap)} PA`;
  return <section className="personal-pockets" aria-label="Bolsillos del combatiente">
   <h3>Bolsillos · 4 grandes / 8 pequeños</h3>
   <p>{moving?'Elegí el bolsillo de destino.':'Seleccioná un bolsillo para usar, dejar o entregar su contenido.'}</p>

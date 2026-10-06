@@ -1,4 +1,6 @@
 'use client';
+import {formatAP} from '../../game/action-points.js';
+
 import {sitePath} from '../lib/site-path.js';
 import {Skull} from 'lucide-react';
 import AmmunitionLoadChoice from './AmmunitionLoadChoice';
@@ -74,9 +76,9 @@ export function RadarCluster({equipmentScope,battle, units, selected, project, v
         <p>{enemies.length} avistados</p>
         <p>{targetingHelp(mode, battle.units.find((u: any) => u.id === selected))}</p>
       </div>
-      {missionAllies.length > 0 && <details className="ja2-garrison-toggle" aria-label="Aliados de la misión"><summary>Oficiales aliados · {missionAllies.length} temporales</summary><div className="squad-strip">{missionAllies.map((p: any) => <button key={p.id} className={`squad-card ${p.id === selected ? 'active' : ''} ${alive(p) ? '' : 'fallen'}`} disabled={!selectable(p)} aria-label={`Seleccionar aliado ${p.name}`} onClick={event => onSelect(p.id, event.shiftKey)}><div><strong>{p.name}</strong><span>{alive(p) ? `${Math.ceil(p.hp)} SALUD · ${battle.mode === 'exploration' ? 'Exploración' : `${p.ap} PA`}` : 'Fuera de combate'}</span></div></button>)}</div></details>}
+      {missionAllies.length > 0 && <details className="ja2-garrison-toggle" aria-label="Aliados de la misión"><summary>Oficiales aliados · {missionAllies.length} temporales</summary><div className="squad-strip">{missionAllies.map((p: any) => <button key={p.id} className={`squad-card ${p.id === selected ? 'active' : ''} ${alive(p) ? '' : 'fallen'}`} disabled={!selectable(p)} aria-label={`Seleccionar aliado ${p.name}`} onClick={event => onSelect(p.id, event.shiftKey)}><div><strong>{p.name}</strong><span>{alive(p) ? `${Math.ceil(p.hp)} SALUD · ${battle.mode === 'exploration' ? 'Exploración' : `${formatAP(p.ap)} PA`}` : 'Fuera de combate'}</span></div></button>)}</div></details>}
       {localMilitia.length > 0 && <details className="ja2-garrison-toggle" aria-label="Guarnición local"><summary>Guarnición local · {localMilitia.length} milicianos</summary><p>La milicia combate por su cuenta.</p><div className="squad-strip">{localMilitia.map((p: any, i: number) => {
-        const content = <div><strong>{i + 1}. {p.name}</strong><span>{p.unconscious ? 'Inconsciente' : alive(p) ? `${Math.ceil(p.hp)} SALUD · ${battle.mode === 'exploration' ? 'Exploración' : `${p.ap} PA`}` : 'Fuera de combate'}</span></div>;
+        const content = <div><strong>{i + 1}. {p.name}</strong><span>{p.unconscious ? 'Inconsciente' : alive(p) ? `${Math.ceil(p.hp)} SALUD · ${battle.mode === 'exploration' ? 'Exploración' : `${formatAP(p.ap)} PA`}` : 'Fuera de combate'}</span></div>;
         return medicalTargeting
           ? <button key={p.id} className="squad-card" disabled={!selectable(p)} aria-label={`Vendar a ${p.name}`} onClick={() => onSelect(p.id)}>{content}</button>
           : <div key={p.id} className={`squad-card ${alive(p) ? '' : 'fallen'}`} aria-label={`Miliciano ${i + 1}: ${p.name}`}>{content}</div>;
@@ -108,7 +110,7 @@ type Props = {
   onAutoBandage?: () => void; bandageReport?: any;
 };
 export default function JA2Inventory({cursorLevel=0,onCursorLevelChange,unit, battle, mode, showSight, busy, units, selected, missionAllies, localMilitia, vw, vh, cameraRect, project, zoom, onOrder, onMode, onToggleSight, onSelect, onInventoryUnit, onRetreat, onCameraCenter, onCameraPan, onZoom, onCloseInventory, onAutoBandage, bandageReport}: Props) {
-  const cost=(n:number|undefined)=>battle.mode==='exploration'?'sin PA':`${n ?? 0} PA`;
+  const cost=(n:number|undefined)=>battle.mode==='exploration'?'sin PA':`${formatAP(n ?? 0)} PA`;
   const inv: any = inventoryModel(battle, unit);
   const isolation = nervousIsolationStatus(battle, {...unit, shock: (unit.shock ?? 0) / 2});
   const isolationText = isolation.reason === 'companion' ? 'Compañía cercana: sin aumento.'
@@ -211,7 +213,7 @@ export default function JA2Inventory({cursorLevel=0,onCursorLevelChange,unit, ba
         {!vitals.dead&&<div className="ja2-inventory-vitals" aria-label="Salud, energía y moral"><span title={`Salud ${Math.ceil(unit.hp)}/${unit.maxHp} · heridas vendadas ${vitals.bandaged} · sin tratar ${vitals.untreated}`}><i className="untreated" style={{width:'100%'}}/><i className="bandaged" style={{width:`${Math.min(100,vitals.hpPct+vitals.bandaged/unit.maxHp*100)}%`}}/><i className="health" style={{width:`${vitals.hpPct}%`}}/></span><span title={`Energía ${Math.round(unit.energy??100)}/${maximumEnergy(unit)}`}><i className="energy" style={{width:`${Math.max(0,Math.min(100,unit.energy??100))}%`}}/></span><span title={`Moral ${Math.round(unit.morale??0)}%`}><i className="morale" style={{width:`${vitals.moralePct}%`}}/></span></div>}
 <details className="ja2-inventory-extra"><summary>Postura y órdenes</summary><div className="ja2-inventory-popup">      <div className="ja2-stance-grid">
         <div>
-          {MOVEMENT.map(([id, label]) => { const targetStance = id === 'prone' ? 'prone' : id === 'crouch' ? 'crouched' : 'standing'; const pa = battle.mode === 'exploration' ? 0 : stanceCost(unit, targetStance); return <button key={id} className={movementActive(id) ? 'active' : ''} aria-pressed={movementActive(id)} aria-label={`Cambiar a ${label}: ${battle.mode === 'exploration' ? 'sin PA' : `${pa} PA`}`} disabled={busyDisabled || unit.knockedDown || (unit.mounted && ['prone', 'crouch'].includes(id)) || (battle.mode !== 'exploration' && unit.ap < pa)} onClick={() => onOrder(orderAction(battle, unit, {movement: id}, 'movement'))}>{label} · {pa} PA</button>; })}
+          {MOVEMENT.map(([id, label]) => { const targetStance = id === 'prone' ? 'prone' : id === 'crouch' ? 'crouched' : 'standing'; const pa = battle.mode === 'exploration' ? 0 : stanceCost(unit, targetStance); return <button key={id} className={movementActive(id) ? 'active' : ''} aria-pressed={movementActive(id)} aria-label={`Cambiar a ${label}: ${battle.mode === 'exploration' ? 'sin PA' : `${formatAP(pa)} PA`}`} disabled={busyDisabled || unit.knockedDown || (unit.mounted && ['prone', 'crouch'].includes(id)) || (battle.mode !== 'exploration' && unit.ap < pa)} onClick={() => onOrder(orderAction(battle, unit, {movement: id}, 'movement'))}>{label} · {formatAP(pa)} PA</button>; })}
         </div>
         <div>
           <button disabled={def('stealth')?.disabled} aria-pressed={Boolean(unit.stealthMode)} className={unit.stealthMode ? 'active' : ''} title="Consume más PA al moverse y reduce el ruido. No cambia la postura." onClick={() => onOrder(orderAction(battle, unit, {}, 'stealth'))}>Sigilo · {unit.stealthMode ? 'Sí' : 'No'}</button>
@@ -229,7 +231,7 @@ export default function JA2Inventory({cursorLevel=0,onCursorLevelChange,unit, ba
       <div className="ja2-stats">
         {inv.stats.map((st: any) => <div key={st.id}><span>{st.label}</span><b>{st.value}</b></div>)}
         <div className="inventory-health"><span>Salud</span><b>{unit.hp<=0?'Muerto':`${Math.ceil(unit.hp)} / ${unit.maxHp}`}</b></div>
-        {battle.mode !== 'exploration' && <div><span>Puntos de acción</span><b>{unit.ap} / {inv.currentAPLimit}</b></div>}
+        {battle.mode !== 'exploration' && <div><span>Puntos de acción</span><b>{formatAP(unit.ap)} / {formatAP(inv.currentAPLimit)}</b></div>}
         <div><span>Postura</span><b>{stanceLabel(unit.stance)}</b></div>
         <div><span>Orientación</span><b>{facingLabel(unit)}</b></div>
         <div><span>Energía</span><b>{Math.round(unit.energy ?? 100)} / {maximumEnergy(unit)}</b></div>
@@ -257,15 +259,15 @@ export default function JA2Inventory({cursorLevel=0,onCursorLevelChange,unit, ba
           {bandaging.reason && <p>{bandaging.reason}</p>}
           {bandageReport && <div role="status"><p>{bandageReport.treatedIds.length} atendidos · {bandageReport.elapsedSeconds} s.</p>{bandageReport.untreated.length > 0 ? <ul>{bandageReport.untreated.map((patient: any) => <li key={patient.id}>{patient.name}: {patient.reason}</li>)}</ul> : <p>Todas las heridas están vendadas.</p>}</div>}
         </section>
-        {battle.mode !== 'exploration' && <p>Se conservan hasta {AP_CARRY_LIMIT} PA. Reserva posible: {inv.apBudget.carryover}. Las heridas y el cansancio reducen los PA del turno.</p>}
+        {battle.mode !== 'exploration' && <p>Se conservan hasta {formatAP(AP_CARRY_LIMIT)} PA. Reserva posible: {formatAP(inv.apBudget.carryover)}. Las heridas y el cansancio reducen los PA del turno.</p>}
         <TrainingProgress unit={unit} />
 </div></details>      </div>
       <div className="paper-doll">
         <JA2OutfitSlot battle={battle} unit={unit} disabled={busyDisabled} onPick={chooseItem} onOrder={onOrder}/>
         <JA2Hands battle={battle} unit={unit} busy={busy} onOrder={onOrder} onPick={chooseItem}/>
 <details className="ja2-inventory-extra"><summary>Cargas y accesorios</summary><div className="ja2-inventory-popup">
-        <AmmunitionLoadChoice unit={unit} disabled={busyDisabled} unloadCost={battle.mode==='exploration'?' · 1 s':' · 4 PA'} onUnload={()=>onOrder({type:'unloadAmmunition',unitId:unit.id})} onSelect={family=>onOrder({type:'selectAmmunitionLoad',unitId:unit.id,family})}/>
-        {unit.leftHandItem!=null&&<button className="line-button ja2-stow-hand" disabled={busyDisabled||!stowSecond.valid} title={stowSecond.reason||undefined} onClick={()=>onOrder({type:'equipLoot',slot:'offhandItem',inventoryKey:null})}>Guardar objeto de segunda mano · {battle.mode==='exploration'?'sin PA':'4 PA'}</button>}
+        <AmmunitionLoadChoice unit={unit} disabled={busyDisabled} unloadCost={battle.mode==='exploration'?' · 1 s':` · ${formatAP(12)} PA`} onUnload={()=>onOrder({type:'unloadAmmunition',unitId:unit.id})} onSelect={family=>onOrder({type:'selectAmmunitionLoad',unitId:unit.id,family})}/>
+        {unit.leftHandItem!=null&&<button className="line-button ja2-stow-hand" disabled={busyDisabled||!stowSecond.valid} title={stowSecond.reason||undefined} onClick={()=>onOrder({type:'equipLoot',slot:'offhandItem',inventoryKey:null})}>Guardar objeto de segunda mano · {battle.mode==='exploration'?'sin PA':'1 PA'}</button>}
         <JA2WeaponMode battle={battle} unit={unit} busy={busy} onOrder={onOrder} onMode={onMode}/>
         <div className="ja2-hand-management">{inv.items.filter((entry: any) => ['primary', 'blade', 'offhand'].includes(entry.item)).map((entry: any) => <button key={entry.item} className="line-button" disabled={busyDisabled} aria-pressed={item?.item === entry.item} onClick={() => chooseItem(entry.item)}>Dar o soltar {entry.label}</button>)}</div>
         <AttachedBayonetControl freeActions={battle.mode==='exploration'} attached={inv.fittings.attached} busy={busyDisabled} onOrder={onOrder}/>
@@ -293,7 +295,7 @@ export default function JA2Inventory({cursorLevel=0,onCursorLevelChange,unit, ba
               <span>{item.name ?? 'Pertrechos'} · {item.count}{gun ? ` · ${item.loaded || 0} carga(s)` : ''}{item.condition !== undefined ? ` · estado ${item.condition}%` : ''}</span>
               <FittingReadout fitting={item.fittings?.bayonet}/>
               <LooseBayonetControl freeActions={battle.mode==='exploration'} source={inv.fittings.sources.find((source: any) => source.item === `inventory:${item.key}`)} busy={busyDisabled} onOrder={onOrder}/>
-              {outfitEquip && <button className="line-button" disabled={busyDisabled || !outfitEquip.valid} title={outfitEquip.reason || undefined} onClick={()=>onOrder(backpackEquipAction(item.key,outfitSlot(item)))}>Ponerse vestimenta · {battle.mode==='exploration'?'sin PA':`${outfitEquip.pa} PA`}</button>}
+              {outfitEquip && <button className="line-button" disabled={busyDisabled || !outfitEquip.valid} title={outfitEquip.reason || undefined} onClick={()=>onOrder(backpackEquipAction(item.key,outfitSlot(item)))}>Ponerse vestimenta · {battle.mode==='exploration'?'sin PA':`${formatAP(outfitEquip.pa)} PA`}</button>}
               {(gun || blade) && <>
                 <button className="line-button" disabled={busyDisabled || !primaryEquip.valid} title={primaryEquip.reason || undefined} onClick={() => onOrder(backpackEquipAction(item.key, 'primary'))}>Equipar principal · {cost(primaryEquip.pa)}</button>
                 {offHandEquip && <button className="line-button" disabled={busyDisabled || !offHandEquip.valid} title={offHandEquip.reason||undefined} onClick={()=>onOrder(backpackEquipAction(item.key,'offhand'))}>Equipar segunda mano · {cost(offHandEquip.pa)}</button>}
@@ -317,7 +319,7 @@ export default function JA2Inventory({cursorLevel=0,onCursorLevelChange,unit, ba
           <label>Cantidad<input aria-label="Cantidad de objetos" type="number" min="1" step="1" max={item?.count || 1} disabled={busyDisabled || !item} value={count} onChange={event => setQuantity(Number(event.target.value))} /></label>
           <label>Destinatario<select aria-label="Aliado que recibe el equipo" disabled={busyDisabled} value={recipient} onChange={event => setRecipient(event.target.value)}><option value="">Elegir aliado</option>{handling.recipients.map((target: any) => <option key={target.id} value={target.id} disabled={target.unconscious}>{target.nickname || target.name}{target.unconscious ? ' · inconsciente' : ''}</option>)}</select></label>
           {holdMain?.valid&&<button className="line-button" disabled={busyDisabled} onClick={()=>onOrder(holdMain.action)}>Poner en mano principal · {cost(holdMain.pa)}</button>}
-          {item&&(!item.weapon||typeof item.weapon!=='number')&&!['headwear','outfit','legwear'].includes(item.item)&&!['primary','blade','offhand'].includes(item.item)&&<button className="line-button" disabled={busyDisabled||!holdSecond?.valid} title={holdSecond?.reason||undefined} onClick={()=>onOrder({type:'equipLoot',slot:'offhandItem',inventoryKey:item.item})}>Poner en segunda mano · {battle.mode==='exploration'?'sin PA':'4 PA'}</button>}
+          {item&&(!item.weapon||typeof item.weapon!=='number')&&!['headwear','outfit','legwear'].includes(item.item)&&!['primary','blade','offhand'].includes(item.item)&&<button className="line-button" disabled={busyDisabled||!holdSecond?.valid} title={holdSecond?.reason||undefined} onClick={()=>onOrder({type:'equipLoot',slot:'offhandItem',inventoryKey:item.item})}>Poner en segunda mano · {battle.mode==='exploration'?'sin PA':'1 PA'}</button>}
           <button className="line-button" disabled={handling.transfer.disabled} title={handling.transfer.reason || undefined} onClick={() => onOrder(handling.transfer.action)}>{handling.transfer.label}{recipient ? ` · ${cost(handling.transfer.totalPA)}${handling.transfer.kind === 'relay' ? ' en total' : ''}` : ''}</button>
           <button className="line-button" disabled={handling.drop.disabled} title={handling.drop.reason || undefined} onClick={() => onOrder({type: 'drop', item: item.item, count})}>Soltar aquí · {cost(handling.drop.pa)}</button>
         </div>

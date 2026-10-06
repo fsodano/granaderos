@@ -1,3 +1,4 @@
+import {formatAP} from '../../game/action-points.js';
 import {equipmentEndpoint,equipmentFingerprint,itemDescriptor} from '../../game/tactical-inventory.js';
 import {equipmentCursorPreview,interruptAvailable} from '../../game/tactical.js';
 
@@ -64,9 +65,9 @@ export function createEquipmentInteraction(scope:string){
  const targetHint=(result:{reason?:string|null;pa:number;operation?:string;actionLabel?:string;rounds?:number;partial?:boolean;remainingPA?:number;seconds?:number})=>{
   if(result.reason)return result.reason;
   if(result.operation!=='reload')return 'Colocar objeto · sin PA';
-  const cost=result.pa>0?`${result.pa} PA`:`sin PA${result.seconds?` · ${result.seconds} s`:''}`;
+  const cost=result.pa>0?`${formatAP(result.pa)} PA`:`sin PA${result.seconds?` · ${result.seconds} s`:''}`;
   const rounds=result.rounds??0,loaded=`${rounds} ${rounds===1?'carga lista':'cargas listas'}`;
-  const partial=result.partial?` · Recarga parcial${result.remainingPA?` · faltan ${result.remainingPA} PA`:''}`:'';
+  const partial=result.partial?` · Recarga parcial${result.remainingPA?` · faltan ${formatAP(result.remainingPA)} PA`:''}`:'';
   return `${result.actionLabel??'Recargar arma'} · ${cost} · ${loaded}${partial}`;
  };
  return {

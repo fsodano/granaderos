@@ -80,7 +80,7 @@ test('a real saved player interrupt permits search and exact finite pickup withi
 test('ground pile markers merge visible stacks and exclude taken, entangled and unseen equipment',()=>{
   const s=field();s.groundItems.push({id:'other',type:'item',x:6,y:2,item:'medkits',count:1,weight:.2},{...s.groundItems[0],id:'hidden',x:14},{...s.groundItems[0],id:'empty',x:5,count:0},{...s.groundItems[0],id:'caught',x:4,heldBy:'guard'});s.droppedWeapons=[{x:6,y:2,weapon:1800,taken:false},{x:3,y:2,weapon:1800,taken:true}];
   assert.deepEqual(groundLootPiles(s,[soldier(s)]),[{x:6,y:2,count:3}]);assert.deepEqual(pickupSelection(s,soldier(s),{x:14,y:2}),[]);
-  const p=targetPreview(s,soldier(s),{x:6,y:2});assert.equal(p.pa,24);assert.equal(p.actionLabel,'Acercarse al equipo');assert.match(p.coverNote,/8 PA adicionales/);
+  const p=targetPreview(s,soldier(s),{x:6,y:2});assert.equal(p.pa,24);assert.equal(p.actionLabel,'Acercarse al equipo');assert.match(p.coverNote,/2 PA adicionales/);
   assert.deepEqual(pickupSelection(s,soldier(s),search,{movementIntent:'preserveFacing'}),[]);
   assert.deepEqual(pickupSelection(s,{...soldier(s),activeSlot:'supply',activeSupply:'torches'},search),[]);
   assert.equal(lootPreview(s,soldier(s),pick).valid,false);

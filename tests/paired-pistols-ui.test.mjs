@@ -1,3 +1,4 @@
+import {formatAP} from '../game/action-points.js';
 import {setTestAmmunition} from './typed-ammunition-fixture.mjs';
 import {register} from 'node:module';register('./tactical-render-loader.mjs',import.meta.url);
 import test from 'node:test';
@@ -11,10 +12,10 @@ const field=()=>createBattle([{id:'p',x:1,y:1,facing:2,weapon:1806,loaded:1,mark
 const draw=(s,aim=2)=>{const preview=targetPreview(s,s.units[0],s.units[1],{mode:'fire',aim,hitLocation:'head'});return render(h('svg',null,h(AimCursor,{point:{x:80,y:90},aim,preview,target:s.units[1]})));};
 
 test('the existing aiming cursor renders one paired AP total while retaining the clicked body region',()=>{
- const s=field(),cost=actionCosts(s,s.units[0],s.units[1]),html=draw(s);assert.match(html,/Cabeza/);assert.ok(html.includes(`${cost.fire+2*cost.aim} PA`));assert.ok(html.includes(`${s.units[0].ap-cost.fire-2*cost.aim} PA restantes`));assert.equal((html.match(/class="aim-step filled"/g)||[]).length,2);assert.equal((html.match(/class="aim-step"/g)||[]).length,2);assert.match(html,/pointer-events="none"/);
+ const s=field(),cost=actionCosts(s,s.units[0],s.units[1]),html=draw(s);assert.match(html,/Cabeza/);assert.ok(html.includes(`${formatAP(cost.fire+2*cost.aim)} PA`));assert.ok(html.includes(`${formatAP(s.units[0].ap-cost.fire-2*cost.aim)} PA restantes`));assert.equal((html.match(/class="aim-step filled"/g)||[]).length,2);assert.equal((html.match(/class="aim-step"/g)||[]).length,2);assert.match(html,/pointer-events="none"/);
 });
 
 test('a loaded second pistol cannot hide the main-hand reload arrow or no-ammunition cross',()=>{
- const s=field();s.units[0].loaded=0;setTestAmmunition(s.units[0],1);let html=draw(s);assert.match(html,/aim-reload/);assert.match(html,/Recargar · \d+ PA/);assert.doesNotMatch(html,/aim-step|Cabeza/);
+ const s=field();s.units[0].loaded=0;setTestAmmunition(s.units[0],1);let html=draw(s);assert.match(html,/aim-reload/);assert.match(html,/Recargar · \d+(?:,\d+)? PA/);assert.doesNotMatch(html,/aim-step|Cabeza/);
  setTestAmmunition(s.units[0],0);html=draw(s);assert.match(html,/class="aim-empty"/);assert.match(html,/Sin munición/);assert.doesNotMatch(html,/aim-reload|aim-step/);assert.equal(s.units[0].offHand.loaded,2);
 });

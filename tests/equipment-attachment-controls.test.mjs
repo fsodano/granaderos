@@ -30,7 +30,7 @@ test('a pocket weapon inspector sends its pocket identity and never equips the h
 });
 test('the attachment control exposes a disabled AP-short action with the same reason as execution',()=>{
  let s=field();s=actBattle(s,{type:'pickupEquipment',unitId:'p',sourceId:inventoryUsage(s.units[0]).slots.find(slot=>slot.entry?.item==='inventory:socket').id,expectedSource:equipmentFingerprint(s.units[0],inventoryUsage(s.units[0]).slots.find(slot=>slot.entry?.item==='inventory:socket').id)});s.mode='combat';s.units[0].ap=11;
- const ui=controls(s),button=ui.attachment();assert.equal(button.props.disabled,true);assert.match(button.props['aria-label'],/12 PA/);assert.match(button.props.title,/12 PA/);assert.equal(ui.orders.length,0);
+ const ui=controls(s),button=ui.attachment();assert.equal(button.props.disabled,true);assert.match(button.props['aria-label'],/3 PA/);assert.match(button.props.title,/3 PA/);assert.equal(ui.orders.length,0);
 });
 test('an incompatible firearm has no usable attachment slot',()=>{
  const ui=controls(field({weapon:1805}));assert.equal(ui.attachment(),undefined);assert.equal(ui.orders.length,0);

@@ -61,7 +61,7 @@ test('paired point shots disclose two discharges without revealing a hidden occu
 });
 
 test('paired exploration preview hides AP expenditure and adds no separate fire-mode order',()=>{
- const s=field({ap:0},{exploration:true,enemies:[]}),u=s.units[0],point={x:7,y:2},p=targetPreview(s,u,point,{mode:'fire',aim:4});assert.equal(p.valid,true);assert.equal(p.pa,0);assert.equal(p.remaining,0);assert.match(p.actionLabel,/ambas pistolas/);assert.doesNotMatch(p.coverNote,/\d+ PA/);
+ const s=field({ap:0},{exploration:true,enemies:[]}),u=s.units[0],point={x:7,y:2},p=targetPreview(s,u,point,{mode:'fire',aim:4});assert.equal(p.valid,true);assert.equal(p.pa,0);assert.equal(p.remaining,0);assert.match(p.actionLabel,/ambas pistolas/);assert.doesNotMatch(p.coverNote,/\d+(?:,\d+)? PA/);
  assert.match(equippedItemHelp(s,u,{mode:'fire',target:point}),/Disparar ambas pistolas · 0 PA/);
  const descriptors=orderDescriptors(s,u),single=orderDescriptors(s,{...u,leftHandItem:null});assert.equal(descriptors.filter(d=>d.id==='fire').length,1);assert.deepEqual(descriptors.map(d=>d.id),single.map(d=>d.id));
  const next=actBattle(s,{type:'firePoint',unitId:'p',...point,aim:4});assert.equal(next.lastError,null);assert.equal(next.units[0].ap,0);assert.ok(next.elapsedSeconds>0);assert.equal(next.units[0].loaded,0);assert.equal(next.units[0].offHand.loaded,1);
@@ -81,7 +81,7 @@ test('a paired preview distinguishes a blocked main shot from the second pistol 
 test('exploration permits an empty-main reload at zero AP with finite reserve and rejects an exhausted reserve',()=>{
  for(const offHand of [undefined,pistol()])for(const ap of [0,17]){
   const s=field({loaded:0,ammo:1,ap,offHand},{exploration:true,enemies:[]}),u=s.units[0],before=structuredClone(s);
-  const p=targetPreview(s,u,null,{mode:'fire',aim:4});assert.equal(p.valid,true);assert.equal(p.reason,null);assert.equal(p.cursor,'reload');assert.equal(p.attackType,'reload');assert.equal(p.pa,0);assert.equal(p.remaining,ap);assert.equal(p.rounds,1);assert.equal(p.partial,false);assert.doesNotMatch(p.coverNote,/\d+ PA/);
+  const p=targetPreview(s,u,null,{mode:'fire',aim:4});assert.equal(p.valid,true);assert.equal(p.reason,null);assert.equal(p.cursor,'reload');assert.equal(p.attackType,'reload');assert.equal(p.pa,0);assert.equal(p.remaining,ap);assert.equal(p.rounds,1);assert.equal(p.partial,false);assert.doesNotMatch(p.coverNote,/\d+(?:,\d+)? PA/);
   const order=tacticalInputAction(s,u,{type:'firePoint',unitId:'p',x:7,y:2,aim:4});assert.deepEqual(order,{type:'reload',unitId:'p',aim:0});
   const next=actBattle(s,order);assert.equal(next.lastError,null);assert.equal(next.units[0].ap,ap);assert.equal(next.units[0].loaded,1);assert.equal(next.units[0].ammo,0);assert.equal(next.units[0].condition,u.condition);assert.deepEqual(next.units[0].offHand,u.offHand);assert.deepEqual(next.smoke,s.smoke);assert.equal(next.elapsedSeconds-s.elapsedSeconds,2);assert.deepEqual(s,before);assert.doesNotThrow(()=>validateBattleSnapshot(next));
   const empty=field({loaded:0,ammo:0,ap,offHand},{exploration:true,enemies:[]}),v=empty.units[0],blocked=targetPreview(empty,v,null,{mode:'fire'});assert.equal(blocked.valid,false);assert.equal(blocked.cursor,'empty');assert.equal(blocked.pa,0);assert.equal(blocked.remaining,ap);assert.match(blocked.reason,/Sin munición/);

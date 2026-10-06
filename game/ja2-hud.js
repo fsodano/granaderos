@@ -1,3 +1,4 @@
+import {formatAP} from './action-points.js';
 import {CIVILIAN_SUPPLY_FIELDS} from './civilian-supplies.js';
 import {FINITE_ARTILLERY_ARSENALS} from './finite-artillery-arsenals.js';
 import {weaponSpecification} from './weapon-definition.js';
@@ -129,8 +130,8 @@ export function firearmMaintenanceAction(state,unit){
 export function firearmCostText(state,unit,point){
   if(state.mode==='exploration')return 'Sin coste de PA; consume tiempo y la munición del disparo.';
   const c=actionCosts(state,unit,point);
-  if(c.turn)return c.ready?`Preparar y girar: ${c.setup} PA · disparar: ${c.discharge} PA.`:`Girar: ${c.turn} PA · disparar: ${c.discharge} PA.`;
-  return c.ready?`Preparar: ${c.ready} PA · disparar: ${c.discharge} PA.`:`Arma en posición de tiro · disparar: ${c.discharge} PA.`;
+  if(c.turn)return c.ready?`Preparar y girar: ${formatAP(c.setup)} PA · disparar: ${formatAP(c.discharge)} PA.`:`Girar: ${formatAP(c.turn)} PA · disparar: ${formatAP(c.discharge)} PA.`;
+  return c.ready?`Preparar: ${formatAP(c.ready)} PA · disparar: ${formatAP(c.discharge)} PA.`:`Arma en posición de tiro · disparar: ${formatAP(c.discharge)} PA.`;
 }
 function reloadLabel(plan){
   if(plan.partial)return plan.hands?.[0]?.hand==='offhand'?'Recarga parcial: segunda mano':'Recarga parcial';
@@ -138,9 +139,9 @@ function reloadLabel(plan){
 }
 function reloadNote(state,unit,plan){
   if(!plan.available)return undefined;
-  if(!plan.hands)return plan.partial?`Carga ${plan.rounds} cartuchos ahora. Faltan ${plan.remainingPA} PA para completar la recarga. Continuá con R o un clic de disparo con el arma vacía.`:`Carga ${plan.rounds} cartucho${plan.rounds===1?'':'s'}. Quedan ${totalReserveAmmunition(unit)-plan.rounds} de reserva. Hacé otro clic para disparar.`;
-  const hands=plan.hands.map(hand=>`${hand.hand==='primary'?'Mano principal':'Segunda mano'}: ${hand.partial?'recarga parcial, ':''}carga ${hand.rounds} cartucho${hand.rounds===1?'':'s'}${state.mode==='exploration'?'':` (${hand.pa} PA)`}.`);
-  return [...hands,plan.partial?`Faltan ${plan.remainingPA} PA para completar la recarga. Continuá con R.`:null,plan.offhandPending?'La segunda mano queda pendiente. Conservás los PA sobrantes.':null,`Quedan ${totalReserveAmmunition(unit)-plan.rounds} cartuchos de reserva.`,plan.partial?null:'Hacé otro clic para disparar.'].filter(Boolean).join(' ');
+  if(!plan.hands)return plan.partial?`Carga ${plan.rounds} cartuchos ahora. Faltan ${formatAP(plan.remainingPA)} PA para completar la recarga. Continuá con R o un clic de disparo con el arma vacía.`:`Carga ${plan.rounds} cartucho${plan.rounds===1?'':'s'}. Quedan ${totalReserveAmmunition(unit)-plan.rounds} de reserva. Hacé otro clic para disparar.`;
+  const hands=plan.hands.map(hand=>`${hand.hand==='primary'?'Mano principal':'Segunda mano'}: ${hand.partial?'recarga parcial, ':''}carga ${hand.rounds} cartucho${hand.rounds===1?'':'s'}${state.mode==='exploration'?'':` (${formatAP(hand.pa)} PA)`}.`);
+  return [...hands,plan.partial?`Faltan ${formatAP(plan.remainingPA)} PA para completar la recarga. Continuá con R.`:null,plan.offhandPending?'La segunda mano queda pendiente. Conservás los PA sobrantes.':null,`Quedan ${totalReserveAmmunition(unit)-plan.rounds} cartuchos de reserva.`,plan.partial?null:'Hacé otro clic para disparar.'].filter(Boolean).join(' ');
 }
 export function emptyGunPreview(state, unit) {
   if (!unit || !hasFirearm(unit) || unit.loaded > 0) return null;
@@ -269,7 +270,7 @@ export function targetingHelp(mode, unit, ctx = {}) {
   if(grenadeTargetingMode(unit,mode))return 'Granada: clic en una casilla para lanzar. Otro clic derecho o Esc vuelve a movimiento. No permite aumentar la puntería ni elegir una parte del cuerpo. La explosión puede herir aliados.';
   if(mode==='throwKnife')return 'Facón: clic para lanzar; botón derecho para apuntar más, incluso a una casilla vacía. Esc vuelve al cursor de movimiento.';
   if(mode==='talk')return 'Hablar: seleccioná una persona visible y contigua. Esc vuelve al cursor de movimiento.';
-  if ((ctx.itemIntent==='steal'&&['move','useItem'].includes(mode))||mode==='loot'&&unit?.activeSlot==='unarmed') return 'Manos libres: seleccioná un enemigo contiguo para quitarle el arma. Requiere 28 PA como mínimo y consume todos los restantes. Los cuerpos se registran.';
+  if ((ctx.itemIntent==='steal'&&['move','useItem'].includes(mode))||mode==='loot'&&unit?.activeSlot==='unarmed') return 'Manos libres: seleccioná un enemigo contiguo para quitarle el arma. Requiere 7 PA como mínimo y consume todos los restantes. Los cuerpos se registran.';
   if (unit?.activeSlot==='unarmed'&&['move','useItem'].includes(mode)) return mode==='useItem'?'Puños: seleccioná un enemigo o una casilla para acercarte y golpear. Esc: caminar.':'Seleccioná un enemigo para golpear. F: golpear una casilla. Ctrl+clic: quitar el arma.';
   if (mode === 'fire') return 'Disparo deliberado: seleccioná un enemigo o una casilla. Una casilla no confirma un objetivo; el tiro puede herir aliados. G o Esc vuelve al uso contextual.';
   if (mode === 'look') return 'Seleccioná hacia dónde mirar. El giro consume PA. Con un arma de fuego, mirá otra vez en la misma dirección para prepararla sin disparar. La vista previa muestra el costo. F: usar el arma en el modo elegido; Esc: cancelar.';
@@ -311,12 +312,12 @@ export function targetPreview(state, unit, point, ctx = {}) {
 function meleePreparationText(state,preview){
   if(!preview.stancePa&&!preview.movePa)return undefined;
   if(state.mode==='exploration')return `${preview.movePa?preview.stancePa?'Se acerca, se levanta y ataca':'Se acerca y ataca':'Se levanta antes de atacar'}. Sin coste de PA; consume tiempo${preview.movePa?' y energía':''}. El contacto puede detener la acción.`;
-  return [preview.movePa?`Desplazamiento: ${preview.movePa} PA`:null,preview.stancePa?`Levantarse: ${preview.stancePa} PA`:null,`ataque: ${preview.strikePa??preview.actionPa} PA`].filter(Boolean).join(' · ')+'. El contacto puede detener la acción.';
+  return [preview.movePa?`Desplazamiento: ${formatAP(preview.movePa)} PA`:null,preview.stancePa?`Levantarse: ${formatAP(preview.stancePa)} PA`:null,`ataque: ${formatAP(preview.strikePa??preview.actionPa)} PA`].filter(Boolean).join(' · ')+'. El contacto puede detener la acción.';
 }
 function medicalTreatmentText(state, preview) {
   if (!preview.valid || !preview.treatment) return undefined;
   const treatment=preview.treatment;
-  const approach=preview.movePa?(state.mode==='exploration'?'Se acerca. Consume tiempo y energía.':`Desplazamiento: ${preview.movePa} PA · vendas: ${preview.actionPa} PA.`):'';
+  const approach=preview.movePa?(state.mode==='exploration'?'Se acerca. Consume tiempo y energía.':`Desplazamiento: ${formatAP(preview.movePa)} PA · vendas: ${formatAP(preview.actionPa)} PA.`):'';
   return [approach,'Usa una venda.',treatment.hpGain>0?`Salud: +${treatment.hpGain}, hasta ${treatment.hpAfter}.`:null,
     treatment.bleedingAfter>0?`Hemorragia restante: ${treatment.bleedingAfter}.`:'Sin hemorragia al terminar.',
     treatment.partial?'Tratamiento parcial: necesita más vendas.':treatment.critical?'Estabilizado. La recuperación completa requiere atención en campaña.':'Las heridas quedan vendadas; la recuperación de salud requiere atención en campaña.',
@@ -392,7 +393,7 @@ function targetPreviewWithCosts(state, unit, point, ctx = {}) {
     return {name: `${tacticalGridLabel(point.x,point.y)}`, actionLabel: 'Mover sin girar', movement:true,path:destination?.path,pa, remaining: pa === undefined ? undefined : Math.max(0, unit.ap - pa), reason:reason||(insufficient?'PA insuficientes.':null), valid: !reason&&!insufficient};
   }
   const pickup=pickupSelection(state,unit,point,ctx);
-  if(pickup.length){const p=pickup[0];return {name:'Equipo',actionLabel:p.movePa?'Acercarse al equipo':'Elegir qué recoger',pa:p.movePa,remaining:Math.max(0,unit.ap-(state.mode==='exploration'?0:p.movePa)),valid:p.valid,reason:p.reason,coverNote:state.mode==='exploration'?'Al llegar, elegí el objeto y la cantidad. Recoger consume tiempo.':'Al llegar, elegí el objeto y la cantidad. Recoger cuesta 8 PA adicionales. El contacto puede detener el desplazamiento.'};}
+  if(pickup.length){const p=pickup[0];return {name:'Equipo',actionLabel:p.movePa?'Acercarse al equipo':'Elegir qué recoger',pa:p.movePa,remaining:Math.max(0,unit.ap-(state.mode==='exploration'?0:p.movePa)),valid:p.valid,reason:p.reason,coverNote:state.mode==='exploration'?'Al llegar, elegí el objeto y la cantidad. Recoger consume tiempo.':'Al llegar, elegí el objeto y la cantidad. Recoger cuesta 2 PA adicionales. El contacto puede detener el desplazamiento.'};}
   const aliasSupply = ({torch: 'torches', bolas: 'boleadoras', ration: 'rations'})[mode];
   if (aliasSupply || unit.activeSlot === 'supply' && ['move', 'useItem'].includes(mode) && (unit.activeSupply === 'torches' || unit.activeSupply === 'boleadoras' || target || mode === 'useItem')) {
     const key = aliasSupply || unit.activeSupply;
@@ -403,7 +404,7 @@ function targetPreviewWithCosts(state, unit, point, ctx = {}) {
   const environment = !target && ['move', 'useItem'].includes(mode) ? environmentTargetAt(state, point) : null;
   if (environment && canSee(state, unit, point) && (environment.kind!=='container'||environmentContainerVisible(state,unit,environment))) {
     const summary = environmentTargetSummary(unit, environment), preview = environmentUsePreview(state, unit, environment);
-    const coverNote=[preview.movePa?`Desplazamiento: ${preview.movePa} PA · uso: ${preview.actionPa} PA. El contacto puede detener la acción.`:null,environment.kind==='wall'&&preview.toolWear>0?`Desgaste de la barreta: hasta ${preview.toolWear} puntos. Abre un paso permanente.`:null].filter(Boolean).join(' ');
+    const coverNote=[preview.movePa?`Desplazamiento: ${formatAP(preview.movePa)} PA · uso: ${formatAP(preview.actionPa)} PA. El contacto puede detener la acción.`:null,environment.kind==='wall'&&preview.toolWear>0?`Desgaste de la barreta: hasta ${preview.toolWear} puntos. Abre un paso permanente.`:null].filter(Boolean).join(' ');
     return {name: summary.label, pa: preview.pa, chance: preview.chance ?? undefined, chanceLabel: 'éxito', attackLabel: preview.label, actionLabel: preview.label, remaining: Math.max(0, unit.ap - (state.mode === 'exploration' ? 0 : preview.pa)), coverNote:coverNote||undefined, reason: preview.reason, valid: preview.valid};
   }
   if (mode === 'heal' || unit.activeSlot === 'medical' && ['move', 'useItem'].includes(mode) && target) {
@@ -489,24 +490,24 @@ export function equippedItemHelp(state, unit, ctx = {}) {
   if(heldGrenade(unit)||ctx.mode==='throwGrenade')return targetingHelp(ctx.mode??'move',unit);
   if(ctx.mode==='throwKnife')return targetingHelp(ctx.mode,unit);
   const weapon = weaponFor(unit), costs = actionCosts(state, unit), exploring=state.mode==='exploration';
-  if (unit.activeSlot === 'supply') return `${weapon.name} · ${exploring?0:supplyUsePreview(state, unit, ctx.target).cost} PA. ${targetingHelp('useItem', unit)}`;
+  if (unit.activeSlot === 'supply') return `${weapon.name} · ${formatAP(exploring?0:supplyUsePreview(state, unit, ctx.target).cost)} PA. ${targetingHelp('useItem', unit)}`;
   if (unit.activeSlot === 'item') return `${weapon.name}. ${targetingHelp('useItem',unit)}`;
   if (unit.activeSlot === 'tool') return `${weapon.name}. Seleccioná ${toolTargets(unit)} para usarla.`;
   if (unit.activeSlot === 'medical' && exploring) return 'Vendas: sin coste de PA. Seleccionate a vos, a un aliado o a un civil herido. Consume tiempo y vendas. Reduce la hemorragia y estabiliza heridas críticas hasta 15 de salud. La recuperación completa requiere atención en campaña.';
-  if (unit.activeSlot === 'medical') return `Vendas: ${costs.heal} PA, más el desplazamiento. Seleccionate a vos, a un aliado o a un civil herido. Se acerca y venda si hay PA suficientes. Reduce la hemorragia y estabiliza heridas críticas hasta 15 de salud. La recuperación completa requiere atención en campaña.`;
+  if (unit.activeSlot === 'medical') return `Vendas: ${formatAP(costs.heal)} PA, más el desplazamiento. Seleccionate a vos, a un aliado o a un civil herido. Se acerca y venda si hay PA suficientes. Reduce la hemorragia y estabiliza heridas críticas hasta 15 de salud. La recuperación completa requiere atención en campaña.`;
   const attack = contextualAttack(state, unit, ctx.target, {type: ctx.mode, aim: ctx.aim || 0});
   const reload = attack.type === 'fire' ? emptyGunPreview(state, unit) : null;
-  if (reload) return `${weapon.name} · ${reload.actionLabel}${reload.valid ? `: ${reload.pa} PA. ${reload.coverNote}` : `. ${reload.reason}`}`;
+  if (reload) return `${weapon.name} · ${reload.actionLabel}${reload.valid ? `: ${formatAP(reload.pa)} PA. ${reload.coverNote}` : `. ${reload.reason}`}`;
   const approach=ctx.target&&['move','useItem',undefined].includes(ctx.mode)?itemUsePreview(state,unit,ctx.target):null;
   if(attack.type==='melee'&&(approach?.stancePa||costs.meleeStance)){
     const preparation=approach??{pa:attack.pa,stancePa:costs.meleeStance,strikePa:costs.meleeStrike};
     const label=hasFirearm(unit)?fixedBayonetFor(unit)?'Estocada de bayoneta':'Culatazo':weapon.name;
-    return `${label} · ${exploring?0:preparation.pa} PA. ${meleePreparationText(state,preparation)}`;
+    return `${label} · ${formatAP(exploring?0:preparation.pa)} PA. ${meleePreparationText(state,preparation)}`;
   }
   if(approach?.movePa&&exploring)return `${weapon.name} · sin coste de PA. Se acerca y usa el objeto. El contacto puede detener la acción.`;
-  if(approach?.movePa)return `${weapon.name} · ${approach.pa} PA (${approach.movePa} para acercarse y ${approach.actionPa} para usarlo). El contacto puede detener la acción.`;
+  if(approach?.movePa)return `${weapon.name} · ${formatAP(approach.pa)} PA (${formatAP(approach.movePa)} para acercarse y ${formatAP(approach.actionPa)} para usarlo). El contacto puede detener la acción.`;
   const label = attack.type === 'melee' && hasFirearm(unit) ? fixedBayonetFor(unit) ? 'Estocada de bayoneta' : 'Culatazo' : attack.type==='fire'&&pairedPistol(unit)?'Disparar ambas pistolas':weapon.name;
-  return `${label} · ${exploring?0:attack.pa} PA. ${attack.type==='fire'?firearmCostText(state,unit,ctx.target)+' ':''}${fixedBayonetFor(unit) || ctx.mode === 'fire' ? targetingHelp(ctx.mode || 'move', unit) : 'Seleccioná un enemigo para usarlo.'}`;
+  return `${label} · ${formatAP(exploring?0:attack.pa)} PA. ${attack.type==='fire'?firearmCostText(state,unit,ctx.target)+' ':''}${fixedBayonetFor(unit) || ctx.mode === 'fire' ? targetingHelp(ctx.mode || 'move', unit) : 'Seleccioná un enemigo para usarlo.'}`;
 }
 
 export function levelFor(unit) {
@@ -680,8 +681,8 @@ export function inventoryHandlingModel(state, unit, ctx = {}) {
       action: {type:'transfer',targetId:target?.id,item:ctx.item,count:ctx.count??1,transferKind:transfer.kind,transferRoute:transfer.route.map(v=>v.id)},
       label: !target ? 'Dar o arrojar' : transfer.kind === 'relay' ? 'Pasar por aliados' : transfer.kind === 'throw' ? 'Arrojar al aliado' : 'Dar al aliado',
       detail: transfer.kind === 'relay'
-        ? `${transfer.route.map(v=>`${v.name} (${v.pa} PA)`).join(' → ')}. ${transfer.totalPA} PA en total. Entrega segura.`
-        : transfer.kind === 'throw' ? `${transfer.chance}% de recepción. El aliado necesita 2 PA; si falla, el objeto cae al suelo.` : 'Entrega directa al aliado contiguo.',
+        ? `${transfer.route.map(v=>`${v.name} (${formatAP(v.pa)} PA)`).join(' → ')}. ${formatAP(transfer.totalPA)} PA en total. Entrega segura.`
+        : transfer.kind === 'throw' ? `${transfer.chance}% de recepción. El aliado necesita 0,5 PA; si falla, el objeto cae al suelo.` : 'Entrega directa al aliado contiguo.',
       disabled: Boolean(ctx.busy) || !transfer.valid},
     drop: {...drop, disabled: Boolean(ctx.busy) || !drop.valid},
   };
@@ -900,10 +901,10 @@ export function orderDescriptors(state, unit, ctx = {}) {
     if(def.id in gunPlans){
       const plan=gunPlans[def.id],cost=def.id==='artilleryReload'?gunLoading.pa:gunCosts?.[{artillery:'fire',artilleryMove:'move',artilleryPivot:'pivot'}[def.id]]??0;
       d.pa=state.mode==='exploration'?0:cost;if(state.mode==='exploration')d.seconds=cost?Math.max(1,Math.ceil(cost*.06)):0;
-      d.detail=plan.reason||(def.id==='artillery'&&!gun.loaded?'Primero hay que recargar la pieza.':def.id==='artilleryReload'&&gunLoading.partial?`${cost} PA por artillero ahora; faltan ${gunLoading.remainingPA} PA por artillero.`:state.mode==='exploration'?'Trabajo simultáneo de la dotación.':`${cost} PA por artillero.`);
+      d.detail=plan.reason||(def.id==='artillery'&&!gun.loaded?'Primero hay que recargar la pieza.':def.id==='artilleryReload'&&gunLoading.partial?`${formatAP(cost)} PA por artillero ahora; faltan ${formatAP(gunLoading.remainingPA)} PA por artillero.`:state.mode==='exploration'?'Trabajo simultáneo de la dotación.':`${formatAP(cost)} PA por artillero.`);
     }
-    if(def.id==='fire'&&firearm&&(weaponFor(u).readyAP??0)>0){if(state.mode==='exploration'){d.seconds=Math.max(1,Math.ceil(costs.fire*.06));d.detail=costs.ready?'Levanta el arma antes de disparar.':'Arma en posición de tiro.';}else d.detail=costs.ready?`Preparar: ${costs.ready} PA · disparar: ${costs.discharge} PA.`:`Arma en posición de tiro · disparar: ${costs.discharge} PA.`;}
-    if(def.id==='reload'&&loading){if(state.mode==='exploration')d.seconds=loading.pa?Math.max(1,Math.ceil(loading.pa*.06)):0;d.detail=loading.partial?`${loading.rounds} cartuchos; después faltan ${loading.remainingPA} PA.`:`${loading.rounds} cartuchos; recarga completa.`;}
+    if(def.id==='fire'&&firearm&&(weaponFor(u).readyAP??0)>0){if(state.mode==='exploration'){d.seconds=Math.max(1,Math.ceil(costs.fire*.06));d.detail=costs.ready?'Levanta el arma antes de disparar.':'Arma en posición de tiro.';}else d.detail=costs.ready?`Preparar: ${formatAP(costs.ready)} PA · disparar: ${formatAP(costs.discharge)} PA.`:`Arma en posición de tiro · disparar: ${formatAP(costs.discharge)} PA.`;}
+    if(def.id==='reload'&&loading){if(state.mode==='exploration')d.seconds=loading.pa?Math.max(1,Math.ceil(loading.pa*.06)):0;d.detail=loading.partial?`${loading.rounds} cartuchos; después faltan ${formatAP(loading.remainingPA)} PA.`:`${loading.rounds} cartuchos; recarga completa.`;}
     if(def.id==='repair'){
       d.action=maintenance.action;
       d.detail=maintenance.reason||`Estado +${maintenanceGainFormat.format(maintenance.gain)} puntos · materiales: ${maintenance.materialCost} puntos.`;

@@ -30,16 +30,16 @@ function scene(s,positions={},extra={}){
 
 test('inventory alone offers paid bayonet fitting and both removal destinations with separate conditions',()=>{
   const s=fixture(),u=s.units[0];Object.assign(u,{weapon:1800,activeSlot:'primary',condition:61,blade:1811,bladeCondition:73,bladeFittingPattern:'india_socket',bladeInstanceId:'socket-render'});
-  let markup=strip(s,true);assert.match(markup,/Fijar al Brown Bess · 12 PA/);assert.match(markup,/suelta · estado 73% · 0.5 kg/);
+  let markup=strip(s,true);assert.match(markup,/Fijar al Brown Bess · 3 PA/);assert.match(markup,/suelta · estado 73% · 0.5 kg/);
   assert.ok(!strip(s).includes('Fijar al Brown Bess'));
   const fitted=actBattle(s,{type:'fitBayonet',unitId:u.id,item:'blade'});assert.equal(fitted.lastError,null);
   markup=strip(fitted,true);assert.match(markup,/fijada · estado 73%/);assert.match(markup,/Fusil: estado 61%/);
   assert.match(markup,/aria-label="Segunda mano: Ocupada por el arma"/);assert.match(markup,/class="blocked" disabled/);
   assert.ok(!markup.includes('aria-label="Equipar Bayoneta para Brown Bess India'));
-  assert.match(markup,/Retirar a mochila · 8 PA/);assert.match(markup,/Retirar a secundaria · 8 PA/);
+  assert.match(markup,/Retirar a mochila · 2 PA/);assert.match(markup,/Retirar a secundaria · 2 PA/);
   assert.ok(!markup.includes('Calar bayoneta'));assert.match(markup,/Guardia de bayoneta/);
   const mismatch=structuredClone(s);mismatch.units[0].weapon=1801;
-  const button=strip(mismatch,true).match(/<button[^>]*>Fijar al Brown Bess · 12 PA<\/button>/)?.[0];assert.match(button,/disabled=""/);
+  const button=strip(mismatch,true).match(/<button[^>]*>Fijar al Brown Bess · 3 PA<\/button>/)?.[0];assert.match(button,/disabled=""/);
 });
 
 test('close-combat mode shows thrust cost without a shot percentage until explicit fire mode',()=>{
@@ -48,7 +48,7 @@ test('close-combat mode shows thrust cost without a shot percentage until explic
   const options={units:s.units,hover:enemy};
   assert.ok(!/>\d+%<\/text>/.test(scene(s,{},options)));
   assert.match(scene(s,{}, {...options,mode:'fire'}),/>\d+%<\/text>/);
-  assert.match(orders(s,{target:enemy}),/Estocada de bayoneta · 16 PA/);
+  assert.match(orders(s,{target:enemy}),/Estocada de bayoneta · 4 PA/);
   assert.match(orders(s,{target:enemy,mode:'fire'}),/Disparo deliberado/);
   u.weaponFittings.bayonet.condition=0;assert.ok(!/>\d+%<\/text>/.test(scene(s,{},options)));assert.match(orders(s,{target:enemy}),/Culatazo|acercarse/);
 });
@@ -111,7 +111,7 @@ test('equipment panel keeps quantity, give/drop and selective pickup controls ou
   s.units[0].inventory.found={count:1,weight:4,weapon:1800,loaded:1,condition:63,jammed:true};
   const markup=strip(s,true);
   for(const label of ['Objeto para dar o soltar','Cantidad de objetos','Aliado que recibe el equipo','Objeto cercano para recoger','Cantidad para recoger'])assert.ok(markup.includes(`aria-label="${label}"`),label);
-  assert.match(markup,/Manos del combatiente/);assert.match(markup,/Soltar aquí · 4 PA/);assert.match(markup,/Recoger · 8 PA/);
+  assert.match(markup,/Manos del combatiente/);assert.match(markup,/Soltar aquí · 1 PA/);assert.match(markup,/Recoger · 2 PA/);
   assert.match(markup,/value="inventory:found"/);assert.match(markup,/estado 63%/);assert.match(markup,/4 grandes \/ 8 pequeños/);
   assert.match(markup,/En el suelo · Cartuchos · 7/);
   assert.ok(!strip(s).includes('Cantidad de objetos'));assert.ok(!strip(s).includes('Soltar aquí'));
@@ -167,10 +167,10 @@ test('supplies use ordinary pockets and hands without dedicated selectors',()=>{
   assert.match(inventory,/aria-label="Manos del combatiente"/);
 
   for(const label of ['Arrojar antorcha','Lanzar boleadoras','Comer tasajo'])assert.ok(!new RegExp(`<button[^>]*>[^<]*${label}`).test(inventory),label);
-  const main=orders(s);assert.match(main,/Antorcha · 10 PA/);assert.match(main,/Para avanzar, cambiá el objeto en mano/);assert.ok(!main.includes('aria-label="Zona de tiro"'));
+  const main=orders(s);assert.match(main,/Antorcha · 2,5 PA/);assert.match(main,/Para avanzar, cambiá el objeto en mano/);assert.ok(!main.includes('aria-label="Zona de tiro"'));
   assert.ok(!main.includes('aria-label="Equipar pertrecho"'));
   Object.assign(u,{activeSupply:'rations',energy:45});
-  const ration=orders(s);assert.match(ration,/Ración de tasajo · 10 PA/);assert.match(ration,/Seleccionate a vos para comer/);
+  const ration=orders(s);assert.match(ration,/Ración de tasajo · 2,5 PA/);assert.match(ration,/Seleccionate a vos para comer/);
   u.torches=0;u.boleadoras=0;u.rations=0;u.activeSlot='unarmed';delete u.activeSupply;
   assert.ok(!strip(s,true).includes('aria-label="Equipar pertrecho"'));
 });
@@ -238,7 +238,7 @@ test('preserved-facing animation belongs only to its accepted battle and keeps t
 test('withdrawal panel renders destinations, per-soldier rejection and an explicit eligible subset',()=>{
  const state=createBattle([{id:'p',name:'Listo para salir',x:0,y:1},{id:'q',name:'Debe acercarse',x:3,y:1}],{width:10,height:8,exits:[{id:'west',edge:'W',destination:'san_nicolas',entryEdge:'E',entryAnchor:{x:19,y:3}}],enemies:[{id:'e',x:8,y:6}]});
  const props={model:exitModel(state,{unitIds:['p','q'],exitId:'west'}),selectedId:'p',busy:false,onUnits:noop,onExit:noop,onLeave:noop,onClose:noop,exploring:false};
- const markup=render(h(JA2ExitPanel,props));assert.match(markup,/aria-label="Destino de salida"/);assert.match(markup,/Oeste · san nicolas/);assert.match(markup,/8 PA para cruzar/);assert.match(markup,/Debe alcanzar el borde/);assert.match(markup,/Seleccionar los que pueden salir/);assert.match(markup,/Solo se mantiene un encuentro táctico activo/);
+ const markup=render(h(JA2ExitPanel,props));assert.match(markup,/aria-label="Destino de salida"/);assert.match(markup,/Oeste · san nicolas/);assert.match(markup,/2 PA para cruzar/);assert.match(markup,/Debe alcanzar el borde/);assert.match(markup,/Seleccionar los que pueden salir/);assert.match(markup,/Solo se mantiene un encuentro táctico activo/);
  const blocked=markup.match(/<button[^>]*>Cruzar el borde[^<]*<\/button>/)?.[0];assert.match(blocked,/disabled=""/);
  const ready=render(h(JA2ExitPanel,{...props,model:exitModel(state,{unitIds:['p'],exitId:'west'})})).match(/<button[^>]*>Cruzar el borde[^<]*<\/button>/)?.[0];assert.ok(ready&&!ready.includes('disabled'));
  state.phase='interrupt';state.interrupt={side:'player',unitIds:['p'],enemyId:'e'};const paused=render(h(JA2ExitPanel,{...props,model:exitModel(state,{unitIds:['p'],exitId:'west'})}));assert.match(paused,/turno normal del jugador/);

@@ -1,3 +1,4 @@
+import {formatAP} from '../game/action-points.js';
 import {register} from 'node:module';
 register('./tactical-render-loader.mjs',import.meta.url);
 import test from 'node:test';
@@ -70,7 +71,7 @@ test('the real inventory maintenance consumes its declared finite kit and surviv
 test('inventory maintenance explains invalid boundaries and still spends a legacy numeric reserve through the actual button',async t=>{
   const field=extra=>validateBattleSnapshot(createBattle([{id:'p',name:'Soldado preparado',x:1,y:2,weapon:1805,loaded:1,ammo:9,condition:60,toolkitPoints:8,...extra}],{width:14,height:8,seed:45,tiles:Array.from({length:112},(_,i)=>({x:i%14,y:Math.floor(i/14),type:'grass',blocked:false,blocksSight:false,cover:0})),enemies:[{id:'e',x:12,y:6,patrol:false,overwatch:false}]}));
   const initial=field({}),ui=await mountInventory(t,initial),before=structuredClone(initial),preview=firearmMaintenancePreview(initial,initial.units[0]);
-  assert.equal(ui.button.disabled,false);assert.equal(ui.button.textContent,`Mantener arma · ${preview.pa} PA`);assert.match(ui.host.textContent,/Estado \+8 puntos.*materiales: 8 puntos/);
+  assert.equal(ui.button.disabled,false);assert.equal(ui.button.textContent,`Mantener arma · ${formatAP(preview.pa)} PA`);assert.match(ui.host.textContent,/Estado \+8 puntos.*materiales: 8 puntos/);
   await act(async()=>ui.button.click());assert.deepEqual(ui.orders,[preview.action]);assert.equal(ui.battle.units[0].condition,68);assert.equal(ui.battle.units[0].toolkitPoints,0);assert.equal(ui.battle.units[0].ap,initial.units[0].ap-preview.pa);
   assert.deepEqual(unitAmmunitionByType(ui.battle.units[0]),unitAmmunitionByType(initial.units[0]));assert.deepEqual(validateBattleSnapshot(JSON.parse(JSON.stringify(ui.battle))),ui.battle);assert.deepEqual(initial,before);
   for(const [boundary,reason]of [

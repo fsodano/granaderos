@@ -78,7 +78,7 @@ test('exploration spends one second per handover, keeps AP and consumes finite s
  assert.equal(n.elapsedSeconds-s.elapsedSeconds,4);assert.ok(n.units.every(u=>u.ap===0));assert.equal(n.units[0].ammo,9);assert.equal(n.units[4].ammo,3);
 });
 test('inventory preview identifies each participant, total cost and guarded confirmation',()=>{
- const s=field(4),p=plan(s);assert.equal(p.label,'Pasar por aliados');assert.match(p.detail,/Soldado 0 \(4 PA\).*Soldado 3 \(0 PA\)/);assert.match(p.detail,/12 PA en total/);assert.equal(p.disabled,false);
+ const s=field(4),p=plan(s);assert.equal(p.label,'Pasar por aliados');assert.match(p.detail,/Soldado 0 \(1 PA\).*Soldado 3 \(0 PA\)/);assert.match(p.detail,/3 PA en total/);assert.equal(p.disabled,false);
  assert.deepEqual(p.action.transferRoute,p.route.map(v=>v.id));assert.equal(p.action.transferKind,'relay');
  assert.equal(inventoryHandlingModel(s,s.units[0],{item:AMMO,count:3,targetId:'p3',busy:true}).transfer.disabled,true);
 });

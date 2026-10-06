@@ -9,6 +9,8 @@
 @keyframes tactical-cross-fade{65%{opacity:1}100%{opacity:0}}
 .tactical-hit-reaction{pointer-events:none;animation:tactical-impact .9s ease-out both}
 .tactical-hit-reaction path{stroke:#f15f54;stroke-width:4;fill:none;stroke-linecap:round}
+.tactical-damage-number{animation:tactical-damage-rise .9s ease-out both}
+@keyframes tactical-damage-rise{from{transform:translateY(0)}to{transform:translateY(-18px)}}
 .tactical-hit-reaction text{fill:#fff;stroke:#681c1b;stroke-width:3;paint-order:stroke;font:bold 12px ui-monospace,monospace}
 @keyframes tactical-impact{0%{opacity:0}12%,65%{opacity:1}100%{opacity:0}}
 .tactical-turn-bar{position:absolute;top:0;left:0;right:0;height:5px;background:#449b52;pointer-events:none;z-index:6}
@@ -21,4 +23,4 @@
 .tactical-quick-tools button{width:26px;height:26px;padding:3px;display:grid;place-items:center;border:1px solid #66735f;background:#253124;color:#eee6d0;cursor:pointer}
 .tactical-quick-tools button[aria-pressed=true]{background:#616c38}.tactical-quick-tools button:disabled{opacity:.4;cursor:default}
 .tactical-quick-tools svg{width:17px;height:17px}
-@media(prefers-reduced-motion:reduce){.movement-route.insufficient{animation:none;color:#fff;stroke:#000;stroke-dasharray:2 2}.tactical-hit-reaction{animation:none}.tactical-action-failure{animation:none}}
+@media(prefers-reduced-motion:reduce){.movement-route.insufficient{animation:none;color:#fff;stroke:#000;stroke-dasharray:2 2}.tactical-hit-reaction,.tactical-damage-number{animation:none}.tactical-action-failure{animation:none}}

@@ -36,7 +36,7 @@ test('whole ground pickup takes only the remaining stack space; explicit excess 
  const b=field();full(b.units[0]);delete b.units[0].inventory['small-0'];b.units[0].medkits=4;b.groundItems=[{id:'bundle',type:'medkits',count:5,x:1,y:2}];
  const refused=order(b,{type:'loot',groundId:'bundle',count:2});assert.match(refused.lastError,/bolsillo|espacio/);assert.deepEqual(physical(refused),physical(b));
  const n=order(b,{type:'loot',groundId:'bundle'});assert.equal(n.lastError,null);assert.equal(n.units[0].medkits,5);assert.equal(n.groundItems[0].count,4);assert.equal(n.units[0].ap,b.units[0].ap-8);
- const tired=structuredClone(b);tired.units[0].ap=7;const rejected=order(tired,{type:'loot',groundId:'bundle'});assert.match(rejected.lastError,/8 PA/);assert.deepEqual(physical(rejected),physical(tired));
+ const tired=structuredClone(b);tired.units[0].ap=7;const rejected=order(tired,{type:'loot',groundId:'bundle'});assert.match(rejected.lastError,/2 PA/);assert.deepEqual(physical(rejected),physical(tired));
 });
 test('collect all leaves an unfittable rifle and finite supply remainder on the body instead of losing them',()=>{
  const b=field();full(b.units[0]);delete b.units[0].inventory['small-0'];b.units[0].medkits=4;

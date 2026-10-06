@@ -136,7 +136,7 @@ test('full campaign save resumes partial work and pack work survives report and 
 
 test('exploration finishes saved work in the remaining time without spending AP twice',()=>{
  let s=field();s.units[0].ap=35;s=load(s);s.mode='exploration';s.units[0].ap=7;const elapsed=s.elapsedSeconds;
- s=load(s);assert.equal(s.elapsedSeconds-elapsed,3);assert.equal(s.units[0].ap,7);assert.equal(s.units[0].loaded,1);assert.equal(s.units[0].ammo,2);assert.equal(s.units[0].reloadProgress,undefined);assert.doesNotMatch(s.log.at(-1),/\d+ PA/);assert.match(s.log.at(-1),/recarga/);
+ s=load(s);assert.equal(s.elapsedSeconds-elapsed,3);assert.equal(s.units[0].ap,7);assert.equal(s.units[0].loaded,1);assert.equal(s.units[0].ammo,2);assert.equal(s.units[0].reloadProgress,undefined);assert.doesNotMatch(s.log.at(-1),/\d+(?:,\d+)? PA/);assert.match(s.log.at(-1),/recarga/);
 });
 
 test('autonomous wounded militia finish loading across their own turns',()=>{

@@ -13,7 +13,7 @@ test('the ordinary fire control shows paid preparation then the saved cheaper sh
  const draw=()=>root.render(h(Battlefield,{battle,onChange:next=>{battle=next;draw();},onFinish:()=>{},onRetreat:()=>{}}));
  const target=()=>document.querySelector('[data-unit-id="guard"] [data-person-hit-target]'),preview=()=>document.querySelector('[aria-label="Vista previa de la orden"]');
  const hover=async()=>act(async()=>target().dispatchEvent(new dom.window.MouseEvent('mouseover',{bubbles:true})));
- await act(async()=>draw());const source=structuredClone(battle);await act(async()=>document.body.dispatchEvent(new dom.window.KeyboardEvent('keydown',{key:'f',bubbles:true})));await hover();assert.match(preview().textContent,/Preparar: 7 PA/);assert.match(preview().textContent,/disparar: 13 PA/);assert.deepEqual(battle,source);
+ await act(async()=>draw());const source=structuredClone(battle);await act(async()=>document.body.dispatchEvent(new dom.window.KeyboardEvent('keydown',{key:'f',bubbles:true})));await hover();assert.match(preview().textContent,/Preparar: 1,75 PA/);assert.match(preview().textContent,/disparar: 3,25 PA/);assert.deepEqual(battle,source);
  await act(async()=>target().dispatchEvent(new dom.window.MouseEvent('click',{bubbles:true})));await timers.settle(document);assert.equal(battle.lastError,null);assert.equal(battle.units[0].ap,80);assert.equal(battle.units[0].loaded,2);assert.equal(battle.units[0].weaponReady,true);await hover();assert.match(preview().textContent,/posición de tiro/);
  battle=validateBattleSnapshot(JSON.parse(JSON.stringify(battle)));await act(async()=>draw());
  assert.doesNotMatch(document.querySelector('.battle-phase').textContent,/Procesando/);

@@ -1,3 +1,4 @@
+import {formatAP} from '../game/action-points.js';
 import {componentTree} from './component-tree.mjs';
 import {register} from 'node:module';
 register('./tactical-render-loader.mjs',import.meta.url);
@@ -46,7 +47,7 @@ test('the real inventory keeps a disclosed chest selection pinned until the play
   battle=outdoor;
   await draw();assert.match(panel().textContent,/contenido permanece oculto/);assert.doesNotMatch(panel().textContent,/Barreta|Camisa de lino|Estado (60|75)%/);assert.equal(pickup(),undefined);
   await act(async()=>panel().querySelector('button').click());await draw();assert.equal(orders.length,1);
-  assert.match(panel().textContent,/Estado 60%/);const first=containerLootPreview(battle,battle.units[0],ref,0,1).action;assert.equal(pickup().textContent,`Recoger · ${containerLootPreview(battle,battle.units[0],ref,0,1).pa} PA`);
+  assert.match(panel().textContent,/Estado 60%/);const first=containerLootPreview(battle,battle.units[0],ref,0,1).action;assert.equal(pickup().textContent,`Recoger · ${formatAP(containerLootPreview(battle,battle.units[0],ref,0,1).pa)} PA`);
   await act(async()=>pickup().click());assert.deepEqual(orders[1],first);await draw();
   assert.deepEqual(battle.props[0].contents,[shirt]);assert.equal(pickup().disabled,true);assert.match(pickup().title,/Cambió el objeto/);assert.equal(panel().querySelector('[aria-label="Objeto del cofre"]').value,'-1');
   await act(async()=>pickup().click());assert.equal(orders.length,2);
@@ -80,7 +81,7 @@ test('the mounted wall panel uses the real paid crowbar action and disables abse
     return {model,button:host.querySelector('button')};
   };
   const {model,button}=await draw(state);
-  assert.equal(button.textContent,`${model.preview.label} · ${model.preview.pa} PA`);assert.equal(button.disabled,false);
+  assert.equal(button.textContent,`${model.preview.label} · ${formatAP(model.preview.pa)} PA`);assert.equal(button.disabled,false);
   assert.match(host.textContent,new RegExp(`Desgaste de la barreta: hasta ${model.preview.toolWear} puntos`));
   assert.ok(host.querySelector('[aria-label="Puerta, cofre o pared cercana"]'));
   assert.doesNotMatch(host.textContent,/\b(Abierto|Cerrado)\b|% de éxito|contenido permanece|cofre está vacío/i);

@@ -90,7 +90,7 @@ test('an approach and aid fit within a saved real player interrupt and preserve 
 });
 
 test('target and public previews disclose combined AP and the interruption risk without a new action button',()=>{
-  const s=field(),p=targetPreview(s,s.units[0],s.units[1]);assert.equal(p.valid,true);assert.equal(p.pa,49);assert.equal(p.remaining,11);assert.equal(p.actionLabel,'Acercarse y vendar');assert.match(p.coverNote,/24 PA.*25 PA/);
+  const s=field(),p=targetPreview(s,s.units[0],s.units[1]);assert.equal(p.valid,true);assert.equal(p.pa,49);assert.equal(p.remaining,11);assert.equal(p.actionLabel,'Acercarse y vendar');assert.match(p.coverNote,/6 PA.*6,25 PA/);
   const descriptor=orderDescriptors(s,s.units[0],{target:s.units[1]}).find(o=>o.id==='useItem');assert.equal(descriptor.pa,49);assert.equal(descriptor.disabled,false);
   const view=playerKnownBattle(s),target=view.orders.find(o=>o.unitId==='p').targets.find(t=>t.targetId==='q');assert.equal(target.pa,49);assert.match(target.coverNote,/contacto/);assert.equal(target.path,undefined);
 });

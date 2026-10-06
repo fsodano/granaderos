@@ -1,3 +1,4 @@
+import {formatAP} from '../game/action-points.js';
 import {assertTradeRejected} from './commerce-gear-fixture.mjs';
 import {register} from 'node:module';register('./tactical-render-loader.mjs',import.meta.url);
 import test from 'node:test';import assert from 'node:assert/strict';
@@ -28,7 +29,7 @@ test('grenade reticle shows area and cost without body parts or aim refinement',
   s.mode=exploring?'exploration':'combat';const target=s.units[1],preview=targetPreview(s,s.units[0],target,{mode:'throwGrenade',aim:4,hitLocation:'head'});
   const markup=render(h('svg',null,h(AimCursor,{point:{x:80,y:90},aim:4,preview,target,exploring})));
   assert.match(markup,/Granada · Área/);assert.ok(markup.includes(`Radio ${preview.blastRadius} casillas`));assert.doesNotMatch(markup,/Cabeza|Torso|Piernas|Puntería|aim-step|cartuchos|Recargar|recarga/);
-  if(exploring)assert.doesNotMatch(markup,/\bPA\b/);else assert.ok(markup.includes(`${preview.pa} PA`));
+  if(exploring)assert.doesNotMatch(markup,/\bPA\b/);else assert.ok(markup.includes(`${formatAP(preview.pa)} PA`));
  }
 });
 test('a blocked grenade reticle uses the warning color and names the actual near-side landing',()=>{

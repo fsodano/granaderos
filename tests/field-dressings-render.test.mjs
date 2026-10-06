@@ -35,7 +35,7 @@ async function mounted(t,initial){
 test('the real inspected shirt control dispatches a paid finite conversion with saved and presented equality',async t=>{
  const s=field({inventory:{linen:shirt(50)}}),before=structuredClone(s),ui=await mounted(t,s);
  assert.equal(ui.button,undefined,'conversion is offered after selecting the actual garment');await ui.inspect();
- assert.equal(ui.button.textContent,'Preparar vendas · 20 PA');assert.equal(ui.button.disabled,false);
+ assert.equal(ui.button.textContent,'Preparar vendas · 5 PA');assert.equal(ui.button.disabled,false);
  assert.match(ui.host.textContent,/Consume una camisa de lino guardada para obtener 3 vendas\. No cura heridas\./);
  const expected=fieldDressingsSource(s.units[0],'linen');await act(async()=>ui.button.click());assert.equal(ui.orders.length,1);
  const action={...ui.orders[0],unitId:'p'};assert.deepEqual(action,{type:'craftDressings',inventoryKey:'linen',expectedSource:expected,unitId:'p'});

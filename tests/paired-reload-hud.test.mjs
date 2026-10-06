@@ -35,8 +35,8 @@ test('empty-pistol preview shows one reload order with exact rounds and AP for e
  const s=field(),u=s.units[0],before=structuredClone(s),p=targetPreview(s,u,s.units[1],{mode:'fire',aim:4,hitLocation:'head'});
  assert.deepEqual(ammunitionByType(u),{pistol_69:3});assert.equal(u.ammo,3,'both pistols use the same family reserve');
  assert.equal(p.valid,true);assert.equal(p.actionLabel,'Recargar ambas pistolas');assert.equal(p.attackType,'reload');assert.equal(p.cursor,'reload');assert.equal(p.pa,87);assert.equal(p.rounds,3);assert.equal(p.remaining,13);
- assert.match(p.coverNote,/Mano principal: carga 1 cartucho \(32 PA\)/);assert.match(p.coverNote,/Segunda mano: carga 2 cartuchos \(55 PA\)/);assert.match(p.coverNote,/Quedan 0 cartuchos de reserva/);assert.equal(reload(s).disabled,false);assert.equal(reload(s).pa,p.pa);
- const html=render(h('svg',null,h(AimCursor,{point:{x:80,y:80},aim:4,preview:p,target:s.units[1]})));assert.match(html,/Recargar ambas pistolas · 87 PA/);assert.match(html,/13 PA restantes/);assert.match(html,/aim-reload/);assert.doesNotMatch(html,/aim-step|Cabeza/);
+ assert.match(p.coverNote,/Mano principal: carga 1 cartucho \(8 PA\)/);assert.match(p.coverNote,/Segunda mano: carga 2 cartuchos \(13,75 PA\)/);assert.match(p.coverNote,/Quedan 0 cartuchos de reserva/);assert.equal(reload(s).disabled,false);assert.equal(reload(s).pa,p.pa);
+ const html=render(h('svg',null,h(AimCursor,{point:{x:80,y:80},aim:4,preview:p,target:s.units[1]})));assert.match(html,/Recargar ambas pistolas · 21,75 PA/);assert.match(html,/3,25 PA restantes/);assert.match(html,/aim-reload/);assert.doesNotMatch(html,/aim-step|Cabeza/);
  const next=click(s);assert.equal(next.lastError,null);assert.equal(next.units[0].loaded,1);assert.equal(next.units[0].offHand.loaded,2);assert.equal(totalReserveAmmunition(next.units[0]),0);assert.equal(next.units[0].ap,13);assert.equal(next.units[0].condition,u.condition);assert.equal(next.units[0].offHand.condition,u.offHand.condition);assert.equal(next.units[1].hp,s.units[1].hp);assert.deepEqual(next.smoke,s.smoke);assert.deepEqual(s,before);assert.deepEqual(next,click(restore(s)));assert.doesNotThrow(()=>restore(next));
 });
 
@@ -55,7 +55,7 @@ test('one AP short of both reloads spends only main-hand work and reports the se
 });
 
 test('unfinished main loading shows only paid progress and leaves both reserve and offhand untouched',()=>{
- const s=field({ap:20}),u=s.units[0],p=emptyGunPreview(s,u);assert.equal(p.actionLabel,'Recarga parcial');assert.equal(p.partial,true);assert.equal(p.pa,20);assert.equal(p.rounds,0);assert.equal(p.remainingReloadPA,12);assert.match(p.coverNote,/Mano principal: recarga parcial, carga 0 cartuchos \(20 PA\)/);assert.match(p.coverNote,/Faltan 12 PA/);assert.doesNotMatch(p.coverNote,/Segunda mano: carga/);
+ const s=field({ap:20}),u=s.units[0],p=emptyGunPreview(s,u);assert.equal(p.actionLabel,'Recarga parcial');assert.equal(p.partial,true);assert.equal(p.pa,20);assert.equal(p.rounds,0);assert.equal(p.remainingReloadPA,12);assert.match(p.coverNote,/Mano principal: recarga parcial, carga 0 cartuchos \(5 PA\)/);assert.match(p.coverNote,/Faltan 3 PA/);assert.doesNotMatch(p.coverNote,/Segunda mano: carga/);
  const next=click(s);assert.equal(next.lastError,null);assert.equal(next.units[0].loaded,0);assert.equal(next.units[0].reloadProgress,.625);assert.equal(totalReserveAmmunition(next.units[0]),3);assert.equal(next.units[0].ap,0);assert.deepEqual(next.units[0].offHand,u.offHand);assert.doesNotThrow(()=>restore(next));
 });
 
@@ -67,7 +67,7 @@ test('a full main gun enables the actual second-hand reload button and lets inju
 });
 
 test('exploration reloads both hands at zero AP and advances only their actual work time',()=>{
- const s=field({ap:0,ammo:2},{exploration:true,enemies:[]}),p=emptyGunPreview(s,s.units[0]);assert.equal(p.valid,true);assert.equal(p.pa,0);assert.equal(p.remaining,0);assert.match(p.coverNote,/Mano principal: carga 1 cartucho/);assert.match(p.coverNote,/Segunda mano: carga 1 cartucho/);assert.doesNotMatch(p.coverNote,/\d+ PA|queda pendiente/);assert.equal(reload(s).disabled,false);assert.equal(reload(s).pa,0);
+ const s=field({ap:0,ammo:2},{exploration:true,enemies:[]}),p=emptyGunPreview(s,s.units[0]);assert.equal(p.valid,true);assert.equal(p.pa,0);assert.equal(p.remaining,0);assert.match(p.coverNote,/Mano principal: carga 1 cartucho/);assert.match(p.coverNote,/Segunda mano: carga 1 cartucho/);assert.doesNotMatch(p.coverNote,/\d+(?:,\d+)? PA|queda pendiente/);assert.equal(reload(s).disabled,false);assert.equal(reload(s).pa,0);
  const next=click(s);assert.equal(next.lastError,null);assert.equal(next.units[0].ap,0);assert.equal(next.units[0].loaded,1);assert.equal(next.units[0].offHand.loaded,1);assert.equal(totalReserveAmmunition(next.units[0]),0);assert.equal(next.elapsedSeconds,4);
  const full=field({loaded:1,ap:0,ammo:2},{exploration:true,enemies:[]});assert.equal(reload(full).disabled,false);assert.equal(reload(full).label,'Recargar segunda mano');assert.equal(reload(full).pa,0);const done=pressReload(full);assert.equal(done.lastError,null);assert.equal(done.units[0].ap,0);assert.equal(done.units[0].offHand.loaded,2);assert.equal(totalReserveAmmunition(done.units[0]),0);
 });

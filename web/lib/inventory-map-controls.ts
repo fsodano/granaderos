@@ -1,3 +1,4 @@
+import {formatAP} from '../../game/action-points.js';
 import {inventoryMapPreview,canSee,visibleRooms} from '../../game/tactical.js';
 import {tacticalLevel,sameCell,spaceKey} from '../../game/tactical-space.js';
 import {isInteriorVisible} from '../../game/tactical-visibility.js';
@@ -17,7 +18,7 @@ export function selectedItemMapPreview(battle:any,unit:any,picked:EquipmentSourc
  const action={type:'inventoryMap',sourceId:picked.sourceId,expectedSource:picked.expectedSource,count:picked.count,intent,x:point.x,y:point.y,tacticalLevel:tacticalLevel(point),...(target?{targetId:target.id}:{})};
  const preview=inventoryMapPreview(battle,unit,action);
  const actionLabel=('actionLabel' in preview?preview.actionLabel:'Colocar objeto')+(preview.valid&&preview.kind==='throw'&&preview.action?.targetId?` · ${preview.chance}% de atrapar`:'');
- const relayNote=preview.kind==='gift'&&preview.path?.length?'Acercarse y entregar el objeto.':preview.route.length>2?`${preview.route.map((step:any)=>step.name).join(' → ')}${battle.mode==='exploration'?'':` · ${preview.totalPA} PA en total`}`:null;
+ const relayNote=preview.kind==='gift'&&preview.path?.length?'Acercarse y entregar el objeto.':preview.route.length>2?`${preview.route.map((step:any)=>step.name).join(' → ')}${battle.mode==='exploration'?'':` · ${formatAP(preview.totalPA)} PA en total`}`:null;
  return {...preview,name:`${picked.label} · ${picked.count}`,actionLabel,coverNote:relayNote,remaining:Math.max(0,(unit.ap??0)-preview.pa),action:preview.action??action};
 }
 
