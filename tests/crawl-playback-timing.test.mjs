@@ -16,9 +16,9 @@ test('observed enemy steps wait for calibrated crawl travel without changing the
  actor.x=7;assert.equal(presentedFrameDuration(frame,before),BATTLE_PLAYBACK.step,'A reappearing actor does not disclose its unseen route length');
 });
 
-test('recorded standing movement and attack clocks keep their existing timing',()=>{
+test('recorded standing movement uses its native pace while attack clocks keep their timing',()=>{
  const before=createBattle([{id:'walker',x:1,y:1}],{width:8,height:8,tiles:Array.from({length:64},(_,i)=>({x:i%8,y:Math.floor(i/8),type:'grass',blocked:false,cover:0})),exploration:true,enemies:[]}),after=actBattle(before,{type:'move',unitId:'walker',x:2,y:1});
- assert.equal(presentedFrameDuration({type:'step',unitId:'walker',state:after},before),BATTLE_PLAYBACK.step);
+ assert.equal(presentedFrameDuration({type:'step',unitId:'walker',state:after},before),movementStepDuration(after.units[0],before.units[0],after.units[0],BATTLE_PLAYBACK.step));
  for(const type of ['prepare','contact','projectile','impact','result']){
   const frame={type,action:'melee',unitId:'walker',state:after};assert.equal(presentedFrameDuration(frame,before),battleFrameDuration(frame));
  }

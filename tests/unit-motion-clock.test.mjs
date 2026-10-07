@@ -11,6 +11,8 @@ const {TILE_METRES}=await import('../web/lib/three/projection.ts');
 const {sampleAnimationTime}=await import('../web/lib/three/animation-clock.ts');
 const {readFileSync}=await import('node:fs');
 const manifest=JSON.parse(readFileSync(new URL('../web/public/models/characters/manifest.json',import.meta.url),'utf8'));
+const walkStep=movementStepDuration({weapon:1800},{x:1,y:1},{x:2,y:1}),runStep=movementStepDuration({weapon:1800,movementMode:'run'},{x:1,y:1},{x:2,y:1});
+const close=(actual,expected)=>assert.ok(Math.abs(actual-expected)<1e-8,`${actual} != ${expected}`);
 
 async function mountMotion(t){
  const dom=new JSDOM('<!doctype html><div id="root"></div>'),frames=new Map();
@@ -43,20 +45,20 @@ test('route preparation cannot consume opening walk frames or restart an ongoing
  await env.draw(after);
  assert.equal(env.motion.positions.walker.x,1);assert.equal(env.motion.positions.walker.elapsedMs,0);
  await env.frame(16);
- assert.ok(Math.abs(env.motion.positions.walker.x-(1+16/240))<1e-9,'first visible movement starts at the first route cell after preparation');
+ assert.ok(Math.abs(env.motion.positions.walker.x-(1+16/walkStep))<1e-9,'first visible movement starts at the first route cell after preparation');
  assert.equal(env.motion.positions.walker.elapsedMs,16);
- await env.frame(104);assert.equal(env.motion.positions.walker.x,1.5);
+ await env.frame(walkStep/2-16);close(env.motion.positions.walker.x,1.5);
  await env.draw({...after,log:[...after.log,'Otra actualización.']});
- assert.equal(env.motion.positions.walker.x,1.5,'unrelated state changes preserve an ongoing track');
- await env.frame(120);assert.equal(env.motion.positions.walker.x,2);assert.equal(env.motion.positions.walker.elapsedMs,240);
- await env.frame(720);assert.equal(env.motion.positions.walker.x,5);assert.equal(env.motion.positions.walker.moving,false);assert.equal(env.pendingFrames,0);
+ close(env.motion.positions.walker.x,1.5);
+ await env.frame(walkStep/2);assert.equal(env.motion.positions.walker.x,2);close(env.motion.positions.walker.elapsedMs,walkStep);
+ await env.frame(walkStep*3);assert.equal(env.motion.positions.walker.x,5);assert.equal(env.motion.positions.walker.moving,false);assert.equal(env.pendingFrames,0);
 });
 
 for(const hz of [60,120])test(`${hz} Hz display publishes 60 accurate walking positions per second`,async t=>{
  const env=await mountMotion(t),{start}=await beginWalk(env),times=[];
  for(let frame=1;frame<=hz;frame++)if(await env.frame(1000/hz)){
   times.push(env.now);const position=env.motion.positions.walker,elapsed=env.now-start;
-  assert.ok(Math.abs(position.x-(1+elapsed/240))<1e-9);assert.ok(Math.abs(position.elapsedMs-elapsed)<1e-9);
+  assert.ok(Math.abs(position.x-(1+elapsed/walkStep))<1e-9);assert.ok(Math.abs(position.elapsedMs-elapsed)<1e-9);
  }
  assert.equal(times.length,60);assert.equal(env.motion.positions.walker.moving,true);
  for(let index=1;index<times.length;index++)assert.ok(Math.abs(times[index]-times[index-1]-1000/60)<1e-8);
@@ -67,7 +69,7 @@ test('120 Hz timestamp jitter does not cause a third-frame delay or reduce runni
  for(let frame=1;frame<=120;frame++){
   const target=start+frame*1000/120+(frame%4===0?-.35:frame%4===2?.35:0);
   if(await env.frame(target-env.now)){
-   times.push(env.now);assert.ok(Math.abs(env.motion.positions.walker.x-(1+(env.now-start)/150))<1e-9);
+   times.push(env.now);assert.ok(Math.abs(env.motion.positions.walker.x-(1+(env.now-start)/runStep))<1e-9);
   }
  }
  assert.equal(times.length,60);
@@ -77,10 +79,10 @@ test('120 Hz timestamp jitter does not cause a third-frame delay or reduce runni
 test('a delayed frame publishes once without catch-up bursts and finishes on the first completed frame',async t=>{
  const env=await mountMotion(t),{start}=await beginWalk(env,4);
  assert.equal(await env.frame(137),true);assert.equal(env.motion.positions.walker.elapsedMs,137);
- assert.ok(Math.abs(env.motion.positions.walker.x-(1+137/240))<1e-9);
+ assert.ok(Math.abs(env.motion.positions.walker.x-(1+137/walkStep))<1e-9);
  assert.equal(env.pendingFrames,1);assert.equal(await env.frame(1000/120),false,'a late callback must not immediately publish another snapshot');
  assert.equal(await env.frame(1000/120),true);assert.equal(env.pendingFrames,1);
- await env.frame(start+950-env.now);assert.equal(env.motion.positions.walker.moving,true);
+ await env.frame(start+walkStep*4-10-env.now);assert.equal(env.motion.positions.walker.moving,true);
  assert.equal(await env.frame(10),true,'completion bypasses the ordinary publication deadline');
  assert.equal(env.motion.positions.walker.x,5);assert.equal(env.motion.positions.walker.moving,false);assert.equal(env.motion.blocking,false);assert.equal(env.pendingFrames,0);
 });
@@ -90,13 +92,13 @@ test('incremental movement keeps its gait between paid tiles and stops only when
  const width=8,before=createBattle([{id:'walker',x:1,y:1}],{width,height:8,tiles:Array.from({length:64},(_,i)=>({x:i%width,y:Math.floor(i/width),type:'grass',blocked:false,cover:0})),exploration:true,enemies:[]});
  await env.draw(before,continuing);
  const first=actBattle(before,{type:'move',unitId:'walker',x:2,y:1});await env.draw(first,continuing);
- await env.frame(240);assert.equal(env.motion.positions.walker.x,2);assert.equal(env.motion.positions.walker.settled,true);
+ await env.frame(walkStep);assert.equal(env.motion.positions.walker.x,2);assert.equal(env.motion.positions.walker.settled,true);
  assert.equal(env.motion.positions.walker.moving,true,'the sprite does not flash idle at a tile boundary');
- assert.equal(env.motion.positions.walker.elapsedMs,240);
+ close(env.motion.positions.walker.elapsedMs,walkStep);
  const second=actBattle(first,{type:'move',unitId:'walker',x:3,y:1});await env.draw(second,continuing);
- assert.equal(env.motion.positions.walker.settled,false);assert.equal(env.motion.positions.walker.elapsedMs,240,'the next step retains the gait phase');
- await env.frame(120);assert.equal(env.motion.positions.walker.x,2.5);assert.equal(env.motion.positions.walker.elapsedMs,360);
- await env.frame(120);assert.equal(env.motion.positions.walker.x,3);assert.equal(env.motion.positions.walker.moving,true);
+ assert.equal(env.motion.positions.walker.settled,false);close(env.motion.positions.walker.elapsedMs,walkStep);
+ await env.frame(walkStep/2);close(env.motion.positions.walker.x,2.5);close(env.motion.positions.walker.elapsedMs,walkStep*1.5);
+ await env.frame(walkStep/2);assert.equal(env.motion.positions.walker.x,3);assert.equal(env.motion.positions.walker.moving,true);
  await env.draw(second,new Set());assert.equal(env.motion.positions.walker.moving,false);assert.equal(env.motion.positions.walker.settled,true);assert.equal(env.pendingFrames,0);
 });
 
@@ -122,6 +124,47 @@ test('diagonal crawl uses distance while a recorded short delay cannot accelerat
  assert.ok(Math.abs(diagonal/cardinal-Math.SQRT2)<1e-9);
  assert.equal(movementStepDuration(actor,from,{x:2,y:1},cardinal),cardinal,'The playback duration and position interpolation use the same clock');
  assert.equal(movementStepDuration(actor,from,{x:2,y:1},undefined,true),cardinal*1.25,'Preserved facing keeps its slower travel');
- assert.equal(movementStepDuration({...actor,mounted:true},from,{x:2,y:1},210),210,'Mounted movement keeps its separate gait');
+ assert.ok(movementStepDuration({...actor,mounted:true},from,{x:2,y:1},210)>1000,'Mounted movement uses the horse stride');
  assert.equal(movementStepDuration(actor,from,{x:2,y:1,kind:'climb'},210),210,'A climb uses its recorded link fraction');
+});
+
+for(const [gender,appearance]of [['male','granadero'],['female','woman-scout']])test(`${gender} movement uses the matching equipment gait and accepted pace`,()=>{
+ const from={x:1,y:1},forward={x:2,y:1},left={x:1,y:0},right={x:1,y:2};
+ const cases=[
+  [{activeSlot:'unarmed'},forward,'stand.walk.unarmed',false],
+  [{weapon:1800},forward,'stand.walk.long-gun',false],
+  [{weapon:1805},forward,'stand.walk.short-gun',false],
+  [{weapon:1813},forward,'stand.walk.knife',false],
+  [{weapon:1812},forward,'stand.walk.lance',false],
+  [{weapon:1800,movementMode:'run'},forward,'stand.run.long-gun',false],
+  [{weapon:1813,movementMode:'run'},forward,'stand.run.knife',false],
+  [{weapon:1800,stance:'crouched',movementMode:'crouch'},forward,'crouch.walk.long-gun',false],
+  [{weapon:1800},left,'stand.strafeLeft.long-gun',true],
+  [{weapon:1800},right,'stand.strafeRight.long-gun',true],
+  [{weapon:1805,stance:'crouched',movementMode:'crouch'},left,'crouch.strafeLeft.short-gun',true],
+ ];
+ for(const [changes,to,name,preserve]of cases){
+  const actor={spriteAppearance:appearance,facing:2,...changes},clip=manifest.animationLibraries[gender].clips.find(clip=>clip.name===name);
+  const expected=TILE_METRES/((clip.nativeStrideSpeed??clip.locomotionSpeed)*(clip.playbackRate??1))*1000*(preserve?1.25:1);
+  close(movementStepDuration(actor,from,to,210,preserve),expected);
+  assert.equal(movementStepDuration(actor,from,to,10000,preserve),10000*(preserve?1.25:1),'A longer supplied presentation delay remains authoritative');
+ }
+});
+
+test('mounted walk and run use the horse hoof stride instead of the rider leg clip',()=>{
+ for(const action of ['walk','run']){
+  const clip=manifest.horse.clips.find(clip=>clip.name===manifest.horse.actions[action]);
+  const duration=movementStepDuration({mounted:true,movementMode:action,weapon:1812},{x:1,y:1},{x:2,y:1},210);
+  close(duration,TILE_METRES/clip.locomotionSpeed*1000);assert.ok(duration>400);
+ }
+});
+
+test('cardinal and diagonal walking segments keep one physical speed and finish in path order',async t=>{
+ const env=await mountMotion(t),before=createBattle([{id:'walker',x:1,y:1}],{width:8,height:8,tiles:Array.from({length:64},(_,i)=>({x:i%8,y:Math.floor(i/8),type:'grass',blocked:false,cover:0})),exploration:true,enemies:[]});
+ await env.draw(before);const after=actBattle(before,{type:'move',unitId:'walker',x:3,y:2});assert.equal(after.lastError,null);
+ after.units[0].lastMovePath=[{x:2,y:1},{x:3,y:2}];await env.draw(after);
+ await env.frame(walkStep);assert.equal(env.motion.positions.walker.x,2);assert.equal(env.motion.positions.walker.y,1);
+ await env.frame(walkStep*Math.SQRT2/2);close(env.motion.positions.walker.x,2.5);close(env.motion.positions.walker.y,1.5);
+ close(env.motion.positions.walker.speed,1000/walkStep);close(env.motion.positions.walker.elapsedDistance,1+Math.SQRT2/2);
+ await env.frame(walkStep*Math.SQRT2/2);assert.equal(env.motion.positions.walker.x,3);assert.equal(env.motion.positions.walker.y,2);assert.equal(env.motion.positions.walker.moving,false);
 });

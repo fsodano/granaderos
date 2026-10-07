@@ -8,6 +8,9 @@ import {movementStep} from '../game/movement-step.js';
 import {mountBattlefield} from './mounted-battlefield.mjs';
 const {default:Battlefield}=await import('../web/app/Battlefield.tsx');
 const {default:TacticalSceneControls}=await import('../web/app/TacticalSceneControls.tsx');
+const {movementStepDuration}=await import('../web/lib/three/movement-timing.ts');
+const walkStep=movementStepDuration({weapon:1800},{x:1,y:1},{x:2,y:1}),runStep=movementStepDuration({weapon:1800,movementMode:'run'},{x:1,y:1},{x:2,y:1});
+const close=(actual,expected)=>assert.ok(Math.abs(actual-expected)<1e-8,`${actual} != ${expected}`);
 const nodes=node=>!node||typeof node!=='object'?[]:[node,...(Array.isArray(node)?node:Array.isArray(node.props?.children)?node.props.children:[node.props?.children]).flatMap(nodes)];
 
 test('actual R sets only the selected actor to run without loading or spending PA; Shift+R reloads',async t=>{
@@ -51,22 +54,22 @@ for(const delivery of ['early','late'])test(`real map input redirects and runs w
  await mounted.deliver('movement-step');await mounted.render(props());
  assert.equal(commits.length,1);assert.equal(battle.units[0].x,2);assert.equal(battle.elapsedSeconds,3);
  assert.equal(jobs().length,1);assert.equal(jobs()[0].job.battle,battle,'the next pure calculation uses the accepted paid state');
- await frame(120);assert.equal(get(TacticalSceneControls).props.positions['unit:p'].x,1.5);assert.equal(get(TacticalSceneControls).props.positions['unit:p'].moving,true);
+ await frame(walkStep/2);close(get(TacticalSceneControls).props.positions['unit:p'].x,1.5);assert.equal(get(TacticalSceneControls).props.positions['unit:p'].moving,true);
  await click({x:2,y:6});assert.equal(jobs().length,1,'a redirect never starts a second simultaneous worker');
  await click({x:2,y:6},2);await click({x:2,y:6},3);
  await mounted.deliver('movement-step');assert.equal(commits.length,1,'the abandoned speculative result has no effect');assert.equal(jobs().length,1);
  assert.equal(jobs()[0].job.action.x,2);assert.equal(jobs()[0].job.action.y,6);assert.equal(jobs()[0].job.action.movement,'run');
  assert.equal(jobs()[0].job.continuation,undefined,'the abandoned destination cannot supply the next route');
  if(delivery==='early'){await mounted.deliver('movement-step');assert.equal(commits.length,1,'a prepared result cannot spend the next step before the endpoint');}
- await frame(120);
+ await frame(walkStep/2);
  assert.equal(get(TacticalSceneControls).props.positions['unit:p'].moving,true,'the sprite keeps its gait between committed cells');
- if(delivery==='late'){assert.equal(commits.length,1);await frame(50);assert.equal(get(TacticalSceneControls).props.positions['unit:p'].x,2);assert.equal(get(TacticalSceneControls).props.positions['unit:p'].elapsedMs,240,'waiting for a worker holds the gait at the reached cell');await mounted.deliver('movement-step');}
+ if(delivery==='late'){assert.equal(commits.length,1);await frame(50);assert.equal(get(TacticalSceneControls).props.positions['unit:p'].x,2);close(get(TacticalSceneControls).props.positions['unit:p'].elapsedMs,walkStep);await mounted.deliver('movement-step');}
  else assert.equal(commits.length,2,'the prepared step commits at the endpoint without waiting for a worker');
  await mounted.render(props());
  assert.equal(battle.units[0].x,2);assert.equal(battle.units[0].y,2);assert.equal(battle.elapsedSeconds,4);assert.equal(battle.units[0].movementMode,'run');
- await frame(75);assert.equal(get(TacticalSceneControls).props.positions['unit:p'].y,1.5);assert.equal(get(TacticalSceneControls).props.positions['unit:p'].elapsedMs,315);
+ await frame(runStep/2);close(get(TacticalSceneControls).props.positions['unit:p'].y,1.5);close(get(TacticalSceneControls).props.positions['unit:p'].elapsedMs,walkStep+runStep/2);
  await mounted.act(async()=>document.body.dispatchEvent(new window.KeyboardEvent('keydown',{key:'Escape',bubbles:true})));
- await frame(75);assert.equal(get(TacticalSceneControls).props.positions['unit:p'].y,2);assert.equal(get(TacticalSceneControls).props.positions['unit:p'].moving,false);
+ await frame(runStep/2);assert.equal(get(TacticalSceneControls).props.positions['unit:p'].y,2);assert.equal(get(TacticalSceneControls).props.positions['unit:p'].moving,false);
  assert.equal(jobs().length,1);await mounted.deliver('movement-step');assert.equal(jobs().length,0);
  assert.equal(commits.length,2,'cancelled future steps never spend time or energy');
 });
@@ -91,33 +94,33 @@ for(const delivery of ['early','late'])test(`actual group scene clicks redirect 
  for(let i=0;i<10;i++){
   await mounted.deliver('group-step');await mounted.render(env.props());
   if(env.battle.units.find(unit=>unit.id==='q').x>1)break;
-  await env.frame(240);
+  await env.frame(walkStep);
  }
  const paid=env.battle;assert.equal(paid.units.find(unit=>unit.id==='p').x,7);assert.equal(paid.units.find(unit=>unit.id==='q').x,2);
- await env.frame(120);assert.equal(nodes(mounted.tree()).find(node=>node.type===TacticalSceneControls).props.positions['unit:q'].x,1.5);
+ await env.frame(walkStep/2);close(nodes(mounted.tree()).find(node=>node.type===TacticalSceneControls).props.positions['unit:q'].x,1.5);
  const count=env.commits.length;await env.click(env.tile(2,6));await mounted.deliver('group-step');
  assert.equal(env.commits.length,count,'the abandoned speculative follower step is unpaid');assert.equal(env.jobs('group-step').length,1);
  const job=env.jobs('group-step')[0].job;assert.equal(job.action.x,2);assert.equal(job.action.y,6);assert.equal(job.continuation,undefined);
  const expected=groupMovementStep(paid,job.action).state;
  if(delivery==='early'){await mounted.deliver('group-step');assert.equal(env.commits.length,count);}
- await env.frame(120);
+ await env.frame(walkStep/2);
  if(delivery==='late'){assert.equal(env.commits.length,count);await mounted.deliver('group-step');}
  await mounted.render(env.props());assert.deepEqual(env.battle,expected,'redirect retains paid follower time/energy and pays one legal replacement cell');
  assert.equal(new Set(env.battle.units.map(unit=>`${unit.x},${unit.y}`)).size,2);
  // Clicking the selected actor stops the remaining formation; it does not
  // undo the replacement cell whose sprite is still visibly approaching it.
- const stopped=env.battle,stoppedCount=env.commits.length;await env.click(env.person('p'));await env.frame(400);
+ const stopped=env.battle,stoppedCount=env.commits.length;await env.click(env.person('p'));await env.frame(walkStep*2);
  if(env.jobs('group-step').length)await mounted.deliver('group-step');
  assert.equal(env.commits.length,stoppedCount);assert.strictEqual(env.battle,stopped);
 });
 
 test('actual combat scene clicks redirect with normal PA costs and stop at the last paid cell',async t=>{
  const env=await actualInput(t,{combat:true,enemies:[{id:'e',x:23,y:7,weapon:1800}]});await env.click(env.tile(5,1));await env.mounted.deliver('movement-step');await env.mounted.render(env.props());
- const paid=env.battle,paidAP=paid.units[0].ap;assert.ok(paidAP<100);await env.frame(120);
+ const paid=env.battle,paidAP=paid.units[0].ap;assert.ok(paidAP<100);await env.frame(walkStep/2);
  await env.click(env.tile(2,4));await env.mounted.deliver('movement-step');assert.equal(env.commits.length,1);
  const job=env.jobs('movement-step')[0].job,expected=movementStep(paid,job.action).state;await env.mounted.deliver('movement-step');assert.equal(env.commits.length,1);
- await env.frame(120);await env.mounted.render(env.props());assert.deepEqual(env.battle,expected);assert.ok(env.battle.units[0].ap<paidAP);
- const stopped=env.battle,count=env.commits.length;await env.click(env.person('p'));await env.frame(240);
+ await env.frame(walkStep/2);await env.mounted.render(env.props());assert.deepEqual(env.battle,expected);assert.ok(env.battle.units[0].ap<paidAP);
+ const stopped=env.battle,count=env.commits.length;await env.click(env.person('p'));await env.frame(walkStep);
  if(env.jobs('movement-step').length)await env.mounted.deliver('movement-step');assert.equal(env.commits.length,count);assert.strictEqual(env.battle,stopped);
 });
 

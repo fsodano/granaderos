@@ -51,9 +51,17 @@ for(const [gender,bank]of Object.entries(manifest.animationLibraries)){
   variant.strideMeasurement={...variant.strideMeasurement,sampleCount:measured.sampleCount,space:'exported-gltf',referenceClip:clip.name};
  }
  bank.locomotionSpeed.crawl=measured.speed;
- banks[gender]={crawl:{nativeStrideSpeed:measured.speed,duration:clip.duration,playbackRate:clip.playbackRate??1}};
+ const gaits=bank.clips.filter(clip=>['walk','run','crawl','strafeLeft','strafeRight'].includes(clip.gesture));
+ for(const gait of gaits)if(!((gait.nativeStrideSpeed??gait.locomotionSpeed)>0))throw Error(`Missing native movement speed: ${gender}:${gait.name}`);
+ banks[gender]={crawl:{nativeStrideSpeed:measured.speed,duration:clip.duration,playbackRate:clip.playbackRate??1},clips:Object.fromEntries(gaits.map(clip=>[clip.name,{nativeStrideSpeed:clip.nativeStrideSpeed??clip.locomotionSpeed,duration:clip.duration,playbackRate:clip.playbackRate??1}]))};
 }
-const profile={version:1,source:'web/public/models/characters/manifest.json',appearances:Object.fromEntries(Object.entries(manifest.appearances).map(([id,appearance])=>[id,appearance.animationLibrary])),banks};
+const horse=Object.fromEntries(['walk','run'].map(action=>{
+ const clip=manifest.horse.clips.find(clip=>clip.name===manifest.horse.actions[action]);
+ if(!(clip?.locomotionSpeed>0))throw Error(`Missing native horse speed: ${action}`);
+ return [action,{nativeStrideSpeed:clip.nativeStrideSpeed??clip.locomotionSpeed,duration:clip.duration,playbackRate:clip.playbackRate??1}];
+}));
+const itemClips=Object.fromEntries(Object.entries(manifest.equipment.items).filter(([,item])=>item.clipOverrides).map(([id,item])=>[id,item.clipOverrides]));
+const profile={version:1,source:'web/public/models/characters/manifest.json',appearances:Object.fromEntries(Object.entries(manifest.appearances).map(([id,appearance])=>[id,appearance.animationLibrary])),banks,horse,itemClips,itemAliases:manifest.equipment.aliases};
 const path=fileURLToPath(new URL('web/lib/three/locomotion-profile.json',root)),text=JSON.stringify(profile,null,2)+'\n',manifestText=JSON.stringify(manifest,null,2)+'\n';
 if(process.argv.includes('--check')){
  if(readFileSync(path,'utf8')!==text||readFileSync(manifestPath,'utf8')!==manifestText)throw Error('Character locomotion calibration is stale. Run tools/characters-3d/compile-locomotion-profile.mjs.');
