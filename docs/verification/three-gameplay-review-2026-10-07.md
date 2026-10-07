@@ -524,6 +524,22 @@ charge or reserve. Contact and recovery screenshots were visually inspected.
 The broader audit found a separate released sabre wrist-path issue, held for
 its own repair; this pistol cut does not hide it.
 
+## Native unarmed prone arm support increment
+
+The unarmed prone idle/crawl palms, fingers and complete sleeves now clear
+the floor. Alternating planted skin pulls set the unarmed distance clock;
+torso, Root, legs, fingers and every equipped clip remain exact. Per anatomy,
+all 332 other clips and 306 non-arm selected channels are preserved. The
+[prone arm review](../art/prone-arm-support-3d-review-2026-10-07.md) records
+actual stored versus nominal duration and the remaining lateral contact roll.
+
+The final clean cut passed 63 affected checks, native/profile/type/docs/baseline
+checks and the production export. Twenty-eight clean browser captures had
+no errors and both normal one-cell crawls committed their saved endpoints.
+Selected support and recovery frames were compared with the current unarmed
+prone sprites. The decoded track/manifest preservation proof passed again
+against the exact clean source.
+
 ## Next increments and acceptance limits
 
 The low-ceiling headwear limit, broader posture bank, braking steps and the
