@@ -340,11 +340,29 @@ production export. Twelve live palace views cover the original roof and the
 closed 3 m slab without browser errors. Selected rotated exteriors and the
 short slab were visually inspected against the current sprite.
 
+## Tenth increment
+
+The palace portico now retains the direct sprite's raised stone entablature,
+shallow tiled gable and small geometric badge. Metre-based roof UVs, joined
+fascia and ridge, and closed front and rear masonry keep the detail readable
+from either side. Its whole return excludes walking upper cells. Short slabs,
+breached supports and ordinary room cutaways omit the above-roof features.
+The [portico review](../art/palace-portico-3d-review-2026-10-07.md) records the
+source dimensions and the repaired rear closure.
+
+The clean committed cut passed 75 affected checks in 10.78 seconds, type and
+documentation checks, all 38 baseline checks, and the production export.
+Six stable playable palace views produced no browser errors. The front,
+rear and interior were compared with the current sprite. The native repair
+work remains separate from this small architectural release.
+
 ## Next increments and acceptance limits
 
 Climbing support and the roof-edge step, the broader posture bank, braking
-steps and paired melee contact still need review. Crouched boot grounding and
-the palace portico roof and crest remain under correction. The
+steps and paired melee contact still need review. The broader published bank
+audit also found floor penetration in sideways steps, prone motion and lance
+locomotion; native boot grounding remains under correction. Timber lattice,
+depot loading details and warehouse buttresses need source comparison. The
 [character review](../../assets/source/characters-3d/REVIEW.md) records the
 accepted standing reference and the retained motion bank separately.
 
