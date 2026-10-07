@@ -138,3 +138,7 @@ fingers, all 332 other clips and every equipped pace remain exact. The
 [prone arm review](../../../docs/art/prone-arm-support-3d-review-2026-10-07.md)
 records the clean 63-check/native/profile/build gate, 28 normal browser captures,
 saved endpoints, source-sprite comparison and remaining contact roll.
+
+### Standing unarmed sideways support increment
+
+Only the eight leg rotation channels in each standing unarmed sideways clip change per anatomy. Complete published boots clear the floor and retain a supporting contact through 241 sampled phases. The native rig, all 332 other clips, 302 non-leg selected channels, stored and nominal periods and pace profile remain exact. The [sideways support review](../../../docs/art/standing-unarmed-sideways-support-3d-review-2026-10-07.md) records the clean 97-check/native/profile/build gate, 68 ordinary browser captures, saved destinations, sprite comparison and measured contact residuals. Equipped and crouched sideways variants remain separate work.

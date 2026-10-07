@@ -587,3 +587,7 @@ Authored houses with intact front corners now use one centred physical frame for
 ## House front piers and hood
 
 The house now has the current source’s two supported corner piers, warm stone feet, separate pale coping and shallow timber door hood. Physical dimensions, cell containment, standing doorway clearance and real roof/upper-route bounds are checked. The clean source passes 72 affected architecture checks, type checking, documentation/baseline audits and the build (`d885995adab9`). Its thirty ordinary and closer browser views pass without errors; the entrance, exteriors and disclosed interior were compared with the current sprite. See [the house facade review](../art/house-facade-3d-review-2026-10-07.md).
+
+## Standing unarmed sideways support
+
+The four standing unarmed sideways clips now retain a supporting boot and clear the complete footwear throughout the loop. Stable native knee direction, forefoot roll and recovery are checked without stretching the limbs. All 332 other clips and 302 non-leg selected channels per anatomy, native durations, pace and the profile remain exact. The clean source passes 97 affected checks, native/profile/type/docs/baseline verification and the build (`6e151ad105fa`). Four ordinary two-cell routes save their destinations; all 68 browser captures pass without errors. Selected frames were compared with the current male/female walking sheets. See [the detailed review](../art/standing-unarmed-sideways-support-3d-review-2026-10-07.md) for contact residuals and the separate test fixture correction.
