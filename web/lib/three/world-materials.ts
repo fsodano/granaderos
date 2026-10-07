@@ -36,19 +36,20 @@ export class WorldMaterials {
       };
       material.customProgramCacheKey=()=>`plaster-finish:${strength}`;
     }
-    if(kind==='aged'&&path==='/art/architecture-roof-clay-v2.png'){
-      // Match the retained sprite's saturate(.55) brightness(.84) in its
+    const roofBrightness=kind==='aged'&&path==='/art/architecture-roof-clay-v2.png' ? .84 : kind==='thatch'&&path==='/art/architecture-roof-thatch-v2.png' ? .85 : undefined;
+    if(roofBrightness!==undefined){
+      // Match the retained sprite's aged/thatch saturation and brightness in its
       // encoded colour space, then return to linear lighting. Clay keeps
       // its original colour map, metric UVs, shared texture and bump relief.
       material.onBeforeCompile=shader=>{
         const fragment=ShaderChunk.map_fragment.replace('diffuseColor *= sampledDiffuseColor;',`vec4 roofEncoded = sRGBTransferOETF( sampledDiffuseColor );
           float roofLuma = dot( roofEncoded.rgb, vec3( 0.213, 0.715, 0.072 ) );
-          roofEncoded.rgb = mix( vec3( roofLuma ), roofEncoded.rgb, 0.55 ) * 0.84;
+          roofEncoded.rgb = mix( vec3( roofLuma ), roofEncoded.rgb, 0.55 ) * ${roofBrightness.toFixed(2)};
           sampledDiffuseColor = sRGBTransferEOTF( roofEncoded );
           diffuseColor *= sampledDiffuseColor;`);
         shader.fragmentShader=shader.fragmentShader.replace('#include <map_fragment>',fragment);
       };
-      material.customProgramCacheKey=()=> 'roof-finish:aged:0.55:0.84';
+      material.customProgramCacheKey=()=> `roof-finish:${kind}:0.55:${roofBrightness.toFixed(2)}`;
     }
     material.userData.metricBoxUV=masonryKinds.has(kind);
     if(opacity>=1){material.stencilWrite=true;material.stencilRef=1;material.stencilFunc=AlwaysStencilFunc;material.stencilZPass=ReplaceStencilOp;}
