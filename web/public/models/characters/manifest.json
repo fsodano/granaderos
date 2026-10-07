@@ -1826,8 +1826,8 @@
   "animationLibraries": {
     "male": {
       "url": "/models/characters/male-animations.glb",
-      "bytes": 11992828,
-      "sha256": "bebe5a5c651cabd66701a55d10574c6c73c0a4fad59bf5763f1a80668f729c72",
+      "bytes": 11993224,
+      "sha256": "c9f8c0ac146c519fee93806de43902ce719613f1315ef91aa07bb6a3751997fc",
       "clips": [
         {
           "name": "stand.idle.unarmed",
@@ -9155,7 +9155,14 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "native-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "maximumLift": 0.003908
+          }
         },
         {
           "name": "stand.idle.knife",
@@ -15474,8 +15481,8 @@
     },
     "female": {
       "url": "/models/characters/female-animations.glb",
-      "bytes": 11817764,
-      "sha256": "a9df249e6fe75a1b57d013bf83a3e1193a8d9339b1583194a4d64b21a8c9c5fd",
+      "bytes": 11818160,
+      "sha256": "278c5793589a0505dac67a887d580e51ab788274fa20eaf27a0fc7520380cf3d",
       "clips": [
         {
           "name": "stand.idle.unarmed",
@@ -22810,7 +22817,14 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "native-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "maximumLift": 0.006104
+          }
         },
         {
           "name": "stand.idle.knife",
