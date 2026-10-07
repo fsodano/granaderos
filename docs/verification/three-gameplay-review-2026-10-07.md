@@ -468,6 +468,21 @@ production export. Six clean playable views had no browser errors. Front,
 side and interior were compared with the current sprite. A separate placement
 correction remains necessary for the prominent capital silhouette.
 
+## Warehouse shell placement increment
+
+The default warehouse shell, roof, gables and loading canopy now share centred
+wall coordinates. Both side supports expose 39.2 cm while staying inside
+blocked support cells. Disclosed room floors meet the inner wall and keep their
+finish and hatch clipping. Corner door/window edits retain their exact original
+placement. The
+[placement review](../art/warehouse-shell-placement-3d-review-2026-10-07.md)
+records these joins and the remaining source-palette comparison.
+
+The clean cut passed 69 affected checks, type/docs/baseline checks and the
+production export. Thirty final clean playable original/slab/terrace/walking
+roof views had no browser errors. Selected exteriors, interior and upper modes
+were visually inspected against the source.
+
 ## Next increments and acceptance limits
 
 The low-ceiling headwear limit, broader posture bank, braking steps and the
