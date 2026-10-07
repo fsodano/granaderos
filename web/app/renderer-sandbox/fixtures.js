@@ -6,7 +6,7 @@ import {makeGrenadeStack} from '../../../game/grenades.js';
 import {BUILDING_TYPES,BUILDING_FOOTPRINTS} from '../../../game/building-types.js';
 import {createArchitectureReviewBattle} from './architecture-fixtures.js';
 import {PARTIAL_LOADING_SCENARIO,createPartialLoadingBattle} from './partial-loading-fixture.js';
-import {PAIRED_LOADING_SCENARIO,createPairedLoadingBattle} from './paired-loading-fixture.js';
+import {PAIRED_LOADING_SCENARIO,FOUR_BORE_LOADING_SCENARIO,createPairedLoadingBattle} from './paired-loading-fixture.js';
 
 export const RENDERER_SCENARIOS=Object.freeze([
   {id:'characters',label:'Ocho personajes',help:'Granadero, realista, trabajador, cirujano, gaucho, fraile, exploradora y mujer con rebozo. Selecciona cada personaje para caminar, correr o cambiar su equipo. Esta escena no usa tu campaña guardada.'},
@@ -17,6 +17,7 @@ export const RENDERER_SCENARIOS=Object.freeze([
   {id:'combat',label:'Combate',help:'Fusil, pistola, sable, granada y cuchillo: cada especialista tiene un blanco enfrente. Los dos artilleros están junto al cañón. Usa las órdenes habituales; reinicia para repetir.'},
   PARTIAL_LOADING_SCENARIO,
   PAIRED_LOADING_SCENARIO,
+  FOUR_BORE_LOADING_SCENARIO,
   {id:'mounted',label:'Montura y azotea',help:'Jinete: caminar, correr y montar/desmontar. Escaladora: subir por el acceso junto a la casa. Vigía: moverse por la azotea. La puerta está abierta.'},
   {id:'night',label:'Noche',help:'Las fogatas iluminan los blancos. El fusil ya disparó y dejó humo: puedes recargarlo. Todos llevan antorchas; equipa una para añadir luz.'},
   {id:'performance24',label:'24 personajes',help:'Sector abierto para comprobar movimiento y variedad con 24 personajes.'},
@@ -115,6 +116,7 @@ function performance(count,architecture=false){
 export function createRendererSandboxBattle(id='combat'){
   if(id==='partial-loading')return createPartialLoadingBattle();
   if(id==='paired-loading')return createPairedLoadingBattle();
+  if(id==='four-bore-loading')return createPairedLoadingBattle(true);
   if(id==='catalog')return createArchitectureReviewBattle();
   if(id.startsWith('catalog:')){const [,template,rotation,view,roof]=id.split(':');return createArchitectureReviewBattle(template,Number(rotation),view,roof);}
   if(id==='empty')return {...createBattle([],{id:'renderer-empty',name:'Sector vacío',width:12,height:12,tiles:ground(12,12),enemies:[],exploration:true}),deploymentComplete:true};
