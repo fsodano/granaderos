@@ -258,11 +258,48 @@ and 1,438,718 triangles. The first LOD-switch sample was 31.9 FPS. This is bound
 warm performance evidence; it does not establish locked 60 FPS or other hardware
 and pixel densities. The earlier table remains the earlier camera's evidence.
 
+## Seventh increment
+
+The formal town hall now follows its direct sprite with capped square columns,
+corner supports, a storey band and eighteen separate barred upper panes. These
+details use actual solid wall cells, keep opening rays clear and omit upper
+panes on short slabs. Six live room-state and rotation views produced no browser
+errors. The exterior was compared directly with the current 2D town hall.
+
+All fourteen building templates now retain their sprite's jointed stone footing.
+Plaster walls have small deterministic low chips and scuffs using the existing
+undercoat. Brick and stone faces, openings and cut walls do not receive plaster
+wear. The geometry check covers 56 rotated bases, 168 room/window/breach states
+and 24 short-slab/roof-route states. Twenty-four live views of the town hall,
+palace, house and warehouse produced no browser errors; selected views were
+inspected against their retained source. Palace upper detail remains pending.
+
+The Escopeta Criolla now has the supplied reference's single bore, matching its
+capacity-one rule. All nine firearms also fit their separate lock, band and sight
+centres to the same length factor as their vertices. The old short rifle and
+Trabuco fittings extended 45–355 mm beyond their native muzzles. The corrected
+barrel ends remain 2.9–4.6 mm behind them. Seventeen other item meshes, all gun
+roots and muzzle markers, equipment metadata and loading clips remain unchanged.
+The [firearm review](../art/firearm-fitting-3d-review-2026-10-07.md) records the
+source comparison and corrected timed rod views.
+
+The pistol clearance check now uses published deformed face and neck triangles.
+Every charge, hand, posture and physical bore passes 45 native poses with a
+conservative 15 mm barrel capsule. Minimum surface gaps are 34.50 mm for the male
+body and 43.76 mm for the female body. Corrected source views show the actual rod;
+these supplement the sixth increment's live four-bore acceptance.
+
+Melee contact cues now carry a typed visible target pose only after actor
+admission and room readability. Stale, hidden, missing, ambiguous and coordinate
+targets cannot supply body data. Real paid orders retain their authoritative
+outcome and save state. This prepares contact fitting; diagonal sword reach is
+still under repair and is not accepted by this data boundary.
+
 ## Next increments and acceptance limits
 
 Climbing support and the roof-edge step, the broader posture bank, braking
-steps and paired melee contact still need review. Town hall facade details
-and wall finish contrast also remain under visual comparison. The
+steps and paired melee contact still need review. Door hardware and palace upper
+facade detail remain under visual comparison. The
 [character review](../../assets/source/characters-3d/REVIEW.md) records the
 accepted standing reference and the retained motion bank separately.
 
