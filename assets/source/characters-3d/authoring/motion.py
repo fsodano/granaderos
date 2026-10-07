@@ -844,14 +844,17 @@ def apply_animations(ctx, only=None):
     """
     rig=ctx['rig'];bpy.context.scene.render.fps=FPS
     if rig.animation_data:rig.animation_data_clear()
-    reviewed,reviewed_digest=_reviewed_bank(ctx)
-    ctx['reviewed_stride']={name:reviewed[name]['locomotionSpeed'] for name in ('Walk','Run')}
+    specs=_semantic_specs()
+    if only:specs=[s for s in specs if s['name'] in only]
+    loading_only=bool(only) and all(s['gesture'] in ('reload','reprime','repair','unload') for s in specs)
+    reviewed,reviewed_digest=({},None) if loading_only else _reviewed_bank(ctx)
+    ctx['reviewed_stride']={name:reviewed[name]['locomotionSpeed'] for name in ('Walk','Run') if name in reviewed}
     disabled=[]
     for obj in ctx['objects']:
         for modifier in obj.modifiers:
             if modifier.show_viewport:disabled.append(modifier);modifier.show_viewport=False
     offsets=_grip_setup(ctx);sources={};source_meta={}
-    for recipe in SOURCE_RECIPES:
+    for recipe in (('idle','crouch') if loading_only else SOURCE_RECIPES):
         print('MOTION SOURCE',recipe,flush=True)
         sources[recipe],source_meta[recipe]=_retarget_samples(ctx,recipe)
     idle=sources['idle'][0];crouch=sources['crouch'][0]
@@ -863,8 +866,7 @@ def apply_animations(ctx, only=None):
     crouch=_collect(rig)
     prone=_prone_pose(ctx,idle);mounted=_mounted_pose(ctx,idle)
     bases={'standing':idle,'crouched':crouch,'prone':prone,'mounted':mounted}
-    result=[];specs=_semantic_specs();crawl_stride=None
-    if only:specs=[s for s in specs if s['name'] in only]
+    result=[];crawl_stride=None
     for index,spec in enumerate(specs):
         binding=_reviewed_binding(spec)
         if binding:
@@ -889,6 +891,11 @@ def apply_animations(ctx, only=None):
         elif gesture=='artilleryReload':duration=4;markers={'contact':1.8,'ready':3.7}
         elif gesture in ('mount','dismount'):duration=2.3;markers={'seat':duration*(.72 if gesture=='mount' else .20)}
         times=sorted(set([duration*i/max(2,round(duration*SAMPLE_FPS)) for i in range(max(2,round(duration*SAMPLE_FPS))+1)]+list(markers.values())))
+        if equipment=='long-gun' and gesture in ('reload','unload'):
+            # Exact contact stages prevent a short unloading clip from
+            # interpolating past its single muzzle contact between samples.
+            stages=(.12,.24,.36,.46,.58,.70,.79,.86,.90) if gesture=='reload' else (.12,.25,.55,.78,.90)
+            times=sorted(set(times+[duration*stage for stage in stages]))
         samples=[]
         for time in times:
             t=time/duration;pose=_copy_pose(base)
@@ -912,7 +919,10 @@ def apply_animations(ctx, only=None):
                 if gesture=='fire':recoil=_smooth_key([(0,0),(markers['shot'],0),(markers['shot']+.045,.042 if equipment=='long-gun' else .07),(markers['shot']+.22,.004),(duration,0)],time)
                 pose=_gun_pose(ctx,base,'rifle' if equipment=='long-gun' else 'pistol',offsets,'aim',recoil)[0]
             elif gesture in ('reload','reprime','repair','unload'):
-                pose=_reload_pose(ctx,base,'rifle' if equipment=='long-gun' else 'pistol',offsets,t,gesture)
+                if equipment=='long-gun' and gesture in ('reload','unload'):
+                    from rifle_loading import pose as rifle_loading_pose
+                    pose=rifle_loading_pose(ctx,base,offsets,t,gesture,spec.get('item'),posture)
+                else:pose=_reload_pose(ctx,base,'rifle' if equipment=='long-gun' else 'pistol',offsets,t,gesture)
             elif gesture=='slash':
                 phase=_smooth_key([(0,0),(.23,-.65),(.483,1),(.65,.8),(1,0)],t);pose=_blade_pose(ctx,base,offsets,phase,key='knife' if equipment=='knife' else 'sabre')
             elif gesture in ('punch','butt','bayonet'):
@@ -971,6 +981,9 @@ def apply_animations(ctx, only=None):
         meta=_write_clip(rig,spec['name'],samples,duration,spec['loop'],times=times)
         meta.update(spec);meta.update({'duration':round(duration,6),'events':markers,'markers':markers,'source':source,'sampleRate':SAMPLE_FPS,'timingAuthority':'simulation','rootMotion':'in-place'})
         if gesture=='reload' and equipment=='long-gun':meta['propCues']=[{'item':'ramrod','socket':'socket_handLeft_tool','start':round(duration*.46,6),'end':round(duration*.86,6)}]
+        if equipment=='long-gun' and gesture in ('reload','unload'):
+            from rifle_loading import metadata as rifle_loading_metadata
+            meta.update(rifle_loading_metadata(ctx,spec.get('item'),duration))
         if gesture=='throwKnife':meta['handProps']=[{'hand':'handRight','categories':['knife'],'untilMarker':'release'}]
         if speed is not None:meta['locomotionSpeed']=speed
         if gesture=='crawl':

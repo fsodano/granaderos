@@ -3,6 +3,7 @@ import math
 import bpy
 from mathutils import Matrix,Vector
 from equipment import create_equipment
+from equipment_dimensions import RIFLE_STRETCH,PISTOL_STRETCH
 
 def create_library(ctx):
  create_equipment(ctx);h=ctx['equipment_helpers'];exports=[];records={};weapons=ctx['weapons']
@@ -21,7 +22,7 @@ def create_library(ctx):
   muzzle=next((o for o in group.children if o.type=='EMPTY' and 'muzzle' in o.name),None)
   if muzzle:muzzle.name='muzzle_'+key
   records[key]={'node':group.name,'category':category,'grip':grip,'socket':'handRight_'+grip,'leftSocket':'handLeft_'+grip,'position':[0,0,0],'rotation':[0,0,0],'scale':1,'stowedSocket':stow,**({'muzzle':muzzle.name} if muzzle else {})}
- for key,scale in [('1800',1.12),('1801',1.10),('1802',.91),('1803',.76),('1804',.85),('1807',.58)]:
+ for key,scale in RIFLE_STRETCH.items():
   g=clone_tree(weapons['rifle'],'item_'+key,scale)
   if key=='1804':
    barrel=next(o for o in g.children if 'Rifle_Barrel' in o.name and 'Band' not in o.name);barrel.location.y=-.012;other=barrel.copy();other.data=barrel.data.copy();other.location.y=.012;bpy.context.collection.objects.link(other);exports.append(other)
@@ -31,7 +32,7 @@ def create_library(ctx):
      for v in o.data.vertices:
       flare=1+max(0,(v.co.x-.40)/.14)*1.8;v.co.y*=flare;v.co.z=.055+(v.co.z-.055)*flare
   record(key,g,'rifle','rifle','back')
- for key,scale in [('1805',1.0),('1806',1.13),('1808',.90)]:
+ for key,scale in PISTOL_STRETCH.items():
   g=clone_tree(weapons['pistol'],'item_'+key,scale)
   if key=='1808':
    barrel=next(o for o in g.children if 'Pistol_Barrel' in o.name);barrel.location.y=-.011;other=barrel.copy();other.data=barrel.data.copy();other.location.y=.011;bpy.context.collection.objects.link(other);exports.append(other)

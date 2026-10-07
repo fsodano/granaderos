@@ -129,7 +129,21 @@ export class ActorRuntime {
       const role=stow?(item.stowedSocket??'hipLeft'):hand==='hip'?(item.stowedSocket??'hipLeft'):hand;
       const target=this.socket(role,['handRight','handLeft'].includes(role)?item.grip:undefined);
       if(!target)throw Error(`Missing ${role} socket for presentation item: ${object.userData.itemId}`);
-      if(object.parent!==target){target.add(object);this.itemTransform(object,item);}
+      if(object.parent!==target)target.add(object);
+      // Native loading clips slide the supporting palm along the barrel.
+      // The authored offset follows that clip's clock and returns to zero;
+      // inventory ownership and the geometry's dimensions stay unchanged.
+      this.itemTransform(object,item);
+      const grip=!stow&&held?spec.gripOffsets?.find(offset=>offset.hand===hand):undefined;
+      if(grip?.keys.length){
+        let position=grip.keys[0].position;
+        for(let index=1;index<grip.keys.length;index++){
+          const a=grip.keys[index-1],b=grip.keys[index];
+          if(time>=b.time){position=b.position;continue;}
+          const fraction=Math.max(0,(time-a.time)/(b.time-a.time));position=a.position.map((value,axis)=>value+(b.position[axis]-value)*fraction);break;
+        }
+        object.position.x+=position[0];object.position.y+=position[1];object.position.z+=position[2];
+      }
       object.userData.presentationStowed=stow;
     }
   }

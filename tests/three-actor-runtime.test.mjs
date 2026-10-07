@@ -181,6 +181,20 @@ test('a ramrod exists only during the declared reload interval and leaves on int
   runtime.update(visual(f),1400);runtime.tick(0,1400);assert.equal(socket.getObjectByName(name),undefined);runtime.dispose();
 });
 
+test('native loading attachment offsets follow the body clock and recover without accumulating',()=>{
+  const f=fixture(),spec=f.asset.clips.find(clip=>clip.semantic==='stand.reload.long-gun');
+  spec.gripOffsets=[{hand:'handRight',keys:[{time:0,position:[0,0,0]},{time:.4,position:[-.3,-.04,0]},{time:1.6,position:[-.3,-.04,0]},{time:2,position:[0,0,0]}]}];
+  const v=visual(f,{action:'reload',equipment:'long-gun',items:[{id:'1800',reference:'primary',socket:'handRight'}],cue:{id:'barrel-grip',action:'reload',startedAt:0,durationMs:2000}}),before=structuredClone(v),runtime=new ActorRuntime(f.asset,v);
+  const item=attached(runtime,'primary','1800');
+  runtime.tick(0,200);closeVector(item.position,[-.14,0,.03]);
+  runtime.tick(0,400);closeVector(item.position,[-.29,-.02,.03]);
+  runtime.tick(0,400);closeVector(item.position,[-.29,-.02,.03],'Repeated ticks do not add the offset again');
+  runtime.tick(0,1800);closeVector(item.position,[-.14,0,.03]);
+  runtime.tick(0,2001);closeVector(item.position,[.01,.02,.03],'Rest returns to the original attachment transform');
+  assert.deepEqual(v,before,'Presentation retains the original held item and cue');
+  closeVector(f.asset.equipment.scene.getObjectByName(f.asset.manifest.equipment.items['1800'].node).position,[0,0,0],'Shared geometry remains at its original transform');runtime.dispose();
+});
+
 test('mounted placement uses normalized model-local coordinates exactly once',()=>{
   const f=fixture(),v=visual(f,{mounted:true}),runtime=new ActorRuntime(f.asset,v);runtime.tick(0,0);
   closeVector(runtime.model.position,[.08,.7,-.13]);closeVector(runtime.root.position,v.position,'gameplay position is unchanged');
