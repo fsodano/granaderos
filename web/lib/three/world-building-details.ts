@@ -13,6 +13,7 @@ import {stableVentilation} from './world-stable-ventilation';
 import {stableTimberFrame} from './world-stable-frame';
 import {farmhouseGallery as supportedFarmhouseGallery} from './world-farmhouse-gallery';
 import {houseFacade} from './world-house-facade';
+import {chapelPiers} from './world-chapel-piers';
 import {buildingArtInset} from './world-building-placement';
 import type {WorldGeometry} from './world-geometry';
 import type {WorldMaterials} from './world-materials';
@@ -199,6 +200,7 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
     }
   };
 
+  if(kind==='chapel')root.add(chapelPiers(b,input,T,height,base,geometry,materials,legacy));
   if(kind==='chapel'&&!walkableAbove(doorU,-.17/T,1.36/T,.28/T))feature('chapel-bell-gable',()=>{
     const bottom=height+roofRise*.62,spring=bottom+.55,u=doorU,outer=.64,inner=.23,front=-.17/T,back=front+.095/T;
     // Two jambs and an arched crown leave a real bell opening. The narrow
