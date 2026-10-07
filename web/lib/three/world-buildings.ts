@@ -9,6 +9,7 @@ import {illuminationAt} from './world-materials';
 import {architecturalDetails,roofEdgeDetails} from './world-building-details';
 import {addWallSurfaceDetails} from './world-building-surfaces';
 import {addDoorLeaf} from './world-building-doors';
+import {addWindowFace} from './world-building-windows';
 import type {WorldGeometry} from './world-geometry';
 import type {WorldMaterials} from './world-materials';
 import type {WorldBuilding,WorldInput,WorldTile} from './world-types';
@@ -117,10 +118,7 @@ export function buildBuilding(b0:WorldBuilding,input:WorldInput,T:number,geometr
           }
           group.add(leafGroup);
         }else if(!cut){
-          const windowMat=materials.get('glass',{opacity:.38});box(mid,(top+sill)*.5,ow,top-sill,.025,windowMat);
-          const style=tile.style??appearance.windowStyle;
-          if(['barred','lattice','small','arched'].includes(style)){for(let n=0;n<4;n++)box(mid-ow*.38+ow*.25*n,(top+sill)*.5,.018,top-sill,.035,iron);box(mid,sill+(top-sill)*.48,ow,.018,.035,iron);}
-          if(style==='shutters'){box(mid-ow*.64,(top+sill)*.5,ow*.28,top-sill,.07,wood);box(mid+ow*.64,(top+sill)*.5,ow*.28,top-sill,.07,wood);}
+          addWindowFace(batch,materials,{axis,mid,cross,base:tileBase,sill,top,width:ow,style:tile.style??appearance.windowStyle,light});
         }
       }
     }
