@@ -640,6 +640,20 @@
             "release": 0.754
           }
         },
+        "life.climbUp": {
+          "duration": 1.533327,
+          "loop": false,
+          "markers": {
+            "support": 0.7666636
+          }
+        },
+        "life.climbDown": {
+          "duration": 1.408328,
+          "loop": false,
+          "markers": {
+            "support": 0.70416385
+          }
+        },
         "life.mount": {
           "duration": 2.3,
           "loop": false,
@@ -1678,6 +1692,20 @@
           "loop": false,
           "markers": {
             "release": 0.754
+          }
+        },
+        "life.climbUp": {
+          "duration": 1.533327,
+          "loop": false,
+          "markers": {
+            "support": 0.7666636
+          }
+        },
+        "life.climbDown": {
+          "duration": 1.408328,
+          "loop": false,
+          "markers": {
+            "support": 0.70416385
           }
         },
         "life.mount": {

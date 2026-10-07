@@ -24,7 +24,12 @@ export function takeMovementFacingOverride(holder:OverrideHolder|undefined,battl
   return command?.battle===battle?command:null;
 }
 // Screen compass after the map's isometric projection, clockwise from north.
-export function motionDirection(a:Point,b:Point,preservedDirection?:number){if(preservedDirection!==undefined)return preservedDirection;const dx=(b.x-a.x)-(b.y-a.y),dy=(b.x-a.x)+(b.y-a.y);return (Math.round(Math.atan2(dx,-dy)/ (Math.PI/4))+8)%8;}
+export function motionDirection(a:Point,b:Point,preservedDirection?:number){
+  const climbing=b.kind==='climb',descending=climbing&&(b.renderedHeight??0)<(a.renderedHeight??0);
+  if(preservedDirection!==undefined&&!climbing)return preservedDirection;
+  const x=(b.x-a.x)*(descending?-1:1),y=(b.y-a.y)*(descending?-1:1),dx=x-y,dy=x+y;
+  return (Math.round(Math.atan2(dx,-dy)/(Math.PI/4))+8)%8;
+}
 export function movementRoute(previous:any,unit:any,target:Point,charge=false,preserveFacing=false):Point[]{
   const recorded=(target as any).lastMovePath;
   if(Array.isArray(recorded)&&recorded.length&&sameCell(recorded.at(-1),target)&&(recorded[0].kind==='climb'||sameSurface(unit,recorded[0])&&Math.max(Math.abs(recorded[0].x-unit.x),Math.abs(recorded[0].y-unit.y))===1))return [unit,...recorded];

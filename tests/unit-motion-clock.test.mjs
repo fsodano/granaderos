@@ -5,7 +5,7 @@ import {JSDOM} from '../web/node_modules/jsdom/lib/api.js';
 import {createElement as h,act} from '../web/node_modules/react/index.js';
 import {createRoot} from '../web/node_modules/react-dom/client.js';
 import {createBattle,actBattle} from '../game/tactical.js';
-const {useUnitMotion}=await import('../web/app/useUnitMotion.ts');
+const {useUnitMotion,motionDirection}=await import('../web/app/useUnitMotion.ts');
 const {movementStepDuration}=await import('../web/lib/three/movement-timing.ts');
 const {TILE_METRES}=await import('../web/lib/three/projection.ts');
 const {sampleAnimationTime}=await import('../web/lib/three/animation-clock.ts');
@@ -125,7 +125,7 @@ test('diagonal crawl uses distance while a recorded short delay cannot accelerat
  assert.equal(movementStepDuration(actor,from,{x:2,y:1},cardinal),cardinal,'The playback duration and position interpolation use the same clock');
  assert.equal(movementStepDuration(actor,from,{x:2,y:1},undefined,true),cardinal*1.25,'Preserved facing keeps its slower travel');
  assert.ok(movementStepDuration({...actor,mounted:true},from,{x:2,y:1},210)>1000,'Mounted movement uses the horse stride');
- assert.equal(movementStepDuration(actor,from,{x:2,y:1,kind:'climb'},210),210,'A climb uses its recorded link fraction');
+ assert.equal(movementStepDuration(actor,from,{x:2,y:1,kind:'climb'},210),manifest.animationLibraries.male.clips.find(clip=>clip.name==='life.climbUp').duration*1000,'A climb plays the complete native interval');
 });
 
 for(const [gender,appearance]of [['male','granadero'],['female','woman-scout']])test(`${gender} movement uses the matching equipment gait and accepted pace`,()=>{
@@ -167,4 +167,32 @@ test('cardinal and diagonal walking segments keep one physical speed and finish 
  await env.frame(walkStep*Math.SQRT2/2);close(env.motion.positions.walker.x,2.5);close(env.motion.positions.walker.y,1.5);
  close(env.motion.positions.walker.speed,1000/walkStep);close(env.motion.positions.walker.elapsedDistance,1+Math.SQRT2/2);
  await env.frame(walkStep*Math.SQRT2/2);assert.equal(env.motion.positions.walker.x,3);assert.equal(env.motion.positions.walker.y,2);assert.equal(env.motion.positions.walker.moving,false);
+});
+
+
+test('climb timing keeps every native pose and a supported vertical pace',()=>{
+ for(const appearance of ['granadero','woman-scout'])for(const [from,to]of [[{x:1,y:1,renderedHeight:.4},{x:2,y:1,renderedHeight:3.4,kind:'climb'}],[{x:2,y:1,renderedHeight:3.4},{x:1,y:1,renderedHeight:.4,kind:'climb'}]]){
+  const duration=movementStepDuration({spriteAppearance:appearance},from,to,210);
+  close(duration,3/.65*1000);
+  assert.equal(movementStepDuration({spriteAppearance:appearance},from,to,10000),10000,'A longer admitted delay remains authoritative');
+  assert.equal(movementStepDuration({spriteAppearance:appearance},from,to,210,true),duration,'Climbing always uses its supported facing');
+ }
+});
+test('both climb directions face the upper end of the link',()=>{
+ for(const [low,high]of [[{x:1,y:1,renderedHeight:.4},{x:2,y:1,renderedHeight:3.4}],[{x:1,y:1,renderedHeight:0},{x:1,y:2,renderedHeight:2}]]){
+  const up=motionDirection(low,{...high,kind:'climb'}),down=motionDirection(high,{...low,kind:'climb'});
+  assert.equal(down,up);assert.equal(motionDirection(high,{...low,kind:'climb'},(up+4)%8),up,'A climb cannot turn its back to the ladder');
+ }
+});
+
+
+test('a real roof climb publishes the complete ascent and descent before the next path',async t=>{
+ const env=await mountMotion(t),tiles=Array.from({length:100},(_,i)=>({x:i%10,y:Math.floor(i/10),type:'grass',blocked:false,cover:0})),from={x:3,y:4,tacticalLevel:0},to={x:4,y:4,tacticalLevel:1},before=createBattle([{id:'climber',...from,activeSlot:'unarmed',energy:100}],{width:10,height:10,tiles,upperSurfaces:[{id:'platform',...to,elevation:3,kind:'platform',type:'floor',blocked:false,cover:0}],climbLinks:[{id:'access',kind:'climb',from,to}],exploration:true,enemies:[]});
+ await env.draw(before);const up=actBattle(before,{type:'climb',unitId:'climber',linkId:'access'});assert.equal(up.lastError,null);await env.draw(up);
+ const duration=3/.65*1000;await env.frame(duration/2);let motion=env.motion.positions.climber;
+ assert.equal(motion.moving,true);close(motion.x,3.5);close(motion.renderedHeight,1.5);assert.equal(motion.linkId,'access');const facing=motion.direction;
+ await env.frame(duration/2);assert.equal(env.motion.positions.climber.moving,false);close(env.motion.positions.climber.x,4);close(env.motion.positions.climber.renderedHeight,3);
+ const down=actBattle(up,{type:'climb',unitId:'climber',linkId:'access'});assert.equal(down.lastError,null);await env.draw(down);await env.frame(duration/2);motion=env.motion.positions.climber;
+ assert.equal(motion.moving,true);assert.equal(motion.direction,facing);close(motion.x,3.5);close(motion.renderedHeight,1.5);
+ await env.frame(duration/2);assert.equal(env.motion.positions.climber.moving,false);close(env.motion.positions.climber.x,3);close(env.motion.positions.climber.renderedHeight,0);
 });
