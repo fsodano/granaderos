@@ -10,6 +10,7 @@ import {warehouseButtresses} from './world-warehouse-buttresses';
 import {postaPiers} from './world-posta-piers';
 import {stableVentilation} from './world-stable-ventilation';
 import {stableTimberFrame} from './world-stable-frame';
+import {farmhouseGallery as supportedFarmhouseGallery} from './world-farmhouse-gallery';
 import {houseFacade} from './world-house-facade';
 import {buildingArtInset} from './world-building-placement';
 import type {WorldGeometry} from './world-geometry';
@@ -346,7 +347,8 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
     roofCanopy('posta-masonry-veranda',supports,.55,true);
     root.add(postaPiers(b,input,T,height,base,geometry,materials,legacy));
   }else if(['farmhouse','estancia'].includes(kind)){
-    farmhouseGallery();
+    if(legacy&&b.wallFinish===undefined)farmhouseGallery();
+    else root.add(supportedFarmhouseGallery(b,input,T,height,base,geometry,materials,(panels,low)=>roofEdgeDetails(`${b.id}:farmhouse-gallery`,panels,low,geometry,roof,darkwood,light)));
     for(const u of [0,frame.width]){
       const v=Array.from({length:Math.max(0,Math.floor(frame.depth)-1)},(_,n)=>n+1).filter(v=>wallAt(u,v)?.type==='wall'&&!walkableAbove(u-alongInset,v-depthInset,.48)).sort((a,c)=>Math.abs(a-frame.depth+1)-Math.abs(c-frame.depth+1))[0];
       if(v!==undefined)chimney(u-alongInset,v-depthInset,{name:u===0?'farmhouse-chimney-left':'farmhouse-chimney-right',material:wall,capMaterial:materials.get('stone'),top:height+roofRise+.68});
