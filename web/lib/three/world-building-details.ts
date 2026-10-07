@@ -71,7 +71,7 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
       box(u,cv,cy,w*.46,.68,.028/T,darkwood);
       for(const side of [-1,1])box(u+side*w*.25,cv,cy,.040/T,.76,.04/T,trim);
       box(u,cv,cy+.38,w*.54,.055,.04/T,trim);
-      if(civic)clock(u,cv+face*.044/T,cy,.26,face);
+      if(civic)clock(u,cv+face*.044/T,cy,Math.min(.34,w*T*.30),face);
       else{
         batch.primitive('flare',materials.get('brass'),at(u,cv+face*.022/T,cy-.06),[.13,.22,.09],undefined,light);
         box(u,cv,cy+.20,w*.42,.045,.045/T,wood);
@@ -107,14 +107,49 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
     const center=frame.width*.5;batch.polygon(wall,[at(center-1,0,height),at(center+1,0,height),at(center,0,height+.72)],light);
     for(let v=1;v<frame.depth;v+=1.6)for(const u of [0,frame.width])if(wallAt(u,Math.round(v))?.type==='wall')box(u,v,.80,.20,1.6,.32,trim);
   }else if(['cabildo','townhall'].includes(kind)){
-    const columns=Math.max(3,Math.floor(frame.width/1.1));
-    for(let n=0;n<columns;n++){
-      const u=(n+.5)*frame.width/columns;
-      if(Math.abs(u-frame.doorU)>.45)box(u,-.38,height*.40,.22,height*.8,.38,trim);
-      if(n<columns-1){const a=u+.15,c=(n+1.5)*frame.width/columns-.15,r=(c-a)*T*.5,y=height*.73;for(let k=0;k<10;k++){const angle=Math.PI*k/10,next=Math.PI*(k+1)/10;batch.cylinder(trim,at((a+c)*.5+Math.cos(angle)*r/T,-.58,y+Math.sin(angle)*r*.6),at((a+c)*.5+Math.cos(next)*r/T,-.58,y+Math.sin(next)*r*.6),.06,light);}}
-    }
-    box(frame.width*.5,-.36,height*.84,frame.width,.16,.44,trim);
-    tower(frame.width*.5,.1,.86,height+1.35,height-.12,true);
+    const twoStoreys=height>=4,storey=twoStoreys?height*.50:height,columns:number[]=[];
+    for(let u=0;u<=frame.width;u++)if(wallAt(u,0)?.type==='wall')columns.push(u===0||u===frame.width?u:u-alongInset);
+    columns.sort((a,b)=>a-b);
+    const arcade=(name:string,bottom:number,top:number,upper=false)=>feature(name,()=>{
+      for(const u of columns){box(u,-.16/T,(bottom+top)*.5,.21/T,top-bottom,.25/T,trim);box(u,-.16/T,top-.08,.30/T,.13,.29/T,trim);}
+      for(let n=1;n<columns.length;n++){
+        const left=columns[n-1]+.14/T,right=columns[n]-.14/T;
+        if(right-left<.25/T)continue;
+        const radius=(right-left)*T*.5,center=(left+right)*.5,peak=top-.17,spring=peak-Math.min(radius,.52);
+        const arch=Array.from({length:17},(_,k)=>at(center+Math.cos(k*Math.PI/16)*radius/T,-.20/T,spring+Math.sin(k*Math.PI/16)*(peak-spring)));
+        if(upper){
+          // Upper arcade recesses are scenery on the retained exterior shell.
+          // They never create new playable doors or reveal actors indoors.
+          const pane=[at(left,-.13/T,bottom+.10),at(right,-.13/T,bottom+.10),...arch.map(point=>point.clone().add(new Vector3(frame.v.x*.07,0,frame.v.y*.07)))];
+          batch.polygon(darkwood,pane,light);
+          for(const u of [left,right])batch.cylinder(trim,at(u,-.20/T,bottom+.08),at(u,-.20/T,spring),.038,light);
+          for(const y of [bottom+.14,bottom+.53])batch.cylinder(iron,at(left,-.26/T,y),at(right,-.26/T,y),.021,light);
+          const rods=Math.max(2,Math.ceil((right-left)/.20));for(let k=0;k<=rods;k++){const u=left+(right-left)*k/rods;batch.cylinder(iron,at(u,-.26/T,bottom+.14),at(u,-.26/T,bottom+.53),.012,light);}
+        }
+        for(let k=1;k<arch.length;k++)batch.cylinder(trim,arch[k-1],arch[k],.053,light);
+      }
+    });
+    arcade('civic-ground-arcade',.03,storey-.09);
+    if(twoStoreys)arcade('civic-upper-arcade',storey+.12,height-.12,true);
+    feature('civic-cornices',()=>{
+      for(const y of twoStoreys?[storey,height-.10]:[height-.10]){
+        box(frame.width*.5,-.12/T,y,frame.width+.20/T,.15,.29/T,trim);
+        for(const u of [0,frame.width])box(u,frame.depth*.5,y,.22/T,.14,frame.depth,trim);
+      }
+    });
+    if(twoStoreys)feature('civic-side-windows',()=>{
+      const y=storey+(height-storey)*.46;
+      for(const side of [0,frame.width])for(let v=1;v<frame.depth;v+=2){
+        if(wallAt(side,v)?.type!=='wall')continue;
+        const sign=side===0?-1:1,u=side+sign*.085/T;
+        box(u,v,y,.04/T,1.04,.72/T,darkwood);
+        for(const offset of [-.40,.40])box(u+sign*.024/T,v+offset/T,y,.065/T,1.17,.055/T,trim);
+        for(const dy of [-.55,.55])box(u+sign*.024/T,v,y+dy,.065/T,.06,.86/T,trim);
+        for(const offset of [-.23,0,.23])box(u+sign*.045/T,v+offset/T,y,.023/T,1.03,.024/T,iron);
+        box(u+sign*.045/T,v,y-.16,.023/T,.024,.72/T,iron);
+      }
+    });
+    tower(frame.width*.5,.1,Math.min(1.4,Math.max(1.1,frame.width*.22)),height+(twoStoreys?2.05:1.35),height-.12,true);
   }else if(['farmhouse','estancia','posta','pulperia'].includes(kind)){
     gallery(kind==='pulperia'?.75:.55);
     if(kind==='farmhouse'||kind==='estancia')chimney(Math.max(.60,frame.width-.65),Math.max(.55,frame.depth-.60));
@@ -177,7 +212,7 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
   }else if(kind==='smithy'){
     box(frame.width-.65,frame.depth-.55,(height+1)*.5,.42,height+1,.42,materials.get('brick'));box(frame.width-.65,frame.depth-.55,height+1,.56,.14,.56,trim);
   }
-  if(['palace','townhall','mansion','cabildo'].includes(kind))feature('upper-windows',()=>{
+  if(['palace','mansion'].includes(kind))feature('upper-windows',()=>{
     for(let u=.7;u<frame.width;u+=1.35){
       if(hasBalcony&&Math.abs(u-doorU)<.64)continue;
       const y=height*.71;box(u,-.085/T,y,.45/T,.65,.04/T,darkwood);

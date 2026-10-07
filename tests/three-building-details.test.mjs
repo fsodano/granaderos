@@ -133,3 +133,32 @@ test('palace balcony and military details leave no floating features during room
     assert.equal(building.getObjectByName('building-details:review'),undefined);assert.equal(building.getObjectByName('building-roof-edges:review'),undefined);f.dispose(building);
   }
 });
+
+test('tall civic facades have separate arcade levels, iron rails, side windows and a roof-supported clock',()=>{
+  for(const kind of ['cabildo','townhall'])for(const side of ['north','east','south','west']){
+    const f=fixture(kind,side),height=5.1,details=architecturalDetails(f.b,f.input,T,height,0,f.geometry,f.materials,false),ground=details.getObjectByName('building-detail:review:civic-ground-arcade'),upper=details.getObjectByName('building-detail:review:civic-upper-arcade'),cornices=details.getObjectByName('building-detail:review:civic-cornices'),windows=details.getObjectByName('building-detail:review:civic-side-windows'),tower=details.getObjectByName('building-detail:review:civic-clock-tower');
+    const lowerBounds=new Box3().setFromObject(ground),upperBounds=new Box3().setFromObject(upper);
+    assert.ok(lowerBounds.max.y<height*.51&&upperBounds.min.y>height*.51,'arcade floors must remain visually separate');
+    assert.ok(upper.children.some(child=>child.material?.name==='world:darkwood'));assert.ok(upper.children.some(child=>child.material?.name==='world:iron'),'upper arcade needs its period rail');
+    assert.ok(new Box3().setFromObject(cornices).max.y>5);assert.ok(windows.children.some(child=>child.material?.name==='world:iron'),'side windows need wrought iron bars');
+    const clockBounds=new Box3().setFromObject(tower);assert.ok(clockBounds.min.y>height-.20);assert.ok(clockBounds.max.y>height+2.9,'clock cupola must rise clearly above the roof');f.dispose(details);
+  }
+});
+
+test('civic decoration leaves doors, windows and wall breaches clear through all rotations',()=>{
+  for(const side of ['north','east','south','west']){
+    const f=fixture('cabildo',side);
+    for(const [offset,type]of [[-1,'window'],[1,'rubble']]){const p=f.frame.at(f.frame.doorU+offset,0);f.input.terrain.tiles.find(tile=>tile.x===p.x&&tile.y===p.y).type=type;}
+    const before=JSON.stringify(f.input),details=architecturalDetails(f.b,f.input,T,5.1,0,f.geometry,f.materials,false);details.updateMatrixWorld(true);
+    for(const [offset,y]of [[-1,1.3],[0,1.90],[1,1.90]]){
+      const u=f.frame.doorU+offset-.4*(f.frame.u.x+f.frame.u.y),p=f.frame.at(u,-1),ray=new Raycaster(new Vector3((p.x+.4)*T,y,(p.y+.4)*T),new Vector3(f.frame.v.x,0,f.frame.v.y),0,T*1.6);
+      assert.equal(ray.intersectObject(details,true).length,0,`${side} civic decoration obstructs ${offset}`);
+    }
+    assert.equal(JSON.stringify(f.input),before);f.dispose(details);
+  }
+});
+
+test('short civic profiles keep one arcade level and revealed rooms omit every civic detail',()=>{
+  const f=fixture('cabildo'),short=architecturalDetails(f.b,f.input,T,2.5,0,f.geometry,f.materials,false);assert.ok(short.getObjectByName('building-detail:review:civic-ground-arcade'));assert.equal(short.getObjectByName('building-detail:review:civic-upper-arcade'),undefined);disposeWorldNode(short);
+  const interior=buildBuilding(f.b,{...f.input,revealedRooms:['room']},T,f.geometry,f.materials);assert.equal(interior.getObjectByName('building-details:review'),undefined);f.dispose(interior);
+});
