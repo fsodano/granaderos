@@ -1,0 +1,7 @@
+# Thatch roof finish review — 7 October 2026
+
+The current direct rural-house and stable roofs select thatch. Their retained map receives `saturate(.55) brightness(.85)` in `TacticalRoof.tsx` and `TacticalBuildingVolumes.tsx`. The native material previously used the same map without the filter, leaving the straw too bright and yellow.
+
+The native thatch material now applies the same encoded saturation and brightness before returning to linear lighting. It retains the current map, physical straw spacing and bump relief. The aged clay treatment remains at .84 brightness with its same shader cache key; ordinary clay remains unfiltered. Each filtered finish has its own cache key. No bitmap, appearance selection or gameplay state changes.
+
+The clean committed cut passed 13 affected roof/flat-roof/surface checks in 9.04 seconds, type/docs/baseline checks and the production export (1,244 files; 1,039 references; build `a3e9d945bf11`). Eighteen final clean playable rural-house/stable/posta views passed without browser errors at `artifacts/three-thatch-cut-review/`. The house front was compared directly with its current sprite; the stable side was inspected. The thatch field now has the retained muted straw treatment. The aged control retains its prior treatment. Native lighting can change final pixels; the finish comparison does not claim pixel identity or complete building polish. The stable's small ventilation gable remains a separate geometry correction.

@@ -483,6 +483,18 @@ production export. Thirty final clean playable original/slab/terrace/walking
 roof views had no browser errors. Selected exteriors, interior and upper modes
 were visually inspected against the source.
 
+## Thatch roof finish increment
+
+Authored thatch now retains the current sprite's encoded saturation and
+brightness before native lighting. The aged treatment, ordinary clay, current
+maps, physical spacing and bump relief remain. The
+[thatch review](../art/thatch-roof-finish-3d-review-2026-10-07.md)
+records the direct roof comparison and remaining stable-gable correction.
+
+The clean cut passed 13 affected checks, type/docs/baseline checks and the
+production export. Eighteen clean rural-house/stable/aged-control views had no
+browser errors; the house front and stable side were visually reviewed.
+
 ## Next increments and acceptance limits
 
 The low-ceiling headwear limit, broader posture bank, braking steps and the
