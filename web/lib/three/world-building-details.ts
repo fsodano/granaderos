@@ -5,6 +5,7 @@ import {buildingStyle} from '../../../game/building-types.js';
 import {WorldBatch,roofTextureProjector} from './world-geometry';
 import {illuminationAt} from './world-materials';
 import {palaceFacade} from './world-palace-facade';
+import {depotFacade} from './world-depot-facade';
 import type {WorldGeometry} from './world-geometry';
 import type {WorldMaterials} from './world-materials';
 import type {WorldBuilding,WorldInput} from './world-types';
@@ -360,13 +361,11 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
   }else if(kind==='palace'){
     root.add(palaceFacade(b,input,T,height,base,geometry,materials,legacy,(panels,eave)=>roofEdgeDetails(`${b.id}:palace-portico`,panels,eave,geometry,roof,darkwood,light)));
   }else if(['warehouse','depot','stable','barracks'].includes(kind)){
-    for(let v=1;v<frame.depth;v+=2)for(const u of [0,frame.width])if(wallAt(u,v)?.type==='wall')box(u,v,.5,.16,1,.18,trim);
+    if(kind!=='depot')for(let v=1;v<frame.depth;v+=2)for(const u of [0,frame.width])if(wallAt(u,v)?.type==='wall')box(u,v,.5,.16,1,.18,trim);
     if(kind==='warehouse')roofCanopy('loading-canopy',entranceSupports(),.50);
     if(kind==='depot'){
       roofCanopy('gallery',frontSupports(),.60);
-      const supports=entranceSupports();if(supports.length===2&&height>=2.4&&!walkableAbove(doorU,-.08,2.25))feature('depot-hoist',()=>{
-        box(doorU,-.08,height-.05,2.20,.12,.13/T,wood);batch.primitive('torus',iron,at(doorU,-.10,height-.01),[.12,.12,.12],rotation,light);batch.cylinder(iron,at(doorU,-.10,height-.10),at(doorU,-.10,height-.26),.014,light);
-      });
+      root.add(depotFacade(b,input,T,height,base,roofRise,geometry,materials));
     }
     if(kind==='barracks')feature('barracks-gate',()=>{
       const supports=entranceSupports();

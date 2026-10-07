@@ -1,0 +1,11 @@
+# Depot facade review — 7 October 2026
+
+The direct current depósito sprite has full-height stone piers along its end walls, plus a timber loft hatch and projecting hoist above the loading canopy. See `depotPiers()` and `depotLoadingFront()` in `web/app/TacticalBuildingDetails.tsx`, and the retained direct render at `artifacts/three-gameplay-review/direct-facade-audit/deposito-0-exterior.png`. The previous 3D depot had short thin trim blocks and a small hoist at wall height.
+
+The depot helper now follows those pier and hatch details. Stone shafts, feet and capitals use the retained stone finish. Their outer faces reach 49% of the actual intact support cell, joining the wall without entering a walking cell. The timber hatch has a closed face, border, straps and diagonal brace. Its supported boom, pulley and short rope fit below the actual pitched ridge. The existing loading gallery, authored wall and roof finishes, doors and collision remain unchanged.
+
+The hatch requires an intact central wall support and enough real roof rise. Flat authored slabs and terraces omit it. A legal upper walking cell that overlaps the hatch or boom also omits them; blocked, ground and distant upper cells do not. All depot exterior detail follows the normal room cutaway.
+
+The focused window, detail, support and depot tests passed 41 checks in 3.8 seconds. TypeScript and whitespace checks passed. The checks cover all four actual compiled template rotations, fully visible stone faces, every pier vertex inside a solid cell, clear door/window centres, edited supports, flat roofs, upper routes, retained finishes and ordinary partial/full room disclosure. Rendering does not change input state.
+
+The first six live depot views passed without browser errors. Inspection found that the stone shafts were mostly hidden by the positive wall face. Their final inset now exposes the stone within the same footprint; the geometry test checks that it is the first visible surface. All six final views passed without browser errors at `artifacts/three-gameplay-review/depot-facade-final/`. The final 0° and 90° exteriors and 270° interior were inspected against the direct sprite: the full stone faces and loft hatch are visible, and the normal cutaways are clear. This records a specific facade correction, not complete architectural acceptance.
