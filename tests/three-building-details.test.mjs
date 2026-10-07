@@ -8,6 +8,7 @@ const {WorldMaterials}=await import('../web/lib/three/world-materials.ts');
 const {architecturalDetails,roofEdgeDetails}=await import('../web/lib/three/world-building-details.ts');
 const {buildBuilding}=await import('../web/lib/three/world-buildings.ts');
 const {entranceFrame}=await import('../game/building-profile.js');
+const {createArchitectureReviewBattle}=await import('../web/app/renderer-sandbox/architecture-fixtures.js');
 const T=1.2360585147470482;
 
 function fixture(kind,side='south'){
@@ -60,6 +61,50 @@ test('pulperia trade signs keep their bracket and front face through rotation',(
     assert.ok(bounds.max.z<.05&&bounds.min.z<-.5,'the sign must hang outside with its bracket anchored in the facade');
     if(expected)actual.forEach((value,n)=>assert.ok(Math.abs(value-expected[n])<1e-5));else expected=actual;
     f.dispose(details);
+  }
+});
+
+test('posta and work canopies have closed roof edges and keep every ground support in solid cells through rotation',()=>{
+  for(const [kind,name]of [['posta','posta-masonry-veranda'],['warehouse','loading-canopy'],['smithy','forge-canopy']])for(const side of ['north','east','south','west']){
+    const f=fixture(kind,side),before=JSON.stringify(f.input),details=architecturalDetails(f.b,f.input,T,2.5,0,f.geometry,f.materials,false),canopy=details.getObjectByName(`building-detail:review:${name}`);
+    assert.ok(canopy,`${kind} needs its supported canopy`);assert.ok(canopy.getObjectByName(`building-roof-edges:review:${name}`),'the roof needs a closed underside and fascia');
+    const roof=canopy.children.find(child=>child.material?.name==='world:aged');assert.ok(roof,'these work buildings must retain their aged-tile roof finish');
+    assert.ok(new Box3().setFromObject(roof).min.y>2.10,'canopy eaves must clear the standing doorway');
+    let groundVertices=0;canopy.traverse(child=>{if(child instanceof Mesh){const p=child.geometry.getAttribute('position');for(let n=0;n<p.count;n++)if(p.getY(n)<1.9){
+      groundVertices++;const x=Math.round(p.getX(n)/T),y=Math.round(p.getZ(n)/T);assert.equal(f.input.terrain.tiles.find(tile=>tile.x===x&&tile.y===y)?.type,'wall',`${kind} ${side} support extends into walkable ground at ${x},${y}`);
+    }}});assert.ok(groundVertices>0);assert.equal(JSON.stringify(f.input),before);f.dispose(details);
+  }
+});
+
+test('work canopy supports follow edited openings and all canopies preserve real doorway and breach paths',()=>{
+  for(const [kind,name]of [['posta','posta-masonry-veranda'],['warehouse','loading-canopy'],['smithy','forge-canopy']])for(const side of ['north','east','south','west'])for(const type of ['window','door','rubble']){
+    const f=fixture(kind,side),u=f.frame.doorU+1,point=f.frame.at(u,0);f.input.terrain.tiles.find(tile=>tile.x===point.x&&tile.y===point.y).type=type;
+    const details=architecturalDetails(f.b,f.input,T,2.5,0,f.geometry,f.materials,false);details.updateMatrixWorld(true);
+    if(kind!=='posta')assert.equal(details.getObjectByName(`building-detail:review:${name}`),undefined,'a loading or forge canopy requires both original solid entrance supports');
+    for(const [along,y]of [[f.frame.doorU,1.90],[u,type==='window'?1.3:1.90]]){
+      const actual=along-.4*(f.frame.u.x+f.frame.u.y),start=f.frame.at(actual,-1),ray=new Raycaster(new Vector3((start.x+.4)*T,y,(start.y+.4)*T),new Vector3(f.frame.v.x,0,f.frame.v.y),0,T*1.6);
+      assert.equal(ray.intersectObject(details,true).length,0,`${kind} ${side} canopy must leave ${type} clear`);
+    }
+    f.dispose(details);
+  }
+});
+
+test('supported canopies retain authored roof finishes and disappear during normal room cutaways',()=>{
+  for(const [kind,name]of [['posta','posta-masonry-veranda'],['warehouse','loading-canopy'],['smithy','forge-canopy']]){
+    const f=fixture(kind);f.b.roofFinish='aged';const exterior=buildBuilding(f.b,f.input,T,f.geometry,f.materials),canopy=exterior.getObjectByName(`building-detail:review:${name}`);
+    assert.ok(canopy.children.some(child=>child.material?.name==='world:aged'));disposeWorldNode(exterior);
+    const interior=buildBuilding(f.b,{...f.input,revealedRooms:['room']},T,f.geometry,f.materials);assert.equal(interior.getObjectByName(`building-detail:review:${name}`),undefined);f.dispose(interior);
+  }
+});
+
+test('compiled posta, warehouse and smithy templates retain supported canopies and ordinary room disclosure',()=>{
+  for(const [id,name]of [['posta','posta-masonry-veranda'],['almacen','loading-canopy'],['herreria','forge-canopy']])for(const rotation of [0,90,180,270])for(const view of ['exterior','partial']){
+    const battle=createArchitectureReviewBattle(id,rotation,view),before=JSON.stringify(battle),input={terrain:{width:battle.width,height:battle.height,tiles:battle.tiles,buildings:battle.buildings,upperSurfaces:battle.upperSurfaces},revealedRooms:battle.revealedRooms},geometry=new WorldGeometry(),materials=new WorldMaterials({tileMetres:T,assetUrl:path=>path}),building=buildBuilding(battle.buildings[0],input,T,geometry,materials),canopy=building.getObjectByName(`building-detail:${battle.buildings[0].id}:${name}`);
+    assert.equal(Boolean(canopy),view==='exterior',`${id}/${rotation}/${view} must follow ordinary room disclosure`);
+    if(canopy)canopy.traverse(child=>{if(child instanceof Mesh){const p=child.geometry.getAttribute('position');for(let n=0;n<p.count;n++)if(p.getY(n)<1.9){
+      const x=Math.round(p.getX(n)/T),y=Math.round(p.getZ(n)/T);assert.equal(battle.tiles.find(tile=>tile.x===x&&tile.y===y)?.type,'wall',`${id}/${rotation} support must remain in its actual compiled wall cell`);
+    }}});
+    assert.equal(JSON.stringify(battle),before);disposeWorldNode(building);geometry.dispose();materials.dispose();
   }
 });
 

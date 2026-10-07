@@ -111,6 +111,27 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
     batch.polygon(darkwood,[panel[0],panel[1],panel[1].clone().add(new Vector3(0,-.07,0)),panel[0].clone().add(new Vector3(0,-.07,0))],light);
     box(frame.width*.5,-depth,roofY-.05,frame.width+.18,.12,.13,wood);
   });
+  const roofCanopy=(name:string,supports:number[],depth=.55,masonry=false)=>{
+    if(supports.length<2||height<2.4)return;
+    const lo=Math.min(...supports),hi=Math.max(...supports),low=Math.max(2.12,height*.82),high=low+.24,front=-depth-.15,back=.16;
+    const panel=[at(lo-.18,front,low),at(hi+.18,front,low),at(hi+.18,back,high),at(lo-.18,back,high)],roofAt=(v:number)=>low+(v-front)/(back-front)*(high-low);
+    feature(name,()=>{
+      for(const u of supports){
+        // Wide masonry feet use a slightly smaller global art inset. They
+        // still meet the shell, and every ground vertex stays in its wall cell.
+        const shift=masonry?.06:0,a=u-shift*(frame.u.x+frame.u.y),v=-shift*(frame.v.x+frame.v.y),top=roofAt(v);
+        if(masonry){
+          box(a,v,(top+.16)*.5,.30/T,top-.16,.30/T,wall);box(a,v,.08,.38/T,.16,.38/T,materials.get('stone'));box(a,v,top-.02,.38/T,.10,.38/T,trim);
+        }else{
+          box(a,v,top*.5,.11/T,top,.11/T,wood);box(a,v,.055,.21/T,.11,.21/T,materials.get('stone'));
+          const toward=u==lo?1:-1;batch.cylinder(wood,at(a,v,top-.30),at(a+toward*.28,v,roofAt(v)-.065),.025,light);
+        }
+      }
+      box((lo+hi)*.5,0,roofAt(0)-.045,hi-lo+.18,.11,.14/T,masonry?trim:wood);
+      batch.polygon(roof,panel,light,roofTextureProjector(panel));
+    });
+    root.getObjectByName(`building-detail:${b.id}:${name}`)?.add(roofEdgeDetails(`${b.id}:${name}`,[panel],low,geometry,roof,darkwood,light));
+  };
   const chimney=(u:number,v:number,options:{material?:MeshStandardMaterial;top?:number;industrial?:boolean}={})=>feature(options.industrial?'forge-chimney':'domestic-chimney',()=>{
     const bottom=height-.12,top=options.top??height+1.02,w=options.industrial?.42:.38,cap=options.industrial?.56:.48;
     box(u,v,(bottom+top)*.5,w,top-bottom,w,options.material??materials.get('brick'));box(u,v,top+.015,cap,.12,cap,trim);box(u,v,top+.08,w-.11,.018,w-.11,darkwood);
@@ -227,7 +248,10 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
       }
     });
     tower(frame.width*.5,.1,Math.min(1.4,Math.max(1.1,frame.width*.22)),height+(twoStoreys?2.05:1.35),height-.12,true);
-  }else if(['farmhouse','estancia','posta','pulperia'].includes(kind)){
+  }else if(kind==='posta'){
+    const supports=[...new Set([0,...entranceSupports(),frame.width])].filter(u=>wallAt(u,0)?.type==='wall').sort((a,c)=>a-c);
+    roofCanopy('posta-masonry-veranda',supports,.55,true);
+  }else if(['farmhouse','estancia','pulperia'].includes(kind)){
     gallery(kind==='pulperia'?.75:.55);
     if(kind==='farmhouse'||kind==='estancia')chimney(Math.max(.60,frame.width-.65),Math.max(.55,frame.depth-.60));
     if(kind==='pulperia')feature('trade-sign',()=>{
@@ -259,6 +283,7 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
     });
   }else if(['warehouse','depot','stable','barracks'].includes(kind)){
     for(let v=.3;v<frame.depth;v+=1.7)for(const u of [0,frame.width])box(u,v,.5,.18,1,.22,trim);
+    if(kind==='warehouse')roofCanopy('loading-canopy',entranceSupports(),.50);
     if(kind==='depot'){gallery(.60);box(frame.doorU,-.52,1.2,.10,2.4,.1,wood);batch.primitive('torus',iron,at(frame.doorU,-.75,2.2),[.12,.12,.12],rotation,light);}
     if(kind==='barracks')feature('barracks-gate',()=>{
       const supports=entranceSupports();
@@ -286,7 +311,7 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
       for(let n=0;n<3;n++)batch.cylinder(wood,panel[n],panel[(n+1)%3],.04,light);
       for(let u=center-half+.18;u<center+half;u+=.25){const top=height+.025+(rise-.025)*(1-Math.abs(u-center)/half);batch.cylinder(trim,at(u,v-.015/T,height+.055),at(u,v-.015/T,top-.035),.018,light);}
     });
-  }else if(kind==='smithy')sideChimney(true);
+  }else if(kind==='smithy'){sideChimney(true);roofCanopy('forge-canopy',entranceSupports(),.50);}
   else if(kind==='house')sideChimney();
   if(['palace','mansion'].includes(kind))feature('upper-windows',()=>{
     for(let u=.7;u<frame.width;u+=1.35){
