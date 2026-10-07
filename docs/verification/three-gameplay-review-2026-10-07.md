@@ -295,11 +295,34 @@ targets cannot supply body data. Real paid orders retain their authoritative
 outcome and save state. This prepares contact fitting; diagonal sword reach is
 still under repair and is not accepted by this data boundary.
 
+## Eighth increment
+
+Door leaves now retain the direct sprite's separate detail on both faces.
+Panelled leaves have four framed fields, plank leaves have board seams and
+straps, and barn leaves have flat timber V-braces. Local moulding and brace
+colours make their narrow raised edges visible while the shared timber leaf
+finish remains intact. Handles and hinge plates stay attached to the original
+hinges. Short cutaway stubs omit full-height hardware and panels.
+
+Twenty-six affected checks cover all fourteen actual catalogue templates and
+four rotations, both leaf faces, standing doorway clearance, breaches, room
+cutaways, slabs and roof routes. Twenty-four stable live views of house, town
+hall, palace and warehouse produced no browser errors. Selected exteriors and
+interiors were visually reviewed. Captures interrupted by loading are removed
+and repeated by the catalogue checker; an earlier loading image is excluded.
+
+The melee body resolver now uses only the current loaded actor matching the
+admitted target pose and appearance. Hidden, pending, stale, replaced, failed
+and ambiguous models cannot supply geometry. Thirty-four runtime/resolver checks
+and the type check pass. A collapsed clothing face now supplies a finite segment
+or point distance. This is groundwork for the measured paired contact repair,
+which remains pending.
+
 ## Next increments and acceptance limits
 
 Climbing support and the roof-edge step, the broader posture bank, braking
-steps and paired melee contact still need review. Door hardware and palace upper
-facade detail remain under visual comparison. The
+steps and paired melee contact still need review. Crouched boot grounding and
+palace upper facade detail remain under correction. The
 [character review](../../assets/source/characters-3d/REVIEW.md) records the
 accepted standing reference and the retained motion bank separately.
 
