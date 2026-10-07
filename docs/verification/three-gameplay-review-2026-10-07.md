@@ -655,3 +655,7 @@ The parish front corners now carry the current source-sized plaster shafts, sepa
 ## Supported shop forge and depot shells
 
 Authored shop, forge and depot roofs, walls, standing openings and floor returns now share centred support coordinates when both front corners are intact. Depot piers and its loft follow the same measured frame. Edited corners and unpainted legacy shells retain their existing placement. All 53 affected checks, type/docs/baseline checks and export `f615a93d1dbb` pass. Ninety original/slab/accessible-roof/close views and eighteen final combined views pass without browser errors; selected entrances, exteriors and interiors were compared with the three current sprites. Porch frames remain the next separate source detail. See [the shell review](../art/work-porch-shell-placement-3d-review-2026-10-07.md).
+
+## Current parish arched bars
+
+Authored church and explicitly arched chapel panes now use the current sprite's three pale bars, measured insets and transverse stroke. Default small chapel windows and other saved styles retain their existing helper. All 52 affected checks, type/docs/baseline checks and export `790c382a3b61` pass. Sixty actual original/slab/accessible-roof/close views pass without browser errors; selected exterior/interior church bars and the ordinary chapel entrance were compared with the current sprites. The publication bridge preserves the actual capture source and selected file hashes. See [the grille review](../art/parish-arched-window-bars-3d-review-2026-10-07.md).
