@@ -1,6 +1,6 @@
 // Playable template review. Every view uses normal door and movement orders.
 import assert from 'node:assert/strict';
-import {mkdir,writeFile} from 'node:fs/promises';
+import {mkdir,rm,writeFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
 import {ARCHITECTURE_REVIEW_TEMPLATES,ARCHITECTURE_REVIEW_ROOFS,createArchitectureReviewBattle} from '../web/app/renderer-sandbox/architecture-fixtures.js';
 import {getBuildingProfile} from '../game/building-profile.js';
@@ -45,13 +45,21 @@ try{
       const camera=await page.locator('[data-scene-camera]').evaluate(element=>{const matrix=element.transform.baseVal.consolidate().matrix,svg=element.ownerSVGElement;return {x:-matrix.e,y:-matrix.f,width:svg.viewBox.baseVal.width,height:svg.viewBox.baseVal.height};});
       const field=await page.locator('.tactical-field').boundingBox();await page.mouse.move(field.x+field.width*.5,field.y+field.height*.5);
       await page.mouse.wheel(target.x-camera.x-camera.width*.5,target.y-camera.y-camera.height*.5);await page.waitForTimeout(180);
+      await ready();
       const telemetry=await page.locator('canvas[data-sector-renderer="three"]').evaluate(element=>({...element.dataset}));
       assert.equal(telemetry.error,undefined,`${template.id} renderer failure`);
       assert.equal(telemetry.actors,'1',`${template.id} guard missing`);
       assert.ok(Number(telemetry.triangles)>0,`${template.id} empty geometry`);
       const bounds=await page.locator('.battle-layout').boundingBox();assert.ok(bounds&&bounds.y+bounds.height<=1001,`${template.id} HUD exceeds viewport`);
       const file=`${template.id}-${state.rotation}-${state.view}${roof==='original'?'':`-${roof}`}.png`;
-      await page.screenshot({path:resolve(output,file)});results.push({template:template.id,...state,roof,file,telemetry});
+      let captured=false;
+      for(let attempt=0;attempt<3&&!captured;attempt++){
+        await ready();await page.screenshot({path:resolve(output,file)});
+        captured=await page.evaluate(()=>{const c=document.querySelector('canvas[data-sector-renderer="three"]');return Boolean(c?.dataset.actors&&c.dataset.actors===c.dataset.loadedActors&&!document.querySelector('.tactical-three-status'));});
+        if(!captured)await rm(resolve(output,file),{force:true});
+      }
+      assert.ok(captured,`${template.id}: loading interrupted the screenshot`);
+      results.push({template:template.id,...state,roof,file,telemetry});
     }
     console.log(`${template.id}: ${states.length} live views ready`);
   }

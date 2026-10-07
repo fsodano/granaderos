@@ -1,4 +1,4 @@
-# Character library review — 2026-10-06
+# Character library review — 2026-10-07
 
 The user accepted Granadero preview `4921a38b` as a sufficient reference for
 reuse and requested the other characters plus a merge to main. This accepts
@@ -25,7 +25,7 @@ the existing semantic parts. Civilian presets remove all military trim.
 
 ## Movement coverage
 
-Each anatomy bank now has 318 semantic clips. The original 270-clip bank
+Each anatomy bank now has 334 semantic clips. The original 270-clip bank
 includes 34 accepted reference clips through 29 distinct motions:
 
 | Family | Semantic clips | Distinct reference motions |
@@ -65,6 +65,22 @@ ramrod clearance, planted support feet and crouched stock clearance. Source
 closeups and the normal interrupted-loading UI were reviewed; broad combat
 motion acceptance remains open.
 
+Pistol loading replaces four generic clips and adds sixteen item/bore aliases
+per anatomy. Both working hands use the actual short barrel and timed rod.
+Published contact checks cover all three pistols, four postures and the second
+1808 bore. The maximum checked palm-to-muzzle gap is 0.69 mm and the rod centre
+offset is 1.13 mm. Actual face and neck triangles clear a conservative 15 mm
+barrel capsule in 45 native poses per hand, posture and charge: minimum surface
+gaps are 34.50 mm male and 43.76 mm female. Source tool closeups and live four-bore
+orders were inspected. The [pistol review](../../../docs/art/pistol-loading-3d-review-2026-10-07.md)
+records the finite ammunition and input checks separately from these contacts.
+
+Mounted boots now follow the actual moving stirrup irons. Checked sole contact
+is within 7 mm during riding and within 6 mm at mount/dismount endpoints.
+Native leg rotations supply the fit; anatomy, equipment contacts and saved
+gameplay positions remain unchanged. Live riding and reverse mounting images
+were reviewed. This does not establish paired mounted melee contact.
+
 ## Review and validation
 
 The `/renderer-sandbox` **Ocho personajes** fixture displays all eight presets
@@ -99,3 +115,11 @@ timing. Passing checks do not prove natural motion or sustained crowd speed.
 Remaining visual limits include transition/braking steps, garment deformation
 across the full posture bank, paired opponent contact, and broader individual
 face/age/body variation. The isometric game view is the acceptance view.
+
+The wider October 7 surface audit found a specific pending support defect:
+crouched walking can place both actual boot soles below the floor, reaching
+about 80 mm penetration in the checked male and female cycles. Standing walking
+keeps the measured lower sole at 2 mm. Running has an 8–9 cm flight phase.
+Crouched and prone idle boot support also require review. These are published
+LOD0 footwear surface measurements; they are not an acceptance of the remaining
+posture bank. Roof-edge climbing support is under a separate native contact repair.

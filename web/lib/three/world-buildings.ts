@@ -8,6 +8,7 @@ import {WorldBatch,cellTop,roofTextureProjector} from './world-geometry';
 import {illuminationAt} from './world-materials';
 import {architecturalDetails,roofEdgeDetails} from './world-building-details';
 import {addWallSurfaceDetails} from './world-building-surfaces';
+import {addDoorLeaf} from './world-building-doors';
 import type {WorldGeometry} from './world-geometry';
 import type {WorldMaterials} from './world-materials';
 import type {WorldBuilding,WorldInput,WorldTile} from './world-types';
@@ -106,17 +107,13 @@ export function buildBuilding(b0:WorldBuilding,input:WorldInput,T:number,geometr
         openingRecords.push({id,type:tile.type,open:Boolean(tile.open),axis,height:openingHeight,width:ow});
         if(tile.type==='door'){
           const leafGroup=new Group();leafGroup.name=`door:${id}`;leafGroup.userData.semanticId=`door:${id}`;leafGroup.userData.open=Boolean(tile.open);leafGroup.userData.broken=Boolean(tile.broken);
-          const double=(tile.style??appearance.doorStyle)==='double';
+          const style=tile.style??appearance.doorStyle,double=style==='double';
           for(let side=0;side<(double?2:1);side++){
             const w=double?ow*.5:ow,hinge=new Group();hinge.position.set(axis==='x'?mid-ow*.5+side*ow:cross,tileBase+sill,axis==='x'?cross:mid-ow*.5+side*ow);hinge.rotation.y=axis==='x'?0:-Math.PI*.5;
             if(tile.open)hinge.rotation.y+=(side===1?-1:1)*Math.PI*.48;
             const part=new WorldBatch(geometry),sign=side===1?-1:1;
-            part.box(wood,sign*w*.5,openingHeight*.5,0,w,.98*openingHeight,.06,light);
-            for(let n=1;n<5;n++)part.box(materials.get('darkwood'),sign*w*n/5,openingHeight*.5,-.034,.012,openingHeight*.93,.01,light);
-            for(const y of [.12,Math.max(.15,openingHeight-.15)])part.box(iron,sign*w*.5,y,-.04,w*.82,.03,.015,light);
-            part.primitive('sphere',materials.get('brass'),[sign*w*.82,openingHeight*.47,-.045],[.023,.023,.018],undefined,light);
-            if(tile.broken)part.box(materials.get('darkwood'),sign*w*.5,openingHeight*.54,-.043,w*.9,.035,.025,light);
-            hinge.add(part.finish(`door-leaf:${id}:${side}`));leafGroup.add(hinge);
+            addDoorLeaf(part,materials,{width:w,height:openingHeight,sign,style,broken:Boolean(tile.broken),light});
+            const leaf=part.finish(`door-leaf:${id}:${side}`);leaf.userData.style=style;hinge.add(leaf);leafGroup.add(hinge);
           }
           group.add(leafGroup);
         }else if(!cut){

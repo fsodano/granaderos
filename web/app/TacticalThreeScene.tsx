@@ -6,6 +6,7 @@ import {createSectorWorld} from '../lib/three/sector-world';
 import {ActorAssetLibrary} from '../lib/three/actor-assets';
 import {ActorOcclusion,markActorMaterials} from '../lib/three/actor-occlusion';
 import {ActorRuntime} from '../lib/three/actor-runtime';
+import {resolveContactTargetModel} from '../lib/three/contact-target-model';
 import {updateSectorCamera,TILE_METRES,type SectorCameraView} from '../lib/three/projection';
 import type {WorldInput} from '../lib/three/world-types';
 import type {ActorVisual} from '../lib/three/presentation';
@@ -37,7 +38,7 @@ export default function TacticalThreeScene(props:Props){
       void library.actor(visual.appearance,lod,mounted).then(asset=>{
         if(!alive||actors.get(visual.key)!==entry)return;
         const current=latest.current.actors.find(actor=>actor.key===visual.key);if(!current)return;
-        const runtime=new ActorRuntime(asset,current,(key,id)=>latest.current.onCueComplete?.(key,id));entry.runtime?.dispose();entry.runtime=runtime;entry.visual=current;entry.pending=false;markActorMaterials(runtime.root);scene.add(runtime.root);
+        const runtime=new ActorRuntime(asset,current,(key,id)=>latest.current.onCueComplete?.(key,id),target=>resolveContactTargetModel(target,latest.current.actors,actors.get(target.key)));entry.runtime?.dispose();entry.runtime=runtime;entry.visual=current;entry.pending=false;markActorMaterials(runtime.root);scene.add(runtime.root);
       }).catch(error=>{if(!alive||actors.get(visual.key)!==entry)return;entry.pending=false;entry.error=true;report(error);});
     };
     const tick=(now:number)=>{

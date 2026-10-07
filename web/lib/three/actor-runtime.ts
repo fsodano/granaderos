@@ -5,7 +5,9 @@ import {boundClip,type LoadedActor,type SocketSpec,type ClipSpec,type EquipmentS
 import {mirroredClip,fitMirroredSockets,withMirroredProps} from './clip-mirroring';
 import {sampleAnimationTime,cueControlsAction} from './animation-clock';
 import {TILE_METRES} from './projection';
-import type {ActorVisual} from './presentation';
+import type {ActorVisual,ContactTarget} from './presentation';
+
+export type ContactActorResolver=(target:ContactTarget)=>{model:Object3D;root:Object3D}|undefined;
 
 type HandRole='handRight'|'handLeft';
 // Authored gesture requirements are presentation metadata, not inventory moves.
@@ -33,7 +35,7 @@ export class ActorRuntime {
   private clothMeshes:{mesh:Mesh;prone:number;crouched:number}[]=[];private clothProne=0;private clothCrouched=0;
   private actionHand:HandRole='handRight';private actionBarrel=0;
   readonly root=new Group();readonly model:Object3D;private mixer:AnimationMixer;private action:AnimationAction|null=null;private actionKey='';private clipSpec:any;private ownedMaterials=new Set<Material>();private equipment=new Group();private equipmentKey='';private clothesKey='';private colorKey='';private horse?:Object3D;private horseMixer?:AnimationMixer;private horseAction?:AnimationAction;private horseClip='';private visual:ActorVisual;private bones=new Map<string,Object3D>();private clothing?:Object3D;private ghost?:Group;private cueStartedAt=0;private temporaryProps=new Map<string,Object3D>();private completedCues=new Set<string>();
-  constructor(readonly asset:LoadedActor,visual:ActorVisual,private onCueComplete?:(key:string,id:string)=>void){
+  constructor(readonly asset:LoadedActor,visual:ActorVisual,private onCueComplete?:(key:string,id:string)=>void,private contactActor?:ContactActorResolver){
     this.visual=visual;this.model=clone(asset.body.scene);this.root.add(this.model);this.root.name=visual.key;
     this.model.traverse(node=>{this.bones.set(node.name,node);if(node instanceof Mesh){node.castShadow=true;node.receiveShadow=true;node.frustumCulled=false;const targets=node.morphTargetDictionary;if(targets?.cloth_prone!==undefined&&targets?.cloth_crouched!==undefined)this.clothMeshes.push({mesh:node,prone:targets.cloth_prone,crouched:targets.cloth_crouched});}});
     fitMirroredSockets(this.model,asset.appearance.sockets??asset.manifest.sockets??asset.manifest.rig?.sockets??{});

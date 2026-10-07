@@ -48,6 +48,11 @@ export function capsuleSurfaceGap(start,end,radius,faces){
   let bound=0;for(let axis=0;axis<3;axis++){const triLow=Math.min(a.getComponent(axis),b.getComponent(axis),c.getComponent(axis)),triHigh=Math.max(a.getComponent(axis),b.getComponent(axis),c.getComponent(axis)),gap=Math.max(0,low[axis]-triHigh,triLow-high[axis]);bound+=gap*gap;}
   if(bound>=minimum)continue;
   triangle.set(a,b,c);
+  if(triangle.getArea()<1e-12){
+   // Collapsed cloth faces retain a line or point distance. Feeding their
+   // zero-area barycentric denominator into closestPointToPoint yields NaN.
+   minimum=Math.min(minimum,segmentDistanceSquared(start,end,a,b),segmentDistanceSquared(start,end,b,c),segmentDistanceSquared(start,end,c,a));continue;
+  }
   if(ray.intersectTriangle(a,b,c,false,closest)&&closest.distanceToSquared(start)<=lengthSquared)return -radius;
   minimum=Math.min(minimum,triangle.closestPointToPoint(start,closest).distanceToSquared(start),triangle.closestPointToPoint(end,closest).distanceToSquared(end),segmentDistanceSquared(start,end,a,b),segmentDistanceSquared(start,end,b,c),segmentDistanceSquared(start,end,c,a));
  }
