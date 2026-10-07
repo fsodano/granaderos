@@ -1826,8 +1826,8 @@
   "animationLibraries": {
     "male": {
       "url": "/models/characters/male-animations.glb",
-      "bytes": 11898744,
-      "sha256": "2c6d0547bebc23122f58acc8edc9b75677c2004047fea9ed1f75addd0aa65594",
+      "bytes": 11909764,
+      "sha256": "7386a5baa28f1866de463812a07144097a8af9bb86286882a2dcb651641ba905",
       "clips": [
         {
           "name": "stand.idle.unarmed",
@@ -2898,7 +2898,14 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "native-leg-rotations",
+            "surface": "actual-lower-sole-ring",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "maximumLift": 0.007542
+          }
         },
         {
           "name": "crouch.walk.unarmed",
@@ -2920,7 +2927,14 @@
           "sampleRate": 15,
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
-          "locomotionSpeed": 0.8403
+          "locomotionSpeed": 0.8403,
+          "nativeBootSupport": {
+            "method": "native-leg-rotations",
+            "surface": "actual-lower-sole-ring",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "maximumLift": 0.082579
+          }
         },
         {
           "name": "crouch.strafeLeft.unarmed",
@@ -3004,7 +3018,14 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "native-leg-rotations",
+            "surface": "actual-lower-sole-ring",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "maximumLift": 0.007542
+          }
         },
         {
           "name": "crouch.walk.long-gun",
@@ -3026,7 +3047,14 @@
           "sampleRate": 15,
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
-          "locomotionSpeed": 0.8403
+          "locomotionSpeed": 0.8403,
+          "nativeBootSupport": {
+            "method": "native-leg-rotations",
+            "surface": "actual-lower-sole-ring",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "maximumLift": 0.082579
+          }
         },
         {
           "name": "crouch.strafeLeft.long-gun",
@@ -3384,7 +3412,14 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "native-leg-rotations",
+            "surface": "actual-lower-sole-ring",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "maximumLift": 0.007542
+          }
         },
         {
           "name": "crouch.walk.short-gun",
@@ -3406,7 +3441,14 @@
           "sampleRate": 15,
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
-          "locomotionSpeed": 0.8403
+          "locomotionSpeed": 0.8403,
+          "nativeBootSupport": {
+            "method": "native-leg-rotations",
+            "surface": "actual-lower-sole-ring",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "maximumLift": 0.082579
+          }
         },
         {
           "name": "crouch.strafeLeft.short-gun",
@@ -3637,7 +3679,14 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "native-leg-rotations",
+            "surface": "actual-lower-sole-ring",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "maximumLift": 0.007542
+          }
         },
         {
           "name": "crouch.walk.blade",
@@ -3659,7 +3708,14 @@
           "sampleRate": 15,
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
-          "locomotionSpeed": 0.8403
+          "locomotionSpeed": 0.8403,
+          "nativeBootSupport": {
+            "method": "native-leg-rotations",
+            "surface": "actual-lower-sole-ring",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "maximumLift": 0.082579
+          }
         },
         {
           "name": "crouch.strafeLeft.blade",
@@ -9112,7 +9168,14 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "native-leg-rotations",
+            "surface": "actual-lower-sole-ring",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "maximumLift": 0.007542
+          }
         },
         {
           "name": "crouch.idle.knife",
@@ -9128,7 +9191,14 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "native-leg-rotations",
+            "surface": "actual-lower-sole-ring",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "maximumLift": 0.007542
+          }
         },
         {
           "name": "crouch.walk.lance",
@@ -9150,7 +9220,14 @@
           "sampleRate": 15,
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
-          "locomotionSpeed": 0.8403
+          "locomotionSpeed": 0.8403,
+          "nativeBootSupport": {
+            "method": "native-leg-rotations",
+            "surface": "actual-lower-sole-ring",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "maximumLift": 0.082579
+          }
         },
         {
           "name": "crouch.walk.knife",
@@ -9172,7 +9249,14 @@
           "sampleRate": 15,
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
-          "locomotionSpeed": 0.8403
+          "locomotionSpeed": 0.8403,
+          "nativeBootSupport": {
+            "method": "native-leg-rotations",
+            "surface": "actual-lower-sole-ring",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "maximumLift": 0.082579
+          }
         },
         {
           "name": "crouch.strafeLeft.lance",
@@ -14979,8 +15063,8 @@
     },
     "female": {
       "url": "/models/characters/female-animations.glb",
-      "bytes": 11725284,
-      "sha256": "a6821d043ad3b73a1b23126285a16199b1da43bfa9b45cfcbd1d5810de1a6c30",
+      "bytes": 11736380,
+      "sha256": "b9272f0a5ed66699f4e07915d85701df89e1bee2af6c8312a470f26e5f21ed90",
       "clips": [
         {
           "name": "stand.idle.unarmed",
@@ -16051,7 +16135,14 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "native-leg-rotations",
+            "surface": "actual-lower-sole-ring",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "maximumLift": 0.015117
+          }
         },
         {
           "name": "crouch.walk.unarmed",
@@ -16073,7 +16164,14 @@
           "sampleRate": 15,
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
-          "locomotionSpeed": 0.7993
+          "locomotionSpeed": 0.7993,
+          "nativeBootSupport": {
+            "method": "native-leg-rotations",
+            "surface": "actual-lower-sole-ring",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "maximumLift": 0.082373
+          }
         },
         {
           "name": "crouch.strafeLeft.unarmed",
@@ -16157,7 +16255,14 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "native-leg-rotations",
+            "surface": "actual-lower-sole-ring",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "maximumLift": 0.015117
+          }
         },
         {
           "name": "crouch.walk.long-gun",
@@ -16179,7 +16284,14 @@
           "sampleRate": 15,
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
-          "locomotionSpeed": 0.7993
+          "locomotionSpeed": 0.7993,
+          "nativeBootSupport": {
+            "method": "native-leg-rotations",
+            "surface": "actual-lower-sole-ring",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "maximumLift": 0.082373
+          }
         },
         {
           "name": "crouch.strafeLeft.long-gun",
@@ -16537,7 +16649,14 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "native-leg-rotations",
+            "surface": "actual-lower-sole-ring",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "maximumLift": 0.015117
+          }
         },
         {
           "name": "crouch.walk.short-gun",
@@ -16559,7 +16678,14 @@
           "sampleRate": 15,
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
-          "locomotionSpeed": 0.7993
+          "locomotionSpeed": 0.7993,
+          "nativeBootSupport": {
+            "method": "native-leg-rotations",
+            "surface": "actual-lower-sole-ring",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "maximumLift": 0.082373
+          }
         },
         {
           "name": "crouch.strafeLeft.short-gun",
@@ -16790,7 +16916,14 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "native-leg-rotations",
+            "surface": "actual-lower-sole-ring",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "maximumLift": 0.015117
+          }
         },
         {
           "name": "crouch.walk.blade",
@@ -16812,7 +16945,14 @@
           "sampleRate": 15,
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
-          "locomotionSpeed": 0.7993
+          "locomotionSpeed": 0.7993,
+          "nativeBootSupport": {
+            "method": "native-leg-rotations",
+            "surface": "actual-lower-sole-ring",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "maximumLift": 0.082373
+          }
         },
         {
           "name": "crouch.strafeLeft.blade",
@@ -22265,7 +22405,14 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "native-leg-rotations",
+            "surface": "actual-lower-sole-ring",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "maximumLift": 0.015117
+          }
         },
         {
           "name": "crouch.idle.knife",
@@ -22281,7 +22428,14 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "native-leg-rotations",
+            "surface": "actual-lower-sole-ring",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "maximumLift": 0.015117
+          }
         },
         {
           "name": "crouch.walk.lance",
@@ -22303,7 +22457,14 @@
           "sampleRate": 15,
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
-          "locomotionSpeed": 0.7993
+          "locomotionSpeed": 0.7993,
+          "nativeBootSupport": {
+            "method": "native-leg-rotations",
+            "surface": "actual-lower-sole-ring",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "maximumLift": 0.082373
+          }
         },
         {
           "name": "crouch.walk.knife",
@@ -22325,7 +22486,14 @@
           "sampleRate": 15,
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
-          "locomotionSpeed": 0.7993
+          "locomotionSpeed": 0.7993,
+          "nativeBootSupport": {
+            "method": "native-leg-rotations",
+            "surface": "actual-lower-sole-ring",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "maximumLift": 0.082373
+          }
         },
         {
           "name": "crouch.strafeLeft.lance",

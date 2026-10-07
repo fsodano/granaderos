@@ -204,7 +204,7 @@ def _collect(rig):
     return {pb.name:(pb.location.copy(),pb.rotation_quaternion.copy()) for pb in rig.pose.bones}
 
 
-def _write_clip(rig, name, samples, duration, loop=True, grounding=None, times=None):
+def _write_clip(rig, name, samples, duration, loop=True, grounding=None, times=None, native_support=None):
     action=bpy.data.actions.new(name)
     rig.animation_data_create();rig.animation_data.action=action
     if loop:
@@ -231,6 +231,10 @@ def _write_clip(rig, name, samples, duration, loop=True, grounding=None, times=N
             root=rig.pose.bones['Root']
             root.matrix=Matrix.Translation((0,0,goals[i]-lowest)) @ root.matrix
             sample['Root']=(root.location.copy(),root.rotation_quaternion.copy())
+    support=None
+    if native_support is not None:
+        from grounding_motion import support_clip
+        samples,times,support=support_clip(native_support,samples,duration,times,FPS)
     previous={}
     for i,sample in enumerate(samples):
         frame=1+FPS*(times[i] if times is not None else duration*i/(len(samples)-1))
@@ -255,7 +259,9 @@ def _write_clip(rig, name, samples, duration, loop=True, grounding=None, times=N
     track=rig.animation_data.nla_tracks.new();track.name=name
     strip=track.strips.new(name,1,action);strip.name=name
     track.mute=True
-    return {'name':name,'duration':round(duration,6),'loop':loop,'events':{}}
+    result={'name':name,'duration':round(duration,6),'loop':loop,'events':{}}
+    if support:result['nativeBootSupport']=support
+    return result
 
 
 def _retarget_clip(ctx,clip_name,file,start,end):
@@ -852,14 +858,16 @@ def apply_animations(ctx, only=None):
     climbing_only=bool(only) and all(s['gesture'] in ('climbUp','climbDown') for s in specs)
     riding_only=bool(only) and all(s['posture']=='mounted' for s in specs)
     contact_only=loading_only or mounting_only or throwing_only or climbing_only
-    reviewed,reviewed_digest=({},None) if contact_only or riding_only else _reviewed_bank(ctx)
+    crouch_support_only=bool(only) and all(s['posture']=='crouched'and s['gesture']in('idle','walk')for s in specs)
+    needs_reviewed=any(_reviewed_binding(spec)for spec in specs)
+    reviewed,reviewed_digest=_reviewed_bank(ctx)if needs_reviewed else ({},None)
     ctx['reviewed_stride']={name:reviewed[name]['locomotionSpeed'] for name in ('Walk','Run') if name in reviewed}
     disabled=[]
     for obj in ctx['objects']:
         for modifier in obj.modifiers:
             if modifier.show_viewport:disabled.append(modifier);modifier.show_viewport=False
     offsets=_grip_setup(ctx);sources={};source_meta={}
-    for recipe in (('idle','crouch') if contact_only else ('idle','crouch','walk','run','fall','recover') if riding_only else SOURCE_RECIPES):
+    for recipe in (('idle','crouch') if contact_only or crouch_support_only else ('idle','crouch','walk','run','fall','recover') if riding_only else SOURCE_RECIPES):
         print('MOTION SOURCE',recipe,flush=True)
         sources[recipe],source_meta[recipe]=_retarget_samples(ctx,recipe)
     idle=sources['idle'][0];crouch=sources['crouch'][0]
@@ -1010,7 +1018,7 @@ def apply_animations(ctx, only=None):
             for name,(p,q) in pose.items():
                 if name!='Root':pose[name]=(Vector(),q)
             samples.append(pose)
-        meta=_write_clip(rig,spec['name'],samples,duration,spec['loop'],times=times)
+        meta=_write_clip(rig,spec['name'],samples,duration,spec['loop'],times=times,native_support=ctx if posture=='crouched'and gesture in('idle','walk')else None)
         meta.update(spec);meta.update({'duration':round(duration,6),'events':markers,'markers':markers,'source':source,'sampleRate':SAMPLE_FPS,'timingAuthority':'simulation','rootMotion':'in-place'})
         if gesture=='reload' and equipment=='long-gun':meta['propCues']=[{'item':'ramrod','socket':'socket_handLeft_tool','start':round(duration*.46,6),'end':round(duration*.86,6)}]
         if equipment=='long-gun' and gesture in ('reload','unload'):
