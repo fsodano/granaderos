@@ -132,9 +132,34 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
     });
     root.getObjectByName(`building-detail:${b.id}:${name}`)?.add(roofEdgeDetails(`${b.id}:${name}`,[panel],low,geometry,roof,darkwood,light));
   };
-  const chimney=(u:number,v:number,options:{material?:MeshStandardMaterial;top?:number;industrial?:boolean}={})=>feature(options.industrial?'forge-chimney':'domestic-chimney',()=>{
+  const farmhouseGallery=()=>{
+    const frontSupports=[...new Set([0,.3,.7,1].map(r=>Math.round(frame.width*r)))].filter(u=>wallAt(u,0)?.type==='wall'),length=Math.max(1,Math.round(frame.depth*.57)),sideSupports=[0,length].filter(v=>wallAt(0,v)?.type==='wall');
+    const hasFront=frontSupports.length>=2,hasSide=sideSupports.length===2,joint=hasFront&&hasSide&&frontSupports[0]===0;
+    if((!hasFront&&!hasSide)||height<2.4)return;
+    const low=height-.16,high=height+.12,outside=-.45,inside=.42,postTop=low+(0-outside)/(inside-outside)*(high-low),panels:Vector3[][]=[];
+    feature('farmhouse-gallery',()=>{
+      const post=(u:number,v:number,du:number,dv:number)=>{
+        box(u,v,postTop*.5,.11/T,postTop,.11/T,wood);box(u,v,.055,.21/T,.11,.21/T,materials.get('stone'));
+        batch.cylinder(wood,at(u,v,postTop-.32),at(u+du*.30,v+dv*.30,postTop-.06),.027,light);
+      };
+      if(hasFront){
+        const lo=Math.min(...frontSupports),hi=Math.max(...frontSupports);
+        for(const u of frontSupports)post(u,0,u===lo?1:-1,0);
+        box((lo+hi)*.5,0,postTop-.04,hi-lo+.18,.12,.14/T,wood);
+        panels.push([at(joint?outside:lo-.15,outside,low),at(hi+.15,outside,low),at(hi+.15,inside,high),at(joint?inside:lo-.15,inside,high)]);
+      }
+      if(hasSide){
+        for(const v of sideSupports)if(v!==0||!joint)post(0,v,0,v===0?1:-1);
+        box(0,length*.5,postTop-.04,.14/T,.12,length+.18,wood);
+        panels.push([at(outside,length+.15,low),at(outside,joint?outside:0,low),at(inside,joint?inside:0,high),at(inside,length+.15,high)]);
+      }
+      for(const panel of panels)batch.polygon(roof,panel,light,roofTextureProjector(panel));
+    });
+    root.getObjectByName(`building-detail:${b.id}:farmhouse-gallery`)?.add(roofEdgeDetails(`${b.id}:farmhouse-gallery`,panels,low,geometry,roof,darkwood,light));
+  };
+  const chimney=(u:number,v:number,options:{material?:MeshStandardMaterial;capMaterial?:MeshStandardMaterial;top?:number;industrial?:boolean;name?:string}={})=>feature(options.name??(options.industrial?'forge-chimney':'domestic-chimney'),()=>{
     const bottom=height-.12,top=options.top??height+1.02,w=options.industrial?.42:.38,cap=options.industrial?.56:.48;
-    box(u,v,(bottom+top)*.5,w,top-bottom,w,options.material??materials.get('brick'));box(u,v,top+.015,cap,.12,cap,trim);box(u,v,top+.08,w-.11,.018,w-.11,darkwood);
+    box(u,v,(bottom+top)*.5,w,top-bottom,w,options.material??materials.get('brick'));box(u,v,top+.015,cap,.12,cap,options.capMaterial??trim);box(u,v,top+.08,w-.11,.018,w-.11,darkwood);
   });
   const sideChimney=(industrial=false)=>{
     const supports=[frame.width,0].flatMap(u=>Array.from({length:Math.max(0,Math.floor(frame.depth)-1)},(_,n)=>({u,v:n+1}))).filter(({u,v})=>{
@@ -251,10 +276,16 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
   }else if(kind==='posta'){
     const supports=[...new Set([0,...entranceSupports(),frame.width])].filter(u=>wallAt(u,0)?.type==='wall').sort((a,c)=>a-c);
     roofCanopy('posta-masonry-veranda',supports,.55,true);
-  }else if(['farmhouse','estancia','pulperia'].includes(kind)){
-    gallery(kind==='pulperia'?.75:.55);
-    if(kind==='farmhouse'||kind==='estancia')chimney(Math.max(.60,frame.width-.65),Math.max(.55,frame.depth-.60));
-    if(kind==='pulperia')feature('trade-sign',()=>{
+  }else if(['farmhouse','estancia'].includes(kind)){
+    farmhouseGallery();
+    const flat=b.roof==='terrace'||(input.terrain.upperSurfaces??[]).some(surface=>surface.kind==='roof'&&surface.buildingId===b.id),rise=flat?0:Math.min(getBuildingProfile(b).roofRise/25.066666666666666,Math.max(.4,frame.width*.28));
+    for(const u of [0,frame.width]){
+      const v=Array.from({length:Math.max(0,Math.floor(frame.depth)-1)},(_,n)=>n+1).filter(v=>wallAt(u,v)?.type==='wall'&&!walkableAbove(u-alongInset,v-depthInset,.48)).sort((a,c)=>Math.abs(a-frame.depth+1)-Math.abs(c-frame.depth+1))[0];
+      if(v!==undefined)chimney(u-alongInset,v-depthInset,{name:u===0?'farmhouse-chimney-left':'farmhouse-chimney-right',material:wall,capMaterial:materials.get('stone'),top:height+rise+.68});
+    }
+  }else if(kind==='pulperia'){
+    gallery(.75);
+    feature('trade-sign',()=>{
       const u=Math.min(frame.width-.55,doorU+1.15),y=height*.68;
       box(u,-.30,y+.40,.055,.055,.66,iron);
       for(const offset of [-.19,.19])box(u+offset,-.58,y+.22,.017,.36,.02,iron);

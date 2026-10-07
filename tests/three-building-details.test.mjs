@@ -97,10 +97,11 @@ test('supported canopies retain authored roof finishes and disappear during norm
   }
 });
 
-test('compiled posta, warehouse and smithy templates retain supported canopies and ordinary room disclosure',()=>{
-  for(const [id,name]of [['posta','posta-masonry-veranda'],['almacen','loading-canopy'],['herreria','forge-canopy']])for(const rotation of [0,90,180,270])for(const view of ['exterior','partial']){
+test('compiled work and farmhouse templates retain supported galleries and ordinary room disclosure',()=>{
+  for(const [id,name]of [['posta','posta-masonry-veranda'],['almacen','loading-canopy'],['herreria','forge-canopy'],['estancia','farmhouse-gallery']])for(const rotation of [0,90,180,270])for(const view of ['exterior','partial']){
     const battle=createArchitectureReviewBattle(id,rotation,view),before=JSON.stringify(battle),input={terrain:{width:battle.width,height:battle.height,tiles:battle.tiles,buildings:battle.buildings,upperSurfaces:battle.upperSurfaces},revealedRooms:battle.revealedRooms},geometry=new WorldGeometry(),materials=new WorldMaterials({tileMetres:T,assetUrl:path=>path}),building=buildBuilding(battle.buildings[0],input,T,geometry,materials),canopy=building.getObjectByName(`building-detail:${battle.buildings[0].id}:${name}`);
     assert.equal(Boolean(canopy),view==='exterior',`${id}/${rotation}/${view} must follow ordinary room disclosure`);
+    if(id==='estancia')for(const chimney of ['farmhouse-chimney-left','farmhouse-chimney-right'])assert.equal(Boolean(building.getObjectByName(`building-detail:${battle.buildings[0].id}:${chimney}`)),view==='exterior','both rural chimneys must follow actual room disclosure');
     if(canopy)canopy.traverse(child=>{if(child instanceof Mesh){const p=child.geometry.getAttribute('position');for(let n=0;n<p.count;n++)if(p.getY(n)<1.9){
       const x=Math.round(p.getX(n)/T),y=Math.round(p.getZ(n)/T);assert.equal(battle.tiles.find(tile=>tile.x===x&&tile.y===y)?.type,'wall',`${id}/${rotation} support must remain in its actual compiled wall cell`);
     }}});
@@ -108,10 +109,47 @@ test('compiled posta, warehouse and smithy templates retain supported canopies a
   }
 });
 
-test('farmhouse roof receives a capped domestic chimney, with finite shaded geometry',()=>{
-  const f=fixture('farmhouse'),details=architecturalDetails(f.b,f.input,T,2.5,0,f.geometry,f.materials,false),chimney=details.getObjectByName('building-detail:review:domestic-chimney'),bounds=new Box3().setFromObject(chimney);
-  assert.ok(bounds.max.y>3.5);assert.ok(chimney.children.some(child=>child.material?.name==='world:brick'));
-  details.traverse(child=>{if(child instanceof Mesh){assert.ok(child.geometry.getAttribute('normal'));for(const value of child.geometry.getAttribute('position').array)assert.ok(Number.isFinite(value));}});f.dispose(details);
+test('farmhouse galleries meet at a mitred corner and paired chimneys follow solid side walls through rotation',()=>{
+  for(const side of ['north','east','south','west']){
+    const f=fixture('farmhouse',side),before=JSON.stringify(f.input),details=architecturalDetails(f.b,f.input,T,2.5,0,f.geometry,f.materials,false),gallery=details.getObjectByName('building-detail:review:farmhouse-gallery'),edges=gallery.getObjectByName('building-roof-edges:review:farmhouse-gallery');
+    assert.ok(gallery&&edges);assert.ok(edges.children.some(child=>child.material?.name==='world:clay'),'the shared sloping corner must have one rounded roof cap');
+    for(const name of ['farmhouse-chimney-left','farmhouse-chimney-right']){
+      const chimney=details.getObjectByName(`building-detail:review:${name}`),bounds=new Box3().setFromObject(chimney);
+      assert.ok(bounds.max.y>4.2&&bounds.min.y>=2.38-1e-5);assert.ok(chimney.children.some(child=>child.material?.name==='world:limewash'),'rural chimneys must retain the authored wall finish');assert.ok(chimney.children.some(child=>child.material?.name==='world:stone'));
+      const center=bounds.getCenter(new Vector3());assert.equal(f.input.terrain.tiles.find(tile=>tile.x===Math.round(center.x/T)&&tile.y===Math.round(center.z/T))?.type,'wall');
+    }
+    let ground=0;gallery.traverse(child=>{if(child instanceof Mesh){const p=child.geometry.getAttribute('position');for(let n=0;n<p.count;n++)if(p.getY(n)<1.9){ground++;assert.equal(f.input.terrain.tiles.find(tile=>tile.x===Math.round(p.getX(n)/T)&&tile.y===Math.round(p.getZ(n)/T))?.type,'wall','gallery feet must not occupy the yard');}}});assert.ok(ground>0);
+    details.traverse(child=>{if(child instanceof Mesh){assert.ok(child.geometry.getAttribute('normal'));for(const value of child.geometry.getAttribute('position').array)assert.ok(Number.isFinite(value));}});assert.equal(JSON.stringify(f.input),before);f.dispose(details);
+  }
+});
+
+test('farmhouse returns and chimney pairs omit edited supports and keep playable upper cells clear',()=>{
+  for(const side of ['north','east','south','west']){
+    const f=fixture('farmhouse',side),end=Math.round(f.frame.depth*.57),point=f.frame.at(0,end);f.input.terrain.tiles.find(tile=>tile.x===point.x&&tile.y===point.y).type='window';
+    const details=architecturalDetails(f.b,f.input,T,2.5,0,f.geometry,f.materials,false),gallery=details.getObjectByName('building-detail:review:farmhouse-gallery'),bounds=f.localBounds(gallery);
+    assert.ok(bounds.max.z<.5,'the unsupported side gallery must not span the edited window');disposeWorldNode(details);
+    f.input.terrain.upperSurfaces=f.input.terrain.tiles.filter(tile=>tile.type==='wall').map(tile=>({...tile,type:'floor',kind:'roof',tacticalLevel:1,elevation:3,blocked:false}));
+    const roof=architecturalDetails(f.b,f.input,T,3,0,f.geometry,f.materials,false);for(const name of ['farmhouse-chimney-left','farmhouse-chimney-right'])assert.equal(roof.getObjectByName(`building-detail:review:${name}`),undefined,'rural chimneys must not occupy roof walking cells');f.dispose(roof);
+  }
+});
+
+test('farmhouse slab and terrace chimneys follow the real flat roof elevation',()=>{
+  for(const roof of ['slab','terrace']){
+    const f=fixture('farmhouse');if(roof==='terrace')f.b.roof='terrace';else f.input.terrain.upperSurfaces=[{x:3,y:3,type:'floor',kind:'roof',buildingId:f.b.id,tacticalLevel:1,elevation:3.2,blocked:false}];
+    const building=buildBuilding(f.b,f.input,T,f.geometry,f.materials),height=building.userData.height;
+    for(const name of ['farmhouse-chimney-left','farmhouse-chimney-right']){const chimney=building.getObjectByName(`building-detail:review:${name}`),bounds=new Box3().setFromObject(chimney);assert.ok(bounds.max.y>height+.7&&bounds.max.y<height+.85,'flat roofs must not inherit a template pitch');}f.dispose(building);
+  }
+});
+
+test('farmhouse galleries preserve door, window and breach paths on both sides through rotation',()=>{
+  for(const side of ['north','east','south','west'])for(const type of ['window','rubble']){
+    const f=fixture('farmhouse',side),v=Math.round(f.frame.depth*.57),point=f.frame.at(0,v);f.input.terrain.tiles.find(tile=>tile.x===point.x&&tile.y===point.y).type=type;
+    const before=JSON.stringify(f.input),details=architecturalDetails(f.b,f.input,T,2.5,0,f.geometry,f.materials,false);details.updateMatrixWorld(true);
+    const door=f.frame.at(f.frame.doorU-.4*(f.frame.u.x+f.frame.u.y),-1),doorRay=new Raycaster(new Vector3((door.x+.4)*T,1.90,(door.y+.4)*T),new Vector3(f.frame.v.x,0,f.frame.v.y),0,T*1.6);
+    assert.equal(doorRay.intersectObject(details,true).length,0,'the front gallery must preserve the real doorway');
+    const start=new Vector3(point.x*T-f.frame.u.x*T,type==='window'?1.3:1.90,point.y*T-f.frame.u.y*T),ray=new Raycaster(start,new Vector3(f.frame.u.x,0,f.frame.u.y),0,T*1.6);
+    assert.equal(ray.intersectObject(details,true).length,0,'an edited return must not cover the side opening');assert.equal(JSON.stringify(f.input),before);f.dispose(details);
+  }
 });
 
 test('chapels use a roof-supported bell gable with a real arched opening in every orientation',()=>{
