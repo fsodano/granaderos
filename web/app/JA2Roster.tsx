@@ -1,4 +1,6 @@
 'use client';
+import {formatAP} from '../../game/action-points.js';
+
 import {sitePath} from '../lib/site-path.js';
 import {memo,useEffect,useMemo,useRef,useState} from 'react';
 import {maximumEnergy} from '../../game/fatigue.js';
@@ -43,12 +45,12 @@ export default function JA2Roster({battle, players, selected, groupIds = [], med
             role="listitem"
             className={`ja2-portrait-cell ${cell.active ? 'active' : ''} ${cell.fallen ? 'fallen' : ''} ${cell.interruptReady ? 'interrupt-ready' : ''} ${groupIds.includes(u.id) ? 'group-selected' : ''}`}
             aria-disabled={medicalTargeting ? u.hp <= 0 || u.routed : cell.disabled}
-            aria-label={`${cell.index + 1}. ${u.name}. ${cell.dead ? 'Muerto' : u.unconscious ? 'Inconsciente' : cell.fallen ? 'Fuera de combate' : `Salud ${Math.ceil(u.hp)}, ${exploring ? '' : `${u.ap} puntos de acción, `}energía ${Math.round(u.energy ?? 100)}, moral ${Math.round(u.morale ?? 0)}`}${!cell.dead ? `. Ve ${cell.visibleEnemyCount} enemigos` : ''}${cell.bleeding && !cell.dead ? `. Hemorragia: ${cell.bleeding} salud por turno` : ''}${cell.interruptReady ? '. Puede actuar en la interrupción' : ''}${groupIds.includes(u.id) ? '. En el grupo de marcha' : ''}. ${hands.map((hand:any)=>hand.description).join(' ')} Botón derecho: equipo del combatiente`}
+            aria-label={`${cell.index + 1}. ${u.name}. ${cell.dead ? 'Muerto' : u.unconscious ? 'Inconsciente' : cell.fallen ? 'Fuera de combate' : `Salud ${Math.ceil(u.hp)}, ${exploring ? '' : `${formatAP(u.ap)} puntos de acción, `}energía ${Math.round(u.energy ?? 100)}, moral ${Math.round(u.morale ?? 0)}`}${!cell.dead ? `. Ve ${cell.visibleEnemyCount} enemigos` : ''}${cell.bleeding && !cell.dead ? `. Hemorragia: ${cell.bleeding} salud por turno` : ''}${cell.interruptReady ? '. Puede actuar en la interrupción' : ''}${groupIds.includes(u.id) ? '. En el grupo de marcha' : ''}. ${hands.map((hand:any)=>hand.description).join(' ')} Botón derecho: equipo del combatiente`}
             onClick={event => {if(!(medicalTargeting ? u.hp <= 0 || u.routed : cell.disabled))onSelect(u.id, event.shiftKey);}}
             onDoubleClick={() => { if (!medicalTargeting) onOpenInventory(u.id); }}
             onContextMenu={(e) => { e.preventDefault(); onOpenInventory(u.id); }}
           >
-            <span className={`ja2-portrait-face ${cell.dead ? 'dead' : ''}`}>{cell.dead ? <><Skull className="ja2-dead-skull" aria-hidden="true"/><span className="ja2-portrait-blood" aria-hidden="true"/></> : portrait ? <img src={sitePath(portrait)} alt="" /> : <span className="portrait-fallback">{short(u).slice(0, 2).toUpperCase()}</span>}{cell.bleeding > 0 && !cell.dead && <span className="ja2-bleeding-mark" title={`Hemorragia: ${cell.bleeding} salud por turno`}>−{cell.bleeding} SAL</span>}{!cell.dead && <span className="ja2-personal-enemies" title={`${short(u)} ve ${cell.visibleEnemyCount} enemigos`}><Eye size={12} aria-hidden="true"/>{cell.visibleEnemyCount}</span>}{!exploring && !cell.dead && <span className="ja2-ap-readout" title="Puntos de acción restantes">{u.ap}<small>PA</small></span>}</span>
+            <span className={`ja2-portrait-face ${cell.dead ? 'dead' : ''}`}>{cell.dead ? <><Skull className="ja2-dead-skull" aria-hidden="true"/><span className="ja2-portrait-blood" aria-hidden="true"/></> : portrait ? <img src={sitePath(portrait)} alt="" /> : <span className="portrait-fallback">{short(u).slice(0, 2).toUpperCase()}</span>}{cell.bleeding > 0 && !cell.dead && <span className="ja2-bleeding-mark" title={`Hemorragia: ${cell.bleeding} salud por turno`}>−{cell.bleeding} SAL</span>}{!cell.dead && <span className="ja2-personal-enemies" title={`${short(u)} ve ${cell.visibleEnemyCount} enemigos`}><Eye size={12} aria-hidden="true"/>{cell.visibleEnemyCount}</span>}{!exploring && !cell.dead && <span className="ja2-ap-readout" title="Puntos de acción restantes">{formatAP(u.ap)}<small>PA</small></span>}</span>
             <span className="portrait-name"><b>{cell.index + 1}</b> {cell.label}</span>
             {groupIds.includes(u.id) && <span className="ja2-group-tag">En el grupo</span>}
             <span className="ja2-vitals" aria-hidden={cell.dead}>

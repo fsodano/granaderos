@@ -1,4 +1,6 @@
 'use client';
+import {formatAP,displayedAP,storedAP,isAPField} from '../../../game/action-points.js';
+
 import {pagePath,sitePath} from '../../lib/site-path.js';
 import BuildIdentity from '../BuildIdentity';
 import AlternativeLoads from './AlternativeLoads';
@@ -351,15 +353,17 @@ export default function ContentEditor() {
     }
   }
   function numeric(key: string, value: number, attributes = false) {
+    const actionPoints = !attributes && isAPField(key);
+    const display = (value: number) => actionPoints ? displayedAP(value) : value;
     return (
       <label key={key}>
         {labels[key] ?? key}
         <input
           type="number"
-          value={Number.isFinite(value) ? value : ''}
-          min={key === 'maxHp' ? 15 : key.startsWith('stock') ? 1 : 0}
-          max={key === 'stockReach' ? 1.5 : key === 'reloadAP' ? 500 : key === 'price' ? 1000000 : key === 'weight' ? 30 : key === 'capacity' ? 8 : key==='reach'?4:100}
-          step={['weight','reach','stockReach'].includes(key) ? .1 : 1}
+          value={Number.isFinite(value) ? display(value) : ''}
+          min={display(key === 'maxHp' ? 15 : key.startsWith('stock') ? 1 : 0)}
+          max={display(key === 'stockReach' ? 1.5 : key === 'reloadAP' ? 500 : key === 'price' ? 1000000 : key === 'weight' ? 30 : key === 'capacity' ? 8 : key==='reach'?4:100)}
+          step={actionPoints ? displayedAP(1) : ['weight','reach','stockReach'].includes(key) ? .1 : 1}
           onChange={(e) =>
             update(
               attributes
@@ -369,7 +373,7 @@ export default function ContentEditor() {
                       [key]: e.target.valueAsNumber,
                     },
                   }
-                : { [key]: e.target.valueAsNumber },
+                : { [key]: actionPoints ? storedAP(e.target.valueAsNumber) : e.target.valueAsNumber },
             )
           }
         />
@@ -1238,12 +1242,12 @@ export default function ContentEditor() {
                 {player.name} · {weaponFor(player).name}
               </h3>
               <p>
-                PA: {player.ap} · Carga: {player.loaded} · Reserva:{' '}
+                PA: {formatAP(player.ap)} · Carga: {player.loaded} · Reserva:{' '}
                 {player.ammo} · Salud del oponente: {target.hp}
               </p>
               <p>
                 {shot?.reason ??
-                  `Probabilidad de impacto: ${Math.round(shot?.chance ?? 0)}% · Coste: ${shot?.pa ?? '—'} PA`}
+                  `Probabilidad de impacto: ${Math.round(shot?.chance ?? 0)}% · Coste: ${formatAP(shot?.pa ?? '—')} PA`}
               </p>
               <div className="toolbar">
                 <button

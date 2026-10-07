@@ -39,7 +39,7 @@ test('civilian treatment previews share the reducer costs and show no AP in expl
   const s=field({exploration}),u=s.units[0],npc=s.npcs[0],before=structuredClone(s);
   const plan=itemUsePreview(s,u,npc,{targetKind:'npc'}),preview=targetPreview(s,u,npc,{mode:'move'});
   assert.equal(plan.valid,true);assert.equal(preview.valid,true);assert.equal(preview.actionLabel,'Acercarse y vendar');assert.equal(preview.pa,exploration?0:plan.pa);
-  assert.match(preview.coverNote,/recuperación de salud requiere atención en campaña/);if(exploration)assert.doesNotMatch(preview.coverNote,/\d+ PA/);
+  assert.match(preview.coverNote,/recuperación de salud requiere atención en campaña/);if(exploration)assert.doesNotMatch(preview.coverNote,/\d+(?:,\d+)? PA/);
   const local=medicalUsePreview(s,u,npc,{targetKind:'npc'}),direct=targetPreview(s,u,npc,{mode:'heal'});
   assert.equal(direct.valid,local.allowed);assert.equal(direct.reason,local.reason);assert.deepEqual(s,before);
  }

@@ -21,10 +21,10 @@ async function mount(t,battle){
  return {doc,read:()=>current,click,settle:()=>timers.settle(doc),until:timers.until,button:()=>[...doc.querySelectorAll('button')].find(b=>b.textContent.startsWith('Recargar pieza'))};
 }
 test('mounted field controls show partial cost and saved work, then finish through the real next-turn reload',async t=>{
- const b=crewField();b.units[0].ap=25;const m=await mount(t,b);assert.equal(m.button().disabled,false);assert.match(m.button().textContent,/25 PA/);assert.match(m.doc.querySelector('.ja2-artillery').textContent,/25 PA por artillero ahora; faltan 50 PA por artillero/);
+ const b=crewField();b.units[0].ap=25;const m=await mount(t,b);assert.equal(m.button().disabled,false);assert.match(m.button().textContent,/6,25 PA/);assert.match(m.doc.querySelector('.ja2-artillery').textContent,/6,25 PA por artillero ahora; faltan 12,5 PA por artillero/);
  await m.click(m.button());assert.ok(m.doc.querySelector('[data-enemy-frame]'));await m.settle();assert.equal(m.read().lastError,null);assert.equal(m.read().artillery[0].reloadProgress,1/3);assert.equal(m.read().artillery[0].ammo,3);assert.match(m.doc.querySelector('.ja2-artillery').textContent,/recarga 33%/);assert.equal(m.button().disabled,true);assert.ok(validateBattleSnapshot(m.read()));
  for(const member of b.units.filter(unit=>unit.side==='player'))assert.equal(m.read().units.find(unit=>unit.id===member.id).ap,member.ap-25);
- const turn=m.read().turn;await m.click(m.doc.querySelector('.ja2-essential .gold-button'));await m.until(()=>m.read().turn>turn&&!m.doc.querySelector('[data-enemy-frame]'));assert.equal(m.button().disabled,false);assert.match(m.button().textContent,/50 PA/);
+ const turn=m.read().turn;await m.click(m.doc.querySelector('.ja2-essential .gold-button'));await m.until(()=>m.read().turn>turn&&!m.doc.querySelector('[data-enemy-frame]'));assert.equal(m.button().disabled,false);assert.match(m.button().textContent,/12,5 PA/);
  const crew=m.read().units.filter(unit=>unit.side==='player').map(unit=>({id:unit.id,ap:unit.ap}));await m.click(m.button());assert.ok(m.doc.querySelector('[data-enemy-frame]'));await m.settle();assert.equal(m.read().artillery[0].loaded,true);assert.equal(m.read().artillery[0].ammo,2);assert.equal(m.read().artillery[0].reloadProgress,undefined);assert.equal(m.button().disabled,true);
  for(const member of crew)assert.equal(m.read().units.find(unit=>unit.id===member.id).ap,member.ap-50);
 });

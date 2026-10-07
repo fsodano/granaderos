@@ -60,7 +60,7 @@ test('hidden enemy reloads preserve anonymous hearing without load or AP details
  const s=rearAttack();Object.assign(s.units[1],{x:7,loaded:0,ap:45});setTestAmmunition(s.units[1],1);
  const n=endTurn(s);assert.equal(n.units[1].loaded,1);assert.equal(n.units[1].ammo,0);
  assert.ok(n.log.some(line=>line.includes('oye un ruido')));
- assert.ok(!n.log.some(line=>/Atacante oculto|recarga|45 PA/.test(line)));
+ assert.ok(!n.log.some(line=>/Atacante oculto|recarga|11,25 PA/.test(line)));
 });
 
 test('visible enemy movement does not disclose the length or AP cost of its route',()=>{

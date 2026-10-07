@@ -59,7 +59,7 @@ test('the same pocket buttons load a stored gun without equipping it',()=>{
 
 test('a combat hover shows partial reload work even when this action cannot complete one cartridge',()=>{
  const initial=field({},true);initial.units[0].ap=12;const ui=controls(initial),source=pocket(ui.unit,'inventory:selected');ui.click(source,true);
- const before=structuredClone(ui.battle),hint=ui.hover('hand:right');assert.match(hint,/12 PA/);assert.match(hint,/0 cargas listas/);assert.match(hint,/Recarga parcial/);assert.match(hint,/faltan 33 PA/);assert.doesNotMatch(hint,/sin PA/);assert.deepEqual(ui.battle,before);
+ const before=structuredClone(ui.battle),hint=ui.hover('hand:right');assert.match(hint,/3 PA/);assert.match(hint,/0 cargas listas/);assert.match(hint,/Recarga parcial/);assert.match(hint,/faltan 8,25 PA/);assert.doesNotMatch(hint,/sin PA/);assert.deepEqual(ui.battle,before);
  ui.click('hand:right');assert.equal(ui.battle.lastError,null);assert.equal(ui.unit.ap,0);assert.equal(ui.unit.loaded,0);assert.ok(ui.unit.reloadProgress>0);assert.equal(ui.unit.equipmentCursor.stack.count,5);assert.equal(ui.unit.inventory.reserve.count,7);
 });
 

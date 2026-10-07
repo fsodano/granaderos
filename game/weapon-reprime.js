@@ -1,3 +1,4 @@
+import {formatAP} from './action-points.js';
 import {secondHeldPistol} from './paired-fire.js';
 
 export const reprimeCost=unit=>unit.traits?.includes('gunsmith_artillerist')?10:15;
@@ -9,7 +10,7 @@ export function planReprime(unit,{exploring=false,firearm=false}={}){
  const required=firearm?[...(unit.jammed?['primary']:[]),...(other?.jammed&&(other.condition??100)>0?['offhand']:[])]:[];
  const count=Math.min(required.length,exploring?Infinity:Math.floor(Math.max(0,unit.ap??0)/cost));
  const hands=required.slice(0,count);
- const reason=!firearm?'Prepará un arma de fuego en la mano.':!required.length?'El arma no necesita cebado.':!count?`Cebar requiere ${cost} PA.`:'';
+ const reason=!firearm?'Prepará un arma de fuego en la mano.':!required.length?'El arma no necesita cebado.':!count?`Cebar requiere ${formatAP(cost)} PA.`:'';
  return {hands,required:required.length,pending:required.length-hands.length,pa:hands.length*cost,totalPA:required.length*cost,cost,reason};
 }
 

@@ -27,7 +27,7 @@ test('default preparation retains the first-shot total and explicit authored zer
 });
 
 test('two actual discharges pay authored preparation once and conserve finite charges through a snapshot',()=>{
- const s=field(),copy=structuredClone(s),descriptor=b=>orderDescriptors(b,b.units[0]).find(d=>d.id==='fire');assert.match(descriptor(s).detail,/Preparar: 7 PA · disparar: 13 PA/);
+ const s=field(),copy=structuredClone(s),descriptor=b=>orderDescriptors(b,b.units[0]).find(d=>d.id==='fire');assert.match(descriptor(s).detail,/Preparar: 1,75 PA · disparar: 3,25 PA/);
  const first=shoot(s);assert.deepEqual(s,copy);assert.equal(first.units[0].ap,80);assert.equal(first.units[0].loaded,2);assert.equal(first.units[0].weaponReady,true);
  const restored=validateBattleSnapshot(JSON.parse(JSON.stringify(first)));assert.match(descriptor(restored).detail,/posición de tiro/);assert.equal(descriptor(restored).pa,13);
  const second=shoot(restored);assert.equal(second.units[0].ap,67);assert.equal(second.units[0].loaded,1);assert.equal(second.units[0].ammo,6);assert.equal(second.units[0].weaponReady,true);

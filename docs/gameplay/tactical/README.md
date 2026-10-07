@@ -8,6 +8,31 @@ features on `main`. Notes marked *workspace* describe unpublished integration;
 the [workspace acceptance record](../../verification/gameplay-completion.md) and
 [parity audit](../../verification/ja2-parity-audit.md) record that separate scope.
 
+## Action-point display
+
+The compact interface uses a base maximum of 25 PA, plus up to 5 PA carried
+from the previous turn. A standing punch costs 3 PA before movement. Wounds
+and fatigue still reduce the budget. Quarter-point costs are displayed exactly
+with Spanish decimal commas; a cost of 2,75 PA does not become 3 PA.
+
+The engine, saved battles and content packages retain their existing integer
+units: four stored units equal one displayed PA. HUD values, cursor previews,
+new journal messages and rejection messages use the compact scale. Weapon and
+artillery editors convert both directions and accept steps of 0,25 PA. This
+preserves old saves, authored equipment, partial reload work, enemy decisions
+and the number of actions available per turn. The data API and historical
+verification records still use stored units; old saved journal entries remain
+historical text.
+
+This is a scale change, not a reload balance change. Base firearm reloads remain
+7–17,5 PA, before modifiers; a Brown Bess costs 11,25 PA. Reload progress and
+available ammunition can reduce the cost of the next loading order.
+
+Hit feedback uses the existing observed health-loss frames. The number rises
+18 SVG units near the hit character and fades within 0,9 seconds. It disappears
+when that impact frame ends, cannot replay from a save, and does not reveal
+unobserved targets. Reduced-motion settings disable its movement and animation.
+
 ## Controls and information
 
 - [Keyboard controls](TACTICAL-HOTKEYS.md)

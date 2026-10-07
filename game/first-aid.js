@@ -1,3 +1,4 @@
+import {formatAP} from './action-points.js';
 import {CRITICAL_HEALTH} from './tactical-condition.js';
 import {civilianMaxHp} from './civilian-harm.js';
 
@@ -25,7 +26,7 @@ export function firstAidPlan(doctor,patient,{baseCost=25,budgetAP=Infinity,targe
  if(hp<=0)return result({reason:'El herido debe estar vivo.'});
  if(!(doctor?.medical>0))return result({reason:'Este soldado no tiene conocimientos de primeros auxilios.'});
  if(!(doctor?.medkits>0))return result({reason:'No quedan vendas.'});
- if(budgetAP<baseCost)return result({reason:`${critical?'Estabilizar':'Vendar'} requiere ${baseCost} PA.`});
+ if(budgetAP<baseCost)return result({reason:`${critical?'Estabilizar':'Vendar'} requiere ${formatAP(baseCost)} PA.`});
  if(!critical){
   if(!bleeding&&bandaged>=wounds)return result({reason:'Las heridas ya están vendadas. Necesita recuperación en campaña.'});
   return result({paCost:baseCost,dressingsUsed:1,bleedingAfter:0,bandagedAfter:wounds,complete:true,partial:false,valid:true});

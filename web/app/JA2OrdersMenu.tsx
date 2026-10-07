@@ -1,4 +1,6 @@
 'use client';
+import {formatAP} from '../../game/action-points.js';
+
 import {firearmMaintenanceAction} from '../../game/ja2-hud.js';
 import {useMemo, useState} from 'react';
 import JA2Hands from './JA2Hands';
@@ -39,14 +41,14 @@ export function JA2OrdersPanel({battle, unit, mode, aim, firearm, cannonId, shot
   return (
     <div className="ja2-context">
         {unit && <div className="ja2-action-readout" aria-label="Estado del combatiente">
-          <strong>{unit.nickname || unit.name} · {battle.mode === 'exploration' ? 'Sin coste de PA' : `${unit.ap} PA`}</strong>
+          <strong>{unit.nickname || unit.name} · {battle.mode === 'exploration' ? 'Sin coste de PA' : `${formatAP(unit.ap)} PA`}</strong>
           {unit.militia&&<small>{MILITIA_NAMES[unit.militiaRank]??"Milicia"} · {unit.militiaExperience??0} puntos de combate</small>}
           <span>{stanceLabel(unit.stance)} · {facingLabel(unit)} · {Math.ceil(unit.hp)}/{unit.maxHp} salud · {Math.round(unit.energy ?? 100)}/{maximumEnergy(unit)} energía{unit.bleeding > 0 ? ` · Hemorragia ${unit.bleeding}` : ''}{unit.stealthMode ? ' · Sigilo' : ''}</span>
           {heardNoise && <span className="ja2-noise-readout">{heardNoise.label}</span>}
-          <small>{turn.interrupted ? 'Interrupción: usá los PA restantes. Esta pausa no recupera PA.' : battle.mode === 'exploration' ? 'Exploración: moverse consume energía y tiempo, sin gastar PA.' : `Dejá PA para interrumpir al enemigo. Se conservan hasta ${budget?.carryover} PA al próximo turno (límite ${AP_CARRY_LIMIT}).`}</small>
+          <small>{turn.interrupted ? 'Interrupción: usá los PA restantes. Esta pausa no recupera PA.' : battle.mode === 'exploration' ? 'Exploración: moverse consume energía y tiempo, sin gastar PA.' : `Dejá PA para interrumpir al enemigo. Se conservan hasta ${formatAP(budget?.carryover)} PA al próximo turno (límite ${formatAP(AP_CARRY_LIMIT)}).`}</small>
         </div>}
         {unit && <div className="ja2-equipped-slots" aria-label="Objeto equipado">
-          {equipmentSlots(battle, unit, {busy}).map((slot: any) => <button key={slot.slot} aria-pressed={slot.active} disabled={slot.active || slot.disabled} title={slot.reason||`Equipar ${slot.label} · ${slot.pa} PA`} onClick={() => { onOrder(slot.action); onMode('move'); }}>{slot.label}</button>)}
+          {equipmentSlots(battle, unit, {busy}).map((slot: any) => <button key={slot.slot} aria-pressed={slot.active} disabled={slot.active || slot.disabled} title={slot.reason||`Equipar ${slot.label} · ${formatAP(slot.pa)} PA`} onClick={() => { onOrder(slot.action); onMode('move'); }}>{slot.label}</button>)}
         </div>}
         {unit&&<JA2Hands battle={battle} unit={unit} busy={busy} compact onOrder={a=>{onOrder(a);onMode('move');}} onPick={()=>onOpenInventory(unit.id)}/>}
         <JA2WeaponMode battle={battle} unit={unit} busy={busy} onOrder={onOrder} onMode={onMode}/>
@@ -57,8 +59,8 @@ export function JA2OrdersPanel({battle, unit, mode, aim, firearm, cannonId, shot
             const Icon = GRID_ICONS[d.id];
             const label = d.id === 'mount' ? (unit?.mounted ? 'Desmontar' : 'Montar') : d.label;
             return (
-              <button key={d.id} className={(d.kind === 'mode' && mode === d.id) || d.active ? 'selected' : ''} disabled={d.disabled} aria-label={label} aria-pressed={d.id === 'stealth' ? Boolean(d.active) : undefined} title={d.id === 'stealth' ? 'Reduce el ruido al moverse. Consume más PA de movimiento y no cambia la postura. Atajo: Z.' : d.reserve ? `Conservá ${d.pa} PA para un disparo de reacción. Se pagan cuando dispara.` : d.kind === 'mode' ? targetingHelp(d.id, unit) : undefined} onClick={() => { if (d.kind === 'mode') onMode(d.id); else if (d.id === 'sight') onToggleSight(); else onOrder(orderAction(battle, unit, {}, d.id)); }}>
-                {Icon && <Icon size={16} />}<span>{label}{battle.mode !== 'exploration' && d.pa !== undefined ? ` · ${d.reserve ? 'reservar ' : ''}${d.pa} PA` : ''}</span>
+              <button key={d.id} className={(d.kind === 'mode' && mode === d.id) || d.active ? 'selected' : ''} disabled={d.disabled} aria-label={label} aria-pressed={d.id === 'stealth' ? Boolean(d.active) : undefined} title={d.id === 'stealth' ? 'Reduce el ruido al moverse. Consume más PA de movimiento y no cambia la postura. Atajo: Z.' : d.reserve ? `Conservá ${formatAP(d.pa)} PA para un disparo de reacción. Se pagan cuando dispara.` : d.kind === 'mode' ? targetingHelp(d.id, unit) : undefined} onClick={() => { if (d.kind === 'mode') onMode(d.id); else if (d.id === 'sight') onToggleSight(); else onOrder(orderAction(battle, unit, {}, d.id)); }}>
+                {Icon && <Icon size={16} />}<span>{label}{battle.mode !== 'exploration' && d.pa !== undefined ? ` · ${d.reserve ? 'reservar ' : ''}${formatAP(d.pa)} PA` : ''}</span>
               </button>
             );
           })}
@@ -66,10 +68,10 @@ export function JA2OrdersPanel({battle, unit, mode, aim, firearm, cannonId, shot
         {(artillery || []).length > 0 && <div className="ja2-artillery">
           <p className="eyebrow">ARTILLERÍA DE CAMPAÑA</p>
           <select aria-label="Seleccionar pieza de artillería" value={cannonId} onChange={e => onCannonChange(e.target.value)}><option value="">Elegir cañón</option>{artillery.map((a: any) => <option key={a.id} value={a.id}>{(ARTILLERY as any)[a.type]?.name ?? a.type} · {a.loaded ? 'cargado' : a.reloadProgress ? `recarga ${Math.floor(a.reloadProgress*100)}%` : 'descargado'}</option>)}</select>
-          {cannonId && (() => { const gun=artillery.find((a:any)=>a.id===cannonId); const reload=artilleryReloadPreview(battle,unit,gun); return <p aria-live="polite">{reload.reason || (battle.mode === 'exploration' ? 'Recarga sin coste de PA. Consume una munición al completar la carga.' : `Recarga: ${reload.pa} PA por artillero${reload.partial ? ` ahora; faltan ${reload.remainingPA} PA por artillero` : ''}. La munición se descuenta al completar la carga.`)}</p>; })()}
+          {cannonId && (() => { const gun=artillery.find((a:any)=>a.id===cannonId); const reload=artilleryReloadPreview(battle,unit,gun); return <p aria-live="polite">{reload.reason || (battle.mode === 'exploration' ? 'Recarga sin coste de PA. Consume una munición al completar la carga.' : `Recarga: ${formatAP(reload.pa)} PA por artillero${reload.partial ? ` ahora; faltan ${formatAP(reload.remainingPA)} PA por artillero` : ''}. La munición se descuenta al completar la carga.`)}</p>; })()}
           <select aria-label="Munición de artillería" value={shotType} onChange={e => onShotTypeChange(e.target.value)}><option value="solid">Bala rasa</option><option value="canister">Metralla</option></select>
           <div>
-            {['artillery', 'artilleryMove', 'artilleryPivot', 'artilleryReload'].map(id => { const d = descriptors.find((entry: any) => entry.id === id); return <button key={id} className="line-button" disabled={!d || d.disabled} onClick={() => id === 'artilleryReload' ? onOrder(orderAction(battle, unit, {artilleryId: cannonId}, id)) : onMode(id)}>{d?.label || id} · {d?.pa ?? '—'} PA por artillero</button>; })}
+            {['artillery', 'artilleryMove', 'artilleryPivot', 'artilleryReload'].map(id => { const d = descriptors.find((entry: any) => entry.id === id); return <button key={id} className="line-button" disabled={!d || d.disabled} onClick={() => id === 'artilleryReload' ? onOrder(orderAction(battle, unit, {artilleryId: cannonId}, id)) : onMode(id)}>{d?.label || id} · {formatAP(d?.pa ?? '—')} PA por artillero</button>; })}
           </div>
           <small>La pieza debe apuntar al objetivo. {battle.mode === 'exploration' ? 'Las órdenes consumen tiempo, sin gastar PA.' : 'Cada artillero paga el coste de la orden.'}</small>
         </div>}

@@ -74,7 +74,7 @@ test('a loaded alternative survives held transfer, recipient equip and tactical 
 
 test('unloading requires pocket capacity and combat AP, and cannot clear a jam for free',()=>{
  const field=()=>createBattle([{id:'p',x:1,y:1,weapon:1800,loaded:1,ammunitionChoice:'ammoShot',ammo:0,ap:3}],{width:8,height:8,enemies:[{id:'e',x:7,y:7,weapon:1813,patrol:false}]});
- let b=field();b.units[0].ap=3;const before=structuredClone(b.units);let n=actBattle(b,{type:'unloadAmmunition',unitId:'p'});assert.match(n.lastError,/12 PA/);assert.deepEqual(n.units,before);
+ let b=field();b.units[0].ap=3;const before=structuredClone(b.units);let n=actBattle(b,{type:'unloadAmmunition',unitId:'p'});assert.match(n.lastError,/3 PA/);assert.deepEqual(n.units,before);
  b=field();b.units[0].jammed=true;b.units[0].ap=20;n=actBattle(b,{type:'unloadAmmunition',unitId:'p'});assert.equal(n.lastError,null);assert.equal(n.units[0].ap,8);assert.equal(n.units[0].loaded,0);assert.equal(n.units[0].jammed,true);assert.equal(ammoCount(n.units[0],'ammoShot'),1);
  b=field();b.units[0].ap=20;b.units[0].inventory=Object.fromEntries(Array.from({length:12},(_,i)=>['full'+i,{name:'Objeto '+i,count:1,weight:.1,instanceId:'full-'+i}]));const full=structuredClone(b.units);n=actBattle(b,{type:'unloadAmmunition',unitId:'p'});assert.ok(n.lastError);assert.deepEqual(n.units,full);
 });

@@ -1,4 +1,6 @@
 'use client';
+import {formatAP} from '../../game/action-points.js';
+
 import {sitePath} from '../lib/site-path.js';
 import {equipmentAttachmentHost} from '../../game/equipment-cursor.js';
 import {equipmentFingerprint} from '../../game/tactical-inventory.js';
@@ -14,7 +16,7 @@ export default function JA2AttachmentSlot({battle,unit,hostId,disabled,onOrder}:
  const action={type:'attachment',unitId:String(unit.id),hostId,operation:unit.equipmentCursor?'attach':'detach',expectedHost:equipmentFingerprint(unit,hostId),expectedCursor:equipmentFingerprint(unit,'cursor')};
  const preview=equipmentAttachmentPreview(battle,unit,action),fitting=host.fitting;
  const verb=action.operation==='detach'?'Retirar al cursor':preview.swapped?'Cambiar bayoneta':'Colocar bayoneta';
- const cost=battle.mode==='exploration'?'sin PA':`${preview.pa} PA`;
+ const cost=battle.mode==='exploration'?'sin PA':`${formatAP(preview.pa)} PA`;
  const name=fitting?fittingLabel(fitting.fittingPattern):'Sin bayoneta';
  const hint=!unit.equipmentCursor&&!fitting?'Tomá una bayoneta y colocala en esta ranura.':preview.reason??`${verb} · ${cost}`;
  return <section className="ja2-attachment-detail" aria-label="Accesorios del arma" data-equipment-scope={store.scope}>

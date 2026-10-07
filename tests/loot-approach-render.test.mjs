@@ -23,7 +23,7 @@ test('the visible ground marker supports focus and keyboard selection without ma
 test('the picker labels finite quantities and blocks a full pack without committing an order',()=>{
   const s=field({x:5,ammo:240,priming:0,flints:0,medkits:0,rations:0,torches:0,boleadoras:0});let calls=0;
   const markup=render(h(JA2LootPicker,{battle:s,unit:s.units[0],point:{x:6,y:2},busy:false,onTake:()=>calls++,onClose:()=>{}}));
-  assert.match(markup,/<dialog[^>]+aria-labelledby="loot-picker-title"/);assert.match(markup,/aria-label="Objetos disponibles"/);assert.match(markup,/aria-label="Cantidad 1: En el suelo · Cartuchos"[^>]*max="12"/);assert.match(markup,/Recoger selección · 8 PA/);assert.match(markup,/Seleccionar todos/);assert.match(markup,/Limpiar selección/);assert.match(markup,/<button[^>]+class="gold-button"[^>]*disabled/);assert.equal(calls,0);assert.ok(!markup.includes('99'));
+  assert.match(markup,/<dialog[^>]+aria-labelledby="loot-picker-title"/);assert.match(markup,/aria-label="Objetos disponibles"/);assert.match(markup,/aria-label="Cantidad 1: En el suelo · Cartuchos"[^>]*max="12"/);assert.match(markup,/Recoger selección · 2 PA/);assert.match(markup,/Seleccionar todos/);assert.match(markup,/Limpiar selección/);assert.match(markup,/<button[^>]+class="gold-button"[^>]*disabled/);assert.equal(calls,0);assert.ok(!markup.includes('99'));
 });
 
 test('exploration pickup states energy and time without advertising an AP debit',()=>{

@@ -1,4 +1,6 @@
 'use client';
+import {formatAP} from '../../game/action-points.js';
+
 import {useState} from 'react';
 import {artilleryCosts, artilleryCrewPlan, artilleryReloadPreview} from '../../game/tactical.js';
 import {artilleryProfile} from '../../game/artillery-definitions.js';
@@ -35,17 +37,17 @@ function ArtilleryControls({battle, unit, artillery, cannonId, shotType, busy, o
     </select>
     {reload && <p aria-live="polite">{reload.reason || (battle.mode === 'exploration'
       ? 'Recarga sin coste de PA. Consume una munición al completar la carga.'
-      : `Recarga: ${reload.pa} PA por artillero${reload.partial ? ` ahora; faltan ${reload.remainingPA} PA por artillero` : ''}.`)}</p>}
+      : `Recarga: ${formatAP(reload.pa)} PA por artillero${reload.partial ? ` ahora; faltan ${formatAP(reload.remainingPA)} PA por artillero` : ''}.`)}</p>}
     <select aria-label="Munición de artillería" value={shotType} onChange={e => onShotTypeChange(e.target.value)}>
       <option value="solid">Bala rasa</option><option value="canister">Metralla</option>
     </select>
     {actions.map(action => {
       const crew = unit && gun ? artilleryCrewPlan(battle, unit, gun, action.pa) : null;
       return <button key={action.id} className="line-button" disabled={!ready || !crew || Boolean(crew.reason) || action.disabled}
-        title={crew?.reason || undefined} onClick={() => onMode(action.id)}>{action.label} · {battle.mode === 'exploration' ? 'sin PA' : `${action.pa ?? '—'} PA por artillero`}</button>;
+        title={crew?.reason || undefined} onClick={() => onMode(action.id)}>{action.label} · {battle.mode === 'exploration' ? 'sin PA' : `${formatAP(action.pa ?? '—')} PA por artillero`}</button>;
     })}
     <button className="line-button" disabled={!ready || !reload?.valid} onClick={() => onOrder({type:'artilleryReload', artilleryId:cannonId})}>
-      Recargar pieza · {battle.mode === 'exploration' ? 'sin PA' : `${reload?.pa ?? '—'} PA por artillero`}
+      Recargar pieza · {battle.mode === 'exploration' ? 'sin PA' : `${formatAP(reload?.pa ?? '—')} PA por artillero`}
     </button>
   </section>;
 }

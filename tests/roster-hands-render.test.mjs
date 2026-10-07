@@ -62,7 +62,7 @@ test('personal enemy counts follow each observer sight and AP remains explicit a
  for(const cell of cells.filter(c=>c.unit))assert.equal(cell.visibleEnemyCount,battle.units.filter(e=>e.side==='enemy'&&e.hp>0&&canSee(battle,cell.unit,e)).length);
  const html=render(h(Roster,{...props(battle),players,selected:'watcher'}));
  assert.match(html,/Vigía ve 2 enemigos/);assert.match(html,/Retaguardia ve 0 enemigos/);
- assert.match(html,/class="ja2-ap-readout"[^>]*>19<small>PA/);assert.match(html,/class="ja2-ap-readout"[^>]*>0<small>PA/);
+ assert.match(html,/class="ja2-ap-readout"[^>]*>4,75<small>PA/);assert.match(html,/class="ja2-ap-readout"[^>]*>0<small>PA/);
  battle.units.find(u=>u.id==='one').hp=0;assert.equal(rosterCells(players,'watcher',battle)[0].visibleEnemyCount,1);
 });
 

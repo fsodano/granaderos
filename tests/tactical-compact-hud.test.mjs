@@ -17,7 +17,7 @@ test('peaceful Retiro entry and movement with zero AP use energy without changin
 });
 test('six portraits stay visible and selecting a later merc opens that page',()=>{
  const b=createBattle(Array.from({length:9},(_,i)=>({id:`merc-${i}`,name:`Soldado ${i}`,x:1,y:i+1})),{width:20,height:20,exploration:true,enemies:[]});
- const html=render(h(Roster,{battle:b,players:b.units,selected:'merc-7',onSelect:noop,onOpenInventory:noop}));assert.equal((html.match(/class="ja2-portrait-cell /g)||[]).length,3);assert.equal((html.match(/empty-portrait-slot/g)||[]).length,3);assert.match(html,/Soldado 7/);assert.doesNotMatch(html,/Soldado 0|puntos de acción|\d+ PA/);assert.match(html,/Combatientes anteriores/);
+ const html=render(h(Roster,{battle:b,players:b.units,selected:'merc-7',onSelect:noop,onOpenInventory:noop}));assert.equal((html.match(/class="ja2-portrait-cell /g)||[]).length,3);assert.equal((html.match(/empty-portrait-slot/g)||[]).length,3);assert.match(html,/Soldado 7/);assert.doesNotMatch(html,/Soldado 0|puntos de acción|\d+(?:,\d+)? PA/);assert.match(html,/Combatientes anteriores/);
 });
 test('right-click inspects a merc who cannot act while left-click cannot order them',()=>{
  const b=createBattle([{id:'p',name:'Herido',x:1,y:1}],{width:8,height:8,exploration:true,enemies:[]});b.units[0].unconscious=true;let inspected,selected;

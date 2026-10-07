@@ -1,3 +1,4 @@
+import {formatAP} from '../game/action-points.js';
 import {register} from 'node:module';
 register('./tactical-render-loader.mjs',import.meta.url);
 import test from 'node:test';
@@ -152,7 +153,7 @@ test('inventory climb controls use real admission, costs and callbacks while nat
  function CaptureLevel(){levelButton=levelControl.type(levelControl.props);return null;}
  render(h(tree.type,null,h(CaptureLevel)));
  levelButton.props.onClick();assert.equal(cursor,1);
- const climb=buttons.find(n=>render(n).includes('Subir'));assert.equal(climb.props.disabled,false);assert.match(render(climb),new RegExp(`${expected.pa} PA`));climb.props.onClick();
+ const climb=buttons.find(n=>render(n).includes('Subir'));assert.equal(climb.props.disabled,false);assert.match(render(climb),new RegExp(`${formatAP(expected.pa)} PA`));climb.props.onClick();
  assert.deepEqual(action,{type:'climb',linkId:link.id});assert.equal(actBattle(state,{...action,unitId:state.units[0].id}).lastError,null);
  state.units[0].stance='crouched';const blocked=nodes(componentTree(Inventory,inventoryProps(state))).find(n=>n.type==='button'&&render(n).includes('Subir'));
  assert.equal(blocked.props.disabled,true);assert.match(blocked.props.title,/de pie/);

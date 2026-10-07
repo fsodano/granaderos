@@ -1,3 +1,4 @@
+import {formatAP} from '../game/action-points.js';
 import {componentTree} from './component-tree.mjs';
 import {register} from 'node:module';
 register('./tactical-render-loader.mjs',import.meta.url);
@@ -56,7 +57,7 @@ test('knife cursor shows body aim, AP and energy and never displays firearm relo
   const s=field(),u=s.units[0];if(situation==='missing')u.blade=null;if(situation==='prone')s.units[1].stance='prone';const target=situation==='point'?{x:4,y:2}:s.units[1];
   const preview=targetPreview(s,u,target,{mode:'throwKnife',aim:2,hitLocation:situation==='prone'?'torso':'head'});
   const html=render(h('svg',null,h(AimCursor,{point:{x:80,y:90},aim:2,preview,target})));
-  assert.match(html,/Facón/);assert.ok(html.includes(`${preview.pa} PA`));assert.match(html,/6 EN/);assert.doesNotMatch(html,/cartuchos|Recargar|recarga|aim-reload/);
+  assert.match(html,/Facón/);assert.ok(html.includes(`${formatAP(preview.pa)} PA`));assert.match(html,/6 EN/);assert.doesNotMatch(html,/cartuchos|Recargar|recarga|aim-reload/);
   assert.match(html,situation==='missing'?/aim-cursor invalid/:/aim-cursor valid/);
   assert.match(html,situation==='point'?/Casilla/:situation==='prone'?/Cuerpo/:/Cabeza/);
  }

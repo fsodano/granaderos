@@ -18,7 +18,7 @@ export default function GroundSupplyPicker({battle,unit,tile,onClose,onCollect}:
   <h2>Suministros en {tacticalGridLabel(tile.x,tile.y)}</h2><p>{unit.name} recoge lo que elijas. El resto queda en el sector.</p>
   <label>Bulto <select aria-label="Bulto del suelo" value={chosen} onChange={e=>{setChosen(e.target.value);setAmount(String(bundles.find((g:any)=>g.id===e.target.value)?.count??1));}}>{bundles.map((g:any,i:number)=><option key={g.id} value={g.id}>{(TRANSFER_SUPPLY_LABELS as any)[g.type]} · {g.count} · bulto {i+1}</option>)}</select></label>
   <label>Cantidad <input aria-label="Cantidad de suministros para recoger" type="number" min="1" max={source?.count??0} step="1" value={amount} onChange={e=>setAmount(e.target.value)}/></label>
-  <p>En el bulto: {source?.count??0}. En el equipo: {source?supplyCount(unit,source.type):0}. Costo: {battle.mode==='exploration'?'1 segundo':'8 PA'}.</p>
+  <p>En el bulto: {source?.count??0}. En el equipo: {source?supplyCount(unit,source.type):0}. Costo: {battle.mode==='exploration'?'1 segundo':'2 PA'}.</p>
   {plan.reason&&<p role="status">{plan.reason}</p>}
   <div><button className="gold-button" disabled={Boolean(plan.reason)} onClick={()=>onCollect(chosen,Number(amount))}>Recoger cantidad</button><button className="line-button" onClick={onClose}>Cancelar</button></div>
  </section></div>;

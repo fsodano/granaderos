@@ -37,7 +37,7 @@ test('a held-key target pays the same approach and unlock as ordinary local orde
 });
 
 test('normal target previews include total AP while direct environment aliases remain local',()=>{
-  const s=field(),p=targetPreview(s,s.units[0],door(s));assert.equal(p.valid,true);assert.equal(p.pa,28);assert.equal(p.remaining,72);assert.equal(p.actionLabel,'Acercarse y usar llave');assert.match(p.coverNote,/24 PA.*4 PA.*contacto/);
+  const s=field(),p=targetPreview(s,s.units[0],door(s));assert.equal(p.valid,true);assert.equal(p.pa,28);assert.equal(p.remaining,72);assert.equal(p.actionLabel,'Acercarse y usar llave');assert.match(p.coverNote,/6 PA.*1 PA.*contacto/);
   assert.equal(environmentPreview(s,s.units[0],ref,'unlock').valid,false);
   const local=actBattle(s,{type:'environment',unitId:'p',...ref,verb:'unlock'});assert.ok(local.lastError);assert.deepEqual(local.units,s.units);
   const close=use(s),model=nearbyEnvironmentModel(close,close.units[0],{targetKey:'door:store'});assert.equal(model.preview.valid,true);assert.equal(model.preview.pa,4);
