@@ -611,3 +611,7 @@ The sabre contact helper now checks complete native wrist and sole paths before 
 ## Current target frame order
 
 The scene now binds every current actor identity and visibility before evaluating contact. Native target bodies tick before contact actors, with one tick per active actor. The strict resolver still rejects unavailable or undisclosed models. The clean source passes 41 focused checks, type/docs/baseline verification, the build (`1cb70509cc9d`) and eighteen ordinary paid sabre captures without errors. The finite action retains its AP, damage and saved cell. Diagonal paid-facing transitions and moving target drift remain recorded follow-ups. See [the frame-order review](../art/scene-contact-frame-order-review-2026-10-07.md).
+
+## Exposed farmhouse gallery
+
+The farmhouse gallery now has the source front and return posts, warm stone feet, supported ties and shallow beams. Its joined corner retains one post and one roof cap, with overlapping beam faces removed. The source passes 73 affected checks, type/docs/baseline verification and the build (`3652c1aed03a`). Thirty ordinary and closer original/slab/accessible-roof browser views pass without errors. Selected exterior, entrance, interior and roof views were compared with the current sprite. See [the gallery review](../art/farmhouse-gallery-exposure-3d-review-2026-10-07.md).
