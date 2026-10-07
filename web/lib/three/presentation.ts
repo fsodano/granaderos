@@ -21,7 +21,8 @@ import type {AnimationWork} from './animation-clock';
 
 export type ActorKind='unit'|'npc';
 export type ActorEntry={key:string;kind:ActorKind;actor:any};
-export type ActorCue={id:string;action:string;shotHand?:'primary'|'offhand';hand?:'handRight'|'handLeft';startedAt:number;durationMs?:number;phase?:string;phaseStartedAt?:number;phaseDurationMs?:number;fromPosture?:string;toPosture?:string;work?:readonly AnimationWork[]};
+export type ContactTarget={key:string;appearance:string;position:[number,number,number];yaw:number;posture:string;mounted:boolean;action:string;bodyHeights:Record<string,number>};
+export type ActorCue={id:string;action:string;shotHand?:'primary'|'offhand';hand?:'handRight'|'handLeft';startedAt:number;durationMs?:number;phase?:string;phaseStartedAt?:number;phaseDurationMs?:number;fromPosture?:string;toPosture?:string;work?:readonly AnimationWork[];contactTarget?:ContactTarget};
 export type VisualItem={id:string;reference:string;socket:'handRight'|'handLeft'|'back'|'hip';fittings?:any};
 export type ActorVisual={key:string;id:string;kind:ActorKind;appearance:string;skin:string;side:string;tacticalLevel:number;position:[number,number,number];yaw:number;posture:string;mounted:boolean;action:string;idleAction:string;equipment:string;items:VisualItem[];garments:Record<string,string|null>;cue?:ActorCue;motion?:Motion;selected:boolean;bodyHeights:Record<string,number>};
 export const actorKey=(kind:ActorKind,id:string)=>`${kind}:${id}`;
@@ -129,6 +130,18 @@ export function presentActors(state:any,entries:readonly ActorEntry[],positions:
       if(Math.abs(left)>Math.abs(forward)+.01)action=left>0?'strafeLeft':'strafeRight';
     }
     result.push({key,id:actor.id,kind,appearance:spriteAppearance(actor,kind==='npc'?'civilian':'soldier'),skin:spriteSkinTone(actor),side:actor.side??'civilian',tacticalLevel:tacticalLevel(actor),position:[at.x*TILE_METRES,renderedSurfaceHeight(state,at),at.y*TILE_METRES],yaw:actorYaw(direction),posture,mounted,action,idleAction,equipment,items,garments:Object.fromEntries(['headwear','outfit','legwear'].map(slot=>[slot,wornOutfit(actor,slot)?.outfit??null])),cue,motion,selected:kind==='unit'&&actor.id===options.selected,bodyHeights:Object.fromEntries(['head','torso','legs','muzzle'].map(part=>[part,relativeBodyHeight(actor,part)]))});
+  }
+  // Contact fitting uses the bodies that passed both admission and room
+  // readability. A frame's target coordinates cannot admit another body.
+  const frame=options.frame,point=frame?.targetPoint;
+  if(frame?.performed!==false&&['melee','charge'].includes(frame?.action)&&['prepare','contact'].includes(frame?.type)&&['unit','npc'].includes(point?.kind)&&typeof point.id==='string'&&point.id.length>0&&[point.x,point.y].every(Number.isFinite)){
+    const key=actorKey(point.kind,String(point.id)),matches=result.filter(visual=>visual.key===key);
+    const entry=entries.find(entry=>entry.key===key),target=matches.length===1?matches[0]:undefined;
+    if(target&&entry&&entry.actor.x===point.x&&entry.actor.y===point.y&&tacticalLevel(entry.actor)===tacticalLevel(point)&&target.position.every(Number.isFinite)&&Number.isFinite(target.yaw)){
+      for(const visual of result)if(visual.kind==='unit'&&visual.id===frame.unitId&&visual.key!==key&&visual.cue&&['strike','bayonet'].includes(visual.cue.action)){
+        visual.cue={...visual.cue,contactTarget:{key,appearance:target.appearance,position:[...target.position],yaw:target.yaw,posture:target.posture,mounted:target.mounted,action:target.action,bodyHeights:{...target.bodyHeights}}};
+      }
+    }
   }
   return result;
 }

@@ -335,8 +335,8 @@ test('palace balcony and military details leave no floating features during room
   }
 });
 
-test('tall civic facades have separate arcade levels, iron rails, side windows and a roof-supported clock',()=>{
-  for(const kind of ['cabildo','townhall'])for(const side of ['north','east','south','west']){
+test('tall cabildo facades have separate arcade levels, iron rails, side windows and a roof-supported clock',()=>{
+  for(const kind of ['cabildo'])for(const side of ['north','east','south','west']){
     const f=fixture(kind,side),height=5.1,details=architecturalDetails(f.b,f.input,T,height,0,f.geometry,f.materials,false),ground=details.getObjectByName('building-detail:review:civic-ground-arcade'),upper=details.getObjectByName('building-detail:review:civic-upper-arcade'),cornices=details.getObjectByName('building-detail:review:civic-cornices'),windows=details.getObjectByName('building-detail:review:civic-side-windows'),tower=details.getObjectByName(`building-detail:review:${kind==='townhall'?'townhall-clock-pediment':'civic-clock-tower'}`);
     const lowerBounds=new Box3().setFromObject(ground),upperBounds=new Box3().setFromObject(upper);
     assert.ok(lowerBounds.max.y<height*.51&&upperBounds.min.y>height*.51,'arcade floors must remain visually separate');

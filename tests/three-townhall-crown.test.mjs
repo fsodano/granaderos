@@ -10,8 +10,8 @@ const {entranceFrame}=await import('../game/building-profile.js');
 const {createArchitectureReviewBattle}=await import('../web/app/renderer-sandbox/architecture-fixtures.js');
 const T=1.2360585147470482;
 
-function fixture(rotation,view='exterior'){
- const battle=createArchitectureReviewBattle('ayuntamiento',rotation,view),b=battle.buildings[0],input={terrain:{width:battle.width,height:battle.height,tiles:battle.tiles,buildings:battle.buildings},revealedRooms:battle.revealedRooms},frame=entranceFrame({...b,walls:battle.tiles.filter(tile=>tile.buildingId===b.id)}),geometry=new WorldGeometry(),materials=new WorldMaterials({tileMetres:T,assetUrl:path=>path});
+function fixture(rotation,view='exterior',roof='original'){
+ const battle=createArchitectureReviewBattle('ayuntamiento',rotation,view,roof),b=battle.buildings[0],input={terrain:{width:battle.width,height:battle.height,tiles:battle.tiles,buildings:battle.buildings,upperSurfaces:battle.upperSurfaces},revealedRooms:battle.revealedRooms},frame=entranceFrame({...b,walls:battle.tiles.filter(tile=>tile.buildingId===b.id)}),geometry=new WorldGeometry(),materials=new WorldMaterials({tileMetres:T,assetUrl:path=>path});
  const build=()=>buildBuilding(b,input,T,geometry,materials);
  const name=feature=>`building-detail:${b.id}:${feature}`;
  const actualDoor=frame.doorU-.4*(frame.u.x+frame.u.y);
@@ -75,5 +75,42 @@ test('town hall crowns retain authored finishes and follow ordinary room cutaway
   for(const view of ['partial','interior']){
    const g=fixture(rotation,view),inside=g.build();assert.ok(g.input.revealedRooms.length>0,'the review must enter rooms with ordinary gameplay orders');assert.equal(inside.getObjectByName(g.name('townhall-clock-pediment')),undefined);assert.equal(inside.getObjectByName(g.name('townhall-finials')),undefined);g.dispose(inside);
   }
+ }
+});
+
+test('the compiled town hall has formal stone columns, storey bands and eighteen separate barred upper panes',()=>{
+ for(const rotation of [0,90,180,270]){
+  const f=fixture(rotation),before=JSON.stringify(f.input),building=f.build(),height=building.userData.height,columns=building.getObjectByName(f.name('townhall-formal-columns')),bands=building.getObjectByName(f.name('townhall-storey-bands')),windows=building.getObjectByName(f.name('townhall-upper-windows'));
+  assert.ok(columns.children.some(child=>child.material?.name==='world:stone'));assert.ok(bands.children.some(child=>child.material?.name==='world:stone'));assert.ok(windows.children.some(child=>child.material?.name==='world:iron'));assert.equal(building.getObjectByName(f.name('civic-ground-arcade')),undefined);assert.equal(building.getObjectByName(f.name('civic-upper-arcade')),undefined);
+  building.updateMatrixWorld(true);const paneY=height*66/118+.62+.45,alongInset=.4*(f.frame.u.x+f.frame.u.y),depthInset=.4*(f.frame.v.x+f.frame.v.y);let panes=0;
+  for(const v of [0,f.frame.depth])for(const u of [1,3,5,7,9]){
+   const sign=v===0?1:-1,ray=new Raycaster(f.point(u-alongInset,v-sign,paneY),new Vector3(f.frame.v.x*sign,0,f.frame.v.y*sign),0,T*1.6);assert.ok(ray.intersectObject(windows,true).length,`${rotation}: missing front/rear pane at ${u},${v}`);panes++;
+  }
+  for(const u of [0,f.frame.width])for(const v of [1,3,5,7]){
+   const sign=u===0?1:-1,ray=new Raycaster(f.point(u-sign,v-depthInset,paneY),new Vector3(f.frame.u.x*sign,0,f.frame.u.y*sign),0,T*1.6);assert.ok(ray.intersectObject(windows,true).length,`${rotation}: missing side pane at ${u},${v}`);panes++;
+  }
+  assert.equal(panes,18);assert.equal(JSON.stringify(f.input),before);f.dispose(building);
+ }
+});
+
+test('formal town hall columns omit edited entrance supports and leave doors, windows and breaches open',()=>{
+ for(const rotation of [0,90,180,270])for(const type of ['window','door','rubble']){
+  const f=fixture(rotation),u=f.frame.doorU+2,cell=f.frame.at(u,0),tile=f.input.terrain.tiles.find(tile=>tile.x===cell.x&&tile.y===cell.y);tile.type=type;const before=JSON.stringify(f.input),building=f.build(),details=building.getObjectByName(`building-details:${f.b.id}`),columns=building.getObjectByName(f.name('townhall-formal-columns'));
+  columns.traverse(child=>{if(child instanceof Mesh){const p=child.geometry.getAttribute('position');for(let n=0;n<p.count;n++)if(p.getY(n)<1.8)assert.ok(Math.abs(p.getX(n)/T-cell.x)>.5||Math.abs(p.getZ(n)/T-cell.y)>.5,'a column must leave an edited support cell empty');}});
+  details.updateMatrixWorld(true);const actual=u-.4*(f.frame.u.x+f.frame.u.y);for(const [along,y]of [[f.actualDoor,1.9],[actual,type==='window'?1.3:1.9]])assert.equal(new Raycaster(f.point(along,-1,y),new Vector3(f.frame.v.x,0,f.frame.v.y),0,T*1.6).intersectObject(details,true).length,0,'formal scenery must not obstruct an authored opening');
+  assert.equal(JSON.stringify(f.input),before);f.dispose(building);
+ }
+});
+
+test('short metric town hall roofs keep one formal floor with a clear standing entrance',()=>{
+ for(const rotation of [0,90,180,270]){
+  const f=fixture(rotation,'exterior','slab'),before=JSON.stringify(f.input),building=f.build(),details=building.getObjectByName(`building-details:${f.b.id}`);assert.equal(building.userData.height,3);assert.ok(building.getObjectByName(f.name('townhall-formal-columns')));assert.equal(building.getObjectByName(f.name('townhall-upper-windows')),undefined);assert.ok(new Box3().setFromObject(building.getObjectByName(f.name('townhall-storey-bands'))).max.y<3);
+  details.updateMatrixWorld(true);assert.equal(new Raycaster(f.point(f.actualDoor,-1,1.9),new Vector3(f.frame.v.x,0,f.frame.v.y),0,T*1.6).intersectObject(details,true).length,0);assert.equal(JSON.stringify(f.input),before);f.dispose(building);
+ }
+});
+
+test('formal town hall facades follow normal partial and full room cutaways at every rotation',()=>{
+ for(const rotation of [0,90,180,270])for(const view of ['partial','interior']){
+  const f=fixture(rotation,view),building=f.build();assert.ok(f.input.revealedRooms.length>0);for(const name of ['townhall-formal-columns','townhall-storey-bands','townhall-upper-windows','townhall-clock-pediment','townhall-finials'])assert.equal(building.getObjectByName(f.name(name)),undefined);f.dispose(building);
  }
 });
