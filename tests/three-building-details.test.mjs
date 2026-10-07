@@ -158,10 +158,10 @@ test('chapels use a roof-supported bell gable with a real arched opening in ever
   for(const side of ['north','east','south','west']){
     const f=fixture('chapel',side),height=2.5,details=architecturalDetails(f.b,f.input,T,height,0,f.geometry,f.materials,false),bell=details.getObjectByName('building-detail:review:chapel-bell-gable');
     assert.ok(bell);assert.equal(details.getObjectByName('building-detail:review:bell-tower'),undefined,'a modest chapel must not reuse the parish tower');
-    const bounds=f.localBounds(bell),door=f.frame.doorU-.4*(f.frame.u.x+f.frame.u.y),actual=[bounds.min.x-door,bounds.max.x-door,bounds.min.y,bounds.max.y,bounds.min.z,bounds.max.z];
+    const inset=buildingArtInset(f.b,f.input),bounds=f.localBounds(bell),door=f.frame.doorU-inset*(f.frame.u.x+f.frame.u.y),actual=[bounds.min.x-door,bounds.max.x-door,bounds.min.y,bounds.max.y,bounds.min.z,bounds.max.z];
     if(expected)actual.forEach((value,n)=>assert.ok(Math.abs(value-expected[n])<1e-5));else expected=actual;
     assert.ok(bounds.min.y>height+.6);assert.ok(bell.children.some(child=>child.material?.name==='world:brass'));
-    const spring=height+30/25.066666666666666*.62+.55,p=f.frame.at(door,-1),ray=new Raycaster(new Vector3((p.x+.4)*T,spring+.14,(p.y+.4)*T),new Vector3(f.frame.v.x,0,f.frame.v.y),0,T*1.5);
+    const spring=height+30/25.066666666666666*.62+.55,p=f.frame.at(door,-1),ray=new Raycaster(new Vector3((p.x+inset)*T,spring+.14,(p.y+inset)*T),new Vector3(f.frame.v.x,0,f.frame.v.y),0,T*1.5);
     details.updateMatrixWorld(true);assert.equal(ray.intersectObject(bell,true).length,0,'the bell gable must have an actual opening above the hanging beam');
     f.dispose(details);
   }
