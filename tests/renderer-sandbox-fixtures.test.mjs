@@ -140,3 +140,15 @@ test('night uses actual lights, shot-produced smoke, reload supplies and usable 
   assert.equal(actor(battle,'grenade').torches,torches-1);
   assert.ok(battle.lights.some(light=>light.type==='torch'&&light.x===5&&light.y===13));
 });
+
+
+test('same-cell hatch review uses ordinary climbs and keeps its roof walking cells',()=>{
+ const initial=createRendererSandboxBattle('climb-hatches');
+ for(const id of ['hatch-man','hatch-woman']){
+  const start=actor(initial,id),up=order(initial,{type:'climb',unitId:id,linkId:id});assert.equal(actor(up,id).tacticalLevel,1);assert.equal(climbPreview(initial,start,{linkId:id}).valid,true);
+  assert.equal(actor(up,id).x,start.x);assert.equal(actor(up,id).y,start.y);
+  const walk=order(up,{type:'move',unitId:id,x:start.x+1,y:start.y,tacticalLevel:1}),back=order(walk,{type:'move',unitId:id,x:start.x,y:start.y,tacticalLevel:1});
+  const down=order(back,{type:'climb',unitId:id,linkId:id});assert.equal(actor(down,id).tacticalLevel,0);assert.equal(actor(down,id).x,start.x);assert.equal(actor(down,id).y,start.y);
+  assert.deepEqual(down.upperSurfaces,initial.upperSurfaces);assert.deepEqual(down.climbLinks,initial.climbLinks);
+ }
+});
