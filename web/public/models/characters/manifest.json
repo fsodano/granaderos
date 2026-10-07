@@ -1826,8 +1826,8 @@
   "animationLibraries": {
     "male": {
       "url": "/models/characters/male-animations.glb",
-      "bytes": 10616584,
-      "sha256": "ac03287ccd518eb5f19a999a510fd02e3ec61b4ac169508cf277d28be9f63aeb",
+      "bytes": 10893392,
+      "sha256": "77aac8974046c6f2fe85939599bab9a9ffddb79e5a97c4ff1c678a93dad68e50",
       "clips": [
         {
           "name": "stand.idle.unarmed",
@@ -5422,7 +5422,20 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "freeHands": [
+            "handRight",
+            "handLeft"
+          ],
+          "handProps": [
+            {
+              "hand": "handRight",
+              "categories": [
+                "supply"
+              ],
+              "untilMarker": "release"
+            }
+          ]
         },
         {
           "name": "stand.gesture.bolas",
@@ -5443,7 +5456,20 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "freeHands": [
+            "handRight",
+            "handLeft"
+          ],
+          "handProps": [
+            {
+              "hand": "handRight",
+              "categories": [
+                "supply"
+              ],
+              "untilMarker": "release"
+            }
+          ]
         },
         {
           "name": "crouch.gesture.heal",
@@ -5672,7 +5698,20 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "freeHands": [
+            "handRight",
+            "handLeft"
+          ],
+          "handProps": [
+            {
+              "hand": "handRight",
+              "categories": [
+                "supply"
+              ],
+              "untilMarker": "release"
+            }
+          ]
         },
         {
           "name": "crouch.gesture.bolas",
@@ -5693,7 +5732,20 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "freeHands": [
+            "handRight",
+            "handLeft"
+          ],
+          "handProps": [
+            {
+              "hand": "handRight",
+              "categories": [
+                "supply"
+              ],
+              "untilMarker": "release"
+            }
+          ]
         },
         {
           "name": "prone.gesture.heal",
@@ -5922,7 +5974,20 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "freeHands": [
+            "handRight",
+            "handLeft"
+          ],
+          "handProps": [
+            {
+              "hand": "handRight",
+              "categories": [
+                "supply"
+              ],
+              "untilMarker": "release"
+            }
+          ]
         },
         {
           "name": "prone.gesture.bolas",
@@ -5943,7 +6008,20 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "freeHands": [
+            "handRight",
+            "handLeft"
+          ],
+          "handProps": [
+            {
+              "hand": "handRight",
+              "categories": [
+                "supply"
+              ],
+              "untilMarker": "release"
+            }
+          ]
         },
         {
           "name": "mounted.gesture.heal",
@@ -6245,6 +6323,19 @@
           "sampleRate": 15,
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
+          "freeHands": [
+            "handRight",
+            "handLeft"
+          ],
+          "handProps": [
+            {
+              "hand": "handRight",
+              "categories": [
+                "supply"
+              ],
+              "untilMarker": "release"
+            }
+          ],
           "seatAnchor": [
             0,
             0.9451594948768616,
@@ -6272,6 +6363,19 @@
           "sampleRate": 15,
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
+          "freeHands": [
+            "handRight",
+            "handLeft"
+          ],
+          "handProps": [
+            {
+              "hand": "handRight",
+              "categories": [
+                "supply"
+              ],
+              "untilMarker": "release"
+            }
+          ],
           "seatAnchor": [
             0,
             0.9451594948768616,
@@ -6299,6 +6403,10 @@
           "sampleRate": 15,
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
+          "freeHands": [
+            "handRight",
+            "handLeft"
+          ],
           "handProps": [
             {
               "hand": "handRight",
@@ -12307,8 +12415,8 @@
     },
     "female": {
       "url": "/models/characters/female-animations.glb",
-      "bytes": 10438588,
-      "sha256": "be4c130f1d2834f1130c39d84fe7526ac2509dd8172938c44345f77abdf7b807",
+      "bytes": 10718564,
+      "sha256": "91ea766502d49b2aa535f59501b99b377096e4d9ede165dfbfabd92d8b661272",
       "clips": [
         {
           "name": "stand.idle.unarmed",
@@ -15903,7 +16011,20 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "freeHands": [
+            "handRight",
+            "handLeft"
+          ],
+          "handProps": [
+            {
+              "hand": "handRight",
+              "categories": [
+                "supply"
+              ],
+              "untilMarker": "release"
+            }
+          ]
         },
         {
           "name": "stand.gesture.bolas",
@@ -15924,7 +16045,20 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "freeHands": [
+            "handRight",
+            "handLeft"
+          ],
+          "handProps": [
+            {
+              "hand": "handRight",
+              "categories": [
+                "supply"
+              ],
+              "untilMarker": "release"
+            }
+          ]
         },
         {
           "name": "crouch.gesture.heal",
@@ -16153,7 +16287,20 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "freeHands": [
+            "handRight",
+            "handLeft"
+          ],
+          "handProps": [
+            {
+              "hand": "handRight",
+              "categories": [
+                "supply"
+              ],
+              "untilMarker": "release"
+            }
+          ]
         },
         {
           "name": "crouch.gesture.bolas",
@@ -16174,7 +16321,20 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "freeHands": [
+            "handRight",
+            "handLeft"
+          ],
+          "handProps": [
+            {
+              "hand": "handRight",
+              "categories": [
+                "supply"
+              ],
+              "untilMarker": "release"
+            }
+          ]
         },
         {
           "name": "prone.gesture.heal",
@@ -16403,7 +16563,20 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "freeHands": [
+            "handRight",
+            "handLeft"
+          ],
+          "handProps": [
+            {
+              "hand": "handRight",
+              "categories": [
+                "supply"
+              ],
+              "untilMarker": "release"
+            }
+          ]
         },
         {
           "name": "prone.gesture.bolas",
@@ -16424,7 +16597,20 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "freeHands": [
+            "handRight",
+            "handLeft"
+          ],
+          "handProps": [
+            {
+              "hand": "handRight",
+              "categories": [
+                "supply"
+              ],
+              "untilMarker": "release"
+            }
+          ]
         },
         {
           "name": "mounted.gesture.heal",
@@ -16726,6 +16912,19 @@
           "sampleRate": 15,
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
+          "freeHands": [
+            "handRight",
+            "handLeft"
+          ],
+          "handProps": [
+            {
+              "hand": "handRight",
+              "categories": [
+                "supply"
+              ],
+              "untilMarker": "release"
+            }
+          ],
           "seatAnchor": [
             0,
             0.9131789803504944,
@@ -16753,6 +16952,19 @@
           "sampleRate": 15,
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
+          "freeHands": [
+            "handRight",
+            "handLeft"
+          ],
+          "handProps": [
+            {
+              "hand": "handRight",
+              "categories": [
+                "supply"
+              ],
+              "untilMarker": "release"
+            }
+          ],
           "seatAnchor": [
             0,
             0.9131789803504944,
@@ -16780,6 +16992,10 @@
           "sampleRate": 15,
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
+          "freeHands": [
+            "handRight",
+            "handLeft"
+          ],
           "handProps": [
             {
               "hand": "handRight",

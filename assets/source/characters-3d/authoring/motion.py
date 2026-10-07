@@ -847,14 +847,16 @@ def apply_animations(ctx, only=None):
     specs=_semantic_specs()
     if only:specs=[s for s in specs if s['name'] in only]
     loading_only=bool(only) and all(s['gesture'] in ('reload','reprime','repair','unload') for s in specs)
-    reviewed,reviewed_digest=({},None) if loading_only else _reviewed_bank(ctx)
+    throwing_only=bool(only) and all(s['gesture'] in ('throw','throwKnife','bolas') for s in specs)
+    contact_only=loading_only or throwing_only
+    reviewed,reviewed_digest=({},None) if contact_only else _reviewed_bank(ctx)
     ctx['reviewed_stride']={name:reviewed[name]['locomotionSpeed'] for name in ('Walk','Run') if name in reviewed}
     disabled=[]
     for obj in ctx['objects']:
         for modifier in obj.modifiers:
             if modifier.show_viewport:disabled.append(modifier);modifier.show_viewport=False
     offsets=_grip_setup(ctx);sources={};source_meta={}
-    for recipe in (('idle','crouch') if loading_only else SOURCE_RECIPES):
+    for recipe in (('idle','crouch') if contact_only else SOURCE_RECIPES):
         print('MOTION SOURCE',recipe,flush=True)
         sources[recipe],source_meta[recipe]=_retarget_samples(ctx,recipe)
     idle=sources['idle'][0];crouch=sources['crouch'][0]
@@ -895,6 +897,12 @@ def apply_animations(ctx, only=None):
             # Exact contact stages prevent a short unloading clip from
             # interpolating past its single muzzle contact between samples.
             stages=(.12,.24,.36,.46,.58,.70,.79,.86,.90) if gesture=='reload' else (.12,.25,.55,.78,.90)
+            times=sorted(set(times+[duration*stage for stage in stages]))
+        if gesture in ('throw','throwKnife','bolas'):
+            from throwing_motion import PROFILES
+            # Preserve hand orbit and planted support at authored phase keys,
+            # including the exact item release in the 30 Hz exported track.
+            stages=set(phase for phase,_ in PROFILES[gesture]['arm'])|{.09,.19,.24,.30,.38,.42,.43,.48,.52,.60,.63,.74,.77,.82,.88,.91}
             times=sorted(set(times+[duration*stage for stage in stages]))
         samples=[]
         for time in times:
@@ -950,6 +958,9 @@ def apply_animations(ctx, only=None):
             elif gesture in ('climbUp','climbDown'):pose=_at(sources[gesture],t)
             elif gesture in ('mount','dismount'):
                 u=t*t*(3-2*t);pose=_blend(idle,mounted,u if gesture=='mount' else 1-u)
+            elif gesture in ('throw','throwKnife','bolas'):
+                from throwing_motion import pose as throwing_pose
+                pose=throwing_pose(ctx,base,gesture,t,posture)
             elif gesture in ('die','collapse','knockdown'):
                 target=_at(sources['fall'],t)
                 if posture=='prone':pose=_blend(prone,sources['recover'][0],min(1,t*2))
@@ -971,7 +982,7 @@ def apply_animations(ctx, only=None):
                     lower=_at(sources['walk'],t)
                     for n in pose:
                         if n.startswith(('thigh','calf','foot','ball')) or n=='Root':pose[n]=lower[n]
-            elif gesture in ('heal','pickup','equip','offer','grab','door','tool','breach','free','ration','signal','fitting','throw','throwKnife','bolas'):
+            elif gesture in ('heal','pickup','equip','offer','grab','door','tool','breach','free','ration','signal','fitting'):
                 pose=_gesture_pose(ctx,base,gesture,t,{'canCrouch':posture=='standing','crouched':crouch,'groundReach':_at(sources['recover'],.5)})
             else:raise ValueError('Unimplemented semantic gesture: '+gesture)
             # Enforce native joint lengths: only Root has position tracks.
@@ -984,7 +995,9 @@ def apply_animations(ctx, only=None):
         if equipment=='long-gun' and gesture in ('reload','unload'):
             from rifle_loading import metadata as rifle_loading_metadata
             meta.update(rifle_loading_metadata(ctx,spec.get('item'),duration))
-        if gesture=='throwKnife':meta['handProps']=[{'hand':'handRight','categories':['knife'],'untilMarker':'release'}]
+        if gesture in ('throw','throwKnife','bolas'):
+            meta['freeHands']=['handRight','handLeft']
+            meta['handProps']=[{'hand':'handRight','categories':['knife'] if gesture=='throwKnife' else ['supply'],'untilMarker':'release'}]
         if speed is not None:meta['locomotionSpeed']=speed
         if gesture=='crawl':
             if crawl_stride is None:
