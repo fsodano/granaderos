@@ -9,6 +9,7 @@ import {depotFacade} from './world-depot-facade';
 import {warehouseButtresses} from './world-warehouse-buttresses';
 import {postaPiers} from './world-posta-piers';
 import {stableVentilation} from './world-stable-ventilation';
+import {stableTimberFrame} from './world-stable-frame';
 import {houseFacade} from './world-house-facade';
 import {buildingArtInset} from './world-building-placement';
 import type {WorldGeometry} from './world-geometry';
@@ -389,7 +390,7 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
       }
     });
     if(kind==='stable'){
-      feature('stable-timber-frame',()=>{
+      if(legacy&&b.wallFinish===undefined)feature('stable-timber-frame',()=>{
         const y=height*.91;
         box(frame.width*.5,-.13/T,y,frame.width+.10,.14,.20/T,wood);
         for(let u=0;u<=frame.width;u+=2)if(wallAt(u,0)?.type==='wall'){
@@ -397,6 +398,7 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
           batch.cylinder(wood,at(a,v,y-.30),at(a+(u<frame.width/2?.42:-.42),v,y-.04),.04,light);
         }
       });
+      else root.add(stableTimberFrame(b,input,T,height,base,geometry,materials));
       root.add(stableVentilation(b,input,T,height,base,roofRise,geometry,materials));
     }
   }else if(kind==='smithy'){sideChimney(true);roofCanopy('forge-canopy',entranceSupports(),.50);}
