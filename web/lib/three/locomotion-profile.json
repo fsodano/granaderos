@@ -14,7 +14,7 @@
   "banks": {
     "male": {
       "crawl": {
-        "nativeStrideSpeed": 0.260825,
+        "nativeStrideSpeed": 0.143763,
         "duration": 1.966659,
         "playbackRate": 1
       },
@@ -160,7 +160,7 @@
           "playbackRate": 1
         },
         "prone.crawl.unarmed": {
-          "nativeStrideSpeed": 0.260825,
+          "nativeStrideSpeed": 0.143763,
           "duration": 1.966659,
           "playbackRate": 1
         },
@@ -1200,7 +1200,7 @@
     },
     "female": {
       "crawl": {
-        "nativeStrideSpeed": 0.262093,
+        "nativeStrideSpeed": 0.143432,
         "duration": 1.966659,
         "playbackRate": 1
       },
@@ -1346,7 +1346,7 @@
           "playbackRate": 1
         },
         "prone.crawl.unarmed": {
-          "nativeStrideSpeed": 0.262093,
+          "nativeStrideSpeed": 0.143432,
           "duration": 1.966659,
           "playbackRate": 1
         },

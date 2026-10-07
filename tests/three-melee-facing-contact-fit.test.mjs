@@ -10,6 +10,7 @@ const {publishedActor}=await import('./published-actor-fixture.mjs');
 const {createRendererSandboxBattle}=await import('../web/app/renderer-sandbox/fixtures.js');
 const {presentedActBattle,actBattle}=await import('../game/tactical.js');
 const {battleFrameDuration}=await import('../game/battle-playback.js');
+const {TILE_METRES}=await import('../web/lib/three/projection.ts');
 const {Vector3,Triangle}=await import('../web/node_modules/three/build/three.module.js');
 const {capsuleSurfaceGap}=await import('./skinned-surface-contact-fixture.mjs');
 
@@ -21,11 +22,15 @@ function bodyFaces(runtime){runtime.root.updateMatrixWorld(true);const out=[];ru
 function strikeGap(runtime,target){
  runtime.root.updateMatrixWorld(true);const item=runtime.model.getObjectByName('primary:1810'),hilt=runtime.action.getClip().name.endsWith('.hilt'),faces=[];item.traverse(mesh=>{if(mesh.isMesh&&mesh.visible&&(hilt?/Leather_Grip|Crossguard|Pommel/:/Curved_Blade/).test(mesh.name))faces.push(...meshFaces(mesh));});assert.ok(faces.length);const surface=bodyFaces(target);let minimum=Infinity;for(const face of faces)for(let i=0;i<3;i++){if(face[i].distanceToSquared(face[(i+1)%3])<1e-12)continue;minimum=Math.min(minimum,capsuleSurfaceGap(face[i],face[(i+1)%3],0,surface));if(minimum<=1e-8)return 0;}return minimum;
 }
-async function combat(posture='standing',appearance){
+async function combat(posture='standing',appearance,contactOffset=0){
  const state=createRendererSandboxBattle('combat'),order={type:'melee',unitId:'sabre',targetId:'target-sabre'};
  if(appearance)state.units.find(u=>u.id==='sabre').spriteAppearance=appearance;state.units.find(u=>u.id==='target-sabre').stance=posture;state.units.find(u=>u.id==='target-sabre').y++;
  const result=presentedActBattle(state,order),durationMs=result.frames.map(battleFrameDuration),actionDurationMs=durationMs.reduce((a,b)=>a+b,0),entries=new Map(),trace=[],reads=[],revealed=new Set();let latest=[],currentNow=-200;
- const show=(state,frame,now)=>presentActors(state,admittedActors(state,state.units.filter(u=>u.side==='player'),revealed),{},revealed,{selected:'sabre',mode:'melee',frame,now});latest=show(state,undefined,-200);assert.equal(latest.length,13);assert.equal(latest.findIndex(v=>v.id==='sabre'),2);assert.equal(latest.findIndex(v=>v.id==='target-sabre'),9);
+ const show=(state,frame,now)=>{
+  const actor=state.units.find(u=>u.id==='sabre'),target=state.units.find(u=>u.id==='target-sabre'),direction=new Vector3(target.x-actor.x,0,target.y-actor.y).normalize();
+  const positions=contactOffset?{'unit:target-sabre':{x:target.x-direction.x*contactOffset/TILE_METRES,y:target.y-direction.z*contactOffset/TILE_METRES,moving:false}}:{};
+  return presentActors(state,admittedActors(state,state.units.filter(u=>u.side==='player'),revealed),positions,revealed,{selected:'sabre',mode:'melee',frame,now});
+ };latest=show(state,undefined,-200);assert.equal(latest.length,13);assert.equal(latest.findIndex(v=>v.id==='sabre'),2);assert.equal(latest.findIndex(v=>v.id==='target-sabre'),9);
  for(const visual of latest){const asset=await publishedActor(visual.appearance,0),runtime=new ActorRuntime(asset,visual,undefined,target=>{const entry=entries.get(target.key),model=resolveContactTargetModel(target,latest,entry);reads.push({now:currentNow,target:target.key,accepted:Boolean(model),targetTicked:trace.some(event=>event[0]==='tick'&&event[1]===target.key)});return model;});const nativeTick=runtime.tick.bind(runtime),nativeUpdate=runtime.update.bind(runtime);runtime.tick=(...args)=>{trace.push(['tick',runtime.visual.key]);return nativeTick(...args);};runtime.update=(...args)=>{trace.push(['update',args[0].key]);return nativeUpdate(...args);};entries.set(visual.key,{runtime,visual,pending:false,error:false});}
  const run=(now,{refresh=true,active=()=>true,ambientPaused=false,reducedMotion=false}={})=>{if(refresh)latest=latest.map(visual=>({...visual}));const delta=(now-currentNow)/1000;currentNow=now;trace.length=0;const errors=[],activeActors=advanceSceneActors({visuals:latest,entry:key=>entries.get(key),active,delta,now,ambientPaused,reducedMotion,report:error=>errors.push(error)});assert.deepEqual(errors,[]);const ticks=trace.filter(event=>event[0]==='tick').map(event=>event[1]);assert.equal(new Set(ticks).size,ticks.length,'Each visible actor advances exactly once');assert.equal(ticks.length,activeActors);for(const visual of latest)assert.equal(entries.get(visual.key).visual,visual,'Every current identity is rebound before target resolution');return {ticks,activeActors};};
  run(-100);run(0);
@@ -35,7 +40,11 @@ function frame(fixture,index,startedAt){return {...fixture.result.frames[index],
 
 test('a paid zero-advance forehand turns during preparation and remains finite through its complete native recovery',async()=>{
  for(const posture of ['standing','crouched']){
-  const f=await combat(posture),before=JSON.stringify(f.result.state),expected=actBattle(f.state,f.order);let startedAt=0;
+  // The revised native forehand needs a 4 cm advance against the old cell
+  // centre fixture. A 6 cm in-cell presentation offset makes the actual
+  // standing surface reachable with no step, preserving the zero-distance
+  // transfer regression without changing the paid cells or easing its gates.
+  const f=await combat(posture,undefined,posture==='standing'?.06:0),before=JSON.stringify(f.result.state),expected=actBattle(f.state,f.order);let startedAt=0;
   for(let index=0;index<f.result.frames.length;index++){
    const shownFrame=frame(f,index,startedAt),state={...shownFrame.state,presentationVisibleIds:shownFrame.state.visibleIds};f.latest=f.show(state,shownFrame,startedAt);
    const duration=f.durationMs[index],times=duration?Array.from({length:Math.ceil(duration/(1000/60))+1},(_,i)=>Math.min(duration-.001,i*1000/60)):[0];if(shownFrame.type==='impact')times.push((.9-f.attacker.clipSpec.markers.contact)/(f.attacker.action.getClip().duration-f.attacker.clipSpec.markers.contact)*duration);times.sort((a,b)=>a-b);

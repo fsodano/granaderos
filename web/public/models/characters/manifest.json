@@ -31,26 +31,26 @@
         {
           "lod": 0,
           "url": "/models/characters/granadero-lod0.glb",
-          "triangles": 47054,
-          "bytes": 3216480,
+          "triangles": 54130,
+          "bytes": 3585060,
           "drawCalls": 6,
-          "sha256": "99e0e4de982efab5c01da0297eb03eaa2067ccc9eff5a75c92f0ef8b08afd8b6"
+          "sha256": "9fc5450135118e8965eae770ee66956599e6aa496ae3f4c4d9610e244df02107"
         },
         {
           "lod": 1,
           "url": "/models/characters/granadero-lod1.glb",
-          "triangles": 25908,
-          "bytes": 1956428,
+          "triangles": 31022,
+          "bytes": 2268348,
           "drawCalls": 6,
-          "sha256": "441c308cc0f16bd10eed2e250e24106449c6f451cb93b174ee984a89cbdbf95d"
+          "sha256": "731b29f079747cc93db653c0a60389fc622912f1d17d398d95481ed259977981"
         },
         {
           "lod": 2,
           "url": "/models/characters/granadero-lod2.glb",
-          "triangles": 10458,
-          "bytes": 859152,
+          "triangles": 12813,
+          "bytes": 931372,
           "drawCalls": 6,
-          "sha256": "86d3d498d8654a9e7bec1430e5166a8e3c0c41b0d26b0298a3c89a0b077318e2"
+          "sha256": "6cdc58dbedd5e7a1537c753a2e11d777b719ebaa3df4d13bf4c8223967cf8dc4"
         }
       ],
       "materials": {
@@ -256,26 +256,26 @@
         {
           "lod": 0,
           "url": "/models/characters/royalist-lod0.glb",
-          "triangles": 46697,
-          "bytes": 3175484,
+          "triangles": 53773,
+          "bytes": 3544068,
           "drawCalls": 6,
-          "sha256": "1e82ae5a43a203362552a2f7d2cdae5cc7ee67bb2398451fc16c5460277016b7"
+          "sha256": "11ff8b3b7b4dc321e301b574380cc43114352c7bfd1768818257bea0998594e4"
         },
         {
           "lod": 1,
           "url": "/models/characters/royalist-lod1.glb",
-          "triangles": 25837,
-          "bytes": 1946980,
+          "triangles": 30951,
+          "bytes": 2258900,
           "drawCalls": 6,
-          "sha256": "16cf8a87d89a7785b9dc47348af9666adb1c72a9ae3c958f545ffcc8f9174408"
+          "sha256": "830cbc8be56cd23b42ba10d2a961fa2efa8aef8238ac65d547cb5d426e980014"
         },
         {
           "lod": 2,
           "url": "/models/characters/royalist-lod2.glb",
-          "triangles": 10401,
-          "bytes": 850300,
+          "triangles": 12756,
+          "bytes": 922520,
           "drawCalls": 6,
-          "sha256": "4797b9b01c75ee53fc6c9b9c12d0569852cf236db6ab2f9955517f54f91d3235"
+          "sha256": "7a3d565ed8dca6872667fb3e63eae5e110b20d53c525362b2df6414ff447129c"
         }
       ],
       "materials": {
@@ -481,26 +481,26 @@
         {
           "lod": 0,
           "url": "/models/characters/worker-lod0.glb",
-          "triangles": 44953,
-          "bytes": 2085032,
+          "triangles": 48831,
+          "bytes": 2329388,
           "drawCalls": 5,
-          "sha256": "7a6203dac59f2b4105fa7cd7e580b502752b586c760fe8dfa04362aea8e2283d"
+          "sha256": "ef6b0fac4252b7553f0c9017a7e5969d09e1ad070bd71bc2baa691efe95ff73c"
         },
         {
           "lod": 1,
           "url": "/models/characters/worker-lod1.glb",
-          "triangles": 22448,
-          "bytes": 1170304,
+          "triangles": 25962,
+          "bytes": 1428472,
           "drawCalls": 5,
-          "sha256": "2420b5c2b3314527ba38ebae6386161ca9eeb5651429a034547bc4a085ba3587"
+          "sha256": "a9357b6b19d1614b42fda37e5c8e417a1277373ce45b6679462c36848b2ef9e7"
         },
         {
           "lod": 2,
           "url": "/models/characters/worker-lod2.glb",
-          "triangles": 9714,
-          "bytes": 543468,
+          "triangles": 11128,
+          "bytes": 589944,
           "drawCalls": 5,
-          "sha256": "e78d9805aa6aa3ca41aee6d270b587ad2e3734faed498974f87ba05a0ff26d79"
+          "sha256": "083a4d857e6f64b9902a6051ca3c53a36b52b2f4644ab1609134f2fa78cf5481"
         }
       ],
       "materials": {
@@ -706,26 +706,26 @@
         {
           "lod": 0,
           "url": "/models/characters/surgeon-lod0.glb",
-          "triangles": 31645,
-          "bytes": 1695760,
+          "triangles": 35523,
+          "bytes": 1944004,
           "drawCalls": 5,
-          "sha256": "51f2a54e0713016f046f9b0e02c2b625f502f8620584874a11cfceff4346757c"
+          "sha256": "c5a8c62f819aa8df04474d85029c190c924d496c72046a36d6ce63c19e16614c"
         },
         {
           "lod": 1,
           "url": "/models/characters/surgeon-lod1.glb",
-          "triangles": 16098,
-          "bytes": 1026916,
+          "triangles": 19612,
+          "bytes": 1289276,
           "drawCalls": 5,
-          "sha256": "9c705188e8ad0ff5c6ab8749d1995b6d9a7856465b17a181d01b28aac0e05afd"
+          "sha256": "c549bab323865e8bee39b3a543b1d5d5a8c065659f710bf6af47b3dfde04ce52"
         },
         {
           "lod": 2,
           "url": "/models/characters/surgeon-lod2.glb",
-          "triangles": 7700,
-          "bytes": 551952,
+          "triangles": 9114,
+          "bytes": 601820,
           "drawCalls": 5,
-          "sha256": "8f13eeb6eef93a2de617aca4ccf55b286649c0c3e5cad5138be59af3fdc1b39c"
+          "sha256": "5a15fa35a439eb31b10c87c9d6eee3581c0a9c466de9d5d900ef39a9cfcd72d1"
         }
       ],
       "materials": {
@@ -931,26 +931,26 @@
         {
           "lod": 0,
           "url": "/models/characters/gaucho-lod0.glb",
-          "triangles": 30951,
-          "bytes": 1514916,
+          "triangles": 34829,
+          "bytes": 1769516,
           "drawCalls": 6,
-          "sha256": "7cc4b4ff2ddc0265e5459e4ba57ccb44bc062129364a2fc2042c695348a0d9b9"
+          "sha256": "88fa8d51109807f570cb94e871fb2b8fa2d173b715d8ae7feaf9dfae2185bc15"
         },
         {
           "lod": 1,
           "url": "/models/characters/gaucho-lod1.glb",
-          "triangles": 14078,
-          "bytes": 816768,
+          "triangles": 17592,
+          "bytes": 1082240,
           "drawCalls": 6,
-          "sha256": "3c1e4b591c4b25d9b1537c144fa3b38d1b2dbec17a51011f2d845f1051ee34d8"
+          "sha256": "ae2329c4bbde13cb8df1db5ada92fdab6ed51c40dc8b4bef550a64565f15f220"
         },
         {
           "lod": 2,
           "url": "/models/characters/gaucho-lod2.glb",
-          "triangles": 5575,
-          "bytes": 363356,
+          "triangles": 6989,
+          "bytes": 415332,
           "drawCalls": 6,
-          "sha256": "bfaff153dc71e1c257a7b7afd7a043a2e2f6934363f4ccd41df8bec4bb28a556"
+          "sha256": "7afbe1cc16f04fb27fee9557f295e64d76b397924fb0806025e2a852abab25b0"
         }
       ],
       "materials": {
@@ -1156,26 +1156,26 @@
         {
           "lod": 0,
           "url": "/models/characters/friar-lod0.glb",
-          "triangles": 38083,
-          "bytes": 2150864,
+          "triangles": 41961,
+          "bytes": 2394108,
           "drawCalls": 5,
-          "sha256": "bf8d84b7d5ffb1e511116a9969a144161f22eb7c27876d878a764416f6554a23"
+          "sha256": "6cb1a91475ebb3a0968168af888cd554d4105c2920907e2f0aebc67bbee51808"
         },
         {
           "lod": 1,
           "url": "/models/characters/friar-lod1.glb",
-          "triangles": 18325,
-          "bytes": 1197088,
+          "triangles": 21839,
+          "bytes": 1455548,
           "drawCalls": 5,
-          "sha256": "c574bfcbb83af6c9aa55cc35967386f1c9c506138d026c6b1c84f4ed4d185e97"
+          "sha256": "5c85d3584407530ff7b0e68956c23c121825a2d38824943d6aa7197a01ea67be"
         },
         {
           "lod": 2,
           "url": "/models/characters/friar-lod2.glb",
-          "triangles": 7497,
-          "bytes": 548444,
+          "triangles": 8913,
+          "bytes": 594980,
           "drawCalls": 5,
-          "sha256": "09c58e89e6514614e698c4c93a9c21a21f865885cd99ff80cb1f35a996369fd4"
+          "sha256": "f332faa00f90577c5ab419eea431e6fd4a1a861f596a699354bbf9edc9a3336d"
         }
       ],
       "materials": {
@@ -1381,26 +1381,26 @@
         {
           "lod": 0,
           "url": "/models/characters/woman-scout-lod0.glb",
-          "triangles": 30705,
-          "bytes": 1599044,
+          "triangles": 36526,
+          "bytes": 1855832,
           "drawCalls": 5,
-          "sha256": "d1671bcbb906d17e37fbe15de0476af5856c7bad36edf4cc20a11f45f826b5e4"
+          "sha256": "afe08d1507cbfb5b80a68fcc93fa177785a7d71f6d15904fdc3cf1684442ec39"
         },
         {
           "lod": 1,
           "url": "/models/characters/woman-scout-lod1.glb",
-          "triangles": 14439,
-          "bytes": 900640,
+          "triangles": 18687,
+          "bytes": 1143000,
           "drawCalls": 5,
-          "sha256": "24f9b65ee90476a25783c0b32151d4e4144a4ee4236a109eae17a47e72190ebd"
+          "sha256": "efff522137cc63b41fe6e2813a1b892ee978ad49abb33ca9fcf018185d50a575"
         },
         {
           "lod": 2,
           "url": "/models/characters/woman-scout-lod2.glb",
-          "triangles": 5719,
-          "bytes": 405360,
+          "triangles": 7565,
+          "bytes": 448600,
           "drawCalls": 5,
-          "sha256": "5376361a949af9f6cef04bb85386448cc69f513f68de9ce688c34e8aca43ea90"
+          "sha256": "d6f430b3b89b2927d440529bb0ae5ec69a63051055000783a578bfc9661d3c13"
         }
       ],
       "materials": {
@@ -1606,26 +1606,26 @@
         {
           "lod": 0,
           "url": "/models/characters/woman-shawl-lod0.glb",
-          "triangles": 55144,
-          "bytes": 2796512,
+          "triangles": 59894,
+          "bytes": 3022340,
           "drawCalls": 5,
-          "sha256": "f51a96c35566ac4691fb5c5218d1b220763f8af33e9c70db3a1742d44b46ed1e"
+          "sha256": "20777eb2097152ad71fce0ff9de82f6b11f29e3009a1ec9f5bab2ec2717dfe79"
         },
         {
           "lod": 1,
           "url": "/models/characters/woman-shawl-lod1.glb",
-          "triangles": 27800,
-          "bytes": 1556592,
+          "triangles": 31440,
+          "bytes": 1777236,
           "drawCalls": 5,
-          "sha256": "68b9ad6ee0306888b2ab6d2cc1d981b65a5f5abe66312dde16c96618f8f26591"
+          "sha256": "5480fc7064d6c779424ec3096721b2a60a8c5fa7d70eb83c6c1fb10f2d601c19"
         },
         {
           "lod": 2,
           "url": "/models/characters/woman-shawl-lod2.glb",
-          "triangles": 11683,
-          "bytes": 706152,
+          "triangles": 13195,
+          "bytes": 728296,
           "drawCalls": 5,
-          "sha256": "56067e86a07981db72cf6abca023eb176db46fc0a356a53edcae8809fa53b707"
+          "sha256": "b8e4c5be6c9a318b5271dd6e1a2cc3c65675349b2bd205cecf162ccab925e2a1"
         }
       ],
       "materials": {
@@ -1826,8 +1826,8 @@
   "animationLibraries": {
     "male": {
       "url": "/models/characters/male-animations.glb",
-      "bytes": 16744740,
-      "sha256": "325f32da6e9e6b18a4bd527ac458862bcd80abda9ea3831b7beb78d6349192b1",
+      "bytes": 17302384,
+      "sha256": "9c442370280b20bdc0808d3ed210e88737c63203f7efb2b92df62f934934714c",
       "clips": [
         {
           "name": "stand.idle.unarmed",
@@ -1914,12 +1914,6 @@
           "duration": 1.183329,
           "loop": true,
           "events": {},
-          "nativeBootSupport": {
-            "method": "native-leg-rotations",
-            "surface": "actual-sole-and-weighted-shaft",
-            "floor": 0.006,
-            "sampleRate": 30
-          },
           "gesture": "strafeLeft",
           "posture": "standing",
           "equipment": "unarmed",
@@ -1936,19 +1930,35 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "locomotionSpeed": 1.1159,
-          "locomotionAxis": "left"
+          "locomotionAxis": "left",
+          "nativeSidewaysSupport": {
+            "method": "native-sideways-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "nativeCycleDuration": 1.166667,
+            "retainedNativeStrideSpeed": 1.1159,
+            "supportWindows": {
+              "l": [
+                0.054166666666666655,
+                0.2791666666666667
+              ],
+              "r": [
+                0.2791666666666667,
+                0.5541666666666667
+              ]
+            },
+            "heelRoll": {
+              "l": 0.07734375,
+              "r": 0.123486328125
+            }
+          }
         },
         {
           "name": "stand.strafeRight.unarmed",
           "duration": 1.283328,
           "loop": true,
           "events": {},
-          "nativeBootSupport": {
-            "method": "native-leg-rotations",
-            "surface": "actual-sole-and-weighted-shaft",
-            "floor": 0.006,
-            "sampleRate": 30
-          },
           "gesture": "strafeRight",
           "posture": "standing",
           "equipment": "unarmed",
@@ -1965,7 +1975,29 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "locomotionSpeed": 1.1113,
-          "locomotionAxis": "right"
+          "locomotionAxis": "right",
+          "nativeSidewaysSupport": {
+            "method": "native-sideways-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "nativeCycleDuration": 1.266667,
+            "retainedNativeStrideSpeed": 1.1113,
+            "supportWindows": {
+              "r": [
+                0.2583333333333333,
+                0.5
+              ],
+              "l": [
+                0.5,
+                0.7583333333333333
+              ]
+            },
+            "heelRoll": {
+              "r": 0.18336181640625004,
+              "l": 0.030102539062500003
+            }
+          }
         },
         {
           "name": "stand.punch.unarmed",
@@ -2101,11 +2133,27 @@
           "duration": 1.183329,
           "loop": true,
           "events": {},
-          "nativeBootSupport": {
-            "method": "native-leg-rotations",
-            "surface": "actual-sole-and-weighted-shaft",
-            "floor": 0.006,
-            "sampleRate": 30
+          "nativeSidewaysSupport": {
+            "method": "native-sideways-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "nativeCycleDuration": 1.166667,
+            "retainedNativeStrideSpeed": 1.1159,
+            "supportWindows": {
+              "l": [
+                0.054166666666666655,
+                0.2791666666666667
+              ],
+              "r": [
+                0.2791666666666667,
+                0.5541666666666667
+              ]
+            },
+            "heelRoll": {
+              "l": 0.07734375,
+              "r": 0.123486328125
+            }
           },
           "gesture": "strafeLeft",
           "posture": "standing",
@@ -2130,11 +2178,27 @@
           "duration": 1.283328,
           "loop": true,
           "events": {},
-          "nativeBootSupport": {
-            "method": "native-leg-rotations",
-            "surface": "actual-sole-and-weighted-shaft",
-            "floor": 0.006,
-            "sampleRate": 30
+          "nativeSidewaysSupport": {
+            "method": "native-sideways-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "nativeCycleDuration": 1.266667,
+            "retainedNativeStrideSpeed": 1.1113,
+            "supportWindows": {
+              "r": [
+                0.2583333333333333,
+                0.5
+              ],
+              "l": [
+                0.5,
+                0.7583333333333333
+              ]
+            },
+            "heelRoll": {
+              "r": 0.18336181640625004,
+              "l": 0.030102539062500003
+            }
           },
           "gesture": "strafeRight",
           "posture": "standing",
@@ -2279,29 +2343,29 @@
                 {
                   "time": 0.576,
                   "position": [
-                    -0.02129996567964554,
-                    0.5291391015052795,
-                    -0.0007373429834842682
+                    -0.018466882407665253,
+                    0.5287290811538696,
+                    -0.002536185085773468
                   ],
                   "rotationQuaternion": [
-                    -0.5197828412055969,
-                    0.5409322381019592,
-                    -0.5073608160018921,
-                    0.42403194308280945
+                    -0.6502869129180908,
+                    0.7046710848808289,
+                    -0.2312171310186386,
+                    0.16463370621204376
                   ]
                 },
                 {
                   "time": 4.32,
                   "position": [
-                    -0.02129996567964554,
-                    0.5291391015052795,
-                    -0.0007373429834842682
+                    -0.018466882407665253,
+                    0.5287290811538696,
+                    -0.002536185085773468
                   ],
                   "rotationQuaternion": [
-                    -0.5197828412055969,
-                    0.5409322381019592,
-                    -0.5073608160018921,
-                    0.42403194308280945
+                    -0.6502869129180908,
+                    0.7046710848808289,
+                    -0.2312171310186386,
+                    0.16463370621204376
                   ]
                 },
                 {
@@ -2426,29 +2490,29 @@
                 {
                   "time": 0.36,
                   "position": [
-                    -0.02129996567964554,
-                    0.5291391015052795,
-                    -0.0007373429834842682
+                    -0.018466882407665253,
+                    0.5287290811538696,
+                    -0.002536185085773468
                   ],
                   "rotationQuaternion": [
-                    -0.5197828412055969,
-                    0.5409322381019592,
-                    -0.5073608160018921,
-                    0.42403194308280945
+                    -0.6502869129180908,
+                    0.7046710848808289,
+                    -0.2312171310186386,
+                    0.16463370621204376
                   ]
                 },
                 {
                   "time": 1.24,
                   "position": [
-                    -0.02129996567964554,
-                    0.5291391015052795,
-                    -0.0007373429834842682
+                    -0.018466882407665253,
+                    0.5287290811538696,
+                    -0.002536185085773468
                   ],
                   "rotationQuaternion": [
-                    -0.5197828412055969,
-                    0.5409322381019592,
-                    -0.5073608160018921,
-                    0.42403194308280945
+                    -0.6502869129180908,
+                    0.7046710848808289,
+                    -0.2312171310186386,
+                    0.16463370621204376
                   ]
                 },
                 {
@@ -2669,11 +2733,27 @@
           "duration": 1.183329,
           "loop": true,
           "events": {},
-          "nativeBootSupport": {
-            "method": "native-leg-rotations",
-            "surface": "actual-sole-and-weighted-shaft",
-            "floor": 0.006,
-            "sampleRate": 30
+          "nativeSidewaysSupport": {
+            "method": "native-sideways-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "nativeCycleDuration": 1.166667,
+            "retainedNativeStrideSpeed": 1.1159,
+            "supportWindows": {
+              "l": [
+                0.054166666666666655,
+                0.2791666666666667
+              ],
+              "r": [
+                0.2791666666666667,
+                0.5541666666666667
+              ]
+            },
+            "heelRoll": {
+              "l": 0.07734375,
+              "r": 0.123486328125
+            }
           },
           "gesture": "strafeLeft",
           "posture": "standing",
@@ -2698,11 +2778,27 @@
           "duration": 1.283328,
           "loop": true,
           "events": {},
-          "nativeBootSupport": {
-            "method": "native-leg-rotations",
-            "surface": "actual-sole-and-weighted-shaft",
-            "floor": 0.006,
-            "sampleRate": 30
+          "nativeSidewaysSupport": {
+            "method": "native-sideways-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "nativeCycleDuration": 1.266667,
+            "retainedNativeStrideSpeed": 1.1113,
+            "supportWindows": {
+              "r": [
+                0.2583333333333333,
+                0.5
+              ],
+              "l": [
+                0.5,
+                0.7583333333333333
+              ]
+            },
+            "heelRoll": {
+              "r": 0.18336181640625004,
+              "l": 0.030102539062500003
+            }
           },
           "gesture": "strafeRight",
           "posture": "standing",
@@ -2910,7 +3006,46 @@
             "name": "PistolStrike",
             "origin": "approved-granadero-preview",
             "sourceSha256": "0d347fd1d5d8f5a5efb156327348b0c13cf81e6de83120fc29c1dfbf44b5e569"
-          }
+          },
+          "gripOffsets": [
+            {
+              "hand": "handRight",
+              "keys": [
+                {
+                  "time": 0,
+                  "position": [
+                    0,
+                    0,
+                    0
+                  ]
+                },
+                {
+                  "time": 0.2,
+                  "position": [
+                    -0.001001,
+                    0.000273,
+                    0.003159
+                  ]
+                },
+                {
+                  "time": 0.82,
+                  "position": [
+                    -0.001001,
+                    0.000273,
+                    0.003159
+                  ]
+                },
+                {
+                  "time": 1,
+                  "position": [
+                    0,
+                    0,
+                    0
+                  ]
+                }
+              ]
+            }
+          ]
         },
         {
           "name": "stand.idle.blade",
@@ -2987,11 +3122,27 @@
           "duration": 1.183329,
           "loop": true,
           "events": {},
-          "nativeBootSupport": {
-            "method": "native-leg-rotations",
-            "surface": "actual-sole-and-weighted-shaft",
-            "floor": 0.006,
-            "sampleRate": 30
+          "nativeSidewaysSupport": {
+            "method": "native-sideways-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "nativeCycleDuration": 1.166667,
+            "retainedNativeStrideSpeed": 1.1159,
+            "supportWindows": {
+              "l": [
+                0.054166666666666655,
+                0.2791666666666667
+              ],
+              "r": [
+                0.2791666666666667,
+                0.5541666666666667
+              ]
+            },
+            "heelRoll": {
+              "l": 0.07734375,
+              "r": 0.123486328125
+            }
           },
           "gesture": "strafeLeft",
           "posture": "standing",
@@ -3016,11 +3167,27 @@
           "duration": 1.283328,
           "loop": true,
           "events": {},
-          "nativeBootSupport": {
-            "method": "native-leg-rotations",
-            "surface": "actual-sole-and-weighted-shaft",
-            "floor": 0.006,
-            "sampleRate": 30
+          "nativeSidewaysSupport": {
+            "method": "native-sideways-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "nativeCycleDuration": 1.266667,
+            "retainedNativeStrideSpeed": 1.1113,
+            "supportWindows": {
+              "r": [
+                0.2583333333333333,
+                0.5
+              ],
+              "l": [
+                0.5,
+                0.7583333333333333
+              ]
+            },
+            "heelRoll": {
+              "r": 0.18336181640625004,
+              "l": 0.030102539062500003
+            }
           },
           "gesture": "strafeRight",
           "posture": "standing",
@@ -3405,29 +3572,29 @@
                 {
                   "time": 0.576,
                   "position": [
-                    -0.02129996567964554,
-                    0.5291391015052795,
-                    -0.0007373429834842682
+                    -0.018466882407665253,
+                    0.5287290811538696,
+                    -0.002536185085773468
                   ],
                   "rotationQuaternion": [
-                    -0.5197828412055969,
-                    0.5409322381019592,
-                    -0.5073608160018921,
-                    0.42403194308280945
+                    -0.6502869129180908,
+                    0.7046710848808289,
+                    -0.2312171310186386,
+                    0.16463370621204376
                   ]
                 },
                 {
                   "time": 4.32,
                   "position": [
-                    -0.02129996567964554,
-                    0.5291391015052795,
-                    -0.0007373429834842682
+                    -0.018466882407665253,
+                    0.5287290811538696,
+                    -0.002536185085773468
                   ],
                   "rotationQuaternion": [
-                    -0.5197828412055969,
-                    0.5409322381019592,
-                    -0.5073608160018921,
-                    0.42403194308280945
+                    -0.6502869129180908,
+                    0.7046710848808289,
+                    -0.2312171310186386,
+                    0.16463370621204376
                   ]
                 },
                 {
@@ -3552,29 +3719,29 @@
                 {
                   "time": 0.36,
                   "position": [
-                    -0.02129996567964554,
-                    0.5291391015052795,
-                    -0.0007373429834842682
+                    -0.018466882407665253,
+                    0.5287290811538696,
+                    -0.002536185085773468
                   ],
                   "rotationQuaternion": [
-                    -0.5197828412055969,
-                    0.5409322381019592,
-                    -0.5073608160018921,
-                    0.42403194308280945
+                    -0.6502869129180908,
+                    0.7046710848808289,
+                    -0.2312171310186386,
+                    0.16463370621204376
                   ]
                 },
                 {
                   "time": 1.24,
                   "position": [
-                    -0.02129996567964554,
-                    0.5291391015052795,
-                    -0.0007373429834842682
+                    -0.018466882407665253,
+                    0.5287290811538696,
+                    -0.002536185085773468
                   ],
                   "rotationQuaternion": [
-                    -0.5197828412055969,
-                    0.5409322381019592,
-                    -0.5073608160018921,
-                    0.42403194308280945
+                    -0.6502869129180908,
+                    0.7046710848808289,
+                    -0.2312171310186386,
+                    0.16463370621204376
                   ]
                 },
                 {
@@ -4094,6 +4261,24 @@
           "duration": 2,
           "loop": true,
           "events": {},
+          "nativeBootSupport": {
+            "method": "native-leg-rotations",
+            "surface": "actual-sole-and-weighted-shaft",
+            "floor": 0.006,
+            "sampleRate": 30
+          },
+          "nativeArmSupport": {
+            "method": "native-arm-rotations",
+            "surface": "complete-native-palm-finger-and-sleeve",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "recoveryLift": 0,
+            "alternatingRecovery": false,
+            "pullDistance": 0,
+            "maximumRecoveryLift": 0,
+            "maximumReachCorrection": 0,
+            "nativeCycleDuration": 2
+          },
           "gesture": "idle",
           "posture": "prone",
           "equipment": "unarmed",
@@ -4116,6 +4301,50 @@
             "floor": 0.006,
             "sampleRate": 30
           },
+          "locomotionSpeed": 0.143763,
+          "nativeStrideSpeed": 0.143763,
+          "authoredStrideSpeed": 0.144372,
+          "strideDistance": 0.282733,
+          "strideMeasurement": {
+            "method": "native forearm planted pull displacement",
+            "bones": [
+              "lowerarm_l",
+              "lowerarm_r"
+            ],
+            "surface": "complete-native-sleeve-and-forearm",
+            "sampleRate": 30,
+            "maximumContactHeight": 0.007,
+            "pulls": [
+              {
+                "hand": "r",
+                "from": 0,
+                "to": 0.5,
+                "distance": 0.142071,
+                "duration": 0.983329
+              },
+              {
+                "hand": "l",
+                "from": 0.5,
+                "to": 1,
+                "distance": 0.140662,
+                "duration": 0.983329
+              }
+            ],
+            "space": "exported-gltf",
+            "referenceClip": "prone.crawl.unarmed"
+          },
+          "nativeArmSupport": {
+            "method": "native-arm-rotations",
+            "surface": "complete-native-palm-finger-and-sleeve",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "recoveryLift": 0.04,
+            "alternatingRecovery": true,
+            "pullDistance": 0.14,
+            "maximumRecoveryLift": 0.039972,
+            "maximumReachCorrection": 0,
+            "nativeCycleDuration": 1.966659
+          },
           "gesture": "crawl",
           "posture": "prone",
           "equipment": "unarmed",
@@ -4130,23 +4359,7 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place",
-          "locomotionSpeed": 0.260825,
-          "nativeStrideSpeed": 0.260825,
-          "authoredStrideSpeed": 0.260825,
-          "strideDistance": 0.512954,
-          "strideMeasurement": {
-            "method": "median rearward forearm contact velocity",
-            "bones": [
-              "lowerarm_l",
-              "lowerarm_r"
-            ],
-            "maximumContactHeight": 0.09,
-            "sampleCount": 17,
-            "sampledFrom": "exported-glb",
-            "space": "exported-gltf",
-            "referenceClip": "prone.crawl.unarmed"
-          }
+          "rootMotion": "in-place"
         },
         {
           "name": "prone.idle.long-gun",
@@ -9839,11 +10052,27 @@
           "duration": 1.183329,
           "loop": true,
           "events": {},
-          "nativeBootSupport": {
-            "method": "native-leg-rotations",
-            "surface": "actual-sole-and-weighted-shaft",
-            "floor": 0.006,
-            "sampleRate": 30
+          "nativeSidewaysSupport": {
+            "method": "native-sideways-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "nativeCycleDuration": 1.166667,
+            "retainedNativeStrideSpeed": 1.1159,
+            "supportWindows": {
+              "l": [
+                0.054166666666666655,
+                0.2791666666666667
+              ],
+              "r": [
+                0.2791666666666667,
+                0.5541666666666667
+              ]
+            },
+            "heelRoll": {
+              "l": 0.07734375,
+              "r": 0.123486328125
+            }
           },
           "gesture": "strafeLeft",
           "posture": "standing",
@@ -9868,11 +10097,27 @@
           "duration": 1.183329,
           "loop": true,
           "events": {},
-          "nativeBootSupport": {
-            "method": "native-leg-rotations",
-            "surface": "actual-sole-and-weighted-shaft",
-            "floor": 0.006,
-            "sampleRate": 30
+          "nativeSidewaysSupport": {
+            "method": "native-sideways-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "nativeCycleDuration": 1.166667,
+            "retainedNativeStrideSpeed": 1.1159,
+            "supportWindows": {
+              "l": [
+                0.054166666666666655,
+                0.2791666666666667
+              ],
+              "r": [
+                0.2791666666666667,
+                0.5541666666666667
+              ]
+            },
+            "heelRoll": {
+              "l": 0.07734375,
+              "r": 0.123486328125
+            }
           },
           "gesture": "strafeLeft",
           "posture": "standing",
@@ -9897,11 +10142,27 @@
           "duration": 1.283328,
           "loop": true,
           "events": {},
-          "nativeBootSupport": {
-            "method": "native-leg-rotations",
-            "surface": "actual-sole-and-weighted-shaft",
-            "floor": 0.006,
-            "sampleRate": 30
+          "nativeSidewaysSupport": {
+            "method": "native-sideways-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "nativeCycleDuration": 1.266667,
+            "retainedNativeStrideSpeed": 1.1113,
+            "supportWindows": {
+              "r": [
+                0.2583333333333333,
+                0.5
+              ],
+              "l": [
+                0.5,
+                0.7583333333333333
+              ]
+            },
+            "heelRoll": {
+              "r": 0.18336181640625004,
+              "l": 0.030102539062500003
+            }
           },
           "gesture": "strafeRight",
           "posture": "standing",
@@ -9926,11 +10187,27 @@
           "duration": 1.283328,
           "loop": true,
           "events": {},
-          "nativeBootSupport": {
-            "method": "native-leg-rotations",
-            "surface": "actual-sole-and-weighted-shaft",
-            "floor": 0.006,
-            "sampleRate": 30
+          "nativeSidewaysSupport": {
+            "method": "native-sideways-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "nativeCycleDuration": 1.266667,
+            "retainedNativeStrideSpeed": 1.1113,
+            "supportWindows": {
+              "r": [
+                0.2583333333333333,
+                0.5
+              ],
+              "l": [
+                0.5,
+                0.7583333333333333
+              ]
+            },
+            "heelRoll": {
+              "r": 0.18336181640625004,
+              "l": 0.030102539062500003
+            }
           },
           "gesture": "strafeRight",
           "posture": "standing",
@@ -10956,29 +11233,29 @@
                 {
                   "time": 0.576,
                   "position": [
-                    -0.014492899179458618,
-                    0.5966762900352478,
-                    -0.005411028861999512
+                    -0.011659808456897736,
+                    0.5962662696838379,
+                    -0.007209841161966324
                   ],
                   "rotationQuaternion": [
-                    -0.5197828412055969,
-                    0.5409322381019592,
-                    -0.5073608160018921,
-                    0.42403194308280945
+                    -0.6502869129180908,
+                    0.7046710848808289,
+                    -0.2312171310186386,
+                    0.16463370621204376
                   ]
                 },
                 {
                   "time": 4.32,
                   "position": [
-                    -0.014492899179458618,
-                    0.5966762900352478,
-                    -0.005411028861999512
+                    -0.011659808456897736,
+                    0.5962662696838379,
+                    -0.007209841161966324
                   ],
                   "rotationQuaternion": [
-                    -0.5197828412055969,
-                    0.5409322381019592,
-                    -0.5073608160018921,
-                    0.42403194308280945
+                    -0.6502869129180908,
+                    0.7046710848808289,
+                    -0.2312171310186386,
+                    0.16463370621204376
                   ]
                 },
                 {
@@ -11060,29 +11337,29 @@
                 {
                   "time": 0.36,
                   "position": [
-                    -0.014492899179458618,
-                    0.5966762900352478,
-                    -0.005411028861999512
+                    -0.011659808456897736,
+                    0.5962662696838379,
+                    -0.007209841161966324
                   ],
                   "rotationQuaternion": [
-                    -0.5197828412055969,
-                    0.5409322381019592,
-                    -0.5073608160018921,
-                    0.42403194308280945
+                    -0.6502869129180908,
+                    0.7046710848808289,
+                    -0.2312171310186386,
+                    0.16463370621204376
                   ]
                 },
                 {
                   "time": 1.24,
                   "position": [
-                    -0.014492899179458618,
-                    0.5966762900352478,
-                    -0.005411028861999512
+                    -0.011659808456897736,
+                    0.5962662696838379,
+                    -0.007209841161966324
                   ],
                   "rotationQuaternion": [
-                    -0.5197828412055969,
-                    0.5409322381019592,
-                    -0.5073608160018921,
-                    0.42403194308280945
+                    -0.6502869129180908,
+                    0.7046710848808289,
+                    -0.2312171310186386,
+                    0.16463370621204376
                   ]
                 },
                 {
@@ -11177,29 +11454,29 @@
                 {
                   "time": 0.576,
                   "position": [
-                    -0.014492899179458618,
-                    0.5966762900352478,
-                    -0.005411028861999512
+                    -0.011659808456897736,
+                    0.5962662696838379,
+                    -0.007209841161966324
                   ],
                   "rotationQuaternion": [
-                    -0.5197828412055969,
-                    0.5409322381019592,
-                    -0.5073608160018921,
-                    0.42403194308280945
+                    -0.6502869129180908,
+                    0.7046710848808289,
+                    -0.2312171310186386,
+                    0.16463370621204376
                   ]
                 },
                 {
                   "time": 4.32,
                   "position": [
-                    -0.014492899179458618,
-                    0.5966762900352478,
-                    -0.005411028861999512
+                    -0.011659808456897736,
+                    0.5962662696838379,
+                    -0.007209841161966324
                   ],
                   "rotationQuaternion": [
-                    -0.5197828412055969,
-                    0.5409322381019592,
-                    -0.5073608160018921,
-                    0.42403194308280945
+                    -0.6502869129180908,
+                    0.7046710848808289,
+                    -0.2312171310186386,
+                    0.16463370621204376
                   ]
                 },
                 {
@@ -11281,29 +11558,29 @@
                 {
                   "time": 0.36,
                   "position": [
-                    -0.014492899179458618,
-                    0.5966762900352478,
-                    -0.005411028861999512
+                    -0.011659808456897736,
+                    0.5962662696838379,
+                    -0.007209841161966324
                   ],
                   "rotationQuaternion": [
-                    -0.5197828412055969,
-                    0.5409322381019592,
-                    -0.5073608160018921,
-                    0.42403194308280945
+                    -0.6502869129180908,
+                    0.7046710848808289,
+                    -0.2312171310186386,
+                    0.16463370621204376
                   ]
                 },
                 {
                   "time": 1.24,
                   "position": [
-                    -0.014492899179458618,
-                    0.5966762900352478,
-                    -0.005411028861999512
+                    -0.011659808456897736,
+                    0.5962662696838379,
+                    -0.007209841161966324
                   ],
                   "rotationQuaternion": [
-                    -0.5197828412055969,
-                    0.5409322381019592,
-                    -0.5073608160018921,
-                    0.42403194308280945
+                    -0.6502869129180908,
+                    0.7046710848808289,
+                    -0.2312171310186386,
+                    0.16463370621204376
                   ]
                 },
                 {
@@ -11894,29 +12171,29 @@
                 {
                   "time": 0.576,
                   "position": [
-                    -0.015627406537532806,
-                    0.5854200720787048,
-                    -0.004632052034139633
+                    -0.012794338166713715,
+                    0.5850100517272949,
+                    -0.006430920213460922
                   ],
                   "rotationQuaternion": [
-                    -0.5197828412055969,
-                    0.5409322381019592,
-                    -0.5073608160018921,
-                    0.42403194308280945
+                    -0.6502869129180908,
+                    0.7046710848808289,
+                    -0.2312171310186386,
+                    0.16463370621204376
                   ]
                 },
                 {
                   "time": 4.32,
                   "position": [
-                    -0.015627406537532806,
-                    0.5854200720787048,
-                    -0.004632052034139633
+                    -0.012794338166713715,
+                    0.5850100517272949,
+                    -0.006430920213460922
                   ],
                   "rotationQuaternion": [
-                    -0.5197828412055969,
-                    0.5409322381019592,
-                    -0.5073608160018921,
-                    0.42403194308280945
+                    -0.6502869129180908,
+                    0.7046710848808289,
+                    -0.2312171310186386,
+                    0.16463370621204376
                   ]
                 },
                 {
@@ -11998,29 +12275,29 @@
                 {
                   "time": 0.36,
                   "position": [
-                    -0.015627406537532806,
-                    0.5854200720787048,
-                    -0.004632052034139633
+                    -0.012794338166713715,
+                    0.5850100517272949,
+                    -0.006430920213460922
                   ],
                   "rotationQuaternion": [
-                    -0.5197828412055969,
-                    0.5409322381019592,
-                    -0.5073608160018921,
-                    0.42403194308280945
+                    -0.6502869129180908,
+                    0.7046710848808289,
+                    -0.2312171310186386,
+                    0.16463370621204376
                   ]
                 },
                 {
                   "time": 1.24,
                   "position": [
-                    -0.015627406537532806,
-                    0.5854200720787048,
-                    -0.004632052034139633
+                    -0.012794338166713715,
+                    0.5850100517272949,
+                    -0.006430920213460922
                   ],
                   "rotationQuaternion": [
-                    -0.5197828412055969,
-                    0.5409322381019592,
-                    -0.5073608160018921,
-                    0.42403194308280945
+                    -0.6502869129180908,
+                    0.7046710848808289,
+                    -0.2312171310186386,
+                    0.16463370621204376
                   ]
                 },
                 {
@@ -12115,29 +12392,29 @@
                 {
                   "time": 0.576,
                   "position": [
-                    -0.015627406537532806,
-                    0.5854200720787048,
-                    -0.004632052034139633
+                    -0.012794338166713715,
+                    0.5850100517272949,
+                    -0.006430920213460922
                   ],
                   "rotationQuaternion": [
-                    -0.5197828412055969,
-                    0.5409322381019592,
-                    -0.5073608160018921,
-                    0.42403194308280945
+                    -0.6502869129180908,
+                    0.7046710848808289,
+                    -0.2312171310186386,
+                    0.16463370621204376
                   ]
                 },
                 {
                   "time": 4.32,
                   "position": [
-                    -0.015627406537532806,
-                    0.5854200720787048,
-                    -0.004632052034139633
+                    -0.012794338166713715,
+                    0.5850100517272949,
+                    -0.006430920213460922
                   ],
                   "rotationQuaternion": [
-                    -0.5197828412055969,
-                    0.5409322381019592,
-                    -0.5073608160018921,
-                    0.42403194308280945
+                    -0.6502869129180908,
+                    0.7046710848808289,
+                    -0.2312171310186386,
+                    0.16463370621204376
                   ]
                 },
                 {
@@ -12219,29 +12496,29 @@
                 {
                   "time": 0.36,
                   "position": [
-                    -0.015627406537532806,
-                    0.5854200720787048,
-                    -0.004632052034139633
+                    -0.012794338166713715,
+                    0.5850100517272949,
+                    -0.006430920213460922
                   ],
                   "rotationQuaternion": [
-                    -0.5197828412055969,
-                    0.5409322381019592,
-                    -0.5073608160018921,
-                    0.42403194308280945
+                    -0.6502869129180908,
+                    0.7046710848808289,
+                    -0.2312171310186386,
+                    0.16463370621204376
                   ]
                 },
                 {
                   "time": 1.24,
                   "position": [
-                    -0.015627406537532806,
-                    0.5854200720787048,
-                    -0.004632052034139633
+                    -0.012794338166713715,
+                    0.5850100517272949,
+                    -0.006430920213460922
                   ],
                   "rotationQuaternion": [
-                    -0.5197828412055969,
-                    0.5409322381019592,
-                    -0.5073608160018921,
-                    0.42403194308280945
+                    -0.6502869129180908,
+                    0.7046710848808289,
+                    -0.2312171310186386,
+                    0.16463370621204376
                   ]
                 },
                 {
@@ -12832,29 +13109,29 @@
                 {
                   "time": 0.576,
                   "position": [
-                    -0.026405274868011475,
-                    0.4784862995147705,
-                    0.002767857164144516
+                    -0.023572169244289398,
+                    0.4780762791633606,
+                    0.0009690262377262115
                   ],
                   "rotationQuaternion": [
-                    -0.5197828412055969,
-                    0.5409322381019592,
-                    -0.5073608160018921,
-                    0.42403194308280945
+                    -0.6502869129180908,
+                    0.7046710848808289,
+                    -0.2312171310186386,
+                    0.16463370621204376
                   ]
                 },
                 {
                   "time": 4.32,
                   "position": [
-                    -0.026405274868011475,
-                    0.4784862995147705,
-                    0.002767857164144516
+                    -0.023572169244289398,
+                    0.4780762791633606,
+                    0.0009690262377262115
                   ],
                   "rotationQuaternion": [
-                    -0.5197828412055969,
-                    0.5409322381019592,
-                    -0.5073608160018921,
-                    0.42403194308280945
+                    -0.6502869129180908,
+                    0.7046710848808289,
+                    -0.2312171310186386,
+                    0.16463370621204376
                   ]
                 },
                 {
@@ -12936,29 +13213,29 @@
                 {
                   "time": 0.36,
                   "position": [
-                    -0.026405274868011475,
-                    0.4784862995147705,
-                    0.002767857164144516
+                    -0.023572169244289398,
+                    0.4780762791633606,
+                    0.0009690262377262115
                   ],
                   "rotationQuaternion": [
-                    -0.5197828412055969,
-                    0.5409322381019592,
-                    -0.5073608160018921,
-                    0.42403194308280945
+                    -0.6502869129180908,
+                    0.7046710848808289,
+                    -0.2312171310186386,
+                    0.16463370621204376
                   ]
                 },
                 {
                   "time": 1.24,
                   "position": [
-                    -0.026405274868011475,
-                    0.4784862995147705,
-                    0.002767857164144516
+                    -0.023572169244289398,
+                    0.4780762791633606,
+                    0.0009690262377262115
                   ],
                   "rotationQuaternion": [
-                    -0.5197828412055969,
-                    0.5409322381019592,
-                    -0.5073608160018921,
-                    0.42403194308280945
+                    -0.6502869129180908,
+                    0.7046710848808289,
+                    -0.2312171310186386,
+                    0.16463370621204376
                   ]
                 },
                 {
@@ -13053,29 +13330,29 @@
                 {
                   "time": 0.576,
                   "position": [
-                    -0.026405274868011475,
-                    0.4784862995147705,
-                    0.002767857164144516
+                    -0.023572169244289398,
+                    0.4780762791633606,
+                    0.0009690262377262115
                   ],
                   "rotationQuaternion": [
-                    -0.5197828412055969,
-                    0.5409322381019592,
-                    -0.5073608160018921,
-                    0.42403194308280945
+                    -0.6502869129180908,
+                    0.7046710848808289,
+                    -0.2312171310186386,
+                    0.16463370621204376
                   ]
                 },
                 {
                   "time": 4.32,
                   "position": [
-                    -0.026405274868011475,
-                    0.4784862995147705,
-                    0.002767857164144516
+                    -0.023572169244289398,
+                    0.4780762791633606,
+                    0.0009690262377262115
                   ],
                   "rotationQuaternion": [
-                    -0.5197828412055969,
-                    0.5409322381019592,
-                    -0.5073608160018921,
-                    0.42403194308280945
+                    -0.6502869129180908,
+                    0.7046710848808289,
+                    -0.2312171310186386,
+                    0.16463370621204376
                   ]
                 },
                 {
@@ -13157,29 +13434,29 @@
                 {
                   "time": 0.36,
                   "position": [
-                    -0.026405274868011475,
-                    0.4784862995147705,
-                    0.002767857164144516
+                    -0.023572169244289398,
+                    0.4780762791633606,
+                    0.0009690262377262115
                   ],
                   "rotationQuaternion": [
-                    -0.5197828412055969,
-                    0.5409322381019592,
-                    -0.5073608160018921,
-                    0.42403194308280945
+                    -0.6502869129180908,
+                    0.7046710848808289,
+                    -0.2312171310186386,
+                    0.16463370621204376
                   ]
                 },
                 {
                   "time": 1.24,
                   "position": [
-                    -0.026405274868011475,
-                    0.4784862995147705,
-                    0.002767857164144516
+                    -0.023572169244289398,
+                    0.4780762791633606,
+                    0.0009690262377262115
                   ],
                   "rotationQuaternion": [
-                    -0.5197828412055969,
-                    0.5409322381019592,
-                    -0.5073608160018921,
-                    0.42403194308280945
+                    -0.6502869129180908,
+                    0.7046710848808289,
+                    -0.2312171310186386,
+                    0.16463370621204376
                   ]
                 },
                 {
@@ -13770,29 +14047,29 @@
                 {
                   "time": 0.576,
                   "position": [
-                    -0.03491412475705147,
-                    0.39406493306159973,
-                    0.00860997661948204
+                    -0.03208104148507118,
+                    0.3936549127101898,
+                    0.006811082363128662
                   ],
                   "rotationQuaternion": [
-                    -0.5197828412055969,
-                    0.5409322381019592,
-                    -0.5073608160018921,
-                    0.42403194308280945
+                    -0.6502869129180908,
+                    0.7046710848808289,
+                    -0.2312171310186386,
+                    0.16463370621204376
                   ]
                 },
                 {
                   "time": 4.32,
                   "position": [
-                    -0.03491412475705147,
-                    0.39406493306159973,
-                    0.00860997661948204
+                    -0.03208104148507118,
+                    0.3936549127101898,
+                    0.006811082363128662
                   ],
                   "rotationQuaternion": [
-                    -0.5197828412055969,
-                    0.5409322381019592,
-                    -0.5073608160018921,
-                    0.42403194308280945
+                    -0.6502869129180908,
+                    0.7046710848808289,
+                    -0.2312171310186386,
+                    0.16463370621204376
                   ]
                 },
                 {
@@ -13874,29 +14151,29 @@
                 {
                   "time": 0.36,
                   "position": [
-                    -0.03491412475705147,
-                    0.39406493306159973,
-                    0.00860997661948204
+                    -0.03208104148507118,
+                    0.3936549127101898,
+                    0.006811082363128662
                   ],
                   "rotationQuaternion": [
-                    -0.5197828412055969,
-                    0.5409322381019592,
-                    -0.5073608160018921,
-                    0.42403194308280945
+                    -0.6502869129180908,
+                    0.7046710848808289,
+                    -0.2312171310186386,
+                    0.16463370621204376
                   ]
                 },
                 {
                   "time": 1.24,
                   "position": [
-                    -0.03491412475705147,
-                    0.39406493306159973,
-                    0.00860997661948204
+                    -0.03208104148507118,
+                    0.3936549127101898,
+                    0.006811082363128662
                   ],
                   "rotationQuaternion": [
-                    -0.5197828412055969,
-                    0.5409322381019592,
-                    -0.5073608160018921,
-                    0.42403194308280945
+                    -0.6502869129180908,
+                    0.7046710848808289,
+                    -0.2312171310186386,
+                    0.16463370621204376
                   ]
                 },
                 {
@@ -13991,29 +14268,29 @@
                 {
                   "time": 0.576,
                   "position": [
-                    -0.03491412475705147,
-                    0.39406493306159973,
-                    0.00860997661948204
+                    -0.03208104148507118,
+                    0.3936549127101898,
+                    0.006811082363128662
                   ],
                   "rotationQuaternion": [
-                    -0.5197828412055969,
-                    0.5409322381019592,
-                    -0.5073608160018921,
-                    0.42403194308280945
+                    -0.6502869129180908,
+                    0.7046710848808289,
+                    -0.2312171310186386,
+                    0.16463370621204376
                   ]
                 },
                 {
                   "time": 4.32,
                   "position": [
-                    -0.03491412475705147,
-                    0.39406493306159973,
-                    0.00860997661948204
+                    -0.03208104148507118,
+                    0.3936549127101898,
+                    0.006811082363128662
                   ],
                   "rotationQuaternion": [
-                    -0.5197828412055969,
-                    0.5409322381019592,
-                    -0.5073608160018921,
-                    0.42403194308280945
+                    -0.6502869129180908,
+                    0.7046710848808289,
+                    -0.2312171310186386,
+                    0.16463370621204376
                   ]
                 },
                 {
@@ -14095,29 +14372,29 @@
                 {
                   "time": 0.36,
                   "position": [
-                    -0.03491412475705147,
-                    0.39406493306159973,
-                    0.00860997661948204
+                    -0.03208104148507118,
+                    0.3936549127101898,
+                    0.006811082363128662
                   ],
                   "rotationQuaternion": [
-                    -0.5197828412055969,
-                    0.5409322381019592,
-                    -0.5073608160018921,
-                    0.42403194308280945
+                    -0.6502869129180908,
+                    0.7046710848808289,
+                    -0.2312171310186386,
+                    0.16463370621204376
                   ]
                 },
                 {
                   "time": 1.24,
                   "position": [
-                    -0.03491412475705147,
-                    0.39406493306159973,
-                    0.00860997661948204
+                    -0.03208104148507118,
+                    0.3936549127101898,
+                    0.006811082363128662
                   ],
                   "rotationQuaternion": [
-                    -0.5197828412055969,
-                    0.5409322381019592,
-                    -0.5073608160018921,
-                    0.42403194308280945
+                    -0.6502869129180908,
+                    0.7046710848808289,
+                    -0.2312171310186386,
+                    0.16463370621204376
                   ]
                 },
                 {
@@ -14708,29 +14985,29 @@
                 {
                   "time": 0.576,
                   "position": [
-                    -0.029808811843395233,
-                    0.44471776485443115,
-                    0.00510469451546669
+                    -0.026975728571414948,
+                    0.44430774450302124,
+                    0.003305882215499878
                   ],
                   "rotationQuaternion": [
-                    -0.5197828412055969,
-                    0.5409322381019592,
-                    -0.5073608160018921,
-                    0.42403194308280945
+                    -0.6502869129180908,
+                    0.7046710848808289,
+                    -0.2312171310186386,
+                    0.16463370621204376
                   ]
                 },
                 {
                   "time": 4.32,
                   "position": [
-                    -0.029808811843395233,
-                    0.44471776485443115,
-                    0.00510469451546669
+                    -0.026975728571414948,
+                    0.44430774450302124,
+                    0.003305882215499878
                   ],
                   "rotationQuaternion": [
-                    -0.5197828412055969,
-                    0.5409322381019592,
-                    -0.5073608160018921,
-                    0.42403194308280945
+                    -0.6502869129180908,
+                    0.7046710848808289,
+                    -0.2312171310186386,
+                    0.16463370621204376
                   ]
                 },
                 {
@@ -14812,29 +15089,29 @@
                 {
                   "time": 0.36,
                   "position": [
-                    -0.029808811843395233,
-                    0.44471776485443115,
-                    0.00510469451546669
+                    -0.026975728571414948,
+                    0.44430774450302124,
+                    0.003305882215499878
                   ],
                   "rotationQuaternion": [
-                    -0.5197828412055969,
-                    0.5409322381019592,
-                    -0.5073608160018921,
-                    0.42403194308280945
+                    -0.6502869129180908,
+                    0.7046710848808289,
+                    -0.2312171310186386,
+                    0.16463370621204376
                   ]
                 },
                 {
                   "time": 1.24,
                   "position": [
-                    -0.029808811843395233,
-                    0.44471776485443115,
-                    0.00510469451546669
+                    -0.026975728571414948,
+                    0.44430774450302124,
+                    0.003305882215499878
                   ],
                   "rotationQuaternion": [
-                    -0.5197828412055969,
-                    0.5409322381019592,
-                    -0.5073608160018921,
-                    0.42403194308280945
+                    -0.6502869129180908,
+                    0.7046710848808289,
+                    -0.2312171310186386,
+                    0.16463370621204376
                   ]
                 },
                 {
@@ -14929,29 +15206,29 @@
                 {
                   "time": 0.576,
                   "position": [
-                    -0.029808811843395233,
-                    0.44471776485443115,
-                    0.00510469451546669
+                    -0.026975728571414948,
+                    0.44430774450302124,
+                    0.003305882215499878
                   ],
                   "rotationQuaternion": [
-                    -0.5197828412055969,
-                    0.5409322381019592,
-                    -0.5073608160018921,
-                    0.42403194308280945
+                    -0.6502869129180908,
+                    0.7046710848808289,
+                    -0.2312171310186386,
+                    0.16463370621204376
                   ]
                 },
                 {
                   "time": 4.32,
                   "position": [
-                    -0.029808811843395233,
-                    0.44471776485443115,
-                    0.00510469451546669
+                    -0.026975728571414948,
+                    0.44430774450302124,
+                    0.003305882215499878
                   ],
                   "rotationQuaternion": [
-                    -0.5197828412055969,
-                    0.5409322381019592,
-                    -0.5073608160018921,
-                    0.42403194308280945
+                    -0.6502869129180908,
+                    0.7046710848808289,
+                    -0.2312171310186386,
+                    0.16463370621204376
                   ]
                 },
                 {
@@ -15033,29 +15310,29 @@
                 {
                   "time": 0.36,
                   "position": [
-                    -0.029808811843395233,
-                    0.44471776485443115,
-                    0.00510469451546669
+                    -0.026975728571414948,
+                    0.44430774450302124,
+                    0.003305882215499878
                   ],
                   "rotationQuaternion": [
-                    -0.5197828412055969,
-                    0.5409322381019592,
-                    -0.5073608160018921,
-                    0.42403194308280945
+                    -0.6502869129180908,
+                    0.7046710848808289,
+                    -0.2312171310186386,
+                    0.16463370621204376
                   ]
                 },
                 {
                   "time": 1.24,
                   "position": [
-                    -0.029808811843395233,
-                    0.44471776485443115,
-                    0.00510469451546669
+                    -0.026975728571414948,
+                    0.44430774450302124,
+                    0.003305882215499878
                   ],
                   "rotationQuaternion": [
-                    -0.5197828412055969,
-                    0.5409322381019592,
-                    -0.5073608160018921,
-                    0.42403194308280945
+                    -0.6502869129180908,
+                    0.7046710848808289,
+                    -0.2312171310186386,
+                    0.16463370621204376
                   ]
                 },
                 {
@@ -15646,29 +15923,29 @@
                 {
                   "time": 0.576,
                   "position": [
-                    -0.045124754309654236,
-                    0.2927592694759369,
-                    0.01562042161822319
+                    -0.04229164496064186,
+                    0.2923492193222046,
+                    0.0138215571641922
                   ],
                   "rotationQuaternion": [
-                    -0.5197828412055969,
-                    0.5409322381019592,
-                    -0.5073608160018921,
-                    0.42403194308280945
+                    -0.6502869129180908,
+                    0.7046710848808289,
+                    -0.2312171310186386,
+                    0.16463370621204376
                   ]
                 },
                 {
                   "time": 4.32,
                   "position": [
-                    -0.045124754309654236,
-                    0.2927592694759369,
-                    0.01562042161822319
+                    -0.04229164496064186,
+                    0.2923492193222046,
+                    0.0138215571641922
                   ],
                   "rotationQuaternion": [
-                    -0.5197828412055969,
-                    0.5409322381019592,
-                    -0.5073608160018921,
-                    0.42403194308280945
+                    -0.6502869129180908,
+                    0.7046710848808289,
+                    -0.2312171310186386,
+                    0.16463370621204376
                   ]
                 },
                 {
@@ -15750,29 +16027,29 @@
                 {
                   "time": 0.36,
                   "position": [
-                    -0.045124754309654236,
-                    0.2927592694759369,
-                    0.01562042161822319
+                    -0.04229164496064186,
+                    0.2923492193222046,
+                    0.0138215571641922
                   ],
                   "rotationQuaternion": [
-                    -0.5197828412055969,
-                    0.5409322381019592,
-                    -0.5073608160018921,
-                    0.42403194308280945
+                    -0.6502869129180908,
+                    0.7046710848808289,
+                    -0.2312171310186386,
+                    0.16463370621204376
                   ]
                 },
                 {
                   "time": 1.24,
                   "position": [
-                    -0.045124754309654236,
-                    0.2927592694759369,
-                    0.01562042161822319
+                    -0.04229164496064186,
+                    0.2923492193222046,
+                    0.0138215571641922
                   ],
                   "rotationQuaternion": [
-                    -0.5197828412055969,
-                    0.5409322381019592,
-                    -0.5073608160018921,
-                    0.42403194308280945
+                    -0.6502869129180908,
+                    0.7046710848808289,
+                    -0.2312171310186386,
+                    0.16463370621204376
                   ]
                 },
                 {
@@ -15867,29 +16144,29 @@
                 {
                   "time": 0.576,
                   "position": [
-                    -0.045124754309654236,
-                    0.2927592694759369,
-                    0.01562042161822319
+                    -0.04229164496064186,
+                    0.2923492193222046,
+                    0.0138215571641922
                   ],
                   "rotationQuaternion": [
-                    -0.5197828412055969,
-                    0.5409322381019592,
-                    -0.5073608160018921,
-                    0.42403194308280945
+                    -0.6502869129180908,
+                    0.7046710848808289,
+                    -0.2312171310186386,
+                    0.16463370621204376
                   ]
                 },
                 {
                   "time": 4.32,
                   "position": [
-                    -0.045124754309654236,
-                    0.2927592694759369,
-                    0.01562042161822319
+                    -0.04229164496064186,
+                    0.2923492193222046,
+                    0.0138215571641922
                   ],
                   "rotationQuaternion": [
-                    -0.5197828412055969,
-                    0.5409322381019592,
-                    -0.5073608160018921,
-                    0.42403194308280945
+                    -0.6502869129180908,
+                    0.7046710848808289,
+                    -0.2312171310186386,
+                    0.16463370621204376
                   ]
                 },
                 {
@@ -15971,29 +16248,29 @@
                 {
                   "time": 0.36,
                   "position": [
-                    -0.045124754309654236,
-                    0.2927592694759369,
-                    0.01562042161822319
+                    -0.04229164496064186,
+                    0.2923492193222046,
+                    0.0138215571641922
                   ],
                   "rotationQuaternion": [
-                    -0.5197828412055969,
-                    0.5409322381019592,
-                    -0.5073608160018921,
-                    0.42403194308280945
+                    -0.6502869129180908,
+                    0.7046710848808289,
+                    -0.2312171310186386,
+                    0.16463370621204376
                   ]
                 },
                 {
                   "time": 1.24,
                   "position": [
-                    -0.045124754309654236,
-                    0.2927592694759369,
-                    0.01562042161822319
+                    -0.04229164496064186,
+                    0.2923492193222046,
+                    0.0138215571641922
                   ],
                   "rotationQuaternion": [
-                    -0.5197828412055969,
-                    0.5409322381019592,
-                    -0.5073608160018921,
-                    0.42403194308280945
+                    -0.6502869129180908,
+                    0.7046710848808289,
+                    -0.2312171310186386,
+                    0.16463370621204376
                   ]
                 },
                 {
@@ -17648,7 +17925,7 @@
         "strafeLeftStanding": 1.1159,
         "strafeRightCrouched": 0.8492,
         "strafeLeftCrouched": 0.7564,
-        "crawl": 0.260825,
+        "crawl": 0.143763,
         "climbUp": 0.4062,
         "climbDown": 0.4455,
         "recover": 0.3467,
@@ -17663,8 +17940,8 @@
     },
     "female": {
       "url": "/models/characters/female-animations.glb",
-      "bytes": 15996352,
-      "sha256": "43608a7ed513fdda8b6d76f235759bb9daf1c62e0e7805e0da0b7194ba9f82c6",
+      "bytes": 16595732,
+      "sha256": "3bb2e760b7522510f24e26e56e7975132ee190bafc384456bd42177746b5be9c",
       "clips": [
         {
           "name": "stand.idle.unarmed",
@@ -17751,12 +18028,6 @@
           "duration": 1.183329,
           "loop": true,
           "events": {},
-          "nativeBootSupport": {
-            "method": "native-leg-rotations",
-            "surface": "actual-sole-and-weighted-shaft",
-            "floor": 0.006,
-            "sampleRate": 30
-          },
           "gesture": "strafeLeft",
           "posture": "standing",
           "equipment": "unarmed",
@@ -17773,19 +18044,35 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "locomotionSpeed": 1.0544,
-          "locomotionAxis": "left"
+          "locomotionAxis": "left",
+          "nativeSidewaysSupport": {
+            "method": "native-sideways-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "nativeCycleDuration": 1.166667,
+            "retainedNativeStrideSpeed": 1.0544,
+            "supportWindows": {
+              "l": [
+                0.05833333333333333,
+                0.2791666666666667
+              ],
+              "r": [
+                0.2791666666666667,
+                0.5583333333333333
+              ]
+            },
+            "heelRoll": {
+              "l": 0.0791015625,
+              "r": 0.12227783203124999
+            }
+          }
         },
         {
           "name": "stand.strafeRight.unarmed",
           "duration": 1.283328,
           "loop": true,
           "events": {},
-          "nativeBootSupport": {
-            "method": "native-leg-rotations",
-            "surface": "actual-sole-and-weighted-shaft",
-            "floor": 0.006,
-            "sampleRate": 30
-          },
           "gesture": "strafeRight",
           "posture": "standing",
           "equipment": "unarmed",
@@ -17802,7 +18089,29 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "locomotionSpeed": 1.0316,
-          "locomotionAxis": "right"
+          "locomotionAxis": "right",
+          "nativeSidewaysSupport": {
+            "method": "native-sideways-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "nativeCycleDuration": 1.266667,
+            "retainedNativeStrideSpeed": 1.0316,
+            "supportWindows": {
+              "r": [
+                0.25,
+                0.5
+              ],
+              "l": [
+                0.5,
+                0.75
+              ]
+            },
+            "heelRoll": {
+              "r": 0.17874755859375002,
+              "l": 0.0283447265625
+            }
+          }
         },
         {
           "name": "stand.punch.unarmed",
@@ -17938,11 +18247,27 @@
           "duration": 1.183329,
           "loop": true,
           "events": {},
-          "nativeBootSupport": {
-            "method": "native-leg-rotations",
-            "surface": "actual-sole-and-weighted-shaft",
-            "floor": 0.006,
-            "sampleRate": 30
+          "nativeSidewaysSupport": {
+            "method": "native-sideways-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "nativeCycleDuration": 1.166667,
+            "retainedNativeStrideSpeed": 1.0544,
+            "supportWindows": {
+              "l": [
+                0.05833333333333333,
+                0.2791666666666667
+              ],
+              "r": [
+                0.2791666666666667,
+                0.5583333333333333
+              ]
+            },
+            "heelRoll": {
+              "l": 0.0791015625,
+              "r": 0.12227783203124999
+            }
           },
           "gesture": "strafeLeft",
           "posture": "standing",
@@ -17967,11 +18292,27 @@
           "duration": 1.283328,
           "loop": true,
           "events": {},
-          "nativeBootSupport": {
-            "method": "native-leg-rotations",
-            "surface": "actual-sole-and-weighted-shaft",
-            "floor": 0.006,
-            "sampleRate": 30
+          "nativeSidewaysSupport": {
+            "method": "native-sideways-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "nativeCycleDuration": 1.266667,
+            "retainedNativeStrideSpeed": 1.0316,
+            "supportWindows": {
+              "r": [
+                0.25,
+                0.5
+              ],
+              "l": [
+                0.5,
+                0.75
+              ]
+            },
+            "heelRoll": {
+              "r": 0.17874755859375002,
+              "l": 0.0283447265625
+            }
           },
           "gesture": "strafeRight",
           "posture": "standing",
@@ -18116,29 +18457,29 @@
                 {
                   "time": 0.576,
                   "position": [
-                    -0.00887306034564972,
-                    0.5226341485977173,
-                    -0.08315839618444443
+                    -0.006095297634601593,
+                    0.5218784809112549,
+                    -0.0849313959479332
                   ],
                   "rotationQuaternion": [
-                    -0.548101544380188,
-                    0.5131495594978333,
-                    -0.5464893579483032,
-                    0.3709605038166046
+                    -0.6535233855247498,
+                    0.6960278153419495,
+                    -0.27842116355895996,
+                    0.10456664115190506
                   ]
                 },
                 {
                   "time": 4.32,
                   "position": [
-                    -0.00887306034564972,
-                    0.5226341485977173,
-                    -0.08315839618444443
+                    -0.006095297634601593,
+                    0.5218784809112549,
+                    -0.0849313959479332
                   ],
                   "rotationQuaternion": [
-                    -0.548101544380188,
-                    0.5131495594978333,
-                    -0.5464893579483032,
-                    0.3709605038166046
+                    -0.6535233855247498,
+                    0.6960278153419495,
+                    -0.27842116355895996,
+                    0.10456664115190506
                   ]
                 },
                 {
@@ -18263,29 +18604,29 @@
                 {
                   "time": 0.36,
                   "position": [
-                    -0.00887306034564972,
-                    0.5226341485977173,
-                    -0.08315839618444443
+                    -0.006095297634601593,
+                    0.5218784809112549,
+                    -0.0849313959479332
                   ],
                   "rotationQuaternion": [
-                    -0.548101544380188,
-                    0.5131495594978333,
-                    -0.5464893579483032,
-                    0.3709605038166046
+                    -0.6535233855247498,
+                    0.6960278153419495,
+                    -0.27842116355895996,
+                    0.10456664115190506
                   ]
                 },
                 {
                   "time": 1.24,
                   "position": [
-                    -0.00887306034564972,
-                    0.5226341485977173,
-                    -0.08315839618444443
+                    -0.006095297634601593,
+                    0.5218784809112549,
+                    -0.0849313959479332
                   ],
                   "rotationQuaternion": [
-                    -0.548101544380188,
-                    0.5131495594978333,
-                    -0.5464893579483032,
-                    0.3709605038166046
+                    -0.6535233855247498,
+                    0.6960278153419495,
+                    -0.27842116355895996,
+                    0.10456664115190506
                   ]
                 },
                 {
@@ -18506,11 +18847,27 @@
           "duration": 1.183329,
           "loop": true,
           "events": {},
-          "nativeBootSupport": {
-            "method": "native-leg-rotations",
-            "surface": "actual-sole-and-weighted-shaft",
-            "floor": 0.006,
-            "sampleRate": 30
+          "nativeSidewaysSupport": {
+            "method": "native-sideways-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "nativeCycleDuration": 1.166667,
+            "retainedNativeStrideSpeed": 1.0544,
+            "supportWindows": {
+              "l": [
+                0.05833333333333333,
+                0.2791666666666667
+              ],
+              "r": [
+                0.2791666666666667,
+                0.5583333333333333
+              ]
+            },
+            "heelRoll": {
+              "l": 0.0791015625,
+              "r": 0.12227783203124999
+            }
           },
           "gesture": "strafeLeft",
           "posture": "standing",
@@ -18535,11 +18892,27 @@
           "duration": 1.283328,
           "loop": true,
           "events": {},
-          "nativeBootSupport": {
-            "method": "native-leg-rotations",
-            "surface": "actual-sole-and-weighted-shaft",
-            "floor": 0.006,
-            "sampleRate": 30
+          "nativeSidewaysSupport": {
+            "method": "native-sideways-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "nativeCycleDuration": 1.266667,
+            "retainedNativeStrideSpeed": 1.0316,
+            "supportWindows": {
+              "r": [
+                0.25,
+                0.5
+              ],
+              "l": [
+                0.5,
+                0.75
+              ]
+            },
+            "heelRoll": {
+              "r": 0.17874755859375002,
+              "l": 0.0283447265625
+            }
           },
           "gesture": "strafeRight",
           "posture": "standing",
@@ -18747,7 +19120,46 @@
             "name": "PistolStrike",
             "origin": "approved-granadero-preview",
             "sourceSha256": "0d347fd1d5d8f5a5efb156327348b0c13cf81e6de83120fc29c1dfbf44b5e569"
-          }
+          },
+          "gripOffsets": [
+            {
+              "hand": "handRight",
+              "keys": [
+                {
+                  "time": 0,
+                  "position": [
+                    0,
+                    0,
+                    0
+                  ]
+                },
+                {
+                  "time": 0.2,
+                  "position": [
+                    0.000974,
+                    -0.000795,
+                    0.0046
+                  ]
+                },
+                {
+                  "time": 0.82,
+                  "position": [
+                    0.000974,
+                    -0.000795,
+                    0.0046
+                  ]
+                },
+                {
+                  "time": 1,
+                  "position": [
+                    0,
+                    0,
+                    0
+                  ]
+                }
+              ]
+            }
+          ]
         },
         {
           "name": "stand.idle.blade",
@@ -18824,11 +19236,27 @@
           "duration": 1.183329,
           "loop": true,
           "events": {},
-          "nativeBootSupport": {
-            "method": "native-leg-rotations",
-            "surface": "actual-sole-and-weighted-shaft",
-            "floor": 0.006,
-            "sampleRate": 30
+          "nativeSidewaysSupport": {
+            "method": "native-sideways-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "nativeCycleDuration": 1.166667,
+            "retainedNativeStrideSpeed": 1.0544,
+            "supportWindows": {
+              "l": [
+                0.05833333333333333,
+                0.2791666666666667
+              ],
+              "r": [
+                0.2791666666666667,
+                0.5583333333333333
+              ]
+            },
+            "heelRoll": {
+              "l": 0.0791015625,
+              "r": 0.12227783203124999
+            }
           },
           "gesture": "strafeLeft",
           "posture": "standing",
@@ -18853,11 +19281,27 @@
           "duration": 1.283328,
           "loop": true,
           "events": {},
-          "nativeBootSupport": {
-            "method": "native-leg-rotations",
-            "surface": "actual-sole-and-weighted-shaft",
-            "floor": 0.006,
-            "sampleRate": 30
+          "nativeSidewaysSupport": {
+            "method": "native-sideways-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "nativeCycleDuration": 1.266667,
+            "retainedNativeStrideSpeed": 1.0316,
+            "supportWindows": {
+              "r": [
+                0.25,
+                0.5
+              ],
+              "l": [
+                0.5,
+                0.75
+              ]
+            },
+            "heelRoll": {
+              "r": 0.17874755859375002,
+              "l": 0.0283447265625
+            }
           },
           "gesture": "strafeRight",
           "posture": "standing",
@@ -19242,29 +19686,29 @@
                 {
                   "time": 0.576,
                   "position": [
-                    -0.00887306034564972,
-                    0.5226341485977173,
-                    -0.08315839618444443
+                    -0.006095297634601593,
+                    0.5218784809112549,
+                    -0.0849313959479332
                   ],
                   "rotationQuaternion": [
-                    -0.548101544380188,
-                    0.5131495594978333,
-                    -0.5464893579483032,
-                    0.3709605038166046
+                    -0.6535233855247498,
+                    0.6960278153419495,
+                    -0.27842116355895996,
+                    0.10456664115190506
                   ]
                 },
                 {
                   "time": 4.32,
                   "position": [
-                    -0.00887306034564972,
-                    0.5226341485977173,
-                    -0.08315839618444443
+                    -0.006095297634601593,
+                    0.5218784809112549,
+                    -0.0849313959479332
                   ],
                   "rotationQuaternion": [
-                    -0.548101544380188,
-                    0.5131495594978333,
-                    -0.5464893579483032,
-                    0.3709605038166046
+                    -0.6535233855247498,
+                    0.6960278153419495,
+                    -0.27842116355895996,
+                    0.10456664115190506
                   ]
                 },
                 {
@@ -19389,29 +19833,29 @@
                 {
                   "time": 0.36,
                   "position": [
-                    -0.00887306034564972,
-                    0.5226341485977173,
-                    -0.08315839618444443
+                    -0.006095297634601593,
+                    0.5218784809112549,
+                    -0.0849313959479332
                   ],
                   "rotationQuaternion": [
-                    -0.548101544380188,
-                    0.5131495594978333,
-                    -0.5464893579483032,
-                    0.3709605038166046
+                    -0.6535233855247498,
+                    0.6960278153419495,
+                    -0.27842116355895996,
+                    0.10456664115190506
                   ]
                 },
                 {
                   "time": 1.24,
                   "position": [
-                    -0.00887306034564972,
-                    0.5226341485977173,
-                    -0.08315839618444443
+                    -0.006095297634601593,
+                    0.5218784809112549,
+                    -0.0849313959479332
                   ],
                   "rotationQuaternion": [
-                    -0.548101544380188,
-                    0.5131495594978333,
-                    -0.5464893579483032,
-                    0.3709605038166046
+                    -0.6535233855247498,
+                    0.6960278153419495,
+                    -0.27842116355895996,
+                    0.10456664115190506
                   ]
                 },
                 {
@@ -19931,6 +20375,24 @@
           "duration": 2,
           "loop": true,
           "events": {},
+          "nativeBootSupport": {
+            "method": "native-leg-rotations",
+            "surface": "actual-sole-and-weighted-shaft",
+            "floor": 0.006,
+            "sampleRate": 30
+          },
+          "nativeArmSupport": {
+            "method": "native-arm-rotations",
+            "surface": "complete-native-palm-finger-and-sleeve",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "recoveryLift": 0,
+            "alternatingRecovery": false,
+            "pullDistance": 0,
+            "maximumRecoveryLift": 0,
+            "maximumReachCorrection": 0,
+            "nativeCycleDuration": 2
+          },
           "gesture": "idle",
           "posture": "prone",
           "equipment": "unarmed",
@@ -19953,6 +20415,50 @@
             "floor": 0.006,
             "sampleRate": 30
           },
+          "locomotionSpeed": 0.143432,
+          "nativeStrideSpeed": 0.143432,
+          "authoredStrideSpeed": 0.143997,
+          "strideDistance": 0.282082,
+          "strideMeasurement": {
+            "method": "native forearm planted pull displacement",
+            "bones": [
+              "lowerarm_l",
+              "lowerarm_r"
+            ],
+            "surface": "complete-native-sleeve-and-forearm",
+            "sampleRate": 30,
+            "maximumContactHeight": 0.007,
+            "pulls": [
+              {
+                "hand": "r",
+                "from": 0,
+                "to": 0.5,
+                "distance": 0.142198,
+                "duration": 0.983329
+              },
+              {
+                "hand": "l",
+                "from": 0.5,
+                "to": 1,
+                "distance": 0.139884,
+                "duration": 0.983329
+              }
+            ],
+            "space": "exported-gltf",
+            "referenceClip": "prone.crawl.unarmed"
+          },
+          "nativeArmSupport": {
+            "method": "native-arm-rotations",
+            "surface": "complete-native-palm-finger-and-sleeve",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "recoveryLift": 0.04,
+            "alternatingRecovery": true,
+            "pullDistance": 0.14,
+            "maximumRecoveryLift": 0.039972,
+            "maximumReachCorrection": 0,
+            "nativeCycleDuration": 1.966659
+          },
           "gesture": "crawl",
           "posture": "prone",
           "equipment": "unarmed",
@@ -19967,23 +20473,7 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place",
-          "locomotionSpeed": 0.262093,
-          "nativeStrideSpeed": 0.262093,
-          "authoredStrideSpeed": 0.262095,
-          "strideDistance": 0.515448,
-          "strideMeasurement": {
-            "method": "median rearward forearm contact velocity",
-            "bones": [
-              "lowerarm_l",
-              "lowerarm_r"
-            ],
-            "maximumContactHeight": 0.09,
-            "sampleCount": 13,
-            "sampledFrom": "exported-glb",
-            "space": "exported-gltf",
-            "referenceClip": "prone.crawl.unarmed"
-          }
+          "rootMotion": "in-place"
         },
         {
           "name": "prone.idle.long-gun",
@@ -25676,11 +26166,27 @@
           "duration": 1.183329,
           "loop": true,
           "events": {},
-          "nativeBootSupport": {
-            "method": "native-leg-rotations",
-            "surface": "actual-sole-and-weighted-shaft",
-            "floor": 0.006,
-            "sampleRate": 30
+          "nativeSidewaysSupport": {
+            "method": "native-sideways-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "nativeCycleDuration": 1.166667,
+            "retainedNativeStrideSpeed": 1.0544,
+            "supportWindows": {
+              "l": [
+                0.05833333333333333,
+                0.2791666666666667
+              ],
+              "r": [
+                0.2791666666666667,
+                0.5583333333333333
+              ]
+            },
+            "heelRoll": {
+              "l": 0.0791015625,
+              "r": 0.12227783203124999
+            }
           },
           "gesture": "strafeLeft",
           "posture": "standing",
@@ -25705,11 +26211,27 @@
           "duration": 1.183329,
           "loop": true,
           "events": {},
-          "nativeBootSupport": {
-            "method": "native-leg-rotations",
-            "surface": "actual-sole-and-weighted-shaft",
-            "floor": 0.006,
-            "sampleRate": 30
+          "nativeSidewaysSupport": {
+            "method": "native-sideways-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "nativeCycleDuration": 1.166667,
+            "retainedNativeStrideSpeed": 1.0544,
+            "supportWindows": {
+              "l": [
+                0.05833333333333333,
+                0.2791666666666667
+              ],
+              "r": [
+                0.2791666666666667,
+                0.5583333333333333
+              ]
+            },
+            "heelRoll": {
+              "l": 0.0791015625,
+              "r": 0.12227783203124999
+            }
           },
           "gesture": "strafeLeft",
           "posture": "standing",
@@ -25734,11 +26256,27 @@
           "duration": 1.283328,
           "loop": true,
           "events": {},
-          "nativeBootSupport": {
-            "method": "native-leg-rotations",
-            "surface": "actual-sole-and-weighted-shaft",
-            "floor": 0.006,
-            "sampleRate": 30
+          "nativeSidewaysSupport": {
+            "method": "native-sideways-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "nativeCycleDuration": 1.266667,
+            "retainedNativeStrideSpeed": 1.0316,
+            "supportWindows": {
+              "r": [
+                0.25,
+                0.5
+              ],
+              "l": [
+                0.5,
+                0.75
+              ]
+            },
+            "heelRoll": {
+              "r": 0.17874755859375002,
+              "l": 0.0283447265625
+            }
           },
           "gesture": "strafeRight",
           "posture": "standing",
@@ -25763,11 +26301,27 @@
           "duration": 1.283328,
           "loop": true,
           "events": {},
-          "nativeBootSupport": {
-            "method": "native-leg-rotations",
-            "surface": "actual-sole-and-weighted-shaft",
-            "floor": 0.006,
-            "sampleRate": 30
+          "nativeSidewaysSupport": {
+            "method": "native-sideways-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "nativeCycleDuration": 1.266667,
+            "retainedNativeStrideSpeed": 1.0316,
+            "supportWindows": {
+              "r": [
+                0.25,
+                0.5
+              ],
+              "l": [
+                0.5,
+                0.75
+              ]
+            },
+            "heelRoll": {
+              "r": 0.17874755859375002,
+              "l": 0.0283447265625
+            }
           },
           "gesture": "strafeRight",
           "posture": "standing",
@@ -26793,29 +27347,29 @@
                 {
                   "time": 0.576,
                   "position": [
-                    -0.0004397779703140259,
-                    0.5884947180747986,
-                    -0.0980147272348404
+                    0.002337999641895294,
+                    0.5877391695976257,
+                    -0.09978772699832916
                   ],
                   "rotationQuaternion": [
-                    -0.548101544380188,
-                    0.5131495594978333,
-                    -0.5464893579483032,
-                    0.3709605038166046
+                    -0.6535233855247498,
+                    0.6960278153419495,
+                    -0.27842116355895996,
+                    0.10456664115190506
                   ]
                 },
                 {
                   "time": 4.32,
                   "position": [
-                    -0.0004397779703140259,
-                    0.5884947180747986,
-                    -0.0980147272348404
+                    0.002337999641895294,
+                    0.5877391695976257,
+                    -0.09978772699832916
                   ],
                   "rotationQuaternion": [
-                    -0.548101544380188,
-                    0.5131495594978333,
-                    -0.5464893579483032,
-                    0.3709605038166046
+                    -0.6535233855247498,
+                    0.6960278153419495,
+                    -0.27842116355895996,
+                    0.10456664115190506
                   ]
                 },
                 {
@@ -26897,29 +27451,29 @@
                 {
                   "time": 0.36,
                   "position": [
-                    -0.0004397779703140259,
-                    0.5884947180747986,
-                    -0.0980147272348404
+                    0.002337999641895294,
+                    0.5877391695976257,
+                    -0.09978772699832916
                   ],
                   "rotationQuaternion": [
-                    -0.548101544380188,
-                    0.5131495594978333,
-                    -0.5464893579483032,
-                    0.3709605038166046
+                    -0.6535233855247498,
+                    0.6960278153419495,
+                    -0.27842116355895996,
+                    0.10456664115190506
                   ]
                 },
                 {
                   "time": 1.24,
                   "position": [
-                    -0.0004397779703140259,
-                    0.5884947180747986,
-                    -0.0980147272348404
+                    0.002337999641895294,
+                    0.5877391695976257,
+                    -0.09978772699832916
                   ],
                   "rotationQuaternion": [
-                    -0.548101544380188,
-                    0.5131495594978333,
-                    -0.5464893579483032,
-                    0.3709605038166046
+                    -0.6535233855247498,
+                    0.6960278153419495,
+                    -0.27842116355895996,
+                    0.10456664115190506
                   ]
                 },
                 {
@@ -27014,29 +27568,29 @@
                 {
                   "time": 0.576,
                   "position": [
-                    -0.0004397779703140259,
-                    0.5884947180747986,
-                    -0.0980147272348404
+                    0.002337999641895294,
+                    0.5877391695976257,
+                    -0.09978772699832916
                   ],
                   "rotationQuaternion": [
-                    -0.548101544380188,
-                    0.5131495594978333,
-                    -0.5464893579483032,
-                    0.3709605038166046
+                    -0.6535233855247498,
+                    0.6960278153419495,
+                    -0.27842116355895996,
+                    0.10456664115190506
                   ]
                 },
                 {
                   "time": 4.32,
                   "position": [
-                    -0.0004397779703140259,
-                    0.5884947180747986,
-                    -0.0980147272348404
+                    0.002337999641895294,
+                    0.5877391695976257,
+                    -0.09978772699832916
                   ],
                   "rotationQuaternion": [
-                    -0.548101544380188,
-                    0.5131495594978333,
-                    -0.5464893579483032,
-                    0.3709605038166046
+                    -0.6535233855247498,
+                    0.6960278153419495,
+                    -0.27842116355895996,
+                    0.10456664115190506
                   ]
                 },
                 {
@@ -27118,29 +27672,29 @@
                 {
                   "time": 0.36,
                   "position": [
-                    -0.0004397779703140259,
-                    0.5884947180747986,
-                    -0.0980147272348404
+                    0.002337999641895294,
+                    0.5877391695976257,
+                    -0.09978772699832916
                   ],
                   "rotationQuaternion": [
-                    -0.548101544380188,
-                    0.5131495594978333,
-                    -0.5464893579483032,
-                    0.3709605038166046
+                    -0.6535233855247498,
+                    0.6960278153419495,
+                    -0.27842116355895996,
+                    0.10456664115190506
                   ]
                 },
                 {
                   "time": 1.24,
                   "position": [
-                    -0.0004397779703140259,
-                    0.5884947180747986,
-                    -0.0980147272348404
+                    0.002337999641895294,
+                    0.5877391695976257,
+                    -0.09978772699832916
                   ],
                   "rotationQuaternion": [
-                    -0.548101544380188,
-                    0.5131495594978333,
-                    -0.5464893579483032,
-                    0.3709605038166046
+                    -0.6535233855247498,
+                    0.6960278153419495,
+                    -0.27842116355895996,
+                    0.10456664115190506
                   ]
                 },
                 {
@@ -27731,29 +28285,29 @@
                 {
                   "time": 0.576,
                   "position": [
-                    -0.0018453150987625122,
-                    0.5775179862976074,
-                    -0.09553863108158112
+                    0.0009324550628662109,
+                    0.5767623782157898,
+                    -0.09731167554855347
                   ],
                   "rotationQuaternion": [
-                    -0.548101544380188,
-                    0.5131495594978333,
-                    -0.5464893579483032,
-                    0.3709605038166046
+                    -0.6535233855247498,
+                    0.6960278153419495,
+                    -0.27842116355895996,
+                    0.10456664115190506
                   ]
                 },
                 {
                   "time": 4.32,
                   "position": [
-                    -0.0018453150987625122,
-                    0.5775179862976074,
-                    -0.09553863108158112
+                    0.0009324550628662109,
+                    0.5767623782157898,
+                    -0.09731167554855347
                   ],
                   "rotationQuaternion": [
-                    -0.548101544380188,
-                    0.5131495594978333,
-                    -0.5464893579483032,
-                    0.3709605038166046
+                    -0.6535233855247498,
+                    0.6960278153419495,
+                    -0.27842116355895996,
+                    0.10456664115190506
                   ]
                 },
                 {
@@ -27835,29 +28389,29 @@
                 {
                   "time": 0.36,
                   "position": [
-                    -0.0018453150987625122,
-                    0.5775179862976074,
-                    -0.09553863108158112
+                    0.0009324550628662109,
+                    0.5767623782157898,
+                    -0.09731167554855347
                   ],
                   "rotationQuaternion": [
-                    -0.548101544380188,
-                    0.5131495594978333,
-                    -0.5464893579483032,
-                    0.3709605038166046
+                    -0.6535233855247498,
+                    0.6960278153419495,
+                    -0.27842116355895996,
+                    0.10456664115190506
                   ]
                 },
                 {
                   "time": 1.24,
                   "position": [
-                    -0.0018453150987625122,
-                    0.5775179862976074,
-                    -0.09553863108158112
+                    0.0009324550628662109,
+                    0.5767623782157898,
+                    -0.09731167554855347
                   ],
                   "rotationQuaternion": [
-                    -0.548101544380188,
-                    0.5131495594978333,
-                    -0.5464893579483032,
-                    0.3709605038166046
+                    -0.6535233855247498,
+                    0.6960278153419495,
+                    -0.27842116355895996,
+                    0.10456664115190506
                   ]
                 },
                 {
@@ -27952,29 +28506,29 @@
                 {
                   "time": 0.576,
                   "position": [
-                    -0.0018453150987625122,
-                    0.5775179862976074,
-                    -0.09553863108158112
+                    0.0009324550628662109,
+                    0.5767623782157898,
+                    -0.09731167554855347
                   ],
                   "rotationQuaternion": [
-                    -0.548101544380188,
-                    0.5131495594978333,
-                    -0.5464893579483032,
-                    0.3709605038166046
+                    -0.6535233855247498,
+                    0.6960278153419495,
+                    -0.27842116355895996,
+                    0.10456664115190506
                   ]
                 },
                 {
                   "time": 4.32,
                   "position": [
-                    -0.0018453150987625122,
-                    0.5775179862976074,
-                    -0.09553863108158112
+                    0.0009324550628662109,
+                    0.5767623782157898,
+                    -0.09731167554855347
                   ],
                   "rotationQuaternion": [
-                    -0.548101544380188,
-                    0.5131495594978333,
-                    -0.5464893579483032,
-                    0.3709605038166046
+                    -0.6535233855247498,
+                    0.6960278153419495,
+                    -0.27842116355895996,
+                    0.10456664115190506
                   ]
                 },
                 {
@@ -28056,29 +28610,29 @@
                 {
                   "time": 0.36,
                   "position": [
-                    -0.0018453150987625122,
-                    0.5775179862976074,
-                    -0.09553863108158112
+                    0.0009324550628662109,
+                    0.5767623782157898,
+                    -0.09731167554855347
                   ],
                   "rotationQuaternion": [
-                    -0.548101544380188,
-                    0.5131495594978333,
-                    -0.5464893579483032,
-                    0.3709605038166046
+                    -0.6535233855247498,
+                    0.6960278153419495,
+                    -0.27842116355895996,
+                    0.10456664115190506
                   ]
                 },
                 {
                   "time": 1.24,
                   "position": [
-                    -0.0018453150987625122,
-                    0.5775179862976074,
-                    -0.09553863108158112
+                    0.0009324550628662109,
+                    0.5767623782157898,
+                    -0.09731167554855347
                   ],
                   "rotationQuaternion": [
-                    -0.548101544380188,
-                    0.5131495594978333,
-                    -0.5464893579483032,
-                    0.3709605038166046
+                    -0.6535233855247498,
+                    0.6960278153419495,
+                    -0.27842116355895996,
+                    0.10456664115190506
                   ]
                 },
                 {
@@ -28669,29 +29223,29 @@
                 {
                   "time": 0.576,
                   "position": [
-                    -0.01519802212715149,
-                    0.4732387363910675,
-                    -0.07201610505580902
+                    -0.012420237064361572,
+                    0.47248315811157227,
+                    -0.07378914952278137
                   ],
                   "rotationQuaternion": [
-                    -0.548101544380188,
-                    0.5131495594978333,
-                    -0.5464893579483032,
-                    0.3709605038166046
+                    -0.6535233855247498,
+                    0.6960278153419495,
+                    -0.27842116355895996,
+                    0.10456664115190506
                   ]
                 },
                 {
                   "time": 4.32,
                   "position": [
-                    -0.01519802212715149,
-                    0.4732387363910675,
-                    -0.07201610505580902
+                    -0.012420237064361572,
+                    0.47248315811157227,
+                    -0.07378914952278137
                   ],
                   "rotationQuaternion": [
-                    -0.548101544380188,
-                    0.5131495594978333,
-                    -0.5464893579483032,
-                    0.3709605038166046
+                    -0.6535233855247498,
+                    0.6960278153419495,
+                    -0.27842116355895996,
+                    0.10456664115190506
                   ]
                 },
                 {
@@ -28773,29 +29327,29 @@
                 {
                   "time": 0.36,
                   "position": [
-                    -0.01519802212715149,
-                    0.4732387363910675,
-                    -0.07201610505580902
+                    -0.012420237064361572,
+                    0.47248315811157227,
+                    -0.07378914952278137
                   ],
                   "rotationQuaternion": [
-                    -0.548101544380188,
-                    0.5131495594978333,
-                    -0.5464893579483032,
-                    0.3709605038166046
+                    -0.6535233855247498,
+                    0.6960278153419495,
+                    -0.27842116355895996,
+                    0.10456664115190506
                   ]
                 },
                 {
                   "time": 1.24,
                   "position": [
-                    -0.01519802212715149,
-                    0.4732387363910675,
-                    -0.07201610505580902
+                    -0.012420237064361572,
+                    0.47248315811157227,
+                    -0.07378914952278137
                   ],
                   "rotationQuaternion": [
-                    -0.548101544380188,
-                    0.5131495594978333,
-                    -0.5464893579483032,
-                    0.3709605038166046
+                    -0.6535233855247498,
+                    0.6960278153419495,
+                    -0.27842116355895996,
+                    0.10456664115190506
                   ]
                 },
                 {
@@ -28890,29 +29444,29 @@
                 {
                   "time": 0.576,
                   "position": [
-                    -0.01519802212715149,
-                    0.4732387363910675,
-                    -0.07201610505580902
+                    -0.012420237064361572,
+                    0.47248315811157227,
+                    -0.07378914952278137
                   ],
                   "rotationQuaternion": [
-                    -0.548101544380188,
-                    0.5131495594978333,
-                    -0.5464893579483032,
-                    0.3709605038166046
+                    -0.6535233855247498,
+                    0.6960278153419495,
+                    -0.27842116355895996,
+                    0.10456664115190506
                   ]
                 },
                 {
                   "time": 4.32,
                   "position": [
-                    -0.01519802212715149,
-                    0.4732387363910675,
-                    -0.07201610505580902
+                    -0.012420237064361572,
+                    0.47248315811157227,
+                    -0.07378914952278137
                   ],
                   "rotationQuaternion": [
-                    -0.548101544380188,
-                    0.5131495594978333,
-                    -0.5464893579483032,
-                    0.3709605038166046
+                    -0.6535233855247498,
+                    0.6960278153419495,
+                    -0.27842116355895996,
+                    0.10456664115190506
                   ]
                 },
                 {
@@ -28994,29 +29548,29 @@
                 {
                   "time": 0.36,
                   "position": [
-                    -0.01519802212715149,
-                    0.4732387363910675,
-                    -0.07201610505580902
+                    -0.012420237064361572,
+                    0.47248315811157227,
+                    -0.07378914952278137
                   ],
                   "rotationQuaternion": [
-                    -0.548101544380188,
-                    0.5131495594978333,
-                    -0.5464893579483032,
-                    0.3709605038166046
+                    -0.6535233855247498,
+                    0.6960278153419495,
+                    -0.27842116355895996,
+                    0.10456664115190506
                   ]
                 },
                 {
                   "time": 1.24,
                   "position": [
-                    -0.01519802212715149,
-                    0.4732387363910675,
-                    -0.07201610505580902
+                    -0.012420237064361572,
+                    0.47248315811157227,
+                    -0.07378914952278137
                   ],
                   "rotationQuaternion": [
-                    -0.548101544380188,
-                    0.5131495594978333,
-                    -0.5464893579483032,
-                    0.3709605038166046
+                    -0.6535233855247498,
+                    0.6960278153419495,
+                    -0.27842116355895996,
+                    0.10456664115190506
                   ]
                 },
                 {
@@ -29607,29 +30161,29 @@
                 {
                   "time": 0.576,
                   "position": [
-                    -0.025739654898643494,
-                    0.3909130096435547,
-                    -0.053445711731910706
+                    -0.022961854934692383,
+                    0.39015746116638184,
+                    -0.05521874874830246
                   ],
                   "rotationQuaternion": [
-                    -0.548101544380188,
-                    0.5131495594978333,
-                    -0.5464893579483032,
-                    0.3709605038166046
+                    -0.6535233855247498,
+                    0.6960278153419495,
+                    -0.27842116355895996,
+                    0.10456664115190506
                   ]
                 },
                 {
                   "time": 4.32,
                   "position": [
-                    -0.025739654898643494,
-                    0.3909130096435547,
-                    -0.053445711731910706
+                    -0.022961854934692383,
+                    0.39015746116638184,
+                    -0.05521874874830246
                   ],
                   "rotationQuaternion": [
-                    -0.548101544380188,
-                    0.5131495594978333,
-                    -0.5464893579483032,
-                    0.3709605038166046
+                    -0.6535233855247498,
+                    0.6960278153419495,
+                    -0.27842116355895996,
+                    0.10456664115190506
                   ]
                 },
                 {
@@ -29711,29 +30265,29 @@
                 {
                   "time": 0.36,
                   "position": [
-                    -0.025739654898643494,
-                    0.3909130096435547,
-                    -0.053445711731910706
+                    -0.022961854934692383,
+                    0.39015746116638184,
+                    -0.05521874874830246
                   ],
                   "rotationQuaternion": [
-                    -0.548101544380188,
-                    0.5131495594978333,
-                    -0.5464893579483032,
-                    0.3709605038166046
+                    -0.6535233855247498,
+                    0.6960278153419495,
+                    -0.27842116355895996,
+                    0.10456664115190506
                   ]
                 },
                 {
                   "time": 1.24,
                   "position": [
-                    -0.025739654898643494,
-                    0.3909130096435547,
-                    -0.053445711731910706
+                    -0.022961854934692383,
+                    0.39015746116638184,
+                    -0.05521874874830246
                   ],
                   "rotationQuaternion": [
-                    -0.548101544380188,
-                    0.5131495594978333,
-                    -0.5464893579483032,
-                    0.3709605038166046
+                    -0.6535233855247498,
+                    0.6960278153419495,
+                    -0.27842116355895996,
+                    0.10456664115190506
                   ]
                 },
                 {
@@ -29828,29 +30382,29 @@
                 {
                   "time": 0.576,
                   "position": [
-                    -0.025739654898643494,
-                    0.3909130096435547,
-                    -0.053445711731910706
+                    -0.022961854934692383,
+                    0.39015746116638184,
+                    -0.05521874874830246
                   ],
                   "rotationQuaternion": [
-                    -0.548101544380188,
-                    0.5131495594978333,
-                    -0.5464893579483032,
-                    0.3709605038166046
+                    -0.6535233855247498,
+                    0.6960278153419495,
+                    -0.27842116355895996,
+                    0.10456664115190506
                   ]
                 },
                 {
                   "time": 4.32,
                   "position": [
-                    -0.025739654898643494,
-                    0.3909130096435547,
-                    -0.053445711731910706
+                    -0.022961854934692383,
+                    0.39015746116638184,
+                    -0.05521874874830246
                   ],
                   "rotationQuaternion": [
-                    -0.548101544380188,
-                    0.5131495594978333,
-                    -0.5464893579483032,
-                    0.3709605038166046
+                    -0.6535233855247498,
+                    0.6960278153419495,
+                    -0.27842116355895996,
+                    0.10456664115190506
                   ]
                 },
                 {
@@ -29932,29 +30486,29 @@
                 {
                   "time": 0.36,
                   "position": [
-                    -0.025739654898643494,
-                    0.3909130096435547,
-                    -0.053445711731910706
+                    -0.022961854934692383,
+                    0.39015746116638184,
+                    -0.05521874874830246
                   ],
                   "rotationQuaternion": [
-                    -0.548101544380188,
-                    0.5131495594978333,
-                    -0.5464893579483032,
-                    0.3709605038166046
+                    -0.6535233855247498,
+                    0.6960278153419495,
+                    -0.27842116355895996,
+                    0.10456664115190506
                   ]
                 },
                 {
                   "time": 1.24,
                   "position": [
-                    -0.025739654898643494,
-                    0.3909130096435547,
-                    -0.053445711731910706
+                    -0.022961854934692383,
+                    0.39015746116638184,
+                    -0.05521874874830246
                   ],
                   "rotationQuaternion": [
-                    -0.548101544380188,
-                    0.5131495594978333,
-                    -0.5464893579483032,
-                    0.3709605038166046
+                    -0.6535233855247498,
+                    0.6960278153419495,
+                    -0.27842116355895996,
+                    0.10456664115190506
                   ]
                 },
                 {
@@ -30545,29 +31099,29 @@
                 {
                   "time": 0.576,
                   "position": [
-                    -0.01941467821598053,
-                    0.44030842185020447,
-                    -0.06458796560764313
+                    -0.016636893153190613,
+                    0.4395528733730316,
+                    -0.0663609728217125
                   ],
                   "rotationQuaternion": [
-                    -0.548101544380188,
-                    0.5131495594978333,
-                    -0.5464893579483032,
-                    0.3709605038166046
+                    -0.6535233855247498,
+                    0.6960278153419495,
+                    -0.27842116355895996,
+                    0.10456664115190506
                   ]
                 },
                 {
                   "time": 4.32,
                   "position": [
-                    -0.01941467821598053,
-                    0.44030842185020447,
-                    -0.06458796560764313
+                    -0.016636893153190613,
+                    0.4395528733730316,
+                    -0.0663609728217125
                   ],
                   "rotationQuaternion": [
-                    -0.548101544380188,
-                    0.5131495594978333,
-                    -0.5464893579483032,
-                    0.3709605038166046
+                    -0.6535233855247498,
+                    0.6960278153419495,
+                    -0.27842116355895996,
+                    0.10456664115190506
                   ]
                 },
                 {
@@ -30649,29 +31203,29 @@
                 {
                   "time": 0.36,
                   "position": [
-                    -0.01941467821598053,
-                    0.44030842185020447,
-                    -0.06458796560764313
+                    -0.016636893153190613,
+                    0.4395528733730316,
+                    -0.0663609728217125
                   ],
                   "rotationQuaternion": [
-                    -0.548101544380188,
-                    0.5131495594978333,
-                    -0.5464893579483032,
-                    0.3709605038166046
+                    -0.6535233855247498,
+                    0.6960278153419495,
+                    -0.27842116355895996,
+                    0.10456664115190506
                   ]
                 },
                 {
                   "time": 1.24,
                   "position": [
-                    -0.01941467821598053,
-                    0.44030842185020447,
-                    -0.06458796560764313
+                    -0.016636893153190613,
+                    0.4395528733730316,
+                    -0.0663609728217125
                   ],
                   "rotationQuaternion": [
-                    -0.548101544380188,
-                    0.5131495594978333,
-                    -0.5464893579483032,
-                    0.3709605038166046
+                    -0.6535233855247498,
+                    0.6960278153419495,
+                    -0.27842116355895996,
+                    0.10456664115190506
                   ]
                 },
                 {
@@ -30766,29 +31320,29 @@
                 {
                   "time": 0.576,
                   "position": [
-                    -0.01941467821598053,
-                    0.44030842185020447,
-                    -0.06458796560764313
+                    -0.016636893153190613,
+                    0.4395528733730316,
+                    -0.0663609728217125
                   ],
                   "rotationQuaternion": [
-                    -0.548101544380188,
-                    0.5131495594978333,
-                    -0.5464893579483032,
-                    0.3709605038166046
+                    -0.6535233855247498,
+                    0.6960278153419495,
+                    -0.27842116355895996,
+                    0.10456664115190506
                   ]
                 },
                 {
                   "time": 4.32,
                   "position": [
-                    -0.01941467821598053,
-                    0.44030842185020447,
-                    -0.06458796560764313
+                    -0.016636893153190613,
+                    0.4395528733730316,
+                    -0.0663609728217125
                   ],
                   "rotationQuaternion": [
-                    -0.548101544380188,
-                    0.5131495594978333,
-                    -0.5464893579483032,
-                    0.3709605038166046
+                    -0.6535233855247498,
+                    0.6960278153419495,
+                    -0.27842116355895996,
+                    0.10456664115190506
                   ]
                 },
                 {
@@ -30870,29 +31424,29 @@
                 {
                   "time": 0.36,
                   "position": [
-                    -0.01941467821598053,
-                    0.44030842185020447,
-                    -0.06458796560764313
+                    -0.016636893153190613,
+                    0.4395528733730316,
+                    -0.0663609728217125
                   ],
                   "rotationQuaternion": [
-                    -0.548101544380188,
-                    0.5131495594978333,
-                    -0.5464893579483032,
-                    0.3709605038166046
+                    -0.6535233855247498,
+                    0.6960278153419495,
+                    -0.27842116355895996,
+                    0.10456664115190506
                   ]
                 },
                 {
                   "time": 1.24,
                   "position": [
-                    -0.01941467821598053,
-                    0.44030842185020447,
-                    -0.06458796560764313
+                    -0.016636893153190613,
+                    0.4395528733730316,
+                    -0.0663609728217125
                   ],
                   "rotationQuaternion": [
-                    -0.548101544380188,
-                    0.5131495594978333,
-                    -0.5464893579483032,
-                    0.3709605038166046
+                    -0.6535233855247498,
+                    0.6960278153419495,
+                    -0.27842116355895996,
+                    0.10456664115190506
                   ]
                 },
                 {
@@ -31483,29 +32037,29 @@
                 {
                   "time": 0.576,
                   "position": [
-                    -0.03838956356048584,
-                    0.2921222150325775,
-                    -0.031161196529865265
+                    -0.03561178967356682,
+                    0.2913666367530823,
+                    -0.032934222370386124
                   ],
                   "rotationQuaternion": [
-                    -0.548101544380188,
-                    0.5131495594978333,
-                    -0.5464893579483032,
-                    0.3709605038166046
+                    -0.6535233855247498,
+                    0.6960278153419495,
+                    -0.27842116355895996,
+                    0.10456664115190506
                   ]
                 },
                 {
                   "time": 4.32,
                   "position": [
-                    -0.03838956356048584,
-                    0.2921222150325775,
-                    -0.031161196529865265
+                    -0.03561178967356682,
+                    0.2913666367530823,
+                    -0.032934222370386124
                   ],
                   "rotationQuaternion": [
-                    -0.548101544380188,
-                    0.5131495594978333,
-                    -0.5464893579483032,
-                    0.3709605038166046
+                    -0.6535233855247498,
+                    0.6960278153419495,
+                    -0.27842116355895996,
+                    0.10456664115190506
                   ]
                 },
                 {
@@ -31587,29 +32141,29 @@
                 {
                   "time": 0.36,
                   "position": [
-                    -0.03838956356048584,
-                    0.2921222150325775,
-                    -0.031161196529865265
+                    -0.03561178967356682,
+                    0.2913666367530823,
+                    -0.032934222370386124
                   ],
                   "rotationQuaternion": [
-                    -0.548101544380188,
-                    0.5131495594978333,
-                    -0.5464893579483032,
-                    0.3709605038166046
+                    -0.6535233855247498,
+                    0.6960278153419495,
+                    -0.27842116355895996,
+                    0.10456664115190506
                   ]
                 },
                 {
                   "time": 1.24,
                   "position": [
-                    -0.03838956356048584,
-                    0.2921222150325775,
-                    -0.031161196529865265
+                    -0.03561178967356682,
+                    0.2913666367530823,
+                    -0.032934222370386124
                   ],
                   "rotationQuaternion": [
-                    -0.548101544380188,
-                    0.5131495594978333,
-                    -0.5464893579483032,
-                    0.3709605038166046
+                    -0.6535233855247498,
+                    0.6960278153419495,
+                    -0.27842116355895996,
+                    0.10456664115190506
                   ]
                 },
                 {
@@ -31704,29 +32258,29 @@
                 {
                   "time": 0.576,
                   "position": [
-                    -0.03838956356048584,
-                    0.2921222150325775,
-                    -0.031161196529865265
+                    -0.03561178967356682,
+                    0.2913666367530823,
+                    -0.032934222370386124
                   ],
                   "rotationQuaternion": [
-                    -0.548101544380188,
-                    0.5131495594978333,
-                    -0.5464893579483032,
-                    0.3709605038166046
+                    -0.6535233855247498,
+                    0.6960278153419495,
+                    -0.27842116355895996,
+                    0.10456664115190506
                   ]
                 },
                 {
                   "time": 4.32,
                   "position": [
-                    -0.03838956356048584,
-                    0.2921222150325775,
-                    -0.031161196529865265
+                    -0.03561178967356682,
+                    0.2913666367530823,
+                    -0.032934222370386124
                   ],
                   "rotationQuaternion": [
-                    -0.548101544380188,
-                    0.5131495594978333,
-                    -0.5464893579483032,
-                    0.3709605038166046
+                    -0.6535233855247498,
+                    0.6960278153419495,
+                    -0.27842116355895996,
+                    0.10456664115190506
                   ]
                 },
                 {
@@ -31808,29 +32362,29 @@
                 {
                   "time": 0.36,
                   "position": [
-                    -0.03838956356048584,
-                    0.2921222150325775,
-                    -0.031161196529865265
+                    -0.03561178967356682,
+                    0.2913666367530823,
+                    -0.032934222370386124
                   ],
                   "rotationQuaternion": [
-                    -0.548101544380188,
-                    0.5131495594978333,
-                    -0.5464893579483032,
-                    0.3709605038166046
+                    -0.6535233855247498,
+                    0.6960278153419495,
+                    -0.27842116355895996,
+                    0.10456664115190506
                   ]
                 },
                 {
                   "time": 1.24,
                   "position": [
-                    -0.03838956356048584,
-                    0.2921222150325775,
-                    -0.031161196529865265
+                    -0.03561178967356682,
+                    0.2913666367530823,
+                    -0.032934222370386124
                   ],
                   "rotationQuaternion": [
-                    -0.548101544380188,
-                    0.5131495594978333,
-                    -0.5464893579483032,
-                    0.3709605038166046
+                    -0.6535233855247498,
+                    0.6960278153419495,
+                    -0.27842116355895996,
+                    0.10456664115190506
                   ]
                 },
                 {
@@ -33485,7 +34039,7 @@
         "strafeLeftStanding": 1.0544,
         "strafeRightCrouched": 0.9318,
         "strafeLeftCrouched": 0.9402,
-        "crawl": 0.262093,
+        "crawl": 0.143432,
         "climbUp": 0.3498,
         "climbDown": 0.4242,
         "recover": 0.3301,
