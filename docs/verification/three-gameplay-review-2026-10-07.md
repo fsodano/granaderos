@@ -639,3 +639,7 @@ The authored chapel roof, walls, door, floor returns and existing bell gable now
 ## Exposed chapel front piers
 
 The chapel now has its source-sized front shafts, separate warm stone feet and capitals. All four rotations retain actual corner supports, the standing door and real upper routes. The source passes 56 affected checks, type/docs/baseline checks and the clean build (`4a2d7c8a2e8a`). Thirty ordinary and closer original/slab/accessible-roof browser views pass without errors and were compared with the current sprite. See [the front-pier review](../art/chapel-front-piers-3d-review-2026-10-07.md).
+
+## Parish tower warm stone base
+
+The parish tower now has the source warm stone base and retained 67.82 cm height on its actual supported foundation. The upper body joins its top without overlapping planes. All 55 affected checks, type/docs/baseline checks and the clean build (`0031975cb7ef`) pass. Thirty ordinary and closer original/slab/accessible-roof views pass without browser errors and were compared with the current sprite. See [the tower-base review](../art/church-tower-stone-base-3d-review-2026-10-07.md).
