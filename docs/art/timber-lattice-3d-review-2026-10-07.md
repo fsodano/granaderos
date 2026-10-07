@@ -1,0 +1,9 @@
+# Timber lattice window review — 7 October 2026
+
+The current direct sprite draws `lattice` windows with four diagonal timber strips from each upper jamb (`web/app/TacticalArchitectureMaterials.tsx`). The prior 3D window block instead used the same vertical iron bars as barred windows. The window helper now follows the diagonal timber pattern and the source colour `#b29970` on both wall faces. The strips stop inside the retained opening, and the lower pane stays clear.
+
+The shell still selects the authored window style and controls window height and room disclosure. Barred, small, arched and shutter windows keep their former geometry. Existing open/broken flags keep their former rendering rule; a breached wall tile removes the window through the normal shell path. This change adds no movement cells or collision rules.
+
+The final focused run passed 31 checks across window, sector-world, building-support, surface and door tests. TypeScript checking and whitespace checking passed. The new checks measure both window axes, both faces, all four template rotations, explicit style overrides, breach removal and normal partial/full cutaways. Input state remains unchanged.
+
+The final clean committed capture contains 12 pulpería and caballeriza views at `artifacts/three-pr196-cut-review/`, with no browser errors. The pulpería 0° exterior and caballeriza 270° interior were inspected against the direct current sprites after the final endpoint inset. The timber pattern reads on both faces, and ordinary cut walls have no floating strips. The clean cut passed the 31 affected checks in 10.13 seconds, type and documentation checks, all 38 baseline checks and the production export (1,244 files; 1,039 asset references). This accepts this window correction; complete architectural polish remains under review.
