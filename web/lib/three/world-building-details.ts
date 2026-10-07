@@ -1,4 +1,4 @@
-import {Group,MeshStandardMaterial,Quaternion,Vector3} from 'three';
+import {ExtrudeGeometry,Group,Matrix4,MeshStandardMaterial,Quaternion,Shape,Vector3} from 'three';
 import {entranceFrame,getBuildingProfile} from '../../../game/building-profile.js';
 import {buildingAppearance} from '../../../game/building-appearance.js';
 import {buildingStyle} from '../../../game/building-types.js';
@@ -42,6 +42,10 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
   const at=(u:number,v:number,y:number)=>{const point=frame.at(u,v);return new Vector3((point.x+wallInset)*T,base+y,(point.y+wallInset)*T);};
   const box=(u:number,v:number,y:number,w:number,h:number,d:number,material=wall)=>batch.primitive('box',material,at(u,v,y),[w*T,h,d*T],rotation,light);
   const wallAt=(u:number,v:number)=>{const point=frame.at(u,v);return walls.find(tile=>tile.x===point.x&&tile.y===point.y);};
+  const walkableAbove=(u:number,v:number,w:number)=>{
+    const point=at(u,v,0),reach=(w+1)*T*.5;
+    return (input.terrain.upperSurfaces??[]).some(surface=>!surface.blocked&&(surface.tacticalLevel??0)>0&&Math.abs(surface.x*T-point.x)<reach-1e-6&&Math.abs(surface.y*T-point.z)<reach-1e-6);
+  };
   const entranceSupports=()=>[Math.round(frame.doorU-1),Math.round(frame.doorU+1)].filter(u=>u>=0&&u<=frame.width&&wallAt(u,0)?.type==='wall');
   const palaceSupports=kind==='palace'?entranceSupports():[],hasBalcony=palaceSupports.length===2;
   const feature=(name:string,draw:()=>void)=>{
@@ -57,7 +61,11 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
     batch.cylinder(iron,at(u,v+facing*.050/T,y),at(u,v+facing*.050/T,y+radius*.65),.018,light);
     batch.cylinder(iron,at(u,v+facing*.050/T,y),at(u+radius*.49/T,v+facing*.050/T,y-radius*.22),.018,light);
   };
-  const tower=(u:number,v:number,w:number,top:number,bottom=0,civic=false)=>feature(civic?'civic-clock-tower':'bell-tower',()=>{
+  const tower=(u:number,v:number,w:number,top:number,bottom=0,civic=false)=>{
+    // The broad base cornice belongs to the occupied tower footprint too.
+    // Decoration cannot fill an authored upper walking cell.
+    if(walkableAbove(u,v,w+.15))return;
+    feature(civic?'civic-clock-tower':'bell-tower',()=>{
     // The civic cupola rests on the facade. It never fills the entrance below.
     box(u,v,(top+bottom)*.5,w,top-bottom,w);
     for(const y of [Math.max(height,bottom),top-.12])box(u,v,y,w+.15,.12,w+.15,trim);
@@ -66,18 +74,31 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
     else for(let n=0;n<4;n++){const panel=[corners[n],corners[(n+1)%4],apex];batch.polygon(roof,panel,light,roofTextureProjector(panel));}
     box(u,v,top+.06,w*1.16,.08,w*1.16,darkwood);
     box(u,v,top+.91,.044,.45,.044,iron);box(u,v,top+.99,.24,.044,.044,iron);
+    if(!civic){
+      const openingHeight=Math.min(1.30,Math.max(.85,w*T*.70)),bottom=top-.17-openingHeight,spring=top-.17-.24,rx=Math.min(.50,w*T*.22),cy=(bottom+top-.17)*.5;
+      for(const [nu,nv,du,dv]of [[0,-1,1,0],[0,1,1,0],[-1,0,0,1],[1,0,0,1]]){
+        const point=(a:number,y:number,outset=.01)=>at(u+nu*(w*.51+outset/T)+du*a/T,v+nv*(w*.51+outset/T)+dv*a/T,y);
+        const arch=Array.from({length:17},(_,n)=>point(Math.cos(n*Math.PI/16)*rx,spring+Math.sin(n*Math.PI/16)*.24));
+        batch.polygon(darkwood,[point(-rx,bottom),point(rx,bottom),...arch],light);
+        for(const sign of [-1,1])batch.cylinder(trim,point(sign*(rx+.025),bottom-.025,.025),point(sign*(rx+.025),spring,.025),.032,light);
+        for(let n=1;n<arch.length;n++)batch.cylinder(trim,arch[n-1],arch[n],.037,light);
+        batch.cylinder(wood,point(-rx*.91,spring-.025,.028),point(rx*.91,spring-.025,.028),.032,light);
+        const bellRotation=du?rotation:rotation.clone().multiply(new Quaternion().setFromAxisAngle(new Vector3(0,1,0),Math.PI*.5)),radius=Math.min(.18,rx*.60);
+        batch.primitive('flare',materials.get('brass'),point(0,cy-.05,.028),[radius,.28,.11],bellRotation,light);
+        batch.cylinder(iron,point(0,cy-.18,.030),point(0,cy-.25,.030),.023,light);
+      }
+      box(u,v,bottom-.09,w+.12,.12,w+.12,trim);
+      return;
+    }
     for(const face of [-1,1]){
       const cy=top-.53,cv=v+face*w*.51;
       box(u,cv,cy,w*.46,.68,.028/T,darkwood);
       for(const side of [-1,1])box(u+side*w*.25,cv,cy,.040/T,.76,.04/T,trim);
       box(u,cv,cy+.38,w*.54,.055,.04/T,trim);
-      if(civic)clock(u,cv+face*.044/T,cy,Math.min(.34,w*T*.30),face);
-      else{
-        batch.primitive('flare',materials.get('brass'),at(u,cv+face*.022/T,cy-.06),[.13,.22,.09],rotation,light);
-        box(u,cv,cy+.20,w*.42,.045,.045/T,wood);
-      }
+      clock(u,cv+face*.044/T,cy,Math.min(.34,w*T*.30),face);
     }
-  });
+    });
+  };
   const gallery=(depth=.65)=>feature('gallery',()=>{
     const roofY=height*.81;
     for(let u=.35;u<frame.width;u+=1.20){
@@ -127,15 +148,40 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
     box(u,front,spring+.77,.035/T,.44,.035/T,iron);box(u,front,spring+.83,.23/T,.035,.035/T,iron);
   });
   else if(kind==='church'){
-    const reserved=(end:boolean)=>[0,1].every(u=>[0,1].every(v=>wallAt(end?frame.width-u:u,v)?.type==='wall'));
-    const end=[true,false].find(reserved)??[true,false].find(end=>wallAt(end?frame.width:0,0)?.type==='wall');
+    const hasSlab=(input.terrain.upperSurfaces??[]).some(surface=>surface.kind==='roof'&&surface.buildingId===b.id),roofRise=b.roof==='terrace'||hasSlab?0:Math.min(getBuildingProfile(b).roofRise/25.066666666666666,Math.max(.4,frame.width*.28));
+    const reserved=(end:boolean)=>[0,1].every(u=>[0,1].every(v=>wallAt(end?frame.width-u:u,v)?.type==='wall'))&&!walkableAbove((end?frame.width-.5:.5)-alongInset,.5-depthInset,1.95);
+    const end=[true,false].find(reserved)??[true,false].find(end=>wallAt(end?frame.width:0,0)?.type==='wall'&&!walkableAbove((end?frame.width:0)-alongInset,-depthInset,.95));
     if(end!==undefined){
       const wide=reserved(end),u=end?frame.width-(wide?.5:0):wide?.5:0,v=wide?.5:0;
       // The tower foundation follows the solid authored cells rather than
       // the wall-art inset. A narrow corner never occupies the nave floor.
-      tower(u-alongInset,v-depthInset,wide?1.8:.8,height+2.25);
+      tower(u-alongInset,v-depthInset,wide?1.8:.8,height+roofRise+(wide?1.80:1.25));
     }
-    const center=frame.width*.5;batch.polygon(wall,[at(center-1,0,height),at(center+1,0,height),at(center,0,height+.72)],light);
+    const span=Math.min(Math.max(.8,frame.width-1.8),5.2),center=Math.max(span*.5+.15,Math.min(frame.width-span*.5-.15,doorU)),rise=roofRise,crest=rise+.42;
+    feature('church-shaped-facade',()=>{
+      const width=span*T,x=(value:number)=>value/40*width,y=(value:number)=>value/50*crest,shape=new Shape();
+      // The retained town-parish catalogue uses a curved masonry silhouette.
+      // Extrusion keeps that concave outline closed and joined to the gable.
+      shape.moveTo(0,0);shape.lineTo(0,y(5));shape.bezierCurveTo(x(5),y(6),x(7),y(10),x(9),y(23));shape.bezierCurveTo(x(11),y(34),x(14),y(29),x(15),y(40));shape.bezierCurveTo(x(17),y(53),x(23),y(53),x(25),y(40));shape.bezierCurveTo(x(26),y(29),x(29),y(34),x(31),y(23));shape.bezierCurveTo(x(33),y(10),x(35),y(6),x(40),y(5));shape.lineTo(width,0);shape.closePath();
+      const front=-.22/T,baseY=height-.035,mesh=new ExtrudeGeometry(shape,{depth:.27,bevelEnabled:false,curveSegments:12});
+      batch.add(mesh,wall,new Matrix4().compose(at(center-span*.5,front,baseY),rotation,new Vector3(1,1,1)),light);mesh.dispose();
+      const outline=shape.getPoints(14);for(let n=1;n<outline.length;n++)batch.cylinder(trim,at(center-span*.5+outline[n-1].x/T,front-.035/T,baseY+outline[n-1].y),at(center-span*.5+outline[n].x/T,front-.035/T,baseY+outline[n].y),.038,light);
+      box(center,-.13/T,height+.015,span+.17/T,.13,.35/T,trim);
+      box(center,-.16/T,height+crest+.18,.040/T,.50,.040/T,iron);box(center,-.16/T,height+crest+.27,.28/T,.040,.040/T,iron);
+    });
+    feature('church-oculus',()=>{
+      const y=height+rise*.43,radius=Math.min(.28,span*T*.10),v=-.276/T;
+      faceDisc(center,v,y,radius-.010,darkwood);
+      const q=new Quaternion().setFromUnitVectors(new Vector3(0,0,1),new Vector3(frame.v.x,0,frame.v.y));
+      batch.primitive('torus',trim,at(center,v-.018/T,y),[radius,radius,radius],q,light);
+      for(const a of [-.48,0,.48]){const x=a*radius,half=Math.sqrt(radius*radius-x*x)*.92;batch.cylinder(iron,at(center+x/T,v-.036/T,y-half),at(center+x/T,v-.036/T,y+half),.014,light);}
+      batch.cylinder(iron,at(center-radius*.88/T,v-.036/T,y),at(center+radius*.88/T,v-.036/T,y),.015,light);
+    });
+    feature('church-facade-pilasters',()=>{
+      for(const u of [0,frame.width])if(wallAt(u,0)?.type==='wall'){
+        box(u,-.13/T,height*.5,.23/T,height,.31/T,trim);box(u,-.13/T,.11,.34/T,.22,.35/T,materials.get('stone'));box(u,-.13/T,height-.035,.35/T,.15,.36/T,trim);
+      }
+    });
     for(let v=1;v<frame.depth;v+=1.6)for(const u of [0,frame.width])if(wallAt(u,Math.round(v))?.type==='wall')box(u,v,.80,.20,1.6,.32,trim);
   }else if(['cabildo','townhall'].includes(kind)){
     const twoStoreys=height>=4,storey=twoStoreys?height*.50:height,columns:number[]=[];
