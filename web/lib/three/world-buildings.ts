@@ -7,6 +7,7 @@ import {roomDecorProfile} from '../../../game/room-dressing.js';
 import {WorldBatch,cellTop,roofTextureProjector} from './world-geometry';
 import {illuminationAt} from './world-materials';
 import {architecturalDetails,roofEdgeDetails} from './world-building-details';
+import {addWallSurfaceDetails} from './world-building-surfaces';
 import type {WorldGeometry} from './world-geometry';
 import type {WorldMaterials} from './world-materials';
 import type {WorldBuilding,WorldInput,WorldTile} from './world-types';
@@ -77,7 +78,7 @@ export function buildBuilding(b0:WorldBuilding,input:WorldInput,T:number,geometr
   // Existing metric slabs and cover metadata win over artwork pixel heights.
   const fullHeight=roofs.length?Math.min(...roofs.map(surface=>(surface.elevation??3)-base)):Math.max(2.5,(legacy?buildingStyle(b).height:profile.wallHeight)/V);
   const floorHeight=roofs.length?fullHeight:Math.min(fullHeight,Math.max(2.5,profile.groundFloorHeight/V));
-  const height=profile.floors>1&&someOpen?floorHeight:fullHeight,batch=new WorldBatch(geometry),group=new Group();group.name=`building:${b.id}`;group.userData.semanticId=`building:${b.id}`;
+  const height=profile.floors>1&&someOpen?floorHeight:fullHeight,batch=new WorldBatch(geometry),surfaces=new WorldBatch(geometry),group=new Group();group.name=`building:${b.id}`;group.userData.semanticId=`building:${b.id}`;
   const wallMat=materials.get(appearance.wallFinish,legacy?{colour:buildingStyle(b).wall}:{}),trim=materials.get('trim',legacy?{colour:buildingStyle(b).trim}:{}),wood=materials.get('wood'),iron=materials.get('iron');
   const doorHeight=BUILDING_OPENINGS.doorHeight/V,doorWidth=T*.60,thickness=.18,cutaway=BUILDING_OPENINGS.cutawayHeight/V;
   const openingRecords:{id:string;type:string;open:boolean;axis:Axis;height:number;width:number}[]=[];
@@ -97,7 +98,8 @@ export function buildBuilding(b0:WorldBuilding,input:WorldInput,T:number,geometr
         if(!cut)box(mid,top+(h-top)*.5,ow,h-top,thickness);if(sill>0&&!cut)box(mid,sill*.5,ow,sill,thickness);
         box(mid-ow*.5-.03,(top+sill)*.5,.065,top-sill+.10,thickness+.06,trim);box(mid+ow*.5+.03,(top+sill)*.5,.065,top-sill+.10,thickness+.06,trim);box(mid,top+.03,ow+.14,.09,thickness+.06,trim);
       }
-      if(tile.type!=='door'||!opening){box(mid,.065,len,.13,thickness+.045,materials.get('stone'));box(mid,h-.045,len,.09,thickness+.04,trim);}
+      addWallSurfaceDetails(surfaces,materials,{axis,first,last,cross,base:tileBase,height:h,thickness,opening:opening?tile.type as 'door'|'window':undefined,openingWidth:ow,finish:appearance.wallFinish,colour:wallMat.color,x:tile.x,y:tile.y,face:index,cut,light});
+      if(tile.type!=='door'||!opening)box(mid,h-.045,len,.09,thickness+.04,trim);
       if(opening){
         const id=tile.doorId??`${tile.type}:${tile.x},${tile.y}`,openingHeight=cut?Math.min(h,.28):top-sill;
         if(!cut&&(tile.style??(tile.type==='door'?appearance.doorStyle:appearance.windowStyle))==='arched')openingArch(batch,wallMat,trim,axis,mid,cross,tileBase,top,ow,thickness,light);
@@ -152,7 +154,7 @@ export function buildBuilding(b0:WorldBuilding,input:WorldInput,T:number,geometr
     if(whole)group.add(roofEdgeDetails(b.id,panels,height,geometry,roofMat,materials.get(terrace?'stone':'darkwood'),illuminationAt(input,b),terrace));
   }
   if(!someOpen)group.add(architecturalDetails(b,input,T,height,base,geometry,materials,legacy));
-  group.add(batch.finish(`building-fabric:${b.id}`));group.userData.kind='building';group.userData.openings=openingRecords;group.userData.cutawayRooms=groundRooms.filter(room=>known.has(room.id)).map(room=>room.id);group.userData.height=height;return group;
+  group.add(surfaces.finish(`building-surfaces:${b.id}`),batch.finish(`building-fabric:${b.id}`));group.userData.kind='building';group.userData.openings=openingRecords;group.userData.cutawayRooms=groundRooms.filter(room=>known.has(room.id)).map(room=>room.id);group.userData.height=height;return group;
 }
 
 export function buildIndependentWalls(input:WorldInput,T:number,geometry:WorldGeometry,materials:WorldMaterials){
