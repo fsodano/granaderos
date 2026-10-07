@@ -1,7 +1,7 @@
 import {register} from 'node:module';register('./tactical-render-loader.mjs',import.meta.url);
 import test from 'node:test';import assert from 'node:assert/strict';import {readFileSync} from 'node:fs';
-import {AnimationClip,AnimationMixer,InterpolateDiscrete,InterpolateLinear,Group,Object3D,QuaternionKeyframeTrack,Vector3,VectorKeyframeTrack} from '../web/node_modules/three/build/three.module.js';
-const {mirroredClip,fitMirroredSockets}=await import('../web/lib/three/clip-mirroring.ts');
+import {AnimationClip,AnimationMixer,Euler,InterpolateDiscrete,InterpolateLinear,Group,Matrix4,Object3D,Quaternion,QuaternionKeyframeTrack,Vector3,VectorKeyframeTrack} from '../web/node_modules/three/build/three.module.js';
+const {mirroredClip,fitMirroredSockets,withMirroredProps}=await import('../web/lib/three/clip-mirroring.ts');
 const root=new URL('../web/public/',import.meta.url);
 const manifest=JSON.parse(readFileSync(new URL('models/characters/manifest.json',root),'utf8'));
 function glb(url){
@@ -46,6 +46,15 @@ test('mirror bindings and channels are explicit and missing mappings cannot sile
  const root=new Group(),bone=new Object3D();bone.name='right';root.add(bone);
  const clip=new AnimationClip('source',1,[new QuaternionKeyframeTrack('right.quaternion',[0,1],[0,0,0,1,0,0,0,1])]);
  assert.throws(()=>mirroredClip(clip,root,{axis:'x',bones:{right:'missing'}}),/Missing symmetric animation bone/);
+});
+
+for(const appearance of ['granadero','woman-scout'])test(`${appearance} mirrored loading props fit the opposite native socket with a proper rod frame`,()=>{
+ const rest=rig(glb(manifest.appearances[appearance].lods[0].url).json),spec={name:'loading',loop:false,propCues:[{item:'ramrod',socket:'socket_handLeft_tool',start:2.208,end:4.128,scale:1/3}]},before=structuredClone(spec),derived=withMirroredProps(spec,rest),cue=derived.propCues[0];
+ assert.equal(withMirroredProps(spec,rest),derived);assert.equal(cue.socket,'socket_handRight_tool');assert.equal(cue.scale,1/3);assert.deepEqual(spec,before);
+ const source=rest.getObjectByName(spec.propCues[0].socket),target=rest.getObjectByName(cue.socket),matrix=target.matrixWorld.clone().multiply(new Matrix4().compose(new Vector3().fromArray(cue.position),new Quaternion().setFromEuler(new Euler(...cue.rotation)),new Vector3(1,1,1)));
+ const expected=source.getWorldPosition(new Vector3());expected.x*=-1;assert.ok(new Vector3().setFromMatrixPosition(matrix).distanceTo(expected)<.000001);
+ const rod=new Vector3(0,1,0).transformDirection(source.matrixWorld);rod.x*=-1;assert.ok(rod.dot(new Vector3(0,1,0).transformDirection(matrix))>.999999,'The mirrored rod follows the reflected barrel direction');assert.ok(matrix.determinant()>0,'The prop retains positive dimensions');
+ assert.throws(()=>withMirroredProps({...spec,propCues:[{...spec.propCues[0],socket:'missing'}]},rest),/Missing mirrored prop socket/);
 });
 
 test('exported mounted fall metadata releases saddle support by each actual ground marker',()=>{

@@ -1,4 +1,4 @@
-import {AlwaysStencilFunc,ReplaceStencilOp,Color, DoubleSide, MeshStandardMaterial, RepeatWrapping, SRGBColorSpace, Texture, TextureLoader} from 'three';
+import {AlwaysStencilFunc,ReplaceStencilOp,Color, DoubleSide, MeshStandardMaterial, RepeatWrapping, SRGBColorSpace, ShaderChunk, Texture, TextureLoader} from 'three';
 import type {WorldInput,WorldOptions,WorldPoint} from './world-types';
 
 const colours:Record<string,string>={wood:'#76503a',darkwood:'#443227',iron:'#41494b',brass:'#b19650',stone:'#918a76',adobe:'#b49676',limewash:'#d3cbb3',ochre:'#c7ac72',brick:'#a37057',trim:'#e0d2ad',clay:'#9e624d',aged:'#786a59',thatch:'#a18c58',leather:'#4b3b2f',linen:'#c4b99a',water:'#547b78',grass:'#6e754d',leaf:'#45553a',poplar:'#596745',trunk:'#66503c',rubble:'#978772',wax:'#ddcfb1',flame:'#ffbd61',ember:'#aa5233',smoke:'#b8b8ad',rug:'#845547',ceramic:'#ae7951',glass:'#94b8b1',food:'#91805c'};
@@ -12,6 +12,7 @@ const roofSurfaces:Record<string,{repeat:readonly [number,number];relief:number}
 const colourTextures=new Set(['/art/architecture-wood-v2.png','/art/architecture-brick-v2.png','/art/architecture-stone-v2.png',...Object.keys(roofSurfaces)]);
 const textureRelief:Record<string,number>={'/art/architecture-wood-v2.png':.006,'/art/buildings/plaster-v1.webp':.012};
 const masonryKinds=new Set(['adobe','limewash','ochre','brick','stone']);
+const plasterStrength:Record<string,number>={adobe:.35,limewash:.20,ochre:.30};
 export class WorldMaterials {
   private materials=new Map<string,MeshStandardMaterial>();
   private textures=new Map<string,Texture>();
@@ -24,9 +25,17 @@ export class WorldMaterials {
     const retained=this.materials.get(key);if(retained)return retained;
     const opacity=options.opacity??1,metal=['iron','brass'].includes(kind),path=options.texture??texturePaths[kind],roofSurface=roofSurfaces[path];
     const material=new MeshStandardMaterial({name:`world:${kind}`,color:options.colour??(colourTextures.has(path)?'#ffffff':colours[kind]??'#91836b'),roughness:metal ? .48 : .94,metalness:metal ? .68 : 0,vertexColors:true,transparent:opacity<1,opacity,depthWrite:opacity>=1,side:DoubleSide});
-    // The retained sprite texture already contains a muted plaster pigment.
-    // Compensate that base so the finish tint does not darken it twice.
-    if(path==='/art/buildings/plaster-v1.webp')material.color.multiplyScalar(1.65);
+    if(path==='/art/buildings/plaster-v1.webp'){
+      // The sprite plaster contains baked pigment and dark weathering. Keep
+      // that relief, but let the authored finish supply the wall's base colour.
+      // Full multiplication made limewash look like saturated brown stone.
+      const strength=plasterStrength[kind]??.30;
+      material.onBeforeCompile=shader=>{
+        const fragment=ShaderChunk.map_fragment.replace('diffuseColor *= sampledDiffuseColor;',`sampledDiffuseColor.rgb = mix( vec3( 1.0 ), sampledDiffuseColor.rgb, ${strength.toFixed(2)} );\n\tdiffuseColor *= sampledDiffuseColor;`);
+        shader.fragmentShader=shader.fragmentShader.replace('#include <map_fragment>',fragment);
+      };
+      material.customProgramCacheKey=()=>`plaster-finish:${strength}`;
+    }
     material.userData.metricBoxUV=masonryKinds.has(kind);
     if(opacity>=1){material.stencilWrite=true;material.stencilRef=1;material.stencilFunc=AlwaysStencilFunc;material.stencilZPass=ReplaceStencilOp;}
     if(kind==='water'){material.roughness=.35;material.metalness=.12;}

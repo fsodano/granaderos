@@ -5,13 +5,20 @@ import {resolveActorAction} from '../../../game/actor-action-contract.js';
 import {actorItems,actorPosture} from './presentation';
 import {TILE_METRES,actorYaw} from './projection';
 
-type Point={x:number;y:number;kind?:string};
+type Point={x:number;y:number;kind?:string;renderedHeight?:number};
+// A supported ladder ascent raises the feet about 65 cm each second.
+export const CLIMB_VERTICAL_METRES_PER_SECOND=.65;
 /** Presentation travel uses the same measured metre/second speed as the gait.
  * AP, simulation time, positions and the paid route remain authoritative. */
 export function movementStepDuration(unit:any,from:Point,to:Point,requested?:number,preserveFacing=false){
   const fallback=requested??(unit.mounted?150:unit.stance==='prone'||unit.movementMode==='prone'?420:unit.movementMode==='crouch'?320:unit.movementMode==='run'?150:240);
-  if(to.kind==='climb')return fallback*(preserveFacing?1.25:1);
   const appearance=spriteAppearance(unit),bank=profile.appearances[appearance as keyof typeof profile.appearances];
+  if(to.kind==='climb'){
+    const height=(to.renderedHeight??0)-(from.renderedHeight??0),action=height<0?'life.climbDown':'life.climbUp';
+    const native=profile.banks[bank as keyof typeof profile.banks]?.actions[action];
+    if(!native)throw Error(`Missing climb profile: ${appearance}:${action}`);
+    return Math.max(fallback,native.duration*1000,Math.abs(height)/CLIMB_VERTICAL_METRES_PER_SECOND*1000);
+  }
   const posture=actorPosture(unit),equipment=spriteEquipment(unit);
   let action=!unit.mounted&&posture==='prone'?'crawl':unit.movementMode==='run'?'run':'walk';
   if(preserveFacing&&!unit.mounted&&['walk','run'].includes(action)){

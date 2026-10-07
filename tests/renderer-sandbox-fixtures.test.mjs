@@ -99,6 +99,18 @@ test('the loaded cannon has a complete adjacent crew and finite ammunition',()=>
   assert.equal(reloaded.artillery[0].loaded,true);assert.equal(reloaded.artillery[0].ammo,gun.ammo-1);
 });
 
+test('four-bore review loads both owned pistols with finite cartridges through ordinary exploration orders',()=>{
+  const battle=createRendererSandboxBattle('four-bore-loading');
+  assert.equal(battle.mode,'exploration');assert.equal(battle.units.length,2);
+  for(const id of ['paired-loader','offhand-loader']){
+    const unit=actor(battle,id),next=order(battle,{type:'reload',unitId:id}),loaded=actor(next,id);
+    assert.equal(unit.weapon,1808);assert.equal(unit.offHand.weapon,1808);
+    assert.equal(loaded.loaded,2);assert.equal(loaded.offHand.loaded,2);
+    assert.equal(loaded.ammo,id==='paired-loader'?4:6);
+    assert.equal(loaded.condition,81);assert.equal(loaded.offHand.condition,57);
+  }
+});
+
 test('mounted movement, dismount, real roof ascent/descent and the open door use legal game orders',()=>{
   let battle=createRendererSandboxBattle('mounted');
   battle=order(battle,{type:'move',unitId:'rider',x:6,y:7});

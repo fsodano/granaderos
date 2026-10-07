@@ -24,7 +24,8 @@ function admittedGunWork(before:any,after:any,hand:'primary'|'offhand'):Animatio
   // A dropped, replaced or pocketed gun does not establish observed loading
   // for that owned item. The two pistols retain their separate work intervals.
   if(!first||!last||first.id!==last.id||identity(before)!==identity(after))return [];
-  return loadingWork(hand==='primary'?before:before.offHand,hand==='primary'?after:after.offHand).map(work=>({...work,hand}));
+  const initial=hand==='primary'?before:before.offHand,final=hand==='primary'?after:after.offHand;
+  return loadingWork(initial,final).map((work,index)=>({...work,hand,...(first.id==='1808'?{barrel:(Number(initial.loaded??0)+index)%2}:{})}));
 }
 
 /** Work is derived only when preparation and result admit the same actor.

@@ -13,7 +13,7 @@ def write_glb(path,doc,binary):
     raw=struct.pack('<III',0x46546c67,2,28+len(encoded)+len(binary))+struct.pack('<II',len(encoded),0x4e4f534a)+encoded+struct.pack('<II',len(binary),0x004e4942)+binary
     Path(path).write_bytes(raw);return raw
 
-def merge(target,increment):
+def merge(target,increment,bones=None,existing_only=False):
     doc,binary=read_glb(target);added,data=read_glb(increment)
     names={node['name']:i for i,node in enumerate(doc['nodes']) if 'name'in node}
     views={};accessors={}
@@ -32,7 +32,27 @@ def merge(target,increment):
             if isinstance(source,dict)and'bufferView'in source:source['bufferView']=view(source['bufferView'])
         accessors[index]=len(doc.setdefault('accessors',[]));doc['accessors'].append(result);return accessors[index]
     replacements={}
+    existing={animation['name']:animation for animation in doc.get('animations',[])}
     for source in added['animations']:
+        if existing_only and source['name']not in existing:continue
+        if bones:
+            animation=copy.deepcopy(existing[source['name']]);updates={}
+            for channel in source['channels']:
+                name=added['nodes'][channel['target']['node']]['name']
+                if name not in bones or channel['target']['path']!='rotation':continue
+                sampler=copy.deepcopy(source['samplers'][channel['sampler']])
+                sampler['input']=accessor(sampler['input']);sampler['output']=accessor(sampler['output'])
+                updates[(name,'rotation')]=len(animation['samplers']);animation['samplers'].append(sampler)
+            assert set(name for name,path in updates)==set(bones),source['name']+' lacks native leg rotations'
+            for channel in animation['channels']:
+                key=(doc['nodes'][channel['target']['node']]['name'],channel['target']['path'])
+                if key in updates:channel['sampler']=updates.pop(key)
+            assert not updates,source['name']+' changes native animation targets'
+            used=sorted({channel['sampler']for channel in animation['channels']});indices={old:new for new,old in enumerate(used)}
+            animation['samplers']=[animation['samplers'][index]for index in used]
+            for channel in animation['channels']:channel['sampler']=indices[channel['sampler']]
+            replacements[animation['name']]=animation
+            continue
         animation=copy.deepcopy(source)
         for sampler in animation['samplers']:
             sampler['input']=accessor(sampler['input']);sampler['output']=accessor(sampler['output'])

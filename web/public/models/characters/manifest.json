@@ -1826,8 +1826,8 @@
   "animationLibraries": {
     "male": {
       "url": "/models/characters/male-animations.glb",
-      "bytes": 10907832,
-      "sha256": "74d5db259b29b33354eed27a26ee77048872caedb93dac469d95002d78da7281",
+      "bytes": 11521284,
+      "sha256": "29a7e08f2b053b0f2de30375d48eef7b75f2c19a60a23d7abcc8815b21afca24",
       "clips": [
         {
           "name": "stand.idle.unarmed",
@@ -2603,7 +2603,30 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2750000059604645,
+              0.054999999701976776,
+              0
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.25,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3333333333333333
+            }
+          ]
         },
         {
           "name": "stand.reprime.short-gun",
@@ -3487,7 +3510,30 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2750000059604645,
+              0.054999999701976776,
+              0
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.25,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3333333333333333
+            }
+          ]
         },
         {
           "name": "crouch.reprime.short-gun",
@@ -4147,7 +4193,30 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2750000059604645,
+              0.054999999701976776,
+              0
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.25,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3333333333333333
+            }
+          ]
         },
         {
           "name": "prone.reprime.short-gun",
@@ -4287,7 +4356,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.walk.unarmed",
@@ -4315,7 +4401,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.run.unarmed",
@@ -4343,7 +4446,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.punch.unarmed",
@@ -4371,7 +4491,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.idle.long-gun",
@@ -4393,7 +4530,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.walk.long-gun",
@@ -4421,7 +4575,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.run.long-gun",
@@ -4449,7 +4620,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.aim.long-gun",
@@ -4471,7 +4659,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.fire.long-gun",
@@ -4497,7 +4702,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.reload.long-gun",
@@ -4585,7 +4807,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.reprime.long-gun",
@@ -4613,7 +4852,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.repair.long-gun",
@@ -4641,7 +4897,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.unload.long-gun",
@@ -4721,7 +4994,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.butt.long-gun",
@@ -4749,7 +5039,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.bayonet.long-gun",
@@ -4777,7 +5084,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.brace.long-gun",
@@ -4799,7 +5123,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.idle.short-gun",
@@ -4821,7 +5162,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.walk.short-gun",
@@ -4849,7 +5207,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.run.short-gun",
@@ -4877,7 +5252,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.aim.short-gun",
@@ -4899,7 +5291,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.fire.short-gun",
@@ -4925,7 +5334,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.reload.short-gun",
@@ -4948,11 +5374,51 @@
           "sampleRate": 15,
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2750000059604645,
+              0.054999999701976776,
+              0
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.25,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3333333333333333
+            }
+          ],
           "seatAnchor": [
             0,
             0.9451594948768616,
             0.006795833352953196
           ],
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          },
           "seatAnchorSpace": "gltf-model-local"
         },
         {
@@ -4981,7 +5447,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.repair.short-gun",
@@ -5009,7 +5492,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.unload.short-gun",
@@ -5037,7 +5537,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.butt.short-gun",
@@ -5065,7 +5582,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.idle.blade",
@@ -5087,7 +5621,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.walk.blade",
@@ -5115,7 +5666,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.run.blade",
@@ -5143,7 +5711,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.slash.blade",
@@ -5171,7 +5756,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.brace.blade",
@@ -5193,7 +5795,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "stand.gesture.heal",
@@ -6044,7 +6663,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.gesture.pickup",
@@ -6067,7 +6703,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.gesture.equip",
@@ -6090,7 +6743,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.gesture.offer",
@@ -6113,7 +6783,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.gesture.grab",
@@ -6136,7 +6823,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.gesture.door",
@@ -6159,7 +6863,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.gesture.tool",
@@ -6182,7 +6903,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.gesture.breach",
@@ -6209,7 +6947,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.gesture.free",
@@ -6232,7 +6987,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.gesture.ration",
@@ -6255,7 +7027,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.gesture.signal",
@@ -6278,7 +7067,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.gesture.fitting",
@@ -6301,7 +7107,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.gesture.throw",
@@ -6341,7 +7164,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.gesture.bolas",
@@ -6381,7 +7221,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "stand.gesture.throwKnife",
@@ -6747,7 +7604,24 @@
                 0
               ]
             }
-          ]
+          ],
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "life.dismount",
@@ -6913,7 +7787,24 @@
                 0
               ]
             }
-          ]
+          ],
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "life.stand.die",
@@ -7424,7 +8315,24 @@
               "weight": 0
             }
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "life.mounted.collapse",
@@ -7470,7 +8378,24 @@
               "weight": 0
             }
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "life.mounted.dead",
@@ -7493,7 +8418,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "life.mounted.unconscious",
@@ -7516,7 +8458,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "life.mounted.recover",
@@ -7548,7 +8507,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "life.mounted.hit",
@@ -7571,7 +8547,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "life.mounted.knockdown",
@@ -7617,7 +8610,24 @@
               "weight": 0
             }
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "crew.artilleryFire",
@@ -8378,7 +9388,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.idle.knife",
@@ -8400,7 +9427,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.walk.lance",
@@ -8428,7 +9472,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.walk.knife",
@@ -8456,7 +9517,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.run.lance",
@@ -8484,7 +9562,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.run.knife",
@@ -8512,7 +9607,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.thrust.lance",
@@ -8540,7 +9652,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.slash.knife",
@@ -8568,7 +9697,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.brace.lance",
@@ -8590,7 +9736,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.brace.knife",
@@ -8612,7 +9775,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "stand.slash.blade.forehand",
@@ -9337,7 +10517,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.unload.long-gun.1800",
@@ -9418,7 +10615,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "stand.reload.long-gun.1801",
@@ -9981,7 +11195,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.unload.long-gun.1801",
@@ -10062,7 +11293,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "stand.reload.long-gun.1802",
@@ -10625,7 +11873,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.unload.long-gun.1802",
@@ -10706,7 +11971,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "stand.reload.long-gun.1803",
@@ -11269,7 +12551,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.unload.long-gun.1803",
@@ -11350,7 +12649,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "stand.reload.long-gun.1804",
@@ -11913,7 +13229,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.unload.long-gun.1804",
@@ -11994,7 +13327,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "stand.reload.long-gun.1807",
@@ -12557,7 +13907,24 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.unload.long-gun.1807",
@@ -12638,6 +14005,875 @@
             0.9451594948768616,
             0.006795833352953196
           ],
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
+        },
+        {
+          "name": "stand.reload.short-gun.1805",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "standing",
+          "equipment": "short-gun",
+          "item": "1805",
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2750000059604645,
+              0.054999999701976776,
+              0
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.25,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3333333333333333
+            }
+          ]
+        },
+        {
+          "name": "crouch.reload.short-gun.1805",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "crouched",
+          "equipment": "short-gun",
+          "item": "1805",
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2750000059604645,
+              0.054999999701976776,
+              0
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.25,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3333333333333333
+            }
+          ]
+        },
+        {
+          "name": "prone.reload.short-gun.1805",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "prone",
+          "equipment": "short-gun",
+          "item": "1805",
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2750000059604645,
+              0.054999999701976776,
+              0
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.25,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3333333333333333
+            }
+          ]
+        },
+        {
+          "name": "mounted.reload.short-gun.1805",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "mounted",
+          "equipment": "short-gun",
+          "item": "1805",
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2750000059604645,
+              0.054999999701976776,
+              0
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.25,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3333333333333333
+            }
+          ],
+          "seatAnchor": [
+            0,
+            0.9451594948768616,
+            0.006795833352953196
+          ],
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          },
+          "seatAnchorSpace": "gltf-model-local"
+        },
+        {
+          "name": "stand.reload.short-gun.1806",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "standing",
+          "equipment": "short-gun",
+          "item": "1806",
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.31075000762939453,
+              0.054999999701976776,
+              0
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.2825,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.37666666666666665
+            }
+          ]
+        },
+        {
+          "name": "crouch.reload.short-gun.1806",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "crouched",
+          "equipment": "short-gun",
+          "item": "1806",
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.31075000762939453,
+              0.054999999701976776,
+              0
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.2825,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.37666666666666665
+            }
+          ]
+        },
+        {
+          "name": "prone.reload.short-gun.1806",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "prone",
+          "equipment": "short-gun",
+          "item": "1806",
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.31075000762939453,
+              0.054999999701976776,
+              0
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.2825,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.37666666666666665
+            }
+          ]
+        },
+        {
+          "name": "mounted.reload.short-gun.1806",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "mounted",
+          "equipment": "short-gun",
+          "item": "1806",
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.31075000762939453,
+              0.054999999701976776,
+              0
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.2825,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.37666666666666665
+            }
+          ],
+          "seatAnchor": [
+            0,
+            0.9451594948768616,
+            0.006795833352953196
+          ],
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          },
+          "seatAnchorSpace": "gltf-model-local"
+        },
+        {
+          "name": "stand.reload.short-gun.1808",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "standing",
+          "equipment": "short-gun",
+          "item": "1808",
+          "barrel": 0,
+          "barrelClips": [
+            "stand.reload.short-gun.1808",
+            "stand.reload.short-gun.1808.barrel1"
+          ],
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2475000023841858,
+              0.054999999701976776,
+              0.010999999940395355
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.225,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3
+            }
+          ]
+        },
+        {
+          "name": "stand.reload.short-gun.1808.barrel1",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "standing",
+          "equipment": "short-gun",
+          "item": "1808",
+          "barrel": 1,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2475000023841858,
+              0.054999999701976776,
+              -0.010999999940395355
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.225,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3
+            }
+          ]
+        },
+        {
+          "name": "crouch.reload.short-gun.1808",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "crouched",
+          "equipment": "short-gun",
+          "item": "1808",
+          "barrel": 0,
+          "barrelClips": [
+            "crouch.reload.short-gun.1808",
+            "crouch.reload.short-gun.1808.barrel1"
+          ],
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2475000023841858,
+              0.054999999701976776,
+              0.010999999940395355
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.225,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3
+            }
+          ]
+        },
+        {
+          "name": "crouch.reload.short-gun.1808.barrel1",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "crouched",
+          "equipment": "short-gun",
+          "item": "1808",
+          "barrel": 1,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2475000023841858,
+              0.054999999701976776,
+              -0.010999999940395355
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.225,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3
+            }
+          ]
+        },
+        {
+          "name": "prone.reload.short-gun.1808",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "prone",
+          "equipment": "short-gun",
+          "item": "1808",
+          "barrel": 0,
+          "barrelClips": [
+            "prone.reload.short-gun.1808",
+            "prone.reload.short-gun.1808.barrel1"
+          ],
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2475000023841858,
+              0.054999999701976776,
+              0.010999999940395355
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.225,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3
+            }
+          ]
+        },
+        {
+          "name": "prone.reload.short-gun.1808.barrel1",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "prone",
+          "equipment": "short-gun",
+          "item": "1808",
+          "barrel": 1,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2475000023841858,
+              0.054999999701976776,
+              -0.010999999940395355
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.225,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3
+            }
+          ]
+        },
+        {
+          "name": "mounted.reload.short-gun.1808",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "mounted",
+          "equipment": "short-gun",
+          "item": "1808",
+          "barrel": 0,
+          "barrelClips": [
+            "mounted.reload.short-gun.1808",
+            "mounted.reload.short-gun.1808.barrel1"
+          ],
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2475000023841858,
+              0.054999999701976776,
+              0.010999999940395355
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.225,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3
+            }
+          ],
+          "seatAnchor": [
+            0,
+            0.9451594948768616,
+            0.006795833352953196
+          ],
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          },
+          "seatAnchorSpace": "gltf-model-local"
+        },
+        {
+          "name": "mounted.reload.short-gun.1808.barrel1",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "mounted",
+          "equipment": "short-gun",
+          "item": "1808",
+          "barrel": 1,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2475000023841858,
+              0.054999999701976776,
+              -0.010999999940395355
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.225,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3
+            }
+          ],
+          "seatAnchor": [
+            0,
+            0.9451594948768616,
+            0.006795833352953196
+          ],
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          },
           "seatAnchorSpace": "gltf-model-local"
         }
       ],
@@ -12665,8 +14901,8 @@
     },
     "female": {
       "url": "/models/characters/female-animations.glb",
-      "bytes": 10733168,
-      "sha256": "deef6403bf978250a066e487dfe510274b293f9f689f60db9bac168d64a20225",
+      "bytes": 11349456,
+      "sha256": "1bc7c12f0c57c40d2e2054b5ef83f0c1152318edbb697e7f52438f34d5934d02",
       "clips": [
         {
           "name": "stand.idle.unarmed",
@@ -13442,7 +15678,30 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2750000059604645,
+              0.054999999701976776,
+              0
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.25,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3333333333333333
+            }
+          ]
         },
         {
           "name": "stand.reprime.short-gun",
@@ -14326,7 +16585,30 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2750000059604645,
+              0.054999999701976776,
+              0
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.25,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3333333333333333
+            }
+          ]
         },
         {
           "name": "crouch.reprime.short-gun",
@@ -14986,7 +17268,30 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2750000059604645,
+              0.054999999701976776,
+              0
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.25,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3333333333333333
+            }
+          ]
         },
         {
           "name": "prone.reprime.short-gun",
@@ -15126,7 +17431,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.walk.unarmed",
@@ -15154,7 +17476,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.run.unarmed",
@@ -15182,7 +17521,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.punch.unarmed",
@@ -15210,7 +17566,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.idle.long-gun",
@@ -15232,7 +17605,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.walk.long-gun",
@@ -15260,7 +17650,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.run.long-gun",
@@ -15288,7 +17695,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.aim.long-gun",
@@ -15310,7 +17734,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.fire.long-gun",
@@ -15336,7 +17777,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.reload.long-gun",
@@ -15424,7 +17882,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.reprime.long-gun",
@@ -15452,7 +17927,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.repair.long-gun",
@@ -15480,7 +17972,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.unload.long-gun",
@@ -15560,7 +18069,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.butt.long-gun",
@@ -15588,7 +18114,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.bayonet.long-gun",
@@ -15616,7 +18159,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.brace.long-gun",
@@ -15638,7 +18198,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.idle.short-gun",
@@ -15660,7 +18237,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.walk.short-gun",
@@ -15688,7 +18282,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.run.short-gun",
@@ -15716,7 +18327,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.aim.short-gun",
@@ -15738,7 +18366,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.fire.short-gun",
@@ -15764,7 +18409,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.reload.short-gun",
@@ -15787,11 +18449,51 @@
           "sampleRate": 15,
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2750000059604645,
+              0.054999999701976776,
+              0
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.25,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3333333333333333
+            }
+          ],
           "seatAnchor": [
             0,
             0.9131789803504944,
             0.025762733072042465
           ],
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          },
           "seatAnchorSpace": "gltf-model-local"
         },
         {
@@ -15820,7 +18522,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.repair.short-gun",
@@ -15848,7 +18567,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.unload.short-gun",
@@ -15876,7 +18612,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.butt.short-gun",
@@ -15904,7 +18657,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.idle.blade",
@@ -15926,7 +18696,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.walk.blade",
@@ -15954,7 +18741,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.run.blade",
@@ -15982,7 +18786,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.slash.blade",
@@ -16010,7 +18831,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.brace.blade",
@@ -16032,7 +18870,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "stand.gesture.heal",
@@ -16883,7 +19738,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.gesture.pickup",
@@ -16906,7 +19778,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.gesture.equip",
@@ -16929,7 +19818,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.gesture.offer",
@@ -16952,7 +19858,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.gesture.grab",
@@ -16975,7 +19898,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.gesture.door",
@@ -16998,7 +19938,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.gesture.tool",
@@ -17021,7 +19978,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.gesture.breach",
@@ -17048,7 +20022,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.gesture.free",
@@ -17071,7 +20062,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.gesture.ration",
@@ -17094,7 +20102,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.gesture.signal",
@@ -17117,7 +20142,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.gesture.fitting",
@@ -17140,7 +20182,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.gesture.throw",
@@ -17180,7 +20239,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.gesture.bolas",
@@ -17220,7 +20296,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "stand.gesture.throwKnife",
@@ -17586,7 +20679,24 @@
                 0
               ]
             }
-          ]
+          ],
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "life.dismount",
@@ -17752,7 +20862,24 @@
                 0
               ]
             }
-          ]
+          ],
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "life.stand.die",
@@ -18263,7 +21390,24 @@
               "weight": 0
             }
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "life.mounted.collapse",
@@ -18309,7 +21453,24 @@
               "weight": 0
             }
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "life.mounted.dead",
@@ -18332,7 +21493,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "life.mounted.unconscious",
@@ -18355,7 +21533,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "life.mounted.recover",
@@ -18387,7 +21582,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "life.mounted.hit",
@@ -18410,7 +21622,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "life.mounted.knockdown",
@@ -18456,7 +21685,24 @@
               "weight": 0
             }
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "crew.artilleryFire",
@@ -19217,7 +22463,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.idle.knife",
@@ -19239,7 +22502,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.walk.lance",
@@ -19267,7 +22547,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.walk.knife",
@@ -19295,7 +22592,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.run.lance",
@@ -19323,7 +22637,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.run.knife",
@@ -19351,7 +22682,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.thrust.lance",
@@ -19379,7 +22727,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.slash.knife",
@@ -19407,7 +22772,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.brace.lance",
@@ -19429,7 +22811,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.brace.knife",
@@ -19451,7 +22850,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "stand.slash.blade.forehand",
@@ -20176,7 +23592,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.unload.long-gun.1800",
@@ -20257,7 +23690,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "stand.reload.long-gun.1801",
@@ -20820,7 +24270,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.unload.long-gun.1801",
@@ -20901,7 +24368,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "stand.reload.long-gun.1802",
@@ -21464,7 +24948,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.unload.long-gun.1802",
@@ -21545,7 +25046,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "stand.reload.long-gun.1803",
@@ -22108,7 +25626,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.unload.long-gun.1803",
@@ -22189,7 +25724,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "stand.reload.long-gun.1804",
@@ -22752,7 +26304,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.unload.long-gun.1804",
@@ -22833,7 +26402,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "stand.reload.long-gun.1807",
@@ -23396,7 +26982,24 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
         },
         {
           "name": "mounted.unload.long-gun.1807",
@@ -23477,6 +27080,875 @@
             0.9131789803504944,
             0.025762733072042465
           ],
+          "seatAnchorSpace": "gltf-model-local",
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          }
+        },
+        {
+          "name": "stand.reload.short-gun.1805",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "standing",
+          "equipment": "short-gun",
+          "item": "1805",
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2750000059604645,
+              0.054999999701976776,
+              0
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.25,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3333333333333333
+            }
+          ]
+        },
+        {
+          "name": "crouch.reload.short-gun.1805",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "crouched",
+          "equipment": "short-gun",
+          "item": "1805",
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2750000059604645,
+              0.054999999701976776,
+              0
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.25,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3333333333333333
+            }
+          ]
+        },
+        {
+          "name": "prone.reload.short-gun.1805",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "prone",
+          "equipment": "short-gun",
+          "item": "1805",
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2750000059604645,
+              0.054999999701976776,
+              0
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.25,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3333333333333333
+            }
+          ]
+        },
+        {
+          "name": "mounted.reload.short-gun.1805",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "mounted",
+          "equipment": "short-gun",
+          "item": "1805",
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2750000059604645,
+              0.054999999701976776,
+              0
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.25,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3333333333333333
+            }
+          ],
+          "seatAnchor": [
+            0,
+            0.9131789803504944,
+            0.025762733072042465
+          ],
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          },
+          "seatAnchorSpace": "gltf-model-local"
+        },
+        {
+          "name": "stand.reload.short-gun.1806",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "standing",
+          "equipment": "short-gun",
+          "item": "1806",
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.31075000762939453,
+              0.054999999701976776,
+              0
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.2825,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.37666666666666665
+            }
+          ]
+        },
+        {
+          "name": "crouch.reload.short-gun.1806",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "crouched",
+          "equipment": "short-gun",
+          "item": "1806",
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.31075000762939453,
+              0.054999999701976776,
+              0
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.2825,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.37666666666666665
+            }
+          ]
+        },
+        {
+          "name": "prone.reload.short-gun.1806",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "prone",
+          "equipment": "short-gun",
+          "item": "1806",
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.31075000762939453,
+              0.054999999701976776,
+              0
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.2825,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.37666666666666665
+            }
+          ]
+        },
+        {
+          "name": "mounted.reload.short-gun.1806",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "mounted",
+          "equipment": "short-gun",
+          "item": "1806",
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.31075000762939453,
+              0.054999999701976776,
+              0
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.2825,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.37666666666666665
+            }
+          ],
+          "seatAnchor": [
+            0,
+            0.9131789803504944,
+            0.025762733072042465
+          ],
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          },
+          "seatAnchorSpace": "gltf-model-local"
+        },
+        {
+          "name": "stand.reload.short-gun.1808",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "standing",
+          "equipment": "short-gun",
+          "item": "1808",
+          "barrel": 0,
+          "barrelClips": [
+            "stand.reload.short-gun.1808",
+            "stand.reload.short-gun.1808.barrel1"
+          ],
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2475000023841858,
+              0.054999999701976776,
+              0.010999999940395355
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.225,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3
+            }
+          ]
+        },
+        {
+          "name": "stand.reload.short-gun.1808.barrel1",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "standing",
+          "equipment": "short-gun",
+          "item": "1808",
+          "barrel": 1,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2475000023841858,
+              0.054999999701976776,
+              -0.010999999940395355
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.225,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3
+            }
+          ]
+        },
+        {
+          "name": "crouch.reload.short-gun.1808",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "crouched",
+          "equipment": "short-gun",
+          "item": "1808",
+          "barrel": 0,
+          "barrelClips": [
+            "crouch.reload.short-gun.1808",
+            "crouch.reload.short-gun.1808.barrel1"
+          ],
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2475000023841858,
+              0.054999999701976776,
+              0.010999999940395355
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.225,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3
+            }
+          ]
+        },
+        {
+          "name": "crouch.reload.short-gun.1808.barrel1",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "crouched",
+          "equipment": "short-gun",
+          "item": "1808",
+          "barrel": 1,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2475000023841858,
+              0.054999999701976776,
+              -0.010999999940395355
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.225,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3
+            }
+          ]
+        },
+        {
+          "name": "prone.reload.short-gun.1808",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "prone",
+          "equipment": "short-gun",
+          "item": "1808",
+          "barrel": 0,
+          "barrelClips": [
+            "prone.reload.short-gun.1808",
+            "prone.reload.short-gun.1808.barrel1"
+          ],
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2475000023841858,
+              0.054999999701976776,
+              0.010999999940395355
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.225,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3
+            }
+          ]
+        },
+        {
+          "name": "prone.reload.short-gun.1808.barrel1",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "prone",
+          "equipment": "short-gun",
+          "item": "1808",
+          "barrel": 1,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2475000023841858,
+              0.054999999701976776,
+              -0.010999999940395355
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.225,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3
+            }
+          ]
+        },
+        {
+          "name": "mounted.reload.short-gun.1808",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "mounted",
+          "equipment": "short-gun",
+          "item": "1808",
+          "barrel": 0,
+          "barrelClips": [
+            "mounted.reload.short-gun.1808",
+            "mounted.reload.short-gun.1808.barrel1"
+          ],
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2475000023841858,
+              0.054999999701976776,
+              0.010999999940395355
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.225,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3
+            }
+          ],
+          "seatAnchor": [
+            0,
+            0.9131789803504944,
+            0.025762733072042465
+          ],
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          },
+          "seatAnchorSpace": "gltf-model-local"
+        },
+        {
+          "name": "mounted.reload.short-gun.1808.barrel1",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "mounted",
+          "equipment": "short-gun",
+          "item": "1808",
+          "barrel": 1,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2475000023841858,
+              0.054999999701976776,
+              -0.010999999940395355
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.225,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3
+            }
+          ],
+          "seatAnchor": [
+            0,
+            0.9131789803504944,
+            0.025762733072042465
+          ],
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          },
           "seatAnchorSpace": "gltf-model-local"
         }
       ],
@@ -23674,7 +28146,13 @@
         ],
         "scale": 1,
         "stowedSocket": "hipRight",
-        "muzzle": "muzzle_1805"
+        "muzzle": "muzzle_1805",
+        "clipOverrides": {
+          "stand.reload.short-gun": "stand.reload.short-gun.1805",
+          "crouch.reload.short-gun": "crouch.reload.short-gun.1805",
+          "prone.reload.short-gun": "prone.reload.short-gun.1805",
+          "mounted.reload.short-gun": "mounted.reload.short-gun.1805"
+        }
       },
       "1806": {
         "node": "item_1806",
@@ -23694,7 +28172,13 @@
         ],
         "scale": 1,
         "stowedSocket": "hipRight",
-        "muzzle": "muzzle_1806"
+        "muzzle": "muzzle_1806",
+        "clipOverrides": {
+          "stand.reload.short-gun": "stand.reload.short-gun.1806",
+          "crouch.reload.short-gun": "crouch.reload.short-gun.1806",
+          "prone.reload.short-gun": "prone.reload.short-gun.1806",
+          "mounted.reload.short-gun": "mounted.reload.short-gun.1806"
+        }
       },
       "1807": {
         "node": "item_1807",
@@ -23744,7 +28228,13 @@
         ],
         "scale": 1,
         "stowedSocket": "hipRight",
-        "muzzle": "muzzle_1808"
+        "muzzle": "muzzle_1808",
+        "clipOverrides": {
+          "stand.reload.short-gun": "stand.reload.short-gun.1808",
+          "crouch.reload.short-gun": "crouch.reload.short-gun.1808",
+          "prone.reload.short-gun": "prone.reload.short-gun.1808",
+          "mounted.reload.short-gun": "mounted.reload.short-gun.1808"
+        }
       },
       "1809": {
         "node": "item_1809",

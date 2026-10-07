@@ -42,10 +42,10 @@ test('upper facade panes keep the same width and wall contact through all four r
   }
 });
 
-test('civic clock cupolas rest above the ground doorway in every orientation',()=>{
+test('distinct civic clock crowns rest above the ground doorway in every orientation',()=>{
   for(const kind of ['cabildo','townhall'])for(const side of ['north','east','south','west']){
-    const f=fixture(kind,side),height=kind==='townhall'?4.7:2.5,details=architecturalDetails(f.b,f.input,T,height,0,f.geometry,f.materials,false),tower=details.getObjectByName('building-detail:review:civic-clock-tower'),bounds=new Box3().setFromObject(tower);
-    assert.ok(bounds.min.y>=height-.19,'the cupola must not extrude to the street');
+    const f=fixture(kind,side),height=kind==='townhall'?4.7:2.5,details=architecturalDetails(f.b,f.input,T,height,0,f.geometry,f.materials,false),tower=details.getObjectByName(`building-detail:review:${kind==='townhall'?'townhall-clock-pediment':'civic-clock-tower'}`),bounds=new Box3().setFromObject(tower);
+    assert.ok(bounds.min.y>=height-.19,'the clock crown must not extrude to the street');
     assert.ok(tower.children.some(child=>child.material?.name==='world:linen'),'clock faces must be present');
     const p=f.frame.at(f.frame.doorU,-1),ray=new Raycaster(new Vector3((p.x+.4)*T,1,(p.y+.4)*T),new Vector3(f.frame.v.x,0,f.frame.v.y),0,T*1.6);
     details.updateMatrixWorld(true);assert.equal(ray.intersectObject(details,true).length,0,'exterior details must leave the doorway clear');
@@ -282,7 +282,7 @@ test('parish towers and front crests follow authored slab and terrace roofs with
 
 test('parish and civic towers preserve legal upper routes while retaining blocked and ground surfaces',()=>{
   for(const kind of ['church','cabildo','townhall'])for(const side of ['north','east','south','west'])for(const mode of ['blocked','ground','walkable']){
-    const f=fixture(kind,side),name=kind==='church'?'bell-tower':'civic-clock-tower';
+    const f=fixture(kind,side),name=kind==='church'?'bell-tower':kind==='townhall'?'townhall-clock-pediment':'civic-clock-tower';
     // Every perimeter cell covers both possible parish foundations and the
     // civic base. Upper cells are ordinary authoritative scene surfaces.
     f.input.terrain.upperSurfaces=f.input.terrain.tiles.filter(tile=>tile.type!=='floor').map(tile=>({...tile,type:'floor',kind:'roof',tacticalLevel:mode==='ground'?0:1,elevation:3,blocked:mode==='blocked'}));
@@ -337,12 +337,12 @@ test('palace balcony and military details leave no floating features during room
 
 test('tall civic facades have separate arcade levels, iron rails, side windows and a roof-supported clock',()=>{
   for(const kind of ['cabildo','townhall'])for(const side of ['north','east','south','west']){
-    const f=fixture(kind,side),height=5.1,details=architecturalDetails(f.b,f.input,T,height,0,f.geometry,f.materials,false),ground=details.getObjectByName('building-detail:review:civic-ground-arcade'),upper=details.getObjectByName('building-detail:review:civic-upper-arcade'),cornices=details.getObjectByName('building-detail:review:civic-cornices'),windows=details.getObjectByName('building-detail:review:civic-side-windows'),tower=details.getObjectByName('building-detail:review:civic-clock-tower');
+    const f=fixture(kind,side),height=5.1,details=architecturalDetails(f.b,f.input,T,height,0,f.geometry,f.materials,false),ground=details.getObjectByName('building-detail:review:civic-ground-arcade'),upper=details.getObjectByName('building-detail:review:civic-upper-arcade'),cornices=details.getObjectByName('building-detail:review:civic-cornices'),windows=details.getObjectByName('building-detail:review:civic-side-windows'),tower=details.getObjectByName(`building-detail:review:${kind==='townhall'?'townhall-clock-pediment':'civic-clock-tower'}`);
     const lowerBounds=new Box3().setFromObject(ground),upperBounds=new Box3().setFromObject(upper);
     assert.ok(lowerBounds.max.y<height*.51&&upperBounds.min.y>height*.51,'arcade floors must remain visually separate');
     assert.ok(upper.children.some(child=>child.material?.name==='world:darkwood'));assert.ok(upper.children.some(child=>child.material?.name==='world:iron'),'upper arcade needs its period rail');
     assert.ok(new Box3().setFromObject(cornices).max.y>5);assert.ok(windows.children.some(child=>child.material?.name==='world:iron'),'side windows need wrought iron bars');
-    const clockBounds=new Box3().setFromObject(tower);assert.ok(clockBounds.min.y>height-.20);assert.ok(clockBounds.max.y>height+2.9,'clock cupola must rise clearly above the roof');f.dispose(details);
+    const clockBounds=new Box3().setFromObject(tower);assert.ok(clockBounds.min.y>height-.20);assert.ok(clockBounds.max.y>height+(kind==='townhall'?1.8:2.9),'the distinct clock crown must rise clearly above the roof');f.dispose(details);
   }
 });
 

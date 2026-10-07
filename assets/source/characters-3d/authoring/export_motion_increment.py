@@ -10,7 +10,7 @@ from gltf_pack import pack
 p=argparse.ArgumentParser();p.add_argument('--preset',required=True);p.add_argument('--output',required=True);p.add_argument('--gesture',action='append',required=True);p.add_argument('--equipment',required=True);p.add_argument('--posture');a=p.parse_args(sys.argv[sys.argv.index('--')+1:])
 bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=False)
 ctx=create_character(a.preset);create_equipment(ctx)
-names={spec['name'] for spec in _semantic_specs() if spec['gesture']in a.gesture and spec['equipment']==a.equipment and(not a.posture or spec['posture']==a.posture)}
+names={spec['name'] for spec in _semantic_specs() if ('*'in a.gesture or spec['gesture']in a.gesture) and(a.equipment=='all'or spec['equipment']==a.equipment) and(not a.posture or spec['posture']==a.posture)}
 motion=apply_animations(ctx,only=names);rig=ctx['rig'];rig.animation_data.action=None
 for track in rig.animation_data.nla_tracks:track.mute=False
 bpy.ops.object.select_all(action='DESELECT');rig.select_set(True);bpy.context.view_layer.objects.active=rig

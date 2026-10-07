@@ -43,10 +43,14 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
   const box=(u:number,v:number,y:number,w:number,h:number,d:number,material=wall)=>batch.primitive('box',material,at(u,v,y),[w*T,h,d*T],rotation,light);
   const wallAt=(u:number,v:number)=>{const point=frame.at(u,v);return walls.find(tile=>tile.x===point.x&&tile.y===point.y);};
   const bearing=(u:number,v=0,actualAlong=false)=>[u-(actualAlong?alongInset:.06*(frame.u.x+frame.u.y)),v-.06*(frame.v.x+frame.v.y)] as const;
-  const walkableAbove=(u:number,v:number,w:number)=>{
-    const point=at(u,v,0),reach=(w+1)*T*.5;
-    return (input.terrain.upperSurfaces??[]).some(surface=>!surface.blocked&&(surface.tacticalLevel??0)>0&&Math.abs(surface.x*T-point.x)<reach-1e-6&&Math.abs(surface.y*T-point.z)<reach-1e-6);
+  const walkableAbove=(u:number,v:number,w:number,d=w)=>{
+    const point=at(u,v,0),alongReach=(w+1)*T*.5,depthReach=(d+1)*T*.5;
+    return (input.terrain.upperSurfaces??[]).some(surface=>{
+      const x=surface.x*T-point.x,z=surface.y*T-point.z;
+      return !surface.blocked&&(surface.tacticalLevel??0)>0&&Math.abs(x*frame.u.x+z*frame.u.y)<alongReach-1e-6&&Math.abs(x*frame.v.x+z*frame.v.y)<depthReach-1e-6;
+    });
   };
+  const roofRise=b.roof==='terrace'||(input.terrain.upperSurfaces??[]).some(surface=>surface.kind==='roof'&&surface.buildingId===b.id)?0:Math.min(getBuildingProfile(b).roofRise/25.066666666666666,Math.max(.4,frame.width*.28));
   const entranceSupports=()=>[Math.round(frame.doorU-1),Math.round(frame.doorU+1)].filter(u=>u>=0&&u<=frame.width&&wallAt(u,0)?.type==='wall');
   const palaceSupports=kind==='palace'?entranceSupports():[],hasBalcony=palaceSupports.length===2&&height>=4;
   const feature=(name:string,draw:()=>void)=>{
@@ -98,6 +102,31 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
       box(u,cv,cy+.38,w*.54,.055,.04/T,trim);
       clock(u,cv+face*.044/T,cy,Math.min(.34,w*T*.30),face);
     }
+    });
+  };
+  const townhallCrown=()=>{
+    const supports=[...new Set([-2,2].map(offset=>Math.max(0,Math.min(frame.width,Math.round(frame.doorU+offset)))))].filter(u=>wallAt(u,0)?.type==='wall');
+    if(supports.length!==2||height<2.4)return;
+    const lo=Math.min(...supports)-alongInset,hi=Math.max(...supports)-alongInset,width=hi-lo,center=(lo+hi)*.5;
+    // The long, shallow crown and its stone entablature must not occupy an
+    // authored roof route. Their rectangle follows the actual facade rotation.
+    if(walkableAbove(center,-.06,width+.20,.68))return;
+    const V=25.066666666666666,rise=Math.min(48,24+width*5)/V,baseY=height+4/V,front=-.31,back=.22,x=(value:number)=>value/40*width*T,y=(value:number)=>value/46*rise,shape=new Shape();
+    // This closed curved outline follows the retained town-hall sprite crown.
+    // The cabildo keeps its distinct clock cupola.
+    shape.moveTo(0,0);shape.lineTo(0,y(7));shape.lineTo(x(9),y(7));shape.lineTo(x(9),y(14));shape.quadraticCurveTo(x(9),y(21),x(14),y(25));shape.lineTo(x(14),y(32));shape.bezierCurveTo(x(14),y(48),x(26),y(48),x(26),y(32));shape.lineTo(x(26),y(25));shape.quadraticCurveTo(x(31),y(21),x(31),y(14));shape.lineTo(x(31),y(7));shape.lineTo(x(40),y(7));shape.lineTo(x(40),0);shape.closePath();
+    feature('townhall-clock-pediment',()=>{
+      const mesh=new ExtrudeGeometry(shape,{depth:(back-front)*T,bevelEnabled:false,curveSegments:16});
+      batch.add(mesh,wall,new Matrix4().compose(at(lo,front,baseY),rotation,new Vector3(1,1,1)),light);mesh.dispose();
+      const outline=shape.getPoints(16);for(let n=1;n<outline.length;n++)batch.cylinder(trim,at(lo+outline[n-1].x/T,front-.025/T,baseY+outline[n-1].y),at(lo+outline[n].x/T,front-.025/T,baseY+outline[n].y),.045,light);
+      box(center,-.06,height+1.5/V,width+.20,7/V,.68,materials.get('stone'));
+      clock(center,front-.028/T,baseY+y(29),7.5/V);
+    });
+    feature('townhall-finials',()=>{
+      for(const u of [lo+.16,hi-.16]){
+        box(u,-.135,baseY+7.5/V,.20,5/V,.31,materials.get('stone'));
+        batch.primitive('sphere',trim,at(u,-.13,baseY+12/V),[2.3/V,3/V,2.3/V],undefined,light);
+      }
     });
   };
   const frontSupports=()=>Array.from({length:Math.floor(frame.width)+1},(_,u)=>u).filter(u=>wallAt(u,0)?.type==='wall'&&(u===0||u===frame.width||u%2===0||Math.abs(u-frame.doorU)===1));
@@ -157,13 +186,13 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
       return wallAt(u,v)?.type==='wall'&&!(input.terrain.upperSurfaces??[]).some(surface=>surface.x===point.x&&surface.y===point.y&&!surface.blocked&&(surface.tacticalLevel??0)>0);
     }).sort((a,c)=>Math.abs(a.v-frame.depth*.66)-Math.abs(c.v-frame.depth*.66));
     if(supports.length){
-      const {u,v}=supports[0],rise=b.roof==='terrace'?0:Math.min(getBuildingProfile(b).roofRise/25.066666666666666,Math.max(.4,frame.width*.28));
-      chimney(u-alongInset,v-depthInset,{material:industrial?materials.get('brick'):wall,top:height+rise+(industrial?1.08:.64),industrial});
+      const {u,v}=supports[0];
+      chimney(u-alongInset,v-depthInset,{material:industrial?materials.get('brick'):wall,top:height+roofRise+(industrial?1.08:.64),industrial});
     }
   };
 
-  if(kind==='chapel')feature('chapel-bell-gable',()=>{
-    const rise=Math.min(getBuildingProfile(b).roofRise/25.066666666666666,Math.max(.4,frame.width*.28)),bottom=height+rise*.62,spring=bottom+.55,u=doorU,outer=.64,inner=.23,front=-.17/T,back=front+.095/T;
+  if(kind==='chapel'&&!walkableAbove(doorU,-.17/T,1.36/T,.28/T))feature('chapel-bell-gable',()=>{
+    const bottom=height+roofRise*.62,spring=bottom+.55,u=doorU,outer=.64,inner=.23,front=-.17/T,back=front+.095/T;
     // Two jambs and an arched crown leave a real bell opening. The narrow
     // gable joins the existing front masonry without occupying floor cells.
     box(u,front,bottom+.05,outer*2/T,.10,.19/T,trim);
@@ -184,7 +213,6 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
     box(u,front,spring+.77,.035/T,.44,.035/T,iron);box(u,front,spring+.83,.23/T,.035,.035/T,iron);
   });
   else if(kind==='church'){
-    const hasSlab=(input.terrain.upperSurfaces??[]).some(surface=>surface.kind==='roof'&&surface.buildingId===b.id),roofRise=b.roof==='terrace'||hasSlab?0:Math.min(getBuildingProfile(b).roofRise/25.066666666666666,Math.max(.4,frame.width*.28));
     const reserved=(end:boolean)=>[0,1].every(u=>[0,1].every(v=>wallAt(end?frame.width-u:u,v)?.type==='wall'))&&!walkableAbove((end?frame.width-.5:.5)-alongInset,.5-depthInset,1.95);
     const end=[true,false].find(reserved)??[true,false].find(end=>wallAt(end?frame.width:0,0)?.type==='wall'&&!walkableAbove((end?frame.width:0)-alongInset,-depthInset,.95));
     if(end!==undefined){
@@ -263,16 +291,16 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
         box(u+sign*.045/T,v,y-.16,.023/T,.024,.72/T,iron);
       }
     });
-    tower(frame.width*.5,.1,Math.min(1.4,Math.max(1.1,frame.width*.22)),height+(twoStoreys?2.05:1.35),height-.12,true);
+    if(kind==='townhall')townhallCrown();
+    else tower(frame.width*.5,.1,Math.min(1.4,Math.max(1.1,frame.width*.22)),height+(twoStoreys?2.05:1.35),height-.12,true);
   }else if(kind==='posta'){
     const supports=[...new Set([0,...entranceSupports(),frame.width])].filter(u=>wallAt(u,0)?.type==='wall').sort((a,c)=>a-c);
     roofCanopy('posta-masonry-veranda',supports,.55,true);
   }else if(['farmhouse','estancia'].includes(kind)){
     farmhouseGallery();
-    const flat=b.roof==='terrace'||(input.terrain.upperSurfaces??[]).some(surface=>surface.kind==='roof'&&surface.buildingId===b.id),rise=flat?0:Math.min(getBuildingProfile(b).roofRise/25.066666666666666,Math.max(.4,frame.width*.28));
     for(const u of [0,frame.width]){
       const v=Array.from({length:Math.max(0,Math.floor(frame.depth)-1)},(_,n)=>n+1).filter(v=>wallAt(u,v)?.type==='wall'&&!walkableAbove(u-alongInset,v-depthInset,.48)).sort((a,c)=>Math.abs(a-frame.depth+1)-Math.abs(c-frame.depth+1))[0];
-      if(v!==undefined)chimney(u-alongInset,v-depthInset,{name:u===0?'farmhouse-chimney-left':'farmhouse-chimney-right',material:wall,capMaterial:materials.get('stone'),top:height+rise+.68});
+      if(v!==undefined)chimney(u-alongInset,v-depthInset,{name:u===0?'farmhouse-chimney-left':'farmhouse-chimney-right',material:wall,capMaterial:materials.get('stone'),top:height+roofRise+.68});
     }
   }else if(kind==='pulperia'){
     roofCanopy('gallery',frontSupports(),.55);

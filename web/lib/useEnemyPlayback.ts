@@ -3,6 +3,7 @@ import {useEffect,useRef,useState,useMemo} from 'react';
 import {presentedEndTurn} from '../../game/tactical.js';
 import {BATTLE_PLAYBACK,battleFrameDuration,battleFrameFocus} from '../../game/battle-playback.js';
 import {movementStepDuration} from './three/movement-timing';
+import {surfaceMotionPoint} from './tactical-elevation';
 import {admittedReloadWork,admittedThrownRelease,nativeActionFrameDuration} from './three/action-timing';
 import {admittedMountTransitions,mountFrameDuration} from './three/mount-presentation';
 import enemyWorkerUrl from './enemy-turn-worker.ts?worker&url';
@@ -13,9 +14,9 @@ export function presentedFrameDuration(frame:any,previous:any){
  if(!actor||!before)return stepMs;
  // Each observed step is adjacent. Reappearing actors do not expose the
  // distance they travelled outside sight through a longer playback delay.
- const distance=Math.hypot(actor.x-before.x,actor.y-before.y);
- if(distance>Math.SQRT2+.000001||distance===0)return stepMs;
- const endpoint=actor.lastMovePath?.at(-1)??actor;
+ const distance=Math.hypot(actor.x-before.x,actor.y-before.y),endpoint=actor.lastMovePath?.at(-1)??actor;
+ if(distance>Math.SQRT2+.000001||distance===0&&endpoint.kind!=='climb')return stepMs;
+ if(endpoint.kind==='climb')return movementStepDuration(actor,surfaceMotionPoint(previous,before,frame.state),surfaceMotionPoint(frame.state,endpoint,previous),stepMs);
  return movementStepDuration(actor,before,endpoint,stepMs);
 }
 export function useEnemyPlayback(committed:any,onChange:(state:any)=>any,onBusy?:(busy:boolean)=>void,validate?:(state:any)=>boolean,onFrame?:(before:any,after:any)=>void){

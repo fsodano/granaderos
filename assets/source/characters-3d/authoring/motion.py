@@ -650,9 +650,9 @@ def _mounted_pose(ctx,base):
     rig=ctx['rig'];_apply_sample(rig,base)
     _root_shift(rig,(0,0,rig.data.bones['pelvis'].head_local.z-rig.pose.bones['pelvis'].head.z))
     pelvis=rig.pose.bones['pelvis'].head.copy()
+    from riding_motion import fit_legs
+    fit_legs(ctx,pelvis)
     for side,sign in [('l',1),('r',-1)]:
-        _leg_ik(rig,side,pelvis+Vector((sign*.30,-.11,-.65)),pelvis+Vector((sign*.34,-.42,-.26)))
-        _aim(rig,'foot_'+side,(0,-.15,.005));_aim(rig,'ball_'+side,(0,-.1,0))
         _reach(rig,side,pelvis+Vector((sign*.10,-.34,.16)),long=Vector((0,-.2,-.1)),normal=Vector((-sign,0,0)),curl=.85)
     return _collect(rig)
 
@@ -849,15 +849,16 @@ def apply_animations(ctx, only=None):
     loading_only=bool(only) and all(s['gesture'] in ('reload','reprime','repair','unload') for s in specs)
     mounting_only=bool(only) and all(s['gesture'] in ('mount','dismount') for s in specs)
     throwing_only=bool(only) and all(s['gesture'] in ('throw','throwKnife','bolas') for s in specs)
+    riding_only=bool(only) and all(s['posture']=='mounted' for s in specs)
     contact_only=loading_only or mounting_only or throwing_only
-    reviewed,reviewed_digest=({},None) if contact_only else _reviewed_bank(ctx)
+    reviewed,reviewed_digest=({},None) if contact_only or riding_only else _reviewed_bank(ctx)
     ctx['reviewed_stride']={name:reviewed[name]['locomotionSpeed'] for name in ('Walk','Run') if name in reviewed}
     disabled=[]
     for obj in ctx['objects']:
         for modifier in obj.modifiers:
             if modifier.show_viewport:disabled.append(modifier);modifier.show_viewport=False
     offsets=_grip_setup(ctx);sources={};source_meta={}
-    for recipe in (('idle','crouch') if contact_only else SOURCE_RECIPES):
+    for recipe in (('idle','crouch') if contact_only else ('idle','crouch','walk','run','fall','recover') if riding_only else SOURCE_RECIPES):
         print('MOTION SOURCE',recipe,flush=True)
         sources[recipe],source_meta[recipe]=_retarget_samples(ctx,recipe)
     idle=sources['idle'][0];crouch=sources['crouch'][0]
@@ -903,6 +904,9 @@ def apply_animations(ctx, only=None):
             # interpolating past its single muzzle contact between samples.
             stages=(.12,.24,.36,.46,.58,.70,.79,.86,.90) if gesture=='reload' else (.12,.25,.55,.78,.90)
             times=sorted(set(times+[duration*stage for stage in stages]))
+        if equipment=='short-gun' and gesture=='reload':
+            from pistol_loading import STAGES
+            times=sorted(set(times+[duration*stage for stage in STAGES]))
         if gesture in ('throw','throwKnife','bolas'):
             from throwing_motion import PROFILES
             # Preserve hand orbit and planted support at authored phase keys,
@@ -935,6 +939,9 @@ def apply_animations(ctx, only=None):
                 if equipment=='long-gun' and gesture in ('reload','unload'):
                     from rifle_loading import pose as rifle_loading_pose
                     pose=rifle_loading_pose(ctx,base,offsets,t,gesture,spec.get('item'),posture)
+                elif equipment=='short-gun' and gesture=='reload':
+                    from pistol_loading import pose as pistol_loading_pose
+                    pose=pistol_loading_pose(ctx,base,offsets,t,spec.get('item'),posture,spec.get('barrel',0))
                 else:pose=_reload_pose(ctx,base,'rifle' if equipment=='long-gun' else 'pistol',offsets,t,gesture)
             elif gesture=='slash':
                 phase=_smooth_key([(0,0),(.23,-.65),(.483,1),(.65,.8),(1,0)],t);pose=_blade_pose(ctx,base,offsets,phase,key='knife' if equipment=='knife' else 'sabre')
@@ -1001,6 +1008,9 @@ def apply_animations(ctx, only=None):
         if equipment=='long-gun' and gesture in ('reload','unload'):
             from rifle_loading import metadata as rifle_loading_metadata
             meta.update(rifle_loading_metadata(ctx,spec.get('item'),duration))
+        if equipment=='short-gun' and gesture=='reload':
+            from pistol_loading import metadata as pistol_loading_metadata
+            meta.update(pistol_loading_metadata(ctx,spec.get('item'),duration,spec.get('barrel',0)))
         if gesture in ('mount','dismount'):
             from mounted_motion import metadata as mounted_motion_metadata
             meta.update(mounted_motion_metadata(ctx,duration,reverse=gesture=='dismount'))
@@ -1026,6 +1036,9 @@ def apply_animations(ctx, only=None):
             meta.update(crawl_stride);source_meta['crawl']['locomotionSpeed']=crawl_stride['locomotionSpeed']
         if gesture.startswith('strafe'):meta['locomotionAxis']='left' if gesture=='strafeLeft' else 'right'
         if posture=='mounted' and gesture not in ('mount','dismount'):meta['seatAnchor']=list(rig.data.bones['pelvis'].head_local)
+        if posture=='mounted' or gesture=='mount':
+            from riding_motion import metadata as riding_metadata
+            meta['ridingSupport']=riding_metadata(ctx)
         if posture=='mounted' and gesture in ('die','collapse','knockdown'):
             # Native collapse samples already reach the ground. Remove the
             # saddle offset as the rider falls, before the ground contact.

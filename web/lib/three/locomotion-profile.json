@@ -640,6 +640,20 @@
             "release": 0.754
           }
         },
+        "life.climbUp": {
+          "duration": 1.533327,
+          "loop": false,
+          "markers": {
+            "support": 0.7666636
+          }
+        },
+        "life.climbDown": {
+          "duration": 1.408328,
+          "loop": false,
+          "markers": {
+            "support": 0.70416385
+          }
+        },
         "life.mount": {
           "duration": 2.3,
           "loop": false,
@@ -1048,6 +1062,134 @@
           "markers": {
             "contact": 0.9,
             "ready": 1.84
+          }
+        },
+        "stand.reload.short-gun.1805": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "crouch.reload.short-gun.1805": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "prone.reload.short-gun.1805": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "mounted.reload.short-gun.1805": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "stand.reload.short-gun.1806": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "crouch.reload.short-gun.1806": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "prone.reload.short-gun.1806": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "mounted.reload.short-gun.1806": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "stand.reload.short-gun.1808": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "stand.reload.short-gun.1808.barrel1": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "crouch.reload.short-gun.1808": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "crouch.reload.short-gun.1808.barrel1": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "prone.reload.short-gun.1808": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "prone.reload.short-gun.1808.barrel1": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "mounted.reload.short-gun.1808": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "mounted.reload.short-gun.1808.barrel1": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
           }
         }
       }
@@ -1680,6 +1822,20 @@
             "release": 0.754
           }
         },
+        "life.climbUp": {
+          "duration": 1.533327,
+          "loop": false,
+          "markers": {
+            "support": 0.7666636
+          }
+        },
+        "life.climbDown": {
+          "duration": 1.408328,
+          "loop": false,
+          "markers": {
+            "support": 0.70416385
+          }
+        },
         "life.mount": {
           "duration": 2.3,
           "loop": false,
@@ -2089,6 +2245,134 @@
             "contact": 0.9,
             "ready": 1.84
           }
+        },
+        "stand.reload.short-gun.1805": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "crouch.reload.short-gun.1805": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "prone.reload.short-gun.1805": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "mounted.reload.short-gun.1805": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "stand.reload.short-gun.1806": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "crouch.reload.short-gun.1806": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "prone.reload.short-gun.1806": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "mounted.reload.short-gun.1806": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "stand.reload.short-gun.1808": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "stand.reload.short-gun.1808.barrel1": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "crouch.reload.short-gun.1808": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "crouch.reload.short-gun.1808.barrel1": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "prone.reload.short-gun.1808": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "prone.reload.short-gun.1808.barrel1": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "mounted.reload.short-gun.1808": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "mounted.reload.short-gun.1808.barrel1": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
         }
       }
     }
@@ -2156,6 +2440,18 @@
       "mounted.reload.long-gun": "mounted.reload.long-gun.1804",
       "mounted.unload.long-gun": "mounted.unload.long-gun.1804"
     },
+    "1805": {
+      "stand.reload.short-gun": "stand.reload.short-gun.1805",
+      "crouch.reload.short-gun": "crouch.reload.short-gun.1805",
+      "prone.reload.short-gun": "prone.reload.short-gun.1805",
+      "mounted.reload.short-gun": "mounted.reload.short-gun.1805"
+    },
+    "1806": {
+      "stand.reload.short-gun": "stand.reload.short-gun.1806",
+      "crouch.reload.short-gun": "crouch.reload.short-gun.1806",
+      "prone.reload.short-gun": "prone.reload.short-gun.1806",
+      "mounted.reload.short-gun": "mounted.reload.short-gun.1806"
+    },
     "1807": {
       "stand.reload.long-gun": "stand.reload.long-gun.1807",
       "stand.unload.long-gun": "stand.unload.long-gun.1807",
@@ -2165,6 +2461,12 @@
       "prone.unload.long-gun": "prone.unload.long-gun.1807",
       "mounted.reload.long-gun": "mounted.reload.long-gun.1807",
       "mounted.unload.long-gun": "mounted.unload.long-gun.1807"
+    },
+    "1808": {
+      "stand.reload.short-gun": "stand.reload.short-gun.1808",
+      "crouch.reload.short-gun": "crouch.reload.short-gun.1808",
+      "prone.reload.short-gun": "prone.reload.short-gun.1808",
+      "mounted.reload.short-gun": "mounted.reload.short-gun.1808"
     },
     "1812": {
       "stand.idle.blade": "stand.idle.lance",

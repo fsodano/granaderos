@@ -13,7 +13,7 @@ import {sitePath} from '../lib/site-path.js';
 import './tactical-three.css';
 
 type Props={world:WorldInput;actors:readonly ActorVisual[];view:SectorCameraView;sceneId:string;effects?:readonly CombatEffectEvent[];ambientPaused?:boolean;onCueComplete?:(key:string,id:string)=>void};
-type LiveActor={assetKey:string;generation:number;runtime?:ActorRuntime;pending?:boolean;error?:boolean};
+type LiveActor={assetKey:string;generation:number;runtime?:ActorRuntime;visual?:ActorVisual;pending?:boolean;error?:boolean};
 export default function TacticalThreeScene(props:Props){
   const canvas=useRef<HTMLCanvasElement>(null),latest=useRef(props);latest.current=props;
   const [status,setStatus]=useState('Cargando sector…'),[failed,setFailed]=useState(false),[attempt,setAttempt]=useState(0);
@@ -33,11 +33,11 @@ export default function TacticalThreeScene(props:Props){
     const ensure=(visual:ActorVisual,lod:number)=>{
       const mounted=visual.mounted||visual.cue?.fromPosture==='mounted'||['mount','dismount'].includes(visual.action),key=`${visual.appearance}:${lod}:${mounted}`,old=actors.get(visual.key);
       if(old?.assetKey===key)return;
-      const entry:LiveActor={assetKey:key,generation:(old?.generation??0)+1,runtime:old?.runtime,pending:true};actors.set(visual.key,entry);
+      const entry:LiveActor={assetKey:key,generation:(old?.generation??0)+1,runtime:old?.runtime,visual:old?.visual,pending:true};actors.set(visual.key,entry);
       void library.actor(visual.appearance,lod,mounted).then(asset=>{
         if(!alive||actors.get(visual.key)!==entry)return;
         const current=latest.current.actors.find(actor=>actor.key===visual.key);if(!current)return;
-        const runtime=new ActorRuntime(asset,current,(key,id)=>latest.current.onCueComplete?.(key,id));entry.runtime?.dispose();entry.runtime=runtime;entry.pending=false;markActorMaterials(runtime.root);scene.add(runtime.root);
+        const runtime=new ActorRuntime(asset,current,(key,id)=>latest.current.onCueComplete?.(key,id));entry.runtime?.dispose();entry.runtime=runtime;entry.visual=current;entry.pending=false;markActorMaterials(runtime.root);scene.add(runtime.root);
       }).catch(error=>{if(!alive||actors.get(visual.key)!==entry)return;entry.pending=false;entry.error=true;report(error);});
     };
     const tick=(now:number)=>{
@@ -58,7 +58,13 @@ export default function TacticalThreeScene(props:Props){
       if(actorInput!==input.actors){actorInput=input.actors;world.updateActors?.(input.actors.map(actor=>({x:actor.position[0]/TILE_METRES,y:actor.position[2]/TILE_METRES,elevation:actor.position[1],tacticalLevel:actor.motion?.tacticalLevel??actor.tacticalLevel})));}
       const pixelHeight=1.76*25.0666666667*bounds.width/input.view.width,lod=pixelHeight>160?0:pixelHeight>65?1:2;
       let activeActors=0;
-      for(const visual of input.actors){ensure(visual,lod);const actor=actors.get(visual.key);if(!actor?.runtime||actor.error)continue;try{actor.runtime.update(visual,now);actorBounds.center.fromArray(visual.position);actorBounds.center.y+=1;const active=frustum.intersectsSphere(actorBounds);actor.runtime.root.visible=active;if(active){activeActors++;actor.runtime.tick(input.ambientPaused&&visual.action==='idle'?0:delta,now,Boolean(reduced?.matches));}}catch(error){actor.error=true;report(error);}}
+      for(const visual of input.actors){ensure(visual,lod);const actor=actors.get(visual.key);if(!actor?.runtime||actor.error)continue;try{
+        // React supplies immutable presentation records. Rebind equipment,
+        // clothing and the selected clip only when a record changes; the
+        // native clock still advances every visible frame inside tick().
+        if(actor.visual!==visual){actor.runtime.update(visual,now);actor.visual=visual;}
+        actorBounds.center.fromArray(visual.position);actorBounds.center.y+=1;const active=frustum.intersectsSphere(actorBounds);actor.runtime.root.visible=active;if(active){activeActors++;actor.runtime.tick(input.ambientPaused&&visual.action==='idle'?0:delta,now,Boolean(reduced?.matches));}
+      }catch(error){actor.error=true;report(error);}}
       const selected=input.actors.find(actor=>actor.selected);occlusion.setActor(selected?actors.get(selected.key)?.runtime?.root??null:null);occlusion.sync();
       if(effectInput!==input.effects||lastReduced!==quiet){
         effectInput=input.effects;

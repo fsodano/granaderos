@@ -76,6 +76,19 @@ for(const item of ['1800','1801','1802','1803','1804','1807']){
   }
   firearmOverrides[item]=Object.freeze(overrides);
 }
+// Native pistol lengths also differ. Each paid charge retains its owned
+// gun's muzzle contact, including when the left-hand pose is mirrored.
+const pistolLoads=[...clips.values()].filter(spec=>spec.equipment==='short-gun'&&spec.gesture==='reload');
+for(const item of ['1805','1806','1808']){
+  const overrides={};
+  for(const spec of pistolLoads){
+    const name=`${spec.name}.${item}`;overrides[spec.name]=name;
+    const barrelClips=item==='1808'?Object.freeze([name,`${name}.barrel1`]):undefined;
+    clips.set(name,Object.freeze({...spec,name,item,...(barrelClips?{barrel:0,barrelClips}:{})}));
+    if(barrelClips)clips.set(barrelClips[1],Object.freeze({...spec,name:barrelClips[1],item,barrel:1}));
+  }
+  firearmOverrides[item]=Object.freeze(overrides);
+}
 export const ACTOR_ITEM_CLIP_OVERRIDES=Object.freeze({...firearmOverrides,'1812':Object.freeze(lanceOverrides),'1813':Object.freeze(knifeOverrides)});
 
 // Every variant presents one paid strike with one contact. The preview's

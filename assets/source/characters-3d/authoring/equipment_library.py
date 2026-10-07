@@ -3,7 +3,7 @@ import math
 import bpy
 from mathutils import Matrix,Vector
 from equipment import create_equipment
-from equipment_dimensions import RIFLE_STRETCH,PISTOL_STRETCH
+from equipment_dimensions import RIFLE_STRETCH,PISTOL_STRETCH,PISTOL_BARREL_OFFSETS
 
 def create_library(ctx):
  create_equipment(ctx);h=ctx['equipment_helpers'];exports=[];records={};weapons=ctx['weapons']
@@ -35,7 +35,7 @@ def create_library(ctx):
  for key,scale in PISTOL_STRETCH.items():
   g=clone_tree(weapons['pistol'],'item_'+key,scale)
   if key=='1808':
-   barrel=next(o for o in g.children if 'Pistol_Barrel' in o.name);barrel.location.y=-.011;other=barrel.copy();other.data=barrel.data.copy();other.location.y=.011;bpy.context.collection.objects.link(other);exports.append(other)
+   offsets=PISTOL_BARREL_OFFSETS[key];barrel=next(o for o in g.children if 'Pistol_Barrel' in o.name);barrel.location.y=offsets[0];other=barrel.copy();other.data=barrel.data.copy();other.location.y=offsets[1];bpy.context.collection.objects.link(other);exports.append(other)
   record(key,g,'pistol','pistol','hipRight')
  for key in ('1809','1810','1813','1811'):
   g=clone_tree(weapons['knife'] if key=='1813' else weapons['sabre'],'item_'+key)
