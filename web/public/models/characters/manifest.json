@@ -1826,8 +1826,8 @@
   "animationLibraries": {
     "male": {
       "url": "/models/characters/male-animations.glb",
-      "bytes": 11909764,
-      "sha256": "7386a5baa28f1866de463812a07144097a8af9bb86286882a2dcb651641ba905",
+      "bytes": 11913664,
+      "sha256": "19a2f7a1285b1b4463f28bd467352667472a4f89fc1a46ab49681214ed2bb85e",
       "clips": [
         {
           "name": "stand.idle.unarmed",
@@ -3815,7 +3815,14 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "native-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "maximumLift": 0.054151
+          }
         },
         {
           "name": "prone.crawl.unarmed",
@@ -3851,7 +3858,14 @@
             "space": "exported-gltf",
             "referenceClip": "prone.crawl.unarmed"
           },
-          "authoredStrideSpeed": 0.202303
+          "authoredStrideSpeed": 0.202303,
+          "nativeBootSupport": {
+            "method": "native-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "maximumLift": 0.073134
+          }
         },
         {
           "name": "prone.idle.long-gun",
@@ -3867,7 +3881,14 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "native-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "maximumLift": 0.054151
+          }
         },
         {
           "name": "prone.crawl.long-gun",
@@ -3903,7 +3924,14 @@
             "space": "exported-gltf",
             "referenceClip": "prone.crawl.unarmed"
           },
-          "authoredStrideSpeed": 0.202303
+          "authoredStrideSpeed": 0.202303,
+          "nativeBootSupport": {
+            "method": "native-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "maximumLift": 0.073134
+          }
         },
         {
           "name": "prone.aim.long-gun",
@@ -4155,7 +4183,14 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "native-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "maximumLift": 0.054151
+          }
         },
         {
           "name": "prone.crawl.short-gun",
@@ -4191,7 +4226,14 @@
             "space": "exported-gltf",
             "referenceClip": "prone.crawl.unarmed"
           },
-          "authoredStrideSpeed": 0.202303
+          "authoredStrideSpeed": 0.202303,
+          "nativeBootSupport": {
+            "method": "native-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "maximumLift": 0.073134
+          }
         },
         {
           "name": "prone.aim.short-gun",
@@ -4354,7 +4396,14 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "native-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "maximumLift": 0.054151
+          }
         },
         {
           "name": "prone.crawl.blade",
@@ -4390,7 +4439,14 @@
             "space": "exported-gltf",
             "referenceClip": "prone.crawl.unarmed"
           },
-          "authoredStrideSpeed": 0.202303
+          "authoredStrideSpeed": 0.202303,
+          "nativeBootSupport": {
+            "method": "native-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "maximumLift": 0.073134
+          }
         },
         {
           "name": "mounted.idle.unarmed",
@@ -9440,7 +9496,14 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "native-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "maximumLift": 0.054151
+          }
         },
         {
           "name": "prone.idle.knife",
@@ -9456,7 +9519,14 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "native-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "maximumLift": 0.054151
+          }
         },
         {
           "name": "prone.crawl.lance",
@@ -9492,7 +9562,14 @@
             "space": "exported-gltf",
             "referenceClip": "prone.crawl.unarmed"
           },
-          "authoredStrideSpeed": 0.202303
+          "authoredStrideSpeed": 0.202303,
+          "nativeBootSupport": {
+            "method": "native-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "maximumLift": 0.073134
+          }
         },
         {
           "name": "prone.crawl.knife",
@@ -9528,7 +9605,14 @@
             "space": "exported-gltf",
             "referenceClip": "prone.crawl.unarmed"
           },
-          "authoredStrideSpeed": 0.202303
+          "authoredStrideSpeed": 0.202303,
+          "nativeBootSupport": {
+            "method": "native-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "maximumLift": 0.073134
+          }
         },
         {
           "name": "mounted.idle.lance",
@@ -15063,8 +15147,8 @@
     },
     "female": {
       "url": "/models/characters/female-animations.glb",
-      "bytes": 11736380,
-      "sha256": "b9272f0a5ed66699f4e07915d85701df89e1bee2af6c8312a470f26e5f21ed90",
+      "bytes": 11739932,
+      "sha256": "7688cbc785358346034cdb36041fae13329efc042f076aa5b833eb153250fc0d",
       "clips": [
         {
           "name": "stand.idle.unarmed",
@@ -17052,7 +17136,14 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "native-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "maximumLift": 0.048419
+          }
         },
         {
           "name": "prone.crawl.unarmed",
@@ -17088,7 +17179,14 @@
             "space": "exported-gltf",
             "referenceClip": "prone.crawl.unarmed"
           },
-          "authoredStrideSpeed": 0.223721
+          "authoredStrideSpeed": 0.223721,
+          "nativeBootSupport": {
+            "method": "native-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "maximumLift": 0.068669
+          }
         },
         {
           "name": "prone.idle.long-gun",
@@ -17104,7 +17202,14 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "native-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "maximumLift": 0.048419
+          }
         },
         {
           "name": "prone.crawl.long-gun",
@@ -17140,7 +17245,14 @@
             "space": "exported-gltf",
             "referenceClip": "prone.crawl.unarmed"
           },
-          "authoredStrideSpeed": 0.223721
+          "authoredStrideSpeed": 0.223721,
+          "nativeBootSupport": {
+            "method": "native-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "maximumLift": 0.068669
+          }
         },
         {
           "name": "prone.aim.long-gun",
@@ -17392,7 +17504,14 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "native-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "maximumLift": 0.048419
+          }
         },
         {
           "name": "prone.crawl.short-gun",
@@ -17428,7 +17547,14 @@
             "space": "exported-gltf",
             "referenceClip": "prone.crawl.unarmed"
           },
-          "authoredStrideSpeed": 0.223721
+          "authoredStrideSpeed": 0.223721,
+          "nativeBootSupport": {
+            "method": "native-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "maximumLift": 0.068669
+          }
         },
         {
           "name": "prone.aim.short-gun",
@@ -17591,7 +17717,14 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "native-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "maximumLift": 0.048419
+          }
         },
         {
           "name": "prone.crawl.blade",
@@ -17627,7 +17760,14 @@
             "space": "exported-gltf",
             "referenceClip": "prone.crawl.unarmed"
           },
-          "authoredStrideSpeed": 0.223721
+          "authoredStrideSpeed": 0.223721,
+          "nativeBootSupport": {
+            "method": "native-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "maximumLift": 0.068669
+          }
         },
         {
           "name": "mounted.idle.unarmed",
@@ -22677,7 +22817,14 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "native-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "maximumLift": 0.048419
+          }
         },
         {
           "name": "prone.idle.knife",
@@ -22693,7 +22840,14 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "native-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "maximumLift": 0.048419
+          }
         },
         {
           "name": "prone.crawl.lance",
@@ -22729,7 +22883,14 @@
             "space": "exported-gltf",
             "referenceClip": "prone.crawl.unarmed"
           },
-          "authoredStrideSpeed": 0.223721
+          "authoredStrideSpeed": 0.223721,
+          "nativeBootSupport": {
+            "method": "native-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "maximumLift": 0.068669
+          }
         },
         {
           "name": "prone.crawl.knife",
@@ -22765,7 +22926,14 @@
             "space": "exported-gltf",
             "referenceClip": "prone.crawl.unarmed"
           },
-          "authoredStrideSpeed": 0.223721
+          "authoredStrideSpeed": 0.223721,
+          "nativeBootSupport": {
+            "method": "native-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "maximumLift": 0.068669
+          }
         },
         {
           "name": "mounted.idle.lance",
