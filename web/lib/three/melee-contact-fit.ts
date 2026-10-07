@@ -5,7 +5,7 @@ import type {ActorCue,ContactTarget,ContactSupport} from './presentation';
 export type ContactActorResolver=(target:ContactTarget)=>{model:Object3D;root:Object3D}|undefined;
 type Limb={base:Object3D;middle:Object3D;end:Object3D;first:number;second:number};
 type Sole={mesh:SkinnedMesh;vertices:number[];outline:number[];floor:number};
-type Plan={key:string;cueId:string;target:Object3D;hand:Vector3;body:Vector3;step:Vector3;rearStep:Vector3;contact:number;duration:number};
+type Plan={key:string;cueId:string;target:Object3D;hand:Vector3;body:Vector3;step:Vector3;rearStep:Vector3;contact:number;duration:number;pistol?:boolean};
 const smooth=(value:number)=>{const t=Math.max(0,Math.min(1,value));return t*t*(3-2*t);};
 function visible(node:Object3D){let current:Object3D|null=node;while(current){if(!current.visible)return false;current=current.parent;}return true;}
 function poseTree(source:Object3D):Object3D|undefined{
@@ -207,7 +207,7 @@ export class NativeMeleeContactFit {
      step.copy(forward).multiplyScalar(advance*fraction);
      const leg=this.limbs.get('foot_r')!,hip=hips.get('r')!.clone().add(body),foot=feet.get('r')!.clone().add(step);
      if(hip.distanceTo(foot)>leg.first+leg.second-.008)continue;
-     const local=(value:Vector3)=>value.clone().applyQuaternion(rootRotation.clone().invert()),plan={key,cueId:cue.id,target,hand:local(correction),body:local(body),step:local(step),rearStep:local(rearStep),contact:contact!,duration:clip.duration};
+     const local=(value:Vector3)=>value.clone().applyQuaternion(rootRotation.clone().invert()),plan={key,cueId:cue.id,target,hand:local(correction),body:local(body),step:local(step),rearStep:local(rearStep),contact:contact!,duration:clip.duration,pistol:spec.name==='stand.butt.short-gun'};
      if(!this.pathAllowed(plan,clip,support,action))continue;
      accepted=true;acceptedPlan=plan;break;
     }
@@ -259,7 +259,10 @@ export class NativeMeleeContactFit {
   return true;
  }
  private pathAllowed(plan:Plan,clip:AnimationClip,support:ContactSupport,action:AnimationAction){
-  const sample=(time:number)=>{this.previewFit!.restore();action.time=time;action.timeScale=0;this.sampleMixer!.update(0);this.sampleRoot.updateMatrixWorld(true);this.previewFit!.pose(plan,time);this.sampleRoot.updateMatrixWorld(true);return this.floorAllowed(support)&&this.previewFit!.footReachError<.001;};
+  // A held pistol still keeps its wrist socket when the arm solver clamps.
+  // Require the complete native wrist path to be reachable, beyond contact
+  // and grip alone. Other weapon families retain their existing admission.
+  const sample=(time:number)=>{this.previewFit!.restore();action.time=time;action.timeScale=0;this.sampleMixer!.update(0);this.sampleRoot.updateMatrixWorld(true);this.previewFit!.pose(plan,time);this.sampleRoot.updateMatrixWorld(true);return this.floorAllowed(support)&&this.previewFit!.footReachError<.001&&(!plan.pistol||this.previewFit!.handReachError<1e-7);};
   // Reject an obstructed contact footprint before checking its whole path.
   this.pathPrevious=undefined;
   if(!sample(plan.contact)||!this.bodyAllowed(support))return false;

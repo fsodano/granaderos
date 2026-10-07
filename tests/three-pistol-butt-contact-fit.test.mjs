@@ -48,6 +48,15 @@ function assertFreeGuard(runtime,source){
 }
 function gripMatrix(runtime,weapon){const item=runtime.model.getObjectByName(`primary:${weapon}`);return new Matrix4().copy(runtime.model.getObjectByName('hand_r').matrixWorld).invert().multiply(item.matrixWorld);}
 function assertGrip(runtime,source,weapon){const current=gripMatrix(runtime,weapon).elements,native=gripMatrix(source,weapon).elements;assert.ok(current.every((value,index)=>Math.abs(value-native[index])<1e-8),'The same owned gun keeps its native wrist grip');}
+function assertStrikingReach(runtime,source,label){
+ const plan=runtime.meleeFit.plan;if(!plan)return;
+ // Recover the intended wrist from the independently rendered source pose,
+ // not from the solver's clamped endpoint or its reported reach counter.
+ const time=runtime.action.time,contact=runtime.clipSpec.markers.contact,end=runtime.action.getClip().duration,smooth=value=>{const t=Math.max(0,Math.min(1,value));return t*t*(3-2*t);},weight=time<=contact?smooth(time/contact):1-smooth((time-contact)/(end*.9-contact));
+ const nativeShoulder=source.model.getObjectByName('upperarm_r').getWorldPosition(new Vector3()),nativeElbow=source.model.getObjectByName('lowerarm_r').getWorldPosition(new Vector3()),nativeWrist=source.model.getObjectByName('hand_r').getWorldPosition(new Vector3()),length=nativeShoulder.distanceTo(nativeElbow)+nativeElbow.distanceTo(nativeWrist),desired=nativeWrist.add(plan.hand.clone().applyQuaternion(runtime.root.quaternion).multiplyScalar(weight)),shoulder=runtime.model.getObjectByName('upperarm_r').getWorldPosition(new Vector3()),wrist=runtime.model.getObjectByName('hand_r').getWorldPosition(new Vector3());
+ assert.ok(Math.max(0,shoulder.distanceTo(desired)-(length-.001))<1e-7,`${label} intended wrist stays within original measured arm reach`);
+ assert.ok(wrist.distanceTo(desired)<1e-6,`${label} actual native wrist reaches its intended path without a hidden clamp`);
+}
 
 test('all twenty-four real pistol-butt pairings meet the actual end cap with native guard, grip and sole support',async()=>{
  for(const appearance of ['granadero','woman-scout'])for(const diagonal of [false,true])for(const posture of ['standing','crouched'])for(const weapon of [1805,1806,1808]){
@@ -55,9 +64,9 @@ test('all twenty-four real pistol-butt pairings meet the actual end cap with nat
   runtime.tick(.1,1070);source.tick(.1,1070);runtime.root.updateMatrixWorld(true);source.root.updateMatrixWorld(true);const label=`${appearance}/${diagonal?'diagonal':'straight'}/${posture}/${weapon}`;
   assert.equal(runtime.action.getClip().name,'stand.butt.short-gun');assert.equal(runtime.action.time,.42);assert.equal(runtime.meleeFit.rejectedFits,0,label);assert.ok(gap(capFaces(runtime,weapon),surface)<=.001,label);assert.ok(gap(palmFaces(runtime),weaponFaces(runtime,weapon))<=.001,`${label} actual right palm`);assertFreeGuard(runtime,source);assertGrip(runtime,source,weapon);
   const heldBody=runtime.model.getObjectByName('Root').position.clone(),heldHand=runtime.model.getObjectByName('hand_r').getWorldPosition(new Vector3());for(let tick=0;tick<12;tick++){runtime.tick(0,1070);runtime.root.updateMatrixWorld(true);assert.ok(runtime.model.getObjectByName('Root').position.distanceTo(heldBody)<1e-8);assert.ok(runtime.model.getObjectByName('hand_r').getWorldPosition(new Vector3()).distanceTo(heldHand)<1e-8);assertFreeGuard(runtime,source);assertGrip(runtime,source,weapon);}
-  for(let frame=0;frame<30;frame++){
-   const cue={...visual.cue,phase:undefined,phaseStartedAt:0,startedAt:0,durationMs:1000};delete cue.phaseDurationMs;const shown={...visual,cue},now=frame*1000/30;
-   runtime.update(shown,now);source.update(shown,now);runtime.tick(0,now);source.tick(0,now);runtime.root.updateMatrixWorld(true);source.root.updateMatrixWorld(true);assertNative(runtime,bones,visual.position);assertFreeGuard(runtime,source);assertGrip(runtime,source,weapon);assert.ok(runtime.meleeFit.footReachError<.001,label);const sole=lowestSole(runtime)-visual.position[1];assert.ok(sole>=-.001&&sole<=.008,`${label} supported actual sole (${sole})`);
+  for(let frame=0;frame<=120;frame++){
+   const cue={...visual.cue,phase:undefined,phaseStartedAt:0,startedAt:0,durationMs:1000};delete cue.phaseDurationMs;const shown={...visual,cue},now=frame*1000/120;
+   runtime.update(shown,now);source.update(shown,now);runtime.tick(0,now);source.tick(0,now);runtime.root.updateMatrixWorld(true);source.root.updateMatrixWorld(true);assertNative(runtime,bones,visual.position);assertFreeGuard(runtime,source);assertGrip(runtime,source,weapon);assert.ok(runtime.meleeFit.footReachError<.001,label);assert.ok(runtime.meleeFit.handReachError<1e-7,`${label}/${frame} native striking arm is never clamped`);assertStrikingReach(runtime,source,`${label}/${frame}`);const sole=lowestSole(runtime)-visual.position[1];assert.ok(sole>=-.001&&sole<=.008,`${label} supported actual sole (${sole})`);
   }
   assert.equal(JSON.stringify(fixture.frame.state),before);runtime.dispose();source.dispose();fixture.body.dispose();
  }
