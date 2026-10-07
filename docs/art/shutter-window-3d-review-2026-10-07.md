@@ -1,0 +1,7 @@
+# Shutter window review — 7 October 2026
+
+The current house and farmhouse sprites use paired green shutter panels inside the window aperture. Each panel occupies six of the eighteen opening units, leaves a central gap and has a dark border and three pale horizontal rails. The source is `Opening` in `web/app/TacticalArchitectureMaterials.tsx`; the current catalogue images are in `artifacts/three-gameplay-review/direct-facade-audit/`.
+
+The released native helper placed plain brown posts outside the aperture. The masonry jambs hid those posts, leaving a blank glazed rectangle. The correction retains the source green paint (`#65705a`), dark border (`#434a3b`) and pale rails (`#a8ac84`). Both panels now sit inside the real opening. Their shallow physical faces and rail relief are visible from either side of the wall. The glazing and source central gap remain. The helper scales its source proportions to the existing physical opening; it does not change wall collision, opening dimensions, styles, saved flags or interaction. Normal disclosure and breaches remove the detail with its window.
+
+Six focused source checks pass in 1.97 seconds. They render the current source opening, cast rays through both faces of the actual physical panels and rails, preserve the central gap, and check real house and farmhouse windows through four rotations, saved window flags and room disclosure. Existing lattice, glazing and retained bar checks also pass. Clean build and browser acceptance follow this source commit.
