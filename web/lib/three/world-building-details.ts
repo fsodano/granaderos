@@ -79,7 +79,11 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
     if(walkableAbove(u,v,w+.15))return;
     feature(civic?'civic-clock-tower':'bell-tower',()=>{
     // The civic cupola rests on the facade. It never fills the entrance below.
-    box(u,v,(top+bottom)*.5,w,top-bottom,w);
+    const footing=!civic&&(!legacy||b.wallFinish!==undefined)&&bottom===0?Math.min((getBuildingProfile(b).plinthHeight+2)/25.066666666666666,top):bottom;
+    // The current parish sprite has a warm stone foot over its plaster base.
+    // Join those volumes once on the unchanged actual reserved foundation.
+    if(footing>bottom)box(u,v,(footing+bottom)*.5,w,footing-bottom,w,materials.get('stone',{architectureRole:'volume',colour:'#a99a79'}));
+    box(u,v,(top+footing)*.5,w,top-footing,w);
     for(const y of [Math.max(height,bottom),top-.12])box(u,v,y,w+.15,.12,w+.15,trim);
     const e=w*.57,corners=[at(u-e,v-e,top+.06),at(u+e,v-e,top+.06),at(u+e,v+e,top+.06),at(u-e,v+e,top+.06)],apex=at(u,v,top+.64);
     if(civic)batch.primitive('sphere',roof,at(u,v,top+.26),[w*T*.57,.37,w*T*.57],undefined,light);
