@@ -8,6 +8,7 @@ import {palaceFacade} from './world-palace-facade';
 import {depotFacade} from './world-depot-facade';
 import {warehouseButtresses} from './world-warehouse-buttresses';
 import {churchNave} from './world-church-nave';
+import {churchFrontPiers} from './world-church-front-piers';
 import {postaPiers} from './world-posta-piers';
 import {stableVentilation} from './world-stable-ventilation';
 import {stableTimberFrame} from './world-stable-frame';
@@ -255,11 +256,12 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
       for(const a of [-.48,0,.48]){const x=a*radius,half=Math.sqrt(radius*radius-x*x)*.92;batch.cylinder(iron,at(center+x/T,v-.036/T,y-half),at(center+x/T,v-.036/T,y+half),.014,light);}
       batch.cylinder(iron,at(center-radius*.88/T,v-.036/T,y),at(center+radius*.88/T,v-.036/T,y),.015,light);
     });
-    feature('church-facade-pilasters',()=>{
+    if(legacy&&b.wallFinish===undefined)feature('church-facade-pilasters',()=>{
       for(const u of [0,frame.width])if(wallAt(u,0)?.type==='wall'){
         const [a,v]=bearing(u);box(a,v,height*.5,.23/T,height,.38/T,trim);box(a,v,.11,.34/T,.22,.38/T,materials.get('stone'));box(a,v,height-.035,.35/T,.15,.38/T,trim);
       }
     });
+    else root.add(churchFrontPiers(b,input,T,height,base,geometry,materials,legacy));
     if(!legacy||b.wallFinish!==undefined)root.add(churchNave(b,input,T,height,base,geometry,materials));
     else for(let v=1;v<frame.depth;v+=1.6)for(const u of [0,frame.width])if(wallAt(u,Math.round(v))?.type==='wall')box(u,v,.80,.20,1.6,.32,trim);
   }else if(kind==='townhall'){
