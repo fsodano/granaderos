@@ -8,6 +8,7 @@ import {runBattleJob} from '../game/battle-job.js';
 import {battleTimers} from './battle-timers-fixture.mjs';
 const {default:Battlefield}=await import('../web/app/Battlefield.tsx');
 const {default:JA2Strip}=await import('../web/app/JA2Strip.tsx');
+const {movementStepDuration}=await import('../web/lib/three/movement-timing.ts');
 const nodes=node=>!node||typeof node!=='object'?[]:[node,...(Array.isArray(node)?node:Array.isArray(node.props?.children)?node.props.children:[node.props?.children]).flatMap(nodes)];
 
 // Mount the real controller and its SVG ref. Omit scene descendants: wheel
@@ -138,7 +139,8 @@ test('selecting another merc during movement centers them without replacing the 
  await map.draw(stepped);assert.equal(map.jobs.length,2,'the original soldier prepares its next route step');
  const remaining=map.jobs[1].job;assert.equal(remaining.kind,'movement-step');assert.equal(remaining.action.unitId,'p');assert.equal(remaining.action.x,28);assert.equal(remaining.action.y,20);
  await map.deliver(map.jobs[1]);await map.frame(120);assert.equal(map.changes.length,1,'the prepared step waits for the current visible step');assert.deepEqual(map.camera(),camera);
- await map.frame(120);assert.equal(map.changes.length,2);assert.equal(map.changes[1].units.find(unit=>unit.id==='p').x,26,'the original soldier continues after its visible step');
+ const moving=stepped.units.find(unit=>unit.id==='p'),stepMs=movementStepDuration(moving,{x:24,y:20},moving);
+ await map.frame(stepMs-120);assert.equal(map.changes.length,2);assert.equal(map.changes[1].units.find(unit=>unit.id==='p').x,26,'the original soldier continues after its visible step');
  assert.equal(map.strip().selected,'q');assert.deepEqual(map.camera(),camera);
 });
 

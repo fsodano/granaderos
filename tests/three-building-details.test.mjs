@@ -8,6 +8,7 @@ const {WorldMaterials}=await import('../web/lib/three/world-materials.ts');
 const {architecturalDetails,roofEdgeDetails}=await import('../web/lib/three/world-building-details.ts');
 const {buildBuilding}=await import('../web/lib/three/world-buildings.ts');
 const {entranceFrame}=await import('../game/building-profile.js');
+const {createArchitectureReviewBattle}=await import('../web/app/renderer-sandbox/architecture-fixtures.js');
 const T=1.2360585147470482;
 
 function fixture(kind,side='south'){
@@ -60,6 +61,50 @@ test('pulperia trade signs keep their bracket and front face through rotation',(
     assert.ok(bounds.max.z<.05&&bounds.min.z<-.5,'the sign must hang outside with its bracket anchored in the facade');
     if(expected)actual.forEach((value,n)=>assert.ok(Math.abs(value-expected[n])<1e-5));else expected=actual;
     f.dispose(details);
+  }
+});
+
+test('posta and work canopies have closed roof edges and keep every ground support in solid cells through rotation',()=>{
+  for(const [kind,name]of [['posta','posta-masonry-veranda'],['warehouse','loading-canopy'],['smithy','forge-canopy']])for(const side of ['north','east','south','west']){
+    const f=fixture(kind,side),before=JSON.stringify(f.input),details=architecturalDetails(f.b,f.input,T,2.5,0,f.geometry,f.materials,false),canopy=details.getObjectByName(`building-detail:review:${name}`);
+    assert.ok(canopy,`${kind} needs its supported canopy`);assert.ok(canopy.getObjectByName(`building-roof-edges:review:${name}`),'the roof needs a closed underside and fascia');
+    const roof=canopy.children.find(child=>child.material?.name==='world:aged');assert.ok(roof,'these work buildings must retain their aged-tile roof finish');
+    assert.ok(new Box3().setFromObject(roof).min.y>2.10,'canopy eaves must clear the standing doorway');
+    let groundVertices=0;canopy.traverse(child=>{if(child instanceof Mesh){const p=child.geometry.getAttribute('position');for(let n=0;n<p.count;n++)if(p.getY(n)<1.9){
+      groundVertices++;const x=Math.round(p.getX(n)/T),y=Math.round(p.getZ(n)/T);assert.equal(f.input.terrain.tiles.find(tile=>tile.x===x&&tile.y===y)?.type,'wall',`${kind} ${side} support extends into walkable ground at ${x},${y}`);
+    }}});assert.ok(groundVertices>0);assert.equal(JSON.stringify(f.input),before);f.dispose(details);
+  }
+});
+
+test('work canopy supports follow edited openings and all canopies preserve real doorway and breach paths',()=>{
+  for(const [kind,name]of [['posta','posta-masonry-veranda'],['warehouse','loading-canopy'],['smithy','forge-canopy']])for(const side of ['north','east','south','west'])for(const type of ['window','door','rubble']){
+    const f=fixture(kind,side),u=f.frame.doorU+1,point=f.frame.at(u,0);f.input.terrain.tiles.find(tile=>tile.x===point.x&&tile.y===point.y).type=type;
+    const details=architecturalDetails(f.b,f.input,T,2.5,0,f.geometry,f.materials,false);details.updateMatrixWorld(true);
+    if(kind!=='posta')assert.equal(details.getObjectByName(`building-detail:review:${name}`),undefined,'a loading or forge canopy requires both original solid entrance supports');
+    for(const [along,y]of [[f.frame.doorU,1.90],[u,type==='window'?1.3:1.90]]){
+      const actual=along-.4*(f.frame.u.x+f.frame.u.y),start=f.frame.at(actual,-1),ray=new Raycaster(new Vector3((start.x+.4)*T,y,(start.y+.4)*T),new Vector3(f.frame.v.x,0,f.frame.v.y),0,T*1.6);
+      assert.equal(ray.intersectObject(details,true).length,0,`${kind} ${side} canopy must leave ${type} clear`);
+    }
+    f.dispose(details);
+  }
+});
+
+test('supported canopies retain authored roof finishes and disappear during normal room cutaways',()=>{
+  for(const [kind,name]of [['posta','posta-masonry-veranda'],['warehouse','loading-canopy'],['smithy','forge-canopy']]){
+    const f=fixture(kind);f.b.roofFinish='aged';const exterior=buildBuilding(f.b,f.input,T,f.geometry,f.materials),canopy=exterior.getObjectByName(`building-detail:review:${name}`);
+    assert.ok(canopy.children.some(child=>child.material?.name==='world:aged'));disposeWorldNode(exterior);
+    const interior=buildBuilding(f.b,{...f.input,revealedRooms:['room']},T,f.geometry,f.materials);assert.equal(interior.getObjectByName(`building-detail:review:${name}`),undefined);f.dispose(interior);
+  }
+});
+
+test('compiled posta, warehouse and smithy templates retain supported canopies and ordinary room disclosure',()=>{
+  for(const [id,name]of [['posta','posta-masonry-veranda'],['almacen','loading-canopy'],['herreria','forge-canopy']])for(const rotation of [0,90,180,270])for(const view of ['exterior','partial']){
+    const battle=createArchitectureReviewBattle(id,rotation,view),before=JSON.stringify(battle),input={terrain:{width:battle.width,height:battle.height,tiles:battle.tiles,buildings:battle.buildings,upperSurfaces:battle.upperSurfaces},revealedRooms:battle.revealedRooms},geometry=new WorldGeometry(),materials=new WorldMaterials({tileMetres:T,assetUrl:path=>path}),building=buildBuilding(battle.buildings[0],input,T,geometry,materials),canopy=building.getObjectByName(`building-detail:${battle.buildings[0].id}:${name}`);
+    assert.equal(Boolean(canopy),view==='exterior',`${id}/${rotation}/${view} must follow ordinary room disclosure`);
+    if(canopy)canopy.traverse(child=>{if(child instanceof Mesh){const p=child.geometry.getAttribute('position');for(let n=0;n<p.count;n++)if(p.getY(n)<1.9){
+      const x=Math.round(p.getX(n)/T),y=Math.round(p.getZ(n)/T);assert.equal(battle.tiles.find(tile=>tile.x===x&&tile.y===y)?.type,'wall',`${id}/${rotation} support must remain in its actual compiled wall cell`);
+    }}});
+    assert.equal(JSON.stringify(battle),before);disposeWorldNode(building);geometry.dispose();materials.dispose();
   }
 });
 
@@ -135,6 +180,89 @@ test('church towers occupy solid corner foundations through every rotation and s
     assert.equal(JSON.stringify(f.input),before);disposeWorldNode(details);
     for(const u of [0,f.frame.width]){const p=f.frame.at(u,0);f.input.terrain.tiles.find(tile=>tile.x===p.x&&tile.y===p.y).type='window';}
     const unsupported=architecturalDetails(f.b,f.input,T,2.55,0,f.geometry,f.materials,false);assert.equal(unsupported.getObjectByName('building-detail:review:bell-tower'),undefined);f.dispose(unsupported);
+  }
+});
+
+test('church shaped facades and circular barred oculi stay joined and rotate with the entrance',()=>{
+  let expected;
+  for(const side of ['north','east','south','west']){
+    const f=fixture('church',side),height=2.55,before=JSON.stringify(f.input),details=architecturalDetails(f.b,f.input,T,height,0,f.geometry,f.materials,false),facade=details.getObjectByName('building-detail:review:church-shaped-facade'),oculus=details.getObjectByName('building-detail:review:church-oculus'),pilasters=details.getObjectByName('building-detail:review:church-facade-pilasters');
+    assert.ok(facade&&oculus&&pilasters);const bounds=f.localBounds(facade),center=f.frame.doorU-.4*(f.frame.u.x+f.frame.u.y),actual=[bounds.min.x-center,bounds.max.x-center,bounds.min.y,bounds.max.y,bounds.min.z,bounds.max.z];
+    // The crest may clamp along a compact facade; its shape and thickness
+    // still remain the same through every tile rotation.
+    if(expected)actual.slice(2).forEach((value,n)=>assert.ok(Math.abs(value-expected[n+2])<1e-5));else expected=actual;
+    assert.ok(bounds.min.y<height&&bounds.max.y>height+1.9,'curved masonry must join the original gable and rise above it');
+    assert.ok(bounds.max.z>0&&bounds.min.z<-.20/T,'the facade needs real masonry thickness at the shell');
+    assert.ok(oculus.children.some(child=>child.material?.name==='world:iron'));assert.ok(oculus.children.some(child=>child.material?.name==='world:darkwood'));
+    const circle=f.localBounds(oculus);assert.ok(Math.abs((circle.max.x-circle.min.x)*T-(circle.max.y-circle.min.y))<.01,'the oculus must remain circular in physical metres');assert.ok(circle.min.y>height);
+    details.traverse(child=>{if(child instanceof Mesh){assert.ok(child.geometry.getAttribute('normal')&&child.geometry.getAttribute('uv'));for(const value of child.geometry.getAttribute('position').array)assert.ok(Number.isFinite(value));}});
+    assert.equal(JSON.stringify(f.input),before);f.dispose(details);
+  }
+});
+
+test('compact and reserved parish belfries show arched faces above the nave on all four sides',()=>{
+  for(const side of ['north','east','south','west'])for(const wide of [false,true]){
+    const f=fixture('church',side);if(wide)for(const u of [0,1])for(const v of [0,1]){const p=f.frame.at(f.frame.width-u,v);f.input.terrain.tiles.find(tile=>tile.x===p.x&&tile.y===p.y).type='wall';}
+    const height=2.55,details=architecturalDetails(f.b,f.input,T,height,0,f.geometry,f.materials,false),tower=details.getObjectByName('building-detail:review:bell-tower'),panes=tower.children.find(child=>child.material?.name==='world:darkwood'),bounds=f.localBounds(panes);
+    assert.ok(bounds.max.y-bounds.min.y>(wide?1.2:.8),'parish tower must have readable tall bell openings');
+    const roofRise=38/25.066666666666666,top=height+roofRise+(wide?1.80:1.25),cy=top-.17-(wide?1.30:.85)*.5,centerU=f.frame.width-(wide?.5:0)-.4*(f.frame.u.x+f.frame.u.y),centerV=(wide?.5:0)-.4*(f.frame.v.x+f.frame.v.y);
+    assert.ok(bounds.min.y>height+roofRise+.20,'the complete bell opening must rise above the nave ridge');
+    tower.updateMatrixWorld(true);for(const [du,dv]of [[1,0],[-1,0],[0,1],[0,-1]]){
+      const p=f.frame.at(centerU+du*1.4,centerV+dv*1.4),ray=new Raycaster(new Vector3((p.x+.4)*T,cy,(p.y+.4)*T),new Vector3(-du*f.frame.u.x-dv*f.frame.v.x,0,-du*f.frame.u.y-dv*f.frame.v.y),0,T);
+      assert.ok(ray.intersectObject(panes,true).length>0,'every belfry face must retain its dark arched inset');
+    }
+    f.dispose(details);
+  }
+});
+
+test('church facade additions preserve doorway, window and breach paths through every rotation',()=>{
+  for(const side of ['north','east','south','west'])for(const type of ['window','rubble']){
+    const f=fixture('church',side),point=f.frame.at(1,0),tile=f.input.terrain.tiles.find(tile=>tile.x===point.x&&tile.y===point.y);tile.type=type;
+    const before=JSON.stringify(f.input),details=architecturalDetails(f.b,f.input,T,2.55,0,f.geometry,f.materials,false);details.updateMatrixWorld(true);
+    for(const [u,y]of [[f.frame.doorU,1.90],[1,type==='window'?1.3:1.90]]){
+      const actual=u-.4*(f.frame.u.x+f.frame.u.y),start=f.frame.at(actual,-1),ray=new Raycaster(new Vector3((start.x+.4)*T,y,(start.y+.4)*T),new Vector3(f.frame.v.x,0,f.frame.v.y),0,T*1.6);
+      assert.equal(ray.intersectObject(details,true).length,0,`${side} ${type} must remain clear`);
+    }
+    assert.equal(JSON.stringify(f.input),before);f.dispose(details);
+  }
+});
+
+test('parish towers and front crests follow authored slab and terrace roofs without a generated pitch',()=>{
+  for(const side of ['north','east','south','west'])for(const roof of ['terrace','slab']){
+    const f=fixture('church',side);for(const u of [0,1])for(const v of [0,1]){const p=f.frame.at(f.frame.width-u,v);f.input.terrain.tiles.find(tile=>tile.x===p.x&&tile.y===p.y).type='wall';}
+    if(roof==='terrace')f.b.roof='terrace';
+    else f.input.terrain.upperSurfaces=[{x:3,y:3,type:'floor',kind:'roof',buildingId:f.b.id,tacticalLevel:1,elevation:3.2,blocked:false}];
+    const before=JSON.stringify(f.input),building=buildBuilding(f.b,f.input,T,f.geometry,f.materials),height=building.userData.height,tower=building.getObjectByName('building-detail:review:bell-tower'),panes=tower.children.find(child=>child.material?.name==='world:darkwood'),crest=building.getObjectByName('building-detail:review:church-shaped-facade');
+    assert.equal(height,roof==='slab'?3.2:64/25.066666666666666,'metric slabs must supply the actual roof elevation');
+    const openings=new Box3().setFromObject(panes),outline=new Box3().setFromObject(crest);
+    assert.ok(openings.min.y>height+.20&&openings.min.y<height+.40,'the bell stage must clear the flat roof without adding the template pitch');
+    assert.ok(new Box3().setFromObject(tower).max.y<height+3.1,'flat roofs must not inherit the generated nave rise');
+    assert.ok(outline.min.y<height&&outline.max.y<height+.9,'the front crest must join the authored flat shell');
+    assert.equal(JSON.stringify(f.input),before);f.dispose(building);
+  }
+});
+
+test('parish and civic towers preserve legal upper routes while retaining blocked and ground surfaces',()=>{
+  for(const kind of ['church','cabildo','townhall'])for(const side of ['north','east','south','west'])for(const mode of ['blocked','ground','walkable']){
+    const f=fixture(kind,side),name=kind==='church'?'bell-tower':'civic-clock-tower';
+    // Every perimeter cell covers both possible parish foundations and the
+    // civic base. Upper cells are ordinary authoritative scene surfaces.
+    f.input.terrain.upperSurfaces=f.input.terrain.tiles.filter(tile=>tile.type!=='floor').map(tile=>({...tile,type:'floor',kind:'roof',tacticalLevel:mode==='ground'?0:1,elevation:3,blocked:mode==='blocked'}));
+    const before=JSON.stringify(f.input),details=architecturalDetails(f.b,f.input,T,3,0,f.geometry,f.materials,false);
+    assert.equal(Boolean(details.getObjectByName(`building-detail:review:${name}`)),mode!=='walkable',`${kind} ${side} must preserve ${mode} roof surfaces`);
+    assert.equal(JSON.stringify(f.input),before);f.dispose(details);
+  }
+});
+
+test('civic tower clearance checks its full base footprint and parish towers can use the other supported corner',()=>{
+  for(const side of ['north','east','south','west']){
+    const f=fixture('cabildo',side),center=f.frame.at(f.frame.width*.5,.1),height=3;
+    f.input.terrain.upperSurfaces=[{x:Math.floor(center.x+.4)+1,y:Math.round(center.y+.4),type:'floor',kind:'roof',buildingId:f.b.id,tacticalLevel:1,elevation:height,blocked:false}];
+    const details=architecturalDetails(f.b,f.input,T,height,0,f.geometry,f.materials,false);
+    assert.equal(details.getObjectByName('building-detail:review:civic-clock-tower'),undefined,'a route touching the broad cornice must not be hidden by a tower whose centre is in another cell');f.dispose(details);
+    const g=fixture('church',side),blocked=g.frame.at(g.frame.width,0);g.input.terrain.upperSurfaces=[{...blocked,type:'floor',kind:'roof',buildingId:g.b.id,tacticalLevel:1,elevation:height,blocked:false}];
+    const alternate=architecturalDetails(g.b,g.input,T,height,0,g.geometry,g.materials,false),tower=alternate.getObjectByName('building-detail:review:bell-tower'),bounds=g.localBounds(tower);
+    assert.ok(tower,'an intact opposite foundation can retain the parish tower');assert.ok(bounds.getCenter(new Vector3()).x<1,'the tower must move to the unoccupied supported corner');g.dispose(alternate);
   }
 });
 

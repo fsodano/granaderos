@@ -41,7 +41,7 @@ test('hidden, missing, cancelled and incapacitated maintenance retains ordinary 
  const unit={id:'secret',side:'enemy',hp:80,weapon:1800},state={units:[unit]},frame={type:'result',action:'reload',unitId:'secret',state};
  const ordinary=battleFrameDuration(frame);
  for(const change of [{unitId:null},{unitId:'missing'},{performed:false},{state:{units:[{...unit,hp:0}]}},{state:{units:[{...unit,unconscious:true}]}},{state:{units:[{...unit,knockedDown:true}]}}])assert.equal(presentedFrameDuration({...frame,...change},state),ordinary);
- for(const action of ['fire','melee','heal','throwKnife','artillery'])for(const type of ['prepare','contact','projectile','impact','result']){
+ for(const action of ['fire','melee','heal','artillery'])for(const type of ['prepare','contact','projectile','impact','result']){
   const other={...frame,action,type};assert.equal(presentedFrameDuration(other,state),battleFrameDuration(other));
  }
 });

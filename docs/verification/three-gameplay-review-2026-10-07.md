@@ -128,10 +128,40 @@ The live `tools/verify-three-partial-loading.mjs` check retained 69% work throug
 the next turn, then spent 14 internal AP (3.5 displayed PA) and one cartridge
 exactly once. The four UI stages produced no browser errors.
 
+## Fourth increment
+
+Six rifle lengths now have distinct loading and unloading contacts in four
+postures and both anatomy banks. The loading palm stays within 6 mm of its
+actual muzzle and the 3 mm ramrod axis fits the measured muzzle clearance.
+Support feet remain planted; crouched stocks clear the floor. This adds 48
+item-specific aliases to each bank, for 318 clips, and updates the eight generic
+rifle loading clips. The other 262 original clips and bank meshes were retained
+byte-for-byte at that boundary. Native source closeups and the real interrupted
+loading control confirm the corrected bindings.
+
+Recorded grenade and knife throws now use the native preparation interval,
+continue from the release marker through the visible flight, and keep impact
+results without replaying the throw. Eighteen focused checks cover one final
+commit, blocked repeated input, finite item use, impact cues and hidden-flight
+privacy. The rules result remains equal to the ordinary reducer result.
+
+Masonry now reuses the existing mottled sprite plaster. Box surfaces measure
+texture coordinates in metres, so unequal wall lengths and rotated facades
+keep a common texture density. Unequal faces, adjacent joins and explicit
+polygon coordinates pass the focused checks. Church fronts regain their curved
+crest and barred round window; the bell stage clears the actual roof ridge.
+Tower foundations and cornices skip playable upper surfaces.
+
+Posta, warehouse and smithy canopies have roof undersides, fascia and supported
+beams. Timber braces and masonry capitals remain within solid authored cells.
+The live catalogue captured 18 views across these three templates without
+browser errors. Exterior captures and the warehouse interior were compared
+with the retained artwork. The posta piers remain subtle at the review scale.
+
 ## Next increments and acceptance limits
 
-The rifle loading hand and ramrod contact, broader posture bank, braking
-steps and paired melee contact still need review. The
+Mounting, throw body mechanics, the broader posture bank, braking steps and
+paired melee contact still need review. The
 [character review](../../assets/source/characters-3d/REVIEW.md) records the
 accepted standing reference and the retained motion bank separately.
 

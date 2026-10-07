@@ -64,7 +64,19 @@ for(const spec of [...clips.values()].filter(spec=>spec.equipment==='blade')){
   knifeOverrides[spec.name]=knifeName;
   clips.set(knifeName,Object.freeze({...spec,name:knifeName,equipment:'knife'}));
 }
-export const ACTOR_ITEM_CLIP_OVERRIDES=Object.freeze({'1812':Object.freeze(lanceOverrides),'1813':Object.freeze(knifeOverrides)});
+// A loading hand must meet the actual muzzle. Barrel lengths range from the
+// short blunderbuss to the full infantry musket; one shared reach cannot fit.
+const firearmOverrides={};
+const firearmLoads=[...clips.values()].filter(spec=>spec.equipment==='long-gun'&&['reload','unload'].includes(spec.gesture));
+for(const item of ['1800','1801','1802','1803','1804','1807']){
+  const overrides={};
+  for(const spec of firearmLoads){
+    const name=`${spec.name}.${item}`;overrides[spec.name]=name;
+    clips.set(name,Object.freeze({...spec,name,item}));
+  }
+  firearmOverrides[item]=Object.freeze(overrides);
+}
+export const ACTOR_ITEM_CLIP_OVERRIDES=Object.freeze({...firearmOverrides,'1812':Object.freeze(lanceOverrides),'1813':Object.freeze(knifeOverrides)});
 
 // Every variant presents one paid strike with one contact. The preview's
 // two-cut combination is deliberately not a gameplay animation capability.
