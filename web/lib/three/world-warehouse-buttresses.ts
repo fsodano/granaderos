@@ -15,10 +15,11 @@ export function warehouseButtresses(b:WorldBuilding,input:WorldInput,T:number,he
   const root=new Group();root.name=`building-warehouse-buttresses:${b.id}`;
   if(height<.8)return root;
   const walls=input.terrain.tiles.filter(tile=>tile.buildingId===b.id&&['wall','door','window'].includes(tile.type)),frame=entranceFrame({...b,walls}),inset=buildingArtInset(b,input),appearance=buildingAppearance(b),profile=getBuildingProfile(b),batch=new WorldBatch(geometry),light=illuminationAt(input,b),V=25.066666666666666;
-  const wall=materials.get(appearance.wallFinish,legacy?{colour:buildingStyle(b).wall}:{}),stone=materials.get('stone');
+  const authored=!legacy||b.wallFinish!==undefined,stoneBody=authored&&appearance.wallFinish==='stone';
+  const wall=materials.get(appearance.wallFinish,!authored?{colour:buildingStyle(b).wall}:stoneBody?{architectureRole:'volume'}:{}),stone=materials.get('stone',authored?{architectureRole:'volume',colour:'#a99a79'}:{});
   // ArchitectureVolume uses each authored finish's pale trim on its sloped
   // cap. Keep that local coping separate from the textured masonry body.
-  const copingColours:Record<string,string>={adobe:'#cab48e',limewash:'#eee6d1',ochre:'#e4d3ab',stone:'#c5bd9f',brick:'#cfb490'},coping=materials.get('masonry-coping',{colour:legacy?buildingStyle(b).trim:copingColours[appearance.wallFinish]??copingColours.stone});
+  const copingColours:Record<string,string>={adobe:'#cab48e',limewash:'#eee6d1',ochre:'#e4d3ab',stone:'#c5bd9f',brick:'#cfb490'},coping=materials.get('masonry-coping',{colour:!authored?buildingStyle(b).trim:copingColours[appearance.wallFinish]??copingColours.stone});
   const at=(u:number,v:number,y:number)=>{const p=frame.at(u,v);return new Vector3((p.x+inset)*T,base+y,(p.y+inset)*T);};
   const face=(material:ReturnType<WorldMaterials['get']>,points:Vector3[],shade=1)=>{
     const normal=points[1].clone().sub(points[0]).cross(points[2].clone().sub(points[0])).normalize();
@@ -32,9 +33,10 @@ export function warehouseButtresses(b:WorldBuilding,input:WorldInput,T:number,he
     // Join the body at the top of the footing. Overlapping plaster and stone
     // on a shared outer plane would flicker on authored non-stone walls.
     face(coping,[...top].reverse());face(wall,feet);
-    // The direct volume shades its upright side faces against the wall. Keep
-    // that modest contrast on this small support without changing its finish.
-    for(let n=0;n<4;n++){const next=(n+1)%4;face(wall,[feet[n],feet[next],top[next],top[n]],.86);}
+    // The current stone source overlays its map at 60% on the authored base.
+    // Native normal lighting then shades the wedge, without a second uniform
+    // brightness guess. Other authored textures retain their released choice.
+    for(let n=0;n<4;n++){const next=(n+1)%4;face(wall,[feet[n],feet[next],top[next],top[n]],stoneBody?1:.86);}
     face(stone,[...feet].reverse());
     for(let n=0;n<4;n++){const next=(n+1)%4;face(stone,[bottom[n],bottom[next],feet[next],feet[n]]);}
   }
