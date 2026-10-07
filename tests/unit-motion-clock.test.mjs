@@ -6,6 +6,11 @@ import {createElement as h,act} from '../web/node_modules/react/index.js';
 import {createRoot} from '../web/node_modules/react-dom/client.js';
 import {createBattle,actBattle} from '../game/tactical.js';
 const {useUnitMotion}=await import('../web/app/useUnitMotion.ts');
+const {movementStepDuration}=await import('../web/lib/three/movement-timing.ts');
+const {TILE_METRES}=await import('../web/lib/three/projection.ts');
+const {sampleAnimationTime}=await import('../web/lib/three/animation-clock.ts');
+const {readFileSync}=await import('node:fs');
+const manifest=JSON.parse(readFileSync(new URL('../web/public/models/characters/manifest.json',import.meta.url),'utf8'));
 
 async function mountMotion(t){
  const dom=new JSDOM('<!doctype html><div id="root"></div>'),frames=new Map();
@@ -93,4 +98,30 @@ test('incremental movement keeps its gait between paid tiles and stops only when
  await env.frame(120);assert.equal(env.motion.positions.walker.x,2.5);assert.equal(env.motion.positions.walker.elapsedMs,360);
  await env.frame(120);assert.equal(env.motion.positions.walker.x,3);assert.equal(env.motion.positions.walker.moving,true);
  await env.draw(second,new Set());assert.equal(env.motion.positions.walker.moving,false);assert.equal(env.motion.positions.walker.settled,true);assert.equal(env.pendingFrames,0);
+});
+
+for(const appearance of ['granadero','woman-scout'])test(`${appearance} crawl travels at its measured body pace and retains the paid state`,async t=>{
+ const env=await mountMotion(t),before=createBattle([{id:'crawler',x:1,y:1,stance:'prone',movementMode:'prone',spriteAppearance:appearance}],{width:8,height:8,tiles:Array.from({length:64},(_,i)=>({x:i%8,y:Math.floor(i/8),type:'grass',blocked:false,cover:0})),exploration:true,enemies:[]});
+ await env.draw(before);const after=actBattle(before,{type:'move',unitId:'crawler',x:2,y:1,movement:'prone'}),paid=structuredClone(after);
+ assert.equal(after.lastError,null);await env.draw(after);
+ const clip=manifest.animationLibraries[manifest.appearances[appearance].animationLibrary].clips.find(clip=>clip.name==='prone.crawl.unarmed');
+ const duration=movementStepDuration(after.units[0],before.units[0],after.units[0]);
+ assert.ok(duration>4000,'One cell cannot run nearly eight crawl cycles in 420 ms');
+ await env.frame(500);const position=env.motion.positions.crawler;
+ assert.ok(Math.abs(position.x-(1+.5*clip.nativeStrideSpeed/TILE_METRES))<1e-8);
+ const gait=sampleAnimationTime({clip,action:'crawl',now:env.now,motion:{moving:true,elapsedDistance:position.elapsedDistance*TILE_METRES,speed:position.speed*TILE_METRES}});
+ assert.ok(Math.abs(gait.time-.5)<1e-8,'One second of natural travel advances one second of the authored gait');
+ assert.equal(env.motion.blocking,true);
+ await env.frame(duration-500);assert.equal(env.motion.positions.crawler.x,2);assert.equal(env.motion.positions.crawler.moving,false);assert.equal(env.motion.blocking,false);
+ assert.deepEqual(after,paid,'Visual travel cannot alter paid AP, positions or simulation state');
+});
+
+test('diagonal crawl uses distance while a recorded short delay cannot accelerate it',()=>{
+ const actor={stance:'prone',movementMode:'prone',spriteAppearance:'granadero'},from={x:1,y:1};
+ const cardinal=movementStepDuration(actor,from,{x:2,y:1},210),diagonal=movementStepDuration(actor,from,{x:2,y:2},210);
+ assert.ok(Math.abs(diagonal/cardinal-Math.SQRT2)<1e-9);
+ assert.equal(movementStepDuration(actor,from,{x:2,y:1},cardinal),cardinal,'The playback duration and position interpolation use the same clock');
+ assert.equal(movementStepDuration(actor,from,{x:2,y:1},undefined,true),cardinal*1.25,'Preserved facing keeps its slower travel');
+ assert.equal(movementStepDuration({...actor,mounted:true},from,{x:2,y:1},210),210,'Mounted movement keeps its separate gait');
+ assert.equal(movementStepDuration(actor,from,{x:2,y:1,kind:'climb'},210),210,'A climb uses its recorded link fraction');
 });

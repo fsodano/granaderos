@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "source": "web/public/models/characters/manifest.json",
+  "appearances": {
+    "granadero": "male",
+    "royalist": "male",
+    "worker": "male",
+    "surgeon": "male",
+    "gaucho": "male",
+    "friar": "male",
+    "woman-scout": "female",
+    "woman-shawl": "female"
+  },
+  "banks": {
+    "male": {
+      "crawl": {
+        "nativeStrideSpeed": 0.195142,
+        "duration": 1.966659,
+        "playbackRate": 1
+      }
+    },
+    "female": {
+      "crawl": {
+        "nativeStrideSpeed": 0.194203,
+        "duration": 1.966659,
+        "playbackRate": 1
+      }
+    }
+  }
+}

@@ -1831,7 +1831,7 @@
       "clips": [
         {
           "name": "stand.idle.unarmed",
-          "duration": 2.0,
+          "duration": 2,
           "loop": true,
           "events": {},
           "gesture": "idle",
@@ -1957,7 +1957,7 @@
         },
         {
           "name": "stand.punch.unarmed",
-          "duration": 1.0,
+          "duration": 1,
           "loop": false,
           "events": {
             "contact": 0.42
@@ -1983,7 +1983,7 @@
         },
         {
           "name": "stand.idle.long-gun",
-          "duration": 2.0,
+          "duration": 2,
           "loop": true,
           "events": {},
           "gesture": "idle",
@@ -2099,7 +2099,7 @@
         },
         {
           "name": "stand.aim.long-gun",
-          "duration": 2.0,
+          "duration": 2,
           "loop": true,
           "events": {},
           "gesture": "aim",
@@ -2177,7 +2177,7 @@
         },
         {
           "name": "stand.reprime.long-gun",
-          "duration": 2.0,
+          "duration": 2,
           "loop": false,
           "events": {
             "contact": 0.9,
@@ -2199,7 +2199,7 @@
         },
         {
           "name": "stand.repair.long-gun",
-          "duration": 2.0,
+          "duration": 2,
           "loop": false,
           "events": {
             "contact": 0.9,
@@ -2221,7 +2221,7 @@
         },
         {
           "name": "stand.unload.long-gun",
-          "duration": 2.0,
+          "duration": 2,
           "loop": false,
           "events": {
             "contact": 0.9,
@@ -2243,7 +2243,7 @@
         },
         {
           "name": "stand.butt.long-gun",
-          "duration": 1.0,
+          "duration": 1,
           "loop": false,
           "events": {
             "contact": 0.42
@@ -2269,7 +2269,7 @@
         },
         {
           "name": "stand.bayonet.long-gun",
-          "duration": 1.0,
+          "duration": 1,
           "loop": false,
           "events": {
             "contact": 0.42
@@ -2295,7 +2295,7 @@
         },
         {
           "name": "stand.brace.long-gun",
-          "duration": 2.0,
+          "duration": 2,
           "loop": true,
           "events": {},
           "gesture": "brace",
@@ -2317,7 +2317,7 @@
         },
         {
           "name": "stand.idle.short-gun",
-          "duration": 2.0,
+          "duration": 2,
           "loop": true,
           "events": {},
           "gesture": "idle",
@@ -2433,7 +2433,7 @@
         },
         {
           "name": "stand.aim.short-gun",
-          "duration": 2.0,
+          "duration": 2,
           "loop": true,
           "events": {},
           "gesture": "aim",
@@ -2503,7 +2503,7 @@
         },
         {
           "name": "stand.reprime.short-gun",
-          "duration": 2.0,
+          "duration": 2,
           "loop": false,
           "events": {
             "contact": 0.9,
@@ -2525,7 +2525,7 @@
         },
         {
           "name": "stand.repair.short-gun",
-          "duration": 2.0,
+          "duration": 2,
           "loop": false,
           "events": {
             "contact": 0.9,
@@ -2547,7 +2547,7 @@
         },
         {
           "name": "stand.unload.short-gun",
-          "duration": 2.0,
+          "duration": 2,
           "loop": false,
           "events": {
             "contact": 0.9,
@@ -2569,7 +2569,7 @@
         },
         {
           "name": "stand.butt.short-gun",
-          "duration": 1.0,
+          "duration": 1,
           "loop": false,
           "events": {
             "contact": 0.42
@@ -2595,7 +2595,7 @@
         },
         {
           "name": "stand.idle.blade",
-          "duration": 2.0,
+          "duration": 2,
           "loop": true,
           "events": {},
           "gesture": "idle",
@@ -2711,7 +2711,7 @@
         },
         {
           "name": "stand.slash.blade",
-          "duration": 1.0,
+          "duration": 1,
           "loop": false,
           "events": {
             "contact": 0.36
@@ -2737,7 +2737,7 @@
         },
         {
           "name": "stand.brace.blade",
-          "duration": 2.0,
+          "duration": 2,
           "loop": true,
           "events": {},
           "gesture": "brace",
@@ -2847,14 +2847,14 @@
           "loop": false,
           "events": {
             "contact": 0.58,
-            "recover": 1.0
+            "recover": 1
           },
           "gesture": "punch",
           "posture": "crouched",
           "equipment": "unarmed",
           "markers": {
             "contact": 0.58,
-            "recover": 1.0
+            "recover": 1
           },
           "source": {
             "type": "native-contact-authoring"
@@ -3015,7 +3015,7 @@
         },
         {
           "name": "crouch.reprime.long-gun",
-          "duration": 2.0,
+          "duration": 2,
           "loop": false,
           "events": {
             "contact": 0.9,
@@ -3037,7 +3037,7 @@
         },
         {
           "name": "crouch.repair.long-gun",
-          "duration": 2.0,
+          "duration": 2,
           "loop": false,
           "events": {
             "contact": 0.9,
@@ -3059,7 +3059,7 @@
         },
         {
           "name": "crouch.unload.long-gun",
-          "duration": 2.0,
+          "duration": 2,
           "loop": false,
           "events": {
             "contact": 0.9,
@@ -3085,14 +3085,14 @@
           "loop": false,
           "events": {
             "contact": 0.58,
-            "recover": 1.0
+            "recover": 1
           },
           "gesture": "butt",
           "posture": "crouched",
           "equipment": "long-gun",
           "markers": {
             "contact": 0.58,
-            "recover": 1.0
+            "recover": 1
           },
           "source": {
             "type": "native-contact-authoring"
@@ -3107,14 +3107,14 @@
           "loop": false,
           "events": {
             "contact": 0.58,
-            "recover": 1.0
+            "recover": 1
           },
           "gesture": "bayonet",
           "posture": "crouched",
           "equipment": "long-gun",
           "markers": {
             "contact": 0.58,
-            "recover": 1.0
+            "recover": 1
           },
           "source": {
             "type": "native-contact-authoring"
@@ -3283,7 +3283,7 @@
         },
         {
           "name": "crouch.reprime.short-gun",
-          "duration": 2.0,
+          "duration": 2,
           "loop": false,
           "events": {
             "contact": 0.9,
@@ -3305,7 +3305,7 @@
         },
         {
           "name": "crouch.repair.short-gun",
-          "duration": 2.0,
+          "duration": 2,
           "loop": false,
           "events": {
             "contact": 0.9,
@@ -3327,7 +3327,7 @@
         },
         {
           "name": "crouch.unload.short-gun",
-          "duration": 2.0,
+          "duration": 2,
           "loop": false,
           "events": {
             "contact": 0.9,
@@ -3353,14 +3353,14 @@
           "loop": false,
           "events": {
             "contact": 0.58,
-            "recover": 1.0
+            "recover": 1
           },
           "gesture": "butt",
           "posture": "crouched",
           "equipment": "short-gun",
           "markers": {
             "contact": 0.58,
-            "recover": 1.0
+            "recover": 1
           },
           "source": {
             "type": "native-contact-authoring"
@@ -3459,14 +3459,14 @@
           "loop": false,
           "events": {
             "contact": 0.58,
-            "recover": 1.0
+            "recover": 1
           },
           "gesture": "slash",
           "posture": "crouched",
           "equipment": "blade",
           "markers": {
             "contact": 0.58,
-            "recover": 1.0
+            "recover": 1
           },
           "source": {
             "type": "native-contact-authoring"
@@ -3527,7 +3527,21 @@
           "sampleRate": 15,
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
-          "locomotionSpeed": 0.0796
+          "locomotionSpeed": 0.195142,
+          "nativeStrideSpeed": 0.195142,
+          "strideDistance": 0.383778,
+          "strideMeasurement": {
+            "method": "median rearward forearm contact velocity",
+            "bones": [
+              "lowerarm_l",
+              "lowerarm_r"
+            ],
+            "maximumContactHeight": 0.09,
+            "sampleCount": 20,
+            "space": "exported-gltf",
+            "referenceClip": "prone.crawl.unarmed"
+          },
+          "authoredStrideSpeed": 0.202303
         },
         {
           "name": "prone.idle.long-gun",
@@ -3565,7 +3579,21 @@
           "sampleRate": 15,
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
-          "locomotionSpeed": 0.0796
+          "locomotionSpeed": 0.195142,
+          "nativeStrideSpeed": 0.195142,
+          "strideDistance": 0.383778,
+          "strideMeasurement": {
+            "method": "median rearward forearm contact velocity",
+            "bones": [
+              "lowerarm_l",
+              "lowerarm_r"
+            ],
+            "maximumContactHeight": 0.09,
+            "sampleCount": 20,
+            "space": "exported-gltf",
+            "referenceClip": "prone.crawl.unarmed"
+          },
+          "authoredStrideSpeed": 0.202303
         },
         {
           "name": "prone.aim.long-gun",
@@ -3635,7 +3663,7 @@
         },
         {
           "name": "prone.reprime.long-gun",
-          "duration": 2.0,
+          "duration": 2,
           "loop": false,
           "events": {
             "contact": 0.9,
@@ -3657,7 +3685,7 @@
         },
         {
           "name": "prone.repair.long-gun",
-          "duration": 2.0,
+          "duration": 2,
           "loop": false,
           "events": {
             "contact": 0.9,
@@ -3679,7 +3707,7 @@
         },
         {
           "name": "prone.unload.long-gun",
-          "duration": 2.0,
+          "duration": 2,
           "loop": false,
           "events": {
             "contact": 0.9,
@@ -3735,7 +3763,21 @@
           "sampleRate": 15,
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
-          "locomotionSpeed": 0.0796
+          "locomotionSpeed": 0.195142,
+          "nativeStrideSpeed": 0.195142,
+          "strideDistance": 0.383778,
+          "strideMeasurement": {
+            "method": "median rearward forearm contact velocity",
+            "bones": [
+              "lowerarm_l",
+              "lowerarm_r"
+            ],
+            "maximumContactHeight": 0.09,
+            "sampleCount": 20,
+            "space": "exported-gltf",
+            "referenceClip": "prone.crawl.unarmed"
+          },
+          "authoredStrideSpeed": 0.202303
         },
         {
           "name": "prone.aim.short-gun",
@@ -3797,7 +3839,7 @@
         },
         {
           "name": "prone.reprime.short-gun",
-          "duration": 2.0,
+          "duration": 2,
           "loop": false,
           "events": {
             "contact": 0.9,
@@ -3819,7 +3861,7 @@
         },
         {
           "name": "prone.repair.short-gun",
-          "duration": 2.0,
+          "duration": 2,
           "loop": false,
           "events": {
             "contact": 0.9,
@@ -3841,7 +3883,7 @@
         },
         {
           "name": "prone.unload.short-gun",
-          "duration": 2.0,
+          "duration": 2,
           "loop": false,
           "events": {
             "contact": 0.9,
@@ -3897,7 +3939,21 @@
           "sampleRate": 15,
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
-          "locomotionSpeed": 0.0796
+          "locomotionSpeed": 0.195142,
+          "nativeStrideSpeed": 0.195142,
+          "strideDistance": 0.383778,
+          "strideMeasurement": {
+            "method": "median rearward forearm contact velocity",
+            "bones": [
+              "lowerarm_l",
+              "lowerarm_r"
+            ],
+            "maximumContactHeight": 0.09,
+            "sampleCount": 20,
+            "space": "exported-gltf",
+            "referenceClip": "prone.crawl.unarmed"
+          },
+          "authoredStrideSpeed": 0.202303
         },
         {
           "name": "mounted.idle.unarmed",
@@ -3915,7 +3971,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -3943,7 +3999,7 @@
           "rootMotion": "in-place",
           "locomotionSpeed": 1.4052,
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -3971,7 +4027,7 @@
           "rootMotion": "in-place",
           "locomotionSpeed": 1.007,
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -3983,14 +4039,14 @@
           "loop": false,
           "events": {
             "contact": 0.58,
-            "recover": 1.0
+            "recover": 1
           },
           "gesture": "punch",
           "posture": "mounted",
           "equipment": "unarmed",
           "markers": {
             "contact": 0.58,
-            "recover": 1.0
+            "recover": 1
           },
           "source": {
             "type": "native-contact-authoring"
@@ -3999,7 +4055,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -4021,7 +4077,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -4049,7 +4105,7 @@
           "rootMotion": "in-place",
           "locomotionSpeed": 1.4052,
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -4077,7 +4133,7 @@
           "rootMotion": "in-place",
           "locomotionSpeed": 1.007,
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -4099,7 +4155,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -4125,7 +4181,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -4161,7 +4217,7 @@
             }
           ],
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -4169,7 +4225,7 @@
         },
         {
           "name": "mounted.reprime.long-gun",
-          "duration": 2.0,
+          "duration": 2,
           "loop": false,
           "events": {
             "contact": 0.9,
@@ -4189,7 +4245,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -4197,7 +4253,7 @@
         },
         {
           "name": "mounted.repair.long-gun",
-          "duration": 2.0,
+          "duration": 2,
           "loop": false,
           "events": {
             "contact": 0.9,
@@ -4217,7 +4273,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -4225,7 +4281,7 @@
         },
         {
           "name": "mounted.unload.long-gun",
-          "duration": 2.0,
+          "duration": 2,
           "loop": false,
           "events": {
             "contact": 0.9,
@@ -4245,7 +4301,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -4257,14 +4313,14 @@
           "loop": false,
           "events": {
             "contact": 0.58,
-            "recover": 1.0
+            "recover": 1
           },
           "gesture": "butt",
           "posture": "mounted",
           "equipment": "long-gun",
           "markers": {
             "contact": 0.58,
-            "recover": 1.0
+            "recover": 1
           },
           "source": {
             "type": "native-contact-authoring"
@@ -4273,7 +4329,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -4285,14 +4341,14 @@
           "loop": false,
           "events": {
             "contact": 0.58,
-            "recover": 1.0
+            "recover": 1
           },
           "gesture": "bayonet",
           "posture": "mounted",
           "equipment": "long-gun",
           "markers": {
             "contact": 0.58,
-            "recover": 1.0
+            "recover": 1
           },
           "source": {
             "type": "native-contact-authoring"
@@ -4301,7 +4357,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -4323,7 +4379,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -4345,7 +4401,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -4373,7 +4429,7 @@
           "rootMotion": "in-place",
           "locomotionSpeed": 1.4052,
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -4401,7 +4457,7 @@
           "rootMotion": "in-place",
           "locomotionSpeed": 1.007,
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -4423,7 +4479,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -4449,7 +4505,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -4477,7 +4533,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -4485,7 +4541,7 @@
         },
         {
           "name": "mounted.reprime.short-gun",
-          "duration": 2.0,
+          "duration": 2,
           "loop": false,
           "events": {
             "contact": 0.9,
@@ -4505,7 +4561,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -4513,7 +4569,7 @@
         },
         {
           "name": "mounted.repair.short-gun",
-          "duration": 2.0,
+          "duration": 2,
           "loop": false,
           "events": {
             "contact": 0.9,
@@ -4533,7 +4589,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -4541,7 +4597,7 @@
         },
         {
           "name": "mounted.unload.short-gun",
-          "duration": 2.0,
+          "duration": 2,
           "loop": false,
           "events": {
             "contact": 0.9,
@@ -4561,7 +4617,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -4573,14 +4629,14 @@
           "loop": false,
           "events": {
             "contact": 0.58,
-            "recover": 1.0
+            "recover": 1
           },
           "gesture": "butt",
           "posture": "mounted",
           "equipment": "short-gun",
           "markers": {
             "contact": 0.58,
-            "recover": 1.0
+            "recover": 1
           },
           "source": {
             "type": "native-contact-authoring"
@@ -4589,7 +4645,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -4611,7 +4667,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -4639,7 +4695,7 @@
           "rootMotion": "in-place",
           "locomotionSpeed": 1.4052,
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -4667,7 +4723,7 @@
           "rootMotion": "in-place",
           "locomotionSpeed": 1.007,
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -4679,14 +4735,14 @@
           "loop": false,
           "events": {
             "contact": 0.58,
-            "recover": 1.0
+            "recover": 1
           },
           "gesture": "slash",
           "posture": "mounted",
           "equipment": "blade",
           "markers": {
             "contact": 0.58,
-            "recover": 1.0
+            "recover": 1
           },
           "source": {
             "type": "native-contact-authoring"
@@ -4695,7 +4751,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -4717,7 +4773,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -5490,7 +5546,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -5513,7 +5569,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -5536,7 +5592,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -5559,7 +5615,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -5582,7 +5638,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -5605,7 +5661,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -5628,7 +5684,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -5655,7 +5711,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -5678,7 +5734,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -5701,7 +5757,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -5724,7 +5780,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -5747,7 +5803,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -5774,7 +5830,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -5801,7 +5857,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -6024,7 +6080,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -6065,7 +6121,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -6576,7 +6632,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -6622,7 +6678,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -6659,7 +6715,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -6682,7 +6738,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -6714,7 +6770,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -6737,7 +6793,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -6769,7 +6825,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -6890,7 +6946,7 @@
         },
         {
           "name": "stand.idle.knife",
-          "duration": 2.0,
+          "duration": 2,
           "loop": true,
           "events": {},
           "gesture": "idle",
@@ -7100,14 +7156,14 @@
           "loop": false,
           "events": {
             "contact": 0.58,
-            "recover": 1.0
+            "recover": 1
           },
           "gesture": "thrust",
           "posture": "standing",
           "equipment": "lance",
           "markers": {
             "contact": 0.58,
-            "recover": 1.0
+            "recover": 1
           },
           "source": {
             "type": "native-contact-authoring"
@@ -7160,7 +7216,7 @@
         },
         {
           "name": "stand.brace.knife",
-          "duration": 2.0,
+          "duration": 2,
           "loop": true,
           "events": {},
           "gesture": "brace",
@@ -7354,14 +7410,14 @@
           "loop": false,
           "events": {
             "contact": 0.58,
-            "recover": 1.0
+            "recover": 1
           },
           "gesture": "thrust",
           "posture": "crouched",
           "equipment": "lance",
           "markers": {
             "contact": 0.58,
-            "recover": 1.0
+            "recover": 1
           },
           "source": {
             "type": "native-contact-authoring"
@@ -7376,14 +7432,14 @@
           "loop": false,
           "events": {
             "contact": 0.58,
-            "recover": 1.0
+            "recover": 1
           },
           "gesture": "slash",
           "posture": "crouched",
           "equipment": "knife",
           "markers": {
             "contact": 0.58,
-            "recover": 1.0
+            "recover": 1
           },
           "source": {
             "type": "native-contact-authoring"
@@ -7476,7 +7532,21 @@
           "sampleRate": 15,
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
-          "locomotionSpeed": 0.0796
+          "locomotionSpeed": 0.195142,
+          "nativeStrideSpeed": 0.195142,
+          "strideDistance": 0.383778,
+          "strideMeasurement": {
+            "method": "median rearward forearm contact velocity",
+            "bones": [
+              "lowerarm_l",
+              "lowerarm_r"
+            ],
+            "maximumContactHeight": 0.09,
+            "sampleCount": 20,
+            "space": "exported-gltf",
+            "referenceClip": "prone.crawl.unarmed"
+          },
+          "authoredStrideSpeed": 0.202303
         },
         {
           "name": "prone.crawl.knife",
@@ -7498,7 +7568,21 @@
           "sampleRate": 15,
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
-          "locomotionSpeed": 0.0796
+          "locomotionSpeed": 0.195142,
+          "nativeStrideSpeed": 0.195142,
+          "strideDistance": 0.383778,
+          "strideMeasurement": {
+            "method": "median rearward forearm contact velocity",
+            "bones": [
+              "lowerarm_l",
+              "lowerarm_r"
+            ],
+            "maximumContactHeight": 0.09,
+            "sampleCount": 20,
+            "space": "exported-gltf",
+            "referenceClip": "prone.crawl.unarmed"
+          },
+          "authoredStrideSpeed": 0.202303
         },
         {
           "name": "mounted.idle.lance",
@@ -7516,7 +7600,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -7538,7 +7622,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -7566,7 +7650,7 @@
           "rootMotion": "in-place",
           "locomotionSpeed": 1.4052,
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -7594,7 +7678,7 @@
           "rootMotion": "in-place",
           "locomotionSpeed": 1.4052,
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -7622,7 +7706,7 @@
           "rootMotion": "in-place",
           "locomotionSpeed": 1.007,
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -7650,7 +7734,7 @@
           "rootMotion": "in-place",
           "locomotionSpeed": 1.007,
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -7662,14 +7746,14 @@
           "loop": false,
           "events": {
             "contact": 0.58,
-            "recover": 1.0
+            "recover": 1
           },
           "gesture": "thrust",
           "posture": "mounted",
           "equipment": "lance",
           "markers": {
             "contact": 0.58,
-            "recover": 1.0
+            "recover": 1
           },
           "source": {
             "type": "native-contact-authoring"
@@ -7678,7 +7762,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -7690,14 +7774,14 @@
           "loop": false,
           "events": {
             "contact": 0.58,
-            "recover": 1.0
+            "recover": 1
           },
           "gesture": "slash",
           "posture": "mounted",
           "equipment": "knife",
           "markers": {
             "contact": 0.58,
-            "recover": 1.0
+            "recover": 1
           },
           "source": {
             "type": "native-contact-authoring"
@@ -7706,7 +7790,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -7728,7 +7812,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -7750,7 +7834,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9451594948768616,
             0.006795833352953196
           ],
@@ -7758,7 +7842,7 @@
         },
         {
           "name": "stand.slash.blade.forehand",
-          "duration": 1.0,
+          "duration": 1,
           "loop": false,
           "events": {
             "contact": 0.36
@@ -7785,7 +7869,7 @@
         },
         {
           "name": "stand.slash.blade.backhand",
-          "duration": 1.0,
+          "duration": 1,
           "loop": false,
           "events": {
             "contact": 0.36
@@ -7812,7 +7896,7 @@
         },
         {
           "name": "stand.slash.blade.thrust",
-          "duration": 1.0,
+          "duration": 1,
           "loop": false,
           "events": {
             "contact": 0.42
@@ -7839,7 +7923,7 @@
         },
         {
           "name": "stand.slash.blade.hilt",
-          "duration": 1.0,
+          "duration": 1,
           "loop": false,
           "events": {
             "contact": 0.42
@@ -7893,7 +7977,7 @@
         },
         {
           "name": "stand.slash.knife.thrust",
-          "duration": 1.0,
+          "duration": 1,
           "loop": false,
           "events": {
             "contact": 0.42
@@ -7928,7 +8012,7 @@
         "strafeLeftStanding": 1.1159,
         "strafeRightCrouched": 0.8492,
         "strafeLeftCrouched": 0.7564,
-        "crawl": 0.0796,
+        "crawl": 0.195142,
         "climbUp": 0.4062,
         "climbDown": 0.4455,
         "recover": 0.3467,
@@ -7948,7 +8032,7 @@
       "clips": [
         {
           "name": "stand.idle.unarmed",
-          "duration": 2.0,
+          "duration": 2,
           "loop": true,
           "events": {},
           "gesture": "idle",
@@ -8074,7 +8158,7 @@
         },
         {
           "name": "stand.punch.unarmed",
-          "duration": 1.0,
+          "duration": 1,
           "loop": false,
           "events": {
             "contact": 0.42
@@ -8100,7 +8184,7 @@
         },
         {
           "name": "stand.idle.long-gun",
-          "duration": 2.0,
+          "duration": 2,
           "loop": true,
           "events": {},
           "gesture": "idle",
@@ -8216,7 +8300,7 @@
         },
         {
           "name": "stand.aim.long-gun",
-          "duration": 2.0,
+          "duration": 2,
           "loop": true,
           "events": {},
           "gesture": "aim",
@@ -8294,7 +8378,7 @@
         },
         {
           "name": "stand.reprime.long-gun",
-          "duration": 2.0,
+          "duration": 2,
           "loop": false,
           "events": {
             "contact": 0.9,
@@ -8316,7 +8400,7 @@
         },
         {
           "name": "stand.repair.long-gun",
-          "duration": 2.0,
+          "duration": 2,
           "loop": false,
           "events": {
             "contact": 0.9,
@@ -8338,7 +8422,7 @@
         },
         {
           "name": "stand.unload.long-gun",
-          "duration": 2.0,
+          "duration": 2,
           "loop": false,
           "events": {
             "contact": 0.9,
@@ -8360,7 +8444,7 @@
         },
         {
           "name": "stand.butt.long-gun",
-          "duration": 1.0,
+          "duration": 1,
           "loop": false,
           "events": {
             "contact": 0.42
@@ -8386,7 +8470,7 @@
         },
         {
           "name": "stand.bayonet.long-gun",
-          "duration": 1.0,
+          "duration": 1,
           "loop": false,
           "events": {
             "contact": 0.42
@@ -8412,7 +8496,7 @@
         },
         {
           "name": "stand.brace.long-gun",
-          "duration": 2.0,
+          "duration": 2,
           "loop": true,
           "events": {},
           "gesture": "brace",
@@ -8434,7 +8518,7 @@
         },
         {
           "name": "stand.idle.short-gun",
-          "duration": 2.0,
+          "duration": 2,
           "loop": true,
           "events": {},
           "gesture": "idle",
@@ -8550,7 +8634,7 @@
         },
         {
           "name": "stand.aim.short-gun",
-          "duration": 2.0,
+          "duration": 2,
           "loop": true,
           "events": {},
           "gesture": "aim",
@@ -8620,7 +8704,7 @@
         },
         {
           "name": "stand.reprime.short-gun",
-          "duration": 2.0,
+          "duration": 2,
           "loop": false,
           "events": {
             "contact": 0.9,
@@ -8642,7 +8726,7 @@
         },
         {
           "name": "stand.repair.short-gun",
-          "duration": 2.0,
+          "duration": 2,
           "loop": false,
           "events": {
             "contact": 0.9,
@@ -8664,7 +8748,7 @@
         },
         {
           "name": "stand.unload.short-gun",
-          "duration": 2.0,
+          "duration": 2,
           "loop": false,
           "events": {
             "contact": 0.9,
@@ -8686,7 +8770,7 @@
         },
         {
           "name": "stand.butt.short-gun",
-          "duration": 1.0,
+          "duration": 1,
           "loop": false,
           "events": {
             "contact": 0.42
@@ -8712,7 +8796,7 @@
         },
         {
           "name": "stand.idle.blade",
-          "duration": 2.0,
+          "duration": 2,
           "loop": true,
           "events": {},
           "gesture": "idle",
@@ -8828,7 +8912,7 @@
         },
         {
           "name": "stand.slash.blade",
-          "duration": 1.0,
+          "duration": 1,
           "loop": false,
           "events": {
             "contact": 0.36
@@ -8854,7 +8938,7 @@
         },
         {
           "name": "stand.brace.blade",
-          "duration": 2.0,
+          "duration": 2,
           "loop": true,
           "events": {},
           "gesture": "brace",
@@ -8964,14 +9048,14 @@
           "loop": false,
           "events": {
             "contact": 0.58,
-            "recover": 1.0
+            "recover": 1
           },
           "gesture": "punch",
           "posture": "crouched",
           "equipment": "unarmed",
           "markers": {
             "contact": 0.58,
-            "recover": 1.0
+            "recover": 1
           },
           "source": {
             "type": "native-contact-authoring"
@@ -9132,7 +9216,7 @@
         },
         {
           "name": "crouch.reprime.long-gun",
-          "duration": 2.0,
+          "duration": 2,
           "loop": false,
           "events": {
             "contact": 0.9,
@@ -9154,7 +9238,7 @@
         },
         {
           "name": "crouch.repair.long-gun",
-          "duration": 2.0,
+          "duration": 2,
           "loop": false,
           "events": {
             "contact": 0.9,
@@ -9176,7 +9260,7 @@
         },
         {
           "name": "crouch.unload.long-gun",
-          "duration": 2.0,
+          "duration": 2,
           "loop": false,
           "events": {
             "contact": 0.9,
@@ -9202,14 +9286,14 @@
           "loop": false,
           "events": {
             "contact": 0.58,
-            "recover": 1.0
+            "recover": 1
           },
           "gesture": "butt",
           "posture": "crouched",
           "equipment": "long-gun",
           "markers": {
             "contact": 0.58,
-            "recover": 1.0
+            "recover": 1
           },
           "source": {
             "type": "native-contact-authoring"
@@ -9224,14 +9308,14 @@
           "loop": false,
           "events": {
             "contact": 0.58,
-            "recover": 1.0
+            "recover": 1
           },
           "gesture": "bayonet",
           "posture": "crouched",
           "equipment": "long-gun",
           "markers": {
             "contact": 0.58,
-            "recover": 1.0
+            "recover": 1
           },
           "source": {
             "type": "native-contact-authoring"
@@ -9400,7 +9484,7 @@
         },
         {
           "name": "crouch.reprime.short-gun",
-          "duration": 2.0,
+          "duration": 2,
           "loop": false,
           "events": {
             "contact": 0.9,
@@ -9422,7 +9506,7 @@
         },
         {
           "name": "crouch.repair.short-gun",
-          "duration": 2.0,
+          "duration": 2,
           "loop": false,
           "events": {
             "contact": 0.9,
@@ -9444,7 +9528,7 @@
         },
         {
           "name": "crouch.unload.short-gun",
-          "duration": 2.0,
+          "duration": 2,
           "loop": false,
           "events": {
             "contact": 0.9,
@@ -9470,14 +9554,14 @@
           "loop": false,
           "events": {
             "contact": 0.58,
-            "recover": 1.0
+            "recover": 1
           },
           "gesture": "butt",
           "posture": "crouched",
           "equipment": "short-gun",
           "markers": {
             "contact": 0.58,
-            "recover": 1.0
+            "recover": 1
           },
           "source": {
             "type": "native-contact-authoring"
@@ -9576,14 +9660,14 @@
           "loop": false,
           "events": {
             "contact": 0.58,
-            "recover": 1.0
+            "recover": 1
           },
           "gesture": "slash",
           "posture": "crouched",
           "equipment": "blade",
           "markers": {
             "contact": 0.58,
-            "recover": 1.0
+            "recover": 1
           },
           "source": {
             "type": "native-contact-authoring"
@@ -9644,7 +9728,21 @@
           "sampleRate": 15,
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
-          "locomotionSpeed": 0.076
+          "locomotionSpeed": 0.194203,
+          "nativeStrideSpeed": 0.194203,
+          "strideDistance": 0.381931,
+          "strideMeasurement": {
+            "method": "median rearward forearm contact velocity",
+            "bones": [
+              "lowerarm_l",
+              "lowerarm_r"
+            ],
+            "maximumContactHeight": 0.09,
+            "sampleCount": 19,
+            "space": "exported-gltf",
+            "referenceClip": "prone.crawl.unarmed"
+          },
+          "authoredStrideSpeed": 0.223721
         },
         {
           "name": "prone.idle.long-gun",
@@ -9682,7 +9780,21 @@
           "sampleRate": 15,
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
-          "locomotionSpeed": 0.076
+          "locomotionSpeed": 0.194203,
+          "nativeStrideSpeed": 0.194203,
+          "strideDistance": 0.381931,
+          "strideMeasurement": {
+            "method": "median rearward forearm contact velocity",
+            "bones": [
+              "lowerarm_l",
+              "lowerarm_r"
+            ],
+            "maximumContactHeight": 0.09,
+            "sampleCount": 19,
+            "space": "exported-gltf",
+            "referenceClip": "prone.crawl.unarmed"
+          },
+          "authoredStrideSpeed": 0.223721
         },
         {
           "name": "prone.aim.long-gun",
@@ -9752,7 +9864,7 @@
         },
         {
           "name": "prone.reprime.long-gun",
-          "duration": 2.0,
+          "duration": 2,
           "loop": false,
           "events": {
             "contact": 0.9,
@@ -9774,7 +9886,7 @@
         },
         {
           "name": "prone.repair.long-gun",
-          "duration": 2.0,
+          "duration": 2,
           "loop": false,
           "events": {
             "contact": 0.9,
@@ -9796,7 +9908,7 @@
         },
         {
           "name": "prone.unload.long-gun",
-          "duration": 2.0,
+          "duration": 2,
           "loop": false,
           "events": {
             "contact": 0.9,
@@ -9852,7 +9964,21 @@
           "sampleRate": 15,
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
-          "locomotionSpeed": 0.076
+          "locomotionSpeed": 0.194203,
+          "nativeStrideSpeed": 0.194203,
+          "strideDistance": 0.381931,
+          "strideMeasurement": {
+            "method": "median rearward forearm contact velocity",
+            "bones": [
+              "lowerarm_l",
+              "lowerarm_r"
+            ],
+            "maximumContactHeight": 0.09,
+            "sampleCount": 19,
+            "space": "exported-gltf",
+            "referenceClip": "prone.crawl.unarmed"
+          },
+          "authoredStrideSpeed": 0.223721
         },
         {
           "name": "prone.aim.short-gun",
@@ -9914,7 +10040,7 @@
         },
         {
           "name": "prone.reprime.short-gun",
-          "duration": 2.0,
+          "duration": 2,
           "loop": false,
           "events": {
             "contact": 0.9,
@@ -9936,7 +10062,7 @@
         },
         {
           "name": "prone.repair.short-gun",
-          "duration": 2.0,
+          "duration": 2,
           "loop": false,
           "events": {
             "contact": 0.9,
@@ -9958,7 +10084,7 @@
         },
         {
           "name": "prone.unload.short-gun",
-          "duration": 2.0,
+          "duration": 2,
           "loop": false,
           "events": {
             "contact": 0.9,
@@ -10014,7 +10140,21 @@
           "sampleRate": 15,
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
-          "locomotionSpeed": 0.076
+          "locomotionSpeed": 0.194203,
+          "nativeStrideSpeed": 0.194203,
+          "strideDistance": 0.381931,
+          "strideMeasurement": {
+            "method": "median rearward forearm contact velocity",
+            "bones": [
+              "lowerarm_l",
+              "lowerarm_r"
+            ],
+            "maximumContactHeight": 0.09,
+            "sampleCount": 19,
+            "space": "exported-gltf",
+            "referenceClip": "prone.crawl.unarmed"
+          },
+          "authoredStrideSpeed": 0.223721
         },
         {
           "name": "mounted.idle.unarmed",
@@ -10032,7 +10172,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -10060,7 +10200,7 @@
           "rootMotion": "in-place",
           "locomotionSpeed": 1.3273,
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -10088,7 +10228,7 @@
           "rootMotion": "in-place",
           "locomotionSpeed": 0.9754,
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -10100,14 +10240,14 @@
           "loop": false,
           "events": {
             "contact": 0.58,
-            "recover": 1.0
+            "recover": 1
           },
           "gesture": "punch",
           "posture": "mounted",
           "equipment": "unarmed",
           "markers": {
             "contact": 0.58,
-            "recover": 1.0
+            "recover": 1
           },
           "source": {
             "type": "native-contact-authoring"
@@ -10116,7 +10256,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -10138,7 +10278,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -10166,7 +10306,7 @@
           "rootMotion": "in-place",
           "locomotionSpeed": 1.3273,
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -10194,7 +10334,7 @@
           "rootMotion": "in-place",
           "locomotionSpeed": 0.9754,
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -10216,7 +10356,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -10242,7 +10382,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -10278,7 +10418,7 @@
             }
           ],
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -10286,7 +10426,7 @@
         },
         {
           "name": "mounted.reprime.long-gun",
-          "duration": 2.0,
+          "duration": 2,
           "loop": false,
           "events": {
             "contact": 0.9,
@@ -10306,7 +10446,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -10314,7 +10454,7 @@
         },
         {
           "name": "mounted.repair.long-gun",
-          "duration": 2.0,
+          "duration": 2,
           "loop": false,
           "events": {
             "contact": 0.9,
@@ -10334,7 +10474,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -10342,7 +10482,7 @@
         },
         {
           "name": "mounted.unload.long-gun",
-          "duration": 2.0,
+          "duration": 2,
           "loop": false,
           "events": {
             "contact": 0.9,
@@ -10362,7 +10502,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -10374,14 +10514,14 @@
           "loop": false,
           "events": {
             "contact": 0.58,
-            "recover": 1.0
+            "recover": 1
           },
           "gesture": "butt",
           "posture": "mounted",
           "equipment": "long-gun",
           "markers": {
             "contact": 0.58,
-            "recover": 1.0
+            "recover": 1
           },
           "source": {
             "type": "native-contact-authoring"
@@ -10390,7 +10530,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -10402,14 +10542,14 @@
           "loop": false,
           "events": {
             "contact": 0.58,
-            "recover": 1.0
+            "recover": 1
           },
           "gesture": "bayonet",
           "posture": "mounted",
           "equipment": "long-gun",
           "markers": {
             "contact": 0.58,
-            "recover": 1.0
+            "recover": 1
           },
           "source": {
             "type": "native-contact-authoring"
@@ -10418,7 +10558,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -10440,7 +10580,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -10462,7 +10602,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -10490,7 +10630,7 @@
           "rootMotion": "in-place",
           "locomotionSpeed": 1.3273,
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -10518,7 +10658,7 @@
           "rootMotion": "in-place",
           "locomotionSpeed": 0.9754,
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -10540,7 +10680,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -10566,7 +10706,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -10594,7 +10734,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -10602,7 +10742,7 @@
         },
         {
           "name": "mounted.reprime.short-gun",
-          "duration": 2.0,
+          "duration": 2,
           "loop": false,
           "events": {
             "contact": 0.9,
@@ -10622,7 +10762,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -10630,7 +10770,7 @@
         },
         {
           "name": "mounted.repair.short-gun",
-          "duration": 2.0,
+          "duration": 2,
           "loop": false,
           "events": {
             "contact": 0.9,
@@ -10650,7 +10790,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -10658,7 +10798,7 @@
         },
         {
           "name": "mounted.unload.short-gun",
-          "duration": 2.0,
+          "duration": 2,
           "loop": false,
           "events": {
             "contact": 0.9,
@@ -10678,7 +10818,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -10690,14 +10830,14 @@
           "loop": false,
           "events": {
             "contact": 0.58,
-            "recover": 1.0
+            "recover": 1
           },
           "gesture": "butt",
           "posture": "mounted",
           "equipment": "short-gun",
           "markers": {
             "contact": 0.58,
-            "recover": 1.0
+            "recover": 1
           },
           "source": {
             "type": "native-contact-authoring"
@@ -10706,7 +10846,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -10728,7 +10868,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -10756,7 +10896,7 @@
           "rootMotion": "in-place",
           "locomotionSpeed": 1.3273,
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -10784,7 +10924,7 @@
           "rootMotion": "in-place",
           "locomotionSpeed": 0.9754,
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -10796,14 +10936,14 @@
           "loop": false,
           "events": {
             "contact": 0.58,
-            "recover": 1.0
+            "recover": 1
           },
           "gesture": "slash",
           "posture": "mounted",
           "equipment": "blade",
           "markers": {
             "contact": 0.58,
-            "recover": 1.0
+            "recover": 1
           },
           "source": {
             "type": "native-contact-authoring"
@@ -10812,7 +10952,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -10834,7 +10974,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -11607,7 +11747,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -11630,7 +11770,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -11653,7 +11793,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -11676,7 +11816,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -11699,7 +11839,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -11722,7 +11862,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -11745,7 +11885,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -11772,7 +11912,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -11795,7 +11935,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -11818,7 +11958,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -11841,7 +11981,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -11864,7 +12004,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -11891,7 +12031,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -11918,7 +12058,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -12141,7 +12281,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -12182,7 +12322,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -12693,7 +12833,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -12739,7 +12879,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -12776,7 +12916,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -12799,7 +12939,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -12831,7 +12971,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -12854,7 +12994,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -12886,7 +13026,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -13007,7 +13147,7 @@
         },
         {
           "name": "stand.idle.knife",
-          "duration": 2.0,
+          "duration": 2,
           "loop": true,
           "events": {},
           "gesture": "idle",
@@ -13217,14 +13357,14 @@
           "loop": false,
           "events": {
             "contact": 0.58,
-            "recover": 1.0
+            "recover": 1
           },
           "gesture": "thrust",
           "posture": "standing",
           "equipment": "lance",
           "markers": {
             "contact": 0.58,
-            "recover": 1.0
+            "recover": 1
           },
           "source": {
             "type": "native-contact-authoring"
@@ -13277,7 +13417,7 @@
         },
         {
           "name": "stand.brace.knife",
-          "duration": 2.0,
+          "duration": 2,
           "loop": true,
           "events": {},
           "gesture": "brace",
@@ -13471,14 +13611,14 @@
           "loop": false,
           "events": {
             "contact": 0.58,
-            "recover": 1.0
+            "recover": 1
           },
           "gesture": "thrust",
           "posture": "crouched",
           "equipment": "lance",
           "markers": {
             "contact": 0.58,
-            "recover": 1.0
+            "recover": 1
           },
           "source": {
             "type": "native-contact-authoring"
@@ -13493,14 +13633,14 @@
           "loop": false,
           "events": {
             "contact": 0.58,
-            "recover": 1.0
+            "recover": 1
           },
           "gesture": "slash",
           "posture": "crouched",
           "equipment": "knife",
           "markers": {
             "contact": 0.58,
-            "recover": 1.0
+            "recover": 1
           },
           "source": {
             "type": "native-contact-authoring"
@@ -13593,7 +13733,21 @@
           "sampleRate": 15,
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
-          "locomotionSpeed": 0.076
+          "locomotionSpeed": 0.194203,
+          "nativeStrideSpeed": 0.194203,
+          "strideDistance": 0.381931,
+          "strideMeasurement": {
+            "method": "median rearward forearm contact velocity",
+            "bones": [
+              "lowerarm_l",
+              "lowerarm_r"
+            ],
+            "maximumContactHeight": 0.09,
+            "sampleCount": 19,
+            "space": "exported-gltf",
+            "referenceClip": "prone.crawl.unarmed"
+          },
+          "authoredStrideSpeed": 0.223721
         },
         {
           "name": "prone.crawl.knife",
@@ -13615,7 +13769,21 @@
           "sampleRate": 15,
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
-          "locomotionSpeed": 0.076
+          "locomotionSpeed": 0.194203,
+          "nativeStrideSpeed": 0.194203,
+          "strideDistance": 0.381931,
+          "strideMeasurement": {
+            "method": "median rearward forearm contact velocity",
+            "bones": [
+              "lowerarm_l",
+              "lowerarm_r"
+            ],
+            "maximumContactHeight": 0.09,
+            "sampleCount": 19,
+            "space": "exported-gltf",
+            "referenceClip": "prone.crawl.unarmed"
+          },
+          "authoredStrideSpeed": 0.223721
         },
         {
           "name": "mounted.idle.lance",
@@ -13633,7 +13801,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -13655,7 +13823,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -13683,7 +13851,7 @@
           "rootMotion": "in-place",
           "locomotionSpeed": 1.3273,
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -13711,7 +13879,7 @@
           "rootMotion": "in-place",
           "locomotionSpeed": 1.3273,
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -13739,7 +13907,7 @@
           "rootMotion": "in-place",
           "locomotionSpeed": 0.9754,
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -13767,7 +13935,7 @@
           "rootMotion": "in-place",
           "locomotionSpeed": 0.9754,
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -13779,14 +13947,14 @@
           "loop": false,
           "events": {
             "contact": 0.58,
-            "recover": 1.0
+            "recover": 1
           },
           "gesture": "thrust",
           "posture": "mounted",
           "equipment": "lance",
           "markers": {
             "contact": 0.58,
-            "recover": 1.0
+            "recover": 1
           },
           "source": {
             "type": "native-contact-authoring"
@@ -13795,7 +13963,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -13807,14 +13975,14 @@
           "loop": false,
           "events": {
             "contact": 0.58,
-            "recover": 1.0
+            "recover": 1
           },
           "gesture": "slash",
           "posture": "mounted",
           "equipment": "knife",
           "markers": {
             "contact": 0.58,
-            "recover": 1.0
+            "recover": 1
           },
           "source": {
             "type": "native-contact-authoring"
@@ -13823,7 +13991,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -13845,7 +14013,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -13867,7 +14035,7 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
-            0.0,
+            0,
             0.9131789803504944,
             0.025762733072042465
           ],
@@ -13875,7 +14043,7 @@
         },
         {
           "name": "stand.slash.blade.forehand",
-          "duration": 1.0,
+          "duration": 1,
           "loop": false,
           "events": {
             "contact": 0.36
@@ -13902,7 +14070,7 @@
         },
         {
           "name": "stand.slash.blade.backhand",
-          "duration": 1.0,
+          "duration": 1,
           "loop": false,
           "events": {
             "contact": 0.36
@@ -13929,7 +14097,7 @@
         },
         {
           "name": "stand.slash.blade.thrust",
-          "duration": 1.0,
+          "duration": 1,
           "loop": false,
           "events": {
             "contact": 0.42
@@ -13956,7 +14124,7 @@
         },
         {
           "name": "stand.slash.blade.hilt",
-          "duration": 1.0,
+          "duration": 1,
           "loop": false,
           "events": {
             "contact": 0.42
@@ -14010,7 +14178,7 @@
         },
         {
           "name": "stand.slash.knife.thrust",
-          "duration": 1.0,
+          "duration": 1,
           "loop": false,
           "events": {
             "contact": 0.42
@@ -14045,7 +14213,7 @@
         "strafeLeftStanding": 1.0544,
         "strafeRightCrouched": 0.9318,
         "strafeLeftCrouched": 0.9402,
-        "crawl": 0.076,
+        "crawl": 0.194203,
         "climbUp": 0.3498,
         "climbDown": 0.4242,
         "recover": 0.3301,
@@ -14162,26 +14330,6 @@
         "stowedSocket": "back",
         "muzzle": "muzzle_1804"
       },
-      "1807": {
-        "node": "item_1807",
-        "category": "rifle",
-        "grip": "rifle",
-        "socket": "handRight_rifle",
-        "leftSocket": "handLeft_rifle",
-        "position": [
-          0,
-          0,
-          0
-        ],
-        "rotation": [
-          0,
-          0,
-          0
-        ],
-        "scale": 1,
-        "stowedSocket": "back",
-        "muzzle": "muzzle_1807"
-      },
       "1805": {
         "node": "item_1805",
         "category": "pistol",
@@ -14221,6 +14369,26 @@
         "scale": 1,
         "stowedSocket": "hipRight",
         "muzzle": "muzzle_1806"
+      },
+      "1807": {
+        "node": "item_1807",
+        "category": "rifle",
+        "grip": "rifle",
+        "socket": "handRight_rifle",
+        "leftSocket": "handLeft_rifle",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": 1,
+        "stowedSocket": "back",
+        "muzzle": "muzzle_1807"
       },
       "1808": {
         "node": "item_1808",
@@ -14280,47 +14448,6 @@
         "scale": 1,
         "stowedSocket": "hipLeft"
       },
-      "1813": {
-        "node": "item_1813",
-        "category": "knife",
-        "grip": "sabre",
-        "socket": "handRight_sabre",
-        "leftSocket": "handLeft_sabre",
-        "position": [
-          0,
-          0,
-          0
-        ],
-        "rotation": [
-          0,
-          0,
-          0
-        ],
-        "scale": 1,
-        "stowedSocket": "hipLeft",
-        "clipOverrides": {
-          "stand.idle.blade": "stand.idle.knife",
-          "stand.walk.blade": "stand.walk.knife",
-          "stand.run.blade": "stand.run.knife",
-          "stand.strafeLeft.blade": "stand.strafeLeft.knife",
-          "stand.strafeRight.blade": "stand.strafeRight.knife",
-          "stand.slash.blade": "stand.slash.knife",
-          "stand.brace.blade": "stand.brace.knife",
-          "crouch.idle.blade": "crouch.idle.knife",
-          "crouch.walk.blade": "crouch.walk.knife",
-          "crouch.strafeLeft.blade": "crouch.strafeLeft.knife",
-          "crouch.strafeRight.blade": "crouch.strafeRight.knife",
-          "crouch.slash.blade": "crouch.slash.knife",
-          "crouch.brace.blade": "crouch.brace.knife",
-          "prone.idle.blade": "prone.idle.knife",
-          "prone.crawl.blade": "prone.crawl.knife",
-          "mounted.idle.blade": "mounted.idle.knife",
-          "mounted.walk.blade": "mounted.walk.knife",
-          "mounted.run.blade": "mounted.run.knife",
-          "mounted.slash.blade": "mounted.slash.knife",
-          "mounted.brace.blade": "mounted.brace.knife"
-        }
-      },
       "1811": {
         "node": "item_1811",
         "category": "knife",
@@ -14379,6 +14506,47 @@
           "mounted.run.blade": "mounted.run.lance",
           "mounted.slash.blade": "mounted.thrust.lance",
           "mounted.brace.blade": "mounted.brace.lance"
+        }
+      },
+      "1813": {
+        "node": "item_1813",
+        "category": "knife",
+        "grip": "sabre",
+        "socket": "handRight_sabre",
+        "leftSocket": "handLeft_sabre",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": 1,
+        "stowedSocket": "hipLeft",
+        "clipOverrides": {
+          "stand.idle.blade": "stand.idle.knife",
+          "stand.walk.blade": "stand.walk.knife",
+          "stand.run.blade": "stand.run.knife",
+          "stand.strafeLeft.blade": "stand.strafeLeft.knife",
+          "stand.strafeRight.blade": "stand.strafeRight.knife",
+          "stand.slash.blade": "stand.slash.knife",
+          "stand.brace.blade": "stand.brace.knife",
+          "crouch.idle.blade": "crouch.idle.knife",
+          "crouch.walk.blade": "crouch.walk.knife",
+          "crouch.strafeLeft.blade": "crouch.strafeLeft.knife",
+          "crouch.strafeRight.blade": "crouch.strafeRight.knife",
+          "crouch.slash.blade": "crouch.slash.knife",
+          "crouch.brace.blade": "crouch.brace.knife",
+          "prone.idle.blade": "prone.idle.knife",
+          "prone.crawl.blade": "prone.crawl.knife",
+          "mounted.idle.blade": "mounted.idle.knife",
+          "mounted.walk.blade": "mounted.walk.knife",
+          "mounted.run.blade": "mounted.run.knife",
+          "mounted.slash.blade": "mounted.slash.knife",
+          "mounted.brace.blade": "mounted.brace.knife"
         }
       },
       "ramrod": {
@@ -14745,7 +14913,7 @@
         "duration": 2.4,
         "loop": true,
         "locomotionSpeed": 0,
-        "strideDistance": 0.0,
+        "strideDistance": 0,
         "strideMeasurement": "median rearward sole velocity below 4.5 cm",
         "gait": "idle",
         "nativeBoneCount": 19

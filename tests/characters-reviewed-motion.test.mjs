@@ -31,11 +31,11 @@ function clip(data,name){
  return new AnimationClip(name,-1,def.channels.map(channel=>{const sampler=def.samplers[channel.sampler],property={translation:'position',rotation:'quaternion',scale:'scale'}[channel.target.path],Track=property==='quaternion'?QuaternionKeyframeTrack:VectorKeyframeTrack;assert.ok(['LINEAR','STEP'].includes(sampler.interpolation??'LINEAR'));return new Track(`${data.json.nodes[channel.target.node].name}.${property}`,data.access(sampler.input),data.access(sampler.output),sampler.interpolation==='STEP'?InterpolateDiscrete:InterpolateLinear);}));
 }
 const banks=Object.fromEntries([['male','granadero'],['female','woman-scout']].map(([gender,appearance])=>[gender,{body:glb(manifest.appearances[appearance].lods[0].url),data:glb(manifest.animationLibraries[gender].url),specs:manifest.animationLibraries[gender].clips}]));
-function samples(bank,name,read){
+function samples(bank,name,read,sampleCount){
  const scene=rig(bank.body.json),animation=clip(bank.data,name),mixer=new AnimationMixer(scene),action=mixer.clipAction(animation).setLoop(LoopOnce,1);action.clampWhenFinished=true;action.play();
  const bones=bank.body.json.skins[0].joints.map(index=>scene.getObjectByName(bank.body.json.nodes[index].name)),native=bones.map(bone=>bone.position.length());
  const point=name=>{const node=scene.getObjectByName(name);assert.ok(node,`Native joint ${name}`);return node.getWorldPosition(new Vector3());};
- const result=[],count=Math.ceil(animation.duration*120);
+ const result=[],count=sampleCount??Math.ceil(animation.duration*120);
  for(let i=0;i<=count;i++){
   const time=animation.duration*i/count;mixer.setTime(time);scene.updateMatrixWorld(true);
   for(let j=0;j<bones.length;j++)if(bones[j].name!=='Root')assert.ok(Math.abs(bones[j].position.length()-native[j])<.0001,`${name}: ${bones[j].name} retains its native bone length`);
@@ -52,6 +52,23 @@ const expected={
  'stand.idle.knife':'KnifeReady','stand.brace.knife':'KnifeReady','stand.slash.knife':'KnifeSlash','stand.walk.knife':'KnifeWalk','stand.run.knife':'KnifeRun','stand.slash.knife.backhand':'KnifeBackhand','stand.slash.knife.thrust':'KnifeThrust'
 };
 for(const [gender,bank]of Object.entries(banks)){
+ test(`${gender} published crawl stride measures the final supporting forearms`,()=>{
+  const spec=bank.specs.find(entry=>entry.name==='prone.crawl.unarmed');
+  assert.equal(spec.strideMeasurement.method,'median rearward forearm contact velocity');
+  assert.deepEqual(spec.strideMeasurement.bones,['lowerarm_l','lowerarm_r']);
+  const count=Math.round(spec.duration*spec.sampleRate);
+  const values=samples(bank,spec.name,point=>({contacts:spec.strideMeasurement.bones.map(point)}),count),speeds=[];
+  for(let index=1;index<values.length-1;index++)for(let side=0;side<2;side++){
+   const a=values[index-1].contacts[side],p=values[index].contacts[side],b=values[index+1].contacts[side];
+   const velocity=(a.z-b.z)/(values[index+1].time-values[index-1].time);
+   if(p.y<=spec.strideMeasurement.maximumContactHeight&&velocity>0)speeds.push(velocity);
+  }
+  speeds.sort((a,b)=>a-b);const mid=Math.floor(speeds.length/2),median=speeds.length%2?speeds[mid]:(speeds[mid-1]+speeds[mid])/2;
+  assert.ok(Math.abs(median-spec.nativeStrideSpeed)<.005,`Published support velocity ${median.toFixed(6)} matches the native stride ${spec.nativeStrideSpeed}`);
+  assert.ok(spec.nativeStrideSpeed>.15&&spec.nativeStrideSpeed<.4,'The adapted body pull replaces the unrelated 0.08 m/s foot measurement');
+  assert.ok(Math.abs(spec.strideDistance-spec.nativeStrideSpeed*spec.duration)<.000002);
+  for(const variant of bank.specs.filter(entry=>entry.gesture==='crawl'))assert.equal(variant.nativeStrideSpeed,spec.nativeStrideSpeed,'Carried equipment preserves the same underlying body travel');
+ });
  test(`${gender} exported standing motions bind the reviewed poses and free playback speed`,()=>{
   for(const [name,reviewedName]of Object.entries(expected)){
    const spec=bank.specs.find(entry=>entry.name===name);assert.ok(spec,name);

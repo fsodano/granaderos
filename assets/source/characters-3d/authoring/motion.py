@@ -616,6 +616,36 @@ def _prone_pose(ctx,base,source_sample=None,phase_center=None):
     return _collect(rig)
 
 
+def _crawl_stride(rig,samples,duration):
+    """Calibrate the adapted belly crawl from its supporting forearms.
+
+    The source is a hands-and-knees crawl. Its grounded-foot velocity cannot
+    describe the final prone pose, which is pulled forward by the forearms.
+    Samples must be the closed loop written by _write_clip, in native metres.
+    All carried-equipment variants retain this underlying body travel.
+    """
+    saved=_collect(rig);contacts=[]
+    for sample in samples:
+        _apply_sample(rig,sample)
+        contacts.append([rig.pose.bones['lowerarm_'+side].head.copy() for side in ('l','r')])
+    _apply_sample(rig,saved)
+    step=duration/(len(samples)-1);speeds=[]
+    for index in range(1,len(contacts)-1):
+        for side in (0,1):
+            before,current,after=(contacts[i][side] for i in (index-1,index,index+1))
+            # Elbow centres within 9 cm of the plane support the low prone
+            # body. +Y is rearward in the native authoring coordinates.
+            velocity=(after.y-before.y)/(2*step)
+            if current.z<=.09 and velocity>0:speeds.append(velocity)
+    if not speeds:raise ValueError('Prone crawl has no rearward forearm support samples')
+    speed=round(float(np.median(speeds)),6)
+    return {'locomotionSpeed':speed,'nativeStrideSpeed':speed,'authoredStrideSpeed':speed,
+            'strideDistance':round(speed*duration,6),
+            'strideMeasurement':{'method':'median rearward forearm contact velocity',
+                                 'bones':['lowerarm_l','lowerarm_r'],
+                                 'maximumContactHeight':.09,'sampleCount':len(speeds)}}
+
+
 def _mounted_pose(ctx,base):
     rig=ctx['rig'];_apply_sample(rig,base)
     _root_shift(rig,(0,0,rig.data.bones['pelvis'].head_local.z-rig.pose.bones['pelvis'].head.z))
@@ -833,7 +863,7 @@ def apply_animations(ctx, only=None):
     crouch=_collect(rig)
     prone=_prone_pose(ctx,idle);mounted=_mounted_pose(ctx,idle)
     bases={'standing':idle,'crouched':crouch,'prone':prone,'mounted':mounted}
-    result=[];specs=_semantic_specs()
+    result=[];specs=_semantic_specs();crawl_stride=None
     if only:specs=[s for s in specs if s['name'] in only]
     for index,spec in enumerate(specs):
         binding=_reviewed_binding(spec)
@@ -943,6 +973,22 @@ def apply_animations(ctx, only=None):
         if gesture=='reload' and equipment=='long-gun':meta['propCues']=[{'item':'ramrod','socket':'socket_handLeft_tool','start':round(duration*.46,6),'end':round(duration*.86,6)}]
         if gesture=='throwKnife':meta['handProps']=[{'hand':'handRight','categories':['knife'],'untilMarker':'release'}]
         if speed is not None:meta['locomotionSpeed']=speed
+        if gesture=='crawl':
+            if crawl_stride is None:
+                # The unarmed capability precedes its equipped variants.
+                # Measure the body pull, not a hand fixed to a carried gun.
+                if equipment!='unarmed':
+                    base_samples=[_prone_pose(ctx,idle,s,source_meta['crawl']['kneeCenter']) for s in sources['crawl']]
+                    # Close a review-only sequence without adding an action.
+                    first,last=base_samples[0],base_samples[-1]
+                    for i,sample in enumerate(base_samples):
+                        t=i/(len(base_samples)-1)
+                        for bone,(p,q) in list(sample.items()):
+                            sample[bone]=(p-(last[bone][0]-first[bone][0])*t,q @ Quaternion().slerp(last[bone][1].inverted() @ first[bone][1],t))
+                    base_samples[-1]=_copy_pose(base_samples[0])
+                    crawl_stride=_crawl_stride(rig,base_samples,duration)
+                else:crawl_stride=_crawl_stride(rig,samples,duration)
+            meta.update(crawl_stride);source_meta['crawl']['locomotionSpeed']=crawl_stride['locomotionSpeed']
         if gesture.startswith('strafe'):meta['locomotionAxis']='left' if gesture=='strafeLeft' else 'right'
         if posture=='mounted':meta['seatAnchor']=list(rig.data.bones['pelvis'].head_local)
         if posture=='mounted' and gesture in ('die','collapse','knockdown'):
