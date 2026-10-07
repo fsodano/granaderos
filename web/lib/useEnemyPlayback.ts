@@ -3,10 +3,11 @@ import {useEffect,useRef,useState,useMemo} from 'react';
 import {presentedEndTurn} from '../../game/tactical.js';
 import {BATTLE_PLAYBACK,battleFrameDuration,battleFrameFocus} from '../../game/battle-playback.js';
 import {movementStepDuration} from './three/movement-timing';
+import {nativeActionFrameDuration} from './three/action-timing';
 import enemyWorkerUrl from './enemy-turn-worker.ts?worker&url';
 const stepMs=BATTLE_PLAYBACK.step;
 export function presentedFrameDuration(frame:any,previous:any){
- if(frame.type!=='step'||!frame.unitId)return battleFrameDuration(frame);
+ if(frame.type!=='step'||!frame.unitId)return nativeActionFrameDuration(frame,battleFrameDuration(frame));
  const actor=frame.state.units.find((unit:any)=>unit.id===frame.unitId),before=previous.units.find((unit:any)=>unit.id===frame.unitId);
  if(!actor||!before)return stepMs;
  // Each observed step is adjacent. Reappearing actors do not expose the

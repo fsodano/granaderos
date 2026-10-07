@@ -51,6 +51,23 @@ test('recorded crawl and mounted steps share the native movement clock until the
   assert.equal(await env.step(),expected);await done;assert.deepEqual(commits,[after]);assert.equal(api.busy,false);assert.equal(api.frame,null);
  });
 });
+test('recorded reload and reprime keep native visual delays and commit the paid result once',async t=>{
+ for(const [action,nativeDuration]of [['reload',4800],['reprime',2000]])await t.test(action,async t=>{
+  let api;const commits=[],source=field(),actor=source.units[0];actor.ap=100;actor.loaded=action==='reload'?0:1;actor.jammed=action==='reprime';
+  const saved=structuredClone(source),result=presentedActBattle(source,{type:action,unitId:'p'});
+  assert.equal(result.state.lastError,null);assert.deepEqual(result.frames.map(frame=>frame.type),['prepare','result']);assert.deepEqual(source,saved);
+  function Capture(){api=useEnemyPlayback(source,state=>commits.push(state));return null;}
+  const env=await mount(t,()=>h(Capture));let done;await act(async()=>{done=api.present(result,state=>commits.push(state));});
+  let duration=0;
+  for(let index=0;index<result.frames.length;index++){
+   const expected=presentedFrameDuration(result.frames[index],index?result.frames[index-1].state:source);
+   assert.equal(api.busy,true);assert.deepEqual(commits,[]);assert.equal(api.frame.durationMs,expected);assert.ok(Math.abs(api.frame.actionDurationMs-nativeDuration)<1e-9);
+   assert.deepEqual(api.state.units,result.frames[index].state.units);duration+=await env.step();
+  }
+  await done;assert.ok(Math.abs(duration-nativeDuration)<1e-9);assert.deepEqual(commits,[result.state]);assert.equal(api.busy,false);assert.equal(api.frame,null);
+  assert.ok(commits[0].units[0].ap<actor.ap);assert.equal(commits[0].units[0].loaded,1);assert.equal(commits[0].units[0].jammed,false);
+ });
+});
 test('the same portrait toggles inventory and failed target orders use a timed cross without a permanent error panel',async t=>{
  const source=field();source.units[0].ap=0;let tree,commits=[];
  const wrapper=Battlefield({battle:source,onChange:s=>commits.push(s),onFinish(){}}),content=wrapper.props.children;

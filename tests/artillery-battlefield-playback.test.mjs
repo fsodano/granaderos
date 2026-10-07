@@ -2,8 +2,8 @@ import {register} from 'node:module';register('./tactical-render-loader.mjs',imp
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createBattle,actBattle,presentedActBattle,actionCosts,artilleryCosts} from '../game/tactical.js';
-import {battleFrameDuration} from '../game/battle-playback.js';
 import {mountBattlefield} from './mounted-battlefield.mjs';
+const {presentedFrameDuration}=await import('../web/lib/useEnemyPlayback.ts');
 const {default:Battlefield}=await import('../web/app/Battlefield.tsx');
 const {default:TacticalThreeScene}=await import('../web/app/TacticalThreeScene.tsx');
 const nodes=node=>!node||typeof node!=='object'?[]:[node,...(Array.isArray(node)?node:Array.isArray(node.props?.children)?node.props.children:[node.props?.children]).flatMap(nodes)];
@@ -25,7 +25,7 @@ for(const type of ['artillery','artilleryReload','artilleryMove','artilleryPivot
  const props=()=>({battle,onChange:next=>{battle=next;commits.push(next);return next;},onFinish(){}}),mounted=await mountBattlefield(t,Battlefield,props(),{clock,virtualTimers:true});
  const panel=()=>nodes(mounted.tree()).find(node=>node.props?.onOrder&&node.props?.onEndTurn),scene=()=>nodes(mounted.tree()).find(node=>node.type===TacticalThreeScene);
  await mounted.act(async()=>panel().props.onOrder(action));
- let crewCues=0;
+ let crewCues=0,timingState=before,totalDelay=0;
  for(const frame of expected.frames){
   assert.deepEqual(commits,[],'presentation does not commit intermediate snapshots');assert.equal(panel().props.busy,true);
   if(frame.type==='prepare'){
@@ -36,10 +36,11 @@ for(const type of ['artillery','artilleryReload','artilleryMove','artilleryPivot
    assert.equal(scene().props.actors.some(actor=>actor.id==='reserve'),false,'hidden enemies are not disclosed');
   }
   await mounted.act(async()=>panel().props.onOrder(action));assert.deepEqual(commits,[],'repeated input during playback cannot spend a second action');
-  assert.equal(await mounted.nextDelay(),battleFrameDuration(frame));
+  const delay=presentedFrameDuration(frame,timingState);assert.equal(await mounted.nextDelay(),delay);totalDelay+=delay;timingState=frame.state;
  }
  assert.equal(crewCues,1);assert.deepEqual(commits,[expected.state]);assert.deepEqual(battle,actBattle(before,request));
  if(type==='artilleryReload'){
+  assert.ok(Math.abs(totalDelay-4000)<1e-9,'the complete crew loading cycle keeps its four-second native pace');
   const cost=artilleryCosts(before,unit(before,20),before.artillery[0]).reload;
   for(const id of [20,21,22])assert.equal(unit(battle,id).ap,unit(before,id).ap-cost,`crew ${id} pays one reload`);
   assert.equal(battle.artillery[0].loaded,true);assert.equal(battle.artillery[0].ammo,3);assert.equal(unit(battle,23).ap,unit(before,23).ap);
