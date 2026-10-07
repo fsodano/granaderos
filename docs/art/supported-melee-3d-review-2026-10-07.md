@@ -14,4 +14,6 @@ Only an admitted `contactTarget` can request the loaded target model. Missing, h
 
 The focused regression has four checks and forty paired contact cases. The existing **63** actor runtime, animation clock, model admission and finite melee presentation checks also pass, as does the type check. This boundary changes no GLB, native bank, equipment dimension or action duration.
 
-Live screenshots of this fitted runtime remain a separate acceptance step. This is not a complete body-polish claim. Knives, bayonets, punches, gun butt strikes, prone contact, mounted contact and mounted targets still need their own measured fitting increments.
+The clean committed implementation passed 65 affected checks in 13.45 seconds, type and documentation checks, all 38 baseline checks, and the production export. A real UI sabre order was captured through preparation, contact and recovery in `artifacts/three-pr195-cut-review/melee-after/`. The 550, 750 and 1100 ms views were inspected against the earlier native strike. The supported weight shift keeps the boots on the ground and returns to the original guard. The recorded order still charges 3.5 PA once and deals its authoritative 42 damage once, with no browser errors.
+
+This is not a complete body-polish claim. Knives, bayonets, punches, gun butt strikes, prone contact, mounted contact and mounted targets still need their own measured fitting increments.
