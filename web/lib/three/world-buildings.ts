@@ -120,7 +120,7 @@ export function buildBuilding(b0:WorldBuilding,input:WorldInput,T:number,geometr
           }
           group.add(leafGroup);
         }else if(!cut){
-          addWindowFace(batch,materials,{axis,mid,cross,base:tileBase,sill,top,width:ow,style:tile.style??appearance.windowStyle,light});
+          addWindowFace(batch,materials,{axis,mid,cross,base:tileBase,sill,top,width:ow,style:tile.style??appearance.windowStyle,light,sourceParish:(!legacy||b.wallFinish!==undefined)&&['church','chapel'].includes(b.kind??'')});
         }
       }
     }
