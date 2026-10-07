@@ -55,7 +55,7 @@ test('civic clock cupolas rest above the ground doorway in every orientation',()
 test('pulperia trade signs keep their bracket and front face through rotation',()=>{
   let expected;
   for(const side of ['north','east','south','west']){
-    const f=fixture('pulperia',side),details=architecturalDetails(f.b,f.input,T,2.5,0,f.geometry,f.materials,false),sign=details.getObjectByName('building-detail:review:trade-sign'),bounds=f.localBounds(sign),actual=[...bounds.min.toArray(),...bounds.max.toArray()];
+    const f=fixture('pulperia',side),details=architecturalDetails(f.b,f.input,T,2.5,0,f.geometry,f.materials,false),sign=details.getObjectByName('building-detail:review:trade-sign'),bounds=f.localBounds(sign),door=f.frame.doorU-.4*(f.frame.u.x+f.frame.u.y),actual=[bounds.min.x-door,bounds.min.y,bounds.min.z,bounds.max.x-door,bounds.max.y,bounds.max.z];
     assert.ok(sign.children.some(child=>child.material?.name==='world:iron'),'the sign must have hanging hardware');
     assert.ok(bounds.max.z<.05&&bounds.min.z<-.5,'the sign must hang outside with its bracket anchored in the facade');
     if(expected)actual.forEach((value,n)=>assert.ok(Math.abs(value-expected[n])<1e-5));else expected=actual;
@@ -87,5 +87,49 @@ test('flat terraces use masonry by default and preserve authored roof finishes',
     assert.ok(roof,`flat terrace must use ${material}`);assert.ok(roof.material.polygonOffsetFactor<0,'roof/wall joins need a depth bias');
     const edges=building.getObjectByName('building-roof-edges:review');assert.ok(edges.children.every(child=>child.material?.name==='world:stone'),'terrace coping must retain a masonry edge');
     f.dispose(building);
+  }
+});
+
+test('church towers occupy solid corner foundations through every rotation and skip missing supports',()=>{
+  for(const side of ['north','east','south','west'])for(const wide of [false,true]){
+    const f=fixture('church',side);
+    if(wide)for(const u of [0,1])for(const v of [0,1]){const p=f.frame.at(f.frame.width-u,v);f.input.terrain.tiles.find(tile=>tile.x===p.x&&tile.y===p.y).type='wall';}
+    const before=JSON.stringify(f.input),details=architecturalDetails(f.b,f.input,T,2.55,0,f.geometry,f.materials,false),tower=details.getObjectByName('building-detail:review:bell-tower'),base=new Box3();
+    tower.traverse(child=>{if(child instanceof Mesh){const positions=child.geometry.getAttribute('position');for(let n=0;n<positions.count;n++)if(positions.getY(n)<.001)base.expandByPoint(new Vector3().fromBufferAttribute(positions,n));}});
+    for(let y=Math.floor(base.min.z/T+.5);y<=Math.ceil(base.max.z/T-.5);y++)for(let x=Math.floor(base.min.x/T+.5);x<=Math.ceil(base.max.x/T-.5);x++)assert.equal(f.input.terrain.tiles.find(tile=>tile.x===x&&tile.y===y)?.type,'wall',`${side} tower occupies a non-solid cell at ${x},${y}`);
+    assert.equal(JSON.stringify(f.input),before);disposeWorldNode(details);
+    for(const u of [0,f.frame.width]){const p=f.frame.at(u,0);f.input.terrain.tiles.find(tile=>tile.x===p.x&&tile.y===p.y).type='window';}
+    const unsupported=architecturalDetails(f.b,f.input,T,2.55,0,f.geometry,f.materials,false);assert.equal(unsupported.getObjectByName('building-detail:review:bell-tower'),undefined);f.dispose(unsupported);
+  }
+});
+
+test('palace balcony follows the actual doorway and requires both solid entrance supports',()=>{
+  for(const side of ['north','east','south','west']){
+    const f=fixture('palace',side),before=JSON.stringify(f.input),details=architecturalDetails(f.b,f.input,T,4.95,0,f.geometry,f.materials,false),balcony=details.getObjectByName('building-detail:review:palace-balcony'),bounds=f.localBounds(balcony);
+    const actualDoor=f.frame.doorU-.4*(f.frame.u.x+f.frame.u.y);
+    assert.ok(Math.abs(bounds.getCenter(new Vector3()).x-actualDoor)<1e-5,'balcony must align with the real door midpoint');
+    assert.ok(bounds.min.y>2.6,'balcony must stay above the ground passage');assert.ok(balcony.children.some(child=>child.material?.name==='world:iron'),'balcony must have an iron railing');
+    assert.equal(JSON.stringify(f.input),before);disposeWorldNode(details);
+    for(const type of ['window','door','rubble']){
+      const p=f.frame.at(f.frame.doorU+1,0),support=f.input.terrain.tiles.find(tile=>tile.x===p.x&&tile.y===p.y);support.type=type;
+      const unsupported=architecturalDetails(f.b,f.input,T,4.95,0,f.geometry,f.materials,false);assert.equal(unsupported.getObjectByName('building-detail:review:palace-balcony'),undefined,`${type} must remove the unsupported balcony`);disposeWorldNode(unsupported);
+    }
+    f.geometry.dispose();f.materials.dispose();
+  }
+});
+
+test('barracks and stable details preserve the open doorway in all four orientations',()=>{
+  for(const kind of ['barracks','stable'])for(const side of ['north','east','south','west']){
+    const f=fixture(kind,side),before=JSON.stringify(f.input),details=architecturalDetails(f.b,f.input,T,2.5,0,f.geometry,f.materials,false),feature=details.getObjectByName(`building-detail:review:${kind==='barracks'?'barracks-gate':'stable-timber-frame'}`);
+    assert.ok(feature);assert.ok(feature.children.some(child=>child.material?.name===(kind==='barracks'?'world:brass':'world:wood')));
+    const u=f.frame.doorU-.4*(f.frame.u.x+f.frame.u.y),p=f.frame.at(u,-1),ray=new Raycaster(new Vector3((p.x+.4)*T,1,(p.y+.4)*T),new Vector3(f.frame.v.x,0,f.frame.v.y),0,T*1.6);details.updateMatrixWorld(true);
+    assert.equal(ray.intersectObject(details,true).length,0,`${kind} details obstruct the door at ${side}`);assert.equal(JSON.stringify(f.input),before);f.dispose(details);
+  }
+});
+
+test('palace balcony and military details leave no floating features during room cutaway',()=>{
+  for(const kind of ['palace','barracks','stable','church']){
+    const f=fixture(kind),building=buildBuilding(f.b,{...f.input,revealedRooms:['room']},T,f.geometry,f.materials);
+    assert.equal(building.getObjectByName('building-details:review'),undefined);assert.equal(building.getObjectByName('building-roof-edges:review'),undefined);f.dispose(building);
   }
 });
