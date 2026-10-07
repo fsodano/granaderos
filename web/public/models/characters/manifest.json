@@ -1826,8 +1826,8 @@
   "animationLibraries": {
     "male": {
       "url": "/models/characters/male-animations.glb",
-      "bytes": 11982572,
-      "sha256": "f33a6db63726c22ebabd319d809adb4ed097ce9dee9444bee69ce6a961eea25a",
+      "bytes": 11992828,
+      "sha256": "bebe5a5c651cabd66701a55d10574c6c73c0a4fad59bf5763f1a80668f729c72",
       "clips": [
         {
           "name": "stand.idle.unarmed",
@@ -2045,6 +2045,17 @@
             "name": "RifleAim",
             "origin": "approved-granadero-preview",
             "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          },
+          "nativeBootSupport": {
+            "method": "released-guard-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 120,
+            "preservedNativeLift": true,
+            "maximumHeelRoll": 0,
+            "forefootRollEnvelopes": {},
+            "minimumStraightLegReserve": 0.002,
+            "sourceSha256": "cc1100741c56e0a3808b5350671d78ccc808dd597c55ac1e1827f2a5ba55cda7"
           }
         },
         {
@@ -2457,6 +2468,17 @@
             "name": "RifleButtStrike",
             "origin": "approved-granadero-preview",
             "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          },
+          "nativeBootSupport": {
+            "method": "released-guard-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 120,
+            "preservedNativeLift": true,
+            "maximumHeelRoll": 0,
+            "forefootRollEnvelopes": {},
+            "minimumStraightLegReserve": 0.002,
+            "sourceSha256": "cc1100741c56e0a3808b5350671d78ccc808dd597c55ac1e1827f2a5ba55cda7"
           }
         },
         {
@@ -15452,8 +15474,8 @@
     },
     "female": {
       "url": "/models/characters/female-animations.glb",
-      "bytes": 11806960,
-      "sha256": "d2da5a44f61a5f71a8731136c3600a7ad38072522e808068f1d26546f36aaef0",
+      "bytes": 11817764,
+      "sha256": "a9df249e6fe75a1b57d013bf83a3e1193a8d9339b1583194a4d64b21a8c9c5fd",
       "clips": [
         {
           "name": "stand.idle.unarmed",
@@ -15671,6 +15693,17 @@
             "name": "RifleAim",
             "origin": "approved-granadero-preview",
             "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          },
+          "nativeBootSupport": {
+            "method": "released-guard-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 120,
+            "preservedNativeLift": true,
+            "maximumHeelRoll": 0,
+            "forefootRollEnvelopes": {},
+            "minimumStraightLegReserve": 0.002,
+            "sourceSha256": "cc1100741c56e0a3808b5350671d78ccc808dd597c55ac1e1827f2a5ba55cda7"
           }
         },
         {
@@ -16083,6 +16116,24 @@
             "name": "RifleButtStrike",
             "origin": "approved-granadero-preview",
             "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          },
+          "nativeBootSupport": {
+            "method": "released-guard-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 120,
+            "preservedNativeLift": true,
+            "maximumHeelRoll": 0.018758403320312506,
+            "forefootRollEnvelopes": {
+              "l": {
+                "begin": 0.3458333333333333,
+                "peak": 0.5,
+                "end": 0.65,
+                "amplitude": 0.018758403320312506
+              }
+            },
+            "minimumStraightLegReserve": 0.002,
+            "sourceSha256": "cc1100741c56e0a3808b5350671d78ccc808dd597c55ac1e1827f2a5ba55cda7"
           }
         },
         {
