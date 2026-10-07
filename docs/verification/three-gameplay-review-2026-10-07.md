@@ -200,12 +200,69 @@ produced 54 live exterior, partial and interior captures without browser
 errors. Selected facade and interior images were visually reviewed. The
 support probe does not by itself establish final facade quality.
 
+## Sixth increment
+
+Mounted boots now meet the moving iron stirrups. The fit changes only eight
+leg and foot rotation tracks in 74 mounted or transition clips per anatomy.
+The checked boot contact stays within 7 mm of the iron, and mount/dismount
+endpoints stay within 6 mm. The other 49,954 animation tracks, native meshes,
+skin bindings, weapon contacts and action clocks remain byte-identical at this
+boundary. Live riding and reverse mounting views were inspected.
+
+Pistol loading now fits three actual item lengths in both bodies and all four
+postures. The maximum checked native muzzle gap is 0.69 mm and rod centre
+offset is 1.13 mm. The timed rod uses the existing mesh at the actual short
+barrel length. Each charge of the 1808 two-barrel pistol uses its own bore;
+partial second-barrel work resumes on that same bore. The other 314 clips,
+native rigs and meshes per anatomy remain unchanged at the pistol boundary.
+The bank now contains 334 clips per anatomy.
+
+The playable **Recarga de cuatro cañones** scene uses real exploration orders
+and finite cartridges. Its live check loads two charges in each owned pistol,
+reducing reserve from eight to four once. The offhand-only order reduces eight
+to six and leaves the loaded primary gun alone. Repeated input is blocked.
+Both working hands and all four rod strokes were captured and viewed without
+browser errors. Exploration retains its ordinary AP rules. The earlier combat
+scene still checks the 15 PA/two-cartridge and 7 PA/one-cartridge orders.
+`tools/verify-three-paired-loading.mjs --four-bores` reproduces the new scene.
+
+Ladder playback now faces the upper end in both directions and retains the
+full native interval. A three-metre ascent or descent takes 4.615 seconds at
+0.65 m/s vertical pace. Hidden reappearance retains its ordinary admission
+delay. Exact paid endpoints, AP and battle state remain authoritative. The
+slower live review exposed roof-edge and limb support defects; the timing
+boundary does not accept those contacts.
+
+Limewashed and adobe walls now use mild variation from the retained plaster
+map instead of multiplying their finish by its strong brown pigment. Physical
+texture density and relief remain unchanged. The town hall has the retained
+sprite's curved clock crown, stone entablature and two low finials. Twelve live
+views checked its four rotations and three room states. Formal facade columns
+and separate upper windows remain under comparison.
+
+Chapel gables and house/forge chimneys now use the actual authored roof slab
+height. They skip usable roof cells and retain ordinary cutaways. The visible
+catalogue roof control permits original roofs, terraces, blocked three-metre
+slabs and accessible three-metre roof routes. Zero-height blocked cells retain
+collision without adding raised obstacle blocks. Positive/default obstacles
+retain their geometry. Twelve corrected chapel/house slab views and six forge
+roof-route views produced no browser errors; selected exteriors and interiors
+were inspected.
+
+Actor equipment and clothing now rebind only when the immutable presentation
+record changes. Native clocks, timed tools and completion still advance each
+visible frame. Real paired loading passed after this change. On the same M2 Max,
+Chrome, DPR 1 and 992 × 634 canvas used above, a camera exposing all 100 loaded
+bodies produced warm samples of **60, 60, 57.2, 59, 60 FPS** with 1,553 draw calls
+and 1,438,718 triangles. The first LOD-switch sample was 31.9 FPS. This is bounded
+warm performance evidence; it does not establish locked 60 FPS or other hardware
+and pixel densities. The earlier table remains the earlier camera's evidence.
+
 ## Next increments and acceptance limits
 
-Mounted boot contact, climbing support and native duration, pistol loading
-contact, the broader posture bank, braking steps and paired melee contact
-still need review. Town hall facade details and wall finish contrast also
-remain under visual comparison. The
+Climbing support and the roof-edge step, the broader posture bank, braking
+steps and paired melee contact still need review. Town hall facade details
+and wall finish contrast also remain under visual comparison. The
 [character review](../../assets/source/characters-3d/REVIEW.md) records the
 accepted standing reference and the retained motion bank separately.
 
