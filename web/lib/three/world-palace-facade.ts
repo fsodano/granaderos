@@ -12,7 +12,7 @@ import type {WorldBuilding,WorldInput} from './world-types';
 /** Formal palace details follow authored walls rather than filling floor cells. */
 export function palaceFacade(b:WorldBuilding,input:WorldInput,T:number,height:number,base:number,geometry:WorldGeometry,materials:WorldMaterials,legacy:boolean,edgeDetails:(panels:readonly (readonly Vector3[])[],eave:number)=>Group){
   const walls=input.terrain.tiles.filter(tile=>tile.buildingId===b.id&&['wall','door','window'].includes(tile.type)),frame=entranceFrame({...b,walls}),profile=getBuildingProfile(b),appearance=buildingAppearance({...b,roofFinish:b.roofFinish??(b.roof==='thatch'?'thatch':undefined)}),light=illuminationAt(input,b);
-  const wall=materials.get(appearance.wallFinish,legacy?{colour:buildingStyle(b).wall}:{}),trim=materials.get('trim',legacy?{colour:buildingStyle(b).trim}:{}),stone=materials.get('stone'),dark=materials.get('darkwood'),iron=materials.get('iron'),bars=materials.get('iron',{colour:'#a7ae9b'});
+  const wall=materials.get(appearance.wallFinish,legacy&&b.wallFinish===undefined?{colour:buildingStyle(b).wall}:{architectureRole:'volume'}),trim=materials.get('trim',legacy?{colour:buildingStyle(b).trim}:{}),stone=materials.get('stone'),dark=materials.get('darkwood'),iron=materials.get('iron'),bars=materials.get('iron',{colour:'#a7ae9b'});
   const rotation=new Quaternion().setFromAxisAngle(new Vector3(0,1,0),Math.atan2(-frame.u.y,frame.u.x)),alongInset=.4*(frame.u.x+frame.u.y),depthInset=.4*(frame.v.x+frame.v.y),doorU=frame.doorU-alongInset;
   const at=(u:number,v:number,y:number)=>{const p=frame.at(u,v);return new Vector3((p.x+.4)*T,base+y,(p.y+.4)*T);};
   const wallAt=(u:number,v:number)=>{const p=frame.at(u,v);return walls.find(tile=>tile.x===p.x&&tile.y===p.y);};
