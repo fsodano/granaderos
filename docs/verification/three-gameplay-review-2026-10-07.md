@@ -414,6 +414,22 @@ and the production export. Six clean playable views had no browser errors.
 Front/side exteriors and the rotated interior were compared with the current
 sprite. This accepts the bounded depot correction.
 
+## Prone boot increment
+
+The complete native boots now remain on the support surface through prone idle
+and crawl. The measured stored lower surface remains between 1 and 3 mm above
+the floor, including the toe caps. Native leg rotations supply the correction;
+body, arms, held weapons and all 322 other clips remain exact. The
+[prone support review](../art/prone-boot-support-3d-review-2026-10-07.md)
+records the actual surfaces and preservation comparison.
+
+The clean cut passed 74 focused checks, type/docs/baseline/native/profile checks
+and the production export. Fourteen clean normal UI frames completed
+male and female one-cell crawl orders at exact saved destinations without game
+or browser errors (excluding the missing favicon). Selected idle, crawl and
+completion frames were compared with the sprites. Exposed unarmed hand/cuff
+support and broader motion remain.
+
 ## Next increments and acceptance limits
 
 The low-ceiling headwear limit, broader posture bank, braking steps and the

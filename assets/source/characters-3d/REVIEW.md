@@ -121,6 +121,10 @@ clips in each anatomy within the [crouched support review](../../../docs/art/cro
 Worst stored penetration is below 0.3 mm; idle rests at 2 mm, and swinging feet
 keep their recorded lift. All other clips and all upper/Root tracks remain exact.
 Standing walking keeps the measured lower sole at 2 mm. Running has an 8–9 cm
-flight phase. Prone, sideways and lance support remain under review. These
+flight phase. The twelve prone idle/crawl clips now keep the complete boot
+between 1 and 3 mm above the floor; all other clips and body/arm/Root tracks
+remain exact. The [prone support review](../../../docs/art/prone-boot-support-3d-review-2026-10-07.md)
+records the retained weapon hold and measured surfaces. Exposed unarmed palms
+and cuffs, sideways and lance support remain under review. These
 published LOD0 surface measurements do not accept the remaining posture bank.
 The complete native climb and roof-edge transfer are accepted within the [measured climbing review](../../../docs/art/native-climbing-3d-review-2026-10-07.md), including four clean playable same-cell hatch routes. The documented low-ceiling/headwear limit remains under review.
