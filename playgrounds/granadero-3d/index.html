@@ -2,16 +2,16 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#142820"><title>Granadero · Laboratorio 3D</title>
+  <meta name="theme-color" content="#142820"><title>Personajes · Laboratorio 3D</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='8' fill='%231a3026'/%3E%3Cpath d='M12 29V11h16v5H17v8h6v-3h-4v-4h9v12z' fill='%23d2b877'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="/src/style.css">
   <script type="importmap">{"imports":{"three":"/vendor/three/build/three.module.js","three/addons/":"/vendor/three/examples/jsm/"}}</script>
 </head>
 <body>
-  <header class="masthead"><a class="brand" href="/" aria-label="Granaderos"><span class="brand-mark">G</span><span>GRANADEROS<small>LABORATORIO 3D</small></span></a><span class="project-tag"><span></span>Un soldado · mundo 3D</span></header>
+  <header class="masthead"><a class="brand" href="/" aria-label="Granaderos"><span class="brand-mark">G</span><span>GRANADEROS<small>LABORATORIO 3D</small></span></a><span class="project-tag"><span></span>Personajes · mundo 3D</span></header>
   <main class="workspace">
-    <section class="stage-panel" aria-label="Vista 3D del granadero">
-      <div class="stage-heading"><div><p class="eyebrow">REGIMIENTO DE GRANADEROS</p><h1>El granadero</h1><p class="subheading">Movimiento, armas y apariencia.</p></div><span class="uniform-tag">ESTUDIO DE UNIFORME</span></div>
+    <section class="stage-panel" aria-label="Vista 3D del personaje">
+      <div class="stage-heading"><div><p class="eyebrow">PERSONAJES DE GRANADEROS</p><h1 id="character-title">Granadero · referencia aprobada</h1><p class="subheading">Movimiento, armas y apariencia.</p></div><span class="uniform-tag">ESTUDIO DE UNIFORME</span></div>
       <div id="viewport" class="viewport">
         <canvas id="scene" tabindex="0" aria-label="Granadero en vista isométrica. Arrastrá para mover la vista. Usá la rueda para acercarte."></canvas>
         <div id="loading" class="loading" role="status"><span class="loading-ring"></span><strong>Preparando el granadero…</strong><span>Modelo y animaciones</span></div>
@@ -21,13 +21,14 @@
       </div>
       <div class="playback-bar"><button id="pause" disabled aria-label="Pausar animación">Ⅱ <span>Pausar</span></button><label class="speed-label" for="speed">Velocidad <input id="speed" type="range" min="0.25" max="1.5" step="0.25" value="1"><output id="speed-value">1×</output></label><span id="motion-state" class="motion-state">En el sitio</span></div>
     </section>
-    <aside class="controls" aria-label="Controles del granadero">
-      <div class="control-intro"><p class="eyebrow">PROBÁ CADA ACCIÓN</p><h2>Un cuerpo.<br>Distintas acciones.</h2><p>Cambiá el equipo y observá al soldado desde la cámara isométrica.</p></div>
-      <fieldset><legend><span class="step">01</span> Equipo</legend><div class="weapon-grid" role="group" aria-label="Elegir equipo"><button data-weapon="none" class="choice active" aria-pressed="true"><span class="weapon-icon">✋</span><span>Sin arma<small>Manos libres</small></span></button><button data-weapon="rifle" class="choice" aria-pressed="false"><span class="weapon-icon">╱</span><span>Fusil<small>Arma larga</small></span></button><button data-weapon="sabre" class="choice" aria-pressed="false"><span class="weapon-icon">⌒</span><span>Sable<small>Combate cercano</small></span></button><button data-weapon="pistol" class="choice" aria-pressed="false"><span class="weapon-icon">⌐</span><span>Pistola<small>Arma corta</small></span></button></div></fieldset>
+    <aside class="controls" aria-label="Controles del personaje">
+      <div class="control-intro"><p class="eyebrow">PROBÁ CADA ACCIÓN</p><h2>Personajes.<br>Distintas acciones.</h2><p>Elegí un personaje. Probá sus movimientos y armas en la vista isométrica.</p></div>
+      <label class="character-label" for="character-choice">Personaje</label><select id="character-choice" aria-label="Personaje"></select>
+      <fieldset><legend><span class="step">01</span> Equipo</legend><div class="weapon-grid" role="group" aria-label="Elegir equipo"><button data-weapon="none" class="choice active" aria-pressed="true"><span class="weapon-icon">✋</span><span>Sin arma<small>Manos libres</small></span></button><button data-weapon="rifle" class="choice" aria-pressed="false"><span class="weapon-icon">╱</span><span>Fusil<small>Arma larga</small></span></button><button data-weapon="sabre" class="choice" aria-pressed="false"><span class="weapon-icon">⌒</span><span>Sable<small>Combate cercano</small></span></button><button data-weapon="knife" class="choice" aria-pressed="false"><span class="weapon-icon">╱</span><span>Cuchillo<small>Hoja corta · 18 cm</small></span></button><button data-weapon="pistol" class="choice" aria-pressed="false"><span class="weapon-icon">⌐</span><span>Pistola<small>Arma corta</small></span></button></div></fieldset>
       <fieldset><legend><span class="step">02</span> Movimiento</legend><div class="segmented" role="group" aria-label="Elegir movimiento"><button data-motion="idle" aria-pressed="false">Quieto</button><button data-motion="walk" class="active" aria-pressed="true">Caminar</button><button data-motion="run" aria-pressed="false">Correr</button></div><label class="checkbox-label"><input id="travel" type="checkbox"><span>Recorrer el terreno</span></label></fieldset>
-      <fieldset><legend><span class="step">03</span> Acción con el arma</legend><button id="attack" class="attack" disabled><span id="attack-icon">→</span><span id="attack-label">Elegí un arma</span></button><p id="attack-description" class="control-note">El granadero camina y corre con las manos libres.</p></fieldset>
+      <fieldset><legend><span class="step">03</span> Acción con el arma</legend><label for="action-choice">Movimiento de ataque</label><select id="action-choice" aria-label="Movimiento de ataque"></select><button id="attack" class="attack" disabled><span id="attack-icon">→</span><span id="attack-label">Elegí un arma</span></button><p id="attack-description" class="control-note">Elegí un arma para caminar o correr con ella.</p></fieldset>
       <fieldset><legend><span class="step">04</span> Color de piel</legend><div class="skin-options" role="group" aria-label="Elegir color de piel"><button data-skin="blanco" class="active" aria-pressed="true"><i style="--skin:#d8a783"></i>Blanco</button><button data-skin="moreno" aria-pressed="false"><i style="--skin:#9b6441"></i>Moreno</button><button data-skin="negro" aria-pressed="false"><i style="--skin:#513023"></i>Negro</button></div></fieldset>
-      <div class="view-options"><label class="checkbox-label"><input id="grid" type="checkbox" checked><span>Mostrar cuadrícula</span></label><label class="checkbox-label"><input id="night" type="checkbox"><span>Luz nocturna</span></label></div>
+      <label class="checkbox-label"><input id="pixelated" type="checkbox"> Comparar estilo pixelado</label><div class="view-options"><label class="checkbox-label"><input id="grid" type="checkbox" checked><span>Mostrar cuadrícula</span></label><label class="checkbox-label"><input id="night" type="checkbox"><span>Luz nocturna</span></label></div>
       <p id="status" class="status" role="status" aria-live="polite">Cargando el modelo…</p>
     </aside>
   </main>

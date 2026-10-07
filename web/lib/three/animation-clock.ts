@@ -1,5 +1,5 @@
 /** Pure visual time mapping. No animation event is a gameplay command. */
-export type AnimationClockClip={duration:number;loop:boolean;locomotionSpeed?:number;nativeStrideSpeed?:number;markers?:Record<string,number>};
+export type AnimationClockClip={duration:number;loop:boolean;playbackRate?:number;locomotionSpeed?:number;nativeStrideSpeed?:number;markers?:Record<string,number>};
 export type AnimationClockCue={action:string;startedAt:number;durationMs?:number;phase?:string;phaseStartedAt?:number;phaseDurationMs?:number};
 export type AnimationClockMotion={moving?:boolean;elapsedMs?:number;elapsedDistance?:number;signedDistance?:number;speed?:number;signedForwardSpeed?:number;segmentFraction?:number};
 export type AnimationClockInput={clip:AnimationClockClip;action:string;cue?:AnimationClockCue;motion?:AnimationClockMotion;now:number;reducedMotion?:boolean};
@@ -51,5 +51,8 @@ export function sampleAnimationTime({clip,action,cue,motion,now,reducedMotion=fa
   // Accessibility suppresses idle breathing only. Gaits, recovery, weapon use,
   // reactions and stance changes keep their real visual timing.
   if(reducedMotion&&action==='idle')return {...result,time:0,rate:0};
-  return result;
+  // Reviewed free playback has its own pace. Paid cue phases and travelled
+  // distance above remain authoritative and never receive this multiplier.
+  const playbackRate=clip.playbackRate??1;
+  return {...result,rate:Number.isFinite(playbackRate)&&playbackRate>0?playbackRate:1};
 }

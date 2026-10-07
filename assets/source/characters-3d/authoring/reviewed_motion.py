@@ -1,0 +1,926 @@
+"""Reviewed standing motion authoring, ported from the approved Granadero preview.
+
+This module samples native male or female rigs. It creates no production NLA
+tracks; motion.py binds its poses to the game action contract. Keep the approved
+pose functions in sync deliberately after visual review, never at build time.
+
+Retarget recorded CMU human movement onto the unmodified MakeHuman game rig.
+
+The three locomotion clips are sampled from recorded people, not generated
+limb waves.  Source files and use terms are in vendor/motion.  All animation
+tracks use the character's native bone lengths and native skin weights.
+"""
+from pathlib import Path
+import json
+import math
+import re
+import bpy
+import numpy as np
+from mathutils import Matrix, Quaternion, Vector
+
+VENDOR = Path(__file__).resolve().parent / 'vendor' / 'motion'
+FPS = 30
+UP = Vector((0, 0, 1))
+FORWARD = Vector((0, -1, 0))
+CONVERT = Matrix(((1,0,0),(0,0,-1),(0,1,0)))
+
+
+class BVH:
+    """Small deterministic reader. Channel order follows the file exactly."""
+    def __init__(self, path):
+        self.path = Path(path)
+        text = self.path.read_text()
+        hierarchy, motion = text.split('MOTION', 1)
+        tokens = re.findall(r'[^\s{}]+|[{}]', hierarchy)
+        self.nodes = []
+        self.names = {}
+        self.channels = 0
+        i = 1
+        def node(parent):
+            nonlocal i
+            kind = tokens[i]; i += 1
+            if kind == 'End':
+                i += 1
+                name = self.nodes[parent]['name'] + '_End'
+            else:
+                name = tokens[i]; i += 1
+            assert tokens[i] == '{'; i += 1
+            n = dict(name=name, parent=parent, offset=Vector(), channels=[], start=self.channels)
+            idx = len(self.nodes); self.nodes.append(n); self.names[name] = idx
+            while tokens[i] != '}':
+                if tokens[i] == 'OFFSET':
+                    n['offset'] = Vector(map(float, tokens[i+1:i+4])); i += 4
+                elif tokens[i] == 'CHANNELS':
+                    count = int(tokens[i+1]); n['channels'] = tokens[i+2:i+2+count]
+                    n['start'] = self.channels; self.channels += count; i += count + 2
+                else:
+                    node(idx)
+            i += 1
+        node(None)
+        lines = motion.strip().splitlines()
+        self.dt = float(lines[1].split(':')[1])
+        self.frames = np.array([[float(v) for v in line.split()] for line in lines[2:] if line.strip()])
+        assert self.frames.shape[1] == self.channels
+        self.cache = {}
+
+    def sample(self, frame):
+        frame = max(0, min(len(self.frames)-1, float(frame)))
+        index = int(frame); blend = frame-index
+        if blend > 1e-6:
+            a = self.sample(index); b = self.sample(min(index+1,len(self.frames)-1))
+            return {name:(p.lerp(b[name][0], blend), q.slerp(b[name][1], blend)) for name,(p,q) in a.items()}
+        if index in self.cache:
+            return self.cache[index]
+        result = {}; world = []
+        row = self.frames[index]
+        for n in self.nodes:
+            location = n['offset'].copy(); rotation = Quaternion()
+            for ch, value in zip(n['channels'], row[n['start']:]):
+                axis = 'XYZ'.index(ch[0])
+                if ch.endswith('position'):
+                    location[axis] += value
+                else:
+                    unit = Vector((int(axis==0),int(axis==1),int(axis==2)))
+                    rotation = rotation @ Quaternion(unit, math.radians(value))
+            mat = Matrix.LocRotScale(location, rotation, Vector((1,1,1)))
+            if n['parent'] is not None: mat = world[n['parent']] @ mat
+            world.append(mat)
+            p = CONVERT @ mat.translation
+            q = (CONVERT @ mat.to_3x3() @ CONVERT.inverted()).to_quaternion()
+            result[n['name']] = (p, q)
+        self.cache[index] = result
+        return result
+
+
+def _pose_signature(sample):
+    hips = sample['Hips'][0]
+    return np.array([tuple(sample[name][0] - hips) for name in
+        ('LeftLeg','RightLeg','LeftFoot','RightFoot','LeftForeArm','RightForeArm','LeftHand','RightHand')]).ravel()
+
+
+def inspect_sources():
+    for path in sorted(VENDOR.glob('*.bvh')):
+        bvh = BVH(path)
+        rows = []
+        for f in range(1,len(bvh.frames),max(1,len(bvh.frames)//60)):
+            p = bvh.sample(f)
+            rows.append(_pose_signature(p))
+        values = np.array(rows)
+        print(path.name,'frames',len(bvh.frames),'seconds',round(len(bvh.frames)*bvh.dt,2),'joint_variance',np.round(values.std(axis=0).reshape(-1,3),2).tolist())
+
+
+
+BODY_MAP = {'pelvis':'Hips','spine_01':'LowerBack','spine_02':'Spine','spine_03':'Spine1','neck_01':'Neck1','head':'Head'}
+SEGMENTS = {}
+for suffix, side in [('l','Left'),('r','Right')]:
+    SEGMENTS.update({
+        'upperarm_'+suffix:(side+'Arm',side+'ForeArm'),
+        'lowerarm_'+suffix:(side+'ForeArm',side+'Hand'),
+        'hand_'+suffix:(side+'Hand',side+'HandIndex1'),
+        'thigh_'+suffix:(side+'UpLeg',side+'Leg'),
+        'calf_'+suffix:(side+'Leg',side+'Foot'),
+        'foot_'+suffix:(side+'Foot',side+'ToeBase'),
+        'ball_'+suffix:(side+'ToeBase',side+'ToeBase_End')})
+
+
+def _bone_order(rig):
+    return sorted(rig.pose.bones, key=lambda pb: len(pb.parent_recursive))
+
+
+def _reset(rig):
+    for pb in rig.pose.bones:
+        pb.rotation_mode = 'QUATERNION'
+        pb.matrix_basis = Matrix.Identity(4)
+    bpy.context.view_layer.update()
+
+
+def _head(rig, name):
+    bone = rig.data.bones[name]
+    if bone.parent:
+        return rig.pose.bones[bone.parent.name].matrix @ bone.parent.matrix_local.inverted() @ bone.head_local
+    return bone.head_local.copy()
+
+
+def _set_world_rotation(rig, name, rotation):
+    pb = rig.pose.bones[name]
+    pb.matrix = Matrix.LocRotScale(_head(rig, name), rotation, Vector((1,1,1)))
+    bpy.context.view_layer.update()
+
+
+def _aim(rig, name, direction):
+    bone = rig.data.bones[name]
+    direction = Vector(direction).normalized()
+    rest_direction = (bone.tail_local - bone.head_local).normalized()
+    q = rest_direction.rotation_difference(direction) @ bone.matrix_local.to_quaternion()
+    _set_world_rotation(rig, name, q)
+
+
+def _finger_curl(rig, amount=.45, side=None):
+    """MakeHuman's native finger joints bend toward their own palm plane."""
+    for suffix in (side,) if side else ('l','r'):
+        forward, palm_normal = _palm_basis(rig, suffix)
+        axis = forward.cross(palm_normal).normalized()
+        for finger in ('index','middle','ring','pinky'):
+            for i, factor in [(1,.65),(2,1.0),(3,.8)]:
+                name=f'{finger}_{i:02d}_{suffix}'
+                if name not in rig.pose.bones: continue
+                pb=rig.pose.bones[name]
+                local_axis=pb.bone.matrix_local.to_3x3().inverted() @ axis
+                pb.rotation_quaternion=Quaternion(local_axis,amount*factor)
+        # Bring the thumb across the index finger instead of leaving the
+        # source A-pose thumb splayed. This is a short anatomical IK chain.
+        bpy.context.view_layer.update()
+        names=[f'thumb_{i:02d}_{suffix}' for i in (1,2,3)]
+        if all(n in rig.pose.bones for n in names):
+            thumb=rig.pose.bones[names[0]]
+            hand=rig.pose.bones['hand_'+suffix]
+            hand_delta=hand.matrix.to_3x3() @ hand.bone.matrix_local.to_3x3().inverted()
+            world_normal=hand_delta @ palm_normal
+            world_forward=hand_delta @ forward
+            index=rig.pose.bones['index_02_'+suffix]
+            target=index.head+world_normal*.004-world_forward*.004
+            base=thumb.head.copy();d=target-base
+            l1=rig.data.bones[names[0]].length
+            l2=sum(rig.data.bones[n].length for n in names[1:])
+            distance=min(d.length,l1+l2-.001);d.normalize()
+            pole=world_normal-d*d.dot(world_normal)
+            if pole.length<.001:pole=world_forward-d*d.dot(world_forward)
+            pole.normalize()
+            along=(l1*l1-l2*l2+distance*distance)/(2*distance)
+            joint=base+d*along+pole*math.sqrt(max(0,l1*l1-along*along))
+            _aim(rig,names[0],joint-base)
+            _aim(rig,names[1],target-joint)
+            _aim(rig,names[2],target-joint)
+
+    bpy.context.view_layer.update()
+
+
+def _sole_points(rig):
+    out=[]
+    for suffix in ('l','r'):
+        foot=rig.data.bones['foot_'+suffix];ball=rig.data.bones['ball_'+suffix]
+        for name,point in [('foot_'+suffix,Vector((foot.head_local.x,foot.head_local.y+.032,.012))),
+                           ('ball_'+suffix,Vector((ball.tail_local.x,ball.tail_local.y,.012)))]:
+            pb=rig.pose.bones[name]
+            out.append((suffix,pb.matrix @ pb.bone.matrix_local.inverted() @ point))
+    return out
+
+
+def _collect(rig):
+    return {pb.name:(pb.location.copy(),pb.rotation_quaternion.copy()) for pb in rig.pose.bones}
+
+
+def _write_clip(rig, name, samples, duration, loop=True, grounding=None):
+    if loop:
+        first,last=samples[0],samples[-1]
+        for i,sample in enumerate(samples):
+            t=i/(len(samples)-1)
+            for bone,(p,q) in list(sample.items()):
+                shift=last[bone][0]-first[bone][0]
+                mismatch=last[bone][1].inverted() @ first[bone][1]
+                sample[bone]=(p-shift*t,q @ Quaternion().slerp(mismatch,t))
+        samples[-1]={name:(p.copy(),q.copy()) for name,(p,q) in samples[0].items()}
+    if grounding:
+        boots,goals=grounding
+        goals[-1]=goals[0]
+        for i,sample in enumerate(samples):
+            _apply_sample(rig,sample)
+            depsgraph=bpy.context.evaluated_depsgraph_get()
+            lowest=100
+            for obj in boots:
+                evaluated=obj.evaluated_get(depsgraph)
+                mesh=evaluated.to_mesh()
+                lowest=min(lowest,min((obj.matrix_world @ v.co).z for v in mesh.vertices))
+                evaluated.to_mesh_clear()
+            root=rig.pose.bones['Root']
+            root.matrix=Matrix.Translation((0,0,goals[i]-lowest)) @ root.matrix
+            sample['Root']=(root.location.copy(),root.rotation_quaternion.copy())
+    return {'name':name,'duration':round(duration,6),'loop':loop,'events':{},'samples':samples}
+
+
+def _retarget_clip(ctx,clip_name,file,start,end):
+    rig=ctx['rig'];bvh=BVH(VENDOR/file)
+    count=round((end-start)*bvh.dt*FPS)
+    duration=count/FPS
+    sampled=[bvh.sample(start+(end-start)*i/count) for i in range(count+1)]
+    # Use the actor's chest plane, not the camera, to establish forward.
+    across=sum((p['LeftArm'][0]-p['RightArm'][0] for p in sampled),Vector())
+    alignment=Quaternion(UP,-math.atan2(across.y,across.x))
+    reference=bvh.sample(0)
+    src_leg=sum((reference[a][0]-reference[b][0]).length for a,b in [('LeftUpLeg','LeftLeg'),('LeftLeg','LeftFoot')])
+    dst_leg=sum(rig.data.bones[n].length for n in ('thigh_l','calf_l'))
+    scale=dst_leg/src_leg
+    mean_hip=sum(p['Hips'][0].z for p in sampled)/len(sampled)
+    min_source_foot=min(min(p['LeftFoot'][0].z,p['RightFoot'][0].z) for p in sampled)
+    all_samples=[];foot_path=[];ground_heights=[]
+    boots=[o for o in ctx['objects'] if 'Boot' in o.name]
+    for sample in sampled:
+        _reset(rig)
+        # Recorded pelvis rise/fall, body rotation, and counter-rotation.
+        for name in BODY_MAP:
+            source=BODY_MAP[name]
+            q=alignment @ sample[source][1] @ reference[source][1].inverted()
+            _set_world_rotation(rig,name,q @ rig.data.bones[name].matrix_local.to_quaternion())
+        for suffix in ('l','r'):
+            parent=rig.pose.bones['spine_03']
+            delta=parent.matrix.to_quaternion() @ parent.bone.matrix_local.to_quaternion().inverted()
+            _set_world_rotation(rig,'clavicle_'+suffix,delta @ rig.data.bones['clavicle_'+suffix].matrix_local.to_quaternion())
+        for pb in _bone_order(rig):
+            if pb.name not in SEGMENTS:continue
+            a,b=SEGMENTS[pb.name]
+            direction=alignment @ (sample[b][0]-sample[a][0])
+            if direction.length>1e-5:_aim(rig,pb.name,direction)
+        if clip_name in ('Walk','Run'):
+            # Retargeted head pitch exaggerates the source actor's upward gaze.
+            # Keep a little recorded motion around a level, forward-facing head.
+            for name in ('neck_01','head'):
+                pb=rig.pose.bones[name]
+                rest=pb.bone.matrix_local.to_quaternion()
+                level=Quaternion(Vector((1,0,0)),.06 if clip_name=='Run' else .02) @ rest
+                _set_world_rotation(rig,name,level.slerp(pb.matrix.to_quaternion(),.20))
+        if clip_name=='Walk':
+            for suffix in ('l','r'):
+                shoulder=_head(rig,'upperarm_'+suffix)
+                hand=_head(rig,'hand_'+suffix)
+                side=1 if suffix=='l' else -1
+                swing=hand.y-shoulder.y
+                target=shoulder+Vector((side*.055,swing*.75,-.49+abs(swing)*.18))
+                _arm_ik(rig,suffix,target,shoulder+Vector((side*.09,.08,-.30)))
+        if clip_name=='Run':
+            # Keep the recorded opposing arm timing, but contain the elbows
+            # and carry the hands beside the ribs instead of throwing them out.
+            for suffix in ('l','r'):
+                shoulder=_head(rig,'upperarm_'+suffix)
+                hand=_head(rig,'hand_'+suffix)
+                swing=max(-1,min(1,(hand.y-shoulder.y)/.32))
+                side=1 if suffix=='l' else -1
+                target=shoulder+Vector((side*.075,-.12+swing*.16,-.23-swing*.085))
+                pole=shoulder+Vector((side*.12,.14+swing*.07,-.25))
+                _arm_ik(rig,suffix,target,pole)
+        # The BVH hand channels have marker noise. A nearly straight wrist
+        # follows the forearm; softly curled native fingers form a relaxed hand.
+        for suffix in ('l','r'):
+            forearm=rig.pose.bones['lowerarm_'+suffix]
+            inward=Vector((-1 if suffix=='l' else 1,0,0))
+            hand_q=_hand_rotation(rig,suffix,forearm.tail-forearm.head,inward)
+            _set_world_rotation(rig,'hand_'+suffix,hand_q)
+        _finger_curl(rig,1.30 if clip_name in ('Run','Walk') else 1.15)
+        sole=_sole_points(rig)
+        min_sole=min(p.z for _,p in sole)
+        airborne=max(0,(min(sample['LeftFoot'][0].z,sample['RightFoot'][0].z)-min_source_foot)*scale-.035) if clip_name=='Run' else 0
+        root=rig.pose.bones['Root']
+        root.matrix=Matrix.Translation((0,0,-min_sole+airborne+.008)) @ root.matrix
+        bpy.context.view_layer.update()
+        foot_path.append({s:min((p for side,p in _sole_points(rig) if side==s),key=lambda p:p.z).copy() for s in ('l','r')})
+        all_samples.append(_collect(rig))
+        ground_heights.append(airborne+.002)
+    meta=_write_clip(rig,clip_name,all_samples,duration,grounding=(boots,ground_heights))
+    meta['source']={'database':'CMU','file':file,'startFrame':start,'endFrame':end,'sampleRate':round(1/bvh.dt)}
+    speeds=[]
+    for i in range(1,len(foot_path)-1):
+        for side in ('l','r'):
+            a,p,b=foot_path[i-1][side],foot_path[i][side],foot_path[i+1][side]
+            if p.z<.045 and b.y>a.y:
+                speeds.append((b.y-a.y)/(2*duration/count))
+    source_displacement=alignment @ (sampled[-1]['Hips'][0]-sampled[0]['Hips'][0])
+    speed=float(np.median(speeds)) if speeds else -source_displacement.y*scale/duration
+    meta['locomotionSpeed']=round(max(.1,speed),3) if clip_name in ('Walk','Run') else 0
+    return meta,all_samples[0],all_samples
+
+
+def _palm_basis(rig,suffix):
+    bones=rig.data.bones
+    wrist=bones['hand_'+suffix].head_local
+    middle=bones['middle_01_'+suffix].head_local
+    across=bones['index_01_'+suffix].head_local-bones['pinky_01_'+suffix].head_local
+    long=(middle-wrist).normalized()
+    normal=across.cross(long).normalized()*(-1 if suffix=='l' else 1)
+    return long,normal
+
+
+def _frame(long,normal):
+    y=Vector(long).normalized()
+    z=Vector(normal)-y*y.dot(normal)
+    if z.length<.01:z=y.cross(Vector((1,0,0)))
+    z.normalize();x=y.cross(z).normalized()
+    return Matrix((x,y,z)).transposed()
+
+
+def _hand_rotation(rig,suffix,long,normal):
+    native_long,native_normal=_palm_basis(rig,suffix)
+    return (_frame(long,normal) @ _frame(native_long,native_normal).inverted() @ rig.data.bones['hand_'+suffix].matrix_local.to_3x3()).to_quaternion()
+
+
+def _limb_ik(rig,upper_name,lower_name,wrist,pole):
+    upper=rig.data.bones[upper_name];lower=rig.data.bones[lower_name]
+    shoulder=_head(rig,upper.name);wrist=Vector(wrist)
+    direction=wrist-shoulder; distance=min(direction.length,upper.length+lower.length-.002)
+    direction.normalize();wrist=shoulder+direction*distance
+    pole=Vector(pole)-shoulder;pole-=direction*pole.dot(direction)
+    if pole.length<.001:pole=direction.cross(Vector((0,1,0)))
+    pole.normalize()
+    along=(upper.length**2-lower.length**2+distance**2)/(2*distance)
+    height=math.sqrt(max(0,upper.length**2-along**2))
+    elbow=shoulder+direction*along+pole*height
+    _aim(rig,upper.name,elbow-shoulder)
+    _aim(rig,lower.name,wrist-elbow)
+    return wrist
+
+
+def _arm_ik(rig,suffix,wrist,pole):
+    return _limb_ik(rig,'upperarm_'+suffix,'lowerarm_'+suffix,wrist,pole)
+
+
+def _combat_base(rig,base,shift=0,turn=0,pivot=0,step=0,lift=0,crouch=0,lean=0):
+    """Stagger the feet, flex the knees, and solve legs after weight shifts."""
+    _apply_sample(rig,base)
+    feet={side:(rig.pose.bones['foot_'+side].matrix.translation.copy(),rig.pose.bones['foot_'+side].matrix.to_quaternion()) for side in ('l','r')}
+    root=rig.pose.bones['Root']
+    root.matrix=Matrix.Translation((0,shift,-.045-crouch)) @ root.matrix
+    bpy.context.view_layer.update()
+    pelvis=rig.pose.bones['pelvis']
+    _set_world_rotation(rig,'pelvis',Quaternion(UP,turn) @ Quaternion(Vector((1,0,0)),lean) @ pelvis.matrix.to_quaternion())
+    for side,(point,rotation) in feet.items():
+        point+=Vector((.055 if side=='l' else -.055,.10 if side=='l' else -.10,0))
+        if side=='r':point+=Vector((0,-step,lift))
+        if side=='l' and pivot:
+            foot=rig.data.bones['foot_l']
+            toe_local=foot.matrix_local.inverted() @ rig.data.bones['ball_l'].head_local
+            toe_anchor=point+rotation @ toe_local
+            rotation=Quaternion(UP,pivot) @ rotation
+            point=toe_anchor-rotation @ toe_local
+        _limb_ik(rig,'thigh_'+side,'calf_'+side,point,point+Vector((0,-1,.45)))
+        _set_world_rotation(rig,'foot_'+side,rotation)
+    return _collect(rig)
+
+
+def _flow_key(values,t):
+    """Monotone cubic interpolation: continuous velocity through the cut.
+
+    Tangents are zero only at extrema and the start/end of the action.
+    Harmonic slopes prevent overshoot between authored positions.
+    """
+    slopes=[(b-a)/(tb-ta) for (ta,a),(tb,b) in zip(values,values[1:])]
+    tangent=[0.0]
+    for i in range(1,len(values)-1):
+        a,b=slopes[i-1],slopes[i]
+        tangent.append(2*a*b/(a+b) if a*b>0 else 0.0)
+    tangent.append(0.0)
+    for i,((ta,a),(tb,b)) in enumerate(zip(values,values[1:])):
+        if t<=tb:
+            u=max(0,min(1,(t-ta)/(tb-ta)));dt=tb-ta
+            return (2*u**3-3*u*u+1)*a+(u**3-2*u*u+u)*dt*tangent[i]+(-2*u**3+3*u*u)*b+(u**3-u*u)*dt*tangent[i+1]
+    return values[-1][1]
+
+
+def _apply_sample(rig,sample):
+    for pb in rig.pose.bones:
+        pb.location=sample[pb.name][0];pb.rotation_quaternion=sample[pb.name][1]
+    bpy.context.view_layer.update()
+
+
+def _grip_setup(ctx):
+    rig=ctx['rig'];bone=rig.data.bones['hand_r']
+    long,normal=_palm_basis(rig,'r')
+    # Grip lies inside the curled fingers, below the knuckle row. Native
+    # MakeHuman finger positions define it; no hand mesh is moved or scaled.
+    knuckles=sum((rig.data.bones[f+'_01_r'].head_local for f in ('index','middle','ring','pinky')),Vector())/4
+    center=bone.head_local.lerp(knuckles,.74)+normal*.014
+    local_center=bone.matrix_local.inverted() @ center
+    offsets={}
+    for key,group in ctx.get('weapons',{}).items():
+        long_in_weapon=Vector((1,0,.05)) if key=='rifle' else Vector((1,0,-.10)) if key=='pistol' else Vector((1,0,0))
+        hand_in_weapon=_hand_rotation(rig,'r',long_in_weapon,Vector((0,1,0)))
+        bind=Matrix.LocRotScale(local_center,hand_in_weapon.inverted(),Vector((1,1,1)))
+        group.parent=rig;group.parent_type='BONE';group.parent_bone='hand_r'
+        group.matrix_parent_inverse=Matrix.Translation((0,-bone.length,0))
+        group.matrix_basis=bind
+        offsets[key]=(local_center.copy(),hand_in_weapon.copy())
+    ctx.setdefault('weapon_grips',{})['rifle_support']=(.22,0,.030)
+    return offsets
+
+
+def _weapon_pose(ctx,base,key,position,rotation,offsets,recoil=0,breathing=0,settle=0,posture=True,trigger=True,right_pole=None,left_pole=None):
+    rig=ctx['rig'];_apply_sample(rig,base)
+    if posture and recoil and key in ('rifle','pistol'):
+        spine=rig.pose.bones['spine_01']
+        lean=recoil/(.41 if key=='rifle' else 2.0)
+        _set_world_rotation(rig,'spine_01',Quaternion(Vector((1,0,0)),-lean) @ spine.matrix.to_quaternion())
+    # A modest torso turn puts the supporting shoulder forward and keeps
+    # both elbows within their anatomical reach around a shoulder stock.
+    if posture:
+        chest=rig.pose.bones['spine_02']
+        _set_world_rotation(rig,'spine_02',Quaternion(Vector((1,0,0)),breathing*.006+settle*.012) @ chest.matrix.to_quaternion())
+        torso_turn=(-.16 if key=='rifle' else -.06)+settle*.014
+        spine=rig.pose.bones['spine_03']
+        _set_world_rotation(rig,'spine_03',Quaternion(UP,torso_turn) @ spine.matrix.to_quaternion())
+    gun_pos=Vector(position)+Vector((0,breathing*.0015,breathing*.003));gun_q=rotation
+    local_grip,hand_offset=offsets[key]
+    hand_q=gun_q @ hand_offset
+    wrist=gun_pos-hand_q @ local_grip
+    actual_wrist=_arm_ik(rig,'r',wrist,right_pole if right_pole is not None else Vector((-.41,-.12,1.22 if key=='rifle' else 1.10)))
+    _set_world_rotation(rig,'hand_r',hand_q)
+    _finger_curl(rig,1.33,'r')
+    if trigger and key in ('rifle','pistol'):
+        _trigger_finger(rig,ctx['weapons'][key],key)
+    # If a requested grip lies outside reach, report the actual arm solution.
+    actual_grip=actual_wrist+hand_q @ local_grip
+    if key=='rifle':
+        target=actual_grip+gun_q @ Vector(ctx.get('weapon_grips',{}).get('rifle_support',(.22,0,.030)))
+        left_long=gun_q @ Vector((.65,-.76,.08))
+        left_normal=gun_q @ Vector((0,0,1))
+        left_q=_hand_rotation(rig,'l',left_long,left_normal)
+        left_bone=rig.data.bones['hand_l']
+        knuckles=sum((rig.data.bones[f+'_01_l'].head_local for f in ('index','middle','ring','pinky')),Vector())/4
+        long,normal=_palm_basis(rig,'l')
+        palm=left_bone.head_local.lerp(knuckles,.75)+normal*.016
+        local_palm=left_bone.matrix_local.inverted() @ palm
+        left_wrist=target-left_q @ local_palm
+        _arm_ik(rig,'l',left_wrist,left_pole if left_pole is not None else Vector((.24,-.25,1.03)))
+        _set_world_rotation(rig,'hand_l',left_q)
+        _finger_curl(rig,1.18,'l')
+    elif key=='pistol':
+        # The free hand follows a chest-relative guard, not a frozen idle pose.
+        # Delayed elbow/hand response settles after the shooting arm recoils.
+        shoulder=rig.pose.bones['upperarm_l'].matrix.translation.copy()
+        chest_q=rig.pose.bones['spine_03'].matrix.to_quaternion()
+        rest_q=rig.data.bones['spine_03'].matrix_local.to_quaternion()
+        follow=chest_q @ rest_q.inverted()
+        free=shoulder+follow @ Vector((.040+settle*.022,-.055+settle*.027,-.365+settle*.018+breathing*.003))
+        _arm_ik(rig,'l',free,shoulder+Vector((.19+settle*.025,.015,-.18)))
+        palm=_hand_rotation(rig,'l',Vector((-.12,-.35,-.8)),Vector((-.2,-1,.2)))
+        _set_world_rotation(rig,'hand_l',follow @ Quaternion(UP,settle*.10+breathing*.012) @ palm)
+        _finger_curl(rig,.70+settle*.08,'l')
+    else:
+        _finger_curl(rig,.70,'l')
+    # Slight neck inclination brings the right cheek toward the shouldered
+    # stock, while the muzzle remains level in world space.
+    if posture and key=='rifle':
+        neck=rig.pose.bones['neck_01']
+        _set_world_rotation(rig,'neck_01',Quaternion(Vector((0,1,0)),-.20) @ Quaternion(Vector((1,0,0)),.18) @ neck.matrix.to_quaternion())
+    # A small head turn follows the aim without a twisted neck.
+    if posture:
+        head=rig.pose.bones['head']
+        aim_turn=(-.12 if key=='rifle' else -.08)-settle*.008
+        _set_world_rotation(rig,'head',Quaternion(UP,aim_turn) @ head.matrix.to_quaternion())
+    return _collect(rig)
+
+
+def _smooth_key(values,t):
+    for i in range(len(values)-1):
+        ta,a=values[i];tb,b=values[i+1]
+        if t<=tb:
+            u=max(0,min(1,(t-ta)/(tb-ta)));u=u*u*(3-2*u)
+            return a+(b-a)*u
+    return values[-1][1]
+
+
+def _path(knots,values,t):
+    """Sample a position without independently eased stops at every pose."""
+    return Vector(tuple(_flow_key(list(zip(knots,[v[c] for v in values])),t) for c in range(3)))
+
+
+def _guard_hand(rig,offset,pole_offset,curl=1.24):
+    """Fit the free fist to the moving shoulder and let its wrist follow."""
+    shoulder=_head(rig,'upperarm_l')
+    _arm_ik(rig,'l',shoulder+Vector(offset),shoulder+Vector(pole_offset))
+    forearm=rig.pose.bones['lowerarm_l']
+    _set_world_rotation(rig,'hand_l',_hand_rotation(rig,'l',forearm.tail-forearm.head,Vector((-1,-.15,0))))
+    _finger_curl(rig,curl,'l')
+
+
+def _carry_pose(ctx,base,previous,key,motion,offsets):
+    """Retain the recorded gait; the weapon hand follows, then settles.
+
+    The wrist target and elbow pole move independently. The rifle uses a
+    smaller shared carry arc; its forward hand stays on the fore-end.
+    """
+    rig=ctx['rig'];running=motion=='Run'
+    _apply_sample(rig,previous)
+    previous_delta=_head(rig,'hand_r')-_head(rig,'upperarm_r')
+    lag=math.tanh((previous_delta.y+.12)*4)
+    _apply_sample(rig,base)
+    shoulder=_head(rig,'upperarm_r')
+    chest=rig.pose.bones['spine_03']
+    follow=chest.matrix.to_quaternion() @ chest.bone.matrix_local.to_quaternion().inverted()
+    relative=follow.inverted() @ (_head(rig,'hand_r')-shoulder)
+    swing=math.tanh((relative.y+.12)*4)
+    if key=='rifle':
+        # The stock stays below the shoulder during travel. Both elbows
+        # absorb the stride, with the muzzle lagging behind the body turn.
+        phase=math.tanh((rig.pose.bones['thigh_r'].tail-rig.pose.bones['thigh_r'].head).normalized().y*2.5)
+        amplitude=1 if running else .62
+        grip=_head(rig,'spine_03')+follow @ Vector((-.105+.018*phase*amplitude,-.285+.026*phase*amplitude,-.035+.014*phase*amplitude))
+        if ctx['gender']=='female':
+            # The native female arms are shorter. Bring the whole rifle
+            # inward so the supporting elbow can still flex at every stride.
+            # Keep the approved male carry and each rig's bone lengths intact.
+            grip+=follow @ Vector((.015,.060,0))
+        rotation=follow @ Quaternion(UP,math.radians(-68+2.2*lag*amplitude)) @ Quaternion(Vector((0,1,0)),-.10+.045*lag*amplitude)
+        right_pole=shoulder+follow @ Vector((-.08,.035+.025*phase,-.27))
+        left_pole=_head(rig,'upperarm_l')+follow @ Vector((.045,-.16,-.28))
+    else:
+        # Use the actual arm swing from the gait, not a fixed gun/sword
+        # position. Right wrist rotation trails the elbow by one sample.
+        scale=.86 if key=='pistol' else .90 if key=='knife' else 1.0
+        wrist=shoulder+follow @ Vector((-.025-.008*swing,relative.y*scale-.018,relative.z+.018+.008*lag))
+        if key=='pistol':
+            rotation=follow @ Quaternion(UP,math.radians(-86+7*lag)) @ Quaternion(Vector((0,1,0)),.32+.19*lag)
+        else:
+            rotation=follow @ Quaternion(UP,math.radians(-65+(10 if key=='knife' else 7)*lag)) @ Quaternion(Vector((0,1,0)),(.40 if key=='knife' else .27)+(.20 if key=='knife' else .17)*lag)
+        local_grip,hand_offset=offsets[key]
+        grip=wrist+(rotation @ hand_offset) @ local_grip
+        right_pole=shoulder+follow @ Vector((-.105,.10+.065*swing,-.24 if running else -.31))
+        left_pole=None
+    pose=_weapon_pose(ctx,base,key,grip,rotation,offsets,posture=False,trigger=False,right_pole=right_pole,left_pole=left_pole)
+    # Preserve source balance and forward gaze. Only the rifle requires the
+    # free arm to stop its ordinary opposing gait and share the carry load.
+    for name in pose:
+        if name in ('head','neck_01') or (key!='rifle' and name.endswith('_l') and any(part in name for part in ('arm','hand','index','middle','ring','pinky','thumb'))):
+            pose[name]=base[name]
+    return pose
+
+
+def _firearm_pose(ctx,base,key,t,action,offsets,duration):
+    """A stable aim, short mechanical recoil, then delayed body settlement."""
+    rig=ctx['rig'];rifle=key=='rifle'
+    breath=0 if action else math.sin(math.pi*t)
+    # The gun moves first, shoulder/chest follow, then the knees and free
+    # elbow settle. The shot remains at .10; no pre-shot recoil is added.
+    kick=_flow_key([(0,0),(.10,0),(.133,1),(.205,.48),(.32,.13),(.48,0),(duration,0)],t) if action else 0
+    chest_response=_flow_key([(0,0),(.10,0),(.17,1),(.28,.48),(.42,-.12),(.60,0),(duration,0)],t) if action else 0
+    settle=_flow_key([(0,0),(.12,0),(.23,1),(.39,.35),(.53,.08),(duration,0)],t) if action else 0
+    shift=(.018 if rifle else .009)*chest_response
+    crouch=(.006 if rifle else .003)*settle
+    _combat_base(rig,base,shift,(-.10 if rifle else -.055)+chest_response*.012,0,0,0,crouch)
+    lean=(.10 if rifle else .035)-chest_response*(.060 if rifle else .028)
+    for name,factor in [('spine_01',.45),('spine_02',.35),('spine_03',.20)]:
+        pb=rig.pose.bones[name]
+        _set_world_rotation(rig,name,Quaternion(UP,(-.07 if rifle else -.025)*factor) @ Quaternion(Vector((1,0,0)),(lean+breath*.008)*factor) @ pb.matrix.to_quaternion())
+    if rifle:
+        pos=Vector((-.104,-.335+kick*.030+shift*.65,1.405+kick*.004+breath*.003))
+        q=Quaternion(UP,math.radians(-75)-settle*.006) @ Quaternion(Vector((0,1,0)),-kick*.035-breath*.003)
+    else:
+        pos=Vector((-.13,-.56+kick*.050+shift*.5,1.30+kick*.021+breath*.003))
+        q=Quaternion(UP,math.radians(-85)-settle*.009) @ Quaternion(Vector((0,1,0)),-kick*.16-breath*.004)
+    right=_head(rig,'upperarm_r');left=_head(rig,'upperarm_l')
+    _weapon_pose(ctx,_collect(rig),key,pos,q,offsets,posture=False,
+                 right_pole=right+Vector((-.14,.01+settle*.022,-.19 if rifle else -.24)),
+                 left_pole=left+Vector((.025,-.13,-.31)))
+    if not rifle:
+        _guard_hand(rig,(.035,-.10+settle*.040,-.32+settle*.023+breath*.004),(.105,.035+settle*.025,-.21),1.24+settle*.04)
+    # Neck and head follow separate smaller arcs. The gaze remains near the
+    # line of aim while the shoulders absorb recoil beneath it.
+    neck=rig.pose.bones['neck_01']
+    _set_world_rotation(rig,'neck_01',Quaternion(UP,-.06 if rifle else -.015) @ Quaternion(Vector((0,1,0)),-.14 if rifle else 0) @ Quaternion(Vector((1,0,0)),.13 if rifle else .025) @ neck.bone.matrix_local.to_quaternion())
+    head=rig.pose.bones['head']
+    _set_world_rotation(rig,'head',Quaternion(UP,-.075 if rifle else -.035) @ Quaternion(Vector((0,1,0)),-.08 if rifle else 0) @ Quaternion(Vector((1,0,0)),.075-chest_response*.016 if rifle else .015-chest_response*.010) @ head.bone.matrix_local.to_quaternion())
+    return _collect(rig)
+
+
+def _melee_pose(ctx,base,key,t,action,offsets,reverse=False):
+    # Authored grip path in metres. Forward is -Y. Rotate the blade in
+    # its cutting plane, with a slower preparation and recovery.
+    knife=key=='knife'
+    duration=.8 if knife else 1.0
+    knots=[0,.16,.27,.36,.56,duration] if knife else [0,.22,.36,.47,.72,duration]
+    positions=([(-.23,-.27,1.12),(-.29,-.20,1.27),(-.08,-.48,1.16),(.08,-.43,1.02),(-.12,-.30,1.06),(-.23,-.27,1.12)] if knife else
+               [(-.25,-.27,1.17),(-.36,-.15,1.53),(-.12,-.49,1.37),(.19,-.42,1.04),(.04,-.26,1.02),(-.25,-.27,1.17)])
+    angles=[25,-25,65,115,65,25] if knife else [15,-50,55,125,80,15]
+    turns=[0,-.20,.20,.30,.12,0] if knife else [0,-.32,.28,.44,.17,0]
+    if reverse:
+        positions=([positions[0],(.09,-.23,1.24),(-.06,-.47,1.18),(-.33,-.35,1.04),(-.29,-.25,1.08),positions[0]] if knife else
+                   [positions[0],(.12,-.22,1.46),(-.06,-.48,1.35),(-.39,-.33,1.03),(-.33,-.23,1.03),positions[0]])
+        angles=[25,55,-55,-105,-30,25] if knife else [15,60,-45,-115,-45,15]
+        turns=[-v for v in turns]
+        if not knife:
+            # Backhand at chest height: open across the front, not another
+            # descending chop. Preparation stays in front of the left shoulder.
+            positions=[positions[0],(.12,-.30,1.24),(-.10,-.49,1.23),(-.38,-.30,1.20),(-.32,-.23,1.10),positions[0]]
+            angles=[15,82,90,94,48,15]
+            turns=[0,.46,-.52,-.80,-.26,0]
+            knots=[0,.25,.36,.46,.74,duration]
+    if reverse=='forehand':
+        positions=[positions[0],(-.39,-.23,1.25),(-.08,-.50,1.23),(.19,-.32,1.20),(.04,-.24,1.10),positions[0]]
+        turns=[-v*.75 for v in turns]
+    breathing=0 if action else math.sin(math.pi*t)
+    sample_t=t if action else 0
+    pos=Vector(tuple(_flow_key(list(zip(knots,[v[c] for v in positions])),sample_t) for c in range(3)))
+    angle=math.radians(_flow_key(list(zip(knots,angles)),sample_t))
+    turn=_flow_key(list(zip(knots,turns)),sample_t)
+    rig=ctx['rig']
+    weight=_flow_key(list(zip(knots,[0,.025,-.065,-.085,-.045,0])),sample_t)*( .65 if knife else 1)
+    # Keep the accepted descending sabre cut unchanged. Short-blade cuts
+    # and horizontal cuts get a distinct body compression and shoulder
+    # drive, rather than increasing only the hand's travel.
+    detailed=knife or bool(reverse)
+    body_lean=0
+    compression=0
+    if detailed:
+        weight=_flow_key(list(zip(knots,[0,.020,-.078,-.105,-.033,0])),sample_t)*(.82 if knife else 1)
+        body_lean=_flow_key(list(zip(knots,[0,-.025,.12,.19,.045,0])),sample_t)*(.9 if knife else .72)
+        compression=_flow_key(list(zip(knots,[0,.008,.016,.009,0,0])),sample_t)
+    hip_turn=_flow_key(list(zip(knots,turns)),min(duration,sample_t+.035*math.sin(math.pi*sample_t/duration)))* .45 if action else 0
+    pivot=_flow_key(list(zip(knots,[0,-.025,.065,.10,.035,0])),sample_t)*(-1 if reverse and reverse!='forehand' else 1)
+    # A short advance plants before blade contact; recovery unweights the
+    # front foot and returns it to the original guard, rather than sliding.
+    phase=sample_t/duration
+    step_length=.075 if knife else .14
+    step=_flow_key([(0,0),(.10,0),(.29,step_length),(.64,step_length),(.94,0),(1,0)],phase)
+    lift=_flow_key([(0,0),(.10,0),(.19,.035),(.29,0),(.64,0),(.79,.030),(.94,0),(1,0)],phase)
+    _combat_base(rig,base,weight,hip_turn,pivot,step,lift,compression,body_lean*.18)
+    # Arm targets follow the advancing torso instead of staying world-locked.
+    pos.y+=weight*.65
+    for bone,weight in [('spine_01',.35),('spine_02',.35),('spine_03',.30)]:
+        pb=rig.pose.bones[bone]
+        _set_world_rotation(rig,bone,Quaternion(UP,_flow_key(list(zip(knots,turns)),max(0,sample_t-.018))*weight) @ Quaternion(Vector((1,0,0)),body_lean*.82*weight) @ pb.matrix.to_quaternion())
+    prepared=_collect(rig)
+    # Local Z runs along the blade; local X is the cutting edge direction.
+    q=Quaternion(UP,math.radians(-65)) @ Quaternion(Vector((0,1,0)),angle)
+    if reverse and not knife:
+        yaw_values=[-65,-169,-80,0,-38,-65] if reverse=='forehand' else [-65,0,-96,-169,-116,-65]
+        yaw=math.radians(_flow_key(list(zip(knots,yaw_values)),sample_t))
+        roll_values=[0,90,90,90,35,0] if reverse=='forehand' else [0,-90,-90,-90,-35,0]
+        roll=math.radians(_flow_key(list(zip(knots,roll_values)),sample_t))
+        q=Quaternion(UP,yaw) @ Quaternion(Vector((0,1,0)),angle) @ Quaternion(UP,roll)
+    _weapon_pose(ctx,prepared,key,pos,q,offsets,breathing=breathing)
+    # Free arm counterbalances the cut. The elbow opens during preparation,
+    # then the hand withdraws behind the cutting plane with a slight lag.
+    # Backhand uses a different path so the blade never sweeps into the hand.
+    # A relaxed free arm swings behind the hip and down as the cut opens.
+    # The target is relative to the moving shoulder, so body translation and
+    # shoulder rotation cannot leave the hand suspended on a world-space shelf.
+    guard=(.22,-.11,1.04)
+    free_positions=([guard,(.26,-.08,1.10),(.28,.08,.96),(.25,.15,.90),(.23,.02,.96),guard] if not reverse else
+                    [guard,(.25,.03,1.01),(.28,.14,.91),(.25,.10,.88),(.23,-.01,.97),guard])
+    if reverse and not knife:
+        free_positions=[guard,(.27,.06,1.06),(.27,.24,1.01),(.22,.31,.95),(.24,.08,.97),guard]
+    if knife:
+        free_positions=[tuple(guard[c]+(p[c]-guard[c])*.75 for c in range(3)) for p in free_positions]
+    free_knots=[knots[0],knots[1],knots[2]+.025,knots[3]+.035,knots[4]+.02,knots[5]]
+    free_hand=Vector(tuple(_flow_key(list(zip(free_knots,[p[c] for p in free_positions])),sample_t) for c in range(3)))
+    shoulder=rig.pose.bones['upperarm_l'].matrix.translation.copy()
+    # Native shoulder location is the common reference for this adult rig.
+    shoulder_delta=shoulder-rig.data.bones['upperarm_l'].head_local
+    free_hand+=shoulder_delta+Vector((0,breathing*.002,breathing*.004))
+    elbow_back=_flow_key(list(zip(free_knots,[0,.015,.08,.11,.04,0])),sample_t)
+    _arm_ik(rig,'l',free_hand,shoulder+Vector((.13,.03+elbow_back,-.29)))
+    forearm=rig.pose.bones['lowerarm_l']
+    palm=_hand_rotation(rig,'l',forearm.tail-forearm.head,Vector((-1,-.2,0)))
+    _set_world_rotation(rig,'hand_l',palm)
+    curl=_flow_key(list(zip(free_knots,[1.15,1.12,1.25,1.25,1.18,1.15])),sample_t)
+    _finger_curl(rig,curl,'l')
+    if detailed:
+        # Keep the eyes on the target through the torso turn; the head does
+        # not spin sideways with the end of the sword arc.
+        head=rig.pose.bones['head']
+        _set_world_rotation(rig,'head',Quaternion(UP,turn*.18) @ Quaternion(Vector((1,0,0)),body_lean*.20) @ head.bone.matrix_local.to_quaternion())
+    return _collect(rig)
+
+
+def _punch_pose(ctx,base,t):
+    """Reference-led lunging punch: load, drive, rear-leg lift, retract."""
+    rig=ctx['rig'];_apply_sample(rig,base)
+    feet={side:(rig.pose.bones['foot_'+side].matrix.translation.copy(),rig.pose.bones['foot_'+side].matrix.to_quaternion()) for side in ('l','r')}
+    drive=_flow_key([(0,0),(.23,-.10),(.32,.22),(.42,1),(.47,1.02),(.64,.35),(.87,0),(1,0)],t)
+    weight=_flow_key([(0,0),(.20,.015),(.33,-.12),(.43,-.22),(.53,-.22),(.73,-.08),(.94,0),(1,0)],t)
+    hip=_flow_key([(0,0),(.22,-.20),(.35,.28),(.44,.34),(.58,.28),(.80,0),(1,0)],t)
+    turn=_flow_key([(0,0),(.25,-.30),(.39,.37),(.46,.46),(.58,.34),(.82,0),(1,0)],t)
+    lean=_flow_key([(0,0),(.24,-.04),(.34,.20),(.43,.80),(.51,.84),(.66,.38),(.87,0),(1,0)],t)
+    root=rig.pose.bones['Root']
+    root.matrix=Matrix.Translation((0,weight,-.045-.05*max(0,drive))) @ root.matrix
+    bpy.context.view_layer.update()
+    pelvis=rig.pose.bones['pelvis']
+    _set_world_rotation(rig,'pelvis',Quaternion(UP,hip) @ Quaternion(Vector((1,0,0)),lean*.24) @ pelvis.matrix.to_quaternion())
+    for name,factor in [('spine_01',.40),('spine_02',.35),('spine_03',.25)]:
+        pb=rig.pose.bones[name]
+        _set_world_rotation(rig,name,Quaternion(UP,turn*factor) @ Quaternion(Vector((1,0,0)),lean*.76*factor) @ pb.matrix.to_quaternion())
+    # Left foot receives the weight; right foot leaves the ground after push-off.
+    step=_flow_key([(0,0),(.10,0),(.30,.16),(.63,.16),(.94,0),(1,0)],t)
+    front_lift=_flow_key([(0,0),(.10,0),(.19,.04),(.30,0),(.63,0),(.78,.035),(.94,0),(1,0)],t)
+    rear_lift=_flow_key([(0,0),(.33,0),(.44,.12),(.54,.14),(.73,0),(1,0)],t)
+    for side,(point,rotation) in feet.items():
+        if side=='l':point+=Vector((.045,-.11-step,front_lift))
+        else:
+            point+=Vector((-.045,.24+rear_lift*.50,rear_lift))
+            rotation=Quaternion(Vector((1,0,0)),rear_lift*2.0) @ rotation
+        _limb_ik(rig,'thigh_'+side,'calf_'+side,point,point+Vector((0,-1,.35)))
+        _set_world_rotation(rig,'foot_'+side,rotation)
+    # The fist stays back while the hips begin; the shoulder carries it forward.
+    reach=_flow_key([(0,0),(.25,-.20),(.32,.06),(.42,1),(.46,1),(.62,.02),(.85,0),(1,0)],t)
+    shoulder=_head(rig,'upperarm_r')
+    arm_knots=[0,.25,.32,.42,.46,.62,.85,1]
+    arm_offsets=[(-.025,-.18,-.065),(-.09,.075,.04),(-.06,-.16,.07),(.05,-.49,.21),(.05,-.49,.21),(0,-.18,0),(-.025,-.18,-.065),(-.025,-.18,-.065)]
+    target=shoulder+Vector(tuple(_flow_key(list(zip(arm_knots,[v[c] for v in arm_offsets])),t) for c in range(3)))
+    pole=shoulder+Vector((-.19+.08*max(0,reach),.10-.06*max(0,reach),-.08-.12*max(0,reach)))
+    _arm_ik(rig,'r',target,pole)
+    forearm=rig.pose.bones['lowerarm_r']
+    _set_world_rotation(rig,'hand_r',_hand_rotation(rig,'r',forearm.tail-forearm.head,Vector((0,0,-1))))
+    left=_head(rig,'upperarm_l')
+    _arm_ik(rig,'l',left+Vector((-.05,-.21+.065*reach,-.025+.07*reach)),left+Vector((.10,.015,-.26)))
+    forearm=rig.pose.bones['lowerarm_l']
+    _set_world_rotation(rig,'hand_l',_hand_rotation(rig,'l',forearm.tail-forearm.head,Vector((0,-1,0))))
+    # Look toward the target while the torso folds forward.
+    head=rig.pose.bones['head']
+    _set_world_rotation(rig,'head',Quaternion(Vector((1,0,0)),.08*max(0,drive)) @ head.bone.matrix_local.to_quaternion())
+    _finger_curl(rig,1.40)
+    return _collect(rig)
+
+
+# Shoulder-relative paths keep the shoulder, elbow and grip in the same
+# action. Distinct weapon mass/reach calls for distinct preparation/recovery.
+_CLOSE_PROFILES = {
+    ('sabre','thrust'): dict(
+        advance=.15, weight=.145, turn=.27, lean=.27,
+        grips=[(-.015,-.23,-.20),(-.07,-.12,-.10),(.01,-.23,-.08),(.055,-.46,-.025),(.055,-.47,-.025),(-.005,-.22,-.11),(-.015,-.23,-.20),(-.015,-.23,-.20)],
+        yaw=[-35,-12,-3,0,0,-12,-35,-35],pitch=[45,72,86,90,90,72,45,45],roll=[-45,-75,-88,-90,-90,-72,-45,-45]),
+    ('knife','thrust'): dict(
+        advance=.11, weight=.12, turn=.31, lean=.32,
+        grips=[(-.01,-.22,-.25),(-.05,-.09,-.18),(.005,-.22,-.17),(.035,-.46,-.13),(.035,-.46,-.13),(-.025,-.18,-.22),(-.01,-.22,-.25),(-.01,-.22,-.25)],
+        yaw=[-30,-18,-5,0,0,-15,-30,-30],pitch=[48,64,83,90,90,65,48,48],roll=[-50,-70,-85,-90,-90,-70,-50,-50]),
+    ('rifle','thrust'): dict(
+        advance=.17, weight=.17, turn=-.14, lean=.24,
+        grips=[(.06,-.27,-.085),(.04,-.14,-.09),(.05,-.20,-.075),(.075,-.31,-.04),(.075,-.32,-.04),(.04,-.19,-.075),(.06,-.27,-.085),(.06,-.27,-.085)],
+        yaw=[-75,-81,-88,-90,-90,-82,-75,-75],pitch=[0,4,1,-1,-1,2,0,0],roll=[0,3,1,0,0,1,0,0]),
+    ('sabre','blunt'): dict(
+        advance=.12, weight=.125, turn=.40, lean=.30,
+        grips=[(-.04,-.24,-.17),(-.12,-.10,.09),(-.07,-.20,.05),(.025,-.40,-.015),(.05,-.43,-.045),(-.07,-.20,-.09),(-.04,-.24,-.17),(-.04,-.24,-.17)],
+        yaw=[15,42,50,48,45,25,15,15],pitch=[-32,-65,-70,-65,-58,-38,-32,-32],roll=[0,-10,-10,-5,0,0,0,0]),
+    ('pistol','blunt'): dict(
+        advance=.12, weight=.13, turn=.35, lean=.34,
+        grips=[(-.015,-.25,-.10),(-.11,-.08,.10),(-.045,-.20,.085),(.045,-.40,-.08),(.065,-.43,-.16),(-.04,-.20,-.08),(-.015,-.25,-.10),(-.015,-.25,-.10)],
+        yaw=[-82,-100,-94,-85,-79,-82,-82,-82],pitch=[-30,-55,-76,-80,-72,-40,-30,-30],roll=[0,-10,-5,0,4,0,0,0]),
+    ('rifle','blunt'): dict(
+        advance=.15, weight=.15, turn=-.43, lean=.29,
+        # Sweep the stock across the front. The muzzle passes outside the
+        # left shoulder instead of reversing through the neck and coat.
+        grips=[(.06,-.27,-.10),(.02,-.22,-.19),(.14,-.39,-.12),(.17,-.47,-.08),(.17,-.48,-.09),(.14,-.39,-.14),(.06,-.27,-.10),(.06,-.27,-.10)],
+        yaw=[-75,-5,15,25,27,10,-45,-75],pitch=[0,-7,-4,0,4,0,0,0],roll=[0,18,13,5,0,10,0,0]),
+}
+
+
+def _close_strike(ctx,base,key,t,offsets,kind):
+    if key=='none':return _punch_pose(ctx,base,t)
+    rig=ctx['rig'];profile=_CLOSE_PROFILES[(key,kind)]
+    knots=[0,.22,.32,.42,.48,.62,.82,1]
+    # The support step and hips lead the hand. Weight remains forward while
+    # the hand retracts, then the torso rises and the front foot returns.
+    drive=_flow_key([(0,0),(.20,-.12),(.32,.42),(.42,1),(.50,1.03),(.65,.48),(.87,0),(1,0)],t)
+    hip=_flow_key([(0,0),(.19,-.34),(.31,.45),(.40,1),(.52,.91),(.69,.30),(.88,0),(1,0)],t)*profile['turn']
+    chest_turn=_flow_key([(0,0),(.23,-.50),(.33,.22),(.43,1),(.51,1.03),(.69,.25),(.88,0),(1,0)],t)*profile['turn']
+    lean=_flow_key([(0,0),(.23,-.045),(.34,.52),(.43,1),(.51,1.05),(.69,.32),(.89,0),(1,0)],t)*profile['lean']
+    step=_flow_key([(0,0),(.10,0),(.32,profile['advance']),(.62,profile['advance']),(.94,0),(1,0)],t)
+    lift=_flow_key([(0,0),(.10,0),(.21,.036),(.32,0),(.62,0),(.79,.032),(.94,0),(1,0)],t)
+    pivot=_flow_key([(0,0),(.22,-.02),(.40,.12),(.53,.12),(.75,.025),(1,0)],t)*(1 if profile['turn']>0 else -1)
+    compression=_flow_key([(0,0),(.23,.008),(.42,.024),(.54,.016),(.84,0),(1,0)],t)
+    _combat_base(rig,base,-profile['weight']*drive,hip*.62,pivot,step,lift,compression,lean*.18)
+    for name,factor in [('spine_01',.42),('spine_02',.34),('spine_03',.24)]:
+        pb=rig.pose.bones[name]
+        _set_world_rotation(rig,name,Quaternion(UP,chest_turn*factor) @ Quaternion(Vector((1,0,0)),lean*.82*factor) @ pb.matrix.to_quaternion())
+    shoulder=_head(rig,'upperarm_r')
+    grip=shoulder+_path(knots,profile['grips'],t)
+    yaw,pitch,roll=[math.radians(_flow_key(list(zip(knots,profile[axis])),t)) for axis in ('yaw','pitch','roll')]
+    if key in ('sabre','knife'):
+        rotation=Quaternion(UP,yaw) @ Quaternion(Vector((1,0,0)),pitch) @ Quaternion(UP,roll)
+    else:
+        rotation=Quaternion(UP,yaw) @ Quaternion(Vector((0,1,0)),pitch) @ Quaternion(Vector((1,0,0)),roll)
+    right_pole=shoulder+Vector((-.12-.055*(kind=='blunt'),.025-.065*max(0,drive),-.20))
+    left_pole=_head(rig,'upperarm_l')+Vector((.105,-.075,-.28))
+    _weapon_pose(ctx,_collect(rig),key,grip,rotation,offsets,posture=False,trigger=False,right_pole=right_pole,left_pole=left_pole)
+    if key!='rifle':
+        # The free fist starts by the ribs, rises as the body commits, and
+        # withdraws behind the weapon path. It never shares a fixed world Y.
+        free_knots=[0,.24,.35,.45,.53,.67,.87,1]
+        free_offsets=[(.025,-.11,-.34),(.045,-.15,-.28),(.04,-.10,-.23),(.055,.035,-.27),(.07,.075,-.31),(.04,-.06,-.30),(.025,-.11,-.34),(.025,-.11,-.34)]
+        if kind=='blunt':
+            free_offsets=[(.02,-.13,-.30),(.03,-.19,-.21),(.01,-.14,-.16),(.045,-.025,-.23),(.06,.04,-.27),(.025,-.10,-.26),(.02,-.13,-.30),(.02,-.13,-.30)]
+        _guard_hand(rig,_path(free_knots,free_offsets,t),(.11,.035+.05*max(0,drive),-.24),1.30)
+    head=rig.pose.bones['head']
+    _set_world_rotation(rig,'head',Quaternion(UP,chest_turn*.10) @ Quaternion(Vector((1,0,0)),.04+lean*.15) @ head.bone.matrix_local.to_quaternion())
+    return _collect(rig)
+
+
+def sample_animations(ctx):
+    """Sample the thirty reviewed actions on this native anatomy."""
+    rig=ctx['rig'];bpy.context.scene.render.fps=FPS
+    clips=[];locomotion_samples={}
+    for spec in [('Idle','111_28.bvh',120,360),('Walk','07_01.bvh',100,230),('Run','02_03.bvh',40,131)]:
+        meta,base,samples=_retarget_clip(ctx,*spec);clips.append(meta)
+        if spec[0] in ('Walk','Run'):locomotion_samples[spec[0]]=(meta,samples)
+        if spec[0]=='Idle':idle_base=base
+    ready_poses={'Idle':idle_base}
+    offsets=_grip_setup(ctx)
+    if len(offsets)!=4:raise ValueError('Equipment requires rifle, pistol, sabre and knife')
+    for motion,(source_meta,source_samples) in locomotion_samples.items():
+        for key in ('rifle','pistol','sabre','knife'):
+            carried=[]
+            for index,base in enumerate(source_samples):
+                previous=source_samples[(index-1)%(len(source_samples)-1)]
+                carried.append(_carry_pose(ctx,base,previous,key,motion,offsets))
+            meta=_write_clip(rig,key.title()+motion,carried,source_meta['duration'])
+            meta['source']={'base':motion,'carry':key}
+            clips.append(meta)
+    for key,aim,fire,duration,event in [('rifle','RifleAim','RifleFire',.8,.10),('pistol','PistolAim','PistolFire',.7,.10),('sabre','SabreReady','SabreSlash',1.0,.36),('knife','KnifeReady','KnifeSlash',.8,.27)]:
+        duration=round(duration*FPS)/FPS
+        def pose(t,action=False):
+            if key in ('sabre','knife'):return _melee_pose(ctx,idle_base,key,t,action,offsets)
+            return _firearm_pose(ctx,idle_base,key,t,action,offsets,duration)
+        aim_samples=[pose(i/15,False) for i in range(31)]
+        ready_poses[aim]=aim_samples[0]
+        clips.append(_write_clip(rig,aim,aim_samples,2.0))
+        count=round(duration*FPS)
+        samples=[pose(duration*i/count,True) for i in range(count+1)]
+        samples[0]=aim_samples[0];samples[-1]=aim_samples[0]
+        meta=_write_clip(rig,fire,samples,duration,False)
+        meta['events']={'hit' if key in ('sabre','knife') else 'shot':event};clips.append(meta)
+        if key in ('sabre','knife'):
+            samples=[_melee_pose(ctx,idle_base,key,duration*i/count,True,offsets,True) for i in range(count+1)]
+            samples[0]=aim_samples[0];samples[-1]=aim_samples[0]
+            meta=_write_clip(rig,'SabreBackhand' if key=='sabre' else 'KnifeBackhand',samples,duration,False)
+            meta['events']={'hit':event};clips.append(meta)
+    for key,name,kind,ready in [('sabre','SabreThrust','thrust','SabreReady'),('knife','KnifeThrust','thrust','KnifeReady'),('rifle','BayonetThrust','thrust','RifleAim'),('sabre','SabreHiltStrike','blunt','SabreReady'),('pistol','PistolStrike','blunt','PistolAim'),('rifle','RifleButtStrike','blunt','RifleAim'),('none','Punch','blunt','Idle')]:
+        guard=ready_poses[ready]
+        samples=[_close_strike(ctx,idle_base,key,i/30,offsets,kind) for i in range(31)]
+        # Blend the first/last preparation frames to the selected guard.
+        for i in range(7):
+            blend=i/6;blend=blend*blend*(3-2*blend)
+            for index in (i,30-i):
+                samples[index]={n:(guard[n][0].lerp(samples[index][n][0],blend),guard[n][1].slerp(samples[index][n][1],blend)) for n in guard}
+        meta=_write_clip(rig,name,samples,1.0,False);meta['events']={'hit':.42};clips.append(meta)
+    duration=1.0
+    samples=[_melee_pose(ctx,idle_base,'sabre',i/30,True,offsets,'forehand') for i in range(31)]
+    samples[0]=ready_poses['SabreReady'];samples[-1]=ready_poses['SabreReady']
+    meta=_write_clip(rig,'SabreForehand',samples,duration,False);meta['events']={'hit':.36};clips.append(meta)
+    combo=[]
+    first_end=_melee_pose(ctx,idle_base,'sabre',.46,True,offsets,'forehand')
+    return_start=_melee_pose(ctx,idle_base,'sabre',.25,True,offsets,True)
+    for i in range(46):
+        if i<=15:pose=_melee_pose(ctx,idle_base,'sabre',.46*i/15,True,offsets,'forehand')
+        elif i<20:
+            u=(i-15)/5;u=u*u*(3-2*u)
+            pose={n:(first_end[n][0].lerp(return_start[n][0],u),first_end[n][1].slerp(return_start[n][1],u)) for n in first_end}
+        else:pose=_melee_pose(ctx,idle_base,'sabre',.25+.75*(i-20)/25,True,offsets,True)
+        combo.append(pose)
+    combo[0]=ready_poses['SabreReady'];combo[-1]=ready_poses['SabreReady']
+    meta=_write_clip(rig,'SabreCombination',combo,1.5,False);meta['events']={'hit':.36/.46*.5,'secondHit':20/30+(.36-.25)/.75*(25/30)};clips.append(meta)
+    _apply_sample(rig,idle_base)
+    return {'clips':clips,'locomotionSpeed':{m['name']:m['locomotionSpeed'] for m in clips if m['name'] in ('Walk','Run')},'source':'CMU motion capture retargeted onto native MakeHuman skeleton; weapon actions authored for held props','fps':FPS}
+
+
+def _trigger_finger(rig,weapon,key):
+    """Fit the index pad to the trigger inside the actual modeled guard."""
+    bpy.context.view_layer.update()
+    transform=weapon.matrix_world
+    gun_q=transform.to_quaternion()
+    target=transform @ Vector((.019,-.006,-.020) if key=='rifle' else (.050,-.008,-.013))
+    names=['index_01_r','index_02_r','index_03_r']
+    first=rig.pose.bones[names[0]].head.copy()
+    _aim(rig,names[0],target-first+gun_q @ Vector((.035,0,0)))
+    base=rig.pose.bones[names[1]].head.copy()
+    l1=rig.data.bones[names[1]].length;l2=rig.data.bones[names[2]].length
+    d=target-base;distance=min(d.length,l1+l2-.0001);d.normalize()
+    pole=gun_q @ Vector((0,-1,0));pole-=d*pole.dot(d);pole.normalize()
+    along=(l1*l1-l2*l2+distance*distance)/(2*distance)
+    joint=base+d*along+pole*math.sqrt(max(0,l1*l1-along*along))
+    _aim(rig,names[1],joint-base)
+    _aim(rig,names[2],target-joint)

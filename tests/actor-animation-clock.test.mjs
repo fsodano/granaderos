@@ -61,3 +61,21 @@ test('a native long reload completes at its clip duration when no override is su
  const atThree=sample({...base,now:3000});nearly(atThree.time,3);assert.equal(atThree.complete,false);
  const end=sample({...base,now:4800});nearly(end.time,4.8);assert.equal(end.complete,true);
 });
+
+test('reviewed free playback uses its approved rate without changing paid clocks or distance',()=>{
+ const reviewed={duration:1,loop:true,playbackRate:1.25,locomotionSpeed:1.5,markers:{contact:.42}};
+ nearly(sample({clip:reviewed,action:'idle',now:100}).rate,1.25);
+ nearly(sample({clip:reviewed,action:'walk',now:100}).rate,1.25);
+ assert.equal(sample({clip:reviewed,action:'idle',now:100,reducedMotion:true}).rate,0);
+ for(const phase of ['prepare','contact','impact']){
+  const input={clip:{...reviewed,loop:false},action:'strike',cue:{action:'strike',startedAt:1000,durationMs:1500,phase,phaseStartedAt:1500,phaseDurationMs:500},now:1750};
+  assert.deepEqual(sample(input),sample({...input,clip:{...input.clip,playbackRate:1}}),`${phase} uses paid phase timing`);
+ }
+ for(const motion of [{moving:true,elapsedDistance:.3,speed:3},{moving:true,elapsedMs:100,speed:3},{moving:true,speed:3}]){
+  const input={clip:reviewed,action:'walk',motion,now:100};
+  assert.deepEqual(sample(input),sample({...input,clip:{...reviewed,playbackRate:1}}),'gait timing follows actual travelled distance/speed');
+ }
+ const reload={clip:{duration:4.8,loop:false,playbackRate:1.25},action:'reload',cue:{action:'reload',startedAt:0},now:3000};
+ nearly(sample(reload).time,3);assert.equal(sample(reload).complete,false);
+ for(const rate of [undefined,0,-1,NaN,Infinity])assert.equal(sample({clip:{...reviewed,playbackRate:rate},action:'idle',now:0}).rate,1);
+});

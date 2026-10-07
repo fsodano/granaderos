@@ -26,9 +26,12 @@ for clip in meta['clips']:
  if clip['gesture']=='throwKnife':
   assert clip['handProps']==[{'hand':'handRight','categories':['knife'],'untilMarker':'release'}]
   assert 0<clip['markers']['release']<clip['duration']
- if clip['gesture']=='thrust':
-  assert clip['equipment']=='lance'
+ if clip['gesture']=='thrust' or clip.get('variant')=='thrust':
+  assert clip['equipment'] in ('lance','blade','knife')
   assert 0<clip['markers']['contact']<clip['duration']
+  if clip['equipment']!='lance':
+   assert clip['reviewedPose']['name'] in ('SabreThrust','KnifeThrust')
+   assert clip['playbackRate']==1.25
  assert abs((action.frame_range[1]-action.frame_range[0])/30-clip['duration'])<.00001,(clip['name'],action.frame_range,clip['duration'])
  rig.animation_data.action=action
  for t in [0,.25,.5,.75,1]:

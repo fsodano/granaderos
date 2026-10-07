@@ -13,8 +13,8 @@
     "vendorManifest": "authoring/vendor/makehuman/source-manifest.json",
     "motionManifest": "authoring/vendor/motion/source-manifest.json"
   },
-  "sha256": "b5c072e0c59bb89ae485477709415c9ac61d10da0756e5007ad766edd0eb97e6",
-  "byteLength": 5702004,
+  "sha256": "8916e8f96df895640eb83f442985fa10a1e648953f9f81352f79ab85f7f7cc30",
+  "byteLength": 8284328,
   "coordinates": {
     "up": "+Y",
     "forward": "+Z",
@@ -22,29 +22,29 @@
     "authoringUp": "+Z",
     "authoringForward": "-Y",
     "adultBodyHeightMetres": 1.76,
-    "heightWithShakoAndPlumeMetres": 1.942
+    "heightWithShakoAndPlumeMetres": 1.99
   },
   "bounds": {
     "space": "gltf, Idle frame 1; weapons excluded",
     "min": [
-      -0.26854,
+      -0.26853,
       0.002,
       -0.20699
     ],
     "max": [
-      0.26857,
-      1.942,
-      0.20174
+      0.2686,
+      1.98997,
+      0.19829
     ]
   },
   "statistics": {
-    "triangles": 115640,
-    "meshes": 123,
-    "nodes": 182,
+    "triangles": 147654,
+    "meshes": 229,
+    "nodes": 289,
     "skins": 1,
     "bones": 53,
-    "materials": 17,
-    "animationClips": 9
+    "materials": 24,
+    "animationClips": 30
   },
   "materials": {
     "skin": "Skin",
@@ -57,13 +57,15 @@
     "rifle": "weapon_rifle",
     "sabre": "weapon_sabre",
     "pistol": "weapon_pistol",
+    "knife": "weapon_knife",
     "rifleMuzzle": "muzzle_rifle",
     "pistolMuzzle": "muzzle_pistol"
   },
   "weaponForwardLocal": {
     "rifle": "+X",
     "pistol": "+X",
-    "sabreBlade": "+Y"
+    "sabreBlade": "+Y",
+    "knifeBlade": "+Y"
   },
   "locomotionSpeed": {
     "Walk": 1.448,
@@ -113,6 +115,94 @@
       }
     },
     {
+      "name": "RifleWalk",
+      "durationSeconds": 1.066667,
+      "loop": true,
+      "events": {},
+      "channels": 159,
+      "source": {
+        "base": "Walk",
+        "carry": "rifle"
+      }
+    },
+    {
+      "name": "PistolWalk",
+      "durationSeconds": 1.066667,
+      "loop": true,
+      "events": {},
+      "channels": 159,
+      "source": {
+        "base": "Walk",
+        "carry": "pistol"
+      }
+    },
+    {
+      "name": "SabreWalk",
+      "durationSeconds": 1.066667,
+      "loop": true,
+      "events": {},
+      "channels": 159,
+      "source": {
+        "base": "Walk",
+        "carry": "sabre"
+      }
+    },
+    {
+      "name": "KnifeWalk",
+      "durationSeconds": 1.066667,
+      "loop": true,
+      "events": {},
+      "channels": 159,
+      "source": {
+        "base": "Walk",
+        "carry": "knife"
+      }
+    },
+    {
+      "name": "RifleRun",
+      "durationSeconds": 0.766667,
+      "loop": true,
+      "events": {},
+      "channels": 159,
+      "source": {
+        "base": "Run",
+        "carry": "rifle"
+      }
+    },
+    {
+      "name": "PistolRun",
+      "durationSeconds": 0.766667,
+      "loop": true,
+      "events": {},
+      "channels": 159,
+      "source": {
+        "base": "Run",
+        "carry": "pistol"
+      }
+    },
+    {
+      "name": "SabreRun",
+      "durationSeconds": 0.766667,
+      "loop": true,
+      "events": {},
+      "channels": 159,
+      "source": {
+        "base": "Run",
+        "carry": "sabre"
+      }
+    },
+    {
+      "name": "KnifeRun",
+      "durationSeconds": 0.766667,
+      "loop": true,
+      "events": {},
+      "channels": 159,
+      "source": {
+        "base": "Run",
+        "carry": "knife"
+      }
+    },
+    {
       "name": "RifleAim",
       "durationSeconds": 2,
       "loop": true,
@@ -121,10 +211,10 @@
     },
     {
       "name": "RifleFire",
-      "durationSeconds": 1.1,
+      "durationSeconds": 0.8,
       "loop": false,
       "events": {
-        "shot": 0.3
+        "shot": 0.1
       },
       "channels": 159
     },
@@ -137,10 +227,10 @@
     },
     {
       "name": "PistolFire",
-      "durationSeconds": 0.8,
+      "durationSeconds": 0.7,
       "loop": false,
       "events": {
-        "shot": 0.2
+        "shot": 0.1
       },
       "channels": 159
     },
@@ -153,10 +243,126 @@
     },
     {
       "name": "SabreSlash",
-      "durationSeconds": 1.2,
+      "durationSeconds": 1,
       "loop": false,
       "events": {
-        "hit": 0.5
+        "hit": 0.36
+      },
+      "channels": 159
+    },
+    {
+      "name": "SabreBackhand",
+      "durationSeconds": 1,
+      "loop": false,
+      "events": {
+        "hit": 0.36
+      },
+      "channels": 159
+    },
+    {
+      "name": "KnifeReady",
+      "durationSeconds": 2,
+      "loop": true,
+      "events": {},
+      "channels": 159
+    },
+    {
+      "name": "KnifeSlash",
+      "durationSeconds": 0.8,
+      "loop": false,
+      "events": {
+        "hit": 0.27
+      },
+      "channels": 159
+    },
+    {
+      "name": "KnifeBackhand",
+      "durationSeconds": 0.8,
+      "loop": false,
+      "events": {
+        "hit": 0.27
+      },
+      "channels": 159
+    },
+    {
+      "name": "SabreThrust",
+      "durationSeconds": 1,
+      "loop": false,
+      "events": {
+        "hit": 0.42
+      },
+      "channels": 159
+    },
+    {
+      "name": "KnifeThrust",
+      "durationSeconds": 1,
+      "loop": false,
+      "events": {
+        "hit": 0.42
+      },
+      "channels": 159
+    },
+    {
+      "name": "BayonetThrust",
+      "durationSeconds": 1,
+      "loop": false,
+      "events": {
+        "hit": 0.42
+      },
+      "channels": 159
+    },
+    {
+      "name": "SabreHiltStrike",
+      "durationSeconds": 1,
+      "loop": false,
+      "events": {
+        "hit": 0.42
+      },
+      "channels": 159
+    },
+    {
+      "name": "PistolStrike",
+      "durationSeconds": 1,
+      "loop": false,
+      "events": {
+        "hit": 0.42
+      },
+      "channels": 159
+    },
+    {
+      "name": "RifleButtStrike",
+      "durationSeconds": 1,
+      "loop": false,
+      "events": {
+        "hit": 0.42
+      },
+      "channels": 159
+    },
+    {
+      "name": "Punch",
+      "durationSeconds": 1,
+      "loop": false,
+      "events": {
+        "hit": 0.42
+      },
+      "channels": 159
+    },
+    {
+      "name": "SabreForehand",
+      "durationSeconds": 1,
+      "loop": false,
+      "events": {
+        "hit": 0.36
+      },
+      "channels": 159
+    },
+    {
+      "name": "SabreCombination",
+      "durationSeconds": 1.5,
+      "loop": false,
+      "events": {
+        "hit": 0.3913043478260869,
+        "secondHit": 0.7888888888888889
       },
       "channels": 159
     }

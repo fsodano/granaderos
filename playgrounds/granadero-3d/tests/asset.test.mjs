@@ -7,8 +7,8 @@ import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 
 const bytes=readFileSync(new URL('../public/assets/granadero.glb',import.meta.url));
 const manifest=JSON.parse(readFileSync(new URL('../public/assets/asset-manifest.json',import.meta.url),'utf8'));
-const requiredClips=['Idle','Walk','Run','RifleAim','RifleFire','SabreReady','SabreSlash','PistolAim','PistolFire'];
-const oneShotEvents={RifleFire:'shot',PistolFire:'shot',SabreSlash:'hit'};
+const requiredClips=['Idle','Walk','Run','RifleAim','RifleFire','SabreReady','SabreSlash','PistolAim','PistolFire','KnifeReady','KnifeSlash','SabreBackhand','KnifeBackhand','RifleWalk','RifleRun','PistolWalk','PistolRun','SabreWalk','SabreRun','KnifeWalk','KnifeRun','SabreForehand','SabreThrust','KnifeThrust','BayonetThrust','SabreHiltStrike','PistolStrike','RifleButtStrike','Punch','SabreCombination'];
+const oneShotEvents={SabreForehand:'hit',SabreThrust:'hit',KnifeThrust:'hit',BayonetThrust:'hit',SabreHiltStrike:'hit',PistolStrike:'hit',RifleButtStrike:'hit',Punch:'hit',SabreCombination:'hit',RifleFire:'shot',PistolFire:'shot',SabreSlash:'hit',KnifeSlash:'hit',SabreBackhand:'hit',KnifeBackhand:'hit'};
 
 function parseGlb(buffer){
  assert.ok(buffer.length>=20,'GLB header is present');
@@ -175,11 +175,11 @@ test('skin tone is a separate material and each weapon follows the rig with a mu
  const skinIndex=gltf.materials.findIndex(material=>material.name==='Skin');assert.ok(skinIndex>=0,'Skin material exists');
  assert.ok(gltf.nodes.some(node=>node.skin!==undefined&&gltf.meshes[node.mesh]?.primitives.some(primitive=>primitive.material===skinIndex)),'Skin material belongs to the animated body');
  assert.ok(gltf.materials.some((_,index)=>index!==skinIndex),'Clothing has separate materials');
- for(const weapon of ['rifle','sabre','pistol']){
+ for(const weapon of ['rifle','sabre','pistol','knife']){
   const index=gltf.nodes.findIndex(node=>node.name===`weapon_${weapon}`);assert.ok(index>=0,`${weapon} group exists`);
   const children=descendants(index);assert.ok([...children].some(child=>gltf.nodes[child].mesh!==undefined),`${weapon} has geometry`);
   assert.ok([...allJoints].some(joint=>descendants(joint).has(index)),`${weapon} is attached to the skeleton`);
-  if(weapon!=='sabre'){
+  if(['rifle','pistol'].includes(weapon)){
    const muzzle=gltf.nodes.findIndex(node=>node.name===`muzzle_${weapon}`);assert.ok(muzzle>=0&&children.has(muzzle),`${weapon} muzzle follows its weapon`);
   }
  }
@@ -222,7 +222,7 @@ test('Three.js plays the exported clips and keeps weapon effects aligned with th
  }
  const directions={'+X':[1,0,0],'-X':[-1,0,0],'+Y':[0,1,0],'-Y':[0,-1,0],'+Z':[0,0,1],'-Z':[0,0,-1]};
  const worldForward=new THREE.Vector3(...directions[manifest.coordinates.forward]);
- for(const [weapon,ready,actionName]of [['rifle','RifleAim','RifleFire'],['pistol','PistolAim','PistolFire'],['sabre','SabreReady','SabreSlash']]){
+ for(const [weapon,ready,actionName]of [['rifle','RifleAim','RifleFire'],['pistol','PistolAim','PistolFire'],['sabre','SabreReady','SabreSlash'],['knife','KnifeReady','KnifeSlash']]){
   const group=scene.getObjectByName(`weapon_${weapon}`);assert.ok(group);
   let hand=group.parent;while(hand&&!hand.isBone)hand=hand.parent;
   assert.ok(hand?.isBone,`${weapon} is attached to an animated bone`);
@@ -233,7 +233,7 @@ test('Three.js plays the exported clips and keeps weapon effects aligned with th
   }
   assert.ok(positions.some(position=>position.distanceTo(positions[0])>1e-4),`${weapon} follows hand movement during its action`);
   assert.ok(offsets.every(offset=>offset.distanceTo(offsets[0])<1e-5),`${weapon} remains attached without grip drift`);
-  if(weapon==='sabre')continue;
+  if(['sabre','knife'].includes(weapon))continue;
   const axis=directions[manifest.weaponForwardLocal?.[weapon]];assert.ok(axis,`${weapon} declares an exported local barrel axis`);
   const muzzle=scene.getObjectByName(`muzzle_${weapon}`),readyClip=THREE.AnimationClip.findByName(loaded.animations,ready);
   for(const fraction of [.2,.5,.8]){
@@ -311,8 +311,8 @@ test('loop seams and one-shot return poses do not introduce skeletal jumps',asyn
    assert.ok(first[index].rotation.clone().normalize().angleTo(last[index].rotation.clone().normalize())<1e-3,`${label}: ${first[index].name} rotation is continuous`);
   }
  };
- for(const name of ['Idle','Walk','Run','RifleAim','PistolAim','SabreReady'])samePose(pose(name),pose(name,true),`${name} loop seam`);
- for(const [name,ready]of [['RifleFire','RifleAim'],['PistolFire','PistolAim'],['SabreSlash','SabreReady']]){
+ for(const name of ['Idle','Walk','Run','RifleWalk','RifleRun','PistolWalk','PistolRun','SabreWalk','SabreRun','KnifeWalk','KnifeRun','RifleAim','PistolAim','SabreReady','KnifeReady'])samePose(pose(name),pose(name,true),`${name} loop seam`);
+ for(const [name,ready]of [['RifleFire','RifleAim'],['PistolFire','PistolAim'],['SabreSlash','SabreReady'],['KnifeSlash','KnifeReady'],['SabreBackhand','SabreReady'],['KnifeBackhand','KnifeReady'],['SabreForehand','SabreReady'],['SabreCombination','SabreReady'],['SabreThrust','SabreReady'],['KnifeThrust','KnifeReady'],['BayonetThrust','RifleAim'],['SabreHiltStrike','SabreReady'],['PistolStrike','PistolAim'],['RifleButtStrike','RifleAim'],['Punch','Idle']]){
   const reference=pose(ready);samePose(reference,pose(name),`${name} starts ready`);samePose(reference,pose(name,true),`${name} ends ready`);
  }
  mixer.stopAllAction();mixer.uncacheRoot(scene);
@@ -338,4 +338,215 @@ test('the adult rig retains human shoulder width and limb lengths',async()=>{
   within(joint(`calf_${side}`).distanceTo(joint(`foot_${side}`)),.34,.50,`${side} lower leg`);
   within(joint(`hand_${side}`).distanceTo(joint(`middle_03_${side}`)),.11,.20,`${side} hand before fingertip`);
  }
+});
+
+test('combat cuts plant the advancing foot and carry the blade through impact',async()=>{
+ const {scene,animations}=await loadCpuAsset(),mixer=new THREE.AnimationMixer(scene);
+ const facts=[];
+ for(const [name,weapon] of [['SabreSlash','sabre'],['SabreBackhand','sabre'],['KnifeSlash','knife'],['KnifeBackhand','knife']]){
+  mixer.stopAllAction();
+  const clip=THREE.AnimationClip.findByName(animations,name),action=mixer.clipAction(clip);
+  action.reset().setLoop(THREE.LoopOnce,1);action.clampWhenFinished=true;action.play();
+  const group=scene.getObjectByName(`weapon_${weapon}`),feet=['ball_l','foot_r'].map(n=>scene.getObjectByName(n));
+  assert.ok(feet.every(Boolean),'Rear toe and front foot exist');
+  const tipLocal=new THREE.Vector3(weapon==='sabre'?-.06:0,weapon==='sabre'?.838:.238,0);
+  const samples=[];
+  for(let frame=0;frame<=Math.round(clip.duration*120);frame++){
+   mixer.setTime(frame/120);scene.updateMatrixWorld(true);
+   samples.push({bladeBase:group.localToWorld(new THREE.Vector3(0,.078,0)),hand:scene.getObjectByName('hand_l').getWorldPosition(new THREE.Vector3()),tip:group.localToWorld(tipLocal.clone()),feet:feet.map(f=>f.getWorldPosition(new THREE.Vector3()))});
+  }
+  for(const sample of samples)assert.ok(sample.feet[0].distanceTo(samples[0].feet[0])<.004,`${name}: rear toe anchors the advance`);
+  const footTravel=Math.max(...samples.map(sample=>sample.feet[1].distanceTo(samples[0].feet[1])));
+  assert.ok(footTravel>(weapon==='sabre'?.10:.05)&&footTravel<.20,`${name}: a controlled front step is present`);
+  const plant=samples[Math.round(samples.length*.40)].feet[1];
+  for(let i=Math.ceil(samples.length*.32);i<Math.floor(samples.length*.60);i++)assert.ok(samples[i].feet[1].distanceTo(plant)<.005,`${name}: front foot plants through the strike`);
+  assert.ok(samples.at(-1).feet[1].distanceTo(samples[0].feet[1])<.001,`${name}: recovery returns to guard`);
+  for(const sample of samples){
+   const blade=new THREE.Line3(sample.bladeBase,sample.tip);
+   const nearest=blade.closestPointToPoint(sample.hand,true,new THREE.Vector3());
+   assert.ok(nearest.distanceTo(sample.hand)>.065,`${name}: free wrist clears the blade`);
+  }
+  const handTravel=Math.max(...samples.map(sample=>sample.hand.distanceTo(samples[0].hand)));
+  assert.ok(handTravel>.06,`${name}: free hand counterbalances instead of remaining locked`);
+  assert.ok(handTravel<.45,`${name}: free arm stays in a controlled guard range`);
+  const heights=samples.map(sample=>sample.hand.y);
+  assert.ok(Math.max(...heights)-Math.min(...heights)>.10,`${name}: free hand changes height with the whole arm`);
+  const hit=manifest.clips.find(c=>c.name===name).events.hit,index=Math.round(hit*120);
+  const hitSpeed=samples[index+1].tip.distanceTo(samples[index-1].tip)*60;
+  const speeds=samples.slice(1).map((sample,i)=>sample.tip.distanceTo(samples[i].tip)*120);
+  assert.ok(hitSpeed>1,`${name}: blade carries motion through the hit (${hitSpeed.toFixed(2)} m/s)`);
+  assert.ok(Math.max(...speeds)<25,`${name}: no implausible blade teleport`);
+  facts.push({name,duration:clip.duration,hitSpeed:Number(hitSpeed.toFixed(2)),peakSpeed:Number(Math.max(...speeds).toFixed(2))});
+ }
+ console.log('Combat motion measurements:',JSON.stringify(facts));
+ mixer.stopAllAction();mixer.uncacheRoot(scene);
+});
+
+test('firearm free and support arms breathe and settle without losing the guard',async()=>{
+ const {scene,animations}=await loadCpuAsset(),mixer=new THREE.AnimationMixer(scene);
+ const measurements=[];
+ for(const name of ['PistolAim','PistolFire','RifleAim','RifleFire']){
+  mixer.stopAllAction();const clip=THREE.AnimationClip.findByName(animations,name),action=mixer.clipAction(clip);
+  action.reset().setLoop(THREE.LoopOnce,1);action.clampWhenFinished=true;action.play();
+  const samples=[];
+  for(let i=0;i<=120;i++){
+   mixer.setTime(clip.duration*i/120);scene.updateMatrixWorld(true);
+   samples.push(scene.getObjectByName('hand_l').getWorldPosition(new THREE.Vector3()));
+  }
+  const travel=Math.max(...samples.map(p=>p.distanceTo(samples[0])));
+  assert.ok(travel>(name.endsWith('Aim')?.002:.008),`${name}: left hand must move with breathing or recoil, got ${travel}`);
+  assert.ok(travel<.15,`${name}: no excessive free-arm flailing`);
+  assert.ok(samples[0].distanceTo(samples.at(-1))<.001,`${name}: left hand returns to guard`);
+  measurements.push({name,leftHandExcursionMetres:Number(travel.toFixed(4))});
+ }
+ console.log('Firearm arm measurements:',JSON.stringify(measurements));
+ mixer.stopAllAction();mixer.uncacheRoot(scene);
+});
+
+test('blade carry moves the weapon wrist relative to the torso throughout locomotion',async()=>{
+ const {scene,animations}=await loadCpuAsset(),mixer=new THREE.AnimationMixer(scene);
+ for(const name of ['SabreWalk','SabreRun','KnifeWalk','KnifeRun','PistolWalk','PistolRun']){
+  mixer.stopAllAction();const clip=THREE.AnimationClip.findByName(animations,name);
+  const action=mixer.clipAction(clip).reset().setLoop(THREE.LoopOnce,1);action.clampWhenFinished=true;action.play();
+  const positions=[];
+  for(let i=0;i<=120;i++){
+   mixer.setTime(clip.duration*i/120);scene.updateMatrixWorld(true);
+   positions.push(scene.getObjectByName('spine_03').worldToLocal(scene.getObjectByName('hand_r').getWorldPosition(new THREE.Vector3())));
+  }
+  const range=Math.max(...positions.map(p=>p.distanceTo(positions[0])));
+  assert.ok(range>.06,`${name}: weapon arm must swing independently of torso (${range})`);
+  assert.ok(range<.4,`${name}: carry must remain controlled`);
+ }
+ mixer.stopAllAction();mixer.uncacheRoot(scene);
+});
+
+test('rifle carry moves with the gait while the supporting palm stays at the fore-end',async()=>{
+ const {scene,animations}=await loadCpuAsset(),mixer=new THREE.AnimationMixer(scene);
+ const rifle=scene.getObjectByName('weapon_rifle'),chest=scene.getObjectByName('spine_03');
+ const point=name=>scene.getObjectByName(name).getWorldPosition(new THREE.Vector3());
+ // Exported equipment axes: +X along the barrel, +Y up. The support palm
+ // sits below the fore-end; this is a contact region, not an exact wrist pose.
+ const supportRegion=new THREE.Vector3(.22,.030,0);
+ for(const name of ['RifleWalk','RifleRun']){
+  mixer.stopAllAction();const clip=THREE.AnimationClip.findByName(animations,name);
+  const action=mixer.clipAction(clip).reset().setLoop(THREE.LoopOnce,1);action.clampWhenFinished=true;action.play();
+  const samples=[],count=Math.ceil(clip.duration*120),dt=clip.duration/count;
+  for(let i=0;i<=count;i++){
+   mixer.setTime(i*dt);scene.updateMatrixWorld(true);
+   const wrist=point('hand_r');
+   const knuckles=['index','middle','ring','pinky'].reduce((sum,finger)=>sum.add(point(`${finger}_01_l`)),new THREE.Vector3()).multiplyScalar(.25);
+   const palm=rifle.worldToLocal(point('hand_l').lerp(knuckles,.75));
+   samples.push({wrist,palm,relativeWrist:chest.worldToLocal(wrist.clone())});
+  }
+  const wristTravel=Math.max(...samples.map(s=>s.relativeWrist.distanceTo(samples[0].relativeWrist)));
+  const supportDrift=Math.max(...samples.map(s=>s.palm.distanceTo(samples[0].palm)));
+  const wristSpeed=Math.max(...samples.slice(1).map((s,i)=>s.wrist.distanceTo(samples[i].wrist)/dt));
+  assert.ok(wristTravel>.015&&wristTravel<.30,`${name}: rifle carry moves relative to the torso without flailing (${wristTravel.toFixed(3)} m)`);
+  assert.ok(supportDrift<.015,`${name}: supporting palm stays on the rifle (${supportDrift.toFixed(4)} m drift)`);
+  for(const {palm} of samples)assert.ok(palm.distanceTo(supportRegion)<.045,`${name}: palm stays within the fore-end contact region`);
+  assert.ok(wristSpeed<12,`${name}: no abrupt weapon-wrist jump (${wristSpeed.toFixed(2)} m/s)`);
+ }
+ mixer.stopAllAction();mixer.uncacheRoot(scene);
+});
+
+test('rifle butt strike keeps the barrel outside the deformed coat',async()=>{
+ const {scene,animations}=await loadCpuAsset(),mixer=new THREE.AnimationMixer(scene);
+ const coat=[];scene.traverse(object=>{if(object.isSkinnedMesh&&object.name.startsWith('Tailored_Coat'))coat.push(object);});
+ assert.ok(coat.length>0,'The animated coat is available for contact checks');
+ const originalSides=new Map();
+ for(const object of coat)for(const material of Array.isArray(object.material)?object.material:[object.material]){
+  if(!originalSides.has(material))originalSides.set(material,material.side);
+  material.side=THREE.DoubleSide;
+ }
+ try{
+  const clip=THREE.AnimationClip.findByName(animations,'RifleButtStrike');
+  const action=mixer.clipAction(clip).reset().setLoop(THREE.LoopOnce,1);action.clampWhenFinished=true;action.play();
+  const rifle=scene.getObjectByName('weapon_rifle'),count=Math.ceil(clip.duration*120);
+  for(let frame=0;frame<=count;frame++){
+   const time=frame*clip.duration/count;mixer.setTime(time);scene.updateMatrixWorld(true);
+   for(const object of coat){object.skeleton.update();object.computeBoundingSphere();}
+   // The metal barrel begins beyond the lock. A centerline crossing detects
+   // the former shoulder/torso penetration without treating grip contact as
+   // an error. It is intentionally not a complete weapon/body collision test.
+   const start=rifle.localToWorld(new THREE.Vector3(.06,.055,0));
+   const end=rifle.localToWorld(new THREE.Vector3(.94,.055,0));
+   const ray=new THREE.Raycaster(start,end.clone().sub(start).normalize(),0,start.distanceTo(end));
+   const hits=ray.intersectObjects(coat,false);
+   assert.equal(hits.length,0,`RifleButtStrike: barrel crosses the coat at ${time.toFixed(3)} s`);
+  }
+ }finally{
+  for(const [material,side] of originalSides)material.side=side;
+  mixer.stopAllAction();mixer.uncacheRoot(scene);
+ }
+});
+
+test('weapon thrusts and blunt strikes transfer body weight without abrupt wrist jumps',async()=>{
+ const {scene,animations}=await loadCpuAsset(),mixer=new THREE.AnimationMixer(scene);
+ const point=name=>scene.getObjectByName(name).getWorldPosition(new THREE.Vector3());
+ const facts=[];
+ for(const name of ['SabreThrust','KnifeThrust','BayonetThrust','SabreHiltStrike','PistolStrike','RifleButtStrike']){
+  mixer.stopAllAction();const clip=THREE.AnimationClip.findByName(animations,name);
+  const action=mixer.clipAction(clip).reset().setLoop(THREE.LoopOnce,1);action.clampWhenFinished=true;action.play();
+  const samples=[],count=Math.ceil(clip.duration*120),dt=clip.duration/count;
+  for(let i=0;i<=count;i++){
+   mixer.setTime(i*dt);scene.updateMatrixWorld(true);
+   samples.push({time:i*dt,wrist:point('hand_r'),pelvis:point('pelvis'),chest:point('neck_01'),foot:point('foot_r'),chestRotation:scene.getObjectByName('spine_03').getWorldQuaternion(new THREE.Quaternion())});
+  }
+  const start=samples[0],hit=manifest.clips.find(c=>c.name===name).events.hit;
+  // Contact support is checked around the event, not during the advance or
+  // recovery step. The neck base marks the top of the thorax on this rig.
+  const contact=samples.filter(s=>s.time>=hit-.06&&s.time<=hit+.10);
+  const forwardTravel=Math.max(...samples.map(s=>s.pelvis.z-start.pelvis.z));
+  const chestLean=Math.max(...samples.map(s=>s.chest.z-s.pelvis.z-(start.chest.z-start.pelvis.z)));
+  const chestTurn=Math.max(...samples.map(s=>s.chestRotation.angleTo(start.chestRotation)));
+  const wristTravel=Math.max(...samples.map(s=>s.wrist.distanceTo(start.wrist)));
+  const wristSpeed=Math.max(...samples.slice(1).map((s,i)=>s.wrist.distanceTo(samples[i].wrist)/dt));
+  const footDrift=Math.max(...contact.map(s=>s.foot.distanceTo(contact[0].foot)));
+  assert.ok(forwardTravel>.06,`${name}: pelvis transfers weight toward contact (${forwardTravel.toFixed(3)} m)`);
+  assert.ok(chestLean>.025,`${name}: upper body contributes to the strike (${chestLean.toFixed(3)} m forward lean)`);
+  assert.ok(chestTurn>.12,`${name}: torso rotates through the strike (${chestTurn.toFixed(3)} radians)`);
+  assert.ok(wristTravel>.10,`${name}: weapon hand has a distinct attack path (${wristTravel.toFixed(3)} m)`);
+  assert.ok(wristSpeed<12,`${name}: no abrupt weapon-wrist jump (${wristSpeed.toFixed(2)} m/s)`);
+  assert.ok(footDrift<.015,`${name}: lead foot supports contact (${footDrift.toFixed(4)} m drift)`);
+  facts.push({name,forwardTravelMetres:Number(forwardTravel.toFixed(3)),chestLeanMetres:Number(chestLean.toFixed(3)),wristPeakMetresPerSecond:Number(wristSpeed.toFixed(2)),contactFootDriftMetres:Number(footDrift.toFixed(4))});
+ }
+ console.log('Weapon strike measurements:',JSON.stringify(facts));
+ mixer.stopAllAction();mixer.uncacheRoot(scene);
+});
+
+test('punch transfers body weight and accelerates the fist before recovery',async()=>{
+ const {scene,animations}=await loadCpuAsset(),mixer=new THREE.AnimationMixer(scene);
+ const clip=THREE.AnimationClip.findByName(animations,'Punch'),action=mixer.clipAction(clip).setLoop(THREE.LoopOnce,1);action.clampWhenFinished=true;action.play();
+ const hands=[],roots=[],chests=[],pelvises=[],frontFeet=[],rearFeet=[],times=[];
+ for(let i=0;i<=120;i++){
+  mixer.setTime(clip.duration*i/120);scene.updateMatrixWorld(true);
+  times.push(clip.duration*i/120);
+  hands.push(scene.getObjectByName('hand_r').getWorldPosition(new THREE.Vector3()));
+  roots.push(scene.getObjectByName('Root').getWorldPosition(new THREE.Vector3()));
+  // The base of the neck marks the upper thorax. spine_03 starts below the ribs.
+  chests.push(scene.getObjectByName('neck_01').getWorldPosition(new THREE.Vector3()));
+  pelvises.push(scene.getObjectByName('pelvis').getWorldPosition(new THREE.Vector3()));
+  frontFeet.push(scene.getObjectByName('foot_l').getWorldPosition(new THREE.Vector3()));
+  rearFeet.push(scene.getObjectByName('foot_r').getWorldPosition(new THREE.Vector3()));
+ }
+ const bodyTravel=Math.max(...roots.map(p=>p.distanceTo(roots[0])));
+ const forwardTravel=Math.max(...roots.map(p=>p.z-roots[0].z));
+ const initialChestOffset=chests[0].z-pelvises[0].z;
+ const chestLean=Math.max(...chests.map((p,i)=>p.z-pelvises[i].z-initialChestOffset));
+ const plantedFeet=frontFeet.filter((_,i)=>times[i]>=.34&&times[i]<=.50);
+ assert.ok(plantedFeet.length>1,'Punch has samples during front-foot support');
+ const frontFootDrift=Math.max(...plantedFeet.map(p=>p.distanceTo(plantedFeet[0])));
+ const rearFootLift=Math.max(...rearFeet.filter((_,i)=>times[i]>=.38).map(p=>p.y-rearFeet[0].y));
+ const handTravel=Math.max(...hands.map(p=>p.distanceTo(hands[0])));
+ const speeds=hands.slice(1).map((p,i)=>p.distanceTo(hands[i])*120/clip.duration);
+ assert.ok(bodyTravel>.09,'Punch moves body mass forward');
+ assert.ok(forwardTravel>.16,`Punch advances body mass toward the target (${forwardTravel.toFixed(3)} m)`);
+ assert.ok(chestLean>.12,`Punch leans the chest forward relative to the pelvis (${chestLean.toFixed(3)} m)`);
+ assert.ok(frontFootDrift<.01,`Punch keeps its lead foot planted through contact (${frontFootDrift.toFixed(4)} m)`);
+ assert.ok(rearFootLift>.08,`Punch lifts the rear ankle after the push (${rearFootLift.toFixed(3)} m)`);
+ assert.ok(handTravel>.35,'Punch has a full fist extension');
+ assert.ok(Math.max(...speeds.slice(36,54))>2,'Fist accelerates during the strike');
+ assert.ok(hands[0].distanceTo(hands.at(-1))<.001,'Punch recovers to its initial pose');
+ console.log('Punch motion measurements:',JSON.stringify({forwardTravelMetres:Number(forwardTravel.toFixed(4)),chestLeanMetres:Number(chestLean.toFixed(4)),frontFootDriftMetres:Number(frontFootDrift.toFixed(4)),rearFootLiftMetres:Number(rearFootLift.toFixed(4)),handTravelMetres:Number(handTravel.toFixed(4)),strikePeakMetresPerSecond:Number(Math.max(...speeds.slice(36,54)).toFixed(3))}));
+ mixer.stopAllAction();mixer.uncacheRoot(scene);
 });

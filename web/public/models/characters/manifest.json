@@ -31,26 +31,26 @@
         {
           "lod": 0,
           "url": "/models/characters/granadero-lod0.glb",
-          "triangles": 30856,
-          "bytes": 1198376,
+          "triangles": 42670,
+          "bytes": 1964996,
           "drawCalls": 6,
-          "sha256": "4d8641a5f01095c866fddc1501099dd11c0d571d356f851c87e106aa5e2442a2"
+          "sha256": "9041e7e5ecd249b0065cf012271d60552f418d1bb2809be6ccb973496c7e97e3"
         },
         {
           "lod": 1,
           "url": "/models/characters/granadero-lod1.glb",
-          "triangles": 17050,
-          "bytes": 713544,
+          "triangles": 23113,
+          "bytes": 1137720,
           "drawCalls": 6,
-          "sha256": "624103a8f399bc8d85caa52bc2fa5db90ccdabca2fe869b4d1440db596916765"
+          "sha256": "b589b8558e13d693cccbbc28621ca96221cc9bc6ee58028751075b2fcf5c0188"
         },
         {
           "lod": 2,
           "url": "/models/characters/granadero-lod2.glb",
-          "triangles": 8099,
-          "bytes": 369440,
+          "triangles": 9806,
+          "bytes": 529988,
           "drawCalls": 6,
-          "sha256": "966a6b2cd9137ce708eb7adc1171745964cd208804bf8fa42d79c480df1596bf"
+          "sha256": "de18c59d01ed02830e42cdc65a1b3b03a4f895746e800ba53c46eef8aa8a2f9f"
         }
       ],
       "materials": {
@@ -256,26 +256,26 @@
         {
           "lod": 0,
           "url": "/models/characters/royalist-lod0.glb",
-          "triangles": 30856,
-          "bytes": 1198376,
+          "triangles": 42313,
+          "bytes": 1940516,
           "drawCalls": 6,
-          "sha256": "ade4c0563535cbcab6337d3bb8d845a32a9ebca4295d4a9e4065131cbae1c71b"
+          "sha256": "d23f8262eb38def87d7b21586d3faf308505323b5091a8c7150acd82a7334b01"
         },
         {
           "lod": 1,
           "url": "/models/characters/royalist-lod1.glb",
-          "triangles": 17050,
-          "bytes": 713544,
+          "triangles": 23042,
+          "bytes": 1134352,
           "drawCalls": 6,
-          "sha256": "bd0020344c335842d446d1efab63409966cec52385089653336903dd71dbd4ad"
+          "sha256": "9199b37b27872bd9348f34c9f6bd051d45089aa3727ae76cd23347d30129df31"
         },
         {
           "lod": 2,
           "url": "/models/characters/royalist-lod2.glb",
-          "triangles": 8099,
-          "bytes": 369440,
+          "triangles": 9749,
+          "bytes": 527152,
           "drawCalls": 6,
-          "sha256": "28865a3455757db7542bd1fb0ab954adc6aa07d855c56291657d70c444e162ad"
+          "sha256": "294698350af08dc29e0b505fcc3f432a7634adda3ead34019a6e7ab5e4b99f34"
         }
       ],
       "materials": {
@@ -481,26 +481,26 @@
         {
           "lod": 0,
           "url": "/models/characters/worker-lod0.glb",
-          "triangles": 25982,
-          "bytes": 995340,
+          "triangles": 27146,
+          "bytes": 1238932,
           "drawCalls": 5,
-          "sha256": "dbdbf5b4815987ac547a0ef01863ec8b0e602a43e04fd77dffd1297ee095f5d5"
+          "sha256": "1682d2cbd20cca840fc088d58983fa37496db3cb56084babd6cdd7c7d179540a"
         },
         {
           "lod": 1,
           "url": "/models/characters/worker-lod1.glb",
-          "triangles": 10841,
-          "bytes": 466208,
+          "triangles": 12009,
+          "bytes": 606240,
           "drawCalls": 5,
-          "sha256": "758a749060c65d00400a5befa76d48e7123d2636dedb56f774b07ef4686c1d4e"
+          "sha256": "a83c44ad08118860c59ea02a330b617ad0d8ddfa2a4ed70fabe695a04bd10a7f"
         },
         {
           "lod": 2,
           "url": "/models/characters/worker-lod2.glb",
-          "triangles": 4459,
-          "bytes": 228948,
+          "triangles": 4458,
+          "bytes": 272600,
           "drawCalls": 5,
-          "sha256": "c5d1fb9620e001d87b26c09558cf938f4f6f2d3caa79a4cf2584eb71cd9de224"
+          "sha256": "52e16641b2ed73a47536faf899772678e30451b10d8d2704b171d8f631d9e517"
         }
       ],
       "materials": {
@@ -706,26 +706,26 @@
         {
           "lod": 0,
           "url": "/models/characters/surgeon-lod0.glb",
-          "triangles": 26983,
-          "bytes": 1033024,
+          "triangles": 28152,
+          "bytes": 1283760,
           "drawCalls": 5,
-          "sha256": "08761792f1d13359b8796c5a9028bbb37eba83b8a2c5857b501891480a42dde5"
+          "sha256": "7f40d2b114f1da469abb2dc0dfe13d1feb5212a98abdc90604b2f21e540d7fb7"
         },
         {
           "lod": 1,
           "url": "/models/characters/surgeon-lod1.glb",
-          "triangles": 13229,
-          "bytes": 549860,
+          "triangles": 14398,
+          "bytes": 705700,
           "drawCalls": 5,
-          "sha256": "09151b95406b2da5df7cf768c2956b1b86b360bb6c9492c01321cabda6935e30"
+          "sha256": "78f121de0540449c2fad102c31a346b41e3afb13c94ac28bd24c3e0660324d0e"
         },
         {
           "lod": 2,
           "url": "/models/characters/surgeon-lod2.glb",
-          "triangles": 6962,
-          "bytes": 317652,
+          "triangles": 6961,
+          "bytes": 378312,
           "drawCalls": 5,
-          "sha256": "1412b6818e107d96e9d2ad4524147040cb2bad9a81bbe71ea0cbc27dd3586d2a"
+          "sha256": "ac5ed22dfc4e5c4558a801df20cf7f87a6347f6f5cca0376214394ea04d0e5cd"
         }
       ],
       "materials": {
@@ -931,26 +931,26 @@
         {
           "lod": 0,
           "url": "/models/characters/gaucho-lod0.glb",
-          "triangles": 25627,
-          "bytes": 988512,
+          "triangles": 26664,
+          "bytes": 1225728,
           "drawCalls": 6,
-          "sha256": "ad5f888f8a8001f8b5d7525ceed3b9d31ca7c345a6081866fc02eb328855c9a6"
+          "sha256": "7179603e7221ef55ea754590b1b4a81d521a8167ae1b033244042ad968f6c687"
         },
         {
           "lod": 1,
           "url": "/models/characters/gaucho-lod1.glb",
-          "triangles": 10983,
-          "bytes": 476872,
+          "triangles": 12106,
+          "bytes": 617120,
           "drawCalls": 6,
-          "sha256": "a575277be25d2f7e20bfc6de8842d87b65a8ed5b188fbd7f6159e800264f09c4"
+          "sha256": "69b3e5d633a9578338f5ae2c2270b1470096b1a031c55814bbc93d100baddf78"
         },
         {
           "lod": 2,
           "url": "/models/characters/gaucho-lod2.glb",
-          "triangles": 4637,
-          "bytes": 242112,
+          "triangles": 4618,
+          "bytes": 287756,
           "drawCalls": 6,
-          "sha256": "ebe634cf17d03c2d8c3010683add2c7f66cae37b10a25006f6a5543dfc30d5af"
+          "sha256": "185ee45e4b006e9168650a02b3ceeac0e3a654dfcbeb3094dbbf543e03b7a083"
         }
       ],
       "materials": {
@@ -1156,26 +1156,26 @@
         {
           "lod": 0,
           "url": "/models/characters/friar-lod0.glb",
-          "triangles": 25366,
-          "bytes": 969440,
+          "triangles": 26535,
+          "bytes": 1207744,
           "drawCalls": 5,
-          "sha256": "5c6fbf3de956f4faa48f40ef6e96cba61bc77e6e4248d9cb3e042523a318ece8"
+          "sha256": "98be189f495012ac1ec4f25475ee025fcaa09e670cbf25202caf33af9a05a572"
         },
         {
           "lod": 1,
           "url": "/models/characters/friar-lod1.glb",
-          "triangles": 10722,
-          "bytes": 457796,
+          "triangles": 11891,
+          "bytes": 595872,
           "drawCalls": 5,
-          "sha256": "db5f13edee33af1ff7e4d5ce7b72a247da46eca7f59af9220840939810238238"
+          "sha256": "c28a72775a84fe9c42234057d9bfa1d4dd4fa7cc95085c52304d277a181fcc9c"
         },
         {
           "lod": 2,
           "url": "/models/characters/friar-lod2.glb",
           "triangles": 4239,
-          "bytes": 218524,
+          "bytes": 260212,
           "drawCalls": 5,
-          "sha256": "4224c85bf20eecc223980a97619393a50eaa5426ef37670a2fa9f6cc97e0f1ba"
+          "sha256": "211ab70c05df4132ed3d967114230dbec1c7e594135a7be9940c522c0d0d559b"
         }
       ],
       "materials": {
@@ -1381,26 +1381,26 @@
         {
           "lod": 0,
           "url": "/models/characters/woman-scout-lod0.glb",
-          "triangles": 26694,
-          "bytes": 1037548,
+          "triangles": 27911,
+          "bytes": 1286968,
           "drawCalls": 5,
-          "sha256": "37a96f33b03b7c38d36034de47619fb843c2e14ee75c89206bc455c73b7e66f5"
+          "sha256": "8d7c0d817c45681a0a1ebf5068b985ad8d1de580a221d93af3ccba1640f5fa39"
         },
         {
           "lod": 1,
           "url": "/models/characters/woman-scout-lod1.glb",
-          "triangles": 12853,
-          "bytes": 546064,
+          "triangles": 14071,
+          "bytes": 701492,
           "drawCalls": 5,
-          "sha256": "b36a69fd6f189626b1462220b9342f0eecfdd1554f2bbba2a9c3d385b4705177"
+          "sha256": "358863428ae5d24a19f4d080dd56c7982b568041a5530bacc59e48153ca78cda"
         },
         {
           "lod": 2,
           "url": "/models/characters/woman-scout-lod2.glb",
-          "triangles": 7061,
-          "bytes": 328152,
+          "triangles": 7060,
+          "bytes": 389524,
           "drawCalls": 5,
-          "sha256": "52c9f5e7ca6e42ec93fa10d75dbf0f8567b441f769fcf42df35259d28142a686"
+          "sha256": "06dee5978656e70919c86a3650e914c6f713afb00cf502c954a426740678aa93"
         }
       ],
       "materials": {
@@ -1606,26 +1606,26 @@
         {
           "lod": 0,
           "url": "/models/characters/woman-shawl-lod0.glb",
-          "triangles": 27580,
-          "bytes": 1058620,
+          "triangles": 28792,
+          "bytes": 1311324,
           "drawCalls": 5,
-          "sha256": "4bea8137ef79440cc033310700ea72daff9eefd08d849b2888e110f8a48fd678"
+          "sha256": "3f4aba3369eed002393ff8ed5d201b2b75983609fc612911c9258ff08e99d8e7"
         },
         {
           "lod": 1,
           "url": "/models/characters/woman-shawl-lod1.glb",
-          "triangles": 11527,
-          "bytes": 493956,
+          "triangles": 12743,
+          "bytes": 638928,
           "drawCalls": 5,
-          "sha256": "0febe06c23165b2d5183c57bad9acbaf4d8fccef4c8f840241f4cc38604084b2"
+          "sha256": "a585d5def2f7890b018b5b311306adec1292f217e648efd945eb339cb7e12e18"
         },
         {
           "lod": 2,
           "url": "/models/characters/woman-shawl-lod2.glb",
-          "triangles": 4889,
-          "bytes": 247208,
+          "triangles": 4886,
+          "bytes": 292564,
           "drawCalls": 5,
-          "sha256": "b9eee356141d128a2ce2433162b5277614d29f7c324ee9048f4add1e5aa976fa"
+          "sha256": "433ee28a59a1aed7edadfeb5efe25568c98cd7951a1a5fc98a37ba1932d6cd78"
         }
       ],
       "materials": {
@@ -1826,12 +1826,12 @@
   "animationLibraries": {
     "male": {
       "url": "/models/characters/male-animations.glb",
-      "bytes": 7495956,
-      "sha256": "090ace1b4f97bd69404f0a6ef2992ad7af78b7ff978cd37f00e6286dbdac3fc1",
+      "bytes": 8573700,
+      "sha256": "4b8734dd8149b6becffb7ba3af8d7741ee2067b6c03705147c1b1b9c282d5ee3",
       "clips": [
         {
           "name": "stand.idle.unarmed",
-          "duration": 1.999992,
+          "duration": 2.0,
           "loop": true,
           "events": {},
           "gesture": "idle",
@@ -1843,16 +1843,21 @@
             "file": "111_28.bvh",
             "startFrame": 120,
             "endFrame": 360,
-            "description": "standing still",
             "sampleRate": 120
           },
-          "sampleRate": 15,
+          "sampleRate": 30,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "Idle",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          }
         },
         {
           "name": "stand.walk.unarmed",
-          "duration": 1.083329,
+          "duration": 1.066667,
           "loop": true,
           "events": {},
           "gesture": "walk",
@@ -1864,17 +1869,22 @@
             "file": "07_01.bvh",
             "startFrame": 100,
             "endFrame": 230,
-            "description": "walk",
             "sampleRate": 120
           },
-          "sampleRate": 15,
+          "sampleRate": 30,
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
-          "locomotionSpeed": 1.4052
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "Walk",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          },
+          "locomotionSpeed": 1.448
         },
         {
           "name": "stand.run.unarmed",
-          "duration": 0.75833,
+          "duration": 0.766667,
           "loop": true,
           "events": {},
           "gesture": "run",
@@ -1886,13 +1896,18 @@
             "file": "02_03.bvh",
             "startFrame": 40,
             "endFrame": 131,
-            "description": "run/jog",
             "sampleRate": 120
           },
-          "sampleRate": 15,
+          "sampleRate": 30,
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
-          "locomotionSpeed": 1.007
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "Run",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          },
+          "locomotionSpeed": 2.242
         },
         {
           "name": "stand.strafeLeft.unarmed",
@@ -1942,29 +1957,33 @@
         },
         {
           "name": "stand.punch.unarmed",
-          "duration": 1.2,
+          "duration": 1.0,
           "loop": false,
           "events": {
-            "contact": 0.58,
-            "recover": 1.0
+            "contact": 0.42
           },
           "gesture": "punch",
           "posture": "standing",
           "equipment": "unarmed",
           "markers": {
-            "contact": 0.58,
-            "recover": 1.0
+            "contact": 0.42
           },
           "source": {
             "type": "native-contact-authoring"
           },
-          "sampleRate": 15,
+          "sampleRate": 30,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "Punch",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          }
         },
         {
           "name": "stand.idle.long-gun",
-          "duration": 1.999992,
+          "duration": 2.0,
           "loop": true,
           "events": {},
           "gesture": "idle",
@@ -1972,20 +1991,21 @@
           "equipment": "long-gun",
           "markers": {},
           "source": {
-            "database": "CMU",
-            "file": "111_28.bvh",
-            "startFrame": 120,
-            "endFrame": 360,
-            "description": "standing still",
-            "sampleRate": 120
+            "type": "native-contact-authoring"
           },
-          "sampleRate": 15,
+          "sampleRate": 30,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "RifleAim",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          }
         },
         {
           "name": "stand.walk.long-gun",
-          "duration": 1.083329,
+          "duration": 1.066667,
           "loop": true,
           "events": {},
           "gesture": "walk",
@@ -1993,21 +2013,23 @@
           "equipment": "long-gun",
           "markers": {},
           "source": {
-            "database": "CMU",
-            "file": "07_01.bvh",
-            "startFrame": 100,
-            "endFrame": 230,
-            "description": "walk",
-            "sampleRate": 120
+            "base": "Walk",
+            "carry": "rifle"
           },
-          "sampleRate": 15,
+          "sampleRate": 30,
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
-          "locomotionSpeed": 1.4052
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "RifleWalk",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          },
+          "locomotionSpeed": 1.448
         },
         {
           "name": "stand.run.long-gun",
-          "duration": 0.75833,
+          "duration": 0.766667,
           "loop": true,
           "events": {},
           "gesture": "run",
@@ -2015,17 +2037,19 @@
           "equipment": "long-gun",
           "markers": {},
           "source": {
-            "database": "CMU",
-            "file": "02_03.bvh",
-            "startFrame": 40,
-            "endFrame": 131,
-            "description": "run/jog",
-            "sampleRate": 120
+            "base": "Run",
+            "carry": "rifle"
           },
-          "sampleRate": 15,
+          "sampleRate": 30,
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
-          "locomotionSpeed": 1.007
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "RifleRun",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          },
+          "locomotionSpeed": 2.242
         },
         {
           "name": "stand.strafeLeft.long-gun",
@@ -2075,7 +2099,7 @@
         },
         {
           "name": "stand.aim.long-gun",
-          "duration": 2,
+          "duration": 2.0,
           "loop": true,
           "events": {},
           "gesture": "aim",
@@ -2085,29 +2109,41 @@
           "source": {
             "type": "native-contact-authoring"
           },
-          "sampleRate": 15,
+          "sampleRate": 30,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "RifleAim",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          }
         },
         {
           "name": "stand.fire.long-gun",
-          "duration": 1.1,
+          "duration": 0.8,
           "loop": false,
           "events": {
-            "shot": 0.3
+            "shot": 0.1
           },
           "gesture": "fire",
           "posture": "standing",
           "equipment": "long-gun",
           "markers": {
-            "shot": 0.3
+            "shot": 0.1
           },
           "source": {
             "type": "native-contact-authoring"
           },
-          "sampleRate": 15,
+          "sampleRate": 30,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "RifleFire",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          }
         },
         {
           "name": "stand.reload.long-gun",
@@ -2207,51 +2243,59 @@
         },
         {
           "name": "stand.butt.long-gun",
-          "duration": 1.2,
+          "duration": 1.0,
           "loop": false,
           "events": {
-            "contact": 0.58,
-            "recover": 1.0
+            "contact": 0.42
           },
           "gesture": "butt",
           "posture": "standing",
           "equipment": "long-gun",
           "markers": {
-            "contact": 0.58,
-            "recover": 1.0
+            "contact": 0.42
           },
           "source": {
             "type": "native-contact-authoring"
           },
-          "sampleRate": 15,
+          "sampleRate": 30,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "RifleButtStrike",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          }
         },
         {
           "name": "stand.bayonet.long-gun",
-          "duration": 1.2,
+          "duration": 1.0,
           "loop": false,
           "events": {
-            "contact": 0.58,
-            "recover": 1.0
+            "contact": 0.42
           },
           "gesture": "bayonet",
           "posture": "standing",
           "equipment": "long-gun",
           "markers": {
-            "contact": 0.58,
-            "recover": 1.0
+            "contact": 0.42
           },
           "source": {
             "type": "native-contact-authoring"
           },
-          "sampleRate": 15,
+          "sampleRate": 30,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "BayonetThrust",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          }
         },
         {
           "name": "stand.brace.long-gun",
-          "duration": 2,
+          "duration": 2.0,
           "loop": true,
           "events": {},
           "gesture": "brace",
@@ -2261,13 +2305,19 @@
           "source": {
             "type": "native-contact-authoring"
           },
-          "sampleRate": 15,
+          "sampleRate": 30,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "RifleAim",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          }
         },
         {
           "name": "stand.idle.short-gun",
-          "duration": 1.999992,
+          "duration": 2.0,
           "loop": true,
           "events": {},
           "gesture": "idle",
@@ -2275,20 +2325,21 @@
           "equipment": "short-gun",
           "markers": {},
           "source": {
-            "database": "CMU",
-            "file": "111_28.bvh",
-            "startFrame": 120,
-            "endFrame": 360,
-            "description": "standing still",
-            "sampleRate": 120
+            "type": "native-contact-authoring"
           },
-          "sampleRate": 15,
+          "sampleRate": 30,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "PistolAim",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          }
         },
         {
           "name": "stand.walk.short-gun",
-          "duration": 1.083329,
+          "duration": 1.066667,
           "loop": true,
           "events": {},
           "gesture": "walk",
@@ -2296,21 +2347,23 @@
           "equipment": "short-gun",
           "markers": {},
           "source": {
-            "database": "CMU",
-            "file": "07_01.bvh",
-            "startFrame": 100,
-            "endFrame": 230,
-            "description": "walk",
-            "sampleRate": 120
+            "base": "Walk",
+            "carry": "pistol"
           },
-          "sampleRate": 15,
+          "sampleRate": 30,
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
-          "locomotionSpeed": 1.4052
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "PistolWalk",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          },
+          "locomotionSpeed": 1.448
         },
         {
           "name": "stand.run.short-gun",
-          "duration": 0.75833,
+          "duration": 0.766667,
           "loop": true,
           "events": {},
           "gesture": "run",
@@ -2318,17 +2371,19 @@
           "equipment": "short-gun",
           "markers": {},
           "source": {
-            "database": "CMU",
-            "file": "02_03.bvh",
-            "startFrame": 40,
-            "endFrame": 131,
-            "description": "run/jog",
-            "sampleRate": 120
+            "base": "Run",
+            "carry": "pistol"
           },
-          "sampleRate": 15,
+          "sampleRate": 30,
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
-          "locomotionSpeed": 1.007
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "PistolRun",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          },
+          "locomotionSpeed": 2.242
         },
         {
           "name": "stand.strafeLeft.short-gun",
@@ -2378,7 +2433,7 @@
         },
         {
           "name": "stand.aim.short-gun",
-          "duration": 2,
+          "duration": 2.0,
           "loop": true,
           "events": {},
           "gesture": "aim",
@@ -2388,29 +2443,41 @@
           "source": {
             "type": "native-contact-authoring"
           },
-          "sampleRate": 15,
+          "sampleRate": 30,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "PistolAim",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          }
         },
         {
           "name": "stand.fire.short-gun",
-          "duration": 0.8,
+          "duration": 0.7,
           "loop": false,
           "events": {
-            "shot": 0.2
+            "shot": 0.1
           },
           "gesture": "fire",
           "posture": "standing",
           "equipment": "short-gun",
           "markers": {
-            "shot": 0.2
+            "shot": 0.1
           },
           "source": {
             "type": "native-contact-authoring"
           },
-          "sampleRate": 15,
+          "sampleRate": 30,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "PistolFire",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          }
         },
         {
           "name": "stand.reload.short-gun",
@@ -2502,29 +2569,33 @@
         },
         {
           "name": "stand.butt.short-gun",
-          "duration": 1.2,
+          "duration": 1.0,
           "loop": false,
           "events": {
-            "contact": 0.58,
-            "recover": 1.0
+            "contact": 0.42
           },
           "gesture": "butt",
           "posture": "standing",
           "equipment": "short-gun",
           "markers": {
-            "contact": 0.58,
-            "recover": 1.0
+            "contact": 0.42
           },
           "source": {
             "type": "native-contact-authoring"
           },
-          "sampleRate": 15,
+          "sampleRate": 30,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "PistolStrike",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          }
         },
         {
           "name": "stand.idle.blade",
-          "duration": 1.999992,
+          "duration": 2.0,
           "loop": true,
           "events": {},
           "gesture": "idle",
@@ -2532,20 +2603,21 @@
           "equipment": "blade",
           "markers": {},
           "source": {
-            "database": "CMU",
-            "file": "111_28.bvh",
-            "startFrame": 120,
-            "endFrame": 360,
-            "description": "standing still",
-            "sampleRate": 120
+            "type": "native-contact-authoring"
           },
-          "sampleRate": 15,
+          "sampleRate": 30,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "SabreReady",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          }
         },
         {
           "name": "stand.walk.blade",
-          "duration": 1.083329,
+          "duration": 1.066667,
           "loop": true,
           "events": {},
           "gesture": "walk",
@@ -2553,21 +2625,23 @@
           "equipment": "blade",
           "markers": {},
           "source": {
-            "database": "CMU",
-            "file": "07_01.bvh",
-            "startFrame": 100,
-            "endFrame": 230,
-            "description": "walk",
-            "sampleRate": 120
+            "base": "Walk",
+            "carry": "sabre"
           },
-          "sampleRate": 15,
+          "sampleRate": 30,
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
-          "locomotionSpeed": 1.4052
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "SabreWalk",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          },
+          "locomotionSpeed": 1.448
         },
         {
           "name": "stand.run.blade",
-          "duration": 0.75833,
+          "duration": 0.766667,
           "loop": true,
           "events": {},
           "gesture": "run",
@@ -2575,17 +2649,19 @@
           "equipment": "blade",
           "markers": {},
           "source": {
-            "database": "CMU",
-            "file": "02_03.bvh",
-            "startFrame": 40,
-            "endFrame": 131,
-            "description": "run/jog",
-            "sampleRate": 120
+            "base": "Run",
+            "carry": "sabre"
           },
-          "sampleRate": 15,
+          "sampleRate": 30,
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
-          "locomotionSpeed": 1.007
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "SabreRun",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          },
+          "locomotionSpeed": 2.242
         },
         {
           "name": "stand.strafeLeft.blade",
@@ -2635,29 +2711,33 @@
         },
         {
           "name": "stand.slash.blade",
-          "duration": 1.2,
+          "duration": 1.0,
           "loop": false,
           "events": {
-            "contact": 0.58,
-            "recover": 1.0
+            "contact": 0.36
           },
           "gesture": "slash",
           "posture": "standing",
           "equipment": "blade",
           "markers": {
-            "contact": 0.58,
-            "recover": 1.0
+            "contact": 0.36
           },
           "source": {
             "type": "native-contact-authoring"
           },
-          "sampleRate": 15,
+          "sampleRate": 30,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "SabreSlash",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          }
         },
         {
           "name": "stand.brace.blade",
-          "duration": 2,
+          "duration": 2.0,
           "loop": true,
           "events": {},
           "gesture": "brace",
@@ -2667,9 +2747,15 @@
           "source": {
             "type": "native-contact-authoring"
           },
-          "sampleRate": 15,
+          "sampleRate": 30,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "SabreReady",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          }
         },
         {
           "name": "crouch.idle.unarmed",
@@ -6494,7 +6580,6 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local",
           "seatWeight": [
             {
               "time": 0,
@@ -6508,7 +6593,8 @@
               "time": 1.283328,
               "weight": 0
             }
-          ]
+          ],
+          "seatAnchorSpace": "gltf-model-local"
         },
         {
           "name": "life.mounted.collapse",
@@ -6540,7 +6626,6 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local",
           "seatWeight": [
             {
               "time": 0,
@@ -6554,7 +6639,8 @@
               "time": 1.283328,
               "weight": 0
             }
-          ]
+          ],
+          "seatAnchorSpace": "gltf-model-local"
         },
         {
           "name": "life.mounted.dead",
@@ -6687,7 +6773,6 @@
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local",
           "seatWeight": [
             {
               "time": 0,
@@ -6701,7 +6786,8 @@
               "time": 1.283328,
               "weight": 0
             }
-          ]
+          ],
+          "seatAnchorSpace": "gltf-model-local"
         },
         {
           "name": "crew.artilleryFire",
@@ -6803,6 +6889,28 @@
           "rootMotion": "in-place"
         },
         {
+          "name": "stand.idle.knife",
+          "duration": 2.0,
+          "loop": true,
+          "events": {},
+          "gesture": "idle",
+          "posture": "standing",
+          "equipment": "knife",
+          "markers": {},
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 30,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "KnifeReady",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          }
+        },
+        {
           "name": "stand.walk.lance",
           "duration": 1.083329,
           "loop": true,
@@ -6823,6 +6931,30 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "locomotionSpeed": 1.4052
+        },
+        {
+          "name": "stand.walk.knife",
+          "duration": 1.066667,
+          "loop": true,
+          "events": {},
+          "gesture": "walk",
+          "posture": "standing",
+          "equipment": "knife",
+          "markers": {},
+          "source": {
+            "base": "Walk",
+            "carry": "knife"
+          },
+          "sampleRate": 30,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "KnifeWalk",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          },
+          "locomotionSpeed": 1.448
         },
         {
           "name": "stand.run.lance",
@@ -6847,6 +6979,30 @@
           "locomotionSpeed": 1.007
         },
         {
+          "name": "stand.run.knife",
+          "duration": 0.766667,
+          "loop": true,
+          "events": {},
+          "gesture": "run",
+          "posture": "standing",
+          "equipment": "knife",
+          "markers": {},
+          "source": {
+            "base": "Run",
+            "carry": "knife"
+          },
+          "sampleRate": 30,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "KnifeRun",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          },
+          "locomotionSpeed": 2.242
+        },
+        {
           "name": "stand.strafeLeft.lance",
           "duration": 1.183329,
           "loop": true,
@@ -6854,6 +7010,29 @@
           "gesture": "strafeLeft",
           "posture": "standing",
           "equipment": "lance",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "141_33.bvh",
+            "startFrame": 780,
+            "endFrame": 922,
+            "description": "sideways walk, foot to foot, left",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 1.1159,
+          "locomotionAxis": "left"
+        },
+        {
+          "name": "stand.strafeLeft.knife",
+          "duration": 1.183329,
+          "loop": true,
+          "events": {},
+          "gesture": "strafeLeft",
+          "posture": "standing",
+          "equipment": "knife",
           "markers": {},
           "source": {
             "database": "CMU",
@@ -6893,6 +7072,29 @@
           "locomotionAxis": "right"
         },
         {
+          "name": "stand.strafeRight.knife",
+          "duration": 1.283328,
+          "loop": true,
+          "events": {},
+          "gesture": "strafeRight",
+          "posture": "standing",
+          "equipment": "knife",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "141_33.bvh",
+            "startFrame": 156,
+            "endFrame": 310,
+            "description": "sideways walk, foot to foot, right",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 1.1113,
+          "locomotionAxis": "right"
+        },
+        {
           "name": "stand.thrust.lance",
           "duration": 1.2,
           "loop": false,
@@ -6915,6 +7117,32 @@
           "rootMotion": "in-place"
         },
         {
+          "name": "stand.slash.knife",
+          "duration": 0.8,
+          "loop": false,
+          "events": {
+            "contact": 0.27
+          },
+          "gesture": "slash",
+          "posture": "standing",
+          "equipment": "knife",
+          "markers": {
+            "contact": 0.27
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 30,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "KnifeSlash",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          }
+        },
+        {
           "name": "stand.brace.lance",
           "duration": 2,
           "loop": true,
@@ -6931,6 +7159,28 @@
           "rootMotion": "in-place"
         },
         {
+          "name": "stand.brace.knife",
+          "duration": 2.0,
+          "loop": true,
+          "events": {},
+          "gesture": "brace",
+          "posture": "standing",
+          "equipment": "knife",
+          "markers": {},
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 30,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "KnifeReady",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          }
+        },
+        {
           "name": "crouch.idle.lance",
           "duration": 2,
           "loop": true,
@@ -6938,6 +7188,22 @@
           "gesture": "idle",
           "posture": "crouched",
           "equipment": "lance",
+          "markers": {},
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place"
+        },
+        {
+          "name": "crouch.idle.knife",
+          "duration": 2,
+          "loop": true,
+          "events": {},
+          "gesture": "idle",
+          "posture": "crouched",
+          "equipment": "knife",
           "markers": {},
           "source": {
             "type": "native-contact-authoring"
@@ -6969,6 +7235,28 @@
           "locomotionSpeed": 0.8403
         },
         {
+          "name": "crouch.walk.knife",
+          "duration": 1.533327,
+          "loop": true,
+          "events": {},
+          "gesture": "walk",
+          "posture": "crouched",
+          "equipment": "knife",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "136_09.bvh",
+            "startFrame": 430,
+            "endFrame": 614,
+            "description": "crouching, walking forward",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 0.8403
+        },
+        {
           "name": "crouch.strafeLeft.lance",
           "duration": 1.61666,
           "loop": true,
@@ -6976,6 +7264,29 @@
           "gesture": "strafeLeft",
           "posture": "crouched",
           "equipment": "lance",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "139_14.bvh",
+            "startFrame": 620,
+            "endFrame": 814,
+            "description": "sideways sneak, left",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 0.7564,
+          "locomotionAxis": "left"
+        },
+        {
+          "name": "crouch.strafeLeft.knife",
+          "duration": 1.61666,
+          "loop": true,
+          "events": {},
+          "gesture": "strafeLeft",
+          "posture": "crouched",
+          "equipment": "knife",
           "markers": {},
           "source": {
             "database": "CMU",
@@ -7015,6 +7326,29 @@
           "locomotionAxis": "right"
         },
         {
+          "name": "crouch.strafeRight.knife",
+          "duration": 1.399994,
+          "loop": true,
+          "events": {},
+          "gesture": "strafeRight",
+          "posture": "crouched",
+          "equipment": "knife",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "139_14.bvh",
+            "startFrame": 172,
+            "endFrame": 340,
+            "description": "sideways sneak, right",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 0.8492,
+          "locomotionAxis": "right"
+        },
+        {
           "name": "crouch.thrust.lance",
           "duration": 1.2,
           "loop": false,
@@ -7025,6 +7359,28 @@
           "gesture": "thrust",
           "posture": "crouched",
           "equipment": "lance",
+          "markers": {
+            "contact": 0.58,
+            "recover": 1.0
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place"
+        },
+        {
+          "name": "crouch.slash.knife",
+          "duration": 1.2,
+          "loop": false,
+          "events": {
+            "contact": 0.58,
+            "recover": 1.0
+          },
+          "gesture": "slash",
+          "posture": "crouched",
+          "equipment": "knife",
           "markers": {
             "contact": 0.58,
             "recover": 1.0
@@ -7053,6 +7409,22 @@
           "rootMotion": "in-place"
         },
         {
+          "name": "crouch.brace.knife",
+          "duration": 2,
+          "loop": true,
+          "events": {},
+          "gesture": "brace",
+          "posture": "crouched",
+          "equipment": "knife",
+          "markers": {},
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place"
+        },
+        {
           "name": "prone.idle.lance",
           "duration": 2,
           "loop": true,
@@ -7069,6 +7441,22 @@
           "rootMotion": "in-place"
         },
         {
+          "name": "prone.idle.knife",
+          "duration": 2,
+          "loop": true,
+          "events": {},
+          "gesture": "idle",
+          "posture": "prone",
+          "equipment": "knife",
+          "markers": {},
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place"
+        },
+        {
           "name": "prone.crawl.lance",
           "duration": 1.966659,
           "loop": true,
@@ -7076,6 +7464,28 @@
           "gesture": "crawl",
           "posture": "prone",
           "equipment": "lance",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "111_03.bvh",
+            "startFrame": 450,
+            "endFrame": 686,
+            "description": "crawling; adapted to forearm/belly contact",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 0.0796
+        },
+        {
+          "name": "prone.crawl.knife",
+          "duration": 1.966659,
+          "loop": true,
+          "events": {},
+          "gesture": "crawl",
+          "posture": "prone",
+          "equipment": "knife",
           "markers": {},
           "source": {
             "database": "CMU",
@@ -7113,6 +7523,28 @@
           "seatAnchorSpace": "gltf-model-local"
         },
         {
+          "name": "mounted.idle.knife",
+          "duration": 2,
+          "loop": true,
+          "events": {},
+          "gesture": "idle",
+          "posture": "mounted",
+          "equipment": "knife",
+          "markers": {},
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "seatAnchor": [
+            0.0,
+            0.9451594948768616,
+            0.006795833352953196
+          ],
+          "seatAnchorSpace": "gltf-model-local"
+        },
+        {
           "name": "mounted.walk.lance",
           "duration": 1.083329,
           "loop": true,
@@ -7120,6 +7552,34 @@
           "gesture": "walk",
           "posture": "mounted",
           "equipment": "lance",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "07_01.bvh",
+            "startFrame": 100,
+            "endFrame": 230,
+            "description": "walk",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 1.4052,
+          "seatAnchor": [
+            0.0,
+            0.9451594948768616,
+            0.006795833352953196
+          ],
+          "seatAnchorSpace": "gltf-model-local"
+        },
+        {
+          "name": "mounted.walk.knife",
+          "duration": 1.083329,
+          "loop": true,
+          "events": {},
+          "gesture": "walk",
+          "posture": "mounted",
+          "equipment": "knife",
           "markers": {},
           "source": {
             "database": "CMU",
@@ -7169,6 +7629,34 @@
           "seatAnchorSpace": "gltf-model-local"
         },
         {
+          "name": "mounted.run.knife",
+          "duration": 0.75833,
+          "loop": true,
+          "events": {},
+          "gesture": "run",
+          "posture": "mounted",
+          "equipment": "knife",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "02_03.bvh",
+            "startFrame": 40,
+            "endFrame": 131,
+            "description": "run/jog",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 1.007,
+          "seatAnchor": [
+            0.0,
+            0.9451594948768616,
+            0.006795833352953196
+          ],
+          "seatAnchorSpace": "gltf-model-local"
+        },
+        {
           "name": "mounted.thrust.lance",
           "duration": 1.2,
           "loop": false,
@@ -7179,6 +7667,34 @@
           "gesture": "thrust",
           "posture": "mounted",
           "equipment": "lance",
+          "markers": {
+            "contact": 0.58,
+            "recover": 1.0
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "seatAnchor": [
+            0.0,
+            0.9451594948768616,
+            0.006795833352953196
+          ],
+          "seatAnchorSpace": "gltf-model-local"
+        },
+        {
+          "name": "mounted.slash.knife",
+          "duration": 1.2,
+          "loop": false,
+          "events": {
+            "contact": 0.58,
+            "recover": 1.0
+          },
+          "gesture": "slash",
+          "posture": "mounted",
+          "equipment": "knife",
           "markers": {
             "contact": 0.58,
             "recover": 1.0
@@ -7217,6 +7733,190 @@
             0.006795833352953196
           ],
           "seatAnchorSpace": "gltf-model-local"
+        },
+        {
+          "name": "mounted.brace.knife",
+          "duration": 2,
+          "loop": true,
+          "events": {},
+          "gesture": "brace",
+          "posture": "mounted",
+          "equipment": "knife",
+          "markers": {},
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "seatAnchor": [
+            0.0,
+            0.9451594948768616,
+            0.006795833352953196
+          ],
+          "seatAnchorSpace": "gltf-model-local"
+        },
+        {
+          "name": "stand.slash.blade.forehand",
+          "duration": 1.0,
+          "loop": false,
+          "events": {
+            "contact": 0.36
+          },
+          "gesture": "slash",
+          "posture": "standing",
+          "equipment": "blade",
+          "variant": "forehand",
+          "markers": {
+            "contact": 0.36
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 30,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "SabreForehand",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          }
+        },
+        {
+          "name": "stand.slash.blade.backhand",
+          "duration": 1.0,
+          "loop": false,
+          "events": {
+            "contact": 0.36
+          },
+          "gesture": "slash",
+          "posture": "standing",
+          "equipment": "blade",
+          "variant": "backhand",
+          "markers": {
+            "contact": 0.36
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 30,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "SabreBackhand",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          }
+        },
+        {
+          "name": "stand.slash.blade.thrust",
+          "duration": 1.0,
+          "loop": false,
+          "events": {
+            "contact": 0.42
+          },
+          "gesture": "slash",
+          "posture": "standing",
+          "equipment": "blade",
+          "variant": "thrust",
+          "markers": {
+            "contact": 0.42
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 30,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "SabreThrust",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          }
+        },
+        {
+          "name": "stand.slash.blade.hilt",
+          "duration": 1.0,
+          "loop": false,
+          "events": {
+            "contact": 0.42
+          },
+          "gesture": "slash",
+          "posture": "standing",
+          "equipment": "blade",
+          "variant": "hilt",
+          "markers": {
+            "contact": 0.42
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 30,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "SabreHiltStrike",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          }
+        },
+        {
+          "name": "stand.slash.knife.backhand",
+          "duration": 0.8,
+          "loop": false,
+          "events": {
+            "contact": 0.27
+          },
+          "gesture": "slash",
+          "posture": "standing",
+          "equipment": "knife",
+          "variant": "backhand",
+          "markers": {
+            "contact": 0.27
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 30,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "KnifeBackhand",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          }
+        },
+        {
+          "name": "stand.slash.knife.thrust",
+          "duration": 1.0,
+          "loop": false,
+          "events": {
+            "contact": 0.42
+          },
+          "gesture": "slash",
+          "posture": "standing",
+          "equipment": "knife",
+          "variant": "thrust",
+          "markers": {
+            "contact": 0.42
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 30,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "KnifeThrust",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          }
         }
       ],
       "locomotionSpeed": {
@@ -7243,12 +7943,12 @@
     },
     "female": {
       "url": "/models/characters/female-animations.glb",
-      "bytes": 7442340,
-      "sha256": "6ebc38f378f3cd4920317a75c5ff23b762ce4addf68962b84b878947eeca041e",
+      "bytes": 8395252,
+      "sha256": "5e05f48d4663425cf667676d6da8c910e97c5771af56302ee8f934c1e1c25931",
       "clips": [
         {
           "name": "stand.idle.unarmed",
-          "duration": 1.999992,
+          "duration": 2.0,
           "loop": true,
           "events": {},
           "gesture": "idle",
@@ -7260,16 +7960,21 @@
             "file": "111_28.bvh",
             "startFrame": 120,
             "endFrame": 360,
-            "description": "standing still",
             "sampleRate": 120
           },
-          "sampleRate": 15,
+          "sampleRate": 30,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "Idle",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          }
         },
         {
           "name": "stand.walk.unarmed",
-          "duration": 1.083329,
+          "duration": 1.066667,
           "loop": true,
           "events": {},
           "gesture": "walk",
@@ -7281,17 +7986,22 @@
             "file": "07_01.bvh",
             "startFrame": 100,
             "endFrame": 230,
-            "description": "walk",
             "sampleRate": 120
           },
-          "sampleRate": 15,
+          "sampleRate": 30,
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
-          "locomotionSpeed": 1.3273
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "Walk",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          },
+          "locomotionSpeed": 1.383
         },
         {
           "name": "stand.run.unarmed",
-          "duration": 0.75833,
+          "duration": 0.766667,
           "loop": true,
           "events": {},
           "gesture": "run",
@@ -7303,13 +8013,18 @@
             "file": "02_03.bvh",
             "startFrame": 40,
             "endFrame": 131,
-            "description": "run/jog",
             "sampleRate": 120
           },
-          "sampleRate": 15,
+          "sampleRate": 30,
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
-          "locomotionSpeed": 0.9754
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "Run",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          },
+          "locomotionSpeed": 2.133
         },
         {
           "name": "stand.strafeLeft.unarmed",
@@ -7359,29 +8074,33 @@
         },
         {
           "name": "stand.punch.unarmed",
-          "duration": 1.2,
+          "duration": 1.0,
           "loop": false,
           "events": {
-            "contact": 0.58,
-            "recover": 1.0
+            "contact": 0.42
           },
           "gesture": "punch",
           "posture": "standing",
           "equipment": "unarmed",
           "markers": {
-            "contact": 0.58,
-            "recover": 1.0
+            "contact": 0.42
           },
           "source": {
             "type": "native-contact-authoring"
           },
-          "sampleRate": 15,
+          "sampleRate": 30,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "Punch",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          }
         },
         {
           "name": "stand.idle.long-gun",
-          "duration": 1.999992,
+          "duration": 2.0,
           "loop": true,
           "events": {},
           "gesture": "idle",
@@ -7389,20 +8108,21 @@
           "equipment": "long-gun",
           "markers": {},
           "source": {
-            "database": "CMU",
-            "file": "111_28.bvh",
-            "startFrame": 120,
-            "endFrame": 360,
-            "description": "standing still",
-            "sampleRate": 120
+            "type": "native-contact-authoring"
           },
-          "sampleRate": 15,
+          "sampleRate": 30,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "RifleAim",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          }
         },
         {
           "name": "stand.walk.long-gun",
-          "duration": 1.083329,
+          "duration": 1.066667,
           "loop": true,
           "events": {},
           "gesture": "walk",
@@ -7410,21 +8130,23 @@
           "equipment": "long-gun",
           "markers": {},
           "source": {
-            "database": "CMU",
-            "file": "07_01.bvh",
-            "startFrame": 100,
-            "endFrame": 230,
-            "description": "walk",
-            "sampleRate": 120
+            "base": "Walk",
+            "carry": "rifle"
           },
-          "sampleRate": 15,
+          "sampleRate": 30,
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
-          "locomotionSpeed": 1.3273
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "RifleWalk",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          },
+          "locomotionSpeed": 1.383
         },
         {
           "name": "stand.run.long-gun",
-          "duration": 0.75833,
+          "duration": 0.766667,
           "loop": true,
           "events": {},
           "gesture": "run",
@@ -7432,17 +8154,19 @@
           "equipment": "long-gun",
           "markers": {},
           "source": {
-            "database": "CMU",
-            "file": "02_03.bvh",
-            "startFrame": 40,
-            "endFrame": 131,
-            "description": "run/jog",
-            "sampleRate": 120
+            "base": "Run",
+            "carry": "rifle"
           },
-          "sampleRate": 15,
+          "sampleRate": 30,
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
-          "locomotionSpeed": 0.9754
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "RifleRun",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          },
+          "locomotionSpeed": 2.133
         },
         {
           "name": "stand.strafeLeft.long-gun",
@@ -7492,7 +8216,7 @@
         },
         {
           "name": "stand.aim.long-gun",
-          "duration": 2,
+          "duration": 2.0,
           "loop": true,
           "events": {},
           "gesture": "aim",
@@ -7502,29 +8226,41 @@
           "source": {
             "type": "native-contact-authoring"
           },
-          "sampleRate": 15,
+          "sampleRate": 30,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "RifleAim",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          }
         },
         {
           "name": "stand.fire.long-gun",
-          "duration": 1.1,
+          "duration": 0.8,
           "loop": false,
           "events": {
-            "shot": 0.3
+            "shot": 0.1
           },
           "gesture": "fire",
           "posture": "standing",
           "equipment": "long-gun",
           "markers": {
-            "shot": 0.3
+            "shot": 0.1
           },
           "source": {
             "type": "native-contact-authoring"
           },
-          "sampleRate": 15,
+          "sampleRate": 30,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "RifleFire",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          }
         },
         {
           "name": "stand.reload.long-gun",
@@ -7624,51 +8360,59 @@
         },
         {
           "name": "stand.butt.long-gun",
-          "duration": 1.2,
+          "duration": 1.0,
           "loop": false,
           "events": {
-            "contact": 0.58,
-            "recover": 1.0
+            "contact": 0.42
           },
           "gesture": "butt",
           "posture": "standing",
           "equipment": "long-gun",
           "markers": {
-            "contact": 0.58,
-            "recover": 1.0
+            "contact": 0.42
           },
           "source": {
             "type": "native-contact-authoring"
           },
-          "sampleRate": 15,
+          "sampleRate": 30,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "RifleButtStrike",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          }
         },
         {
           "name": "stand.bayonet.long-gun",
-          "duration": 1.2,
+          "duration": 1.0,
           "loop": false,
           "events": {
-            "contact": 0.58,
-            "recover": 1.0
+            "contact": 0.42
           },
           "gesture": "bayonet",
           "posture": "standing",
           "equipment": "long-gun",
           "markers": {
-            "contact": 0.58,
-            "recover": 1.0
+            "contact": 0.42
           },
           "source": {
             "type": "native-contact-authoring"
           },
-          "sampleRate": 15,
+          "sampleRate": 30,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "BayonetThrust",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          }
         },
         {
           "name": "stand.brace.long-gun",
-          "duration": 2,
+          "duration": 2.0,
           "loop": true,
           "events": {},
           "gesture": "brace",
@@ -7678,13 +8422,19 @@
           "source": {
             "type": "native-contact-authoring"
           },
-          "sampleRate": 15,
+          "sampleRate": 30,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "RifleAim",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          }
         },
         {
           "name": "stand.idle.short-gun",
-          "duration": 1.999992,
+          "duration": 2.0,
           "loop": true,
           "events": {},
           "gesture": "idle",
@@ -7692,20 +8442,21 @@
           "equipment": "short-gun",
           "markers": {},
           "source": {
-            "database": "CMU",
-            "file": "111_28.bvh",
-            "startFrame": 120,
-            "endFrame": 360,
-            "description": "standing still",
-            "sampleRate": 120
+            "type": "native-contact-authoring"
           },
-          "sampleRate": 15,
+          "sampleRate": 30,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "PistolAim",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          }
         },
         {
           "name": "stand.walk.short-gun",
-          "duration": 1.083329,
+          "duration": 1.066667,
           "loop": true,
           "events": {},
           "gesture": "walk",
@@ -7713,21 +8464,23 @@
           "equipment": "short-gun",
           "markers": {},
           "source": {
-            "database": "CMU",
-            "file": "07_01.bvh",
-            "startFrame": 100,
-            "endFrame": 230,
-            "description": "walk",
-            "sampleRate": 120
+            "base": "Walk",
+            "carry": "pistol"
           },
-          "sampleRate": 15,
+          "sampleRate": 30,
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
-          "locomotionSpeed": 1.3273
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "PistolWalk",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          },
+          "locomotionSpeed": 1.383
         },
         {
           "name": "stand.run.short-gun",
-          "duration": 0.75833,
+          "duration": 0.766667,
           "loop": true,
           "events": {},
           "gesture": "run",
@@ -7735,17 +8488,19 @@
           "equipment": "short-gun",
           "markers": {},
           "source": {
-            "database": "CMU",
-            "file": "02_03.bvh",
-            "startFrame": 40,
-            "endFrame": 131,
-            "description": "run/jog",
-            "sampleRate": 120
+            "base": "Run",
+            "carry": "pistol"
           },
-          "sampleRate": 15,
+          "sampleRate": 30,
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
-          "locomotionSpeed": 0.9754
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "PistolRun",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          },
+          "locomotionSpeed": 2.133
         },
         {
           "name": "stand.strafeLeft.short-gun",
@@ -7795,7 +8550,7 @@
         },
         {
           "name": "stand.aim.short-gun",
-          "duration": 2,
+          "duration": 2.0,
           "loop": true,
           "events": {},
           "gesture": "aim",
@@ -7805,29 +8560,41 @@
           "source": {
             "type": "native-contact-authoring"
           },
-          "sampleRate": 15,
+          "sampleRate": 30,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "PistolAim",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          }
         },
         {
           "name": "stand.fire.short-gun",
-          "duration": 0.8,
+          "duration": 0.7,
           "loop": false,
           "events": {
-            "shot": 0.2
+            "shot": 0.1
           },
           "gesture": "fire",
           "posture": "standing",
           "equipment": "short-gun",
           "markers": {
-            "shot": 0.2
+            "shot": 0.1
           },
           "source": {
             "type": "native-contact-authoring"
           },
-          "sampleRate": 15,
+          "sampleRate": 30,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "PistolFire",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          }
         },
         {
           "name": "stand.reload.short-gun",
@@ -7919,29 +8686,33 @@
         },
         {
           "name": "stand.butt.short-gun",
-          "duration": 1.2,
+          "duration": 1.0,
           "loop": false,
           "events": {
-            "contact": 0.58,
-            "recover": 1.0
+            "contact": 0.42
           },
           "gesture": "butt",
           "posture": "standing",
           "equipment": "short-gun",
           "markers": {
-            "contact": 0.58,
-            "recover": 1.0
+            "contact": 0.42
           },
           "source": {
             "type": "native-contact-authoring"
           },
-          "sampleRate": 15,
+          "sampleRate": 30,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "PistolStrike",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          }
         },
         {
           "name": "stand.idle.blade",
-          "duration": 1.999992,
+          "duration": 2.0,
           "loop": true,
           "events": {},
           "gesture": "idle",
@@ -7949,20 +8720,21 @@
           "equipment": "blade",
           "markers": {},
           "source": {
-            "database": "CMU",
-            "file": "111_28.bvh",
-            "startFrame": 120,
-            "endFrame": 360,
-            "description": "standing still",
-            "sampleRate": 120
+            "type": "native-contact-authoring"
           },
-          "sampleRate": 15,
+          "sampleRate": 30,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "SabreReady",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          }
         },
         {
           "name": "stand.walk.blade",
-          "duration": 1.083329,
+          "duration": 1.066667,
           "loop": true,
           "events": {},
           "gesture": "walk",
@@ -7970,21 +8742,23 @@
           "equipment": "blade",
           "markers": {},
           "source": {
-            "database": "CMU",
-            "file": "07_01.bvh",
-            "startFrame": 100,
-            "endFrame": 230,
-            "description": "walk",
-            "sampleRate": 120
+            "base": "Walk",
+            "carry": "sabre"
           },
-          "sampleRate": 15,
+          "sampleRate": 30,
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
-          "locomotionSpeed": 1.3273
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "SabreWalk",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          },
+          "locomotionSpeed": 1.383
         },
         {
           "name": "stand.run.blade",
-          "duration": 0.75833,
+          "duration": 0.766667,
           "loop": true,
           "events": {},
           "gesture": "run",
@@ -7992,17 +8766,19 @@
           "equipment": "blade",
           "markers": {},
           "source": {
-            "database": "CMU",
-            "file": "02_03.bvh",
-            "startFrame": 40,
-            "endFrame": 131,
-            "description": "run/jog",
-            "sampleRate": 120
+            "base": "Run",
+            "carry": "sabre"
           },
-          "sampleRate": 15,
+          "sampleRate": 30,
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
-          "locomotionSpeed": 0.9754
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "SabreRun",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          },
+          "locomotionSpeed": 2.133
         },
         {
           "name": "stand.strafeLeft.blade",
@@ -8052,29 +8828,33 @@
         },
         {
           "name": "stand.slash.blade",
-          "duration": 1.2,
+          "duration": 1.0,
           "loop": false,
           "events": {
-            "contact": 0.58,
-            "recover": 1.0
+            "contact": 0.36
           },
           "gesture": "slash",
           "posture": "standing",
           "equipment": "blade",
           "markers": {
-            "contact": 0.58,
-            "recover": 1.0
+            "contact": 0.36
           },
           "source": {
             "type": "native-contact-authoring"
           },
-          "sampleRate": 15,
+          "sampleRate": 30,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "SabreSlash",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          }
         },
         {
           "name": "stand.brace.blade",
-          "duration": 2,
+          "duration": 2.0,
           "loop": true,
           "events": {},
           "gesture": "brace",
@@ -8084,9 +8864,15 @@
           "source": {
             "type": "native-contact-authoring"
           },
-          "sampleRate": 15,
+          "sampleRate": 30,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "SabreReady",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          }
         },
         {
           "name": "crouch.idle.unarmed",
@@ -11911,7 +12697,6 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local",
           "seatWeight": [
             {
               "time": 0,
@@ -11925,7 +12710,8 @@
               "time": 1.283328,
               "weight": 0
             }
-          ]
+          ],
+          "seatAnchorSpace": "gltf-model-local"
         },
         {
           "name": "life.mounted.collapse",
@@ -11957,7 +12743,6 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local",
           "seatWeight": [
             {
               "time": 0,
@@ -11971,7 +12756,8 @@
               "time": 1.283328,
               "weight": 0
             }
-          ]
+          ],
+          "seatAnchorSpace": "gltf-model-local"
         },
         {
           "name": "life.mounted.dead",
@@ -12104,7 +12890,6 @@
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local",
           "seatWeight": [
             {
               "time": 0,
@@ -12118,7 +12903,8 @@
               "time": 1.283328,
               "weight": 0
             }
-          ]
+          ],
+          "seatAnchorSpace": "gltf-model-local"
         },
         {
           "name": "crew.artilleryFire",
@@ -12220,6 +13006,28 @@
           "rootMotion": "in-place"
         },
         {
+          "name": "stand.idle.knife",
+          "duration": 2.0,
+          "loop": true,
+          "events": {},
+          "gesture": "idle",
+          "posture": "standing",
+          "equipment": "knife",
+          "markers": {},
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 30,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "KnifeReady",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          }
+        },
+        {
           "name": "stand.walk.lance",
           "duration": 1.083329,
           "loop": true,
@@ -12240,6 +13048,30 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "locomotionSpeed": 1.3273
+        },
+        {
+          "name": "stand.walk.knife",
+          "duration": 1.066667,
+          "loop": true,
+          "events": {},
+          "gesture": "walk",
+          "posture": "standing",
+          "equipment": "knife",
+          "markers": {},
+          "source": {
+            "base": "Walk",
+            "carry": "knife"
+          },
+          "sampleRate": 30,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "KnifeWalk",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          },
+          "locomotionSpeed": 1.383
         },
         {
           "name": "stand.run.lance",
@@ -12264,6 +13096,30 @@
           "locomotionSpeed": 0.9754
         },
         {
+          "name": "stand.run.knife",
+          "duration": 0.766667,
+          "loop": true,
+          "events": {},
+          "gesture": "run",
+          "posture": "standing",
+          "equipment": "knife",
+          "markers": {},
+          "source": {
+            "base": "Run",
+            "carry": "knife"
+          },
+          "sampleRate": 30,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "KnifeRun",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          },
+          "locomotionSpeed": 2.133
+        },
+        {
           "name": "stand.strafeLeft.lance",
           "duration": 1.183329,
           "loop": true,
@@ -12271,6 +13127,29 @@
           "gesture": "strafeLeft",
           "posture": "standing",
           "equipment": "lance",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "141_33.bvh",
+            "startFrame": 780,
+            "endFrame": 922,
+            "description": "sideways walk, foot to foot, left",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 1.0544,
+          "locomotionAxis": "left"
+        },
+        {
+          "name": "stand.strafeLeft.knife",
+          "duration": 1.183329,
+          "loop": true,
+          "events": {},
+          "gesture": "strafeLeft",
+          "posture": "standing",
+          "equipment": "knife",
           "markers": {},
           "source": {
             "database": "CMU",
@@ -12310,6 +13189,29 @@
           "locomotionAxis": "right"
         },
         {
+          "name": "stand.strafeRight.knife",
+          "duration": 1.283328,
+          "loop": true,
+          "events": {},
+          "gesture": "strafeRight",
+          "posture": "standing",
+          "equipment": "knife",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "141_33.bvh",
+            "startFrame": 156,
+            "endFrame": 310,
+            "description": "sideways walk, foot to foot, right",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 1.0316,
+          "locomotionAxis": "right"
+        },
+        {
           "name": "stand.thrust.lance",
           "duration": 1.2,
           "loop": false,
@@ -12332,6 +13234,32 @@
           "rootMotion": "in-place"
         },
         {
+          "name": "stand.slash.knife",
+          "duration": 0.8,
+          "loop": false,
+          "events": {
+            "contact": 0.27
+          },
+          "gesture": "slash",
+          "posture": "standing",
+          "equipment": "knife",
+          "markers": {
+            "contact": 0.27
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 30,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "KnifeSlash",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          }
+        },
+        {
           "name": "stand.brace.lance",
           "duration": 2,
           "loop": true,
@@ -12348,6 +13276,28 @@
           "rootMotion": "in-place"
         },
         {
+          "name": "stand.brace.knife",
+          "duration": 2.0,
+          "loop": true,
+          "events": {},
+          "gesture": "brace",
+          "posture": "standing",
+          "equipment": "knife",
+          "markers": {},
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 30,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "KnifeReady",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          }
+        },
+        {
           "name": "crouch.idle.lance",
           "duration": 2,
           "loop": true,
@@ -12355,6 +13305,22 @@
           "gesture": "idle",
           "posture": "crouched",
           "equipment": "lance",
+          "markers": {},
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place"
+        },
+        {
+          "name": "crouch.idle.knife",
+          "duration": 2,
+          "loop": true,
+          "events": {},
+          "gesture": "idle",
+          "posture": "crouched",
+          "equipment": "knife",
           "markers": {},
           "source": {
             "type": "native-contact-authoring"
@@ -12386,6 +13352,28 @@
           "locomotionSpeed": 0.7993
         },
         {
+          "name": "crouch.walk.knife",
+          "duration": 1.533327,
+          "loop": true,
+          "events": {},
+          "gesture": "walk",
+          "posture": "crouched",
+          "equipment": "knife",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "136_09.bvh",
+            "startFrame": 430,
+            "endFrame": 614,
+            "description": "crouching, walking forward",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 0.7993
+        },
+        {
           "name": "crouch.strafeLeft.lance",
           "duration": 1.61666,
           "loop": true,
@@ -12393,6 +13381,29 @@
           "gesture": "strafeLeft",
           "posture": "crouched",
           "equipment": "lance",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "139_14.bvh",
+            "startFrame": 620,
+            "endFrame": 814,
+            "description": "sideways sneak, left",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 0.9402,
+          "locomotionAxis": "left"
+        },
+        {
+          "name": "crouch.strafeLeft.knife",
+          "duration": 1.61666,
+          "loop": true,
+          "events": {},
+          "gesture": "strafeLeft",
+          "posture": "crouched",
+          "equipment": "knife",
           "markers": {},
           "source": {
             "database": "CMU",
@@ -12432,6 +13443,29 @@
           "locomotionAxis": "right"
         },
         {
+          "name": "crouch.strafeRight.knife",
+          "duration": 1.399994,
+          "loop": true,
+          "events": {},
+          "gesture": "strafeRight",
+          "posture": "crouched",
+          "equipment": "knife",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "139_14.bvh",
+            "startFrame": 172,
+            "endFrame": 340,
+            "description": "sideways sneak, right",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 0.9318,
+          "locomotionAxis": "right"
+        },
+        {
           "name": "crouch.thrust.lance",
           "duration": 1.2,
           "loop": false,
@@ -12442,6 +13476,28 @@
           "gesture": "thrust",
           "posture": "crouched",
           "equipment": "lance",
+          "markers": {
+            "contact": 0.58,
+            "recover": 1.0
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place"
+        },
+        {
+          "name": "crouch.slash.knife",
+          "duration": 1.2,
+          "loop": false,
+          "events": {
+            "contact": 0.58,
+            "recover": 1.0
+          },
+          "gesture": "slash",
+          "posture": "crouched",
+          "equipment": "knife",
           "markers": {
             "contact": 0.58,
             "recover": 1.0
@@ -12470,6 +13526,22 @@
           "rootMotion": "in-place"
         },
         {
+          "name": "crouch.brace.knife",
+          "duration": 2,
+          "loop": true,
+          "events": {},
+          "gesture": "brace",
+          "posture": "crouched",
+          "equipment": "knife",
+          "markers": {},
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place"
+        },
+        {
           "name": "prone.idle.lance",
           "duration": 2,
           "loop": true,
@@ -12486,6 +13558,22 @@
           "rootMotion": "in-place"
         },
         {
+          "name": "prone.idle.knife",
+          "duration": 2,
+          "loop": true,
+          "events": {},
+          "gesture": "idle",
+          "posture": "prone",
+          "equipment": "knife",
+          "markers": {},
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place"
+        },
+        {
           "name": "prone.crawl.lance",
           "duration": 1.966659,
           "loop": true,
@@ -12493,6 +13581,28 @@
           "gesture": "crawl",
           "posture": "prone",
           "equipment": "lance",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "111_03.bvh",
+            "startFrame": 450,
+            "endFrame": 686,
+            "description": "crawling; adapted to forearm/belly contact",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 0.076
+        },
+        {
+          "name": "prone.crawl.knife",
+          "duration": 1.966659,
+          "loop": true,
+          "events": {},
+          "gesture": "crawl",
+          "posture": "prone",
+          "equipment": "knife",
           "markers": {},
           "source": {
             "database": "CMU",
@@ -12530,6 +13640,28 @@
           "seatAnchorSpace": "gltf-model-local"
         },
         {
+          "name": "mounted.idle.knife",
+          "duration": 2,
+          "loop": true,
+          "events": {},
+          "gesture": "idle",
+          "posture": "mounted",
+          "equipment": "knife",
+          "markers": {},
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "seatAnchor": [
+            0.0,
+            0.9131789803504944,
+            0.025762733072042465
+          ],
+          "seatAnchorSpace": "gltf-model-local"
+        },
+        {
           "name": "mounted.walk.lance",
           "duration": 1.083329,
           "loop": true,
@@ -12537,6 +13669,34 @@
           "gesture": "walk",
           "posture": "mounted",
           "equipment": "lance",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "07_01.bvh",
+            "startFrame": 100,
+            "endFrame": 230,
+            "description": "walk",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 1.3273,
+          "seatAnchor": [
+            0.0,
+            0.9131789803504944,
+            0.025762733072042465
+          ],
+          "seatAnchorSpace": "gltf-model-local"
+        },
+        {
+          "name": "mounted.walk.knife",
+          "duration": 1.083329,
+          "loop": true,
+          "events": {},
+          "gesture": "walk",
+          "posture": "mounted",
+          "equipment": "knife",
           "markers": {},
           "source": {
             "database": "CMU",
@@ -12586,6 +13746,34 @@
           "seatAnchorSpace": "gltf-model-local"
         },
         {
+          "name": "mounted.run.knife",
+          "duration": 0.75833,
+          "loop": true,
+          "events": {},
+          "gesture": "run",
+          "posture": "mounted",
+          "equipment": "knife",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "02_03.bvh",
+            "startFrame": 40,
+            "endFrame": 131,
+            "description": "run/jog",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 0.9754,
+          "seatAnchor": [
+            0.0,
+            0.9131789803504944,
+            0.025762733072042465
+          ],
+          "seatAnchorSpace": "gltf-model-local"
+        },
+        {
           "name": "mounted.thrust.lance",
           "duration": 1.2,
           "loop": false,
@@ -12596,6 +13784,34 @@
           "gesture": "thrust",
           "posture": "mounted",
           "equipment": "lance",
+          "markers": {
+            "contact": 0.58,
+            "recover": 1.0
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "seatAnchor": [
+            0.0,
+            0.9131789803504944,
+            0.025762733072042465
+          ],
+          "seatAnchorSpace": "gltf-model-local"
+        },
+        {
+          "name": "mounted.slash.knife",
+          "duration": 1.2,
+          "loop": false,
+          "events": {
+            "contact": 0.58,
+            "recover": 1.0
+          },
+          "gesture": "slash",
+          "posture": "mounted",
+          "equipment": "knife",
           "markers": {
             "contact": 0.58,
             "recover": 1.0
@@ -12634,6 +13850,190 @@
             0.025762733072042465
           ],
           "seatAnchorSpace": "gltf-model-local"
+        },
+        {
+          "name": "mounted.brace.knife",
+          "duration": 2,
+          "loop": true,
+          "events": {},
+          "gesture": "brace",
+          "posture": "mounted",
+          "equipment": "knife",
+          "markers": {},
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "seatAnchor": [
+            0.0,
+            0.9131789803504944,
+            0.025762733072042465
+          ],
+          "seatAnchorSpace": "gltf-model-local"
+        },
+        {
+          "name": "stand.slash.blade.forehand",
+          "duration": 1.0,
+          "loop": false,
+          "events": {
+            "contact": 0.36
+          },
+          "gesture": "slash",
+          "posture": "standing",
+          "equipment": "blade",
+          "variant": "forehand",
+          "markers": {
+            "contact": 0.36
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 30,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "SabreForehand",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          }
+        },
+        {
+          "name": "stand.slash.blade.backhand",
+          "duration": 1.0,
+          "loop": false,
+          "events": {
+            "contact": 0.36
+          },
+          "gesture": "slash",
+          "posture": "standing",
+          "equipment": "blade",
+          "variant": "backhand",
+          "markers": {
+            "contact": 0.36
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 30,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "SabreBackhand",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          }
+        },
+        {
+          "name": "stand.slash.blade.thrust",
+          "duration": 1.0,
+          "loop": false,
+          "events": {
+            "contact": 0.42
+          },
+          "gesture": "slash",
+          "posture": "standing",
+          "equipment": "blade",
+          "variant": "thrust",
+          "markers": {
+            "contact": 0.42
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 30,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "SabreThrust",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          }
+        },
+        {
+          "name": "stand.slash.blade.hilt",
+          "duration": 1.0,
+          "loop": false,
+          "events": {
+            "contact": 0.42
+          },
+          "gesture": "slash",
+          "posture": "standing",
+          "equipment": "blade",
+          "variant": "hilt",
+          "markers": {
+            "contact": 0.42
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 30,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "SabreHiltStrike",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          }
+        },
+        {
+          "name": "stand.slash.knife.backhand",
+          "duration": 0.8,
+          "loop": false,
+          "events": {
+            "contact": 0.27
+          },
+          "gesture": "slash",
+          "posture": "standing",
+          "equipment": "knife",
+          "variant": "backhand",
+          "markers": {
+            "contact": 0.27
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 30,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "KnifeBackhand",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          }
+        },
+        {
+          "name": "stand.slash.knife.thrust",
+          "duration": 1.0,
+          "loop": false,
+          "events": {
+            "contact": 0.42
+          },
+          "gesture": "slash",
+          "posture": "standing",
+          "equipment": "knife",
+          "variant": "thrust",
+          "markers": {
+            "contact": 0.42
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 30,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "playbackRate": 1.25,
+          "reviewedPose": {
+            "name": "KnifeThrust",
+            "origin": "approved-granadero-preview",
+            "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          }
         }
       ],
       "locomotionSpeed": {
@@ -12897,7 +14297,29 @@
           0
         ],
         "scale": 1,
-        "stowedSocket": "hipLeft"
+        "stowedSocket": "hipLeft",
+        "clipOverrides": {
+          "stand.idle.blade": "stand.idle.knife",
+          "stand.walk.blade": "stand.walk.knife",
+          "stand.run.blade": "stand.run.knife",
+          "stand.strafeLeft.blade": "stand.strafeLeft.knife",
+          "stand.strafeRight.blade": "stand.strafeRight.knife",
+          "stand.slash.blade": "stand.slash.knife",
+          "stand.brace.blade": "stand.brace.knife",
+          "crouch.idle.blade": "crouch.idle.knife",
+          "crouch.walk.blade": "crouch.walk.knife",
+          "crouch.strafeLeft.blade": "crouch.strafeLeft.knife",
+          "crouch.strafeRight.blade": "crouch.strafeRight.knife",
+          "crouch.slash.blade": "crouch.slash.knife",
+          "crouch.brace.blade": "crouch.brace.knife",
+          "prone.idle.blade": "prone.idle.knife",
+          "prone.crawl.blade": "prone.crawl.knife",
+          "mounted.idle.blade": "mounted.idle.knife",
+          "mounted.walk.blade": "mounted.walk.knife",
+          "mounted.run.blade": "mounted.run.knife",
+          "mounted.slash.blade": "mounted.slash.knife",
+          "mounted.brace.blade": "mounted.brace.knife"
+        }
       },
       "1811": {
         "node": "item_1811",
@@ -13188,8 +14610,8 @@
         "stowedSocket": "hipLeft"
       }
     },
-    "bytes": 611508,
-    "sha256": "086c2c3f85243bb5747f5e7d589cab792e877c6d2a687b643709307860eb7f33",
+    "bytes": 604848,
+    "sha256": "2f2e721bddcc9e9124bb606fa7cf6dfd9fecc5af633fab87f89e0fd1d656c692",
     "aliases": {
       "medical": "medkits",
       "medkit": "medkits",
