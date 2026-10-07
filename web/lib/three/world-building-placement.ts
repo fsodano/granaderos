@@ -7,9 +7,9 @@ import type {WorldBuilding,WorldInput,WorldPoint} from './world-types';
  * Corner openings retain the original shell to preserve their clipped spans. */
 export function buildingArtInset(b:WorldBuilding,input:WorldInput){
   const kind=b.kind??b.architecture??'';
-  if(!['warehouse','posta','house','stable','farmhouse','church','chapel'].includes(kind))return .4;
-  if(['house','stable','farmhouse','church','chapel'].includes(kind)){
-    // Unpainted legacy domestic and stable shells keep their released placement.
+  if(!['warehouse','posta','house','stable','farmhouse','church','chapel','pulperia','smithy','depot'].includes(kind))return .4;
+  if(['house','stable','farmhouse','church','chapel','pulperia','smithy','depot'].includes(kind)){
+    // Unpainted legacy shells keep their released placement.
     // These authored fronts need both intact corners before centring the shell.
     if(b.architecture&&b.wallFinish===undefined)return .4;
     const walls=input.terrain.tiles.filter(tile=>tile.buildingId===b.id&&['wall','door','window'].includes(tile.type)),frame=entranceFrame({...b,walls});
