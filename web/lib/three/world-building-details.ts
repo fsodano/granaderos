@@ -358,7 +358,7 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
       box(u,-.090,y,.13,.21,.012,darkwood);for(const offset of [-.065,.065])box(u,-.092,y+offset,.17,.025,.010,trim);
     });
   }else if(kind==='palace'){
-    root.add(palaceFacade(b,input,T,height,base,geometry,materials,legacy));
+    root.add(palaceFacade(b,input,T,height,base,geometry,materials,legacy,(panels,eave)=>roofEdgeDetails(`${b.id}:palace-portico`,panels,eave,geometry,roof,darkwood,light)));
   }else if(['warehouse','depot','stable','barracks'].includes(kind)){
     for(let v=1;v<frame.depth;v+=2)for(const u of [0,frame.width])if(wallAt(u,v)?.type==='wall')box(u,v,.5,.16,1,.18,trim);
     if(kind==='warehouse')roofCanopy('loading-canopy',entranceSupports(),.50);
