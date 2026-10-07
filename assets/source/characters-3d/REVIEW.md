@@ -1,140 +1,41 @@
-# Character library review — 2026-10-07
+# Human character library review — 7 October 2026
 
-The user accepted Granadero preview `4921a38b` as a sufficient reference for
-reuse and requested the other characters plus a merge to main. This accepts
-the current direction; it does not establish final animation quality or
-historical reconstruction accuracy.
+The library contains eight human appearances, three mesh detail levels per appearance, and 334 semantic clips in each native anatomy bank. The accepted view is isometric. The lab opens the current game Granadero, with pixelation off and the accepted playback pace (the former 1.25× is displayed as 1×).
 
-## Appearance coverage
+## Appearance
 
-| Preset | Native anatomy | Retained identity |
-| --- | --- | --- |
-| granadero | Male | Navy uniform, red facings, crossbelt, detailed shako |
-| royalist | Male | Light uniform, red facings and cockade, brass shako plate |
-| worker | Male | Earth-colored shirt and waistcoat, bare head |
-| surgeon | Male | Dark coat, linen cravat and fitted spectacles |
-| gaucho | Male | Poncho, red scarf and felt hat |
-| friar | Male | Habit, rope belt, folded hood and tonsure |
-| woman-scout | Female | Green shirt, trousers and braid |
-| woman-shawl | Female | Light shirt, burgundy shawl and skirt, hair bun |
+| Character | Retained identity |
+| --- | --- |
+| Granadero | Navy coat, red facings, cream crossbelt, brass shako plate and red cords |
+| Realista | Light uniform, red facings and cockade |
+| Trabajador | Earth-colored shirt and waistcoat |
+| Cirujano | Dark coat, linen cravat and brass buttons |
+| Gaucho | Fitted poncho, red scarf and felt hat |
+| Fraile | Habit, rope belt, folded hood and tonsure |
+| Exploradora | Green shirt, trousers and continuous braid |
+| Mujer con rebozo | Light blouse, burgundy shawl, skirt and hair bun |
 
-All eight use the shared human surface treatment and three real mesh LODs.
-Female proportions and bind poses remain native. Facial pigment remains
-separate from the selectable skin color. Outfit and headwear replacement uses
-the existing semantic parts. Civilian presets remove all military trim.
+The pass corrects washed-out skin maps, open hairlines, collar seams, sleeve cuffs and cloth detail. Faces retain the licensed native human surface and UVs. Skin color is separate from clothing and facial pigment. The female models retain their native proportions and bind poses. Clothing replacement still uses the existing semantic parts.
 
-## Movement coverage
+Poncho openings allow the arms to pass beside the torso. Long garments have separate crouched, face-down and face-up shapes. Coat tails flatten under a fallen body rather than lifting the body above the floor. These are authored cloth corrections, not a cloth simulation.
 
-Each anatomy bank now has 334 semantic clips. The original 270-clip bank
-includes 34 accepted reference clips through 29 distinct motions:
+## Motion and contact
 
-| Family | Semantic clips | Distinct reference motions |
-| --- | ---: | ---: |
-| Unarmed | 4 | 4 |
-| Rifle and bayonet | 8 | 6 |
-| Pistol | 6 | 5 |
-| Sabre | 9 | 8 |
-| Knife | 7 | 6 |
-| Total | 34 | 29 |
+- Punches and relaxed hands use the native palm frame. Closed fingers and the guarding fist no longer flare or flip during preparation.
+- Sword and knife cuts retain torso drive, anticipation and recovery. Their wrists follow the forearms; the forehand has knuckles down and the returning backhand has knuckles up. Thrusts point forward. Crouched attacks use continuous joint arcs instead of a changing elbow bend plane.
+- Rifle and pistol holds fit the actual stock, grip, eye line and supporting hand. Loading uses each weapon's physical length and bore. The ramrod hand and tool share a consistent frame. Native wrist checks accompany contact checks so a precise muzzle contact cannot conceal a bent wrist.
+- Throws retain their original release markers. The throwing knife follows its release velocity; grenade and bolas preparations have continuous wrist paths and actual head clearance.
+- Crouch/prone transitions use planted hands and knees. Crawling includes alternating leg assistance. Recovery starts from the preceding resting pose. Work gestures have continuous arm arcs; prone working palms and fingers stay above the floor.
+- Riders fit the saddle and moving stirrups. Mounting follows a continuous leg and supporting-hand path. Falls clear the horse before reaching the existing ground posture. The saved gameplay position does not move during the animation.
 
-Aim/idle/brace requests share suitable guard poses. The production binding
-preserves contact and shot markers, body contribution, free-arm motion,
-closed grips, and the accepted pace. It recomputes targets for each anatomy.
-The manifest records the reviewed source name and source hash on each mapped
-clip. The 30th preview motion, the two-cut sabre combination, is excluded:
-one gameplay strike must have one contact.
+The animation banks preserve native bone lengths and scales. They do not change hit damage, AP costs, ammunition, inventory ownership, or gameplay event markers. The two-cut lab combination remains exclusive to the old reference: one production strike has one contact marker.
 
-Sabre strikes choose among descending cut, forehand, backhand, thrust and hilt
-strike. Knife item 1813 uses knife guard, carry, cuts and thrust instead of sabre
-poses. Variant choice is deterministic for a cue and stays fixed through its
-phases. This changes presentation, not damage, AP cost or ammunition rules.
+The lab applies the production weapon offsets and quaternion rotations during playback. The game blends saddle placement with the active pose weights and uses the same animation clock for cloth. These details are required to show the exported contact corrections correctly.
 
-The remaining original families include crouched, prone and mounted movement,
-interactions, reactions, transitions and specialized actions. Later increments
-correct their exported movement pace and rifle loading contacts. This does not
-establish visual acceptance of every original clip. The horse retains its source
-and gait; gameplay now uses its measured exported stride.
+## Evidence
 
-Rifle loading and unloading now fit six actual weapon lengths, four postures
-and both anatomy banks. The 48 additional clips are item-specific aliases.
-The support hand follows the fore-end, the loading hand meets the muzzle, and
-the ramrod follows the bore axis. Eight generic rifle loading clips receive the
-same correction. The other 262 original clips and the bank meshes remain
-byte-identical at this rifle increment. Geometry checks cover hand distance,
-ramrod clearance, planted support feet and crouched stock clearance. Source
-closeups and the normal interrupted-loading UI were reviewed; broad combat
-motion acceptance remains open.
+The audit keeps immutable source snapshots, exported-library hashes, exact frame times and contact sheets. The [render review guide](../../../tools/characters-3d/RENDER-REVIEW.md) explains how to reproduce the exported-frame review. Local artifacts are under `artifacts/character-anatomy-review/`; they are intentionally not committed as large image bundles.
 
-Pistol loading replaces four generic clips and adds sixteen item/bore aliases
-per anatomy. Both working hands use the actual short barrel and timed rod.
-Published contact checks cover all three pistols, four postures and the second
-1808 bore. The maximum checked palm-to-muzzle gap is 0.69 mm and the rod centre
-offset is 1.13 mm. Actual face and neck triangles clear a conservative 15 mm
-barrel capsule in 45 native poses per hand, posture and charge: minimum surface
-gaps are 34.50 mm male and 43.76 mm female. Source tool closeups and live four-bore
-orders were inspected. The [pistol review](../../../docs/art/pistol-loading-3d-review-2026-10-07.md)
-records the finite ammunition and input checks separately from these contacts.
+The original baseline records 672 movement frames across all eight appearances and 27 representative actions. The appearance pass adds 756 frames across six remaining presets and 41 representative actions. Focused checks cover the poncho, braid, coat tails, long garments, firearms, throws, mounted transitions, hands and task arcs. The final combined review adds 864 rendered images: 288 full-body frames and 576 close views of heads and hands, across all eight presets and 12 selected actions. The two complete native banks were also sampled at 120 Hz for joint-length, scale, loop-seam and abrupt-motion checks. That scan found and led to corrections for maintenance arm paths, climb knees, loading arms and recovery wrists. The maintenance review adds 66 rendered images and native arc tests for both anatomies.
 
-Mounted boots now follow the actual moving stirrup irons. Checked sole contact
-is within 7 mm during riding and within 6 mm at mount/dismount endpoints.
-Native leg rotations supply the fit; anatomy, equipment contacts and saved
-gameplay positions remain unchanged. Live riding and reverse mounting images
-were reviewed. This does not establish paired mounted melee contact.
-
-## Review and validation
-
-The `/renderer-sandbox` **Ocho personajes** fixture displays all eight presets
-without reading a saved campaign. The combat fixture includes the short knife.
-The standalone Granadero preview remains the action-by-action reference.
-
-The full builder writes local isometric appearance renders under
-`authoring/.build/` when `--review` is supplied. The eight LOD0 appearance renders
-were inspected for identity, native female proportions, misplaced military
-trim and obvious clothing defects. Static poses cannot establish that cloth
-remains clear of the body during every motion.
-
-Additional native-source probes inspected the gaucho, friar and woman-shawl
-in neutral, running and sabre-backhand contact poses. The poncho now follows
-the trunk, clears the shoulders, and has narrow open side seams for the arms;
-nearest-arm weights previously pulled it into sharp folds and opened its
-collar. Long garments use calf-aware sewn panels and sparse crouch/prone
-corrective shapes. The runtime blends those shapes with the body animation
-clock. Live side views of the friar and woman-shawl confirm a low continuous
-drape over the prone legs; the friar crawl also retains that silhouette.
-The extreme backhand can still expose a small boot patch below the lead knee.
-The underlying legs remain so replacing a habit with an owned shirt does not
-leave missing geometry. These are skinned garments without general cloth
-collision simulation. The correction preserves all six LOD triangle counts,
-bones, textures and draw calls; their files add 150,468 bytes in total.
-
-Export checks must verify hashes, native skeletons, weights, materials,
-variable `COLOR_0` pigment, complete clip names and marker bounds. Runtime tests
-must cover deterministic variants, knife item bindings, and simulation-owned
-timing. Passing checks do not prove natural motion or sustained crowd speed.
-
-Remaining visual limits include transition/braking steps, garment deformation
-across the full posture bank, paired opponent contact, and broader individual
-face/age/body variation. The isometric game view is the acceptance view.
-
-The October 7 full-boot correction accepts the twelve native crouched idle/walk
-clips in each anatomy within the [crouched support review](../../../docs/art/crouched-boot-support-3d-review-2026-10-07.md).
-Worst stored penetration is below 0.3 mm; idle rests at 2 mm, and swinging feet
-keep their recorded lift. All other clips and all upper/Root tracks remain exact.
-Standing walking keeps the measured lower sole at 2 mm. Running has an 8–9 cm
-flight phase. The twelve prone idle/crawl clips now keep the complete boot
-between 1 and 3 mm above the floor; all other clips and body/arm/Root tracks
-remain exact. The [prone support review](../../../docs/art/prone-boot-support-3d-review-2026-10-07.md)
-records the retained weapon hold and measured surfaces. Exposed unarmed palms
-and cuffs, sideways and lance support remain under review. These
-published LOD0 surface measurements do not accept the remaining posture bank.
-The complete native climb and roof-edge transfer are accepted within the [measured climbing review](../../../docs/art/native-climbing-3d-review-2026-10-07.md), including four clean playable same-cell hatch routes. The documented low-ceiling/headwear limit remains under review.
-
-### Unarmed prone arm support increment
-
-Only the six arm/wrist rotation channels in unarmed prone idle and crawl change
-per anatomy. Complete published palms, fingers and sleeves now clear the floor
-and alternate planted pulls. Native durations, dimensions, Root, torso, legs,
-fingers, all 332 other clips and every equipped pace remain exact. The
-[prone arm review](../../../docs/art/prone-arm-support-3d-review-2026-10-07.md)
-records the clean 63-check/native/profile/build gate, 28 normal browser captures,
-saved endpoints, source-sprite comparison and remaining contact roll.
+Acceptance applies to the tested library and recorded views. It is not a claim of historical reconstruction accuracy, universal cloth collision, or perfect contact with every possible opponent and terrain shape. Broader face, age and body variation remains a separate art task.

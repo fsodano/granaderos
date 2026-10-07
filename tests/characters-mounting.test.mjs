@@ -2,16 +2,22 @@ import {register} from 'node:module';register('./tactical-render-loader.mjs',imp
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
+import {resolve,sep} from 'node:path';
+import {pathToFileURL} from 'node:url';
 import {createHash} from 'node:crypto';
 import {Vector3,Raycaster,DoubleSide} from '../web/node_modules/three/build/three.module.js';
 import {GLTFLoader} from '../web/node_modules/three/examples/jsm/loaders/GLTFLoader.js';
 const {ActorRuntime}=await import('../web/lib/three/actor-runtime.ts');
-const publicRoot=new URL('../web/public/',import.meta.url),manifest=JSON.parse(readFileSync(new URL('models/characters/manifest.json',publicRoot))),loaded=new Map();
+const libraryRoot=process.env.GRANADEROS_CHARACTER_LIBRARY
+ ?pathToFileURL(resolve(process.env.GRANADEROS_CHARACTER_LIBRARY)+sep)
+ :new URL('../web/public/models/characters/',import.meta.url);
+function libraryAsset(url){const prefix='/models/characters/';assert.ok(url.startsWith(prefix));return new URL(url.slice(prefix.length),libraryRoot);}
+const manifest=JSON.parse(readFileSync(new URL('manifest.json',libraryRoot))),loaded=new Map();
 function load(url){
  if(loaded.has(url))return loaded.get(url);
  // Keep published buffers, rig, and animation tracks. Browser image decoding
  // is not required for CPU contact checks on the actual skinned geometry.
- const bytes=readFileSync(new URL(`.${url}`,publicRoot)),length=bytes.readUInt32LE(12),doc=JSON.parse(bytes.subarray(20,20+length));
+ const bytes=readFileSync(libraryAsset(url)),length=bytes.readUInt32LE(12),doc=JSON.parse(bytes.subarray(20,20+length));
  delete doc.images;delete doc.textures;delete doc.samplers;doc.materials=(doc.materials??[]).map(material=>({name:material.name}));
  const json=Buffer.from(JSON.stringify(doc)),padded=Buffer.concat([json,Buffer.alloc((4-json.length%4)%4,32)]),binary=bytes.subarray(20+length),header=Buffer.from(bytes.subarray(0,20));
  header.writeUInt32LE(20+padded.length+binary.length,8);header.writeUInt32LE(padded.length,12);
@@ -38,6 +44,12 @@ function sole(actor,side){
 }
 function at(actor,spec,fraction){actor.tick(0,spec.duration*1000*fraction);actor.root.updateMatrixWorld(true);}
 function closeVector(actual,expected,tolerance,message){assert.ok(actual.distanceTo(new Vector3(...expected))<tolerance,`${message}: ${actual.toArray()} != ${expected}`);}
+function bootBall(actor,source,side){
+ const rest=source.body.scene;rest.updateMatrixWorld(true);
+ const foot=rest.getObjectByName('foot_'+side),ball=rest.getObjectByName('ball_'+side).getWorldPosition(new Vector3());
+ rest.worldToLocal(ball);ball.y=.007;rest.localToWorld(ball);foot.worldToLocal(ball);
+ return actor.root.worldToLocal(actor.model.getObjectByName('foot_'+side).localToWorld(ball));
+}
 function supportTarget(spec,side,fraction){
  const keys=spec.mountSupport[side==='l'?'frontKeys':'rearKeys'],time=spec.duration*fraction;
  if(time<=keys[0].time)return [...keys[0].position];
@@ -49,7 +61,7 @@ function supportTarget(spec,side,fraction){
 }
 
 for(const id of ['granadero','woman-scout'])test(`${id} mounts from a supported side and reverses the same published path`,async()=>{
- const source=await asset(id),bank=manifest.animationLibraries[source.appearance.gender],bytes=readFileSync(new URL(`.${bank.url}`,publicRoot));
+ const source=await asset(id),bank=manifest.animationLibraries[source.appearance.gender],bytes=readFileSync(libraryAsset(bank.url));
  assert.equal(manifest.complete,true);assert.equal(createHash('sha256').update(bytes).digest('hex'),bank.sha256);assert.equal(bytes.length,bank.bytes);
  const mount=bank.clips.find(clip=>clip.name==='life.mount'),dismount=bank.clips.find(clip=>clip.name==='life.dismount');
  assert.equal(mount.mountSupport.coordinateSpace,'gltf-model-local');assert.deepEqual(mount.freeHands,['handRight','handLeft']);
@@ -59,8 +71,14 @@ for(const id of ['granadero','woman-scout'])test(`${id} mounts from a supported 
   closeVector(rising.root.position,[4,0,7],1e-8,'Mount leaves the saved gameplay position intact');
   if(index)for(const name of ['pelvis','calf_l','calf_r','foot_l','foot_r','hand_l','hand_r'])closeVector(point(rising,name),point(descending,name).toArray(),.025,`${name} follows the same reverse path`);
   if(t<=.28)assert.ok(Math.abs(Math.min(sole(rising,'l'),sole(rising,'r')))<.035,'The side step has a supporting ground foot');
+  if(t>=.20&&t<=.46){
+   const horse=rising.root.children.find(node=>node!==rising.model),body=horse.getObjectByName('Horse_Body');
+   const knee=rising.root.localToWorld(point(rising,'calf_l'));
+   const ray=new Raycaster(knee.clone().add(new Vector3(2,0,0)),new Vector3(-1,0,0),0,2.025);
+   assert.equal(ray.intersectObject(body,true).length,0,`The near knee clears the horse while entering the stirrup at ${t}`);
+  }
   if(t>=.36&&t<=.70){
-   closeVector(point(rising,'foot_l'),[mount.mountSupport.stirrup[0],point(rising,'foot_l').y,mount.mountSupport.stirrup[2]+.035],.035,'The supporting boot remains at the measured left stirrup');
+   closeVector(bootBall(rising,source,'l'),[mount.mountSupport.stirrup[0],mount.mountSupport.stirrup[1]+.010,mount.mountSupport.stirrup[2]],.012,'The native boot ball stays on the actual stirrup tread');
    assert.ok(Math.abs(sole(rising,'l')-mount.mountSupport.stirrup[1])<.045,'The published supporting sole rests on the iron stirrup');
    for(const side of ['l','r']){
     const target=supportTarget(mount,side,t);target[1]+=.010;
@@ -77,6 +95,46 @@ for(const id of ['granadero','woman-scout'])test(`${id} mounts from a supported 
  for(let frame=1;frame<=24;frame++)descending.tick(1/120,dismount.duration*1000+1+frame*1000/120);
  closeVector(descending.model.position,[0,0,0],1e-8,'Dismount returns to normal ground placement after the pose blend');
  rising.dispose();descending.dispose();
+});
+
+for(const id of ['granadero','woman-scout'])test(`${id} keeps mounted joint paths continuous between exported keys`,async()=>{
+ const source=await asset(id),native=source.body.parser.json;
+ const names=native.skins[0].joints.map(index=>native.nodes[index].name);assert.equal(names.length,53);
+ const monitored=['upperarm_l','upperarm_r','lowerarm_l','lowerarm_r','hand_l','hand_r','thigh_l','thigh_r','calf_l','calf_r','foot_l','foot_r'];
+ for(const gesture of ['mount','dismount']){
+  const spec=source.clips.find(clip=>clip.name===`life.${gesture}`),actor=new ActorRuntime(source,visual(id,gesture));
+  assert.equal(spec.duration,2.3,'The repair preserves the timed gameplay action');
+  const bones=Object.fromEntries(names.map(name=>[name,actor.model.getObjectByName(name)]));
+  const lengths=Object.fromEntries(names.map(name=>[name,source.body.scene.getObjectByName(name).position.length()]));
+  const count=Math.round(spec.duration*120),dt=spec.duration/count;let previous;
+  for(let frame=0;frame<=count;frame++){
+   // The exact duration hands control to mounted/standing idle. Test that
+   // separate runtime transition independently of the authored clip path.
+   at(actor,spec,Math.min(frame/count,1-1e-6));
+   for(const name of names){
+    assert.ok(bones[name].matrixWorld.elements.every(Number.isFinite),`${gesture} ${name} remains finite`);
+    if(name!=='Root')assert.ok(Math.abs(bones[name].position.length()-lengths[name])<.00001,`${gesture} ${name} keeps its native length`);
+   }
+   const sample=Object.fromEntries(monitored.map(name=>[name,{position:point(actor,name),rotation:bones[name].quaternion.clone()}]));
+   if(previous)for(const name of monitored){
+    // Sample the actual interpolated hierarchy. Smooth endpoint positions
+    // alone missed a 168 degree roll flip that threw a wrist 24 cm in 8 ms.
+    const speed=sample[name].position.distanceTo(previous[name].position)/dt;
+    const turn=sample[name].rotation.angleTo(previous[name].rotation)*180/Math.PI/dt;
+    const maximumSpeed=name.startsWith('lowerarm')?4.5:name.startsWith('hand')?6:8;
+    assert.ok(speed<maximumSpeed,`${gesture} ${name} has no IK position jump at ${frame*dt}: ${speed} m/s`);
+    assert.ok(turn<1400,`${gesture} ${name} has no roll flip at ${frame*dt}: ${turn} degrees/s`);
+    const time=frame*dt;
+    if(name.startsWith('hand')&&time>=spec.mountSupport.supportedStart+dt&&time<=spec.mountSupport.supportedEnd){
+     // A free leg can tuck quickly into the high stirrup. A loaded wrist
+     // must follow the measured saddle grip without an equally fast jump.
+     assert.ok(speed<1.5,`${gesture} ${name} remains planted while it carries weight at ${time}: ${speed} m/s`);
+    }
+   }
+   previous=sample;
+  }
+  actor.dispose();
+ }
 });
 
 test('mount support stows owned lance and rifle through the normal sockets, then restores them',async()=>{

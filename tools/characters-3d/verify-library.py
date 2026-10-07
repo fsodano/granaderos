@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """Validate published mesh, rig, texture and clip contracts with no Blender."""
 from pathlib import Path
-import json,struct,math,hashlib,subprocess
-ROOT=Path(__file__).resolve().parents[2];OUT=ROOT/'web/public/models/characters';m=json.loads((OUT/'manifest.json').read_text());assert m['complete'],'Library incomplete'
+import argparse,json,struct,math,hashlib,subprocess
+ROOT=Path(__file__).resolve().parents[2]
+parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--directory',type=Path,default=ROOT/'web/public/models/characters');args=parser.parse_args()
+OUT=args.directory.resolve();m=json.loads((OUT/'manifest.json').read_text());assert m['complete'],'Library incomplete'
 contract=json.loads(subprocess.check_output(['node','--input-type=module','-e',"import {ACTOR_CLIP_SPECS,ACTOR_ITEM_CLIP_OVERRIDES} from './game/actor-action-contract.js';console.log(JSON.stringify({clips:ACTOR_CLIP_SPECS,overrides:ACTOR_ITEM_CLIP_OVERRIDES}));"],cwd=ROOT,text=True))
 required={c['name']for c in contract['clips']}
 
@@ -47,16 +49,26 @@ for gender,bank in m['animationLibraries'].items():
    assert all(math.isfinite(x)for v in read(doc,data,sample['output'])for x in v)
   if'seatAnchor'in c:
    assert c['seatAnchorSpace']=='gltf-model-local'
-   if c['gesture']in('mount','dismount'):
+   if c['gesture']in('mount','dismount') or c.get('mountedGround'):
     # These paths are authored in horse space. Their anchor is the actual
     # saddle, rather than the native pelvis height used by seated clips.
     assert all(abs(a-b)<1e-5 for a,b in zip(c['seatAnchor'],m['horse']['saddle']['position']))
-    assert c['mountSupport']['coordinateSpace']=='gltf-model-local'
+    if not c.get('mountedGround'):assert c['mountSupport']['coordinateSpace']=='gltf-model-local'
    else:assert .7<c['seatAnchor'][1]<1.1
  for c in bank['clips']:
   for t in c.get('markers',{}).values():assert 0<=t<=c['duration']+.001
   if c['gesture']in('mount','dismount'):assert'seatWeight'in c and'seatAnchor'in c
-  if c.get('posture')=='mounted'and c['gesture']in('die','collapse','knockdown'):
+  if c.get('mountedGround'):
+   assert c['mountedGround']=={'destination':'standing' if c['gesture']=='recover' else 'prone','gameplayRoot':'unchanged'}
+   weights=c['seatWeight'];assert weights and weights[-1]['weight']==0
+   assert all(0<=key['time']<=c['duration'] and 0<=key['weight']<=1 for key in weights)
+   assert all(a['time']<b['time'] for a,b in zip(weights,weights[1:]))
+   visibility=c['horseVisibility']
+   if c['gesture']in('die','collapse','knockdown'):
+    assert weights[0]=={'time':0,'weight':1}
+    assert visibility['start']==0 and 0<visibility['end']<c['markers']['ground']
+   else:assert weights==[{'time':0,'weight':0}] and visibility['start']>c['duration']
+  elif c.get('posture')=='mounted'and c['gesture']in('die','collapse','knockdown'):
    assert c['seatWeight']==[{'time':0,'weight':1},{'time':c['markers']['ground'],'weight':0},{'time':c['duration'],'weight':0}]
   if c['gesture'].startswith('strafe'):
    assert c['source']['file']in('139_14.bvh','141_33.bvh') and c['locomotionSpeed']>0

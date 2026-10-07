@@ -63,7 +63,16 @@ export function sampleLadderClimb(geometry,fraction,feetRest=defaultFeet){
   }else if(t<.76&&side===moving){const lift=phase(u,.03,.46);height=mix(a.height,b.height,lift)+.09*Math.sin(Math.PI*lift);forward=mix(a.forward,b.forward,lift);planted=u<=.03||u>=.46;}
   else if(t>=.76){height=rung(side==='l'?N-2:N-1).height;forward=rung(side==='l'?N-2:N-1).forward;}
   const roofForward=E+(B!==0?(side==='l'?.35:.55):(side==='l'?.10:.32));
-  if(t>=.76){const lift=phase(t,side==='l'?.76:.85,side==='l'?.82:.91),clear=phase(lift,0,.55),step=phase(lift,.55,1);height=lift<=.55?mix(height,H+.15,clear):mix(H+.15,H+.007,step);forward=mix(forward-.04*Math.sin(Math.PI*clear),roofForward,step);planted=lift===0||lift===1;}
+  if(t>=.76){
+   const lift=phase(t,side==='l'?.76:.85,side==='l'?.82:.91),clear=phase(lift,0,.55),step=phase(lift,.55,1);
+   height=lift<=.55?mix(height,H+.15,clear):mix(H+.15,H+.007,step);
+   forward=mix(forward-.04*Math.sin(Math.PI*clear),roofForward,step);
+   // The free boot passes ahead of the hip, rather than folding directly
+   // through it. Both offsets and their slopes vanish at the supports.
+   const clearance=Math.sin(Math.PI*lift)**2;
+   forward+=(side==='l'?.14:0)*clearance;height-=.04*clearance;
+   planted=lift===0||lift===1;
+  }
   let spread=phase(t,.04,.12);
   if(side==='r'&&t<.12)spread=0;else if(side==='r'&&step===0&&t<.76)spread=phase(u,.03,.46);
   let footX=mix(rest[0],sign*.13,spread);

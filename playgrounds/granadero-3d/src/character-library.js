@@ -1,4 +1,5 @@
 import {clone as cloneSkeleton} from 'three/addons/utils/SkeletonUtils.js';
+import {Quaternion} from 'three';
 
 export const characterChoices=[
  ['reference','Granadero · referencia aprobada'],['granadero','Granadero · juego'],
@@ -11,6 +12,27 @@ const transform=(object,spec)=>{
  object.rotation.fromArray([...(spec.rotation??[0,0,0]),'XYZ']);
  object.scale.setScalar(spec.scale??1);
 };
+const gripRotation=new Quaternion(),nextGripRotation=new Quaternion();
+/** Apply the production bank's item correction after sampling its body pose. */
+export function applyProductionGripOffsets(weapons,spec,time){
+ for(const object of Object.values(weapons)){
+  const base=object.userData.labGripBase;if(!base)continue;
+  object.position.copy(base.position);object.quaternion.copy(base.rotation);
+  const keys=spec?.gripOffsets?.find(offset=>offset.hand==='handRight')?.keys;
+  if(!keys?.length)continue;
+  let from=keys[0],to=from,fraction=0;
+  for(let index=1;index<keys.length;index++){
+   const a=keys[index-1],b=keys[index];
+   if(time>=b.time){from=to=b;continue;}
+   from=a;to=b;fraction=Math.max(0,(time-a.time)/(b.time-a.time));break;
+  }
+  for(let axis=0;axis<3;axis++)object.position.setComponent(axis,object.position.getComponent(axis)+from.position[axis]+(to.position[axis]-from.position[axis])*fraction);
+  gripRotation.identity();nextGripRotation.identity();
+  if(from.rotationQuaternion)gripRotation.fromArray(from.rotationQuaternion).normalize();
+  if(to.rotationQuaternion)nextGripRotation.fromArray(to.rotationQuaternion).normalize();
+  object.quaternion.multiply(gripRotation.slerp(nextGripRotation,fraction)).normalize();
+ }
+}
 /** Use the same native skeleton, sockets and item transforms as the game. */
 export function prepareProductionCharacter(body,animation,equipment,library,appearance){
  const scene=cloneSkeleton(body.scene),bank=library.animationLibraries[appearance.animationLibrary];
@@ -29,6 +51,7 @@ export function prepareProductionCharacter(body,animation,equipment,library,appe
   const socketSpec=appearance.sockets[spec.socket],socket=scene.getObjectByName(socketSpec?.node);
   if(!socket)throw Error(`Falta el agarre ${spec.socket}.`);
   const object=source.clone(true);object.name=`weapon_${key}`;transform(object,spec);socket.add(object);weapons[key]=object;
+  object.userData.labGripBase={position:object.position.clone(),rotation:object.quaternion.clone()};
   if(spec.muzzle){const muzzle=object.getObjectByName(spec.muzzle);if(!muzzle)throw Error(`Falta la boca ${spec.muzzle}.`);muzzles[key]=muzzle;}
   if(key==='rifle'){
    const fit=library.equipment.fittings?.india_socket,source=equipment.scene.getObjectByName(fit?.node);

@@ -4,7 +4,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   AnimationClip,Bone,BoxGeometry,Float32BufferAttribute,Group,Mesh,
-  MeshStandardMaterial,NumberKeyframeTrack,Object3D,Skeleton,SkinnedMesh,
+  MeshStandardMaterial,NumberKeyframeTrack,Object3D,Quaternion,Skeleton,SkinnedMesh,
   Uint16BufferAttribute,Vector3,VectorKeyframeTrack,
 } from '../web/node_modules/three/build/three.module.js';
 const {ActorRuntime}=await import('../web/lib/three/actor-runtime.ts');
@@ -193,6 +193,30 @@ test('native loading attachment offsets follow the body clock and recover withou
   runtime.tick(0,2001);closeVector(item.position,[.01,.02,.03],'Rest returns to the original attachment transform');
   assert.deepEqual(v,before,'Presentation retains the original held item and cue');
   closeVector(f.asset.equipment.scene.getObjectByName(f.asset.manifest.equipment.items['1800'].node).position,[0,0,0],'Shared geometry remains at its original transform');runtime.dispose();
+});
+
+test('loading attachment rotations use normalized shortest arcs after the normal item frame',()=>{
+  const f=fixture(),spec=f.asset.clips.find(clip=>clip.semantic==='stand.reload.long-gun');
+  const turn=new Quaternion().setFromAxisAngle(new Vector3(1,0,0),Math.PI*2/3);
+  spec.gripOffsets=[{hand:'handRight',keys:[
+    {time:0,position:[0,0,0]},
+    // Negated and nonunit on purpose: the same 120-degree turn must interpolate
+    // toward 60 degrees, without taking the long arc or changing item scale.
+    {time:1,position:[-.3,-.04,0],rotationQuaternion:turn.toArray().map(value=>-value*3)},
+    {time:2,position:[0,0,0]},
+  ]}];
+  const before=structuredClone(spec),v=visual(f,{action:'reload',equipment:'long-gun',items:[{id:'1800',reference:'primary',socket:'handRight'}],cue:{id:'rotating-grip',action:'reload',startedAt:0,durationMs:2000}}),runtime=new ActorRuntime(f.asset,v);
+  const item=attached(runtime,'primary','1800'),normal=item.quaternion.clone();
+  const expected=normal.clone().multiply(new Quaternion().setFromAxisAngle(new Vector3(1,0,0),Math.PI/3));
+  for(const time of [500,500,1500]){
+    runtime.tick(0,time);
+    assert.ok(item.quaternion.angleTo(expected)<1e-6,'Midpoint rotation composes after the normal item orientation and does not accumulate');
+    close(item.quaternion.length(),1,'The resulting orientation is normalized');
+    closeVector(item.position,[-.14,0,.03],'Position still interpolates independently in socket space');
+    closeVector(item.scale,[.8,.8,.8],'The grip does not deform the weapon');
+  }
+  runtime.tick(0,2001);assert.ok(item.quaternion.angleTo(normal)<1e-6,'Rest restores the normal orientation');
+  assert.deepEqual(spec,before,'Sampling does not change shared authoring keys');runtime.dispose();
 });
 
 test('mounted placement uses normalized model-local coordinates exactly once',()=>{

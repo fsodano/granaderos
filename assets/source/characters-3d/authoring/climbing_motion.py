@@ -8,7 +8,7 @@ from pathlib import Path
 from mathutils import Vector,Quaternion
 
 
-def _native_limb(rig,names,target,pole):
+def _native_limb(rig,names,target,pole,folded_bend=None,folded_weight=0):
     """Fit native child-head segments; native tails are not contact joints."""
     from motion import _head,_set_world_rotation
     bones=[rig.data.bones[name]for name in names];base=_head(rig,names[0])
@@ -17,7 +17,15 @@ def _native_limb(rig,names,target,pole):
     direction=Vector(target)-base;distance=min(a+b-.0005,max(abs(a-b)+.0005,direction.length));direction.normalize()
     bend=Vector(pole)-base;bend-=direction*bend.dot(direction)
     if bend.length<.001:bend=Vector((1,0,0))
-    bend.normalize();along=(a*a-b*b+distance*distance)/(2*distance)
+    bend.normalize()
+    if folded_bend is not None and folded_weight:
+        # A roof step brings the ankle close to the hip. A high point pole
+        # then changes sides as the boot rises, flipping the folded knee.
+        # Keep a continuous bend plane through that interval. The caller
+        # returns it to the actual idle knee plane after both roof supports.
+        safe=Vector(folded_bend);safe-=direction*safe.dot(direction);safe.normalize()
+        bend=bend.lerp(safe,folded_weight).normalized()
+    along=(a*a-b*b+distance*distance)/(2*distance)
     middle=base+direction*along+bend*math.sqrt(max(0,a*a-along*along))
     for index,end in ((0,middle),(1,base+direction*distance)):
         start=_head(rig,names[index]);rotation=offsets[index].rotation_difference(end-start)@bones[index].matrix_local.to_quaternion()
@@ -80,6 +88,12 @@ def pose(ctx,idle,t,reverse=False):
     plan=min(data['plans'],key=lambda entry:abs(entry['fraction']-t))
     rig=ctx['rig'];_apply_sample(rig,idle)
     idle_feet={name:rig.pose.bones[name].matrix.to_quaternion()for side in ('l','r')for name in ('foot_'+side,'ball_'+side)}
+    idle_knees={}
+    for side in ('l','r'):
+        hip=rig.pose.bones['thigh_'+side].head
+        axis=(rig.pose.bones['foot_'+side].head-hip).normalized()
+        bend=rig.pose.bones['calf_'+side].head-hip
+        idle_knees[side]=(bend-axis*bend.dot(axis)).normalized()
     if t<=0 or t>=1:return _collect(rig)
     _root_shift(rig,(0,0,-plan['crouch']))
     for name in ('spine_01','spine_02'):
@@ -99,7 +113,13 @@ def pose(ctx,idle,t,reverse=False):
         # Keep the trailing knee outside the wall. Once its boot crosses
         # the edge, the knee bends forward above the supported roof foot.
         forward_pole=(-.35*contact['roofWeight']+.30*(1-contact['roofWeight']))*crest-.35*(1-crest)
-        _native_limb(rig,('thigh_'+side,'calf_'+side,'foot_'+side),ankle,pelvis+Vector((sign*(.10+.15*crest),forward_pole,-.25+crest)))
+        # Set the bend plane while the boot still supports a rung, before
+        # its fast lift crosses the hip. Changing it during the lift would
+        # simply move the knee snap to the start of the roof-step interval.
+        entering=max(0,min(1,(t-.48)/.10));entering=entering*entering*(3-2*entering)
+        standing=max(0,min(1,(t-.91)/.09));standing=standing*standing*(3-2*standing)
+        bend=Vector((sign,0,0)).lerp(idle_knees[side],standing).normalized()
+        _native_limb(rig,('thigh_'+side,'calf_'+side,'foot_'+side),ankle,pelvis+Vector((sign*(.10+.15*crest),forward_pole,-.25+crest)),bend,entering)
         for name in ('foot_'+side,'ball_'+side):
             _set_world_rotation(rig,name,(tilt@rig.data.bones[name].matrix_local.to_quaternion()).slerp(idle_feet[name],contact['restWeight']))
         contact=plan['hands'][side];x,height,forward=contact['position']

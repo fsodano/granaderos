@@ -20,6 +20,8 @@ def export(ctx,path,animations=False):
  for o in ctx['export_objects']:o.select_set(True)
  bpy.context.view_layer.objects.active=ctx.get('rig') or ctx['export_objects'][0]
  bpy.ops.export_scene.gltf(filepath=str(path),export_format='GLB',use_selection=True,export_yup=True,export_animations=animations,export_animation_mode='NLA_TRACKS',export_force_sampling=True,export_frame_range=False,export_anim_slide_to_zero=True,export_nla_strips=True,export_skins=True,export_morph=True,export_extras=False,export_cameras=False,export_lights=False,export_apply=False,export_all_influences=False)
+ from export_timing import trim_endpoints,authored_durations
+ if animations and ctx.get("rig"):trim_endpoints(path,authored_durations(ctx["rig"]))
  from gltf_pack import pack
  raw,doc=pack(path,{m.name:list(m.diffuse_color) for m in bpy.data.materials})
  ac=doc.get('accessors',[]);triangles=sum(ac[p['indices']]['count']//3 for m in doc.get('meshes',[]) for p in m['primitives'] if 'indices'in p)
@@ -43,7 +45,11 @@ if args.kind in ('appearance','garments','animations'):
   add_cloth_correctives(ctx);create_sockets(ctx);name=args.preset+'-lod'+str(args.lod)
  facts,doc=export(ctx,OUT/(name+'.glb'),args.kind=='animations');facts.update(kind=args.kind,preset=args.preset,gender=gender,lod=args.lod,height=ctx['body_height'])
  if args.kind=='appearance':facts['sockets']=ctx['sockets']
- if args.kind=='animations':facts['clips']=motion['clips'];facts['locomotionSpeed']=motion['locomotionSpeed']
+ if args.kind=='animations':
+  from export_timing import calibrate_crawl
+  crawl_speed=calibrate_crawl(OUT/(name+'.glb'),motion['clips'])
+  if crawl_speed is not None:motion['locomotionSpeed']['crawl']=crawl_speed
+  facts['clips']=motion['clips'];facts['locomotionSpeed']=motion['locomotionSpeed']
 elif args.kind=='equipment':
  from equipment_library import create_library
  ctx=create_character();records=create_library(ctx);ctx.pop('rig');name='equipment';facts,doc=export(ctx,OUT/(name+'.glb'));facts.update(kind='equipment',items=records)

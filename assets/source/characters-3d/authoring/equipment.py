@@ -108,12 +108,14 @@ def create_equipment(ctx):
         return o
 
     rifle = group('weapon_rifle')
-    stock('Rifle_Walnut_Stock', [(-.295,.014,.019,.055),(-.255,.008,.022,.062),(-.16,.018,.021,.048),(-.04,.014,.017,.022),(.04,.031,.021,.026),(.18,.027,.020,.021),(.43,.029,.016,.017),(.76,.035,.012,.012)], walnut, rifle)
+    # A continuous dropped comb leaves cheek clearance below the iron-sight line.
+    # The grip, lock, trigger and forward assembly retain their authored frame.
+    stock('Rifle_Walnut_Stock', [(-.295,-.049,.019,.055),(-.255,-.055,.022,.062),(-.16,-.038,.021,.048),(-.04,.014,.017,.022),(.04,.031,.021,.026),(.18,.027,.020,.021),(.43,.029,.016,.017),(.76,.035,.012,.012)], walnut, rifle)
     tube('Rifle_Barrel', [(.015,0,.055),(.94,0,.055)], [.014,.0105], steel, rifle, 16)
     tube('Rifle_Ramrod', [(.14,0,.014),(.925,0,.030)], .003, steel, rifle, 8)
     for x in (.25,.47,.72):
         box('Rifle_Barrel_Band', (x,0,.043), (.012,.039,.046), brass, rifle, .004)
-    box('Rifle_Butt_Plate', (-.296,0,.014), (.008,.039,.113), brass, rifle, .003)
+    box('Rifle_Butt_Plate', (-.296,0,-.049), (.008,.039,.113), brass, rifle, .003)
     box('Rifle_Lock_Plate', (.04,-.025,.032), (.105,.010,.033), steel, rifle, .004)
     tube('Rifle_Cock', [(.019,-.032,.041),(.003,-.032,.09),(.035,-.032,.087)], [.006,.005,.004], steel, rifle)
     tube('Rifle_Trigger_Guard', [(-.026,-.008,-.004),(-.019,-.008,-.040),(.050,-.008,-.037),(.065,-.008,.011)], .0035, brass, rifle)
@@ -125,6 +127,7 @@ def create_equipment(ctx):
     tube('Pistol_Stock', [(-.045,0,-.075),(-.026,0,-.050),(0,0,.005),(.075,0,.033),(.24,0,.034)], [.018,.020,.024,.020,.011], walnut, pistol, 12)
     tube('Pistol_Barrel', [(.025,0,.055),(.27,0,.055)], [.015,.0105], steel, pistol, 14)
     tube('Pistol_Trigger_Guard', [(.009,-.008,.007),(.038,-.008,-.028),(.085,-.008,-.012),(.079,-.008,.030)], .003, brass, pistol)
+    tube('Pistol_Trigger', [(.059,-.008,.024),(.049,-.008,-.013),(.038,-.008,-.019)], .002, steel, pistol)
     box('Pistol_Lock', (.07,-.023,.036), (.075,.009,.030), steel, pistol)
     tube('Pistol_Cock', [(.040,-.029,.044),(.026,-.029,.083),(.054,-.029,.082)], .004, steel, pistol)
     tube('Pistol_Butt_Cap', [(-.045,0,-.073),(-.045,0,-.083)], .020, brass, pistol, 12)

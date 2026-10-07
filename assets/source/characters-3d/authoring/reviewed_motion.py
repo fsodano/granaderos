@@ -155,18 +155,30 @@ def _aim(rig, name, direction):
     _set_world_rotation(rig, name, q)
 
 
-def _finger_curl(rig, amount=.45, side=None):
+def _finger_curl(rig, amount=.45, side=None, closed=False):
     """MakeHuman's native finger joints bend toward their own palm plane."""
     for suffix in (side,) if side else ('l','r'):
         forward, palm_normal = _palm_basis(rig, suffix)
         axis = forward.cross(palm_normal).normalized()
+        hand=rig.pose.bones['hand_'+suffix]
+        hand_delta=hand.matrix.to_quaternion() @ hand.bone.matrix_local.to_quaternion().inverted()
         for finger in ('index','middle','ring','pinky'):
             for i, factor in [(1,.65),(2,1.0),(3,.8)]:
                 name=f'{finger}_{i:02d}_{suffix}'
                 if name not in rig.pose.bones: continue
                 pb=rig.pose.bones[name]
-                local_axis=pb.bone.matrix_local.to_3x3().inverted() @ axis
-                pb.rotation_quaternion=Quaternion(local_axis,amount*factor)
+                if closed:
+                    # Native fingers already curl and spread in the rest pose.
+                    # Set the closed directions in the palm frame; adding the
+                    # same bend to every joint overcurled and splayed the pinky.
+                    flex=math.radians((80,180,225)[i-1])
+                    direction=forward*math.cos(flex)+palm_normal*math.sin(flex)
+                    rest=(pb.bone.tail_local-pb.bone.head_local).normalized()
+                    turn=Quaternion().slerp(rest.rotation_difference(direction),min(1,max(0,amount/1.4)))
+                    _set_world_rotation(rig,name,hand_delta @ turn @ pb.bone.matrix_local.to_quaternion())
+                else:
+                    local_axis=pb.bone.matrix_local.to_3x3().inverted() @ axis
+                    pb.rotation_quaternion=Quaternion(local_axis,amount*factor)
         # Bring the thumb across the index finger instead of leaving the
         # source A-pose thumb splayed. This is a short anatomical IK chain.
         bpy.context.view_layer.update()
@@ -304,7 +316,7 @@ def _retarget_clip(ctx,clip_name,file,start,end):
             inward=Vector((-1 if suffix=='l' else 1,0,0))
             hand_q=_hand_rotation(rig,suffix,forearm.tail-forearm.head,inward)
             _set_world_rotation(rig,'hand_'+suffix,hand_q)
-        _finger_curl(rig,1.30 if clip_name in ('Run','Walk') else 1.15)
+        _finger_curl(rig,1.30 if clip_name in ('Run','Walk') else 1.15,closed=clip_name in ('Run','Walk'))
         sole=_sole_points(rig)
         min_sole=min(p.z for _,p in sole)
         airborne=max(0,(min(sample['LeftFoot'][0].z,sample['RightFoot'][0].z)-min_source_foot)*scale-.035) if clip_name=='Run' else 0
@@ -421,26 +433,20 @@ def _apply_sample(rig,sample):
 
 def _grip_setup(ctx):
     rig=ctx['rig'];bone=rig.data.bones['hand_r']
-    long,normal=_palm_basis(rig,'r')
-    # Grip lies inside the curled fingers, below the knuckle row. Native
-    # MakeHuman finger positions define it; no hand mesh is moved or scaled.
-    knuckles=sum((rig.data.bones[f+'_01_r'].head_local for f in ('index','middle','ring','pinky')),Vector())/4
-    center=bone.head_local.lerp(knuckles,.74)+normal*.014
-    local_center=bone.matrix_local.inverted() @ center
+    from firearm_grips import grip_frame, rifle_support_point
     offsets={}
     for key,group in ctx.get('weapons',{}).items():
-        long_in_weapon=Vector((1,0,.05)) if key=='rifle' else Vector((1,0,-.10)) if key=='pistol' else Vector((1,0,0))
-        hand_in_weapon=_hand_rotation(rig,'r',long_in_weapon,Vector((0,1,0)))
+        local_center,hand_in_weapon=grip_frame(rig,'r',key,_palm_basis,_hand_rotation,ctx.get('gender'))
         bind=Matrix.LocRotScale(local_center,hand_in_weapon.inverted(),Vector((1,1,1)))
         group.parent=rig;group.parent_type='BONE';group.parent_bone='hand_r'
         group.matrix_parent_inverse=Matrix.Translation((0,-bone.length,0))
         group.matrix_basis=bind
         offsets[key]=(local_center.copy(),hand_in_weapon.copy())
-    ctx.setdefault('weapon_grips',{})['rifle_support']=(.22,0,.030)
+    ctx.setdefault('weapon_grips',{})['rifle_support']=rifle_support_point(rig)
     return offsets
 
 
-def _weapon_pose(ctx,base,key,position,rotation,offsets,recoil=0,breathing=0,settle=0,posture=True,trigger=True,right_pole=None,left_pole=None):
+def _weapon_pose(ctx,base,key,position,rotation,offsets,recoil=0,breathing=0,settle=0,posture=True,trigger=True,right_pole=None,left_pole=None,aiming=False,blade_wrist_limit=None,blade_grip_roll=0):
     rig=ctx['rig'];_apply_sample(rig,base)
     if posture and recoil and key in ('rifle','pistol'):
         spine=rig.pose.bones['spine_01']
@@ -458,27 +464,42 @@ def _weapon_pose(ctx,base,key,position,rotation,offsets,recoil=0,breathing=0,set
     local_grip,hand_offset=offsets[key]
     hand_q=gun_q @ hand_offset
     wrist=gun_pos-hand_q @ local_grip
-    actual_wrist=_arm_ik(rig,'r',wrist,right_pole if right_pole is not None else Vector((-.41,-.12,1.22 if key=='rifle' else 1.10)))
+    pole=right_pole if right_pole is not None else Vector((-.41,-.12,1.22 if key=='rifle' else 1.10))
+    if key in ('rifle','pistol'):
+        from firearm_grips import grip_elbow, align_arm_roll
+        pole=grip_elbow(rig,'r',wrist,hand_q,guide=pole,aiming=key=='rifle' and aiming)
+    actual_wrist=_arm_ik(rig,'r',wrist,pole)
+    if key in ('sabre','knife') and blade_wrist_limit is not None:
+        # Preserve the native grip while the hand follows the forearm.
+        # Correct swing only: a full quaternion blend can reverse pronation
+        # near the loaded pose, even when both endpoint wrists look sound.
+        from firearm_grips import align_arm_roll
+        fore=(_head(rig,'hand_r')-_head(rig,'lowerarm_r')).normalized()
+        native_long,_=_palm_basis(rig,'r')
+        long=hand_q @ rig.data.bones['hand_r'].matrix_local.to_quaternion().inverted() @ native_long
+        if blade_grip_roll:
+            # Roll through authored keys around the blade before changing
+            # its cutting plane. Projecting the forearm onto the blade plane
+            # here has two solutions and flips when they become parallel.
+            hand_q=Quaternion(gun_q @ Vector((0,0,1)),blade_grip_roll) @ hand_q
+            long=hand_q @ rig.data.bones['hand_r'].matrix_local.to_quaternion().inverted() @ native_long
+        bend=long.angle(fore);limit=math.radians(blade_wrist_limit)
+        if bend>limit:hand_q=Quaternion().slerp(long.rotation_difference(fore),(bend-limit)/bend) @ hand_q
+        align_arm_roll(rig,'r',hand_q,_set_world_rotation)
     _set_world_rotation(rig,'hand_r',hand_q)
-    _finger_curl(rig,1.33,'r')
-    if trigger and key in ('rifle','pistol'):
-        _trigger_finger(rig,ctx['weapons'][key],key)
+    if key in ('rifle','pistol'):align_arm_roll(rig,'r',hand_q,_set_world_rotation)
+    _finger_curl(rig,1.36 if key=='rifle' else 1.23 if key=='pistol' else 1.33,'r')
+    if key in ('rifle','pistol'):
+        _trigger_finger(rig,ctx['weapons'][key],key,trigger)
     # If a requested grip lies outside reach, report the actual arm solution.
     actual_grip=actual_wrist+hand_q @ local_grip
     if key=='rifle':
-        target=actual_grip+gun_q @ Vector(ctx.get('weapon_grips',{}).get('rifle_support',(.22,0,.030)))
-        left_long=gun_q @ Vector((.65,-.76,.08))
-        left_normal=gun_q @ Vector((0,0,1))
-        left_q=_hand_rotation(rig,'l',left_long,left_normal)
-        left_bone=rig.data.bones['hand_l']
-        knuckles=sum((rig.data.bones[f+'_01_l'].head_local for f in ('index','middle','ring','pinky')),Vector())/4
-        long,normal=_palm_basis(rig,'l')
-        palm=left_bone.head_local.lerp(knuckles,.75)+normal*.016
-        local_palm=left_bone.matrix_local.inverted() @ palm
-        left_wrist=target-left_q @ local_palm
-        _arm_ik(rig,'l',left_wrist,left_pole if left_pole is not None else Vector((.24,-.25,1.03)))
-        _set_world_rotation(rig,'hand_l',left_q)
-        _finger_curl(rig,1.18,'l')
+        from firearm_grips import rifle_support_frame, rifle_fingers
+        left_wrist,left_q=rifle_support_frame(rig,actual_grip,gun_q,_hand_rotation)
+        pole=grip_elbow(rig,'l',left_wrist,left_q,guide=Vector((.24,-.25,1.03)))
+        _arm_ik(rig,'l',left_wrist,pole)
+        align_arm_roll(rig,'l',left_q,_set_world_rotation)
+        rifle_fingers(rig,'l')
     elif key=='pistol':
         # The free hand follows a chest-relative guard, not a frozen idle pose.
         # Delayed elbow/hand response settles after the shooting arm recoils.
@@ -550,7 +571,7 @@ def _carry_pose(ctx,base,previous,key,motion,offsets):
         # absorb the stride, with the muzzle lagging behind the body turn.
         phase=math.tanh((rig.pose.bones['thigh_r'].tail-rig.pose.bones['thigh_r'].head).normalized().y*2.5)
         amplitude=1 if running else .62
-        grip=_head(rig,'spine_03')+follow @ Vector((-.105+.018*phase*amplitude,-.285+.026*phase*amplitude,-.035+.014*phase*amplitude))
+        grip=_head(rig,'spine_03')+follow @ Vector((-.105+.018*phase*amplitude,-.235+.026*phase*amplitude,-.035+.014*phase*amplitude))
         if ctx['gender']=='female':
             # The native female arms are shorter. Bring the whole rifle
             # inward so the supporting elbow can still flex at every stride.
@@ -559,6 +580,8 @@ def _carry_pose(ctx,base,previous,key,motion,offsets):
         rotation=follow @ Quaternion(UP,math.radians(-68+2.2*lag*amplitude)) @ Quaternion(Vector((0,1,0)),-.10+.045*lag*amplitude)
         right_pole=shoulder+follow @ Vector((-.08,.035+.025*phase,-.27))
         left_pole=_head(rig,'upperarm_l')+follow @ Vector((.045,-.16,-.28))
+        from firearm_grips import rifle_carry_position
+        grip=rifle_carry_position(ctx,grip,rotation,_hand_rotation)
     else:
         # Use the actual arm swing from the gait, not a fixed gun/sword
         # position. Right wrist rotation trails the elbow by one sample.
@@ -603,18 +626,18 @@ def _firearm_pose(ctx,base,key,t,action,offsets,duration):
     else:
         pos=Vector((-.13,-.56+kick*.050+shift*.5,1.30+kick*.021+breath*.003))
         q=Quaternion(UP,math.radians(-85)-settle*.009) @ Quaternion(Vector((0,1,0)),-kick*.16-breath*.004)
+    if rifle:
+        from firearm_grips import rifle_sight_pose
+        pos,q=rifle_sight_pose(ctx,pos,q,_set_world_rotation)
+    else:
+        from firearm_grips import pistol_sight_pose
+        pos,q=pistol_sight_pose(ctx,q,_set_world_rotation,kick)
     right=_head(rig,'upperarm_r');left=_head(rig,'upperarm_l')
     _weapon_pose(ctx,_collect(rig),key,pos,q,offsets,posture=False,
                  right_pole=right+Vector((-.14,.01+settle*.022,-.19 if rifle else -.24)),
-                 left_pole=left+Vector((.025,-.13,-.31)))
+                 left_pole=left+Vector((.025,-.13,-.31)),aiming=rifle)
     if not rifle:
         _guard_hand(rig,(.035,-.10+settle*.040,-.32+settle*.023+breath*.004),(.105,.035+settle*.025,-.21),1.24+settle*.04)
-    # Neck and head follow separate smaller arcs. The gaze remains near the
-    # line of aim while the shoulders absorb recoil beneath it.
-    neck=rig.pose.bones['neck_01']
-    _set_world_rotation(rig,'neck_01',Quaternion(UP,-.06 if rifle else -.015) @ Quaternion(Vector((0,1,0)),-.14 if rifle else 0) @ Quaternion(Vector((1,0,0)),.13 if rifle else .025) @ neck.bone.matrix_local.to_quaternion())
-    head=rig.pose.bones['head']
-    _set_world_rotation(rig,'head',Quaternion(UP,-.075 if rifle else -.035) @ Quaternion(Vector((0,1,0)),-.08 if rifle else 0) @ Quaternion(Vector((1,0,0)),.075-chest_response*.016 if rifle else .015-chest_response*.010) @ head.bone.matrix_local.to_quaternion())
     return _collect(rig)
 
 
@@ -683,7 +706,11 @@ def _melee_pose(ctx,base,key,t,action,offsets,reverse=False):
         roll_values=[0,90,90,90,35,0] if reverse=='forehand' else [0,-90,-90,-90,-35,0]
         roll=math.radians(_flow_key(list(zip(knots,roll_values)),sample_t))
         q=Quaternion(UP,yaw) @ Quaternion(Vector((0,1,0)),angle) @ Quaternion(UP,roll)
-    _weapon_pose(ctx,prepared,key,pos,q,offsets,breathing=breathing)
+    grip_roll=0
+    if action and not reverse:
+        rolls=[0,15,65,110,35,0] if knife else [0,30,105,115,60,0]
+        grip_roll=math.radians(_flow_key(list(zip(knots,rolls)),sample_t))
+    _weapon_pose(ctx,prepared,key,pos,q,offsets,breathing=breathing,blade_wrist_limit=35,blade_grip_roll=grip_roll)
     # Free arm counterbalances the cut. The elbow opens during preparation,
     # then the hand withdraws behind the cutting plane with a slight lag.
     # Backhand uses a different path so the blade never sweeps into the hand.
@@ -755,15 +782,22 @@ def _punch_pose(ctx,base,t):
     pole=shoulder+Vector((-.19+.08*max(0,reach),.10-.06*max(0,reach),-.08-.12*max(0,reach)))
     _arm_ik(rig,'r',target,pole)
     forearm=rig.pose.bones['lowerarm_r']
-    _set_world_rotation(rig,'hand_r',_hand_rotation(rig,'r',forearm.tail-forearm.head,Vector((0,0,-1))))
+    # Preserve the native wrist frame as the forearm rises through vertical.
+    # Projecting a fixed world-down palm normal onto that direction flips the
+    # fist when both vectors align during the wind-up.
+    wrist_rest=forearm.bone.matrix_local.to_quaternion().inverted() @ rig.data.bones['hand_r'].matrix_local.to_quaternion()
+    _set_world_rotation(rig,'hand_r',forearm.matrix.to_quaternion() @ wrist_rest)
     left=_head(rig,'upperarm_l')
-    _arm_ik(rig,'l',left+Vector((-.05,-.21+.065*reach,-.025+.07*reach)),left+Vector((.10,.015,-.26)))
+    # Keep the guarding fist beside the cheek as the trunk drives forward.
+    # The previous inward wrist path put the closed hand through the jaw.
+    _arm_ik(rig,'l',left+Vector((-.05+.12*max(0,drive),-.21+.065*reach,-.025+.07*reach)),left+Vector((.10,.015,-.26)))
     forearm=rig.pose.bones['lowerarm_l']
-    _set_world_rotation(rig,'hand_l',_hand_rotation(rig,'l',forearm.tail-forearm.head,Vector((0,-1,0))))
+    wrist_rest=forearm.bone.matrix_local.to_quaternion().inverted() @ rig.data.bones['hand_l'].matrix_local.to_quaternion()
+    _set_world_rotation(rig,'hand_l',forearm.matrix.to_quaternion() @ wrist_rest)
     # Look toward the target while the torso folds forward.
     head=rig.pose.bones['head']
     _set_world_rotation(rig,'head',Quaternion(Vector((1,0,0)),.08*max(0,drive)) @ head.bone.matrix_local.to_quaternion())
-    _finger_curl(rig,1.40)
+    _finger_curl(rig,1.40,closed=True)
     return _collect(rig)
 
 
@@ -772,12 +806,12 @@ def _punch_pose(ctx,base,t):
 _CLOSE_PROFILES = {
     ('sabre','thrust'): dict(
         advance=.15, weight=.145, turn=.27, lean=.27,
-        grips=[(-.015,-.23,-.20),(-.07,-.12,-.10),(.01,-.23,-.08),(.055,-.46,-.025),(.055,-.47,-.025),(-.005,-.22,-.11),(-.015,-.23,-.20),(-.015,-.23,-.20)],
-        yaw=[-35,-12,-3,0,0,-12,-35,-35],pitch=[45,72,86,90,90,72,45,45],roll=[-45,-75,-88,-90,-90,-72,-45,-45]),
+        grips=[(-.015,-.23,-.20),(-.07,-.12,-.10),(.01,-.23,-.08),(.10,-.30,-.15),(.10,-.31,-.15),(-.005,-.22,-.11),(-.015,-.23,-.20),(-.015,-.23,-.20)],
+        yaw=[-35,-12,-3,0,0,-12,-35,-35],pitch=[45,72,86,90,90,72,45,45],roll=[-45,-60,-40,-30,-30,-40,-45,-45]),
     ('knife','thrust'): dict(
         advance=.11, weight=.12, turn=.31, lean=.32,
-        grips=[(-.01,-.22,-.25),(-.05,-.09,-.18),(.005,-.22,-.17),(.035,-.46,-.13),(.035,-.46,-.13),(-.025,-.18,-.22),(-.01,-.22,-.25),(-.01,-.22,-.25)],
-        yaw=[-30,-18,-5,0,0,-15,-30,-30],pitch=[48,64,83,90,90,65,48,48],roll=[-50,-70,-85,-90,-90,-70,-50,-50]),
+        grips=[(-.01,-.22,-.25),(-.05,-.09,-.18),(.005,-.22,-.17),(.10,-.30,-.20),(.10,-.31,-.20),(-.025,-.18,-.22),(-.01,-.22,-.25),(-.01,-.22,-.25)],
+        yaw=[-30,-18,-5,0,0,-15,-30,-30],pitch=[48,64,83,90,90,65,48,48],roll=[-50,-60,-40,-30,-30,-45,-50,-50]),
     ('rifle','thrust'): dict(
         advance=.17, weight=.17, turn=-.14, lean=.24,
         grips=[(.06,-.27,-.085),(.04,-.14,-.09),(.05,-.20,-.075),(.075,-.31,-.04),(.075,-.32,-.04),(.04,-.19,-.075),(.06,-.27,-.085),(.06,-.27,-.085)],
@@ -825,8 +859,19 @@ def _close_strike(ctx,base,key,t,offsets,kind):
     else:
         rotation=Quaternion(UP,yaw) @ Quaternion(Vector((0,1,0)),pitch) @ Quaternion(Vector((1,0,0)),roll)
     right_pole=shoulder+Vector((-.12-.055*(kind=='blunt'),.025-.065*max(0,drive),-.20))
+    if key in ('sabre','knife') and kind=='thrust':
+        # A hammer grip cannot point forward with the palm folded over a
+        # fully extended forearm. Let the bent elbow lead the lower, closer
+        # grip, then drive the point through the target with the body step.
+        local,hand_offset=offsets[key];hand_q=rotation @ hand_offset
+        native_long,_=_palm_basis(rig,'r')
+        long=hand_q @ rig.data.bones['hand_r'].matrix_local.to_quaternion().inverted() @ native_long
+        wrist=grip-hand_q @ local
+        aligned_pole=wrist-long*rig.data.bones['lowerarm_r'].length
+        support=_flow_key([(0,0),(.22,.35),(.32,.75),(.40,1),(.52,1),(.65,.45),(.82,0),(1,0)],t)
+        right_pole=right_pole.lerp(aligned_pole,support)
     left_pole=_head(rig,'upperarm_l')+Vector((.105,-.075,-.28))
-    _weapon_pose(ctx,_collect(rig),key,grip,rotation,offsets,posture=False,trigger=False,right_pole=right_pole,left_pole=left_pole)
+    _weapon_pose(ctx,_collect(rig),key,grip,rotation,offsets,posture=False,trigger=False,right_pole=right_pole,left_pole=left_pole,blade_wrist_limit=35 if key in ('sabre','knife') else None)
     if key!='rifle':
         # The free fist starts by the ribs, rises as the body commits, and
         # withdraws behind the weapon path. It never shares a fixed world Y.
@@ -840,8 +885,14 @@ def _close_strike(ctx,base,key,t,offsets,kind):
     return _collect(rig)
 
 
-def sample_animations(ctx):
-    """Sample the thirty reviewed actions on this native anatomy."""
+def sample_animations(ctx,only=None):
+    """Sample reviewed actions, optionally limiting private action probes.
+
+    Native Idle/Walk/Run remain available as base and stride dependencies.
+    Omitting `only` keeps the complete release sampling path unchanged.
+    """
+    selected=set(only) if only is not None else None
+    wanted=lambda name:selected is None or name in selected
     rig=ctx['rig'];bpy.context.scene.render.fps=FPS
     clips=[];locomotion_samples={}
     for spec in [('Idle','111_28.bvh',120,360),('Walk','07_01.bvh',100,230),('Run','02_03.bvh',40,131)]:
@@ -853,6 +904,7 @@ def sample_animations(ctx):
     if len(offsets)!=4:raise ValueError('Equipment requires rifle, pistol, sabre and knife')
     for motion,(source_meta,source_samples) in locomotion_samples.items():
         for key in ('rifle','pistol','sabre','knife'):
+            if not wanted(key.title()+motion):continue
             carried=[]
             for index,base in enumerate(source_samples):
                 previous=source_samples[(index-1)%(len(source_samples)-1)]
@@ -861,6 +913,11 @@ def sample_animations(ctx):
             meta['source']={'base':motion,'carry':key}
             clips.append(meta)
     for key,aim,fire,duration,event in [('rifle','RifleAim','RifleFire',.8,.10),('pistol','PistolAim','PistolFire',.7,.10),('sabre','SabreReady','SabreSlash',1.0,.36),('knife','KnifeReady','KnifeSlash',.8,.27)]:
+        family={'rifle':{'RifleAim','RifleFire','BayonetThrust','RifleButtStrike'},
+                'pistol':{'PistolAim','PistolFire','PistolStrike'},
+                'sabre':{'SabreReady','SabreSlash','SabreBackhand','SabreForehand','SabreThrust','SabreHiltStrike','SabreCombination'},
+                'knife':{'KnifeReady','KnifeSlash','KnifeBackhand','KnifeThrust'}}[key]
+        if selected is not None and not selected.intersection(family):continue
         duration=round(duration*FPS)/FPS
         def pose(t,action=False):
             if key in ('sabre','knife'):return _melee_pose(ctx,idle_base,key,t,action,offsets)
@@ -869,16 +926,18 @@ def sample_animations(ctx):
         ready_poses[aim]=aim_samples[0]
         clips.append(_write_clip(rig,aim,aim_samples,2.0))
         count=round(duration*FPS)
-        samples=[pose(duration*i/count,True) for i in range(count+1)]
-        samples[0]=aim_samples[0];samples[-1]=aim_samples[0]
-        meta=_write_clip(rig,fire,samples,duration,False)
-        meta['events']={'hit' if key in ('sabre','knife') else 'shot':event};clips.append(meta)
-        if key in ('sabre','knife'):
+        if wanted(fire):
+            samples=[pose(duration*i/count,True) for i in range(count+1)]
+            samples[0]=aim_samples[0];samples[-1]=aim_samples[0]
+            meta=_write_clip(rig,fire,samples,duration,False)
+            meta['events']={'hit' if key in ('sabre','knife') else 'shot':event};clips.append(meta)
+        if key in ('sabre','knife') and wanted('SabreBackhand' if key=='sabre' else 'KnifeBackhand'):
             samples=[_melee_pose(ctx,idle_base,key,duration*i/count,True,offsets,True) for i in range(count+1)]
             samples[0]=aim_samples[0];samples[-1]=aim_samples[0]
             meta=_write_clip(rig,'SabreBackhand' if key=='sabre' else 'KnifeBackhand',samples,duration,False)
             meta['events']={'hit':event};clips.append(meta)
     for key,name,kind,ready in [('sabre','SabreThrust','thrust','SabreReady'),('knife','KnifeThrust','thrust','KnifeReady'),('rifle','BayonetThrust','thrust','RifleAim'),('sabre','SabreHiltStrike','blunt','SabreReady'),('pistol','PistolStrike','blunt','PistolAim'),('rifle','RifleButtStrike','blunt','RifleAim'),('none','Punch','blunt','Idle')]:
+        if not wanted(name):continue
         guard=ready_poses[ready]
         samples=[_close_strike(ctx,idle_base,key,i/30,offsets,kind) for i in range(31)]
         # Blend the first/last preparation frames to the selected guard.
@@ -887,40 +946,28 @@ def sample_animations(ctx):
             for index in (i,30-i):
                 samples[index]={n:(guard[n][0].lerp(samples[index][n][0],blend),guard[n][1].slerp(samples[index][n][1],blend)) for n in guard}
         meta=_write_clip(rig,name,samples,1.0,False);meta['events']={'hit':.42};clips.append(meta)
-    duration=1.0
-    samples=[_melee_pose(ctx,idle_base,'sabre',i/30,True,offsets,'forehand') for i in range(31)]
-    samples[0]=ready_poses['SabreReady'];samples[-1]=ready_poses['SabreReady']
-    meta=_write_clip(rig,'SabreForehand',samples,duration,False);meta['events']={'hit':.36};clips.append(meta)
-    combo=[]
-    first_end=_melee_pose(ctx,idle_base,'sabre',.46,True,offsets,'forehand')
-    return_start=_melee_pose(ctx,idle_base,'sabre',.25,True,offsets,True)
-    for i in range(46):
-        if i<=15:pose=_melee_pose(ctx,idle_base,'sabre',.46*i/15,True,offsets,'forehand')
-        elif i<20:
-            u=(i-15)/5;u=u*u*(3-2*u)
-            pose={n:(first_end[n][0].lerp(return_start[n][0],u),first_end[n][1].slerp(return_start[n][1],u)) for n in first_end}
-        else:pose=_melee_pose(ctx,idle_base,'sabre',.25+.75*(i-20)/25,True,offsets,True)
-        combo.append(pose)
-    combo[0]=ready_poses['SabreReady'];combo[-1]=ready_poses['SabreReady']
-    meta=_write_clip(rig,'SabreCombination',combo,1.5,False);meta['events']={'hit':.36/.46*.5,'secondHit':20/30+(.36-.25)/.75*(25/30)};clips.append(meta)
+    if wanted('SabreForehand'):
+        duration=1.0
+        samples=[_melee_pose(ctx,idle_base,'sabre',i/30,True,offsets,'forehand') for i in range(31)]
+        samples[0]=ready_poses['SabreReady'];samples[-1]=ready_poses['SabreReady']
+        meta=_write_clip(rig,'SabreForehand',samples,duration,False);meta['events']={'hit':.36};clips.append(meta)
+    if wanted('SabreCombination'):
+        combo=[]
+        first_end=_melee_pose(ctx,idle_base,'sabre',.46,True,offsets,'forehand')
+        return_start=_melee_pose(ctx,idle_base,'sabre',.25,True,offsets,True)
+        for i in range(46):
+            if i<=15:pose=_melee_pose(ctx,idle_base,'sabre',.46*i/15,True,offsets,'forehand')
+            elif i<20:
+                u=(i-15)/5;u=u*u*(3-2*u)
+                pose={n:(first_end[n][0].lerp(return_start[n][0],u),first_end[n][1].slerp(return_start[n][1],u)) for n in first_end}
+            else:pose=_melee_pose(ctx,idle_base,'sabre',.25+.75*(i-20)/25,True,offsets,True)
+            combo.append(pose)
+        combo[0]=ready_poses['SabreReady'];combo[-1]=ready_poses['SabreReady']
+        meta=_write_clip(rig,'SabreCombination',combo,1.5,False);meta['events']={'hit':.36/.46*.5,'secondHit':20/30+(.36-.25)/.75*(25/30)};clips.append(meta)
     _apply_sample(rig,idle_base)
     return {'clips':clips,'locomotionSpeed':{m['name']:m['locomotionSpeed'] for m in clips if m['name'] in ('Walk','Run')},'source':'CMU motion capture retargeted onto native MakeHuman skeleton; weapon actions authored for held props','fps':FPS}
 
 
-def _trigger_finger(rig,weapon,key):
-    """Fit the index pad to the trigger inside the actual modeled guard."""
-    bpy.context.view_layer.update()
-    transform=weapon.matrix_world
-    gun_q=transform.to_quaternion()
-    target=transform @ Vector((.019,-.006,-.020) if key=='rifle' else (.050,-.008,-.013))
-    names=['index_01_r','index_02_r','index_03_r']
-    first=rig.pose.bones[names[0]].head.copy()
-    _aim(rig,names[0],target-first+gun_q @ Vector((.035,0,0)))
-    base=rig.pose.bones[names[1]].head.copy()
-    l1=rig.data.bones[names[1]].length;l2=rig.data.bones[names[2]].length
-    d=target-base;distance=min(d.length,l1+l2-.0001);d.normalize()
-    pole=gun_q @ Vector((0,-1,0));pole-=d*pole.dot(d);pole.normalize()
-    along=(l1*l1-l2*l2+distance*distance)/(2*distance)
-    joint=base+d*along+pole*math.sqrt(max(0,l1*l1-along*along))
-    _aim(rig,names[1],joint-base)
-    _aim(rig,names[2],target-joint)
+def _trigger_finger(rig,weapon,key,trigger=True):
+    from firearm_grips import fit_firearm_fingers
+    fit_firearm_fingers(rig,weapon,key,_aim,trigger)

@@ -104,12 +104,12 @@
     },
     {
       "localPath": "skin-detail-neutral.png",
-      "bytes": 262822,
-      "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357",
+      "bytes": 454047,
+      "sha256": "8fbdf67dd0f7b843cf01d3bb27384cb824c3e98c2665e96fd0858f7566b277cc",
       "license": "CC0-1.0",
       "author": "Mindfront; neutral map transformation by Granaderos",
       "derivedFrom": "Aksel_Skin_diffuse.png",
-      "derivation": "Pillow: convert upstream diffuse to RGB; resize to 1024 x 1024 with LANCZOS; ImageOps.grayscale; ImageEnhance.Contrast(...).enhance(0.66); remap each value with min(255, max(0, int((value - 128) * 0.78 + 222))); convert to RGB and save as PNG.",
+      "derivation": "Pillow: convert upstream diffuse to RGB; resize to 1024 x 1024 with LANCZOS; ImageOps.grayscale; map each value using linear = value * 0.70 + 109.6; when linear > 230, replace with 230 + 24 * (1 - exp(-(linear - 230) / 24)); round; convert to RGB and save as PNG. Exact recipe: prepare_skin_maps.py. Original source and normal map are unchanged.",
       "sourceUrl": "https://files2.makehumancommunity.org/asset_packs/skins02/skins02_cc0.zip",
       "archiveMember": "skins/mindfront_aksel_skin/Aksel_Skin_diffuse.png",
       "upstreamSha256": "268ee6d1ea9665f8050d040c7b47971884428628021418ae52f68912859f5e60",
@@ -120,7 +120,7 @@
         1024
       ],
       "colorMode": "RGB",
-      "pixelSha256": "058ef736e5508efa1c98e41c5c7734f27de68b7ea88cbda56df2a215a39b9fac",
+      "pixelSha256": "334dff1c440481bad6adea9222c2400ff7f650866ba7899111fea3c35fa8e969",
       "pixelHashEncoding": "RGB pixels, row-major order, three bytes per pixel. Recipe reproduces these pixels; PNG byte encoding can vary with Pillow versions."
     },
     {

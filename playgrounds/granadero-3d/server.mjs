@@ -5,7 +5,9 @@ import {fileURLToPath} from 'node:url';
 const root=resolve(fileURLToPath(new URL('.',import.meta.url)));
 const base=process.argv.includes('--dist')?resolve(root,'dist'):root;
 const production=process.argv.includes('--dist');
-const libraryRoot=resolve(root,'../../web/public/models/characters');
+const libraryRoot=process.env.GRANADERO_CHARACTER_LIBRARY
+ ?resolve(process.env.GRANADERO_CHARACTER_LIBRARY)
+ :resolve(root,'../../web/public/models/characters');
 const port=Number(process.env.GRANADERO_PLAYGROUND_PORT??3147);
 const types={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.mjs':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.json':'application/json; charset=utf-8','.glb':'model/gltf-binary','.png':'image/png','.svg':'image/svg+xml'};
 const server=createServer(async(req,res)=>{

@@ -1,7 +1,7 @@
 import {register} from 'node:module';register('./tactical-render-loader.mjs',import.meta.url);
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {Vector3} from '../web/node_modules/three/build/three.module.js';
+import {Euler,Vector3} from '../web/node_modules/three/build/three.module.js';
 import {banks,manifest,readGlb,nativeScene,sampleBank} from './character-bank-fixture.mjs';
 import {publishedActor} from './published-actor-fixture.mjs';
 import {createPairedLoadingBattle} from '../web/app/renderer-sandbox/paired-loading-fixture.js';
@@ -38,14 +38,16 @@ for(const [gender,bank]of Object.entries(banks))for(const posture of Object.keys
   const phases=[0,.36,.46,.50,.58,.66,.70,.79,.83,1],values=sampleBank(bank,name,phases,(point,scene)=>{
    const right=scene.getObjectByName('socket_handRight_pistol'),left=scene.getObjectByName('socket_handLeft_tool');
    if(!right.getObjectByName(`item_${id}`))right.add(equipment.getObjectByName(`item_${id}`).clone(true));scene.updateMatrixWorld(true);
-   const palm=left.getWorldPosition(new Vector3()),muzzle=right.localToWorld(new Vector3(...spec.loadingContact.muzzle)),axis=new Vector3(1,0,0).transformDirection(right.matrixWorld),rod=new Vector3(0,1,0).transformDirection(left.matrixWorld),delta=palm.clone().sub(muzzle),axial=delta.dot(axis);
+   const palm=left.getWorldPosition(new Vector3()),muzzle=right.localToWorld(new Vector3(...spec.loadingContact.muzzle)),axis=new Vector3(1,0,0).transformDirection(right.matrixWorld),rod=new Vector3(0,1,0).applyEuler(new Euler(...(spec.propCues[0].rotation??[0,0,0]))).transformDirection(left.matrixWorld),delta=palm.clone().sub(muzzle),axial=delta.dot(axis);
    near(muzzle.distanceTo(point(manifest.equipment.items[id].muzzle)),id==='1808'?.011:0,.000001,'Bore uses its actual lateral offset from the central marker');
    const breech=right.localToWorld(new Vector3(.025,.055,spec.loadingContact.muzzle[2])),line=muzzle.clone().sub(breech),head=point('head'),fraction=Math.max(0,Math.min(1,head.clone().sub(breech).dot(line)/line.lengthSq()));
-   return {palm,muzzle,clearance:delta.addScaledVector(axis,-axial).length(),alignment:rod.dot(axis),headClearance:head.distanceTo(breech.clone().addScaledVector(line,fraction)),feet:['foot_l','foot_r'].map(point),support:right.getObjectByName(`item_${id}`).worldToLocal(right.getWorldPosition(new Vector3()))};
+   const wristBends=['r','l'].map(side=>point(`middle_01_${side}`).sub(point(`hand_${side}`)).angleTo(point(`hand_${side}`).sub(point(`lowerarm_${side}`)))*180/Math.PI);
+   return {palm,muzzle,wristBends,clearance:delta.addScaledVector(axis,-axial).length(),alignment:rod.dot(axis),headClearance:head.distanceTo(breech.clone().addScaledVector(line,fraction)),feet:['foot_l','foot_r'].map(point),support:right.getObjectByName(`item_${id}`).worldToLocal(right.getWorldPosition(new Vector3()))};
   });
   for(const value of values.filter(value=>[.36,.46].includes(value.fraction)))assert.ok(value.palm.distanceTo(value.muzzle)<.002,`${name}: loading palm reaches its own muzzle within 2 mm`);
   for(const value of values.filter(value=>value.fraction>=.46&&value.fraction<=.83)){
    assert.ok(value.clearance<.006,`${name}: the rod remains inside the measured muzzle clearance`);assert.ok(value.alignment<-.9999,`${name}: the rod points into the actual barrel`);
+   assert.ok(value.wristBends.every(angle=>angle<65),`${name}: loading preserves functional wrist bends (${value.wristBends.map(angle=>angle.toFixed(1)).join(', ')}°)`);
    assert.ok(value.headClearance>.14,`${name}: the barrel stays ahead of the face`);
   }
   for(const value of values){assert.ok(value.support.length()<.0001,'The gun stays inside its native supporting palm');for(const [index,foot]of value.feet.entries())assert.ok(foot.distanceTo(values[0].feet[index])<.0001,'Pistol loading retains planted support');}
