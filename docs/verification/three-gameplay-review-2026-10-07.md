@@ -158,10 +158,54 @@ The live catalogue captured 18 views across these three templates without
 browser errors. Exterior captures and the warehouse interior were compared
 with the retained artwork. The posta piers remain subtle at the review scale.
 
+## Fifth increment
+
+Farmhouse galleries now have joined front and return roofs, fascia, braces and
+two capped chimneys. Their supports stay in actual intact wall cells, skip
+edited openings and omit playable upper surfaces. The six live farmhouse
+views retain ordinary door actions and room cutaways.
+
+Grenade, knife and bolas throws now have distinct native body mechanics for
+both anatomies. Torso and pelvis rotation, a controlled lead step and the free
+arm support the release. The eighteen replaced clips preserve their existing
+release times, joints and scale; the other 309 clips per anatomy stay unchanged.
+The actual grenade order additionally verifies weapon stow through recorded
+preparation, flight and recovery, including exhaustion of the final grenade.
+The live order spends 3.75 PA once and produces no browser errors.
+
+Mounting and dismounting now use the measured saddle, iron stirrup and tack
+grips. The reverse path retains the same frame grid. The protected native
+preparation lasts 2.3 seconds; competing orders are ignored until its result
+commits once. The lance head now has its correct orientation, and long weapons
+use fitted stow positions during the transition. The two equipment meshes are
+the only replaced equipment geometry. Mounted idle boot contact still needs
+a separate correction; these transition checks do not accept the entire
+riding bank.
+
+Pistol loading work now identifies the owned primary or offhand gun. The
+native clock selects each paid interval, reflects the offhand body pose and
+stows the other gun while its hand works. The playable two-pistol review
+checks both guns together and the offhand alone. The first spends 15 PA and
+two cartridges; the second spends 7 PA and one cartridge. Both retain one
+charge in each owned gun. Repeated input during loading cannot add an order.
+`tools/verify-three-paired-loading.mjs` reproduces these UI checks and captures
+both working hands. Pistol muzzle contact remains a separate source audit.
+
+The existing building support audit now covers all fourteen compiled types,
+four rotations and original, window-edited and breached walls: 168 geometry
+states. Low columns, gallery posts, pilasters and trim remain in solid cells;
+the depot hoist clears the approach, and the pulpería sign retains its timber
+barrel emblem above the standing entrance height. The nine changed templates
+produced 54 live exterior, partial and interior captures without browser
+errors. Selected facade and interior images were visually reviewed. The
+support probe does not by itself establish final facade quality.
+
 ## Next increments and acceptance limits
 
-Mounting, throw body mechanics, the broader posture bank, braking steps and
-paired melee contact still need review. The
+Mounted boot contact, climbing support and native duration, pistol loading
+contact, the broader posture bank, braking steps and paired melee contact
+still need review. Town hall facade details and wall finish contrast also
+remain under visual comparison. The
 [character review](../../assets/source/characters-3d/REVIEW.md) records the
 accepted standing reference and the retained motion bank separately.
 

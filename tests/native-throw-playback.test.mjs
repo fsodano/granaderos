@@ -6,6 +6,8 @@ import {createRendererSandboxBattle} from '../web/app/renderer-sandbox/fixtures.
 import {actBattle,presentedActBattle} from '../game/tactical.js';
 import {battleFrameDuration} from '../game/battle-playback.js';
 import {mountBattlefield} from './mounted-battlefield.mjs';
+import {publishedActor} from './published-actor-fixture.mjs';
+const {ActorRuntime}=await import('../web/lib/three/actor-runtime.ts');
 const {admittedThrownRelease}=await import('../web/lib/three/action-timing.ts');
 const {sampleAnimationTime:sample}=await import('../web/lib/three/animation-clock.ts');
 const {presentActors}=await import('../web/lib/three/presentation.ts');
@@ -64,4 +66,27 @@ for(const order of orders)test(`${order.type} mounted Battlefield blocks input d
   assert.equal(await mounted.nextDelay(),presentedFrameDuration(frame,before));
  }
  assert.deepEqual(commits,[expected.state]);assert.deepEqual(battle,actBattle(before,order));
+});
+for(const count of [1,2])test(`published grenade recovery retains the owned weapon stow with ${count} grenade${count===1?'':'s'}`,async()=>{
+ const state=createRendererSandboxBattle('combat'),source=state.units.find(unit=>unit.id==='grenade');source.inventory.grenade.count=count;
+ const before=structuredClone(state),recorded=presentedActBattle(state,orders[0]),frames=admittedThrownRelease(recorded.frames),delays=frames.map(frame=>presentedFrameDuration(frame,state)),asset=await publishedActor('woman-scout');
+ const clip=asset.clips.find(clip=>clip.name==='stand.gesture.throw'),total=delays.reduce((sum,delay)=>sum+delay,0);
+ const shown=(index,start)=>{
+  const frame=frames[index],actor=frame.state.units.find(unit=>unit.id==='grenade');
+  return presentActors(frame.state,[{kind:'unit',key:'unit:grenade',actor}],{},new Set(),{frame:{...frame,sequenceId:'owned-grenade',actionId:1,index,startedAt:start,durationMs:delays[index],actionStartedAt:0,actionDurationMs:total},now:start})[0];
+ };
+ const prepare=shown(0,0),runtime=new ActorRuntime(asset,prepare),rifle=()=>runtime.model.getObjectByName('primary:1800'),grenade=()=>runtime.model.getObjectByName('inventory:grenade:grenade');
+ const pose=(visual,now)=>{runtime.update(visual,now);runtime.tick(.1,now);runtime.tick(.1,now);};
+ // Native preparation ends at the same marker that starts the visible flight.
+ nearly(delays[0],clip.markers.release*1000);pose(prepare,delays[0]-1);
+ assert.equal(rifle().parent.name,asset.appearance.sockets.back.node);assert.equal(grenade().parent.name,asset.appearance.sockets.handRight_tool.node);assert.equal(grenade().visible,true);
+ const recovery=shown(1,delays[0]);
+ for(const offset of [0,1,delays[1]/2,delays[1]-1]){
+  pose(recovery,delays[0]+offset);assert.equal(rifle().parent.name,asset.appearance.sockets.back.node,'The rifle stays on the back through released follow-through');
+  const released=grenade();if(count===2)assert.ok(released&&!released.visible,'Retained stock cannot appear as a second thrown grenade');else assert.equal(released,undefined,'The exhausted owned stack is absent from the admitted state');
+  runtime.model.traverse(object=>{if(object.userData?.itemId&&['1800','1810'].includes(object.userData.itemId))assert.ok(!object.parent.name.startsWith('socket_hand'),'The balancing arms remain free through recovery');});
+ }
+ pose(shown(2,delays[0]+delays[1]),delays[0]+delays[1]);assert.equal(rifle().parent.name,asset.appearance.sockets.back.node);
+ if(count===2)assert.equal(grenade().visible,true,'The remaining owned stack returns after completed follow-through');else assert.equal(grenade(),undefined);
+ assert.deepEqual(state,before);assert.deepEqual(recorded.state,actBattle(before,orders[0]));assert.equal(recorded.state.units.find(unit=>unit.id==='grenade').inventory.grenade?.count??0,count-1);runtime.dispose();
 });
