@@ -63,7 +63,7 @@ test('three paid rifle reload portions preserve work and resume at the interrupt
 test('separate primary and offhand charge intervals retain their own interrupted portions',()=>{
  const before={id:'loader',side:'player',hp:80,weapon:1805,loaded:0,reloadProgress:.5,offHand:{weapon:1806,loaded:0,reloadProgress:.5}},after={...before,loaded:1,reloadProgress:undefined,offHand:{...before.offHand,loaded:1,reloadProgress:undefined}};
  const frames=admittedReloadWork([{type:'prepare',action:'reload',unitId:'loader',state:{units:[before]}},{type:'result',action:'reload',unitId:'loader',state:{units:[after]}}]);
- assert.deepEqual(frames[1].actionWork,[{from:.5,to:1},{from:.5,to:1}]);
+ assert.deepEqual(frames[1].actionWork,[{from:.5,to:1,hand:'primary'},{from:.5,to:1,hand:'offhand'}]);
  const clip=manifest.animationLibraries.male.clips.find(clip=>clip.name==='stand.reload.short-gun'),duration=presentedFrameDuration(frames[1],frames[0].state);nearly(duration,4800);assert.equal(presentedFrameDuration(frames[0],frames[0].state),0);
  const cue={action:'reload',startedAt:0,phase:'result',phaseDurationMs:duration,work:frames[1].actionWork};
  nearly(sample({clip,action:'reload',cue,now:1200}).time,clip.duration*.75);nearly(sample({clip,action:'reload',cue,now:3600}).time,clip.duration*.75);nearly(sample({clip,action:'reload',cue,now:4800}).time,clip.duration);
