@@ -2,10 +2,10 @@ import {surfaceRectangles,subtractRectangle} from './world-climb-openings';
 import type {ClimbOpening,SurfaceRectangle} from './world-climb-openings';
 import type {WorldBuilding,WorldInput,WorldPoint} from './world-types';
 
-/** Centred warehouse walls expose their supported masonry on every face.
+/** Centred warehouse and posta walls expose their supported masonry.
  * Corner openings retain the original shell to preserve their clipped spans. */
 export function buildingArtInset(b:WorldBuilding,input:WorldInput){
-  if((b.kind??b.architecture)!=='warehouse')return .4;
+  if(!['warehouse','posta'].includes(b.kind??b.architecture??''))return .4;
   const cornerOpening=input.terrain.tiles.some(tile=>tile.buildingId===b.id&&['door','window'].includes(tile.type)&&(tile.x===b.x||tile.x===b.x+b.width-1)&&(tile.y===b.y||tile.y===b.y+b.height-1));
   return cornerOpening ? .4 : 0;
 }
