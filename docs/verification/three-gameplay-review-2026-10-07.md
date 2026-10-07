@@ -508,6 +508,22 @@ The final clean cut passed 77 affected checks, type/docs/baseline checks and
 the production export. Twelve clean rotation/disclosure views had no browser
 errors. Front and side exteriors and the interior were visually inspected.
 
+## Primary pistol-butt contact increment
+
+A standing primary/right pistol with a free guard hand now contacts its actual
+brass cap against the current admitted target body. The entire swept sole and
+native wrist path must remain supported and reachable. A replacement model is
+refitted and cached recovery does not inspect hidden targets. The
+[pistol contact review](../art/supported-pistol-butt-3d-review-2026-10-07.md)
+records the independent arm check and finite unsupported cases.
+
+The clean cut passed 70 affected checks, type/docs/baseline checks and the
+production export. The normal inventory/move/B/strike browser sequence had
+no errors and applied exactly one paid 23-point impact without consuming its
+charge or reserve. Contact and recovery screenshots were visually inspected.
+The broader audit found a separate released sabre wrist-path issue, held for
+its own repair; this pistol cut does not hide it.
+
 ## Next increments and acceptance limits
 
 The low-ceiling headwear limit, broader posture bank, braking steps and the

@@ -5,7 +5,7 @@ import type {ActorCue,ContactTarget,ContactSupport} from './presentation';
 export type ContactActorResolver=(target:ContactTarget)=>{model:Object3D;root:Object3D}|undefined;
 type Limb={base:Object3D;middle:Object3D;end:Object3D;first:number;second:number};
 type Sole={mesh:SkinnedMesh;vertices:number[];outline:number[];floor:number};
-type Plan={key:string;cueId:string;target:Object3D;hand:Vector3;body:Vector3;step:Vector3;rearStep:Vector3;contact:number;duration:number};
+type Plan={key:string;cueId:string;target:Object3D;hand:Vector3;body:Vector3;step:Vector3;rearStep:Vector3;contact:number;duration:number;pistol?:boolean};
 const smooth=(value:number)=>{const t=Math.max(0,Math.min(1,value));return t*t*(3-2*t);};
 function visible(node:Object3D){let current:Object3D|null=node;while(current){if(!current.visible)return false;current=current.parent;}return true;}
 function poseTree(source:Object3D):Object3D|undefined{
@@ -14,7 +14,7 @@ function poseTree(source:Object3D):Object3D|undefined{
  for(const child of source.children){const copy=poseTree(child);if(copy)node.add(copy);}return node;
 }
 
-/** A paired standing sabre strike uses the current admitted body surface.
+/** A paired standing sabre or primary pistol-butt strike uses the current admitted body surface.
  * The actor's gameplay transform stays fixed. The native pelvis advances
  * between a planted rear boot and a stepping lead boot; all limb lengths,
  * the authored cut rotation and the single contact marker are preserved. */
@@ -22,6 +22,25 @@ export class NativeMeleeContactFit {
  maximumReachError=0;footReachError=0;handReachError=0;bodyAdvance=0;rejectedFits=0;
  private limbs=new Map<string,Limb>();private body:Object3D;
  private soles=new Map<string,Sole>();
+ private soleVertices=new WeakMap<Sole,Map<number,{bone:Object3D;point:Vector3;weight:number}[]>>();
+ private soleScratch=new Vector3();
+ // Native attached footwear shares its bone world transform. Cache the
+ // immutable inverse-bind coordinates, keeping each current bone rotation.
+ // Morph or detached footwear keeps Three's full vertex deformation.
+ private solePoint(sole:Sole,index:number,point:Vector3){
+  const mesh=sole.mesh;
+  if(mesh.bindMode!=='attached'||mesh.geometry.morphAttributes.position?.length)return mesh.localToWorld(mesh.getVertexPosition(index,point));
+  let vertices=this.soleVertices.get(sole);if(!vertices){vertices=new Map();this.soleVertices.set(sole,vertices);}
+  let influences=vertices.get(index);
+  if(!influences){
+   const position=new Vector3().fromBufferAttribute(mesh.geometry.attributes.position,index).applyMatrix4(mesh.bindMatrix),indices=mesh.geometry.attributes.skinIndex,weights=mesh.geometry.attributes.skinWeight;
+   influences=[];for(let slot=0;slot<4;slot++){const weight=weights.getComponent(index,slot);if(weight>0){const boneIndex=indices.getComponent(index,slot);influences.push({bone:mesh.skeleton.bones[boneIndex],point:position.clone().applyMatrix4(mesh.skeleton.boneInverses[boneIndex]),weight});}}
+   vertices.set(index,influences);
+  }
+  point.set(0,0,0);for(const influence of influences)point.addScaledVector(this.soleScratch.copy(influence.point).applyMatrix4(influence.bone.matrixWorld),influence.weight);return point;
+ }
+
+
  private core:{bone:Object3D;low:Vector3;high:Vector3}[]=[];
  private sample?:Object3D;private sampleRoot=new Object3D();private sampleMixer?:AnimationMixer;
  private previewFit?:NativeMeleeContactFit;
@@ -86,7 +105,15 @@ export class NativeMeleeContactFit {
   this.rotateToward(middle,this.before.subVectors(this.end,this.joint),this.after.subVectors(this.target,this.joint));
   end.parent!.getWorldQuaternion(this.parentRotation);end.quaternion.copy(this.parentRotation.invert().multiply(this.endRotation));end.updateWorldMatrix(false,true);
  }
- private contactPoints(weapon:Object3D,hilt:boolean){
+ private contactPoints(weapon:Object3D,hilt:boolean,pistol=false){
+  const cap=pistol?weapon.children.find(node=>/Pistol_Butt_Cap/.test(node.name)) as Mesh|undefined:undefined;
+  if(pistol&&!cap)return [];
+  if(cap){
+   const positions=cap.geometry.attributes.position;let bottom=Infinity;for(let index=0;index<positions.count;index++)bottom=Math.min(bottom,positions.getY(index));
+   const ring=new Map<string,Vector3>();for(let index=0;index<positions.count;index++)if(Math.abs(positions.getY(index)-bottom)<1e-6){const point=new Vector3().fromBufferAttribute(positions,index);ring.set(`${Math.round(point.x*1e6)}:${Math.round(point.z*1e6)}`,point);}
+   return [...ring.values()];
+  }
+
   if(hilt){
    const grip=weapon.children.find(node=>/Leather_Grip/.test(node.name)) as Mesh|undefined,guard=weapon.children.find(node=>/Crossguard/.test(node.name)) as Mesh|undefined;
    if(!grip||!guard)return [];
@@ -104,26 +131,31 @@ export class NativeMeleeContactFit {
   return [...rings.values()].sort((a,b)=>a.low.y-b.low.y).map(ring=>ring.low.clone().add(ring.high).multiplyScalar(.5));
  }
  private correction(points:Vector3[],target:Object3D){
-  const surfaces:{triangle:Triangle;low:Vector3;high:Vector3}[]=[],vertex=new Vector3();
   target.updateWorldMatrix(true,false);target.updateMatrixWorld(true);
+  let distance=Infinity;const closest=new Vector3(),delta=new Vector3(),base=new Vector3(),triangle=new Triangle();
   target.traverse(node=>{
    if(!(node instanceof SkinnedMesh)||!visible(node))return;
    const positions=node.geometry.attributes.position,index=node.geometry.index;if(!index)return;
-   // getVertexPosition includes the posture morph, then native skinning.
-   const vertices=Array.from({length:positions.count},(_,i)=>node.localToWorld(node.getVertexPosition(i,vertex.clone())));
+   // Compose each current native palette once. Mesh's base method includes
+   // all active clothing morphs; the same four exported weights then skin it.
+   const indices=node.geometry.attributes.skinIndex,weights=node.geometry.attributes.skinWeight,
+    meshToWorld=new Matrix4().multiplyMatrices(node.matrixWorld,node.bindMatrixInverse),matrices=node.skeleton.bones.map((bone,i)=>new Matrix4().copy(meshToWorld).multiply(bone.matrixWorld).multiply(node.skeleton.boneInverses[i]).multiply(node.bindMatrix));
+   const vertices=Array.from({length:positions.count},(_,i)=>{
+    Mesh.prototype.getVertexPosition.call(node,i,base);const x=base.x,y=base.y,z=base.z,point=new Vector3();
+    for(let slot=0;slot<4;slot++){
+     const weight=weights.getComponent(i,slot);if(weight===0)continue;const m=matrices[indices.getComponent(i,slot)].elements;
+     point.x+=weight*(m[0]*x+m[4]*y+m[8]*z+m[12]);point.y+=weight*(m[1]*x+m[5]*y+m[9]*z+m[13]);point.z+=weight*(m[2]*x+m[6]*y+m[10]*z+m[14]);
+    }return point;
+   });
    for(let i=0;i<index.count;i+=3){
-    const a=vertices[index.getX(i)],b=vertices[index.getX(i+1)],c=vertices[index.getX(i+2)],triangle=new Triangle(a,b,c);
-    if(triangle.getArea()<1e-10)continue;
-    surfaces.push({triangle,low:a.clone().min(b).min(c),high:a.clone().max(b).max(c)});
+    const a=vertices[index.getX(i)],b=vertices[index.getX(i+1)],c=vertices[index.getX(i+2)];triangle.set(a,b,c);if(triangle.getArea()<1e-10)continue;
+    const minX=Math.min(a.x,b.x,c.x),maxX=Math.max(a.x,b.x,c.x),minY=Math.min(a.y,b.y,c.y),maxY=Math.max(a.y,b.y,c.y),minZ=Math.min(a.z,b.z,c.z),maxZ=Math.max(a.z,b.z,c.z);
+    for(const point of points){
+     const dx=Math.max(0,minX-point.x,point.x-maxX),dy=Math.max(0,minY-point.y,point.y-maxY),dz=Math.max(0,minZ-point.z,point.z-maxZ);if(dx*dx+dy*dy+dz*dz>=distance)continue;
+     triangle.closestPointToPoint(point,closest);const squared=closest.distanceToSquared(point);if(squared<distance){distance=squared;delta.subVectors(closest,point);}
+    }
    }
   });
-  let distance=Infinity;const closest=new Vector3(),delta=new Vector3();
-  for(const point of points)for(const {triangle,low,high}of surfaces){
-   let bound=0;for(let axis=0;axis<3;axis++){const gap=Math.max(0,low.getComponent(axis)-point.getComponent(axis),point.getComponent(axis)-high.getComponent(axis));bound+=gap*gap;}
-   if(bound>=distance)continue;
-   triangle.closestPointToPoint(point,closest);const squared=closest.distanceToSquared(point);
-   if(squared<distance){distance=squared;delta.subVectors(closest,point);}
-  }
   return Number.isFinite(distance)?delta:undefined;
  }
  private prepare(key:string,cue:ActorCue,clip:AnimationClip,spec:ClipSpec,weapon:Object3D,target:Object3D){
@@ -147,7 +179,7 @@ export class NativeMeleeContactFit {
   const hand=this.model.getObjectByName('hand_r')!,sampleHand=this.sample.getObjectByName('hand_r')!,arm=this.limbs.get('hand_r')!;
   this.root.updateWorldMatrix(true,false);this.root.updateMatrixWorld(true);
   const relative=new Matrix4().copy(hand.matrixWorld).invert().multiply(weapon.matrixWorld),transform=new Matrix4().multiplyMatrices(sampleHand.matrixWorld,relative);
-  const points=this.contactPoints(weapon,spec.name.endsWith('.hilt')).map(point=>point.applyMatrix4(transform)),correction=this.correction(points,target);if(!correction)return;
+  const points=this.contactPoints(weapon,spec.name.endsWith('.hilt'),spec.name==='stand.butt.short-gun').map(point=>point.applyMatrix4(transform)),correction=this.correction(points,target);if(!correction)return;
   const rootRotation=this.root.getWorldQuaternion(new Quaternion()),shoulder=this.sample.getObjectByName('upperarm_r')!.getWorldPosition(new Vector3()),desired=sampleHand.getWorldPosition(new Vector3()).add(correction),forward=new Vector3(0,0,1).applyQuaternion(rootRotation),body=new Vector3(),step=new Vector3(),rearStep=new Vector3();
   const hips=new Map(['l','r'].map(side=>[side,this.sample!.getObjectByName(`thigh_${side}`)!.getWorldPosition(new Vector3())])),feet=new Map(['l','r'].map(side=>[side,this.sample!.getObjectByName(`foot_${side}`)!.getWorldPosition(new Vector3())]));
   // Choose the smallest supported advance that puts the contact wrist within
@@ -175,7 +207,7 @@ export class NativeMeleeContactFit {
      step.copy(forward).multiplyScalar(advance*fraction);
      const leg=this.limbs.get('foot_r')!,hip=hips.get('r')!.clone().add(body),foot=feet.get('r')!.clone().add(step);
      if(hip.distanceTo(foot)>leg.first+leg.second-.008)continue;
-     const local=(value:Vector3)=>value.clone().applyQuaternion(rootRotation.clone().invert()),plan={key,cueId:cue.id,target,hand:local(correction),body:local(body),step:local(step),rearStep:local(rearStep),contact:contact!,duration:clip.duration};
+     const local=(value:Vector3)=>value.clone().applyQuaternion(rootRotation.clone().invert()),plan={key,cueId:cue.id,target,hand:local(correction),body:local(body),step:local(step),rearStep:local(rearStep),contact:contact!,duration:clip.duration,pistol:spec.name==='stand.butt.short-gun'};
      if(!this.pathAllowed(plan,clip,support,action))continue;
      accepted=true;acceptedPlan=plan;break;
     }
@@ -187,33 +219,25 @@ export class NativeMeleeContactFit {
   this.plan=acceptedPlan;this.bodyAdvance=Math.hypot(body.x,body.z);
  }
  private floorAllowed(support:ContactSupport){
-  const point=new Vector3(),height=this.sampleRoot.position.y,inside=(x:number,z:number)=>support.floors.some(floor=>Math.abs(floor.height-height)<.001&&x>=floor.minX&&x<=floor.maxX&&z>=floor.minZ&&z<=floor.maxZ),current:Vector3[]=[];
-  for(const sole of this.previewFit!.soles.values())for(const index of sole.outline){
-   sole.mesh.localToWorld(sole.mesh.getVertexPosition(index,point));
-   // A small neighbourhood covers the interval between the 120 Hz samples.
-   // Shared edges of two allowed cells remain inside their floor union.
-   const before=this.pathPrevious?.[current.length];
-   for(const dx of [-.003,0,.003])for(const dz of [-.003,0,.003]){
-    if(!inside(point.x+dx,point.z+dz))return false;
-    if(before&&!this.segmentAllowed(before.x+dx,before.z+dz,point.x+dx,point.z+dz,support,height))return false;
+  const point=new Vector3(),height=this.sampleRoot.position.y,current:Vector3[]=[];
+  for(const sole of this.previewFit!.soles.values()){
+   let minX=Infinity,maxX=-Infinity,minZ=Infinity,maxZ=-Infinity;
+   for(const index of sole.outline){
+    this.previewFit!.solePoint(sole,index,point);const before=this.pathPrevious?.[current.length];
+    minX=Math.min(minX,point.x,before?.x??point.x);maxX=Math.max(maxX,point.x,before?.x??point.x);minZ=Math.min(minZ,point.z,before?.z??point.z);maxZ=Math.max(maxZ,point.z,before?.z??point.z);current.push(point.clone());
    }
-   current.push(point.clone());
-  }
-  this.pathPrevious=current;
-  return this.previewFit!.soles.size===2;
- }
- private segmentAllowed(x0:number,z0:number,x1:number,z1:number,support:ContactSupport,height:number){
-  const spans:number[][]=[];
-  for(const floor of support.floors){
-   if(Math.abs(floor.height-height)>.001)continue;
-   let begin=0,end=1;
-   for(const [a,b,low,high]of [[x0,x1,floor.minX,floor.maxX],[z0,z1,floor.minZ,floor.maxZ]]){
-    const delta=b-a;if(Math.abs(delta)<1e-12){if(a<low||a>high){begin=1;end=0;break;}continue;}
-    const from=(low-a)/delta,to=(high-a)/delta;begin=Math.max(begin,Math.min(from,to));end=Math.min(end,Math.max(from,to));
+   // This swept rectangle encloses every exported sole vertex and its
+   // segment between the 120 Hz samples. Checking its complete area is
+   // stricter than testing only vertex endpoints at a blocked corner.
+   minX-=.003;maxX+=.003;minZ-=.003;maxZ+=.003;
+   const floors=support.floors.filter(floor=>Math.abs(floor.height-height)<.001),cuts=[minX,maxX,...floors.flatMap(floor=>[floor.minX,floor.maxX]).filter(x=>x>minX&&x<maxX)].sort((a,b)=>a-b);
+   for(let index=1;index<cuts.length;index++){
+    if(cuts[index]-cuts[index-1]<1e-10)continue;
+    const x=(cuts[index]+cuts[index-1])/2,spans=floors.filter(floor=>x>=floor.minX&&x<=floor.maxX).map(floor=>[Math.max(minZ,floor.minZ),Math.min(maxZ,floor.maxZ)]).filter(([a,b])=>b>=a).sort((a,b)=>a[0]-b[0]);
+    let covered=minZ;for(const [a,b]of spans){if(a>covered+1e-8)break;covered=Math.max(covered,b);}if(covered<maxZ-1e-8)return false;
    }
-   if(end>=begin)spans.push([begin,end]);
   }
-  spans.sort((a,b)=>a[0]-b[0]);let covered=0;for(const [a,b]of spans){if(a>covered+1e-8)return false;covered=Math.max(covered,b);if(covered>=1-1e-8)return true;}return false;
+  this.pathPrevious=current;return this.previewFit!.soles.size===2;
  }
  private bodyAllowed(support:ContactSupport){
   const low=new Vector3(Infinity,Infinity,Infinity),high=new Vector3(-Infinity,-Infinity,-Infinity),point=new Vector3();
@@ -235,7 +259,10 @@ export class NativeMeleeContactFit {
   return true;
  }
  private pathAllowed(plan:Plan,clip:AnimationClip,support:ContactSupport,action:AnimationAction){
-  const sample=(time:number)=>{this.previewFit!.restore();action.time=time;action.timeScale=0;this.sampleMixer!.update(0);this.sampleRoot.updateMatrixWorld(true);this.previewFit!.pose(plan,time);this.sampleRoot.updateMatrixWorld(true);return this.floorAllowed(support)&&this.previewFit!.footReachError<.001;};
+  // A held pistol still keeps its wrist socket when the arm solver clamps.
+  // Require the complete native wrist path to be reachable, beyond contact
+  // and grip alone. Other weapon families retain their existing admission.
+  const sample=(time:number)=>{this.previewFit!.restore();action.time=time;action.timeScale=0;this.sampleMixer!.update(0);this.sampleRoot.updateMatrixWorld(true);this.previewFit!.pose(plan,time);this.sampleRoot.updateMatrixWorld(true);return this.floorAllowed(support)&&this.previewFit!.footReachError<.001&&(!plan.pistol||this.previewFit!.handReachError<1e-7);};
   // Reject an obstructed contact footprint before checking its whole path.
   this.pathPrevious=undefined;
   if(!sample(plan.contact)||!this.bodyAllowed(support))return false;
@@ -245,7 +272,7 @@ export class NativeMeleeContactFit {
  }
  apply(cue:ActorCue|undefined,clip:AnimationClip,spec:ClipSpec,weapon:Object3D|undefined,time:number,resolve?:ContactActorResolver){
   this.maximumReachError=0;this.footReachError=0;this.handReachError=0;
-  if(!cue||!weapon||!this.body||!['hand_r','foot_l','foot_r'].every(name=>this.limbs.has(name))||this.soles.size!==2||!spec.name.startsWith('stand.slash.blade')||cue.contactTarget&&(cue.contactTarget.mounted||!['standing','crouched'].includes(cue.contactTarget.posture))){this.plan=undefined;this.attemptedKey='';return;}
+  if(!cue||!weapon||!this.body||!['hand_r','foot_l','foot_r'].every(name=>this.limbs.has(name))||this.soles.size!==2||!(spec.name.startsWith('stand.slash.blade')||spec.name==='stand.butt.short-gun')||cue.contactTarget&&(cue.contactTarget.mounted||!['standing','crouched'].includes(cue.contactTarget.posture))){this.plan=undefined;this.attemptedKey='';return;}
   const key=cue.id;
   if(cue.contactTarget){
    const admitted=resolve?.(cue.contactTarget);if(!admitted||!visible(admitted.root)||!visible(admitted.model)){this.plan=undefined;this.attemptedKey='';return;}
@@ -280,7 +307,7 @@ export class NativeMeleeContactFit {
   lead.y+=Math.max(advanceArc,recoveryArc)*Math.min(.045,plan.step.length()*.1);
   const support=plan.rearStep.length()>.005&&Math.max(rearAdvanceArc,rearRecoveryArc)>0?'r':'l',sole=this.soles.get(support);
   if(sole){
-   const minimum=Math.min(...sole.vertices.map(index=>sole.mesh.localToWorld(sole.mesh.getVertexPosition(index,new Vector3())).y)),floor=this.root.getWorldPosition(new Vector3()).y+sole.floor;
+   const minimum=Math.min(...sole.vertices.map(index=>this.solePoint(sole,index,new Vector3()).y)),floor=this.root.getWorldPosition(new Vector3()).y+sole.floor;
    footTargets.get(support)!.y+=floor-minimum;
   }
   // Flex the knees by the amount the measured leg reach needs at this
