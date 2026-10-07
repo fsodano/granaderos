@@ -356,13 +356,25 @@ Six stable playable palace views produced no browser errors. The front,
 rear and interior were compared with the current sprite. The native repair
 work remains separate from this small architectural release.
 
+## Timber lattice increment
+
+Lattice windows now follow the direct sprite's diagonal timber strips and source
+colour on both faces. Barred and arched windows retain their iron. Edited styles,
+breaches and normal room cutaways retain their existing shell controls. The
+[timber window review](../art/timber-lattice-3d-review-2026-10-07.md) records the
+measured opening and final visual comparison.
+
+The clean committed cut passed 31 affected checks in 10.13 seconds, the type and
+documentation checks, all 38 baseline checks and the production export. Twelve
+final playable pulpería and caballeriza views had no browser errors. Selected
+exterior and interior views were compared with the current sprites.
+
 ## Next increments and acceptance limits
 
 Climbing support and the roof-edge step, the broader posture bank, braking
 steps and paired melee contact still need review. The broader published bank
 audit also found floor penetration in sideways steps, prone motion and lance
-locomotion; native boot grounding remains under correction. Timber lattice,
-depot loading details and warehouse buttresses need source comparison. The
+locomotion; native boot grounding remains under correction. Depot loading details and warehouse buttresses need source comparison. The
 [character review](../../assets/source/characters-3d/REVIEW.md) records the
 accepted standing reference and the retained motion bank separately.
 
