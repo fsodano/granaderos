@@ -540,6 +540,19 @@ Selected support and recovery frames were compared with the current unarmed
 prone sprites. The decoded track/manifest preservation proof passed again
 against the exact clean source.
 
+## Stable timber gable ventilation increment
+
+The stable's broad timber triangle and six physical slats now follow the
+current sprite span and actual pitched roof height. Authored slabs, terraces,
+usable overlapping roof cells and room cutaways omit the pitched feature.
+The [stable ventilation review](../art/stable-ventilation-3d-review-2026-10-07.md)
+records the retained frame and remaining separate material work.
+
+The final clean cut passed 75 affected checks, type/docs/baseline checks and
+the production export. Eighteen clean original/slab browser views had no errors.
+The front was compared with the current direct sprite; selected original and
+slab exterior/interior frames were visually inspected.
+
 ## Next increments and acceptance limits
 
 The low-ceiling headwear limit, broader posture bank, braking steps and the
