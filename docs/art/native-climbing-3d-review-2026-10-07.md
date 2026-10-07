@@ -1,0 +1,13 @@
+# Native climbing review — 7 October 2026
+
+The published human banks now have a complete authored ascent and descent. One physical ladder plan supplies the rung spacing, native authoring, world mesh, movement path and current hand/foot contacts. Playback keeps the complete paid movement interval and both saved endpoints. It does not repeat a short observer clip during the climb.
+
+Both anatomies use the original rig. The contact fit changes native joint rotations, keeps native segment lengths and restores the unfitted pose before each mixer update. The published bank preservation check confirms that only the two climbing clips changed in each 334-clip bank; the other 332 clips, native meshes, bind matrices and unrelated records remain exact. The weapon stays stowed during ascent and descent.
+
+The same-cell ladder sits behind the saved standing point. Its measured aperture passes the clothed high-detail body through the actual slab and adjacent room floors. A timber cover is flush with the roof when idle. Only an admitted visible active climb opens it, and the raised cover stays behind the measured body envelope. The landing heels retain real floor support. Current visible melee footing excludes an actively open hatch; an absent or unreadable climber cannot alter it.
+
+The clean committed cut passed 69 affected checks in 13.71 seconds, the type and documentation checks, all 38 baseline checks, native asset verification, locomotion calibration and the production export (1,244 files; 1,039 asset references). Checks include complete ascent/descent timing, published contact surfaces and held poses, slab volume, hatch closure, floor cache retention, admitted support and the existing sabre fit. The playable hatch fixture uses ordinary game orders on 3 m and 4.2 m platforms with the original walking cells.
+
+Normal UI captures of the Montura y azotea route and the opposite-facing Casa rural roof route were reviewed during ascent, roof transfer and descent. The saved cells are reached after the complete movement interval, with supported boots and stowed equipment. The opposite-route crest and mid-descent were compared with the current climbing sprites. A clean committed hatch capture is still required before release.
+
+The 2 m platform stress check exposes a standing headwear clearance limit under its 1.8 m slab underside. It requires a separate low-ceiling correction. This review accepts only the measured climbing increment. General crouched/prone support, other body actions and final scene polish remain under review.
