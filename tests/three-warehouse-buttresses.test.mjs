@@ -6,6 +6,7 @@ const {Mesh,Raycaster,Vector3}=await import('../web/node_modules/three/build/thr
 const {WorldGeometry,disposeWorldNode}=await import('../web/lib/three/world-geometry.ts');
 const {WorldMaterials}=await import('../web/lib/three/world-materials.ts');
 const {buildBuilding}=await import('../web/lib/three/world-buildings.ts');
+const {buildingArtInset}=await import('../web/lib/three/world-building-placement.ts');
 const {entranceFrame}=await import('../game/building-profile.js');
 const {createArchitectureReviewBattle}=await import('../web/app/renderer-sandbox/architecture-fixtures.js');
 const T=1.2360585147470482,V=25.066666666666666,rotations=[0,90,180,270];
@@ -18,9 +19,9 @@ function supports(f){return [0,f.frame.width].flatMap(u=>Array.from({length:Math
 test('actual warehouse supports form closed sloping masonry wedges in intact side cells at four rotations',()=>{
  let checked=0;
  for(const rotation of rotations){
-  const f=fixture(rotation),building=f.build(),node=f.feature(building),height=building.userData.height,points=[];assert.ok(node);
-  node.traverse(child=>{if(child instanceof Mesh){const p=child.geometry.getAttribute('position');for(let n=0;n<p.count;n++){const x=p.getX(n),z=p.getZ(n);assert.equal(f.input.terrain.tiles.find(tile=>tile.x===Math.round(x/T)&&tile.y===Math.round(z/T))?.type,'wall','every masonry vertex must remain in an intact support cell');assert.ok(p.getY(n)<height-.04);points.push({u:(x/T-.4-f.frame.origin.x)*f.frame.u.x+(z/T-.4-f.frame.origin.y)*f.frame.u.y,v:(x/T-.4-f.frame.origin.x)*f.frame.v.x+(z/T-.4-f.frame.origin.y)*f.frame.v.y,y:p.getY(n)});}}});
-  for(const {u,v}of supports(f)){const a=u-.30*(f.frame.u.x+f.frame.u.y),c=v-.30*(f.frame.v.x+f.frame.v.y),out=u===0?-1:1,near=points.filter(p=>Math.abs(p.v-c)<.20),inner=Math.max(...near.filter(p=>Math.abs(p.u-(a-out*.39))<1e-5).map(p=>p.y)),outer=Math.max(...near.filter(p=>Math.abs(p.u-(a+out*.39))<1e-5).map(p=>p.y));assert.ok(Math.abs(inner-(height-12/V))<1e-5);assert.ok(Math.abs(outer-height*.59)<1e-5);assert.ok(inner-outer>.50,'the support must have the retained visible slope');checked++;}
+  const f=fixture(rotation),building=f.build(),node=f.feature(building),height=building.userData.height,inset=buildingArtInset(f.b,f.input),points=[];assert.ok(node);
+  node.traverse(child=>{if(child instanceof Mesh){const p=child.geometry.getAttribute('position');for(let n=0;n<p.count;n++){const x=p.getX(n),z=p.getZ(n);assert.equal(f.input.terrain.tiles.find(tile=>tile.x===Math.round(x/T)&&tile.y===Math.round(z/T))?.type,'wall','every masonry vertex must remain in an intact support cell');assert.ok(p.getY(n)<height-.04);points.push({u:(x/T-inset-f.frame.origin.x)*f.frame.u.x+(z/T-inset-f.frame.origin.y)*f.frame.u.y,v:(x/T-inset-f.frame.origin.x)*f.frame.v.x+(z/T-inset-f.frame.origin.y)*f.frame.v.y,y:p.getY(n)});}}});
+  for(const {u,v}of supports(f)){const shift=inset===0?0:.30,a=u-shift*(f.frame.u.x+f.frame.u.y),c=v-shift*(f.frame.v.x+f.frame.v.y),out=u===0?-1:1,near=points.filter(p=>Math.abs(p.v-c)<.20),inner=Math.max(...near.filter(p=>Math.abs(p.u-(a-out*.39))<1e-5).map(p=>p.y)),outer=Math.max(...near.filter(p=>Math.abs(p.u-(a+out*.39))<1e-5).map(p=>p.y));assert.ok(Math.abs(inner-(height-12/V))<1e-5);assert.ok(Math.abs(outer-height*.59)<1e-5);assert.ok(inner-outer>.50,'the support must have the retained visible slope');checked++;}
   // A ray through the support must meet front and back surfaces, rather than
   // a single floating panel. The lower foot leaves the ordinary door route.
   const {u,v}=supports(f)[0],p=f.frame.at(u,v),onX=Math.abs(f.frame.u.x)===1,start=onX?new Vector3((p.x-1)*T,.35,(p.y+.1)*T):new Vector3((p.x+.1)*T,.35,(p.y-1)*T),direction=onX?new Vector3(1,0,0):new Vector3(0,0,1);assert.ok(new Raycaster(start,direction,0,2*T).intersectObject(node,true).length>=2);f.dispose(building);

@@ -9,13 +9,14 @@ import {illuminationAt} from './world-materials';
 import {architecturalDetails,roofEdgeDetails} from './world-building-details';
 import {addWallSurfaceDetails} from './world-building-surfaces';
 import {addDoorLeaf} from './world-building-doors';
-import {climbOpenings,surfaceRectangles} from './world-climb-openings';
+import {climbOpenings} from './world-climb-openings';
 import {addWindowFace} from './world-building-windows';
+import {buildingArtInset,buildingFloorRectangles} from './world-building-placement';
 import type {WorldGeometry} from './world-geometry';
 import type {WorldMaterials} from './world-materials';
 import type {WorldBuilding,WorldInput,WorldTile} from './world-types';
 
-const V=25.066666666666666,wallInset=.4;
+const V=25.066666666666666;
 type Axis='x'|'y';
 /** Masonry fills the rectangle above the arch, leaving a true curved opening. */
 function openingArch(batch:WorldBatch,wall:ReturnType<WorldMaterials['get']>,trim:ReturnType<WorldMaterials['get']>,axis:Axis,mid:number,cross:number,base:number,top:number,width:number,thickness:number,light:number){
@@ -74,7 +75,7 @@ export function buildingWallAxes(tile:WorldTile,b:WorldBuilding|undefined,occupi
   return result;
 }
 export function buildBuilding(b0:WorldBuilding,input:WorldInput,T:number,geometry:WorldGeometry,materials:WorldMaterials){
-  const b=normalizedBuilding(b0),known=effectiveRooms(input),profile=getBuildingProfile(b),appearance=appearanceFor(b),legacy=Boolean(b0.architecture&&(!b0.kind||b0.roof==='terrace'));
+  const b=normalizedBuilding(b0),wallInset=buildingArtInset(b,input),known=effectiveRooms(input),profile=getBuildingProfile(b),appearance=appearanceFor(b),legacy=Boolean(b0.architecture&&(!b0.kind||b0.roof==='terrace'));
   const walls=input.terrain.tiles.filter(tile=>tile.buildingId===b.id&&['wall','door','window'].includes(tile.type)),allWalls=input.terrain.tiles.filter(tile=>['wall','door','window'].includes(tile.type)),occupied=new Set(allWalls.map(tile=>`${tile.x},${tile.y}`));
   const roofs=(input.terrain.upperSurfaces??[]).filter(surface=>surface.kind==='roof'&&surface.buildingId===b.id),base=input.terrain.tiles.find(tile=>tile.x===b.x&&tile.y===b.y)?.elevation??0;
   const groundRooms=(b.rooms??[]).filter(room=>!(room.tacticalLevel??room.cells[0]?.tacticalLevel??0)),allOpen=groundRooms.length>0&&groundRooms.every(room=>known.has(room.id)),someOpen=groundRooms.some(room=>known.has(room.id));
@@ -128,7 +129,7 @@ export function buildBuilding(b0:WorldBuilding,input:WorldInput,T:number,geometr
   for(const [index,room]of (b.rooms??[]).entries())if(known.has(room.id)){
     const decor=roomDecorProfile(b,room,index),floor=materials.terrain(decor.floor==='stone'?'cobble':decor.floor),level=room.tacticalLevel??0;
     for(const cell of room.cells){const cellLevel=cell.tacticalLevel??level,surface=(cellLevel?input.terrain.upperSurfaces:input.terrain.tiles)?.find(tile=>tile.x===cell.x&&tile.y===cell.y&&(tile.tacticalLevel??0)===cellLevel),y=surface?.elevation??base;
-      for(const part of surfaceRectangles({...cell,tacticalLevel:cellLevel,elevation:y},T,openings))cellTop(batch,floor,part.minX,part.minZ,part.maxX,part.maxZ,y+.006,illuminationAt(input,{...cell,tacticalLevel:cellLevel}));
+      for(const part of buildingFloorRectangles(b,input,{...cell,tacticalLevel:cellLevel,elevation:y},T,openings,wallInset))cellTop(batch,floor,part.minX,part.minZ,part.maxX,part.maxZ,y+.006,illuminationAt(input,{...cell,tacticalLevel:cellLevel}));
     }
   }
   if(!roofs.length&&!allOpen){

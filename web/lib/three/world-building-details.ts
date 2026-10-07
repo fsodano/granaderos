@@ -8,11 +8,10 @@ import {palaceFacade} from './world-palace-facade';
 import {depotFacade} from './world-depot-facade';
 import {warehouseButtresses} from './world-warehouse-buttresses';
 import {postaPiers} from './world-posta-piers';
+import {buildingArtInset} from './world-building-placement';
 import type {WorldGeometry} from './world-geometry';
 import type {WorldMaterials} from './world-materials';
 import type {WorldBuilding,WorldInput} from './world-types';
-
-const wallInset=.4;
 
 /** Join the roof planes with a timber fascia and rounded clay ridge caps.
  * This is exterior scenery. Room cutaways omit it with the removed roof. */
@@ -37,7 +36,7 @@ export function roofEdgeDetails(id:string,panels:readonly (readonly Vector3[])[]
  * Positions and face orientation therefore follow every authored rotation. */
 export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,height:number,base:number,geometry:WorldGeometry,materials:WorldMaterials,legacy:boolean){
   const walls=input.terrain.tiles.filter(tile=>tile.buildingId===b.id&&['wall','door','window'].includes(tile.type));
-  const frame=entranceFrame({...b,walls}),kind=b.kind??b.architecture??'house',appearance=buildingAppearance({...b,roofFinish:b.roofFinish??(b.roof==='thatch'?'thatch':undefined)});
+  const wallInset=buildingArtInset(b,input),frame=entranceFrame({...b,walls}),kind=b.kind??b.architecture??'house',appearance=buildingAppearance({...b,roofFinish:b.roofFinish??(b.roof==='thatch'?'thatch':undefined)});
   const wall=materials.get(appearance.wallFinish,legacy?{colour:buildingStyle(b).wall}:{}),trim=materials.get('trim',legacy?{colour:buildingStyle(b).trim}:{}),wood=materials.get('wood'),darkwood=materials.get('darkwood'),iron=materials.get('iron'),roof=materials.get(appearance.roofFinish),light=illuminationAt(input,b);
   const root=new Group();root.name=`building-details:${b.id}`;
   let batch=new WorldBatch(geometry);
@@ -135,14 +134,14 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
   const frontSupports=()=>Array.from({length:Math.floor(frame.width)+1},(_,u)=>u).filter(u=>wallAt(u,0)?.type==='wall'&&(u===0||u===frame.width||u%2===0||Math.abs(u-frame.doorU)===1));
   const roofCanopy=(name:string,supports:number[],depth=.55,masonry=false)=>{
     if(supports.length<2||height<2.4)return;
-    const lo=Math.min(...supports),hi=Math.max(...supports),low=Math.max(2.12,height*.82),high=low+.24,front=-depth-.15,back=.16;
+    const lo=Math.min(...supports),hi=Math.max(...supports),low=Math.max(2.12,height*.82),high=low+.24,front=-depth-.15,back=.16,supportDepth=kind==='warehouse'&&wallInset===0?-.30:0;
     const panel=[at(lo-.18,front,low),at(hi+.18,front,low),at(hi+.18,back,high),at(lo-.18,back,high)],roofAt=(v:number)=>low+(v-front)/(back-front)*(high-low);
     feature(name,()=>{
       for(const u of supports){
         if(masonry&&(u===0||u===frame.width))continue;
         // The posta's broad corner piers are separate. Its thin porch posts
         // expose their front face without crossing the solid cell boundary.
-        const a=masonry?u-alongInset:u,v=masonry?.02*(frame.v.x+frame.v.y):0,top=roofAt(v);
+        const a=masonry?u-alongInset:u,v=masonry?.02*(frame.v.x+frame.v.y):supportDepth,top=roofAt(v);
         if(masonry){
           box(a,v,(top+.11)*.5,.14,top-.11,.14,wall);box(a,v,.055,.23,.11,.14,materials.get('stone'));box(a,v,top-.02,.23,.10,.14,trim);
         }else{
@@ -150,7 +149,7 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
           const toward=u==lo?1:-1;batch.cylinder(wood,at(a,v,top-.30),at(a+toward*.28,v,roofAt(v)-.065),.025,light);
         }
       }
-      box((lo+hi)*.5,0,roofAt(0)-.045,hi-lo+.18,.11,.14/T,masonry?trim:wood);
+      box((lo+hi)*.5,supportDepth,roofAt(supportDepth)-.045,hi-lo+.18,.11,.14/T,masonry?trim:wood);
       batch.polygon(roof,panel,light,roofTextureProjector(panel));
     });
     root.getObjectByName(`building-detail:${b.id}:${name}`)?.add(roofEdgeDetails(`${b.id}:${name}`,[panel],low,geometry,roof,darkwood,light));
