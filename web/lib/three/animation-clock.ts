@@ -1,6 +1,6 @@
 /** Pure visual time mapping. No animation event is a gameplay command. */
 export type AnimationClockClip={duration:number;loop:boolean;playbackRate?:number;locomotionSpeed?:number;nativeStrideSpeed?:number;markers?:Record<string,number>};
-export type AnimationWork={from:number;to:number;hand?:'primary'|'offhand'};
+export type AnimationWork={from:number;to:number;hand?:'primary'|'offhand';barrel?:number};
 export type AnimationClockCue={action:string;startedAt:number;durationMs?:number;phase?:string;phaseStartedAt?:number;phaseDurationMs?:number;work?:readonly AnimationWork[]};
 export type AnimationClockMotion={moving?:boolean;elapsedMs?:number;elapsedDistance?:number;signedDistance?:number;speed?:number;signedForwardSpeed?:number;segmentFraction?:number};
 export type AnimationClockInput={clip:AnimationClockClip;action:string;cue?:AnimationClockCue;motion?:AnimationClockMotion;now:number;reducedMotion?:boolean};

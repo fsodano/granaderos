@@ -1826,8 +1826,8 @@
   "animationLibraries": {
     "male": {
       "url": "/models/characters/male-animations.glb",
-      "bytes": 10919184,
-      "sha256": "5ec6ff18cdd8f2764328c95c1d7c7e6e78fa20b65c9d2b9db1b18a21b0c02add",
+      "bytes": 11521284,
+      "sha256": "29a7e08f2b053b0f2de30375d48eef7b75f2c19a60a23d7abcc8815b21afca24",
       "clips": [
         {
           "name": "stand.idle.unarmed",
@@ -2603,7 +2603,30 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2750000059604645,
+              0.054999999701976776,
+              0
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.25,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3333333333333333
+            }
+          ]
         },
         {
           "name": "stand.reprime.short-gun",
@@ -3487,7 +3510,30 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2750000059604645,
+              0.054999999701976776,
+              0
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.25,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3333333333333333
+            }
+          ]
         },
         {
           "name": "crouch.reprime.short-gun",
@@ -4147,7 +4193,30 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2750000059604645,
+              0.054999999701976776,
+              0
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.25,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3333333333333333
+            }
+          ]
         },
         {
           "name": "prone.reprime.short-gun",
@@ -5305,12 +5374,34 @@
           "sampleRate": 15,
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2750000059604645,
+              0.054999999701976776,
+              0
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.25,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3333333333333333
+            }
+          ],
           "seatAnchor": [
             0,
             0.9451594948768616,
             0.006795833352953196
           ],
-          "seatAnchorSpace": "gltf-model-local",
           "ridingSupport": {
             "coordinateSpace": "horse-model-local",
             "method": "native boot ball on measured iron",
@@ -5327,7 +5418,8 @@
                 -0.019999999552965164
               ]
             }
-          }
+          },
+          "seatAnchorSpace": "gltf-model-local"
         },
         {
           "name": "mounted.reprime.short-gun",
@@ -13931,6 +14023,858 @@
               ]
             }
           }
+        },
+        {
+          "name": "stand.reload.short-gun.1805",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "standing",
+          "equipment": "short-gun",
+          "item": "1805",
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2750000059604645,
+              0.054999999701976776,
+              0
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.25,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3333333333333333
+            }
+          ]
+        },
+        {
+          "name": "crouch.reload.short-gun.1805",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "crouched",
+          "equipment": "short-gun",
+          "item": "1805",
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2750000059604645,
+              0.054999999701976776,
+              0
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.25,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3333333333333333
+            }
+          ]
+        },
+        {
+          "name": "prone.reload.short-gun.1805",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "prone",
+          "equipment": "short-gun",
+          "item": "1805",
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2750000059604645,
+              0.054999999701976776,
+              0
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.25,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3333333333333333
+            }
+          ]
+        },
+        {
+          "name": "mounted.reload.short-gun.1805",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "mounted",
+          "equipment": "short-gun",
+          "item": "1805",
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2750000059604645,
+              0.054999999701976776,
+              0
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.25,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3333333333333333
+            }
+          ],
+          "seatAnchor": [
+            0,
+            0.9451594948768616,
+            0.006795833352953196
+          ],
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          },
+          "seatAnchorSpace": "gltf-model-local"
+        },
+        {
+          "name": "stand.reload.short-gun.1806",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "standing",
+          "equipment": "short-gun",
+          "item": "1806",
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.31075000762939453,
+              0.054999999701976776,
+              0
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.2825,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.37666666666666665
+            }
+          ]
+        },
+        {
+          "name": "crouch.reload.short-gun.1806",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "crouched",
+          "equipment": "short-gun",
+          "item": "1806",
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.31075000762939453,
+              0.054999999701976776,
+              0
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.2825,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.37666666666666665
+            }
+          ]
+        },
+        {
+          "name": "prone.reload.short-gun.1806",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "prone",
+          "equipment": "short-gun",
+          "item": "1806",
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.31075000762939453,
+              0.054999999701976776,
+              0
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.2825,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.37666666666666665
+            }
+          ]
+        },
+        {
+          "name": "mounted.reload.short-gun.1806",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "mounted",
+          "equipment": "short-gun",
+          "item": "1806",
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.31075000762939453,
+              0.054999999701976776,
+              0
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.2825,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.37666666666666665
+            }
+          ],
+          "seatAnchor": [
+            0,
+            0.9451594948768616,
+            0.006795833352953196
+          ],
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          },
+          "seatAnchorSpace": "gltf-model-local"
+        },
+        {
+          "name": "stand.reload.short-gun.1808",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "standing",
+          "equipment": "short-gun",
+          "item": "1808",
+          "barrel": 0,
+          "barrelClips": [
+            "stand.reload.short-gun.1808",
+            "stand.reload.short-gun.1808.barrel1"
+          ],
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2475000023841858,
+              0.054999999701976776,
+              0.010999999940395355
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.225,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3
+            }
+          ]
+        },
+        {
+          "name": "stand.reload.short-gun.1808.barrel1",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "standing",
+          "equipment": "short-gun",
+          "item": "1808",
+          "barrel": 1,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2475000023841858,
+              0.054999999701976776,
+              -0.010999999940395355
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.225,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3
+            }
+          ]
+        },
+        {
+          "name": "crouch.reload.short-gun.1808",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "crouched",
+          "equipment": "short-gun",
+          "item": "1808",
+          "barrel": 0,
+          "barrelClips": [
+            "crouch.reload.short-gun.1808",
+            "crouch.reload.short-gun.1808.barrel1"
+          ],
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2475000023841858,
+              0.054999999701976776,
+              0.010999999940395355
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.225,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3
+            }
+          ]
+        },
+        {
+          "name": "crouch.reload.short-gun.1808.barrel1",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "crouched",
+          "equipment": "short-gun",
+          "item": "1808",
+          "barrel": 1,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2475000023841858,
+              0.054999999701976776,
+              -0.010999999940395355
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.225,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3
+            }
+          ]
+        },
+        {
+          "name": "prone.reload.short-gun.1808",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "prone",
+          "equipment": "short-gun",
+          "item": "1808",
+          "barrel": 0,
+          "barrelClips": [
+            "prone.reload.short-gun.1808",
+            "prone.reload.short-gun.1808.barrel1"
+          ],
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2475000023841858,
+              0.054999999701976776,
+              0.010999999940395355
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.225,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3
+            }
+          ]
+        },
+        {
+          "name": "prone.reload.short-gun.1808.barrel1",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "prone",
+          "equipment": "short-gun",
+          "item": "1808",
+          "barrel": 1,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2475000023841858,
+              0.054999999701976776,
+              -0.010999999940395355
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.225,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3
+            }
+          ]
+        },
+        {
+          "name": "mounted.reload.short-gun.1808",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "mounted",
+          "equipment": "short-gun",
+          "item": "1808",
+          "barrel": 0,
+          "barrelClips": [
+            "mounted.reload.short-gun.1808",
+            "mounted.reload.short-gun.1808.barrel1"
+          ],
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2475000023841858,
+              0.054999999701976776,
+              0.010999999940395355
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.225,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3
+            }
+          ],
+          "seatAnchor": [
+            0,
+            0.9451594948768616,
+            0.006795833352953196
+          ],
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          },
+          "seatAnchorSpace": "gltf-model-local"
+        },
+        {
+          "name": "mounted.reload.short-gun.1808.barrel1",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "mounted",
+          "equipment": "short-gun",
+          "item": "1808",
+          "barrel": 1,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2475000023841858,
+              0.054999999701976776,
+              -0.010999999940395355
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.225,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3
+            }
+          ],
+          "seatAnchor": [
+            0,
+            0.9451594948768616,
+            0.006795833352953196
+          ],
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          },
+          "seatAnchorSpace": "gltf-model-local"
         }
       ],
       "locomotionSpeed": {
@@ -13957,8 +14901,8 @@
     },
     "female": {
       "url": "/models/characters/female-animations.glb",
-      "bytes": 10744588,
-      "sha256": "65a03fa11c3582ab09b2b21d4f022a25b416be8bd3b33018b74c0c18606eebc0",
+      "bytes": 11349456,
+      "sha256": "1bc7c12f0c57c40d2e2054b5ef83f0c1152318edbb697e7f52438f34d5934d02",
       "clips": [
         {
           "name": "stand.idle.unarmed",
@@ -14734,7 +15678,30 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2750000059604645,
+              0.054999999701976776,
+              0
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.25,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3333333333333333
+            }
+          ]
         },
         {
           "name": "stand.reprime.short-gun",
@@ -15618,7 +16585,30 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2750000059604645,
+              0.054999999701976776,
+              0
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.25,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3333333333333333
+            }
+          ]
         },
         {
           "name": "crouch.reprime.short-gun",
@@ -16278,7 +17268,30 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2750000059604645,
+              0.054999999701976776,
+              0
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.25,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3333333333333333
+            }
+          ]
         },
         {
           "name": "prone.reprime.short-gun",
@@ -17436,12 +18449,34 @@
           "sampleRate": 15,
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2750000059604645,
+              0.054999999701976776,
+              0
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.25,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3333333333333333
+            }
+          ],
           "seatAnchor": [
             0,
             0.9131789803504944,
             0.025762733072042465
           ],
-          "seatAnchorSpace": "gltf-model-local",
           "ridingSupport": {
             "coordinateSpace": "horse-model-local",
             "method": "native boot ball on measured iron",
@@ -17458,7 +18493,8 @@
                 -0.019999999552965164
               ]
             }
-          }
+          },
+          "seatAnchorSpace": "gltf-model-local"
         },
         {
           "name": "mounted.reprime.short-gun",
@@ -26062,6 +27098,858 @@
               ]
             }
           }
+        },
+        {
+          "name": "stand.reload.short-gun.1805",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "standing",
+          "equipment": "short-gun",
+          "item": "1805",
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2750000059604645,
+              0.054999999701976776,
+              0
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.25,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3333333333333333
+            }
+          ]
+        },
+        {
+          "name": "crouch.reload.short-gun.1805",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "crouched",
+          "equipment": "short-gun",
+          "item": "1805",
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2750000059604645,
+              0.054999999701976776,
+              0
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.25,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3333333333333333
+            }
+          ]
+        },
+        {
+          "name": "prone.reload.short-gun.1805",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "prone",
+          "equipment": "short-gun",
+          "item": "1805",
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2750000059604645,
+              0.054999999701976776,
+              0
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.25,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3333333333333333
+            }
+          ]
+        },
+        {
+          "name": "mounted.reload.short-gun.1805",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "mounted",
+          "equipment": "short-gun",
+          "item": "1805",
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2750000059604645,
+              0.054999999701976776,
+              0
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.25,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3333333333333333
+            }
+          ],
+          "seatAnchor": [
+            0,
+            0.9131789803504944,
+            0.025762733072042465
+          ],
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          },
+          "seatAnchorSpace": "gltf-model-local"
+        },
+        {
+          "name": "stand.reload.short-gun.1806",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "standing",
+          "equipment": "short-gun",
+          "item": "1806",
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.31075000762939453,
+              0.054999999701976776,
+              0
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.2825,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.37666666666666665
+            }
+          ]
+        },
+        {
+          "name": "crouch.reload.short-gun.1806",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "crouched",
+          "equipment": "short-gun",
+          "item": "1806",
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.31075000762939453,
+              0.054999999701976776,
+              0
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.2825,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.37666666666666665
+            }
+          ]
+        },
+        {
+          "name": "prone.reload.short-gun.1806",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "prone",
+          "equipment": "short-gun",
+          "item": "1806",
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.31075000762939453,
+              0.054999999701976776,
+              0
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.2825,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.37666666666666665
+            }
+          ]
+        },
+        {
+          "name": "mounted.reload.short-gun.1806",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "mounted",
+          "equipment": "short-gun",
+          "item": "1806",
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.31075000762939453,
+              0.054999999701976776,
+              0
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.2825,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.37666666666666665
+            }
+          ],
+          "seatAnchor": [
+            0,
+            0.9131789803504944,
+            0.025762733072042465
+          ],
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          },
+          "seatAnchorSpace": "gltf-model-local"
+        },
+        {
+          "name": "stand.reload.short-gun.1808",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "standing",
+          "equipment": "short-gun",
+          "item": "1808",
+          "barrel": 0,
+          "barrelClips": [
+            "stand.reload.short-gun.1808",
+            "stand.reload.short-gun.1808.barrel1"
+          ],
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2475000023841858,
+              0.054999999701976776,
+              0.010999999940395355
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.225,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3
+            }
+          ]
+        },
+        {
+          "name": "stand.reload.short-gun.1808.barrel1",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "standing",
+          "equipment": "short-gun",
+          "item": "1808",
+          "barrel": 1,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2475000023841858,
+              0.054999999701976776,
+              -0.010999999940395355
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.225,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3
+            }
+          ]
+        },
+        {
+          "name": "crouch.reload.short-gun.1808",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "crouched",
+          "equipment": "short-gun",
+          "item": "1808",
+          "barrel": 0,
+          "barrelClips": [
+            "crouch.reload.short-gun.1808",
+            "crouch.reload.short-gun.1808.barrel1"
+          ],
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2475000023841858,
+              0.054999999701976776,
+              0.010999999940395355
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.225,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3
+            }
+          ]
+        },
+        {
+          "name": "crouch.reload.short-gun.1808.barrel1",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "crouched",
+          "equipment": "short-gun",
+          "item": "1808",
+          "barrel": 1,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2475000023841858,
+              0.054999999701976776,
+              -0.010999999940395355
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.225,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3
+            }
+          ]
+        },
+        {
+          "name": "prone.reload.short-gun.1808",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "prone",
+          "equipment": "short-gun",
+          "item": "1808",
+          "barrel": 0,
+          "barrelClips": [
+            "prone.reload.short-gun.1808",
+            "prone.reload.short-gun.1808.barrel1"
+          ],
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2475000023841858,
+              0.054999999701976776,
+              0.010999999940395355
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.225,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3
+            }
+          ]
+        },
+        {
+          "name": "prone.reload.short-gun.1808.barrel1",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "prone",
+          "equipment": "short-gun",
+          "item": "1808",
+          "barrel": 1,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2475000023841858,
+              0.054999999701976776,
+              -0.010999999940395355
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.225,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3
+            }
+          ]
+        },
+        {
+          "name": "mounted.reload.short-gun.1808",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "mounted",
+          "equipment": "short-gun",
+          "item": "1808",
+          "barrel": 0,
+          "barrelClips": [
+            "mounted.reload.short-gun.1808",
+            "mounted.reload.short-gun.1808.barrel1"
+          ],
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2475000023841858,
+              0.054999999701976776,
+              0.010999999940395355
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.225,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3
+            }
+          ],
+          "seatAnchor": [
+            0,
+            0.9131789803504944,
+            0.025762733072042465
+          ],
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          },
+          "seatAnchorSpace": "gltf-model-local"
+        },
+        {
+          "name": "mounted.reload.short-gun.1808.barrel1",
+          "duration": 4.8,
+          "loop": false,
+          "events": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "gesture": "reload",
+          "posture": "mounted",
+          "equipment": "short-gun",
+          "item": "1808",
+          "barrel": 1,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          },
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "loadingContact": {
+            "muzzle": [
+              0.2475000023841858,
+              0.054999999701976776,
+              -0.010999999940395355
+            ],
+            "support": [
+              0,
+              0,
+              0
+            ],
+            "ramrodLength": 0.225,
+            "method": "native palm and item muzzle"
+          },
+          "propCues": [
+            {
+              "item": "ramrod",
+              "socket": "socket_handLeft_tool",
+              "start": 2.208,
+              "end": 4.128,
+              "scale": 0.3
+            }
+          ],
+          "seatAnchor": [
+            0,
+            0.9131789803504944,
+            0.025762733072042465
+          ],
+          "ridingSupport": {
+            "coordinateSpace": "horse-model-local",
+            "method": "native boot ball on measured iron",
+            "heelDropDegrees": 10,
+            "stirrups": {
+              "l": [
+                0.32187986373901367,
+                0.9278209805488586,
+                -0.019999999552965164
+              ],
+              "r": [
+                -0.3181198835372925,
+                0.9278209805488586,
+                -0.019999999552965164
+              ]
+            }
+          },
+          "seatAnchorSpace": "gltf-model-local"
         }
       ],
       "locomotionSpeed": {
@@ -26258,7 +28146,13 @@
         ],
         "scale": 1,
         "stowedSocket": "hipRight",
-        "muzzle": "muzzle_1805"
+        "muzzle": "muzzle_1805",
+        "clipOverrides": {
+          "stand.reload.short-gun": "stand.reload.short-gun.1805",
+          "crouch.reload.short-gun": "crouch.reload.short-gun.1805",
+          "prone.reload.short-gun": "prone.reload.short-gun.1805",
+          "mounted.reload.short-gun": "mounted.reload.short-gun.1805"
+        }
       },
       "1806": {
         "node": "item_1806",
@@ -26278,7 +28172,13 @@
         ],
         "scale": 1,
         "stowedSocket": "hipRight",
-        "muzzle": "muzzle_1806"
+        "muzzle": "muzzle_1806",
+        "clipOverrides": {
+          "stand.reload.short-gun": "stand.reload.short-gun.1806",
+          "crouch.reload.short-gun": "crouch.reload.short-gun.1806",
+          "prone.reload.short-gun": "prone.reload.short-gun.1806",
+          "mounted.reload.short-gun": "mounted.reload.short-gun.1806"
+        }
       },
       "1807": {
         "node": "item_1807",
@@ -26328,7 +28228,13 @@
         ],
         "scale": 1,
         "stowedSocket": "hipRight",
-        "muzzle": "muzzle_1808"
+        "muzzle": "muzzle_1808",
+        "clipOverrides": {
+          "stand.reload.short-gun": "stand.reload.short-gun.1808",
+          "crouch.reload.short-gun": "crouch.reload.short-gun.1808",
+          "prone.reload.short-gun": "prone.reload.short-gun.1808",
+          "mounted.reload.short-gun": "mounted.reload.short-gun.1808"
+        }
       },
       "1809": {
         "node": "item_1809",

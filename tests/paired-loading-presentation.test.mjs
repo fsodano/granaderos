@@ -61,9 +61,14 @@ test('offhand-only partial work resumes the same left-hand pose and charges with
 });
 test('two-barrel pistols retain two primary then two offhand body intervals',()=>{
  const state=field('granadero',{weapon:1808,offHand:{weapon:1808,loaded:0,count:1,weight:1.3,condition:100,instanceId:'owned-left'}});state.mode='exploration';state.units=state.units.filter(unit=>unit.side==='player');
- const {frames,delays,result}=recorded(state);assert.deepEqual(frames[1].actionWork,[{from:0,to:1,hand:'primary'},{from:0,to:1,hand:'primary'},{from:0,to:1,hand:'offhand'},{from:0,to:1,hand:'offhand'}]);nearly(delays.reduce((a,b)=>a+b,0),19200);assert.equal(actor(result.state).loaded,2);assert.equal(actor(result.state).offHand.loaded,2);
+ const {frames,delays,result}=recorded(state);assert.deepEqual(frames[1].actionWork,[{from:0,to:1,hand:'primary',barrel:0},{from:0,to:1,hand:'primary',barrel:1},{from:0,to:1,hand:'offhand',barrel:0},{from:0,to:1,hand:'offhand',barrel:1}]);nearly(delays.reduce((a,b)=>a+b,0),19200);assert.equal(actor(result.state).loaded,2);assert.equal(actor(result.state).offHand.loaded,2);
  const cue=visual(frames[1],delays[0],delays[1]).cue,clip={duration:4.8,loop:false,markers:{contact:2.16}};
  for(const [index,now]of [1000,5800,10600,15400].entries())assert.equal(sample({clip,action:'reload',cue,now}).workIndex,index);
+});
+test('a partial second-barrel charge resumes the same owned bore without reloading the first',()=>{
+ let state=field('granadero',{weapon:1808,loaded:1,offHand:{weapon:1806,loaded:1,count:1,weight:1.2,condition:100,instanceId:'owned-left'}});actor(state).ap=10;
+ const first=recorded(state);assert.deepEqual(first.frames[1].actionWork,[{from:0,to:4/11,hand:'primary',barrel:1}]);assert.equal(actor(first.result.state).loaded,1);assert.equal(actor(first.result.state).offHand.loaded,1);assert.equal(totalReserveAmmunition(actor(first.result.state)),8);
+ state=first.result.state;actor(state).ap=17.5;const next=recorded(state);assert.deepEqual(next.frames[1].actionWork,[{from:4/11,to:1,hand:'primary',barrel:1}]);assert.equal(next.delays[0],0);assert.equal(actor(next.result.state).loaded,2);assert.equal(actor(next.result.state).offHand.loaded,1);assert.equal(actor(next.result.state).ap,0);assert.equal(totalReserveAmmunition(actor(next.result.state)),7);
 });
 test('hidden, replaced or pocketed guns cannot establish offhand loading evidence',()=>{
  const {result}=recorded(field());

@@ -904,6 +904,9 @@ def apply_animations(ctx, only=None):
             # interpolating past its single muzzle contact between samples.
             stages=(.12,.24,.36,.46,.58,.70,.79,.86,.90) if gesture=='reload' else (.12,.25,.55,.78,.90)
             times=sorted(set(times+[duration*stage for stage in stages]))
+        if equipment=='short-gun' and gesture=='reload':
+            from pistol_loading import STAGES
+            times=sorted(set(times+[duration*stage for stage in STAGES]))
         if gesture in ('throw','throwKnife','bolas'):
             from throwing_motion import PROFILES
             # Preserve hand orbit and planted support at authored phase keys,
@@ -936,6 +939,9 @@ def apply_animations(ctx, only=None):
                 if equipment=='long-gun' and gesture in ('reload','unload'):
                     from rifle_loading import pose as rifle_loading_pose
                     pose=rifle_loading_pose(ctx,base,offsets,t,gesture,spec.get('item'),posture)
+                elif equipment=='short-gun' and gesture=='reload':
+                    from pistol_loading import pose as pistol_loading_pose
+                    pose=pistol_loading_pose(ctx,base,offsets,t,spec.get('item'),posture,spec.get('barrel',0))
                 else:pose=_reload_pose(ctx,base,'rifle' if equipment=='long-gun' else 'pistol',offsets,t,gesture)
             elif gesture=='slash':
                 phase=_smooth_key([(0,0),(.23,-.65),(.483,1),(.65,.8),(1,0)],t);pose=_blade_pose(ctx,base,offsets,phase,key='knife' if equipment=='knife' else 'sabre')
@@ -1002,6 +1008,9 @@ def apply_animations(ctx, only=None):
         if equipment=='long-gun' and gesture in ('reload','unload'):
             from rifle_loading import metadata as rifle_loading_metadata
             meta.update(rifle_loading_metadata(ctx,spec.get('item'),duration))
+        if equipment=='short-gun' and gesture=='reload':
+            from pistol_loading import metadata as pistol_loading_metadata
+            meta.update(pistol_loading_metadata(ctx,spec.get('item'),duration,spec.get('barrel',0)))
         if gesture in ('mount','dismount'):
             from mounted_motion import metadata as mounted_motion_metadata
             meta.update(mounted_motion_metadata(ctx,duration,reverse=gesture=='dismount'))
