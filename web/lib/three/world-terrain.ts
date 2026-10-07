@@ -2,6 +2,7 @@ import {Vector3} from 'three';
 import {terrainMaterial} from '../../../game/regional-terrain.js';
 import {WorldBatch,cellTop,seeded} from './world-geometry';
 import {illuminationAt,worldKey} from './world-materials';
+import {climbOpenings,surfaceRectangles} from './world-climb-openings';
 import type {WorldGeometry} from './world-geometry';
 import type {WorldMaterials} from './world-materials';
 import type {WorldInput,WorldTile} from './world-types';
@@ -47,14 +48,14 @@ export function buildTerrainChunk(id:string,tiles:readonly WorldTile[],input:Wor
   const group=batch.finish(`terrain:${id}`);group.userData.kind='terrain';group.userData.chunk=id;return group;
 }
 export function buildUpperSurfaces(surfaces:readonly WorldTile[],input:WorldInput,T:number,geometry:WorldGeometry,materials:WorldMaterials){
-  const batch=new WorldBatch(geometry);
+  const batch=new WorldBatch(geometry),openings=climbOpenings(input,T);
   for(const surface of surfaces){
     const height=surface.elevation??0,thickness=surface.slabThickness??.2,light=illuminationAt(input,surface),x=surface.x*T,z=surface.y*T;
     const finish=surface.material==='wood'?'wood':surface.kind==='roof'?'roof':'floor',material=materials.get(`upper-${finish}`,{colour:'#ffffff',texture:`/art/terrain-${finish}-v1.webp`});
     // Wall tops share this exact metric height. A depth offset removes flicker
     // without lifting the walking surface or changing the shared coordinates.
     material.polygonOffset=true;material.polygonOffsetFactor=-1;material.polygonOffsetUnits=-1;
-    batch.box(material,x,height-thickness*.5,z,T,thickness,T,light);
+    for(const part of surfaceRectangles(surface,T,openings))batch.box(material,(part.minX+part.maxX)*.5,height-thickness*.5,(part.minZ+part.maxZ)*.5,part.maxX-part.minX,thickness,part.maxZ-part.minZ,light);
     if(surface.blocked){const h=surface.obstacleHeight??.45;if(h>0)batch.box(materials.get(surface.material==='wood'?'wood':'stone'),x,height+h*.5,z,T*.86,h,T*.86,light);}
   }
   const group=batch.finish('upper-surfaces');group.userData.kind='upper-surfaces';group.userData.surfaceIds=surfaces.map(surface=>surface.id);return group;

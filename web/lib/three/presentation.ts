@@ -18,6 +18,7 @@ import {renderedSurfaceHeight} from '../tactical-elevation';
 import type {Motion} from '../../app/useUnitMotion';
 import {TILE_METRES,actorYaw} from './projection';
 import type {WorldInput} from './world-types';
+import {climbOpenings,surfaceRectangles} from './world-climb-openings';
 import type {AnimationWork} from './animation-clock';
 
 export type ActorKind='unit'|'npc';
@@ -95,14 +96,16 @@ export function admittedImpactCue({key,kind,actor}:ActorEntry,frame:any,now=0):A
 }
 
 /** Known support only; private bodies and unreadable props are not queried. */
-function contactSupport(state:any,actor:any,visual:ActorVisual,revealed:ReadonlySet<string>):ContactSupport{
+function contactSupport(state:any,actor:any,visual:ActorVisual,revealed:ReadonlySet<string>,visible:readonly ActorVisual[]):ContactSupport{
   const floors:ContactSupport['floors'][number][]=[],level=tacticalLevel(actor),height=visual.position[1];
+  const active=new Set(visible.flatMap(actor=>actor.motion?.moving&&actor.motion.kind==='climb'&&actor.motion.linkId?[actor.motion.linkId]:[]));
+  const openings=active.size?climbOpenings({terrain:{width:state.width,height:state.height,tiles:state.tiles,upperSurfaces:state.upperSurfaces,climbLinks:state.climbLinks}},TILE_METRES).filter(opening=>active.has(opening.linkId)):[];
   const props={props:(state.props??[]).filter((prop:any)=>isInteriorVisible(state,prop,revealed))};
   for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){
     const point={x:actor.x+dx,y:actor.y+dy,tacticalLevel:level},surface=surfaceAt(state,point);
     if(!surface||surface.blocked||['wall','window'].includes(surface.type)||surface.type==='door'&&!surface.open&&!surface.broken||Math.abs((surfaceHeight(state,point)??0)-height)>.001||propBlocksAt(props,point.x,point.y,level))continue;
     if((dx||dy)&&!isInteriorVisible(state,point,revealed))continue;
-    floors.push({minX:(point.x-.5)*TILE_METRES,maxX:(point.x+.5)*TILE_METRES,minZ:(point.y-.5)*TILE_METRES,maxZ:(point.y+.5)*TILE_METRES,height});
+    floors.push(...surfaceRectangles({...point,elevation:height},TILE_METRES,openings).map(rect=>({...rect,height})));
   }
   return {floors};
 }
@@ -155,7 +158,7 @@ export function presentActors(state:any,entries:readonly ActorEntry[],positions:
     if(target&&entry&&entry.actor.x===point.x&&entry.actor.y===point.y&&tacticalLevel(entry.actor)===tacticalLevel(point)&&target.position.every(Number.isFinite)&&Number.isFinite(target.yaw)){
       for(const visual of result)if(visual.kind==='unit'&&visual.id===frame.unitId&&visual.key!==key&&visual.cue&&['strike','bayonet'].includes(visual.cue.action)){
         const source=entries.find(entry=>entry.key===visual.key)!;
-        visual.cue={...visual.cue,contactTarget:{key,appearance:target.appearance,position:[...target.position],yaw:target.yaw,posture:target.posture,mounted:target.mounted,action:target.action,bodyHeights:{...target.bodyHeights}},contactSupport:contactSupport(state,source.actor,visual,revealed)};
+        visual.cue={...visual.cue,contactTarget:{key,appearance:target.appearance,position:[...target.position],yaw:target.yaw,posture:target.posture,mounted:target.mounted,action:target.action,bodyHeights:{...target.bodyHeights}},contactSupport:contactSupport(state,source.actor,visual,revealed,result)};
       }
     }
   }

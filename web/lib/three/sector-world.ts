@@ -5,6 +5,7 @@ import {WorldGeometry,disposeWorldNode} from './world-geometry';
 import {buildLoot} from './world-items';
 import {animateWorldNode,buildClimbLinks,buildLight,buildSmoke} from './world-lights';
 import {WorldMaterials,illuminationAt,worldKey} from './world-materials';
+import {activeClimbLinks,buildClimbCovers,climbOpenings,type ClimbOpening} from './world-climb-openings';
 import {buildProps} from './world-props';
 import {buildTerrainChunk,buildUpperSurfaces,chunkKey,terrainChunks} from './world-terrain';
 import {buildVegetationChunk,softenedFoliage} from './world-vegetation';
@@ -18,6 +19,7 @@ export function createSectorWorld(scene:Scene,options:WorldOptions):SectorWorld{
   const T=options.tileMetres,root=new Group(),geometry=new WorldGeometry(),materials=new WorldMaterials(options),nodes=new Map<string,WorldNode>();
   root.name='sector-world';scene.add(root);
   let disposed=false,input:WorldInput|undefined,chunks=new Map<string,WorldTile[]>(),desired=new Set<string>(),time=0;
+  let openings:ClimbOpening[]=[];
   let vegetationBase=new Map<string,string>(),upperBase='',upperAlways:readonly WorldTile[]=[],upperSupported:readonly WorldTile[]=[];
   const signature=(value:unknown)=>JSON.stringify(value);
   const retain=(id:string,key:string,build:()=>Group)=>{
@@ -34,13 +36,19 @@ export function createSectorWorld(scene:Scene,options:WorldOptions):SectorWorld{
     const supported=upperSupported.filter(surface=>(input!.admittedActorPoints??[]).some(point=>(point.tacticalLevel??0)===(surface.tacticalLevel??0)&&Math.abs(point.x-surface.x)<.65&&Math.abs(point.y-surface.y)<.65)),surfaces=[...upperAlways,...supported];
     if(surfaces.length)retain('upper-surfaces',`${upperBase}:${supported.map(worldKey).join(';')}`,()=>buildUpperSurfaces(surfaces,input!,T,geometry,materials));
     else{const node=nodes.get('upper-surfaces');if(node){disposeWorldNode(node.object);nodes.delete('upper-surfaces');}}
+    const shown=openings.filter(opening=>surfaces.some(surface=>(surface.tacticalLevel??0)===opening.level&&Math.abs((surface.elevation??0)-opening.height)<1e-6&&(surface.x+.5)*T>opening.minX&&(surface.x-.5)*T<opening.maxX&&(surface.y+.5)*T>opening.minZ&&(surface.y-.5)*T<opening.maxZ));
+    const active=activeClimbLinks(input.admittedActorPoints??[]);
+    if(shown.length)retain('climb-covers',signature([shown,[...active].filter(id=>shown.some(opening=>opening.linkId===id)).sort(),lit(shown.map(opening=>({x:(opening.minX+opening.maxX)/2/T,y:(opening.minZ+opening.maxZ)/2/T,tacticalLevel:opening.level})))]),()=>buildClimbCovers(shown,active,input!,T,geometry,materials));
+    else{const node=nodes.get('climb-covers');if(node){disposeWorldNode(node.object);nodes.delete('climb-covers');}}
+
   };
   const update=(next:WorldInput)=>{
     if(disposed)throw Error('Cannot update a disposed sector world');
     for(const source of [next,next.terrain])for(const key of ['units','npcs','players','enemies'])if(key in source)throw Error(`Sector world must not receive the ${key} roster`);
     input=next;time=next.timeSeconds??time;desired=new Set();chunks=terrainChunks(next.terrain.tiles);
     vegetationBase=new Map([...chunks].map(([id,tiles])=>{const vegetation=tiles.filter(tile=>['forest','scrub'].includes(tile.type)&&!tile.buildingId);return [id,signature([vegetation,lit(vegetation)])];}));
-    upperAlways=shownUpperSurfaces({...next,admittedActorPoints:[]});const always=new Set(upperAlways);upperSupported=(next.terrain.upperSurfaces??[]).filter(surface=>!always.has(surface));upperBase=signature([next.terrain.upperSurfaces,lit(next.terrain.upperSurfaces??[]),[...effectiveRooms(next)].sort(),next.cursorLevel]);
+    openings=climbOpenings(next,T);
+    upperAlways=shownUpperSurfaces({...next,admittedActorPoints:[]});const always=new Set(upperAlways);upperSupported=(next.terrain.upperSurfaces??[]).filter(surface=>!always.has(surface));upperBase=signature([next.terrain.upperSurfaces,openings,lit(next.terrain.upperSurfaces??[]),[...effectiveRooms(next)].sort(),next.cursorLevel]);
     const heights=new Map(next.terrain.tiles.map(tile=>[worldKey(tile),tile.elevation??0]));
     for(const [id,tiles]of chunks){
       const edges=tiles.flatMap(tile=>[[tile.x-1,tile.y],[tile.x+1,tile.y],[tile.x,tile.y-1],[tile.x,tile.y+1]].map(([x,y])=>heights.get(`0:${x},${y}`)));
@@ -50,7 +58,7 @@ export function createSectorWorld(scene:Scene,options:WorldOptions):SectorWorld{
     const known=[...effectiveRooms(next)].sort(),allWalls=next.terrain.tiles.filter(tile=>['wall','door','window'].includes(tile.type));
     for(const building of next.terrain.buildings??[]){
       const tiles=next.terrain.tiles.filter(tile=>tile.buildingId===building.id),surfaces=(next.terrain.upperSurfaces??[]).filter(tile=>tile.buildingId===building.id);
-      retain(`building:${building.id}`,signature([building,tiles,surfaces,known,next.cursorLevel,lit(tiles),lit(surfaces)]),()=>buildBuilding(building,next,T,geometry,materials));
+      retain(`building:${building.id}`,signature([building,tiles,surfaces,openings,known,next.cursorLevel,lit(tiles),lit(surfaces)]),()=>buildBuilding(building,next,T,geometry,materials));
     }
     const independent=allWalls.filter(tile=>!tile.buildingId);
     if(independent.length)retain('independent-walls',signature([independent,lit(independent)]),()=>buildIndependentWalls(next,T,geometry,materials));

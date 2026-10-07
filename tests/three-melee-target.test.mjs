@@ -66,3 +66,20 @@ test('contact support uses only disclosed passable floors at the actor height',(
  assert.deepEqual(support.floors.map(floor=>[(floor.minX+floor.maxX)/2/TILE_METRES,(floor.minZ+floor.maxZ)/2/TILE_METRES]),[[2,2],[3,2],[3,3]]);
  assert.ok(support.floors.every(floor=>floor.height===0));assert.deepEqual(known,before);
 });
+
+
+test('only an admitted active climber removes the open hatch from visible melee footing',()=>{
+ const state=field({tacticalLevel:1}),a=state.units.find(unit=>unit.id==='attacker');a.tacticalLevel=1;
+ state.upperSurfaces=Array.from({length:9},(_,i)=>({x:1+i%3,y:1+Math.floor(i/3),type:'floor',tacticalLevel:1,elevation:3,blocked:false}));
+ state.climbLinks=[{id:'visible-hatch',kind:'climb',from:{x:2,y:2},to:{x:2,y:2,tacticalLevel:1}}];
+ state.units.push({...a,id:'climber',name:'Escaladora',x:2,y:2,tacticalLevel:0,weapon:0,activeSlot:'unarmed'});
+ const frame=presentedActBattle(state,{type:'melee',unitId:'attacker',targetId:'target'}).frames.find(frame=>frame.type==='contact');assert.ok(frame);
+ const players=frame.state.units.filter(unit=>unit.side==='player'),revealed=new Set(visibleRooms(frame.state)),entries=admittedActors(frame.state,players,revealed);
+ const motion={x:2,y:2,renderedHeight:1.5,tacticalLevel:0,direction:5,frame:1,moving:true,kind:'climb',linkId:'visible-hatch',climbDirection:1};
+ const support=(list,motions)=>attacker(render(frame,motions,list)).cue.contactSupport.floors;
+ const closed=support(entries,{}),open=support(entries,{'unit:climber':motion}),area=floors=>floors.reduce((sum,floor)=>sum+(floor.maxX-floor.minX)*(floor.maxZ-floor.minZ),0);
+ assert.ok(Math.abs(area(closed)-area(open)-1.14*.88)<1e-8,'the complete visible aperture cannot support a step');
+ assert.deepEqual(support(entries.filter(entry=>entry.key!=='unit:climber'),{'unit:climber':motion}),closed,'a private motion alone cannot open visible footing');
+ assert.deepEqual(support(entries,{'unit:climber':{...motion,moving:false}}),closed,'an idle ladder retains a closed walking cover');
+ assert.deepEqual(support(entries,{'unit:climber':{...motion,linkId:'other'}}),closed,'an unrelated link cannot change this floor');
+});
