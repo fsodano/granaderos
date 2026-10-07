@@ -3,13 +3,13 @@ import {surfaceRectangles,subtractRectangle} from './world-climb-openings';
 import type {ClimbOpening,SurfaceRectangle} from './world-climb-openings';
 import type {WorldBuilding,WorldInput,WorldPoint} from './world-types';
 
-/** Centred warehouse, posta, supported house and stable walls expose their details.
+/** Centred warehouse, posta, supported house, stable and farmhouse walls expose their details.
  * Corner openings retain the original shell to preserve their clipped spans. */
 export function buildingArtInset(b:WorldBuilding,input:WorldInput){
   const kind=b.kind??b.architecture??'';
-  if(!['warehouse','posta','house','stable'].includes(kind))return .4;
-  if(kind==='house'||kind==='stable'){
-    // Unpainted legacy houses and stables keep their released placement.
+  if(!['warehouse','posta','house','stable','farmhouse'].includes(kind))return .4;
+  if(['house','stable','farmhouse'].includes(kind)){
+    // Unpainted legacy domestic and stable shells keep their released placement.
     // These authored fronts need both intact corners before centring the shell.
     if(b.architecture&&b.wallFinish===undefined)return .4;
     const walls=input.terrain.tiles.filter(tile=>tile.buildingId===b.id&&['wall','door','window'].includes(tile.type)),frame=entranceFrame({...b,walls});

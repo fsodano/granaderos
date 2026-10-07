@@ -599,3 +599,7 @@ The stable wall, actual door crossing, pitched roof, gables and ventilation now 
 ## Exposed stable timber frame
 
 The stable now has supported source-sized front posts, diagonal ties and a continuous timber header. Door, window and edited-support crossings remain clear; short roofs and usable upper routes omit conflicting features. The clean source passes 65 affected checks, type/docs/baseline verification and the build (`922e40531573`). Thirty original/slab/accessible-roof and closer browser views pass without errors. The front, side, slab and interior were compared with the current stable sprite and the placement-only cut. See [the timber review](../art/stable-timber-frame-3d-review-2026-10-07.md).
+
+## Supported farmhouse placement
+
+The farmhouse wall shell, real doorway, hip roof, gallery planes and chimney supports now share centred coordinates when both front corners remain intact. Corner opening edits and unpainted legacy selection retain their original clipped shell. The clean source passes 69 affected checks, type/docs/baseline verification and the build (`ea6e054cf232`). Thirty ordinary and closer original/slab/accessible-roof views pass without browser errors. Selected views were compared with the current farmhouse sprite; exposed gallery details remain the next cut. See [the placement review](../art/farmhouse-shell-placement-3d-review-2026-10-07.md).
