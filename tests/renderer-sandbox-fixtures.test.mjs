@@ -144,6 +144,7 @@ test('night uses actual lights, shot-produced smoke, reload supplies and usable 
 
 test('same-cell hatch review uses ordinary climbs and keeps its roof walking cells',()=>{
  const initial=createRendererSandboxBattle('climb-hatches');
+ for(const surface of initial.upperSurfaces.filter(surface=>initial.climbLinks.some(link=>sameCell(link.to,surface))))assert.ok(initial.units.some(unit=>canSee(initial,unit,surface)),'normal observers disclose both climb destinations');
  for(const id of ['hatch-man','hatch-woman']){
   const start=actor(initial,id),up=order(initial,{type:'climb',unitId:id,linkId:id});assert.equal(actor(up,id).tacticalLevel,1);assert.equal(climbPreview(initial,start,{linkId:id}).valid,true);
   assert.equal(actor(up,id).x,start.x);assert.equal(actor(up,id).y,start.y);
