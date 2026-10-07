@@ -116,6 +116,16 @@ test('climbing geometry resolves endpoint heights from exact authored surfaces',
  assert.ok(bounds.max.y>4.19&&bounds.max.y<4.3);assert.ok(bounds.min.y>.3);world.dispose();
 });
 
+test('climbing geometry refreshes after endpoint heights change without moving saved cells',()=>{
+ const input={terrain:terrain({upperSurfaces:[{id:'roof',x:3,y:3,type:'floor',kind:'roof',tacticalLevel:1,elevation:3,slabThickness:.2}],climbLinks:[{id:'ladder',kind:'climb',from:{x:2,y:3},to:{x:3,y:3,tacticalLevel:1}}]})},{root,world}=setup(input);
+ const initial=root.getObjectByName('climb-links'),before=new Box3().setFromObject(initial);
+ const raised={...input,terrain:{...input.terrain,upperSurfaces:input.terrain.upperSurfaces.map(surface=>({...surface,elevation:4.2}))}};
+ world.update(raised);const changed=root.getObjectByName('climb-links');assert.notEqual(changed.uuid,initial.uuid);assert.ok(new Box3().setFromObject(changed).max.y>before.max.y+1.19);
+ world.update(raised);assert.equal(root.getObjectByName('climb-links').uuid,changed.uuid,'unchanged endpoint heights retain geometry');
+ const groundRaised={...raised,terrain:{...raised.terrain,tiles:raised.terrain.tiles.map(tile=>tile.x===2&&tile.y===3?{...tile,elevation:.4}:tile)}};
+ world.update(groundRaised);assert.notEqual(root.getObjectByName('climb-links').uuid,changed.uuid);assert.ok(new Box3().setFromObject(root.getObjectByName('climb-links')).min.y>.36);world.dispose();
+});
+
 test('light extinction removes illumination emitters while smoke expiry removes its volumes',()=>{
  const input={terrain:terrain({lights:[{id:'fire',x:2,y:2,type:'campfire',intensity:1,radius:4}]}),smoke:[{id:'smoke',x:3,y:2,radius:2,turns:3}]},{world,root}=setup(input);let emitters=0;root.traverse(object=>{if(object.isPointLight)emitters++;});assert.equal(emitters,1);
  const terrainUuid=root.getObjectByName('terrain:0,0').uuid;world.tick(.016,2);assert.equal(root.getObjectByName('terrain:0,0').uuid,terrainUuid);

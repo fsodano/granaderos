@@ -54,3 +54,15 @@ test('a room that is not readable cannot supply contact even when its entry is s
  const actors=presentActors(concealed,entries,{},new Set(),{frame:{...contact,sequenceId:'paid',actionId:1}});
  assert.deepEqual(actors.map(actor=>actor.id),['attacker']);assert.equal(attacker(actors).cue.contactTarget,undefined);
 });
+
+test('contact support uses only disclosed passable floors at the actor height',()=>{
+ const state=field(),contact=presentedActBattle(state,{type:'melee',unitId:'attacker',targetId:'target'}).frames.find(frame=>frame.type==='contact'),known=structuredClone(contact.state);
+ const alter=(x,y,change)=>Object.assign(known.tiles.find(tile=>tile.x===x&&tile.y===y),change);
+ alter(1,1,{type:'wall',blocked:true});alter(2,1,{type:'window',blocked:false});alter(3,1,{type:'door',blocked:false,open:false});
+ alter(1,2,{elevation:.5});alter(1,3,{roomId:'unreadable-room'});
+ known.props=[{id:'known-table',x:2,y:3,blocksMovement:true},{id:'private-table',x:3,y:3,roomId:'unreadable-room',blocksMovement:true}];
+ const before=structuredClone(known),revealed=new Set(),entries=admittedActors(known,known.units.filter(unit=>unit.side==='player'),revealed);
+ const support=attacker(presentActors(known,entries,{},revealed,{frame:{...contact,state:known,sequenceId:'paid',actionId:1,startedAt:100,durationMs:650}})).cue.contactSupport;
+ assert.deepEqual(support.floors.map(floor=>[(floor.minX+floor.maxX)/2/TILE_METRES,(floor.minZ+floor.maxZ)/2/TILE_METRES]),[[2,2],[3,2],[3,3]]);
+ assert.ok(support.floors.every(floor=>floor.height===0));assert.deepEqual(known,before);
+});

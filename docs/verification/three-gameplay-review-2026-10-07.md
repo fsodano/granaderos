@@ -318,11 +318,33 @@ and the type check pass. A collapsed clothing face now supplies a finite segment
 or point distance. This is groundwork for the measured paired contact repair,
 which remains pending.
 
+## Ninth increment
+
+The palace now follows its direct sprite with four supported capped columns,
+a measured storey band, a joined balcony and twenty-one arched upper panes on
+all four faces. Edited openings remove their supports. Short slabs retain one
+facade storey, and ordinary room cutaways remove the upper decoration. The
+[palace review](../art/palace-facade-3d-review-2026-10-07.md) records the source
+comparison and the separate pending portico roof and crest.
+
+Paired melee cues now include only nearby disclosed passable floor rectangles
+at the attacker height. Walls, windows, closed doors, uneven floors, unreadable
+rooms and disclosed blocking props cannot support a fitted step. Private prop
+records do not change visible support. This is a boundary for the pending
+contact fit; it does not yet change the native attack.
+
+Ladder geometry now refreshes when the authored endpoint heights change at the
+same saved cells. The clean committed cut passed 114 affected checks in 6.77
+seconds, type and documentation checks, all 38 baseline checks, and the
+production export. Twelve live palace views cover the original roof and the
+closed 3 m slab without browser errors. Selected rotated exteriors and the
+short slab were visually inspected against the current sprite.
+
 ## Next increments and acceptance limits
 
 Climbing support and the roof-edge step, the broader posture bank, braking
 steps and paired melee contact still need review. Crouched boot grounding and
-palace upper facade detail remain under correction. The
+the palace portico roof and crest remain under correction. The
 [character review](../../assets/source/characters-3d/REVIEW.md) records the
 accepted standing reference and the retained motion bank separately.
 

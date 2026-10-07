@@ -57,7 +57,10 @@ export function createSectorWorld(scene:Scene,options:WorldOptions):SectorWorld{
     const propChunks=new Map<string,NonNullable<WorldInput['terrain']['props']>[number][]>();
     for(const prop of next.terrain.props??[]){const key=`${prop.tacticalLevel??0}:${chunkKey(prop)}`,list=propChunks.get(key)??[];list.push(prop);propChunks.set(key,list);}
     for(const [id,props]of propChunks)retain(`props:${id}`,signature([props,lit(props)]),()=>buildProps(id,props,next,T,geometry,materials));
-    if(next.terrain.climbLinks?.length)retain('climb-links',signature([next.terrain.climbLinks,lit(next.terrain.climbLinks.map(link=>link.from))]),()=>buildClimbLinks(next,T,geometry,materials));
+    if(next.terrain.climbLinks?.length){
+      const elevation=(point:WorldPoint)=>point.elevation??(point.tacticalLevel?next.terrain.upperSurfaces:next.terrain.tiles)?.find(surface=>worldKey(surface)===worldKey(point))?.elevation??0;
+      retain('climb-links',signature([next.terrain.climbLinks,next.terrain.climbLinks.map(link=>[elevation(link.from),elevation(link.to)]),lit(next.terrain.climbLinks.map(link=>link.from))]),()=>buildClimbLinks(next,T,geometry,materials));
+    }
     for(const cannon of next.cannons??[])retain(`cannon:${cannon.id}`,signature([cannon,illuminationAt(next,cannon)]),()=>buildCannon(cannon,next,T,geometry,materials));
     for(const [n,pile]of (next.loot??[]).entries()){
       const id=pile.id??`${worldKey(pile)}:${n}`;retain(`loot:${id}`,signature([pile,illuminationAt(next,pile)]),()=>buildLoot(id,pile,next,T,geometry,materials));

@@ -7,7 +7,8 @@ import {fixedBayonetFor} from '../../../game/weapon-fittings.js';
 import {wornOutfit} from '../../../game/outfits.js';
 import {canSee,tileIllumination} from '../../../game/tactical.js';
 import {relativeBodyHeight} from '../../../game/sight-geometry.js';
-import {tacticalLevel,spaceKey,surfaceHeight} from '../../../game/tactical-space.js';
+import {tacticalLevel,spaceKey,surfaceHeight,surfaceAt} from '../../../game/tactical-space.js';
+import {propBlocksAt} from '../../../game/props.js';
 import {isInteriorVisible} from '../../../game/tactical-visibility.js';
 import {actorInteriorReadable} from '../../../game/scene-readability.js';
 import {roomDressings} from '../../../game/room-dressing.js';
@@ -22,7 +23,8 @@ import type {AnimationWork} from './animation-clock';
 export type ActorKind='unit'|'npc';
 export type ActorEntry={key:string;kind:ActorKind;actor:any};
 export type ContactTarget={key:string;appearance:string;position:[number,number,number];yaw:number;posture:string;mounted:boolean;action:string;bodyHeights:Record<string,number>};
-export type ActorCue={id:string;action:string;shotHand?:'primary'|'offhand';hand?:'handRight'|'handLeft';startedAt:number;durationMs?:number;phase?:string;phaseStartedAt?:number;phaseDurationMs?:number;fromPosture?:string;toPosture?:string;work?:readonly AnimationWork[];contactTarget?:ContactTarget};
+export type ContactSupport={floors:readonly {minX:number;maxX:number;minZ:number;maxZ:number;height:number}[]};
+export type ActorCue={id:string;action:string;shotHand?:'primary'|'offhand';hand?:'handRight'|'handLeft';startedAt:number;durationMs?:number;phase?:string;phaseStartedAt?:number;phaseDurationMs?:number;fromPosture?:string;toPosture?:string;work?:readonly AnimationWork[];contactTarget?:ContactTarget;contactSupport?:ContactSupport};
 export type VisualItem={id:string;reference:string;socket:'handRight'|'handLeft'|'back'|'hip';fittings?:any};
 export type ActorVisual={key:string;id:string;kind:ActorKind;appearance:string;skin:string;side:string;tacticalLevel:number;position:[number,number,number];yaw:number;posture:string;mounted:boolean;action:string;idleAction:string;equipment:string;items:VisualItem[];garments:Record<string,string|null>;cue?:ActorCue;motion?:Motion;selected:boolean;bodyHeights:Record<string,number>};
 export const actorKey=(kind:ActorKind,id:string)=>`${kind}:${id}`;
@@ -92,6 +94,19 @@ export function admittedImpactCue({key,kind,actor}:ActorEntry,frame:any,now=0):A
   if(impact)return {id:`${frame.sequenceId}:${frame.index??frame.actionId}:impact:${key}`,action:'hit',startedAt:frame.startedAt??now,durationMs:frame.durationMs??450};
 }
 
+/** Known support only; private bodies and unreadable props are not queried. */
+function contactSupport(state:any,actor:any,visual:ActorVisual,revealed:ReadonlySet<string>):ContactSupport{
+  const floors:ContactSupport['floors'][number][]=[],level=tacticalLevel(actor),height=visual.position[1];
+  const props={props:(state.props??[]).filter((prop:any)=>isInteriorVisible(state,prop,revealed))};
+  for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){
+    const point={x:actor.x+dx,y:actor.y+dy,tacticalLevel:level},surface=surfaceAt(state,point);
+    if(!surface||surface.blocked||['wall','window'].includes(surface.type)||surface.type==='door'&&!surface.open&&!surface.broken||Math.abs((surfaceHeight(state,point)??0)-height)>.001||propBlocksAt(props,point.x,point.y,level))continue;
+    if((dx||dy)&&!isInteriorVisible(state,point,revealed))continue;
+    floors.push({minX:(point.x-.5)*TILE_METRES,maxX:(point.x+.5)*TILE_METRES,minZ:(point.y-.5)*TILE_METRES,maxZ:(point.y+.5)*TILE_METRES,height});
+  }
+  return {floors};
+}
+
 export function presentActors(state:any,entries:readonly ActorEntry[],positions:Record<string,Motion>,revealed:ReadonlySet<string>,options:{selected?:string;mode?:string;cues?:Readonly<Record<string,ActorCue>>;frame?:any;now?:number}={}):ActorVisual[]{
   const result:ActorVisual[]=[];
   for(const {key,kind,actor}of entries){
@@ -139,7 +154,8 @@ export function presentActors(state:any,entries:readonly ActorEntry[],positions:
     const entry=entries.find(entry=>entry.key===key),target=matches.length===1?matches[0]:undefined;
     if(target&&entry&&entry.actor.x===point.x&&entry.actor.y===point.y&&tacticalLevel(entry.actor)===tacticalLevel(point)&&target.position.every(Number.isFinite)&&Number.isFinite(target.yaw)){
       for(const visual of result)if(visual.kind==='unit'&&visual.id===frame.unitId&&visual.key!==key&&visual.cue&&['strike','bayonet'].includes(visual.cue.action)){
-        visual.cue={...visual.cue,contactTarget:{key,appearance:target.appearance,position:[...target.position],yaw:target.yaw,posture:target.posture,mounted:target.mounted,action:target.action,bodyHeights:{...target.bodyHeights}}};
+        const source=entries.find(entry=>entry.key===visual.key)!;
+        visual.cue={...visual.cue,contactTarget:{key,appearance:target.appearance,position:[...target.position],yaw:target.yaw,posture:target.posture,mounted:target.mounted,action:target.action,bodyHeights:{...target.bodyHeights}},contactSupport:contactSupport(state,source.actor,visual,revealed)};
       }
     }
   }
