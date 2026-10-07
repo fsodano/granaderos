@@ -67,14 +67,39 @@ Cold loading samples were lower. These measurements cover the stated camera
 and computer; they do not establish 100 simultaneously visible bodies or DPR 2
 performance.
 
+## Second increment
+
+All ground and horse movement now uses the exported stride of the matching
+anatomy, equipment and posture. Male unarmed walking takes about 683 ms per
+cardinal cell and running about 441 ms. Diagonal segments retain the same
+physical speed. Recorded crawl and horse steps wait until their visible
+travel completes and commit the final battle once.
+
+Roof UVs now measure metres along the eave and the real slope. Partial room
+cutaways reuse the original plane coordinates. Clay courses are approximately
+19 cm wide and 45 cm long; roof maps retain their source colours and add subtle
+surface relief. Ground and flat terrace coordinates retain their existing
+mapping.
+
+Palace balconies require two solid entrance supports. Barracks gate details,
+stable timber frames and church tower foundations follow the authored walls
+and skip openings. Individual building selection removes the other guards,
+so the full facade and roof can be reviewed through normal camera controls.
+
+The local selection passed 108 motion/input/playback/export tests, 28 building
+and world tests, and the updated cumulative-distance checks. TypeScript and
+production static export passed. The real UI fire/reload/crawl checks passed
+again and all nine isolated facades were captured. A separate empty-sector
+browser check loaded all ground textures, removed the loading message and
+reported zero actors, 5,280 triangles and no errors.
+
 ## Next increments and acceptance limits
 
-Standing, running, crouched and mounted travel still need the same native pace
-alignment. Roof textures need slope-relative coordinates that survive facade
-rotation and room reveal. Palace balconies, stable and barracks details and
-church support placement need another visual pass. The broader posture bank,
-long-garment deformation, braking steps and paired melee contact also remain
-open. The [character review](../../assets/source/characters-3d/REVIEW.md) records
+The civic facade still needs two readable arcade levels. Browser review also
+found raised long garments in prone poses and recorded reloads playing much
+faster than their native clip. These are the next specific corrections. The
+broader posture bank, braking steps and paired melee contact still need
+review. The [character review](../../assets/source/characters-3d/REVIEW.md) records
 the accepted standing reference and the retained motion bank separately.
 
 The inspected sprites provide anatomy, clothing, grips and silhouette targets;

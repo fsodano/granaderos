@@ -4,7 +4,7 @@ import {JSDOM} from '../web/node_modules/jsdom/lib/api.js';
 import {createElement as h,act} from '../web/node_modules/react/index.js';
 import {createRoot} from '../web/node_modules/react-dom/client.js';
 import {createBattle,presentedEndTurn,presentedActBattle} from '../game/tactical.js';
-const {useEnemyPlayback}=await import('../web/lib/useEnemyPlayback.ts');
+const {useEnemyPlayback,presentedFrameDuration}=await import('../web/lib/useEnemyPlayback.ts');
 const {default:Battlefield}=await import('../web/app/Battlefield.tsx');
 const hosts=n=>!n||typeof n!=='object'?[]:Array.isArray(n)?n.flatMap(hosts):[n,...hosts(n.props?.children)];
 const field=()=>{const s=createBattle([{id:'p',name:'Patriota',x:1,y:1,weapon:1801,marksmanship:70}],{width:24,height:12,seed:45,tiles:Array.from({length:288},(_,i)=>({x:i%24,y:Math.floor(i/24),type:'grass',blocked:false,cover:0})),enemies:[{id:'e',name:'Sable',x:7,y:1,weapon:1809,morale:100}]});s.units[0].ap=0;return s;};
@@ -39,6 +39,17 @@ test('commanded player shots show preparation and target impact before committin
  const env=await mount(t,()=>h(Capture));let done;await act(async()=>{done=api.present(result,s=>commits.push(s));});
  let reaction=false;for(let i=0;i<result.frames.length;i++){assert.equal(api.frame.index,i);assert.equal(commits.length,0);if(api.frame.impacts.length)reaction=true;await env.step();}
  await done;assert.ok(reaction);assert.deepEqual(commits,[result.state]);assert.equal(api.busy,false);
+});
+test('recorded crawl and mounted steps share the native movement clock until the final commit',async t=>{
+ for(const changes of [{stance:'prone',movementMode:'prone'},{mounted:true,horse:true,movementMode:'walk'}])await t.test(changes.mounted?'horse':'crawl',async t=>{
+  let api;const commits=[],source=field(),actor=source.units.find(unit=>unit.id==='e');Object.assign(actor,changes);
+  const after=structuredClone(source),moved=after.units.find(unit=>unit.id==='e');moved.x++;moved.lastMovePath=[{x:moved.x,y:moved.y}];
+  const frame={type:'step',action:'move',unitId:'e',state:after,visibleIds:['p','e'],impacts:[]},result={state:after,frames:[frame]},expected=presentedFrameDuration(frame,source);
+  function Capture(){api=useEnemyPlayback(source,state=>commits.push(state));return null;}
+  const env=await mount(t,()=>h(Capture));let done;await act(async()=>{done=api.present(result,state=>commits.push(state));});
+  assert.equal(api.busy,true);assert.deepEqual(commits,[]);assert.equal(api.frame.durationMs,expected);assert.equal(api.state.presentationStepMs,expected);
+  assert.equal(await env.step(),expected);await done;assert.deepEqual(commits,[after]);assert.equal(api.busy,false);assert.equal(api.frame,null);
+ });
 });
 test('the same portrait toggles inventory and failed target orders use a timed cross without a permanent error panel',async t=>{
  const source=field();source.units[0].ap=0;let tree,commits=[];

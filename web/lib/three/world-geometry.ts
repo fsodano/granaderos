@@ -1,6 +1,21 @@
 import {BoxGeometry,BufferAttribute,BufferGeometry,ConeGeometry,CylinderGeometry,Group,IcosahedronGeometry,LatheGeometry,Matrix4,Mesh,MeshStandardMaterial,Quaternion,Shape,ShapeGeometry,TorusGeometry,Vector2,Vector3} from 'three';
 import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
 
+export type PolygonUV=(point:Vector3)=>readonly [number,number];
+/** Roof courses run along the low eave, with their spacing measured on the
+ * actual slope. Retain this projector when clipping a plane for room reveal. */
+export function roofTextureProjector(points:readonly Vector3[]):PolygonUV{
+  const origin=points[0],across=points[1]?.clone().sub(origin);
+  if(!origin||!across||across.lengthSq()<1e-12)return point=>[point.x,point.z+point.y];
+  across.normalize();
+  const uphill=points.slice(2).map(point=>point.clone().sub(origin)).map(offset=>offset.addScaledVector(across,-offset.dot(across))).find(offset=>offset.lengthSq()>1e-12);
+  if(!uphill)return point=>[point.x,point.z+point.y];
+  uphill.normalize();
+  // TextureLoader's vertical axis points upwards. Positive V therefore runs
+  // from the eave to the ridge; the image's lower tile edge faces downhill.
+  return point=>{const offset=point.clone().sub(origin);return [offset.dot(across),offset.dot(uphill)];};
+}
+
 /** Owned primitive library; merged render geometry does not retain its inputs. */
 export class WorldGeometry {
   private cache=new Map<string,BufferGeometry>();
@@ -48,11 +63,14 @@ export class WorldBatch {
   cylinder(material:MeshStandardMaterial,a:Vector3,b:Vector3,radius:number,light=1,kind='cylinder'){
     const vector=b.clone().sub(a);this.primitive(kind,material,a.clone().add(b).multiplyScalar(.5),[radius,vector.length(),radius],new Quaternion().setFromUnitVectors(new Vector3(0,1,0),vector.normalize()),light);
   }
-  polygon(material:MeshStandardMaterial,points:readonly Vector3[],light=1){
+  polygon(material:MeshStandardMaterial,points:readonly Vector3[],light=1,projectUV?:PolygonUV){
     if(points.length<3)return;const vertices:number[]=[];
     for(let n=1;n<points.length-1;n++)for(const point of [points[0],points[n],points[n+1]])vertices.push(point.x,point.y,point.z);
     const geometry=new BufferGeometry().setAttribute('position',new BufferAttribute(new Float32Array(vertices),3));geometry.computeVertexNormals();
-    const uv=new Float32Array(vertices.length/3*2);for(let n=0;n<vertices.length/3;n++){uv[n*2]=vertices[n*3];uv[n*2+1]=vertices[n*3+2]+vertices[n*3+1];}geometry.setAttribute('uv',new BufferAttribute(uv,2));
+    const uv=new Float32Array(vertices.length/3*2);for(let n=0;n<vertices.length/3;n++){
+      if(projectUV){const value=projectUV(new Vector3(vertices[n*3],vertices[n*3+1],vertices[n*3+2]));uv[n*2]=value[0];uv[n*2+1]=value[1];}
+      else{uv[n*2]=vertices[n*3];uv[n*2+1]=vertices[n*3+2]+vertices[n*3+1];}
+    }geometry.setAttribute('uv',new BufferAttribute(uv,2));
     this.add(geometry,material,new Matrix4(),light);geometry.dispose();
   }
   finish(name:string){

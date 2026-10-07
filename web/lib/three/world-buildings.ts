@@ -4,7 +4,7 @@ import {buildingAppearance} from '../../../game/building-appearance.js';
 import {buildingStyle} from '../../../game/building-types.js';
 import {BUILDING_OPENINGS} from '../../../game/building-scale.js';
 import {roomDecorProfile} from '../../../game/room-dressing.js';
-import {WorldBatch,cellTop} from './world-geometry';
+import {WorldBatch,cellTop,roofTextureProjector} from './world-geometry';
 import {illuminationAt} from './world-materials';
 import {architecturalDetails,roofEdgeDetails} from './world-building-details';
 import type {WorldGeometry} from './world-geometry';
@@ -141,12 +141,13 @@ export function buildBuilding(b0:WorldBuilding,input:WorldInput,T:number,geometr
     if(b.roof==='terrace')panels.push([at(lo,front,height),at(lo,back,height),at(hi,back,height),at(hi,front,height)]);
     else if(profile.roofShape==='hip'){
       const inset=Math.min(frame.width*.44,frame.depth*.3),a=at(mid,inset,height+rise),c=at(mid,frame.depth-inset,height+rise),corners=[at(lo,front,height),at(lo,back,height),at(hi,back,height),at(hi,front,height)];panels.push([corners[0],corners[1],c,a],[corners[2],corners[3],a,c],[corners[3],corners[0],a],[corners[1],corners[2],c]);
-    }else if(profile.roofShape==='shed')panels.push([at(lo,front,height),at(lo,back,height+rise),at(hi,back,height+rise),at(hi,front,height)]);
+    }else if(profile.roofShape==='shed')panels.push([at(lo,front,height),at(hi,front,height),at(hi,back,height+rise),at(lo,back,height+rise)]);
     else{const a=at(mid,front,height+rise),c=at(mid,back,height+rise);panels.push([at(lo,front,height),at(lo,back,height),c,a],[at(hi,back,height),at(hi,front,height),a,c]);for(const d of [0,frame.depth])batch.polygon(wallMat,[at(0,d,height),at(frame.width,d,height),at(mid,d,height+rise)],illuminationAt(input,b));}
     const owners=roofOwners(b),hidden=groundRooms.filter(room=>!known.has(room.id)),whole=!someOpen;
     for(const panel of panels){
-      if(whole)batch.polygon(roofMat,panel,illuminationAt(input,b));
-      else for(let y=b.y;y<b.y+b.height;y++)for(let x=b.x;x<b.x+b.width;x++)if(hidden.some(room=>room.id===owners.get(`${x},${y}`))){const clipped=clipRoofCell(panel,(x-.5+wallInset)*T,(y-.5+wallInset)*T,(x+.5+wallInset)*T,(y+.5+wallInset)*T);batch.polygon(roofMat,clipped,illuminationAt(input,{x,y}));}
+      const projectUV=terrace?undefined:roofTextureProjector(panel);
+      if(whole)batch.polygon(roofMat,panel,illuminationAt(input,b),projectUV);
+      else for(let y=b.y;y<b.y+b.height;y++)for(let x=b.x;x<b.x+b.width;x++)if(hidden.some(room=>room.id===owners.get(`${x},${y}`))){const clipped=clipRoofCell(panel,(x-.5+wallInset)*T,(y-.5+wallInset)*T,(x+.5+wallInset)*T,(y+.5+wallInset)*T);batch.polygon(roofMat,clipped,illuminationAt(input,{x,y}),projectUV);}
     }
     if(whole)group.add(roofEdgeDetails(b.id,panels,height,geometry,roofMat,materials.get(terrace?'stone':'darkwood'),illuminationAt(input,b),terrace));
   }

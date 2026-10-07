@@ -18,9 +18,9 @@ test('all sandbox choices are fresh, valid real battle snapshots with legal equi
   for(const {id}of RENDERER_SCENARIOS){
     const battle=createRendererSandboxBattle(id),again=createRendererSandboxBattle(id);
     assert.deepEqual(again,battle,`${id} resets to a repeatable state`);
-    assert.notEqual(again,battle);assert.notEqual(again.units[0],battle.units[0]);
+    assert.notEqual(again,battle);assert.notEqual(again.units,battle.units);if(battle.units.length)assert.notEqual(again.units[0],battle.units[0]);
     assert.doesNotThrow(()=>validateBattleSnapshot(JSON.parse(JSON.stringify(battle))),id);
-    assert.equal(battle.phase,'player');assert.equal(battle.status,'active');
+    assert.equal(battle.phase,'player');assert.equal(battle.status,id==='empty'?'defeat':'active');
     assert.ok(battle.units.filter(unit=>unit.side==='player').every(unit=>unit.ap>0&&unit.ap<=100));
   }
   for(const count of [24,60,100])assert.equal(createRendererSandboxBattle(`performance${count}`).units.length,count);
@@ -74,6 +74,19 @@ test('posture review exercises real travel for both prone anatomy banks',()=>{
     assert.equal(actor(next,id).stance,unit.stance);
     assert.equal(actor(next,id).movementMode,unit.movementMode);
   }
+});
+
+test('individual building review keeps a real lone guard outside each closed facade',()=>{
+  for(const type of Object.keys(BUILDING_TYPES)){
+    const battle=createRendererSandboxBattle(`architecture:${type}`);
+    assert.equal(battle.buildings.length,1);assert.equal(battle.buildings[0].architecture,type);
+    assert.equal(battle.units.length,1);assert.equal(battle.units[0].id,`guard-${type}`);
+    assert.doesNotThrow(()=>validateBattleSnapshot(JSON.parse(JSON.stringify(battle))));
+    const guard=battle.units[0],building=battle.buildings[0];
+    assert.ok(guard.x>building.x+building.width-1||guard.y>building.y+building.height-1);
+    assert.equal(battle.tiles.find(tile=>tile.type==='door').open,false);
+  }
+  assert.throws(()=>createRendererSandboxBattle('architecture:unknown'));
 });
 
 test('the loaded cannon has a complete adjacent crew and finite ammunition',()=>{

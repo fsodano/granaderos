@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import {mkdir,writeFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
+import {BUILDING_TYPES} from '../game/building-types.js';
 const {chromium}=await import(process.env.PLAYWRIGHT_MODULE||'playwright');
 const url=process.env.GRANADEROS_REVIEW_URL||'http://127.0.0.1:3150/renderer-sandbox';
 const output=resolve(process.env.GRANADEROS_REVIEW_OUTPUT||'artifacts/three-gameplay-review');
@@ -33,11 +34,11 @@ try{
  await page.waitForSelector('[data-unit-id="crawler"][data-moving="false"]',{timeout:15000});
  checks.push({action:'male-crawl',finished:true});
  await page.getByRole('button',{name:'Arquitectura',exact:true}).click();await ready();
- for(let index=1;index<=9;index++){
-  if(index===7)await page.getByRole('button',{name:'Combatientes siguientes',exact:true}).click();
-  await page.locator(`[aria-label^="${index}. "]`).click();
+ for(const [index,type]of Object.keys(BUILDING_TYPES).entries()){
+  await page.getByRole('combobox',{name:'Edificio a revisar',exact:true}).selectOption(type);await ready();
+  await page.locator('.tactical-field').focus();await page.keyboard.press('-');
   await page.waitForTimeout(1100);
-  await page.screenshot({path:resolve(output,`building-${index}.png`)});
+  await page.screenshot({path:resolve(output,`building-${index+1}.png`)});
  }
  assert.deepEqual(errors,[],'Live gameplay browser errors');
  const report={url,checks,errors,buildingScreenshots:9,scope:'Real UI rifle shot, finite reload, paid crawl movement and nine building camera views. Screenshots still require visual review.'};

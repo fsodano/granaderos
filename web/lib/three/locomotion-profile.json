@@ -17,6 +17,308 @@
         "nativeStrideSpeed": 0.195142,
         "duration": 1.966659,
         "playbackRate": 1
+      },
+      "clips": {
+        "stand.walk.unarmed": {
+          "nativeStrideSpeed": 1.448,
+          "duration": 1.066667,
+          "playbackRate": 1.25
+        },
+        "stand.run.unarmed": {
+          "nativeStrideSpeed": 2.242,
+          "duration": 0.766667,
+          "playbackRate": 1.25
+        },
+        "stand.strafeLeft.unarmed": {
+          "nativeStrideSpeed": 1.1159,
+          "duration": 1.183329,
+          "playbackRate": 1
+        },
+        "stand.strafeRight.unarmed": {
+          "nativeStrideSpeed": 1.1113,
+          "duration": 1.283328,
+          "playbackRate": 1
+        },
+        "stand.walk.long-gun": {
+          "nativeStrideSpeed": 1.448,
+          "duration": 1.066667,
+          "playbackRate": 1.25
+        },
+        "stand.run.long-gun": {
+          "nativeStrideSpeed": 2.242,
+          "duration": 0.766667,
+          "playbackRate": 1.25
+        },
+        "stand.strafeLeft.long-gun": {
+          "nativeStrideSpeed": 1.1159,
+          "duration": 1.183329,
+          "playbackRate": 1
+        },
+        "stand.strafeRight.long-gun": {
+          "nativeStrideSpeed": 1.1113,
+          "duration": 1.283328,
+          "playbackRate": 1
+        },
+        "stand.walk.short-gun": {
+          "nativeStrideSpeed": 1.448,
+          "duration": 1.066667,
+          "playbackRate": 1.25
+        },
+        "stand.run.short-gun": {
+          "nativeStrideSpeed": 2.242,
+          "duration": 0.766667,
+          "playbackRate": 1.25
+        },
+        "stand.strafeLeft.short-gun": {
+          "nativeStrideSpeed": 1.1159,
+          "duration": 1.183329,
+          "playbackRate": 1
+        },
+        "stand.strafeRight.short-gun": {
+          "nativeStrideSpeed": 1.1113,
+          "duration": 1.283328,
+          "playbackRate": 1
+        },
+        "stand.walk.blade": {
+          "nativeStrideSpeed": 1.448,
+          "duration": 1.066667,
+          "playbackRate": 1.25
+        },
+        "stand.run.blade": {
+          "nativeStrideSpeed": 2.242,
+          "duration": 0.766667,
+          "playbackRate": 1.25
+        },
+        "stand.strafeLeft.blade": {
+          "nativeStrideSpeed": 1.1159,
+          "duration": 1.183329,
+          "playbackRate": 1
+        },
+        "stand.strafeRight.blade": {
+          "nativeStrideSpeed": 1.1113,
+          "duration": 1.283328,
+          "playbackRate": 1
+        },
+        "crouch.walk.unarmed": {
+          "nativeStrideSpeed": 0.8403,
+          "duration": 1.533327,
+          "playbackRate": 1
+        },
+        "crouch.strafeLeft.unarmed": {
+          "nativeStrideSpeed": 0.7564,
+          "duration": 1.61666,
+          "playbackRate": 1
+        },
+        "crouch.strafeRight.unarmed": {
+          "nativeStrideSpeed": 0.8492,
+          "duration": 1.399994,
+          "playbackRate": 1
+        },
+        "crouch.walk.long-gun": {
+          "nativeStrideSpeed": 0.8403,
+          "duration": 1.533327,
+          "playbackRate": 1
+        },
+        "crouch.strafeLeft.long-gun": {
+          "nativeStrideSpeed": 0.7564,
+          "duration": 1.61666,
+          "playbackRate": 1
+        },
+        "crouch.strafeRight.long-gun": {
+          "nativeStrideSpeed": 0.8492,
+          "duration": 1.399994,
+          "playbackRate": 1
+        },
+        "crouch.walk.short-gun": {
+          "nativeStrideSpeed": 0.8403,
+          "duration": 1.533327,
+          "playbackRate": 1
+        },
+        "crouch.strafeLeft.short-gun": {
+          "nativeStrideSpeed": 0.7564,
+          "duration": 1.61666,
+          "playbackRate": 1
+        },
+        "crouch.strafeRight.short-gun": {
+          "nativeStrideSpeed": 0.8492,
+          "duration": 1.399994,
+          "playbackRate": 1
+        },
+        "crouch.walk.blade": {
+          "nativeStrideSpeed": 0.8403,
+          "duration": 1.533327,
+          "playbackRate": 1
+        },
+        "crouch.strafeLeft.blade": {
+          "nativeStrideSpeed": 0.7564,
+          "duration": 1.61666,
+          "playbackRate": 1
+        },
+        "crouch.strafeRight.blade": {
+          "nativeStrideSpeed": 0.8492,
+          "duration": 1.399994,
+          "playbackRate": 1
+        },
+        "prone.crawl.unarmed": {
+          "nativeStrideSpeed": 0.195142,
+          "duration": 1.966659,
+          "playbackRate": 1
+        },
+        "prone.crawl.long-gun": {
+          "nativeStrideSpeed": 0.195142,
+          "duration": 1.966659,
+          "playbackRate": 1
+        },
+        "prone.crawl.short-gun": {
+          "nativeStrideSpeed": 0.195142,
+          "duration": 1.966659,
+          "playbackRate": 1
+        },
+        "prone.crawl.blade": {
+          "nativeStrideSpeed": 0.195142,
+          "duration": 1.966659,
+          "playbackRate": 1
+        },
+        "mounted.walk.unarmed": {
+          "nativeStrideSpeed": 1.4052,
+          "duration": 1.083329,
+          "playbackRate": 1
+        },
+        "mounted.run.unarmed": {
+          "nativeStrideSpeed": 1.007,
+          "duration": 0.75833,
+          "playbackRate": 1
+        },
+        "mounted.walk.long-gun": {
+          "nativeStrideSpeed": 1.4052,
+          "duration": 1.083329,
+          "playbackRate": 1
+        },
+        "mounted.run.long-gun": {
+          "nativeStrideSpeed": 1.007,
+          "duration": 0.75833,
+          "playbackRate": 1
+        },
+        "mounted.walk.short-gun": {
+          "nativeStrideSpeed": 1.4052,
+          "duration": 1.083329,
+          "playbackRate": 1
+        },
+        "mounted.run.short-gun": {
+          "nativeStrideSpeed": 1.007,
+          "duration": 0.75833,
+          "playbackRate": 1
+        },
+        "mounted.walk.blade": {
+          "nativeStrideSpeed": 1.4052,
+          "duration": 1.083329,
+          "playbackRate": 1
+        },
+        "mounted.run.blade": {
+          "nativeStrideSpeed": 1.007,
+          "duration": 0.75833,
+          "playbackRate": 1
+        },
+        "stand.walk.lance": {
+          "nativeStrideSpeed": 1.4052,
+          "duration": 1.083329,
+          "playbackRate": 1
+        },
+        "stand.walk.knife": {
+          "nativeStrideSpeed": 1.448,
+          "duration": 1.066667,
+          "playbackRate": 1.25
+        },
+        "stand.run.lance": {
+          "nativeStrideSpeed": 1.007,
+          "duration": 0.75833,
+          "playbackRate": 1
+        },
+        "stand.run.knife": {
+          "nativeStrideSpeed": 2.242,
+          "duration": 0.766667,
+          "playbackRate": 1.25
+        },
+        "stand.strafeLeft.lance": {
+          "nativeStrideSpeed": 1.1159,
+          "duration": 1.183329,
+          "playbackRate": 1
+        },
+        "stand.strafeLeft.knife": {
+          "nativeStrideSpeed": 1.1159,
+          "duration": 1.183329,
+          "playbackRate": 1
+        },
+        "stand.strafeRight.lance": {
+          "nativeStrideSpeed": 1.1113,
+          "duration": 1.283328,
+          "playbackRate": 1
+        },
+        "stand.strafeRight.knife": {
+          "nativeStrideSpeed": 1.1113,
+          "duration": 1.283328,
+          "playbackRate": 1
+        },
+        "crouch.walk.lance": {
+          "nativeStrideSpeed": 0.8403,
+          "duration": 1.533327,
+          "playbackRate": 1
+        },
+        "crouch.walk.knife": {
+          "nativeStrideSpeed": 0.8403,
+          "duration": 1.533327,
+          "playbackRate": 1
+        },
+        "crouch.strafeLeft.lance": {
+          "nativeStrideSpeed": 0.7564,
+          "duration": 1.61666,
+          "playbackRate": 1
+        },
+        "crouch.strafeLeft.knife": {
+          "nativeStrideSpeed": 0.7564,
+          "duration": 1.61666,
+          "playbackRate": 1
+        },
+        "crouch.strafeRight.lance": {
+          "nativeStrideSpeed": 0.8492,
+          "duration": 1.399994,
+          "playbackRate": 1
+        },
+        "crouch.strafeRight.knife": {
+          "nativeStrideSpeed": 0.8492,
+          "duration": 1.399994,
+          "playbackRate": 1
+        },
+        "prone.crawl.lance": {
+          "nativeStrideSpeed": 0.195142,
+          "duration": 1.966659,
+          "playbackRate": 1
+        },
+        "prone.crawl.knife": {
+          "nativeStrideSpeed": 0.195142,
+          "duration": 1.966659,
+          "playbackRate": 1
+        },
+        "mounted.walk.lance": {
+          "nativeStrideSpeed": 1.4052,
+          "duration": 1.083329,
+          "playbackRate": 1
+        },
+        "mounted.walk.knife": {
+          "nativeStrideSpeed": 1.4052,
+          "duration": 1.083329,
+          "playbackRate": 1
+        },
+        "mounted.run.lance": {
+          "nativeStrideSpeed": 1.007,
+          "duration": 0.75833,
+          "playbackRate": 1
+        },
+        "mounted.run.knife": {
+          "nativeStrideSpeed": 1.007,
+          "duration": 0.75833,
+          "playbackRate": 1
+        }
       }
     },
     "female": {
@@ -24,7 +326,379 @@
         "nativeStrideSpeed": 0.194203,
         "duration": 1.966659,
         "playbackRate": 1
+      },
+      "clips": {
+        "stand.walk.unarmed": {
+          "nativeStrideSpeed": 1.383,
+          "duration": 1.066667,
+          "playbackRate": 1.25
+        },
+        "stand.run.unarmed": {
+          "nativeStrideSpeed": 2.133,
+          "duration": 0.766667,
+          "playbackRate": 1.25
+        },
+        "stand.strafeLeft.unarmed": {
+          "nativeStrideSpeed": 1.0544,
+          "duration": 1.183329,
+          "playbackRate": 1
+        },
+        "stand.strafeRight.unarmed": {
+          "nativeStrideSpeed": 1.0316,
+          "duration": 1.283328,
+          "playbackRate": 1
+        },
+        "stand.walk.long-gun": {
+          "nativeStrideSpeed": 1.383,
+          "duration": 1.066667,
+          "playbackRate": 1.25
+        },
+        "stand.run.long-gun": {
+          "nativeStrideSpeed": 2.133,
+          "duration": 0.766667,
+          "playbackRate": 1.25
+        },
+        "stand.strafeLeft.long-gun": {
+          "nativeStrideSpeed": 1.0544,
+          "duration": 1.183329,
+          "playbackRate": 1
+        },
+        "stand.strafeRight.long-gun": {
+          "nativeStrideSpeed": 1.0316,
+          "duration": 1.283328,
+          "playbackRate": 1
+        },
+        "stand.walk.short-gun": {
+          "nativeStrideSpeed": 1.383,
+          "duration": 1.066667,
+          "playbackRate": 1.25
+        },
+        "stand.run.short-gun": {
+          "nativeStrideSpeed": 2.133,
+          "duration": 0.766667,
+          "playbackRate": 1.25
+        },
+        "stand.strafeLeft.short-gun": {
+          "nativeStrideSpeed": 1.0544,
+          "duration": 1.183329,
+          "playbackRate": 1
+        },
+        "stand.strafeRight.short-gun": {
+          "nativeStrideSpeed": 1.0316,
+          "duration": 1.283328,
+          "playbackRate": 1
+        },
+        "stand.walk.blade": {
+          "nativeStrideSpeed": 1.383,
+          "duration": 1.066667,
+          "playbackRate": 1.25
+        },
+        "stand.run.blade": {
+          "nativeStrideSpeed": 2.133,
+          "duration": 0.766667,
+          "playbackRate": 1.25
+        },
+        "stand.strafeLeft.blade": {
+          "nativeStrideSpeed": 1.0544,
+          "duration": 1.183329,
+          "playbackRate": 1
+        },
+        "stand.strafeRight.blade": {
+          "nativeStrideSpeed": 1.0316,
+          "duration": 1.283328,
+          "playbackRate": 1
+        },
+        "crouch.walk.unarmed": {
+          "nativeStrideSpeed": 0.7993,
+          "duration": 1.533327,
+          "playbackRate": 1
+        },
+        "crouch.strafeLeft.unarmed": {
+          "nativeStrideSpeed": 0.9402,
+          "duration": 1.61666,
+          "playbackRate": 1
+        },
+        "crouch.strafeRight.unarmed": {
+          "nativeStrideSpeed": 0.9318,
+          "duration": 1.399994,
+          "playbackRate": 1
+        },
+        "crouch.walk.long-gun": {
+          "nativeStrideSpeed": 0.7993,
+          "duration": 1.533327,
+          "playbackRate": 1
+        },
+        "crouch.strafeLeft.long-gun": {
+          "nativeStrideSpeed": 0.9402,
+          "duration": 1.61666,
+          "playbackRate": 1
+        },
+        "crouch.strafeRight.long-gun": {
+          "nativeStrideSpeed": 0.9318,
+          "duration": 1.399994,
+          "playbackRate": 1
+        },
+        "crouch.walk.short-gun": {
+          "nativeStrideSpeed": 0.7993,
+          "duration": 1.533327,
+          "playbackRate": 1
+        },
+        "crouch.strafeLeft.short-gun": {
+          "nativeStrideSpeed": 0.9402,
+          "duration": 1.61666,
+          "playbackRate": 1
+        },
+        "crouch.strafeRight.short-gun": {
+          "nativeStrideSpeed": 0.9318,
+          "duration": 1.399994,
+          "playbackRate": 1
+        },
+        "crouch.walk.blade": {
+          "nativeStrideSpeed": 0.7993,
+          "duration": 1.533327,
+          "playbackRate": 1
+        },
+        "crouch.strafeLeft.blade": {
+          "nativeStrideSpeed": 0.9402,
+          "duration": 1.61666,
+          "playbackRate": 1
+        },
+        "crouch.strafeRight.blade": {
+          "nativeStrideSpeed": 0.9318,
+          "duration": 1.399994,
+          "playbackRate": 1
+        },
+        "prone.crawl.unarmed": {
+          "nativeStrideSpeed": 0.194203,
+          "duration": 1.966659,
+          "playbackRate": 1
+        },
+        "prone.crawl.long-gun": {
+          "nativeStrideSpeed": 0.194203,
+          "duration": 1.966659,
+          "playbackRate": 1
+        },
+        "prone.crawl.short-gun": {
+          "nativeStrideSpeed": 0.194203,
+          "duration": 1.966659,
+          "playbackRate": 1
+        },
+        "prone.crawl.blade": {
+          "nativeStrideSpeed": 0.194203,
+          "duration": 1.966659,
+          "playbackRate": 1
+        },
+        "mounted.walk.unarmed": {
+          "nativeStrideSpeed": 1.3273,
+          "duration": 1.083329,
+          "playbackRate": 1
+        },
+        "mounted.run.unarmed": {
+          "nativeStrideSpeed": 0.9754,
+          "duration": 0.75833,
+          "playbackRate": 1
+        },
+        "mounted.walk.long-gun": {
+          "nativeStrideSpeed": 1.3273,
+          "duration": 1.083329,
+          "playbackRate": 1
+        },
+        "mounted.run.long-gun": {
+          "nativeStrideSpeed": 0.9754,
+          "duration": 0.75833,
+          "playbackRate": 1
+        },
+        "mounted.walk.short-gun": {
+          "nativeStrideSpeed": 1.3273,
+          "duration": 1.083329,
+          "playbackRate": 1
+        },
+        "mounted.run.short-gun": {
+          "nativeStrideSpeed": 0.9754,
+          "duration": 0.75833,
+          "playbackRate": 1
+        },
+        "mounted.walk.blade": {
+          "nativeStrideSpeed": 1.3273,
+          "duration": 1.083329,
+          "playbackRate": 1
+        },
+        "mounted.run.blade": {
+          "nativeStrideSpeed": 0.9754,
+          "duration": 0.75833,
+          "playbackRate": 1
+        },
+        "stand.walk.lance": {
+          "nativeStrideSpeed": 1.3273,
+          "duration": 1.083329,
+          "playbackRate": 1
+        },
+        "stand.walk.knife": {
+          "nativeStrideSpeed": 1.383,
+          "duration": 1.066667,
+          "playbackRate": 1.25
+        },
+        "stand.run.lance": {
+          "nativeStrideSpeed": 0.9754,
+          "duration": 0.75833,
+          "playbackRate": 1
+        },
+        "stand.run.knife": {
+          "nativeStrideSpeed": 2.133,
+          "duration": 0.766667,
+          "playbackRate": 1.25
+        },
+        "stand.strafeLeft.lance": {
+          "nativeStrideSpeed": 1.0544,
+          "duration": 1.183329,
+          "playbackRate": 1
+        },
+        "stand.strafeLeft.knife": {
+          "nativeStrideSpeed": 1.0544,
+          "duration": 1.183329,
+          "playbackRate": 1
+        },
+        "stand.strafeRight.lance": {
+          "nativeStrideSpeed": 1.0316,
+          "duration": 1.283328,
+          "playbackRate": 1
+        },
+        "stand.strafeRight.knife": {
+          "nativeStrideSpeed": 1.0316,
+          "duration": 1.283328,
+          "playbackRate": 1
+        },
+        "crouch.walk.lance": {
+          "nativeStrideSpeed": 0.7993,
+          "duration": 1.533327,
+          "playbackRate": 1
+        },
+        "crouch.walk.knife": {
+          "nativeStrideSpeed": 0.7993,
+          "duration": 1.533327,
+          "playbackRate": 1
+        },
+        "crouch.strafeLeft.lance": {
+          "nativeStrideSpeed": 0.9402,
+          "duration": 1.61666,
+          "playbackRate": 1
+        },
+        "crouch.strafeLeft.knife": {
+          "nativeStrideSpeed": 0.9402,
+          "duration": 1.61666,
+          "playbackRate": 1
+        },
+        "crouch.strafeRight.lance": {
+          "nativeStrideSpeed": 0.9318,
+          "duration": 1.399994,
+          "playbackRate": 1
+        },
+        "crouch.strafeRight.knife": {
+          "nativeStrideSpeed": 0.9318,
+          "duration": 1.399994,
+          "playbackRate": 1
+        },
+        "prone.crawl.lance": {
+          "nativeStrideSpeed": 0.194203,
+          "duration": 1.966659,
+          "playbackRate": 1
+        },
+        "prone.crawl.knife": {
+          "nativeStrideSpeed": 0.194203,
+          "duration": 1.966659,
+          "playbackRate": 1
+        },
+        "mounted.walk.lance": {
+          "nativeStrideSpeed": 1.3273,
+          "duration": 1.083329,
+          "playbackRate": 1
+        },
+        "mounted.walk.knife": {
+          "nativeStrideSpeed": 1.3273,
+          "duration": 1.083329,
+          "playbackRate": 1
+        },
+        "mounted.run.lance": {
+          "nativeStrideSpeed": 0.9754,
+          "duration": 0.75833,
+          "playbackRate": 1
+        },
+        "mounted.run.knife": {
+          "nativeStrideSpeed": 0.9754,
+          "duration": 0.75833,
+          "playbackRate": 1
+        }
       }
     }
+  },
+  "horse": {
+    "walk": {
+      "nativeStrideSpeed": 0.87949,
+      "duration": 1.1,
+      "playbackRate": 1
+    },
+    "run": {
+      "nativeStrideSpeed": 2.22906,
+      "duration": 0.7333333333333333,
+      "playbackRate": 1
+    }
+  },
+  "itemClips": {
+    "1812": {
+      "stand.idle.blade": "stand.idle.lance",
+      "stand.walk.blade": "stand.walk.lance",
+      "stand.run.blade": "stand.run.lance",
+      "stand.strafeLeft.blade": "stand.strafeLeft.lance",
+      "stand.strafeRight.blade": "stand.strafeRight.lance",
+      "stand.slash.blade": "stand.thrust.lance",
+      "stand.brace.blade": "stand.brace.lance",
+      "crouch.idle.blade": "crouch.idle.lance",
+      "crouch.walk.blade": "crouch.walk.lance",
+      "crouch.strafeLeft.blade": "crouch.strafeLeft.lance",
+      "crouch.strafeRight.blade": "crouch.strafeRight.lance",
+      "crouch.slash.blade": "crouch.thrust.lance",
+      "crouch.brace.blade": "crouch.brace.lance",
+      "prone.idle.blade": "prone.idle.lance",
+      "prone.crawl.blade": "prone.crawl.lance",
+      "mounted.idle.blade": "mounted.idle.lance",
+      "mounted.walk.blade": "mounted.walk.lance",
+      "mounted.run.blade": "mounted.run.lance",
+      "mounted.slash.blade": "mounted.thrust.lance",
+      "mounted.brace.blade": "mounted.brace.lance"
+    },
+    "1813": {
+      "stand.idle.blade": "stand.idle.knife",
+      "stand.walk.blade": "stand.walk.knife",
+      "stand.run.blade": "stand.run.knife",
+      "stand.strafeLeft.blade": "stand.strafeLeft.knife",
+      "stand.strafeRight.blade": "stand.strafeRight.knife",
+      "stand.slash.blade": "stand.slash.knife",
+      "stand.brace.blade": "stand.brace.knife",
+      "crouch.idle.blade": "crouch.idle.knife",
+      "crouch.walk.blade": "crouch.walk.knife",
+      "crouch.strafeLeft.blade": "crouch.strafeLeft.knife",
+      "crouch.strafeRight.blade": "crouch.strafeRight.knife",
+      "crouch.slash.blade": "crouch.slash.knife",
+      "crouch.brace.blade": "crouch.brace.knife",
+      "prone.idle.blade": "prone.idle.knife",
+      "prone.crawl.blade": "prone.crawl.knife",
+      "mounted.idle.blade": "mounted.idle.knife",
+      "mounted.walk.blade": "mounted.walk.knife",
+      "mounted.run.blade": "mounted.run.knife",
+      "mounted.slash.blade": "mounted.slash.knife",
+      "mounted.brace.blade": "mounted.brace.knife"
+    }
+  },
+  "itemAliases": {
+    "medical": "medkits",
+    "medkit": "medkits",
+    "torch": "torches",
+    "bolas": "boleadoras",
+    "ration": "rations",
+    "ammo": "ammunition",
+    "inventory:key": "key",
+    "inventory:lockpick": "lockpick",
+    "inventory:crowbar": "crowbar",
+    "inventory:pliers": "pliers"
   }
 }
