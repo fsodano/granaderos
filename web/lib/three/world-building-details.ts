@@ -9,6 +9,7 @@ import {depotFacade} from './world-depot-facade';
 import {warehouseButtresses} from './world-warehouse-buttresses';
 import {postaPiers} from './world-posta-piers';
 import {stableVentilation} from './world-stable-ventilation';
+import {houseFacade} from './world-house-facade';
 import {buildingArtInset} from './world-building-placement';
 import type {WorldGeometry} from './world-geometry';
 import type {WorldMaterials} from './world-materials';
@@ -399,6 +400,6 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
       root.add(stableVentilation(b,input,T,height,base,roofRise,geometry,materials));
     }
   }else if(kind==='smithy'){sideChimney(true);roofCanopy('forge-canopy',entranceSupports(),.50);}
-  else if(kind==='house')sideChimney();
+  else if(kind==='house'){sideChimney();root.add(houseFacade(b,input,T,height,base,geometry,materials,legacy));}
   root.add(batch.finish(`building-detail:${b.id}:fabric`));return root;
 }
