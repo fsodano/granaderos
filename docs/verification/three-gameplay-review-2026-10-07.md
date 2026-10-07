@@ -400,12 +400,26 @@ current climb, loading and sabre regressions. Eight clean normal UI idle/walking
 frames were captured; selected frames were visually compared with the sprites.
 Prone and broader motion polish remain under review.
 
+## Depot facade increment
+
+The depot now retains the current sprite's full-height stone piers and loft
+loading hatch, boom, pulley and rope. Their measured supports stay in intact
+wall cells. Edited openings, actual pitched roof rise, ordinary room cutaways
+and legal upper routes control the detail. The
+[depot review](../art/depot-facade-3d-review-2026-10-07.md) records the source
+comparison and final visible stone faces.
+
+The clean cut passed 50 affected checks in 5.80 seconds, type/docs/baseline checks
+and the production export. Six clean playable views had no browser errors.
+Front/side exteriors and the rotated interior were compared with the current
+sprite. This accepts the bounded depot correction.
+
 ## Next increments and acceptance limits
 
 The low-ceiling headwear limit, broader posture bank, braking steps and the
 remaining paired melee actions still need review. The broader published bank
 audit also found floor penetration in sideways steps, prone motion and lance
-locomotion; native boot grounding remains under correction. Depot loading details and warehouse buttresses need source comparison. The
+locomotion; native boot grounding remains under correction. Warehouse buttresses and the posta porch remain under source comparison. The
 [character review](../../assets/source/characters-3d/REVIEW.md) records the
 accepted standing reference and the retained motion bank separately.
 
