@@ -271,7 +271,7 @@ export class ActorRuntime {
   }
   tick(delta:number,now:number,reducedMotion=false){
     if(!this.action)return;
-    this.meleeFit.restore();
+    this.meleeFit.restore();this.root.rotation.y=this.visual.yaw;
     this.climbFit?.restore();
     const visual=this.visual,clip=this.action.getClip(),motion=visual.motion;
     const projected=(x=0,y=0)=>x*Math.sin(visual.yaw)+y*Math.cos(visual.yaw);

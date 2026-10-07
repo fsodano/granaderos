@@ -25,7 +25,7 @@ export type ActorKind='unit'|'npc';
 export type ActorEntry={key:string;kind:ActorKind;actor:any};
 export type ContactTarget={key:string;appearance:string;position:[number,number,number];yaw:number;posture:string;mounted:boolean;action:string;bodyHeights:Record<string,number>};
 export type ContactSupport={floors:readonly {minX:number;maxX:number;minZ:number;maxZ:number;height:number}[]};
-export type ActorCue={id:string;action:string;shotHand?:'primary'|'offhand';hand?:'handRight'|'handLeft';startedAt:number;durationMs?:number;phase?:string;phaseStartedAt?:number;phaseDurationMs?:number;fromPosture?:string;toPosture?:string;work?:readonly AnimationWork[];contactTarget?:ContactTarget;contactSupport?:ContactSupport};
+export type ActorCue={id:string;action:string;shotHand?:'primary'|'offhand';hand?:'handRight'|'handLeft';startedAt:number;durationMs?:number;phase?:string;phaseStartedAt?:number;phaseDurationMs?:number;fromPosture?:string;toPosture?:string;work?:readonly AnimationWork[];contactTurn?:{fromYaw:number;toYaw:number};contactTarget?:ContactTarget;contactSupport?:ContactSupport};
 export type VisualItem={id:string;reference:string;socket:'handRight'|'handLeft'|'back'|'hip';fittings?:any};
 export type ActorVisual={key:string;id:string;kind:ActorKind;appearance:string;skin:string;side:string;tacticalLevel:number;position:[number,number,number];yaw:number;posture:string;mounted:boolean;action:string;idleAction:string;equipment:string;items:VisualItem[];garments:Record<string,string|null>;cue?:ActorCue;motion?:Motion;selected:boolean;bodyHeights:Record<string,number>};
 export const actorKey=(kind:ActorKind,id:string)=>`${kind}:${id}`;
@@ -158,7 +158,10 @@ export function presentActors(state:any,entries:readonly ActorEntry[],positions:
     if(target&&entry&&entry.actor.x===point.x&&entry.actor.y===point.y&&tacticalLevel(entry.actor)===tacticalLevel(point)&&target.position.every(Number.isFinite)&&Number.isFinite(target.yaw)){
       for(const visual of result)if(visual.kind==='unit'&&visual.id===frame.unitId&&visual.key!==key&&visual.cue&&['strike','bayonet'].includes(visual.cue.action)){
         const source=entries.find(entry=>entry.key===visual.key)!;
-        visual.cue={...visual.cue,contactTarget:{key,appearance:target.appearance,position:[...target.position],yaw:target.yaw,posture:target.posture,mounted:target.mounted,action:target.action,bodyHeights:{...target.bodyHeights}},contactSupport:contactSupport(state,source.actor,visual,revealed,result)};
+        const toYaw=Math.atan2(target.position[0]-visual.position[0],target.position[2]-visual.position[2]);
+        const deltaYaw=Math.atan2(Math.sin(toYaw-visual.yaw),Math.cos(toYaw-visual.yaw)),distance=(target.position[0]-visual.position[0])**2+(target.position[2]-visual.position[2])**2;
+        const turn=visual.cue.phase==='prepare'&&visual.equipment==='blade'&&visual.posture==='standing'&&!visual.mounted&&!visual.motion?.moving&&distance>1e-10&&Math.abs(deltaYaw)>1e-7&&Math.abs(deltaYaw)<=Math.PI/4+1e-7?{fromYaw:visual.yaw,toYaw}:undefined;
+        visual.cue={...visual.cue,...(turn?{contactTurn:turn}:{}),contactTarget:{key,appearance:target.appearance,position:[...target.position],yaw:target.yaw,posture:target.posture,mounted:target.mounted,action:target.action,bodyHeights:{...target.bodyHeights}},contactSupport:contactSupport(state,source.actor,visual,revealed,result)};
       }
     }
   }
