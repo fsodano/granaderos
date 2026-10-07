@@ -43,9 +43,12 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
   const box=(u:number,v:number,y:number,w:number,h:number,d:number,material=wall)=>batch.primitive('box',material,at(u,v,y),[w*T,h,d*T],rotation,light);
   const wallAt=(u:number,v:number)=>{const point=frame.at(u,v);return walls.find(tile=>tile.x===point.x&&tile.y===point.y);};
   const bearing=(u:number,v=0,actualAlong=false)=>[u-(actualAlong?alongInset:.06*(frame.u.x+frame.u.y)),v-.06*(frame.v.x+frame.v.y)] as const;
-  const walkableAbove=(u:number,v:number,w:number)=>{
-    const point=at(u,v,0),reach=(w+1)*T*.5;
-    return (input.terrain.upperSurfaces??[]).some(surface=>!surface.blocked&&(surface.tacticalLevel??0)>0&&Math.abs(surface.x*T-point.x)<reach-1e-6&&Math.abs(surface.y*T-point.z)<reach-1e-6);
+  const walkableAbove=(u:number,v:number,w:number,d=w)=>{
+    const point=at(u,v,0),alongReach=(w+1)*T*.5,depthReach=(d+1)*T*.5;
+    return (input.terrain.upperSurfaces??[]).some(surface=>{
+      const x=surface.x*T-point.x,z=surface.y*T-point.z;
+      return !surface.blocked&&(surface.tacticalLevel??0)>0&&Math.abs(x*frame.u.x+z*frame.u.y)<alongReach-1e-6&&Math.abs(x*frame.v.x+z*frame.v.y)<depthReach-1e-6;
+    });
   };
   const entranceSupports=()=>[Math.round(frame.doorU-1),Math.round(frame.doorU+1)].filter(u=>u>=0&&u<=frame.width&&wallAt(u,0)?.type==='wall');
   const palaceSupports=kind==='palace'?entranceSupports():[],hasBalcony=palaceSupports.length===2&&height>=4;
@@ -98,6 +101,31 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
       box(u,cv,cy+.38,w*.54,.055,.04/T,trim);
       clock(u,cv+face*.044/T,cy,Math.min(.34,w*T*.30),face);
     }
+    });
+  };
+  const townhallCrown=()=>{
+    const supports=[...new Set([-2,2].map(offset=>Math.max(0,Math.min(frame.width,Math.round(frame.doorU+offset)))))].filter(u=>wallAt(u,0)?.type==='wall');
+    if(supports.length!==2||height<2.4)return;
+    const lo=Math.min(...supports)-alongInset,hi=Math.max(...supports)-alongInset,width=hi-lo,center=(lo+hi)*.5;
+    // The long, shallow crown and its stone entablature must not occupy an
+    // authored roof route. Their rectangle follows the actual facade rotation.
+    if(walkableAbove(center,-.06,width+.20,.68))return;
+    const V=25.066666666666666,rise=Math.min(48,24+width*5)/V,baseY=height+4/V,front=-.31,back=.22,x=(value:number)=>value/40*width*T,y=(value:number)=>value/46*rise,shape=new Shape();
+    // This closed curved outline follows the retained town-hall sprite crown.
+    // The cabildo keeps its distinct clock cupola.
+    shape.moveTo(0,0);shape.lineTo(0,y(7));shape.lineTo(x(9),y(7));shape.lineTo(x(9),y(14));shape.quadraticCurveTo(x(9),y(21),x(14),y(25));shape.lineTo(x(14),y(32));shape.bezierCurveTo(x(14),y(48),x(26),y(48),x(26),y(32));shape.lineTo(x(26),y(25));shape.quadraticCurveTo(x(31),y(21),x(31),y(14));shape.lineTo(x(31),y(7));shape.lineTo(x(40),y(7));shape.lineTo(x(40),0);shape.closePath();
+    feature('townhall-clock-pediment',()=>{
+      const mesh=new ExtrudeGeometry(shape,{depth:(back-front)*T,bevelEnabled:false,curveSegments:16});
+      batch.add(mesh,wall,new Matrix4().compose(at(lo,front,baseY),rotation,new Vector3(1,1,1)),light);mesh.dispose();
+      const outline=shape.getPoints(16);for(let n=1;n<outline.length;n++)batch.cylinder(trim,at(lo+outline[n-1].x/T,front-.025/T,baseY+outline[n-1].y),at(lo+outline[n].x/T,front-.025/T,baseY+outline[n].y),.045,light);
+      box(center,-.06,height+1.5/V,width+.20,7/V,.68,materials.get('stone'));
+      clock(center,front-.028/T,baseY+y(29),7.5/V);
+    });
+    feature('townhall-finials',()=>{
+      for(const u of [lo+.16,hi-.16]){
+        box(u,-.135,baseY+7.5/V,.20,5/V,.31,materials.get('stone'));
+        batch.primitive('sphere',trim,at(u,-.13,baseY+12/V),[2.3/V,3/V,2.3/V],undefined,light);
+      }
     });
   };
   const frontSupports=()=>Array.from({length:Math.floor(frame.width)+1},(_,u)=>u).filter(u=>wallAt(u,0)?.type==='wall'&&(u===0||u===frame.width||u%2===0||Math.abs(u-frame.doorU)===1));
@@ -263,7 +291,8 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
         box(u+sign*.045/T,v,y-.16,.023/T,.024,.72/T,iron);
       }
     });
-    tower(frame.width*.5,.1,Math.min(1.4,Math.max(1.1,frame.width*.22)),height+(twoStoreys?2.05:1.35),height-.12,true);
+    if(kind==='townhall')townhallCrown();
+    else tower(frame.width*.5,.1,Math.min(1.4,Math.max(1.1,frame.width*.22)),height+(twoStoreys?2.05:1.35),height-.12,true);
   }else if(kind==='posta'){
     const supports=[...new Set([0,...entranceSupports(),frame.width])].filter(u=>wallAt(u,0)?.type==='wall').sort((a,c)=>a-c);
     roofCanopy('posta-masonry-veranda',supports,.55,true);
