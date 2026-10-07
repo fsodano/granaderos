@@ -7,6 +7,7 @@ const {WorldGeometry,disposeWorldNode}=await import('../web/lib/three/world-geom
 const {WorldMaterials}=await import('../web/lib/three/world-materials.ts');
 const {architecturalDetails,roofEdgeDetails}=await import('../web/lib/three/world-building-details.ts');
 const {buildBuilding}=await import('../web/lib/three/world-buildings.ts');
+const {buildingArtInset}=await import('../web/lib/three/world-building-placement.ts');
 const {entranceFrame}=await import('../game/building-profile.js');
 const {createArchitectureReviewBattle}=await import('../web/app/renderer-sandbox/architecture-fixtures.js');
 const T=1.2360585147470482;
@@ -22,7 +23,7 @@ function fixture(kind,side='south'){
   const frame=entranceFrame({...b,walls:tiles});
   const localBounds=(object,predicate=()=>true)=>{
     const bounds=new Box3();object.traverse(child=>{if(child instanceof Mesh){const positions=child.geometry.getAttribute('position');for(let n=0;n<positions.count;n++){
-      const x=positions.getX(n)/T-.4-frame.origin.x,z=positions.getZ(n)/T-.4-frame.origin.y;
+      const x=positions.getX(n)/T-buildingArtInset(b,input)-frame.origin.x,z=positions.getZ(n)/T-buildingArtInset(b,input)-frame.origin.y;
       const p=new Vector3(x*frame.u.x+z*frame.u.y,positions.getY(n),x*frame.v.x+z*frame.v.y);if(predicate(p))bounds.expandByPoint(p);
     }}});return bounds;
   };
