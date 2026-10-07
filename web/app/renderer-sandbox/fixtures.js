@@ -8,6 +8,7 @@ import {BUILDING_TYPES,BUILDING_FOOTPRINTS} from '../../../game/building-types.j
 export const RENDERER_SCENARIOS=Object.freeze([
   {id:'characters',label:'Ocho personajes',help:'Granadero, realista, trabajador, cirujano, gaucho, fraile, exploradora y mujer con rebozo. Selecciona cada personaje para caminar, correr o cambiar su equipo. Esta escena no usa tu campaña guardada.'},
   {id:'architecture',label:'Arquitectura',help:'Nueve edificios a escala de soldado. Selecciona al guardia de cada edificio para centrar la cámara. Abre su puerta y entra para comparar fachada, azotea e interior con las órdenes habituales.'},
+  {id:'furnishings',label:'Mobiliario',help:'Mesa, banco, cama, baúl, barriles, heno y carreta. Usa la cámara y las órdenes habituales para comprobar la escala y el espacio de paso.'},
   {id:'postures',label:'Posturas',help:'Marcha, carrera, movimiento agachado y arrastre. Cada personaje tiene un tramo libre hacia el este. Usa las órdenes habituales para comparar apoyo, avance y recuperación.'},
   {id:'combat',label:'Combate',help:'Fusil, pistola, sable, granada y cuchillo: cada especialista tiene un blanco enfrente. Los dos artilleros están junto al cañón. Usa las órdenes habituales; reinicia para repetir.'},
   {id:'mounted',label:'Montura y azotea',help:'Jinete: caminar, correr y montar/desmontar. Escaladora: subir por el acceso junto a la casa. Vigía: moverse por la azotea. La puerta está abierta.'},
@@ -92,6 +93,10 @@ function postures(){
   ];
   return {...createBattle(squad,{id:'renderer-postures',name:'Apoyo y movimiento',width:20,height:20,tiles:ground(20,20),enemies:[],exploration:true,seed:45}),deploymentComplete:true};
 }
+function furnishings(){
+  const types=['table','bench','bed','chest','barrels','hay','cart'],props=types.map((type,index)=>({id:`review-${type}`,type,x:4+index%4*4,y:5+Math.floor(index/4)*5,footprint:type==='bed'?{width:1,height:2}:type==='cart'?{width:2,height:1}:{width:1,height:1},rotation:type==='cart'?90:0,blocksMovement:true}));
+  return {...createBattle([soldier('furniture-guard','Mobiliario',10,8,{activeSlot:'unarmed'})],{id:'renderer-furnishings',name:'Mobiliario de época',width:22,height:17,tiles:ground(22,17),props,enemies:[],exploration:true}),deploymentComplete:true};
+}
 function performance(count,architecture=false){
   const squad=Array.from({length:count},(_,index)=>({...OPERATIVES[index%OPERATIVES.length],id:`review-${index}`,name:`${families[index%families.length]} ${index+1}`,nickname:families[index%families.length],spriteAppearance:families[index%families.length],skinTone:['light','brown','dark'][Math.floor(index/8)%3],x:4+(index%10)*2,y:6+Math.floor(index/10)*2,weapon:index%4===3?1805:1800,blade:1810,activeSlot:index%4===0?'unarmed':index%4===2?'blade':'primary',offHand:{weapon:1805,count:1,weight:1.3,loaded:1,condition:100,jammed:false},headwear:null,outfit:null,legwear:null}));
   if(architecture){const map=buildSectorMap({sector:'tucuman',compactLayout:false,squad:squad.slice(0,8),enemies:[],exploration:true});return {...createBattle(map.squad,map),deploymentComplete:true};}
@@ -107,6 +112,7 @@ export function createRendererSandboxBattle(id='combat'){
   if(id==='architecture')return architecture();
   if(id.startsWith('architecture:'))return architecture(id.slice('architecture:'.length));
   if(id==='postures')return postures();
+  if(id==='furnishings')return furnishings();
   if(id==='combat'||id==='night')return combat(id==='night');
   if(id==='mounted')return mounted();
   if(id==='tucuman')return performance(8,true);

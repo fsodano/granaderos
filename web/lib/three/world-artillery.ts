@@ -24,7 +24,7 @@ export function buildCannon(cannon:WorldCannon,input:WorldInput,T:number,geometr
   }else{
     batch.cylinder(iron,new Vector3(-.10,.48,-axle*.60),new Vector3(-.10,.48,axle*.60),.045,light);
     // wheel helper axle is local X; rotate wheel geometry to local Z here.
-    const wheels=new WorldBatch(geometry);for(const side of [-1,1])wheel(wheels,materials,light,side*axle*.59,.48,.10,.48);
+    const wheels=new WorldBatch(geometry),wheelRadius=.48/(1.04*1.09);for(const side of [-1,1])wheel(wheels,materials,light,side*axle*.59,.48,.10,wheelRadius);
     const wheelGroup=wheels.finish('cannon-wheels'),matrix=new Matrix4().makeRotationY(Math.PI*.5);for(const mesh of wheelGroup.children){const item=mesh as import('three').Mesh;batch.add(item.geometry,item.material as typeof wood,matrix,1);item.geometry.dispose();}
     for(const side of [-1,1]){
       batch.box(wood,-.12,.61,side*radius*1.5,.71,.25,.11,light);

@@ -47,9 +47,12 @@ export function buildProps(id:string,props:readonly WorldProp[],input:WorldInput
       const m=materials.get(prop.type==='hay'?'thatch':'linen');for(let n=0;n<4;n++){const a=(n%2-.5)*w*.34,b=(Math.floor(n/2)-.5)*d*.34;part.primitive(prop.type==='hay'?'box':'sphere',m,[a,h*(n===3?.57:.32),b],[w*.33,h*.34,d*.31],new Quaternion().setFromAxisAngle(new Vector3(0,1,0),n*.12),light);}
       if(prop.type==='hay')for(let n=0;n<6;n++)box(dark,(n-2.5)*w*.1,h*.66,0,.006,.015,d*.60);
     }else if(prop.type==='cart'){
-      const cw=w*.68,cd=d*.72;box(wood,0,.61,0,cw,.10,cd);for(const a of [-1,1]){box(wood,a*cw*.5,.87,0,.08,.50,cd);for(const by of [.76,.95])box(dark,a*cw*.51,by,0,.02,.035,cd);}
-      box(wood,0,.85,cd*.5,cw,.43,.075);for(const a of [-1,1])pole(wood,[a*cw*.39,.6,-cd*.45],[a*cw*.39,.39,-cd*.83],.045);
-      pole(iron,[-cw*.75,.39,.08],[cw*.75,.39,.08],.035);for(const a of [-1,1])wheel(part,materials,light,a*cw*.69,.39,.08,.39);
+      const cw=w*.68,cd=d*.62,bedZ=d*.10,radius=Math.min(.36,w*.30,d*.30),axleY=radius*1.04*1.09+.01,axleZ=d*.10;
+      box(wood,0,.61,bedZ,cw,.10,cd);for(const a of [-1,1]){box(wood,a*cw*.5,.87,bedZ,.08,.50,cd);for(const by of [.76,.95])box(dark,a*cw*.51,by,bedZ,.02,.035,cd);}
+      box(wood,0,.85,bedZ+cd*.5,cw,.43,.075);for(const a of [-1,1])pole(wood,[a*cw*.39,.6,bedZ-cd*.45],[a*cw*.39,.39,-d*.45],.035);
+      // The iron tyre includes the torus tube. Rest its outer edge on the
+      // floor and leave the hubs and shafts inside the authored cells.
+      pole(iron,[-cw*.64,axleY,axleZ],[cw*.64,axleY,axleZ],.035);for(const a of [-1,1])wheel(part,materials,light,a*cw*.64,axleY,axleZ,radius);
     }else if(prop.type==='shelf'){
       const sw=w*.74,sd=d*.25;for(const a of [-1,1])box(wood,a*sw*.5,h*.5,0,.08,h,sd);for(const by of [.08,h*.35,h*.65,h-.04])box(wood,0,by,0,sw,.06,sd);
       for(let n=0;n<5;n++){const a=(n-2)*sw*.15,by=h*(n%2?.68:.38);part.primitive('cylinder',materials.get(n%2?'ceramic':'food'),[a,by+.11,0],[.07,.20,.07],undefined,light);}
@@ -64,7 +67,12 @@ export function buildProps(id:string,props:readonly WorldProp[],input:WorldInput
     }else if(prop.type==='candle'){
       part.primitive('cylinder',materials.get('brass'),[0,.02,0],[.09,.035,.09],undefined,light);part.primitive('cylinder',materials.get('wax'),[0,h*.45,0],[.035,h*.85,.035],undefined,light);part.primitive('cone',materials.get('flame',{emissive:true}),[0,h+.035,0],[.025,.07,.025],undefined,light);
     }else if(prop.type==='broken-timber'||prop.type==='rubble'){
-      for(let n=0;n<7;n++){const a=seeded(prop.x,prop.y,n+80),b=seeded(prop.y,prop.x,n+31);part.primitive(prop.type==='rubble'?'rock':'box',prop.type==='rubble'?stone:wood,[(a-.5)*w*.8,h*.35,(b-.5)*d*.8],[prop.type==='rubble'?.15:.07,h*.3,prop.type==='rubble'?.16:Math.min(.6,d*.6)],new Quaternion().setFromAxisAngle(new Vector3(0,1,0),a*5),light);}
+      for(let n=0;n<7;n++){
+        const a=seeded(prop.x,prop.y,n+80),b=seeded(prop.y,prop.x,n+31),angle=a*5,rubble=prop.type==='rubble',sw=rubble?.15:.07,sd=rubble?.16:Math.min(.6,d*.6);
+        const halfX=rubble?Math.hypot(sw,sd):(Math.abs(Math.cos(angle))*sw+Math.abs(Math.sin(angle))*sd)*.5,halfZ=rubble?Math.hypot(sw,sd):(Math.abs(Math.sin(angle))*sw+Math.abs(Math.cos(angle))*sd)*.5;
+        const px=(a-.5)*Math.max(0,w-2*halfX)*.8,pz=(b-.5)*Math.max(0,d-2*halfZ)*.8;
+        part.primitive(rubble?'rock':'box',rubble?stone:wood,[px,h*.35,pz],[sw,h*.3,sd],new Quaternion().setFromAxisAngle(new Vector3(0,1,0),angle),light);
+      }
     }else{
       // Unknown authored props retain a modest storage silhouette, never a sprite.
       box(wood,0,h*.5,0,w*.68,h,d*.68);for(const by of [.12,h-.12])box(iron,0,by,-d*.35,w*.69,.035,.025);
