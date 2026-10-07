@@ -1,8 +1,9 @@
 import {Quaternion,Vector3} from 'three';
+import {addParishArchedBars} from './world-parish-window-bars';
 import type {WorldBatch} from './world-geometry';
 import type {WorldMaterials} from './world-materials';
 
-type WindowFace={axis:'x'|'y';mid:number;cross:number;base:number;sill:number;top:number;width:number;style:string;light:number};
+type WindowFace={axis:'x'|'y';mid:number;cross:number;base:number;sill:number;top:number;width:number;style:string;light:number;sourceParish?:boolean};
 
 /** Opening dimensions and disclosure belong to the shell. This helper only
  * dresses a retained full-height window, from either side of its wall. */
@@ -22,6 +23,8 @@ export function addWindowFace(batch:WorldBatch,materials:WorldMaterials,face:Win
         batch.primitive('box',timber,a.clone().add(b).multiplyScalar(.5),axis==='x'?[.030,vector.length(),.018]:[.018,vector.length(),.030],rotation,light);
       }
     }
+  }else if(style==='arched'&&face.sourceParish){
+    addParishArchedBars(batch,materials,face);
   }else if(['barred','small','arched'].includes(style)){
     const iron=materials.get('iron');for(let n=0;n<4;n++)box(-width*.38+width*.25*n,(top+sill)*.5,.018,height,.035,iron);box(0,sill+height*.48,width,.018,.035,iron);
   }else if(style==='shutters'){
