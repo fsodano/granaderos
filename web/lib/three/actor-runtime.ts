@@ -293,7 +293,8 @@ export class ActorRuntime {
     this.mixer.update(Math.min(delta,.1));
     if(motion?.moving&&motion.climbGeometry&&this.clipSpec.climbSupport)this.climbFit?.apply(motion.climbGeometry,visual.action==='climbDown'?1-(motion.segmentFraction??0):motion.segmentFraction??0,this.clipSpec);
     this.poseCloth(Math.min(delta,.1));
-    const meleeWeapon=(this.equipment.userData.attached as Object3D[]).find(item=>item.userData.hand==='handRight'&&this.itemSpec(item.userData.itemId)?.category==='sabre');
+    const attached=this.equipment.userData.attached as Object3D[],freeGuard=!attached.some(item=>item.userData.hand==='handLeft');
+    const meleeWeapon=attached.find(item=>item.userData.hand==='handRight'&&(this.itemSpec(item.userData.itemId)?.category==='sabre'||freeGuard&&this.itemSpec(item.userData.itemId)?.category==='pistol'));
     this.meleeFit.apply(visual.cue,clip,this.clipSpec,meleeWeapon,this.action.time,this.contactActor);
     this.placeEquipment(this.action.time);this.timedProps(this.action.time);
     if(this.horse&&this.horseMixer){
