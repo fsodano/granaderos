@@ -8,6 +8,7 @@ HERE=ROOT/'assets/source/characters-3d/authoring'
 OUT=ROOT/'web/public/models/characters'
 parser=argparse.ArgumentParser()
 parser.add_argument('--item',action='append',required=True)
+parser.add_argument('--allow-mesh-node-transforms',action='store_true',help='Allow selected leaf mesh origins to change; roots and named markers must retain their native attachment')
 parser.add_argument('--blender',default='/Applications/Blender.app/Contents/MacOS/Blender')
 args=parser.parse_args()
 spec=importlib.util.spec_from_file_location('animation_merge',Path(__file__).with_name('merge-animation-bank.py'))
@@ -54,7 +55,15 @@ with tempfile.TemporaryDirectory(prefix='granaderos-equipment-')as directory:
         assert set(old)==set(new),name+' changes attachment nodes'
         for name,index in new.items():
             source=fresh['nodes'][index];existing=doc['nodes'][old[name]]
-            assert {key:source.get(key)for key in ('translation','rotation','scale','matrix')}=={key:existing.get(key)for key in ('translation','rotation','scale','matrix')},name+' changes native attachment'
+            transform_keys=('translation','rotation','scale','matrix')
+            if {key:source.get(key)for key in transform_keys}!={key:existing.get(key)for key in transform_keys}:
+                # A material batch may change its local origin when its mesh
+                # changes. That origin belongs to the selected geometry, not
+                # the held-item attachment or its named muzzle marker.
+                assert args.allow_mesh_node_transforms and 'mesh'in source and 'mesh'in existing and not source.get('children') and not existing.get('children') and 'skin'not in source and 'skin'not in existing,name+' changes native attachment'
+                for key in transform_keys:
+                    if key in source:existing[key]=copy.deepcopy(source[key])
+                    else:existing.pop(key,None)
             if'mesh'not in source:continue
             mesh=copy.deepcopy(fresh['meshes'][source['mesh']])
             for primitive in mesh['primitives']:

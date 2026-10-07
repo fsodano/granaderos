@@ -28604,8 +28604,8 @@
         "stowedSocket": "hipLeft"
       }
     },
-    "bytes": 605248,
-    "sha256": "c5b5b8f45358de5261324ec6d2af8f8503b49cfcc8b12dae88d5996ebb6c195e",
+    "bytes": 605100,
+    "sha256": "9600973d8d9e3319f40e884109a01c77c433c6f085faf6080c69a3a2fc924a74",
     "aliases": {
       "medical": "medkits",
       "medkit": "medkits",

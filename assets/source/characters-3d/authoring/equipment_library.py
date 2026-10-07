@@ -24,8 +24,13 @@ def create_library(ctx):
   records[key]={'node':group.name,'category':category,'grip':grip,'socket':'handRight_'+grip,'leftSocket':'handLeft_'+grip,'position':[0,0,0],'rotation':[0,0,0],'scale':1,'stowedSocket':stow,**({'muzzle':muzzle.name} if muzzle else {})}
  for key,scale in RIFLE_STRETCH.items():
   g=clone_tree(weapons['rifle'],'item_'+key,scale)
+  # The supplied Escopeta Criolla reference has one bore, matching its
+  # capacity-one firearm definition. Its native muzzle stays on that axis.
   if key=='1804':
-   barrel=next(o for o in g.children if 'Rifle_Barrel' in o.name and 'Band' not in o.name);barrel.location.y=-.012;other=barrel.copy();other.data=barrel.data.copy();other.location.y=.012;bpy.context.collection.objects.link(other);exports.append(other)
+   # Box-shaped fittings retain their centre as an object transform. Fit
+   # those centres to this short barrel as well as their local vertices.
+   for part in g.children:
+    if part.type=='MESH':part.location.x*=scale
   if key=='1807':
    for o in g.children:
     if 'Rifle_Barrel' in o.name and 'Band' not in o.name:
