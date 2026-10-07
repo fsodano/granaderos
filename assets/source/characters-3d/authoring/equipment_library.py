@@ -13,9 +13,11 @@ def create_library(ctx):
    o=old.copy()
    if old.data:o.data=old.data.copy()
    bpy.context.collection.objects.link(o);o.parent=parent;o.matrix_basis=old.matrix_basis.copy();o.name=name+'_'+old.name
+   # Vertex positions and part centres share the same grip-local length.
+   # Scaling only local vertices leaves locks, sights and bands displaced.
+   o.location.x*=stretch
    if o.type=='MESH':
     for v in o.data.vertices:v.co.x*=stretch
-   else:o.location.x*=stretch
    exports.append(o)
   return parent
  def record(key,group,category,grip,stow='hipLeft'):
@@ -26,11 +28,6 @@ def create_library(ctx):
   g=clone_tree(weapons['rifle'],'item_'+key,scale)
   # The supplied Escopeta Criolla reference has one bore, matching its
   # capacity-one firearm definition. Its native muzzle stays on that axis.
-  if key=='1804':
-   # Box-shaped fittings retain their centre as an object transform. Fit
-   # those centres to this short barrel as well as their local vertices.
-   for part in g.children:
-    if part.type=='MESH':part.location.x*=scale
   if key=='1807':
    for o in g.children:
     if 'Rifle_Barrel' in o.name and 'Band' not in o.name:
