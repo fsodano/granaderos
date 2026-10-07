@@ -575,3 +575,7 @@ The source wall images and encoded paint formulas now apply to all fourteen comp
 ## Warehouse support paint
 
 The stone warehouse buttress now retains the source body and separate warm-foot palettes with their 60% volume overlays before normal 3D lighting. The closed wedge, pale coping, metre UVs and cell containment remain unchanged. The clean cut passes 34 affected checks, type checking, documentation/baseline audits, the build (`6a24a3a8992f`) and twelve browser views without errors. The visible 0° and 90° supports were compared with the current sprite. See [the support paint review](../art/warehouse-volume-finish-3d-review-2026-10-07.md).
+
+## Green window shutters
+
+Authored shutters now occupy the actual aperture with the current sprite’s paired green panels, dark borders, pale rails and central gap. Both physical faces are visible rather than buried in the masonry jamb. The source retains window flags, glazing, opening dimensions, collision, disclosure and breaches. The clean cut passes 64 affected checks, type checking, documentation/baseline audits, the build (`94aeb2d266c3`) and 24 house/farmhouse browser views without errors. The visible exteriors and house interior were compared with the current sprites. See [the shutter review](../art/shutter-window-3d-review-2026-10-07.md).
