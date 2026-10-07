@@ -44,10 +44,25 @@ export function admittedReloadWork(frames:readonly any[]){
   return result;
 }
 
+/** An observed thrown flight already contains the release and follow-through.
+ * The final rules result may hold impacts, but cannot replay the throw. */
+export function admittedThrownRelease(frames:readonly any[]){
+  const result=frames.map(frame=>({...frame}));
+  for(let index=0;index<frames.length;index++){
+    const flight=frames[index];
+    if(flight.type!=='effect'||!flight.unitId||!(flight.grenadeVisual?.visible||flight.knifeVisual?.visible)||!['throwGrenade','throwKnife'].includes(flight.action))continue;
+    let endIndex=index+1;
+    while(endIndex<frames.length&&frames[endIndex].type!=='prepare'&&frames[endIndex].type!=='result')endIndex++;
+    const end=frames[endIndex];
+    if(end?.type==='result'&&end.unitId===flight.unitId&&end.action===flight.action&&end.performed!==false&&flight.state.units.some((unit:any)=>unit.id===flight.unitId)&&end.state.units.some((unit:any)=>unit.id===end.unitId))result[endIndex].releaseComplete=true;
+  }
+  return result;
+}
+
 /** Only the admitted actor selects a native visual delay. Rules and simulation
  * time remain unchanged; unseen actions retain the ordinary playback delay. */
 export function nativeActionFrameDuration(frame:any,requested:number){
-  if(!frame.unitId||frame.performed===false)return requested;
+  if(!frame.unitId||frame.performed===false||frame.releaseComplete)return requested;
   const unit=frame.state.units.find((unit:any)=>unit.id===frame.unitId);
   if(!unit||unit.hp<=0||unit.unconscious||unit.knockedDown)return requested;
   const action=semanticOrder(frame.action,frame,unit);

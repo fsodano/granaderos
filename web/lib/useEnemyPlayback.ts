@@ -3,7 +3,7 @@ import {useEffect,useRef,useState,useMemo} from 'react';
 import {presentedEndTurn} from '../../game/tactical.js';
 import {BATTLE_PLAYBACK,battleFrameDuration,battleFrameFocus} from '../../game/battle-playback.js';
 import {movementStepDuration} from './three/movement-timing';
-import {admittedReloadWork,nativeActionFrameDuration} from './three/action-timing';
+import {admittedReloadWork,admittedThrownRelease,nativeActionFrameDuration} from './three/action-timing';
 import enemyWorkerUrl from './enemy-turn-worker.ts?worker&url';
 const stepMs=BATTLE_PLAYBACK.step;
 export function presentedFrameDuration(frame:any,previous:any){
@@ -39,7 +39,7 @@ export function useEnemyPlayback(committed:any,onChange:(state:any)=>any,onBusy?
    if(!current()||validate?.(result.state)===false)return;
    let cameraFocus:any=null,index=0,previous=source,grenadeEffect:any=null,actionId=0,actionStartedAt=0,actionDurationMs=0;
    const sequenceId=`${generation}:${++presentationSequence.current}`;
-   const frames=admittedReloadWork(result.frames);
+   const frames=admittedThrownRelease(admittedReloadWork(result.frames));
    let timingState=source;const durations=frames.map((next:any)=>{const duration=presentedFrameDuration(next,timingState);timingState=next.state;return duration;});
    for(const next of frames){
     if(!current())return;

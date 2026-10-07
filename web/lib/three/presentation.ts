@@ -101,8 +101,9 @@ export function presentActors(state:any,entries:readonly ActorEntry[],positions:
     const frame=options.frame;
     const assignedCrew=frame&&['artillery','artilleryReload','artilleryMove','artilleryPivot'].includes(frame.action)&&frame.crewIds?.includes(actor.id);
     if(kind==='unit'&&(frame?.unitId===actor.id||assignedCrew)&&frame.performed!==false&&!lifeCue(cue)){
+      if(frame.releaseComplete)cue=undefined;
       const semantic=semanticOrder(frame.action,frame,actor);
-      if(semantic&&frame.type!=='step'&&!(frame.shotComplete||frame.contactComplete)&&frame.shotVisual?.discharge!==false){
+      if(semantic&&frame.type!=='step'&&!(frame.shotComplete||frame.contactComplete||frame.releaseComplete)&&frame.shotVisual?.discharge!==false){
         const shotHand=frame.shotHand??frame.shotVisual?.shotHand,shotId=frame.shotId??frame.shotVisual?.shotId;
         const held=items.find(item=>item.reference===shotHand&&['handRight','handLeft'].includes(item.socket));
         if(shotHand&&!held)throw Error(`Missing admitted firing hand: ${key}:${shotHand}`);

@@ -8,7 +8,7 @@ export type AnimationClockSample={time?:number;rate:number;complete:boolean;phas
 const clamp=(value:number,min:number,max:number)=>Math.max(min,Math.min(max,value));
 const wrap=(time:number,duration:number)=>(time%duration+duration)%duration;
 const locomotion=new Set(['walk','run','crawl','strafeLeft','strafeRight','artilleryMove']);
-const nativeActions=new Set(['reload','reprime','repair','unload','artilleryReload']);
+const nativeActions=new Set(['reload','reprime','repair','unload','artilleryReload','throwGrenade','throwKnife','throwTorch','boleadoras']);
 export const usesNativeActionTiming=(action:string)=>nativeActions.has(action);
 
 /** A recorded phase and the body clock share the same native pose interval. */
@@ -28,7 +28,7 @@ export function animationPhaseRange(clip:AnimationClockClip,action:string,phase=
     if(phase==='prepare')return [0,release] as const;
     if(phase==='projectile')return [release,recovery] as const;
     if(phase==='impact')return [recovery,duration] as const;
-    if(phase==='release'||phase==='result')return [release,duration] as const;
+    if(phase==='release'||phase==='result'||phase==='effect')return [release,duration] as const;
   }
   return [0,duration] as const;
 }
