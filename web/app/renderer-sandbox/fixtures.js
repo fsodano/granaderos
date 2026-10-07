@@ -3,9 +3,12 @@ import {buildSectorMap} from '../../../game/maps.js';
 import {OPERATIVES} from '../../../game/data.js';
 import {placeBuilding,buildTerrace} from '../../../game/buildings.js';
 import {makeGrenadeStack} from '../../../game/grenades.js';
+import {BUILDING_TYPES,BUILDING_FOOTPRINTS} from '../../../game/building-types.js';
 
 export const RENDERER_SCENARIOS=Object.freeze([
   {id:'characters',label:'Ocho personajes',help:'Granadero, realista, trabajador, cirujano, gaucho, fraile, exploradora y mujer con rebozo. Selecciona cada personaje para caminar, correr o cambiar su equipo. Esta escena no usa tu campaña guardada.'},
+  {id:'architecture',label:'Arquitectura',help:'Nueve edificios a escala de soldado. Selecciona al guardia de cada edificio para centrar la cámara. Abre su puerta y entra para comparar fachada, azotea e interior con las órdenes habituales.'},
+  {id:'postures',label:'Posturas',help:'Marcha, carrera, movimiento agachado y arrastre. Cada personaje tiene un tramo libre hacia el este. Usa las órdenes habituales para comparar apoyo, avance y recuperación.'},
   {id:'combat',label:'Combate',help:'Fusil, pistola, sable, granada y cuchillo: cada especialista tiene un blanco enfrente. Los dos artilleros están junto al cañón. Usa las órdenes habituales; reinicia para repetir.'},
   {id:'mounted',label:'Montura y azotea',help:'Jinete: caminar, correr y montar/desmontar. Escaladora: subir por el acceso junto a la casa. Vigía: moverse por la azotea. La puerta está abierta.'},
   {id:'night',label:'Noche',help:'Las fogatas iluminan los blancos. El fusil ya disparó y dejó humo: puedes recargarlo. Todos llevan antorchas; equipa una para añadir luz.'},
@@ -64,6 +67,28 @@ function characters(){
   }));
   return {...createBattle(squad,{id:'renderer-characters',name:'Ocho personajes',width:20,height:16,tiles:ground(20,16),enemies:[],exploration:true,seed:45}),deploymentComplete:true};
 }
+function architecture(){
+  const width=48,height=45,buildings=[],squad=[];let tiles=ground(width,height);
+  for(const [index,[type,style]]of Object.entries(BUILDING_TYPES).entries()){
+    const x=4+(index%3)*15,y=4+Math.floor(index/3)*14,[w,h]=BUILDING_FOOTPRINTS[type];
+    // Alternate visible facade directions to expose detail-orientation errors.
+    const east=index%2===1,door={id:`review-${type}:door`,x:east?x+w-1:x+Math.floor(w/2),y:east?y+Math.floor(h/2):y+h-1,open:false};
+    const result=placeBuilding(tiles,{id:`review-${type}`,name:style.name,x,y,width:w,height:h,architecture:type,doors:[door],windows:[{x:x+1,y},{x,y:y+1}]});
+    tiles=result.tiles;buildings.push(result.building);
+    squad.push(soldier(`guard-${type}`,style.name,door.x+(east?2:0),door.y+(east?0:2),{activeSlot:'unarmed',facing:east?6:0}));
+  }
+  return {...createBattle(squad,{id:'renderer-architecture',name:'Arquitectura colonial',width,height,tiles,buildings,enemies:[],exploration:true,seed:45}),deploymentComplete:true};
+}
+function postures(){
+  const squad=[
+    soldier('walker','Marcha',4,4,{movementMode:'walk'}),
+    soldier('runner','Carrera',4,7,{movementMode:'run',spriteAppearance:'woman-scout'}),
+    soldier('croucher','Agachado',4,10,{stance:'crouched',movementMode:'crouch'}),
+    soldier('crawler','Arrastre',4,13,{stance:'prone',movementMode:'prone'}),
+    soldier('crawler-woman','Arrastre femenino',4,16,{stance:'prone',movementMode:'prone',spriteAppearance:'woman-scout'}),
+  ];
+  return {...createBattle(squad,{id:'renderer-postures',name:'Apoyo y movimiento',width:20,height:20,tiles:ground(20,20),enemies:[],exploration:true,seed:45}),deploymentComplete:true};
+}
 function performance(count,architecture=false){
   const squad=Array.from({length:count},(_,index)=>({...OPERATIVES[index%OPERATIVES.length],id:`review-${index}`,name:`${families[index%families.length]} ${index+1}`,nickname:families[index%families.length],spriteAppearance:families[index%families.length],skinTone:['light','brown','dark'][Math.floor(index/8)%3],x:4+(index%10)*2,y:6+Math.floor(index/10)*2,weapon:index%4===3?1805:1800,blade:1810,activeSlot:index%4===0?'unarmed':index%4===2?'blade':'primary',offHand:{weapon:1805,count:1,weight:1.3,loaded:1,condition:100,jammed:false},headwear:null,outfit:null,legwear:null}));
   if(architecture){const map=buildSectorMap({sector:'tucuman',compactLayout:false,squad:squad.slice(0,8),enemies:[],exploration:true});return {...createBattle(map.squad,map),deploymentComplete:true};}
@@ -75,6 +100,8 @@ function performance(count,architecture=false){
 /** Fresh real battle state. Scene selection never issues private renderer poses. */
 export function createRendererSandboxBattle(id='combat'){
   if(id==='characters')return characters();
+  if(id==='architecture')return architecture();
+  if(id==='postures')return postures();
   if(id==='combat'||id==='night')return combat(id==='night');
   if(id==='mounted')return mounted();
   if(id==='tucuman')return performance(8,true);

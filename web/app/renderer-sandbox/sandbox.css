@@ -1,0 +1,4 @@
+.renderer-sandbox{height:100svh;display:flex;flex-direction:column;overflow:hidden}
+.renderer-sandbox>nav,.renderer-sandbox>p{flex-shrink:0}
+.renderer-sandbox>.battle-layout{flex:1;min-height:0;height:auto}
+@media(max-height:650px){.renderer-sandbox>nav{max-height:100px;overflow:auto}.renderer-sandbox>p{max-height:40px;overflow:auto}}

@@ -4,6 +4,7 @@ import {createRendererSandboxBattle,RENDERER_SCENARIOS} from '../web/app/rendere
 import {validateBattleSnapshot} from '../game/validate-battle.js';
 import {actBattle,canSee,climbPreview,tileIllumination,artilleryCosts,artilleryCrewPlan} from '../game/tactical.js';
 import {tacticalLevel,sameCell} from '../game/tactical-space.js';
+import {BUILDING_TYPES} from '../game/building-types.js';
 const actor=(battle,id)=>battle.units.find(unit=>unit.id===id);
 function order(battle,action){
   const before=structuredClone(battle),next=actBattle(battle,action);
@@ -48,6 +49,31 @@ test('combat starts with visible targets and real usable rifle, pistol, sabre, g
   assert.equal(battle.tiles.find(tile=>tile.doorId==='sandbox-door').open,true);
   const fired=order(battle,actions[0]),reloaded=order(fired,{type:'reload',unitId:'rifle'});
   assert.equal(actor(reloaded,'rifle').loaded,1);assert.ok(actor(reloaded,'rifle').ammo<actor(fired,'rifle').ammo);
+});
+
+test('architecture has all nine building identities, two facade directions, and usable doors',()=>{
+  const battle=createRendererSandboxBattle('architecture');
+  assert.deepEqual(battle.buildings.map(building=>building.architecture),Object.keys(BUILDING_TYPES));
+  for(const building of battle.buildings){
+    const guard=actor(battle,`guard-${building.architecture}`),door=battle.tiles.find(tile=>tile.doorId===`${building.id}:door`);
+    assert.ok(door);assert.equal(door.open,false);
+    const near={x:door.x+(door.x===building.x+building.width-1?1:0),y:door.y+(door.y===building.y+building.height-1?1:0)};
+    const approached=order(battle,{type:'move',unitId:guard.id,...near});
+    const opened=order(approached,{type:'door',unitId:guard.id,doorId:door.doorId});
+    assert.equal(opened.tiles.find(tile=>tile.doorId===door.doorId).open,true);
+    const entered=order(opened,{type:'move',unitId:guard.id,x:door.x,y:door.y});
+    assert.ok(sameCell(actor(entered,guard.id),door));
+  }
+});
+
+test('posture review exercises real travel for both prone anatomy banks',()=>{
+  const battle=createRendererSandboxBattle('postures');
+  for(const id of ['walker','runner','croucher','crawler','crawler-woman']){
+    const unit=actor(battle,id),next=order(battle,{type:'move',unitId:id,x:unit.x+1,y:unit.y});
+    assert.equal(actor(next,id).x,unit.x+1);
+    assert.equal(actor(next,id).stance,unit.stance);
+    assert.equal(actor(next,id).movementMode,unit.movementMode);
+  }
 });
 
 test('the loaded cannon has a complete adjacent crew and finite ammunition',()=>{
