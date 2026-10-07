@@ -44,7 +44,8 @@ export class ActorRuntime {
     this.visual=visual;this.model=clone(asset.body.scene);this.root.add(this.model);this.root.name=visual.key;
     this.model.traverse(node=>{this.bones.set(node.name,node);if(node instanceof Mesh){node.castShadow=true;node.receiveShadow=true;node.frustumCulled=false;const targets=node.morphTargetDictionary;if(targets?.cloth_prone!==undefined&&targets?.cloth_crouched!==undefined)this.clothMeshes.push({mesh:node,prone:targets.cloth_prone,crouched:targets.cloth_crouched});}});
     this.climbFit=new NativeClimbContactFit(this.model,this.root);
-    this.meleeFit=new NativeMeleeContactFit(this.model,this.root,asset.appearance.parts?.footwear?.replace('{lod}',String(asset.lod)));
+    const walkingClip=asset.animation.animations.find(clip=>clip.name==='stand.walk.blade'),walkingSpec=asset.clips.find(clip=>clip.name==='stand.walk.blade'),walkingSpeed=walkingSpec?.nativeStrideSpeed??walkingSpec?.locomotionSpeed;
+    this.meleeFit=new NativeMeleeContactFit(this.model,this.root,asset.appearance.parts?.footwear?.replace('{lod}',String(asset.lod)),false,walkingClip&&walkingSpeed?{clip:walkingClip,speed:walkingSpeed}:undefined);
     fitMirroredSockets(this.model,asset.appearance.sockets??asset.manifest.sockets??asset.manifest.rig?.sockets??{});
     this.mixer=new AnimationMixer(this.model);
     if(asset.garments){
