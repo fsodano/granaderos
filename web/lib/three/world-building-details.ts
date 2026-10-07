@@ -4,6 +4,7 @@ import {buildingAppearance} from '../../../game/building-appearance.js';
 import {buildingStyle} from '../../../game/building-types.js';
 import {WorldBatch,roofTextureProjector} from './world-geometry';
 import {illuminationAt} from './world-materials';
+import {palaceFacade} from './world-palace-facade';
 import type {WorldGeometry} from './world-geometry';
 import type {WorldMaterials} from './world-materials';
 import type {WorldBuilding,WorldInput} from './world-types';
@@ -52,7 +53,6 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
   };
   const roofRise=b.roof==='terrace'||(input.terrain.upperSurfaces??[]).some(surface=>surface.kind==='roof'&&surface.buildingId===b.id)?0:Math.min(getBuildingProfile(b).roofRise/25.066666666666666,Math.max(.4,frame.width*.28));
   const entranceSupports=()=>[Math.round(frame.doorU-1),Math.round(frame.doorU+1)].filter(u=>u>=0&&u<=frame.width&&wallAt(u,0)?.type==='wall');
-  const palaceSupports=kind==='palace'?entranceSupports():[],hasBalcony=palaceSupports.length===2&&height>=4;
   const feature=(name:string,draw:()=>void)=>{
     const previous=batch;batch=new WorldBatch(geometry);draw();root.add(batch.finish(`building-detail:${b.id}:${name}`));batch=previous;
   };
@@ -358,22 +358,7 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
       box(u,-.090,y,.13,.21,.012,darkwood);for(const offset of [-.065,.065])box(u,-.092,y+offset,.17,.025,.010,trim);
     });
   }else if(kind==='palace'){
-    const floor=hasBalcony?height*.56:height;
-    feature('entrance-columns',()=>{for(const support of palaceSupports){const [u,v]=bearing(support,0,true);batch.cylinder(trim,at(u,v,.08),at(u,v,floor-.13),.18,light);box(u,v,.08,.38/T,.16,.38/T,materials.get('stone'));box(u,v,floor-.15,.38/T,.12,.38/T,trim);}});
-    if(hasBalcony)feature('palace-balcony',()=>{
-      const lo=Math.min(...palaceSupports)-alongInset,hi=Math.max(...palaceSupports)-alongInset;
-      box((lo+hi)*.5,-.27,floor-.08,hi-lo+.25,.16,.65,materials.get('stone'));
-      for(const u of [lo,hi]){box(u,-.54,floor+.34,.085,.68,.085,trim);box(u,-.54,floor+.70,.12,.06,.12,trim);}
-      for(const y of [floor+.07,floor+.64])batch.cylinder(iron,at(lo,-.54,y),at(hi,-.54,y),.021,light);
-      const rods=Math.ceil((hi-lo)/.18);for(let n=0;n<=rods;n++){const u=lo+(hi-lo)*n/rods;batch.cylinder(iron,at(u,-.54,floor+.07),at(u,-.54,floor+.64),.012,light);}
-      for(const u of [lo,hi])batch.cylinder(iron,at(u,-.54,floor+.64),at(u,-.055,floor+.64),.021,light);
-      box(doorU,-.085/T,floor+.64,.74/T,1.24,.055/T,darkwood);
-      for(const side of [-1,1])box(doorU+side*.405/T,-.12/T,floor+.64,.07/T,1.36,.065/T,trim);
-      box(doorU,-.12/T,floor+1.30,.88/T,.08,.065/T,trim);
-      box(doorU,-.125/T,floor+.64,.027/T,1.22,.02/T,wood);
-      batch.polygon(wall,[at(lo-.10,-.12/T,height),at(hi+.10,-.12/T,height),at((lo+hi)*.5,-.12/T,height+.58)],light);
-      for(const u of [lo,hi])box(u,-.10/T,(floor+height)*.5,.17,height-floor,.14,trim);
-    });
+    root.add(palaceFacade(b,input,T,height,base,geometry,materials,legacy));
   }else if(['warehouse','depot','stable','barracks'].includes(kind)){
     for(let v=1;v<frame.depth;v+=2)for(const u of [0,frame.width])if(wallAt(u,v)?.type==='wall')box(u,v,.5,.16,1,.18,trim);
     if(kind==='warehouse')roofCanopy('loading-canopy',entranceSupports(),.50);
@@ -411,14 +396,5 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
     });
   }else if(kind==='smithy'){sideChimney(true);roofCanopy('forge-canopy',entranceSupports(),.50);}
   else if(kind==='house')sideChimney();
-  if(['palace','mansion'].includes(kind)&&height>=4)feature('upper-windows',()=>{
-    for(let u=.7;u<frame.width;u+=1.35){
-      if(hasBalcony&&Math.abs(u-doorU)<.64)continue;
-      const y=height*.71;box(u,-.085/T,y,.45/T,.65,.04/T,darkwood);
-      for(const side of [-1,1])box(u+side*.255/T,-.096/T,y,.055/T,.75,.065/T,trim);
-      for(const dy of [-.36,.36])box(u,-.096/T,y+dy,.56/T,.055,.065/T,trim);
-      box(u,-.125/T,y,.025/T,.64,.020/T,iron);box(u,-.125/T,y,.44/T,.025,.020/T,iron);
-    }
-  });
   root.add(batch.finish(`building-detail:${b.id}:fabric`));return root;
 }

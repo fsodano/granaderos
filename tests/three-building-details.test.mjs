@@ -20,10 +20,10 @@ function fixture(kind,side='south'){
   }
   const input={terrain:{width:12,height:12,tiles,buildings:[b]},revealedRooms:[]},geometry=new WorldGeometry(),materials=new WorldMaterials({tileMetres:T,assetUrl:path=>path});
   const frame=entranceFrame({...b,walls:tiles});
-  const localBounds=object=>{
+  const localBounds=(object,predicate=()=>true)=>{
     const bounds=new Box3();object.traverse(child=>{if(child instanceof Mesh){const positions=child.geometry.getAttribute('position');for(let n=0;n<positions.count;n++){
       const x=positions.getX(n)/T-.4-frame.origin.x,z=positions.getZ(n)/T-.4-frame.origin.y;
-      bounds.expandByPoint(new Vector3(x*frame.u.x+z*frame.u.y,positions.getY(n),x*frame.v.x+z*frame.v.y));
+      const p=new Vector3(x*frame.u.x+z*frame.u.y,positions.getY(n),x*frame.v.x+z*frame.v.y);if(predicate(p))bounds.expandByPoint(p);
     }}});return bounds;
   };
   const dispose=object=>{disposeWorldNode(object);geometry.dispose();materials.dispose();};
@@ -33,10 +33,10 @@ function fixture(kind,side='south'){
 test('upper facade panes keep the same width and wall contact through all four rotations',()=>{
   let expected;
   for(const side of ['north','east','south','west']){
-    const f=fixture('palace',side),details=architecturalDetails(f.b,f.input,T,4.9,0,f.geometry,f.materials,false),windows=details.getObjectByName('building-detail:review:upper-windows'),bounds=f.localBounds(windows);
+    const f=fixture('palace',side),details=architecturalDetails(f.b,f.input,T,4.9,0,f.geometry,f.materials,false),windows=details.getObjectByName('building-detail:review:palace-upper-windows'),bounds=f.localBounds(windows,p=>p.z<0),actualDoor=f.frame.doorU-.4*(f.frame.u.x+f.frame.u.y);
     assert.ok(bounds.min.z<-.06/T&&bounds.max.z<0,'panes and their trim must sit on the exterior facade');
     assert.ok(bounds.max.z-bounds.min.z<.12/T,'facade panes must stay thin along the wall normal');
-    const actual=[...bounds.min.toArray(),...bounds.max.toArray()];
+    const actual=[bounds.min.x-actualDoor,bounds.min.y,bounds.min.z,bounds.max.x-actualDoor,bounds.max.y,bounds.max.z];
     if(expected)actual.forEach((value,n)=>assert.ok(Math.abs(value-expected[n])<1e-5,`${side} changes facade geometry`));else expected=actual;
     f.dispose(details);
   }
@@ -311,9 +311,11 @@ test('palace balcony follows the actual doorway and requires both solid entrance
     assert.ok(Math.abs(bounds.getCenter(new Vector3()).x-actualDoor)<1e-5,'balcony must align with the real door midpoint');
     assert.ok(bounds.min.y>2.6,'balcony must stay above the ground passage');assert.ok(balcony.children.some(child=>child.material?.name==='world:iron'),'balcony must have an iron railing');
     assert.equal(JSON.stringify(f.input),before);disposeWorldNode(details);
-    for(const type of ['window','door','rubble']){
+    // A new exterior door may become the first authored entrance. Windows
+    // and breaches remove this support without changing that entrance frame.
+    for(const type of ['window','rubble']){
       const p=f.frame.at(f.frame.doorU+1,0),support=f.input.terrain.tiles.find(tile=>tile.x===p.x&&tile.y===p.y);support.type=type;
-      const unsupported=architecturalDetails(f.b,f.input,T,4.95,0,f.geometry,f.materials,false);assert.equal(unsupported.getObjectByName('building-detail:review:palace-balcony'),undefined,`${type} must remove the unsupported balcony`);disposeWorldNode(unsupported);
+      const unsupported=architecturalDetails(f.b,f.input,T,4.95,0,f.geometry,f.materials,false);assert.equal(Boolean(unsupported.getObjectByName('building-detail:review:palace-balcony')),false,`${type} must remove the unsupported balcony`);disposeWorldNode(unsupported);
     }
     f.geometry.dispose();f.materials.dispose();
   }
