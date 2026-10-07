@@ -385,6 +385,21 @@ and the production export. Four final playable hatch routes at 3 m and 4.2 m
 retained exact saved endpoints without browser errors. Male and female roof
 transfers and the opposite-facing rural-house route were visually reviewed.
 
+## Crouched boot increment
+
+Native crouched idle/walk now fit the complete published boot at the actual
+export grid. The worst stored interpolation is below 0.3 mm; idle rests at 2 mm.
+The original swinging-foot lift and all upper-body, weapon and Root tracks
+remain. All 322 other clips in each bank are exact. The
+[crouched support review](../art/crouched-boot-support-3d-review-2026-10-07.md)
+records the measured full surfaces and bounded source export.
+
+The clean cut passed 72 focused checks, type/docs/baseline/native/profile checks
+and the production export. It retains the concurrent rider fix and accepts the
+current climb, loading and sabre regressions. Eight clean normal UI idle/walking
+frames were captured; selected frames were visually compared with the sprites.
+Prone and broader motion polish remain under review.
+
 ## Next increments and acceptance limits
 
 The low-ceiling headwear limit, broader posture bank, braking steps and the
