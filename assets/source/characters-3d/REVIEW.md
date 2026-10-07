@@ -70,11 +70,15 @@ Additional native-source probes inspected the gaucho, friar and woman-shawl
 in neutral, running and sabre-backhand contact poses. The poncho now follows
 the trunk, clears the shoulders, and has narrow open side seams for the arms;
 nearest-arm weights previously pulled it into sharp folds and opened its
-collar. Long garments use continuous weights across both thighs and extra
-knee clearance so running reads as one drape. The extreme backhand can still
-expose a small boot patch below the lead knee. The underlying legs remain so
-replacing a habit with an owned shirt does not leave missing geometry. These
-are skinned garments, not a cloth simulation with general collision handling.
+collar. Long garments use calf-aware sewn panels and sparse crouch/prone
+corrective shapes. The runtime blends those shapes with the body animation
+clock. Live side views of the friar and woman-shawl confirm a low continuous
+drape over the prone legs; the friar crawl also retains that silhouette.
+The extreme backhand can still expose a small boot patch below the lead knee.
+The underlying legs remain so replacing a habit with an owned shirt does not
+leave missing geometry. These are skinned garments without general cloth
+collision simulation. The correction preserves all six LOD triangle counts,
+bones, textures and draw calls; their files add 150,468 bytes in total.
 
 Export checks must verify hashes, native skeletons, weights, materials,
 variable `COLOR_0` pigment, complete clip names and marker bounds. Runtime tests

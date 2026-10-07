@@ -30,10 +30,11 @@ function shareSkeletons(root:Object3D){
 
 /** This object consumes presentation records. It cannot issue orders. */
 export class ActorRuntime {
+  private clothMeshes:{mesh:Mesh;prone:number;crouched:number}[]=[];private clothProne=0;private clothCrouched=0;
   readonly root=new Group();readonly model:Object3D;private mixer:AnimationMixer;private action:AnimationAction|null=null;private actionKey='';private clipSpec:any;private ownedMaterials=new Set<Material>();private equipment=new Group();private equipmentKey='';private clothesKey='';private colorKey='';private horse?:Object3D;private horseMixer?:AnimationMixer;private horseAction?:AnimationAction;private horseClip='';private visual:ActorVisual;private bones=new Map<string,Object3D>();private clothing?:Object3D;private ghost?:Group;private cueStartedAt=0;private temporaryProps=new Map<string,Object3D>();private completedCues=new Set<string>();
   constructor(readonly asset:LoadedActor,visual:ActorVisual,private onCueComplete?:(key:string,id:string)=>void){
     this.visual=visual;this.model=clone(asset.body.scene);this.root.add(this.model);this.root.name=visual.key;
-    this.model.traverse(node=>{this.bones.set(node.name,node);if(node instanceof Mesh){node.castShadow=true;node.receiveShadow=true;node.frustumCulled=false;}});
+    this.model.traverse(node=>{this.bones.set(node.name,node);if(node instanceof Mesh){node.castShadow=true;node.receiveShadow=true;node.frustumCulled=false;const targets=node.morphTargetDictionary;if(targets?.cloth_prone!==undefined&&targets?.cloth_crouched!==undefined)this.clothMeshes.push({mesh:node,prone:targets.cloth_prone,crouched:targets.cloth_crouched});}});
     fitMirroredSockets(this.model,asset.appearance.sockets??asset.manifest.sockets??asset.manifest.rig?.sockets??{});
     this.mixer=new AnimationMixer(this.model);
     if(asset.garments){
@@ -175,6 +176,26 @@ export class ActorRuntime {
     }
     for(const [key,object]of this.temporaryProps)if(!desired.has(key)){object.removeFromParent();this.temporaryProps.delete(key);}
   }
+  private poseCloth(delta:number){
+    if(!this.clothMeshes.length||!this.action)return;
+    const spec=this.clipSpec,time=this.action.time,duration=this.action.getClip().duration,posture=spec.posture??this.visual.posture;
+    let prone=posture==='prone'?1:0,crouched=posture==='crouched'?1:0;
+    if(spec.gesture==='transition'){
+      const fraction=Math.max(0,Math.min(1,time/duration)),from=spec.fromPosture,to=spec.toPosture;
+      prone=(from==='prone'?1-fraction:0)+(to==='prone'?fraction:0);crouched=(from==='crouched'?1-fraction:0)+(to==='crouched'?fraction:0);
+    }else if(['dead','unconscious'].includes(spec.gesture)){prone=1;crouched=0;}
+    else if(['die','collapse','knockdown'].includes(spec.gesture)){
+      const fraction=Math.max(0,Math.min(1,time/(spec.markers?.ground??duration)));
+      prone+=(1-prone)*fraction;crouched*=1-fraction;
+    }else if(spec.gesture==='recover'){
+      const fraction=Math.max(0,Math.min(1,time/duration));prone=1-fraction;crouched=0;
+    }
+    // The same animation clock drives body and cloth. This short smoothing
+    // follows ordinary clip crossfades without adding a cloth simulation.
+    const blend=1-Math.exp(-Math.max(0,delta)/.045);
+    this.clothProne+=(prone-this.clothProne)*blend;this.clothCrouched+=(crouched-this.clothCrouched)*blend;
+    for(const {mesh,prone,crouched}of this.clothMeshes){mesh.morphTargetInfluences![prone]=this.clothProne;mesh.morphTargetInfluences![crouched]=this.clothCrouched;}
+  }
   tick(delta:number,now:number,reducedMotion=false){
     if(!this.action)return;
     const visual=this.visual,clip=this.action.getClip(),motion=visual.motion;
@@ -187,7 +208,7 @@ export class ActorRuntime {
     const timing=sampleAnimationTime({clip:{...this.clipSpec,duration:clip.duration},action:visual.action,cue:visual.cue,motion:inputMotion,now,reducedMotion});
     if(timing.complete&&visual.cue&&!this.clipSpec.loop){const id=visual.cue.id;this.completedCues.add(`${id}:${visual.cue.phase??''}`);this.update(this.restVisual(visual),now);this.onCueComplete?.(visual.key,id);this.tick(0,now,reducedMotion);return;}
     this.action.timeScale=timing.rate;if(timing.time!==undefined)this.action.time=timing.time;
-    this.mixer.update(Math.min(delta,.1));this.placeEquipment(this.action.time);this.timedProps(this.action.time);
+    this.mixer.update(Math.min(delta,.1));this.poseCloth(Math.min(delta,.1));this.placeEquipment(this.action.time);this.timedProps(this.action.time);
     if(this.horse&&this.horseMixer){
       if(this.horseAction){const horseSpec=this.asset.manifest.horse?.clips?.find(clip=>clip.name===this.horseClip),horseTime=sampleAnimationTime({clip:{duration:this.horseAction.getClip().duration,loop:true,locomotionSpeed:horseSpec?.locomotionSpeed},action:visual.action,motion:inputMotion,now});this.horseAction.timeScale=horseTime.rate;if(horseTime.time!==undefined)this.horseAction.time=horseTime.time;}
       this.horseMixer.update(Math.min(delta,.1));
