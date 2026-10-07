@@ -2,6 +2,7 @@ import {Group,Vector3} from 'three';
 import {entranceFrame} from '../../../game/building-profile.js';
 import {WorldBatch} from './world-geometry';
 import {illuminationAt} from './world-materials';
+import {buildingArtInset} from './world-building-placement';
 import type {WorldGeometry} from './world-geometry';
 import type {WorldMaterials} from './world-materials';
 import type {WorldBuilding,WorldInput} from './world-types';
@@ -10,10 +11,10 @@ import type {WorldBuilding,WorldInput} from './world-types';
  * It belongs to the real pitched roof, never to an authored flat roof route. */
 export function stableVentilation(b:WorldBuilding,input:WorldInput,T:number,height:number,base:number,rise:number,geometry:WorldGeometry,materials:WorldMaterials){
   const root=new Group();root.name=`building-stable-ventilation:${b.id}`;
-  const walls=input.terrain.tiles.filter(tile=>tile.buildingId===b.id&&['wall','door','window'].includes(tile.type)),frame=entranceFrame({...b,walls}),V=25.066666666666666,span=frame.width-.8;
+  const walls=input.terrain.tiles.filter(tile=>tile.buildingId===b.id&&['wall','door','window'].includes(tile.type)),frame=entranceFrame({...b,walls}),V=25.066666666666666,span=frame.width-.8,inset=buildingArtInset(b,input);
   if(span<=.4||rise<=7/V)return root;
   const center=frame.width*.5,half=.45*span,front=-.11/T,bottom=height+2/V,top=height+rise-3/V;
-  const at=(u:number,v:number,y:number)=>{const p=frame.at(u,v);return new Vector3((p.x+.4)*T,base+y,(p.y+.4)*T);};
+  const at=(u:number,v:number,y:number)=>{const p=frame.at(u,v);return new Vector3((p.x+inset)*T,base+y,(p.y+inset)*T);};
   const point=at(center,front,0),width=2*half+.08/T,depth=.08/T;
   if((input.terrain.upperSurfaces??[]).some(surface=>{
     const x=surface.x*T-point.x,z=surface.y*T-point.z;

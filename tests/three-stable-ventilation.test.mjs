@@ -6,13 +6,14 @@ const {Mesh,Raycaster,Vector3}=await import('../web/node_modules/three/build/thr
 const {WorldGeometry,disposeWorldNode}=await import('../web/lib/three/world-geometry.ts');
 const {WorldMaterials}=await import('../web/lib/three/world-materials.ts');
 const {buildBuilding}=await import('../web/lib/three/world-buildings.ts');
+const {buildingArtInset}=await import('../web/lib/three/world-building-placement.ts');
 const {entranceFrame,getBuildingProfile}=await import('../game/building-profile.js');
 const {createArchitectureReviewBattle}=await import('../web/app/renderer-sandbox/architecture-fixtures.js');
 const T=1.2360585147470482,V=25.066666666666666,rotations=[0,90,180,270],sourceSlats=[8,13,18,23,28,33];
 function fixture(rotation,view='exterior',roof='original'){
- const battle=createArchitectureReviewBattle('caballeriza',rotation,view,roof),b=battle.buildings[0],input={terrain:{width:battle.width,height:battle.height,tiles:battle.tiles,buildings:battle.buildings,upperSurfaces:battle.upperSurfaces},revealedRooms:battle.revealedRooms},frame=entranceFrame({...b,walls:battle.tiles}),geometry=new WorldGeometry(),materials=new WorldMaterials({tileMetres:T,assetUrl:path=>path});
- const point=(u,v,y)=>{const p=frame.at(u,v);return new Vector3((p.x+.4)*T,y,(p.y+.4)*T);};
- const local=p=>({u:(p.x/T-.4-frame.origin.x)*frame.u.x+(p.z/T-.4-frame.origin.y)*frame.u.y,v:(p.x/T-.4-frame.origin.x)*frame.v.x+(p.z/T-.4-frame.origin.y)*frame.v.y,y:p.y});
+ const battle=createArchitectureReviewBattle('caballeriza',rotation,view,roof),b=battle.buildings[0],input={terrain:{width:battle.width,height:battle.height,tiles:battle.tiles,buildings:battle.buildings,upperSurfaces:battle.upperSurfaces},revealedRooms:battle.revealedRooms},frame=entranceFrame({...b,walls:battle.tiles}),inset=()=>buildingArtInset(b,input),geometry=new WorldGeometry(),materials=new WorldMaterials({tileMetres:T,assetUrl:path=>path});
+ const point=(u,v,y)=>{const p=frame.at(u,v);return new Vector3((p.x+inset())*T,y,(p.y+inset())*T);};
+ const local=p=>({u:(p.x/T-inset()-frame.origin.x)*frame.u.x+(p.z/T-inset()-frame.origin.y)*frame.u.y,v:(p.x/T-inset()-frame.origin.x)*frame.v.x+(p.z/T-inset()-frame.origin.y)*frame.v.y,y:p.y});
  return {b,input,frame,point,local,feature:(building,name='stable-ventilation')=>building.getObjectByName(`building-detail:${b.id}:${name}`),build(){const before=JSON.stringify(input),building=buildBuilding(b,input,T,geometry,materials);building.updateMatrixWorld(true);assert.equal(JSON.stringify(input),before,'scenery must not edit the compiled battle');return building;},dispose(building){disposeWorldNode(building);geometry.dispose();materials.dispose();}};
 }
 const vertices=(f,mesh)=>{const p=mesh.geometry.getAttribute('position');return Array.from({length:p.count},(_,n)=>f.local(new Vector3(p.getX(n),p.getY(n),p.getZ(n))));};

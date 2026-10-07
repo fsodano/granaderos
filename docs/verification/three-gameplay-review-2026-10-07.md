@@ -591,3 +591,7 @@ The house now has the current source’s two supported corner piers, warm stone 
 ## Standing unarmed sideways support
 
 The four standing unarmed sideways clips now retain a supporting boot and clear the complete footwear throughout the loop. Stable native knee direction, forefoot roll and recovery are checked without stretching the limbs. All 332 other clips and 302 non-leg selected channels per anatomy, native durations, pace and the profile remain exact. The clean source passes 97 affected checks, native/profile/type/docs/baseline verification and the build (`6e151ad105fa`). Four ordinary two-cell routes save their destinations; all 68 browser captures pass without errors. Selected frames were compared with the current male/female walking sheets. See [the detailed review](../art/standing-unarmed-sideways-support-3d-review-2026-10-07.md) for contact residuals and the separate test fixture correction.
+
+## Supported stable placement
+
+The stable wall, actual door crossing, pitched roof, gables and ventilation now share one centred frame when both front corners remain intact. Edited corners and unpainted legacy selection retain the original shell. The clean source passes 61 affected checks, type/docs/baseline verification and the build (`fb3936990e45`). Thirty ordinary and closer original/slab/accessible-roof browser views pass without errors. Selected views were compared with the current stable sprite. The source-sized timber frame remains the next cut. See [the placement review](../art/stable-shell-placement-3d-review-2026-10-07.md).

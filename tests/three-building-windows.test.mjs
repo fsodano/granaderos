@@ -32,15 +32,15 @@ test('timber lattice has clipped diagonal slats on both wall axes and readable l
 
 function render(battle,tiles=battle.tiles){
  const geometry=new WorldGeometry(),materials=new WorldMaterials({tileMetres:T,assetUrl:path=>path}),input={terrain:{width:battle.width,height:battle.height,tiles,buildings:battle.buildings,upperSurfaces:battle.upperSurfaces},revealedRooms:battle.revealedRooms},before=JSON.stringify(input),building=buildBuilding(battle.buildings[0],input,T,geometry,materials);building.updateMatrixWorld(true);assert.equal(JSON.stringify(input),before);
- return {building,dispose(){disposeWorldNode(building);geometry.dispose();materials.dispose();}};
+ return {building,input,dispose(){disposeWorldNode(building);geometry.dispose();materials.dispose();}};
 }
 test('the actual pulperia and stable retain diagonal timber windows at all four rotations and through authored tile-style overrides',()=>{
  let windows=0;
  for(const id of ['pulperia','caballeriza','barraca'])for(const rotation of [0,90,180,270]){
-  const battle=createArchitectureReviewBattle(id,rotation,'exterior'),b=battle.buildings[0],tiles=battle.tiles.map(tile=>id==='barraca'&&tile.type==='window'?{...tile,style:'lattice'}:tile),r=render(battle,tiles),fabric=r.building.getObjectByName(`building-fabric:${b.id}`);
+  const battle=createArchitectureReviewBattle(id,rotation,'exterior'),b=battle.buildings[0],tiles=battle.tiles.map(tile=>id==='barraca'&&tile.type==='window'?{...tile,style:'lattice'}:tile),r=render(battle,tiles),fabric=r.building.getObjectByName(`building-fabric:${b.id}`),inset=buildingArtInset(b,r.input);
   for(const tile of tiles.filter(tile=>tile.buildingId===b.id&&tile.type==='window')){
    const onY=tile.y===b.y||tile.y===b.y+b.height-1,axis=onY?'x':'y',width=r.building.userData.openings.find(record=>record.id===`window:${tile.x},${tile.y}`).width,sill=BUILDING_OPENINGS.windowSill/V,top=BUILDING_OPENINGS.windowTop/V,height=top-sill,x=-width*.5+width/18+width*4/18,y=top-height/19-height*6/19;
-   for(const sign of [-1,1]){const origin=axis==='x'?new Vector3(tile.x*T+x,y,(tile.y+.4)*T+sign*.20):new Vector3((tile.x+.4)*T+sign*.20,y,tile.y*T+x),direction=axis==='x'?new Vector3(0,0,-sign):new Vector3(-sign,0,0);assert.equal(new Raycaster(origin,direction,0,.4).intersectObject(fabric,true)[0]?.object.material.name,'world:timber-lattice',`${id}/${rotation}: missing diagonal timber face`);}windows++;
+   for(const sign of [-1,1]){const origin=axis==='x'?new Vector3(tile.x*T+x,y,(tile.y+inset)*T+sign*.20):new Vector3((tile.x+inset)*T+sign*.20,y,tile.y*T+x),direction=axis==='x'?new Vector3(0,0,-sign):new Vector3(-sign,0,0);assert.equal(new Raycaster(origin,direction,0,.4).intersectObject(fabric,true)[0]?.object.material.name,'world:timber-lattice',`${id}/${rotation}: missing diagonal timber face`);}windows++;
   }r.dispose();
  }assert.ok(windows>=24);
 });
