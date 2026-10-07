@@ -5,6 +5,7 @@ import {boundClip,type LoadedActor,type SocketSpec,type ClipSpec,type EquipmentS
 import {mirroredClip,fitMirroredSockets,withMirroredProps} from './clip-mirroring';
 import {sampleAnimationTime,cueControlsAction} from './animation-clock';
 import {TILE_METRES} from './projection';
+import {NativeClimbContactFit} from './climb-contact-fit';
 import {NativeMeleeContactFit,type ContactActorResolver} from './melee-contact-fit';
 import type {ActorVisual} from './presentation';
 
@@ -33,6 +34,7 @@ function shareSkeletons(root:Object3D){
 
 /** This object consumes presentation records. It cannot issue orders. */
 export class ActorRuntime {
+  private climbFit?:NativeClimbContactFit;
   private meleeFit:NativeMeleeContactFit;
   private clothMeshes:{mesh:Mesh;prone:number;crouched:number}[]=[];private clothProne=0;private clothCrouched=0;
   private actionHand:HandRole='handRight';private actionBarrel=0;
@@ -40,6 +42,7 @@ export class ActorRuntime {
   constructor(readonly asset:LoadedActor,visual:ActorVisual,private onCueComplete?:(key:string,id:string)=>void,private contactActor?:ContactActorResolver){
     this.visual=visual;this.model=clone(asset.body.scene);this.root.add(this.model);this.root.name=visual.key;
     this.model.traverse(node=>{this.bones.set(node.name,node);if(node instanceof Mesh){node.castShadow=true;node.receiveShadow=true;node.frustumCulled=false;const targets=node.morphTargetDictionary;if(targets?.cloth_prone!==undefined&&targets?.cloth_crouched!==undefined)this.clothMeshes.push({mesh:node,prone:targets.cloth_prone,crouched:targets.cloth_crouched});}});
+    this.climbFit=new NativeClimbContactFit(this.model,this.root);
     this.meleeFit=new NativeMeleeContactFit(this.model,this.root,asset.appearance.parts?.footwear?.replace('{lod}',String(asset.lod)));
     fitMirroredSockets(this.model,asset.appearance.sockets??asset.manifest.sockets??asset.manifest.rig?.sockets??{});
     this.mixer=new AnimationMixer(this.model);
@@ -242,6 +245,7 @@ export class ActorRuntime {
   tick(delta:number,now:number,reducedMotion=false){
     if(!this.action)return;
     this.meleeFit.restore();
+    this.climbFit?.restore();
     const visual=this.visual,clip=this.action.getClip(),motion=visual.motion;
     const projected=(x=0,y=0)=>x*Math.sin(visual.yaw)+y*Math.cos(visual.yaw);
     const strafe=visual.action==='strafeLeft'||visual.action==='strafeRight';
@@ -255,7 +259,10 @@ export class ActorRuntime {
     if(loadingItem&&(loadingItem.socket!==this.actionHand||barrel!==this.actionBarrel)){this.update(visual,now);this.tick(0,now,reducedMotion);return;}
     if(timing.complete&&visual.cue&&!this.clipSpec.loop){const id=visual.cue.id;this.completedCues.add(`${id}:${visual.cue.phase??''}`);this.update(this.restVisual(visual),now);this.onCueComplete?.(visual.key,id);this.tick(0,now,reducedMotion);return;}
     this.action.timeScale=timing.rate;if(timing.time!==undefined)this.action.time=timing.time;
-    this.mixer.update(Math.min(delta,.1));this.poseCloth(Math.min(delta,.1));
+    if(motion?.moving&&motion.climbGeometry&&this.clipSpec.climbSupport){const down=visual.action==='climbDown',fraction=this.climbFit!.nativeFraction(motion.climbGeometry,down?1-(motion.segmentFraction??0):motion.segmentFraction??0,this.clipSpec);this.action.time=clip.duration*(down?1-fraction:fraction);}
+    this.mixer.update(Math.min(delta,.1));
+    if(motion?.moving&&motion.climbGeometry&&this.clipSpec.climbSupport)this.climbFit?.apply(motion.climbGeometry,visual.action==='climbDown'?1-(motion.segmentFraction??0):motion.segmentFraction??0,this.clipSpec);
+    this.poseCloth(Math.min(delta,.1));
     const meleeWeapon=(this.equipment.userData.attached as Object3D[]).find(item=>item.userData.hand==='handRight'&&this.itemSpec(item.userData.itemId)?.category==='sabre');
     this.meleeFit.apply(visual.cue,clip,this.clipSpec,meleeWeapon,this.action.time,this.contactActor);
     this.placeEquipment(this.action.time);this.timedProps(this.action.time);

@@ -1,4 +1,5 @@
 import {Group,PointLight,Quaternion,Vector3} from 'three';
+import {ladderGeometry} from '../../../game/climb-geometry.js';
 import {WorldBatch,seeded} from './world-geometry';
 import {illuminationAt} from './world-materials';
 import type {WorldGeometry} from './world-geometry';
@@ -60,8 +61,9 @@ export function buildClimbLinks(input:WorldInput,T:number,geometry:WorldGeometry
     if(/stair/.test(link.kind)){
       const steps=Math.max(3,Math.ceil(Math.abs(delta.y)/.23));for(let n=0;n<steps;n++){const p=a.clone().addScaledVector(delta,(n+.5)/steps),y=a.y+delta.y*(n+1)/steps;batch.box(wood,p.x,(a.y+y)*.5,p.z,Math.max(.5,Math.abs(delta.x)/steps+.02),Math.max(.08,y-a.y),Math.max(.5,Math.abs(delta.z)/steps+.02),light);}
     }else{
-      for(const side of [-1,1])batch.cylinder(wood,a.clone().addScaledVector(across,side),b.clone().addScaledVector(across,side),.035,light);
-      const steps=Math.max(2,Math.ceil(delta.length()/.29));for(let n=1;n<steps;n++){const p=a.clone().addScaledVector(delta,n/steps);batch.cylinder(wood,p.clone().sub(across),p.clone().add(across),.026,light);}batch.cylinder(iron,b.clone().sub(across),b.clone().add(across),.022,light);
+      const lower=a.y<=b.y?a:b,upper=a.y<=b.y?b:a,support=ladderGeometry(lower.toArray(),upper.toArray(),T),base=new Vector3(...support.base),top=new Vector3(...support.top),rise=top.clone().sub(base);
+      for(const side of [-1,1])batch.cylinder(wood,base.clone().addScaledVector(across,side),top.clone().addScaledVector(across,side),.035,light);
+      for(let n=1;n<support.steps;n++){const p=base.clone().addScaledVector(rise,n/support.steps);batch.cylinder(wood,p.clone().sub(across),p.clone().add(across),support.rungRadius,light);}batch.cylinder(iron,top.clone().sub(across),top.clone().add(across),.022,light);
     }
   }
   const group=batch.finish('climb-links');group.userData.kind='climb-links';group.userData.semanticIds=(input.terrain.climbLinks??[]).map(link=>`climb:${link.id}`);return group;

@@ -849,8 +849,9 @@ def apply_animations(ctx, only=None):
     loading_only=bool(only) and all(s['gesture'] in ('reload','reprime','repair','unload') for s in specs)
     mounting_only=bool(only) and all(s['gesture'] in ('mount','dismount') for s in specs)
     throwing_only=bool(only) and all(s['gesture'] in ('throw','throwKnife','bolas') for s in specs)
+    climbing_only=bool(only) and all(s['gesture'] in ('climbUp','climbDown') for s in specs)
     riding_only=bool(only) and all(s['posture']=='mounted' for s in specs)
-    contact_only=loading_only or mounting_only or throwing_only
+    contact_only=loading_only or mounting_only or throwing_only or climbing_only
     reviewed,reviewed_digest=({},None) if contact_only or riding_only else _reviewed_bank(ctx)
     ctx['reviewed_stride']={name:reviewed[name]['locomotionSpeed'] for name in ('Walk','Run') if name in reviewed}
     disabled=[]
@@ -883,7 +884,9 @@ def apply_animations(ctx, only=None):
             recipe=gesture+posture.title() if gesture.startswith('strafe') else 'crawl' if posture=='prone' else 'crouch' if posture=='crouched' else gesture
             duration=source_meta[recipe]['duration'];speed=source_meta[recipe]['locomotionSpeed'];source=source_meta[recipe]['source']
         elif gesture=='idle' and posture=='standing':duration=source_meta['idle']['duration'];source=source_meta['idle']['source']
-        elif gesture in ('climbUp','climbDown'):duration=source_meta[gesture]['duration'];source=source_meta[gesture]['source'];markers={'support':duration*.5}
+        elif gesture in ('climbUp','climbDown'):
+            from climbing_motion import duration as climb_duration
+            duration=climb_duration(ctx);source={'type':'native-ladder-contact-authoring'};markers={'support':duration*.12}
         elif gesture=='fire':duration=1.1 if equipment=='long-gun' else .8;markers={'shot':.3 if equipment=='long-gun' else .2}
         elif gesture in ('slash','thrust','punch','butt','bayonet'):duration=1.2;markers={'contact':.58,'recover':1.0}
         elif gesture in ('reload','reprime','repair','unload'):duration=4.8 if gesture=='reload' else 2.0;markers={'contact':duration*.45,'ready':duration*.92}
@@ -899,6 +902,9 @@ def apply_animations(ctx, only=None):
             # Use the exported frame grid in both directions. Unequal old
             # seat-marker keys otherwise bend the reverse leg path differently.
             times=sorted(set([i/FPS for i in range(round(duration*FPS)+1)]+list(markers.values())))
+        if gesture in ('climbUp','climbDown'):
+            from climbing_motion import fractions as climb_fractions
+            times=sorted(set(times+[duration*(1-phase if gesture=='climbDown'else phase)for phase in climb_fractions(ctx)]))
         if equipment=='long-gun' and gesture in ('reload','unload'):
             # Exact contact stages prevent a short unloading clip from
             # interpolating past its single muzzle contact between samples.
@@ -967,7 +973,9 @@ def apply_animations(ctx, only=None):
                     _apply_sample(rig,pose)
                     for side in ('l','r'):_leg_ik(rig,side,feet[side],_head(rig,'thigh_'+side)+Vector((0,-.5,-.2)))
                     pose=_collect(rig)
-            elif gesture in ('climbUp','climbDown'):pose=_at(sources[gesture],t)
+            elif gesture in ('climbUp','climbDown'):
+                from climbing_motion import pose as climbing_pose
+                pose=climbing_pose(ctx,idle,t,reverse=gesture=='climbDown')
             elif gesture in ('mount','dismount'):
                 from mounted_motion import mount_pose
                 pose=mount_pose(ctx,idle,mounted,t,reverse=gesture=='dismount')
@@ -1011,6 +1019,10 @@ def apply_animations(ctx, only=None):
         if equipment=='short-gun' and gesture=='reload':
             from pistol_loading import metadata as pistol_loading_metadata
             meta.update(pistol_loading_metadata(ctx,spec.get('item'),duration,spec.get('barrel',0)))
+        if gesture in ('climbUp','climbDown'):
+            from climbing_motion import metadata as climbing_metadata
+            meta.update(climbing_metadata(ctx,duration,reverse=gesture=='climbDown'))
+            meta['events']=meta['markers']
         if gesture in ('mount','dismount'):
             from mounted_motion import metadata as mounted_motion_metadata
             meta.update(mounted_motion_metadata(ctx,duration,reverse=gesture=='dismount'))

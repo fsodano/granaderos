@@ -4,9 +4,12 @@ import { getReachable,teamCanSee } from '../../game/tactical.js';
 import {sameCell,sameSurface,spaceKey,tacticalLevel,surfacesAtLevel} from '../../game/tactical-space.js';
 import {surfaceMotionPoint,type SurfaceRenderOffset} from '../lib/tactical-elevation';
 import {movementStepDuration} from '../lib/three/movement-timing';
+import {ladderGeometry,sampleLadderClimb} from '../../game/climb-geometry.js';
+import {TILE_METRES} from '../lib/three/projection';
+import type {ClimbGeometry} from '../lib/three/climb-contact-fit';
 
-type Point = {x:number;y:number;tacticalLevel?:number;kind?:string;linkId?:string;renderedHeight?:number;renderedOffset?:SurfaceRenderOffset};
-export type Motion = Point & {direction:number;frame:number;moving:boolean;settled?:boolean;elapsedMs?:number;speed?:number;segmentFraction?:number;climbDirection?:number;travelX?:number;travelY?:number;elapsedDistance?:number;elapsedTravelX?:number;elapsedTravelY?:number};
+type Point = {x:number;y:number;tacticalLevel?:number;kind?:string;linkId?:string;climbKind?:string;renderedHeight?:number;renderedOffset?:SurfaceRenderOffset};
+export type Motion = Point & {direction:number;frame:number;moving:boolean;settled?:boolean;elapsedMs?:number;speed?:number;segmentFraction?:number;climbDirection?:number;climbGeometry?:ClimbGeometry;travelX?:number;travelY?:number;elapsedDistance?:number;elapsedTravelX?:number;elapsedTravelY?:number};
 type Track = {points:Point[];start:number;animationOffset:number;distanceOffset:number;travelOffsetX:number;travelOffsetY:number;steps:number[];duration:number;direction:number;preservedDirection?:number};
 const MOTION_FRAME_MS=1000/60,MOTION_FRAME_TOLERANCE_MS=1;
 export type MovementFacingOverride = {battle:any;unitId:string;direction:number};
@@ -27,6 +30,7 @@ export function takeMovementFacingOverride(holder:OverrideHolder|undefined,battl
 export function motionDirection(a:Point,b:Point,preservedDirection?:number){
   const climbing=b.kind==='climb',descending=climbing&&(b.renderedHeight??0)<(a.renderedHeight??0);
   if(preservedDirection!==undefined&&!climbing)return preservedDirection;
+  if(climbing&&Math.abs(b.x-a.x)+Math.abs(b.y-a.y)<.000001)return 5;
   const x=(b.x-a.x)*(descending?-1:1),y=(b.y-a.y)*(descending?-1:1),dx=x-y,dy=x+y;
   return (Math.round(Math.atan2(dx,-dy)/(Math.PI/4))+8)%8;
 }
@@ -52,6 +56,11 @@ export function movementRoute(previous:any,unit:any,target:Point,charge=false,pr
 }
 export function sampleMovementSegment(a:Point,b:Point,fraction:number){
   const offsetA=a.renderedOffset??{x:0,y:0,height:0},offsetB=b.renderedOffset??{x:0,y:0,height:0};
+  if(b.kind==='climb'&&!/stair/.test(b.climbKind??'')){
+    const descending=(b.renderedHeight??0)<(a.renderedHeight??0),lower=descending?b:a,upper=descending?a:b;
+    const upFraction=descending?1-fraction:fraction,geometry=ladderGeometry([lower.x*TILE_METRES,lower.renderedHeight??0,lower.y*TILE_METRES],[upper.x*TILE_METRES,upper.renderedHeight??0,upper.y*TILE_METRES],TILE_METRES),plan=sampleLadderClimb(geometry,upFraction);
+    return {kind:b.kind,linkId:b.linkId,climbKind:b.climbKind,climbGeometry:{height:geometry.height,span:geometry.span,baseSpan:geometry.baseSpan,edgeSpan:geometry.edgeSpan,ladderSpan:geometry.ladderSpan,steps:geometry.steps,kind:b.climbKind},travelX:b.x-a.x,travelY:b.y-a.y,segmentFraction:fraction,climbDirection:descending?-1:1,x:lower.x+geometry.forward[0]*plan.root.forward/TILE_METRES,y:lower.y+geometry.forward[2]*plan.root.forward/TILE_METRES,tacticalLevel:tacticalLevel(upFraction>=.76?upper:lower),renderedHeight:(lower.renderedHeight??0)+plan.root.height,renderedOffset:{x:offsetA.x+(offsetB.x-offsetA.x)*fraction,y:offsetA.y+(offsetB.y-offsetA.y)*fraction,height:offsetA.height+(offsetB.height-offsetA.height)*fraction}};
+  }
   return {kind:b.kind,linkId:b.linkId,travelX:b.x-a.x,travelY:b.y-a.y,segmentFraction:fraction,climbDirection:Math.sign((b.renderedHeight??0)-(a.renderedHeight??0)),x:a.x+(b.x-a.x)*fraction,y:a.y+(b.y-a.y)*fraction,tacticalLevel:tacticalLevel(b),renderedHeight:(a.renderedHeight??0)+((b.renderedHeight??0)-(a.renderedHeight??0))*fraction,
     renderedOffset:{x:offsetA.x+(offsetB.x-offsetA.x)*fraction,y:offsetA.y+(offsetB.y-offsetA.y)*fraction,height:offsetA.height+(offsetB.height-offsetA.height)*fraction}};
 }
@@ -78,7 +87,7 @@ export function useUnitMotion(battle:any,override?:OverrideHolder,visibleIds?:Re
     const ids=new Set(transitions.map(({key})=>key));for(const id of Object.keys(positions.current))if(!ids.has(id)){delete positions.current[id];tracks.current.delete(id);}
     for(const {unit,old,key} of transitions){if(unit.hp<=0||unit.unconscious){tracks.current.delete(key);positions.current[key]={...surfaceMotionPoint(battle,{x:unit.x,y:unit.y,tacticalLevel:tacticalLevel(unit)}),direction:positions.current[key]?.direction??(unit.side==='enemy'?7:3),frame:0,moving:false,settled:true};continue;}if(old&&!sameCell(old,unit)){
       const preservedDirection=command&&command.unitId===unit.id?command.direction:undefined;
-      const points=(battle.presentationStepMs?[old,presentationMovementEndpoint(unit)]:movementRoute(before,old,unit,battle.log?.slice(before.log.length).some((text:string)=>text.startsWith(`${unit.name} ejecuta una carga`)),preservedDirection!==undefined)).map(point=>surfaceMotionPoint(before,point,battle)),track={points,start:0,animationOffset:0,distanceOffset:0,travelOffsetX:0,travelOffsetY:0,steps:points.slice(1).map((point,index)=>movementStepDuration(unit,points[index],point,battle.presentationStepMs,preservedDirection!==undefined)),duration:0,direction:preservedDirection??positions.current[key]?.direction??3,preservedDirection};track.duration=track.steps.reduce((sum,step)=>sum+step,0);tracks.current.set(key,track);started.push(track);
+      const points=(battle.presentationStepMs?[old,presentationMovementEndpoint(unit)]:movementRoute(before,old,unit,battle.log?.slice(before.log.length).some((text:string)=>text.startsWith(`${unit.name} ejecuta una carga`)),preservedDirection!==undefined)).map(point=>({...surfaceMotionPoint(before,point,battle),...(point.kind==='climb'?{climbKind:(before.climbLinks??battle.climbLinks??[]).find((link:any)=>link.id===point.linkId)?.kind}:{})})),track={points,start:0,animationOffset:0,distanceOffset:0,travelOffsetX:0,travelOffsetY:0,steps:points.slice(1).map((point,index)=>movementStepDuration(unit,points[index],point,battle.presentationStepMs,preservedDirection!==undefined)),duration:0,direction:preservedDirection??positions.current[key]?.direction??3,preservedDirection};track.duration=track.steps.reduce((sum,step)=>sum+step,0);tracks.current.set(key,track);started.push(track);
     }else if(!tracks.current.has(key)&&!((continuingIds?.has(key)||continuingIds?.has(unit.id))&&positions.current[key]?.moving))positions.current[key]={...surfaceMotionPoint(battle,{x:unit.x,y:unit.y,tacticalLevel:tacticalLevel(unit)}),direction:positions.current[key]?.direction??(unit.side==='player'?3:7),frame:0,moving:false,settled:true};}
     // Route preparation must not consume animation frames. Carry only time
     // spent moving so a wait between cells cannot jump over walking poses.
@@ -97,7 +106,7 @@ export function useUnitMotion(battle:any,override?:OverrideHolder,visibleIds?:Re
       const segment=Math.min(index,last-1),fraction=index>=last?1:Math.min(1,Math.max(0,(elapsed-segmentStart)/track.steps[segment]));let travelled=0;for(let i=0;i<segment;i++)travelled+=Math.hypot(track.points[i+1].x-track.points[i].x,track.points[i+1].y-track.points[i].y);const from=track.points[segment],to=track.points[segment+1];travelled+=Math.hypot(to.x-from.x,to.y-from.y)*fraction;const distanceFields={elapsedDistance:track.distanceOffset+travelled,elapsedTravelX:track.travelOffsetX+from.x+(to.x-from.x)*fraction-track.points[0].x,elapsedTravelY:track.travelOffsetY+from.y+(to.y-from.y)*fraction-track.points[0].y,travelX:to.x-from.x,travelY:to.y-from.y};
       if(index>=last){const continuing=Boolean((continuingIds?.has(id)||continuingIds?.has(id.slice(id.indexOf(':')+1))));positions.current[id]={...track.points[last],segmentFraction:1,climbDirection:Math.sign((to.renderedHeight??0)-(from.renderedHeight??0)),direction:track.direction,frame:continuing?Math.floor(animationElapsed/100)%8:0,moving:continuing,settled:true,...distanceFields,...(continuing?{elapsedMs:animationElapsed}:{})};tracks.current.delete(id);continue;}
       nextFinish=Math.min(nextFinish,track.start+track.duration);
-      const a=track.points[index],b=track.points[index+1];if(a.x!==b.x||a.y!==b.y)track.direction=motionDirection(a,b,track.preservedDirection);
+      const a=track.points[index],b=track.points[index+1];if(a.x!==b.x||a.y!==b.y||b.kind==='climb')track.direction=motionDirection(a,b,track.preservedDirection);
       positions.current[id]={...sampleMovementSegment(a,b,fraction),...distanceFields,direction:track.direction,frame:Math.floor(animationElapsed/100)%8,elapsedMs:animationElapsed,speed:Math.hypot(b.x-a.x,b.y-a.y)*1000/track.steps[index],moving:true,settled:false};
     }setSnapshot({...positions.current});if(tracks.current.size)request=requestAnimationFrame(tick);};
     tick(now);return()=>cancelAnimationFrame(request);

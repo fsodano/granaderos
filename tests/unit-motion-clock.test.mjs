@@ -173,7 +173,8 @@ test('cardinal and diagonal walking segments keep one physical speed and finish 
 test('climb timing keeps every native pose and a supported vertical pace',()=>{
  for(const appearance of ['granadero','woman-scout'])for(const [from,to]of [[{x:1,y:1,renderedHeight:.4},{x:2,y:1,renderedHeight:3.4,kind:'climb'}],[{x:2,y:1,renderedHeight:3.4},{x:1,y:1,renderedHeight:.4,kind:'climb'}]]){
   const duration=movementStepDuration({spriteAppearance:appearance},from,to,210);
-  close(duration,3/.65*1000);
+  const bank=manifest.animationLibraries[appearance==='granadero'?'male':'female'],native=bank.clips.find(clip=>clip.name===`life.${to.renderedHeight>from.renderedHeight?'climbUp':'climbDown'}`).duration*1000;
+  close(duration,Math.max(3/.65*1000,native));
   assert.equal(movementStepDuration({spriteAppearance:appearance},from,to,10000),10000,'A longer admitted delay remains authoritative');
   assert.equal(movementStepDuration({spriteAppearance:appearance},from,to,210,true),duration,'Climbing always uses its supported facing');
  }
@@ -189,10 +190,11 @@ test('both climb directions face the upper end of the link',()=>{
 test('a real roof climb publishes the complete ascent and descent before the next path',async t=>{
  const env=await mountMotion(t),tiles=Array.from({length:100},(_,i)=>({x:i%10,y:Math.floor(i/10),type:'grass',blocked:false,cover:0})),from={x:3,y:4,tacticalLevel:0},to={x:4,y:4,tacticalLevel:1},before=createBattle([{id:'climber',...from,activeSlot:'unarmed',energy:100}],{width:10,height:10,tiles,upperSurfaces:[{id:'platform',...to,elevation:3,kind:'platform',type:'floor',blocked:false,cover:0}],climbLinks:[{id:'access',kind:'climb',from,to}],exploration:true,enemies:[]});
  await env.draw(before);const up=actBattle(before,{type:'climb',unitId:'climber',linkId:'access'});assert.equal(up.lastError,null);await env.draw(up);
- const duration=3/.65*1000;await env.frame(duration/2);let motion=env.motion.positions.climber;
- assert.equal(motion.moving,true);close(motion.x,3.5);close(motion.renderedHeight,1.5);assert.equal(motion.linkId,'access');const facing=motion.direction;
- await env.frame(duration/2);assert.equal(env.motion.positions.climber.moving,false);close(env.motion.positions.climber.x,4);close(env.motion.positions.climber.renderedHeight,3);
- const down=actBattle(up,{type:'climb',unitId:'climber',linkId:'access'});assert.equal(down.lastError,null);await env.draw(down);await env.frame(duration/2);motion=env.motion.positions.climber;
- assert.equal(motion.moving,true);assert.equal(motion.direction,facing);close(motion.x,3.5);close(motion.renderedHeight,1.5);
+ const duration=movementStepDuration(up.units[0],{...from,renderedHeight:0},{...to,renderedHeight:3,kind:'climb'},210);await env.frame(duration/2);let motion=env.motion.positions.climber;
+ assert.equal(motion.moving,true);assert.ok(motion.x<3.5,'The body stays outside the roof edge during the supported ascent');assert.ok(motion.renderedHeight>1&&motion.renderedHeight<2);assert.equal(motion.linkId,'access');const facing=motion.direction;
+ await env.frame(duration*.37);assert.equal(env.motion.positions.climber.tacticalLevel,1,'Roof support remains visible at the crest');
+ await env.frame(duration*.13);assert.equal(env.motion.positions.climber.moving,false);close(env.motion.positions.climber.x,4);close(env.motion.positions.climber.renderedHeight,3);
+ const down=actBattle(up,{type:'climb',unitId:'climber',linkId:'access'});assert.equal(down.lastError,null);await env.draw(down);await env.frame(duration*.13);assert.equal(env.motion.positions.climber.tacticalLevel,1,'Descent retains the actual roof support');await env.frame(duration*.37);motion=env.motion.positions.climber;
+ assert.equal(motion.moving,true);assert.equal(motion.direction,facing);assert.ok(motion.x<3.5,'Descent stays outside the roof edge');assert.ok(motion.renderedHeight>1&&motion.renderedHeight<2);
  await env.frame(duration/2);assert.equal(env.motion.positions.climber.moving,false);close(env.motion.positions.climber.x,3);close(env.motion.positions.climber.renderedHeight,0);
 });
