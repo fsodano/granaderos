@@ -9,7 +9,7 @@ type WindowFace={axis:'x'|'y';mid:number;cross:number;base:number;sill:number;to
 export function addWindowFace(batch:WorldBatch,materials:WorldMaterials,face:WindowFace){
   const {axis,mid,cross,base,sill,top,width,style,light}=face,height=top-sill;
   const point=(x:number,y:number,d=0)=>axis==='x'?new Vector3(mid+x,base+y,cross+d):new Vector3(cross+d,base+y,mid+x);
-  const box=(x:number,y:number,w:number,h:number,d:number,material:ReturnType<WorldMaterials['get']>)=>{const p=point(x,y);batch.box(material,p.x,p.y,p.z,axis==='x'?w:d,h,axis==='x'?d:w,light);};
+  const box=(x:number,y:number,w:number,h:number,d:number,material:ReturnType<WorldMaterials['get']>,offset=0)=>{const p=point(x,y,offset);batch.box(material,p.x,p.y,p.z,axis==='x'?w:d,h,axis==='x'?d:w,light);};
   box(0,(top+sill)*.5,width,height,.025,materials.get('glass',{opacity:.38}));
   if(style==='lattice'){
     const timber=materials.get('timber-lattice',{colour:'#b29970'});
@@ -25,6 +25,21 @@ export function addWindowFace(batch:WorldBatch,materials:WorldMaterials,face:Win
   }else if(['barred','small','arched'].includes(style)){
     const iron=materials.get('iron');for(let n=0;n<4;n++)box(-width*.38+width*.25*n,(top+sill)*.5,.018,height,.035,iron);box(0,sill+height*.48,width,.018,.035,iron);
   }else if(style==='shutters'){
-    const wood=materials.get('wood');box(-width*.64,(top+sill)*.5,width*.28,height,.07,wood);box(width*.64,(top+sill)*.5,width*.28,height,.07,wood);
+    // Opening draws two green six-unit panels inside its eighteen-unit span.
+    // A post outside the span is swallowed by the solid masonry jamb. Keep
+    // the source's central gap and dress both actual camera faces instead.
+    const panel=materials.get('timber-shutter',{colour:'#65705a'}),edge=materials.get('shutter-edge',{colour:'#434a3b'}),rail=materials.get('shutter-rail',{colour:'#a8ac84'});
+    const panelWidth=width/3,panelHeight=height*17/19,centre=(top+sill)*.5,border=width*.8/18;
+    for(const side of [-1,1]){
+      const x=side*width/3;
+      box(x,centre,panelWidth,panelHeight,.060,panel);
+      for(const offset of [-.036,.036]){
+        for(const sign of [-1,1]){
+          box(x+sign*(panelWidth-border)*.5,centre,border,panelHeight,.010,edge,offset);
+          box(x,centre+sign*(panelHeight-border)*.5,panelWidth,border,.010,edge,offset);
+        }
+        for(const down of [5,10,15])box(x,top-height*down/19,width*4/18,height*.8/19,.012,rail,offset);
+      }
+    }
   }
 }

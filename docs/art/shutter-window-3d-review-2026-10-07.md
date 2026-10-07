@@ -1,0 +1,11 @@
+# Shutter window review — 7 October 2026
+
+The current house and farmhouse sprites use paired green shutter panels inside the window aperture. Each panel occupies six of the eighteen opening units, leaves a central gap and has a dark border and three pale horizontal rails. The source is `Opening` in `web/app/TacticalArchitectureMaterials.tsx`; the current catalogue images are in `artifacts/three-gameplay-review/direct-facade-audit/`.
+
+The released native helper placed plain brown posts outside the aperture. The masonry jambs hid those posts, leaving a blank glazed rectangle. The correction retains the source green paint (`#65705a`), dark border (`#434a3b`) and pale rails (`#a8ac84`). Both panels now sit inside the real opening. Their shallow physical faces and rail relief are visible from either side of the wall. The glazing and source central gap remain. The helper scales its source proportions to the existing physical opening; it does not change wall collision, opening dimensions, styles, saved flags or interaction. Normal disclosure and breaches remove the detail with its window.
+
+Six focused source checks pass in 1.97 seconds. They render the current source opening, cast rays through both faces of the actual physical panels and rails, preserve the central gap, and check real house and farmhouse windows through four rotations, saved window flags and room disclosure. Existing lattice, glazing and retained bar checks also pass. Clean build and browser acceptance follow this source commit.
+
+## Clean source acceptance
+
+Source `fe638740d7fb1744d447c61c342d5d68d0403e42` passes 64 affected architecture checks in 6.45 seconds, TypeScript, documentation and baseline audits, and the static game/editor build (`94aeb2d266c3`, 1,244 files and 1,039 asset references). The ordinary catalogue passes 24 house and farmhouse browser views across all four rotations and three disclosure states, without browser errors. Captures and telemetry are in `artifacts/three-shutter-window-cut-review/` on the clean review checkout. The house and farmhouse exteriors and the disclosed house interior were inspected against the current sprites and preceding blank-glazing captures. Green panels, borders and pale rails are now readable; cut walls retain no floating shutters. House front piers/hood and other facade details remain separate work.
