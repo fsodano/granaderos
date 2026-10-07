@@ -615,3 +615,7 @@ The scene now binds every current actor identity and visibility before evaluatin
 ## Exposed farmhouse gallery
 
 The farmhouse gallery now has the source front and return posts, warm stone feet, supported ties and shallow beams. Its joined corner retains one post and one roof cap, with overlapping beam faces removed. The source passes 73 affected checks, type/docs/baseline verification and the build (`3652c1aed03a`). Thirty ordinary and closer original/slab/accessible-roof browser views pass without errors. Selected exterior, entrance, interior and roof views were compared with the current sprite. See [the gallery review](../art/farmhouse-gallery-exposure-3d-review-2026-10-07.md).
+
+## Standing rifle sideways support
+
+Four standing rifle left/right clips now retain supported complete footwear through their native loops. All 332 other clips and 302 non-leg selected channels per anatomy, native clocks, pace, dimensions and earlier unarmed corrections remain exact. The source passes 26 affected checks, native/profile/type/docs/baseline verification and the build (`5e49d10010e7`). Four normal held-rifle routes save their cells; all 68 captures pass without errors. Selected frames were compared with both current walking sheets. See [the rifle movement review](../art/standing-rifle-sideways-support-3d-review-2026-10-07.md).
