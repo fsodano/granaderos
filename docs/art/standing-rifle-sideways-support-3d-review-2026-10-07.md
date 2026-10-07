@@ -1,0 +1,9 @@
+# Standing rifle sideways support — 7 October 2026
+
+The male and female standing rifle side steps now retain a supporting boot through both native left/right loops. The native source authoring applies the existing sideways support solve to long guns. Actual Brown Bess fixtures retain their held weapon, native upper-body pose and equipment grip.
+
+Only eight thigh/calf/foot/ball rotation channels in each selected clip change. The guarded named transplant preserves all 332 other clips and 302 non-leg selected channels per anatomy, every original joint/mesh/skin payload, native translations and scales, actual 1.1666666269302368/1.2666666507720947-second loops, nominal intervals, retained pace and the locomotion profile. The previously released unarmed clips and their support records remain exact. A simulated unrelated firearm hand/metadata change also survives the transplant. The complete preservation proof is retained separately from the release assets.
+
+The actual LOD0 footwear stays at least 0.930 mm above its floor; a supporting boot remains within 2.889 mm throughout 241 phases. Each recovery lifts the complete boot by 4.2–10.1 cm, with 1.6–10.5 degrees of forefoot roll and unchanged native limb lengths. Normal preserved-facing body travel and animation phase retain their original 0.8 pace. The planted lateral RMS residual is 2.96–9.30 mm/s, with 78.48 mm/s maximum interpolation residual outside the 0.015-phase transfer margins. This is bounded measured support, not zero slip.
+
+The focused gate covers both anatomies and equipment categories, both directions, complete skin support, two full body-distance-driven loops, native clocks and all existing movement clock fixtures. The native library and exact locomotion profile checks pass. Clean browser source review follows before release. Short guns, sabres, knives, lances, crouched sideways motion and broader transitions remain separate increments.

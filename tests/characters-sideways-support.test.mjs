@@ -7,8 +7,8 @@ const {ActorRuntime}=await import('../web/lib/three/actor-runtime.ts');
 const {sampleAnimationTime}=await import('../web/lib/three/animation-clock.ts');
 const {movementStepDuration}=await import('../web/lib/three/movement-timing.ts');
 const {TILE_METRES}=await import('../web/lib/three/projection.ts');
-async function fixture(appearance){
- const asset=await publishedActor(appearance,0),actor=new ActorRuntime(asset,{key:'unit:sideways',id:'sideways',kind:'unit',appearance,skin:'light',side:'player',position:[0,0,0],yaw:0,tacticalLevel:0,posture:'standing',mounted:false,action:'idle',idleAction:'idle',equipment:'unarmed',items:[],garments:{},selected:false,bodyHeights:{}});
+async function fixture(appearance,equipment){
+ const asset=await publishedActor(appearance,0),actor=new ActorRuntime(asset,{key:'unit:sideways',id:'sideways',kind:'unit',appearance,skin:'light',side:'player',position:[0,0,0],yaw:0,tacticalLevel:0,posture:'standing',mounted:false,action:'idle',idleAction:'idle',equipment,items:equipment==='long-gun'?[{id:'1800',reference:'primary',socket:'handRight'}]:[],garments:{},selected:false,bodyHeights:{}});
  const mesh=actor.model.getObjectByName('Human_footwear_LOD0'),position=mesh.geometry.attributes.position,boots={l:[],r:[]},native=[];
  for(let index=0;index<position.count;index++)boots[position.getX(index)>0?'l':'r'].push(index);
  for(const side of ['l','r'])assert.ok(boots[side].length>200,'The complete sole, toe, heel and fitted boot are checked');
@@ -20,24 +20,24 @@ async function fixture(appearance){
  function lowest(side){let height=Infinity,index;for(const candidate of boots[side]){const y=point(candidate).y;if(y<height){height=y;index=candidate;}}return{height,index};}
  return{asset,actor,select,pose,point,lowest};
 }
-for(const appearance of ['granadero','woman-scout']){
- test(`${appearance} standing unarmed side steps support complete native boots through their retained loops`,async()=>{
-  const f=await fixture(appearance);try{for(const direction of ['Left','Right']){
-   const {clip,spec}=f.select(`stand.strafe${direction}.unarmed`),support=spec.nativeSidewaysSupport;
+for(const appearance of ['granadero','woman-scout'])for(const equipment of ['unarmed','long-gun']){
+ test(`${appearance} standing ${equipment} side steps support complete native boots through their retained loops`,async()=>{
+  const f=await fixture(appearance,equipment);try{for(const direction of ['Left','Right']){
+   const {clip,spec}=f.select(`stand.strafe${direction}.${equipment}`),support=spec.nativeSidewaysSupport;
    assert.equal(support.surface,'complete-native-boot');assert.equal(clip.duration,Math.fround((direction==='Left'?35:38)/30),'The original stored cycle is retained');assert.equal(spec.duration,direction==='Left'?1.183329:1.283328,'The older nominal manifest field is retained');
    const recovery={l:0,r:0};
    for(let i=0;i<=240;i++){f.pose(clip.duration*i/240);const heights=[];for(const side of ['l','r']){const {height}=f.lowest(side);assert.ok(height>.0005,`${clip.name} ${side} at ${i}/240: complete boot height ${height}`);recovery[side]=Math.max(recovery[side],height);heights.push(height);}assert.ok(Math.min(...heights)<.0035,`${clip.name}: a boot supports the retained torso at every phase`);}
    for(const side of ['l','r']){assert.ok(recovery[side]>.035&&recovery[side]<.105,'Each recovering boot follows a raised arc');assert.ok(support.heelRoll[side]>=0&&support.heelRoll[side]<.20,'Support uses a small anatomical forefoot roll');}
   }}finally{f.actor.dispose();}
  });
- test(`${appearance} normal lateral travel retains its pace and limits planted skin slip`,async()=>{
-  const f=await fixture(appearance);try{for(const direction of ['Left','Right']){
-   const {clip,spec}=f.select(`stand.strafe${direction}.unarmed`),speed=spec.nativeStrideSpeed??spec.locomotionSpeed,sign=direction==='Left'?1:-1,action=`strafe${direction}`;
-   const step=movementStepDuration({spriteAppearance:appearance,activeSlot:'unarmed',facing:2},{x:4,y:4},{x:4,y:4-sign},210,true),bodySpeed=TILE_METRES/(step/1000),rate=bodySpeed/speed;
+ test(`${appearance} ${equipment} normal lateral travel retains its pace and limits planted skin slip`,async()=>{
+  const f=await fixture(appearance,equipment);try{for(const direction of ['Left','Right']){
+   const {clip,spec}=f.select(`stand.strafe${direction}.${equipment}`),speed=spec.nativeStrideSpeed??spec.locomotionSpeed,sign=direction==='Left'?1:-1,action=`strafe${direction}`;
+   const step=movementStepDuration({spriteAppearance:appearance,activeSlot:equipment==='unarmed'?'unarmed':'primary',weapon:1800,facing:2},{x:4,y:4},{x:4,y:4-sign},210,true),bodySpeed=TILE_METRES/(step/1000),rate=bodySpeed/speed;
    assert.equal(spec.nativeSidewaysSupport.retainedNativeStrideSpeed,speed);assert.ok(Math.abs(rate-.8)<.000000001,'Preserved facing retains the existing slower travel');
    const poseAt=wallTime=>{const distance=bodySpeed*wallTime,sample=sampleAnimationTime({clip:{...spec,duration:clip.duration},action,motion:{moving:true,elapsedDistance:distance,speed:bodySpeed,signedForwardSpeed:0},now:wallTime*1000});assert.equal(sample.rate,0);f.pose(sample.time);return sign*distance;};
    for(const side of ['l','r']){const [start,stop]=spec.nativeSidewaysSupport.supportWindows[side];let squared=0,maximum=0,count=0;
-    for(let i=1;i<240;i++){const phase=i/240,local=((phase-start)%.5+.5)%.5;if(local<=.015||local>=stop-start-.015)continue;
+    for(let i=1;i<480;i++){const phase=i/240,local=((phase-start)%.5+.5)%.5;if(local<=.015||local>=stop-start-.015)continue;
      const wall=phase*clip.duration/rate,delta=.0005*clip.duration/rate;poseAt(wall);const anchor=f.lowest(side).index,beforeTravel=poseAt(wall-delta),before=f.point(anchor);before.x+=beforeTravel;const afterTravel=poseAt(wall+delta),after=f.point(anchor);after.x+=afterTravel;const slip=(after.x-before.x)/(2*delta);squared+=slip*slip;maximum=Math.max(maximum,Math.abs(slip));count++;
     }
     assert.ok(count>60,'Each planted interval has a complete skin contact sample');assert.ok(Math.sqrt(squared/count)<.012,`${clip.name} ${side}: world lateral contact RMS stays below 12 mm/s`);assert.ok(maximum<.09,`${clip.name} ${side}: interpolation and handover residual stay below 9 cm/s`);
