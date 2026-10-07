@@ -72,7 +72,10 @@ for(const id of ['granadero','woman-scout'])test(`${id} mounts from a supported 
  at(rising,mount,.05);assert.equal(rising.root.children.find(node=>node!==rising.model).visible,false,'The on-foot step clears the space before the horse enters view');
  at(rising,mount,.5);assert.equal(rising.root.children.find(node=>node!==rising.model).visible,true);
  at(descending,dismount,.9);assert.equal(descending.root.children.find(node=>node!==descending.model).visible,false,'The horse leaves view before the foot return');
- descending.tick(0,dismount.duration*1000+1);closeVector(descending.model.position,[0,0,0],1e-8,'Dismount returns to normal ground placement');
+ descending.tick(0,dismount.duration*1000+1);
+ // Ground placement settles with the same short fade as the outgoing pose.
+ for(let frame=1;frame<=24;frame++)descending.tick(1/120,dismount.duration*1000+1+frame*1000/120);
+ closeVector(descending.model.position,[0,0,0],1e-8,'Dismount returns to normal ground placement after the pose blend');
  rising.dispose();descending.dispose();
 });
 
