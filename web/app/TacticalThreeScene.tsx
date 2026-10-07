@@ -7,6 +7,7 @@ import {ActorAssetLibrary} from '../lib/three/actor-assets';
 import {ActorOcclusion,markActorMaterials} from '../lib/three/actor-occlusion';
 import {ActorRuntime} from '../lib/three/actor-runtime';
 import {resolveContactTargetModel} from '../lib/three/contact-target-model';
+import {advanceSceneActors} from '../lib/three/scene-actors';
 import {updateSectorCamera,TILE_METRES,type SectorCameraView} from '../lib/three/projection';
 import type {WorldInput} from '../lib/three/world-types';
 import type {ActorVisual} from '../lib/three/presentation';
@@ -58,14 +59,10 @@ export default function TacticalThreeScene(props:Props){
       const visible=new Set(input.actors.map(actor=>actor.key));for(const [key,entry]of actors)if(!visible.has(key)){entry.runtime?.dispose();actors.delete(key);}
       if(actorInput!==input.actors){actorInput=input.actors;world.updateActors?.(input.actors.map(actor=>({x:actor.position[0]/TILE_METRES,y:actor.position[2]/TILE_METRES,elevation:actor.position[1],tacticalLevel:actor.motion?.tacticalLevel??actor.tacticalLevel,activeClimbLink:actor.motion?.moving&&actor.motion.kind==='climb'?actor.motion.linkId:undefined})));}
       const pixelHeight=1.76*25.0666666667*bounds.width/input.view.width,lod=pixelHeight>160?0:pixelHeight>65?1:2;
-      let activeActors=0;
-      for(const visual of input.actors){ensure(visual,lod);const actor=actors.get(visual.key);if(!actor?.runtime||actor.error)continue;try{
-        // React supplies immutable presentation records. Rebind equipment,
-        // clothing and the selected clip only when a record changes; the
-        // native clock still advances every visible frame inside tick().
-        if(actor.visual!==visual){actor.runtime.update(visual,now);actor.visual=visual;}
-        actorBounds.center.fromArray(visual.position);actorBounds.center.y+=1;const active=frustum.intersectsSphere(actorBounds);actor.runtime.root.visible=active;if(active){activeActors++;actor.runtime.tick(input.ambientPaused&&visual.action==='idle'?0:delta,now,Boolean(reduced?.matches));}
-      }catch(error){actor.error=true;report(error);}}
+      for(const visual of input.actors)ensure(visual,lod);
+      const activeActors=advanceSceneActors({visuals:input.actors,entry:key=>actors.get(key),active:visual=>{
+        actorBounds.center.fromArray(visual.position);actorBounds.center.y+=1;return frustum.intersectsSphere(actorBounds);
+      },delta,now,ambientPaused:input.ambientPaused,reducedMotion:Boolean(reduced?.matches),report});
       const selected=input.actors.find(actor=>actor.selected);occlusion.setActor(selected?actors.get(selected.key)?.runtime?.root??null:null);occlusion.sync();
       if(effectInput!==input.effects||lastReduced!==quiet){
         effectInput=input.effects;
