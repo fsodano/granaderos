@@ -5,7 +5,8 @@ import type {ActorCue,ContactTarget,ContactSupport} from './presentation';
 export type ContactActorResolver=(target:ContactTarget)=>{model:Object3D;root:Object3D}|undefined;
 type Limb={base:Object3D;middle:Object3D;end:Object3D;first:number;second:number};
 type Sole={mesh:SkinnedMesh;vertices:number[];outline:number[];floor:number};
-type Plan={key:string;cueId:string;target:Object3D;hand:Vector3;body:Vector3;step:Vector3;rearStep:Vector3;contact:number;duration:number;pistol?:boolean};
+type NativePathSample={time:number;shoulder:Vector3;hand:Vector3;hips:Vector3[];feet:Vector3[];soleMin:number[]};
+type Plan={key:string;cueId:string;target:Object3D;hand:Vector3;body:Vector3;step:Vector3;rearStep:Vector3;contact:number;duration:number;pistol?:boolean;sabre?:boolean;handRecovery?:number};
 const smooth=(value:number)=>{const t=Math.max(0,Math.min(1,value));return t*t*(3-2*t);};
 function visible(node:Object3D){let current:Object3D|null=node;while(current){if(!current.visible)return false;current=current.parent;}return true;}
 function poseTree(source:Object3D):Object3D|undefined{
@@ -47,10 +48,18 @@ export class NativeMeleeContactFit {
  private plan?:Plan;
  private attemptedKey='';private attemptedTarget?:Object3D;
  private nativePose:{node:Object3D;position:Vector3;quaternion:Quaternion}[]=[];
- private pathPrevious?:Vector3[];
+ private pathPrevious?:Vector3[];private nativePath:NativePathSample[]=[];private pathPrioritized=false;
+ private walkingStep=0;private walkingFootSpeed=0;private pathFeet?:{time:number;points:Vector3[]};
+ private soleCenters(){return [...this.previewFit!.soles.values()].map(sole=>{const center=new Vector3();for(const index of sole.outline)center.add(this.previewFit!.solePoint(sole,index,new Vector3()));return center.divideScalar(sole.outline.length);});}
+ private measureWalkingGait(){
+  const gait=this.gait;if(!gait||!Number.isFinite(gait.speed)||gait.speed<=0)return;
+  const action=this.sampleMixer!.clipAction(gait.clip).reset().play();action.timeScale=0;const count=Math.ceil(gait.clip.duration*240),forward=new Vector3(0,0,1).applyQuaternion(this.sampleRoot.quaternion);let previous:Vector3[]|undefined;
+  for(let index=0;index<=count;index++){const time=gait.clip.duration*index/count;this.previewFit!.restore();action.time=time;this.sampleMixer!.update(0);this.sampleRoot.updateMatrixWorld(true);const points=this.soleCenters().map(point=>point.addScaledVector(forward,time*gait.speed));if(previous)for(let side=0;side<points.length;side++){const delta=points[side].clone().sub(previous[side]);this.walkingFootSpeed=Math.max(this.walkingFootSpeed,delta.length()/(gait.clip.duration/count));}previous=points;}
+  this.walkingStep=gait.speed*gait.clip.duration/2;this.sampleMixer!.stopAllAction();
+ }
  private target=new Vector3();private start=new Vector3();private joint=new Vector3();private end=new Vector3();private direction=new Vector3();private pole=new Vector3();private elbow=new Vector3();private before=new Vector3();private after=new Vector3();
  private rotation=new Quaternion();private worldRotation=new Quaternion();private parentRotation=new Quaternion();private endRotation=new Quaternion();
- constructor(private model:Object3D,private root:Object3D,footwearName?:string,preview=false){
+ constructor(private model:Object3D,private root:Object3D,footwearName?:string,private preview=false,private gait?:{clip:AnimationClip;speed:number}){
   this.body=model.getObjectByName('Root')!;model.updateWorldMatrix(true,false);model.updateMatrixWorld(true);
   for(const side of ['l','r'])for(const role of ['foot','hand']){
    const names=role==='foot'?['thigh','calf','foot']:['upperarm','lowerarm','hand'],nodes=names.map(name=>model.getObjectByName(`${name}_${side}`));
@@ -83,13 +92,16 @@ export class NativeMeleeContactFit {
   });
   this.core=[...bounds.values()];
  }
+ private worldPoint=new Vector3();private worldScale=new Vector3();private inverseParent=new Matrix4();
+ private position(node:Object3D,target:Vector3){return this.preview?target.setFromMatrixPosition(node.matrixWorld):node.getWorldPosition(target);}
+ private quaternion(node:Object3D,target:Quaternion){if(!this.preview)return node.getWorldQuaternion(target);node.matrixWorld.decompose(this.worldPoint,target,this.worldScale);return target;}
  private rotateToward(bone:Object3D,before:Vector3,after:Vector3){
-  this.rotation.setFromUnitVectors(before.normalize(),after.normalize());bone.getWorldQuaternion(this.worldRotation);this.rotation.multiply(this.worldRotation);
-  bone.parent!.getWorldQuaternion(this.parentRotation);bone.quaternion.copy(this.parentRotation.invert().multiply(this.rotation));bone.updateWorldMatrix(false,true);
+  this.rotation.setFromUnitVectors(before.normalize(),after.normalize());this.quaternion(bone,this.worldRotation);this.rotation.multiply(this.worldRotation);
+  this.quaternion(bone.parent!,this.parentRotation);bone.quaternion.copy(this.parentRotation.invert().multiply(this.rotation));bone.updateWorldMatrix(false,true);
  }
  private solve(limb:Limb,target:Vector3){
   const {base,middle,end,first:a,second:b}=limb;
-  base.getWorldPosition(this.start);middle.getWorldPosition(this.joint);end.getWorldPosition(this.end);end.getWorldQuaternion(this.endRotation);
+  this.position(base,this.start);this.position(middle,this.joint);this.position(end,this.end);this.quaternion(end,this.endRotation);
   const requested=this.direction.subVectors(target,this.start).length(),distance=Math.min(a+b-.001,Math.max(Math.abs(a-b)+.001,requested));this.direction.normalize();
   this.maximumReachError=Math.max(this.maximumReachError,Math.max(0,requested-(a+b-.001)));
   if(end.name.startsWith('foot'))this.footReachError=Math.max(this.footReachError,Math.max(0,requested-(a+b-.001)));
@@ -101,9 +113,9 @@ export class NativeMeleeContactFit {
   this.elbow.copy(this.start).addScaledVector(this.direction,along).addScaledVector(this.pole,rise);
   this.target.copy(this.start).addScaledVector(this.direction,distance);
   this.rotateToward(base,this.before.subVectors(this.joint,this.start),this.after.subVectors(this.elbow,this.start));
-  middle.getWorldPosition(this.joint);end.getWorldPosition(this.end);
+  this.position(middle,this.joint);this.position(end,this.end);
   this.rotateToward(middle,this.before.subVectors(this.end,this.joint),this.after.subVectors(this.target,this.joint));
-  end.parent!.getWorldQuaternion(this.parentRotation);end.quaternion.copy(this.parentRotation.invert().multiply(this.endRotation));end.updateWorldMatrix(false,true);
+  this.quaternion(end.parent!,this.parentRotation);end.quaternion.copy(this.parentRotation.invert().multiply(this.endRotation));end.updateWorldMatrix(false,true);
  }
  private contactPoints(weapon:Object3D,hilt:boolean,pistol=false){
   const cap=pistol?weapon.children.find(node=>/Pistol_Butt_Cap/.test(node.name)) as Mesh|undefined:undefined;
@@ -159,7 +171,7 @@ export class NativeMeleeContactFit {
   return Number.isFinite(distance)?delta:undefined;
  }
  private prepare(key:string,cue:ActorCue,clip:AnimationClip,spec:ClipSpec,weapon:Object3D,target:Object3D){
-  this.plan=undefined;this.bodyAdvance=0;this.attemptedKey=key;this.attemptedTarget=target;
+  this.plan=undefined;this.bodyAdvance=0;this.attemptedKey=key;this.attemptedTarget=target;this.nativePath=[];this.pathPrioritized=false;
   const support=cue.contactSupport;if(!support?.floors.some(floor=>Math.abs(floor.height-this.root.getWorldPosition(new Vector3()).y)<.001))return;
   const contact=spec.markers?.contact;if(!Number.isFinite(contact))return;
   // Sample only this actor's known native clip. This hierarchy has no meshes
@@ -175,6 +187,7 @@ export class NativeMeleeContactFit {
    for(const [side,sole]of this.previewFit.soles){const native=this.soles.get(side)!;sole.floor=native.floor;sole.outline=[...native.outline];}
   }
   this.root.getWorldPosition(this.sampleRoot.position);this.root.getWorldQuaternion(this.sampleRoot.quaternion);this.sample.position.copy(this.model.position);
+  if(spec.name.startsWith('stand.slash.blade')&&!this.walkingStep)this.measureWalkingGait();
   this.previewFit!.restore();this.sampleMixer!.stopAllAction();const action=this.sampleMixer!.clipAction(clip).reset().play();action.time=contact!;action.timeScale=0;this.sampleMixer!.update(0);this.sampleRoot.updateMatrixWorld(true);
   const hand=this.model.getObjectByName('hand_r')!,sampleHand=this.sample.getObjectByName('hand_r')!,arm=this.limbs.get('hand_r')!;
   this.root.updateWorldMatrix(true,false);this.root.updateMatrixWorld(true);
@@ -186,7 +199,7 @@ export class NativeMeleeContactFit {
   // the measured native arm. Bending the knees makes room for the rear leg;
   // an exported joint translation or a stretched bone is never used.
   let accepted=false,acceptedPlan:Plan|undefined;
-  for(let advance=0;advance<=.8001;advance+=.01){
+  for(let advance=0;advance<=(spec.name.startsWith('stand.slash.blade')?this.walkingStep:.8)+.0001;advance+=.01){
    for(let drop=0;drop<=.3801;drop+=.01){
     body.copy(forward).multiplyScalar(advance);body.y=-drop;rearStep.set(0,0,0);
     if(shoulder.clone().add(body).distanceTo(desired)>arm.first+arm.second-.008)continue;
@@ -207,8 +220,14 @@ export class NativeMeleeContactFit {
      step.copy(forward).multiplyScalar(advance*fraction);
      const leg=this.limbs.get('foot_r')!,hip=hips.get('r')!.clone().add(body),foot=feet.get('r')!.clone().add(step);
      if(hip.distanceTo(foot)>leg.first+leg.second-.008)continue;
-     const local=(value:Vector3)=>value.clone().applyQuaternion(rootRotation.clone().invert()),plan={key,cueId:cue.id,target,hand:local(correction),body:local(body),step:local(step),rearStep:local(rearStep),contact:contact!,duration:clip.duration,pistol:spec.name==='stand.butt.short-gun'};
-     if(!this.pathAllowed(plan,clip,support,action))continue;
+     const local=(value:Vector3)=>value.clone().applyQuaternion(rootRotation.clone().invert()),plan={key,cueId:cue.id,target,hand:local(correction),body:local(body),step:local(step),rearStep:local(rearStep),contact:contact!,duration:clip.duration,pistol:spec.name==='stand.butt.short-gun',sabre:spec.name.startsWith('stand.slash.blade'),handRecovery:spec.name.startsWith('stand.slash.blade')?clip.duration*.75:undefined};
+     if(plan.sabre&&this.nativePath.length&&!this.wristPathReachable(plan))continue;
+     if(!this.pathAllowed(plan,clip,support,action)){
+      // The common first fit avoids a redundant native pose pass. Build the
+      // wrist cache only after an actual full-path arm rejection needs it.
+      if(plan.sabre&&!this.nativePath.length&&this.previewFit!.handReachError>=1e-7)this.cacheNativePath(clip,action);
+      continue;
+     }
      accepted=true;acceptedPlan=plan;break;
     }
     if(accepted)break;
@@ -227,7 +246,7 @@ export class NativeMeleeContactFit {
     minX=Math.min(minX,point.x,before?.x??point.x);maxX=Math.max(maxX,point.x,before?.x??point.x);minZ=Math.min(minZ,point.z,before?.z??point.z);maxZ=Math.max(maxZ,point.z,before?.z??point.z);current.push(point.clone());
    }
    // This swept rectangle encloses every exported sole vertex and its
-   // segment between the 120 Hz samples. Checking its complete area is
+   // segment between the native path samples. Checking its complete area is
    // stricter than testing only vertex endpoints at a blocked corner.
    minX-=.003;maxX+=.003;minZ-=.003;maxZ+=.003;
    const floors=support.floors.filter(floor=>Math.abs(floor.height-height)<.001),cuts=[minX,maxX,...floors.flatMap(floor=>[floor.minX,floor.maxX]).filter(x=>x>minX&&x<maxX)].sort((a,b)=>a-b);
@@ -258,21 +277,76 @@ export class NativeMeleeContactFit {
   }
   return true;
  }
+ private transfer(plan:Plan,time:number){
+  const contact=plan.contact,end=plan.duration,weight=time<=contact?smooth(time/contact):1-smooth((time-contact)/(end*.9-contact)),handWeight=plan.handRecovery&&time>contact?1-smooth((time-contact)/(plan.handRecovery-contact)):weight;
+  const rearDistance=plan.rearStep.length(),leadDistance=plan.step.length(),totalDistance=rearDistance+leadDistance,settleEnd=plan.sabre?end*.1:0,stepEnd=plan.sabre?contact*.9:contact*.8;
+  // The lead boot settles before the rear lifts. Serialized transfers share
+  // the remaining wind-up and recovery in proportion to their travel.
+  const stepStart=plan.sabre?(totalDistance>0?settleEnd+(stepEnd-settleEnd)*rearDistance/totalDistance:settleEnd):Math.min(.1,contact*.28),rearReturnStart=end*.52,rearReturnEnd=plan.sabre?(totalDistance>0?rearReturnStart+(end*.9-rearReturnStart)*rearDistance/totalDistance:rearReturnStart):end*.62;
+  const leadWeight=time<=stepEnd?(stepEnd>stepStart?smooth((time-stepStart)/(stepEnd-stepStart)):0):time<rearReturnEnd?1:1-smooth((time-rearReturnEnd)/(end*.9-rearReturnEnd)),rearWeight=rearDistance===0?0:time<stepStart?smooth((time-settleEnd)/(stepStart-settleEnd)):time<rearReturnStart?1:1-smooth((time-rearReturnStart)/(rearReturnEnd-rearReturnStart));
+  const rearAdvance=time>settleEnd&&time<stepStart?Math.sin(Math.PI*(time-settleEnd)/(stepStart-settleEnd)):0,rearRecovery=time>rearReturnStart&&time<rearReturnEnd?Math.sin(Math.PI*(time-rearReturnStart)/(rearReturnEnd-rearReturnStart)):0,leadAdvance=time>stepStart&&time<stepEnd?Math.sin(Math.PI*(time-stepStart)/(stepEnd-stepStart)):0,leadRecovery=time>rearReturnEnd&&time<end*.9?Math.sin(Math.PI*(time-rearReturnEnd)/(end*.9-rearReturnEnd)):0;
+  return {weight,handWeight,groundWeight:smooth(time/(end*.1))*(1-smooth((time-end*.9)/(end*.1))),rearWeight,leadWeight,rearArc:Math.max(rearAdvance,rearRecovery),leadArc:Math.max(leadAdvance,leadRecovery)};
+ }
+ private cacheNativePath(clip:AnimationClip,action:AnimationAction){
+  this.nativePath=[];this.pathPrioritized=false;const count=Math.ceil(clip.duration*240);
+  for(let index=0;index<=count;index++){
+   const time=Math.min(clip.duration,index/240);this.previewFit!.restore();action.time=time;this.sampleMixer!.update(0);this.sampleRoot.updateMatrixWorld(true);
+   this.nativePath.push({time,shoulder:this.sample!.getObjectByName('upperarm_r')!.getWorldPosition(new Vector3()),hand:this.sample!.getObjectByName('hand_r')!.getWorldPosition(new Vector3()),hips:['l','r'].map(side=>this.sample!.getObjectByName(`thigh_${side}`)!.getWorldPosition(new Vector3())),feet:['l','r'].map(side=>this.sample!.getObjectByName(`foot_${side}`)!.getWorldPosition(new Vector3())),soleMin:['l','r'].map(side=>{const sole=this.previewFit!.soles.get(side)!;return Math.min(...sole.vertices.map(vertex=>this.previewFit!.solePoint(sole,vertex,new Vector3()).y));})});
+  }
+ }
+ private wristPathReachable(plan:Plan){
+  const rotation=this.sampleRoot.quaternion,arm=this.limbs.get('hand_r')!,hand=plan.hand.clone().applyQuaternion(rotation),advance=plan.body.clone().applyQuaternion(rotation),steps=[plan.rearStep.clone().applyQuaternion(rotation),plan.step.clone().applyQuaternion(rotation)],lift=[Math.min(.035,plan.rearStep.length()*.1),Math.min(.045,plan.step.length()*.1)],legLength=['l','r'].map(side=>{const leg=this.limbs.get(`foot_${side}`)!;return (leg.first+leg.second-.002)**2;}),floor=['l','r'].map(side=>this.sampleRoot.position.y+this.previewFit!.soles.get(side)!.floor),reachSquared=(arm.first+arm.second-.001+1e-7)**2;
+  if(!this.pathPrioritized){
+   // Check the strongest raw wrist constraint first. The first supported
+   // candidate gives a useful body estimate; priority changes rejection
+   // order only, and every accepted candidate still checks every sample.
+   this.nativePath=this.nativePath.map(sample=>{
+    const transfer=this.transfer(plan,sample.time),dx=sample.shoulder.x+advance.x*transfer.weight-sample.hand.x-hand.x*transfer.handWeight,dy=sample.shoulder.y+advance.y*transfer.weight-sample.hand.y-hand.y*transfer.handWeight,dz=sample.shoulder.z+advance.z*transfer.weight-sample.hand.z-hand.z*transfer.handWeight;
+    return {sample,score:dx*dx+dy*dy+dz*dz};
+   }).sort((a,b)=>b.score-a.score).map(({sample})=>sample);this.pathPrioritized=true;
+  }
+  // The native clip is cached once. Use scalar native coordinates to reject
+  // impossible wrists without allocating millions of temporary vectors.
+  // Accepted plans still receive the complete240Hz solved geometry gate.
+  for(const sample of this.nativePath){
+   const transfer=this.transfer(plan,sample.time),bodyX=advance.x*transfer.weight,bodyY=advance.y*transfer.weight,bodyZ=advance.z*transfer.weight;let drop=0;
+   for(let index=0;index<2;index++){
+    const stepWeight=index===0?transfer.rearWeight:transfer.leadWeight,arc=index===0?transfer.rearArc:transfer.leadArc,foot=sample.feet[index],hip=sample.hips[index],dx=hip.x+bodyX-foot.x-steps[index].x*stepWeight,dz=hip.z+bodyZ-foot.z-steps[index].z*stepWeight;
+    const footY=foot.y+(floor[index]-sample.soleMin[index])*transfer.groundWeight+arc*lift[index],height=Math.sqrt(Math.max(0,legLength[index]-dx*dx-dz*dz));drop=Math.max(drop,hip.y+bodyY-footY-height);
+   }
+   const dx=sample.shoulder.x+bodyX-sample.hand.x-hand.x*transfer.handWeight,dy=sample.shoulder.y+bodyY-Math.max(0,drop)-sample.hand.y-hand.y*transfer.handWeight,dz=sample.shoulder.z+bodyZ-sample.hand.z-hand.z*transfer.handWeight;
+   if(dx*dx+dy*dy+dz*dz>reachSquared)return false;
+  }return true;
+ }
  private pathAllowed(plan:Plan,clip:AnimationClip,support:ContactSupport,action:AnimationAction){
-  // A held pistol still keeps its wrist socket when the arm solver clamps.
-  // Require the complete native wrist path to be reachable, beyond contact
-  // and grip alone. Other weapon families retain their existing admission.
-  const sample=(time:number)=>{this.previewFit!.restore();action.time=time;action.timeScale=0;this.sampleMixer!.update(0);this.sampleRoot.updateMatrixWorld(true);this.previewFit!.pose(plan,time);this.sampleRoot.updateMatrixWorld(true);return this.floorAllowed(support)&&this.previewFit!.footReachError<.001&&(!plan.pistol||this.previewFit!.handReachError<1e-7);};
+  // A held weapon keeps its wrist socket even when the arm solver clamps.
+  // Require the complete pistol and sabre wrist paths to be reachable,
+  // beyond their contact and grip alone.
+  if(plan.sabre){
+   // One lunge cannot exceed a same-foot half walking stride. Its serial
+   // boot transfers must also fit the actual exported walking sole speed.
+   // Missing native gait data retains the exact finite source strike.
+   if(!this.walkingStep||!this.walkingFootSpeed||plan.step.length()>this.walkingStep||plan.rearStep.length()>this.walkingStep||1.5*(plan.step.length()+plan.rearStep.length())/(plan.contact*.9-plan.duration*.1)>this.walkingFootSpeed)return false;
+  }
+  const sample=(time:number)=>{
+   this.previewFit!.restore();action.time=time;action.timeScale=0;this.sampleMixer!.update(0);this.sampleRoot.updateMatrixWorld(true);this.previewFit!.pose(plan,time);
+   if(plan.sabre){
+    const minimum=Math.min(...[...this.previewFit!.soles.values()].flatMap(sole=>sole.vertices.map(index=>this.previewFit!.solePoint(sole,index,new Vector3()).y)))-this.sampleRoot.position.y;
+    if(minimum<-.001||minimum>.008)return false;
+    const points=this.soleCenters(),before=this.pathFeet;if(before&&time>before.time)for(let side=0;side<points.length;side++){const delta=points[side].clone().sub(before.points[side]);if(delta.length()/(time-before.time)>this.walkingFootSpeed+1e-6)return false;}this.pathFeet={time,points};}
+   return this.floorAllowed(support)&&this.previewFit!.footReachError<.001&&(!(plan.pistol||plan.sabre)||this.previewFit!.handReachError<1e-7);
+  };
   // Reject an obstructed contact footprint before checking its whole path.
-  this.pathPrevious=undefined;
+  this.pathPrevious=undefined;this.pathFeet=undefined;
   if(!sample(plan.contact)||!this.bodyAllowed(support))return false;
-  this.pathPrevious=undefined;
-  for(let index=0;index<=Math.ceil(clip.duration*120);index++)if(!sample(Math.min(clip.duration,index/120))||index%4===0&&!this.bodyAllowed(support))return false;
+  this.pathPrevious=undefined;this.pathFeet=undefined;
+  const frequency=plan.sabre?240:120;
+  for(let index=0;index<=Math.ceil(clip.duration*frequency);index++)if(!sample(Math.min(clip.duration,index/frequency))||index%4===0&&!this.bodyAllowed(support))return false;
   return true;
  }
  apply(cue:ActorCue|undefined,clip:AnimationClip,spec:ClipSpec,weapon:Object3D|undefined,time:number,resolve?:ContactActorResolver){
   this.maximumReachError=0;this.footReachError=0;this.handReachError=0;
-  if(!cue||!weapon||!this.body||!['hand_r','foot_l','foot_r'].every(name=>this.limbs.has(name))||this.soles.size!==2||!(spec.name.startsWith('stand.slash.blade')||spec.name==='stand.butt.short-gun')||cue.contactTarget&&(cue.contactTarget.mounted||!['standing','crouched'].includes(cue.contactTarget.posture))){this.plan=undefined;this.attemptedKey='';return;}
+  if(!cue||!weapon||!this.body||!['hand_r','foot_l','foot_r'].every(name=>this.limbs.has(name))||this.soles.size!==2||!(spec.name.startsWith('stand.slash.blade')||spec.name==='stand.butt.short-gun')||spec.name.startsWith('stand.slash.blade')&&!this.gait||cue.contactTarget&&(cue.contactTarget.mounted||!['standing','crouched'].includes(cue.contactTarget.posture))){this.plan=undefined;this.attemptedKey='';return;}
   const key=cue.id;
   if(cue.contactTarget){
    const admitted=resolve?.(cue.contactTarget);if(!admitted||!visible(admitted.root)||!visible(admitted.model)){this.plan=undefined;this.attemptedKey='';return;}
@@ -286,39 +360,43 @@ export class NativeMeleeContactFit {
  }
  private pose(plan:Plan,time:number){
   this.maximumReachError=0;this.footReachError=0;this.handReachError=0;
-  const contact=plan.contact,end=plan.duration,weight=time<=contact?smooth(time/contact):1-smooth((time-contact)/(end*.9-contact));
-  if(weight<=0)return;
+  const {weight,handWeight,groundWeight,rearWeight,leadWeight,rearArc,leadArc}=this.transfer(plan,time),end=plan.duration;
+  if(weight<=0&&(!plan.sabre||time>=end))return;
   const modified=new Set<Object3D>([this.body]);for(const name of ['foot_l','foot_r','hand_r']){const limb=this.limbs.get(name)!;modified.add(limb.base);modified.add(limb.middle);modified.add(limb.end);}
   this.nativePose=[...modified].map(node=>({node,position:node.position.clone(),quaternion:node.quaternion.clone()}));
-  this.root.updateWorldMatrix(true,false);this.root.updateMatrixWorld(true);
-  const rootRotation=this.root.getWorldQuaternion(new Quaternion());
-  const footTargets=new Map<string,Vector3>();for(const side of ['l','r'])footTargets.set(side,this.limbs.get(`foot_${side}`)!.end.getWorldPosition(new Vector3()));
-  const handTarget=this.limbs.get('hand_r')!.end.getWorldPosition(new Vector3()).add(plan.hand.clone().applyQuaternion(rootRotation).multiplyScalar(weight));
-  const body=plan.body.clone().applyQuaternion(rootRotation).multiplyScalar(weight);
-  const stepStart=Math.min(.1,contact*.28),stepWeight=time<=contact*.8?smooth((time-stepStart)/(contact*.8-stepStart)):time<end*.62?1:1-smooth((time-end*.62)/(end*.9-end*.62));
-  const lead=footTargets.get('r')!;lead.add(plan.step.clone().applyQuaternion(rootRotation).multiplyScalar(stepWeight));
-  const rearWeight=time<stepStart?smooth(time/stepStart):time<end*.52?1:1-smooth((time-end*.52)/(end*.62-end*.52)),rear=footTargets.get('l')!;
-  rear.add(plan.rearStep.clone().applyQuaternion(rootRotation).multiplyScalar(rearWeight));
-  // The rear boot gathers first and plants before the lead boot lifts. On
-  // recovery it returns first while the lead boot still supports the body.
-  const rearAdvanceArc=time<stepStart?Math.sin(Math.PI*time/stepStart):0,rearRecoveryArc=time>end*.52&&time<end*.62?Math.sin(Math.PI*(time-end*.52)/(end*.62-end*.52)):0;
-  rear.y+=Math.max(rearAdvanceArc,rearRecoveryArc)*Math.min(.035,plan.rearStep.length()*.1);
-  const advanceArc=time>stepStart&&time<contact*.8?Math.sin(Math.PI*(time-stepStart)/(contact*.8-stepStart)):0,recoveryArc=time>end*.62&&time<end*.9?Math.sin(Math.PI*(time-end*.62)/(end*.9-end*.62)):0;
-  lead.y+=Math.max(advanceArc,recoveryArc)*Math.min(.045,plan.step.length()*.1);
-  const support=plan.rearStep.length()>.005&&Math.max(rearAdvanceArc,rearRecoveryArc)>0?'r':'l',sole=this.soles.get(support);
-  if(sole){
-   const minimum=Math.min(...sole.vertices.map(index=>this.solePoint(sole,index,new Vector3()).y)),floor=this.root.getWorldPosition(new Vector3()).y+sole.floor;
-   footTargets.get(support)!.y+=floor-minimum;
+  // The preview sampler already updated the native hierarchy. Solving the
+  // pelvis and limbs below updates every changed bone; its static mesh/root
+  // transforms do not need another complete hierarchy traversal.
+  if(!this.preview){this.root.updateWorldMatrix(true,false);this.root.updateMatrixWorld(true);}
+  const rootRotation=this.quaternion(this.root,new Quaternion());
+  const footTargets=new Map<string,Vector3>();for(const side of ['l','r']){
+   const target=this.position(this.limbs.get(`foot_${side}`)!.end,new Vector3());
+   if(plan.sabre){
+    // Each sabre boot starts from its complete grounded native sole. The
+    // continuous transfer arcs below lift it from this same baseline. The
+    // source starts its lift at10%. Settle the lead boot first while the
+    // rear stays planted, then gather. The added ground baseline returns
+    // continuously to the native guard over the final10% recovery.
+    // A support handoff or recovery cannot toggle a raised source foot.
+    const sole=this.soles.get(side)!;const minimum=Math.min(...sole.vertices.map(index=>this.solePoint(sole,index,new Vector3()).y));target.y+=(this.position(this.root,new Vector3()).y+sole.floor-minimum)*groundWeight;
+   }footTargets.set(side,target);
   }
+  // Keep the exact held contact. The added hand correction then returns
+  // to its native guard before the pelvis completes its supported retreat.
+  const handTarget=this.position(this.limbs.get('hand_r')!.end,new Vector3()).add(plan.hand.clone().applyQuaternion(rootRotation).multiplyScalar(handWeight)),body=plan.body.clone().applyQuaternion(rootRotation).multiplyScalar(weight);
+  const lead=footTargets.get('r')!,rear=footTargets.get('l')!;lead.add(plan.step.clone().applyQuaternion(rootRotation).multiplyScalar(leadWeight));rear.add(plan.rearStep.clone().applyQuaternion(rootRotation).multiplyScalar(rearWeight));
+  rear.y+=rearArc*Math.min(.035,plan.rearStep.length()*.1);lead.y+=leadArc*Math.min(.045,plan.step.length()*.1);
+  const support=plan.rearStep.length()>.005&&rearArc>0?'r':'l',sole=this.soles.get(support);
+  if(sole&&!plan.sabre){const minimum=Math.min(...sole.vertices.map(index=>this.solePoint(sole,index,new Vector3()).y)),floor=this.position(this.root,new Vector3()).y+sole.floor;footTargets.get(support)!.y+=floor-minimum;}
   // Flex the knees by the amount the measured leg reach needs at this
   // sample, including the two recovery steps. Clamping the foot target
   // would pull a planted sole upward or make it skate along the floor.
   let kneeDrop=0;
   for(const side of ['l','r']){
-   const leg=this.limbs.get(`foot_${side}`)!,hip=leg.base.getWorldPosition(new Vector3()).add(body),foot=footTargets.get(side)!,dx=hip.x-foot.x,dz=hip.z-foot.z;
+   const leg=this.limbs.get(`foot_${side}`)!,hip=this.position(leg.base,new Vector3()).add(body),foot=footTargets.get(side)!,dx=hip.x-foot.x,dz=hip.z-foot.z;
    const height=Math.sqrt(Math.max(0,(leg.first+leg.second-.002)**2-dx*dx-dz*dz));kneeDrop=Math.max(kneeDrop,hip.y-foot.y-height);
   }
-  body.y-=Math.max(0,kneeDrop);this.body.getWorldPosition(this.start).add(body);this.body.parent!.worldToLocal(this.start);this.body.position.copy(this.start);this.body.updateWorldMatrix(false,true);
+  body.y-=Math.max(0,kneeDrop);this.position(this.body,this.start).add(body);if(this.preview)this.start.applyMatrix4(this.inverseParent.copy(this.body.parent!.matrixWorld).invert());else this.body.parent!.worldToLocal(this.start);this.body.position.copy(this.start);this.body.updateWorldMatrix(false,true);
   for(const side of ['l','r'])this.solve(this.limbs.get(`foot_${side}`)!,footTargets.get(side)!);
   this.solve(this.limbs.get('hand_r')!,handTarget);
  }
