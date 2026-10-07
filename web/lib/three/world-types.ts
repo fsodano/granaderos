@@ -1,7 +1,7 @@
 import type {Object3D, Vector3} from 'three';
 
 /** Presentation records only. Simulation rosters are deliberately absent. */
-export type WorldPoint={x:number;y:number;tacticalLevel?:number;elevation?:number};
+export type WorldPoint={x:number;y:number;tacticalLevel?:number;elevation?:number;activeClimbLink?:string};
 export type WorldTile=WorldPoint&{id?:string;type:string;kind?:string;blocked?:boolean;cover?:number;material?:string;buildingId?:string|null;roomId?:string|null;slabThickness?:number;obstacleHeight?:number;open?:boolean;locked?:boolean;broken?:boolean;doorId?:string;style?:string};
 export type WorldRoom={id:string;cells:readonly WorldPoint[];tacticalLevel?:number;ruined?:boolean};
 export type WorldBuilding={id:string;x:number;y:number;width:number;height:number;kind?:string;architecture?:string;roof?:string;material?:string;wallFinish?:string;roofFinish?:string;doorStyle?:string;windowStyle?:string;rooms?:readonly WorldRoom[];walls?:readonly WorldTile[];ruined?:boolean;ruin?:boolean};

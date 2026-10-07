@@ -641,17 +641,21 @@
           }
         },
         "life.climbUp": {
-          "duration": 1.533327,
+          "duration": 4.616667,
           "loop": false,
           "markers": {
-            "support": 0.7666636
+            "support": 0.554,
+            "crest": 3.508667,
+            "roof": 4.201167
           }
         },
         "life.climbDown": {
-          "duration": 1.408328,
+          "duration": 4.616667,
           "loop": false,
           "markers": {
-            "support": 0.70416385
+            "support": 1.108,
+            "crest": 0.4155,
+            "roof": 0.4155
           }
         },
         "life.mount": {
@@ -1823,17 +1827,21 @@
           }
         },
         "life.climbUp": {
-          "duration": 1.533327,
+          "duration": 4.616667,
           "loop": false,
           "markers": {
-            "support": 0.7666636
+            "support": 0.554,
+            "crest": 3.508667,
+            "roof": 4.201167
           }
         },
         "life.climbDown": {
-          "duration": 1.408328,
+          "duration": 4.616667,
           "loop": false,
           "markers": {
-            "support": 0.70416385
+            "support": 1.108,
+            "crest": 0.4155,
+            "roof": 0.4155
           }
         },
         "life.mount": {

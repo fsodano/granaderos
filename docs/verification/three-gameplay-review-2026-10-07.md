@@ -369,10 +369,26 @@ documentation checks, all 38 baseline checks and the production export. Twelve
 final playable pulpería and caballeriza views had no browser errors. Selected
 exterior and interior views were compared with the current sprites.
 
+## Native climbing increment
+
+The complete native ascent and descent follow the same measured ladder as the
+world mesh and movement path. Hands and feet retain support through the roof
+transfer; both saved endpoints and the original authoritative costs remain.
+Same-cell access has a real slab aperture and a flush timber cover. The cover
+opens only for an admitted visible climb and restores ordinary roof footing
+afterward. Visible melee support excludes an actively open hatch.
+
+The [native climbing review](../art/native-climbing-3d-review-2026-10-07.md)
+records the native preservation proof, physical surface checks and limitations.
+The clean cut passed 69 affected checks, type/docs/baseline/native/profile checks
+and the production export. Four final playable hatch routes at 3 m and 4.2 m
+retained exact saved endpoints without browser errors. Male and female roof
+transfers and the opposite-facing rural-house route were visually reviewed.
+
 ## Next increments and acceptance limits
 
-Climbing support and the roof-edge step, the broader posture bank, braking
-steps and paired melee contact still need review. The broader published bank
+The low-ceiling headwear limit, broader posture bank, braking steps and the
+remaining paired melee actions still need review. The broader published bank
 audit also found floor penetration in sideways steps, prone motion and lance
 locomotion; native boot grounding remains under correction. Depot loading details and warehouse buttresses need source comparison. The
 [character review](../../assets/source/characters-3d/REVIEW.md) records the

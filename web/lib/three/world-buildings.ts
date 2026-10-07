@@ -9,6 +9,7 @@ import {illuminationAt} from './world-materials';
 import {architecturalDetails,roofEdgeDetails} from './world-building-details';
 import {addWallSurfaceDetails} from './world-building-surfaces';
 import {addDoorLeaf} from './world-building-doors';
+import {climbOpenings,surfaceRectangles} from './world-climb-openings';
 import {addWindowFace} from './world-building-windows';
 import type {WorldGeometry} from './world-geometry';
 import type {WorldMaterials} from './world-materials';
@@ -123,9 +124,12 @@ export function buildBuilding(b0:WorldBuilding,input:WorldInput,T:number,geometr
       }
     }
   }
+  const openings=climbOpenings(input,T);
   for(const [index,room]of (b.rooms??[]).entries())if(known.has(room.id)){
     const decor=roomDecorProfile(b,room,index),floor=materials.terrain(decor.floor==='stone'?'cobble':decor.floor),level=room.tacticalLevel??0;
-    for(const cell of room.cells){const surface=(level?input.terrain.upperSurfaces:input.terrain.tiles)?.find(tile=>tile.x===cell.x&&tile.y===cell.y&&(tile.tacticalLevel??0)===(cell.tacticalLevel??level)),y=surface?.elevation??base;cellTop(batch,floor,(cell.x-.5)*T,(cell.y-.5)*T,(cell.x+.5)*T,(cell.y+.5)*T,y+.006,illuminationAt(input,{...cell,tacticalLevel:level}));}
+    for(const cell of room.cells){const cellLevel=cell.tacticalLevel??level,surface=(cellLevel?input.terrain.upperSurfaces:input.terrain.tiles)?.find(tile=>tile.x===cell.x&&tile.y===cell.y&&(tile.tacticalLevel??0)===cellLevel),y=surface?.elevation??base;
+      for(const part of surfaceRectangles({...cell,tacticalLevel:cellLevel,elevation:y},T,openings))cellTop(batch,floor,part.minX,part.minZ,part.maxX,part.maxZ,y+.006,illuminationAt(input,{...cell,tacticalLevel:cellLevel}));
+    }
   }
   if(!roofs.length&&!allOpen){
     const frame=entranceFrame({...b,walls:walls as WorldTile[]}),e=profile.eave,rise=Math.min(profile.roofRise/V,Math.max(.4,frame.width*.28));

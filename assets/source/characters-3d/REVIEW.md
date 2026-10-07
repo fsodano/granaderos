@@ -122,4 +122,4 @@ about 80 mm penetration in the checked male and female cycles. Standing walking
 keeps the measured lower sole at 2 mm. Running has an 8–9 cm flight phase.
 Crouched and prone idle boot support also require review. These are published
 LOD0 footwear surface measurements; they are not an acceptance of the remaining
-posture bank. Roof-edge climbing support is under a separate native contact repair.
+posture bank. The complete native climb and roof-edge transfer are accepted within the [measured climbing review](../../../docs/art/native-climbing-3d-review-2026-10-07.md), including four clean playable same-cell hatch routes. The documented low-ceiling/headwear limit remains under review.

@@ -5,9 +5,12 @@ import bpy
 HERE=Path(__file__).resolve().parent;sys.path.insert(0,str(HERE))
 from character import create_character
 from equipment import create_equipment
+import motion as motion_authoring
 from motion import apply_animations,_semantic_specs
 from gltf_pack import pack
 p=argparse.ArgumentParser();p.add_argument('--preset',required=True);p.add_argument('--output',required=True);p.add_argument('--gesture',action='append',required=True);p.add_argument('--equipment',required=True);p.add_argument('--posture');a=p.parse_args(sys.argv[sys.argv.index('--')+1:])
+native_contacts=set(a.gesture)<=set(('climbUp','climbDown'))
+if native_contacts:motion_authoring.FPS=60
 bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=False)
 ctx=create_character(a.preset);create_equipment(ctx)
 names={spec['name'] for spec in _semantic_specs() if ('*'in a.gesture or spec['gesture']in a.gesture) and(a.equipment=='all'or spec['equipment']==a.equipment) and(not a.posture or spec['posture']==a.posture)}
@@ -15,7 +18,10 @@ motion=apply_animations(ctx,only=names);rig=ctx['rig'];rig.animation_data.action
 for track in rig.animation_data.nla_tracks:track.mute=False
 bpy.ops.object.select_all(action='DESELECT');rig.select_set(True);bpy.context.view_layer.objects.active=rig
 output=Path(a.output);output.parent.mkdir(parents=True,exist_ok=True)
-bpy.ops.export_scene.gltf(filepath=str(output),export_format='GLB',use_selection=True,export_yup=True,export_animations=True,export_animation_mode='NLA_TRACKS',export_force_sampling=True,export_frame_range=False,export_anim_slide_to_zero=True,export_nla_strips=True,export_skins=True,export_extras=False,export_cameras=False,export_lights=False)
+# Native contact keys contain exact planted-foot and palm transitions between
+# whole frames. They have no constraints to bake; preserve those source keys.
+bpy.context.scene.render.fps=motion_authoring.FPS
+bpy.ops.export_scene.gltf(filepath=str(output),export_format='GLB',use_selection=True,export_yup=True,export_animations=True,export_animation_mode='NLA_TRACKS',export_force_sampling=not native_contacts,export_frame_range=False,export_anim_slide_to_zero=True,export_nla_strips=True,export_skins=True,export_extras=False,export_cameras=False,export_lights=False)
 raw,doc=pack(output,{})
 assert {animation['name']for animation in doc['animations']}==names
 for clip in motion['clips']:

@@ -56,7 +56,7 @@ export default function TacticalThreeScene(props:Props){
       const centreZ=(-(input.view.x+input.view.width/2-(input.view.mapHeight*26+28))/26+(input.view.y+input.view.height/2-65)/14)/2*TILE_METRES;
       sun.position.set(centreX-18,30,centreZ-12);sun.target.position.set(centreX,0,centreZ);const span=Math.max(12,input.view.width/29.747);Object.assign(sun.shadow.camera,{left:-span,right:span,top:span,bottom:-span});sun.shadow.camera.updateProjectionMatrix();
       const visible=new Set(input.actors.map(actor=>actor.key));for(const [key,entry]of actors)if(!visible.has(key)){entry.runtime?.dispose();actors.delete(key);}
-      if(actorInput!==input.actors){actorInput=input.actors;world.updateActors?.(input.actors.map(actor=>({x:actor.position[0]/TILE_METRES,y:actor.position[2]/TILE_METRES,elevation:actor.position[1],tacticalLevel:actor.motion?.tacticalLevel??actor.tacticalLevel})));}
+      if(actorInput!==input.actors){actorInput=input.actors;world.updateActors?.(input.actors.map(actor=>({x:actor.position[0]/TILE_METRES,y:actor.position[2]/TILE_METRES,elevation:actor.position[1],tacticalLevel:actor.motion?.tacticalLevel??actor.tacticalLevel,activeClimbLink:actor.motion?.moving&&actor.motion.kind==='climb'?actor.motion.linkId:undefined})));}
       const pixelHeight=1.76*25.0666666667*bounds.width/input.view.width,lod=pixelHeight>160?0:pixelHeight>65?1:2;
       let activeActors=0;
       for(const visual of input.actors){ensure(visual,lod);const actor=actors.get(visual.key);if(!actor?.runtime||actor.error)continue;try{

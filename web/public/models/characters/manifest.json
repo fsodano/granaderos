@@ -1826,8 +1826,8 @@
   "animationLibraries": {
     "male": {
       "url": "/models/characters/male-animations.glb",
-      "bytes": 11521284,
-      "sha256": "29a7e08f2b053b0f2de30375d48eef7b75f2c19a60a23d7abcc8815b21afca24",
+      "bytes": 11898744,
+      "sha256": "2c6d0547bebc23122f58acc8edc9b75677c2004047fea9ed1f75addd0aa65594",
       "clips": [
         {
           "name": "stand.idle.unarmed",
@@ -7390,55 +7390,133 @@
         },
         {
           "name": "life.climbUp",
-          "duration": 1.533327,
+          "duration": 4.616667,
           "loop": false,
           "events": {
-            "support": 0.7666636
+            "support": 0.554,
+            "crest": 3.508667,
+            "roof": 4.201167
           },
           "gesture": "climbUp",
           "posture": "standing",
           "equipment": "any",
           "clip": "life.climbUp",
           "markers": {
-            "support": 0.7666636
+            "support": 0.554,
+            "crest": 3.508667,
+            "roof": 4.201167
           },
           "source": {
-            "database": "CMU",
-            "file": "143_37.bvh",
-            "startFrame": 48,
-            "endFrame": 232,
-            "description": "ladder, climbing up",
-            "sampleRate": 120
+            "type": "native-ladder-contact-authoring",
+            "helper": "climbing_motion.py",
+            "geometry": "game/climb-geometry.js",
+            "reversed": false
           },
-          "sampleRate": 15,
+          "sampleRate": 60,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "freeHands": [
+            "handRight",
+            "handLeft"
+          ],
+          "climbSupport": {
+            "coordinateSpace": "lower-link-local",
+            "height": 3,
+            "span": 1.2360585147470482,
+            "ladderSpan": 0.5180292573735241,
+            "roofEdgeSpan": 0.6180292573735241,
+            "steps": 11,
+            "rungRadius": 0.026,
+            "feetRest": {
+              "l": [
+                0.03308958187699318,
+                0.010149291716516018,
+                0.08561109006404877
+              ],
+              "r": [
+                -0.06107959523797035,
+                0.054348427802324295,
+                0.07993204891681671
+              ]
+            },
+            "feetBindRest": {
+              "l": [
+                0.2004997283220291,
+                0.007000000216066837,
+                0.14771625399589539
+              ],
+              "r": [
+                -0.2004997283220291,
+                0.007000000216066837,
+                0.14771625399589539
+              ]
+            }
+          }
         },
         {
           "name": "life.climbDown",
-          "duration": 1.408328,
+          "duration": 4.616667,
           "loop": false,
           "events": {
-            "support": 0.70416385
+            "support": 1.108,
+            "crest": 0.4155,
+            "roof": 0.4155
           },
           "gesture": "climbDown",
           "posture": "standing",
           "equipment": "any",
           "clip": "life.climbDown",
           "markers": {
-            "support": 0.70416385
+            "support": 1.108,
+            "crest": 0.4155,
+            "roof": 0.4155
           },
           "source": {
-            "database": "CMU",
-            "file": "143_37.bvh",
-            "startFrame": 296,
-            "endFrame": 465,
-            "description": "ladder, climbing down",
-            "sampleRate": 120
+            "type": "native-ladder-contact-authoring",
+            "helper": "climbing_motion.py",
+            "geometry": "game/climb-geometry.js",
+            "reversed": true
           },
-          "sampleRate": 15,
+          "sampleRate": 60,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "freeHands": [
+            "handRight",
+            "handLeft"
+          ],
+          "climbSupport": {
+            "coordinateSpace": "lower-link-local",
+            "height": 3,
+            "span": 1.2360585147470482,
+            "ladderSpan": 0.5180292573735241,
+            "roofEdgeSpan": 0.6180292573735241,
+            "steps": 11,
+            "rungRadius": 0.026,
+            "feetRest": {
+              "l": [
+                0.03308958187699318,
+                0.010149291716516018,
+                0.08561109006404877
+              ],
+              "r": [
+                -0.06107959523797035,
+                0.054348427802324295,
+                0.07993204891681671
+              ]
+            },
+            "feetBindRest": {
+              "l": [
+                0.2004997283220291,
+                0.007000000216066837,
+                0.14771625399589539
+              ],
+              "r": [
+                -0.2004997283220291,
+                0.007000000216066837,
+                0.14771625399589539
+              ]
+            }
+          }
         },
         {
           "name": "life.mount",
@@ -14901,8 +14979,8 @@
     },
     "female": {
       "url": "/models/characters/female-animations.glb",
-      "bytes": 11349456,
-      "sha256": "1bc7c12f0c57c40d2e2054b5ef83f0c1152318edbb697e7f52438f34d5934d02",
+      "bytes": 11725284,
+      "sha256": "a6821d043ad3b73a1b23126285a16199b1da43bfa9b45cfcbd1d5810de1a6c30",
       "clips": [
         {
           "name": "stand.idle.unarmed",
@@ -20465,55 +20543,133 @@
         },
         {
           "name": "life.climbUp",
-          "duration": 1.533327,
+          "duration": 4.616667,
           "loop": false,
           "events": {
-            "support": 0.7666636
+            "support": 0.554,
+            "crest": 3.508667,
+            "roof": 4.201167
           },
           "gesture": "climbUp",
           "posture": "standing",
           "equipment": "any",
           "clip": "life.climbUp",
           "markers": {
-            "support": 0.7666636
+            "support": 0.554,
+            "crest": 3.508667,
+            "roof": 4.201167
           },
           "source": {
-            "database": "CMU",
-            "file": "143_37.bvh",
-            "startFrame": 48,
-            "endFrame": 232,
-            "description": "ladder, climbing up",
-            "sampleRate": 120
+            "type": "native-ladder-contact-authoring",
+            "helper": "climbing_motion.py",
+            "geometry": "game/climb-geometry.js",
+            "reversed": false
           },
-          "sampleRate": 15,
+          "sampleRate": 60,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "freeHands": [
+            "handRight",
+            "handLeft"
+          ],
+          "climbSupport": {
+            "coordinateSpace": "lower-link-local",
+            "height": 3,
+            "span": 1.2360585147470482,
+            "ladderSpan": 0.5180292573735241,
+            "roofEdgeSpan": 0.6180292573735241,
+            "steps": 11,
+            "rungRadius": 0.026,
+            "feetRest": {
+              "l": [
+                0.03055310621857643,
+                0.01292186789214611,
+                0.10144616663455963
+              ],
+              "r": [
+                -0.05766158178448677,
+                0.05494329705834389,
+                0.09620065987110138
+              ]
+            },
+            "feetBindRest": {
+              "l": [
+                0.18957258760929108,
+                0.007000000216066837,
+                0.1525016576051712
+              ],
+              "r": [
+                -0.18957258760929108,
+                0.007000000216066837,
+                0.1525016576051712
+              ]
+            }
+          }
         },
         {
           "name": "life.climbDown",
-          "duration": 1.408328,
+          "duration": 4.616667,
           "loop": false,
           "events": {
-            "support": 0.70416385
+            "support": 1.108,
+            "crest": 0.4155,
+            "roof": 0.4155
           },
           "gesture": "climbDown",
           "posture": "standing",
           "equipment": "any",
           "clip": "life.climbDown",
           "markers": {
-            "support": 0.70416385
+            "support": 1.108,
+            "crest": 0.4155,
+            "roof": 0.4155
           },
           "source": {
-            "database": "CMU",
-            "file": "143_37.bvh",
-            "startFrame": 296,
-            "endFrame": 465,
-            "description": "ladder, climbing down",
-            "sampleRate": 120
+            "type": "native-ladder-contact-authoring",
+            "helper": "climbing_motion.py",
+            "geometry": "game/climb-geometry.js",
+            "reversed": true
           },
-          "sampleRate": 15,
+          "sampleRate": 60,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "freeHands": [
+            "handRight",
+            "handLeft"
+          ],
+          "climbSupport": {
+            "coordinateSpace": "lower-link-local",
+            "height": 3,
+            "span": 1.2360585147470482,
+            "ladderSpan": 0.5180292573735241,
+            "roofEdgeSpan": 0.6180292573735241,
+            "steps": 11,
+            "rungRadius": 0.026,
+            "feetRest": {
+              "l": [
+                0.03055310621857643,
+                0.01292186789214611,
+                0.10144616663455963
+              ],
+              "r": [
+                -0.05766158178448677,
+                0.05494329705834389,
+                0.09620065987110138
+              ]
+            },
+            "feetBindRest": {
+              "l": [
+                0.18957258760929108,
+                0.007000000216066837,
+                0.1525016576051712
+              ],
+              "r": [
+                -0.18957258760929108,
+                0.007000000216066837,
+                0.1525016576051712
+              ]
+            }
+          }
         },
         {
           "name": "life.mount",
