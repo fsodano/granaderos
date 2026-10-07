@@ -53,7 +53,8 @@ for(const [gender,bank]of Object.entries(manifest.animationLibraries)){
  bank.locomotionSpeed.crawl=measured.speed;
  const gaits=bank.clips.filter(clip=>['walk','run','crawl','strafeLeft','strafeRight'].includes(clip.gesture));
  for(const gait of gaits)if(!((gait.nativeStrideSpeed??gait.locomotionSpeed)>0))throw Error(`Missing native movement speed: ${gender}:${gait.name}`);
- banks[gender]={crawl:{nativeStrideSpeed:measured.speed,duration:clip.duration,playbackRate:clip.playbackRate??1},clips:Object.fromEntries(gaits.map(clip=>[clip.name,{nativeStrideSpeed:clip.nativeStrideSpeed??clip.locomotionSpeed,duration:clip.duration,playbackRate:clip.playbackRate??1}]))};
+ const actions=bank.clips.filter(clip=>['reload','reprime','repair','unload','artilleryReload'].includes(clip.gesture));
+ banks[gender]={crawl:{nativeStrideSpeed:measured.speed,duration:clip.duration,playbackRate:clip.playbackRate??1},clips:Object.fromEntries(gaits.map(clip=>[clip.name,{nativeStrideSpeed:clip.nativeStrideSpeed??clip.locomotionSpeed,duration:clip.duration,playbackRate:clip.playbackRate??1}])),actions:Object.fromEntries(actions.map(clip=>[clip.name,{duration:clip.duration,loop:clip.loop,markers:clip.markers}]))};
 }
 const horse=Object.fromEntries(['walk','run'].map(action=>{
  const clip=manifest.horse.clips.find(clip=>clip.name===manifest.horse.actions[action]);

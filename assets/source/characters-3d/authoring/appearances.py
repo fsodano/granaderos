@@ -137,9 +137,10 @@ def draped(name,ctx,top,bottom,shoulder,material,width,depth):
     centre_y=-.036+.048*ease
    else:
     rx=width*(1+.47*t)
-    # Extra cloth across the knees spans a stride without tracing two trouser
-    # legs. Keep the original waist and hem dimensions.
-    ry=depth*(1+.63*t)+.115*math.sin(math.pi*t);zz=z
+    # The lower panels follow the knees and calves instead of stretching from
+    # the pelvis. A deep circular knee section becomes a raised tent when the
+    # wearer lies down; use sewn ease around the legs rather than that volume.
+    ry=depth*(1+.18*t)+.028*math.sin(math.pi*t);zz=z
    fold=(.007+.010*t)*math.sin(12*a+.25*math.sin(t*math.pi))*(.3+.7*t)
    q=Vector(((rx+fold)*math.cos(a),(centre_y if shoulder else .012)+(ry+fold)*math.sin(a),zz))
    if shoulder and t<.30:
@@ -153,14 +154,21 @@ def draped(name,ctx,top,bottom,shoulder,material,width,depth):
     lower=max(0,min(1,(1.34-zz)/.34));upper=max(0,min(1,(zz-1.18)/.25))
     w={'spine_03':upper,'pelvis':lower*(1-upper),'spine_02':(1-lower)*(1-upper)}
    else:
-    leg=min(.72,t*.72);left=.5+.38*math.cos(a)
-    w={'pelvis':1-leg,'thigh_l':leg*left,'thigh_r':leg*(1-left)}
+    leg=min(1,t*2.1);left=.5+.38*math.cos(a)
+    calf=max(0,min(1,(t-.43)/.40));calf=calf*calf*(3-2*calf)
+    w={'pelvis':1-leg,'thigh_l':leg*(1-calf)*left,'thigh_r':leg*(1-calf)*(1-left),
+       'calf_l':leg*calf*left,'calf_r':leg*calf*(1-left)}
    s=sum(w.values());ww.append({k:v/s for k,v in w.items()})
  for row in range(R-1):
   for j in range(N):
    if shoulder and row/(R-1)>.32 and abs(math.cos((j+.5)*math.tau/N))>.97:continue
    a=row*N+j;b=row*N+(j+1)%N;ff.append((a,b,b+N,a+N))
  o=ctx['mesh'](name,vv,ff,material,ww)
+ if not shoulder:
+  # This mask survives mesh optimization and joining. It separates the sewn
+  # skirt from trousers and boots when posture corrections are added later.
+  cloth=o.data.attributes.new(name='Long_Cloth',type='FLOAT',domain='POINT')
+  for value in cloth.data:value.value=1
  # Solidify before the armature; thickness remains when mesh is exported.
  bpy.context.view_layer.objects.active=o
  mod=o.modifiers.new('Sewn_Cloth_Thickness','SOLIDIFY');mod.thickness=.003

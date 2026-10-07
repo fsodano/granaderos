@@ -9,6 +9,8 @@ const roofSurfaces:Record<string,{repeat:readonly [number,number];relief:number}
   '/art/architecture-roof-clay-v2.png':{repeat:[.65,.32],relief:.035},
   '/art/architecture-roof-thatch-v2.png':{repeat:[.75,.50],relief:.025},
 };
+const colourTextures=new Set(['/art/architecture-wood-v2.png','/art/architecture-brick-v2.png','/art/architecture-stone-v2.png',...Object.keys(roofSurfaces)]);
+const textureRelief:Record<string,number>={'/art/architecture-wood-v2.png':.006,'/art/architecture-plaster-v2.png':.008};
 export class WorldMaterials {
   private materials=new Map<string,MeshStandardMaterial>();
   private textures=new Map<string,Texture>();
@@ -20,7 +22,7 @@ export class WorldMaterials {
     const key=JSON.stringify([kind,options]);
     const retained=this.materials.get(key);if(retained)return retained;
     const opacity=options.opacity??1,metal=['iron','brass'].includes(kind),path=options.texture??texturePaths[kind],roofSurface=roofSurfaces[path];
-    const material=new MeshStandardMaterial({name:`world:${kind}`,color:options.colour??(roofSurface?'#ffffff':colours[kind]??'#91836b'),roughness:metal ? .48 : .94,metalness:metal ? .68 : 0,vertexColors:true,transparent:opacity<1,opacity,depthWrite:opacity>=1,side:DoubleSide});
+    const material=new MeshStandardMaterial({name:`world:${kind}`,color:options.colour??(colourTextures.has(path)?'#ffffff':colours[kind]??'#91836b'),roughness:metal ? .48 : .94,metalness:metal ? .68 : 0,vertexColors:true,transparent:opacity<1,opacity,depthWrite:opacity>=1,side:DoubleSide});
     if(opacity>=1){material.stencilWrite=true;material.stencilRef=1;material.stencilFunc=AlwaysStencilFunc;material.stencilZPass=ReplaceStencilOp;}
     if(kind==='water'){material.roughness=.35;material.metalness=.12;}
     if(options.emissive){material.emissive=new Color(options.colour??colours[kind]??'#f0ac50');material.emissiveIntensity=1.3;}
@@ -33,7 +35,7 @@ export class WorldMaterials {
         if(roofSurface)texture.repeat.set(...roofSurface.repeat);
       }
       material.map=texture;
-      if(roofSurface){material.bumpMap=texture;material.bumpScale=roofSurface.relief;}
+      const relief=roofSurface?.relief??textureRelief[path];if(relief){material.bumpMap=texture;material.bumpScale=relief;}
     }
     this.materials.set(key,material);return material;
   }

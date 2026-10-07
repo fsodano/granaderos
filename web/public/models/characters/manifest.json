@@ -1157,25 +1157,25 @@
           "lod": 0,
           "url": "/models/characters/friar-lod0.glb",
           "triangles": 26535,
-          "bytes": 1207744,
+          "bytes": 1261468,
           "drawCalls": 5,
-          "sha256": "98be189f495012ac1ec4f25475ee025fcaa09e670cbf25202caf33af9a05a572"
+          "sha256": "be43f8c985a94cfe2bd31729fe5a895f81468468c598ee77bb5412e66a3e6171"
         },
         {
           "lod": 1,
           "url": "/models/characters/friar-lod1.glb",
           "triangles": 11891,
-          "bytes": 595872,
+          "bytes": 621292,
           "drawCalls": 5,
-          "sha256": "c28a72775a84fe9c42234057d9bfa1d4dd4fa7cc95085c52304d277a181fcc9c"
+          "sha256": "2741ebe33d525d353eb5f981a22b003d70bdb7c9846ecdcd988e2b9cc60c5eda"
         },
         {
           "lod": 2,
           "url": "/models/characters/friar-lod2.glb",
           "triangles": 4239,
-          "bytes": 260212,
+          "bytes": 271896,
           "drawCalls": 5,
-          "sha256": "211ab70c05df4132ed3d967114230dbec1c7e594135a7be9940c522c0d0d559b"
+          "sha256": "944c0febf4d0ac3404ad4ac987a7c19a9419bb2da7d479e95ab3ed944229ff4e"
         }
       ],
       "materials": {
@@ -1607,25 +1607,25 @@
           "lod": 0,
           "url": "/models/characters/woman-shawl-lod0.glb",
           "triangles": 28792,
-          "bytes": 1311324,
+          "bytes": 1348204,
           "drawCalls": 5,
-          "sha256": "3f4aba3369eed002393ff8ed5d201b2b75983609fc612911c9258ff08e99d8e7"
+          "sha256": "110570d33449fcb2b887a9f06a89f4857cc2f476ecf7963c7c4f5ffe181dc563"
         },
         {
           "lod": 1,
           "url": "/models/characters/woman-shawl-lod1.glb",
           "triangles": 12743,
-          "bytes": 638928,
+          "bytes": 654196,
           "drawCalls": 5,
-          "sha256": "a585d5def2f7890b018b5b311306adec1292f217e648efd945eb339cb7e12e18"
+          "sha256": "77ac4329b66dd5f78da0a75288de72d13b848ac0e46722f5448fdb3a5971a0ea"
         },
         {
           "lod": 2,
           "url": "/models/characters/woman-shawl-lod2.glb",
           "triangles": 4886,
-          "bytes": 292564,
+          "bytes": 300056,
           "drawCalls": 5,
-          "sha256": "433ee28a59a1aed7edadfeb5efe25568c98cd7951a1a5fc98a37ba1932d6cd78"
+          "sha256": "3421a6dde258295f52d8b5029aeb0a04dcef141ee0ecb2a301924f5421ba0f06"
         }
       ],
       "materials": {

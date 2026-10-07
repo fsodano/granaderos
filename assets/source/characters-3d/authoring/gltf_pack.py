@@ -44,11 +44,20 @@ def pack(path,material_colors):
   if'inverseBindMatrices'in skin:skin['inverseBindMatrices']=amap[skin['inverseBindMatrices']]
  for animation in doc.get('animations',[]):
   for s in animation['samplers']:s['input']=amap[s['input']];s['output']=amap[s['output']]
- doc['accessors']=[accessors[i]for i in sorted(used)];needed=sorted(set(a['bufferView']for a in doc['accessors']if'bufferView'in a));vmap={old:new for new,old in enumerate(needed)};newbinary=bytearray();newviews=[]
+ doc['accessors']=[accessors[i]for i in sorted(used)]
+ needed=set(a['bufferView']for a in doc['accessors']if'bufferView'in a)
+ # Sparse cloth shapes use separate index/value views. Keep and remap those
+ # too; otherwise compaction can silently point a shape at unrelated bytes.
+ for accessor in doc['accessors']:
+  for source in accessor.get('sparse',{}).values():
+   if isinstance(source,dict)and'bufferView'in source:needed.add(source['bufferView'])
+ needed=sorted(needed);vmap={old:new for new,old in enumerate(needed)};newbinary=bytearray();newviews=[]
  for idx in needed:
   old=views[idx];new=dict(old);new['byteOffset']=len(newbinary);newbinary.extend(binary[old.get('byteOffset',0):old.get('byteOffset',0)+old['byteLength']]);newbinary.extend(b'\0'*(-len(newbinary)%4));newviews.append(new)
  for a in doc['accessors']:
   if'bufferView'in a:a['bufferView']=vmap[a['bufferView']]
+  for source in a.get('sparse',{}).values():
+   if isinstance(source,dict)and'bufferView'in source:source['bufferView']=vmap[source['bufferView']]
  doc['bufferViews']=newviews;doc['buffers']=[{'byteLength':len(newbinary)}]
  encoded=json.dumps(doc,separators=(',',':')).encode();encoded+=b' '*(-len(encoded)%4);raw=struct.pack('<III',0x46546c67,2,28+len(encoded)+len(newbinary))+struct.pack('<II',len(encoded),0x4e4f534a)+encoded+struct.pack('<II',len(newbinary),0x004e4942)+newbinary;path.write_bytes(raw)
  return raw,doc

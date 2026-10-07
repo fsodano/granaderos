@@ -319,6 +319,272 @@
           "duration": 0.75833,
           "playbackRate": 1
         }
+      },
+      "actions": {
+        "stand.reload.long-gun": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "stand.reprime.long-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "stand.repair.long-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "stand.unload.long-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "stand.reload.short-gun": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "stand.reprime.short-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "stand.repair.short-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "stand.unload.short-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "crouch.reload.long-gun": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "crouch.reprime.long-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "crouch.repair.long-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "crouch.unload.long-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "crouch.reload.short-gun": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "crouch.reprime.short-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "crouch.repair.short-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "crouch.unload.short-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "prone.reload.long-gun": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "prone.reprime.long-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "prone.repair.long-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "prone.unload.long-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "prone.reload.short-gun": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "prone.reprime.short-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "prone.repair.short-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "prone.unload.short-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "mounted.reload.long-gun": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "mounted.reprime.long-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "mounted.repair.long-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "mounted.unload.long-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "mounted.reload.short-gun": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "mounted.reprime.short-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "mounted.repair.short-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "mounted.unload.short-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "crew.artilleryReload": {
+          "duration": 4,
+          "loop": false,
+          "markers": {
+            "contact": 1.8,
+            "ready": 3.7
+          }
+        }
       }
     },
     "female": {
@@ -627,6 +893,272 @@
           "nativeStrideSpeed": 0.9754,
           "duration": 0.75833,
           "playbackRate": 1
+        }
+      },
+      "actions": {
+        "stand.reload.long-gun": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "stand.reprime.long-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "stand.repair.long-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "stand.unload.long-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "stand.reload.short-gun": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "stand.reprime.short-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "stand.repair.short-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "stand.unload.short-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "crouch.reload.long-gun": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "crouch.reprime.long-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "crouch.repair.long-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "crouch.unload.long-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "crouch.reload.short-gun": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "crouch.reprime.short-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "crouch.repair.short-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "crouch.unload.short-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "prone.reload.long-gun": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "prone.reprime.long-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "prone.repair.long-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "prone.unload.long-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "prone.reload.short-gun": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "prone.reprime.short-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "prone.repair.short-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "prone.unload.short-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "mounted.reload.long-gun": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "mounted.reprime.long-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "mounted.repair.long-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "mounted.unload.long-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "mounted.reload.short-gun": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "mounted.reprime.short-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "mounted.repair.short-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "mounted.unload.short-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "crew.artilleryReload": {
+          "duration": 4,
+          "loop": false,
+          "markers": {
+            "contact": 1.8,
+            "ready": 3.7
+          }
         }
       }
     }
