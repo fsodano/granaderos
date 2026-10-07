@@ -83,7 +83,7 @@ export function buildBuilding(b0:WorldBuilding,input:WorldInput,T:number,geometr
   const fullHeight=roofs.length?Math.min(...roofs.map(surface=>(surface.elevation??3)-base)):Math.max(2.5,(legacy?buildingStyle(b).height:profile.wallHeight)/V);
   const floorHeight=roofs.length?fullHeight:Math.min(fullHeight,Math.max(2.5,profile.groundFloorHeight/V));
   const height=profile.floors>1&&someOpen?floorHeight:fullHeight,batch=new WorldBatch(geometry),surfaces=new WorldBatch(geometry),group=new Group();group.name=`building:${b.id}`;group.userData.semanticId=`building:${b.id}`;
-  const wallMat=materials.get(appearance.wallFinish,legacy?{colour:buildingStyle(b).wall}:{}),trim=materials.get('trim',legacy?{colour:buildingStyle(b).trim}:{}),wood=materials.get('wood'),iron=materials.get('iron');
+  const wallMat=materials.get(appearance.wallFinish,legacy&&b.wallFinish===undefined?{colour:buildingStyle(b).wall}:{architectureRole:'wall'}),trim=materials.get('trim',legacy?{colour:buildingStyle(b).trim}:{}),wood=materials.get('wood'),iron=materials.get('iron');
   const doorHeight=BUILDING_OPENINGS.doorHeight/V,doorWidth=T*.60,thickness=.18,cutaway=BUILDING_OPENINGS.cutawayHeight/V;
   const openingRecords:{id:string;type:string;open:boolean;axis:Axis;height:number;width:number}[]=[];
   for(const tile of walls){
