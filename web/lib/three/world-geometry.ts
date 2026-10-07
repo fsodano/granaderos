@@ -46,9 +46,19 @@ export class WorldGeometry {
 export class WorldBatch {
   private parts=new Map<MeshStandardMaterial,BufferGeometry[]>();
   constructor(public library:WorldGeometry){}
-  add(geometry:BufferGeometry,material:MeshStandardMaterial,matrix=new Matrix4(),light=1){
+  add(geometry:BufferGeometry,material:MeshStandardMaterial,matrix=new Matrix4(),light=1,metricBoxUV=false){
     const part=geometry.index?geometry.toNonIndexed():geometry.clone();part.applyMatrix4(matrix);
     if(!part.getAttribute('normal'))part.computeVertexNormals();
+    if(metricBoxUV){
+      const p=part.getAttribute('position'),normal=part.getAttribute('normal'),uv=new Float32Array(p.count*2);
+      for(let n=0;n<p.count;n++){
+        const nx=normal.getX(n),ny=normal.getY(n),nz=normal.getZ(n);
+        if(Math.abs(ny)>.5){uv[n*2]=p.getX(n);uv[n*2+1]=p.getZ(n);}
+        else if(Math.abs(nx)>Math.abs(nz)){uv[n*2]=p.getZ(n)*(nx>0?-1:1);uv[n*2+1]=p.getY(n);}
+        else{uv[n*2]=p.getX(n)*(nz>0?1:-1);uv[n*2+1]=p.getY(n);}
+      }
+      part.setAttribute('uv',new BufferAttribute(uv,2));
+    }
     if(!part.getAttribute('uv'))part.setAttribute('uv',new BufferAttribute(new Float32Array(part.getAttribute('position').count*2),2));
     const colours=new Float32Array(part.getAttribute('position').count*3),source=part.getAttribute('color');
     if(source)for(let n=0;n<source.count;n++){colours[n*3]=source.getX(n)*light;colours[n*3+1]=source.getY(n)*light;colours[n*3+2]=source.getZ(n)*light;}else colours.fill(light);
@@ -57,7 +67,7 @@ export class WorldBatch {
   }
   primitive(kind:string,material:MeshStandardMaterial,position:Vector3|readonly number[],scale:readonly number[],rotation?:Quaternion,light=1){
     const point=position instanceof Vector3?position:new Vector3(...position as [number,number,number]);
-    this.add(this.library.get(kind),material,new Matrix4().compose(point,rotation??new Quaternion(),new Vector3(...scale as [number,number,number])),light);
+    this.add(this.library.get(kind),material,new Matrix4().compose(point,rotation??new Quaternion(),new Vector3(...scale as [number,number,number])),light,kind==='box'&&material.userData.metricBoxUV===true);
   }
   box(material:MeshStandardMaterial,x:number,y:number,z:number,w:number,h:number,d:number,light=1){if(w>0&&h>0&&d>0)this.primitive('box',material,[x,y,z],[w,h,d],undefined,light);}
   cylinder(material:MeshStandardMaterial,a:Vector3,b:Vector3,radius:number,light=1,kind='cylinder'){
