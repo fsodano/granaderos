@@ -1,11 +1,20 @@
+import {entranceFrame} from '../../../game/building-profile.js';
 import {surfaceRectangles,subtractRectangle} from './world-climb-openings';
 import type {ClimbOpening,SurfaceRectangle} from './world-climb-openings';
 import type {WorldBuilding,WorldInput,WorldPoint} from './world-types';
 
-/** Centred warehouse and posta walls expose their supported masonry.
+/** Centred warehouse, posta and supported house walls expose their masonry.
  * Corner openings retain the original shell to preserve their clipped spans. */
 export function buildingArtInset(b:WorldBuilding,input:WorldInput){
-  if(!['warehouse','posta'].includes(b.kind??b.architecture??''))return .4;
+  const kind=b.kind??b.architecture??'';
+  if(!['warehouse','posta','house'].includes(kind))return .4;
+  if(kind==='house'){
+    // Unpainted legacy houses keep their released style placement. An authored
+    // house needs both intact front corners before moving its complete shell.
+    if(b.architecture&&b.wallFinish===undefined)return .4;
+    const walls=input.terrain.tiles.filter(tile=>tile.buildingId===b.id&&['wall','door','window'].includes(tile.type)),frame=entranceFrame({...b,walls});
+    if([0,frame.width].some(u=>{const p=frame.at(u,0);return walls.find(tile=>tile.x===p.x&&tile.y===p.y)?.type!=='wall';}))return .4;
+  }
   const cornerOpening=input.terrain.tiles.some(tile=>tile.buildingId===b.id&&['door','window'].includes(tile.type)&&(tile.x===b.x||tile.x===b.x+b.width-1)&&(tile.y===b.y||tile.y===b.y+b.height-1));
   return cornerOpening ? .4 : 0;
 }

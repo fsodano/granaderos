@@ -16,16 +16,16 @@ function fixture(id,rotation,view='exterior',roof='original'){
  return {b,input,frame,build(){const before=JSON.stringify(input),building=buildBuilding(b,input,T,geometry,materials);building.updateMatrixWorld(true);assert.equal(JSON.stringify(input),before);return building;},dispose(building){disposeWorldNode(building);geometry.dispose();materials.dispose();}};
 }
 
-test('only warehouse and posta templates without authored corner openings use a centred shell',()=>{
- for(const {id}of ARCHITECTURE_REVIEW_TEMPLATES)for(const rotation of rotations){const f=fixture(id,rotation);assert.equal(buildingArtInset(f.b,f.input),['almacen','posta'].includes(id)?0:.4);f.dispose(f.build());}
- for(const id of ['almacen','posta'])for(const rotation of rotations)for(const type of ['door','window'])for(const corner of ['near','far']){
+test('only warehouse, posta and supported authored house templates without corner openings use a centred shell',()=>{
+ for(const {id}of ARCHITECTURE_REVIEW_TEMPLATES)for(const rotation of rotations){const f=fixture(id,rotation);assert.equal(buildingArtInset(f.b,f.input),['almacen','posta','casa'].includes(id)?0:.4);f.dispose(f.build());}
+ for(const id of ['almacen','posta','casa'])for(const rotation of rotations)for(const type of ['door','window'])for(const corner of ['near','far']){
   const f=fixture(id,rotation),tile=f.input.terrain.tiles.find(tile=>tile.x===(corner==='near'?f.b.x:f.b.x+f.b.width-1)&&tile.y===(corner==='near'?f.b.y:f.b.y+f.b.height-1));tile.type=type;tile.doorId='edited-corner';assert.equal(buildingArtInset(f.b,f.input),.4);const building=f.build(),opening=building.userData.openings.find(opening=>opening.id==='edited-corner'),lower=f.b.y+.4,upper=f.b.y+f.b.height-1+.4,first=Math.max(tile.y-.5,lower)*T,last=Math.min(tile.y+.5,upper)*T;
   assert.equal(opening.width,Math.min(.60*T,(last-first)*.65),'the clipped original corner opening width must be retained exactly');if(type==='door'){const hinge=building.getObjectByName('door:edited-corner').children[0];assert.equal(hinge.position.x,(tile.x+.4)*T);assert.equal(hinge.position.z,(first+last)*.5-opening.width*.5,'the original clipped doorway crossing must retain its centre');}f.dispose(building);
  }
 });
 
-test('normal warehouse and posta room disclosure retains the floor finish right up to each centred wall',()=>{
- for(const id of ['almacen','posta'])for(const rotation of rotations){
+test('normal warehouse, posta and house room disclosure retains the floor finish right up to each centred wall',()=>{
+ for(const id of ['almacen','posta','casa'])for(const rotation of rotations){
   const f=fixture(id,rotation,'interior'),building=f.build(),cells=f.b.rooms.flatMap((room,index)=>room.cells.map(cell=>({...cell,roomIndex:index}))),x1=f.b.x+f.b.width-1,y1=f.b.y+f.b.height-1;
   for(const [side,target]of [['left',f.b.x+1],['right',x1-1],['north',f.b.y+1],['south',y1-1]]){const cell=cells.find(cell=>['left','right'].includes(side)?cell.x===target:cell.y===target);assert.ok(cell);const x=side==='left'?f.b.x*T+.13:side==='right'?x1*T-.13:cell.x*T,z=side==='north'?f.b.y*T+.13:side==='south'?y1*T-.13:cell.y*T,decor=roomDecorProfile(f.b,f.b.rooms[cell.roomIndex],cell.roomIndex),expected=`world:terrain-${decor.floor==='stone'?'cobble':decor.floor}`,hit=new Raycaster(new Vector3(x,.50,z),new Vector3(0,-1,0),0,.6).intersectObject(building,true)[0];assert.ok(hit,'the wall-side floor strip must be filled');assert.ok(Math.abs(hit.point.y-.006)<1e-6);assert.equal(hit.object.material.name,expected,'the return must keep the disclosed room’s authored floor finish');}
   assert.equal(building.getObjectByName(`building-detail:${f.b.id}:warehouse-buttresses`),undefined);f.dispose(building);

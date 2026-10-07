@@ -579,3 +579,7 @@ The stone warehouse buttress now retains the source body and separate warm-foot 
 ## Green window shutters
 
 Authored shutters now occupy the actual aperture with the current sprite’s paired green panels, dark borders, pale rails and central gap. Both physical faces are visible rather than buried in the masonry jamb. The source retains window flags, glazing, opening dimensions, collision, disclosure and breaches. The clean cut passes 64 affected checks, type checking, documentation/baseline audits, the build (`94aeb2d266c3`) and 24 house/farmhouse browser views without errors. The visible exteriors and house interior were compared with the current sprites. See [the shutter review](../art/shutter-window-3d-review-2026-10-07.md).
+
+## Supported house placement
+
+Authored houses with intact front corners now use one centred physical frame for their walls, roof, door crossing and chimney. Ground floor returns keep the room finish and measured hatch clipping. Corner openings, unsupported front corners and unpainted legacy houses retain their original frame. The clean source passes 73 affected checks, type checking, documentation/baseline audits and the build (`5dd99033b0f1`). Its 24 completed original/slab/accessible-roof browser views have no browser errors; an initial cold navigation timeout was retried successfully. The source house piers and hood remain the next cut. See [the placement review](../art/house-shell-placement-3d-review-2026-10-07.md).
