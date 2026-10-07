@@ -45,7 +45,14 @@ for gender,bank in m['animationLibraries'].items():
   for sample in animation['samplers']:
    times=[x[0]for x in read(doc,data,sample['input'])];assert all(a<b for a,b in zip(times,times[1:]));assert abs(times[-1]-c['duration'])<.05
    assert all(math.isfinite(x)for v in read(doc,data,sample['output'])for x in v)
-  if'seatAnchor'in c:assert c['seatAnchorSpace']=='gltf-model-local'and .7<c['seatAnchor'][1]<1.1
+  if'seatAnchor'in c:
+   assert c['seatAnchorSpace']=='gltf-model-local'
+   if c['gesture']in('mount','dismount'):
+    # These paths are authored in horse space. Their anchor is the actual
+    # saddle, rather than the native pelvis height used by seated clips.
+    assert all(abs(a-b)<1e-5 for a,b in zip(c['seatAnchor'],m['horse']['saddle']['position']))
+    assert c['mountSupport']['coordinateSpace']=='gltf-model-local'
+   else:assert .7<c['seatAnchor'][1]<1.1
  for c in bank['clips']:
   for t in c.get('markers',{}).values():assert 0<=t<=c['duration']+.001
   if c['gesture']in('mount','dismount'):assert'seatWeight'in c and'seatAnchor'in c

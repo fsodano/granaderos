@@ -2,7 +2,7 @@ import profile from './locomotion-profile.json';
 import {spriteAppearance} from '../../../game/sprite-appearances.js';
 import {spriteEquipment} from '../../../game/sprite-equipment.js';
 import {resolveActorAction} from '../../../game/actor-action-contract.js';
-import {actorPosture,semanticOrder} from './presentation';
+import {actorItems,actorPosture,semanticOrder} from './presentation';
 import {canSee} from '../../../game/tactical.js';
 import {animationPhaseRanges,usesNativeActionTiming,type AnimationClockClip,type AnimationWork} from './animation-clock';
 
@@ -15,6 +15,16 @@ function loadingWork(before:any,after:any):AnimationWork[]{
   for(let round=0;round<rounds;round++)work.push({from:round===0?from:0,to:1});
   if(to>0)work.push({from:rounds?0:from,to});
   return work;
+}
+
+function admittedGunWork(before:any,after:any,hand:'primary'|'offhand'):AnimationWork[]{
+  const held=(actor:any)=>actorItems(actor).find(item=>item.reference===hand&&['handRight','handLeft'].includes(item.socket));
+  const first=held(before),last=held(after);
+  const identity=(actor:any)=>hand==='primary'?actor.weaponInstanceId:actor.offHand?.instanceId;
+  // A dropped, replaced or pocketed gun does not establish observed loading
+  // for that owned item. The two pistols retain their separate work intervals.
+  if(!first||!last||first.id!==last.id||identity(before)!==identity(after))return [];
+  return loadingWork(hand==='primary'?before:before.offHand,hand==='primary'?after:after.offHand).map(work=>({...work,hand}));
 }
 
 /** Work is derived only when preparation and result admit the same actor.
@@ -31,7 +41,7 @@ export function admittedReloadWork(frames:readonly any[]){
     const before=start.state.units.find((unit:any)=>unit.id===start.unitId),after=end.state.units.find((unit:any)=>unit.id===end.unitId);
     if(!before||!after)continue;
     let work:AnimationWork[];
-    if(start.action==='reload')work=[...loadingWork(before,after),...loadingWork(before.offHand,after.offHand)];
+    if(start.action==='reload')work=[...admittedGunWork(before,after,'primary'),...admittedGunWork(before,after,'offhand')];
     else{
       const observed=(state:any,gun:any)=>state.units.some((unit:any)=>unit.side==='player'&&unit.hp>0&&!unit.unconscious&&canSee(state,unit,gun));
       work=(start.state.artillery??[]).flatMap((gun:any)=>{

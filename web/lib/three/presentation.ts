@@ -17,10 +17,11 @@ import {renderedSurfaceHeight} from '../tactical-elevation';
 import type {Motion} from '../../app/useUnitMotion';
 import {TILE_METRES,actorYaw} from './projection';
 import type {WorldInput} from './world-types';
+import type {AnimationWork} from './animation-clock';
 
 export type ActorKind='unit'|'npc';
 export type ActorEntry={key:string;kind:ActorKind;actor:any};
-export type ActorCue={id:string;action:string;shotHand?:'primary'|'offhand';hand?:'handRight'|'handLeft';startedAt:number;durationMs?:number;phase?:string;phaseStartedAt?:number;phaseDurationMs?:number;fromPosture?:string;toPosture?:string;work?:readonly {from:number;to:number}[]};
+export type ActorCue={id:string;action:string;shotHand?:'primary'|'offhand';hand?:'handRight'|'handLeft';startedAt:number;durationMs?:number;phase?:string;phaseStartedAt?:number;phaseDurationMs?:number;fromPosture?:string;toPosture?:string;work?:readonly AnimationWork[]};
 export type VisualItem={id:string;reference:string;socket:'handRight'|'handLeft'|'back'|'hip';fittings?:any};
 export type ActorVisual={key:string;id:string;kind:ActorKind;appearance:string;skin:string;side:string;tacticalLevel:number;position:[number,number,number];yaw:number;posture:string;mounted:boolean;action:string;idleAction:string;equipment:string;items:VisualItem[];garments:Record<string,string|null>;cue?:ActorCue;motion?:Motion;selected:boolean;bodyHeights:Record<string,number>};
 export const actorKey=(kind:ActorKind,id:string)=>`${kind}:${id}`;
@@ -101,7 +102,8 @@ export function presentActors(state:any,entries:readonly ActorEntry[],positions:
     const frame=options.frame;
     const assignedCrew=frame&&['artillery','artilleryReload','artilleryMove','artilleryPivot'].includes(frame.action)&&frame.crewIds?.includes(actor.id);
     if(kind==='unit'&&(frame?.unitId===actor.id||assignedCrew)&&frame.performed!==false&&!lifeCue(cue)){
-      if(frame.releaseComplete)cue=undefined;
+      if(frame.releaseComplete||frame.mountComplete)cue=undefined;
+      if(frame.mountAction)cue={id:`${frame.sequenceId}:${frame.actionId}:mount:${key}`,action:frame.mountAction,fromPosture:frame.mountFromPosture,phase:'prepare',startedAt:frame.startedAt,phaseStartedAt:frame.startedAt,phaseDurationMs:frame.durationMs,durationMs:frame.durationMs};
       const semantic=semanticOrder(frame.action,frame,actor);
       if(semantic&&frame.type!=='step'&&!(frame.shotComplete||frame.contactComplete||frame.releaseComplete)&&frame.shotVisual?.discharge!==false){
         const shotHand=frame.shotHand??frame.shotVisual?.shotHand,shotId=frame.shotId??frame.shotVisual?.shotId;

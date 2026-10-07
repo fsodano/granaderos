@@ -1826,8 +1826,8 @@
   "animationLibraries": {
     "male": {
       "url": "/models/characters/male-animations.glb",
-      "bytes": 10616584,
-      "sha256": "ac03287ccd518eb5f19a999a510fd02e3ec61b4ac169508cf277d28be9f63aeb",
+      "bytes": 10907832,
+      "sha256": "74d5db259b29b33354eed27a26ee77048872caedb93dac469d95002d78da7281",
       "clips": [
         {
           "name": "stand.idle.unarmed",
@@ -5422,7 +5422,20 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "freeHands": [
+            "handRight",
+            "handLeft"
+          ],
+          "handProps": [
+            {
+              "hand": "handRight",
+              "categories": [
+                "supply"
+              ],
+              "untilMarker": "release"
+            }
+          ]
         },
         {
           "name": "stand.gesture.bolas",
@@ -5443,7 +5456,20 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "freeHands": [
+            "handRight",
+            "handLeft"
+          ],
+          "handProps": [
+            {
+              "hand": "handRight",
+              "categories": [
+                "supply"
+              ],
+              "untilMarker": "release"
+            }
+          ]
         },
         {
           "name": "crouch.gesture.heal",
@@ -5672,7 +5698,20 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "freeHands": [
+            "handRight",
+            "handLeft"
+          ],
+          "handProps": [
+            {
+              "hand": "handRight",
+              "categories": [
+                "supply"
+              ],
+              "untilMarker": "release"
+            }
+          ]
         },
         {
           "name": "crouch.gesture.bolas",
@@ -5693,7 +5732,20 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "freeHands": [
+            "handRight",
+            "handLeft"
+          ],
+          "handProps": [
+            {
+              "hand": "handRight",
+              "categories": [
+                "supply"
+              ],
+              "untilMarker": "release"
+            }
+          ]
         },
         {
           "name": "prone.gesture.heal",
@@ -5922,7 +5974,20 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "freeHands": [
+            "handRight",
+            "handLeft"
+          ],
+          "handProps": [
+            {
+              "hand": "handRight",
+              "categories": [
+                "supply"
+              ],
+              "untilMarker": "release"
+            }
+          ]
         },
         {
           "name": "prone.gesture.bolas",
@@ -5943,7 +6008,20 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "freeHands": [
+            "handRight",
+            "handLeft"
+          ],
+          "handProps": [
+            {
+              "hand": "handRight",
+              "categories": [
+                "supply"
+              ],
+              "untilMarker": "release"
+            }
+          ]
         },
         {
           "name": "mounted.gesture.heal",
@@ -6245,6 +6323,19 @@
           "sampleRate": 15,
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
+          "freeHands": [
+            "handRight",
+            "handLeft"
+          ],
+          "handProps": [
+            {
+              "hand": "handRight",
+              "categories": [
+                "supply"
+              ],
+              "untilMarker": "release"
+            }
+          ],
           "seatAnchor": [
             0,
             0.9451594948768616,
@@ -6272,6 +6363,19 @@
           "sampleRate": 15,
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
+          "freeHands": [
+            "handRight",
+            "handLeft"
+          ],
+          "handProps": [
+            {
+              "hand": "handRight",
+              "categories": [
+                "supply"
+              ],
+              "untilMarker": "release"
+            }
+          ],
           "seatAnchor": [
             0,
             0.9451594948768616,
@@ -6299,6 +6403,10 @@
           "sampleRate": 15,
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
+          "freeHands": [
+            "handRight",
+            "handLeft"
+          ],
           "handProps": [
             {
               "hand": "handRight",
@@ -6480,39 +6588,164 @@
           "duration": 2.3,
           "loop": false,
           "events": {
-            "seat": 1.656
+            "seat": 2.07,
+            "support": 0.759,
+            "clear": 0.46
           },
           "gesture": "mount",
           "posture": "standing",
           "equipment": "any",
           "clip": "life.mount",
           "markers": {
-            "seat": 1.656
+            "seat": 2.07,
+            "support": 0.759,
+            "clear": 0.46
           },
           "source": {
-            "type": "native-contact-authoring"
+            "type": "native-tack-contact-authoring",
+            "helper": "mounted_motion.py",
+            "reversed": false
           },
-          "sampleRate": 15,
+          "sampleRate": 30,
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
             0,
-            0.9451594948768616,
-            0.006795833352953196
+            1.5578199625015259,
+            -0.019999999552965164
           ],
-          "seatAnchorSpace": "gltf-model-local",
           "seatWeight": [
             {
               "time": 0,
-              "weight": 0
+              "weight": 1
+            }
+          ],
+          "horseVisibility": {
+            "start": 0.46,
+            "end": 2.3
+          },
+          "freeHands": [
+            "handRight",
+            "handLeft"
+          ],
+          "mountSupport": {
+            "side": "left",
+            "coordinateSpace": "gltf-model-local",
+            "stirrup": [
+              0.32187986373901367,
+              0.9178209900856018,
+              -0.019999999552965164
+            ],
+            "frontGrip": [
+              1.469576190014977e-17,
+              1.6079394817352295,
+              0.1599999964237213
+            ],
+            "rearGrip": [
+              1.469576190014977e-17,
+              1.6529395580291748,
+              -0.2199999988079071
+            ],
+            "frontKeys": [
+              {
+                "time": 0.644,
+                "position": [
+                  0.21627530455589294,
+                  1.4469108581542969,
+                  0.1599999964237213
+                ]
+              },
+              {
+                "time": 0.966,
+                "position": [
+                  0.10324852168560028,
+                  1.5721763372421265,
+                  0.1599999964237213
+                ]
+              },
+              {
+                "time": 1.219,
+                "position": [
+                  1.469576190014977e-17,
+                  1.6079394817352295,
+                  0.1599999964237213
+                ]
+              },
+              {
+                "time": 1.794,
+                "position": [
+                  1.469576190014977e-17,
+                  1.6079394817352295,
+                  0.1599999964237213
+                ]
+              }
+            ],
+            "rearKeys": [
+              {
+                "time": 0.644,
+                "position": [
+                  0.21627525985240936,
+                  1.4919109344482422,
+                  -0.2199999988079071
+                ]
+              },
+              {
+                "time": 0.966,
+                "position": [
+                  0.10324852168560028,
+                  1.6171764135360718,
+                  -0.2199999988079071
+                ]
+              },
+              {
+                "time": 1.219,
+                "position": [
+                  1.469576190014977e-17,
+                  1.6529395580291748,
+                  -0.2199999988079071
+                ]
+              },
+              {
+                "time": 1.794,
+                "position": [
+                  1.469576190014977e-17,
+                  1.6529395580291748,
+                  -0.2199999988079071
+                ]
+              }
+            ],
+            "interpolation": "smoothstep",
+            "supportedStart": 0.759,
+            "supportedEnd": 1.656
+          },
+          "seatAnchorSpace": "gltf-model-local",
+          "stowItems": [
+            {
+              "categories": [
+                "lance"
+              ],
+              "socket": "back",
+              "position": [
+                0.15,
+                -0.34,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                -1.5707963267948966
+              ]
             },
             {
-              "time": 1.656,
-              "weight": 1
-            },
-            {
-              "time": 2.3,
-              "weight": 1
+              "categories": [
+                "rifle"
+              ],
+              "socket": "back",
+              "position": [
+                0.15,
+                -0.38,
+                0
+              ]
             }
           ]
         },
@@ -6521,39 +6754,164 @@
           "duration": 2.3,
           "loop": false,
           "events": {
-            "seat": 0.45999999999999996
+            "seat": 0.23,
+            "support": 0.644,
+            "clear": 1.84
           },
           "gesture": "dismount",
           "posture": "mounted",
           "equipment": "any",
           "clip": "life.dismount",
           "markers": {
-            "seat": 0.45999999999999996
+            "seat": 0.23,
+            "support": 0.644,
+            "clear": 1.84
           },
           "source": {
-            "type": "native-contact-authoring"
+            "type": "native-tack-contact-authoring",
+            "helper": "mounted_motion.py",
+            "reversed": true
           },
-          "sampleRate": 15,
+          "sampleRate": 30,
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
             0,
-            0.9451594948768616,
-            0.006795833352953196
+            1.5578199625015259,
+            -0.019999999552965164
           ],
-          "seatAnchorSpace": "gltf-model-local",
           "seatWeight": [
             {
               "time": 0,
               "weight": 1
+            }
+          ],
+          "horseVisibility": {
+            "start": 0,
+            "end": 1.84
+          },
+          "freeHands": [
+            "handRight",
+            "handLeft"
+          ],
+          "mountSupport": {
+            "side": "left",
+            "coordinateSpace": "gltf-model-local",
+            "stirrup": [
+              0.32187986373901367,
+              0.9178209900856018,
+              -0.019999999552965164
+            ],
+            "frontGrip": [
+              1.469576190014977e-17,
+              1.6079394817352295,
+              0.1599999964237213
+            ],
+            "rearGrip": [
+              1.469576190014977e-17,
+              1.6529395580291748,
+              -0.2199999988079071
+            ],
+            "frontKeys": [
+              {
+                "time": 0.506,
+                "position": [
+                  1.469576190014977e-17,
+                  1.6079394817352295,
+                  0.1599999964237213
+                ]
+              },
+              {
+                "time": 1.081,
+                "position": [
+                  1.469576190014977e-17,
+                  1.6079394817352295,
+                  0.1599999964237213
+                ]
+              },
+              {
+                "time": 1.334,
+                "position": [
+                  0.10324852168560028,
+                  1.5721763372421265,
+                  0.1599999964237213
+                ]
+              },
+              {
+                "time": 1.656,
+                "position": [
+                  0.21627530455589294,
+                  1.4469108581542969,
+                  0.1599999964237213
+                ]
+              }
+            ],
+            "rearKeys": [
+              {
+                "time": 0.506,
+                "position": [
+                  1.469576190014977e-17,
+                  1.6529395580291748,
+                  -0.2199999988079071
+                ]
+              },
+              {
+                "time": 1.081,
+                "position": [
+                  1.469576190014977e-17,
+                  1.6529395580291748,
+                  -0.2199999988079071
+                ]
+              },
+              {
+                "time": 1.334,
+                "position": [
+                  0.10324852168560028,
+                  1.6171764135360718,
+                  -0.2199999988079071
+                ]
+              },
+              {
+                "time": 1.656,
+                "position": [
+                  0.21627525985240936,
+                  1.4919109344482422,
+                  -0.2199999988079071
+                ]
+              }
+            ],
+            "interpolation": "smoothstep",
+            "supportedStart": 0.644,
+            "supportedEnd": 1.541
+          },
+          "seatAnchorSpace": "gltf-model-local",
+          "stowItems": [
+            {
+              "categories": [
+                "lance"
+              ],
+              "socket": "back",
+              "position": [
+                0.15,
+                -0.34,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                -1.5707963267948966
+              ]
             },
             {
-              "time": 0.45999999999999996,
-              "weight": 0
-            },
-            {
-              "time": 2.3,
-              "weight": 0
+              "categories": [
+                "rifle"
+              ],
+              "socket": "back",
+              "position": [
+                0.15,
+                -0.38,
+                0
+              ]
             }
           ]
         },
@@ -12307,8 +12665,8 @@
     },
     "female": {
       "url": "/models/characters/female-animations.glb",
-      "bytes": 10438588,
-      "sha256": "be4c130f1d2834f1130c39d84fe7526ac2509dd8172938c44345f77abdf7b807",
+      "bytes": 10733168,
+      "sha256": "deef6403bf978250a066e487dfe510274b293f9f689f60db9bac168d64a20225",
       "clips": [
         {
           "name": "stand.idle.unarmed",
@@ -15903,7 +16261,20 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "freeHands": [
+            "handRight",
+            "handLeft"
+          ],
+          "handProps": [
+            {
+              "hand": "handRight",
+              "categories": [
+                "supply"
+              ],
+              "untilMarker": "release"
+            }
+          ]
         },
         {
           "name": "stand.gesture.bolas",
@@ -15924,7 +16295,20 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "freeHands": [
+            "handRight",
+            "handLeft"
+          ],
+          "handProps": [
+            {
+              "hand": "handRight",
+              "categories": [
+                "supply"
+              ],
+              "untilMarker": "release"
+            }
+          ]
         },
         {
           "name": "crouch.gesture.heal",
@@ -16153,7 +16537,20 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "freeHands": [
+            "handRight",
+            "handLeft"
+          ],
+          "handProps": [
+            {
+              "hand": "handRight",
+              "categories": [
+                "supply"
+              ],
+              "untilMarker": "release"
+            }
+          ]
         },
         {
           "name": "crouch.gesture.bolas",
@@ -16174,7 +16571,20 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "freeHands": [
+            "handRight",
+            "handLeft"
+          ],
+          "handProps": [
+            {
+              "hand": "handRight",
+              "categories": [
+                "supply"
+              ],
+              "untilMarker": "release"
+            }
+          ]
         },
         {
           "name": "prone.gesture.heal",
@@ -16403,7 +16813,20 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "freeHands": [
+            "handRight",
+            "handLeft"
+          ],
+          "handProps": [
+            {
+              "hand": "handRight",
+              "categories": [
+                "supply"
+              ],
+              "untilMarker": "release"
+            }
+          ]
         },
         {
           "name": "prone.gesture.bolas",
@@ -16424,7 +16847,20 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "freeHands": [
+            "handRight",
+            "handLeft"
+          ],
+          "handProps": [
+            {
+              "hand": "handRight",
+              "categories": [
+                "supply"
+              ],
+              "untilMarker": "release"
+            }
+          ]
         },
         {
           "name": "mounted.gesture.heal",
@@ -16726,6 +17162,19 @@
           "sampleRate": 15,
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
+          "freeHands": [
+            "handRight",
+            "handLeft"
+          ],
+          "handProps": [
+            {
+              "hand": "handRight",
+              "categories": [
+                "supply"
+              ],
+              "untilMarker": "release"
+            }
+          ],
           "seatAnchor": [
             0,
             0.9131789803504944,
@@ -16753,6 +17202,19 @@
           "sampleRate": 15,
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
+          "freeHands": [
+            "handRight",
+            "handLeft"
+          ],
+          "handProps": [
+            {
+              "hand": "handRight",
+              "categories": [
+                "supply"
+              ],
+              "untilMarker": "release"
+            }
+          ],
           "seatAnchor": [
             0,
             0.9131789803504944,
@@ -16780,6 +17242,10 @@
           "sampleRate": 15,
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
+          "freeHands": [
+            "handRight",
+            "handLeft"
+          ],
           "handProps": [
             {
               "hand": "handRight",
@@ -16961,39 +17427,164 @@
           "duration": 2.3,
           "loop": false,
           "events": {
-            "seat": 1.656
+            "seat": 2.07,
+            "support": 0.759,
+            "clear": 0.46
           },
           "gesture": "mount",
           "posture": "standing",
           "equipment": "any",
           "clip": "life.mount",
           "markers": {
-            "seat": 1.656
+            "seat": 2.07,
+            "support": 0.759,
+            "clear": 0.46
           },
           "source": {
-            "type": "native-contact-authoring"
+            "type": "native-tack-contact-authoring",
+            "helper": "mounted_motion.py",
+            "reversed": false
           },
-          "sampleRate": 15,
+          "sampleRate": 30,
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
             0,
-            0.9131789803504944,
-            0.025762733072042465
+            1.5578199625015259,
+            -0.019999999552965164
           ],
-          "seatAnchorSpace": "gltf-model-local",
           "seatWeight": [
             {
               "time": 0,
-              "weight": 0
+              "weight": 1
+            }
+          ],
+          "horseVisibility": {
+            "start": 0.46,
+            "end": 2.3
+          },
+          "freeHands": [
+            "handRight",
+            "handLeft"
+          ],
+          "mountSupport": {
+            "side": "left",
+            "coordinateSpace": "gltf-model-local",
+            "stirrup": [
+              0.32187986373901367,
+              0.9178209900856018,
+              -0.019999999552965164
+            ],
+            "frontGrip": [
+              1.469576190014977e-17,
+              1.6079394817352295,
+              0.1599999964237213
+            ],
+            "rearGrip": [
+              1.469576190014977e-17,
+              1.6529395580291748,
+              -0.2199999988079071
+            ],
+            "frontKeys": [
+              {
+                "time": 0.644,
+                "position": [
+                  0.21627530455589294,
+                  1.4469108581542969,
+                  0.1599999964237213
+                ]
+              },
+              {
+                "time": 0.966,
+                "position": [
+                  0.10324852168560028,
+                  1.5721763372421265,
+                  0.1599999964237213
+                ]
+              },
+              {
+                "time": 1.219,
+                "position": [
+                  1.469576190014977e-17,
+                  1.6079394817352295,
+                  0.1599999964237213
+                ]
+              },
+              {
+                "time": 1.794,
+                "position": [
+                  1.469576190014977e-17,
+                  1.6079394817352295,
+                  0.1599999964237213
+                ]
+              }
+            ],
+            "rearKeys": [
+              {
+                "time": 0.644,
+                "position": [
+                  0.21627525985240936,
+                  1.4919109344482422,
+                  -0.2199999988079071
+                ]
+              },
+              {
+                "time": 0.966,
+                "position": [
+                  0.10324852168560028,
+                  1.6171764135360718,
+                  -0.2199999988079071
+                ]
+              },
+              {
+                "time": 1.219,
+                "position": [
+                  1.469576190014977e-17,
+                  1.6529395580291748,
+                  -0.2199999988079071
+                ]
+              },
+              {
+                "time": 1.794,
+                "position": [
+                  1.469576190014977e-17,
+                  1.6529395580291748,
+                  -0.2199999988079071
+                ]
+              }
+            ],
+            "interpolation": "smoothstep",
+            "supportedStart": 0.759,
+            "supportedEnd": 1.656
+          },
+          "seatAnchorSpace": "gltf-model-local",
+          "stowItems": [
+            {
+              "categories": [
+                "lance"
+              ],
+              "socket": "back",
+              "position": [
+                0.15,
+                -0.34,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                -1.5707963267948966
+              ]
             },
             {
-              "time": 1.656,
-              "weight": 1
-            },
-            {
-              "time": 2.3,
-              "weight": 1
+              "categories": [
+                "rifle"
+              ],
+              "socket": "back",
+              "position": [
+                0.15,
+                -0.38,
+                0
+              ]
             }
           ]
         },
@@ -17002,39 +17593,164 @@
           "duration": 2.3,
           "loop": false,
           "events": {
-            "seat": 0.45999999999999996
+            "seat": 0.23,
+            "support": 0.644,
+            "clear": 1.84
           },
           "gesture": "dismount",
           "posture": "mounted",
           "equipment": "any",
           "clip": "life.dismount",
           "markers": {
-            "seat": 0.45999999999999996
+            "seat": 0.23,
+            "support": 0.644,
+            "clear": 1.84
           },
           "source": {
-            "type": "native-contact-authoring"
+            "type": "native-tack-contact-authoring",
+            "helper": "mounted_motion.py",
+            "reversed": true
           },
-          "sampleRate": 15,
+          "sampleRate": 30,
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "seatAnchor": [
             0,
-            0.9131789803504944,
-            0.025762733072042465
+            1.5578199625015259,
+            -0.019999999552965164
           ],
-          "seatAnchorSpace": "gltf-model-local",
           "seatWeight": [
             {
               "time": 0,
               "weight": 1
+            }
+          ],
+          "horseVisibility": {
+            "start": 0,
+            "end": 1.84
+          },
+          "freeHands": [
+            "handRight",
+            "handLeft"
+          ],
+          "mountSupport": {
+            "side": "left",
+            "coordinateSpace": "gltf-model-local",
+            "stirrup": [
+              0.32187986373901367,
+              0.9178209900856018,
+              -0.019999999552965164
+            ],
+            "frontGrip": [
+              1.469576190014977e-17,
+              1.6079394817352295,
+              0.1599999964237213
+            ],
+            "rearGrip": [
+              1.469576190014977e-17,
+              1.6529395580291748,
+              -0.2199999988079071
+            ],
+            "frontKeys": [
+              {
+                "time": 0.506,
+                "position": [
+                  1.469576190014977e-17,
+                  1.6079394817352295,
+                  0.1599999964237213
+                ]
+              },
+              {
+                "time": 1.081,
+                "position": [
+                  1.469576190014977e-17,
+                  1.6079394817352295,
+                  0.1599999964237213
+                ]
+              },
+              {
+                "time": 1.334,
+                "position": [
+                  0.10324852168560028,
+                  1.5721763372421265,
+                  0.1599999964237213
+                ]
+              },
+              {
+                "time": 1.656,
+                "position": [
+                  0.21627530455589294,
+                  1.4469108581542969,
+                  0.1599999964237213
+                ]
+              }
+            ],
+            "rearKeys": [
+              {
+                "time": 0.506,
+                "position": [
+                  1.469576190014977e-17,
+                  1.6529395580291748,
+                  -0.2199999988079071
+                ]
+              },
+              {
+                "time": 1.081,
+                "position": [
+                  1.469576190014977e-17,
+                  1.6529395580291748,
+                  -0.2199999988079071
+                ]
+              },
+              {
+                "time": 1.334,
+                "position": [
+                  0.10324852168560028,
+                  1.6171764135360718,
+                  -0.2199999988079071
+                ]
+              },
+              {
+                "time": 1.656,
+                "position": [
+                  0.21627525985240936,
+                  1.4919109344482422,
+                  -0.2199999988079071
+                ]
+              }
+            ],
+            "interpolation": "smoothstep",
+            "supportedStart": 0.644,
+            "supportedEnd": 1.541
+          },
+          "seatAnchorSpace": "gltf-model-local",
+          "stowItems": [
+            {
+              "categories": [
+                "lance"
+              ],
+              "socket": "back",
+              "position": [
+                0.15,
+                -0.34,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                -1.5707963267948966
+              ]
             },
             {
-              "time": 0.45999999999999996,
-              "weight": 0
-            },
-            {
-              "time": 2.3,
-              "weight": 0
+              "categories": [
+                "rifle"
+              ],
+              "socket": "back",
+              "position": [
+                0.15,
+                -0.38,
+                0
+              ]
             }
           ]
         },
@@ -23398,8 +24114,8 @@
         "stowedSocket": "hipLeft"
       }
     },
-    "bytes": 604848,
-    "sha256": "2f2e721bddcc9e9124bb606fa7cf6dfd9fecc5af633fab87f89e0fd1d656c692",
+    "bytes": 605248,
+    "sha256": "c5b5b8f45358de5261324ec6d2af8f8503b49cfcc8b12dae88d5996ebb6c195e",
     "aliases": {
       "medical": "medkits",
       "medkit": "medkits",

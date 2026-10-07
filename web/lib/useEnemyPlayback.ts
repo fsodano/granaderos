@@ -4,10 +4,11 @@ import {presentedEndTurn} from '../../game/tactical.js';
 import {BATTLE_PLAYBACK,battleFrameDuration,battleFrameFocus} from '../../game/battle-playback.js';
 import {movementStepDuration} from './three/movement-timing';
 import {admittedReloadWork,admittedThrownRelease,nativeActionFrameDuration} from './three/action-timing';
+import {admittedMountTransitions,mountFrameDuration} from './three/mount-presentation';
 import enemyWorkerUrl from './enemy-turn-worker.ts?worker&url';
 const stepMs=BATTLE_PLAYBACK.step;
 export function presentedFrameDuration(frame:any,previous:any){
- if(frame.type!=='step'||!frame.unitId)return nativeActionFrameDuration(frame,battleFrameDuration(frame));
+ if(frame.type!=='step'||!frame.unitId)return mountFrameDuration(frame,nativeActionFrameDuration(frame,battleFrameDuration(frame)));
  const actor=frame.state.units.find((unit:any)=>unit.id===frame.unitId),before=previous.units.find((unit:any)=>unit.id===frame.unitId);
  if(!actor||!before)return stepMs;
  // Each observed step is adjacent. Reappearing actors do not expose the
@@ -39,7 +40,7 @@ export function useEnemyPlayback(committed:any,onChange:(state:any)=>any,onBusy?
    if(!current()||validate?.(result.state)===false)return;
    let cameraFocus:any=null,index=0,previous=source,grenadeEffect:any=null,actionId=0,actionStartedAt=0,actionDurationMs=0;
    const sequenceId=`${generation}:${++presentationSequence.current}`;
-   const frames=admittedThrownRelease(admittedReloadWork(result.frames));
+   const frames=admittedMountTransitions(admittedThrownRelease(admittedReloadWork(result.frames)));
    let timingState=source;const durations=frames.map((next:any)=>{const duration=presentedFrameDuration(next,timingState);timingState=next.state;return duration;});
    for(const next of frames){
     if(!current())return;

@@ -316,7 +316,7 @@ function BattlefieldContents({battle:committed,onPlaybackBusy,onPlaybackValidate
     return accepted===null?null:accepted??next;
     };
     if(['move','climb'].includes(a.type)){void calculation.run(request).then(accept);return null;}
-    if(['fire','firePoint','melee','meleePoint','charge','throwKnife','throwGrenade','reload','reprime','artillery','artilleryReload','artilleryMove','artilleryPivot','useItem','heal'].includes(actionType)){const result=presentedActBattle(s,request);if(result.state.lastError)return accept(result.state);void presentation.present(result,next=>accept(next,true));return null;}
+    if(['fire','firePoint','melee','meleePoint','charge','throwKnife','throwGrenade','reload','reprime','mount','artillery','artilleryReload','artilleryMove','artilleryPivot','useItem','heal'].includes(actionType)){const result=presentedActBattle(s,request);if(result.state.lastError)return accept(result.state);void presentation.present(result,next=>accept(next,true));return null;}
     return accept(actBattle(s,request));
   };
   function placeInventoryItem(point:any){

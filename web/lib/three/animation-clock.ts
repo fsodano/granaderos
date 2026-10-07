@@ -1,10 +1,10 @@
 /** Pure visual time mapping. No animation event is a gameplay command. */
 export type AnimationClockClip={duration:number;loop:boolean;playbackRate?:number;locomotionSpeed?:number;nativeStrideSpeed?:number;markers?:Record<string,number>};
-export type AnimationWork={from:number;to:number};
+export type AnimationWork={from:number;to:number;hand?:'primary'|'offhand'};
 export type AnimationClockCue={action:string;startedAt:number;durationMs?:number;phase?:string;phaseStartedAt?:number;phaseDurationMs?:number;work?:readonly AnimationWork[]};
 export type AnimationClockMotion={moving?:boolean;elapsedMs?:number;elapsedDistance?:number;signedDistance?:number;speed?:number;signedForwardSpeed?:number;segmentFraction?:number};
 export type AnimationClockInput={clip:AnimationClockClip;action:string;cue?:AnimationClockCue;motion?:AnimationClockMotion;now:number;reducedMotion?:boolean};
-export type AnimationClockSample={time?:number;rate:number;complete:boolean;phaseComplete:boolean;cueControlsAction:boolean};
+export type AnimationClockSample={time?:number;rate:number;complete:boolean;phaseComplete:boolean;cueControlsAction:boolean;workIndex?:number};
 const clamp=(value:number,min:number,max:number)=>Math.max(min,Math.min(max,value));
 const wrap=(time:number,duration:number)=>(time%duration+duration)%duration;
 const locomotion=new Set(['walk','run','crawl','strafeLeft','strafeRight','artilleryMove']);
@@ -70,10 +70,16 @@ export function sampleAnimationTime({clip,action,cue,motion,now,reducedMotion=fa
     const elapsed=Math.max(0,(now-start)/1000),fraction=clamp(elapsed/span,0,1);
     const ranges=animationPhaseRanges(clip,action,phase,cue.work);
     const length=ranges.reduce((sum,[begin,end])=>sum+end-begin,0);
-    let distance=length*fraction,time=ranges.at(-1)![1];
-    for(const [begin,end]of ranges){if(distance<=end-begin){time=begin+distance;break;}distance-=end-begin;}
+    let distance=length*fraction,time=ranges.at(-1)![1],rangeIndex=ranges.length-1;
+    for(let index=0;index<ranges.length;index++){
+      const [begin,end]=ranges[index],segment=end-begin;
+      // A completed charge hands over to the next one at the boundary. Empty
+      // preparation remnants cannot select the gun whose paid work has ended.
+      if(distance<segment-1e-9||index===ranges.length-1){time=begin+Math.min(segment,distance);rangeIndex=index;break;}distance-=segment;
+    }
+    const workIndex=cue.work?.length&&['reload','artilleryReload'].includes(action)?phase==='prepare'?0:rangeIndex:undefined;
     const intermediate=hasPhase&&['prepare','contact','projectile'].includes(phase);
-    return {...result,time:clamp(time,0,duration),rate:0,phaseComplete:elapsed>=span,complete:elapsed>=span&&!intermediate};
+    return {...result,time:clamp(time,0,duration),rate:0,phaseComplete:elapsed>=span,complete:elapsed>=span&&!intermediate,...(workIndex!==undefined?{workIndex}:{})};
   }
   // Accessibility suppresses idle breathing only. Gaits, recovery, weapon use,
   // reactions and stance changes keep their real visual timing.

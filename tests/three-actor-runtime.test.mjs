@@ -426,6 +426,21 @@ test('a different held weapon still stows during a knife throw and a missing rel
   assert.throws(()=>new ActorRuntime(f.asset,v),/Missing held prop marker: release/);
 });
 
+test('published thrown supplies release once and free the opposite hand without consuming retained stock',async()=>{
+ const {readFileSync}=await import('node:fs'),manifest=JSON.parse(readFileSync(new URL('../web/public/models/characters/manifest.json',import.meta.url),'utf8'));
+ for(const [action,gesture,id]of [['throwGrenade','throw','grenade'],['throwTorch','throw','torches'],['boleadoras','bolas','boleadoras']]){
+  const published=manifest.animationLibraries.male.clips.find(clip=>clip.name===`stand.gesture.${gesture}`),f=fixture();
+  const {name:publishedName,...metadata}=published;addClip(f,`stand.gesture.${gesture}`,metadata);
+  // Use the native published clock with the renamed replacement model.
+  f.asset.animation.animations.at(-1).duration=published.duration;
+  f.asset.manifest.equipment.items[id]={...f.asset.manifest.equipment.items.ramrod,...manifest.equipment.items[id],node:f.asset.manifest.equipment.items.ramrod.node};
+  const items=[{id,reference:'inventory:stock',socket:'handRight'},{id:'1805',reference:'offhand',socket:'handLeft'}],before=structuredClone(items),v=visual(f,{action,items,cue:{id:'paid-throw',action,startedAt:0,durationMs:published.duration*1000}}),runtime=new ActorRuntime(f.asset,v),supply=attached(runtime,'inventory:stock',id),pistol=attached(runtime,'offhand','1805');
+  runtime.tick(0,published.markers.release*1000-1);assert.ok(supply.visible);assert.equal(supply.parent.name,f.sockets.handRight_tool.node);assert.equal(pistol.parent.name,f.sockets.hipRight.node,'The free arm can balance without carrying a gun');
+  runtime.tick(0,published.markers.release*1000+1);assert.equal(supply.visible,false);assert.deepEqual(items,before,'Hiding the released prop never mutates gameplay stock');
+  runtime.tick(0,published.duration*1000+1);assert.ok(supply.visible,'Any retained stack returns with the ordinary held item after follow-through');assert.equal(pistol.parent.name,f.sockets.handLeft_pistol.node);assert.equal(attached(runtime,'inventory:stock',id),supply);runtime.dispose();
+ }
+});
+
 test('recorded offhand pistol fire aims the left arm and resolves the left instance muzzle',()=>{
  const f=fixture();f.asset.manifest.animationMirroring={axis:'x',bones:Object.fromEntries(Object.entries(f.names).map(([role,name])=>[name,f.names[role.replace('Left','TEMP').replace('Right','Left').replace('TEMP','Right')]]))};
  addClip(f,'stand.fire.short-gun');

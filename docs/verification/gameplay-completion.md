@@ -1,10 +1,41 @@
 # Gameplay completion work
 
-> **Development-workspace record.** This note describes a separate development
-> checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](published-progress.md) for the main branch baseline.
+> **Dated development record.** The current section distinguishes published
+> evidence from the historical checkout notes below. See
+> [published progress](published-progress.md) for individual requirements.
 
-## Current acceptance — 27 September 2026
+## Current acceptance — 7 October 2026
+
+Full gameplay completion and final visual acceptance are **not achieved**.
+The September blockers below are historical; they must not be read as the
+current state of the merged game.
+
+- Published `WIN-01` and `E-FRESH-ENDING` record a complete fresh stock historical
+  route with paid service, finite supplies, permanent losses, saved victory and
+  post-victory continuation. `POST-01` records an independently authored campaign
+  ending. These routes were accepted in earlier increments; this 3D review has
+  not rerun their long campaign checks.
+- Published `FIX-01` through `FIX-04` and `REL-02` record the later recovery,
+  recapture and physical prisoner-evacuation corrections. Their stated limits
+  still apply, including cleared-field evacuation rather than an accepted
+  stealth rescue through live hostile contact.
+- The normal battlefield uses the native 3D human library, held equipment and
+  colonial scenery. [The October review](three-gameplay-review-2026-10-07.md)
+  records the movement, rifle loading, clothing, roof and building corrections
+  merged through PRs #185–#188, plus their browser evidence and remaining limits.
+- The last broad routine check ran 745 files and 5,216 tests in 8.44 minutes.
+  It passed 5,206 tests and exposed ten old fixed-duration expectations. The
+  affected gait, wheel-route and enemy-campaign checks now pass against the
+  native movement clock. The entire routine selection was not repeated after
+  those test corrections. Subsequent increments use affected fast checks,
+  native-asset validation, type checking and live review.
+- Current visual work includes mounting support, hand-specific pistol loading,
+  throw recovery and building supports. Climbing support and duration, mounted
+  boot contact, other action contacts and the remaining gameplay parity rows
+  still require their own implementation and acceptance. A successful export
+  or one warm 60 FPS scene does not close those requirements.
+
+## Historical acceptance — 27 September 2026 (superseded)
 
 Full gameplay completion is **not achieved**. Current evidence takes precedence
 over the historical progress notes below.

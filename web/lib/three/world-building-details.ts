@@ -42,12 +42,13 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
   const at=(u:number,v:number,y:number)=>{const point=frame.at(u,v);return new Vector3((point.x+wallInset)*T,base+y,(point.y+wallInset)*T);};
   const box=(u:number,v:number,y:number,w:number,h:number,d:number,material=wall)=>batch.primitive('box',material,at(u,v,y),[w*T,h,d*T],rotation,light);
   const wallAt=(u:number,v:number)=>{const point=frame.at(u,v);return walls.find(tile=>tile.x===point.x&&tile.y===point.y);};
+  const bearing=(u:number,v=0,actualAlong=false)=>[u-(actualAlong?alongInset:.06*(frame.u.x+frame.u.y)),v-.06*(frame.v.x+frame.v.y)] as const;
   const walkableAbove=(u:number,v:number,w:number)=>{
     const point=at(u,v,0),reach=(w+1)*T*.5;
     return (input.terrain.upperSurfaces??[]).some(surface=>!surface.blocked&&(surface.tacticalLevel??0)>0&&Math.abs(surface.x*T-point.x)<reach-1e-6&&Math.abs(surface.y*T-point.z)<reach-1e-6);
   };
   const entranceSupports=()=>[Math.round(frame.doorU-1),Math.round(frame.doorU+1)].filter(u=>u>=0&&u<=frame.width&&wallAt(u,0)?.type==='wall');
-  const palaceSupports=kind==='palace'?entranceSupports():[],hasBalcony=palaceSupports.length===2;
+  const palaceSupports=kind==='palace'?entranceSupports():[],hasBalcony=palaceSupports.length===2&&height>=4;
   const feature=(name:string,draw:()=>void)=>{
     const previous=batch;batch=new WorldBatch(geometry);draw();root.add(batch.finish(`building-detail:${b.id}:${name}`));batch=previous;
   };
@@ -99,18 +100,7 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
     }
     });
   };
-  const gallery=(depth=.65)=>feature('gallery',()=>{
-    const roofY=height*.81;
-    for(let u=.35;u<frame.width;u+=1.20){
-      if(Math.abs(u-doorU)<.48)continue;
-      batch.cylinder(wood,at(u,-depth,.08),at(u,-depth,roofY),.055,light);box(u,-depth,.06,.15,.12,.15,materials.get('stone'));
-      batch.cylinder(wood,at(u,-depth,roofY-.39),at(u+(u<frame.width/2?.24:-.24),-depth,roofY-.03),.028,light);
-    }
-    const panel=[at(-.10,-depth-.15,roofY),at(frame.width+.10,-depth-.15,roofY),at(frame.width+.10,.08,roofY+.20),at(-.10,.08,roofY+.20)];
-    batch.polygon(roof,panel,light,roofTextureProjector(panel));
-    batch.polygon(darkwood,[panel[0],panel[1],panel[1].clone().add(new Vector3(0,-.07,0)),panel[0].clone().add(new Vector3(0,-.07,0))],light);
-    box(frame.width*.5,-depth,roofY-.05,frame.width+.18,.12,.13,wood);
-  });
+  const frontSupports=()=>Array.from({length:Math.floor(frame.width)+1},(_,u)=>u).filter(u=>wallAt(u,0)?.type==='wall'&&(u===0||u===frame.width||u%2===0||Math.abs(u-frame.doorU)===1));
   const roofCanopy=(name:string,supports:number[],depth=.55,masonry=false)=>{
     if(supports.length<2||height<2.4)return;
     const lo=Math.min(...supports),hi=Math.max(...supports),low=Math.max(2.12,height*.82),high=low+.24,front=-depth-.15,back=.16;
@@ -132,9 +122,34 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
     });
     root.getObjectByName(`building-detail:${b.id}:${name}`)?.add(roofEdgeDetails(`${b.id}:${name}`,[panel],low,geometry,roof,darkwood,light));
   };
-  const chimney=(u:number,v:number,options:{material?:MeshStandardMaterial;top?:number;industrial?:boolean}={})=>feature(options.industrial?'forge-chimney':'domestic-chimney',()=>{
+  const farmhouseGallery=()=>{
+    const frontSupports=[...new Set([0,.3,.7,1].map(r=>Math.round(frame.width*r)))].filter(u=>wallAt(u,0)?.type==='wall'),length=Math.max(1,Math.round(frame.depth*.57)),sideSupports=[0,length].filter(v=>wallAt(0,v)?.type==='wall');
+    const hasFront=frontSupports.length>=2,hasSide=sideSupports.length===2,joint=hasFront&&hasSide&&frontSupports[0]===0;
+    if((!hasFront&&!hasSide)||height<2.4)return;
+    const low=height-.16,high=height+.12,outside=-.45,inside=.42,postTop=low+(0-outside)/(inside-outside)*(high-low),panels:Vector3[][]=[];
+    feature('farmhouse-gallery',()=>{
+      const post=(u:number,v:number,du:number,dv:number)=>{
+        box(u,v,postTop*.5,.11/T,postTop,.11/T,wood);box(u,v,.055,.21/T,.11,.21/T,materials.get('stone'));
+        batch.cylinder(wood,at(u,v,postTop-.32),at(u+du*.30,v+dv*.30,postTop-.06),.027,light);
+      };
+      if(hasFront){
+        const lo=Math.min(...frontSupports),hi=Math.max(...frontSupports);
+        for(const u of frontSupports)post(u,0,u===lo?1:-1,0);
+        box((lo+hi)*.5,0,postTop-.04,hi-lo+.18,.12,.14/T,wood);
+        panels.push([at(joint?outside:lo-.15,outside,low),at(hi+.15,outside,low),at(hi+.15,inside,high),at(joint?inside:lo-.15,inside,high)]);
+      }
+      if(hasSide){
+        for(const v of sideSupports)if(v!==0||!joint)post(0,v,0,v===0?1:-1);
+        box(0,length*.5,postTop-.04,.14/T,.12,length+.18,wood);
+        panels.push([at(outside,length+.15,low),at(outside,joint?outside:0,low),at(inside,joint?inside:0,high),at(inside,length+.15,high)]);
+      }
+      for(const panel of panels)batch.polygon(roof,panel,light,roofTextureProjector(panel));
+    });
+    root.getObjectByName(`building-detail:${b.id}:farmhouse-gallery`)?.add(roofEdgeDetails(`${b.id}:farmhouse-gallery`,panels,low,geometry,roof,darkwood,light));
+  };
+  const chimney=(u:number,v:number,options:{material?:MeshStandardMaterial;capMaterial?:MeshStandardMaterial;top?:number;industrial?:boolean;name?:string}={})=>feature(options.name??(options.industrial?'forge-chimney':'domestic-chimney'),()=>{
     const bottom=height-.12,top=options.top??height+1.02,w=options.industrial?.42:.38,cap=options.industrial?.56:.48;
-    box(u,v,(bottom+top)*.5,w,top-bottom,w,options.material??materials.get('brick'));box(u,v,top+.015,cap,.12,cap,trim);box(u,v,top+.08,w-.11,.018,w-.11,darkwood);
+    box(u,v,(bottom+top)*.5,w,top-bottom,w,options.material??materials.get('brick'));box(u,v,top+.015,cap,.12,cap,options.capMaterial??trim);box(u,v,top+.08,w-.11,.018,w-.11,darkwood);
   });
   const sideChimney=(industrial=false)=>{
     const supports=[frame.width,0].flatMap(u=>Array.from({length:Math.max(0,Math.floor(frame.depth)-1)},(_,n)=>({u,v:n+1}))).filter(({u,v})=>{
@@ -200,21 +215,22 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
     });
     feature('church-facade-pilasters',()=>{
       for(const u of [0,frame.width])if(wallAt(u,0)?.type==='wall'){
-        box(u,-.13/T,height*.5,.23/T,height,.31/T,trim);box(u,-.13/T,.11,.34/T,.22,.35/T,materials.get('stone'));box(u,-.13/T,height-.035,.35/T,.15,.36/T,trim);
+        const [a,v]=bearing(u);box(a,v,height*.5,.23/T,height,.38/T,trim);box(a,v,.11,.34/T,.22,.38/T,materials.get('stone'));box(a,v,height-.035,.35/T,.15,.38/T,trim);
       }
     });
     for(let v=1;v<frame.depth;v+=1.6)for(const u of [0,frame.width])if(wallAt(u,Math.round(v))?.type==='wall')box(u,v,.80,.20,1.6,.32,trim);
   }else if(['cabildo','townhall'].includes(kind)){
-    const twoStoreys=height>=4,storey=twoStoreys?height*.50:height,columns:number[]=[];
-    for(let u=0;u<=frame.width;u++)if(wallAt(u,0)?.type==='wall')columns.push(u===0||u===frame.width?u:u-alongInset);
-    columns.sort((a,b)=>a-b);
+    const twoStoreys=height>=4,storey=twoStoreys?height*.50:height,records:{a:number;u:number;v:number}[]=[];
+    for(let u=0;u<=frame.width;u++)if(wallAt(u,0)?.type==='wall'){const [a,v]=bearing(u,0,u!==0&&u!==frame.width);records.push({a:u===0||u===frame.width?u:u-alongInset,u:a,v});}
+    records.sort((a,b)=>a.a-b.a);
     const arcade=(name:string,bottom:number,top:number,upper=false)=>feature(name,()=>{
-      for(const u of columns){box(u,-.16/T,(bottom+top)*.5,.21/T,top-bottom,.25/T,trim);box(u,-.16/T,top-.08,.30/T,.13,.29/T,trim);}
+      const columns=records.map(record=>upper?record.a:record.u);
+      for(const record of records){const u=upper?record.a:record.u,v=upper?-.16/T:record.v;box(u,v,(bottom+top)*.5,.21/T,top-bottom,(upper?.25:.38)/T,trim);box(u,v,top-.08,.30/T,.13,(upper?.29:.38)/T,trim);}
       for(let n=1;n<columns.length;n++){
-        const left=columns[n-1]+.14/T,right=columns[n]-.14/T;
+        const margin=(upper?.14:.10)/T,left=columns[n-1]+margin,right=columns[n]-margin;
         if(right-left<.25/T)continue;
         const radius=(right-left)*T*.5,center=(left+right)*.5,peak=top-.17,spring=peak-Math.min(radius,.52);
-        const arch=Array.from({length:17},(_,k)=>at(center+Math.cos(k*Math.PI/16)*radius/T,-.20/T,spring+Math.sin(k*Math.PI/16)*(peak-spring)));
+        const arch=Array.from({length:17},(_,k)=>at(center+Math.cos(k*Math.PI/16)*radius/T,upper?-.20/T:-.04,spring+Math.sin(k*Math.PI/16)*(peak-spring)));
         if(upper){
           // Upper arcade recesses are scenery on the retained exterior shell.
           // They never create new playable doors or reveal actors indoors.
@@ -251,22 +267,29 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
   }else if(kind==='posta'){
     const supports=[...new Set([0,...entranceSupports(),frame.width])].filter(u=>wallAt(u,0)?.type==='wall').sort((a,c)=>a-c);
     roofCanopy('posta-masonry-veranda',supports,.55,true);
-  }else if(['farmhouse','estancia','pulperia'].includes(kind)){
-    gallery(kind==='pulperia'?.75:.55);
-    if(kind==='farmhouse'||kind==='estancia')chimney(Math.max(.60,frame.width-.65),Math.max(.55,frame.depth-.60));
-    if(kind==='pulperia')feature('trade-sign',()=>{
-      const u=Math.min(frame.width-.55,doorU+1.15),y=height*.68;
-      box(u,-.30,y+.40,.055,.055,.66,iron);
-      for(const offset of [-.19,.19])box(u+offset,-.58,y+.22,.017,.36,.02,iron);
-      box(u,-.58,y,.58,.36,.06,wood);
-      for(const offset of [-.17,.17])box(u+offset,-.625,y,.022,.25,.018,trim);
-      for(const offset of [-.105,.105])box(u,-.625,y+offset,.47,.020,.018,trim);
+  }else if(['farmhouse','estancia'].includes(kind)){
+    farmhouseGallery();
+    const flat=b.roof==='terrace'||(input.terrain.upperSurfaces??[]).some(surface=>surface.kind==='roof'&&surface.buildingId===b.id),rise=flat?0:Math.min(getBuildingProfile(b).roofRise/25.066666666666666,Math.max(.4,frame.width*.28));
+    for(const u of [0,frame.width]){
+      const v=Array.from({length:Math.max(0,Math.floor(frame.depth)-1)},(_,n)=>n+1).filter(v=>wallAt(u,v)?.type==='wall'&&!walkableAbove(u-alongInset,v-depthInset,.48)).sort((a,c)=>Math.abs(a-frame.depth+1)-Math.abs(c-frame.depth+1))[0];
+      if(v!==undefined)chimney(u-alongInset,v-depthInset,{name:u===0?'farmhouse-chimney-left':'farmhouse-chimney-right',material:wall,capMaterial:materials.get('stone'),top:height+rise+.68});
+    }
+  }else if(kind==='pulperia'){
+    roofCanopy('gallery',frontSupports(),.55);
+    const support=Array.from({length:Math.floor(frame.width)+1},(_,u)=>u).filter(u=>wallAt(u,0)?.type==='wall').sort((a,c)=>Math.abs(a-frame.doorU-1)-Math.abs(c-frame.doorU-1))[0];
+    if(support!==undefined&&height>=2.4)feature('trade-sign',()=>{
+      const u=support-alongInset,y=Math.max(2.05,Math.max(2.12,height*.82)-.055);
+      box(u,-.04,y+.21,.50,.035,.10,iron);
+      for(const offset of [-.19,.19])box(u+offset,-.082,y+.17,.017,.12,.02,iron);
+      box(u,-.052,y,.58,.30,.06,wood);
+      for(const offset of [-.17,.17])box(u+offset,-.088,y,.022,.25,.012,trim);
+      for(const offset of [-.105,.105])box(u,-.092,y+offset,.47,.020,.010,trim);
       // A small barrel emblem identifies trade without adding tiny text.
-      box(u,-.638,y,.13,.21,.018,darkwood);for(const offset of [-.065,.065])box(u,-.65,y+offset,.17,.025,.020,trim);
+      box(u,-.090,y,.13,.21,.012,darkwood);for(const offset of [-.065,.065])box(u,-.092,y+offset,.17,.025,.010,trim);
     });
   }else if(kind==='palace'){
-    const floor=height*.56;
-    feature('entrance-columns',()=>{for(const support of palaceSupports){const u=support-alongInset;batch.cylinder(trim,at(u,-.25,.08),at(u,-.25,floor-.13),.10,light);box(u,-.25,.08,.24,.16,.24,materials.get('stone'));box(u,-.25,floor-.15,.25,.12,.25,trim);}});
+    const floor=hasBalcony?height*.56:height;
+    feature('entrance-columns',()=>{for(const support of palaceSupports){const [u,v]=bearing(support,0,true);batch.cylinder(trim,at(u,v,.08),at(u,v,floor-.13),.18,light);box(u,v,.08,.38/T,.16,.38/T,materials.get('stone'));box(u,v,floor-.15,.38/T,.12,.38/T,trim);}});
     if(hasBalcony)feature('palace-balcony',()=>{
       const lo=Math.min(...palaceSupports)-alongInset,hi=Math.max(...palaceSupports)-alongInset;
       box((lo+hi)*.5,-.27,floor-.08,hi-lo+.25,.16,.65,materials.get('stone'));
@@ -282,12 +305,17 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
       for(const u of [lo,hi])box(u,-.10/T,(floor+height)*.5,.17,height-floor,.14,trim);
     });
   }else if(['warehouse','depot','stable','barracks'].includes(kind)){
-    for(let v=.3;v<frame.depth;v+=1.7)for(const u of [0,frame.width])box(u,v,.5,.18,1,.22,trim);
+    for(let v=1;v<frame.depth;v+=2)for(const u of [0,frame.width])if(wallAt(u,v)?.type==='wall')box(u,v,.5,.16,1,.18,trim);
     if(kind==='warehouse')roofCanopy('loading-canopy',entranceSupports(),.50);
-    if(kind==='depot'){gallery(.60);box(frame.doorU,-.52,1.2,.10,2.4,.1,wood);batch.primitive('torus',iron,at(frame.doorU,-.75,2.2),[.12,.12,.12],rotation,light);}
+    if(kind==='depot'){
+      roofCanopy('gallery',frontSupports(),.60);
+      const supports=entranceSupports();if(supports.length===2&&height>=2.4&&!walkableAbove(doorU,-.08,2.25))feature('depot-hoist',()=>{
+        box(doorU,-.08,height-.05,2.20,.12,.13/T,wood);batch.primitive('torus',iron,at(doorU,-.10,height-.01),[.12,.12,.12],rotation,light);batch.cylinder(iron,at(doorU,-.10,height-.10),at(doorU,-.10,height-.26),.014,light);
+      });
+    }
     if(kind==='barracks')feature('barracks-gate',()=>{
       const supports=entranceSupports();
-      for(const support of supports)box(support-alongInset,-.09/T,height*.50,.22,height,.20/T,trim);
+      for(const support of supports){const [u,v]=bearing(support,0,true);box(u,v,height*.50,.22,height,.38/T,trim);}
       if(supports.length!==2)return;
       const lo=Math.min(...supports)-alongInset,hi=Math.max(...supports)-alongInset;
       box((lo+hi)*.5,-.11/T,height-.06,hi-lo+.24,.18,.25/T,trim);
@@ -302,8 +330,8 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
       const y=height*.91;
       box(frame.width*.5,-.13/T,y,frame.width+.10,.14,.20/T,wood);
       for(let u=0;u<=frame.width;u+=2)if(wallAt(u,0)?.type==='wall'){
-        const a=u-alongInset;box(a,-.13/T,y*.5,.15,y,.20/T,wood);
-        batch.cylinder(wood,at(a,-.25/T,y-.43),at(a+(u<frame.width/2?.42:-.42),-.25/T,y-.04),.04,light);
+        const [a,v]=bearing(u,0,u!==0&&u!==frame.width);box(a,v,y*.5,.15,y,.38/T,wood);
+        batch.cylinder(wood,at(a,v,y-.30),at(a+(u<frame.width/2?.42:-.42),v,y-.04),.04,light);
       }
       const center=frame.width*.5,half=Math.min(1.20,frame.width*.32),rise=.65,v=-.11/T;
       const panel=[at(center-half,v,height+.025),at(center+half,v,height+.025),at(center,v,height+rise)];
@@ -313,7 +341,7 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
     });
   }else if(kind==='smithy'){sideChimney(true);roofCanopy('forge-canopy',entranceSupports(),.50);}
   else if(kind==='house')sideChimney();
-  if(['palace','mansion'].includes(kind))feature('upper-windows',()=>{
+  if(['palace','mansion'].includes(kind)&&height>=4)feature('upper-windows',()=>{
     for(let u=.7;u<frame.width;u+=1.35){
       if(hasBalcony&&Math.abs(u-doorU)<.64)continue;
       const y=height*.71;box(u,-.085/T,y,.45/T,.65,.04/T,darkwood);
