@@ -9,7 +9,9 @@ from character import create_character,neutral_pose
 from optimize import optimize_character
 from sockets import create_sockets
 
-parser=argparse.ArgumentParser();parser.add_argument('kind');parser.add_argument('--preset',default='granadero');parser.add_argument('--lod',type=int,default=0);parser.add_argument('--review',action='store_true');args=parser.parse_args(sys.argv[sys.argv.index('--')+1:])
+parser=argparse.ArgumentParser();parser.add_argument('kind');parser.add_argument('--preset',default='granadero');parser.add_argument('--lod',type=int,default=0);parser.add_argument('--review',action='store_true');parser.add_argument('--output-dir',type=Path);parser.add_argument('--metadata-dir',type=Path);args=parser.parse_args(sys.argv[sys.argv.index('--')+1:])
+if args.output_dir:OUT=args.output_dir;OUT.mkdir(parents=True,exist_ok=True)
+if args.metadata_dir:META=args.metadata_dir;META.mkdir(parents=True,exist_ok=True)
 bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=False)
 scene=bpy.context.scene;scene.render.fps=30
 

@@ -101,7 +101,8 @@ export function presentActors(state:any,entries:readonly ActorEntry[],positions:
     const frame=options.frame;
     const assignedCrew=frame&&['artillery','artilleryReload','artilleryMove','artilleryPivot'].includes(frame.action)&&frame.crewIds?.includes(actor.id);
     if(kind==='unit'&&(frame?.unitId===actor.id||assignedCrew)&&frame.performed!==false&&!lifeCue(cue)){
-      if(frame.releaseComplete)cue=undefined;
+      if(frame.releaseComplete||frame.mountComplete)cue=undefined;
+      if(frame.mountAction)cue={id:`${frame.sequenceId}:${frame.actionId}:mount:${key}`,action:frame.mountAction,fromPosture:frame.mountFromPosture,phase:'prepare',startedAt:frame.startedAt,phaseStartedAt:frame.startedAt,phaseDurationMs:frame.durationMs,durationMs:frame.durationMs};
       const semantic=semanticOrder(frame.action,frame,actor);
       if(semantic&&frame.type!=='step'&&!(frame.shotComplete||frame.contactComplete||frame.releaseComplete)&&frame.shotVisual?.discharge!==false){
         const shotHand=frame.shotHand??frame.shotVisual?.shotHand,shotId=frame.shotId??frame.shotVisual?.shotId;

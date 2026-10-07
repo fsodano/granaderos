@@ -847,8 +847,9 @@ def apply_animations(ctx, only=None):
     specs=_semantic_specs()
     if only:specs=[s for s in specs if s['name'] in only]
     loading_only=bool(only) and all(s['gesture'] in ('reload','reprime','repair','unload') for s in specs)
+    mounting_only=bool(only) and all(s['gesture'] in ('mount','dismount') for s in specs)
     throwing_only=bool(only) and all(s['gesture'] in ('throw','throwKnife','bolas') for s in specs)
-    contact_only=loading_only or throwing_only
+    contact_only=loading_only or mounting_only or throwing_only
     reviewed,reviewed_digest=({},None) if contact_only else _reviewed_bank(ctx)
     ctx['reviewed_stride']={name:reviewed[name]['locomotionSpeed'] for name in ('Walk','Run') if name in reviewed}
     disabled=[]
@@ -891,8 +892,12 @@ def apply_animations(ctx, only=None):
         elif gesture=='recover':duration=source_meta['recover']['duration'];source=source_meta['recover']['source'];markers={'standing':duration*.95}
         elif gesture=='artilleryFire':duration=1.6;markers={'shot':.8}
         elif gesture=='artilleryReload':duration=4;markers={'contact':1.8,'ready':3.7}
-        elif gesture in ('mount','dismount'):duration=2.3;markers={'seat':duration*(.72 if gesture=='mount' else .20)}
+        elif gesture in ('mount','dismount'):duration=2.3;markers={'seat':duration*(.90 if gesture=='mount' else .10)}
         times=sorted(set([duration*i/max(2,round(duration*SAMPLE_FPS)) for i in range(max(2,round(duration*SAMPLE_FPS))+1)]+list(markers.values())))
+        if gesture in ('mount','dismount'):
+            # Use the exported frame grid in both directions. Unequal old
+            # seat-marker keys otherwise bend the reverse leg path differently.
+            times=sorted(set([i/FPS for i in range(round(duration*FPS)+1)]+list(markers.values())))
         if equipment=='long-gun' and gesture in ('reload','unload'):
             # Exact contact stages prevent a short unloading clip from
             # interpolating past its single muzzle contact between samples.
@@ -957,7 +962,8 @@ def apply_animations(ctx, only=None):
                     pose=_collect(rig)
             elif gesture in ('climbUp','climbDown'):pose=_at(sources[gesture],t)
             elif gesture in ('mount','dismount'):
-                u=t*t*(3-2*t);pose=_blend(idle,mounted,u if gesture=='mount' else 1-u)
+                from mounted_motion import mount_pose
+                pose=mount_pose(ctx,idle,mounted,t,reverse=gesture=='dismount')
             elif gesture in ('throw','throwKnife','bolas'):
                 from throwing_motion import pose as throwing_pose
                 pose=throwing_pose(ctx,base,gesture,t,posture)
@@ -995,6 +1001,9 @@ def apply_animations(ctx, only=None):
         if equipment=='long-gun' and gesture in ('reload','unload'):
             from rifle_loading import metadata as rifle_loading_metadata
             meta.update(rifle_loading_metadata(ctx,spec.get('item'),duration))
+        if gesture in ('mount','dismount'):
+            from mounted_motion import metadata as mounted_motion_metadata
+            meta.update(mounted_motion_metadata(ctx,duration,reverse=gesture=='dismount'))
         if gesture in ('throw','throwKnife','bolas'):
             meta['freeHands']=['handRight','handLeft']
             meta['handProps']=[{'hand':'handRight','categories':['knife'] if gesture=='throwKnife' else ['supply'],'untilMarker':'release'}]
@@ -1016,7 +1025,7 @@ def apply_animations(ctx, only=None):
                 else:crawl_stride=_crawl_stride(rig,samples,duration)
             meta.update(crawl_stride);source_meta['crawl']['locomotionSpeed']=crawl_stride['locomotionSpeed']
         if gesture.startswith('strafe'):meta['locomotionAxis']='left' if gesture=='strafeLeft' else 'right'
-        if posture=='mounted':meta['seatAnchor']=list(rig.data.bones['pelvis'].head_local)
+        if posture=='mounted' and gesture not in ('mount','dismount'):meta['seatAnchor']=list(rig.data.bones['pelvis'].head_local)
         if posture=='mounted' and gesture in ('die','collapse','knockdown'):
             # Native collapse samples already reach the ground. Remove the
             # saddle offset as the rider falls, before the ground contact.

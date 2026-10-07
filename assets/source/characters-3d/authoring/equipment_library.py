@@ -56,7 +56,7 @@ def create_library(ctx):
   record(key,g,category,grip)
  g=fresh('1812');h['tube']('Lance_Shaft',[(0,0,-.8),(0,0,1.85)],[.017,.010],h['walnut'],g,12);h['stock']('Lance_Head',[(1.84,0,.014,.012),(2.05,0,.003,.002)],h['blade'],g)
  # The spearhead is aligned with the long shaft (+Z in Blender).
- tip=g.children[-1]
+ tip=next(child for child in g.children if child.name=='Lance_Head')
  for v in tip.data.vertices:v.co=Vector((v.co.y,v.co.z,v.co.x))
  done('1812',g,'lance','sabre')
  g=fresh('ramrod');h['tube']('Loose_Ramrod',[(0,0,-.10),(0,0,.75)],.003,h['steel'],g,8);done('ramrod',g)

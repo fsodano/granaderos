@@ -126,7 +126,8 @@ export class ActorRuntime {
       // Active tools and supplies remain visible for their own gestures. Timed
       // props claim their hand even when the current item is a tool.
       const stow=held&&(propHands.has(hand as HandRole)||weapon&&free.has(hand as HandRole)&&!handProp);
-      const role=stow?(item.stowedSocket??'hipLeft'):hand==='hip'?(item.stowedSocket??'hipLeft'):hand;
+      const stowItem=stow?spec.stowItems?.find(fitting=>fitting.categories.includes(item.category??'')):undefined;
+      const role=stow?(stowItem?.socket??item.stowedSocket??'hipLeft'):hand==='hip'?(item.stowedSocket??'hipLeft'):hand;
       const target=this.socket(role,['handRight','handLeft'].includes(role)?item.grip:undefined);
       if(!target)throw Error(`Missing ${role} socket for presentation item: ${object.userData.itemId}`);
       if(object.parent!==target)target.add(object);
@@ -134,6 +135,10 @@ export class ActorRuntime {
       // The authored offset follows that clip's clock and returns to zero;
       // inventory ownership and the geometry's dimensions stay unchanged.
       this.itemTransform(object,item);
+      if(stowItem){
+        if(stowItem.position){object.position.x+=stowItem.position[0];object.position.y+=stowItem.position[1];object.position.z+=stowItem.position[2];}
+        if(stowItem.rotation)object.rotation.fromArray([...stowItem.rotation,'XYZ'] as any);
+      }
       const grip=!stow&&held?spec.gripOffsets?.find(offset=>offset.hand===hand):undefined;
       if(grip?.keys.length){
         let position=grip.keys[0].position;
@@ -224,6 +229,8 @@ export class ActorRuntime {
     this.action.timeScale=timing.rate;if(timing.time!==undefined)this.action.time=timing.time;
     this.mixer.update(Math.min(delta,.1));this.poseCloth(Math.min(delta,.1));this.placeEquipment(this.action.time);this.timedProps(this.action.time);
     if(this.horse&&this.horseMixer){
+      const visibility=this.clipSpec.horseVisibility;
+      if(visibility)this.horse.visible=this.action.time>=visibility.start&&this.action.time<=visibility.end;
       if(this.horseAction){const horseSpec=this.asset.manifest.horse?.clips?.find(clip=>clip.name===this.horseClip),horseTime=sampleAnimationTime({clip:{duration:this.horseAction.getClip().duration,loop:true,locomotionSpeed:horseSpec?.locomotionSpeed},action:visual.action,motion:inputMotion,now});this.horseAction.timeScale=horseTime.rate;if(horseTime.time!==undefined)this.horseAction.time=horseTime.time;}
       this.horseMixer.update(Math.min(delta,.1));
       const anchor=this.clipSpec.seatAnchor,saddleSpec=this.asset.manifest.horse?.saddle;

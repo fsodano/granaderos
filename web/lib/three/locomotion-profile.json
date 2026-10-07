@@ -640,6 +640,24 @@
             "release": 0.754
           }
         },
+        "life.mount": {
+          "duration": 2.3,
+          "loop": false,
+          "markers": {
+            "seat": 2.07,
+            "support": 0.759,
+            "clear": 0.46
+          }
+        },
+        "life.dismount": {
+          "duration": 2.3,
+          "loop": false,
+          "markers": {
+            "seat": 0.23,
+            "support": 0.644,
+            "clear": 1.84
+          }
+        },
         "crew.artilleryReload": {
           "duration": 4,
           "loop": false,
@@ -1660,6 +1678,24 @@
           "loop": false,
           "markers": {
             "release": 0.754
+          }
+        },
+        "life.mount": {
+          "duration": 2.3,
+          "loop": false,
+          "markers": {
+            "seat": 2.07,
+            "support": 0.759,
+            "clear": 0.46
+          }
+        },
+        "life.dismount": {
+          "duration": 2.3,
+          "loop": false,
+          "markers": {
+            "seat": 0.23,
+            "support": 0.644,
+            "clear": 1.84
           }
         },
         "crew.artilleryReload": {

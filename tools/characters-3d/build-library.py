@@ -51,7 +51,7 @@ for gender in ('male','female'):
   for clip in bank['clips']:
    if 'seatAnchor'in clip or clip.get('gesture')in ('mount','dismount'):
     x,y,z=clip.get('seatAnchor',anchor);clip['seatAnchor']=[x,z,-y];clip['seatAnchorSpace']='gltf-model-local'
-   if clip.get('gesture')in ('mount','dismount'):
+   if clip.get('gesture')in ('mount','dismount')and not clip.get('seatWeight'):
     mount=clip['gesture']=='mount';clip['seatWeight']=[{'time':0,'weight':0 if mount else 1},{'time':clip['markers']['seat'],'weight':1 if mount else 0},{'time':clip['duration'],'weight':1 if mount else 0}]
    if clip.get('posture')=='mounted'and clip.get('gesture')in ('die','collapse','knockdown'):
     clip['seatWeight']=[{'time':0,'weight':1},{'time':clip['markers']['ground'],'weight':0},{'time':clip['duration'],'weight':0}]

@@ -16,6 +16,9 @@ export function useActorCues(sceneId:string,entries:readonly ActorEntry[],frame?
     previous.current=entries.map(entry=>({...entry,actor:{hp:entry.actor.hp,unconscious:entry.actor.unconscious,knockedDown:entry.actor.knockedDown,mounted:entry.actor.mounted,stance:entry.actor.stance,movementMode:entry.actor.movementMode}}));
     for(const {key,action,extra}of changes){
       const entry=entries.find(entry=>entry.key===key);
+      // Recorded mounting already played its one complete native path during
+      // preparation. Retain the observed endpoint without replay on commit.
+      if(['mount','dismount'].includes(action)&&frame?.mountComplete&&frame.unitId===entry?.actor.id)continue;
       // The direct frame renderer and HP observer share one ID. Completing
       // the frame reaction also clears the retained HP cue instead of replaying it.
       const impact=action==='hit'&&entry?admittedImpactCue(entry,frame):undefined;
