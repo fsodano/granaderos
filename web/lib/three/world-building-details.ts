@@ -1,5 +1,5 @@
 import {Group,MeshStandardMaterial,Quaternion,Vector3} from 'three';
-import {entranceFrame} from '../../../game/building-profile.js';
+import {entranceFrame,getBuildingProfile} from '../../../game/building-profile.js';
 import {buildingAppearance} from '../../../game/building-appearance.js';
 import {buildingStyle} from '../../../game/building-types.js';
 import {WorldBatch,roofTextureProjector} from './world-geometry';
@@ -73,7 +73,7 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
       box(u,cv,cy+.38,w*.54,.055,.04/T,trim);
       if(civic)clock(u,cv+face*.044/T,cy,Math.min(.34,w*T*.30),face);
       else{
-        batch.primitive('flare',materials.get('brass'),at(u,cv+face*.022/T,cy-.06),[.13,.22,.09],undefined,light);
+        batch.primitive('flare',materials.get('brass'),at(u,cv+face*.022/T,cy-.06),[.13,.22,.09],rotation,light);
         box(u,cv,cy+.20,w*.42,.045,.045/T,wood);
       }
     }
@@ -90,19 +90,50 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
     batch.polygon(darkwood,[panel[0],panel[1],panel[1].clone().add(new Vector3(0,-.07,0)),panel[0].clone().add(new Vector3(0,-.07,0))],light);
     box(frame.width*.5,-depth,roofY-.05,frame.width+.18,.12,.13,wood);
   });
-  const chimney=(u:number,v:number)=>feature('domestic-chimney',()=>{
-    const bottom=height-.12,top=height+1.02,brick=materials.get('brick');
-    box(u,v,(bottom+top)*.5,.38,top-bottom,.38,brick);box(u,v,top+.015,.48,.12,.48,trim);box(u,v,top+.08,.27,.018,.27,darkwood);
+  const chimney=(u:number,v:number,options:{material?:MeshStandardMaterial;top?:number;industrial?:boolean}={})=>feature(options.industrial?'forge-chimney':'domestic-chimney',()=>{
+    const bottom=height-.12,top=options.top??height+1.02,w=options.industrial?.42:.38,cap=options.industrial?.56:.48;
+    box(u,v,(bottom+top)*.5,w,top-bottom,w,options.material??materials.get('brick'));box(u,v,top+.015,cap,.12,cap,trim);box(u,v,top+.08,w-.11,.018,w-.11,darkwood);
   });
+  const sideChimney=(industrial=false)=>{
+    const supports=[frame.width,0].flatMap(u=>Array.from({length:Math.max(0,Math.floor(frame.depth)-1)},(_,n)=>({u,v:n+1}))).filter(({u,v})=>{
+      const point=frame.at(u,v);
+      return wallAt(u,v)?.type==='wall'&&!(input.terrain.upperSurfaces??[]).some(surface=>surface.x===point.x&&surface.y===point.y&&!surface.blocked&&(surface.tacticalLevel??0)>0);
+    }).sort((a,c)=>Math.abs(a.v-frame.depth*.66)-Math.abs(c.v-frame.depth*.66));
+    if(supports.length){
+      const {u,v}=supports[0],rise=b.roof==='terrace'?0:Math.min(getBuildingProfile(b).roofRise/25.066666666666666,Math.max(.4,frame.width*.28));
+      chimney(u-alongInset,v-depthInset,{material:industrial?materials.get('brick'):wall,top:height+rise+(industrial?1.08:.64),industrial});
+    }
+  };
 
-  if(['church','chapel'].includes(kind)){
+  if(kind==='chapel')feature('chapel-bell-gable',()=>{
+    const rise=Math.min(getBuildingProfile(b).roofRise/25.066666666666666,Math.max(.4,frame.width*.28)),bottom=height+rise*.62,spring=bottom+.55,u=doorU,outer=.64,inner=.23,front=-.17/T,back=front+.095/T;
+    // Two jambs and an arched crown leave a real bell opening. The narrow
+    // gable joins the existing front masonry without occupying floor cells.
+    box(u,front,bottom+.05,outer*2/T,.10,.19/T,trim);
+    for(const sign of [-1,1])box(u+sign*(outer+inner)*.5/T,front,(bottom+spring)*.5,(outer-inner)/T,spring-bottom,.19/T,wall);
+    const faceUV=(point:Vector3)=>[point.x*frame.u.x+point.z*frame.u.y,point.y] as const;
+    for(let n=0;n<16;n++){
+      const a=n*Math.PI/16,c=(n+1)*Math.PI/16;
+      const crown=(angle:number,width:number,rise:number,v:number)=>at(u+Math.cos(angle)*width/T,v,spring+Math.sin(angle)*rise);
+      for(const v of [front-.095/T,back])batch.polygon(wall,[crown(a,outer,.52,v),crown(c,outer,.52,v),crown(c,inner,.23,v),crown(a,inner,.23,v)],light,faceUV);
+      batch.polygon(wall,[crown(a,outer,.52,front-.095/T),crown(c,outer,.52,front-.095/T),crown(c,outer,.52,back),crown(a,outer,.52,back)],light,faceUV);
+      batch.polygon(wall,[crown(a,inner,.23,front-.095/T),crown(c,inner,.23,front-.095/T),crown(c,inner,.23,back),crown(a,inner,.23,back)],light,faceUV);
+      batch.cylinder(trim,crown(a,outer,.52,front-.105/T),crown(c,outer,.52,front-.105/T),.038,light);
+      batch.cylinder(trim,crown(a,inner,.23,front-.105/T),crown(c,inner,.23,front-.105/T),.024,light);
+    }
+    box(u,front+.025/T,spring-.035,inner*2/T,.055,.085/T,wood);
+    batch.primitive('flare',materials.get('brass'),at(u,front+.025/T,spring-.18),[.12,.22,.10],rotation,light);
+    batch.cylinder(iron,at(u,front+.025/T,spring-.25),at(u,front+.025/T,spring-.34),.022,light);
+    box(u,front,spring+.77,.035/T,.44,.035/T,iron);box(u,front,spring+.83,.23/T,.035,.035/T,iron);
+  });
+  else if(kind==='church'){
     const reserved=(end:boolean)=>[0,1].every(u=>[0,1].every(v=>wallAt(end?frame.width-u:u,v)?.type==='wall'));
     const end=[true,false].find(reserved)??[true,false].find(end=>wallAt(end?frame.width:0,0)?.type==='wall');
     if(end!==undefined){
       const wide=reserved(end),u=end?frame.width-(wide?.5:0):wide?.5:0,v=wide?.5:0;
       // The tower foundation follows the solid authored cells rather than
       // the wall-art inset. A narrow corner never occupies the nave floor.
-      tower(u-alongInset,v-depthInset,wide?1.8:.8,height+(kind==='church'?2.25:1.1));
+      tower(u-alongInset,v-depthInset,wide?1.8:.8,height+2.25);
     }
     const center=frame.width*.5;batch.polygon(wall,[at(center-1,0,height),at(center+1,0,height),at(center,0,height+.72)],light);
     for(let v=1;v<frame.depth;v+=1.6)for(const u of [0,frame.width])if(wallAt(u,Math.round(v))?.type==='wall')box(u,v,.80,.20,1.6,.32,trim);
@@ -209,9 +240,8 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
       for(let n=0;n<3;n++)batch.cylinder(wood,panel[n],panel[(n+1)%3],.04,light);
       for(let u=center-half+.18;u<center+half;u+=.25){const top=height+.025+(rise-.025)*(1-Math.abs(u-center)/half);batch.cylinder(trim,at(u,v-.015/T,height+.055),at(u,v-.015/T,top-.035),.018,light);}
     });
-  }else if(kind==='smithy'){
-    box(frame.width-.65,frame.depth-.55,(height+1)*.5,.42,height+1,.42,materials.get('brick'));box(frame.width-.65,frame.depth-.55,height+1,.56,.14,.56,trim);
-  }
+  }else if(kind==='smithy')sideChimney(true);
+  else if(kind==='house')sideChimney();
   if(['palace','mansion'].includes(kind))feature('upper-windows',()=>{
     for(let u=.7;u<frame.width;u+=1.35){
       if(hasBalcony&&Math.abs(u-doorU)<.64)continue;

@@ -69,6 +69,41 @@ test('farmhouse roof receives a capped domestic chimney, with finite shaded geom
   details.traverse(child=>{if(child instanceof Mesh){assert.ok(child.geometry.getAttribute('normal'));for(const value of child.geometry.getAttribute('position').array)assert.ok(Number.isFinite(value));}});f.dispose(details);
 });
 
+test('chapels use a roof-supported bell gable with a real arched opening in every orientation',()=>{
+  let expected;
+  for(const side of ['north','east','south','west']){
+    const f=fixture('chapel',side),height=2.5,details=architecturalDetails(f.b,f.input,T,height,0,f.geometry,f.materials,false),bell=details.getObjectByName('building-detail:review:chapel-bell-gable');
+    assert.ok(bell);assert.equal(details.getObjectByName('building-detail:review:bell-tower'),undefined,'a modest chapel must not reuse the parish tower');
+    const bounds=f.localBounds(bell),door=f.frame.doorU-.4*(f.frame.u.x+f.frame.u.y),actual=[bounds.min.x-door,bounds.max.x-door,bounds.min.y,bounds.max.y,bounds.min.z,bounds.max.z];
+    if(expected)actual.forEach((value,n)=>assert.ok(Math.abs(value-expected[n])<1e-5));else expected=actual;
+    assert.ok(bounds.min.y>height+.6);assert.ok(bell.children.some(child=>child.material?.name==='world:brass'));
+    const spring=height+30/25.066666666666666*.62+.55,p=f.frame.at(door,-1),ray=new Raycaster(new Vector3((p.x+.4)*T,spring+.14,(p.y+.4)*T),new Vector3(f.frame.v.x,0,f.frame.v.y),0,T*1.5);
+    details.updateMatrixWorld(true);assert.equal(ray.intersectObject(bell,true).length,0,'the bell gable must have an actual opening above the hanging beam');
+    f.dispose(details);
+  }
+});
+
+test('domestic and forge chimneys are supported by solid side walls and avoid playable upper floor cells',()=>{
+  for(const kind of ['house','smithy'])for(const side of ['north','east','south','west']){
+    const name=kind==='smithy'?'forge-chimney':'domestic-chimney',f=fixture(kind,side),height=2.5,before=JSON.stringify(f.input),details=architecturalDetails(f.b,f.input,T,height,0,f.geometry,f.materials,false),chimney=details.getObjectByName(`building-detail:review:${name}`),bounds=new Box3().setFromObject(chimney);
+    assert.ok(chimney);assert.ok(bounds.min.y>=height-.13&&bounds.max.y>4,'a capped chimney must clear the pitched roof');
+    if(kind==='smithy')assert.ok(chimney.children.some(child=>child.material?.name==='world:brick'),'the forge chimney keeps its brick construction');
+    const x=Math.round(bounds.getCenter(new Vector3()).x/T),y=Math.round(bounds.getCenter(new Vector3()).z/T);assert.equal(f.input.terrain.tiles.find(tile=>tile.x===x&&tile.y===y)?.type,'wall');
+    assert.equal(JSON.stringify(f.input),before);disposeWorldNode(details);
+    f.input.terrain.upperSurfaces=f.input.terrain.tiles.filter(tile=>tile.type==='wall').map(tile=>({...tile,type:'floor',kind:'roof',tacticalLevel:1,blocked:false,elevation:3}));
+    const playable=architecturalDetails(f.b,f.input,T,3,0,f.geometry,f.materials,false);assert.equal(playable.getObjectByName(`building-detail:review:${name}`),undefined,'a decoration must not occupy an existing roof walking tile');disposeWorldNode(playable);
+    delete f.input.terrain.upperSurfaces;for(const tile of f.input.terrain.tiles.filter(tile=>tile.type==='wall'))tile.type='window';
+    const unsupported=architecturalDetails(f.b,f.input,T,height,0,f.geometry,f.materials,false);assert.equal(unsupported.getObjectByName(`building-detail:review:${name}`),undefined);f.dispose(unsupported);
+  }
+});
+
+test('chapel bell gables and domestic or forge chimneys disappear with the inspected room',()=>{
+  for(const kind of ['chapel','house','smithy']){
+    const f=fixture(kind),building=buildBuilding(f.b,{...f.input,revealedRooms:['room']},T,f.geometry,f.materials);
+    assert.equal(building.getObjectByName('building-details:review'),undefined);f.dispose(building);
+  }
+});
+
 test('pitched roof eaves have depth and joined ridges, then disappear during room cutaway',()=>{
   const f=fixture('house'),a=new Vector3(0,2.5,0),b=new Vector3(4,2.5,0),c=new Vector3(2,3.5,0),d=new Vector3(2,3.5,4),e=new Vector3(0,2.5,4),g=new Vector3(4,2.5,4);
   const edges=roofEdgeDetails('review',[[a,e,d,c],[b,c,d,g]],2.5,f.geometry,f.materials.get('clay'),f.materials.get('darkwood'),1),bounds=new Box3().setFromObject(edges);
