@@ -495,6 +495,19 @@ The clean cut passed 13 affected checks, type/docs/baseline checks and the
 production export. Eighteen clean rural-house/stable/aged-control views had no
 browser errors; the house front and stable side were visually reviewed.
 
+## Posta corner exposure increment
+
+The posta shell, front piers and porch now share centred wall coordinates.
+The pale capital tops clear the original hip eave while the complete supports
+remain within their solid wall cells. Room floors join continuously; corner
+opening edits retain the original clipped shell. Warehouse placement remains
+intact. The [posta exposure review](../art/posta-exposure-3d-review-2026-10-07.md)
+records the current sprite comparison and remaining wall palette work.
+
+The final clean cut passed 77 affected checks, type/docs/baseline checks and
+the production export. Twelve clean rotation/disclosure views had no browser
+errors. Front and side exteriors and the interior were visually inspected.
+
 ## Next increments and acceptance limits
 
 The low-ceiling headwear limit, broader posture bank, braking steps and the
