@@ -55,12 +55,38 @@ for(const action of ['artilleryFire','artilleryReload','artilleryMove','artiller
 // A lance remains a blade in the rules. Only the item's visual binding
 // selects a long-shaft carry/brace/thrust instead of a sabre pose.
 const lanceOverrides={};
+const knifeOverrides={};
 for(const spec of [...clips.values()].filter(spec=>spec.equipment==='blade')){
   const name=spec.name.replace('.slash.','.thrust.').replace(/\.blade$/,'.lance');
   lanceOverrides[spec.name]=name;
   clips.set(name,Object.freeze({...spec,name,equipment:'lance',gesture:spec.gesture==='slash'?'thrust':spec.gesture}));
+  const knifeName=spec.name.replace(/\.blade$/,'.knife');
+  knifeOverrides[spec.name]=knifeName;
+  clips.set(knifeName,Object.freeze({...spec,name:knifeName,equipment:'knife'}));
 }
-export const ACTOR_ITEM_CLIP_OVERRIDES=Object.freeze({'1812':Object.freeze(lanceOverrides)});
+export const ACTOR_ITEM_CLIP_OVERRIDES=Object.freeze({'1812':Object.freeze(lanceOverrides),'1813':Object.freeze(knifeOverrides)});
+
+// Every variant presents one paid strike with one contact. The preview's
+// two-cut combination is deliberately not a gameplay animation capability.
+const strikeVariants={};
+for(const [base,variants]of [['stand.slash.blade',['forehand','backhand','thrust','hilt']],['stand.slash.knife',['backhand','thrust']]]){
+  const names=[base],spec=clips.get(base);
+  for(const variant of variants){
+    const name=`${base}.${variant}`;names.push(name);
+    clips.set(name,Object.freeze({...spec,name,variant}));
+  }
+  strikeVariants[base]=Object.freeze(names);
+}
+export const ACTOR_STRIKE_CLIP_VARIANTS=Object.freeze(strikeVariants);
+
+/** A cue keeps its selected pose through prepare, contact, and impact. */
+export function selectActorClipVariant(semantic,cueId){
+  const variants=ACTOR_STRIKE_CLIP_VARIANTS[semantic];
+  if(!variants||typeof cueId!=='string'||!cueId)return semantic;
+  let hash=2166136261;
+  for(let index=0;index<cueId.length;index++)hash=Math.imul(hash^cueId.charCodeAt(index),16777619)>>>0;
+  return variants[hash%variants.length];
+}
 
 export const ACTOR_ACTION_CAPABILITIES = Object.freeze(entries);
 export const ACTOR_CLIP_SPECS = Object.freeze([...clips.values()]);

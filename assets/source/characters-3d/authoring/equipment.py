@@ -151,8 +151,19 @@ def create_equipment(ctx):
     faces += [(i*4+j,i*4+(j+1)%4,(i+1)*4+(j+1)%4,(i+1)*4+j) for i in range(24) for j in range(4)]
     mesh('Sabre_Curved_Blade',verts,faces,blade,sabre,False)
 
-    ctx['weapons']={'rifle':rifle,'pistol':pistol,'sabre':sabre}
-    ctx['weapon_forward_local']={'rifle':'+X','pistol':'+X','sabreBlade':'+Y'}
+    # Compact working knife: 18 cm blade, 11 cm wooden grip. Single edge,
+    # thick spine and a tapered point, rather than a scaled cavalry sword.
+    knife = group('weapon_knife')
+    tube('Knife_Wood_Grip', [(0,0,-.055),(0,0,-.035),(0,0,.040),(0,0,.055)], [.012,.015,.014,.011], walnut, knife, 12)
+    tube('Knife_Ferrule', [(0,0,.047),(0,0,.058)], .012, brass, knife, 12)
+    verts=[]
+    for z,back,edge,thick in [(.058,-.010,.019,.0025),(.10,-.010,.020,.0023),(.18,-.009,.015,.0017),(.218,-.006,.007,.001),(.238,-.002,-.001,.0002)]:
+        verts.extend([(back,-thick,z),(back,thick,z),(edge,.0002,z),(edge,-.0002,z)])
+    faces=[(3,2,1,0),(16,17,18,19)]
+    faces += [(i*4+j,i*4+(j+1)%4,(i+1)*4+(j+1)%4,(i+1)*4+j) for i in range(4) for j in range(4)]
+    mesh('Knife_Single_Edge_Blade',verts,faces,blade,knife,False)
+    ctx['weapons']={'rifle':rifle,'pistol':pistol,'sabre':sabre,'knife':knife}
+    ctx['weapon_forward_local']={'rifle':'+X','pistol':'+X','sabreBlade':'+Y','knifeBlade':'+Y'}
     ctx['weapon_grips']={'rifle_support':(.32,0,.045)}
     ctx['equipment_helpers']={'group':group,'mesh':mesh,'tube':tube,'stock':stock,'box':box,'marker':marker,'walnut':walnut,'steel':steel,'brass':brass,'leather':leather,'blade':blade}
     return ctx['weapons']

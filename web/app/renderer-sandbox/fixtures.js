@@ -5,6 +5,7 @@ import {placeBuilding,buildTerrace} from '../../../game/buildings.js';
 import {makeGrenadeStack} from '../../../game/grenades.js';
 
 export const RENDERER_SCENARIOS=Object.freeze([
+  {id:'characters',label:'Ocho personajes',help:'Granadero, realista, trabajador, cirujano, gaucho, fraile, exploradora y mujer con rebozo. Selecciona cada personaje para caminar, correr o cambiar su equipo. Esta escena no usa tu campaña guardada.'},
   {id:'combat',label:'Combate',help:'Fusil, pistola, sable, granada y cuchillo: cada especialista tiene un blanco enfrente. Los dos artilleros están junto al cañón. Usa las órdenes habituales; reinicia para repetir.'},
   {id:'mounted',label:'Montura y azotea',help:'Jinete: caminar, correr y montar/desmontar. Escaladora: subir por el acceso junto a la casa. Vigía: moverse por la azotea. La puerta está abierta.'},
   {id:'night',label:'Noche',help:'Las fogatas iluminan los blancos. El fusil ya disparó y dejó humo: puedes recargarlo. Todos llevan antorchas; equipa una para añadir luz.'},
@@ -53,6 +54,16 @@ function mounted(){
   ];
   return {...createBattle(squad,{...courtyard(),id:'renderer-mounted',name:'Montura y azotea',seed:45,enemies:[],exploration:true}),deploymentComplete:true};
 }
+function characters(){
+  const names=['Granadero','Realista','Trabajador','Cirujano','Gaucho','Fraile','Exploradora','Mujer con rebozo'];
+  const squad=families.map((family,index)=>soldier(`character-${family}`,names[index],4+(index%4)*2,4+Math.floor(index/4)*3,{
+    spriteAppearance:family,skinTone:['light','brown','dark'][index%3],facing:3,
+    weapon:index===4||index===6?1813:index%2?1805:1800,
+    loaded:index===4||index===6?0:1,ammo:index===4||index===6?0:12,
+    blade:1810,activeSlot:index===2||index===3||index===5||index===7?'unarmed':index===0?'blade':'primary',
+  }));
+  return {...createBattle(squad,{id:'renderer-characters',name:'Ocho personajes',width:20,height:16,tiles:ground(20,16),enemies:[],exploration:true,seed:45}),deploymentComplete:true};
+}
 function performance(count,architecture=false){
   const squad=Array.from({length:count},(_,index)=>({...OPERATIVES[index%OPERATIVES.length],id:`review-${index}`,name:`${families[index%families.length]} ${index+1}`,nickname:families[index%families.length],spriteAppearance:families[index%families.length],skinTone:['light','brown','dark'][Math.floor(index/8)%3],x:4+(index%10)*2,y:6+Math.floor(index/10)*2,weapon:index%4===3?1805:1800,blade:1810,activeSlot:index%4===0?'unarmed':index%4===2?'blade':'primary',offHand:{weapon:1805,count:1,weight:1.3,loaded:1,condition:100,jammed:false},headwear:null,outfit:null,legwear:null}));
   if(architecture){const map=buildSectorMap({sector:'tucuman',compactLayout:false,squad:squad.slice(0,8),enemies:[],exploration:true});return {...createBattle(map.squad,map),deploymentComplete:true};}
@@ -63,6 +74,7 @@ function performance(count,architecture=false){
 }
 /** Fresh real battle state. Scene selection never issues private renderer poses. */
 export function createRendererSandboxBattle(id='combat'){
+  if(id==='characters')return characters();
   if(id==='combat'||id==='night')return combat(id==='night');
   if(id==='mounted')return mounted();
   if(id==='tucuman')return performance(8,true);

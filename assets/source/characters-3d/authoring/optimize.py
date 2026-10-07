@@ -10,10 +10,26 @@ RATIOS=(.22,.075,.028)
 
 def optimize_character(ctx,lod=0):
  rig=ctx['rig'];objects=ctx['objects']
- if lod==2:
-  omit=('Red_Epaulette_Fringe','Natural_Eyebrow','Iris','Pupil','Fine_Collar_Gold_Edge','Cuff_Gold_Edge','Shako_Crest_Crown')
+ if lod>0:
+  omit=('Crest_Sun_Ray','Crest_Leaf','Crest_Central_Relief','Chinstrap_Brass_Scale')
+  if lod==2:omit+=('Red_Epaulette_Fringe','Natural_Eyebrow','Iris','Pupil','Fine_Collar_Gold_Edge','Cuff_Gold_Edge','Shako_Crest_Crown','Tailored_Shoulder_Seam','Coat_Back_Panel_Seam','Coat_Centre_Closure','Epaulette_Inner_Braid','Epaulette_Metal_Crescent','Epaulette_Button','Crest_Lower_Scroll','Crest_Laurel')
   for o in list(objects):
    if o.name.startswith(omit):objects.remove(o);bpy.data.objects.remove(o,do_unlink=True)
+ # Use a single attribute name on every object before decimation and joining.
+ # Appearance pieces and owned garments may have been added after the native
+ # body's face/cloth pigments. Missing attributes would otherwise become black
+ # on a joined COLOR_0 primitive.
+ for o in objects:
+  if o.type!='MESH':continue
+  colours=o.data.color_attributes.get('Human_Surface_Tone')
+  if colours is None:
+   colours=o.data.color_attributes.new(name='Human_Surface_Tone',type='FLOAT_COLOR',domain='POINT')
+   cloth=any(word in o.name for word in ('Poncho','Skirt','Shawl','Waistcoat','Habit','Hood','garment_'))
+   for vertex,entry in zip(o.data.vertices,colours.data):
+    p=vertex.co;shade=.96+.02*math.sin(p.z*19+p.x*13)+.015*math.sin(p.z*37-p.y*17) if cloth else 1
+    entry.color=(shade,shade,shade,1)
+  o.data.color_attributes.active_color_index=list(o.data.color_attributes).index(colours)
+  o.data.color_attributes.render_color_index=o.data.color_attributes.active_color_index
  # Palette tiles carry actual material albedo/roughness/metallicity. This joins
  # dozens of small trim meshes without losing brass/leather PBR response.
  sources=[]
@@ -21,8 +37,10 @@ def optimize_character(ctx,lod=0):
   for m in o.data.materials:
    if m and m!=ctx['M']['skin'] and m not in sources:sources.append(m)
  atlas=bpy.data.materials.new('Apparel_Atlas');atlas.use_nodes=True;atlas.diffuse_color=(1,1,1,1)
- p=atlas.node_tree.nodes.get('Principled BSDF');p.inputs['Roughness'].default_value=1;p.inputs['Metallic'].default_value=1
- side=4;tile=32;size=side*tile
+ p=atlas.node_tree.nodes.get('Principled BSDF');p.inputs['Roughness'].default_value=1;p.inputs['Metallic'].default_value=1;p.inputs['Specular IOR Level'].default_value=.28
+ # New cloth, braid, plume and relief materials exceed the old sixteen tiles.
+ # Size the shared palette from its actual sources, with power-of-two images.
+ side=2**max(2,math.ceil(math.log2(max(1,len(sources)))/2));tile=32;size=side*tile
  for channel in ('Color','MetalRough','Normal'):
   im=bpy.data.images.new('Apparel_'+channel,width=size,height=size)
   if channel!='Color':im.colorspace_settings.name='Non-Color'
@@ -45,7 +63,10 @@ def optimize_character(ctx,lod=0):
     values.extend(value)
   im.pixels.foreach_set(values);im.update();im.pack()
   tex=atlas.node_tree.nodes.new('ShaderNodeTexImage');tex.image=im;tex.interpolation='Linear'
-  if channel=='Color':atlas.node_tree.links.new(tex.outputs['Color'],p.inputs['Base Color'])
+  if channel=='Color':
+   pigment=atlas.node_tree.nodes.new('ShaderNodeVertexColor');pigment.layer_name='Human_Surface_Tone'
+   multiply=atlas.node_tree.nodes.new('ShaderNodeMix');multiply.data_type='RGBA';multiply.blend_type='MULTIPLY';multiply.inputs[0].default_value=1
+   atlas.node_tree.links.new(tex.outputs['Color'],multiply.inputs[6]);atlas.node_tree.links.new(pigment.outputs['Color'],multiply.inputs[7]);atlas.node_tree.links.new(multiply.outputs[2],p.inputs['Base Color'])
   elif channel=='MetalRough':
    sep=atlas.node_tree.nodes.new('ShaderNodeSeparateColor');atlas.node_tree.links.new(tex.outputs['Color'],sep.inputs[0]);atlas.node_tree.links.new(sep.outputs['Green'],p.inputs['Roughness']);atlas.node_tree.links.new(sep.outputs['Blue'],p.inputs['Metallic'])
   else:
@@ -54,9 +75,11 @@ def optimize_character(ctx,lod=0):
   if obj.type!='MESH':continue
   bpy.context.view_layer.objects.active=obj
   # Decimation is placed before the armature to preserve rest-space geometry.
-  dec=obj.modifiers.new('Real_Mesh_LOD_'+str(lod),'DECIMATE');dec.ratio=min(1,max(RATIOS[lod],(35 if lod==2 else 100)/max(1,len(obj.data.polygons))));dec.use_collapse_triangulate=True
+  detail=obj.name.startswith(('Red_Epaulette_Fringe','Red_Shako_Cord','Red_Side_Cord','Red_Tassel','Crest_','Cockade_','Epaulette_','Chinstrap_'))
+  minimum=(18 if lod==2 else 36 if lod==1 else 50) if detail else (35 if lod==2 else 100)
+  dec=obj.modifiers.new('Real_Mesh_LOD_'+str(lod),'DECIMATE');dec.ratio=min(1,max(RATIOS[lod],minimum/max(1,len(obj.data.polygons))));dec.use_collapse_triangulate=True
   while obj.modifiers.find(dec.name)>0:bpy.ops.object.modifier_move_up(modifier=dec.name)
-  if len(obj.data.polygons)>150 and not any(n in obj.name for n in ('Crossbelt','Waist_Belt','Trouser_Seam')):bpy.ops.object.modifier_apply(modifier=dec.name)
+  if len(obj.data.polygons)>(60 if detail else 150) and not any(n in obj.name for n in ('Crossbelt','Waist_Belt','Trouser_Seam')):bpy.ops.object.modifier_apply(modifier=dec.name)
   else:obj.modifiers.remove(dec)
   # At most four normalized bone influences, preserving the strongest native
   # weights. The exporter therefore has one four-influence joint attribute.

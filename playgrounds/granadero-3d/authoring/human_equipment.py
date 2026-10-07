@@ -120,6 +120,9 @@ def create_equipment(ctx):
     tube('Rifle_Trigger', [(.025,-.006,.01),(.018,-.006,-.021),(.006,-.006,-.025)], .0023, steel, rifle)
     box('Rifle_Front_Sight', (.9,0,.07), (.012,.005,.013), steel, rifle, .001)
     marker('muzzle_rifle', (.945,0,.055), rifle)
+    tube('Bayonet_Socket', [(.84,.021,.05),(.94,.021,.05)], .015, steel, rifle, 10)
+    tube('Bayonet_Elbow', [(.92,.021,.05),(.96,.047,.07)], .008, steel, rifle, 8)
+    tube('Bayonet_Blade', [(.96,.047,.07),(1.18,.047,.07),(1.30,.047,.07)], [.012,.007,.0005], steel, rifle, 3)
 
     pistol = group('weapon_pistol')
     tube('Pistol_Stock', [(-.045,0,-.075),(-.026,0,-.050),(0,0,.005),(.075,0,.033),(.24,0,.034)], [.018,.020,.024,.020,.011], walnut, pistol, 12)
@@ -151,7 +154,18 @@ def create_equipment(ctx):
     faces += [(i*4+j,i*4+(j+1)%4,(i+1)*4+(j+1)%4,(i+1)*4+j) for i in range(24) for j in range(4)]
     mesh('Sabre_Curved_Blade',verts,faces,blade,sabre,False)
 
-    ctx['weapons']={'rifle':rifle,'pistol':pistol,'sabre':sabre}
-    ctx['weapon_forward_local']={'rifle':'+X','pistol':'+X','sabreBlade':'+Y'}
+    # Compact working knife: 18 cm blade, 11 cm wooden grip. Single edge,
+    # thick spine and a tapered point, rather than a scaled cavalry sword.
+    knife = group('weapon_knife')
+    tube('Knife_Wood_Grip', [(0,0,-.055),(0,0,-.035),(0,0,.040),(0,0,.055)], [.012,.015,.014,.011], walnut, knife, 12)
+    tube('Knife_Ferrule', [(0,0,.047),(0,0,.058)], .012, brass, knife, 12)
+    verts=[]
+    for z,back,edge,thick in [(.058,-.010,.019,.0025),(.10,-.010,.020,.0023),(.18,-.009,.015,.0017),(.218,-.006,.007,.001),(.238,-.002,-.001,.0002)]:
+        verts.extend([(back,-thick,z),(back,thick,z),(edge,.0002,z),(edge,-.0002,z)])
+    faces=[(3,2,1,0),(16,17,18,19)]
+    faces += [(i*4+j,i*4+(j+1)%4,(i+1)*4+(j+1)%4,(i+1)*4+j) for i in range(4) for j in range(4)]
+    mesh('Knife_Single_Edge_Blade',verts,faces,blade,knife,False)
+    ctx['weapons']={'rifle':rifle,'pistol':pistol,'sabre':sabre,'knife':knife}
+    ctx['weapon_forward_local']={'rifle':'+X','pistol':'+X','sabreBlade':'+Y','knifeBlade':'+Y'}
     ctx['weapon_grips']={'rifle_support':(.32,0,.045)}
     return ctx['weapons']

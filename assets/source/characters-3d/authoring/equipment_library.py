@@ -37,7 +37,7 @@ def create_library(ctx):
    barrel=next(o for o in g.children if 'Pistol_Barrel' in o.name);barrel.location.y=-.011;other=barrel.copy();other.data=barrel.data.copy();other.location.y=.011;bpy.context.collection.objects.link(other);exports.append(other)
   record(key,g,'pistol','pistol','hipRight')
  for key in ('1809','1810','1813','1811'):
-  g=clone_tree(weapons['sabre'],'item_'+key)
+  g=clone_tree(weapons['knife'] if key=='1813' else weapons['sabre'],'item_'+key)
   for o in list(g.children):
    if key in ('1813','1811') and any(n in o.name for n in ('Knuckle','Grip_Wire')):
     exports.remove(o);bpy.data.objects.remove(o,do_unlink=True);continue
@@ -45,7 +45,6 @@ def create_library(ctx):
     for v in o.data.vertices:
      if 'Blade' in o.name:
       if key=='1810':v.co.x*=.45
-      if key=='1813':v.co.z*=.42;v.co.x*=1.4
       if key=='1811':v.co.z*=.58;v.co.x*=.35
   record(key,g,'knife' if key in ('1811','1813') else 'sabre','sabre')
  def fresh(key):

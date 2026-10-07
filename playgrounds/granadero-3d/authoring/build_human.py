@@ -133,7 +133,7 @@ manifest = {
     'bounds':{'space':'gltf, Idle frame 1; weapons excluded','min':[round(mins[0],5),round(mins[2],5),round(-maxs[1],5)],'max':[round(maxs[0],5),round(maxs[2],5),round(-mins[1],5)]},
     'statistics':{'triangles':triangles,'meshes':len(doc.get('meshes',[])),'nodes':len(doc.get('nodes',[])),'skins':len(doc.get('skins',[])),'bones':len(rig.data.bones),'materials':len(doc.get('materials',[])),'animationClips':len(doc['animations'])},
     'materials':{'skin':'Skin','uniform':'Navy_Wool','facings':'Crimson_Facings','crossbelts':'Cream_Crossbelts'},
-    'nodes':{'rig':'Granadero_Rig','rifle':'weapon_rifle','sabre':'weapon_sabre','pistol':'weapon_pistol','rifleMuzzle':'muzzle_rifle','pistolMuzzle':'muzzle_pistol'},
+    'nodes':{'rig':'Granadero_Rig','rifle':'weapon_rifle','sabre':'weapon_sabre','pistol':'weapon_pistol','knife':'weapon_knife','rifleMuzzle':'muzzle_rifle','pistolMuzzle':'muzzle_pistol'},
     'weaponForwardLocal':ctx['weapon_forward_local'],'locomotionSpeed':motion['locomotionSpeed'],'clips':clip_facts,
     'notes':['Original body proportions, source joint positions and native weights are preserved.','Walk and Run are retargeted from recorded human movement.','The camera is fixed orthographic, with a 30 degree tactical viewing pitch.','Weapon groups are attached to hand_r; only the selected equipment is visible.']
 }
@@ -142,7 +142,7 @@ activate('Idle')
 bpy.ops.wm.save_as_mainfile(filepath=str(OUT/'granadero-human.blend'),compress=True)
 scene.render.filepath = str(OUT/'candidate-isometric.png')
 bpy.ops.render.render(write_still=True)
-for name, phase, weapon in [('Walk',.20,None),('Run',.20,None),('RifleAim',0,'rifle'),('PistolAim',0,'pistol'),('SabreReady',0,'sabre'),('SabreSlash',.42,'sabre')]:
+for name, phase, weapon in [('Walk',.20,None),('Run',.20,None),('RifleAim',0,'rifle'),('PistolAim',0,'pistol'),('SabreReady',0,'sabre'),('SabreSlash',.37,'sabre'),('KnifeReady',0,'knife'),('KnifeSlash',.44,'knife')]:
     activate(name,phase,weapon)
     scene.render.resolution_x=700
     scene.render.resolution_y=700
@@ -156,6 +156,6 @@ if '--publish' in sys.argv:
     shutil.copy2(OUT / 'asset-manifest.json', public / 'asset-manifest.json')
     shutil.copy2(OUT / 'granadero-human.blend', HERE / 'granadero.blend')
     shutil.copy2(OUT / 'candidate-isometric.png', HERE / 'preview.png')
-    for name in ['Walk', 'Run', 'RifleAim', 'PistolAim', 'SabreReady', 'SabreSlash']:
+    for name in ['Walk', 'Run', 'RifleAim', 'PistolAim', 'SabreReady', 'SabreSlash', 'KnifeReady', 'KnifeSlash']:
         shutil.copy2(OUT / (name + '-candidate.png'), HERE / (name + '-review.png'))
     print('PLAYGROUND_ASSET_UPDATED', str(public / 'granadero.glb'))

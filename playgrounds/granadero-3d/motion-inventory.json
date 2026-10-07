@@ -1,0 +1,425 @@
+{
+  "schemaVersion": 1,
+  "unit": "granadero",
+  "scope": "standalone playground; not the production character library",
+  "assetSha256": "8916e8f96df895640eb83f442985fa10a1e648953f9f81352f79ab85f7f7cc30",
+  "visualApproval": "Accepted as reusable visual reference 2026-10-06; current direction sufficient for propagation, not final polish",
+  "referenceAcceptance": {
+    "date": "2026-10-06",
+    "assetSha256": "4921a38bf3b6afeea30eed115743141621454e55fa078ba7d366021c17e2d795",
+    "scope": "whole Granadero reference accepted for reuse; each receiving anatomy and garment still needs fit and export review"
+  },
+  "approvalByAction": {
+    "Idle": "included in accepted Granadero reference 2026-10-06",
+    "Walk": "included in accepted Granadero reference 2026-10-06",
+    "Run": "included in accepted Granadero reference 2026-10-06",
+    "RifleWalk": "included in accepted Granadero reference 2026-10-06",
+    "PistolWalk": "included in accepted Granadero reference 2026-10-06",
+    "SabreWalk": "included in accepted Granadero reference 2026-10-06",
+    "KnifeWalk": "included in accepted Granadero reference 2026-10-06",
+    "RifleRun": "included in accepted Granadero reference 2026-10-06",
+    "PistolRun": "included in accepted Granadero reference 2026-10-06",
+    "SabreRun": "included in accepted Granadero reference 2026-10-06",
+    "KnifeRun": "included in accepted Granadero reference 2026-10-06",
+    "RifleAim": "included in accepted Granadero reference 2026-10-06",
+    "RifleFire": "included in accepted Granadero reference 2026-10-06",
+    "PistolAim": "included in accepted Granadero reference 2026-10-06",
+    "PistolFire": "included in accepted Granadero reference 2026-10-06",
+    "SabreReady": "included in accepted Granadero reference 2026-10-06",
+    "SabreSlash": "included in accepted Granadero reference 2026-10-06",
+    "SabreBackhand": "included in accepted Granadero reference 2026-10-06",
+    "KnifeReady": "included in accepted Granadero reference 2026-10-06",
+    "KnifeSlash": "included in accepted Granadero reference 2026-10-06",
+    "KnifeBackhand": "included in accepted Granadero reference 2026-10-06",
+    "SabreThrust": "included in accepted Granadero reference 2026-10-06",
+    "KnifeThrust": "included in accepted Granadero reference 2026-10-06",
+    "BayonetThrust": "included in accepted Granadero reference 2026-10-06",
+    "SabreHiltStrike": "included in accepted Granadero reference 2026-10-06",
+    "PistolStrike": "included in accepted Granadero reference 2026-10-06",
+    "RifleButtStrike": "included in accepted Granadero reference 2026-10-06",
+    "Punch": "included in accepted Granadero reference 2026-10-06",
+    "SabreForehand": "included in accepted Granadero reference 2026-10-06",
+    "SabreCombination": "included in accepted Granadero reference 2026-10-06"
+  },
+  "appearanceDirection": "small natural human with digitized-actor character; smooth isometric rendering, coarse pixel filter optional",
+  "playbackSpeed": 1,
+  "basePlaybackRate": 1.25,
+  "sourceFPS": 30,
+  "actions": [
+    {
+      "name": "Idle",
+      "durationSeconds": 2,
+      "playbackDurationAt1xSeconds": 1.6,
+      "loop": true,
+      "events": {},
+      "channels": 159,
+      "source": {
+        "database": "CMU",
+        "file": "111_28.bvh",
+        "startFrame": 120,
+        "endFrame": 360,
+        "sampleRate": 120
+      }
+    },
+    {
+      "name": "Walk",
+      "durationSeconds": 1.066667,
+      "playbackDurationAt1xSeconds": 0.8533336,
+      "loop": true,
+      "events": {},
+      "channels": 159,
+      "source": {
+        "database": "CMU",
+        "file": "07_01.bvh",
+        "startFrame": 100,
+        "endFrame": 230,
+        "sampleRate": 120
+      },
+      "strideMetresPerSecond": 1.448
+    },
+    {
+      "name": "Run",
+      "durationSeconds": 0.766667,
+      "playbackDurationAt1xSeconds": 0.6133336,
+      "loop": true,
+      "events": {},
+      "channels": 159,
+      "source": {
+        "database": "CMU",
+        "file": "02_03.bvh",
+        "startFrame": 40,
+        "endFrame": 131,
+        "sampleRate": 120
+      },
+      "strideMetresPerSecond": 2.242
+    },
+    {
+      "name": "RifleWalk",
+      "durationSeconds": 1.066667,
+      "playbackDurationAt1xSeconds": 0.8533336,
+      "loop": true,
+      "events": {},
+      "channels": 159,
+      "source": {
+        "base": "Walk",
+        "carry": "rifle"
+      }
+    },
+    {
+      "name": "PistolWalk",
+      "durationSeconds": 1.066667,
+      "playbackDurationAt1xSeconds": 0.8533336,
+      "loop": true,
+      "events": {},
+      "channels": 159,
+      "source": {
+        "base": "Walk",
+        "carry": "pistol"
+      }
+    },
+    {
+      "name": "SabreWalk",
+      "durationSeconds": 1.066667,
+      "playbackDurationAt1xSeconds": 0.8533336,
+      "loop": true,
+      "events": {},
+      "channels": 159,
+      "source": {
+        "base": "Walk",
+        "carry": "sabre"
+      }
+    },
+    {
+      "name": "KnifeWalk",
+      "durationSeconds": 1.066667,
+      "playbackDurationAt1xSeconds": 0.8533336,
+      "loop": true,
+      "events": {},
+      "channels": 159,
+      "source": {
+        "base": "Walk",
+        "carry": "knife"
+      }
+    },
+    {
+      "name": "RifleRun",
+      "durationSeconds": 0.766667,
+      "playbackDurationAt1xSeconds": 0.6133336,
+      "loop": true,
+      "events": {},
+      "channels": 159,
+      "source": {
+        "base": "Run",
+        "carry": "rifle"
+      }
+    },
+    {
+      "name": "PistolRun",
+      "durationSeconds": 0.766667,
+      "playbackDurationAt1xSeconds": 0.6133336,
+      "loop": true,
+      "events": {},
+      "channels": 159,
+      "source": {
+        "base": "Run",
+        "carry": "pistol"
+      }
+    },
+    {
+      "name": "SabreRun",
+      "durationSeconds": 0.766667,
+      "playbackDurationAt1xSeconds": 0.6133336,
+      "loop": true,
+      "events": {},
+      "channels": 159,
+      "source": {
+        "base": "Run",
+        "carry": "sabre"
+      }
+    },
+    {
+      "name": "KnifeRun",
+      "durationSeconds": 0.766667,
+      "playbackDurationAt1xSeconds": 0.6133336,
+      "loop": true,
+      "events": {},
+      "channels": 159,
+      "source": {
+        "base": "Run",
+        "carry": "knife"
+      }
+    },
+    {
+      "name": "RifleAim",
+      "durationSeconds": 2,
+      "playbackDurationAt1xSeconds": 1.6,
+      "loop": true,
+      "events": {},
+      "channels": 159,
+      "source": "authored skeletal animation"
+    },
+    {
+      "name": "RifleFire",
+      "durationSeconds": 0.8,
+      "playbackDurationAt1xSeconds": 0.64,
+      "loop": false,
+      "events": {
+        "shot": 0.1
+      },
+      "channels": 159,
+      "source": "authored skeletal animation"
+    },
+    {
+      "name": "PistolAim",
+      "durationSeconds": 2,
+      "playbackDurationAt1xSeconds": 1.6,
+      "loop": true,
+      "events": {},
+      "channels": 159,
+      "source": "authored skeletal animation"
+    },
+    {
+      "name": "PistolFire",
+      "durationSeconds": 0.7,
+      "playbackDurationAt1xSeconds": 0.5599999999999999,
+      "loop": false,
+      "events": {
+        "shot": 0.1
+      },
+      "channels": 159,
+      "source": "authored skeletal animation"
+    },
+    {
+      "name": "SabreReady",
+      "durationSeconds": 2,
+      "playbackDurationAt1xSeconds": 1.6,
+      "loop": true,
+      "events": {},
+      "channels": 159,
+      "source": "authored skeletal animation"
+    },
+    {
+      "name": "SabreSlash",
+      "durationSeconds": 1,
+      "playbackDurationAt1xSeconds": 0.8,
+      "loop": false,
+      "events": {
+        "hit": 0.36
+      },
+      "channels": 159,
+      "source": "authored skeletal animation"
+    },
+    {
+      "name": "SabreBackhand",
+      "durationSeconds": 1,
+      "playbackDurationAt1xSeconds": 0.8,
+      "loop": false,
+      "events": {
+        "hit": 0.36
+      },
+      "channels": 159,
+      "source": "authored skeletal animation"
+    },
+    {
+      "name": "KnifeReady",
+      "durationSeconds": 2,
+      "playbackDurationAt1xSeconds": 1.6,
+      "loop": true,
+      "events": {},
+      "channels": 159,
+      "source": "authored skeletal animation"
+    },
+    {
+      "name": "KnifeSlash",
+      "durationSeconds": 0.8,
+      "playbackDurationAt1xSeconds": 0.64,
+      "loop": false,
+      "events": {
+        "hit": 0.27
+      },
+      "channels": 159,
+      "source": "authored skeletal animation"
+    },
+    {
+      "name": "KnifeBackhand",
+      "durationSeconds": 0.8,
+      "playbackDurationAt1xSeconds": 0.64,
+      "loop": false,
+      "events": {
+        "hit": 0.27
+      },
+      "channels": 159,
+      "source": "authored skeletal animation"
+    },
+    {
+      "name": "SabreThrust",
+      "durationSeconds": 1,
+      "playbackDurationAt1xSeconds": 0.8,
+      "loop": false,
+      "events": {
+        "hit": 0.42
+      },
+      "channels": 159,
+      "source": "authored skeletal animation"
+    },
+    {
+      "name": "KnifeThrust",
+      "durationSeconds": 1,
+      "playbackDurationAt1xSeconds": 0.8,
+      "loop": false,
+      "events": {
+        "hit": 0.42
+      },
+      "channels": 159,
+      "source": "authored skeletal animation"
+    },
+    {
+      "name": "BayonetThrust",
+      "durationSeconds": 1,
+      "playbackDurationAt1xSeconds": 0.8,
+      "loop": false,
+      "events": {
+        "hit": 0.42
+      },
+      "channels": 159,
+      "source": "authored skeletal animation"
+    },
+    {
+      "name": "SabreHiltStrike",
+      "durationSeconds": 1,
+      "playbackDurationAt1xSeconds": 0.8,
+      "loop": false,
+      "events": {
+        "hit": 0.42
+      },
+      "channels": 159,
+      "source": "authored skeletal animation"
+    },
+    {
+      "name": "PistolStrike",
+      "durationSeconds": 1,
+      "playbackDurationAt1xSeconds": 0.8,
+      "loop": false,
+      "events": {
+        "hit": 0.42
+      },
+      "channels": 159,
+      "source": "authored skeletal animation"
+    },
+    {
+      "name": "RifleButtStrike",
+      "durationSeconds": 1,
+      "playbackDurationAt1xSeconds": 0.8,
+      "loop": false,
+      "events": {
+        "hit": 0.42
+      },
+      "channels": 159,
+      "source": "authored skeletal animation"
+    },
+    {
+      "name": "Punch",
+      "durationSeconds": 1,
+      "playbackDurationAt1xSeconds": 0.8,
+      "loop": false,
+      "events": {
+        "hit": 0.42
+      },
+      "channels": 159,
+      "source": "authored skeletal animation"
+    },
+    {
+      "name": "SabreForehand",
+      "durationSeconds": 1,
+      "playbackDurationAt1xSeconds": 0.8,
+      "loop": false,
+      "events": {
+        "hit": 0.36
+      },
+      "channels": 159,
+      "source": "authored skeletal animation"
+    },
+    {
+      "name": "SabreCombination",
+      "durationSeconds": 1.5,
+      "playbackDurationAt1xSeconds": 1.2,
+      "loop": false,
+      "events": {
+        "hit": 0.3913043478260869,
+        "secondHit": 0.7888888888888889
+      },
+      "channels": 159,
+      "source": "authored skeletal animation"
+    }
+  ],
+  "implemented": [
+    "unarmed idle/walk/run",
+    "armed walk/run for rifle, pistol, sabre and knife",
+    "gait-derived wrist/elbow carry with delayed wrist rotation",
+    "rifle aim and isolated shot",
+    "one-hand pistol aim and isolated shot",
+    "layered wrist/chest/knee recoil and arm settlement",
+    "sabre guard, three cuts, linked combination, thrust and hilt strike",
+    "knife guard, two cuts and thrust",
+    "bayonet thrust",
+    "rifle butt strike",
+    "pistol strike",
+    "punch",
+    "weapon-specific thrust and blunt-strike body transfer",
+    "free-arm counterbalance",
+    "breathing",
+    "rear-foot pivot during cuts",
+    "short advancing cuts with recovery"
+  ],
+  "missing": [
+    "reloads",
+    "start/stop steps",
+    "defenses",
+    "hit reactions",
+    "paired opponent/contact",
+    "two-hand pistol variant"
+  ],
+  "reuseStatus": "accepted reference transferred to production; 34 semantic clips use 29 distinct motions in native male/female banks; two-cut combination remains preview-only",
+  "productionReview": "../../assets/source/characters-3d/REVIEW.md",
+  "reviewDocument": "MOTION_REVIEW.md"
+}

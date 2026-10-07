@@ -23,16 +23,31 @@ after(()=>{for(const server of servers)server.kill();});
 for(const mode of ['development','production']){
  test(`${mode} serves the model and all imported runtime modules`,async()=>{
   const base=mode==='development'?development:production;
-  for(const [path,type] of [['/','text/html'],['/src/main.js','text/javascript'],['/src/style.css','text/css'],['/vendor/three/build/three.module.js','text/javascript'],['/vendor/three/build/three.core.js','text/javascript'],['/vendor/three/examples/jsm/loaders/GLTFLoader.js','text/javascript'],['/vendor/three/examples/jsm/controls/OrbitControls.js','text/javascript'],['/vendor/three/examples/jsm/environments/RoomEnvironment.js','text/javascript'],['/vendor/three/examples/jsm/utils/BufferGeometryUtils.js','text/javascript'],['/assets/granadero.glb','model/gltf-binary'],['/assets/asset-manifest.json','application/json']]){
+  for(const [path,type] of [['/','text/html'],['/src/main.js','text/javascript'],['/src/character-library.js','text/javascript'],['/src/style.css','text/css'],['/vendor/three/build/three.module.js','text/javascript'],['/vendor/three/build/three.core.js','text/javascript'],['/vendor/three/examples/jsm/loaders/GLTFLoader.js','text/javascript'],['/vendor/three/examples/jsm/controls/OrbitControls.js','text/javascript'],['/vendor/three/examples/jsm/environments/RoomEnvironment.js','text/javascript'],['/vendor/three/examples/jsm/utils/BufferGeometryUtils.js','text/javascript'],['/vendor/three/examples/jsm/utils/SkeletonUtils.js','text/javascript'],['/assets/granadero.glb','model/gltf-binary'],['/assets/asset-manifest.json','application/json']]){
    const response=await fetch(base+path);
    assert.equal(response.status,200,`${mode} ${path}`);
    assert.ok(response.headers.get('content-type')?.startsWith(type),`${path}: ${type}`);
    assert.ok((await response.arrayBuffer()).byteLength>0,`${path} empty`);
   }
  });
+ test(`${mode} serves every selectable game character with its animation bank and textures`,async()=>{
+  const base=mode==='development'?development:production;
+  const response=await fetch(base+'/models/characters/manifest.json');assert.equal(response.status,200);
+  const manifest=await response.json();assert.equal(Object.keys(manifest.appearances).length,8);
+  const files=new Set([...Object.values(manifest.appearances).map(appearance=>appearance.lods.find(lod=>lod.lod===0).url),...Object.values(manifest.animationLibraries).map(bank=>bank.url),manifest.equipment.url]);
+  const textures=new Set();
+  for(const path of files){
+   const response=await fetch(base+path);assert.equal(response.status,200,`${mode} ${path}`);
+   const bytes=Buffer.from(await response.arrayBuffer()),json=JSON.parse(bytes.subarray(20,20+bytes.readUInt32LE(12)));
+   for(const image of json.images??[])if(image.uri)textures.add(new URL(image.uri,base+path).href);
+  }
+  assert.ok(textures.size>0,'Production textures remain external and shared');
+  for(const url of textures){const response=await fetch(url);assert.equal(response.status,200,`${mode} ${url}`);assert.ok(response.headers.get('content-type').startsWith('image/'));}
+ });
  test(`${mode} rejects missing files and encoded paths outside its root`,async()=>{
   const base=mode==='development'?development:production;
   assert.equal((await fetch(base+'/missing-file')).status,404);
   assert.equal((await fetch(base+'/%2e%2e%2f%2e%2e%2fpackage.json')).status,403);
+  assert.equal((await fetch(base+'/models/characters/%2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2fpackage.json')).status,403);
  });
 }

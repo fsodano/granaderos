@@ -9,6 +9,7 @@ import {
 } from '../web/node_modules/three/build/three.module.js';
 const {ActorRuntime}=await import('../web/lib/three/actor-runtime.ts');
 const {TILE_METRES}=await import('../web/lib/three/projection.ts');
+const {ACTOR_ITEM_CLIP_OVERRIDES,ACTOR_STRIKE_CLIP_VARIANTS,selectActorClipVariant}=await import('../game/actor-action-contract.js');
 
 // These are real CPU-side Three scenes. Names deliberately differ between
 // models and from production assets, so tests cannot pass through hardcoded
@@ -303,6 +304,41 @@ test('an item can select a distinct lance clip through aliases without changing 
   const runtime=new ActorRuntime(f.asset,v);runtime.tick(0,0);close(actorHead(runtime,f).position.x,.57);assert.equal(v.equipment,'blade');runtime.dispose();
   f.asset.manifest.equipment.items['1812'].clipOverrides['stand.idle.blade']='missing.lance';
   assert.throws(()=>new ActorRuntime(f.asset,v),/Missing animation capability: missing\.lance/);
+});
+
+test('sabre and aliased knife strikes bind stable variants throughout paid action phases',()=>{
+  for(const [itemId,semantic]of [['1809','stand.slash.blade'],['inventory:knife','stand.slash.knife']]){
+    const f=fixture(),values=new Map();
+    for(const [index,name]of ACTOR_STRIKE_CLIP_VARIANTS[semantic].entries()){
+      const value=.50+index*.03;values.set(name,value);addClip(f,name,{value,markers:{contact:.8}});
+    }
+    if(itemId==='inventory:knife'){
+      addClip(f,'stand.idle.knife',{loop:true,value:.49});
+      f.asset.manifest.equipment.items['1813']={...f.asset.manifest.equipment.items['1809'],category:'knife',clipOverrides:ACTOR_ITEM_CLIP_OVERRIDES['1813']};
+      f.asset.manifest.equipment.aliases={'inventory:knife':'1813'};
+    }
+    const cue={id:'sequence:5:paid-strike:17:unit:actor',action:'strike',startedAt:1000,durationMs:900};
+    const selected=selectActorClipVariant(semantic,cue.id),items=[{id:itemId,reference:'primary',socket:'handRight'}];
+    const v=visual(f,{action:'strike',equipment:'blade',items,cue:{...cue,phase:'prepare',phaseStartedAt:1000,phaseDurationMs:300}});
+    const before=JSON.stringify(v),runtime=new ActorRuntime(f.asset,v);
+    for(const [index,phase]of ['prepare','contact','impact'].entries()){
+      const start=1000+index*300;
+      runtime.update({...v,cue:{...cue,phase,phaseStartedAt:start,phaseDurationMs:300}},start);
+      runtime.tick(0,start+150);close(actorHead(runtime,f).position.x,values.get(selected),`${itemId}/${phase}`);
+    }
+    assert.equal(JSON.stringify(v),before,'presentation leaves action identity and inventory unchanged');
+    runtime.dispose();
+  }
+});
+
+test('reviewed clip metadata sets free-play speed while paid cue progress stays authoritative',()=>{
+  const f=fixture(),idle=f.asset.clips.find(spec=>spec.semantic==='stand.idle.unarmed');idle.playbackRate=1.25;
+  f.asset.animation.animations[f.asset.animation.animations.findIndex(clip=>clip.name===idle.name)]=new AnimationClip(idle.name,2,[new NumberKeyframeTrack(`${f.names.head}.position[x]`,[0,2],[0,2])]);
+  const free=new ActorRuntime(f.asset,visual(f));free.tick(.1,100);close(actorHead(free,f).position.x,.125);free.dispose();
+  const shot=f.asset.clips.find(spec=>spec.semantic==='stand.fire.long-gun');shot.playbackRate=1.25;
+  f.asset.animation.animations[f.asset.animation.animations.findIndex(clip=>clip.name===shot.name)]=new AnimationClip(shot.name,2,[new NumberKeyframeTrack(`${f.names.head}.position[x]`,[0,2],[0,2])]);
+  const paid=new ActorRuntime(f.asset,visual(f,{action:'fire',equipment:'long-gun',cue:{id:'paid-shot-rate',action:'fire',startedAt:0,durationMs:1000}}));
+  paid.tick(.1,250);close(actorHead(paid,f).position.x,.5);paid.dispose();
 });
 
 test('mounted death and collapse retain the horse and seat until the paid transition finishes',()=>{

@@ -1,6 +1,6 @@
 import {AnimationMixer,AnimationAction,Group,Mesh,SkinnedMesh,Skeleton,Material,MeshStandardMaterial,LoopOnce,LoopRepeat,Vector3,Object3D} from 'three';
 import {clone} from 'three/addons/utils/SkeletonUtils.js';
-import {resolveActorAction} from '../../../game/actor-action-contract.js';
+import {resolveActorAction,selectActorClipVariant} from '../../../game/actor-action-contract.js';
 import {boundClip,type LoadedActor,type SocketSpec,type ClipSpec,type EquipmentSpec} from './actor-assets';
 import {mirroredClip,fitMirroredSockets} from './clip-mirroring';
 import {sampleAnimationTime,cueControlsAction} from './animation-clock';
@@ -141,7 +141,8 @@ export class ActorRuntime {
     const request={action:visual.action,posture:visual.cue?.fromPosture??visual.posture,mounted:visual.cue?.fromPosture?visual.cue.fromPosture==='mounted':visual.mounted,equipment:visual.equipment};
     const spec=resolveActorAction(request);if(!spec)throw Error(`Unsupported character action: ${JSON.stringify(request)}`);
     const mainItem=visual.items.find(item=>item.socket==='handRight');
-    const semantic=(mainItem&&this.itemSpec(mainItem.id)?.clipOverrides?.[spec.clip])??spec.clip;
+    const itemSemantic=(mainItem&&this.itemSpec(mainItem.id)?.clipOverrides?.[spec.clip])??spec.clip;
+    const semantic=selectActorClipVariant(itemSemantic,visual.cue?.id);
     const {spec:clipSpec,clip:sourceClip}=boundClip(this.asset.clips,this.asset.animation.animations,semantic);
     const hand=visual.cue?.hand??'handRight',mirror=hand==='handLeft'&&visual.equipment==='short-gun'&&['aim','fire'].includes(visual.action);
     if(mirror&&!this.asset.manifest.animationMirroring)throw Error(`Missing left-hand animation mapping: ${this.asset.appearance.id}`);

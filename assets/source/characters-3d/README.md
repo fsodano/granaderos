@@ -3,6 +3,10 @@
 This production library uses real skinned human meshes. It does not use sprites,
 billboards, baked animation pictures, or primitive substitute bodies. The approved
 `playgrounds/granadero-3d` demo is independent and is not changed by this builder.
+On 2026-10-06 the user accepted that Granadero as the reference for the other
+characters. The production sources now apply its human proportions, surface
+detail and reviewed standing movement to all eight appearances. See
+[the review inventory](REVIEW.md) for the exact scope and remaining limits.
 
 ## Rebuild
 
@@ -43,6 +47,11 @@ changed by the asset builder.
 The eight active appearances are granadero, royalist, worker, surgeon, gaucho,
 friar, woman-scout, and woman-shawl. Uniforms, shirts, coats, a poncho, a habit,
 a shawl, trousers, a skirt, hair, hats, boots and trim are fitted meshes.
+The shared surface treatment adds facial pigment, cloth folds and seams,
+matte leather, and shaped uniform trim. Female faces omit the male jaw stubble
+treatment. Civilian garments keep their own colors and do not retain military
+cockades, chin scales, cords or epaulettes. Each complete hat is one replaceable
+headwear part, including its small trim pieces.
 
 Family attire is the base visual. An empty inventory outfit slot keeps that base
 visual and does not create an owned item. Equipped inventory garments use the
@@ -60,6 +69,34 @@ Hand sockets are calculated from the native palm and knuckle geometry. The
 matching item is attached at identity below its named socket. Do not apply a
 second arbitrary orientation or move the hand mesh to fit the weapon.
 
+## Reviewed standing movement
+
+The two anatomy banks each contain 270 semantic clips. Of these, 34 use 29
+distinct motions transferred from the accepted Granadero reference. This covers
+unarmed idle/walk/run/punch, rifle and pistol aim/fire/carry/close strikes,
+bayonet thrust, sabre guard/carry/cuts/thrust/hilt strike, and knife
+guard/carry/cuts/thrust. Shared guard poses serve multiple semantic requests.
+`reviewed_motion.py` contains the reusable source; the builder does not import
+the playground. Exported `reviewedPose` metadata identifies the source motion
+and its source hash. Native male and female proportions determine the targets.
+
+Knife item 1813 has explicit bindings to knife motions. Standing sabre and knife
+strikes select a stable variant from the action cue ID; preparation, contact and
+recovery keep the same variant. Each variant has one contact. The playground's
+two-cut combination remains a preview action and does not create a second hit
+for one paid gameplay action.
+
+Reviewed clips retain the accepted 1.25 playback-rate reference. Gameplay cue
+timing remains authoritative; clip markers cannot issue attacks, spend AP or
+ammunition, apply damage, or move an actor. The other clips retain the existing
+production authoring for crouching, prone and mounted actions, reloads,
+interactions and reactions. They are not newly approved by the Granadero review.
+
+Open `/renderer-sandbox` and select **Ocho personajes** to inspect all eight
+appearances and move or equip them without loading a saved campaign. The combat
+fixture also includes a knife user. This fixture supports visual review; it is
+not proof that every posture, garment and weapon combination has been checked.
+
 ## Mesh budgets and sharing
 
 Three real geometry LODs preserve the skeleton contract. Decimation occurs in
@@ -69,6 +106,10 @@ Weights are limited to the strongest four influences and normalized.
 
 Apparel uses a PBR palette atlas with separate metal/roughness and normal data.
 Skin remains a distinct material for deterministic light/brown/dark palettes.
+The atlas grows to fit its material count. All joined parts preserve a common
+`Human_Surface_Tone` attribute, exported as `COLOR_0`; this keeps facial and
+cloth pigment visible in the game renderer. Supported multiply nodes preserve
+the pigment and texture together during export.
 Body parts are batched by equipment slot so owned clothing can replace them.
 Images are external content-addressed PNGs shared across GLBs. Constant animation
 samplers retain their true value at both endpoints; non-default weapon holds are

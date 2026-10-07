@@ -18,18 +18,28 @@ PRESETS = {
  'woman-shawl':dict(gender='female',title='Mujer con mantón',coat=(.58,.50,.36),trousers=(.105,.025,.035),headwear=None),
 }
 
+# These are also the replaceable headwear boundary. Keep every trim component
+# with its hat; a civilian or a replacement felt hat must not leave floating
+# cockades, chin scales, visor trim or plumes on the actor.
+HEADWEAR_PREFIXES = (
+ 'Shaped_Shako','Shako_','Curved_Shako','Red_Shako','Red_Side_Cord',
+ 'Red_Tassel','Short_Red_Plume','Tall_Red_Plume','Broad_Yellow_Hat_Band',
+ 'Cockade_','Brass_Visor_Edge','Crest_','Chinstrap_','Felt_Hat',
+)
+
 def apply_appearance(ctx):
  p=ctx['preset']; spec=PRESETS[p];objects=ctx['objects'];M=ctx['M'];mesh=ctx['mesh'];tube=ctx['tube'];ellipsoid=ctx['ellipsoid'];weight=ctx['source_weight_at'];heads=ctx['heads']
  def color(key,value):
   M[key].diffuse_color=(*value,1);M[key].node_tree.nodes.get('Principled BSDF').inputs['Base Color'].default_value=(*value,1)
  color('navy',spec['coat']);color('trousers',spec['trousers'])
+ color('seam',tuple(c*.73 for c in spec['coat']))
  def remove(prefixes):
   for o in list(objects):
    if o.name.startswith(tuple(prefixes)):
     objects.remove(o);bpy.data.objects.remove(o,do_unlink=True)
  military=p in ('granadero','royalist')
  if not military:
-  remove(['Shaped_Shako','Shako_','Curved_Shako','Red_Shako','Red_Side_Cord','Red_Tassel','Short_Red_Plume','Single_Crossbelt','Crossbelt_Shoulder','Crimson_Epaulette','Red_Epaulette_Fringe','Fine_Collar_Gold','Cuff_Gold','Crimson_Trouser_Seam','Red_Front_Piping'])
+  remove([*HEADWEAR_PREFIXES,'Single_Crossbelt','Crossbelt_Shoulder','Crimson_Epaulette','Red_Epaulette_Fringe','Epaulette_','Fine_Collar_Gold','Cuff_Gold','Crimson_Trouser_Seam','Red_Front_Piping'])
   color('red',spec['coat']);color('brass',(.18,.12,.057))
  if p in ('worker','gaucho','friar','woman-scout','woman-shawl'):
   remove(['Wool_Coat_Tail','Brass_Coat_Button','Belt_Brass_Buckle'])
@@ -37,6 +47,11 @@ def apply_appearance(ctx):
   remove(['White_Waist_Belt'])
  if p=='royalist':
   color('red',(.31,.025,.018));color('cream',(.76,.71,.59))
+  color('cord',(.31,.025,.018));color('plume',(.22,.018,.014))
+  color('cockade',(.31,.025,.018))
+  # The Granadero's sun and sky-blue cockade belong to that appearance.
+  # Preserve the existing royalist brass shield identity on this shared shako.
+  remove(['Crest_Sun_','Crest_Central_Relief'])
  # Native fitted human head remains visible. Hair additions are small head-bound
  # geometry, not disconnected oversized heads or a substitute body silhouette.
  if p=='woman-scout':
@@ -95,7 +110,7 @@ def apply_appearance(ctx):
  for o in objects:
   n=o.name
   o['appearance']=p
-  if any(s in n for s in ('Shako','Plume','Tassel','Felt_Hat')):part='headwear'
+  if n.startswith(HEADWEAR_PREFIXES):part='headwear'
   elif any(s in n for s in ('Boot','Sole')):part='footwear'
   elif any(s in n for s in ('Breeches','Trouser_Seam','Long_Skirt')):part='legwear'
   elif any(s in n for s in ('Skin','Hair','Eyeball','Iris','Pupil','Eyebrow','Spectacles','Braid')):part='skin'
@@ -111,24 +126,40 @@ def draped(name,ctx,top,bottom,shoulder,material,width,depth):
   for j in range(N):
    a=j*math.tau/N
    if shoulder:
-    ease=min(1,t*8.5);rx=.077+(width-.077)*ease;ry=.085+(depth-.085)*ease
-    zz=z-.020*abs(math.cos(a))*math.sin(math.pi*t)
-   else:rx=width*(1+.47*t);ry=depth*(1+.63*t);zz=z
+    # A poncho rests on the shoulders; it is not a closed sleeve surface.
+    # Match the neck opening to the native collar, then hang the front and
+    # back panels from the trunk with open sides below the upper arm.
+    ease=min(1,t*4.6);ease=ease*ease*(3-2*ease)
+    shoulder_width=min(width,.245)
+    rx=.083+(shoulder_width-.083)*ease+(width-shoulder_width)*t
+    ry=.092+(depth-.092)*ease
+    zz=top+.050+(bottom-top-.050)*t
+    centre_y=-.036+.048*ease
+   else:
+    rx=width*(1+.47*t)
+    # Extra cloth across the knees spans a stride without tracing two trouser
+    # legs. Keep the original waist and hem dimensions.
+    ry=depth*(1+.63*t)+.115*math.sin(math.pi*t);zz=z
    fold=(.007+.010*t)*math.sin(12*a+.25*math.sin(t*math.pi))*(.3+.7*t)
-   q=Vector(((rx+fold)*math.cos(a),.012+(ry+fold)*math.sin(a),zz))
-   if shoulder:
-    outward=Vector((math.cos(a),math.sin(a),0))
-    hit,cp,cn,_=ctx['coat'].ray_cast(Vector((0,.012,zz))+outward*.65,-outward)
-    if hit and abs(cp.x)<.30 and Vector((cp.x,cp.y-.012,0)).length>Vector((q.x,q.y-.012,0)).length:q=cp+cn*.015
+   q=Vector(((rx+fold)*math.cos(a),(centre_y if shoulder else .012)+(ry+fold)*math.sin(a),zz))
+   if shoulder and t<.30:
+    hit,cp,cn,_=ctx['coat'].ray_cast(Vector((q.x,q.y,1.8)),Vector((0,0,-1)))
+    if hit:q.z=max(q.z,cp.z+.012)
    vv.append(q)
    if shoulder:
-    w=dict(ctx['source_weight_at'](q));w={k:v for k,v in w.items() if not k.startswith(('hand','thumb','index','middle','ring','pinky'))}
-    if not w:w={'spine_03':1}
+    # Nearest-arm weights folded the garment into the armpit and tore open
+    # the collar when the arm left the bind pose. A hanging panel follows
+    # the chest and waist; its side opening lets the arm move independently.
+    lower=max(0,min(1,(1.34-zz)/.34));upper=max(0,min(1,(zz-1.18)/.25))
+    w={'spine_03':upper,'pelvis':lower*(1-upper),'spine_02':(1-lower)*(1-upper)}
    else:
-    side='l' if q.x>0 else 'r';leg=min(.85,t*.85);w={'pelvis':1-leg,'thigh_'+side:leg}
+    leg=min(.72,t*.72);left=.5+.38*math.cos(a)
+    w={'pelvis':1-leg,'thigh_l':leg*left,'thigh_r':leg*(1-left)}
    s=sum(w.values());ww.append({k:v/s for k,v in w.items()})
  for row in range(R-1):
-  for j in range(N):a=row*N+j;b=row*N+(j+1)%N;ff.append((a,b,b+N,a+N))
+  for j in range(N):
+   if shoulder and row/(R-1)>.32 and abs(math.cos((j+.5)*math.tau/N))>.97:continue
+   a=row*N+j;b=row*N+(j+1)%N;ff.append((a,b,b+N,a+N))
  o=ctx['mesh'](name,vv,ff,material,ww)
  # Solidify before the armature; thickness remains when mesh is exported.
  bpy.context.view_layer.objects.active=o

@@ -665,12 +665,12 @@ def _gun_pose(ctx,base,key,offsets,mode='aim',recoil=0):
     return _collect(rig),grip,rotation
 
 
-def _blade_pose(ctx,base,offsets,phase=0):
+def _blade_pose(ctx,base,offsets,phase=0,key='sabre'):
     rig=ctx['rig'];_apply_sample(rig,base);pelvis=rig.pose.bones['pelvis'].head.copy()
     # Sweep outside the right shoulder before crossing in front of the body.
     position=pelvis+Vector((-.30+.25*max(0,phase),-.28-.30*abs(phase),.20+.32*max(0,-phase)))
     rotation=Quaternion(UP,-math.pi/2+phase*1.75) @ Quaternion(Vector((0,1,0)),.21+abs(phase)*1.95)
-    p,q=offsets['sabre'];wq=rotation @ q
+    p,q=offsets[key];wq=rotation @ q
     _arm_ik(rig,'r',position-wq @ p,_head(rig,'upperarm_r')+Vector((-.25,-.04,-.20)))
     _set_world_rotation(rig,'hand_r',wq);_finger_curl(rig,1.26,'r')
     return _collect(rig)
@@ -695,7 +695,7 @@ def _lance_pose(ctx,base,offsets,mode='carry',phase=0):
 
 def _equipment_pose(ctx,base,equipment,offsets,mode='carry'):
     if equipment in ('long-gun','short-gun'):return _gun_pose(ctx,base,'rifle' if equipment=='long-gun' else 'pistol',offsets,mode)[0]
-    if equipment=='blade':return _blade_pose(ctx,base,offsets)
+    if equipment in ('blade','knife'):return _blade_pose(ctx,base,offsets,key='knife' if equipment=='knife' else 'sabre')
     if equipment=='lance':return _lance_pose(ctx,base,offsets,mode)
     return _copy_pose(base)
 
@@ -753,6 +753,59 @@ def _semantic_specs():
     return json.loads(subprocess.check_output(['node','--input-type=module','-e',script],cwd=root,text=True))
 
 
+
+def _reviewed_binding(spec):
+    """The reviewed standing bank keeps the production semantic contract."""
+    if spec['posture']!='standing':return None
+    equipment=spec['equipment'];gesture=spec['gesture'];variant=spec.get('variant')
+    if equipment=='unarmed':return {'idle':'Idle','walk':'Walk','run':'Run','punch':'Punch'}.get(gesture)
+    if equipment in ('long-gun','short-gun'):
+        prefix='Rifle' if equipment=='long-gun' else 'Pistol'
+        if gesture in ('idle','aim','brace'):return prefix+'Aim'
+        if gesture in ('walk','run','fire'):return prefix+gesture.title()
+        if gesture=='butt':return 'RifleButtStrike' if equipment=='long-gun' else 'PistolStrike'
+        if gesture=='bayonet':return 'BayonetThrust'
+    if equipment in ('blade','knife'):
+        prefix='Sabre' if equipment=='blade' else 'Knife'
+        if gesture in ('idle','brace'):return prefix+'Ready'
+        if gesture in ('walk','run'):return prefix+gesture.title()
+        if gesture=='slash':
+            suffix={'forehand':'Forehand','backhand':'Backhand','thrust':'Thrust','hilt':'HiltStrike'}.get(variant,'Slash')
+            return prefix+suffix
+    return None
+
+
+def _reviewed_bank(ctx):
+    import hashlib
+    import reviewed_motion
+    print('MOTION SOURCE approved standing bank',flush=True)
+    bank=reviewed_motion.sample_animations(ctx)
+    digest=hashlib.sha256(Path(reviewed_motion.__file__).read_bytes()).hexdigest()
+    return {clip['name']:clip for clip in bank['clips']},digest
+
+
+def _write_reviewed(ctx,spec,source,digest):
+    """Use reviewed timing/poses, with precise production event sampling."""
+    rig=ctx['rig'];duration=source['duration']
+    markers={('contact' if key=='hit' else key):value for key,value in source['events'].items()}
+    times=sorted(set([duration*i/(len(source['samples'])-1) for i in range(len(source['samples']))]+list(markers.values())))
+    samples=[_at(source['samples'],time/duration) for time in times]
+    for sample in samples:
+        for name,(position,rotation) in sample.items():
+            if name!='Root':sample[name]=(Vector(),rotation)
+    meta=_write_clip(rig,spec['name'],samples,duration,spec['loop'],times=times)
+    meta.update(spec)
+    meta.update({'duration':duration,'events':markers,'markers':markers,
+        'source':source.get('source',{'type':'native-contact-authoring'}),
+        'sampleRate':30,'timingAuthority':'simulation','rootMotion':'in-place',
+        'playbackRate':1.25,'reviewedPose':{'name':source['name'],
+            'origin':'approved-granadero-preview','sourceSha256':digest}})
+    if source.get('locomotionSpeed'):meta['locomotionSpeed']=source['locomotionSpeed']
+    elif spec['gesture'] in ('walk','run'):
+        # Armed loops retain the recorded lower-body path and stride.
+        meta['locomotionSpeed']=ctx['reviewed_stride'][spec['gesture'].title()]
+    return meta
+
 def apply_animations(ctx, only=None):
     """Create every declared capability. Unknown gestures are build errors.
 
@@ -761,6 +814,8 @@ def apply_animations(ctx, only=None):
     """
     rig=ctx['rig'];bpy.context.scene.render.fps=FPS
     if rig.animation_data:rig.animation_data_clear()
+    reviewed,reviewed_digest=_reviewed_bank(ctx)
+    ctx['reviewed_stride']={name:reviewed[name]['locomotionSpeed'] for name in ('Walk','Run')}
     disabled=[]
     for obj in ctx['objects']:
         for modifier in obj.modifiers:
@@ -781,6 +836,10 @@ def apply_animations(ctx, only=None):
     result=[];specs=_semantic_specs()
     if only:specs=[s for s in specs if s['name'] in only]
     for index,spec in enumerate(specs):
+        binding=_reviewed_binding(spec)
+        if binding:
+            result.append(_write_reviewed(ctx,spec,reviewed[binding],reviewed_digest))
+            continue
         gesture=spec['gesture'];posture=spec['posture'];equipment=spec['equipment'];base=bases[posture]
         duration=1.4;markers={};source={'type':'native-contact-authoring'};speed=None
         if gesture in ('idle','aim','brace','dead','unconscious'):duration=2
@@ -814,8 +873,8 @@ def apply_animations(ctx, only=None):
                     # Rider pelvis stays at the saddle; horse supplies travel.
                 else:pose=_at(sources[gesture+posture.title() if gesture.startswith('strafe') else 'crouch' if posture=='crouched' else gesture],t)
                 pose=_equipment_pose(ctx,pose,equipment,offsets)
-            elif gesture=='brace' and equipment in ('blade','lance'):
-                pose=_lance_pose(ctx,base,offsets,'brace') if equipment=='lance' else _blade_pose(ctx,base,offsets,-.15)
+            elif gesture=='brace' and equipment in ('blade','knife','lance'):
+                pose=_lance_pose(ctx,base,offsets,'brace') if equipment=='lance' else _blade_pose(ctx,base,offsets,-.15,key='knife' if equipment=='knife' else 'sabre')
             elif gesture=='thrust':
                 phase=_smooth_key([(0,0),(.25,-.25),(.483,1),(.70,.35),(1,0)],t);pose=_lance_pose(ctx,base,offsets,'thrust',phase)
             elif gesture in ('aim','fire','brace'):
@@ -825,7 +884,7 @@ def apply_animations(ctx, only=None):
             elif gesture in ('reload','reprime','repair','unload'):
                 pose=_reload_pose(ctx,base,'rifle' if equipment=='long-gun' else 'pistol',offsets,t,gesture)
             elif gesture=='slash':
-                phase=_smooth_key([(0,0),(.23,-.65),(.483,1),(.65,.8),(1,0)],t);pose=_blade_pose(ctx,base,offsets,phase)
+                phase=_smooth_key([(0,0),(.23,-.65),(.483,1),(.65,.8),(1,0)],t);pose=_blade_pose(ctx,base,offsets,phase,key='knife' if equipment=='knife' else 'sabre')
             elif gesture in ('punch','butt','bayonet'):
                 phase=_smooth_key([(0,0),(.25,-.3),(.483,1),(.7,.2),(1,0)],t)
                 if equipment in ('long-gun','short-gun'):
