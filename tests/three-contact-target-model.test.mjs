@@ -18,7 +18,7 @@ test('hidden, replaced, pending, failed, stale and ambiguous target models canno
  const {visual,target,entry}=fixture();
  assert.equal(resolveContactTargetModel(target,[],entry),undefined);
  assert.equal(resolveContactTargetModel(target,[visual,visual],entry),undefined);
- for(const current of [undefined,{}, {visual}, {...entry,error:true},{...entry,visual:{...visual}}, {...entry,runtime:{...entry.runtime,asset:{appearance:{id:'granadero'}}}}])assert.equal(resolveContactTargetModel(target,[visual],current),undefined);
+ for(const current of [undefined,{}, {visual}, {...entry,pending:true},{...entry,error:true},{...entry,visual:{...visual}}, {...entry,runtime:{...entry.runtime,asset:{appearance:{id:'granadero'}}}}])assert.equal(resolveContactTargetModel(target,[visual],current),undefined);
  entry.runtime.root.visible=false;assert.equal(resolveContactTargetModel(target,[visual],entry),undefined);entry.runtime.root.visible=true;
  for(const changes of [{key:'npc:target'},{appearance:'granadero'},{position:[3.1,0,2]},{position:[3,1,2]},{yaw:2},{posture:'standing'},{mounted:true},{action:'hit'}])assert.equal(resolveContactTargetModel({...target,...changes},[visual],entry),undefined);
 });
