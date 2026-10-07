@@ -631,3 +631,7 @@ Sixteen short-gun, sabre, knife and lance sideways loops now retain complete sup
 ## Paid sabre facing and phase continuity
 
 Diagonal standing sabre preparation now turns toward the admitted current target while retaining a supported rear boot; contact keeps the already admitted body/foot recipe. The finite endpoint fix preserves complete native path admission. All 62 affected checks, type/docs/baseline checks and the clean build (`16d1ba388b52`) pass. Independent replay covers 184 paid actions, eight headings and 368 admissions with bounded actual Root/sole handoffs. Both ordinary diagonal browser routes retain their paid cells, 3.5 PA strike cost and one 42-damage result; 42 source-pinned captures have no errors. First-fit cost, current target breathing drift and broader body/weapon polish remain explicit. See [the facing review](../art/paid-melee-facing-3d-review-2026-10-07.md).
+
+## Supported chapel placement
+
+The authored chapel roof, walls, door, floor returns and existing bell gable now share centred coordinates when the front supports remain intact. Edited corners and unpainted legacy shells retain their clipped placement. All 57 affected checks, type/docs/baseline checks and the clean build (`fb1e33a36d4c`) pass. Thirty ordinary and closer original/slab/accessible-roof views pass without browser errors and were compared with the current chapel sprite. The source front piers remain a separate detail cut. See [the placement review](../art/chapel-shell-placement-3d-review-2026-10-07.md).
