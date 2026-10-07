@@ -8,6 +8,7 @@ import {palaceFacade} from './world-palace-facade';
 import {depotFacade} from './world-depot-facade';
 import {warehouseButtresses} from './world-warehouse-buttresses';
 import {postaPiers} from './world-posta-piers';
+import {stableVentilation} from './world-stable-ventilation';
 import {buildingArtInset} from './world-building-placement';
 import type {WorldGeometry} from './world-geometry';
 import type {WorldMaterials} from './world-materials';
@@ -386,19 +387,17 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
         batch.cylinder(materials.get('brass'),at(doorU+sign*.068/T,v-.018/T,y-.132),at(doorU+sign*.136/T,v-.018/T,y-.068),.018,light);
       }
     });
-    if(kind==='stable')feature('stable-timber-frame',()=>{
-      const y=height*.91;
-      box(frame.width*.5,-.13/T,y,frame.width+.10,.14,.20/T,wood);
-      for(let u=0;u<=frame.width;u+=2)if(wallAt(u,0)?.type==='wall'){
-        const [a,v]=bearing(u,0,u!==0&&u!==frame.width);box(a,v,y*.5,.15,y,.38/T,wood);
-        batch.cylinder(wood,at(a,v,y-.30),at(a+(u<frame.width/2?.42:-.42),v,y-.04),.04,light);
-      }
-      const center=frame.width*.5,half=Math.min(1.20,frame.width*.32),rise=.65,v=-.11/T;
-      const panel=[at(center-half,v,height+.025),at(center+half,v,height+.025),at(center,v,height+rise)];
-      batch.polygon(darkwood,panel,light);
-      for(let n=0;n<3;n++)batch.cylinder(wood,panel[n],panel[(n+1)%3],.04,light);
-      for(let u=center-half+.18;u<center+half;u+=.25){const top=height+.025+(rise-.025)*(1-Math.abs(u-center)/half);batch.cylinder(trim,at(u,v-.015/T,height+.055),at(u,v-.015/T,top-.035),.018,light);}
-    });
+    if(kind==='stable'){
+      feature('stable-timber-frame',()=>{
+        const y=height*.91;
+        box(frame.width*.5,-.13/T,y,frame.width+.10,.14,.20/T,wood);
+        for(let u=0;u<=frame.width;u+=2)if(wallAt(u,0)?.type==='wall'){
+          const [a,v]=bearing(u,0,u!==0&&u!==frame.width);box(a,v,y*.5,.15,y,.38/T,wood);
+          batch.cylinder(wood,at(a,v,y-.30),at(a+(u<frame.width/2?.42:-.42),v,y-.04),.04,light);
+        }
+      });
+      root.add(stableVentilation(b,input,T,height,base,roofRise,geometry,materials));
+    }
   }else if(kind==='smithy'){sideChimney(true);roofCanopy('forge-canopy',entranceSupports(),.50);}
   else if(kind==='house')sideChimney();
   root.add(batch.finish(`building-detail:${b.id}:fabric`));return root;
