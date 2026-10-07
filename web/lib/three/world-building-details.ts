@@ -7,6 +7,7 @@ import {illuminationAt} from './world-materials';
 import {palaceFacade} from './world-palace-facade';
 import {depotFacade} from './world-depot-facade';
 import {warehouseButtresses} from './world-warehouse-buttresses';
+import {postaPiers} from './world-posta-piers';
 import type {WorldGeometry} from './world-geometry';
 import type {WorldMaterials} from './world-materials';
 import type {WorldBuilding,WorldInput} from './world-types';
@@ -138,11 +139,12 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
     const panel=[at(lo-.18,front,low),at(hi+.18,front,low),at(hi+.18,back,high),at(lo-.18,back,high)],roofAt=(v:number)=>low+(v-front)/(back-front)*(high-low);
     feature(name,()=>{
       for(const u of supports){
-        // Wide masonry feet use a slightly smaller global art inset. They
-        // still meet the shell, and every ground vertex stays in its wall cell.
-        const shift=masonry?.06:0,a=u-shift*(frame.u.x+frame.u.y),v=-shift*(frame.v.x+frame.v.y),top=roofAt(v);
+        if(masonry&&(u===0||u===frame.width))continue;
+        // The posta's broad corner piers are separate. Its thin porch posts
+        // expose their front face without crossing the solid cell boundary.
+        const a=masonry?u-alongInset:u,v=masonry?.02*(frame.v.x+frame.v.y):0,top=roofAt(v);
         if(masonry){
-          box(a,v,(top+.16)*.5,.30/T,top-.16,.30/T,wall);box(a,v,.08,.38/T,.16,.38/T,materials.get('stone'));box(a,v,top-.02,.38/T,.10,.38/T,trim);
+          box(a,v,(top+.11)*.5,.14,top-.11,.14,wall);box(a,v,.055,.23,.11,.14,materials.get('stone'));box(a,v,top-.02,.23,.10,.14,trim);
         }else{
           box(a,v,top*.5,.11/T,top,.11/T,wood);box(a,v,.055,.21/T,.11,.21/T,materials.get('stone'));
           const toward=u==lo?1:-1;batch.cylinder(wood,at(a,v,top-.30),at(a+toward*.28,v,roofAt(v)-.065),.025,light);
@@ -338,8 +340,9 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
     });
     tower(frame.width*.5,.1,Math.min(1.4,Math.max(1.1,frame.width*.22)),height+(twoStoreys?2.05:1.35),height-.12,true);
   }else if(kind==='posta'){
-    const supports=[...new Set([0,...entranceSupports(),frame.width])].filter(u=>wallAt(u,0)?.type==='wall').sort((a,c)=>a-c);
+    const supports=Array.from({length:Math.floor(frame.width)+1},(_,u)=>u).filter(u=>wallAt(u,0)?.type==='wall'&&(u===0||u===frame.width||u%2===0));
     roofCanopy('posta-masonry-veranda',supports,.55,true);
+    root.add(postaPiers(b,input,T,height,base,geometry,materials,legacy));
   }else if(['farmhouse','estancia'].includes(kind)){
     farmhouseGallery();
     for(const u of [0,frame.width]){

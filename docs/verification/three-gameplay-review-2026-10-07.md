@@ -455,6 +455,19 @@ production export. Six clean playable views had no browser errors. The front
 and interior were compared with the direct sprite. A separate shell-placement
 correction is required to expose the support depth.
 
+## Posta pier increment
+
+The posta separates its broad stepped corner piers from thinner masonry porch
+posts. Source support positions, intact cells, edited openings, actual roof
+heights and ordinary room disclosure control the new details. The
+[posta review](../art/posta-piers-3d-review-2026-10-07.md) records their source
+proportions and the capitals still obscured by the legacy shell placement.
+
+The clean cut passed 58 affected checks, type/docs/baseline checks and the
+production export. Six clean playable views had no browser errors. Front,
+side and interior were compared with the current sprite. A separate placement
+correction remains necessary for the prominent capital silhouette.
+
 ## Next increments and acceptance limits
 
 The low-ceiling headwear limit, broader posture bank, braking steps and the

@@ -1,0 +1,11 @@
+# Posta pier review — 7 October 2026
+
+The current direct posta sprite has broad front corner piers, stepped stone feet and capitals, with thinner masonry porch posts between them. The reference is `artifacts/three-gameplay-review/direct-facade-audit/posta-0-exterior.png`, plus `pier()` and the posta branch in `web/app/TacticalBuildingDetails.tsx`. The current authored ochre walls and aged roof remain the selected finishes.
+
+The 3D corner helper separates these broad supports from the thin porch posts. It uses the source shaft, foot and capital proportions, adjusted to stay wholly inside their actual solid wall cells. Porch posts follow the source's even supported positions. Edited corners that become doors, windows or breaches omit the corresponding pier. All scenery ends below the actual eave, including authored slabs, terraces and walking roofs. Normal partial and complete room disclosure remove the porch and piers. Rendering does not change the authored state or movement rules.
+
+All 45 focused architecture checks pass in 3.25 seconds. TypeScript and whitespace checks pass. The actual compiled templates cover all four rotations, authored openings, edited supports, flat roof states, retained materials and ordinary room disclosure. All six live states at `artifacts/three-gameplay-review/posta-piers/` pass without browser errors. The 0°/90° exteriors and 270° interior were compared with the current source. The interior remains clear.
+
+The corner feet and shaft edges are present at the ordinary camera scale. The main shell's +0.4-tile roof placement still covers much of the capitals and weakens the prominent source silhouette. This cut records that remaining defect; it does not claim complete facade polish. A separate physical shell placement correction can expose the supports while preserving every authored walking cell.
+
+The clean committed cut passed 58 focused checks in 9.02 seconds, type/docs/baseline checks and the production export (1,244 files; 1,039 references; build `e20897624421`). Six final clean playable views passed without browser errors at `artifacts/three-posta-cut-review/`. The 0°/90° exteriors and 270° interior were compared with the current sprite. The broad support geometry is retained safely, and the interior stays clear; the obscured capital silhouette remains for the separate shell-placement correction.
