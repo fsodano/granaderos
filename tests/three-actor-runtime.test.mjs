@@ -199,7 +199,7 @@ test('mounted placement uses normalized model-local coordinates exactly once',()
   const f=fixture(),v=visual(f,{mounted:true}),runtime=new ActorRuntime(f.asset,v);runtime.tick(0,0);
   closeVector(runtime.model.position,[.08,.7,-.13]);closeVector(runtime.root.position,v.position,'gameplay position is unchanged');
   const horse=runtime.root.getObjectByName('A_horse_scene');assert.ok(horse.visible);closeVector(horse.position,[0,0,0]);
-  runtime.update(visual(f),100);runtime.tick(0,100);assert.equal(horse.visible,false);closeVector(runtime.model.position,[0,0,0]);runtime.dispose();
+  runtime.update(visual(f),100);runtime.tick(0,100);assert.equal(horse.visible,false);closeVector(runtime.model.position,[.08,.7,-.13],'Placement retains the outgoing pose at the start of the blend');settle(runtime,200);closeVector(runtime.model.position,[0,0,0]);runtime.dispose();
 });
 
 test('mount and dismount retain the horse while seat weight crosses the transition',()=>{
@@ -208,7 +208,39 @@ test('mount and dismount retain the horse while seat weight crosses the transiti
   runtime.tick(0,500);closeVector(runtime.model.position,[.04,.35,-.065]);runtime.tick(0,1001);closeVector(runtime.model.position,[.08,.7,-.13]);assert.ok(horse.visible);
   const dismount=visual(f,{mounted:false,action:'dismount',cue:{id:'dismount',action:'dismount',startedAt:2000,durationMs:1000,fromPosture:'mounted',toPosture:'standing'}});
   runtime.update(dismount,2000);runtime.tick(0,2000);assert.ok(horse.visible,'already-dismounted simulation still retains horse for exit animation');closeVector(runtime.model.position,[.08,.7,-.13]);
-  runtime.tick(0,2500);closeVector(runtime.model.position,[.04,.35,-.065]);runtime.tick(0,3001);assert.equal(horse.visible,false);closeVector(runtime.model.position,[0,0,0]);runtime.dispose();
+  settle(runtime,2100);runtime.tick(0,2500);closeVector(runtime.model.position,[.04,.35,-.065]);runtime.tick(0,3001);assert.equal(horse.visible,false);closeVector(runtime.model.position,[0,0,0]);runtime.dispose();
+});
+
+test('a stopped mounted firing action cannot retain a saddle offset after dismount',()=>{
+  const f=fixture();addClip(f,'mounted.fire.short-gun',{seatAnchor:[.02,.9,.03]});
+  const completed=[],runtime=new ActorRuntime(f.asset,visual(f,{mounted:true}),(...event)=>completed.push(event));
+  runtime.tick(0,0);closeVector(runtime.model.position,[.08,.7,-.13]);
+  runtime.update(visual(f,{mounted:true,equipment:'short-gun',action:'fire',cue:{id:'mounted-shot',action:'fire',shotHand:'primary',hand:'handRight',startedAt:100,durationMs:1000}}),100);
+  runtime.tick(0,200);closeVector(runtime.model.position,[.08,.7,-.13],'A recorded shot stops the previous seated action without changing seat height');
+  const dismount=visual(f,{action:'dismount',cue:{id:'exit-after-shot',action:'dismount',startedAt:300,durationMs:1000,fromPosture:'mounted',toPosture:'standing'}});
+  runtime.update(dismount,300);runtime.tick(0,300);settle(runtime,500);
+  runtime.tick(0,800);closeVector(runtime.model.position,[.04,.35,-.065],'Only the active exit pose controls the halfway seat offset');
+  runtime.tick(0,1300);settle(runtime,1500);
+  closeVector(runtime.model.position,[0,0,0],'Stopped firing predecessors cannot leave a permanent seat offset on the ground');
+  closeVector(runtime.root.position,dismount.position,'Gameplay position remains unchanged');
+  assert.equal(runtime.root.getObjectByName('A_horse_scene').visible,false);
+  assert.deepEqual(completed,[[dismount.key,'exit-after-shot']],'The interrupted shot does not complete and the dismount completes once');
+  runtime.dispose();
+});
+
+test('seat placement follows the same weights as body poses through an interrupted blend',()=>{
+  const f=fixture(),takes=[['life.mount',[.1,1.6,-.1]],['mounted.idle.unarmed',[.02,.9,.03]],['mounted.run.unarmed',[-.01,.87,.05]]];
+  for(const [semantic,anchor]of takes){
+    const spec=f.asset.clips.find(clip=>clip.semantic===semantic);spec.seatAnchor=anchor;delete spec.seatWeight;
+    const clip=f.asset.animation.animations.find(clip=>clip.name===spec.name);
+    clip.tracks=[new VectorKeyframeTrack(`${f.names.hips}.position`,[0,2],[...anchor,...anchor])];
+  }
+  const v=visual(f,{mounted:true,action:'mount',cue:{id:'mount',action:'mount',startedAt:0,durationMs:1000,fromPosture:'standing'}}),runtime=new ActorRuntime(f.asset,v);
+  const check=()=>{runtime.root.updateMatrixWorld(true);closeVector(runtime.root.worldToLocal(runtime.model.getObjectByName(f.names.hips).getWorldPosition(new Vector3())),[.1,1.6,-.1],'The hips remain on the saddle through all three coordinate frames');};
+  runtime.tick(0,999);check();runtime.tick(0,1000);check();runtime.tick(.04,1040);check();
+  runtime.update(visual(f,{mounted:true,action:'run'}),1040);runtime.tick(0,1040);check();
+  for(let frame=1;frame<=24;frame++){runtime.tick(1/120,1040+frame*1000/120);check();}
+  runtime.dispose();
 });
 
 

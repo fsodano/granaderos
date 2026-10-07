@@ -36,6 +36,7 @@ export class ActorRuntime {
   private meleeFit:NativeMeleeContactFit;
   private clothMeshes:{mesh:Mesh;prone:number;crouched:number}[]=[];private clothProne=0;private clothCrouched=0;
   private actionHand:HandRole='handRight';private actionBarrel=0;
+  private seatActions=new Map<AnimationAction,{spec:ClipSpec;mounted:boolean}>();private saddlePosition=new Vector3();
   readonly root=new Group();readonly model:Object3D;private mixer:AnimationMixer;private action:AnimationAction|null=null;private actionKey='';private clipSpec:any;private ownedMaterials=new Set<Material>();private equipment=new Group();private equipmentKey='';private clothesKey='';private colorKey='';private horse?:Object3D;private horseMixer?:AnimationMixer;private horseAction?:AnimationAction;private horseClip='';private visual:ActorVisual;private bones=new Map<string,Object3D>();private clothing?:Object3D;private ghost?:Group;private cueStartedAt=0;private temporaryProps=new Map<string,Object3D>();private completedCues=new Set<string>();
   constructor(readonly asset:LoadedActor,visual:ActorVisual,private onCueComplete?:(key:string,id:string)=>void,private contactActor?:ContactActorResolver){
     this.visual=visual;this.model=clone(asset.body.scene);this.root.add(this.model);this.root.name=visual.key;
@@ -193,6 +194,7 @@ export class ActorRuntime {
     if(key!==this.actionKey){
       const previous=this.action;this.action=this.mixer.clipAction(clip);this.action.reset();this.action.enabled=true;this.action.clampWhenFinished=!clipSpec.loop;this.action.setLoop(clipSpec.loop?LoopRepeat:LoopOnce,clipSpec.loop?Infinity:1);this.action.play();
       if(previous&&previous!==this.action){if(visual.action==='fire'&&visual.cue?.shotHand)previous.stop();else this.action.crossFadeFrom(previous,.12,false);}this.actionKey=key;this.clipSpec=clipSpec;this.cueStartedAt=visual.cue?.startedAt??now;
+      if(this.horse)this.seatActions.set(this.action,{spec:clipSpec,mounted:visual.mounted||visual.cue?.fromPosture==='mounted'});
     }
     this.actionHand=hand;this.actionBarrel=barrel;
     if(this.horse&&this.horseMixer){
@@ -239,6 +241,30 @@ export class ActorRuntime {
     this.clothProne+=(prone-this.clothProne)*blend;this.clothCrouched+=(crouched-this.clothCrouched)*blend;
     for(const {mesh,prone,crouched}of this.clothMeshes){mesh.morphTargetInfluences![prone]=this.clothProne;mesh.morphTargetInfluences![crouched]=this.clothCrouched;}
   }
+  private placeRider(saddle:number[]|undefined){
+    this.model.position.set(0,0,0);let totalWeight=0;
+    for(const [action,{spec,mounted}]of this.seatActions){
+      if(!action.enabled||!action.isScheduled()){if(action!==this.action)this.seatActions.delete(action);continue;}
+      const blend=action.getEffectiveWeight();totalWeight+=blend;
+      if(!spec.seatAnchor||!saddle)continue;
+      let weight=mounted?1:0;const keys=spec.seatWeight;
+      if(keys?.length){
+        weight=keys[0].weight;
+        for(let index=1;index<keys.length;index++){
+          const a=keys[index-1],b=keys[index];
+          if(action.time>=b.time){weight=b.weight;continue;}
+          weight=a.weight+(b.weight-a.weight)*Math.max(0,(action.time-a.time)/(b.time-a.time));break;
+        }
+      }
+      this.model.position.x+=(saddle[0]-spec.seatAnchor[0])*weight*blend;
+      this.model.position.y+=(saddle[1]-spec.seatAnchor[1])*weight*blend;
+      this.model.position.z+=(saddle[2]-spec.seatAnchor[2])*weight*blend;
+    }
+    // Match the body's animation weights, including interrupted crossfades.
+    // Mount clips already use horse coordinates; seated clips use native
+    // body coordinates. Switching their offsets before the pose caused a jump.
+    if(totalWeight>1)this.model.position.divideScalar(totalWeight);
+  }
   tick(delta:number,now:number,reducedMotion=false){
     if(!this.action)return;
     this.meleeFit.restore();
@@ -253,7 +279,11 @@ export class ActorRuntime {
     const loadingItem=this.loadingItem(visual,timing.workIndex);
     const barrel=visual.cue?.work?.[timing.workIndex??0]?.barrel??0;
     if(loadingItem&&(loadingItem.socket!==this.actionHand||barrel!==this.actionBarrel)){this.update(visual,now);this.tick(0,now,reducedMotion);return;}
-    if(timing.complete&&visual.cue&&!this.clipSpec.loop){const id=visual.cue.id;this.completedCues.add(`${id}:${visual.cue.phase??''}`);this.update(this.restVisual(visual),now);this.onCueComplete?.(visual.key,id);this.tick(0,now,reducedMotion);return;}
+    if(timing.complete&&visual.cue&&!this.clipSpec.loop){
+      // Retain the exact terminal pose while it blends to the resting clip.
+      this.action.time=timing.time??clip.duration;this.action.timeScale=0;this.mixer.update(0);
+      const id=visual.cue.id;this.completedCues.add(`${id}:${visual.cue.phase??''}`);this.update(this.restVisual(visual),now);this.onCueComplete?.(visual.key,id);this.tick(0,now,reducedMotion);return;
+    }
     this.action.timeScale=timing.rate;if(timing.time!==undefined)this.action.time=timing.time;
     this.mixer.update(Math.min(delta,.1));this.poseCloth(Math.min(delta,.1));
     const meleeWeapon=(this.equipment.userData.attached as Object3D[]).find(item=>item.userData.hand==='handRight'&&this.itemSpec(item.userData.itemId)?.category==='sabre');
@@ -264,15 +294,12 @@ export class ActorRuntime {
       if(visibility)this.horse.visible=this.action.time>=visibility.start&&this.action.time<=visibility.end;
       if(this.horseAction){const horseSpec=this.asset.manifest.horse?.clips?.find(clip=>clip.name===this.horseClip),horseTime=sampleAnimationTime({clip:{duration:this.horseAction.getClip().duration,loop:true,locomotionSpeed:horseSpec?.locomotionSpeed},action:visual.action,motion:inputMotion,now});this.horseAction.timeScale=horseTime.rate;if(horseTime.time!==undefined)this.horseAction.time=horseTime.time;}
       this.horseMixer.update(Math.min(delta,.1));
-      const anchor=this.clipSpec.seatAnchor,saddleSpec=this.asset.manifest.horse?.saddle;
+      const saddleSpec=this.asset.manifest.horse?.saddle;
       const socket=saddleSpec&&this.horse.getObjectByName(saddleSpec.node);
       // Read the animated saddle in actor-local space, after the horse mixer.
       this.root.updateMatrixWorld(true);
-      const saddle=socket?this.root.worldToLocal(socket.getWorldPosition(new Vector3())).toArray():saddleSpec?.position;
-      let weight=visual.mounted||visual.cue?.fromPosture==='mounted'?1:0;
-      const keys=this.clipSpec.seatWeight;
-      if(keys?.length){const t=this.action.time;weight=keys[0].weight;for(let index=1;index<keys.length;index++){const a=keys[index-1],b=keys[index];if(t>=b.time){weight=b.weight;continue;}weight=a.weight+(b.weight-a.weight)*Math.max(0,(t-a.time)/(b.time-a.time));break;}}
-      this.model.position.set(anchor&&saddle?(saddle[0]-anchor[0])*weight:0,anchor&&saddle?(saddle[1]-anchor[1])*weight:0,anchor&&saddle?(saddle[2]-anchor[2])*weight:0);
+      const saddle=socket?this.root.worldToLocal(socket.getWorldPosition(this.saddlePosition)).toArray():saddleSpec?.position;
+      this.placeRider(saddle);
     }
   }
   anchor(role:string){
