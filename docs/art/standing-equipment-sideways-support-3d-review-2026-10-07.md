@@ -1,0 +1,9 @@
+# Standing equipped sideways support — 7 October 2026
+
+The remaining sixteen standing left/right clips now use the existing native supported step solve: short gun, sabre, knife and lance, for both native anatomies. Together with the previously released unarmed and rifle clips, all six standing equipment categories retain a supporting complete boot through their sideways loops.
+
+The guarded named transplant changes only eight thigh/calf/foot/ball rotation channels per selected clip and sixteen support records. It preserves all 326 other clips and 1,208 non-leg selected channels per anatomy, including the released unarmed/rifle support and unrelated firearm work. Original nodes, meshes, inverse binds, child translations/scales, Root/pelvis, actual 1.1666666269302368/1.2666666507720947-second loops, nominal intervals and pace remain exact. The locomotion profile is unchanged. The source lower inputs equal the old rifle basis; exported support quaternion components differ by at most 0.000001185 from the earlier solve because of float rounding.
+
+Across the selected complete LOD0 boots, minimum floor clearance is 0.9296 mm and nearest supporting boot height is at most 2.8891 mm throughout 241 phases. Native recovery is 4.2–10.1 cm. Two-loop preserved-facing body travel and phase keep the original 0.8 pace, with planted RMS residual at most 9.301 mm/s and maximum 78.478 mm/s outside transfer margins. These measured residuals do not establish zero slip.
+
+The root gate passes 42 affected complete-boot, two-loop movement and native clock checks in 13.81 seconds. Native library, exact profile and project type checks pass. Clean ordinary equipment routes and source captures follow before release. Crouched sideways motion, native guard and broader strike/turn body mechanics remain separate increments.

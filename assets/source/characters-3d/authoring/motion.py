@@ -1033,7 +1033,7 @@ def apply_animations(ctx, only=None):
             for name,(p,q) in pose.items():
                 if name!='Root':pose[name]=(Vector(),q)
             samples.append(pose)
-        meta=_write_clip(rig,spec['name'],samples,duration,spec['loop'],times=times,native_support=ctx if posture=='crouched'and gesture in('idle','walk')or posture=='prone'and gesture in('idle','crawl')else None,native_surface='boot'if posture=='prone'else'sole',native_sideways=(ctx,speed)if posture=='standing'and equipment in('unarmed','long-gun')and gesture in('strafeLeft','strafeRight')else None)
+        meta=_write_clip(rig,spec['name'],samples,duration,spec['loop'],times=times,native_support=ctx if posture=='crouched'and gesture in('idle','walk')or posture=='prone'and gesture in('idle','crawl')else None,native_surface='boot'if posture=='prone'else'sole',native_sideways=(ctx,speed)if posture=='standing'and equipment in('unarmed','long-gun','short-gun','blade','knife','lance')and gesture in('strafeLeft','strafeRight')else None)
         meta.update(spec);meta.update({'duration':round(duration,6),'events':markers,'markers':markers,'source':source,'sampleRate':SAMPLE_FPS,'timingAuthority':'simulation','rootMotion':'in-place'})
         if gesture=='reload' and equipment=='long-gun':meta['propCues']=[{'item':'ramrod','socket':'socket_handLeft_tool','start':round(duration*.46,6),'end':round(duration*.86,6)}]
         if equipment=='long-gun' and gesture in ('reload','unload'):

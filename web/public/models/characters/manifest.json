@@ -1826,8 +1826,8 @@
   "animationLibraries": {
     "male": {
       "url": "/models/characters/male-animations.glb",
-      "bytes": 11948248,
-      "sha256": "24dfc62a449ddb84861db39ee5d5169de46847f00b19164cf01dbec7a5ab6594",
+      "bytes": 11982572,
+      "sha256": "f33a6db63726c22ebabd319d809adb4ed097ce9dee9444bee69ce6a961eea25a",
       "clips": [
         {
           "name": "stand.idle.unarmed",
@@ -2598,7 +2598,29 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "locomotionSpeed": 1.1159,
-          "locomotionAxis": "left"
+          "locomotionAxis": "left",
+          "nativeSidewaysSupport": {
+            "method": "native-sideways-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "nativeCycleDuration": 1.166667,
+            "retainedNativeStrideSpeed": 1.1159,
+            "supportWindows": {
+              "l": [
+                0.054166666666666655,
+                0.2791666666666667
+              ],
+              "r": [
+                0.2791666666666667,
+                0.5541666666666667
+              ]
+            },
+            "heelRoll": {
+              "l": 0.07734375,
+              "r": 0.123486328125
+            }
+          }
         },
         {
           "name": "stand.strafeRight.short-gun",
@@ -2621,7 +2643,29 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "locomotionSpeed": 1.1113,
-          "locomotionAxis": "right"
+          "locomotionAxis": "right",
+          "nativeSidewaysSupport": {
+            "method": "native-sideways-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "nativeCycleDuration": 1.266667,
+            "retainedNativeStrideSpeed": 1.1113,
+            "supportWindows": {
+              "r": [
+                0.2583333333333333,
+                0.5
+              ],
+              "l": [
+                0.5,
+                0.7583333333333333
+              ]
+            },
+            "heelRoll": {
+              "r": 0.18336181640625004,
+              "l": 0.030102539062500003
+            }
+          }
         },
         {
           "name": "stand.aim.short-gun",
@@ -2899,7 +2943,29 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "locomotionSpeed": 1.1159,
-          "locomotionAxis": "left"
+          "locomotionAxis": "left",
+          "nativeSidewaysSupport": {
+            "method": "native-sideways-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "nativeCycleDuration": 1.166667,
+            "retainedNativeStrideSpeed": 1.1159,
+            "supportWindows": {
+              "l": [
+                0.054166666666666655,
+                0.2791666666666667
+              ],
+              "r": [
+                0.2791666666666667,
+                0.5541666666666667
+              ]
+            },
+            "heelRoll": {
+              "l": 0.07734375,
+              "r": 0.123486328125
+            }
+          }
         },
         {
           "name": "stand.strafeRight.blade",
@@ -2922,7 +2988,29 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "locomotionSpeed": 1.1113,
-          "locomotionAxis": "right"
+          "locomotionAxis": "right",
+          "nativeSidewaysSupport": {
+            "method": "native-sideways-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "nativeCycleDuration": 1.266667,
+            "retainedNativeStrideSpeed": 1.1113,
+            "supportWindows": {
+              "r": [
+                0.2583333333333333,
+                0.5
+              ],
+              "l": [
+                0.5,
+                0.7583333333333333
+              ]
+            },
+            "heelRoll": {
+              "r": 0.18336181640625004,
+              "l": 0.030102539062500003
+            }
+          }
         },
         {
           "name": "stand.slash.blade",
@@ -9182,7 +9270,29 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "locomotionSpeed": 1.1159,
-          "locomotionAxis": "left"
+          "locomotionAxis": "left",
+          "nativeSidewaysSupport": {
+            "method": "native-sideways-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "nativeCycleDuration": 1.166667,
+            "retainedNativeStrideSpeed": 1.1159,
+            "supportWindows": {
+              "l": [
+                0.054166666666666655,
+                0.2791666666666667
+              ],
+              "r": [
+                0.2791666666666667,
+                0.5541666666666667
+              ]
+            },
+            "heelRoll": {
+              "l": 0.07734375,
+              "r": 0.123486328125
+            }
+          }
         },
         {
           "name": "stand.strafeLeft.knife",
@@ -9205,7 +9315,29 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "locomotionSpeed": 1.1159,
-          "locomotionAxis": "left"
+          "locomotionAxis": "left",
+          "nativeSidewaysSupport": {
+            "method": "native-sideways-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "nativeCycleDuration": 1.166667,
+            "retainedNativeStrideSpeed": 1.1159,
+            "supportWindows": {
+              "l": [
+                0.054166666666666655,
+                0.2791666666666667
+              ],
+              "r": [
+                0.2791666666666667,
+                0.5541666666666667
+              ]
+            },
+            "heelRoll": {
+              "l": 0.07734375,
+              "r": 0.123486328125
+            }
+          }
         },
         {
           "name": "stand.strafeRight.lance",
@@ -9228,7 +9360,29 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "locomotionSpeed": 1.1113,
-          "locomotionAxis": "right"
+          "locomotionAxis": "right",
+          "nativeSidewaysSupport": {
+            "method": "native-sideways-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "nativeCycleDuration": 1.266667,
+            "retainedNativeStrideSpeed": 1.1113,
+            "supportWindows": {
+              "r": [
+                0.2583333333333333,
+                0.5
+              ],
+              "l": [
+                0.5,
+                0.7583333333333333
+              ]
+            },
+            "heelRoll": {
+              "r": 0.18336181640625004,
+              "l": 0.030102539062500003
+            }
+          }
         },
         {
           "name": "stand.strafeRight.knife",
@@ -9251,7 +9405,29 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "locomotionSpeed": 1.1113,
-          "locomotionAxis": "right"
+          "locomotionAxis": "right",
+          "nativeSidewaysSupport": {
+            "method": "native-sideways-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "nativeCycleDuration": 1.266667,
+            "retainedNativeStrideSpeed": 1.1113,
+            "supportWindows": {
+              "r": [
+                0.2583333333333333,
+                0.5
+              ],
+              "l": [
+                0.5,
+                0.7583333333333333
+              ]
+            },
+            "heelRoll": {
+              "r": 0.18336181640625004,
+              "l": 0.030102539062500003
+            }
+          }
         },
         {
           "name": "stand.thrust.lance",
@@ -15276,8 +15452,8 @@
     },
     "female": {
       "url": "/models/characters/female-animations.glb",
-      "bytes": 11774800,
-      "sha256": "13073769ac3b9732255f0cc9bb32db32b6f0e20655e679111b52ab08f0124c09",
+      "bytes": 11806960,
+      "sha256": "d2da5a44f61a5f71a8731136c3600a7ad38072522e808068f1d26546f36aaef0",
       "clips": [
         {
           "name": "stand.idle.unarmed",
@@ -16048,7 +16224,29 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "locomotionSpeed": 1.0544,
-          "locomotionAxis": "left"
+          "locomotionAxis": "left",
+          "nativeSidewaysSupport": {
+            "method": "native-sideways-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "nativeCycleDuration": 1.166667,
+            "retainedNativeStrideSpeed": 1.0544,
+            "supportWindows": {
+              "l": [
+                0.05833333333333333,
+                0.2791666666666667
+              ],
+              "r": [
+                0.2791666666666667,
+                0.5583333333333333
+              ]
+            },
+            "heelRoll": {
+              "l": 0.0791015625,
+              "r": 0.12227783203124999
+            }
+          }
         },
         {
           "name": "stand.strafeRight.short-gun",
@@ -16071,7 +16269,29 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "locomotionSpeed": 1.0316,
-          "locomotionAxis": "right"
+          "locomotionAxis": "right",
+          "nativeSidewaysSupport": {
+            "method": "native-sideways-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "nativeCycleDuration": 1.266667,
+            "retainedNativeStrideSpeed": 1.0316,
+            "supportWindows": {
+              "r": [
+                0.25,
+                0.5
+              ],
+              "l": [
+                0.5,
+                0.75
+              ]
+            },
+            "heelRoll": {
+              "r": 0.17874755859375002,
+              "l": 0.0283447265625
+            }
+          }
         },
         {
           "name": "stand.aim.short-gun",
@@ -16349,7 +16569,29 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "locomotionSpeed": 1.0544,
-          "locomotionAxis": "left"
+          "locomotionAxis": "left",
+          "nativeSidewaysSupport": {
+            "method": "native-sideways-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "nativeCycleDuration": 1.166667,
+            "retainedNativeStrideSpeed": 1.0544,
+            "supportWindows": {
+              "l": [
+                0.05833333333333333,
+                0.2791666666666667
+              ],
+              "r": [
+                0.2791666666666667,
+                0.5583333333333333
+              ]
+            },
+            "heelRoll": {
+              "l": 0.0791015625,
+              "r": 0.12227783203124999
+            }
+          }
         },
         {
           "name": "stand.strafeRight.blade",
@@ -16372,7 +16614,29 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "locomotionSpeed": 1.0316,
-          "locomotionAxis": "right"
+          "locomotionAxis": "right",
+          "nativeSidewaysSupport": {
+            "method": "native-sideways-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "nativeCycleDuration": 1.266667,
+            "retainedNativeStrideSpeed": 1.0316,
+            "supportWindows": {
+              "r": [
+                0.25,
+                0.5
+              ],
+              "l": [
+                0.5,
+                0.75
+              ]
+            },
+            "heelRoll": {
+              "r": 0.17874755859375002,
+              "l": 0.0283447265625
+            }
+          }
         },
         {
           "name": "stand.slash.blade",
@@ -22632,7 +22896,29 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "locomotionSpeed": 1.0544,
-          "locomotionAxis": "left"
+          "locomotionAxis": "left",
+          "nativeSidewaysSupport": {
+            "method": "native-sideways-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "nativeCycleDuration": 1.166667,
+            "retainedNativeStrideSpeed": 1.0544,
+            "supportWindows": {
+              "l": [
+                0.05833333333333333,
+                0.2791666666666667
+              ],
+              "r": [
+                0.2791666666666667,
+                0.5583333333333333
+              ]
+            },
+            "heelRoll": {
+              "l": 0.0791015625,
+              "r": 0.12227783203124999
+            }
+          }
         },
         {
           "name": "stand.strafeLeft.knife",
@@ -22655,7 +22941,29 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "locomotionSpeed": 1.0544,
-          "locomotionAxis": "left"
+          "locomotionAxis": "left",
+          "nativeSidewaysSupport": {
+            "method": "native-sideways-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "nativeCycleDuration": 1.166667,
+            "retainedNativeStrideSpeed": 1.0544,
+            "supportWindows": {
+              "l": [
+                0.05833333333333333,
+                0.2791666666666667
+              ],
+              "r": [
+                0.2791666666666667,
+                0.5583333333333333
+              ]
+            },
+            "heelRoll": {
+              "l": 0.0791015625,
+              "r": 0.12227783203124999
+            }
+          }
         },
         {
           "name": "stand.strafeRight.lance",
@@ -22678,7 +22986,29 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "locomotionSpeed": 1.0316,
-          "locomotionAxis": "right"
+          "locomotionAxis": "right",
+          "nativeSidewaysSupport": {
+            "method": "native-sideways-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "nativeCycleDuration": 1.266667,
+            "retainedNativeStrideSpeed": 1.0316,
+            "supportWindows": {
+              "r": [
+                0.25,
+                0.5
+              ],
+              "l": [
+                0.5,
+                0.75
+              ]
+            },
+            "heelRoll": {
+              "r": 0.17874755859375002,
+              "l": 0.0283447265625
+            }
+          }
         },
         {
           "name": "stand.strafeRight.knife",
@@ -22701,7 +23031,29 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "locomotionSpeed": 1.0316,
-          "locomotionAxis": "right"
+          "locomotionAxis": "right",
+          "nativeSidewaysSupport": {
+            "method": "native-sideways-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "nativeCycleDuration": 1.266667,
+            "retainedNativeStrideSpeed": 1.0316,
+            "supportWindows": {
+              "r": [
+                0.25,
+                0.5
+              ],
+              "l": [
+                0.5,
+                0.75
+              ]
+            },
+            "heelRoll": {
+              "r": 0.17874755859375002,
+              "l": 0.0283447265625
+            }
+          }
         },
         {
           "name": "stand.thrust.lance",
