@@ -30,9 +30,11 @@ def measure_tack(ctx):
     from horse import create_horse
     horse=create_horse(0)
     saddle=Vector((horse['saddle']['position'][0],-horse['saddle']['position'][2],horse['saddle']['position'][1]))
-    stirrup=next(obj for obj in horse['objects'] if obj.name.startswith('Iron_Stirrup') and sum(v.co.x for v in obj.data.vertices)>0)
-    bottom=min(v.co.z for v in stirrup.data.vertices)
-    centre=sum((v.co for v in stirrup.data.vertices),Vector())/len(stirrup.data.vertices)
+    stirrups={}
+    for stirrup in [obj for obj in horse['objects'] if obj.name.startswith('Iron_Stirrup')]:
+        bottom=min(v.co.z for v in stirrup.data.vertices)
+        centre=sum((v.co for v in stirrup.data.vertices),Vector())/len(stirrup.data.vertices)
+        stirrups['l' if centre.x>0 else 'r']=Vector((centre.x,centre.y,bottom))
     edges=[obj for obj in horse['objects'] if obj.name.startswith('Saddle_Raised_Edge')]
     grips=[];outside=[];middle=[]
     for edge in edges:
@@ -45,7 +47,7 @@ def measure_tack(ctx):
     middle.sort(key=lambda point:point.y);outside.sort(key=lambda point:point.y)
     body=next(obj for obj in horse['objects'] if obj.name.startswith('Horse_Body'))
     croup=max(v.co.z for v in body.data.vertices if abs(v.co.x)<.24 and .15<v.co.y<.65)
-    result={'saddle':saddle,'stirrup':Vector((centre.x,centre.y,bottom)),
+    result={'saddle':saddle,'stirrup':stirrups['l'],'stirrups':stirrups,
             'frontGrip':grips[0],'rearGrip':grips[1],'croupHeight':croup,
             'frontKeys':[(.28,outside[0]),(.42,middle[0]),(.53,grips[0]),(.78,grips[0])],
             'rearKeys':[(.28,outside[1]),(.42,middle[1]),(.53,grips[1]),(.78,grips[1])]}
