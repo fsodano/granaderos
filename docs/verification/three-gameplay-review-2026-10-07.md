@@ -643,3 +643,7 @@ The chapel now has its source-sized front shafts, separate warm stone feet and c
 ## Parish tower warm stone base
 
 The parish tower now has the source warm stone base and retained 67.82 cm height on its actual supported foundation. The upper body joins its top without overlapping planes. All 55 affected checks, type/docs/baseline checks and the clean build (`0031975cb7ef`) pass. Thirty ordinary and closer original/slab/accessible-roof views pass without browser errors and were compared with the current sprite. See [the tower-base review](../art/church-tower-stone-base-3d-review-2026-10-07.md).
+
+## Closed and readable church nave supports
+
+Authored churches now have the current sprite's closed sloped nave supports, separate warm stone feet and measured local face borders. Both actual side walls retain stable physical anchors across rotation. The final combined source passes 63 affected geometry checks, type/docs/baseline checks and export `fa0709314bb2`. Thirty original/slab/accessible-roof/close views and six final combined views pass without browser errors and were compared with the current parish sprite. Edited supports, standing openings, upper routes and normal cutaways remain covered. The 90° flat-source anchor difference is a declared physical adaptation. See [the nave review](../art/church-nave-supports-3d-review-2026-10-07.md) and [source edges](../art/church-nave-edge-separation-3d-review-2026-10-07.md).
