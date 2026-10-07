@@ -430,6 +430,18 @@ or browser errors (excluding the missing favicon). Selected idle, crawl and
 completion frames were compared with the sprites. Exposed unarmed hand/cuff
 support and broader motion remain.
 
+## Aged roof finish increment
+
+Authored aged clay roofs now retain the current sprite's encoded saturation
+and brightness before native lighting. Ordinary clay retains its existing
+colour map and tile relief. The
+[aged roof review](../art/aged-roof-finish-3d-review-2026-10-07.md)
+records the direct source comparison and remaining support-placement defect.
+
+The clean cut passed 13 affected checks, type/docs/baseline checks and the
+production export. Twelve clean posta/estancia views had no browser errors;
+the aged front and ordinary clay side were visually inspected.
+
 ## Next increments and acceptance limits
 
 The low-ceiling headwear limit, broader posture bank, braking steps and the
