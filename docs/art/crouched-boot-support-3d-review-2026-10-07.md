@@ -1,0 +1,11 @@
+# Crouched boot support review — 7 October 2026
+
+The published crouched walk previously put a planted boot about 8 cm through the floor. Crouched idle also had uneven boot support. The native source now fits the complete boot to the floor after loop closure, at the actual 30 Hz export grid. It changes only eight native leg rotation channels in each crouched idle/walk clip. Native joint positions, segment lengths and scale remain intact.
+
+The actual published LOD0 footwear was checked at 121 phases for all 12 affected clips in each anatomy. Worst stored interpolation is −0.285 mm male and −0.143 mm female, within the 1 mm support tolerance. Idle soles stay on the 2 mm contact plane. The recorded swinging boot still rises 11.0 cm male and 10.6 cm female. Both the lower sole ring and the complete toe/boot mesh are checked; a sole-only result cannot conceal a penetrating toe cap.
+
+The preservation proof retains all 322 other clips per bank, including both new climbs, and all 1,812 non-leg tracks inside the changed clips. Root, pelvis/body, arms, hands, weapon grips, meshes and bind matrices remain exact. The locomotion calibration file is byte-identical. The bounded source recipe selection also avoids loading unrelated mocap recipes during a focused export.
+
+The clean committed cut passed 72 affected checks in 18.15 seconds, type/docs/baseline checks, native asset and locomotion verification, and the production export (1,244 files; 1,039 asset references; build `eb58b2d95d78`). The focused run includes published boot surfaces, current climb contacts, rifle/pistol loading grips, the concurrent rider transition and the existing paired sabre fit.
+
+Normal UI after-idle and after-walk frames were visually compared with the current crouched sprites: boots retain a coherent supported silhouette, and the ordinary held rifle pose remains. Eight clean committed idle and walking frames at `artifacts/three-crouch-cut-review/` completed the ordinary UI run; the clean idle and walk-3 frames were visually inspected. Prone boots, sideways steps, stopping/turning mechanics and the broader posture bank remain separate work. This accepts the measured crouched boot correction, not complete body polish.

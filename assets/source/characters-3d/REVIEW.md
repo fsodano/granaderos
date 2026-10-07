@@ -116,10 +116,11 @@ Remaining visual limits include transition/braking steps, garment deformation
 across the full posture bank, paired opponent contact, and broader individual
 face/age/body variation. The isometric game view is the acceptance view.
 
-The wider October 7 surface audit found a specific pending support defect:
-crouched walking can place both actual boot soles below the floor, reaching
-about 80 mm penetration in the checked male and female cycles. Standing walking
-keeps the measured lower sole at 2 mm. Running has an 8–9 cm flight phase.
-Crouched and prone idle boot support also require review. These are published
-LOD0 footwear surface measurements; they are not an acceptance of the remaining
-posture bank. The complete native climb and roof-edge transfer are accepted within the [measured climbing review](../../../docs/art/native-climbing-3d-review-2026-10-07.md), including four clean playable same-cell hatch routes. The documented low-ceiling/headwear limit remains under review.
+The October 7 full-boot correction accepts the twelve native crouched idle/walk
+clips in each anatomy within the [crouched support review](../../../docs/art/crouched-boot-support-3d-review-2026-10-07.md).
+Worst stored penetration is below 0.3 mm; idle rests at 2 mm, and swinging feet
+keep their recorded lift. All other clips and all upper/Root tracks remain exact.
+Standing walking keeps the measured lower sole at 2 mm. Running has an 8–9 cm
+flight phase. Prone, sideways and lance support remain under review. These
+published LOD0 surface measurements do not accept the remaining posture bank.
+The complete native climb and roof-edge transfer are accepted within the [measured climbing review](../../../docs/art/native-climbing-3d-review-2026-10-07.md), including four clean playable same-cell hatch routes. The documented low-ceiling/headwear limit remains under review.
