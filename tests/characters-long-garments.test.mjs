@@ -3,20 +3,28 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync,mkdtempSync,writeFileSync,rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
-import {join} from 'node:path';
+import {join,resolve,sep} from 'node:path';
+import {pathToFileURL} from 'node:url';
 import {spawnSync} from 'node:child_process';
 import {createHash} from 'node:crypto';
-import {Box3,Vector3} from '../web/node_modules/three/build/three.module.js';
+import {Box3,Vector3,Raycaster} from '../web/node_modules/three/build/three.module.js';
 import {GLTFLoader} from '../web/node_modules/three/examples/jsm/loaders/GLTFLoader.js';
 const {ActorRuntime}=await import('../web/lib/three/actor-runtime.ts');
-const publicRoot=new URL('../web/public/',import.meta.url);
-const manifest=JSON.parse(readFileSync(new URL('models/characters/manifest.json',publicRoot)));
+// A private complete library can use this exact suite before publication.
+const libraryRoot=process.env.GRANADEROS_CHARACTER_LIBRARY
+ ?pathToFileURL(resolve(process.env.GRANADEROS_CHARACTER_LIBRARY)+sep)
+ :new URL('../web/public/models/characters/',import.meta.url);
+function libraryAsset(url){
+ const prefix='/models/characters/';assert.ok(url.startsWith(prefix),'Asset belongs to the character library');
+ return new URL(url.slice(prefix.length),libraryRoot);
+}
+const manifest=JSON.parse(readFileSync(new URL('manifest.json',libraryRoot)));
 const loaded=new Map();
 function load(url){
  if(loaded.has(url))return loaded.get(url);
  // CPU geometry verification does not need browser image decoding. Keep the
  // exact published buffers, sparse morph accessors, skeleton, and motions.
- const bytes=readFileSync(new URL(`.${url}`,publicRoot)),length=bytes.readUInt32LE(12),doc=JSON.parse(bytes.subarray(20,20+length));
+ const bytes=readFileSync(libraryAsset(url)),length=bytes.readUInt32LE(12),doc=JSON.parse(bytes.subarray(20,20+length));
  delete doc.images;delete doc.textures;delete doc.samplers;
  doc.materials=(doc.materials??[]).map(material=>({name:material.name}));
  const json=Buffer.from(JSON.stringify(doc)),padded=Buffer.concat([json,Buffer.alloc((4-json.length%4)%4,32)]),binary=bytes.subarray(20+length),header=Buffer.from(bytes.subarray(0,20));
@@ -42,27 +50,60 @@ function clothBounds(mesh){
  }
  assert.ok(!bounds.isEmpty(),'Published long hem has measurable geometry');return bounds;
 }
+function probeCloth(actor,id,lod){
+ const cloth=clothMesh(actor,id,lod),boots=actor.model.getObjectByName(`Human_footwear_LOD${lod}`),ray=new Raycaster(),clearances=[];
+ actor.root.updateMatrixWorld(true);cloth.skeleton.update();boots.skeleton.update();cloth.computeBoundingSphere();boots.computeBoundingSphere();
+ for(const side of ['l','r']){
+  const knee=actor.model.getObjectByName(`calf_${side}`).getWorldPosition(new Vector3()),ankle=actor.model.getObjectByName(`foot_${side}`).getWorldPosition(new Vector3());
+  for(const t of [.30,.65]){
+   const p=knee.clone().lerp(ankle,t);ray.set(new Vector3(p.x,2,p.z),new Vector3(0,-1,0));
+   const bootHit=ray.intersectObject(boots,false)[0],clothHit=ray.intersectObject(cloth,false)[0];
+   if(bootHit)clearances.push(clothHit?clothHit.point.y-bootHit.point.y:-1);
+  }
+ }
+ const peaks={centre:-Infinity,left:-Infinity,right:-Infinity};
+ for(let i=0;i<cloth.geometry.attributes.position.count;i++){
+  const rest=new Vector3().fromBufferAttribute(cloth.geometry.attributes.position,i);if(rest.y>.85)continue;
+  const delta=new Vector3().fromBufferAttribute(cloth.geometry.morphAttributes.position[1],i);if(delta.length()<.005)continue;
+  const p=cloth.getVertexPosition(i,new Vector3()).applyMatrix4(cloth.matrixWorld);if(p.z<-.64||p.z>-.33)continue;
+  if(Math.abs(p.x)<.05)peaks.centre=Math.max(peaks.centre,p.y);
+  if(p.x<-.15)peaks.left=Math.max(peaks.left,p.y);if(p.x>.15)peaks.right=Math.max(peaks.right,p.y);
+ }
+ return {clearances,peaks};
+}
+
 function settle(actor,start=0){for(let i=0;i<12;i++)actor.tick(.1,start+i*100);actor.root.updateMatrixWorld(true);}
 
 for(const id of ['friar','woman-shawl'])for(const lod of [0,1,2]){
  test(`${id} LOD ${lod} keeps sparse cloth shapes valid and grounded in the actual runtime`,async()=>{
-  const record=manifest.appearances[id].lods[lod],bytes=readFileSync(new URL(`.${record.url}`,publicRoot));
+  const record=manifest.appearances[id].lods[lod],bytes=readFileSync(libraryAsset(record.url));
   assert.equal(createHash('sha256').update(bytes).digest('hex'),record.sha256);assert.equal(bytes.length,record.bytes);assert.equal(manifest.complete,true);
   const source=await asset(id,lod),actor=new ActorRuntime(source,visual(id,'prone')),mesh=clothMesh(actor,id,lod);
-  assert.deepEqual(mesh.morphTargetDictionary,{cloth_crouched:0,cloth_prone:1});assert.equal(mesh.skeleton.bones.length,53);
+  assert.deepEqual(mesh.morphTargetDictionary,{cloth_crouched:0,cloth_prone:1,cloth_supine:2});assert.equal(mesh.skeleton.bones.length,53);
   for(const target of mesh.geometry.morphAttributes.position){
    const largest=Math.max(...target.array.map(Math.abs));
    assert.ok(target.array.every(Number.isFinite),'Sparse index/value compaction preserves finite values');
-   assert.ok(largest>.01&&largest<.15,`Authored cloth offsets remain centimetres, got ${largest}`);
+   assert.ok(largest>.01&&largest<.45,`A bounded rest-space cloth envelope must remain below 45 cm, got ${largest}`);
   }
   settle(actor);const prone=clothBounds(mesh);
-  assert.ok(prone.max.y<.33,`Prone cloth rests over the legs, top ${prone.max.y}`);
-  assert.ok(prone.min.y>-.025,`Prone hem remains at the floor, bottom ${prone.min.y}`);
+  assert.ok(prone.max.y<.37,`Prone cloth rests over the legs, top ${prone.max.y}`);
+  assert.ok(prone.min.y>-.015,`Prone hem remains at the floor, bottom ${prone.min.y}`);
   assert.ok(mesh.morphTargetInfluences[1]>.999);
+  const contact=probeCloth(actor,id,lod);
+  assert.equal(contact.clearances.length,4,'Both calf surfaces have two measurable support probes');
+  assert.ok(contact.clearances.every(clearance=>clearance>.006&&clearance<.10),`Prone cloth clears the actual calf boots: ${contact.clearances}`);
+  // The extended prone legs are closer together than the previous wide-knee
+  // pose. Require a visible depression relative to the supported ridge height,
+  // rather than forcing the cloth eight centimetres into a narrower gap.
+  const ridge=Math.min(contact.peaks.left,contact.peaks.right),supportHeight=ridge-Math.max(0,prone.min.y);
+  assert.ok(ridge-contact.peaks.centre>supportHeight*.25,`Cloth settles between the legs: centre ${contact.peaks.centre}, ridge ${ridge}, supported height ${supportHeight}`);
   actor.update(visual(id,'prone',{action:'crawl'}),1200);
-  for(let i=0;i<16;i++){
-   actor.tick(.1,1200+i*100);actor.root.updateMatrixWorld(true);const crawling=clothBounds(mesh);
-   assert.ok(crawling.max.y<.37&&crawling.min.y>-.035,`Crawl cloth stays over the moving legs, bounds ${crawling.min.y}..${crawling.max.y}`);
+  const duration=source.clips.find(clip=>clip.name==='prone.crawl.unarmed').duration;
+  for(let i=0;i<24;i++){
+   actor.tick(.12,1200+duration*1000*(i+.03)/24);actor.root.updateMatrixWorld(true);const crawling=clothBounds(mesh),contact=probeCloth(actor,id,lod);
+   assert.ok(crawling.max.y<.39&&crawling.min.y>-.015,`Crawl cloth stays grounded over moving legs, bounds ${crawling.min.y}..${crawling.max.y}`);
+   assert.equal(contact.clearances.length,4,'Every crawl sample covers both calf boots');
+   assert.ok(contact.clearances.every(clearance=>clearance>.006),`Crawl cloth must not cut through the calf boots: ${contact.clearances}`);
   }
   actor.update(visual(id,'crouched'),1500);settle(actor,1500);const crouched=clothBounds(mesh);
   assert.ok(crouched.min.y>-.025,`Crouched hem remains at the floor, bottom ${crouched.min.y}`);
@@ -71,6 +112,32 @@ for(const id of ['friar','woman-shawl'])for(const lod of [0,1,2]){
   assert.ok(mesh.morphTargetInfluences.every(weight=>weight<.001),'Standing outfit returns to its native rest shape');
   assert.ok(source.body.scene.getObjectByName(mesh.name).morphTargetInfluences.every(weight=>weight===0),'Actor pose cannot change the shared source asset');
   actor.dispose();
+ });
+}
+
+for(const id of ['friar','woman-shawl'])for(const lod of [0,1,2]){
+ test(`${id} LOD ${lod} keeps face-up and face-down fallen cloth above ground`,async()=>{
+  const source=await asset(id,lod);
+  for(const posture of ['standing','prone'])for(const action of ['die','collapse']){
+   const clip=source.clips.find(c=>c.name===`life.${posture==='standing'?'stand':'prone'}.${action}`),duration=clip.duration;
+   const actor=new ActorRuntime(source,visual(id,posture,{action,cue:{id:`cloth:${posture}:${action}`,action,startedAt:0,durationMs:duration*1000}})),mesh=clothMesh(actor,id,lod);
+   let previous;
+   for(let step=0;step<40;step++){
+    const time=duration*(step+.5)/40;actor.tick(duration/40,time*1000);actor.root.updateMatrixWorld(true);
+    const weights=mesh.morphTargetInfluences;
+    assert.ok(weights.every(w=>Number.isFinite(w)&&w>=-.00001&&w<=1.00001),'Orientation split remains finite and normalized');
+    assert.ok(weights[1]+weights[2]<=1.00001,'Prone and supine envelopes form one continuous blend');
+    if(previous)assert.ok(Math.max(...weights.map((w,i)=>Math.abs(w-previous[i])))<.28,'Changing torso orientation does not pop between garment shapes');
+    previous=weights.slice();
+    if(time>=(clip.markers?.ground??duration*.68)){
+     const bounds=clothBounds(mesh);
+     assert.ok(bounds.min.y>-.02,`Fallen ${posture} cloth must stay above the floor: ${bounds.min.y}`);
+     assert.ok(bounds.max.y<.55,`Fallen ${posture} cloth remains around the legs: ${bounds.max.y}`);
+    }
+   }
+   assert.ok(mesh.morphTargetInfluences[posture==='standing'?2:1]>.90,`The settled ${posture} fall selects the matching cloth surface`);
+   actor.dispose();
+  }
  });
 }
 

@@ -2,17 +2,20 @@ import {register} from 'node:module';register('./tactical-render-loader.mjs',imp
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
+import {resolve,sep} from 'node:path';
+import {pathToFileURL} from 'node:url';
 import {Vector3,Plane} from '../web/node_modules/three/build/three.module.js';
 import {GLTFLoader} from '../web/node_modules/three/examples/jsm/loaders/GLTFLoader.js';
 const {ActorRuntime}=await import('../web/lib/three/actor-runtime.ts');
 const {TILE_METRES}=await import('../web/lib/three/projection.ts');
 import {ladderGeometry,sampleLadderClimb,referenceClimbFraction} from '../game/climb-geometry.js';
-const publicRoot=new URL('../web/public/',import.meta.url),manifest=JSON.parse(readFileSync(new URL('models/characters/manifest.json',publicRoot))),loaded=new Map();
+const libraryRoot=process.env.GRANADEROS_CHARACTER_LIBRARY?pathToFileURL(resolve(process.env.GRANADEROS_CHARACTER_LIBRARY)+sep):new URL('../web/public/models/characters/',import.meta.url),manifest=JSON.parse(readFileSync(new URL('manifest.json',libraryRoot))),loaded=new Map();
 function load(url){
  if(loaded.has(url))return loaded.get(url);
  // Keep published buffers, rig, and animation tracks. Browser image decoding
  // is not required for CPU contact checks on the actual skinned geometry.
- const bytes=readFileSync(new URL(`.${url}`,publicRoot)),length=bytes.readUInt32LE(12),doc=JSON.parse(bytes.subarray(20,20+length));
+ assert.ok(url.startsWith('/models/characters/'));
+ const bytes=readFileSync(new URL(url.slice('/models/characters/'.length),libraryRoot)),length=bytes.readUInt32LE(12),doc=JSON.parse(bytes.subarray(20,20+length));
  delete doc.images;delete doc.textures;delete doc.samplers;doc.materials=(doc.materials??[]).map(material=>({name:material.name}));
  const json=Buffer.from(JSON.stringify(doc)),padded=Buffer.concat([json,Buffer.alloc((4-json.length%4)%4,32)]),binary=bytes.subarray(20+length),header=Buffer.from(bytes.subarray(0,20));
  header.writeUInt32LE(20+padded.length+binary.length,8);header.writeUInt32LE(padded.length,12);
@@ -74,6 +77,24 @@ test('shared ladder ends outside the measured roof edge and retains every saved 
  }
 });
 
+test('the flying roof-step clearance keeps exact supports and a smooth departure',()=>{
+ const g=ladderGeometry([0,0,0],[0,3,TILE_METRES],TILE_METRES);
+ for(const [side,start,end]of [['l',.76,.82],['r',.85,.91]]){
+  const first=sampleLadderClimb(g,start).feet[side],last=sampleLadderClimb(g,end).feet[side];
+  assert.ok(first.planted&&last.planted);
+  assert.equal(last.position[1],g.height+.007);
+  assert.equal(last.position[0],side==='l'?.13:-.13);
+  for(const [time,contact]of [[start,first],[end,last]])for(const delta of [-1e-6,1e-6]){
+   const nearby=sampleLadderClimb(g,time+delta).feet[side];
+   assert.ok(new Vector3(...nearby.position).distanceTo(new Vector3(...contact.position))<.000001,'The clearance has no position or slope jump at a support');
+  }
+  const middle=sampleLadderClimb(g,(start+end)/2).feet[side];
+  assert.ok(!middle.planted,'The foot is free between its supports');
+  const peak=Math.max(...Array.from({length:31},(_,i)=>sampleLadderClimb(g,start+(end-start)*i/30).feet[side].position[1]));
+  assert.ok(peak>g.height+.045,'The later boot lift retains clearance over the roof lip');
+ }
+});
+
 for(const appearance of ['granadero','woman-scout'])test(`${appearance} stored native climbs reach actual rungs and roof supports without runtime fitting`,async()=>{
  const source=await asset(appearance);
  for(const action of ['climbUp','climbDown']){
@@ -90,6 +111,47 @@ for(const appearance of ['granadero','woman-scout'])test(`${appearance} stored n
  }
 });
 
+for(const appearance of ['granadero','woman-scout'])test(`${appearance} exported roof steps keep the moving knee on a continuous branch`,async()=>{
+ const source=await asset(appearance),g=ladderGeometry([0,0,0],[0,3,TILE_METRES],TILE_METRES);
+ for(const action of ['climbUp','climbDown']){
+  const spec=source.clips.find(clip=>clip.name==='life.'+action),count=Math.ceil(spec.duration*120),dt=spec.duration/count;
+  const actor=new ActorRuntime(source,visual(appearance,action,{cue:undefined,motion:{moving:true,segmentFraction:0,climbGeometry:g}}));
+  let before;
+  for(let i=0;i<=count;i++){
+   const f=i/count,up=action==='climbDown'?1-f:f;
+   actor.update(visual(appearance,action,{cue:undefined,motion:{moving:true,segmentFraction:f,climbGeometry:g}}),spec.duration*1000*f);actor.tick(0,spec.duration*1000*f);
+   const legs=Object.fromEntries(['l','r'].map(side=>[side,{knee:point(actor,'calf_'+side),rotations:['thigh_','calf_'].map(bone=>actor.model.getObjectByName(bone+side).quaternion.clone())}]));
+   if(before)for(const [side,start,end]of [['l',.76,.82],['r',.85,.91]]){
+    // Also cover the entrance to the stable plane and the return to idle.
+    // Unchanged early rung steps peak at 5.96 m/s and 26.36 rad/s.
+    const speed=legs[side].knee.distanceTo(before[side].knee)/dt;
+    assert.ok(speed<7,`${action} ${side} at ${up}: no knee jump outside the roof swing`);
+    for(let j=0;j<2;j++)assert.ok(legs[side].rotations[j].angleTo(before[side].rotations[j])/dt<30,`${action} ${side} at ${up}: the full climb has no new bend-plane seam`);
+    if(up>start&&up<end){
+     assert.ok(speed<6,`${action} ${side} at ${up}: a roof step cannot snap the knee across the hip`);
+    }
+   }
+   before=legs;
+  }
+  actor.dispose();
+ }
+});
+
+for(const appearance of ['granadero','woman-scout'])test(`${appearance} climbing arms return to idle before the endpoint handoff`,async()=>{
+ const source=await asset(appearance),g=ladderGeometry([0,0,0],[0,3,TILE_METRES],TILE_METRES);
+ for(const action of ['climbUp','climbDown']){
+  const spec=source.clips.find(clip=>clip.name==='life.'+action),actor=new ActorRuntime(source,visual(appearance,action,{cue:undefined,motion:{moving:true,segmentFraction:0,climbGeometry:g}}));
+  const poses=[];
+  for(const up of [.985,.995,1]){
+   const f=action==='climbDown'?1-up:up;
+   actor.update(visual(appearance,action,{cue:undefined,motion:{moving:true,segmentFraction:f,climbGeometry:g}}),spec.duration*1000*f);actor.tick(0,spec.duration*1000*f);
+   poses.push(Object.fromEntries(['upperarm_l','upperarm_r','lowerarm_l','lowerarm_r','hand_l','hand_r'].map(name=>[name,actor.model.getObjectByName(name).quaternion.clone()])));
+  }
+  for(const pose of poses.slice(0,-1))for(const [name,rotation]of Object.entries(pose))assert.ok(rotation.angleTo(poses.at(-1)[name])<.001,`${action} ${name}: released hands reach the actual idle arm before the terminal frame`);
+  actor.dispose();
+ }
+});
+
 for(const appearance of ['granadero','woman-scout'])test(`${appearance} height, diagonal and vertical ladder fits preserve native anatomy and contact timing`,async()=>{
  const source=await asset(appearance);
  for(const [height,dx,dz,yaw]of [[2,0,TILE_METRES,0],[4.2,TILE_METRES,0,Math.PI/2],[3,TILE_METRES,TILE_METRES,Math.PI/4],[3,0,0,0]])for(const action of ['climbUp','climbDown']){
@@ -99,7 +161,7 @@ for(const appearance of ['granadero','woman-scout'])test(`${appearance} height, 
    const f=i/100,up=action==='climbDown'?1-f:f,plan=sampleLadderClimb(g,up,spec.climbSupport.feetRest);
    actor.update(visual(appearance,action,{yaw,cue:undefined,motion:{moving:true,segmentFraction:f,climbGeometry:g}}),spec.duration*1000*f);actor.tick(0,spec.duration*1000*f);actor.root.updateMatrixWorld(true);nativeShape(actor,offsets);
    assert.equal(actor.climbFit.rejectedFits,0,'All tested authored contact differences stay in the measured fit range');largestFit=Math.max(largestFit,actor.climbFit.maximumAdjustment);
-   for(const side of ['l','r'])for(const [contact,actual]of [[plan.feet[side],boot(actor,side,contacts)],[plan.hands[side],palm(actor,side)]])if(contact.planted&&(contact.weight===undefined||contact.weight>.999))assert.ok(actual.distanceTo(relative(plan,contact))<.025,`${height} m ${action} ${side} at ${up}: contact gap ${(actual.distanceTo(relative(plan,contact))*1000).toFixed(2)} mm`);
+   for(const side of ['l','r'])for(const [contact,actual]of [[plan.feet[side],boot(actor,side,contacts)],[plan.hands[side],palm(actor,side)]])if(contact.planted&&(contact.weight===undefined||contact.weight>.999))assert.ok(actual.distanceTo(relative(plan,contact))<.025,`${height} m ${action} ${side} ${contact===plan.feet[side]?"sole":"palm"} at ${up}: contact gap ${(actual.distanceTo(relative(plan,contact))*1000).toFixed(2)} mm`);
    closeVector(actor.root.position,[4,0,7],1e-8,'Contact fitting leaves the gameplay position intact');
   }
   assert.ok(largestFit<=.65);actor.dispose();
@@ -116,6 +178,29 @@ for(const appearance of ['granadero','woman-scout'])test(`${appearance} actual h
     assert.ok(skin[group][side].length>30,'The check samples real published surface vertices');
     const height=lowestSurface(actor,skin[group][side])+plan.root.height-g.height;
     assert.ok(height>-.004,`${span===0?'vertical':'inclined'} ${action} ${side} ${group} at ${up}: actual roof penetration ${(-height*1000).toFixed(2)} mm`);
+   }
+  }
+  actor.dispose();
+ }
+});
+
+for(const appearance of ['granadero','woman-scout'])test(`${appearance} flying sole surfaces clear the roof before crossing its edge`,async()=>{
+ const source=await asset(appearance,0),spec=source.clips.find(clip=>clip.name==='life.climbUp');
+ for(const span of [TILE_METRES,0]){
+  const g=ladderGeometry([0,0,0],[0,3,span],TILE_METRES),actor=new ActorRuntime(source,visual(appearance,'climbUp',{cue:undefined,motion:{moving:true,segmentFraction:0,climbGeometry:g}})),skin=supportSkin(actor);
+  for(let i=0;i<=90;i++){
+   const f=.76+i*(.91-.76)/90,plan=sampleLadderClimb(g,f,spec.climbSupport.feetRest);
+   actor.update(visual(appearance,'climbUp',{cue:undefined,motion:{moving:true,segmentFraction:f,climbGeometry:g}}),spec.duration*1000*f);actor.tick(0,spec.duration*1000*f);actor.root.updateMatrixWorld(true);
+   for(const side of ['l','r']){
+    for(const mesh of new Set(skin.feet[side].map(vertex=>vertex.mesh)))mesh.skeleton.update();
+    for(const {mesh,index}of skin.feet[side]){
+     const p=actor.root.worldToLocal(mesh.getVertexPosition(index,new Vector3()).applyMatrix4(mesh.matrixWorld));
+     const forward=p.z+plan.root.forward;
+     // A vertical ladder rises through a real hatch. The hole below its
+     // front lip is empty space, not a solid roof at the ladder centre.
+     const overRoof=g.hatch?forward>g.hatch.maxForward+.002||p.x<g.hatch.minAcross-.002||p.x>g.hatch.maxAcross+.002:forward>g.edgeSpan+.002;
+     if(overRoof)assert.ok(p.y+plan.root.height>g.height-.004,`${side} sole at ${f}: the flying boot enters the roof lip`);
+    }
    }
   }
   actor.dispose();

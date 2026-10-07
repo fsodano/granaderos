@@ -81,19 +81,25 @@ def create_character(preset="granadero", height=1.76):
         # plastic when the model is lit at the small isometric game scale.
         p.inputs['Specular IOR Level'].default_value=.28 if metallic==0 else .5
         return m
-    mats['skin']=material('Skin',(.49,.29,.18),.78)
-    # The neutral diffuse texture allows the viewer to choose a skin palette.
+    mats['skin']=material('Skin',(.49,.29,.18),.68)
+    # Tintable RGB preserves the source's lips, cheeks and jaw pigmentation.
     shader=mats['skin'].node_tree.nodes.get('Principled BSDF')
     tex=mats['skin'].node_tree.nodes.new('ShaderNodeTexImage')
-    tex.image=bpy.data.images.load(str(VENDOR/'skin-detail-neutral.png'),check_existing=True);tex.image.pack()
+    tex.image=bpy.data.images.load(str(VENDOR/f'skin-{gender}-colour.png'),check_existing=True);tex.image.pack()
     tint=mats['skin'].node_tree.nodes.new('ShaderNodeMix');tint.data_type='RGBA';tint.blend_type='MULTIPLY';tint.inputs[0].default_value=1;tint.inputs[7].default_value=(.49,.29,.18,1)
     mats['skin'].node_tree.links.new(tex.outputs['Color'],tint.inputs[6]);mats['skin'].node_tree.links.new(tint.outputs[2],shader.inputs['Base Color'])
     normaltex=mats['skin'].node_tree.nodes.new('ShaderNodeTexImage')
-    normaltex.image=bpy.data.images.load(str(VENDOR/'skin-normal-1024.png'),check_existing=True)
+    normaltex.image=bpy.data.images.load(str(VENDOR/f'skin-{gender}-normal.png'),check_existing=True)
     normaltex.image.colorspace_settings.name='Non-Color';normaltex.image.pack()
-    normal=mats['skin'].node_tree.nodes.new('ShaderNodeNormalMap');normal.inputs['Strength'].default_value=.38
+    normal=mats['skin'].node_tree.nodes.new('ShaderNodeNormalMap');normal.inputs['Strength'].default_value=1
     mats['skin'].node_tree.links.new(normaltex.outputs['Color'],normal.inputs['Color'])
     mats['skin'].node_tree.links.new(normal.outputs['Normal'],shader.inputs['Normal'])
+    roughtex=mats['skin'].node_tree.nodes.new('ShaderNodeTexImage')
+    roughtex.image=bpy.data.images.load(str(VENDOR/f'skin-{gender}-roughness.png'),check_existing=True)
+    roughtex.image.colorspace_settings.name='Non-Color';roughtex.image.pack()
+    channels=mats['skin'].node_tree.nodes.new('ShaderNodeSeparateColor')
+    mats['skin'].node_tree.links.new(roughtex.outputs['Color'],channels.inputs[0])
+    mats['skin'].node_tree.links.new(channels.outputs['Green'],shader.inputs['Roughness'])
     mats['navy']=material('Navy_Wool',(.017,.025,.044),.88)
     mats['trousers']=material('Navy_Trousers',(.019,.027,.043),.91)
     mats['red']=material('Crimson_Facings',(.32,.012,.021),.84)
@@ -103,8 +109,8 @@ def create_character(preset="granadero", height=1.76):
     mats['brass']=material('Aged_Brass',(.43,.285,.082),.43,.68)
     mats['steel']=material('Steel',(.38,.41,.44),.3,.8)
     mats['hair']=material('Brown_Hair',(.027,.013,.008),.93)
-    mats['eye']=material('Eye_White',(.56,.51,.44),.28)
-    mats['iris']=material('Iris',(.074,.047,.019),.35)
+    mats['eye']=material('Eye_White',(.64,.60,.54),.27)
+    mats['iris']=material('Iris',(.11,.065,.026),.30)
     mats['pupil']=material('Pupil',(.004,.003,.003),.23)
     mats['wood']=material('Walnut',(.10,.040,.016),.7)
     mats['seam']=material('Navy_Cloth_Seam',(.012,.019,.034),.94)
@@ -218,22 +224,22 @@ def create_character(preset="granadero", height=1.76):
     def limb_weight(i,names):return sum(v for k,v in assignments[i].items() if k in names)
     coat=subset('Tailored_Coat',lambda f:all((.985<points[i].z<1.525 or limb_weight(i,arm_bones)>.35) and limb_weight(i,hand_bones)<.32 for i,uv in f),mats['navy'])
     smooth(coat,14,.62)
+    from anatomy_surface import cloth_relief, surface_weights, sewn_boundary
     for v in coat.data.vertices:
         p=v.co.copy();normal=v.normal.copy()
-        waist=math.exp(-((p.z-1.045)/.10)**2)
-        elbow=min((p-heads['lowerarm_l']).length,(p-heads['lowerarm_r']).length)
-        fold=.0048*math.sin(elbow*112+p.y*14)*math.exp(-((elbow-.055)/.065)**2)
-        fold+=.0030*math.sin(p.z*96+p.x*29)*waist
-        # Cloth compresses under the shoulder and above the belt. Keep these
-        # folds broad enough to survive the final game-sized silhouette.
-        underarm=math.exp(-((abs(p.x)-.16)/.065)**2-((p.z-1.34)/.065)**2)
-        fold+=.0034*math.sin(p.z*76+abs(p.x)*45)*underarm
-        v.co+=normal*(.017+fold)
+        sleeve=sum(g.weight for g in v.groups if coat.vertex_groups[g.group].name in arm_bones)
+        v.co+=normal*(.017-.005*min(1,sleeve))
         if abs(p.x)<.160 and 1.065<p.z<1.405 and p.y<-.052:
             front=-.122-.032*math.sin(math.pi*(p.z-1.04)/.43)*math.sqrt(max(0,1-(p.x/.25)**2))
             if gender == 'female':front-=.032*math.exp(-((abs(p.x)-.071)/.060)**2-((p.z-1.318)/.085)**2)
             blend=max(0,min(1,(.166-abs(p.x))/.027))*max(0,min(1,(p.z-1.065)/.035,(1.405-p.z)/.035))
-            v.co.y=v.co.y*(1-blend)+(front+.004*math.sin(p.z*96+p.x*29)*waist)*blend
+            v.co.y=v.co.y*(1-blend)+front*blend
+            # A normal offset spreads the small native pectoral loops across
+            # each other when their depth is flattened into a cloth panel.
+            # Retain their relaxed surface coordinates in the other axes.
+            # This repairs the coat without changing native skin or weights.
+            v.co.x=v.co.x*(1-blend)+p.x*blend
+            v.co.z=v.co.z*(1-blend)+p.z*blend
     if gender == 'female':
         for v in coat.data.vertices:
             p=v.co.copy()
@@ -252,18 +258,46 @@ def create_character(preset="granadero", height=1.76):
     bm=bmesh.new();bm.from_mesh(coat.data)
     for v in bm.verts:
         if v.is_boundary and v.co.z>1.46 and abs(v.co.x)<.12: v.co.z=1.508
-    bm.to_mesh(coat.data);bm.free();coat.data.update();subdiv(coat,1)
+        if v.is_boundary:
+            for suffix in ('l','r'):
+                wrist=heads['hand_'+suffix];axis=(wrist-heads['lowerarm_'+suffix]).normalized()
+                if (v.co-wrist).length<.09:
+                    # A sewn sleeve hem crosses the forearm in one plane;
+                    # selecting skin faces alone leaves finger-like notches.
+                    v.co+=axis*(-.020-(v.co-wrist).dot(axis))
+    bm.to_mesh(coat.data);bm.free();coat.data.update()
+    neckline=sewn_boundary(coat,lambda v:v.co.z>1.485 and abs(v.co.x)<.13)
+    for _ in range(5):
+        positions=[v.co.copy() for v in neckline]
+        for i,v in enumerate(neckline):v.co=positions[i]*.5+(positions[i-1]+positions[(i+1)%len(positions)])*.25
+    for v in neckline:
+        centre=Vector((0,-.036,v.co.z));direction=(v.co-centre).normalized()
+        hit,q,n,face=skin.ray_cast(centre+direction*.17,-direction)
+        if hit and (q-centre).length<.115:
+            v.co=q+Vector((n.x,n.y,0)).normalized()*.009
+            fitted=surface_weights(skin,q,face)
+            for group in list(v.groups):coat.vertex_groups[group.group].remove([v.index])
+            for name,weight in fitted.items():
+                group=coat.vertex_groups.get(name) or coat.vertex_groups.new(name=name)
+                group.add([v.index],weight,'REPLACE')
+    coat.data.update();subdiv(coat,1)
+    # Sculpt the final cloth surface so subdivision does not erase the short
+    # elbow folds. This moves cloth only; native skin and bones stay intact.
+    for vertex in coat.data.vertices:
+        vertex.co+=vertex.normal*cloth_relief(vertex.co,vertex.normal,heads,'coat')
+    coat.data.update()
     # Breeches follow native thigh, knee and pelvis topology with cloth ease.
     trousers=subset('Tailored_Breeches',lambda f:all(.425<points[i].z<1.055 and limb_weight(i,hand_bones|arm_bones)<.05 for i,uv in f),mats['trousers'])
     smooth(trousers,7,.64)
     for v in trousers.data.vertices:
-        p=v.co.copy();ease=(.016+.014*math.exp(-((p.z-.82)/.17)**2))*max(0,min(1,(p.z-.455)/.105))+.002
-        fold=.0060*math.sin(p.z*104+p.x*24)*math.exp(-((p.z-.54)/.095)**2)
-        fold+=.0027*math.sin(p.z*61+abs(p.x)*33+p.y*17)*math.exp(-((p.z-.85)/.11)**2)
-        v.co+=v.normal*(ease+fold)
+        p=v.co.copy();ease=(.012+.010*math.exp(-((p.z-.82)/.17)**2))*max(0,min(1,(p.z-.455)/.105))+.002
+        v.co+=v.normal*ease
         # Cloth passes over the fly instead of tracing anatomical detail.
         if abs(v.co.x)<.06 and .80<v.co.z<.99 and v.co.y<-.072:v.co.y=max(v.co.y,-.122)
     trousers.data.update();subdiv(trousers,1)
+    for vertex in trousers.data.vertices:
+        vertex.co+=vertex.normal*cloth_relief(vertex.co,vertex.normal,heads,'breeches')
+    trousers.data.update()
     # Narrow crimson outer seams on the breeches follow their actual surface.
     for suffix,sign in [('l',1),('r',-1)]:
         sv=[];sw=[];sf=[]
@@ -421,44 +455,63 @@ def create_character(preset="granadero", height=1.76):
         bpy.context.view_layer.objects.active=tail
         while tail.modifiers.find(solid.name)>0:bpy.ops.object.modifier_move_up(modifier=solid.name)
         bpy.ops.object.modifier_apply(modifier=solid.name)
+        mask=tail.data.attributes.new(name='Coat_Tail',type='FLOAT',domain='POINT')
+        for value in mask.data:value.value=1
     # Collar follows the native neck, with open front edges below the jaw.
-    collarv=[];collarf=[]
-    for row,z in enumerate((1.480,1.510,1.533)):
-        for j in range(48):
-            a=math.tau*j/48
-            radiusx=.068 if row<2 else .062;radiusy=.078 if row<2 else .072
-            collarv.append((radiusx*math.cos(a),-.036+radiusy*math.sin(a),z))
-    for row in range(2):
-        for j in range(48):a=row*48+j;b=row*48+(j+1)%48;collarf.append((a,b,b+48,a+48))
-    mesh('Crimson_Collar',collarv,collarf,mats['red'],'neck_01')
-    collar_top=[Vector((.062*math.cos(j*math.tau/48),-.036+.072*math.sin(j*math.tau/48),1.534)) for j in range(49)]
-    tube('Fine_Collar_Gold_Edge',collar_top,[.0015]*49,mats['brass'],'neck_01',6)
+    # Start at the coat's actual boundary, copying each boundary weight. An
+    # independently fitted cylinder cannot remain sewn to an animated collar.
+    neckline=sewn_boundary(coat,lambda v:v.co.z>1.485 and abs(v.co.x)<.13)
+    if len(neckline)<24:raise ValueError('The native coat needs a closed, detailed neckline')
+    collarv=[];collarf=[];collarw=[];count=len(neckline)
+    collar_levels=(None,1.516,1.525,1.533)
+    for row,level in enumerate(collar_levels):
+        for vertex in neckline:
+            p=vertex.co.copy()
+            weights={coat.vertex_groups[g.group].name:g.weight for g in vertex.groups if g.weight>1e-7}
+            if level is not None:
+                # Follow the convex neck between the sewn base and top edge.
+                # A single straight strip cuts through the neck on a turn.
+                p.z=level;centre=Vector((0,-.036,p.z));direction=Vector((p.x,p.y+.036,0)).normalized()
+                hit,q,n,face=skin.ray_cast(centre+direction*.17,-direction)
+                if hit and (q-centre).length<.115:
+                    p=q+Vector((n.x,n.y,0)).normalized()*.006
+                    weights=surface_weights(skin,q,face)
+            collarv.append(p)
+            collarw.append(weights)
+    for row in range(len(collar_levels)-1):
+        for j in range(count):a=row*count+j;b=row*count+(j+1)%count;collarf.append((a,b,b+count,a+count))
+    collar=mesh('Crimson_Collar',collarv,collarf,mats['red'],collarw)
+    # The facing and coat share the same sewn vertices. An overlapping strip
+    # can still open after skinning or independent LOD simplification.
+    seam_positions={tuple(round(value,6) for value in p) for p in collarv[:count]}
+    bpy.ops.object.select_all(action='DESELECT');coat.select_set(True);collar.select_set(True)
+    bpy.context.view_layer.objects.active=coat;bpy.ops.object.join();objects.remove(collar)
+    sewn=bmesh.new();sewn.from_mesh(coat.data)
+    seam=[v for v in sewn.verts if tuple(round(value,6) for value in v.co) in seam_positions]
+    bmesh.ops.remove_doubles(sewn,verts=seam,dist=.000002)
+    sewn.to_mesh(coat.data);sewn.free();coat.data.update()
+    collar_top=[p+Vector((0,0,.0007)) for p in collarv[-count:]];collar_top.append(collar_top[0])
+    top_weights=collarw[-count:]+[collarw[-count]]
+    tube('Fine_Collar_Gold_Edge',collar_top,[.0015]*len(collar_top),mats['brass'],[w for w in top_weights for _ in range(6)],6)
     # Cuffs use the source sleeve surface, not separate oversized wrist tubes.
-    if gender == 'female':
-        for v in coat.data.vertices:
-            p=v.co.copy()
-            if abs(p.x)<.18 and 1.12<p.z<1.475 and p.y<-.045:
-                front=-.133-.038*math.exp(-((abs(p.x)-.071)/.073)**2-((p.z-1.379)/.096)**2)
-                blend=min(1,(.18-abs(p.x))/.02,(p.z-1.12)/.025,(1.475-p.z)/.020)
-                v.co.y=p.y*(1-blend)+front*blend
+    from garment_detail import coat_panel
+    cuff_context={'coat':coat,'mesh':mesh,'tube':tube,'objects':objects}
     for suffix in ('l','r'):
         wrist=heads['hand_'+suffix];elbow=heads['lowerarm_'+suffix]
         axis=(wrist-elbow).normalized()
-        # Sample the sleeve itself to fit a clean cuff around the real wrist.
-        u=axis.cross(Vector((0,0,1))).normalized();v=axis.cross(u).normalized()
-        cv=[];cw=[];cp=[]
-        for d in (-.073,-.050,-.014):
-            center=wrist+axis*d
-            for j in range(32):
-                a=math.tau*j/32;n=u*math.cos(a)+v*math.sin(a)
-                hit,p,norm,_=coat.ray_cast(center+n*.14,-n)
-                if not hit or (p-center).length>.070:p=center+n*(.040 if d<-.025 else .033)
-                else:p+=norm*.004
-                cv.append(p);cw.append({'lowerarm_'+suffix:1})
-        for row in range(2):
-            for j in range(32):a=row*32+j;b=row*32+(j+1)%32;cp.append((a,b,b+32,a+32))
-        mesh('Crimson_Cuff_'+suffix,cv,cp,mats['red'],cw)
-        tube('Cuff_Gold_Edge_'+suffix,cv[-32:]+[cv[-32]],[.0014]*33,mats['brass'],'lowerarm_'+suffix,6)
+        # Copy the sleeve topology and weights, so the facing cannot slide
+        # through its sleeve when the wrist rotates or the elbow bends.
+        cuff=coat_panel(cuff_context,'Crimson_Cuff_'+suffix,mats['red'],[
+            lambda p,w=wrist,a=axis:(p-w).dot(a)+.073,
+            lambda p,w=wrist:.15-(p-w).length],clearance=.003)
+        # Civilian presets recolour the shared facing material later. Keep
+        # the sewn cuff edge on that same palette instead of a crimson copy.
+        for i,mat in enumerate(cuff.data.materials):
+            if mat.name.startswith(mats['red'].name+'_Sewn_Wool_Edge'):cuff.data.materials[i]=mats['red']
+        hem=sewn_boundary(coat,lambda q:(q.co-wrist).length<.09,axis)
+        cv=[q.co+q.normal*.0038 for q in hem]
+        cw=[{coat.vertex_groups[g.group].name:g.weight for g in q.groups if g.weight>1e-7} for q in hem]
+        tube('Cuff_Gold_Edge_'+suffix,cv+[cv[0]],[.0014]*(len(cv)+1),mats['brass'],[w for w in cw+[cw[0]] for _ in range(6)],6)
         shoulder=heads['upperarm_'+suffix];sign=1 if suffix=='l' else -1
         hit,p,n,_=coat.ray_cast(Vector((shoulder.x,.005,1.8)),Vector((0,0,-1)))
         center=p+Vector((sign*.009,0,.008)) if hit else shoulder+Vector((0,0,.05))
@@ -484,25 +537,53 @@ def create_character(preset="granadero", height=1.76):
             length=.033+.009*math.cos(a)+.002*math.sin(j*2.1)
             path=[top+Vector((sign*(.004*t+.002*math.sin(t*math.pi)),.0016*math.sin(j*1.7+t*2.4)*t,-length*t)) for t in (0,.25,.5,.75,1)]
             tube('Red_Epaulette_Fringe_'+suffix,path,[.0023,.0022,.0020,.0019,.0015],mats['cord'],weights,7)
-    # Eyeballs fit the actual source sockets. Skin texture carries fine brows.
+    # Fit iris pigment to the eyeball surface. Raised ellipsoids read as
+    # buttons; the iris, pupil and sclera share one continuous spherical arc.
     for suffix in ('l','r'):
         center=joint({'cube_name':'joint-'+suffix+'-eye'})
         ellipsoid('Eyeball_'+suffix,center,(.0115,.0115,.0115),mats['eye'],'head',24,16)
-        ellipsoid('Iris_'+suffix,center+Vector((0,-.0108,0)),(.0046,.0013,.0046),mats['iris'],'head',20,12)
-        ellipsoid('Pupil_'+suffix,center+Vector((0,-.0118,0)),(.0021,.0005,.0021),mats['pupil'],'head',16,10)
-        brow=[]
-        for j in range(9):
-            x=center.x-.014+.028*j/8;z=center.z+.014+.004*math.sin(j*math.pi/8)
-            z+=.0006*math.sin(j*math.pi/8)*(1 if suffix=='l' else -.5)
-            hit,p,n,_=skin.ray_cast(Vector((x,-1,z)),Vector((0,1,0)))
-            if hit:brow.append(p+n*.0009)
-        if len(brow)>1:tube('Natural_Eyebrow_'+suffix,brow,[.0013]*len(brow),mats['hair'],'head',5)
-    if preset in ('granadero','royalist'):
-        hair=subset('Short_Hair',lambda f:all(points[i].z>1.67 and (points[i].y>-.025 or points[i].z>1.739) for i,uv in f),mats['hair'],.0015)
-    else:
-        # The cropped under-shako scalp is unsuitable as a bare-headed style.
-        # Follow the native cranium with fuller temples and a natural hairline.
-        hair=subset('Short_Hair',lambda f:all(points[i].z>1.64 and (points[i].y>-.024 or points[i].z>1.708) for i,uv in f),mats['hair'],.003)
+        for name,radii,mat in [('Iris',(.0017,.0022,.0035,.0044,.00465),mats['iris']),('Pupil',(0,.0008,.00172),mats['pupil'])]:
+            coords=[];polys=[];tones=[];segments=48
+            for row,radius in enumerate(radii):
+                for j in range(segments):
+                    a=math.tau*j/segments
+                    coords.append(center+Vector((radius*math.cos(a),-math.sqrt(.0115**2-radius**2)-.00007,radius*math.sin(a))))
+                    fibre=.82+.13*math.sin(j*2.399+row*.6)+.05*math.sin(j*5.31)
+                    edge=.38 if name=='Iris' and row==len(radii)-1 else .73 if name=='Iris' and row==0 else 1
+                    tones.append((fibre*edge, fibre*edge, fibre*edge,1))
+            for row in range(len(radii)-1):
+                for j in range(segments):
+                    a=row*segments+j;b=row*segments+(j+1)%segments
+                    polys.append((a,b,b+segments,a+segments))
+            eye=mesh(name+'_'+suffix,coords,polys,mat,'head')
+            pigment=eye.data.color_attributes.new(name='Human_Surface_Tone',type='FLOAT_COLOR',domain='POINT')
+            for entry,tone in zip(pigment.data,tones):entry.color=tone
+        # Flat tapered brow bed plus directional fine hairs, attached to the
+        # actual forehead. No constant-radius eyebrow cord floats above it.
+        sign=1 if center.x>0 else -1
+        brow_coords=[];brow_faces=[]
+        def brow_point(t,across=0):
+            x=sign*(abs(center.x)-.017+.038*t)
+            z=center.z+.013+.0043*math.sin(math.pi*t*.92)-.002*t
+            width=.0024*math.sin(math.pi*(.10+.88*t))**.65
+            hit,p,n,_=skin.ray_cast(Vector((x,-1,z+across*width)),Vector((0,1,0)))
+            return p+n*.00018 if hit else None
+        for j in range(25):
+            t=j/24
+            for across in (-1,1):brow_coords.append(brow_point(t,across))
+            if j:brow_faces.append((2*j-2,2*j,2*j+1,2*j-1))
+        if all(p is not None for p in brow_coords):mesh('Natural_Eyebrow_Bed_'+suffix,brow_coords,brow_faces,mats['hair'],'head')
+        for j in range(76):
+            t=(j+.35)/77
+            start=brow_point(t,-.76+.24*math.sin(j*2.399))
+            end=brow_point(min(1,t+.019+.022*t),.78+.20*math.sin(j*1.731))
+            if start is not None and end is not None:
+                start+=Vector((0,-.00012,0));end+=Vector((0,-.00012,0))
+                radius=.00014+.000025*(.5+.5*math.sin(j*3.11))
+                tube('Natural_Eyebrow_Hair_'+suffix,[start,(start+end)*.5+Vector((0,-.00008,.00008)),end],[radius,radius*.8,.000018],mats['hair'],'head',4)
+    from anatomy_surface import scalp_patch, fitted_fingernails, hand_frames, hand_tone
+    hair=scalp_patch(mesh,faces,points,uvs,assignments,mats['hair'],preset in ('granadero','royalist'),gender=='female')
+    subdiv(hair,1)
     # User photograph: broad woven yellow band, brass plate and red cords.
     hat_y=-.052;hat_base=1.692;hrings=[(hat_base,.087,.105),(1.725,.092,.108),(1.838,.101,.111),(1.851,.102,.111)]
     hv=[];hf=[]
@@ -605,6 +686,7 @@ def create_character(preset="granadero", height=1.76):
     plumef.extend([tuple(reversed(range(segments))),tuple((rings-1)*segments+i for i in range(segments))])
     mesh('Tall_Red_Plume',plumev,plumef,mats['plume'],'head')
     ctx = {'rig':rig,'arm':arm,'objects':objects,'export_objects':[rig]+objects,'materials':mats,'M':mats,'heads':heads,'tails':tails,'rest':rest,'HEADS':heads,'TAILS':tails,'REST':rest,'source_points':points,'source_weights':source_weights,'source_assignments':assignments,'body_height':height,'height':1.948,'body_bounds':(tuple(min(points[i][a] for i in used) for a in range(3)),tuple(max(points[i][a] for i in used) for a in range(3))),'mesh':mesh,'ellipsoid':ellipsoid,'tube':tube,'source_weight_at':source_weight_at,'preset':preset,'gender':gender,'coat':coat,'trousers':trousers,'subset':subset,'source_faces':faces,'skin':skin}
+    fitted_fingernails(ctx,mats['skin'])
     apply_appearance(ctx)
     ctx['export_objects'] = [rig]+objects
     for cloth in (coat,trousers):
@@ -630,6 +712,7 @@ def create_character(preset="granadero", height=1.76):
         links.new(attribute.outputs['Color'],multiply.inputs[7]);links.new(multiply.outputs[2],base)
     eye_z=joint({'cube_name':'joint-l-eye'}).z
     mouth_z=eye_z-.063
+    native_hands=hand_frames(rig)
     def gauss(value,centre,width):return math.exp(-((value-centre)/width)**2)
     def surface_tone(p,key):
         if key=='skin':
@@ -642,8 +725,9 @@ def create_character(preset="granadero", height=1.76):
             jaw=gauss(p.x,0,.061)*gauss(p.z,mouth_z-.022,.024)*front
             temple=gauss(abs(p.x),.067,.020)*gauss(p.z,eye_z-.013,.056)*front
             # Stubble is a mild cool jaw tone; it does not obscure the mouth.
-            shade=1-.115*socket-(.055 if gender=='male' else .012)*jaw-.035*temple
-            return (shade*(1-.045*lips),shade*(1-.23*lips-.035*cheek),shade*(1-.24*lips-.055*cheek),1)
+            shade=1-.14*socket-(.08 if gender=='male' else .020)*jaw-.05*temple
+            hands=hand_tone(p,rig,native_hands)
+            return (shade*(1-.035*lips)*hands[0],shade*(1-.30*lips-.055*cheek)*hands[1],shade*(1-.32*lips-.085*cheek)*hands[2],1)
         if key in ('navy','trousers','red','black'):
             cloth=.956+.018*math.sin(p.z*15+p.x*7)+.012*math.sin(p.z*29-p.y*19+abs(p.x)*11)
             if key=='navy':
@@ -675,7 +759,8 @@ def create_character(preset="granadero", height=1.76):
         key=toned_materials.get(obj.data.materials[0].name)
         if key is None:continue
         colours=obj.data.color_attributes.new(name='Human_Surface_Tone',type='FLOAT_COLOR',domain='POINT')
-        for vertex,entry in zip(obj.data.vertices,colours.data):entry.color=surface_tone(vertex.co,key)
+        for vertex,entry in zip(obj.data.vertices,colours.data):
+            entry.color=(.995,.975,.97,1) if obj.get('anatomy_surface')=='nail' else surface_tone(vertex.co,key)
         obj.data.color_attributes.active_color_index=len(obj.data.color_attributes)-1
         obj.data.color_attributes.render_color_index=len(obj.data.color_attributes)-1
     bpy.context.view_layer.update()

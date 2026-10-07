@@ -7,17 +7,27 @@ from equipment_dimensions import RIFLE_STRETCH,PISTOL_STRETCH,PISTOL_BARREL_OFFS
 
 def create_library(ctx):
  create_equipment(ctx);h=ctx['equipment_helpers'];exports=[];records={};weapons=ctx['weapons']
- def clone_tree(source,name,stretch=1):
+ def clone_tree(source,name,stretch=1,preserve_stock=False):
   parent=bpy.data.objects.new(name,None);bpy.context.collection.objects.link(parent);exports.append(parent)
   for old in source.children:
    o=old.copy()
    if old.data:o.data=old.data.copy()
    bpy.context.collection.objects.link(o);o.parent=parent;o.matrix_basis=old.matrix_basis.copy();o.name=name+'_'+old.name
-   # Vertex positions and part centres share the same grip-local length.
-   # Scaling only local vertices leaves locks, sights and bands displaced.
-   o.location.x*=stretch
-   if o.type=='MESH':
-    for v in o.data.vertices:v.co.x*=stretch
+   if preserve_stock:
+    # Keep a human-sized butt/grip on carbines. Transform the forward
+    # assembly in item space, so wood, bands and furniture remain aligned.
+    basis=o.matrix_basis.copy();inverse=basis.inverted()
+    if o.type=='MESH':
+     for v in o.data.vertices:
+      point=basis@v.co
+      if point.x>0:point.x*=stretch
+      v.co=inverse@point
+    elif o.location.x>0:o.location.x*=stretch
+   else:
+    # Part origins and vertices must use the same grip-local length scale.
+    o.location.x*=stretch
+    if o.type=='MESH':
+     for v in o.data.vertices:v.co.x*=stretch
    exports.append(o)
   return parent
  def record(key,group,category,grip,stow='hipLeft'):
@@ -25,9 +35,8 @@ def create_library(ctx):
   if muzzle:muzzle.name='muzzle_'+key
   records[key]={'node':group.name,'category':category,'grip':grip,'socket':'handRight_'+grip,'leftSocket':'handLeft_'+grip,'position':[0,0,0],'rotation':[0,0,0],'scale':1,'stowedSocket':stow,**({'muzzle':muzzle.name} if muzzle else {})}
  for key,scale in RIFLE_STRETCH.items():
-  g=clone_tree(weapons['rifle'],'item_'+key,scale)
-  # The supplied Escopeta Criolla reference has one bore, matching its
-  # capacity-one firearm definition. Its native muzzle stays on that axis.
+  g=clone_tree(weapons['rifle'],'item_'+key,scale,preserve_stock=True)
+  # Escopeta Criolla has one bore, matching its capacity-one definition.
   if key=='1807':
    for o in g.children:
     if 'Rifle_Barrel' in o.name and 'Band' not in o.name:

@@ -47,6 +47,13 @@ export function sampleLadderClimb(geometry,fraction,feetRest=defaultFeet){
  if(t>=.76){root.height=mix(Math.max(0,H-.85),Math.max(0,H-.55),phase(t,.76,.91));root.forward=mix(B+run*(H?Math.max(0,H-.85)/H:0)-setback,E-.20,phase(t,.76,.85));}
  if(t>=.85)root.forward=mix(E-.20,E+.10,phase(t,.85,.91));
  if(t>=.91){root.height=mix(Math.max(0,H-.55),H,phase(t,.91,1));root.forward=mix(E+.10,span,phase(t,.91,1));}
+ // Raise the hips over the crest before the free boot reaches the roof.
+ // The brief setback leaves room for its shaft while the native palms
+ // and trailing sole keep their measured support positions.
+ const crestSupport=phase(t,.76,.802)*(1-phase(t,.91,.98));
+ const flyingClearance=Math.sin(Math.PI*phase(t,.772,.82))**2;
+ root.height+=.16*crestSupport+.18*flyingClearance+.025*Math.sin(Math.PI*phase(t,.82,.85))**2+.16*Math.sin(Math.PI*phase(t,.91,.98))**2;
+ root.forward-=.20*phase(t,.76,.79)*(1-phase(t,.83,.86));
  // Close the short preparation seam without moving a planted ground boot.
  if(t>=.08&&t<.12)root.forward=mix(preparation,B-.20,phase(t,.08,.12));
  /** @type {Record<string,{position:number[],planted:boolean,tilt:number,restWeight:number,roofWeight:number}>} */
@@ -62,13 +69,23 @@ export function sampleLadderClimb(geometry,fraction,feetRest=defaultFeet){
    if(side==='l')height+=.08*Math.sin(Math.PI*enter);
   }else if(t<.76&&side===moving){const lift=phase(u,.03,.46);height=mix(a.height,b.height,lift)+.09*Math.sin(Math.PI*lift);forward=mix(a.forward,b.forward,lift);planted=u<=.03||u>=.46;}
   else if(t>=.76){height=rung(side==='l'?N-2:N-1).height;forward=rung(side==='l'?N-2:N-1).forward;}
-  const roofForward=E+(B!==0?(side==='l'?.35:.55):(side==='l'?.10:.32));
-  if(t>=.76){const lift=phase(t,side==='l'?.76:.85,side==='l'?.82:.91),clear=phase(lift,0,.55),step=phase(lift,.55,1);height=lift<=.55?mix(height,H+.15,clear):mix(H+.15,H+.007,step);forward=mix(forward-.04*Math.sin(Math.PI*clear),roofForward,step);planted=lift===0||lift===1;}
+  const roofForward=E+(B!==0?(side==='l'?.50:.55):(side==='l'?.25:.32));
+  if(t>=.76){
+   const lift=phase(t,side==='l'?.772:.85,side==='l'?.82:.91),clear=phase(lift,0,.55),step=phase(lift,.55,1);
+   const apex=H+(side==='l'?.10:.15);
+   height=lift<=.55?mix(height,apex,clear):mix(apex,H+.007,step);
+   forward=mix(forward-.04*Math.sin(Math.PI*clear),roofForward,step);
+   // The free boot passes ahead of the hip, rather than folding directly
+   // through it. Both offsets and their slopes vanish at the supports.
+   const clearance=Math.sin(Math.PI*lift)**2;
+   forward+=(side==='l'?.14*phase(lift,.46,.58):0)*clearance;height-=.04*clearance;
+   planted=side==='l'?t<=.76||t>=.82:lift===0||lift===1;
+  }
   let spread=phase(t,.04,.12);
   if(side==='r'&&t<.12)spread=0;else if(side==='r'&&step===0&&t<.76)spread=phase(u,.03,.46);
   let footX=mix(rest[0],sign*.13,spread);
   const finish=phase(t,side==='l'?.91:.96,side==='l'?.96:1);
-  if(t>=.91){height=H+mix(.007,rest[1],finish)+.10*Math.sin(Math.PI*finish);forward=mix(roofForward,span+rest[2],finish);footX=mix(sign*.13,rest[0],finish);planted=finish===0||finish===1;}
+  if(t>=.91){height=H+mix(.007,rest[1],finish)+.055*Math.sin(Math.PI*finish);forward=mix(roofForward,span+rest[2],finish);footX=mix(sign*.13,rest[0],finish);planted=finish===0||finish===1;}
   const lifted=side==='r'&&step===0&&t<.76?phase(u,.03,.46):side==='r'&&t<.12?0:phase(t,.06,.12);
   const entering=side==='l'?phase(t,.04,.12):t<.12?0:step===0?phase(u,.03,.46):1;
   const roofWeight=phase(t,side==='l'?.76:.85,side==='l'?.82:.91);
@@ -78,5 +95,5 @@ export function sampleLadderClimb(geometry,fraction,feetRest=defaultFeet){
   if(t>=.76){const reach=phase(t,side==='l'?.82:.84,side==='l'?.84:.86);hand.position=[sign*.15,H+mix(.022,.055,reach)+.10*Math.sin(Math.PI*reach),mix(L,E+.40,reach)];hand.planted=reach===0||reach===1;hand.roofWeight=reach;}
   hands[side]=hand;
  }
- return {fraction:t,root,feet,hands,lean:(.20+.25*phase(t,.76,.83))*phase(t,.02,.12)*(1-phase(t,.91,1)),crouch:.07*phase(t,.70,.83)*(1-phase(t,.91,1)),kneeRise:.70*phase(t,.60,.72)*(1-phase(t,.91,1))};
+ return {fraction:t,root,feet,hands,crestSupport,lean:(.20+.25*phase(t,.76,.83))*phase(t,.02,.12)*(1-phase(t,.91,1)),crouch:.07*phase(t,.70,.83)*(1-phase(t,.91,1)),kneeRise:.70*phase(t,.60,.72)*(1-phase(t,.91,1))};
 }

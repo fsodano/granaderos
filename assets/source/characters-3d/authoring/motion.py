@@ -204,7 +204,7 @@ def _collect(rig):
     return {pb.name:(pb.location.copy(),pb.rotation_quaternion.copy()) for pb in rig.pose.bones}
 
 
-def _write_clip(rig, name, samples, duration, loop=True, grounding=None, times=None, native_support=None, native_surface='sole'):
+def _write_clip(rig, name, samples, duration, loop=True, grounding=None, times=None, support=None, native_sideways=None):
     action=bpy.data.actions.new(name)
     rig.animation_data_create();rig.animation_data.action=action
     if loop:
@@ -216,6 +216,14 @@ def _write_clip(rig, name, samples, duration, loop=True, grounding=None, times=N
                 mismatch=last[bone][1].inverted() @ first[bone][1]
                 sample[bone]=(p-shift*t,q @ Quaternion().slerp(mismatch,t))
         samples[-1]={name:(p.copy(),q.copy()) for name,(p,q) in samples[0].items()}
+    if support:
+        from posture_support import fit_boots
+        if name.startswith('crouch.walk.'):
+            from posture_support import crouch_contact_samples
+            samples,times=crouch_contact_samples(support,samples,times,duration)
+        for i,sample in enumerate(samples):
+            _apply_sample(rig,sample);fit_boots(support)
+            samples[i]=_collect(rig)
     if grounding:
         boots,goals=grounding
         goals[-1]=goals[0]
@@ -231,14 +239,23 @@ def _write_clip(rig, name, samples, duration, loop=True, grounding=None, times=N
             root=rig.pose.bones['Root']
             root.matrix=Matrix.Translation((0,0,goals[i]-lowest)) @ root.matrix
             sample['Root']=(root.location.copy(),root.rotation_quaternion.copy())
-    support=None
-    if native_support is not None:
-        from grounding_motion import support_clip
-        samples,times,support=support_clip(native_support,samples,duration,times,FPS,native_surface)
     arm_support=None
-    if native_support is not None and name in('prone.idle.unarmed','prone.crawl.unarmed'):
+    if support is not None and name in ('prone.idle.unarmed','prone.crawl.unarmed'):
         from prone_arm_support import support_clip as support_arms
-        samples,arm_support=support_arms(native_support,samples,duration,times,name=='prone.crawl.unarmed')
+        samples,arm_support=support_arms(support,samples,duration,times,name=='prone.crawl.unarmed')
+    sideways_support=None
+    if native_sideways is not None:
+        from sideways_support import support_clip as support_sideways
+        ctx,speed=native_sideways
+        samples,times,sideways_support=support_sideways(ctx,samples,duration,times,name,speed)
+        # This reviewed legacy gait intentionally retains its original stored
+        # period and pace. Do not add the nominal manifest's fractional tail.
+        duration=math.floor(duration*FPS+.000001)/FPS
+        selected=[(time,sample) for time,sample in zip(times,samples) if time<=duration+1e-7]
+        times=[time for time,sample in selected];samples=[sample for time,sample in selected]
+    # NLA export samples whole frames and otherwise drops a fractional end.
+    # A same-pose padding key is trimmed back to this exact time after export.
+    action["authored_duration"]=float(duration)
     previous={}
     for i,sample in enumerate(samples):
         frame=1+FPS*(times[i] if times is not None else duration*i/(len(samples)-1))
@@ -250,6 +267,11 @@ def _write_clip(rig, name, samples, duration, loop=True, grounding=None, times=N
             pb.location=p;pb.rotation_quaternion=q
             pb.keyframe_insert(data_path='location',frame=frame,group=pb.name)
             pb.keyframe_insert(data_path='rotation_quaternion',frame=frame,group=pb.name)
+    end_frame=1+FPS*duration
+    if abs(end_frame-round(end_frame))>1e-7:
+        for pb in rig.pose.bones:
+            pb.keyframe_insert(data_path="location",frame=math.ceil(end_frame),group=pb.name)
+            pb.keyframe_insert(data_path="rotation_quaternion",frame=math.ceil(end_frame),group=pb.name)
     try:
         for layer in action.layers:
             for strip in layer.strips:
@@ -262,9 +284,14 @@ def _write_clip(rig, name, samples, duration, loop=True, grounding=None, times=N
     rig.animation_data.action=None
     track=rig.animation_data.nla_tracks.new();track.name=name
     strip=track.strips.new(name,1,action);strip.name=name
+    # Blender merges keys closer than its insertion epsilon. Explicit strip
+    # bounds also retain an endpoint only a few microseconds below a frame.
+    strip.action_frame_end=math.ceil(end_frame-1e-8)
+    strip.frame_end=math.ceil(end_frame-1e-8)
     track.mute=True
     result={'name':name,'duration':round(duration,6),'loop':loop,'events':{}}
-    if support:result['nativeBootSupport']=support
+    if support:result['nativeBootSupport']={'method':'native-leg-rotations','surface':'actual-sole-and-weighted-shaft','floor':.006,'sampleRate':FPS}
+    if sideways_support:result['nativeSidewaysSupport']=sideways_support
     if arm_support:
         if 'stride'in arm_support:result.update(arm_support.pop('stride'))
         result['nativeArmSupport']=arm_support
@@ -381,22 +408,16 @@ def _apply_sample(rig,sample):
 
 def _grip_setup(ctx):
     rig=ctx['rig'];bone=rig.data.bones['hand_r']
-    long,normal=_palm_basis(rig,'r')
-    # Grip lies inside the curled fingers, below the knuckle row. Native
-    # MakeHuman finger positions define it; no hand mesh is moved or scaled.
-    knuckles=sum((rig.data.bones[f+'_01_r'].head_local for f in ('index','middle','ring','pinky')),Vector())/4
-    center=bone.head_local.lerp(knuckles,.74)+normal*.014
-    local_center=bone.matrix_local.inverted() @ center
+    from firearm_grips import grip_frame, rifle_support_point
     offsets={}
     for key,group in ctx.get('weapons',{}).items():
-        long_in_weapon=Vector((1,0,.05)) if key=='rifle' else Vector((1,0,-.10)) if key=='pistol' else Vector((1,0,0))
-        hand_in_weapon=_hand_rotation(rig,'r',long_in_weapon,Vector((0,1,0)))
+        local_center,hand_in_weapon=grip_frame(rig,'r',key,_palm_basis,_hand_rotation,ctx.get('gender'))
         bind=Matrix.LocRotScale(local_center,hand_in_weapon.inverted(),Vector((1,1,1)))
         group.parent=rig;group.parent_type='BONE';group.parent_bone='hand_r'
         group.matrix_parent_inverse=Matrix.Translation((0,-bone.length,0))
         group.matrix_basis=bind
         offsets[key]=(local_center.copy(),hand_in_weapon.copy())
-    ctx.setdefault('weapon_grips',{})['rifle_support']=(.22,0,.030)
+    ctx.setdefault('weapon_grips',{})['rifle_support']=rifle_support_point(rig)
     return offsets
 
 
@@ -415,27 +436,25 @@ def _weapon_pose(ctx,base,key,position,rotation,offsets,recoil=0):
     local_grip,hand_offset=offsets[key]
     hand_q=gun_q @ hand_offset
     wrist=gun_pos-hand_q @ local_grip
-    actual_wrist=_arm_ik(rig,'r',wrist,Vector((-.41,-.12,1.22 if key=='rifle' else 1.10)))
+    pole=Vector((-.41,-.12,1.22 if key=='rifle' else 1.10))
+    if key in ('rifle','pistol'):
+        from firearm_grips import grip_elbow, align_arm_roll
+        pole=grip_elbow(rig,'r',wrist,hand_q,guide=pole)
+    actual_wrist=_arm_ik(rig,'r',wrist,pole)
     _set_world_rotation(rig,'hand_r',hand_q)
-    _finger_curl(rig,1.33,'r')
+    if key in ('rifle','pistol'):align_arm_roll(rig,'r',hand_q,_set_world_rotation)
+    _finger_curl(rig,1.36 if key=='rifle' else 1.23 if key=='pistol' else 1.33,'r')
     if key in ('rifle','pistol'):
         _trigger_finger(rig,ctx['weapons'][key],key)
     # If a requested grip lies outside reach, report the actual arm solution.
     actual_grip=actual_wrist+hand_q @ local_grip
     if key=='rifle':
-        target=actual_grip+gun_q @ Vector(ctx.get('weapon_grips',{}).get('rifle_support',(.22,0,.030)))
-        left_long=gun_q @ Vector((.65,-.76,.08))
-        left_normal=gun_q @ Vector((0,0,1))
-        left_q=_hand_rotation(rig,'l',left_long,left_normal)
-        left_bone=rig.data.bones['hand_l']
-        knuckles=sum((rig.data.bones[f+'_01_l'].head_local for f in ('index','middle','ring','pinky')),Vector())/4
-        long,normal=_palm_basis(rig,'l')
-        palm=left_bone.head_local.lerp(knuckles,.75)+normal*.016
-        local_palm=left_bone.matrix_local.inverted() @ palm
-        left_wrist=target-left_q @ local_palm
-        _arm_ik(rig,'l',left_wrist,Vector((.24,-.25,1.03)))
-        _set_world_rotation(rig,'hand_l',left_q)
-        _finger_curl(rig,1.18,'l')
+        from firearm_grips import rifle_support_frame, rifle_fingers
+        left_wrist,left_q=rifle_support_frame(rig,actual_grip,gun_q,_hand_rotation)
+        pole=grip_elbow(rig,'l',left_wrist,left_q,guide=Vector((.24,-.25,1.03)))
+        _arm_ik(rig,'l',left_wrist,pole)
+        align_arm_roll(rig,'l',left_q,_set_world_rotation)
+        rifle_fingers(rig,'l')
     else:
         # Free hand remains relaxed at the soldier's left side.
         _finger_curl(rig,.70,'l')
@@ -461,23 +480,10 @@ def _smooth_key(values,t):
 
 
 
-def _trigger_finger(rig,weapon,key):
-    """Fit the index pad to the trigger inside the actual modeled guard."""
-    bpy.context.view_layer.update()
-    transform=weapon.matrix_world
-    gun_q=transform.to_quaternion()
-    target=transform @ Vector((.019,-.006,-.020) if key=='rifle' else (.050,-.008,-.013))
-    names=['index_01_r','index_02_r','index_03_r']
-    first=rig.pose.bones[names[0]].head.copy()
-    _aim(rig,names[0],target-first+gun_q @ Vector((.035,0,0)))
-    base=rig.pose.bones[names[1]].head.copy()
-    l1=rig.data.bones[names[1]].length;l2=rig.data.bones[names[2]].length
-    d=target-base;distance=min(d.length,l1+l2-.0001);d.normalize()
-    pole=gun_q @ Vector((0,-1,0));pole-=d*pole.dot(d);pole.normalize()
-    along=(l1*l1-l2*l2+distance*distance)/(2*distance)
-    joint=base+d*along+pole*math.sqrt(max(0,l1*l1-along*along))
-    _aim(rig,names[1],joint-base)
-    _aim(rig,names[2],target-joint)
+def _trigger_finger(rig,weapon,key,trigger=True):
+    from firearm_grips import fit_firearm_fingers
+    fit_firearm_fingers(rig,weapon,key,_aim,trigger)
+
 
 # Production semantic bank. The game owns action time and movement; clips only
 # describe visible poses, contact phases, and the speed of the captured gait.
@@ -565,12 +571,23 @@ def _retarget_samples(ctx,recipe):
             if lowest<.003:_root_shift(rig,(0,0,.003-lowest))
         if recipe=='recover':
             for side,label in [('l','Left'),('r','Right')]:
-                if (p[label+'Hand'][0].z-floor)*scale<.075:
-                    target=rig.pose.bones['hand_'+side].head.copy();target.z=.026
-                    _reach(rig,side,target,long=FORWARD,normal=Vector((0,0,-1)),curl=.12)
-        _finger_curl(rig,.85 if recipe=='run' else .72)
+                from posture_support import support_hand,phase
+                hand=rig.pose.bones['hand_'+side];elbow=rig.pose.bones['lowerarm_'+side].head.copy()
+                palm=hand.head.lerp(rig.pose.bones['middle_01_'+side].head,.72)
+                contact=1-phase((p[label+'Hand'][0].z-floor)*scale,.025,.15)
+                rotation=hand.matrix.to_quaternion().slerp(_hand_rotation(rig,side,FORWARD,Vector((0,0,-1))),contact)
+                palm.z=max(.050,palm.z)
+                support_hand(ctx,side,palm,elbow,rotation,.25,.080,outward=1 if side=='l' else -1)
+        _finger_curl(rig,.25 if recipe=='recover' else .85 if recipe=='run' else .72)
         feet.append({s:min((v for side,v in _sole_points(rig) if s==side),key=lambda v:v.z).copy() for s in ('l','r')})
         knees.append({s:rig.pose.bones['calf_'+s].head.y-rig.pose.bones['pelvis'].head.y for s in ('l','r')})
+        if recipe in ('strafeLeftStanding','strafeRightStanding'):
+            # The accepted unarmed lateral solver derives its handovers from
+            # the captured boot motion, before generic equipment support.
+            ctx.setdefault('native_sideways_samples',{}).setdefault(recipe,[]).append(_collect(rig))
+        if recipe in ('crouch','run','walk') or recipe.startswith('strafe'):
+            from posture_support import fit_boots
+            fit_boots(ctx)
         out.append(_collect(rig))
     speeds=[]
     lateral=recipe.startswith('strafe');axis=0 if lateral else 1
@@ -606,12 +623,14 @@ def _reach(rig,side,target,pole=None,long=FORWARD,normal=UP,curl=.4):
     _set_world_rotation(rig,'hand_'+side,q);_finger_curl(rig,curl,side)
 
 
-def _prone_pose(ctx,base,source_sample=None,phase_center=None):
+def _prone_pose(ctx,base,source_sample=None,phase_center=None,crawl_phase=None):
     rig=ctx['rig'];_apply_sample(rig,base)
     q=Quaternion(Vector((1,0,0)),math.pi/2)
     for name in BODY_MAP:_set_world_rotation(rig,name,q @ rig.data.bones[name].matrix_local.to_quaternion())
     _set_world_rotation(rig,'spine_03',Quaternion(Vector((1,0,0)),1.24) @ rig.data.bones['spine_03'].matrix_local.to_quaternion())
     _root_shift(rig,(0,0,.205-rig.pose.bones['pelvis'].head.z))
+    from posture_support import crawl_assistance
+    assistance=crawl_assistance(ctx,crawl_phase) if crawl_phase is not None else None
     pelvis=rig.pose.bones['pelvis'].head.copy()
     initial=_collect(rig);phases={'l':0,'r':0}
     if source_sample:
@@ -620,12 +639,18 @@ def _prone_pose(ctx,base,source_sample=None,phase_center=None):
         _apply_sample(rig,initial)
     for side,sign in [('l',1),('r',-1)]:
         phase=phases[side]
-        ankle=pelvis+Vector((sign*(.16+max(0,phase)),.76-max(0,phase)*1.5,-.145))
-        _leg_ik(rig,side,ankle,pelvis+Vector((sign*.43,.30,.015)))
-        _aim(rig,'foot_'+side,(0,.15,-.035));_aim(rig,'ball_'+side,(0,.12,0))
+        from posture_support import prone_leg
+        # Alternate the leg draw; simultaneous positive source knee offsets
+        # must not fold both legs into a wide frog posture.
+        other=phases['r' if side=='l' else 'l']
+        advance=assistance[side] if assistance is not None else max(0,min(.16,phase-other))
+        prone_leg(ctx,side,sign,pelvis,advance)
         shoulder=_head(rig,'upperarm_'+side)
-        _reach(rig,side,(sign*.21,shoulder.y-.25+phase,.065),(sign*.29,shoulder.y+.03,.07),FORWARD,Vector((0,0,-1)),.25)
+        from posture_support import support_hand
+        support_hand(ctx,side,(pelvis.x*.5+sign*.21,shoulder.y-.25+phase,.105),(sign*.29,shoulder.y+.03,.09),_hand_rotation(rig,side,FORWARD,Vector((0,0,-1))),.25,.090)
     for name in ('neck_01','head'):_set_world_rotation(rig,name,Quaternion(Vector((1,0,0)),.40) @ rig.data.bones[name].matrix_local.to_quaternion())
+    from posture_support import fit_boots
+    fit_boots(ctx)
     return _collect(rig)
 
 
@@ -664,16 +689,18 @@ def _mounted_pose(ctx,base):
     _root_shift(rig,(0,0,rig.data.bones['pelvis'].head_local.z-rig.pose.bones['pelvis'].head.z))
     pelvis=rig.pose.bones['pelvis'].head.copy()
     from riding_motion import fit_legs
-    fit_legs(ctx,pelvis)
+    pelvis=fit_legs(ctx,pelvis)
     for side,sign in [('l',1),('r',-1)]:
         _reach(rig,side,pelvis+Vector((sign*.10,-.34,.16)),long=Vector((0,-.2,-.1)),normal=Vector((-sign,0,0)),curl=.85)
     return _collect(rig)
 
 
-def _gun_pose(ctx,base,key,offsets,mode='aim',recoil=0):
+def _gun_pose(ctx,base,key,offsets,mode='aim',recoil=0,posture=None):
     rig=ctx['rig'];_apply_sample(rig,base)
     chest=(rig.pose.bones['upperarm_l'].head+rig.pose.bones['upperarm_r'].head)*.5;pelvis=rig.pose.bones['pelvis'].head.copy()
     prone=chest.z-pelvis.z<.13
+    posture=posture or ('prone' if prone else 'crouched' if pelvis.z<.8 else 'standing')
+    aim_profile=None
     if mode=='reload':
         position=pelvis+Vector((-.18,-.20,.06));rotation=Quaternion(UP,-math.pi/2) @ Quaternion(Vector((0,1,0)),-1.38 if key=='rifle' else -.7)
         if prone:
@@ -694,32 +721,91 @@ def _gun_pose(ctx,base,key,offsets,mode='aim',recoil=0):
         if prone:position=chest+Vector((-.12,-.26,.075))
         rotation=Quaternion(UP,math.radians(-75 if key=='rifle' else -85))
         position-=rotation @ Vector((recoil,0,0))
+    if key=='rifle' and mode=='carry':
+        from firearm_grips import rifle_carry_position
+        position=rifle_carry_position(ctx,position,rotation,_hand_rotation)
+    if key=='rifle' and mode=='aim':
+        from firearm_grips import rifle_sight_pose,RIFLE_AIM_PROFILES
+        rotation=rotation@Quaternion(Vector((0,1,0)),-recoil*1.2)
+        position,rotation=rifle_sight_pose(ctx,position,rotation,_set_world_rotation,posture)
+        aim_profile=RIFLE_AIM_PROFILES.get(ctx['gender'],{}).get(posture)
+    elif key=='pistol' and mode=='aim':
+        from firearm_grips import pistol_sight_pose
+        rotation=rotation@Quaternion(Vector((0,1,0)),-recoil*2.3)
+        position,rotation=pistol_sight_pose(ctx,rotation,_set_world_rotation,recoil/.07 if recoil else 0)
     local_grip,hand_offset=offsets[key];hand_q=rotation @ hand_offset
     right_pole=_head(rig,'upperarm_r')+Vector((-.20,.10,-.26 if not prone else -.07))
-    actual=_arm_ik(rig,'r',position-hand_q @ local_grip,right_pole)
-    _set_world_rotation(rig,'hand_r',hand_q);_finger_curl(rig,1.33,'r')
-    if key in ctx.get('weapons',{}):_trigger_finger(rig,ctx['weapons'][key],key)
+    wrist=position-hand_q @ local_grip
+    if key in ('rifle','pistol'):
+        from firearm_grips import grip_elbow,align_arm_roll
+        right_pole=grip_elbow(rig,'r',wrist,hand_q,guide=right_pole,aiming=key=='rifle' and mode=='aim')
+    actual=_arm_ik(rig,'r',wrist,right_pole)
+    _set_world_rotation(rig,'hand_r',hand_q);_finger_curl(rig,1.36 if key=='rifle' else 1.23 if key=='pistol' else 1.33,'r')
+    if key in ('rifle','pistol'):align_arm_roll(rig,'r',hand_q,_set_world_rotation)
+    if key in ctx.get('weapons',{}):_trigger_finger(rig,ctx['weapons'][key],key,trigger=mode=='aim')
     grip=actual+hand_q @ local_grip
     if key=='rifle':
-        target=grip+rotation @ Vector(ctx['weapon_grips']['rifle_support'])
-        _reach(rig,'l',target,_head(rig,'upperarm_l')+Vector((.10,-.15,-.32 if not prone else -.09)),rotation @ Vector((.65,-.76,.08)),rotation @ UP,1.18)
-    if mode=='aim' and key=='rifle' and not prone:
-        neck=rig.pose.bones['neck_01'];_set_world_rotation(rig,'neck_01',Quaternion(Vector((0,1,0)),-.16) @ Quaternion(Vector((1,0,0)),.12) @ neck.matrix.to_quaternion())
+        from firearm_grips import rifle_support_frame,rifle_fingers
+        left_wrist,left_q=rifle_support_frame(rig,grip,rotation,_hand_rotation,
+            support_x=aim_profile['supportX'] if aim_profile else None,roll=aim_profile['supportRoll'] if aim_profile else 0)
+        guide=_head(rig,'upperarm_l')+Vector((.10,-.15,-.32 if not prone else -.09))
+        # A planted crouch keeps the support elbow on one side of the arm.
+        # Re-optimizing both elbow branches can reverse it during a side step.
+        pole=guide if mode=='carry'and posture=='crouched'else grip_elbow(rig,'l',left_wrist,left_q,guide=guide,support_height=.075 if prone and mode=='aim' else None)
+        _arm_ik(rig,'l',left_wrist,pole)
+        align_arm_roll(rig,'l',left_q,_set_world_rotation)
+        rifle_fingers(rig,'l',posture=posture if mode=='aim' else None)
     return _collect(rig),grip,rotation
 
 
-def _blade_pose(ctx,base,offsets,phase=0,key='sabre'):
+def _blade_key(ctx,base,offsets,phase=0,key='sabre'):
     rig=ctx['rig'];_apply_sample(rig,base);pelvis=rig.pose.bones['pelvis'].head.copy()
-    # Sweep outside the right shoulder before crossing in front of the body.
-    position=pelvis+Vector((-.30+.25*max(0,phase),-.28-.30*abs(phase),.20+.32*max(0,-phase)))
-    rotation=Quaternion(UP,-math.pi/2+phase*1.75) @ Quaternion(Vector((0,1,0)),.21+abs(phase)*1.95)
+    # The torso drives the short seated/crouched cut; the free arm follows
+    # the shoulder rather than remaining fixed in the locomotion pose.
+    for name,share in [('spine_01',.35),('spine_02',.35),('spine_03',.30)]:
+        bone=rig.pose.bones[name]
+        _set_world_rotation(rig,name,Quaternion(UP,phase*.38*share)@bone.matrix.to_quaternion())
+    # Carry in front of the actual shoulders, including a leaning crouch.
+    # A pelvis-relative grip can sit behind the shoulders and force the
+    # elbow above the head even though the weapon is held at waist height.
+    chest=(_head(rig,'upperarm_l')+_head(rig,'upperarm_r'))*.5
+    load=max(0,-phase/.65);drive=max(0,phase)
+    position=chest+Vector((-.20+.24*drive,-.25-.22*drive+.08*load,-.15+.20*load-.01*drive))
+    rotation=Quaternion(UP,math.radians(-65)+phase*.35) @ Quaternion(Vector((0,1,0)),.26+drive*1.65-load*.60)
     p,q=offsets[key];wq=rotation @ q
-    _arm_ik(rig,'r',position-wq @ p,_head(rig,'upperarm_r')+Vector((-.25,-.04,-.20)))
-    _set_world_rotation(rig,'hand_r',wq);_finger_curl(rig,1.26,'r')
+    from firearm_grips import align_arm_roll
+    wrist=position-wq@p
+    pole=_head(rig,'upperarm_r')+Vector((-.24,.04,-.30))
+    _arm_ik(rig,'r',wrist,pole)
+    fore=(_head(rig,'hand_r')-_head(rig,'lowerarm_r')).normalized()
+    native_long,_=_palm_basis(rig,'r')
+    long=wq@rig.data.bones['hand_r'].matrix_local.to_quaternion().inverted()@native_long
+    bend=long.angle(fore)
+    if bend>math.radians(35):
+        wq=Quaternion().slerp(long.rotation_difference(fore),(bend-math.radians(35))/bend)@wq
+    align_arm_roll(rig,'r',wq,_set_world_rotation);_finger_curl(rig,1.26,'r')
+    shoulder=_head(rig,'upperarm_l')
+    wrist=_head(rig,'hand_l')+Vector((.035*abs(phase),.10*abs(phase),-.055*abs(phase)))
+    _arm_ik(rig,'l',wrist,shoulder+Vector((.20,.05,-.30)))
+    fore=rig.pose.bones['lowerarm_l']
+    hand=_hand_rotation(rig,'l',fore.tail-fore.head,Vector((-1,0,0)))
+    align_arm_roll(rig,'l',hand,_set_world_rotation)
+    _finger_curl(rig,1.05,'l')
     return _collect(rig)
 
 
-def _lance_pose(ctx,base,offsets,mode='carry',phase=0):
+def _blade_pose(ctx,base,offsets,phase=0,key='sabre'):
+    # Interpolate the authored joint poses, so the elbow follows an arc.
+    # Solving a straight wrist path at every frame crosses the shoulder's
+    # bend-plane singularity in the low crouch and reverses the elbow.
+    if abs(phase)<1e-7:return _blade_key(ctx,base,offsets,0,key)
+    end=-.65 if phase<0 else 1
+    ready=_blade_key(ctx,base,offsets,0,key)
+    contact=_blade_key(ctx,base,offsets,end,key)
+    return _blend(ready,contact,min(1,phase/end))
+
+
+def _lance_pose(ctx,base,offsets,mode='carry',phase=0,posture=None):
     rig=ctx['rig'];_apply_sample(rig,base)
     pelvis=rig.pose.bones['pelvis'].head.copy();chest=(rig.pose.bones['upperarm_l'].head+rig.pose.bones['upperarm_r'].head)*.5
     prone=chest.z-pelvis.z<.13
@@ -727,6 +813,11 @@ def _lance_pose(ctx,base,offsets,mode='carry',phase=0):
     rotation=Quaternion(Vector((1,0,0)),math.pi/2 if level else .10)
     grip=chest+Vector((-.24,-.18-.22*phase,-.20)) if level else pelvis+Vector((-.25,-.07,.22))
     if prone:grip=chest+Vector((-.19,-.22,.065))
+    if posture=='mounted' and not level:
+        # The full shaft extends below the fist. Carry it outside the
+        # measured horse barrel, with room for the galloping body roll.
+        from mounted_motion import measure_tack
+        grip.x=-abs(measure_tack(ctx)['stirrups']['r'].x)-.055
     local,offset=offsets['sabre'];hand_q=rotation@offset
     _arm_ik(rig,'r',grip-hand_q@local,_head(rig,'upperarm_r')+Vector((-.24,.10,-.28)))
     _set_world_rotation(rig,'hand_r',hand_q);_finger_curl(rig,1.28,'r')
@@ -736,10 +827,15 @@ def _lance_pose(ctx,base,offsets,mode='carry',phase=0):
     return _collect(rig)
 
 
-def _equipment_pose(ctx,base,equipment,offsets,mode='carry'):
+def _equipment_pose(ctx,base,equipment,offsets,mode='carry',posture=None):
+    if equipment=='long-gun' and posture=='standing' and mode=='strafe-carry':
+        # Keep the native lateral gait while using the reviewed chest-level
+        # rifle carry. The generic upright carry folds the support wrist.
+        from reviewed_motion import _carry_pose
+        return _carry_pose(ctx,base,base,'rifle','Walk',offsets)
     if equipment in ('long-gun','short-gun'):return _gun_pose(ctx,base,'rifle' if equipment=='long-gun' else 'pistol',offsets,mode)[0]
     if equipment in ('blade','knife'):return _blade_pose(ctx,base,offsets,key='knife' if equipment=='knife' else 'sabre')
-    if equipment=='lance':return _lance_pose(ctx,base,offsets,mode)
+    if equipment=='lance':return _lance_pose(ctx,base,offsets,mode,posture=posture)
     return _copy_pose(base)
 
 
@@ -752,18 +848,56 @@ def _reload_pose(ctx,base,key,offsets,t,gesture):
         stages=[(0,breech),(.12,belt),(.24,mouth),(.36,muzzle),(.46,muzzle),(.58,muzzle+q @ Vector((.12,0,0))),(.70,muzzle),(.79,muzzle+q @ Vector((.12,0,0))),(.88,breech),(1,breech)]
     elif gesture=='unload':stages=[(0,breech),(.25,muzzle),(.55,muzzle+q @ Vector((.10,0,0))),(.78,belt),(1,breech)]
     else:stages=[(0,breech),(.25,belt),(.45,breech),(.60,breech+q @ Vector((.03,.025,0))),(.78,breech),(1,breech)]
-    target=stages[-1][1]
+    # Solve the contact poses first, then interpolate native joint arcs. A
+    # straight wrist target crossing the forearm axis can flip the IK plane
+    # between adjacent frames, especially when the body is prone.
+    def contact(target):
+        _apply_sample(rig,pose)
+        _gesture_reach(rig,'l',target,1,.9)
+        return _collect(rig)
     for (a,pa),(b,pb) in zip(stages,stages[1:]):
-        if t<=b:u=max(0,(t-a)/(b-a));u=u*u*(3-2*u);target=pa.lerp(pb,u);break
-    _reach(rig,'l',target,long=q @ Vector((.25,-.95,0)),normal=q @ UP,curl=.9)
-    return _collect(rig)
+        if t<=b:
+            u=max(0,min(1,(t-a)/(b-a)));u=u*u*(3-2*u)
+            return _blend(contact(pa),contact(pb),u)
+    return contact(stages[-1][1])
+
+
+
+def _gesture_reach(rig,side,target,weight,curl,offer=False):
+    """Reach along a stable elbow plane, with a neutral local wrist."""
+    hand=rig.pose.bones['hand_'+side]
+    names=['upperarm_'+side,'lowerarm_'+side,'hand_'+side]
+    start={name:rig.pose.bones[name].rotation_quaternion.copy()for name in names}
+    if weight<1e-6:
+        _finger_curl(rig,curl,side);return
+    shoulder=_head(rig,'upperarm_'+side);sign=1 if side=='l' else -1
+    pole=shoulder+Vector((sign*.35,.20,-.12))
+    palm=hand.bone.matrix_local.inverted()@hand.bone.head_local.lerp(rig.data.bones['middle_01_'+side].head_local,.72)
+    rotation=hand.matrix.to_quaternion().copy()
+    target=Vector(target)
+    for _ in range(4):
+        _arm_ik(rig,side,target-rotation@palm,pole)
+        upper=rig.pose.bones['upperarm_'+side];lower=rig.pose.bones['lowerarm_'+side]
+        ru=(lower.bone.head_local-upper.bone.head_local).normalized()
+        rl=(hand.bone.head_local-lower.bone.head_local).normalized();rp=ru.cross(rl).normalized()
+        pu=(lower.head-upper.head).normalized();pl=(hand.head-lower.head).normalized();pp=pu.cross(pl).normalized()
+        _set_world_rotation(rig,upper.name,(_frame(pu,pp)@_frame(ru,rp).inverted()).to_quaternion()@upper.bone.matrix_local.to_quaternion())
+        _set_world_rotation(rig,lower.name,(_frame(pl,pp)@_frame(rl,rp).inverted()).to_quaternion()@lower.bone.matrix_local.to_quaternion())
+        if offer:_set_world_rotation(rig,lower.name,Quaternion(pl,sign*math.radians(55))@lower.matrix.to_quaternion())
+        hand.rotation_quaternion=Quaternion()
+        bpy.context.view_layer.update();rotation=hand.matrix.to_quaternion().copy()
+    for name in names:
+        bone=rig.pose.bones[name];bone.rotation_quaternion=start[name].slerp(bone.rotation_quaternion,weight)
+    bpy.context.view_layer.update()
+    _finger_curl(rig,curl,side)
 
 
 def _gesture_pose(ctx,base,gesture,t,bank):
     rig=ctx['rig'];envelope=math.sin(math.pi*t)**2
     pose=base
     if gesture in ('pickup','heal','free') and bank.get('canCrouch'):
-        pose=_blend(base,bank.get('groundReach',bank['crouched']),envelope)
+        from posture_support import ground_reach
+        pose=ground_reach(ctx,base,bank['crouched'],envelope,bank['prone'])
     _apply_sample(rig,pose)
     pelvis=rig.pose.bones['pelvis'].head.copy();chest=rig.pose.bones['spine_03'].head.copy();head=rig.pose.bones['head'].head.copy()
     target=chest+Vector((-.12,-.45,-.18));side='r';other=False;curl=.4
@@ -782,10 +916,25 @@ def _gesture_pose(ctx,base,gesture,t,bank):
         curl=1.0 if t<.58 else .1
     elif gesture=='breach':
         wind=_smooth_key([(0,0),(.3,-1),(.58,1),(1,0)],t)
-        target=chest+Vector((-.15,-.25-.25*max(0,wind),.25*max(0,-wind)-.20*max(0,wind)));other=True;curl=1.2
-    origin=rig.pose.bones['hand_r'].head.copy()
-    _reach(rig,side,origin.lerp(target,envelope if gesture not in ('throw','throwKnife','bolas','breach') else 1),normal=Vector((0,0,-1)) if gesture in ('pickup','heal','free') else UP,curl=curl)
-    if other:_reach(rig,'l',target+Vector((.20,.04,0)),curl=.65)
+        key=-1 if wind<0 else 1
+        target=chest+Vector((-.15,-.25-.25*max(0,key),.25*max(0,-key)-.20*max(0,key)));other=True;curl=1.2
+    if chest.z-pelvis.z<.13 and gesture not in ('pickup','heal','free'):
+        # Working hands reach above the floor when lying down. Standing
+        # chest offsets otherwise send the palm and curled fingers below it.
+        target.z=max(.18,target.z)
+    origin=rig.pose.bones['hand_r'].matrix@rig.data.bones['hand_r'].matrix_local.inverted()@rig.data.bones['hand_r'].head_local.lerp(rig.data.bones['middle_01_r'].head_local,.72)
+    if gesture in ('pickup','heal','free'):
+        _reach(rig,side,origin.lerp(target,envelope),normal=Vector((0,0,-1)),curl=curl)
+        if other:_reach(rig,'l',target+Vector((.20,.04,0)),curl=.65)
+    else:
+        weight=abs(wind) if gesture=='breach' else envelope
+        _gesture_reach(rig,side,target,weight,curl,gesture=='offer')
+        if other:
+            origin=rig.pose.bones['hand_l'].matrix@rig.data.bones['hand_l'].matrix_local.inverted()@rig.data.bones['hand_l'].head_local.lerp(rig.data.bones['middle_01_l'].head_local,.72)
+            _gesture_reach(rig,'l',target+Vector((.20,.04,0)),weight,.65)
+    if chest.z-pelvis.z<.13 and gesture not in ('pickup','heal','free'):
+        from posture_support import clear_working_hands
+        clear_working_hands(ctx)
     return _collect(rig)
 
 
@@ -824,6 +973,8 @@ def _reviewed_bank(ctx):
     print('MOTION SOURCE approved standing bank',flush=True)
     bank=reviewed_motion.sample_animations(ctx)
     digest=hashlib.sha256(Path(reviewed_motion.__file__).read_bytes()).hexdigest()
+    import firearm_grips
+    ctx['reviewed_grip_sha256']=hashlib.sha256(Path(firearm_grips.__file__).read_bytes()).hexdigest()
     return {clip['name']:clip for clip in bank['clips']},digest
 
 
@@ -843,6 +994,21 @@ def _write_reviewed(ctx,spec,source,digest):
         'sampleRate':30,'timingAuthority':'simulation','rootMotion':'in-place',
         'playbackRate':1.25,'reviewedPose':{'name':source['name'],
             'origin':'approved-granadero-preview','sourceSha256':digest}})
+    if spec['equipment']=='long-gun':
+        x,y,z=ctx['weapon_grips']['rifle_support']
+        meta['reviewedPose']['nativeGrip']={'version':1,'anatomy':ctx['gender'],
+            'sourceSha256':ctx['reviewed_grip_sha256'],
+            'supportPosition':[x,z,-y],'space':'gltf-weapon-local'}
+    if spec['name']=='stand.butt.short-gun':
+        # Seat the curved stock against the closed palm during the blow.
+        # These socket-local fits are measured from the exported native skin
+        # and all three pistol stocks. The ready grip and arm tracks stay exact.
+        seated=[-.001001,.000273,.003159] if ctx['gender']=='male' else [.000974,-.000795,.004600]
+        meta['gripOffsets']=[{'hand':'handRight','keys':[
+            {'time':0,'position':[0,0,0]},
+            {'time':duration*.20,'position':seated},
+            {'time':duration*.82,'position':seated},
+            {'time':duration,'position':[0,0,0]}]}]
     if source.get('locomotionSpeed'):meta['locomotionSpeed']=source['locomotionSpeed']
     elif spec['gesture'] in ('walk','run'):
         # Armed loops retain the recorded lower-body path and stride.
@@ -856,9 +1022,12 @@ def apply_animations(ctx, only=None):
     issue a shot, apply damage, pay AP, change stance, or move a game actor.
     """
     rig=ctx['rig'];bpy.context.scene.render.fps=FPS
+    ctx['native_sideways_samples']={}
     if rig.animation_data:rig.animation_data_clear()
     specs=_semantic_specs()
-    if only:specs=[s for s in specs if s['name'] in only]
+    if only is not None:
+        specs=[s for s in specs if s['name'] in only]
+        if not specs:raise ValueError('No semantic clips selected; pass None only for a complete release bank')
     loading_only=bool(only) and all(s['gesture'] in ('reload','reprime','repair','unload') for s in specs)
     mounting_only=bool(only) and all(s['gesture'] in ('mount','dismount') for s in specs)
     throwing_only=bool(only) and all(s['gesture'] in ('throw','throwKnife','bolas') for s in specs)
@@ -867,6 +1036,7 @@ def apply_animations(ctx, only=None):
     contact_only=loading_only or mounting_only or throwing_only or climbing_only
     crouch_support_only=bool(only) and all(s['posture']=='crouched'and s['gesture']in('idle','walk')for s in specs)
     prone_support_only=bool(only) and all(s['posture']=='prone'and s['gesture']in('idle','crawl')for s in specs)
+    sideways_support_only=bool(only) and all(s['posture']=='standing'and s['gesture']in('strafeLeft','strafeRight')for s in specs)
     needs_reviewed=any(_reviewed_binding(spec)for spec in specs)
     reviewed,reviewed_digest=_reviewed_bank(ctx)if needs_reviewed else ({},None)
     ctx['reviewed_stride']={name:reviewed[name]['locomotionSpeed'] for name in ('Walk','Run') if name in reviewed}
@@ -875,7 +1045,7 @@ def apply_animations(ctx, only=None):
         for modifier in obj.modifiers:
             if modifier.show_viewport:disabled.append(modifier);modifier.show_viewport=False
     offsets=_grip_setup(ctx);sources={};source_meta={}
-    for recipe in (('idle','crouch','crawl')if prone_support_only else ('idle','crouch') if contact_only or crouch_support_only else ('idle','crouch','walk','run','fall','recover') if riding_only else SOURCE_RECIPES):
+    for recipe in (('idle','crouch','strafeLeftStanding','strafeRightStanding')if sideways_support_only else ('idle','crouch','crawl')if prone_support_only else ('idle','crouch') if contact_only or crouch_support_only else ('idle','crouch','walk','run','fall','recover') if riding_only else SOURCE_RECIPES):
         print('MOTION SOURCE',recipe,flush=True)
         sources[recipe],source_meta[recipe]=_retarget_samples(ctx,recipe)
     idle=sources['idle'][0];crouch=sources['crouch'][0]
@@ -884,6 +1054,8 @@ def apply_animations(ctx, only=None):
     for side,sign in [('l',1),('r',-1)]:
         _leg_ik(rig,side,(sign*.13,.015,.078),(sign*.14,-.42,.40))
         _aim(rig,'foot_'+side,(0,-.18,-.036));_aim(rig,'ball_'+side,(0,-.10,0))
+    from posture_support import fit_boots
+    fit_boots(ctx)
     crouch=_collect(rig)
     prone=_prone_pose(ctx,idle);mounted=_mounted_pose(ctx,idle)
     bases={'standing':idle,'crouched':crouch,'prone':prone,'mounted':mounted}
@@ -914,6 +1086,8 @@ def apply_animations(ctx, only=None):
         elif gesture=='artilleryReload':duration=4;markers={'contact':1.8,'ready':3.7}
         elif gesture in ('mount','dismount'):duration=2.3;markers={'seat':duration*(.90 if gesture=='mount' else .10)}
         times=sorted(set([duration*i/max(2,round(duration*SAMPLE_FPS)) for i in range(max(2,round(duration*SAMPLE_FPS))+1)]+list(markers.values())))
+        if gesture in ('transition','pickup','heal','free','crawl','die','collapse','knockdown','recover'):
+            times=sorted(set(times+[duration*i/max(2,round(duration*FPS)) for i in range(max(2,round(duration*FPS))+1)]))
         if gesture in ('mount','dismount'):
             # Use the exported frame grid in both directions. Unequal old
             # seat-marker keys otherwise bend the reverse leg path differently.
@@ -943,12 +1117,15 @@ def apply_animations(ctx, only=None):
                     if posture=='standing':pose=_at(sources['idle'],t)
                     else:
                         _apply_sample(rig,base);pb=rig.pose.bones['spine_02'];pb.rotation_quaternion=pb.rotation_quaternion @ Quaternion(Vector((1,0,0)),math.sin(t*math.tau)*.005);pose=_collect(rig)
-                elif posture=='prone':pose=_prone_pose(ctx,idle,_at(sources['crawl'],t),source_meta['crawl']['kneeCenter'])
+                elif posture=='prone':pose=_prone_pose(ctx,idle,_at(sources['crawl'],t),source_meta['crawl']['kneeCenter'],t)
                 elif posture=='mounted':
                     recorded=_at(sources[gesture],t);pose=_mounted_pose(ctx,recorded)
                     # Rider pelvis stays at the saddle; horse supplies travel.
-                else:pose=_at(sources[gesture+posture.title() if gesture.startswith('strafe') else 'crouch' if posture=='crouched' else gesture],t)
-                pose=_equipment_pose(ctx,pose,equipment,offsets)
+                else:
+                    recipe=gesture+posture.title() if gesture.startswith('strafe') else 'crouch' if posture=='crouched' else gesture
+                    sequence=ctx['native_sideways_samples'][recipe] if posture=='standing' and equipment in ('unarmed','long-gun','short-gun','blade','knife','lance') and gesture.startswith('strafe') else sources[recipe]
+                    pose=_at(sequence,t)
+                pose=_equipment_pose(ctx,pose,equipment,offsets,mode='strafe-carry' if posture=='standing' and equipment=='long-gun' and gesture.startswith('strafe') else 'carry',posture=posture)
             elif gesture=='brace' and equipment in ('blade','knife','lance'):
                 pose=_lance_pose(ctx,base,offsets,'brace') if equipment=='lance' else _blade_pose(ctx,base,offsets,-.15,key='knife' if equipment=='knife' else 'sabre')
             elif gesture=='thrust':
@@ -956,7 +1133,7 @@ def apply_animations(ctx, only=None):
             elif gesture in ('aim','fire','brace'):
                 recoil=0
                 if gesture=='fire':recoil=_smooth_key([(0,0),(markers['shot'],0),(markers['shot']+.045,.042 if equipment=='long-gun' else .07),(markers['shot']+.22,.004),(duration,0)],time)
-                pose=_gun_pose(ctx,base,'rifle' if equipment=='long-gun' else 'pistol',offsets,'aim',recoil)[0]
+                pose=_gun_pose(ctx,base,'rifle' if equipment=='long-gun' else 'pistol',offsets,'aim',recoil,posture)[0]
             elif gesture in ('reload','reprime','repair','unload'):
                 if equipment=='long-gun' and gesture in ('reload','unload'):
                     from rifle_loading import pose as rifle_loading_pose
@@ -970,25 +1147,14 @@ def apply_animations(ctx, only=None):
             elif gesture in ('punch','butt','bayonet'):
                 phase=_smooth_key([(0,0),(.25,-.3),(.483,1),(.7,.2),(1,0)],t)
                 if equipment in ('long-gun','short-gun'):
-                    pose,grip,q=_gun_pose(ctx,base,'rifle' if equipment=='long-gun' else 'pistol',offsets,'aim')
+                    pose,grip,q=_gun_pose(ctx,base,'rifle' if equipment=='long-gun' else 'pistol',offsets,'aim',posture=posture)
                     # Keep both palms fitted while extending the shoulder line.
                     _apply_sample(rig,pose);pb=rig.pose.bones['spine_03'];_set_world_rotation(rig,'spine_03',Quaternion(UP,-phase*.38) @ pb.matrix.to_quaternion());pose=_collect(rig)
                 else:
                     _apply_sample(rig,base);chest=rig.pose.bones['spine_03'].head.copy();_reach(rig,'r',chest+Vector((-.16,-.28-.29*phase,-.04)),curl=1.4);pose=_collect(rig)
             elif gesture=='transition':
-                a=spec['fromPosture'];b=spec['toPosture']
-                if 'prone' in (a,b):
-                    progress=t if a=='prone' else 1-t
-                    end=.68 if 'crouched' in (a,b) else 1
-                    pose=_at(sources['recover'],progress*end)
-                    pose=_blend(bases[a],pose,min(1,t/.12))
-                    pose=_blend(pose,bases[b],max(0,(t-.88)/.12))
-                else:
-                    pose=_blend(bases[a],bases[b],t*t*(3-2*t))
-                    _apply_sample(rig,bases[a]);feet={side:rig.pose.bones['foot_'+side].head.copy() for side in ('l','r')}
-                    _apply_sample(rig,pose)
-                    for side in ('l','r'):_leg_ik(rig,side,feet[side],_head(rig,'thigh_'+side)+Vector((0,-.5,-.2)))
-                    pose=_collect(rig)
+                from posture_support import transition
+                pose=transition(ctx,bases,spec['fromPosture'],spec['toPosture'],t)
             elif gesture in ('climbUp','climbDown'):
                 from climbing_motion import pose as climbing_pose
                 pose=climbing_pose(ctx,idle,t,reverse=gesture=='climbDown')
@@ -998,18 +1164,36 @@ def apply_animations(ctx, only=None):
             elif gesture in ('throw','throwKnife','bolas'):
                 from throwing_motion import pose as throwing_pose
                 pose=throwing_pose(ctx,base,gesture,t,posture)
+            elif posture=='mounted' and gesture in ('die','collapse','knockdown','dead','unconscious','recover'):
+                from mounted_motion import lifecycle_pose
+                pose=lifecycle_pose(ctx,bases,sources,gesture,t)
             elif gesture in ('die','collapse','knockdown'):
                 target=_at(sources['fall'],t)
-                if posture=='prone':pose=_blend(prone,sources['recover'][0],min(1,t*2))
-                elif posture=='standing':pose=target
-                else:pose=_blend(base,target,min(1,t*3))
+                if posture=='prone':
+                    from posture_support import prone_fall
+                    pose=prone_fall(ctx,prone,t)
+                else:
+                    pose=target if posture=='standing' else _blend(base,target,min(1,t*3))
+                    from posture_support import relaxed_ground_arms,phase
+                    pose=relaxed_ground_arms(ctx,pose,phase(t,.60,1))
             elif gesture in ('dead','unconscious'):
-                pose=_copy_pose(sources['recover'][0] if posture=='prone' else sources['fall'][-1])
+                if posture=='prone':
+                    from posture_support import prone_rest
+                    pose=prone_rest(ctx,prone)
+                else:pose=_copy_pose(sources['fall'][-1])
+                from posture_support import relaxed_ground_arms
+                pose=relaxed_ground_arms(ctx,pose,face_down=posture=='prone')
                 if gesture=='unconscious':
                     _apply_sample(rig,pose);pb=rig.pose.bones['spine_02'];pb.rotation_quaternion=pb.rotation_quaternion @ Quaternion(Vector((1,0,0)),math.sin(t*math.tau)*.005);pose=_collect(rig)
             elif gesture=='recover':
-                pose=_at(sources['recover'],t)
-                if posture=='crouched':pose=_blend(pose,crouch,max(0,(t-.65)/.35))
+                from posture_support import ground_recovery,relaxed_ground_arms
+                fallen=relaxed_ground_arms(ctx,sources['fall'][-1])
+                pose=ground_recovery(ctx,fallen,sources['recover'],t,bases,face_down=posture=='prone')
+                if posture=='crouched':
+                    pose=_blend(pose,crouch,max(0,(t-.65)/.35))
+                    _apply_sample(rig,pose)
+                    from posture_support import fit_boots
+                    fit_boots(ctx);pose=_collect(rig)
                 elif posture=='mounted':pose=_blend(pose,mounted,max(0,(t-.65)/.35))
             elif gesture=='hit':
                 _apply_sample(rig,base);pb=rig.pose.bones['spine_01'];_set_world_rotation(rig,'spine_01',Quaternion(Vector((1,0,0)),-math.sin(math.pi*t)*.12) @ pb.matrix.to_quaternion());pose=_collect(rig)
@@ -1020,18 +1204,20 @@ def apply_animations(ctx, only=None):
                     for n in pose:
                         if n.startswith(('thigh','calf','foot','ball')) or n=='Root':pose[n]=lower[n]
             elif gesture in ('heal','pickup','equip','offer','grab','door','tool','breach','free','ration','signal','fitting'):
-                pose=_gesture_pose(ctx,base,gesture,t,{'canCrouch':posture=='standing','crouched':crouch,'groundReach':_at(sources['recover'],.5)})
+                pose=_gesture_pose(ctx,base,gesture,t,{'canCrouch':posture=='standing','crouched':crouch,'prone':prone})
             else:raise ValueError('Unimplemented semantic gesture: '+gesture)
             # Enforce native joint lengths: only Root has position tracks.
             for name,(p,q) in pose.items():
                 if name!='Root':pose[name]=(Vector(),q)
             samples.append(pose)
-        meta=_write_clip(rig,spec['name'],samples,duration,spec['loop'],times=times,native_support=ctx if posture=='crouched'and gesture in('idle','walk')or posture=='prone'and gesture in('idle','crawl')else None,native_surface='boot'if posture=='prone'else'sole')
+        supported=(gesture in ('transition','pickup','heal','free','walk','run','crawl','strafeLeft','strafeRight') and posture!='mounted') or (posture=='prone' and gesture=='idle' and equipment=='unarmed')
+        native_sideways=(ctx,speed) if posture=='standing' and equipment in ('unarmed','long-gun','short-gun','blade','knife','lance') and gesture in ('strafeLeft','strafeRight') else None
+        meta=_write_clip(rig,spec['name'],samples,duration,spec['loop'],times=times,support=ctx if supported and native_sideways is None else None,native_sideways=native_sideways)
         meta.update(spec);meta.update({'duration':round(duration,6),'events':markers,'markers':markers,'source':source,'sampleRate':SAMPLE_FPS,'timingAuthority':'simulation','rootMotion':'in-place'})
-        if gesture=='reload' and equipment=='long-gun':meta['propCues']=[{'item':'ramrod','socket':'socket_handLeft_tool','start':round(duration*.46,6),'end':round(duration*.86,6)}]
+        if gesture=='reload' and equipment=='long-gun':meta['propCues']=[{'item':'ramrod','socket':'socket_handLeft_tool','start':round(duration*.46,6),'end':round(duration*.86,6),'rotation':[0,0,math.pi/2]}]
         if equipment=='long-gun' and gesture in ('reload','unload'):
             from rifle_loading import metadata as rifle_loading_metadata
-            meta.update(rifle_loading_metadata(ctx,spec.get('item'),duration))
+            meta.update(rifle_loading_metadata(ctx,spec.get('item'),duration,gesture,spec['posture']))
         if equipment=='short-gun' and gesture=='reload':
             from pistol_loading import metadata as pistol_loading_metadata
             meta.update(pistol_loading_metadata(ctx,spec.get('item'),duration,spec.get('barrel',0)))
@@ -1051,7 +1237,7 @@ def apply_animations(ctx, only=None):
                 # The unarmed capability precedes its equipped variants.
                 # Measure the body pull, not a hand fixed to a carried gun.
                 if equipment!='unarmed':
-                    base_samples=[_prone_pose(ctx,idle,s,source_meta['crawl']['kneeCenter']) for s in sources['crawl']]
+                    base_samples=[_prone_pose(ctx,idle,s,source_meta['crawl']['kneeCenter'],i/(len(sources['crawl'])-1)) for i,s in enumerate(sources['crawl'])]
                     # Close a review-only sequence without adding an action.
                     first,last=base_samples[0],base_samples[-1]
                     for i,sample in enumerate(base_samples):
@@ -1067,10 +1253,9 @@ def apply_animations(ctx, only=None):
         if posture=='mounted' or gesture=='mount':
             from riding_motion import metadata as riding_metadata
             meta['ridingSupport']=riding_metadata(ctx)
-        if posture=='mounted' and gesture in ('die','collapse','knockdown'):
-            # Native collapse samples already reach the ground. Remove the
-            # saddle offset as the rider falls, before the ground contact.
-            meta['seatWeight']=[{'time':0,'weight':1},{'time':markers['ground'],'weight':0},{'time':round(duration,6),'weight':0}]
+        if posture=='mounted' and gesture in ('die','collapse','knockdown','dead','unconscious','recover'):
+            from mounted_motion import lifecycle_metadata
+            meta.update(lifecycle_metadata(ctx,duration,gesture))
         result.append(meta)
         if index%10==0:print('MOTION CLIP',index+1,'/',len(specs),spec['name'],flush=True)
     for modifier in disabled:modifier.show_viewport=True

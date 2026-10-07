@@ -1,12 +1,12 @@
 # Tactical character library
 
-This production library uses real skinned human meshes. It does not use sprites,
-billboards, baked animation pictures, or primitive substitute bodies. The approved
-`playgrounds/granadero-3d` demo is independent and is not changed by this builder.
-On 2026-10-06 the user accepted that Granadero as the reference for the other
-characters. The production sources now apply its human proportions, surface
-detail and reviewed standing movement to all eight appearances. See
-[the review inventory](REVIEW.md) for the exact scope and remaining limits.
+This library uses real skinned human meshes. The Granadero motion reference is
+shared across eight appearances, with separate native male and female anatomy
+banks. `playgrounds/granadero-3d` opens the current game model in an isometric
+view; its older reference remains a separate comparison. The builder does not
+import that preview binary. See [the review inventory](REVIEW.md) for accepted
+motion work, current evidence and remaining limits. The new face and skin pass
+is still awaiting visual acceptance and the final local validation gate.
 
 ## Rebuild
 
@@ -48,8 +48,12 @@ The eight active appearances are granadero, royalist, worker, surgeon, gaucho,
 friar, woman-scout, and woman-shawl. Uniforms, shirts, coats, a poncho, a habit,
 a shawl, trousers, a skirt, hair, hats, boots and trim are fitted meshes.
 The shared surface treatment adds facial pigment, cloth folds and seams,
-matte leather, and shaped uniform trim. Female faces omit the male jaw stubble
-treatment. Civilian garments keep their own colors and do not retain military
+matte leather, and shaped uniform trim. The current face source uses separate
+2048-pixel male and female skin maps. It preserves local color differences,
+adds spatial roughness and derives restrained normals from fine source grain.
+Native UVs and the light/brown/dark palette controls remain intact. This new
+appearance pass is under review. Civilian garments keep their own colors and
+do not retain military
 cockades, chin scales, cords or epaulettes. Each complete hat is one replaceable
 headwear part, including its small trim pieces.
 
@@ -69,9 +73,10 @@ Hand sockets are calculated from the native palm and knuckle geometry. The
 matching item is attached at identity below its named socket. Do not apply a
 second arbitrary orientation or move the hand mesh to fit the weapon.
 
-## Reviewed standing movement
+## Motion inventory
 
-The two anatomy banks each contain 270 semantic clips. Of these, 34 use 29
+The two anatomy banks each contain 334 semantic clips: 106 standing, 86 crouched,
+63 prone and 79 mounted. Of these, 34 use 29
 distinct motions transferred from the accepted Granadero reference. This covers
 unarmed idle/walk/run/punch, rifle and pistol aim/fire/carry/close strikes,
 bayonet thrust, sabre guard/carry/cuts/thrust/hilt strike, and knife
@@ -86,11 +91,14 @@ recovery keep the same variant. Each variant has one contact. The playground's
 two-cut combination remains a preview action and does not create a second hit
 for one paid gameplay action.
 
-Reviewed clips retain the accepted 1.25 playback-rate reference. Gameplay cue
-timing remains authoritative; clip markers cannot issue attacks, spend AP or
-ammunition, apply damage, or move an actor. The other clips retain the existing
-production authoring for crouching, prone and mounted actions, reloads,
-interactions and reactions. They are not newly approved by the Granadero review.
+Reviewed clips retain the accepted 1.25 playback-rate reference; the lab shows
+this as 1×. Gameplay cue timing remains authoritative; clip markers cannot
+issue attacks, spend AP or
+ammunition, apply damage, or move an actor. The later motion pass also corrects
+weapon grips and loading, throws, crouched attacks, crawl support, work gestures,
+recovery, mounted transitions and roof climbing. Climb supports, saved endpoints
+and timing are retained. These focused checks do not certify every combination;
+the review inventory records the remaining lance wrist and side-step loop issues.
 
 Open `/renderer-sandbox` and select **Ocho personajes** to inspect all eight
 appearances and move or equip them without loading a saved campaign. The combat
@@ -123,9 +131,17 @@ textures, materials where immutable, and animation clips.
   `afb9f530a7c2741dedb8df0ebae2e0b183caec21`. No MPFB Python addon code is used.
   The original license texts, source URLs, hashes and derivations are in
   `authoring/vendor/makehuman/source-manifest.json` and `LICENSE.ASSETS.md`.
-- **Skin detail:** Mindfront's Aksel CC0 skin, via the MakeHuman `skins02_cc0`
-  pack. The tint-neutral diffuse and reduced normal map are reproduced by
-  `authoring/prepare_skin_maps.py`. Source maps and exact recipes are retained.
+- **Current skin detail:** the clean young male and female skins from the
+  [MakeHuman system assets CC0 pack](https://static.makehumancommunity.org/assets/assetpacks/makehuman_system_assets.html).
+  The included material headers identify the September 2020 CC0 release and
+  Data Collection AB, Joel Palmius and Jonas Hauquier as the copyright holders
+  at release. The original diffuse maps and material headers are vendored;
+  source URLs, archive members and file hashes are in
+  [the source manifest](authoring/vendor/makehuman/source-manifest.json).
+  `authoring/prepare_skin_maps.py` reproduces the 2048-pixel tintable color,
+  spatial roughness and fine-grain normal maps without changing the native UVs.
+  The earlier Mindfront Aksel maps remain recorded for provenance but are no
+  longer used by the current appearance source.
 - **Female macro target:** the matching native female target from the same
   pinned upstream commit; URL and SHA256 are in
   `authoring/vendor/additional-source-manifest.json`.

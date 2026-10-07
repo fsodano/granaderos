@@ -7,6 +7,7 @@ import math
 import bpy
 from mathutils import Vector,Matrix,Quaternion
 from mathutils.kdtree import KDTree
+from mathutils.bvhtree import BVHTree
 NAMES={'Bone':'horse_body','Bone.001':'horse_neck','Bone.002':'horse_head','Bone.001_L':'horse_ear_l','Bone.001_R':'horse_ear_r','Bone_L':'horse_front_upper_l','Bone_L.001':'horse_front_lower_l','Bone_L.002':'horse_front_hoof_l','Bone_R':'horse_front_upper_r','Bone_R.001':'horse_front_lower_r','Bone_R.002':'horse_front_hoof_r','Bone_L.003':'horse_rear_upper_l','Bone_L.004':'horse_rear_lower_l','Bone_L.005':'horse_rear_hoof_l','Bone_R.003':'horse_rear_upper_r','Bone_R.004':'horse_rear_lower_r','Bone_R.005':'horse_rear_hoof_r','Bone.003':'horse_tail_01','Bone.004':'horse_tail_02'}
 
 def create_horse(lod=0):
@@ -21,6 +22,11 @@ def create_horse(lod=0):
  withers_top=max(p.z for p in world if abs(p.y-withers.y)<.8)
  scale=1.51/(withers_top-low);centre=(oldrig.matrix_world@oldrig.data.bones['Bone'].head_local).lerp(withers,.5)
  T=Matrix.Scale(scale,4)@Matrix.Translation(Vector((-centre.x,-centre.y,-low)))
+ # Tack uses the same undegraded surface at every LOD. Decimation must not
+ # move a riding contact or change the rider's seat between distance levels.
+ tack_vertices=[T@body.matrix_world@v.co for v in body.data.vertices]
+ tack_faces=[list(p.vertices) for p in body.data.polygons]
+ tack_surface=BVHTree.FromPolygons(tack_vertices,tack_faces)
  arm=bpy.data.armatures.new('Horse_Armature');rig=bpy.data.objects.new('Horse_Rig',arm);bpy.context.collection.objects.link(rig)
  bpy.context.view_layer.objects.active=rig;rig.select_set(True);bpy.ops.object.mode_set(mode='EDIT')
  for old in oldrig.data.bones:
@@ -66,7 +72,7 @@ def create_horse(lod=0):
  for o in imported:bpy.data.objects.remove(o,do_unlink=True)
  # Seat uses the source back height. Saddle and cloth are genuinely curved.
  bodymesh=next(o for o in objects if o.name=='Horse_Body')
- backz=max(v.co.z for v in bodymesh.data.vertices if abs(v.co.x)<.16 and abs(v.co.y)<.3)
+ backz=max(v.z for v in tack_vertices if abs(v.x)<.16 and abs(v.y)<.3)
  seat=Vector((0,.02,backz+.04));verts=[];faces=[]
  for j in range(13):
   y=seat.y-.24+j*.04
@@ -99,9 +105,26 @@ def create_horse(lod=0):
    panel.extend([(x,seat.y+y,base),(x,seat.y+y,base+rise)])
   for j in range(16):faces.append((2*j,2*j+1,2*j+3,2*j+2))
   d=bpy.data.meshes.new('Saddle_Cantle');d.from_pydata(panel,[],faces);d.materials.append(leather);o=bpy.data.objects.new('Saddle_Cantle',d);bpy.context.collection.objects.link(o);o.parent=rig;g=o.vertex_groups.new(name='horse_body');g.add(list(range(len(panel))),1,'REPLACE');mod=o.modifiers.new('Horse_Skin','ARMATURE');mod.object=rig;objects.append(o)
+ # A flat tread supports the boot's ball. Fit the complete iron and its
+ # leather outside the barrel, rather than placing the centre on its skin.
+ iron_profile=[(0,-.59),(.035,-.59),(.062,-.59),(.070,-.582)]
+ iron_profile += [(.070*math.cos(j*math.pi/16),-.510+.060*math.sin(j*math.pi/16)) for j in range(17)]
+ iron_profile += [(-.070,-.582),(-.062,-.59),(-.035,-.59),(0,-.59)]
+ def barrel_x(sign,z,y=seat.y):
+  hit,normal,face,distance=tack_surface.ray_cast(Vector((sign*2,y,z)),Vector((-sign,0,0)))
+  return abs(hit.x) if hit is not None else 0
+ # The additional centimetre covers the barrel's native gait deformation.
+ iron_x=max(barrel_x(sign,seat.z+z)-sign*x+.025 for sign in (-1,1) for x,z in iron_profile)
  for sign in (-1,1):
-  strap('Stirrup_Leather',[(sign*.21,seat.y,seat.z),(sign*.32,seat.y,seat.z-.30),(sign*.32,seat.y,seat.z-.49)],.011,leather)
-  strap('Iron_Stirrup',[(sign*.32+.047*math.cos(j*math.tau/24),seat.y,seat.z-.52+.070*math.sin(j*math.tau/24)) for j in range(25)],.005,hair)
+  points=[]
+  for j in range(13):
+   t=j/12;z=seat.z-.45*t
+   # The leather lies on the saddle/barrel before it meets the iron's eye.
+   x=max(.21+(iron_x-.21)*t,barrel_x(sign,z)+.022)
+   points.append((sign*x,seat.y,z))
+  points[-1]=(sign*iron_x,seat.y,seat.z-.45)
+  strap('Stirrup_Leather',points,.011,leather)
+  strap('Iron_Stirrup',[(sign*iron_x+x,seat.y,seat.z+z) for x,z in iron_profile],.005,hair)
  head=arm.bones['horse_head'];poll=head.head_local;mouth=poll.lerp(head.tail_local,.81)
  tangent=(head.tail_local-poll).normalized();side=Vector((1,0,0));up=side.cross(tangent).normalized()
  strap('Leather_Noseband',[mouth+.080*math.cos(j*math.tau/32)*side+.078*math.sin(j*math.tau/32)*up for j in range(33)],.006,leather,'horse_head')

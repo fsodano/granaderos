@@ -14,9 +14,10 @@ function positions(id){
  });
  return materials;
 }
-function sameFit(actual,reference,scale,referenceScale,label){
+function sameFit(actual,reference,scale,referenceScale,label,preserveStock=false){
  const compare=(a,b)=>{for(const axis of ['x','y','z'])if(Math.abs(a[axis]-b[axis])>1e-6)return a[axis]-b[axis];return 0;};
- const left=actual.map(point=>new Vector3(point.x/scale,point.y,point.z)).sort(compare),right=reference.map(point=>new Vector3(point.x/referenceScale,point.y,point.z)).sort(compare);
+ const nativeX=(x,factor)=>preserveStock&&x<=0?x:x/factor;
+ const left=actual.map(point=>new Vector3(nativeX(point.x,scale),point.y,point.z)).sort(compare),right=reference.map(point=>new Vector3(nativeX(point.x,referenceScale),point.y,point.z)).sort(compare);
  assert.equal(left.length,right.length,`${label}: the source fitting retains its mesh topology`);
  for(let index=0;index<left.length;index++)assert.ok(left[index].distanceTo(right[index])<1e-6,`${label}: fitting vertex ${index} remains at its actual scaled barrel/stock position (${left[index].toArray()} vs ${right[index].toArray()})`);
 }
@@ -32,7 +33,7 @@ test('all rifle material batches fit their actual barrel and stock length',()=>{
     const flare=1+Math.max(0,(point.x/.85*scale-.40)/.14)*1.8;
     return new Vector3(point.x,.055+(point.y-.055)*flare,point.z*flare);
    }):reference[material];
-   sameFit(points,expected,scale,.85,`${id} ${material}`);
+   sameFit(points,expected,scale,.85,`${id} ${material}`,true);
   }
   assert.ok(Math.max(...actual.Equipment_Blackened_Steel.map(point=>point.x))<muzzle.x,`${id}: the fitted sight cannot extend past the physical muzzle`);
  }

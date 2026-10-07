@@ -99,7 +99,7 @@ def _sample(samples,times,time):
         rotation=Quaternion(tuple((1-f)*q[i]+f*end[i]for i in range(4)));rotation.normalize();result[name]=(p.lerp(b[name][0],f),rotation)
     return result
 
-def _crawl_arm(ctx,side,phase):
+def _crawl_arm(ctx,side,phase,shoulder_forward=None):
     """One native forearm pulls while the other clears and returns."""
     from motion import _head,_set_world_rotation,_hand_rotation,FORWARD
     rig=ctx['rig'];surfaces=_bindings(ctx)[side];base=_head(rig,'upperarm_'+side);sign=1 if side=='l'else -1
@@ -111,9 +111,12 @@ def _crawl_arm(ctx,side,phase):
     lift=0 if pull else RECOVERY_LIFT*math.sin(math.pi*u)**2;goal=FLOOR+.0005+lift
     rotation=_hand_rotation(rig,side,FORWARD,Vector((0,0,-1)))
     _set_world_rotation(rig,'hand_'+side,rotation);wrist_z=rig.pose.bones['hand_'+side].head.z+goal-_lowest(rig,surfaces['hand'])
-    elbow_y=base.y+offset;wrist_x=sign*.21
+    # The torso can assist the crawl. Plant the pull in the body's root frame
+    # instead of adding that torso sway to the already measured hand stride.
+    elbow_y=(base.y if shoulder_forward is None else shoulder_forward)+offset;wrist_x=sign*.21
+    reach_forward=elbow_y-base.y
     def set_arm(elbow_z):
-        across=math.sqrt(max(0,a*a-offset*offset-(elbow_z-base.z)**2));elbow=Vector((base.x+sign*across,elbow_y,elbow_z))
+        across=math.sqrt(max(0,a*a-reach_forward*reach_forward-(elbow_z-base.z)**2));elbow=Vector((base.x+sign*across,elbow_y,elbow_z))
         forward=math.sqrt(max(0,b*b-(wrist_x-elbow.x)**2-(wrist_z-elbow.z)**2));wrist=Vector((wrist_x,elbow.y-forward,wrist_z))
         assert forward>.08,'The native forearm must remain forward and reachable'
         for i,end in ((0,elbow),(1,wrist)):
@@ -121,7 +124,7 @@ def _crawl_arm(ctx,side,phase):
         _set_world_rotation(rig,names[2],rotation)
         assert (rig.pose.bones[names[1]].head-elbow).length<.0002 and(rig.pose.bones[names[2]].head-wrist).length<.0002,'Native segment lengths must stay exact'
         return _lowest(rig,surfaces['arm'])
-    low=base.z-math.sqrt(a*a-offset*offset-.015*.015);high=low+.08
+    low=base.z-math.sqrt(a*a-reach_forward*reach_forward-.015*.015);high=low+.08
     before=_lowest(rig,surfaces['full'])
     assert set_arm(low)<goal and set_arm(high)>goal,'A native planted forearm surface must bracket its floor'
     for iteration in range(12):
@@ -134,13 +137,14 @@ def _crawl_arm(ctx,side,phase):
 
 def support_clip(ctx,samples,duration,times,crawl=False):
     from motion import _apply_sample
-    original=list(samples);rig=ctx['rig'];stored_duration=math.floor(duration*30+.000001)/30
+    original=list(samples);rig=ctx['rig'];stored_duration=duration
+    _apply_sample(rig,original[0]);shoulder_forward={side:rig.pose.bones['upperarm_'+side].head.y for side in ('l','r')}
     fitted=[];maximum=0;reports=[]
     for i,(time,sample)in enumerate(zip(times,original)):
         if crawl:
             from motion import _collect
             _apply_sample(rig,sample);phase=min(time,stored_duration)/stored_duration
-            report={side:_crawl_arm(ctx,side,(phase+offset)%1)for side,offset in(('l',0),('r',.5))};result=_collect(rig)
+            report={side:_crawl_arm(ctx,side,(phase+offset)%1,shoulder_forward[side])for side,offset in(('l',0),('r',.5))};result=_collect(rig)
             for name in ARMS:result[name]=(sample[name][0].copy(),result[name][1])
             for name,(position,rotation)in sample.items():
                 if name not in ARMS:assert position==result[name][0]and rotation==result[name][1],name+' changed during native forearm crawl'
@@ -152,7 +156,9 @@ def support_clip(ctx,samples,duration,times,crawl=False):
     ctx['native_prone_arm_final_samples']=(fitted,times,reports)
     metadata={'method':'native-arm-rotations','surface':'complete-native-palm-finger-and-sleeve','floor':FLOOR,'sampleRate':30,'recoveryLift':RECOVERY_LIFT if crawl else 0,'alternatingRecovery':crawl,'pullDistance':.14 if crawl else 0,'maximumRecoveryLift':round(maximum,6),'maximumReachCorrection':round(max(arm['reachCorrection']for report in reports for arm in report.values()),6),'nativeCycleDuration':round(stored_duration,6)}
     if crawl:
-        stored_times=[i/30 for i in range(round(stored_duration*30)+1)];stored_samples=[_sample(fitted,times,time)for time in stored_times];contacts=[]
+        stored_times=[i/30 for i in range(math.floor(stored_duration*30)+1)]
+        if stored_duration-stored_times[-1]>1e-7:stored_times.append(stored_duration)
+        stored_samples=[_sample(fitted,times,time)for time in stored_times];contacts=[]
         for pose in stored_samples:
             _apply_sample(rig,pose);surfaces=_bindings(ctx);contact={}
             for side in ('l','r'):

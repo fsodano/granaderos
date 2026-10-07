@@ -38,6 +38,8 @@ Cada personaje usa su cuerpo LOD0 y su esqueleto nativo. Los cuerpos masculinos 
 
 El servidor de desarrollo expone `/models/characters/` desde `../../web/public/models/characters/`. No copia modelos dentro de `public/assets`. Después de reconstruir la biblioteca, recargar la página permite ver los archivos nuevos. `npm run build` copia al directorio ignorado `dist` los ocho cuerpos LOD0, los dos bancos de movimiento, el equipo y las texturas compartidas que usan esos archivos. La exportación funciona con `npm run preview`, sin depender del servidor del juego.
 
+Para revisar una biblioteca provisional sin sustituir los archivos del juego, iniciar el servidor con `GRANADERO_CHARACTER_LIBRARY=/ruta/absoluta/a/modelos npm run dev`. Esa carpeta debe contener el manifiesto, los cuerpos, los bancos de movimiento, el equipo y sus texturas. La variable sólo cambia el origen del servidor de desarrollo; no cambia los archivos que copia `npm run build`. Seleccionar **Granadero · juego** u otro personaje del juego: la referencia aprobada sigue usando su archivo independiente.
+
 ## Modelo de referencia y animaciones
 
 El archivo [granadero.glb](public/assets/granadero.glb) contiene geometría, materiales, texturas, esqueleto y 30 acciones:

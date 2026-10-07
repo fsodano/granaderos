@@ -2,13 +2,15 @@ import {register} from 'node:module';register('./tactical-render-loader.mjs',imp
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {AnimationClip,AnimationMixer,Group,InterpolateDiscrete,InterpolateLinear,LoopOnce,Object3D,QuaternionKeyframeTrack,Vector3,VectorKeyframeTrack} from '../web/node_modules/three/build/three.module.js';
-const publicRoot=new URL('../web/public/',import.meta.url);
-const manifest=JSON.parse(readFileSync(new URL('models/characters/manifest.json',publicRoot),'utf8'));
+import {resolve,sep} from 'node:path';
+import {pathToFileURL} from 'node:url';
+import {AnimationClip,AnimationMixer,Euler,Group,InterpolateDiscrete,InterpolateLinear,LoopOnce,Object3D,Quaternion,QuaternionKeyframeTrack,Vector3,VectorKeyframeTrack} from '../web/node_modules/three/build/three.module.js';
+const libraryRoot=process.env.GRANADEROS_CHARACTER_LIBRARY?pathToFileURL(resolve(process.env.GRANADEROS_CHARACTER_LIBRARY)+sep):new URL('../web/public/models/characters/',import.meta.url);
+const manifest=JSON.parse(readFileSync(new URL('manifest.json',libraryRoot),'utf8'));
 const format={5121:['readUInt8',1,255],5123:['readUInt16LE',2,65535],5125:['readUInt32LE',4,4294967295],5126:['readFloatLE',4]};
 const widths={SCALAR:1,VEC2:2,VEC3:3,VEC4:4,MAT4:16};
 function glb(url){
- const bytes=readFileSync(new URL(`.${url}`,publicRoot)),size=bytes.readUInt32LE(12),json=JSON.parse(bytes.subarray(20,20+size)),binary=bytes.subarray(28+size),cache=new Map();
+ const bytes=readFileSync(new URL(url.slice('/models/characters/'.length),libraryRoot)),size=bytes.readUInt32LE(12),json=JSON.parse(bytes.subarray(20,20+size)),binary=bytes.subarray(28+size),cache=new Map();
  const access=index=>{
   if(cache.has(index))return cache.get(index);
   const a=json.accessors[index],view=json.bufferViews[a.bufferView],[read,size,max]=format[a.componentType],width=widths[a.type];
@@ -51,25 +53,38 @@ function positionAt(keys,time){
  }
  return position;
 }
+function rotationAt(keys,time){
+ let a=keys[keys.length-1],b=a,fraction=0;
+ for(let i=1;i<keys.length;i++)if(time<=keys[i].time){a=keys[i-1];b=keys[i];fraction=Math.max(0,(time-a.time)/(b.time-a.time));break;}
+ return new Quaternion().fromArray(a.rotationQuaternion??[0,0,0,1]).normalize().slerp(new Quaternion().fromArray(b.rotationQuaternion??[0,0,0,1]).normalize(),fraction);
+}
 for(const [gender,bank]of Object.entries(banks))for(const posture of ['stand','crouch','prone','mounted']){
  test(`${gender} ${posture} loading contacts fit every exported rifle and preserve native support`,()=>{
+  const rest=rig(bank.body.json),restPoint=name=>rest.getObjectByName(name).getWorldPosition(new Vector3());
+  const wrist=restPoint('hand_r'),long=restPoint('middle_01_r').sub(wrist).normalize();
+  const normal=restPoint('index_01_r').sub(restPoint('pinky_01_r')).cross(long).normalize();
+  const knuckles=['index','middle','ring','pinky'].map(finger=>restPoint(`${finger}_01_r`)).reduce((sum,point)=>sum.add(point),new Vector3()).multiplyScalar(.25);
+  const nativePalm=rest.getObjectByName('hand_r').worldToLocal(wrist.lerp(knuckles,.75).addScaledVector(normal,.016));
   for(const itemId of ['1800','1801','1802','1803','1804','1807'])for(const gesture of ['reload','unload']){
    const base=`${posture}.${gesture}.long-gun`,name=manifest.equipment.items[itemId].clipOverrides[base];
    assert.equal(name,`${base}.${itemId}`);const spec=bank.specs.find(clip=>clip.name===name);
-   assert.equal(spec.loadingContact.method,'native palm and item muzzle');
+   assert.equal(spec.loadingContact.method,'native fore-end wrap and item muzzle');
    assert.deepEqual(spec.markers,{contact:spec.duration*.45,ready:spec.duration*.92});
    const values=samples(bank,name,(point,scene,time)=>{
     const right=scene.getObjectByName('socket_handRight_rifle'),left=scene.getObjectByName('socket_handLeft_tool');
     let item=right.getObjectByName(`item_${itemId}`);if(!item){item=equipment.getObjectByName(`item_${itemId}`).clone(true);right.add(item);}
-    item.position.fromArray(positionAt(spec.gripOffsets[0].keys,time));scene.updateMatrixWorld(true);
-    const palm=left.getWorldPosition(new Vector3()),muzzle=point(`muzzle_${itemId}`),barrel=right.localToWorld(new Vector3(1,0,0)).sub(right.getWorldPosition(new Vector3())).normalize(),rod=left.localToWorld(new Vector3(0,1,0)).sub(palm).normalize();
+    item.position.fromArray(positionAt(spec.gripOffsets[0].keys,time));item.quaternion.copy(rotationAt(spec.gripOffsets[0].keys,time));scene.updateMatrixWorld(true);
+    const palm=left.getWorldPosition(new Vector3()),muzzle=point(`muzzle_${itemId}`),barrel=item.localToWorld(new Vector3(1,0,0)).sub(item.getWorldPosition(new Vector3())).normalize(),rod=new Vector3(0,1,0).applyEuler(new Euler(...(spec.propCues?.[0]?.rotation??[0,0,0]))).transformDirection(left.matrixWorld);
     let lowest;
     if(Math.abs(time-spec.duration*(gesture==='reload'?.36:.25))<.00001){
      lowest=Infinity;item.traverse(node=>{const mesh=equipmentData.json.meshes[meshByName.get(node.name)];if(!mesh)return;
       for(const primitive of mesh.primitives){const positions=equipmentData.access(primitive.attributes.POSITION);for(let i=0;i<positions.length;i+=3)lowest=Math.min(lowest,node.localToWorld(new Vector3(...positions.slice(i,i+3))).y);}
      });
     }
-    return {palm,muzzle,barrel,rod,lowest,support:item.worldToLocal(right.getWorldPosition(new Vector3())),feet:['foot_l','foot_r'].map(point)};
+    const supportPalm=scene.getObjectByName('hand_r').localToWorld(nativePalm.clone());
+    assert.ok(supportPalm.distanceTo(right.localToWorld(new Vector3(...spec.loadingContact.palmPosition)))<.00001,'The loading contact is the actual native palm, not a detached metadata point');
+    const wristBends=['r','l'].map(side=>point(`middle_01_${side}`).sub(point(`hand_${side}`)).angleTo(point(`hand_${side}`).sub(point(`lowerarm_${side}`)))*180/Math.PI);
+    return {palm,muzzle,barrel,rod,lowest,wristBends,support:item.worldToLocal(supportPalm),attachmentPosition:item.position.clone(),attachmentRotation:item.quaternion.clone(),feet:['foot_l','foot_r'].map(point)};
    },100);
    const read=fraction=>values[Math.round(fraction*(values.length-1))];
    for(const fraction of gesture==='reload'?[.36,.46]:[.25]){
@@ -80,13 +95,14 @@ for(const [gender,bank]of Object.entries(banks))for(const posture of ['stand','c
     // The rod is 3 mm in radius and the authored muzzle is 10.5 mm. A 6 mm
     // centre tolerance leaves it inside the muzzle through 30 Hz bake blends.
     assert.ok(relative.clone().addScaledVector(value.barrel,-axial).length()<.006,`${name} at ${fraction}: working palm stays inside the muzzle clearance (${(relative.clone().addScaledVector(value.barrel,-axial).length()*1000).toFixed(2)} mm)`);
-    assert.ok(value.rod.dot(value.barrel)<-.9999,`${name}: ramrod points into the barrel`);
+    if(gesture==='reload')assert.ok(value.rod.dot(value.barrel)<-.9999,`${name}: ramrod points into the barrel`);
+    assert.ok(value.wristBends.every(angle=>angle<65),`${name} at ${fraction}: loading preserves functional wrist bends (${value.wristBends.map(angle=>angle.toFixed(1)).join(', ')}°)`);
     const expected=new Vector3(...spec.loadingContact.support);assert.ok(value.support.distanceTo(expected)<.0001,`${name}: support palm encloses the authored barrel grip`);
    }
    const start=read(0),end=read(1);
-   assert.ok(start.support.length()<.0001&&end.support.length()<.0001,'The weapon returns to the ordinary trigger grip at each clip boundary');
+   assert.ok(start.attachmentPosition.length()<.0001&&end.attachmentPosition.length()<.0001&&start.attachmentRotation.angleTo(new Quaternion())<.0001&&end.attachmentRotation.angleTo(new Quaternion())<.0001,'The weapon returns to the ordinary trigger grip at each clip boundary');
    for(const fraction of [.36,.58,.70,1])for(const [i,foot]of read(fraction).feet.entries())assert.ok(foot.distanceTo(start.feet[i])<.0001,'Loading keeps the support feet planted');
-   if(gesture==='reload')assert.deepEqual(spec.propCues,[{item:'ramrod',socket:'socket_handLeft_tool',start:2.208,end:4.128}]);
+   if(gesture==='reload')assert.deepEqual(spec.propCues,[{item:'ramrod',socket:'socket_handLeft_tool',start:2.208,end:4.128,rotation:[0,0,Math.PI/2]}]);
   }
  });
 }

@@ -5,11 +5,11 @@ import {EffectComposer} from 'three/addons/postprocessing/EffectComposer.js';
 import {RenderPixelatedPass} from 'three/addons/postprocessing/RenderPixelatedPass.js';
 import {OutputPass} from 'three/addons/postprocessing/OutputPass.js';
 import {RoomEnvironment} from 'three/addons/environments/RoomEnvironment.js';
-import {characterChoices,prepareProductionCharacter} from './character-library.js';
+import {characterChoices,prepareProductionCharacter,applyProductionGripOffsets} from './character-library.js';
 
 const $=selector=>document.querySelector(selector);
 const canvas=$('#scene'),viewport=$('#viewport');
-const state={character:'reference',ready:false,weapon:'none',motion:'walk',skin:'blanco',paused:false,speed:1,travel:false,attacking:false,clip:null,night:false,pixelated:false};
+const state={character:'granadero',ready:false,weapon:'none',motion:'walk',skin:'blanco',paused:false,speed:1,travel:false,attacking:false,clip:null,night:false,pixelated:false};
 const labels={none:'Sin arma',rifle:'Fusil',sabre:'Sable',pistol:'Pistola',knife:'Cuchillo',idle:'Quieto',walk:'Caminando',run:'Corriendo'};
 const palettes={blanco:'#d8a783',moreno:'#9b6441',negro:'#513023'};
 const skinLabels={blanco:'Blanco',moreno:'Moreno',negro:'Negro'};
@@ -251,8 +251,9 @@ function actionEventTime(clip){
  return typeof event==='number'?event:event?.time??event?.shot??event?.hit??event?.contact??clip.duration*.4;
 }
 
-async function load(characterId='reference'){
+async function load(characterId='granadero'){
  const version=++loadVersion,previousAttack=chosenAttack;state.ready=false;state.attacking=false;state.character=characterId;
+ $('#character-choice').value=characterId;
  clearEffects();mixer?.stopAllAction();if(model){mixer?.uncacheRoot(model);scene.remove(model);}
  for(const material of ownedMaterials)material.dispose();ownedMaterials.clear();skinMaterials.clear();
  for(const key of Object.keys(weapons))delete weapons[key];for(const key of Object.keys(muzzles))delete muzzles[key];
@@ -357,6 +358,8 @@ function tick(now){
   const action=currentAction,wasAttacking=state.attacking;
   const before=action?.time??0;
   mixer.update(delta);
+  applyProductionGripOffsets(weapons,manifest.clips?.find(spec=>spec.name===state.clip),currentAction?.time??0);
+  model.updateMatrixWorld(true);
   if(wasAttacking&&!attackEvent&&action){
    const at=actionEventTime(action.getClip()),after=action.time;
    if(before<=at&&after>=at){attackEvent=true;weaponEvent();}

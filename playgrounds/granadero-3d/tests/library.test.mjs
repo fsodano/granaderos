@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import * as THREE from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
-import {characterChoices,prepareProductionCharacter} from '../src/character-library.js';
+import {characterChoices,prepareProductionCharacter,applyProductionGripOffsets} from '../src/character-library.js';
 const publicRoot=new URL('../../../web/public/',import.meta.url);
 const library=JSON.parse(readFileSync(new URL('models/characters/manifest.json',publicRoot),'utf8'));
 const loader=new GLTFLoader();loader.register(()=>({name:'CpuTexturePlaceholder',loadTexture(){return Promise.resolve(new THREE.Texture());}}));
@@ -14,6 +14,22 @@ async function prepare(id){const appearance=library.appearances[id],bank=library
 test('selector exposes the approved reference and all eight actual game appearances',()=>{
  assert.equal(characterChoices[0][0],'reference');
  assert.deepEqual(new Set(characterChoices.slice(1).map(([id])=>id)),new Set(Object.keys(library.appearances)));
+});
+
+test('lab weapon corrections interpolate without accumulating between frames or actions',async()=>{
+ const prepared=await prepare('granadero'),weapon=prepared.weapons.pistol;
+ const basePosition=weapon.position.clone(),baseRotation=weapon.quaternion.clone();
+ const rotation=new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0,1,0),Math.PI/2);
+ const spec={gripOffsets:[{hand:'handRight',keys:[{time:0,position:[0,0,0]},{time:1,position:[.04,.02,0],rotationQuaternion:rotation.toArray()}]}]};
+ for(let frame=0;frame<3;frame++){
+  applyProductionGripOffsets(prepared.weapons,spec,.5);
+  assert.ok(weapon.position.distanceTo(basePosition.clone().add(new THREE.Vector3(.02,.01,0)))<1e-8);
+  const expected=baseRotation.clone().multiply(new THREE.Quaternion().slerp(rotation,.5));
+  assert.ok(weapon.quaternion.angleTo(expected)<1e-7,'The local rotation follows the shortest quaternion arc');
+ }
+ applyProductionGripOffsets(prepared.weapons,{},0);
+ assert.ok(weapon.position.distanceTo(basePosition)<1e-8,'Changing actions restores the native item position');
+ assert.ok(weapon.quaternion.angleTo(baseRotation)<1e-7,'Changing actions restores the native item rotation');
 });
 test('all production characters retain their native rigs and reviewed lab controls',async()=>{
  for(const id of Object.keys(library.appearances)){
