@@ -442,6 +442,19 @@ The clean cut passed 13 affected checks, type/docs/baseline checks and the
 production export. Twelve clean posta/estancia views had no browser errors;
 the aged front and ordinary clay side were visually inspected.
 
+## Warehouse buttress increment
+
+Closed sloping masonry supports and pale inclined coping now replace the
+warehouse's short trim blocks. All vertices remain in intact wall cells;
+edited openings, real roof elevations and ordinary room cutaways control them.
+The [warehouse review](../art/warehouse-buttresses-3d-review-2026-10-07.md)
+records the source proportions and the remaining physical relief limit.
+
+The clean cut passed 54 affected checks, type/docs/baseline checks and the
+production export. Six clean playable views had no browser errors. The front
+and interior were compared with the direct sprite. A separate shell-placement
+correction is required to expose the support depth.
+
 ## Next increments and acceptance limits
 
 The low-ceiling headwear limit, broader posture bank, braking steps and the
