@@ -7,6 +7,7 @@ import {illuminationAt} from './world-materials';
 import {palaceFacade} from './world-palace-facade';
 import {depotFacade} from './world-depot-facade';
 import {warehouseButtresses} from './world-warehouse-buttresses';
+import {churchNave} from './world-church-nave';
 import {postaPiers} from './world-posta-piers';
 import {stableVentilation} from './world-stable-ventilation';
 import {stableTimberFrame} from './world-stable-frame';
@@ -259,7 +260,8 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
         const [a,v]=bearing(u);box(a,v,height*.5,.23/T,height,.38/T,trim);box(a,v,.11,.34/T,.22,.38/T,materials.get('stone'));box(a,v,height-.035,.35/T,.15,.38/T,trim);
       }
     });
-    for(let v=1;v<frame.depth;v+=1.6)for(const u of [0,frame.width])if(wallAt(u,Math.round(v))?.type==='wall')box(u,v,.80,.20,1.6,.32,trim);
+    if(!legacy||b.wallFinish!==undefined)root.add(churchNave(b,input,T,height,base,geometry,materials));
+    else for(let v=1;v<frame.depth;v+=1.6)for(const u of [0,frame.width])if(wallAt(u,Math.round(v))?.type==='wall')box(u,v,.80,.20,1.6,.32,trim);
   }else if(kind==='townhall'){
     const profile=getBuildingProfile(b),twoStoreys=height>=4,storey=twoStoreys?height*profile.groundFloorHeight/profile.wallHeight:height,stone=materials.get('stone'),formal=[...new Set([-2,2].map(offset=>Math.max(0,Math.min(frame.width,Math.round(frame.doorU+offset)))))].filter(u=>wallAt(u,0)?.type==='wall');
     feature('townhall-formal-columns',()=>{
