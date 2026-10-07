@@ -2,7 +2,7 @@ import {Group,Matrix4,Mesh,Quaternion,Vector3} from 'three';
 import {entranceFrame,getBuildingProfile} from '../../../game/building-profile.js';
 import {buildingAppearance} from '../../../game/building-appearance.js';
 import {buildingStyle} from '../../../game/building-types.js';
-import {WorldBatch,disposeWorldNode} from './world-geometry';
+import {WorldBatch,disposeWorldNode,roofTextureProjector} from './world-geometry';
 import {addDoorLeaf} from './world-building-doors';
 import {illuminationAt} from './world-materials';
 import type {WorldGeometry} from './world-geometry';
@@ -10,8 +10,8 @@ import type {WorldMaterials} from './world-materials';
 import type {WorldBuilding,WorldInput} from './world-types';
 
 /** Formal palace details follow authored walls rather than filling floor cells. */
-export function palaceFacade(b:WorldBuilding,input:WorldInput,T:number,height:number,base:number,geometry:WorldGeometry,materials:WorldMaterials,legacy:boolean){
-  const walls=input.terrain.tiles.filter(tile=>tile.buildingId===b.id&&['wall','door','window'].includes(tile.type)),frame=entranceFrame({...b,walls}),profile=getBuildingProfile(b),appearance=buildingAppearance(b),light=illuminationAt(input,b);
+export function palaceFacade(b:WorldBuilding,input:WorldInput,T:number,height:number,base:number,geometry:WorldGeometry,materials:WorldMaterials,legacy:boolean,edgeDetails:(panels:readonly (readonly Vector3[])[],eave:number)=>Group){
+  const walls=input.terrain.tiles.filter(tile=>tile.buildingId===b.id&&['wall','door','window'].includes(tile.type)),frame=entranceFrame({...b,walls}),profile=getBuildingProfile(b),appearance=buildingAppearance({...b,roofFinish:b.roofFinish??(b.roof==='thatch'?'thatch':undefined)}),light=illuminationAt(input,b);
   const wall=materials.get(appearance.wallFinish,legacy?{colour:buildingStyle(b).wall}:{}),trim=materials.get('trim',legacy?{colour:buildingStyle(b).trim}:{}),stone=materials.get('stone'),dark=materials.get('darkwood'),iron=materials.get('iron'),bars=materials.get('iron',{colour:'#a7ae9b'});
   const rotation=new Quaternion().setFromAxisAngle(new Vector3(0,1,0),Math.atan2(-frame.u.y,frame.u.x)),alongInset=.4*(frame.u.x+frame.u.y),depthInset=.4*(frame.v.x+frame.v.y),doorU=frame.doorU-alongInset;
   const at=(u:number,v:number,y:number)=>{const p=frame.at(u,v);return new Vector3((p.x+.4)*T,base+y,(p.y+.4)*T);};
@@ -19,7 +19,7 @@ export function palaceFacade(b:WorldBuilding,input:WorldInput,T:number,height:nu
   const bearing=(u:number,v=0,along=false)=>[u-(along?alongInset:.06*(frame.u.x+frame.u.y)),v-.06*(frame.v.x+frame.v.y)] as const;
   const root=new Group();root.name=`palace-facade:${b.id}`;let batch=new WorldBatch(geometry);
   const box=(u:number,v:number,y:number,w:number,h:number,d:number,material=wall)=>batch.primitive('box',material,at(u,v,y),[w*T,h,d*T],rotation,light);
-  const feature=(name:string,draw:()=>void)=>{const previous=batch;batch=new WorldBatch(geometry);draw();root.add(batch.finish(`building-detail:${b.id}:${name}`));batch=previous;};
+  const feature=(name:string,draw:()=>void)=>{const previous=batch;batch=new WorldBatch(geometry);draw();const group=batch.finish(`building-detail:${b.id}:${name}`);root.add(group);batch=previous;return group;};
   const twoStoreys=height>=4,storey=twoStoreys?height*profile.groundFloorHeight/profile.wallHeight:height;
   // Compact edited shells retain their attached corner piers instead of
   // adding a second detached entrance column in the same corner wall cell.
@@ -87,13 +87,40 @@ export function palaceFacade(b:WorldBuilding,input:WorldInput,T:number,height:nu
       box(doorU,-.13/T,floor+.02+doorHeight+.04,.88/T,.08,.065/T,trim);
       for(const u of [lo,hi])box(u,-.10/T,(floor+height-.12)*.5,.17,height-floor-.12,.14,trim);
     });
-    const center=(lo+hi)*.5,p=at(center,-.12/T,0),reachU=(hi-lo+.30/T+1)*T*.5,reachV=(.32/T+1)*T*.5;
+    const center=(lo+hi)*.5,front=-.39,back=Math.min(1.2,frame.depth-.3),eave=height+7/25.066666666666666,peak=eave+Math.min(30,Math.max(13,(hi-lo)*4.5))/25.066666666666666;
+    // The complete canopy footprint includes its return into the entrance
+    // bay. A walking roof cell must clear its roof, fascia and entablature.
+    const first=front-.05,last=back+.06/T,p=at(center,(first+last)*.5,0),reachU=(hi-lo+.26+1)*T*.5,reachV=(last-first+1)*T*.5;
     const route=(input.terrain.upperSurfaces??[]).some(surface=>{const x=surface.x*T-p.x,z=surface.y*T-p.z;return !surface.blocked&&(surface.tacticalLevel??0)>0&&Math.abs(x*frame.u.x+z*frame.u.y)<reachU-1e-6&&Math.abs(x*frame.v.x+z*frame.v.y)<reachV-1e-6;});
-    if(!route)feature('palace-pediment',()=>{
-      const front=[at(lo-.10,-.16/T,height),at(hi+.10,-.16/T,height),at(center,-.16/T,height+.58)],back=[at(lo-.10,.02/T,height),at(hi+.10,.02/T,height),at(center,.02/T,height+.58)];
-      batch.polygon(wall,front,light);batch.polygon(wall,back,light);for(let n=0;n<3;n++){const next=(n+1)%3;batch.polygon(wall,[front[n],front[next],back[next],back[n]],light);}
-      batch.cylinder(trim,front[0],front[2],.040,light);batch.cylinder(trim,front[2],front[1],.040,light);
-    });
+    if(!route){
+      feature('palace-portico-entablature',()=>{
+        for(const u of [lo,hi])box(u,-.10/T,height-.02,.17,.20,.14,trim);
+        box(center,(front-.05+.3)*.5,eave-2.5/25.066666666666666,hi-lo+.26,7/25.066666666666666,.3-front+.05,stone);
+      });
+      feature('palace-pediment',()=>{
+        const face=[at(lo,front,eave),at(hi,front,eave),at(center,front,peak)],rear=face.map(point=>point.clone().add(new Vector3(frame.v.x*.18,0,frame.v.y*.18)));
+        batch.polygon(wall,face,light);batch.polygon(wall,rear,light);for(let n=0;n<3;n++){const next=(n+1)%3;batch.polygon(wall,[face[n],face[next],rear[next],rear[n]],light);}
+        const low=at(lo,front-.01,eave+1/25.066666666666666),high=at(hi,front-.01,eave+1/25.066666666666666),crest=at(center,front-.01,peak+1.4/25.066666666666666);
+        batch.cylinder(trim,low,crest,.035,light);batch.cylinder(trim,crest,high,.035,light);
+      });
+      const roof=materials.get(appearance.roofFinish),panels=[
+        [at(lo,front,eave+1/25.066666666666666),at(lo,back,eave+1/25.066666666666666),at(center,back,peak+1/25.066666666666666),at(center,front,peak+1/25.066666666666666)],
+        [at(hi,back,eave+1/25.066666666666666),at(hi,front,eave+1/25.066666666666666),at(center,front,peak+1/25.066666666666666),at(center,back,peak+1/25.066666666666666)],
+      ];
+      const tiles=feature('palace-portico-roof',()=>{for(const panel of panels)batch.polygon(roof,panel,light,roofTextureProjector(panel));});tiles.add(edgeDetails(panels,base+eave+1/25.066666666666666));
+      feature('palace-portico-return',()=>{
+        const rear=[at(lo,back,eave),at(hi,back,eave),at(center,back,peak)],face=rear.map(point=>point.clone().add(new Vector3(-frame.v.x*.18,0,-frame.v.y*.18)));
+        batch.polygon(wall,face,light);batch.polygon(wall,rear,light);for(let n=0;n<3;n++){const next=(n+1)%3;batch.polygon(wall,[face[n],face[next],rear[next],rear[n]],light);}
+      });
+      feature('palace-portico-crest',()=>{
+        // This small geometric badge follows the current sprite's ornament.
+        // It does not claim a particular historical coat of arms.
+        const badge=materials.get('stone',{colour:'#c2ae83'}),mark=materials.get('carved-stone',{colour:'#8d7650'}),outline=[[-.20,.28],[-.19,.50],[0,.56],[.19,.50],[.20,.28],[0,.12]],face=outline.map(([x,y])=>at(center+x/T,front-.035/T,eave+y)),rear=face.map(point=>point.clone().add(new Vector3(frame.v.x*.025,0,frame.v.y*.025)));
+        batch.polygon(badge,face,light);batch.polygon(badge,rear,light);for(let n=0;n<face.length;n++){const next=(n+1)%face.length;batch.polygon(badge,[face[n],face[next],rear[next],rear[n]],light);batch.cylinder(mark,face[n],face[next],.010,light);}
+        const a=(x:number,y:number)=>at(center+x/T,front-.052/T,eave+y);
+        for(const [x,y,x1,y1]of [[0,.19,0,.47],[-.115,.43,.115,.43],[-.09,.30,.09,.30]])batch.cylinder(mark,a(x,y),a(x1,y1),.009,light);
+      });
+    }
   }
   return root;
 }

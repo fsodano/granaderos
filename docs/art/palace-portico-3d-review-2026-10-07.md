@@ -1,0 +1,13 @@
+# Palace portico: 3D review
+
+The current direct palace sprite includes a shallow tiled gable over the broad balcony. A raised stone entablature supports its front, and a small geometric badge decorates the tympanum. The retained 3D triangle had no tiled return and sat too low against the main hip.
+
+This increment follows `palacePortico` in `web/app/TacticalBuildingDetails.tsx` and `artifacts/three-gameplay-review/direct-facade-audit/palacio-0-exterior.png`. The eave stands 7 vertical source units above the actual wall height. The rise follows the supported span, at 4.5 source units per tile, bounded between 13 and 30 units. At the actual six-tile support span, that gives an eave 28 cm above the wall and a rise of 108 cm. The portico extends 1.2 tiles into the entrance bay.
+
+Two sloping panels retain the authored roof finish and use metres along the actual eave and slope for texture density. The shared roof-edge helper closes their underside and fascia and joins the rounded ridge. Closed 18 cm masonry tympana finish both ends. Short returns join the existing upper pilasters to the raised stone entablature. The small geometric badge follows the current source ornament; it does not claim a particular historical coat of arms.
+
+The complete roof, entablature, and ridge footprint excludes legal walking upper cells. Closed slabs and distant inner routes retain the portico; cells under its return omit every above-roof feature. Short 3 m slabs and ordinary partial/full ground-room cutaways omit it. Authored wall and roof finishes, ground supports, openings, and gameplay collision remain unchanged.
+
+All 74 affected checks, the type check, and the diff check pass. Checks measure the physical eave/ridge heights, metre-based roof UVs, closed front and rear masonry thickness, joined entablature supports, full four-rotation upper-route clearance, authored finishes, short slabs, room cutaways, all fourteen compiled building supports and openings, doors, and input immutability.
+
+The initial `artifacts/three-gameplay-review/palace-portico/` images are exploratory. Its 90° view exposed a missing rear gable closure. That closure was added before the accepted comparison. Six final playable views passed without browser errors in `artifacts/three-gameplay-review/palace-portico-final/`. Review inspected the 0° and 90° exteriors and 270° interior against the direct source and previous facade capture. The shallow tiled entrance roof and front badge now read above the main hip, its rear return is closed, and ordinary room entry leaves no floating portico. These checks establish this bounded detail increment, not complete art acceptance for every sector.
