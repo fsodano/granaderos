@@ -67,17 +67,19 @@ function characters(){
   }));
   return {...createBattle(squad,{id:'renderer-characters',name:'Ocho personajes',width:20,height:16,tiles:ground(20,16),enemies:[],exploration:true,seed:45}),deploymentComplete:true};
 }
-function architecture(){
-  const width=48,height=45,buildings=[],squad=[];let tiles=ground(width,height);
+function architecture(selectedType){
+  if(selectedType&&!Object.hasOwn(BUILDING_TYPES,selectedType))throw Error(`Unknown architecture: ${selectedType}`);
+  const width=selectedType?22:48,height=selectedType?20:45,buildings=[],squad=[];let tiles=ground(width,height);
   for(const [index,[type,style]]of Object.entries(BUILDING_TYPES).entries()){
-    const x=4+(index%3)*15,y=4+Math.floor(index/3)*14,[w,h]=BUILDING_FOOTPRINTS[type];
+    if(selectedType&&selectedType!==type)continue;
+    const x=selectedType?4:4+(index%3)*15,y=selectedType?4:4+Math.floor(index/3)*14,[w,h]=BUILDING_FOOTPRINTS[type];
     // Alternate visible facade directions to expose detail-orientation errors.
     const east=index%2===1,door={id:`review-${type}:door`,x:east?x+w-1:x+Math.floor(w/2),y:east?y+Math.floor(h/2):y+h-1,open:false};
     const result=placeBuilding(tiles,{id:`review-${type}`,name:style.name,x,y,width:w,height:h,architecture:type,doors:[door],windows:[{x:x+1,y},{x,y:y+1}]});
     tiles=result.tiles;buildings.push(result.building);
     squad.push(soldier(`guard-${type}`,style.name,door.x+(east?2:0),door.y+(east?0:2),{activeSlot:'unarmed',facing:east?6:0}));
   }
-  return {...createBattle(squad,{id:'renderer-architecture',name:'Arquitectura colonial',width,height,tiles,buildings,enemies:[],exploration:true,seed:45}),deploymentComplete:true};
+  return {...createBattle(squad,{id:`renderer-architecture-${selectedType??'all'}`,name:selectedType?BUILDING_TYPES[selectedType].name:'Arquitectura colonial',width,height,tiles,buildings,enemies:[],exploration:true,seed:45}),deploymentComplete:true};
 }
 function postures(){
   const squad=[
@@ -101,6 +103,7 @@ function performance(count,architecture=false){
 export function createRendererSandboxBattle(id='combat'){
   if(id==='characters')return characters();
   if(id==='architecture')return architecture();
+  if(id.startsWith('architecture:'))return architecture(id.slice('architecture:'.length));
   if(id==='postures')return postures();
   if(id==='combat'||id==='night')return combat(id==='night');
   if(id==='mounted')return mounted();

@@ -76,6 +76,19 @@ test('posture review exercises real travel for both prone anatomy banks',()=>{
   }
 });
 
+test('individual building review keeps a real lone guard outside each closed facade',()=>{
+  for(const type of Object.keys(BUILDING_TYPES)){
+    const battle=createRendererSandboxBattle(`architecture:${type}`);
+    assert.equal(battle.buildings.length,1);assert.equal(battle.buildings[0].architecture,type);
+    assert.equal(battle.units.length,1);assert.equal(battle.units[0].id,`guard-${type}`);
+    assert.doesNotThrow(()=>validateBattleSnapshot(JSON.parse(JSON.stringify(battle))));
+    const guard=battle.units[0],building=battle.buildings[0];
+    assert.ok(guard.x>building.x+building.width-1||guard.y>building.y+building.height-1);
+    assert.equal(battle.tiles.find(tile=>tile.type==='door').open,false);
+  }
+  assert.throws(()=>createRendererSandboxBattle('architecture:unknown'));
+});
+
 test('the loaded cannon has a complete adjacent crew and finite ammunition',()=>{
   const battle=createRendererSandboxBattle('combat'),gun=battle.artillery[0],gunner=actor(battle,'gunner');
   const crew=artilleryCrewPlan(battle,gunner,gun,artilleryCosts(battle,gunner,gun).fire);
