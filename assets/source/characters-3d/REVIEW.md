@@ -25,8 +25,8 @@ the existing semantic parts. Civilian presets remove all military trim.
 
 ## Movement coverage
 
-Each anatomy bank has 270 semantic clips. The accepted reference supplies
-34 of those clips through 29 distinct motions:
+Each anatomy bank now has 318 semantic clips. The original 270-clip bank
+includes 34 accepted reference clips through 29 distinct motions:
 
 | Family | Semantic clips | Distinct reference motions |
 | --- | ---: | ---: |
@@ -49,10 +49,21 @@ strike. Knife item 1813 uses knife guard, carry, cuts and thrust instead of sabr
 poses. Variant choice is deterministic for a cue and stays fixed through its
 phases. This changes presentation, not damage, AP cost or ammunition rules.
 
-The other 236 semantic clips per anatomy keep existing production authoring.
-They include crouched, prone and mounted movement, reloads, interactions,
-reactions, transitions and specialized actions. They were not all revised or
-visually approved in this pass. The horse retains its existing source and gait.
+The remaining original families include crouched, prone and mounted movement,
+interactions, reactions, transitions and specialized actions. Later increments
+correct their exported movement pace and rifle loading contacts. This does not
+establish visual acceptance of every original clip. The horse retains its source
+and gait; gameplay now uses its measured exported stride.
+
+Rifle loading and unloading now fit six actual weapon lengths, four postures
+and both anatomy banks. The 48 additional clips are item-specific aliases.
+The support hand follows the fore-end, the loading hand meets the muzzle, and
+the ramrod follows the bore axis. Eight generic rifle loading clips receive the
+same correction. The other 262 original clips and the bank meshes remain
+byte-identical at this rifle increment. Geometry checks cover hand distance,
+ramrod clearance, planted support feet and crouched stock clearance. Source
+closeups and the normal interrupted-loading UI were reviewed; broad combat
+motion acceptance remains open.
 
 ## Review and validation
 
