@@ -567,3 +567,7 @@ the supplied tactical references provide density and room-readability targets.
 Passing geometry and loading checks does not certify final visual polish. This
 record is an incremental acceptance report, not a declaration that the full 3D
 or gameplay objective is complete.
+
+## Authored architecture paint
+
+The source wall images and encoded paint formulas now apply to all fourteen compiled templates. Main-wall and solid-volume roles have distinct source overlays before native vertex and physical lighting. The clean source passes 87 affected architecture checks, type checking, documentation/baseline audits and the static build (`0bd513889feb`). Its 84 ordinary browser catalogue views pass without browser errors. The posta, barracks, house, warehouse and depot captures were visually compared with the current sprites. Geometry, openings, metric UVs, disclosure, roofs, props and unpainted legacy materials are retained. Warehouse support paint and house entrance details remain separate work; this is bounded material acceptance. See [the detailed review](../art/authored-architecture-finish-3d-review-2026-10-07.md).
