@@ -14,16 +14,16 @@ test('the actual page prevents competing orders and saves only the completed ene
  const request=campaign.pendingBattle,battle=createBattle(request.squad.map((u,i)=>({...u,x:1,y:1+i})),{...request,width:12,height:8,hour:campaign.hour,seed:45,tiles:Array.from({length:96},(_,i)=>({x:i%12,y:Math.floor(i/12),type:'grass',blocked:false,cover:0})),enemies:[{id:'e',x:7,y:1,weapon:1809}]});
  for(const unit of battle.units.filter(u=>u.side==='player'))unit.ap=0;
  const pair=syncBattleTime(campaign,battle);assert.equal(pair.error,null);
- const before=decodeSave(encodeSave(pair.campaign,pair.battle)),m=await mountCampaign(t,before),unitId=before.battle.units[0].id;
+ const before=decodeSave(encodeSave(pair.campaign,pair.battle)),m=await mountCampaign(t,before,{virtualTimers:true}),unitId=before.battle.units[0].id;
  const finalBattle=withCharacterSpeech(before.battle,endTurn(before.battle)),want=syncBattleTime(before.campaign,finalBattle);assert.equal(want.error,null);
  await act(async()=>{
   m.document.body.dispatchEvent(new m.dom.window.KeyboardEvent('keydown',{key:'d',bubbles:true}));
   assert.throws(()=>m.issue({type:'movement',unitId,movement:'crouch'}),/termine el movimiento/);
   assert.deepEqual(m.saved(),before);
  });
- const deadline=Date.now()+10000;let observed=false;
- while(Date.now()<deadline){
-  await act(async()=>new Promise(resolve=>setTimeout(resolve,25)));
+ let observed=false;
+ for(let frame=0;frame<5000;frame++){
+  await m.nextDelay();
   if(m.document.querySelector('[data-enemy-frame]')){observed=true;assert.deepEqual(m.saved(),before);}
   else if(m.saved().battle.turn!==before.battle.turn)break;
  }
