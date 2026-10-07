@@ -247,7 +247,50 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
       }
     });
     for(let v=1;v<frame.depth;v+=1.6)for(const u of [0,frame.width])if(wallAt(u,Math.round(v))?.type==='wall')box(u,v,.80,.20,1.6,.32,trim);
-  }else if(['cabildo','townhall'].includes(kind)){
+  }else if(kind==='townhall'){
+    const profile=getBuildingProfile(b),twoStoreys=height>=4,storey=twoStoreys?height*profile.groundFloorHeight/profile.wallHeight:height,stone=materials.get('stone'),formal=[...new Set([-2,2].map(offset=>Math.max(0,Math.min(frame.width,Math.round(frame.doorU+offset)))))].filter(u=>wallAt(u,0)?.type==='wall');
+    feature('townhall-formal-columns',()=>{
+      const column=(u:number,v:number,w:number,material:MeshStandardMaterial)=>{
+        box(u,v,(storey-.10)*.5,w/T,storey-.10,.38/T,material);box(u,v,.12,.38/T,.24,.38/T,stone);box(u,v,storey-.08,.38/T,.14,.38/T,stone);
+      };
+      for(const support of formal){const [u,v]=bearing(support,0,support!==0&&support!==frame.width);column(u,v,.30,stone);}
+      for(const u of [0,frame.width])for(const v of [0,frame.depth])if(wallAt(u,v)?.type==='wall'){
+        const [a,c]=bearing(u,v);if(v!==0||!formal.includes(u))column(a,c,.38,trim);
+        if(twoStoreys)box(a,c,(storey+.18+height-.16)*.5,.38/T,height-storey-.34,.38/T,stone);
+      }
+      for(const u of [0,frame.width])for(let v=2;v<frame.depth-1;v+=4)if(wallAt(u,v)?.type==='wall')column(u-.06*(frame.u.x+frame.u.y),v-depthInset,.30,wall);
+    });
+    feature('townhall-storey-bands',()=>{
+      const bands=twoStoreys?[[storey,stone],[height-.10,trim]] as const:[[height-.10,trim]] as const;
+      for(const [y,material]of bands){
+        for(const v of [0,frame.depth])box(frame.width*.5,v+(v===0?-.10:.10)/T,y,frame.width+.20/T,.15,.29/T,material);
+        for(const u of [0,frame.width])box(u+(u===0?-.10:.10)/T,frame.depth*.5,y,.29/T,.15,frame.depth,material);
+      }
+    });
+    if(twoStoreys)feature('townhall-upper-windows',()=>{
+      // Match the retained opening's roughly 3 cm pale iron bars. Their
+      // finish and width keep the grille legible against the dark recess.
+      const paneHeight=Math.min(.90,height-storey-.82),y=storey+.62+paneHeight*.5,bars=materials.get('iron',{colour:'#a7ae9b'});
+      const positions=(length:number,parity:number)=>{const result:number[]=[];for(let n=parity||2;n<length;n+=2)result.push(n);return result;};
+      const pane=(u:number,v:number,side:number,alongFront:boolean)=>{
+        const width=.72,edge=width*.5+.04,face=alongFront?v+side*.085/T:u+side*.085/T,bar=face+side*.045/T;
+        if(alongFront){
+          box(u,face,y,width/T,paneHeight,.04/T,darkwood);
+          for(const offset of [-edge,edge])box(u+offset/T,face+side*.022/T,y,.06/T,paneHeight+.14,.065/T,trim);
+          for(const dy of [-paneHeight*.5-.04,paneHeight*.5+.04])box(u,face+side*.022/T,y+dy,(width+.14)/T,.06,.065/T,trim);
+          for(const offset of [-.16,0,.16])box(u+offset/T,bar,y,.028/T,paneHeight,.028/T,bars);box(u,bar,y-.025,width/T,.028,.028/T,bars);
+        }else{
+          box(face,v,y,.04/T,paneHeight,width/T,darkwood);
+          for(const offset of [-edge,edge])box(face+side*.022/T,v+offset/T,y,.065/T,paneHeight+.14,.06/T,trim);
+          for(const dy of [-paneHeight*.5-.04,paneHeight*.5+.04])box(face+side*.022/T,v,y+dy,.065/T,.06,(width+.14)/T,trim);
+          for(const offset of [-.16,0,.16])box(bar,v+offset/T,y,.028/T,paneHeight,.028/T,bars);box(bar,v,y-.025,.028/T,.028,width/T,bars);
+        }
+      };
+      for(const v of [0,frame.depth])for(const u of positions(frame.width,v===0?Math.round(frame.doorU)%2:1))if(wallAt(u,v))pane(u-alongInset,v,v===0?-1:1,true);
+      for(const u of [0,frame.width])for(const v of positions(frame.depth,1))if(wallAt(u,v))pane(u,v-depthInset,u===0?-1:1,false);
+    });
+    townhallCrown();
+  }else if(kind==='cabildo'){
     const twoStoreys=height>=4,storey=twoStoreys?height*.50:height,records:{a:number;u:number;v:number}[]=[];
     for(let u=0;u<=frame.width;u++)if(wallAt(u,0)?.type==='wall'){const [a,v]=bearing(u,0,u!==0&&u!==frame.width);records.push({a:u===0||u===frame.width?u:u-alongInset,u:a,v});}
     records.sort((a,b)=>a.a-b.a);
@@ -291,8 +334,7 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
         box(u+sign*.045/T,v,y-.16,.023/T,.024,.72/T,iron);
       }
     });
-    if(kind==='townhall')townhallCrown();
-    else tower(frame.width*.5,.1,Math.min(1.4,Math.max(1.1,frame.width*.22)),height+(twoStoreys?2.05:1.35),height-.12,true);
+    tower(frame.width*.5,.1,Math.min(1.4,Math.max(1.1,frame.width*.22)),height+(twoStoreys?2.05:1.35),height-.12,true);
   }else if(kind==='posta'){
     const supports=[...new Set([0,...entranceSupports(),frame.width])].filter(u=>wallAt(u,0)?.type==='wall').sort((a,c)=>a-c);
     roofCanopy('posta-masonry-veranda',supports,.55,true);
