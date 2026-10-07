@@ -55,7 +55,24 @@ export function buildProps(id:string,props:readonly WorldProp[],input:WorldInput
       pole(iron,[-cw*.64,axleY,axleZ],[cw*.64,axleY,axleZ],.035);for(const a of [-1,1])wheel(part,materials,light,a*cw*.64,axleY,axleZ,radius);
     }else if(prop.type==='shelf'){
       const sw=w*.74,sd=d*.25;for(const a of [-1,1])box(wood,a*sw*.5,h*.5,0,.08,h,sd);for(const by of [.08,h*.35,h*.65,h-.04])box(wood,0,by,0,sw,.06,sd);
-      for(let n=0;n<5;n++){const a=(n-2)*sw*.15,by=h*(n%2?.68:.38);part.primitive('cylinder',materials.get(n%2?'ceramic':'food'),[a,by+.11,0],[.07,.20,.07],undefined,light);}
+      if(prop.purpose==='archive'||prop.purpose==='office'){
+        // Bound ledgers and tied paper belong in administrative rooms.
+        // Keep their covers, pages and binding visible at the game camera.
+        for(let n=0;n<5;n++){
+          const a=(n-2)*sw*.15,base=h*(n%2?.65:.35)+.03,bh=.20+(n%3)*.025,bw=.075,bd=Math.min(.19,sd*.78);
+          box(n%2?dark:wood,a,base+bh*.5,0,bw,bh,bd);
+          box(linen,a,base+bh*.5,-.008,bw*.67,bh-.028,bd-.022);
+          box(dark,a,base+bh*.5,bd*.48,bw+.006,bh,.016);
+          for(const by of [.045,bh-.045])box(wood,a,base+by,bd*.52,bw+.012,.012,.009);
+        }
+        for(let n=0;n<3;n++){
+          const a=(n-1)*sw*.26,bh=.035+n*.015,bd=Math.min(.18,sd*.75);
+          box(linen,a,.11+bh*.5,0,sw*.21,bh,bd);
+          box(dark,a,.112+bh,0,.012,.004,bd+.004);
+        }
+      }else{
+        for(let n=0;n<5;n++){const a=(n-2)*sw*.15,by=h*(n%2?.68:.38);part.primitive('cylinder',materials.get(n%2?'ceramic':'food'),[a,by+.11,0],[.07,.20,.07],undefined,light);}
+      }
     }else if(prop.type==='hearth'){
       box(stone,0,.04,0,w*.65,.08,d*.58);box(materials.get('brick'),0,h*.5,d*.20,w*.68,h,.18);for(const a of [-1,1])box(stone,a*w*.27,h*.34,0,w*.13,h*.68,d*.47);box(stone,0,h*.73,0,w*.67,.18,d*.53);
       box(materials.get('ember',{emissive:true}),0,.105,0,w*.24,.025,d*.18);for(const a of [-1,1])pole(dark,[a*.17,.13,-.12],[-a*.17,.13,.12],.035);
