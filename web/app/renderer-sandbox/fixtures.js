@@ -16,6 +16,7 @@ export const RENDERER_SCENARIOS=Object.freeze([
   {id:'performance60',label:'60 personajes',help:'Sector abierto para comprobar movimiento y variedad con 60 personajes.'},
   {id:'performance100',label:'100 personajes',help:'Sector abierto para comprobar movimiento y variedad con 100 personajes.'},
   {id:'tucuman',label:'Sector de Tucumán',help:'Mapa real de Tucumán, con ocho personajes y las órdenes habituales de exploración.'},
+  {id:'empty',label:'Sector vacío',help:'Sector sin personajes para comprobar la carga del terreno y el uso de la cámara.'},
 ]);
 const families=['granadero','royalist','worker','surgeon','gaucho','friar','woman-scout','woman-shawl'];
 const ground=(width,height)=>Array.from({length:width*height},(_,i)=>({x:i%width,y:Math.floor(i/width),type:Math.floor(i/width)<4?'stone':'grass',cover:0,blocked:false}));
@@ -101,6 +102,7 @@ function performance(count,architecture=false){
 }
 /** Fresh real battle state. Scene selection never issues private renderer poses. */
 export function createRendererSandboxBattle(id='combat'){
+  if(id==='empty')return {...createBattle([],{id:'renderer-empty',name:'Sector vacío',width:12,height:12,tiles:ground(12,12),enemies:[],exploration:true}),deploymentComplete:true};
   if(id==='characters')return characters();
   if(id==='architecture')return architecture();
   if(id.startsWith('architecture:'))return architecture(id.slice('architecture:'.length));

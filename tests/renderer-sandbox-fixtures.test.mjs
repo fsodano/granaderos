@@ -18,9 +18,9 @@ test('all sandbox choices are fresh, valid real battle snapshots with legal equi
   for(const {id}of RENDERER_SCENARIOS){
     const battle=createRendererSandboxBattle(id),again=createRendererSandboxBattle(id);
     assert.deepEqual(again,battle,`${id} resets to a repeatable state`);
-    assert.notEqual(again,battle);assert.notEqual(again.units[0],battle.units[0]);
+    assert.notEqual(again,battle);assert.notEqual(again.units,battle.units);if(battle.units.length)assert.notEqual(again.units[0],battle.units[0]);
     assert.doesNotThrow(()=>validateBattleSnapshot(JSON.parse(JSON.stringify(battle))),id);
-    assert.equal(battle.phase,'player');assert.equal(battle.status,'active');
+    assert.equal(battle.phase,'player');assert.equal(battle.status,id==='empty'?'defeat':'active');
     assert.ok(battle.units.filter(unit=>unit.side==='player').every(unit=>unit.ap>0&&unit.ap<=100));
   }
   for(const count of [24,60,100])assert.equal(createRendererSandboxBattle(`performance${count}`).units.length,count);
