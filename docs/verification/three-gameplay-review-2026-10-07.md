@@ -619,3 +619,7 @@ The farmhouse gallery now has the source front and return posts, warm stone feet
 ## Standing rifle sideways support
 
 Four standing rifle left/right clips now retain supported complete footwear through their native loops. All 332 other clips and 302 non-leg selected channels per anatomy, native clocks, pace, dimensions and earlier unarmed corrections remain exact. The source passes 26 affected checks, native/profile/type/docs/baseline verification and the build (`5e49d10010e7`). Four normal held-rifle routes save their cells; all 68 captures pass without errors. Selected frames were compared with both current walking sheets. See [the rifle movement review](../art/standing-rifle-sideways-support-3d-review-2026-10-07.md).
+
+## Supported parish placement
+
+The supported authored church walls, gables, roof, openings and disclosed floor returns now share centred coordinates. Tower compensation keeps its actual reserved/compact foundations; edited corners and unpainted legacy shells retain the original frame. The source passes 57 affected checks, type/docs/baseline verification and the build (`4b90ee754a77`). Thirty original/slab/accessible-roof and closer browser views pass without errors. Selected exteriors, entrance, interior and roof routes were compared with the current parish sprite. Source-sized nave wedges and facade details remain separate cuts. See [the placement review](../art/church-shell-placement-3d-review-2026-10-07.md).

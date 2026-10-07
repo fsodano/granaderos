@@ -3,12 +3,12 @@ import {surfaceRectangles,subtractRectangle} from './world-climb-openings';
 import type {ClimbOpening,SurfaceRectangle} from './world-climb-openings';
 import type {WorldBuilding,WorldInput,WorldPoint} from './world-types';
 
-/** Centred warehouse, posta, supported house, stable and farmhouse walls expose their details.
+/** Centred warehouse, posta, supported domestic, stable and church walls expose their details.
  * Corner openings retain the original shell to preserve their clipped spans. */
 export function buildingArtInset(b:WorldBuilding,input:WorldInput){
   const kind=b.kind??b.architecture??'';
-  if(!['warehouse','posta','house','stable','farmhouse'].includes(kind))return .4;
-  if(['house','stable','farmhouse'].includes(kind)){
+  if(!['warehouse','posta','house','stable','farmhouse','church'].includes(kind))return .4;
+  if(['house','stable','farmhouse','church'].includes(kind)){
     // Unpainted legacy domestic and stable shells keep their released placement.
     // These authored fronts need both intact corners before centring the shell.
     if(b.architecture&&b.wallFinish===undefined)return .4;
