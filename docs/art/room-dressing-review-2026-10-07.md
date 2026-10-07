@@ -13,8 +13,9 @@ building and room-order fallback. Ruined rooms keep their existing ruin treatmen
 The current fourteen templates preserve room names when compiled; this change
 does not add a map schema field or alter furniture authored in the templates.
 
-The new items use the existing timber shelves, storage chests, pottery, rugs,
-candles, hearths and washstands. No modern appliances from the supplied gameplay
+The new items use timber shelves, storage chests, pottery, rugs,
+candles, hearths and washstands. Archive and office shelves contain ledgers and
+tied paper; storage and kitchen shelves retain their containers. No modern appliances from the supplied gameplay
 references are added. This is a functional dressing correction, not a claim that
 these rooms reproduce a measured historical interior.
 
@@ -23,5 +24,9 @@ door approaches, at the room's physical level. It remains nonblocking and passes
 through the existing room-disclosure checks. Tests cover all fourteen compiled
 templates in four rotations, fresh campaign maps, malformed floor candidates,
 and hidden versus revealed archive items in both renderers. These checks establish
-placement and disclosure; a live interior screenshot is still needed for visual
-acceptance.
+placement and disclosure. The playable fourteen-template catalogue now visits
+the rooms through normal door and movement orders. Live exterior, partial and
+interior captures produced 84 views across four rotations with no browser errors.
+The Casa rural and Cabildo de villa interiors were inspected for furniture scale,
+room dressing and cutaways. These samples do not prove every historical interior
+detail or replace the remaining facade comparison.

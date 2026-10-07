@@ -93,14 +93,47 @@ again and all nine isolated facades were captured. A separate empty-sector
 browser check loaded all ground textures, removed the loading message and
 reported zero actors, 5,280 triangles and no errors.
 
+## Third increment
+
+Tall civic facades now have two distinct arcade levels, upper iron rails,
+side windows and a larger clock cupola. Short village profiles retain one
+level. Chapel bell gables have a real arched opening; domestic and forge
+chimneys start at the roof on a solid side wall. All supports skip authored
+doors, windows, breaches and playable upper surfaces. Cutaways remove them
+with their room.
+
+The complete fourteen-template catalogue now provides exterior, first-room
+and complete-interior states in four rotations. Each state is prepared by
+ordinary door and movement orders from one exterior guard. The 168-state
+fixture checks passed without writing room disclosure directly or changing
+source templates. `tools/verify-three-catalog.mjs` captures six live states
+per template; `--full` captures all twelve. The earlier nine-building selector
+remains available.
+
+Named room purposes now select appropriate dressing. Administrative shelves
+show leather-bound ledgers and tied paper. Carts, cannon tyres and seeded
+loose timber remain above their floor and within their authored footprints.
+Timber, stone and brick retain texture colours, with subtle wood and plaster
+surface relief.
+
+The friar and woman-shawl use calf-aware sewn panels and sparse crouch/prone
+corrective shapes blended with the body clock. All six LODs keep their bones,
+triangles, textures and draw calls. Side views confirm the prone drape lies
+over the legs and the friar crawl keeps that silhouette. Full garment motion
+coverage and general cloth collision are not established by those samples.
+
+Recorded maintenance gestures now use native clip intervals. Interrupted
+rifle loading presents only the paid work and resumes at its stored fraction.
+The live `tools/verify-three-partial-loading.mjs` check retained 69% work through
+the next turn, then spent 14 internal AP (3.5 displayed PA) and one cartridge
+exactly once. The four UI stages produced no browser errors.
+
 ## Next increments and acceptance limits
 
-The civic facade still needs two readable arcade levels. Browser review also
-found raised long garments in prone poses and recorded reloads playing much
-faster than their native clip. These are the next specific corrections. The
-broader posture bank, braking steps and paired melee contact still need
-review. The [character review](../../assets/source/characters-3d/REVIEW.md) records
-the accepted standing reference and the retained motion bank separately.
+The rifle loading hand and ramrod contact, broader posture bank, braking
+steps and paired melee contact still need review. The
+[character review](../../assets/source/characters-3d/REVIEW.md) records the
+accepted standing reference and the retained motion bank separately.
 
 The inspected sprites provide anatomy, clothing, grips and silhouette targets;
 the supplied tactical references provide density and room-readability targets.

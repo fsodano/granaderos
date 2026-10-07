@@ -2,7 +2,8 @@
 import assert from 'node:assert/strict';
 import {mkdir,writeFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
-import {ARCHITECTURE_REVIEW_TEMPLATES} from '../web/app/renderer-sandbox/architecture-fixtures.js';
+import {ARCHITECTURE_REVIEW_TEMPLATES,createArchitectureReviewBattle} from '../web/app/renderer-sandbox/architecture-fixtures.js';
+import {getBuildingProfile} from '../game/building-profile.js';
 
 const {chromium}=await import(process.env.PLAYWRIGHT_MODULE||'playwright');
 const url=process.env.GRANADEROS_REVIEW_URL||'http://127.0.0.1:3150/renderer-sandbox';
@@ -32,6 +33,14 @@ try{
       await page.getByRole('combobox',{name:'Orientación del edificio',exact:true}).selectOption(String(state.rotation));
       await page.getByRole('combobox',{name:'Vista del edificio',exact:true}).selectOption(state.view);await ready();
       await page.locator('.tactical-field').focus();await page.keyboard.press('-');await page.waitForTimeout(180);
+      // Pan through the normal wheel input so a large roof stays in the
+      // captured viewport instead of following the guard at its front door.
+      const battle=createArchitectureReviewBattle(template.id,state.rotation,state.view),building=battle.buildings[0],profile=getBuildingProfile(building);
+      const x=building.x+(building.width-1)*.5+.4,y=building.y+(building.height-1)*.5+.4;
+      const target={x:battle.height*26+28+(x-y)*26,y:65+(x+y)*14-(state.view==='interior'?24:(profile.wallHeight+profile.roofRise)*.5)};
+      const camera=await page.locator('[data-scene-camera]').evaluate(element=>{const matrix=element.transform.baseVal.consolidate().matrix,svg=element.ownerSVGElement;return {x:-matrix.e,y:-matrix.f,width:svg.viewBox.baseVal.width,height:svg.viewBox.baseVal.height};});
+      const field=await page.locator('.tactical-field').boundingBox();await page.mouse.move(field.x+field.width*.5,field.y+field.height*.5);
+      await page.mouse.wheel(target.x-camera.x-camera.width*.5,target.y-camera.y-camera.height*.5);await page.waitForTimeout(180);
       const telemetry=await page.locator('canvas[data-sector-renderer="three"]').evaluate(element=>({...element.dataset}));
       assert.equal(telemetry.error,undefined,`${template.id} renderer failure`);
       assert.equal(telemetry.actors,'1',`${template.id} guard missing`);
