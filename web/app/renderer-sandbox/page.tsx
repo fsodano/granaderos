@@ -3,7 +3,7 @@ import {useState} from 'react';
 import Battlefield from '../Battlefield';
 import {createRendererSandboxBattle,RENDERER_SCENARIOS} from './fixtures';
 import {BUILDING_TYPES} from '../../../game/building-types.js';
-import {ARCHITECTURE_REVIEW_TEMPLATES} from './architecture-fixtures.js';
+import {ARCHITECTURE_REVIEW_TEMPLATES,ARCHITECTURE_REVIEW_ROOFS} from './architecture-fixtures.js';
 import './sandbox.css';
 
 export default function RendererSandbox(){
@@ -14,9 +14,10 @@ export default function RendererSandbox(){
   const [catalogTemplate,setCatalogTemplate]=useState('casa');
   const [catalogRotation,setCatalogRotation]=useState(0);
   const [catalogView,setCatalogView]=useState('exterior');
-  function reset(id:string,type='all',template=catalogTemplate,rotation=catalogRotation,view=catalogView){
-    setScenario(id);setArchitectureType(type);setCatalogTemplate(template);setCatalogRotation(rotation);setCatalogView(view);
-    setBattle(createRendererSandboxBattle(id==='catalog'?`catalog:${template}:${rotation}:${view}`:id==='architecture'&&type!=='all'?`architecture:${type}`:id));setVersion(value=>value+1);
+  const [catalogRoof,setCatalogRoof]=useState('original');
+  function reset(id:string,type='all',template=catalogTemplate,rotation=catalogRotation,view=catalogView,roof=catalogRoof){
+    setScenario(id);setArchitectureType(type);setCatalogTemplate(template);setCatalogRotation(rotation);setCatalogView(view);setCatalogRoof(roof);
+    setBattle(createRendererSandboxBattle(id==='catalog'?`catalog:${template}:${rotation}:${view}:${roof}`:id==='architecture'&&type!=='all'?`architecture:${type}`:id));setVersion(value=>value+1);
   }
   const help=RENDERER_SCENARIOS.find(item=>item.id===scenario)?.help;
   return <main className="game-shell renderer-sandbox">
@@ -29,6 +30,7 @@ export default function RendererSandbox(){
         <label>Edificio <select aria-label="Edificio del catálogo" value={catalogTemplate} onChange={event=>reset('catalog','all',event.target.value)}>{ARCHITECTURE_REVIEW_TEMPLATES.map(item=><option key={item.id} value={item.id}>{item.label}</option>)}</select></label>
         <label>Orientación <select aria-label="Orientación del edificio" value={catalogRotation} onChange={event=>reset('catalog','all',catalogTemplate,Number(event.target.value))}>{[0,90,180,270].map(angle=><option key={angle} value={angle}>{angle}°</option>)}</select></label>
         <label>Vista <select aria-label="Vista del edificio" value={catalogView} onChange={event=>reset('catalog','all',catalogTemplate,catalogRotation,event.target.value)}><option value="exterior">Exterior</option><option value="partial">Primera sala</option><option value="interior">Interior completo</option></select></label>
+        <label>Tejado <select aria-label="Tejado del edificio" value={catalogRoof} onChange={event=>reset('catalog','all',catalogTemplate,catalogRotation,catalogView,event.target.value)}>{ARCHITECTURE_REVIEW_ROOFS.map(item=><option key={item.id} value={item.id}>{item.label}</option>)}</select></label>
       </>}
     </nav>
     <p style={{margin:'0 16px 8px',fontSize:12}} aria-live="polite">{help}</p>

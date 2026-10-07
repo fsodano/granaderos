@@ -11,7 +11,7 @@ import {PAIRED_LOADING_SCENARIO,createPairedLoadingBattle} from './paired-loadin
 export const RENDERER_SCENARIOS=Object.freeze([
   {id:'characters',label:'Ocho personajes',help:'Granadero, realista, trabajador, cirujano, gaucho, fraile, exploradora y mujer con rebozo. Selecciona cada personaje para caminar, correr o cambiar su equipo. Esta escena no usa tu campaña guardada.'},
   {id:'architecture',label:'Arquitectura',help:'Nueve edificios a escala de soldado. Selecciona al guardia de cada edificio para centrar la cámara. Abre su puerta y entra para comparar fachada, azotea e interior con las órdenes habituales.'},
-  {id:'catalog',label:'Catálogo de edificios',help:'Catorce edificios con su mobiliario y cuatro orientaciones. Exterior: puerta cerrada. Primera sala: el guardia abre la puerta y entra. Interior completo: recorre las salas con las órdenes habituales. Puedes continuar la exploración.'},
+  {id:'catalog',label:'Catálogo de edificios',help:'Catorce edificios con su mobiliario y cuatro orientaciones. Exterior: puerta cerrada. Primera sala: el guardia abre la puerta y entra. Interior completo: recorre las salas con las órdenes habituales. Puedes comparar el tejado original, una terraza o una losa de tres metros. La azotea accesible tiene un acceso frente a la puerta. Puedes continuar la exploración.'},
   {id:'furnishings',label:'Mobiliario',help:'Mesa, banco, cama, baúl, barriles, heno y carreta. Usa la cámara y las órdenes habituales para comprobar la escala y el espacio de paso.'},
   {id:'postures',label:'Posturas',help:'Marcha, carrera, movimiento agachado y arrastre. Cada personaje tiene un tramo libre hacia el este. Usa las órdenes habituales para comparar apoyo, avance y recuperación.'},
   {id:'combat',label:'Combate',help:'Fusil, pistola, sable, granada y cuchillo: cada especialista tiene un blanco enfrente. Los dos artilleros están junto al cañón. Usa las órdenes habituales; reinicia para repetir.'},
@@ -116,7 +116,7 @@ export function createRendererSandboxBattle(id='combat'){
   if(id==='partial-loading')return createPartialLoadingBattle();
   if(id==='paired-loading')return createPairedLoadingBattle();
   if(id==='catalog')return createArchitectureReviewBattle();
-  if(id.startsWith('catalog:')){const [,template,rotation,view]=id.split(':');return createArchitectureReviewBattle(template,Number(rotation),view);}
+  if(id.startsWith('catalog:')){const [,template,rotation,view,roof]=id.split(':');return createArchitectureReviewBattle(template,Number(rotation),view,roof);}
   if(id==='empty')return {...createBattle([],{id:'renderer-empty',name:'Sector vacío',width:12,height:12,tiles:ground(12,12),enemies:[],exploration:true}),deploymentComplete:true};
   if(id==='characters')return characters();
   if(id==='architecture')return architecture();
