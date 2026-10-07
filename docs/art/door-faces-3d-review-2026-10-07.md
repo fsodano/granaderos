@@ -1,0 +1,13 @@
+# Door faces and hardware: 3D review
+
+The current direct sprite's `Opening` gives panelled doors four dark fields with lighter timber mouldings. Plank leaves have vertical board seams and two transverse straps. Barn doors add timber V-braces. The previous 3D door used the same plank detail for every style and placed all seams and hardware on only one leaf face. A rotated building could therefore expose a bare back face.
+
+This increment follows `web/app/TacticalArchitectureMaterials.tsx`'s current door detail. The direct fourteen-template overview is `artifacts/three-gameplay-review/direct-facade-audit/overview.png`; the full `palacio-0-exterior.png` shows the framed door detail. Existing hinge axes, leaf counts, widths, opening heights, open rotations, semantic IDs, and authored door states remain unchanged.
+
+Each leaf now has detail on both faces. Panelled leaves have four framed dark fields; barn leaves retain their gate seams and add flat timber braces. Hinge plates and handle backing plates support a brass knob on each face. Narrow mouldings use the source colour `#9c8058`, and the braces use `#baa077`, which keeps their raised edges legible. The shared wood texture and palette remain on the leaf. The short cutaway stub omits full-height panels, braces, and hardware. Breached door cells still remove their leaves through ordinary building geometry.
+
+All 26 affected checks, the type check, and the diff check pass. They cover both-face detail rays for all five retained door styles, actual authored doors on all fourteen templates at four rotations, open standing doorway clearance, breach removal, low cutaway bounds, metric slabs, roof routes, and the existing wall/support checks. Authored inputs remain unchanged.
+
+Initial live captures in `artifacts/three-gameplay-review/door-faces/` are exploratory. One palace image included an asset-loading overlay during hot reload and is not acceptance evidence. The corrected capture tool checks readiness immediately before and after each image and repeats an interrupted capture.
+
+The final raised-edge finish produced 24 live views without browser errors in `artifacts/three-gameplay-review/door-faces-final/`. Review viewed the house and town hall exteriors at 0°, the town hall interior at 270°, the palace exterior at 0° and interior at 270°, and the warehouse exterior at 0°. The palace's panel mouldings and the warehouse's timber braces are distinct at the normal whole-building camera scale. The dark leaf finish remains consistent with the retained wood, and ordinary room entry leaves no floating full-height hardware. This is a bounded door-detail review; the palace's sparse upper facade remains a separate increment.
