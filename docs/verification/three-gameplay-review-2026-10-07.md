@@ -635,3 +635,7 @@ Diagonal standing sabre preparation now turns toward the admitted current target
 ## Supported chapel placement
 
 The authored chapel roof, walls, door, floor returns and existing bell gable now share centred coordinates when the front supports remain intact. Edited corners and unpainted legacy shells retain their clipped placement. All 57 affected checks, type/docs/baseline checks and the clean build (`fb1e33a36d4c`) pass. Thirty ordinary and closer original/slab/accessible-roof views pass without browser errors and were compared with the current chapel sprite. The source front piers remain a separate detail cut. See [the placement review](../art/chapel-shell-placement-3d-review-2026-10-07.md).
+
+## Exposed chapel front piers
+
+The chapel now has its source-sized front shafts, separate warm stone feet and capitals. All four rotations retain actual corner supports, the standing door and real upper routes. The source passes 56 affected checks, type/docs/baseline checks and the clean build (`4a2d7c8a2e8a`). Thirty ordinary and closer original/slab/accessible-roof browser views pass without errors and were compared with the current sprite. See [the front-pier review](../art/chapel-front-piers-3d-review-2026-10-07.md).
