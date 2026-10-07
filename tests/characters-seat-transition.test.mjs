@@ -44,3 +44,23 @@ for(const id of ['granadero','woman-scout'])for(const action of ['mount','dismou
  if(action==='dismount')assert.ok(actor.model.position.length()<1e-8,'The rider returns to ordinary ground placement');
  actor.dispose();
 });
+
+for(const id of ['granadero','woman-scout'])for(const action of ['die','collapse','knockdown'])test(`${id} mounted ${action} hands off to the saved ground posture`,async()=>{
+ const asset=await source(id),spec=asset.clips.find(clip=>clip.name===`life.mounted.${action}`),end=spec.duration*1000;
+ const visual={key:`unit:${id}`,id,kind:'unit',appearance:id,skin:'light',side:'player',tacticalLevel:0,position:[4,0,7],yaw:.7,posture:'prone',mounted:false,action,idleAction:'idle',equipment:'unarmed',items:[],garments:{headwear:null,outfit:null,legwear:null},selected:false,bodyHeights:{},cue:{id:action,action,startedAt:0,durationMs:end,fromPosture:'mounted',toPosture:'prone'}};
+ const completed=[],actor=new ActorRuntime(asset,visual,(...event)=>completed.push(event));
+ actor.tick(0,0);assert.equal(actor.horse.visible,true,'The source posture retains the horse during the exit');
+ const names=['pelvis','head','foot_l','foot_r','hand_l','hand_r'];
+ actor.tick(0,end-.001);let previous=Object.fromEntries(names.map(name=>[name,point(actor,name)]));
+ actor.tick(0,end);
+ for(const name of names)assert.ok(previous[name].distanceTo(point(actor,name))<.001,`${name} stays continuous when the mounted cue completes`);
+ for(let frame=1;frame<=24;frame++){
+  actor.tick(1/120,end+frame*1000/120);
+  for(const name of names){const current=point(actor,name);assert.ok(previous[name].distanceTo(current)<.025,`${name} must not jump back toward the saddle`);previous[name]=current;}
+ }
+ assert.deepEqual(completed,[[visual.key,action]],'The ground handoff completes once');
+ assert.ok(actor.root.position.distanceTo(new Vector3(...visual.position))<1e-8,'The saved gameplay position stays fixed');
+ assert.ok(actor.model.position.length()<1e-8,'The resting body has no saddle translation');
+ assert.equal(actor.horse.visible,false,'The destination ground posture has no horse');
+ actor.dispose();
+});

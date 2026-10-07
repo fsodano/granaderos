@@ -28,6 +28,7 @@ HEADWEAR_PREFIXES = (
 )
 
 def apply_appearance(ctx):
+ from garment_detail import civilian_placket,waistcoat,rebozo,fitted_rope_and_hood,coat_sampler,coat_panel,surface_sample
  p=ctx['preset']; spec=PRESETS[p];objects=ctx['objects'];M=ctx['M'];mesh=ctx['mesh'];tube=ctx['tube'];ellipsoid=ctx['ellipsoid'];weight=ctx['source_weight_at'];heads=ctx['heads']
  def color(key,value):
   M[key].diffuse_color=(*value,1);M[key].node_tree.nodes.get('Principled BSDF').inputs['Base Color'].default_value=(*value,1)
@@ -55,12 +56,48 @@ def apply_appearance(ctx):
  # Native fitted human head remains visible. Hair additions are small head-bound
  # geometry, not disconnected oversized heads or a substitute body silhouette.
  if p=='woman-scout':
-  for j in range(21):
-   t=j/20;center=Vector((.010*math.sin(t*25),.084+.040*t,1.670-.295*t))
-   ellipsoid('Braided_Hair',center,(.016*(1-.55*t),.014*(1-.55*t),.020),M['hair'],'head',10,6)
-  tube('Braid_Tie',[(-.009,.122,1.400),(.009,.122,1.400)],[.004,.004],M['red'],'head',6)
+  # Three continuous locks form one tapered plait. The broad gathered root
+  # meets the swept-back scalp; separate spherical beads left visible joints.
+  scalp=next(obj for obj in objects if obj.name.startswith('Short_Hair'))
+  root_position,root_weights=surface_sample(scalp,Vector((0,1,1.637)),Vector((0,-1,0)),.007)
+  ellipsoid('Braided_Hair_Root',root_position,(.025,.019,.033),M['hair'],root_weights,24,14)
+  back_surface=coat_sampler(ctx)
+  def braid_support(t):
+   z=1.644-.272*t
+   return back_surface(0,z,True,.010) if z<1.53 else None
+  def braid_weights(t):
+   # The gathered root turns with the head, while the hanging length rests
+   # over the nape and upper back. A rigid head-bound tail enters the shirt
+   # when the wearer raises the head from a prone position.
+   bend=max(0,min(1,(t-.04)/.48));bend=bend*bend*(3-2*bend)
+   back=max(0,min(1,(t-.18)/.45));back=back*back*(3-2*back)
+   support=braid_support(t)
+   native=support[1] if support else {'spine_03':1}
+   result={name:value*bend*back for name,value in native.items()}
+   for name,value in root_weights.items():result[name]=result.get(name,0)+(1-bend)*value
+   result['neck_01']=result.get('neck_01',0)+bend*(1-back)
+   return result
+  for strand in range(3):
+   pts=[];radii=[];weights=[]
+   for j in range(113):
+    t=j/112;phase=t*math.tau*6+strand*math.tau/3;taper=1-.58*t
+    support=braid_support(t);back=max(0,min(1,(t-.42)/.20));back=back*back*(3-2*back)
+    hanging_y=root_position.y+.011+.038*t
+    y=hanging_y*(1-back)+(support[0].y if support else hanging_y)*back
+    pts.append((.0105*taper*math.sin(phase),y+.0045*taper*math.cos(phase),1.644-.272*t))
+    radii.append(.0074*taper)
+    weights.extend([braid_weights(t)]*8)
+   tube('Braided_Hair_Lock',pts,radii,M['hair'],weights,8)
+  tie=braid_support(.96)[0]
+  tube('Braid_Tie',[(-.007,tie.y,1.383),(.007,tie.y,1.383)],[.003,.003],M['red'],braid_weights(.96),8)
  elif p=='woman-shawl':
-  ellipsoid('Bound_Hair_Bun',(0,.078,1.673),(.047,.037,.042),M['hair'],'head',20,12)
+  ellipsoid('Bound_Hair_Root',(0,.084,1.647),(.033,.020,.033),M['hair'],'head',24,14)
+  ellipsoid('Bound_Hair_Bun',(0,.103,1.650),(.037,.025,.032),M['hair'],'head',28,18)
+  pts=[]
+  for j in range(97):
+   t=j/96;a=t*math.tau*2.4;radius=.030*(1-.70*t)
+   pts.append((radius*math.cos(a),.124+.003*t,1.650+radius*.86*math.sin(a)))
+  tube('Bound_Hair_Coil',pts,[.0023]*len(pts),M['hair'],'head',6)
  elif p=='friar':
   # Tonsure exposes source skin across the crown.
   for o in objects:
@@ -70,16 +107,8 @@ def apply_appearance(ctx):
  # Civilian shirts show a modest open collar and chest placket.
  if p in ('worker','woman-scout','woman-shawl'):
   color('cream',(.64,.56,.40))
-  tube('Shirt_Centre_Seam',[(0,-.171,1.43),(0,-.170,1.10)],[.0025,.0025],M['cream'],{'spine_02':.5,'spine_03':.5},6)
-  for z in (1.35,1.25,1.15):ellipsoid('Shirt_Button',(0,-.174,z),(.003,.002,.003),M['brass'],{'spine_02':.5,'spine_03':.5},8,6)
- if p=='worker':
-  # Waistcoat lies on the native coat surface and follows identical skinning.
-  coat=ctx['coat'];vv=[];ff=[];ww=[]
-  for v in coat.data.vertices:
-   vv.append(v.co+v.normal*.003);ww.append({coat.vertex_groups[g.group].name:g.weight for g in v.groups})
-  for f in coat.data.polygons:
-   if all(abs(coat.data.vertices[i].co.x)<.19 and 1.005<coat.data.vertices[i].co.z<1.445 for i in f.vertices):ff.append(tuple(f.vertices))
-  vestmat=M['trousers'];mesh('Worker_Waistcoat',vv,ff,vestmat,ww)
+  civilian_placket(ctx)
+ if p=='worker':waistcoat(ctx)
  if p=='surgeon':
   color('cream',(.67,.60,.45))
   ellipsoid('Linen_Cravat',(0,-.106,1.487),(.029,.020,.029),M['cream'],'neck_01',16,8)
@@ -96,16 +125,14 @@ def apply_appearance(ctx):
   make_hat(ctx)
  if p=='friar':
   draped('Friar_Habit_Skirt',ctx,top=1.07,bottom=.09,shoulder=False,material=M['navy'],width=.205,depth=.143)
-  path=[(.184*math.cos(j*math.tau/48),.012+.140*math.sin(j*math.tau/48),1.06) for j in range(49)]
-  tube('Rope_Belt',path,[.005]*49,M['cream'],'pelvis',8)
-  tube('Rope_Knot_Tails',[(.12,-.13,1.05),(.14,-.14,.87),(.13,-.14,.81)],[.005]*3,M['cream'],'pelvis',8)
-  # Hood rests on upper back, open folded cloth, not a second head.
-  ellipsoid('Folded_Hood',(0,.127,1.406),(.093,.030,.090),M['navy'],'spine_03',20,12)
+  fitted_rope_and_hood(ctx)
  if p=='woman-shawl':
   draped('Long_Skirt',ctx,top=1.06,bottom=.10,shoulder=False,material=M['trousers'],width=.20,depth=.145)
-  coat=ctx['coat'];vv=[v.co+v.normal*.009 for v in coat.data.vertices];ww=[{coat.vertex_groups[g.group].name:g.weight for g in v.groups} for v in coat.data.vertices]
-  ff=[tuple(f.vertices) for f in coat.data.polygons if all(coat.data.vertices[i].co.z>1.265 for i in f.vertices)]
-  mesh('Burgundy_Shawl',vv,ff,M['trousers'],ww)
+  # A sewn waistband overlaps the separately skinned hanging panels. Its
+  # native shirt topology keeps the join closed when the hips and trunk twist.
+  coat_panel(ctx,'Long_Skirt_Waistband',M['trousers'],[
+   lambda point:point.z-1.015,lambda point:1.08-point.z,lambda point:.20-abs(point.x)],.018)
+  rebozo(ctx)
  # Semantic parts are retained through optimization for optional body equipment.
  for o in objects:
   n=o.name
@@ -120,7 +147,8 @@ def apply_appearance(ctx):
 
 def draped(name,ctx,top,bottom,shoulder,material,width,depth):
  """Radially sampled sewn cloth with a real neck hole and source weight blend."""
- vv=[];ff=[];ww=[];N=64;R=24
+ from garment_detail import edge,joined,waist_attachment
+ vv=[];ff=[];ww=[];uv=[];N=80;R=28
  for row in range(R):
   t=row/(R-1);z=top+(bottom-top)*t
   for j in range(N):
@@ -133,6 +161,15 @@ def draped(name,ctx,top,bottom,shoulder,material,width,depth):
     shoulder_width=min(width,.245)
     rx=.083+(shoulder_width-.083)*ease+(width-shoulder_width)*t
     ry=.092+(depth-.092)*ease
+    # Below the elbow, the front hangs close to the torso. Excess breadth
+    # here trapped the forearm behind a projecting sheet and let the guard
+    # fist break through it. The continuous side opening admits the arm;
+    # its front edge falls inward rather than closing across the hand.
+    hanging=max(0,min(1,(t-.25)/.45));hanging=hanging*hanging*(3-2*hanging)
+    passage=max(0,min(1,(abs(math.cos(a))-.28)/.25));passage=passage*passage*(3-2*passage)
+    front=max(0,-math.sin(a))*passage
+    rx-=.045*hanging*front
+    ry-=.058*hanging*front
     zz=top+.050+(bottom-top-.050)*t
     centre_y=-.036+.048*ease
    else:
@@ -141,39 +178,85 @@ def draped(name,ctx,top,bottom,shoulder,material,width,depth):
     # the pelvis. A deep circular knee section becomes a raised tent when the
     # wearer lies down; use sewn ease around the legs rather than that volume.
     ry=depth*(1+.18*t)+.028*math.sin(math.pi*t);zz=z
-   fold=(.007+.010*t)*math.sin(12*a+.25*math.sin(t*math.pi))*(.3+.7*t)
+   # Unequal sewn folds have broad ridges and narrower valleys. The gathering
+   # is strongest at the supported edge, while the hanging folds separate
+   # toward the hem. Avoid a regular ring of identical cylindrical pleats.
+   phase=10*a+.60*math.sin(3*a)+.28*t
+   hanging=math.sin(phase)+.28*math.sin(17*a+1.7+.30*t)
+   gathered=.0028*math.exp(-t*8)*math.sin(23*a+.35)
+   fold=(.002+.010*t)*hanging+gathered
    q=Vector(((rx+fold)*math.cos(a),(centre_y if shoulder else .012)+(ry+fold)*math.sin(a),zz))
    if shoulder and t<.30:
     hit,cp,cn,_=ctx['coat'].ray_cast(Vector((q.x,q.y,1.8)),Vector((0,0,-1)))
     if hit:q.z=max(q.z,cp.z+.012)
-   vv.append(q)
    if shoulder:
     # Nearest-arm weights folded the garment into the armpit and tore open
     # the collar when the arm left the bind pose. A hanging panel follows
     # the chest and waist; its side opening lets the arm move independently.
     lower=max(0,min(1,(1.34-zz)/.34));upper=max(0,min(1,(zz-1.18)/.25))
     w={'spine_03':upper,'pelvis':lower*(1-upper),'spine_02':(1-lower)*(1-upper)}
+    # Side folds ride over the upper arm; the neckline and centre remain
+    # supported by the trunk. This lets a lifted elbow raise the side panel
+    # instead of piercing an immobile sheet across the chest.
+    side=max(0,min(1,(abs(math.cos(a))-.45)/.40))
+    arm=.40*side*min(1,t/.12)*max(0,min(1,(.80-t)/.20))
+    w={key:value*(1-arm) for key,value in w.items()}
+    w['upperarm_'+('l' if math.cos(a)>0 else 'r')]=arm
    else:
-    leg=min(1,t*2.1);left=.5+.38*math.cos(a)
+    leg=min(1,t*2.1);left=.5+.475*math.tanh(2*math.cos(a))
     calf=max(0,min(1,(t-.43)/.40));calf=calf*calf*(3-2*calf)
     w={'pelvis':1-leg,'thigh_l':leg*(1-calf)*left,'thigh_r':leg*(1-calf)*(1-left),
        'calf_l':leg*calf*left,'calf_r':leg*calf*(1-left)}
+    if t<.14:
+     # The sewn waistband overlaps the shirt with enough ease to retain a
+     # continuous edge after the two surfaces are reduced independently.
+     attachment=waist_attachment(ctx,a,top,.012)
+     if attachment:
+      anchor,aw=attachment;blend=(1-t/.14)**2
+      q.x=q.x*(1-blend)+anchor.x*blend;q.y=q.y*(1-blend)+anchor.y*blend
+      w={key:w.get(key,0)*(1-blend)+aw.get(key,0)*blend for key in set(w)|set(aw)}
+   vv.append(q)
    s=sum(w.values());ww.append({k:v/s for k,v in w.items()})
  for row in range(R-1):
   for j in range(N):
-   if shoulder and row/(R-1)>.32 and abs(math.cos((j+.5)*math.tau/N))>.97:continue
-   a=row*N+j;b=row*N+(j+1)%N;ff.append((a,b,b+N,a+N))
- o=ctx['mesh'](name,vv,ff,material,ww)
- if not shoulder:
-  # This mask survives mesh optimization and joining. It separates the sewn
-  # skirt from trousers and boots when posture corrections are added later.
-  cloth=o.data.attributes.new(name='Long_Cloth',type='FLOAT',domain='POINT')
-  for value in cloth.data:value.value=1
+   opening=.91-.25*max(0,min(1,(row/(R-1)-.32)/.36))
+   if shoulder and row/(R-1)>.32 and abs(math.cos((j+.5)*math.tau/N))>opening:continue
+   a=row*N+j;b=row*N+(j+1)%N;ff.append((a,a+N,b+N,b))
+   # The last face reaches U=1, rather than interpolating across the UV seam.
+   uv.append([(j/N,row/(R-1)),(j/N,(row+1)/(R-1)),((j+1)/N,(row+1)/(R-1)),((j+1)/N,row/(R-1))])
+ o=ctx['mesh'](name,vv,ff,material,ww,uv)
  # Solidify before the armature; thickness remains when mesh is exported.
  bpy.context.view_layer.objects.active=o
  mod=o.modifiers.new('Sewn_Cloth_Thickness','SOLIDIFY');mod.thickness=.003
  while o.modifiers.find(mod.name)>0:bpy.ops.object.modifier_move_up(modifier=mod.name)
  bpy.ops.object.modifier_apply(modifier=mod.name)
+ # Turned neck, hem and side edges share the same weights as the cloth.
+ # Join them into the garment so inventory replacement also removes its trim.
+ edges={}
+ for face in ff:
+  for a,b in zip(face,face[1:]+face[:1]):
+   key=tuple(sorted((a,b)));edges[key]=edges.get(key,0)+1
+ neighbours={}
+ for (a,b),count in edges.items():
+  if count==1:neighbours.setdefault(a,[]).append(b);neighbours.setdefault(b,[]).append(a)
+ remaining={pair for pair,count in edges.items() if count==1};details=[]
+ trim=material.copy();trim.name=material.name+'_Turned_Wool_Edge'
+ trim.diffuse_color=(*(c*.76 for c in material.diffuse_color[:3]),1)
+ trim.node_tree.nodes.get('Principled BSDF').inputs['Base Color'].default_value=trim.diffuse_color
+ while remaining:
+  first=next(iter(remaining));path=[first[0],first[1]];remaining.remove(tuple(sorted(first)))
+  while True:
+   options=[v for v in neighbours[path[-1]] if tuple(sorted((path[-1],v))) in remaining]
+   if not options:break
+   following=options[0];remaining.remove(tuple(sorted((path[-1],following))));path.append(following)
+   if following==path[0]:break
+  details.append(edge(ctx,name+'_Sewn_Edge',[vv[i] for i in path],[ww[i] for i in path],trim,.0015))
+ joined(ctx,o,details)
+ if not shoulder:
+  # This mask survives mesh optimization and joining. It separates the sewn
+  # skirt from trousers and boots when posture corrections are added later.
+  cloth=o.data.attributes.new(name='Long_Cloth',type='FLOAT',domain='POINT')
+  for value in cloth.data:value.value=1
  return o
 
 def make_hat(ctx):

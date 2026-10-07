@@ -104,12 +104,12 @@
     },
     {
       "localPath": "skin-detail-neutral.png",
-      "bytes": 262822,
-      "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357",
+      "bytes": 454047,
+      "sha256": "8fbdf67dd0f7b843cf01d3bb27384cb824c3e98c2665e96fd0858f7566b277cc",
       "license": "CC0-1.0",
       "author": "Mindfront; neutral map transformation by Granaderos",
       "derivedFrom": "Aksel_Skin_diffuse.png",
-      "derivation": "Pillow: convert upstream diffuse to RGB; resize to 1024 x 1024 with LANCZOS; ImageOps.grayscale; ImageEnhance.Contrast(...).enhance(0.66); remap each value with min(255, max(0, int((value - 128) * 0.78 + 222))); convert to RGB and save as PNG.",
+      "derivation": "Pillow: convert upstream diffuse to RGB; resize to 1024 x 1024 with LANCZOS; ImageOps.grayscale; map each value using linear = value * 0.70 + 109.6; when linear > 230, replace with 230 + 24 * (1 - exp(-(linear - 230) / 24)); round; convert to RGB and save as PNG. Exact recipe: prepare_skin_maps.py. Original source and normal map are unchanged.",
       "sourceUrl": "https://files2.makehumancommunity.org/asset_packs/skins02/skins02_cc0.zip",
       "archiveMember": "skins/mindfront_aksel_skin/Aksel_Skin_diffuse.png",
       "upstreamSha256": "268ee6d1ea9665f8050d040c7b47971884428628021418ae52f68912859f5e60",
@@ -120,7 +120,7 @@
         1024
       ],
       "colorMode": "RGB",
-      "pixelSha256": "058ef736e5508efa1c98e41c5c7734f27de68b7ea88cbda56df2a215a39b9fac",
+      "pixelSha256": "334dff1c440481bad6adea9222c2400ff7f650866ba7899111fea3c35fa8e969",
       "pixelHashEncoding": "RGB pixels, row-major order, three bytes per pixel. Recipe reproduces these pixels; PNG byte encoding can vary with Pillow versions."
     },
     {
@@ -153,6 +153,120 @@
       "upstreamPath": "src/mpfb/data/rigs/standard/weights.game_engine.json",
       "upstreamSha256": "9f4a773e74ce5ba08415b4f30070338e9f75bae5971b5075b10cd6b9caa58473",
       "derivation": "Unmodified upstream file."
+    },
+    {
+      "localPath": "young_lightskinned_male_diffuse.png",
+      "bytes": 3693828,
+      "sha256": "862a26e335e958b70534cb5f0d7c47ef30ab148a56c42b3e9da969cf76f12963",
+      "sourceUrl": "https://files2.makehumancommunity.org/asset_packs/makehuman_system_assets/makehuman_system_assets_cc0.zip",
+      "archiveMember": "skins/young_caucasian_male/young_lightskinned_male_diffuse.png",
+      "license": "CC0-1.0",
+      "author": "MakeHuman Community",
+      "upstreamPath": "skins/young_caucasian_male/young_lightskinned_male_diffuse.png",
+      "upstreamSha256": "862a26e335e958b70534cb5f0d7c47ef30ab148a56c42b3e9da969cf76f12963",
+      "derivation": "Unmodified upstream file. Explicit September 2020 CC0 release in adjacent material header."
+    },
+    {
+      "localPath": "young_caucasian_male.mhmat",
+      "bytes": 1462,
+      "sha256": "6eda60b07ff2afbde078a2535ef3913593d84e9de92b2eb76c30f396a181fe2e",
+      "sourceUrl": "https://files2.makehumancommunity.org/asset_packs/makehuman_system_assets/makehuman_system_assets_cc0.zip",
+      "archiveMember": "skins/young_caucasian_male/young_caucasian_male.mhmat",
+      "license": "CC0-1.0",
+      "author": "MakeHuman Community",
+      "upstreamPath": "skins/young_caucasian_male/young_caucasian_male.mhmat",
+      "upstreamSha256": "6eda60b07ff2afbde078a2535ef3913593d84e9de92b2eb76c30f396a181fe2e",
+      "derivation": "Unmodified upstream file. Explicit September 2020 CC0 release in adjacent material header."
+    },
+    {
+      "localPath": "young_lightskinned_female_diffuse.png",
+      "bytes": 4391156,
+      "sha256": "b2a6ac8cd4f9febdb447368e29c76cd68410bb66e46d9dcfa2d5f75126eea8fc",
+      "sourceUrl": "https://files2.makehumancommunity.org/asset_packs/makehuman_system_assets/makehuman_system_assets_cc0.zip",
+      "archiveMember": "skins/young_caucasian_female/young_lightskinned_female_diffuse.png",
+      "license": "CC0-1.0",
+      "author": "MakeHuman Community",
+      "upstreamPath": "skins/young_caucasian_female/young_lightskinned_female_diffuse.png",
+      "upstreamSha256": "b2a6ac8cd4f9febdb447368e29c76cd68410bb66e46d9dcfa2d5f75126eea8fc",
+      "derivation": "Unmodified upstream file. Explicit September 2020 CC0 release in adjacent material header."
+    },
+    {
+      "localPath": "young_caucasian_female.mhmat",
+      "bytes": 1464,
+      "sha256": "0bdea7786201f0b1132a24088336a97496ccdc54e9984db65d253a6a6d66f24f",
+      "sourceUrl": "https://files2.makehumancommunity.org/asset_packs/makehuman_system_assets/makehuman_system_assets_cc0.zip",
+      "archiveMember": "skins/young_caucasian_female/young_caucasian_female.mhmat",
+      "license": "CC0-1.0",
+      "author": "MakeHuman Community",
+      "upstreamPath": "skins/young_caucasian_female/young_caucasian_female.mhmat",
+      "upstreamSha256": "0bdea7786201f0b1132a24088336a97496ccdc54e9984db65d253a6a6d66f24f",
+      "derivation": "Unmodified upstream file. Explicit September 2020 CC0 release in adjacent material header."
+    },
+    {
+      "localPath": "skin-female-colour.png",
+      "bytes": 4738747,
+      "sha256": "5818150cab42cf0b2325319cea8b42894eade25d731d364162276b634f55e069",
+      "license": "CC0-1.0",
+      "author": "MakeHuman Community; Granaderos texture preparation",
+      "upstreamPath": "young_lightskinned_female_diffuse.png",
+      "upstreamSha256": "b2a6ac8cd4f9febdb447368e29c76cd68410bb66e46d9dcfa2d5f75126eea8fc",
+      "sourceUrl": "https://files2.makehumancommunity.org/asset_packs/makehuman_system_assets/makehuman_system_assets_cc0.zip",
+      "derivation": "Reproduced by prepare_skin_maps.py: 2048px tintable RGB residual colour, restrained fine-grain tangent normals, or spatial roughness; native UV unchanged."
+    },
+    {
+      "localPath": "skin-female-normal.png",
+      "bytes": 2968764,
+      "sha256": "5b28ef6bb29b5654ff1aececf1922ff6faddd616029fe879ff828d6996269292",
+      "license": "CC0-1.0",
+      "author": "MakeHuman Community; Granaderos texture preparation",
+      "upstreamPath": "young_lightskinned_female_diffuse.png",
+      "upstreamSha256": "b2a6ac8cd4f9febdb447368e29c76cd68410bb66e46d9dcfa2d5f75126eea8fc",
+      "sourceUrl": "https://files2.makehumancommunity.org/asset_packs/makehuman_system_assets/makehuman_system_assets_cc0.zip",
+      "derivation": "Reproduced by prepare_skin_maps.py: 2048px tintable RGB residual colour, restrained fine-grain tangent normals, or spatial roughness; native UV unchanged."
+    },
+    {
+      "localPath": "skin-female-roughness.png",
+      "bytes": 1315950,
+      "sha256": "8b934f7929ec6c3124592577b92fc92ad15436a9e0f2f6d9960999b72655ddba",
+      "license": "CC0-1.0",
+      "author": "MakeHuman Community; Granaderos texture preparation",
+      "upstreamPath": "young_lightskinned_female_diffuse.png",
+      "upstreamSha256": "b2a6ac8cd4f9febdb447368e29c76cd68410bb66e46d9dcfa2d5f75126eea8fc",
+      "sourceUrl": "https://files2.makehumancommunity.org/asset_packs/makehuman_system_assets/makehuman_system_assets_cc0.zip",
+      "derivation": "Reproduced by prepare_skin_maps.py: 2048px tintable RGB residual colour, restrained fine-grain tangent normals, or spatial roughness; native UV unchanged."
+    },
+    {
+      "localPath": "skin-male-colour.png",
+      "bytes": 4211626,
+      "sha256": "cfe00d87638eab122eb8cf15c194a30cae5e6396d8c22d965fb9b6aa305b13b8",
+      "license": "CC0-1.0",
+      "author": "MakeHuman Community; Granaderos texture preparation",
+      "upstreamPath": "young_lightskinned_male_diffuse.png",
+      "upstreamSha256": "862a26e335e958b70534cb5f0d7c47ef30ab148a56c42b3e9da969cf76f12963",
+      "sourceUrl": "https://files2.makehumancommunity.org/asset_packs/makehuman_system_assets/makehuman_system_assets_cc0.zip",
+      "derivation": "Reproduced by prepare_skin_maps.py: 2048px tintable RGB residual colour, restrained fine-grain tangent normals, or spatial roughness; native UV unchanged."
+    },
+    {
+      "localPath": "skin-male-normal.png",
+      "bytes": 2670688,
+      "sha256": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c",
+      "license": "CC0-1.0",
+      "author": "MakeHuman Community; Granaderos texture preparation",
+      "upstreamPath": "young_lightskinned_male_diffuse.png",
+      "upstreamSha256": "862a26e335e958b70534cb5f0d7c47ef30ab148a56c42b3e9da969cf76f12963",
+      "sourceUrl": "https://files2.makehumancommunity.org/asset_packs/makehuman_system_assets/makehuman_system_assets_cc0.zip",
+      "derivation": "Reproduced by prepare_skin_maps.py: 2048px tintable RGB residual colour, restrained fine-grain tangent normals, or spatial roughness; native UV unchanged."
+    },
+    {
+      "localPath": "skin-male-roughness.png",
+      "bytes": 1308737,
+      "sha256": "6eb27af5269a59753a87f626d6611bb54a8c175fc860068c3da620e0e84c4274",
+      "license": "CC0-1.0",
+      "author": "MakeHuman Community; Granaderos texture preparation",
+      "upstreamPath": "young_lightskinned_male_diffuse.png",
+      "upstreamSha256": "862a26e335e958b70534cb5f0d7c47ef30ab148a56c42b3e9da969cf76f12963",
+      "sourceUrl": "https://files2.makehumancommunity.org/asset_packs/makehuman_system_assets/makehuman_system_assets_cc0.zip",
+      "derivation": "Reproduced by prepare_skin_maps.py: 2048px tintable RGB residual colour, restrained fine-grain tangent normals, or spatial roughness; native UV unchanged."
     }
   ],
   "schemaVersion": 1

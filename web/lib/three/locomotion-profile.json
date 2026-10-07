@@ -14,7 +14,7 @@
   "banks": {
     "male": {
       "crawl": {
-        "nativeStrideSpeed": 0.146131,
+        "nativeStrideSpeed": 0.260825,
         "duration": 1.966659,
         "playbackRate": 1
       },
@@ -160,22 +160,22 @@
           "playbackRate": 1
         },
         "prone.crawl.unarmed": {
-          "nativeStrideSpeed": 0.146131,
+          "nativeStrideSpeed": 0.260825,
           "duration": 1.966659,
           "playbackRate": 1
         },
         "prone.crawl.long-gun": {
-          "nativeStrideSpeed": 0.195142,
+          "nativeStrideSpeed": 0.260825,
           "duration": 1.966659,
           "playbackRate": 1
         },
         "prone.crawl.short-gun": {
-          "nativeStrideSpeed": 0.195142,
+          "nativeStrideSpeed": 0.260825,
           "duration": 1.966659,
           "playbackRate": 1
         },
         "prone.crawl.blade": {
-          "nativeStrideSpeed": 0.195142,
+          "nativeStrideSpeed": 0.260825,
           "duration": 1.966659,
           "playbackRate": 1
         },
@@ -290,12 +290,12 @@
           "playbackRate": 1
         },
         "prone.crawl.lance": {
-          "nativeStrideSpeed": 0.195142,
+          "nativeStrideSpeed": 0.260825,
           "duration": 1.966659,
           "playbackRate": 1
         },
         "prone.crawl.knife": {
-          "nativeStrideSpeed": 0.195142,
+          "nativeStrideSpeed": 0.260825,
           "duration": 1.966659,
           "playbackRate": 1
         },
@@ -1200,7 +1200,7 @@
     },
     "female": {
       "crawl": {
-        "nativeStrideSpeed": 0.145855,
+        "nativeStrideSpeed": 0.262093,
         "duration": 1.966659,
         "playbackRate": 1
       },
@@ -1346,22 +1346,22 @@
           "playbackRate": 1
         },
         "prone.crawl.unarmed": {
-          "nativeStrideSpeed": 0.145855,
+          "nativeStrideSpeed": 0.262093,
           "duration": 1.966659,
           "playbackRate": 1
         },
         "prone.crawl.long-gun": {
-          "nativeStrideSpeed": 0.194203,
+          "nativeStrideSpeed": 0.262093,
           "duration": 1.966659,
           "playbackRate": 1
         },
         "prone.crawl.short-gun": {
-          "nativeStrideSpeed": 0.194203,
+          "nativeStrideSpeed": 0.262093,
           "duration": 1.966659,
           "playbackRate": 1
         },
         "prone.crawl.blade": {
-          "nativeStrideSpeed": 0.194203,
+          "nativeStrideSpeed": 0.262093,
           "duration": 1.966659,
           "playbackRate": 1
         },
@@ -1476,12 +1476,12 @@
           "playbackRate": 1
         },
         "prone.crawl.lance": {
-          "nativeStrideSpeed": 0.194203,
+          "nativeStrideSpeed": 0.262093,
           "duration": 1.966659,
           "playbackRate": 1
         },
         "prone.crawl.knife": {
-          "nativeStrideSpeed": 0.194203,
+          "nativeStrideSpeed": 0.262093,
           "duration": 1.966659,
           "playbackRate": 1
         },

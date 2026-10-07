@@ -1,15 +1,38 @@
-import {readFileSync,writeFileSync} from 'node:fs';
+import {readFileSync,writeFileSync,realpathSync} from 'node:fs';
+import {spawnSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
+import {resolve,join,relative,isAbsolute} from 'node:path';
 import {AnimationClip,AnimationMixer,Group,InterpolateDiscrete,InterpolateLinear,LoopOnce,Object3D,QuaternionKeyframeTrack,Vector3,VectorKeyframeTrack} from '../../web/node_modules/three/build/three.module.js';
 import {GLTFLoader} from '../../web/node_modules/three/examples/jsm/loaders/GLTFLoader.js';
 
-const root=new URL('../../',import.meta.url),publicRoot=new URL('web/public/',root);
-const manifestPath=new URL('models/characters/manifest.json',publicRoot);
+const root=new URL('../../',import.meta.url);
+function option(name){const i=process.argv.indexOf(name);if(i<0)return undefined;const value=process.argv[i+1];if(!value||value.startsWith('--'))throw Error(`Missing value for ${name}`);return value;}
+const defaultLibrary=fileURLToPath(new URL('web/public/models/characters/',root));
+const libraryRoot=realpathSync.native(resolve(option('--directory')??defaultLibrary));
+// Hold the same writer lock as asset increment publication, before the fresh
+// manifest read. A trusted parent keeps the lock while this child runs.
+const canonicalLibrary=libraryRoot;
+const lockToken=process.platform==='win32'?canonicalLibrary.toLowerCase():canonicalLibrary;
+if(!process.argv.includes('--check')&&process.env.GRANADEROS_LIBRARY_LOCK!==lockToken){
+ const helper=fileURLToPath(new URL('./library_publication.py',import.meta.url));
+ const child=spawnSync(process.platform==='win32'?'python':'python3',[
+  helper,'--directory',canonicalLibrary,'--',process.execPath,...process.execArgv,...process.argv.slice(1),
+ ],{stdio:'inherit'});
+ if(child.error)throw child.error;
+ if(child.signal)process.kill(process.pid,child.signal);
+ else process.exit(child.status??1);
+}
+const manifestPath=join(libraryRoot,'manifest.json');
 const manifest=JSON.parse(readFileSync(manifestPath,'utf8'));
 const widths={SCALAR:1,VEC2:2,VEC3:3,VEC4:4,MAT4:16};
 const format={5121:['readUInt8',1],5123:['readUInt16LE',2],5125:['readUInt32LE',4],5126:['readFloatLE',4]};
+function assetPath(url){
+ const prefix='/models/characters/';if(!url.startsWith(prefix))throw Error(`Asset outside character library: ${url}`);
+ const asset=resolve(libraryRoot,url.slice(prefix.length)),local=relative(libraryRoot,asset);if(local==='..'||local.startsWith('../')||isAbsolute(local))throw Error(`Asset outside character library: ${url}`);
+ return asset;
+}
 function glb(url){
- const bytes=readFileSync(new URL(`.${url}`,publicRoot)),size=bytes.readUInt32LE(12),json=JSON.parse(bytes.subarray(20,20+size)),binary=bytes.subarray(28+size);
+ const bytes=readFileSync(assetPath(url)),size=bytes.readUInt32LE(12),json=JSON.parse(bytes.subarray(20,20+size)),binary=bytes.subarray(28+size);
  const access=index=>{
   const a=json.accessors[index],view=json.bufferViews[a.bufferView],[read,size]=format[a.componentType],width=widths[a.type];
   if(a.sparse||a.normalized)throw Error('Crawl calibration requires packed native float accessors');
@@ -42,7 +65,7 @@ function measureCrawl(body,data,spec){
 async function measurePlantedCrawl(url,data,spec){
  // Read the complete published forearm skin. A bone pivot or a median of
  // positive velocities does not measure the displacement of a planted pull.
- const bytes=readFileSync(new URL(`.${url}`,publicRoot)),length=bytes.readUInt32LE(12),doc=JSON.parse(bytes.subarray(20,20+length));
+ const bytes=readFileSync(assetPath(url)),length=bytes.readUInt32LE(12),doc=JSON.parse(bytes.subarray(20,20+length));
  delete doc.images;delete doc.textures;delete doc.samplers;doc.materials=(doc.materials??[]).map(material=>({name:material.name}));
  const json=Buffer.from(JSON.stringify(doc)),padded=Buffer.concat([json,Buffer.alloc((4-json.length%4)%4,32)]),binary=bytes.subarray(20+length),header=Buffer.from(bytes.subarray(0,20));
  header.writeUInt32LE(20+padded.length+binary.length,8);header.writeUInt32LE(padded.length,12);
@@ -90,8 +113,9 @@ const horse=Object.fromEntries(['walk','run'].map(action=>{
  return [action,{nativeStrideSpeed:clip.nativeStrideSpeed??clip.locomotionSpeed,duration:clip.duration,playbackRate:clip.playbackRate??1}];
 }));
 const itemClips=Object.fromEntries(Object.entries(manifest.equipment.items).filter(([,item])=>item.clipOverrides).map(([id,item])=>[id,item.clipOverrides]));
-const profile={version:1,source:'web/public/models/characters/manifest.json',appearances:Object.fromEntries(Object.entries(manifest.appearances).map(([id,appearance])=>[id,appearance.animationLibrary])),banks,horse,itemClips,itemAliases:manifest.equipment.aliases};
-const path=fileURLToPath(new URL('web/lib/three/locomotion-profile.json',root)),text=JSON.stringify(profile,null,2)+'\n',manifestText=JSON.stringify(manifest,null,2)+'\n';
+const production=libraryRoot===resolve(defaultLibrary);
+const profile={version:1,source:production?'web/public/models/characters/manifest.json':manifestPath,appearances:Object.fromEntries(Object.entries(manifest.appearances).map(([id,appearance])=>[id,appearance.animationLibrary])),banks,horse,itemClips,itemAliases:manifest.equipment.aliases};
+const path=production?fileURLToPath(new URL('web/lib/three/locomotion-profile.json',root)):join(libraryRoot,'locomotion-profile.json'),text=JSON.stringify(profile,null,2)+'\n',manifestText=JSON.stringify(manifest,null,2)+'\n';
 if(process.argv.includes('--check')){
  if(readFileSync(path,'utf8')!==text||readFileSync(manifestPath,'utf8')!==manifestText)throw Error('Character locomotion calibration is stale. Run tools/characters-3d/compile-locomotion-profile.mjs.');
 }else{writeFileSync(manifestPath,manifestText);writeFileSync(path,text);}

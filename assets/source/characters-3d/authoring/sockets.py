@@ -4,6 +4,7 @@ from mathutils import Matrix,Vector
 
 def create_sockets(ctx):
  from motion import _palm_basis,_hand_rotation
+ from firearm_grips import grip_frame
  rig=ctx['rig'];result={};items=[]
  def marker(name,bone_name,matrix):
   bone=rig.data.bones[bone_name]
@@ -12,11 +13,8 @@ def create_sockets(ctx):
   o.matrix_parent_inverse=Matrix.Translation((0,-bone.length,0));o.matrix_basis=matrix
   items.append(o);return name
  for side,role in [('r','handRight'),('l','handLeft')]:
-  bone=rig.data.bones['hand_'+side];long,normal=_palm_basis(rig,side)
-  knuckles=sum((rig.data.bones[f+'_01_'+side].head_local for f in ('index','middle','ring','pinky')),Vector())/4
-  center=bone.head_local.lerp(knuckles,.74)+normal*.014;local=bone.matrix_local.inverted()@center
-  for grip,direction in [('rifle',(1,0,.05)),('pistol',(1,0,-.10)),('sabre',(1,0,0)),('tool',(1,0,0))]:
-   h=_hand_rotation(rig,side,Vector(direction),Vector((0,1,0)))
+  for grip in ('rifle','pistol','sabre','tool'):
+   local,h=grip_frame(rig,side,grip,_palm_basis,_hand_rotation,ctx.get('gender'))
    name='socket_'+role+'_'+grip;matrix=Matrix.LocRotScale(local,h.inverted(),Vector((1,1,1)))
    result[role+'_'+grip]={'node':marker(name,'hand_'+side,matrix),'bone':'hand_'+side,'position':[0,0,0],'rotation':[0,0,0],'scale':1}
    if role=='handLeft'and grip=='pistol':

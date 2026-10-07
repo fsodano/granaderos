@@ -14,6 +14,7 @@ if native_contacts:motion_authoring.FPS=60
 bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=False)
 ctx=create_character(a.preset);create_equipment(ctx)
 names={spec['name'] for spec in _semantic_specs() if ('*'in a.gesture or spec['gesture']in a.gesture) and(a.equipment=='all'or spec['equipment']==a.equipment) and(not a.posture or spec['posture']==a.posture)}
+if not names:raise ValueError('No semantic clips match the selected gesture, equipment and posture')
 motion=apply_animations(ctx,only=names);rig=ctx['rig'];rig.animation_data.action=None
 for track in rig.animation_data.nla_tracks:track.mute=False
 bpy.ops.object.select_all(action='DESELECT');rig.select_set(True);bpy.context.view_layer.objects.active=rig
@@ -22,7 +23,11 @@ output=Path(a.output);output.parent.mkdir(parents=True,exist_ok=True)
 # whole frames. They have no constraints to bake; preserve those source keys.
 bpy.context.scene.render.fps=motion_authoring.FPS
 bpy.ops.export_scene.gltf(filepath=str(output),export_format='GLB',use_selection=True,export_yup=True,export_animations=True,export_animation_mode='NLA_TRACKS',export_force_sampling=not native_contacts,export_frame_range=False,export_anim_slide_to_zero=True,export_nla_strips=True,export_skins=True,export_extras=False,export_cameras=False,export_lights=False)
+from export_timing import trim_endpoints,authored_durations,calibrate_crawl
+trim_endpoints(output,authored_durations(rig))
 raw,doc=pack(output,{})
+crawl_speed=calibrate_crawl(output,motion['clips'])
+if crawl_speed is not None:motion['locomotionSpeed']['crawl']=crawl_speed
 assert {animation['name']for animation in doc['animations']}==names
 for clip in motion['clips']:
     if'seatAnchor'in clip:

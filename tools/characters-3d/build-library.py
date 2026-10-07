@@ -5,10 +5,31 @@ Usage: python3 tools/characters-3d/build-library.py [--only appearance|garments|
 The approved playground is never read or changed by this production builder.
 """
 from pathlib import Path
-import argparse,subprocess,sys,json,os,struct,concurrent.futures
+import argparse,subprocess,sys,json,os,struct,concurrent.futures,hashlib
+from library_publication import publication_lock
 ROOT=Path(__file__).resolve().parents[2];HERE=ROOT/'assets/source/characters-3d/authoring';OUT=ROOT/'web/public/models/characters';META=HERE/'.build'
 PRESETS=['granadero','royalist','worker','surgeon','gaucho','friar','woman-scout','woman-shawl']
-p=argparse.ArgumentParser();p.add_argument('--blender',default='/Applications/Blender.app/Contents/MacOS/Blender');p.add_argument('--only',choices=['appearance','garments','equipment','horse','animations']);p.add_argument('--preset',choices=PRESETS);p.add_argument('--lod',type=int,choices=[0,1,2]);p.add_argument('--review',action='store_true');p.add_argument('--jobs',type=int,default=2);p.add_argument('--manifest-only',action='store_true');a=p.parse_args()
+p=argparse.ArgumentParser();p.add_argument('--blender',default='/Applications/Blender.app/Contents/MacOS/Blender');p.add_argument('--only',choices=['appearance','garments','equipment','horse','animations']);p.add_argument('--preset',choices=PRESETS);p.add_argument('--lod',type=int,choices=[0,1,2]);p.add_argument('--review',action='store_true');p.add_argument('--jobs',type=int,default=2);p.add_argument('--manifest-only',action='store_true')
+p.add_argument('--directory',type=Path,default=OUT,help='Output library; use a new private directory for paired body/socket/motion changes.')
+p.add_argument('--source-directory',type=Path,default=HERE,help='Authoring source, including the original tree layout and game contract.')
+a=p.parse_args()
+production=OUT.resolve();source_default=HERE.resolve();OUT=a.directory.resolve();HERE=a.source_directory.resolve()
+if OUT==production and HERE!=source_default:p.error('Frozen sources must build into a private library.')
+CONTRACT=HERE.parents[3]
+META=HERE/'.build'if OUT==production else OUT/'.build'
+OUT.mkdir(parents=True,exist_ok=True)
+# The full builder writes a matched set. Keep other writers out for its entire
+# run, including worker exports, manifest creation and crawl calibration.
+if os.environ.get('GRANADEROS_LIBRARY_LOCK')!=os.path.normcase(str(OUT)):
+ with publication_lock(OUT):
+  result=subprocess.run([sys.executable,str(Path(__file__).resolve()),*sys.argv[1:]],cwd=ROOT)
+ sys.exit(result.returncode if result.returncode>=0 else 128-result.returncode)
+contracts=[CONTRACT/'game'/name for name in ('actor-action-contract.js','climb-geometry.js','building-types.js','building-scale.js')]
+if not a.manifest_only and a.only in (None,'animations'):
+ # A frozen animation build also needs the shared ladder geometry. Check
+ # dependencies before spending time authoring the preceding combat clips.
+ subprocess.run(['node','--input-type=module','-e',';'.join('import '+json.dumps('./game/'+path.name) for path in contracts)],cwd=CONTRACT,check=True)
+sources={path:hashlib.sha256(path.read_bytes()).hexdigest()for path in [*HERE.glob('*.py'),*(HERE/'vendor/makehuman').glob('skin-*.png'),*contracts]if path.exists()}
 jobs=[]
 if not a.manifest_only:
  for kind in ([a.only]if a.only else ['appearance','garments','equipment','horse','animations']):
@@ -19,13 +40,15 @@ if not a.manifest_only:
  META.mkdir(parents=True,exist_ok=True)
  def run(job):
   kind,preset,lod=job;log=META/(kind+'-'+preset+'-'+str(lod)+'.log')
-  cmd=[a.blender,'--background','--factory-startup','--python',str(HERE/'build.py'),'--',kind,'--preset',preset,'--lod',str(lod)]+(['--review']if a.review else[])
+  cmd=[a.blender,'--background','--factory-startup','--python',str(HERE/'build.py'),'--',kind,'--preset',preset,'--lod',str(lod),'--output-dir',str(OUT),'--metadata-dir',str(META)]+(['--review']if a.review else[])
   with log.open('w')as f:r=subprocess.run(cmd,cwd=ROOT,stdout=f,stderr=subprocess.STDOUT)
   # Blender can return0 after Python exceptions; verify the explicit completion.
   content=log.read_text()
   if r.returncode or 'ASSET_READY'not in content:raise RuntimeError(str(log)+'\n'+content[-3500:])
   print(next(line for line in content.splitlines()if line.startswith('ASSET_READY')),flush=True)
- with concurrent.futures.ThreadPoolExecutor(max_workers=a.jobs)as pool:list(pool.map(run,jobs))
+ with concurrent.futures.ThreadPoolExecutor(max_workers=max(1,a.jobs))as pool:list(pool.map(run,jobs))
+if any(hashlib.sha256(path.read_bytes()).hexdigest()!=value for path,value in sources.items()):
+ raise ValueError('Authoring source changed during the build; this library is not ready for review.')
 records=[json.loads(f.read_text())for f in META.glob('*.json')]
 byname={f['url'].split('/')[-1]:f for f in records}
 bones={'root':'Root','hips':'pelvis','spine':'spine_02','chest':'spine_03','neck':'neck_01','head':'head','handRight':'hand_r','handLeft':'hand_l','footRight':'foot_r','footLeft':'foot_l'}
@@ -53,12 +76,12 @@ for gender in ('male','female'):
     x,y,z=clip.get('seatAnchor',anchor);clip['seatAnchor']=[x,z,-y];clip['seatAnchorSpace']='gltf-model-local'
    if clip.get('gesture')in ('mount','dismount')and not clip.get('seatWeight'):
     mount=clip['gesture']=='mount';clip['seatWeight']=[{'time':0,'weight':0 if mount else 1},{'time':clip['markers']['seat'],'weight':1 if mount else 0},{'time':clip['duration'],'weight':1 if mount else 0}]
-   if clip.get('posture')=='mounted'and clip.get('gesture')in ('die','collapse','knockdown'):
+   if clip.get('posture')=='mounted'and clip.get('gesture')in ('die','collapse','knockdown') and not clip.get('mountedGround'):
     clip['seatWeight']=[{'time':0,'weight':1},{'time':clip['markers']['ground'],'weight':0},{'time':clip['duration'],'weight':0}]
  name=gender+'-garments.glb'
  if name in byname:manifest['garments'][gender]={'url':byname[name]['url'],'items':{'poncho':{'node':'garment_poncho','slot':'outfit','hideAppearanceParts':[]},'linen_shirt':{'node':'garment_linen_shirt','slot':'outfit','hideAppearanceParts':['outfit']},'trousers':{'node':'garment_trousers','slot':'legwear','hideAppearanceParts':['legwear']},'hat':{'node':'garment_hat','slot':'headwear','hideAppearanceParts':['headwear']}}}
 if 'equipment.glb'in byname:manifest['equipment'].update({k:byname['equipment.glb'][k]for k in ('bytes','sha256','items')})
-item_overrides=json.loads(subprocess.check_output(['node','--input-type=module','-e',"import {ACTOR_ITEM_CLIP_OVERRIDES} from './game/actor-action-contract.js';console.log(JSON.stringify(ACTOR_ITEM_CLIP_OVERRIDES));"],cwd=ROOT,text=True))
+item_overrides=json.loads(subprocess.check_output(['node','--input-type=module','-e',"import {ACTOR_ITEM_CLIP_OVERRIDES} from './game/actor-action-contract.js';console.log(JSON.stringify(ACTOR_ITEM_CLIP_OVERRIDES));"],cwd=CONTRACT,text=True))
 for item,binding in item_overrides.items():
  if item in manifest['equipment']['items']:manifest['equipment']['items'][item]['clipOverrides']=binding
 manifest['equipment']['aliases']={'medical':'medkits','medkit':'medkits','torch':'torches','bolas':'boleadoras','ration':'rations','ammo':'ammunition','inventory:key':'key','inventory:lockpick':'lockpick','inventory:crowbar':'crowbar','inventory:pliers':'pliers'}
@@ -71,5 +94,5 @@ if manifest['complete']:
  # The general bank uses 30 Hz. Native ladder contacts need 60 Hz keys and
  # exact final-frame timing; retain the rest of each complete bank.
  if any(kind=='animations'for kind,preset,lod in jobs):
-  subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-motion-increment.py'),'--blender',a.blender,'--gesture','climbUp','--gesture','climbDown','--equipment','any'],cwd=ROOT,check=True)
- else:subprocess.run(['node',str(ROOT/'tools/characters-3d/compile-locomotion-profile.mjs')],cwd=ROOT,check=True)
+  subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-motion-increment.py'),'--blender',a.blender,'--gesture','climbUp','--gesture','climbDown','--equipment','any','--directory',str(OUT),'--source-directory',str(HERE)],cwd=ROOT,check=True)
+ else:subprocess.run(['node',str(ROOT/'tools/characters-3d/compile-locomotion-profile.mjs'),'--directory',str(OUT)],cwd=ROOT,check=True)

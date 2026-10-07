@@ -1,7 +1,7 @@
 import {register} from 'node:module';register('./tactical-render-loader.mjs',import.meta.url);
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {Vector3,LoopOnce} from '../web/node_modules/three/build/three.module.js';
+import {Vector3,Quaternion,LoopOnce} from '../web/node_modules/three/build/three.module.js';
 import {publishedActor} from './published-actor-fixture.mjs';
 const {ActorRuntime}=await import('../web/lib/three/actor-runtime.ts');
 const {sampleAnimationTime}=await import('../web/lib/three/animation-clock.ts');
@@ -21,6 +21,31 @@ async function fixture(appearance,equipment){
  function lowest(side){let height=Infinity,index;for(const candidate of boots[side]){const y=point(candidate).y;if(y<height){height=y;index=candidate;}}return{height,index};}
  return{asset,actor,select,pose,point,lowest};
 }
+for(const appearance of ['granadero','woman-scout'])test(`${appearance} rifle side steps retain the reviewed palm contact and native wrist bend`,async()=>{
+ const f=await fixture(appearance,'long-gun');try{
+  const point=name=>f.actor.model.getObjectByName(name).getWorldPosition(new Vector3());
+  const rest=Object.fromEntries(['l','r'].map(side=>[side,f.actor.model.getObjectByName(`hand_${side}`).quaternion.clone().invert()]));
+  const grip=f.asset.clips.find(spec=>spec.name==='stand.walk.long-gun').reviewedPose.nativeGrip;
+  const support=new Vector3(...grip.supportPosition);
+  for(const direction of ['Left','Right']){
+   const {clip}=f.select(`stand.strafe${direction}.long-gun`),count=Math.ceil(clip.duration*120);
+   for(let i=0;i<=count;i++){
+    f.pose(clip.duration*i/count);
+    const palm=f.actor.model.getObjectByName('socket_handRight_rifle').worldToLocal(point('socket_handLeft_rifle'));
+    assert.ok(palm.distanceTo(support)<.006,`${clip.name}: supporting palm stays within 6 mm of the fore-end`);
+    for(const side of ['l','r']){
+     const long=point(`middle_01_${side}`).sub(point(`hand_${side}`)).normalize(),forearm=point(`hand_${side}`).sub(point(`lowerarm_${side}`)).normalize();
+     assert.ok(long.angleTo(forearm)<Math.PI/4,`${clip.name}: the rifle carry must not fold the ${side} wrist`);
+     const delta=new Quaternion().multiplyQuaternions(rest[side],f.actor.model.getObjectByName(`hand_${side}`).quaternion);
+     const degrees=2*Math.atan2(delta.y,delta.w)*180/Math.PI,twist=((degrees+180)%360+360)%360-180;
+     assert.ok(Math.abs(twist)<12,`${clip.name}: pronation stays in the native forearm`);
+    }
+    const long=point('middle_01_r').sub(point('hand_r')).normalize(),normal=point('index_01_r').sub(point('pinky_01_r')).cross(long).normalize(),hinge=long.clone().cross(normal).normalize();
+    for(const [a,b]of [['index_01_r','index_02_r'],['index_02_r','index_03_r']])assert.ok(Math.abs(point(b).sub(point(a)).normalize().dot(hinge))<Math.sin(Math.PI/12),`${clip.name}: the trigger finger flexes in its native plane`);
+   }
+  }
+ }finally{f.actor.dispose();}
+});
 for(const appearance of ['granadero','woman-scout'])for(const equipment of ['unarmed','long-gun','short-gun','blade','knife','lance']){
  test(`${appearance} standing ${equipment} side steps support complete native boots through their retained loops`,async()=>{
   const f=await fixture(appearance,equipment);try{for(const direction of ['Left','Right']){
