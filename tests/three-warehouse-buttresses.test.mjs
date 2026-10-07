@@ -8,6 +8,9 @@ const {WorldMaterials}=await import('../web/lib/three/world-materials.ts');
 const {buildBuilding}=await import('../web/lib/three/world-buildings.ts');
 const {buildingArtInset}=await import('../web/lib/three/world-building-placement.ts');
 const {entranceFrame}=await import('../game/building-profile.js');
+const {buildingStyle}=await import('../game/building-types.js');
+const {buildingDetails}=await import('../web/app/TacticalBuildingDetails.tsx');
+const {ArchitectureVolume}=await import('../web/app/TacticalBuildingVolumes.tsx');
 const {createArchitectureReviewBattle}=await import('../web/app/renderer-sandbox/architecture-fixtures.js');
 const T=1.2360585147470482,V=25.066666666666666,rotations=[0,90,180,270];
 function fixture(rotation,view='exterior',roof='original'){
@@ -46,5 +49,36 @@ test('warehouse supports stay below real flat roofs and disappear with ordinary 
  for(const rotation of rotations){
   for(const roof of ['slab','terrace','roof-route']){const f=fixture(rotation,'exterior',roof),building=f.build(),node=f.feature(building);assert.ok(node);node.traverse(child=>{if(child instanceof Mesh){const p=child.geometry.getAttribute('position');for(let n=0;n<p.count;n++)assert.ok(p.getY(n)<building.userData.height-.04,'low scenery must not occupy an authored upper route');}});f.dispose(building);}
   for(const view of ['partial','interior']){const f=fixture(rotation,view),building=f.build();assert.equal(Boolean(f.feature(building)),false);f.dispose(building);}
+ }
+});
+
+function sourceButtress(f){
+ let source;
+ const visit=node=>{if(!node||source)return;if(Array.isArray(node)){for(const child of node)visit(child);return;}if(String(node.props?.['data-architectural-volume']).includes('storehouse-buttress')){source=node.props.children.filter(child=>child.type===ArchitectureVolume);return;}visit(node.props?.children);};
+ for(const object of buildingDetails({...f.b,walls:f.input.terrain.tiles.filter(tile=>tile.buildingId===f.b.id)},new Set(),(x,y)=>({x:(x-y)*26,y:(x+y)*14})))visit(object.node);
+ assert.ok(source,'the actual current warehouse sprite must have its paired body and foot volumes');return source;
+}
+
+test('the current stone warehouse body and separate stone foot retain the actual sprite palettes and 60% volume overlay',()=>{
+ for(const rotation of rotations){
+  const f=fixture(rotation),source=sourceButtress(f),building=f.build(),node=f.feature(building),body=node.children.find(mesh=>mesh.material.name==='world:stone'&&mesh.material.color.getHexString()===source[0].props.palette.base.slice(1)),foot=node.children.find(mesh=>mesh.material.name==='world:stone'&&mesh.material.color.getHexString()===source[1].props.palette.base.slice(1));assert.ok(body&&foot);assert.ok(body.material!==foot.material,'the current source gives the footing a separate warm stone base');assert.equal(source[0].props.texture,'stone');assert.equal(source[1].props.texture,'stone');
+  for(const mesh of [body,foot]){assert.equal(mesh.material.userData.architectureFinish.role,'volume');assert.equal(mesh.material.userData.architectureFinish.textureOpacity,.60);assert.equal(mesh.material.userData.architectureFinish.multiplyOpacity,0);assert.equal(mesh.material.userData.architectureFinish.texture,'/art/architecture-stone-v2.png');}
+  assert.equal(node.children.find(mesh=>mesh.material.name==='world:masonry-coping').material.color.getHexString(),source[0].props.palette.trim.slice(1));f.dispose(building);
+ }
+});
+
+test('source stone supports retain normal day and night vertex light without an extra guessed uniform shade',()=>{
+ for(const rotation of rotations)for(const night of [false,true]){
+  const f=fixture(rotation);f.input.terrain.night=night;f.input.illumination={[`0:${f.b.x},${f.b.y}`]:.5};const building=f.build(),node=f.feature(building),body=node.children.find(mesh=>mesh.material.name==='world:stone'&&mesh.material.color.getHexString()==='928f80'),expected=night?.27+.73*.5:1;assert.ok(body);
+  const colours=body.geometry.getAttribute('color');for(let n=0;n<colours.count;n++)for(const channel of ['getX','getY','getZ'])assert.ok(Math.abs(colours[channel](n)-expected)<1e-6,'source compositing must precede the unmodified physical illumination');f.dispose(building);
+ }
+});
+
+test('warehouse finish correction preserves other authored body textures and unpainted legacy selection',()=>{
+ for(const rotation of rotations)for(const finish of ['brick','limewash','adobe']){
+  const f=fixture(rotation);f.b.wallFinish=finish;const building=f.build(),node=f.feature(building),body=node.children.find(mesh=>mesh.material.name===`world:${finish}`);assert.ok(body);assert.equal(body.material.userData.architectureFinish,undefined,'this current-stone correction must not silently replace an edited body texture');f.dispose(building);
+ }
+ for(const rotation of rotations){
+  const f=fixture(rotation);f.b.architecture='warehouse';f.b.roof='terrace';f.b.wallFinish=undefined;const building=f.build(),node=f.feature(building),style=buildingStyle(f.b),body=node.children.find(mesh=>mesh.material.color.getHexString()===style.wall.slice(1));assert.ok(body);assert.equal(body.material.userData.architectureFinish,undefined);assert.ok(node.children.every(mesh=>mesh.material.userData.architectureFinish===undefined),'unpainted legacy supports must keep their released materials');f.dispose(building);
  }
 });

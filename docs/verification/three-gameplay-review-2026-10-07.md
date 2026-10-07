@@ -571,3 +571,7 @@ or gameplay objective is complete.
 ## Authored architecture paint
 
 The source wall images and encoded paint formulas now apply to all fourteen compiled templates. Main-wall and solid-volume roles have distinct source overlays before native vertex and physical lighting. The clean source passes 87 affected architecture checks, type checking, documentation/baseline audits and the static build (`0bd513889feb`). Its 84 ordinary browser catalogue views pass without browser errors. The posta, barracks, house, warehouse and depot captures were visually compared with the current sprites. Geometry, openings, metric UVs, disclosure, roofs, props and unpainted legacy materials are retained. Warehouse support paint and house entrance details remain separate work; this is bounded material acceptance. See [the detailed review](../art/authored-architecture-finish-3d-review-2026-10-07.md).
+
+## Warehouse support paint
+
+The stone warehouse buttress now retains the source body and separate warm-foot palettes with their 60% volume overlays before normal 3D lighting. The closed wedge, pale coping, metre UVs and cell containment remain unchanged. The clean cut passes 34 affected checks, type checking, documentation/baseline audits, the build (`6a24a3a8992f`) and twelve browser views without errors. The visible 0° and 90° supports were compared with the current sprite. See [the support paint review](../art/warehouse-volume-finish-3d-review-2026-10-07.md).
