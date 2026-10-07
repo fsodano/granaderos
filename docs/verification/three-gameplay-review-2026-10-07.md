@@ -651,3 +651,7 @@ Authored churches now have the current sprite's closed sloped nave supports, sep
 ## Exposed parish front piers
 
 The parish front corners now carry the current source-sized plaster shafts, separate warm stone feet and projecting capitals. Actual supports, compact/reserved tower foundations, standing openings, edited-corner fallback and accessible roofs remain covered through all rotations. All 59 affected checks, type/docs/baseline checks and export `f8931734fc11` pass. Thirty original/slab/accessible-roof/close browser views pass without errors and were compared with the current parish sprite. See [the front-pier review](../art/church-front-piers-3d-review-2026-10-07.md).
+
+## Supported shop forge and depot shells
+
+Authored shop, forge and depot roofs, walls, standing openings and floor returns now share centred support coordinates when both front corners are intact. Depot piers and its loft follow the same measured frame. Edited corners and unpainted legacy shells retain their existing placement. All 53 affected checks, type/docs/baseline checks and export `f615a93d1dbb` pass. Ninety original/slab/accessible-roof/close views and eighteen final combined views pass without browser errors; selected entrances, exteriors and interiors were compared with the three current sprites. Porch frames remain the next separate source detail. See [the shell review](../art/work-porch-shell-placement-3d-review-2026-10-07.md).

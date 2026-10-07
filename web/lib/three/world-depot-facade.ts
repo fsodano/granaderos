@@ -2,6 +2,7 @@ import {Group,Quaternion,Vector3} from 'three';
 import {entranceFrame,getBuildingProfile} from '../../../game/building-profile.js';
 import {WorldBatch} from './world-geometry';
 import {illuminationAt} from './world-materials';
+import {buildingArtInset} from './world-building-placement';
 import type {WorldGeometry} from './world-geometry';
 import type {WorldMaterials} from './world-materials';
 import type {WorldBuilding,WorldInput} from './world-types';
@@ -9,10 +10,10 @@ import type {WorldBuilding,WorldInput} from './world-types';
 /** The retained depot sprite has substantial stone piers and a timber roof
  * hatch. These details bear on real wall cells; the hatch is exterior scenery. */
 export function depotFacade(b:WorldBuilding,input:WorldInput,T:number,height:number,base:number,rise:number,geometry:WorldGeometry,materials:WorldMaterials){
-  const walls=input.terrain.tiles.filter(tile=>tile.buildingId===b.id&&['wall','door','window'].includes(tile.type)),frame=entranceFrame({...b,walls}),V=25.066666666666666;
+  const walls=input.terrain.tiles.filter(tile=>tile.buildingId===b.id&&['wall','door','window'].includes(tile.type)),frame=entranceFrame({...b,walls}),inset=buildingArtInset(b,input),V=25.066666666666666;
   const root=new Group();root.name=`building-depot-facade:${b.id}`;
   const rotation=new Quaternion().setFromAxisAngle(new Vector3(0,1,0),Math.atan2(-frame.u.y,frame.u.x)),light=illuminationAt(input,b),profile=getBuildingProfile(b),stone=materials.get('stone'),wood=materials.get('wood'),iron=materials.get('iron');
-  const at=(u:number,v:number,y:number)=>{const p=frame.at(u,v);return new Vector3((p.x+.4)*T,base+y,(p.y+.4)*T);};
+  const at=(u:number,v:number,y:number)=>{const p=frame.at(u,v);return new Vector3((p.x+inset)*T,base+y,(p.y+inset)*T);};
   const wallAt=(u:number,v:number)=>{const p=frame.at(u,v);return walls.find(tile=>tile.x===p.x&&tile.y===p.y);};
   const feature=(name:string,draw:(batch:WorldBatch)=>void)=>{const batch=new WorldBatch(geometry);draw(batch);const node=batch.finish(`building-detail:${b.id}:${name}`);if(node.children.length)root.add(node);};
   const box=(batch:WorldBatch,u:number,v:number,y:number,w:number,h:number,d:number,material=stone)=>batch.primitive('box',material,at(u,v,y),[w*T,h,d*T],rotation,light);
@@ -21,14 +22,14 @@ export function depotFacade(b:WorldBuilding,input:WorldInput,T:number,height:num
     for(const u of [0,frame.width])for(let v=0;v<=frame.depth;v++)if((v===0||v===frame.depth||v%3===0)&&wallAt(u,v)?.type==='wall'){
       // Each outer stone face reaches 49% of its solid cell. The shaft joins
       // the art-inset shell, while its wider foot stays clear of walking cells.
-      const shift=(value:number,inset:number,axis:{x:number;y:number})=>value-(.4-inset)*(axis.x+axis.y),top=height-3/V,foot=Math.min((profile.plinthHeight+2)/V,top*.40);
+      const shift=(value:number,target:number,axis:{x:number;y:number})=>value-(inset-(inset===0?0:target))*(axis.x+axis.y),top=height-3/V,foot=Math.min((profile.plinthHeight+2)/V,top*.40);
       box(batch,shift(u,.20,frame.u),shift(v,.30,frame.v),top*.5,.58,top,.38);
       box(batch,shift(u,.14,frame.u),shift(v,.14,frame.v),foot*.5,.70,foot,.70);
       box(batch,shift(u,.16,frame.u),shift(v,.16,frame.v),height-4.5/V,.66,5/V,.66);
     }
   });
 
-  const support=Math.round(frame.width*.5),u=support-.4*(frame.u.x+frame.u.y),bottom=height+7/V,top=height+rise-7/V;
+  const support=Math.round(frame.width*.5),u=support-inset*(frame.u.x+frame.u.y),bottom=height+7/V,top=height+rise-7/V;
   if(frame.width<4||wallAt(support,0)?.type!=='wall'||top-bottom<.12)return root;
   const point=at(u,-.16,0),walking=(input.terrain.upperSurfaces??[]).some(surface=>{
     const x=surface.x*T-point.x,z=surface.y*T-point.z;
