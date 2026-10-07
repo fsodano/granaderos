@@ -58,7 +58,7 @@ test('pulperia trade signs keep their bracket and front face through rotation',(
   for(const side of ['north','east','south','west']){
     const f=fixture('pulperia',side),details=architecturalDetails(f.b,f.input,T,2.5,0,f.geometry,f.materials,false),sign=details.getObjectByName('building-detail:review:trade-sign'),bounds=f.localBounds(sign),door=f.frame.doorU-.4*(f.frame.u.x+f.frame.u.y),actual=[bounds.min.x-door,bounds.min.y,bounds.min.z,bounds.max.x-door,bounds.max.y,bounds.max.z];
     assert.ok(sign.children.some(child=>child.material?.name==='world:iron'),'the sign must have hanging hardware');
-    assert.ok(bounds.max.z<.05&&bounds.min.z<-.5,'the sign must hang outside with its bracket anchored in the facade');
+    assert.ok(bounds.max.z<.05&&bounds.min.z<-.09&&bounds.min.z>-.10,'the short hanger must keep the plaque on its solid facade cell');assert.ok(bounds.min.y>=1.9,'the plaque must clear the standing doorway height');
     if(expected)actual.forEach((value,n)=>assert.ok(Math.abs(value-expected[n])<1e-5));else expected=actual;
     f.dispose(details);
   }
