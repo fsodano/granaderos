@@ -7,8 +7,9 @@ const {ActorRuntime}=await import('../web/lib/three/actor-runtime.ts');
 const {sampleAnimationTime}=await import('../web/lib/three/animation-clock.ts');
 const {movementStepDuration}=await import('../web/lib/three/movement-timing.ts');
 const {TILE_METRES}=await import('../web/lib/three/projection.ts');
+const heldItem={unarmed:null,'long-gun':1800,'short-gun':1805,blade:1810,knife:1813,lance:1812};
 async function fixture(appearance,equipment){
- const asset=await publishedActor(appearance,0),actor=new ActorRuntime(asset,{key:'unit:sideways',id:'sideways',kind:'unit',appearance,skin:'light',side:'player',position:[0,0,0],yaw:0,tacticalLevel:0,posture:'standing',mounted:false,action:'idle',idleAction:'idle',equipment,items:equipment==='long-gun'?[{id:'1800',reference:'primary',socket:'handRight'}]:[],garments:{},selected:false,bodyHeights:{}});
+ const asset=await publishedActor(appearance,0),actor=new ActorRuntime(asset,{key:'unit:sideways',id:'sideways',kind:'unit',appearance,skin:'light',side:'player',position:[0,0,0],yaw:0,tacticalLevel:0,posture:'standing',mounted:false,action:'idle',idleAction:'idle',equipment:['knife','lance'].includes(equipment)?'blade':equipment,items:heldItem[equipment]?[{id:String(heldItem[equipment]),reference:'primary',socket:'handRight'}]:[],garments:{},selected:false,bodyHeights:{}});
  const mesh=actor.model.getObjectByName('Human_footwear_LOD0'),position=mesh.geometry.attributes.position,boots={l:[],r:[]},native=[];
  for(let index=0;index<position.count;index++)boots[position.getX(index)>0?'l':'r'].push(index);
  for(const side of ['l','r'])assert.ok(boots[side].length>200,'The complete sole, toe, heel and fitted boot are checked');
@@ -20,7 +21,7 @@ async function fixture(appearance,equipment){
  function lowest(side){let height=Infinity,index;for(const candidate of boots[side]){const y=point(candidate).y;if(y<height){height=y;index=candidate;}}return{height,index};}
  return{asset,actor,select,pose,point,lowest};
 }
-for(const appearance of ['granadero','woman-scout'])for(const equipment of ['unarmed','long-gun']){
+for(const appearance of ['granadero','woman-scout'])for(const equipment of ['unarmed','long-gun','short-gun','blade','knife','lance']){
  test(`${appearance} standing ${equipment} side steps support complete native boots through their retained loops`,async()=>{
   const f=await fixture(appearance,equipment);try{for(const direction of ['Left','Right']){
    const {clip,spec}=f.select(`stand.strafe${direction}.${equipment}`),support=spec.nativeSidewaysSupport;
@@ -33,7 +34,7 @@ for(const appearance of ['granadero','woman-scout'])for(const equipment of ['una
  test(`${appearance} ${equipment} normal lateral travel retains its pace and limits planted skin slip`,async()=>{
   const f=await fixture(appearance,equipment);try{for(const direction of ['Left','Right']){
    const {clip,spec}=f.select(`stand.strafe${direction}.${equipment}`),speed=spec.nativeStrideSpeed??spec.locomotionSpeed,sign=direction==='Left'?1:-1,action=`strafe${direction}`;
-   const step=movementStepDuration({spriteAppearance:appearance,activeSlot:equipment==='unarmed'?'unarmed':'primary',weapon:1800,facing:2},{x:4,y:4},{x:4,y:4-sign},210,true),bodySpeed=TILE_METRES/(step/1000),rate=bodySpeed/speed;
+   const step=movementStepDuration({spriteAppearance:appearance,activeSlot:equipment==='unarmed'?'unarmed':'primary',weapon:heldItem[equipment]??1800,facing:2},{x:4,y:4},{x:4,y:4-sign},210,true),bodySpeed=TILE_METRES/(step/1000),rate=bodySpeed/speed;
    assert.equal(spec.nativeSidewaysSupport.retainedNativeStrideSpeed,speed);assert.ok(Math.abs(rate-.8)<.000000001,'Preserved facing retains the existing slower travel');
    const poseAt=wallTime=>{const distance=bodySpeed*wallTime,sample=sampleAnimationTime({clip:{...spec,duration:clip.duration},action,motion:{moving:true,elapsedDistance:distance,speed:bodySpeed,signedForwardSpeed:0},now:wallTime*1000});assert.equal(sample.rate,0);f.pose(sample.time);return sign*distance;};
    for(const side of ['l','r']){const [start,stop]=spec.nativeSidewaysSupport.supportWindows[side];let squared=0,maximum=0,count=0;
