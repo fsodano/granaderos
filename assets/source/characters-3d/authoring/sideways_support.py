@@ -1,0 +1,108 @@
+"""Keep the recorded standing side-step pelvis and native leg dimensions.
+
+Only the eight leg rotations change. A planted complete boot moves opposite
+actor travel at the supplied recorded pace. Recovery joins the same velocity
+with a smooth raised arc. A small forefoot roll allows the native leg to reach
+without stretching a joint or raising the retained torso.
+"""
+import math,bisect
+from mathutils import Vector,Quaternion
+LEGS=tuple(name+'_'+side for side in('l','r')for name in('thigh','calf','foot','ball'))
+FLOOR=.002
+
+def sample_at(samples,times,time):
+    i=max(0,min(len(times)-2,bisect.bisect_right(times,time)-1));f=(time-times[i])/(times[i+1]-times[i]);a,b=samples[i:i+2];out={}
+    for name,(p,q)in a.items():
+        end=b[name][1].copy()
+        if q.dot(end)<0:end.negate()
+        v=Quaternion(tuple(q[j]*(1-f)+end[j]*f for j in range(4)));v.normalize();out[name]=(p.lerp(b[name][0],f),v)
+    return out
+
+def fit_leg(rig,side,target,pole):
+    from motion import _head,_set_world_rotation
+    names=('thigh_'+side,'calf_'+side,'foot_'+side);bones=[rig.data.bones[n]for n in names]
+    base=_head(rig,names[0]);offsets=[bones[i+1].head_local-bones[i].head_local for i in(0,1)];a,b=(offset.length for offset in offsets)
+    direction=Vector(target)-base;distance=direction.length;assert distance<a+b-.0004 and distance>abs(a-b)+.0004,'Native leg support is unreachable';direction.normalize()
+    bend=Vector(pole)-direction*Vector(pole).dot(direction);assert bend.length>.001,'A stable anatomical knee plane is required';bend.normalize()
+    along=(a*a-b*b+distance*distance)/(2*distance);knee=base+direction*along+bend*math.sqrt(max(0,a*a-along*along))
+    for i,end in((0,knee),(1,Vector(target))):
+        start=_head(rig,names[i]);q=offsets[i].rotation_difference(end-start)@bones[i].matrix_local.to_quaternion();_set_world_rotation(rig,names[i],q)
+
+def support_clip(ctx,samples,duration,times,name,speed):
+    from motion import _apply_sample,_collect,_head,_set_world_rotation
+    from grounding_motion import _boot_bindings,_boot_lowest,_sole_bindings
+    rig=ctx['rig'];boots=_boot_bindings(ctx);soles=_sole_bindings(ctx);stored=math.floor(duration*30+.000001)/30
+    assert speed>0,'A measured native lateral pace is required'
+    direction=1 if'.strafeLeft.'in name else-1
+    # The captured native lateral sequence contains two foot-to-foot steps.
+    # Identify its support handovers from the complete published boot floor.
+    raw=[]
+    for i in range(121):
+        _apply_sample(rig,sample_at(samples,times,stored*i/120));low={s:_boot_lowest(rig,boots[s])for s in('l','r')};raw.append((i/120,min(low,key=low.get),low))
+    if direction==1:
+        first=next(p for p,s,_ in raw if s=='l');switch=next(p for p,s,_ in raw if p>first+.1 and s=='r');second=next(p for p,s,_ in raw if p>switch+.1 and s=='l');end=next(p for p,s,_ in raw if p>second+.1 and s=='r');start=((first)+(second-.5))/2;stop=((switch)+(end-.5))/2;windows={'l':(start,stop),'r':(stop,start+.5)}
+    else:
+        first=next(p for p,s,_ in raw if s=='r');switch=next(p for p,s,_ in raw if p>first+.1 and s=='l');second=next(p for p,s,_ in raw if p>switch+.1 and s=='r');end=next(p for p,s,_ in raw if p>second+.1 and s=='l');start=(first+second-.5)/2;stop=(switch+end-.5)/2;windows={'r':(start,stop),'l':(stop,start+.5)}
+    profiles={}
+    for side,(start,stop)in windows.items():
+        midpoint=(start+stop)/2;_apply_sample(rig,sample_at(samples,times,(midpoint%.5)*stored));foot=rig.pose.bones['foot_'+side];q=foot.matrix.to_quaternion();native_up=rig.data.bones['foot_'+side].matrix_local.to_quaternion().inverted()@Vector((0,0,1));normal=q@native_up;q=normal.rotation_difference(Vector((0,0,1)))@q
+        # Native torso height can require a supported forefoot roll. Find
+        # its smallest angle over both planted intervals; never stretch legs.
+        forward=q@(rig.data.bones['foot_'+side].matrix_local.to_quaternion().inverted()@Vector((0,-1,0)));forward.z=0;forward.normalize();axis=Vector((0,0,1)).cross(forward)
+        projection=[(q@point).dot(forward)for point in soles[side]];front=max(projection);toe=sum((point for point,v in zip(soles[side],projection)if v>front-.001),Vector())/sum(v>front-.001 for v in projection)
+        contact=foot.head+q@toe
+        lift=max(.04,min(.10,max(low[side]for p,s,low in raw if s!=side)-min(low[side]for p,s,low in raw)))
+        native_a=(rig.data.bones['calf_'+side].head_local-rig.data.bones['thigh_'+side].head_local).length;native_b=(rig.data.bones['foot_'+side].head_local-rig.data.bones['calf_'+side].head_local).length
+        def reachable(angle):
+            rotation=Quaternion(axis,angle)@q
+            for phase,_,_ in raw:
+                local=(phase-start)%.5
+                stance=stop-start;recovery=.5-stance
+                if local<=stance:offset=-direction*speed*stored*(local-stance/2);height=0
+                else:
+                    u=(local-stance)/recovery;begin=-direction*speed*stored*stance/2;end=-begin;slope=-direction*speed*stored*recovery
+                    offset=(2*u**3-3*u*u+1)*begin+(u**3-2*u*u+u)*slope+(-2*u**3+3*u*u)*end+(u**3-u*u)*slope;height=lift*math.sin(math.pi*u)**2
+                _apply_sample(rig,sample_at(samples,times,phase*stored))
+                goal=Vector((contact.x+offset,contact.y,FLOOR+height))-rotation@toe
+                if(goal-_head(rig,'thigh_'+side)).length>native_a+native_b-.001:return False
+            return True
+        low,high=0,.45
+        assert reachable(high),'The retained torso cannot reach a supported forefoot within a normal heel roll'
+        for iteration in range(12):
+            middle=(low+high)/2
+            if reachable(middle):high=middle
+            else:low=middle
+        rotation=Quaternion(axis,high)@q
+        lift=max(.04,min(.10,max(low[side]for p,s,low in raw if s!=side)-min(low[side]for p,s,low in raw)))
+        profiles[side]={'start':start,'stop':stop,'q':rotation,'center':toe,'contact':contact,'lift':lift,'heelRoll':high,'pole':forward}
+    keys=sorted(set(times+[i/30 for i in range(round(stored*30)+1)]));fitted=[];reports=[]
+    for time in keys:
+        sample=sample_at(samples,times,time);_apply_sample(rig,sample);phase=(min(time,stored)/stored)%1;report={}
+        for side,p in profiles.items():
+            start=p['start'];stop=p['stop'];period=.5;local=((phase-start)%period);stance=stop-start;recovery=period-stance
+            if local<=stance:
+                offset=-direction*speed*stored*(local-stance/2);lift=0;q=p['q'];planted=True
+            else:
+                u=(local-stance)/recovery;begin=-direction*speed*stored*stance/2;end=-begin;slope=-direction*speed*stored*recovery
+                offset=(2*u**3-3*u*u+1)*begin+(u**3-2*u*u+u)*slope+(-2*u**3+3*u*u)*end+(u**3-u*u)*slope
+                lift=p['lift']*math.sin(math.pi*u)**2;q=p['q'];planted=False
+            contact=Vector((p['contact'].x+offset,p['contact'].y,FLOOR+lift));target=contact-q@p['center']
+            for iteration in range(4):
+                fit_leg(rig,side,target,p['pole']);_set_world_rotation(rig,'foot_'+side,q)
+                difference=FLOOR+lift-_boot_lowest(rig,boots[side])
+                if abs(difference)<.00005:break
+                target.z+=difference
+            reach=(rig.pose.bones['foot_'+side].head-target).length
+            assert reach<.001,'Supported native leg target is beyond reach: '+str((side,phase,reach,tuple(target),tuple(_head(rig,'thigh_'+side))))
+            lowest=_boot_lowest(rig,boots[side]);report[side]={'planted':planted,'lift':lift,'floor':lowest,'contact':list(contact),'reach':reach}
+            assert lowest>=FLOOR-.001,'Complete boot penetration '+str((phase,side,lowest))
+        pose=_collect(rig)
+        for bone in LEGS:pose[bone]=(sample[bone][0].copy(),pose[bone][1])
+        for bone in sample:
+            if bone not in LEGS:assert pose[bone][0]==sample[bone][0]and pose[bone][1]==sample[bone][1],bone
+        fitted.append(pose);reports.append(report)
+    # Fit the original final stored sample in world space. Its retained
+    # pelvis track can differ slightly from the first sample, so copying
+    # local leg rotations would undo the planted support at the loop seam.
+    ctx.setdefault('sideways_reports',{})[name]={'times':keys,'reports':reports,'windows':windows,'heelRoll':{side:profile['heelRoll']for side,profile in profiles.items()},'speed':speed,'actualDuration':stored}
+    return fitted,keys,{'method':'native-sideways-leg-rotations','surface':'complete-native-boot','floor':FLOOR,'sampleRate':30,'nativeCycleDuration':round(stored,6),'retainedNativeStrideSpeed':speed,'supportWindows':windows,'heelRoll':{side:profile['heelRoll']for side,profile in profiles.items()}}
