@@ -235,6 +235,10 @@ def _write_clip(rig, name, samples, duration, loop=True, grounding=None, times=N
     if native_support is not None:
         from grounding_motion import support_clip
         samples,times,support=support_clip(native_support,samples,duration,times,FPS,native_surface)
+    arm_support=None
+    if native_support is not None and name in('prone.idle.unarmed','prone.crawl.unarmed'):
+        from prone_arm_support import support_clip as support_arms
+        samples,arm_support=support_arms(native_support,samples,duration,times,name=='prone.crawl.unarmed')
     previous={}
     for i,sample in enumerate(samples):
         frame=1+FPS*(times[i] if times is not None else duration*i/(len(samples)-1))
@@ -261,6 +265,9 @@ def _write_clip(rig, name, samples, duration, loop=True, grounding=None, times=N
     track.mute=True
     result={'name':name,'duration':round(duration,6),'loop':loop,'events':{}}
     if support:result['nativeBootSupport']=support
+    if arm_support:
+        if 'stride'in arm_support:result.update(arm_support.pop('stride'))
+        result['nativeArmSupport']=arm_support
     return result
 
 
@@ -1039,7 +1046,7 @@ def apply_animations(ctx, only=None):
             meta['freeHands']=['handRight','handLeft']
             meta['handProps']=[{'hand':'handRight','categories':['knife'] if gesture=='throwKnife' else ['supply'],'untilMarker':'release'}]
         if speed is not None:meta['locomotionSpeed']=speed
-        if gesture=='crawl':
+        if gesture=='crawl' and not(equipment=='unarmed' and 'nativeArmSupport'in meta):
             if crawl_stride is None:
                 # The unarmed capability precedes its equipped variants.
                 # Measure the body pull, not a hand fixed to a carried gun.

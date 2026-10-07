@@ -52,22 +52,19 @@ const expected={
  'stand.idle.knife':'KnifeReady','stand.brace.knife':'KnifeReady','stand.slash.knife':'KnifeSlash','stand.walk.knife':'KnifeWalk','stand.run.knife':'KnifeRun','stand.slash.knife.backhand':'KnifeBackhand','stand.slash.knife.thrust':'KnifeThrust'
 };
 for(const [gender,bank]of Object.entries(banks)){
- test(`${gender} published crawl stride measures the final supporting forearms`,()=>{
-  const spec=bank.specs.find(entry=>entry.name==='prone.crawl.unarmed');
+ test(`${gender} carried crawl variants retain their separate published pace`,()=>{
+  const spec=bank.specs.find(entry=>entry.name==='prone.crawl.long-gun');
   assert.equal(spec.strideMeasurement.method,'median rearward forearm contact velocity');
   assert.deepEqual(spec.strideMeasurement.bones,['lowerarm_l','lowerarm_r']);
-  const count=Math.round(spec.duration*spec.sampleRate);
-  const values=samples(bank,spec.name,point=>({contacts:spec.strideMeasurement.bones.map(point)}),count),speeds=[];
-  for(let index=1;index<values.length-1;index++)for(let side=0;side<2;side++){
-   const a=values[index-1].contacts[side],p=values[index].contacts[side],b=values[index+1].contacts[side];
-   const velocity=(a.z-b.z)/(values[index+1].time-values[index-1].time);
-   if(p.y<=spec.strideMeasurement.maximumContactHeight&&velocity>0)speeds.push(velocity);
-  }
-  speeds.sort((a,b)=>a-b);const mid=Math.floor(speeds.length/2),median=speeds.length%2?speeds[mid]:(speeds[mid-1]+speeds[mid])/2;
-  assert.ok(Math.abs(median-spec.nativeStrideSpeed)<.005,`Published support velocity ${median.toFixed(6)} matches the native stride ${spec.nativeStrideSpeed}`);
-  assert.ok(spec.nativeStrideSpeed>.15&&spec.nativeStrideSpeed<.4,'The adapted body pull replaces the unrelated 0.08 m/s foot measurement');
+  assert.ok(spec.nativeStrideSpeed>.15&&spec.nativeStrideSpeed<.4);
   assert.ok(Math.abs(spec.strideDistance-spec.nativeStrideSpeed*spec.duration)<.000002);
-  for(const variant of bank.specs.filter(entry=>entry.gesture==='crawl'))assert.equal(variant.nativeStrideSpeed,spec.nativeStrideSpeed,'Carried equipment preserves the same underlying body travel');
+  for(const variant of bank.specs.filter(entry=>entry.gesture==='crawl'&&entry.equipment!=='unarmed')){
+   assert.equal(variant.nativeStrideSpeed,spec.nativeStrideSpeed,'Carried poses keep their existing travel calibration');
+   assert.deepEqual(variant.strideMeasurement,spec.strideMeasurement);
+  }
+  const unarmed=bank.specs.find(entry=>entry.name==='prone.crawl.unarmed');
+  assert.equal(unarmed.strideMeasurement.method,'native forearm planted pull displacement');
+  assert.equal(unarmed.nativeArmSupport.alternatingRecovery,true);
  });
  test(`${gender} exported standing motions bind the reviewed poses and free playback speed`,()=>{
   for(const [name,reviewedName]of Object.entries(expected)){

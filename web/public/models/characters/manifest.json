@@ -1826,8 +1826,8 @@
   "animationLibraries": {
     "male": {
       "url": "/models/characters/male-animations.glb",
-      "bytes": 11913664,
-      "sha256": "19a2f7a1285b1b4463f28bd467352667472a4f89fc1a46ab49681214ed2bb85e",
+      "bytes": 11923916,
+      "sha256": "52829a26a1f84547b9c935c77660c56ba69cb10ac0b94fdb07a58cf28c25ba60",
       "clips": [
         {
           "name": "stand.idle.unarmed",
@@ -3822,6 +3822,18 @@
             "floor": 0.002,
             "sampleRate": 30,
             "maximumLift": 0.054151
+          },
+          "nativeArmSupport": {
+            "method": "native-arm-rotations",
+            "surface": "complete-native-palm-finger-and-sleeve",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "recoveryLift": 0,
+            "alternatingRecovery": false,
+            "pullDistance": 0,
+            "maximumRecoveryLift": 0,
+            "maximumReachCorrection": 0,
+            "nativeCycleDuration": 2
           }
         },
         {
@@ -3844,27 +3856,56 @@
           "sampleRate": 15,
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
-          "locomotionSpeed": 0.195142,
-          "nativeStrideSpeed": 0.195142,
-          "strideDistance": 0.383778,
+          "locomotionSpeed": 0.146131,
+          "nativeStrideSpeed": 0.146131,
+          "strideDistance": 0.28252,
           "strideMeasurement": {
-            "method": "median rearward forearm contact velocity",
+            "method": "native forearm planted pull displacement",
             "bones": [
               "lowerarm_l",
               "lowerarm_r"
             ],
-            "maximumContactHeight": 0.09,
-            "sampleCount": 20,
+            "surface": "complete-native-sleeve-and-forearm",
+            "sampleRate": 30,
+            "maximumContactHeight": 0.007,
+            "pulls": [
+              {
+                "hand": "r",
+                "from": 0,
+                "to": 0.5,
+                "distance": 0.142759,
+                "duration": 0.966667
+              },
+              {
+                "hand": "l",
+                "from": 0.5,
+                "to": 1,
+                "distance": 0.139761,
+                "duration": 0.966667
+              }
+            ],
             "space": "exported-gltf",
             "referenceClip": "prone.crawl.unarmed"
           },
-          "authoredStrideSpeed": 0.202303,
+          "authoredStrideSpeed": 0.148357,
           "nativeBootSupport": {
             "method": "native-leg-rotations",
             "surface": "complete-native-boot",
             "floor": 0.002,
             "sampleRate": 30,
             "maximumLift": 0.073134
+          },
+          "nativeArmSupport": {
+            "method": "native-arm-rotations",
+            "surface": "complete-native-palm-finger-and-sleeve",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "recoveryLift": 0.04,
+            "alternatingRecovery": true,
+            "pullDistance": 0.14,
+            "maximumRecoveryLift": 0.039969,
+            "maximumReachCorrection": 0,
+            "nativeCycleDuration": 1.933333
           }
         },
         {
@@ -15132,7 +15173,7 @@
         "strafeLeftStanding": 1.1159,
         "strafeRightCrouched": 0.8492,
         "strafeLeftCrouched": 0.7564,
-        "crawl": 0.195142,
+        "crawl": 0.146131,
         "climbUp": 0.4062,
         "climbDown": 0.4455,
         "recover": 0.3467,
@@ -15147,8 +15188,8 @@
     },
     "female": {
       "url": "/models/characters/female-animations.glb",
-      "bytes": 11739932,
-      "sha256": "7688cbc785358346034cdb36041fae13329efc042f076aa5b833eb153250fc0d",
+      "bytes": 11750468,
+      "sha256": "c3e30144765d75062d85c47a5bd8c4f322e49ffe34b58397031e04c84de60a0a",
       "clips": [
         {
           "name": "stand.idle.unarmed",
@@ -17143,6 +17184,18 @@
             "floor": 0.002,
             "sampleRate": 30,
             "maximumLift": 0.048419
+          },
+          "nativeArmSupport": {
+            "method": "native-arm-rotations",
+            "surface": "complete-native-palm-finger-and-sleeve",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "recoveryLift": 0,
+            "alternatingRecovery": false,
+            "pullDistance": 0,
+            "maximumRecoveryLift": 0,
+            "maximumReachCorrection": 0,
+            "nativeCycleDuration": 2
           }
         },
         {
@@ -17165,27 +17218,56 @@
           "sampleRate": 15,
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
-          "locomotionSpeed": 0.194203,
-          "nativeStrideSpeed": 0.194203,
-          "strideDistance": 0.381931,
+          "locomotionSpeed": 0.145855,
+          "nativeStrideSpeed": 0.145855,
+          "strideDistance": 0.281986,
           "strideMeasurement": {
-            "method": "median rearward forearm contact velocity",
+            "method": "native forearm planted pull displacement",
             "bones": [
               "lowerarm_l",
               "lowerarm_r"
             ],
-            "maximumContactHeight": 0.09,
-            "sampleCount": 19,
+            "surface": "complete-native-sleeve-and-forearm",
+            "sampleRate": 30,
+            "maximumContactHeight": 0.007,
+            "pulls": [
+              {
+                "hand": "r",
+                "from": 0,
+                "to": 0.5,
+                "distance": 0.141987,
+                "duration": 0.966667
+              },
+              {
+                "hand": "l",
+                "from": 0.5,
+                "to": 1,
+                "distance": 0.14,
+                "duration": 0.966667
+              }
+            ],
             "space": "exported-gltf",
             "referenceClip": "prone.crawl.unarmed"
           },
-          "authoredStrideSpeed": 0.223721,
+          "authoredStrideSpeed": 0.145978,
           "nativeBootSupport": {
             "method": "native-leg-rotations",
             "surface": "complete-native-boot",
             "floor": 0.002,
             "sampleRate": 30,
             "maximumLift": 0.068669
+          },
+          "nativeArmSupport": {
+            "method": "native-arm-rotations",
+            "surface": "complete-native-palm-finger-and-sleeve",
+            "floor": 0.002,
+            "sampleRate": 30,
+            "recoveryLift": 0.04,
+            "alternatingRecovery": true,
+            "pullDistance": 0.14,
+            "maximumRecoveryLift": 0.039969,
+            "maximumReachCorrection": 0,
+            "nativeCycleDuration": 1.933333
           }
         },
         {
@@ -28453,7 +28535,7 @@
         "strafeLeftStanding": 1.0544,
         "strafeRightCrouched": 0.9318,
         "strafeLeftCrouched": 0.9402,
-        "crawl": 0.194203,
+        "crawl": 0.145855,
         "climbUp": 0.3498,
         "climbDown": 0.4242,
         "recover": 0.3301,

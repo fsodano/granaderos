@@ -128,3 +128,13 @@ records the retained weapon hold and measured surfaces. Exposed unarmed palms
 and cuffs, sideways and lance support remain under review. These
 published LOD0 surface measurements do not accept the remaining posture bank.
 The complete native climb and roof-edge transfer are accepted within the [measured climbing review](../../../docs/art/native-climbing-3d-review-2026-10-07.md), including four clean playable same-cell hatch routes. The documented low-ceiling/headwear limit remains under review.
+
+### Unarmed prone arm support increment
+
+Only the six arm/wrist rotation channels in unarmed prone idle and crawl change
+per anatomy. Complete published palms, fingers and sleeves now clear the floor
+and alternate planted pulls. Native durations, dimensions, Root, torso, legs,
+fingers, all 332 other clips and every equipped pace remain exact. The
+[prone arm review](../../../docs/art/prone-arm-support-3d-review-2026-10-07.md)
+records the clean 63-check/native/profile/build gate, 28 normal browser captures,
+saved endpoints, source-sprite comparison and remaining contact roll.
