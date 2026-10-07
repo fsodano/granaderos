@@ -54,8 +54,12 @@ test('mounted Battlefield presents partial artillery reload work once without co
  const battle=field();battle.artillery[0].loaded=false;unit(battle,20).ap=25;
  const before=structuredClone(battle),commits=[],action={type:'artilleryReload',artilleryId:'gun'},expected=actBattle(before,{unitId:'20',aim:0,hitLocation:'torso',...action});
  const mounted=await mountBattlefield(t,Battlefield,{battle,onChange:next=>{commits.push(next);return next;},onFinish(){}},{virtualTimers:true});
- const panel=()=>nodes(mounted.tree()).find(node=>node.props?.onOrder&&node.props?.onEndTurn);
- await mounted.act(async()=>panel().props.onOrder(action));assert.equal(panel().props.busy,true);await mounted.settle();
+ const panel=()=>nodes(mounted.tree()).find(node=>node.props?.onOrder&&node.props?.onEndTurn),scene=()=>nodes(mounted.tree()).find(node=>node.type===TacticalThreeScene);
+ await mounted.act(async()=>panel().props.onOrder(action));assert.equal(panel().props.busy,true);
+ const crew=scene().props.actors.filter(actor=>['20','21','22'].includes(actor.id));
+ assert.ok(crew.every(actor=>actor.cue.work[0].from===0&&Math.abs(actor.cue.work[0].to-1/3)<1e-9));
+ assert.ok(crew.every(actor=>Math.abs(actor.cue.durationMs-4000/3)<1e-9),'only the paid third of cannon work is presented');
+ await mounted.settle();
  assert.deepEqual(commits,[expected]);assert.equal(expected.lastError,null);
  for(const id of [20,21,22])assert.equal(unit(expected,id).ap,unit(before,id).ap-25);
  assert.equal(expected.artillery[0].loaded,false);assert.equal(expected.artillery[0].ammo,before.artillery[0].ammo);assert.deepEqual(battle,before);

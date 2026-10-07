@@ -3,7 +3,46 @@ import {spriteAppearance} from '../../../game/sprite-appearances.js';
 import {spriteEquipment} from '../../../game/sprite-equipment.js';
 import {resolveActorAction} from '../../../game/actor-action-contract.js';
 import {actorPosture,semanticOrder} from './presentation';
-import {animationPhaseRange,usesNativeActionTiming,type AnimationClockClip} from './animation-clock';
+import {canSee} from '../../../game/tactical.js';
+import {animationPhaseRanges,usesNativeActionTiming,type AnimationClockClip,type AnimationWork} from './animation-clock';
+
+function loadingWork(before:any,after:any):AnimationWork[]{
+  if(!before||!after)return [];
+  const from=before.reloadProgress??0,to=after.reloadProgress??0,rounds=Number(after.loaded??0)-Number(before.loaded??0);
+  const gain=rounds+to-from;
+  if(!(gain>1e-9)||from<0||from>=1||to<0||to>=1||rounds<0)return [];
+  const work:AnimationWork[]=[];
+  for(let round=0;round<rounds;round++)work.push({from:round===0?from:0,to:1});
+  if(to>0)work.push({from:rounds?0:from,to});
+  return work;
+}
+
+/** Work is derived only when preparation and result admit the same actor.
+ * Cannon work additionally requires the piece to be observed on both sides. */
+export function admittedReloadWork(frames:readonly any[]){
+  const result=frames.map(frame=>({...frame}));
+  for(let index=0;index<frames.length;index++){
+    const start=frames[index];
+    if(start.type!=='prepare'||!start.unitId||!['reload','artilleryReload'].includes(start.action))continue;
+    let endIndex=index+1;
+    while(endIndex<frames.length&&frames[endIndex].type!=='prepare'&&frames[endIndex].type!=='result')endIndex++;
+    const end=frames[endIndex];
+    if(!end||end.type!=='result'||end.unitId!==start.unitId||end.action!==start.action||end.performed===false)continue;
+    const before=start.state.units.find((unit:any)=>unit.id===start.unitId),after=end.state.units.find((unit:any)=>unit.id===end.unitId);
+    if(!before||!after)continue;
+    let work:AnimationWork[];
+    if(start.action==='reload')work=[...loadingWork(before,after),...loadingWork(before.offHand,after.offHand)];
+    else{
+      const observed=(state:any,gun:any)=>state.units.some((unit:any)=>unit.side==='player'&&unit.hp>0&&!unit.unconscious&&canSee(state,unit,gun));
+      work=(start.state.artillery??[]).flatMap((gun:any)=>{
+        const next=end.state.artillery?.find((next:any)=>next.id===gun.id);
+        return next&&observed(start.state,gun)&&observed(end.state,next)?loadingWork(gun,next):[];
+      });
+    }
+    if(work.length)for(let cursor=index;cursor<=endIndex;cursor++)result[cursor].actionWork=work;
+  }
+  return result;
+}
 
 /** Only the admitted actor selects a native visual delay. Rules and simulation
  * time remain unchanged; unseen actions retain the ordinary playback delay. */
@@ -19,6 +58,7 @@ export function nativeActionFrameDuration(frame:any,requested:number){
   const actions=profile.banks[bank as keyof typeof profile.banks]?.actions;
   const clip:AnimationClockClip|undefined=actions?.[capability.clip as keyof typeof actions];
   if(!clip)throw Error(`Missing native action timing: ${appearance}:${capability.clip}`);
-  const [begin,end]=animationPhaseRange(clip,action,frame.type);
-  return Math.max(requested,(end-begin)*1000);
+  const ranges=animationPhaseRanges(clip,action,frame.type,frame.actionWork);
+  const duration=ranges.reduce((sum,[begin,end])=>sum+end-begin,0)*1000;
+  return frame.actionWork&&duration===0?0:Math.max(requested,duration);
 }

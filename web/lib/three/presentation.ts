@@ -20,7 +20,7 @@ import type {WorldInput} from './world-types';
 
 export type ActorKind='unit'|'npc';
 export type ActorEntry={key:string;kind:ActorKind;actor:any};
-export type ActorCue={id:string;action:string;shotHand?:'primary'|'offhand';hand?:'handRight'|'handLeft';startedAt:number;durationMs?:number;phase?:string;phaseStartedAt?:number;phaseDurationMs?:number;fromPosture?:string;toPosture?:string};
+export type ActorCue={id:string;action:string;shotHand?:'primary'|'offhand';hand?:'handRight'|'handLeft';startedAt:number;durationMs?:number;phase?:string;phaseStartedAt?:number;phaseDurationMs?:number;fromPosture?:string;toPosture?:string;work?:readonly {from:number;to:number}[]};
 export type VisualItem={id:string;reference:string;socket:'handRight'|'handLeft'|'back'|'hip';fittings?:any};
 export type ActorVisual={key:string;id:string;kind:ActorKind;appearance:string;skin:string;side:string;tacticalLevel:number;position:[number,number,number];yaw:number;posture:string;mounted:boolean;action:string;idleAction:string;equipment:string;items:VisualItem[];garments:Record<string,string|null>;cue?:ActorCue;motion?:Motion;selected:boolean;bodyHeights:Record<string,number>};
 export const actorKey=(kind:ActorKind,id:string)=>`${kind}:${id}`;
@@ -106,7 +106,7 @@ export function presentActors(state:any,entries:readonly ActorEntry[],positions:
         const shotHand=frame.shotHand??frame.shotVisual?.shotHand,shotId=frame.shotId??frame.shotVisual?.shotId;
         const held=items.find(item=>item.reference===shotHand&&['handRight','handLeft'].includes(item.socket));
         if(shotHand&&!held)throw Error(`Missing admitted firing hand: ${key}:${shotHand}`);
-        cue={id:`${frame.sequenceId}:${frame.actionId}${shotId===undefined?'':`:shot:${shotId}`}:${key}`,action:frame.type==='prepare'&&['fire','firePoint'].includes(frame.action)?'aim':semantic,...(held?{shotHand,hand:held.socket as 'handRight'|'handLeft'}:{}),phase:frame.type,phaseStartedAt:frame.startedAt,phaseDurationMs:frame.durationMs,startedAt:['fire','firePoint'].includes(frame.action)?frame.startedAt:frame.actionStartedAt??frame.startedAt,durationMs:['fire','firePoint'].includes(frame.action)?frame.durationMs:frame.actionDurationMs??frame.durationMs};
+        cue={id:`${frame.sequenceId}:${frame.actionId}${shotId===undefined?'':`:shot:${shotId}`}:${key}`,action:frame.type==='prepare'&&['fire','firePoint'].includes(frame.action)?'aim':semantic,...(held?{shotHand,hand:held.socket as 'handRight'|'handLeft'}:{}),...(frame.actionWork?{work:frame.actionWork}:{}),phase:frame.type,phaseStartedAt:frame.startedAt,phaseDurationMs:frame.durationMs,startedAt:['fire','firePoint'].includes(frame.action)?frame.startedAt:frame.actionStartedAt??frame.startedAt,durationMs:['fire','firePoint'].includes(frame.action)?frame.durationMs:frame.actionDurationMs??frame.durationMs};
       }
     }
     // Frame impacts are already disclosure-filtered by the recorder. The

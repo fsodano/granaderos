@@ -61,7 +61,7 @@ test('recorded reload and reprime keep native visual delays and commit the paid 
   let duration=0;
   for(let index=0;index<result.frames.length;index++){
    const expected=presentedFrameDuration(result.frames[index],index?result.frames[index-1].state:source);
-   assert.equal(api.busy,true);assert.deepEqual(commits,[]);assert.equal(api.frame.durationMs,expected);assert.ok(Math.abs(api.frame.actionDurationMs-nativeDuration)<1e-9);
+   assert.equal(api.busy,true);assert.deepEqual(commits,[]);assert.ok(Math.abs(api.frame.durationMs-expected)<1e-9);assert.ok(Math.abs(api.frame.actionDurationMs-nativeDuration)<1e-9);
    assert.deepEqual(api.state.units,result.frames[index].state.units);duration+=await env.step();
   }
   await done;assert.ok(Math.abs(duration-nativeDuration)<1e-9);assert.deepEqual(commits,[result.state]);assert.equal(api.busy,false);assert.equal(api.frame,null);

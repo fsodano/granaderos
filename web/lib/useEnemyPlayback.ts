@@ -3,7 +3,7 @@ import {useEffect,useRef,useState,useMemo} from 'react';
 import {presentedEndTurn} from '../../game/tactical.js';
 import {BATTLE_PLAYBACK,battleFrameDuration,battleFrameFocus} from '../../game/battle-playback.js';
 import {movementStepDuration} from './three/movement-timing';
-import {nativeActionFrameDuration} from './three/action-timing';
+import {admittedReloadWork,nativeActionFrameDuration} from './three/action-timing';
 import enemyWorkerUrl from './enemy-turn-worker.ts?worker&url';
 const stepMs=BATTLE_PLAYBACK.step;
 export function presentedFrameDuration(frame:any,previous:any){
@@ -39,13 +39,14 @@ export function useEnemyPlayback(committed:any,onChange:(state:any)=>any,onBusy?
    if(!current()||validate?.(result.state)===false)return;
    let cameraFocus:any=null,index=0,previous=source,grenadeEffect:any=null,actionId=0,actionStartedAt=0,actionDurationMs=0;
    const sequenceId=`${generation}:${++presentationSequence.current}`;
-   let timingState=source;const durations=result.frames.map((next:any)=>{const duration=presentedFrameDuration(next,timingState);timingState=next.state;return duration;});
-   for(const next of result.frames){
+   const frames=admittedReloadWork(result.frames);
+   let timingState=source;const durations=frames.map((next:any)=>{const duration=presentedFrameDuration(next,timingState);timingState=next.state;return duration;});
+   for(const next of frames){
     if(!current())return;
     cameraFocus=battleFrameFocus(next)??cameraFocus;
     const startedAt=performance.now();
     if(next.grenadeVisual)grenadeEffect={id:index,startedAt,visual:next.grenadeVisual};
-    if(next.type==='prepare'||index===0){actionId++;actionStartedAt=performance.now();actionDurationMs=0;for(let cursor=index;cursor<result.frames.length;cursor++){if(cursor>index&&result.frames[cursor].type==='prepare')break;actionDurationMs+=durations[cursor];}}
+    if(next.type==='prepare'||index===0){actionId++;actionStartedAt=performance.now();actionDurationMs=0;for(let cursor=index;cursor<frames.length;cursor++){if(cursor>index&&frames[cursor].type==='prepare')break;actionDurationMs+=durations[cursor];}}
     const delay=durations[index];
     setFrame({...next,index:index++,cameraFocus,grenadeEffect,sequenceId,actionId,actionStartedAt,actionDurationMs,startedAt,durationMs:delay});
     onFrame?.(previous,next.state);previous=next.state;
