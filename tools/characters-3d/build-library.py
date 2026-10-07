@@ -72,4 +72,6 @@ if manifest['complete']:
  # exact final-frame timing; retain the rest of each complete bank.
  if any(kind=='animations'for kind,preset,lod in jobs):
   subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-motion-increment.py'),'--blender',a.blender,'--gesture','climbUp','--gesture','climbDown','--equipment','any'],cwd=ROOT,check=True)
+  # Keep the released rifle guard soles supported after native retargeting.
+  subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-guard-support.py'),'--blender',a.blender],cwd=ROOT,check=True)
  else:subprocess.run(['node',str(ROOT/'tools/characters-3d/compile-locomotion-profile.mjs')],cwd=ROOT,check=True)
