@@ -134,14 +134,14 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
   const frontSupports=()=>Array.from({length:Math.floor(frame.width)+1},(_,u)=>u).filter(u=>wallAt(u,0)?.type==='wall'&&(u===0||u===frame.width||u%2===0||Math.abs(u-frame.doorU)===1));
   const roofCanopy=(name:string,supports:number[],depth=.55,masonry=false)=>{
     if(supports.length<2||height<2.4)return;
-    const lo=Math.min(...supports),hi=Math.max(...supports),low=Math.max(2.12,height*.82),high=low+.24,front=-depth-.15,back=.16,supportDepth=kind==='warehouse'&&wallInset===0?-.30:0;
+    const lo=Math.min(...supports),hi=Math.max(...supports),low=Math.max(2.12,height*.82),high=low+.24,front=-depth-.15,back=.16,supportDepth=wallInset===0?(kind==='warehouse'?-.30:kind==='posta'?-.33:0):0;
     const panel=[at(lo-.18,front,low),at(hi+.18,front,low),at(hi+.18,back,high),at(lo-.18,back,high)],roofAt=(v:number)=>low+(v-front)/(back-front)*(high-low);
     feature(name,()=>{
       for(const u of supports){
         if(masonry&&(u===0||u===frame.width))continue;
         // The posta's broad corner piers are separate. Its thin porch posts
         // expose their front face without crossing the solid cell boundary.
-        const a=masonry?u-alongInset:u,v=masonry?.02*(frame.v.x+frame.v.y):supportDepth,top=roofAt(v);
+        const a=masonry?u-alongInset:u,v=masonry?(wallInset===0?-.30:.02*(frame.v.x+frame.v.y)):supportDepth,top=roofAt(v);
         if(masonry){
           box(a,v,(top+.11)*.5,.14,top-.11,.14,wall);box(a,v,.055,.23,.11,.14,materials.get('stone'));box(a,v,top-.02,.23,.10,.14,trim);
         }else{
