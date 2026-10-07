@@ -583,3 +583,7 @@ Authored shutters now occupy the actual aperture with the current sprite’s pai
 ## Supported house placement
 
 Authored houses with intact front corners now use one centred physical frame for their walls, roof, door crossing and chimney. Ground floor returns keep the room finish and measured hatch clipping. Corner openings, unsupported front corners and unpainted legacy houses retain their original frame. The clean source passes 73 affected checks, type checking, documentation/baseline audits and the build (`5dd99033b0f1`). Its 24 completed original/slab/accessible-roof browser views have no browser errors; an initial cold navigation timeout was retried successfully. The source house piers and hood remain the next cut. See [the placement review](../art/house-shell-placement-3d-review-2026-10-07.md).
+
+## House front piers and hood
+
+The house now has the current source’s two supported corner piers, warm stone feet, separate pale coping and shallow timber door hood. Physical dimensions, cell containment, standing doorway clearance and real roof/upper-route bounds are checked. The clean source passes 72 affected architecture checks, type checking, documentation/baseline audits and the build (`d885995adab9`). Its thirty ordinary and closer browser views pass without errors; the entrance, exteriors and disclosed interior were compared with the current sprite. See [the house facade review](../art/house-facade-3d-review-2026-10-07.md).
