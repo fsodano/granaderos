@@ -1,0 +1,45 @@
+import assert from 'node:assert/strict';
+import {mkdir,writeFile} from 'node:fs/promises';
+import {resolve} from 'node:path';
+const {chromium}=await import(process.env.PLAYWRIGHT_MODULE||'playwright');
+const url=process.env.GRANADEROS_REVIEW_URL||'http://127.0.0.1:3150/renderer-sandbox';
+const output=resolve(process.env.GRANADEROS_REVIEW_OUTPUT||'artifacts/three-gameplay-review');
+await mkdir(output,{recursive:true});
+const browser=await chromium.launch({headless:true,...(process.env.CHROMIUM_EXECUTABLE?{executablePath:process.env.CHROMIUM_EXECUTABLE}:{})});
+const errors=[],checks=[];
+try{
+  const page=await browser.newPage({viewport:{width:1440,height:1000}});
+  page.on('pageerror',error=>errors.push(error.message));
+  const ready=()=>page.waitForFunction(()=>{const c=document.querySelector('canvas[data-sector-renderer="three"]');return c?.dataset.actors&&c.dataset.actors===c.dataset.loadedActors&&!document.querySelector('.tactical-three-status');});
+  const roster=()=>page.locator('[aria-label^="1. Fusil."]');
+  const idle=()=>page.getByRole('button',{name:'Fin del turno',exact:true}).click({trial:true});
+  await page.goto(url,{waitUntil:'networkidle'});await ready();
+  await page.getByRole('button',{name:'Recarga interrumpida',exact:true}).click();await ready();
+  const initial=await roster().getAttribute('aria-label');
+  assert.match(initial,/7,75 puntos de acción/);assert.match(initial,/0 carga\(s\).*11 de reserva/);
+  checks.push({stage:'legal-fire-reload-fire',equipment:initial});
+  // Zoom uses the same camera control available in the playable sector.
+  await page.locator('.tactical-field').focus();await page.keyboard.press('+');await page.keyboard.press('+');
+  await page.keyboard.press('Alt+r');
+  await page.waitForTimeout(1900);await page.screenshot({path:resolve(output,'partial-reload-before-ram.png')});
+  await page.waitForTimeout(1100);await page.screenshot({path:resolve(output,'partial-reload-last-work.png')});
+  await idle();
+  const partial=await roster().getAttribute('aria-label');
+  assert.match(partial,/0 puntos de acción/);assert.match(partial,/0 carga\(s\).*11 de reserva/);assert.match(partial,/Recarga en curso: 69%/i);
+  checks.push({stage:'interrupted-charge',equipment:partial});
+  await page.screenshot({path:resolve(output,'partial-reload-committed.png')});
+  await page.getByRole('button',{name:'Fin del turno',exact:true}).click();await idle();
+  const next=await roster().getAttribute('aria-label');
+  assert.match(next,/25 puntos de acción/);assert.match(next,/0 carga\(s\).*11 de reserva/);assert.match(next,/Recarga en curso: 69%/i);
+  checks.push({stage:'work-survives-next-turn',equipment:next});
+  await page.locator('.tactical-field').focus();await page.keyboard.press('Alt+r');
+  await page.waitForTimeout(400);await page.screenshot({path:resolve(output,'partial-reload-continuation.png')});
+  await idle();
+  const complete=await roster().getAttribute('aria-label');
+  assert.match(complete,/21,5 puntos de acción/);assert.match(complete,/1 carga\(s\).*10 de reserva/);assert.doesNotMatch(complete,/Recarga en curso: \d+%/i);
+  checks.push({stage:'one-charge-completed-once',equipment:complete});
+  await page.screenshot({path:resolve(output,'partial-reload-complete.png')});
+  assert.deepEqual(errors,[],'Live partial-loading browser errors');
+  const report={url,checks,errors,scope:'Real interrupted rifle reload and next-turn continuation. UI assertions cover AP, stored work and cartridge consumption; body screenshots require visual review.'};
+  await writeFile(resolve(output,'partial-loading-report.json'),`${JSON.stringify(report,null,2)}\n`);console.log(JSON.stringify(report,null,2));
+}finally{await browser.close();}
