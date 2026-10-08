@@ -70,6 +70,23 @@ export function admittedThrownRelease(frames:readonly any[]){
   return result;
 }
 
+/** An accepted observed treatment has preparation and result for the same
+ * current actor. This flag carries no patient state or hidden position. */
+export function admittedHealingIntervals(frames:readonly any[]){
+  const result=frames.map(frame=>({...frame}));
+  for(let index=0;index<frames.length;index++){
+    const start=frames[index];
+    if(start.type!=='prepare'||start.action!=='heal'||!start.unitId||start.performed===false)continue;
+    let endIndex=index+1;
+    while(endIndex<frames.length&&frames[endIndex].type!=='prepare'&&frames[endIndex].type!=='result')endIndex++;
+    const end=frames[endIndex];
+    if(end?.type!=='result'||end.action!=='heal'||end.unitId!==start.unitId||end.performed===false)continue;
+    if(!start.state.units.some((unit:any)=>unit.id===start.unitId)||!end.state.units.some((unit:any)=>unit.id===end.unitId))continue;
+    result[index].healInterval=true;result[endIndex].healInterval=true;
+  }
+  return result;
+}
+
 /** Only the admitted actor selects a native visual delay. Rules and simulation
  * time remain unchanged; unseen actions retain the ordinary playback delay. */
 export function nativeActionFrameDuration(frame:any,requested:number){
@@ -77,14 +94,14 @@ export function nativeActionFrameDuration(frame:any,requested:number){
   const unit=frame.state.units.find((unit:any)=>unit.id===frame.unitId);
   if(!unit||unit.hp<=0||unit.unconscious||unit.knockedDown)return requested;
   const action=semanticOrder(frame.action,frame,unit);
-  if(!action||!usesNativeActionTiming(action))return requested;
+  if(!action||!usesNativeActionTiming(action)||action==='heal'&&!frame.healInterval)return requested;
   const capability=resolveActorAction({action,posture:actorPosture(unit),mounted:Boolean(unit.mounted),equipment:spriteEquipment(unit)});
   if(!capability)throw Error(`Unsupported action timing: ${action}`);
   const appearance=spriteAppearance(unit),bank=profile.appearances[appearance as keyof typeof profile.appearances];
   const actions=profile.banks[bank as keyof typeof profile.banks]?.actions;
   const clip:AnimationClockClip|undefined=actions?.[capability.clip as keyof typeof actions];
   if(!clip)throw Error(`Missing native action timing: ${appearance}:${capability.clip}`);
-  const ranges=animationPhaseRanges(clip,action,frame.type,frame.actionWork);
+  const ranges=animationPhaseRanges(clip,action,frame.type,frame.actionWork,frame.healInterval);
   const duration=ranges.reduce((sum,[begin,end])=>sum+end-begin,0)*1000;
   return frame.actionWork&&duration===0?0:Math.max(requested,duration);
 }

@@ -25,7 +25,8 @@ export type ActorKind='unit'|'npc';
 export type ActorEntry={key:string;kind:ActorKind;actor:any};
 export type ContactTarget={key:string;appearance:string;position:[number,number,number];yaw:number;posture:string;mounted:boolean;action:string;bodyHeights:Record<string,number>};
 export type ContactSupport={floors:readonly {minX:number;maxX:number;minZ:number;maxZ:number;height:number}[]};
-export type ActorCue={id:string;action:string;shotHand?:'primary'|'offhand';hand?:'handRight'|'handLeft';startedAt:number;durationMs?:number;phase?:string;phaseStartedAt?:number;phaseDurationMs?:number;fromPosture?:string;toPosture?:string;work?:readonly AnimationWork[];contactTurn?:{fromYaw:number;toYaw:number};contactTarget?:ContactTarget;contactSupport?:ContactSupport};
+export type CareCue={mode:'self'}|{mode:'patient';target:ContactTarget;support:ContactSupport};
+export type ActorCue={id:string;action:string;shotHand?:'primary'|'offhand';hand?:'handRight'|'handLeft';startedAt:number;durationMs?:number;phase?:string;phaseStartedAt?:number;phaseDurationMs?:number;fromPosture?:string;toPosture?:string;work?:readonly AnimationWork[];contactTurn?:{fromYaw:number;toYaw:number};contactTarget?:ContactTarget;contactSupport?:ContactSupport;care?:CareCue;healInterval?:true};
 export type VisualItem={id:string;reference:string;socket:'handRight'|'handLeft'|'back'|'hip';fittings?:any};
 export type ActorVisual={key:string;id:string;kind:ActorKind;appearance:string;skin:string;side:string;tacticalLevel:number;position:[number,number,number];yaw:number;posture:string;mounted:boolean;action:string;idleAction:string;equipment:string;items:VisualItem[];garments:Record<string,string|null>;cue?:ActorCue;contactWarm?:{targets:ContactTarget[];support:ContactSupport};motion?:Motion;selected:boolean;bodyHeights:Record<string,number>};
 export const actorKey=(kind:ActorKind,id:string)=>`${kind}:${id}`;
@@ -128,7 +129,7 @@ export function presentActors(state:any,entries:readonly ActorEntry[],positions:
         const shotHand=frame.shotHand??frame.shotVisual?.shotHand,shotId=frame.shotId??frame.shotVisual?.shotId;
         const held=items.find(item=>item.reference===shotHand&&['handRight','handLeft'].includes(item.socket));
         if(shotHand&&!held)throw Error(`Missing admitted firing hand: ${key}:${shotHand}`);
-        cue={id:`${frame.sequenceId}:${frame.actionId}${shotId===undefined?'':`:shot:${shotId}`}:${key}`,action:frame.type==='prepare'&&['fire','firePoint'].includes(frame.action)?'aim':semantic,...(held?{shotHand,hand:held.socket as 'handRight'|'handLeft'}:{}),...(frame.actionWork?{work:frame.actionWork}:{}),phase:frame.type,phaseStartedAt:frame.startedAt,phaseDurationMs:frame.durationMs,startedAt:['fire','firePoint'].includes(frame.action)?frame.startedAt:frame.actionStartedAt??frame.startedAt,durationMs:['fire','firePoint'].includes(frame.action)?frame.durationMs:frame.actionDurationMs??frame.durationMs};
+        cue={id:`${frame.sequenceId}:${frame.actionId}${shotId===undefined?'':`:shot:${shotId}`}:${key}`,action:frame.type==='prepare'&&['fire','firePoint'].includes(frame.action)?'aim':semantic,...(held?{shotHand,hand:held.socket as 'handRight'|'handLeft'}:{}),...(frame.actionWork?{work:frame.actionWork}:{}),...(frame.healInterval?{healInterval:true as const}:{}),phase:frame.type,phaseStartedAt:frame.startedAt,phaseDurationMs:frame.durationMs,startedAt:['fire','firePoint'].includes(frame.action)?frame.startedAt:frame.actionStartedAt??frame.startedAt,durationMs:['fire','firePoint'].includes(frame.action)?frame.durationMs:frame.actionDurationMs??frame.durationMs};
       }
     }
     // Frame impacts are already disclosure-filtered by the recorder. The
@@ -163,6 +164,18 @@ export function presentActors(state:any,entries:readonly ActorEntry[],positions:
         const turn=visual.cue.phase==='prepare'&&(visual.equipment==='blade'||visual.equipment==='long-gun'&&visual.action==='strike')&&visual.posture==='standing'&&!visual.mounted&&!visual.motion?.moving&&distance>1e-10&&Math.abs(deltaYaw)>1e-7&&Math.abs(deltaYaw)<=Math.PI/4+1e-7?{fromYaw:visual.yaw,toYaw}:undefined;
         visual.cue={...visual.cue,...(turn?{contactTurn:turn}:{}),contactTarget:{key,appearance:target.appearance,position:[...target.position],yaw:target.yaw,posture:target.posture,mounted:target.mounted,action:target.action,bodyHeights:{...target.bodyHeights}},contactSupport:contactSupport(state,source.actor,visual,revealed,result)};
       }
+    }
+  }
+  // A patient cue uses only the current admitted body, never a saved/future
+  // model. The resolver reads its current animated pose at the point of use.
+  if(frame?.action==='heal'&&frame.healInterval&&frame.performed!==false&&['prepare','result'].includes(frame.type)){
+    for(const visual of result)if(visual.kind==='unit'&&visual.id===frame.unitId&&visual.cue?.action==='heal'){
+      if(frame.careSelf===true){visual.cue={...visual.cue,care:{mode:'self'}};continue;}
+      if(!['unit','npc'].includes(point?.kind)||typeof point.id!=='string'||!point.id||![point.x,point.y].every(Number.isFinite))continue;
+      const key=actorKey(point.kind,point.id),matches=result.filter(target=>target.key===key),target=matches.length===1?matches[0]:undefined,entry=entries.find(entry=>entry.key===key);
+      if(!target||!entry||key===visual.key||entry.actor.x!==point.x||entry.actor.y!==point.y||tacticalLevel(entry.actor)!==tacticalLevel(point)||!target.position.every(Number.isFinite)||!Number.isFinite(target.yaw))continue;
+      const source=entries.find(entry=>entry.key===visual.key)!;
+      visual.cue={...visual.cue,care:{mode:'patient',target:{key,appearance:target.appearance,position:[...target.position],yaw:target.yaw,posture:target.posture,mounted:target.mounted,action:target.action,bodyHeights:{...target.bodyHeights}},support:contactSupport(state,source.actor,visual,revealed,result)}};
     }
   }
   // Warm candidates contain only current rendered bodies and disclosed

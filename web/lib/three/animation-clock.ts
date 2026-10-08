@@ -1,20 +1,26 @@
 /** Pure visual time mapping. No animation event is a gameplay command. */
 export type AnimationClockClip={duration:number;loop:boolean;playbackRate?:number;locomotionSpeed?:number;nativeStrideSpeed?:number;markers?:Record<string,number>};
 export type AnimationWork={from:number;to:number;hand?:'primary'|'offhand';barrel?:number};
-export type AnimationClockCue={action:string;startedAt:number;durationMs?:number;phase?:string;phaseStartedAt?:number;phaseDurationMs?:number;work?:readonly AnimationWork[]};
+export type AnimationClockCue={action:string;startedAt:number;durationMs?:number;phase?:string;phaseStartedAt?:number;phaseDurationMs?:number;work?:readonly AnimationWork[];healInterval?:true};
 export type AnimationClockMotion={moving?:boolean;elapsedMs?:number;elapsedDistance?:number;signedDistance?:number;speed?:number;signedForwardSpeed?:number;segmentFraction?:number};
 export type AnimationClockInput={clip:AnimationClockClip;action:string;cue?:AnimationClockCue;motion?:AnimationClockMotion;now:number;reducedMotion?:boolean};
 export type AnimationClockSample={time?:number;rate:number;complete:boolean;phaseComplete:boolean;cueControlsAction:boolean;workIndex?:number};
 const clamp=(value:number,min:number,max:number)=>Math.max(min,Math.min(max,value));
 const wrap=(time:number,duration:number)=>(time%duration+duration)%duration;
 const locomotion=new Set(['walk','run','crawl','strafeLeft','strafeRight','artilleryMove']);
-const nativeActions=new Set(['reload','reprime','repair','unload','artilleryReload','throwGrenade','throwKnife','throwTorch','boleadoras']);
+const nativeActions=new Set(['heal','reload','reprime','repair','unload','artilleryReload','throwGrenade','throwKnife','throwTorch','boleadoras']);
 export const usesNativeActionTiming=(action:string)=>nativeActions.has(action);
 
 /** A recorded phase and the body clock share the same native pose interval. */
-export function animationPhaseRange(clip:AnimationClockClip,action:string,phase=''){
+export function animationPhaseRange(clip:AnimationClockClip,action:string,phase='',healInterval=false){
   const duration=Math.max(.000001,clip.duration),marker=clip.markers??{};
   const contact=marker.contact,release=marker.shot??marker.release;
+  // An accepted recorded treatment plays one native interval. Direct and
+  // unpaired gestures keep their original full-clip playback.
+  if(action==='heal'&&healInterval){
+    if(phase==='prepare')return [0,duration*.25] as const;
+    if(phase==='result')return [duration*.25,duration] as const;
+  }
   if(Number.isFinite(contact)){
     const ready=contact*.45;
     if(phase==='prepare')return [0,ready] as const;
@@ -35,8 +41,8 @@ export function animationPhaseRange(clip:AnimationClockClip,action:string,phase=
 
 /** A charge may stop partway or resume an earlier paid portion. Multiple
  * charges retain their separate native intervals instead of inventing work. */
-export function animationPhaseRanges(clip:AnimationClockClip,action:string,phase='',work?:readonly AnimationWork[]){
-  if(!work?.length||!['reload','artilleryReload'].includes(action))return [animationPhaseRange(clip,action,phase)];
+export function animationPhaseRanges(clip:AnimationClockClip,action:string,phase='',work?:readonly AnimationWork[],healInterval=false){
+  if(!work?.length||!['reload','artilleryReload'].includes(action))return [animationPhaseRange(clip,action,phase,healInterval)];
   const duration=clip.duration,ready=(clip.markers?.contact??duration*.45)*.45/duration;
   const ranges=work.map(({from,to})=>[clamp(from,0,1),clamp(to,from,1)] as const);
   const first=ranges[0],split=clamp(ready,first[0],first[1]);
@@ -68,7 +74,7 @@ export function sampleAnimationTime({clip,action,cue,motion,now,reducedMotion=fa
     const start=cue.phaseStartedAt??cue.startedAt;
     const span=Math.max(.001,(cue.phaseDurationMs??cue.durationMs??duration*1000)/1000);
     const elapsed=Math.max(0,(now-start)/1000),fraction=clamp(elapsed/span,0,1);
-    const ranges=animationPhaseRanges(clip,action,phase,cue.work);
+    const ranges=animationPhaseRanges(clip,action,phase,cue.work,cue.healInterval);
     const length=ranges.reduce((sum,[begin,end])=>sum+end-begin,0);
     let distance=length*fraction,time=ranges.at(-1)![1],rangeIndex=ranges.length-1;
     for(let index=0;index<ranges.length;index++){
