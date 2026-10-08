@@ -44,6 +44,30 @@ def shape_face(skin, eye_z, gender):
     skin.data.update()
 
 
+def soften_lower_lid(skin, eye_z):
+    """Ease the outward lower-lid ridge; leave the rim and cavity untouched."""
+    def smooth(value):
+        t=max(0,min(1,value))
+        return t*t*(3-2*t)
+    # Read all normals before changing any position so the selection is stable.
+    samples=[(v,v.co.copy(),v.normal.copy()) for v in skin.data.vertices]
+    for vertex,p,n in samples:
+        x=abs(p.x);below=eye_z-p.z
+        if not (.017<x<.047 and .0058<below<.014):
+            continue
+        # Upward-facing real rim and inward orbital surfaces remain exact.
+        if n.y>=-.65 or n.z>=.70 or p.y>=-.1435:
+            continue
+        width=smooth((x-.017)/.008)*smooth((.047-x)/.008)
+        edge=smooth((below-.0058)/.001)*smooth((.014-below)/.003)
+        face=smooth((-n.y-.65)/.22)*smooth((.70-n.z)/.20)
+        front=smooth((-.1435-p.y)/.0015)
+        band=math.exp(-((below-.0077)/.003)**2)
+        # Recess at most 0.60 mm along depth only. No new holes or lid opening.
+        vertex.co.y+=.00060*width*edge*face*front*band
+    skin.data.update()
+
+
 def surface_uv(obj, point, face_index):
     from mathutils import Vector
     from mathutils.geometry import barycentric_transform, closest_point_on_tri

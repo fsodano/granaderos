@@ -207,7 +207,7 @@ clearance correction changes twelve arm tracks in prone idle and crawl.
 The complete merge preserves all 334 clip durations, contact markers and
 action semantics in each anatomy. It changes 614 male and 602 female rotation
 tracks; the other 52,492 and 52,504 tracks remain exact. All thirty non-bank
-GLB files remain exact. The current manifest hash is
+GLB files remain exact. The support checkpoint manifest hash is
 `529afaf3cec474624ca426442faeefeac1b2f81b63158932ed2cc9a5923aed2b`.
 Local receipts and render evidence are retained in
 `artifacts/character-anatomy-review/delivery/support-integration/`.
@@ -218,3 +218,32 @@ open. Material-only and stronger cheek-sculpt trials were rejected: one was
 too subtle at game scale; the other made the cheek look carved and hollow.
 Eye and garment trials remain private until visual review. The local checks
 above do not establish the requested reference-level visual quality.
+
+## Visible face review, 8 October
+
+The next accepted appearance pass uses an 11 mm iris and a lower-lid ridge
+recessed by at most 0.60 mm. It also smooths the narrow, cut-like folds below
+the military collar while retaining the sewn neckline. Actual matched face
+and full-body views cover Granadero, Royalist, scout and shawl appearances.
+All 24 bodies were rebuilt. Their native joint transforms and inverse-bind
+matrices remain exact; both animation banks remain byte-identical.
+
+All 43 affected skin-map, coat, crossbelt and prone arm checks pass. The
+initial military LOD1 simplification folded its coat through the strap during
+reload. These two LOD1 bodies now retain the accepted LOD0 coat support;
+all other body parts retain their ordinary reductions. This costs 10,564
+additional triangles and 459,484 bytes per military LOD1 body. Six draw calls
+remain unchanged. The result has not been benchmarked in a crowded sector.
+
+These are modest corrections, not the overall quality improvement requested
+by the user. More facial colour, 2,700 short beard hairs, stronger wool colour,
+different lighting and larger scalar cloth folds were tested separately and
+rejected. The hair added 10,800 triangles without enough visible gain; stronger
+cloth relief looked like bulges and distorted the strap. A 128-sample render
+without denoising confirmed that the beard result was not merely hidden by
+the review renderer. None of those rejected appearance trials is published.
+
+The face still looks smooth and generic, and the original coat construction
+follows the body too closely. A separate constrained garment prototype remains
+under visual review. The latest local evidence is in
+`artifacts/character-anatomy-review/delivery/visible-face-review/`.

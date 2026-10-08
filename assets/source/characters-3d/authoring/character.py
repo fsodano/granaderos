@@ -288,7 +288,8 @@ def create_character(preset="granadero", height=1.76):
     # Sculpt the final cloth surface so subdivision does not erase the short
     # elbow folds. This moves cloth only; native skin and bones stay intact.
     if preset in ('granadero','royalist'):
-        from uniform_folds import compression_relief
+        from uniform_folds import compression_relief, relax_neck_gathers
+        relax_neck_gathers(coat)
     for vertex in coat.data.vertices:
         relief=compression_relief(vertex.co,vertex.normal,heads) if preset in ('granadero','royalist') else cloth_relief(vertex.co,vertex.normal,heads,'coat')
         vertex.co+=vertex.normal*relief
@@ -565,7 +566,7 @@ def create_character(preset="granadero", height=1.76):
     for suffix in ('l','r'):
         center=joint({'cube_name':'joint-'+suffix+'-eye'})
         ellipsoid('Eyeball_'+suffix,center,(.0115,.0115,.0115),mats['eye'],'head',24,16)
-        for name,radii,mat in [('Iris',(.0017,.0022,.0035,.0044,.00465),mats['iris']),('Pupil',(0,.0008,.00172),mats['pupil'])]:
+        for name,radii,mat in [('Iris',(.0017,.0025,.0041,.0052,.0055),mats['iris']),('Pupil',(0,.0008,.00172),mats['pupil'])]:
             coords=[];polys=[];tones=[];segments=48
             for row,radius in enumerate(radii):
                 for j in range(segments):
@@ -761,6 +762,7 @@ def create_character(preset="granadero", height=1.76):
         else:multiply.inputs[6].default_value=colour
         links.new(attribute.outputs['Color'],multiply.inputs[7]);links.new(multiply.outputs[2],base)
     eye_z=joint({'cube_name':'joint-l-eye'}).z
+    ctx['facial_eye_z']=eye_z
     mouth_z=eye_z-.063
     native_hands=hand_frames(rig)
     def gauss(value,centre,width):return math.exp(-((value-centre)/width)**2)

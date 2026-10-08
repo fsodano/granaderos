@@ -31,26 +31,26 @@
         {
           "lod": 0,
           "url": "/models/characters/granadero-lod0.glb",
-          "triangles": 87375,
-          "bytes": 5306404,
+          "triangles": 87454,
+          "bytes": 5309164,
           "drawCalls": 6,
-          "sha256": "67e1c263befa83fb714da7dfe686f7878ee93016ca26f081aa38c7a882c3d0bb"
+          "sha256": "957b2cf949eaf263df67d1f987a695f5c216c14f1365a464768eb20d2058515d"
         },
         {
           "lod": 1,
           "url": "/models/characters/granadero-lod1.glb",
-          "triangles": 51202,
-          "bytes": 3461228,
+          "triangles": 61784,
+          "bytes": 3923244,
           "drawCalls": 6,
-          "sha256": "0c5e5b49288fa5ceb8d60103a2048ebfe8b0a1a66b9dbddcce8492cf058e0f0a"
+          "sha256": "e1b1e00c114533ca43c67a0742c6314254ea5ef5d5db2f536f816960228bab5d"
         },
         {
           "lod": 2,
           "url": "/models/characters/granadero-lod2.glb",
-          "triangles": 18734,
-          "bytes": 1168360,
+          "triangles": 18666,
+          "bytes": 1164512,
           "drawCalls": 6,
-          "sha256": "d249976b846f41575e152bcf21e26729aba7dcaa1ad3f5eeeafd857552f5f875"
+          "sha256": "4393536a48d5deccb08b24b77269fbe3ec561be66b3f370720d92984db533e72"
         }
       ],
       "materials": {
@@ -256,26 +256,26 @@
         {
           "lod": 0,
           "url": "/models/characters/royalist-lod0.glb",
-          "triangles": 87018,
-          "bytes": 5265412,
+          "triangles": 87097,
+          "bytes": 5268172,
           "drawCalls": 6,
-          "sha256": "1f3396983f8c69ef11cf5871c39456d35290b910a05aa3af36a718ea24b84110"
+          "sha256": "507562d72afcf1a6915279087089d837c286120974a587e23c4f4b8176904967"
         },
         {
           "lod": 1,
           "url": "/models/characters/royalist-lod1.glb",
-          "triangles": 51131,
-          "bytes": 3451780,
+          "triangles": 61713,
+          "bytes": 3913796,
           "drawCalls": 6,
-          "sha256": "ee7997cd11afaaca1e7c83d431ae771a03cf059c2013ca315b8d9214ace6c45b"
+          "sha256": "c4c59b57ddf663c921a8e84dba20e0ae3c3d4825156c8926848fa8d4a5889d3b"
         },
         {
           "lod": 2,
           "url": "/models/characters/royalist-lod2.glb",
-          "triangles": 18677,
-          "bytes": 1159508,
+          "triangles": 18609,
+          "bytes": 1155660,
           "drawCalls": 6,
-          "sha256": "f9a8e7561f6d8f4d7cefc532980714a3ec83f38a61b578febb35fff7bb858eab"
+          "sha256": "5b0052c211e063f7ba54c6f26b1048d3dffb162d45ea489b7b4704c43010e7ce"
         }
       ],
       "materials": {
@@ -484,7 +484,7 @@
           "triangles": 76210,
           "bytes": 3793140,
           "drawCalls": 5,
-          "sha256": "714e4b3f297a7dcd23ca5db639b15e415f0b6f16dd42091915a0ca3b63ee6c4d"
+          "sha256": "17b943a339165188e4c0aacbdc3eda6b5dcdbe6f4cd348489f7256b460648246"
         },
         {
           "lod": 1,
@@ -492,7 +492,7 @@
           "triangles": 46181,
           "bytes": 2619960,
           "drawCalls": 5,
-          "sha256": "9deedb94a3292dd906556f16b0b9ac70b6c9c22c3b244614b73d880d9abcb9fa"
+          "sha256": "0abf4920035b9893a98e93dc164c598182c761ad972951c51321c7648b70bd7a"
         },
         {
           "lod": 2,
@@ -500,7 +500,7 @@
           "triangles": 17104,
           "bytes": 828104,
           "drawCalls": 5,
-          "sha256": "02eee6fd923d6252b93ce4827f57f7ddcde2d4c8949d4220b4ae97e928f2a762"
+          "sha256": "0265825cc705188561048bb6996abb4628d2c2290a7a4a2d4288cd162db0e48b"
         }
       ],
       "materials": {
@@ -709,7 +709,7 @@
           "triangles": 62902,
           "bytes": 3407760,
           "drawCalls": 5,
-          "sha256": "80562b2bedc862bffb2247d9f4c5ebd0409e8572e33792d182267ea219fe1cf8"
+          "sha256": "c9c3da005cbe9c260e9f5ee79108b8e57ea299940c6f9dfeb56d9dea38fe7e22"
         },
         {
           "lod": 1,
@@ -717,7 +717,7 @@
           "triangles": 39831,
           "bytes": 2480760,
           "drawCalls": 5,
-          "sha256": "04057237417a1d1dc639fcbca3bc13d977876b676b9154f3aa76733b127c3d8d"
+          "sha256": "24a97ecefbc8f0c233e8882731a51b92ce171adc69ba028abbafd99841ec9326"
         },
         {
           "lod": 2,
@@ -725,7 +725,7 @@
           "triangles": 15090,
           "bytes": 839984,
           "drawCalls": 5,
-          "sha256": "125bf698aa41d4aab4f0219c2d8a51ce5ac967bbdc8bb4555887bb12c6b04177"
+          "sha256": "514810c44a8db76c63beb69654772ac17d2f1a02719e939f471bad7cefde2c2f"
         }
       ],
       "materials": {
@@ -934,7 +934,7 @@
           "triangles": 62208,
           "bytes": 3233272,
           "drawCalls": 6,
-          "sha256": "2154e3aa7aeed5d2d3771360cebe972a66451030289eca3bf6eb49f574275212"
+          "sha256": "0cb631f9ca7b43179f3c6c50eabd26657849fae144b798cd4ed63781275f7bb4"
         },
         {
           "lod": 1,
@@ -942,7 +942,7 @@
           "triangles": 37811,
           "bytes": 2273724,
           "drawCalls": 6,
-          "sha256": "9ec217287704cb7bc947266c36e4c22c25931beac578e1d44d6d678dccc656d4"
+          "sha256": "f345d64022a4b5d82c7424e5b34199fa09a7856052791b9a6d0fe0d92b5f3c36"
         },
         {
           "lod": 2,
@@ -950,7 +950,7 @@
           "triangles": 12965,
           "bytes": 653496,
           "drawCalls": 6,
-          "sha256": "21532e7cc635b888a1998debec73d27d8b1084f607a60786647711b041b96b43"
+          "sha256": "819eb2714e60ebe68c49ac199f68a7bf0e05a3c9ddb06600eb1d33a98219a871"
         }
       ],
       "materials": {
@@ -1157,25 +1157,25 @@
           "lod": 0,
           "url": "/models/characters/friar-lod0.glb",
           "triangles": 69340,
-          "bytes": 3857736,
+          "bytes": 3857976,
           "drawCalls": 5,
-          "sha256": "e7537d17e994cc1c1e9852035d2dee34780f377457ae1dcdb7d03665cab7053b"
+          "sha256": "1ce4b5bb2e5f4f014f8f06fbe5f435e787220e8e033972aa22e8374445bf5686"
         },
         {
           "lod": 1,
           "url": "/models/characters/friar-lod1.glb",
           "triangles": 42058,
-          "bytes": 2646728,
+          "bytes": 2646504,
           "drawCalls": 5,
-          "sha256": "fa5c38ac5eb470d5eb71f0070e69c8b4f004cacea4ea6caf0b9d53299db3ce6d"
+          "sha256": "10d86834e8deee0b3db991e4f70d9af2f2f4ea491bf7232e6f377991c18cc8e6"
         },
         {
           "lod": 2,
           "url": "/models/characters/friar-lod2.glb",
           "triangles": 14889,
-          "bytes": 833252,
+          "bytes": 833364,
           "drawCalls": 5,
-          "sha256": "76dcc2ac69336efef606ceb0eb1a7d4ece843417e03d58c9e605cf2c0b4289a7"
+          "sha256": "c6d1445d800cbd6a7e674a909e4455b8fbee4b7a0adf650289c521630ca0b38c"
         }
       ],
       "materials": {
@@ -1384,7 +1384,7 @@
           "triangles": 63649,
           "bytes": 3311264,
           "drawCalls": 5,
-          "sha256": "8f6f1ef18ccc51b579c7d769fa211fee3d70f98f855f778984269ea62acaacfe"
+          "sha256": "fb424c540fbcbc938d744a79c90a9abe86265d497049c11f27219d1ad071a4d9"
         },
         {
           "lod": 1,
@@ -1392,7 +1392,7 @@
           "triangles": 38771,
           "bytes": 2329836,
           "drawCalls": 5,
-          "sha256": "53e31365f9db98fc9264256b859de5dce4ca36be1b54a19f96ce957857d0d7ba"
+          "sha256": "a2782456fa7256858d245f3fe304f66869fd8bf756fdfa81c6b173b301ff9979"
         },
         {
           "lod": 2,
@@ -1400,7 +1400,7 @@
           "triangles": 13519,
           "bytes": 685156,
           "drawCalls": 5,
-          "sha256": "04a347b0a980f687c67901e14c799ce9ae753f0b91f79b318a1e4b65f8e99b97"
+          "sha256": "9068031f747e6e70306ab024d99ee0723f07b5ad0c06fa37a05b4163374cb9db"
         }
       ],
       "materials": {
@@ -1607,25 +1607,25 @@
           "lod": 0,
           "url": "/models/characters/woman-shawl-lod0.glb",
           "triangles": 87017,
-          "bytes": 4477520,
+          "bytes": 4477976,
           "drawCalls": 5,
-          "sha256": "64688ce312ddef06f568aadefc2f875e5e53cba478275da99705a0e1cfc230e3"
+          "sha256": "7217de8afea4595e7abf9e023f07bd3db520a0fd17774359fe6cb80fd829ca80"
         },
         {
           "lod": 1,
           "url": "/models/characters/woman-shawl-lod1.glb",
           "triangles": 51524,
-          "bytes": 2964184,
+          "bytes": 2964016,
           "drawCalls": 5,
-          "sha256": "2dc1be5e20ef75355da5ef79f2ee9163e4dcfcb301bdd81711ee698d504b7fe5"
+          "sha256": "f09349b340616e0f07621f317975389752d1f9dc668f869c42f938635321cb83"
         },
         {
           "lod": 2,
           "url": "/models/characters/woman-shawl-lod2.glb",
           "triangles": 19149,
-          "bytes": 964992,
+          "bytes": 964836,
           "drawCalls": 5,
-          "sha256": "77e84cd9066fd8063f90174efc6fa337f3fc21be27fc40b8a51150be8837dedc"
+          "sha256": "3a64f9f5067e2a81a87c15be56bf5d5545fe846c9049a0e76ca7296b077ed164"
         }
       ],
       "materials": {

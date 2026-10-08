@@ -57,8 +57,11 @@ to the native face. The measured displacement is below 1.23 mm. Head geometry
 has its own reduction budget, so the eyes and lips keep more of their source
 shape at each detail level. A fitted brow base and irregular short hairs replace
 the sparse dotted brows. Native UVs, skin weights, joints and the
-light/brown/dark palette controls remain intact. The exported non-head
-triangles retain their positions, normals, UVs, pigments and named skin weights.
+light/brown/dark palette controls remain intact. The later eye pass increases
+the iris diameter to 11 mm and softens the lower-lid ridge. Skin outside the
+face remains unchanged. Military coats also have a smoother neckline; LOD1
+retains the LOD0 coat support to prevent the shoulder belt entering the cloth
+during compressed poses. Other LOD1 parts keep their normal reductions.
 Civilian garments keep their own colors and do not retain military
 cockades, chin scales, cords or epaulettes. Each complete hat is one replaceable
 headwear part, including its small trim pieces.

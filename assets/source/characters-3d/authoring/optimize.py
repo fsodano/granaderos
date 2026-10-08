@@ -71,7 +71,11 @@ def optimize_character(ctx,lod=0):
  if ctx.get('preset') in ('granadero','royalist') and any(o.name.startswith('Single_Crossbelt') for o in objects):
   reduced_coat=ctx['coat'];bpy.context.view_layer.objects.active=reduced_coat
   reduction=reduced_coat.modifiers.new('Crossbelt_Support_LOD','DECIMATE')
-  reduction.ratio=min(1,max(.42 if ctx.get('preset') in ('granadero','royalist') and lod==0 else RATIOS[lod],(35 if lod==2 else 100)/max(1,len(reduced_coat.data.polygons))))
+  # Retain the accepted moving coat support at LOD1. Decimation otherwise
+  # changes shoulder folds under the sewn belt during compressed reloads.
+  # Other body parts still use their normal LOD ratios; clearance is unchanged.
+  military_ratio=(.42,.42,RATIOS[2])[lod]
+  reduction.ratio=min(1,max(military_ratio,(35 if lod==2 else 100)/max(1,len(reduced_coat.data.polygons))))
   reduction.use_collapse_triangulate=True
   while reduced_coat.modifiers.find(reduction.name)>0:bpy.ops.object.modifier_move_up(modifier=reduction.name)
   if len(reduced_coat.data.polygons)>150:bpy.ops.object.modifier_apply(modifier=reduction.name)
@@ -143,6 +147,11 @@ def optimize_character(ctx,lod=0):
   fitted_edges=('Crossbelt','Waist_Belt','Trouser_Seam','Crimson_Collar','Fine_Collar_Gold_Edge','Iris','Pupil','Natural_Eyebrow')
   if obj is not reduced_coat and len(obj.data.polygons)>(60 if detail else 150) and not any(n in obj.name for n in fitted_edges):bpy.ops.object.modifier_apply(modifier=dec.name)
   else:obj.modifiers.remove(dec)
+  if obj.get('retain_head_skin'):
+   # Move only the small lower-lid ridge after reduction; changing it before
+   # decimation would reallocate the edge budget elsewhere on the face.
+   from facial_structure import soften_lower_lid
+   soften_lower_lid(obj,ctx['facial_eye_z'])
   if obj.get('replace_reduced_head'):
    head_vertices=_head_component_vertices(obj)
    _keep_vertices(obj,set(range(len(obj.data.vertices)))-head_vertices)
