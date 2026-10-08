@@ -71,7 +71,7 @@ second arbitrary orientation or move the hand mesh to fit the weapon.
 
 ## Reviewed standing movement
 
-The two anatomy banks each contain 270 semantic clips. Of these, 34 use 29
+The two anatomy banks each contain 334 semantic clips. Of these, 34 use 29
 distinct motions transferred from the accepted Granadero reference. This covers
 unarmed idle/walk/run/punch, rifle and pistol aim/fire/carry/close strikes,
 bayonet thrust, sabre guard/carry/cuts/thrust/hilt strike, and knife
@@ -85,6 +85,18 @@ strikes select a stable variant from the action cue ID; preparation, contact and
 recovery keep the same variant. Each variant has one contact. The playground's
 two-cut combination remains a preview action and does not create a second hit
 for one paid gameplay action.
+
+The standing sabre **thrust** uses the pinned, compact native donor
+`authoring/standing_blade_wrist_donor.json`. After a fresh animation build,
+`tools/characters-3d/build-standing-blade-wrists.py` replaces only the right
+upper-arm, forearm, wrist and three thumb rotation outputs in this one clip.
+It checks the donor's native rest transforms and exact input clocks before
+installing either anatomy bank. All other clips, joint offsets, scales, markers,
+meshes, equipment and original binary data remain exact. The source commit and
+bank hashes are recorded in each changed clip's `nativeBladeWrist` metadata.
+The donor is applied once to fresh banks; a repeated application is rejected.
+The other standing cuts and hilt strike retain their released channels and
+still need separate physical and visual review.
 
 Reviewed clips retain the accepted 1.25 playback-rate reference. Gameplay cue
 timing remains authoritative; clip markers cannot issue attacks, spend AP or
