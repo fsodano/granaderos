@@ -9,10 +9,10 @@ const {ActorRuntime}=await import('../web/lib/three/actor-runtime.ts');
 const visual=(id,extra={})=>({key:'unit:cloth',id:'cloth',kind:'unit',appearance:id,skin:'light',side:'player',tacticalLevel:0,position:[0,0,0],yaw:0,posture:'prone',mounted:false,action:'idle',idleAction:'idle',equipment:'long-gun',items:[{id:'1800',reference:'primary',socket:'handRight'}],garments:{headwear:null,outfit:null,legwear:null},selected:false,bodyHeights:{},...extra});
 const names=id=>[`Human_${id==='friar'?'outfit':'legwear'}_LOD0`,'Human_footwear_LOD0'];
 function refresh(actor,cloth,boot){actor.root.updateMatrixWorld(true);cloth.skeleton.update();boot.skeleton.update();}
-function pairs(cloth,boot){const bvh=tree(surface(boot)),result=[];for(const triangle of surface(cloth,true)){const nearby=[];candidates(bvh,triangle.box,nearby);for(const other of nearby)if(crossed(triangle,other)||crossed(other,triangle))result.push([triangle.indices,other.indices]);}return result;}
+function pairs(cloth,boot){const bvh=tree(surface(boot)),result=[];for(const triangle of surface(cloth)){const nearby=[];candidates(bvh,triangle.box,nearby);for(const other of nearby)if(crossed(triangle,other)||crossed(other,triangle))result.push([triangle.indices,other.indices]);}return result;}
 
 for(const id of ['friar','woman-shawl']){
- test(`${id} close cloth clears complete boot surfaces for every admitted fixed native clip`,async()=>{
+ test(`${id} complete close garment clears full boot surfaces for every admitted fixed native clip`,async()=>{
   const asset=await publishedActor(id,0),actor=new ActorRuntime(asset,visual(id)),[clothName,bootName]=names(id),cloth=actor.model.getObjectByName(clothName),boot=actor.model.getObjectByName(bootName),support=asset.appearance.lods[0].nativeClothBootSupport;
   assert.equal(support.retainedOriginalClothTargetsAndRig,true);
   assert.deepEqual(cloth.userData.nativeClothBootSupport,support);
