@@ -1,0 +1,381 @@
+{
+  "basis": "9b3798475a94eee22ed9993a20292f49ee7e9c14",
+  "scope": "Three obsolete expectation/fixture corrections only. No production runtime/game/source/assets changes.",
+  "allowlist": [
+    {
+      "path": "tests/actor-unit-motion-distance.test.mjs",
+      "before": "1c3d1c445a05ad9220d336604a58bf9e958a98b930c29b312b3a5e60a2c8635d",
+      "after": "7bb63ff771da1fed29c6db633c2719dc7a1dfa38a5eb2fee1fb397bd747190dd"
+    },
+    {
+      "path": "tests/artillery-battlefield-playback.test.mjs",
+      "before": "6b0e87dc5943a63beb3c6bca92da5ceac8454b01209adab612f5f451c5677fb9",
+      "after": "0f3b81b5463b1e51907bcfd798f599430dbb77bdeed51f8a9b7b57d4945df059"
+    },
+    {
+      "path": "tests/elevation-interface.test.mjs",
+      "before": "0262ed79b553f2a58e21b61dccf13055b137fd424bb7c7c3b10de838015eed2b",
+      "after": "ec76b7f81fe25aa96ea70e20850dc75bad31ea2e02e9a7a02b375b698558216d"
+    }
+  ],
+  "unchangedPinnedFiles": {
+    "web/app/useUnitMotion.ts": "3b8bb8b1735ba060b5297a0b9c5921ca21f147ae2bc232d1c23033b4958d6409",
+    "web/app/Battlefield.tsx": "e67d67e31c7ef6245dd34fe759ea9bf29e0a046b3536b6c7e8bb208f90fe54ea",
+    "web/app/TacticalScene.tsx": "f6562b090ed1660eacb0c950d563e387d72e8bc551bf59d9bada359d880ef747",
+    "web/lib/tactical-elevation.ts": "f80eb1d5d7220c4127d21e6123b9763c09374af84e9e2dd38849eb3336d48451",
+    "web/lib/useEnemyPlayback.ts": "14a368601e828fadee8cff034f2acfbe6a9872573e2a55fb6f7d892c00c11a3b",
+    "web/lib/three/movement-timing.ts": "4c63d32b1886171e6c5bcbbb720816a0f2a0c37591672425476a76b8cf744679",
+    "web/lib/three/mount-presentation.ts": "89e64df4bee476fda1d43fb1660be50ac3ef3e818deec50aa4d4679ba8cee93d",
+    "web/lib/three/presentation.ts": "c78f1984a7684717b8b8a17255a1b27daa39a1f4d1c4b75343f603287b0cf44d",
+    "web/lib/three/locomotion-profile.json": "d3a9d3d1af2468a7a07ccb4d2a422b1d860b2526f9faa25b8b11e8603f8c3431",
+    "game/climb-geometry.js": "5b3e8b6b21a3326ebe32af269eb617e23a8b0e3bdfda75e356547989372a7586",
+    "game/tactical.js": "372159ac1f6ddfd86ad7f1f7e02e63662c08be6c4e15a230a1d3f32626f07fbc",
+    "web/public/models/characters/manifest.json": "446831c80eedf146ee2eef120a18b0ef1dd8e4eec821bbb4a4434168ad4b3a12",
+    "web/public/models/characters/male-animations.glb": "48a5966d73058d2fef5eb77837d229377178106a349b903983c0bb38ad914d87",
+    "web/public/models/characters/female-animations.glb": "0d437c4296ce6e7657626f0a18815eddf1b3cdf75479933ddd8a5fada017542e"
+  },
+  "cause": {
+    "climb": "Native duration and minimum vertical pace superseded fixed120ms fixture in3881df6a andea6342f2.",
+    "mount": "Protected recorded prepare/result delivery superseded immediate commit in2f1ba2ed. Test owner must install committed props via React state in same render as cleared frame, matching actual UI; delayed external mutation causes phantom reverse observer transition.",
+    "roof": "Supported ladder Root setback/crest introduced inea6342f2 superseded linear root travel. Old reversed route also omitted destinationkind:climb for descent; candidate uses actual paid reverse order."
+  },
+  "independentInvariants": {
+    "climb": "Manifest4.616667s native duration and3m/.65 minimum pace;60ms remains in flight, half occurs2308.3335ms; end link/cell/height settled; source state unchanged.",
+    "mount": "Actual presentedActBattleprepare/result andactBattle result,2300ms protected native path; zero early commit; AP once; cells exact; input ignored whilebusy; renderer completion doesnot commit; same-frame/committed/late callback doesnot replay; rejected AP0 remains rejected.",
+    "roof": "Actual paid ascent+descent; native authoritative contact Root; roof plane recovered independently from rendered mesh; hit frame+sprite share projected feet; phase boundary continuity and reversal; exactendpoints; stairs retain original linear interpolation; independentplatform height andentirepaidstate unchanged."
+  },
+  "commands": [
+    {
+      "command": "node --test --test-reporter=tap tests/actor-unit-motion-distance.test.mjs tests/artillery-battlefield-playback.test.mjs tests/elevation-interface.test.mjs",
+      "cwd": "/tmp/granaderos-three-fast-current-audit",
+      "log": "/tmp/granaderos-three-fast-current-audit/audit/three-fast-after-react-owner.log",
+      "tests": 16,
+      "pass": 16,
+      "fail": 0,
+      "durationMs": 2217.400166
+    }
+  ],
+  "values": {
+    "source": "9b3798475a94eee22ed9993a20292f49ee7e9c14",
+    "climb": {
+      "native": 4.616667,
+      "durationMs": 4616.6669999999995,
+      "after60Fraction": 0.01299638895332932,
+      "paidHalfMs": 2308.3334999999997
+    },
+    "mounts": [
+      {
+        "semantic": "mount",
+        "frames": [
+          {
+            "type": "prepare",
+            "mounted": false,
+            "duration": 2300
+          },
+          {
+            "type": "result",
+            "mounted": true,
+            "duration": 300,
+            "mountComplete": true
+          }
+        ],
+        "beforeAP": 100,
+        "afterAP": 88,
+        "cellBefore": [
+          2,
+          2
+        ],
+        "cellAfter": [
+          2,
+          2
+        ]
+      },
+      {
+        "semantic": "dismount",
+        "frames": [
+          {
+            "type": "prepare",
+            "mounted": true,
+            "duration": 2300
+          },
+          {
+            "type": "result",
+            "mounted": false,
+            "duration": 300,
+            "mountComplete": true
+          }
+        ],
+        "beforeAP": 88,
+        "afterAP": 76,
+        "cellBefore": [
+          2,
+          2
+        ],
+        "cellAfter": [
+          2,
+          2
+        ]
+      }
+    ],
+    "roof": [
+      {
+        "fraction": 0,
+        "position": {
+          "kind": "climb",
+          "linkId": "terrace:climb:west",
+          "climbGeometry": {
+            "height": 3,
+            "span": 1.2360585147470482,
+            "baseSpan": 0,
+            "edgeSpan": 0.6180292573735241,
+            "ladderSpan": 0.5180292573735241,
+            "steps": 11
+          },
+          "travelX": 1,
+          "travelY": 0,
+          "segmentFraction": 0,
+          "climbDirection": 1,
+          "x": 1,
+          "y": 3,
+          "tacticalLevel": 0,
+          "renderedHeight": 0,
+          "renderedOffset": {
+            "x": 0,
+            "y": 0,
+            "height": 0
+          }
+        },
+        "projected": {
+          "x": 248,
+          "y": 121
+        },
+        "oldLinear": {
+          "x": 248,
+          "y": 121
+        }
+      },
+      {
+        "fraction": 0.08,
+        "position": {
+          "kind": "climb",
+          "linkId": "terrace:climb:west",
+          "climbGeometry": {
+            "height": 3,
+            "span": 1.2360585147470482,
+            "baseSpan": 0,
+            "edgeSpan": 0.6180292573735241,
+            "ladderSpan": 0.5180292573735241,
+            "steps": 11
+          },
+          "travelX": 1,
+          "travelY": 0,
+          "segmentFraction": 0.08,
+          "climbDirection": 1,
+          "x": 0.8705562899400899,
+          "y": 3,
+          "tacticalLevel": 0,
+          "renderedHeight": 0,
+          "renderedOffset": {
+            "x": 0.032,
+            "y": 0.032,
+            "height": 0
+          }
+        },
+        "projected": {
+          "x": 244.63446353844233,
+          "y": 120.08378805916126
+        },
+        "oldLinear": {
+          "x": 250.08,
+          "y": 117
+        }
+      },
+      {
+        "fraction": 0.25,
+        "position": {
+          "kind": "climb",
+          "linkId": "terrace:climb:west",
+          "climbGeometry": {
+            "height": 3,
+            "span": 1.2360585147470482,
+            "baseSpan": 0,
+            "edgeSpan": 0.6180292573735241,
+            "ladderSpan": 0.5180292573735241,
+            "steps": 11
+          },
+          "travelX": 1,
+          "travelY": 0,
+          "segmentFraction": 0.25,
+          "climbDirection": 1,
+          "x": 0.8992046342474611,
+          "y": 3,
+          "tacticalLevel": 0,
+          "renderedHeight": 0.43671875,
+          "renderedOffset": {
+            "x": 0.1,
+            "y": 0.1,
+            "height": 0
+          }
+        },
+        "projected": {
+          "x": 245.379320490434,
+          "y": 111.44178154613111
+        },
+        "oldLinear": {
+          "x": 254.5,
+          "y": 108.5
+        }
+      },
+      {
+        "fraction": 0.5,
+        "position": {
+          "kind": "climb",
+          "linkId": "terrace:climb:west",
+          "climbGeometry": {
+            "height": 3,
+            "span": 1.2360585147470482,
+            "baseSpan": 0,
+            "edgeSpan": 0.6180292573735241,
+            "ladderSpan": 0.5180292573735241,
+            "steps": 11
+          },
+          "travelX": 1,
+          "travelY": 0,
+          "segmentFraction": 0.5,
+          "climbDirection": 1,
+          "x": 1.016530156982747,
+          "y": 3,
+          "tacticalLevel": 0,
+          "renderedHeight": 1.2765625,
+          "renderedOffset": {
+            "x": 0.2,
+            "y": 0.2,
+            "height": 0
+          }
+        },
+        "projected": {
+          "x": 248.42978408155142,
+          "y": 94.83225553109179
+        },
+        "oldLinear": {
+          "x": 261,
+          "y": 96
+        }
+      },
+      {
+        "fraction": 0.76,
+        "position": {
+          "kind": "climb",
+          "linkId": "terrace:climb:west",
+          "climbGeometry": {
+            "height": 3,
+            "span": 1.2360585147470482,
+            "baseSpan": 0,
+            "edgeSpan": 0.6180292573735241,
+            "ladderSpan": 0.5180292573735241,
+            "steps": 11
+          },
+          "travelX": 1,
+          "travelY": 0,
+          "segmentFraction": 0.76,
+          "climbDirection": 1,
+          "x": 1.1385487006274444,
+          "y": 3,
+          "tacticalLevel": 1,
+          "renderedHeight": 2.15,
+          "renderedOffset": {
+            "x": 0.30400000000000005,
+            "y": 0.30400000000000005,
+            "height": 0
+          }
+        },
+        "projected": {
+          "x": 251.60226621631355,
+          "y": 77.5583484754509
+        },
+        "oldLinear": {
+          "x": 267.76,
+          "y": 82.99999999999999
+        }
+      },
+      {
+        "fraction": 0.91,
+        "position": {
+          "kind": "climb",
+          "linkId": "terrace:climb:west",
+          "climbGeometry": {
+            "height": 3,
+            "span": 1.2360585147470482,
+            "baseSpan": 0,
+            "edgeSpan": 0.6180292573735241,
+            "ladderSpan": 0.5180292573735241,
+            "steps": 11
+          },
+          "travelX": 1,
+          "travelY": 0,
+          "segmentFraction": 0.91,
+          "climbDirection": 1,
+          "x": 1.5809023187874438,
+          "y": 3,
+          "tacticalLevel": 1,
+          "renderedHeight": 2.45,
+          "renderedOffset": {
+            "x": 0.36400000000000005,
+            "y": 0.36400000000000005,
+            "height": 0
+          }
+        },
+        "projected": {
+          "x": 263.10346028847357,
+          "y": 77.91129912969089
+        },
+        "oldLinear": {
+          "x": 271.66,
+          "y": 75.49999999999999
+        }
+      },
+      {
+        "fraction": 1,
+        "position": {
+          "kind": "climb",
+          "linkId": "terrace:climb:west",
+          "climbGeometry": {
+            "height": 3,
+            "span": 1.2360585147470482,
+            "baseSpan": 0,
+            "edgeSpan": 0.6180292573735241,
+            "ladderSpan": 0.5180292573735241,
+            "steps": 11
+          },
+          "travelX": 1,
+          "travelY": 0,
+          "segmentFraction": 1,
+          "climbDirection": 1,
+          "x": 2,
+          "y": 3,
+          "tacticalLevel": 1,
+          "renderedHeight": 3,
+          "renderedOffset": {
+            "x": 0.4,
+            "y": 0.4,
+            "height": 0
+          }
+        },
+        "projected": {
+          "x": 274,
+          "y": 70.99999999999999
+        },
+        "oldLinear": {
+          "x": 274,
+          "y": 70.99999999999999
+        }
+      }
+    ]
+  },
+  "trialLimits": [
+    "Three original affectedfiles only were executed; no heavy suite/browser/full native geometry sweep.",
+    "Delayed-ownercontrolfailure is retained inthree-fast-after.log. A realReactcommitowner passedwithout runtimechange.",
+    "No claim that allquick/fulltests pass. Three additional geometry baseline failures remain a separate root task."
+  ],
+  "patchSha256": "dd08f805abe6d140bde7b1bdafea91757bc91623302e2fdce0e18bd5f06332e8"
+}

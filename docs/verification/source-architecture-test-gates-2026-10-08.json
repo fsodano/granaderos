@@ -1,0 +1,695 @@
+{
+  "basis": "9002e91c6fa542ebdc372386e7587bf5d1de9ea0",
+  "scope": "Three obsolete broad architecture detail tests only; no runtime, game, source art, published bank/body/profile or other asset changes.",
+  "allowlist": [
+    {
+      "path": "tests/three-authored-flat-roofs.test.mjs",
+      "before": "4825aebb3d7b69613dea5ae716f42c74848c014739d4c54cd400f67bb9d2d4f6",
+      "after": "85fe986ddec640c8587d6f9c52b54099e94482bb1146f5bec0468c7bee57014f"
+    },
+    {
+      "path": "tests/three-church-tower-foot.test.mjs",
+      "before": "ebe3c74f6a4b7cd69ff48bd5d97ae21d78f97a12ff467f486f964eb525ab84a3",
+      "after": "82cd8b4b13746b6bd85e3c31cc1e7c02f3f6c7d8ad8b693c947d269921dd8e82"
+    },
+    {
+      "path": "tests/three-porch-placement.test.mjs",
+      "before": "f47d1870dcf80bdb16ee5b313f31341c26318d1d6a6ca262fecec98e760c043b",
+      "after": "289d8d389f3e0b647ed5f21e62ff7eb1bca68393fee9dd329d6c3fe15d80c80f"
+    }
+  ],
+  "unchangedPinnedFiles": {
+    "web/lib/three/world-buildings.ts": "7061aed8d4e31d75e878cb1dc1e5e7d5b73313959b5dc7c8c80a8edb53cf7203",
+    "web/lib/three/world-building-details.ts": "867c36481ba721478dd29f6c543d340633d833bbff58364bad467ece649807c3",
+    "web/lib/three/world-smithy-chimney.ts": "5d32a83549d1ef8cf683045a0ae9897f45d9468391b92bcbe15c854a1321641a",
+    "web/lib/three/world-pulperia-sign.ts": "69e2c80589c88971f4c859b2cb332f40522f1c4841ff2b43ae8c1d92d54bbfa7",
+    "web/lib/three/world-cabildo-facade.ts": "38416a2bf7c19dd3b978389d24eea2ccd1a2517a6ffb2a5307d3ac6e6e3a2686",
+    "web/lib/three/world-work-porches.ts": "dca827c9d0a7e209d10829fec037b0e0a6f0d8b6a89d836630e9eb97a5c56b08",
+    "web/lib/three/world-building-placement.ts": "22ab45520c9a596945be5642228ab714e7a9eb145740e74d81f2113fa899807f",
+    "web/app/TacticalBuildingDetails.tsx": "15e5a7c64be318441ba44cc4aff16b90a0a5ab0a68e83446a6ed72c3fb83957a",
+    "web/app/TacticalBuildingVolumes.tsx": "523ebfca0f26a57414cb40fb8967bfa625d1bee72e2e97684cee30e9d21b2fc2",
+    "web/app/renderer-sandbox/architecture-fixtures.js": "a25c4fb022e40dae646bd713490c4e41b3d6dd81e2558b7ed9eb7ae8d42aed9c",
+    "game/building-profile.js": "2be6ec989e602b6953746d96f6fa0e95fecd1b08de036a4cd08676a84e6f66b0",
+    "web/public/models/characters/manifest.json": "446831c80eedf146ee2eef120a18b0ef1dd8e4eec821bbb4a4434168ad4b3a12",
+    "web/public/models/characters/male-animations.glb": "48a5966d73058d2fef5eb77837d229377178106a349b903983c0bb38ad914d87",
+    "web/public/models/characters/female-animations.glb": "0d437c4296ce6e7657626f0a18815eddf1b3cdf75479933ddd8a5fada017542e"
+  },
+  "causes": {
+    "flatRoof": "a9a72df3 replaces generic industrial chimney with current source brick shaft/cap/flue. Old flat-roof assertion used generic\u2212.12m/+1.169m instead of actual source\u22121/V and +40.3/V. Domestic and chapel assertions remain exact.",
+    "tower": "d4cc177c attaches the actual source tiled pyramid/roof-edge group beneath civic-clock-tower. The old child.material.name predicate crashes on that Group. Candidate inspects every descendant Mesh, asserts nonempty traversal and actual nested cupola, and still forbids parish stone foot on the civic crown.",
+    "porch": "cdff49d9 replaces the generic sign with the current source board/strokes/timber bracket joined to the already raised native porch. Old arbitrarymin1.9m conflicts with the accepted board at1.55m. New check reads actual source rect, preserves its relative board height, requires actual bracket\u2192beam surface contact and all sign faces inside intact support cells. Opposite sprite views omit the sign glyph; source proportions are read once from the front-visible source and retained acrossrotations."
+  },
+  "independentInvariants": [
+    "Forge flat-roof masonry and cap/flue use actual current ArchitectureVolume source bottom/top/palette/texture, with source roofRise removed; no generated pitched rise.",
+    "Civic crown has no parish stone foot in any descendant Mesh, including actual nested cupola. No optional guard/vacuous empty traversal.",
+    "Pulperia actual source board height/position relative to its own bracket; real bracket ray meets actual porch beam; all weighted world detail vertices remain above intactwall support.",
+    "All existing chapel/domestic, walking roof exclusion, partial/full room disclosure, actual centered roof planes, standing doorway rays, edited supports, physical hatch clipping and immutablegame input assertions remain."
+  ],
+  "tests": {
+    "command": "node --test --test-reporter=tap tests/three-authored-flat-roofs.test.mjs tests/three-church-tower-foot.test.mjs tests/three-porch-placement.test.mjs",
+    "cwd": "/tmp/granaderos-three-geometry-current-audit",
+    "log": "/tmp/granaderos-three-geometry-current-audit/audit/three-geometry-after-source-views.log",
+    "count": 13,
+    "pass": 13,
+    "fail": 0,
+    "durationMs": 3547.920667
+  },
+  "valuesAtRotation0Slab": [
+    {
+      "id": "casa",
+      "rotation": 0,
+      "roof": "slab",
+      "height": 3,
+      "profile": {
+        "wallHeight": 44,
+        "roofRise": 24,
+        "roofShape": "hip",
+        "eave": 0.2,
+        "plinthHeight": 8,
+        "groundFloorHeight": 44,
+        "floors": 1
+      },
+      "childKinds": [
+        {
+          "name": "building-detail:review-casa:domestic-chimney:world:adobe",
+          "type": "Mesh",
+          "material": "world:adobe"
+        },
+        {
+          "name": "building-detail:review-casa:domestic-chimney:world:trim",
+          "type": "Mesh",
+          "material": "world:trim"
+        },
+        {
+          "name": "building-detail:review-casa:domestic-chimney:world:darkwood",
+          "type": "Mesh",
+          "material": "world:darkwood"
+        }
+      ],
+      "source": [
+        {
+          "label": "domestic-chimney",
+          "bottom": 43,
+          "top": 84,
+          "texture": "plaster",
+          "palette": {
+            "base": "#b49a71",
+            "trim": "#cab48e",
+            "shadow": "#776448"
+          }
+        },
+        {
+          "label": "chimney-cap",
+          "bottom": 82,
+          "top": 86,
+          "texture": "stone",
+          "palette": {
+            "base": "#a99a79",
+            "trim": "#c7b795",
+            "shadow": "#776d54"
+          }
+        }
+      ],
+      "bounds": {
+        "min": [
+          4.647580146789551,
+          2.880000114440918,
+          5.883638381958008
+        ],
+        "max": [
+          5.2408881187438965,
+          3.7290000915527344,
+          6.476946830749512
+        ]
+      },
+      "parts": [
+        {
+          "name": "building-detail:review-casa:domestic-chimney:world:adobe",
+          "material": "world:adobe",
+          "pigment": "b49a71",
+          "min": [
+            4.709383010864258,
+            2.880000114440918,
+            5.945441246032715
+          ],
+          "max": [
+            5.1790852546691895,
+            3.640000104904175,
+            6.4151434898376465
+          ],
+          "points": 36
+        },
+        {
+          "name": "building-detail:review-casa:domestic-chimney:world:trim",
+          "material": "world:trim",
+          "pigment": "e0d2ad",
+          "min": [
+            4.647580146789551,
+            3.5950000286102295,
+            5.883638381958008
+          ],
+          "max": [
+            5.2408881187438965,
+            3.7149999141693115,
+            6.476946830749512
+          ],
+          "points": 36
+        },
+        {
+          "name": "building-detail:review-casa:domestic-chimney:world:darkwood",
+          "material": "world:darkwood",
+          "pigment": "443227",
+          "min": [
+            4.7773661613464355,
+            3.7109999656677246,
+            6.013424873352051
+          ],
+          "max": [
+            5.111102104187012,
+            3.7290000915527344,
+            6.347160339355469
+          ],
+          "points": 36
+        }
+      ]
+    },
+    {
+      "id": "herreria",
+      "rotation": 0,
+      "roof": "slab",
+      "height": 3,
+      "profile": {
+        "wallHeight": 47,
+        "roofRise": 21,
+        "roofShape": "shed",
+        "eave": 0.17,
+        "plinthHeight": 12,
+        "groundFloorHeight": 47,
+        "floors": 1
+      },
+      "childKinds": [
+        {
+          "name": "building-detail:review-herreria:forge-chimney:world:brick",
+          "type": "Mesh",
+          "material": "world:brick"
+        },
+        {
+          "name": "building-detail:review-herreria:forge-chimney:world:forge-flue",
+          "type": "Mesh",
+          "material": "world:forge-flue"
+        }
+      ],
+      "source": [
+        {
+          "label": "forge-chimney",
+          "bottom": 46,
+          "top": 106,
+          "texture": "brick",
+          "palette": {
+            "base": "#9b6849",
+            "trim": "#bd8b61",
+            "shadow": "#6f4a35"
+          }
+        },
+        {
+          "label": "chimney-cap",
+          "bottom": 104,
+          "top": 108,
+          "texture": "brick",
+          "palette": {
+            "base": "#9b6849",
+            "trim": "#bd8b61",
+            "shadow": "#6f4a35"
+          }
+        }
+      ],
+      "bounds": {
+        "min": [
+          4.511613368988037,
+          2.960106372833252,
+          5.747672080993652
+        ],
+        "max": [
+          5.376854419708252,
+          4.607712745666504,
+          6.612913131713867
+        ]
+      },
+      "parts": [
+        {
+          "name": "building-detail:review-herreria:forge-chimney:world:brick",
+          "material": "world:brick",
+          "pigment": "9b6849",
+          "min": [
+            4.511613368988037,
+            2.960106372833252,
+            5.747672080993652
+          ],
+          "max": [
+            5.376854419708252,
+            4.595744609832764,
+            6.612913131713867
+          ],
+          "points": 72
+        },
+        {
+          "name": "building-detail:review-herreria:forge-chimney:world:forge-flue",
+          "material": "world:forge-flue",
+          "pigment": "40382b",
+          "min": [
+            4.659940719604492,
+            4.607712745666504,
+            5.895998954772949
+          ],
+          "max": [
+            5.228527545928955,
+            4.607712745666504,
+            6.46458625793457
+          ],
+          "points": 6
+        }
+      ]
+    },
+    {
+      "id": "cabildo",
+      "rotation": 0,
+      "roof": "slab",
+      "height": 3,
+      "profile": {
+        "wallHeight": 58,
+        "roofRise": 27,
+        "roofShape": "hip",
+        "eave": 0.2,
+        "plinthHeight": 12,
+        "groundFloorHeight": 58,
+        "floors": 1
+      },
+      "childKinds": [
+        {
+          "name": "building-detail:review-cabildo:civic-clock-tower:world:limewash",
+          "type": "Mesh",
+          "material": "world:limewash"
+        },
+        {
+          "name": "building-detail:review-cabildo:civic-clock-tower:world:cabildo-coping",
+          "type": "Mesh",
+          "material": "world:cabildo-coping"
+        },
+        {
+          "name": "building-detail:review-cabildo:civic-clock-tower:world:linen",
+          "type": "Mesh",
+          "material": "world:linen"
+        },
+        {
+          "name": "building-detail:review-cabildo:civic-clock-tower:world:cabildo-clock-ring",
+          "type": "Mesh",
+          "material": "world:cabildo-clock-ring"
+        },
+        {
+          "name": "building-detail:review-cabildo:civic-clock-tower:world:cabildo-clock-hands",
+          "type": "Mesh",
+          "material": "world:cabildo-clock-hands"
+        },
+        {
+          "name": "building-detail:review-cabildo:civic-clock-tower:world:cabildo-clock-ticks",
+          "type": "Mesh",
+          "material": "world:cabildo-clock-ticks"
+        },
+        {
+          "name": "building-detail:review-cabildo:civic-cupola-roof",
+          "type": "Group"
+        }
+      ],
+      "source": [
+        {
+          "label": "cabildo-clock-tower",
+          "bottom": 55,
+          "top": 113,
+          "texture": "plaster",
+          "palette": {
+            "base": "#ded8c5",
+            "trim": "#eee6d1",
+            "shadow": "#aaa18a"
+          }
+        },
+        {
+          "label": "cabildo-tower-cornice",
+          "bottom": 111,
+          "top": 116,
+          "texture": "plaster",
+          "palette": {
+            "base": "#ded8c5",
+            "trim": "#eee6d1",
+            "shadow": "#aaa18a"
+          }
+        }
+      ],
+      "bounds": {
+        "min": [
+          10.084474563598633,
+          2.880319118499756,
+          11.677268028259277
+        ],
+        "max": [
+          12.164578437805176,
+          6.078680992126465,
+          12.90793514251709
+        ]
+      },
+      "parts": [
+        {
+          "name": "building-detail:review-cabildo:civic-clock-tower:world:limewash",
+          "material": "world:limewash",
+          "pigment": "ded8c5",
+          "min": [
+            10.160401344299316,
+            2.880319118499756,
+            11.779637336730957
+          ],
+          "max": [
+            12.088652610778809,
+            5.293882846832275,
+            12.793205261230469
+          ],
+          "points": 72
+        },
+        {
+          "name": "building-detail:review-cabildo:civic-clock-tower:world:cabildo-coping",
+          "material": "world:cabildo-coping",
+          "pigment": "eee6d1",
+          "min": [
+            10.160401344299316,
+            5.293882846832275,
+            11.779637336730957
+          ],
+          "max": [
+            12.088652610778809,
+            5.3138298988342285,
+            12.793205261230469
+          ],
+          "points": 36
+        },
+        {
+          "name": "building-detail:review-cabildo:civic-clock-tower:world:linen",
+          "material": "world:linen",
+          "pigment": "ddd0aa",
+          "min": [
+            10.691905975341797,
+            3.3989362716674805,
+            11.853800773620605
+          ],
+          "max": [
+            11.557147026062012,
+            4.196808338165283,
+            12.706681251525879
+          ],
+          "points": 276
+        },
+        {
+          "name": "building-detail:review-cabildo:civic-clock-tower:world:cabildo-clock-ring",
+          "material": "world:cabildo-clock-ring",
+          "pigment": "9b8964",
+          "min": [
+            10.666040420532227,
+            3.3730525970458984,
+            11.82787036895752
+          ],
+          "max": [
+            11.583012580871582,
+            4.222692012786865,
+            12.732612609863281
+          ],
+          "points": 13824
+        },
+        {
+          "name": "building-detail:review-cabildo:civic-clock-tower:world:cabildo-clock-hands",
+          "material": "world:cabildo-clock-hands",
+          "pigment": "554931",
+          "min": [
+            10.858508110046387,
+            3.6971120834350586,
+            11.807138442993164
+          ],
+          "max": [
+            11.146468162536621,
+            4.077127456665039,
+            12.753344535827637
+          ],
+          "points": 576
+        },
+        {
+          "name": "building-detail:review-cabildo:civic-clock-tower:world:cabildo-clock-ticks",
+          "material": "world:cabildo-clock-ticks",
+          "pigment": "665439",
+          "min": [
+            10.778429985046387,
+            3.4787232875823975,
+            11.81611442565918
+          ],
+          "max": [
+            11.470623016357422,
+            4.117021083831787,
+            12.744368553161621
+          ],
+          "points": 3456
+        },
+        {
+          "name": "building-detail:review-cabildo:civic-cupola-roof:world:clay",
+          "material": "world:clay",
+          "pigment": "ffffff",
+          "min": [
+            10.123319625854492,
+            5.3138298988342285,
+            11.730195045471191
+          ],
+          "max": [
+            12.125734329223633,
+            5.992021083831787,
+            12.855008125305176
+          ],
+          "points": 12
+        },
+        {
+          "name": "building-roof-edges:review-cabildo:civic-cupola:world:darkwood",
+          "material": "world:darkwood",
+          "pigment": "443227",
+          "min": [
+            10.123319625854492,
+            5.238829612731934,
+            11.730195045471191
+          ],
+          "max": [
+            12.125734329223633,
+            5.91702127456665,
+            12.855008125305176
+          ],
+          "points": 36
+        },
+        {
+          "name": "building-roof-edges:review-cabildo:civic-cupola:world:clay",
+          "material": "world:clay",
+          "pigment": "ffffff",
+          "min": [
+            10.084474563598633,
+            5.297170162200928,
+            11.677268028259277
+          ],
+          "max": [
+            12.164578437805176,
+            6.078680992126465,
+            12.90793514251709
+          ],
+          "points": 576
+        }
+      ]
+    },
+    {
+      "id": "pulperia",
+      "rotation": 0,
+      "roof": "slab",
+      "height": 3,
+      "profile": {
+        "wallHeight": 45,
+        "roofRise": 24,
+        "roofShape": "hip",
+        "eave": 0.24,
+        "plinthHeight": 8,
+        "groundFloorHeight": 45,
+        "floors": 1
+      },
+      "childKinds": [
+        {
+          "name": "building-pulperia-sign:review-pulperia:board",
+          "type": "Group"
+        },
+        {
+          "name": "building-pulperia-sign:review-pulperia:face--1",
+          "type": "Group"
+        },
+        {
+          "name": "building-pulperia-sign:review-pulperia:face-1",
+          "type": "Group"
+        },
+        {
+          "name": "building-pulperia-sign:review-pulperia:bracket",
+          "type": "Group"
+        }
+      ],
+      "source": [
+        {
+          "label": "shop-sign",
+          "transform": "translate(-27.820000000000007 236.77999999999997)",
+          "children": [
+            {
+              "type": "path",
+              "props": {
+                "d": "M0,0v10m0,-6h-14v4",
+                "stroke": "#5f472e",
+                "strokeWidth": "1.5"
+              }
+            },
+            {
+              "type": "rect",
+              "props": {
+                "x": "-21",
+                "y": "8",
+                "width": "14",
+                "height": "10",
+                "rx": ".7",
+                "fill": "#645039",
+                "stroke": "#c1a676",
+                "strokeWidth": ".7"
+              }
+            },
+            {
+              "type": "path",
+              "props": {
+                "d": "M-17,14h6m-5,-3v6m4,-6v6",
+                "stroke": "#d5c096",
+                "strokeWidth": ".9"
+              }
+            }
+          ]
+        }
+      ],
+      "bounds": {
+        "min": [
+          10.542153358459473,
+          1.587526559829712,
+          12.756123542785645
+        ],
+        "max": [
+          11.587067604064941,
+          2.3195743560791016,
+          12.952912330627441
+        ]
+      },
+      "parts": [
+        {
+          "name": "building-pulperia-sign:review-pulperia:board:world:pulperia-sign-board",
+          "material": "world:pulperia-sign-board",
+          "pigment": "645039",
+          "min": [
+            10.558792114257812,
+            1.6014893054962158,
+            12.907991409301758
+          ],
+          "max": [
+            11.22436237335205,
+            2.0004255771636963,
+            12.937992095947266
+          ],
+          "points": 36
+        },
+        {
+          "name": "building-pulperia-sign:review-pulperia:face--1:world:pulperia-sign-edge",
+          "material": "world:pulperia-sign-edge",
+          "pigment": "c1a676",
+          "min": [
+            10.542153358459473,
+            1.587526559829712,
+            12.93899154663086
+          ],
+          "max": [
+            11.24100112915039,
+            2.0143883228302,
+            12.944992065429688
+          ],
+          "points": 144
+        },
+        {
+          "name": "building-pulperia-sign:review-pulperia:face--1:world:pulperia-sign-mark",
+          "material": "world:pulperia-sign-mark",
+          "pigment": "d5c096",
+          "min": [
+            10.748954772949219,
+            1.6413829326629639,
+            12.93899154663086
+          ],
+          "max": [
+            11.034199714660645,
+            1.8807446956634521,
+            12.944992065429688
+          ],
+          "points": 108
+        },
+        {
+          "name": "building-pulperia-sign:review-pulperia:face-1:world:pulperia-sign-edge",
+          "material": "world:pulperia-sign-edge",
+          "pigment": "c1a676",
+          "min": [
+            10.542153358459473,
+            1.587526559829712,
+            12.900991439819336
+          ],
+          "max": [
+            11.24100112915039,
+            2.0143883228302,
+            12.906991958618164
+          ],
+          "points": 144
+        },
+        {
+          "name": "building-pulperia-sign:review-pulperia:face-1:world:pulperia-sign-mark",
+          "material": "world:pulperia-sign-mark",
+          "pigment": "d5c096",
+          "min": [
+            10.748954772949219,
+            1.6413829326629639,
+            12.900991439819336
+          ],
+          "max": [
+            11.034199714660645,
+            1.8807446956634521,
+            12.906991958618164
+          ],
+          "points": 108
+        },
+        {
+          "name": "building-pulperia-sign:review-pulperia:bracket:world:pulperia-sign-bracket",
+          "material": "world:pulperia-sign-bracket",
+          "pigment": "5f472e",
+          "min": [
+            10.86165714263916,
+            1.9206383228302002,
+            12.756123542785645
+          ],
+          "max": [
+            11.587067604064941,
+            2.3195743560791016,
+            12.952912330627441
+          ],
+          "points": 144
+        }
+      ]
+    }
+  ],
+  "diagnosticScript": "/tmp/granaderos-three-geometry-current-audit/audit/geometry-contract-probe.mjs",
+  "diagnosticReport": "/tmp/granaderos-three-geometry-current-audit/audit/geometry-contract-values.json",
+  "limits": [
+    "Only the three affected geometry test files were executed. No heavy suite, full quick suite, browser, source export or asset mutation.",
+    "The source-view trial failure is retained inthree-geometry-after.log; it sampled the intentionally omitted opposite sprite sign, corrected by retained front reference.",
+    "This is a focused integration test repair, not new3D polish or visual acceptance."
+  ],
+  "patchSha256": "78af303e5ec44db65077812073479376567e319b817616ecfbf319895cbe4f78"
+}

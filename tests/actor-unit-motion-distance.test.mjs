@@ -6,6 +6,9 @@ import {createRoot} from '../web/node_modules/react-dom/client.js';
 import {createBattle} from '../game/tactical.js';
 const {useUnitMotion}=await import('../web/app/useUnitMotion.ts');
 const {movementStepDuration}=await import('../web/lib/three/movement-timing.ts');
+const {surfaceMotionPoint}=await import('../web/lib/tactical-elevation.ts');
+const {readFileSync}=await import('node:fs');
+const manifest=JSON.parse(readFileSync(new URL('../web/public/models/characters/manifest.json',import.meta.url),'utf8'));
 
 async function mount(t){
  const dom=new JSDOM('<div id="root"></div>'),callbacks=new Map();let now=1000,serial=0,motion;
@@ -46,7 +49,16 @@ test('presented climb keeps its link and final segment fraction',async t=>{
  const platform={x:4,y:1,tacticalLevel:1,elevation:3,kind:'platform'};
  let state={...ground,upperSurfaces:[platform],presentationVisibleIds:['p','e'],presentationStepMs:120};await env.draw(state);
  state={...state,presentationMovingUnitId:'e',units:state.units.map(u=>u.id==='e'?{...u,x:4,y:1,tacticalLevel:1,lastMovePath:[{x:4,y:1,tacticalLevel:1,kind:'climb',linkId:'ladder'}]}:u)};
- await env.draw(state);await env.tick(60);
- assert.equal(env.motion.positions.e.kind,'climb');assert.equal(env.motion.positions.e.linkId,'ladder');assert.equal(env.motion.positions.e.segmentFraction,.5);assert.equal(env.motion.positions.e.climbDirection,1);
- await env.tick(60);assert.equal(env.motion.positions.e.segmentFraction,1);assert.equal(env.motion.positions.e.climbDirection,1);assert.equal(env.motion.positions.e.kind,'climb');
+ const actor=state.units.find(unit=>unit.id==='e'),from=surfaceMotionPoint(ground,ground.units.find(unit=>unit.id==='e')),to=surfaceMotionPoint(state,actor.lastMovePath.at(-1));
+ const native=manifest.animationLibraries.male.clips.find(clip=>clip.name==='life.climbUp');
+ const duration=Math.max(120,native.duration*1000,3/.65*1000),paid=structuredClone(state);
+ assert.equal(movementStepDuration(actor,from,to,120),duration,'The recorded delay cannot compress the native climb or supported vertical pace');
+ await env.draw(state);await env.tick(60);assert.ok(Math.abs(env.motion.positions.e.segmentFraction-60/duration)<1e-12);assert.equal(env.motion.blocking,true);
+ await env.tick(duration/2-60);
+ assert.equal(env.motion.positions.e.kind,'climb');assert.equal(env.motion.positions.e.linkId,'ladder');assert.ok(Math.abs(env.motion.positions.e.segmentFraction-.5)<1e-12);assert.equal(env.motion.positions.e.climbDirection,1);
+ assert.equal(env.motion.positions.e.moving,true);assert.equal(env.motion.positions.e.settled,false);assert.deepEqual(state,paid,'The display clock cannot change paid state');
+ await env.tick(duration/2);const final=env.motion.positions.e;
+ assert.equal(final.segmentFraction,1);assert.equal(final.climbDirection,1);assert.equal(final.kind,'climb');assert.equal(final.linkId,'ladder');
+ assert.deepEqual([final.x,final.y,final.tacticalLevel,final.renderedHeight],[4,1,1,3]);assert.equal(final.settled,true);
+ await env.draw({...state,presentationMovingUnitId:null});assert.equal(env.motion.blocking,false);assert.deepEqual(state,paid);
 });
