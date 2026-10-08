@@ -1826,8 +1826,8 @@
   "animationLibraries": {
     "male": {
       "url": "/models/characters/male-animations.glb",
-      "bytes": 12036864,
-      "sha256": "afb24b3c18e087498b3033348203435998cb6455d3be75ec2cc4ac5ef2d9b484",
+      "bytes": 12048644,
+      "sha256": "ae55f4b4b79f98beb4d4bc7f325224e8ce8674181cb28ca1fae7e86935580b56",
       "clips": [
         {
           "name": "stand.idle.unarmed",
@@ -6300,7 +6300,54 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "released-reach-gesture-leg-rotations",
+            "surface": "complete-native-boots-all-lods",
+            "floor": 0.002,
+            "sampleRate": 120,
+            "fixedForefootRoll": {
+              "l": 0.004244424362182617,
+              "r": 0.020426608581542965
+            },
+            "minimumStraightLegReserve": 0.002,
+            "lodSurfaces": [
+              {
+                "lod": "granadero-lod0",
+                "vertices": {
+                  "l": 607,
+                  "r": 608
+                },
+                "soleVertices": {
+                  "l": 48,
+                  "r": 48
+                }
+              },
+              {
+                "lod": "granadero-lod1",
+                "vertices": {
+                  "l": 397,
+                  "r": 393
+                },
+                "soleVertices": {
+                  "l": 48,
+                  "r": 48
+                }
+              },
+              {
+                "lod": "granadero-lod2",
+                "vertices": {
+                  "l": 242,
+                  "r": 240
+                },
+                "soleVertices": {
+                  "l": 48,
+                  "r": 48
+                }
+              }
+            ],
+            "sourceSha256": "d054298c8c1c0827efec2d0a3366bff6bb9a1e49dc12ba024b69e40c5f53390b"
+          }
         },
         {
           "name": "stand.gesture.pickup",
@@ -6317,7 +6364,54 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "released-reach-gesture-leg-rotations",
+            "surface": "complete-native-boots-all-lods",
+            "floor": 0.002,
+            "sampleRate": 120,
+            "fixedForefootRoll": {
+              "l": 0.004244424362182617,
+              "r": 0.020426608581542965
+            },
+            "minimumStraightLegReserve": 0.002,
+            "lodSurfaces": [
+              {
+                "lod": "granadero-lod0",
+                "vertices": {
+                  "l": 607,
+                  "r": 608
+                },
+                "soleVertices": {
+                  "l": 48,
+                  "r": 48
+                }
+              },
+              {
+                "lod": "granadero-lod1",
+                "vertices": {
+                  "l": 397,
+                  "r": 393
+                },
+                "soleVertices": {
+                  "l": 48,
+                  "r": 48
+                }
+              },
+              {
+                "lod": "granadero-lod2",
+                "vertices": {
+                  "l": 242,
+                  "r": 240
+                },
+                "soleVertices": {
+                  "l": 48,
+                  "r": 48
+                }
+              }
+            ],
+            "sourceSha256": "d054298c8c1c0827efec2d0a3366bff6bb9a1e49dc12ba024b69e40c5f53390b"
+          }
         },
         {
           "name": "stand.gesture.equip",
@@ -6440,7 +6534,54 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "released-reach-gesture-leg-rotations",
+            "surface": "complete-native-boots-all-lods",
+            "floor": 0.002,
+            "sampleRate": 120,
+            "fixedForefootRoll": {
+              "l": 0.004244424362182617,
+              "r": 0.020426608581542965
+            },
+            "minimumStraightLegReserve": 0.002,
+            "lodSurfaces": [
+              {
+                "lod": "granadero-lod0",
+                "vertices": {
+                  "l": 607,
+                  "r": 608
+                },
+                "soleVertices": {
+                  "l": 48,
+                  "r": 48
+                }
+              },
+              {
+                "lod": "granadero-lod1",
+                "vertices": {
+                  "l": 397,
+                  "r": 393
+                },
+                "soleVertices": {
+                  "l": 48,
+                  "r": 48
+                }
+              },
+              {
+                "lod": "granadero-lod2",
+                "vertices": {
+                  "l": 242,
+                  "r": 240
+                },
+                "soleVertices": {
+                  "l": 48,
+                  "r": 48
+                }
+              }
+            ],
+            "sourceSha256": "d054298c8c1c0827efec2d0a3366bff6bb9a1e49dc12ba024b69e40c5f53390b"
+          }
         },
         {
           "name": "stand.gesture.ration",
@@ -15649,8 +15790,8 @@
     },
     "female": {
       "url": "/models/characters/female-animations.glb",
-      "bytes": 11861860,
-      "sha256": "9633e9041a9c9a32d3cb3cd58cf54af06b221c4edffa63ef864651e2adef89fc",
+      "bytes": 11873640,
+      "sha256": "1a61aeca53cd0e4f778224cc5b431c2159179d88df59cc898f8ff8523ebcf680",
       "clips": [
         {
           "name": "stand.idle.unarmed",
@@ -20137,7 +20278,54 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "released-reach-gesture-leg-rotations",
+            "surface": "complete-native-boots-all-lods",
+            "floor": 0.002,
+            "sampleRate": 120,
+            "fixedForefootRoll": {
+              "l": 0.007655478973388672,
+              "r": 0.023938304443359374
+            },
+            "minimumStraightLegReserve": 0.002,
+            "lodSurfaces": [
+              {
+                "lod": "woman-scout-lod0",
+                "vertices": {
+                  "l": 640,
+                  "r": 640
+                },
+                "soleVertices": {
+                  "l": 48,
+                  "r": 48
+                }
+              },
+              {
+                "lod": "woman-scout-lod1",
+                "vertices": {
+                  "l": 396,
+                  "r": 397
+                },
+                "soleVertices": {
+                  "l": 48,
+                  "r": 48
+                }
+              },
+              {
+                "lod": "woman-scout-lod2",
+                "vertices": {
+                  "l": 247,
+                  "r": 245
+                },
+                "soleVertices": {
+                  "l": 48,
+                  "r": 48
+                }
+              }
+            ],
+            "sourceSha256": "d054298c8c1c0827efec2d0a3366bff6bb9a1e49dc12ba024b69e40c5f53390b"
+          }
         },
         {
           "name": "stand.gesture.pickup",
@@ -20154,7 +20342,54 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "released-reach-gesture-leg-rotations",
+            "surface": "complete-native-boots-all-lods",
+            "floor": 0.002,
+            "sampleRate": 120,
+            "fixedForefootRoll": {
+              "l": 0.007655478973388672,
+              "r": 0.023938304443359374
+            },
+            "minimumStraightLegReserve": 0.002,
+            "lodSurfaces": [
+              {
+                "lod": "woman-scout-lod0",
+                "vertices": {
+                  "l": 640,
+                  "r": 640
+                },
+                "soleVertices": {
+                  "l": 48,
+                  "r": 48
+                }
+              },
+              {
+                "lod": "woman-scout-lod1",
+                "vertices": {
+                  "l": 396,
+                  "r": 397
+                },
+                "soleVertices": {
+                  "l": 48,
+                  "r": 48
+                }
+              },
+              {
+                "lod": "woman-scout-lod2",
+                "vertices": {
+                  "l": 247,
+                  "r": 245
+                },
+                "soleVertices": {
+                  "l": 48,
+                  "r": 48
+                }
+              }
+            ],
+            "sourceSha256": "d054298c8c1c0827efec2d0a3366bff6bb9a1e49dc12ba024b69e40c5f53390b"
+          }
         },
         {
           "name": "stand.gesture.equip",
@@ -20277,7 +20512,54 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "released-reach-gesture-leg-rotations",
+            "surface": "complete-native-boots-all-lods",
+            "floor": 0.002,
+            "sampleRate": 120,
+            "fixedForefootRoll": {
+              "l": 0.007655478973388672,
+              "r": 0.023938304443359374
+            },
+            "minimumStraightLegReserve": 0.002,
+            "lodSurfaces": [
+              {
+                "lod": "woman-scout-lod0",
+                "vertices": {
+                  "l": 640,
+                  "r": 640
+                },
+                "soleVertices": {
+                  "l": 48,
+                  "r": 48
+                }
+              },
+              {
+                "lod": "woman-scout-lod1",
+                "vertices": {
+                  "l": 396,
+                  "r": 397
+                },
+                "soleVertices": {
+                  "l": 48,
+                  "r": 48
+                }
+              },
+              {
+                "lod": "woman-scout-lod2",
+                "vertices": {
+                  "l": 247,
+                  "r": 245
+                },
+                "soleVertices": {
+                  "l": 48,
+                  "r": 48
+                }
+              }
+            ],
+            "sourceSha256": "d054298c8c1c0827efec2d0a3366bff6bb9a1e49dc12ba024b69e40c5f53390b"
+          }
         },
         {
           "name": "stand.gesture.ration",
