@@ -150,20 +150,22 @@ local delivery artifacts.
 
 ## Validation status
 
-The next integration remains in review. The incoming rifle contact gate
-currently passes 21 of 27 tests; six failures expose native rifle grip and
-paired-contact compatibility problems. These are not baseline failures and
-must pass before this branch is merged. A separate actual forearm-to-palm
+The accepted integration includes main through `2c8a27a45b7f`. All 27 rifle
+contact/runtime checks and four new authored-curve checks now pass. The
+rifle guard and butt strike retain support from the left hand; the right hand
+releases during preparation and returns before the powered contact. Both
+hands retain their measured contact during the powered part of the strike.
+A separate actual forearm-to-palm
 audit also found static wrist folds that the older angular-continuity checks
 did not detect. Maintenance, low work and crouched-punch repairs are now
 published and pass their combined 10 wrist, arc and floor gates, plus two
-retained low-work boot checks. Rifle unload and rifle strikes remain
+retained low-work boot checks. Rifle loading and unloading remain
 in private review. Their pending files are not accepted
 merely because a wrist is straight; speed, surface clearance and item contact
 also need to pass. PR #239 remains a draft while this review is active.
 
-The broad local quick gate completed all 809 selected files: **5,642 passed,
-4 failed, 0 skipped**. The four failures match the current-main baseline
+The earlier broad local quick gate completed all 809 selected files: **5,642 passed,
+4 failed, 0 skipped**. The four failures matched the main baseline at that checkpoint
 exactly: artillery mount cue (0 vs 1), climb segment (0.01299638895332932 vs
 0.5), roof inset (245.379320490434 vs 254.5), and projected height (1.2765625
 vs 1.5). The separate 47-file character/contact gate passed **398 of 399**
@@ -178,7 +180,8 @@ subsequent lance integration gate passed all 10 grip, complete-boot support
 and runtime transition tests. These are separate affected-area checks, not a
 replacement for the broad results and baseline failures above.
 
-Typecheck, production build and published-library verification pass. The live
+Typecheck and published-library verification pass after the main integration.
+The production build passed at the previous checkpoint. The live
 lab loads all eight characters and the three skin palettes. Pistol, rifle,
 sword and knife actions, and a paired sword attack in the game scene, were
 checked without new browser errors. Guard integration adds 12 support/blend
@@ -189,3 +192,29 @@ approval of the revised appearance, or a claim
 of historical reconstruction accuracy, universal cloth collision, or perfect
 contact with every possible opponent and terrain shape. Additional faces, ages
 and body builds remain separate variants, not properties of this two-anatomy bank.
+
+## Accepted support integration, 8 October
+
+The combined exported library passes 525 affected support, gait, transition,
+gesture, wrist and floor checks, plus the separate 31 rifle checks above.
+It includes static crouch foot contact, complete sideways crouch cycles,
+planted standing gestures, lance thrust grips, and prone leg support with the
+original narrow knee shape. The first incoming prone candidate was rejected
+visually because its legs spread too far, despite passing numerical checks.
+The accepted fit changes the knee position by less than 0.9 mm. A male sleeve
+clearance correction changes twelve arm tracks in prone idle and crawl.
+
+The complete merge preserves all 334 clip durations, contact markers and
+action semantics in each anatomy. It changes 614 male and 602 female rotation
+tracks; the other 52,492 and 52,504 tracks remain exact. All thirty non-bank
+GLB files remain exact. The current manifest hash is
+`529afaf3cec474624ca426442faeefeac1b2f81b63158932ed2cc9a5923aed2b`.
+Local receipts and render evidence are retained in
+`artifacts/character-anatomy-review/delivery/support-integration/`.
+
+This checkpoint does not improve the face beyond the previous `67e1c263`
+Granadero body. The user's criticism of its smooth, generic appearance remains
+open. Material-only and stronger cheek-sculpt trials were rejected: one was
+too subtle at game scale; the other made the cheek look carved and hollow.
+Eye and garment trials remain private until visual review. The local checks
+above do not establish the requested reference-level visual quality.

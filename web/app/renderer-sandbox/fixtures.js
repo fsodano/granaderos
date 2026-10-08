@@ -6,6 +6,9 @@ import {makeGrenadeStack} from '../../../game/grenades.js';
 import {BUILDING_TYPES,BUILDING_FOOTPRINTS} from '../../../game/building-types.js';
 import {CLIMB_HATCH_SCENARIO,createClimbHatchBattle} from './climb-hatch-fixture.js';
 import {createArchitectureReviewBattle} from './architecture-fixtures.js';
+import {BAYONET_SCENARIO,createBayonetReviewBattle} from './bayonet-fixture.js';
+import {PRONE_WORK_SCENARIO,createProneWorkReviewBattle} from './prone-work-fixture.js';
+import {REACH_SCENARIO,createReachReviewBattle} from './reach-fixture.js';
 import {PARTIAL_LOADING_SCENARIO,createPartialLoadingBattle} from './partial-loading-fixture.js';
 import {PAIRED_LOADING_SCENARIO,FOUR_BORE_LOADING_SCENARIO,createPairedLoadingBattle} from './paired-loading-fixture.js';
 
@@ -15,7 +18,11 @@ export const RENDERER_SCENARIOS=Object.freeze([
   {id:'catalog',label:'Catálogo de edificios',help:'Catorce edificios con su mobiliario y cuatro orientaciones. Exterior: puerta cerrada. Primera sala: el guardia abre la puerta y entra. Interior completo: recorre las salas con las órdenes habituales. Puedes comparar el tejado original, una terraza o una losa de tres metros. La azotea accesible tiene un acceso frente a la puerta. Puedes continuar la exploración.'},
   {id:'furnishings',label:'Mobiliario',help:'Mesa, banco, cama, baúl, barriles, heno y carreta. Usa la cámara y las órdenes habituales para comprobar la escala y el espacio de paso.'},
   {id:'postures',label:'Posturas',help:'Marcha, carrera, movimiento agachado y arrastre. Cada personaje tiene un tramo libre hacia el este. Usa las órdenes habituales para comparar apoyo, avance y recuperación.'},
+  {id:'equipped-crouch',label:'Agachado con equipo',help:'Dos combatientes con el mismo equipo. Cambia el arma, selecciona cada combatiente y usa Alt + movimiento para desplazarte de costado sin girar. Puedes comparar entrada, avance y parada.'},
   {id:'combat',label:'Combate',help:'Fusil, pistola, sable, granada y cuchillo: cada especialista tiene un blanco enfrente. Los dos artilleros están junto al cañón. Usa las órdenes habituales; reinicia para repetir.'},
+  BAYONET_SCENARIO,
+  PRONE_WORK_SCENARIO,
+  REACH_SCENARIO,
   PARTIAL_LOADING_SCENARIO,
   PAIRED_LOADING_SCENARIO,
   FOUR_BORE_LOADING_SCENARIO,
@@ -29,6 +36,13 @@ export const RENDERER_SCENARIOS=Object.freeze([
   {id:'empty',label:'Sector vacío',help:'Sector sin personajes para comprobar la carga del terreno y el uso de la cámara.'},
 ]);
 const families=['granadero','royalist','worker','surgeon','gaucho','friar','woman-scout','woman-shawl'];
+export const CROUCH_REVIEW_EQUIPMENT=Object.freeze([
+  {id:'long-gun',label:'Fusil',weapon:1800},
+  {id:'short-gun',label:'Pistola',weapon:1805},
+  {id:'blade',label:'Sable',weapon:1810},
+  {id:'knife',label:'Cuchillo',weapon:1813},
+  {id:'lance',label:'Lanza',weapon:1812},
+]);
 const ground=(width,height)=>Array.from({length:width*height},(_,i)=>({x:i%width,y:Math.floor(i/width),type:Math.floor(i/width)<4?'stone':'grass',cover:0,blocked:false}));
 function soldier(id,name,x,y,extra={}){
   return {id,name,nickname:name,x,y,facing:2,weapon:1800,loaded:1,ammo:12,blade:1810,activeSlot:'primary',condition:100,energy:100,agility:90,dexterity:85,strength:85,marksmanship:85,wisdom:80,experienceLevel:7,medical:70,mechanical:70,explosives:80,medkits:2,torches:3,rations:2,spriteAppearance:'granadero',skinTone:'brown',headwear:null,outfit:null,legwear:null,...extra};
@@ -102,6 +116,16 @@ function postures(){
   ];
   return {...createBattle(squad,{id:'renderer-postures',name:'Apoyo y movimiento',width:20,height:20,tiles:ground(20,20),enemies:[],exploration:true,seed:45}),deploymentComplete:true};
 }
+function equippedCrouch(equipment='long-gun'){
+  const gear=CROUCH_REVIEW_EQUIPMENT.find(item=>item.id===equipment);
+  if(!gear)throw Error(`Unknown crouched review equipment: ${equipment}`);
+  const squad=['male','female'].map((anatomy,index)=>soldier(`croucher-${anatomy}`,index?'Agachada':'Agachado',4,10+index*6,{
+    weapon:gear.weapon,weaponInstanceId:`crouch-${anatomy}-${gear.weapon}`,blade:0,
+    loaded:equipment.includes('gun')?1:0,ammo:equipment.includes('gun')?12:0,
+    stance:'crouched',movementMode:'crouch',spriteAppearance:index?'woman-scout':'granadero',skinTone:index?'light':'brown',
+  }));
+  return {...createBattle(squad,{id:`renderer-equipped-crouch-${equipment}`,name:'Agachado con equipo',width:20,height:20,tiles:ground(20,20),enemies:[],exploration:true,seed:45}),deploymentComplete:true};
+}
 function furnishings(){
   const types=['table','bench','bed','chest','barrels','hay','cart'],props=types.map((type,index)=>({id:`review-${type}`,type,x:4+index%4*4,y:5+Math.floor(index/4)*5,footprint:type==='bed'?{width:1,height:2}:type==='cart'?{width:2,height:1}:{width:1,height:1},rotation:type==='cart'?90:0,blocksMovement:true}));
   return {...createBattle([soldier('furniture-guard','Mobiliario',10,8,{activeSlot:'unarmed'})],{id:'renderer-furnishings',name:'Mobiliario de época',width:22,height:17,tiles:ground(22,17),props,enemies:[],exploration:true}),deploymentComplete:true};
@@ -116,6 +140,13 @@ function performance(count,architecture=false){
 }
 /** Fresh real battle state. Scene selection never issues private renderer poses. */
 export function createRendererSandboxBattle(id='combat'){
+  if(id==='prone-work')return createProneWorkReviewBattle();
+  if(id.startsWith('prone-work:'))return createProneWorkReviewBattle(id.slice('prone-work:'.length));
+  if(id==='reach-actions')return createReachReviewBattle();
+  if(id.startsWith('reach-actions:'))return createReachReviewBattle(id.slice('reach-actions:'.length));
+  if(id==='equipped-crouch')return equippedCrouch();
+  if(id.startsWith('equipped-crouch:'))return equippedCrouch(id.slice('equipped-crouch:'.length));
+  if(id==='bayonets')return createBayonetReviewBattle();
   if(id==='partial-loading')return createPartialLoadingBattle();
   if(id==='paired-loading')return createPairedLoadingBattle();
   if(id==='four-bore-loading')return createPairedLoadingBattle(true);

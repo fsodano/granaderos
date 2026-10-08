@@ -61,7 +61,22 @@ function assertGuard(runtime,source){
 }
 function gripMatrix(runtime,weapon,side='r'){const item=runtime.model.getObjectByName(`primary:${weapon}`);return new Matrix4().copy(runtime.model.getObjectByName(`hand_${side}`).matrixWorld).invert().multiply(item.matrixWorld);}
 function assertGrip(runtime,source,weapon){for(const side of ['l','r']){const current=gripMatrix(runtime,weapon,side).elements,native=gripMatrix(source,weapon,side).elements;assert.ok(current.every((value,index)=>Math.abs(value-native[index])<1e-6),`The same owned rifle keeps its native ${side} wrist grip`);}}
-function assertPalms(runtime,weapon,label){const surfaces=weaponFaces(runtime,weapon);for(const side of ['l','r'])assert.ok(gap(palmFaces(runtime,side),surfaces)<=.001,`${label} actual ${side} palm on rifle surface`);assert.ok(gap(palmFaces(runtime,'l'),weaponFaces(runtime,weapon,true))<=.001,`${label} actual left palm on walnut stock`);}
+function assertPalms(runtime,weapon,label){
+ const rule=runtime.clipSpec.nativeHandContacts,time=runtime.action.time;
+ let sides=['l','r'];
+ if(rule){
+  assert.equal(rule.version,1);assert.equal(rule.space,'skinned-hand-to-stock');
+  const holds=side=>rule.hands[side].some(([start,end])=>time>=start-1e-7&&time<=end+1e-7);
+  sides=[['l','left'],['r','right']].filter(([,side])=>holds(side)).map(([side])=>side);
+  assert.ok(sides.length>0,label+' always has an authored holding hand');
+  const [start,end]=rule.powered;
+  assert.ok(start<=runtime.clipSpec.markers.contact&&end>=runtime.clipSpec.markers.contact);
+  if(time>=start-1e-7&&time<=end+1e-7)assert.deepEqual(sides,['l','r'],label+' both palms hold during powered strike');
+ }
+ const surfaces=weaponFaces(runtime,weapon);
+ for(const side of sides)assert.ok(gap(palmFaces(runtime,side),surfaces)<=.001,`${label} actual ${side} holding palm on rifle surface`);
+ if(sides.includes('l'))assert.ok(gap(palmFaces(runtime,'l'),weaponFaces(runtime,weapon,true))<=.001,`${label} actual left palm on walnut stock`);
+}
 function assertIntendedWrists(runtime,source,label){
  const plan=runtime.meleeFit.plan;
  if(!plan){

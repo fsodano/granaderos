@@ -34,7 +34,7 @@ function fixture(kind,side='south'){
 test('upper facade panes keep the same width and wall contact through all four rotations',()=>{
   let expected;
   for(const side of ['north','east','south','west']){
-    const f=fixture('palace',side),details=architecturalDetails(f.b,f.input,T,4.9,0,f.geometry,f.materials,false),windows=details.getObjectByName('building-detail:review:palace-upper-windows'),bounds=f.localBounds(windows,p=>p.z<0),actualDoor=f.frame.doorU-.4*(f.frame.u.x+f.frame.u.y);
+    const f=fixture('palace',side),details=architecturalDetails(f.b,f.input,T,4.9,0,f.geometry,f.materials,false),windows=details.getObjectByName('building-detail:review:palace-upper-windows'),bounds=f.localBounds(windows,p=>p.z<0),actualDoor=f.frame.doorU-buildingArtInset(f.b,f.input)*(f.frame.u.x+f.frame.u.y);
     assert.ok(bounds.min.z<-.06/T&&bounds.max.z<0,'panes and their trim must sit on the exterior facade');
     assert.ok(bounds.max.z-bounds.min.z<.12/T,'facade panes must stay thin along the wall normal');
     const actual=[bounds.min.x-actualDoor,bounds.min.y,bounds.min.z,bounds.max.x-actualDoor,bounds.max.y,bounds.max.z];
@@ -146,7 +146,7 @@ test('farmhouse galleries preserve door, window and breach paths on both sides t
   for(const side of ['north','east','south','west'])for(const type of ['window','rubble']){
     const f=fixture('farmhouse',side),v=Math.round(f.frame.depth*.57),point=f.frame.at(0,v);f.input.terrain.tiles.find(tile=>tile.x===point.x&&tile.y===point.y).type=type;
     const before=JSON.stringify(f.input),details=architecturalDetails(f.b,f.input,T,2.5,0,f.geometry,f.materials,false);details.updateMatrixWorld(true);
-    const door=f.frame.at(f.frame.doorU-.4*(f.frame.u.x+f.frame.u.y),-1),doorRay=new Raycaster(new Vector3((door.x+.4)*T,1.90,(door.y+.4)*T),new Vector3(f.frame.v.x,0,f.frame.v.y),0,T*1.6);
+    const inset=buildingArtInset(f.b,f.input),door=f.frame.at(f.frame.doorU-inset*(f.frame.u.x+f.frame.u.y),-1),doorRay=new Raycaster(new Vector3((door.x+inset)*T,1.90,(door.y+inset)*T),new Vector3(f.frame.v.x,0,f.frame.v.y),0,T*1.6);
     assert.equal(doorRay.intersectObject(details,true).length,0,'the front gallery must preserve the real doorway');
     const start=new Vector3(point.x*T-f.frame.u.x*T,type==='window'?1.3:1.90,point.y*T-f.frame.u.y*T),ray=new Raycaster(start,new Vector3(f.frame.u.x,0,f.frame.u.y),0,T*1.6);
     assert.equal(ray.intersectObject(details,true).length,0,'an edited return must not cover the side opening');assert.equal(JSON.stringify(f.input),before);f.dispose(details);
@@ -295,8 +295,8 @@ test('parish and civic towers preserve legal upper routes while retaining blocke
 
 test('civic tower clearance checks its full base footprint and parish towers can use the other supported corner',()=>{
   for(const side of ['north','east','south','west']){
-    const f=fixture('cabildo',side),center=f.frame.at(f.frame.width*.5,.1),height=3;
-    f.input.terrain.upperSurfaces=[{x:Math.floor(center.x+.4)+1,y:Math.round(center.y+.4),type:'floor',kind:'roof',buildingId:f.b.id,tacticalLevel:1,elevation:height,blocked:false}];
+    const f=fixture('cabildo',side),center=f.frame.at(f.frame.width*.5,.1),height=3,inset=buildingArtInset(f.b,f.input);
+    f.input.terrain.upperSurfaces=[{x:Math.floor(center.x+inset)+1,y:Math.round(center.y+inset),type:'floor',kind:'roof',buildingId:f.b.id,tacticalLevel:1,elevation:height,blocked:false}];
     const details=architecturalDetails(f.b,f.input,T,height,0,f.geometry,f.materials,false);
     assert.equal(details.getObjectByName('building-detail:review:civic-clock-tower'),undefined,'a route touching the broad cornice must not be hidden by a tower whose centre is in another cell');f.dispose(details);
     const g=fixture('church',side),blocked=g.frame.at(g.frame.width,0);g.input.terrain.upperSurfaces=[{...blocked,type:'floor',kind:'roof',buildingId:g.b.id,tacticalLevel:1,elevation:height,blocked:false}];
@@ -308,7 +308,7 @@ test('civic tower clearance checks its full base footprint and parish towers can
 test('palace balcony follows the actual doorway and requires both solid entrance supports',()=>{
   for(const side of ['north','east','south','west']){
     const f=fixture('palace',side),before=JSON.stringify(f.input),details=architecturalDetails(f.b,f.input,T,4.95,0,f.geometry,f.materials,false),balcony=details.getObjectByName('building-detail:review:palace-balcony'),bounds=f.localBounds(balcony);
-    const actualDoor=f.frame.doorU-.4*(f.frame.u.x+f.frame.u.y);
+    const actualDoor=f.frame.doorU-buildingArtInset(f.b,f.input)*(f.frame.u.x+f.frame.u.y);
     assert.ok(Math.abs(bounds.getCenter(new Vector3()).x-actualDoor)<1e-5,'balcony must align with the real door midpoint');
     assert.ok(bounds.min.y>2.6,'balcony must stay above the ground passage');assert.ok(balcony.children.some(child=>child.material?.name==='world:iron'),'balcony must have an iron railing');
     assert.equal(JSON.stringify(f.input),before);disposeWorldNode(details);
@@ -325,8 +325,8 @@ test('palace balcony follows the actual doorway and requires both solid entrance
 test('barracks and stable details preserve the open doorway in all four orientations',()=>{
   for(const kind of ['barracks','stable'])for(const side of ['north','east','south','west']){
     const f=fixture(kind,side),before=JSON.stringify(f.input),details=architecturalDetails(f.b,f.input,T,2.5,0,f.geometry,f.materials,false),feature=details.getObjectByName(`building-detail:review:${kind==='barracks'?'barracks-gate':'stable-timber-frame'}`);
-    assert.ok(feature);let expectedMaterial=false;feature.traverse(child=>{if(child.material?.name===(kind==='barracks'?'world:brass':'world:wood'))expectedMaterial=true;});assert.ok(expectedMaterial);
-    const u=f.frame.doorU-.4*(f.frame.u.x+f.frame.u.y),p=f.frame.at(u,-1),ray=new Raycaster(new Vector3((p.x+.4)*T,1,(p.y+.4)*T),new Vector3(f.frame.v.x,0,f.frame.v.y),0,T*1.6);details.updateMatrixWorld(true);
+    assert.ok(feature);let expectedMaterial=false;feature.traverse(child=>{if(child.material?.name===(kind==='barracks'?'world:barracks-plaque-mark':'world:wood'))expectedMaterial=true;});assert.ok(expectedMaterial);
+    const inset=buildingArtInset(f.b,f.input),u=f.frame.doorU-inset*(f.frame.u.x+f.frame.u.y),p=f.frame.at(u,-1),ray=new Raycaster(new Vector3((p.x+inset)*T,1,(p.y+inset)*T),new Vector3(f.frame.v.x,0,f.frame.v.y),0,T*1.6);details.updateMatrixWorld(true);
     assert.equal(ray.intersectObject(details,true).length,0,`${kind} details obstruct the door at ${side}`);assert.equal(JSON.stringify(f.input),before);f.dispose(details);
   }
 });
@@ -355,7 +355,7 @@ test('civic decoration leaves doors, windows and wall breaches clear through all
     for(const [offset,type]of [[-1,'window'],[1,'rubble']]){const p=f.frame.at(f.frame.doorU+offset,0);f.input.terrain.tiles.find(tile=>tile.x===p.x&&tile.y===p.y).type=type;}
     const before=JSON.stringify(f.input),details=architecturalDetails(f.b,f.input,T,5.1,0,f.geometry,f.materials,false);details.updateMatrixWorld(true);
     for(const [offset,y]of [[-1,1.3],[0,1.90],[1,1.90]]){
-      const u=f.frame.doorU+offset-.4*(f.frame.u.x+f.frame.u.y),p=f.frame.at(u,-1),ray=new Raycaster(new Vector3((p.x+.4)*T,y,(p.y+.4)*T),new Vector3(f.frame.v.x,0,f.frame.v.y),0,T*1.6);
+      const inset=buildingArtInset(f.b,f.input),u=f.frame.doorU+offset-inset*(f.frame.u.x+f.frame.u.y),p=f.frame.at(u,-1),ray=new Raycaster(new Vector3((p.x+inset)*T,y,(p.y+inset)*T),new Vector3(f.frame.v.x,0,f.frame.v.y),0,T*1.6);
       assert.equal(ray.intersectObject(details,true).length,0,`${side} civic decoration obstructs ${offset}`);
     }
     assert.equal(JSON.stringify(f.input),before);f.dispose(details);

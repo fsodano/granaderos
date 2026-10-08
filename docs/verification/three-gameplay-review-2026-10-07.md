@@ -691,3 +691,137 @@ The authored posta piers now retain the current source shaft, foot and coping pl
 ## Exact rifle fit sampling with lower calculation cost
 
 Rifle contact sampling now reuses scalar boot buffers and rejects a known adjacent speed failure before repeating the full path. Every accepted path still runs the complete 240 Hz chronological checks. All 48 original plans, sampled bones and 222,288 boot coordinates remain exact. Fifteen integrated checks, type/docs/baseline audits and combined export `6df69babc7d6` pass. Four normal paid browser cases pass in 88 source-pinned captures with identical costs, one damage result and retained ammunition. Same-process CPU comparisons improve; cold first-fit latency remains open. See [the sampling review](../art/rifle-fit-sampling-3d-review-2026-10-07.md).
+
+## Current supported barracks entrance gate
+
+The authored barracks now uses one guarded centred shell and its current source gate: broad plaster piers, separate warm feet, beam and geometric plaque. Edited-corner and legacy shell/gate fallbacks remain exact; supports, standing openings, flat roofs and upper routes remain covered. Fifty-two affected checks, type/docs/baseline audits and combined export `9950243f8165` pass. Thirty-four source-pinned normal and close views pass without errors and were compared with the current sprite. Exact composition and publication bridges are recorded. See [the gate review](../art/barracks-source-gate-3d-review-2026-10-07.md).
+
+## Supported sideways starts, stops and crouched unarmed loops
+
+Standing supported sideways travel and crouched unarmed travel now keep complete boots supported through native idle transitions. Four crouched source clips and a bounded visual transition change; earlier rifle/lance guards, other native clips, dimensions, pace, paid rules and saved transforms remain exact. The temporary standing Root settle is explicit. All 132 integrated checks, native/profile/source/type/docs/baseline checks and combined export `934caef41466` pass. Eight ordinary owned/stowed equipment routes save their cells in 192 source-pinned captures without errors. Selected movement and recovery views were compared with current sheets. Defined CPU/FPS workload limits and unchanged publication hashes are recorded. Equipped crouched loops remain open. See [the transition review](../art/supported-sideways-transitions-3d-review-2026-10-07.md).
+
+## Current town hall entrance columns
+
+The guarded town hall shell now uses the source stone entrance columns, stepped feet and capitals, plaster corner piers and separate upper supports. Existing paint exceptions and edited/legacy fallbacks remain exact. All 55 affected checks, type/docs/baseline audits and combined export `f765f1b75356` pass. Twenty-eight normal browser views pass without errors, and the full facade and close entrance were compared with the current sprite. All seven source paths remain exact after the movement integration. See [the town hall review](../art/townhall-source-columns-3d-review-2026-10-07.md).
+
+## Current palace entrance columns
+
+The guarded palace shell and dependent balcony, upper facade and portico coordinates now use one centred source basis. Four source stone columns, stepped feet/capitals and separate plaster/upper supports replace shallow offset supports; edited and legacy fallbacks remain exact. All nine frozen source paths are exact. Fifty-five affected checks, type/docs/baseline audits and export `2e2811964b03` pass. Twenty-eight normal browser views pass without errors; the full and close facade were compared with the current sprite. See [the palace review](../art/palace-source-columns-3d-review-2026-10-07.md).
+
+## Native prone rifle work support
+
+Nine prone rifle aim, fire and reload clips now retain the current supported idle leg pose. Only six named leg rotation outputs per clip change; clocks, Root/pelvis, hands, item contacts, native payload and 325 unrelated clips per bank remain exact. The builder composes with current movement banks and preserves calibration format. Five affected checks, all 48 ordinary blends, native/profile/source/type/docs/baseline gates and combined export `04d081722e60` pass. Four normal before/after routes produce 24 captures without errors and keep source hashes exact. The inherited male LOD2 .963 mm clearance limit is explicit. See [the prone rifle review](../art/prone-rifle-native-boot-support-review-2026-10-07.md).
+
+## Current Cabildo arcade and clock tower
+
+The supported Cabildo uses the current sprite's six broad piers, stepped stone feet, pale arcade strokes and shallow plain clock tower. Edited and legacy fallbacks remain exact. Only its own dispatcher branch/import change, preserving all other buildings. Forty-seven affected checks, type/docs/baseline audits and combined export `7dda76a04180` pass. Twenty-eight normal browser views pass without errors and were compared with the current sprite. All seven integrated source paths remain exact after the prone correction. See [the Cabildo review](../art/cabildo-source-facade-3d-review-2026-10-07.md).
+
+## Native bayonet support and owned gameplay review
+
+The standing bayonet source now keeps complete boots supported from its own retained Root/pelvis poses. One clip's eight lower rotations per anatomy change; 333 other clips remain exact. The normal Bayonetas scene prepares two owned socket assemblies with paid fitting orders and uses finite melee attacks. All 36 native/fade/guard and eleven fixture checks, native/profile/source/type/docs/baseline gates and combined export `717eec4ee75d` pass. Two normal routes yield 44 source-pinned captures without errors; each spends four displayed PA and commits one damage result while retaining charge/ammunition/ownership. Fitted target contact and acceleration corners remain open. See [the native bayonet review](../art/bayonet-native-support-3d-review-2026-10-07.md).
+
+## Native standing reach gestures
+
+Healing, ground pickup and release now use supported native lower rotations
+for both anatomies. The named source transplant preserves every current
+non-leg track and the other 331 clips, including the newer prone, bayonet and
+movement fixes. Six anatomy/LOD checks, native/calibration checks, TypeScript,
+documentation, 38 baseline checks and production export pass. The
+[standing reach review](../art/standing-reach-gesture-support-3d-review-2026-10-07.md)
+records the source geometry and the remaining paid blend and garment review.
+
+## Equipped crouched movement and guards
+
+The five owned weapon groups now retain the supported crouched lower-body
+path. Six native aim/brace guards also have supported boots, and crouched
+aim/brace can enter the existing planted start/stop consumer. Other body and
+weapon tracks, native pace, AP and saved travel stay exact. The normal
+`Agachado con equipo` selector exposes both anatomies and all five groups.
+Local checks and 28 ordinary browser routes pass. The
+[equipped movement review](../art/equipped-crouch-transition-admission-review-2026-10-07.md#integrated-current-gameplay-review)
+records 168 captures, current bank preservation and the remaining cold
+admission and garment limits.
+
+## Normal paid reach-action review scene
+
+The compiled `Vendas, recogida y liberación` choice provides two native anatomy
+groups. Each group owns two dressings, an injured ally, a visible adjacent
+dressing stack and a combatant entangled in an identified held boleadoras
+item. The ordinary HUD issues healing, an exact one-item ground pickup and
+self release. No renderer pose or private browser state is injected.
+
+Six paid browser orders pass with 72 owned, ready, action and retained-equipment
+captures. The original 100 internal AP becomes 75 for healing, 92 for pickup
+and 85 for release, once each. Saved cells and owned rifle charges remain
+exact. The eight recorded source/runtime/asset hashes stay exact, served
+native bank bytes match, and no browser error occurs. Healing uses recorded
+prepare/result frames; direct pickup/release use normal native-duration cues.
+
+The male healing, female pickup and male release captures were inspected.
+These establish usable ordinary review controls and source pose playback.
+Full planted entry/return, target contact and garment/art acceptance remain
+open. This scene does not claim final gesture polish.
+
+The twelve fixture checks, TypeScript, documentation audit and combined
+production export pass. Export identity is `6ec9b2ad390d`: 1,244 files and
+1,039 verified asset references. A local build attempted before a fixture
+merge conflict was resolved failed to parse; the resolved current source was
+then checked and rebuilt successfully. Its failed log is retained separately.
+
+## Native prone firearm maintenance and pistol work
+
+Nineteen additional prone rifle and pistol clips per anatomy now use the
+matching supported native idle leg rotations. Root, pelvis, upper body,
+weapon tracks, native clocks and 315 unrelated clips per bank remain exact.
+The compiled `Armas cuerpo a tierra` selector provides five owned finite
+weapon tasks for both bodies through ordinary gameplay controls.
+
+The 45 focused native/presentation/loading/clock checks and 14 combined
+scene checks pass, as do native library/calibration, TypeScript, documentation
+and 38 baseline checks. Combined production export is `d561cdb30b51`, with
+1,244 files and 1,039 verified asset references. All 20 current before/after browser routes pass in 80 captures without errors,
+with exact source hashes and retained prone cells. UI evidence and limits are
+recorded in the
+[prone firearm work review](../art/prone-firearm-work-native-support-review-2026-10-07.md).
+
+This cut repairs boot support. It retains known upper-surface and garment
+limits; remaining prone interactions, dynamic throws and final motion
+acceptance remain open.
+
+## Native prone interaction boot support
+
+Twelve static prone interaction clips now retain the supported native idle
+leg rotations. Each anatomy changes 72 lower outputs while 1,836 selected
+nonleg channels and 322 other clips remain exact, including current firearm
+work. The normal reach review now exposes standing/prone posture through
+a public selector.
+
+All 52 focused checks and 16 combined fixture checks pass, with native/profile,
+TypeScript, documentation and 38 baseline checks. Production export
+`c4f3f60be5fe` verifies 1,244 files and 1,039 asset references. Twelve normal
+before/after paid routes pass in 144 captures without errors, preserving
+source hashes, one AP payment, prone cells and owned gun ammunition.
+The [interaction review](../art/prone-interaction-native-support-review-2026-10-07.md)
+records the corrected local selector failure and final current source bridge.
+Known upper-floor, adjacent-patient hand contact, dynamic throwing and garment
+limits remain open.
+
+## Planted standing reach contact
+
+A bounded standing gesture consumer keeps full boots above the floor and
+uses actual weighted forefeet through medical, ground pickup and release
+entry/contact. Seven actor hooks preserve all other runtime bytes, and the
+current native banks, gait and scalar melee helpers remain exact.
+
+All 193 contact/floor checks and 126 actor/gait/prone regressions pass with
+native/profile, TypeScript, documentation and 38 baseline checks. Export
+`6b773ead1460` verifies 1,244 files and 1,039 asset references. Six before and
+six after normal HUD routes pass in 144 captures with exact owned/paid states
+and no browser errors. Twelve corrected source/runtime/model hashes stay
+exact throughout the current capture run.
+
+The [standing contact review](../art/standing-gesture-planted-contact-3d-review-2026-10-07.md)
+retains the original failed mirrored-return test and measured 2.991 m/s
+return limit. Complete-surface speeds, 100-actor CPU costs, target hand
+contact and garments remain open. This is bounded contact repair, not final
+body-motion or 60 FPS acceptance.

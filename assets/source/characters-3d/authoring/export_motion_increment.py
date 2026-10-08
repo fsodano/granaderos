@@ -9,7 +9,7 @@ import motion as motion_authoring
 from motion import apply_animations,_semantic_specs
 from gltf_pack import pack
 p=argparse.ArgumentParser();p.add_argument('--preset',required=True);p.add_argument('--output',required=True);p.add_argument('--gesture',action='append',required=True);p.add_argument('--equipment',required=True);p.add_argument('--posture');a=p.parse_args(sys.argv[sys.argv.index('--')+1:])
-native_contacts=set(a.gesture)<=set(('climbUp','climbDown'))
+native_contacts=set(a.gesture)<=set(('climbUp','climbDown')) or (a.posture=='crouched'and a.equipment=='unarmed'and set(a.gesture)<=set(('strafeLeft','strafeRight')))
 if native_contacts:motion_authoring.FPS=60
 bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=False)
 ctx=create_character(a.preset);create_equipment(ctx)
@@ -26,6 +26,9 @@ bpy.ops.export_scene.gltf(filepath=str(output),export_format='GLB',use_selection
 from export_timing import trim_endpoints,authored_durations,calibrate_crawl
 trim_endpoints(output,authored_durations(rig))
 raw,doc=pack(output,{})
+from rifle_guard_curves import preserve_export as preserve_rifle_guard_curves
+restored=preserve_rifle_guard_curves(output,ctx)
+if restored is not None:raw,doc=restored
 crawl_speed=calibrate_crawl(output,motion['clips'])
 if crawl_speed is not None:motion['locomotionSpeed']['crawl']=crawl_speed
 assert {animation['name']for animation in doc['animations']}==names

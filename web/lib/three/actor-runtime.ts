@@ -5,6 +5,8 @@ import {boundClip,type LoadedActor,type SocketSpec,type ClipSpec,type EquipmentS
 import {mirroredClip,fitMirroredSockets,withMirroredProps} from './clip-mirroring';
 import {sampleAnimationTime,cueControlsAction} from './animation-clock';
 import {TILE_METRES} from './projection';
+import {NativeGaitTransitionSupport} from './gait-transition-support';
+import {NativeGestureBlendSupport} from './gesture-blend-support';
 import {NativeClimbContactFit} from './climb-contact-fit';
 import {NativeMeleeContactFit,type ContactActorResolver} from './melee-contact-fit';
 import type {ActorVisual} from './presentation';
@@ -34,6 +36,8 @@ function shareSkeletons(root:Object3D){
 
 /** This object consumes presentation records. It cannot issue orders. */
 export class ActorRuntime {
+  private gaitSupport:NativeGaitTransitionSupport;
+  private gestureSupport:NativeGestureBlendSupport;
   private climbFit?:NativeClimbContactFit;
   private meleeFit:NativeMeleeContactFit;
   private clothMeshes:{mesh:Mesh;prone:number;crouched:number;supine?:number}[]=[];private clothProne=0;private clothCrouched=0;private clothSupine=0;
@@ -55,6 +59,8 @@ export class ActorRuntime {
         this.clothChestForward.transformDirection(this.model.matrixWorld).applyQuaternion(this.clothChest.getWorldQuaternion(this.clothRotation).invert());
       }
     }
+    this.gaitSupport=new NativeGaitTransitionSupport(this.model,this.root,asset.appearance.parts?.footwear?.replace('{lod}',String(asset.lod)));
+    this.gestureSupport=new NativeGestureBlendSupport(this.model,this.root,asset.appearance.parts?.footwear?.replace('{lod}',String(asset.lod)));
     this.climbFit=new NativeClimbContactFit(this.model,this.root);
     const walkingClip=asset.animation.animations.find(clip=>clip.name==='stand.walk.blade'),walkingSpec=asset.clips.find(clip=>clip.name==='stand.walk.blade'),walkingSpeed=walkingSpec?.nativeStrideSpeed??walkingSpec?.locomotionSpeed;
     this.meleeFit=new NativeMeleeContactFit(this.model,this.root,asset.appearance.parts?.footwear?.replace('{lod}',String(asset.lod)),false,walkingClip&&walkingSpeed?{clip:walkingClip,speed:walkingSpeed}:undefined);
@@ -231,6 +237,8 @@ export class ActorRuntime {
     const clipSpec=mirror?withMirroredProps(sourceSpec,this.asset.body.scene):sourceSpec;
     const key=`${semantic}:${hand}:${visual.cue?.id??''}`;
     if(key!==this.actionKey){
+      this.gaitSupport.begin(this.clipSpec,clipSpec,this.mixer.time,clip);
+      this.gestureSupport.begin(this.clipSpec,clipSpec,this.mixer.time,clip,this.action?.getClip(),this.action?.time??0);
       const previous=this.action;this.action=this.mixer.clipAction(clip);this.action.reset();this.action.enabled=true;this.action.clampWhenFinished=!clipSpec.loop;this.action.setLoop(clipSpec.loop?LoopRepeat:LoopOnce,clipSpec.loop?Infinity:1);this.action.play();
       if(previous&&previous!==this.action){if(visual.action==='fire'&&visual.cue?.shotHand)previous.stop();else this.action.crossFadeFrom(previous,.12,false);}this.actionKey=key;this.clipSpec=clipSpec;this.cueStartedAt=visual.cue?.startedAt??now;
       this.gripActions.set(this.action,clipSpec);
@@ -317,6 +325,8 @@ export class ActorRuntime {
   }
   tick(delta:number,now:number,reducedMotion=false){
     if(!this.action)return;
+    this.gestureSupport.restore();
+    this.gaitSupport.restore();
     this.meleeFit.restore();this.root.rotation.y=this.visual.yaw;
     this.climbFit?.restore();
     const visual=this.visual,clip=this.action.getClip(),motion=visual.motion;
@@ -339,6 +349,8 @@ export class ActorRuntime {
     if(motion?.moving&&motion.climbGeometry&&this.clipSpec.climbSupport){const down=visual.action==='climbDown',fraction=this.climbFit!.nativeFraction(motion.climbGeometry,down?1-(motion.segmentFraction??0):motion.segmentFraction??0,this.clipSpec);this.action.time=clip.duration*(down?1-fraction:fraction);}
     this.mixer.update(Math.min(delta,.1));
     if(motion?.moving&&motion.climbGeometry&&this.clipSpec.climbSupport)this.climbFit?.apply(motion.climbGeometry,visual.action==='climbDown'?1-(motion.segmentFraction??0):motion.segmentFraction??0,this.clipSpec);
+    this.gaitSupport.apply(this.mixer.time,this.action.time,inputMotion?.speed??0);
+    this.gestureSupport.apply(this.mixer.time,this.action.time);
     this.poseCloth(Math.min(delta,.1));
     const attached=this.equipment.userData.attached as Object3D[],freeGuard=!attached.some(item=>item.userData.hand==='handLeft');
     const meleeWeapon=attached.find(item=>item.userData.hand==='handRight'&&(this.itemSpec(item.userData.itemId)?.category==='sabre'||freeGuard&&['pistol','rifle'].includes(this.itemSpec(item.userData.itemId)?.category??'')));
@@ -367,6 +379,8 @@ export class ActorRuntime {
     return node?.getWorldPosition(new Vector3())??null;
   }
   dispose(){
+    this.gestureSupport.dispose();
+    this.gaitSupport.dispose();
     this.meleeFit.dispose();
     this.mixer.stopAllAction();this.mixer.uncacheRoot(this.model);this.horseMixer?.stopAllAction();if(this.horse)this.horseMixer?.uncacheRoot(this.horse);
     const skeletons=new Set<Skeleton>();this.root.traverse(node=>{if(node instanceof SkinnedMesh)skeletons.add(node.skeleton);});for(const skeleton of skeletons)skeleton.dispose();

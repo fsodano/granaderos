@@ -24,7 +24,7 @@ for(const appearance of ['granadero','woman-scout'])test(`${appearance} stored c
     assert.ok(fullLow>-.001,`${clip.name} ${side} at ${(clip.duration*frame/frames).toFixed(4)} s: complete boot enters floor by ${(-fullLow*1000).toFixed(2)} mm`);
     assert.ok(soleLow>-.001,`${clip.name} ${side}: stored sole support stays within 1 mm`);highest=Math.max(highest,soleLow);
     supportingSole=Math.min(supportingSole,soleLow);
-    if(clip.name.includes('.idle.'))assert.ok(Math.abs(soleLow-supportHeight)<.0001,'Idle soles rest on the authored 6 mm contact plane');
+    if(clip.name.includes('.idle.'))assert.ok(Math.abs(soleLow-.002)<.0001,'Idle soles share the 2 mm native guard contact plane');
    }
    assert.ok(supportingSole<supportHeight+.002,`${clip.name} at ${(clip.duration*frame/frames).toFixed(4)} s: at least one actual sole supports the crouched step (${(supportingSole*1000).toFixed(2)} mm)`);
    actor.model.traverse(node=>{if(node.isBone){const shape=native.get(node.name);if(node.name!=='Root')assert.ok(node.position.distanceTo(shape.position)<.00001,node.name+' keeps its native joint offset');assert.ok(node.scale.distanceTo(shape.scale)<.00001,node.name+' keeps its native scale');}});
@@ -46,7 +46,7 @@ for(const appearance of ['granadero','woman-scout'])test(`${appearance} stored p
    for(const side of ['l','r']){
     let lowest=Infinity;for(const index of indices[side])lowest=Math.min(lowest,mesh.getVertexPosition(index,new Vector3()).applyMatrix4(mesh.matrixWorld).y);
     assert.ok(lowest>.001,`${clip.name} ${side} at ${(clip.duration*frame/frames).toFixed(4)} s: actual full boot height ${(lowest*1000).toFixed(2)} mm`);
-    assert.ok(Math.abs(lowest-supportHeight)<proneContactTolerance,`${clip.name} ${side}: the complete toe or shaft stays within 1 mm of the authored 6 mm support plane (${(lowest*1000).toFixed(2)} mm)`);
+    assert.ok(Math.abs(lowest-(clip.name.includes('.idle.')?.002:supportHeight))<proneContactTolerance,`${clip.name} ${side}: the complete toe or shaft stays within 1 mm of its authored support plane (${(lowest*1000).toFixed(2)} mm)`);
    }
   }
  }

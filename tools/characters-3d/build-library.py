@@ -29,7 +29,7 @@ if not a.manifest_only and a.only in (None,'animations'):
  # A frozen animation build also needs the shared ladder geometry. Check
  # dependencies before spending time authoring the preceding combat clips.
  subprocess.run(['node','--input-type=module','-e',';'.join('import '+json.dumps('./game/'+path.name) for path in contracts)],cwd=CONTRACT,check=True)
-sources={path:hashlib.sha256(path.read_bytes()).hexdigest()for path in [*HERE.glob('*.py'),*(HERE/'vendor/makehuman').glob('skin-*.png'),*contracts]if path.exists()}
+sources={path:hashlib.sha256(path.read_bytes()).hexdigest()for path in [*HERE.glob('*.py'),*HERE.glob('rifle_guard_curves_*.json'),*(HERE/'vendor/makehuman').glob('skin-*.png'),*contracts]if path.exists()}
 jobs=[]
 if not a.manifest_only:
  for kind in ([a.only]if a.only else ['appearance','garments','equipment','horse','animations']):
@@ -94,7 +94,26 @@ if manifest['complete']:
  # The general bank uses 30 Hz. Native ladder contacts need 60 Hz keys and
  # exact final-frame timing; retain the rest of each complete bank.
  if any(kind=='animations'for kind,preset,lod in jobs):
-  subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-motion-increment.py'),'--blender',a.blender,'--gesture','climbUp','--gesture','climbDown','--equipment','any','--directory',str(OUT),'--source-directory',str(HERE)],cwd=ROOT,check=True)
-  # Fit the released guard after native retargeting, in the same library lock.
+  subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-motion-increment.py'),'--blender',a.blender,'--directory',str(OUT),'--source-directory',str(HERE),'--gesture','climbUp','--gesture','climbDown','--equipment','any'],cwd=ROOT,check=True)
+  # Keep the released rifle guard soles supported after native retargeting.
   subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-guard-support.py'),'--blender',a.blender,'--directory',str(OUT),'--source-directory',str(HERE)],cwd=ROOT,check=True)
+  # The bayonet retains its own Root/pelvis and native support gate.
+  subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-guard-support.py'),'--blender',a.blender,'--directory',str(OUT),'--source-directory',str(HERE),'--clip','stand.bayonet.long-gun'],cwd=ROOT,check=True)
+  # Preserve native upper reach gestures and correct only their leg support.
+  subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-gesture-support.py'),'--blender',a.blender,'--directory',str(OUT),'--source-directory',str(HERE)],cwd=ROOT,check=True)
+  # Prone rifle work retains its own body/weapon tracks and the already
+  # supported native prone idle leg pose, with exact source input clocks.
+  subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-prone-rifle-support.py'),'--directory',str(OUT)],cwd=ROOT,check=True)
+  # Preserve each native body and weapon contact for remaining prone firearm work.
+  subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-prone-work-support.py'),'--directory',str(OUT)],cwd=ROOT,check=True)
+  # Retain body/hand/item channels while supporting fixed prone interactions.
+  subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-prone-interaction-support.py'),'--directory',str(OUT)],cwd=ROOT,check=True)
+  # Preserve the retained 30 Hz parent trajectory and fit crouched boot support
+  # at 60 Hz without replacing native upper-body, Root or pace channels.
+  leg_bones=[name+'_'+side for side in ('l','r')for name in ('thigh','calf','foot','ball')]
+  subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-motion-increment.py'),'--blender',a.blender,'--directory',str(OUT),'--source-directory',str(HERE),'--posture','crouched','--gesture','strafeLeft','--gesture','strafeRight','--equipment','unarmed','--metadata-field','nativeSidewaysSupport','--existing-only']+[argument for bone in leg_bones for argument in ('--bone',bone)],cwd=ROOT,check=True)
+  # The five owned equipment poses retain that exact native parent path.
+  subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-equipped-crouch-support.py'),'--directory',str(OUT)],cwd=ROOT,check=True)
+  # Raised crouched guards retain the same supported native lower body.
+  subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-crouched-guard-support.py'),'--directory',str(OUT)],cwd=ROOT,check=True)
  else:subprocess.run(['node',str(ROOT/'tools/characters-3d/compile-locomotion-profile.mjs'),'--directory',str(OUT)],cwd=ROOT,check=True)

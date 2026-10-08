@@ -53,7 +53,7 @@ def main():
     contract_root = source_root.parents[3]
     # Freeze inputs before reading the contract or starting either worker.
     # Climb authoring also consumes the shared physical ladder geometry.
-    sources = {str(path): digest(path) for path in source_root.glob('*.py')}
+    sources = {str(path): digest(path) for path in [*source_root.glob('*.py'),*source_root.glob('rifle_guard_curves_*.json')]}
     for name in ('actor-action-contract.js', 'climb-geometry.js',
                  'building-types.js', 'building-scale.js'):
         contract_path = contract_root / 'game' / name

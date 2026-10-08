@@ -40,11 +40,10 @@ function frame(fixture,index,startedAt){return {...fixture.result.frames[index],
 
 test('a paid zero-advance forehand turns during preparation and remains finite through its complete native recovery',async()=>{
  for(const posture of ['standing','crouched']){
-  // The revised native forehand needs a 4 cm advance against the old cell
-  // centre fixture. A 6 cm in-cell presentation offset makes the actual
-  // standing surface reachable with no step, preserving the zero-distance
-  // transfer regression without changing the paid cells or easing its gates.
-  const f=await combat(posture,undefined,posture==='standing'?.06:0),before=JSON.stringify(f.result.state),expected=actBattle(f.state,f.order);let startedAt=0;
+  // The fitted rifle guard changes the target arm surface. An 11 cm
+  // in-cell presentation offset keeps this an actual zero-advance case.
+  // Paid cells and every physical contact/support limit remain unchanged.
+  const f=await combat(posture,undefined,posture==='standing'?.11:0),before=JSON.stringify(f.result.state),expected=actBattle(f.state,f.order);let startedAt=0;
   for(let index=0;index<f.result.frames.length;index++){
    const shownFrame=frame(f,index,startedAt),state={...shownFrame.state,presentationVisibleIds:shownFrame.state.visibleIds};f.latest=f.show(state,shownFrame,startedAt);
    const duration=f.durationMs[index],times=duration?Array.from({length:Math.ceil(duration/(1000/60))+1},(_,i)=>Math.min(duration-.001,i*1000/60)):[0];if(shownFrame.type==='impact')times.push((.9-f.attacker.clipSpec.markers.contact)/(f.attacker.action.getClip().duration-f.attacker.clipSpec.markers.contact)*duration);times.sort((a,b)=>a-b);

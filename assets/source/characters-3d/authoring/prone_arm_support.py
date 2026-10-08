@@ -4,6 +4,9 @@ from mathutils import Vector,Quaternion
 ARMS=tuple(name+'_'+side for side in ('l','r')for name in ('upperarm','lowerarm','hand'))
 FLOOR=.002
 RECOVERY_LIFT=.04
+# The fitted male uniform loses up to 1.3 mm of the source sleeve clearance
+# after subdivision and LOD export. Reserve 1 mm without moving the body.
+MALE_CLOTH_EXPORT_RESERVE=.001
 
 def _bindings(ctx):
     cached=ctx.get('native_prone_arm_surfaces')
@@ -56,7 +59,7 @@ def fit_arm_support(ctx,sample,lifts=None):
     from motion import _apply_sample,_collect,_set_world_rotation
     rig=ctx['rig'];_apply_sample(rig,sample);surfaces=_bindings(ctx);report={}
     for side in ('l','r'):
-        points=surfaces[side];goal=FLOOR+(lifts or{}).get(side,0)
+        points=surfaces[side];goal=FLOOR+(lifts or{}).get(side,0)+(MALE_CLOTH_EXPORT_RESERVE if ctx['gender']=='male' else 0)
         before=_lowest(rig,points['full']);hand=rig.pose.bones['hand_'+side];rotation=hand.matrix.to_quaternion();original_wrist=hand.head.copy();target=original_wrist.copy();target.z+=goal+.0005-_lowest(rig,points['hand'])
         def fit_wrist(wrist):
             _fit_native_arm(rig,side,wrist);_set_world_rotation(rig,'hand_'+side,rotation)
@@ -108,7 +111,7 @@ def _crawl_arm(ctx,side,phase,shoulder_forward=None):
     # Recovery meets the planted pull with its rearward velocity. The palm
     # does not stop relative to a body that still moves forward.
     offset=extent*(u-.5)if pull else extent*(.5+u-6*u*u+4*u*u*u)
-    lift=0 if pull else RECOVERY_LIFT*math.sin(math.pi*u)**2;goal=FLOOR+.0005+lift
+    lift=0 if pull else RECOVERY_LIFT*math.sin(math.pi*u)**2;goal=FLOOR+.0005+lift+(MALE_CLOTH_EXPORT_RESERVE if ctx['gender']=='male' else 0)
     rotation=_hand_rotation(rig,side,FORWARD,Vector((0,0,-1)))
     _set_world_rotation(rig,'hand_'+side,rotation);wrist_z=rig.pose.bones['hand_'+side].head.z+goal-_lowest(rig,surfaces['hand'])
     # The torso can assist the crawl. Plant the pull in the body's root frame

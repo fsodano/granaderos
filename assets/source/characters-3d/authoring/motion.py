@@ -204,7 +204,7 @@ def _collect(rig):
     return {pb.name:(pb.location.copy(),pb.rotation_quaternion.copy()) for pb in rig.pose.bones}
 
 
-def _write_clip(rig, name, samples, duration, loop=True, grounding=None, times=None, support=None, native_sideways=None, native_lance_idle=None):
+def _write_clip(rig, name, samples, duration, loop=True, grounding=None, times=None, support=None, native_sideways=None, native_lance_idle=None, native_prone_idle=None, native_crouch_idle=None):
     action=bpy.data.actions.new(name)
     rig.animation_data_create();rig.animation_data.action=action
     if loop:
@@ -239,6 +239,19 @@ def _write_clip(rig, name, samples, duration, loop=True, grounding=None, times=N
             root=rig.pose.bones['Root']
             root.matrix=Matrix.Translation((0,0,goals[i]-lowest)) @ root.matrix
             sample['Root']=(root.location.copy(),root.rotation_quaternion.copy())
+    prone_support=None
+    if native_prone_idle is not None:
+        from static_prone_support import fit_static
+        for index,sample in enumerate(samples):
+            _apply_sample(rig,sample);fit_static(native_prone_idle)
+            samples[index]=_collect(rig)
+        prone_support={'method':'retained-natural-prone-knee-plane','surface':'complete-native-boot','floor':.002,'sampleRate':FPS}
+    crouch_support=None
+    if native_crouch_idle is not None:
+        # Keep the current native crouch while matching the shared 2 mm
+        # idle, guard and sideways contact plane.
+        from crouch_idle_support import support_clip as support_crouch_idle
+        samples,times,crouch_support=support_crouch_idle(native_crouch_idle,samples,duration,times,FPS)
     lance_support=None
     if native_lance_idle is not None:
         # PR237 fits complete boots after loop closure. Keep the newer common
@@ -251,14 +264,18 @@ def _write_clip(rig, name, samples, duration, loop=True, grounding=None, times=N
         samples,arm_support=support_arms(support,samples,duration,times,name=='prone.crawl.unarmed')
     sideways_support=None
     if native_sideways is not None:
-        from sideways_support import support_clip as support_sideways
+        if name.startswith('crouch.'):
+            from crouched_sideways_support import support_clip as support_sideways
+        else:
+            from sideways_support import support_clip as support_sideways
         ctx,speed=native_sideways
         samples,times,sideways_support=support_sideways(ctx,samples,duration,times,name,speed)
         # This reviewed legacy gait intentionally retains its original stored
         # period and pace. Do not add the nominal manifest's fractional tail.
-        duration=math.floor(duration*FPS+.000001)/FPS
-        selected=[(time,sample) for time,sample in zip(times,samples) if time<=duration+1e-7]
-        times=[time for time,sample in selected];samples=[sample for time,sample in selected]
+        if name.startswith('stand.'):
+            duration=math.floor(duration*FPS+.000001)/FPS
+            selected=[(time,sample) for time,sample in zip(times,samples) if time<=duration+1e-7]
+            times=[time for time,sample in selected];samples=[sample for time,sample in selected]
     # NLA export samples whole frames and otherwise drops a fractional end.
     # A same-pose padding key is trimmed back to this exact time after export.
     action["authored_duration"]=float(duration)
@@ -296,8 +313,10 @@ def _write_clip(rig, name, samples, duration, loop=True, grounding=None, times=N
     strip.frame_end=math.ceil(end_frame-1e-8)
     track.mute=True
     result={'name':name,'duration':round(duration,6),'loop':loop,'events':{}}
+    if crouch_support:result['nativeBootSupport']=crouch_support
     if lance_support:result['nativeBootSupport']=lance_support
     if support:result['nativeBootSupport']={'method':'native-leg-rotations','surface':'actual-sole-and-weighted-shaft','floor':.006,'sampleRate':FPS}
+    if prone_support:result['nativeBootSupport']=prone_support
     if sideways_support:result['nativeSidewaysSupport']=sideways_support
     if arm_support:
         if 'stride'in arm_support:result.update(arm_support.pop('stride'))
@@ -836,7 +855,8 @@ def _lance_pose(ctx,base,offsets,mode='carry',phase=0,posture=None):
     if mode=='brace':
         actual=rig.pose.bones['hand_r'].matrix@local
         _reach(rig,'l',actual+rotation@Vector((0,0,.18)),long=rotation@Vector((1,0,0)),normal=rotation@Vector((0,-1,0)),curl=1.2)
-    return _collect(rig)
+    from lance_grips import thrust_pose
+    return thrust_pose(ctx,offsets)
 
 
 def _equipment_pose(ctx,base,equipment,offsets,mode='carry',posture=None):
@@ -1009,6 +1029,9 @@ def _write_reviewed(ctx,spec,source,digest):
     elif spec['gesture'] in ('walk','run'):
         # Armed loops retain the recorded lower-body path and stride.
         meta['locomotionSpeed']=ctx['reviewed_stride'][spec['gesture'].title()]
+    # Retain the reviewed native regrip keys without changing the body writer.
+    from rifle_guard_curves import apply_clip as apply_rifle_guard_curves
+    apply_rifle_guard_curves(ctx,meta,FPS)
     return meta
 
 def apply_animations(ctx, only=None):
@@ -1034,6 +1057,7 @@ def apply_animations(ctx, only=None):
     crouch_support_only=bool(only) and all(s['posture']=='crouched'and s['gesture']in('idle','walk')for s in specs)
     prone_support_only=bool(only) and all(s['posture']=='prone'and s['gesture']in('idle','crawl')for s in specs)
     sideways_support_only=bool(only) and all(s['posture']=='standing'and s['gesture']in('strafeLeft','strafeRight')for s in specs)
+    crouched_sideways_only=bool(only) and all(s['posture']=='crouched'and s['equipment']=='unarmed'and s['gesture']in('strafeLeft','strafeRight')for s in specs)
     needs_reviewed=any(_reviewed_binding(spec)for spec in specs)
     reviewed,reviewed_digest=_reviewed_bank(ctx)if needs_reviewed else ({},None)
     ctx['reviewed_stride']={name:reviewed[name]['locomotionSpeed'] for name in ('Walk','Run') if name in reviewed}
@@ -1042,7 +1066,7 @@ def apply_animations(ctx, only=None):
         for modifier in obj.modifiers:
             if modifier.show_viewport:disabled.append(modifier);modifier.show_viewport=False
     offsets=_grip_setup(ctx);sources={};source_meta={}
-    for recipe in (('idle','crouch','strafeLeftStanding','strafeRightStanding')if sideways_support_only else ('idle','crouch','crawl')if prone_support_only else ('idle','crouch') if contact_only or crouch_support_only else ('idle','crouch','walk','run','fall','recover') if riding_only else SOURCE_RECIPES):
+    for recipe in (('idle','crouch','strafeLeftCrouched','strafeRightCrouched')if crouched_sideways_only else ('idle','crouch','strafeLeftStanding','strafeRightStanding')if sideways_support_only else ('idle','crouch','crawl')if prone_support_only else ('idle','crouch') if contact_only or crouch_support_only else ('idle','crouch','walk','run','fall','recover') if riding_only else SOURCE_RECIPES):
         print('MOTION SOURCE',recipe,flush=True)
         sources[recipe],source_meta[recipe]=_retarget_samples(ctx,recipe)
     idle=sources['idle'][0];crouch=sources['crouch'][0]
@@ -1218,8 +1242,8 @@ def apply_animations(ctx, only=None):
                 if name!='Root':pose[name]=(Vector(),q)
             samples.append(pose)
         supported=(gesture in ('transition','pickup','heal','free','walk','run','crawl','strafeLeft','strafeRight') and posture!='mounted') or (posture=='prone' and gesture=='idle' and equipment=='unarmed')
-        native_sideways=(ctx,speed) if posture=='standing' and equipment in ('unarmed','long-gun','short-gun','blade','knife','lance') and gesture in ('strafeLeft','strafeRight') else None
-        meta=_write_clip(rig,spec['name'],samples,duration,spec['loop'],times=times,support=ctx if supported and native_sideways is None else None,native_sideways=native_sideways,native_lance_idle=ctx if posture=='standing' and equipment=='lance' and gesture=='idle' else None)
+        native_sideways=(ctx,speed) if (posture=='standing' and equipment in ('unarmed','long-gun','short-gun','blade','knife','lance') or posture=='crouched' and equipment=='unarmed') and gesture in ('strafeLeft','strafeRight') else None
+        meta=_write_clip(rig,spec['name'],samples,duration,spec['loop'],times=times,support=ctx if supported and native_sideways is None else None,native_sideways=native_sideways,native_lance_idle=ctx if posture=='standing' and equipment=='lance' and gesture=='idle' else None,native_prone_idle=ctx if posture=='prone' and gesture=='idle' else None,native_crouch_idle=ctx if posture=='crouched' and gesture=='idle' else None)
         meta.update(spec);meta.update({'duration':round(duration,6),'events':markers,'markers':markers,'source':source,'sampleRate':SAMPLE_FPS,'timingAuthority':'simulation','rootMotion':'in-place'})
         if gesture=='reload' and equipment=='long-gun':meta['propCues']=[{'item':'ramrod','socket':'socket_handLeft_tool','start':round(duration*.46,6),'end':round(duration*.86,6),'rotation':[0,0,math.pi/2]}]
         if equipment=='long-gun' and gesture in ('reload','unload'):
@@ -1258,6 +1282,9 @@ def apply_animations(ctx, only=None):
         if equipment=='lance' and gesture=='brace':
             from lance_grips import metadata as lance_metadata
             meta.update(lance_metadata(duration))
+        if equipment=='lance' and gesture=='thrust':
+            from lance_grips import thrust_metadata
+            meta.update(thrust_metadata(ctx['gender'],duration))
         if gesture.startswith('strafe'):meta['locomotionAxis']='left' if gesture=='strafeLeft' else 'right'
         if posture=='mounted' and gesture not in ('mount','dismount'):meta['seatAnchor']=list(rig.data.bones['pelvis'].head_local)
         if posture=='mounted' or gesture=='mount':

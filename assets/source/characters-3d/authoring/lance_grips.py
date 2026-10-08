@@ -89,10 +89,27 @@ def metadata(duration):
         for time in (0,duration)]}]}
 
 
-def brace_fingers(rig,gender,side):
+def thrust_pose(ctx,offsets):
+    """Refit the gripping arm around the unchanged authored shaft matrix."""
+    import motion as m
+    from mathutils import Matrix
+    rig=ctx['rig'];local,offset=offsets['sabre']
+    bind=Matrix.LocRotScale(local,offset.inverted(),Vector((1,1,1)))
+    # Read the actual native solve, including any existing reach projection.
+    # The complementary item offset restores this exact weapon frame.
+    shaft=rig.pose.bones['hand_r'].matrix@bind
+    rotation=shaft.to_quaternion();tilt=Quaternion((0,1,0),math.radians(-55))
+    shift=Vector((.015,.024 if ctx['gender']=='male' else .0215,0))
+    place_hand(rig,'r',shaft.translation-rotation@shift,
+               local,rotation@tilt@offset,reference=rotation@offset)
+    brace_fingers(rig,ctx['gender'],'r',THRUST_FINGERS[ctx['gender']])
+    return m._collect(rig)
+
+
+def brace_fingers(rig,gender,side,profile=None):
     """Fit the rear fist to the diagonal shaft with stable native hinges."""
     from firearm_grips import _palm_basis,_frame,_set_rotation,_thumb_pose
-    profile=(BRACE_FINGERS if side=='r' else FRONT_FINGERS)[gender];long,normal=_palm_basis(rig,side)
+    profile=profile or (BRACE_FINGERS if side=='r' else FRONT_FINGERS)[gender];long,normal=_palm_basis(rig,side)
     hand=rig.pose.bones['hand_'+side]
     delta=hand.matrix.to_quaternion()@hand.bone.matrix_local.to_quaternion().inverted()
     for finger,p in profile.items():
@@ -164,3 +181,38 @@ FRONT_FINGERS = {'male': {'index': {'angles': [56.407763663202175, 140.882265133
                                  -0.7063371602917957,
                                  0.48243198610529187,
                                  0.31142633506067935]}}}
+
+
+def thrust_metadata(gender,duration):
+    result=metadata(duration)
+    q=Quaternion((0,1,0),math.radians(55))
+    position=q@Vector((.015,.024 if gender=='male' else .0215,0))
+    for key in result['gripOffsets'][0]['keys']:
+        key['position']=[position.x,position.z,-position.y]
+    return result
+
+THRUST_FINGERS = {'male': {'index': {'angles': [43.64248786226784, 153.64243857620215, 153.64250380204447],
+                    'fan': -14.950961796339278},
+          'middle': {'angles': [18.148755650695346, 88.10217051991148, 132.92428169035304],
+                     'fan': 14.407914569483363},
+          'ring': {'angles': [42.5880384621084, 103.88843162233597, 144.39798261876052],
+                   'fan': 6.20652271014966},
+          'pinky': {'angles': [62.650641514134236, 155.92971047320356, 207.83995462174983],
+                    'fan': -3.7969294792284773},
+          'thumb': {'angles': [-0.3562865694970154,
+                               0.38054626874277325,
+                               -0.24740902222748487,
+                               0.010817455925936881,
+                               0.003750815068731325]}},
+ 'female': {'index': {'angles': [31.808048269627104, 131.53930028829635, 178.14610224372638], 'fan': -15.0},
+            'middle': {'angles': [16.892391795122844, 78.58452181159606, 123.89186496290091],
+                       'fan': 14.999666039561237},
+            'ring': {'angles': [38.5061417437032, 96.35983963153727, 136.8027129477204],
+                     'fan': 8.980228408243915},
+            'pinky': {'angles': [60.81018388710042, 162.0405950298693, 214.70353966876925],
+                      'fan': -4.74112389796013},
+            'thumb': {'angles': [-0.3293530986184092,
+                                 0.4410989501736131,
+                                 -0.16481402010400806,
+                                 0.0138958640674935,
+                                 -0.02788230598835152]}}}

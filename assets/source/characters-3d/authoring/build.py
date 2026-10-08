@@ -25,6 +25,9 @@ def export(ctx,path,animations=False):
  if animations and ctx.get("rig"):trim_endpoints(path,authored_durations(ctx["rig"]))
  from gltf_pack import pack
  raw,doc=pack(path,{m.name:list(m.diffuse_color) for m in bpy.data.materials})
+ from rifle_guard_curves import preserve_export as preserve_rifle_guard_curves
+ restored=preserve_rifle_guard_curves(path,ctx) if animations else None
+ if restored is not None:raw,doc=restored
  ac=doc.get('accessors',[]);triangles=sum(ac[p['indices']]['count']//3 for m in doc.get('meshes',[]) for p in m['primitives'] if 'indices'in p)
  return {'url':'/models/characters/'+path.name,'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest(),'triangles':triangles,'meshes':len(doc.get('meshes',[])),'drawCalls':sum(len(m['primitives'])for m in doc.get('meshes',[])),'materials':[m['name']for m in doc.get('materials',[])],'bones':len(ctx['rig'].data.bones) if ctx.get('rig') else 0,'nodes':[n.get('name')for n in doc.get('nodes',[])]},doc
 

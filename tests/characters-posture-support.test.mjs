@@ -130,7 +130,7 @@ for(const [gender,bank]of Object.entries(banks)){
   for(const spec of bank.specs){
    const definition=bank.data.json.animations.find(a=>a.name===spec.name);assert.ok(definition,spec.name);
    const native=spec.nativeSidewaysSupport;
-   if(native){assert.match(spec.name,/^stand\.strafe(Left|Right)\.(unarmed|long-gun|short-gun|blade|knife|lance)$/);assert.equal(native.method,'native-sideways-leg-rotations');}
+   if(native){assert.match(spec.name,/^(stand|crouch)\.strafe(Left|Right)\.(unarmed|long-gun|short-gun|blade|knife|lance)$/);assert.equal(native.method,'native-sideways-leg-rotations');}
    assert.ok(Math.abs(clip(bank.data,spec.name).duration-(native?.nativeCycleDuration??spec.duration))<.000002,`${spec.name}: exact declared endpoint is retained`);
    for(const sampler of definition.samplers){const times=bank.data.access(sampler.input);for(let i=1;i<times.length;i++)assert.ok(times[i]>times[i-1],`${spec.name}: no duplicate or reversed key times`);}
   }
@@ -141,7 +141,7 @@ for(const [gender,bank]of Object.entries(banks)){
    // PR216 and PR223 retain the original shorter stored lateral period.
    // Its measured full-body seam is below 17 mm; complete native boot
    // support across that seam is checked in characters-sideways-support.
-   const retained=/^stand\.strafe(Left|Right)\.(unarmed|long-gun|short-gun|blade|knife|lance)$/.test(spec.name);
+   const retained=/^(stand|crouch)\.strafe(Left|Right)\.(unarmed|long-gun|short-gun|blade|knife|lance)$/.test(spec.name);
    if(retained)assert.equal(spec.nativeSidewaysSupport?.method,'native-sideways-leg-rotations');
    result[0].joints.forEach((p,i)=>assert.ok(p.distanceTo(result[1].joints[i])<(retained ? .017 : .00003),`${spec.name}: terminal seam stays inside its native contract`));
   }
