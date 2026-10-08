@@ -410,25 +410,370 @@
           "lod": 0,
           "url": "/models/characters/royalist-lod0.glb",
           "triangles": 76309,
-          "bytes": 4589928,
+          "bytes": 4740820,
           "drawCalls": 8,
-          "sha256": "2547dea2e5d2c6aafca85dd5dd8a78c3deb609286d3a705f4fbe65debbd444c0"
+          "sha256": "fbbbe0ecb869ba09b9cdea6ca7e1a4c56664b74a94a8dcd3ea080929eba74105",
+          "familyClothDepth": {
+            "recipe": {
+              "method": "family-rest-space-cloth-fold-colours-v1",
+              "source": "assets/source/characters-3d/authoring/family_cloth_depth.py",
+              "sourceSha256": "417a371c610ca358bf682e4828233c1aff66cd3599b3726abb066c1303426fe2",
+              "installerSha256": "536dfa4fb0b4b4c05323ff656be831e7755aefaa4e4870f84186e510a7de6d10",
+              "factorBounds": [
+                0.7,
+                1.26
+              ],
+              "albedoHeadroom": {
+                "royalist": {
+                  "outfit": 1,
+                  "legwear": 1
+                },
+                "surgeon": {
+                  "outfit": 1.3,
+                  "legwear": 1.3
+                },
+                "gaucho": {
+                  "outfit": 1.2,
+                  "legwear": 1.25
+                },
+                "friar": {
+                  "outfit": 1.3,
+                  "legwear": 1.3
+                },
+                "woman-scout": {
+                  "outfit": 1,
+                  "legwear": 1
+                },
+                "woman-shawl": {
+                  "outfit": 1,
+                  "legwear": 1
+                }
+              },
+              "retainedGeometryRigClipsMaps": true,
+              "hemProtection": "UV1-stripe-crossing-triangles-plus-adjacent-ring"
+            },
+            "beforeSha256": "2547dea2e5d2c6aafca85dd5dd8a78c3deb609286d3a705f4fbe65debbd444c0",
+            "originalRecord": {
+              "lod": 0,
+              "url": "/models/characters/royalist-lod0.glb",
+              "triangles": 76309,
+              "bytes": 4589928,
+              "drawCalls": 8,
+              "sha256": "2547dea2e5d2c6aafca85dd5dd8a78c3deb609286d3a705f4fbe65debbd444c0"
+            },
+            "originalJSONSha256": "7e99b33bbc754e2da8bac6971a04a27be899e12c73c0d9932afea4eeadb8e05c",
+            "originalBinarySha256": "d06c592f2e565be238cd40178608160313e6ea99e42d1abf669a687181c6b7d9",
+            "originalBinaryBytes": 4560644,
+            "originalBuffers": [
+              {
+                "byteLength": 4560644
+              }
+            ],
+            "originalAccessorCount": 59,
+            "originalViewCount": 59,
+            "originalMaterialCount": 4,
+            "originalTextureCount": 11,
+            "originalImageCount": 11,
+            "originalImages": {
+              "textures/409b7f25641a2c1cf7e2.png": "409b7f25641a2c1cf7e2497521c2022152e41c3cad3e224a29384d18681ad207",
+              "textures/cde52c5fc44edc14b3d6.png": "cde52c5fc44edc14b3d661cff6a5a62068916c4af703298e0e31431b5eaf51a9",
+              "textures/040aa7bd60f397241c0c.png": "040aa7bd60f397241c0c5dd19c01e5d2660fc82c6d78e911b62e1efef5cbde33",
+              "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+              "textures/2e15a426be9ee20c39a7.png": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357",
+              "textures/ca4f162e85fafee194c7.png": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c",
+              "textures/cfe00d87638eab122eb8.png": "cfe00d87638eab122eb8cf15c194a30cae5e6396d8c22d965fb9b6aa305b13b8",
+              "textures/bde948d56c47e9a9c68c.png": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2",
+              "textures/e3c6887d5bede0fbc1e4.png": "e3c6887d5bede0fbc1e43a05bfa7a16714982e21ee6c7a161481fee88f06f517",
+              "textures/a4d52e34a5ed852382b9.png": "a4d52e34a5ed852382b9ec0a589732f2d30be8f5776ae751ce003503d1fffee4",
+              "textures/09fa758893afdf340aac.png": "09fa758893afdf340aacb8102101cbcab335a4dfdfab5a6bac8a9a9a9b55200f"
+            },
+            "originalHadExtras": false,
+            "primitives": [
+              {
+                "mesh": 3,
+                "primitive": 0,
+                "part": "outfit",
+                "originalColourAccessor": 25,
+                "colourAccessor": 59,
+                "originalMaterial": 0,
+                "material": 0,
+                "colourUri": null,
+                "colourSha256": null,
+                "changedVertices": 3390,
+                "vertexCount": 10839,
+                "selection": {
+                  "drapeVertexCount": 0,
+                  "protectedVertexCount": 0,
+                  "protectedMaskSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+                }
+              },
+              {
+                "mesh": 2,
+                "primitive": 0,
+                "part": "legwear",
+                "originalColourAccessor": 18,
+                "colourAccessor": 60,
+                "originalMaterial": 0,
+                "material": 0,
+                "colourUri": null,
+                "colourSha256": null,
+                "changedVertices": 1308,
+                "vertexCount": 1424,
+                "selection": {
+                  "drapeVertexCount": 0,
+                  "protectedVertexCount": 0,
+                  "protectedMaskSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+                }
+              }
+            ],
+            "documentPatches": []
+          }
         },
         {
           "lod": 1,
           "url": "/models/characters/royalist-lod1.glb",
           "triangles": 48383,
-          "bytes": 3138188,
+          "bytes": 3249048,
           "drawCalls": 8,
-          "sha256": "c3ddb01f0a75e77970feec24278c2c5c0d00ea55479177a0c38f033b5e1ce67d"
+          "sha256": "23119f74aaa3bde846800986b497a9ece6f8e3523fb224d20cc42e74687d50b1",
+          "familyClothDepth": {
+            "recipe": {
+              "method": "family-rest-space-cloth-fold-colours-v1",
+              "source": "assets/source/characters-3d/authoring/family_cloth_depth.py",
+              "sourceSha256": "417a371c610ca358bf682e4828233c1aff66cd3599b3726abb066c1303426fe2",
+              "installerSha256": "536dfa4fb0b4b4c05323ff656be831e7755aefaa4e4870f84186e510a7de6d10",
+              "factorBounds": [
+                0.7,
+                1.26
+              ],
+              "albedoHeadroom": {
+                "royalist": {
+                  "outfit": 1,
+                  "legwear": 1
+                },
+                "surgeon": {
+                  "outfit": 1.3,
+                  "legwear": 1.3
+                },
+                "gaucho": {
+                  "outfit": 1.2,
+                  "legwear": 1.25
+                },
+                "friar": {
+                  "outfit": 1.3,
+                  "legwear": 1.3
+                },
+                "woman-scout": {
+                  "outfit": 1,
+                  "legwear": 1
+                },
+                "woman-shawl": {
+                  "outfit": 1,
+                  "legwear": 1
+                }
+              },
+              "retainedGeometryRigClipsMaps": true,
+              "hemProtection": "UV1-stripe-crossing-triangles-plus-adjacent-ring"
+            },
+            "beforeSha256": "c3ddb01f0a75e77970feec24278c2c5c0d00ea55479177a0c38f033b5e1ce67d",
+            "originalRecord": {
+              "lod": 1,
+              "url": "/models/characters/royalist-lod1.glb",
+              "triangles": 48383,
+              "bytes": 3138188,
+              "drawCalls": 8,
+              "sha256": "c3ddb01f0a75e77970feec24278c2c5c0d00ea55479177a0c38f033b5e1ce67d"
+            },
+            "originalJSONSha256": "4d0573789101952733f29c7dd3135474fae3480c50c7f60a55051031592c033d",
+            "originalBinarySha256": "886b3990b09fe889aac30f94d65d65cb1eb0e19d2caaf9204530fa752f43bd13",
+            "originalBinaryBytes": 3108956,
+            "originalBuffers": [
+              {
+                "byteLength": 3108956
+              }
+            ],
+            "originalAccessorCount": 59,
+            "originalViewCount": 59,
+            "originalMaterialCount": 4,
+            "originalTextureCount": 11,
+            "originalImageCount": 11,
+            "originalImages": {
+              "textures/409b7f25641a2c1cf7e2.png": "409b7f25641a2c1cf7e2497521c2022152e41c3cad3e224a29384d18681ad207",
+              "textures/cde52c5fc44edc14b3d6.png": "cde52c5fc44edc14b3d661cff6a5a62068916c4af703298e0e31431b5eaf51a9",
+              "textures/040aa7bd60f397241c0c.png": "040aa7bd60f397241c0c5dd19c01e5d2660fc82c6d78e911b62e1efef5cbde33",
+              "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+              "textures/2e15a426be9ee20c39a7.png": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357",
+              "textures/ca4f162e85fafee194c7.png": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c",
+              "textures/cfe00d87638eab122eb8.png": "cfe00d87638eab122eb8cf15c194a30cae5e6396d8c22d965fb9b6aa305b13b8",
+              "textures/bde948d56c47e9a9c68c.png": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2",
+              "textures/e3c6887d5bede0fbc1e4.png": "e3c6887d5bede0fbc1e43a05bfa7a16714982e21ee6c7a161481fee88f06f517",
+              "textures/a4d52e34a5ed852382b9.png": "a4d52e34a5ed852382b9ec0a589732f2d30be8f5776ae751ce003503d1fffee4",
+              "textures/09fa758893afdf340aac.png": "09fa758893afdf340aacb8102101cbcab335a4dfdfab5a6bac8a9a9a9b55200f"
+            },
+            "originalHadExtras": false,
+            "primitives": [
+              {
+                "mesh": 3,
+                "primitive": 0,
+                "part": "outfit",
+                "originalColourAccessor": 25,
+                "colourAccessor": 59,
+                "originalMaterial": 0,
+                "material": 0,
+                "colourUri": null,
+                "colourSha256": null,
+                "changedVertices": 1530,
+                "vertexCount": 8278,
+                "selection": {
+                  "drapeVertexCount": 0,
+                  "protectedVertexCount": 0,
+                  "protectedMaskSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+                }
+              },
+              {
+                "mesh": 2,
+                "primitive": 0,
+                "part": "legwear",
+                "originalColourAccessor": 18,
+                "colourAccessor": 60,
+                "originalMaterial": 0,
+                "material": 0,
+                "colourUri": null,
+                "colourSha256": null,
+                "changedVertices": 534,
+                "vertexCount": 650,
+                "selection": {
+                  "drapeVertexCount": 0,
+                  "protectedVertexCount": 0,
+                  "protectedMaskSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+                }
+              }
+            ],
+            "documentPatches": []
+          }
         },
         {
           "lod": 2,
           "url": "/models/characters/royalist-lod2.glb",
           "triangles": 17858,
-          "bytes": 1019700,
+          "bytes": 1068512,
           "drawCalls": 7,
-          "sha256": "900f93723c5057884f711805f0f14b84bf33e7420426f52bcf12759ad044b3b9"
+          "sha256": "58e7f5d6bcb9853a0f5f1ac23007afd4f1f1bfdcf977aeccde1b35f17b582811",
+          "familyClothDepth": {
+            "recipe": {
+              "method": "family-rest-space-cloth-fold-colours-v1",
+              "source": "assets/source/characters-3d/authoring/family_cloth_depth.py",
+              "sourceSha256": "417a371c610ca358bf682e4828233c1aff66cd3599b3726abb066c1303426fe2",
+              "installerSha256": "536dfa4fb0b4b4c05323ff656be831e7755aefaa4e4870f84186e510a7de6d10",
+              "factorBounds": [
+                0.7,
+                1.26
+              ],
+              "albedoHeadroom": {
+                "royalist": {
+                  "outfit": 1,
+                  "legwear": 1
+                },
+                "surgeon": {
+                  "outfit": 1.3,
+                  "legwear": 1.3
+                },
+                "gaucho": {
+                  "outfit": 1.2,
+                  "legwear": 1.25
+                },
+                "friar": {
+                  "outfit": 1.3,
+                  "legwear": 1.3
+                },
+                "woman-scout": {
+                  "outfit": 1,
+                  "legwear": 1
+                },
+                "woman-shawl": {
+                  "outfit": 1,
+                  "legwear": 1
+                }
+              },
+              "retainedGeometryRigClipsMaps": true,
+              "hemProtection": "UV1-stripe-crossing-triangles-plus-adjacent-ring"
+            },
+            "beforeSha256": "900f93723c5057884f711805f0f14b84bf33e7420426f52bcf12759ad044b3b9",
+            "originalRecord": {
+              "lod": 2,
+              "url": "/models/characters/royalist-lod2.glb",
+              "triangles": 17858,
+              "bytes": 1019700,
+              "drawCalls": 7,
+              "sha256": "900f93723c5057884f711805f0f14b84bf33e7420426f52bcf12759ad044b3b9"
+            },
+            "originalJSONSha256": "44892e199c4fd5e32fbca7539d12dd7f6084948b968500370db5f9e4b5469abc",
+            "originalBinarySha256": "6cdfb3aa30707ca9768f7e55388769049de8e4ae60cfef7e5a8e22b89d54539e",
+            "originalBinaryBytes": 990808,
+            "originalBuffers": [
+              {
+                "byteLength": 990808
+              }
+            ],
+            "originalAccessorCount": 58,
+            "originalViewCount": 58,
+            "originalMaterialCount": 4,
+            "originalTextureCount": 11,
+            "originalImageCount": 11,
+            "originalImages": {
+              "textures/cfef86f82ac5d996af20.png": "cfef86f82ac5d996af200cedf4b76ca9d633459188d697a9d8cfdf17d08e7e18",
+              "textures/8cbf285a07c9ac6f5db6.png": "8cbf285a07c9ac6f5db6312b0f652cec8da66e8c5a093007684ee4912236e6a5",
+              "textures/55aaf791e83ec37fa219.png": "55aaf791e83ec37fa219953f3eb685a5375b2f35e1c93991a15f1c637b764dbe",
+              "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+              "textures/2e15a426be9ee20c39a7.png": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357",
+              "textures/ca4f162e85fafee194c7.png": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c",
+              "textures/cfe00d87638eab122eb8.png": "cfe00d87638eab122eb8cf15c194a30cae5e6396d8c22d965fb9b6aa305b13b8",
+              "textures/bde948d56c47e9a9c68c.png": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2",
+              "textures/35352ce8175250721c1f.png": "35352ce8175250721c1fa7f67c65adb94609f1ca7f7ae8f616d67696e487d2e3",
+              "textures/465ec17af5d67ed742e5.png": "465ec17af5d67ed742e5d22f1f6c5b8dac0d7a9d292b9e5ad5edf8a5c34a872c",
+              "textures/7ba8a99b0e70d6156272.png": "7ba8a99b0e70d615627236bcca1dbf961dff7bbbcaec8dfa5c2f7008bd1c1f22"
+            },
+            "originalHadExtras": false,
+            "primitives": [
+              {
+                "mesh": 3,
+                "primitive": 0,
+                "part": "outfit",
+                "originalColourAccessor": 25,
+                "colourAccessor": 58,
+                "originalMaterial": 0,
+                "material": 0,
+                "colourUri": null,
+                "colourSha256": null,
+                "changedVertices": 732,
+                "vertexCount": 3393,
+                "selection": {
+                  "drapeVertexCount": 0,
+                  "protectedVertexCount": 0,
+                  "protectedMaskSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+                }
+              },
+              {
+                "mesh": 2,
+                "primitive": 0,
+                "part": "legwear",
+                "originalColourAccessor": 18,
+                "colourAccessor": 59,
+                "originalMaterial": 0,
+                "material": 0,
+                "colourUri": null,
+                "colourSha256": null,
+                "changedVertices": 241,
+                "vertexCount": 357,
+                "selection": {
+                  "drapeVertexCount": 0,
+                  "protectedVertexCount": 0,
+                  "protectedMaskSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+                }
+              }
+            ],
+            "documentPatches": []
+          }
         }
       ],
       "materials": {
@@ -1013,25 +1358,370 @@
           "lod": 0,
           "url": "/models/characters/surgeon-lod0.glb",
           "triangles": 59637,
-          "bytes": 3879244,
+          "bytes": 3969328,
           "drawCalls": 6,
-          "sha256": "2142aa6c8cdbd33a0c3f6fef5abbd78bec9da25e86a43d21d0f3a67d46857032"
+          "sha256": "b90a90259d44520ac9ec49130382fd7d3d24b8f0f686b0f942901d91a7f8a5d0",
+          "familyClothDepth": {
+            "recipe": {
+              "method": "family-rest-space-cloth-fold-colours-v1",
+              "source": "assets/source/characters-3d/authoring/family_cloth_depth.py",
+              "sourceSha256": "417a371c610ca358bf682e4828233c1aff66cd3599b3726abb066c1303426fe2",
+              "installerSha256": "536dfa4fb0b4b4c05323ff656be831e7755aefaa4e4870f84186e510a7de6d10",
+              "factorBounds": [
+                0.7,
+                1.26
+              ],
+              "albedoHeadroom": {
+                "royalist": {
+                  "outfit": 1,
+                  "legwear": 1
+                },
+                "surgeon": {
+                  "outfit": 1.3,
+                  "legwear": 1.3
+                },
+                "gaucho": {
+                  "outfit": 1.2,
+                  "legwear": 1.25
+                },
+                "friar": {
+                  "outfit": 1.3,
+                  "legwear": 1.3
+                },
+                "woman-scout": {
+                  "outfit": 1,
+                  "legwear": 1
+                },
+                "woman-shawl": {
+                  "outfit": 1,
+                  "legwear": 1
+                }
+              },
+              "retainedGeometryRigClipsMaps": true,
+              "hemProtection": "UV1-stripe-crossing-triangles-plus-adjacent-ring"
+            },
+            "beforeSha256": "2142aa6c8cdbd33a0c3f6fef5abbd78bec9da25e86a43d21d0f3a67d46857032",
+            "originalRecord": {
+              "lod": 0,
+              "url": "/models/characters/surgeon-lod0.glb",
+              "triangles": 59637,
+              "bytes": 3879244,
+              "drawCalls": 6,
+              "sha256": "2142aa6c8cdbd33a0c3f6fef5abbd78bec9da25e86a43d21d0f3a67d46857032"
+            },
+            "originalJSONSha256": "d3f9f22db40c112e4de6e1996bc39837487ed44030e27366144d4569e8640280",
+            "originalBinarySha256": "66523d1c4ca3bee74e630090ce04847695d0cc2a69216f7bba4e9eacee4c5a6e",
+            "originalBinaryBytes": 3851544,
+            "originalBuffers": [
+              {
+                "byteLength": 3851544
+              }
+            ],
+            "originalAccessorCount": 51,
+            "originalViewCount": 51,
+            "originalMaterialCount": 4,
+            "originalTextureCount": 11,
+            "originalImageCount": 11,
+            "originalImages": {
+              "textures/72fcd3fee9a0c97e77fe.png": "72fcd3fee9a0c97e77feda0ba5f4444a3356a6b8f80aa1313cc609dbfb180e8e",
+              "textures/e35c2780ff9208044a69.png": "e35c2780ff9208044a6905df53ae7dcd74a781e2b6e0e043fc4ef0b1a2c34422",
+              "textures/f77574e15506128045f5.png": "f77574e15506128045f5f9f299f14c0827c7338cbcb9e7be4bb802f8ac729115",
+              "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+              "textures/2e15a426be9ee20c39a7.png": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357",
+              "textures/ca4f162e85fafee194c7.png": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c",
+              "textures/cfe00d87638eab122eb8.png": "cfe00d87638eab122eb8cf15c194a30cae5e6396d8c22d965fb9b6aa305b13b8",
+              "textures/bde948d56c47e9a9c68c.png": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2",
+              "textures/491089fb9520714de5b5.png": "491089fb9520714de5b5c1e6ccf9b3c5830ce3c201b97bb562af912a4662d91a",
+              "textures/6323715e4e2b8cd3db7c.png": "6323715e4e2b8cd3db7c6d5d7125ea8910887cb4ace99a3f998083c5e01d2420",
+              "textures/e735cf2c599a1dc3ddf1.png": "e735cf2c599a1dc3ddf13b4dbf3a1d1bc9da8d38154dc1052eaba46a66f5b369"
+            },
+            "originalHadExtras": false,
+            "primitives": [
+              {
+                "mesh": 2,
+                "primitive": 0,
+                "part": "outfit",
+                "originalColourAccessor": 18,
+                "colourAccessor": 51,
+                "originalMaterial": 0,
+                "material": 4,
+                "colourUri": "textures/ef9d99ded16d9fbc7e29.png",
+                "colourSha256": "ef9d99ded16d9fbc7e29f55bca35545d70c479afeb771f13e1be9297e6488e98",
+                "changedVertices": 3678,
+                "vertexCount": 5793,
+                "selection": {
+                  "drapeVertexCount": 0,
+                  "protectedVertexCount": 0,
+                  "protectedMaskSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+                }
+              },
+              {
+                "mesh": 1,
+                "primitive": 0,
+                "part": "legwear",
+                "originalColourAccessor": 11,
+                "colourAccessor": 52,
+                "originalMaterial": 0,
+                "material": 5,
+                "colourUri": "textures/3f82d47782058f31deba.png",
+                "colourSha256": "3f82d47782058f31debaa791ee91898e9205735831b15b77f75e1d13d9d172d5",
+                "changedVertices": 1308,
+                "vertexCount": 1308,
+                "selection": {
+                  "drapeVertexCount": 0,
+                  "protectedVertexCount": 0,
+                  "protectedMaskSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+                }
+              }
+            ],
+            "documentPatches": []
+          }
         },
         {
           "lod": 1,
           "url": "/models/characters/surgeon-lod1.glb",
           "triangles": 38132,
-          "bytes": 2692424,
+          "bytes": 2751088,
           "drawCalls": 6,
-          "sha256": "7a1bd6ffed31946c0fef10822846643f6bca204e4ed6abef8b71f78f0aebbd12"
+          "sha256": "1488a00c98b04a4625e4ee9710f0efc78354c9af28f0a44d1299ff5dabc1b1f5",
+          "familyClothDepth": {
+            "recipe": {
+              "method": "family-rest-space-cloth-fold-colours-v1",
+              "source": "assets/source/characters-3d/authoring/family_cloth_depth.py",
+              "sourceSha256": "417a371c610ca358bf682e4828233c1aff66cd3599b3726abb066c1303426fe2",
+              "installerSha256": "536dfa4fb0b4b4c05323ff656be831e7755aefaa4e4870f84186e510a7de6d10",
+              "factorBounds": [
+                0.7,
+                1.26
+              ],
+              "albedoHeadroom": {
+                "royalist": {
+                  "outfit": 1,
+                  "legwear": 1
+                },
+                "surgeon": {
+                  "outfit": 1.3,
+                  "legwear": 1.3
+                },
+                "gaucho": {
+                  "outfit": 1.2,
+                  "legwear": 1.25
+                },
+                "friar": {
+                  "outfit": 1.3,
+                  "legwear": 1.3
+                },
+                "woman-scout": {
+                  "outfit": 1,
+                  "legwear": 1
+                },
+                "woman-shawl": {
+                  "outfit": 1,
+                  "legwear": 1
+                }
+              },
+              "retainedGeometryRigClipsMaps": true,
+              "hemProtection": "UV1-stripe-crossing-triangles-plus-adjacent-ring"
+            },
+            "beforeSha256": "7a1bd6ffed31946c0fef10822846643f6bca204e4ed6abef8b71f78f0aebbd12",
+            "originalRecord": {
+              "lod": 1,
+              "url": "/models/characters/surgeon-lod1.glb",
+              "triangles": 38132,
+              "bytes": 2692424,
+              "drawCalls": 6,
+              "sha256": "7a1bd6ffed31946c0fef10822846643f6bca204e4ed6abef8b71f78f0aebbd12"
+            },
+            "originalJSONSha256": "eb449df4b4da55a5f96dc2ed4d878456ece1ab42c117dae6338ec0a354c01b80",
+            "originalBinarySha256": "fec5c308bbb5096abe3a4848bf4427323efda9d6f47ab381e0a2e7055eaccd9a",
+            "originalBinaryBytes": 2664780,
+            "originalBuffers": [
+              {
+                "byteLength": 2664780
+              }
+            ],
+            "originalAccessorCount": 51,
+            "originalViewCount": 51,
+            "originalMaterialCount": 4,
+            "originalTextureCount": 11,
+            "originalImageCount": 11,
+            "originalImages": {
+              "textures/72fcd3fee9a0c97e77fe.png": "72fcd3fee9a0c97e77feda0ba5f4444a3356a6b8f80aa1313cc609dbfb180e8e",
+              "textures/e35c2780ff9208044a69.png": "e35c2780ff9208044a6905df53ae7dcd74a781e2b6e0e043fc4ef0b1a2c34422",
+              "textures/f77574e15506128045f5.png": "f77574e15506128045f5f9f299f14c0827c7338cbcb9e7be4bb802f8ac729115",
+              "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+              "textures/2e15a426be9ee20c39a7.png": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357",
+              "textures/ca4f162e85fafee194c7.png": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c",
+              "textures/cfe00d87638eab122eb8.png": "cfe00d87638eab122eb8cf15c194a30cae5e6396d8c22d965fb9b6aa305b13b8",
+              "textures/bde948d56c47e9a9c68c.png": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2",
+              "textures/491089fb9520714de5b5.png": "491089fb9520714de5b5c1e6ccf9b3c5830ce3c201b97bb562af912a4662d91a",
+              "textures/6323715e4e2b8cd3db7c.png": "6323715e4e2b8cd3db7c6d5d7125ea8910887cb4ace99a3f998083c5e01d2420",
+              "textures/e735cf2c599a1dc3ddf1.png": "e735cf2c599a1dc3ddf13b4dbf3a1d1bc9da8d38154dc1052eaba46a66f5b369"
+            },
+            "originalHadExtras": false,
+            "primitives": [
+              {
+                "mesh": 2,
+                "primitive": 0,
+                "part": "outfit",
+                "originalColourAccessor": 18,
+                "colourAccessor": 51,
+                "originalMaterial": 0,
+                "material": 4,
+                "colourUri": "textures/ef9d99ded16d9fbc7e29.png",
+                "colourSha256": "ef9d99ded16d9fbc7e29f55bca35545d70c479afeb771f13e1be9297e6488e98",
+                "changedVertices": 1834,
+                "vertexCount": 3949,
+                "selection": {
+                  "drapeVertexCount": 0,
+                  "protectedVertexCount": 0,
+                  "protectedMaskSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+                }
+              },
+              {
+                "mesh": 1,
+                "primitive": 0,
+                "part": "legwear",
+                "originalColourAccessor": 11,
+                "colourAccessor": 52,
+                "originalMaterial": 0,
+                "material": 5,
+                "colourUri": "textures/3f82d47782058f31deba.png",
+                "colourSha256": "3f82d47782058f31debaa791ee91898e9205735831b15b77f75e1d13d9d172d5",
+                "changedVertices": 534,
+                "vertexCount": 534,
+                "selection": {
+                  "drapeVertexCount": 0,
+                  "protectedVertexCount": 0,
+                  "protectedMaskSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+                }
+              }
+            ],
+            "documentPatches": []
+          }
         },
         {
           "lod": 2,
           "url": "/models/characters/surgeon-lod2.glb",
           "triangles": 14352,
-          "bytes": 881840,
+          "bytes": 918848,
           "drawCalls": 6,
-          "sha256": "5e8463de8ab9a65d6c40af4ff4ae57b7c1c3d8308869a0e1b63b69d5502885ca"
+          "sha256": "d6fc3a0fd179d13ec1d791bccfda8c2b86873b9144fb878d58f4c7889e3b7ca0",
+          "familyClothDepth": {
+            "recipe": {
+              "method": "family-rest-space-cloth-fold-colours-v1",
+              "source": "assets/source/characters-3d/authoring/family_cloth_depth.py",
+              "sourceSha256": "417a371c610ca358bf682e4828233c1aff66cd3599b3726abb066c1303426fe2",
+              "installerSha256": "536dfa4fb0b4b4c05323ff656be831e7755aefaa4e4870f84186e510a7de6d10",
+              "factorBounds": [
+                0.7,
+                1.26
+              ],
+              "albedoHeadroom": {
+                "royalist": {
+                  "outfit": 1,
+                  "legwear": 1
+                },
+                "surgeon": {
+                  "outfit": 1.3,
+                  "legwear": 1.3
+                },
+                "gaucho": {
+                  "outfit": 1.2,
+                  "legwear": 1.25
+                },
+                "friar": {
+                  "outfit": 1.3,
+                  "legwear": 1.3
+                },
+                "woman-scout": {
+                  "outfit": 1,
+                  "legwear": 1
+                },
+                "woman-shawl": {
+                  "outfit": 1,
+                  "legwear": 1
+                }
+              },
+              "retainedGeometryRigClipsMaps": true,
+              "hemProtection": "UV1-stripe-crossing-triangles-plus-adjacent-ring"
+            },
+            "beforeSha256": "5e8463de8ab9a65d6c40af4ff4ae57b7c1c3d8308869a0e1b63b69d5502885ca",
+            "originalRecord": {
+              "lod": 2,
+              "url": "/models/characters/surgeon-lod2.glb",
+              "triangles": 14352,
+              "bytes": 881840,
+              "drawCalls": 6,
+              "sha256": "5e8463de8ab9a65d6c40af4ff4ae57b7c1c3d8308869a0e1b63b69d5502885ca"
+            },
+            "originalJSONSha256": "73dc79c701b1119b7a43903cd14e2ffd153b931b40cfe1e3acf22b5f9c9c2e45",
+            "originalBinarySha256": "3fda884e495caa14cdd3150d68fee8e3d22e00a3d0881eee124debaa05e0ef86",
+            "originalBinaryBytes": 854244,
+            "originalBuffers": [
+              {
+                "byteLength": 854244
+              }
+            ],
+            "originalAccessorCount": 51,
+            "originalViewCount": 51,
+            "originalMaterialCount": 4,
+            "originalTextureCount": 11,
+            "originalImageCount": 11,
+            "originalImages": {
+              "textures/4b36fb5abe80124daabc.png": "4b36fb5abe80124daabce546e8ba9f220ed6467a69c301dd3baaeb43852e8aa5",
+              "textures/8c172dc9580b54c81b2b.png": "8c172dc9580b54c81b2b8836c2505fb9a523d11c8e7440cc39765bc8fb1e227f",
+              "textures/2b37ee7756a9b82dfffb.png": "2b37ee7756a9b82dfffb3745cf51692fae1ed75ec14ea0e66b6111d59f5c89ec",
+              "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+              "textures/2e15a426be9ee20c39a7.png": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357",
+              "textures/ca4f162e85fafee194c7.png": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c",
+              "textures/cfe00d87638eab122eb8.png": "cfe00d87638eab122eb8cf15c194a30cae5e6396d8c22d965fb9b6aa305b13b8",
+              "textures/bde948d56c47e9a9c68c.png": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2",
+              "textures/f2f7c8420ab2e6bf72af.png": "f2f7c8420ab2e6bf72afeff90a8a3f99af3df31725d997cf18decedc55f96871",
+              "textures/e31e4b28bb224684cf57.png": "e31e4b28bb224684cf571b7b88d6c627361dcd8906d8d7594c66989626e4edbd",
+              "textures/431f49c3e8d9e53ce775.png": "431f49c3e8d9e53ce77579c389f28aac3f7b32521543c5d414114065e452487e"
+            },
+            "originalHadExtras": false,
+            "primitives": [
+              {
+                "mesh": 2,
+                "primitive": 0,
+                "part": "outfit",
+                "originalColourAccessor": 18,
+                "colourAccessor": 51,
+                "originalMaterial": 0,
+                "material": 4,
+                "colourUri": "textures/dad05b97473c1bda2943.png",
+                "colourSha256": "dad05b97473c1bda2943f318db3e730665f8a841f2d7d6176b2f8a013e002e1b",
+                "changedVertices": 999,
+                "vertexCount": 2434,
+                "selection": {
+                  "drapeVertexCount": 0,
+                  "protectedVertexCount": 0,
+                  "protectedMaskSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+                }
+              },
+              {
+                "mesh": 1,
+                "primitive": 0,
+                "part": "legwear",
+                "originalColourAccessor": 11,
+                "colourAccessor": 52,
+                "originalMaterial": 0,
+                "material": 5,
+                "colourUri": "textures/e1a7e63228556d4147d6.png",
+                "colourSha256": "e1a7e63228556d4147d6d89438f407de7554ec436cdd055e6789366707ae32b1",
+                "changedVertices": 241,
+                "vertexCount": 241,
+                "selection": {
+                  "drapeVertexCount": 0,
+                  "protectedVertexCount": 0,
+                  "protectedMaskSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+                }
+              }
+            ],
+            "documentPatches": []
+          }
         }
       ],
       "materials": {
@@ -1238,25 +1928,370 @@
           "lod": 0,
           "url": "/models/characters/gaucho-lod0.glb",
           "triangles": 58149,
-          "bytes": 3776972,
+          "bytes": 3857636,
           "drawCalls": 7,
-          "sha256": "c81314f4abffc6d7c111d499c4751c72d726e0d6c94f1147d36ef2008d909c26"
+          "sha256": "92433163d61089c4ee9205dbab433024ca5e31bc277fb4937d413ecd7696e7fc",
+          "familyClothDepth": {
+            "recipe": {
+              "method": "family-rest-space-cloth-fold-colours-v1",
+              "source": "assets/source/characters-3d/authoring/family_cloth_depth.py",
+              "sourceSha256": "417a371c610ca358bf682e4828233c1aff66cd3599b3726abb066c1303426fe2",
+              "installerSha256": "536dfa4fb0b4b4c05323ff656be831e7755aefaa4e4870f84186e510a7de6d10",
+              "factorBounds": [
+                0.7,
+                1.26
+              ],
+              "albedoHeadroom": {
+                "royalist": {
+                  "outfit": 1,
+                  "legwear": 1
+                },
+                "surgeon": {
+                  "outfit": 1.3,
+                  "legwear": 1.3
+                },
+                "gaucho": {
+                  "outfit": 1.2,
+                  "legwear": 1.25
+                },
+                "friar": {
+                  "outfit": 1.3,
+                  "legwear": 1.3
+                },
+                "woman-scout": {
+                  "outfit": 1,
+                  "legwear": 1
+                },
+                "woman-shawl": {
+                  "outfit": 1,
+                  "legwear": 1
+                }
+              },
+              "retainedGeometryRigClipsMaps": true,
+              "hemProtection": "UV1-stripe-crossing-triangles-plus-adjacent-ring"
+            },
+            "beforeSha256": "c81314f4abffc6d7c111d499c4751c72d726e0d6c94f1147d36ef2008d909c26",
+            "originalRecord": {
+              "lod": 0,
+              "url": "/models/characters/gaucho-lod0.glb",
+              "triangles": 58149,
+              "bytes": 3776972,
+              "drawCalls": 7,
+              "sha256": "c81314f4abffc6d7c111d499c4751c72d726e0d6c94f1147d36ef2008d909c26"
+            },
+            "originalJSONSha256": "ccff235cfec597a226b6d7cce13d2282fde337bd25758151751425f402944bba",
+            "originalBinarySha256": "312a2b419fc9bece76e29c468fa04c4409707202d5b9b96450cd677dc8d30b39",
+            "originalBinaryBytes": 3748008,
+            "originalBuffers": [
+              {
+                "byteLength": 3748008
+              }
+            ],
+            "originalAccessorCount": 58,
+            "originalViewCount": 58,
+            "originalMaterialCount": 4,
+            "originalTextureCount": 11,
+            "originalImageCount": 11,
+            "originalImages": {
+              "textures/4b36fb5abe80124daabc.png": "4b36fb5abe80124daabce546e8ba9f220ed6467a69c301dd3baaeb43852e8aa5",
+              "textures/02fc23efbfd8542db951.png": "02fc23efbfd8542db9518c8793db2b0b3ecb320896a7697607992b22c6568389",
+              "textures/190fcfc8745e6197a795.png": "190fcfc8745e6197a7954c6b921f4cf3a890d9ac78db560a67dcdbc8359de180",
+              "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+              "textures/2e15a426be9ee20c39a7.png": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357",
+              "textures/ca4f162e85fafee194c7.png": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c",
+              "textures/cfe00d87638eab122eb8.png": "cfe00d87638eab122eb8cf15c194a30cae5e6396d8c22d965fb9b6aa305b13b8",
+              "textures/bde948d56c47e9a9c68c.png": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2",
+              "textures/ea43152d1732ed05f4ea.png": "ea43152d1732ed05f4eaf431f74b02b89a1041440790c14af00fa70f1e49606f",
+              "textures/b6163461b8122d6787f8.png": "b6163461b8122d6787f8f771e1a9f362c5663bef6136d74c2ec7301ddb58ed91",
+              "textures/32c4f3619e14232ca1c9.png": "32c4f3619e14232ca1c97317f4d575838beae7f7814762585d296b7a25e86ac4"
+            },
+            "originalHadExtras": false,
+            "primitives": [
+              {
+                "mesh": 3,
+                "primitive": 0,
+                "part": "outfit",
+                "originalColourAccessor": 25,
+                "colourAccessor": 58,
+                "originalMaterial": 0,
+                "material": 4,
+                "colourUri": "textures/fda208aa6522c10908fc.png",
+                "colourSha256": "fda208aa6522c10908fc4b0d0e72f6f93c1f0328d4b53e00a0ba0725f44a1465",
+                "changedVertices": 3747,
+                "vertexCount": 5008,
+                "selection": {
+                  "drapeVertexCount": 609,
+                  "protectedVertexCount": 0,
+                  "protectedMaskSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+                }
+              },
+              {
+                "mesh": 2,
+                "primitive": 0,
+                "part": "legwear",
+                "originalColourAccessor": 18,
+                "colourAccessor": 59,
+                "originalMaterial": 0,
+                "material": 5,
+                "colourUri": "textures/3f2ba7b080982af7d9ee.png",
+                "colourSha256": "3f2ba7b080982af7d9ee3c2ecc225149d95b8b6c5a4949915427062d595c06c5",
+                "changedVertices": 1308,
+                "vertexCount": 1308,
+                "selection": {
+                  "drapeVertexCount": 0,
+                  "protectedVertexCount": 0,
+                  "protectedMaskSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+                }
+              }
+            ],
+            "documentPatches": []
+          }
         },
         {
           "lod": 1,
           "url": "/models/characters/gaucho-lod1.glb",
           "triangles": 35840,
-          "bytes": 2559600,
+          "bytes": 2604024,
           "drawCalls": 7,
-          "sha256": "e7615908bc58eb3f1de0a665932dca81a3dcd7cab0da5f6161c77406d498b9c8"
+          "sha256": "f10d9c11302e64a35083a20abe6d84ef6c8fca90afaf8ec50a00e1a005bf78c0",
+          "familyClothDepth": {
+            "recipe": {
+              "method": "family-rest-space-cloth-fold-colours-v1",
+              "source": "assets/source/characters-3d/authoring/family_cloth_depth.py",
+              "sourceSha256": "417a371c610ca358bf682e4828233c1aff66cd3599b3726abb066c1303426fe2",
+              "installerSha256": "536dfa4fb0b4b4c05323ff656be831e7755aefaa4e4870f84186e510a7de6d10",
+              "factorBounds": [
+                0.7,
+                1.26
+              ],
+              "albedoHeadroom": {
+                "royalist": {
+                  "outfit": 1,
+                  "legwear": 1
+                },
+                "surgeon": {
+                  "outfit": 1.3,
+                  "legwear": 1.3
+                },
+                "gaucho": {
+                  "outfit": 1.2,
+                  "legwear": 1.25
+                },
+                "friar": {
+                  "outfit": 1.3,
+                  "legwear": 1.3
+                },
+                "woman-scout": {
+                  "outfit": 1,
+                  "legwear": 1
+                },
+                "woman-shawl": {
+                  "outfit": 1,
+                  "legwear": 1
+                }
+              },
+              "retainedGeometryRigClipsMaps": true,
+              "hemProtection": "UV1-stripe-crossing-triangles-plus-adjacent-ring"
+            },
+            "beforeSha256": "e7615908bc58eb3f1de0a665932dca81a3dcd7cab0da5f6161c77406d498b9c8",
+            "originalRecord": {
+              "lod": 1,
+              "url": "/models/characters/gaucho-lod1.glb",
+              "triangles": 35840,
+              "bytes": 2559600,
+              "drawCalls": 7,
+              "sha256": "e7615908bc58eb3f1de0a665932dca81a3dcd7cab0da5f6161c77406d498b9c8"
+            },
+            "originalJSONSha256": "31c914abaa205c6ef19921bbc1061c6b60df473c0b9565e0d4121a8d8c389a07",
+            "originalBinarySha256": "a97b8126242ea27d5bb8662eb939dd250ca40af3dde8ff533c7e0d0dfdf3326a",
+            "originalBinaryBytes": 2530692,
+            "originalBuffers": [
+              {
+                "byteLength": 2530692
+              }
+            ],
+            "originalAccessorCount": 58,
+            "originalViewCount": 58,
+            "originalMaterialCount": 4,
+            "originalTextureCount": 11,
+            "originalImageCount": 11,
+            "originalImages": {
+              "textures/4b36fb5abe80124daabc.png": "4b36fb5abe80124daabce546e8ba9f220ed6467a69c301dd3baaeb43852e8aa5",
+              "textures/02fc23efbfd8542db951.png": "02fc23efbfd8542db9518c8793db2b0b3ecb320896a7697607992b22c6568389",
+              "textures/190fcfc8745e6197a795.png": "190fcfc8745e6197a7954c6b921f4cf3a890d9ac78db560a67dcdbc8359de180",
+              "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+              "textures/2e15a426be9ee20c39a7.png": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357",
+              "textures/ca4f162e85fafee194c7.png": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c",
+              "textures/cfe00d87638eab122eb8.png": "cfe00d87638eab122eb8cf15c194a30cae5e6396d8c22d965fb9b6aa305b13b8",
+              "textures/bde948d56c47e9a9c68c.png": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2",
+              "textures/ea43152d1732ed05f4ea.png": "ea43152d1732ed05f4eaf431f74b02b89a1041440790c14af00fa70f1e49606f",
+              "textures/b6163461b8122d6787f8.png": "b6163461b8122d6787f8f771e1a9f362c5663bef6136d74c2ec7301ddb58ed91",
+              "textures/32c4f3619e14232ca1c9.png": "32c4f3619e14232ca1c97317f4d575838beae7f7814762585d296b7a25e86ac4"
+            },
+            "originalHadExtras": false,
+            "primitives": [
+              {
+                "mesh": 3,
+                "primitive": 0,
+                "part": "outfit",
+                "originalColourAccessor": 25,
+                "colourAccessor": 58,
+                "originalMaterial": 0,
+                "material": 4,
+                "colourUri": "textures/fda208aa6522c10908fc.png",
+                "colourSha256": "fda208aa6522c10908fc4b0d0e72f6f93c1f0328d4b53e00a0ba0725f44a1465",
+                "changedVertices": 1501,
+                "vertexCount": 2762,
+                "selection": {
+                  "drapeVertexCount": 207,
+                  "protectedVertexCount": 0,
+                  "protectedMaskSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+                }
+              },
+              {
+                "mesh": 2,
+                "primitive": 0,
+                "part": "legwear",
+                "originalColourAccessor": 18,
+                "colourAccessor": 59,
+                "originalMaterial": 0,
+                "material": 5,
+                "colourUri": "textures/3f2ba7b080982af7d9ee.png",
+                "colourSha256": "3f2ba7b080982af7d9ee3c2ecc225149d95b8b6c5a4949915427062d595c06c5",
+                "changedVertices": 534,
+                "vertexCount": 534,
+                "selection": {
+                  "drapeVertexCount": 0,
+                  "protectedVertexCount": 0,
+                  "protectedMaskSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+                }
+              }
+            ],
+            "documentPatches": []
+          }
         },
         {
           "lod": 2,
           "url": "/models/characters/gaucho-lod2.glb",
           "triangles": 12009,
-          "bytes": 747044,
+          "bytes": 769492,
           "drawCalls": 7,
-          "sha256": "a6cd0d56c467576b51488c2b91395707af352fef27fec948eda1a158747cb1dc"
+          "sha256": "5b4b902a3340b7b4f347a9c75e2b0918d0d3a193a807c3f95364e4a3bdef1a83",
+          "familyClothDepth": {
+            "recipe": {
+              "method": "family-rest-space-cloth-fold-colours-v1",
+              "source": "assets/source/characters-3d/authoring/family_cloth_depth.py",
+              "sourceSha256": "417a371c610ca358bf682e4828233c1aff66cd3599b3726abb066c1303426fe2",
+              "installerSha256": "536dfa4fb0b4b4c05323ff656be831e7755aefaa4e4870f84186e510a7de6d10",
+              "factorBounds": [
+                0.7,
+                1.26
+              ],
+              "albedoHeadroom": {
+                "royalist": {
+                  "outfit": 1,
+                  "legwear": 1
+                },
+                "surgeon": {
+                  "outfit": 1.3,
+                  "legwear": 1.3
+                },
+                "gaucho": {
+                  "outfit": 1.2,
+                  "legwear": 1.25
+                },
+                "friar": {
+                  "outfit": 1.3,
+                  "legwear": 1.3
+                },
+                "woman-scout": {
+                  "outfit": 1,
+                  "legwear": 1
+                },
+                "woman-shawl": {
+                  "outfit": 1,
+                  "legwear": 1
+                }
+              },
+              "retainedGeometryRigClipsMaps": true,
+              "hemProtection": "UV1-stripe-crossing-triangles-plus-adjacent-ring"
+            },
+            "beforeSha256": "a6cd0d56c467576b51488c2b91395707af352fef27fec948eda1a158747cb1dc",
+            "originalRecord": {
+              "lod": 2,
+              "url": "/models/characters/gaucho-lod2.glb",
+              "triangles": 12009,
+              "bytes": 747044,
+              "drawCalls": 7,
+              "sha256": "a6cd0d56c467576b51488c2b91395707af352fef27fec948eda1a158747cb1dc"
+            },
+            "originalJSONSha256": "cc07a229fed9cec8df719b2e6ff557f5a31e811909216b88be7428c11e289722",
+            "originalBinarySha256": "c7144cdc7e48330e49c00c8add36db50d262078386c0d776fb1cae3aab5fcac9",
+            "originalBinaryBytes": 718184,
+            "originalBuffers": [
+              {
+                "byteLength": 718184
+              }
+            ],
+            "originalAccessorCount": 58,
+            "originalViewCount": 58,
+            "originalMaterialCount": 4,
+            "originalTextureCount": 11,
+            "originalImageCount": 11,
+            "originalImages": {
+              "textures/01f30a1649e149138639.png": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8",
+              "textures/bf154685e393a585d17b.png": "bf154685e393a585d17b3c3caff2e092d862b8047b6c99361d3a99b6eb800bfd",
+              "textures/1b6188df5f9a698957f1.png": "1b6188df5f9a698957f1728ce3cbf8760c736178b4f43d1535b29d57ecbc6f83",
+              "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+              "textures/2e15a426be9ee20c39a7.png": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357",
+              "textures/ca4f162e85fafee194c7.png": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c",
+              "textures/cfe00d87638eab122eb8.png": "cfe00d87638eab122eb8cf15c194a30cae5e6396d8c22d965fb9b6aa305b13b8",
+              "textures/bde948d56c47e9a9c68c.png": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2",
+              "textures/8d624207fb5fdba71f3a.png": "8d624207fb5fdba71f3ad01c27b53a216b489218ba8420bd97806c824f19a225",
+              "textures/94c58f92a66daac53b99.png": "94c58f92a66daac53b99596d44ee274b3728cd8deb773a0d56f27dc51c8c227f",
+              "textures/d93693724cacd6f0c6f1.png": "d93693724cacd6f0c6f11964ce62840313df8ce20e8efb85f94881fcd997a535"
+            },
+            "originalHadExtras": false,
+            "primitives": [
+              {
+                "mesh": 3,
+                "primitive": 0,
+                "part": "outfit",
+                "originalColourAccessor": 25,
+                "colourAccessor": 58,
+                "originalMaterial": 0,
+                "material": 4,
+                "colourUri": "textures/9277bf6b7f4b71b54f3b.png",
+                "colourSha256": "9277bf6b7f4b71b54f3b8e4c8698ade268e6de58f1a07402c62ef70db2751ebe",
+                "changedVertices": 666,
+                "vertexCount": 1221,
+                "selection": {
+                  "drapeVertexCount": 77,
+                  "protectedVertexCount": 0,
+                  "protectedMaskSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+                }
+              },
+              {
+                "mesh": 2,
+                "primitive": 0,
+                "part": "legwear",
+                "originalColourAccessor": 18,
+                "colourAccessor": 59,
+                "originalMaterial": 0,
+                "material": 5,
+                "colourUri": "textures/b853d116e906ea504175.png",
+                "colourSha256": "b853d116e906ea504175d1aa88c4cb61433926bcb401065803308ce558ce5b24",
+                "changedVertices": 241,
+                "vertexCount": 241,
+                "selection": {
+                  "drapeVertexCount": 0,
+                  "protectedVertexCount": 0,
+                  "protectedMaskSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+                }
+              }
+            ],
+            "documentPatches": []
+          }
         }
       ],
       "materials": {
@@ -1463,9 +2498,9 @@
           "lod": 0,
           "url": "/models/characters/friar-lod0.glb",
           "triangles": 58020,
-          "bytes": 3818928,
+          "bytes": 3901244,
           "drawCalls": 6,
-          "sha256": "f903132a8d7faebab4b2219760e3ce3c68997cba44e10baccb3c1739b59417da",
+          "sha256": "8b373d3b24bb80d5ff991617e0fe8498fa252573dc05cd9ac92a90e84d632dd8",
           "nativeClothSupport": {
             "method": "current-native-prone-cloth-shape",
             "sourceClip": "prone.idle.long-gun",
@@ -1524,15 +2559,189 @@
               "prone.unload.short-gun"
             ],
             "retainedOriginalClothTargetsAndRig": true
+          },
+          "familyClothDepth": {
+            "recipe": {
+              "method": "family-rest-space-cloth-fold-colours-v1",
+              "source": "assets/source/characters-3d/authoring/family_cloth_depth.py",
+              "sourceSha256": "417a371c610ca358bf682e4828233c1aff66cd3599b3726abb066c1303426fe2",
+              "installerSha256": "536dfa4fb0b4b4c05323ff656be831e7755aefaa4e4870f84186e510a7de6d10",
+              "factorBounds": [
+                0.7,
+                1.26
+              ],
+              "albedoHeadroom": {
+                "royalist": {
+                  "outfit": 1,
+                  "legwear": 1
+                },
+                "surgeon": {
+                  "outfit": 1.3,
+                  "legwear": 1.3
+                },
+                "gaucho": {
+                  "outfit": 1.2,
+                  "legwear": 1.25
+                },
+                "friar": {
+                  "outfit": 1.3,
+                  "legwear": 1.3
+                },
+                "woman-scout": {
+                  "outfit": 1,
+                  "legwear": 1
+                },
+                "woman-shawl": {
+                  "outfit": 1,
+                  "legwear": 1
+                }
+              },
+              "retainedGeometryRigClipsMaps": true,
+              "hemProtection": "UV1-stripe-crossing-triangles-plus-adjacent-ring"
+            },
+            "beforeSha256": "f903132a8d7faebab4b2219760e3ce3c68997cba44e10baccb3c1739b59417da",
+            "originalRecord": {
+              "lod": 0,
+              "url": "/models/characters/friar-lod0.glb",
+              "triangles": 58020,
+              "bytes": 3818928,
+              "drawCalls": 6,
+              "sha256": "f903132a8d7faebab4b2219760e3ce3c68997cba44e10baccb3c1739b59417da",
+              "nativeClothSupport": {
+                "method": "current-native-prone-cloth-shape",
+                "sourceClip": "prone.idle.long-gun",
+                "sourcePoseHash": "3355a8e30cd68e78bc0d2066333a9222a52963b1515a4c40b0dc4b442e43fac8",
+                "retainedRestMeshAndRig": true
+              },
+              "nativeClothBootSupport": {
+                "method": "additive-fixed-prone-boot-clearance",
+                "sourcePoseHash": "3355a8e30cd68e78bc0d2066333a9222a52963b1515a4c40b0dc4b442e43fac8",
+                "clipSetHash": "7df74939a1bd6e78c7ab84115ccd6097f42025bfec341dcee1b3e884b2993c82",
+                "clips": [
+                  "prone.aim.long-gun",
+                  "prone.aim.short-gun",
+                  "prone.fire.long-gun",
+                  "prone.fire.short-gun",
+                  "prone.gesture.breach",
+                  "prone.gesture.door",
+                  "prone.gesture.equip",
+                  "prone.gesture.fitting",
+                  "prone.gesture.free",
+                  "prone.gesture.grab",
+                  "prone.gesture.heal",
+                  "prone.gesture.offer",
+                  "prone.gesture.pickup",
+                  "prone.gesture.ration",
+                  "prone.gesture.signal",
+                  "prone.gesture.tool",
+                  "prone.idle.blade",
+                  "prone.idle.knife",
+                  "prone.idle.lance",
+                  "prone.idle.long-gun",
+                  "prone.idle.short-gun",
+                  "prone.reload.long-gun",
+                  "prone.reload.long-gun.1800",
+                  "prone.reload.long-gun.1801",
+                  "prone.reload.long-gun.1802",
+                  "prone.reload.long-gun.1803",
+                  "prone.reload.long-gun.1804",
+                  "prone.reload.long-gun.1807",
+                  "prone.reload.short-gun",
+                  "prone.reload.short-gun.1805",
+                  "prone.reload.short-gun.1806",
+                  "prone.reload.short-gun.1808",
+                  "prone.reload.short-gun.1808.barrel1",
+                  "prone.repair.long-gun",
+                  "prone.repair.short-gun",
+                  "prone.reprime.long-gun",
+                  "prone.reprime.short-gun",
+                  "prone.unload.long-gun",
+                  "prone.unload.long-gun.1800",
+                  "prone.unload.long-gun.1801",
+                  "prone.unload.long-gun.1802",
+                  "prone.unload.long-gun.1803",
+                  "prone.unload.long-gun.1804",
+                  "prone.unload.long-gun.1807",
+                  "prone.unload.short-gun"
+                ],
+                "retainedOriginalClothTargetsAndRig": true
+              }
+            },
+            "originalJSONSha256": "e1f9887ffd0f7c89dce609605e84c9655d976799c5742cff718e660ac52ebf9a",
+            "originalBinarySha256": "5de8ee60f05596cc50b887e140d8f953f69ddfa307cd4812918158f02f0aeb1a",
+            "originalBinaryBytes": 3787408,
+            "originalBuffers": [
+              {
+                "byteLength": 3787408
+              }
+            ],
+            "originalAccessorCount": 57,
+            "originalViewCount": 63,
+            "originalMaterialCount": 4,
+            "originalTextureCount": 11,
+            "originalImageCount": 11,
+            "originalImages": {
+              "textures/01f30a1649e149138639.png": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8",
+              "textures/ede54015ca90cc29311f.png": "ede54015ca90cc29311fc135ce09564f9fd977e40111655eb32a0ec3664d51f0",
+              "textures/55e296edc51c20d99a47.png": "55e296edc51c20d99a4758abe005c1d98e463c01967303ce835d01bc3b54069f",
+              "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+              "textures/2e15a426be9ee20c39a7.png": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357",
+              "textures/ca4f162e85fafee194c7.png": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c",
+              "textures/cfe00d87638eab122eb8.png": "cfe00d87638eab122eb8cf15c194a30cae5e6396d8c22d965fb9b6aa305b13b8",
+              "textures/bde948d56c47e9a9c68c.png": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2",
+              "textures/8d399752680e68257da6.png": "8d399752680e68257da624280d502a4fb71ec0f1524059c122cdaed10d8d2893",
+              "textures/1475bcc494750a798dc8.png": "1475bcc494750a798dc86f5fe0205673495f20d90fe979deffb6f5715c13f2e1",
+              "textures/a966ec3d74fe209f0820.png": "a966ec3d74fe209f082077c6267e0a7b8025235aa0d1ebd45078867a8e745de9"
+            },
+            "originalHadExtras": false,
+            "primitives": [
+              {
+                "mesh": 2,
+                "primitive": 0,
+                "part": "outfit",
+                "originalColourAccessor": 18,
+                "colourAccessor": 57,
+                "originalMaterial": 0,
+                "material": 4,
+                "colourUri": "textures/3691556479aefad5c194.png",
+                "colourSha256": "3691556479aefad5c194fd94e1f2146edb2f79449d63216d68235c6a7a2aae74",
+                "changedVertices": 4261,
+                "vertexCount": 5047,
+                "selection": {
+                  "drapeVertexCount": 675,
+                  "protectedVertexCount": 0,
+                  "protectedMaskSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+                }
+              },
+              {
+                "mesh": 1,
+                "primitive": 0,
+                "part": "legwear",
+                "originalColourAccessor": 11,
+                "colourAccessor": 58,
+                "originalMaterial": 0,
+                "material": 4,
+                "colourUri": "textures/3691556479aefad5c194.png",
+                "colourSha256": "3691556479aefad5c194fd94e1f2146edb2f79449d63216d68235c6a7a2aae74",
+                "changedVertices": 1308,
+                "vertexCount": 1308,
+                "selection": {
+                  "drapeVertexCount": 0,
+                  "protectedVertexCount": 0,
+                  "protectedMaskSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+                }
+              }
+            ],
+            "documentPatches": []
           }
         },
         {
           "lod": 1,
           "url": "/models/characters/friar-lod1.glb",
           "triangles": 39341,
-          "bytes": 2767088,
+          "bytes": 2840600,
           "drawCalls": 6,
-          "sha256": "d7cbb1e5eb84449f211d016fa57de7f629c1b24b1c6fb7be205e80c4e84c49d8",
+          "sha256": "773cbdbae0bdb634ee88a26a17582765b62d788a6d063e51bda073bea48717e6",
           "nativeClothSupport": {
             "method": "current-native-prone-cloth-shape",
             "sourceClip": "prone.idle.long-gun",
@@ -1595,18 +2804,211 @@
           "nativeClothTopology": {
             "method": "reviewed-close-garment-topology",
             "sourceUrl": "/models/characters/friar-lod0.glb",
-            "sourceSha256": "f903132a8d7faebab4b2219760e3ce3c68997cba44e10baccb3c1739b59417da",
+            "sourceSha256": "8b373d3b24bb80d5ff991617e0fe8498fa252573dc05cd9ac92a90e84d632dd8",
             "retainedOtherCoarseMeshesAndRig": true,
             "maximumExtraWorldDisplacement": 0
+          },
+          "familyClothDepth": {
+            "recipe": {
+              "method": "family-rest-space-cloth-fold-colours-v1",
+              "source": "assets/source/characters-3d/authoring/family_cloth_depth.py",
+              "sourceSha256": "417a371c610ca358bf682e4828233c1aff66cd3599b3726abb066c1303426fe2",
+              "installerSha256": "536dfa4fb0b4b4c05323ff656be831e7755aefaa4e4870f84186e510a7de6d10",
+              "factorBounds": [
+                0.7,
+                1.26
+              ],
+              "albedoHeadroom": {
+                "royalist": {
+                  "outfit": 1,
+                  "legwear": 1
+                },
+                "surgeon": {
+                  "outfit": 1.3,
+                  "legwear": 1.3
+                },
+                "gaucho": {
+                  "outfit": 1.2,
+                  "legwear": 1.25
+                },
+                "friar": {
+                  "outfit": 1.3,
+                  "legwear": 1.3
+                },
+                "woman-scout": {
+                  "outfit": 1,
+                  "legwear": 1
+                },
+                "woman-shawl": {
+                  "outfit": 1,
+                  "legwear": 1
+                }
+              },
+              "retainedGeometryRigClipsMaps": true,
+              "hemProtection": "UV1-stripe-crossing-triangles-plus-adjacent-ring"
+            },
+            "beforeSha256": "d7cbb1e5eb84449f211d016fa57de7f629c1b24b1c6fb7be205e80c4e84c49d8",
+            "originalRecord": {
+              "lod": 1,
+              "url": "/models/characters/friar-lod1.glb",
+              "triangles": 39341,
+              "bytes": 2767088,
+              "drawCalls": 6,
+              "sha256": "d7cbb1e5eb84449f211d016fa57de7f629c1b24b1c6fb7be205e80c4e84c49d8",
+              "nativeClothSupport": {
+                "method": "current-native-prone-cloth-shape",
+                "sourceClip": "prone.idle.long-gun",
+                "sourcePoseHash": "3355a8e30cd68e78bc0d2066333a9222a52963b1515a4c40b0dc4b442e43fac8",
+                "retainedRestMeshAndRig": true
+              },
+              "nativeClothBootSupport": {
+                "method": "additive-fixed-prone-boot-clearance",
+                "sourcePoseHash": "3355a8e30cd68e78bc0d2066333a9222a52963b1515a4c40b0dc4b442e43fac8",
+                "clipSetHash": "7df74939a1bd6e78c7ab84115ccd6097f42025bfec341dcee1b3e884b2993c82",
+                "clips": [
+                  "prone.aim.long-gun",
+                  "prone.aim.short-gun",
+                  "prone.fire.long-gun",
+                  "prone.fire.short-gun",
+                  "prone.gesture.breach",
+                  "prone.gesture.door",
+                  "prone.gesture.equip",
+                  "prone.gesture.fitting",
+                  "prone.gesture.free",
+                  "prone.gesture.grab",
+                  "prone.gesture.heal",
+                  "prone.gesture.offer",
+                  "prone.gesture.pickup",
+                  "prone.gesture.ration",
+                  "prone.gesture.signal",
+                  "prone.gesture.tool",
+                  "prone.idle.blade",
+                  "prone.idle.knife",
+                  "prone.idle.lance",
+                  "prone.idle.long-gun",
+                  "prone.idle.short-gun",
+                  "prone.reload.long-gun",
+                  "prone.reload.long-gun.1800",
+                  "prone.reload.long-gun.1801",
+                  "prone.reload.long-gun.1802",
+                  "prone.reload.long-gun.1803",
+                  "prone.reload.long-gun.1804",
+                  "prone.reload.long-gun.1807",
+                  "prone.reload.short-gun",
+                  "prone.reload.short-gun.1805",
+                  "prone.reload.short-gun.1806",
+                  "prone.reload.short-gun.1808",
+                  "prone.reload.short-gun.1808.barrel1",
+                  "prone.repair.long-gun",
+                  "prone.repair.short-gun",
+                  "prone.reprime.long-gun",
+                  "prone.reprime.short-gun",
+                  "prone.unload.long-gun",
+                  "prone.unload.long-gun.1800",
+                  "prone.unload.long-gun.1801",
+                  "prone.unload.long-gun.1802",
+                  "prone.unload.long-gun.1803",
+                  "prone.unload.long-gun.1804",
+                  "prone.unload.long-gun.1807",
+                  "prone.unload.short-gun"
+                ],
+                "retainedOriginalClothTargetsAndRig": true
+              },
+              "nativeClothTopology": {
+                "method": "reviewed-close-garment-topology",
+                "sourceUrl": "/models/characters/friar-lod0.glb",
+                "sourceSha256": "f903132a8d7faebab4b2219760e3ce3c68997cba44e10baccb3c1739b59417da",
+                "retainedOtherCoarseMeshesAndRig": true,
+                "maximumExtraWorldDisplacement": 0
+              }
+            },
+            "originalJSONSha256": "ccaf2e8ae3061467a36b97b95ce45b8297e3048a8d967a2deb02b2de228576e7",
+            "originalBinarySha256": "4fcb248cc12429b7bbaf2a083df559a782979fa20f26d09f38c34c8f125beb81",
+            "originalBinaryBytes": 2735356,
+            "originalBuffers": [
+              {
+                "byteLength": 2735356
+              }
+            ],
+            "originalAccessorCount": 57,
+            "originalViewCount": 63,
+            "originalMaterialCount": 4,
+            "originalTextureCount": 11,
+            "originalImageCount": 11,
+            "originalImages": {
+              "textures/01f30a1649e149138639.png": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8",
+              "textures/ede54015ca90cc29311f.png": "ede54015ca90cc29311fc135ce09564f9fd977e40111655eb32a0ec3664d51f0",
+              "textures/55e296edc51c20d99a47.png": "55e296edc51c20d99a4758abe005c1d98e463c01967303ce835d01bc3b54069f",
+              "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+              "textures/2e15a426be9ee20c39a7.png": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357",
+              "textures/ca4f162e85fafee194c7.png": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c",
+              "textures/cfe00d87638eab122eb8.png": "cfe00d87638eab122eb8cf15c194a30cae5e6396d8c22d965fb9b6aa305b13b8",
+              "textures/bde948d56c47e9a9c68c.png": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2",
+              "textures/8d399752680e68257da6.png": "8d399752680e68257da624280d502a4fb71ec0f1524059c122cdaed10d8d2893",
+              "textures/1475bcc494750a798dc8.png": "1475bcc494750a798dc86f5fe0205673495f20d90fe979deffb6f5715c13f2e1",
+              "textures/a966ec3d74fe209f0820.png": "a966ec3d74fe209f082077c6267e0a7b8025235aa0d1ebd45078867a8e745de9"
+            },
+            "originalHadExtras": false,
+            "primitives": [
+              {
+                "mesh": 2,
+                "primitive": 0,
+                "part": "outfit",
+                "originalColourAccessor": 32,
+                "colourAccessor": 57,
+                "originalMaterial": 0,
+                "material": 4,
+                "colourUri": "textures/3691556479aefad5c194.png",
+                "colourSha256": "3691556479aefad5c194fd94e1f2146edb2f79449d63216d68235c6a7a2aae74",
+                "changedVertices": 4261,
+                "vertexCount": 5047,
+                "selection": {
+                  "drapeVertexCount": 675,
+                  "protectedVertexCount": 0,
+                  "protectedMaskSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+                }
+              },
+              {
+                "mesh": 1,
+                "primitive": 0,
+                "part": "legwear",
+                "originalColourAccessor": 11,
+                "colourAccessor": 58,
+                "originalMaterial": 0,
+                "material": 4,
+                "colourUri": "textures/3691556479aefad5c194.png",
+                "colourSha256": "3691556479aefad5c194fd94e1f2146edb2f79449d63216d68235c6a7a2aae74",
+                "changedVertices": 534,
+                "vertexCount": 534,
+                "selection": {
+                  "drapeVertexCount": 0,
+                  "protectedVertexCount": 0,
+                  "protectedMaskSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+                }
+              }
+            ],
+            "documentPatches": [
+              {
+                "path": [
+                  "meshes",
+                  2,
+                  "extras",
+                  "nativeClothTopology",
+                  "sourceSha256"
+                ],
+                "before": "f903132a8d7faebab4b2219760e3ce3c68997cba44e10baccb3c1739b59417da",
+                "after": "8b373d3b24bb80d5ff991617e0fe8498fa252573dc05cd9ac92a90e84d632dd8"
+              }
+            ]
           }
         },
         {
           "lod": 2,
           "url": "/models/characters/friar-lod2.glb",
           "triangles": 17982,
-          "bytes": 1068716,
+          "bytes": 1139472,
           "drawCalls": 6,
-          "sha256": "386fc77718c780518390aa3c8c51e478c08ec387956bd9e3b27c6cbf18e6bed6",
+          "sha256": "4e6869d47eaae5a15981ba52cd4d8a90220d0d647ca3865a30d67867c06e31c5",
           "nativeClothSupport": {
             "method": "current-native-prone-cloth-shape",
             "sourceClip": "prone.idle.long-gun",
@@ -1669,9 +3071,205 @@
           "nativeClothTopology": {
             "method": "reviewed-close-garment-topology",
             "sourceUrl": "/models/characters/friar-lod0.glb",
-            "sourceSha256": "f903132a8d7faebab4b2219760e3ce3c68997cba44e10baccb3c1739b59417da",
+            "sourceSha256": "8b373d3b24bb80d5ff991617e0fe8498fa252573dc05cd9ac92a90e84d632dd8",
             "retainedOtherCoarseMeshesAndRig": true,
             "maximumExtraWorldDisplacement": 0
+          },
+          "familyClothDepth": {
+            "recipe": {
+              "method": "family-rest-space-cloth-fold-colours-v1",
+              "source": "assets/source/characters-3d/authoring/family_cloth_depth.py",
+              "sourceSha256": "417a371c610ca358bf682e4828233c1aff66cd3599b3726abb066c1303426fe2",
+              "installerSha256": "536dfa4fb0b4b4c05323ff656be831e7755aefaa4e4870f84186e510a7de6d10",
+              "factorBounds": [
+                0.7,
+                1.26
+              ],
+              "albedoHeadroom": {
+                "royalist": {
+                  "outfit": 1,
+                  "legwear": 1
+                },
+                "surgeon": {
+                  "outfit": 1.3,
+                  "legwear": 1.3
+                },
+                "gaucho": {
+                  "outfit": 1.2,
+                  "legwear": 1.25
+                },
+                "friar": {
+                  "outfit": 1.3,
+                  "legwear": 1.3
+                },
+                "woman-scout": {
+                  "outfit": 1,
+                  "legwear": 1
+                },
+                "woman-shawl": {
+                  "outfit": 1,
+                  "legwear": 1
+                }
+              },
+              "retainedGeometryRigClipsMaps": true,
+              "hemProtection": "UV1-stripe-crossing-triangles-plus-adjacent-ring"
+            },
+            "beforeSha256": "386fc77718c780518390aa3c8c51e478c08ec387956bd9e3b27c6cbf18e6bed6",
+            "originalRecord": {
+              "lod": 2,
+              "url": "/models/characters/friar-lod2.glb",
+              "triangles": 17982,
+              "bytes": 1068716,
+              "drawCalls": 6,
+              "sha256": "386fc77718c780518390aa3c8c51e478c08ec387956bd9e3b27c6cbf18e6bed6",
+              "nativeClothSupport": {
+                "method": "current-native-prone-cloth-shape",
+                "sourceClip": "prone.idle.long-gun",
+                "sourcePoseHash": "3355a8e30cd68e78bc0d2066333a9222a52963b1515a4c40b0dc4b442e43fac8",
+                "retainedRestMeshAndRig": true
+              },
+              "nativeClothBootSupport": {
+                "method": "additive-fixed-prone-boot-clearance",
+                "sourcePoseHash": "3355a8e30cd68e78bc0d2066333a9222a52963b1515a4c40b0dc4b442e43fac8",
+                "clipSetHash": "7df74939a1bd6e78c7ab84115ccd6097f42025bfec341dcee1b3e884b2993c82",
+                "clips": [
+                  "prone.aim.long-gun",
+                  "prone.aim.short-gun",
+                  "prone.fire.long-gun",
+                  "prone.fire.short-gun",
+                  "prone.gesture.breach",
+                  "prone.gesture.door",
+                  "prone.gesture.equip",
+                  "prone.gesture.fitting",
+                  "prone.gesture.free",
+                  "prone.gesture.grab",
+                  "prone.gesture.heal",
+                  "prone.gesture.offer",
+                  "prone.gesture.pickup",
+                  "prone.gesture.ration",
+                  "prone.gesture.signal",
+                  "prone.gesture.tool",
+                  "prone.idle.blade",
+                  "prone.idle.knife",
+                  "prone.idle.lance",
+                  "prone.idle.long-gun",
+                  "prone.idle.short-gun",
+                  "prone.reload.long-gun",
+                  "prone.reload.long-gun.1800",
+                  "prone.reload.long-gun.1801",
+                  "prone.reload.long-gun.1802",
+                  "prone.reload.long-gun.1803",
+                  "prone.reload.long-gun.1804",
+                  "prone.reload.long-gun.1807",
+                  "prone.reload.short-gun",
+                  "prone.reload.short-gun.1805",
+                  "prone.reload.short-gun.1806",
+                  "prone.reload.short-gun.1808",
+                  "prone.reload.short-gun.1808.barrel1",
+                  "prone.repair.long-gun",
+                  "prone.repair.short-gun",
+                  "prone.reprime.long-gun",
+                  "prone.reprime.short-gun",
+                  "prone.unload.long-gun",
+                  "prone.unload.long-gun.1800",
+                  "prone.unload.long-gun.1801",
+                  "prone.unload.long-gun.1802",
+                  "prone.unload.long-gun.1803",
+                  "prone.unload.long-gun.1804",
+                  "prone.unload.long-gun.1807",
+                  "prone.unload.short-gun"
+                ],
+                "retainedOriginalClothTargetsAndRig": true
+              },
+              "nativeClothTopology": {
+                "method": "reviewed-close-garment-topology",
+                "sourceUrl": "/models/characters/friar-lod0.glb",
+                "sourceSha256": "f903132a8d7faebab4b2219760e3ce3c68997cba44e10baccb3c1739b59417da",
+                "retainedOtherCoarseMeshesAndRig": true,
+                "maximumExtraWorldDisplacement": 0
+              }
+            },
+            "originalJSONSha256": "2e3063695fd399d1826a444f7c520799da4eeddd9641998e4c40169126db1c82",
+            "originalBinarySha256": "e8cc1252d80bc2c03eb097fc146a1c0787bf4c13e476186b59ce87b78f5c8ce2",
+            "originalBinaryBytes": 1036384,
+            "originalBuffers": [
+              {
+                "byteLength": 1036384
+              }
+            ],
+            "originalAccessorCount": 57,
+            "originalViewCount": 63,
+            "originalMaterialCount": 5,
+            "originalTextureCount": 14,
+            "originalImageCount": 14,
+            "originalImages": {
+              "textures/b14cf99a684846cb69e9.png": "b14cf99a684846cb69e9be4ab93a58d973d3bfce54c0ec9a47ca0545229d2cc1",
+              "textures/79b468f44254a4b58d1f.png": "79b468f44254a4b58d1fb54f597c0e3fab79ae8732637caed793639d5eaf26d5",
+              "textures/5fbafa4e4224acc6b55d.png": "5fbafa4e4224acc6b55d9a76c820ed415f5d45e368ad9e07ad5253657a888626",
+              "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+              "textures/2e15a426be9ee20c39a7.png": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357",
+              "textures/01f30a1649e149138639.png": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8",
+              "textures/ede54015ca90cc29311f.png": "ede54015ca90cc29311fc135ce09564f9fd977e40111655eb32a0ec3664d51f0",
+              "textures/55e296edc51c20d99a47.png": "55e296edc51c20d99a4758abe005c1d98e463c01967303ce835d01bc3b54069f",
+              "textures/ca4f162e85fafee194c7.png": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c",
+              "textures/cfe00d87638eab122eb8.png": "cfe00d87638eab122eb8cf15c194a30cae5e6396d8c22d965fb9b6aa305b13b8",
+              "textures/bde948d56c47e9a9c68c.png": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2",
+              "textures/55f2e13925123daea921.png": "55f2e13925123daea921e254ee30bbd2109adc583faf6ce9e2b1feabb34ae63a",
+              "textures/89a9d994989390a0e185.png": "89a9d994989390a0e1858cdb750bc432af0782e017c302677249a69ca4eef39a",
+              "textures/392889f6329752c020dd.png": "392889f6329752c020ddacf276bbf849c8e5b9ba5365641a059ff76a1d614f47"
+            },
+            "originalHadExtras": false,
+            "primitives": [
+              {
+                "mesh": 2,
+                "primitive": 0,
+                "part": "outfit",
+                "originalColourAccessor": 32,
+                "colourAccessor": 57,
+                "originalMaterial": 2,
+                "material": 5,
+                "colourUri": "textures/3691556479aefad5c194.png",
+                "colourSha256": "3691556479aefad5c194fd94e1f2146edb2f79449d63216d68235c6a7a2aae74",
+                "changedVertices": 4261,
+                "vertexCount": 5047,
+                "selection": {
+                  "drapeVertexCount": 675,
+                  "protectedVertexCount": 0,
+                  "protectedMaskSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+                }
+              },
+              {
+                "mesh": 1,
+                "primitive": 0,
+                "part": "legwear",
+                "originalColourAccessor": 11,
+                "colourAccessor": 58,
+                "originalMaterial": 0,
+                "material": 6,
+                "colourUri": "textures/af73a7186075e3b44859.png",
+                "colourSha256": "af73a7186075e3b44859362ff6f8940cf7e0439e040ff583c71a5d194385e43c",
+                "changedVertices": 241,
+                "vertexCount": 241,
+                "selection": {
+                  "drapeVertexCount": 0,
+                  "protectedVertexCount": 0,
+                  "protectedMaskSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+                }
+              }
+            ],
+            "documentPatches": [
+              {
+                "path": [
+                  "meshes",
+                  2,
+                  "extras",
+                  "nativeClothTopology",
+                  "sourceSha256"
+                ],
+                "before": "f903132a8d7faebab4b2219760e3ce3c68997cba44e10baccb3c1739b59417da",
+                "after": "8b373d3b24bb80d5ff991617e0fe8498fa252573dc05cd9ac92a90e84d632dd8"
+              }
+            ]
           }
         }
       ],
@@ -1879,25 +3477,370 @@
           "lod": 0,
           "url": "/models/characters/woman-scout-lod0.glb",
           "triangles": 59860,
-          "bytes": 3996636,
+          "bytes": 4071020,
           "drawCalls": 6,
-          "sha256": "d3dbb04cc5a0ddca1ec300def391004e9540bc78f5a82ded0c674262ed0f818b"
+          "sha256": "83a3f477b3771761a4fbb00f3a33cd744e4e77b49c6f870b72b3cc49c03c5434",
+          "familyClothDepth": {
+            "recipe": {
+              "method": "family-rest-space-cloth-fold-colours-v1",
+              "source": "assets/source/characters-3d/authoring/family_cloth_depth.py",
+              "sourceSha256": "417a371c610ca358bf682e4828233c1aff66cd3599b3726abb066c1303426fe2",
+              "installerSha256": "536dfa4fb0b4b4c05323ff656be831e7755aefaa4e4870f84186e510a7de6d10",
+              "factorBounds": [
+                0.7,
+                1.26
+              ],
+              "albedoHeadroom": {
+                "royalist": {
+                  "outfit": 1,
+                  "legwear": 1
+                },
+                "surgeon": {
+                  "outfit": 1.3,
+                  "legwear": 1.3
+                },
+                "gaucho": {
+                  "outfit": 1.2,
+                  "legwear": 1.25
+                },
+                "friar": {
+                  "outfit": 1.3,
+                  "legwear": 1.3
+                },
+                "woman-scout": {
+                  "outfit": 1,
+                  "legwear": 1
+                },
+                "woman-shawl": {
+                  "outfit": 1,
+                  "legwear": 1
+                }
+              },
+              "retainedGeometryRigClipsMaps": true,
+              "hemProtection": "UV1-stripe-crossing-triangles-plus-adjacent-ring"
+            },
+            "beforeSha256": "d3dbb04cc5a0ddca1ec300def391004e9540bc78f5a82ded0c674262ed0f818b",
+            "originalRecord": {
+              "lod": 0,
+              "url": "/models/characters/woman-scout-lod0.glb",
+              "triangles": 59860,
+              "bytes": 3996636,
+              "drawCalls": 6,
+              "sha256": "d3dbb04cc5a0ddca1ec300def391004e9540bc78f5a82ded0c674262ed0f818b"
+            },
+            "originalJSONSha256": "5ee05e845c31eab165ea532f3b71c83169c74c4f4a97e40c57a83c085daf0841",
+            "originalBinarySha256": "b38b5fce2ce7ff81e801f401d3cd7d84dba900992531ba81af3330aed5dbdc3b",
+            "originalBinaryBytes": 3968492,
+            "originalBuffers": [
+              {
+                "byteLength": 3968492
+              }
+            ],
+            "originalAccessorCount": 51,
+            "originalViewCount": 51,
+            "originalMaterialCount": 4,
+            "originalTextureCount": 11,
+            "originalImageCount": 11,
+            "originalImages": {
+              "textures/4b36fb5abe80124daabc.png": "4b36fb5abe80124daabce546e8ba9f220ed6467a69c301dd3baaeb43852e8aa5",
+              "textures/e80f68933ff3fbf30557.png": "e80f68933ff3fbf305574a55d2512ea143835de52314e7f62ecab38ec409a8c4",
+              "textures/f63de566801fcea8ef97.png": "f63de566801fcea8ef973271a3cd46ac87cf285e766ecfa2d0c6f64670ff3af2",
+              "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+              "textures/2e15a426be9ee20c39a7.png": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357",
+              "textures/5b28ef6bb29b5654ff1a.png": "5b28ef6bb29b5654ff1aececf1922ff6faddd616029fe879ff828d6996269292",
+              "textures/5818150cab42cf0b2325.png": "5818150cab42cf0b2325319cea8b42894eade25d731d364162276b634f55e069",
+              "textures/e35f74c0f83556345583.png": "e35f74c0f8355634558348073fa69517f15cdee745fe589b12e61b769654642b",
+              "textures/f98f3d1f919d7d128ace.png": "f98f3d1f919d7d128aceffeaed54f56d1c01149ad0d7530e33a7bf36e3420e0c",
+              "textures/9c4d0ad1822c0e3d56d2.png": "9c4d0ad1822c0e3d56d2e6bf792d4d282bf60da205a48d2e868354f51ebcf0c4",
+              "textures/98f3ec35fdedc87adac0.png": "98f3ec35fdedc87adac04d643040d7532aac5d07e656e12f517acdf6e1c3a9ea"
+            },
+            "originalHadExtras": false,
+            "primitives": [
+              {
+                "mesh": 2,
+                "primitive": 0,
+                "part": "outfit",
+                "originalColourAccessor": 18,
+                "colourAccessor": 51,
+                "originalMaterial": 0,
+                "material": 0,
+                "colourUri": null,
+                "colourSha256": null,
+                "changedVertices": 3531,
+                "vertexCount": 4518,
+                "selection": {
+                  "drapeVertexCount": 0,
+                  "protectedVertexCount": 0,
+                  "protectedMaskSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+                }
+              },
+              {
+                "mesh": 1,
+                "primitive": 0,
+                "part": "legwear",
+                "originalColourAccessor": 11,
+                "colourAccessor": 52,
+                "originalMaterial": 0,
+                "material": 0,
+                "colourUri": null,
+                "colourSha256": null,
+                "changedVertices": 1370,
+                "vertexCount": 1370,
+                "selection": {
+                  "drapeVertexCount": 0,
+                  "protectedVertexCount": 0,
+                  "protectedMaskSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+                }
+              }
+            ],
+            "documentPatches": []
+          }
         },
         {
           "lod": 1,
           "url": "/models/characters/woman-scout-lod1.glb",
           "triangles": 36615,
-          "bytes": 2721608,
+          "bytes": 2763916,
           "drawCalls": 6,
-          "sha256": "af0d39fba27102e59f58d97e874b7c3aeacf693579cdcb296dd2cb808cc618c0"
+          "sha256": "6f6f979fde16dbdab4cc41894ddd34562ad07da24f9c49947c615bf02f842ee5",
+          "familyClothDepth": {
+            "recipe": {
+              "method": "family-rest-space-cloth-fold-colours-v1",
+              "source": "assets/source/characters-3d/authoring/family_cloth_depth.py",
+              "sourceSha256": "417a371c610ca358bf682e4828233c1aff66cd3599b3726abb066c1303426fe2",
+              "installerSha256": "536dfa4fb0b4b4c05323ff656be831e7755aefaa4e4870f84186e510a7de6d10",
+              "factorBounds": [
+                0.7,
+                1.26
+              ],
+              "albedoHeadroom": {
+                "royalist": {
+                  "outfit": 1,
+                  "legwear": 1
+                },
+                "surgeon": {
+                  "outfit": 1.3,
+                  "legwear": 1.3
+                },
+                "gaucho": {
+                  "outfit": 1.2,
+                  "legwear": 1.25
+                },
+                "friar": {
+                  "outfit": 1.3,
+                  "legwear": 1.3
+                },
+                "woman-scout": {
+                  "outfit": 1,
+                  "legwear": 1
+                },
+                "woman-shawl": {
+                  "outfit": 1,
+                  "legwear": 1
+                }
+              },
+              "retainedGeometryRigClipsMaps": true,
+              "hemProtection": "UV1-stripe-crossing-triangles-plus-adjacent-ring"
+            },
+            "beforeSha256": "af0d39fba27102e59f58d97e874b7c3aeacf693579cdcb296dd2cb808cc618c0",
+            "originalRecord": {
+              "lod": 1,
+              "url": "/models/characters/woman-scout-lod1.glb",
+              "triangles": 36615,
+              "bytes": 2721608,
+              "drawCalls": 6,
+              "sha256": "af0d39fba27102e59f58d97e874b7c3aeacf693579cdcb296dd2cb808cc618c0"
+            },
+            "originalJSONSha256": "b61ad536055e1b73a2c760bceef193692ebe0f9168bb939c315b0bc0970978f4",
+            "originalBinarySha256": "6198483b8700b604d42a59a66d5924380fe0572c9fdab45493e8592bb8f3946c",
+            "originalBinaryBytes": 2693520,
+            "originalBuffers": [
+              {
+                "byteLength": 2693520
+              }
+            ],
+            "originalAccessorCount": 51,
+            "originalViewCount": 51,
+            "originalMaterialCount": 4,
+            "originalTextureCount": 11,
+            "originalImageCount": 11,
+            "originalImages": {
+              "textures/4b36fb5abe80124daabc.png": "4b36fb5abe80124daabce546e8ba9f220ed6467a69c301dd3baaeb43852e8aa5",
+              "textures/e80f68933ff3fbf30557.png": "e80f68933ff3fbf305574a55d2512ea143835de52314e7f62ecab38ec409a8c4",
+              "textures/f63de566801fcea8ef97.png": "f63de566801fcea8ef973271a3cd46ac87cf285e766ecfa2d0c6f64670ff3af2",
+              "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+              "textures/2e15a426be9ee20c39a7.png": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357",
+              "textures/5b28ef6bb29b5654ff1a.png": "5b28ef6bb29b5654ff1aececf1922ff6faddd616029fe879ff828d6996269292",
+              "textures/5818150cab42cf0b2325.png": "5818150cab42cf0b2325319cea8b42894eade25d731d364162276b634f55e069",
+              "textures/e35f74c0f83556345583.png": "e35f74c0f8355634558348073fa69517f15cdee745fe589b12e61b769654642b",
+              "textures/f98f3d1f919d7d128ace.png": "f98f3d1f919d7d128aceffeaed54f56d1c01149ad0d7530e33a7bf36e3420e0c",
+              "textures/9c4d0ad1822c0e3d56d2.png": "9c4d0ad1822c0e3d56d2e6bf792d4d282bf60da205a48d2e868354f51ebcf0c4",
+              "textures/98f3ec35fdedc87adac0.png": "98f3ec35fdedc87adac04d643040d7532aac5d07e656e12f517acdf6e1c3a9ea"
+            },
+            "originalHadExtras": false,
+            "primitives": [
+              {
+                "mesh": 2,
+                "primitive": 0,
+                "part": "outfit",
+                "originalColourAccessor": 18,
+                "colourAccessor": 51,
+                "originalMaterial": 0,
+                "material": 0,
+                "colourUri": null,
+                "colourSha256": null,
+                "changedVertices": 1665,
+                "vertexCount": 2652,
+                "selection": {
+                  "drapeVertexCount": 0,
+                  "protectedVertexCount": 0,
+                  "protectedMaskSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+                }
+              },
+              {
+                "mesh": 1,
+                "primitive": 0,
+                "part": "legwear",
+                "originalColourAccessor": 11,
+                "colourAccessor": 52,
+                "originalMaterial": 0,
+                "material": 0,
+                "colourUri": null,
+                "colourSha256": null,
+                "changedVertices": 563,
+                "vertexCount": 563,
+                "selection": {
+                  "drapeVertexCount": 0,
+                  "protectedVertexCount": 0,
+                  "protectedMaskSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+                }
+              }
+            ],
+            "documentPatches": []
+          }
         },
         {
           "lod": 2,
           "url": "/models/characters/woman-scout-lod2.glb",
           "triangles": 12503,
-          "bytes": 893488,
+          "bytes": 915456,
           "drawCalls": 6,
-          "sha256": "2990d8f4c0ded1c9e1553b03cbaaf04fe17887c1f0f34110f13eb9283315f8a6"
+          "sha256": "ea0d9176be44aed584c51cbb25c796779d4c8c2fab6afd50a3e7a2e6955c4326",
+          "familyClothDepth": {
+            "recipe": {
+              "method": "family-rest-space-cloth-fold-colours-v1",
+              "source": "assets/source/characters-3d/authoring/family_cloth_depth.py",
+              "sourceSha256": "417a371c610ca358bf682e4828233c1aff66cd3599b3726abb066c1303426fe2",
+              "installerSha256": "536dfa4fb0b4b4c05323ff656be831e7755aefaa4e4870f84186e510a7de6d10",
+              "factorBounds": [
+                0.7,
+                1.26
+              ],
+              "albedoHeadroom": {
+                "royalist": {
+                  "outfit": 1,
+                  "legwear": 1
+                },
+                "surgeon": {
+                  "outfit": 1.3,
+                  "legwear": 1.3
+                },
+                "gaucho": {
+                  "outfit": 1.2,
+                  "legwear": 1.25
+                },
+                "friar": {
+                  "outfit": 1.3,
+                  "legwear": 1.3
+                },
+                "woman-scout": {
+                  "outfit": 1,
+                  "legwear": 1
+                },
+                "woman-shawl": {
+                  "outfit": 1,
+                  "legwear": 1
+                }
+              },
+              "retainedGeometryRigClipsMaps": true,
+              "hemProtection": "UV1-stripe-crossing-triangles-plus-adjacent-ring"
+            },
+            "beforeSha256": "2990d8f4c0ded1c9e1553b03cbaaf04fe17887c1f0f34110f13eb9283315f8a6",
+            "originalRecord": {
+              "lod": 2,
+              "url": "/models/characters/woman-scout-lod2.glb",
+              "triangles": 12503,
+              "bytes": 893488,
+              "drawCalls": 6,
+              "sha256": "2990d8f4c0ded1c9e1553b03cbaaf04fe17887c1f0f34110f13eb9283315f8a6"
+            },
+            "originalJSONSha256": "591553578280a96cbaf9d04687060d24096ac2ba050e936cf68e99432153da7b",
+            "originalBinarySha256": "e23a3ec90fa6932ad0654652c0051429377007577f92111a6570400bbe8fc2cc",
+            "originalBinaryBytes": 865444,
+            "originalBuffers": [
+              {
+                "byteLength": 865444
+              }
+            ],
+            "originalAccessorCount": 51,
+            "originalViewCount": 51,
+            "originalMaterialCount": 4,
+            "originalTextureCount": 11,
+            "originalImageCount": 11,
+            "originalImages": {
+              "textures/01f30a1649e149138639.png": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8",
+              "textures/ca8dfdb29da067ef8ac1.png": "ca8dfdb29da067ef8ac15565cbd7779aef4188f41b2afc539af517a2680fbbe2",
+              "textures/a27b9aff9f8c8edf1136.png": "a27b9aff9f8c8edf1136144e3450fcf61faad1b74eae0deb6b512c0c1d2b55de",
+              "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+              "textures/2e15a426be9ee20c39a7.png": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357",
+              "textures/5b28ef6bb29b5654ff1a.png": "5b28ef6bb29b5654ff1aececf1922ff6faddd616029fe879ff828d6996269292",
+              "textures/5818150cab42cf0b2325.png": "5818150cab42cf0b2325319cea8b42894eade25d731d364162276b634f55e069",
+              "textures/e35f74c0f83556345583.png": "e35f74c0f8355634558348073fa69517f15cdee745fe589b12e61b769654642b",
+              "textures/c3782e00498e23e6a224.png": "c3782e00498e23e6a224559d3df18d6d41db391d3e7b15861787bb2eef5f85e1",
+              "textures/6dd4cdb2fff9b1b7b2ee.png": "6dd4cdb2fff9b1b7b2eef82dadd716cf6ecce8bed5f6217e562510545f25c8a4",
+              "textures/e229e1eb9ffd5725d876.png": "e229e1eb9ffd5725d8767e8ddecc9544694780c03afeb468ce610c9370e3c1a7"
+            },
+            "originalHadExtras": false,
+            "primitives": [
+              {
+                "mesh": 2,
+                "primitive": 0,
+                "part": "outfit",
+                "originalColourAccessor": 18,
+                "colourAccessor": 51,
+                "originalMaterial": 0,
+                "material": 0,
+                "colourUri": null,
+                "colourSha256": null,
+                "changedVertices": 931,
+                "vertexCount": 1251,
+                "selection": {
+                  "drapeVertexCount": 0,
+                  "protectedVertexCount": 0,
+                  "protectedMaskSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+                }
+              },
+              {
+                "mesh": 1,
+                "primitive": 0,
+                "part": "legwear",
+                "originalColourAccessor": 11,
+                "colourAccessor": 52,
+                "originalMaterial": 0,
+                "material": 0,
+                "colourUri": null,
+                "colourSha256": null,
+                "changedVertices": 262,
+                "vertexCount": 262,
+                "selection": {
+                  "drapeVertexCount": 0,
+                  "protectedVertexCount": 0,
+                  "protectedMaskSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+                }
+              }
+            ],
+            "documentPatches": []
+          }
         }
       ],
       "materials": {
@@ -2104,9 +4047,9 @@
           "lod": 0,
           "url": "/models/characters/woman-shawl-lod0.glb",
           "triangles": 61269,
-          "bytes": 3991436,
+          "bytes": 4088408,
           "drawCalls": 6,
-          "sha256": "64f09afe0d7ec85f49cb0d55bf7a640c9355a64b7f4ffbc7bde377a98d31e05e",
+          "sha256": "5a6772d75ccf7bb03f4dac6e74db2226bfca0e4609c0373fc2c70e99fc081a8e",
           "nativeClothSupport": {
             "method": "current-native-prone-cloth-shape",
             "sourceClip": "prone.idle.long-gun",
@@ -2204,15 +4147,230 @@
               0.5,
               0.25
             ]
+          },
+          "familyClothDepth": {
+            "recipe": {
+              "method": "family-rest-space-cloth-fold-colours-v1",
+              "source": "assets/source/characters-3d/authoring/family_cloth_depth.py",
+              "sourceSha256": "417a371c610ca358bf682e4828233c1aff66cd3599b3726abb066c1303426fe2",
+              "installerSha256": "536dfa4fb0b4b4c05323ff656be831e7755aefaa4e4870f84186e510a7de6d10",
+              "factorBounds": [
+                0.7,
+                1.26
+              ],
+              "albedoHeadroom": {
+                "royalist": {
+                  "outfit": 1,
+                  "legwear": 1
+                },
+                "surgeon": {
+                  "outfit": 1.3,
+                  "legwear": 1.3
+                },
+                "gaucho": {
+                  "outfit": 1.2,
+                  "legwear": 1.25
+                },
+                "friar": {
+                  "outfit": 1.3,
+                  "legwear": 1.3
+                },
+                "woman-scout": {
+                  "outfit": 1,
+                  "legwear": 1
+                },
+                "woman-shawl": {
+                  "outfit": 1,
+                  "legwear": 1
+                }
+              },
+              "retainedGeometryRigClipsMaps": true,
+              "hemProtection": "UV1-stripe-crossing-triangles-plus-adjacent-ring"
+            },
+            "beforeSha256": "64f09afe0d7ec85f49cb0d55bf7a640c9355a64b7f4ffbc7bde377a98d31e05e",
+            "originalRecord": {
+              "lod": 0,
+              "url": "/models/characters/woman-shawl-lod0.glb",
+              "triangles": 61269,
+              "bytes": 3991436,
+              "drawCalls": 6,
+              "sha256": "64f09afe0d7ec85f49cb0d55bf7a640c9355a64b7f4ffbc7bde377a98d31e05e",
+              "nativeClothSupport": {
+                "method": "current-native-prone-cloth-shape",
+                "sourceClip": "prone.idle.long-gun",
+                "sourcePoseHash": "679eddfd742ef7758efe3477685a12aa0f15e44cf61271f129ef521675da8a26",
+                "retainedRestMeshAndRig": true
+              },
+              "nativeClothBootSupport": {
+                "method": "additive-fixed-prone-boot-clearance",
+                "sourcePoseHash": "679eddfd742ef7758efe3477685a12aa0f15e44cf61271f129ef521675da8a26",
+                "clipSetHash": "e6447ad746aaa41dc164d2852287fb30092275bbdd1c302a8b5b68714b51affe",
+                "clips": [
+                  "prone.aim.long-gun",
+                  "prone.aim.short-gun",
+                  "prone.fire.long-gun",
+                  "prone.fire.short-gun",
+                  "prone.gesture.breach",
+                  "prone.gesture.door",
+                  "prone.gesture.equip",
+                  "prone.gesture.fitting",
+                  "prone.gesture.free",
+                  "prone.gesture.grab",
+                  "prone.gesture.heal",
+                  "prone.gesture.offer",
+                  "prone.gesture.pickup",
+                  "prone.gesture.ration",
+                  "prone.gesture.signal",
+                  "prone.gesture.tool",
+                  "prone.idle.blade",
+                  "prone.idle.knife",
+                  "prone.idle.lance",
+                  "prone.idle.long-gun",
+                  "prone.idle.short-gun",
+                  "prone.idle.unarmed",
+                  "prone.reload.long-gun",
+                  "prone.reload.long-gun.1800",
+                  "prone.reload.long-gun.1801",
+                  "prone.reload.long-gun.1802",
+                  "prone.reload.long-gun.1803",
+                  "prone.reload.long-gun.1804",
+                  "prone.reload.long-gun.1807",
+                  "prone.reload.short-gun",
+                  "prone.reload.short-gun.1805",
+                  "prone.reload.short-gun.1806",
+                  "prone.reload.short-gun.1808",
+                  "prone.reload.short-gun.1808.barrel1",
+                  "prone.repair.long-gun",
+                  "prone.repair.short-gun",
+                  "prone.reprime.long-gun",
+                  "prone.reprime.short-gun",
+                  "prone.unload.long-gun",
+                  "prone.unload.long-gun.1800",
+                  "prone.unload.long-gun.1801",
+                  "prone.unload.long-gun.1802",
+                  "prone.unload.long-gun.1803",
+                  "prone.unload.long-gun.1804",
+                  "prone.unload.long-gun.1807",
+                  "prone.unload.short-gun"
+                ],
+                "retainedOriginalClothTargetsAndRig": true
+              },
+              "nativeSkirtHem": {
+                "method": "source-reference-inset-rust-colour-band",
+                "colourTexCoord": 1,
+                "retainedOriginalUV": 0,
+                "imageSize": [
+                  32,
+                  256
+                ],
+                "rustRows": [
+                  231,
+                  236
+                ],
+                "rustSRGB": [
+                  105,
+                  50,
+                  40
+                ],
+                "charcoalSRGB": [
+                  49,
+                  48,
+                  49
+                ],
+                "restHeightRange": [
+                  0.1,
+                  1.06
+                ],
+                "nativeBandWidth": 0.01904761904761905,
+                "nativeBandCentreInset": 0.07673024523160762,
+                "nativeClearBorderBelowBand": 0.0672064357077981,
+                "retainedGeometryAndClothShapes": true,
+                "sewnSkirtSelection": "indexed-component-at-authored-hem",
+                "sewnSkirtVertexCount": 675,
+                "nativeUnderlayerVertexCount": 1370,
+                "nativeUnderlayerColourUV": [
+                  0.5,
+                  0.25
+                ]
+              }
+            },
+            "originalJSONSha256": "d36783cec92da3d765c5e8e40d72f4f4889377b9ebbf7bbcc6b53e4dc3a1c0bb",
+            "originalBinarySha256": "6cfa26cd4109bd758bb6688d332079a9d0ead2cbd647793886e2b1ab06fc9bcc",
+            "originalBinaryBytes": 3957804,
+            "originalBuffers": [
+              {
+                "byteLength": 3957804
+              }
+            ],
+            "originalAccessorCount": 58,
+            "originalViewCount": 64,
+            "originalMaterialCount": 6,
+            "originalTextureCount": 13,
+            "originalImageCount": 13,
+            "originalImages": {
+              "textures/01f30a1649e149138639.png": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8",
+              "textures/8a4e28b91cfa07b8dbd2.png": "8a4e28b91cfa07b8dbd2f22cc7739ed5f79ed0f02f2ebb5d167c165cb06ad6e6",
+              "textures/79b3320dd2f22a4941bf.png": "79b3320dd2f22a4941bf0243b0ebc0b7bc19cf512770d7627922d1fd67aeb9c3",
+              "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+              "textures/2e15a426be9ee20c39a7.png": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357",
+              "textures/7e88592eeb20ec0f16ff.png": "7e88592eeb20ec0f16fff1567f6419d1ef7e953388b4eda301ce7ccb477a9551",
+              "textures/0620e2e93cecf73291dd.png": "0620e2e93cecf73291ddcd06c6eff1fe268af67ece4d484c21c279a1501b4814",
+              "textures/5b28ef6bb29b5654ff1a.png": "5b28ef6bb29b5654ff1aececf1922ff6faddd616029fe879ff828d6996269292",
+              "textures/5818150cab42cf0b2325.png": "5818150cab42cf0b2325319cea8b42894eade25d731d364162276b634f55e069",
+              "textures/e35f74c0f83556345583.png": "e35f74c0f8355634558348073fa69517f15cdee745fe589b12e61b769654642b",
+              "textures/230ddcfcde0deb6c86d4.png": "230ddcfcde0deb6c86d4ca56a83a467971a1ad793ab5496c959ae018ff2a13cd",
+              "textures/756a3307c4231b534a82.png": "756a3307c4231b534a82393738368dc32063e38b3bd366e10142fd6ac6ef2a7c",
+              "textures/ad3939922a6916be23f6.png": "ad3939922a6916be23f68ff22420c69da3db72632294b43c9d64ec9c7edc7010"
+            },
+            "originalHadExtras": false,
+            "primitives": [
+              {
+                "mesh": 2,
+                "primitive": 0,
+                "part": "outfit",
+                "originalColourAccessor": 20,
+                "colourAccessor": 58,
+                "originalMaterial": 0,
+                "material": 0,
+                "colourUri": null,
+                "colourSha256": null,
+                "changedVertices": 4664,
+                "vertexCount": 5523,
+                "selection": {
+                  "drapeVertexCount": 0,
+                  "protectedVertexCount": 0,
+                  "protectedMaskSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+                }
+              },
+              {
+                "mesh": 1,
+                "primitive": 0,
+                "part": "legwear",
+                "originalColourAccessor": 11,
+                "colourAccessor": 59,
+                "originalMaterial": 3,
+                "material": 3,
+                "colourUri": null,
+                "colourSha256": null,
+                "changedVertices": 1665,
+                "vertexCount": 2045,
+                "selection": {
+                  "drapeVertexCount": 675,
+                  "protectedVertexCount": 380,
+                  "protectedMaskSha256": "d8a71ba2b888a9021866272c68a7f4e3dff9ad65f0ca4bd717487091d905449c"
+                }
+              }
+            ],
+            "documentPatches": []
           }
         },
         {
           "lod": 1,
           "url": "/models/characters/woman-shawl-lod1.glb",
           "triangles": 38888,
-          "bytes": 2767600,
+          "bytes": 2834200,
           "drawCalls": 6,
-          "sha256": "123dd039f32f2f062992635a6cf63ab1a917da68921a26464403b9349bd92d63",
+          "sha256": "d75f8238d4baeff4ee3ebe424994193d4f29798fa2f6403342b6cf6aecf91764",
           "nativeClothSupport": {
             "method": "current-native-prone-cloth-shape",
             "sourceClip": "prone.idle.long-gun",
@@ -2276,7 +4434,7 @@
           "nativeClothTopology": {
             "method": "reviewed-close-garment-topology",
             "sourceUrl": "/models/characters/woman-shawl-lod0.glb",
-            "sourceSha256": "64f09afe0d7ec85f49cb0d55bf7a640c9355a64b7f4ffbc7bde377a98d31e05e",
+            "sourceSha256": "5a6772d75ccf7bb03f4dac6e74db2226bfca0e4609c0373fc2c70e99fc081a8e",
             "retainedOtherCoarseMeshesAndRig": true,
             "maximumExtraWorldDisplacement": 0
           },
@@ -2317,15 +4475,249 @@
               0.5,
               0.25
             ]
+          },
+          "familyClothDepth": {
+            "recipe": {
+              "method": "family-rest-space-cloth-fold-colours-v1",
+              "source": "assets/source/characters-3d/authoring/family_cloth_depth.py",
+              "sourceSha256": "417a371c610ca358bf682e4828233c1aff66cd3599b3726abb066c1303426fe2",
+              "installerSha256": "536dfa4fb0b4b4c05323ff656be831e7755aefaa4e4870f84186e510a7de6d10",
+              "factorBounds": [
+                0.7,
+                1.26
+              ],
+              "albedoHeadroom": {
+                "royalist": {
+                  "outfit": 1,
+                  "legwear": 1
+                },
+                "surgeon": {
+                  "outfit": 1.3,
+                  "legwear": 1.3
+                },
+                "gaucho": {
+                  "outfit": 1.2,
+                  "legwear": 1.25
+                },
+                "friar": {
+                  "outfit": 1.3,
+                  "legwear": 1.3
+                },
+                "woman-scout": {
+                  "outfit": 1,
+                  "legwear": 1
+                },
+                "woman-shawl": {
+                  "outfit": 1,
+                  "legwear": 1
+                }
+              },
+              "retainedGeometryRigClipsMaps": true,
+              "hemProtection": "UV1-stripe-crossing-triangles-plus-adjacent-ring"
+            },
+            "beforeSha256": "123dd039f32f2f062992635a6cf63ab1a917da68921a26464403b9349bd92d63",
+            "originalRecord": {
+              "lod": 1,
+              "url": "/models/characters/woman-shawl-lod1.glb",
+              "triangles": 38888,
+              "bytes": 2767600,
+              "drawCalls": 6,
+              "sha256": "123dd039f32f2f062992635a6cf63ab1a917da68921a26464403b9349bd92d63",
+              "nativeClothSupport": {
+                "method": "current-native-prone-cloth-shape",
+                "sourceClip": "prone.idle.long-gun",
+                "sourcePoseHash": "679eddfd742ef7758efe3477685a12aa0f15e44cf61271f129ef521675da8a26",
+                "retainedRestMeshAndRig": true
+              },
+              "nativeClothBootSupport": {
+                "method": "additive-fixed-prone-boot-clearance",
+                "sourcePoseHash": "679eddfd742ef7758efe3477685a12aa0f15e44cf61271f129ef521675da8a26",
+                "clipSetHash": "e6447ad746aaa41dc164d2852287fb30092275bbdd1c302a8b5b68714b51affe",
+                "clips": [
+                  "prone.aim.long-gun",
+                  "prone.aim.short-gun",
+                  "prone.fire.long-gun",
+                  "prone.fire.short-gun",
+                  "prone.gesture.breach",
+                  "prone.gesture.door",
+                  "prone.gesture.equip",
+                  "prone.gesture.fitting",
+                  "prone.gesture.free",
+                  "prone.gesture.grab",
+                  "prone.gesture.heal",
+                  "prone.gesture.offer",
+                  "prone.gesture.pickup",
+                  "prone.gesture.ration",
+                  "prone.gesture.signal",
+                  "prone.gesture.tool",
+                  "prone.idle.blade",
+                  "prone.idle.knife",
+                  "prone.idle.lance",
+                  "prone.idle.long-gun",
+                  "prone.idle.short-gun",
+                  "prone.idle.unarmed",
+                  "prone.reload.long-gun",
+                  "prone.reload.long-gun.1800",
+                  "prone.reload.long-gun.1801",
+                  "prone.reload.long-gun.1802",
+                  "prone.reload.long-gun.1803",
+                  "prone.reload.long-gun.1804",
+                  "prone.reload.long-gun.1807",
+                  "prone.reload.short-gun",
+                  "prone.reload.short-gun.1805",
+                  "prone.reload.short-gun.1806",
+                  "prone.reload.short-gun.1808",
+                  "prone.reload.short-gun.1808.barrel1",
+                  "prone.repair.long-gun",
+                  "prone.repair.short-gun",
+                  "prone.reprime.long-gun",
+                  "prone.reprime.short-gun",
+                  "prone.unload.long-gun",
+                  "prone.unload.long-gun.1800",
+                  "prone.unload.long-gun.1801",
+                  "prone.unload.long-gun.1802",
+                  "prone.unload.long-gun.1803",
+                  "prone.unload.long-gun.1804",
+                  "prone.unload.long-gun.1807",
+                  "prone.unload.short-gun"
+                ],
+                "retainedOriginalClothTargetsAndRig": true
+              },
+              "nativeClothTopology": {
+                "method": "reviewed-close-garment-topology",
+                "sourceUrl": "/models/characters/woman-shawl-lod0.glb",
+                "sourceSha256": "64f09afe0d7ec85f49cb0d55bf7a640c9355a64b7f4ffbc7bde377a98d31e05e",
+                "retainedOtherCoarseMeshesAndRig": true,
+                "maximumExtraWorldDisplacement": 0
+              },
+              "nativeSkirtHem": {
+                "method": "source-reference-inset-rust-colour-band",
+                "colourTexCoord": 1,
+                "retainedOriginalUV": 0,
+                "imageSize": [
+                  32,
+                  256
+                ],
+                "rustRows": [
+                  231,
+                  236
+                ],
+                "rustSRGB": [
+                  105,
+                  50,
+                  40
+                ],
+                "charcoalSRGB": [
+                  49,
+                  48,
+                  49
+                ],
+                "restHeightRange": [
+                  0.1,
+                  1.06
+                ],
+                "nativeBandWidth": 0.01904761904761905,
+                "nativeBandCentreInset": 0.07673024523160762,
+                "nativeClearBorderBelowBand": 0.0672064357077981,
+                "retainedGeometryAndClothShapes": true,
+                "sewnSkirtSelection": "indexed-component-at-authored-hem",
+                "sewnSkirtVertexCount": 675,
+                "nativeUnderlayerVertexCount": 1370,
+                "nativeUnderlayerColourUV": [
+                  0.5,
+                  0.25
+                ]
+              }
+            },
+            "originalJSONSha256": "7a07f118c8c17f6739b00deb969bde43a82fdefa960523e21f5972912aaa42fa",
+            "originalBinarySha256": "e39340f995560a5b0d3f687758da93b14e8105a16c69ceef2c09240689a02c5e",
+            "originalBinaryBytes": 2733740,
+            "originalBuffers": [
+              {
+                "byteLength": 2733740
+              }
+            ],
+            "originalAccessorCount": 58,
+            "originalViewCount": 64,
+            "originalMaterialCount": 6,
+            "originalTextureCount": 13,
+            "originalImageCount": 13,
+            "originalImages": {
+              "textures/01f30a1649e149138639.png": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8",
+              "textures/8a4e28b91cfa07b8dbd2.png": "8a4e28b91cfa07b8dbd2f22cc7739ed5f79ed0f02f2ebb5d167c165cb06ad6e6",
+              "textures/79b3320dd2f22a4941bf.png": "79b3320dd2f22a4941bf0243b0ebc0b7bc19cf512770d7627922d1fd67aeb9c3",
+              "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+              "textures/2e15a426be9ee20c39a7.png": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357",
+              "textures/7e88592eeb20ec0f16ff.png": "7e88592eeb20ec0f16fff1567f6419d1ef7e953388b4eda301ce7ccb477a9551",
+              "textures/0620e2e93cecf73291dd.png": "0620e2e93cecf73291ddcd06c6eff1fe268af67ece4d484c21c279a1501b4814",
+              "textures/5b28ef6bb29b5654ff1a.png": "5b28ef6bb29b5654ff1aececf1922ff6faddd616029fe879ff828d6996269292",
+              "textures/5818150cab42cf0b2325.png": "5818150cab42cf0b2325319cea8b42894eade25d731d364162276b634f55e069",
+              "textures/e35f74c0f83556345583.png": "e35f74c0f8355634558348073fa69517f15cdee745fe589b12e61b769654642b",
+              "textures/230ddcfcde0deb6c86d4.png": "230ddcfcde0deb6c86d4ca56a83a467971a1ad793ab5496c959ae018ff2a13cd",
+              "textures/756a3307c4231b534a82.png": "756a3307c4231b534a82393738368dc32063e38b3bd366e10142fd6ac6ef2a7c",
+              "textures/ad3939922a6916be23f6.png": "ad3939922a6916be23f68ff22420c69da3db72632294b43c9d64ec9c7edc7010"
+            },
+            "originalHadExtras": false,
+            "primitives": [
+              {
+                "mesh": 2,
+                "primitive": 0,
+                "part": "outfit",
+                "originalColourAccessor": 11,
+                "colourAccessor": 58,
+                "originalMaterial": 0,
+                "material": 0,
+                "colourUri": null,
+                "colourSha256": null,
+                "changedVertices": 2092,
+                "vertexCount": 2951,
+                "selection": {
+                  "drapeVertexCount": 0,
+                  "protectedVertexCount": 0,
+                  "protectedMaskSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+                }
+              },
+              {
+                "mesh": 1,
+                "primitive": 0,
+                "part": "legwear",
+                "originalColourAccessor": 32,
+                "colourAccessor": 59,
+                "originalMaterial": 3,
+                "material": 3,
+                "colourUri": null,
+                "colourSha256": null,
+                "changedVertices": 1665,
+                "vertexCount": 2045,
+                "selection": {
+                  "drapeVertexCount": 675,
+                  "protectedVertexCount": 380,
+                  "protectedMaskSha256": "d8a71ba2b888a9021866272c68a7f4e3dff9ad65f0ca4bd717487091d905449c"
+                }
+              }
+            ],
+            "documentPatches": [
+              {
+                "path": [
+                  "meshes",
+                  1,
+                  "extras",
+                  "nativeClothTopology",
+                  "sourceSha256"
+                ],
+                "before": "64f09afe0d7ec85f49cb0d55bf7a640c9355a64b7f4ffbc7bde377a98d31e05e",
+                "after": "5a6772d75ccf7bb03f4dac6e74db2226bfca0e4609c0373fc2c70e99fc081a8e"
+              }
+            ]
           }
         },
         {
           "lod": 2,
           "url": "/models/characters/woman-shawl-lod2.glb",
           "triangles": 15088,
-          "bytes": 956620,
+          "bytes": 1003784,
           "drawCalls": 6,
-          "sha256": "839d9976fbd30be6c6c023fee8e4a7ec1fc47eafd55ce1298a84492cb9088c27",
+          "sha256": "526238446b1743e9dffc1e639bcf467837a2f7f78be39f9840ddf8ae0a458029",
           "nativeClothSupport": {
             "method": "current-native-prone-cloth-shape",
             "sourceClip": "prone.idle.long-gun",
@@ -2389,7 +4781,7 @@
           "nativeClothTopology": {
             "method": "reviewed-close-garment-topology",
             "sourceUrl": "/models/characters/woman-shawl-lod0.glb",
-            "sourceSha256": "64f09afe0d7ec85f49cb0d55bf7a640c9355a64b7f4ffbc7bde377a98d31e05e",
+            "sourceSha256": "5a6772d75ccf7bb03f4dac6e74db2226bfca0e4609c0373fc2c70e99fc081a8e",
             "retainedOtherCoarseMeshesAndRig": true,
             "maximumExtraWorldDisplacement": 0.002
           },
@@ -2429,6 +4821,243 @@
             "nativeUnderlayerColourUV": [
               0.5,
               0.25
+            ]
+          },
+          "familyClothDepth": {
+            "recipe": {
+              "method": "family-rest-space-cloth-fold-colours-v1",
+              "source": "assets/source/characters-3d/authoring/family_cloth_depth.py",
+              "sourceSha256": "417a371c610ca358bf682e4828233c1aff66cd3599b3726abb066c1303426fe2",
+              "installerSha256": "536dfa4fb0b4b4c05323ff656be831e7755aefaa4e4870f84186e510a7de6d10",
+              "factorBounds": [
+                0.7,
+                1.26
+              ],
+              "albedoHeadroom": {
+                "royalist": {
+                  "outfit": 1,
+                  "legwear": 1
+                },
+                "surgeon": {
+                  "outfit": 1.3,
+                  "legwear": 1.3
+                },
+                "gaucho": {
+                  "outfit": 1.2,
+                  "legwear": 1.25
+                },
+                "friar": {
+                  "outfit": 1.3,
+                  "legwear": 1.3
+                },
+                "woman-scout": {
+                  "outfit": 1,
+                  "legwear": 1
+                },
+                "woman-shawl": {
+                  "outfit": 1,
+                  "legwear": 1
+                }
+              },
+              "retainedGeometryRigClipsMaps": true,
+              "hemProtection": "UV1-stripe-crossing-triangles-plus-adjacent-ring"
+            },
+            "beforeSha256": "839d9976fbd30be6c6c023fee8e4a7ec1fc47eafd55ce1298a84492cb9088c27",
+            "originalRecord": {
+              "lod": 2,
+              "url": "/models/characters/woman-shawl-lod2.glb",
+              "triangles": 15088,
+              "bytes": 956620,
+              "drawCalls": 6,
+              "sha256": "839d9976fbd30be6c6c023fee8e4a7ec1fc47eafd55ce1298a84492cb9088c27",
+              "nativeClothSupport": {
+                "method": "current-native-prone-cloth-shape",
+                "sourceClip": "prone.idle.long-gun",
+                "sourcePoseHash": "679eddfd742ef7758efe3477685a12aa0f15e44cf61271f129ef521675da8a26",
+                "retainedRestMeshAndRig": true
+              },
+              "nativeClothBootSupport": {
+                "method": "additive-fixed-prone-boot-clearance",
+                "sourcePoseHash": "679eddfd742ef7758efe3477685a12aa0f15e44cf61271f129ef521675da8a26",
+                "clipSetHash": "e6447ad746aaa41dc164d2852287fb30092275bbdd1c302a8b5b68714b51affe",
+                "clips": [
+                  "prone.aim.long-gun",
+                  "prone.aim.short-gun",
+                  "prone.fire.long-gun",
+                  "prone.fire.short-gun",
+                  "prone.gesture.breach",
+                  "prone.gesture.door",
+                  "prone.gesture.equip",
+                  "prone.gesture.fitting",
+                  "prone.gesture.free",
+                  "prone.gesture.grab",
+                  "prone.gesture.heal",
+                  "prone.gesture.offer",
+                  "prone.gesture.pickup",
+                  "prone.gesture.ration",
+                  "prone.gesture.signal",
+                  "prone.gesture.tool",
+                  "prone.idle.blade",
+                  "prone.idle.knife",
+                  "prone.idle.lance",
+                  "prone.idle.long-gun",
+                  "prone.idle.short-gun",
+                  "prone.idle.unarmed",
+                  "prone.reload.long-gun",
+                  "prone.reload.long-gun.1800",
+                  "prone.reload.long-gun.1801",
+                  "prone.reload.long-gun.1802",
+                  "prone.reload.long-gun.1803",
+                  "prone.reload.long-gun.1804",
+                  "prone.reload.long-gun.1807",
+                  "prone.reload.short-gun",
+                  "prone.reload.short-gun.1805",
+                  "prone.reload.short-gun.1806",
+                  "prone.reload.short-gun.1808",
+                  "prone.reload.short-gun.1808.barrel1",
+                  "prone.repair.long-gun",
+                  "prone.repair.short-gun",
+                  "prone.reprime.long-gun",
+                  "prone.reprime.short-gun",
+                  "prone.unload.long-gun",
+                  "prone.unload.long-gun.1800",
+                  "prone.unload.long-gun.1801",
+                  "prone.unload.long-gun.1802",
+                  "prone.unload.long-gun.1803",
+                  "prone.unload.long-gun.1804",
+                  "prone.unload.long-gun.1807",
+                  "prone.unload.short-gun"
+                ],
+                "retainedOriginalClothTargetsAndRig": true
+              },
+              "nativeClothTopology": {
+                "method": "reviewed-close-garment-topology",
+                "sourceUrl": "/models/characters/woman-shawl-lod0.glb",
+                "sourceSha256": "64f09afe0d7ec85f49cb0d55bf7a640c9355a64b7f4ffbc7bde377a98d31e05e",
+                "retainedOtherCoarseMeshesAndRig": true,
+                "maximumExtraWorldDisplacement": 0.002
+              },
+              "nativeSkirtHem": {
+                "method": "source-reference-inset-rust-colour-band",
+                "colourTexCoord": 1,
+                "retainedOriginalUV": 0,
+                "imageSize": [
+                  32,
+                  256
+                ],
+                "rustRows": [
+                  231,
+                  236
+                ],
+                "rustSRGB": [
+                  105,
+                  50,
+                  40
+                ],
+                "charcoalSRGB": [
+                  49,
+                  48,
+                  49
+                ],
+                "restHeightRange": [
+                  0.1,
+                  1.06
+                ],
+                "nativeBandWidth": 0.01904761904761905,
+                "nativeBandCentreInset": 0.07673024523160762,
+                "nativeClearBorderBelowBand": 0.0672064357077981,
+                "retainedGeometryAndClothShapes": true,
+                "sewnSkirtSelection": "indexed-component-at-authored-hem",
+                "sewnSkirtVertexCount": 675,
+                "nativeUnderlayerVertexCount": 1370,
+                "nativeUnderlayerColourUV": [
+                  0.5,
+                  0.25
+                ]
+              }
+            },
+            "originalJSONSha256": "9f2a076d540737f6c5d6ff630eea9b403a07642bc01b5e8a3dc76ad1d162fdaa",
+            "originalBinarySha256": "3f7eaaaf6988e01178f1948ac4eaad0e3f990036dd90accc3d74f440101287ee",
+            "originalBinaryBytes": 922164,
+            "originalBuffers": [
+              {
+                "byteLength": 922164
+              }
+            ],
+            "originalAccessorCount": 58,
+            "originalViewCount": 64,
+            "originalMaterialCount": 7,
+            "originalTextureCount": 16,
+            "originalImageCount": 16,
+            "originalImages": {
+              "textures/b14cf99a684846cb69e9.png": "b14cf99a684846cb69e9be4ab93a58d973d3bfce54c0ec9a47ca0545229d2cc1",
+              "textures/c87059b901355578ac69.png": "c87059b901355578ac6969804d1893732e807e8e4825a3787733567b93a763aa",
+              "textures/c2e31d1ddd86e7509c38.png": "c2e31d1ddd86e7509c381bcf15b4dcf0a116d1d2607a27e981b2b1c61ab42a0f",
+              "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+              "textures/2e15a426be9ee20c39a7.png": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357",
+              "textures/01f30a1649e149138639.png": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8",
+              "textures/8a4e28b91cfa07b8dbd2.png": "8a4e28b91cfa07b8dbd2f22cc7739ed5f79ed0f02f2ebb5d167c165cb06ad6e6",
+              "textures/79b3320dd2f22a4941bf.png": "79b3320dd2f22a4941bf0243b0ebc0b7bc19cf512770d7627922d1fd67aeb9c3",
+              "textures/7e88592eeb20ec0f16ff.png": "7e88592eeb20ec0f16fff1567f6419d1ef7e953388b4eda301ce7ccb477a9551",
+              "textures/0620e2e93cecf73291dd.png": "0620e2e93cecf73291ddcd06c6eff1fe268af67ece4d484c21c279a1501b4814",
+              "textures/5b28ef6bb29b5654ff1a.png": "5b28ef6bb29b5654ff1aececf1922ff6faddd616029fe879ff828d6996269292",
+              "textures/5818150cab42cf0b2325.png": "5818150cab42cf0b2325319cea8b42894eade25d731d364162276b634f55e069",
+              "textures/e35f74c0f83556345583.png": "e35f74c0f8355634558348073fa69517f15cdee745fe589b12e61b769654642b",
+              "textures/614541eb0bf63d3a9b6e.png": "614541eb0bf63d3a9b6e6aba79764059d7a07cfdd6541df24f289ece8beb7150",
+              "textures/9f2116257d14fb045d70.png": "9f2116257d14fb045d7056108484a5c882180f9355ae5e6723929b59f899b783",
+              "textures/a6e08a37dd3d86917cf4.png": "a6e08a37dd3d86917cf45a233d0afefd307393f14f6c5bea1f0355420f741744"
+            },
+            "originalHadExtras": false,
+            "primitives": [
+              {
+                "mesh": 2,
+                "primitive": 0,
+                "part": "outfit",
+                "originalColourAccessor": 11,
+                "colourAccessor": 58,
+                "originalMaterial": 0,
+                "material": 0,
+                "colourUri": null,
+                "colourSha256": null,
+                "changedVertices": 1110,
+                "vertexCount": 1302,
+                "selection": {
+                  "drapeVertexCount": 0,
+                  "protectedVertexCount": 0,
+                  "protectedMaskSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+                }
+              },
+              {
+                "mesh": 1,
+                "primitive": 0,
+                "part": "legwear",
+                "originalColourAccessor": 32,
+                "colourAccessor": 59,
+                "originalMaterial": 4,
+                "material": 4,
+                "colourUri": null,
+                "colourSha256": null,
+                "changedVertices": 1665,
+                "vertexCount": 2045,
+                "selection": {
+                  "drapeVertexCount": 675,
+                  "protectedVertexCount": 380,
+                  "protectedMaskSha256": "d8a71ba2b888a9021866272c68a7f4e3dff9ad65f0ca4bd717487091d905449c"
+                }
+              }
+            ],
+            "documentPatches": [
+              {
+                "path": [
+                  "meshes",
+                  1,
+                  "extras",
+                  "nativeClothTopology",
+                  "sourceSha256"
+                ],
+                "before": "64f09afe0d7ec85f49cb0d55bf7a640c9355a64b7f4ffbc7bde377a98d31e05e",
+                "after": "5a6772d75ccf7bb03f4dac6e74db2226bfca0e4609c0373fc2c70e99fc081a8e"
+              }
             ]
           }
         }

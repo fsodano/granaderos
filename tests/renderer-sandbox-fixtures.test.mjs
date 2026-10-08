@@ -76,6 +76,23 @@ test('posture review exercises real travel for both prone anatomy banks',()=>{
   }
 });
 
+test('all-family cloth review uses valid postures and ordinary travel with base attire',()=>{
+  for(const stance of ['standing','crouched','prone'])for(const gear of ['family','unarmed','rifle'])for(const facing of [3,5,7]){
+    const id=`characters:${stance}:${gear}:${facing}`,battle=createRendererSandboxBattle(id);
+    assert.doesNotThrow(()=>validateBattleSnapshot(JSON.parse(JSON.stringify(battle))));
+    assert.equal(new Set(battle.units.map(unit=>unit.spriteAppearance)).size,8);
+    for(const unit of battle.units){
+      assert.equal(unit.stance,stance);assert.equal(unit.facing,facing);
+      for(const slot of ['headwear','outfit','legwear'])assert.equal(unit[slot],null,'base family attire is visible');
+      if(gear==='unarmed')assert.equal(unit.activeSlot,'unarmed');
+      if(gear==='rifle'){assert.equal(unit.weapon,1800);assert.equal(unit.activeSlot,'primary');}
+      const next=order(battle,{type:'move',unitId:unit.id,x:unit.x+1,y:unit.y});
+      assert.equal(actor(next,unit.id).x,unit.x+1);assert.equal(actor(next,unit.id).stance,stance);
+    }
+  }
+  for(const id of ['characters:unknown','characters:standing:unknown','characters:standing:family:2'])assert.throws(()=>createRendererSandboxBattle(id));
+});
+
 test('individual building review keeps a real lone guard outside each closed facade',()=>{
   for(const type of Object.keys(BUILDING_TYPES)){
     const battle=createRendererSandboxBattle(`architecture:${type}`);

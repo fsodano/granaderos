@@ -3,4 +3,6 @@
 .graphics-review>nav strong{font-size:12px;margin-right:8px}
 .graphics-review>nav button,.graphics-review>nav a{font-size:11px;min-height:26px;padding:4px 8px}
 .graphics-review>nav button[aria-pressed="true"]{border-color:#e0cf7c;color:#e0cf7c}
+.graphics-review>nav label{font-size:11px;display:flex;align-items:center;gap:4px}
+.graphics-review>nav select{font-size:11px;min-height:26px;max-width:122px}
 .graphics-review>.battle-layout{flex:1;min-height:0;height:auto}

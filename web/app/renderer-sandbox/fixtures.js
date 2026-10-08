@@ -84,13 +84,15 @@ function mounted(){
   ];
   return {...createBattle(squad,{...courtyard(),id:'renderer-mounted',name:'Montura y azotea',seed:45,enemies:[],exploration:true}),deploymentComplete:true};
 }
-function characters(){
+function characters(stance='standing',gear='family',facing=3){
+  if(!['standing','crouched','prone'].includes(stance)||!['family','unarmed','rifle'].includes(gear)||![3,5,7].includes(facing))throw Error('Unknown character review option');
   const names=['Granadero','Realista','Trabajador','Cirujano','Gaucho','Fraile','Exploradora','Mujer con rebozo'];
   const squad=families.map((family,index)=>soldier(`character-${family}`,names[index],4+(index%4)*2,4+Math.floor(index/4)*3,{
-    spriteAppearance:family,skinTone:['light','brown','dark'][index%3],facing:3,
+    spriteAppearance:family,skinTone:['light','brown','dark'][index%3],facing,stance,movementMode:stance==='crouched'?'crouch':stance==='prone'?'prone':'walk',
     weapon:index===4||index===6?1813:index%2?1805:1800,
     loaded:index===4||index===6?0:1,ammo:index===4||index===6?0:12,
     blade:1810,activeSlot:index===2||index===3||index===5||index===7?'unarmed':index===0?'blade':'primary',
+    ...(gear==='unarmed'?{activeSlot:'unarmed'}:gear==='rifle'?{weapon:1800,loaded:1,ammo:12,activeSlot:'primary'}:{}),
   }));
   return {...createBattle(squad,{id:'renderer-characters',name:'Ocho personajes',width:20,height:16,tiles:ground(20,16),enemies:[],exploration:true,seed:45}),deploymentComplete:true};
 }
@@ -157,6 +159,7 @@ export function createRendererSandboxBattle(id='combat'){
   if(id.startsWith('catalog:')){const [,template,rotation,view,roof]=id.split(':');return createArchitectureReviewBattle(template,Number(rotation),view,roof);}
   if(id==='empty')return {...createBattle([],{id:'renderer-empty',name:'Sector vacío',width:12,height:12,tiles:ground(12,12),enemies:[],exploration:true}),deploymentComplete:true};
   if(id==='characters')return characters();
+  if(id.startsWith('characters:')){const [,stance,gear,facing]=id.split(':');return characters(stance,gear,facing===undefined?3:Number(facing));}
   if(id==='architecture')return architecture();
   if(id.startsWith('architecture:'))return architecture(id.slice('architecture:'.length));
   if(id==='postures')return postures();

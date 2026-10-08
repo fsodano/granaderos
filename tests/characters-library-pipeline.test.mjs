@@ -10,6 +10,16 @@ sys.path.insert(0,str(root/'tools/characters-3d'))
 s=importlib.util.spec_from_file_location('library',root/'tools/characters-3d/library_manifest.py')
 library=importlib.util.module_from_spec(s);s.loader.exec_module(library)
 assets=root/'web/public/models/characters';previous=json.loads((assets/'manifest.json').read_text())
+verified_families=set()
+def native_body_and_record(preset,lod):
+ s=importlib.util.spec_from_file_location('native_fixture_glb',root/'tools/characters-3d/merge-animation-bank.py');glb=importlib.util.module_from_spec(s);s.loader.exec_module(glb)
+ record=copy.deepcopy(next(r for r in previous['appearances'][preset]['lods'] if r['lod']==lod))
+ doc,binary=glb.read_glb(assets/Path(record['url']).name)
+ if 'familyClothDepth' in record:
+  s=importlib.util.spec_from_file_location('native_fixture_family',root/'tools/characters-3d/build-family-cloth-depth.py');family=importlib.util.module_from_spec(s);s.loader.exec_module(family)
+  if preset not in verified_families:family.verify_completed(root,[preset]);verified_families.add(preset)
+  doc,binary=family.restore_body(doc,binary,record['familyClothDepth']);record=family.restore_record(record)
+ return doc,binary,record
 ${source}
 `], {cwd:new URL('..',import.meta.url),encoding:'utf8'}));
 
@@ -71,7 +81,7 @@ source=assets/'woman-shawl-lod1.glb';source_before=source.read_bytes()
 with tempfile.TemporaryDirectory() as folder:
  target=Path(folder)
  for p in assets.glob('*.glb'):os.link(p,target/p.name)
- doc,binary=glb.read_glb(source);doc['extras']={'explicitChangedBodyFixture':True}
+ doc,binary,native_record=native_body_and_record('woman-shawl',1);doc['extras']={'explicitChangedBodyFixture':True}
  staged=target/'fresh.glb';glb.write_glb(staged,doc,binary)
  selected=target/source.name;selected.unlink();staged.rename(selected)
  fresh={k:v for k,v in previous['appearances']['woman-shawl']['lods'][1].items() if k in ('lod','url','triangles','bytes','drawCalls','sha256')}
@@ -123,7 +133,7 @@ with tempfile.TemporaryDirectory() as folder:
  manifest_bytes=(assets/'manifest.json').read_bytes();(target/'manifest.json').write_bytes(manifest_bytes)
  record=copy.deepcopy(previous['appearances']['woman-shawl']['lods'][1]);record.update(kind='appearance',preset='woman-shawl')
  (metadata/'woman-shawl-lod1.json').write_text(json.dumps(record))
- doc,binary=glb.read_glb(source);doc['extras']={'failedDirectWorkerFixture':True}
+ doc,binary,native_record=native_body_and_record('woman-shawl',1);doc['extras']={'failedDirectWorkerFixture':True}
  staged=target/'fresh.glb';glb.write_glb(staged,doc,binary)
  selected=target/source.name;selected.unlink();staged.rename(selected)
  rejected=False
@@ -151,7 +161,8 @@ with tempfile.TemporaryDirectory() as folder:
    destination=target/relative;destination.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(root/relative,destination)
   current=copy.deepcopy(previous);old_binary={}
   for lod in (0,1,2):
-   name=f'woman-shawl-lod{lod}.glb';doc,binary=glb.read_glb(assets/name);old_binary[name]=bytes(binary)
+   name=f'woman-shawl-lod{lod}.glb';doc,binary,native_record=native_body_and_record('woman-shawl',lod);old_binary[name]=bytes(binary)
+   current['appearances']['woman-shawl']['lods'][lod]=native_record
    for image in doc['images']:
     if 'uri' in image:shutil.copy2(assets/image['uri'],out/image['uri'])
    mesh=next(n['mesh'] for n in doc['nodes'] if n.get('name')==f'Human_legwear_LOD{lod}');primitive=doc['meshes'][mesh]['primitives'][0]
@@ -205,7 +216,9 @@ with tempfile.TemporaryDirectory() as folder:
  shutil.copy2(root/'package.json',target/'package.json');(target/'web/node_modules').symlink_to((root/'web/node_modules').resolve(),target_is_directory=True)
  current=copy.deepcopy(previous)
  for id in ('friar','woman-shawl'):
-  for lod in (0,1,2):shutil.copy2(assets/f'{id}-lod{lod}.glb',out/f'{id}-lod{lod}.glb')
+  for lod in (0,1,2):
+   doc,binary,native_record=native_body_and_record(id,lod);glb.write_glb(out/f'{id}-lod{lod}.glb',doc,binary)
+   current['appearances'][id]['lods'][lod]=native_record
  for name in ('male-animations.glb','female-animations.glb','equipment.glb'):shutil.copy2(assets/name,out/name)
  shutil.copytree(assets/'textures',out/'textures')
  # Model a fresh donor with updated native map bindings. Old coarse palette
@@ -246,4 +259,63 @@ with tempfile.TemporaryDirectory() as folder:
  print(json.dumps({'coarseHemClassificationRestored':True,'retainedUV0PaletteCopied':True,'finalDonorIdentity':True,'bothBankFilesAndMetadataExact':True,'orderedRepeatExact':True}))
 `);
   assert.deepEqual(result,{coarseHemClassificationRestored:true,retainedUV0PaletteCopied:true,finalDonorIdentity:true,bothBankFilesAndMetadataExact:true,orderedRepeatExact:true});
+});
+
+test('completed family surface replay keeps final bytes exact and safely rebases selected close and coarse sources', () => {
+  const result = python(`
+import subprocess
+def module(name,path):
+ s=importlib.util.spec_from_file_location(name,path);value=importlib.util.module_from_spec(s);s.loader.exec_module(value);return value
+context=module('family_surface_fixture',root/'tools/characters-3d/family_surface_context.py')
+family=module('family_surface_export',root/'tools/characters-3d/build-family-cloth-depth.py')
+glb=module('family_surface_glb',root/'tools/characters-3d/merge-animation-bank.py')
+with tempfile.TemporaryDirectory() as folder:
+ target=Path(folder).resolve();context._copy_inputs(root,target,context._pins(root));out=target/'web/public/models/characters'
+ def files():return {str(p.relative_to(out)):library.digest(p) for p in out.rglob('*') if p.is_file()}
+ def run(tool,label):
+  receipt=target/(label+'.json')
+  result=subprocess.run(['python3',str(target/'tools/characters-3d'/tool),'--root',str(target),'--receipt',str(receipt)],cwd=target,capture_output=True,text=True)
+  assert result.returncode==0,result.stdout+result.stderr
+  return json.loads(receipt.read_text())
+ stable=files()
+ for tool in ('build-reviewed-long-cloth-lods.py','build-woman-shawl-palette.py','build-woman-shawl-hem.py'):
+  receipt=run(tool,tool)
+  assert receipt['exactNoOp'] and not receipt['changedFiles']
+  assert files()==stable
+ # Model an explicitly selected fresh source body. Restore its actual native
+ # stream first, then retain a source marker that must survive all postpasses.
+ def fresh(preset,lod,label):
+  mp=out/'manifest.json';manifest=json.loads(mp.read_text());record=manifest['appearances'][preset]['lods'][lod];path=out/Path(record['url']).name
+  doc,binary=glb.read_glb(path);doc,binary=family.restore_body(doc,binary,record['familyClothDepth']);record=family.restore_record(record)
+  doc.setdefault('extras',{})[label]=True;raw=glb.write_glb(path,doc,binary)
+  record.update(bytes=len(raw),sha256=hashlib.sha256(raw).hexdigest());manifest['appearances'][preset]['lods'][lod]=record;mp.write_text(json.dumps(manifest,indent=2)+'\\n')
+ fresh('friar',0,'selectedCloseSourceFixture')
+ # The old coarse receipts remain valid; their old final donor links are stale
+ # until native topology is rebuilt from the selected fresh close source.
+ strict_rejected=False
+ try:family.verify_completed(target,['friar'])
+ except AssertionError as error:strict_rejected='Completed coarse donor identity is stale' in str(error)
+ assert strict_rejected
+ receipt=run('build-reviewed-long-cloth-lods.py','mixed-close')
+ assert not receipt['exactNoOp']
+ family.verify_completed(target,['friar','woman-shawl'])
+ close_changes={name for name,pin in files().items() if stable.get(name)!=pin}
+ assert close_changes=={'manifest.json','friar-lod0.glb','friar-lod1.glb','friar-lod2.glb'},close_changes
+ completed=json.loads((out/'manifest.json').read_text());donor=completed['appearances']['friar']['lods'][0]['sha256']
+ doc,binary=glb.read_glb(out/'friar-lod0.glb');assert doc['extras']['selectedCloseSourceFixture'] is True
+ for lod in (1,2):
+  record=completed['appearances']['friar']['lods'][lod];doc,binary=glb.read_glb(out/f'friar-lod{lod}.glb')
+  mesh=next(n['mesh'] for n in doc['nodes'] if n.get('name')==f'Human_outfit_LOD{lod}')
+  assert doc['meshes'][mesh]['extras']['nativeClothTopology']['sourceSha256']==record['nativeClothTopology']['sourceSha256']==donor
+ before_coarse=files();fresh('woman-shawl',1,'selectedCoarseSourceFixture')
+ receipt=run('build-reviewed-long-cloth-lods.py','mixed-coarse');assert not receipt['exactNoOp']
+ family.verify_completed(target,['friar','woman-shawl'])
+ coarse_changes={name for name,pin in files().items() if before_coarse.get(name)!=pin}
+ assert coarse_changes=={'manifest.json','woman-shawl-lod1.glb'},coarse_changes
+ doc,binary=glb.read_glb(out/'woman-shawl-lod1.glb');assert doc['extras']['selectedCoarseSourceFixture'] is True
+ assert json.loads((out/'manifest.json').read_text())['animationLibraries']==previous['animationLibraries']
+ for bank in previous['animationLibraries'].values():assert library.digest(out/Path(bank['url']).name)==bank['sha256']
+ print(json.dumps({'allCompletedPassesByteExact':True,'selectedCloseRebasedWithFinalDonorLinks':True,'selectedCoarseRebased':True,'nativeSourceMarkersRetained':True,'bothBanksExact':True,'otherLibraryFilesExact':True}))
+`);
+  assert.deepEqual(result,{allCompletedPassesByteExact:true,selectedCloseRebasedWithFinalDonorLinks:true,selectedCoarseRebased:true,nativeSourceMarkersRetained:true,bothBanksExact:true,otherLibraryFilesExact:true});
 });
