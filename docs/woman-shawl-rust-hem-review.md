@@ -57,3 +57,11 @@ python3 tools/characters-3d/verify-library.py
 ```
 
 This cut does not claim that a complete Blender library rebuild already invokes the palette, coarse-donor and hem passes in the reviewed order. Full pipeline preservation and a targeted fresh woman-shawl export are the next separate increment. Gameplay state, paid action timing, supplies, outcomes and all cue/runtime files are unchanged. Sustained frame rate and general cloth/body polish are outside this detail acceptance.
+
+## Current-main integration check
+
+The guarded cut was installed on main `9c3a119e` and committed as `3468dc55`. An independent pre-install snapshot confirms all 100 other model files, both current animation banks, the profile and all old dense model component bytes retain their reviewed identities. Only eleven named woman-shawl manifest fields change. The hem and coarse-donor postpasses repeat with identical hashes and zero growth on these integrated assets.
+
+All 40 focused checks pass in 25.42 s. TypeScript, the native library verifier, the locomotion profile check, document links and all 38 baseline checks pass. The game/editor build passes as `2f4c2a1dcc0f`, with 1,247 staged files and 1,040 checked asset references.
+
+The current normal browser check covers nine actual LOD/posture views, compared with a fresh nine-view main baseline. Cards, inventory, actor counts and ordinary paid posture controls match. Eight additional before/after standing views use ordinary camera pan, roster selection and four paid turns, so the ring does not hide the hem. Both reports have no browser errors and exact unchanged source/model/texture pins. The current front and side screenshot crops and the retained full-body reference were viewed. Full reports remain in `artifacts/three-woman-shawl-hem-current-review/`. This final integration update changes this review document only.
