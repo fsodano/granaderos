@@ -1826,8 +1826,8 @@
   "animationLibraries": {
     "male": {
       "url": "/models/characters/male-animations.glb",
-      "bytes": 12055488,
-      "sha256": "a945df6be3b66c51b19bb2ba43556ca46b08605fd8b1abc33711a4efd071ed4c",
+      "bytes": 12066216,
+      "sha256": "d75355af7f86c0f6840399c83092bf4e72f1036218621432cbe6762ab1cf0a85",
       "clips": [
         {
           "name": "stand.idle.unarmed",
@@ -7313,7 +7313,15 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "retained-supported-prone-leg-rotations",
+            "surface": "complete-native-boot",
+            "sourceClip": "prone.idle.long-gun",
+            "floor": 0.002,
+            "retainedInputTimes": true,
+            "retainedNativeBodyAndWeapon": true
+          }
         },
         {
           "name": "prone.gesture.pickup",
@@ -7330,7 +7338,15 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "retained-supported-prone-leg-rotations",
+            "surface": "complete-native-boot",
+            "sourceClip": "prone.idle.long-gun",
+            "floor": 0.002,
+            "retainedInputTimes": true,
+            "retainedNativeBodyAndWeapon": true
+          }
         },
         {
           "name": "prone.gesture.equip",
@@ -7347,7 +7363,15 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "retained-supported-prone-leg-rotations",
+            "surface": "complete-native-boot",
+            "sourceClip": "prone.idle.long-gun",
+            "floor": 0.002,
+            "retainedInputTimes": true,
+            "retainedNativeBodyAndWeapon": true
+          }
         },
         {
           "name": "prone.gesture.offer",
@@ -7364,7 +7388,15 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "retained-supported-prone-leg-rotations",
+            "surface": "complete-native-boot",
+            "sourceClip": "prone.idle.long-gun",
+            "floor": 0.002,
+            "retainedInputTimes": true,
+            "retainedNativeBodyAndWeapon": true
+          }
         },
         {
           "name": "prone.gesture.grab",
@@ -7381,7 +7413,15 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "retained-supported-prone-leg-rotations",
+            "surface": "complete-native-boot",
+            "sourceClip": "prone.idle.long-gun",
+            "floor": 0.002,
+            "retainedInputTimes": true,
+            "retainedNativeBodyAndWeapon": true
+          }
         },
         {
           "name": "prone.gesture.door",
@@ -7398,7 +7438,15 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "retained-supported-prone-leg-rotations",
+            "surface": "complete-native-boot",
+            "sourceClip": "prone.idle.long-gun",
+            "floor": 0.002,
+            "retainedInputTimes": true,
+            "retainedNativeBodyAndWeapon": true
+          }
         },
         {
           "name": "prone.gesture.tool",
@@ -7415,7 +7463,15 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "retained-supported-prone-leg-rotations",
+            "surface": "complete-native-boot",
+            "sourceClip": "prone.idle.long-gun",
+            "floor": 0.002,
+            "retainedInputTimes": true,
+            "retainedNativeBodyAndWeapon": true
+          }
         },
         {
           "name": "prone.gesture.breach",
@@ -7436,7 +7492,15 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "retained-supported-prone-leg-rotations",
+            "surface": "complete-native-boot",
+            "sourceClip": "prone.idle.long-gun",
+            "floor": 0.002,
+            "retainedInputTimes": true,
+            "retainedNativeBodyAndWeapon": true
+          }
         },
         {
           "name": "prone.gesture.free",
@@ -7453,7 +7517,15 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "retained-supported-prone-leg-rotations",
+            "surface": "complete-native-boot",
+            "sourceClip": "prone.idle.long-gun",
+            "floor": 0.002,
+            "retainedInputTimes": true,
+            "retainedNativeBodyAndWeapon": true
+          }
         },
         {
           "name": "prone.gesture.ration",
@@ -7470,7 +7542,15 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "retained-supported-prone-leg-rotations",
+            "surface": "complete-native-boot",
+            "sourceClip": "prone.idle.long-gun",
+            "floor": 0.002,
+            "retainedInputTimes": true,
+            "retainedNativeBodyAndWeapon": true
+          }
         },
         {
           "name": "prone.gesture.signal",
@@ -7487,7 +7567,15 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "retained-supported-prone-leg-rotations",
+            "surface": "complete-native-boot",
+            "sourceClip": "prone.idle.long-gun",
+            "floor": 0.002,
+            "retainedInputTimes": true,
+            "retainedNativeBodyAndWeapon": true
+          }
         },
         {
           "name": "prone.gesture.fitting",
@@ -7504,7 +7592,15 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "retained-supported-prone-leg-rotations",
+            "surface": "complete-native-boot",
+            "sourceClip": "prone.idle.long-gun",
+            "floor": 0.002,
+            "retainedInputTimes": true,
+            "retainedNativeBodyAndWeapon": true
+          }
         },
         {
           "name": "prone.gesture.throw",
@@ -16350,8 +16446,8 @@
     },
     "female": {
       "url": "/models/characters/female-animations.glb",
-      "bytes": 11880624,
-      "sha256": "f62c5e320dc144c48746b154f04e01b9c9f076b068cd6796e048ab700c1f5371",
+      "bytes": 11891352,
+      "sha256": "aef5ad3949c2282e55cda6d116f8dc895f5a4aabd64a184c8dcabf827838de8d",
       "clips": [
         {
           "name": "stand.idle.unarmed",
@@ -21851,7 +21947,15 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "retained-supported-prone-leg-rotations",
+            "surface": "complete-native-boot",
+            "sourceClip": "prone.idle.long-gun",
+            "floor": 0.002,
+            "retainedInputTimes": true,
+            "retainedNativeBodyAndWeapon": true
+          }
         },
         {
           "name": "prone.gesture.pickup",
@@ -21868,7 +21972,15 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "retained-supported-prone-leg-rotations",
+            "surface": "complete-native-boot",
+            "sourceClip": "prone.idle.long-gun",
+            "floor": 0.002,
+            "retainedInputTimes": true,
+            "retainedNativeBodyAndWeapon": true
+          }
         },
         {
           "name": "prone.gesture.equip",
@@ -21885,7 +21997,15 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "retained-supported-prone-leg-rotations",
+            "surface": "complete-native-boot",
+            "sourceClip": "prone.idle.long-gun",
+            "floor": 0.002,
+            "retainedInputTimes": true,
+            "retainedNativeBodyAndWeapon": true
+          }
         },
         {
           "name": "prone.gesture.offer",
@@ -21902,7 +22022,15 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "retained-supported-prone-leg-rotations",
+            "surface": "complete-native-boot",
+            "sourceClip": "prone.idle.long-gun",
+            "floor": 0.002,
+            "retainedInputTimes": true,
+            "retainedNativeBodyAndWeapon": true
+          }
         },
         {
           "name": "prone.gesture.grab",
@@ -21919,7 +22047,15 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "retained-supported-prone-leg-rotations",
+            "surface": "complete-native-boot",
+            "sourceClip": "prone.idle.long-gun",
+            "floor": 0.002,
+            "retainedInputTimes": true,
+            "retainedNativeBodyAndWeapon": true
+          }
         },
         {
           "name": "prone.gesture.door",
@@ -21936,7 +22072,15 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "retained-supported-prone-leg-rotations",
+            "surface": "complete-native-boot",
+            "sourceClip": "prone.idle.long-gun",
+            "floor": 0.002,
+            "retainedInputTimes": true,
+            "retainedNativeBodyAndWeapon": true
+          }
         },
         {
           "name": "prone.gesture.tool",
@@ -21953,7 +22097,15 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "retained-supported-prone-leg-rotations",
+            "surface": "complete-native-boot",
+            "sourceClip": "prone.idle.long-gun",
+            "floor": 0.002,
+            "retainedInputTimes": true,
+            "retainedNativeBodyAndWeapon": true
+          }
         },
         {
           "name": "prone.gesture.breach",
@@ -21974,7 +22126,15 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "retained-supported-prone-leg-rotations",
+            "surface": "complete-native-boot",
+            "sourceClip": "prone.idle.long-gun",
+            "floor": 0.002,
+            "retainedInputTimes": true,
+            "retainedNativeBodyAndWeapon": true
+          }
         },
         {
           "name": "prone.gesture.free",
@@ -21991,7 +22151,15 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "retained-supported-prone-leg-rotations",
+            "surface": "complete-native-boot",
+            "sourceClip": "prone.idle.long-gun",
+            "floor": 0.002,
+            "retainedInputTimes": true,
+            "retainedNativeBodyAndWeapon": true
+          }
         },
         {
           "name": "prone.gesture.ration",
@@ -22008,7 +22176,15 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "retained-supported-prone-leg-rotations",
+            "surface": "complete-native-boot",
+            "sourceClip": "prone.idle.long-gun",
+            "floor": 0.002,
+            "retainedInputTimes": true,
+            "retainedNativeBodyAndWeapon": true
+          }
         },
         {
           "name": "prone.gesture.signal",
@@ -22025,7 +22201,15 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "retained-supported-prone-leg-rotations",
+            "surface": "complete-native-boot",
+            "sourceClip": "prone.idle.long-gun",
+            "floor": 0.002,
+            "retainedInputTimes": true,
+            "retainedNativeBodyAndWeapon": true
+          }
         },
         {
           "name": "prone.gesture.fitting",
@@ -22042,7 +22226,15 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "retained-supported-prone-leg-rotations",
+            "surface": "complete-native-boot",
+            "sourceClip": "prone.idle.long-gun",
+            "floor": 0.002,
+            "retainedInputTimes": true,
+            "retainedNativeBodyAndWeapon": true
+          }
         },
         {
           "name": "prone.gesture.throw",
