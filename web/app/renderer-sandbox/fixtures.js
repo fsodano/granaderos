@@ -1,3 +1,4 @@
+import {VARIED_ROOF_CLIMB_SCENARIO,createVariedRoofClimbBattle} from './varied-roof-climb-fixture.js';
 import {createBattle,actBattle} from '../../../game/tactical.js';
 import {buildSectorMap} from '../../../game/maps.js';
 import {OPERATIVES} from '../../../game/data.js';
@@ -13,6 +14,7 @@ import {PARTIAL_LOADING_SCENARIO,createPartialLoadingBattle} from './partial-loa
 import {PAIRED_LOADING_SCENARIO,FOUR_BORE_LOADING_SCENARIO,createPairedLoadingBattle} from './paired-loading-fixture.js';
 
 export const RENDERER_SCENARIOS=Object.freeze([
+  VARIED_ROOF_CLIMB_SCENARIO,
   {id:'characters',label:'Ocho personajes',help:'Granadero, realista, trabajador, cirujano, gaucho, fraile, exploradora y mujer con rebozo. Selecciona cada personaje para caminar, correr o cambiar su equipo. Esta escena no usa tu campaña guardada.'},
   {id:'architecture',label:'Arquitectura',help:'Nueve edificios a escala de soldado. Selecciona al guardia de cada edificio para centrar la cámara. Abre su puerta y entra para comparar fachada, azotea e interior con las órdenes habituales.'},
   {id:'catalog',label:'Catálogo de edificios',help:'Catorce edificios con su mobiliario y cuatro orientaciones. Exterior: puerta cerrada. Primera sala: el guardia abre la puerta y entra. Interior completo: recorre las salas con las órdenes habituales. Puedes comparar el tejado original, una terraza o una losa de tres metros. La azotea accesible tiene un acceso frente a la puerta. Puedes continuar la exploración.'},
@@ -140,6 +142,7 @@ function performance(count,architecture=false){
 }
 /** Fresh real battle state. Scene selection never issues private renderer poses. */
 export function createRendererSandboxBattle(id='combat'){
+  if(id.startsWith('varied-roof-climbs'))return createVariedRoofClimbBattle(id.split(':')[1]);
   if(id==='prone-work')return createProneWorkReviewBattle();
   if(id.startsWith('prone-work:'))return createProneWorkReviewBattle(id.slice('prone-work:'.length));
   if(id==='reach-actions')return createReachReviewBattle();

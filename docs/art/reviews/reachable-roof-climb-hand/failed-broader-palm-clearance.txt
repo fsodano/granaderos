@@ -1,0 +1,52 @@
+✔ granadero LOD0 climbUp: reachable tall rung hands retain contact and native body (1196.521917ms)
+✔ granadero LOD0 climbDown: reachable tall rung hands retain contact and native body (529.776959ms)
+✔ granadero LOD1 climbUp: reachable tall rung hands retain contact and native body (437.067042ms)
+✔ granadero LOD1 climbDown: reachable tall rung hands retain contact and native body (432.294792ms)
+✖ granadero LOD2 climbUp: reachable tall rung hands retain contact and native body (56.33825ms)
+✖ granadero LOD2 climbDown: reachable tall rung hands retain contact and native body (39.665292ms)
+✔ woman-scout LOD0 climbUp: reachable tall rung hands retain contact and native body (1218.662166ms)
+✔ woman-scout LOD0 climbDown: reachable tall rung hands retain contact and native body (508.180625ms)
+✔ woman-scout LOD1 climbUp: reachable tall rung hands retain contact and native body (413.074042ms)
+✔ woman-scout LOD1 climbDown: reachable tall rung hands retain contact and native body (403.15375ms)
+✔ woman-scout LOD2 climbUp: reachable tall rung hands retain contact and native body (352.205167ms)
+✔ woman-scout LOD2 climbDown: reachable tall rung hands retain contact and native body (354.367208ms)
+✔ granadero: finite and unreachable targets retain native fallback (6.551292ms)
+✔ woman-scout: finite and unreachable targets retain native fallback (6.848125ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 12
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6527.175083
+
+✖ failing tests:
+
+test at tests/characters-tall-climbing-contact.test.mjs:62:122
+✖ granadero LOD2 climbUp: reachable tall rung hands retain contact and native body (56.33825ms)
+  AssertionError [ERR_ASSERTION]: 2m 0.84: complete exposed palm roof clearance
+      at TestContext.<anonymous> (file:///private/tmp/granaderos-varied-roof-climb-audit-4ec028f5/tests/characters-tall-climbing-contact.test.mjs:77:68)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/characters-tall-climbing-contact.test.mjs:62:122
+✖ granadero LOD2 climbDown: reachable tall rung hands retain contact and native body (39.665292ms)
+  AssertionError [ERR_ASSERTION]: 2m 0.84: complete exposed palm roof clearance
+      at TestContext.<anonymous> (file:///private/tmp/granaderos-varied-roof-climb-audit-4ec028f5/tests/characters-tall-climbing-contact.test.mjs:77:68)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
