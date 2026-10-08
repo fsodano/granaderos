@@ -667,3 +667,7 @@ The native standing rifle guard and initial/final stock-strike endpoints now kee
 ## Current shop forge and depot porch frames
 
 Authored shop and forge porches now expose their source timber posts, paired ties and shallow roof planes; depot loading frames retain their distinct three posts, warm stone feet and broad header. Actual supports, standing doors, edited corners, saved roofs and normal cutaways remain covered. All fifty-four combined affected checks, type/docs/baseline checks and export `2bb2077f2c1a` pass. Ninety actual original/slab/accessible-roof/close views pass without browser errors and were compared with the three current sprites. The source receipt and unchanged-file publication bridge retain the actual capture commit. See [the porch review](../art/source-work-porches-3d-review-2026-10-07.md).
+
+## Current depot stone pier volumes
+
+Authored depot piers now retain the current source's rectangular warm stone feet and capitals around their existing supported shafts. Legacy and edited-corner fallbacks, real openings, saved finishes and upper routes remain covered. All fifty-four combined affected checks, type/docs/baseline checks and export `6c318168bf4c` pass. Thirty source-pinned original/slab/accessible-roof/close views and six final combined porch-and-pier views pass without browser errors. Selected views were compared with the current depot sprite. See [the pier review](../art/depot-source-piers-3d-review-2026-10-07.md).
