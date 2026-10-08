@@ -1826,8 +1826,8 @@
   "animationLibraries": {
     "male": {
       "url": "/models/characters/male-animations.glb",
-      "bytes": 12019220,
-      "sha256": "0cc95d2ffd9efea6ef417e7a9c75001a10631e4178479f5081e2157328903909",
+      "bytes": 12027224,
+      "sha256": "5ee4df7379d1cc4e64ea4c762d26d84a6a551ee04c1f9922203209ef86579f33",
       "clips": [
         {
           "name": "stand.idle.unarmed",
@@ -4258,7 +4258,15 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "retained-supported-prone-leg-rotations",
+            "surface": "complete-native-boot",
+            "sourceClip": "prone.idle.long-gun",
+            "floor": 0.002,
+            "retainedInputTimes": true,
+            "retainedNativeBodyAndWeapon": true
+          }
         },
         {
           "name": "prone.fire.long-gun",
@@ -4278,7 +4286,15 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "retained-supported-prone-leg-rotations",
+            "surface": "complete-native-boot",
+            "sourceClip": "prone.idle.long-gun",
+            "floor": 0.002,
+            "retainedInputTimes": true,
+            "retainedNativeBodyAndWeapon": true
+          }
         },
         {
           "name": "prone.reload.long-gun",
@@ -4360,6 +4376,14 @@
               0
             ],
             "method": "native palm and item muzzle"
+          },
+          "nativeBootSupport": {
+            "method": "retained-supported-prone-leg-rotations",
+            "surface": "complete-native-boot",
+            "sourceClip": "prone.idle.long-gun",
+            "floor": 0.002,
+            "retainedInputTimes": true,
+            "retainedNativeBodyAndWeapon": true
           }
         },
         {
@@ -11005,6 +11029,14 @@
               0
             ],
             "method": "native palm and item muzzle"
+          },
+          "nativeBootSupport": {
+            "method": "retained-supported-prone-leg-rotations",
+            "surface": "complete-native-boot",
+            "sourceClip": "prone.idle.long-gun",
+            "floor": 0.002,
+            "retainedInputTimes": true,
+            "retainedNativeBodyAndWeapon": true
           }
         },
         {
@@ -11683,6 +11715,14 @@
               0
             ],
             "method": "native palm and item muzzle"
+          },
+          "nativeBootSupport": {
+            "method": "retained-supported-prone-leg-rotations",
+            "surface": "complete-native-boot",
+            "sourceClip": "prone.idle.long-gun",
+            "floor": 0.002,
+            "retainedInputTimes": true,
+            "retainedNativeBodyAndWeapon": true
           }
         },
         {
@@ -12361,6 +12401,14 @@
               0
             ],
             "method": "native palm and item muzzle"
+          },
+          "nativeBootSupport": {
+            "method": "retained-supported-prone-leg-rotations",
+            "surface": "complete-native-boot",
+            "sourceClip": "prone.idle.long-gun",
+            "floor": 0.002,
+            "retainedInputTimes": true,
+            "retainedNativeBodyAndWeapon": true
           }
         },
         {
@@ -13039,6 +13087,14 @@
               0
             ],
             "method": "native palm and item muzzle"
+          },
+          "nativeBootSupport": {
+            "method": "retained-supported-prone-leg-rotations",
+            "surface": "complete-native-boot",
+            "sourceClip": "prone.idle.long-gun",
+            "floor": 0.002,
+            "retainedInputTimes": true,
+            "retainedNativeBodyAndWeapon": true
           }
         },
         {
@@ -13717,6 +13773,14 @@
               0
             ],
             "method": "native palm and item muzzle"
+          },
+          "nativeBootSupport": {
+            "method": "retained-supported-prone-leg-rotations",
+            "surface": "complete-native-boot",
+            "sourceClip": "prone.idle.long-gun",
+            "floor": 0.002,
+            "retainedInputTimes": true,
+            "retainedNativeBodyAndWeapon": true
           }
         },
         {
@@ -14395,6 +14459,14 @@
               0
             ],
             "method": "native palm and item muzzle"
+          },
+          "nativeBootSupport": {
+            "method": "retained-supported-prone-leg-rotations",
+            "surface": "complete-native-boot",
+            "sourceClip": "prone.idle.long-gun",
+            "floor": 0.002,
+            "retainedInputTimes": true,
+            "retainedNativeBodyAndWeapon": true
           }
         },
         {
@@ -15553,8 +15625,8 @@
     },
     "female": {
       "url": "/models/characters/female-animations.glb",
-      "bytes": 11844156,
-      "sha256": "2ca2063080d20ee7400730abbbf281521fd6914449b9ab1ab7f07f3baccf647e",
+      "bytes": 11852160,
+      "sha256": "f2e43b7bac6cfca254d0e71e29d28454dc2dabff093649dfb6133b721fd0d5ca",
       "clips": [
         {
           "name": "stand.idle.unarmed",
@@ -17992,7 +18064,15 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "retained-supported-prone-leg-rotations",
+            "surface": "complete-native-boot",
+            "sourceClip": "prone.idle.long-gun",
+            "floor": 0.002,
+            "retainedInputTimes": true,
+            "retainedNativeBodyAndWeapon": true
+          }
         },
         {
           "name": "prone.fire.long-gun",
@@ -18012,7 +18092,15 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "retained-supported-prone-leg-rotations",
+            "surface": "complete-native-boot",
+            "sourceClip": "prone.idle.long-gun",
+            "floor": 0.002,
+            "retainedInputTimes": true,
+            "retainedNativeBodyAndWeapon": true
+          }
         },
         {
           "name": "prone.reload.long-gun",
@@ -18094,6 +18182,14 @@
               0
             ],
             "method": "native palm and item muzzle"
+          },
+          "nativeBootSupport": {
+            "method": "retained-supported-prone-leg-rotations",
+            "surface": "complete-native-boot",
+            "sourceClip": "prone.idle.long-gun",
+            "floor": 0.002,
+            "retainedInputTimes": true,
+            "retainedNativeBodyAndWeapon": true
           }
         },
         {
@@ -24739,6 +24835,14 @@
               0
             ],
             "method": "native palm and item muzzle"
+          },
+          "nativeBootSupport": {
+            "method": "retained-supported-prone-leg-rotations",
+            "surface": "complete-native-boot",
+            "sourceClip": "prone.idle.long-gun",
+            "floor": 0.002,
+            "retainedInputTimes": true,
+            "retainedNativeBodyAndWeapon": true
           }
         },
         {
@@ -25417,6 +25521,14 @@
               0
             ],
             "method": "native palm and item muzzle"
+          },
+          "nativeBootSupport": {
+            "method": "retained-supported-prone-leg-rotations",
+            "surface": "complete-native-boot",
+            "sourceClip": "prone.idle.long-gun",
+            "floor": 0.002,
+            "retainedInputTimes": true,
+            "retainedNativeBodyAndWeapon": true
           }
         },
         {
@@ -26095,6 +26207,14 @@
               0
             ],
             "method": "native palm and item muzzle"
+          },
+          "nativeBootSupport": {
+            "method": "retained-supported-prone-leg-rotations",
+            "surface": "complete-native-boot",
+            "sourceClip": "prone.idle.long-gun",
+            "floor": 0.002,
+            "retainedInputTimes": true,
+            "retainedNativeBodyAndWeapon": true
           }
         },
         {
@@ -26773,6 +26893,14 @@
               0
             ],
             "method": "native palm and item muzzle"
+          },
+          "nativeBootSupport": {
+            "method": "retained-supported-prone-leg-rotations",
+            "surface": "complete-native-boot",
+            "sourceClip": "prone.idle.long-gun",
+            "floor": 0.002,
+            "retainedInputTimes": true,
+            "retainedNativeBodyAndWeapon": true
           }
         },
         {
@@ -27451,6 +27579,14 @@
               0
             ],
             "method": "native palm and item muzzle"
+          },
+          "nativeBootSupport": {
+            "method": "retained-supported-prone-leg-rotations",
+            "surface": "complete-native-boot",
+            "sourceClip": "prone.idle.long-gun",
+            "floor": 0.002,
+            "retainedInputTimes": true,
+            "retainedNativeBodyAndWeapon": true
           }
         },
         {
@@ -28129,6 +28265,14 @@
               0
             ],
             "method": "native palm and item muzzle"
+          },
+          "nativeBootSupport": {
+            "method": "retained-supported-prone-leg-rotations",
+            "surface": "complete-native-boot",
+            "sourceClip": "prone.idle.long-gun",
+            "floor": 0.002,
+            "retainedInputTimes": true,
+            "retainedNativeBodyAndWeapon": true
           }
         },
         {
