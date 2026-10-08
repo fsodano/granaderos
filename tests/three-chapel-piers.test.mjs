@@ -22,7 +22,9 @@ test('actual chapel front piers keep their source-sized shaft, foot, exposed cap
  for(const rotation of rotations){
   const f=fixture(rotation),building=f.build(),node=f.feature(building),height=building.userData.height,coping=node.children.find(mesh=>mesh.material.name==='world:chapel-pier-coping');assert.ok(node);supported(f,node);assert.ok(coping);
   for(const u of [0,f.frame.width]){
-   const sample=u===0?u+.04:u-.04,top=new Raycaster(f.point(sample,-.365,height+2),new Vector3(0,-1,0),0,3).intersectObject(building,true)[0];assert.ok(top?.object===coping,'both capitals must remain readable outside the real roof eave');assert.ok(Math.abs(top.point.y-(height+2.5/V))<1e-5);
+   // Probe the retained coping face inside its source edge, still well
+   // beyond the real .16-tile roof eave. The .5-unit border has its own hull.
+   const sample=u===0?u+.04:u-.04,top=new Raycaster(f.point(sample,-.350,height+2),new Vector3(0,-1,0),0,3).intersectObject(building,true)[0];assert.ok(top?.object===coping,'both capitals must remain readable outside the real roof eave');assert.ok(Math.abs(top.point.y-(height+2.5/V))<1e-5);
    const out=new Vector3(-f.frame.v.x,0,-f.frame.v.y),ray=new Raycaster(f.point(sample,-1,1.3),out.clone().negate(),0,2*T),body=ray.intersectObject(node,true)[0],wall=ray.intersectObject(building.getObjectByName(`building-fabric:${f.b.id}`),true)[0];assert.ok(body&&wall);assert.ok(Math.abs(wall.distance-body.distance-(.34*T-.09))<1e-5,'the whole source shaft projects about 33 cm beyond the wall');
   }
   const foot=node.children.find(mesh=>mesh.material.name==='world:stone');assert.ok(Math.abs(new Box3().setFromObject(foot).max.y-getBuildingProfile(f.b).plinthHeight/V)<1e-5);f.dispose(building);
@@ -60,8 +62,10 @@ test('chapel pier bodies keep the current sprite plaster exception, separate war
 
 test('chapel piers respect actual slab heights, usable upper surfaces, legacy selection and normal room disclosure',()=>{
  for(const rotation of rotations){
-  for(const roof of ['slab','terrace','roof-route']){const f=fixture(rotation,'exterior',roof),building=f.build(),node=f.feature(building);if(roof==='roof-route')assert.equal(Boolean(node),false,'the capital above the roof must not occupy an accessible upper corner');else{assert.ok(node);supported(f,node);assert.ok(Math.abs(new Box3().setFromObject(node).max.y-building.userData.height-2.5/V)<1e-5);}f.dispose(building);}
-  const short=fixture(rotation,'exterior','slab');short.input.terrain.upperSurfaces=short.input.terrain.upperSurfaces.map(surface=>({...surface,elevation:1.8}));const shortBuilding=short.build();assert.ok(Math.abs(new Box3().setFromObject(short.feature(shortBuilding)).max.y-1.8-2.5/V)<1e-5);short.dispose(shortBuilding);
+  // Include the exposed source cap stroke's .25-unit radius, while the
+  // coping-plane ray above continues to prove its unchanged physical height.
+  for(const roof of ['slab','terrace','roof-route']){const f=fixture(rotation,'exterior',roof),building=f.build(),node=f.feature(building);if(roof==='roof-route')assert.equal(Boolean(node),false,'the capital above the roof must not occupy an accessible upper corner');else{assert.ok(node);supported(f,node);assert.ok(Math.abs(new Box3().setFromObject(node).max.y-building.userData.height-2.5/V-.25/V)<1e-5);}f.dispose(building);}
+  const short=fixture(rotation,'exterior','slab');short.input.terrain.upperSurfaces=short.input.terrain.upperSurfaces.map(surface=>({...surface,elevation:1.8}));const shortBuilding=short.build();assert.ok(Math.abs(new Box3().setFromObject(short.feature(shortBuilding)).max.y-1.8-2.5/V-.25/V)<1e-5);short.dispose(shortBuilding);
   for(const blocked of [false,true]){const f=fixture(rotation),corners=[f.frame.at(0,0),f.frame.at(f.frame.width,0)];f.input.terrain.upperSurfaces=corners.map(p=>({...p,tacticalLevel:1,elevation:2.2,blocked,kind:'platform',buildingId:f.b.id,type:'floor'}));const building=f.build();assert.equal(Boolean(f.feature(building)),blocked);f.dispose(building);}
   for(const view of ['partial','interior']){const f=fixture(rotation,view),building=f.build();assert.equal(Boolean(f.feature(building)),false);f.dispose(building);}
   const legacy=fixture(rotation);legacy.b.architecture='chapel';legacy.b.kind=undefined;legacy.b.wallFinish=undefined;const building=legacy.build();assert.equal(Boolean(legacy.feature(building)),false);legacy.dispose(building);
