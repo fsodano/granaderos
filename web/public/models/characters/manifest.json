@@ -1798,9 +1798,9 @@
           "lod": 0,
           "url": "/models/characters/woman-shawl-lod0.glb",
           "triangles": 28792,
-          "bytes": 1354420,
+          "bytes": 1371988,
           "drawCalls": 5,
-          "sha256": "d499fbc64310599eac95fa6bf15516d7aa320053942d4c7d8d6723438a67e8ec",
+          "sha256": "840681442792a9ce2c0c688ceb8d5542caec5d618256c7366dc9bb8129765234",
           "nativeClothSupport": {
             "method": "current-native-prone-cloth-shape",
             "sourceClip": "prone.idle.long-gun",
@@ -1860,15 +1860,53 @@
               "prone.unload.short-gun"
             ],
             "retainedOriginalClothTargetsAndRig": true
+          },
+          "nativeSkirtHem": {
+            "method": "source-reference-inset-rust-colour-band",
+            "colourTexCoord": 1,
+            "retainedOriginalUV": 0,
+            "imageSize": [
+              32,
+              256
+            ],
+            "rustRows": [
+              231,
+              236
+            ],
+            "rustSRGB": [
+              105,
+              50,
+              40
+            ],
+            "charcoalSRGB": [
+              49,
+              48,
+              49
+            ],
+            "restHeightRange": [
+              0.1,
+              1.06
+            ],
+            "nativeBandWidth": 0.01904761904761905,
+            "nativeBandCentreInset": 0.07673024523160762,
+            "nativeClearBorderBelowBand": 0.0672064357077981,
+            "retainedGeometryAndClothShapes": true,
+            "sewnSkirtSelection": "indexed-component-at-authored-hem",
+            "sewnSkirtVertexCount": 675,
+            "nativeUnderlayerVertexCount": 1370,
+            "nativeUnderlayerColourUV": [
+              0.5,
+              0.25
+            ]
           }
         },
         {
           "lod": 1,
           "url": "/models/characters/woman-shawl-lod1.glb",
           "triangles": 14840,
-          "bytes": 775016,
+          "bytes": 792580,
           "drawCalls": 5,
-          "sha256": "634a03bcebb26b070aad89fb9cd40ebbe6a52f78b7c9d184e67bfefd95d8d6b0",
+          "sha256": "5653faec338aeed3923359b63d8ae08cec4a045919e6586d457346f6d7e9190f",
           "nativeClothSupport": {
             "method": "current-native-prone-cloth-shape",
             "sourceClip": "prone.idle.long-gun",
@@ -1932,18 +1970,56 @@
           "nativeClothTopology": {
             "method": "reviewed-close-garment-topology",
             "sourceUrl": "/models/characters/woman-shawl-lod0.glb",
-            "sourceSha256": "d499fbc64310599eac95fa6bf15516d7aa320053942d4c7d8d6723438a67e8ec",
+            "sourceSha256": "840681442792a9ce2c0c688ceb8d5542caec5d618256c7366dc9bb8129765234",
             "retainedOtherCoarseMeshesAndRig": true,
             "maximumExtraWorldDisplacement": 0
+          },
+          "nativeSkirtHem": {
+            "method": "source-reference-inset-rust-colour-band",
+            "colourTexCoord": 1,
+            "retainedOriginalUV": 0,
+            "imageSize": [
+              32,
+              256
+            ],
+            "rustRows": [
+              231,
+              236
+            ],
+            "rustSRGB": [
+              105,
+              50,
+              40
+            ],
+            "charcoalSRGB": [
+              49,
+              48,
+              49
+            ],
+            "restHeightRange": [
+              0.1,
+              1.06
+            ],
+            "nativeBandWidth": 0.01904761904761905,
+            "nativeBandCentreInset": 0.07673024523160762,
+            "nativeClearBorderBelowBand": 0.0672064357077981,
+            "retainedGeometryAndClothShapes": true,
+            "sewnSkirtSelection": "indexed-component-at-authored-hem",
+            "sewnSkirtVertexCount": 675,
+            "nativeUnderlayerVertexCount": 1370,
+            "nativeUnderlayerColourUV": [
+              0.5,
+              0.25
+            ]
           }
         },
         {
           "lod": 2,
           "url": "/models/characters/woman-shawl-lod2.glb",
           "triangles": 7664,
-          "bytes": 463740,
+          "bytes": 481308,
           "drawCalls": 5,
-          "sha256": "de735c7d5ac5bb798a02255ccd1a626464ebb1581583396a5f5e9298f6b605be",
+          "sha256": "2ff3830480c870cf5733399a18635f1f176fd9a827206d9225083184543478ac",
           "nativeClothSupport": {
             "method": "current-native-prone-cloth-shape",
             "sourceClip": "prone.idle.long-gun",
@@ -2007,9 +2083,47 @@
           "nativeClothTopology": {
             "method": "reviewed-close-garment-topology",
             "sourceUrl": "/models/characters/woman-shawl-lod0.glb",
-            "sourceSha256": "d499fbc64310599eac95fa6bf15516d7aa320053942d4c7d8d6723438a67e8ec",
+            "sourceSha256": "840681442792a9ce2c0c688ceb8d5542caec5d618256c7366dc9bb8129765234",
             "retainedOtherCoarseMeshesAndRig": true,
             "maximumExtraWorldDisplacement": 0.002
+          },
+          "nativeSkirtHem": {
+            "method": "source-reference-inset-rust-colour-band",
+            "colourTexCoord": 1,
+            "retainedOriginalUV": 0,
+            "imageSize": [
+              32,
+              256
+            ],
+            "rustRows": [
+              231,
+              236
+            ],
+            "rustSRGB": [
+              105,
+              50,
+              40
+            ],
+            "charcoalSRGB": [
+              49,
+              48,
+              49
+            ],
+            "restHeightRange": [
+              0.1,
+              1.06
+            ],
+            "nativeBandWidth": 0.01904761904761905,
+            "nativeBandCentreInset": 0.07673024523160762,
+            "nativeClearBorderBelowBand": 0.0672064357077981,
+            "retainedGeometryAndClothShapes": true,
+            "sewnSkirtSelection": "indexed-component-at-authored-hem",
+            "sewnSkirtVertexCount": 675,
+            "nativeUnderlayerVertexCount": 1370,
+            "nativeUnderlayerColourUV": [
+              0.5,
+              0.25
+            ]
           }
         }
       ],
