@@ -1,0 +1,14 @@
+✔ granadero LOD0: complete roof hand skin clears planted fingertips with preserved motion (38393.316917ms)
+✔ granadero LOD1: complete roof hand skin clears planted fingertips with preserved motion (16428.421792ms)
+✔ granadero LOD2: complete roof hand skin clears planted fingertips with preserved motion (6119.124ms)
+✔ woman-scout LOD0: complete roof hand skin clears planted fingertips with preserved motion (26859.144292ms)
+✔ woman-scout LOD1: complete roof hand skin clears planted fingertips with preserved motion (10060.145917ms)
+✔ woman-scout LOD2: complete roof hand skin clears planted fingertips with preserved motion (5617.8205ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 104231.29975
