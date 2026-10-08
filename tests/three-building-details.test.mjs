@@ -295,8 +295,8 @@ test('parish and civic towers preserve legal upper routes while retaining blocke
 
 test('civic tower clearance checks its full base footprint and parish towers can use the other supported corner',()=>{
   for(const side of ['north','east','south','west']){
-    const f=fixture('cabildo',side),center=f.frame.at(f.frame.width*.5,.1),height=3;
-    f.input.terrain.upperSurfaces=[{x:Math.floor(center.x+.4)+1,y:Math.round(center.y+.4),type:'floor',kind:'roof',buildingId:f.b.id,tacticalLevel:1,elevation:height,blocked:false}];
+    const f=fixture('cabildo',side),center=f.frame.at(f.frame.width*.5,.1),height=3,inset=buildingArtInset(f.b,f.input);
+    f.input.terrain.upperSurfaces=[{x:Math.floor(center.x+inset)+1,y:Math.round(center.y+inset),type:'floor',kind:'roof',buildingId:f.b.id,tacticalLevel:1,elevation:height,blocked:false}];
     const details=architecturalDetails(f.b,f.input,T,height,0,f.geometry,f.materials,false);
     assert.equal(details.getObjectByName('building-detail:review:civic-clock-tower'),undefined,'a route touching the broad cornice must not be hidden by a tower whose centre is in another cell');f.dispose(details);
     const g=fixture('church',side),blocked=g.frame.at(g.frame.width,0);g.input.terrain.upperSurfaces=[{...blocked,type:'floor',kind:'roof',buildingId:g.b.id,tacticalLevel:1,elevation:height,blocked:false}];
@@ -355,7 +355,7 @@ test('civic decoration leaves doors, windows and wall breaches clear through all
     for(const [offset,type]of [[-1,'window'],[1,'rubble']]){const p=f.frame.at(f.frame.doorU+offset,0);f.input.terrain.tiles.find(tile=>tile.x===p.x&&tile.y===p.y).type=type;}
     const before=JSON.stringify(f.input),details=architecturalDetails(f.b,f.input,T,5.1,0,f.geometry,f.materials,false);details.updateMatrixWorld(true);
     for(const [offset,y]of [[-1,1.3],[0,1.90],[1,1.90]]){
-      const u=f.frame.doorU+offset-.4*(f.frame.u.x+f.frame.u.y),p=f.frame.at(u,-1),ray=new Raycaster(new Vector3((p.x+.4)*T,y,(p.y+.4)*T),new Vector3(f.frame.v.x,0,f.frame.v.y),0,T*1.6);
+      const inset=buildingArtInset(f.b,f.input),u=f.frame.doorU+offset-inset*(f.frame.u.x+f.frame.u.y),p=f.frame.at(u,-1),ray=new Raycaster(new Vector3((p.x+inset)*T,y,(p.y+inset)*T),new Vector3(f.frame.v.x,0,f.frame.v.y),0,T*1.6);
       assert.equal(ray.intersectObject(details,true).length,0,`${side} civic decoration obstructs ${offset}`);
     }
     assert.equal(JSON.stringify(f.input),before);f.dispose(details);

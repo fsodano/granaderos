@@ -711,3 +711,7 @@ The guarded palace shell and dependent balcony, upper facade and portico coordin
 ## Native prone rifle work support
 
 Nine prone rifle aim, fire and reload clips now retain the current supported idle leg pose. Only six named leg rotation outputs per clip change; clocks, Root/pelvis, hands, item contacts, native payload and 325 unrelated clips per bank remain exact. The builder composes with current movement banks and preserves calibration format. Five affected checks, all 48 ordinary blends, native/profile/source/type/docs/baseline gates and combined export `04d081722e60` pass. Four normal before/after routes produce 24 captures without errors and keep source hashes exact. The inherited male LOD2 .963 mm clearance limit is explicit. See [the prone rifle review](../art/prone-rifle-native-boot-support-review-2026-10-07.md).
+
+## Current Cabildo arcade and clock tower
+
+The supported Cabildo uses the current sprite's six broad piers, stepped stone feet, pale arcade strokes and shallow plain clock tower. Edited and legacy fallbacks remain exact. Only its own dispatcher branch/import change, preserving all other buildings. Forty-seven affected checks, type/docs/baseline audits and combined export `7dda76a04180` pass. Twenty-eight normal browser views pass without errors and were compared with the current sprite. All seven integrated source paths remain exact after the prone correction. See [the Cabildo review](../art/cabildo-source-facade-3d-review-2026-10-07.md).
