@@ -703,3 +703,7 @@ Standing supported sideways travel and crouched unarmed travel now keep complete
 ## Current town hall entrance columns
 
 The guarded town hall shell now uses the source stone entrance columns, stepped feet and capitals, plaster corner piers and separate upper supports. Existing paint exceptions and edited/legacy fallbacks remain exact. All 55 affected checks, type/docs/baseline audits and combined export `f765f1b75356` pass. Twenty-eight normal browser views pass without errors, and the full facade and close entrance were compared with the current sprite. All seven source paths remain exact after the movement integration. See [the town hall review](../art/townhall-source-columns-3d-review-2026-10-07.md).
+
+## Current palace entrance columns
+
+The guarded palace shell and dependent balcony, upper facade and portico coordinates now use one centred source basis. Four source stone columns, stepped feet/capitals and separate plaster/upper supports replace shallow offset supports; edited and legacy fallbacks remain exact. All nine frozen source paths are exact. Fifty-five affected checks, type/docs/baseline audits and export `2e2811964b03` pass. Twenty-eight normal browser views pass without errors; the full and close facade were compared with the current sprite. See [the palace review](../art/palace-source-columns-3d-review-2026-10-07.md).
