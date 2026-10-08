@@ -102,6 +102,8 @@ def optimize_character(ctx,lod=0):
    obj.data.materials.clear();obj.data.materials.append(atlas)
   for key in list(obj.keys()):
    if key not in ('part','appearance'):del obj[key]
+ from collar_seam import fit_collar
+ fit_collar(ctx,lod)
  # Keep optional headwear in its own batch; body has Skin + Apparel primitives.
  result=[]
  batches={part:[o for o in objects if o.get('part','skin')==part] for part in set(o.get('part','skin') for o in objects)}

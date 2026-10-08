@@ -1,0 +1,80 @@
+[
+  {
+    "file": "granadero-lod0.glb",
+    "beforeSha256": "444abea73ec08c1ef03c7fc2dac8fa5141767b4a249c3cb314b48ccc7cda069f",
+    "afterSha256": "e1e75cfc1a15502689f751938e7b57e9a85f7d6f8b2ccf2f8d7af8f45cca4588",
+    "exactMeshes": [
+      "Fitted_Boot_l",
+      "Shaped_Shako",
+      "Tailored_Breeches",
+      "Exposed_Human_Skin"
+    ],
+    "rigExact": true,
+    "materialsAndTexturesExact": true
+  },
+  {
+    "file": "granadero-lod1.glb",
+    "beforeSha256": "a3845e976701bf597499b0195178612a9d00fc3b0553700d818dcf8e50132701",
+    "afterSha256": "d7d8b16ce6610be13f084f805b088957b64785d3fece869929cd1b32449ae60e",
+    "exactMeshes": [
+      "Fitted_Boot_l",
+      "Shaped_Shako",
+      "Tailored_Breeches",
+      "Exposed_Human_Skin"
+    ],
+    "rigExact": true,
+    "materialsAndTexturesExact": true
+  },
+  {
+    "file": "granadero-lod2.glb",
+    "beforeSha256": "c99b30d724b63035ad3f93bbd5be2d80144598770b5b8122b55ddff20b9c118c",
+    "afterSha256": "f770ebef2ebbb93ebf4f1def7ada8f56d696e2f9c606defbf1c2c96971349f39",
+    "exactMeshes": [
+      "Fitted_Boot_l",
+      "Shaped_Shako",
+      "Tailored_Breeches",
+      "Exposed_Human_Skin"
+    ],
+    "rigExact": true,
+    "materialsAndTexturesExact": true
+  },
+  {
+    "file": "royalist-lod0.glb",
+    "beforeSha256": "c6043aa97c224ec55b8337a99c666b6b1d04e259814fa7954ef1422f8b83c8b4",
+    "afterSha256": "fb3e2ae7dc101a4fa505a69846bb536e94aecdd358f8d47c7042d95d28eb240b",
+    "exactMeshes": [
+      "Fitted_Boot_l",
+      "Shaped_Shako",
+      "Tailored_Breeches",
+      "Exposed_Human_Skin"
+    ],
+    "rigExact": true,
+    "materialsAndTexturesExact": true
+  },
+  {
+    "file": "royalist-lod1.glb",
+    "beforeSha256": "343bbbc9c77ed6a6b947f205bd0131b4359110871b6da9b8730f381b4529b3f5",
+    "afterSha256": "f5de7b0eac250c3277fc2017a9d53eb5d076f75cc8f250b71f0d372cd2abec65",
+    "exactMeshes": [
+      "Fitted_Boot_l",
+      "Shaped_Shako",
+      "Tailored_Breeches",
+      "Exposed_Human_Skin"
+    ],
+    "rigExact": true,
+    "materialsAndTexturesExact": true
+  },
+  {
+    "file": "royalist-lod2.glb",
+    "beforeSha256": "394701f4674fe4e3340367c689d691d98c87bd8fe7a486039cb7c9bbc989b8f9",
+    "afterSha256": "f5330673811e2fb2fa9b78e3f9b30d226e13008289920a8944258ef5b99a9241",
+    "exactMeshes": [
+      "Fitted_Boot_l",
+      "Shaped_Shako",
+      "Tailored_Breeches",
+      "Exposed_Human_Skin"
+    ],
+    "rigExact": true,
+    "materialsAndTexturesExact": true
+  }
+]

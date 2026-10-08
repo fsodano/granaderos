@@ -1,0 +1,152 @@
+{
+  "baseCommit": "f01916b070b4dfd59a92ef20c50d184ba8a194a1",
+  "nodeVersion": "v25.9.0",
+  "quickSuite": {
+    "counts": {
+      "tests": 6574,
+      "failed": 6,
+      "passed": 6568,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0,
+      "topLevel": 6431,
+      "suites": 0
+    },
+    "duration_ms": 956894.417792,
+    "success": false
+  },
+  "quickFiles": {
+    "completed": 870,
+    "failed": 6
+  },
+  "quickLogSha256": "e498497d172ccc9343500bf986cc8e4baf8df929ac53400c7f771a34c11e23bf",
+  "baselineTotals": {
+    "tests": 29,
+    "pass": 23,
+    "fail": 6,
+    "skipped": 0
+  },
+  "conclusion": "All six failed quick tests reproduce with identical names and assertions on exact pre-clothing main f01916b070b4dfd59a92ef20c50d184ba8a194a1. This is evidence for that revision only; no claim about later main.",
+  "failures": [
+    {
+      "file": "tests/actor-unit-motion-distance.test.mjs",
+      "command": "node --test --test-reporter=tap tests/actor-unit-motion-distance.test.mjs",
+      "exitCode": 1,
+      "counts": {
+        "tests": 2,
+        "pass": 1,
+        "fail": 1,
+        "skipped": 0
+      },
+      "logSha256": "6c9d19d3bf38b5c52e317d2f740b8a2be8245b77debfd4599ac9d27bf0368ebd",
+      "testFileUnchangedFromBaseline": true,
+      "sameFailureNamesAndAssertionsAsClothingQuick": true,
+      "failures": [
+        {
+          "name": "presented climb keeps its link and final segment fraction",
+          "diagnostic": "---\n  duration_ms: 24.43475\n  type: 'test'\n  location: '<baseline>/tests/actor-unit-motion-distance.test.mjs:44:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + 0.01299638895332932\n    - 0.5\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 0.5\n  actual: 0.01299638895332932\n  operator: 'strictEqual'\n  stack: |-\n    TestContext.<anonymous> (file://<baseline>/tests/actor-unit-motion-distance.test.mjs:50:112)\n    async Test.run (node:internal/test_runner/test:1208:7)\n    async Test.processPendingSubtests (node:internal/test_runner/test:831:7)"
+        }
+      ]
+    },
+    {
+      "file": "tests/artillery-battlefield-playback.test.mjs",
+      "command": "node --test --test-reporter=tap tests/artillery-battlefield-playback.test.mjs",
+      "exitCode": 1,
+      "counts": {
+        "tests": 6,
+        "pass": 5,
+        "fail": 1,
+        "skipped": 0
+      },
+      "logSha256": "75434196db9149214c5c87231a2895a8461d82e089b93629a4a302b2451fcdc0",
+      "testFileUnchangedFromBaseline": true,
+      "sameFailureNamesAndAssertionsAsClothingQuick": true,
+      "failures": [
+        {
+          "name": "mounted Battlefield uses the accepted horse state to emit exactly one mount or dismount cue",
+          "diagnostic": "---\n  duration_ms: 55.352792\n  type: 'test'\n  location: '<baseline>/tests/artillery-battlefield-playback.test.mjs:68:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    \n    0 !== 1\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 1\n  actual: 0\n  operator: 'strictEqual'\n  stack: |-\n    TestContext.<anonymous> (file://<baseline>/tests/artillery-battlefield-playback.test.mjs:76:10)\n    async Test.run (node:internal/test_runner/test:1208:7)\n    async Test.processPendingSubtests (node:internal/test_runner/test:831:7)"
+        }
+      ]
+    },
+    {
+      "file": "tests/elevation-interface.test.mjs",
+      "command": "node --test --test-reporter=tap tests/elevation-interface.test.mjs",
+      "exitCode": 1,
+      "counts": {
+        "tests": 8,
+        "pass": 7,
+        "fail": 1,
+        "skipped": 0
+      },
+      "logSha256": "d9186a716dd4645343619b930013df0f30554120aa0a0b802ecc35a32b0c2b95",
+      "testFileUnchangedFromBaseline": true,
+      "sameFailureNamesAndAssertionsAsClothingQuick": true,
+      "failures": [
+        {
+          "name": "paid climb and descent interpolate the roof inset without snapping the actor foot or hit frame",
+          "diagnostic": "---\n  duration_ms: 31.215584\n  type: 'test'\n  location: '<baseline>/tests/elevation-interface.test.mjs:131:1'\n  failureType: 'testCodeFailure'\n  error: '245.379320490434 != 254.5'\n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: true\n  actual: false\n  operator: '=='\n  stack: |-\n    close (file://<baseline>/tests/elevation-interface.test.mjs:24:39)\n    TestContext.<anonymous> (file://<baseline>/tests/elevation-interface.test.mjs:138:4)\n    Test.runInAsyncScope (node:async_hooks:226:14)\n    Test.run (node:internal/test_runner/test:1201:25)\n    Test.processPendingSubtests (node:internal/test_runner/test:831:18)\n    Test.postRun (node:internal/test_runner/test:1330:19)\n    Test.run (node:internal/test_runner/test:1258:12)\n    async Test.processPendingSubtests (node:internal/test_runner/test:831:7)"
+        }
+      ]
+    },
+    {
+      "file": "tests/three-authored-flat-roofs.test.mjs",
+      "command": "node --test --test-reporter=tap tests/three-authored-flat-roofs.test.mjs",
+      "exitCode": 1,
+      "counts": {
+        "tests": 5,
+        "pass": 4,
+        "fail": 1,
+        "skipped": 0
+      },
+      "logSha256": "69fc5a263aac520985abfa3ae2112529a6d83b986594cdeb09991777d4f62522",
+      "testFileUnchangedFromBaseline": true,
+      "sameFailureNamesAndAssertionsAsClothingQuick": true,
+      "failures": [
+        {
+          "name": "actual chapel and chimney templates follow explicit terraces and blocked metric slab elevations through four rotations",
+          "diagnostic": "---\n  duration_ms: 376.699583\n  type: 'test'\n  location: '<baseline>/tests/three-authored-flat-roofs.test.mjs:20:1'\n  failureType: 'testCodeFailure'\n  error: 'chimney masonry must still enter the roof'\n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: true\n  actual: false\n  operator: '=='\n  stack: |-\n    TestContext.<anonymous> (file://<baseline>/tests/three-authored-flat-roofs.test.mjs:25:53)\n    Test.runInAsyncScope (node:async_hooks:226:14)\n    Test.run (node:internal/test_runner/test:1201:25)\n    Test.start (node:internal/test_runner/test:1096:17)\n    startSubtestAfterBootstrap (node:internal/test_runner/harness:385:17)"
+        }
+      ]
+    },
+    {
+      "file": "tests/three-church-tower-foot.test.mjs",
+      "command": "node --test --test-reporter=tap tests/three-church-tower-foot.test.mjs",
+      "exitCode": 1,
+      "counts": {
+        "tests": 4,
+        "pass": 3,
+        "fail": 1,
+        "skipped": 0
+      },
+      "logSha256": "25fd2a6c90b0a69161d87bed40a5e691d855282ecf4ed06b651a2bc74b88fc6b",
+      "testFileUnchangedFromBaseline": true,
+      "sameFailureNamesAndAssertionsAsClothingQuick": true,
+      "failures": [
+        {
+          "name": "tower feet follow normal route exclusion and disclosure while unpainted legacy and civic towers retain their previous materials",
+          "diagnostic": "---\n  duration_ms: 338.542167\n  type: 'test'\n  location: '<baseline>/tests/three-church-tower-foot.test.mjs:47:1'\n  failureType: 'testCodeFailure'\n  error: \"Cannot read properties of undefined (reading 'name')\"\n  code: 'ERR_TEST_FAILURE'\n  name: 'TypeError'\n  stack: |-\n    file://<baseline>/tests/three-church-tower-foot.test.mjs:53:248\n    Array.every (<anonymous>)\n    TestContext.<anonymous> (file://<baseline>/tests/three-church-tower-foot.test.mjs:53:222)\n    Test.runInAsyncScope (node:async_hooks:226:14)\n    Test.run (node:internal/test_runner/test:1201:25)\n    Test.processPendingSubtests (node:internal/test_runner/test:831:18)\n    Test.postRun (node:internal/test_runner/test:1330:19)\n    Test.run (node:internal/test_runner/test:1258:12)\n    async Test.processPendingSubtests (node:internal/test_runner/test:831:7)"
+        }
+      ]
+    },
+    {
+      "file": "tests/three-porch-placement.test.mjs",
+      "command": "node --test --test-reporter=tap tests/three-porch-placement.test.mjs",
+      "exitCode": 1,
+      "counts": {
+        "tests": 4,
+        "pass": 3,
+        "fail": 1,
+        "skipped": 0
+      },
+      "logSha256": "9273080aa0872536428855daccc1848e4725cc2ce68bd68c9c3e5b889f330fa2",
+      "testFileUnchangedFromBaseline": true,
+      "sameFailureNamesAndAssertionsAsClothingQuick": true,
+      "failures": [
+        {
+          "name": "existing shop signs, forge chimneys and depot piers or loft follow actual supports, flat roofs and ordinary disclosure after centring",
+          "diagnostic": "---\n  duration_ms: 26.763167\n  type: 'test'\n  location: '<baseline>/tests/three-porch-placement.test.mjs:41:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    The expression evaluated to a falsy value:\n    \n      assert.ok(new Box3().setFromObject(sign).min.y>=1.9)\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: true\n  actual: false\n  operator: '=='\n  stack: |-\n    TestContext.<anonymous> (file://<baseline>/tests/three-porch-placement.test.mjs:43:186)\n    Test.runInAsyncScope (node:async_hooks:226:14)\n    Test.run (node:internal/test_runner/test:1201:25)\n    Test.processPendingSubtests (node:internal/test_runner/test:831:18)\n    Test.postRun (node:internal/test_runner/test:1330:19)\n    Test.run (node:internal/test_runner/test:1258:12)\n    async Test.processPendingSubtests (node:internal/test_runner/test:831:7)"
+        }
+      ]
+    }
+  ]
+}

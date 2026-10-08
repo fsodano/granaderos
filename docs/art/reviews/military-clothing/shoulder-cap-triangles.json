@@ -1,0 +1,33 @@
+{
+  "beforeSha256": "444abea73ec08c1ef03c7fc2dac8fa5141767b4a249c3cb314b48ccc7cda069f",
+  "afterSha256": "e1e75cfc1a15502689f751938e7b57e9a85f7d6f8b2ccf2f8d7af8f45cca4588",
+  "exactTrianglePayloads": 13533,
+  "removed": {
+    "triangles": 400,
+    "minimum": [
+      -0.23897597193717957,
+      1.4672660827636719,
+      -0.06407611817121506
+    ],
+    "maximum": [
+      0.24104507267475128,
+      1.4832661151885986,
+      0.05437694117426872
+    ],
+    "allInsideCapBounds": true
+  },
+  "added": {
+    "triangles": 360,
+    "minimum": [
+      -0.24145270884037018,
+      1.4672781229019165,
+      -0.06384330242872238
+    ],
+    "maximum": [
+      0.24145270884037018,
+      1.4832487106323242,
+      0.05384329333901405
+    ],
+    "allInsideCapBounds": true
+  }
+}

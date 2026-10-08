@@ -1,0 +1,90 @@
+{
+  "method": "Actual skinned triangle edge intersections at 30 Hz; native clips only",
+  "limits": "Rest-space neck band 1.485–1.570 m; edge crossings only, not positive clearance or wholly contained penetration. No collar self-intersection, crossfade or paid-contact acceptance claim.",
+  "clips": [
+    "stand.idle.unarmed",
+    "stand.aim.short-gun",
+    "stand.aim.long-gun",
+    "stand.run.long-gun",
+    "stand.slash.blade.backhand",
+    "stand.punch.unarmed",
+    "crouch.idle.unarmed",
+    "crouch.aim.long-gun",
+    "prone.idle.unarmed",
+    "prone.aim.long-gun"
+  ],
+  "rows": [
+    {
+      "preset": "granadero",
+      "lod": 0,
+      "bodySha256": "0f575797896fc2ca45e1580a2f2b0f9556bf04adf07a5b53bea0a06b3d0db56d",
+      "bankSha256": "48a5966d73058d2fef5eb77837d229377178106a349b903983c0bb38ad914d87",
+      "selectedTriangles": {
+        "neck": 2997,
+        "collar": 1680
+      },
+      "samples": 514,
+      "crossingFrames": []
+    },
+    {
+      "preset": "granadero",
+      "lod": 1,
+      "bodySha256": "362a56c0bfaddbdd5bb15c0e72a8bca8aeb7a9061a55e72f01f7e6acdcb1a6b0",
+      "bankSha256": "48a5966d73058d2fef5eb77837d229377178106a349b903983c0bb38ad914d87",
+      "selectedTriangles": {
+        "neck": 2074,
+        "collar": 1092
+      },
+      "samples": 514,
+      "crossingFrames": []
+    },
+    {
+      "preset": "granadero",
+      "lod": 2,
+      "bodySha256": "34f62420b8750ebe7242accda1872375a7d4c30bb09e92f5d9f1a4df18ed2266",
+      "bankSha256": "48a5966d73058d2fef5eb77837d229377178106a349b903983c0bb38ad914d87",
+      "selectedTriangles": {
+        "neck": 762,
+        "collar": 1260
+      },
+      "samples": 514,
+      "crossingFrames": []
+    },
+    {
+      "preset": "royalist",
+      "lod": 0,
+      "bodySha256": "2547dea2e5d2c6aafca85dd5dd8a78c3deb609286d3a705f4fbe65debbd444c0",
+      "bankSha256": "48a5966d73058d2fef5eb77837d229377178106a349b903983c0bb38ad914d87",
+      "selectedTriangles": {
+        "neck": 2997,
+        "collar": 1680
+      },
+      "samples": 514,
+      "crossingFrames": []
+    },
+    {
+      "preset": "royalist",
+      "lod": 1,
+      "bodySha256": "c3ddb01f0a75e77970feec24278c2c5c0d00ea55479177a0c38f033b5e1ce67d",
+      "bankSha256": "48a5966d73058d2fef5eb77837d229377178106a349b903983c0bb38ad914d87",
+      "selectedTriangles": {
+        "neck": 2074,
+        "collar": 1092
+      },
+      "samples": 514,
+      "crossingFrames": []
+    },
+    {
+      "preset": "royalist",
+      "lod": 2,
+      "bodySha256": "900f93723c5057884f711805f0f14b84bf33e7420426f52bcf12759ad044b3b9",
+      "bankSha256": "48a5966d73058d2fef5eb77837d229377178106a349b903983c0bb38ad914d87",
+      "selectedTriangles": {
+        "neck": 762,
+        "collar": 1260
+      },
+      "samples": 514,
+      "crossingFrames": []
+    }
+  ]
+}

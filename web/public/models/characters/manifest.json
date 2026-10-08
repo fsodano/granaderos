@@ -31,26 +31,26 @@
         {
           "lod": 0,
           "url": "/models/characters/granadero-lod0.glb",
-          "triangles": 73670,
-          "bytes": 4616260,
+          "triangles": 76666,
+          "bytes": 4734596,
           "drawCalls": 8,
-          "sha256": "444abea73ec08c1ef03c7fc2dac8fa5141767b4a249c3cb314b48ccc7cda069f"
+          "sha256": "0f575797896fc2ca45e1580a2f2b0f9556bf04adf07a5b53bea0a06b3d0db56d"
         },
         {
           "lod": 1,
           "url": "/models/characters/granadero-lod1.glb",
-          "triangles": 46650,
-          "bytes": 3143824,
+          "triangles": 48454,
+          "bytes": 3213212,
           "drawCalls": 8,
-          "sha256": "a3845e976701bf597499b0195178612a9d00fc3b0553700d818dcf8e50132701"
+          "sha256": "362a56c0bfaddbdd5bb15c0e72a8bca8aeb7a9061a55e72f01f7e6acdcb1a6b0"
         },
         {
           "lod": 2,
           "url": "/models/characters/granadero-lod2.glb",
-          "triangles": 16995,
-          "bytes": 1015792,
+          "triangles": 17915,
+          "bytes": 1053632,
           "drawCalls": 7,
-          "sha256": "c99b30d724b63035ad3f93bbd5be2d80144598770b5b8122b55ddff20b9c118c"
+          "sha256": "34f62420b8750ebe7242accda1872375a7d4c30bb09e92f5d9f1a4df18ed2266"
         }
       ],
       "materials": {
@@ -256,26 +256,26 @@
         {
           "lod": 0,
           "url": "/models/characters/royalist-lod0.glb",
-          "triangles": 73313,
-          "bytes": 4471592,
+          "triangles": 76309,
+          "bytes": 4589928,
           "drawCalls": 8,
-          "sha256": "c6043aa97c224ec55b8337a99c666b6b1d04e259814fa7954ef1422f8b83c8b4"
+          "sha256": "2547dea2e5d2c6aafca85dd5dd8a78c3deb609286d3a705f4fbe65debbd444c0"
         },
         {
           "lod": 1,
           "url": "/models/characters/royalist-lod1.glb",
-          "triangles": 46579,
-          "bytes": 3068800,
+          "triangles": 48383,
+          "bytes": 3138188,
           "drawCalls": 8,
-          "sha256": "343bbbc9c77ed6a6b947f205bd0131b4359110871b6da9b8730f381b4529b3f5"
+          "sha256": "c3ddb01f0a75e77970feec24278c2c5c0d00ea55479177a0c38f033b5e1ce67d"
         },
         {
           "lod": 2,
           "url": "/models/characters/royalist-lod2.glb",
-          "triangles": 16938,
-          "bytes": 981860,
+          "triangles": 17858,
+          "bytes": 1019700,
           "drawCalls": 7,
-          "sha256": "394701f4674fe4e3340367c689d691d98c87bd8fe7a486039cb7c9bbc989b8f9"
+          "sha256": "900f93723c5057884f711805f0f14b84bf33e7420426f52bcf12759ad044b3b9"
         }
       ],
       "materials": {
