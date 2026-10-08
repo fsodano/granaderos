@@ -325,8 +325,8 @@ test('palace balcony follows the actual doorway and requires both solid entrance
 test('barracks and stable details preserve the open doorway in all four orientations',()=>{
   for(const kind of ['barracks','stable'])for(const side of ['north','east','south','west']){
     const f=fixture(kind,side),before=JSON.stringify(f.input),details=architecturalDetails(f.b,f.input,T,2.5,0,f.geometry,f.materials,false),feature=details.getObjectByName(`building-detail:review:${kind==='barracks'?'barracks-gate':'stable-timber-frame'}`);
-    assert.ok(feature);let expectedMaterial=false;feature.traverse(child=>{if(child.material?.name===(kind==='barracks'?'world:brass':'world:wood'))expectedMaterial=true;});assert.ok(expectedMaterial);
-    const u=f.frame.doorU-.4*(f.frame.u.x+f.frame.u.y),p=f.frame.at(u,-1),ray=new Raycaster(new Vector3((p.x+.4)*T,1,(p.y+.4)*T),new Vector3(f.frame.v.x,0,f.frame.v.y),0,T*1.6);details.updateMatrixWorld(true);
+    assert.ok(feature);let expectedMaterial=false;feature.traverse(child=>{if(child.material?.name===(kind==='barracks'?'world:barracks-plaque-mark':'world:wood'))expectedMaterial=true;});assert.ok(expectedMaterial);
+    const inset=buildingArtInset(f.b,f.input),u=f.frame.doorU-inset*(f.frame.u.x+f.frame.u.y),p=f.frame.at(u,-1),ray=new Raycaster(new Vector3((p.x+inset)*T,1,(p.y+inset)*T),new Vector3(f.frame.v.x,0,f.frame.v.y),0,T*1.6);details.updateMatrixWorld(true);
     assert.equal(ray.intersectObject(details,true).length,0,`${kind} details obstruct the door at ${side}`);assert.equal(JSON.stringify(f.input),before);f.dispose(details);
   }
 });
