@@ -51,3 +51,17 @@ The independent before/after normal fades cover 36 replays. Each cue completes o
 | 240 Hz | 1.863173 | 1.560903 | 160.704103 | 203.399328 |
 
 The retained native motion has acceleration corners, and the lower support solve amplifies some of them. This remains a separate motion correction. The current source cut establishes bounded native fallback support. Paired bayonet contact fitting, source acceleration correction, upper-body review and ordinary browser screenshot acceptance remain separate; the complete thrust is not claimed as finished body polish.
+
+## Root current-bank integration and gameplay review
+
+Root transplanted only the eight lower rotations of the one accepted bayonet clip into each current complete bank from main `3e51e1a3f1b67e814ac52e1ca0f531d6374cae40`. It first checked that every retained selected Root/pelvis/body/weapon channel matched the frozen source basis. The corrected selected clip then matches the frozen native output exactly. All 333 other clips and native payload remain exact, preserving current prone and unarmed movement work. The default guard exporter is unchanged; its new optional bayonet branch and full-builder call are composed with the current prone/gait postpasses. No stale complete bank was copied.
+
+Native source commit `6c2d3dcc` is followed by playable review source `d8addee80c980d23c6d594030441c0bcdf6a1033`. All thirteen integrated source paths remain exact after Cabildo PR #248 in combined source `a4da954693782b8548cc875996c95a7e02042763`. The original source velocity/acceleration and contact-fitting limits above remain unchanged.
+
+The new normal Bayonetas scene prepares two separately identified owned Brown Bess/socket assemblies through the ordinary paid fitting action. The ordinary melee action spends 16 internal AP (four displayed PA), keeps each charge, reserve and firearm condition, and wears the same bayonet once. No private renderer pose or injected saved state is used.
+
+Root ran 36 native/source/fade/guard checks in 4.857 seconds and eleven review-fixture checks. The actual fixture contact, 12 internal AP fitting cost, finite attack, identities, ammunition and immutable/valid snapshots are checked. Native library, locomotion profile, Python/type/docs and all 38 baseline audits pass. Initial export `96d9fd3eba08` and combined export `717eec4ee75d` pass with 1,244 files and 1,039 asset references.
+
+Two ordinary browser cases pass with four loaded actors and no errors. Forty-four source-pinned captures show owned equipment, readiness, prepare/contact/impact, finite completion and retained equipment. Both targets take one 50-point damage result; displayed PA changes from 22 to 18, loaded charge stays one and reserve stays twelve. Saved cell controls remain at G7/M7. Served native model bytes match the recorded source files, and source/asset hashes remain exact before/after capture. Root viewed male/female strike frames against the current Granadero southeast strike sprite: the weapon, stance and supported boots are visible; native target overlap remains a separate contact-fitting review.
+
+Receipts and captures remain in `artifacts/three-bayonet-native-source-cut-review/`. The 3D native support and ordinary browser acceptance requested above are now recorded. Paired fitted contact, retained acceleration corners and complete body polish still need the separate corrections stated above.
