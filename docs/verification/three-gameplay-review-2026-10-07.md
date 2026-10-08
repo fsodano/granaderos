@@ -741,3 +741,29 @@ Local checks and 28 ordinary browser routes pass. The
 [equipped movement review](../art/equipped-crouch-transition-admission-review-2026-10-07.md#integrated-current-gameplay-review)
 records 168 captures, current bank preservation and the remaining cold
 admission and garment limits.
+
+## Normal paid reach-action review scene
+
+The compiled `Vendas, recogida y liberación` choice provides two native anatomy
+groups. Each group owns two dressings, an injured ally, a visible adjacent
+dressing stack and a combatant entangled in an identified held boleadoras
+item. The ordinary HUD issues healing, an exact one-item ground pickup and
+self release. No renderer pose or private browser state is injected.
+
+Six paid browser orders pass with 72 owned, ready, action and retained-equipment
+captures. The original 100 internal AP becomes 75 for healing, 92 for pickup
+and 85 for release, once each. Saved cells and owned rifle charges remain
+exact. The eight recorded source/runtime/asset hashes stay exact, served
+native bank bytes match, and no browser error occurs. Healing uses recorded
+prepare/result frames; direct pickup/release use normal native-duration cues.
+
+The male healing, female pickup and male release captures were inspected.
+These establish usable ordinary review controls and source pose playback.
+Full planted entry/return, target contact and garment/art acceptance remain
+open. This scene does not claim final gesture polish.
+
+The twelve fixture checks, TypeScript, documentation audit and combined
+production export pass. Export identity is `6ec9b2ad390d`: 1,244 files and
+1,039 verified asset references. A local build attempted before a fixture
+merge conflict was resolved failed to parse; the resolved current source was
+then checked and rebuilt successfully. Its failed log is retained separately.
