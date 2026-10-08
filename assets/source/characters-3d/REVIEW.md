@@ -119,6 +119,35 @@ normal and roughness detail survives export. All 26 body/garment skeleton
 signatures retain the exact native joints, hierarchy and inverse-bind matrices. Pixel comparison off uses the native renderer; it does not
 apply the pixel or contour pass.
 
+## Face structure and grip follow-up
+
+The further face pass adds small cheek, brow, nose and mouth planes to both
+native anatomies. Maximum measured movement is 1.23 mm; the source UVs and
+weights stay exact. The head now retains 80%, 45% and 16% of its source
+geometry across the three detail levels. The previous whole-skin reduction
+used 22%, 7.5% and 2.8%, which removed useful eyelid and lip structure. A fitted
+brow base and irregular fine hairs also replace the sparse dotted brows.
+
+All 24 rebuilt body files preserve the native skeleton and every non-head
+triangle's position, normal, UV, pigment and named bone-weight mapping. Equal
+weights may have a different joint-slot order; their deformation is identical.
+The Granadero LOD0 now has 87,375 triangles and six draw calls. The combined
+surface, collar and crossbelt gates pass all 39 tests. Actual exported idle
+renders cover all eight appearances; additional Granadero and scout views
+cover both reduced detail levels. These are offline model renders. This pass
+does not establish the clothing, hair or individual character variation of
+the user's reference. The source still has two shared native faces.
+
+The pistol strike shortens two right-hand reach targets while retaining its
+body motion, contact marker, duration and weapon orientation. Only three arm
+rotation tracks per anatomy change. Dense native wrist checks now remain
+below 52.18 degrees, and all 17 retained pistol/sabre runtime checks pass on
+the reviewed candidate. Mounted rifle idle, walk and run also use a lower,
+diagonal carry; their six arm tracks per clip keep both hands on the stock,
+with measured wrist bend below 30.15 degrees. Neither increment replaces
+unrelated motion tracks. Detailed hash and preservation receipts are in the
+local delivery artifacts.
+
 ## Validation status
 
 The next integration remains in review. The incoming rifle contact gate
@@ -128,7 +157,7 @@ must pass before this branch is merged. A separate actual forearm-to-palm
 audit also found static wrist folds that the older angular-continuity checks
 did not detect. Maintenance, low work and crouched-punch repairs are now
 published and pass their combined 10 wrist, arc and floor gates, plus two
-retained low-work boot checks. Rifle unload/carry and rifle strikes remain
+retained low-work boot checks. Rifle unload and rifle strikes remain
 in private review. Their pending files are not accepted
 merely because a wrist is straight; speed, surface clearance and item contact
 also need to pass. PR #239 remains a draft while this review is active.

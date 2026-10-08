@@ -721,6 +721,8 @@ def _gun_pose(ctx,base,key,offsets,mode='aim',recoil=0,posture=None):
             # it would cross the head. Keep the stock beside the shoulder
             # and the barrel ahead, with both hands on the same rigid gun.
             position=chest+Vector((-.16,-.28,-.08));rotation=Quaternion(UP,math.radians(-85)) @ Quaternion(Vector((0,1,0)),.08)
+        if key=='rifle' and posture=='mounted':
+            position=chest+Vector((-.16,-.30,-.12));rotation=Quaternion(UP,math.radians(-65)) @ Quaternion(Vector((0,1,0)),.08)
         if prone:
             position=chest+Vector((-.12,-.26,.07));rotation=Quaternion(UP,math.radians(-85))
     else:
@@ -843,7 +845,7 @@ def _equipment_pose(ctx,base,equipment,offsets,mode='carry',posture=None):
         # rifle carry. The generic upright carry folds the support wrist.
         from reviewed_motion import _carry_pose
         return _carry_pose(ctx,base,base,'rifle','Walk',offsets)
-    if equipment in ('long-gun','short-gun'):return _gun_pose(ctx,base,'rifle' if equipment=='long-gun' else 'pistol',offsets,mode)[0]
+    if equipment in ('long-gun','short-gun'):return _gun_pose(ctx,base,'rifle' if equipment=='long-gun' else 'pistol',offsets,mode,posture='mounted' if posture=='mounted' and equipment=='long-gun' else None)[0]
     if equipment in ('blade','knife'):return _blade_pose(ctx,base,offsets,key='knife' if equipment=='knife' else 'sabre')
     if equipment=='lance':return _lance_pose(ctx,base,offsets,mode,posture=posture)
     return _copy_pose(base)

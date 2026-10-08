@@ -31,26 +31,26 @@
         {
           "lod": 0,
           "url": "/models/characters/granadero-lod0.glb",
-          "triangles": 59996,
-          "bytes": 3842648,
+          "triangles": 87375,
+          "bytes": 5306404,
           "drawCalls": 6,
-          "sha256": "ec51b87ad3a7d5165c22f9d967d904755760cffa6528a6d52641abeb7d8531ed"
+          "sha256": "67e1c263befa83fb714da7dfe686f7878ee93016ca26f081aa38c7a882c3d0bb"
         },
         {
           "lod": 1,
           "url": "/models/characters/granadero-lod1.glb",
-          "triangles": 30983,
-          "bytes": 2269748,
+          "triangles": 51202,
+          "bytes": 3461228,
           "drawCalls": 6,
-          "sha256": "0cf517f5fe225c06fc0ba03ca92710e6782ae02fb40045b2e3707059a3b94743"
+          "sha256": "0c5e5b49288fa5ceb8d60103a2048ebfe8b0a1a66b9dbddcce8492cf058e0f0a"
         },
         {
           "lod": 2,
           "url": "/models/characters/granadero-lod2.glb",
-          "triangles": 12758,
-          "bytes": 930192,
+          "triangles": 18734,
+          "bytes": 1168360,
           "drawCalls": 6,
-          "sha256": "35038dc9c59d243eb52bca4e55eca04389a3165e2d76e569eb92238d7a9b35b3"
+          "sha256": "d249976b846f41575e152bcf21e26729aba7dcaa1ad3f5eeeafd857552f5f875"
         }
       ],
       "materials": {
@@ -256,26 +256,26 @@
         {
           "lod": 0,
           "url": "/models/characters/royalist-lod0.glb",
-          "triangles": 59639,
-          "bytes": 3801656,
+          "triangles": 87018,
+          "bytes": 5265412,
           "drawCalls": 6,
-          "sha256": "908d3b2ddd984e6f1d1d1131df07e03295dec477c20419ed91e2caab65310d9a"
+          "sha256": "1f3396983f8c69ef11cf5871c39456d35290b910a05aa3af36a718ea24b84110"
         },
         {
           "lod": 1,
           "url": "/models/characters/royalist-lod1.glb",
-          "triangles": 30912,
-          "bytes": 2260300,
+          "triangles": 51131,
+          "bytes": 3451780,
           "drawCalls": 6,
-          "sha256": "e730eb1371a2889651ba45a450c7634c2697e7efe7c2f9cd48910a7a582ad047"
+          "sha256": "ee7997cd11afaaca1e7c83d431ae771a03cf059c2013ca315b8d9214ace6c45b"
         },
         {
           "lod": 2,
           "url": "/models/characters/royalist-lod2.glb",
-          "triangles": 12701,
-          "bytes": 921340,
+          "triangles": 18677,
+          "bytes": 1159508,
           "drawCalls": 6,
-          "sha256": "f0c60df2651bb88cb8cab5897c6927f2fa3f9ad3362c1736d854cee6bc02c913"
+          "sha256": "f9a8e7561f6d8f4d7cefc532980714a3ec83f38a61b578febb35fff7bb858eab"
         }
       ],
       "materials": {
@@ -481,26 +481,26 @@
         {
           "lod": 0,
           "url": "/models/characters/worker-lod0.glb",
-          "triangles": 48831,
-          "bytes": 2329388,
+          "triangles": 76210,
+          "bytes": 3793140,
           "drawCalls": 5,
-          "sha256": "ef6b0fac4252b7553f0c9017a7e5969d09e1ad070bd71bc2baa691efe95ff73c"
+          "sha256": "714e4b3f297a7dcd23ca5db639b15e415f0b6f16dd42091915a0ca3b63ee6c4d"
         },
         {
           "lod": 1,
           "url": "/models/characters/worker-lod1.glb",
-          "triangles": 25962,
-          "bytes": 1428472,
+          "triangles": 46181,
+          "bytes": 2619960,
           "drawCalls": 5,
-          "sha256": "a9357b6b19d1614b42fda37e5c8e417a1277373ce45b6679462c36848b2ef9e7"
+          "sha256": "9deedb94a3292dd906556f16b0b9ac70b6c9c22c3b244614b73d880d9abcb9fa"
         },
         {
           "lod": 2,
           "url": "/models/characters/worker-lod2.glb",
-          "triangles": 11128,
-          "bytes": 589944,
+          "triangles": 17104,
+          "bytes": 828104,
           "drawCalls": 5,
-          "sha256": "083a4d857e6f64b9902a6051ca3c53a36b52b2f4644ab1609134f2fa78cf5481"
+          "sha256": "02eee6fd923d6252b93ce4827f57f7ddcde2d4c8949d4220b4ae97e928f2a762"
         }
       ],
       "materials": {
@@ -706,26 +706,26 @@
         {
           "lod": 0,
           "url": "/models/characters/surgeon-lod0.glb",
-          "triangles": 35523,
-          "bytes": 1944004,
+          "triangles": 62902,
+          "bytes": 3407760,
           "drawCalls": 5,
-          "sha256": "c5a8c62f819aa8df04474d85029c190c924d496c72046a36d6ce63c19e16614c"
+          "sha256": "80562b2bedc862bffb2247d9f4c5ebd0409e8572e33792d182267ea219fe1cf8"
         },
         {
           "lod": 1,
           "url": "/models/characters/surgeon-lod1.glb",
-          "triangles": 19612,
-          "bytes": 1289276,
+          "triangles": 39831,
+          "bytes": 2480760,
           "drawCalls": 5,
-          "sha256": "c549bab323865e8bee39b3a543b1d5d5a8c065659f710bf6af47b3dfde04ce52"
+          "sha256": "04057237417a1d1dc639fcbca3bc13d977876b676b9154f3aa76733b127c3d8d"
         },
         {
           "lod": 2,
           "url": "/models/characters/surgeon-lod2.glb",
-          "triangles": 9114,
-          "bytes": 601820,
+          "triangles": 15090,
+          "bytes": 839984,
           "drawCalls": 5,
-          "sha256": "5a15fa35a439eb31b10c87c9d6eee3581c0a9c466de9d5d900ef39a9cfcd72d1"
+          "sha256": "125bf698aa41d4aab4f0219c2d8a51ce5ac967bbdc8bb4555887bb12c6b04177"
         }
       ],
       "materials": {
@@ -931,26 +931,26 @@
         {
           "lod": 0,
           "url": "/models/characters/gaucho-lod0.glb",
-          "triangles": 34829,
-          "bytes": 1769516,
+          "triangles": 62208,
+          "bytes": 3233272,
           "drawCalls": 6,
-          "sha256": "88fa8d51109807f570cb94e871fb2b8fa2d173b715d8ae7feaf9dfae2185bc15"
+          "sha256": "2154e3aa7aeed5d2d3771360cebe972a66451030289eca3bf6eb49f574275212"
         },
         {
           "lod": 1,
           "url": "/models/characters/gaucho-lod1.glb",
-          "triangles": 17592,
-          "bytes": 1082240,
+          "triangles": 37811,
+          "bytes": 2273724,
           "drawCalls": 6,
-          "sha256": "ae2329c4bbde13cb8df1db5ada92fdab6ed51c40dc8b4bef550a64565f15f220"
+          "sha256": "9ec217287704cb7bc947266c36e4c22c25931beac578e1d44d6d678dccc656d4"
         },
         {
           "lod": 2,
           "url": "/models/characters/gaucho-lod2.glb",
-          "triangles": 6989,
-          "bytes": 415332,
+          "triangles": 12965,
+          "bytes": 653496,
           "drawCalls": 6,
-          "sha256": "7afbe1cc16f04fb27fee9557f295e64d76b397924fb0806025e2a852abab25b0"
+          "sha256": "21532e7cc635b888a1998debec73d27d8b1084f607a60786647711b041b96b43"
         }
       ],
       "materials": {
@@ -1156,26 +1156,26 @@
         {
           "lod": 0,
           "url": "/models/characters/friar-lod0.glb",
-          "triangles": 41961,
-          "bytes": 2394108,
+          "triangles": 69340,
+          "bytes": 3857736,
           "drawCalls": 5,
-          "sha256": "6cb1a91475ebb3a0968168af888cd554d4105c2920907e2f0aebc67bbee51808"
+          "sha256": "e7537d17e994cc1c1e9852035d2dee34780f377457ae1dcdb7d03665cab7053b"
         },
         {
           "lod": 1,
           "url": "/models/characters/friar-lod1.glb",
-          "triangles": 21839,
-          "bytes": 1455548,
+          "triangles": 42058,
+          "bytes": 2646728,
           "drawCalls": 5,
-          "sha256": "5c85d3584407530ff7b0e68956c23c121825a2d38824943d6aa7197a01ea67be"
+          "sha256": "fa5c38ac5eb470d5eb71f0070e69c8b4f004cacea4ea6caf0b9d53299db3ce6d"
         },
         {
           "lod": 2,
           "url": "/models/characters/friar-lod2.glb",
-          "triangles": 8913,
-          "bytes": 594980,
+          "triangles": 14889,
+          "bytes": 833252,
           "drawCalls": 5,
-          "sha256": "f332faa00f90577c5ab419eea431e6fd4a1a861f596a699354bbf9edc9a3336d"
+          "sha256": "76dcc2ac69336efef606ceb0eb1a7d4ece843417e03d58c9e605cf2c0b4289a7"
         }
       ],
       "materials": {
@@ -1381,26 +1381,26 @@
         {
           "lod": 0,
           "url": "/models/characters/woman-scout-lod0.glb",
-          "triangles": 36526,
-          "bytes": 1855832,
+          "triangles": 63649,
+          "bytes": 3311264,
           "drawCalls": 5,
-          "sha256": "afe08d1507cbfb5b80a68fcc93fa177785a7d71f6d15904fdc3cf1684442ec39"
+          "sha256": "8f6f1ef18ccc51b579c7d769fa211fee3d70f98f855f778984269ea62acaacfe"
         },
         {
           "lod": 1,
           "url": "/models/characters/woman-scout-lod1.glb",
-          "triangles": 18687,
-          "bytes": 1143000,
+          "triangles": 38771,
+          "bytes": 2329836,
           "drawCalls": 5,
-          "sha256": "efff522137cc63b41fe6e2813a1b892ee978ad49abb33ca9fcf018185d50a575"
+          "sha256": "53e31365f9db98fc9264256b859de5dce4ca36be1b54a19f96ce957857d0d7ba"
         },
         {
           "lod": 2,
           "url": "/models/characters/woman-scout-lod2.glb",
-          "triangles": 7565,
-          "bytes": 448600,
+          "triangles": 13519,
+          "bytes": 685156,
           "drawCalls": 5,
-          "sha256": "d6f430b3b89b2927d440529bb0ae5ec69a63051055000783a578bfc9661d3c13"
+          "sha256": "04a347b0a980f687c67901e14c799ce9ae753f0b91f79b318a1e4b65f8e99b97"
         }
       ],
       "materials": {
@@ -1606,26 +1606,26 @@
         {
           "lod": 0,
           "url": "/models/characters/woman-shawl-lod0.glb",
-          "triangles": 59894,
-          "bytes": 3022340,
+          "triangles": 87017,
+          "bytes": 4477520,
           "drawCalls": 5,
-          "sha256": "20777eb2097152ad71fce0ff9de82f6b11f29e3009a1ec9f5bab2ec2717dfe79"
+          "sha256": "64688ce312ddef06f568aadefc2f875e5e53cba478275da99705a0e1cfc230e3"
         },
         {
           "lod": 1,
           "url": "/models/characters/woman-shawl-lod1.glb",
-          "triangles": 31440,
-          "bytes": 1777236,
+          "triangles": 51524,
+          "bytes": 2964184,
           "drawCalls": 5,
-          "sha256": "5480fc7064d6c779424ec3096721b2a60a8c5fa7d70eb83c6c1fb10f2d601c19"
+          "sha256": "2dc1be5e20ef75355da5ef79f2ee9163e4dcfcb301bdd81711ee698d504b7fe5"
         },
         {
           "lod": 2,
           "url": "/models/characters/woman-shawl-lod2.glb",
-          "triangles": 13195,
-          "bytes": 728296,
+          "triangles": 19149,
+          "bytes": 964992,
           "drawCalls": 5,
-          "sha256": "b8e4c5be6c9a318b5271dd6e1a2cc3c65675349b2bd205cecf162ccab925e2a1"
+          "sha256": "77e84cd9066fd8063f90174efc6fa337f3fc21be27fc40b8a51150be8837dedc"
         }
       ],
       "materials": {
@@ -1826,8 +1826,8 @@
   "animationLibraries": {
     "male": {
       "url": "/models/characters/male-animations.glb",
-      "bytes": 17730616,
-      "sha256": "18775a9848ca3e38eda6d55c1264ef86b56c3fc6fdad9db816264e96578de94e",
+      "bytes": 17743640,
+      "sha256": "da31fa81d389b35887585126ae9eb9f3779ecc0f35b78a39d2a523dd0af4fe81",
       "clips": [
         {
           "name": "stand.idle.unarmed",
@@ -3027,7 +3027,7 @@
           "reviewedPose": {
             "name": "PistolStrike",
             "origin": "approved-granadero-preview",
-            "sourceSha256": "0d347fd1d5d8f5a5efb156327348b0c13cf81e6de83120fc29c1dfbf44b5e569"
+            "sourceSha256": "e16dc547a15a8406a14ca64bf9679ce429f020b9548429ba19c4d8060713bdee"
           },
           "gripOffsets": [
             {
@@ -18074,8 +18074,8 @@
     },
     "female": {
       "url": "/models/characters/female-animations.glb",
-      "bytes": 17001196,
-      "sha256": "6a61b83aa990be398f62c4a27aee08eee9d6c6337d54184e269ffa2c07b14a1f",
+      "bytes": 17014224,
+      "sha256": "ccd59d1984ac3fa5720714a9c903e069398badde80b07f93ba93683bcc6b08a7",
       "clips": [
         {
           "name": "stand.idle.unarmed",
@@ -19282,7 +19282,7 @@
           "reviewedPose": {
             "name": "PistolStrike",
             "origin": "approved-granadero-preview",
-            "sourceSha256": "0d347fd1d5d8f5a5efb156327348b0c13cf81e6de83120fc29c1dfbf44b5e569"
+            "sourceSha256": "e16dc547a15a8406a14ca64bf9679ce429f020b9548429ba19c4d8060713bdee"
           },
           "gripOffsets": [
             {

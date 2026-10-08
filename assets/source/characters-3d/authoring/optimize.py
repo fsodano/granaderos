@@ -4,21 +4,61 @@ Run after all fitting queries. Never changes source rig or bakes posed skinning.
 """
 import math
 import bpy
+import bmesh
 from mathutils import Vector
 from surface_atlas import TILE_SIZE, TILE_GUTTER, atlas_pixels
 
 RATIOS=(.22,.075,.028)
 LONG_CLOTH_RATIOS=(.65,.35,.16)
 HAIR_RATIOS=(.55,.25,.12)
+HEAD_SKIN_RATIOS=(.80,.45,.16)
+
+def _head_component_vertices(obj):
+ """Select the native, disconnected head/neck island; never cut a seam."""
+ adjacency=[[] for _ in obj.data.vertices]
+ for edge in obj.data.edges:
+  a,b=edge.vertices;adjacency[a].append(b);adjacency[b].append(a)
+ head_groups={group.index for group in obj.vertex_groups if group.name=='head' or group.name.startswith('neck_')}
+ seen=set();selected=set()
+ for vertex in obj.data.vertices:
+  if vertex.index in seen:continue
+  stack=[vertex.index];seen.add(vertex.index);component=[];head_weight=0
+  while stack:
+   index=stack.pop();component.append(index)
+   head_weight+=sum(group.weight for group in obj.data.vertices[index].groups if group.group in head_groups)
+   for neighbor in adjacency[index]:
+    if neighbor not in seen:seen.add(neighbor);stack.append(neighbor)
+  if head_weight>.5*len(component):selected.update(component)
+ return selected
+
+def _keep_vertices(obj,selected):
+ # Copy/delete preserves native loop UVs, point pigments and deform weights.
+ # No surface is cut: both sides are already disconnected in the source skin.
+ mesh=bmesh.new();mesh.from_mesh(obj.data);mesh.verts.ensure_lookup_table()
+ bmesh.ops.delete(mesh,geom=[vertex for vertex in mesh.verts if vertex.index not in selected],context='VERTS')
+ mesh.to_mesh(obj.data);mesh.free();obj.data.update()
+
+def _preserve_head_skin(ctx,objects):
+ for skin in list(objects):
+  if not skin.name.startswith('Exposed_Human_Skin'):continue
+  selected=_head_component_vertices(skin)
+  if not selected or len(selected)==len(skin.data.vertices):
+   raise ValueError('Expected separate native head/neck and hand skin islands')
+  head=skin.copy();head.data=skin.data.copy();head.name='Exposed_Human_Head'
+  bpy.context.collection.objects.link(head);objects.append(head)
+  _keep_vertices(head,selected);head['retain_head_skin']=True
+  # First reduce the original combined skin by its existing ratio. Removing
+  # its head afterwards keeps the exact baseline hand decimation result.
+  skin['replace_reduced_head']=True
+  # The combined reduction still sees the original head shape. Otherwise
+  # facial sculpting changes its edge budget and can alter fingertip geometry.
+  native=ctx['native_skin_points'];assert len(native)==len(skin.data.vertices)
+  for vertex,point in zip(skin.data.vertices,native):vertex.co=point
+  skin.data.update()
 
 def optimize_character(ctx,lod=0):
  rig=ctx['rig'];objects=ctx['objects']
- # The distant fallback is a flat taper. At inspection/game close distance,
- # individual fitted hairs supply the brow, without a painted strip below.
- if lod<2:
-  for o in list(objects):
-   if o.name.startswith('Natural_Eyebrow_Bed'):
-    objects.remove(o);bpy.data.objects.remove(o,do_unlink=True)
+ # Fitted brow pigment remains at every LOD; close hairs add fine relief.
  if lod>0:
   omit=('Crest_Sun_Ray','Crest_Leaf','Crest_Central_Relief','Chinstrap_Brass_Scale')
   if lod==2:omit+=('Red_Epaulette_Fringe','Natural_Eyebrow_Hair','Fine_Collar_Gold_Edge','Cuff_Gold_Edge','Shako_Crest_Crown','Tailored_Shoulder_Seam','Coat_Back_Panel_Seam','Coat_Centre_Closure','Epaulette_Inner_Braid','Epaulette_Metal_Crescent','Epaulette_Button','Crest_Lower_Scroll','Crest_Laurel')
@@ -42,6 +82,7 @@ def optimize_character(ctx,lod=0):
  # straps exist. This leaves all rest vertices and native weights unchanged.
  from garment_detail import prepare_apparel_surface
  prepare_apparel_surface(ctx, objects)
+ _preserve_head_skin(ctx,objects)
  # Use a single attribute name on every object before decimation and joining.
  # Appearance pieces and owned garments may have been added after the native
  # body's face/cloth pigments. Missing attributes would otherwise become black
@@ -92,6 +133,7 @@ def optimize_character(ctx,lod=0):
   # Heavy reduction makes drapes angular and cuts shawl chords into the coat.
   fitted_cloth=any(obj.data.attributes.get(name) is not None for name in ('Long_Cloth','Fitted_Cloth'))
   ratio=LONG_CLOTH_RATIOS[lod] if fitted_cloth else RATIOS[lod]
+  if obj.get('retain_head_skin'):ratio=HEAD_SKIN_RATIOS[lod]
   if obj.data.attributes.get('Hair_Surface') is not None or obj.name.startswith(('Short_Hair','Braided_Hair','Bound_Hair')):
    ratio=HAIR_RATIOS[lod]
   dec=obj.modifiers.new('Real_Mesh_LOD_'+str(lod),'DECIMATE');dec.ratio=min(1,max(ratio,minimum/max(1,len(obj.data.polygons))));dec.use_collapse_triangulate=True
@@ -101,6 +143,9 @@ def optimize_character(ctx,lod=0):
   fitted_edges=('Crossbelt','Waist_Belt','Trouser_Seam','Crimson_Collar','Fine_Collar_Gold_Edge','Iris','Pupil','Natural_Eyebrow')
   if obj is not reduced_coat and len(obj.data.polygons)>(60 if detail else 150) and not any(n in obj.name for n in fitted_edges):bpy.ops.object.modifier_apply(modifier=dec.name)
   else:obj.modifiers.remove(dec)
+  if obj.get('replace_reduced_head'):
+   head_vertices=_head_component_vertices(obj)
+   _keep_vertices(obj,set(range(len(obj.data.vertices)))-head_vertices)
   # At most four normalized bone influences, preserving the strongest native
   # weights. The exporter therefore has one four-influence joint attribute.
   for v in obj.data.vertices:

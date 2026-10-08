@@ -52,8 +52,14 @@ The shared surface treatment adds facial pigment, cloth folds and seams,
 matte leather, and shaped uniform trim. The current face source uses separate
 2048-pixel male and female skin maps. It preserves local color differences,
 adds spatial roughness and derives restrained normals from fine source grain.
-Native UVs and the light/brown/dark palette controls remain intact. Civilian garments keep their own colors and
-do not retain military
+`facial_structure.py` adds small cheek, brow, nose and mouth surface changes
+to the native face. The measured displacement is below 1.23 mm. Head geometry
+has its own reduction budget, so the eyes and lips keep more of their source
+shape at each detail level. A fitted brow base and irregular short hairs replace
+the sparse dotted brows. Native UVs, skin weights, joints and the
+light/brown/dark palette controls remain intact. The exported non-head
+triangles retain their positions, normals, UVs, pigments and named skin weights.
+Civilian garments keep their own colors and do not retain military
 cockades, chin scales, cords or epaulettes. Each complete hat is one replaceable
 headwear part, including its small trim pieces.
 

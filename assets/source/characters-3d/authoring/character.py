@@ -1,7 +1,8 @@
-"""A human-proportioned Granadero built on the unmodified MakeHuman anatomy.
+"""A human-proportioned Granadero built on native MakeHuman anatomy.
 
-Only uniform meshes are expanded for cloth clearance. The body, source joint
-centres, source weights and all limb lengths keep the native adult proportions.
+Uniform meshes expand for cloth clearance; small facial soft-tissue planes are
+shaped after rig creation. Joint centres, skin weights, UVs and limb lengths
+keep the native adult proportions.
 Source assets and their CC0 provenance are in vendor/makehuman.
 """
 from pathlib import Path
@@ -217,6 +218,9 @@ def create_character(preset="granadero", height=1.76):
     tree.balance()
     skin=subset('Exposed_Human_Skin',lambda f:all((points[i].z>1.495 and abs(points[i].x)<.13) or sum(v for k,v in assignments[i].items() if k.startswith(('hand_','thumb_','index_','middle_','ring_','pinky_')))>.24 or min((points[i]-heads['hand_l']).length,(points[i]-heads['hand_r']).length)<.135 for i,uv in f),mats['skin'])
     subdiv(skin,1)
+    native_skin_points=[v.co.copy() for v in skin.data.vertices]
+    from facial_structure import shape_face
+    shape_face(skin,joint({"cube_name":"joint-l-eye"}).z,gender)
     # Neck and hands keep original human anatomy. Smooth wool bridges muscle
     # landmarks without changing the skeleton or narrowing any body axis.
     arm_bones={'upperarm_l','upperarm_r','lowerarm_l','lowerarm_r'}
@@ -577,8 +581,8 @@ def create_character(preset="granadero", height=1.76):
             eye=mesh(name+'_'+suffix,coords,polys,mat,'head')
             pigment=eye.data.color_attributes.new(name='Human_Surface_Tone',type='FLOAT_COLOR',domain='POINT')
             for entry,tone in zip(pigment.data,tones):entry.color=tone
-        # Flat tapered brow bed plus directional fine hairs, attached to the
-        # actual forehead. No constant-radius eyebrow cord floats above it.
+        # Soft native-skin brow pigment and short directional hairs follow
+        # the actual forehead surface.
         sign=1 if center.x>0 else -1
         brow_coords=[];brow_faces=[]
         def brow_point(t,across=0):
@@ -587,19 +591,46 @@ def create_character(preset="granadero", height=1.76):
             width=.0024*math.sin(math.pi*(.10+.88*t))**.65
             hit,p,n,_=skin.ray_cast(Vector((x,-1,z+across*width)),Vector((0,1,0)))
             return p+n*.00018 if hit else None
-        for j in range(25):
-            t=j/24
-            for across in (-1,1):brow_coords.append(brow_point(t,across))
-            if j:brow_faces.append((2*j-2,2*j,2*j+1,2*j-1))
-        if all(p is not None for p in brow_coords):mesh('Natural_Eyebrow_Bed_'+suffix,brow_coords,brow_faces,mats['hair'],'head')
-        for j in range(76):
-            t=(j+.35)/77
-            start=brow_point(t,-.76+.24*math.sin(j*2.399))
-            end=brow_point(min(1,t+.019+.022*t),.78+.20*math.sin(j*1.731))
+        from facial_structure import surface_uv
+        brow_uv=[];brow_tones=[];columns=9
+        for j in range(49):
+            t=j/48
+            for column in range(columns):
+                across=(column/(columns-1)-.5)*2
+                # Soft pigment gives depth below short individual hairs. The
+                # edge returns to the sampled native skin colour, so this is
+                # not an opaque hair-coloured strip or a raised tube.
+                spread=1+.07*math.sin(j*2.17)+.04*math.sin(j*5.31)
+                point=brow_point(t,across*spread)
+                if point is None:raise ValueError('Brow pigment must fit forehead')
+                hit,native,normal,face=skin.ray_cast(point+Vector((0,-.01,0)),Vector((0,1,0)))
+                if not hit:raise ValueError('Brow pigment has no native UV')
+                brow_coords.append(native+normal*.00009)
+                brow_uv.append(surface_uv(skin,native,face))
+                density=max(0,1-across*across)**.8
+                density*=math.sin(math.pi*t)**.30
+                density*=.90+.10*math.sin(j*2.399)
+                brow_tones.append((1-.65*density,1-.70*density,1-.73*density,1))
+            if j:
+                for column in range(columns-1):
+                    a=(j-1)*columns+column;brow_faces.append((a,a+1,a+columns+1,a+columns))
+        bed=mesh('Natural_Eyebrow_Bed_'+suffix,brow_coords,brow_faces,mats['skin'],'head',[[brow_uv[i] for i in face] for face in brow_faces])
+        pigment=bed.data.color_attributes.new(name='Human_Surface_Tone',type='FLOAT_COLOR',domain='POINT')
+        for entry,tone in zip(pigment.data,brow_tones):entry.color=tone
+        bed['anatomy_surface']='brow-density'
+        import random
+        brow_random=random.Random(319 if suffix=='l' else 731)
+        for j in range(220):
+            t=brow_random.uniform(.018,.982)
+            lower=brow_random.uniform(-.94,.50)
+            lift=brow_random.uniform(.25,.72)*(1-.40*t)
+            sweep=brow_random.uniform(.008,.027)*(.20+1.20*t)
+            start=brow_point(t,lower)
+            end=brow_point(min(.999,t+sweep),min(.98,lower+lift))
             if start is not None and end is not None:
-                start+=Vector((0,-.00012,0));end+=Vector((0,-.00012,0))
-                radius=.00014+.000025*(.5+.5*math.sin(j*3.11))
-                tube('Natural_Eyebrow_Hair_'+suffix,[start,(start+end)*.5+Vector((0,-.00008,.00008)),end],[radius,radius*.8,.000018],mats['hair'],'head',4)
+                start+=Vector((0,-.00007,0));end+=Vector((0,-.00007,0))
+                radius=brow_random.uniform(.000038,.000068)
+                tube('Natural_Eyebrow_Hair_'+suffix,[start,(start+end)*.5+Vector((0,-.000055,.000015)),end],[radius,radius*.82,.000012],mats['hair'],'head',4)
     from anatomy_surface import scalp_patch, fitted_fingernails, hand_frames, hand_tone
     hair=scalp_patch(mesh,faces,points,uvs,assignments,mats['hair'],preset in ('granadero','royalist'),gender=='female')
     subdiv(hair,1)
@@ -704,7 +735,7 @@ def create_character(preset="granadero", height=1.76):
             a=j*segments+i;b=j*segments+(i+1)%segments;plumef.append((a,b,b+segments,a+segments))
     plumef.extend([tuple(reversed(range(segments))),tuple((rings-1)*segments+i for i in range(segments))])
     mesh('Tall_Red_Plume',plumev,plumef,mats['plume'],'head')
-    ctx = {'rig':rig,'arm':arm,'objects':objects,'export_objects':[rig]+objects,'materials':mats,'M':mats,'heads':heads,'tails':tails,'rest':rest,'HEADS':heads,'TAILS':tails,'REST':rest,'source_points':points,'source_weights':source_weights,'source_assignments':assignments,'body_height':height,'height':1.948,'body_bounds':(tuple(min(points[i][a] for i in used) for a in range(3)),tuple(max(points[i][a] for i in used) for a in range(3))),'mesh':mesh,'ellipsoid':ellipsoid,'tube':tube,'source_weight_at':source_weight_at,'preset':preset,'gender':gender,'coat':coat,'trousers':trousers,'subset':subset,'source_faces':faces,'skin':skin}
+    ctx = {'rig':rig,'arm':arm,'objects':objects,'export_objects':[rig]+objects,'materials':mats,'M':mats,'heads':heads,'tails':tails,'rest':rest,'HEADS':heads,'TAILS':tails,'REST':rest,'source_points':points,'source_weights':source_weights,'source_assignments':assignments,'body_height':height,'height':1.948,'body_bounds':(tuple(min(points[i][a] for i in used) for a in range(3)),tuple(max(points[i][a] for i in used) for a in range(3))),'mesh':mesh,'ellipsoid':ellipsoid,'tube':tube,'source_weight_at':source_weight_at,'preset':preset,'gender':gender,'coat':coat,'trousers':trousers,'subset':subset,'source_faces':faces,'skin':skin,'native_skin_points':native_skin_points}
     fitted_fingernails(ctx,mats['skin'])
     apply_appearance(ctx)
     ctx['export_objects'] = [rig]+objects
@@ -776,7 +807,7 @@ def create_character(preset="granadero", height=1.76):
     for obj in objects:
         if obj.type!='MESH' or not obj.data.materials:continue
         key=toned_materials.get(obj.data.materials[0].name)
-        if key is None:continue
+        if key is None or obj.get('anatomy_surface')=='brow-density':continue
         colours=obj.data.color_attributes.new(name='Human_Surface_Tone',type='FLOAT_COLOR',domain='POINT')
         for vertex,entry in zip(obj.data.vertices,colours.data):
             entry.color=(.995,.975,.97,1) if obj.get('anatomy_surface')=='nail' else surface_tone(vertex.co,key)
