@@ -34,7 +34,7 @@ function fixture(kind,side='south'){
 test('upper facade panes keep the same width and wall contact through all four rotations',()=>{
   let expected;
   for(const side of ['north','east','south','west']){
-    const f=fixture('palace',side),details=architecturalDetails(f.b,f.input,T,4.9,0,f.geometry,f.materials,false),windows=details.getObjectByName('building-detail:review:palace-upper-windows'),bounds=f.localBounds(windows,p=>p.z<0),actualDoor=f.frame.doorU-.4*(f.frame.u.x+f.frame.u.y);
+    const f=fixture('palace',side),details=architecturalDetails(f.b,f.input,T,4.9,0,f.geometry,f.materials,false),windows=details.getObjectByName('building-detail:review:palace-upper-windows'),bounds=f.localBounds(windows,p=>p.z<0),actualDoor=f.frame.doorU-buildingArtInset(f.b,f.input)*(f.frame.u.x+f.frame.u.y);
     assert.ok(bounds.min.z<-.06/T&&bounds.max.z<0,'panes and their trim must sit on the exterior facade');
     assert.ok(bounds.max.z-bounds.min.z<.12/T,'facade panes must stay thin along the wall normal');
     const actual=[bounds.min.x-actualDoor,bounds.min.y,bounds.min.z,bounds.max.x-actualDoor,bounds.max.y,bounds.max.z];
@@ -146,7 +146,7 @@ test('farmhouse galleries preserve door, window and breach paths on both sides t
   for(const side of ['north','east','south','west'])for(const type of ['window','rubble']){
     const f=fixture('farmhouse',side),v=Math.round(f.frame.depth*.57),point=f.frame.at(0,v);f.input.terrain.tiles.find(tile=>tile.x===point.x&&tile.y===point.y).type=type;
     const before=JSON.stringify(f.input),details=architecturalDetails(f.b,f.input,T,2.5,0,f.geometry,f.materials,false);details.updateMatrixWorld(true);
-    const door=f.frame.at(f.frame.doorU-.4*(f.frame.u.x+f.frame.u.y),-1),doorRay=new Raycaster(new Vector3((door.x+.4)*T,1.90,(door.y+.4)*T),new Vector3(f.frame.v.x,0,f.frame.v.y),0,T*1.6);
+    const inset=buildingArtInset(f.b,f.input),door=f.frame.at(f.frame.doorU-inset*(f.frame.u.x+f.frame.u.y),-1),doorRay=new Raycaster(new Vector3((door.x+inset)*T,1.90,(door.y+inset)*T),new Vector3(f.frame.v.x,0,f.frame.v.y),0,T*1.6);
     assert.equal(doorRay.intersectObject(details,true).length,0,'the front gallery must preserve the real doorway');
     const start=new Vector3(point.x*T-f.frame.u.x*T,type==='window'?1.3:1.90,point.y*T-f.frame.u.y*T),ray=new Raycaster(start,new Vector3(f.frame.u.x,0,f.frame.u.y),0,T*1.6);
     assert.equal(ray.intersectObject(details,true).length,0,'an edited return must not cover the side opening');assert.equal(JSON.stringify(f.input),before);f.dispose(details);
@@ -308,7 +308,7 @@ test('civic tower clearance checks its full base footprint and parish towers can
 test('palace balcony follows the actual doorway and requires both solid entrance supports',()=>{
   for(const side of ['north','east','south','west']){
     const f=fixture('palace',side),before=JSON.stringify(f.input),details=architecturalDetails(f.b,f.input,T,4.95,0,f.geometry,f.materials,false),balcony=details.getObjectByName('building-detail:review:palace-balcony'),bounds=f.localBounds(balcony);
-    const actualDoor=f.frame.doorU-.4*(f.frame.u.x+f.frame.u.y);
+    const actualDoor=f.frame.doorU-buildingArtInset(f.b,f.input)*(f.frame.u.x+f.frame.u.y);
     assert.ok(Math.abs(bounds.getCenter(new Vector3()).x-actualDoor)<1e-5,'balcony must align with the real door midpoint');
     assert.ok(bounds.min.y>2.6,'balcony must stay above the ground passage');assert.ok(balcony.children.some(child=>child.material?.name==='world:iron'),'balcony must have an iron railing');
     assert.equal(JSON.stringify(f.input),before);disposeWorldNode(details);
