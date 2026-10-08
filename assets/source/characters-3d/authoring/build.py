@@ -3,15 +3,16 @@ from pathlib import Path
 import sys,json,struct,hashlib,argparse,math
 import bpy
 from mathutils import Vector
-HERE=Path(__file__).resolve().parent;ROOT=HERE.parents[3];OUT=ROOT/'web/public/models/characters';META=HERE/'.build';META.mkdir(exist_ok=True);OUT.mkdir(parents=True,exist_ok=True)
+HERE=Path(__file__).resolve().parent;ROOT=HERE.parents[3];OUT=ROOT/'web/public/models/characters';META=HERE/'.build'
 sys.path.insert(0,str(HERE))
 from character import create_character,neutral_pose
 from optimize import optimize_character
 from sockets import create_sockets
 
 parser=argparse.ArgumentParser();parser.add_argument('kind');parser.add_argument('--preset',default='granadero');parser.add_argument('--lod',type=int,default=0);parser.add_argument('--review',action='store_true');parser.add_argument('--output-dir',type=Path);parser.add_argument('--metadata-dir',type=Path);args=parser.parse_args(sys.argv[sys.argv.index('--')+1:])
-if args.output_dir:OUT=args.output_dir;OUT.mkdir(parents=True,exist_ok=True)
-if args.metadata_dir:META=args.metadata_dir;META.mkdir(parents=True,exist_ok=True)
+if args.output_dir:OUT=args.output_dir
+if args.metadata_dir:META=args.metadata_dir
+META.mkdir(parents=True,exist_ok=True);OUT.mkdir(parents=True,exist_ok=True)
 bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=False)
 scene=bpy.context.scene;scene.render.fps=30
 
@@ -51,7 +52,7 @@ elif args.kind=='horse':
  from horse import create_horse
  ctx=create_horse(args.lod);name='horse-lod'+str(args.lod);facts,doc=export(ctx,OUT/(name+'.glb'),True);facts.update(kind='horse',lod=args.lod,clips=ctx['clips'],saddle=ctx['saddle'],height=ctx['height'])
 else:raise ValueError(args.kind)
-(META/(name+'.json')).write_text(json.dumps(facts,indent=2)+'\n');print('ASSET_READY',name,facts['triangles'],facts['bytes'])
+(META/(name+'.json')).write_text(json.dumps(facts,indent=2)+'\n')
 if args.review and args.kind!='equipment':
  if args.kind!='horse':
   if ctx['rig'].animation_data:
@@ -65,3 +66,4 @@ if args.review and args.kind!='equipment':
   d=bpy.data.lights.new('Light','AREA');d.energy=power;d.size=size;o=bpy.data.objects.new('Light',d);bpy.context.collection.objects.link(o);o.location=loc;o.rotation_euler=(Vector((0,0,1))-o.location).to_track_quat('-Z','Y').to_euler()
  d=bpy.data.cameras.new('Camera');o=bpy.data.objects.new('Camera',d);bpy.context.collection.objects.link(o);o.location=(5,-5,5.1);o.rotation_euler=(Vector((0,0,1))-o.location).to_track_quat('-Z','Y').to_euler();d.type='ORTHO';d.ortho_scale=3.2 if args.kind=='horse' else 2.6;scene.camera=o
  scene.render.resolution_x=650;scene.render.resolution_y=650;scene.render.resolution_percentage=100;scene.render.filepath=str(META/(name+'.png'));bpy.ops.render.render(write_still=True)
+print('ASSET_READY',name,facts['triangles'],facts['bytes'])

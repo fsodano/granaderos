@@ -3,10 +3,33 @@ from pathlib import Path
 import copy
 import hashlib
 import json
+import math
 
 
 def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def strict_json(raw):
+    def reject(value):
+        raise ValueError('Non-finite source JSON: ' + value)
+    value = json.loads(raw, parse_constant=reject)
+    def check(item):
+        if isinstance(item, (int, float)):
+            try:
+                finite = math.isfinite(item)
+            except OverflowError:
+                finite = False
+            if not finite:
+                raise ValueError('Non-finite source JSON number')
+        elif isinstance(item, dict):
+            for child in item.values():
+                check(child)
+        elif isinstance(item, list):
+            for child in item:
+                check(child)
+    check(value)
+    return value
 
 
 def job_filename(job):
@@ -29,8 +52,8 @@ def checked_job_records(metadata, assets, jobs):
     records = {}
     for job, name in zip(jobs, names):
         kind, preset, lod = job
-        record = json.loads((metadata / (Path(name).stem + '.json')).read_text())
-        assert record['kind'] == kind and Path(record['url']).name == name, 'Wrong source receipt identity'
+        record = strict_json((metadata / (Path(name).stem + '.json')).read_text())
+        assert record['kind'] == kind and record['url'] == '/models/characters/' + name, 'Wrong source receipt identity'
         if kind in ('appearance', 'garments', 'animations'):
             assert record['preset'] == preset, 'Wrong source receipt preset'
         if kind in ('appearance', 'horse'):
@@ -41,14 +64,15 @@ def checked_job_records(metadata, assets, jobs):
     return records
 
 
-def checked_manifest(manifest, assets):
+def checked_manifest(manifest, assets, replacements=None):
     records = [record for appearance in manifest.get('appearances', {}).values() for record in appearance['lods']]
     records += list(manifest.get('animationLibraries', {}).values())
     records += manifest.get('horse', {}).get('lods', [])
     if manifest.get('equipment', {}).get('sha256'):
         records.append(manifest['equipment'])
     for record in records:
-        path = assets / Path(record['url']).name
+        name = Path(record['url']).name
+        path = replacements.get(name, assets / name) if replacements else assets / name
         assert path.stat().st_size == record['bytes'] and digest(path) == record['sha256'], 'Asset differs from retained manifest: ' + path.name
     return manifest
 
@@ -72,10 +96,10 @@ def requested_lod(records, lod):
     return selected[0]
 
 
-def merge_job_manifest(previous, generated, assets, jobs):
+def merge_job_manifest(previous, generated, assets, jobs, replacements=None):
     if not previous:
         assert generated['complete'], 'A partial build needs a complete current library manifest'
-        return checked_manifest(generated, assets)
+        return checked_manifest(generated, assets, replacements)
     assert previous['complete'], 'A partial build needs a complete current library manifest'
     result = copy.deepcopy(previous)
     for kind, preset, lod in jobs:
@@ -100,4 +124,4 @@ def merge_job_manifest(previous, generated, assets, jobs):
                     result['horse'][key] = copy.deepcopy(generated['horse'][key])
     # The current manifest is authoritative for every untouched field, including
     # all native support metadata, body triangle counts and final anchor space.
-    return checked_manifest(result, assets)
+    return checked_manifest(result, assets, replacements)

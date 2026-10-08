@@ -5,33 +5,41 @@ Usage: python3 tools/characters-3d/build-library.py [--only appearance|garments|
 The approved playground is never read or changed by this production builder.
 """
 from pathlib import Path
-import argparse,subprocess,sys,json,os,struct,concurrent.futures,hashlib
-from library_manifest import checked_job_records, merge_job_manifest
+import argparse,subprocess,sys,json,os,struct,concurrent.futures,hashlib,tempfile,shutil
+from library_manifest import checked_job_records, merge_job_manifest, strict_json
+from library_jobs import current_job_pins, prepared_job_files, install_job_files
 ROOT=Path(__file__).resolve().parents[2];HERE=ROOT/'assets/source/characters-3d/authoring';OUT=ROOT/'web/public/models/characters';META=HERE/'.build'
 PRESETS=['granadero','royalist','worker','surgeon','gaucho','friar','woman-scout','woman-shawl']
 p=argparse.ArgumentParser();p.add_argument('--blender',default='/Applications/Blender.app/Contents/MacOS/Blender');p.add_argument('--only',choices=['appearance','garments','equipment','horse','animations']);p.add_argument('--preset',choices=PRESETS);p.add_argument('--lod',type=int,choices=[0,1,2]);p.add_argument('--review',action='store_true');p.add_argument('--jobs',type=int,default=2);p.add_argument('--manifest-only',action='store_true');a=p.parse_args()
-previous_manifest=json.loads((OUT/'manifest.json').read_text())if(OUT/'manifest.json').exists()else{}
+previous_manifest=strict_json((OUT/'manifest.json').read_text())if(OUT/'manifest.json').exists()else{}
+manifest_before=(OUT/'manifest.json').read_bytes()if(OUT/'manifest.json').exists()else None
 jobs=[]
+private_jobs=None;JOB_OUT=OUT;JOB_META=META;job_pins={}
 if not a.manifest_only:
  for kind in ([a.only]if a.only else ['appearance','garments','equipment','horse','animations']):
   presets=([a.preset]if a.preset else PRESETS)if kind=='appearance' else ['granadero','woman-scout']if kind in ('garments','animations')else ['granadero']
   lods=([a.lod]if a.lod is not None else [0,1,2])if kind in ('appearance','horse')else[0]
   for preset in presets:
    for lod in lods:jobs.append((kind,preset,lod))
- META.mkdir(parents=True,exist_ok=True)
+ job_pins=current_job_pins(OUT,jobs)
+ private_jobs=Path(tempfile.mkdtemp(prefix='granaderos-source-jobs-'))
+ JOB_OUT=private_jobs/'assets';JOB_META=private_jobs/'metadata'
+ JOB_OUT.mkdir();JOB_META.mkdir()
+ print('PRIVATE_SOURCE_JOBS',private_jobs,flush=True)
  def run(job):
-  kind,preset,lod=job;log=META/(kind+'-'+preset+'-'+str(lod)+'.log')
-  cmd=[a.blender,'--background','--factory-startup','--python',str(HERE/'build.py'),'--',kind,'--preset',preset,'--lod',str(lod)]+(['--review']if a.review else[])
+  kind,preset,lod=job;log=JOB_META/(kind+'-'+preset+'-'+str(lod)+'.log')
+  cmd=[a.blender,'--background','--factory-startup','--python',str(HERE/'build.py'),'--',kind,'--preset',preset,'--lod',str(lod),'--output-dir',str(JOB_OUT),'--metadata-dir',str(JOB_META)]+(['--review']if a.review else[])
   with log.open('w')as f:r=subprocess.run(cmd,cwd=ROOT,stdout=f,stderr=subprocess.STDOUT)
   # Blender can return0 after Python exceptions; verify the explicit completion.
   content=log.read_text()
   if r.returncode or 'ASSET_READY'not in content:raise RuntimeError(str(log)+'\n'+content[-3500:])
   print(next(line for line in content.splitlines()if line.startswith('ASSET_READY')),flush=True)
  with concurrent.futures.ThreadPoolExecutor(max_workers=a.jobs)as pool:list(pool.map(run,jobs))
-byname=checked_job_records(META,OUT,jobs)
+byname=checked_job_records(JOB_META,JOB_OUT,jobs)
+job_files=prepared_job_files(JOB_OUT,byname)if jobs else{}
 bones={'root':'Root','hips':'pelvis','spine':'spine_02','chest':'spine_03','neck':'neck_01','head':'head','handRight':'hand_r','handLeft':'hand_l','footRight':'foot_r','footLeft':'foot_l'}
 manifest={'version':1,'units':'metres','up':'+Y','forward':'+Z','bodyHeight':1.76,'bones':bones,'skinTones':{'light':'#d5a07d','brown':'#9d6844','dark':'#623c29'},'appearances':{},'animationLibraries':{},'equipment':{'url':'/models/characters/equipment.glb','items':{}},'garments':{},'horse':{},'provenance':'assets/source/characters-3d/README.md'}
-native_path=OUT/'granadero-lod0.glb'
+native_path=JOB_OUT/'granadero-lod0.glb'if(JOB_OUT/'granadero-lod0.glb').exists()else OUT/'granadero-lod0.glb'
 if native_path.exists():
  raw=native_path.read_bytes();document=json.loads(raw[20:20+struct.unpack_from('<I',raw,12)[0]])
  native_names=[document['nodes'][index]['name']for index in document['skins'][0]['joints']]
@@ -67,11 +75,17 @@ manifest['equipment']['fittings']={'india_socket':{'node':'item_1811','hostWeapo
 horses=[byname['horse-lod'+str(i)+'.glb']for i in range(3)if 'horse-lod'+str(i)+'.glb'in byname]
 if horses:manifest['horse']={'height':1.51,'saddle':horses[0]['saddle'],'lods':[{k:h[k]for k in ('lod','url','triangles','bytes','sha256')}for h in horses],'clips':horses[0]['clips'],'actions':{'idle':'HorseIdle','walk':'HorseWalk','run':'HorseRun'},'riderSeatLocal':'clip.seatAnchor'}
 manifest['complete']=all(len(x['lods'])==3 for x in manifest['appearances'].values())and len(manifest['animationLibraries'])==2 and len(manifest['garments'])==2 and len(horses)==3 and bool(manifest['equipment']['items'])
-manifest=merge_job_manifest(previous_manifest,manifest,OUT,jobs)
-OUT.mkdir(parents=True,exist_ok=True)
+manifest=merge_job_manifest(previous_manifest,manifest,OUT,jobs,{name:JOB_OUT/name for name in byname})
 canonical=subprocess.check_output(['node','-e',"let s='';process.stdin.setEncoding('utf8');process.stdin.on('data',v=>s+=v);process.stdin.on('end',()=>process.stdout.write(JSON.stringify(JSON.parse(s),null,2)+'\\n'));"],input=json.dumps(manifest),text=True)
+assert strict_json(canonical)==manifest,'Canonical manifest changes source values'
+assert((OUT/'manifest.json').read_bytes()if(OUT/'manifest.json').exists()else None)==manifest_before,'Concurrent source manifest change'
+if jobs:install_job_files(OUT,job_files,job_pins)
+OUT.mkdir(parents=True,exist_ok=True)
 if not (OUT/'manifest.json').exists() or (OUT/'manifest.json').read_text()!=canonical:(OUT/'manifest.json').write_text(canonical)
 print('Manifest written; complete=',manifest['complete'])
+if private_jobs:
+ if a.review:print('PRIVATE_REVIEW_READY',JOB_META,flush=True)
+ else:shutil.rmtree(private_jobs)
 if manifest['complete']:
  # The general bank uses 30 Hz. Native ladder contacts need 60 Hz keys and
  # exact final-frame timing; retain the rest of each complete bank.
