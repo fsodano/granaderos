@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "updated": "2026-10-08",
-  "baseline": "239141793994803ba4c40eddc2ee77f80baa570a",
+  "baseline": "ecfa67d885b38cfe59dc7a94688ba7b0038bd2eb",
   "audit": "docs/verification/formal-audit-2026-09-27.md",
   "design": "docs/specification/game-design.md",
   "evidence": [
@@ -746,6 +746,24 @@
       "path": "docs/verification/ai-ground-dressing-recovery.md",
       "url": "https://github.com/fsodano/granaderos/pull/299",
       "description": "Published PR299 recovers one actual visible local dressing for affordable present self/adjacent-ally care. 190 focused checks, independent 107 checks/29 boundaries/24 fallback comparisons and the root combined 404-check set pass, with types and production game/editor export. Finite equipment, recorder and saved nested interruption are retained. No live HUD, long route or full T07 acceptance is claimed."
+    },
+    {
+      "id": "E-AI-OWNED-REPAIR-KIT",
+      "path": "docs/verification/ai-owned-repair-kit.md",
+      "url": "https://github.com/fsodano/granaderos/pull/301",
+      "description": "Published PR301 selects an ordinary paid repair for an enemy zero-condition loaded primary using its own finite physical kit. Root 415 affected checks, independent 44 checks and saved repair/shot/interruption comparisons pass. No kit retrieval/sharing, manual militia control or general maintenance parity is claimed."
+    },
+    {
+      "id": "E-FUNDED-SERVICE-GUARANTEE",
+      "path": "docs/verification/funded-service-guarantee.md",
+      "url": "https://github.com/fsodano/granaderos/pull/302",
+      "description": "Published PR302 funds an optional authored guarantee once, retains it through renewal/capture, refunds it according to health at actual safe departure, forfeits it on confirmed death and cancels pending arrivals once. Root 578 combined checks, types, production export and normal paid saved controls pass. Salary death compensation and full R03 parity remain open."
+    },
+    {
+      "id": "E-MILITIA-OWNED-REPAIR-KIT",
+      "path": "docs/verification/militia-owned-firearm-maintenance.md",
+      "url": "https://github.com/fsodano/granaderos/pull/303",
+      "description": "Published militia repair uses private current-queue authority for ordinary finite owned-kit maintenance. Original 136 queue/AI checks and independent 35 checks pass; actual recorded and saved repair/shot routes retain costs. Default manual/enemy preview guards, accepted guarantees and unrelated game sources remain exact. No natural twelve-action history, live HUD or complete AI acceptance is claimed."
     }
   ],
   "queue": [
@@ -4220,9 +4238,9 @@
       "requirement": "All enemy actions obey the same state and cost constraints. G19; M35.",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Published bounded enemy orders use shared AP, state, observed-target and ownership rules: finite care and short rescue approaches; capacity-checked prepared pack/holstered guns and bayonet fitting; affordable aim/body-region/penetration choices; observed finite scavenging; local cartridge/dressing handovers; and a loaded owned other-hand backup via a paid swap followed by a separate shot. PR292 retains old-gun identity, finite ammunition, capacity, readiness and saved interruption sequencing. Existing movement plans use observed occupancy and stop at actual blockers. The named AI records retain their dated checks; the PR139 publication receipt covers the consolidated related core. PR294 now admits only serviceable owned firearms for paid firing/loading/ignition work and excludes opposing private condition from threat estimates. PR295 adds an adjacent unused owned pack-gun handover followed by paid equip and a useful shot, with actual upcoming queue membership and conserved donor/recipient records. PR297 rejects broken-only cartridge demand while retaining a real healthy held-secondary reload. PR298 recovers only serviceable actual ground/drop/body firearms and retains useful same-family secondary cartridges. PR299 picks one existing visible local dressing for affordable immediate self/adjacent-ally care through ordinary paid pickup, preparation and treatment.",
-      "local": "The original development records and check counts remain source-specific. PR292 records 126 focused checks for the owned other-hand backup, paired maintenance and saved interruption sequencing. This October documentation reconciliation does not rerun those AI cases, a campaign or browser acceptance. The named PR294 and PR295 receipts record 232 and 334 affected checks, respectively, plus type checking and independent review. No new broad AI, campaign or browser run is claimed by this ledger update. PR297/298 retain 342/349 affected checks; PR299 retains 190 focused checks, independent current-main review and a root combined 404-check set in 5.8 seconds, plus types and production export. This ledger update reruns only documentation checks; it makes no fresh live-HUD or long-campaign claim.",
-      "remaining": "Specialist tools and repair materials, held-gun/tool handovers, coordinated supply requests, wider medical/container/body cache searches and broader equipment choice remain incomplete. PR295 conservatively excludes care/grenade/artillery recipients; PR299 adds only immediate local ground-dressing recovery. Broader pack/secondary ammunition search, donor reserve tuning and equip/fire scheduling remain open. Search limits and scoring weights are Granaderos tuning; incoming exposure still estimates torso chance.",
+      "published": "Published bounded enemy orders use shared AP, state, observed-target and ownership rules: finite care and short rescue approaches; capacity-checked prepared pack/holstered guns and bayonet fitting; affordable aim/body-region/penetration choices; observed finite scavenging; local cartridge/dressing handovers; and a loaded owned other-hand backup via a paid swap followed by a separate shot. PR292 retains old-gun identity, finite ammunition, capacity, readiness and saved interruption sequencing. Existing movement plans use observed occupancy and stop at actual blockers. The named AI records retain their dated checks; the PR139 publication receipt covers the consolidated related core. PR294 now admits only serviceable owned firearms for paid firing/loading/ignition work and excludes opposing private condition from threat estimates. PR295 adds an adjacent unused owned pack-gun handover followed by paid equip and a useful shot, with actual upcoming queue membership and conserved donor/recipient records. PR297 rejects broken-only cartridge demand while retaining a real healthy held-secondary reload. PR298 recovers only serviceable actual ground/drop/body firearms and retains useful same-family secondary cartridges. PR299 picks one existing visible local dressing for affordable immediate self/adjacent-ally care through ordinary paid pickup, preparation and treatment. PR301 repairs an enemy zero-condition loaded primary with its own finite physical kit through ordinary paid upkeep. The later militia successor admits the same maintenance only through private current allied/reaction queue authority, retaining public/manual rejection and earlier action priorities.",
+      "local": "The original development records and check counts remain source-specific. PR292 records 126 focused checks for the owned other-hand backup, paired maintenance and saved interruption sequencing. This October documentation reconciliation does not rerun those AI cases, a campaign or browser acceptance. The named PR294 and PR295 receipts record 232 and 334 affected checks, respectively, plus type checking and independent review. No new broad AI, campaign or browser run is claimed by this ledger update. PR297/298 retain 342/349 affected checks; PR299 retains 190 focused checks, independent current-main review and a root combined 404-check set in 5.8 seconds, plus types and production export. This ledger update reruns only documentation checks; it makes no fresh live-HUD or long-campaign claim. PR301 retains 415 root affected checks and independent saved repair/shot evidence. The militia successor retains its 136 affected queue checks and 35 independent checks, with actual recorded/saved continuations and unchanged excluded presentations. Current financial and AI integration remains bounded; this ledger change reruns only documentation checks.",
+      "remaining": "Repair-kit retrieval/sharing, jammed or unloaded broken guns, general worn-gun upkeep, held-gun/tool handovers, coordinated supply requests, wider medical/container/body cache searches and broader equipment choice remain incomplete. Existing care/grenade/artillery gun-handover exclusions, broader pack/secondary ammunition search, donor reserve tuning and equip/fire scheduling remain open. Search limits and scoring weights are Granaderos tuning; incoming exposure still estimates torso chance. Paid enemy and trusted militia repairs do not establish every enemy action or full T07 parity.",
       "acceptance": "Demonstrate this entire requirement in the published game through actual orders, resource conservation, failure paths and save/load. Also resolve the source row acceptance notes.",
       "evidence": [
         "E-PARITY",
@@ -4236,7 +4254,9 @@
         "E-AI-PACKED-GUN-HANDOVER",
         "E-AI-SERVICEABLE-CARTRIDGE-SHARING",
         "E-AI-SERVICEABLE-SCAVENGING",
-        "E-AI-GROUND-DRESSING-RECOVERY"
+        "E-AI-GROUND-DRESSING-RECOVERY",
+        "E-AI-OWNED-REPAIR-KIT",
+        "E-MILITIA-OWNED-REPAIR-KIT"
       ],
       "sourceRow": "JA2-T07",
       "sourceNotes": "Three-step/24-AP normal searches and the protected interrupt-step policy are game tuning. Paid finite orders and saved reactions do not establish every enemy action, exact classic AI parity or a complete loadout policy.",
@@ -4255,7 +4275,9 @@
         "tests/tactical-ai-packed-gun-handover.test.mjs",
         "tests/tactical-ai-serviceable-sharing.test.mjs",
         "tests/tactical-ai-serviceable-scavenging.test.mjs",
-        "tests/tactical-ai-ground-dressing-recovery.test.mjs"
+        "tests/tactical-ai-ground-dressing-recovery.test.mjs",
+        "tests/tactical-ai-owned-repair-kit.test.mjs",
+        "tests/militia-owned-firearm-maintenance.test.mjs"
       ]
     },
     {
@@ -5290,19 +5312,24 @@
       "id": "JA2-R03",
       "group": "JA2 gameplay parity",
       "requirement": "Medical deposits and insurance add a financial risk choice. M14.",
-      "status": "MISSING",
+      "status": "PARTIAL",
       "priority": "P1",
-      "published": "No accepted implementation found in the audited sources.",
-      "local": "The preserved source records the local implementation and remaining gaps. The fresh broad run is not a new visual or per-row acceptance check.",
-      "remaining": "Define a period contract guarantee/compensation choice, cost and claim/refund rules; then implement it.",
+      "published": "PR302 implements the funded deposit half as an optional authored service guarantee, without changing stock offers. Hire pays salary plus guarantee once; renewal retains its ID. Capture holds it. Actual safe departure refunds the health-based amount, confirmed death forfeits it and pending-arrival cancellation refunds salary plus guarantee once. Normal editor, hiring, renewal, personnel and cancellation controls display the actual payable or refundable amount.",
+      "local": "The final 19-path source passes 578 combined financial/rendered/contract/content/custody/save and AI checks in 64 seconds, with no failures or skips, plus types, documentation audits and the canonical production export. Normal editor/launch/hire/saved dismissal controls retain treasury 3200 to 3064 to 3164 without repeated payment. Final-source casualty, custody, cancellation and actual travel-expiry probes pass. Declared fixture boundaries and cold HTTP/module-cycle corrections are recorded; no full campaign or complete insurance acceptance is claimed.",
+      "remaining": "A confirmed near-cap treasury boundary exposes an open guarantee defect: actual departure/expiry or arrival cancellation can credit more than the existing 1e9 save limit. Manual combined-refund guards and strict unpaid automatic-settlement receipts are required; the declared near-cap fixture is not evidence of naturally earned billion-peso income. Unused prepaid salary compensation after death is not implemented. It requires immutable actual payment/service segments, an explicit player risk choice and fee, arrival/capture/renewal timing, one-time death settlement and saved/UI acceptance. The guarantee is a game contract rule; it does not establish a historical insurer, compensation institution, balance or complete R03 parity.",
       "acceptance": "Demonstrate this entire requirement in the published game through actual orders, resource conservation, failure paths and save/load. Also resolve the source row acceptance notes.",
       "evidence": [
         "E-PARITY",
         "E-LOCAL",
-        "E-PUBLISHED"
+        "E-PUBLISHED",
+        "E-FUNDED-SERVICE-GUARANTEE"
       ],
       "sourceRow": "JA2-R03",
-      "sourceNotes": "If retaining this classic choice, present a period contract guarantee/compensation equivalent and real claim/refund conditions. It is not inherently a modern technology exception."
+      "sourceNotes": "If retaining this classic choice, present a period contract guarantee/compensation equivalent and real claim/refund conditions. It is not inherently a modern technology exception.",
+      "testFiles": [
+        "tests/service-guarantees.test.mjs",
+        "tests/service-guarantees-render.test.mjs"
+      ]
     },
     {
       "id": "JA2-R04",
@@ -6771,6 +6798,6 @@
     "frozenInputs": 9324,
     "sourceNote": "Complete local execution at 67f6c7b5195d0cf946bf8c4c3134a84cabcf3702. The compact delta reconstructs its frozen manifest byte for byte over immutable PR139 evidence. Browser QA at 2035fa7702858123b454141ca0c9d26b00fb10fe has identical game/tools/UI build source; only the exact reviewed test-only preparation and expectation changes differ. Final pre-push documentation/evidence is audited separately; no later full rerun, alpha CI or merge is asserted. The final pre-push workflow changes only the test-job timeout from 90 to 120 minutes after the complete run. All 9,323 other frozen inputs, including every game, test and tool source, remain byte-identical; the workflow and final documentation are checked separately. No later complete local run is claimed."
   },
-  "sourceRelationship": "T07 now includes named published PR297/298/299 receipts retained on main 239141793994803ba4c40eddc2ee77f80baa570a. Their bounded cartridge/recovery/care changes pass a combined 404-check root gate; this documentation-only update reruns no gameplay, browser or long campaign. Earlier reconciliations and historical checks keep their exact sources: The selected T07 and W08 rows are reconciled against named published records retained on main 916049df7346a5b655564fafdea37c93be76045c. PR294 and PR295 add bounded paid firearm admission and owned packed-gun handover; FIX-03/PR139 supersede the old failed cleared-field rescue. This documentation-only reconciliation runs no long campaign or broad suite. The earlier T07/V09/W10 reconciliation and historical checks remain source-specific: The selected T07, V09 and W10 rows are reconciled against named published records retained on main c2cee4b421d9e6b9ff6ca3db3d5496051253646b. This documentation-only reconciliation runs no long campaign or broad suite. The check table retains its original exact-source results. The following pre-push alpha source relationship is historical: The dated published baseline and published-check row preserve PR #139 at 7ac3c9d612cc5d46c846617e0686ef5b6b450184. This alpha PR includes the later finite service-equipment return with separate complete local acceptance at 67f6c7b5195d0cf946bf8c4c3134a84cabcf3702. The compact delta identifies its unchanged executing inputs. No alpha CI result or merge is asserted in this pre-push record; actual publication is recorded in the PR body and final delivery report. Original/prototype/presence snapshots remain historical. The final pre-push workflow changes only the test-job timeout from 90 to 120 minutes after the complete run. All 9,323 other frozen inputs, including every game, test and tool source, remain byte-identical; the workflow and final documentation are checked separately. No later complete local run is claimed.",
-  "snapshotSummary": "These totals are dated results, not a fresh run on the October baseline. W10 now points to the accepted WIN-01, POST-01, FIX-01 through FIX-04 and REL-02 route records; their bounded scope and remaining manual/balance limits are unchanged. The 2026-09-27 audit snapshots and PR139 local/published 4214/4214 results remain unchanged dated evidence. The corrected alpha candidate passes 4,251/4,251 across 600 files with no failures, skips, cancellations or TODOs. It accepts the bounded return policy and preserves scripted routes. Extensive player alpha, wider force/seed balance, full JA2 parity, art/audio and sustained loaded 60 FPS remain open. W08 now points to the accepted FIX-03/PR139 cleared-field rescue while retaining stealth, self-escape, carrying and narrative gaps. T07 adds the bounded published PR294/PR295 records and stays partial. Later PR297/298 close broken-only cartridge demand and broken-source firearm admission; PR299 adds immediate local ground-dressing care. These bounded records do not close T07, general medical/AI parity or release-scale acceptance."
+  "sourceRelationship": "T07 and R03 now include named published enemy repair PR301, funded guarantee PR302 and trusted militia repair PR303, retained on main ecfa67d885b38cfe59dc7a94688ba7b0038bd2eb. These are bounded finite-order and contract receipts. This documentation-only update reruns no campaign, browser or broad gameplay suite. All earlier checks remain exact and source-specific: T07 now includes named published PR297/298/299 receipts retained on main 239141793994803ba4c40eddc2ee77f80baa570a. Their bounded cartridge/recovery/care changes pass a combined 404-check root gate; this documentation-only update reruns no gameplay, browser or long campaign. Earlier reconciliations and historical checks keep their exact sources: The selected T07 and W08 rows are reconciled against named published records retained on main 916049df7346a5b655564fafdea37c93be76045c. PR294 and PR295 add bounded paid firearm admission and owned packed-gun handover; FIX-03/PR139 supersede the old failed cleared-field rescue. This documentation-only reconciliation runs no long campaign or broad suite. The earlier T07/V09/W10 reconciliation and historical checks remain source-specific: The selected T07, V09 and W10 rows are reconciled against named published records retained on main c2cee4b421d9e6b9ff6ca3db3d5496051253646b. This documentation-only reconciliation runs no long campaign or broad suite. The check table retains its original exact-source results. The following pre-push alpha source relationship is historical: The dated published baseline and published-check row preserve PR #139 at 7ac3c9d612cc5d46c846617e0686ef5b6b450184. This alpha PR includes the later finite service-equipment return with separate complete local acceptance at 67f6c7b5195d0cf946bf8c4c3134a84cabcf3702. The compact delta identifies its unchanged executing inputs. No alpha CI result or merge is asserted in this pre-push record; actual publication is recorded in the PR body and final delivery report. Original/prototype/presence snapshots remain historical. The final pre-push workflow changes only the test-job timeout from 90 to 120 minutes after the complete run. All 9,323 other frozen inputs, including every game, test and tool source, remain byte-identical; the workflow and final documentation are checked separately. No later complete local run is claimed.",
+  "snapshotSummary": "These totals are dated results, not a fresh run on the October baseline. W10 now points to the accepted WIN-01, POST-01, FIX-01 through FIX-04 and REL-02 route records; their bounded scope and remaining manual/balance limits are unchanged. The 2026-09-27 audit snapshots and PR139 local/published 4214/4214 results remain unchanged dated evidence. The corrected alpha candidate passes 4,251/4,251 across 600 files with no failures, skips, cancellations or TODOs. It accepts the bounded return policy and preserves scripted routes. Extensive player alpha, wider force/seed balance, full JA2 parity, art/audio and sustained loaded 60 FPS remain open. W08 now points to the accepted FIX-03/PR139 cleared-field rescue while retaining stealth, self-escape, carrying and narrative gaps. T07 adds the bounded published PR294/PR295 records and stays partial. Later PR297/298 close broken-only cartridge demand and broken-source firearm admission; PR299 adds immediate local ground-dressing care. These bounded records do not close T07, general medical/AI parity or release-scale acceptance. Later owned finite enemy/militia repairs extend T07 without closing broader equipment policy. R03 moves from missing to partial only for the funded guarantee; unused-salary death compensation and complete insurance acceptance remain open."
 }
