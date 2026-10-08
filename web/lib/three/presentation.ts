@@ -160,7 +160,7 @@ export function presentActors(state:any,entries:readonly ActorEntry[],positions:
         const source=entries.find(entry=>entry.key===visual.key)!;
         const toYaw=Math.atan2(target.position[0]-visual.position[0],target.position[2]-visual.position[2]);
         const deltaYaw=Math.atan2(Math.sin(toYaw-visual.yaw),Math.cos(toYaw-visual.yaw)),distance=(target.position[0]-visual.position[0])**2+(target.position[2]-visual.position[2])**2;
-        const turn=visual.cue.phase==='prepare'&&visual.equipment==='blade'&&visual.posture==='standing'&&!visual.mounted&&!visual.motion?.moving&&distance>1e-10&&Math.abs(deltaYaw)>1e-7&&Math.abs(deltaYaw)<=Math.PI/4+1e-7?{fromYaw:visual.yaw,toYaw}:undefined;
+        const turn=visual.cue.phase==='prepare'&&(visual.equipment==='blade'||visual.equipment==='long-gun'&&visual.action==='strike')&&visual.posture==='standing'&&!visual.mounted&&!visual.motion?.moving&&distance>1e-10&&Math.abs(deltaYaw)>1e-7&&Math.abs(deltaYaw)<=Math.PI/4+1e-7?{fromYaw:visual.yaw,toYaw}:undefined;
         visual.cue={...visual.cue,...(turn?{contactTurn:turn}:{}),contactTarget:{key,appearance:target.appearance,position:[...target.position],yaw:target.yaw,posture:target.posture,mounted:target.mounted,action:target.action,bodyHeights:{...target.bodyHeights}},contactSupport:contactSupport(state,source.actor,visual,revealed,result)};
       }
     }
