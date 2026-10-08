@@ -1,0 +1,2125 @@
+{
+  "url": "http://127.0.0.1:3198/renderer-sandbox",
+  "errors": [],
+  "sourcePins": {
+    "web/lib/three/actor-runtime.ts": "075a40c931bc88e9d6c39fcd0b7629317795b966959f3ab5516d94496b2fc110",
+    "web/lib/three/climb-contact-fit.ts": "d333d244bd1a6a0769fdf9ceb75c41e9f2fe455f9be07d2a0c925f7747967a7d",
+    "web/lib/three/climb-body-phase.ts": "f15bd357270cba7aec5a74accfe81060b9a55f0ede069bd253980e6de228723e",
+    "game/climb-geometry.js": "5b3e8b6b21a3326ebe32af269eb617e23a8b0e3bdfda75e356547989372a7586",
+    "web/app/renderer-sandbox/varied-roof-climb-fixture.js": "968d1012c78051aba37f625333a6c6b631de11712b6d3e0afca8a259109cd47e",
+    "web/public/models/characters/manifest.json": "94c6f4938fda3e53d1c00d08d61fbdf44f7f8af3a21888c4db457a3b9d688375",
+    "web/public/models/characters/male-animations.glb": "624915277f2f4f842c0f2b8c251e91aee7b5436319612e327ecbb174fe1f8cda",
+    "web/public/models/characters/female-animations.glb": "aa8cc1381835de19c1ffa747020d50225f92f3f8c1eb807e31c4a04007e2f37a"
+  },
+  "network": [
+    {
+      "path": "/models/characters/manifest.json",
+      "status": 200,
+      "sha256": "94c6f4938fda3e53d1c00d08d61fbdf44f7f8af3a21888c4db457a3b9d688375"
+    },
+    {
+      "path": "/models/characters/male-garments.glb",
+      "status": 200,
+      "sha256": "f2c8a94230284344705166b83e229194a2d38003c821fc1b7484c91573c4ea07"
+    },
+    {
+      "path": "/models/characters/equipment.glb",
+      "status": 200,
+      "sha256": "237c0e3dd3e7a3af5fbb0c05ee94a3aa95c25951b346877e43c9af4fb673edf5"
+    },
+    {
+      "path": "/models/characters/gaucho-lod1.glb",
+      "status": 200,
+      "sha256": "69b3e5d633a9578338f5ae2c2270b1470096b1a031c55814bbc93d100baddf78"
+    },
+    {
+      "path": "/models/characters/woman-scout-lod1.glb",
+      "status": 200,
+      "sha256": "358863428ae5d24a19f4d080dd56c7982b568041a5530bacc59e48153ca78cda"
+    },
+    {
+      "path": "/models/characters/granadero-lod1.glb",
+      "status": 200,
+      "sha256": "b589b8558e13d693cccbbc28621ca96221cc9bc6ee58028751075b2fcf5c0188"
+    },
+    {
+      "path": "/models/characters/worker-lod1.glb",
+      "status": 200,
+      "sha256": "a83c44ad08118860c59ea02a330b617ad0d8ddfa2a4ed70fabe695a04bd10a7f"
+    },
+    {
+      "path": "/models/characters/female-garments.glb",
+      "status": 200,
+      "sha256": "e197024f2a2a9a2d18241206eef4e409189ceab1ba4f7fd97a8eb0d96784c5af"
+    },
+    {
+      "path": "/models/characters/royalist-lod1.glb",
+      "status": 200,
+      "sha256": "9199b37b27872bd9348f34c9f6bd051d45089aa3727ae76cd23347d30129df31"
+    },
+    {
+      "path": "/models/characters/textures/6b9e6e7cf8e4e61f4eec.png",
+      "status": 200,
+      "sha256": "6b9e6e7cf8e4e61f4eeca4c37b1a44185157489b9dfa152f06742cca0e05bd25"
+    },
+    {
+      "path": "/models/characters/textures/851812def6824e843620.png",
+      "status": 200,
+      "sha256": "851812def6824e8436202da61466ea219f705c42ea2352d5d2a095be711d6c14"
+    },
+    {
+      "path": "/models/characters/textures/190fcfc8745e6197a795.png",
+      "status": 200,
+      "sha256": "190fcfc8745e6197a7954c6b921f4cf3a890d9ac78db560a67dcdbc8359de180"
+    },
+    {
+      "path": "/models/characters/textures/4b36fb5abe80124daabc.png",
+      "status": 200,
+      "sha256": "4b36fb5abe80124daabce546e8ba9f220ed6467a69c301dd3baaeb43852e8aa5"
+    },
+    {
+      "path": "/models/characters/textures/531a12fea7813218250b.png",
+      "status": 200,
+      "sha256": "531a12fea7813218250b3e25413c9fd0e7456d66733a9affda8b7fdd383ae4ab"
+    },
+    {
+      "path": "/models/characters/textures/02fc23efbfd8542db951.png",
+      "status": 200,
+      "sha256": "02fc23efbfd8542db9518c8793db2b0b3ecb320896a7697607992b22c6568389"
+    },
+    {
+      "path": "/models/characters/textures/e80f68933ff3fbf30557.png",
+      "status": 200,
+      "sha256": "e80f68933ff3fbf305574a55d2512ea143835de52314e7f62ecab38ec409a8c4"
+    },
+    {
+      "path": "/models/characters/textures/f63de566801fcea8ef97.png",
+      "status": 200,
+      "sha256": "f63de566801fcea8ef973271a3cd46ac87cf285e766ecfa2d0c6f64670ff3af2"
+    },
+    {
+      "path": "/models/characters/textures/76c6ed4f73557a4a0a53.png",
+      "status": 200,
+      "sha256": "76c6ed4f73557a4a0a53d707abccd289a0cbe8d7a9c2a822753f6848ba41ae0f"
+    },
+    {
+      "path": "/models/characters/textures/409b7f25641a2c1cf7e2.png",
+      "status": 200,
+      "sha256": "409b7f25641a2c1cf7e2497521c2022152e41c3cad3e224a29384d18681ad207"
+    },
+    {
+      "path": "/models/characters/textures/c4ad653360cce21ee393.png",
+      "status": 200,
+      "sha256": "c4ad653360cce21ee3933b84279b682381beeb75d21e4f88906076fdd7165456"
+    },
+    {
+      "path": "/models/characters/textures/79b3320dd2f22a4941bf.png",
+      "status": 200,
+      "sha256": "79b3320dd2f22a4941bf0243b0ebc0b7bc19cf512770d7627922d1fd67aeb9c3"
+    },
+    {
+      "path": "/models/characters/textures/040aa7bd60f397241c0c.png",
+      "status": 200,
+      "sha256": "040aa7bd60f397241c0c5dd19c01e5d2660fc82c6d78e911b62e1efef5cbde33"
+    },
+    {
+      "path": "/models/characters/textures/01f30a1649e149138639.png",
+      "status": 200,
+      "sha256": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8"
+    },
+    {
+      "path": "/models/characters/textures/89135b727219523ff9ab.png",
+      "status": 200,
+      "sha256": "89135b727219523ff9ab057e2481e4022fdd64fe463bfa1480ffbf1876a6475a"
+    },
+    {
+      "path": "/models/characters/textures/cde52c5fc44edc14b3d6.png",
+      "status": 200,
+      "sha256": "cde52c5fc44edc14b3d661cff6a5a62068916c4af703298e0e31431b5eaf51a9"
+    },
+    {
+      "path": "/models/characters/textures/6b9e6e7cf8e4e61f4eec.png",
+      "status": 200,
+      "sha256": "6b9e6e7cf8e4e61f4eeca4c37b1a44185157489b9dfa152f06742cca0e05bd25"
+    },
+    {
+      "path": "/models/characters/textures/531a12fea7813218250b.png",
+      "status": 200,
+      "sha256": "531a12fea7813218250b3e25413c9fd0e7456d66733a9affda8b7fdd383ae4ab"
+    },
+    {
+      "path": "/models/characters/textures/040aa7bd60f397241c0c.png",
+      "status": 200,
+      "sha256": "040aa7bd60f397241c0c5dd19c01e5d2660fc82c6d78e911b62e1efef5cbde33"
+    },
+    {
+      "path": "/models/characters/textures/4b36fb5abe80124daabc.png",
+      "status": 200,
+      "sha256": "4b36fb5abe80124daabce546e8ba9f220ed6467a69c301dd3baaeb43852e8aa5"
+    },
+    {
+      "path": "/models/characters/textures/409b7f25641a2c1cf7e2.png",
+      "status": 200,
+      "sha256": "409b7f25641a2c1cf7e2497521c2022152e41c3cad3e224a29384d18681ad207"
+    },
+    {
+      "path": "/models/characters/textures/2e15a426be9ee20c39a7.png",
+      "status": 200,
+      "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+    },
+    {
+      "path": "/models/characters/textures/2e15a426be9ee20c39a7.png",
+      "status": 200,
+      "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+    },
+    {
+      "path": "/models/characters/textures/042e670c62ad34a45c14.png",
+      "status": 200,
+      "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+    },
+    {
+      "path": "/models/characters/textures/2e15a426be9ee20c39a7.png",
+      "status": 200,
+      "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+    },
+    {
+      "path": "/models/characters/textures/2e15a426be9ee20c39a7.png",
+      "status": 200,
+      "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+    },
+    {
+      "path": "/models/characters/textures/042e670c62ad34a45c14.png",
+      "status": 200,
+      "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+    },
+    {
+      "path": "/models/characters/textures/042e670c62ad34a45c14.png",
+      "status": 200,
+      "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+    },
+    {
+      "path": "/models/characters/textures/2e15a426be9ee20c39a7.png",
+      "status": 200,
+      "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+    },
+    {
+      "path": "/models/characters/textures/042e670c62ad34a45c14.png",
+      "status": 200,
+      "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+    },
+    {
+      "path": "/models/characters/textures/042e670c62ad34a45c14.png",
+      "status": 200,
+      "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+    },
+    {
+      "path": "/models/characters/female-animations.glb",
+      "status": 200,
+      "sha256": "aa8cc1381835de19c1ffa747020d50225f92f3f8c1eb807e31c4a04007e2f37a"
+    },
+    {
+      "path": "/models/characters/male-animations.glb",
+      "status": 200,
+      "sha256": "624915277f2f4f842c0f2b8c251e91aee7b5436319612e327ecbb174fe1f8cda"
+    },
+    {
+      "path": "/models/characters/textures/01f30a1649e149138639.png",
+      "status": 200,
+      "sha256": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8"
+    },
+    {
+      "path": "/models/characters/textures/2e15a426be9ee20c39a7.png",
+      "status": 200,
+      "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+    },
+    {
+      "path": "/models/characters/textures/a27b9aff9f8c8edf1136.png",
+      "status": 200,
+      "sha256": "a27b9aff9f8c8edf1136144e3450fcf61faad1b74eae0deb6b512c0c1d2b55de"
+    },
+    {
+      "path": "/models/characters/textures/a536d20596728975d3d5.png",
+      "status": 200,
+      "sha256": "a536d20596728975d3d5364979a12235b13fdda1c55a71beb924308f5d21ddae"
+    },
+    {
+      "path": "/models/characters/textures/042e670c62ad34a45c14.png",
+      "status": 200,
+      "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+    },
+    {
+      "path": "/models/characters/textures/55aaf791e83ec37fa219.png",
+      "status": 200,
+      "sha256": "55aaf791e83ec37fa219953f3eb685a5375b2f35e1c93991a15f1c637b764dbe"
+    },
+    {
+      "path": "/models/characters/textures/ca8dfdb29da067ef8ac1.png",
+      "status": 200,
+      "sha256": "ca8dfdb29da067ef8ac15565cbd7779aef4188f41b2afc539af517a2680fbbe2"
+    },
+    {
+      "path": "/models/characters/textures/cfef86f82ac5d996af20.png",
+      "status": 200,
+      "sha256": "cfef86f82ac5d996af200cedf4b76ca9d633459188d697a9d8cfdf17d08e7e18"
+    },
+    {
+      "path": "/models/characters/textures/2e15a426be9ee20c39a7.png",
+      "status": 200,
+      "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+    },
+    {
+      "path": "/models/characters/textures/042e670c62ad34a45c14.png",
+      "status": 200,
+      "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+    },
+    {
+      "path": "/models/characters/manifest.json",
+      "status": 200,
+      "sha256": "94c6f4938fda3e53d1c00d08d61fbdf44f7f8af3a21888c4db457a3b9d688375"
+    },
+    {
+      "path": "/models/characters/granadero-lod1.glb",
+      "status": 200,
+      "sha256": "b589b8558e13d693cccbbc28621ca96221cc9bc6ee58028751075b2fcf5c0188"
+    },
+    {
+      "path": "/models/characters/equipment.glb",
+      "status": 200,
+      "sha256": "237c0e3dd3e7a3af5fbb0c05ee94a3aa95c25951b346877e43c9af4fb673edf5"
+    },
+    {
+      "path": "/models/characters/male-garments.glb",
+      "status": 200,
+      "sha256": "f2c8a94230284344705166b83e229194a2d38003c821fc1b7484c91573c4ea07"
+    },
+    {
+      "path": "/models/characters/worker-lod1.glb",
+      "status": 200,
+      "sha256": "a83c44ad08118860c59ea02a330b617ad0d8ddfa2a4ed70fabe695a04bd10a7f"
+    },
+    {
+      "path": "/models/characters/textures/76c6ed4f73557a4a0a53.png",
+      "status": 200,
+      "sha256": "76c6ed4f73557a4a0a53d707abccd289a0cbe8d7a9c2a822753f6848ba41ae0f"
+    },
+    {
+      "path": "/models/characters/textures/040aa7bd60f397241c0c.png",
+      "status": 200,
+      "sha256": "040aa7bd60f397241c0c5dd19c01e5d2660fc82c6d78e911b62e1efef5cbde33"
+    },
+    {
+      "path": "/models/characters/textures/409b7f25641a2c1cf7e2.png",
+      "status": 200,
+      "sha256": "409b7f25641a2c1cf7e2497521c2022152e41c3cad3e224a29384d18681ad207"
+    },
+    {
+      "path": "/models/characters/textures/2e15a426be9ee20c39a7.png",
+      "status": 200,
+      "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+    },
+    {
+      "path": "/models/characters/textures/042e670c62ad34a45c14.png",
+      "status": 200,
+      "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+    },
+    {
+      "path": "/models/characters/textures/6b9e6e7cf8e4e61f4eec.png",
+      "status": 200,
+      "sha256": "6b9e6e7cf8e4e61f4eeca4c37b1a44185157489b9dfa152f06742cca0e05bd25"
+    },
+    {
+      "path": "/models/characters/textures/851812def6824e843620.png",
+      "status": 200,
+      "sha256": "851812def6824e8436202da61466ea219f705c42ea2352d5d2a095be711d6c14"
+    },
+    {
+      "path": "/models/characters/textures/01f30a1649e149138639.png",
+      "status": 200,
+      "sha256": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8"
+    },
+    {
+      "path": "/models/characters/textures/79b3320dd2f22a4941bf.png",
+      "status": 200,
+      "sha256": "79b3320dd2f22a4941bf0243b0ebc0b7bc19cf512770d7627922d1fd67aeb9c3"
+    },
+    {
+      "path": "/models/characters/textures/531a12fea7813218250b.png",
+      "status": 200,
+      "sha256": "531a12fea7813218250b3e25413c9fd0e7456d66733a9affda8b7fdd383ae4ab"
+    },
+    {
+      "path": "/models/characters/textures/2e15a426be9ee20c39a7.png",
+      "status": 200,
+      "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+    },
+    {
+      "path": "/models/characters/textures/c4ad653360cce21ee393.png",
+      "status": 200,
+      "sha256": "c4ad653360cce21ee3933b84279b682381beeb75d21e4f88906076fdd7165456"
+    },
+    {
+      "path": "/models/characters/textures/042e670c62ad34a45c14.png",
+      "status": 200,
+      "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+    },
+    {
+      "path": "/models/characters/textures/55aaf791e83ec37fa219.png",
+      "status": 200,
+      "sha256": "55aaf791e83ec37fa219953f3eb685a5375b2f35e1c93991a15f1c637b764dbe"
+    },
+    {
+      "path": "/models/characters/textures/a536d20596728975d3d5.png",
+      "status": 200,
+      "sha256": "a536d20596728975d3d5364979a12235b13fdda1c55a71beb924308f5d21ddae"
+    },
+    {
+      "path": "/models/characters/textures/cfef86f82ac5d996af20.png",
+      "status": 200,
+      "sha256": "cfef86f82ac5d996af200cedf4b76ca9d633459188d697a9d8cfdf17d08e7e18"
+    },
+    {
+      "path": "/models/characters/textures/2e15a426be9ee20c39a7.png",
+      "status": 200,
+      "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+    },
+    {
+      "path": "/models/characters/male-animations.glb",
+      "status": 200,
+      "sha256": "624915277f2f4f842c0f2b8c251e91aee7b5436319612e327ecbb174fe1f8cda"
+    },
+    {
+      "path": "/models/characters/textures/042e670c62ad34a45c14.png",
+      "status": 200,
+      "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+    },
+    {
+      "path": "/models/characters/manifest.json",
+      "status": 200,
+      "sha256": "94c6f4938fda3e53d1c00d08d61fbdf44f7f8af3a21888c4db457a3b9d688375"
+    },
+    {
+      "path": "/models/characters/granadero-lod1.glb",
+      "status": 200,
+      "sha256": "b589b8558e13d693cccbbc28621ca96221cc9bc6ee58028751075b2fcf5c0188"
+    },
+    {
+      "path": "/models/characters/equipment.glb",
+      "status": 200,
+      "sha256": "237c0e3dd3e7a3af5fbb0c05ee94a3aa95c25951b346877e43c9af4fb673edf5"
+    },
+    {
+      "path": "/models/characters/male-garments.glb",
+      "status": 200,
+      "sha256": "f2c8a94230284344705166b83e229194a2d38003c821fc1b7484c91573c4ea07"
+    },
+    {
+      "path": "/models/characters/worker-lod1.glb",
+      "status": 200,
+      "sha256": "a83c44ad08118860c59ea02a330b617ad0d8ddfa2a4ed70fabe695a04bd10a7f"
+    },
+    {
+      "path": "/models/characters/textures/040aa7bd60f397241c0c.png",
+      "status": 200,
+      "sha256": "040aa7bd60f397241c0c5dd19c01e5d2660fc82c6d78e911b62e1efef5cbde33"
+    },
+    {
+      "path": "/models/characters/textures/409b7f25641a2c1cf7e2.png",
+      "status": 200,
+      "sha256": "409b7f25641a2c1cf7e2497521c2022152e41c3cad3e224a29384d18681ad207"
+    },
+    {
+      "path": "/models/characters/textures/76c6ed4f73557a4a0a53.png",
+      "status": 200,
+      "sha256": "76c6ed4f73557a4a0a53d707abccd289a0cbe8d7a9c2a822753f6848ba41ae0f"
+    },
+    {
+      "path": "/models/characters/textures/6b9e6e7cf8e4e61f4eec.png",
+      "status": 200,
+      "sha256": "6b9e6e7cf8e4e61f4eeca4c37b1a44185157489b9dfa152f06742cca0e05bd25"
+    },
+    {
+      "path": "/models/characters/textures/851812def6824e843620.png",
+      "status": 200,
+      "sha256": "851812def6824e8436202da61466ea219f705c42ea2352d5d2a095be711d6c14"
+    },
+    {
+      "path": "/models/characters/textures/531a12fea7813218250b.png",
+      "status": 200,
+      "sha256": "531a12fea7813218250b3e25413c9fd0e7456d66733a9affda8b7fdd383ae4ab"
+    },
+    {
+      "path": "/models/characters/textures/2e15a426be9ee20c39a7.png",
+      "status": 200,
+      "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+    },
+    {
+      "path": "/models/characters/textures/042e670c62ad34a45c14.png",
+      "status": 200,
+      "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+    },
+    {
+      "path": "/models/characters/textures/01f30a1649e149138639.png",
+      "status": 200,
+      "sha256": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8"
+    },
+    {
+      "path": "/models/characters/textures/79b3320dd2f22a4941bf.png",
+      "status": 200,
+      "sha256": "79b3320dd2f22a4941bf0243b0ebc0b7bc19cf512770d7627922d1fd67aeb9c3"
+    },
+    {
+      "path": "/models/characters/textures/c4ad653360cce21ee393.png",
+      "status": 200,
+      "sha256": "c4ad653360cce21ee3933b84279b682381beeb75d21e4f88906076fdd7165456"
+    },
+    {
+      "path": "/models/characters/textures/2e15a426be9ee20c39a7.png",
+      "status": 200,
+      "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+    },
+    {
+      "path": "/models/characters/textures/042e670c62ad34a45c14.png",
+      "status": 200,
+      "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+    },
+    {
+      "path": "/models/characters/textures/a536d20596728975d3d5.png",
+      "status": 200,
+      "sha256": "a536d20596728975d3d5364979a12235b13fdda1c55a71beb924308f5d21ddae"
+    },
+    {
+      "path": "/models/characters/textures/55aaf791e83ec37fa219.png",
+      "status": 200,
+      "sha256": "55aaf791e83ec37fa219953f3eb685a5375b2f35e1c93991a15f1c637b764dbe"
+    },
+    {
+      "path": "/models/characters/textures/cfef86f82ac5d996af20.png",
+      "status": 200,
+      "sha256": "cfef86f82ac5d996af200cedf4b76ca9d633459188d697a9d8cfdf17d08e7e18"
+    },
+    {
+      "path": "/models/characters/male-animations.glb",
+      "status": 200,
+      "sha256": "624915277f2f4f842c0f2b8c251e91aee7b5436319612e327ecbb174fe1f8cda"
+    },
+    {
+      "path": "/models/characters/textures/2e15a426be9ee20c39a7.png",
+      "status": 200,
+      "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+    },
+    {
+      "path": "/models/characters/textures/042e670c62ad34a45c14.png",
+      "status": 200,
+      "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+    },
+    {
+      "path": "/models/characters/worker-lod0.glb",
+      "status": 200,
+      "sha256": "1682d2cbd20cca840fc088d58983fa37496db3cb56084babd6cdd7c7d179540a"
+    },
+    {
+      "path": "/models/characters/granadero-lod0.glb",
+      "status": 200,
+      "sha256": "9041e7e5ecd249b0065cf012271d60552f418d1bb2809be6ccb973496c7e97e3"
+    },
+    {
+      "path": "/models/characters/textures/c4ad653360cce21ee393.png",
+      "status": 200,
+      "sha256": "c4ad653360cce21ee3933b84279b682381beeb75d21e4f88906076fdd7165456"
+    },
+    {
+      "path": "/models/characters/textures/01f30a1649e149138639.png",
+      "status": 200,
+      "sha256": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8"
+    },
+    {
+      "path": "/models/characters/textures/79b3320dd2f22a4941bf.png",
+      "status": 200,
+      "sha256": "79b3320dd2f22a4941bf0243b0ebc0b7bc19cf512770d7627922d1fd67aeb9c3"
+    },
+    {
+      "path": "/models/characters/textures/2e15a426be9ee20c39a7.png",
+      "status": 200,
+      "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+    },
+    {
+      "path": "/models/characters/textures/040aa7bd60f397241c0c.png",
+      "status": 200,
+      "sha256": "040aa7bd60f397241c0c5dd19c01e5d2660fc82c6d78e911b62e1efef5cbde33"
+    },
+    {
+      "path": "/models/characters/textures/76c6ed4f73557a4a0a53.png",
+      "status": 200,
+      "sha256": "76c6ed4f73557a4a0a53d707abccd289a0cbe8d7a9c2a822753f6848ba41ae0f"
+    },
+    {
+      "path": "/models/characters/textures/409b7f25641a2c1cf7e2.png",
+      "status": 200,
+      "sha256": "409b7f25641a2c1cf7e2497521c2022152e41c3cad3e224a29384d18681ad207"
+    },
+    {
+      "path": "/models/characters/textures/2e15a426be9ee20c39a7.png",
+      "status": 200,
+      "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+    },
+    {
+      "path": "/models/characters/textures/042e670c62ad34a45c14.png",
+      "status": 200,
+      "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+    },
+    {
+      "path": "/models/characters/textures/042e670c62ad34a45c14.png",
+      "status": 200,
+      "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+    },
+    {
+      "path": "/models/characters/manifest.json",
+      "status": 200,
+      "sha256": "94c6f4938fda3e53d1c00d08d61fbdf44f7f8af3a21888c4db457a3b9d688375"
+    },
+    {
+      "path": "/models/characters/granadero-lod1.glb",
+      "status": 200,
+      "sha256": "b589b8558e13d693cccbbc28621ca96221cc9bc6ee58028751075b2fcf5c0188"
+    },
+    {
+      "path": "/models/characters/male-garments.glb",
+      "status": 200,
+      "sha256": "f2c8a94230284344705166b83e229194a2d38003c821fc1b7484c91573c4ea07"
+    },
+    {
+      "path": "/models/characters/equipment.glb",
+      "status": 200,
+      "sha256": "237c0e3dd3e7a3af5fbb0c05ee94a3aa95c25951b346877e43c9af4fb673edf5"
+    },
+    {
+      "path": "/models/characters/worker-lod1.glb",
+      "status": 200,
+      "sha256": "a83c44ad08118860c59ea02a330b617ad0d8ddfa2a4ed70fabe695a04bd10a7f"
+    },
+    {
+      "path": "/models/characters/textures/76c6ed4f73557a4a0a53.png",
+      "status": 200,
+      "sha256": "76c6ed4f73557a4a0a53d707abccd289a0cbe8d7a9c2a822753f6848ba41ae0f"
+    },
+    {
+      "path": "/models/characters/textures/409b7f25641a2c1cf7e2.png",
+      "status": 200,
+      "sha256": "409b7f25641a2c1cf7e2497521c2022152e41c3cad3e224a29384d18681ad207"
+    },
+    {
+      "path": "/models/characters/textures/040aa7bd60f397241c0c.png",
+      "status": 200,
+      "sha256": "040aa7bd60f397241c0c5dd19c01e5d2660fc82c6d78e911b62e1efef5cbde33"
+    },
+    {
+      "path": "/models/characters/textures/2e15a426be9ee20c39a7.png",
+      "status": 200,
+      "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+    },
+    {
+      "path": "/models/characters/textures/6b9e6e7cf8e4e61f4eec.png",
+      "status": 200,
+      "sha256": "6b9e6e7cf8e4e61f4eeca4c37b1a44185157489b9dfa152f06742cca0e05bd25"
+    },
+    {
+      "path": "/models/characters/textures/c4ad653360cce21ee393.png",
+      "status": 200,
+      "sha256": "c4ad653360cce21ee3933b84279b682381beeb75d21e4f88906076fdd7165456"
+    },
+    {
+      "path": "/models/characters/textures/531a12fea7813218250b.png",
+      "status": 200,
+      "sha256": "531a12fea7813218250b3e25413c9fd0e7456d66733a9affda8b7fdd383ae4ab"
+    },
+    {
+      "path": "/models/characters/textures/79b3320dd2f22a4941bf.png",
+      "status": 200,
+      "sha256": "79b3320dd2f22a4941bf0243b0ebc0b7bc19cf512770d7627922d1fd67aeb9c3"
+    },
+    {
+      "path": "/models/characters/textures/01f30a1649e149138639.png",
+      "status": 200,
+      "sha256": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8"
+    },
+    {
+      "path": "/models/characters/textures/851812def6824e843620.png",
+      "status": 200,
+      "sha256": "851812def6824e8436202da61466ea219f705c42ea2352d5d2a095be711d6c14"
+    },
+    {
+      "path": "/models/characters/textures/2e15a426be9ee20c39a7.png",
+      "status": 200,
+      "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+    },
+    {
+      "path": "/models/characters/textures/042e670c62ad34a45c14.png",
+      "status": 200,
+      "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+    },
+    {
+      "path": "/models/characters/textures/042e670c62ad34a45c14.png",
+      "status": 200,
+      "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+    },
+    {
+      "path": "/models/characters/textures/a536d20596728975d3d5.png",
+      "status": 200,
+      "sha256": "a536d20596728975d3d5364979a12235b13fdda1c55a71beb924308f5d21ddae"
+    },
+    {
+      "path": "/models/characters/male-animations.glb",
+      "status": 200,
+      "sha256": "624915277f2f4f842c0f2b8c251e91aee7b5436319612e327ecbb174fe1f8cda"
+    },
+    {
+      "path": "/models/characters/textures/cfef86f82ac5d996af20.png",
+      "status": 200,
+      "sha256": "cfef86f82ac5d996af200cedf4b76ca9d633459188d697a9d8cfdf17d08e7e18"
+    },
+    {
+      "path": "/models/characters/textures/55aaf791e83ec37fa219.png",
+      "status": 200,
+      "sha256": "55aaf791e83ec37fa219953f3eb685a5375b2f35e1c93991a15f1c637b764dbe"
+    },
+    {
+      "path": "/models/characters/textures/2e15a426be9ee20c39a7.png",
+      "status": 200,
+      "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+    },
+    {
+      "path": "/models/characters/textures/042e670c62ad34a45c14.png",
+      "status": 200,
+      "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+    },
+    {
+      "path": "/models/characters/manifest.json",
+      "status": 200,
+      "sha256": "94c6f4938fda3e53d1c00d08d61fbdf44f7f8af3a21888c4db457a3b9d688375"
+    },
+    {
+      "path": "/models/characters/woman-scout-lod1.glb",
+      "status": 200,
+      "sha256": "358863428ae5d24a19f4d080dd56c7982b568041a5530bacc59e48153ca78cda"
+    },
+    {
+      "path": "/models/characters/equipment.glb",
+      "status": 200,
+      "sha256": "237c0e3dd3e7a3af5fbb0c05ee94a3aa95c25951b346877e43c9af4fb673edf5"
+    },
+    {
+      "path": "/models/characters/female-garments.glb",
+      "status": 200,
+      "sha256": "e197024f2a2a9a2d18241206eef4e409189ceab1ba4f7fd97a8eb0d96784c5af"
+    },
+    {
+      "path": "/models/characters/male-garments.glb",
+      "status": 200,
+      "sha256": "f2c8a94230284344705166b83e229194a2d38003c821fc1b7484c91573c4ea07"
+    },
+    {
+      "path": "/models/characters/worker-lod1.glb",
+      "status": 200,
+      "sha256": "a83c44ad08118860c59ea02a330b617ad0d8ddfa2a4ed70fabe695a04bd10a7f"
+    },
+    {
+      "path": "/models/characters/textures/e80f68933ff3fbf30557.png",
+      "status": 200,
+      "sha256": "e80f68933ff3fbf305574a55d2512ea143835de52314e7f62ecab38ec409a8c4"
+    },
+    {
+      "path": "/models/characters/textures/f63de566801fcea8ef97.png",
+      "status": 200,
+      "sha256": "f63de566801fcea8ef973271a3cd46ac87cf285e766ecfa2d0c6f64670ff3af2"
+    },
+    {
+      "path": "/models/characters/textures/c4ad653360cce21ee393.png",
+      "status": 200,
+      "sha256": "c4ad653360cce21ee3933b84279b682381beeb75d21e4f88906076fdd7165456"
+    },
+    {
+      "path": "/models/characters/textures/4b36fb5abe80124daabc.png",
+      "status": 200,
+      "sha256": "4b36fb5abe80124daabce546e8ba9f220ed6467a69c301dd3baaeb43852e8aa5"
+    },
+    {
+      "path": "/models/characters/textures/6b9e6e7cf8e4e61f4eec.png",
+      "status": 200,
+      "sha256": "6b9e6e7cf8e4e61f4eeca4c37b1a44185157489b9dfa152f06742cca0e05bd25"
+    },
+    {
+      "path": "/models/characters/textures/531a12fea7813218250b.png",
+      "status": 200,
+      "sha256": "531a12fea7813218250b3e25413c9fd0e7456d66733a9affda8b7fdd383ae4ab"
+    },
+    {
+      "path": "/models/characters/textures/2e15a426be9ee20c39a7.png",
+      "status": 200,
+      "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+    },
+    {
+      "path": "/models/characters/textures/79b3320dd2f22a4941bf.png",
+      "status": 200,
+      "sha256": "79b3320dd2f22a4941bf0243b0ebc0b7bc19cf512770d7627922d1fd67aeb9c3"
+    },
+    {
+      "path": "/models/characters/textures/851812def6824e843620.png",
+      "status": 200,
+      "sha256": "851812def6824e8436202da61466ea219f705c42ea2352d5d2a095be711d6c14"
+    },
+    {
+      "path": "/models/characters/textures/01f30a1649e149138639.png",
+      "status": 200,
+      "sha256": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8"
+    },
+    {
+      "path": "/models/characters/textures/89135b727219523ff9ab.png",
+      "status": 200,
+      "sha256": "89135b727219523ff9ab057e2481e4022fdd64fe463bfa1480ffbf1876a6475a"
+    },
+    {
+      "path": "/models/characters/textures/042e670c62ad34a45c14.png",
+      "status": 200,
+      "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+    },
+    {
+      "path": "/models/characters/textures/2e15a426be9ee20c39a7.png",
+      "status": 200,
+      "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+    },
+    {
+      "path": "/models/characters/textures/6b9e6e7cf8e4e61f4eec.png",
+      "status": 200,
+      "sha256": "6b9e6e7cf8e4e61f4eeca4c37b1a44185157489b9dfa152f06742cca0e05bd25"
+    },
+    {
+      "path": "/models/characters/textures/531a12fea7813218250b.png",
+      "status": 200,
+      "sha256": "531a12fea7813218250b3e25413c9fd0e7456d66733a9affda8b7fdd383ae4ab"
+    },
+    {
+      "path": "/models/characters/textures/042e670c62ad34a45c14.png",
+      "status": 200,
+      "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+    },
+    {
+      "path": "/models/characters/female-animations.glb",
+      "status": 200,
+      "sha256": "aa8cc1381835de19c1ffa747020d50225f92f3f8c1eb807e31c4a04007e2f37a"
+    },
+    {
+      "path": "/models/characters/textures/ca8dfdb29da067ef8ac1.png",
+      "status": 200,
+      "sha256": "ca8dfdb29da067ef8ac15565cbd7779aef4188f41b2afc539af517a2680fbbe2"
+    },
+    {
+      "path": "/models/characters/textures/01f30a1649e149138639.png",
+      "status": 200,
+      "sha256": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8"
+    },
+    {
+      "path": "/models/characters/textures/a27b9aff9f8c8edf1136.png",
+      "status": 200,
+      "sha256": "a27b9aff9f8c8edf1136144e3450fcf61faad1b74eae0deb6b512c0c1d2b55de"
+    },
+    {
+      "path": "/models/characters/textures/2e15a426be9ee20c39a7.png",
+      "status": 200,
+      "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+    },
+    {
+      "path": "/models/characters/textures/55aaf791e83ec37fa219.png",
+      "status": 200,
+      "sha256": "55aaf791e83ec37fa219953f3eb685a5375b2f35e1c93991a15f1c637b764dbe"
+    },
+    {
+      "path": "/models/characters/textures/a536d20596728975d3d5.png",
+      "status": 200,
+      "sha256": "a536d20596728975d3d5364979a12235b13fdda1c55a71beb924308f5d21ddae"
+    },
+    {
+      "path": "/models/characters/textures/2e15a426be9ee20c39a7.png",
+      "status": 200,
+      "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+    },
+    {
+      "path": "/models/characters/textures/cfef86f82ac5d996af20.png",
+      "status": 200,
+      "sha256": "cfef86f82ac5d996af200cedf4b76ca9d633459188d697a9d8cfdf17d08e7e18"
+    },
+    {
+      "path": "/models/characters/textures/042e670c62ad34a45c14.png",
+      "status": 200,
+      "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+    },
+    {
+      "path": "/models/characters/textures/042e670c62ad34a45c14.png",
+      "status": 200,
+      "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+    },
+    {
+      "path": "/models/characters/male-animations.glb",
+      "status": 200,
+      "sha256": "624915277f2f4f842c0f2b8c251e91aee7b5436319612e327ecbb174fe1f8cda"
+    },
+    {
+      "path": "/models/characters/worker-lod0.glb",
+      "status": 200,
+      "sha256": "1682d2cbd20cca840fc088d58983fa37496db3cb56084babd6cdd7c7d179540a"
+    },
+    {
+      "path": "/models/characters/woman-scout-lod0.glb",
+      "status": 200,
+      "sha256": "8d7c0d817c45681a0a1ebf5068b985ad8d1de580a221d93af3ccba1640f5fa39"
+    },
+    {
+      "path": "/models/characters/textures/79b3320dd2f22a4941bf.png",
+      "status": 200,
+      "sha256": "79b3320dd2f22a4941bf0243b0ebc0b7bc19cf512770d7627922d1fd67aeb9c3"
+    },
+    {
+      "path": "/models/characters/textures/01f30a1649e149138639.png",
+      "status": 200,
+      "sha256": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8"
+    },
+    {
+      "path": "/models/characters/textures/c4ad653360cce21ee393.png",
+      "status": 200,
+      "sha256": "c4ad653360cce21ee3933b84279b682381beeb75d21e4f88906076fdd7165456"
+    },
+    {
+      "path": "/models/characters/textures/2e15a426be9ee20c39a7.png",
+      "status": 200,
+      "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+    },
+    {
+      "path": "/models/characters/textures/e80f68933ff3fbf30557.png",
+      "status": 200,
+      "sha256": "e80f68933ff3fbf305574a55d2512ea143835de52314e7f62ecab38ec409a8c4"
+    },
+    {
+      "path": "/models/characters/textures/4b36fb5abe80124daabc.png",
+      "status": 200,
+      "sha256": "4b36fb5abe80124daabce546e8ba9f220ed6467a69c301dd3baaeb43852e8aa5"
+    },
+    {
+      "path": "/models/characters/textures/f63de566801fcea8ef97.png",
+      "status": 200,
+      "sha256": "f63de566801fcea8ef973271a3cd46ac87cf285e766ecfa2d0c6f64670ff3af2"
+    },
+    {
+      "path": "/models/characters/textures/2e15a426be9ee20c39a7.png",
+      "status": 200,
+      "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+    },
+    {
+      "path": "/models/characters/textures/042e670c62ad34a45c14.png",
+      "status": 200,
+      "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+    },
+    {
+      "path": "/models/characters/textures/042e670c62ad34a45c14.png",
+      "status": 200,
+      "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+    },
+    {
+      "path": "/models/characters/royalist-lod0.glb",
+      "status": 200,
+      "sha256": "d23f8262eb38def87d7b21586d3faf308505323b5091a8c7150acd82a7334b01"
+    },
+    {
+      "path": "/models/characters/textures/040aa7bd60f397241c0c.png",
+      "status": 200,
+      "sha256": "040aa7bd60f397241c0c5dd19c01e5d2660fc82c6d78e911b62e1efef5cbde33"
+    },
+    {
+      "path": "/models/characters/textures/409b7f25641a2c1cf7e2.png",
+      "status": 200,
+      "sha256": "409b7f25641a2c1cf7e2497521c2022152e41c3cad3e224a29384d18681ad207"
+    },
+    {
+      "path": "/models/characters/textures/cde52c5fc44edc14b3d6.png",
+      "status": 200,
+      "sha256": "cde52c5fc44edc14b3d661cff6a5a62068916c4af703298e0e31431b5eaf51a9"
+    },
+    {
+      "path": "/models/characters/textures/2e15a426be9ee20c39a7.png",
+      "status": 200,
+      "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+    },
+    {
+      "path": "/models/characters/textures/042e670c62ad34a45c14.png",
+      "status": 200,
+      "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+    },
+    {
+      "path": "/models/characters/royalist-lod1.glb",
+      "status": 200,
+      "sha256": "9199b37b27872bd9348f34c9f6bd051d45089aa3727ae76cd23347d30129df31"
+    },
+    {
+      "path": "/models/characters/textures/cde52c5fc44edc14b3d6.png",
+      "status": 200,
+      "sha256": "cde52c5fc44edc14b3d661cff6a5a62068916c4af703298e0e31431b5eaf51a9"
+    },
+    {
+      "path": "/models/characters/textures/040aa7bd60f397241c0c.png",
+      "status": 200,
+      "sha256": "040aa7bd60f397241c0c5dd19c01e5d2660fc82c6d78e911b62e1efef5cbde33"
+    },
+    {
+      "path": "/models/characters/textures/409b7f25641a2c1cf7e2.png",
+      "status": 200,
+      "sha256": "409b7f25641a2c1cf7e2497521c2022152e41c3cad3e224a29384d18681ad207"
+    },
+    {
+      "path": "/models/characters/textures/2e15a426be9ee20c39a7.png",
+      "status": 200,
+      "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+    },
+    {
+      "path": "/models/characters/textures/042e670c62ad34a45c14.png",
+      "status": 200,
+      "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+    },
+    {
+      "path": "/models/characters/manifest.json",
+      "status": 200,
+      "sha256": "94c6f4938fda3e53d1c00d08d61fbdf44f7f8af3a21888c4db457a3b9d688375"
+    },
+    {
+      "path": "/models/characters/equipment.glb",
+      "status": 200,
+      "sha256": "237c0e3dd3e7a3af5fbb0c05ee94a3aa95c25951b346877e43c9af4fb673edf5"
+    },
+    {
+      "path": "/models/characters/female-garments.glb",
+      "status": 200,
+      "sha256": "e197024f2a2a9a2d18241206eef4e409189ceab1ba4f7fd97a8eb0d96784c5af"
+    },
+    {
+      "path": "/models/characters/woman-scout-lod1.glb",
+      "status": 200,
+      "sha256": "358863428ae5d24a19f4d080dd56c7982b568041a5530bacc59e48153ca78cda"
+    },
+    {
+      "path": "/models/characters/worker-lod1.glb",
+      "status": 200,
+      "sha256": "a83c44ad08118860c59ea02a330b617ad0d8ddfa2a4ed70fabe695a04bd10a7f"
+    },
+    {
+      "path": "/models/characters/male-garments.glb",
+      "status": 200,
+      "sha256": "f2c8a94230284344705166b83e229194a2d38003c821fc1b7484c91573c4ea07"
+    },
+    {
+      "path": "/models/characters/textures/f63de566801fcea8ef97.png",
+      "status": 200,
+      "sha256": "f63de566801fcea8ef973271a3cd46ac87cf285e766ecfa2d0c6f64670ff3af2"
+    },
+    {
+      "path": "/models/characters/textures/4b36fb5abe80124daabc.png",
+      "status": 200,
+      "sha256": "4b36fb5abe80124daabce546e8ba9f220ed6467a69c301dd3baaeb43852e8aa5"
+    },
+    {
+      "path": "/models/characters/textures/89135b727219523ff9ab.png",
+      "status": 200,
+      "sha256": "89135b727219523ff9ab057e2481e4022fdd64fe463bfa1480ffbf1876a6475a"
+    },
+    {
+      "path": "/models/characters/textures/2e15a426be9ee20c39a7.png",
+      "status": 200,
+      "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+    },
+    {
+      "path": "/models/characters/textures/79b3320dd2f22a4941bf.png",
+      "status": 200,
+      "sha256": "79b3320dd2f22a4941bf0243b0ebc0b7bc19cf512770d7627922d1fd67aeb9c3"
+    },
+    {
+      "path": "/models/characters/textures/c4ad653360cce21ee393.png",
+      "status": 200,
+      "sha256": "c4ad653360cce21ee3933b84279b682381beeb75d21e4f88906076fdd7165456"
+    },
+    {
+      "path": "/models/characters/textures/e80f68933ff3fbf30557.png",
+      "status": 200,
+      "sha256": "e80f68933ff3fbf305574a55d2512ea143835de52314e7f62ecab38ec409a8c4"
+    },
+    {
+      "path": "/models/characters/textures/531a12fea7813218250b.png",
+      "status": 200,
+      "sha256": "531a12fea7813218250b3e25413c9fd0e7456d66733a9affda8b7fdd383ae4ab"
+    },
+    {
+      "path": "/models/characters/textures/6b9e6e7cf8e4e61f4eec.png",
+      "status": 200,
+      "sha256": "6b9e6e7cf8e4e61f4eeca4c37b1a44185157489b9dfa152f06742cca0e05bd25"
+    },
+    {
+      "path": "/models/characters/textures/01f30a1649e149138639.png",
+      "status": 200,
+      "sha256": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8"
+    },
+    {
+      "path": "/models/characters/textures/2e15a426be9ee20c39a7.png",
+      "status": 200,
+      "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+    },
+    {
+      "path": "/models/characters/textures/851812def6824e843620.png",
+      "status": 200,
+      "sha256": "851812def6824e8436202da61466ea219f705c42ea2352d5d2a095be711d6c14"
+    },
+    {
+      "path": "/models/characters/textures/6b9e6e7cf8e4e61f4eec.png",
+      "status": 200,
+      "sha256": "6b9e6e7cf8e4e61f4eeca4c37b1a44185157489b9dfa152f06742cca0e05bd25"
+    },
+    {
+      "path": "/models/characters/textures/531a12fea7813218250b.png",
+      "status": 200,
+      "sha256": "531a12fea7813218250b3e25413c9fd0e7456d66733a9affda8b7fdd383ae4ab"
+    },
+    {
+      "path": "/models/characters/textures/042e670c62ad34a45c14.png",
+      "status": 200,
+      "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+    },
+    {
+      "path": "/models/characters/textures/042e670c62ad34a45c14.png",
+      "status": 200,
+      "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+    },
+    {
+      "path": "/models/characters/female-animations.glb",
+      "status": 200,
+      "sha256": "aa8cc1381835de19c1ffa747020d50225f92f3f8c1eb807e31c4a04007e2f37a"
+    },
+    {
+      "path": "/models/characters/male-animations.glb",
+      "status": 200,
+      "sha256": "624915277f2f4f842c0f2b8c251e91aee7b5436319612e327ecbb174fe1f8cda"
+    },
+    {
+      "path": "/models/characters/textures/ca8dfdb29da067ef8ac1.png",
+      "status": 200,
+      "sha256": "ca8dfdb29da067ef8ac15565cbd7779aef4188f41b2afc539af517a2680fbbe2"
+    },
+    {
+      "path": "/models/characters/textures/a27b9aff9f8c8edf1136.png",
+      "status": 200,
+      "sha256": "a27b9aff9f8c8edf1136144e3450fcf61faad1b74eae0deb6b512c0c1d2b55de"
+    },
+    {
+      "path": "/models/characters/textures/01f30a1649e149138639.png",
+      "status": 200,
+      "sha256": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8"
+    },
+    {
+      "path": "/models/characters/textures/2e15a426be9ee20c39a7.png",
+      "status": 200,
+      "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+    },
+    {
+      "path": "/models/characters/textures/cfef86f82ac5d996af20.png",
+      "status": 200,
+      "sha256": "cfef86f82ac5d996af200cedf4b76ca9d633459188d697a9d8cfdf17d08e7e18"
+    },
+    {
+      "path": "/models/characters/textures/a536d20596728975d3d5.png",
+      "status": 200,
+      "sha256": "a536d20596728975d3d5364979a12235b13fdda1c55a71beb924308f5d21ddae"
+    },
+    {
+      "path": "/models/characters/textures/55aaf791e83ec37fa219.png",
+      "status": 200,
+      "sha256": "55aaf791e83ec37fa219953f3eb685a5375b2f35e1c93991a15f1c637b764dbe"
+    },
+    {
+      "path": "/models/characters/textures/2e15a426be9ee20c39a7.png",
+      "status": 200,
+      "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+    },
+    {
+      "path": "/models/characters/textures/042e670c62ad34a45c14.png",
+      "status": 200,
+      "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+    },
+    {
+      "path": "/models/characters/textures/042e670c62ad34a45c14.png",
+      "status": 200,
+      "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+    },
+    {
+      "path": "/models/characters/manifest.json",
+      "status": 200,
+      "sha256": "94c6f4938fda3e53d1c00d08d61fbdf44f7f8af3a21888c4db457a3b9d688375"
+    },
+    {
+      "path": "/models/characters/woman-scout-lod1.glb",
+      "status": 200,
+      "sha256": "358863428ae5d24a19f4d080dd56c7982b568041a5530bacc59e48153ca78cda"
+    },
+    {
+      "path": "/models/characters/equipment.glb",
+      "status": 200,
+      "sha256": "237c0e3dd3e7a3af5fbb0c05ee94a3aa95c25951b346877e43c9af4fb673edf5"
+    },
+    {
+      "path": "/models/characters/female-garments.glb",
+      "status": 200,
+      "sha256": "e197024f2a2a9a2d18241206eef4e409189ceab1ba4f7fd97a8eb0d96784c5af"
+    },
+    {
+      "path": "/models/characters/worker-lod1.glb",
+      "status": 200,
+      "sha256": "a83c44ad08118860c59ea02a330b617ad0d8ddfa2a4ed70fabe695a04bd10a7f"
+    },
+    {
+      "path": "/models/characters/male-garments.glb",
+      "status": 200,
+      "sha256": "f2c8a94230284344705166b83e229194a2d38003c821fc1b7484c91573c4ea07"
+    },
+    {
+      "path": "/models/characters/male-animations.glb",
+      "status": 200,
+      "sha256": "624915277f2f4f842c0f2b8c251e91aee7b5436319612e327ecbb174fe1f8cda"
+    },
+    {
+      "path": "/models/characters/textures/6b9e6e7cf8e4e61f4eec.png",
+      "status": 200,
+      "sha256": "6b9e6e7cf8e4e61f4eeca4c37b1a44185157489b9dfa152f06742cca0e05bd25"
+    },
+    {
+      "path": "/models/characters/textures/f63de566801fcea8ef97.png",
+      "status": 200,
+      "sha256": "f63de566801fcea8ef973271a3cd46ac87cf285e766ecfa2d0c6f64670ff3af2"
+    },
+    {
+      "path": "/models/characters/textures/4b36fb5abe80124daabc.png",
+      "status": 200,
+      "sha256": "4b36fb5abe80124daabce546e8ba9f220ed6467a69c301dd3baaeb43852e8aa5"
+    },
+    {
+      "path": "/models/characters/textures/e80f68933ff3fbf30557.png",
+      "status": 200,
+      "sha256": "e80f68933ff3fbf305574a55d2512ea143835de52314e7f62ecab38ec409a8c4"
+    },
+    {
+      "path": "/models/characters/textures/2e15a426be9ee20c39a7.png",
+      "status": 200,
+      "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+    },
+    {
+      "path": "/models/characters/textures/c4ad653360cce21ee393.png",
+      "status": 200,
+      "sha256": "c4ad653360cce21ee3933b84279b682381beeb75d21e4f88906076fdd7165456"
+    },
+    {
+      "path": "/models/characters/textures/89135b727219523ff9ab.png",
+      "status": 200,
+      "sha256": "89135b727219523ff9ab057e2481e4022fdd64fe463bfa1480ffbf1876a6475a"
+    },
+    {
+      "path": "/models/characters/textures/531a12fea7813218250b.png",
+      "status": 200,
+      "sha256": "531a12fea7813218250b3e25413c9fd0e7456d66733a9affda8b7fdd383ae4ab"
+    },
+    {
+      "path": "/models/characters/textures/79b3320dd2f22a4941bf.png",
+      "status": 200,
+      "sha256": "79b3320dd2f22a4941bf0243b0ebc0b7bc19cf512770d7627922d1fd67aeb9c3"
+    },
+    {
+      "path": "/models/characters/textures/01f30a1649e149138639.png",
+      "status": 200,
+      "sha256": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8"
+    },
+    {
+      "path": "/models/characters/textures/851812def6824e843620.png",
+      "status": 200,
+      "sha256": "851812def6824e8436202da61466ea219f705c42ea2352d5d2a095be711d6c14"
+    },
+    {
+      "path": "/models/characters/textures/6b9e6e7cf8e4e61f4eec.png",
+      "status": 200,
+      "sha256": "6b9e6e7cf8e4e61f4eeca4c37b1a44185157489b9dfa152f06742cca0e05bd25"
+    },
+    {
+      "path": "/models/characters/textures/531a12fea7813218250b.png",
+      "status": 200,
+      "sha256": "531a12fea7813218250b3e25413c9fd0e7456d66733a9affda8b7fdd383ae4ab"
+    },
+    {
+      "path": "/models/characters/textures/042e670c62ad34a45c14.png",
+      "status": 200,
+      "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+    },
+    {
+      "path": "/models/characters/textures/2e15a426be9ee20c39a7.png",
+      "status": 200,
+      "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+    },
+    {
+      "path": "/models/characters/female-animations.glb",
+      "status": 200,
+      "sha256": "aa8cc1381835de19c1ffa747020d50225f92f3f8c1eb807e31c4a04007e2f37a"
+    },
+    {
+      "path": "/models/characters/textures/042e670c62ad34a45c14.png",
+      "status": 200,
+      "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+    },
+    {
+      "path": "/models/characters/textures/55aaf791e83ec37fa219.png",
+      "status": 200,
+      "sha256": "55aaf791e83ec37fa219953f3eb685a5375b2f35e1c93991a15f1c637b764dbe"
+    },
+    {
+      "path": "/models/characters/textures/cfef86f82ac5d996af20.png",
+      "status": 200,
+      "sha256": "cfef86f82ac5d996af200cedf4b76ca9d633459188d697a9d8cfdf17d08e7e18"
+    },
+    {
+      "path": "/models/characters/textures/a536d20596728975d3d5.png",
+      "status": 200,
+      "sha256": "a536d20596728975d3d5364979a12235b13fdda1c55a71beb924308f5d21ddae"
+    },
+    {
+      "path": "/models/characters/textures/ca8dfdb29da067ef8ac1.png",
+      "status": 200,
+      "sha256": "ca8dfdb29da067ef8ac15565cbd7779aef4188f41b2afc539af517a2680fbbe2"
+    },
+    {
+      "path": "/models/characters/textures/01f30a1649e149138639.png",
+      "status": 200,
+      "sha256": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8"
+    },
+    {
+      "path": "/models/characters/textures/2e15a426be9ee20c39a7.png",
+      "status": 200,
+      "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+    },
+    {
+      "path": "/models/characters/textures/a27b9aff9f8c8edf1136.png",
+      "status": 200,
+      "sha256": "a27b9aff9f8c8edf1136144e3450fcf61faad1b74eae0deb6b512c0c1d2b55de"
+    },
+    {
+      "path": "/models/characters/textures/2e15a426be9ee20c39a7.png",
+      "status": 200,
+      "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+    },
+    {
+      "path": "/models/characters/textures/042e670c62ad34a45c14.png",
+      "status": 200,
+      "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+    },
+    {
+      "path": "/models/characters/textures/042e670c62ad34a45c14.png",
+      "status": 200,
+      "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+    },
+    {
+      "path": "/models/characters/woman-scout-lod0.glb",
+      "status": 200,
+      "sha256": "8d7c0d817c45681a0a1ebf5068b985ad8d1de580a221d93af3ccba1640f5fa39"
+    },
+    {
+      "path": "/models/characters/worker-lod0.glb",
+      "status": 200,
+      "sha256": "1682d2cbd20cca840fc088d58983fa37496db3cb56084babd6cdd7c7d179540a"
+    },
+    {
+      "path": "/models/characters/textures/e80f68933ff3fbf30557.png",
+      "status": 200,
+      "sha256": "e80f68933ff3fbf305574a55d2512ea143835de52314e7f62ecab38ec409a8c4"
+    },
+    {
+      "path": "/models/characters/textures/f63de566801fcea8ef97.png",
+      "status": 200,
+      "sha256": "f63de566801fcea8ef973271a3cd46ac87cf285e766ecfa2d0c6f64670ff3af2"
+    },
+    {
+      "path": "/models/characters/textures/4b36fb5abe80124daabc.png",
+      "status": 200,
+      "sha256": "4b36fb5abe80124daabce546e8ba9f220ed6467a69c301dd3baaeb43852e8aa5"
+    },
+    {
+      "path": "/models/characters/textures/2e15a426be9ee20c39a7.png",
+      "status": 200,
+      "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+    },
+    {
+      "path": "/models/characters/textures/79b3320dd2f22a4941bf.png",
+      "status": 200,
+      "sha256": "79b3320dd2f22a4941bf0243b0ebc0b7bc19cf512770d7627922d1fd67aeb9c3"
+    },
+    {
+      "path": "/models/characters/textures/c4ad653360cce21ee393.png",
+      "status": 200,
+      "sha256": "c4ad653360cce21ee3933b84279b682381beeb75d21e4f88906076fdd7165456"
+    },
+    {
+      "path": "/models/characters/textures/01f30a1649e149138639.png",
+      "status": 200,
+      "sha256": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8"
+    },
+    {
+      "path": "/models/characters/textures/042e670c62ad34a45c14.png",
+      "status": 200,
+      "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+    },
+    {
+      "path": "/models/characters/textures/2e15a426be9ee20c39a7.png",
+      "status": 200,
+      "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+    },
+    {
+      "path": "/models/characters/textures/042e670c62ad34a45c14.png",
+      "status": 200,
+      "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+    },
+    {
+      "path": "/models/characters/manifest.json",
+      "status": 200,
+      "sha256": "94c6f4938fda3e53d1c00d08d61fbdf44f7f8af3a21888c4db457a3b9d688375"
+    },
+    {
+      "path": "/models/characters/female-garments.glb",
+      "status": 200,
+      "sha256": "e197024f2a2a9a2d18241206eef4e409189ceab1ba4f7fd97a8eb0d96784c5af"
+    },
+    {
+      "path": "/models/characters/woman-scout-lod1.glb",
+      "status": 200,
+      "sha256": "358863428ae5d24a19f4d080dd56c7982b568041a5530bacc59e48153ca78cda"
+    },
+    {
+      "path": "/models/characters/equipment.glb",
+      "status": 200,
+      "sha256": "237c0e3dd3e7a3af5fbb0c05ee94a3aa95c25951b346877e43c9af4fb673edf5"
+    },
+    {
+      "path": "/models/characters/worker-lod1.glb",
+      "status": 200,
+      "sha256": "a83c44ad08118860c59ea02a330b617ad0d8ddfa2a4ed70fabe695a04bd10a7f"
+    },
+    {
+      "path": "/models/characters/male-garments.glb",
+      "status": 200,
+      "sha256": "f2c8a94230284344705166b83e229194a2d38003c821fc1b7484c91573c4ea07"
+    },
+    {
+      "path": "/models/characters/textures/f63de566801fcea8ef97.png",
+      "status": 200,
+      "sha256": "f63de566801fcea8ef973271a3cd46ac87cf285e766ecfa2d0c6f64670ff3af2"
+    },
+    {
+      "path": "/models/characters/textures/4b36fb5abe80124daabc.png",
+      "status": 200,
+      "sha256": "4b36fb5abe80124daabce546e8ba9f220ed6467a69c301dd3baaeb43852e8aa5"
+    },
+    {
+      "path": "/models/characters/textures/e80f68933ff3fbf30557.png",
+      "status": 200,
+      "sha256": "e80f68933ff3fbf305574a55d2512ea143835de52314e7f62ecab38ec409a8c4"
+    },
+    {
+      "path": "/models/characters/textures/2e15a426be9ee20c39a7.png",
+      "status": 200,
+      "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+    },
+    {
+      "path": "/models/characters/textures/6b9e6e7cf8e4e61f4eec.png",
+      "status": 200,
+      "sha256": "6b9e6e7cf8e4e61f4eeca4c37b1a44185157489b9dfa152f06742cca0e05bd25"
+    },
+    {
+      "path": "/models/characters/textures/531a12fea7813218250b.png",
+      "status": 200,
+      "sha256": "531a12fea7813218250b3e25413c9fd0e7456d66733a9affda8b7fdd383ae4ab"
+    },
+    {
+      "path": "/models/characters/textures/89135b727219523ff9ab.png",
+      "status": 200,
+      "sha256": "89135b727219523ff9ab057e2481e4022fdd64fe463bfa1480ffbf1876a6475a"
+    },
+    {
+      "path": "/models/characters/textures/042e670c62ad34a45c14.png",
+      "status": 200,
+      "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+    },
+    {
+      "path": "/models/characters/female-animations.glb",
+      "status": 200,
+      "sha256": "aa8cc1381835de19c1ffa747020d50225f92f3f8c1eb807e31c4a04007e2f37a"
+    },
+    {
+      "path": "/models/characters/textures/c4ad653360cce21ee393.png",
+      "status": 200,
+      "sha256": "c4ad653360cce21ee3933b84279b682381beeb75d21e4f88906076fdd7165456"
+    },
+    {
+      "path": "/models/characters/male-animations.glb",
+      "status": 200,
+      "sha256": "624915277f2f4f842c0f2b8c251e91aee7b5436319612e327ecbb174fe1f8cda"
+    },
+    {
+      "path": "/models/characters/textures/79b3320dd2f22a4941bf.png",
+      "status": 200,
+      "sha256": "79b3320dd2f22a4941bf0243b0ebc0b7bc19cf512770d7627922d1fd67aeb9c3"
+    },
+    {
+      "path": "/models/characters/textures/01f30a1649e149138639.png",
+      "status": 200,
+      "sha256": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8"
+    },
+    {
+      "path": "/models/characters/textures/851812def6824e843620.png",
+      "status": 200,
+      "sha256": "851812def6824e8436202da61466ea219f705c42ea2352d5d2a095be711d6c14"
+    },
+    {
+      "path": "/models/characters/textures/2e15a426be9ee20c39a7.png",
+      "status": 200,
+      "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+    },
+    {
+      "path": "/models/characters/textures/6b9e6e7cf8e4e61f4eec.png",
+      "status": 200,
+      "sha256": "6b9e6e7cf8e4e61f4eeca4c37b1a44185157489b9dfa152f06742cca0e05bd25"
+    },
+    {
+      "path": "/models/characters/textures/ca8dfdb29da067ef8ac1.png",
+      "status": 200,
+      "sha256": "ca8dfdb29da067ef8ac15565cbd7779aef4188f41b2afc539af517a2680fbbe2"
+    },
+    {
+      "path": "/models/characters/textures/531a12fea7813218250b.png",
+      "status": 200,
+      "sha256": "531a12fea7813218250b3e25413c9fd0e7456d66733a9affda8b7fdd383ae4ab"
+    },
+    {
+      "path": "/models/characters/textures/01f30a1649e149138639.png",
+      "status": 200,
+      "sha256": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8"
+    },
+    {
+      "path": "/models/characters/textures/a27b9aff9f8c8edf1136.png",
+      "status": 200,
+      "sha256": "a27b9aff9f8c8edf1136144e3450fcf61faad1b74eae0deb6b512c0c1d2b55de"
+    },
+    {
+      "path": "/models/characters/textures/a536d20596728975d3d5.png",
+      "status": 200,
+      "sha256": "a536d20596728975d3d5364979a12235b13fdda1c55a71beb924308f5d21ddae"
+    },
+    {
+      "path": "/models/characters/textures/2e15a426be9ee20c39a7.png",
+      "status": 200,
+      "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+    },
+    {
+      "path": "/models/characters/textures/55aaf791e83ec37fa219.png",
+      "status": 200,
+      "sha256": "55aaf791e83ec37fa219953f3eb685a5375b2f35e1c93991a15f1c637b764dbe"
+    },
+    {
+      "path": "/models/characters/textures/2e15a426be9ee20c39a7.png",
+      "status": 200,
+      "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+    },
+    {
+      "path": "/models/characters/textures/cfef86f82ac5d996af20.png",
+      "status": 200,
+      "sha256": "cfef86f82ac5d996af200cedf4b76ca9d633459188d697a9d8cfdf17d08e7e18"
+    },
+    {
+      "path": "/models/characters/textures/042e670c62ad34a45c14.png",
+      "status": 200,
+      "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+    },
+    {
+      "path": "/models/characters/textures/042e670c62ad34a45c14.png",
+      "status": 200,
+      "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+    },
+    {
+      "path": "/models/characters/textures/042e670c62ad34a45c14.png",
+      "status": 200,
+      "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+    },
+    {
+      "path": "/models/characters/manifest.json",
+      "status": 200,
+      "sha256": "94c6f4938fda3e53d1c00d08d61fbdf44f7f8af3a21888c4db457a3b9d688375"
+    },
+    {
+      "path": "/models/characters/granadero-lod1.glb",
+      "status": 200,
+      "sha256": "b589b8558e13d693cccbbc28621ca96221cc9bc6ee58028751075b2fcf5c0188"
+    },
+    {
+      "path": "/models/characters/male-garments.glb",
+      "status": 200,
+      "sha256": "f2c8a94230284344705166b83e229194a2d38003c821fc1b7484c91573c4ea07"
+    },
+    {
+      "path": "/models/characters/equipment.glb",
+      "status": 200,
+      "sha256": "237c0e3dd3e7a3af5fbb0c05ee94a3aa95c25951b346877e43c9af4fb673edf5"
+    },
+    {
+      "path": "/models/characters/worker-lod1.glb",
+      "status": 200,
+      "sha256": "a83c44ad08118860c59ea02a330b617ad0d8ddfa2a4ed70fabe695a04bd10a7f"
+    },
+    {
+      "path": "/models/characters/royalist-lod1.glb",
+      "status": 200,
+      "sha256": "9199b37b27872bd9348f34c9f6bd051d45089aa3727ae76cd23347d30129df31"
+    },
+    {
+      "path": "/models/characters/textures/2e15a426be9ee20c39a7.png",
+      "status": 200,
+      "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+    },
+    {
+      "path": "/models/characters/textures/76c6ed4f73557a4a0a53.png",
+      "status": 200,
+      "sha256": "76c6ed4f73557a4a0a53d707abccd289a0cbe8d7a9c2a822753f6848ba41ae0f"
+    },
+    {
+      "path": "/models/characters/textures/409b7f25641a2c1cf7e2.png",
+      "status": 200,
+      "sha256": "409b7f25641a2c1cf7e2497521c2022152e41c3cad3e224a29384d18681ad207"
+    },
+    {
+      "path": "/models/characters/textures/040aa7bd60f397241c0c.png",
+      "status": 200,
+      "sha256": "040aa7bd60f397241c0c5dd19c01e5d2660fc82c6d78e911b62e1efef5cbde33"
+    },
+    {
+      "path": "/models/characters/textures/042e670c62ad34a45c14.png",
+      "status": 200,
+      "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+    },
+    {
+      "path": "/models/characters/textures/851812def6824e843620.png",
+      "status": 200,
+      "sha256": "851812def6824e8436202da61466ea219f705c42ea2352d5d2a095be711d6c14"
+    },
+    {
+      "path": "/models/characters/textures/6b9e6e7cf8e4e61f4eec.png",
+      "status": 200,
+      "sha256": "6b9e6e7cf8e4e61f4eeca4c37b1a44185157489b9dfa152f06742cca0e05bd25"
+    },
+    {
+      "path": "/models/characters/textures/531a12fea7813218250b.png",
+      "status": 200,
+      "sha256": "531a12fea7813218250b3e25413c9fd0e7456d66733a9affda8b7fdd383ae4ab"
+    },
+    {
+      "path": "/models/characters/textures/79b3320dd2f22a4941bf.png",
+      "status": 200,
+      "sha256": "79b3320dd2f22a4941bf0243b0ebc0b7bc19cf512770d7627922d1fd67aeb9c3"
+    },
+    {
+      "path": "/models/characters/textures/01f30a1649e149138639.png",
+      "status": 200,
+      "sha256": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8"
+    },
+    {
+      "path": "/models/characters/textures/c4ad653360cce21ee393.png",
+      "status": 200,
+      "sha256": "c4ad653360cce21ee3933b84279b682381beeb75d21e4f88906076fdd7165456"
+    },
+    {
+      "path": "/models/characters/textures/cde52c5fc44edc14b3d6.png",
+      "status": 200,
+      "sha256": "cde52c5fc44edc14b3d661cff6a5a62068916c4af703298e0e31431b5eaf51a9"
+    },
+    {
+      "path": "/models/characters/textures/040aa7bd60f397241c0c.png",
+      "status": 200,
+      "sha256": "040aa7bd60f397241c0c5dd19c01e5d2660fc82c6d78e911b62e1efef5cbde33"
+    },
+    {
+      "path": "/models/characters/textures/409b7f25641a2c1cf7e2.png",
+      "status": 200,
+      "sha256": "409b7f25641a2c1cf7e2497521c2022152e41c3cad3e224a29384d18681ad207"
+    },
+    {
+      "path": "/models/characters/textures/2e15a426be9ee20c39a7.png",
+      "status": 200,
+      "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+    },
+    {
+      "path": "/models/characters/textures/2e15a426be9ee20c39a7.png",
+      "status": 200,
+      "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+    },
+    {
+      "path": "/models/characters/textures/042e670c62ad34a45c14.png",
+      "status": 200,
+      "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+    },
+    {
+      "path": "/models/characters/textures/042e670c62ad34a45c14.png",
+      "status": 200,
+      "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+    },
+    {
+      "path": "/models/characters/male-animations.glb",
+      "status": 200,
+      "sha256": "624915277f2f4f842c0f2b8c251e91aee7b5436319612e327ecbb174fe1f8cda"
+    },
+    {
+      "path": "/models/characters/textures/a536d20596728975d3d5.png",
+      "status": 200,
+      "sha256": "a536d20596728975d3d5364979a12235b13fdda1c55a71beb924308f5d21ddae"
+    },
+    {
+      "path": "/models/characters/textures/55aaf791e83ec37fa219.png",
+      "status": 200,
+      "sha256": "55aaf791e83ec37fa219953f3eb685a5375b2f35e1c93991a15f1c637b764dbe"
+    },
+    {
+      "path": "/models/characters/textures/cfef86f82ac5d996af20.png",
+      "status": 200,
+      "sha256": "cfef86f82ac5d996af200cedf4b76ca9d633459188d697a9d8cfdf17d08e7e18"
+    },
+    {
+      "path": "/models/characters/textures/2e15a426be9ee20c39a7.png",
+      "status": 200,
+      "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+    },
+    {
+      "path": "/models/characters/textures/042e670c62ad34a45c14.png",
+      "status": 200,
+      "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+    },
+    {
+      "path": "/models/characters/granadero-lod0.glb",
+      "status": 200,
+      "sha256": "9041e7e5ecd249b0065cf012271d60552f418d1bb2809be6ccb973496c7e97e3"
+    },
+    {
+      "path": "/models/characters/worker-lod0.glb",
+      "status": 200,
+      "sha256": "1682d2cbd20cca840fc088d58983fa37496db3cb56084babd6cdd7c7d179540a"
+    },
+    {
+      "path": "/models/characters/royalist-lod0.glb",
+      "status": 200,
+      "sha256": "d23f8262eb38def87d7b21586d3faf308505323b5091a8c7150acd82a7334b01"
+    },
+    {
+      "path": "/models/characters/textures/76c6ed4f73557a4a0a53.png",
+      "status": 200,
+      "sha256": "76c6ed4f73557a4a0a53d707abccd289a0cbe8d7a9c2a822753f6848ba41ae0f"
+    },
+    {
+      "path": "/models/characters/textures/040aa7bd60f397241c0c.png",
+      "status": 200,
+      "sha256": "040aa7bd60f397241c0c5dd19c01e5d2660fc82c6d78e911b62e1efef5cbde33"
+    },
+    {
+      "path": "/models/characters/textures/409b7f25641a2c1cf7e2.png",
+      "status": 200,
+      "sha256": "409b7f25641a2c1cf7e2497521c2022152e41c3cad3e224a29384d18681ad207"
+    },
+    {
+      "path": "/models/characters/textures/c4ad653360cce21ee393.png",
+      "status": 200,
+      "sha256": "c4ad653360cce21ee3933b84279b682381beeb75d21e4f88906076fdd7165456"
+    },
+    {
+      "path": "/models/characters/textures/040aa7bd60f397241c0c.png",
+      "status": 200,
+      "sha256": "040aa7bd60f397241c0c5dd19c01e5d2660fc82c6d78e911b62e1efef5cbde33"
+    },
+    {
+      "path": "/models/characters/textures/cde52c5fc44edc14b3d6.png",
+      "status": 200,
+      "sha256": "cde52c5fc44edc14b3d661cff6a5a62068916c4af703298e0e31431b5eaf51a9"
+    },
+    {
+      "path": "/models/characters/textures/2e15a426be9ee20c39a7.png",
+      "status": 200,
+      "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+    },
+    {
+      "path": "/models/characters/textures/79b3320dd2f22a4941bf.png",
+      "status": 200,
+      "sha256": "79b3320dd2f22a4941bf0243b0ebc0b7bc19cf512770d7627922d1fd67aeb9c3"
+    },
+    {
+      "path": "/models/characters/textures/409b7f25641a2c1cf7e2.png",
+      "status": 200,
+      "sha256": "409b7f25641a2c1cf7e2497521c2022152e41c3cad3e224a29384d18681ad207"
+    },
+    {
+      "path": "/models/characters/textures/01f30a1649e149138639.png",
+      "status": 200,
+      "sha256": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8"
+    },
+    {
+      "path": "/models/characters/textures/2e15a426be9ee20c39a7.png",
+      "status": 200,
+      "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+    },
+    {
+      "path": "/models/characters/textures/2e15a426be9ee20c39a7.png",
+      "status": 200,
+      "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+    },
+    {
+      "path": "/models/characters/textures/042e670c62ad34a45c14.png",
+      "status": 200,
+      "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+    },
+    {
+      "path": "/models/characters/textures/042e670c62ad34a45c14.png",
+      "status": 200,
+      "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+    },
+    {
+      "path": "/models/characters/textures/042e670c62ad34a45c14.png",
+      "status": 200,
+      "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+    },
+    {
+      "path": "/models/characters/manifest.json",
+      "status": 200,
+      "sha256": "94c6f4938fda3e53d1c00d08d61fbdf44f7f8af3a21888c4db457a3b9d688375"
+    },
+    {
+      "path": "/models/characters/male-garments.glb",
+      "status": 200,
+      "sha256": "f2c8a94230284344705166b83e229194a2d38003c821fc1b7484c91573c4ea07"
+    },
+    {
+      "path": "/models/characters/granadero-lod1.glb",
+      "status": 200,
+      "sha256": "b589b8558e13d693cccbbc28621ca96221cc9bc6ee58028751075b2fcf5c0188"
+    },
+    {
+      "path": "/models/characters/equipment.glb",
+      "status": 200,
+      "sha256": "237c0e3dd3e7a3af5fbb0c05ee94a3aa95c25951b346877e43c9af4fb673edf5"
+    },
+    {
+      "path": "/models/characters/worker-lod1.glb",
+      "status": 200,
+      "sha256": "a83c44ad08118860c59ea02a330b617ad0d8ddfa2a4ed70fabe695a04bd10a7f"
+    },
+    {
+      "path": "/models/characters/royalist-lod1.glb",
+      "status": 200,
+      "sha256": "9199b37b27872bd9348f34c9f6bd051d45089aa3727ae76cd23347d30129df31"
+    },
+    {
+      "path": "/models/characters/textures/6b9e6e7cf8e4e61f4eec.png",
+      "status": 200,
+      "sha256": "6b9e6e7cf8e4e61f4eeca4c37b1a44185157489b9dfa152f06742cca0e05bd25"
+    },
+    {
+      "path": "/models/characters/textures/851812def6824e843620.png",
+      "status": 200,
+      "sha256": "851812def6824e8436202da61466ea219f705c42ea2352d5d2a095be711d6c14"
+    },
+    {
+      "path": "/models/characters/textures/531a12fea7813218250b.png",
+      "status": 200,
+      "sha256": "531a12fea7813218250b3e25413c9fd0e7456d66733a9affda8b7fdd383ae4ab"
+    },
+    {
+      "path": "/models/characters/textures/040aa7bd60f397241c0c.png",
+      "status": 200,
+      "sha256": "040aa7bd60f397241c0c5dd19c01e5d2660fc82c6d78e911b62e1efef5cbde33"
+    },
+    {
+      "path": "/models/characters/textures/409b7f25641a2c1cf7e2.png",
+      "status": 200,
+      "sha256": "409b7f25641a2c1cf7e2497521c2022152e41c3cad3e224a29384d18681ad207"
+    },
+    {
+      "path": "/models/characters/textures/76c6ed4f73557a4a0a53.png",
+      "status": 200,
+      "sha256": "76c6ed4f73557a4a0a53d707abccd289a0cbe8d7a9c2a822753f6848ba41ae0f"
+    },
+    {
+      "path": "/models/characters/textures/c4ad653360cce21ee393.png",
+      "status": 200,
+      "sha256": "c4ad653360cce21ee3933b84279b682381beeb75d21e4f88906076fdd7165456"
+    },
+    {
+      "path": "/models/characters/textures/79b3320dd2f22a4941bf.png",
+      "status": 200,
+      "sha256": "79b3320dd2f22a4941bf0243b0ebc0b7bc19cf512770d7627922d1fd67aeb9c3"
+    },
+    {
+      "path": "/models/characters/textures/01f30a1649e149138639.png",
+      "status": 200,
+      "sha256": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8"
+    },
+    {
+      "path": "/models/characters/textures/cde52c5fc44edc14b3d6.png",
+      "status": 200,
+      "sha256": "cde52c5fc44edc14b3d661cff6a5a62068916c4af703298e0e31431b5eaf51a9"
+    },
+    {
+      "path": "/models/characters/textures/409b7f25641a2c1cf7e2.png",
+      "status": 200,
+      "sha256": "409b7f25641a2c1cf7e2497521c2022152e41c3cad3e224a29384d18681ad207"
+    },
+    {
+      "path": "/models/characters/textures/2e15a426be9ee20c39a7.png",
+      "status": 200,
+      "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+    },
+    {
+      "path": "/models/characters/textures/040aa7bd60f397241c0c.png",
+      "status": 200,
+      "sha256": "040aa7bd60f397241c0c5dd19c01e5d2660fc82c6d78e911b62e1efef5cbde33"
+    },
+    {
+      "path": "/models/characters/textures/2e15a426be9ee20c39a7.png",
+      "status": 200,
+      "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+    },
+    {
+      "path": "/models/characters/textures/042e670c62ad34a45c14.png",
+      "status": 200,
+      "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+    },
+    {
+      "path": "/models/characters/textures/042e670c62ad34a45c14.png",
+      "status": 200,
+      "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+    },
+    {
+      "path": "/models/characters/textures/2e15a426be9ee20c39a7.png",
+      "status": 200,
+      "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+    },
+    {
+      "path": "/models/characters/textures/042e670c62ad34a45c14.png",
+      "status": 200,
+      "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+    },
+    {
+      "path": "/models/characters/male-animations.glb",
+      "status": 200,
+      "sha256": "624915277f2f4f842c0f2b8c251e91aee7b5436319612e327ecbb174fe1f8cda"
+    },
+    {
+      "path": "/models/characters/textures/a536d20596728975d3d5.png",
+      "status": 200,
+      "sha256": "a536d20596728975d3d5364979a12235b13fdda1c55a71beb924308f5d21ddae"
+    },
+    {
+      "path": "/models/characters/textures/cfef86f82ac5d996af20.png",
+      "status": 200,
+      "sha256": "cfef86f82ac5d996af200cedf4b76ca9d633459188d697a9d8cfdf17d08e7e18"
+    },
+    {
+      "path": "/models/characters/textures/55aaf791e83ec37fa219.png",
+      "status": 200,
+      "sha256": "55aaf791e83ec37fa219953f3eb685a5375b2f35e1c93991a15f1c637b764dbe"
+    },
+    {
+      "path": "/models/characters/textures/2e15a426be9ee20c39a7.png",
+      "status": 200,
+      "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+    },
+    {
+      "path": "/models/characters/textures/042e670c62ad34a45c14.png",
+      "status": 200,
+      "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+    }
+  ],
+  "cases": [
+    {
+      "id": "tall-cardinal",
+      "direction": "up",
+      "file": "tall-cardinal-up-palm-0.png",
+      "upFractionFromOrdinaryOverlay": 0.8800071429181845,
+      "timestamp": 1791458674.126809
+    },
+    {
+      "id": "tall-cardinal",
+      "direction": "up",
+      "file": "tall-cardinal-up-palm-1.png",
+      "upFractionFromOrdinaryOverlay": 0.8800071429181845,
+      "timestamp": 1791458674.132073
+    },
+    {
+      "id": "tall-cardinal",
+      "direction": "up",
+      "file": "tall-cardinal-up-palm-2.png",
+      "upFractionFromOrdinaryOverlay": 0.8800071429181845,
+      "timestamp": 1791458674.139685
+    },
+    {
+      "id": "tall-cardinal",
+      "direction": "up",
+      "file": "tall-cardinal-up-palm-3.png",
+      "upFractionFromOrdinaryOverlay": 0.8761535714473575,
+      "timestamp": 1791458674.101778
+    },
+    {
+      "id": "tall-cardinal",
+      "direction": "up",
+      "final": "1. Escalador de la casa. Salud 100, 20 puntos de acción, energía 88, moral 80. Ve 0 enemigos. Mano principal: vacía. Segunda mano: vacía. Botón derecho: equipo del combatiente",
+      "actual": {
+        "x": 444,
+        "y": 146.54666666666668
+      },
+      "expected": {
+        "x": 8,
+        "y": 10,
+        "tacticalLevel": 1,
+        "elevation": 6.8
+      }
+    },
+    {
+      "id": "tall-cardinal",
+      "direction": "down",
+      "file": "tall-cardinal-down-palm-0.png",
+      "upFractionFromOrdinaryOverlay": 0.8793901785183699,
+      "timestamp": 1791458676.50204
+    },
+    {
+      "id": "tall-cardinal",
+      "direction": "down",
+      "file": "tall-cardinal-down-palm-1.png",
+      "upFractionFromOrdinaryOverlay": 0.8813633928541093,
+      "timestamp": 1791458676.482017
+    },
+    {
+      "id": "tall-cardinal",
+      "direction": "down",
+      "file": "tall-cardinal-down-palm-2.png",
+      "upFractionFromOrdinaryOverlay": 0.8813633928541093,
+      "timestamp": 1791458676.493155
+    },
+    {
+      "id": "tall-cardinal",
+      "direction": "down",
+      "file": "tall-cardinal-down-palm-3.png",
+      "upFractionFromOrdinaryOverlay": 0.8774633928854019,
+      "timestamp": 1791458676.515427
+    },
+    {
+      "id": "tall-cardinal",
+      "direction": "down",
+      "final": "1. Escalador de la casa. Salud 100, 16,25 puntos de acción, energía 80, moral 80. Ve 0 enemigos. Mano principal: vacía. Segunda mano: vacía. Botón derecho: equipo del combatiente",
+      "actual": {
+        "x": 418,
+        "y": 300.92
+      },
+      "expected": {
+        "x": 8,
+        "y": 11,
+        "tacticalLevel": 0,
+        "elevation": 1.2
+      }
+    },
+    {
+      "id": "raised-vertical",
+      "direction": "up",
+      "final": "1. Escalador de la casa. Salud 100, 20 puntos de acción, energía 88, moral 80. Ve 1 enemigos. Mano principal: vacía. Segunda mano: vacía. Botón derecho: equipo del combatiente",
+      "actual": {
+        "x": 496,
+        "y": 156.14666666666665
+      },
+      "expected": {
+        "x": 8,
+        "y": 8,
+        "tacticalLevel": 1,
+        "elevation": 5.300000000000001
+      }
+    },
+    {
+      "id": "raised-vertical",
+      "direction": "down",
+      "final": "1. Escalador de la casa. Salud 100, 16,25 puntos de acción, energía 80, moral 80. Ve 0 enemigos. Mano principal: vacía. Segunda mano: vacía. Botón derecho: equipo del combatiente",
+      "actual": {
+        "x": 496,
+        "y": 261.4266666666667
+      },
+      "expected": {
+        "x": 8,
+        "y": 8,
+        "tacticalLevel": 0,
+        "elevation": 1.1
+      }
+    },
+    {
+      "id": "tall-return",
+      "direction": "up",
+      "final": "1. Escalador de la casa. Salud 100, 20 puntos de acción, energía 88, moral 80. Ve 0 enemigos. Mano principal: vacía. Segunda mano: vacía. Botón derecho: equipo del combatiente",
+      "actual": {
+        "x": 444,
+        "y": 123.98666666666665
+      },
+      "expected": {
+        "x": 8,
+        "y": 10,
+        "tacticalLevel": 1,
+        "elevation": 7.7
+      }
+    },
+    {
+      "id": "tall-return",
+      "direction": "down",
+      "final": "1. Escalador de la casa. Salud 100, 16,25 puntos de acción, energía 80, moral 80. Ve 0 enemigos. Mano principal: vacía. Segunda mano: vacía. Botón derecho: equipo del combatiente",
+      "actual": {
+        "x": 418,
+        "y": 288.38666666666666
+      },
+      "expected": {
+        "x": 8,
+        "y": 11,
+        "tacticalLevel": 0,
+        "elevation": 1.7
+      }
+    },
+    {
+      "id": "low-vertical",
+      "direction": "up",
+      "final": "1. Escalador de la casa. Salud 100, 20 puntos de acción, energía 88, moral 80. Ve 1 enemigos. Mano principal: vacía. Segunda mano: vacía. Botón derecho: equipo del combatiente",
+      "actual": {
+        "x": 496,
+        "y": 228.84
+      },
+      "expected": {
+        "x": 8,
+        "y": 8,
+        "tacticalLevel": 1,
+        "elevation": 2.4
+      }
+    },
+    {
+      "id": "low-vertical",
+      "direction": "down",
+      "final": "1. Escalador de la casa. Salud 100, 16,25 puntos de acción, energía 80, moral 80. Ve 0 enemigos. Mano principal: vacía. Segunda mano: vacía. Botón derecho: equipo del combatiente",
+      "actual": {
+        "x": 496,
+        "y": 278.97333333333336
+      },
+      "expected": {
+        "x": 8,
+        "y": 8,
+        "tacticalLevel": 0,
+        "elevation": 0.4
+      }
+    }
+  ],
+  "scope": "Only visible controls and ordinary DOM telemetry. No state/pose/time injection."
+}

@@ -1,0 +1,38 @@
+"""Bounded roof fingertip relief on the retained native climb finger tracks.
+
+The original recipe curls roof fingers by .10 radians. A .052-radian
+reduction clears the measured male middle fingertip on every released LOD.
+The source-key relief starts after roofWeight reaches .90 (the source
+hand turn is within nine degrees of the roof normal). The final relief
+enters with a smooth bounded blend. Native 60 Hz interpolation is retained.
+Only four finger chains change. Wrist, thumb, reach, native lengths and all
+parent channels remain exact. Main-palm support is a separate open task.
+"""
+import math
+NAMES={'life.climbUp','life.climbDown'}
+FINGERS=tuple(f'{finger}_{index:02d}_{side}'for side in('l','r')for finger in('index','middle','ring','pinky')for index in(1,2,3))
+CURL_RELIEF=.052
+
+
+def phase(t,a,b):
+    x=max(0.,min(1.,(t-a)/(b-a)))
+    return x*x*(3-2*x)
+
+
+def relief_weight(name,side,time,duration):
+    up=1-time/duration if name=='life.climbDown'else time/duration
+    roof=phase(up,.82 if side=='l'else .84,.84 if side=='l'else .86)
+    contact=1-phase(up,.91,.98)
+    original_curl=1.15*(1-roof)+.10*roof
+    return CURL_RELIEF*phase(roof,.90,1.)*contact/original_curl
+
+
+def slerp(a,b,t):
+    if t<=0:return tuple(a)
+    norm=lambda q:tuple(v/math.sqrt(sum(x*x for x in q))for v in q)
+    a=norm(a);b=norm(b);dot=sum(x*y for x,y in zip(a,b))
+    if dot<0:b=tuple(-v for v in b);dot=-dot
+    if dot>.9995:return norm(tuple(x+(y-x)*t for x,y in zip(a,b)))
+    theta=math.acos(max(-1,min(1,dot)));s=math.sin(theta)
+    wa=math.sin((1-t)*theta)/s;wb=math.sin(t*theta)/s
+    return tuple(wa*x+wb*y for x,y in zip(a,b))

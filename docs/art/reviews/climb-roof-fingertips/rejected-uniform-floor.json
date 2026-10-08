@@ -1,0 +1,20 @@
+{
+  "scope": "Rejected uniform roof-finger relief worsens actual native approach-floor penetration",
+  "case": {
+    "appearance": "granadero",
+    "lod": 2,
+    "direction": "climbDown",
+    "height": 3,
+    "span": 1.2360585147470482,
+    "paidUpFraction": 0.828,
+    "side": "l",
+    "beforeMm": -1.8189333238645133,
+    "currentMm": -2.470877915389913,
+    "addedPenetrationMm": 0.6519445915253996
+  },
+  "sourceSha256": "75da40db82871ed3fc36fee6048fb56f1d3bb117d87b0426a5fff9f761545ce4",
+  "banks": {
+    "male": "2218ca3df1c203957972079538513986fe4d7d527c4e3069d3ed626e17696286",
+    "female": "237d06e7984f108e456e29df49651f5b1cd97f561f8570c831df42d3b71e86b6"
+  }
+}

@@ -91,6 +91,8 @@ if manifest['complete']:
  # exact final-frame timing; retain the rest of each complete bank.
  if any(kind=='animations'for kind,preset,lod in jobs):
   subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-motion-increment.py'),'--blender',a.blender,'--gesture','climbUp','--gesture','climbDown','--equipment','any'],cwd=ROOT,check=True)
+  # Clear planted roof fingertips only after fresh native climb channels.
+  subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-climb-palm-support.py')],cwd=ROOT,check=True)
   # Keep the released rifle guard soles supported after native retargeting.
   subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-guard-support.py'),'--blender',a.blender],cwd=ROOT,check=True)
   # The bayonet retains its own Root/pelvis and native support gate.
