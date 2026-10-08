@@ -18,7 +18,7 @@ function fixture(rotation,roof='original'){
 test('centred posta capitals remain visibly exposed beyond the actual hip eave through all four rotations',()=>{
  for(const rotation of rotations){
   const f=fixture(rotation),geometry=new WorldGeometry(),materials=new WorldMaterials({tileMetres:T,assetUrl:path=>path}),building=buildBuilding(f.b,f.input,T,geometry,materials);building.updateMatrixWorld(true);const piers=building.getObjectByName(`building-detail:${f.b.id}:posta-corner-piers`);
-  for(const u of [0,f.frame.width]){const p=f.frame.at(u,-.40),ray=new Raycaster(new Vector3(p.x*T,f.height+3,p.y*T),new Vector3(0,-1,0),0,5),hit=ray.intersectObject(building,true)[0];assert.ok(hit);assert.ok(hit.object.parent===piers,'the actual hip roof and canopy must not hide the front capital');assert.equal(hit.object.material.name,'world:trim');assert.ok(Math.abs(hit.point.y-(f.height-1.5/V))<1e-5,'the exposed cap must remain on its supported real height');}
+  for(const u of [0,f.frame.width]){const p=f.frame.at(u,-.365),ray=new Raycaster(new Vector3(p.x*T,f.height+3,p.y*T),new Vector3(0,-1,0),0,5),hit=ray.intersectObject(building,true)[0];assert.ok(hit);assert.ok(hit.object.parent===piers,'the actual hip roof and canopy must not hide the front capital');assert.equal(hit.object.material.name,'world:posta-pier-coping');assert.ok(Math.abs(hit.point.y-(f.height-1.5/V))<1e-5,'the exposed cap must remain on its supported real height');}
   disposeWorldNode(building);geometry.dispose();materials.dispose();f.dispose(f.build());
  }
 });
