@@ -241,7 +241,10 @@ def _write_clip(rig, name, samples, duration, loop=True, grounding=None, times=N
         samples,arm_support=support_arms(native_support,samples,duration,times,name=='prone.crawl.unarmed')
     sideways_support=None
     if native_sideways is not None:
-        from sideways_support import support_clip as support_sideways
+        if name.startswith('crouch.'):
+            from crouched_sideways_support import support_clip as support_sideways
+        else:
+            from sideways_support import support_clip as support_sideways
         ctx,speed=native_sideways
         samples,times,sideways_support=support_sideways(ctx,samples,duration,times,name,speed)
     previous={}
@@ -875,6 +878,7 @@ def apply_animations(ctx, only=None):
     crouch_support_only=bool(only) and all(s['posture']=='crouched'and s['gesture']in('idle','walk')for s in specs)
     prone_support_only=bool(only) and all(s['posture']=='prone'and s['gesture']in('idle','crawl')for s in specs)
     sideways_support_only=bool(only) and all(s['posture']=='standing'and s['gesture']in('strafeLeft','strafeRight')for s in specs)
+    crouched_sideways_only=bool(only) and all(s['posture']=='crouched'and s['equipment']=='unarmed'and s['gesture']in('strafeLeft','strafeRight')for s in specs)
     needs_reviewed=any(_reviewed_binding(spec)for spec in specs)
     reviewed,reviewed_digest=_reviewed_bank(ctx)if needs_reviewed else ({},None)
     ctx['reviewed_stride']={name:reviewed[name]['locomotionSpeed'] for name in ('Walk','Run') if name in reviewed}
@@ -883,7 +887,7 @@ def apply_animations(ctx, only=None):
         for modifier in obj.modifiers:
             if modifier.show_viewport:disabled.append(modifier);modifier.show_viewport=False
     offsets=_grip_setup(ctx);sources={};source_meta={}
-    for recipe in (('idle','crouch','strafeLeftStanding','strafeRightStanding')if sideways_support_only else ('idle','crouch','crawl')if prone_support_only else ('idle','crouch') if contact_only or crouch_support_only else ('idle','crouch','walk','run','fall','recover') if riding_only else SOURCE_RECIPES):
+    for recipe in (('idle','crouch','strafeLeftCrouched','strafeRightCrouched')if crouched_sideways_only else ('idle','crouch','strafeLeftStanding','strafeRightStanding')if sideways_support_only else ('idle','crouch','crawl')if prone_support_only else ('idle','crouch') if contact_only or crouch_support_only else ('idle','crouch','walk','run','fall','recover') if riding_only else SOURCE_RECIPES):
         print('MOTION SOURCE',recipe,flush=True)
         sources[recipe],source_meta[recipe]=_retarget_samples(ctx,recipe)
     idle=sources['idle'][0];crouch=sources['crouch'][0]
@@ -1034,7 +1038,7 @@ def apply_animations(ctx, only=None):
             for name,(p,q) in pose.items():
                 if name!='Root':pose[name]=(Vector(),q)
             samples.append(pose)
-        meta=_write_clip(rig,spec['name'],samples,duration,spec['loop'],times=times,native_support=ctx if posture=='crouched'and gesture in('idle','walk')or posture=='prone'and gesture in('idle','crawl')or posture=='standing'and equipment=='lance'and gesture=='idle'else None,native_surface='boot'if posture=='prone'or posture=='standing'and equipment=='lance'and gesture=='idle'else'sole',native_sideways=(ctx,speed)if posture=='standing'and equipment in('unarmed','long-gun','short-gun','blade','knife','lance')and gesture in('strafeLeft','strafeRight')else None)
+        meta=_write_clip(rig,spec['name'],samples,duration,spec['loop'],times=times,native_support=ctx if posture=='crouched'and gesture in('idle','walk')or posture=='prone'and gesture in('idle','crawl')or posture=='standing'and equipment=='lance'and gesture=='idle'else None,native_surface='boot'if posture=='prone'or posture=='standing'and equipment=='lance'and gesture=='idle'else'sole',native_sideways=(ctx,speed)if (posture=='standing'and equipment in('unarmed','long-gun','short-gun','blade','knife','lance')or posture=='crouched'and equipment=='unarmed')and gesture in('strafeLeft','strafeRight')else None)
         meta.update(spec);meta.update({'duration':round(duration,6),'events':markers,'markers':markers,'source':source,'sampleRate':SAMPLE_FPS,'timingAuthority':'simulation','rootMotion':'in-place'})
         if gesture=='reload' and equipment=='long-gun':meta['propCues']=[{'item':'ramrod','socket':'socket_handLeft_tool','start':round(duration*.46,6),'end':round(duration*.86,6)}]
         if equipment=='long-gun' and gesture in ('reload','unload'):
