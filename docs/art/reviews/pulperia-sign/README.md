@@ -31,3 +31,19 @@ node --test tests/three-pulperia-sign.test.mjs tests/three-building-details.test
 ```
 
 The source base is `4a140a4fd8487b374da1c46174affb98721a2331`. This restores one concrete source detail. It does not establish complete building polish from bounds or test results.
+
+## Current-main integration
+
+Source commit `cdff49d9` applies the exact nine frozen files to current main
+`163b0476` after the close-garment and pistol changes. All predecessor and
+candidate hashes match. The actor runtime, camera and native model/manifest
+pins remain exact. All 58 affected checks pass in 5.88 seconds with TypeScript,
+documentation and 38 baseline checks. Export `37dc28177667` verifies 1,245 files
+and 1,040 references.
+
+Twenty-four current normal HUD views cover the original and edited slab roofs,
+all four rotations and exterior/partial/interior disclosure. Browser errors
+are empty and all capture source pins remain exact. The ordinary 270° exterior
+was visibly compared with the earlier original and current sprite. Integration
+evidence is in `artifacts/three-pulperia-sign-current-review/`. Final publication
+adds only this review and the verification record after the captured source.
