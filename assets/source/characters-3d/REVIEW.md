@@ -428,3 +428,64 @@ range. **Centrar vista** restores the full character. Both retain the isometric
 angle. The old reference is labelled **Granadero · prototipo anterior**, while
 **Granadero · juego** remains the default current model. Face framing was
 visually checked on the Granadero and scout in the live lab.
+
+
+## Granadero shako construction, 8 October
+
+The Granadero now has a closed two-millimetre leather visor, a narrow flat
+brass binding and shallower pressed badge details. The crown uses eight
+woven texture domains and a separate lower leather reinforcement. Only the
+Granadero body and apparel atlas records change. Its facial geometry, colour
+map, native rig and other surface geometry remain unchanged. The original
+plume is retained: detached tufts read as spikes, while the connected nap
+trial did not produce a useful visible gain. Both plume trials were rejected.
+
+The three bodies have 86,481, 61,724 and 18,734 triangles, respectively, with
+six draw calls at each level. The current manifest is
+`b51efb390707b48b003b70e5d6d5d8eae3d6b4bf8abb6368dcccac0d35767f23`.
+The live lab loaded Granadero body `9abd7909`, and its close face/visor view
+was inspected with no console warnings or errors. The face remains clearer
+in close views than at game scale. Clothing still reads too smooth, the broad
+outer eyebrows remain, and the other seven faces retain native skin assets.
+
+A matched contact comparison covers 24 actions and 1,750 actual LOD0 frames
+at 30 Hz plus event markers. It finds no new hand, rifle or sabre crossings.
+One shallow left-hand/tassel-fibre touch in the punch is unchanged from the
+preceding hat. All three existing punch-depth checks pass, and no sampled
+hand vertex enters the hat. These results do not certify every transition,
+between-frame contact or reduced-detail headwear.
+
+All 64 combined skin, eye, rifle-head and relaxed-hand checks pass. Library
+verification, typecheck, the 28 lab checks and both lab and production builds
+pass. The web build produces 1,315 static files and resolves 1,039 asset
+references. The final quick profile completes all 857 selected files with
+6,281 passes and 11 failures. Compared with the preceding face checkpoint,
+there are no new or resolved failures; all 11 assertion payloads match exactly
+after excluding stack frames. The six new hand checks pass. All 2,104
+snapshotted source and asset files remained unchanged during the run. This
+is a previous-candidate comparison, not a verified current-main baseline.
+Evidence is retained in
+`artifacts/character-anatomy-review/delivery/shako-construction/`.
+
+The separate coat-ease and material-only wool trials remain rejected. The
+geometry trial did not give enough visible improvement and increased sampled
+elbow clearance warnings. The material trial retained smooth plastic-like
+folds at game scale. Neither is included in the published library.
+
+
+## Matched face-family review, 8 October
+
+A read-only gallery compares all eight current LOD0 exports with the same
+light palette, orthographic isometric camera, 0.32 m face scale and light rig.
+The Granadero uses its exported albedo compensation; the seven native faces
+use the equivalent native palette override. The palette formula was verified
+numerically. The sheet only arranges actual model renders.
+
+The Granadero has more cheek, lip and stubble detail. The other seven faces
+remain smooth. The six male faces share the same visible nose, jaw and brow
+design, and the two female faces also match one another. Civilian hair has
+regular broad grooves and a hard cap edge. The friar adds a conspicuous
+saw-tooth tonsure boundary. These are visible model limits, not differences
+in lighting or evidence of improvement across all faces. Clothing still has
+flat, sharp folds at the collar. The gallery, body hashes and per-character
+notes are in `artifacts/character-anatomy-review/delivery/face-family-review/`.

@@ -822,6 +822,8 @@ def create_character(preset="granadero", height=1.76):
             entry.color=(.995,.975,.97,1) if obj.get('anatomy_surface')=='nail' else surface_tone(vertex.co,key)
         obj.data.color_attributes.active_color_index=len(obj.data.color_attributes)-1
         obj.data.color_attributes.render_color_index=len(obj.data.color_attributes)-1
+    from shako_detail import refine_shako
+    refine_shako(ctx)
     bpy.context.view_layer.update()
     return ctx
 

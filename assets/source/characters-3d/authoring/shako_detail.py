@@ -1,0 +1,90 @@
+"""Granadero-only shako construction; no body or native rig changes."""
+import math
+import bpy,bmesh
+from mathutils import Vector,Matrix
+
+
+def refine_shako(ctx):
+    if ctx['preset']!='granadero':return
+    objects=ctx['objects'];mesh=ctx['mesh'];M=ctx['M']
+    def remove(obj):
+        objects.remove(obj);bpy.data.objects.remove(obj,do_unlink=True)
+    def material(source,name,colour=None,roughness=None,metallic=None):
+        m=source.copy();m.name=name;p=m.node_tree.nodes.get('Principled BSDF')
+        if colour is not None:m.diffuse_color=(*colour,1);p.inputs['Base Color'].default_value=m.diffuse_color
+        if roughness is not None:p.inputs['Roughness'].default_value=roughness
+        if metallic is not None:p.inputs['Metallic'].default_value=metallic
+        return m
+    def finish(obj):
+        obj['part']='headwear';obj['appearance']='granadero'
+        bm=bmesh.new();bm.from_mesh(obj.data);bmesh.ops.recalc_face_normals(bm,faces=list(bm.faces));bm.to_mesh(obj.data);bm.free();obj.data.update()
+        return obj
+    def colour(obj,values):
+        layer=obj.data.color_attributes.get('Human_Surface_Tone')or obj.data.color_attributes.new(name='Human_Surface_Tone',type='FLOAT_COLOR',domain='POINT')
+        for entry,value in zip(layer.data,values):entry.color=(*value,1)
+    def panel_uv(obj,sectors=8):
+        layer=obj.data.uv_layers.active or obj.data.uv_layers.new(name='UVMap')
+        for face in obj.data.polygons:
+            points=[obj.data.vertices[i].co for i in face.vertices]
+            if abs(face.normal.z)>.8:uv=[((p.x+.105)/.21,(p.y+.166)/.228)for p in points]
+            else:
+                angles=[(math.atan2(p.x,-(p.y+.052))/math.tau+.5)*sectors for p in points]
+                if max(angles)-min(angles)>sectors/2:angles=[a+sectors if a<sectors/2 else a for a in angles]
+                sector=math.floor((min(angles)+max(angles))*.5)
+                uv=[(max(0,min(1,a-sector)),max(0,min(1,(p.z-1.692)/.159)))for a,p in zip(angles,points)]
+            for li,value in zip(face.loop_indices,uv):layer.data[li].uv=value
+    brass=material(M['brass'],'Shako_Stamped_Brass',(.47,.315,.095),.28,.88)
+    recess=material(M['brass_recess'],'Shako_Stamped_Brass_Recess',(.29,.185,.057),.42,.82)
+    leather=material(M['leather'],'Granadero_Shako_Polished_Leather',(.009,.012,.016),.29,0)
+    wool=material(M['black'],'Shako_Fulled_Woven_Felt',(.0105,.0125,.019),.96,0)
+    # The crown occupies eight sewn-width texture domains, not one coarse
+    # band around its entire circumference. Geometry and dimensions stay exact.
+    for obj in list(objects):
+        if obj.name=='Shaped_Shako':
+            obj.name='Shako_Woven_Crown';obj.data.materials[0]=wool;panel_uv(obj)
+        elif obj.name.startswith(('Crest_','Shako_Crest_')):
+            if obj.name.startswith('Crest_Leaf'):continue
+            for v in obj.data.vertices:v.co.y=-.162+(v.co.y+.162)*.45
+            obj.data.materials[0]=recess if 'Recess'in obj.data.materials[0].name or 'Engraved'in obj.name or 'Shield'in obj.name else brass
+            finish(obj)
+        elif obj.name.startswith('Chinstrap_'):obj.data.materials[0]=brass
+    # Thin pressed leaves replace rounded beads. The six-point sheet has a
+    # shallow centre ridge and a real back/edge, rather than a swollen oval.
+    for obj in [o for o in objects if o.name.startswith('Crest_Leaf')]:remove(obj)
+    for sign in (-1,1):
+        for i in range(6):
+            centre=Vector((sign*(.014+.012*math.sin(i*math.pi/7)),-.16655,1.765+i*.007))
+            rot=Matrix.Rotation(sign*-.52,3,'Y');outline=[(0,-.0063),(-.0030,-.0022),(-.0026,.0025),(0,.0063),(.0026,.0025),(.0030,-.0022)]
+            verts=[centre+rot@Vector((x,y,z))for y in (0,.0004)for x,z in outline]
+            verts.extend([centre+Vector((0,-.0006,0)),centre+Vector((0,.0004,0))]);faces=[]
+            for j in range(6):k=(j+1)%6;faces.extend([(12,j,k),(13,k+6,j+6),(j,j+6,k+6,k)])
+            finish(mesh('Crest_Leaf_Sheet',verts,faces,brass,'head'))
+    # A closed two-millimetre leather visor. The narrow metal facing follows
+    # its outer edge instead of reading as a round gold cable.
+    for obj in [o for o in objects if o.name.startswith(('Curved_Shako_Visor','Brass_Visor_Edge'))]:remove(obj)
+    n=40;verts=[]
+    for z in (1.714,1.716):
+        for j in range(n+1):
+            a=math.pi+math.pi*j/n;verts.extend([(.082*math.cos(a),-.052+.077*math.sin(a),z),(.099*math.cos(a),-.052+.132*math.sin(a),z-.007)])
+    ring=(n+1)*2;faces=[]
+    for j in range(n):
+        a=2*j;faces.extend([(a,a+1,a+3,a+2),(ring+a,ring+a+2,ring+a+3,ring+a+1),(a+1,ring+a+1,ring+a+3,a+3),(a+2,ring+a+2,ring+a,a)])
+    faces.extend([(0,ring,ring+1,1),(2*n,2*n+1,ring+2*n+1,ring+2*n)])
+    visor=finish(mesh('Granadero_Shako_Visor_Leather',verts,faces,leather,'head'))
+    visor_uv=visor.data.uv_layers.new(name='UVMap')
+    for face in visor.data.polygons:
+        for li in face.loop_indices:
+            p=visor.data.vertices[visor.data.loops[li].vertex_index].co
+            visor_uv.data[li].uv=((p.x+.105)/.21,(p.y+.190)/.15)
+    # Exact visor profile, as a flat metal binding two millimetres wide.
+    edge=ctx['tube']('Brass_Visor_Edge',[(.099*math.cos(math.pi+math.pi*j/n),-.052+.132*math.sin(math.pi+math.pi*j/n),1.708)for j in range(n+1)],[.0018]*(n+1),brass,'head',6)
+    for v in edge.data.vertices:v.co.z=1.708+(v.co.z-1.708)*.36
+    finish(edge)
+    # Leather reinforcement is a separate strip below the woven crown.
+    verts=[];faces=[];rings=[(1.695,.088,.106),(1.723,.093,.109)]
+    for z,rx,ry in rings:
+        for j in range(64):a=math.tau*j/64;verts.append((rx*math.cos(a),-.052+ry*math.sin(a),z))
+    for j in range(64):a=j;b=(j+1)%64;faces.append((a,b,b+64,a+64))
+    band=mesh('Shako_Leather_Reinforcement',verts,faces,leather,'head');band['part']='headwear';panel_uv(band)
+    # Keep the accepted plume: detached tufts read as spikes at isometric scale.
+    ctx['export_objects']=[ctx['rig']]+objects

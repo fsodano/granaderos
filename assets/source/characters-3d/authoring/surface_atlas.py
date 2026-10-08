@@ -106,6 +106,12 @@ def surface_tile(name, colour, roughness, metallic, size=TILE_SIZE):
         rough = np.full_like(rough, .69 if buff else .31 if gloss else .54)
         rough += (.025 if buff else .065) * grain_cells + .070 * (1 - polish)
         height = (.09 if buff else .18 if gloss else .26) * grain_cells + .018 * grain
+        if name == 'Granadero_Shako_Polished_Leather':
+            # A coated visor is smooth leather with a thin glossy finish.
+            # The boot-sized cellular normal reads as embossed cross-hatching here.
+            shade = np.ones_like(shade) + .009 * grain_cells + .006 * broad
+            rough = np.full_like(rough,.24) + .035 * (1 - polish) + .008 * grain_cells
+            height = .018 * grain_cells + .005 * grain
     elif kind == 'metal':
         # Soft tooling and polish marks vary the highlight, preserving the
         # actual relief mesh and its warm brass colour. Recesses stay duller.

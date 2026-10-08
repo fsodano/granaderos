@@ -31,26 +31,26 @@
         {
           "lod": 0,
           "url": "/models/characters/granadero-lod0.glb",
-          "triangles": 87197,
-          "bytes": 5452964,
+          "triangles": 86481,
+          "bytes": 5345112,
           "drawCalls": 6,
-          "sha256": "43ed469eb9ea1cf2bf07bf01317921350fc6eb15e9b5d2caccbe7bf02b1fa1e2"
+          "sha256": "9abd79099e863f8f2581b1f34118255375da98d496a3ff33c3d12413d6796550"
         },
         {
           "lod": 1,
           "url": "/models/characters/granadero-lod1.glb",
-          "triangles": 61526,
-          "bytes": 3996624,
+          "triangles": 61724,
+          "bytes": 4003508,
           "drawCalls": 6,
-          "sha256": "a50f3d2a0de9368a01b62d9724f906caf8265dfca45c3152cf7ae2693c5a64f9"
+          "sha256": "58bb52b8be77895293084b0299d090fe178d90543e24f30fbe33a0fb6c02e07d"
         },
         {
           "lod": 2,
           "url": "/models/characters/granadero-lod2.glb",
-          "triangles": 18664,
-          "bytes": 1203904,
+          "triangles": 18734,
+          "bytes": 1203556,
           "drawCalls": 6,
-          "sha256": "b373ef830906ebbb2d8861f1ff758f931b8f10b863e713e817a0abbe01cc8b03"
+          "sha256": "f2e8c6d8676e52bb852d1590db1340e75916358297345f3f4f946cc8d5c2d4c5"
         }
       ],
       "materials": {
