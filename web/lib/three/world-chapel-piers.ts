@@ -5,6 +5,7 @@ import {architectureFinish,applyArchitectureFinish} from './world-architecture-f
 import {WorldBatch} from './world-geometry';
 import {illuminationAt} from './world-materials';
 import {buildingArtInset} from './world-building-placement';
+import {addChapelPierEdges} from './world-chapel-pier-edges';
 import type {WorldGeometry} from './world-geometry';
 import type {WorldMaterials} from './world-materials';
 import type {WorldBuilding,WorldInput,WorldTile} from './world-types';
@@ -18,6 +19,10 @@ export function chapelPiers(b:WorldBuilding,input:WorldInput,T:number,height:num
   const recipe=architectureFinish(appearance.wallFinish,'volume')!,texture='/art/architecture-plaster-v2.png',wall=materials.get(appearance.wallFinish,{architectureRole:'volume',texture}),stone=materials.get('stone',{architectureRole:'volume',colour:'#a99a79'}),copingColours:Record<string,string>={adobe:'#cab48e',limewash:'#eee6d1',ochre:'#e4d3ab',stone:'#c5bd9f',brick:'#cfb490'},coping=materials.get('chapel-pier-coping',{colour:copingColours[appearance.wallFinish]??copingColours.adobe});
   // pier() uses plaster even when its authored pigment is stone or brick.
   applyArchitectureFinish(wall,{...recipe,texture,textureOpacity:.36,multiplyOpacity:0});
+  const shadows:Record<string,string>={adobe:'#776448',limewash:'#aaa18a',ochre:'#8f754f',stone:'#5e635c',brick:'#6f5140'},outline=materials.get('chapel-pier-outline',{colour:shadows[appearance.wallFinish]??shadows.adobe}),stoneOutline=materials.get('chapel-foot-outline',{colour:'#776d54'});
+  // A clipped fallback stroke can share its support plane. Bias only these
+  // local borders so they retain the source line without depth flicker.
+  for(const material of [outline,stoneOutline]){material.polygonOffset=true;material.polygonOffsetFactor=-1;material.polygonOffsetUnits=-1;}
   const at=(u:number,v:number)=>{const p=frame.at(u,v);return new Vector3((p.x+inset)*T,0,(p.y+inset)*T);};
   const rectangle=(u0:number,v0:number,u1:number,v1:number)=>{const a=at(u0,v0),c=at(u1,v1);return {minX:Math.min(a.x,c.x),maxX:Math.max(a.x,c.x),minZ:Math.min(a.z,c.z),maxZ:Math.max(a.z,c.z)};};
   const walking=(rect:ReturnType<typeof rectangle>,top:number)=>(input.terrain.upperSurfaces??[]).some(surface=>!surface.blocked&&(surface.tacticalLevel??0)>0&&(surface.elevation??3)<=base+top+.01&&(surface.x+.5)*T>rect.minX+1e-6&&(surface.x-.5)*T<rect.maxX-1e-6&&(surface.y+.5)*T>rect.minZ+1e-6&&(surface.y-.5)*T<rect.maxZ-1e-6);
@@ -28,11 +33,16 @@ export function chapelPiers(b:WorldBuilding,input:WorldInput,T:number,height:num
   if(capitalBottom>foot+.20)feature('chapel-corner-piers',batch=>{
     for(const u of [0,frame.width]){
       const p=frame.at(u,0),tile=walls.find(tile=>tile.x===p.x&&tile.y===p.y);if(tile?.type!=='wall')continue;
-      const footRect=supported(tile,rectangle(u-.21,-.39,u+.21,.20));if(walking(footRect,capitalTop))continue;
+      const footRect=supported(tile,rectangle(u-.21,-.39,u+.21,.20)),radius=.5/V*.5;
+      if(walking({minX:footRect.minX-radius,maxX:footRect.maxX+radius,minZ:footRect.minZ-radius,maxZ:footRect.maxZ+radius},capitalTop+radius))continue;
       box(batch,footRect,0,foot,stone);
-      box(batch,supported(tile,rectangle(u-.14,-.34,u+.14,.15)),foot,capitalBottom,wall);
+      const shaft=supported(tile,rectangle(u-.14,-.34,u+.14,.15));box(batch,shaft,foot,capitalBottom,wall);
       const capital=supported(tile,rectangle(u-.19,-.37,u+.19,.19));
       box(batch,capital,capitalBottom,capitalTop-.5/V,wall);box(batch,capital,capitalTop-.5/V,capitalTop,coping);
+      const support={minX:(tile.x-.49)*T,maxX:(tile.x+.49)*T,minZ:(tile.y-.49)*T,maxZ:(tile.y+.49)*T},border={support,base,light};
+      addChapelPierEdges(batch,stoneOutline,{...border,rect:footRect,bottom:0,top:foot,bottomStroke:true,topStroke:.45});
+      addChapelPierEdges(batch,outline,{...border,rect:shaft,bottom:foot,top:capitalBottom});
+      addChapelPierEdges(batch,outline,{...border,rect:capital,bottom:capitalBottom,top:capitalTop,bottomStroke:true,topStroke:.5});
     }
   });
 
