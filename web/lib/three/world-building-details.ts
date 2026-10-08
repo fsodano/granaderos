@@ -19,6 +19,7 @@ import {workPorch} from './world-work-porches';
 import {smithyChimney} from './world-smithy-chimney';
 import {barracksGate} from './world-barracks-gate';
 import {townhallColumns} from './world-townhall-columns';
+import {cabildoFacade} from './world-cabildo-facade';
 import {buildingArtInset} from './world-building-placement';
 import type {WorldGeometry} from './world-geometry';
 import type {WorldMaterials} from './world-materials';
@@ -317,8 +318,8 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
     });
     townhallCrown();
   }else if(kind==='cabildo'){
-    const twoStoreys=height>=4,storey=twoStoreys?height*.50:height,records:{a:number;u:number;v:number}[]=[];
-    for(let u=0;u<=frame.width;u++)if(wallAt(u,0)?.type==='wall'){const [a,v]=bearing(u,0,u!==0&&u!==frame.width);records.push({a:u===0||u===frame.width?u:u-alongInset,u:a,v});}
+    const sourceCabildo=wallInset===0&&(!legacy||b.wallFinish!==undefined),twoStoreys=height>=4,storey=twoStoreys?height*.50:height,records:{a:number;u:number;v:number}[]=[];
+    for(let u=0;u<=frame.width;u++)if(wallAt(u,0)?.type==='wall'&&(!sourceCabildo||u===0||u===frame.width||u%2===0&&u<frame.width-1)){const [a,v]=bearing(u,0,u!==0&&u!==frame.width);records.push({a:u===0||u===frame.width?u:u-alongInset,u:a,v});}
     records.sort((a,b)=>a.a-b.a);
     const arcade=(name:string,bottom:number,top:number,upper=false)=>feature(name,()=>{
       const columns=records.map(record=>upper?record.a:record.u);
@@ -340,10 +341,11 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
         for(let k=1;k<arch.length;k++)batch.cylinder(trim,arch[k-1],arch[k],.053,light);
       }
     });
-    arcade('civic-ground-arcade',.03,storey-.09);
+    if(sourceCabildo)root.add(cabildoFacade(b,input,T,height,base,geometry,materials,(panels,eave,localRoof)=>roofEdgeDetails(`${b.id}:civic-cupola`,panels,eave,geometry,localRoof,darkwood,light)));
+    else arcade('civic-ground-arcade',.03,storey-.09);
     if(twoStoreys)arcade('civic-upper-arcade',storey+.12,height-.12,true);
     feature('civic-cornices',()=>{
-      for(const y of twoStoreys?[storey,height-.10]:[height-.10]){
+      for(const y of sourceCabildo?(twoStoreys?[height-.10]:[]):twoStoreys?[storey,height-.10]:[height-.10]){
         box(frame.width*.5,-.12/T,y,frame.width+.20/T,.15,.29/T,trim);
         for(const u of [0,frame.width])box(u,frame.depth*.5,y,.22/T,.14,frame.depth,trim);
       }
@@ -360,7 +362,7 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
         box(u+sign*.045/T,v,y-.16,.023/T,.024,.72/T,iron);
       }
     });
-    tower(frame.width*.5,.1,Math.min(1.4,Math.max(1.1,frame.width*.22)),height+(twoStoreys?2.05:1.35),height-.12,true);
+    if(!sourceCabildo)tower(frame.width*.5,.1,Math.min(1.4,Math.max(1.1,frame.width*.22)),height+(twoStoreys?2.05:1.35),height-.12,true);
   }else if(kind==='posta'){
     const supports=Array.from({length:Math.floor(frame.width)+1},(_,u)=>u).filter(u=>wallAt(u,0)?.type==='wall'&&(u===0||u===frame.width||u%2===0));
     roofCanopy('posta-masonry-veranda',supports,.55,true);
