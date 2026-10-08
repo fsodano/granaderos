@@ -25,3 +25,11 @@ The actual rebuilt body has exact native positions, normals, joints, weights, in
 ## Failure boundary
 
 The published selected-worker staging and pre-install receipt/manifest checks remain intact. This increment does not add a whole-pipeline transaction. A later ordered postpass or I/O failure can still occur after a valid selected worker output installs. The first failure remains part of the record. Full-library fresh export, unrelated character changes and general rendering performance are outside this cut.
+
+## Root integration validation
+
+The frozen eight-source cut was installed on main `3879a828c201264d6ab45f1ffad2a23527bc55c3` and committed as `7d5bb452fa79ff7b96020e977efc66431b9855d8`. The root ran all 38 affected checks: 38 passed in 26.06 seconds. Python compilation, native library verification, profile verification, the documentation audit and all 38 baseline checks passed. Tests finished before the manifest-only repeat started, so no postpass could mutate a file while a test read it.
+
+The actual installed `build-library.py --manifest-only` repeat kept the entire released 106-file model, texture, manifest and profile set byte for byte exact, with no extra files. All ten pinned source dependencies remained exact, including the two previously published pipeline review appendices. Frozen-cut verification passed again after the sequential gates. The before/after receipt is `artifacts/three-character-material-role-current-review/current-repeat-proof.json` in the isolated root checkout.
+
+This integration installs no public assets or gameplay renderer changes. The fresh Blender export, its two 110-file repeats and its 18-view normal HUD review remain separate private evidence. The root reviewed the nine paired posture/LOD images; that visual check does not prove complete fragment or mip equality and does not remove the measured LOD0 vertex-colour limit above. Production application and released-asset inputs remain exact to the previously verified build `3e5532ec2ba8`; no new production build or fresh-asset acceptance is claimed here.
