@@ -21,6 +21,14 @@ supersedes older integration claims below. It covers the free one-person start,
 exploration endurance, campaign rendering and current route failures. Full
 gameplay and universal 60 FPS acceptance remain open.
 
+The [8 October healing cue and clock record](healing-patient-cue-and-clock.md)
+adds an admitted current self/patient cue and one continuous native treatment
+interval. Four normal standing/prone HUD routes retain exact paid AP, finite
+dressings, wound results, cells and owned items; 104 affected checks, types,
+native assets and the production build pass. Physical patient contact and
+prone sleeve floor clearance remain open. This bounded presentation change
+does not establish complete gameplay or final character-art acceptance.
+
 ## Recovery and integrated gameplay checkpoint — 21 September 2026
 
 Critical first aid and civilian health persistence are recovered in `2c121e3`. Coastal defensive victories now release prisoners after the last local enemy force is defeated, even when sector ownership stays patriot; remaining coastal forces also retain the blockade. The current-price established-area route passes all eight checks and reaches Yatasto with 11 permanent deaths and no captives after finite custody care; see [the route checkpoint](northern-route.md).
