@@ -858,3 +858,21 @@ unchanged equipment. The [worker review](../three-rifle-worker-ready-review.md)
 records first admission costs of 25.9–33.0 ms, remaining 66.6–83.3 ms frame
 gaps and original synchronous fallback costs. Final responsiveness and
 motion polish remain open.
+
+## Supported changed-hand standing return
+
+A standing gesture return with a changed native hand guard now lifts and
+lands each foot in turn. The leg return uses two 240 ms steps while retaining
+paid action phases, native Root/pelvis/upper channels and the existing mixer
+fade. Complete weighted boots remain part of the support and motion checks.
+
+All 205 focused checks, six held-clock checks and 188 affected worker/runtime/gait/prone/garment
+regressions pass with native/profile, TypeScript, documentation and 38
+baseline checks. Export `a2072de717a3` verifies 1,245 files and 1,040 asset
+references. Six before and six after normal HUD routes preserve exact paid
+and owned states in 144 captures without browser errors. The
+[step return review](../art/standing-gesture-step-return-3d-review-2026-10-08.md)
+records grounded mirrored-return speed reduced from 2.991 m/s to at most
+1.619 mm/s. The focused physical matrix covers changed-hand transitions;
+ordinary HUD routes cover rifle-equipped gestures. Whole-boot interruption
+continuity, broader CPU cost and final motion acceptance remain open.
