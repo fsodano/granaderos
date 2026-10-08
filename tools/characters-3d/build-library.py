@@ -40,7 +40,7 @@ if native_path.exists():
  manifest['animationMirroring']={'axis':'x','bones':mirror}
 for preset in PRESETS:
  gender='female'if preset.startswith('woman-')else'male';lods=[byname[preset+'-lod'+str(i)+'.glb']for i in range(3)if preset+'-lod'+str(i)+'.glb'in byname]
- manifest['appearances'][preset]={'id':preset,'gender':gender,'height':1.76,'animationLibrary':gender,'lods':[{k:f[k]for k in ('lod','url','triangles','bytes','drawCalls','sha256')}for f in lods],'materials':{'skin':'Skin','apparel':'Apparel_Atlas'},'parts':{part:'Human_'+part+'_LOD{lod}'for part in ('skin','outfit','legwear','footwear','headwear')},'sockets':lods[0]['sockets']if lods else{},'lodPixelThresholds':[160,65,0],'baseAttire':{'headwear':'appearance','outfit':'appearance','legwear':'appearance'},'nullWornItem':'keepBaseAttire'}
+ manifest['appearances'][preset]={'id':preset,'gender':gender,'height':1.76,'animationLibrary':gender,'lods':[{k:f[k]for k in ('lod','url','triangles','bytes','drawCalls','sha256')}for f in lods],'materials':{'skin':'Skin','apparel':'Apparel_Atlas'},'parts':{part:'Human_'+part+'_LOD{lod}'for part in ('skin','outfit','legwear','footwear','headwear')},'sockets':lods[0]['sockets']if lods else{},'lodPixelThresholds':[120,65,0],'baseAttire':{'headwear':'appearance','outfit':'appearance','legwear':'appearance'},'nullWornItem':'keepBaseAttire'}
  # Source metadata predates the native cloth pass. Keep the reviewed record
  # when this invocation did not rebuild that exact authored body.
  for record in manifest['appearances'][preset]['lods']:
@@ -48,7 +48,7 @@ for preset in PRESETS:
   if previous.get('nativeClothSupport')and('appearance',preset,record['lod'])not in jobs:
    path=OUT/Path(record['url']).name
    assert hashlib.sha256(path.read_bytes()).hexdigest()==previous['sha256'],'Changed reviewed cloth body: '+str(path)
-   record.update({key:previous[key]for key in('bytes','sha256','nativeClothSupport')})
+   record.update({key:previous[key]for key in('bytes','sha256','nativeClothSupport','nativeClothBootSupport')if key in previous})
  sockets=manifest['appearances'][preset]['sockets']
  if 'handLeft_pistol'in sockets:sockets['handLeft_pistol']['mirror']={'socket':'handRight_pistol','localAxis':'z'}
 for gender in ('male','female'):
@@ -107,3 +107,4 @@ if manifest['complete']:
  else:subprocess.run(['node',str(ROOT/'tools/characters-3d/compile-locomotion-profile.mjs')],cwd=ROOT,check=True)
  # Fit existing long-cloth shapes only after the final native support poses.
  subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-long-cloth-support.py')],cwd=ROOT,check=True)
+ subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-close-long-cloth-boot-support.py')],cwd=ROOT,check=True)

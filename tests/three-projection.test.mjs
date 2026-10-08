@@ -2,9 +2,20 @@ import {register} from 'node:module';register('./tactical-render-loader.mjs',imp
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {OrthographicCamera,Vector3} from '../web/node_modules/three/build/three.module.js';
-const {sectorProject,updateSectorCamera,TILE_METRES,actorYaw}=await import('../web/lib/three/projection.ts');
+const {sectorProject,updateSectorCamera,TILE_METRES,actorYaw,characterLOD,CHARACTER_LOD_PIXEL_THRESHOLDS}=await import('../web/lib/three/projection.ts');
 const {projectSurface,ELEVATION_PIXELS_PER_METRE}=await import('../web/lib/tactical-elevation.ts');
 const {sampleMovementSegment,motionTransitions}=await import('../web/app/useUnitMotion.ts');
+const {tacticalCamera}=await import('../game/tactical-camera.js');
+
+test('all three normal zoom levels reach the matching body detail on desktop and mobile',()=>{
+ for(const width of [390,769,1440])for(const zoom of [1,2,3]){
+  const view=tacticalCamera({width:4000,height:4000},{width,height:700},{x:2000,y:2000},{x:0,y:0},zoom);
+  const pixels=1.76*25.0666666667*width/view.width;
+  assert.equal(characterLOD(pixels),3-zoom,`${width}px viewport, ${zoom}x normal zoom`);
+ }
+ assert.equal(characterLOD(CHARACTER_LOD_PIXEL_THRESHOLDS[0]),1);
+ assert.equal(characterLOD(CHARACTER_LOD_PIXEL_THRESHOLDS[1]),2);
+});
 
 test('metric 3D camera aligns with map controls at every zoom, pan and surface height',()=>{
  for(const [width,height]of [[769,600],[1440,810],[390,700]])for(const zoom of [.7,1,2,4])for(const [x,y]of [[0,0],[150,80],[-100,290]]){
@@ -36,6 +47,15 @@ test('soldiers and civilians with the same ID keep separate movement history',()
  assert.equal(motionTransitions(before,after,undefined,new Set(['npc:same'])).length,1);
 });
 test('climb sampling retains the recorded access link and metric height',()=>{
- const point=sampleMovementSegment({x:1,y:1,renderedHeight:0},{x:1,y:2,tacticalLevel:1,renderedHeight:3,kind:'climb',linkId:'ladder'},.5);
- assert.equal(point.kind,'climb');assert.equal(point.linkId,'ladder');assert.equal(point.renderedHeight,1.5);assert.equal(point.climbDirection,1);
+ const lower={x:1,y:1,renderedHeight:0},upper={x:1,y:2,tacticalLevel:1,renderedHeight:3,kind:'climb',linkId:'ladder'};
+ const point=sampleMovementSegment(lower,upper,.5);
+ assert.equal(point.kind,'climb');assert.equal(point.linkId,'ladder');assert.equal(point.climbDirection,1);
+ assert.equal(point.climbGeometry.height,3);assert.equal(point.climbGeometry.span,TILE_METRES);
+ // Root motion follows the supported rung path, rather than linear body lift.
+ assert.ok(point.renderedHeight>0&&point.renderedHeight<3);
+ const start=sampleMovementSegment(lower,upper,0),end=sampleMovementSegment(lower,upper,1);
+ assert.equal(start.renderedHeight,0);assert.equal(end.renderedHeight,3);
+ assert.equal(end.x,upper.x);assert.equal(end.y,upper.y);assert.equal(end.tacticalLevel,1);
+ const descending=sampleMovementSegment({...upper,kind:undefined},{...lower,kind:'climb',linkId:'ladder'},.5);
+ assert.equal(descending.climbDirection,-1);assert.equal(descending.renderedHeight,point.renderedHeight);
 });

@@ -140,6 +140,26 @@ The checks cover prone height, floor bounds, crawling, posture blending,
 replacement clothing, shading normals, repeat fitting and stale-pose rejection.
 They do not establish cloth and boot collision clearance in every motion.
 
+## Close long-cloth boot support
+
+The detailed friar and woman's skirt bodies have a third additive target,
+`cloth_prone_boot_clearance`. It clears complete boot surfaces for the recorded
+fixed native prone support set while retaining the original rest mesh, rig,
+two cloth targets and crawling shape. Normal camera zoom can now select these
+detailed bodies; the character LOD thresholds are 120 and 65 projected pixels.
+
+```sh
+python3 tools/characters-3d/build-close-long-cloth-boot-support.py
+node --test tests/three-long-cloth-boot-clearance.test.mjs
+```
+
+The library runs this pass after the native cloth-height pass. Repeat fitting
+changes no asset. Changed source-pose or compatible clip-set hashes require
+authored body regeneration. Runtime weights follow scheduled native actions,
+including paused paid phases, and exclude mirrored or moving lower-body clips.
+The [close garment review](../../../docs/art/close-long-cloth-boot-clearance-review-2026-10-08.md)
+records complete surface checks and remaining coarse-LOD and motion limits.
+
 ## Sources and rights
 
 - **MakeHuman / MPFB body, targets, rig and weights:** CC0-1.0 assets from

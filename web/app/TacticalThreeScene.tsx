@@ -8,7 +8,7 @@ import {ActorOcclusion,markActorMaterials} from '../lib/three/actor-occlusion';
 import {ActorRuntime} from '../lib/three/actor-runtime';
 import {resolveContactTargetModel} from '../lib/three/contact-target-model';
 import {advanceSceneActors} from '../lib/three/scene-actors';
-import {updateSectorCamera,TILE_METRES,type SectorCameraView} from '../lib/three/projection';
+import {updateSectorCamera,TILE_METRES,characterLOD,type SectorCameraView} from '../lib/three/projection';
 import type {WorldInput} from '../lib/three/world-types';
 import type {ActorVisual} from '../lib/three/presentation';
 import {sitePath} from '../lib/site-path.js';
@@ -58,7 +58,7 @@ export default function TacticalThreeScene(props:Props){
       sun.position.set(centreX-18,30,centreZ-12);sun.target.position.set(centreX,0,centreZ);const span=Math.max(12,input.view.width/29.747);Object.assign(sun.shadow.camera,{left:-span,right:span,top:span,bottom:-span});sun.shadow.camera.updateProjectionMatrix();
       const visible=new Set(input.actors.map(actor=>actor.key));for(const [key,entry]of actors)if(!visible.has(key)){entry.runtime?.dispose();actors.delete(key);}
       if(actorInput!==input.actors){actorInput=input.actors;world.updateActors?.(input.actors.map(actor=>({x:actor.position[0]/TILE_METRES,y:actor.position[2]/TILE_METRES,elevation:actor.position[1],tacticalLevel:actor.motion?.tacticalLevel??actor.tacticalLevel,activeClimbLink:actor.motion?.moving&&actor.motion.kind==='climb'?actor.motion.linkId:undefined})));}
-      const pixelHeight=1.76*25.0666666667*bounds.width/input.view.width,lod=pixelHeight>160?0:pixelHeight>65?1:2;
+      const pixelHeight=1.76*25.0666666667*bounds.width/input.view.width,lod=characterLOD(pixelHeight);
       for(const visual of input.actors)ensure(visual,lod);
       const activeActors=advanceSceneActors({visuals:input.actors,entry:key=>actors.get(key),active:visual=>{
         actorBounds.center.fromArray(visual.position);actorBounds.center.y+=1;return frustum.intersectsSphere(actorBounds);
@@ -77,7 +77,7 @@ export default function TacticalThreeScene(props:Props){
         // Empty sectors are ready too. Wait for ground/building textures so
         // the initial loading state covers the complete admitted scene.
         if(!initialReady&&!failedMessage&&[...actors.values()].every(actor=>!actor.pending&&actor.runtime)&&world.inspect().pendingTextures===0){initialReady=true;setStatus('');}
-        element.dataset.effects=String(effects.inspect().events.length);element.dataset.fps=(frames*1000/(now-frameStart)).toFixed(1);element.dataset.drawCalls=String(renderer.info.render.calls);element.dataset.triangles=String(renderer.info.render.triangles);element.dataset.actors=String(actors.size);element.dataset.loadedActors=String([...actors.values()].filter(actor=>actor.runtime).length);element.dataset.activeActors=String(activeActors);element.dataset.lod=String(lod);element.dataset.geometries=String(renderer.info.memory.geometries);element.dataset.textures=String(renderer.info.memory.textures);frames=0;frameStart=now;}
+        element.dataset.effects=String(effects.inspect().events.length);element.dataset.fps=(frames*1000/(now-frameStart)).toFixed(1);element.dataset.drawCalls=String(renderer.info.render.calls);element.dataset.triangles=String(renderer.info.render.triangles);element.dataset.actors=String(actors.size);element.dataset.loadedActors=String([...actors.values()].filter(actor=>actor.runtime).length);element.dataset.activeActors=String(activeActors);element.dataset.pendingActors=String([...actors.values()].filter(actor=>actor.pending).length);element.dataset.lod=String(lod);element.dataset.geometries=String(renderer.info.memory.geometries);element.dataset.textures=String(renderer.info.memory.textures);frames=0;frameStart=now;}
     };
     request=requestAnimationFrame(tick);
     const lost=(event:Event)=>{event.preventDefault();report(Error('WebGL context lost'));},restored=()=>setAttempt(value=>value+1);element.addEventListener('webglcontextlost',lost);element.addEventListener('webglcontextrestored',restored);

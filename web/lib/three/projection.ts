@@ -7,6 +7,9 @@ export const ISO_HALF_HEIGHT=14;
 export const ISO_PITCH=Math.asin(ISO_HALF_HEIGHT/ISO_HALF_WIDTH);
 export const PIXELS_PER_METRE=ELEVATION_PIXELS_PER_METRE/Math.cos(ISO_PITCH);
 export const TILE_METRES=ISO_HALF_WIDTH*Math.SQRT2/PIXELS_PER_METRE;
+/** Normal field zoom projects a 1.76 m body to 44, 88 or 132 CSS pixels. */
+export const CHARACTER_LOD_PIXEL_THRESHOLDS=[120,65,0] as const;
+export function characterLOD(pixelHeight:number){return pixelHeight>CHARACTER_LOD_PIXEL_THRESHOLDS[0]?0:pixelHeight>CHARACTER_LOD_PIXEL_THRESHOLDS[1]?1:2;}
 export type SectorCameraView={x:number;y:number;width:number;height:number;mapHeight:number};
 export type MetricProject=((x:number,y:number)=>{x:number;y:number})&{metric:true};
 export function sectorProject(mapHeight:number):MetricProject {
