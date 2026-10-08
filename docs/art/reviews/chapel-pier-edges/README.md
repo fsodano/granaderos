@@ -18,6 +18,8 @@ Two old pier assertions needed a measured update. The coping ray now samples 0.3
 
 Live review: 12 original before views and 36 after views pass without browser errors. Each set uses normal catalogue controls and visits exterior, partial and interior states at all four rotations. The after sets include original roofs, closed slabs and legal roof routes. The normal 0-degree front, 90-degree exterior, closed slab, accessible roof and disclosed interior were visually checked. This record confirms the local edge correction. It does not claim full visual parity or complete building polish; the previously disclosed source/native window-aperture proportion difference remains.
 
+Final root integration at `58b0a4cc5107a886d940b39011e43eb1ae31764b` passes 44 affected checks plus four support checks, typecheck, documentation/baseline audits and the production build (`11759c166e9f`, 1,245 static files and 1,040 asset references). All nine frozen paths are exact before this documentation addendum. An independent normal-camera run adds 12 current-main baseline views and 24 current original/slab views, with no browser errors and exact source hashes before/after capture. The twelve protected window, sign, actor, healing-clock/profile and native manifest/bank files remain exact main `dfe41950`. Each exterior adds exactly 1,344 triangles; partial/interior geometry counts remain equal. The current 0-degree front was viewed beside its baseline and the complete current chapel sprite. Source-pinned reports and images are in `artifacts/three-chapel-pier-edges-current-review/`.
+
 Focused checks:
 
 ```sh
