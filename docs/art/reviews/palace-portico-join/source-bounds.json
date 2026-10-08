@@ -1,0 +1,824 @@
+{
+  "baseCommit": "4ec028f541272ee5579d5c7fa1d4259042b2fec7",
+  "sourceRecipe": "web/app/TacticalBuildingDetails.tsx:palacePortico",
+  "adaptation": "Retain front pediment and source eave corners; end level ridge at the authored entablature return v=.3 and close the rear with a planar tiled hip. The source explicitly authors a rear triangle but hides it with main-roof painter order.",
+  "sourcePoints": [
+    {
+      "rotation": 0,
+      "roof": [
+        {
+          "id": "review-palacio-palace-portico-0",
+          "points": [
+            {
+              "x": 8,
+              "y": 12.8,
+              "z": 132
+            },
+            {
+              "x": 8,
+              "y": 14.39,
+              "z": 132
+            },
+            {
+              "x": 11,
+              "y": 14.39,
+              "z": 159
+            },
+            {
+              "x": 11,
+              "y": 12.8,
+              "z": 159
+            }
+          ],
+          "finish": "clay"
+        },
+        {
+          "id": "review-palacio-palace-portico-1",
+          "points": [
+            {
+              "x": 14,
+              "y": 14.39,
+              "z": 132
+            },
+            {
+              "x": 14,
+              "y": 12.8,
+              "z": 132
+            },
+            {
+              "x": 11,
+              "y": 12.8,
+              "z": 159
+            },
+            {
+              "x": 11,
+              "y": 14.39,
+              "z": 159
+            }
+          ],
+          "finish": "clay"
+        }
+      ],
+      "entablature": {
+        "points": [
+          {
+            "x": 14.129999999999999,
+            "y": 14.44
+          },
+          {
+            "x": 7.869999999999999,
+            "y": 14.44
+          },
+          {
+            "x": 7.869999999999999,
+            "y": 13.7
+          },
+          {
+            "x": 14.129999999999999,
+            "y": 13.7
+          }
+        ],
+        "bottom": 125,
+        "top": 132,
+        "palette": {
+          "base": "#a99a79",
+          "trim": "#c7b795",
+          "shadow": "#776d54"
+        },
+        "texture": "stone"
+      }
+    },
+    {
+      "rotation": 90,
+      "roof": [
+        {
+          "id": "review-palacio-palace-portico-0",
+          "points": [
+            {
+              "x": 5.2,
+              "y": 8,
+              "z": 132
+            },
+            {
+              "x": 3.61,
+              "y": 8,
+              "z": 132
+            },
+            {
+              "x": 3.61,
+              "y": 11,
+              "z": 159
+            },
+            {
+              "x": 5.2,
+              "y": 11,
+              "z": 159
+            }
+          ],
+          "finish": "clay"
+        },
+        {
+          "id": "review-palacio-palace-portico-1",
+          "points": [
+            {
+              "x": 3.61,
+              "y": 14,
+              "z": 132
+            },
+            {
+              "x": 5.2,
+              "y": 14,
+              "z": 132
+            },
+            {
+              "x": 5.2,
+              "y": 11,
+              "z": 159
+            },
+            {
+              "x": 3.61,
+              "y": 11,
+              "z": 159
+            }
+          ],
+          "finish": "clay"
+        }
+      ],
+      "entablature": {
+        "points": [
+          {
+            "x": 3.56,
+            "y": 14.129999999999999
+          },
+          {
+            "x": 3.56,
+            "y": 7.869999999999999
+          },
+          {
+            "x": 4.3,
+            "y": 7.869999999999999
+          },
+          {
+            "x": 4.3,
+            "y": 14.129999999999999
+          }
+        ],
+        "bottom": 125,
+        "top": 132,
+        "palette": {
+          "base": "#a99a79",
+          "trim": "#c7b795",
+          "shadow": "#776d54"
+        },
+        "texture": "stone"
+      }
+    },
+    {
+      "rotation": 180,
+      "roof": [
+        {
+          "id": "review-palacio-palace-portico-0",
+          "points": [
+            {
+              "x": 7,
+              "y": 3.61,
+              "z": 132
+            },
+            {
+              "x": 7,
+              "y": 5.2,
+              "z": 132
+            },
+            {
+              "x": 10,
+              "y": 5.2,
+              "z": 159
+            },
+            {
+              "x": 10,
+              "y": 3.61,
+              "z": 159
+            }
+          ],
+          "finish": "clay"
+        },
+        {
+          "id": "review-palacio-palace-portico-1",
+          "points": [
+            {
+              "x": 13,
+              "y": 5.2,
+              "z": 132
+            },
+            {
+              "x": 13,
+              "y": 3.61,
+              "z": 132
+            },
+            {
+              "x": 10,
+              "y": 3.61,
+              "z": 159
+            },
+            {
+              "x": 10,
+              "y": 5.2,
+              "z": 159
+            }
+          ],
+          "finish": "clay"
+        }
+      ],
+      "entablature": {
+        "points": [
+          {
+            "x": 6.87,
+            "y": 3.56
+          },
+          {
+            "x": 13.13,
+            "y": 3.56
+          },
+          {
+            "x": 13.13,
+            "y": 4.3
+          },
+          {
+            "x": 6.87,
+            "y": 4.3
+          }
+        ],
+        "bottom": 125,
+        "top": 132,
+        "palette": {
+          "base": "#a99a79",
+          "trim": "#c7b795",
+          "shadow": "#776d54"
+        },
+        "texture": "stone"
+      }
+    },
+    {
+      "rotation": 270,
+      "roof": [
+        {
+          "id": "review-palacio-palace-portico-0",
+          "points": [
+            {
+              "x": 14.39,
+              "y": 7,
+              "z": 132
+            },
+            {
+              "x": 12.8,
+              "y": 7,
+              "z": 132
+            },
+            {
+              "x": 12.8,
+              "y": 10,
+              "z": 159
+            },
+            {
+              "x": 14.39,
+              "y": 10,
+              "z": 159
+            }
+          ],
+          "finish": "clay"
+        },
+        {
+          "id": "review-palacio-palace-portico-1",
+          "points": [
+            {
+              "x": 12.8,
+              "y": 13,
+              "z": 132
+            },
+            {
+              "x": 14.39,
+              "y": 13,
+              "z": 132
+            },
+            {
+              "x": 14.39,
+              "y": 10,
+              "z": 159
+            },
+            {
+              "x": 12.8,
+              "y": 10,
+              "z": 159
+            }
+          ],
+          "finish": "clay"
+        }
+      ],
+      "entablature": {
+        "points": [
+          {
+            "x": 14.44,
+            "y": 6.87
+          },
+          {
+            "x": 14.44,
+            "y": 13.13
+          },
+          {
+            "x": 13.7,
+            "y": 13.13
+          },
+          {
+            "x": 13.7,
+            "y": 6.87
+          }
+        ],
+        "bottom": 125,
+        "top": 132,
+        "palette": {
+          "base": "#a99a79",
+          "trim": "#c7b795",
+          "shadow": "#776d54"
+        },
+        "texture": "stone"
+      }
+    }
+  ],
+  "measurements": [
+    {
+      "rotation": 0,
+      "finish": "clay",
+      "base": 0,
+      "height": 4.946808510638298,
+      "sourceFrontV": -0.39,
+      "sourceBackV": 1.2,
+      "sourceEntablatureReturnV": 0.3,
+      "sourceSpanTiles": 6,
+      "sourceEaveHeight": 5.26595744680851,
+      "retainedFrontRidgeHeight": 6.343085106382978,
+      "mainRoofAtBack": 5.557149362537835,
+      "oldRearRidgeAboveMainMillimetres": 785.9357438451431,
+      "newRearRoofBelowMainMillimetres": 289.99561132828154,
+      "actualTileIntersectionV": 1.0112512747305447,
+      "actualJoinDeltaMillimetres": -2.6144419962292886e-07,
+      "newRearSlopeDegrees": 44.075714177385706,
+      "retainedSideSlopeDegrees": 16.197194058334215
+    },
+    {
+      "rotation": 0,
+      "finish": "clay",
+      "base": 1.7,
+      "height": 4.946808510638298,
+      "sourceFrontV": -0.39,
+      "sourceBackV": 1.2,
+      "sourceEntablatureReturnV": 0.3,
+      "sourceSpanTiles": 6,
+      "sourceEaveHeight": 6.965957446808511,
+      "retainedFrontRidgeHeight": 8.043085106382978,
+      "mainRoofAtBack": 7.257149436859713,
+      "oldRearRidgeAboveMainMillimetres": 785.9356695232656,
+      "newRearRoofBelowMainMillimetres": 289.99540007749937,
+      "actualTileIntersectionV": 1.0112513293749652,
+      "actualJoinDeltaMillimetres": -5.183053986002051e-07,
+      "newRearSlopeDegrees": 44.075714177385706,
+      "retainedSideSlopeDegrees": 16.197194058334215
+    },
+    {
+      "rotation": 0,
+      "finish": "aged",
+      "base": 0,
+      "height": 4.946808510638298,
+      "sourceFrontV": -0.39,
+      "sourceBackV": 1.2,
+      "sourceEntablatureReturnV": 0.3,
+      "sourceSpanTiles": 6,
+      "sourceEaveHeight": 5.26595744680851,
+      "retainedFrontRidgeHeight": 6.343085106382978,
+      "mainRoofAtBack": 5.557149362537835,
+      "oldRearRidgeAboveMainMillimetres": 785.9357438451431,
+      "newRearRoofBelowMainMillimetres": 289.99561132828154,
+      "actualTileIntersectionV": 1.0112512747305447,
+      "actualJoinDeltaMillimetres": -2.6144419962292886e-07,
+      "newRearSlopeDegrees": 44.075714177385706,
+      "retainedSideSlopeDegrees": 16.197194058334215
+    },
+    {
+      "rotation": 0,
+      "finish": "aged",
+      "base": 1.7,
+      "height": 4.946808510638298,
+      "sourceFrontV": -0.39,
+      "sourceBackV": 1.2,
+      "sourceEntablatureReturnV": 0.3,
+      "sourceSpanTiles": 6,
+      "sourceEaveHeight": 6.965957446808511,
+      "retainedFrontRidgeHeight": 8.043085106382978,
+      "mainRoofAtBack": 7.257149436859713,
+      "oldRearRidgeAboveMainMillimetres": 785.9356695232656,
+      "newRearRoofBelowMainMillimetres": 289.99540007749937,
+      "actualTileIntersectionV": 1.0112513293749652,
+      "actualJoinDeltaMillimetres": -5.183053986002051e-07,
+      "newRearSlopeDegrees": 44.075714177385706,
+      "retainedSideSlopeDegrees": 16.197194058334215
+    },
+    {
+      "rotation": 0,
+      "finish": "thatch",
+      "base": 0,
+      "height": 4.946808510638298,
+      "sourceFrontV": -0.39,
+      "sourceBackV": 1.2,
+      "sourceEntablatureReturnV": 0.3,
+      "sourceSpanTiles": 6,
+      "sourceEaveHeight": 5.26595744680851,
+      "retainedFrontRidgeHeight": 6.343085106382978,
+      "mainRoofAtBack": 5.557149362537835,
+      "oldRearRidgeAboveMainMillimetres": 785.9357438451431,
+      "newRearRoofBelowMainMillimetres": 289.99561132828154,
+      "actualTileIntersectionV": 1.0112512747305447,
+      "actualJoinDeltaMillimetres": -2.6144419962292886e-07,
+      "newRearSlopeDegrees": 44.075714177385706,
+      "retainedSideSlopeDegrees": 16.197194058334215
+    },
+    {
+      "rotation": 0,
+      "finish": "thatch",
+      "base": 1.7,
+      "height": 4.946808510638298,
+      "sourceFrontV": -0.39,
+      "sourceBackV": 1.2,
+      "sourceEntablatureReturnV": 0.3,
+      "sourceSpanTiles": 6,
+      "sourceEaveHeight": 6.965957446808511,
+      "retainedFrontRidgeHeight": 8.043085106382978,
+      "mainRoofAtBack": 7.257149436859713,
+      "oldRearRidgeAboveMainMillimetres": 785.9356695232656,
+      "newRearRoofBelowMainMillimetres": 289.99540007749937,
+      "actualTileIntersectionV": 1.0112513293749652,
+      "actualJoinDeltaMillimetres": -5.183053986002051e-07,
+      "newRearSlopeDegrees": 44.075714177385706,
+      "retainedSideSlopeDegrees": 16.197194058334215
+    },
+    {
+      "rotation": 90,
+      "finish": "clay",
+      "base": 0,
+      "height": 4.946808510638298,
+      "sourceFrontV": -0.39,
+      "sourceBackV": 1.2,
+      "sourceEntablatureReturnV": 0.3,
+      "sourceSpanTiles": 6,
+      "sourceEaveHeight": 5.26595744680851,
+      "retainedFrontRidgeHeight": 6.343085106382978,
+      "mainRoofAtBack": 5.557149436830677,
+      "oldRearRidgeAboveMainMillimetres": 785.935669552301,
+      "newRearRoofBelowMainMillimetres": 289.9954795840429,
+      "actualTileIntersectionV": 1.0112513600089588,
+      "actualJoinDeltaMillimetres": -2.3776003388320532e-07,
+      "newRearSlopeDegrees": 44.075714177385706,
+      "retainedSideSlopeDegrees": 16.197194058334215
+    },
+    {
+      "rotation": 90,
+      "finish": "clay",
+      "base": 1.7,
+      "height": 4.946808510638298,
+      "sourceFrontV": -0.39,
+      "sourceBackV": 1.2,
+      "sourceEntablatureReturnV": 0.3,
+      "sourceSpanTiles": 6,
+      "sourceEaveHeight": 6.965957446808511,
+      "retainedFrontRidgeHeight": 8.043085106382978,
+      "mainRoofAtBack": 7.257149511152521,
+      "oldRearRidgeAboveMainMillimetres": 785.9355952304572,
+      "newRearRoofBelowMainMillimetres": 289.9952683333158,
+      "actualTileIntersectionV": 1.0112514146533793,
+      "actualJoinDeltaMillimetres": -4.946212328604815e-07,
+      "newRearSlopeDegrees": 44.075714177385706,
+      "retainedSideSlopeDegrees": 16.197194058334215
+    },
+    {
+      "rotation": 90,
+      "finish": "aged",
+      "base": 0,
+      "height": 4.946808510638298,
+      "sourceFrontV": -0.39,
+      "sourceBackV": 1.2,
+      "sourceEntablatureReturnV": 0.3,
+      "sourceSpanTiles": 6,
+      "sourceEaveHeight": 5.26595744680851,
+      "retainedFrontRidgeHeight": 6.343085106382978,
+      "mainRoofAtBack": 5.557149436830677,
+      "oldRearRidgeAboveMainMillimetres": 785.935669552301,
+      "newRearRoofBelowMainMillimetres": 289.9954795840429,
+      "actualTileIntersectionV": 1.0112513600089588,
+      "actualJoinDeltaMillimetres": -2.3776003388320532e-07,
+      "newRearSlopeDegrees": 44.075714177385706,
+      "retainedSideSlopeDegrees": 16.197194058334215
+    },
+    {
+      "rotation": 90,
+      "finish": "aged",
+      "base": 1.7,
+      "height": 4.946808510638298,
+      "sourceFrontV": -0.39,
+      "sourceBackV": 1.2,
+      "sourceEntablatureReturnV": 0.3,
+      "sourceSpanTiles": 6,
+      "sourceEaveHeight": 6.965957446808511,
+      "retainedFrontRidgeHeight": 8.043085106382978,
+      "mainRoofAtBack": 7.257149511152521,
+      "oldRearRidgeAboveMainMillimetres": 785.9355952304572,
+      "newRearRoofBelowMainMillimetres": 289.9952683333158,
+      "actualTileIntersectionV": 1.0112514146533793,
+      "actualJoinDeltaMillimetres": -4.946212328604815e-07,
+      "newRearSlopeDegrees": 44.075714177385706,
+      "retainedSideSlopeDegrees": 16.197194058334215
+    },
+    {
+      "rotation": 90,
+      "finish": "thatch",
+      "base": 0,
+      "height": 4.946808510638298,
+      "sourceFrontV": -0.39,
+      "sourceBackV": 1.2,
+      "sourceEntablatureReturnV": 0.3,
+      "sourceSpanTiles": 6,
+      "sourceEaveHeight": 5.26595744680851,
+      "retainedFrontRidgeHeight": 6.343085106382978,
+      "mainRoofAtBack": 5.557149436830677,
+      "oldRearRidgeAboveMainMillimetres": 785.935669552301,
+      "newRearRoofBelowMainMillimetres": 289.9954795840429,
+      "actualTileIntersectionV": 1.0112513600089588,
+      "actualJoinDeltaMillimetres": -2.3776003388320532e-07,
+      "newRearSlopeDegrees": 44.075714177385706,
+      "retainedSideSlopeDegrees": 16.197194058334215
+    },
+    {
+      "rotation": 90,
+      "finish": "thatch",
+      "base": 1.7,
+      "height": 4.946808510638298,
+      "sourceFrontV": -0.39,
+      "sourceBackV": 1.2,
+      "sourceEntablatureReturnV": 0.3,
+      "sourceSpanTiles": 6,
+      "sourceEaveHeight": 6.965957446808511,
+      "retainedFrontRidgeHeight": 8.043085106382978,
+      "mainRoofAtBack": 7.257149511152521,
+      "oldRearRidgeAboveMainMillimetres": 785.9355952304572,
+      "newRearRoofBelowMainMillimetres": 289.9952683333158,
+      "actualTileIntersectionV": 1.0112514146533793,
+      "actualJoinDeltaMillimetres": -4.946212328604815e-07,
+      "newRearSlopeDegrees": 44.075714177385706,
+      "retainedSideSlopeDegrees": 16.197194058334215
+    },
+    {
+      "rotation": 180,
+      "finish": "clay",
+      "base": 0,
+      "height": 4.946808510638298,
+      "sourceFrontV": -0.39,
+      "sourceBackV": 1.2,
+      "sourceEntablatureReturnV": 0.3,
+      "sourceSpanTiles": 6,
+      "sourceEaveHeight": 5.26595744680851,
+      "retainedFrontRidgeHeight": 6.343085106382978,
+      "mainRoofAtBack": 5.557149436830677,
+      "oldRearRidgeAboveMainMillimetres": 785.935669552301,
+      "newRearRoofBelowMainMillimetres": 289.99547958404116,
+      "actualTileIntersectionV": 1.0112513600089588,
+      "actualJoinDeltaMillimetres": -2.3776003388320532e-07,
+      "newRearSlopeDegrees": 44.075714177385706,
+      "retainedSideSlopeDegrees": 16.197194058334215
+    },
+    {
+      "rotation": 180,
+      "finish": "clay",
+      "base": 1.7,
+      "height": 4.946808510638298,
+      "sourceFrontV": -0.39,
+      "sourceBackV": 1.2,
+      "sourceEntablatureReturnV": 0.3,
+      "sourceSpanTiles": 6,
+      "sourceEaveHeight": 6.965957446808511,
+      "retainedFrontRidgeHeight": 8.043085106382978,
+      "mainRoofAtBack": 7.257149511152521,
+      "oldRearRidgeAboveMainMillimetres": 785.9355952304572,
+      "newRearRoofBelowMainMillimetres": 289.99526833331754,
+      "actualTileIntersectionV": 1.0112514146533793,
+      "actualJoinDeltaMillimetres": -4.946212328604815e-07,
+      "newRearSlopeDegrees": 44.075714177385706,
+      "retainedSideSlopeDegrees": 16.197194058334215
+    },
+    {
+      "rotation": 180,
+      "finish": "aged",
+      "base": 0,
+      "height": 4.946808510638298,
+      "sourceFrontV": -0.39,
+      "sourceBackV": 1.2,
+      "sourceEntablatureReturnV": 0.3,
+      "sourceSpanTiles": 6,
+      "sourceEaveHeight": 5.26595744680851,
+      "retainedFrontRidgeHeight": 6.343085106382978,
+      "mainRoofAtBack": 5.557149436830677,
+      "oldRearRidgeAboveMainMillimetres": 785.935669552301,
+      "newRearRoofBelowMainMillimetres": 289.99547958404116,
+      "actualTileIntersectionV": 1.0112513600089588,
+      "actualJoinDeltaMillimetres": -2.3776003388320532e-07,
+      "newRearSlopeDegrees": 44.075714177385706,
+      "retainedSideSlopeDegrees": 16.197194058334215
+    },
+    {
+      "rotation": 180,
+      "finish": "aged",
+      "base": 1.7,
+      "height": 4.946808510638298,
+      "sourceFrontV": -0.39,
+      "sourceBackV": 1.2,
+      "sourceEntablatureReturnV": 0.3,
+      "sourceSpanTiles": 6,
+      "sourceEaveHeight": 6.965957446808511,
+      "retainedFrontRidgeHeight": 8.043085106382978,
+      "mainRoofAtBack": 7.257149511152521,
+      "oldRearRidgeAboveMainMillimetres": 785.9355952304572,
+      "newRearRoofBelowMainMillimetres": 289.99526833331754,
+      "actualTileIntersectionV": 1.0112514146533793,
+      "actualJoinDeltaMillimetres": -4.946212328604815e-07,
+      "newRearSlopeDegrees": 44.075714177385706,
+      "retainedSideSlopeDegrees": 16.197194058334215
+    },
+    {
+      "rotation": 180,
+      "finish": "thatch",
+      "base": 0,
+      "height": 4.946808510638298,
+      "sourceFrontV": -0.39,
+      "sourceBackV": 1.2,
+      "sourceEntablatureReturnV": 0.3,
+      "sourceSpanTiles": 6,
+      "sourceEaveHeight": 5.26595744680851,
+      "retainedFrontRidgeHeight": 6.343085106382978,
+      "mainRoofAtBack": 5.557149436830677,
+      "oldRearRidgeAboveMainMillimetres": 785.935669552301,
+      "newRearRoofBelowMainMillimetres": 289.99547958404116,
+      "actualTileIntersectionV": 1.0112513600089588,
+      "actualJoinDeltaMillimetres": -2.3776003388320532e-07,
+      "newRearSlopeDegrees": 44.075714177385706,
+      "retainedSideSlopeDegrees": 16.197194058334215
+    },
+    {
+      "rotation": 180,
+      "finish": "thatch",
+      "base": 1.7,
+      "height": 4.946808510638298,
+      "sourceFrontV": -0.39,
+      "sourceBackV": 1.2,
+      "sourceEntablatureReturnV": 0.3,
+      "sourceSpanTiles": 6,
+      "sourceEaveHeight": 6.965957446808511,
+      "retainedFrontRidgeHeight": 8.043085106382978,
+      "mainRoofAtBack": 7.257149511152521,
+      "oldRearRidgeAboveMainMillimetres": 785.9355952304572,
+      "newRearRoofBelowMainMillimetres": 289.99526833331754,
+      "actualTileIntersectionV": 1.0112514146533793,
+      "actualJoinDeltaMillimetres": -4.946212328604815e-07,
+      "newRearSlopeDegrees": 44.075714177385706,
+      "retainedSideSlopeDegrees": 16.197194058334215
+    },
+    {
+      "rotation": 270,
+      "finish": "clay",
+      "base": 0,
+      "height": 4.946808510638298,
+      "sourceFrontV": -0.39,
+      "sourceBackV": 1.2,
+      "sourceEntablatureReturnV": 0.3,
+      "sourceSpanTiles": 6,
+      "sourceEaveHeight": 5.26595744680851,
+      "retainedFrontRidgeHeight": 6.343085106382978,
+      "mainRoofAtBack": 5.557149362537835,
+      "oldRearRidgeAboveMainMillimetres": 785.9357438451431,
+      "newRearRoofBelowMainMillimetres": 289.99561132828154,
+      "actualTileIntersectionV": 1.0112512747305447,
+      "actualJoinDeltaMillimetres": -2.6144242326608946e-07,
+      "newRearSlopeDegrees": 44.075714177385706,
+      "retainedSideSlopeDegrees": 16.197194058334215
+    },
+    {
+      "rotation": 270,
+      "finish": "clay",
+      "base": 1.7,
+      "height": 4.946808510638298,
+      "sourceFrontV": -0.39,
+      "sourceBackV": 1.2,
+      "sourceEntablatureReturnV": 0.3,
+      "sourceSpanTiles": 6,
+      "sourceEaveHeight": 6.965957446808511,
+      "retainedFrontRidgeHeight": 8.043085106382978,
+      "mainRoofAtBack": 7.257149436859713,
+      "oldRearRidgeAboveMainMillimetres": 785.9356695232656,
+      "newRearRoofBelowMainMillimetres": 289.99540007749937,
+      "actualTileIntersectionV": 1.0112513293749652,
+      "actualJoinDeltaMillimetres": -5.183053986002051e-07,
+      "newRearSlopeDegrees": 44.075714177385706,
+      "retainedSideSlopeDegrees": 16.197194058334215
+    },
+    {
+      "rotation": 270,
+      "finish": "aged",
+      "base": 0,
+      "height": 4.946808510638298,
+      "sourceFrontV": -0.39,
+      "sourceBackV": 1.2,
+      "sourceEntablatureReturnV": 0.3,
+      "sourceSpanTiles": 6,
+      "sourceEaveHeight": 5.26595744680851,
+      "retainedFrontRidgeHeight": 6.343085106382978,
+      "mainRoofAtBack": 5.557149362537835,
+      "oldRearRidgeAboveMainMillimetres": 785.9357438451431,
+      "newRearRoofBelowMainMillimetres": 289.99561132828154,
+      "actualTileIntersectionV": 1.0112512747305447,
+      "actualJoinDeltaMillimetres": -2.6144242326608946e-07,
+      "newRearSlopeDegrees": 44.075714177385706,
+      "retainedSideSlopeDegrees": 16.197194058334215
+    },
+    {
+      "rotation": 270,
+      "finish": "aged",
+      "base": 1.7,
+      "height": 4.946808510638298,
+      "sourceFrontV": -0.39,
+      "sourceBackV": 1.2,
+      "sourceEntablatureReturnV": 0.3,
+      "sourceSpanTiles": 6,
+      "sourceEaveHeight": 6.965957446808511,
+      "retainedFrontRidgeHeight": 8.043085106382978,
+      "mainRoofAtBack": 7.257149436859713,
+      "oldRearRidgeAboveMainMillimetres": 785.9356695232656,
+      "newRearRoofBelowMainMillimetres": 289.99540007749937,
+      "actualTileIntersectionV": 1.0112513293749652,
+      "actualJoinDeltaMillimetres": -5.183053986002051e-07,
+      "newRearSlopeDegrees": 44.075714177385706,
+      "retainedSideSlopeDegrees": 16.197194058334215
+    },
+    {
+      "rotation": 270,
+      "finish": "thatch",
+      "base": 0,
+      "height": 4.946808510638298,
+      "sourceFrontV": -0.39,
+      "sourceBackV": 1.2,
+      "sourceEntablatureReturnV": 0.3,
+      "sourceSpanTiles": 6,
+      "sourceEaveHeight": 5.26595744680851,
+      "retainedFrontRidgeHeight": 6.343085106382978,
+      "mainRoofAtBack": 5.557149362537835,
+      "oldRearRidgeAboveMainMillimetres": 785.9357438451431,
+      "newRearRoofBelowMainMillimetres": 289.99561132828154,
+      "actualTileIntersectionV": 1.0112512747305447,
+      "actualJoinDeltaMillimetres": -2.6144242326608946e-07,
+      "newRearSlopeDegrees": 44.075714177385706,
+      "retainedSideSlopeDegrees": 16.197194058334215
+    },
+    {
+      "rotation": 270,
+      "finish": "thatch",
+      "base": 1.7,
+      "height": 4.946808510638298,
+      "sourceFrontV": -0.39,
+      "sourceBackV": 1.2,
+      "sourceEntablatureReturnV": 0.3,
+      "sourceSpanTiles": 6,
+      "sourceEaveHeight": 6.965957446808511,
+      "retainedFrontRidgeHeight": 8.043085106382978,
+      "mainRoofAtBack": 7.257149436859713,
+      "oldRearRidgeAboveMainMillimetres": 785.9356695232656,
+      "newRearRoofBelowMainMillimetres": 289.99540007749937,
+      "actualTileIntersectionV": 1.0112513293749652,
+      "actualJoinDeltaMillimetres": -5.183053986002051e-07,
+      "newRearSlopeDegrees": 44.075714177385706,
+      "retainedSideSlopeDegrees": 16.197194058334215
+    }
+  ],
+  "validation": {
+    "affectedChecks": 85,
+    "durationMs": 18377.199792,
+    "typescript": "pass",
+    "normalBeforeViews": 12,
+    "normalAfterViews": 36,
+    "browserErrors": [],
+    "preservedStates": 408,
+    "preservedNonPorticoMeshes": 10948,
+    "preservationSha256": "e09a75df1702ea46a215a2468c1f781c1ba89c9eb1105e65cd1ab48c4bcc595b",
+    "rejectedLiteralRoof": {
+      "pass": 3,
+      "fail": 2,
+      "failedChecks": [
+        "actual tiled-plane join",
+        "ridge over source return support"
+      ]
+    }
+  }
+}

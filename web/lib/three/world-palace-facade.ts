@@ -8,6 +8,7 @@ import {illuminationAt} from './world-materials';
 import {buildingArtInset} from './world-building-placement';
 import {palaceColumns} from './world-palace-columns';
 import {civicStoreyBands} from './world-civic-storey-bands';
+import {palacePorticoHipReturn} from './world-palace-portico';
 import type {WorldGeometry} from './world-geometry';
 import type {WorldMaterials} from './world-materials';
 import type {WorldBuilding,WorldInput} from './world-types';
@@ -110,12 +111,14 @@ export function palaceFacade(b:WorldBuilding,input:WorldInput,T:number,height:nu
         const low=at(lo,front-.01,eave+1/25.066666666666666),high=at(hi,front-.01,eave+1/25.066666666666666),crest=at(center,front-.01,peak+1.4/25.066666666666666);
         batch.cylinder(trim,low,crest,.035,light);batch.cylinder(trim,crest,high,.035,light);
       });
+      const hipReturn=palacePorticoHipReturn(b,input,height,wallInset,legacy,lo,hi,back,eave),ridgeEnd=hipReturn?.ridgeEnd??back;
       const roof=materials.get(appearance.roofFinish),panels=[
-        [at(lo,front,eave+1/25.066666666666666),at(lo,back,eave+1/25.066666666666666),at(center,back,peak+1/25.066666666666666),at(center,front,peak+1/25.066666666666666)],
-        [at(hi,back,eave+1/25.066666666666666),at(hi,front,eave+1/25.066666666666666),at(center,front,peak+1/25.066666666666666),at(center,back,peak+1/25.066666666666666)],
+        [at(lo,front,eave+1/25.066666666666666),at(lo,back,eave+1/25.066666666666666),at(center,ridgeEnd,peak+1/25.066666666666666),at(center,front,peak+1/25.066666666666666)],
+        [at(hi,back,eave+1/25.066666666666666),at(hi,front,eave+1/25.066666666666666),at(center,front,peak+1/25.066666666666666),at(center,ridgeEnd,peak+1/25.066666666666666)],
       ];
+      if(hipReturn)panels.push([at(lo,back,eave+1/25.066666666666666),at(hi,back,eave+1/25.066666666666666),at(center,ridgeEnd,peak+1/25.066666666666666)]);
       const tiles=feature('palace-portico-roof',()=>{for(const panel of panels)batch.polygon(roof,panel,light,roofTextureProjector(panel));});tiles.add(edgeDetails(panels,base+eave+1/25.066666666666666));
-      feature('palace-portico-return',()=>{
+      if(!hipReturn)feature('palace-portico-return',()=>{
         const rear=[at(lo,back,eave),at(hi,back,eave),at(center,back,peak)],face=rear.map(point=>point.clone().add(new Vector3(-frame.v.x*.18,0,-frame.v.y*.18)));
         batch.polygon(wall,face,light);batch.polygon(wall,rear,light);for(let n=0;n<3;n++){const next=(n+1)%3;batch.polygon(wall,[face[n],face[next],rear[next],rear[n]],light);}
       });
