@@ -840,3 +840,21 @@ asset hashes. The [long cloth review](../art/native-long-cloth-3d-review-2026-10
 records original failures, the 84-case movement sample and remaining cloth/boot
 collision and interaction contact limits. This is a bounded corrective-shape
 repair, not complete garment or character polish.
+
+## Standing rifle worker readiness
+
+One scene worker prepares native sampling, gait measurements and owned body
+bounds for the current selected standing rifle actor and disclosed targets.
+Current physical admission retains all original chronological samples and
+contact checks. An absent, stale, failed or late result keeps the entire cue
+on the original synchronous physical fitter.
+
+All 55 worker checks and 132 affected regressions pass with native/profile,
+TypeScript, documentation and 38 baseline checks. Export `9c53d3a8064f`
+verifies 1,245 files and 1,040 asset references. All 56 exact comparisons
+retain 13,496 chronological samples. Eight paired browser routes and four
+integration HUD routes pass with exact source/assets, one paid hit and
+unchanged equipment. The [worker review](../three-rifle-worker-ready-review.md)
+records first admission costs of 25.9–33.0 ms, remaining 66.6–83.3 ms frame
+gaps and original synchronous fallback costs. Final responsiveness and
+motion polish remain open.
