@@ -1826,8 +1826,8 @@
   "animationLibraries": {
     "male": {
       "url": "/models/characters/male-animations.glb",
-      "bytes": 12039000,
-      "sha256": "d23ac7678f7e305e85a443745664df461ac159717027beadfe7eada86a0b12fd",
+      "bytes": 12048644,
+      "sha256": "ae55f4b4b79f98beb4d4bc7f325224e8ce8674181cb28ca1fae7e86935580b56",
       "clips": [
         {
           "name": "stand.idle.unarmed",
@@ -2505,6 +2505,30 @@
             "name": "BayonetThrust",
             "origin": "approved-granadero-preview",
             "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          },
+          "nativeBootSupport": {
+            "method": "released-bayonet-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 120,
+            "preservedNativeLift": true,
+            "maximumHeelRoll": 0.002104626547768713,
+            "forefootRollEnvelopes": {
+              "l": {
+                "begin": 0.39583333333333337,
+                "peak": 0.5,
+                "end": 0.6124999999999999,
+                "amplitude": 0.002104626547768713,
+                "nativeDemandAmplitude": 0.002104626547768713
+              }
+            },
+            "minimumStraightLegReserve": 0.002,
+            "sourceSha256": "a47ebc84469b5ccaf50095ed225d08366673ba3252acac14c657e7caff9c3820",
+            "planarShiftEnvelopes": {},
+            "maximumPlanarCorrection": 0,
+            "measuredMinimumStraightLegReserve": 0.0020033588589404294,
+            "numericalReserveBuffer": 0.000001,
+            "supportSourceSha256": "cc1100741c56e0a3808b5350671d78ccc808dd597c55ac1e1827f2a5ba55cda7"
           }
         },
         {
@@ -15766,8 +15790,8 @@
     },
     "female": {
       "url": "/models/characters/female-animations.glb",
-      "bytes": 11863940,
-      "sha256": "b0c3128bee70264f73c1eaf95057e2ccc80e739fdf40c371c80963622e8de9ba",
+      "bytes": 11873640,
+      "sha256": "1a61aeca53cd0e4f778224cc5b431c2159179d88df59cc898f8ff8523ebcf680",
       "clips": [
         {
           "name": "stand.idle.unarmed",
@@ -16452,6 +16476,37 @@
             "name": "BayonetThrust",
             "origin": "approved-granadero-preview",
             "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          },
+          "nativeBootSupport": {
+            "method": "released-bayonet-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 120,
+            "preservedNativeLift": true,
+            "maximumHeelRoll": 0.021520495296751773,
+            "forefootRollEnvelopes": {
+              "l": {
+                "begin": 0.3375,
+                "peak": 0.49583333333333335,
+                "end": 0.6541666666666667,
+                "amplitude": 0.021524264717638485,
+                "nativeDemandAmplitude": 0.021750722297406124
+              }
+            },
+            "minimumStraightLegReserve": 0.002,
+            "sourceSha256": "a47ebc84469b5ccaf50095ed225d08366673ba3252acac14c657e7caff9c3820",
+            "planarShiftEnvelopes": {
+              "l": {
+                "begin": 0.39583333333333337,
+                "peak": 0.5,
+                "end": 0.6166666666666667,
+                "amplitude": 0.001323615270941101
+              }
+            },
+            "maximumPlanarCorrection": 0.001323615270941101,
+            "measuredMinimumStraightLegReserve": 0.0020018732560257435,
+            "numericalReserveBuffer": 0.000001,
+            "supportSourceSha256": "cc1100741c56e0a3808b5350671d78ccc808dd597c55ac1e1827f2a5ba55cda7"
           }
         },
         {

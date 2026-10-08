@@ -6,6 +6,7 @@ import {makeGrenadeStack} from '../../../game/grenades.js';
 import {BUILDING_TYPES,BUILDING_FOOTPRINTS} from '../../../game/building-types.js';
 import {CLIMB_HATCH_SCENARIO,createClimbHatchBattle} from './climb-hatch-fixture.js';
 import {createArchitectureReviewBattle} from './architecture-fixtures.js';
+import {BAYONET_SCENARIO,createBayonetReviewBattle} from './bayonet-fixture.js';
 import {PARTIAL_LOADING_SCENARIO,createPartialLoadingBattle} from './partial-loading-fixture.js';
 import {PAIRED_LOADING_SCENARIO,FOUR_BORE_LOADING_SCENARIO,createPairedLoadingBattle} from './paired-loading-fixture.js';
 
@@ -16,6 +17,7 @@ export const RENDERER_SCENARIOS=Object.freeze([
   {id:'furnishings',label:'Mobiliario',help:'Mesa, banco, cama, baúl, barriles, heno y carreta. Usa la cámara y las órdenes habituales para comprobar la escala y el espacio de paso.'},
   {id:'postures',label:'Posturas',help:'Marcha, carrera, movimiento agachado y arrastre. Cada personaje tiene un tramo libre hacia el este. Usa las órdenes habituales para comparar apoyo, avance y recuperación.'},
   {id:'combat',label:'Combate',help:'Fusil, pistola, sable, granada y cuchillo: cada especialista tiene un blanco enfrente. Los dos artilleros están junto al cañón. Usa las órdenes habituales; reinicia para repetir.'},
+  BAYONET_SCENARIO,
   PARTIAL_LOADING_SCENARIO,
   PAIRED_LOADING_SCENARIO,
   FOUR_BORE_LOADING_SCENARIO,
@@ -116,6 +118,7 @@ function performance(count,architecture=false){
 }
 /** Fresh real battle state. Scene selection never issues private renderer poses. */
 export function createRendererSandboxBattle(id='combat'){
+  if(id==='bayonets')return createBayonetReviewBattle();
   if(id==='partial-loading')return createPartialLoadingBattle();
   if(id==='paired-loading')return createPairedLoadingBattle();
   if(id==='four-bore-loading')return createPairedLoadingBattle(true);

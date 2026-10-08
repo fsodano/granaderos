@@ -715,3 +715,7 @@ Nine prone rifle aim, fire and reload clips now retain the current supported idl
 ## Current Cabildo arcade and clock tower
 
 The supported Cabildo uses the current sprite's six broad piers, stepped stone feet, pale arcade strokes and shallow plain clock tower. Edited and legacy fallbacks remain exact. Only its own dispatcher branch/import change, preserving all other buildings. Forty-seven affected checks, type/docs/baseline audits and combined export `7dda76a04180` pass. Twenty-eight normal browser views pass without errors and were compared with the current sprite. All seven integrated source paths remain exact after the prone correction. See [the Cabildo review](../art/cabildo-source-facade-3d-review-2026-10-07.md).
+
+## Native bayonet support and owned gameplay review
+
+The standing bayonet source now keeps complete boots supported from its own retained Root/pelvis poses. One clip's eight lower rotations per anatomy change; 333 other clips remain exact. The normal Bayonetas scene prepares two owned socket assemblies with paid fitting orders and uses finite melee attacks. All 36 native/fade/guard and eleven fixture checks, native/profile/source/type/docs/baseline gates and combined export `717eec4ee75d` pass. Two normal routes yield 44 source-pinned captures without errors; each spends four displayed PA and commits one damage result while retaining charge/ammunition/ownership. Fitted target contact and acceleration corners remain open. See [the native bayonet review](../art/bayonet-native-support-3d-review-2026-10-07.md).
