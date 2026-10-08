@@ -671,3 +671,7 @@ Authored shop and forge porches now expose their source timber posts, paired tie
 ## Current depot stone pier volumes
 
 Authored depot piers now retain the current source's rectangular warm stone feet and capitals around their existing supported shafts. Legacy and edited-corner fallbacks, real openings, saved finishes and upper routes remain covered. All fifty-four combined affected checks, type/docs/baseline checks and export `6c318168bf4c` pass. Thirty source-pinned original/slab/accessible-roof/close views and six final combined porch-and-pier views pass without browser errors. Selected views were compared with the current depot sprite. See [the pier review](../art/depot-source-piers-3d-review-2026-10-07.md).
+
+## Standing lance idle boot support
+
+Both standing lance idle clips now support complete native boots while retaining all other clips, clocks, upper contact and dimensions. Fourteen affected checks, native/profile/type/docs/baseline checks and export `5ba61ae9ed40` pass. All four ordinary owned and dismounted lance routes save their destinations; seventy-two accepted source-pinned captures have no browser errors. Selected guards and supported feet were compared with the current walking sheets. The corrected setup failure and actual source bridge remain explicit. This accepts native idle support only. See [the lance review](../art/standing-lance-idle-support-3d-review-2026-10-07.md).

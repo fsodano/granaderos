@@ -870,7 +870,8 @@ def apply_animations(ctx, only=None):
     throwing_only=bool(only) and all(s['gesture'] in ('throw','throwKnife','bolas') for s in specs)
     climbing_only=bool(only) and all(s['gesture'] in ('climbUp','climbDown') for s in specs)
     riding_only=bool(only) and all(s['posture']=='mounted' for s in specs)
-    contact_only=loading_only or mounting_only or throwing_only or climbing_only
+    lance_idle_only=bool(only)and all(s['posture']=='standing'and s['equipment']=='lance'and s['gesture']=='idle'for s in specs)
+    contact_only=loading_only or mounting_only or throwing_only or climbing_only or lance_idle_only
     crouch_support_only=bool(only) and all(s['posture']=='crouched'and s['gesture']in('idle','walk')for s in specs)
     prone_support_only=bool(only) and all(s['posture']=='prone'and s['gesture']in('idle','crawl')for s in specs)
     sideways_support_only=bool(only) and all(s['posture']=='standing'and s['gesture']in('strafeLeft','strafeRight')for s in specs)
@@ -1033,7 +1034,7 @@ def apply_animations(ctx, only=None):
             for name,(p,q) in pose.items():
                 if name!='Root':pose[name]=(Vector(),q)
             samples.append(pose)
-        meta=_write_clip(rig,spec['name'],samples,duration,spec['loop'],times=times,native_support=ctx if posture=='crouched'and gesture in('idle','walk')or posture=='prone'and gesture in('idle','crawl')else None,native_surface='boot'if posture=='prone'else'sole',native_sideways=(ctx,speed)if posture=='standing'and equipment in('unarmed','long-gun','short-gun','blade','knife','lance')and gesture in('strafeLeft','strafeRight')else None)
+        meta=_write_clip(rig,spec['name'],samples,duration,spec['loop'],times=times,native_support=ctx if posture=='crouched'and gesture in('idle','walk')or posture=='prone'and gesture in('idle','crawl')or posture=='standing'and equipment=='lance'and gesture=='idle'else None,native_surface='boot'if posture=='prone'or posture=='standing'and equipment=='lance'and gesture=='idle'else'sole',native_sideways=(ctx,speed)if posture=='standing'and equipment in('unarmed','long-gun','short-gun','blade','knife','lance')and gesture in('strafeLeft','strafeRight')else None)
         meta.update(spec);meta.update({'duration':round(duration,6),'events':markers,'markers':markers,'source':source,'sampleRate':SAMPLE_FPS,'timingAuthority':'simulation','rootMotion':'in-place'})
         if gesture=='reload' and equipment=='long-gun':meta['propCues']=[{'item':'ramrod','socket':'socket_handLeft_tool','start':round(duration*.46,6),'end':round(duration*.86,6)}]
         if equipment=='long-gun' and gesture in ('reload','unload'):
