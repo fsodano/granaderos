@@ -102,3 +102,11 @@ The next bounded change must stage selected worker outputs and receipts in a
 private job directory and validate them before installing released output. A
 targeted fresh woman-shawl Blender export remains a separate source-reproduction
 check. No full fresh library rebuild or transactional rebuild claim is made here.
+
+## Current-main integration check
+
+The guarded six-source-file cut was installed on main `4ec028f5` and committed as `7cd093b9`. All 24 focused checks pass in 15.70 s. Python source compilation, the native library verifier, locomotion profile check, document audit and all 38 baseline checks pass.
+
+Root independently ran the actual installed `--manifest-only` command twice: first with the empty current cache, then with an invalid receipt named `woman-shawl-lod0.json`. Both runs preserve the complete 106-file model/texture/manifest/profile tree exactly, with no added or removed files. The temporary stale fixture was removed. The installed source is exact against the frozen receipt.
+
+The old-main negative control used a separate exact-asset copy and the real old command. It exited zero while dropping all 24 body-LOD and both bank records. Its receipt is retained with the current repeat logs in `artifacts/three-character-source-build-current-review/` and the private frozen package. The current application source, runtime and released asset bytes are unchanged; this cut requires no new visual acceptance claim. This final validation update changes only this review record. The documented direct-output and postpass failure limits remain open for the next staging increment.
