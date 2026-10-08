@@ -341,7 +341,7 @@ export class ActorRuntime {
     if(motion?.moving&&motion.climbGeometry&&this.clipSpec.climbSupport)this.climbFit?.apply(motion.climbGeometry,visual.action==='climbDown'?1-(motion.segmentFraction??0):motion.segmentFraction??0,this.clipSpec);
     this.poseCloth(Math.min(delta,.1));
     const attached=this.equipment.userData.attached as Object3D[],freeGuard=!attached.some(item=>item.userData.hand==='handLeft');
-    const meleeWeapon=attached.find(item=>item.userData.hand==='handRight'&&(this.itemSpec(item.userData.itemId)?.category==='sabre'||freeGuard&&this.itemSpec(item.userData.itemId)?.category==='pistol'));
+    const meleeWeapon=attached.find(item=>item.userData.hand==='handRight'&&(this.itemSpec(item.userData.itemId)?.category==='sabre'||freeGuard&&['pistol','rifle'].includes(this.itemSpec(item.userData.itemId)?.category??'')));
     // Contact fitting samples the strike's impact pose. Use its item grip too,
     // then restore the visible grip for this frame after the fitted body pose.
     if(meleeWeapon&&visual.cue)this.placeEquipment(this.clipSpec.markers?.contact??this.action.time,true);

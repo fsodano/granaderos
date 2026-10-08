@@ -31,7 +31,7 @@ def optimize_character(ctx,lod=0):
  if ctx.get('preset') in ('granadero','royalist') and any(o.name.startswith('Single_Crossbelt') for o in objects):
   reduced_coat=ctx['coat'];bpy.context.view_layer.objects.active=reduced_coat
   reduction=reduced_coat.modifiers.new('Crossbelt_Support_LOD','DECIMATE')
-  reduction.ratio=min(1,max(RATIOS[lod],(35 if lod==2 else 100)/max(1,len(reduced_coat.data.polygons))))
+  reduction.ratio=min(1,max(.42 if ctx.get('preset') in ('granadero','royalist') and lod==0 else RATIOS[lod],(35 if lod==2 else 100)/max(1,len(reduced_coat.data.polygons))))
   reduction.use_collapse_triangulate=True
   while reduced_coat.modifiers.find(reduction.name)>0:bpy.ops.object.modifier_move_up(modifier=reduction.name)
   if len(reduced_coat.data.polygons)>150:bpy.ops.object.modifier_apply(modifier=reduction.name)

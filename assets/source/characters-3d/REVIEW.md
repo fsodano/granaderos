@@ -19,6 +19,16 @@ The earlier pass corrects open hairlines, collar seams, sleeve cuffs and cloth d
 
 Poncho openings allow the arms to pass beside the torso. Long garments have separate crouched, face-down and face-up shapes. Coat tails flatten under a fallen body rather than lifting the body above the floor. Military crossbelts share seam vertices and native skin weights with each reduced coat, so the shoulder strap follows the actual cloth at all three detail levels. These are authored cloth corrections, not a cloth simulation.
 
+The further military cloth pass adds curved elbow compression folds, short
+waist gathers, a 2.6 mm collar return and thicker cuff edges to the Granadero
+and Realista. It changes only their outfit surfaces across six body files.
+Native bindings, skin, hands, trousers, boots and headwear accessors remain
+byte-identical. The Granadero LOD0 rises from 54,130 to 59,996 triangles;
+lower detail levels remain at the existing reduction settings. All 15 coat
+and crossbelt contact checks pass. Matched isometric renders show a modest
+improvement, clearest at the elbows and waist. This does not establish the
+full detail level of the user's reference.
+
 ## Motion and contact
 
 Each anatomy has the same action coverage:
@@ -52,9 +62,10 @@ The audit keeps immutable source snapshots, exported-library hashes, exact frame
 
 The original baseline records 672 movement frames across all eight appearances and 27 representative actions. The appearance pass adds 756 frames across six remaining presets and 41 representative actions. Focused checks cover the poncho, braid, coat tails, long garments, firearms, throws, mounted transitions, hands and task arcs. The final combined review adds 864 rendered images: 288 full-body frames and 576 close views of heads and hands, across all eight presets and 12 selected actions. The two complete native banks were also sampled at 120 Hz for joint-length, scale, loop-seam and abrupt-motion checks. That scan found and led to corrections for maintenance arm paths, climb knees, loading arms and recovery wrists. The maintenance review adds 66 rendered images and native arc tests for both anatomies.
 
-The final delivery scan, recorded in `scan-delivery-668` after the guard,
+The preceding delivery scan, recorded in `scan-delivery-668` after the guard,
 lance grip and incoming standing lance idle support integrations, covers all
-668 clips and 165,724 sampled poses at 120 Hz.
+668 clips and 165,724 sampled poses at 120 Hz. It predates the further
+military cloth and wrist corrections described below.
 Its manifest hash is
 `72774dd03356ff62f6bd5a9e6700929a310e2fa04e62d55f5dea39564d742a74`.
 The recorded manifest, both body files and both animation banks match the
@@ -98,6 +109,16 @@ signatures retain the exact native joints, hierarchy and inverse-bind matrices. 
 apply the pixel or contour pass.
 
 ## Validation status
+
+The next integration remains in review. The incoming rifle contact gate
+currently passes 21 of 27 tests; six failures expose native rifle grip and
+paired-contact compatibility problems. These are not baseline failures and
+must pass before this branch is merged. A separate actual forearm-to-palm
+audit also found static wrist folds that the older angular-continuity checks
+did not detect. Private repairs cover maintenance, low work, crouched punches,
+rifle unload/carry and rifle strikes. Their pending files are not accepted
+merely because a wrist is straight; speed, surface clearance and item contact
+also need to pass. PR #239 remains a draft while this review is active.
 
 The broad local quick gate completed all 809 selected files: **5,642 passed,
 4 failed, 0 skipped**. The four failures match the current-main baseline

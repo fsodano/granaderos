@@ -14,7 +14,7 @@
   "banks": {
     "male": {
       "crawl": {
-        "nativeStrideSpeed": 0.143763,
+        "nativeStrideSpeed": 0.143701,
         "duration": 1.966659,
         "playbackRate": 1
       },
@@ -160,7 +160,7 @@
           "playbackRate": 1
         },
         "prone.crawl.unarmed": {
-          "nativeStrideSpeed": 0.143763,
+          "nativeStrideSpeed": 0.143701,
           "duration": 1.966659,
           "playbackRate": 1
         },

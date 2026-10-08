@@ -31,26 +31,26 @@
         {
           "lod": 0,
           "url": "/models/characters/granadero-lod0.glb",
-          "triangles": 54130,
-          "bytes": 3585060,
+          "triangles": 59996,
+          "bytes": 3842648,
           "drawCalls": 6,
-          "sha256": "9fc5450135118e8965eae770ee66956599e6aa496ae3f4c4d9610e244df02107"
+          "sha256": "ec51b87ad3a7d5165c22f9d967d904755760cffa6528a6d52641abeb7d8531ed"
         },
         {
           "lod": 1,
           "url": "/models/characters/granadero-lod1.glb",
-          "triangles": 31022,
-          "bytes": 2268348,
+          "triangles": 30983,
+          "bytes": 2269748,
           "drawCalls": 6,
-          "sha256": "731b29f079747cc93db653c0a60389fc622912f1d17d398d95481ed259977981"
+          "sha256": "0cf517f5fe225c06fc0ba03ca92710e6782ae02fb40045b2e3707059a3b94743"
         },
         {
           "lod": 2,
           "url": "/models/characters/granadero-lod2.glb",
-          "triangles": 12813,
-          "bytes": 931372,
+          "triangles": 12758,
+          "bytes": 930192,
           "drawCalls": 6,
-          "sha256": "6cdc58dbedd5e7a1537c753a2e11d777b719ebaa3df4d13bf4c8223967cf8dc4"
+          "sha256": "35038dc9c59d243eb52bca4e55eca04389a3165e2d76e569eb92238d7a9b35b3"
         }
       ],
       "materials": {
@@ -256,26 +256,26 @@
         {
           "lod": 0,
           "url": "/models/characters/royalist-lod0.glb",
-          "triangles": 53773,
-          "bytes": 3544068,
+          "triangles": 59639,
+          "bytes": 3801656,
           "drawCalls": 6,
-          "sha256": "11ff8b3b7b4dc321e301b574380cc43114352c7bfd1768818257bea0998594e4"
+          "sha256": "908d3b2ddd984e6f1d1d1131df07e03295dec477c20419ed91e2caab65310d9a"
         },
         {
           "lod": 1,
           "url": "/models/characters/royalist-lod1.glb",
-          "triangles": 30951,
-          "bytes": 2258900,
+          "triangles": 30912,
+          "bytes": 2260300,
           "drawCalls": 6,
-          "sha256": "830cbc8be56cd23b42ba10d2a961fa2efa8aef8238ac65d547cb5d426e980014"
+          "sha256": "e730eb1371a2889651ba45a450c7634c2697e7efe7c2f9cd48910a7a582ad047"
         },
         {
           "lod": 2,
           "url": "/models/characters/royalist-lod2.glb",
-          "triangles": 12756,
-          "bytes": 922520,
+          "triangles": 12701,
+          "bytes": 921340,
           "drawCalls": 6,
-          "sha256": "7a3d565ed8dca6872667fb3e63eae5e110b20d53c525362b2df6414ff447129c"
+          "sha256": "f0c60df2651bb88cb8cab5897c6927f2fa3f9ad3362c1736d854cee6bc02c913"
         }
       ],
       "materials": {
@@ -4323,10 +4323,10 @@
             "floor": 0.006,
             "sampleRate": 30
           },
-          "locomotionSpeed": 0.143763,
-          "nativeStrideSpeed": 0.143763,
+          "locomotionSpeed": 0.143701,
+          "nativeStrideSpeed": 0.143701,
           "authoredStrideSpeed": 0.144372,
-          "strideDistance": 0.282733,
+          "strideDistance": 0.282611,
           "strideMeasurement": {
             "method": "native forearm planted pull displacement",
             "bones": [
@@ -4341,14 +4341,14 @@
                 "hand": "r",
                 "from": 0,
                 "to": 0.5,
-                "distance": 0.142071,
+                "distance": 0.142737,
                 "duration": 0.983329
               },
               {
                 "hand": "l",
                 "from": 0.5,
                 "to": 1,
-                "distance": 0.140662,
+                "distance": 0.139874,
                 "duration": 0.983329
               }
             ],
@@ -18059,7 +18059,7 @@
         "strafeLeftStanding": 1.1159,
         "strafeRightCrouched": 0.8492,
         "strafeLeftCrouched": 0.7564,
-        "crawl": 0.143763,
+        "crawl": 0.143701,
         "climbUp": 0.4062,
         "climbDown": 0.4455,
         "recover": 0.3467,

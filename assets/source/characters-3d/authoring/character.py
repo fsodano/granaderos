@@ -283,8 +283,11 @@ def create_character(preset="granadero", height=1.76):
     coat.data.update();subdiv(coat,1)
     # Sculpt the final cloth surface so subdivision does not erase the short
     # elbow folds. This moves cloth only; native skin and bones stay intact.
+    if preset in ('granadero','royalist'):
+        from uniform_folds import compression_relief
     for vertex in coat.data.vertices:
-        vertex.co+=vertex.normal*cloth_relief(vertex.co,vertex.normal,heads,'coat')
+        relief=compression_relief(vertex.co,vertex.normal,heads) if preset in ('granadero','royalist') else cloth_relief(vertex.co,vertex.normal,heads,'coat')
+        vertex.co+=vertex.normal*relief
     coat.data.update()
     # Breeches follow native thigh, knee and pelvis topology with cloth ease.
     trousers=subset('Tailored_Breeches',lambda f:all(.425<points[i].z<1.055 and limb_weight(i,hand_bones|arm_bones)<.05 for i,uv in f),mats['trousers'])
@@ -480,6 +483,20 @@ def create_character(preset="granadero", height=1.76):
             collarw.append(weights)
     for row in range(len(collar_levels)-1):
         for j in range(count):a=row*count+j;b=row*count+(j+1)%count;collarf.append((a,b,b+count,a+count))
+    collar_outer_top=collarv[-count:]
+    collar_outer_weights=collarw[-count:]
+    if preset in ('granadero','royalist'):
+        # Turn the wool facing over at its top. The inner return stays clear
+        # of the neck and shares the fitted native weights with the outer lip.
+        for depth,drop in ((.0026,0),(.0026,.0026)):
+            previous=len(collarv)-count
+            for p,w in zip(collar_outer_top,collar_outer_weights):
+                radial=Vector((p.x,p.y+.036,0)).normalized()
+                collarv.append(p-radial*depth-Vector((0,0,drop)))
+                collarw.append(dict(w))
+            for j in range(count):
+                a=previous+j;b=previous+(j+1)%count
+                collarf.append((a,b,b+count,a+count))
     collar=mesh('Crimson_Collar',collarv,collarf,mats['red'],collarw)
     # The facing and coat share the same sewn vertices. An overlapping strip
     # can still open after skinning or independent LOD simplification.
@@ -490,8 +507,8 @@ def create_character(preset="granadero", height=1.76):
     seam=[v for v in sewn.verts if tuple(round(value,6) for value in v.co) in seam_positions]
     bmesh.ops.remove_doubles(sewn,verts=seam,dist=.000002)
     sewn.to_mesh(coat.data);sewn.free();coat.data.update()
-    collar_top=[p+Vector((0,0,.0007)) for p in collarv[-count:]];collar_top.append(collar_top[0])
-    top_weights=collarw[-count:]+[collarw[-count]]
+    collar_top=[p+Vector((0,0,.0007)) for p in collar_outer_top];collar_top.append(collar_top[0])
+    top_weights=collar_outer_weights+[collar_outer_weights[0]]
     tube('Fine_Collar_Gold_Edge',collar_top,[.0015]*len(collar_top),mats['brass'],[w for w in top_weights for _ in range(6)],6)
     # Cuffs use the source sleeve surface, not separate oversized wrist tubes.
     from garment_detail import coat_panel
@@ -503,7 +520,9 @@ def create_character(preset="granadero", height=1.76):
         # through its sleeve when the wrist rotates or the elbow bends.
         cuff=coat_panel(cuff_context,'Crimson_Cuff_'+suffix,mats['red'],[
             lambda p,w=wrist,a=axis:(p-w).dot(a)+.073,
-            lambda p,w=wrist:.15-(p-w).length],clearance=.003)
+            lambda p,w=wrist:.15-(p-w).length],clearance=.003,
+            thickness=.0035 if preset in ('granadero','royalist') else .002,
+            edge_radius=.0018 if preset in ('granadero','royalist') else .0013)
         # Civilian presets recolour the shared facing material later. Keep
         # the sewn cuff edge on that same palette instead of a crimson copy.
         for i,mat in enumerate(cuff.data.materials):

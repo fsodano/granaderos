@@ -74,7 +74,7 @@ def solidify(obj,thickness=.002):
  bpy.ops.object.modifier_apply(modifier=modifier.name)
 
 
-def coat_panel(ctx,name,material,constraints,clearance=.007):
+def coat_panel(ctx,name,material,constraints,clearance=.007,thickness=.002,edge_radius=.0013):
  """Cut a sewn boundary through native cloth faces without changing weights.
 
  A projected grid does not follow the same interpolation as the underlying
@@ -112,7 +112,7 @@ def coat_panel(ctx,name,material,constraints,clearance=.007):
    indices.append(cache[key])
   if len(set(indices))<3:continue
   polygons.append(tuple(indices));uvs.append([tuple(point['uv']) for point in polygon])
- obj=ctx['mesh'](name,coords,polygons,material,weights,uvs);solidify(obj)
+ obj=ctx['mesh'](name,coords,polygons,material,weights,uvs);solidify(obj,thickness)
  counts={}
  for face in polygons:
   for a,b in zip(face,face[1:]+face[:1]):
@@ -132,7 +132,7 @@ def coat_panel(ctx,name,material,constraints,clearance=.007):
    if not options:break
    following=options[0];remaining.remove(tuple(sorted((path[-1],following))));path.append(following)
    if following==path[0]:break
-  details.append(edge(ctx,name+'_Sewn_Edge',[coords[i] for i in path],[weights[i] for i in path],trim_material,.0013))
+  details.append(edge(ctx,name+'_Sewn_Edge',[coords[i] for i in path],[weights[i] for i in path],trim_material,edge_radius))
  obj=joined(ctx,obj,details)
  # A close sewn overlay must retain its curved support surface at lower
  # detail levels. Independent aggressive collapse puts shoulder chords

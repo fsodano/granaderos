@@ -679,3 +679,15 @@ Both standing lance idle clips now support complete native boots while retaining
 ## Current smithy brick chimney
 
 The authored smithy now retains its source brick shaft, broad brick cap and inset dark flue on actual intact supports. Legacy chimneys, edited supports, saved finishes, room disclosure and upper routes remain covered. Fifty-one affected checks, type/docs/baseline checks and combined export `b0f73eb21870` pass. Thirty-four source-pinned browser views pass without errors; selected views were compared with the current sprite, including the full chimney close view. The capture source, unchanged publication bridge and initial loading retries are recorded. See [the chimney review](../art/smithy-source-chimney-3d-review-2026-10-07.md).
+
+## Owned rifle butt contact and supported paid turns
+
+Owned rifle butt strikes now fit both native wrists and complete boots to the disclosed target and floor. Native endpoints, finite paid phases, saved cells and ammunition remain authoritative. All 48 strict native contact paths and the separate actual paid replay pass; the integrated 43-check regression, type/docs/baseline audits and export `419a6ec71bc1` pass. Four ordinary cardinal/diagonal routes for both bodies pass in 88 accepted source-pinned captures, each spending 4 PA and applying 18 damage once with ammunition retained. Selected poses were compared with current sprites. Initial helper/export failures and the unchanged publication bridge are recorded. Cold first-fit latency and source acceleration limits remain open. See [the rifle contact review](../art/supported-rifle-butt-3d-review-2026-10-07.md).
+
+## Current posta pier planes and warm feet
+
+The authored posta piers now retain the current source shaft, foot and coping planes, separate warm stone feet and actual plaster pigments. Legacy geometry, edited supports, standing openings, flat roofs and upper routes remain covered. Fifty-one affected checks, type/docs/baseline audits and combined export `28f76f14198f` pass. Thirty source-pinned original/slab/accessible-roof/close views pass without errors; selected views were compared with the current sprite. The unchanged publication bridge retains the actual capture source. See [the posta review](../art/posta-source-piers-3d-review-2026-10-07.md).
+
+## Exact rifle fit sampling with lower calculation cost
+
+Rifle contact sampling now reuses scalar boot buffers and rejects a known adjacent speed failure before repeating the full path. Every accepted path still runs the complete 240 Hz chronological checks. All 48 original plans, sampled bones and 222,288 boot coordinates remain exact. Fifteen integrated checks, type/docs/baseline audits and combined export `6df69babc7d6` pass. Four normal paid browser cases pass in 88 source-pinned captures with identical costs, one damage result and retained ammunition. Same-process CPU comparisons improve; cold first-fit latency remains open. See [the sampling review](../art/rifle-fit-sampling-3d-review-2026-10-07.md).
