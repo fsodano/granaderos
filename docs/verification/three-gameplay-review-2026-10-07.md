@@ -729,3 +729,15 @@ movement fixes. Six anatomy/LOD checks, native/calibration checks, TypeScript,
 documentation, 38 baseline checks and production export pass. The
 [standing reach review](../art/standing-reach-gesture-support-3d-review-2026-10-07.md)
 records the source geometry and the remaining paid blend and garment review.
+
+## Equipped crouched movement and guards
+
+The five owned weapon groups now retain the supported crouched lower-body
+path. Six native aim/brace guards also have supported boots, and crouched
+aim/brace can enter the existing planted start/stop consumer. Other body and
+weapon tracks, native pace, AP and saved travel stay exact. The normal
+`Agachado con equipo` selector exposes both anatomies and all five groups.
+Local checks and 28 ordinary browser routes pass. The
+[equipped movement review](../art/equipped-crouch-transition-admission-review-2026-10-07.md#integrated-current-gameplay-review)
+records 168 captures, current bank preservation and the remaining cold
+admission and garment limits.

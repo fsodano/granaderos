@@ -1826,8 +1826,8 @@
   "animationLibraries": {
     "male": {
       "url": "/models/characters/male-animations.glb",
-      "bytes": 12048644,
-      "sha256": "ae55f4b4b79f98beb4d4bc7f325224e8ce8674181cb28ca1fae7e86935580b56",
+      "bytes": 12040352,
+      "sha256": "2a0f34c2df908e48aa523fd04f612d25d3477112e58ce2d8ee898877d2db1476",
       "clips": [
         {
           "name": "stand.idle.unarmed",
@@ -3371,7 +3371,43 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "locomotionSpeed": 0.7564,
-          "locomotionAxis": "left"
+          "locomotionAxis": "left",
+          "nativeSidewaysSupport": {
+            "method": "native-sideways-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 60,
+            "parentSampleRate": 30,
+            "contactShiftSpace": "gltf-model-local",
+            "contactShift": {
+              "l": [
+                0,
+                0,
+                0
+              ],
+              "r": [
+                -0.0003312453627586365,
+                0,
+                -0.0009435415267944336
+              ]
+            },
+            "nativeCycleDuration": 1.6,
+            "retainedNativeStrideSpeed": 0.7564,
+            "supportWindows": {
+              "l": [
+                0.09583333333333334,
+                0.20416666666666666
+              ],
+              "r": [
+                0.20416666666666666,
+                0.5958333333333333
+              ]
+            },
+            "heelRoll": {
+              "l": 0.108935546875,
+              "r": 0.19760742187500002
+            }
+          }
         },
         {
           "name": "crouch.strafeRight.long-gun",
@@ -3394,7 +3430,43 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "locomotionSpeed": 0.8492,
-          "locomotionAxis": "right"
+          "locomotionAxis": "right",
+          "nativeSidewaysSupport": {
+            "method": "native-sideways-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 60,
+            "parentSampleRate": 30,
+            "contactShiftSpace": "gltf-model-local",
+            "contactShift": {
+              "r": [
+                0,
+                0,
+                0
+              ],
+              "l": [
+                0,
+                0,
+                0
+              ]
+            },
+            "nativeCycleDuration": 1.366667,
+            "retainedNativeStrideSpeed": 0.8492,
+            "supportWindows": {
+              "r": [
+                0.1166666666666667,
+                0.4833333333333333
+              ],
+              "l": [
+                0.4833333333333333,
+                0.6166666666666667
+              ]
+            },
+            "heelRoll": {
+              "r": 0.000048828125,
+              "l": 0.000048828125
+            }
+          }
         },
         {
           "name": "crouch.aim.long-gun",
@@ -3410,7 +3482,15 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "retained-supported-crouched-leg-rotations",
+            "surface": "complete-native-boot",
+            "sourceClip": "crouch.idle.unarmed",
+            "floor": 0.002,
+            "retainedInputTimes": true,
+            "retainedNativeBodyAndWeapon": true
+          }
         },
         {
           "name": "crouch.fire.long-gun",
@@ -3690,7 +3770,15 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "retained-supported-crouched-leg-rotations",
+            "surface": "complete-native-boot",
+            "sourceClip": "crouch.idle.unarmed",
+            "floor": 0.002,
+            "retainedInputTimes": true,
+            "retainedNativeBodyAndWeapon": true
+          }
         },
         {
           "name": "crouch.idle.short-gun",
@@ -3765,7 +3853,43 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "locomotionSpeed": 0.7564,
-          "locomotionAxis": "left"
+          "locomotionAxis": "left",
+          "nativeSidewaysSupport": {
+            "method": "native-sideways-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 60,
+            "parentSampleRate": 30,
+            "contactShiftSpace": "gltf-model-local",
+            "contactShift": {
+              "l": [
+                0,
+                0,
+                0
+              ],
+              "r": [
+                -0.0003312453627586365,
+                0,
+                -0.0009435415267944336
+              ]
+            },
+            "nativeCycleDuration": 1.6,
+            "retainedNativeStrideSpeed": 0.7564,
+            "supportWindows": {
+              "l": [
+                0.09583333333333334,
+                0.20416666666666666
+              ],
+              "r": [
+                0.20416666666666666,
+                0.5958333333333333
+              ]
+            },
+            "heelRoll": {
+              "l": 0.108935546875,
+              "r": 0.19760742187500002
+            }
+          }
         },
         {
           "name": "crouch.strafeRight.short-gun",
@@ -3788,7 +3912,43 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "locomotionSpeed": 0.8492,
-          "locomotionAxis": "right"
+          "locomotionAxis": "right",
+          "nativeSidewaysSupport": {
+            "method": "native-sideways-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 60,
+            "parentSampleRate": 30,
+            "contactShiftSpace": "gltf-model-local",
+            "contactShift": {
+              "r": [
+                0,
+                0,
+                0
+              ],
+              "l": [
+                0,
+                0,
+                0
+              ]
+            },
+            "nativeCycleDuration": 1.366667,
+            "retainedNativeStrideSpeed": 0.8492,
+            "supportWindows": {
+              "r": [
+                0.1166666666666667,
+                0.4833333333333333
+              ],
+              "l": [
+                0.4833333333333333,
+                0.6166666666666667
+              ]
+            },
+            "heelRoll": {
+              "r": 0.000048828125,
+              "l": 0.000048828125
+            }
+          }
         },
         {
           "name": "crouch.aim.short-gun",
@@ -3804,7 +3964,15 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "retained-supported-crouched-leg-rotations",
+            "surface": "complete-native-boot",
+            "sourceClip": "crouch.idle.unarmed",
+            "floor": 0.002,
+            "retainedInputTimes": true,
+            "retainedNativeBodyAndWeapon": true
+          }
         },
         {
           "name": "crouch.fire.short-gun",
@@ -4032,7 +4200,43 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "locomotionSpeed": 0.7564,
-          "locomotionAxis": "left"
+          "locomotionAxis": "left",
+          "nativeSidewaysSupport": {
+            "method": "native-sideways-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 60,
+            "parentSampleRate": 30,
+            "contactShiftSpace": "gltf-model-local",
+            "contactShift": {
+              "l": [
+                0,
+                0,
+                0
+              ],
+              "r": [
+                -0.0003312453627586365,
+                0,
+                -0.0009435415267944336
+              ]
+            },
+            "nativeCycleDuration": 1.6,
+            "retainedNativeStrideSpeed": 0.7564,
+            "supportWindows": {
+              "l": [
+                0.09583333333333334,
+                0.20416666666666666
+              ],
+              "r": [
+                0.20416666666666666,
+                0.5958333333333333
+              ]
+            },
+            "heelRoll": {
+              "l": 0.108935546875,
+              "r": 0.19760742187500002
+            }
+          }
         },
         {
           "name": "crouch.strafeRight.blade",
@@ -4055,7 +4259,43 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "locomotionSpeed": 0.8492,
-          "locomotionAxis": "right"
+          "locomotionAxis": "right",
+          "nativeSidewaysSupport": {
+            "method": "native-sideways-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 60,
+            "parentSampleRate": 30,
+            "contactShiftSpace": "gltf-model-local",
+            "contactShift": {
+              "r": [
+                0,
+                0,
+                0
+              ],
+              "l": [
+                0,
+                0,
+                0
+              ]
+            },
+            "nativeCycleDuration": 1.366667,
+            "retainedNativeStrideSpeed": 0.8492,
+            "supportWindows": {
+              "r": [
+                0.1166666666666667,
+                0.4833333333333333
+              ],
+              "l": [
+                0.4833333333333333,
+                0.6166666666666667
+              ]
+            },
+            "heelRoll": {
+              "r": 0.000048828125,
+              "l": 0.000048828125
+            }
+          }
         },
         {
           "name": "crouch.slash.blade",
@@ -4093,7 +4333,15 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "retained-supported-crouched-leg-rotations",
+            "surface": "complete-native-boot",
+            "sourceClip": "crouch.idle.unarmed",
+            "floor": 0.002,
+            "retainedInputTimes": true,
+            "retainedNativeBodyAndWeapon": true
+          }
         },
         {
           "name": "prone.idle.unarmed",
@@ -9930,7 +10178,43 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "locomotionSpeed": 0.7564,
-          "locomotionAxis": "left"
+          "locomotionAxis": "left",
+          "nativeSidewaysSupport": {
+            "method": "native-sideways-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 60,
+            "parentSampleRate": 30,
+            "contactShiftSpace": "gltf-model-local",
+            "contactShift": {
+              "l": [
+                0,
+                0,
+                0
+              ],
+              "r": [
+                -0.0003312453627586365,
+                0,
+                -0.0009435415267944336
+              ]
+            },
+            "nativeCycleDuration": 1.6,
+            "retainedNativeStrideSpeed": 0.7564,
+            "supportWindows": {
+              "l": [
+                0.09583333333333334,
+                0.20416666666666666
+              ],
+              "r": [
+                0.20416666666666666,
+                0.5958333333333333
+              ]
+            },
+            "heelRoll": {
+              "l": 0.108935546875,
+              "r": 0.19760742187500002
+            }
+          }
         },
         {
           "name": "crouch.strafeLeft.knife",
@@ -9953,7 +10237,43 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "locomotionSpeed": 0.7564,
-          "locomotionAxis": "left"
+          "locomotionAxis": "left",
+          "nativeSidewaysSupport": {
+            "method": "native-sideways-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 60,
+            "parentSampleRate": 30,
+            "contactShiftSpace": "gltf-model-local",
+            "contactShift": {
+              "l": [
+                0,
+                0,
+                0
+              ],
+              "r": [
+                -0.0003312453627586365,
+                0,
+                -0.0009435415267944336
+              ]
+            },
+            "nativeCycleDuration": 1.6,
+            "retainedNativeStrideSpeed": 0.7564,
+            "supportWindows": {
+              "l": [
+                0.09583333333333334,
+                0.20416666666666666
+              ],
+              "r": [
+                0.20416666666666666,
+                0.5958333333333333
+              ]
+            },
+            "heelRoll": {
+              "l": 0.108935546875,
+              "r": 0.19760742187500002
+            }
+          }
         },
         {
           "name": "crouch.strafeRight.lance",
@@ -9976,7 +10296,43 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "locomotionSpeed": 0.8492,
-          "locomotionAxis": "right"
+          "locomotionAxis": "right",
+          "nativeSidewaysSupport": {
+            "method": "native-sideways-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 60,
+            "parentSampleRate": 30,
+            "contactShiftSpace": "gltf-model-local",
+            "contactShift": {
+              "r": [
+                0,
+                0,
+                0
+              ],
+              "l": [
+                0,
+                0,
+                0
+              ]
+            },
+            "nativeCycleDuration": 1.366667,
+            "retainedNativeStrideSpeed": 0.8492,
+            "supportWindows": {
+              "r": [
+                0.1166666666666667,
+                0.4833333333333333
+              ],
+              "l": [
+                0.4833333333333333,
+                0.6166666666666667
+              ]
+            },
+            "heelRoll": {
+              "r": 0.000048828125,
+              "l": 0.000048828125
+            }
+          }
         },
         {
           "name": "crouch.strafeRight.knife",
@@ -9999,7 +10355,43 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "locomotionSpeed": 0.8492,
-          "locomotionAxis": "right"
+          "locomotionAxis": "right",
+          "nativeSidewaysSupport": {
+            "method": "native-sideways-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 60,
+            "parentSampleRate": 30,
+            "contactShiftSpace": "gltf-model-local",
+            "contactShift": {
+              "r": [
+                0,
+                0,
+                0
+              ],
+              "l": [
+                0,
+                0,
+                0
+              ]
+            },
+            "nativeCycleDuration": 1.366667,
+            "retainedNativeStrideSpeed": 0.8492,
+            "supportWindows": {
+              "r": [
+                0.1166666666666667,
+                0.4833333333333333
+              ],
+              "l": [
+                0.4833333333333333,
+                0.6166666666666667
+              ]
+            },
+            "heelRoll": {
+              "r": 0.000048828125,
+              "l": 0.000048828125
+            }
+          }
         },
         {
           "name": "crouch.thrust.lance",
@@ -10059,7 +10451,15 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "retained-supported-crouched-leg-rotations",
+            "surface": "complete-native-boot",
+            "sourceClip": "crouch.idle.unarmed",
+            "floor": 0.002,
+            "retainedInputTimes": true,
+            "retainedNativeBodyAndWeapon": true
+          }
         },
         {
           "name": "crouch.brace.knife",
@@ -10075,7 +10475,15 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "retained-supported-crouched-leg-rotations",
+            "surface": "complete-native-boot",
+            "sourceClip": "crouch.idle.unarmed",
+            "floor": 0.002,
+            "retainedInputTimes": true,
+            "retainedNativeBodyAndWeapon": true
+          }
         },
         {
           "name": "prone.idle.lance",
@@ -15790,8 +16198,8 @@
     },
     "female": {
       "url": "/models/characters/female-animations.glb",
-      "bytes": 11873640,
-      "sha256": "1a61aeca53cd0e4f778224cc5b431c2159179d88df59cc898f8ff8523ebcf680",
+      "bytes": 11865488,
+      "sha256": "25b62402a0ad57633ad1497ef00ef3e88271c4cbf4e04d10fd9f6d7c55107b88",
       "clips": [
         {
           "name": "stand.idle.unarmed",
@@ -17349,7 +17757,43 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "locomotionSpeed": 0.9402,
-          "locomotionAxis": "left"
+          "locomotionAxis": "left",
+          "nativeSidewaysSupport": {
+            "method": "native-sideways-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 60,
+            "parentSampleRate": 30,
+            "contactShiftSpace": "gltf-model-local",
+            "contactShift": {
+              "l": [
+                0,
+                0,
+                0
+              ],
+              "r": [
+                -0.025708824396133423,
+                0,
+                -0.06725364923477173
+              ]
+            },
+            "nativeCycleDuration": 1.6,
+            "retainedNativeStrideSpeed": 0.9402,
+            "supportWindows": {
+              "l": [
+                0.11250000000000003,
+                0.22083333333333333
+              ],
+              "r": [
+                0.22083333333333333,
+                0.6125
+              ]
+            },
+            "heelRoll": {
+              "l": 0.08330078125000001,
+              "r": 0.19809570312500002
+            }
+          }
         },
         {
           "name": "crouch.strafeRight.long-gun",
@@ -17372,7 +17816,43 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "locomotionSpeed": 0.9318,
-          "locomotionAxis": "right"
+          "locomotionAxis": "right",
+          "nativeSidewaysSupport": {
+            "method": "native-sideways-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 60,
+            "parentSampleRate": 30,
+            "contactShiftSpace": "gltf-model-local",
+            "contactShift": {
+              "r": [
+                0,
+                0,
+                0
+              ],
+              "l": [
+                0,
+                0,
+                0
+              ]
+            },
+            "nativeCycleDuration": 1.366667,
+            "retainedNativeStrideSpeed": 0.9318,
+            "supportWindows": {
+              "r": [
+                0.1166666666666667,
+                0.475
+              ],
+              "l": [
+                0.475,
+                0.6166666666666667
+              ]
+            },
+            "heelRoll": {
+              "r": 0.000048828125,
+              "l": 0.000048828125
+            }
+          }
         },
         {
           "name": "crouch.aim.long-gun",
@@ -17388,7 +17868,15 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "retained-supported-crouched-leg-rotations",
+            "surface": "complete-native-boot",
+            "sourceClip": "crouch.idle.unarmed",
+            "floor": 0.002,
+            "retainedInputTimes": true,
+            "retainedNativeBodyAndWeapon": true
+          }
         },
         {
           "name": "crouch.fire.long-gun",
@@ -17668,7 +18156,15 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "retained-supported-crouched-leg-rotations",
+            "surface": "complete-native-boot",
+            "sourceClip": "crouch.idle.unarmed",
+            "floor": 0.002,
+            "retainedInputTimes": true,
+            "retainedNativeBodyAndWeapon": true
+          }
         },
         {
           "name": "crouch.idle.short-gun",
@@ -17743,7 +18239,43 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "locomotionSpeed": 0.9402,
-          "locomotionAxis": "left"
+          "locomotionAxis": "left",
+          "nativeSidewaysSupport": {
+            "method": "native-sideways-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 60,
+            "parentSampleRate": 30,
+            "contactShiftSpace": "gltf-model-local",
+            "contactShift": {
+              "l": [
+                0,
+                0,
+                0
+              ],
+              "r": [
+                -0.025708824396133423,
+                0,
+                -0.06725364923477173
+              ]
+            },
+            "nativeCycleDuration": 1.6,
+            "retainedNativeStrideSpeed": 0.9402,
+            "supportWindows": {
+              "l": [
+                0.11250000000000003,
+                0.22083333333333333
+              ],
+              "r": [
+                0.22083333333333333,
+                0.6125
+              ]
+            },
+            "heelRoll": {
+              "l": 0.08330078125000001,
+              "r": 0.19809570312500002
+            }
+          }
         },
         {
           "name": "crouch.strafeRight.short-gun",
@@ -17766,7 +18298,43 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "locomotionSpeed": 0.9318,
-          "locomotionAxis": "right"
+          "locomotionAxis": "right",
+          "nativeSidewaysSupport": {
+            "method": "native-sideways-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 60,
+            "parentSampleRate": 30,
+            "contactShiftSpace": "gltf-model-local",
+            "contactShift": {
+              "r": [
+                0,
+                0,
+                0
+              ],
+              "l": [
+                0,
+                0,
+                0
+              ]
+            },
+            "nativeCycleDuration": 1.366667,
+            "retainedNativeStrideSpeed": 0.9318,
+            "supportWindows": {
+              "r": [
+                0.1166666666666667,
+                0.475
+              ],
+              "l": [
+                0.475,
+                0.6166666666666667
+              ]
+            },
+            "heelRoll": {
+              "r": 0.000048828125,
+              "l": 0.000048828125
+            }
+          }
         },
         {
           "name": "crouch.aim.short-gun",
@@ -17782,7 +18350,15 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "retained-supported-crouched-leg-rotations",
+            "surface": "complete-native-boot",
+            "sourceClip": "crouch.idle.unarmed",
+            "floor": 0.002,
+            "retainedInputTimes": true,
+            "retainedNativeBodyAndWeapon": true
+          }
         },
         {
           "name": "crouch.fire.short-gun",
@@ -18010,7 +18586,43 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "locomotionSpeed": 0.9402,
-          "locomotionAxis": "left"
+          "locomotionAxis": "left",
+          "nativeSidewaysSupport": {
+            "method": "native-sideways-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 60,
+            "parentSampleRate": 30,
+            "contactShiftSpace": "gltf-model-local",
+            "contactShift": {
+              "l": [
+                0,
+                0,
+                0
+              ],
+              "r": [
+                -0.025708824396133423,
+                0,
+                -0.06725364923477173
+              ]
+            },
+            "nativeCycleDuration": 1.6,
+            "retainedNativeStrideSpeed": 0.9402,
+            "supportWindows": {
+              "l": [
+                0.11250000000000003,
+                0.22083333333333333
+              ],
+              "r": [
+                0.22083333333333333,
+                0.6125
+              ]
+            },
+            "heelRoll": {
+              "l": 0.08330078125000001,
+              "r": 0.19809570312500002
+            }
+          }
         },
         {
           "name": "crouch.strafeRight.blade",
@@ -18033,7 +18645,43 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "locomotionSpeed": 0.9318,
-          "locomotionAxis": "right"
+          "locomotionAxis": "right",
+          "nativeSidewaysSupport": {
+            "method": "native-sideways-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 60,
+            "parentSampleRate": 30,
+            "contactShiftSpace": "gltf-model-local",
+            "contactShift": {
+              "r": [
+                0,
+                0,
+                0
+              ],
+              "l": [
+                0,
+                0,
+                0
+              ]
+            },
+            "nativeCycleDuration": 1.366667,
+            "retainedNativeStrideSpeed": 0.9318,
+            "supportWindows": {
+              "r": [
+                0.1166666666666667,
+                0.475
+              ],
+              "l": [
+                0.475,
+                0.6166666666666667
+              ]
+            },
+            "heelRoll": {
+              "r": 0.000048828125,
+              "l": 0.000048828125
+            }
+          }
         },
         {
           "name": "crouch.slash.blade",
@@ -18071,7 +18719,15 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "retained-supported-crouched-leg-rotations",
+            "surface": "complete-native-boot",
+            "sourceClip": "crouch.idle.unarmed",
+            "floor": 0.002,
+            "retainedInputTimes": true,
+            "retainedNativeBodyAndWeapon": true
+          }
         },
         {
           "name": "prone.idle.unarmed",
@@ -23908,7 +24564,43 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "locomotionSpeed": 0.9402,
-          "locomotionAxis": "left"
+          "locomotionAxis": "left",
+          "nativeSidewaysSupport": {
+            "method": "native-sideways-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 60,
+            "parentSampleRate": 30,
+            "contactShiftSpace": "gltf-model-local",
+            "contactShift": {
+              "l": [
+                0,
+                0,
+                0
+              ],
+              "r": [
+                -0.025708824396133423,
+                0,
+                -0.06725364923477173
+              ]
+            },
+            "nativeCycleDuration": 1.6,
+            "retainedNativeStrideSpeed": 0.9402,
+            "supportWindows": {
+              "l": [
+                0.11250000000000003,
+                0.22083333333333333
+              ],
+              "r": [
+                0.22083333333333333,
+                0.6125
+              ]
+            },
+            "heelRoll": {
+              "l": 0.08330078125000001,
+              "r": 0.19809570312500002
+            }
+          }
         },
         {
           "name": "crouch.strafeLeft.knife",
@@ -23931,7 +24623,43 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "locomotionSpeed": 0.9402,
-          "locomotionAxis": "left"
+          "locomotionAxis": "left",
+          "nativeSidewaysSupport": {
+            "method": "native-sideways-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 60,
+            "parentSampleRate": 30,
+            "contactShiftSpace": "gltf-model-local",
+            "contactShift": {
+              "l": [
+                0,
+                0,
+                0
+              ],
+              "r": [
+                -0.025708824396133423,
+                0,
+                -0.06725364923477173
+              ]
+            },
+            "nativeCycleDuration": 1.6,
+            "retainedNativeStrideSpeed": 0.9402,
+            "supportWindows": {
+              "l": [
+                0.11250000000000003,
+                0.22083333333333333
+              ],
+              "r": [
+                0.22083333333333333,
+                0.6125
+              ]
+            },
+            "heelRoll": {
+              "l": 0.08330078125000001,
+              "r": 0.19809570312500002
+            }
+          }
         },
         {
           "name": "crouch.strafeRight.lance",
@@ -23954,7 +24682,43 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "locomotionSpeed": 0.9318,
-          "locomotionAxis": "right"
+          "locomotionAxis": "right",
+          "nativeSidewaysSupport": {
+            "method": "native-sideways-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 60,
+            "parentSampleRate": 30,
+            "contactShiftSpace": "gltf-model-local",
+            "contactShift": {
+              "r": [
+                0,
+                0,
+                0
+              ],
+              "l": [
+                0,
+                0,
+                0
+              ]
+            },
+            "nativeCycleDuration": 1.366667,
+            "retainedNativeStrideSpeed": 0.9318,
+            "supportWindows": {
+              "r": [
+                0.1166666666666667,
+                0.475
+              ],
+              "l": [
+                0.475,
+                0.6166666666666667
+              ]
+            },
+            "heelRoll": {
+              "r": 0.000048828125,
+              "l": 0.000048828125
+            }
+          }
         },
         {
           "name": "crouch.strafeRight.knife",
@@ -23977,7 +24741,43 @@
           "timingAuthority": "simulation",
           "rootMotion": "in-place",
           "locomotionSpeed": 0.9318,
-          "locomotionAxis": "right"
+          "locomotionAxis": "right",
+          "nativeSidewaysSupport": {
+            "method": "native-sideways-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 60,
+            "parentSampleRate": 30,
+            "contactShiftSpace": "gltf-model-local",
+            "contactShift": {
+              "r": [
+                0,
+                0,
+                0
+              ],
+              "l": [
+                0,
+                0,
+                0
+              ]
+            },
+            "nativeCycleDuration": 1.366667,
+            "retainedNativeStrideSpeed": 0.9318,
+            "supportWindows": {
+              "r": [
+                0.1166666666666667,
+                0.475
+              ],
+              "l": [
+                0.475,
+                0.6166666666666667
+              ]
+            },
+            "heelRoll": {
+              "r": 0.000048828125,
+              "l": 0.000048828125
+            }
+          }
         },
         {
           "name": "crouch.thrust.lance",
@@ -24037,7 +24837,15 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "retained-supported-crouched-leg-rotations",
+            "surface": "complete-native-boot",
+            "sourceClip": "crouch.idle.unarmed",
+            "floor": 0.002,
+            "retainedInputTimes": true,
+            "retainedNativeBodyAndWeapon": true
+          }
         },
         {
           "name": "crouch.brace.knife",
@@ -24053,7 +24861,15 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "nativeBootSupport": {
+            "method": "retained-supported-crouched-leg-rotations",
+            "surface": "complete-native-boot",
+            "sourceClip": "crouch.idle.unarmed",
+            "floor": 0.002,
+            "retainedInputTimes": true,
+            "retainedNativeBodyAndWeapon": true
+          }
         },
         {
           "name": "prone.idle.lance",

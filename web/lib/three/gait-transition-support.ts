@@ -48,7 +48,7 @@ export class NativeGaitTransitionSupport{
  begin(previous:GaitClip|undefined,next:GaitClip,_time:number,clip:AnimationClip){
   this.pending=undefined;this.plan=undefined;
   if(!previous||this.legs.length!==2||previous.posture!==next.posture||!['standing','crouched'].includes(next.posture??''))return;
-  const idle=(s:GaitClip)=>s.gesture==='idle',sideways=(s:GaitClip)=>['strafeLeft','strafeRight'].includes(s.gesture??'')&&Boolean(s.nativeSidewaysSupport);
+  const idle=(s:GaitClip)=>s.gesture==='idle'||s.posture==='crouched'&&['aim','brace'].includes(s.gesture??''),sideways=(s:GaitClip)=>['strafeLeft','strafeRight'].includes(s.gesture??'')&&Boolean(s.nativeSidewaysSupport);
   if(!(idle(previous)&&sideways(next)||sideways(previous)&&idle(next)))return;
   const initial=this.capture(),current=this.root.matrixWorld.clone(),delta=this.hasFrame?this.lastRoot.clone().multiply(current.clone().invert()):new Matrix4(),rotation=new Quaternion().setFromRotationMatrix(delta);for(const leg of this.legs){const goal=initial.get(leg.foot.name.slice(-1))!;goal.p.applyMatrix4(delta);goal.knee?.applyMatrix4(delta);goal.q.premultiply(rotation);goal.height=this.lowest(leg)+delta.elements[13];}this.pending={spec:next,clip,moving:sideways(next),initial};
  }
