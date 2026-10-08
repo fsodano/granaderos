@@ -25,9 +25,12 @@ The [8 October healing cue and clock record](healing-patient-cue-and-clock.md)
 adds an admitted current self/patient cue and one continuous native treatment
 interval. Four normal standing/prone HUD routes retain exact paid AP, finite
 dressings, wound results, cells and owned items; 104 affected checks, types,
-native assets and the production build pass. Physical patient contact and
-prone sleeve floor clearance remain open. This bounded presentation change
-does not establish complete gameplay or final character-art acceptance.
+native assets and the production build pass. The later
+[supported prone healing path](prone-heal-arm-floor-support.md) verifies complete
+arm-skin floor clearance for all eight appearances and three LODs through paid
+entry, work and return. Physical patient contact remains open. These bounded
+presentation changes do not establish complete gameplay or final character-art
+acceptance.
 
 ## Recovery and integrated gameplay checkpoint — 21 September 2026
 
