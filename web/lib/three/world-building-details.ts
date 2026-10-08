@@ -391,7 +391,7 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
     }
     if(kind==='depot'){
       workCanopy('gallery',frontSupports(),.60);
-      root.add(depotFacade(b,input,T,height,base,roofRise,geometry,materials));
+      root.add(depotFacade(b,input,T,height,base,roofRise,geometry,materials,legacy));
     }
     if(kind==='barracks')feature('barracks-gate',()=>{
       const supports=entranceSupports();

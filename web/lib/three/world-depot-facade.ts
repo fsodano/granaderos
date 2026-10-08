@@ -9,10 +9,10 @@ import type {WorldBuilding,WorldInput} from './world-types';
 
 /** The retained depot sprite has substantial stone piers and a timber roof
  * hatch. These details bear on real wall cells; the hatch is exterior scenery. */
-export function depotFacade(b:WorldBuilding,input:WorldInput,T:number,height:number,base:number,rise:number,geometry:WorldGeometry,materials:WorldMaterials){
+export function depotFacade(b:WorldBuilding,input:WorldInput,T:number,height:number,base:number,rise:number,geometry:WorldGeometry,materials:WorldMaterials,legacy=false){
   const walls=input.terrain.tiles.filter(tile=>tile.buildingId===b.id&&['wall','door','window'].includes(tile.type)),frame=entranceFrame({...b,walls}),inset=buildingArtInset(b,input),V=25.066666666666666;
   const root=new Group();root.name=`building-depot-facade:${b.id}`;
-  const rotation=new Quaternion().setFromAxisAngle(new Vector3(0,1,0),Math.atan2(-frame.u.y,frame.u.x)),light=illuminationAt(input,b),profile=getBuildingProfile(b),stone=materials.get('stone'),wood=materials.get('wood'),iron=materials.get('iron');
+  const rotation=new Quaternion().setFromAxisAngle(new Vector3(0,1,0),Math.atan2(-frame.u.y,frame.u.x)),light=illuminationAt(input,b),profile=getBuildingProfile(b),authored=!(legacy&&b.wallFinish===undefined),stone=materials.get('stone',authored?{architectureRole:'volume',colour:'#a99a79'}:{}),wood=materials.get('wood'),iron=materials.get('iron');
   const at=(u:number,v:number,y:number)=>{const p=frame.at(u,v);return new Vector3((p.x+inset)*T,base+y,(p.y+inset)*T);};
   const wallAt=(u:number,v:number)=>{const p=frame.at(u,v);return walls.find(tile=>tile.x===p.x&&tile.y===p.y);};
   const feature=(name:string,draw:(batch:WorldBatch)=>void)=>{const batch=new WorldBatch(geometry);draw(batch);const node=batch.finish(`building-detail:${b.id}:${name}`);if(node.children.length)root.add(node);};
@@ -23,9 +23,12 @@ export function depotFacade(b:WorldBuilding,input:WorldInput,T:number,height:num
       // Each outer stone face reaches 49% of its solid cell. The shaft joins
       // the art-inset shell, while its wider foot stays clear of walking cells.
       const shift=(value:number,target:number,axis:{x:number;y:number})=>value-(inset-(inset===0?0:target))*(axis.x+axis.y),top=height-3/V,foot=Math.min((profile.plinthHeight+2)/V,top*.40);
-      box(batch,shift(u,.20,frame.u),shift(v,.30,frame.v),top*.5,.58,top,.38);
-      box(batch,shift(u,.14,frame.u),shift(v,.14,frame.v),foot*.5,.70,foot,.70);
-      box(batch,shift(u,.16,frame.u),shift(v,.16,frame.v),height-4.5/V,.66,5/V,.66);
+      const source=authored&&inset===0,footW=source?.72:.70,footD=source?.52:.70,capitalD=source?.46:.66,footU=shift(u,.14,frame.u),footV=shift(v,.14,frame.v),point=at(footU,footV,0),halfX=(Math.abs(frame.u.x)*footW+Math.abs(frame.v.x)*footD)*T*.5,halfZ=(Math.abs(frame.u.y)*footW+Math.abs(frame.v.y)*footD)*T*.5;
+      if(authored&&(input.terrain.upperSurfaces??[]).some(surface=>!surface.blocked&&(surface.tacticalLevel??0)>0&&(surface.elevation??3)<=base+height-2/V+.01&&(surface.x+.5)*T>point.x-halfX+1e-6&&(surface.x-.5)*T<point.x+halfX-1e-6&&(surface.y+.5)*T>point.z-halfZ+1e-6&&(surface.y-.5)*T<point.z+halfZ-1e-6))continue;
+      const bottom=source?foot:0,bodyTop=source?height-7/V:top;if(bodyTop<=bottom)continue;
+      box(batch,shift(u,.20,frame.u),shift(v,.30,frame.v),(bottom+bodyTop)*.5,.58,bodyTop-bottom,.38);
+      box(batch,footU,footV,foot*.5,footW,foot,footD);
+      box(batch,shift(u,.16,frame.u),shift(v,.16,frame.v),height-4.5/V,.66,5/V,capitalD);
     }
   });
 
