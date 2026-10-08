@@ -16,7 +16,7 @@ historical reconstruction accuracy.
 | gaucho | Male | Poncho, red scarf and felt hat |
 | friar | Male | Habit, rope belt, folded hood and tonsure |
 | woman-scout | Female | Green shirt, trousers and braid |
-| woman-shawl | Female | Light shirt, burgundy shawl and skirt, hair bun |
+| woman-shawl | Female | Light shirt, burgundy shawl, charcoal skirt, hair bun |
 
 All eight use the shared human surface treatment and three real mesh LODs.
 Female proportions and bind poses remain native. Facial pigment remains

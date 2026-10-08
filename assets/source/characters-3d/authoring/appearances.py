@@ -6,6 +6,7 @@ The defaults intentionally share a human size; gameplay owns actor body height.
 import math
 import bpy
 from mathutils import Vector
+from appearance_palette import WOMAN_SHAWL_SKIRT_LINEAR, WOMAN_SHAWL_BURGUNDY_LINEAR
 
 PRESETS = {
  'granadero':dict(gender='male',title='Granadero',coat=(.017,.025,.044),trousers=(.019,.027,.043),headwear='shako'),
@@ -15,7 +16,7 @@ PRESETS = {
  'gaucho':dict(gender='male',title='Gaucho',coat=(.16,.098,.047),trousers=(.052,.042,.031),headwear='felt-hat'),
  'friar':dict(gender='male',title='Fraile',coat=(.093,.049,.022),trousers=(.093,.049,.022),headwear=None),
  'woman-scout':dict(gender='female',title='Exploradora',coat=(.105,.128,.069),trousers=(.30,.26,.18),headwear=None),
- 'woman-shawl':dict(gender='female',title='Mujer con mantón',coat=(.58,.50,.36),trousers=(.105,.025,.035),headwear=None),
+ 'woman-shawl':dict(gender='female',title='Mujer con mantón',coat=(.58,.50,.36),trousers=WOMAN_SHAWL_SKIRT_LINEAR,shawl=WOMAN_SHAWL_BURGUNDY_LINEAR,headwear=None),
 }
 
 # These are also the replaceable headwear boundary. Keep every trim component
@@ -102,10 +103,14 @@ def apply_appearance(ctx):
   # Hood rests on upper back, open folded cloth, not a second head.
   ellipsoid('Folded_Hood',(0,.127,1.406),(.093,.030,.090),M['navy'],'spine_03',20,12)
  if p=='woman-shawl':
+  # The reference has a charcoal skirt and a burgundy shawl. Separate pigment
+  # roles while retaining the original wool roughness and normal treatment.
+  M['shawl']=M['trousers'].copy();M['shawl'].name='Burgundy_Shawl_Wool'
+  color('shawl',spec['shawl'])
   draped('Long_Skirt',ctx,top=1.06,bottom=.10,shoulder=False,material=M['trousers'],width=.20,depth=.145)
   coat=ctx['coat'];vv=[v.co+v.normal*.009 for v in coat.data.vertices];ww=[{coat.vertex_groups[g.group].name:g.weight for g in v.groups} for v in coat.data.vertices]
   ff=[tuple(f.vertices) for f in coat.data.polygons if all(coat.data.vertices[i].co.z>1.265 for i in f.vertices)]
-  mesh('Burgundy_Shawl',vv,ff,M['trousers'],ww)
+  mesh('Burgundy_Shawl',vv,ff,M['shawl'],ww)
  # Semantic parts are retained through optimization for optional body equipment.
  for o in objects:
   n=o.name

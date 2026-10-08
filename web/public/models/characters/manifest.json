@@ -1798,9 +1798,9 @@
           "lod": 0,
           "url": "/models/characters/woman-shawl-lod0.glb",
           "triangles": 28792,
-          "bytes": 1353992,
+          "bytes": 1354420,
           "drawCalls": 5,
-          "sha256": "86222b401277c4e79666721815215d004e64f27b082a4af30fd73e65f97cb181",
+          "sha256": "d499fbc64310599eac95fa6bf15516d7aa320053942d4c7d8d6723438a67e8ec",
           "nativeClothSupport": {
             "method": "current-native-prone-cloth-shape",
             "sourceClip": "prone.idle.long-gun",
@@ -1866,9 +1866,9 @@
           "lod": 1,
           "url": "/models/characters/woman-shawl-lod1.glb",
           "triangles": 14840,
-          "bytes": 774584,
+          "bytes": 775016,
           "drawCalls": 5,
-          "sha256": "37172e04f3fed3b26b829d4a5b671a404fcf77a5428c36d20d34520854898d4f",
+          "sha256": "634a03bcebb26b070aad89fb9cd40ebbe6a52f78b7c9d184e67bfefd95d8d6b0",
           "nativeClothSupport": {
             "method": "current-native-prone-cloth-shape",
             "sourceClip": "prone.idle.long-gun",
@@ -1932,7 +1932,7 @@
           "nativeClothTopology": {
             "method": "reviewed-close-garment-topology",
             "sourceUrl": "/models/characters/woman-shawl-lod0.glb",
-            "sourceSha256": "86222b401277c4e79666721815215d004e64f27b082a4af30fd73e65f97cb181",
+            "sourceSha256": "d499fbc64310599eac95fa6bf15516d7aa320053942d4c7d8d6723438a67e8ec",
             "retainedOtherCoarseMeshesAndRig": true,
             "maximumExtraWorldDisplacement": 0
           }
@@ -1941,9 +1941,9 @@
           "lod": 2,
           "url": "/models/characters/woman-shawl-lod2.glb",
           "triangles": 7664,
-          "bytes": 463312,
+          "bytes": 463740,
           "drawCalls": 5,
-          "sha256": "6464b06455e5be4d8ba7a441e1fdd64f99100f2ae93a2309b93149784254506c",
+          "sha256": "de735c7d5ac5bb798a02255ccd1a626464ebb1581583396a5f5e9298f6b605be",
           "nativeClothSupport": {
             "method": "current-native-prone-cloth-shape",
             "sourceClip": "prone.idle.long-gun",
@@ -2007,7 +2007,7 @@
           "nativeClothTopology": {
             "method": "reviewed-close-garment-topology",
             "sourceUrl": "/models/characters/woman-shawl-lod0.glb",
-            "sourceSha256": "86222b401277c4e79666721815215d004e64f27b082a4af30fd73e65f97cb181",
+            "sourceSha256": "d499fbc64310599eac95fa6bf15516d7aa320053942d4c7d8d6723438a67e8ec",
             "retainedOtherCoarseMeshesAndRig": true,
             "maximumExtraWorldDisplacement": 0.002
           }
