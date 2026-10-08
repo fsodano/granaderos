@@ -1,0 +1,3137 @@
+{
+  "results": [
+    {
+      "id": "friar",
+      "lod": 0,
+      "action": "climbUp",
+      "visibleMeshes": [
+        "Human_footwear_LOD0",
+        "Human_legwear_LOD0",
+        "Human_outfit_LOD0",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7025720705551963,
+          "fineMm": 0.01709362677049867
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.765461551285531,
+          "fineMm": 0.03807384336059092
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 11.079173542808219,
+          "fineMm": 0.11079588227652831
+        }
+      ]
+    },
+    {
+      "id": "friar",
+      "lod": 0,
+      "action": "climbDown",
+      "visibleMeshes": [
+        "Human_footwear_LOD0",
+        "Human_legwear_LOD0",
+        "Human_outfit_LOD0",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7025682358569827,
+          "fineMm": 0.01708987124580603
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.7654485456995346,
+          "fineMm": 0.038073714478091374
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 11.079174084360572,
+          "fineMm": 0.1107958877603705
+        }
+      ]
+    },
+    {
+      "id": "friar",
+      "lod": 1,
+      "action": "climbUp",
+      "visibleMeshes": [
+        "Human_footwear_LOD1",
+        "Human_legwear_LOD1",
+        "Human_outfit_LOD1",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7008644833957363,
+          "fineMm": 0.0170763397643375
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.7720877964939317,
+          "fineMm": 0.038140620519760186
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 11.077272040172359,
+          "fineMm": 0.1107768473448788
+        }
+      ]
+    },
+    {
+      "id": "friar",
+      "lod": 1,
+      "action": "climbDown",
+      "visibleMeshes": [
+        "Human_footwear_LOD1",
+        "Human_legwear_LOD1",
+        "Human_outfit_LOD1",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7008606445999668,
+          "fineMm": 0.01707258211430936
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.7720747336593003,
+          "fineMm": 0.038140491022962436
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 11.077272564597953,
+          "fineMm": 0.1107768526572091
+        }
+      ]
+    },
+    {
+      "id": "friar",
+      "lod": 2,
+      "action": "climbUp",
+      "visibleMeshes": [
+        "Human_footwear_LOD2",
+        "Human_legwear_LOD2",
+        "Human_outfit_LOD2",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.6984257335939021,
+          "fineMm": 0.01705216240920434
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.8036281895906843,
+          "fineMm": 0.03845283867467531
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 11.108194459494381,
+          "fineMm": 0.11108613892652633
+        }
+      ]
+    },
+    {
+      "id": "friar",
+      "lod": 2,
+      "action": "climbDown",
+      "visibleMeshes": [
+        "Human_footwear_LOD2",
+        "Human_legwear_LOD2",
+        "Human_outfit_LOD2",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.6984219036714223,
+          "fineMm": 0.017048413027286463
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.803615440792198,
+          "fineMm": 0.03845271251199355
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 11.108195071281967,
+          "fineMm": 0.11108614511328592
+        }
+      ]
+    },
+    {
+      "id": "woman-shawl",
+      "lod": 0,
+      "action": "climbUp",
+      "visibleMeshes": [
+        "Human_footwear_LOD0",
+        "Human_legwear_LOD0",
+        "Human_outfit_LOD0",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7987423931809443,
+          "fineMm": 0.018044141585666848
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.4229087178878697,
+          "fineMm": 0.034652111966324256
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 10.750146207252465,
+          "fineMm": 0.1075052992316188
+        }
+      ]
+    },
+    {
+      "id": "woman-shawl",
+      "lod": 0,
+      "action": "climbDown",
+      "visibleMeshes": [
+        "Human_footwear_LOD0",
+        "Human_legwear_LOD0",
+        "Human_outfit_LOD0",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7987383423553573,
+          "fineMm": 0.018040150789054583
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.4228971763223335,
+          "fineMm": 0.03465199751839343
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 10.750146010260353,
+          "fineMm": 0.10750529731115424
+        }
+      ]
+    },
+    {
+      "id": "woman-shawl",
+      "lod": 1,
+      "action": "climbUp",
+      "visibleMeshes": [
+        "Human_footwear_LOD1",
+        "Human_legwear_LOD1",
+        "Human_outfit_LOD1",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7987423931809443,
+          "fineMm": 0.018044141585666848
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.447319324034913,
+          "fineMm": 0.034894926311928004
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 10.75065970800625,
+          "fineMm": 0.10751043285916179
+        }
+      ]
+    },
+    {
+      "id": "woman-shawl",
+      "lod": 1,
+      "action": "climbDown",
+      "visibleMeshes": [
+        "Human_footwear_LOD1",
+        "Human_legwear_LOD1",
+        "Human_outfit_LOD1",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7987383423553573,
+          "fineMm": 0.018040150789054583
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.4473079030251053,
+          "fineMm": 0.03489481315216472
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 10.750659441657906,
+          "fineMm": 0.10751043024535716
+        }
+      ]
+    },
+    {
+      "id": "woman-shawl",
+      "lod": 2,
+      "action": "climbUp",
+      "visibleMeshes": [
+        "Human_footwear_LOD2",
+        "Human_legwear_LOD2",
+        "Human_outfit_LOD2",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7973187245629896,
+          "fineMm": 0.01802989208225618
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.458800051899381,
+          "fineMm": 0.03500766208622149
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 10.774404872091898,
+          "fineMm": 0.10774790685154166
+        }
+      ]
+    },
+    {
+      "id": "woman-shawl",
+      "lod": 2,
+      "action": "climbDown",
+      "visibleMeshes": [
+        "Human_footwear_LOD2",
+        "Human_legwear_LOD2",
+        "Human_outfit_LOD2",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7973146775423878,
+          "fineMm": 0.01802590505519418
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.4587888424461,
+          "fineMm": 0.03500755118033408
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 10.774404659784668,
+          "fineMm": 0.10774790477865596
+        }
+      ]
+    },
+    {
+      "id": "royalist",
+      "lod": 0,
+      "action": "climbUp",
+      "visibleMeshes": [
+        "Human_footwear_LOD0",
+        "Human_headwear_LOD0",
+        "Human_legwear_LOD0",
+        "Human_outfit_LOD0",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7025720705551963,
+          "fineMm": 0.01709362677049867
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.765461551285531,
+          "fineMm": 0.03807384336059092
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 11.079173542808219,
+          "fineMm": 0.11079588227652831
+        }
+      ]
+    },
+    {
+      "id": "royalist",
+      "lod": 0,
+      "action": "climbDown",
+      "visibleMeshes": [
+        "Human_footwear_LOD0",
+        "Human_headwear_LOD0",
+        "Human_legwear_LOD0",
+        "Human_outfit_LOD0",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7025682358569827,
+          "fineMm": 0.01708987124580603
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.7654485456995346,
+          "fineMm": 0.038073714478091374
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 11.079174084360572,
+          "fineMm": 0.1107958877603705
+        }
+      ]
+    },
+    {
+      "id": "royalist",
+      "lod": 1,
+      "action": "climbUp",
+      "visibleMeshes": [
+        "Human_footwear_LOD1",
+        "Human_headwear_LOD1",
+        "Human_legwear_LOD1",
+        "Human_outfit_LOD1",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7008644833957363,
+          "fineMm": 0.0170763397643375
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.7720877964939317,
+          "fineMm": 0.038140620519760186
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 11.077272040172359,
+          "fineMm": 0.1107768473448788
+        }
+      ]
+    },
+    {
+      "id": "royalist",
+      "lod": 1,
+      "action": "climbDown",
+      "visibleMeshes": [
+        "Human_footwear_LOD1",
+        "Human_headwear_LOD1",
+        "Human_legwear_LOD1",
+        "Human_outfit_LOD1",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7008606445999668,
+          "fineMm": 0.01707258211430936
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.7720747336593003,
+          "fineMm": 0.038140491022962436
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 11.077272564597953,
+          "fineMm": 0.1107768526572091
+        }
+      ]
+    },
+    {
+      "id": "royalist",
+      "lod": 2,
+      "action": "climbUp",
+      "visibleMeshes": [
+        "Human_footwear_LOD2",
+        "Human_headwear_LOD2",
+        "Human_legwear_LOD2",
+        "Human_outfit_LOD2",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.6984257335939021,
+          "fineMm": 0.01705216240920434
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.8036281895906843,
+          "fineMm": 0.03845283867467531
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 11.108194459494381,
+          "fineMm": 0.11108613892652633
+        }
+      ]
+    },
+    {
+      "id": "royalist",
+      "lod": 2,
+      "action": "climbDown",
+      "visibleMeshes": [
+        "Human_footwear_LOD2",
+        "Human_headwear_LOD2",
+        "Human_legwear_LOD2",
+        "Human_outfit_LOD2",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.6984219036714223,
+          "fineMm": 0.017048413027286463
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.803615440792198,
+          "fineMm": 0.03845271251199355
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 11.108195071281967,
+          "fineMm": 0.11108614511328592
+        }
+      ]
+    },
+    {
+      "id": "worker",
+      "lod": 0,
+      "action": "climbUp",
+      "visibleMeshes": [
+        "Human_footwear_LOD0",
+        "Human_legwear_LOD0",
+        "Human_outfit_LOD0",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7025720705551963,
+          "fineMm": 0.01709362677049867
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.765461551285531,
+          "fineMm": 0.03807384336059092
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 11.079173542808219,
+          "fineMm": 0.11079588227652831
+        }
+      ]
+    },
+    {
+      "id": "worker",
+      "lod": 0,
+      "action": "climbDown",
+      "visibleMeshes": [
+        "Human_footwear_LOD0",
+        "Human_legwear_LOD0",
+        "Human_outfit_LOD0",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7025682358569827,
+          "fineMm": 0.01708987124580603
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.7654485456995346,
+          "fineMm": 0.038073714478091374
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 11.079174084360572,
+          "fineMm": 0.1107958877603705
+        }
+      ]
+    },
+    {
+      "id": "worker",
+      "lod": 1,
+      "action": "climbUp",
+      "visibleMeshes": [
+        "Human_footwear_LOD1",
+        "Human_legwear_LOD1",
+        "Human_outfit_LOD1",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7008644833957363,
+          "fineMm": 0.0170763397643375
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.7720877964939317,
+          "fineMm": 0.038140620519760186
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 11.077272040172359,
+          "fineMm": 0.1107768473448788
+        }
+      ]
+    },
+    {
+      "id": "worker",
+      "lod": 1,
+      "action": "climbDown",
+      "visibleMeshes": [
+        "Human_footwear_LOD1",
+        "Human_legwear_LOD1",
+        "Human_outfit_LOD1",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7008606445999668,
+          "fineMm": 0.01707258211430936
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.7720747336593003,
+          "fineMm": 0.038140491022962436
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 11.077272564597953,
+          "fineMm": 0.1107768526572091
+        }
+      ]
+    },
+    {
+      "id": "worker",
+      "lod": 2,
+      "action": "climbUp",
+      "visibleMeshes": [
+        "Human_footwear_LOD2",
+        "Human_legwear_LOD2",
+        "Human_outfit_LOD2",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.6984257335939021,
+          "fineMm": 0.01705216240920434
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.8036281895906843,
+          "fineMm": 0.03845283867467531
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 11.108194459494381,
+          "fineMm": 0.11108613892652633
+        }
+      ]
+    },
+    {
+      "id": "worker",
+      "lod": 2,
+      "action": "climbDown",
+      "visibleMeshes": [
+        "Human_footwear_LOD2",
+        "Human_legwear_LOD2",
+        "Human_outfit_LOD2",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.6984219036714223,
+          "fineMm": 0.017048413027286463
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.803615440792198,
+          "fineMm": 0.03845271251199355
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 11.108195071281967,
+          "fineMm": 0.11108614511328592
+        }
+      ]
+    },
+    {
+      "id": "surgeon",
+      "lod": 0,
+      "action": "climbUp",
+      "visibleMeshes": [
+        "Human_footwear_LOD0",
+        "Human_legwear_LOD0",
+        "Human_outfit_LOD0",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7025720705551963,
+          "fineMm": 0.01709362677049867
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.765461551285531,
+          "fineMm": 0.03807384336059092
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 11.079173542808219,
+          "fineMm": 0.11079588227652831
+        }
+      ]
+    },
+    {
+      "id": "surgeon",
+      "lod": 0,
+      "action": "climbDown",
+      "visibleMeshes": [
+        "Human_footwear_LOD0",
+        "Human_legwear_LOD0",
+        "Human_outfit_LOD0",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7025682358569827,
+          "fineMm": 0.01708987124580603
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.7654485456995346,
+          "fineMm": 0.038073714478091374
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 11.079174084360572,
+          "fineMm": 0.1107958877603705
+        }
+      ]
+    },
+    {
+      "id": "surgeon",
+      "lod": 1,
+      "action": "climbUp",
+      "visibleMeshes": [
+        "Human_footwear_LOD1",
+        "Human_legwear_LOD1",
+        "Human_outfit_LOD1",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7008644833957363,
+          "fineMm": 0.0170763397643375
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.7720877964939317,
+          "fineMm": 0.038140620519760186
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 11.077272040172359,
+          "fineMm": 0.1107768473448788
+        }
+      ]
+    },
+    {
+      "id": "surgeon",
+      "lod": 1,
+      "action": "climbDown",
+      "visibleMeshes": [
+        "Human_footwear_LOD1",
+        "Human_legwear_LOD1",
+        "Human_outfit_LOD1",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7008606445999668,
+          "fineMm": 0.01707258211430936
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.7720747336593003,
+          "fineMm": 0.038140491022962436
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 11.077272564597953,
+          "fineMm": 0.1107768526572091
+        }
+      ]
+    },
+    {
+      "id": "surgeon",
+      "lod": 2,
+      "action": "climbUp",
+      "visibleMeshes": [
+        "Human_footwear_LOD2",
+        "Human_legwear_LOD2",
+        "Human_outfit_LOD2",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.6984257335939021,
+          "fineMm": 0.01705216240920434
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.8036281895906843,
+          "fineMm": 0.03845283867467531
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 11.108194459494381,
+          "fineMm": 0.11108613892652633
+        }
+      ]
+    },
+    {
+      "id": "surgeon",
+      "lod": 2,
+      "action": "climbDown",
+      "visibleMeshes": [
+        "Human_footwear_LOD2",
+        "Human_legwear_LOD2",
+        "Human_outfit_LOD2",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.6984219036714223,
+          "fineMm": 0.017048413027286463
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.803615440792198,
+          "fineMm": 0.03845271251199355
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 11.108195071281967,
+          "fineMm": 0.11108614511328592
+        }
+      ]
+    },
+    {
+      "id": "gaucho",
+      "lod": 0,
+      "action": "climbUp",
+      "visibleMeshes": [
+        "Human_footwear_LOD0",
+        "Human_headwear_LOD0",
+        "Human_legwear_LOD0",
+        "Human_outfit_LOD0",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7025720705551963,
+          "fineMm": 0.01709362677049867
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.765461551285531,
+          "fineMm": 0.03807384336059092
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 11.079173542808219,
+          "fineMm": 0.11079588227652831
+        }
+      ]
+    },
+    {
+      "id": "gaucho",
+      "lod": 0,
+      "action": "climbDown",
+      "visibleMeshes": [
+        "Human_footwear_LOD0",
+        "Human_headwear_LOD0",
+        "Human_legwear_LOD0",
+        "Human_outfit_LOD0",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7025682358569827,
+          "fineMm": 0.01708987124580603
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.7654485456995346,
+          "fineMm": 0.038073714478091374
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 11.079174084360572,
+          "fineMm": 0.1107958877603705
+        }
+      ]
+    },
+    {
+      "id": "gaucho",
+      "lod": 1,
+      "action": "climbUp",
+      "visibleMeshes": [
+        "Human_footwear_LOD1",
+        "Human_headwear_LOD1",
+        "Human_legwear_LOD1",
+        "Human_outfit_LOD1",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7008644833957363,
+          "fineMm": 0.0170763397643375
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.7720877964939317,
+          "fineMm": 0.038140620519760186
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 11.077272040172359,
+          "fineMm": 0.1107768473448788
+        }
+      ]
+    },
+    {
+      "id": "gaucho",
+      "lod": 1,
+      "action": "climbDown",
+      "visibleMeshes": [
+        "Human_footwear_LOD1",
+        "Human_headwear_LOD1",
+        "Human_legwear_LOD1",
+        "Human_outfit_LOD1",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7008606445999668,
+          "fineMm": 0.01707258211430936
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.7720747336593003,
+          "fineMm": 0.038140491022962436
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 11.077272564597953,
+          "fineMm": 0.1107768526572091
+        }
+      ]
+    },
+    {
+      "id": "gaucho",
+      "lod": 2,
+      "action": "climbUp",
+      "visibleMeshes": [
+        "Human_footwear_LOD2",
+        "Human_headwear_LOD2",
+        "Human_legwear_LOD2",
+        "Human_outfit_LOD2",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.6984257335939021,
+          "fineMm": 0.01705216240920434
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.8036281895906843,
+          "fineMm": 0.03845283867467531
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 11.108194459494381,
+          "fineMm": 0.11108613892652633
+        }
+      ]
+    },
+    {
+      "id": "gaucho",
+      "lod": 2,
+      "action": "climbDown",
+      "visibleMeshes": [
+        "Human_footwear_LOD2",
+        "Human_headwear_LOD2",
+        "Human_legwear_LOD2",
+        "Human_outfit_LOD2",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.6984219036714223,
+          "fineMm": 0.017048413027286463
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.803615440792198,
+          "fineMm": 0.03845271251199355
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 11.108195071281967,
+          "fineMm": 0.11108614511328592
+        }
+      ]
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbUp",
+      "item": "1800",
+      "visibleMeshes": [
+        "Human_footwear_LOD0",
+        "Human_outfit_LOD0",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1",
+        "item_1800_Rifle_Barrel",
+        "item_1800_Rifle_Barrel_Band",
+        "item_1800_Rifle_Walnut_Stock",
+        "garment_hat",
+        "garment_poncho",
+        "garment_trousers"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7025720705551963,
+          "fineMm": 0.01709362677049867
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.765461551285531,
+          "fineMm": 0.03807384336059092
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 11.079173542808219,
+          "fineMm": 0.11079588227652831
+        }
+      ]
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbUp",
+      "item": "1805",
+      "visibleMeshes": [
+        "Human_footwear_LOD0",
+        "Human_outfit_LOD0",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1",
+        "item_1805_Pistol_Barrel",
+        "item_1805_Pistol_Butt_Cap",
+        "item_1805_Pistol_Stock",
+        "garment_hat",
+        "garment_poncho",
+        "garment_trousers"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7025720705551963,
+          "fineMm": 0.01709362677049867
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.765461551285531,
+          "fineMm": 0.03807384336059092
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 11.079173542808219,
+          "fineMm": 0.11079588227652831
+        }
+      ]
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbUp",
+      "item": "1809",
+      "visibleMeshes": [
+        "Human_footwear_LOD0",
+        "Human_outfit_LOD0",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1",
+        "item_1809_Sabre_Crossguard",
+        "item_1809_Sabre_Curved_Blade",
+        "item_1809_Sabre_Leather_Grip",
+        "garment_hat",
+        "garment_poncho",
+        "garment_trousers"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7025720705551963,
+          "fineMm": 0.01709362677049867
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.765461551285531,
+          "fineMm": 0.03807384336059092
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 11.079173542808219,
+          "fineMm": 0.11079588227652831
+        }
+      ]
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbUp",
+      "item": "1812",
+      "visibleMeshes": [
+        "Human_footwear_LOD0",
+        "Human_outfit_LOD0",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1",
+        "Lance_Head",
+        "Lance_Shaft",
+        "garment_hat",
+        "garment_poncho",
+        "garment_trousers"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7025720705551963,
+          "fineMm": 0.01709362677049867
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.765461551285531,
+          "fineMm": 0.03807384336059092
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 11.079173542808219,
+          "fineMm": 0.11079588227652831
+        }
+      ]
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbUp",
+      "item": "medkits",
+      "visibleMeshes": [
+        "Human_footwear_LOD0",
+        "Human_outfit_LOD0",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1",
+        "Package_Tie001",
+        "Wrapped_medkits",
+        "garment_hat",
+        "garment_poncho",
+        "garment_trousers"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7025720705551963,
+          "fineMm": 0.01709362677049867
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.765461551285531,
+          "fineMm": 0.03807384336059092
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 11.079173542808219,
+          "fineMm": 0.11079588227652831
+        }
+      ]
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbDown",
+      "item": "1800",
+      "visibleMeshes": [
+        "Human_footwear_LOD0",
+        "Human_outfit_LOD0",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1",
+        "item_1800_Rifle_Barrel",
+        "item_1800_Rifle_Barrel_Band",
+        "item_1800_Rifle_Walnut_Stock",
+        "garment_hat",
+        "garment_poncho",
+        "garment_trousers"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7025682358569827,
+          "fineMm": 0.01708987124580603
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.7654485456995346,
+          "fineMm": 0.038073714478091374
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 11.079174084360572,
+          "fineMm": 0.1107958877603705
+        }
+      ]
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbDown",
+      "item": "1805",
+      "visibleMeshes": [
+        "Human_footwear_LOD0",
+        "Human_outfit_LOD0",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1",
+        "item_1805_Pistol_Barrel",
+        "item_1805_Pistol_Butt_Cap",
+        "item_1805_Pistol_Stock",
+        "garment_hat",
+        "garment_poncho",
+        "garment_trousers"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7025682358569827,
+          "fineMm": 0.01708987124580603
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.7654485456995346,
+          "fineMm": 0.038073714478091374
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 11.079174084360572,
+          "fineMm": 0.1107958877603705
+        }
+      ]
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbDown",
+      "item": "1809",
+      "visibleMeshes": [
+        "Human_footwear_LOD0",
+        "Human_outfit_LOD0",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1",
+        "item_1809_Sabre_Crossguard",
+        "item_1809_Sabre_Curved_Blade",
+        "item_1809_Sabre_Leather_Grip",
+        "garment_hat",
+        "garment_poncho",
+        "garment_trousers"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7025682358569827,
+          "fineMm": 0.01708987124580603
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.7654485456995346,
+          "fineMm": 0.038073714478091374
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 11.079174084360572,
+          "fineMm": 0.1107958877603705
+        }
+      ]
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbDown",
+      "item": "1812",
+      "visibleMeshes": [
+        "Human_footwear_LOD0",
+        "Human_outfit_LOD0",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1",
+        "Lance_Head",
+        "Lance_Shaft",
+        "garment_hat",
+        "garment_poncho",
+        "garment_trousers"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7025682358569827,
+          "fineMm": 0.01708987124580603
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.7654485456995346,
+          "fineMm": 0.038073714478091374
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 11.079174084360572,
+          "fineMm": 0.1107958877603705
+        }
+      ]
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbDown",
+      "item": "medkits",
+      "visibleMeshes": [
+        "Human_footwear_LOD0",
+        "Human_outfit_LOD0",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1",
+        "Package_Tie001",
+        "Wrapped_medkits",
+        "garment_hat",
+        "garment_poncho",
+        "garment_trousers"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7025682358569827,
+          "fineMm": 0.01708987124580603
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.7654485456995346,
+          "fineMm": 0.038073714478091374
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 11.079174084360572,
+          "fineMm": 0.1107958877603705
+        }
+      ]
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbUp",
+      "item": "1800",
+      "visibleMeshes": [
+        "Human_footwear_LOD1",
+        "Human_outfit_LOD1",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1",
+        "item_1800_Rifle_Barrel",
+        "item_1800_Rifle_Barrel_Band",
+        "item_1800_Rifle_Walnut_Stock",
+        "garment_hat",
+        "garment_poncho",
+        "garment_trousers"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7008644833957363,
+          "fineMm": 0.0170763397643375
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.7720877964939317,
+          "fineMm": 0.038140620519760186
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 11.077272040172359,
+          "fineMm": 0.1107768473448788
+        }
+      ]
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbUp",
+      "item": "1805",
+      "visibleMeshes": [
+        "Human_footwear_LOD1",
+        "Human_outfit_LOD1",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1",
+        "item_1805_Pistol_Barrel",
+        "item_1805_Pistol_Butt_Cap",
+        "item_1805_Pistol_Stock",
+        "garment_hat",
+        "garment_poncho",
+        "garment_trousers"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7008644833957363,
+          "fineMm": 0.0170763397643375
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.7720877964939317,
+          "fineMm": 0.038140620519760186
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 11.077272040172359,
+          "fineMm": 0.1107768473448788
+        }
+      ]
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbUp",
+      "item": "1809",
+      "visibleMeshes": [
+        "Human_footwear_LOD1",
+        "Human_outfit_LOD1",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1",
+        "item_1809_Sabre_Crossguard",
+        "item_1809_Sabre_Curved_Blade",
+        "item_1809_Sabre_Leather_Grip",
+        "garment_hat",
+        "garment_poncho",
+        "garment_trousers"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7008644833957363,
+          "fineMm": 0.0170763397643375
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.7720877964939317,
+          "fineMm": 0.038140620519760186
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 11.077272040172359,
+          "fineMm": 0.1107768473448788
+        }
+      ]
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbUp",
+      "item": "1812",
+      "visibleMeshes": [
+        "Human_footwear_LOD1",
+        "Human_outfit_LOD1",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1",
+        "Lance_Head",
+        "Lance_Shaft",
+        "garment_hat",
+        "garment_poncho",
+        "garment_trousers"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7008644833957363,
+          "fineMm": 0.0170763397643375
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.7720877964939317,
+          "fineMm": 0.038140620519760186
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 11.077272040172359,
+          "fineMm": 0.1107768473448788
+        }
+      ]
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbUp",
+      "item": "medkits",
+      "visibleMeshes": [
+        "Human_footwear_LOD1",
+        "Human_outfit_LOD1",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1",
+        "Package_Tie001",
+        "Wrapped_medkits",
+        "garment_hat",
+        "garment_poncho",
+        "garment_trousers"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7008644833957363,
+          "fineMm": 0.0170763397643375
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.7720877964939317,
+          "fineMm": 0.038140620519760186
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 11.077272040172359,
+          "fineMm": 0.1107768473448788
+        }
+      ]
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbDown",
+      "item": "1800",
+      "visibleMeshes": [
+        "Human_footwear_LOD1",
+        "Human_outfit_LOD1",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1",
+        "item_1800_Rifle_Barrel",
+        "item_1800_Rifle_Barrel_Band",
+        "item_1800_Rifle_Walnut_Stock",
+        "garment_hat",
+        "garment_poncho",
+        "garment_trousers"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7008606445999668,
+          "fineMm": 0.01707258211430936
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.7720747336593003,
+          "fineMm": 0.038140491022962436
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 11.077272564597953,
+          "fineMm": 0.1107768526572091
+        }
+      ]
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbDown",
+      "item": "1805",
+      "visibleMeshes": [
+        "Human_footwear_LOD1",
+        "Human_outfit_LOD1",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1",
+        "item_1805_Pistol_Barrel",
+        "item_1805_Pistol_Butt_Cap",
+        "item_1805_Pistol_Stock",
+        "garment_hat",
+        "garment_poncho",
+        "garment_trousers"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7008606445999668,
+          "fineMm": 0.01707258211430936
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.7720747336593003,
+          "fineMm": 0.038140491022962436
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 11.077272564597953,
+          "fineMm": 0.1107768526572091
+        }
+      ]
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbDown",
+      "item": "1809",
+      "visibleMeshes": [
+        "Human_footwear_LOD1",
+        "Human_outfit_LOD1",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1",
+        "item_1809_Sabre_Crossguard",
+        "item_1809_Sabre_Curved_Blade",
+        "item_1809_Sabre_Leather_Grip",
+        "garment_hat",
+        "garment_poncho",
+        "garment_trousers"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7008606445999668,
+          "fineMm": 0.01707258211430936
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.7720747336593003,
+          "fineMm": 0.038140491022962436
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 11.077272564597953,
+          "fineMm": 0.1107768526572091
+        }
+      ]
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbDown",
+      "item": "1812",
+      "visibleMeshes": [
+        "Human_footwear_LOD1",
+        "Human_outfit_LOD1",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1",
+        "Lance_Head",
+        "Lance_Shaft",
+        "garment_hat",
+        "garment_poncho",
+        "garment_trousers"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7008606445999668,
+          "fineMm": 0.01707258211430936
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.7720747336593003,
+          "fineMm": 0.038140491022962436
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 11.077272564597953,
+          "fineMm": 0.1107768526572091
+        }
+      ]
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbDown",
+      "item": "medkits",
+      "visibleMeshes": [
+        "Human_footwear_LOD1",
+        "Human_outfit_LOD1",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1",
+        "Package_Tie001",
+        "Wrapped_medkits",
+        "garment_hat",
+        "garment_poncho",
+        "garment_trousers"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7008606445999668,
+          "fineMm": 0.01707258211430936
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.7720747336593003,
+          "fineMm": 0.038140491022962436
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 11.077272564597953,
+          "fineMm": 0.1107768526572091
+        }
+      ]
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbUp",
+      "item": "1800",
+      "visibleMeshes": [
+        "Human_footwear_LOD2",
+        "Human_outfit_LOD2",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1",
+        "item_1800_Rifle_Barrel",
+        "item_1800_Rifle_Barrel_Band",
+        "item_1800_Rifle_Walnut_Stock",
+        "garment_hat",
+        "garment_poncho",
+        "garment_trousers"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7008644833957363,
+          "fineMm": 0.0170763397643375
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.8036281895906843,
+          "fineMm": 0.03845283867467531
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 11.108194459494381,
+          "fineMm": 0.11108613892652633
+        }
+      ]
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbUp",
+      "item": "1805",
+      "visibleMeshes": [
+        "Human_footwear_LOD2",
+        "Human_outfit_LOD2",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1",
+        "item_1805_Pistol_Barrel",
+        "item_1805_Pistol_Butt_Cap",
+        "item_1805_Pistol_Stock",
+        "garment_hat",
+        "garment_poncho",
+        "garment_trousers"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7008644833957363,
+          "fineMm": 0.0170763397643375
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.8036281895906843,
+          "fineMm": 0.03845283867467531
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 11.108194459494381,
+          "fineMm": 0.11108613892652633
+        }
+      ]
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbUp",
+      "item": "1809",
+      "visibleMeshes": [
+        "Human_footwear_LOD2",
+        "Human_outfit_LOD2",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1",
+        "item_1809_Sabre_Crossguard",
+        "item_1809_Sabre_Curved_Blade",
+        "item_1809_Sabre_Leather_Grip",
+        "garment_hat",
+        "garment_poncho",
+        "garment_trousers"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7008644833957363,
+          "fineMm": 0.0170763397643375
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.8036281895906843,
+          "fineMm": 0.03845283867467531
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 11.108194459494381,
+          "fineMm": 0.11108613892652633
+        }
+      ]
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbUp",
+      "item": "1812",
+      "visibleMeshes": [
+        "Human_footwear_LOD2",
+        "Human_outfit_LOD2",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1",
+        "Lance_Head",
+        "Lance_Shaft",
+        "garment_hat",
+        "garment_poncho",
+        "garment_trousers"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7008644833957363,
+          "fineMm": 0.0170763397643375
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.8036281895906843,
+          "fineMm": 0.03845283867467531
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 11.108194459494381,
+          "fineMm": 0.11108613892652633
+        }
+      ]
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbUp",
+      "item": "medkits",
+      "visibleMeshes": [
+        "Human_footwear_LOD2",
+        "Human_outfit_LOD2",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1",
+        "Package_Tie001",
+        "Wrapped_medkits",
+        "garment_hat",
+        "garment_poncho",
+        "garment_trousers"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7008644833957363,
+          "fineMm": 0.0170763397643375
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.8036281895906843,
+          "fineMm": 0.03845283867467531
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 11.108194459494381,
+          "fineMm": 0.11108613892652633
+        }
+      ]
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbDown",
+      "item": "1800",
+      "visibleMeshes": [
+        "Human_footwear_LOD2",
+        "Human_outfit_LOD2",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1",
+        "item_1800_Rifle_Barrel",
+        "item_1800_Rifle_Barrel_Band",
+        "item_1800_Rifle_Walnut_Stock",
+        "garment_hat",
+        "garment_poncho",
+        "garment_trousers"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7008606445999668,
+          "fineMm": 0.01707258211430936
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.803615440792198,
+          "fineMm": 0.03845271251199355
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 11.108195071281967,
+          "fineMm": 0.11108614511328592
+        }
+      ]
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbDown",
+      "item": "1805",
+      "visibleMeshes": [
+        "Human_footwear_LOD2",
+        "Human_outfit_LOD2",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1",
+        "item_1805_Pistol_Barrel",
+        "item_1805_Pistol_Butt_Cap",
+        "item_1805_Pistol_Stock",
+        "garment_hat",
+        "garment_poncho",
+        "garment_trousers"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7008606445999668,
+          "fineMm": 0.01707258211430936
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.803615440792198,
+          "fineMm": 0.03845271251199355
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 11.108195071281967,
+          "fineMm": 0.11108614511328592
+        }
+      ]
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbDown",
+      "item": "1809",
+      "visibleMeshes": [
+        "Human_footwear_LOD2",
+        "Human_outfit_LOD2",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1",
+        "item_1809_Sabre_Crossguard",
+        "item_1809_Sabre_Curved_Blade",
+        "item_1809_Sabre_Leather_Grip",
+        "garment_hat",
+        "garment_poncho",
+        "garment_trousers"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7008606445999668,
+          "fineMm": 0.01707258211430936
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.803615440792198,
+          "fineMm": 0.03845271251199355
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 11.108195071281967,
+          "fineMm": 0.11108614511328592
+        }
+      ]
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbDown",
+      "item": "1812",
+      "visibleMeshes": [
+        "Human_footwear_LOD2",
+        "Human_outfit_LOD2",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1",
+        "Lance_Head",
+        "Lance_Shaft",
+        "garment_hat",
+        "garment_poncho",
+        "garment_trousers"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7008606445999668,
+          "fineMm": 0.01707258211430936
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.803615440792198,
+          "fineMm": 0.03845271251199355
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 11.108195071281967,
+          "fineMm": 0.11108614511328592
+        }
+      ]
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbDown",
+      "item": "medkits",
+      "visibleMeshes": [
+        "Human_footwear_LOD2",
+        "Human_outfit_LOD2",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1",
+        "Package_Tie001",
+        "Wrapped_medkits",
+        "garment_hat",
+        "garment_poncho",
+        "garment_trousers"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7008606445999668,
+          "fineMm": 0.01707258211430936
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.803615440792198,
+          "fineMm": 0.03845271251199355
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 11.108195071281967,
+          "fineMm": 0.11108614511328592
+        }
+      ]
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbUp",
+      "item": "1800",
+      "visibleMeshes": [
+        "Human_footwear_LOD0",
+        "Human_outfit_LOD0",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1",
+        "item_1800_Rifle_Barrel",
+        "item_1800_Rifle_Barrel_Band",
+        "item_1800_Rifle_Walnut_Stock",
+        "garment_hat",
+        "garment_poncho",
+        "garment_trousers"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7987423931809443,
+          "fineMm": 0.018044141585666848
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.4229087178878697,
+          "fineMm": 0.034652111966324256
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 10.750146207252465,
+          "fineMm": 0.1075052992316188
+        }
+      ]
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbUp",
+      "item": "1805",
+      "visibleMeshes": [
+        "Human_footwear_LOD0",
+        "Human_outfit_LOD0",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1",
+        "item_1805_Pistol_Barrel",
+        "item_1805_Pistol_Butt_Cap",
+        "item_1805_Pistol_Stock",
+        "garment_hat",
+        "garment_poncho",
+        "garment_trousers"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7987423931809443,
+          "fineMm": 0.018044141585666848
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.4229087178878697,
+          "fineMm": 0.034652111966324256
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 10.750146207252465,
+          "fineMm": 0.1075052992316188
+        }
+      ]
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbUp",
+      "item": "1809",
+      "visibleMeshes": [
+        "Human_footwear_LOD0",
+        "Human_outfit_LOD0",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1",
+        "item_1809_Sabre_Crossguard",
+        "item_1809_Sabre_Curved_Blade",
+        "item_1809_Sabre_Leather_Grip",
+        "garment_hat",
+        "garment_poncho",
+        "garment_trousers"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7987423931809443,
+          "fineMm": 0.018044141585666848
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.4229087178878697,
+          "fineMm": 0.034652111966324256
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 10.750146207252465,
+          "fineMm": 0.1075052992316188
+        }
+      ]
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbUp",
+      "item": "1812",
+      "visibleMeshes": [
+        "Human_footwear_LOD0",
+        "Human_outfit_LOD0",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1",
+        "Lance_Head",
+        "Lance_Shaft",
+        "garment_hat",
+        "garment_poncho",
+        "garment_trousers"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7987423931809443,
+          "fineMm": 0.018044141585666848
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.4229087178878697,
+          "fineMm": 0.034652111966324256
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 10.750146207252465,
+          "fineMm": 0.1075052992316188
+        }
+      ]
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbUp",
+      "item": "medkits",
+      "visibleMeshes": [
+        "Human_footwear_LOD0",
+        "Human_outfit_LOD0",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1",
+        "Package_Tie001",
+        "Wrapped_medkits",
+        "garment_hat",
+        "garment_poncho",
+        "garment_trousers"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7987423931809443,
+          "fineMm": 0.018044141585666848
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.4229087178878697,
+          "fineMm": 0.034652111966324256
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 10.750146207252465,
+          "fineMm": 0.1075052992316188
+        }
+      ]
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbDown",
+      "item": "1800",
+      "visibleMeshes": [
+        "Human_footwear_LOD0",
+        "Human_outfit_LOD0",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1",
+        "item_1800_Rifle_Barrel",
+        "item_1800_Rifle_Barrel_Band",
+        "item_1800_Rifle_Walnut_Stock",
+        "garment_hat",
+        "garment_poncho",
+        "garment_trousers"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7987383423553573,
+          "fineMm": 0.018040150789054583
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.4228971763223335,
+          "fineMm": 0.03465199751839343
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 10.750146010260353,
+          "fineMm": 0.10750529731115424
+        }
+      ]
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbDown",
+      "item": "1805",
+      "visibleMeshes": [
+        "Human_footwear_LOD0",
+        "Human_outfit_LOD0",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1",
+        "item_1805_Pistol_Barrel",
+        "item_1805_Pistol_Butt_Cap",
+        "item_1805_Pistol_Stock",
+        "garment_hat",
+        "garment_poncho",
+        "garment_trousers"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7987383423553573,
+          "fineMm": 0.018040150789054583
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.4228971763223335,
+          "fineMm": 0.03465199751839343
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 10.750146010260353,
+          "fineMm": 0.10750529731115424
+        }
+      ]
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbDown",
+      "item": "1809",
+      "visibleMeshes": [
+        "Human_footwear_LOD0",
+        "Human_outfit_LOD0",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1",
+        "item_1809_Sabre_Crossguard",
+        "item_1809_Sabre_Curved_Blade",
+        "item_1809_Sabre_Leather_Grip",
+        "garment_hat",
+        "garment_poncho",
+        "garment_trousers"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7987383423553573,
+          "fineMm": 0.018040150789054583
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.4228971763223335,
+          "fineMm": 0.03465199751839343
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 10.750146010260353,
+          "fineMm": 0.10750529731115424
+        }
+      ]
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbDown",
+      "item": "1812",
+      "visibleMeshes": [
+        "Human_footwear_LOD0",
+        "Human_outfit_LOD0",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1",
+        "Lance_Head",
+        "Lance_Shaft",
+        "garment_hat",
+        "garment_poncho",
+        "garment_trousers"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7987383423553573,
+          "fineMm": 0.018040150789054583
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.4228971763223335,
+          "fineMm": 0.03465199751839343
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 10.750146010260353,
+          "fineMm": 0.10750529731115424
+        }
+      ]
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbDown",
+      "item": "medkits",
+      "visibleMeshes": [
+        "Human_footwear_LOD0",
+        "Human_outfit_LOD0",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1",
+        "Package_Tie001",
+        "Wrapped_medkits",
+        "garment_hat",
+        "garment_poncho",
+        "garment_trousers"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7987383423553573,
+          "fineMm": 0.018040150789054583
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.4228971763223335,
+          "fineMm": 0.03465199751839343
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 10.750146010260353,
+          "fineMm": 0.10750529731115424
+        }
+      ]
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbUp",
+      "item": "1800",
+      "visibleMeshes": [
+        "Human_footwear_LOD1",
+        "Human_outfit_LOD1",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1",
+        "item_1800_Rifle_Barrel",
+        "item_1800_Rifle_Barrel_Band",
+        "item_1800_Rifle_Walnut_Stock",
+        "garment_hat",
+        "garment_poncho",
+        "garment_trousers"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7987423931809443,
+          "fineMm": 0.018044141585666848
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.447319324034913,
+          "fineMm": 0.034894926311928004
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 10.75065970800625,
+          "fineMm": 0.10751043285916179
+        }
+      ]
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbUp",
+      "item": "1805",
+      "visibleMeshes": [
+        "Human_footwear_LOD1",
+        "Human_outfit_LOD1",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1",
+        "item_1805_Pistol_Barrel",
+        "item_1805_Pistol_Butt_Cap",
+        "item_1805_Pistol_Stock",
+        "garment_hat",
+        "garment_poncho",
+        "garment_trousers"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7987423931809443,
+          "fineMm": 0.018044141585666848
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.447319324034913,
+          "fineMm": 0.034894926311928004
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 10.75065970800625,
+          "fineMm": 0.10751043285916179
+        }
+      ]
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbUp",
+      "item": "1809",
+      "visibleMeshes": [
+        "Human_footwear_LOD1",
+        "Human_outfit_LOD1",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1",
+        "item_1809_Sabre_Crossguard",
+        "item_1809_Sabre_Curved_Blade",
+        "item_1809_Sabre_Leather_Grip",
+        "garment_hat",
+        "garment_poncho",
+        "garment_trousers"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7987423931809443,
+          "fineMm": 0.018044141585666848
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.447319324034913,
+          "fineMm": 0.034894926311928004
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 10.75065970800625,
+          "fineMm": 0.10751043285916179
+        }
+      ]
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbUp",
+      "item": "1812",
+      "visibleMeshes": [
+        "Human_footwear_LOD1",
+        "Human_outfit_LOD1",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1",
+        "Lance_Head",
+        "Lance_Shaft",
+        "garment_hat",
+        "garment_poncho",
+        "garment_trousers"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7987423931809443,
+          "fineMm": 0.018044141585666848
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.447319324034913,
+          "fineMm": 0.034894926311928004
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 10.75065970800625,
+          "fineMm": 0.10751043285916179
+        }
+      ]
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbUp",
+      "item": "medkits",
+      "visibleMeshes": [
+        "Human_footwear_LOD1",
+        "Human_outfit_LOD1",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1",
+        "Package_Tie001",
+        "Wrapped_medkits",
+        "garment_hat",
+        "garment_poncho",
+        "garment_trousers"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7987423931809443,
+          "fineMm": 0.018044141585666848
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.447319324034913,
+          "fineMm": 0.034894926311928004
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 10.75065970800625,
+          "fineMm": 0.10751043285916179
+        }
+      ]
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbDown",
+      "item": "1800",
+      "visibleMeshes": [
+        "Human_footwear_LOD1",
+        "Human_outfit_LOD1",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1",
+        "item_1800_Rifle_Barrel",
+        "item_1800_Rifle_Barrel_Band",
+        "item_1800_Rifle_Walnut_Stock",
+        "garment_hat",
+        "garment_poncho",
+        "garment_trousers"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7987383423553573,
+          "fineMm": 0.018040150789054583
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.4473079030251053,
+          "fineMm": 0.03489481315216472
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 10.750659441657906,
+          "fineMm": 0.10751043024535716
+        }
+      ]
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbDown",
+      "item": "1805",
+      "visibleMeshes": [
+        "Human_footwear_LOD1",
+        "Human_outfit_LOD1",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1",
+        "item_1805_Pistol_Barrel",
+        "item_1805_Pistol_Butt_Cap",
+        "item_1805_Pistol_Stock",
+        "garment_hat",
+        "garment_poncho",
+        "garment_trousers"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7987383423553573,
+          "fineMm": 0.018040150789054583
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.4473079030251053,
+          "fineMm": 0.03489481315216472
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 10.750659441657906,
+          "fineMm": 0.10751043024535716
+        }
+      ]
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbDown",
+      "item": "1809",
+      "visibleMeshes": [
+        "Human_footwear_LOD1",
+        "Human_outfit_LOD1",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1",
+        "item_1809_Sabre_Crossguard",
+        "item_1809_Sabre_Curved_Blade",
+        "item_1809_Sabre_Leather_Grip",
+        "garment_hat",
+        "garment_poncho",
+        "garment_trousers"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7987383423553573,
+          "fineMm": 0.018040150789054583
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.4473079030251053,
+          "fineMm": 0.03489481315216472
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 10.750659441657906,
+          "fineMm": 0.10751043024535716
+        }
+      ]
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbDown",
+      "item": "1812",
+      "visibleMeshes": [
+        "Human_footwear_LOD1",
+        "Human_outfit_LOD1",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1",
+        "Lance_Head",
+        "Lance_Shaft",
+        "garment_hat",
+        "garment_poncho",
+        "garment_trousers"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7987383423553573,
+          "fineMm": 0.018040150789054583
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.4473079030251053,
+          "fineMm": 0.03489481315216472
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 10.750659441657906,
+          "fineMm": 0.10751043024535716
+        }
+      ]
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbDown",
+      "item": "medkits",
+      "visibleMeshes": [
+        "Human_footwear_LOD1",
+        "Human_outfit_LOD1",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1",
+        "Package_Tie001",
+        "Wrapped_medkits",
+        "garment_hat",
+        "garment_poncho",
+        "garment_trousers"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7987383423553573,
+          "fineMm": 0.018040150789054583
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.4473079030251053,
+          "fineMm": 0.03489481315216472
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 10.750659441657906,
+          "fineMm": 0.10751043024535716
+        }
+      ]
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbUp",
+      "item": "1800",
+      "visibleMeshes": [
+        "Human_footwear_LOD2",
+        "Human_outfit_LOD2",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1",
+        "item_1800_Rifle_Barrel",
+        "item_1800_Rifle_Barrel_Band",
+        "item_1800_Rifle_Walnut_Stock",
+        "garment_hat",
+        "garment_poncho",
+        "garment_trousers"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7973187245629896,
+          "fineMm": 0.01802989208225618
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.458800051899381,
+          "fineMm": 0.03500766208622149
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 10.774404872091898,
+          "fineMm": 0.10774790685154166
+        }
+      ]
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbUp",
+      "item": "1805",
+      "visibleMeshes": [
+        "Human_footwear_LOD2",
+        "Human_outfit_LOD2",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1",
+        "item_1805_Pistol_Barrel",
+        "item_1805_Pistol_Butt_Cap",
+        "item_1805_Pistol_Stock",
+        "garment_hat",
+        "garment_poncho",
+        "garment_trousers"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7973187245629896,
+          "fineMm": 0.01802989208225618
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.458800051899381,
+          "fineMm": 0.03500766208622149
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 10.774404872091898,
+          "fineMm": 0.10774790685154166
+        }
+      ]
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbUp",
+      "item": "1809",
+      "visibleMeshes": [
+        "Human_footwear_LOD2",
+        "Human_outfit_LOD2",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1",
+        "item_1809_Sabre_Crossguard",
+        "item_1809_Sabre_Curved_Blade",
+        "item_1809_Sabre_Leather_Grip",
+        "garment_hat",
+        "garment_poncho",
+        "garment_trousers"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7973187245629896,
+          "fineMm": 0.01802989208225618
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.458800051899381,
+          "fineMm": 0.03500766208622149
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 10.774404872091898,
+          "fineMm": 0.10774790685154166
+        }
+      ]
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbUp",
+      "item": "1812",
+      "visibleMeshes": [
+        "Human_footwear_LOD2",
+        "Human_outfit_LOD2",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1",
+        "Lance_Head",
+        "Lance_Shaft",
+        "garment_hat",
+        "garment_poncho",
+        "garment_trousers"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7973187245629896,
+          "fineMm": 0.01802989208225618
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.458800051899381,
+          "fineMm": 0.03500766208622149
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 10.774404872091898,
+          "fineMm": 0.10774790685154166
+        }
+      ]
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbUp",
+      "item": "medkits",
+      "visibleMeshes": [
+        "Human_footwear_LOD2",
+        "Human_outfit_LOD2",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1",
+        "Package_Tie001",
+        "Wrapped_medkits",
+        "garment_hat",
+        "garment_poncho",
+        "garment_trousers"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7973187245629896,
+          "fineMm": 0.01802989208225618
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.458800051899381,
+          "fineMm": 0.03500766208622149
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 10.774404872091898,
+          "fineMm": 0.10774790685154166
+        }
+      ]
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbDown",
+      "item": "1800",
+      "visibleMeshes": [
+        "Human_footwear_LOD2",
+        "Human_outfit_LOD2",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1",
+        "item_1800_Rifle_Barrel",
+        "item_1800_Rifle_Barrel_Band",
+        "item_1800_Rifle_Walnut_Stock",
+        "garment_hat",
+        "garment_poncho",
+        "garment_trousers"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7973146775423878,
+          "fineMm": 0.01802590505519418
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.4587888424461,
+          "fineMm": 0.03500755118033408
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 10.774404659784668,
+          "fineMm": 0.10774790477865596
+        }
+      ]
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbDown",
+      "item": "1805",
+      "visibleMeshes": [
+        "Human_footwear_LOD2",
+        "Human_outfit_LOD2",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1",
+        "item_1805_Pistol_Barrel",
+        "item_1805_Pistol_Butt_Cap",
+        "item_1805_Pistol_Stock",
+        "garment_hat",
+        "garment_poncho",
+        "garment_trousers"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7973146775423878,
+          "fineMm": 0.01802590505519418
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.4587888424461,
+          "fineMm": 0.03500755118033408
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 10.774404659784668,
+          "fineMm": 0.10774790477865596
+        }
+      ]
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbDown",
+      "item": "1809",
+      "visibleMeshes": [
+        "Human_footwear_LOD2",
+        "Human_outfit_LOD2",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1",
+        "item_1809_Sabre_Crossguard",
+        "item_1809_Sabre_Curved_Blade",
+        "item_1809_Sabre_Leather_Grip",
+        "garment_hat",
+        "garment_poncho",
+        "garment_trousers"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7973146775423878,
+          "fineMm": 0.01802590505519418
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.4587888424461,
+          "fineMm": 0.03500755118033408
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 10.774404659784668,
+          "fineMm": 0.10774790477865596
+        }
+      ]
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbDown",
+      "item": "1812",
+      "visibleMeshes": [
+        "Human_footwear_LOD2",
+        "Human_outfit_LOD2",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1",
+        "Lance_Head",
+        "Lance_Shaft",
+        "garment_hat",
+        "garment_poncho",
+        "garment_trousers"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7973146775423878,
+          "fineMm": 0.01802590505519418
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.4587888424461,
+          "fineMm": 0.03500755118033408
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 10.774404659784668,
+          "fineMm": 0.10774790477865596
+        }
+      ]
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbDown",
+      "item": "medkits",
+      "visibleMeshes": [
+        "Human_footwear_LOD2",
+        "Human_outfit_LOD2",
+        "Exposed_Human_Skin",
+        "Exposed_Human_Skin_1",
+        "Package_Tie001",
+        "Wrapped_medkits",
+        "garment_hat",
+        "garment_poncho",
+        "garment_trousers"
+      ],
+      "edges": [
+        {
+          "center": 0.76,
+          "coarseMm": 1.7973146775423878,
+          "fineMm": 0.01802590505519418
+        },
+        {
+          "center": 0.82,
+          "coarseMm": 3.4587888424461,
+          "fineMm": 0.03500755118033408
+        },
+        {
+          "center": 0.85,
+          "coarseMm": 10.774404659784668,
+          "fineMm": 0.10774790477865596
+        }
+      ]
+    }
+  ],
+  "scope": "Complete published appearance/owned-item surfaces; continuity and later-pose regression. Natural pace and cloth collision are separate open audits."
+}

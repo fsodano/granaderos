@@ -1,0 +1,93 @@
+{
+  "url": "http://127.0.0.1:3190/renderer-sandbox",
+  "errors": [],
+  "cases": [
+    {
+      "id": "tall-cardinal",
+      "direction": "up",
+      "file": "tall-cardinal-up-crest-0.png",
+      "upFractionFromOrdinaryOverlay": 0.7596991070825607,
+      "timestamp": 1791452047.440647
+    },
+    {
+      "id": "tall-cardinal",
+      "direction": "up",
+      "file": "tall-cardinal-up-crest-1.png",
+      "upFractionFromOrdinaryOverlay": 0.7596991070825607,
+      "timestamp": 1791452047.44973
+    },
+    {
+      "id": "tall-cardinal",
+      "direction": "up",
+      "file": "tall-cardinal-up-crest-2.png",
+      "upFractionFromOrdinaryOverlay": 0.7616374999936671,
+      "timestamp": 1791452047.459873
+    },
+    {
+      "id": "tall-cardinal",
+      "direction": "up",
+      "file": "tall-cardinal-up-crest-3.png",
+      "upFractionFromOrdinaryOverlay": 0.7577723214495927,
+      "timestamp": 1791452047.427043
+    },
+    {
+      "id": "tall-cardinal",
+      "direction": "up",
+      "final": "1. Escalador de la casa. Salud 100, 20 puntos de acción, energía 88, moral 80. Ve 0 enemigos. Mano principal: vacía. Segunda mano: vacía. Botón derecho: equipo del combatiente",
+      "actual": {
+        "x": 444,
+        "y": 146.54666666666668
+      },
+      "expected": {
+        "x": 8,
+        "y": 10,
+        "tacticalLevel": 1,
+        "elevation": 6.8
+      }
+    },
+    {
+      "id": "tall-cardinal",
+      "direction": "down",
+      "file": "tall-cardinal-down-crest-0.png",
+      "upFractionFromOrdinaryOverlay": 0.7594651785586032,
+      "timestamp": 1791452051.874652
+    },
+    {
+      "id": "tall-cardinal",
+      "direction": "down",
+      "file": "tall-cardinal-down-crest-1.png",
+      "upFractionFromOrdinaryOverlay": 0.7594651785586032,
+      "timestamp": 1791452051.881137
+    },
+    {
+      "id": "tall-cardinal",
+      "direction": "down",
+      "file": "tall-cardinal-down-crest-2.png",
+      "upFractionFromOrdinaryOverlay": 0.7623089285101742,
+      "timestamp": 1791452051.852793
+    },
+    {
+      "id": "tall-cardinal",
+      "direction": "down",
+      "file": "tall-cardinal-down-crest-3.png",
+      "upFractionFromOrdinaryOverlay": 0.7623089285101742,
+      "timestamp": 1791452051.865953
+    },
+    {
+      "id": "tall-cardinal",
+      "direction": "down",
+      "final": "1. Escalador de la casa. Salud 100, 16,25 puntos de acción, energía 80, moral 80. Ve 0 enemigos. Mano principal: vacía. Segunda mano: vacía. Botón derecho: equipo del combatiente",
+      "actual": {
+        "x": 418,
+        "y": 300.92
+      },
+      "expected": {
+        "x": 8,
+        "y": 11,
+        "tacticalLevel": 0,
+        "elevation": 1.2
+      }
+    }
+  ],
+  "scope": "Only visible controls and ordinary DOM telemetry. No state/pose/time injection."
+}

@@ -96,17 +96,18 @@ export class NativeClimbContactFit {
   this.root.updateWorldMatrix(true,true);
   for(const limb of this.limbs.values())limb.end.getWorldQuaternion(limb.nativeEndRotation);
   this.kneeRise=actual.kneeRise;
-  const evenCrest=geometry.steps>2&&geometry.steps%2===0,endFade=.76-.32/(geometry.steps-2),sourceClip=geometry.steps>2&&clip?.name===spec.name&&this.bodyPhase.supports(clip);
-  this.sourceWeight=sourceClip?phase(fraction,.02,.12)*(1-phase(fraction,evenCrest?.82:endFade,evenCrest?.85:.76)):0;
+  const endFade=.76-.32/(geometry.steps-2),sourceClip=geometry.steps>2&&clip?.name===spec.name&&this.bodyPhase.supports(clip);
+  this.sourceWeight=sourceClip?phase(fraction,.02,.12)*(1-phase(fraction,endFade,.76)):0;
   if(sourceClip)this.bodyPhase.apply(clip,fraction,this.nativeFraction(geometry,fraction,spec),spec.name==='life.climbDown',blendWeight*this.sourceWeight);
   this.root.getWorldQuaternion(this.rootRotation);
-  const contactWeight=sourceClip?phase(fraction,.12,.12+.32/(geometry.steps-2))*(1-phase(fraction,evenCrest?.82:endFade,evenCrest?.85:.76)):0;
-  // Retain the authored pole/contact frame across the parity-aware crest.
-  // Both contact frames and bend poles fade smoothly to the native landing.
+  const contactWeight=sourceClip?phase(fraction,.12,.12+.32/(geometry.steps-2))*(1-phase(fraction,endFade,.76)):0;
+  // Enter the exact source contact frame smoothly after approach. Return to
+  // the original native crest before .76; the separate even-rung defect stays
+  // unchanged until its own physical contact-plan correction.
   if(clip&&contactWeight>0)for(const side of ['l','r']){
    const foot=this.limbs.get(`foot_${side}`),contact=actual.feet[side];
    if(foot){this.tilt.setFromAxisAngle(this.current.set(1,0,0),-contact.tilt*Math.PI/180);this.authoredWorldRotation.copy(this.tilt).multiply(foot.bindEndRotation).slerp(this.idleRotation(clip,foot.end,spec.name==='life.climbDown'),contact.restWeight);this.authoredWorldRotation.premultiply(this.rootRotation);foot.nativeEndRotation.slerp(this.authoredWorldRotation,contactWeight);}
-   const hand=this.limbs.get(`hand_${side}`);if(hand?.bindHandContactRotation){this.tilt.setFromAxisAngle(this.current.set(1,0,0),-Math.PI*.5*actual.hands[side].roofWeight);this.authoredWorldRotation.copy(this.rootRotation).multiply(this.tilt).multiply(hand.bindHandContactRotation);hand.nativeEndRotation.slerp(this.authoredWorldRotation,contactWeight*actual.hands[side].weight);}
+   const hand=this.limbs.get(`hand_${side}`);if(hand?.bindHandContactRotation&&actual.hands[side].weight>=.999){this.authoredWorldRotation.copy(this.rootRotation).multiply(hand.bindHandContactRotation);hand.nativeEndRotation.slerp(this.authoredWorldRotation,contactWeight);}
   }
 
   for(const side of ['l','r'])for(const role of ['foot','hand']){
