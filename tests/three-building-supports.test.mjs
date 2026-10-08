@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {register} from 'node:module';
 register('./tactical-render-loader.mjs',import.meta.url);
-const {Mesh,Box3,Raycaster,Vector3}=await import('../web/node_modules/three/build/three.module.js');
+const {Mesh,Raycaster,Vector3}=await import('../web/node_modules/three/build/three.module.js');
 const {WorldGeometry,disposeWorldNode}=await import('../web/lib/three/world-geometry.ts');
 const {WorldMaterials}=await import('../web/lib/three/world-materials.ts');
 const {buildBuilding}=await import('../web/lib/three/world-buildings.ts');
@@ -33,10 +33,12 @@ test('all fourteen actual compiled exteriors keep low architectural scenery in s
  assert.equal(checked,168);
 });
 
-test('actual pulperia signs remain inside their intact wall support and above standing door height',()=>{
+test('actual pulperia signs remain inside their intact wall support and clear the full standing doorway',()=>{
  for(const rotation of [0,90,180,270]){
   const battle=createArchitectureReviewBattle('pulperia',rotation,'exterior'),geometry=new WorldGeometry(),materials=new WorldMaterials({tileMetres:T,assetUrl:path=>path}),input={terrain:{width:battle.width,height:battle.height,tiles:battle.tiles,buildings:battle.buildings},revealedRooms:battle.revealedRooms},building=buildBuilding(battle.buildings[0],input,T,geometry,materials),sign=building.getObjectByName(`building-detail:${battle.buildings[0].id}:trade-sign`);
-  assert.ok(sign);assert.ok(new Box3().setFromObject(sign).min.y>=1.9);sign.traverse(child=>{if(child instanceof Mesh){const p=child.geometry.getAttribute('position');for(let n=0;n<p.count;n++)assert.equal(battle.tiles.find(tile=>tile.x===Math.round(p.getX(n)/T)&&tile.y===Math.round(p.getZ(n)/T))?.type,'wall','a hanging plaque must not occupy the legal porch route');}});
+  assert.ok(sign);sign.traverse(child=>{if(child instanceof Mesh){const p=child.geometry.getAttribute('position');for(let n=0;n<p.count;n++)assert.equal(battle.tiles.find(tile=>tile.x===Math.round(p.getX(n)/T)&&tile.y===Math.round(p.getZ(n)/T))?.type,'wall','a hanging plaque must not occupy the legal porch route');}});
+  building.updateMatrixWorld(true);const b=battle.buildings[0],door=battle.tiles.find(tile=>tile.type==='door'),onY=door.y===b.y||door.y===b.y+b.height-1,outward=onY?(door.y===b.y?-1:1):(door.x===b.x?-1:1),direction=onY?new Vector3(0,0,-outward):new Vector3(-outward,0,0);
+  for(const y of [.3,1.3,1.8,1.9])for(const offset of [-.20,0,.20]){const start=onY?new Vector3(door.x*T+offset,y,(door.y+outward)*T):new Vector3((door.x+outward)*T,y,door.y*T+offset);assert.equal(new Raycaster(start,direction,0,T*1.6).intersectObject(sign,true).length,0,'a lower wall-supported plaque must keep the actual standing aperture clear');}
   disposeWorldNode(building);geometry.dispose();materials.dispose();
  }
 });

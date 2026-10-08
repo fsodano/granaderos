@@ -911,3 +911,21 @@ unchanged owned states without browser errors. The
 [close garment review](../art/close-long-cloth-boot-clearance-review-2026-10-08.md)
 retains rejected fits and the earlier coarse-model captures. Coarse garments,
 other motion clearance and broader graphics performance remain open.
+
+## Pulpería source porch plaque
+
+The authored shop now shows the current sprite's timber trade plaque in front
+of its exposed porch. Board proportions, pale marks and bracket colours follow
+the retained source. Its complete hardware remains in one intact wall cell,
+joins the actual porch beam and clears real standing door and window rays.
+Edited supports, upper routes and ordinary interior disclosure remain covered;
+unpainted saved shells retain the existing generic sign.
+
+All 58 affected building checks pass with TypeScript, documentation, 38 baseline
+checks and export `37dc28177667` (1,245 files, 1,040 references). The
+24 current original/slab normal HUD views pass without browser errors and
+retain exact capture source pins. The
+[plaque review](../art/reviews/pulperia-sign/README.md) records the source sprite,
+before/after views, retained old height failure and obstructing-plaque negative
+control. This restores one visible period detail; complete building polish
+remains open.

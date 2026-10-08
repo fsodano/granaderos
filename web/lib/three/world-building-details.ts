@@ -20,6 +20,7 @@ import {smithyChimney} from './world-smithy-chimney';
 import {barracksGate} from './world-barracks-gate';
 import {townhallColumns} from './world-townhall-columns';
 import {cabildoFacade} from './world-cabildo-facade';
+import {pulperiaSign} from './world-pulperia-sign';
 import {buildingArtInset} from './world-building-placement';
 import type {WorldGeometry} from './world-geometry';
 import type {WorldMaterials} from './world-materials';
@@ -377,7 +378,11 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
   }else if(kind==='pulperia'){
     workCanopy('gallery',frontSupports(),.55);
     const support=Array.from({length:Math.floor(frame.width)+1},(_,u)=>u).filter(u=>wallAt(u,0)?.type==='wall').sort((a,c)=>Math.abs(a-frame.doorU-1)-Math.abs(c-frame.doorU-1))[0];
-    if(support!==undefined&&height>=2.4)feature('trade-sign',()=>{
+    if(b.wallFinish!==undefined){
+      if(root.getObjectByName(`building-detail:${b.id}:gallery`)){
+        const sign=pulperiaSign(b,input,T,height,base,geometry,materials);if(sign.children.length)root.add(sign);
+      }
+    }else if(support!==undefined&&height>=2.4)feature('trade-sign',()=>{
       const u=support-alongInset,y=Math.max(2.05,Math.max(2.12,height*.82)-.055);
       box(u,-.04,y+.21,.50,.035,.10,iron);
       for(const offset of [-.19,.19])box(u+offset,-.082,y+.17,.017,.12,.02,iron);
