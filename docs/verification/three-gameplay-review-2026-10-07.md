@@ -805,3 +805,23 @@ The [interaction review](../art/prone-interaction-native-support-review-2026-10-
 records the corrected local selector failure and final current source bridge.
 Known upper-floor, adjacent-patient hand contact, dynamic throwing and garment
 limits remain open.
+
+## Planted standing reach contact
+
+A bounded standing gesture consumer keeps full boots above the floor and
+uses actual weighted forefeet through medical, ground pickup and release
+entry/contact. Seven actor hooks preserve all other runtime bytes, and the
+current native banks, gait and scalar melee helpers remain exact.
+
+All 193 contact/floor checks and 126 actor/gait/prone regressions pass with
+native/profile, TypeScript, documentation and 38 baseline checks. Export
+`6b773ead1460` verifies 1,244 files and 1,039 asset references. Six before and
+six after normal HUD routes pass in 144 captures with exact owned/paid states
+and no browser errors. Twelve corrected source/runtime/model hashes stay
+exact throughout the current capture run.
+
+The [standing contact review](../art/standing-gesture-planted-contact-3d-review-2026-10-07.md)
+retains the original failed mirrored-return test and measured 2.991 m/s
+return limit. Complete-surface speeds, 100-actor CPU costs, target hand
+contact and garments remain open. This is bounded contact repair, not final
+body-motion or 60 FPS acceptance.
