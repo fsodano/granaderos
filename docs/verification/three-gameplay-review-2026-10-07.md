@@ -787,3 +787,21 @@ recorded in the
 This cut repairs boot support. It retains known upper-surface and garment
 limits; remaining prone interactions, dynamic throws and final motion
 acceptance remain open.
+
+## Native prone interaction boot support
+
+Twelve static prone interaction clips now retain the supported native idle
+leg rotations. Each anatomy changes 72 lower outputs while 1,836 selected
+nonleg channels and 322 other clips remain exact, including current firearm
+work. The normal reach review now exposes standing/prone posture through
+a public selector.
+
+All 52 focused checks and 16 combined fixture checks pass, with native/profile,
+TypeScript, documentation and 38 baseline checks. Production export
+`c4f3f60be5fe` verifies 1,244 files and 1,039 asset references. Twelve normal
+before/after paid routes pass in 144 captures without errors, preserving
+source hashes, one AP payment, prone cells and owned gun ammunition.
+The [interaction review](../art/prone-interaction-native-support-review-2026-10-07.md)
+records the corrected local selector failure and final current source bridge.
+Known upper-floor, adjacent-patient hand contact, dynamic throwing and garment
+limits remain open.
