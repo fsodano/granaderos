@@ -1,6 +1,11 @@
 import {register} from 'node:module';register('./tactical-render-loader.mjs',import.meta.url);
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {readFileSync,writeFileSync,mkdtempSync,mkdirSync,symlinkSync,readdirSync,rmSync} from 'node:fs';
+import {spawnSync} from 'node:child_process';
+import {join} from 'node:path';
+import {tmpdir} from 'node:os';
+import {createHash} from 'node:crypto';
 import {Vector3} from '../web/node_modules/three/build/three.module.js';
 import {publishedActor} from './published-actor-fixture.mjs';
 import {surface,tree,candidates,crossed} from '../tools/characters-3d/cloth-boot-surfaces.mjs';
@@ -50,3 +55,16 @@ for(const id of ['friar','woman-shawl']){
   actor.dispose();
  });
 }
+
+test('close fitting is unchanged on repetition and rejects a stale support set before writing',()=>{
+ const root=new URL('../',import.meta.url).pathname,folder=mkdtempSync(join(tmpdir(),'granaderos-close-cloth-')),models=join(folder,'web/public/models/characters'),script=join(root,'tools/characters-3d/fit-close-long-cloth-boot-support.mjs'),output=join(folder,'proposal.json'),files=['manifest.json','friar-lod0.glb','woman-shawl-lod0.glb'];
+ const source=join(root,'web/public/models/characters'),pins=()=>files.map(name=>createHash('sha256').update(readFileSync(join(source,name))).digest('hex'));
+ try{
+  const before=pins(),repeat=spawnSync('node',[script,output],{cwd:root,encoding:'utf8'});assert.equal(repeat.status,0,repeat.stderr);assert.deepEqual(JSON.parse(readFileSync(output)).map(row=>[row.id,row.lod,row.unchanged]),[['friar',0,true],['woman-shawl',0,true]]);assert.deepEqual(pins(),before);rmSync(output);
+  mkdirSync(models,{recursive:true});mkdirSync(join(folder,'tests'));for(const name of ['lib','node_modules'])symlinkSync(join(root,'web',name),join(folder,'web',name),'dir');
+  for(const name of ['published-actor-fixture.mjs','tactical-render-loader.mjs'])writeFileSync(join(folder,'tests',name),readFileSync(join(root,'tests',name)));
+  for(const name of readdirSync(source))if(name!=='manifest.json')symlinkSync(join(source,name),join(models,name));
+  const manifest=JSON.parse(readFileSync(join(source,'manifest.json')));manifest.appearances.friar.lods[0].nativeClothBootSupport.clipSetHash='stale-support-set';writeFileSync(join(models,'manifest.json'),JSON.stringify(manifest));
+  const stale=spawnSync('node',[script,output],{cwd:folder,encoding:'utf8'});assert.notEqual(stale.status,0);assert.match(stale.stderr,/Native cloth support set changed; regenerate/);assert.ok(!readdirSync(folder).includes('proposal.json'));assert.deepEqual(pins(),before,'Rejected fitting leaves every published body and manifest exact');
+ }finally{rmSync(folder,{recursive:true,force:true});}
+});

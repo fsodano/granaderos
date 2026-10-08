@@ -892,3 +892,22 @@ and prone cells. The [pistol support review](prone-pistol-forearm-support.md)
 records complete weighted skin clearance of at least 1.500 mm and retained
 world grip. Planting the holding elbow in paired firing/loading, remaining
 rifle sleeves and adjacent-patient healing contact remain open.
+
+## Reachable close long garments
+
+The detailed friar and woman's skirt bodies now have an additive boot-clearance
+shape for their recorded fixed native prone support sets. All original rest,
+rig, two cloth targets and native animation data remain exact. Scheduled paid
+actions retain the correction when their native clock pauses; crawling and
+moving/mirrored clips use the original shape. Shared camera thresholds now make
+LOD 0 reachable at normal maximum zoom.
+
+All 91 admitted clips pass complete garment/full-boot surface checks. All 28
+current garment/projection/pistol/clock checks and five final close-garment
+guard checks pass with native/profile, TypeScript, documentation and 38 baseline
+checks. Export `52b1e1a21f9b` verifies 1,245 files and 1,040 references. Twelve
+final normal HUD views use actual loaded LOD 0 bodies, exact source/assets and
+unchanged owned states without browser errors. The
+[close garment review](../art/close-long-cloth-boot-clearance-review-2026-10-08.md)
+retains rejected fits and the earlier coarse-model captures. Coarse garments,
+other motion clearance and broader graphics performance remain open.
