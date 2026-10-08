@@ -1,0 +1,32 @@
+{
+  "basis": "381af4c5669fc106994297966724338c275259c9",
+  "implementation": "99929c6a3bd2d366aa540f71975a9d4a964ae54e",
+  "sourceHashes": {
+    "web/app/TacticalArchitectureMaterials.tsx": "d865f416fbe99879cb0e1c1b24fdbd0619e6ce1b176cd29fdbc4a12534bf1691",
+    "web/app/TacticalBuildings.tsx": "19a7c67640b1d94ee1929787c3a296039553e4bfcc496b2912a2ed586214b199",
+    "web/app/TacticalRoof.tsx": "60600976c5c8095b0866adeffa37ef30ac9cae0b1555ecaccecc48f01c8ce336",
+    "web/lib/three/world-architecture-finish.ts": "83001cdbed5f611196878ec092049283f7d4521d79a69987c5af59f0148340fa",
+    "web/lib/three/actor-runtime.ts": "3858ea6fb4a58dd53a4e0313939a6b0516d8ee2531854bb048cd3429c55a26aa"
+  },
+  "exactNonFrameMeshes": 11376,
+  "exactReassignedFrameTriangles": 685008,
+  "preservationCombinedSha256": "eed94657f5dc86c81a71a63e38c06e9c24fd760e70a346c3a8d3d1512ae4c4c3",
+  "physicalCases": 608,
+  "beforeViews": 30,
+  "currentViews": 60,
+  "sourcePinsPerRun": 24,
+  "servedNativeResponses": {
+    "before": 220,
+    "current": 423
+  },
+  "onlyChangedBrowserSource": [
+    "web/lib/three/world-buildings.ts"
+  ],
+  "exactNativeAndProfileFiles": 106,
+  "images": {
+    "before.png": "a51bfc26dbe44b2b86f32d384924e6410a2527c95929deeb2fad018828e31c5c",
+    "after.png": "19fb95001951c24f7523980992ac75579d02d63886a04259e96fe9640de0a246",
+    "current-sprite.png": "9806e2e7da1bd39c21e6e1d7657b23acccc8bdd2674a3510b2f2286354bede0c"
+  },
+  "scope": "Retained authored window jamb/lintel/arch pigment only. Existing geometry, glazing, bars, game state and other architectural paint stay exact. Complete window/building polish remains open."
+}

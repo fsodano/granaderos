@@ -13,6 +13,7 @@ import {addDoorLeaf} from './world-building-doors';
 import {climbOpenings} from './world-climb-openings';
 import {addWindowFace} from './world-building-windows';
 import {addWindowSill} from './world-window-sills';
+import {architectureTrimColour} from './world-architecture-finish';
 import {buildingArtInset,buildingFloorRectangles} from './world-building-placement';
 import type {WorldGeometry} from './world-geometry';
 import type {WorldMaterials} from './world-materials';
@@ -98,17 +99,19 @@ export function buildBuilding(b0:WorldBuilding,input:WorldInput,T:number,geometr
       const mid=(first+last)*.5,len=last-first,cross=((axis==='x'?tile.y:tile.x)+wallInset)*T;
       const box=(u:number,y:number,w:number,hi:number,d:number,material=wallMat)=>axis==='x'?batch.box(material,u,tileBase+y,cross,w,hi,d,light):batch.box(material,cross,tileBase+y,u,d,hi,w,light);
       const opening=tile.type!=='wall'&&index===0,ow=Math.min(doorWidth,len*.65),top=Math.min(h-.12,tile.type==='door'?doorHeight:BUILDING_OPENINGS.windowTop/V),sill=tile.type==='window'?Math.min(top-.25,BUILDING_OPENINGS.windowSill/V):0;
+      const windowPaint=opening&&tile.type==='window'&&!cut&&(!legacy||b.wallFinish!==undefined)?architectureTrimColour(appearance.wallFinish):undefined;
+      const openingTrim=windowPaint?materials.get(`window-trim-${appearance.wallFinish}`,{colour:windowPaint}):trim;
       if(!opening){box(mid,h*.5,len,h,thickness);}
       else{
         box((first+mid-ow*.5)*.5,h*.5,(len-ow)*.5,h,thickness);box((mid+ow*.5+last)*.5,h*.5,(len-ow)*.5,h,thickness);
         if(!cut)box(mid,top+(h-top)*.5,ow,h-top,thickness);if(sill>0&&!cut)box(mid,sill*.5,ow,sill,thickness);
-        box(mid-ow*.5-.03,(top+sill)*.5,.065,top-sill+.10,thickness+.06,trim);box(mid+ow*.5+.03,(top+sill)*.5,.065,top-sill+.10,thickness+.06,trim);box(mid,top+.03,ow+.14,.09,thickness+.06,trim);
+        box(mid-ow*.5-.03,(top+sill)*.5,.065,top-sill+.10,thickness+.06,openingTrim);box(mid+ow*.5+.03,(top+sill)*.5,.065,top-sill+.10,thickness+.06,openingTrim);box(mid,top+.03,ow+.14,.09,thickness+.06,openingTrim);
       }
       addWallSurfaceDetails(surfaces,materials,{axis,first,last,cross,base:tileBase,height:h,thickness,opening:opening?tile.type as 'door'|'window':undefined,openingWidth:ow,finish:appearance.wallFinish,colour:wallMat.color,x:tile.x,y:tile.y,face:index,cut,light});
       if(tile.type!=='door'||!opening)box(mid,h-.045,len,.09,thickness+.04,trim);
       if(opening){
         const id=tile.doorId??`${tile.type}:${tile.x},${tile.y}`,openingHeight=cut?Math.min(h,.28):top-sill;
-        if(!cut&&(tile.style??(tile.type==='door'?appearance.doorStyle:appearance.windowStyle))==='arched')openingArch(batch,wallMat,trim,axis,mid,cross,tileBase,top,ow,thickness,light);
+        if(!cut&&(tile.style??(tile.type==='door'?appearance.doorStyle:appearance.windowStyle))==='arched')openingArch(batch,wallMat,openingTrim,axis,mid,cross,tileBase,top,ow,thickness,light);
         openingRecords.push({id,type:tile.type,open:Boolean(tile.open),axis,height:openingHeight,width:ow});
         if(tile.type==='door'){
           const leafGroup=new Group();leafGroup.name=`door:${id}`;leafGroup.userData.semanticId=`door:${id}`;leafGroup.userData.open=Boolean(tile.open);leafGroup.userData.broken=Boolean(tile.broken);
