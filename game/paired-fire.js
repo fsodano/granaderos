@@ -1,4 +1,5 @@
 import {handLayout} from './hand-layout.js';
+import {firearmServiceable} from './firearm-serviceability.js';
 
 const pistol = id => [1805,1806,1808].includes(id);
 export function secondHeldPistol(unit) {
@@ -9,9 +10,9 @@ export function secondHeldPistol(unit) {
 // Ownership alone is insufficient: a gun in a pocket never joins a shot.
 // An empty main hand keeps the existing deliberate reload-click contract.
 export function pairedPistol(unit) {
- if(!unit||unit.weaponDropped||(unit.activeSlot??'primary')!=='primary'||!pistol(unit.weapon)||!(unit.loaded>0)||unit.jammed)return null;
+ if(!unit||unit.weaponDropped||(unit.activeSlot??'primary')!=='primary'||!pistol(unit.weapon)||!(unit.loaded>0)||unit.jammed||!firearmServiceable(unit))return null;
  const other=secondHeldPistol(unit);
- return other&&other.loaded>0&&!other.jammed&&(other.condition??100)>0?other:null;
+ return other&&other.loaded>0&&!other.jammed&&firearmServiceable(other)?other:null;
 }
 export const pistolPairPenalty = unit => unit.traits?.includes('ambidextrous')?0:20;
 

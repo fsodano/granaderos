@@ -9,6 +9,7 @@ import {HELD_SUPPLIES} from './held-supplies.js';
 import {POCKETS,pocketOrderFromSlots} from './inventory-pockets.js';
 import {BODY_SLOTS,wornOutfit,validateOutfit} from './outfits.js';
 import {lowerWeapon} from './weapon-readiness.js';
+import {firearmServiceable} from './firearm-serviceability.js';
 import {SUPPLY_ITEMS,inventoryUsage,equipmentEndpoint,equipmentFingerprint,readItemStack,readItemStacks,itemStackDescriptor,equipmentStacksMerge,validateItemStack,validateEquipmentCursor,handMetadata} from './tactical-inventory.js';
 export {validateEquipmentCursor} from './tactical-inventory.js';
 const copy=value=>structuredClone(value);
@@ -138,7 +139,7 @@ export function planEquipmentCursorPlacement(unit,action,{exploring=true,assiste
   const weapon=weaponSpecification(gun);
   need((gun.loaded??0)<weapon.capacity,'El arma ya está cargada.');
   need(!gun.jammed,'Primero debes volver a cebar el arma.');
-  need((gun.condition??100)>0,'El arma está rota.');
+  need(firearmServiceable(gun),'El arma está rota.');
   const reload=planReload({...gun,loaded:gun.loaded??0,ammo:count,ap:unit.ap},reloadRoundCost(unit,weapon,assisted),weapon.capacity,exploring);
   need(reload.pa>0,'Faltan puntos de acción para recargar.');
   gun.loaded=(gun.loaded??0)+reload.rounds;

@@ -32,6 +32,7 @@ import {availableAmmunition,weaponAmmoType} from './ammunition-types.js';
 import {initializeUnitAmmunition,syncUnitAmmunition,consumeWeaponAmmunition} from './tactical-ammunition.js';
 import {sectorDeploymentAction} from './sector-deployment.js';
 import {pairedPistol,secondHeldPistol,pistolPairPenalty,secondaryPistolView} from './paired-fire.js';
+import {firearmServiceable,BROKEN_FIREARM_REASON} from './firearm-serviceability.js';
 import {pocketOrderFromSlots} from './inventory-pockets.js';
 import {planEquipmentUnload,planEquipmentAttachment,planEquipmentPickup,planEquipmentCursorPlacement,planEquipmentCursorReturn} from './equipment-cursor.js';
 import {regionalWeatherAt} from './regional-weather.js';
@@ -233,11 +234,12 @@ export function lookPreview(s,u,point){
 }
 function singleReloadPlan(unit,state,reserved=0){
   const w=weaponFor(unit),rate=reloadRoundCost(unit,w,Boolean(state&&nearby(state,unit,'loading_support',2)));
+  if(!firearmServiceable(unit))return {...planReload({...unit,ammo:0},rate,w.capacity,state?.mode==='exploration'),reason:BROKEN_FIREARM_REASON};
   return planReload({...unit,ammo:Math.max(0,availableAmmunition(unit,unit)-reserved)},rate,w.capacity,state?.mode==='exploration');
 }
 export function reloadPlan(unit,state){
   const first=singleReloadPlan(unit,state),other=secondHeldPistol(unit);
-  if(!other||other.jammed||(other.condition??100)<=0)return first;
+  if(!other||other.jammed||!firearmServiceable(other))return first;
   const second=secondaryPistolView(unit,other),hands=[];
   const step=(hand,view,plan)=>({hand,weapon:view.weapon,name:weaponFor(view).name,...plan});
   if(first.available)hands.push(step('primary',unit,first));
@@ -521,11 +523,13 @@ function forecastTarget(s,attacker,target,path,accuracy,hitLocation='torso'){
  return {chance,damageFactor:missedBody?0:impact?.damageFactor??path.damageFactor,...(impact&&impact.hitLocation!==hitLocation?{physicalHitLocation:impact.hitLocation}:{}),...(impact&&impact.reachChance<1?{conditional:true,reachChance:impact.reachChance}:{}),...(interveningFriendly?{interveningFriendly:true}:{})};
 }
 export function shotChance(s,attacker,target,aim=0,hitLocation='torso'){
+  if(!hasFirearm(attacker)||!firearmServiceable(attacker))return 0;
   const accuracy=shotAccuracy(s,attacker,target,aim,hitLocation);
   const path=firearmFlightPreview(s,attacker,target,hitLocation);
   return forecastTarget(s,attacker,target,path,accuracy,hitLocation).chance;
 }
 export function firearmVolleyPreview(s,unit,target,aim=0,hitLocation='torso'){
+ if(!firearmServiceable(unit)){const w=weaponFor(unit);return {paired:false,shots:[{hand:'primary',weapon:w.id,name:w.name,chance:0,damageFactor:0,damage:w.damage}],reason:BROKEN_FIREARM_REASON};}
  const second=pairedPistol(unit),penalty=second?pistolPairPenalty(unit):0;
  const guns=[{hand:'primary',view:unit},...(second?[{hand:'offhand',view:secondaryPistolView(unit,second)}]:[])];
  return {paired:Boolean(second),shots:guns.map(({hand,view})=>{
@@ -536,7 +540,7 @@ export function firearmVolleyPreview(s,unit,target,aim=0,hitLocation='torso'){
 // One geometry trace per body region serves all affordable aim increments.
 // This is a fresh read, not a cache that can outlive movement or a breached wall.
 export function firearmShotOptions(s,attacker,target,maxAim=4){
-  if(!hasFirearm(attacker)||!hasLineOfSight(s,attacker,target))return [];
+  if(!hasFirearm(attacker)||!firearmServiceable(attacker)||!hasLineOfSight(s,attacker,target))return [];
   const options=[],limit=clamp(Number.isFinite(maxAim)?Math.floor(maxAim):0,0,4);
   const second=pairedPistol(attacker),other=second?secondaryPistolView(attacker,second):null;
   // Body-region aiming cannot change which people the shooter can see. Build
@@ -567,7 +571,7 @@ export function firearmRangeProfile(s,attacker,target){
     weaponChanceFactor:COMBAT_BALANCE.outsideWeaponChanceFactor,sightChanceFactor:COMBAT_BALANCE.outsideSightChanceFactor,chanceFactor:(base.beyondSight?COMBAT_BALANCE.outsideSightChanceFactor:1)*(base.beyondWeapon?COMBAT_BALANCE.outsideWeaponChanceFactor:1)};
 }
 function shotAccuracy(s,attacker,target,aim=0,hitLocation='torso',pointShot=false,pairPenalty=pairedPistol(attacker)?pistolPairPenalty(attacker):0,knownSight=false){
-  if(attacker.departure||target.departure||!hasFirearm(attacker)||!pointShot&&!knownSight&&!hasLineOfSight(s,attacker,target))return 0;
+  if(attacker.departure||target.departure||!hasFirearm(attacker)||!firearmServiceable(attacker)||!pointShot&&!knownSight&&!hasLineOfSight(s,attacker,target))return 0;
   const w=weaponFor(attacker),range=spaceDistance(s,attacker,target);if(w.loadPattern==='cone'&&range>w.range)return 0;
   const rangeProfile=firearmRangeProfile(s,attacker,target);
   const skill=attacker.marksmanship??70,condition=attacker.condition??100;
@@ -1080,6 +1084,7 @@ export function pointFirePreview(s,u,point,aim=0){
   const level=clamp(Number.isFinite(aim)?Math.floor(aim):0,0,4),costs=u?actionCosts(s,u,point):{fire:0,aim:0},pa=costs.fire+level*costs.aim;
   let reason=!u||!(u.side==='enemy'?s.phase==='enemy'&&alive(u)&&s.status==='active':interruptAvailable(s,u))||u.knockedDown?'El soldado no puede disparar ahora.':null;
   if(!reason&&!hasFirearm(u))reason='Equipá un arma de fuego.';
+  if(!reason&&!firearmServiceable(u))reason=BROKEN_FIREARM_REASON;
   if(!reason&&(!Number.isInteger(point?.x)||!Number.isInteger(point?.y)||point.x<0||point.y<0||point.x>=s.width||point.y>=s.height))reason='Seleccioná una casilla del mapa.';
   if(!reason&&!surfaceAt(s,point))reason='Seleccioná una superficie del mapa.';
   if(!reason&&sameCell(point,u))reason='Seleccioná otra casilla para disparar.';
@@ -2023,6 +2028,7 @@ else if(a.type==='throwKnife'){
   sayObserved(s,[u],`${u.name} lanza el facón que llevaba en la mano.`);
   if(visible)knifeThrowVisuals.set(s,{source,impact:shown.impact,landing:shown.landing,weapon:knife.record.weapon,visible:true});
 }
+else if(['fire','firePoint'].includes(a.type)&&hasFirearm(u)&&!firearmServiceable(u))return fail(BROKEN_FIREARM_REASON);
 else if(['fire','firePoint'].includes(a.type)&&pairedPistol(u)){
   const pointShot=a.type==='firePoint',hitLocation=a.hitLocation??'torso';
   if(pointShot){
@@ -2093,9 +2099,9 @@ else if(a.type==='weaponMode'){
 }
 else if(a.type==='reload'){
   if(!hasFirearm(u))return fail('Las armas blancas no necesitan recarga.');
-  if(u.jammed)return fail('Primero debes volver a cebar el arma.');
+  if(u.jammed&&firearmServiceable(u))return fail('Primero debes volver a cebar el arma.');
   const plan=reloadPlan(u,s);
-  if(!plan.totalPA)return fail('No falta carga o no quedan cartuchos compatibles.');
+  if(!plan.totalPA)return fail(plan.reason??'No falta carga o no quedan cartuchos compatibles.');
   if(!plan.pa||!pay(plan.pa))return fail('Faltan puntos de acción para recargar.');
   const exploring=s.mode==='exploration';
   const completed=exploring?advanceExplorationReload(s,u,plan):plan;
@@ -2396,7 +2402,7 @@ else if(a.type==='weapon'){
 }
 else if(a.type==='overwatch'){
   if(u.overwatch){u.overwatch=false;sayObserved(s,[u],`${u.name} deja de cubrir el frente.`);}
-  else {if(!hasFirearm(u)||!u.loaded||u.jammed)return fail('Necesitas un arma cargada y cebada para cubrir el frente.');
+  else {if(hasFirearm(u)&&!firearmServiceable(u))return fail(BROKEN_FIREARM_REASON);if(!hasFirearm(u)||!u.loaded||u.jammed)return fail('Necesitas un arma cargada y cebada para cubrir el frente.');
     if(s.mode!=='exploration'&&u.ap<actionCosts(s,u).fire)return fail('Reserva PA suficientes para disparar.');
     u.overwatch=true;sayObserved(s,[u],`${u.name} reserva sus PA para fuego de reacción.`);}
 }
