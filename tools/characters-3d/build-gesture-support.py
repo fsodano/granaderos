@@ -104,7 +104,9 @@ def main():
             pending.append((path,raw))
         # Write only after both native banks passed their preservation gate.
         for path,raw in pending:path.write_bytes(raw)
-    manifest_path.write_text(json.dumps(manifest,indent=2)+'\n')
+    # Match the compiler's canonical number formatting before publication.
+    canonical=subprocess.run(['node','-e','let s="";process.stdin.on("data",c=>s+=c);process.stdin.on("end",()=>process.stdout.write(JSON.stringify(JSON.parse(s),null,2)+"\\n"));'],input=json.dumps(manifest),text=True,capture_output=True,check=True).stdout
+    manifest_path.write_text(canonical)
     if args.receipt:args.receipt.write_text(json.dumps(receipt,indent=2)+'\n')
     print('NATIVE_GESTURE_SUPPORT_READY',json.dumps({gender:data['proof']for gender,data in receipt.items()}),flush=True)
 

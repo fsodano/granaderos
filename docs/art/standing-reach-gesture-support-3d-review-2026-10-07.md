@@ -132,3 +132,23 @@ clearance and visual acceptance remain for integration.
 The exact source, sampled before/after metrics, all 288 blend states for each
 guard baseline, source roll demand and preservation hashes are recorded in
 [the native metrics](reviews/standing-gestures/native-gesture-support-metrics.json).
+
+## Current gameplay integration
+
+The source cut was rebuilt on main `113803bf`, then composed onto the merged
+bayonet cut `0b3b32cd` using only the three named lower rotations and their
+metadata. The preservation proof retains all 331 other current clips and
+151 non-leg channels per selected clip, including the new prone, bayonet,
+lance and sideways support. The rig, skin and geometry remain exact.
+
+The final six anatomy/LOD checks pass in 3.15 seconds. The native library
+check, locomotion calibration, TypeScript, documentation audit and all 38
+baseline checks pass. Production export passes with 1,244 files and 1,039
+verified asset references; build identity is `7b3be675e2dc`. The builder writes
+manifest numbers with the compiler's canonical Node formatting.
+
+The before/after geometry image was inspected. It shows the boots supported
+during the retained deep hand reach. It is source geometry evidence only.
+Normal paid gesture start/return, garment clearance and production browser
+visual acceptance remain open for the separate planted-contact consumer.
+This increment does not claim full animation polish.

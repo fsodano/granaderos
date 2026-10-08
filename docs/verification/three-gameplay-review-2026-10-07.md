@@ -719,3 +719,13 @@ The supported Cabildo uses the current sprite's six broad piers, stepped stone f
 ## Native bayonet support and owned gameplay review
 
 The standing bayonet source now keeps complete boots supported from its own retained Root/pelvis poses. One clip's eight lower rotations per anatomy change; 333 other clips remain exact. The normal Bayonetas scene prepares two owned socket assemblies with paid fitting orders and uses finite melee attacks. All 36 native/fade/guard and eleven fixture checks, native/profile/source/type/docs/baseline gates and combined export `717eec4ee75d` pass. Two normal routes yield 44 source-pinned captures without errors; each spends four displayed PA and commits one damage result while retaining charge/ammunition/ownership. Fitted target contact and acceleration corners remain open. See [the native bayonet review](../art/bayonet-native-support-3d-review-2026-10-07.md).
+
+## Native standing reach gestures
+
+Healing, ground pickup and release now use supported native lower rotations
+for both anatomies. The named source transplant preserves every current
+non-leg track and the other 331 clips, including the newer prone, bayonet and
+movement fixes. Six anatomy/LOD checks, native/calibration checks, TypeScript,
+documentation, 38 baseline checks and production export pass. The
+[standing reach review](../art/standing-reach-gesture-support-3d-review-2026-10-07.md)
+records the source geometry and the remaining paid blend and garment review.
