@@ -98,3 +98,11 @@ source rebuild is published.
 A targeted fresh woman-shawl Blender export remains a separate reproduction
 check. No full library rebuild or complete source-reproduction claim is made in
 this source-only increment.
+
+## Independent integration validation
+
+On main `a4fe7335799feea325acae7eb8dff4606454c92e`, implementation commit `0b31125a08736869d80afc8c0a3f09bde9de6cc0` passes all 30 affected checks in 19.83 s. The actual controlled-builder failures and their entire released-tree assertions pass in that run. Python compilation, the native verifier, profile consistency, documentation and all 38 baseline checks pass.
+
+The installed builder's current `--manifest-only` command runs the ordered postpasses and retains all 106 released model, texture, manifest and profile files exactly, with no new files. All six installed source hashes and the preceding published validation appendix, palette/coarse helpers and pipeline test remain exact before the publication appendix.
+
+The application and released assets are unchanged from the palace implementation whose production build and browser review passed. This source-only change does not claim a new rendered-model or Blender-export acceptance. The publication commit changes only this review text after the checked implementation. Later installation and postpass failures remain outside the transaction, as stated above.
