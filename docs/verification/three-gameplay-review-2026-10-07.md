@@ -929,3 +929,20 @@ retain exact capture source pins. The
 before/after views, retained old height failure and obstructing-plaque negative
 control. This restores one visible period detail; complete building polish
 remains open.
+
+## Native prone rifle sleeve clearance
+
+Seven male prone reload clips now use native elbow-plane transfers that clear
+the complete weighted sleeve while retaining world wrists, holding-hand rifle
+placement, all lower-body channels and paid clocks. Only three left-arm
+rotations and their sampling change in each selected clip. The complete female
+bank, other 327 male clips and current garment support sets remain exact.
+
+All 27 affected checks pass, including 42 native pose cases and 36 actual paid
+reload routes. Native/profile, TypeScript, documentation, 38 baseline checks
+and export `c02e3814860c` pass. Eight before and eight current normal HUD routes
+retain exact paid/owned states, served assets and capture source pins in 130
+screenshots without browser errors. The public review includes all six rifles
+and the Baker's paid two-turn completion. The
+[rifle sleeve review](prone-rifle-sleeve-support.md) records the denser selected
+curves, retained boundary-timing captures and remaining motion limits.

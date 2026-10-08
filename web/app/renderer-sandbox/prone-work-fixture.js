@@ -1,8 +1,9 @@
-import {createBattle} from '../../../game/tactical.js';
+import {createBattle,weaponFor} from '../../../game/tactical.js';
 
 export const PRONE_WORK_TASKS=Object.freeze([
   {id:'rifle-prime',label:'Cebar fusil',weapon:1800,jammed:true},
   {id:'rifle-unload',label:'Descargar fusil',weapon:1800},
+  ...[1800,1801,1802,1803,1804,1807].map(weapon=>({id:`rifle-reload-${weapon}`,label:`Recargar ${weaponFor({weapon,activeSlot:'primary'}).name}`,weapon,loaded:0})),
   {id:'pistol-prime',label:'Cebar pistola',weapon:1805,jammed:true},
   {id:'pistol-repair',label:'Mantener pistola',weapon:1805,condition:61},
   {id:'pistol-reload',label:'Recargar pistola',weapon:1805,loaded:0},
