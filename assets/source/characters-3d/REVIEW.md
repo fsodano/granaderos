@@ -506,3 +506,50 @@ sampled open-surface diagnostic, not a watertight-volume or between-frame
 collision proof. The earlier broad-suite result above remains attached to
 its exact checkpoint. Evidence is in
 `artifacts/character-anatomy-review/delivery/prone-throw-contact-review/`.
+
+
+## Sleeve construction trials and current visual limits, 8 October
+
+The slimmer sleeve trial is rejected. Four matched exported poses show that
+removing the padded silhouette introduces a sharp inner-elbow pinch and an
+angular outer crease. The two existing garment checks pass, and no exposed
+skin or weapon crossings occur in those four sampled poses. However, hidden
+body crossing pairs increase in all four poses. These checks do not establish
+a sound cloth surface. The previous padded trial is also rejected. Neither
+trial changes the current library. Their source patches, actual comparison
+images and measurements are retained in
+`artifacts/character-anatomy-review/delivery/coat-sleeve-rejected/`.
+
+A fresh live isometric face review confirms Granadero body `9abd7909` in the
+lab. Skin colour detail is visible, but the white shoulder strap has an
+angular, dented edge and the collar remains too sharp. The civilian hair
+trials also retain visible mapping defects and are not accepted. These are
+open appearance defects; the current model does not match the supplied
+realistic soldier reference. The live image is retained in
+`artifacts/character-anatomy-review/delivery/current-face-review/`.
+
+The full quick profile after the contact-check correction completed all 858
+selected files: 6,283 passes and 10 failures. One prior failure is resolved
+(the false prone-throw head contact), and the ten remaining assertion
+payloads match the previous candidate checkpoint exactly. There are no new
+failures. The 1,335 recorded source, test and asset inputs stayed unchanged
+through that run. This comparison is against the prior candidate, not a
+verified `main` baseline. The palette-review correction and new thumb trials
+are later changes and are not covered by this result.
+
+
+## Offline skin palette parity, 8 October
+
+The review renderer now applies the same coloured-albedo compensation as
+`game/skin-palette.js`. Previously, `--skin light` replaced the Granadero's
+compensated factor with an uncompensated colour and produced an orange tint.
+The live game and lab already used the correct calculation. No skin pixels,
+mesh, palette or runtime behaviour changed.
+
+Seven generated-skin checks pass, including direct numeric comparison of the
+Python renderer against the live Three.js helper across all three palettes
+and both valid and invalid albedo references. A new actual Granadero face
+and hand render confirms the corrected colour. Existing reviews made with
+the exported Granadero factor remain valid; earlier Granadero reviews made
+with the old `--skin` override must not be used for colour comparison. Evidence
+is in `artifacts/character-anatomy-review/delivery/review-palette-parity/`.

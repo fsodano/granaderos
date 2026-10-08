@@ -1,6 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
+import {spawnSync} from 'node:child_process';
+import {fileURLToPath} from 'node:url';
 import {resolve,sep} from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {createHash} from 'node:crypto';
@@ -47,4 +49,20 @@ for(const lod of manifest.appearances.granadero.lods)test(`Granadero LOD${lod.lo
 });
 test('the seven other appearance families keep their existing palette and native albedo domain',()=>{
  for(const appearance of Object.values(manifest.appearances).filter(a=>a.id!=='granadero'))for(const lod of appearance.lods){const {json}=readGlb(lod.url),skin=json.materials.find(m=>m.name===appearance.materials.skin);assert.equal(skin.extras?.skinAlbedoReference,undefined);assert.equal(skin.pbrMetallicRoughness.baseColorTexture.texCoord??0,0);}
+});
+
+
+test('offline review colours match the live palette for generated and native albedos',()=>{
+ const references=[null,[.846873231509858,.4232676699860717,.2788942634768104],[],[1,1],[1,0,1],[true,1,1],['1',1,1]];
+ const cases=references.flatMap(reference=>Object.values(manifest.skinTones).map(tone=>({tone,reference})));
+ const source=fileURLToPath(new URL('../tools/characters-3d/render-review.py',import.meta.url));
+ const result=spawnSync(process.platform==='win32'?'python':'python3',['-c',
+  "import importlib.util,json,sys;spec=importlib.util.spec_from_file_location('review',sys.argv[1]);module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module);print(json.dumps([module.skin_palette_linear(c['tone'],c['reference']) for c in json.load(sys.stdin)]))",source],
+  {input:JSON.stringify(cases),encoding:'utf8'});
+ assert.equal(result.status,0,result.stderr);const actual=JSON.parse(result.stdout);assert.equal(actual.length,cases.length);
+ for(const [index,{tone,reference}] of cases.entries()){
+  const material=new MeshStandardMaterial();material.userData.skinAlbedoReference=reference;applySkinPalette(material,tone);
+  for(const [component,key]of ['r','g','b'].entries())assert.ok(Math.abs(actual[index][component]-material.color[key])<1e-9,`${tone} ${JSON.stringify(reference)} ${key}`);
+  assert.equal(actual[index][3],1);material.dispose();
+ }
 });
