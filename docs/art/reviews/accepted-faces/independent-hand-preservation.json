@@ -1,0 +1,146 @@
+[
+  {
+    "file": "friar-lod0.glb",
+    "drawnHandTrianglesExact": 5923,
+    "allHandAttributesExact": true,
+    "handMaterialExact": true
+  },
+  {
+    "file": "friar-lod1.glb",
+    "drawnHandTrianglesExact": 2058,
+    "allHandAttributesExact": true,
+    "handMaterialExact": true
+  },
+  {
+    "file": "friar-lod2.glb",
+    "drawnHandTrianglesExact": 772,
+    "allHandAttributesExact": true,
+    "handMaterialExact": true
+  },
+  {
+    "file": "gaucho-lod0.glb",
+    "drawnHandTrianglesExact": 5923,
+    "allHandAttributesExact": true,
+    "handMaterialExact": true
+  },
+  {
+    "file": "gaucho-lod1.glb",
+    "drawnHandTrianglesExact": 2058,
+    "allHandAttributesExact": true,
+    "handMaterialExact": true
+  },
+  {
+    "file": "gaucho-lod2.glb",
+    "drawnHandTrianglesExact": 772,
+    "allHandAttributesExact": true,
+    "handMaterialExact": true
+  },
+  {
+    "file": "granadero-lod0.glb",
+    "drawnHandTrianglesExact": 5923,
+    "allHandAttributesExact": true,
+    "handMaterialExact": true
+  },
+  {
+    "file": "granadero-lod1.glb",
+    "drawnHandTrianglesExact": 2058,
+    "allHandAttributesExact": true,
+    "handMaterialExact": true
+  },
+  {
+    "file": "granadero-lod2.glb",
+    "drawnHandTrianglesExact": 772,
+    "allHandAttributesExact": true,
+    "handMaterialExact": true
+  },
+  {
+    "file": "royalist-lod0.glb",
+    "drawnHandTrianglesExact": 5923,
+    "allHandAttributesExact": true,
+    "handMaterialExact": true
+  },
+  {
+    "file": "royalist-lod1.glb",
+    "drawnHandTrianglesExact": 2058,
+    "allHandAttributesExact": true,
+    "handMaterialExact": true
+  },
+  {
+    "file": "royalist-lod2.glb",
+    "drawnHandTrianglesExact": 772,
+    "allHandAttributesExact": true,
+    "handMaterialExact": true
+  },
+  {
+    "file": "surgeon-lod0.glb",
+    "drawnHandTrianglesExact": 5923,
+    "allHandAttributesExact": true,
+    "handMaterialExact": true
+  },
+  {
+    "file": "surgeon-lod1.glb",
+    "drawnHandTrianglesExact": 2058,
+    "allHandAttributesExact": true,
+    "handMaterialExact": true
+  },
+  {
+    "file": "surgeon-lod2.glb",
+    "drawnHandTrianglesExact": 772,
+    "allHandAttributesExact": true,
+    "handMaterialExact": true
+  },
+  {
+    "file": "woman-scout-lod0.glb",
+    "drawnHandTrianglesExact": 5691,
+    "allHandAttributesExact": true,
+    "handMaterialExact": true
+  },
+  {
+    "file": "woman-scout-lod1.glb",
+    "drawnHandTrianglesExact": 1941,
+    "allHandAttributesExact": true,
+    "handMaterialExact": true
+  },
+  {
+    "file": "woman-scout-lod2.glb",
+    "drawnHandTrianglesExact": 742,
+    "allHandAttributesExact": true,
+    "handMaterialExact": true
+  },
+  {
+    "file": "woman-shawl-lod0.glb",
+    "drawnHandTrianglesExact": 5691,
+    "allHandAttributesExact": true,
+    "handMaterialExact": true
+  },
+  {
+    "file": "woman-shawl-lod1.glb",
+    "drawnHandTrianglesExact": 1941,
+    "allHandAttributesExact": true,
+    "handMaterialExact": true
+  },
+  {
+    "file": "woman-shawl-lod2.glb",
+    "drawnHandTrianglesExact": 742,
+    "allHandAttributesExact": true,
+    "handMaterialExact": true
+  },
+  {
+    "file": "worker-lod0.glb",
+    "drawnHandTrianglesExact": 5923,
+    "allHandAttributesExact": true,
+    "handMaterialExact": true
+  },
+  {
+    "file": "worker-lod1.glb",
+    "drawnHandTrianglesExact": 2058,
+    "allHandAttributesExact": true,
+    "handMaterialExact": true
+  },
+  {
+    "file": "worker-lod2.glb",
+    "drawnHandTrianglesExact": 772,
+    "allHandAttributesExact": true,
+    "handMaterialExact": true
+  }
+]

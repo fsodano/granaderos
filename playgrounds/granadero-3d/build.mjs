@@ -6,6 +6,9 @@ await rm(target,{recursive:true,force:true});
 await mkdir(target,{recursive:true});
 for(const name of ['index.html','src'])await cp(new URL(name,import.meta.url),new URL(name,target),{recursive:true});
 await cp(new URL('public/assets',import.meta.url),new URL('assets',target),{recursive:true});
+// Package the same single shared module served by the development route.
+await mkdir(new URL('game',target),{recursive:true});
+await cp(new URL('../../game/skin-palette.js',import.meta.url),new URL('game/skin-palette.js',target));
 await mkdir(new URL('vendor/three',target),{recursive:true});
 for(const name of ['build','examples/jsm'])await cp(new URL(`node_modules/three/${name}`,import.meta.url),new URL(`vendor/three/${name}`,target),{recursive:true});
 // Copy only the models this lab can select. Production sources stay in one place.

@@ -1,3 +1,4 @@
+import {applySkinPalette} from '../../../game/skin-palette.js';
 import {AnimationMixer,AnimationAction,Group,Mesh,SkinnedMesh,Skeleton,Material,MeshStandardMaterial,LoopOnce,LoopRepeat,Vector3,Object3D} from 'three';
 import {clone} from 'three/addons/utils/SkeletonUtils.js';
 import {resolveActorAction,selectActorClipVariant} from '../../../game/actor-action-contract.js';
@@ -95,7 +96,7 @@ export class ActorRuntime {
     const skinName=this.asset.appearance.materials?.skin??'Skin';
     this.model.traverse(node=>{if(!(node instanceof Mesh))return;
       const materials=Array.isArray(node.material)?node.material:[node.material];
-      const updated=materials.map(material=>{if(material.name!==skinName&&material.userData.role!=='skin')return material;let owned=material;if(!this.ownedMaterials.has(material)){owned=material.clone();this.ownedMaterials.add(owned);}if(owned instanceof MeshStandardMaterial)owned.color.set(this.asset.manifest.skinTones?.[visual.skin]??({light:'#d5a788',brown:'#965d40',dark:'#51301f'} as Record<string,string>)[visual.skin]);return owned;});
+      const updated=materials.map(material=>{if(material.name!==skinName&&material.userData.role!=='skin')return material;let owned=material;if(!this.ownedMaterials.has(material)){owned=material.clone();this.ownedMaterials.add(owned);}if(owned instanceof MeshStandardMaterial)applySkinPalette(owned,this.asset.manifest.skinTones?.[visual.skin]??({light:'#d5a788',brown:'#965d40',dark:'#51301f'} as Record<string,string>)[visual.skin]);return owned;});
       node.material=Array.isArray(node.material)?updated:updated[0];
     });
   }

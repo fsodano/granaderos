@@ -1,0 +1,107 @@
+{
+  "status": "frozen",
+  "scope": "accepted face/head/hair only on main724; no clothing/hands/banks",
+  "moduleSha256": "1c9e88f14317843e2371e7517efd2d918065474b8c65c4577a56826cc10b70f0",
+  "bodies": 24,
+  "bodyReplayByteExact": 24,
+  "packagedHeadSourcesExact": 24,
+  "preexistingNonBodyLibraryFilesExact": 77,
+  "mainManifestGameplayRecordsExact": true,
+  "mainNativeRigAndSkinBindsExact": true,
+  "mainMaterialsExact": true,
+  "mainNonHeadRenderedTrianglesAttributesAndMorphsExact": true,
+  "realBlenderBuildHookByteExact": [
+    "granadero-lod2",
+    "worker-lod2"
+  ],
+  "sourceTests": "7 passed",
+  "neck": {
+    "largeVisibleGap": "Present in matched unchanged-main render; not introduced by face cut",
+    "restBoundaryMaxDifferenceM": 0.00020079891,
+    "posedBoundaryMaxDifferenceM": 0.0004464749944323874,
+    "clips": [
+      "stand.idle.unarmed",
+      "stand.idle.long-gun",
+      "stand.aim.long-gun",
+      "stand.fire.short-gun"
+    ],
+    "samplesPerClip": 6,
+    "notBitExact": true,
+    "before": "neck-review-before/granadero/stand.idle.unarmed.sample-1.face.png",
+    "after": "neck-review-after/granadero/stand.idle.unarmed.sample-1.face.png",
+    "renderNote": "Offline after tint is wrong because the prior renderer does not resolve Face_Skin albedo-reference per material; browser palette has been checked by root. Geometry comparison remains matched."
+  },
+  "proofFiles": [
+    "final-preservation-proof.json",
+    "source-integration-receipt.json",
+    "posed-neck-proof.json",
+    "neck-boundary-proof.json"
+  ],
+  "limitations": [
+    "Face/hair-only scope deliberately retains main clothing/hat geometry and existing collar opening.",
+    "Whole connected neck/head was replaced; lower cut contour matches within measured tolerance, not bit-exact."
+  ],
+  "finalManifestSha256": "b5cb0df963910d6204e179dc022b222fd8dbf93a7481730f5b6d0e07416301f0",
+  "metadataException": {
+    "reason": "Retained coarse cloth references must name the face-composed equivalent LOD0 donor",
+    "files": [
+      {
+        "file": "friar-lod1.glb",
+        "beforeSha256": "bc4bdd70699d5e6c8746ad8048cdb91e3b5e536279300848ed0e1072871e4308",
+        "afterSha256": "d7cbb1e5eb84449f211d016fa57de7f629c1b24b1c6fb7be205e80c4e84c49d8",
+        "bytes": 2767088,
+        "mesh": 2,
+        "sourceBeforeSha256": "b866a9269b046007dbff7191afa91e65a86128c36bf64925a5921e6ed8f43bd9",
+        "sourceAfterSha256": "f903132a8d7faebab4b2219760e3ce3c68997cba44e10baccb3c1739b59417da",
+        "binaryExact": true,
+        "allRenderedAttributesIndicesMorphsMaterialsRigExact": true,
+        "onlyDocumentChange": "meshes[mesh].extras.nativeClothTopology.sourceSha256"
+      },
+      {
+        "file": "friar-lod2.glb",
+        "beforeSha256": "e4b11fa605d11f4522c5f07c8d86564990e090840bc54edf23955dc318ce8c5b",
+        "afterSha256": "386fc77718c780518390aa3c8c51e478c08ec387956bd9e3b27c6cbf18e6bed6",
+        "bytes": 1068716,
+        "mesh": 2,
+        "sourceBeforeSha256": "b866a9269b046007dbff7191afa91e65a86128c36bf64925a5921e6ed8f43bd9",
+        "sourceAfterSha256": "f903132a8d7faebab4b2219760e3ce3c68997cba44e10baccb3c1739b59417da",
+        "binaryExact": true,
+        "allRenderedAttributesIndicesMorphsMaterialsRigExact": true,
+        "onlyDocumentChange": "meshes[mesh].extras.nativeClothTopology.sourceSha256"
+      },
+      {
+        "file": "woman-shawl-lod1.glb",
+        "beforeSha256": "2700d396cb33915bde5ac3ddca3099a0e15c4d4dc3c1f5d1ea3c5373c6a09538",
+        "afterSha256": "123dd039f32f2f062992635a6cf63ab1a917da68921a26464403b9349bd92d63",
+        "bytes": 2767600,
+        "mesh": 1,
+        "sourceBeforeSha256": "840681442792a9ce2c0c688ceb8d5542caec5d618256c7366dc9bb8129765234",
+        "sourceAfterSha256": "64f09afe0d7ec85f49cb0d55bf7a640c9355a64b7f4ffbc7bde377a98d31e05e",
+        "binaryExact": true,
+        "allRenderedAttributesIndicesMorphsMaterialsRigExact": true,
+        "onlyDocumentChange": "meshes[mesh].extras.nativeClothTopology.sourceSha256"
+      },
+      {
+        "file": "woman-shawl-lod2.glb",
+        "beforeSha256": "6c3fd320a946ced813dd8d561db33e72dde5b991066bfc0ed59cdd3c134bfbfd",
+        "afterSha256": "839d9976fbd30be6c6c023fee8e4a7ec1fc47eafd55ce1298a84492cb9088c27",
+        "bytes": 956620,
+        "mesh": 1,
+        "sourceBeforeSha256": "840681442792a9ce2c0c688ceb8d5542caec5d618256c7366dc9bb8129765234",
+        "sourceAfterSha256": "64f09afe0d7ec85f49cb0d55bf7a640c9355a64b7f4ffbc7bde377a98d31e05e",
+        "binaryExact": true,
+        "allRenderedAttributesIndicesMorphsMaterialsRigExact": true,
+        "onlyDocumentChange": "meshes[mesh].extras.nativeClothTopology.sourceSha256"
+      }
+    ],
+    "allBinaryPayloadsExact": true,
+    "postCompositionReplayStage": "refresh-face-cloth-provenance.py"
+  },
+  "pipelineTests": {
+    "passed": 15,
+    "failed": 0,
+    "log": "pipeline-final.log"
+  },
+  "compositorAndHeadSourceManifestUnchanged": true,
+  "locomotionCompilerCheck": "passed"
+}

@@ -1,7 +1,7 @@
 import {clone as cloneSkeleton} from 'three/addons/utils/SkeletonUtils.js';
 
 export const characterChoices=[
- ['reference','Granadero · referencia aprobada'],['granadero','Granadero · juego'],
+ ['reference','Granadero · prototipo anterior'],['granadero','Granadero · juego'],
  ['royalist','Realista'],['worker','Trabajador'],['surgeon','Cirujano'],['gaucho','Gaucho'],
  ['friar','Fraile'],['woman-scout','Exploradora'],['woman-shawl','Mujer con rebozo']
 ];

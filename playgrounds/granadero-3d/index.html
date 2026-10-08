@@ -11,12 +11,12 @@
   <header class="masthead"><a class="brand" href="/" aria-label="Granaderos"><span class="brand-mark">G</span><span>GRANADEROS<small>LABORATORIO 3D</small></span></a><span class="project-tag"><span></span>Personajes · mundo 3D</span></header>
   <main class="workspace">
     <section class="stage-panel" aria-label="Vista 3D del personaje">
-      <div class="stage-heading"><div><p class="eyebrow">PERSONAJES DE GRANADEROS</p><h1 id="character-title">Granadero · referencia aprobada</h1><p class="subheading">Movimiento, armas y apariencia.</p></div><span class="uniform-tag">ESTUDIO DE UNIFORME</span></div>
+      <div class="stage-heading"><div><p class="eyebrow">PERSONAJES DE GRANADEROS</p><h1 id="character-title">Granadero · juego</h1><p class="subheading">Movimiento, armas y apariencia.</p></div><span class="uniform-tag">ESTUDIO DE UNIFORME</span></div>
       <div id="viewport" class="viewport">
         <canvas id="scene" tabindex="0" aria-label="Granadero en vista isométrica. Arrastrá para mover la vista. Usá la rueda para acercarte."></canvas>
         <div id="loading" class="loading" role="status"><span class="loading-ring"></span><strong>Preparando el granadero…</strong><span>Modelo y animaciones</span></div>
         <div class="scene-label"><span class="live-dot"></span><span id="scene-state">Cargando</span></div>
-        <div class="camera-toolbar" role="group" aria-label="Vista isométrica"><span class="camera-label">Isométrica</span><button id="zoom-out" aria-label="Alejar" title="Alejar">−</button><button id="zoom-in" aria-label="Acercar" title="Acercar">+</button><button id="reset-camera" aria-label="Centrar vista" title="Centrar vista">↺</button></div>
+        <div class="camera-toolbar" role="group" aria-label="Vista isométrica"><span class="camera-label">Isométrica</span><button id="focus-face" aria-label="Ver rostro" title="Ver rostro">Rostro</button><button id="zoom-out" aria-label="Alejar" title="Alejar">−</button><button id="zoom-in" aria-label="Acercar" title="Acercar">+</button><button id="reset-camera" aria-label="Centrar vista" title="Centrar vista">↺</button></div>
         <span class="stage-hint">Arrastrá para mover · Rueda para acercar</span>
       </div>
       <div class="playback-bar"><button id="pause" disabled aria-label="Pausar animación">Ⅱ <span>Pausar</span></button><label class="speed-label" for="speed">Velocidad <input id="speed" type="range" min="0.25" max="1.5" step="0.25" value="1"><output id="speed-value">1×</output></label><span id="motion-state" class="motion-state">En el sitio</span></div>
