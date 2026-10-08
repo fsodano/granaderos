@@ -1,8 +1,9 @@
+import type {ContactActorModel} from './contact-target-model';
 import {AnimationAction,AnimationClip,AnimationMixer,Matrix4,Mesh,Object3D,Quaternion,Skeleton,SkinnedMesh,Triangle,Vector3} from 'three';
 import type {ClipSpec} from './actor-assets';
 import type {ActorCue,ContactTarget,ContactSupport} from './presentation';
 
-export type ContactActorResolver=(target:ContactTarget)=>{model:Object3D;root:Object3D}|undefined;
+export type ContactActorResolver=(target:ContactTarget)=>ContactActorModel|undefined;
 type Limb={base:Object3D;middle:Object3D;end:Object3D;first:number;second:number};
 type Sole={mesh:SkinnedMesh;vertices:number[];outline:number[];floor:number};
 type SkinInfluence={bone:Object3D;point:Vector3;weight:number};

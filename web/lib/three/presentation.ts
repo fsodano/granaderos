@@ -28,7 +28,7 @@ export type ContactSupport={floors:readonly {minX:number;maxX:number;minZ:number
 export type CareCue={mode:'self'}|{mode:'patient';target:ContactTarget;support:ContactSupport};
 export type ActorCue={id:string;action:string;shotHand?:'primary'|'offhand';hand?:'handRight'|'handLeft';startedAt:number;durationMs?:number;phase?:string;phaseStartedAt?:number;phaseDurationMs?:number;fromPosture?:string;toPosture?:string;work?:readonly AnimationWork[];contactTurn?:{fromYaw:number;toYaw:number};contactTarget?:ContactTarget;contactSupport?:ContactSupport;care?:CareCue;healInterval?:true};
 export type VisualItem={id:string;reference:string;socket:'handRight'|'handLeft'|'back'|'hip';fittings?:any};
-export type ActorVisual={key:string;id:string;kind:ActorKind;appearance:string;skin:string;side:string;tacticalLevel:number;position:[number,number,number];yaw:number;posture:string;mounted:boolean;action:string;idleAction:string;equipment:string;items:VisualItem[];garments:Record<string,string|null>;cue?:ActorCue;contactWarm?:{targets:ContactTarget[];support:ContactSupport};motion?:Motion;selected:boolean;bodyHeights:Record<string,number>};
+export type ActorVisual={key:string;id:string;kind:ActorKind;appearance:string;skin:string;side:string;tacticalLevel:number;position:[number,number,number];yaw:number;posture:string;mounted:boolean;action:string;idleAction:string;equipment:string;items:VisualItem[];garments:Record<string,string|null>;cue?:ActorCue;careWarm?:{targets:ContactTarget[];support:ContactSupport};contactWarm?:{targets:ContactTarget[];support:ContactSupport};motion?:Motion;selected:boolean;bodyHeights:Record<string,number>};
 export const actorKey=(kind:ActorKind,id:string)=>`${kind}:${id}`;
 export function admittedActors(state:any,players:any[],revealed:ReadonlySet<string>):ActorEntry[]{
   const result:ActorEntry[]=[];
@@ -184,6 +184,13 @@ export function presentActors(state:any,entries:readonly ActorEntry[],positions:
     const source=entries.find(entry=>entry.key===visual.key)!;
     const candidates=result.filter(target=>target.key!==visual.key&&target.side!==visual.side&&!target.mounted&&['standing','crouched'].includes(target.posture)&&target.tacticalLevel===visual.tacticalLevel&&(target.position[0]-visual.position[0])**2+(target.position[2]-visual.position[2])**2<=2*TILE_METRES**2+1e-8).sort((a,b)=>a.key.localeCompare(b.key));
     if(candidates.length)visual.contactWarm={targets:candidates.map(target=>({key:target.key,appearance:target.appearance,position:[...target.position],yaw:target.yaw,posture:target.posture,mounted:target.mounted,action:target.action,bodyHeights:{...target.bodyHeights}})),support:contactSupport(state,source.actor,visual,revealed,result)};
+  }
+  // A selected medic may prepare only current admitted adjacent comrades.
+  // Preparation contains no orders, wound locations or future frame state.
+  for(const visual of result)if(visual.selected&&!visual.cue&&!visual.motion?.moving&&visual.posture==='prone'&&!visual.mounted&&visual.items.some(item=>item.id==='medkits')){
+    const source=entries.find(entry=>entry.key===visual.key)!;
+    const candidates=result.filter(target=>target.key!==visual.key&&target.side===visual.side&&target.kind==='unit'&&!target.mounted&&target.posture==='prone'&&target.action==='idle'&&target.tacticalLevel===visual.tacticalLevel&&(target.position[0]-visual.position[0])**2+(target.position[2]-visual.position[2])**2<=2*TILE_METRES**2+1e-8).sort((a,b)=>a.key.localeCompare(b.key));
+    if(candidates.length)visual.careWarm={targets:candidates.map(target=>({key:target.key,appearance:target.appearance,position:[...target.position],yaw:target.yaw,posture:target.posture,mounted:target.mounted,action:target.action,bodyHeights:{...target.bodyHeights}})),support:contactSupport(state,source.actor,visual,revealed,result)};
   }
   return result;
 }

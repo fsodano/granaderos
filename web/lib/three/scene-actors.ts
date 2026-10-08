@@ -21,7 +21,7 @@ export function advanceSceneActors({visuals,entry,active,delta,now,ambientPaused
  // Both groups tick exactly once. Pending/error/model admission stays with
  // the strict resolver; an old runtime can remain displayed while replacing.
  for(const contact of [false,true])for(const {visual,actor,runtime}of ready){
-  if(Boolean(visual.cue?.contactTarget)!==contact||actor.error)continue;
+  if(Boolean(visual.cue?.contactTarget||visual.cue?.care?.mode==='patient')!==contact||actor.error)continue;
   try{runtime.tick(ambientPaused&&visual.action==='idle'?0:delta,now,reducedMotion);}catch(error){actor.error=true;report(error);}
  }
  for(const {actor,runtime}of ready)if(!actor.error&&runtime.root.visible)try{runtime.prewarmContact?.();}catch(error){actor.error=true;report(error);}
