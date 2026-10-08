@@ -175,10 +175,12 @@ test('artillery operators and nearby prospective crew retain their gun duties in
  }
 });
 
-test('the inherited broken-primary cartridge sharing policy remains explicit and separate',()=>{
- const s=field({ammo:1},{condition:0}),before=structuredClone(s);
- assert.equal(isHandover(s),false);assert.equal(chooseEnemyAction({...s,phase:'enemy'},donor(s)).item,'inventory:ammo:pistol_69');
- const n=endTurn(s);assert.equal(donor(n).inventory.spare.instanceId,'donor-spare');assert.equal(recipient(n).weaponInstanceId,'recipient-empty');assert.equal(recipient(n).condition,0);assert.equal(recipient(n).loaded,0);assert.equal(recipient(n).ammo,1);assert.equal(unit(n,'p').hp,100);assert.deepEqual(s,before);
+test('broken-only cartridge demand no longer blocks the paid owned gun handover',()=>{
+ const s=field({ammo:1},{condition:0}),before=structuredClone(s),held=handRecord(donor(s),'primary'),old=handRecord(recipient(s),'primary');
+ assert.deepEqual(chooseEnemyAction({...s,phase:'enemy'},donor(s)),order);
+ const n=endTurn(s);assert.equal(n.lastError,null);assert.equal(donor(n).inventory.spare,undefined);assert.equal(donor(n).ap,0);assert.equal(donor(n).ammo,1);assert.deepEqual(handRecord(donor(n),'primary'),held);
+ assert.equal(recipient(n).weaponInstanceId,'donor-spare');assert.equal(recipient(n).condition,83);assert.equal(recipient(n).loaded,0);assert.equal(recipient(n).ammo,0);assert.equal(recipient(n).ap,0);assert.ok(unit(n,'p').hp<100);assert.equal(n.elapsedSeconds,6);
+ assert.deepEqual(Object.values(recipient(n).inventory).find(r=>r.instanceId==='recipient-empty'),old);assert.deepEqual(s,before);assert.deepEqual(n,endTurn(restored(s)));assert.doesNotThrow(()=>restored(n));
 });
 
 

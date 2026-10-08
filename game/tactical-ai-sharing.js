@@ -2,12 +2,22 @@ import {atHand,moveOrder,planningPoint} from './tactical-planning-space.js';
 import {canSee,hasLineOfSight,weaponFor,transferPreview,actionCosts} from './tactical.js';
 import {ammunitionByType,weaponAmmoType} from './ammunition-types.js';
 import {criticalFirstAidNeeded} from './first-aid.js';
+import {firearmServiceable} from './firearm-serviceability.js';
+import {secondHeldPistol,secondaryPistolView} from './paired-fire.js';
 
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 const available=u=>u.hp>0&&!u.unconscious&&!u.departure&&!u.fled&&!u.routed&&!u.surrendered;
 const present=u=>u.hp>0&&!u.departure&&!u.fled&&!u.routed&&!u.surrendered;
 const observed=(state,u,other)=>atHand(u,other)&&hasLineOfSight(state,u,other)||canSee(state,u,other);
 const compareId=(a,b)=>String(a.id)<String(b.id)?-1:String(a.id)>String(b.id)?1:0;
+
+// A broken primary cannot use incoming cartridges. A real held healthy
+// secondary may still use its own finite family through the existing reload.
+function cartridgeDemandView(ally){
+  if(firearmServiceable(ally))return ally;
+  const other=secondHeldPistol(ally);
+  return other&&firearmServiceable(other)?secondaryPistolView(ally,other):null;
+}
 
 // Donors act with their own AP and finite pack. No remote requests or supply
 // promises survive a move: every decision checks the current field again.
@@ -26,9 +36,11 @@ export function chooseSupplySharingAction(state,unit,targets,paths){
     !other.knockedDown&&!other.entangled&&distance(unit,other)<=5&&observed(state,unit,other)).sort(compareId);
   const needs=[];
   for(const ally of allies){
-    const capacity=ally.weaponDropped?0:weaponFor({...ally,activeSlot:'primary'}).capacity??0;
-    const type=weaponAmmoType(ally.weapon);
-    if(type&&spare[type]>0&&capacity>0&&!ally.jammed&&ally.loaded===0&&!(ammunitionByType(ally)[type]>0))
+    const gun=cartridgeDemandView(ally);
+    const capacity=!gun||gun.weaponDropped?0:weaponFor({...gun,activeSlot:'primary'}).capacity??0;
+    // Retain the healthy-primary policy; a secondary carries its own authored load.
+    const type=gun===ally?weaponAmmoType(ally.weapon):gun?weaponAmmoType(gun):null;
+    if(type&&spare[type]>0&&capacity>0&&!gun.jammed&&gun.loaded===0&&!(ammunitionByType(ally)[type]>0))
       for(const [key,stack] of sources)if(stack.ammoType===type)needs.push({ally,item:`inventory:${key}`,count:Math.min(capacity,spare[type],stack.count),priority:1});
     if(spareDressings&&ally.medical>0&&ally.medkits===0){
       // A dressing has a present purpose only when the recipient can reach a
