@@ -1969,8 +1969,8 @@
   "animationLibraries": {
     "male": {
       "url": "/models/characters/male-animations.glb",
-      "bytes": 12067128,
-      "sha256": "5bec05916de50ee256db2344a95f237476e78363b92d7da1c52f74c087cdcd43",
+      "bytes": 12281968,
+      "sha256": "63fd64af5b31c93c34a63d6548a6de3d124e73a42a374bfb6bd4d92052aa1317",
       "clips": [
         {
           "name": "stand.idle.unarmed",
@@ -4799,6 +4799,19 @@
             "floor": 0.002,
             "retainedInputTimes": true,
             "retainedNativeBodyAndWeapon": true
+          },
+          "nativeProneElbowSupport": {
+            "method": "native-published-fixed-wrist-elbow-plane-v1",
+            "rotations": [
+              "upperarm_l",
+              "lowerarm_l",
+              "hand_l"
+            ],
+            "sampleRate": 120,
+            "maximumArc": 0.2,
+            "retainedNativeWristAtKeys": true,
+            "retainedBodyAndPaidClocks": true,
+            "trackDigest": "05e0274e6ebb6a7c90735590c9ea96a56a6d50bda464432caa0556bdae31beed"
           }
         },
         {
@@ -11948,6 +11961,19 @@
             "floor": 0.002,
             "retainedInputTimes": true,
             "retainedNativeBodyAndWeapon": true
+          },
+          "nativeProneElbowSupport": {
+            "method": "native-published-fixed-wrist-elbow-plane-v1",
+            "rotations": [
+              "upperarm_l",
+              "lowerarm_l",
+              "hand_l"
+            ],
+            "sampleRate": 120,
+            "maximumArc": 0.2,
+            "retainedNativeWristAtKeys": true,
+            "retainedBodyAndPaidClocks": true,
+            "trackDigest": "bdeac63b415f1399b2bd430219c2768cecbad5b6e2871e52841e41743b71c148"
           }
         },
         {
@@ -12642,6 +12668,19 @@
             "floor": 0.002,
             "retainedInputTimes": true,
             "retainedNativeBodyAndWeapon": true
+          },
+          "nativeProneElbowSupport": {
+            "method": "native-published-fixed-wrist-elbow-plane-v1",
+            "rotations": [
+              "upperarm_l",
+              "lowerarm_l",
+              "hand_l"
+            ],
+            "sampleRate": 120,
+            "maximumArc": 0.2,
+            "retainedNativeWristAtKeys": true,
+            "retainedBodyAndPaidClocks": true,
+            "trackDigest": "3bdfbaf7a167770895a8bf5b1440305efd1a99bb58d868140c71a064927a3bed"
           }
         },
         {
@@ -13336,6 +13375,19 @@
             "floor": 0.002,
             "retainedInputTimes": true,
             "retainedNativeBodyAndWeapon": true
+          },
+          "nativeProneElbowSupport": {
+            "method": "native-published-fixed-wrist-elbow-plane-v1",
+            "rotations": [
+              "upperarm_l",
+              "lowerarm_l",
+              "hand_l"
+            ],
+            "sampleRate": 120,
+            "maximumArc": 0.2,
+            "retainedNativeWristAtKeys": true,
+            "retainedBodyAndPaidClocks": true,
+            "trackDigest": "1cacf29daa2db12760fb44859c1c03347f88e54641902b4c0cdd16327853a485"
           }
         },
         {
@@ -14030,6 +14082,19 @@
             "floor": 0.002,
             "retainedInputTimes": true,
             "retainedNativeBodyAndWeapon": true
+          },
+          "nativeProneElbowSupport": {
+            "method": "native-published-fixed-wrist-elbow-plane-v1",
+            "rotations": [
+              "upperarm_l",
+              "lowerarm_l",
+              "hand_l"
+            ],
+            "sampleRate": 120,
+            "maximumArc": 0.22,
+            "retainedNativeWristAtKeys": true,
+            "retainedBodyAndPaidClocks": true,
+            "trackDigest": "b3e727e8c84572c8a043a06ab9c616390ffb361d3e0477084d7e10005c126239"
           }
         },
         {
@@ -14724,6 +14789,19 @@
             "floor": 0.002,
             "retainedInputTimes": true,
             "retainedNativeBodyAndWeapon": true
+          },
+          "nativeProneElbowSupport": {
+            "method": "native-published-fixed-wrist-elbow-plane-v1",
+            "rotations": [
+              "upperarm_l",
+              "lowerarm_l",
+              "hand_l"
+            ],
+            "sampleRate": 120,
+            "maximumArc": 0.2,
+            "retainedNativeWristAtKeys": true,
+            "retainedBodyAndPaidClocks": true,
+            "trackDigest": "5ac01388076aca58da7af5cf9e3a81893f7ccbc3e1df313daa479e44f8333b34"
           }
         },
         {
@@ -15418,6 +15496,19 @@
             "floor": 0.002,
             "retainedInputTimes": true,
             "retainedNativeBodyAndWeapon": true
+          },
+          "nativeProneElbowSupport": {
+            "method": "native-published-fixed-wrist-elbow-plane-v1",
+            "rotations": [
+              "upperarm_l",
+              "lowerarm_l",
+              "hand_l"
+            ],
+            "sampleRate": 120,
+            "maximumArc": 0.4,
+            "retainedNativeWristAtKeys": true,
+            "retainedBodyAndPaidClocks": true,
+            "trackDigest": "8650f0ff4601199523142e6aacb29931fb396d0ce16672cb60af02238e9557bf"
           }
         },
         {
