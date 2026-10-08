@@ -946,3 +946,19 @@ screenshots without browser errors. The public review includes all six rifles
 and the Baker's paid two-turn completion. The
 [rifle sleeve review](prone-rifle-sleeve-support.md) records the denser selected
 curves, retained boundary-timing captures and remaining motion limits.
+
+## Source rectangular window bars
+
+Authored rectangular windows now use the retained source's three pale inset
+bars; small windows omit the transverse stroke. Existing shell apertures,
+glass, framing, standing approaches and sight gaps remain exact. Saved legacy
+grilles and the accepted parish arches, lattice and shutters keep their own
+helpers.
+
+All 72 current affected checks pass with TypeScript, documentation, 38 baseline
+checks and export `c9ba90f375ef` (1,245 files, 1,040 references). Twenty-four
+current normal chapel/smithy views pass without browser errors with exact
+capture source pins. The
+[rectangular grille review](../art/reviews/rectangular-window-bars/README.md)
+records the source formulas, original failing source checks and explicit native
+aperture adaptation. Full window framing and glazing parity remain open.
