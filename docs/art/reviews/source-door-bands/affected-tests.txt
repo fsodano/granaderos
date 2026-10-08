@@ -1,0 +1,16 @@
+✔ authored cross bands retain the Opening source proportions and colour on both leaf faces (50.165958ms)
+✔ all fourteen compiled templates and roof edits retain supported bands at four rotations (5314.93625ms)
+✔ short cutaways and unrequested legacy leaves retain their existing band and hardware rules (26.390708ms)
+✔ real open doors keep the standing approach and sight rays clear with source-sized bands (3320.450791ms)
+✔ retained door styles expose their panels, straps and barn braces on both leaf faces (30.1585ms)
+✔ actual compiled doors retain their authored styles and both faces at four catalogue rotations (2581.364667ms)
+✔ open authored doors clear the standing opening at every rotation and breaches remove the leaves (2178.461875ms)
+✔ short room cutaways omit full-size hardware and preserve the existing low leaf (1074.374917ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 10263.303166

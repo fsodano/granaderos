@@ -120,7 +120,7 @@ export function buildBuilding(b0:WorldBuilding,input:WorldInput,T:number,geometr
             const w=double?ow*.5:ow,hinge=new Group();hinge.position.set(axis==='x'?mid-ow*.5+side*ow:cross,tileBase+sill,axis==='x'?cross:mid-ow*.5+side*ow);hinge.rotation.y=axis==='x'?0:-Math.PI*.5;
             if(tile.open)hinge.rotation.y+=(side===1?-1:1)*Math.PI*.48;
             const part=new WorldBatch(geometry),sign=side===1?-1:1;
-            addDoorLeaf(part,materials,{width:w,height:openingHeight,sign,style,broken:Boolean(tile.broken),light});
+            addDoorLeaf(part,materials,{width:w,height:openingHeight,sign,style,broken:Boolean(tile.broken),light,sourceBands:!legacy||b.wallFinish!==undefined});
             const leaf=part.finish(`door-leaf:${id}:${side}`);leaf.userData.style=style;hinge.add(leaf);leafGroup.add(hinge);
           }
           group.add(leafGroup);
