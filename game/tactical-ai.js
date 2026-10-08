@@ -4,6 +4,7 @@ import {chooseGrenadeThrow} from './tactical-ai-grenades.js';
 import {sameSurface,spaceKey,surfaceAt,tacticalLevel} from './tactical-space.js';
 import {atHand,moveOrder,planningPoint} from './tactical-planning-space.js';
 import {chooseSupplySharingAction} from './tactical-ai-sharing.js';
+import {choosePackedGunHandover} from './tactical-ai-gun-handover.js';
 import {chooseScavengingAction} from './tactical-ai-scavenging.js';
 import {directionTo,facingAllowsSight,turnAPCost} from './tactical-awareness.js';
 import {getReachable, hasFirearm, canSee, hasLineOfSight, shotChance, firearmShotOptions, actionCosts, stanceCost, weaponFor, bladeFor, planEquipLoot, planSwapHands, swapHandsPreview, maxActionPoints, AP_CARRY_LIMIT, movementStepCost, climbPreview,knifeThrowPreview,meleePreview} from './tactical.js';
@@ -384,6 +385,8 @@ export function chooseEnemyAction(state, unit) {
   if (upkeep) return upkeep;
   const sharing = chooseSupplySharingAction(state, unit, targets, paths);
   if (sharing) return sharing;
+  const handover=choosePackedGunHandover(state,unit,targets,{readyGun,bestShot,backupWeapon});
+  if(handover)return handover;
   const scavenge = chooseScavengingAction(state, unit, targets, paths);
   if (scavenge) return scavenge;
 
