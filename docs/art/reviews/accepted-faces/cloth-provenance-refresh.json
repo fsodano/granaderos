@@ -1,0 +1,55 @@
+{
+  "stage": "face-only composition final donor identity refresh",
+  "codeSha256": "4f95db9a56fca431b9a6d3d99e9804467315f80410b388129d77829ac24fb194",
+  "rows": [
+    {
+      "file": "friar-lod1.glb",
+      "beforeSha256": "bc4bdd70699d5e6c8746ad8048cdb91e3b5e536279300848ed0e1072871e4308",
+      "afterSha256": "d7cbb1e5eb84449f211d016fa57de7f629c1b24b1c6fb7be205e80c4e84c49d8",
+      "bytes": 2767088,
+      "mesh": 2,
+      "sourceBeforeSha256": "b866a9269b046007dbff7191afa91e65a86128c36bf64925a5921e6ed8f43bd9",
+      "sourceAfterSha256": "f903132a8d7faebab4b2219760e3ce3c68997cba44e10baccb3c1739b59417da",
+      "binaryExact": true,
+      "allRenderedAttributesIndicesMorphsMaterialsRigExact": true,
+      "onlyDocumentChange": "meshes[mesh].extras.nativeClothTopology.sourceSha256"
+    },
+    {
+      "file": "friar-lod2.glb",
+      "beforeSha256": "e4b11fa605d11f4522c5f07c8d86564990e090840bc54edf23955dc318ce8c5b",
+      "afterSha256": "386fc77718c780518390aa3c8c51e478c08ec387956bd9e3b27c6cbf18e6bed6",
+      "bytes": 1068716,
+      "mesh": 2,
+      "sourceBeforeSha256": "b866a9269b046007dbff7191afa91e65a86128c36bf64925a5921e6ed8f43bd9",
+      "sourceAfterSha256": "f903132a8d7faebab4b2219760e3ce3c68997cba44e10baccb3c1739b59417da",
+      "binaryExact": true,
+      "allRenderedAttributesIndicesMorphsMaterialsRigExact": true,
+      "onlyDocumentChange": "meshes[mesh].extras.nativeClothTopology.sourceSha256"
+    },
+    {
+      "file": "woman-shawl-lod1.glb",
+      "beforeSha256": "2700d396cb33915bde5ac3ddca3099a0e15c4d4dc3c1f5d1ea3c5373c6a09538",
+      "afterSha256": "123dd039f32f2f062992635a6cf63ab1a917da68921a26464403b9349bd92d63",
+      "bytes": 2767600,
+      "mesh": 1,
+      "sourceBeforeSha256": "840681442792a9ce2c0c688ceb8d5542caec5d618256c7366dc9bb8129765234",
+      "sourceAfterSha256": "64f09afe0d7ec85f49cb0d55bf7a640c9355a64b7f4ffbc7bde377a98d31e05e",
+      "binaryExact": true,
+      "allRenderedAttributesIndicesMorphsMaterialsRigExact": true,
+      "onlyDocumentChange": "meshes[mesh].extras.nativeClothTopology.sourceSha256"
+    },
+    {
+      "file": "woman-shawl-lod2.glb",
+      "beforeSha256": "6c3fd320a946ced813dd8d561db33e72dde5b991066bfc0ed59cdd3c134bfbfd",
+      "afterSha256": "839d9976fbd30be6c6c023fee8e4a7ec1fc47eafd55ce1298a84492cb9088c27",
+      "bytes": 956620,
+      "mesh": 1,
+      "sourceBeforeSha256": "840681442792a9ce2c0c688ceb8d5542caec5d618256c7366dc9bb8129765234",
+      "sourceAfterSha256": "64f09afe0d7ec85f49cb0d55bf7a640c9355a64b7f4ffbc7bde377a98d31e05e",
+      "binaryExact": true,
+      "allRenderedAttributesIndicesMorphsMaterialsRigExact": true,
+      "onlyDocumentChange": "meshes[mesh].extras.nativeClothTopology.sourceSha256"
+    }
+  ],
+  "sourceFaceChunksAndCompositorUnchanged": true
+}

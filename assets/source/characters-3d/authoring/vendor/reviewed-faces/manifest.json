@@ -1,0 +1,260 @@
+{
+  "version": 1,
+  "scope": "Reviewed head/neck, eyes, brows and hair only; retain destination hands, costume, headwear and motion",
+  "mainRevision": "724a9c7236ff2dfe314cd7031abd3595d3ad8afe",
+  "donorSourceCheckpoint": "fe1487c1 plus accepted Worker generated facial albedo and collar-only composition; no collar geometry is selected",
+  "donorManifestSha256": "76a42d1ce60845c1aaa0609fe62ddeb753a3cab109818d675ba821b11bdda216",
+  "extraction": "accepted_faces.extract_head_source; complete native-bone-weighted connected components",
+  "sources": {
+    "granadero-lod0": {
+      "path": "granadero-lod0.glb",
+      "preset": "granadero",
+      "lod": 0,
+      "sha256": "26ccea04728dcd8257fbe0e9fb8d7e07dc279304a8f26131cbb735041f805dba",
+      "donorBodySha256": "ae600a0416e00b81f1062971586571490959667ffcf31d542dcbd49a1494a9bf",
+      "bytes": 2589960
+    },
+    "granadero-lod1": {
+      "path": "granadero-lod1.glb",
+      "preset": "granadero",
+      "lod": 1,
+      "sha256": "00c6bb6fe8edce7bd4308e607f32804bc55d3ea6ea869c4469c81fd79eed4daa",
+      "donorBodySha256": "e2873161ff1413c5481f9cfcb59354701e0cad21025c30f90339fed81b72e227",
+      "bytes": 1995056
+    },
+    "granadero-lod2": {
+      "path": "granadero-lod2.glb",
+      "preset": "granadero",
+      "lod": 2,
+      "sha256": "51f5897aa1e33f50b536ae0dcc772f7735c6d3d4999abf197aae28dd0045fc58",
+      "donorBodySha256": "f2e8c6d8676e52bb852d1590db1340e75916358297345f3f4f946cc8d5c2d4c5",
+      "bytes": 493176
+    },
+    "royalist-lod0": {
+      "path": "royalist-lod0.glb",
+      "preset": "royalist",
+      "lod": 0,
+      "sha256": "85e28c2388608274117b061ca19043dcdf5759b0f6a6ff0c540db5392c43e77a",
+      "donorBodySha256": "20d3e6a37cba688bc7344c63290efba61163c15e06f1000e096df7ef2f7a6a22",
+      "bytes": 2469772
+    },
+    "royalist-lod1": {
+      "path": "royalist-lod1.glb",
+      "preset": "royalist",
+      "lod": 1,
+      "sha256": "e5e8f452d99f1c874228d53c407c3235acbf4d8e824552296799ee164532e8b3",
+      "donorBodySha256": "a95c668cc76951ded6fc1f241d08c3d222c163539c3ca5dff7687617c5843dea",
+      "bytes": 1923400
+    },
+    "royalist-lod2": {
+      "path": "royalist-lod2.glb",
+      "preset": "royalist",
+      "lod": 2,
+      "sha256": "e616f7669e998f2490427df7042c95e7175a84340263e044ca30eb57a8e38e23",
+      "donorBodySha256": "edaa87211e7a96045928bad8ca5d5f2e2e9e4feca6de7ed06c701977ef66b634",
+      "bytes": 462080
+    },
+    "worker-lod0": {
+      "path": "worker-lod0.glb",
+      "preset": "worker",
+      "lod": 0,
+      "sha256": "727d990149fd7e0cf7c4fe04b182a3494f6024c74d664f69b3ea6959f842487c",
+      "donorBodySha256": "e019b035e082ba67e5e06a062e15eb3408b0378caadf957dd232762fc9d6e498",
+      "bytes": 2903336
+    },
+    "worker-lod1": {
+      "path": "worker-lod1.glb",
+      "preset": "worker",
+      "lod": 1,
+      "sha256": "8f0331dc6e7ff272c96e00572595578a8b3fae394b4ade893cab183502296c37",
+      "donorBodySha256": "27bf16d99a16c944a9d53497b3172331b65be938432bab7a3902a75c4fac5848",
+      "bytes": 2301608
+    },
+    "worker-lod2": {
+      "path": "worker-lod2.glb",
+      "preset": "worker",
+      "lod": 2,
+      "sha256": "5fc09aa55f658fc1aaf1f004dbe04a9a00f4836519e7b9a166141faa7b1cdb8b",
+      "donorBodySha256": "a15c8a823636e2578342ce9b0780fc63446d38f22d8da2b5e0d6b30229dd5c36",
+      "bytes": 796984
+    },
+    "surgeon-lod0": {
+      "path": "surgeon-lod0.glb",
+      "preset": "surgeon",
+      "lod": 0,
+      "sha256": "df88944c1f3964bb7b0816ebf1870cff0ffae14f039921971744e16ef29eea1d",
+      "donorBodySha256": "913905f38df1be298fdf71f25e5d750619ca3cca6ed0a83511a225b602204410",
+      "bytes": 2536864
+    },
+    "surgeon-lod1": {
+      "path": "surgeon-lod1.glb",
+      "preset": "surgeon",
+      "lod": 1,
+      "sha256": "e5a4b49a5f65ba3cb057a67e4ebad11bc24825cca4397a0f4c3b3f56a046175d",
+      "donorBodySha256": "aee9c5a71cd1567e05ddc17b78b03ef7bde531835b624b8a9da7fb69ace301ca",
+      "bytes": 1977688
+    },
+    "surgeon-lod2": {
+      "path": "surgeon-lod2.glb",
+      "preset": "surgeon",
+      "lod": 2,
+      "sha256": "314908eb4d1426886073bb7131afafbfd21f37fd9a71066d870d97176abc7501",
+      "donorBodySha256": "f9801b4087169667fe497734f461658050d9bdc8dac5041c936df588d24c3fbf",
+      "bytes": 510900
+    },
+    "gaucho-lod0": {
+      "path": "gaucho-lod0.glb",
+      "preset": "gaucho",
+      "lod": 0,
+      "sha256": "aff7cfdb023f154523639c79f74fafaac2b605fd86984087438db2fa47d05db4",
+      "donorBodySha256": "40f286bbc56e8c90621005dbece1df4c1d1f6fdb1c624ee9bd6ee51a54a2806a",
+      "bytes": 2492624
+    },
+    "gaucho-lod1": {
+      "path": "gaucho-lod1.glb",
+      "preset": "gaucho",
+      "lod": 1,
+      "sha256": "977dbb760998f9dd0f20dc07581f95f0e6854943b003199717694974719a88ab",
+      "donorBodySha256": "cc884292707dd3d5ad86c32dce8649e58602dcfa1951d679e1950491e8e4b24e",
+      "bytes": 1933448
+    },
+    "gaucho-lod2": {
+      "path": "gaucho-lod2.glb",
+      "preset": "gaucho",
+      "lod": 2,
+      "sha256": "743e3ca7b743cac3411298e223ee8e9a99f1d4914db01447750a9011691e5bdf",
+      "donorBodySha256": "53a9c146f6ddf9c57312a0b3e5352c221e747b488eea84764dac3a31663ed276",
+      "bytes": 466660
+    },
+    "friar-lod0": {
+      "path": "friar-lod0.glb",
+      "preset": "friar",
+      "lod": 0,
+      "sha256": "90210bc6c2521ec9cddb4d9d4e5661da7a5e4c68d2b823dc504d01765790a41f",
+      "donorBodySha256": "b72a20bbd219ee7c80f667f6a55c7701c9d2e400c54b2503af55d0bf0c312a5d",
+      "bytes": 2492556
+    },
+    "friar-lod1": {
+      "path": "friar-lod1.glb",
+      "preset": "friar",
+      "lod": 1,
+      "sha256": "de074e6bbb25c9d1f78ff74b147d85c873b45072779d1640b2709031d3fdc47c",
+      "donorBodySha256": "ec48c3c9eaa27ad11c0b0c9889f6258537f8ba272a8fe7bc7787f4419c44a80e",
+      "bytes": 1933116
+    },
+    "friar-lod2": {
+      "path": "friar-lod2.glb",
+      "preset": "friar",
+      "lod": 2,
+      "sha256": "42abe5df6ee25b0d8f68129fa78a44568eceb85dec345ee2a89239380ccf6831",
+      "donorBodySha256": "d134235b384d82a72a36c3e4a764bf75cbb5a1b2e62412c9bc6d0d52bdfbd686",
+      "bytes": 466416
+    },
+    "woman-scout-lod0": {
+      "path": "woman-scout-lod0.glb",
+      "preset": "woman-scout",
+      "lod": 0,
+      "sha256": "d9455b74a8edf1c071de64ab4c1ae091488d6134d9fbe321b0bebbf9eb5f792b",
+      "donorBodySha256": "54d20755699a380660cfd20a83d0948bab9802b541b54ad2644f727cd5cd7060",
+      "bytes": 2653872
+    },
+    "woman-scout-lod1": {
+      "path": "woman-scout-lod1.glb",
+      "preset": "woman-scout",
+      "lod": 1,
+      "sha256": "e80abe33ed338b520ea77be81da25cc65424752593890b1eedbf7d5c117b41d1",
+      "donorBodySha256": "7e25d030019b88a5f8fb0351192049562246429f0193904dc00546e682e7881d",
+      "bytes": 2012760
+    },
+    "woman-scout-lod2": {
+      "path": "woman-scout-lod2.glb",
+      "preset": "woman-scout",
+      "lod": 2,
+      "sha256": "5d3258681c70d3c52e2537554893f74c9daf1e954358cf19ec39ed878f139bf8",
+      "donorBodySha256": "abf4b6373a38f3a131bc78a4d325beb8c18a155739ef7a7ab6c6d3a2e9e5788c",
+      "bytes": 511900
+    },
+    "woman-shawl-lod0": {
+      "path": "woman-shawl-lod0.glb",
+      "preset": "woman-shawl",
+      "lod": 0,
+      "sha256": "0552614f225e1275bfc94b7fc03740bfcaeb4657aa5e8ba876422921d3276370",
+      "donorBodySha256": "647fcbc89e4620090a789dfdd49f2c8b5a90fd9f77aad6018d147f5a1569b8a9",
+      "bytes": 2563648
+    },
+    "woman-shawl-lod1": {
+      "path": "woman-shawl-lod1.glb",
+      "preset": "woman-shawl",
+      "lod": 1,
+      "sha256": "65d078c4230fc0602a3526fc3096eb47a378a39dee8a3df6eaa81a4e9d0b9773",
+      "donorBodySha256": "2e748c0afb8b64485554ffc5d6319e0459a9c82ebc3a7f398bf70cc4410bc824",
+      "bytes": 1967656
+    },
+    "woman-shawl-lod2": {
+      "path": "woman-shawl-lod2.glb",
+      "preset": "woman-shawl",
+      "lod": 2,
+      "sha256": "051d390bb0c60639e1848d0fed72eb80e700f6f4650846ee53f09037a3a968ef",
+      "donorBodySha256": "506eda4d30b06fa59f62df33947fe5fc8691ecd7bf1640450848f45565c27482",
+      "bytes": 483236
+    }
+  },
+  "textures": {
+    "textures/040b6c27fc46ce2da454.png": "040b6c27fc46ce2da45430b075721781c0200c75729387d7937f45ab30399f1d",
+    "textures/09fa758893afdf340aac.png": "09fa758893afdf340aacb8102101cbcab335a4dfdfab5a6bac8a9a9a9b55200f",
+    "textures/1475bcc494750a798dc8.png": "1475bcc494750a798dc86f5fe0205673495f20d90fe979deffb6f5715c13f2e1",
+    "textures/18bd9589742c675e9df5.png": "18bd9589742c675e9df5351ef3986b07bd2439b0385e0c9e0005e1d040b5daa5",
+    "textures/2184ae3386ac18625140.png": "2184ae3386ac1862514018ac4c75241f3fa8dc37354989af05685231c88e6dfa",
+    "textures/230ddcfcde0deb6c86d4.png": "230ddcfcde0deb6c86d4ca56a83a467971a1ad793ab5496c959ae018ff2a13cd",
+    "textures/32c4f3619e14232ca1c9.png": "32c4f3619e14232ca1c97317f4d575838beae7f7814762585d296b7a25e86ac4",
+    "textures/35352ce8175250721c1f.png": "35352ce8175250721c1fa7f67c65adb94609f1ca7f7ae8f616d67696e487d2e3",
+    "textures/392889f6329752c020dd.png": "392889f6329752c020ddacf276bbf849c8e5b9ba5365641a059ff76a1d614f47",
+    "textures/3ba0430ec0e2e7158fa7.png": "3ba0430ec0e2e7158fa7c82e3cac15e1bd42a8dfbf6bcc9994f800efaa4ee9cb",
+    "textures/3bb81102c0b19c0f3604.png": "3bb81102c0b19c0f3604135d0bf048426b2d100d00221c934aaf0261a4876f78",
+    "textures/431f49c3e8d9e53ce775.png": "431f49c3e8d9e53ce77579c389f28aac3f7b32521543c5d414114065e452487e",
+    "textures/465ec17af5d67ed742e5.png": "465ec17af5d67ed742e5d22f1f6c5b8dac0d7a9d292b9e5ad5edf8a5c34a872c",
+    "textures/491089fb9520714de5b5.png": "491089fb9520714de5b5c1e6ccf9b3c5830ce3c201b97bb562af912a4662d91a",
+    "textures/55f2e13925123daea921.png": "55f2e13925123daea921e254ee30bbd2109adc583faf6ce9e2b1feabb34ae63a",
+    "textures/5818150cab42cf0b2325.png": "5818150cab42cf0b2325319cea8b42894eade25d731d364162276b634f55e069",
+    "textures/5b28ef6bb29b5654ff1a.png": "5b28ef6bb29b5654ff1aececf1922ff6faddd616029fe879ff828d6996269292",
+    "textures/614541eb0bf63d3a9b6e.png": "614541eb0bf63d3a9b6e6aba79764059d7a07cfdd6541df24f289ece8beb7150",
+    "textures/6323715e4e2b8cd3db7c.png": "6323715e4e2b8cd3db7c6d5d7125ea8910887cb4ace99a3f998083c5e01d2420",
+    "textures/6dd4cdb2fff9b1b7b2ee.png": "6dd4cdb2fff9b1b7b2eef82dadd716cf6ecce8bed5f6217e562510545f25c8a4",
+    "textures/756a3307c4231b534a82.png": "756a3307c4231b534a82393738368dc32063e38b3bd366e10142fd6ac6ef2a7c",
+    "textures/7ba8a99b0e70d6156272.png": "7ba8a99b0e70d615627236bcca1dbf961dff7bbbcaec8dfa5c2f7008bd1c1f22",
+    "textures/89a9d994989390a0e185.png": "89a9d994989390a0e1858cdb750bc432af0782e017c302677249a69ca4eef39a",
+    "textures/8d399752680e68257da6.png": "8d399752680e68257da624280d502a4fb71ec0f1524059c122cdaed10d8d2893",
+    "textures/8d624207fb5fdba71f3a.png": "8d624207fb5fdba71f3ad01c27b53a216b489218ba8420bd97806c824f19a225",
+    "textures/93f40634d5f47b42afdb.png": "93f40634d5f47b42afdb76dd3ebf22ce420022219eccaf65e1972ef860632a44",
+    "textures/940c90a65502a117ca0b.png": "940c90a65502a117ca0b309670a7eca7522df2d3cd9c24b002c3d81cd31dcbe7",
+    "textures/94c58f92a66daac53b99.png": "94c58f92a66daac53b99596d44ee274b3728cd8deb773a0d56f27dc51c8c227f",
+    "textures/98f3ec35fdedc87adac0.png": "98f3ec35fdedc87adac04d643040d7532aac5d07e656e12f517acdf6e1c3a9ea",
+    "textures/9c4d0ad1822c0e3d56d2.png": "9c4d0ad1822c0e3d56d2e6bf792d4d282bf60da205a48d2e868354f51ebcf0c4",
+    "textures/9f2116257d14fb045d70.png": "9f2116257d14fb045d7056108484a5c882180f9355ae5e6723929b59f899b783",
+    "textures/a4d52e34a5ed852382b9.png": "a4d52e34a5ed852382b9ec0a589732f2d30be8f5776ae751ce003503d1fffee4",
+    "textures/a6e08a37dd3d86917cf4.png": "a6e08a37dd3d86917cf45a233d0afefd307393f14f6c5bea1f0355420f741744",
+    "textures/a966ec3d74fe209f0820.png": "a966ec3d74fe209f082077c6267e0a7b8025235aa0d1ebd45078867a8e745de9",
+    "textures/ac9a975213b8d91f675a.png": "ac9a975213b8d91f675a42d12df74b8f57101775e337c9d3aaf619907b69e8da",
+    "textures/ad3939922a6916be23f6.png": "ad3939922a6916be23f68ff22420c69da3db72632294b43c9d64ec9c7edc7010",
+    "textures/b6163461b8122d6787f8.png": "b6163461b8122d6787f8f771e1a9f362c5663bef6136d74c2ec7301ddb58ed91",
+    "textures/bde948d56c47e9a9c68c.png": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2",
+    "textures/c3782e00498e23e6a224.png": "c3782e00498e23e6a224559d3df18d6d41db391d3e7b15861787bb2eef5f85e1",
+    "textures/c74d1bdaf5f3ed21a420.png": "c74d1bdaf5f3ed21a4204ee3096ac83025a7d086aa133eadd21fe80f64809835",
+    "textures/ca4f162e85fafee194c7.png": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c",
+    "textures/cfe00d87638eab122eb8.png": "cfe00d87638eab122eb8cf15c194a30cae5e6396d8c22d965fb9b6aa305b13b8",
+    "textures/d3947bf8ce7ee3fb076e.png": "d3947bf8ce7ee3fb076eefbe4beb50c415e6889a32b536838a1bb6019bf54603",
+    "textures/d93693724cacd6f0c6f1.png": "d93693724cacd6f0c6f11964ce62840313df8ce20e8efb85f94881fcd997a535",
+    "textures/db0dd096ce52f78a260d.png": "db0dd096ce52f78a260d6d545733e52a07e9abfc85b44e39bc1061a132f1cdfe",
+    "textures/ddbf803c43fc641d3512.png": "ddbf803c43fc641d35129edf6e8b9531d2f74d88781d88d0c4fb61ef78be9381",
+    "textures/e229e1eb9ffd5725d876.png": "e229e1eb9ffd5725d8767e8ddecc9544694780c03afeb468ce610c9370e3c1a7",
+    "textures/e31e4b28bb224684cf57.png": "e31e4b28bb224684cf571b7b88d6c627361dcd8906d8d7594c66989626e4edbd",
+    "textures/e35f74c0f83556345583.png": "e35f74c0f8355634558348073fa69517f15cdee745fe589b12e61b769654642b",
+    "textures/e3c6887d5bede0fbc1e4.png": "e3c6887d5bede0fbc1e43a05bfa7a16714982e21ee6c7a161481fee88f06f517",
+    "textures/e53e4d4ad46335cf9f8d.png": "e53e4d4ad46335cf9f8de5173b245d63ae1afc73367a5266f10bbd3432db18eb",
+    "textures/e735cf2c599a1dc3ddf1.png": "e735cf2c599a1dc3ddf13b4dbf3a1d1bc9da8d38154dc1052eaba46a66f5b369",
+    "textures/ea43152d1732ed05f4ea.png": "ea43152d1732ed05f4eaf431f74b02b89a1041440790c14af00fa70f1e49606f",
+    "textures/eb7d7e234e6b60198b7f.png": "eb7d7e234e6b60198b7f6b1da0cb1533ef15a96251c57535105d43e69f8fd10b",
+    "textures/f2f7c8420ab2e6bf72af.png": "f2f7c8420ab2e6bf72afeff90a8a3f99af3df31725d997cf18decedc55f96871",
+    "textures/f98f3d1f919d7d128ace.png": "f98f3d1f919d7d128aceffeaed54f56d1c01149ad0d7530e33a7bf36e3420e0c"
+  }
+}

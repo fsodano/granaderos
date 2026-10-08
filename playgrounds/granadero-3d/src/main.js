@@ -1,3 +1,4 @@
+import {applySkinPalette} from '../../../game/skin-palette.js';
 import * as THREE from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
@@ -9,7 +10,7 @@ import {characterChoices,prepareProductionCharacter} from './character-library.j
 
 const $=selector=>document.querySelector(selector);
 const canvas=$('#scene'),viewport=$('#viewport');
-const state={character:'reference',ready:false,weapon:'none',motion:'walk',skin:'blanco',paused:false,speed:1,travel:false,attacking:false,clip:null,night:false,pixelated:false};
+const state={character:'granadero',ready:false,weapon:'none',motion:'walk',skin:'blanco',paused:false,speed:1,travel:false,attacking:false,clip:null,night:false,pixelated:false};
 const labels={none:'Sin arma',rifle:'Fusil',sabre:'Sable',pistol:'Pistola',knife:'Cuchillo',idle:'Quieto',walk:'Caminando',run:'Corriendo'};
 const palettes={blanco:'#d8a783',moreno:'#9b6441',negro:'#513023'};
 const skinLabels={blanco:'Blanco',moreno:'Moreno',negro:'Negro'};
@@ -61,7 +62,7 @@ controls.touches.TWO=THREE.TOUCH.DOLLY_PAN;
 controls.enableDamping=true;
 controls.dampingFactor=.08;
 controls.minZoom=.7;
-controls.maxZoom=3.2;
+controls.maxZoom=12;
 controls.minPolarAngle=.18;
 controls.maxPolarAngle=Math.PI/2-.08;
 function setCamera(){
@@ -78,6 +79,16 @@ composer.addPass(pixelPass);
 composer.addPass(new OutputPass());
 setCamera();
 function zoom(amount){camera.zoom=THREE.MathUtils.clamp(camera.zoom*amount,controls.minZoom,controls.maxZoom);camera.updateProjectionMatrix();controls.update();}
+
+function focusFace(){
+ if(!state.ready||!model)return;
+ const head=model.getObjectByName('head')??model.getObjectByName('Head');
+ if(!head)return;
+ const offset=camera.position.clone().sub(controls.target);
+ model.updateMatrixWorld(true);head.getWorldPosition(controls.target);controls.target.y-=.08;
+ camera.position.copy(controls.target).add(offset);camera.zoom=12;
+ camera.updateProjectionMatrix();controls.update();
+}
 
 const hemi=new THREE.HemisphereLight('#e2e7ed','#554631',.78);scene.add(hemi);
 const sunlight=new THREE.DirectionalLight('#fff1d9',2.7);
@@ -154,6 +165,7 @@ const bulletGeometry=new THREE.SphereGeometry(.008,6,4);
 
 function pressed(button,active){button.classList.toggle('active',active);button.setAttribute('aria-pressed',String(active));}
 function updateControls(){
+ $('#focus-face').disabled=!state.ready;
  document.querySelectorAll('[data-weapon]').forEach(button=>{pressed(button,button.dataset.weapon===state.weapon);button.disabled=!state.ready;});
  document.querySelectorAll('[data-motion]').forEach(button=>{pressed(button,button.dataset.motion===state.motion);button.disabled=!state.ready;});
  document.querySelectorAll('[data-skin]').forEach(button=>{pressed(button,button.dataset.skin===state.skin);button.disabled=!state.ready;});
@@ -191,7 +203,7 @@ function returnToSelectedPose(fade=.16){
  const chosen=locomotion?(state.weapon==='none'?locomotion:state.weapon[0].toUpperCase()+state.weapon.slice(1)+locomotion):readyClips[state.weapon];
  playClip(chosen,{fade});updateBayonet();updateControls();
 }
-function applySkin(tone){state.skin=tone;for(const material of skinMaterials)material.color.set(palettes[tone]);updateControls();}
+function applySkin(tone){state.skin=tone;for(const material of skinMaterials)applySkinPalette(material,palettes[tone]);updateControls();}
 function updateBayonet(){if(bayonet)bayonet.visible=state.weapon==='rifle'&&(chosenAttack==='BayonetThrust'||state.clip==='BayonetThrust'&&state.attacking);}
 function selectWeapon(weapon){
  if(!state.ready)return;
@@ -251,8 +263,9 @@ function actionEventTime(clip){
  return typeof event==='number'?event:event?.time??event?.shot??event?.hit??event?.contact??clip.duration*.4;
 }
 
-async function load(characterId='reference'){
+async function load(characterId='granadero'){
  const version=++loadVersion,previousAttack=chosenAttack;state.ready=false;state.attacking=false;state.character=characterId;
+ $('#character-choice').value=characterId;
  clearEffects();mixer?.stopAllAction();if(model){mixer?.uncacheRoot(model);scene.remove(model);}
  for(const material of ownedMaterials)material.dispose();ownedMaterials.clear();skinMaterials.clear();
  for(const key of Object.keys(weapons))delete weapons[key];for(const key of Object.keys(muzzles))delete muzzles[key];
@@ -280,7 +293,7 @@ async function load(characterId='reference'){
   model.traverse(object=>{
    if(object.isMesh){object.castShadow=true;object.receiveShadow=true;
     const materials=Array.isArray(object.material)?object.material:[object.material];
-    const cloned=materials.map(material=>{const value=material.clone();ownedMaterials.add(value);if(/^skin(?:[._]|$)/i.test(value.name))skinMaterials.add(value);return value;});
+    const cloned=materials.map(material=>{const value=material.clone();ownedMaterials.add(value);if(/^skin(?:[._]|$)/i.test(value.name)||value.userData.role==='skin')skinMaterials.add(value);return value;});
     object.material=Array.isArray(object.material)?cloned:cloned[0];
    }
    for(const weapon of ['rifle','sabre','pistol','knife']){
@@ -313,6 +326,7 @@ document.querySelectorAll('[data-weapon]').forEach(button=>button.addEventListen
 document.querySelectorAll('[data-motion]').forEach(button=>button.addEventListener('click',()=>selectMotion(button.dataset.motion)));
 document.querySelectorAll('[data-skin]').forEach(button=>button.addEventListener('click',()=>applySkin(button.dataset.skin)));
 $('#reset-camera').addEventListener('click',()=>setCamera());
+$('#focus-face').addEventListener('click',focusFace);
 $('#zoom-in').addEventListener('click',()=>zoom(1.25));
 $('#zoom-out').addEventListener('click',()=>zoom(.8));
 $('#pixelated').addEventListener('change',event=>{state.pixelated=event.target.checked;});

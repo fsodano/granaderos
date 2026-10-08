@@ -23,7 +23,7 @@ export function skinnedSurface(root,accept){
  });
 }
 export function headSurface(root){
- const surface=skinnedSurface(root,(mesh,bone)=>bone===undefined?mesh.material.name==='Skin':['head','neck_01'].includes(bone));
+ const surface=skinnedSurface(root,(mesh,bone)=>bone===undefined?(mesh.material.name==='Skin'||mesh.material.userData.role==='skin'):['head','neck_01'].includes(bone));
  return ()=>{const faces=surface();assert.ok(faces.length>1000,'The review contains the actual face and neck triangles');return faces;};
 }
 

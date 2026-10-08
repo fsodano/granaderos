@@ -1,0 +1,553 @@
+{
+  "scope": "Reviewed face/hair source extraction only; no character, optimize, costume, hand or animation source edits",
+  "baseMain": "724a9c7236ff2dfe314cd7031abd3595d3ad8afe",
+  "sourceManifestSha256": "a5826bde49238e1e65f9ff955d2f48cc6087fdd466e17c58c27d63fabc77ae06",
+  "compositorSha256": "1c9e88f14317843e2371e7517efd2d918065474b8c65c4577a56826cc10b70f0",
+  "tests": {
+    "passed": 7,
+    "failed": 0,
+    "skipped": 0,
+    "log": "/tmp/granadero-face-main-composition-audit/source-tests.log"
+  },
+  "compilePassed": true,
+  "realBlenderRebuilds": [
+    {
+      "preset": "granadero",
+      "lod": 2,
+      "rebuildSha256": "c99b30d724b63035ad3f93bbd5be2d80144598770b5b8122b55ddff20b9c118c",
+      "composedSha256": "c99b30d724b63035ad3f93bbd5be2d80144598770b5b8122b55ddff20b9c118c",
+      "byteExact": true
+    },
+    {
+      "preset": "worker",
+      "lod": 2,
+      "rebuildSha256": "565b4d9ce09f45fc1f3f2f2706d299f7c804fb2ed294308110af2cf6e7b90d40",
+      "composedSha256": "565b4d9ce09f45fc1f3f2f2706d299f7c804fb2ed294308110af2cf6e7b90d40",
+      "byteExact": true
+    }
+  ],
+  "appearanceReviewImportsFinalGLB": true,
+  "reviewImage": "/tmp/granadero-face-main-composition-audit/rebuild-meta/worker-lod2.png",
+  "files": [
+    {
+      "path": "assets/source/characters-3d/authoring/build.py",
+      "sha256": "32e0023e6ad34d693f4b5a1b5234d18090741bc943c262a865a5e41a96e11b6e",
+      "bytes": 6197
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/accepted_faces.py",
+      "sha256": "1c9e88f14317843e2371e7517efd2d918065474b8c65c4577a56826cc10b70f0",
+      "bytes": 15167
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/face_source.py",
+      "sha256": "4e088a4fff619432dcfa24590a99e461da084200e4ef8842910f4aceb872f9ca",
+      "bytes": 1582
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/generated/granadero-skin-colour.png",
+      "sha256": "040b6c27fc46ce2da45430b075721781c0200c75729387d7937f45ab30399f1d",
+      "bytes": 2032518
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/generated/granadero-skin-generation.json",
+      "sha256": "8030fecd2cfa2e18d27cc07b0ad49c2fb8d12ab19952ffe7325ca734a1c93c55",
+      "bytes": 454
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/generated/granadero-skin-prompt.txt",
+      "sha256": "485a240a59e2e0e604d974a4f6b4c37363d23b7186b4029b2296b1e40acba041",
+      "bytes": 1468
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/generated/granadero-skin.json",
+      "sha256": "d4d2e0427926558ba3e77596da4936b11f1379c6718ff90ceb78c921b6de6f88",
+      "bytes": 768
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/generated/hair-strands-v1.generation.json",
+      "sha256": "051b0726061387409d8dbbf2a0083530fb0f95c4cfe4e3dca90b10ad39f3160a",
+      "bytes": 399
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/generated/hair-strands-v1.png",
+      "sha256": "ddbf803c43fc641d35129edf6e8b9531d2f74d88781d88d0c4fb61ef78be9381",
+      "bytes": 2485369
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/generated/hair-strands-v1.prompt.txt",
+      "sha256": "1aa351e61504f89d0f22a2bc35ac13bcc93050531b4f327424a752aa5bd697dc",
+      "bytes": 1048
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/README.md",
+      "sha256": "925a2c61d73bc2eb08ad3d0f81383758c51a5ec8101df4324146763e2878ac5a",
+      "bytes": 2443
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/friar-lod0.glb",
+      "sha256": "90210bc6c2521ec9cddb4d9d4e5661da7a5e4c68d2b823dc504d01765790a41f",
+      "bytes": 2492556
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/friar-lod1.glb",
+      "sha256": "de074e6bbb25c9d1f78ff74b147d85c873b45072779d1640b2709031d3fdc47c",
+      "bytes": 1933116
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/friar-lod2.glb",
+      "sha256": "42abe5df6ee25b0d8f68129fa78a44568eceb85dec345ee2a89239380ccf6831",
+      "bytes": 466416
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/gaucho-lod0.glb",
+      "sha256": "aff7cfdb023f154523639c79f74fafaac2b605fd86984087438db2fa47d05db4",
+      "bytes": 2492624
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/gaucho-lod1.glb",
+      "sha256": "977dbb760998f9dd0f20dc07581f95f0e6854943b003199717694974719a88ab",
+      "bytes": 1933448
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/gaucho-lod2.glb",
+      "sha256": "743e3ca7b743cac3411298e223ee8e9a99f1d4914db01447750a9011691e5bdf",
+      "bytes": 466660
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/granadero-lod0.glb",
+      "sha256": "26ccea04728dcd8257fbe0e9fb8d7e07dc279304a8f26131cbb735041f805dba",
+      "bytes": 2589960
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/granadero-lod1.glb",
+      "sha256": "00c6bb6fe8edce7bd4308e607f32804bc55d3ea6ea869c4469c81fd79eed4daa",
+      "bytes": 1995056
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/granadero-lod2.glb",
+      "sha256": "51f5897aa1e33f50b536ae0dcc772f7735c6d3d4999abf197aae28dd0045fc58",
+      "bytes": 493176
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/makehuman-LICENSE.ASSETS.md",
+      "sha256": "f6089cba01cb570a24712b41ab8a586ccd3cc5ef53dc266ca50b95c288956d2c",
+      "bytes": 6962
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/makehuman-LICENSE.md",
+      "sha256": "5cefb60680cb9efd4550a2e65d719021cfbec9dad3658481d11d48ae863ce04d",
+      "bytes": 3188
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/makehuman-source-manifest.json",
+      "sha256": "e886085a9ea9b19fb357d4456617e1177e89df2a76b3b79ac42c3229c7ae0e96",
+      "bytes": 16020
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/manifest.json",
+      "sha256": "a5826bde49238e1e65f9ff955d2f48cc6087fdd466e17c58c27d63fabc77ae06",
+      "bytes": 14082
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/provenance/prepare_skin_maps.py",
+      "sha256": "cc99231f3335da8d9f2d052ef503a5c8e8729f34dd5c1512862a0f75e14da848",
+      "bytes": 2571
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/royalist-lod0.glb",
+      "sha256": "85e28c2388608274117b061ca19043dcdf5759b0f6a6ff0c540db5392c43e77a",
+      "bytes": 2469772
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/royalist-lod1.glb",
+      "sha256": "e5e8f452d99f1c874228d53c407c3235acbf4d8e824552296799ee164532e8b3",
+      "bytes": 1923400
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/royalist-lod2.glb",
+      "sha256": "e616f7669e998f2490427df7042c95e7175a84340263e044ca30eb57a8e38e23",
+      "bytes": 462080
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/skin-female-colour.png",
+      "sha256": "5818150cab42cf0b2325319cea8b42894eade25d731d364162276b634f55e069",
+      "bytes": 4738747
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/skin-female-normal.png",
+      "sha256": "5b28ef6bb29b5654ff1aececf1922ff6faddd616029fe879ff828d6996269292",
+      "bytes": 2968764
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/skin-female-roughness.png",
+      "sha256": "8b934f7929ec6c3124592577b92fc92ad15436a9e0f2f6d9960999b72655ddba",
+      "bytes": 1315950
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/skin-male-colour.png",
+      "sha256": "cfe00d87638eab122eb8cf15c194a30cae5e6396d8c22d965fb9b6aa305b13b8",
+      "bytes": 4211626
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/skin-male-normal.png",
+      "sha256": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c",
+      "bytes": 2670688
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/skin-male-roughness.png",
+      "sha256": "6eb27af5269a59753a87f626d6611bb54a8c175fc860068c3da620e0e84c4274",
+      "bytes": 1308737
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/surgeon-lod0.glb",
+      "sha256": "df88944c1f3964bb7b0816ebf1870cff0ffae14f039921971744e16ef29eea1d",
+      "bytes": 2536864
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/surgeon-lod1.glb",
+      "sha256": "e5a4b49a5f65ba3cb057a67e4ebad11bc24825cca4397a0f4c3b3f56a046175d",
+      "bytes": 1977688
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/surgeon-lod2.glb",
+      "sha256": "314908eb4d1426886073bb7131afafbfd21f37fd9a71066d870d97176abc7501",
+      "bytes": 510900
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/textures/040b6c27fc46ce2da454.png",
+      "sha256": "040b6c27fc46ce2da45430b075721781c0200c75729387d7937f45ab30399f1d",
+      "bytes": 2032518
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/textures/09fa758893afdf340aac.png",
+      "sha256": "09fa758893afdf340aacb8102101cbcab335a4dfdfab5a6bac8a9a9a9b55200f",
+      "bytes": 699852
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/textures/1475bcc494750a798dc8.png",
+      "sha256": "1475bcc494750a798dc86f5fe0205673495f20d90fe979deffb6f5715c13f2e1",
+      "bytes": 245104
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/textures/18bd9589742c675e9df5.png",
+      "sha256": "18bd9589742c675e9df5351ef3986b07bd2439b0385e0c9e0005e1d040b5daa5",
+      "bytes": 700912
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/textures/2184ae3386ac18625140.png",
+      "sha256": "2184ae3386ac1862514018ac4c75241f3fa8dc37354989af05685231c88e6dfa",
+      "bytes": 395710
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/textures/230ddcfcde0deb6c86d4.png",
+      "sha256": "230ddcfcde0deb6c86d4ca56a83a467971a1ad793ab5496c959ae018ff2a13cd",
+      "bytes": 580261
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/textures/32c4f3619e14232ca1c9.png",
+      "sha256": "32c4f3619e14232ca1c97317f4d575838beae7f7814762585d296b7a25e86ac4",
+      "bytes": 336391
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/textures/35352ce8175250721c1f.png",
+      "sha256": "35352ce8175250721c1fa7f67c65adb94609f1ca7f7ae8f616d67696e487d2e3",
+      "bytes": 1013016
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/textures/392889f6329752c020dd.png",
+      "sha256": "392889f6329752c020ddacf276bbf849c8e5b9ba5365641a059ff76a1d614f47",
+      "bytes": 327886
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/textures/3ba0430ec0e2e7158fa7.png",
+      "sha256": "3ba0430ec0e2e7158fa7c82e3cac15e1bd42a8dfbf6bcc9994f800efaa4ee9cb",
+      "bytes": 599678
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/textures/3bb81102c0b19c0f3604.png",
+      "sha256": "3bb81102c0b19c0f3604135d0bf048426b2d100d00221c934aaf0261a4876f78",
+      "bytes": 650237
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/textures/431f49c3e8d9e53ce775.png",
+      "sha256": "431f49c3e8d9e53ce77579c389f28aac3f7b32521543c5d414114065e452487e",
+      "bytes": 340840
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/textures/465ec17af5d67ed742e5.png",
+      "sha256": "465ec17af5d67ed742e5d22f1f6c5b8dac0d7a9d292b9e5ad5edf8a5c34a872c",
+      "bytes": 642779
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/textures/491089fb9520714de5b5.png",
+      "sha256": "491089fb9520714de5b5c1e6ccf9b3c5830ce3c201b97bb562af912a4662d91a",
+      "bytes": 440157
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/textures/55f2e13925123daea921.png",
+      "sha256": "55f2e13925123daea921e254ee30bbd2109adc583faf6ce9e2b1feabb34ae63a",
+      "bytes": 397200
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/textures/5818150cab42cf0b2325.png",
+      "sha256": "5818150cab42cf0b2325319cea8b42894eade25d731d364162276b634f55e069",
+      "bytes": 4738747
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/textures/5b28ef6bb29b5654ff1a.png",
+      "sha256": "5b28ef6bb29b5654ff1aececf1922ff6faddd616029fe879ff828d6996269292",
+      "bytes": 2968764
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/textures/614541eb0bf63d3a9b6e.png",
+      "sha256": "614541eb0bf63d3a9b6e6aba79764059d7a07cfdd6541df24f289ece8beb7150",
+      "bytes": 531019
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/textures/6323715e4e2b8cd3db7c.png",
+      "sha256": "6323715e4e2b8cd3db7c6d5d7125ea8910887cb4ace99a3f998083c5e01d2420",
+      "bytes": 294240
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/textures/6dd4cdb2fff9b1b7b2ee.png",
+      "sha256": "6dd4cdb2fff9b1b7b2eef82dadd716cf6ecce8bed5f6217e562510545f25c8a4",
+      "bytes": 249396
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/textures/756a3307c4231b534a82.png",
+      "sha256": "756a3307c4231b534a82393738368dc32063e38b3bd366e10142fd6ac6ef2a7c",
+      "bytes": 350399
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/textures/7ba8a99b0e70d6156272.png",
+      "sha256": "7ba8a99b0e70d615627236bcca1dbf961dff7bbbcaec8dfa5c2f7008bd1c1f22",
+      "bytes": 627797
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/textures/89a9d994989390a0e185.png",
+      "sha256": "89a9d994989390a0e1858cdb750bc432af0782e017c302677249a69ca4eef39a",
+      "bytes": 218362
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/textures/8d399752680e68257da6.png",
+      "sha256": "8d399752680e68257da624280d502a4fb71ec0f1524059c122cdaed10d8d2893",
+      "bytes": 463631
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/textures/8d624207fb5fdba71f3a.png",
+      "sha256": "8d624207fb5fdba71f3ad01c27b53a216b489218ba8420bd97806c824f19a225",
+      "bytes": 506687
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/textures/93f40634d5f47b42afdb.png",
+      "sha256": "93f40634d5f47b42afdb76dd3ebf22ce420022219eccaf65e1972ef860632a44",
+      "bytes": 314984
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/textures/940c90a65502a117ca0b.png",
+      "sha256": "940c90a65502a117ca0b309670a7eca7522df2d3cd9c24b002c3d81cd31dcbe7",
+      "bytes": 441809
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/textures/94c58f92a66daac53b99.png",
+      "sha256": "94c58f92a66daac53b99596d44ee274b3728cd8deb773a0d56f27dc51c8c227f",
+      "bytes": 257274
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/textures/98f3ec35fdedc87adac0.png",
+      "sha256": "98f3ec35fdedc87adac04d643040d7532aac5d07e656e12f517acdf6e1c3a9ea",
+      "bytes": 296023
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/textures/9c4d0ad1822c0e3d56d2.png",
+      "sha256": "9c4d0ad1822c0e3d56d2e6bf792d4d282bf60da205a48d2e868354f51ebcf0c4",
+      "bytes": 247072
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/textures/9f2116257d14fb045d70.png",
+      "sha256": "9f2116257d14fb045d7056108484a5c882180f9355ae5e6723929b59f899b783",
+      "bytes": 346814
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/textures/a4d52e34a5ed852382b9.png",
+      "sha256": "a4d52e34a5ed852382b9ec0a589732f2d30be8f5776ae751ce003503d1fffee4",
+      "bytes": 708116
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/textures/a6e08a37dd3d86917cf4.png",
+      "sha256": "a6e08a37dd3d86917cf45a233d0afefd307393f14f6c5bea1f0355420f741744",
+      "bytes": 385069
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/textures/a966ec3d74fe209f0820.png",
+      "sha256": "a966ec3d74fe209f082077c6267e0a7b8025235aa0d1ebd45078867a8e745de9",
+      "bytes": 366238
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/textures/ac9a975213b8d91f675a.png",
+      "sha256": "ac9a975213b8d91f675a42d12df74b8f57101775e337c9d3aaf619907b69e8da",
+      "bytes": 630030
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/textures/ad3939922a6916be23f6.png",
+      "sha256": "ad3939922a6916be23f68ff22420c69da3db72632294b43c9d64ec9c7edc7010",
+      "bytes": 394314
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/textures/b6163461b8122d6787f8.png",
+      "sha256": "b6163461b8122d6787f8f771e1a9f362c5663bef6136d74c2ec7301ddb58ed91",
+      "bytes": 292169
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/textures/bde948d56c47e9a9c68c.png",
+      "sha256": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2",
+      "bytes": 1835626
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/textures/c3782e00498e23e6a224.png",
+      "sha256": "c3782e00498e23e6a224559d3df18d6d41db391d3e7b15861787bb2eef5f85e1",
+      "bytes": 448722
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/textures/c74d1bdaf5f3ed21a420.png",
+      "sha256": "c74d1bdaf5f3ed21a4204ee3096ac83025a7d086aa133eadd21fe80f64809835",
+      "bytes": 991210
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/textures/ca4f162e85fafee194c7.png",
+      "sha256": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c",
+      "bytes": 2670688
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/textures/cfe00d87638eab122eb8.png",
+      "sha256": "cfe00d87638eab122eb8cf15c194a30cae5e6396d8c22d965fb9b6aa305b13b8",
+      "bytes": 4211626
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/textures/d3947bf8ce7ee3fb076e.png",
+      "sha256": "d3947bf8ce7ee3fb076eefbe4beb50c415e6889a32b536838a1bb6019bf54603",
+      "bytes": 522293
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/textures/d93693724cacd6f0c6f1.png",
+      "sha256": "d93693724cacd6f0c6f11964ce62840313df8ce20e8efb85f94881fcd997a535",
+      "bytes": 304712
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/textures/db0dd096ce52f78a260d.png",
+      "sha256": "db0dd096ce52f78a260d6d545733e52a07e9abfc85b44e39bc1061a132f1cdfe",
+      "bytes": 964855
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/textures/ddbf803c43fc641d3512.png",
+      "sha256": "ddbf803c43fc641d35129edf6e8b9531d2f74d88781d88d0c4fb61ef78be9381",
+      "bytes": 2485369
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/textures/e229e1eb9ffd5725d876.png",
+      "sha256": "e229e1eb9ffd5725d8767e8ddecc9544694780c03afeb468ce610c9370e3c1a7",
+      "bytes": 304837
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/textures/e31e4b28bb224684cf57.png",
+      "sha256": "e31e4b28bb224684cf571b7b88d6c627361dcd8906d8d7594c66989626e4edbd",
+      "bytes": 259675
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/textures/e35f74c0f83556345583.png",
+      "sha256": "e35f74c0f8355634558348073fa69517f15cdee745fe589b12e61b769654642b",
+      "bytes": 1829644
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/textures/e3c6887d5bede0fbc1e4.png",
+      "sha256": "e3c6887d5bede0fbc1e43a05bfa7a16714982e21ee6c7a161481fee88f06f517",
+      "bytes": 1006001
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/textures/e53e4d4ad46335cf9f8d.png",
+      "sha256": "e53e4d4ad46335cf9f8de5173b245d63ae1afc73367a5266f10bbd3432db18eb",
+      "bytes": 360836
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/textures/e735cf2c599a1dc3ddf1.png",
+      "sha256": "e735cf2c599a1dc3ddf13b4dbf3a1d1bc9da8d38154dc1052eaba46a66f5b369",
+      "bytes": 372042
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/textures/ea43152d1732ed05f4ea.png",
+      "sha256": "ea43152d1732ed05f4eaf431f74b02b89a1041440790c14af00fa70f1e49606f",
+      "bytes": 568322
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/textures/eb7d7e234e6b60198b7f.png",
+      "sha256": "eb7d7e234e6b60198b7f6b1da0cb1533ef15a96251c57535105d43e69f8fd10b",
+      "bytes": 331284
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/textures/f2f7c8420ab2e6bf72af.png",
+      "sha256": "f2f7c8420ab2e6bf72afeff90a8a3f99af3df31725d997cf18decedc55f96871",
+      "bytes": 377338
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/textures/f98f3d1f919d7d128ace.png",
+      "sha256": "f98f3d1f919d7d128aceffeaed54f56d1c01149ad0d7530e33a7bf36e3420e0c",
+      "bytes": 443931
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/woman-scout-lod0.glb",
+      "sha256": "d9455b74a8edf1c071de64ab4c1ae091488d6134d9fbe321b0bebbf9eb5f792b",
+      "bytes": 2653872
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/woman-scout-lod1.glb",
+      "sha256": "e80abe33ed338b520ea77be81da25cc65424752593890b1eedbf7d5c117b41d1",
+      "bytes": 2012760
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/woman-scout-lod2.glb",
+      "sha256": "5d3258681c70d3c52e2537554893f74c9daf1e954358cf19ec39ed878f139bf8",
+      "bytes": 511900
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/woman-shawl-lod0.glb",
+      "sha256": "0552614f225e1275bfc94b7fc03740bfcaeb4657aa5e8ba876422921d3276370",
+      "bytes": 2563648
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/woman-shawl-lod1.glb",
+      "sha256": "65d078c4230fc0602a3526fc3096eb47a378a39dee8a3df6eaa81a4e9d0b9773",
+      "bytes": 1967656
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/woman-shawl-lod2.glb",
+      "sha256": "051d390bb0c60639e1848d0fed72eb80e700f6f4650846ee53f09037a3a968ef",
+      "bytes": 483236
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/worker-lod0.glb",
+      "sha256": "727d990149fd7e0cf7c4fe04b182a3494f6024c74d664f69b3ea6959f842487c",
+      "bytes": 2903336
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/worker-lod1.glb",
+      "sha256": "8f0331dc6e7ff272c96e00572595578a8b3fae394b4ade893cab183502296c37",
+      "bytes": 2301608
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/vendor/reviewed-faces/worker-lod2.glb",
+      "sha256": "5fc09aa55f658fc1aaf1f004dbe04a9a00f4836519e7b9a166141faa7b1cdb8b",
+      "bytes": 796984
+    },
+    {
+      "path": "tests/characters-reviewed-faces.test.mjs",
+      "sha256": "6a02246e100ef0110be7448c1867a9ad566a22e72526edd902d12be1c96f0591",
+      "bytes": 5009
+    },
+    {
+      "path": "tests/reviewed-faces-fixture.py",
+      "sha256": "836ce5066d8dbb8cee3724b732f153e20efa7d648e3ffaec3c29ddfba462e28b",
+      "bytes": 5600
+    }
+  ]
+}

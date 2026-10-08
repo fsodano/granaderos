@@ -3,7 +3,7 @@ register('./tactical-render-loader.mjs',import.meta.url);
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  AnimationClip,Bone,BoxGeometry,Float32BufferAttribute,Group,Mesh,
+  AnimationClip,Bone,BoxGeometry,Color,Float32BufferAttribute,Group,Mesh,
   MeshStandardMaterial,NumberKeyframeTrack,Object3D,Skeleton,SkinnedMesh,
   Uint16BufferAttribute,Vector3,VectorKeyframeTrack,
 } from '../web/node_modules/three/build/three.module.js';
@@ -100,6 +100,23 @@ test('a replacement model binds renamed clips, bones, sockets and skin material 
     assert.equal(attached(runtime,'primary','1800').parent.name,f.sockets.handRight_rifle.node);
     runtime.dispose();
   }
+});
+
+test('separate face and hand materials keep actor-owned palettes without tint accumulation',()=>{
+  const f=fixture('FaceRoles'),reference=[.846873231509858,.4232676699860717,.2788942634768104];
+  const source=new MeshStandardMaterial({color:'#ffffff'});source.name='ReviewedFace';source.userData={role:'skin',facialSurface:true,skinAlbedoReference:reference};
+  const face=f.body.clone();face.name='SeparateHead';face.material=source;f.rig.scene.add(face);
+  const a=new ActorRuntime(f.asset,visual(f,{skin:'light'})),b=new ActorRuntime(f.asset,visual(f,{key:'unit:second',skin:'dark'}));
+  const faceA=a.model.getObjectByName(face.name).material,faceB=b.model.getObjectByName(face.name).material;
+  for(const tone of ['light','brown','dark','light']){
+    a.update(visual(f,{skin:tone}),0);const target=new Color(f.asset.manifest.skinTones[tone]);
+    for(const [axis,key]of ['r','g','b'].entries())close(faceA.color[key]*reference[axis],target[key],'Face albedo compensation');
+    assert.equal(a.model.getObjectByName(f.body.name).material.color.getHexString(),target.getHexString(),'Hands retain the native palette factor');
+  }
+  const dark=new Color(f.asset.manifest.skinTones.dark);
+  for(const [axis,key]of ['r','g','b'].entries())close(faceB.color[key]*reference[axis],dark[key],'Other actor palette is independent');
+  assert.notEqual(faceA,faceB);assert.notEqual(faceA,source);assert.equal(source.color.getHexString(),'ffffff');
+  assert.equal(f.skin.color.getHexString(),'c68b62');a.dispose();b.dispose();source.dispose();
 });
 
 test('instances share geometry but have independent palettes, bones and garment skeleton bindings',()=>{

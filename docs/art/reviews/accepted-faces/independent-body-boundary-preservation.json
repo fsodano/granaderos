@@ -1,0 +1,299 @@
+[
+  {
+    "file": "friar-lod0.glb",
+    "unchangedMeshes": [
+      "Fitted_Boot_l",
+      "Tailored_Breeches",
+      "Tailored_Coat"
+    ],
+    "originalAccessorPayloadAndDescriptorsExact": true,
+    "rigAndSceneExact": true,
+    "originalMaterialsAndTexturesExact": true,
+    "bodySha256": "f903132a8d7faebab4b2219760e3ce3c68997cba44e10baccb3c1739b59417da"
+  },
+  {
+    "file": "friar-lod1.glb",
+    "unchangedMeshes": [
+      "Fitted_Boot_l",
+      "Tailored_Breeches",
+      "Tailored_Coat"
+    ],
+    "originalAccessorPayloadAndDescriptorsExact": true,
+    "rigAndSceneExact": true,
+    "originalMaterialsAndTexturesExact": true,
+    "bodySha256": "bc4bdd70699d5e6c8746ad8048cdb91e3b5e536279300848ed0e1072871e4308"
+  },
+  {
+    "file": "friar-lod2.glb",
+    "unchangedMeshes": [
+      "Fitted_Boot_l",
+      "Tailored_Breeches",
+      "Tailored_Coat"
+    ],
+    "originalAccessorPayloadAndDescriptorsExact": true,
+    "rigAndSceneExact": true,
+    "originalMaterialsAndTexturesExact": true,
+    "bodySha256": "e4b11fa605d11f4522c5f07c8d86564990e090840bc54edf23955dc318ce8c5b"
+  },
+  {
+    "file": "gaucho-lod0.glb",
+    "unchangedMeshes": [
+      "Fitted_Boot_l",
+      "Felt_Hat_Crown",
+      "Tailored_Breeches",
+      "Tailored_Coat"
+    ],
+    "originalAccessorPayloadAndDescriptorsExact": true,
+    "rigAndSceneExact": true,
+    "originalMaterialsAndTexturesExact": true,
+    "bodySha256": "c81314f4abffc6d7c111d499c4751c72d726e0d6c94f1147d36ef2008d909c26"
+  },
+  {
+    "file": "gaucho-lod1.glb",
+    "unchangedMeshes": [
+      "Fitted_Boot_l",
+      "Felt_Hat_Crown",
+      "Tailored_Breeches",
+      "Tailored_Coat"
+    ],
+    "originalAccessorPayloadAndDescriptorsExact": true,
+    "rigAndSceneExact": true,
+    "originalMaterialsAndTexturesExact": true,
+    "bodySha256": "e7615908bc58eb3f1de0a665932dca81a3dcd7cab0da5f6161c77406d498b9c8"
+  },
+  {
+    "file": "gaucho-lod2.glb",
+    "unchangedMeshes": [
+      "Fitted_Boot_l",
+      "Felt_Hat_Crown",
+      "Tailored_Breeches",
+      "Tailored_Coat"
+    ],
+    "originalAccessorPayloadAndDescriptorsExact": true,
+    "rigAndSceneExact": true,
+    "originalMaterialsAndTexturesExact": true,
+    "bodySha256": "a6cd0d56c467576b51488c2b91395707af352fef27fec948eda1a158747cb1dc"
+  },
+  {
+    "file": "granadero-lod0.glb",
+    "unchangedMeshes": [
+      "Fitted_Boot_l",
+      "Shaped_Shako",
+      "Tailored_Breeches",
+      "Tailored_Coat"
+    ],
+    "originalAccessorPayloadAndDescriptorsExact": true,
+    "rigAndSceneExact": true,
+    "originalMaterialsAndTexturesExact": true,
+    "bodySha256": "444abea73ec08c1ef03c7fc2dac8fa5141767b4a249c3cb314b48ccc7cda069f"
+  },
+  {
+    "file": "granadero-lod1.glb",
+    "unchangedMeshes": [
+      "Fitted_Boot_l",
+      "Shaped_Shako",
+      "Tailored_Breeches",
+      "Tailored_Coat"
+    ],
+    "originalAccessorPayloadAndDescriptorsExact": true,
+    "rigAndSceneExact": true,
+    "originalMaterialsAndTexturesExact": true,
+    "bodySha256": "a3845e976701bf597499b0195178612a9d00fc3b0553700d818dcf8e50132701"
+  },
+  {
+    "file": "granadero-lod2.glb",
+    "unchangedMeshes": [
+      "Fitted_Boot_l",
+      "Shaped_Shako",
+      "Tailored_Breeches",
+      "Tailored_Coat"
+    ],
+    "originalAccessorPayloadAndDescriptorsExact": true,
+    "rigAndSceneExact": true,
+    "originalMaterialsAndTexturesExact": true,
+    "bodySha256": "c99b30d724b63035ad3f93bbd5be2d80144598770b5b8122b55ddff20b9c118c"
+  },
+  {
+    "file": "royalist-lod0.glb",
+    "unchangedMeshes": [
+      "Fitted_Boot_l",
+      "Shaped_Shako",
+      "Tailored_Breeches",
+      "Tailored_Coat"
+    ],
+    "originalAccessorPayloadAndDescriptorsExact": true,
+    "rigAndSceneExact": true,
+    "originalMaterialsAndTexturesExact": true,
+    "bodySha256": "c6043aa97c224ec55b8337a99c666b6b1d04e259814fa7954ef1422f8b83c8b4"
+  },
+  {
+    "file": "royalist-lod1.glb",
+    "unchangedMeshes": [
+      "Fitted_Boot_l",
+      "Shaped_Shako",
+      "Tailored_Breeches",
+      "Tailored_Coat"
+    ],
+    "originalAccessorPayloadAndDescriptorsExact": true,
+    "rigAndSceneExact": true,
+    "originalMaterialsAndTexturesExact": true,
+    "bodySha256": "343bbbc9c77ed6a6b947f205bd0131b4359110871b6da9b8730f381b4529b3f5"
+  },
+  {
+    "file": "royalist-lod2.glb",
+    "unchangedMeshes": [
+      "Fitted_Boot_l",
+      "Shaped_Shako",
+      "Tailored_Breeches",
+      "Tailored_Coat"
+    ],
+    "originalAccessorPayloadAndDescriptorsExact": true,
+    "rigAndSceneExact": true,
+    "originalMaterialsAndTexturesExact": true,
+    "bodySha256": "394701f4674fe4e3340367c689d691d98c87bd8fe7a486039cb7c9bbc989b8f9"
+  },
+  {
+    "file": "surgeon-lod0.glb",
+    "unchangedMeshes": [
+      "Fitted_Boot_l",
+      "Tailored_Breeches",
+      "Tailored_Coat"
+    ],
+    "originalAccessorPayloadAndDescriptorsExact": true,
+    "rigAndSceneExact": true,
+    "originalMaterialsAndTexturesExact": true,
+    "bodySha256": "2142aa6c8cdbd33a0c3f6fef5abbd78bec9da25e86a43d21d0f3a67d46857032"
+  },
+  {
+    "file": "surgeon-lod1.glb",
+    "unchangedMeshes": [
+      "Fitted_Boot_l",
+      "Tailored_Breeches",
+      "Tailored_Coat"
+    ],
+    "originalAccessorPayloadAndDescriptorsExact": true,
+    "rigAndSceneExact": true,
+    "originalMaterialsAndTexturesExact": true,
+    "bodySha256": "7a1bd6ffed31946c0fef10822846643f6bca204e4ed6abef8b71f78f0aebbd12"
+  },
+  {
+    "file": "surgeon-lod2.glb",
+    "unchangedMeshes": [
+      "Fitted_Boot_l",
+      "Tailored_Breeches",
+      "Tailored_Coat"
+    ],
+    "originalAccessorPayloadAndDescriptorsExact": true,
+    "rigAndSceneExact": true,
+    "originalMaterialsAndTexturesExact": true,
+    "bodySha256": "5e8463de8ab9a65d6c40af4ff4ae57b7c1c3d8308869a0e1b63b69d5502885ca"
+  },
+  {
+    "file": "woman-scout-lod0.glb",
+    "unchangedMeshes": [
+      "Fitted_Boot_l",
+      "Tailored_Breeches",
+      "Tailored_Coat"
+    ],
+    "originalAccessorPayloadAndDescriptorsExact": true,
+    "rigAndSceneExact": true,
+    "originalMaterialsAndTexturesExact": true,
+    "bodySha256": "d3dbb04cc5a0ddca1ec300def391004e9540bc78f5a82ded0c674262ed0f818b"
+  },
+  {
+    "file": "woman-scout-lod1.glb",
+    "unchangedMeshes": [
+      "Fitted_Boot_l",
+      "Tailored_Breeches",
+      "Tailored_Coat"
+    ],
+    "originalAccessorPayloadAndDescriptorsExact": true,
+    "rigAndSceneExact": true,
+    "originalMaterialsAndTexturesExact": true,
+    "bodySha256": "af0d39fba27102e59f58d97e874b7c3aeacf693579cdcb296dd2cb808cc618c0"
+  },
+  {
+    "file": "woman-scout-lod2.glb",
+    "unchangedMeshes": [
+      "Fitted_Boot_l",
+      "Tailored_Breeches",
+      "Tailored_Coat"
+    ],
+    "originalAccessorPayloadAndDescriptorsExact": true,
+    "rigAndSceneExact": true,
+    "originalMaterialsAndTexturesExact": true,
+    "bodySha256": "2990d8f4c0ded1c9e1553b03cbaaf04fe17887c1f0f34110f13eb9283315f8a6"
+  },
+  {
+    "file": "woman-shawl-lod0.glb",
+    "unchangedMeshes": [
+      "Fitted_Boot_l",
+      "Tailored_Breeches",
+      "Tailored_Coat"
+    ],
+    "originalAccessorPayloadAndDescriptorsExact": true,
+    "rigAndSceneExact": true,
+    "originalMaterialsAndTexturesExact": true,
+    "bodySha256": "64f09afe0d7ec85f49cb0d55bf7a640c9355a64b7f4ffbc7bde377a98d31e05e"
+  },
+  {
+    "file": "woman-shawl-lod1.glb",
+    "unchangedMeshes": [
+      "Fitted_Boot_l",
+      "Tailored_Breeches",
+      "Tailored_Coat"
+    ],
+    "originalAccessorPayloadAndDescriptorsExact": true,
+    "rigAndSceneExact": true,
+    "originalMaterialsAndTexturesExact": true,
+    "bodySha256": "2700d396cb33915bde5ac3ddca3099a0e15c4d4dc3c1f5d1ea3c5373c6a09538"
+  },
+  {
+    "file": "woman-shawl-lod2.glb",
+    "unchangedMeshes": [
+      "Fitted_Boot_l",
+      "Tailored_Breeches",
+      "Tailored_Coat"
+    ],
+    "originalAccessorPayloadAndDescriptorsExact": true,
+    "rigAndSceneExact": true,
+    "originalMaterialsAndTexturesExact": true,
+    "bodySha256": "6c3fd320a946ced813dd8d561db33e72dde5b991066bfc0ed59cdd3c134bfbfd"
+  },
+  {
+    "file": "worker-lod0.glb",
+    "unchangedMeshes": [
+      "Fitted_Boot_l",
+      "Tailored_Breeches",
+      "Tailored_Coat"
+    ],
+    "originalAccessorPayloadAndDescriptorsExact": true,
+    "rigAndSceneExact": true,
+    "originalMaterialsAndTexturesExact": true,
+    "bodySha256": "8db1a151dda296d7e08632e5e6df0fe8cba8f34c8c1a0d39ee15425436103aad"
+  },
+  {
+    "file": "worker-lod1.glb",
+    "unchangedMeshes": [
+      "Fitted_Boot_l",
+      "Tailored_Breeches",
+      "Tailored_Coat"
+    ],
+    "originalAccessorPayloadAndDescriptorsExact": true,
+    "rigAndSceneExact": true,
+    "originalMaterialsAndTexturesExact": true,
+    "bodySha256": "ca17b0a34329ca1243746780080e9c647d44219bba37c2f5f52e92e3b64dcd32"
+  },
+  {
+    "file": "worker-lod2.glb",
+    "unchangedMeshes": [
+      "Fitted_Boot_l",
+      "Tailored_Breeches",
+      "Tailored_Coat"
+    ],
+    "originalAccessorPayloadAndDescriptorsExact": true,
+    "rigAndSceneExact": true,
+    "originalMaterialsAndTexturesExact": true,
+    "bodySha256": "565b4d9ce09f45fc1f3f2f2706d299f7c804fb2ed294308110af2cf6e7b90d40"
+  }
+]

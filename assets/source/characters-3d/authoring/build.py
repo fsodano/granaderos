@@ -23,6 +23,12 @@ def export(ctx,path,animations=False):
  bpy.ops.export_scene.gltf(filepath=str(path),export_format='GLB',use_selection=True,export_yup=True,export_animations=animations,export_animation_mode='NLA_TRACKS',export_force_sampling=True,export_frame_range=False,export_anim_slide_to_zero=True,export_nla_strips=True,export_skins=True,export_morph=True,export_extras=False,export_cameras=False,export_lights=False,export_apply=False,export_all_influences=False)
  from gltf_pack import pack
  raw,doc=pack(path,{m.name:list(m.diffuse_color) for m in bpy.data.materials})
+ # Reviewed face sources are applied only to body appearances. The current
+ # rig, hands, clothing, equipment and animation exports remain authoritative.
+ if args.kind=='appearance':
+  from face_source import apply_reviewed_face
+  apply_reviewed_face(path,args.preset,args.lod)
+  raw=path.read_bytes();length=struct.unpack_from('<I',raw,12)[0];doc=json.loads(raw[20:20+length])
  ac=doc.get('accessors',[]);triangles=sum(ac[p['indices']]['count']//3 for m in doc.get('meshes',[]) for p in m['primitives'] if 'indices'in p)
  return {'url':'/models/characters/'+path.name,'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest(),'triangles':triangles,'meshes':len(doc.get('meshes',[])),'drawCalls':sum(len(m['primitives'])for m in doc.get('meshes',[])),'materials':[m['name']for m in doc.get('materials',[])],'bones':len(ctx['rig'].data.bones) if ctx.get('rig') else 0,'nodes':[n.get('name')for n in doc.get('nodes',[])]},doc
 
@@ -54,6 +60,14 @@ elif args.kind=='horse':
 else:raise ValueError(args.kind)
 (META/(name+'.json')).write_text(json.dumps(facts,indent=2)+'\n')
 if args.review and args.kind!='equipment':
+ if args.kind=='appearance':
+  # The reviewed face is a post-export source asset. Render the delivered GLB,
+  # not the older in-memory head that was replaced during composition.
+  bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=False)
+  bpy.ops.import_scene.gltf(filepath=str(OUT/(name+'.glb')))
+  rigs=[obj for obj in bpy.context.scene.objects if obj.type=='ARMATURE']
+  if len(rigs)!=1:raise ValueError('Appearance review requires one imported native rig')
+  ctx={'rig':rigs[0]}
  if args.kind!='horse':
   if ctx['rig'].animation_data:
    ctx['rig'].animation_data.action=None

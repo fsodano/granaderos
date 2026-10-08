@@ -2,6 +2,7 @@ import test,{before,after} from 'node:test';
 import assert from 'node:assert/strict';
 import {spawn,execFileSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
+import {readFileSync} from 'node:fs';
 const root=fileURLToPath(new URL('..',import.meta.url));
 const servers=[];
 async function start(production){
@@ -23,12 +24,19 @@ after(()=>{for(const server of servers)server.kill();});
 for(const mode of ['development','production']){
  test(`${mode} serves the model and all imported runtime modules`,async()=>{
   const base=mode==='development'?development:production;
-  for(const [path,type] of [['/','text/html'],['/src/main.js','text/javascript'],['/src/character-library.js','text/javascript'],['/src/style.css','text/css'],['/vendor/three/build/three.module.js','text/javascript'],['/vendor/three/build/three.core.js','text/javascript'],['/vendor/three/examples/jsm/loaders/GLTFLoader.js','text/javascript'],['/vendor/three/examples/jsm/controls/OrbitControls.js','text/javascript'],['/vendor/three/examples/jsm/environments/RoomEnvironment.js','text/javascript'],['/vendor/three/examples/jsm/utils/BufferGeometryUtils.js','text/javascript'],['/vendor/three/examples/jsm/utils/SkeletonUtils.js','text/javascript'],['/assets/granadero.glb','model/gltf-binary'],['/assets/asset-manifest.json','application/json']]){
+  for(const [path,type] of [['/','text/html'],['/src/main.js','text/javascript'],['/game/skin-palette.js','text/javascript'],['/src/character-library.js','text/javascript'],['/src/style.css','text/css'],['/vendor/three/build/three.module.js','text/javascript'],['/vendor/three/build/three.core.js','text/javascript'],['/vendor/three/examples/jsm/loaders/GLTFLoader.js','text/javascript'],['/vendor/three/examples/jsm/controls/OrbitControls.js','text/javascript'],['/vendor/three/examples/jsm/environments/RoomEnvironment.js','text/javascript'],['/vendor/three/examples/jsm/utils/BufferGeometryUtils.js','text/javascript'],['/vendor/three/examples/jsm/utils/SkeletonUtils.js','text/javascript'],['/assets/granadero.glb','model/gltf-binary'],['/assets/asset-manifest.json','application/json']]){
    const response=await fetch(base+path);
    assert.equal(response.status,200,`${mode} ${path}`);
    assert.ok(response.headers.get('content-type')?.startsWith(type),`${path}: ${type}`);
    assert.ok((await response.arrayBuffer()).byteLength>0,`${path} empty`);
   }
+ });
+ test(`${mode} serves only the allowed shared palette helper`,async()=>{
+  const base=mode==='development'?development:production;
+  const response=await fetch(base+'/game/skin-palette.js');
+  assert.equal(response.status,200);
+  assert.equal(await response.text(),readFileSync(new URL('../../../game/skin-palette.js',import.meta.url),'utf8'));
+  assert.equal((await fetch(base+'/game/actor-action-contract.js')).status,404,'Other repository modules are not exposed');
  });
  test(`${mode} serves every selectable game character with its animation bank and textures`,async()=>{
   const base=mode==='development'?development:production;

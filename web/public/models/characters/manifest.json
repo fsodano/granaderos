@@ -31,26 +31,26 @@
         {
           "lod": 0,
           "url": "/models/characters/granadero-lod0.glb",
-          "triangles": 42670,
-          "bytes": 1964996,
-          "drawCalls": 6,
-          "sha256": "9041e7e5ecd249b0065cf012271d60552f418d1bb2809be6ccb973496c7e97e3"
+          "triangles": 73670,
+          "bytes": 4616260,
+          "drawCalls": 8,
+          "sha256": "444abea73ec08c1ef03c7fc2dac8fa5141767b4a249c3cb314b48ccc7cda069f"
         },
         {
           "lod": 1,
           "url": "/models/characters/granadero-lod1.glb",
-          "triangles": 23113,
-          "bytes": 1137720,
-          "drawCalls": 6,
-          "sha256": "b589b8558e13d693cccbbc28621ca96221cc9bc6ee58028751075b2fcf5c0188"
+          "triangles": 46650,
+          "bytes": 3143824,
+          "drawCalls": 8,
+          "sha256": "a3845e976701bf597499b0195178612a9d00fc3b0553700d818dcf8e50132701"
         },
         {
           "lod": 2,
           "url": "/models/characters/granadero-lod2.glb",
-          "triangles": 9806,
-          "bytes": 529988,
-          "drawCalls": 6,
-          "sha256": "de18c59d01ed02830e42cdc65a1b3b03a4f895746e800ba53c46eef8aa8a2f9f"
+          "triangles": 16995,
+          "bytes": 1015792,
+          "drawCalls": 7,
+          "sha256": "c99b30d724b63035ad3f93bbd5be2d80144598770b5b8122b55ddff20b9c118c"
         }
       ],
       "materials": {
@@ -256,26 +256,26 @@
         {
           "lod": 0,
           "url": "/models/characters/royalist-lod0.glb",
-          "triangles": 42313,
-          "bytes": 1940516,
-          "drawCalls": 6,
-          "sha256": "d23f8262eb38def87d7b21586d3faf308505323b5091a8c7150acd82a7334b01"
+          "triangles": 73313,
+          "bytes": 4471592,
+          "drawCalls": 8,
+          "sha256": "c6043aa97c224ec55b8337a99c666b6b1d04e259814fa7954ef1422f8b83c8b4"
         },
         {
           "lod": 1,
           "url": "/models/characters/royalist-lod1.glb",
-          "triangles": 23042,
-          "bytes": 1134352,
-          "drawCalls": 6,
-          "sha256": "9199b37b27872bd9348f34c9f6bd051d45089aa3727ae76cd23347d30129df31"
+          "triangles": 46579,
+          "bytes": 3068800,
+          "drawCalls": 8,
+          "sha256": "343bbbc9c77ed6a6b947f205bd0131b4359110871b6da9b8730f381b4529b3f5"
         },
         {
           "lod": 2,
           "url": "/models/characters/royalist-lod2.glb",
-          "triangles": 9749,
-          "bytes": 527152,
-          "drawCalls": 6,
-          "sha256": "294698350af08dc29e0b505fcc3f432a7634adda3ead34019a6e7ab5e4b99f34"
+          "triangles": 16938,
+          "bytes": 981860,
+          "drawCalls": 7,
+          "sha256": "394701f4674fe4e3340367c689d691d98c87bd8fe7a486039cb7c9bbc989b8f9"
         }
       ],
       "materials": {
@@ -481,26 +481,26 @@
         {
           "lod": 0,
           "url": "/models/characters/worker-lod0.glb",
-          "triangles": 27146,
-          "bytes": 1238932,
-          "drawCalls": 5,
-          "sha256": "1682d2cbd20cca840fc088d58983fa37496db3cb56084babd6cdd7c7d179540a"
+          "triangles": 63192,
+          "bytes": 4200892,
+          "drawCalls": 7,
+          "sha256": "8db1a151dda296d7e08632e5e6df0fe8cba8f34c8c1a0d39ee15425436103aad"
         },
         {
           "lod": 1,
           "url": "/models/characters/worker-lod1.glb",
-          "triangles": 12009,
-          "bytes": 606240,
-          "drawCalls": 5,
-          "sha256": "a83c44ad08118860c59ea02a330b617ad0d8ddfa2a4ed70fabe695a04bd10a7f"
+          "triangles": 40434,
+          "bytes": 2916884,
+          "drawCalls": 7,
+          "sha256": "ca17b0a34329ca1243746780080e9c647d44219bba37c2f5f52e92e3b64dcd32"
         },
         {
           "lod": 2,
           "url": "/models/characters/worker-lod2.glb",
-          "triangles": 4458,
-          "bytes": 272600,
-          "drawCalls": 5,
-          "sha256": "52e16641b2ed73a47536faf899772678e30451b10d8d2704b171d8f631d9e517"
+          "triangles": 16597,
+          "bytes": 1062216,
+          "drawCalls": 7,
+          "sha256": "565b4d9ce09f45fc1f3f2f2706d299f7c804fb2ed294308110af2cf6e7b90d40"
         }
       ],
       "materials": {
@@ -706,26 +706,26 @@
         {
           "lod": 0,
           "url": "/models/characters/surgeon-lod0.glb",
-          "triangles": 28152,
-          "bytes": 1283760,
-          "drawCalls": 5,
-          "sha256": "7f40d2b114f1da469abb2dc0dfe13d1feb5212a98abdc90604b2f21e540d7fb7"
+          "triangles": 59637,
+          "bytes": 3879244,
+          "drawCalls": 6,
+          "sha256": "2142aa6c8cdbd33a0c3f6fef5abbd78bec9da25e86a43d21d0f3a67d46857032"
         },
         {
           "lod": 1,
           "url": "/models/characters/surgeon-lod1.glb",
-          "triangles": 14398,
-          "bytes": 705700,
-          "drawCalls": 5,
-          "sha256": "78f121de0540449c2fad102c31a346b41e3afb13c94ac28bd24c3e0660324d0e"
+          "triangles": 38132,
+          "bytes": 2692424,
+          "drawCalls": 6,
+          "sha256": "7a1bd6ffed31946c0fef10822846643f6bca204e4ed6abef8b71f78f0aebbd12"
         },
         {
           "lod": 2,
           "url": "/models/characters/surgeon-lod2.glb",
-          "triangles": 6961,
-          "bytes": 378312,
-          "drawCalls": 5,
-          "sha256": "ac5ed22dfc4e5c4558a801df20cf7f87a6347f6f5cca0376214394ea04d0e5cd"
+          "triangles": 14352,
+          "bytes": 881840,
+          "drawCalls": 6,
+          "sha256": "5e8463de8ab9a65d6c40af4ff4ae57b7c1c3d8308869a0e1b63b69d5502885ca"
         }
       ],
       "materials": {
@@ -931,26 +931,26 @@
         {
           "lod": 0,
           "url": "/models/characters/gaucho-lod0.glb",
-          "triangles": 26664,
-          "bytes": 1225728,
-          "drawCalls": 6,
-          "sha256": "7179603e7221ef55ea754590b1b4a81d521a8167ae1b033244042ad968f6c687"
+          "triangles": 58149,
+          "bytes": 3776972,
+          "drawCalls": 7,
+          "sha256": "c81314f4abffc6d7c111d499c4751c72d726e0d6c94f1147d36ef2008d909c26"
         },
         {
           "lod": 1,
           "url": "/models/characters/gaucho-lod1.glb",
-          "triangles": 12106,
-          "bytes": 617120,
-          "drawCalls": 6,
-          "sha256": "69b3e5d633a9578338f5ae2c2270b1470096b1a031c55814bbc93d100baddf78"
+          "triangles": 35840,
+          "bytes": 2559600,
+          "drawCalls": 7,
+          "sha256": "e7615908bc58eb3f1de0a665932dca81a3dcd7cab0da5f6161c77406d498b9c8"
         },
         {
           "lod": 2,
           "url": "/models/characters/gaucho-lod2.glb",
-          "triangles": 4618,
-          "bytes": 287756,
-          "drawCalls": 6,
-          "sha256": "185ee45e4b006e9168650a02b3ceeac0e3a654dfcbeb3094dbbf543e03b7a083"
+          "triangles": 12009,
+          "bytes": 747044,
+          "drawCalls": 7,
+          "sha256": "a6cd0d56c467576b51488c2b91395707af352fef27fec948eda1a158747cb1dc"
         }
       ],
       "materials": {
@@ -1156,10 +1156,10 @@
         {
           "lod": 0,
           "url": "/models/characters/friar-lod0.glb",
-          "triangles": 26535,
-          "bytes": 1267752,
-          "drawCalls": 5,
-          "sha256": "b866a9269b046007dbff7191afa91e65a86128c36bf64925a5921e6ed8f43bd9",
+          "triangles": 58020,
+          "bytes": 3818928,
+          "drawCalls": 6,
+          "sha256": "f903132a8d7faebab4b2219760e3ce3c68997cba44e10baccb3c1739b59417da",
           "nativeClothSupport": {
             "method": "current-native-prone-cloth-shape",
             "sourceClip": "prone.idle.long-gun",
@@ -1223,10 +1223,10 @@
         {
           "lod": 1,
           "url": "/models/characters/friar-lod1.glb",
-          "triangles": 15608,
-          "bytes": 824936,
-          "drawCalls": 5,
-          "sha256": "17f92e1b1c45acaf06e20e58ba7e298f5cc847398a9205807694636e65a51a08",
+          "triangles": 39341,
+          "bytes": 2767088,
+          "drawCalls": 6,
+          "sha256": "d7cbb1e5eb84449f211d016fa57de7f629c1b24b1c6fb7be205e80c4e84c49d8",
           "nativeClothSupport": {
             "method": "current-native-prone-cloth-shape",
             "sourceClip": "prone.idle.long-gun",
@@ -1289,7 +1289,7 @@
           "nativeClothTopology": {
             "method": "reviewed-close-garment-topology",
             "sourceUrl": "/models/characters/friar-lod0.glb",
-            "sourceSha256": "b866a9269b046007dbff7191afa91e65a86128c36bf64925a5921e6ed8f43bd9",
+            "sourceSha256": "f903132a8d7faebab4b2219760e3ce3c68997cba44e10baccb3c1739b59417da",
             "retainedOtherCoarseMeshesAndRig": true,
             "maximumExtraWorldDisplacement": 0
           }
@@ -1297,10 +1297,10 @@
         {
           "lod": 2,
           "url": "/models/characters/friar-lod2.glb",
-          "triangles": 10591,
-          "bytes": 609664,
-          "drawCalls": 5,
-          "sha256": "e31fdb7eef3729895d9bdc7c8eb11b4c57ac7ca7e7cd71eeed2e560fd1b8fcc5",
+          "triangles": 17982,
+          "bytes": 1068716,
+          "drawCalls": 6,
+          "sha256": "386fc77718c780518390aa3c8c51e478c08ec387956bd9e3b27c6cbf18e6bed6",
           "nativeClothSupport": {
             "method": "current-native-prone-cloth-shape",
             "sourceClip": "prone.idle.long-gun",
@@ -1363,7 +1363,7 @@
           "nativeClothTopology": {
             "method": "reviewed-close-garment-topology",
             "sourceUrl": "/models/characters/friar-lod0.glb",
-            "sourceSha256": "b866a9269b046007dbff7191afa91e65a86128c36bf64925a5921e6ed8f43bd9",
+            "sourceSha256": "f903132a8d7faebab4b2219760e3ce3c68997cba44e10baccb3c1739b59417da",
             "retainedOtherCoarseMeshesAndRig": true,
             "maximumExtraWorldDisplacement": 0
           }
@@ -1572,26 +1572,26 @@
         {
           "lod": 0,
           "url": "/models/characters/woman-scout-lod0.glb",
-          "triangles": 27911,
-          "bytes": 1286968,
-          "drawCalls": 5,
-          "sha256": "8d7c0d817c45681a0a1ebf5068b985ad8d1de580a221d93af3ccba1640f5fa39"
+          "triangles": 59860,
+          "bytes": 3996636,
+          "drawCalls": 6,
+          "sha256": "d3dbb04cc5a0ddca1ec300def391004e9540bc78f5a82ded0c674262ed0f818b"
         },
         {
           "lod": 1,
           "url": "/models/characters/woman-scout-lod1.glb",
-          "triangles": 14071,
-          "bytes": 701492,
-          "drawCalls": 5,
-          "sha256": "358863428ae5d24a19f4d080dd56c7982b568041a5530bacc59e48153ca78cda"
+          "triangles": 36615,
+          "bytes": 2721608,
+          "drawCalls": 6,
+          "sha256": "af0d39fba27102e59f58d97e874b7c3aeacf693579cdcb296dd2cb808cc618c0"
         },
         {
           "lod": 2,
           "url": "/models/characters/woman-scout-lod2.glb",
-          "triangles": 7060,
-          "bytes": 389524,
-          "drawCalls": 5,
-          "sha256": "06dee5978656e70919c86a3650e914c6f713afb00cf502c954a426740678aa93"
+          "triangles": 12503,
+          "bytes": 893488,
+          "drawCalls": 6,
+          "sha256": "2990d8f4c0ded1c9e1553b03cbaaf04fe17887c1f0f34110f13eb9283315f8a6"
         }
       ],
       "materials": {
@@ -1797,10 +1797,10 @@
         {
           "lod": 0,
           "url": "/models/characters/woman-shawl-lod0.glb",
-          "triangles": 28792,
-          "bytes": 1371988,
-          "drawCalls": 5,
-          "sha256": "840681442792a9ce2c0c688ceb8d5542caec5d618256c7366dc9bb8129765234",
+          "triangles": 61269,
+          "bytes": 3991436,
+          "drawCalls": 6,
+          "sha256": "64f09afe0d7ec85f49cb0d55bf7a640c9355a64b7f4ffbc7bde377a98d31e05e",
           "nativeClothSupport": {
             "method": "current-native-prone-cloth-shape",
             "sourceClip": "prone.idle.long-gun",
@@ -1903,10 +1903,10 @@
         {
           "lod": 1,
           "url": "/models/characters/woman-shawl-lod1.glb",
-          "triangles": 14840,
-          "bytes": 792580,
-          "drawCalls": 5,
-          "sha256": "5653faec338aeed3923359b63d8ae08cec4a045919e6586d457346f6d7e9190f",
+          "triangles": 38888,
+          "bytes": 2767600,
+          "drawCalls": 6,
+          "sha256": "123dd039f32f2f062992635a6cf63ab1a917da68921a26464403b9349bd92d63",
           "nativeClothSupport": {
             "method": "current-native-prone-cloth-shape",
             "sourceClip": "prone.idle.long-gun",
@@ -1970,7 +1970,7 @@
           "nativeClothTopology": {
             "method": "reviewed-close-garment-topology",
             "sourceUrl": "/models/characters/woman-shawl-lod0.glb",
-            "sourceSha256": "840681442792a9ce2c0c688ceb8d5542caec5d618256c7366dc9bb8129765234",
+            "sourceSha256": "64f09afe0d7ec85f49cb0d55bf7a640c9355a64b7f4ffbc7bde377a98d31e05e",
             "retainedOtherCoarseMeshesAndRig": true,
             "maximumExtraWorldDisplacement": 0
           },
@@ -2016,10 +2016,10 @@
         {
           "lod": 2,
           "url": "/models/characters/woman-shawl-lod2.glb",
-          "triangles": 7664,
-          "bytes": 481308,
-          "drawCalls": 5,
-          "sha256": "2ff3830480c870cf5733399a18635f1f176fd9a827206d9225083184543478ac",
+          "triangles": 15088,
+          "bytes": 956620,
+          "drawCalls": 6,
+          "sha256": "839d9976fbd30be6c6c023fee8e4a7ec1fc47eafd55ce1298a84492cb9088c27",
           "nativeClothSupport": {
             "method": "current-native-prone-cloth-shape",
             "sourceClip": "prone.idle.long-gun",
@@ -2083,7 +2083,7 @@
           "nativeClothTopology": {
             "method": "reviewed-close-garment-topology",
             "sourceUrl": "/models/characters/woman-shawl-lod0.glb",
-            "sourceSha256": "840681442792a9ce2c0c688ceb8d5542caec5d618256c7366dc9bb8129765234",
+            "sourceSha256": "64f09afe0d7ec85f49cb0d55bf7a640c9355a64b7f4ffbc7bde377a98d31e05e",
             "retainedOtherCoarseMeshesAndRig": true,
             "maximumExtraWorldDisplacement": 0.002
           },

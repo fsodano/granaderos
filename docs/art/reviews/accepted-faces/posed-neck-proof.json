@@ -1,0 +1,166 @@
+[
+  {
+    "name": "stand.idle.unarmed",
+    "samples": [
+      {
+        "fraction": 0,
+        "time": 0,
+        "mainToComposedMaxM": 0.00015766369782012067,
+        "composedToMainMaxM": 0.00037079414557505166
+      },
+      {
+        "fraction": 0.15,
+        "time": 0.3,
+        "mainToComposedMaxM": 0.00018625262134535094,
+        "composedToMainMaxM": 0.0003861944944588319
+      },
+      {
+        "fraction": 0.3,
+        "time": 0.6,
+        "mainToComposedMaxM": 0.0001866535288043436,
+        "composedToMainMaxM": 0.00038591899764994965
+      },
+      {
+        "fraction": 0.5,
+        "time": 1,
+        "mainToComposedMaxM": 0.00019984956975182546,
+        "composedToMainMaxM": 0.0003883618031204034
+      },
+      {
+        "fraction": 0.7,
+        "time": 1.4,
+        "mainToComposedMaxM": 0.00016006349764892042,
+        "composedToMainMaxM": 0.00037272987955092073
+      },
+      {
+        "fraction": 1,
+        "time": 2,
+        "mainToComposedMaxM": 0.0001576637068174976,
+        "composedToMainMaxM": 0.0003707941639545966
+      }
+    ]
+  },
+  {
+    "name": "stand.idle.long-gun",
+    "samples": [
+      {
+        "fraction": 0,
+        "time": 0,
+        "mainToComposedMaxM": 0.00023534604535150813,
+        "composedToMainMaxM": 0.0004446032957354493
+      },
+      {
+        "fraction": 0.15,
+        "time": 0.3,
+        "mainToComposedMaxM": 0.00023389235847249748,
+        "composedToMainMaxM": 0.0004429789664908612
+      },
+      {
+        "fraction": 0.3,
+        "time": 0.6,
+        "mainToComposedMaxM": 0.00023362819009298418,
+        "composedToMainMaxM": 0.00044267921010429585
+      },
+      {
+        "fraction": 0.5,
+        "time": 1,
+        "mainToComposedMaxM": 0.00023534600359971324,
+        "composedToMainMaxM": 0.00044460326699230577
+      },
+      {
+        "fraction": 0.7,
+        "time": 1.4,
+        "mainToComposedMaxM": 0.00023707089507102249,
+        "composedToMainMaxM": 0.0004464749944323874
+      },
+      {
+        "fraction": 1,
+        "time": 2,
+        "mainToComposedMaxM": 0.00023534607660541764,
+        "composedToMainMaxM": 0.00044460331652873244
+      }
+    ]
+  },
+  {
+    "name": "stand.aim.long-gun",
+    "samples": [
+      {
+        "fraction": 0,
+        "time": 0,
+        "mainToComposedMaxM": 0.00023534604535150813,
+        "composedToMainMaxM": 0.0004446032957354493
+      },
+      {
+        "fraction": 0.15,
+        "time": 0.3,
+        "mainToComposedMaxM": 0.00023389235847249748,
+        "composedToMainMaxM": 0.0004429789664908612
+      },
+      {
+        "fraction": 0.3,
+        "time": 0.6,
+        "mainToComposedMaxM": 0.00023362819009298418,
+        "composedToMainMaxM": 0.00044267921010429585
+      },
+      {
+        "fraction": 0.5,
+        "time": 1,
+        "mainToComposedMaxM": 0.00023534600359971324,
+        "composedToMainMaxM": 0.00044460326699230577
+      },
+      {
+        "fraction": 0.7,
+        "time": 1.4,
+        "mainToComposedMaxM": 0.00023707089507102249,
+        "composedToMainMaxM": 0.0004464749944323874
+      },
+      {
+        "fraction": 1,
+        "time": 2,
+        "mainToComposedMaxM": 0.00023534607660541764,
+        "composedToMainMaxM": 0.00044460331652873244
+      }
+    ]
+  },
+  {
+    "name": "stand.fire.short-gun",
+    "samples": [
+      {
+        "fraction": 0,
+        "time": 0,
+        "mainToComposedMaxM": 0.00013612531453731773,
+        "composedToMainMaxM": 0.0002600865061194861
+      },
+      {
+        "fraction": 0.15,
+        "time": 0.10499999821186065,
+        "mainToComposedMaxM": 0.00013612535814687852,
+        "composedToMainMaxM": 0.00026543194315953783
+      },
+      {
+        "fraction": 0.3,
+        "time": 0.2099999964237213,
+        "mainToComposedMaxM": 0.0001361190782564594,
+        "composedToMainMaxM": 0.00028560831342037165
+      },
+      {
+        "fraction": 0.5,
+        "time": 0.3499999940395355,
+        "mainToComposedMaxM": 0.00013612533463277347,
+        "composedToMainMaxM": 0.0002649097869944795
+      },
+      {
+        "fraction": 0.7,
+        "time": 0.4899999916553497,
+        "mainToComposedMaxM": 0.00013612515613927088,
+        "composedToMainMaxM": 0.00025933023186228995
+      },
+      {
+        "fraction": 1,
+        "time": 0.699999988079071,
+        "mainToComposedMaxM": 0.00013612531460720565,
+        "composedToMainMaxM": 0.0002600865227856726
+      }
+    ]
+  }
+]

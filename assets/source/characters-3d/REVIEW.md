@@ -142,3 +142,53 @@ saved endpoints, source-sprite comparison and remaining contact roll.
 ### Standing unarmed sideways support increment
 
 Only the eight leg rotation channels in each standing unarmed sideways clip change per anatomy. Complete published boots clear the floor and retain a supporting contact through 241 sampled phases. The native rig, all 332 other clips, 302 non-leg selected channels, stored and nominal periods and pace profile remain exact. The [sideways support review](../../../docs/art/standing-unarmed-sideways-support-3d-review-2026-10-07.md) records the clean 97-check/native/profile/build gate, 68 ordinary browser captures, saved destinations, sprite comparison and measured contact residuals. Equipped and crouched sideways variants remain separate work.
+
+### Accepted faces and hair, isolated from clothing and motion
+
+The accepted heads are now separate source assets for all eight appearances
+and all three detail levels. The face-only delivery replaces connected head,
+neck, eye, brow and hair surfaces. It preserves current main's hands, hats,
+uniforms, boots, rig, sockets, cloth morphs and animation banks. New clothing
+studies and the competing motion changes are excluded.
+
+Granadero and Worker use the accepted generated skin colour with registered
+UV1. The other six families use their reviewed clean skin maps. Native normal
+and roughness channels remain in UV0. A separate Face_Skin material carries
+the skin role, so game and lab apply the selected tone without multiplying
+the albedo twice; original hand materials remain unchanged. The lab adds
+Rostro inspection, retains the isometric camera, and starts on Granadero · juego.
+Lab and game retain their existing, slightly different palette hex values.
+
+The bounded [source package](authoring/vendor/reviewed-faces/README.md) records
+24 head GLBs, their donor hashes, exact image bytes and source rights. Its
+compositor runs only after an appearance export. Native rig mismatches,
+partial head/hand component selections and repeated application are rejected.
+The appearance review option imports the final composed GLB before rendering.
+Two real Blender LOD2 rebuilds (Granadero and Worker) reproduce the delivered
+bytes exactly.
+
+Independent checks cover all 24 bodies: existing non-head meshes, hand
+triangles, vertex attributes, morphs, rig, materials and textures are exact.
+The explicit hand check covers 69,266 rendered triangles. The visible military
+neck/collar opening also occurs on unchanged main; this face extraction does
+not repair clothing.
+
+The four coarse friar/shawl bodies update their cloth donor hash to the new
+LOD0 file identity. This changes provenance metadata only; the cloth binary
+payloads and completed hem records remain exact. The existing palette pass
+remains byte-idempotent after the update.
+
+Local validation passes 99 facial-surface, eye, palette and actor-runtime
+checks, seven source/compositor checks, all 27 lab checks, typecheck, native
+library verification and the production build. The build resolves 1,041
+asset references in 1,304 exported files. The three pistol-face clearance
+checks also pass against the actual deformed face triangles across standing,
+crouched, prone and mounted reloads. This is a focused acceptance gate,
+not a claim that the entire broad suite was rerun on this face-only branch.
+
+The accepted detail costs more geometry and separate materials. Granadero
+LOD0/1/2 contain 73,670 / 46,650 / 16,995 triangles and 8 / 8 / 7 draw calls.
+The source package contains about 40.94 MB of head GLBs and 45.32 MB of exact
+texture content. No crowd-performance claim is made. Facial identities still
+share base shapes and, for Granadero/Worker, broad brows and stubble. The user
+accepted the faces for now; further clothing work remains separate.
