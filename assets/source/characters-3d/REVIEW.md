@@ -324,3 +324,78 @@ checkpoint. The focused post-repair result does not replace that broad result.
 Loading grip offsets now sample the authored contact curve at 30 Hz. This
 increases the manifest from approximately 2.47 MB to 7.91 MB; startup and
 crowded-sector performance have not been benchmarked for this change.
+
+## Rifle ready-head clearance, 8 October
+
+The shared crouched and prone rifle ready poses now keep the face outside the
+trigger hand. The correction changes only head and neck rotations in 32 clips
+per anatomy: aim, fire, reload and unload, including weapon variants. A small
+neck response clears the hand during recoil while the head counter-rotates.
+Loading retains its original hand-planning frame, then adds the corrected
+head blend. All 53,042 other channels per anatomy, input times, action markers
+and clip metadata remain exact. Body and equipment files do not change.
+
+The actual current Granadero and scout LOD0 surface sweep covers 64 cases and
+24,432 samples at 120 Hz. No hand/head, sleeve/head or sleeve/collar triangle
+crossings were found. Minimum measured firing hand/head clearance is 1.245 mm.
+All 128 ready endpoint checks pass: the eye remains within 1.991 mm of the
+sight line and the face direction within 3.722 degrees of the bore. During
+recoil these briefly reach 9.70 mm and 6.24 degrees. This does not certify all
+headwear or reduced detail levels.
+
+All 29 affected rifle, strap and arm-support checks pass after integration.
+The new four-case surface regression fails on all four preceding poses and
+passes on the corrected bank. It tests every actual right-hand vertex against
+the deformed face/neck during the recoil window, plus ready alignment and
+angular continuity. Native source regeneration varies arm solves by at most
+0.0558 degrees; the selective merge preserves the delivered arm curves exactly.
+
+The current manifest is
+`e53b7eeb2411149380208be792b621d9a7da1fb5825557e651f150550ed96455`.
+Evidence is retained in
+`artifacts/character-anatomy-review/delivery/rifle-ready-head/`.
+
+## Granadero facial colour detail, 8 October
+
+The Granadero now uses the reviewed generated skin albedo at all three detail
+levels. It adds visible cheek and jaw variation, lip detail and short stubble.
+The two fitted eyebrow beds keep their geometry and hairs, but no longer add
+a second dark pigment layer over the eyebrows in the new image. The seven
+other appearance families retain their existing assets and palette behaviour.
+
+The unchanged generated PNG is 1,254 by 1,254 pixels and 2,032,518 bytes. Its
+source, original prompt and generation record are in `authoring/generated/`.
+The build applies the colour image through a separate UV1 with bounded local
+lip and outer-brow registration. Native UV0, positions, normals, indices,
+weights, inverse binds and morphs remain exact. Hand and nail UVs do not move.
+Normals and roughness continue to use the original maps and UV0. A shared
+palette helper compensates the coloured albedo; untagged assets keep their
+existing tint. Both development and built labs package that same helper.
+
+All 122 combined affected skin, eye, garment, rifle-head and runtime checks
+pass. All 28 lab checks pass. Typecheck and production build pass; published
+library verification passes. The live lab loaded body `43ed469e` with no
+console warnings or errors, and all three skin colours were visually checked
+in the isometric view. Separate matched exports cover all three detail levels,
+three colours, the face and both hands. Evidence is in
+`artifacts/character-anatomy-review/delivery/granadero-skin/`.
+
+The current manifest is
+`866d455b3621fd1a73d42fe873a82ae17ee6140a0112629704fa758994247268`.
+The face gain is clearer in close views than at game size. The broad outer
+eyebrow tails remain. Existing idle fingers still look hooked, and reduced
+hand meshes retain coarse facets. This is an incremental appearance improvement,
+not completion of the reference-level target.
+
+The separate coat-construction trial remains rejected. Eight matched poses
+show modestly fuller cloth, but jagged shoulder edges, collar gaps and sampled
+body intersections remain. Fixing the neck boundary order alone did not solve
+these defects. Neither that garment nor its corrective driver is published.
+
+The final quick profile on this exact checkpoint completed all 856 selected
+files: 6,275 passed and 11 failed. There are no new failures compared with the
+preceding 6,260-pass/15-failure checkpoint. All four military strap failures
+are resolved. The remaining 11 have unchanged assertion payloads. This is a
+comparison with a previous candidate, not a verified current-main baseline.
+The full log and failure comparison are retained in
+`artifacts/character-anatomy-review/delivery/granadero-skin/`.

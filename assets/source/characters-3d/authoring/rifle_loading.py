@@ -171,6 +171,11 @@ def pose(ctx,base,offsets,t,gesture,item=None,posture=None,_anchor=False):
 
     ready_pose,ready_grip,ready_q=_cached_pose(ctx,base,('ready','rifle',posture),lambda:_gun_pose(ctx,base,'rifle',offsets,'aim',posture=posture))
     if t<=0 or t>=1:return ready_pose
+    # Existing arm contacts use the original planning frame. Apply the fitted
+    # head to the returned pose after those paths are solved, so a shared
+    # ready-head correction cannot shift the cartridge hand path.
+    from firearm_grips import rifle_head_reference
+    planning_ready=rifle_head_reference(ctx,posture,ready_pose)
     _apply_sample(rig,base)
     chest=(rig.pose.bones['upperarm_l'].head+rig.pose.bones['upperarm_r'].head)*.5;pelvis=rig.pose.bones['pelvis'].head.copy()
     prone=chest.z-pelvis.z<.13;crouched=not prone and pelvis.z<.80
@@ -202,12 +207,14 @@ def pose(ctx,base,offsets,t,gesture,item=None,posture=None,_anchor=False):
     # Arm-key timing must not change the published torso path. The six-arm
     # increment keeps these body curves, so solve every wrist in that same
     # frame, including the new intermediate return keys.
-    body=_blend(ready_pose,base,w)
+    body=_blend(planning_ready,base,w)
+    head_body=_blend(ready_pose,base,w)
     body_stages=([0,.12,.24,.36,.46] if t<.46 else [.86,1] if t>.86 else []) if gesture=='reload' else ([0,.18,.25] if t<.25 else [.55,.78,1] if t>.55 else [])
     for a,b in zip(body_stages,body_stages[1:]):
         if a<t<b:
             u=(t-a)/(b-a);u=u*u*(3-2*u)
-            body=_blend(_blend(ready_pose,base,_weight(a,gesture)),_blend(ready_pose,base,_weight(b,gesture)),u)
+            body=_blend(_blend(planning_ready,base,_weight(a,gesture)),_blend(planning_ready,base,_weight(b,gesture)),u)
+            head_body=_blend(_blend(ready_pose,base,_weight(a,gesture)),_blend(ready_pose,base,_weight(b,gesture)),u)
             break
     _apply_sample(rig,body)
     grip=ctx['weapons']['rifle'].matrix_basis@_grip_at(ctx,item,g,posture,gesture)
@@ -294,4 +301,5 @@ def pose(ctx,base,offsets,t,gesture,item=None,posture=None,_anchor=False):
                 align_arm_roll(rig,'l',rotation,_set_world_rotation)
                 fitted=_collect(rig)
                 for name in ('upperarm_l','lowerarm_l','hand_l'):result[name]=fitted[name]
+    for name in ('neck_01','head'):result[name]=head_body[name]
     return result

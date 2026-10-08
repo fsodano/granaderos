@@ -25,6 +25,10 @@ def export(ctx,path,animations=False):
  if animations and ctx.get("rig"):trim_endpoints(path,authored_durations(ctx["rig"]))
  from gltf_pack import pack
  raw,doc=pack(path,{m.name:list(m.diffuse_color) for m in bpy.data.materials})
+ if args.kind=='appearance':
+  from generated_skin import apply_generated_skin
+  generated=apply_generated_skin(path,args.preset)
+  if generated is not None:raw,doc=generated
  from rifle_guard_curves import preserve_export as preserve_rifle_guard_curves
  restored=preserve_rifle_guard_curves(path,ctx) if animations else None
  if restored is not None:raw,doc=restored

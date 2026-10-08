@@ -32,25 +32,25 @@
           "lod": 0,
           "url": "/models/characters/granadero-lod0.glb",
           "triangles": 87197,
-          "bytes": 5302048,
+          "bytes": 5452964,
           "drawCalls": 6,
-          "sha256": "7976c43a44ae7ccacd01f35548a61fbb9b6c71a7325d385f0b998d3a1a23eab7"
+          "sha256": "43ed469eb9ea1cf2bf07bf01317921350fc6eb15e9b5d2caccbe7bf02b1fa1e2"
         },
         {
           "lod": 1,
           "url": "/models/characters/granadero-lod1.glb",
           "triangles": 61526,
-          "bytes": 3911964,
+          "bytes": 3996624,
           "drawCalls": 6,
-          "sha256": "b183069f9447523e04b2eeeb610559b1ae4127351cc87b494cc65dbfaf6e7759"
+          "sha256": "a50f3d2a0de9368a01b62d9724f906caf8265dfca45c3152cf7ae2693c5a64f9"
         },
         {
           "lod": 2,
           "url": "/models/characters/granadero-lod2.glb",
           "triangles": 18664,
-          "bytes": 1165968,
+          "bytes": 1203904,
           "drawCalls": 6,
-          "sha256": "a5facb84ec4ba0c1c267863efe764eff3e7a5823de983a83b4920df6475d60ef"
+          "sha256": "b373ef830906ebbb2d8861f1ff758f931b8f10b863e713e817a0abbe01cc8b03"
         }
       ],
       "materials": {
@@ -120202,8 +120202,8 @@
         "up": "+Y",
         "forward": "+Z"
       },
-      "sha256": "e48fbf8e8b9fda4219b59582730453221003dad669e0a3b36e50b99e91b5d598",
-      "bytes": 18440256
+      "sha256": "302090b2205efd8c955a9b27216351183532b9027f4d973307a282fb022e5123",
+      "bytes": 18582896
     },
     "female": {
       "url": "/models/characters/female-animations.glb",
@@ -238597,8 +238597,8 @@
         "up": "+Y",
         "forward": "+Z"
       },
-      "sha256": "ee8c093b487012b45472565b42a35df8c0b10693d2104a5dec1e4012bf24d932",
-      "bytes": 17718164
+      "sha256": "e056daa7ab2a4a13a1f7ed545be3a0c028335f6ea337c225d40516d34bd7e198",
+      "bytes": 17860804
     }
   },
   "equipment": {

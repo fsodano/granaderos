@@ -131,6 +131,61 @@ RIFLE_AIM_PROFILES = {'male': {'crouched': {'torsoTurn': -13.9790524,
                         'supportX': 0.18,
                         'supportRoll': -0.0}}}
 
+# Local native rotations fitted against actual hand/head skin. The eye
+# landmark and actual head-facing direction retain the rifle sight line.
+RIFLE_HEAD_CLEARANCE = {'male': {'crouched': {'neck_01': [0.9958630177525912,
+                                   -0.053764533318282404,
+                                   0.047627351363233074,
+                                   -0.05565842462640118],
+                       'head': [0.9882136502840225,
+                                0.06199427266716482,
+                                -0.08690137396260064,
+                                0.10972074895938763]},
+          'prone': {'neck_01': [0.986695152523473,
+                                -0.16045585698868234,
+                                1.0122201523927316e-07,
+                                -0.02620293771121494],
+                    'head': [0.9727006565957627,
+                             0.145171366830045,
+                             -0.013709044212261283,
+                             0.18052913620148678]}},
+ 'female': {'crouched': {'neck_01': [0.9994736800529526,
+                                     -0.024264225766026815,
+                                     0.017322762226648063,
+                                     -0.012787968494736032],
+                         'head': [0.9984250578322421,
+                                  0.02990458309745659,
+                                  -0.02361819057066772,
+                                  0.04117403158082656]},
+            'prone': {'neck_01': [0.994434566602527,
+                                  -0.09176773862578888,
+                                  -0.0213928680494616,
+                                  0.04712663885926139],
+                      'head': [0.9904554783912711,
+                               0.12103173421332286,
+                               0.03101171982632614,
+                               0.05820255897679487]}}}
+
+
+# Bounded recoil response: shift the head clear of the rising trigger hand,
+# while preserving its world-facing direction. Ready correction stays exact.
+RIFLE_HEAD_RECOIL = {'male': {'crouched': [0.9993522301238252, 0, 0, -0.03598777773823774],
+          'prone': [0.9981908328759235,
+                    -0.04355476414605552,
+                    -0.002535389263350942,
+                    -0.041371674898838987]},
+ 'female': {'crouched': [0.9995336256371304, 0, 0, -0.030537374161721004],
+            'prone': [0.9991856159365213, -0.040349781976542355, 0, 0]}}
+
+def rifle_head_reference(ctx, posture, pose):
+    """Keep the accepted loading-hand planning frame independent of head fit."""
+    result=dict(pose)
+    for name, local_rotation in RIFLE_HEAD_CLEARANCE.get(ctx.get('gender'),{}).get(posture,{}).items():
+        position,quaternion=result[name]
+        result[name]=(position.copy(),quaternion@Quaternion(local_rotation).inverted())
+    return result
+
+
 # Fore-end circumference increases toward the breech. The support hand uses
 # a separate bounded curl when a low firing posture moves its grip rearward.
 RIFLE_SUPPORT_PROFILES = {'male': {'crouched': {'fingers': {'index': [0.033825, 0.0798829, 0.8408505],
@@ -425,7 +480,7 @@ def grip_elbow(rig, side, wrist, hand_rotation, palm_basis=None, guide=None, aim
     return sample((lo+hi)/2)[1]
 
 
-def rifle_sight_pose(ctx, position, rotation, set_rotation, posture='standing'):
+def rifle_sight_pose(ctx, position, rotation, set_rotation, posture='standing', recoil=0):
     """Shoulder the stock and sight with native spine, neck, and head joints."""
     rig=ctx['rig'];female=ctx.get('gender')=='female'
     profile=RIFLE_AIM_PROFILES.get(ctx.get('gender'),{}).get(posture)
@@ -444,6 +499,18 @@ def rifle_sight_pose(ctx, position, rotation, set_rotation, posture='standing'):
     head=Quaternion(forward,math.radians(head_roll))@Quaternion(side,math.radians(.75))@turn
     set_rotation(rig,'neck_01',neck@rig.data.bones['neck_01'].matrix_local.to_quaternion())
     set_rotation(rig,'head',head@rig.data.bones['head'].matrix_local.to_quaternion())
+    for name, local_rotation in RIFLE_HEAD_CLEARANCE.get(ctx.get('gender'),{}).get(posture,{}).items():
+        bone=rig.pose.bones[name]
+        bone.rotation_quaternion=bone.rotation_quaternion@Quaternion(local_rotation)
+    bpy.context.view_layer.update()
+    response=RIFLE_HEAD_RECOIL.get(ctx.get('gender'),{}).get(posture)
+    if response and recoil>0:
+        original_head=rig.pose.bones['head'].matrix.to_quaternion()
+        correction=Quaternion().slerp(Quaternion(response),min(1,recoil/.042))
+        neck_bone=rig.pose.bones['neck_01']
+        neck_bone.rotation_quaternion=neck_bone.rotation_quaternion@correction
+        bpy.context.view_layer.update()
+        set_rotation(rig,'head',original_head)
     chest=rig.pose.bones['spine_03'];delta=chest.matrix.to_quaternion()@chest.bone.matrix_local.to_quaternion().inverted()
     pocket=rig.pose.bones['upperarm_r'].head+delta@Vector((.055+(profile['pocketAcross'] if profile else 0),-.070,.050+(profile['pocketHeight'] if profile else 0)))
     gun_rotation=rotation@Quaternion(Vector((1,0,0)),math.radians(profile['cant'] if profile else -20))

@@ -49,7 +49,7 @@ The eight active appearances are granadero, royalist, worker, surgeon, gaucho,
 friar, woman-scout, and woman-shawl. Uniforms, shirts, coats, a poncho, a habit,
 a shawl, trousers, a skirt, hair, hats, boots and trim are fitted meshes.
 The shared surface treatment adds facial pigment, cloth folds and seams,
-matte leather, and shaped uniform trim. The current face source uses separate
+matte leather, and shaped uniform trim. The base face source uses separate
 2048-pixel male and female skin maps. It preserves local color differences,
 adds spatial roughness and derives restrained normals from fine source grain.
 `facial_structure.py` adds small cheek, brow, nose and mouth surface changes
@@ -58,10 +58,18 @@ has its own reduction budget, so the eyes and lips keep more of their source
 shape at each detail level. A fitted brow base and irregular short hairs replace
 the sparse dotted brows. Native UVs, skin weights, joints and the
 light/brown/dark palette controls remain intact. The later eye pass increases
-the iris diameter to 11 mm and softens the lower-lid ridge. Skin outside the
-face remains unchanged. Military coats also have a smoother neckline; LOD1
+the iris diameter to 11 mm and softens the lower-lid ridge. These eye changes
+leave skin geometry outside the face unchanged. Military coats have a smoother neckline; LOD1
 retains the LOD0 coat support to prevent the shoulder belt entering the cloth
 during compressed poses. Other LOD1 parts keep their normal reductions.
+The Granadero additionally uses a reviewed 1254-pixel generated colour map
+for clearer facial variation, lips and short stubble. Its separate UV1 registers
+the lips and brows; the native UV0 normal/roughness maps stay intact. Fitted
+eyebrow hairs remain, with the underlying extra pigment disabled for this map.
+The runtime and lab compensate its colour reference when selecting a skin tone.
+This is limited to the three Granadero detail levels. The other appearances
+retain their base maps. The face still needs further art review, especially the
+wide outer brow tails; see the dated evidence and limits in [REVIEW.md](REVIEW.md).
 Civilian garments keep their own colors and do not retain military
 cockades, chin scales, cords or epaulettes. Each complete hat is one replaceable
 headwear part, including its small trim pieces.
@@ -141,7 +149,7 @@ textures, materials where immutable, and animation clips.
   `afb9f530a7c2741dedb8df0ebae2e0b183caec21`. No MPFB Python addon code is used.
   The original license texts, source URLs, hashes and derivations are in
   `authoring/vendor/makehuman/source-manifest.json` and `LICENSE.ASSETS.md`.
-- **Current skin detail:** the clean young male and female skins from the
+- **Base skin detail:** the clean young male and female skins from the
   [MakeHuman system assets CC0 pack](https://static.makehumancommunity.org/assets/assetpacks/makehuman_system_assets.html).
   The included material headers identify the September 2020 CC0 release and
   Data Collection AB, Joel Palmius and Jonas Hauquier as the copyright holders
@@ -152,6 +160,12 @@ textures, materials where immutable, and animation clips.
   spatial roughness and fine-grain normal maps without changing the native UVs.
   The earlier Mindfront Aksel maps remain recorded for provenance but are no
   longer used by the current appearance source.
+- **Granadero colour texture:** generated with the built-in image tool using
+  the vendored young male diffuse map as its UV reference. The unchanged PNG,
+  exact prompt, generation record and hash are in `authoring/generated/`.
+  `authoring/generated_skin.py` adds only albedo registration and material
+  metadata; it does not edit pixels or replace the native surface maps. This
+  generated colour texture is distinct from the original CC0 source asset.
 - **Female macro target:** the matching native female target from the same
   pinned upstream commit; URL and SHA256 are in
   `authoring/vendor/additional-source-manifest.json`.

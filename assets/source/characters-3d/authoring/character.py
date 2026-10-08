@@ -5,6 +5,7 @@ shaped after rig creation. Joint centres, skin weights, UVs and limb lengths
 keep the native adult proportions.
 Source assets and their CC0 provenance are in vendor/makehuman.
 """
+from generated_skin import uses_generated_skin
 from pathlib import Path
 import json
 import math
@@ -615,7 +616,9 @@ def create_character(preset="granadero", height=1.76):
                 density=max(0,1-across*across)**.8
                 density*=math.sin(math.pi*t)**.30
                 density*=.90+.10*math.sin(j*2.399)
-                brow_tones.append((1-.65*density,1-.70*density,1-.73*density,1))
+                # The generated Granadero atlas already includes brow pigment.
+                # Keep the fitted bed and hairs, but do not paint it twice.
+                brow_tones.append((1,1,1,1) if uses_generated_skin(preset) else (1-.65*density,1-.70*density,1-.73*density,1))
             if j:
                 for column in range(columns-1):
                     a=(j-1)*columns+column;brow_faces.append((a,a+1,a+columns+1,a+columns))

@@ -558,3 +558,19 @@ test('held grip offsets follow actual body weights through interrupted fades and
   assert.ok(runtime.action.paused&&runtime.action.isScheduled(),'The clamped terminal action still contributes to the body');
   runtime.update(v,3000);runtime.tick(0,3000);matchesBody();runtime.tick(.1,3100);matchesBody();runtime.tick(.03,3130);matchesBody();runtime.dispose();
 });
+
+
+test('actor palette changes compensate a tagged skin albedo without changing another instance',()=>{
+  const f=fixture('registeredSkin'),reference=[.846873231509858,.4232676699860717,.2788942634768104];
+  f.skin.userData.skinAlbedoReference=reference;
+  const a=new ActorRuntime(f.asset,visual(f,{skin:'light'})),b=new ActorRuntime(f.asset,visual(f,{key:'unit:second',skin:'dark'}));
+  const aSkin=a.model.getObjectByName(f.body.name).material,bSkin=b.model.getObjectByName(f.body.name).material;
+  const expected=new MeshStandardMaterial();
+  for(const tone of ['light','brown','dark','light']){
+    a.update(visual(f,{skin:tone}),0);expected.color.set(f.asset.manifest.skinTones[tone]);
+    for(const [i,key]of ['r','g','b'].entries())assert.ok(Math.abs(aSkin.color[key]*reference[i]-expected.color[key])<1e-10);
+    expected.color.set(f.asset.manifest.skinTones.dark);
+    for(const [i,key]of ['r','g','b'].entries())assert.ok(Math.abs(bSkin.color[key]*reference[i]-expected.color[key])<1e-10);
+  }
+  assert.equal(f.skin.color.getHexString(),'c68b62');a.dispose();b.dispose();expected.dispose();
+});

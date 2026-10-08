@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
+import {createHash} from 'node:crypto';
 import {resolve,sep} from 'node:path';
 import {pathToFileURL} from 'node:url';
 import sharp from '../web/node_modules/sharp/lib/index.js';
@@ -28,12 +29,12 @@ function glb(url){
  }
  return {path,json,access};
 }
-function faceUVs(model,material){
+function faceUVs(model,material,channel=0){
  const {json,access}=model,head=json.skins[0].joints.findIndex(index=>json.nodes[index].name==='head');
  assert.ok(head>=0,'The native head joint is present');
  const uvs=[];
  for(const primitive of json.meshes.flatMap(mesh=>mesh.primitives).filter(p=>p.material===material)){
-  const uv=access(primitive.attributes.TEXCOORD_0),normal=access(primitive.attributes.NORMAL),joints=access(primitive.attributes.JOINTS_0),weights=access(primitive.attributes.WEIGHTS_0),indices=access(primitive.indices).flat();
+  const uv=access(primitive.attributes[`TEXCOORD_${channel}`]),normal=access(primitive.attributes.NORMAL),joints=access(primitive.attributes.JOINTS_0),weights=access(primitive.attributes.WEIGHTS_0),indices=access(primitive.indices).flat();
   // Native head weights and outward forward normals select the actual face,
   // without depending on an appearance's scale or an arbitrary UV rectangle.
   const faceVertex=i=>joints[i].reduce((sum,joint,c)=>sum+(joint===head?weights[i][c]:0),0)>.5&&normal[i][2]>.25;
@@ -55,7 +56,7 @@ function range(values){let low=Infinity,high=-Infinity;for(const value of values
 for(const appearance of Object.values(manifest.appearances))for(const lod of appearance.lods)test(`${appearance.id} LOD${lod.lod} facial PBR maps retain source detail`,async()=>{
  const model=glb(lod.url),{json,path}=model,material=json.materials.findIndex(m=>m.name===appearance.materials.skin);
  assert.ok(material>=0,'Skin stays a separate material');
- const skin=json.materials[material],uvs=faceUVs(model,material),pbr=skin.pbrMetallicRoughness;
+ const skin=json.materials[material],pbr=skin.pbrMetallicRoughness,generated=appearance.id==='granadero'&&Boolean(skin.extras?.skinAlbedoSourceSha256);
  const channels=[
   {role:'colour',texture:pbr.baseColorTexture,components:[0,1,2]},
   {role:'normal',texture:skin.normalTexture,components:[0,1]},
@@ -63,11 +64,22 @@ for(const appearance of Object.values(manifest.appearances))for(const lod of app
  ];
  for(const {role,texture,components} of channels){
   assert.ok(texture,`Skin ${role} remains connected after export`);
-  assert.equal(texture.texCoord??0,0,`${role} uses the retained native UV set`);
+  const registered=generated&&role==='colour',channel=registered?1:0,uvs=faceUVs(model,material,channel);
+  assert.equal(texture.texCoord??0,channel,`${role} uses its retained or registered UV set`);
   const image=json.images[json.textures[texture.index].source];
-  assert.equal(image.name,`skin-${appearance.gender}-${role}`,`${role} belongs to the correct native anatomy`);
+  assert.equal(image.name,registered?'skin-granadero-generated-colour':`skin-${appearance.gender}-${role}`,`${role} belongs to the correct appearance source`);
   assert.ok(image.uri&&!image.uri.startsWith('data:'),'The image is a packaged library texture');
-  const [actual,expected]=await Promise.all([pixels(new URL(image.uri,path)),pixels(new URL(`skin-${appearance.gender}-${role}.png`,source))]);
+  if(registered){
+   const bytes=readFileSync(new URL(image.uri,path)),original=readFileSync(new URL('../../generated/granadero-skin-colour.png',source));
+   const hash=value=>createHash('sha256').update(value).digest('hex');
+   assert.equal(hash(bytes),hash(original),'Generated albedo retains the exact registered source PNG');
+   assert.equal(skin.extras.skinAlbedoSourceSha256,hash(original),'Tagged albedo identifies its exact source');
+   const native=faceUVs(model,material,0);assert.equal(native.length,uvs.length);
+   const shifts=uvs.map((uv,i)=>Math.hypot(uv[0]-native[i][0],uv[1]-native[i][1]));
+   assert.ok(shifts.some(value=>value>1e-6),'Generated lips and brows use a local face registration');
+   assert.ok(shifts.every(value=>Number.isFinite(value)&&value<.005),'Registration remains within the reviewed local face offset');
+  }
+  const [actual,expected]=await Promise.all([pixels(new URL(image.uri,path)),pixels(registered?new URL('../../generated/granadero-skin-colour.png',source):new URL(`skin-${appearance.gender}-${role}.png`,source))]);
   assert.deepEqual([actual.info.width,actual.info.height],[expected.info.width,expected.info.height],`${role} keeps the authored resolution`);
   for(const axis of [0,1])assert.ok(range(uvs.map(uv=>uv[axis]))*(axis?actual.info.height:actual.info.width)>1,'The face does not collapse onto a single texture texel');
   for(const component of components){

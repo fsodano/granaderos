@@ -755,7 +755,7 @@ def _gun_pose(ctx,base,key,offsets,mode='aim',recoil=0,posture=None):
     if key=='rifle' and mode=='aim':
         from firearm_grips import rifle_sight_pose,RIFLE_AIM_PROFILES
         rotation=rotation@Quaternion(Vector((0,1,0)),-recoil*1.2)
-        position,rotation=rifle_sight_pose(ctx,position,rotation,_set_world_rotation,posture)
+        position,rotation=rifle_sight_pose(ctx,position,rotation,_set_world_rotation,posture,recoil)
         aim_profile=RIFLE_AIM_PROFILES.get(ctx['gender'],{}).get(posture)
     elif key=='pistol' and mode=='aim':
         from firearm_grips import pistol_sight_pose

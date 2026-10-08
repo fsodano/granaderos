@@ -1,3 +1,4 @@
+import {applySkinPalette} from '../../../game/skin-palette.js';
 import * as THREE from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
@@ -191,7 +192,7 @@ function returnToSelectedPose(fade=.16){
  const chosen=locomotion?(state.weapon==='none'?locomotion:state.weapon[0].toUpperCase()+state.weapon.slice(1)+locomotion):readyClips[state.weapon];
  playClip(chosen,{fade});updateBayonet();updateControls();
 }
-function applySkin(tone){state.skin=tone;for(const material of skinMaterials)material.color.set(palettes[tone]);updateControls();}
+function applySkin(tone){state.skin=tone;for(const material of skinMaterials)applySkinPalette(material,palettes[tone]);updateControls();}
 function updateBayonet(){if(bayonet)bayonet.visible=state.weapon==='rifle'&&(chosenAttack==='BayonetThrust'||state.clip==='BayonetThrust'&&state.attacking);}
 function selectWeapon(weapon){
  if(!state.ready)return;
