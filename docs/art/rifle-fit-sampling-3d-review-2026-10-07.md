@@ -55,4 +55,12 @@ The unchanged physical rifle cut already records the remaining native source acc
 - All 58 affected existing checks pass: strict sabre/pistol, sole cache, runtime, rider seat, paid facing and current scene order. The focused run took 112.88 seconds on the loaded host.
 - The exact saved helper/consumer/presentation project type check passes.
 
-No shared source, Git index, animation bank, manifest or profile was written during this preparation.
+No animation bank, manifest or profile changes belong to this cut.
+
+## Integrated ordinary combat review
+
+The parent integration passes 15 affected scalar-skinning, chronological-admission, sole-cache, sabre/pistol-contact and real paid-rifle checks in 53.84 seconds. TypeScript, documentation and all 38 baseline audits pass. Initial static export `8ba27d79e676` verifies every route, 1,244 files and 1,039 asset references.
+
+Four normal paid browser cases pass on source `627ea15c82171fe75f2e7be2b32be316bf597526`: cardinal/diagonal rifle strikes for both bodies. All 88 captures have no browser errors. Each strike retains the owned rifle, loaded round, pocket ammunition and supplies, spends 4 displayed PA, applies 18 damage once and completes at its saved cell. Selected live contact and recovery poses were compared with the preceding accepted physical views and current sprites. This confirms retained visible action behavior; screenshot telemetry does not establish a frame budget.
+
+Publication source `b46e89920ac9310e2e8054298316fb1bc5198db2` includes the posta correction from PR #241 and retains every captured actor/helper/native hash byte for byte. Its type check and combined static export `6df69babc7d6` pass. `artifacts/three-rifle-scalar-sampling-cut-review/` records the actual capture source and publication bridge. First-fit main-thread responsiveness remains an explicit separate task.
