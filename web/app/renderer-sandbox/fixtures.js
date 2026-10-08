@@ -143,6 +143,7 @@ export function createRendererSandboxBattle(id='combat'){
   if(id==='prone-work')return createProneWorkReviewBattle();
   if(id.startsWith('prone-work:'))return createProneWorkReviewBattle(id.slice('prone-work:'.length));
   if(id==='reach-actions')return createReachReviewBattle();
+  if(id.startsWith('reach-actions:'))return createReachReviewBattle(id.slice('reach-actions:'.length));
   if(id==='equipped-crouch')return equippedCrouch();
   if(id.startsWith('equipped-crouch:'))return equippedCrouch(id.slice('equipped-crouch:'.length));
   if(id==='bayonets')return createBayonetReviewBattle();
