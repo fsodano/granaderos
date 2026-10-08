@@ -27,7 +27,7 @@ def sewn_panel(ctx,name,constraints):
     return obj
 
 
-def fit_crossbelts(ctx):
+def fit_crossbelts(ctx, *, cleanup_seams=False):
     objects=ctx['objects']
     old=[obj for obj in objects if obj.name.startswith(('Single_Crossbelt','Crossbelt_Shoulder'))]
     insertion=min(objects.index(obj) for obj in old)
@@ -48,8 +48,17 @@ def fit_crossbelts(ctx):
     for point,normal in planes:
         bmesh.ops.bisect_plane(bm,geom=[*bm.verts,*bm.edges,*bm.faces],dist=1e-7,
             plane_co=Vector(point),plane_no=Vector(normal).normalized(),clear_inner=False,clear_outer=False)
+    # Parallel seam cuts can leave submillimetre edges on the shoulder.
+    # Those near-zero wedges reverse under an otherwise valid arm pose.
+    # Collapse only those local degenerate edges before copying the same
+    # support to the strap; retain its original clearance and native weights.
+    if cleanup_seams:
+        bmesh.ops.triangulate(bm,faces=list(bm.faces))
+        tiny=[edge for edge in bm.edges if edge.calc_length()<.0008 and all(
+            .07<vertex.co.x<.23 and 1.34<vertex.co.z<1.56 for vertex in edge.verts)]
+        if tiny:bmesh.ops.dissolve_degenerate(bm,dist=.0008,edges=tiny)
     bmesh.ops.triangulate(bm,faces=list(bm.faces));bm.normal_update()
-    # Seam cuts retain the exact rest surface and its existing open hems.
+    # Keep the garment area and existing open hems within seam tolerance.
     assert abs(sum(face.calc_area() for face in bm.faces)-area)<2e-5
     assert abs(sum(edge.calc_length() for edge in bm.edges if edge.is_boundary)-boundary)<2e-5
     bm.to_mesh(coat.data);bm.free();coat.data.update()

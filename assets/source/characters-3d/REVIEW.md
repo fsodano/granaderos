@@ -247,3 +247,80 @@ The face still looks smooth and generic, and the original coat construction
 follows the body too closely. A separate constrained garment prototype remains
 under visual review. The latest local evidence is in
 `artifacts/character-anatomy-review/delivery/visible-face-review/`.
+
+## Rifle loading contact pass, 8 October
+
+The next loading pass changes six arm rotation channels in each of 56 rifle
+reload/unload clips per anatomy. The cartridge hand releases away from the
+cheek, and the prone ramrod reach keeps the sleeve outside the head and
+collar. All 16 loading tests pass. The 112-clip scan at 120 Hz finds no working
+left-hand/head, sleeve/head, collar or floor intersections. Peak local arm
+rates are 873 degrees/s for the male bank and 910 degrees/s for the female
+bank.
+
+The selective merge preserves 52,770 other channels per bank, including the
+current prone leg support and finger motion. Durations, action markers and
+native support records remain exact. Only loading grip offsets change in clip
+metadata. The published manifest is
+`6c2747997a9a24c8c315b155f08e50aef0e538fdd4487da66c941831261e3bbe`.
+Receipts are in `artifacts/character-anatomy-review/delivery/loading30/`.
+
+This is not an appearance improvement. The shared crouched/prone ready-aim
+right-hand/head overlap remains a separate correction; the largest sampled
+depths are 14.06 mm male and 13.51 mm female. The loading pass does not claim
+that these unchanged endpoints are clear.
+
+## Eye and raised-detail surface orientation, 8 October
+
+The exported sclera, iris, pupils and ellipsoid uniform details had inward
+triangle winding and shading normals. Correcting both generators gives the
+eye shells outward surfaces and points the iris and pupil surfaces forward.
+The new exported-geometry regression passes all 24 corrected bodies and fails
+all 24 preceding bodies. It checks closed, consistently wound eye shells,
+positive volume and the actual triangle and shading normals.
+
+All 24 native Skin geometry, normals, UVs, weights and indices remain exact,
+as do joint transforms, inverse binds, materials and texture bytes. Granadero
+triangle counts are now 87,453 / 61,782 / 18,664. The winding correction changes
+the reduction of some decorative parts. It does not add new skin detail.
+The separately tested generated facial texture remains private: its lip
+registration and eyebrow edge are not yet ready for final publication.
+
+The first combined gate passed 71 of 75 checks. Four military crossbelt checks
+failed during the new rifle-loading arm poses, with 6.06 mm of coat penetration
+at the shoulder. These same failures reproduced with the preceding bodies
+and the new loading bank. The seam repair below now passes all 75 checks.
+This is not a complete appearance release. Local evidence is retained in
+`artifacts/character-anatomy-review/delivery/outward-eye-details/`.
+
+## Military shoulder seam repair, 8 October
+
+One 0.595 mm seam edge formed a narrow coat triangle that reversed during
+rifle loading. Removing local degenerate seam edges before copying the strap
+support fixes all six military strap checks. The strap keeps its 7 mm offset.
+Only Granadero and Royalist LOD0/1 coat meshes change; each loses 256 triangles.
+All non-outfit accessor data, native rig transforms and inverse binds stay
+exact. LOD2 follows the unchanged source path. The animation banks are exact.
+
+The combined eye, skin, coat, crossbelt, prone-arm and rifle-loading gate
+passes all 75 checks. Published-library verification also passes. The current
+manifest is
+`d94e9c11e6842ed924638bd8c173bb43814c34234d79055fd4afdff8b86ff69d`;
+Granadero LOD0 is `7976c43a44ae7ccacd01f35548a61fbb9b6c71a7325d385f0b998d3a1a23eab7`.
+Source, preservation proof and actual failed-pose renders are retained in
+`artifacts/character-anatomy-review/delivery/crossbelt-loading-seam/`.
+
+The full quick profile completed on the preceding immutable surface/loading
+checkpoint: 6,260 passed and 15 failed across all 854 selected test files;
+eight extended files were excluded. Four failures were the strap faults now
+repaired. Two mounted knockdown foot checks, one female prone-throw/head check
+and two descending-cut source-provenance checks reproduce on the pre-pass
+branch. Four more failures match earlier artillery, climb, projection and
+roof-inset failure text; current main was not retested. Two building checks
+(church tower foot and authored flat roof) have not been baseline-classified.
+The broad suite is not green. Its log is retained with the outward-eye
+checkpoint. The focused post-repair result does not replace that broad result.
+
+Loading grip offsets now sample the authored contact curve at 30 Hz. This
+increases the manifest from approximately 2.47 MB to 7.91 MB; startup and
+crowded-sector performance have not been benchmarked for this change.

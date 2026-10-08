@@ -81,7 +81,7 @@ def optimize_character(ctx,lod=0):
   if len(reduced_coat.data.polygons)>150:bpy.ops.object.modifier_apply(modifier=reduction.name)
   else:reduced_coat.modifiers.remove(reduction)
   from crossbelts import fit_crossbelts
-  fit_crossbelts(ctx)
+  fit_crossbelts(ctx,cleanup_seams=lod<2)
  # Allocate useful UV space and material-scale pigment after the fitted
  # straps exist. This leaves all rest vertices and native weights unchanged.
  from garment_detail import prepare_apparel_surface

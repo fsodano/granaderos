@@ -182,7 +182,9 @@ def create_character(preset="granadero", height=1.76):
                 if rotation:p=rotation@p
                 coords.append(Vector(center)+p)
         for j in range(rings):
-            for i in range(segments):a=j*segments+i;b=j*segments+(i+1)%segments;poly.append((a,b,b+segments,a+segments))
+            # Latitude runs from the north pole down. This order points the
+            # surface outwards, including sclera and raised uniform details.
+            for i in range(segments):a=j*segments+i;b=j*segments+(i+1)%segments;poly.append((a,a+segments,b+segments,b))
         return mesh(name,coords,poly,mat,weight)
     def tube(name,centers,radii,mat,weight,segments=12,caps=True):
         coords=[];polys=[]
@@ -578,7 +580,9 @@ def create_character(preset="granadero", height=1.76):
             for row in range(len(radii)-1):
                 for j in range(segments):
                     a=row*segments+j;b=row*segments+(j+1)%segments
-                    polys.append((a,b,b+segments,a+segments))
+                    # Iris rings grow away from the pupil. Their visible
+                    # surface faces forwards (-Y), like the sclera beneath.
+                    polys.append((a,a+segments,b+segments,b))
             eye=mesh(name+'_'+suffix,coords,polys,mat,'head')
             pigment=eye.data.color_attributes.new(name='Human_Surface_Tone',type='FLOAT_COLOR',domain='POINT')
             for entry,tone in zip(pigment.data,tones):entry.color=tone
