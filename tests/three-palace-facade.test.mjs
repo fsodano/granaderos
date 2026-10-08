@@ -6,6 +6,7 @@ const {Box3,Mesh,Raycaster,Vector3}=await import('../web/node_modules/three/buil
 const {WorldGeometry,disposeWorldNode}=await import('../web/lib/three/world-geometry.ts');
 const {WorldMaterials}=await import('../web/lib/three/world-materials.ts');
 const {buildBuilding}=await import('../web/lib/three/world-buildings.ts');
+const {buildingArtInset}=await import('../web/lib/three/world-building-placement.ts');
 const {entranceFrame,getBuildingProfile}=await import('../game/building-profile.js');
 const {buildTerrace}=await import('../game/buildings.js');
 const {createArchitectureReviewBattle}=await import('../web/app/renderer-sandbox/architecture-fixtures.js');
@@ -13,8 +14,8 @@ const T=1.2360585147470482,rotations=[0,90,180,270];
 
 function fixture(rotation,view='exterior',roof='original'){
  const battle=createArchitectureReviewBattle('palacio',rotation,view,roof),b=battle.buildings[0],input={terrain:{width:battle.width,height:battle.height,tiles:battle.tiles,buildings:battle.buildings,upperSurfaces:battle.upperSurfaces},revealedRooms:battle.revealedRooms},frame=entranceFrame({...b,walls:battle.tiles.filter(tile=>tile.buildingId===b.id)}),geometry=new WorldGeometry(),materials=new WorldMaterials({tileMetres:T,assetUrl:path=>path});
- const along=.4*(frame.u.x+frame.u.y),depth=.4*(frame.v.x+frame.v.y),name=feature=>`building-detail:${b.id}:${feature}`;
- const point=(u,v,y)=>{const p=frame.at(u,v);return new Vector3((p.x+.4)*T,y,(p.y+.4)*T);};
+ const along=buildingArtInset(b,input)*(frame.u.x+frame.u.y),depth=buildingArtInset(b,input)*(frame.v.x+frame.v.y),name=feature=>`building-detail:${b.id}:${feature}`;
+ const point=(u,v,y)=>{const p=frame.at(u,v);return new Vector3((p.x+buildingArtInset(b,input))*T,y,(p.y+buildingArtInset(b,input))*T);};
  const ray=(object,u,v,y,axis='v',sign=1)=>new Raycaster(point(u,v,y),new Vector3(frame[axis].x*sign,0,frame[axis].y*sign),0,T*1.6).intersectObject(object,true);
  const build=()=>{const building=buildBuilding(b,input,T,geometry,materials);building.updateMatrixWorld(true);return building;};
  const dispose=building=>{disposeWorldNode(building);geometry.dispose();materials.dispose();};
