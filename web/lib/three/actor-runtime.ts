@@ -305,7 +305,7 @@ export class ActorRuntime {
     this.mixer.update(Math.min(delta,.1));
     if(motion?.moving&&motion.climbGeometry&&this.clipSpec.climbSupport)this.climbFit?.apply(motion.climbGeometry,visual.action==='climbDown'?1-(motion.segmentFraction??0):motion.segmentFraction??0,this.clipSpec);
     this.gaitSupport.apply(this.mixer.time,this.action.time,inputMotion?.speed??0);
-    this.gestureSupport.apply(this.mixer.time,this.action.time);
+    this.gestureSupport.apply(this.mixer.time,this.action.time,this.action.timeScale);
     this.poseCloth(Math.min(delta,.1));
     const attached=this.equipment.userData.attached as Object3D[],freeGuard=!attached.some(item=>item.userData.hand==='handLeft');
     const meleeWeapon=attached.find(item=>item.userData.hand==='handRight'&&(this.itemSpec(item.userData.itemId)?.category==='sabre'||freeGuard&&['pistol','rifle'].includes(this.itemSpec(item.userData.itemId)?.category??'')));

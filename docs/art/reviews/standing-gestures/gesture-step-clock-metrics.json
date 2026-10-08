@@ -1,0 +1,116 @@
+[
+  {
+    "anatomy": "granadero",
+    "lod": 0,
+    "rateModes": [
+      {
+        "mode": "resume-before-endpoint",
+        "endpointSpeed": 0.00012111607710013018
+      },
+      {
+        "mode": "hold-through-endpoint",
+        "endpointSpeed": 0.00012111607710013018
+      }
+    ],
+    "minimum": 0.0019922152798775294,
+    "completeBootSpeed": 7.108764390915032,
+    "endpointSpeed": 0.00012111607710013018,
+    "maximumAdjustment": 0.18898482232044103,
+    "completed": 2
+  },
+  {
+    "anatomy": "granadero",
+    "lod": 1,
+    "rateModes": [
+      {
+        "mode": "resume-before-endpoint",
+        "endpointSpeed": 0.00012111607710013018
+      },
+      {
+        "mode": "hold-through-endpoint",
+        "endpointSpeed": 0.00012111607710013018
+      }
+    ],
+    "minimum": 0.0019922152798775294,
+    "completeBootSpeed": 7.094699662140956,
+    "endpointSpeed": 0.00012111607710013018,
+    "maximumAdjustment": 0.18898482232044103,
+    "completed": 2
+  },
+  {
+    "anatomy": "granadero",
+    "lod": 2,
+    "rateModes": [
+      {
+        "mode": "resume-before-endpoint",
+        "endpointSpeed": 0.00012104104941811571
+      },
+      {
+        "mode": "hold-through-endpoint",
+        "endpointSpeed": 0.00012104104941811571
+      }
+    ],
+    "minimum": 0.0019922152798775294,
+    "completeBootSpeed": 7.055104862035765,
+    "endpointSpeed": 0.00012104104941811571,
+    "maximumAdjustment": 0.18898482232044103,
+    "completed": 2
+  },
+  {
+    "anatomy": "woman-scout",
+    "lod": 0,
+    "rateModes": [
+      {
+        "mode": "resume-before-endpoint",
+        "endpointSpeed": 0.000047887213719132714
+      },
+      {
+        "mode": "hold-through-endpoint",
+        "endpointSpeed": 0.000047887213719132714
+      }
+    ],
+    "minimum": 0.0019808600467673965,
+    "completeBootSpeed": 6.12988698718244,
+    "endpointSpeed": 0.000047887213719132714,
+    "maximumAdjustment": 0.1878778199968124,
+    "completed": 2
+  },
+  {
+    "anatomy": "woman-scout",
+    "lod": 1,
+    "rateModes": [
+      {
+        "mode": "resume-before-endpoint",
+        "endpointSpeed": 0.000047887213719132714
+      },
+      {
+        "mode": "hold-through-endpoint",
+        "endpointSpeed": 0.000047887213719132714
+      }
+    ],
+    "minimum": 0.0019808600467673965,
+    "completeBootSpeed": 6.126457242369696,
+    "endpointSpeed": 0.000047887213719132714,
+    "maximumAdjustment": 0.1878778199968124,
+    "completed": 2
+  },
+  {
+    "anatomy": "woman-scout",
+    "lod": 2,
+    "rateModes": [
+      {
+        "mode": "resume-before-endpoint",
+        "endpointSpeed": 0.00004780233616250479
+      },
+      {
+        "mode": "hold-through-endpoint",
+        "endpointSpeed": 0.00004780233616250479
+      }
+    ],
+    "minimum": 0.0019808600467673965,
+    "completeBootSpeed": 6.125907485803885,
+    "endpointSpeed": 0.00004780233616250479,
+    "maximumAdjustment": 0.1878778199968124,
+    "completed": 2
+  }
+]
