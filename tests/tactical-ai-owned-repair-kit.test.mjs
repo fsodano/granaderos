@@ -65,9 +65,9 @@ test('opposing private gun and inventory getters cannot influence owned repair a
  for(const visible of [false,true]){const s=field({},visible),opponent=s.units[0];for(const name of ['condition','inventory','ammo','loaded','jammed'])Object.defineProperty(opponent,name,{get(){throw Error('private opposing '+name);},enumerable:false,configurable:true});assert.deepEqual(chooseOwnedFirearmRepair(s,actor(s)),repair);assert.deepEqual(chooseEnemyAction(s,actor(s)),repair);}
 });
 
-test('public enemy orders and manual militia control remain refused; militia repair remains a separate authority limit',()=>{
+test('public enemy orders and manual militia control remain refused while the trusted allied queue pays repair',()=>{
  const s=field(),denied=actBattle(s,repair);assert.ok(denied.lastError);assert.deepEqual(denied.units,s.units);assert.equal(denied.elapsedSeconds,s.elapsedSeconds);
- const friendly=field();for(const u of friendly.units)u.side=u.side==='enemy'?'player':'enemy';actor(friendly).militia=true;actor(friendly).x=10;actor(friendly).y=4;const m=saved(friendly),preview=firearmMaintenancePreview(m,actor(m)),n=endTurn(m);assert.equal(preview.valid,false);assert.match(preview.reason,/milicia/);assert.equal(chooseOwnedFirearmRepair(m,actor(m)),null);assert.equal(actor(n).condition,0);assert.equal(repairMaterialPoints(actor(n)),30);const refused=actBattle(m,repair);assert.match(refused.lastError,/milicia/);assert.deepEqual(refused.units,m.units);assert.equal(refused.elapsedSeconds,m.elapsedSeconds);
+ const friendly=field();for(const u of friendly.units)u.side=u.side==='enemy'?'player':'enemy';actor(friendly).militia=true;actor(friendly).x=10;actor(friendly).y=4;const m=saved(friendly),preview=firearmMaintenancePreview(m,actor(m)),n=endTurn(m);assert.equal(preview.valid,false);assert.match(preview.reason,/milicia/);assert.equal(chooseOwnedFirearmRepair(m,actor(m)),null);assert.equal(actor(n).condition,30);assert.equal(repairMaterialPoints(actor(n)),0);const refused=actBattle(m,repair);assert.match(refused.lastError,/milicia/);assert.deepEqual(refused.units,m.units);assert.equal(refused.elapsedSeconds,m.elapsedSeconds);
 });
 
 test('a real repair then shot pauses the enemy turn and saved continuation cannot repeat the repair or discharge',()=>{
