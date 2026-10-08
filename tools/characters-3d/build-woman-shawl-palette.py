@@ -59,6 +59,19 @@ def main():
         primitive = doc['meshes'][mesh]['primitives'][0]
         assert len(doc['meshes'][mesh]['primitives']) == 1
         material = doc['materials'][primitive['material']]
+        retained_hem = material['name'] == 'Apparel_Atlas_Charcoal_Legwear_Rust_Hem'
+        if retained_hem:
+            support = doc['meshes'][mesh].get('extras', {}).get('nativeSkirtHem')
+            assert support and support == record.get('nativeSkirtHem'), 'Inconsistent completed hem metadata'
+            assert material['pbrMetallicRoughness']['baseColorTexture'].get('texCoord') == 1
+            assert 'TEXCOORD_1' in primitive['attributes']
+            retained = [m for m in doc['materials'] if m.get('name') == 'Apparel_Atlas_Charcoal_Legwear']
+            assert len(retained) == 1, 'Missing retained charcoal UV0 material'
+            material = retained[0]
+        else:
+            assert 'nativeSkirtHem' not in doc['meshes'][mesh].get('extras', {}), 'Ambiguous hem material state'
+        assert material['name'] in ('Apparel_Atlas', 'Apparel_Atlas_Charcoal_Legwear'), 'Unrecognized source palette role'
+        assert material['pbrMetallicRoughness']['baseColorTexture'].get('texCoord', 0) == 0
         texture_index = material['pbrMetallicRoughness']['baseColorTexture']['index']
         texture = doc['textures'][texture_index]
         image = doc['images'][texture['source']]
@@ -66,14 +79,20 @@ def main():
         old_png = old_png_path.read_bytes()
         source_pins[old_png_path] = sha(old_png)
         pixels = Image.open(io.BytesIO(old_png)).convert('RGBA')
-        assert pixels.size == (128, 128)
-        used_tiles = {(math.floor(u * 4), math.floor(v * 4))
+        assert pixels.width == pixels.height and pixels.width % 32 == 0
+        side = pixels.width // 32
+        assert side >= 4 and side & (side - 1) == 0, 'Unexpected source atlas dimensions'
+        used_tiles = {(math.floor(u * side), math.floor(v * side))
                       for u, v in uv_values(doc, binary, primitive['attributes']['TEXCOORD_0'])}
         assert len(used_tiles) == 1, 'The legwear pigment must remain isolated'
         tile_x, tile_y = next(iter(used_tiles))
-        assert 0 <= tile_x < 4 and 0 <= tile_y < 4
+        assert 0 <= tile_x < side and 0 <= tile_y < side
         repeated = material['name'] == 'Apparel_Atlas_Charcoal_Legwear'
-        expected = tuple(palette.WOMAN_SHAWL_SKIRT_SRGB) if repeated else (91, 44, 53)
+        colours = {pixels.getpixel((x, y)) for y in range(tile_y * 32, (tile_y + 1) * 32) for x in range(tile_x * 32, (tile_x + 1) * 32)}
+        assert len(colours) == 1 and colours <= {(*palette.WOMAN_SHAWL_SKIRT_SRGB, 255), (91, 44, 53, 255)}, 'Unrecognized source legwear pigment'
+        expected = next(iter(colours))[:3]
+        if repeated:assert expected == tuple(palette.WOMAN_SHAWL_SKIRT_SRGB), 'Completed palette has a different pigment'
+        state = 'completed-hem' if retained_hem else 'completed-charcoal' if repeated else 'raw-charcoal' if expected == tuple(palette.WOMAN_SHAWL_SKIRT_SRGB) else 'legacy-burgundy'
         for y in range(tile_y * 32, (tile_y + 1) * 32):
             for x in range(tile_x * 32, (tile_x + 1) * 32):
                 assert pixels.getpixel((x, y)) == (*expected, 255)
@@ -126,7 +145,8 @@ def main():
                          'oldColorUri': image['uri'], 'newColorUri': uri,
                          'newColorSha256': sha(png), 'newColorBytes': len(png),
                          'paletteSRGB': list(palette.WOMAN_SHAWL_SKIRT_SRGB),
-                         'tile': [tile_x, tile_y], 'binaryExact': True, 'repeated': repeated})
+                         'tile': [tile_x, tile_y], 'binaryExact': True, 'repeated': repeated,
+                         'sourceState': state, 'retainedLaterHem': retained_hem})
     allowed = copy.deepcopy(manifest)
     for lod in (0, 1, 2):
         allowed['appearances']['woman-shawl']['lods'][lod] = old_manifest['appearances']['woman-shawl']['lods'][lod]
