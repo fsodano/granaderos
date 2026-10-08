@@ -1,4 +1,5 @@
 import {formatAP} from './action-points.js';
+import {firearmServiceable,BROKEN_FIREARM_REASON} from './firearm-serviceability.js';
 import {CIVILIAN_SUPPLY_FIELDS} from './civilian-supplies.js';
 import {FINITE_ARTILLERY_ARSENALS} from './finite-artillery-arsenals.js';
 import {weaponSpecification} from './weapon-definition.js';
@@ -146,11 +147,11 @@ function reloadNote(state,unit,plan){
 export function emptyGunPreview(state, unit) {
   if (!unit || !hasFirearm(unit) || unit.loaded > 0) return null;
   const plan = reloadPlan(unit, state), rounds = plan.available, pa = state.mode === 'exploration' ? 0 : plan.pa;
-  const reason = !rounds ? `Sin munición compatible. Requiere ${AMMUNITION_TYPES[weaponAmmoType(unit)]?.name??'la carga del arma'}.`
-    : unit.jammed ? 'Cebá el arma antes de recargar (R).'
+  const reason = plan.reason ?? (!rounds ? `Sin munición compatible. Requiere ${AMMUNITION_TYPES[weaponAmmoType(unit)]?.name??'la carga del arma'}.`
+    : unit.jammed && firearmServiceable(unit) ? 'Cebá el arma antes de recargar (R).'
     : unit.knockedDown ? 'Primero debés levantarte.'
     : !unitCanAct(state, unit) ? 'El combatiente no puede actuar.'
-    : !plan.pa || !affordable(state, unit, plan.pa) ? 'PA insuficientes para recargar.' : null;
+    : !plan.pa || !affordable(state, unit, plan.pa) ? 'PA insuficientes para recargar.' : null);
   return {name: weaponFor(unit).name, actionLabel: rounds ? reloadLabel(plan) : 'Sin munición',
     attackType: 'reload', cursor: rounds ? 'reload' : 'empty', pa,
     chance: undefined, chanceLabel: undefined, hitLocation: undefined, attackLabel: undefined,
@@ -462,6 +463,7 @@ function targetPreviewWithCosts(state, unit, point, ctx = {}) {
       }
       coverNote=[ricochet?'Riesgo de rebote en piedra.':null,coverNote,firearmBystanderWarning(firearmBystanderRisk(state,unit,target,hitLocationFor(ctx.hitLocation)))].filter(Boolean).join(' ');
       if (!canChooseShotLocation(target)&&hitLocationFor(ctx.hitLocation)!=='torso') reason = 'Un objetivo cuerpo a tierra tiene una sola zona de tiro.';
+      else if (!firearmServiceable(unit)) reason = BROKEN_FIREARM_REASON;
       else if (unit.jammed) reason = 'Cebá el arma antes de disparar.';
       else if (!(unit.loaded > 0)) reason = 'Recargá el arma.';
       else if (!hasLineOfSight(state,unit,target)) reason = 'No hay línea de tiro.';

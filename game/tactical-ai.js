@@ -11,16 +11,21 @@ import {heldThrowingKnife,knifeThrowDamage} from './thrown-knife.js';
 import {availableAmmunition} from './ammunition-types.js';
 import {planFitBayonet} from './tactical-inventory.js';
 import {shotLocationEffects,shotLocationsFor} from './targeted-combat.js';
-import {reprimePlan} from './tactical.js';
+import {reprimePlan,reloadPlan} from './tactical.js';
 import {criticalFirstAidNeeded} from './first-aid.js';
 import {contentWeaponOf} from './weapon-definition.js';
+import {firearmServiceable} from './firearm-serviceability.js';
 
 // Decisions use only this soldier's sight and the last place an opponent was seen.
 // No randomness or state changes occur here; tactical.js applies the returned order.
 const distance = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
 const active = u => u.hp > 0 && !u.departure && !u.surrendered && !u.routed && !u.unconscious;
 const compareId = (a, b) => String(a.id) < String(b.id) ? -1 : String(a.id) > String(b.id) ? 1 : 0;
-const readyGun = u => weaponFor(u).capacity > 0 && u.loaded > 0 && !u.jammed;
+// Opponent condition is private. Threat estimates use observed held equipment.
+const observedGun = u => weaponFor(u).capacity > 0 && u.loaded > 0 && !u.jammed;
+const readyGun = u => observedGun(u) && firearmServiceable(u);
+const observedShotChance = (state, opponent, point) => shotChance(state, {...opponent, condition:100,
+  ...(opponent.offHand?{offHand:{...opponent.offHand,condition:100}}:{})}, point);
 
 export function choosePatrolAction(state,unit) {
   if(unit.knockedDown||unit.entangled||!unit.patrolOrigin||unit.patrol===false||unit.patrolTurn===state.turn||state.turn-(unit.lastInvestigatedTurn??-10)<=1||!active(unit)||state.phase==='interrupt'||state.reactionStack?.length||holdsArtilleryPost(state,unit))return null;
@@ -129,8 +134,8 @@ export function chooseKnifeThrow(state,unit,targets){
 function maintenance(state, unit, costs, allowSecondary=false) {
   if (weaponFor(unit).capacity <= 0) return null;
   const priming=reprimePlan(unit,state);
-  if (unit.jammed) return priming.hands.length ? {type: 'reprime', unitId: unit.id} : null;
-  if (unit.loaded === 0 && availableAmmunition(unit,unit) > 0 && costs.reload > 0) {
+  if (unit.jammed && firearmServiceable(unit)) return priming.hands.length ? {type: 'reprime', unitId: unit.id} : null;
+  if (firearmServiceable(unit) && unit.loaded === 0 && availableAmmunition(unit,unit) > 0 && costs.reload > 0) {
     if (unit.ap >= costs.reload) return {type: 'reload', unitId: unit.id};
     // Muzzle-loading while prone can exceed a soldier's entire turn budget.
     // Pay for kneeling only when the complete reload then fits this turn.
@@ -143,6 +148,11 @@ function maintenance(state, unit, costs, allowSecondary=false) {
     // Begin multi-turn work when injury prevents that, or resume work already paid.
     if (unit.ap > 0 && (unit.reloadProgress > 0 || costs.reload > maxActionPoints(state, unit) + AP_CARRY_LIMIT))
       return {type: 'reload', unitId: unit.id};
+  }
+  if(!firearmServiceable(unit)){
+    if(priming.hands.length)return {type:'reprime',unitId:unit.id};
+    const loading=reloadPlan(unit,state);
+    if(loading.hands?.some(hand=>hand.hand==='offhand'&&hand.pa>0))return {type:'reload',unitId:unit.id};
   }
   return allowSecondary&&priming.hands.length ? {type:'reprime',unitId:unit.id} : null;
 }
@@ -166,8 +176,8 @@ function fieldAid(state, unit, costs, targets, paths) {
   if (unit.knockedDown || unit.entangled || state.phase === 'interrupt' || state.reactionStack?.length || !patients.length) return null;
   const budget = Math.min(24, unit.ap - prepare - costs.heal);
   if (budget <= 0 || targets.some(target => distance(unit, target) <= 2.5)) return null;
-  const threats = targets.filter(readyGun);
-  const exposure = point => threats.reduce((sum, enemy) => sum + (canSee(state, enemy, point) ? shotChance(state, enemy, {...unit, ...point}) : 0), 0);
+  const threats = targets.filter(observedGun);
+  const exposure = point => threats.reduce((sum, enemy) => sum + (canSee(state, enemy, point) ? observedShotChance(state, enemy, {...unit, ...point}) : 0), 0);
   const currentExposure = exposure(unit);
   const choices = paths().filter(cell => cell.cost > 0 && cell.cost <= budget && cell.path.length <= 3 &&
     cell.path.every(point => !targets.some(target => distance(point, target) <= 2.5) && exposure(point) <= currentExposure));
@@ -184,7 +194,7 @@ function backupWeapon(state, unit, costs, targets) {
   const blade = bladeFor(unit);
   if (blade.id !== 0 && targets.some(target => atHand(unit,target,blade.reach) && hasLineOfSight(state, unit, target))) return null;
   const held = weaponFor(unit);
-  const serviceable = held.capacity > 0 && (unit.jammed || unit.loaded > 0 || availableAmmunition(unit,unit) > 0);
+  const serviceable = held.capacity > 0 && firearmServiceable(unit) && (unit.jammed || unit.loaded > 0 || availableAmmunition(unit,unit) > 0);
   // Do not unpack guns just to stand idle. With contact, a prepared spare can
   // permit a shot this turn when the held weapon needs a long reload.
   if (!targets.length && (serviceable || held.capacity === 0 && blade.id !== 0)) return null;
@@ -195,7 +205,7 @@ function backupWeapon(state, unit, costs, targets) {
     if (swap.valid) {
       try {
         const next = planSwapHands(unit);
-        if ((next.condition ?? 100) > 0)
+        if (firearmServiceable(next))
           candidates.push({next, cost: swap.pa, order: {type: 'swapHands', unitId: unit.id}});
       } catch { /* The owned other hand must pass the same capacity and item checks. */ }
     }
@@ -312,7 +322,7 @@ export function chooseEnemyAction(state, unit) {
   if(holdsArtilleryPost(state,unit)&&!targets.some(target=>sameSurface(unit,target)&&distance(unit,target)<=2.5))return null;
   const grenade=chooseGrenadeThrow(state,unit,targets);
   if(grenade)return grenade;
-  if(hasFirearm(unit)&&!unit.loaded&&!unit.reloadProgress&&!ammoCount(unit)){const load=ammunitionLoadsFor(unit).find(load=>ammoCount(unit,load.family)>0);if(load)return {type:'selectAmmunitionLoad',unitId:unit.id,family:load.family};}
+  if(hasFirearm(unit)&&firearmServiceable(unit)&&!unit.loaded&&!unit.reloadProgress&&!ammoCount(unit)){const load=ammunitionLoadsFor(unit).find(load=>ammoCount(unit,load.family)>0);if(load)return {type:'selectAmmunitionLoad',unitId:unit.id,family:load.family};}
   const secondary=authoredSecondary(state,unit,costs,targets);
   if(secondary)return secondary;
   const backup = backupWeapon(state, unit, costs, targets);
@@ -368,7 +378,7 @@ export function chooseEnemyAction(state, unit) {
 
   const shot = proneShot??bestShot(state, unit, targets);
   const support = state.units.filter(other => other.side === unit.side && active(other) && distance(unit, other) <= 8).length;
-  const threats = targets.filter(readyGun);
+  const threats = targets.filter(observedGun);
   const outgunned = threats.length > support;
   if (shot?.effectiveness >= 45 && !outgunned) return {type: 'fire', unitId: unit.id, targetId: shot.target.id, aim: shot.aim,hitLocation:shot.hitLocation};
   if (upkeep) return upkeep;
@@ -377,7 +387,7 @@ export function chooseEnemyAction(state, unit) {
   const scavenge = chooseScavengingAction(state, unit, targets, paths);
   if (scavenge) return scavenge;
 
-  if (weaponFor(unit).capacity <= 0 || (!unit.loaded && !availableAmmunition(unit,unit))) {
+  if (weaponFor(unit).capacity <= 0 || !firearmServiceable(unit) || (!unit.loaded && !availableAmmunition(unit,unit))) {
     // Close for an affordable melee attack; never spend the entire turn rushing
     // across open ground towards an armed enemy who can shoot on arrival.
     const reacting = state.phase === 'interrupt' || Boolean(state.reactionStack?.length);
@@ -391,7 +401,7 @@ export function chooseEnemyAction(state, unit) {
     for(const target of crossFloor){const pursuit=verticalPursuit(state,unit,target,costs);if(pursuit)return pursuit;}
     const nearest = point => Math.min(...targets.filter(target=>sameSurface(point,target)).map(target => distance(point, target)));
     const coverAt = point => surfaceAt(state,point)?.cover ?? 0;
-    const exposure = point => threats.reduce((sum, enemy) => sum + (canSee(state, enemy, point) ? shotChance(state, enemy, {...unit, ...point}) : 0), 0);
+    const exposure = point => threats.reduce((sum, enemy) => sum + (canSee(state, enemy, point) ? observedShotChance(state, enemy, {...unit, ...point}) : 0), 0);
     const currentDistance = nearest(unit), currentExposure = exposure(unit), currentCover = coverAt(unit);
     const approach = paths().filter(cell => cell.cost > 0 && cell.cost <= Math.min(reacting ? 16 : 32, unit.ap - costs.melee) && (!reacting || cell.path.length <= 1) && nearest(cell) < currentDistance)
       .map(cell => ({cell, score: (currentDistance - nearest(cell)) * 8 + (coverAt(cell) - currentCover) * .6 - Math.max(0, exposure(cell) - currentExposure) * .3}))
@@ -414,7 +424,7 @@ export function chooseEnemyAction(state, unit) {
       facing:moving?directionTo(cell.path.at(-2)??unit,cell):unit.facing};
     const availableTargets = targets.filter(target => canSee(state, position, target));
     const firing = bestShot(state, position, availableTargets, budget);
-    const exposure = dangerous.reduce((total, enemy) => total + (canSee(state, enemy, position) ? shotChance(state, enemy, position) : 0), 0);
+    const exposure = dangerous.reduce((total, enemy) => total + (canSee(state, enemy, position) ? observedShotChance(state, enemy, position) : 0), 0);
     return {score: (firing?.effectiveness || 0) * .65 + cover(cell) * .8 - exposure * .25, firing};
   };
   const current = positionScore(unit, unit.ap);

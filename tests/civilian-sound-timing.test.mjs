@@ -56,7 +56,7 @@ test('the grenade detonation is heard before blast incapacity and civilian cover
 });
 
 test('a failed ignition creates neither a gunshot memory nor civilian fear',()=>{
- const s=field({condition:0},[{id:'civil',name:'Vecino',x:4,y:3,hp:100,energy:100,stance:'standing'}],{weather:{rain:100,humidity:100}});
+ const s=field({condition:1},[{id:'civil',name:'Vecino',x:4,y:3,hp:100,energy:100,stance:'standing'}],{weather:{rain:100,humidity:100}});
  const next=issue(s,{type:'firePoint',x:7,y:3,aim:4});
  assert.equal(next.units[0].jammed,true);assert.equal(next.units[0].loaded,1);assert.equal(next.units[1].lastHeardNoise,undefined);
  assert.deepEqual(next.npcs,s.npcs);

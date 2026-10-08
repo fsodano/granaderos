@@ -1,5 +1,6 @@
 import {formatAP} from './action-points.js';
 import {secondHeldPistol} from './paired-fire.js';
+import {firearmServiceable,BROKEN_FIREARM_REASON} from './firearm-serviceability.js';
 
 export const reprimeCost=unit=>unit.traits?.includes('gunsmith_artillerist')?10:15;
 
@@ -7,10 +8,10 @@ export const reprimeCost=unit=>unit.traits?.includes('gunsmith_artillerist')?10:
 // Each pan costs one full action; a second gun never borrows future AP.
 export function planReprime(unit,{exploring=false,firearm=false}={}){
  const cost=reprimeCost(unit),other=firearm?secondHeldPistol(unit):null;
- const required=firearm?[...(unit.jammed?['primary']:[]),...(other?.jammed&&(other.condition??100)>0?['offhand']:[])]:[];
+ const required=firearm?[...(unit.jammed&&firearmServiceable(unit)?['primary']:[]),...(other?.jammed&&firearmServiceable(other)?['offhand']:[])]:[];
  const count=Math.min(required.length,exploring?Infinity:Math.floor(Math.max(0,unit.ap??0)/cost));
  const hands=required.slice(0,count);
- const reason=!firearm?'Prepará un arma de fuego en la mano.':!required.length?'El arma no necesita cebado.':!count?`Cebar requiere ${formatAP(cost)} PA.`:'';
+ const reason=!firearm?'Prepará un arma de fuego en la mano.':!required.length?!firearmServiceable(unit)?BROKEN_FIREARM_REASON:'El arma no necesita cebado.':!count?`Cebar requiere ${formatAP(cost)} PA.`:'';
  return {hands,required:required.length,pending:required.length-hands.length,pa:hands.length*cost,totalPA:required.length*cost,cost,reason};
 }
 
