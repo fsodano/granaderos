@@ -68,7 +68,7 @@ The normal builder includes this pass. To apply it to the current library and
 save a local preservation receipt:
 
 ```sh
-python3 tools/characters-3d/build-cloth-depth.py --receipt artifacts/character-cloth-depth/receipt.json
+python3 tools/characters-3d/build-layered-cloth-depth.py --layer pilot --receipt artifacts/character-cloth-depth/receipt.json
 ```
 
 Use the real tactical view at 1× and 2× zoom to judge the result. The appended
@@ -87,8 +87,7 @@ original vertex colours, including triangles that cross the stripe between
 sparse sampled vertices.
 
 ```sh
-python3 tools/characters-3d/build-family-cloth-depth.py --receipt artifacts/character-family-cloth-depth/receipt.json
-python3 tools/characters-3d/build-family-cloth-depth.py --verify-only
+python3 tools/characters-3d/build-layered-cloth-depth.py --layer family --receipt artifacts/character-family-cloth-depth/receipt.json
 node --test tests/characters-family-cloth-depth.test.mjs
 ```
 
@@ -227,6 +226,44 @@ authored body regeneration. Runtime weights follow scheduled native actions,
 including paused paid phases, and exclude mirrored or moving lower-body clips.
 The [close garment review](../../../docs/art/close-long-cloth-boot-clearance-review-2026-10-08.md)
 records complete surface checks and remaining coarse-LOD and motion limits.
+
+The layered dispatcher verifies and removes any completed apparel layer in a
+private library, runs the frozen cloth installer, and restores the apparel
+layer. Direct `build-cloth-depth.py` and `build-family-cloth-depth.py` commands
+are limited to an explicitly unwrapped predecessor library. Historical review
+records retain the commands used for their original captures.
+
+## Broad apparel surfaces
+
+`authoring/apparel_surfaces.py` defines broad garment pigment regions and boot
+wear. Main cloth is selected by its original pigment and roughness role, so
+same-colour facings and seams remain exact. Delivered cloth roughness is already
+matte (224/255 for wool and 232/255 for trousers); this pass retains it. Boots
+start at 171/255 and gain one broad worn region with bounded matte roughness.
+The existing woven normal maps are retained without additional fine noise.
+
+Blackened steel and aged brass on equipment receive a roughness factor of .48.
+Their material names, colours and metallic factors remain exact. Polished
+blades, grip leather and uniform trim retain their complete previous materials.
+
+```sh
+python3 tools/characters-3d/build-apparel-surfaces.py
+python3 tools/characters-3d/build-apparel-surfaces.py --verify-only
+node --test tests/characters-apparel-surfaces.test.mjs
+```
+
+The library installs this layer after both frozen cloth-form passes. It appends
+material/image/texture definitions only; complete binary streams, fold colour
+accessors and receipts, normals, UVs, skin, rust hem, rig and motion remain
+exact. Each compact `apparelSurface` receipt pins the preceding complete LOD
+record and restores it through byte/hash fields and explicit donor patches.
+It proves complete top-layer removal without copying nested earlier receipts.
+Friar/skirt coarse donor links point to the final
+close body and restore to their exact preceding values when the layer is removed.
+
+Pixel bounds and passing preservation checks do not prove readability. Review
+all eight appearances at 44 and 88 projected pixels, including rear views and
+movement, before accepting a recipe change.
 
 ## Sources and rights
 

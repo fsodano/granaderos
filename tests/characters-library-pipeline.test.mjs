@@ -11,13 +11,22 @@ s=importlib.util.spec_from_file_location('library',root/'tools/characters-3d/lib
 library=importlib.util.module_from_spec(s);s.loader.exec_module(library)
 assets=root/'web/public/models/characters';previous=json.loads((assets/'manifest.json').read_text())
 verified_families=set()
+predecessor_scope=None;predecessor=None
+def predecessor_root():
+ global predecessor_scope,predecessor
+ if predecessor is None:
+  from apparel_surface_context import create_predecessor_snapshot
+  predecessor_scope=tempfile.TemporaryDirectory(prefix='granaderos-native-fixture-');predecessor=Path(predecessor_scope.name)/'predecessor'
+  snapshot=create_predecessor_snapshot(root,predecessor,link_assets=True);assert snapshot['releasedInputsExact']
+ return predecessor
 def native_body_and_record(preset,lod):
  s=importlib.util.spec_from_file_location('native_fixture_glb',root/'tools/characters-3d/merge-animation-bank.py');glb=importlib.util.module_from_spec(s);s.loader.exec_module(glb)
- record=copy.deepcopy(next(r for r in previous['appearances'][preset]['lods'] if r['lod']==lod))
- doc,binary=glb.read_glb(assets/Path(record['url']).name)
+ native_root=predecessor_root();native_assets=native_root/'web/public/models/characters';native_manifest=json.loads((native_assets/'manifest.json').read_text())
+ record=copy.deepcopy(next(r for r in native_manifest['appearances'][preset]['lods'] if r['lod']==lod))
+ doc,binary=glb.read_glb(native_assets/Path(record['url']).name)
  if 'familyClothDepth' in record:
   s=importlib.util.spec_from_file_location('native_fixture_family',root/'tools/characters-3d/build-family-cloth-depth.py');family=importlib.util.module_from_spec(s);s.loader.exec_module(family)
-  if preset not in verified_families:family.verify_completed(root,[preset]);verified_families.add(preset)
+  if preset not in verified_families:family.verify_completed(native_root,[preset]);verified_families.add(preset)
   doc,binary=family.restore_body(doc,binary,record['familyClothDepth']);record=family.restore_record(record)
  return doc,binary,record
 ${source}
@@ -219,7 +228,9 @@ with tempfile.TemporaryDirectory() as folder:
   for lod in (0,1,2):
    doc,binary,native_record=native_body_and_record(id,lod);glb.write_glb(out/f'{id}-lod{lod}.glb',doc,binary)
    current['appearances'][id]['lods'][lod]=native_record
- for name in ('male-animations.glb','female-animations.glb','equipment.glb'):shutil.copy2(assets/name,out/name)
+ native_assets=predecessor_root()/'web/public/models/characters'
+ for name in ('male-animations.glb','female-animations.glb','equipment.glb'):shutil.copy2(native_assets/name,out/name)
+ current['equipment']=json.loads((native_assets/'manifest.json').read_text())['equipment']
  shutil.copytree(assets/'textures',out/'textures')
  # Model a fresh donor with updated native map bindings. Old coarse palette
  # materials remain, so names alone cannot identify the new active surface.
@@ -261,44 +272,59 @@ with tempfile.TemporaryDirectory() as folder:
   assert.deepEqual(result,{coarseHemClassificationRestored:true,retainedUV0PaletteCopied:true,finalDonorIdentity:true,bothBankFilesAndMetadataExact:true,orderedRepeatExact:true});
 });
 
-test('completed family surface replay keeps final bytes exact and safely rebases selected close and coarse sources', () => {
+test('completed layered surface replay keeps final bytes exact and safely rebases selected close and coarse sources', () => {
   const result = python(`
 import subprocess
 def module(name,path):
  s=importlib.util.spec_from_file_location(name,path);value=importlib.util.module_from_spec(s);s.loader.exec_module(value);return value
 context=module('family_surface_fixture',root/'tools/characters-3d/family_surface_context.py')
 family=module('family_surface_export',root/'tools/characters-3d/build-family-cloth-depth.py')
+apparel=module('apparel_surface_fixture',root/'tools/characters-3d/apparel_surface_context.py')
 glb=module('family_surface_glb',root/'tools/characters-3d/merge-animation-bank.py')
 with tempfile.TemporaryDirectory() as folder:
  target=Path(folder).resolve();context._copy_inputs(root,target,context._pins(root));out=target/'web/public/models/characters'
  def files():return {str(p.relative_to(out)):library.digest(p) for p in out.rglob('*') if p.is_file()}
- def run(tool,label):
+ def run(tool,label,*arguments):
   receipt=target/(label+'.json')
-  result=subprocess.run(['python3',str(target/'tools/characters-3d'/tool),'--root',str(target),'--receipt',str(receipt)],cwd=target,capture_output=True,text=True)
+  result=subprocess.run(['python3',str(target/'tools/characters-3d'/tool),'--root',str(target),'--receipt',str(receipt),*arguments],cwd=target,capture_output=True,text=True)
   assert result.returncode==0,result.stdout+result.stderr
   return json.loads(receipt.read_text())
  stable=files()
+ apparel.verify_layer(target)
  for tool in ('build-reviewed-long-cloth-lods.py','build-woman-shawl-palette.py','build-woman-shawl-hem.py'):
   receipt=run(tool,tool)
   assert receipt['exactNoOp'] and not receipt['changedFiles']
   assert files()==stable
+ for layer in ('pilot','family'):
+  receipt=run('build-layered-cloth-depth.py','completed-'+layer,'--layer',layer)
+  assert receipt['exactNoOp'] and not receipt['changedFiles']
+  assert files()==stable
+ def verify_family(label,allow_stale_donor=False):
+  snapshot=target/label
+  apparel.create_predecessor_snapshot(target,snapshot,allow_stale_donor=allow_stale_donor,link_assets=True)
+  family.verify_completed(snapshot,['friar','woman-shawl'])
  # Model an explicitly selected fresh source body. Restore its actual native
  # stream first, then retain a source marker that must survive all postpasses.
  def fresh(preset,lod,label):
   mp=out/'manifest.json';manifest=json.loads(mp.read_text());record=manifest['appearances'][preset]['lods'][lod];path=out/Path(record['url']).name
-  doc,binary=glb.read_glb(path);doc,binary=family.restore_body(doc,binary,record['familyClothDepth']);record=family.restore_record(record)
+  doc,binary,record=apparel.unwrap_body_and_record(target,preset,lod)
+  doc,binary=family.restore_body(doc,binary,record['familyClothDepth']);record=family.restore_record(record)
   doc.setdefault('extras',{})[label]=True;raw=glb.write_glb(path,doc,binary)
   record.update(bytes=len(raw),sha256=hashlib.sha256(raw).hexdigest());manifest['appearances'][preset]['lods'][lod]=record;mp.write_text(json.dumps(manifest,indent=2)+'\\n')
  fresh('friar',0,'selectedCloseSourceFixture')
  # The old coarse receipts remain valid; their old final donor links are stale
  # until native topology is rebuilt from the selected fresh close source.
  strict_rejected=False
- try:family.verify_completed(target,['friar'])
+ try:verify_family('stale-lower-state',allow_stale_donor=True)
  except AssertionError as error:strict_rejected='Completed coarse donor identity is stale' in str(error)
  assert strict_rejected
+ strict_apparel_rejected=False
+ try:apparel.verify_layer(target)
+ except AssertionError as error:strict_apparel_rejected='Delivered apparel surface differs from its recipe' in str(error)
+ assert strict_apparel_rejected
  receipt=run('build-reviewed-long-cloth-lods.py','mixed-close')
  assert not receipt['exactNoOp']
- family.verify_completed(target,['friar','woman-shawl'])
+ apparel.verify_layer(target);verify_family('completed-close-lower-state')
  close_changes={name for name,pin in files().items() if stable.get(name)!=pin}
  assert close_changes=={'manifest.json','friar-lod0.glb','friar-lod1.glb','friar-lod2.glb'},close_changes
  completed=json.loads((out/'manifest.json').read_text());donor=completed['appearances']['friar']['lods'][0]['sha256']
@@ -309,7 +335,7 @@ with tempfile.TemporaryDirectory() as folder:
   assert doc['meshes'][mesh]['extras']['nativeClothTopology']['sourceSha256']==record['nativeClothTopology']['sourceSha256']==donor
  before_coarse=files();fresh('woman-shawl',1,'selectedCoarseSourceFixture')
  receipt=run('build-reviewed-long-cloth-lods.py','mixed-coarse');assert not receipt['exactNoOp']
- family.verify_completed(target,['friar','woman-shawl'])
+ apparel.verify_layer(target);verify_family('completed-coarse-lower-state')
  coarse_changes={name for name,pin in files().items() if before_coarse.get(name)!=pin}
  assert coarse_changes=={'manifest.json','woman-shawl-lod1.glb'},coarse_changes
  doc,binary=glb.read_glb(out/'woman-shawl-lod1.glb');assert doc['extras']['selectedCoarseSourceFixture'] is True

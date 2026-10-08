@@ -3,11 +3,11 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 import {execFileSync} from 'node:child_process';
-import {readGlb,manifest} from './character-bank-fixture.mjs';
+import {readGlb,manifest,assets} from './character-predecessor-fixture.mjs';
 import sharp from '../web/node_modules/sharp/lib/index.js';
 
 const hash=raw=>createHash('sha256').update(raw).digest('hex');
-const root=new URL('..',import.meta.url),assets=new URL('../web/public/models/characters/',import.meta.url);
+const root=new URL('..',import.meta.url);
 const baseline=JSON.parse(readFileSync(new URL('./character-family-cloth-depth-baseline.json',import.meta.url)));
 const families=['royalist','surgeon','gaucho','friar','woman-scout','woman-shawl'];
 const pigments={royalist:{outfit:['206,199,179'],legwear:['202,194,175']},surgeon:{outfit:['74,58,49'],legwear:['64,56,51']},gaucho:{outfit:['111,88,61'],legwear:['64,58,49']},friar:{outfit:['86,63,41'],legwear:['86,63,41']},'woman-scout':{outfit:['91,100,74'],legwear:['149,139,118']},'woman-shawl':{outfit:['200,188,162','91,44,53'],legwear:['49,48,49']}};
@@ -90,16 +90,15 @@ test('the accepted pilot bodies, recipe and both native animation banks remain e
 test('family export restores exact baseline bytes, repeats exactly, and rejects recipe,colour,map and late collision changes before writes',()=>{
  const result=JSON.parse(execFileSync('python3',['-c',String.raw`
 from pathlib import Path
-import copy,hashlib,importlib.util,json,shutil,struct,subprocess,tempfile
-root=Path.cwd()
+import copy,hashlib,importlib.util,json,shutil,struct,subprocess,tempfile,sys
+root=Path.cwd();sys.path.insert(0,str(root/'tools/characters-3d'))
+from apparel_surface_context import create_predecessor_snapshot
 def module(n,p):
  s=importlib.util.spec_from_file_location(n,p);m=importlib.util.module_from_spec(s);s.loader.exec_module(m);return m
 tool=module('family_test',root/'tools/characters-3d/build-family-cloth-depth.py');glb=module('family_glb',root/'tools/characters-3d/merge-animation-bank.py')
 digest=lambda raw:hashlib.sha256(raw).hexdigest()
 with tempfile.TemporaryDirectory(prefix='granaderos-family-depth-test-') as folder:
- target=Path(folder);out=target/'web/public/models/characters'
- for directory in ('tools/characters-3d','assets/source/characters-3d/authoring'):shutil.copytree(root/directory,target/directory,ignore=shutil.ignore_patterns('__pycache__','.build'))
- shutil.copytree(root/'web/public/models/characters',out)
+ target=Path(folder)/'root';create_predecessor_snapshot(root,target);out=target/'web/public/models/characters'
  manifest=json.loads((out/'manifest.json').read_text());expected={p.name:digest(p.read_bytes())for p in out.glob('*.glb')};originals={}
  for preset in tool.recipe_for(root)[0].PRESETS:
   for i,record in enumerate(manifest['appearances'][preset]['lods']):

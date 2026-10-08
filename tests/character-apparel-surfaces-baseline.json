@@ -1,0 +1,38 @@
+{
+  "stage": "family-fold-89daba6a",
+  "bodies": {
+    "granadero-lod0": "a539a0064791db7c54e4af6d50e050b291bbece38f53aa9e49bdfb9f38583061",
+    "granadero-lod1": "7ac4542717753b50f1baa47d53f67256bb4fd8e2f5a6625d78f0ea9f96e7f1c7",
+    "granadero-lod2": "44be7e03e4a048f4d16cc169da1536060d26ded409c8e10eb1898d300648c0b4",
+    "royalist-lod0": "fbbbe0ecb869ba09b9cdea6ca7e1a4c56664b74a94a8dcd3ea080929eba74105",
+    "royalist-lod1": "23119f74aaa3bde846800986b497a9ece6f8e3523fb224d20cc42e74687d50b1",
+    "royalist-lod2": "58e7f5d6bcb9853a0f5f1ac23007afd4f1f1bfdcf977aeccde1b35f17b582811",
+    "worker-lod0": "98ae2a429f6fb043683dce990e55aaf1bbb73a22364bf6a0f8a32c0387a4b3dc",
+    "worker-lod1": "6b2468ad4ca2977166073ef4a11ceb4086d3d45675e9c842a9256af3ac590d6b",
+    "worker-lod2": "e73b702b2149ad5a54593a178e6a4f0eff79bfb2649845d3d44052fb78a1d73d",
+    "surgeon-lod0": "b90a90259d44520ac9ec49130382fd7d3d24b8f0f686b0f942901d91a7f8a5d0",
+    "surgeon-lod1": "1488a00c98b04a4625e4ee9710f0efc78354c9af28f0a44d1299ff5dabc1b1f5",
+    "surgeon-lod2": "d6fc3a0fd179d13ec1d791bccfda8c2b86873b9144fb878d58f4c7889e3b7ca0",
+    "gaucho-lod0": "92433163d61089c4ee9205dbab433024ca5e31bc277fb4937d413ecd7696e7fc",
+    "gaucho-lod1": "f10d9c11302e64a35083a20abe6d84ef6c8fca90afaf8ec50a00e1a005bf78c0",
+    "gaucho-lod2": "5b4b902a3340b7b4f347a9c75e2b0918d0d3a193a807c3f95364e4a3bdef1a83",
+    "friar-lod0": "8b373d3b24bb80d5ff991617e0fe8498fa252573dc05cd9ac92a90e84d632dd8",
+    "friar-lod1": "773cbdbae0bdb634ee88a26a17582765b62d788a6d063e51bda073bea48717e6",
+    "friar-lod2": "4e6869d47eaae5a15981ba52cd4d8a90220d0d647ca3865a30d67867c06e31c5",
+    "woman-scout-lod0": "83a3f477b3771761a4fbb00f3a33cd744e4e77b49c6f870b72b3cc49c03c5434",
+    "woman-scout-lod1": "6f6f979fde16dbdab4cc41894ddd34562ad07da24f9c49947c615bf02f842ee5",
+    "woman-scout-lod2": "ea0d9176be44aed584c51cbb25c796779d4c8c2fab6afd50a3e7a2e6955c4326",
+    "woman-shawl-lod0": "5a6772d75ccf7bb03f4dac6e74db2226bfca0e4609c0373fc2c70e99fc081a8e",
+    "woman-shawl-lod1": "d75f8238d4baeff4ee3ebe424994193d4f29798fa2f6403342b6cf6aecf91764",
+    "woman-shawl-lod2": "526238446b1743e9dffc1e639bcf467837a2f7f78be39f9840ddf8ae0a458029"
+  },
+  "equipment": "237c0e3dd3e7a3af5fbb0c05ee94a3aa95c25951b346877e43c9af4fb673edf5",
+  "banks": {
+    "male": "48a5966d73058d2fef5eb77837d229377178106a349b903983c0bb38ad914d87",
+    "female": "0d437c4296ce6e7657626f0a18815eddf1b3cdf75479933ddd8a5fada017542e"
+  },
+  "foldSourceSha256": {
+    "cloth_depth.py": "4abe75b557ff66a88df9b76f295e31f1e5169c12bcbc97f91fb8a44252609ffe",
+    "family_cloth_depth.py": "417a371c610ca358bf682e4828233c1aff66cd3599b3726abb066c1303426fe2"
+  }
+}

@@ -7,8 +7,9 @@ from pathlib import Path
 import sys, json, copy, importlib.util
 root=Path.cwd();sys.path.insert(0,str(root/'tools/characters-3d'))
 from cloth_material_roles import retained_charcoal_material
+from apparel_surface_context import unwrap_body_and_record
 s=importlib.util.spec_from_file_location('glb',root/'tools/characters-3d/merge-animation-bank.py');glb=importlib.util.module_from_spec(s);s.loader.exec_module(glb)
-doc,binary=glb.read_glb(root/'web/public/models/characters/woman-shawl-lod0.glb')
+doc,binary,predecessor=unwrap_body_and_record(root,'woman-shawl',0)
 mesh=next(n['mesh'] for n in doc['nodes'] if n.get('name')=='Human_legwear_LOD0');active=doc['meshes'][mesh]['primitives'][0]['material']
 ${source}
 `], {cwd:new URL('..',import.meta.url),encoding:'utf8'}));

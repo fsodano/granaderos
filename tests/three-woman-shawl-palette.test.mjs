@@ -3,9 +3,8 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 import {inflateSync} from 'node:zlib';
+import {assets,manifest} from './character-predecessor-fixture.mjs';
 
-const assets = new URL('../web/public/models/characters/', import.meta.url);
-const manifest = JSON.parse(readFileSync(new URL('manifest.json', assets), 'utf8'));
 const digest = raw => createHash('sha256').update(raw).digest('hex');
 
 function rgbaPng(bytes) {
@@ -37,7 +36,7 @@ function rgbaPng(bytes) {
 }
 
 for (const lod of [0, 1, 2]) test(`woman-shawl LOD${lod} separates the charcoal skirt from the retained burgundy shawl`, () => {
-  const record = manifest.appearances['woman-shawl'].lods[lod], raw = readFileSync(new URL(`.${record.url}`, new URL('../web/public/', import.meta.url)));
+  const record = manifest.appearances['woman-shawl'].lods[lod], raw = readFileSync(new URL(`woman-shawl-lod${lod}.glb`,assets));
   assert.equal(digest(raw), record.sha256); assert.equal(raw.length, record.bytes);
   const size = raw.readUInt32LE(12), doc = JSON.parse(raw.subarray(20, 20 + size)), binary = raw.subarray(28 + size);
   const node = doc.nodes.find(n => n.name === `Human_legwear_LOD${lod}`), primitive = doc.meshes[node.mesh].primitives[0];

@@ -244,6 +244,11 @@ def family_surface_context(tool, root, receipt=None):
     root = Path(root).resolve()
     if os.environ.get(PRIVATE_ENV) == str(root):
         return False
+    # A later surface layer must verify and unwrap itself before any frozen
+    # family recipe or native postpass inspects its predecessor materials.
+    from apparel_surface_context import apparel_surface_context
+    if apparel_surface_context(tool, root, receipt):
+        return True
     tool = Path(tool).name
     assert tool in NATIVE_BODIES, 'Unknown native surface postpass'
     assets = root / 'web/public/models/characters'

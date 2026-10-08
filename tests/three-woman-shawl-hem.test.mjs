@@ -4,9 +4,8 @@ import {readFileSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
 import {GLTFLoader} from '../web/node_modules/three/examples/jsm/loaders/GLTFLoader.js';
 import {Texture} from '../web/node_modules/three/build/three.module.js';
+import {assets as root,manifest} from './character-predecessor-fixture.mjs';
 
-const root = new URL('../web/public/models/characters/', import.meta.url);
-const manifest = JSON.parse(readFileSync(new URL('manifest.json', root), 'utf8'));
 for (const lod of [0, 1, 2]) test(`woman-shawl LOD${lod} uses a separate base-colour UV without changing native surface maps`, async () => {
   const raw = readFileSync(new URL(`woman-shawl-lod${lod}.glb`, root));
   const loader = new GLTFLoader();

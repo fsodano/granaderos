@@ -136,6 +136,9 @@ if manifest['complete']:
  subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-reviewed-long-cloth-lods.py')],cwd=ROOT,check=True)
  # The first garment form pilot appends colours to the completed released
  # bodies. It retains native geometry, faces, maps and all animation banks.
- subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-cloth-depth.py')],cwd=ROOT,check=True)
+ subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-layered-cloth-depth.py'),'--layer','pilot'],cwd=ROOT,check=True)
  # The independent six-family recipe keeps the accepted pilot bytes exact.
- subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-family-cloth-depth.py')],cwd=ROOT,check=True)
+ subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-layered-cloth-depth.py'),'--layer','family'],cwd=ROOT,check=True)
+ # Keep the accepted cloth form/hem stages exact below a reversible material
+ # layer. This last pass adds broad pigment, boot wear and matte gun fittings.
+ subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-apparel-surfaces.py')],cwd=ROOT,check=True)
