@@ -876,3 +876,19 @@ records grounded mirrored-return speed reduced from 2.991 m/s to at most
 1.619 mm/s. The focused physical matrix covers changed-hand transitions;
 ordinary HUD routes cover rifle-equipped gestures. Whole-boot interruption
 continuity, broader CPU cost and final motion acceptance remain open.
+
+## Prone pistol free-arm and sleeve support
+
+Three native prone pistol guards retain the supported free left arm. A bounded
+elbow-circle consumer clears the complete weighted sleeve through loading
+and return while preserving current world wrists and gun grips. The public
+prone selector now includes a finite owned two-pistol reload case.
+
+All three focused checks, 117 affected regressions and 11 fixture checks pass
+with native/profile, TypeScript, documentation and 38 baseline checks. Export
+`92763e4ceb02` verifies 1,245 files and 1,040 references. Four current normal
+HUD routes pass in 36 captures with exact source/assets, paid AP, ammunition
+and prone cells. The [pistol support review](prone-pistol-forearm-support.md)
+records complete weighted skin clearance of at least 1.500 mm and retained
+world grip. Planting the holding elbow in paired firing/loading, remaining
+rifle sleeves and adjacent-patient healing contact remain open.

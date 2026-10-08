@@ -86,3 +86,20 @@ prone cells and use the same paid command and animation presentation as the
 campaign. The fixture gate independently checks finite ammunition,
 serialization, AP payment and owned identities; no private renderer pose is
 needed to reach this route.
+
+## Current integration evidence
+
+Source commit `d2af80a5` passes all three focused tests in 21.785 seconds,
+117 affected worker/runtime/clock/native/prone/garment checks in 20.562 seconds,
+and 11 public-fixture checks. Native library, locomotion profile, TypeScript,
+documentation and all 38 baseline checks pass. Production export `92763e4ceb02`
+verifies 1,245 files and 1,040 asset references.
+
+Four independent current HUD routes pass in 36 captures: male/female single
+and paired loading through the public selector, normal inventory/camera and
+Shift+R. They retain N5/Q5, prone posture, the exact 52/10 internal AP and
+seven/six reserve cartridges, and one loaded charge in every owned pistol.
+Browser errors are empty; thirteen implementation/model hashes stay exact
+before and after capture, and served models match local bytes. Later review
+updates change no tested implementation or assets. Local receipts are under
+`artifacts/three-prone-pistol-current-review/`.
