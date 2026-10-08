@@ -9,6 +9,7 @@ import {componentTree} from './component-tree.mjs';
 import {buildBuilding,buildTerrace} from '../game/buildings.js';
 import {createBattle,actBattle,getReachable,climbPreview} from '../game/tactical.js';
 import {sameCell,spaceKey,tacticalLevel,surfaceHeight} from '../game/tactical-space.js';
+import {ladderGeometry,sampleLadderClimb} from '../game/climb-geometry.js';
 import {roomAt,isInteriorVisible} from '../game/tactical-visibility.js';
 import {cellOccupant,movementAction,orderAction,heldSupplyAction,movementGroupModel,visibleHover,isGroupGround,toggleMovementGroup} from '../game/ja2-hud.js';
 import {executeGroupMove} from '../game/group-movement.js';
@@ -19,6 +20,7 @@ const {buildBuildingObjects}=await import('../web/app/TacticalBuildings.tsx');
 const {BuildingRoof}=await import('../web/app/BuildingRoof.tsx');
 const {movementRoute,sampleMovementSegment}=await import('../web/app/useUnitMotion.ts');
 const {projectSurface,ELEVATION_PIXELS_PER_METRE,surfaceMotionPoint}=await import('../web/lib/tactical-elevation.ts');
+const {TILE_METRES}=await import('../web/lib/three/projection.ts');
 const project=(x,y)=>({x:300+(x-y)*26,y:65+(x+y)*14}),noop=()=>{};
 const nodes=node=>!node||typeof node!=='object'?[]:[node,...(Array.isArray(node)?node:Array.isArray(node.props?.children)?node.props.children:[node.props?.children]).flatMap(nodes)];
 const close=(actual,expected)=>assert.ok(Math.abs(actual-expected)<1e-8,`${actual} != ${expected}`);
@@ -128,19 +130,44 @@ test('same-column climbs animate physical height and preserve authoritative clim
  assert.equal(surfaceHeight(next,actor),3);
 });
 
-test('paid climb and descent interpolate the roof inset without snapping the actor foot or hit frame',()=>{
- const state=fixture(),unit=state.units[0],next=actBattle(state,{type:'climb',unitId:unit.id,linkId:state.climbLinks[0].id});assert.equal(next.lastError,null);
- const route=movementRoute(state,unit,next.units[0]).map(point=>surfaceMotionPoint(state,point,next)),plane=renderedRoofPlane(state);
- for(const [a,b]of [route,[...route].reverse()]){
-  const from=tacticalLevel(a)?plane.point(a.x,a.y):project(a.x,a.y),to=tacticalLevel(b)?plane.point(b.x,b.y):project(b.x,b.y);
+test('paid ladder ascent and descent keep actor feet and hit frames on the supported path and roof inset',()=>{
+ const state=fixture(),unit=state.units[0],link=state.climbLinks[0],request={type:'climb',unitId:unit.id,linkId:link.id};
+ const up=actBattle(state,request),down=actBattle(up,request);assert.equal(up.lastError,null);assert.equal(down.lastError,null);
+ const paid=structuredClone([state,up,down]),plane=renderedRoofPlane(state),ascending=new Map();
+ for(const [before,after]of [[state,up],[up,down]]){
+  const old=before.units[0],actor=after.units[0],route=movementRoute(before,old,actor).map(point=>({...surfaceMotionPoint(before,point,after),climbKind:link.kind})),[a,b]=route;
+  assert.equal(route.length,2);assert.equal(b.kind,'climb');assert.equal(b.linkId,link.id);
+  const descending=surfaceHeight(before,old)>surfaceHeight(after,actor),lower=descending?b:a,upper=descending?a:b;
+  const geometry=ladderGeometry([lower.x*TILE_METRES,lower.renderedHeight,lower.y*TILE_METRES],[upper.x*TILE_METRES,upper.renderedHeight,upper.y*TILE_METRES],TILE_METRES);
+  // The roof mesh supplies the calibration independently of projectSurface.
+  // The authoritative contact plan supplies the root's setback and crest.
+  const inset=point=>{const flat=project(point.x,point.y),roof=tacticalLevel(point)?plane.point(point.x,point.y):{...flat,y:flat.y-point.renderedHeight*ELEVATION_PIXELS_PER_METRE};return {x:roof.x-flat.x,y:roof.y-(flat.y-point.renderedHeight*ELEVATION_PIXELS_PER_METRE)};};
+  const offsetA=inset(a),offsetB=inset(b);
+  for(const fraction of [0,.04,.08,.12,.25,.5,.75,.76,.82,.85,.91,.96,1]){
+   const position=sampleMovementSegment(a,b,fraction),p=projectSurface(after,project,position),native=sampleLadderClimb(geometry,descending?1-fraction:fraction);
+   const x=lower.x+geometry.forward[0]*native.root.forward/TILE_METRES,y=lower.y+geometry.forward[2]*native.root.forward/TILE_METRES,height=lower.renderedHeight+native.root.height,flat=project(x,y);
+   const expected={x:flat.x+offsetA.x+(offsetB.x-offsetA.x)*fraction,y:flat.y-height*ELEVATION_PIXELS_PER_METRE+offsetA.y+(offsetB.y-offsetA.y)*fraction};
+   close(position.x,x);close(position.y,y);close(position.renderedHeight,height);close(p.x,expected.x);close(p.y,expected.y);
+   assert.equal(position.linkId,link.id);assert.equal(position.segmentFraction,fraction);assert.equal(position.climbDirection,descending?-1:1);
+   const tree=componentTree(Scene,sceneProps(after,{selected:unit.id,cursorLevel:1,positions:{[unit.id]:{...position,moving:true,direction:3,frame:0}}}));
+   const renderedActor=nodes(tree).find(node=>node.props?.['data-unit-id']===unit.id),hit=nodes(renderedActor).find(node=>node.props?.['data-person-hit-target']),sprite=nodes(renderedActor).find(node=>node.props?.drawSize===52);
+   close(hit.props.x+hit.props.width/2,expected.x);close(hit.props.y+hit.props.height,expected.y);assert.deepEqual(sprite.props.position,p);
+   if(!descending)ascending.set(fraction,p);else if(ascending.has(1-fraction)){close(p.x,ascending.get(1-fraction).x);close(p.y,ascending.get(1-fraction).y);}
+  }
+  for(const fraction of [.04,.08,.12,.76,.82,.85,.91,.96]){
+   const left=projectSurface(after,project,sampleMovementSegment(a,b,fraction-1e-7)),right=projectSurface(after,project,sampleMovementSegment(a,b,fraction+1e-7));
+   assert.ok(Math.hypot(right.x-left.x,right.y-left.y)<1e-3,'The contact and crest boundaries must remain continuous');
+  }
+  const start=projectSurface(after,project,sampleMovementSegment(a,b,0)),end=projectSurface(after,project,sampleMovementSegment(a,b,1));
+  const endpoint=point=>tacticalLevel(point)?plane.point(point.x,point.y):project(point.x,point.y);
+  close(start.x,endpoint(a).x);close(start.y,endpoint(a).y);close(end.x,endpoint(b).x);close(end.y,endpoint(b).y);
+  // Stairs retain linear travel; the ladder's supported setback must not alter it.
   for(const fraction of [0,.25,.5,.75,1]){
-   const position=sampleMovementSegment(a,b,fraction),p=projectSurface(state,project,position),expected={x:from.x+(to.x-from.x)*fraction,y:from.y+(to.y-from.y)*fraction};
-   close(p.x,expected.x);close(p.y,expected.y);
-   const tree=componentTree(Scene,sceneProps(next,{selected:unit.id,cursorLevel:1,positions:{[unit.id]:{...position,moving:true,direction:3,frame:0}}}));
-   const actor=nodes(tree).find(node=>node.props?.['data-unit-id']===unit.id),hit=nodes(actor).find(node=>node.props?.['data-person-hit-target']);
-   close(hit.props.x+hit.props.width/2,expected.x);close(hit.props.y+hit.props.height,expected.y);
+   const position=sampleMovementSegment(a,{...b,climbKind:'stairs'},fraction),p=projectSurface(after,project,position),from=endpoint(a),to=endpoint(b);
+   close(p.x,from.x+(to.x-from.x)*fraction);close(p.y,from.y+(to.y-from.y)*fraction);
   }
  }
+ assert.deepEqual([state,up,down],paid,'Presentation sampling cannot change cells, paid AP or simulation state');
  const independent={...state,buildings:[],upperSurfaces:state.upperSurfaces.map(surface=>({...surface,kind:'platform',buildingId:undefined}))};
  const point={x:3,y:3,tacticalLevel:1},p=projectSurface(independent,project,point);close(p.x,project(3,3).x);close(p.y,project(3,3).y-3*ELEVATION_PIXELS_PER_METRE);
 });

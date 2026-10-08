@@ -1,6 +1,7 @@
 import {register} from 'node:module';register('./tactical-render-loader.mjs',import.meta.url);
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {createElement as h,useState} from '../web/node_modules/react/index.js';
 import {createBattle,actBattle,presentedActBattle,actionCosts,artilleryCosts} from '../game/tactical.js';
 import {mountBattlefield} from './mounted-battlefield.mjs';
 const {presentedFrameDuration}=await import('../web/lib/useEnemyPlayback.ts');
@@ -65,20 +66,42 @@ test('mounted Battlefield presents partial artillery reload work once without co
  assert.equal(expected.artillery[0].loaded,false);assert.equal(expected.artillery[0].ammo,before.artillery[0].ammo);assert.deepEqual(battle,before);
 });
 
-test('mounted Battlefield uses the accepted horse state to emit exactly one mount or dismount cue',async t=>{
+// Match the real React owner: onChange installs the committed state in the
+// same render as playback clears. A delayed external mutation would briefly
+// feed the obsolete source back to the transition observer.
+function CommittedBattlefield(props){
+ const wrapper=Battlefield(props),content=wrapper.props.children;
+ function CommittedContents(initial){
+  const [battle,setBattle]=useState(initial.battle);
+  return content.type({...initial,battle,onChange:next=>{initial.onChange(next);setBattle(next);return next;}});
+ }
+ return h(wrapper.type,wrapper.props,h(CommittedContents,content.props));
+}
+
+test('mounted Battlefield presents one protected mount or dismount and commits its paid result once',async t=>{
  let battle=field();unit(battle,20).horse=true;unit(battle,20).mounted=false;
- const commits=[],props=()=>({battle,onChange:next=>{battle=next;commits.push(next);return next;},onFinish(){}}),mounted=await mountBattlefield(t,Battlefield,props(),{virtualTimers:true});
+ const commits=[],props=()=>({battle,onChange:next=>{battle=next;commits.push(next);return next;},onFinish(){}}),mounted=await mountBattlefield(t,CommittedBattlefield,props(),{virtualTimers:true});
  const panel=()=>nodes(mounted.tree()).find(node=>node.props?.onOrder&&node.props?.onEndTurn),scene=()=>nodes(mounted.tree()).find(node=>node.type===TacticalThreeScene),visual=()=>scene().props.actors.find(actor=>actor.id==='20');
  const cueIds=[];
  for(const semantic of ['mount','dismount']){
   const before=structuredClone(battle),cost=actionCosts(before,unit(before,20)).mount,count=commits.length;
+  const request={type:'mount',unitId:'20',aim:0,hitLocation:'torso'},expected=actBattle(before,request),recorded=presentedActBattle(before,request);
+  assert.equal(expected.lastError,null);assert.deepEqual(recorded.frames.map(frame=>frame.type),['prepare','result']);
   await mounted.act(async()=>panel().props.onOrder({type:'mount'}));
-  assert.equal(commits.length,count+1);assert.equal(battle.lastError,null);assert.equal(unit(battle,20).ap,unit(before,20).ap-cost);
-  assert.equal(visual().cue,undefined,'the order itself does not guess mount versus dismount');
-  await mounted.render(props());
-  assert.equal(visual().action,semantic);assert.equal(visual().cue.action,semantic);assert.equal(visual().cue.fromPosture,semantic==='mount'?'standing':'mounted');assert.equal(visual().mounted,semantic==='mount');
-  const id=visual().cue.id;cueIds.push(id);await mounted.render(props());assert.equal(visual().cue.id,id,'the same committed state cannot restart the cue');
-  await mounted.act(async()=>scene().props.onCueComplete('unit:20',id));assert.equal(visual().cue,undefined);
+  assert.equal(commits.length,count,'Preparation cannot commit the paid destination early');assert.deepEqual(battle,before);assert.equal(panel().props.busy,true);
+  assert.equal(visual().action,semantic);assert.equal(visual().cue.action,semantic);assert.equal(visual().cue.fromPosture,semantic==='mount'?'standing':'mounted');
+  assert.equal(visual().mounted,unit(before,20).mounted,'Preparation retains the admitted starting horse state');
+  assert.equal(visual().cue.durationMs,2300,'The protected move plays the full released native interval');
+  const id=visual().cue.id;cueIds.push(id);await mounted.render(props());assert.equal(visual().cue.id,id,'The same frame cannot restart the cue');
+  await mounted.act(async()=>panel().props.onOrder({type:'mount'}));assert.equal(commits.length,count,'Busy input cannot spend a second action');
+  await mounted.act(async()=>scene().props.onCueComplete('unit:20',id));assert.equal(commits.length,count,'A renderer completion cannot commit reducer state');
+  assert.equal(await mounted.nextDelay(),2300);assert.equal(commits.length,count);
+  assert.equal(visual().cue,undefined,'The accepted result holds final idle without replaying the native move');assert.equal(visual().mounted,semantic==='mount');
+  assert.equal(await mounted.nextDelay(),presentedFrameDuration(recorded.frames[1],recorded.frames[0].state));
+  assert.equal(commits.length,count+1);assert.deepEqual(battle,expected);assert.equal(unit(battle,20).ap,unit(before,20).ap-cost);
+  assert.deepEqual([unit(battle,20).x,unit(battle,20).y],[unit(before,20).x,unit(before,20).y]);
+  await mounted.render(props());assert.equal(panel().props.busy,false);assert.equal(visual().cue,undefined);
+  await mounted.act(async()=>scene().props.onCueComplete('unit:20',id));await mounted.render(props());assert.equal(visual().cue,undefined,'A late completion or committed-state render cannot emit a second cue');
  }
  assert.equal(new Set(cueIds).size,2);
  // A rejected order must not fabricate a transition or pay another mount cost.
