@@ -1,10 +1,11 @@
 # Detention and physical rescue work
 
-> **Development-workspace record.** This note describes a separate development
-> checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> **Dated implementation and acceptance records.** Earlier checkpoints below
+> retain their original source, failures and controlled fixtures. FIX-03 and the
+> [PR139 publication receipt](../../evidence/pr139-published-2026-10-01.json) accept
+> the bounded cleared-field rescue. See [published progress](../../verification/published-progress.md).
 
-Status: **in progress**. Campaign attacks, defenses and sector visits now deploy physical detainees. Their wounds, finite first aid and deaths settle into the original service records and survive full saves. Physical release and escape remain unimplemented. The sector-recapture rescue routes pass with finite custody care. This is not completed physical escape gameplay.
+Status on main `916049df7346a5b655564fafdea37c93be76045c` (8 October 2026): physical custody, finite care, paid release/following and joint safe-exit settlement are implemented in the bounded paths recorded below. The actual Jujuy relief route clears its guards before evacuation and retains deaths, finite supplies, contracts, replay and saves. Unaided/stealth rescue, self-directed escape, carrying incapacitated prisoners and wider detention choices remain open. The earlier paragraphs are dated checkpoints; their original unimplemented/failure statements are superseded only by the later named accepted paths.
 
 ## Prisoner construction
 
