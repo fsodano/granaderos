@@ -1,0 +1,3704 @@
+{
+  "baselineCommit": "7cd854a7039c9368cf0150a1c9623fb961ecfc6a",
+  "scope": "One native standing sabre-thrust clip, six right rotation outputs per anatomy, plus continuous current-target hand correction across prepare/contact. Knife, other cuts and hilt are not changed.",
+  "sourceHashes": {
+    "web/app/Battlefield.tsx": "e67d67e31c7ef6245dd34fe759ea9bf29e0a046b3536b6c7e8bb208f90fe54ea",
+    "web/lib/three/melee-contact-fit.ts": "fe9ff8aee5557219da3ae2bf65d1663fc33615839fe63ca6c4c3b4fd90ca65e5",
+    "web/lib/three/actor-runtime.ts": "61274ee9ff78f1f0dd76ee5732e089466d81f7fe56553df39c484c5b59d83f1a",
+    "web/lib/three/presentation.ts": "c78f1984a7684717b8b8a17255a1b27daa39a1f4d1c4b75343f603287b0cf44d",
+    "web/lib/three/scene-actors.ts": "5a9106b793a55c0a2bb5bb9c24b920496560ee4d91f97b8c62a84ea8df129b83",
+    "web/public/models/characters/manifest.json": "446831c80eedf146ee2eef120a18b0ef1dd8e4eec821bbb4a4434168ad4b3a12",
+    "web/public/models/characters/equipment.glb": "237c0e3dd3e7a3af5fbb0c05ee94a3aa95c25951b346877e43c9af4fb673edf5",
+    "web/public/models/characters/male-animations.glb": "48a5966d73058d2fef5eb77837d229377178106a349b903983c0bb38ad914d87",
+    "web/public/models/characters/female-animations.glb": "0d437c4296ce6e7657626f0a18815eddf1b3cdf75479933ddd8a5fada017542e",
+    "web/public/models/characters/granadero-lod0.glb": "444abea73ec08c1ef03c7fc2dac8fa5141767b4a249c3cb314b48ccc7cda069f",
+    "web/public/models/characters/woman-scout-lod0.glb": "d3dbb04cc5a0ddca1ec300def391004e9540bc78f5a82ded0c674262ed0f818b",
+    "web/public/models/characters/royalist-lod0.glb": "c6043aa97c224ec55b8337a99c666b6b1d04e259814fa7954ef1422f8b83c8b4"
+  },
+  "sourceHashesStableThroughHud": true,
+  "sourceGuard": {
+    "baselineCommit": "7cd854a7039c9368cf0150a1c9623fb961ecfc6a",
+    "malformedFemaleRejectedWithoutAnyInstall": true,
+    "freshReleasedBankReplayExact": true,
+    "repeatRejectedWithoutAnyInstall": true,
+    "donorSha256": "b39a215cc00f813d473d976427bd714cb9aa59038f30c5715150b884a405ad0e",
+    "preservation": {
+      "male": {
+        "beforeSha256": "624915277f2f4f842c0f2b8c251e91aee7b5436319612e327ecbb174fe1f8cda",
+        "sha256": "48a5966d73058d2fef5eb77837d229377178106a349b903983c0bb38ad914d87",
+        "clips": 334,
+        "changedRotationChannels": [
+          [
+            "stand.slash.blade.thrust",
+            "upperarm_r",
+            "rotation"
+          ],
+          [
+            "stand.slash.blade.thrust",
+            "lowerarm_r",
+            "rotation"
+          ],
+          [
+            "stand.slash.blade.thrust",
+            "hand_r",
+            "rotation"
+          ],
+          [
+            "stand.slash.blade.thrust",
+            "thumb_01_r",
+            "rotation"
+          ],
+          [
+            "stand.slash.blade.thrust",
+            "thumb_02_r",
+            "rotation"
+          ],
+          [
+            "stand.slash.blade.thrust",
+            "thumb_03_r",
+            "rotation"
+          ]
+        ],
+        "nativeClockInputsExact": true,
+        "allOtherChannelsExact": true,
+        "nativeRigMeshSkinAndPrefixExact": true,
+        "donorSha256": "b39a215cc00f813d473d976427bd714cb9aa59038f30c5715150b884a405ad0e"
+      },
+      "female": {
+        "beforeSha256": "aa8cc1381835de19c1ffa747020d50225f92f3f8c1eb807e31c4a04007e2f37a",
+        "sha256": "0d437c4296ce6e7657626f0a18815eddf1b3cdf75479933ddd8a5fada017542e",
+        "clips": 334,
+        "changedRotationChannels": [
+          [
+            "stand.slash.blade.thrust",
+            "upperarm_r",
+            "rotation"
+          ],
+          [
+            "stand.slash.blade.thrust",
+            "lowerarm_r",
+            "rotation"
+          ],
+          [
+            "stand.slash.blade.thrust",
+            "hand_r",
+            "rotation"
+          ],
+          [
+            "stand.slash.blade.thrust",
+            "thumb_01_r",
+            "rotation"
+          ],
+          [
+            "stand.slash.blade.thrust",
+            "thumb_02_r",
+            "rotation"
+          ],
+          [
+            "stand.slash.blade.thrust",
+            "thumb_03_r",
+            "rotation"
+          ]
+        ],
+        "nativeClockInputsExact": true,
+        "allOtherChannelsExact": true,
+        "nativeRigMeshSkinAndPrefixExact": true,
+        "donorSha256": "b39a215cc00f813d473d976427bd714cb9aa59038f30c5715150b884a405ad0e"
+      }
+    }
+  },
+  "freshBlenderCompatibility": [
+    {
+      "anatomy": "male",
+      "freshBlenderExportSha256": "595f58a8af3a9bdacb35e6e5ffcda9ed95f0ba895a29f9b99da755a0231c3412",
+      "nativeRestTransformsExact": 53,
+      "retainedInputClocksExact": 6,
+      "markersAndDurationExact": true
+    },
+    {
+      "anatomy": "female",
+      "freshBlenderExportSha256": "b30327af3f2ad6b126e329bc7ad2408b711bd8470b4a3dbf217c0d336475c701",
+      "nativeRestTransformsExact": 53,
+      "retainedInputClocksExact": 6,
+      "markersAndDurationExact": true
+    }
+  ],
+  "paidCycles": [
+    {
+      "appearance": "granadero",
+      "equipment": "blade",
+      "diagonal": false,
+      "posture": "standing",
+      "lod": 0,
+      "actionDurationMs": 1970,
+      "samples": 479,
+      "maxWristBendDegrees": 35.38817020840378,
+      "maxWristSpeedMetresPerSecond": 1.8350745428679713,
+      "maxPhaseEdgeWristJumpMetres": 4.961704800310922e-07,
+      "maxReachErrorMetres": 0,
+      "maxPhaseEdge": {
+        "from": "prepare",
+        "to": "contact",
+        "now": 420,
+        "clipTime": 0.189,
+        "root": [
+          7.416351088482289,
+          0,
+          12.360585147470482
+        ],
+        "yaw": 1.5707963267948966
+      }
+    },
+    {
+      "appearance": "granadero",
+      "equipment": "blade",
+      "diagonal": false,
+      "posture": "standing",
+      "lod": 1,
+      "actionDurationMs": 1970,
+      "samples": 479,
+      "maxWristBendDegrees": 35.45224572249721,
+      "maxWristSpeedMetresPerSecond": 1.8365120219619544,
+      "maxPhaseEdgeWristJumpMetres": 4.956726835912135e-07,
+      "maxReachErrorMetres": 0,
+      "maxPhaseEdge": {
+        "from": "prepare",
+        "to": "contact",
+        "now": 420,
+        "clipTime": 0.189,
+        "root": [
+          7.416351088482289,
+          0,
+          12.360585147470482
+        ],
+        "yaw": 1.5707963267948966
+      }
+    },
+    {
+      "appearance": "granadero",
+      "equipment": "blade",
+      "diagonal": false,
+      "posture": "standing",
+      "lod": 2,
+      "actionDurationMs": 1970,
+      "samples": 479,
+      "maxWristBendDegrees": 35.54408353650805,
+      "maxWristSpeedMetresPerSecond": 1.8392383498757874,
+      "maxPhaseEdgeWristJumpMetres": 4.94696292489116e-07,
+      "maxReachErrorMetres": 0,
+      "maxPhaseEdge": {
+        "from": "prepare",
+        "to": "contact",
+        "now": 420,
+        "clipTime": 0.189,
+        "root": [
+          7.416351088482289,
+          0,
+          12.360585147470482
+        ],
+        "yaw": 1.5707963267948966
+      }
+    },
+    {
+      "appearance": "granadero",
+      "equipment": "blade",
+      "diagonal": false,
+      "posture": "crouched",
+      "lod": 0,
+      "actionDurationMs": 1970,
+      "samples": 479,
+      "maxWristBendDegrees": 35.126317329560884,
+      "maxWristSpeedMetresPerSecond": 1.817168710179175,
+      "maxPhaseEdgeWristJumpMetres": 5.022119925722187e-07,
+      "maxReachErrorMetres": 0,
+      "maxPhaseEdge": {
+        "from": "prepare",
+        "to": "contact",
+        "now": 420,
+        "clipTime": 0.189,
+        "root": [
+          7.416351088482289,
+          0,
+          12.360585147470482
+        ],
+        "yaw": 1.5707963267948966
+      }
+    },
+    {
+      "appearance": "granadero",
+      "equipment": "blade",
+      "diagonal": false,
+      "posture": "crouched",
+      "lod": 1,
+      "actionDurationMs": 1970,
+      "samples": 479,
+      "maxWristBendDegrees": 35.13820718947087,
+      "maxWristSpeedMetresPerSecond": 1.8172706366906917,
+      "maxPhaseEdgeWristJumpMetres": 5.021935906362728e-07,
+      "maxReachErrorMetres": 0,
+      "maxPhaseEdge": {
+        "from": "prepare",
+        "to": "contact",
+        "now": 420,
+        "clipTime": 0.189,
+        "root": [
+          7.416351088482289,
+          0,
+          12.360585147470482
+        ],
+        "yaw": 1.5707963267948966
+      }
+    },
+    {
+      "appearance": "granadero",
+      "equipment": "blade",
+      "diagonal": false,
+      "posture": "crouched",
+      "lod": 2,
+      "actionDurationMs": 1970,
+      "samples": 479,
+      "maxWristBendDegrees": 35.147818164995684,
+      "maxWristSpeedMetresPerSecond": 1.816842268909597,
+      "maxPhaseEdgeWristJumpMetres": 5.021455137314241e-07,
+      "maxReachErrorMetres": 0,
+      "maxPhaseEdge": {
+        "from": "prepare",
+        "to": "contact",
+        "now": 420,
+        "clipTime": 0.189,
+        "root": [
+          7.416351088482289,
+          0,
+          12.360585147470482
+        ],
+        "yaw": 1.5707963267948966
+      }
+    },
+    {
+      "appearance": "granadero",
+      "equipment": "blade",
+      "diagonal": true,
+      "posture": "standing",
+      "lod": 0,
+      "actionDurationMs": 1970,
+      "samples": 479,
+      "maxWristBendDegrees": 40.352710169184995,
+      "maxWristSpeedMetresPerSecond": 1.9574060542094125,
+      "maxPhaseEdgeWristJumpMetres": 5.624493846777716e-07,
+      "maxReachErrorMetres": 0,
+      "maxPhaseEdge": {
+        "from": "prepare",
+        "to": "contact",
+        "now": 420,
+        "clipTime": 0.189,
+        "root": [
+          7.416351088482289,
+          0,
+          12.360585147470482
+        ],
+        "yaw": 0.7853981633974483
+      }
+    },
+    {
+      "appearance": "granadero",
+      "equipment": "blade",
+      "diagonal": true,
+      "posture": "standing",
+      "lod": 1,
+      "actionDurationMs": 1970,
+      "samples": 479,
+      "maxWristBendDegrees": 40.320456148591894,
+      "maxWristSpeedMetresPerSecond": 1.9640494479176116,
+      "maxPhaseEdgeWristJumpMetres": 5.767146879795354e-07,
+      "maxReachErrorMetres": 0,
+      "maxPhaseEdge": {
+        "from": "prepare",
+        "to": "contact",
+        "now": 420,
+        "clipTime": 0.189,
+        "root": [
+          7.416351088482289,
+          0,
+          12.360585147470482
+        ],
+        "yaw": 0.7853981633974483
+      }
+    },
+    {
+      "appearance": "granadero",
+      "equipment": "blade",
+      "diagonal": true,
+      "posture": "standing",
+      "lod": 2,
+      "actionDurationMs": 1970,
+      "samples": 479,
+      "maxWristBendDegrees": 40.242841210089374,
+      "maxWristSpeedMetresPerSecond": 1.9641028392429392,
+      "maxPhaseEdgeWristJumpMetres": 5.770965701876995e-07,
+      "maxReachErrorMetres": 0,
+      "maxPhaseEdge": {
+        "from": "prepare",
+        "to": "contact",
+        "now": 420,
+        "clipTime": 0.189,
+        "root": [
+          7.416351088482289,
+          0,
+          12.360585147470482
+        ],
+        "yaw": 0.7853981633974483
+      }
+    },
+    {
+      "appearance": "granadero",
+      "equipment": "blade",
+      "diagonal": true,
+      "posture": "crouched",
+      "lod": 0,
+      "actionDurationMs": 1970,
+      "samples": 479,
+      "maxWristBendDegrees": 34.999939229995704,
+      "maxWristSpeedMetresPerSecond": 1.9903951133341828,
+      "maxPhaseEdgeWristJumpMetres": 4.2390777558627255e-07,
+      "maxReachErrorMetres": 0,
+      "maxPhaseEdge": {
+        "from": "contact",
+        "to": "impact",
+        "now": 1070,
+        "clipTime": 0.42,
+        "root": [
+          7.416351088482289,
+          0,
+          12.360585147470482
+        ],
+        "yaw": 0.7853981633974483
+      }
+    },
+    {
+      "appearance": "granadero",
+      "equipment": "blade",
+      "diagonal": true,
+      "posture": "crouched",
+      "lod": 1,
+      "actionDurationMs": 1970,
+      "samples": 479,
+      "maxWristBendDegrees": 34.999939229995704,
+      "maxWristSpeedMetresPerSecond": 1.9903951133341828,
+      "maxPhaseEdgeWristJumpMetres": 4.2390777558627255e-07,
+      "maxReachErrorMetres": 0,
+      "maxPhaseEdge": {
+        "from": "contact",
+        "to": "impact",
+        "now": 1070,
+        "clipTime": 0.42,
+        "root": [
+          7.416351088482289,
+          0,
+          12.360585147470482
+        ],
+        "yaw": 0.7853981633974483
+      }
+    },
+    {
+      "appearance": "granadero",
+      "equipment": "blade",
+      "diagonal": true,
+      "posture": "crouched",
+      "lod": 2,
+      "actionDurationMs": 1970,
+      "samples": 479,
+      "maxWristBendDegrees": 34.999939229995704,
+      "maxWristSpeedMetresPerSecond": 1.9872580368158346,
+      "maxPhaseEdgeWristJumpMetres": 4.2390775696144015e-07,
+      "maxReachErrorMetres": 0,
+      "maxPhaseEdge": {
+        "from": "contact",
+        "to": "impact",
+        "now": 1070,
+        "clipTime": 0.42,
+        "root": [
+          7.416351088482289,
+          0,
+          12.360585147470482
+        ],
+        "yaw": 0.7853981633974483
+      }
+    },
+    {
+      "appearance": "woman-scout",
+      "equipment": "blade",
+      "diagonal": false,
+      "posture": "standing",
+      "lod": 0,
+      "actionDurationMs": 1970,
+      "samples": 479,
+      "maxWristBendDegrees": 35.028053816175216,
+      "maxWristSpeedMetresPerSecond": 1.793796914736149,
+      "maxPhaseEdgeWristJumpMetres": 5.120893166446807e-07,
+      "maxReachErrorMetres": 0,
+      "maxPhaseEdge": {
+        "from": "prepare",
+        "to": "contact",
+        "now": 420,
+        "clipTime": 0.189,
+        "root": [
+          7.416351088482289,
+          0,
+          12.360585147470482
+        ],
+        "yaw": 1.5707963267948966
+      }
+    },
+    {
+      "appearance": "woman-scout",
+      "equipment": "blade",
+      "diagonal": false,
+      "posture": "standing",
+      "lod": 1,
+      "actionDurationMs": 1970,
+      "samples": 479,
+      "maxWristBendDegrees": 35.03823003248638,
+      "maxWristSpeedMetresPerSecond": 1.790847999218185,
+      "maxPhaseEdgeWristJumpMetres": 5.13443578823195e-07,
+      "maxReachErrorMetres": 0,
+      "maxPhaseEdge": {
+        "from": "prepare",
+        "to": "contact",
+        "now": 420,
+        "clipTime": 0.189,
+        "root": [
+          7.416351088482289,
+          0,
+          12.360585147470482
+        ],
+        "yaw": 1.5707963267948966
+      }
+    },
+    {
+      "appearance": "woman-scout",
+      "equipment": "blade",
+      "diagonal": false,
+      "posture": "standing",
+      "lod": 2,
+      "actionDurationMs": 1970,
+      "samples": 479,
+      "maxWristBendDegrees": 35.02635761981644,
+      "maxWristSpeedMetresPerSecond": 1.7901958185790714,
+      "maxPhaseEdgeWristJumpMetres": 5.135236260389965e-07,
+      "maxReachErrorMetres": 0,
+      "maxPhaseEdge": {
+        "from": "prepare",
+        "to": "contact",
+        "now": 420,
+        "clipTime": 0.189,
+        "root": [
+          7.416351088482289,
+          0,
+          12.360585147470482
+        ],
+        "yaw": 1.5707963267948966
+      }
+    },
+    {
+      "appearance": "woman-scout",
+      "equipment": "blade",
+      "diagonal": false,
+      "posture": "crouched",
+      "lod": 0,
+      "actionDurationMs": 1970,
+      "samples": 479,
+      "maxWristBendDegrees": 35.28242747699439,
+      "maxWristSpeedMetresPerSecond": 1.8098413751946165,
+      "maxPhaseEdgeWristJumpMetres": 5.150814178525882e-07,
+      "maxReachErrorMetres": 0,
+      "maxPhaseEdge": {
+        "from": "prepare",
+        "to": "contact",
+        "now": 420,
+        "clipTime": 0.189,
+        "root": [
+          7.416351088482289,
+          0,
+          12.360585147470482
+        ],
+        "yaw": 1.5707963267948966
+      }
+    },
+    {
+      "appearance": "woman-scout",
+      "equipment": "blade",
+      "diagonal": false,
+      "posture": "crouched",
+      "lod": 1,
+      "actionDurationMs": 1970,
+      "samples": 479,
+      "maxWristBendDegrees": 35.31272600003426,
+      "maxWristSpeedMetresPerSecond": 1.8097038419446534,
+      "maxPhaseEdgeWristJumpMetres": 5.153106479035556e-07,
+      "maxReachErrorMetres": 0,
+      "maxPhaseEdge": {
+        "from": "prepare",
+        "to": "contact",
+        "now": 420,
+        "clipTime": 0.189,
+        "root": [
+          7.416351088482289,
+          0,
+          12.360585147470482
+        ],
+        "yaw": 1.5707963267948966
+      }
+    },
+    {
+      "appearance": "woman-scout",
+      "equipment": "blade",
+      "diagonal": false,
+      "posture": "crouched",
+      "lod": 2,
+      "actionDurationMs": 1970,
+      "samples": 479,
+      "maxWristBendDegrees": 35.322427115128406,
+      "maxWristSpeedMetresPerSecond": 1.8092339496254124,
+      "maxPhaseEdgeWristJumpMetres": 5.152076095343191e-07,
+      "maxReachErrorMetres": 0,
+      "maxPhaseEdge": {
+        "from": "prepare",
+        "to": "contact",
+        "now": 420,
+        "clipTime": 0.189,
+        "root": [
+          7.416351088482289,
+          0,
+          12.360585147470482
+        ],
+        "yaw": 1.5707963267948966
+      }
+    },
+    {
+      "appearance": "woman-scout",
+      "equipment": "blade",
+      "diagonal": true,
+      "posture": "standing",
+      "lod": 0,
+      "actionDurationMs": 1970,
+      "samples": 479,
+      "maxWristBendDegrees": 42.2405237012059,
+      "maxWristSpeedMetresPerSecond": 1.9208651366532041,
+      "maxPhaseEdgeWristJumpMetres": 5.614803406986231e-07,
+      "maxReachErrorMetres": 0,
+      "maxPhaseEdge": {
+        "from": "prepare",
+        "to": "contact",
+        "now": 420,
+        "clipTime": 0.189,
+        "root": [
+          7.416351088482289,
+          0,
+          12.360585147470482
+        ],
+        "yaw": 0.7853981633974483
+      }
+    },
+    {
+      "appearance": "woman-scout",
+      "equipment": "blade",
+      "diagonal": true,
+      "posture": "standing",
+      "lod": 1,
+      "actionDurationMs": 1970,
+      "samples": 479,
+      "maxWristBendDegrees": 42.2859266354686,
+      "maxWristSpeedMetresPerSecond": 1.9246048915464995,
+      "maxPhaseEdgeWristJumpMetres": 5.69635002874267e-07,
+      "maxReachErrorMetres": 0,
+      "maxPhaseEdge": {
+        "from": "prepare",
+        "to": "contact",
+        "now": 420,
+        "clipTime": 0.189,
+        "root": [
+          7.416351088482289,
+          0,
+          12.360585147470482
+        ],
+        "yaw": 0.7853981633974483
+      }
+    },
+    {
+      "appearance": "woman-scout",
+      "equipment": "blade",
+      "diagonal": true,
+      "posture": "standing",
+      "lod": 2,
+      "actionDurationMs": 1970,
+      "samples": 479,
+      "maxWristBendDegrees": 42.29591123485421,
+      "maxWristSpeedMetresPerSecond": 1.9238903946232135,
+      "maxPhaseEdgeWristJumpMetres": 5.686497303732606e-07,
+      "maxReachErrorMetres": 0,
+      "maxPhaseEdge": {
+        "from": "prepare",
+        "to": "contact",
+        "now": 420,
+        "clipTime": 0.189,
+        "root": [
+          7.416351088482289,
+          0,
+          12.360585147470482
+        ],
+        "yaw": 0.7853981633974483
+      }
+    },
+    {
+      "appearance": "woman-scout",
+      "equipment": "blade",
+      "diagonal": true,
+      "posture": "crouched",
+      "lod": 0,
+      "actionDurationMs": 1970,
+      "samples": 479,
+      "maxWristBendDegrees": 34.999950136797416,
+      "maxWristSpeedMetresPerSecond": 1.9512332448199363,
+      "maxPhaseEdgeWristJumpMetres": 4.2424846945454235e-07,
+      "maxReachErrorMetres": 0,
+      "maxPhaseEdge": {
+        "from": "contact",
+        "to": "impact",
+        "now": 1070,
+        "clipTime": 0.42,
+        "root": [
+          7.416351088482289,
+          0,
+          12.360585147470482
+        ],
+        "yaw": 0.7853981633974483
+      }
+    },
+    {
+      "appearance": "woman-scout",
+      "equipment": "blade",
+      "diagonal": true,
+      "posture": "crouched",
+      "lod": 1,
+      "actionDurationMs": 1970,
+      "samples": 479,
+      "maxWristBendDegrees": 34.999950136797416,
+      "maxWristSpeedMetresPerSecond": 1.9512332448199363,
+      "maxPhaseEdgeWristJumpMetres": 4.2424846945454235e-07,
+      "maxReachErrorMetres": 0,
+      "maxPhaseEdge": {
+        "from": "contact",
+        "to": "impact",
+        "now": 1070,
+        "clipTime": 0.42,
+        "root": [
+          7.416351088482289,
+          0,
+          12.360585147470482
+        ],
+        "yaw": 0.7853981633974483
+      }
+    },
+    {
+      "appearance": "woman-scout",
+      "equipment": "blade",
+      "diagonal": true,
+      "posture": "crouched",
+      "lod": 2,
+      "actionDurationMs": 1970,
+      "samples": 479,
+      "maxWristBendDegrees": 37.201580028537386,
+      "maxWristSpeedMetresPerSecond": 1.9547943108092976,
+      "maxPhaseEdgeWristJumpMetres": 4.2424847184304587e-07,
+      "maxReachErrorMetres": 0,
+      "maxPhaseEdge": {
+        "from": "contact",
+        "to": "impact",
+        "now": 1070,
+        "clipTime": 0.42,
+        "root": [
+          7.416351088482289,
+          0,
+          12.360585147470482
+        ],
+        "yaw": 0.7853981633974483
+      }
+    }
+  ],
+  "baselinePaidCycles": [
+    {
+      "appearance": "granadero",
+      "equipment": "blade",
+      "diagonal": false,
+      "posture": "standing",
+      "lod": 0,
+      "actionDurationMs": 1970,
+      "samples": 479,
+      "maxWristBendDegrees": 134.74666519126842,
+      "maxWristSpeedMetresPerSecond": 2.858425259608992,
+      "maxPhaseEdgeWristJumpMetres": 0.0004500255772853257,
+      "maxReachErrorMetres": 0
+    },
+    {
+      "appearance": "granadero",
+      "equipment": "blade",
+      "diagonal": false,
+      "posture": "standing",
+      "lod": 1,
+      "actionDurationMs": 1970,
+      "samples": 479,
+      "maxWristBendDegrees": 134.74666519126842,
+      "maxWristSpeedMetresPerSecond": 2.858425259608992,
+      "maxPhaseEdgeWristJumpMetres": 0.0004500255772853257,
+      "maxReachErrorMetres": 0
+    },
+    {
+      "appearance": "granadero",
+      "equipment": "blade",
+      "diagonal": false,
+      "posture": "standing",
+      "lod": 2,
+      "actionDurationMs": 1970,
+      "samples": 479,
+      "maxWristBendDegrees": 134.74666519126842,
+      "maxWristSpeedMetresPerSecond": 2.858425259608992,
+      "maxPhaseEdgeWristJumpMetres": 0.0004500255772853257,
+      "maxReachErrorMetres": 0
+    },
+    {
+      "appearance": "granadero",
+      "equipment": "blade",
+      "diagonal": false,
+      "posture": "crouched",
+      "lod": 0,
+      "actionDurationMs": 1970,
+      "samples": 479,
+      "maxWristBendDegrees": 134.34265573490163,
+      "maxWristSpeedMetresPerSecond": 2.8490325833064647,
+      "maxPhaseEdgeWristJumpMetres": 0.00033974571151531674,
+      "maxReachErrorMetres": 0
+    },
+    {
+      "appearance": "granadero",
+      "equipment": "blade",
+      "diagonal": false,
+      "posture": "crouched",
+      "lod": 1,
+      "actionDurationMs": 1970,
+      "samples": 479,
+      "maxWristBendDegrees": 134.34265573490163,
+      "maxWristSpeedMetresPerSecond": 2.8490325833064647,
+      "maxPhaseEdgeWristJumpMetres": 0.00033974571151531674,
+      "maxReachErrorMetres": 0
+    },
+    {
+      "appearance": "granadero",
+      "equipment": "blade",
+      "diagonal": false,
+      "posture": "crouched",
+      "lod": 2,
+      "actionDurationMs": 1970,
+      "samples": 479,
+      "maxWristBendDegrees": 134.21697985506555,
+      "maxWristSpeedMetresPerSecond": 2.856187821740229,
+      "maxPhaseEdgeWristJumpMetres": 0.00017798970522156176,
+      "maxReachErrorMetres": 0
+    },
+    {
+      "appearance": "granadero",
+      "equipment": "blade",
+      "diagonal": true,
+      "posture": "standing",
+      "lod": 0,
+      "actionDurationMs": 1970,
+      "samples": 479,
+      "maxWristBendDegrees": 130.49459466116875,
+      "maxWristSpeedMetresPerSecond": 2.9460177025859893,
+      "maxPhaseEdgeWristJumpMetres": 0.0005127913363754782,
+      "maxReachErrorMetres": 0
+    },
+    {
+      "appearance": "granadero",
+      "equipment": "blade",
+      "diagonal": true,
+      "posture": "standing",
+      "lod": 1,
+      "actionDurationMs": 1970,
+      "samples": 479,
+      "maxWristBendDegrees": 130.49459466116875,
+      "maxWristSpeedMetresPerSecond": 2.9460177025859893,
+      "maxPhaseEdgeWristJumpMetres": 0.0005127913363754782,
+      "maxReachErrorMetres": 0
+    },
+    {
+      "appearance": "granadero",
+      "equipment": "blade",
+      "diagonal": true,
+      "posture": "standing",
+      "lod": 2,
+      "actionDurationMs": 1970,
+      "samples": 479,
+      "maxWristBendDegrees": 137.1314181060656,
+      "maxWristSpeedMetresPerSecond": 2.870262737763438,
+      "maxPhaseEdgeWristJumpMetres": 0.0003299406676791725,
+      "maxReachErrorMetres": 0
+    },
+    {
+      "appearance": "granadero",
+      "equipment": "blade",
+      "diagonal": true,
+      "posture": "crouched",
+      "lod": 0,
+      "actionDurationMs": 1970,
+      "samples": 479,
+      "maxWristBendDegrees": 139.92264957822948,
+      "maxWristSpeedMetresPerSecond": 2.8245115228905435,
+      "maxPhaseEdgeWristJumpMetres": 0.0008080841295556901,
+      "maxReachErrorMetres": 0
+    },
+    {
+      "appearance": "granadero",
+      "equipment": "blade",
+      "diagonal": true,
+      "posture": "crouched",
+      "lod": 1,
+      "actionDurationMs": 1970,
+      "samples": 479,
+      "maxWristBendDegrees": 139.92264957822948,
+      "maxWristSpeedMetresPerSecond": 2.8245115228905435,
+      "maxPhaseEdgeWristJumpMetres": 0.0008080841295556901,
+      "maxReachErrorMetres": 0
+    },
+    {
+      "appearance": "granadero",
+      "equipment": "blade",
+      "diagonal": true,
+      "posture": "crouched",
+      "lod": 2,
+      "actionDurationMs": 1970,
+      "samples": 479,
+      "maxWristBendDegrees": 140.54587748586096,
+      "maxWristSpeedMetresPerSecond": 2.8042794975402403,
+      "maxPhaseEdgeWristJumpMetres": 0.0005894392295182517,
+      "maxReachErrorMetres": 0
+    },
+    {
+      "appearance": "woman-scout",
+      "equipment": "blade",
+      "diagonal": false,
+      "posture": "standing",
+      "lod": 0,
+      "actionDurationMs": 1970,
+      "samples": 479,
+      "maxWristBendDegrees": 136.21720068019295,
+      "maxWristSpeedMetresPerSecond": 2.8892199406311305,
+      "maxPhaseEdgeWristJumpMetres": 0.00011208029127194268,
+      "maxReachErrorMetres": 0
+    },
+    {
+      "appearance": "woman-scout",
+      "equipment": "blade",
+      "diagonal": false,
+      "posture": "standing",
+      "lod": 1,
+      "actionDurationMs": 1970,
+      "samples": 479,
+      "maxWristBendDegrees": 136.2079578139447,
+      "maxWristSpeedMetresPerSecond": 2.889391832461942,
+      "maxPhaseEdgeWristJumpMetres": 7.368920437014657e-05,
+      "maxReachErrorMetres": 0
+    },
+    {
+      "appearance": "woman-scout",
+      "equipment": "blade",
+      "diagonal": false,
+      "posture": "standing",
+      "lod": 2,
+      "actionDurationMs": 1970,
+      "samples": 479,
+      "maxWristBendDegrees": 135.99642189181532,
+      "maxWristSpeedMetresPerSecond": 2.8977940731825136,
+      "maxPhaseEdgeWristJumpMetres": 0.0019641870817273814,
+      "maxReachErrorMetres": 0
+    },
+    {
+      "appearance": "woman-scout",
+      "equipment": "blade",
+      "diagonal": false,
+      "posture": "crouched",
+      "lod": 0,
+      "actionDurationMs": 1970,
+      "samples": 479,
+      "maxWristBendDegrees": 136.13951759721107,
+      "maxWristSpeedMetresPerSecond": 2.8872958667177224,
+      "maxPhaseEdgeWristJumpMetres": 0.0003264043410324204,
+      "maxReachErrorMetres": 0
+    },
+    {
+      "appearance": "woman-scout",
+      "equipment": "blade",
+      "diagonal": false,
+      "posture": "crouched",
+      "lod": 1,
+      "actionDurationMs": 1970,
+      "samples": 479,
+      "maxWristBendDegrees": 136.13951759721107,
+      "maxWristSpeedMetresPerSecond": 2.8872958667177224,
+      "maxPhaseEdgeWristJumpMetres": 0.0003264043410324204,
+      "maxReachErrorMetres": 0
+    },
+    {
+      "appearance": "woman-scout",
+      "equipment": "blade",
+      "diagonal": false,
+      "posture": "crouched",
+      "lod": 2,
+      "actionDurationMs": 1970,
+      "samples": 479,
+      "maxWristBendDegrees": 136.11894274988612,
+      "maxWristSpeedMetresPerSecond": 2.8886357638142246,
+      "maxPhaseEdgeWristJumpMetres": 0.00017951815884493846,
+      "maxReachErrorMetres": 0
+    },
+    {
+      "appearance": "woman-scout",
+      "equipment": "blade",
+      "diagonal": true,
+      "posture": "standing",
+      "lod": 0,
+      "actionDurationMs": 1970,
+      "samples": 479,
+      "maxWristBendDegrees": 138.02353655861313,
+      "maxWristSpeedMetresPerSecond": 2.901131866964398,
+      "maxPhaseEdgeWristJumpMetres": 0.00021687472628780188,
+      "maxReachErrorMetres": 0
+    },
+    {
+      "appearance": "woman-scout",
+      "equipment": "blade",
+      "diagonal": true,
+      "posture": "standing",
+      "lod": 1,
+      "actionDurationMs": 1970,
+      "samples": 479,
+      "maxWristBendDegrees": 138.02353655861313,
+      "maxWristSpeedMetresPerSecond": 2.901131866964398,
+      "maxPhaseEdgeWristJumpMetres": 0.00021687472628780188,
+      "maxReachErrorMetres": 0
+    },
+    {
+      "appearance": "woman-scout",
+      "equipment": "blade",
+      "diagonal": true,
+      "posture": "standing",
+      "lod": 2,
+      "actionDurationMs": 1970,
+      "samples": 479,
+      "maxWristBendDegrees": 138.02353655861313,
+      "maxWristSpeedMetresPerSecond": 2.901131866964398,
+      "maxPhaseEdgeWristJumpMetres": 0.00021687472628780188,
+      "maxReachErrorMetres": 0
+    },
+    {
+      "appearance": "woman-scout",
+      "equipment": "blade",
+      "diagonal": true,
+      "posture": "crouched",
+      "lod": 0,
+      "actionDurationMs": 1970,
+      "samples": 479,
+      "maxWristBendDegrees": 143.74718013724612,
+      "maxWristSpeedMetresPerSecond": 2.8712490491028944,
+      "maxPhaseEdgeWristJumpMetres": 0.0005395565064182369,
+      "maxReachErrorMetres": 0
+    },
+    {
+      "appearance": "woman-scout",
+      "equipment": "blade",
+      "diagonal": true,
+      "posture": "crouched",
+      "lod": 1,
+      "actionDurationMs": 1970,
+      "samples": 479,
+      "maxWristBendDegrees": 143.74718013724612,
+      "maxWristSpeedMetresPerSecond": 2.8712490491028944,
+      "maxPhaseEdgeWristJumpMetres": 0.0005395565064182369,
+      "maxReachErrorMetres": 0
+    },
+    {
+      "appearance": "woman-scout",
+      "equipment": "blade",
+      "diagonal": true,
+      "posture": "crouched",
+      "lod": 2,
+      "actionDurationMs": 1970,
+      "samples": 479,
+      "maxWristBendDegrees": 143.80806520793226,
+      "maxWristSpeedMetresPerSecond": 2.83496060888005,
+      "maxPhaseEdgeWristJumpMetres": 0.0008311213136816391,
+      "maxReachErrorMetres": 0
+    }
+  ],
+  "heldKnifeComparison": {
+    "scope": "Diagnostic only; two-clip donor was rejected and replaced by a sabre-only donor. Knife contact fitting is not admitted in the released runtime.",
+    "baselineMaxDiagonalPrepareContactWristJumpMetres": 0.20668789778038762,
+    "rejectedDonorMaxDiagonalPrepareContactWristJumpMetres": 0.21225692132221416,
+    "rejectedMaleBank": "b218297d35151ad07a5f8c9ef7b19e065675684cd3e0823777f72b168b7d87ff",
+    "rejectedFemaleBank": "5ae0d085894ccaf0849e32f844d71c3c1ee708d6eb1d4e46ff602d96cd91dee2"
+  },
+  "hud": [
+    {
+      "anatomy": "male",
+      "appearance": "granadero",
+      "cueId": "1:8:1:unit:sabre",
+      "selectedClip": "stand.slash.blade.thrust",
+      "paidPreparation": [
+        {
+          "sequence": "1:1",
+          "before": "5. Cuchillo. Salud 100, 25 puntos de acci\u00f3n, energ\u00eda 100, moral 80. Ve 5 enemigos. Mano principal: Fac\u00f3n Gaucho con Poncho. Combate cercano activo. Estado 100%. Segunda mano: vac\u00eda. Bot\u00f3n derecho: equipo del combatiente",
+          "after": "5. Cuchillo. Salud 100, 22,5 puntos de acci\u00f3n, energ\u00eda 94, moral 80. Ve 5 enemigos. Mano principal: vac\u00eda. Segunda mano: vac\u00eda. Bot\u00f3n derecho: equipo del combatiente"
+        },
+        {
+          "sequence": "1:2",
+          "before": "5. Cuchillo. Salud 100, 22,5 puntos de acci\u00f3n, energ\u00eda 94, moral 80. Ve 5 enemigos. Mano principal: vac\u00eda. Segunda mano: vac\u00eda. Bot\u00f3n derecho: equipo del combatiente",
+          "after": "5. Cuchillo. Salud 100, 19,5 puntos de acci\u00f3n, energ\u00eda 94, moral 80. Ve 5 enemigos. Mano principal: vac\u00eda. Segunda mano: vac\u00eda. Bot\u00f3n derecho: equipo del combatiente"
+        },
+        {
+          "sequence": "1:3",
+          "before": "5. Cuchillo. Salud 100, 19,5 puntos de acci\u00f3n, energ\u00eda 94, moral 80. Ve 5 enemigos. Mano principal: vac\u00eda. Segunda mano: vac\u00eda. Bot\u00f3n derecho: equipo del combatiente",
+          "after": "5. Cuchillo. Salud 100, 16,5 puntos de acci\u00f3n, energ\u00eda 94, moral 80. Ve 5 enemigos. Mano principal: vac\u00eda. Segunda mano: vac\u00eda. Bot\u00f3n derecho: equipo del combatiente"
+        },
+        {
+          "sequence": "1:4",
+          "before": "5. Cuchillo. Salud 100, 16,5 puntos de acci\u00f3n, energ\u00eda 94, moral 80. Ve 5 enemigos. Mano principal: vac\u00eda. Segunda mano: vac\u00eda. Bot\u00f3n derecho: equipo del combatiente",
+          "after": "5. Cuchillo. Salud 100, 13,5 puntos de acci\u00f3n, energ\u00eda 94, moral 80. Ve 5 enemigos. Mano principal: vac\u00eda. Segunda mano: vac\u00eda. Bot\u00f3n derecho: equipo del combatiente"
+        },
+        {
+          "sequence": "1:5",
+          "before": "5. Cuchillo. Salud 100, 13,5 puntos de acci\u00f3n, energ\u00eda 94, moral 80. Ve 5 enemigos. Mano principal: vac\u00eda. Segunda mano: vac\u00eda. Bot\u00f3n derecho: equipo del combatiente",
+          "after": "5. Cuchillo. Salud 100, 10,5 puntos de acci\u00f3n, energ\u00eda 94, moral 80. Ve 5 enemigos. Mano principal: vac\u00eda. Segunda mano: vac\u00eda. Bot\u00f3n derecho: equipo del combatiente"
+        },
+        {
+          "sequence": "1:6",
+          "before": "5. Cuchillo. Salud 100, 10,5 puntos de acci\u00f3n, energ\u00eda 94, moral 80. Ve 5 enemigos. Mano principal: vac\u00eda. Segunda mano: vac\u00eda. Bot\u00f3n derecho: equipo del combatiente",
+          "after": "5. Cuchillo. Salud 100, 7,5 puntos de acci\u00f3n, energ\u00eda 94, moral 80. Ve 5 enemigos. Mano principal: vac\u00eda. Segunda mano: vac\u00eda. Bot\u00f3n derecho: equipo del combatiente"
+        },
+        {
+          "sequence": "1:7",
+          "before": "5. Cuchillo. Salud 100, 7,5 puntos de acci\u00f3n, energ\u00eda 94, moral 80. Ve 5 enemigos. Mano principal: vac\u00eda. Segunda mano: vac\u00eda. Bot\u00f3n derecho: equipo del combatiente",
+          "after": "5. Cuchillo. Salud 100, 4,5 puntos de acci\u00f3n, energ\u00eda 94, moral 80. Ve 5 enemigos. Mano principal: vac\u00eda. Segunda mano: vac\u00eda. Bot\u00f3n derecho: equipo del combatiente"
+        }
+      ],
+      "before": {
+        "card": "3. Sable. Salud 100, 22,5 puntos de acci\u00f3n, energ\u00eda 99, moral 80. Ve 6 enemigos. Mano principal: Sable de Caroya. Combate cercano activo. Estado 100%. Segunda mano: vac\u00eda. Bot\u00f3n derecho: equipo del combatiente",
+        "target": "Realista sabre \u00b7 100 salud",
+        "actorCell": "J7",
+        "targetCell": "K8",
+        "hands": [
+          "Mano principal: Sable de Caroya",
+          "Segunda mano: Vac\u00eda"
+        ]
+      },
+      "after": {
+        "card": "3. Sable. Salud 100, 19 puntos de acci\u00f3n, energ\u00eda 99, moral 80. Ve 6 enemigos. Mano principal: Sable de Caroya. Combate cercano activo. Estado 100%. Segunda mano: vac\u00eda. Bot\u00f3n derecho: equipo del combatiente",
+        "target": "Realista sabre \u00b7 58 salud"
+      },
+      "frames": [
+        {
+          "requestedAtMs": 80,
+          "wallElapsedMs": 87.51599999999962,
+          "frame": "0:sabre:prepare:melee",
+          "target": "Realista sabre \u00b7 100 salud"
+        },
+        {
+          "requestedAtMs": 320,
+          "wallElapsedMs": 356.7350829999996,
+          "frame": "1:sabre:contact:melee",
+          "target": "Realista sabre \u00b7 100 salud"
+        },
+        {
+          "requestedAtMs": 500,
+          "wallElapsedMs": 530.9802920000002,
+          "frame": "1:sabre:contact:melee",
+          "target": "Realista sabre \u00b7 100 salud"
+        },
+        {
+          "requestedAtMs": 800,
+          "wallElapsedMs": 808.3630830000002,
+          "frame": "1:sabre:contact:melee",
+          "target": "Realista sabre \u00b7 100 salud"
+        },
+        {
+          "requestedAtMs": 1100,
+          "wallElapsedMs": 1108.799583,
+          "frame": "2:sabre:impact:melee",
+          "target": "Realista sabre \u00b7 58 salud"
+        },
+        {
+          "requestedAtMs": 1700,
+          "wallElapsedMs": 1707.1300420000007,
+          "frame": "2:sabre:impact:melee",
+          "target": "Realista sabre \u00b7 58 salud"
+        },
+        {
+          "requestedAtMs": 2200,
+          "wallElapsedMs": 2207.493125000001,
+          "frame": null,
+          "target": "Realista sabre \u00b7 58 salud"
+        }
+      ],
+      "errors": [],
+      "servedAssets": [
+        {
+          "url": "http://127.0.0.1:3151/lib/three/presentation.ts",
+          "status": 200,
+          "sha256": "e03e5ba5c2232c4283ae196b09baa6ebdd17001c93cc6d030a3a87f4246c593f"
+        },
+        {
+          "url": "http://127.0.0.1:3151/lib/three/scene-actors.ts",
+          "status": 200,
+          "sha256": "9dc754fe85690e28e3bdac8e78697ad344c97059ad388ee37aa8021f09c87549"
+        },
+        {
+          "url": "http://127.0.0.1:3151/lib/three/actor-runtime.ts",
+          "status": 200,
+          "sha256": "6148b534a068a258353c129ea040b0d6346ab66e86e0c818a582665c9ec9c6f7"
+        },
+        {
+          "url": "http://127.0.0.1:3151/lib/three/melee-contact-fit.ts",
+          "status": 200,
+          "sha256": "52c33570008c6713fc37b9dcbba26b06fa23ae3d976b9f4536871151a026072f"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/manifest.json",
+          "status": 200,
+          "sha256": "446831c80eedf146ee2eef120a18b0ef1dd8e4eec821bbb4a4434168ad4b3a12"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/equipment.glb",
+          "status": 200,
+          "sha256": "237c0e3dd3e7a3af5fbb0c05ee94a3aa95c25951b346877e43c9af4fb673edf5"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/male-garments.glb",
+          "status": 200,
+          "sha256": "f2c8a94230284344705166b83e229194a2d38003c821fc1b7484c91573c4ea07"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/female-garments.glb",
+          "status": 200,
+          "sha256": "e197024f2a2a9a2d18241206eef4e409189ceab1ba4f7fd97a8eb0d96784c5af"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/granadero-lod1.glb",
+          "status": 200,
+          "sha256": "a3845e976701bf597499b0195178612a9d00fc3b0553700d818dcf8e50132701"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/gaucho-lod1.glb",
+          "status": 200,
+          "sha256": "e7615908bc58eb3f1de0a665932dca81a3dcd7cab0da5f6161c77406d498b9c8"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/woman-scout-lod1.glb",
+          "status": 200,
+          "sha256": "af0d39fba27102e59f58d97e874b7c3aeacf693579cdcb296dd2cb808cc618c0"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/worker-lod1.glb",
+          "status": 200,
+          "sha256": "ca17b0a34329ca1243746780080e9c647d44219bba37c2f5f52e92e3b64dcd32"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/royalist-lod1.glb",
+          "status": 200,
+          "sha256": "343bbbc9c77ed6a6b947f205bd0131b4359110871b6da9b8730f381b4529b3f5"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/male-animations.glb",
+          "status": 200,
+          "sha256": "48a5966d73058d2fef5eb77837d229377178106a349b903983c0bb38ad914d87"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/female-animations.glb",
+          "status": 200,
+          "sha256": "0d437c4296ce6e7657626f0a18815eddf1b3cdf75479933ddd8a5fada017542e"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/851812def6824e843620.png",
+          "status": 200,
+          "sha256": "851812def6824e8436202da61466ea219f705c42ea2352d5d2a095be711d6c14"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/6b9e6e7cf8e4e61f4eec.png",
+          "status": 200,
+          "sha256": "6b9e6e7cf8e4e61f4eeca4c37b1a44185157489b9dfa152f06742cca0e05bd25"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/531a12fea7813218250b.png",
+          "status": 200,
+          "sha256": "531a12fea7813218250b3e25413c9fd0e7456d66733a9affda8b7fdd383ae4ab"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/89135b727219523ff9ab.png",
+          "status": 200,
+          "sha256": "89135b727219523ff9ab057e2481e4022fdd64fe463bfa1480ffbf1876a6475a"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/76c6ed4f73557a4a0a53.png",
+          "status": 200,
+          "sha256": "76c6ed4f73557a4a0a53d707abccd289a0cbe8d7a9c2a822753f6848ba41ae0f"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/040aa7bd60f397241c0c.png",
+          "status": 200,
+          "sha256": "040aa7bd60f397241c0c5dd19c01e5d2660fc82c6d78e911b62e1efef5cbde33"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/409b7f25641a2c1cf7e2.png",
+          "status": 200,
+          "sha256": "409b7f25641a2c1cf7e2497521c2022152e41c3cad3e224a29384d18681ad207"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/2e15a426be9ee20c39a7.png",
+          "status": 200,
+          "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/bde948d56c47e9a9c68c.png",
+          "status": 200,
+          "sha256": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/040b6c27fc46ce2da454.png",
+          "status": 200,
+          "sha256": "040b6c27fc46ce2da45430b075721781c0200c75729387d7937f45ab30399f1d"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/042e670c62ad34a45c14.png",
+          "status": 200,
+          "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/3bb81102c0b19c0f3604.png",
+          "status": 200,
+          "sha256": "3bb81102c0b19c0f3604135d0bf048426b2d100d00221c934aaf0261a4876f78"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/c74d1bdaf5f3ed21a420.png",
+          "status": 200,
+          "sha256": "c74d1bdaf5f3ed21a4204ee3096ac83025a7d086aa133eadd21fe80f64809835"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/ca4f162e85fafee194c7.png",
+          "status": 200,
+          "sha256": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/18bd9589742c675e9df5.png",
+          "status": 200,
+          "sha256": "18bd9589742c675e9df5351ef3986b07bd2439b0385e0c9e0005e1d040b5daa5"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/02fc23efbfd8542db951.png",
+          "status": 200,
+          "sha256": "02fc23efbfd8542db9518c8793db2b0b3ecb320896a7697607992b22c6568389"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/190fcfc8745e6197a795.png",
+          "status": 200,
+          "sha256": "190fcfc8745e6197a7954c6b921f4cf3a890d9ac78db560a67dcdbc8359de180"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/4b36fb5abe80124daabc.png",
+          "status": 200,
+          "sha256": "4b36fb5abe80124daabce546e8ba9f220ed6467a69c301dd3baaeb43852e8aa5"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/b6163461b8122d6787f8.png",
+          "status": 200,
+          "sha256": "b6163461b8122d6787f8f771e1a9f362c5663bef6136d74c2ec7301ddb58ed91"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/32c4f3619e14232ca1c9.png",
+          "status": 200,
+          "sha256": "32c4f3619e14232ca1c97317f4d575838beae7f7814762585d296b7a25e86ac4"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/ea43152d1732ed05f4ea.png",
+          "status": 200,
+          "sha256": "ea43152d1732ed05f4eaf431f74b02b89a1041440790c14af00fa70f1e49606f"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/e80f68933ff3fbf30557.png",
+          "status": 200,
+          "sha256": "e80f68933ff3fbf305574a55d2512ea143835de52314e7f62ecab38ec409a8c4"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/f63de566801fcea8ef97.png",
+          "status": 200,
+          "sha256": "f63de566801fcea8ef973271a3cd46ac87cf285e766ecfa2d0c6f64670ff3af2"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/98f3ec35fdedc87adac0.png",
+          "status": 200,
+          "sha256": "98f3ec35fdedc87adac04d643040d7532aac5d07e656e12f517acdf6e1c3a9ea"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/c4ad653360cce21ee393.png",
+          "status": 200,
+          "sha256": "c4ad653360cce21ee3933b84279b682381beeb75d21e4f88906076fdd7165456"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/e35f74c0f83556345583.png",
+          "status": 200,
+          "sha256": "e35f74c0f8355634558348073fa69517f15cdee745fe589b12e61b769654642b"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/9c4d0ad1822c0e3d56d2.png",
+          "status": 200,
+          "sha256": "9c4d0ad1822c0e3d56d2e6bf792d4d282bf60da205a48d2e868354f51ebcf0c4"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/f98f3d1f919d7d128ace.png",
+          "status": 200,
+          "sha256": "f98f3d1f919d7d128aceffeaed54f56d1c01149ad0d7530e33a7bf36e3420e0c"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/79b3320dd2f22a4941bf.png",
+          "status": 200,
+          "sha256": "79b3320dd2f22a4941bf0243b0ebc0b7bc19cf512770d7627922d1fd67aeb9c3"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/01f30a1649e149138639.png",
+          "status": 200,
+          "sha256": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/eb7d7e234e6b60198b7f.png",
+          "status": 200,
+          "sha256": "eb7d7e234e6b60198b7f6b1da0cb1533ef15a96251c57535105d43e69f8fd10b"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/2184ae3386ac18625140.png",
+          "status": 200,
+          "sha256": "2184ae3386ac1862514018ac4c75241f3fa8dc37354989af05685231c88e6dfa"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/d3947bf8ce7ee3fb076e.png",
+          "status": 200,
+          "sha256": "d3947bf8ce7ee3fb076eefbe4beb50c415e6889a32b536838a1bb6019bf54603"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/cde52c5fc44edc14b3d6.png",
+          "status": 200,
+          "sha256": "cde52c5fc44edc14b3d661cff6a5a62068916c4af703298e0e31431b5eaf51a9"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/a4d52e34a5ed852382b9.png",
+          "status": 200,
+          "sha256": "a4d52e34a5ed852382b9ec0a589732f2d30be8f5776ae751ce003503d1fffee4"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/09fa758893afdf340aac.png",
+          "status": 200,
+          "sha256": "09fa758893afdf340aacb8102101cbcab335a4dfdfab5a6bac8a9a9a9b55200f"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/e3c6887d5bede0fbc1e4.png",
+          "status": 200,
+          "sha256": "e3c6887d5bede0fbc1e43a05bfa7a16714982e21ee6c7a161481fee88f06f517"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/531a12fea7813218250b.png",
+          "status": 200,
+          "sha256": "531a12fea7813218250b3e25413c9fd0e7456d66733a9affda8b7fdd383ae4ab"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/6b9e6e7cf8e4e61f4eec.png",
+          "status": 200,
+          "sha256": "6b9e6e7cf8e4e61f4eeca4c37b1a44185157489b9dfa152f06742cca0e05bd25"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/040aa7bd60f397241c0c.png",
+          "status": 200,
+          "sha256": "040aa7bd60f397241c0c5dd19c01e5d2660fc82c6d78e911b62e1efef5cbde33"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/409b7f25641a2c1cf7e2.png",
+          "status": 200,
+          "sha256": "409b7f25641a2c1cf7e2497521c2022152e41c3cad3e224a29384d18681ad207"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/2e15a426be9ee20c39a7.png",
+          "status": 200,
+          "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/042e670c62ad34a45c14.png",
+          "status": 200,
+          "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/040b6c27fc46ce2da454.png",
+          "status": 200,
+          "sha256": "040b6c27fc46ce2da45430b075721781c0200c75729387d7937f45ab30399f1d"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/bde948d56c47e9a9c68c.png",
+          "status": 200,
+          "sha256": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/a536d20596728975d3d5.png",
+          "status": 200,
+          "sha256": "a536d20596728975d3d5364979a12235b13fdda1c55a71beb924308f5d21ddae"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/55aaf791e83ec37fa219.png",
+          "status": 200,
+          "sha256": "55aaf791e83ec37fa219953f3eb685a5375b2f35e1c93991a15f1c637b764dbe"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/4b36fb5abe80124daabc.png",
+          "status": 200,
+          "sha256": "4b36fb5abe80124daabce546e8ba9f220ed6467a69c301dd3baaeb43852e8aa5"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/cfef86f82ac5d996af20.png",
+          "status": 200,
+          "sha256": "cfef86f82ac5d996af200cedf4b76ca9d633459188d697a9d8cfdf17d08e7e18"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/ca8dfdb29da067ef8ac1.png",
+          "status": 200,
+          "sha256": "ca8dfdb29da067ef8ac15565cbd7779aef4188f41b2afc539af517a2680fbbe2"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/a27b9aff9f8c8edf1136.png",
+          "status": 200,
+          "sha256": "a27b9aff9f8c8edf1136144e3450fcf61faad1b74eae0deb6b512c0c1d2b55de"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/01f30a1649e149138639.png",
+          "status": 200,
+          "sha256": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/2e15a426be9ee20c39a7.png",
+          "status": 200,
+          "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/042e670c62ad34a45c14.png",
+          "status": 200,
+          "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/bde948d56c47e9a9c68c.png",
+          "status": 200,
+          "sha256": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/2e15a426be9ee20c39a7.png",
+          "status": 200,
+          "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/042e670c62ad34a45c14.png",
+          "status": 200,
+          "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/bde948d56c47e9a9c68c.png",
+          "status": 200,
+          "sha256": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/2e15a426be9ee20c39a7.png",
+          "status": 200,
+          "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/042e670c62ad34a45c14.png",
+          "status": 200,
+          "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/2e15a426be9ee20c39a7.png",
+          "status": 200,
+          "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/042e670c62ad34a45c14.png",
+          "status": 200,
+          "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/2e15a426be9ee20c39a7.png",
+          "status": 200,
+          "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/042e670c62ad34a45c14.png",
+          "status": 200,
+          "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/5b28ef6bb29b5654ff1a.png",
+          "status": 200,
+          "sha256": "5b28ef6bb29b5654ff1aececf1922ff6faddd616029fe879ff828d6996269292"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/ddbf803c43fc641d3512.png",
+          "status": 200,
+          "sha256": "ddbf803c43fc641d35129edf6e8b9531d2f74d88781d88d0c4fb61ef78be9381"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/ca4f162e85fafee194c7.png",
+          "status": 200,
+          "sha256": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/ca4f162e85fafee194c7.png",
+          "status": 200,
+          "sha256": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/ca4f162e85fafee194c7.png",
+          "status": 200,
+          "sha256": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/cfe00d87638eab122eb8.png",
+          "status": 200,
+          "sha256": "cfe00d87638eab122eb8cf15c194a30cae5e6396d8c22d965fb9b6aa305b13b8"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/5818150cab42cf0b2325.png",
+          "status": 200,
+          "sha256": "5818150cab42cf0b2325319cea8b42894eade25d731d364162276b634f55e069"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/cfe00d87638eab122eb8.png",
+          "status": 200,
+          "sha256": "cfe00d87638eab122eb8cf15c194a30cae5e6396d8c22d965fb9b6aa305b13b8"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/manifest.json",
+          "status": 200,
+          "sha256": "446831c80eedf146ee2eef120a18b0ef1dd8e4eec821bbb4a4434168ad4b3a12"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/gaucho-lod1.glb",
+          "status": 200,
+          "sha256": "e7615908bc58eb3f1de0a665932dca81a3dcd7cab0da5f6161c77406d498b9c8"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/equipment.glb",
+          "status": 200,
+          "sha256": "237c0e3dd3e7a3af5fbb0c05ee94a3aa95c25951b346877e43c9af4fb673edf5"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/male-garments.glb",
+          "status": 200,
+          "sha256": "f2c8a94230284344705166b83e229194a2d38003c821fc1b7484c91573c4ea07"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/woman-scout-lod1.glb",
+          "status": 200,
+          "sha256": "af0d39fba27102e59f58d97e874b7c3aeacf693579cdcb296dd2cb808cc618c0"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/female-garments.glb",
+          "status": 200,
+          "sha256": "e197024f2a2a9a2d18241206eef4e409189ceab1ba4f7fd97a8eb0d96784c5af"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/granadero-lod1.glb",
+          "status": 200,
+          "sha256": "a3845e976701bf597499b0195178612a9d00fc3b0553700d818dcf8e50132701"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/worker-lod1.glb",
+          "status": 200,
+          "sha256": "ca17b0a34329ca1243746780080e9c647d44219bba37c2f5f52e92e3b64dcd32"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/royalist-lod1.glb",
+          "status": 200,
+          "sha256": "343bbbc9c77ed6a6b947f205bd0131b4359110871b6da9b8730f381b4529b3f5"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/male-animations.glb",
+          "status": 200,
+          "sha256": "48a5966d73058d2fef5eb77837d229377178106a349b903983c0bb38ad914d87"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/female-animations.glb",
+          "status": 200,
+          "sha256": "0d437c4296ce6e7657626f0a18815eddf1b3cdf75479933ddd8a5fada017542e"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/6b9e6e7cf8e4e61f4eec.png",
+          "status": 200,
+          "sha256": "6b9e6e7cf8e4e61f4eeca4c37b1a44185157489b9dfa152f06742cca0e05bd25"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/531a12fea7813218250b.png",
+          "status": 200,
+          "sha256": "531a12fea7813218250b3e25413c9fd0e7456d66733a9affda8b7fdd383ae4ab"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/851812def6824e843620.png",
+          "status": 200,
+          "sha256": "851812def6824e8436202da61466ea219f705c42ea2352d5d2a095be711d6c14"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/02fc23efbfd8542db951.png",
+          "status": 200,
+          "sha256": "02fc23efbfd8542db9518c8793db2b0b3ecb320896a7697607992b22c6568389"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/190fcfc8745e6197a795.png",
+          "status": 200,
+          "sha256": "190fcfc8745e6197a7954c6b921f4cf3a890d9ac78db560a67dcdbc8359de180"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/2e15a426be9ee20c39a7.png",
+          "status": 200,
+          "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/042e670c62ad34a45c14.png",
+          "status": 200,
+          "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/b6163461b8122d6787f8.png",
+          "status": 200,
+          "sha256": "b6163461b8122d6787f8f771e1a9f362c5663bef6136d74c2ec7301ddb58ed91"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/4b36fb5abe80124daabc.png",
+          "status": 200,
+          "sha256": "4b36fb5abe80124daabce546e8ba9f220ed6467a69c301dd3baaeb43852e8aa5"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/ea43152d1732ed05f4ea.png",
+          "status": 200,
+          "sha256": "ea43152d1732ed05f4eaf431f74b02b89a1041440790c14af00fa70f1e49606f"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/32c4f3619e14232ca1c9.png",
+          "status": 200,
+          "sha256": "32c4f3619e14232ca1c97317f4d575838beae7f7814762585d296b7a25e86ac4"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/bde948d56c47e9a9c68c.png",
+          "status": 200,
+          "sha256": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/e80f68933ff3fbf30557.png",
+          "status": 200,
+          "sha256": "e80f68933ff3fbf305574a55d2512ea143835de52314e7f62ecab38ec409a8c4"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/e35f74c0f83556345583.png",
+          "status": 200,
+          "sha256": "e35f74c0f8355634558348073fa69517f15cdee745fe589b12e61b769654642b"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/9c4d0ad1822c0e3d56d2.png",
+          "status": 200,
+          "sha256": "9c4d0ad1822c0e3d56d2e6bf792d4d282bf60da205a48d2e868354f51ebcf0c4"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/98f3ec35fdedc87adac0.png",
+          "status": 200,
+          "sha256": "98f3ec35fdedc87adac04d643040d7532aac5d07e656e12f517acdf6e1c3a9ea"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/f98f3d1f919d7d128ace.png",
+          "status": 200,
+          "sha256": "f98f3d1f919d7d128aceffeaed54f56d1c01149ad0d7530e33a7bf36e3420e0c"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/6b9e6e7cf8e4e61f4eec.png",
+          "status": 200,
+          "sha256": "6b9e6e7cf8e4e61f4eeca4c37b1a44185157489b9dfa152f06742cca0e05bd25"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/531a12fea7813218250b.png",
+          "status": 200,
+          "sha256": "531a12fea7813218250b3e25413c9fd0e7456d66733a9affda8b7fdd383ae4ab"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/89135b727219523ff9ab.png",
+          "status": 200,
+          "sha256": "89135b727219523ff9ab057e2481e4022fdd64fe463bfa1480ffbf1876a6475a"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/76c6ed4f73557a4a0a53.png",
+          "status": 200,
+          "sha256": "76c6ed4f73557a4a0a53d707abccd289a0cbe8d7a9c2a822753f6848ba41ae0f"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/040aa7bd60f397241c0c.png",
+          "status": 200,
+          "sha256": "040aa7bd60f397241c0c5dd19c01e5d2660fc82c6d78e911b62e1efef5cbde33"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/409b7f25641a2c1cf7e2.png",
+          "status": 200,
+          "sha256": "409b7f25641a2c1cf7e2497521c2022152e41c3cad3e224a29384d18681ad207"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/040b6c27fc46ce2da454.png",
+          "status": 200,
+          "sha256": "040b6c27fc46ce2da45430b075721781c0200c75729387d7937f45ab30399f1d"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/3bb81102c0b19c0f3604.png",
+          "status": 200,
+          "sha256": "3bb81102c0b19c0f3604135d0bf048426b2d100d00221c934aaf0261a4876f78"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/18bd9589742c675e9df5.png",
+          "status": 200,
+          "sha256": "18bd9589742c675e9df5351ef3986b07bd2439b0385e0c9e0005e1d040b5daa5"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/c74d1bdaf5f3ed21a420.png",
+          "status": 200,
+          "sha256": "c74d1bdaf5f3ed21a4204ee3096ac83025a7d086aa133eadd21fe80f64809835"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/2184ae3386ac18625140.png",
+          "status": 200,
+          "sha256": "2184ae3386ac1862514018ac4c75241f3fa8dc37354989af05685231c88e6dfa"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/d3947bf8ce7ee3fb076e.png",
+          "status": 200,
+          "sha256": "d3947bf8ce7ee3fb076eefbe4beb50c415e6889a32b536838a1bb6019bf54603"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/a4d52e34a5ed852382b9.png",
+          "status": 200,
+          "sha256": "a4d52e34a5ed852382b9ec0a589732f2d30be8f5776ae751ce003503d1fffee4"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/09fa758893afdf340aac.png",
+          "status": 200,
+          "sha256": "09fa758893afdf340aacb8102101cbcab335a4dfdfab5a6bac8a9a9a9b55200f"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/e3c6887d5bede0fbc1e4.png",
+          "status": 200,
+          "sha256": "e3c6887d5bede0fbc1e43a05bfa7a16714982e21ee6c7a161481fee88f06f517"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/2e15a426be9ee20c39a7.png",
+          "status": 200,
+          "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/f63de566801fcea8ef97.png",
+          "status": 200,
+          "sha256": "f63de566801fcea8ef973271a3cd46ac87cf285e766ecfa2d0c6f64670ff3af2"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/042e670c62ad34a45c14.png",
+          "status": 200,
+          "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/bde948d56c47e9a9c68c.png",
+          "status": 200,
+          "sha256": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/040b6c27fc46ce2da454.png",
+          "status": 200,
+          "sha256": "040b6c27fc46ce2da45430b075721781c0200c75729387d7937f45ab30399f1d"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/2e15a426be9ee20c39a7.png",
+          "status": 200,
+          "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/042e670c62ad34a45c14.png",
+          "status": 200,
+          "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/bde948d56c47e9a9c68c.png",
+          "status": 200,
+          "sha256": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/c4ad653360cce21ee393.png",
+          "status": 200,
+          "sha256": "c4ad653360cce21ee3933b84279b682381beeb75d21e4f88906076fdd7165456"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/79b3320dd2f22a4941bf.png",
+          "status": 200,
+          "sha256": "79b3320dd2f22a4941bf0243b0ebc0b7bc19cf512770d7627922d1fd67aeb9c3"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/01f30a1649e149138639.png",
+          "status": 200,
+          "sha256": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/eb7d7e234e6b60198b7f.png",
+          "status": 200,
+          "sha256": "eb7d7e234e6b60198b7f6b1da0cb1533ef15a96251c57535105d43e69f8fd10b"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/cde52c5fc44edc14b3d6.png",
+          "status": 200,
+          "sha256": "cde52c5fc44edc14b3d661cff6a5a62068916c4af703298e0e31431b5eaf51a9"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/4b36fb5abe80124daabc.png",
+          "status": 200,
+          "sha256": "4b36fb5abe80124daabce546e8ba9f220ed6467a69c301dd3baaeb43852e8aa5"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/040aa7bd60f397241c0c.png",
+          "status": 200,
+          "sha256": "040aa7bd60f397241c0c5dd19c01e5d2660fc82c6d78e911b62e1efef5cbde33"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/409b7f25641a2c1cf7e2.png",
+          "status": 200,
+          "sha256": "409b7f25641a2c1cf7e2497521c2022152e41c3cad3e224a29384d18681ad207"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/2e15a426be9ee20c39a7.png",
+          "status": 200,
+          "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/bde948d56c47e9a9c68c.png",
+          "status": 200,
+          "sha256": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/ca4f162e85fafee194c7.png",
+          "status": 200,
+          "sha256": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/042e670c62ad34a45c14.png",
+          "status": 200,
+          "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/55aaf791e83ec37fa219.png",
+          "status": 200,
+          "sha256": "55aaf791e83ec37fa219953f3eb685a5375b2f35e1c93991a15f1c637b764dbe"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/01f30a1649e149138639.png",
+          "status": 200,
+          "sha256": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/a536d20596728975d3d5.png",
+          "status": 200,
+          "sha256": "a536d20596728975d3d5364979a12235b13fdda1c55a71beb924308f5d21ddae"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/cfef86f82ac5d996af20.png",
+          "status": 200,
+          "sha256": "cfef86f82ac5d996af200cedf4b76ca9d633459188d697a9d8cfdf17d08e7e18"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/ca8dfdb29da067ef8ac1.png",
+          "status": 200,
+          "sha256": "ca8dfdb29da067ef8ac15565cbd7779aef4188f41b2afc539af517a2680fbbe2"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/2e15a426be9ee20c39a7.png",
+          "status": 200,
+          "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/a27b9aff9f8c8edf1136.png",
+          "status": 200,
+          "sha256": "a27b9aff9f8c8edf1136144e3450fcf61faad1b74eae0deb6b512c0c1d2b55de"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/042e670c62ad34a45c14.png",
+          "status": 200,
+          "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/2e15a426be9ee20c39a7.png",
+          "status": 200,
+          "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/042e670c62ad34a45c14.png",
+          "status": 200,
+          "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/2e15a426be9ee20c39a7.png",
+          "status": 200,
+          "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/ddbf803c43fc641d3512.png",
+          "status": 200,
+          "sha256": "ddbf803c43fc641d35129edf6e8b9531d2f74d88781d88d0c4fb61ef78be9381"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/042e670c62ad34a45c14.png",
+          "status": 200,
+          "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/ca4f162e85fafee194c7.png",
+          "status": 200,
+          "sha256": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/5b28ef6bb29b5654ff1a.png",
+          "status": 200,
+          "sha256": "5b28ef6bb29b5654ff1aececf1922ff6faddd616029fe879ff828d6996269292"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/ca4f162e85fafee194c7.png",
+          "status": 200,
+          "sha256": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/ca4f162e85fafee194c7.png",
+          "status": 200,
+          "sha256": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/cfe00d87638eab122eb8.png",
+          "status": 200,
+          "sha256": "cfe00d87638eab122eb8cf15c194a30cae5e6396d8c22d965fb9b6aa305b13b8"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/5818150cab42cf0b2325.png",
+          "status": 200,
+          "sha256": "5818150cab42cf0b2325319cea8b42894eade25d731d364162276b634f55e069"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/cfe00d87638eab122eb8.png",
+          "status": 200,
+          "sha256": "cfe00d87638eab122eb8cf15c194a30cae5e6396d8c22d965fb9b6aa305b13b8"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/gaucho-lod0.glb",
+          "status": 200,
+          "sha256": "c81314f4abffc6d7c111d499c4751c72d726e0d6c94f1147d36ef2008d909c26"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/woman-scout-lod0.glb",
+          "status": 200,
+          "sha256": "d3dbb04cc5a0ddca1ec300def391004e9540bc78f5a82ded0c674262ed0f818b"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/royalist-lod0.glb",
+          "status": 200,
+          "sha256": "c6043aa97c224ec55b8337a99c666b6b1d04e259814fa7954ef1422f8b83c8b4"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/worker-lod0.glb",
+          "status": 200,
+          "sha256": "8db1a151dda296d7e08632e5e6df0fe8cba8f34c8c1a0d39ee15425436103aad"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/granadero-lod0.glb",
+          "status": 200,
+          "sha256": "444abea73ec08c1ef03c7fc2dac8fa5141767b4a249c3cb314b48ccc7cda069f"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/2e15a426be9ee20c39a7.png",
+          "status": 200,
+          "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/042e670c62ad34a45c14.png",
+          "status": 200,
+          "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/02fc23efbfd8542db951.png",
+          "status": 200,
+          "sha256": "02fc23efbfd8542db9518c8793db2b0b3ecb320896a7697607992b22c6568389"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/190fcfc8745e6197a795.png",
+          "status": 200,
+          "sha256": "190fcfc8745e6197a7954c6b921f4cf3a890d9ac78db560a67dcdbc8359de180"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/4b36fb5abe80124daabc.png",
+          "status": 200,
+          "sha256": "4b36fb5abe80124daabce546e8ba9f220ed6467a69c301dd3baaeb43852e8aa5"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/bde948d56c47e9a9c68c.png",
+          "status": 200,
+          "sha256": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/b6163461b8122d6787f8.png",
+          "status": 200,
+          "sha256": "b6163461b8122d6787f8f771e1a9f362c5663bef6136d74c2ec7301ddb58ed91"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/32c4f3619e14232ca1c9.png",
+          "status": 200,
+          "sha256": "32c4f3619e14232ca1c97317f4d575838beae7f7814762585d296b7a25e86ac4"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/ea43152d1732ed05f4ea.png",
+          "status": 200,
+          "sha256": "ea43152d1732ed05f4eaf431f74b02b89a1041440790c14af00fa70f1e49606f"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/ca4f162e85fafee194c7.png",
+          "status": 200,
+          "sha256": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/e80f68933ff3fbf30557.png",
+          "status": 200,
+          "sha256": "e80f68933ff3fbf305574a55d2512ea143835de52314e7f62ecab38ec409a8c4"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/cfe00d87638eab122eb8.png",
+          "status": 200,
+          "sha256": "cfe00d87638eab122eb8cf15c194a30cae5e6396d8c22d965fb9b6aa305b13b8"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/f63de566801fcea8ef97.png",
+          "status": 200,
+          "sha256": "f63de566801fcea8ef973271a3cd46ac87cf285e766ecfa2d0c6f64670ff3af2"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/4b36fb5abe80124daabc.png",
+          "status": 200,
+          "sha256": "4b36fb5abe80124daabce546e8ba9f220ed6467a69c301dd3baaeb43852e8aa5"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/2e15a426be9ee20c39a7.png",
+          "status": 200,
+          "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/042e670c62ad34a45c14.png",
+          "status": 200,
+          "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/e35f74c0f83556345583.png",
+          "status": 200,
+          "sha256": "e35f74c0f8355634558348073fa69517f15cdee745fe589b12e61b769654642b"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/9c4d0ad1822c0e3d56d2.png",
+          "status": 200,
+          "sha256": "9c4d0ad1822c0e3d56d2e6bf792d4d282bf60da205a48d2e868354f51ebcf0c4"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/98f3ec35fdedc87adac0.png",
+          "status": 200,
+          "sha256": "98f3ec35fdedc87adac04d643040d7532aac5d07e656e12f517acdf6e1c3a9ea"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/f98f3d1f919d7d128ace.png",
+          "status": 200,
+          "sha256": "f98f3d1f919d7d128aceffeaed54f56d1c01149ad0d7530e33a7bf36e3420e0c"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/cde52c5fc44edc14b3d6.png",
+          "status": 200,
+          "sha256": "cde52c5fc44edc14b3d661cff6a5a62068916c4af703298e0e31431b5eaf51a9"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/040aa7bd60f397241c0c.png",
+          "status": 200,
+          "sha256": "040aa7bd60f397241c0c5dd19c01e5d2660fc82c6d78e911b62e1efef5cbde33"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/409b7f25641a2c1cf7e2.png",
+          "status": 200,
+          "sha256": "409b7f25641a2c1cf7e2497521c2022152e41c3cad3e224a29384d18681ad207"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/2e15a426be9ee20c39a7.png",
+          "status": 200,
+          "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/09fa758893afdf340aac.png",
+          "status": 200,
+          "sha256": "09fa758893afdf340aacb8102101cbcab335a4dfdfab5a6bac8a9a9a9b55200f"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/042e670c62ad34a45c14.png",
+          "status": 200,
+          "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/bde948d56c47e9a9c68c.png",
+          "status": 200,
+          "sha256": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/a4d52e34a5ed852382b9.png",
+          "status": 200,
+          "sha256": "a4d52e34a5ed852382b9ec0a589732f2d30be8f5776ae751ce003503d1fffee4"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/e3c6887d5bede0fbc1e4.png",
+          "status": 200,
+          "sha256": "e3c6887d5bede0fbc1e43a05bfa7a16714982e21ee6c7a161481fee88f06f517"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/c4ad653360cce21ee393.png",
+          "status": 200,
+          "sha256": "c4ad653360cce21ee3933b84279b682381beeb75d21e4f88906076fdd7165456"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/79b3320dd2f22a4941bf.png",
+          "status": 200,
+          "sha256": "79b3320dd2f22a4941bf0243b0ebc0b7bc19cf512770d7627922d1fd67aeb9c3"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/040b6c27fc46ce2da454.png",
+          "status": 200,
+          "sha256": "040b6c27fc46ce2da45430b075721781c0200c75729387d7937f45ab30399f1d"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/01f30a1649e149138639.png",
+          "status": 200,
+          "sha256": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/2e15a426be9ee20c39a7.png",
+          "status": 200,
+          "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/042e670c62ad34a45c14.png",
+          "status": 200,
+          "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/2184ae3386ac18625140.png",
+          "status": 200,
+          "sha256": "2184ae3386ac1862514018ac4c75241f3fa8dc37354989af05685231c88e6dfa"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/d3947bf8ce7ee3fb076e.png",
+          "status": 200,
+          "sha256": "d3947bf8ce7ee3fb076eefbe4beb50c415e6889a32b536838a1bb6019bf54603"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/bde948d56c47e9a9c68c.png",
+          "status": 200,
+          "sha256": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/eb7d7e234e6b60198b7f.png",
+          "status": 200,
+          "sha256": "eb7d7e234e6b60198b7f6b1da0cb1533ef15a96251c57535105d43e69f8fd10b"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/409b7f25641a2c1cf7e2.png",
+          "status": 200,
+          "sha256": "409b7f25641a2c1cf7e2497521c2022152e41c3cad3e224a29384d18681ad207"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/2e15a426be9ee20c39a7.png",
+          "status": 200,
+          "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/76c6ed4f73557a4a0a53.png",
+          "status": 200,
+          "sha256": "76c6ed4f73557a4a0a53d707abccd289a0cbe8d7a9c2a822753f6848ba41ae0f"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/040aa7bd60f397241c0c.png",
+          "status": 200,
+          "sha256": "040aa7bd60f397241c0c5dd19c01e5d2660fc82c6d78e911b62e1efef5cbde33"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/042e670c62ad34a45c14.png",
+          "status": 200,
+          "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/3bb81102c0b19c0f3604.png",
+          "status": 200,
+          "sha256": "3bb81102c0b19c0f3604135d0bf048426b2d100d00221c934aaf0261a4876f78"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/040b6c27fc46ce2da454.png",
+          "status": 200,
+          "sha256": "040b6c27fc46ce2da45430b075721781c0200c75729387d7937f45ab30399f1d"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/c74d1bdaf5f3ed21a420.png",
+          "status": 200,
+          "sha256": "c74d1bdaf5f3ed21a4204ee3096ac83025a7d086aa133eadd21fe80f64809835"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/18bd9589742c675e9df5.png",
+          "status": 200,
+          "sha256": "18bd9589742c675e9df5351ef3986b07bd2439b0385e0c9e0005e1d040b5daa5"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/bde948d56c47e9a9c68c.png",
+          "status": 200,
+          "sha256": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/5b28ef6bb29b5654ff1a.png",
+          "status": 200,
+          "sha256": "5b28ef6bb29b5654ff1aececf1922ff6faddd616029fe879ff828d6996269292"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/ca4f162e85fafee194c7.png",
+          "status": 200,
+          "sha256": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/ddbf803c43fc641d3512.png",
+          "status": 200,
+          "sha256": "ddbf803c43fc641d35129edf6e8b9531d2f74d88781d88d0c4fb61ef78be9381"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/5818150cab42cf0b2325.png",
+          "status": 200,
+          "sha256": "5818150cab42cf0b2325319cea8b42894eade25d731d364162276b634f55e069"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/ca4f162e85fafee194c7.png",
+          "status": 200,
+          "sha256": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/ca4f162e85fafee194c7.png",
+          "status": 200,
+          "sha256": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/cfe00d87638eab122eb8.png",
+          "status": 200,
+          "sha256": "cfe00d87638eab122eb8cf15c194a30cae5e6396d8c22d965fb9b6aa305b13b8"
+        }
+      ]
+    },
+    {
+      "anatomy": "female",
+      "appearance": "woman-scout",
+      "cueId": "1:8:1:unit:grenade",
+      "selectedClip": "stand.slash.blade.thrust",
+      "paidPreparation": [
+        {
+          "sequence": "1:1",
+          "before": "5. Cuchillo. Salud 100, 25 puntos de acci\u00f3n, energ\u00eda 100, moral 80. Ve 5 enemigos. Mano principal: Fac\u00f3n Gaucho con Poncho. Combate cercano activo. Estado 100%. Segunda mano: vac\u00eda. Bot\u00f3n derecho: equipo del combatiente",
+          "after": "5. Cuchillo. Salud 100, 22,5 puntos de acci\u00f3n, energ\u00eda 94, moral 80. Ve 5 enemigos. Mano principal: vac\u00eda. Segunda mano: vac\u00eda. Bot\u00f3n derecho: equipo del combatiente"
+        },
+        {
+          "sequence": "1:2",
+          "before": "5. Cuchillo. Salud 100, 22,5 puntos de acci\u00f3n, energ\u00eda 94, moral 80. Ve 5 enemigos. Mano principal: vac\u00eda. Segunda mano: vac\u00eda. Bot\u00f3n derecho: equipo del combatiente",
+          "after": "5. Cuchillo. Salud 100, 19,5 puntos de acci\u00f3n, energ\u00eda 94, moral 80. Ve 5 enemigos. Mano principal: vac\u00eda. Segunda mano: vac\u00eda. Bot\u00f3n derecho: equipo del combatiente"
+        },
+        {
+          "sequence": "1:3",
+          "before": "5. Cuchillo. Salud 100, 19,5 puntos de acci\u00f3n, energ\u00eda 94, moral 80. Ve 5 enemigos. Mano principal: vac\u00eda. Segunda mano: vac\u00eda. Bot\u00f3n derecho: equipo del combatiente",
+          "after": "5. Cuchillo. Salud 100, 16,5 puntos de acci\u00f3n, energ\u00eda 94, moral 80. Ve 5 enemigos. Mano principal: vac\u00eda. Segunda mano: vac\u00eda. Bot\u00f3n derecho: equipo del combatiente"
+        },
+        {
+          "sequence": "1:4",
+          "before": "5. Cuchillo. Salud 100, 16,5 puntos de acci\u00f3n, energ\u00eda 94, moral 80. Ve 5 enemigos. Mano principal: vac\u00eda. Segunda mano: vac\u00eda. Bot\u00f3n derecho: equipo del combatiente",
+          "after": "5. Cuchillo. Salud 100, 13,5 puntos de acci\u00f3n, energ\u00eda 94, moral 80. Ve 5 enemigos. Mano principal: vac\u00eda. Segunda mano: vac\u00eda. Bot\u00f3n derecho: equipo del combatiente"
+        },
+        {
+          "sequence": "1:5",
+          "before": "5. Cuchillo. Salud 100, 13,5 puntos de acci\u00f3n, energ\u00eda 94, moral 80. Ve 5 enemigos. Mano principal: vac\u00eda. Segunda mano: vac\u00eda. Bot\u00f3n derecho: equipo del combatiente",
+          "after": "5. Cuchillo. Salud 100, 10,5 puntos de acci\u00f3n, energ\u00eda 94, moral 80. Ve 5 enemigos. Mano principal: vac\u00eda. Segunda mano: vac\u00eda. Bot\u00f3n derecho: equipo del combatiente"
+        },
+        {
+          "sequence": "1:6",
+          "before": "5. Cuchillo. Salud 100, 10,5 puntos de acci\u00f3n, energ\u00eda 94, moral 80. Ve 5 enemigos. Mano principal: vac\u00eda. Segunda mano: vac\u00eda. Bot\u00f3n derecho: equipo del combatiente",
+          "after": "5. Cuchillo. Salud 100, 7,5 puntos de acci\u00f3n, energ\u00eda 94, moral 80. Ve 5 enemigos. Mano principal: vac\u00eda. Segunda mano: vac\u00eda. Bot\u00f3n derecho: equipo del combatiente"
+        },
+        {
+          "sequence": "1:7",
+          "before": "5. Cuchillo. Salud 100, 7,5 puntos de acci\u00f3n, energ\u00eda 94, moral 80. Ve 5 enemigos. Mano principal: vac\u00eda. Segunda mano: vac\u00eda. Bot\u00f3n derecho: equipo del combatiente",
+          "after": "5. Cuchillo. Salud 100, 4,5 puntos de acci\u00f3n, energ\u00eda 94, moral 80. Ve 5 enemigos. Mano principal: vac\u00eda. Segunda mano: vac\u00eda. Bot\u00f3n derecho: equipo del combatiente"
+        }
+      ],
+      "before": {
+        "card": "4. Granada. Salud 100, 12,75 puntos de acci\u00f3n, energ\u00eda 95, moral 80. Ve 4 enemigos. Mano principal: Sable de Caroya. Combate cercano activo. Estado 100%. Segunda mano: vac\u00eda. Bot\u00f3n derecho: equipo del combatiente",
+        "target": "Realista grenade \u00b7 100 salud",
+        "actorCell": "M9",
+        "targetCell": "N10",
+        "hands": [
+          "Mano principal: Sable de Caroya",
+          "Segunda mano: Vac\u00eda"
+        ]
+      },
+      "after": {
+        "card": "4. Granada. Salud 100, 9,25 puntos de acci\u00f3n, energ\u00eda 95, moral 80. Ve 2 enemigos. Mano principal: Sable de Caroya. Combate cercano activo. Estado 100%. Segunda mano: vac\u00eda. Bot\u00f3n derecho: equipo del combatiente",
+        "target": "Realista grenade \u00b7 58 salud"
+      },
+      "frames": [
+        {
+          "requestedAtMs": 80,
+          "wallElapsedMs": 89.84891700000298,
+          "frame": "0:grenade:prepare:melee",
+          "target": "Realista grenade \u00b7 100 salud"
+        },
+        {
+          "requestedAtMs": 320,
+          "wallElapsedMs": 367.3647920000003,
+          "frame": "1:grenade:contact:melee",
+          "target": "Realista grenade \u00b7 100 salud"
+        },
+        {
+          "requestedAtMs": 500,
+          "wallElapsedMs": 536.4656669999968,
+          "frame": "1:grenade:contact:melee",
+          "target": "Realista grenade \u00b7 100 salud"
+        },
+        {
+          "requestedAtMs": 800,
+          "wallElapsedMs": 808.6603749999995,
+          "frame": "1:grenade:contact:melee",
+          "target": "Realista grenade \u00b7 100 salud"
+        },
+        {
+          "requestedAtMs": 1100,
+          "wallElapsedMs": 1109.0235420000026,
+          "frame": "2:grenade:impact:melee",
+          "target": "Realista grenade \u00b7 58 salud"
+        },
+        {
+          "requestedAtMs": 1700,
+          "wallElapsedMs": 1708.680042,
+          "frame": "2:grenade:impact:melee",
+          "target": "Realista grenade \u00b7 58 salud"
+        },
+        {
+          "requestedAtMs": 2200,
+          "wallElapsedMs": 2209.3833339999983,
+          "frame": null,
+          "target": "Realista grenade \u00b7 58 salud"
+        }
+      ],
+      "errors": [],
+      "servedAssets": [
+        {
+          "url": "http://127.0.0.1:3151/lib/three/presentation.ts",
+          "status": 200,
+          "sha256": "e03e5ba5c2232c4283ae196b09baa6ebdd17001c93cc6d030a3a87f4246c593f"
+        },
+        {
+          "url": "http://127.0.0.1:3151/lib/three/actor-runtime.ts",
+          "status": 200,
+          "sha256": "6148b534a068a258353c129ea040b0d6346ab66e86e0c818a582665c9ec9c6f7"
+        },
+        {
+          "url": "http://127.0.0.1:3151/lib/three/scene-actors.ts",
+          "status": 200,
+          "sha256": "9dc754fe85690e28e3bdac8e78697ad344c97059ad388ee37aa8021f09c87549"
+        },
+        {
+          "url": "http://127.0.0.1:3151/lib/three/melee-contact-fit.ts",
+          "status": 200,
+          "sha256": "52c33570008c6713fc37b9dcbba26b06fa23ae3d976b9f4536871151a026072f"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/manifest.json",
+          "status": 200,
+          "sha256": "446831c80eedf146ee2eef120a18b0ef1dd8e4eec821bbb4a4434168ad4b3a12"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/equipment.glb",
+          "status": 200,
+          "sha256": "237c0e3dd3e7a3af5fbb0c05ee94a3aa95c25951b346877e43c9af4fb673edf5"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/male-garments.glb",
+          "status": 200,
+          "sha256": "f2c8a94230284344705166b83e229194a2d38003c821fc1b7484c91573c4ea07"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/female-garments.glb",
+          "status": 200,
+          "sha256": "e197024f2a2a9a2d18241206eef4e409189ceab1ba4f7fd97a8eb0d96784c5af"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/granadero-lod1.glb",
+          "status": 200,
+          "sha256": "a3845e976701bf597499b0195178612a9d00fc3b0553700d818dcf8e50132701"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/gaucho-lod1.glb",
+          "status": 200,
+          "sha256": "e7615908bc58eb3f1de0a665932dca81a3dcd7cab0da5f6161c77406d498b9c8"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/woman-scout-lod1.glb",
+          "status": 200,
+          "sha256": "af0d39fba27102e59f58d97e874b7c3aeacf693579cdcb296dd2cb808cc618c0"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/worker-lod1.glb",
+          "status": 200,
+          "sha256": "ca17b0a34329ca1243746780080e9c647d44219bba37c2f5f52e92e3b64dcd32"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/royalist-lod1.glb",
+          "status": 200,
+          "sha256": "343bbbc9c77ed6a6b947f205bd0131b4359110871b6da9b8730f381b4529b3f5"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/male-animations.glb",
+          "status": 200,
+          "sha256": "48a5966d73058d2fef5eb77837d229377178106a349b903983c0bb38ad914d87"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/female-animations.glb",
+          "status": 200,
+          "sha256": "0d437c4296ce6e7657626f0a18815eddf1b3cdf75479933ddd8a5fada017542e"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/851812def6824e843620.png",
+          "status": 200,
+          "sha256": "851812def6824e8436202da61466ea219f705c42ea2352d5d2a095be711d6c14"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/6b9e6e7cf8e4e61f4eec.png",
+          "status": 200,
+          "sha256": "6b9e6e7cf8e4e61f4eeca4c37b1a44185157489b9dfa152f06742cca0e05bd25"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/531a12fea7813218250b.png",
+          "status": 200,
+          "sha256": "531a12fea7813218250b3e25413c9fd0e7456d66733a9affda8b7fdd383ae4ab"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/89135b727219523ff9ab.png",
+          "status": 200,
+          "sha256": "89135b727219523ff9ab057e2481e4022fdd64fe463bfa1480ffbf1876a6475a"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/040aa7bd60f397241c0c.png",
+          "status": 200,
+          "sha256": "040aa7bd60f397241c0c5dd19c01e5d2660fc82c6d78e911b62e1efef5cbde33"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/409b7f25641a2c1cf7e2.png",
+          "status": 200,
+          "sha256": "409b7f25641a2c1cf7e2497521c2022152e41c3cad3e224a29384d18681ad207"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/76c6ed4f73557a4a0a53.png",
+          "status": 200,
+          "sha256": "76c6ed4f73557a4a0a53d707abccd289a0cbe8d7a9c2a822753f6848ba41ae0f"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/bde948d56c47e9a9c68c.png",
+          "status": 200,
+          "sha256": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/040b6c27fc46ce2da454.png",
+          "status": 200,
+          "sha256": "040b6c27fc46ce2da45430b075721781c0200c75729387d7937f45ab30399f1d"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/2e15a426be9ee20c39a7.png",
+          "status": 200,
+          "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/042e670c62ad34a45c14.png",
+          "status": 200,
+          "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/ca4f162e85fafee194c7.png",
+          "status": 200,
+          "sha256": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/3bb81102c0b19c0f3604.png",
+          "status": 200,
+          "sha256": "3bb81102c0b19c0f3604135d0bf048426b2d100d00221c934aaf0261a4876f78"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/18bd9589742c675e9df5.png",
+          "status": 200,
+          "sha256": "18bd9589742c675e9df5351ef3986b07bd2439b0385e0c9e0005e1d040b5daa5"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/c74d1bdaf5f3ed21a420.png",
+          "status": 200,
+          "sha256": "c74d1bdaf5f3ed21a4204ee3096ac83025a7d086aa133eadd21fe80f64809835"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/02fc23efbfd8542db951.png",
+          "status": 200,
+          "sha256": "02fc23efbfd8542db9518c8793db2b0b3ecb320896a7697607992b22c6568389"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/190fcfc8745e6197a795.png",
+          "status": 200,
+          "sha256": "190fcfc8745e6197a7954c6b921f4cf3a890d9ac78db560a67dcdbc8359de180"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/4b36fb5abe80124daabc.png",
+          "status": 200,
+          "sha256": "4b36fb5abe80124daabce546e8ba9f220ed6467a69c301dd3baaeb43852e8aa5"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/b6163461b8122d6787f8.png",
+          "status": 200,
+          "sha256": "b6163461b8122d6787f8f771e1a9f362c5663bef6136d74c2ec7301ddb58ed91"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/32c4f3619e14232ca1c9.png",
+          "status": 200,
+          "sha256": "32c4f3619e14232ca1c97317f4d575838beae7f7814762585d296b7a25e86ac4"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/ea43152d1732ed05f4ea.png",
+          "status": 200,
+          "sha256": "ea43152d1732ed05f4eaf431f74b02b89a1041440790c14af00fa70f1e49606f"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/e80f68933ff3fbf30557.png",
+          "status": 200,
+          "sha256": "e80f68933ff3fbf305574a55d2512ea143835de52314e7f62ecab38ec409a8c4"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/6b9e6e7cf8e4e61f4eec.png",
+          "status": 200,
+          "sha256": "6b9e6e7cf8e4e61f4eeca4c37b1a44185157489b9dfa152f06742cca0e05bd25"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/531a12fea7813218250b.png",
+          "status": 200,
+          "sha256": "531a12fea7813218250b3e25413c9fd0e7456d66733a9affda8b7fdd383ae4ab"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/f63de566801fcea8ef97.png",
+          "status": 200,
+          "sha256": "f63de566801fcea8ef973271a3cd46ac87cf285e766ecfa2d0c6f64670ff3af2"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/e35f74c0f83556345583.png",
+          "status": 200,
+          "sha256": "e35f74c0f8355634558348073fa69517f15cdee745fe589b12e61b769654642b"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/9c4d0ad1822c0e3d56d2.png",
+          "status": 200,
+          "sha256": "9c4d0ad1822c0e3d56d2e6bf792d4d282bf60da205a48d2e868354f51ebcf0c4"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/98f3ec35fdedc87adac0.png",
+          "status": 200,
+          "sha256": "98f3ec35fdedc87adac04d643040d7532aac5d07e656e12f517acdf6e1c3a9ea"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/f98f3d1f919d7d128ace.png",
+          "status": 200,
+          "sha256": "f98f3d1f919d7d128aceffeaed54f56d1c01149ad0d7530e33a7bf36e3420e0c"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/c4ad653360cce21ee393.png",
+          "status": 200,
+          "sha256": "c4ad653360cce21ee3933b84279b682381beeb75d21e4f88906076fdd7165456"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/79b3320dd2f22a4941bf.png",
+          "status": 200,
+          "sha256": "79b3320dd2f22a4941bf0243b0ebc0b7bc19cf512770d7627922d1fd67aeb9c3"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/01f30a1649e149138639.png",
+          "status": 200,
+          "sha256": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/09fa758893afdf340aac.png",
+          "status": 200,
+          "sha256": "09fa758893afdf340aacb8102101cbcab335a4dfdfab5a6bac8a9a9a9b55200f"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/e3c6887d5bede0fbc1e4.png",
+          "status": 200,
+          "sha256": "e3c6887d5bede0fbc1e43a05bfa7a16714982e21ee6c7a161481fee88f06f517"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/042e670c62ad34a45c14.png",
+          "status": 200,
+          "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/040b6c27fc46ce2da454.png",
+          "status": 200,
+          "sha256": "040b6c27fc46ce2da45430b075721781c0200c75729387d7937f45ab30399f1d"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/bde948d56c47e9a9c68c.png",
+          "status": 200,
+          "sha256": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/4b36fb5abe80124daabc.png",
+          "status": 200,
+          "sha256": "4b36fb5abe80124daabce546e8ba9f220ed6467a69c301dd3baaeb43852e8aa5"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/a536d20596728975d3d5.png",
+          "status": 200,
+          "sha256": "a536d20596728975d3d5364979a12235b13fdda1c55a71beb924308f5d21ddae"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/55aaf791e83ec37fa219.png",
+          "status": 200,
+          "sha256": "55aaf791e83ec37fa219953f3eb685a5375b2f35e1c93991a15f1c637b764dbe"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/cfef86f82ac5d996af20.png",
+          "status": 200,
+          "sha256": "cfef86f82ac5d996af200cedf4b76ca9d633459188d697a9d8cfdf17d08e7e18"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/2e15a426be9ee20c39a7.png",
+          "status": 200,
+          "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/042e670c62ad34a45c14.png",
+          "status": 200,
+          "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/eb7d7e234e6b60198b7f.png",
+          "status": 200,
+          "sha256": "eb7d7e234e6b60198b7f6b1da0cb1533ef15a96251c57535105d43e69f8fd10b"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/bde948d56c47e9a9c68c.png",
+          "status": 200,
+          "sha256": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/ca8dfdb29da067ef8ac1.png",
+          "status": 200,
+          "sha256": "ca8dfdb29da067ef8ac15565cbd7779aef4188f41b2afc539af517a2680fbbe2"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/2184ae3386ac18625140.png",
+          "status": 200,
+          "sha256": "2184ae3386ac1862514018ac4c75241f3fa8dc37354989af05685231c88e6dfa"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/d3947bf8ce7ee3fb076e.png",
+          "status": 200,
+          "sha256": "d3947bf8ce7ee3fb076eefbe4beb50c415e6889a32b536838a1bb6019bf54603"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/040aa7bd60f397241c0c.png",
+          "status": 200,
+          "sha256": "040aa7bd60f397241c0c5dd19c01e5d2660fc82c6d78e911b62e1efef5cbde33"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/cde52c5fc44edc14b3d6.png",
+          "status": 200,
+          "sha256": "cde52c5fc44edc14b3d661cff6a5a62068916c4af703298e0e31431b5eaf51a9"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/01f30a1649e149138639.png",
+          "status": 200,
+          "sha256": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/a27b9aff9f8c8edf1136.png",
+          "status": 200,
+          "sha256": "a27b9aff9f8c8edf1136144e3450fcf61faad1b74eae0deb6b512c0c1d2b55de"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/2e15a426be9ee20c39a7.png",
+          "status": 200,
+          "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/409b7f25641a2c1cf7e2.png",
+          "status": 200,
+          "sha256": "409b7f25641a2c1cf7e2497521c2022152e41c3cad3e224a29384d18681ad207"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/a4d52e34a5ed852382b9.png",
+          "status": 200,
+          "sha256": "a4d52e34a5ed852382b9ec0a589732f2d30be8f5776ae751ce003503d1fffee4"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/2e15a426be9ee20c39a7.png",
+          "status": 200,
+          "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/042e670c62ad34a45c14.png",
+          "status": 200,
+          "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/bde948d56c47e9a9c68c.png",
+          "status": 200,
+          "sha256": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/2e15a426be9ee20c39a7.png",
+          "status": 200,
+          "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/042e670c62ad34a45c14.png",
+          "status": 200,
+          "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/2e15a426be9ee20c39a7.png",
+          "status": 200,
+          "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/042e670c62ad34a45c14.png",
+          "status": 200,
+          "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/2e15a426be9ee20c39a7.png",
+          "status": 200,
+          "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/042e670c62ad34a45c14.png",
+          "status": 200,
+          "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/ca4f162e85fafee194c7.png",
+          "status": 200,
+          "sha256": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/5b28ef6bb29b5654ff1a.png",
+          "status": 200,
+          "sha256": "5b28ef6bb29b5654ff1aececf1922ff6faddd616029fe879ff828d6996269292"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/ddbf803c43fc641d3512.png",
+          "status": 200,
+          "sha256": "ddbf803c43fc641d35129edf6e8b9531d2f74d88781d88d0c4fb61ef78be9381"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/ca4f162e85fafee194c7.png",
+          "status": 200,
+          "sha256": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/ca4f162e85fafee194c7.png",
+          "status": 200,
+          "sha256": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/cfe00d87638eab122eb8.png",
+          "status": 200,
+          "sha256": "cfe00d87638eab122eb8cf15c194a30cae5e6396d8c22d965fb9b6aa305b13b8"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/5818150cab42cf0b2325.png",
+          "status": 200,
+          "sha256": "5818150cab42cf0b2325319cea8b42894eade25d731d364162276b634f55e069"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/cfe00d87638eab122eb8.png",
+          "status": 200,
+          "sha256": "cfe00d87638eab122eb8cf15c194a30cae5e6396d8c22d965fb9b6aa305b13b8"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/manifest.json",
+          "status": 200,
+          "sha256": "446831c80eedf146ee2eef120a18b0ef1dd8e4eec821bbb4a4434168ad4b3a12"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/equipment.glb",
+          "status": 200,
+          "sha256": "237c0e3dd3e7a3af5fbb0c05ee94a3aa95c25951b346877e43c9af4fb673edf5"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/male-garments.glb",
+          "status": 200,
+          "sha256": "f2c8a94230284344705166b83e229194a2d38003c821fc1b7484c91573c4ea07"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/female-garments.glb",
+          "status": 200,
+          "sha256": "e197024f2a2a9a2d18241206eef4e409189ceab1ba4f7fd97a8eb0d96784c5af"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/granadero-lod1.glb",
+          "status": 200,
+          "sha256": "a3845e976701bf597499b0195178612a9d00fc3b0553700d818dcf8e50132701"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/gaucho-lod1.glb",
+          "status": 200,
+          "sha256": "e7615908bc58eb3f1de0a665932dca81a3dcd7cab0da5f6161c77406d498b9c8"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/woman-scout-lod1.glb",
+          "status": 200,
+          "sha256": "af0d39fba27102e59f58d97e874b7c3aeacf693579cdcb296dd2cb808cc618c0"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/worker-lod1.glb",
+          "status": 200,
+          "sha256": "ca17b0a34329ca1243746780080e9c647d44219bba37c2f5f52e92e3b64dcd32"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/royalist-lod1.glb",
+          "status": 200,
+          "sha256": "343bbbc9c77ed6a6b947f205bd0131b4359110871b6da9b8730f381b4529b3f5"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/male-animations.glb",
+          "status": 200,
+          "sha256": "48a5966d73058d2fef5eb77837d229377178106a349b903983c0bb38ad914d87"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/female-animations.glb",
+          "status": 200,
+          "sha256": "0d437c4296ce6e7657626f0a18815eddf1b3cdf75479933ddd8a5fada017542e"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/851812def6824e843620.png",
+          "status": 200,
+          "sha256": "851812def6824e8436202da61466ea219f705c42ea2352d5d2a095be711d6c14"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/6b9e6e7cf8e4e61f4eec.png",
+          "status": 200,
+          "sha256": "6b9e6e7cf8e4e61f4eeca4c37b1a44185157489b9dfa152f06742cca0e05bd25"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/531a12fea7813218250b.png",
+          "status": 200,
+          "sha256": "531a12fea7813218250b3e25413c9fd0e7456d66733a9affda8b7fdd383ae4ab"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/89135b727219523ff9ab.png",
+          "status": 200,
+          "sha256": "89135b727219523ff9ab057e2481e4022fdd64fe463bfa1480ffbf1876a6475a"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/76c6ed4f73557a4a0a53.png",
+          "status": 200,
+          "sha256": "76c6ed4f73557a4a0a53d707abccd289a0cbe8d7a9c2a822753f6848ba41ae0f"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/040aa7bd60f397241c0c.png",
+          "status": 200,
+          "sha256": "040aa7bd60f397241c0c5dd19c01e5d2660fc82c6d78e911b62e1efef5cbde33"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/409b7f25641a2c1cf7e2.png",
+          "status": 200,
+          "sha256": "409b7f25641a2c1cf7e2497521c2022152e41c3cad3e224a29384d18681ad207"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/2e15a426be9ee20c39a7.png",
+          "status": 200,
+          "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/042e670c62ad34a45c14.png",
+          "status": 200,
+          "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/bde948d56c47e9a9c68c.png",
+          "status": 200,
+          "sha256": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/3bb81102c0b19c0f3604.png",
+          "status": 200,
+          "sha256": "3bb81102c0b19c0f3604135d0bf048426b2d100d00221c934aaf0261a4876f78"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/040b6c27fc46ce2da454.png",
+          "status": 200,
+          "sha256": "040b6c27fc46ce2da45430b075721781c0200c75729387d7937f45ab30399f1d"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/ca4f162e85fafee194c7.png",
+          "status": 200,
+          "sha256": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/18bd9589742c675e9df5.png",
+          "status": 200,
+          "sha256": "18bd9589742c675e9df5351ef3986b07bd2439b0385e0c9e0005e1d040b5daa5"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/c74d1bdaf5f3ed21a420.png",
+          "status": 200,
+          "sha256": "c74d1bdaf5f3ed21a4204ee3096ac83025a7d086aa133eadd21fe80f64809835"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/02fc23efbfd8542db951.png",
+          "status": 200,
+          "sha256": "02fc23efbfd8542db9518c8793db2b0b3ecb320896a7697607992b22c6568389"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/190fcfc8745e6197a795.png",
+          "status": 200,
+          "sha256": "190fcfc8745e6197a7954c6b921f4cf3a890d9ac78db560a67dcdbc8359de180"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/4b36fb5abe80124daabc.png",
+          "status": 200,
+          "sha256": "4b36fb5abe80124daabce546e8ba9f220ed6467a69c301dd3baaeb43852e8aa5"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/b6163461b8122d6787f8.png",
+          "status": 200,
+          "sha256": "b6163461b8122d6787f8f771e1a9f362c5663bef6136d74c2ec7301ddb58ed91"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/6b9e6e7cf8e4e61f4eec.png",
+          "status": 200,
+          "sha256": "6b9e6e7cf8e4e61f4eeca4c37b1a44185157489b9dfa152f06742cca0e05bd25"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/531a12fea7813218250b.png",
+          "status": 200,
+          "sha256": "531a12fea7813218250b3e25413c9fd0e7456d66733a9affda8b7fdd383ae4ab"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/32c4f3619e14232ca1c9.png",
+          "status": 200,
+          "sha256": "32c4f3619e14232ca1c97317f4d575838beae7f7814762585d296b7a25e86ac4"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/ea43152d1732ed05f4ea.png",
+          "status": 200,
+          "sha256": "ea43152d1732ed05f4eaf431f74b02b89a1041440790c14af00fa70f1e49606f"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/e80f68933ff3fbf30557.png",
+          "status": 200,
+          "sha256": "e80f68933ff3fbf305574a55d2512ea143835de52314e7f62ecab38ec409a8c4"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/f63de566801fcea8ef97.png",
+          "status": 200,
+          "sha256": "f63de566801fcea8ef973271a3cd46ac87cf285e766ecfa2d0c6f64670ff3af2"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/9c4d0ad1822c0e3d56d2.png",
+          "status": 200,
+          "sha256": "9c4d0ad1822c0e3d56d2e6bf792d4d282bf60da205a48d2e868354f51ebcf0c4"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/98f3ec35fdedc87adac0.png",
+          "status": 200,
+          "sha256": "98f3ec35fdedc87adac04d643040d7532aac5d07e656e12f517acdf6e1c3a9ea"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/f98f3d1f919d7d128ace.png",
+          "status": 200,
+          "sha256": "f98f3d1f919d7d128aceffeaed54f56d1c01149ad0d7530e33a7bf36e3420e0c"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/2e15a426be9ee20c39a7.png",
+          "status": 200,
+          "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/e35f74c0f83556345583.png",
+          "status": 200,
+          "sha256": "e35f74c0f8355634558348073fa69517f15cdee745fe589b12e61b769654642b"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/bde948d56c47e9a9c68c.png",
+          "status": 200,
+          "sha256": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/4b36fb5abe80124daabc.png",
+          "status": 200,
+          "sha256": "4b36fb5abe80124daabce546e8ba9f220ed6467a69c301dd3baaeb43852e8aa5"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/042e670c62ad34a45c14.png",
+          "status": 200,
+          "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/c4ad653360cce21ee393.png",
+          "status": 200,
+          "sha256": "c4ad653360cce21ee3933b84279b682381beeb75d21e4f88906076fdd7165456"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/79b3320dd2f22a4941bf.png",
+          "status": 200,
+          "sha256": "79b3320dd2f22a4941bf0243b0ebc0b7bc19cf512770d7627922d1fd67aeb9c3"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/01f30a1649e149138639.png",
+          "status": 200,
+          "sha256": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/040b6c27fc46ce2da454.png",
+          "status": 200,
+          "sha256": "040b6c27fc46ce2da45430b075721781c0200c75729387d7937f45ab30399f1d"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/eb7d7e234e6b60198b7f.png",
+          "status": 200,
+          "sha256": "eb7d7e234e6b60198b7f6b1da0cb1533ef15a96251c57535105d43e69f8fd10b"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/2184ae3386ac18625140.png",
+          "status": 200,
+          "sha256": "2184ae3386ac1862514018ac4c75241f3fa8dc37354989af05685231c88e6dfa"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/d3947bf8ce7ee3fb076e.png",
+          "status": 200,
+          "sha256": "d3947bf8ce7ee3fb076eefbe4beb50c415e6889a32b536838a1bb6019bf54603"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/5b28ef6bb29b5654ff1a.png",
+          "status": 200,
+          "sha256": "5b28ef6bb29b5654ff1aececf1922ff6faddd616029fe879ff828d6996269292"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/2e15a426be9ee20c39a7.png",
+          "status": 200,
+          "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/ca4f162e85fafee194c7.png",
+          "status": 200,
+          "sha256": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/cfe00d87638eab122eb8.png",
+          "status": 200,
+          "sha256": "cfe00d87638eab122eb8cf15c194a30cae5e6396d8c22d965fb9b6aa305b13b8"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/ddbf803c43fc641d3512.png",
+          "status": 200,
+          "sha256": "ddbf803c43fc641d35129edf6e8b9531d2f74d88781d88d0c4fb61ef78be9381"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/5818150cab42cf0b2325.png",
+          "status": 200,
+          "sha256": "5818150cab42cf0b2325319cea8b42894eade25d731d364162276b634f55e069"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/2e15a426be9ee20c39a7.png",
+          "status": 200,
+          "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/042e670c62ad34a45c14.png",
+          "status": 200,
+          "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/040aa7bd60f397241c0c.png",
+          "status": 200,
+          "sha256": "040aa7bd60f397241c0c5dd19c01e5d2660fc82c6d78e911b62e1efef5cbde33"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/409b7f25641a2c1cf7e2.png",
+          "status": 200,
+          "sha256": "409b7f25641a2c1cf7e2497521c2022152e41c3cad3e224a29384d18681ad207"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/a4d52e34a5ed852382b9.png",
+          "status": 200,
+          "sha256": "a4d52e34a5ed852382b9ec0a589732f2d30be8f5776ae751ce003503d1fffee4"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/bde948d56c47e9a9c68c.png",
+          "status": 200,
+          "sha256": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/09fa758893afdf340aac.png",
+          "status": 200,
+          "sha256": "09fa758893afdf340aacb8102101cbcab335a4dfdfab5a6bac8a9a9a9b55200f"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/e3c6887d5bede0fbc1e4.png",
+          "status": 200,
+          "sha256": "e3c6887d5bede0fbc1e43a05bfa7a16714982e21ee6c7a161481fee88f06f517"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/2e15a426be9ee20c39a7.png",
+          "status": 200,
+          "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/042e670c62ad34a45c14.png",
+          "status": 200,
+          "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/2e15a426be9ee20c39a7.png",
+          "status": 200,
+          "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/55aaf791e83ec37fa219.png",
+          "status": 200,
+          "sha256": "55aaf791e83ec37fa219953f3eb685a5375b2f35e1c93991a15f1c637b764dbe"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/cfef86f82ac5d996af20.png",
+          "status": 200,
+          "sha256": "cfef86f82ac5d996af200cedf4b76ca9d633459188d697a9d8cfdf17d08e7e18"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/042e670c62ad34a45c14.png",
+          "status": 200,
+          "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/bde948d56c47e9a9c68c.png",
+          "status": 200,
+          "sha256": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/cde52c5fc44edc14b3d6.png",
+          "status": 200,
+          "sha256": "cde52c5fc44edc14b3d661cff6a5a62068916c4af703298e0e31431b5eaf51a9"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/042e670c62ad34a45c14.png",
+          "status": 200,
+          "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/a536d20596728975d3d5.png",
+          "status": 200,
+          "sha256": "a536d20596728975d3d5364979a12235b13fdda1c55a71beb924308f5d21ddae"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/ca8dfdb29da067ef8ac1.png",
+          "status": 200,
+          "sha256": "ca8dfdb29da067ef8ac15565cbd7779aef4188f41b2afc539af517a2680fbbe2"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/ca4f162e85fafee194c7.png",
+          "status": 200,
+          "sha256": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/01f30a1649e149138639.png",
+          "status": 200,
+          "sha256": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/a27b9aff9f8c8edf1136.png",
+          "status": 200,
+          "sha256": "a27b9aff9f8c8edf1136144e3450fcf61faad1b74eae0deb6b512c0c1d2b55de"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/ca4f162e85fafee194c7.png",
+          "status": 200,
+          "sha256": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/2e15a426be9ee20c39a7.png",
+          "status": 200,
+          "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/042e670c62ad34a45c14.png",
+          "status": 200,
+          "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/cfe00d87638eab122eb8.png",
+          "status": 200,
+          "sha256": "cfe00d87638eab122eb8cf15c194a30cae5e6396d8c22d965fb9b6aa305b13b8"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/gaucho-lod0.glb",
+          "status": 200,
+          "sha256": "c81314f4abffc6d7c111d499c4751c72d726e0d6c94f1147d36ef2008d909c26"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/woman-scout-lod0.glb",
+          "status": 200,
+          "sha256": "d3dbb04cc5a0ddca1ec300def391004e9540bc78f5a82ded0c674262ed0f818b"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/royalist-lod0.glb",
+          "status": 200,
+          "sha256": "c6043aa97c224ec55b8337a99c666b6b1d04e259814fa7954ef1422f8b83c8b4"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/worker-lod0.glb",
+          "status": 200,
+          "sha256": "8db1a151dda296d7e08632e5e6df0fe8cba8f34c8c1a0d39ee15425436103aad"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/granadero-lod0.glb",
+          "status": 200,
+          "sha256": "444abea73ec08c1ef03c7fc2dac8fa5141767b4a249c3cb314b48ccc7cda069f"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/2e15a426be9ee20c39a7.png",
+          "status": 200,
+          "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/042e670c62ad34a45c14.png",
+          "status": 200,
+          "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/02fc23efbfd8542db951.png",
+          "status": 200,
+          "sha256": "02fc23efbfd8542db9518c8793db2b0b3ecb320896a7697607992b22c6568389"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/bde948d56c47e9a9c68c.png",
+          "status": 200,
+          "sha256": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/4b36fb5abe80124daabc.png",
+          "status": 200,
+          "sha256": "4b36fb5abe80124daabce546e8ba9f220ed6467a69c301dd3baaeb43852e8aa5"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/190fcfc8745e6197a795.png",
+          "status": 200,
+          "sha256": "190fcfc8745e6197a7954c6b921f4cf3a890d9ac78db560a67dcdbc8359de180"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/b6163461b8122d6787f8.png",
+          "status": 200,
+          "sha256": "b6163461b8122d6787f8f771e1a9f362c5663bef6136d74c2ec7301ddb58ed91"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/32c4f3619e14232ca1c9.png",
+          "status": 200,
+          "sha256": "32c4f3619e14232ca1c97317f4d575838beae7f7814762585d296b7a25e86ac4"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/ea43152d1732ed05f4ea.png",
+          "status": 200,
+          "sha256": "ea43152d1732ed05f4eaf431f74b02b89a1041440790c14af00fa70f1e49606f"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/f63de566801fcea8ef97.png",
+          "status": 200,
+          "sha256": "f63de566801fcea8ef973271a3cd46ac87cf285e766ecfa2d0c6f64670ff3af2"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/4b36fb5abe80124daabc.png",
+          "status": 200,
+          "sha256": "4b36fb5abe80124daabce546e8ba9f220ed6467a69c301dd3baaeb43852e8aa5"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/2e15a426be9ee20c39a7.png",
+          "status": 200,
+          "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/e80f68933ff3fbf30557.png",
+          "status": 200,
+          "sha256": "e80f68933ff3fbf305574a55d2512ea143835de52314e7f62ecab38ec409a8c4"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/042e670c62ad34a45c14.png",
+          "status": 200,
+          "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/e35f74c0f83556345583.png",
+          "status": 200,
+          "sha256": "e35f74c0f8355634558348073fa69517f15cdee745fe589b12e61b769654642b"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/9c4d0ad1822c0e3d56d2.png",
+          "status": 200,
+          "sha256": "9c4d0ad1822c0e3d56d2e6bf792d4d282bf60da205a48d2e868354f51ebcf0c4"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/98f3ec35fdedc87adac0.png",
+          "status": 200,
+          "sha256": "98f3ec35fdedc87adac04d643040d7532aac5d07e656e12f517acdf6e1c3a9ea"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/f98f3d1f919d7d128ace.png",
+          "status": 200,
+          "sha256": "f98f3d1f919d7d128aceffeaed54f56d1c01149ad0d7530e33a7bf36e3420e0c"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/cde52c5fc44edc14b3d6.png",
+          "status": 200,
+          "sha256": "cde52c5fc44edc14b3d661cff6a5a62068916c4af703298e0e31431b5eaf51a9"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/040aa7bd60f397241c0c.png",
+          "status": 200,
+          "sha256": "040aa7bd60f397241c0c5dd19c01e5d2660fc82c6d78e911b62e1efef5cbde33"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/409b7f25641a2c1cf7e2.png",
+          "status": 200,
+          "sha256": "409b7f25641a2c1cf7e2497521c2022152e41c3cad3e224a29384d18681ad207"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/2e15a426be9ee20c39a7.png",
+          "status": 200,
+          "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/ca4f162e85fafee194c7.png",
+          "status": 200,
+          "sha256": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/042e670c62ad34a45c14.png",
+          "status": 200,
+          "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/bde948d56c47e9a9c68c.png",
+          "status": 200,
+          "sha256": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/a4d52e34a5ed852382b9.png",
+          "status": 200,
+          "sha256": "a4d52e34a5ed852382b9ec0a589732f2d30be8f5776ae751ce003503d1fffee4"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/e3c6887d5bede0fbc1e4.png",
+          "status": 200,
+          "sha256": "e3c6887d5bede0fbc1e43a05bfa7a16714982e21ee6c7a161481fee88f06f517"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/c4ad653360cce21ee393.png",
+          "status": 200,
+          "sha256": "c4ad653360cce21ee3933b84279b682381beeb75d21e4f88906076fdd7165456"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/79b3320dd2f22a4941bf.png",
+          "status": 200,
+          "sha256": "79b3320dd2f22a4941bf0243b0ebc0b7bc19cf512770d7627922d1fd67aeb9c3"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/09fa758893afdf340aac.png",
+          "status": 200,
+          "sha256": "09fa758893afdf340aacb8102101cbcab335a4dfdfab5a6bac8a9a9a9b55200f"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/2184ae3386ac18625140.png",
+          "status": 200,
+          "sha256": "2184ae3386ac1862514018ac4c75241f3fa8dc37354989af05685231c88e6dfa"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/d3947bf8ce7ee3fb076e.png",
+          "status": 200,
+          "sha256": "d3947bf8ce7ee3fb076eefbe4beb50c415e6889a32b536838a1bb6019bf54603"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/76c6ed4f73557a4a0a53.png",
+          "status": 200,
+          "sha256": "76c6ed4f73557a4a0a53d707abccd289a0cbe8d7a9c2a822753f6848ba41ae0f"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/01f30a1649e149138639.png",
+          "status": 200,
+          "sha256": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/eb7d7e234e6b60198b7f.png",
+          "status": 200,
+          "sha256": "eb7d7e234e6b60198b7f6b1da0cb1533ef15a96251c57535105d43e69f8fd10b"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/3bb81102c0b19c0f3604.png",
+          "status": 200,
+          "sha256": "3bb81102c0b19c0f3604135d0bf048426b2d100d00221c934aaf0261a4876f78"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/042e670c62ad34a45c14.png",
+          "status": 200,
+          "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/040aa7bd60f397241c0c.png",
+          "status": 200,
+          "sha256": "040aa7bd60f397241c0c5dd19c01e5d2660fc82c6d78e911b62e1efef5cbde33"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/409b7f25641a2c1cf7e2.png",
+          "status": 200,
+          "sha256": "409b7f25641a2c1cf7e2497521c2022152e41c3cad3e224a29384d18681ad207"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/2e15a426be9ee20c39a7.png",
+          "status": 200,
+          "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/bde948d56c47e9a9c68c.png",
+          "status": 200,
+          "sha256": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/cfe00d87638eab122eb8.png",
+          "status": 200,
+          "sha256": "cfe00d87638eab122eb8cf15c194a30cae5e6396d8c22d965fb9b6aa305b13b8"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/5818150cab42cf0b2325.png",
+          "status": 200,
+          "sha256": "5818150cab42cf0b2325319cea8b42894eade25d731d364162276b634f55e069"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/ddbf803c43fc641d3512.png",
+          "status": 200,
+          "sha256": "ddbf803c43fc641d35129edf6e8b9531d2f74d88781d88d0c4fb61ef78be9381"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/5b28ef6bb29b5654ff1a.png",
+          "status": 200,
+          "sha256": "5b28ef6bb29b5654ff1aececf1922ff6faddd616029fe879ff828d6996269292"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/cfe00d87638eab122eb8.png",
+          "status": 200,
+          "sha256": "cfe00d87638eab122eb8cf15c194a30cae5e6396d8c22d965fb9b6aa305b13b8"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/040b6c27fc46ce2da454.png",
+          "status": 200,
+          "sha256": "040b6c27fc46ce2da45430b075721781c0200c75729387d7937f45ab30399f1d"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/c74d1bdaf5f3ed21a420.png",
+          "status": 200,
+          "sha256": "c74d1bdaf5f3ed21a4204ee3096ac83025a7d086aa133eadd21fe80f64809835"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/18bd9589742c675e9df5.png",
+          "status": 200,
+          "sha256": "18bd9589742c675e9df5351ef3986b07bd2439b0385e0c9e0005e1d040b5daa5"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/2e15a426be9ee20c39a7.png",
+          "status": 200,
+          "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/040b6c27fc46ce2da454.png",
+          "status": 200,
+          "sha256": "040b6c27fc46ce2da45430b075721781c0200c75729387d7937f45ab30399f1d"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/042e670c62ad34a45c14.png",
+          "status": 200,
+          "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/ca4f162e85fafee194c7.png",
+          "status": 200,
+          "sha256": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/ca4f162e85fafee194c7.png",
+          "status": 200,
+          "sha256": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/bde948d56c47e9a9c68c.png",
+          "status": 200,
+          "sha256": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2"
+        },
+        {
+          "url": "http://127.0.0.1:3151/models/characters/textures/ca4f162e85fafee194c7.png",
+          "status": 200,
+          "sha256": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c"
+        }
+      ]
+    }
+  ],
+  "baselineHudScope": "Visible ordinary combat scenario, paid preserve-facing movement and owned sabre selection. DOM/captures only; no injected state, saved-file edits or private renderer/model reads. Baseline cue variant is inferred from the same source-mounted generation and recorded count of ordinary presented orders; baseline has no public sequence attributes. It is not a private renderer read. Wall capture times may skip the exact authored contact marker.",
+  "baselineHud": [
+    {
+      "anatomy": "male",
+      "cueIdInferredFromOrdinaryOrderCount": "1:8:1:unit:sabre",
+      "before": {
+        "card": "3. Sable. Salud 100, 22,5 puntos de acci\u00f3n, energ\u00eda 99, moral 80. Ve 6 enemigos. Mano principal: Sable de Caroya. Combate cercano activo. Estado 100%. Segunda mano: vac\u00eda. Bot\u00f3n derecho: equipo del combatiente",
+        "target": "Realista sabre \u00b7 100 salud",
+        "actorCell": "J7",
+        "targetCell": "K8",
+        "hands": [
+          "Mano principal: Sable de Caroya",
+          "Segunda mano: Vac\u00eda"
+        ]
+      },
+      "after": {
+        "card": "3. Sable. Salud 100, 19 puntos de acci\u00f3n, energ\u00eda 99, moral 80. Ve 6 enemigos. Mano principal: Sable de Caroya. Combate cercano activo. Estado 100%. Segunda mano: vac\u00eda. Bot\u00f3n derecho: equipo del combatiente",
+        "target": "Realista sabre \u00b7 58 salud"
+      },
+      "frames": [
+        {
+          "requestedAtMs": 80,
+          "wallElapsedMs": 90.48754100000224,
+          "frame": "0:sabre:prepare:melee",
+          "target": "Realista sabre \u00b7 100 salud"
+        },
+        {
+          "requestedAtMs": 320,
+          "wallElapsedMs": 361.07437500000015,
+          "frame": "1:sabre:contact:melee",
+          "target": "Realista sabre \u00b7 100 salud"
+        },
+        {
+          "requestedAtMs": 500,
+          "wallElapsedMs": 506.583458000001,
+          "frame": "1:sabre:contact:melee",
+          "target": "Realista sabre \u00b7 100 salud"
+        },
+        {
+          "requestedAtMs": 800,
+          "wallElapsedMs": 806.143500000002,
+          "frame": "1:sabre:contact:melee",
+          "target": "Realista sabre \u00b7 100 salud"
+        },
+        {
+          "requestedAtMs": 1100,
+          "wallElapsedMs": 1107.784458000002,
+          "frame": "2:sabre:impact:melee",
+          "target": "Realista sabre \u00b7 58 salud"
+        },
+        {
+          "requestedAtMs": 1700,
+          "wallElapsedMs": 1706.884833,
+          "frame": "2:sabre:impact:melee",
+          "target": "Realista sabre \u00b7 58 salud"
+        },
+        {
+          "requestedAtMs": 2200,
+          "wallElapsedMs": 2207.649207999999,
+          "frame": null,
+          "target": "Realista sabre \u00b7 58 salud"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "anatomy": "female",
+      "cueIdInferredFromOrdinaryOrderCount": "1:8:1:unit:grenade",
+      "before": {
+        "card": "4. Granada. Salud 100, 12,75 puntos de acci\u00f3n, energ\u00eda 95, moral 80. Ve 4 enemigos. Mano principal: Sable de Caroya. Combate cercano activo. Estado 100%. Segunda mano: vac\u00eda. Bot\u00f3n derecho: equipo del combatiente",
+        "target": "Realista grenade \u00b7 100 salud",
+        "actorCell": "M9",
+        "targetCell": "N10",
+        "hands": [
+          "Mano principal: Sable de Caroya",
+          "Segunda mano: Vac\u00eda"
+        ]
+      },
+      "after": {
+        "card": "4. Granada. Salud 100, 9,25 puntos de acci\u00f3n, energ\u00eda 95, moral 80. Ve 2 enemigos. Mano principal: Sable de Caroya. Combate cercano activo. Estado 100%. Segunda mano: vac\u00eda. Bot\u00f3n derecho: equipo del combatiente",
+        "target": "Realista grenade \u00b7 58 salud"
+      },
+      "frames": [
+        {
+          "requestedAtMs": 80,
+          "wallElapsedMs": 87.7321660000016,
+          "frame": "0:grenade:prepare:melee",
+          "target": "Realista grenade \u00b7 100 salud"
+        },
+        {
+          "requestedAtMs": 320,
+          "wallElapsedMs": 374.5506250000035,
+          "frame": "1:grenade:contact:melee",
+          "target": "Realista grenade \u00b7 100 salud"
+        },
+        {
+          "requestedAtMs": 500,
+          "wallElapsedMs": 520.5984160000007,
+          "frame": "1:grenade:contact:melee",
+          "target": "Realista grenade \u00b7 100 salud"
+        },
+        {
+          "requestedAtMs": 800,
+          "wallElapsedMs": 806.5285409999997,
+          "frame": "1:grenade:contact:melee",
+          "target": "Realista grenade \u00b7 100 salud"
+        },
+        {
+          "requestedAtMs": 1100,
+          "wallElapsedMs": 1107.346958000002,
+          "frame": "2:grenade:impact:melee",
+          "target": "Realista grenade \u00b7 58 salud"
+        },
+        {
+          "requestedAtMs": 1700,
+          "wallElapsedMs": 1705.9177909999999,
+          "frame": "2:grenade:impact:melee",
+          "target": "Realista grenade \u00b7 58 salud"
+        },
+        {
+          "requestedAtMs": 2200,
+          "wallElapsedMs": 2206.5813750000016,
+          "frame": null,
+          "target": "Realista grenade \u00b7 58 salud"
+        }
+      ],
+      "errors": []
+    }
+  ],
+  "limitations": [
+    "HUD PNG wall capture time is not an exact native contact-marker photograph.",
+    "The existing loose finger/handle proximity check is not a complete palm/contact or clothing clearance proof.",
+    "Knife diagonal preparation, backhand and hilt wrist fit remain open.",
+    "No sustained FPS, full art polish or gameplay parity claim."
+  ]
+}
