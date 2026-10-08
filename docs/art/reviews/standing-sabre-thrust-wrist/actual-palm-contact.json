@@ -1,0 +1,378 @@
+{
+  "baselineCommit": "f01916b070b4dfd59a92ef20c50d184ba8a194a1",
+  "scope": "Test-only: filter actual hand-weighted skin triangles and independently bound them to current native wrist/MCP dimensions. No runtime, gameplay, body or bank changes.",
+  "animationBanks": {
+    "male": "48a5966d73058d2fef5eb77837d229377178106a349b903983c0bb38ad914d87",
+    "female": "0d437c4296ce6e7657626f0a18815eddf1b3cdf75479933ddd8a5fada017542e"
+  },
+  "bodyLod0": {
+    "granadero": "444abea73ec08c1ef03c7fc2dac8fa5141767b4a249c3cb314b48ccc7cda069f",
+    "woman-scout": "d3dbb04cc5a0ddca1ec300def391004e9540bc78f5a82ded0c674262ed0f818b"
+  },
+  "cases": [
+    {
+      "appearance": "granadero",
+      "diagonal": false,
+      "targetPosture": "standing",
+      "clip": "stand.slash.blade",
+      "palmTriangles": 446,
+      "maximumGapMetres": 0.001,
+      "measuredGapMetres": 0
+    },
+    {
+      "appearance": "granadero",
+      "diagonal": false,
+      "targetPosture": "standing",
+      "clip": "stand.slash.blade.forehand",
+      "palmTriangles": 446,
+      "maximumGapMetres": 0.001,
+      "measuredGapMetres": 0
+    },
+    {
+      "appearance": "granadero",
+      "diagonal": false,
+      "targetPosture": "standing",
+      "clip": "stand.slash.blade.backhand",
+      "palmTriangles": 446,
+      "maximumGapMetres": 0.001,
+      "measuredGapMetres": 0
+    },
+    {
+      "appearance": "granadero",
+      "diagonal": false,
+      "targetPosture": "standing",
+      "clip": "stand.slash.blade.thrust",
+      "palmTriangles": 446,
+      "maximumGapMetres": 0.001,
+      "measuredGapMetres": 0
+    },
+    {
+      "appearance": "granadero",
+      "diagonal": false,
+      "targetPosture": "standing",
+      "clip": "stand.slash.blade.hilt",
+      "palmTriangles": 446,
+      "maximumGapMetres": 0.001,
+      "measuredGapMetres": 0
+    },
+    {
+      "appearance": "granadero",
+      "diagonal": false,
+      "targetPosture": "crouched",
+      "clip": "stand.slash.blade",
+      "palmTriangles": 446,
+      "maximumGapMetres": 0.001,
+      "measuredGapMetres": 0
+    },
+    {
+      "appearance": "granadero",
+      "diagonal": false,
+      "targetPosture": "crouched",
+      "clip": "stand.slash.blade.forehand",
+      "palmTriangles": 446,
+      "maximumGapMetres": 0.001,
+      "measuredGapMetres": 0
+    },
+    {
+      "appearance": "granadero",
+      "diagonal": false,
+      "targetPosture": "crouched",
+      "clip": "stand.slash.blade.backhand",
+      "palmTriangles": 446,
+      "maximumGapMetres": 0.001,
+      "measuredGapMetres": 0
+    },
+    {
+      "appearance": "granadero",
+      "diagonal": false,
+      "targetPosture": "crouched",
+      "clip": "stand.slash.blade.thrust",
+      "palmTriangles": 446,
+      "maximumGapMetres": 0.001,
+      "measuredGapMetres": 0
+    },
+    {
+      "appearance": "granadero",
+      "diagonal": false,
+      "targetPosture": "crouched",
+      "clip": "stand.slash.blade.hilt",
+      "palmTriangles": 446,
+      "maximumGapMetres": 0.001,
+      "measuredGapMetres": 0
+    },
+    {
+      "appearance": "granadero",
+      "diagonal": true,
+      "targetPosture": "standing",
+      "clip": "stand.slash.blade",
+      "palmTriangles": 446,
+      "maximumGapMetres": 0.001,
+      "measuredGapMetres": 0
+    },
+    {
+      "appearance": "granadero",
+      "diagonal": true,
+      "targetPosture": "standing",
+      "clip": "stand.slash.blade.forehand",
+      "palmTriangles": 446,
+      "maximumGapMetres": 0.001,
+      "measuredGapMetres": 0
+    },
+    {
+      "appearance": "granadero",
+      "diagonal": true,
+      "targetPosture": "standing",
+      "clip": "stand.slash.blade.backhand",
+      "palmTriangles": 446,
+      "maximumGapMetres": 0.001,
+      "measuredGapMetres": 0
+    },
+    {
+      "appearance": "granadero",
+      "diagonal": true,
+      "targetPosture": "standing",
+      "clip": "stand.slash.blade.thrust",
+      "palmTriangles": 446,
+      "maximumGapMetres": 0.001,
+      "measuredGapMetres": 0
+    },
+    {
+      "appearance": "granadero",
+      "diagonal": true,
+      "targetPosture": "standing",
+      "clip": "stand.slash.blade.hilt",
+      "palmTriangles": 446,
+      "maximumGapMetres": 0.001,
+      "measuredGapMetres": 0
+    },
+    {
+      "appearance": "granadero",
+      "diagonal": true,
+      "targetPosture": "crouched",
+      "clip": "stand.slash.blade",
+      "palmTriangles": 446,
+      "maximumGapMetres": 0.001,
+      "measuredGapMetres": 0
+    },
+    {
+      "appearance": "granadero",
+      "diagonal": true,
+      "targetPosture": "crouched",
+      "clip": "stand.slash.blade.forehand",
+      "palmTriangles": 446,
+      "maximumGapMetres": 0.001,
+      "measuredGapMetres": 0
+    },
+    {
+      "appearance": "granadero",
+      "diagonal": true,
+      "targetPosture": "crouched",
+      "clip": "stand.slash.blade.backhand",
+      "palmTriangles": 446,
+      "maximumGapMetres": 0.001,
+      "measuredGapMetres": 0
+    },
+    {
+      "appearance": "granadero",
+      "diagonal": true,
+      "targetPosture": "crouched",
+      "clip": "stand.slash.blade.thrust",
+      "palmTriangles": 446,
+      "maximumGapMetres": 0.001,
+      "measuredGapMetres": 0
+    },
+    {
+      "appearance": "granadero",
+      "diagonal": true,
+      "targetPosture": "crouched",
+      "clip": "stand.slash.blade.hilt",
+      "palmTriangles": 446,
+      "maximumGapMetres": 0.001,
+      "measuredGapMetres": 0
+    },
+    {
+      "appearance": "woman-scout",
+      "diagonal": false,
+      "targetPosture": "standing",
+      "clip": "stand.slash.blade",
+      "palmTriangles": 414,
+      "maximumGapMetres": 0.001,
+      "measuredGapMetres": 0
+    },
+    {
+      "appearance": "woman-scout",
+      "diagonal": false,
+      "targetPosture": "standing",
+      "clip": "stand.slash.blade.forehand",
+      "palmTriangles": 414,
+      "maximumGapMetres": 0.001,
+      "measuredGapMetres": 0
+    },
+    {
+      "appearance": "woman-scout",
+      "diagonal": false,
+      "targetPosture": "standing",
+      "clip": "stand.slash.blade.backhand",
+      "palmTriangles": 414,
+      "maximumGapMetres": 0.001,
+      "measuredGapMetres": 0
+    },
+    {
+      "appearance": "woman-scout",
+      "diagonal": false,
+      "targetPosture": "standing",
+      "clip": "stand.slash.blade.thrust",
+      "palmTriangles": 414,
+      "maximumGapMetres": 0.001,
+      "measuredGapMetres": 0
+    },
+    {
+      "appearance": "woman-scout",
+      "diagonal": false,
+      "targetPosture": "standing",
+      "clip": "stand.slash.blade.hilt",
+      "palmTriangles": 414,
+      "maximumGapMetres": 0.001,
+      "measuredGapMetres": 0
+    },
+    {
+      "appearance": "woman-scout",
+      "diagonal": false,
+      "targetPosture": "crouched",
+      "clip": "stand.slash.blade",
+      "palmTriangles": 414,
+      "maximumGapMetres": 0.001,
+      "measuredGapMetres": 0
+    },
+    {
+      "appearance": "woman-scout",
+      "diagonal": false,
+      "targetPosture": "crouched",
+      "clip": "stand.slash.blade.forehand",
+      "palmTriangles": 414,
+      "maximumGapMetres": 0.001,
+      "measuredGapMetres": 0
+    },
+    {
+      "appearance": "woman-scout",
+      "diagonal": false,
+      "targetPosture": "crouched",
+      "clip": "stand.slash.blade.backhand",
+      "palmTriangles": 414,
+      "maximumGapMetres": 0.001,
+      "measuredGapMetres": 0
+    },
+    {
+      "appearance": "woman-scout",
+      "diagonal": false,
+      "targetPosture": "crouched",
+      "clip": "stand.slash.blade.thrust",
+      "palmTriangles": 414,
+      "maximumGapMetres": 0.001,
+      "measuredGapMetres": 0
+    },
+    {
+      "appearance": "woman-scout",
+      "diagonal": false,
+      "targetPosture": "crouched",
+      "clip": "stand.slash.blade.hilt",
+      "palmTriangles": 414,
+      "maximumGapMetres": 0.001,
+      "measuredGapMetres": 0
+    },
+    {
+      "appearance": "woman-scout",
+      "diagonal": true,
+      "targetPosture": "standing",
+      "clip": "stand.slash.blade",
+      "palmTriangles": 414,
+      "maximumGapMetres": 0.001,
+      "measuredGapMetres": 0
+    },
+    {
+      "appearance": "woman-scout",
+      "diagonal": true,
+      "targetPosture": "standing",
+      "clip": "stand.slash.blade.forehand",
+      "palmTriangles": 414,
+      "maximumGapMetres": 0.001,
+      "measuredGapMetres": 0
+    },
+    {
+      "appearance": "woman-scout",
+      "diagonal": true,
+      "targetPosture": "standing",
+      "clip": "stand.slash.blade.backhand",
+      "palmTriangles": 414,
+      "maximumGapMetres": 0.001,
+      "measuredGapMetres": 0
+    },
+    {
+      "appearance": "woman-scout",
+      "diagonal": true,
+      "targetPosture": "standing",
+      "clip": "stand.slash.blade.thrust",
+      "palmTriangles": 414,
+      "maximumGapMetres": 0.001,
+      "measuredGapMetres": 0
+    },
+    {
+      "appearance": "woman-scout",
+      "diagonal": true,
+      "targetPosture": "standing",
+      "clip": "stand.slash.blade.hilt",
+      "palmTriangles": 414,
+      "maximumGapMetres": 0.001,
+      "measuredGapMetres": 0
+    },
+    {
+      "appearance": "woman-scout",
+      "diagonal": true,
+      "targetPosture": "crouched",
+      "clip": "stand.slash.blade",
+      "palmTriangles": 414,
+      "maximumGapMetres": 0.001,
+      "measuredGapMetres": 0
+    },
+    {
+      "appearance": "woman-scout",
+      "diagonal": true,
+      "targetPosture": "crouched",
+      "clip": "stand.slash.blade.forehand",
+      "palmTriangles": 414,
+      "maximumGapMetres": 0.001,
+      "measuredGapMetres": 0
+    },
+    {
+      "appearance": "woman-scout",
+      "diagonal": true,
+      "targetPosture": "crouched",
+      "clip": "stand.slash.blade.backhand",
+      "palmTriangles": 414,
+      "maximumGapMetres": 0.001,
+      "measuredGapMetres": 0
+    },
+    {
+      "appearance": "woman-scout",
+      "diagonal": true,
+      "targetPosture": "crouched",
+      "clip": "stand.slash.blade.thrust",
+      "palmTriangles": 414,
+      "maximumGapMetres": 0.001,
+      "measuredGapMetres": 0
+    },
+    {
+      "appearance": "woman-scout",
+      "diagonal": true,
+      "targetPosture": "crouched",
+      "clip": "stand.slash.blade.hilt",
+      "palmTriangles": 414,
+      "maximumGapMetres": 0.001,
+      "measuredGapMetres": 0
+    }
+  ],
+  "limits": [
+    "Contact surface proximity does not prove nonpenetration, all finger mechanics, all LODs, clothing clearance or full polish.",
+    "The forty contact samples here use LOD0 bodies; other current tests retain their separate replacement-LOD and support checks."
+  ]
+}
