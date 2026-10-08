@@ -1157,25 +1157,43 @@
           "lod": 0,
           "url": "/models/characters/friar-lod0.glb",
           "triangles": 26535,
-          "bytes": 1261468,
+          "bytes": 1261604,
           "drawCalls": 5,
-          "sha256": "be43f8c985a94cfe2bd31729fe5a895f81468468c598ee77bb5412e66a3e6171"
+          "sha256": "94f2e3ab12dcd346a0a67c7a2b35957fe23349904ccb820f23bd76e504d7ae3b",
+          "nativeClothSupport": {
+            "method": "current-native-prone-cloth-shape",
+            "sourceClip": "prone.idle.long-gun",
+            "sourcePoseHash": "3355a8e30cd68e78bc0d2066333a9222a52963b1515a4c40b0dc4b442e43fac8",
+            "retainedRestMeshAndRig": true
+          }
         },
         {
           "lod": 1,
           "url": "/models/characters/friar-lod1.glb",
           "triangles": 11891,
-          "bytes": 621292,
+          "bytes": 621420,
           "drawCalls": 5,
-          "sha256": "2741ebe33d525d353eb5f981a22b003d70bdb7c9846ecdcd988e2b9cc60c5eda"
+          "sha256": "52778a12b12290e73e902298fb71915cff33ed981326cf46206738de556f99d7",
+          "nativeClothSupport": {
+            "method": "current-native-prone-cloth-shape",
+            "sourceClip": "prone.idle.long-gun",
+            "sourcePoseHash": "3355a8e30cd68e78bc0d2066333a9222a52963b1515a4c40b0dc4b442e43fac8",
+            "retainedRestMeshAndRig": true
+          }
         },
         {
           "lod": 2,
           "url": "/models/characters/friar-lod2.glb",
           "triangles": 4239,
-          "bytes": 271896,
+          "bytes": 272028,
           "drawCalls": 5,
-          "sha256": "944c0febf4d0ac3404ad4ac987a7c19a9419bb2da7d479e95ab3ed944229ff4e"
+          "sha256": "32b1db6e17509e07a92c2d59615f70b96f043d0e5ca56abbba355c1e3071b9af",
+          "nativeClothSupport": {
+            "method": "current-native-prone-cloth-shape",
+            "sourceClip": "prone.idle.long-gun",
+            "sourcePoseHash": "3355a8e30cd68e78bc0d2066333a9222a52963b1515a4c40b0dc4b442e43fac8",
+            "retainedRestMeshAndRig": true
+          }
         }
       ],
       "materials": {
@@ -1607,25 +1625,43 @@
           "lod": 0,
           "url": "/models/characters/woman-shawl-lod0.glb",
           "triangles": 28792,
-          "bytes": 1348204,
+          "bytes": 1348356,
           "drawCalls": 5,
-          "sha256": "110570d33449fcb2b887a9f06a89f4857cc2f476ecf7963c7c4f5ffe181dc563"
+          "sha256": "843568cf607ae133a6d7dba4c6237709eb3d725572f99991e4f2b417e452bce2",
+          "nativeClothSupport": {
+            "method": "current-native-prone-cloth-shape",
+            "sourceClip": "prone.idle.long-gun",
+            "sourcePoseHash": "679eddfd742ef7758efe3477685a12aa0f15e44cf61271f129ef521675da8a26",
+            "retainedRestMeshAndRig": true
+          }
         },
         {
           "lod": 1,
           "url": "/models/characters/woman-shawl-lod1.glb",
           "triangles": 12743,
-          "bytes": 654196,
+          "bytes": 654328,
           "drawCalls": 5,
-          "sha256": "77ac4329b66dd5f78da0a75288de72d13b848ac0e46722f5448fdb3a5971a0ea"
+          "sha256": "4d127127c6febf4372114ff3fdaaf2c26c80383ff03d8442a4d135fba2d8d1c9",
+          "nativeClothSupport": {
+            "method": "current-native-prone-cloth-shape",
+            "sourceClip": "prone.idle.long-gun",
+            "sourcePoseHash": "679eddfd742ef7758efe3477685a12aa0f15e44cf61271f129ef521675da8a26",
+            "retainedRestMeshAndRig": true
+          }
         },
         {
           "lod": 2,
           "url": "/models/characters/woman-shawl-lod2.glb",
           "triangles": 4886,
-          "bytes": 300056,
+          "bytes": 300188,
           "drawCalls": 5,
-          "sha256": "3421a6dde258295f52d8b5029aeb0a04dcef141ee0ecb2a301924f5421ba0f06"
+          "sha256": "f72bf6faeee731b55a9e6014f7f1fe0337b11efde2b0444d885537db0a2c4d3c",
+          "nativeClothSupport": {
+            "method": "current-native-prone-cloth-shape",
+            "sourceClip": "prone.idle.long-gun",
+            "sourcePoseHash": "679eddfd742ef7758efe3477685a12aa0f15e44cf61271f129ef521675da8a26",
+            "retainedRestMeshAndRig": true
+          }
         }
       ],
       "materials": {

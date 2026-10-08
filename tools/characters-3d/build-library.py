@@ -5,10 +5,11 @@ Usage: python3 tools/characters-3d/build-library.py [--only appearance|garments|
 The approved playground is never read or changed by this production builder.
 """
 from pathlib import Path
-import argparse,subprocess,sys,json,os,struct,concurrent.futures
+import argparse,subprocess,sys,json,os,struct,concurrent.futures,hashlib
 ROOT=Path(__file__).resolve().parents[2];HERE=ROOT/'assets/source/characters-3d/authoring';OUT=ROOT/'web/public/models/characters';META=HERE/'.build'
 PRESETS=['granadero','royalist','worker','surgeon','gaucho','friar','woman-scout','woman-shawl']
 p=argparse.ArgumentParser();p.add_argument('--blender',default='/Applications/Blender.app/Contents/MacOS/Blender');p.add_argument('--only',choices=['appearance','garments','equipment','horse','animations']);p.add_argument('--preset',choices=PRESETS);p.add_argument('--lod',type=int,choices=[0,1,2]);p.add_argument('--review',action='store_true');p.add_argument('--jobs',type=int,default=2);p.add_argument('--manifest-only',action='store_true');a=p.parse_args()
+previous_manifest=json.loads((OUT/'manifest.json').read_text())if(OUT/'manifest.json').exists()else{}
 jobs=[]
 if not a.manifest_only:
  for kind in ([a.only]if a.only else ['appearance','garments','equipment','horse','animations']):
@@ -40,6 +41,14 @@ if native_path.exists():
 for preset in PRESETS:
  gender='female'if preset.startswith('woman-')else'male';lods=[byname[preset+'-lod'+str(i)+'.glb']for i in range(3)if preset+'-lod'+str(i)+'.glb'in byname]
  manifest['appearances'][preset]={'id':preset,'gender':gender,'height':1.76,'animationLibrary':gender,'lods':[{k:f[k]for k in ('lod','url','triangles','bytes','drawCalls','sha256')}for f in lods],'materials':{'skin':'Skin','apparel':'Apparel_Atlas'},'parts':{part:'Human_'+part+'_LOD{lod}'for part in ('skin','outfit','legwear','footwear','headwear')},'sockets':lods[0]['sockets']if lods else{},'lodPixelThresholds':[160,65,0],'baseAttire':{'headwear':'appearance','outfit':'appearance','legwear':'appearance'},'nullWornItem':'keepBaseAttire'}
+ # Source metadata predates the native cloth pass. Keep the reviewed record
+ # when this invocation did not rebuild that exact authored body.
+ for record in manifest['appearances'][preset]['lods']:
+  previous=next((r for r in previous_manifest.get('appearances',{}).get(preset,{}).get('lods',[])if r['lod']==record['lod']),{})
+  if previous.get('nativeClothSupport')and('appearance',preset,record['lod'])not in jobs:
+   path=OUT/Path(record['url']).name
+   assert hashlib.sha256(path.read_bytes()).hexdigest()==previous['sha256'],'Changed reviewed cloth body: '+str(path)
+   record.update({key:previous[key]for key in('bytes','sha256','nativeClothSupport')})
  sockets=manifest['appearances'][preset]['sockets']
  if 'handLeft_pistol'in sockets:sockets['handLeft_pistol']['mirror']={'socket':'handRight_pistol','localAxis':'z'}
 for gender in ('male','female'):
@@ -94,3 +103,5 @@ if manifest['complete']:
   # Raised crouched guards retain the same supported native lower body.
   subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-crouched-guard-support.py')],cwd=ROOT,check=True)
  else:subprocess.run(['node',str(ROOT/'tools/characters-3d/compile-locomotion-profile.mjs')],cwd=ROOT,check=True)
+ # Fit existing long-cloth shapes only after the final native support poses.
+ subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-long-cloth-support.py')],cwd=ROOT,check=True)
