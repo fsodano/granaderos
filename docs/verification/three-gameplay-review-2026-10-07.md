@@ -691,3 +691,7 @@ The authored posta piers now retain the current source shaft, foot and coping pl
 ## Exact rifle fit sampling with lower calculation cost
 
 Rifle contact sampling now reuses scalar boot buffers and rejects a known adjacent speed failure before repeating the full path. Every accepted path still runs the complete 240 Hz chronological checks. All 48 original plans, sampled bones and 222,288 boot coordinates remain exact. Fifteen integrated checks, type/docs/baseline audits and combined export `6df69babc7d6` pass. Four normal paid browser cases pass in 88 source-pinned captures with identical costs, one damage result and retained ammunition. Same-process CPU comparisons improve; cold first-fit latency remains open. See [the sampling review](../art/rifle-fit-sampling-3d-review-2026-10-07.md).
+
+## Current supported barracks entrance gate
+
+The authored barracks now uses one guarded centred shell and its current source gate: broad plaster piers, separate warm feet, beam and geometric plaque. Edited-corner and legacy shell/gate fallbacks remain exact; supports, standing openings, flat roofs and upper routes remain covered. Fifty-two affected checks, type/docs/baseline audits and combined export `9950243f8165` pass. Thirty-four source-pinned normal and close views pass without errors and were compared with the current sprite. Exact composition and publication bridges are recorded. See [the gate review](../art/barracks-source-gate-3d-review-2026-10-07.md).

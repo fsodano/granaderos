@@ -17,6 +17,7 @@ import {houseFacade} from './world-house-facade';
 import {chapelPiers} from './world-chapel-piers';
 import {workPorch} from './world-work-porches';
 import {smithyChimney} from './world-smithy-chimney';
+import {barracksGate} from './world-barracks-gate';
 import {buildingArtInset} from './world-building-placement';
 import type {WorldGeometry} from './world-geometry';
 import type {WorldMaterials} from './world-materials';
@@ -394,7 +395,8 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
       workCanopy('gallery',frontSupports(),.60);
       root.add(depotFacade(b,input,T,height,base,roofRise,geometry,materials,legacy));
     }
-    if(kind==='barracks')feature('barracks-gate',()=>{
+    if(kind==='barracks'&&wallInset===0&&(!legacy||b.wallFinish!==undefined))root.add(barracksGate(b,input,T,height,base,geometry,materials));
+    else if(kind==='barracks')feature('barracks-gate',()=>{
       const supports=entranceSupports();
       for(const support of supports){const [u,v]=bearing(support,0,true);box(u,v,height*.50,.22,height,.38/T,trim);}
       if(supports.length!==2)return;
