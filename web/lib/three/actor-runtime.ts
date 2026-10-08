@@ -7,6 +7,7 @@ import {sampleAnimationTime,cueControlsAction} from './animation-clock';
 import {TILE_METRES} from './projection';
 import {NativeGaitTransitionSupport} from './gait-transition-support';
 import {NativeGestureBlendSupport} from './gesture-blend-support';
+import {NativeReadyPatientContactFit as NativePatientContactFit} from './heal-patient-ready-fit';
 import {NativeProneArmBlendSupport} from './prone-arm-blend-support';
 import {NativeClimbContactFit} from './climb-contact-fit';
 import type {ContactActorResolver} from './melee-contact-fit';
@@ -40,6 +41,7 @@ function shareSkeletons(root:Object3D){
 export class ActorRuntime {
   private gaitSupport:NativeGaitTransitionSupport;
   private gestureSupport:NativeGestureBlendSupport;
+  private patientFit:NativePatientContactFit;
   private proneArmSupport:NativeProneArmBlendSupport;
   private climbFit?:NativeClimbContactFit;
   private meleeFit:NativeMeleeContactFit;
@@ -53,7 +55,7 @@ export class ActorRuntime {
     this.model.traverse(node=>{this.bones.set(node.name,node);if(node instanceof Mesh){node.castShadow=true;node.receiveShadow=true;node.frustumCulled=false;const targets=node.morphTargetDictionary;if(targets?.cloth_prone!==undefined&&targets?.cloth_crouched!==undefined)this.clothMeshes.push({mesh:node,prone:targets.cloth_prone,crouched:targets.cloth_crouched,boot:targets.cloth_prone_boot_clearance,bootClips:new Set(node.userData.nativeClothBootSupport?.clips??[])});}});
     this.gaitSupport=new NativeGaitTransitionSupport(this.model,this.root,asset.appearance.parts?.footwear?.replace('{lod}',String(asset.lod)));
     this.gestureSupport=new NativeGestureBlendSupport(this.model,this.root,asset.appearance.parts?.footwear?.replace('{lod}',String(asset.lod)));
-    this.proneArmSupport=new NativeProneArmBlendSupport(this.model,this.root);
+    this.patientFit=new NativePatientContactFit(this.model,this.root);this.proneArmSupport=new NativeProneArmBlendSupport(this.model,this.root);
     this.climbFit=new NativeClimbContactFit(this.model,this.root);
     const walkingClip=asset.animation.animations.find(clip=>clip.name==='stand.walk.blade'),walkingSpec=asset.clips.find(clip=>clip.name==='stand.walk.blade'),walkingSpeed=walkingSpec?.nativeStrideSpeed??walkingSpec?.locomotionSpeed;
     this.meleeFit=new NativeMeleeContactFit(this.model,this.root,asset.appearance.parts?.footwear?.replace('{lod}',String(asset.lod)),false,walkingClip&&walkingSpeed?{clip:walkingClip,speed:walkingSpeed}:undefined);
@@ -155,7 +157,8 @@ export class ActorRuntime {
       object.visible=release===undefined||time<release;
       // Active tools and supplies remain visible for their own gestures. Timed
       // props claim their hand even when the current item is a tool.
-      const stow=held&&(propHands.has(hand as HandRole)||weapon&&free.has(hand as HandRole)&&!handProp);
+      const patientSupply=this.patientFit.suppliesStowed&&item.node==='item_medkits';
+      const stow=held&&(patientSupply||propHands.has(hand as HandRole)||weapon&&free.has(hand as HandRole)&&!handProp);
       const stowItem=stow?spec.stowItems?.find(fitting=>fitting.categories.includes(item.category??'')):undefined;
       const role=stow?(stowItem?.socket??item.stowedSocket??'hipLeft'):hand==='hip'?(item.stowedSocket??'hipLeft'):hand;
       const target=this.socket(role,['handRight','handLeft'].includes(role)?item.grip:undefined);
@@ -165,6 +168,7 @@ export class ActorRuntime {
       // The authored offset follows that clip's clock and returns to zero;
       // inventory ownership and the geometry's dimensions stay unchanged.
       this.itemTransform(object,item);
+      if(patientSupply)this.patientFit.stowSupply(object);
       if(stowItem){
         if(stowItem.position){object.position.x+=stowItem.position[0];object.position.y+=stowItem.position[1];object.position.z+=stowItem.position[2];}
         if(stowItem.rotation)object.rotation.fromArray([...stowItem.rotation,'XYZ'] as any);
@@ -292,7 +296,7 @@ export class ActorRuntime {
   }
   tick(delta:number,now:number,reducedMotion=false){
     if(!this.action)return;
-    this.proneArmSupport.restore();
+    this.patientFit.restore();this.proneArmSupport.restore();
     this.gestureSupport.restore();
     this.gaitSupport.restore();
     this.meleeFit.restore();this.root.rotation.y=this.visual.yaw;
@@ -321,6 +325,7 @@ export class ActorRuntime {
     this.gestureSupport.apply(this.mixer.time,this.action.time,this.action.timeScale);
     this.poseCloth(Math.min(delta,.1));
     this.proneArmSupport.apply(this.mixer.time);
+    this.patientFit.apply(visual.posture==='prone'?visual.cue:undefined,this.action.time,clip.duration,this.contactActor,now/1000);
     const attached=this.equipment.userData.attached as Object3D[],freeGuard=!attached.some(item=>item.userData.hand==='handLeft');
     const meleeWeapon=attached.find(item=>item.userData.hand==='handRight'&&(this.itemSpec(item.userData.itemId)?.category==='sabre'||freeGuard&&['pistol','rifle'].includes(this.itemSpec(item.userData.itemId)?.category??'')));
     this.meleeFit.apply(visual.cue,clip,this.clipSpec,meleeWeapon,this.action.time,this.contactActor);
@@ -338,7 +343,10 @@ export class ActorRuntime {
       this.placeRider(saddle);
     }
   }
+  contactNativePose(){return this.action?{clip:this.action.getClip(),time:this.action.time,weight:this.action.getEffectiveWeight()}:undefined;}
   prewarmContact(){
+    const careVisual=this.visual,careStock=(this.equipment.userData.attached as Object3D[]).find(item=>item.userData.itemId==='medkits');
+    this.patientFit.prewarm(careVisual.selected&&!careVisual.cue&&!careVisual.motion?.moving?careVisual.careWarm:undefined,careStock,this.socket('hipLeft'),this.contactActor);
     const visual=this.visual,attached=this.equipment.userData.attached as Object3D[],freeGuard=!attached.some(item=>item.userData.hand==='handLeft'),gun=freeGuard?attached.find(item=>item.userData.hand==='handRight'&&this.itemSpec(item.userData.itemId)?.category==='rifle'):undefined;
     if(!visual.contactWarm||visual.cue||visual.motion?.moving||visual.posture!=='standing'||visual.mounted||!visual.selected){this.meleeFit.prewarm(undefined,this.action!.getClip(),this.clipSpec,undefined,this.contactActor);return;}
     const bound=boundClip(this.asset.clips,this.asset.animation.animations,'stand.butt.long-gun');this.meleeFit.prewarm(visual.contactWarm,bound.clip,bound.spec,gun,this.contactActor);
@@ -350,7 +358,7 @@ export class ActorRuntime {
     return node?.getWorldPosition(new Vector3())??null;
   }
   dispose(){
-    this.proneArmSupport.dispose();
+    this.patientFit.dispose();this.proneArmSupport.dispose();
     this.gestureSupport.dispose();
     this.gaitSupport.dispose();
     this.meleeFit.dispose();
