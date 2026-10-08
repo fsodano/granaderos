@@ -1,0 +1,664 @@
+[
+  {
+    "baseline": "444abea73ec08c1ef03c7fc2dac8fa5141767b4a249c3cb314b48ccc7cda069f",
+    "candidate": "0f575797896fc2ca45e1580a2f2b0f9556bf04adf07a5b53bea0a06b3d0db56d",
+    "nativeRigExact": true,
+    "materialDefinitionsExact": true,
+    "textureBytesExact": true,
+    "meshes": [
+      {
+        "mesh": [
+          "Fitted_Boot_l",
+          "Apparel_Atlas"
+        ],
+        "triangles": [
+          1853,
+          1853
+        ],
+        "allAttributesIndicesMorphsExact": true
+      },
+      {
+        "mesh": [
+          "Shaped_Shako",
+          "Apparel_Atlas"
+        ],
+        "triangles": [
+          9633,
+          9633
+        ],
+        "allAttributesIndicesMorphsExact": true
+      },
+      {
+        "mesh": [
+          "Tailored_Breeches",
+          "Apparel_Atlas"
+        ],
+        "triangles": [
+          1951,
+          1951
+        ],
+        "allAttributesIndicesMorphsExact": true
+      },
+      {
+        "mesh": [
+          "Tailored_Coat",
+          "Apparel_Atlas"
+        ],
+        "triangles": [
+          13933,
+          16929
+        ],
+        "outsideCollarAndCapsTriangles": 11067,
+        "outsideCollarAndCapsGeometryUVWeightColorExact": true,
+        "outsideCollarAndCapsNormalsExact": false,
+        "normalChangedTriangles": 1
+      },
+      {
+        "mesh": [
+          "Exposed_Human_Skin",
+          "Skin"
+        ],
+        "triangles": [
+          6289,
+          6289
+        ],
+        "allAttributesIndicesMorphsExact": true
+      },
+      {
+        "mesh": [
+          "Exposed_Human_Skin",
+          "Apparel_Atlas"
+        ],
+        "triangles": [
+          200,
+          200
+        ],
+        "allAttributesIndicesMorphsExact": true
+      },
+      {
+        "mesh": [
+          "Exposed_Human_Skin",
+          "Face_Skin"
+        ],
+        "triangles": [
+          28902,
+          28902
+        ],
+        "allAttributesIndicesMorphsExact": true
+      },
+      {
+        "mesh": [
+          "Exposed_Human_Skin",
+          "Face_Details_Atlas"
+        ],
+        "triangles": [
+          10909,
+          10909
+        ],
+        "allAttributesIndicesMorphsExact": true
+      }
+    ],
+    "triangles": {
+      "before": 73670,
+      "after": 76666
+    },
+    "draws": {
+      "before": 8,
+      "after": 8
+    },
+    "bytes": {
+      "before": 4616260,
+      "after": 4734596
+    },
+    "allOtherLibraryGLBsExact": true,
+    "file": "granadero-lod0.glb"
+  },
+  {
+    "baseline": "a3845e976701bf597499b0195178612a9d00fc3b0553700d818dcf8e50132701",
+    "candidate": "362a56c0bfaddbdd5bb15c0e72a8bca8aeb7a9061a55e72f01f7e6acdcb1a6b0",
+    "nativeRigExact": true,
+    "materialDefinitionsExact": true,
+    "textureBytesExact": true,
+    "meshes": [
+      {
+        "mesh": [
+          "Fitted_Boot_l",
+          "Apparel_Atlas"
+        ],
+        "triangles": [
+          1084,
+          1084
+        ],
+        "allAttributesIndicesMorphsExact": true
+      },
+      {
+        "mesh": [
+          "Shaped_Shako",
+          "Apparel_Atlas"
+        ],
+        "triangles": [
+          4014,
+          4014
+        ],
+        "allAttributesIndicesMorphsExact": true
+      },
+      {
+        "mesh": [
+          "Tailored_Breeches",
+          "Apparel_Atlas"
+        ],
+        "triangles": [
+          739,
+          739
+        ],
+        "allAttributesIndicesMorphsExact": true
+      },
+      {
+        "mesh": [
+          "Tailored_Coat",
+          "Apparel_Atlas"
+        ],
+        "triangles": [
+          10978,
+          12782
+        ],
+        "outsideCollarAndCapsTriangles": 8533,
+        "outsideCollarAndCapsGeometryUVWeightColorExact": true,
+        "outsideCollarAndCapsNormalsExact": true,
+        "normalChangedTriangles": 0
+      },
+      {
+        "mesh": [
+          "Exposed_Human_Skin",
+          "Skin"
+        ],
+        "triangles": [
+          2157,
+          2157
+        ],
+        "allAttributesIndicesMorphsExact": true
+      },
+      {
+        "mesh": [
+          "Exposed_Human_Skin",
+          "Apparel_Atlas"
+        ],
+        "triangles": [
+          144,
+          144
+        ],
+        "allAttributesIndicesMorphsExact": true
+      },
+      {
+        "mesh": [
+          "Exposed_Human_Skin",
+          "Face_Skin"
+        ],
+        "triangles": [
+          16928,
+          16928
+        ],
+        "allAttributesIndicesMorphsExact": true
+      },
+      {
+        "mesh": [
+          "Exposed_Human_Skin",
+          "Face_Details_Atlas"
+        ],
+        "triangles": [
+          10606,
+          10606
+        ],
+        "allAttributesIndicesMorphsExact": true
+      }
+    ],
+    "triangles": {
+      "before": 46650,
+      "after": 48454
+    },
+    "draws": {
+      "before": 8,
+      "after": 8
+    },
+    "bytes": {
+      "before": 3143824,
+      "after": 3213212
+    },
+    "allOtherLibraryGLBsExact": true,
+    "file": "granadero-lod1.glb"
+  },
+  {
+    "baseline": "c99b30d724b63035ad3f93bbd5be2d80144598770b5b8122b55ddff20b9c118c",
+    "candidate": "34f62420b8750ebe7242accda1872375a7d4c30bb09e92f5d9f1a4df18ed2266",
+    "nativeRigExact": true,
+    "materialDefinitionsExact": true,
+    "textureBytesExact": true,
+    "meshes": [
+      {
+        "mesh": [
+          "Fitted_Boot_l",
+          "Apparel_Atlas"
+        ],
+        "triangles": [
+          562,
+          562
+        ],
+        "allAttributesIndicesMorphsExact": true
+      },
+      {
+        "mesh": [
+          "Shaped_Shako",
+          "Apparel_Atlas"
+        ],
+        "triangles": [
+          2410,
+          2410
+        ],
+        "allAttributesIndicesMorphsExact": true
+      },
+      {
+        "mesh": [
+          "Tailored_Breeches",
+          "Apparel_Atlas"
+        ],
+        "triangles": [
+          345,
+          345
+        ],
+        "allAttributesIndicesMorphsExact": true
+      },
+      {
+        "mesh": [
+          "Tailored_Coat",
+          "Apparel_Atlas"
+        ],
+        "triangles": [
+          4307,
+          5227
+        ],
+        "outsideCollarAndCapsTriangles": 3654,
+        "outsideCollarAndCapsGeometryUVWeightColorExact": true,
+        "outsideCollarAndCapsNormalsExact": false,
+        "normalChangedTriangles": 9
+      },
+      {
+        "mesh": [
+          "Exposed_Human_Skin",
+          "Skin"
+        ],
+        "triangles": [
+          790,
+          790
+        ],
+        "allAttributesIndicesMorphsExact": true
+      },
+      {
+        "mesh": [
+          "Exposed_Human_Skin",
+          "Face_Skin"
+        ],
+        "triangles": [
+          7008,
+          7008
+        ],
+        "allAttributesIndicesMorphsExact": true
+      },
+      {
+        "mesh": [
+          "Exposed_Human_Skin",
+          "Face_Details_Atlas"
+        ],
+        "triangles": [
+          1573,
+          1573
+        ],
+        "allAttributesIndicesMorphsExact": true
+      }
+    ],
+    "triangles": {
+      "before": 16995,
+      "after": 17915
+    },
+    "draws": {
+      "before": 7,
+      "after": 7
+    },
+    "bytes": {
+      "before": 1015792,
+      "after": 1053632
+    },
+    "allOtherLibraryGLBsExact": true,
+    "file": "granadero-lod2.glb"
+  },
+  {
+    "baseline": "c6043aa97c224ec55b8337a99c666b6b1d04e259814fa7954ef1422f8b83c8b4",
+    "candidate": "2547dea2e5d2c6aafca85dd5dd8a78c3deb609286d3a705f4fbe65debbd444c0",
+    "nativeRigExact": true,
+    "materialDefinitionsExact": true,
+    "textureBytesExact": true,
+    "meshes": [
+      {
+        "mesh": [
+          "Fitted_Boot_l",
+          "Apparel_Atlas"
+        ],
+        "triangles": [
+          1853,
+          1853
+        ],
+        "allAttributesIndicesMorphsExact": true
+      },
+      {
+        "mesh": [
+          "Shaped_Shako",
+          "Apparel_Atlas"
+        ],
+        "triangles": [
+          9276,
+          9276
+        ],
+        "allAttributesIndicesMorphsExact": true
+      },
+      {
+        "mesh": [
+          "Tailored_Breeches",
+          "Apparel_Atlas"
+        ],
+        "triangles": [
+          1951,
+          1951
+        ],
+        "allAttributesIndicesMorphsExact": true
+      },
+      {
+        "mesh": [
+          "Tailored_Coat",
+          "Apparel_Atlas"
+        ],
+        "triangles": [
+          13933,
+          16929
+        ],
+        "outsideCollarAndCapsTriangles": 11067,
+        "outsideCollarAndCapsGeometryUVWeightColorExact": true,
+        "outsideCollarAndCapsNormalsExact": false,
+        "normalChangedTriangles": 1
+      },
+      {
+        "mesh": [
+          "Exposed_Human_Skin",
+          "Skin"
+        ],
+        "triangles": [
+          6289,
+          6289
+        ],
+        "allAttributesIndicesMorphsExact": true
+      },
+      {
+        "mesh": [
+          "Exposed_Human_Skin",
+          "Apparel_Atlas"
+        ],
+        "triangles": [
+          200,
+          200
+        ],
+        "allAttributesIndicesMorphsExact": true
+      },
+      {
+        "mesh": [
+          "Exposed_Human_Skin",
+          "Face_Skin"
+        ],
+        "triangles": [
+          28902,
+          28902
+        ],
+        "allAttributesIndicesMorphsExact": true
+      },
+      {
+        "mesh": [
+          "Exposed_Human_Skin",
+          "Face_Details_Atlas"
+        ],
+        "triangles": [
+          10909,
+          10909
+        ],
+        "allAttributesIndicesMorphsExact": true
+      }
+    ],
+    "triangles": {
+      "before": 73313,
+      "after": 76309
+    },
+    "draws": {
+      "before": 8,
+      "after": 8
+    },
+    "bytes": {
+      "before": 4471592,
+      "after": 4589928
+    },
+    "allOtherLibraryGLBsExact": true,
+    "file": "royalist-lod0.glb"
+  },
+  {
+    "baseline": "343bbbc9c77ed6a6b947f205bd0131b4359110871b6da9b8730f381b4529b3f5",
+    "candidate": "c3ddb01f0a75e77970feec24278c2c5c0d00ea55479177a0c38f033b5e1ce67d",
+    "nativeRigExact": true,
+    "materialDefinitionsExact": true,
+    "textureBytesExact": true,
+    "meshes": [
+      {
+        "mesh": [
+          "Fitted_Boot_l",
+          "Apparel_Atlas"
+        ],
+        "triangles": [
+          1084,
+          1084
+        ],
+        "allAttributesIndicesMorphsExact": true
+      },
+      {
+        "mesh": [
+          "Shaped_Shako",
+          "Apparel_Atlas"
+        ],
+        "triangles": [
+          3943,
+          3943
+        ],
+        "allAttributesIndicesMorphsExact": true
+      },
+      {
+        "mesh": [
+          "Tailored_Breeches",
+          "Apparel_Atlas"
+        ],
+        "triangles": [
+          739,
+          739
+        ],
+        "allAttributesIndicesMorphsExact": true
+      },
+      {
+        "mesh": [
+          "Tailored_Coat",
+          "Apparel_Atlas"
+        ],
+        "triangles": [
+          10978,
+          12782
+        ],
+        "outsideCollarAndCapsTriangles": 8533,
+        "outsideCollarAndCapsGeometryUVWeightColorExact": true,
+        "outsideCollarAndCapsNormalsExact": true,
+        "normalChangedTriangles": 0
+      },
+      {
+        "mesh": [
+          "Exposed_Human_Skin",
+          "Skin"
+        ],
+        "triangles": [
+          2157,
+          2157
+        ],
+        "allAttributesIndicesMorphsExact": true
+      },
+      {
+        "mesh": [
+          "Exposed_Human_Skin",
+          "Apparel_Atlas"
+        ],
+        "triangles": [
+          144,
+          144
+        ],
+        "allAttributesIndicesMorphsExact": true
+      },
+      {
+        "mesh": [
+          "Exposed_Human_Skin",
+          "Face_Skin"
+        ],
+        "triangles": [
+          16928,
+          16928
+        ],
+        "allAttributesIndicesMorphsExact": true
+      },
+      {
+        "mesh": [
+          "Exposed_Human_Skin",
+          "Face_Details_Atlas"
+        ],
+        "triangles": [
+          10606,
+          10606
+        ],
+        "allAttributesIndicesMorphsExact": true
+      }
+    ],
+    "triangles": {
+      "before": 46579,
+      "after": 48383
+    },
+    "draws": {
+      "before": 8,
+      "after": 8
+    },
+    "bytes": {
+      "before": 3068800,
+      "after": 3138188
+    },
+    "allOtherLibraryGLBsExact": true,
+    "file": "royalist-lod1.glb"
+  },
+  {
+    "baseline": "394701f4674fe4e3340367c689d691d98c87bd8fe7a486039cb7c9bbc989b8f9",
+    "candidate": "900f93723c5057884f711805f0f14b84bf33e7420426f52bcf12759ad044b3b9",
+    "nativeRigExact": true,
+    "materialDefinitionsExact": true,
+    "textureBytesExact": true,
+    "meshes": [
+      {
+        "mesh": [
+          "Fitted_Boot_l",
+          "Apparel_Atlas"
+        ],
+        "triangles": [
+          562,
+          562
+        ],
+        "allAttributesIndicesMorphsExact": true
+      },
+      {
+        "mesh": [
+          "Shaped_Shako",
+          "Apparel_Atlas"
+        ],
+        "triangles": [
+          2353,
+          2353
+        ],
+        "allAttributesIndicesMorphsExact": true
+      },
+      {
+        "mesh": [
+          "Tailored_Breeches",
+          "Apparel_Atlas"
+        ],
+        "triangles": [
+          345,
+          345
+        ],
+        "allAttributesIndicesMorphsExact": true
+      },
+      {
+        "mesh": [
+          "Tailored_Coat",
+          "Apparel_Atlas"
+        ],
+        "triangles": [
+          4307,
+          5227
+        ],
+        "outsideCollarAndCapsTriangles": 3654,
+        "outsideCollarAndCapsGeometryUVWeightColorExact": true,
+        "outsideCollarAndCapsNormalsExact": false,
+        "normalChangedTriangles": 9
+      },
+      {
+        "mesh": [
+          "Exposed_Human_Skin",
+          "Skin"
+        ],
+        "triangles": [
+          790,
+          790
+        ],
+        "allAttributesIndicesMorphsExact": true
+      },
+      {
+        "mesh": [
+          "Exposed_Human_Skin",
+          "Face_Skin"
+        ],
+        "triangles": [
+          7008,
+          7008
+        ],
+        "allAttributesIndicesMorphsExact": true
+      },
+      {
+        "mesh": [
+          "Exposed_Human_Skin",
+          "Face_Details_Atlas"
+        ],
+        "triangles": [
+          1573,
+          1573
+        ],
+        "allAttributesIndicesMorphsExact": true
+      }
+    ],
+    "triangles": {
+      "before": 16938,
+      "after": 17858
+    },
+    "draws": {
+      "before": 7,
+      "after": 7
+    },
+    "bytes": {
+      "before": 981860,
+      "after": 1019700
+    },
+    "allOtherLibraryGLBsExact": true,
+    "file": "royalist-lod2.glb"
+  }
+]

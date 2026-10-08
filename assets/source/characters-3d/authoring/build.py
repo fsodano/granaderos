@@ -45,6 +45,8 @@ if args.kind in ('appearance','garments','animations'):
   for t in rig.animation_data.nla_tracks:t.mute=False
   name=gender+'-animations'
  else:
+  from clothing_surfaces import finish_shoulder_pads
+  finish_shoulder_pads(ctx)
   optimize_character(ctx,args.lod)
   from cloth_correctives import add_cloth_correctives
   add_cloth_correctives(ctx);create_sockets(ctx);name=args.preset+'-lod'+str(args.lod)

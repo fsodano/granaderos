@@ -1,0 +1,134 @@
+{
+  "date": "2026-10-08",
+  "baseCommit": "f01916b070b4dfd59a92ef20c50d184ba8a194a1",
+  "scope": "Military collar seam and shoulder-pad topology, six appearance LODs only",
+  "sources": {
+    "assets/source/characters-3d/authoring/collar_seam.py": "fe29958a2060c141bd690b41c55c38c57109bf08d660ee2f2c7609a1bdbc97b0",
+    "assets/source/characters-3d/authoring/clothing_surfaces.py": "f960e7fecb88cbdb1ce6b653da42f0a20f4aa1c101fddb54bd26ae7c133603c0"
+  },
+  "bodies": {
+    "granadero": [
+      {
+        "lod": 0,
+        "url": "/models/characters/granadero-lod0.glb",
+        "triangles": 76666,
+        "bytes": 4734596,
+        "drawCalls": 8,
+        "sha256": "0f575797896fc2ca45e1580a2f2b0f9556bf04adf07a5b53bea0a06b3d0db56d"
+      },
+      {
+        "lod": 1,
+        "url": "/models/characters/granadero-lod1.glb",
+        "triangles": 48454,
+        "bytes": 3213212,
+        "drawCalls": 8,
+        "sha256": "362a56c0bfaddbdd5bb15c0e72a8bca8aeb7a9061a55e72f01f7e6acdcb1a6b0"
+      },
+      {
+        "lod": 2,
+        "url": "/models/characters/granadero-lod2.glb",
+        "triangles": 17915,
+        "bytes": 1053632,
+        "drawCalls": 7,
+        "sha256": "34f62420b8750ebe7242accda1872375a7d4c30bb09e92f5d9f1a4df18ed2266"
+      }
+    ],
+    "royalist": [
+      {
+        "lod": 0,
+        "url": "/models/characters/royalist-lod0.glb",
+        "triangles": 76309,
+        "bytes": 4589928,
+        "drawCalls": 8,
+        "sha256": "2547dea2e5d2c6aafca85dd5dd8a78c3deb609286d3a705f4fbe65debbd444c0"
+      },
+      {
+        "lod": 1,
+        "url": "/models/characters/royalist-lod1.glb",
+        "triangles": 48383,
+        "bytes": 3138188,
+        "drawCalls": 8,
+        "sha256": "c3ddb01f0a75e77970feec24278c2c5c0d00ea55479177a0c38f033b5e1ce67d"
+      },
+      {
+        "lod": 2,
+        "url": "/models/characters/royalist-lod2.glb",
+        "triangles": 17858,
+        "bytes": 1019700,
+        "drawCalls": 7,
+        "sha256": "900f93723c5057884f711805f0f14b84bf33e7420426f52bcf12759ad044b3b9"
+      }
+    ]
+  },
+  "preservedAnimationBanks": {
+    "male": "48a5966d73058d2fef5eb77837d229377178106a349b903983c0bb38ad914d87",
+    "female": "0d437c4296ce6e7657626f0a18815eddf1b3cdf75479933ddd8a5fada017542e"
+  },
+  "validation": {
+    "nativeCollarSamples": 3084,
+    "collarCrossingFrames": 0,
+    "labTestsPassed": 27,
+    "typecheck": "pass",
+    "library": {
+      "appearances": 24,
+      "anatomies": 2,
+      "clipsPerAnatomy": 334,
+      "equipment": 26,
+      "horseLODs": 3
+    },
+    "locomotionProfile": "fresh",
+    "productionBuild": {
+      "id": "e4176a47c77b",
+      "files": 1304,
+      "assetReferences": 1041,
+      "baseCommit": "9002e91c6fa542ebdc372386e7587bf5d1de9ea0"
+    },
+    "browser": {
+      "url": "http://localhost:3147/",
+      "granaderoVisibleHash": "0f575797",
+      "royalistVisibleHash": "2547dea2",
+      "warningOrErrorLogs": 0
+    },
+    "quickSuite": {
+      "status": "6 pre-existing failures",
+      "baseCommit": "f01916b070b4dfd59a92ef20c50d184ba8a194a1",
+      "files": 870,
+      "passed": 6568,
+      "failed": 6,
+      "skipped": 0,
+      "baselineReproduction": {
+        "passed": 23,
+        "failed": 6,
+        "skipped": 0
+      },
+      "evidence": "baseline-test-failures.json"
+    },
+    "postSyncTests": {
+      "baseCommit": "9002e91c6fa542ebdc372386e7587bf5d1de9ea0",
+      "passed": 9,
+      "failed": 0,
+      "files": [
+        "tests/three-melee-contact-fit.test.mjs",
+        "tests/three-building-door-source-bands.test.mjs"
+      ]
+    }
+  },
+  "limits": [
+    "Ten native clips at30Hz plus rest; no all-motion acceptance.",
+    "Edge crossings do not establish positive clearance or exclude wholly contained penetration.",
+    "Inner shoulder-pad/coat fit remains open as C8.",
+    "Worker and long-cloth pilots are not included."
+  ],
+  "evidence": [
+    "combined-preservation.json",
+    "collar-clearance.json",
+    "render-frames.json",
+    "granadero-before.png",
+    "granadero-after.png",
+    "royalist-after.png",
+    "lab-granadero.png",
+    "lab-royalist.png",
+    "baseline-test-failures.json"
+  ],
+  "integrationBaseCommit": "9002e91c6fa542ebdc372386e7587bf5d1de9ea0"
+}

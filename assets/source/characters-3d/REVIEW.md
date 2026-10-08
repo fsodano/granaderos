@@ -192,3 +192,17 @@ The source package contains about 40.94 MB of head GLBs and 45.32 MB of exact
 texture content. No crowd-performance claim is made. Facial identities still
 share base shapes and, for Granadero/Worker, broad brows and stubble. The user
 accepted the faces for now; further clothing work remains separate.
+
+## Separate military clothing repair — 2026-10-08
+
+Granadero and Royalist collars now share the coat neckline and follow the
+accepted neck surface at all three LODs. Shoulder pads have closed poles and
+outward normals. The six combined exports preserve accepted faces, hands,
+other body parts and the separately merged sabre-thrust banks. A 30 Hz gate
+finds no collar/neck edge crossings in 3,084 samples across ten native clips
+plus rest. This is a sampled crossing check, not full cloth acceptance.
+
+The [clothing review](../../../docs/art/character-clothing-review-2026-10-08.md)
+contains actual before/after images, preservation receipts, geometry costs,
+and open issues C1–C8. The Worker vest, long garments, coat tails and remaining
+shoulder-pad fit continue separately.

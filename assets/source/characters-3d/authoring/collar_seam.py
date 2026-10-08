@@ -1,0 +1,197 @@
+"""Military collar sewn to the current reduced coat and reviewed native neck.
+
+Only the coat's open neckline seam is refitted and locally subdivided. All
+other coat positions, UVs, colours and native weights remain fixed. The new
+collar shares that seam and follows the reviewed exported neck surface.
+"""
+import math
+from pathlib import Path
+import bpy,bmesh
+from mathutils import Vector
+from mathutils.bvhtree import BVHTree
+from mathutils.geometry import barycentric_transform
+from mathutils.kdtree import KDTree
+
+
+def neckline(coat):
+    counts={}
+    for face in coat.data.polygons:
+        ids=list(face.vertices)
+        for a,b in zip(ids,ids[1:]+ids[:1]):
+            key=tuple(sorted((a,b)));counts[key]=counts.get(key,0)+1
+    adjacent={}
+    for (a,b),count in counts.items():
+        if count==1 and min(coat.data.vertices[i].co.z for i in (a,b))>1.48:
+            adjacent.setdefault(a,[]).append(b);adjacent.setdefault(b,[]).append(a)
+    if len(adjacent)<8 or any(len(v)!=2 for v in adjacent.values()):
+        raise ValueError('A collar needs one closed native coat neckline')
+    first=min(adjacent);ids=[first];previous=None;current=first
+    while True:
+        following=next(i for i in sorted(adjacent[current])if i!=previous)
+        if following==first:break
+        if following in ids:raise ValueError('Invalid sewn collar boundary')
+        ids.append(following);previous,current=current,following
+    if len(ids)!=len(adjacent):raise ValueError('Multiple coat neckline loops')
+    points=[coat.data.vertices[i].co for i in ids]
+    if sum(a.x*b.y-b.x*a.y for a,b in zip(points,points[1:]+points[:1]))<0:ids.reverse()
+    return ids
+
+
+def neck_surface(preset,lod):
+    from accepted_faces import load
+    path=Path(__file__).parent/'vendor/reviewed-faces'/f'{preset}-lod{lod}.glb'
+    doc,read,_=load(path);names=[doc['nodes'][i]['name']for i in doc['skins'][0]['joints']]
+    primitive=next(p for m in doc['meshes']for p in m['primitives']if doc['materials'][p['material']]['name']=='Face_Skin')
+    position=read(primitive['attributes']['POSITION']);joints=read(primitive['attributes']['JOINTS_0']);weights=read(primitive['attributes']['WEIGHTS_0'])
+    points=[Vector((float(x),-float(z),float(y)))for x,y,z in position]
+    faces=[tuple(map(int,t))for t in read(primitive['indices']).reshape(-1,3)]
+    bvh=BVHTree.FromPolygons(points,faces,all_triangles=True)
+    def sample(direction,z):
+        centre=Vector((0,-.036,z));p,n,index,d=bvh.ray_cast(centre,direction,.18)
+        if p is None or (p-centre).length>.115:raise ValueError('Collar must fit the reviewed exported neck')
+        ids=faces[index];blend=barycentric_transform(p,*[points[i]for i in ids],Vector((1,0,0)),Vector((0,1,0)),Vector((0,0,1)))
+        result={}
+        for i,factor in zip(ids,blend):
+            for bone,w in zip(joints[i],weights[i]):
+                if w>0:result[names[int(bone)]]=result.get(names[int(bone)],0)+max(0,factor)*float(w)
+        kept=sorted(result.items(),key=lambda value:-value[1])[:4];total=sum(v for k,v in kept)
+        radial=Vector((n.x,n.y,0)).normalized()
+        # Edge reserve supplements the fitted cloth thickness.
+        # The lower side panels need room for the native clavicle/neck twist.
+        # Keep this reserve out of the front, back and upper collar edge.
+        base=max(0.,min(1.,(1.522-z)/.014))
+        side=max(0.,min(1.,(abs(direction.x)-.5)/.5))
+        outset=(.0065+.0035*base*side)/max(.5,radial.dot(direction))
+        q=p+direction*outset
+        if lod==2:
+            # Exact coarse native seam anchor: a 0.014 mm posed entry remains
+            # after simplification. Move coat and collar together, 0.10 mm at
+            # the centre, in the inverse-skinned outward surface direction.
+            centre=Vector((.08719699085,-.02548218891,1.50885093212))
+            d=q-centre
+            falloff=math.exp(-((d.x/.012)**2+(d.y/.012)**2+(d.z/.006)**2))
+            q+=Vector((.3528619,-.5919615,.7331930))*(.0001*falloff)
+        return q,{k:v/total for k,v in kept}
+    return sample
+
+
+def fit_collar(ctx,lod):
+    if ctx.get('preset') not in ('granadero','royalist'):return
+    coat=ctx['coat'];objects=ctx['objects'];mesh=ctx['mesh']
+    collar=next(o for o in objects if o.name=='Crimson_Collar')
+    gold=next((o for o in objects if o.name=='Fine_Collar_Gold_Edge'),None)
+    # At this hook all original objects have completed their ordinary LOD and
+    # atlas conversion. Reuse those exact materials and original colour tiles.
+    atlas=collar.data.materials[0]
+    red_uv=tuple(collar.data.uv_layers.active.data[0].uv)
+    gold_uv=tuple(gold.data.uv_layers.active.data[0].uv) if gold else None
+    old_colours=collar.data.color_attributes['Human_Surface_Tone']
+    old_tones=[tuple(v.color)for v in old_colours.data]
+    tree=KDTree(len(collar.data.vertices))
+    for vertex in collar.data.vertices:tree.insert(vertex.co,vertex.index)
+    tree.balance()
+    original_ids=neckline(coat)
+    edge_keys={tuple(sorted((a,b))) for a,b in zip(original_ids,original_ids[1:]+original_ids[:1])}
+    bm=bmesh.new();bm.from_mesh(coat.data);bm.verts.ensure_lookup_table()
+    groups={}
+    for edge in bm.edges:
+        if tuple(sorted(v.index for v in edge.verts)) in edge_keys:
+            cuts=max(0,math.ceil(edge.calc_length()/(.006,.008,.006)[lod])-1)
+            if cuts:groups.setdefault(cuts,[]).append(edge)
+    for cuts,edges in sorted(groups.items()):
+        bmesh.ops.subdivide_edges(bm,edges=edges,cuts=cuts,use_grid_fill=False)
+    bm.to_mesh(coat.data);bm.free();coat.data.update()
+    ids=neckline(coat);count=len(ids)
+    fixed_ids=set(range(len(coat.data.vertices)))-set(ids)
+    before={i:tuple(coat.data.vertices[i].co) for i in fixed_ids}
+    before_triangles=sorted(tuple(tuple(coat.data.vertices[i].co)for i in f.vertices)for f in coat.data.polygons if all(i in fixed_ids for i in f.vertices))
+    # Keep the native cycle, but remove its small backward angular steps.
+    # Sorting vertex IDs by angle would cut the sewn topology. Isotonic fitting
+    # moves only the existing seam points, with a small positive column gap.
+    raw=[math.atan2(coat.data.vertices[i].co.y+.036,coat.data.vertices[i].co.x)for i in ids]
+    gaps=[(raw[(i+1)%count]-raw[i])%math.tau for i in range(count)]
+    # Exclude tiny backward steps interpreted as almost a whole turn.
+    cut=max(range(count),key=lambda i:gaps[i] if gaps[i]<math.pi else 0)
+    shift=(cut+1)%count;ids=ids[shift:]+ids[:shift]
+    coords=[coat.data.vertices[i].co.copy()for i in ids]
+    angles=[]
+    for p in coords:
+        angle=math.atan2(p.y+.036,p.x)
+        if angles:angle=angles[-1]+(angle-angles[-1]+math.pi)%math.tau-math.pi
+        angles.append(angle)
+    minimum=.004;blocks=[]
+    for i,angle in enumerate(angles):
+        blocks.append([angle-i*minimum,1])
+        while len(blocks)>1 and blocks[-2][0]>blocks[-1][0]:
+            b=blocks.pop();a=blocks.pop();blocks.append([(a[0]*a[1]+b[0]*b[1])/(a[1]+b[1]),a[1]+b[1]])
+    fitted=[mean for mean,n in blocks for _ in range(n)]
+    angles=[mean+i*minimum for i,mean in enumerate(fitted)]
+    assert all(b>a for a,b in zip(angles,angles[1:])), 'Sewn collar columns cannot fold back'
+    assert angles[-1]<angles[0]+math.tau-minimum, 'Sewn collar cycle must remain open at its seam'
+
+    weights=[{coat.vertex_groups[g.group].name:g.weight for g in coat.data.vertices[i].groups}for i in ids]
+    sample=neck_surface(ctx['preset'],lod)
+    maximum=0
+    for i,p in enumerate(coords):
+        direction=Vector((math.cos(angles[i]),math.sin(angles[i]),0))
+        try:q,w=sample(direction,p.z)
+        except ValueError:
+            q,w=sample(direction,max(p.z,1.510));q.z=p.z
+        maximum=max(maximum,(q-p).length)
+        coords[i]=q;weights[i]=w
+        vertex=coat.data.vertices[ids[i]];vertex.co=q
+        for group in coat.vertex_groups:group.remove([vertex.index])
+        for bone,value in w.items():
+            group=coat.vertex_groups.get(bone) or coat.vertex_groups.new(name=bone)
+            group.add([vertex.index],value,'REPLACE')
+    print('COLLAR_NECKLINE_MAX_DELTA',maximum,flush=True)
+    # Preserve the exact angular correspondence of the sewn native boundary.
+    # Uniform index spacing twists uneven native edge loops across the neck.
+    base_heights=[p.z for p in coords]
+    for fraction in (.18,.40,.65,1.):
+        for i,angle in enumerate(angles):
+            # The front edge sits under the throat rather than over the chin.
+            top=1.533-.011*max(0.,-math.sin(angle))**8
+            z=base_heights[i]+fraction*(top-base_heights[i])
+            q,w=sample(Vector((math.cos(angle),math.sin(angle),0)),z)
+            coords.append(q);weights.append(w)
+    outer=coords[-count:];outer_weights=weights[-count:]
+    for depth,drop in ((.002,0),(.002,.002)):
+        for p,w in zip(outer,outer_weights):
+            radial=Vector((p.x,p.y+.036,0)).normalized();coords.append(p-radial*depth-Vector((0,0,drop)));weights.append(dict(w))
+    faces=[]
+    for row in range(6):
+        for i in range(count):
+            a=row*count+i;b=row*count+(i+1)%count;faces.append((a,b,b+count,a+count))
+    replacement=mesh('Crimson_Collar_Sewn',coords,faces,atlas,weights,[[red_uv]*4 for _ in faces])
+    pigment=replacement.data.color_attributes.new(name='Human_Surface_Tone',type='FLOAT_COLOR',domain='POINT')
+    for vertex,entry in zip(replacement.data.vertices,pigment.data):entry.color=old_tones[tree.find(vertex.co)[1]]
+    replacement['part']='outfit';replacement['appearance']=ctx['preset']
+    # Match the coat's pigments at the shared point domain. UVs remain per-loop,
+    # so red facing and blue coat still sample their original separate tiles.
+    coat_tone=coat.data.color_attributes['Human_Surface_Tone']
+    for i,source_id in enumerate(ids):pigment.data[i].color=coat_tone.data[source_id].color
+    seam_positions={tuple(round(c,7)for c in p)for p in coords[:count]}
+    bpy.ops.object.select_all(action='DESELECT');coat.select_set(True);replacement.select_set(True)
+    bpy.context.view_layer.objects.active=coat;bpy.ops.object.join();objects.remove(replacement)
+    bm=bmesh.new();bm.from_mesh(coat.data)
+    seam=[v for v in bm.verts if tuple(round(c,7)for c in v.co)in seam_positions]
+    bmesh.ops.remove_doubles(bm,verts=seam,dist=1e-7);bm.to_mesh(coat.data);bm.free();coat.data.update()
+    after=[tuple(tuple(coat.data.vertices[i].co)for i in f.vertices)for f in coat.data.polygons]
+    assert all(p in {tuple(v.co)for v in coat.data.vertices}for p in before.values())
+    assert all(face in after for face in before_triangles),'Non-seam coat triangles must remain exact'
+    gold_insert=objects.index(gold) if gold else len(objects)
+    for old in (collar,gold):
+        if old is not None:objects.remove(old);bpy.data.objects.remove(old,do_unlink=True)
+    if gold is None:
+        print('COLLAR_SEWN',count,'fitted seam vertices;',len(before_triangles),'unchanged coat polygons; no omitted LOD gold added',flush=True)
+        return
+    path=[p+Vector((0,0,.0007))for p in outer];path.append(path[0]);w=outer_weights+[outer_weights[0]]
+    edge=ctx['tube']('Fine_Collar_Gold_Edge',path,[.0015]*len(path),atlas,[a for a in w for _ in range(6)],6)
+    layer=edge.data.uv_layers.new(name='UVMap')
+    for loop in layer.data:loop.uv=gold_uv
+    colours=edge.data.color_attributes.new(name='Human_Surface_Tone',type='FLOAT_COLOR',domain='POINT')
+    for vertex,entry in zip(edge.data.vertices,colours.data):
+        shade=.96-.025*(.5+.5*math.sin(vertex.co.z*61+vertex.co.x*39));entry.color=(shade,shade,shade*.97,1)
+    edge['part']='outfit';edge['appearance']=ctx['preset'];objects.remove(edge);objects.insert(min(gold_insert,len(objects)),edge)
+    print('COLLAR_SEWN',count,'fitted seam vertices;' ,len(before_triangles),'unchanged coat polygons',flush=True)
