@@ -24,7 +24,7 @@ All 156 affected tests pass: 22 crest/geometry tests, 24 appearance/item tests a
 
 The visible sandbox checker uses Azoteas a distintas alturas and normal Subir/Bajar controls. Eight paid actions and four resets pass: 5.6 m/base 1.2 m, 4.2 m same-cell/base 1.1 m, 6 m/base 1.7 m and 2 m same-cell/base .4 m. AP is 100→80→65 internally (25→20→16.25 on the HUD), energy is 100→88→80; saved cells, levels and elevations remain exact. Page errors and failed HTTP responses are empty.
 
-The before/current crest images and raised hatch/low return endpoints were viewed. The corrected last-rung sequence is visible. Overlay phase metadata can lag a screenshot by one frame; these ordinary images establish route and appearance, while the CPU proof establishes sub-frame continuity. The private UI retains the accepted prior renderer inputs. Root must repeat the route on its current composed main renderer before publication.
+The before/current crest images and raised hatch/low return endpoints were viewed. The corrected last-rung sequence is visible. Overlay phase metadata can lag a screenshot by one frame; these ordinary images establish route and appearance, while the CPU proof establishes sub-frame continuity. The private UI retains the accepted prior renderer inputs. Root repeated that route on the current composed main renderer before publication; results are below.
 
 ## Retained defects and rejected trials
 
@@ -47,3 +47,15 @@ node tools/verify-three-climb-crest-pace.mjs
 ```
 
 The visible route uses `tools/verify-three-climb-crest-route.mjs` with the ordinary `GRANADEROS_REVIEW_URL`, `GRANADEROS_REVIEW_OUTPUT`, `PLAYWRIGHT_MODULE` and `CHROMIUM_EXECUTABLE` settings. It does not inject battle state, pose or clocks.
+
+## Root integration on clinical main
+
+Root composed the cut onto patient-care main `fd742cff274ac178a30228017211d61feaf8918a`. All nine clinical code/test inputs, including ActorRuntime `075a40c9…`, remain exact. The 106 complete native model/bank/manifest/equipment/profile inputs remain exact. Every 10,799 tracked main blob outside the 33-path cut matched before build and remained byte exact afterward. The Git submodule reference is retained. One empty final line in the copied typecheck log was removed for `git diff --check`; the immutable review cut retains the raw output.
+
+The root gate passes 242 affected checks in 96.7 seconds, with zero failures/skips. Typecheck, native/profile checks, docs audit, all 38 baseline checks and production build pass. Build source is `f1a502d7b1ccb8c0180d9a4d7728deb70a4d287ecd22ec4c52504a2730dd271c`. Final additions are documentation-only.
+
+Root repeated dense whole-surface preservation for both anatomies/all three LODs on the 5.6 m same-cell ascent: six cases, 3,318 poses and 54 edge comparisons pass. The selected largest crest jump drops from 527.132629 to 0.014433 mm. This subset does not replace the frozen full 96-case proof. Root also reproduced the retained Granadero LOD1 rapid-motion witness, so natural climbing pace remains open.
+
+Root repeated eight normal paid actions and four resets. Both runs preserve 182 source/native pins and each receives 386 exact native responses, with no browser/HTTP/console errors. The captured current fitter response matches the independently read compiled module and includes the new even-crest logic; its geometry dependency also includes the new real-rung bridge. AP, energy, saved cells, levels and elevations pass. Root viewed the before/current crest, descent, raised return and low return captures. A cutaway endpoint does not prove physical low-ceiling clearance; the retained actual authored slab/headwear defect remains open.
+
+[Before crest](root-before-up-crest.png), [current crest](root-current-up-crest.png), [current descent](root-current-down-crest.png), [raised return](root-raised-return.png) and [low return](root-low-return.png) are root captures. [Root source/UI receipt](root-current-source-and-ui.json) and [selected dense proof](root-dense-crest.json) retain the measured scope. Screenshot phase telemetry can lag the actual rendered frame; the dense proof supplies sub-frame continuity evidence.
