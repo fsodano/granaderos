@@ -74,4 +74,8 @@ if manifest['complete']:
   subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-motion-increment.py'),'--blender',a.blender,'--gesture','climbUp','--gesture','climbDown','--equipment','any'],cwd=ROOT,check=True)
   # Keep the released rifle guard soles supported after native retargeting.
   subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-guard-support.py'),'--blender',a.blender],cwd=ROOT,check=True)
+  # Preserve the retained 30 Hz parent trajectory and fit crouched boot support
+  # at 60 Hz without replacing native upper-body, Root or pace channels.
+  leg_bones=[name+'_'+side for side in ('l','r')for name in ('thigh','calf','foot','ball')]
+  subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-motion-increment.py'),'--blender',a.blender,'--posture','crouched','--gesture','strafeLeft','--gesture','strafeRight','--equipment','unarmed','--metadata-field','nativeSidewaysSupport','--existing-only']+[argument for bone in leg_bones for argument in ('--bone',bone)],cwd=ROOT,check=True)
  else:subprocess.run(['node',str(ROOT/'tools/characters-3d/compile-locomotion-profile.mjs')],cwd=ROOT,check=True)
