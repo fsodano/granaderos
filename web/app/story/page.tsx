@@ -266,7 +266,7 @@ export default function ContentEditor() {
       };
     if(collection==='characters'&&kind==='encounter'){
       delete added.arrivalHours;
-      Object.assign(added,{name:'Nuevo habitante',nickname:'Habitante',role:'Habitante',recruitmentSource:'encounter',service:'permanent',monthlyPay:0,weapon:null,spriteAppearance:'worker',encounter:{recruitable:false,greeting:'Buen día.',requiredLeadership:0,requiredLiberated:0,requiredSector:null}});
+      Object.assign(added,{name:'Nuevo habitante',nickname:'Habitante',role:'Habitante',recruitmentSource:'encounter',service:'permanent',monthlyPay:0,serviceGuarantee:0,weapon:null,spriteAppearance:'worker',encounter:{recruitable:false,greeting:'Buen día.',requiredLeadership:0,requiredLiberated:0,requiredSector:null}});
     }
     change({ ...draft, [collection]: [...items, added] });
     setSelected(added.id);
@@ -275,7 +275,7 @@ export default function ContentEditor() {
   function duplicateCharacter() {
     if (collection !== 'characters' || isHistoricalCharacter(item)&&!draft.campaignStory) return;
     const added = {...structuredClone(item), ...structuredClone(characterPresentationDefaults(item)), abilities:[...(item.abilities??legacyCharacterAbilities(legacyOperativeId(item.id)))], recruitmentSource:item.recruitmentSource??'contract', service:item.service??'contract', progression:item.progression??'experience', traits:[...characterTraits], ridingSkill, id: nextId('person', draft.characters), name: `${item.name.slice(0, 92)} (copia)`};
-    if(isHistoricalCharacter(item))Object.assign(added,{recruitmentSource:'encounter',service:'permanent',monthlyPay:0,progression:'experience',encounter:{recruitable:true,greeting:'Buen día. Hablemos de la campaña.',requiredLeadership:0,requiredLiberated:0,requiredSector:null}});
+    if(isHistoricalCharacter(item))Object.assign(added,{recruitmentSource:'encounter',service:'permanent',monthlyPay:0,serviceGuarantee:0,progression:'experience',encounter:{recruitable:true,greeting:'Buen día. Hablemos de la campaña.',requiredLeadership:0,requiredLiberated:0,requiredSector:null}});
     change({...draft, characters: [...draft.characters, added],placements:placement?[...draft.placements,{...structuredClone(placement),id:nextId('placement',draft.placements),character:added.id}]:draft.placements});
     setSelected(added.id);
     setSearches(current=>({...current,characters:''}));
@@ -677,6 +677,10 @@ export default function ContentEditor() {
                           }
                         />
                       </label>
+                      <label>Garantía de servicio (pesos)
+                        <input type="number" min={0} max={1000000} value={item.serviceGuarantee??0} disabled={isHistoricalCharacter(item)||item.service!=='contract'} onChange={e=>update({serviceGuarantee:e.target.valueAsNumber})}/>
+                        <small>Opcional; 0 conserva el costo original. Se paga aparte de la paga y se devuelve según la salud al finalizar el servicio. No se devuelve al capturar ni al fallecer.</small>
+                      </label>
                       <label>
                         Arma principal
                         <select
@@ -700,6 +704,7 @@ export default function ContentEditor() {
                         </select>
                       </label>
                     </div>
+                    {isContractCharacter(item)&&<ContractPricePreview draft={draft} monthlyPay={item.monthlyPay} serviceGuarantee={item.serviceGuarantee??0}/>}
                     {isContractCharacter(item) && <label>
                       Tiempo de viaje (horas)
                       <input type="number" min={0} max={168} value={item.arrivalHours ?? 0} onChange={e=>update({arrivalHours:e.target.valueAsNumber})}/>
@@ -736,13 +741,13 @@ export default function ContentEditor() {
                       </label>
                       {item.encounter.recruitable&&<>
                         <label>Tipo de servicio
-                          <select value={item.service} onChange={e=>update({service:e.target.value,...(e.target.value==='permanent'?{monthlyPay:0}:{})})}>
+                          <select value={item.service} onChange={e=>update({service:e.target.value,...(e.target.value==='permanent'?{monthlyPay:0,serviceGuarantee:0}:{})})}>
                             <option value="permanent">Permanente, sin paga</option>
                             <option value="contract">Contrato por los plazos de la campaña</option>
                           </select>
                         </label>
                         <p>Se incorpora donde lo encontrás y conserva sus heridas. {item.service==='contract'?'La paga mensual define el precio de cada plazo. El jugador elige y paga antes de incorporarlo.':'Sirve sin paga y sin fecha de vencimiento.'}</p>
-                        {item.service==='contract'&&<ContractPricePreview draft={draft} monthlyPay={item.monthlyPay}/>}
+                        {item.service==='contract'&&<ContractPricePreview draft={draft} monthlyPay={item.monthlyPay} serviceGuarantee={item.serviceGuarantee??0}/>}
                         <label>Liderazgo mínimo del interlocutor
                           <input type="number" min={0} max={100} value={item.encounter.requiredLeadership} onChange={e=>update({encounter:{...item.encounter,requiredLeadership:e.target.valueAsNumber}})}/>
                         </label>

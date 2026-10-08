@@ -3,7 +3,8 @@ import {useEffect,useRef,useState} from 'react';
 import {contractRenewalQuote,contractStatus} from '../../game/contracts.js';
 import {CARE_ASSIGNMENTS,careAssignmentReason} from '../../game/medical-care.js';
 import {WORK_ASSIGNMENTS,STUDY_SKILLS,workAssignmentReason} from '../../game/assignments.js';
-import {operativeLocation} from '../../game/squads.js';
+import {guaranteeRecord,serviceGuaranteeRefund} from '../../game/service-guarantees.js';
+import {operativeInTransit,operativeLocation} from '../../game/squads.js';
 import {mountForOperative,MATURITY_HOURS} from '../../game/horses.js';
 import {strategicSquadAssignments} from '../../game/strategic-squad-assignments.js';
 import {squadTravelStatus} from '../../game/squad-travel.js';
@@ -76,8 +77,10 @@ export default function StrategicPersonnelMenu({state:s,roster,id,kind,onClose,d
    <ContractMoraleNotice status={lowMoraleRenewalStatus(s,op)}/>
    <p>{contract?.remaining===null?'Servicio permanente':`${Math.ceil((contract?.remaining??0)/24)} días hasta la salida`}</p>
    <ServiceRefusalNotice state={s} refusal={contractRefusal} disabled={blocked} dispatch={dispatch}/>
-   {contract?.remaining!==null&&['day','week','fortnight'].map(term=>{const q=contractRenewalQuote(s,op,term),reason=blocked?'Resolvé el encuentro antes de renovar.':!q.available?q.reason:q.price>s.resources.treasury?'No hay suficientes pesos.':null;return <button key={term} className="line-button" disabled={Boolean(reason)} title={reason||undefined} onClick={()=>order({type:'renewContract',id,term,expectedExpiresAt:s.contracts[id]?.expiresAt,expectedExpiresSecond:s.contracts[id]?.expiresSecond??0})}>{term==='day'?'Un día':term==='week'?'Una semana':'Dos semanas'} · {q.price.toLocaleString('es-AR')} pesos</button>;})}
-   {id!==1000&&<button className="line-button" disabled={blocked} onClick={()=>order({type:'dismiss',id})}>Despedir</button>}
+   {contract?.remaining!==null&&['day','week','fortnight'].map(term=>{const q=contractRenewalQuote(s,op,term),reason=blocked?'Resolvé el encuentro antes de renovar.':!q.available?q.reason:q.price>s.resources.treasury?'No hay suficientes pesos.':null;return <button key={term} className="line-button" disabled={Boolean(reason)} title={reason||undefined} onClick={()=>order({type:'renewContract',id,term,...(s.contracts[id]?.guaranteeId?{expectedGuaranteeId:s.contracts[id].guaranteeId}:{}),expectedExpiresAt:s.contracts[id]?.expiresAt,expectedExpiresSecond:s.contracts[id]?.expiresSecond??0})}>{term==='day'?'Un día':term==='week'?'Una semana':'Dos semanas'} · {q.price.toLocaleString('es-AR')} pesos</button>;})}
+   {guaranteeRecord(s,contract)&&<p>Garantía: {guaranteeRecord(s,contract).amount} pesos. Devolución actual al salir: {serviceGuaranteeRefund(s,contract,op)} pesos. La paga no se devuelve.</p>}
+   {operativeInTransit(s,id)&&<p>Está en camino. Esperá su llegada para finalizar el servicio.</p>}
+   {id!==1000&&<button className="line-button" disabled={blocked||operativeInTransit(s,id)} onClick={()=>order({type:'dismiss',id,...(contract?.guaranteeId?{expectedGuaranteeId:contract.guaranteeId}:{})})}>Despedir</button>}
   </>:<>
    <PreferredCompanionsSummary state={s} operative={op}/>
    <button type="button" className="line-button" aria-expanded={squadMenu} aria-controls={`personnel-squads-${id}`} disabled={blocked||!record.alive||record.captured} onClick={()=>setSquadMenu(open=>!open)}>Escuadra ›</button>
