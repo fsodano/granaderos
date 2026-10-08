@@ -8,6 +8,7 @@ import {CLIMB_HATCH_SCENARIO,createClimbHatchBattle} from './climb-hatch-fixture
 import {createArchitectureReviewBattle} from './architecture-fixtures.js';
 import {BAYONET_SCENARIO,createBayonetReviewBattle} from './bayonet-fixture.js';
 import {PRONE_WORK_SCENARIO,createProneWorkReviewBattle} from './prone-work-fixture.js';
+import {REACH_SCENARIO,createReachReviewBattle} from './reach-fixture.js';
 import {PARTIAL_LOADING_SCENARIO,createPartialLoadingBattle} from './partial-loading-fixture.js';
 import {PAIRED_LOADING_SCENARIO,FOUR_BORE_LOADING_SCENARIO,createPairedLoadingBattle} from './paired-loading-fixture.js';
 
@@ -21,6 +22,7 @@ export const RENDERER_SCENARIOS=Object.freeze([
   {id:'combat',label:'Combate',help:'Fusil, pistola, sable, granada y cuchillo: cada especialista tiene un blanco enfrente. Los dos artilleros están junto al cañón. Usa las órdenes habituales; reinicia para repetir.'},
   BAYONET_SCENARIO,
   PRONE_WORK_SCENARIO,
+  REACH_SCENARIO,
   PARTIAL_LOADING_SCENARIO,
   PAIRED_LOADING_SCENARIO,
   FOUR_BORE_LOADING_SCENARIO,
@@ -140,6 +142,7 @@ function performance(count,architecture=false){
 export function createRendererSandboxBattle(id='combat'){
   if(id==='prone-work')return createProneWorkReviewBattle();
   if(id.startsWith('prone-work:'))return createProneWorkReviewBattle(id.slice('prone-work:'.length));
+  if(id==='reach-actions')return createReachReviewBattle();
   if(id==='equipped-crouch')return equippedCrouch();
   if(id.startsWith('equipped-crouch:'))return equippedCrouch(id.slice('equipped-crouch:'.length));
   if(id==='bayonets')return createBayonetReviewBattle();
