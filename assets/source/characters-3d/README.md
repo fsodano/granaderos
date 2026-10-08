@@ -9,6 +9,10 @@ motion work, current evidence and remaining limits. The new face and skin pass
 has passed local export and surface checks. User approval of its appearance is
 still pending.
 
+The lab camera toolbar includes **Rostro** for a close face view. **Centrar
+vista** restores the full character. Both retain the isometric angle; the zoom
+controls and drag-to-pan remain available.
+
 ## Rebuild
 
 With Blender 5 installed:

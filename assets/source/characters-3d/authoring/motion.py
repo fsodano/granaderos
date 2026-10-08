@@ -276,6 +276,13 @@ def _write_clip(rig, name, samples, duration, loop=True, grounding=None, times=N
             duration=math.floor(duration*FPS+.000001)/FPS
             selected=[(time,sample) for time,sample in zip(times,samples) if time<=duration+1e-7]
             times=[time for time,sample in selected];samples=[sample for time,sample in selected]
+    if name in ('stand.idle.unarmed','stand.walk.unarmed','stand.run.unarmed'):
+        from relaxed_hands import apply_relaxed_hands
+        _apply_sample(rig,samples[0]);apply_relaxed_hands(rig)
+        rotations={bone.name:bone.rotation_quaternion.copy()for bone in rig.pose.bones
+            if any(bone.name.startswith(finger+'_')for finger in ('index','middle','ring','pinky','thumb'))}
+        for sample in samples:
+            for bone,rotation in rotations.items():sample[bone]=(sample[bone][0],rotation.copy())
     # NLA export samples whole frames and otherwise drops a fractional end.
     # A same-pose padding key is trimmed back to this exact time after export.
     action["authored_duration"]=float(duration)

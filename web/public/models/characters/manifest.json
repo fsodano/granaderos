@@ -120202,8 +120202,8 @@
         "up": "+Y",
         "forward": "+Z"
       },
-      "sha256": "302090b2205efd8c955a9b27216351183532b9027f4d973307a282fb022e5123",
-      "bytes": 18582896
+      "sha256": "9caf54205c1e4c38e976ba1f46c23b985f6e04d460146c4c220cade4b646b8a0",
+      "bytes": 18611960
     },
     "female": {
       "url": "/models/characters/female-animations.glb",
@@ -238597,8 +238597,8 @@
         "up": "+Y",
         "forward": "+Z"
       },
-      "sha256": "e056daa7ab2a4a13a1f7ed545be3a0c028335f6ea337c225d40516d34bd7e198",
-      "bytes": 17860804
+      "sha256": "5e4d62112e8e6693abb3989cc47c48634d7a9ac50777d5246463e3cebe34d174",
+      "bytes": 17889868
     }
   },
   "equipment": {

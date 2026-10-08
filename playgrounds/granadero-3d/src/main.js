@@ -62,7 +62,7 @@ controls.touches.TWO=THREE.TOUCH.DOLLY_PAN;
 controls.enableDamping=true;
 controls.dampingFactor=.08;
 controls.minZoom=.7;
-controls.maxZoom=3.2;
+controls.maxZoom=12;
 controls.minPolarAngle=.18;
 controls.maxPolarAngle=Math.PI/2-.08;
 function setCamera(){
@@ -79,6 +79,15 @@ composer.addPass(pixelPass);
 composer.addPass(new OutputPass());
 setCamera();
 function zoom(amount){camera.zoom=THREE.MathUtils.clamp(camera.zoom*amount,controls.minZoom,controls.maxZoom);camera.updateProjectionMatrix();controls.update();}
+function focusFace(){
+ if(!state.ready||!model)return;
+ const head=model.getObjectByName('head')??model.getObjectByName('Head');
+ if(!head)return;
+ const offset=camera.position.clone().sub(controls.target);
+ model.updateMatrixWorld(true);head.getWorldPosition(controls.target);controls.target.y-=.08;
+ camera.position.copy(controls.target).add(offset);camera.zoom=12;
+ camera.updateProjectionMatrix();controls.update();
+}
 
 const hemi=new THREE.HemisphereLight('#e2e7ed','#554631',.78);scene.add(hemi);
 const sunlight=new THREE.DirectionalLight('#fff1d9',2.7);
@@ -155,6 +164,7 @@ const bulletGeometry=new THREE.SphereGeometry(.008,6,4);
 
 function pressed(button,active){button.classList.toggle('active',active);button.setAttribute('aria-pressed',String(active));}
 function updateControls(){
+ $('#focus-face').disabled=!state.ready;
  document.querySelectorAll('[data-weapon]').forEach(button=>{pressed(button,button.dataset.weapon===state.weapon);button.disabled=!state.ready;});
  document.querySelectorAll('[data-motion]').forEach(button=>{pressed(button,button.dataset.motion===state.motion);button.disabled=!state.ready;});
  document.querySelectorAll('[data-skin]').forEach(button=>{pressed(button,button.dataset.skin===state.skin);button.disabled=!state.ready;});
@@ -315,6 +325,7 @@ document.querySelectorAll('[data-weapon]').forEach(button=>button.addEventListen
 document.querySelectorAll('[data-motion]').forEach(button=>button.addEventListener('click',()=>selectMotion(button.dataset.motion)));
 document.querySelectorAll('[data-skin]').forEach(button=>button.addEventListener('click',()=>applySkin(button.dataset.skin)));
 $('#reset-camera').addEventListener('click',()=>setCamera());
+$('#focus-face').addEventListener('click',focusFace);
 $('#zoom-in').addEventListener('click',()=>zoom(1.25));
 $('#zoom-out').addEventListener('click',()=>zoom(.8));
 $('#pixelated').addEventListener('change',event=>{state.pixelated=event.target.checked;});

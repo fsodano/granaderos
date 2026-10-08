@@ -399,3 +399,32 @@ are resolved. The remaining 11 have unchanged assertion payloads. This is a
 comparison with a previous candidate, not a verified current-main baseline.
 The full log and failure comparison are retained in
 `artifacts/character-anatomy-review/delivery/granadero-skin/`.
+
+## Relaxed unarmed hands and face inspection, 8 October
+
+Standing idle, walk and run now use a compact, loose fist. The proximal
+knuckles sit closer together, the distal joints curl less, and each thumb
+rests outside the index finger in the moving palm's frame. Only 90 finger
+rotation channels per anatomy change. The 53,016 other channels, all input
+times, events, native joint positions and geometry remain exact. Weapon grips,
+loading, punches and other postures retain their previous curves.
+
+All six full-cycle LOD0 surface checks pass at 120 Hz; the preceding banks fail
+all six. A separate 60 Hz sweep passes all 12 Granadero/scout LOD1/2 cases. The
+checks cover distal finger triangles against the palm and other digits, not
+connected finger roots or soft-tissue compression. Sharp thumb/index web
+creases and stiff skin folds remain. The selected Blender source export agrees
+with the delivered rotations within 0.000308 degrees, with exact duration.
+
+The combined 16 hand, rifle-head and generated-skin checks pass on the assembled
+library. Library verification passes. The manifest is
+`7375f601d52d703dc3b36c94127d6b4878df72fff477bdec8d1c71103eb43e20`.
+Evidence is retained in `artifacts/character-anatomy-review/delivery/relaxed-hands/`.
+The 6,275-pass/11-failure broad result above belongs to the preceding face/head
+checkpoint; it was not rerun for this finger-only delta.
+
+The lab now has a **Rostro** button for close face review and a larger zoom
+range. **Centrar vista** restores the full character. Both retain the isometric
+angle. The old reference is labelled **Granadero · prototipo anterior**, while
+**Granadero · juego** remains the default current model. Face framing was
+visually checked on the Granadero and scout in the live lab.

@@ -17,7 +17,7 @@ Abrir [http://localhost:3147](http://localhost:3147). El servidor escucha sólo 
 
 | Control | Resultado |
 | --- | --- |
-| Personaje | Comparar la referencia aprobada del granadero con los ocho personajes del juego. Conserva el equipo, la acción elegida, la piel, la cámara y la velocidad. |
+| Personaje | Comparar el prototipo anterior del granadero con los ocho personajes del juego. Conserva el equipo, la acción elegida, la piel, la cámara y la velocidad. |
 | Caminar / Correr | Marcha o carrera de combate con el arma seleccionada; sin arma usa las manos libres. |
 | Fusil / Pistola + Disparar | Apuntar, disparar con retroceso y volver a la postura de espera. |
 | Movimiento de ataque | Elegir un corte, estocada, golpe con el arma o puñetazo; también permite alternar variantes. |
@@ -26,19 +26,20 @@ Abrir [http://localhost:3147](http://localhost:3147). El servidor escucha sólo 
 | Recorrer el terreno | Centrar el recorrido y desplazarse sobre el suelo durante la marcha o carrera. |
 | Pausar / Velocidad | Detener la animación o cambiar su velocidad. |
 | Acercar / Alejar / arrastrar / rueda | Cambiar el acercamiento o mover la vista, con ángulo isométrico fijo. |
+| Rostro / Centrar vista | Acercar al rostro o volver a la figura completa, con el mismo ángulo isométrico. |
 | Mostrar cuadrícula / Luz nocturna | Comparar la lectura del soldado con otra iluminación. |
 
 Con el lienzo enfocado: `Espacio` pausa, `F` ejecuta la acción del arma y `R` restaura la cámara táctica.
 
 ## Personajes del juego
 
-El selector incluye granadero, realista, trabajador, cirujano, gaucho, fraile, exploradora y mujer con rebozo. La **referencia aprobada** del granadero sigue como opción inicial. La opción **Granadero · juego** permite compararla con la versión de producción.
+El selector incluye granadero, realista, trabajador, cirujano, gaucho, fraile, exploradora y mujer con rebozo. **Granadero · juego** es la opción inicial y carga el modelo actual. **Granadero · prototipo anterior** conserva la referencia previa para comparar.
 
 Cada personaje usa su cuerpo LOD0 y su esqueleto nativo. Los cuerpos masculinos y femeninos cargan bancos separados. Los controles muestran las 29 acciones revisadas de un solo contacto; la combinación de dos cortes sigue disponible sólo en la referencia. Las armas se fijan a los agarres de cada cuerpo. La estocada de fusil muestra la bayoneta montada. La piel y los materiales de la figura seleccionada se copian antes de editarlos.
 
 El servidor de desarrollo expone `/models/characters/` desde `../../web/public/models/characters/`. No copia modelos dentro de `public/assets`. Después de reconstruir la biblioteca, recargar la página permite ver los archivos nuevos. `npm run build` copia al directorio ignorado `dist` los ocho cuerpos LOD0, los dos bancos de movimiento, el equipo y las texturas compartidas que usan esos archivos. La exportación funciona con `npm run preview`, sin depender del servidor del juego.
 
-Para revisar una biblioteca provisional sin sustituir los archivos del juego, iniciar el servidor con `GRANADERO_CHARACTER_LIBRARY=/ruta/absoluta/a/modelos npm run dev`. Esa carpeta debe contener el manifiesto, los cuerpos, los bancos de movimiento, el equipo y sus texturas. La variable sólo cambia el origen del servidor de desarrollo; no cambia los archivos que copia `npm run build`. Seleccionar **Granadero · juego** u otro personaje del juego: la referencia aprobada sigue usando su archivo independiente.
+Para revisar una biblioteca provisional sin sustituir los archivos del juego, iniciar el servidor con `GRANADERO_CHARACTER_LIBRARY=/ruta/absoluta/a/modelos npm run dev`. Esa carpeta debe contener el manifiesto, los cuerpos, los bancos de movimiento, el equipo y sus texturas. La variable sólo cambia el origen del servidor de desarrollo; no cambia los archivos que copia `npm run build`. Seleccionar **Granadero · juego** u otro personaje del juego: el prototipo anterior sigue usando su archivo independiente.
 
 ## Modelo de referencia y animaciones
 
