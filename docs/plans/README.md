@@ -11,6 +11,7 @@ and the [parity audit](../verification/ja2-parity-audit.md) before selecting wor
 - [Removable bayonet fitting plan — I06](bayonet-fitting-plan.md) *(workspace)*
 - [Game content system and editor](game-content-system.md) *(workspace)*
 - [Sector builder implementation plan](sector-builder.md)
+- [Tactical reference graphics](tactical-reference-graphics.md) *(workspace)*
 - [T09 campaign transaction plan](tactical-exit-campaign-plan.md) *(workspace)*
 - [T09: physical retreat and sector exit](tactical-exit-plan.md) *(workspace)*
 

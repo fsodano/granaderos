@@ -7,6 +7,7 @@ provenance and reproducible exports. The notes below describe the browser art
 systems and their recorded scope.
 
 - [Tactical visual assets and compilation](TACTICAL-VISUALS.md)
+- [Character cloth depth reference pilot](character-cloth-depth-review-2026-10-08.md) *(workspace)*
 - [Colonial buildings, 1810–1820](buildings.md)
 - [Illustrated character sprites](character-sprites.md)
 - [Custom-character portraits](custom-character-portraits.md)

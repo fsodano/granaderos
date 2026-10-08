@@ -32,25 +32,178 @@
           "lod": 0,
           "url": "/models/characters/granadero-lod0.glb",
           "triangles": 76666,
-          "bytes": 4734596,
+          "bytes": 4884064,
           "drawCalls": 8,
-          "sha256": "0f575797896fc2ca45e1580a2f2b0f9556bf04adf07a5b53bea0a06b3d0db56d"
+          "sha256": "a539a0064791db7c54e4af6d50e050b291bbece38f53aa9e49bdfb9f38583061",
+          "clothDepth": {
+            "recipe": {
+              "method": "broad-rest-space-cloth-fold-colours-v2",
+              "source": "assets/source/characters-3d/authoring/cloth_depth.py",
+              "sourceSha256": "4abe75b557ff66a88df9b76f295e31f1e5169c12bcbc97f91fb8a44252609ffe",
+              "factorBounds": [
+                0.76,
+                1.48
+              ],
+              "navyAlbedoHeadroom": 1.52,
+              "retainedGeometryRigClipsMaps": true
+            },
+            "beforeSha256": "0f575797896fc2ca45e1580a2f2b0f9556bf04adf07a5b53bea0a06b3d0db56d",
+            "originalJSONSha256": "e2b2d55d7cbf16c269dba292aa9f6208bf2349758013b8fbe0a1440012162c9b",
+            "originalBinarySha256": "039fac80af0d285600218191832c68f8a22180d09796edac1c2d0b42353aa020",
+            "originalBinaryBytes": 4704852,
+            "originalAccessorCount": 60,
+            "originalViewCount": 60,
+            "originalMaterialCount": 4,
+            "originalTextureCount": 11,
+            "originalImageCount": 11,
+            "originalHadExtras": false,
+            "primitives": [
+              {
+                "mesh": 3,
+                "primitive": 0,
+                "part": "outfit",
+                "originalColourAccessor": 25,
+                "colourAccessor": 60,
+                "originalMaterial": 0,
+                "material": 4,
+                "colourUri": "textures/ffd58295d122c45a1753.png",
+                "colourSha256": "ffd58295d122c45a1753a1a5c9530bbc4be2513e96c27beb2431842a5cdad221",
+                "changedVertices": 3402,
+                "vertexCount": 10839
+              },
+              {
+                "mesh": 2,
+                "primitive": 0,
+                "part": "legwear",
+                "originalColourAccessor": 18,
+                "colourAccessor": 61,
+                "originalMaterial": 0,
+                "material": 4,
+                "colourUri": "textures/ffd58295d122c45a1753.png",
+                "colourSha256": "ffd58295d122c45a1753a1a5c9530bbc4be2513e96c27beb2431842a5cdad221",
+                "changedVertices": 1308,
+                "vertexCount": 1424
+              }
+            ]
+          }
         },
         {
           "lod": 1,
           "url": "/models/characters/granadero-lod1.glb",
           "triangles": 48454,
-          "bytes": 3213212,
+          "bytes": 3322652,
           "drawCalls": 8,
-          "sha256": "362a56c0bfaddbdd5bb15c0e72a8bca8aeb7a9061a55e72f01f7e6acdcb1a6b0"
+          "sha256": "7ac4542717753b50f1baa47d53f67256bb4fd8e2f5a6625d78f0ea9f96e7f1c7",
+          "clothDepth": {
+            "recipe": {
+              "method": "broad-rest-space-cloth-fold-colours-v2",
+              "source": "assets/source/characters-3d/authoring/cloth_depth.py",
+              "sourceSha256": "4abe75b557ff66a88df9b76f295e31f1e5169c12bcbc97f91fb8a44252609ffe",
+              "factorBounds": [
+                0.76,
+                1.48
+              ],
+              "navyAlbedoHeadroom": 1.52,
+              "retainedGeometryRigClipsMaps": true
+            },
+            "beforeSha256": "362a56c0bfaddbdd5bb15c0e72a8bca8aeb7a9061a55e72f01f7e6acdcb1a6b0",
+            "originalJSONSha256": "140a86ca6c4ab446020874768b8b40476474b33bb6277b3ee5eb13792d2f6d1e",
+            "originalBinarySha256": "3f4fa175f550fe5ffa41f90fe55e8a7d43f20d560f7103f1ff5e584343814f31",
+            "originalBinaryBytes": 3183524,
+            "originalAccessorCount": 60,
+            "originalViewCount": 60,
+            "originalMaterialCount": 4,
+            "originalTextureCount": 11,
+            "originalImageCount": 11,
+            "originalHadExtras": false,
+            "primitives": [
+              {
+                "mesh": 3,
+                "primitive": 0,
+                "part": "outfit",
+                "originalColourAccessor": 25,
+                "colourAccessor": 60,
+                "originalMaterial": 0,
+                "material": 4,
+                "colourUri": "textures/ffd58295d122c45a1753.png",
+                "colourSha256": "ffd58295d122c45a1753a1a5c9530bbc4be2513e96c27beb2431842a5cdad221",
+                "changedVertices": 1542,
+                "vertexCount": 8278
+              },
+              {
+                "mesh": 2,
+                "primitive": 0,
+                "part": "legwear",
+                "originalColourAccessor": 18,
+                "colourAccessor": 61,
+                "originalMaterial": 0,
+                "material": 4,
+                "colourUri": "textures/ffd58295d122c45a1753.png",
+                "colourSha256": "ffd58295d122c45a1753a1a5c9530bbc4be2513e96c27beb2431842a5cdad221",
+                "changedVertices": 534,
+                "vertexCount": 650
+              }
+            ]
+          }
         },
         {
           "lod": 2,
           "url": "/models/characters/granadero-lod2.glb",
           "triangles": 17915,
-          "bytes": 1053632,
+          "bytes": 1100984,
           "drawCalls": 7,
-          "sha256": "34f62420b8750ebe7242accda1872375a7d4c30bb09e92f5d9f1a4df18ed2266"
+          "sha256": "44be7e03e4a048f4d16cc169da1536060d26ded409c8e10eb1898d300648c0b4",
+          "clothDepth": {
+            "recipe": {
+              "method": "broad-rest-space-cloth-fold-colours-v2",
+              "source": "assets/source/characters-3d/authoring/cloth_depth.py",
+              "sourceSha256": "4abe75b557ff66a88df9b76f295e31f1e5169c12bcbc97f91fb8a44252609ffe",
+              "factorBounds": [
+                0.76,
+                1.48
+              ],
+              "navyAlbedoHeadroom": 1.52,
+              "retainedGeometryRigClipsMaps": true
+            },
+            "beforeSha256": "34f62420b8750ebe7242accda1872375a7d4c30bb09e92f5d9f1a4df18ed2266",
+            "originalJSONSha256": "48cbdb1207030a2418e6e906c1d4c1337d099a5ac72653d8ef1bc276c408388e",
+            "originalBinarySha256": "ce349516acba6781703737c3aa832be8c703f0a3bf03788f7a0cca168d44cc47",
+            "originalBinaryBytes": 1024284,
+            "originalAccessorCount": 59,
+            "originalViewCount": 59,
+            "originalMaterialCount": 4,
+            "originalTextureCount": 11,
+            "originalImageCount": 11,
+            "originalHadExtras": false,
+            "primitives": [
+              {
+                "mesh": 3,
+                "primitive": 0,
+                "part": "outfit",
+                "originalColourAccessor": 25,
+                "colourAccessor": 59,
+                "originalMaterial": 0,
+                "material": 4,
+                "colourUri": "textures/d59a76abdc3a396d8e68.png",
+                "colourSha256": "d59a76abdc3a396d8e683b73826c2f51d8debd90a52e8562c0afb80c54ff95eb",
+                "changedVertices": 743,
+                "vertexCount": 3393
+              },
+              {
+                "mesh": 2,
+                "primitive": 0,
+                "part": "legwear",
+                "originalColourAccessor": 18,
+                "colourAccessor": 60,
+                "originalMaterial": 0,
+                "material": 4,
+                "colourUri": "textures/d59a76abdc3a396d8e68.png",
+                "colourSha256": "d59a76abdc3a396d8e683b73826c2f51d8debd90a52e8562c0afb80c54ff95eb",
+                "changedVertices": 241,
+                "vertexCount": 357
+              }
+            ]
+          }
         }
       ],
       "materials": {
@@ -482,25 +635,178 @@
           "lod": 0,
           "url": "/models/characters/worker-lod0.glb",
           "triangles": 63192,
-          "bytes": 4200892,
+          "bytes": 4283932,
           "drawCalls": 7,
-          "sha256": "8db1a151dda296d7e08632e5e6df0fe8cba8f34c8c1a0d39ee15425436103aad"
+          "sha256": "98ae2a429f6fb043683dce990e55aaf1bbb73a22364bf6a0f8a32c0387a4b3dc",
+          "clothDepth": {
+            "recipe": {
+              "method": "broad-rest-space-cloth-fold-colours-v2",
+              "source": "assets/source/characters-3d/authoring/cloth_depth.py",
+              "sourceSha256": "4abe75b557ff66a88df9b76f295e31f1e5169c12bcbc97f91fb8a44252609ffe",
+              "factorBounds": [
+                0.76,
+                1.48
+              ],
+              "navyAlbedoHeadroom": 1.52,
+              "retainedGeometryRigClipsMaps": true
+            },
+            "beforeSha256": "8db1a151dda296d7e08632e5e6df0fe8cba8f34c8c1a0d39ee15425436103aad",
+            "originalJSONSha256": "2c499c433f9cbb2f6f69a938971eb7dde7f7f2ed9e71762112cb9d06862187de",
+            "originalBinarySha256": "fffff7b16532747b699c819dce3f4b638b0de19fea05ce27606c1f61f41c528a",
+            "originalBinaryBytes": 4170992,
+            "originalAccessorCount": 59,
+            "originalViewCount": 59,
+            "originalMaterialCount": 5,
+            "originalTextureCount": 12,
+            "originalImageCount": 12,
+            "originalHadExtras": false,
+            "primitives": [
+              {
+                "mesh": 2,
+                "primitive": 0,
+                "part": "outfit",
+                "originalColourAccessor": 18,
+                "colourAccessor": 59,
+                "originalMaterial": 0,
+                "material": 0,
+                "colourUri": null,
+                "colourSha256": null,
+                "changedVertices": 4641,
+                "vertexCount": 5477
+              },
+              {
+                "mesh": 1,
+                "primitive": 0,
+                "part": "legwear",
+                "originalColourAccessor": 11,
+                "colourAccessor": 60,
+                "originalMaterial": 0,
+                "material": 0,
+                "colourUri": null,
+                "colourSha256": null,
+                "changedVertices": 1308,
+                "vertexCount": 1308
+              }
+            ]
+          }
         },
         {
           "lod": 1,
           "url": "/models/characters/worker-lod1.glb",
           "triangles": 40434,
-          "bytes": 2916884,
+          "bytes": 2959820,
           "drawCalls": 7,
-          "sha256": "ca17b0a34329ca1243746780080e9c647d44219bba37c2f5f52e92e3b64dcd32"
+          "sha256": "6b2468ad4ca2977166073ef4a11ceb4086d3d45675e9c842a9256af3ac590d6b",
+          "clothDepth": {
+            "recipe": {
+              "method": "broad-rest-space-cloth-fold-colours-v2",
+              "source": "assets/source/characters-3d/authoring/cloth_depth.py",
+              "sourceSha256": "4abe75b557ff66a88df9b76f295e31f1e5169c12bcbc97f91fb8a44252609ffe",
+              "factorBounds": [
+                0.76,
+                1.48
+              ],
+              "navyAlbedoHeadroom": 1.52,
+              "retainedGeometryRigClipsMaps": true
+            },
+            "beforeSha256": "ca17b0a34329ca1243746780080e9c647d44219bba37c2f5f52e92e3b64dcd32",
+            "originalJSONSha256": "3e3f420aee3e0b4018d976e96b7a4904d56f6cb0f9b629e514d90bcfaabe2061",
+            "originalBinarySha256": "e0899113e9266670d879f3337ea04aacfa5ee3204111f2f72453bfd5c0fbd2ed",
+            "originalBinaryBytes": 2887044,
+            "originalAccessorCount": 59,
+            "originalViewCount": 59,
+            "originalMaterialCount": 5,
+            "originalTextureCount": 12,
+            "originalImageCount": 12,
+            "originalHadExtras": false,
+            "primitives": [
+              {
+                "mesh": 2,
+                "primitive": 0,
+                "part": "outfit",
+                "originalColourAccessor": 18,
+                "colourAccessor": 59,
+                "originalMaterial": 0,
+                "material": 0,
+                "colourUri": null,
+                "colourSha256": null,
+                "changedVertices": 2074,
+                "vertexCount": 2909
+              },
+              {
+                "mesh": 1,
+                "primitive": 0,
+                "part": "legwear",
+                "originalColourAccessor": 11,
+                "colourAccessor": 60,
+                "originalMaterial": 0,
+                "material": 0,
+                "colourUri": null,
+                "colourSha256": null,
+                "changedVertices": 534,
+                "vertexCount": 534
+              }
+            ]
+          }
         },
         {
           "lod": 2,
           "url": "/models/characters/worker-lod2.glb",
           "triangles": 16597,
-          "bytes": 1062216,
+          "bytes": 1082500,
           "drawCalls": 7,
-          "sha256": "565b4d9ce09f45fc1f3f2f2706d299f7c804fb2ed294308110af2cf6e7b90d40"
+          "sha256": "e73b702b2149ad5a54593a178e6a4f0eff79bfb2649845d3d44052fb78a1d73d",
+          "clothDepth": {
+            "recipe": {
+              "method": "broad-rest-space-cloth-fold-colours-v2",
+              "source": "assets/source/characters-3d/authoring/cloth_depth.py",
+              "sourceSha256": "4abe75b557ff66a88df9b76f295e31f1e5169c12bcbc97f91fb8a44252609ffe",
+              "factorBounds": [
+                0.76,
+                1.48
+              ],
+              "navyAlbedoHeadroom": 1.52,
+              "retainedGeometryRigClipsMaps": true
+            },
+            "beforeSha256": "565b4d9ce09f45fc1f3f2f2706d299f7c804fb2ed294308110af2cf6e7b90d40",
+            "originalJSONSha256": "94fddee45a0da94129b1c312350f21f32a912bcf215b7bad771e7d00eda1d334",
+            "originalBinarySha256": "2bb2223880d596240a5b92f1bcdce1da78cb7bcedc067a41c8dd34fd38ef3486",
+            "originalBinaryBytes": 1032424,
+            "originalAccessorCount": 59,
+            "originalViewCount": 59,
+            "originalMaterialCount": 5,
+            "originalTextureCount": 12,
+            "originalImageCount": 12,
+            "originalHadExtras": false,
+            "primitives": [
+              {
+                "mesh": 2,
+                "primitive": 0,
+                "part": "outfit",
+                "originalColourAccessor": 18,
+                "colourAccessor": 59,
+                "originalMaterial": 0,
+                "material": 0,
+                "colourUri": null,
+                "colourSha256": null,
+                "changedVertices": 1115,
+                "vertexCount": 1307
+              },
+              {
+                "mesh": 1,
+                "primitive": 0,
+                "part": "legwear",
+                "originalColourAccessor": 11,
+                "colourAccessor": 60,
+                "originalMaterial": 0,
+                "material": 0,
+                "colourUri": null,
+                "colourSha256": null,
+                "changedVertices": 241,
+                "vertexCount": 241
+              }
+            ]
+          }
         }
       ],
       "materials": {

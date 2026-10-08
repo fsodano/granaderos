@@ -53,6 +53,29 @@ treatment. Civilian garments keep their own colors and do not retain military
 cockades, chin scales, cords or epaulettes. Each complete hat is one replaceable
 headwear part, including its small trim pieces.
 
+The first tactical cloth-depth pilot applies only to Granadero and worker base
+outfit and legwear at all three LODs. `authoring/cloth_depth.py` defines broad
+rest-space tones around existing waist, sleeve and knee folds. The append-only
+`tools/characters-3d/build-cloth-depth.py` pass installs new `COLOR_0` arrays and
+a separate Granadero colour atlas. Only navy cloth tiles receive bounded albedo
+headroom so their fold ridges can remain visible. The original atlas, trim,
+skin, faces, normal/roughness maps, geometry, bindings and action data stay exact.
+Each changed LOD records the original binary/JSON hashes and colour
+references in `clothDepth`. Repeating the pass verifies its output without
+accumulating contrast. Changed source recipes require a fresh source build.
+
+The normal builder includes this pass. To apply it to the current library and
+save a local preservation receipt:
+
+```sh
+python3 tools/characters-3d/build-cloth-depth.py --receipt artifacts/character-cloth-depth/receipt.json
+```
+
+Use the real tactical view at 1× and 2× zoom to judge the result. The appended
+navy colours provide headroom for normalized vertex highlights. This pilot
+does not add weave/roughness detail, alter anatomy or poses, or establish final visual
+agreement with the supplied tactical references.
+
 Family attire is the base visual. An empty inventory outfit slot keeps that base
 visual and does not create an owned item. Equipped inventory garments use the
 manifest's explicit replacement/overlay rules. Each anatomy has fitted poncho,
