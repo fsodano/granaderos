@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import {writeFileSync} from 'node:fs';
 import {register} from 'node:module';
 import test from 'node:test';
 register('./tactical-render-loader.mjs',import.meta.url);
@@ -25,11 +26,11 @@ async function pair(appearance='granadero',diagonal=false,posture='standing',lod
  const [asset,other]=await Promise.all([publishedActor(appearance,lod),publishedActor(defender.appearance,lod)]),body=new ActorRuntime(other,defender);body.tick(.1,1070);body.root.updateMatrixWorld(true);
  return {attacker,defender,asset,body,frame,result};
 }
-function faces(root){
+function faces(root,accept=()=>true){
  const faces=[];root.traverse(mesh=>{
-  if(!mesh.isSkinnedMesh||!mesh.visible)return;
+  if(!mesh.isSkinnedMesh||!mesh.visible||!accept(mesh))return;
   const position=mesh.geometry.attributes.position,index=mesh.geometry.index,vertices=Array.from({length:position.count},(_,index)=>mesh.localToWorld(mesh.getVertexPosition(index,new Vector3())));
-  for(let offset=0;offset<index.count;offset+=3){const face=[vertices[index.getX(offset)],vertices[index.getX(offset+1)],vertices[index.getX(offset+2)]];if(new Triangle(...face).getArea()>1e-10)faces.push(face);}
+  for(let offset=0;offset<index.count;offset+=3){const ids=[0,1,2].map(slot=>index.getX(offset+slot));if(!ids.every(id=>accept(mesh,id)))continue;const face=ids.map(id=>vertices[id]);if(new Triangle(...face).getArea()>1e-10)faces.push(face);}
  });return faces;
 }
 function contactGap(runtime,surface){
@@ -52,7 +53,16 @@ function gap(a,b){let minimum=Infinity;for(const face of a)for(let i=0;i<3;i++){
 function strikingFaces(runtime){const item=runtime.model.getObjectByName('primary:1810'),hilt=runtime.action.getClip().name.endsWith('.hilt'),result=[];item.traverse(mesh=>{if(!mesh.isMesh||!mesh.visible||!(hilt?/Leather_Grip|Crossguard/:/Curved_Blade/).test(mesh.name))return;const p=mesh.geometry.attributes.position,index=mesh.geometry.index;for(let i=0;i<index.count;i+=3){const face=[0,1,2].map(offset=>mesh.localToWorld(new Vector3().fromBufferAttribute(p,index.getX(i+offset))));if(new Triangle(...face).getArea()>1e-10)result.push(face);}});assert.ok(result.length);return result;}
 function soleCenter(runtime,side){const mesh=runtime.model.getObjectByName(runtime.asset.appearance.parts.footwear.replace('{lod}',String(runtime.asset.lod))),sole=runtime.meleeFit.soles.get(side),center=new Vector3();for(const index of sole.outline)center.add(mesh.localToWorld(mesh.getVertexPosition(index,new Vector3())));return center.divideScalar(sole.outline.length);}
 function weaponFaces(runtime,weapon){const item=runtime.model.getObjectByName('primary:1810'),faces=[];item.traverse(mesh=>{if(!mesh.isMesh||!mesh.visible||!/Leather_Grip/.test(mesh.name))return;const p=mesh.geometry.attributes.position,index=mesh.geometry.index;for(let i=0;i<index.count;i+=3)faces.push([0,1,2].map(offset=>mesh.localToWorld(new Vector3().fromBufferAttribute(p,index.getX(i+offset)))));});return faces;}
-function palmFaces(runtime){return faces(runtime.model,(mesh,index)=>{if(mesh.material.name!=='Skin')return false;if(index===undefined)return true;let weight=0;for(let slot=0;slot<4;slot++)if(mesh.skeleton.bones[mesh.geometry.attributes.skinIndex.getComponent(index,slot)].name==='hand_r')weight+=mesh.geometry.attributes.skinWeight.getComponent(index,slot);return weight>.5;});}
+function palmFaces(runtime){
+ const palm=faces(runtime.model,(mesh,index)=>{if(mesh.material.name!=='Skin')return false;if(index===undefined)return true;let weight=0;for(let slot=0;slot<4;slot++)if(mesh.skeleton.bones[mesh.geometry.attributes.skinIndex.getComponent(index,slot)].name==='hand_r')weight+=mesh.geometry.attributes.skinWeight.getComponent(index,slot);return weight>.5;});
+ assert.ok(palm.length>=8,'Grip contact requires nonempty actual hand-weighted skin triangles');
+ // An ignored selector previously returned the entire body. Independently
+ // bound the selected surface to the current native wrist/MCP dimensions so
+ // a nearby chest, cuff, boot or head cannot pass as the right palm again.
+ const wrist=runtime.model.getObjectByName('hand_r').getWorldPosition(new Vector3()),span=runtime.model.getObjectByName('middle_01_r').getWorldPosition(new Vector3()).distanceTo(wrist);
+ assert.ok(span>0&&palm.every(face=>face.every(point=>point.distanceTo(wrist)<=span*2)),'Every accepted palm triangle stays within the native hand envelope');
+ return palm;
+}
 function assertFreeGuard(runtime,source){
  runtime.model.getObjectByName('upperarm_l').traverse(node=>{if(!node.isBone)return;const native=source.model.getObjectByName(node.name);assert.ok(node.quaternion.toArray().every((value,index)=>Math.abs(value-native.quaternion.toArray()[index])<1e-8),`${node.name} keeps the free native guard`);assert.ok(node.position.distanceTo(native.position)<1e-8);});
  const current=runtime.model.getObjectByName('spine_03').worldToLocal(runtime.model.getObjectByName('hand_l').getWorldPosition(new Vector3())),native=source.model.getObjectByName('spine_03').worldToLocal(source.model.getObjectByName('hand_l').getWorldPosition(new Vector3()));assert.ok(current.distanceTo(native)<1e-8,'The free guard keeps its native position relative to the chest');
@@ -70,6 +80,8 @@ function assertStrikingReach(runtime,source,label){
 }
 
 
+const palmReceipt=[];
+test.after(()=>{if(process.env.GRANADEROS_PALM_RECEIPT)writeFileSync(process.env.GRANADEROS_PALM_RECEIPT,JSON.stringify(palmReceipt,null,2)+'\n');});
 test('all forty native sabre pairings reach actual skin or clothing with fixed cells and supported soles',async()=>{
  for(const appearance of ['granadero','woman-scout'])for(const diagonal of [false,true])for(const posture of ['standing','crouched']){
   const fixture=await pair(appearance,diagonal,posture),surface=faces(fixture.body.model),seen=new Set(),before=JSON.stringify(fixture.frame.state),bones=nativeBones(fixture.asset);
@@ -80,7 +92,8 @@ test('all forty native sabre pairings reach actual skin or clothing with fixed c
    const label=`${appearance}/${diagonal?'diagonal':'cardinal'}/${posture}/${clip}`;
    assert.equal(runtime.meleeFit.rejectedFits,0,label);assert.ok(contactGap(runtime,surface)<=.01,`${label}: the actual target surface meets the striking part`);
    assert.ok(gap(strikingFaces(runtime),surface)<=.001,`${label}: actual exported striking triangles meet the admitted body`);assert.ok(runtime.meleeFit.plan.body.length()<=Math.hypot(runtime.meleeFit.walkingStep,.38)+1e-7);
-   assertNative(runtime,bones,visual.position);assertFreeGuard(runtime,source);assertGrip(runtime,source,1810);assertStrikingReach(runtime,source,label);assert.ok(gap(palmFaces(runtime),weaponFaces(runtime,1810))<=.001,`${label}: actual right palm meets the owned grip`);assert.ok(lowestSole(runtime)-visual.position[1]<=.008,label);
+   assertNative(runtime,bones,visual.position);assertFreeGuard(runtime,source);assertGrip(runtime,source,1810);assertStrikingReach(runtime,source,label);
+   const palm=palmFaces(runtime),palmGap=gap(palm,weaponFaces(runtime,1810));assert.ok(palmGap<=.001,`${label}: actual right palm meets the owned grip`);palmReceipt.push({appearance,diagonal,targetPosture:posture,clip,palmTriangles:palm.length,maximumGapMetres:.001,measuredGapMetres:palmGap});assert.ok(lowestSole(runtime)-visual.position[1]<=.008,label);
    const heldBody=runtime.model.getObjectByName('Root').position.clone(),heldHand=runtime.model.getObjectByName('hand_r').getWorldPosition(new Vector3());
    for(let tick=0;tick<12;tick++){
     runtime.tick(0,1070);runtime.root.updateMatrixWorld(true);
