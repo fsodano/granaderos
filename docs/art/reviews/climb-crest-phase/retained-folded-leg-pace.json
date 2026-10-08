@@ -1,0 +1,56 @@
+{
+  "id": "granadero",
+  "lod": 1,
+  "action": "climbUp",
+  "height": 2,
+  "span": 1.2360585147470482,
+  "steps": 8,
+  "centerPaidFraction": 0.784,
+  "paidDurationSeconds": 4.616667,
+  "epsilon": 0.000001,
+  "records": {
+    "before": {
+      "fullSurfaceSpeedMps": 136.6243177236337,
+      "mesh": "Human_legwear_LOD1",
+      "vertex": 524,
+      "beforeWorld": [
+        0.17372534408315582,
+        3.6428829933804128,
+        0.40911105669964387
+      ],
+      "afterWorld": [
+        0.17287543552912643,
+        3.6434260227319997,
+        0.4083533287330863
+      ],
+      "decodedDuration": 4.616666793823242,
+      "centerNativeTime": 3.619466766357422,
+      "centerPaidFraction": 0.784
+    },
+    "current": {
+      "fullSurfaceSpeedMps": 27.668700869442617,
+      "mesh": "Human_legwear_LOD1",
+      "vertex": 345,
+      "beforeWorld": [
+        0.2450087741347919,
+        3.543260422162829,
+        0.060702450745357045
+      ],
+      "afterWorld": [
+        0.24496094368785873,
+        3.543164042524011,
+        0.06047073894077415
+      ],
+      "decodedDuration": 4.616666793823242,
+      "centerNativeTime": 3.619466766357422,
+      "centerPaidFraction": 0.784
+    }
+  },
+  "sourcePins": {
+    "beforeHelper": "231daa09c37bc391ccaeb0ebd4734218e6a2214d30782043078f2c335da95d6f",
+    "beforeGeometry": "b7ad2737df630896eb19583a5aca386c72047491930ba32c7b4460f62b4ffc8a",
+    "currentHelper": "d333d244bd1a6a0769fdf9ceb75c41e9f2fe455f9be07d2a0c925f7747967a7d",
+    "currentGeometry": "5b3e8b6b21a3326ebe32af269eb617e23a8b0e3bdfda75e356547989372a7586"
+  },
+  "scope": "Actual full weighted surface pace witness. Removal of fixed crest jumps does not constitute natural-motion acceptance."
+}

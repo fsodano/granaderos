@@ -1,0 +1,13 @@
+{
+  "cases": 96,
+  "poses": 37608,
+  "edgeComparisons": 864,
+  "worstBeforeCrestMm": 547.4618505147806,
+  "worstCurrentCrestMm": 0.01804414158566685,
+  "worstBeforeContinuousMps": 140.1431369499787,
+  "worstCurrentContinuousMps": 98.04199407631913,
+  "nativeBanks": {
+    "/models/characters/male-animations.glb": "49f5d77abe97ae560f46060f93d3fdd31661eda97e47dfdf029216ade2beeb27",
+    "/models/characters/female-animations.glb": "509a9c2c1ab0cb2a7d38c8f50cb7809cfa9f6c4cc946c69652b6918fdeb1ac10"
+  }
+}

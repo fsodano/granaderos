@@ -1,0 +1,261 @@
+✖ granadero LOD0 climbUp: full body/garment surfaces have no crest or roof-contact pose jump (878.281291ms)
+✖ granadero LOD0 climbDown: full body/garment surfaces have no crest or roof-contact pose jump (167.432875ms)
+✖ granadero LOD1 climbUp: full body/garment surfaces have no crest or roof-contact pose jump (99.813959ms)
+✖ granadero LOD1 climbDown: full body/garment surfaces have no crest or roof-contact pose jump (92.622333ms)
+✖ granadero LOD2 climbUp: full body/garment surfaces have no crest or roof-contact pose jump (46.159167ms)
+✖ granadero LOD2 climbDown: full body/garment surfaces have no crest or roof-contact pose jump (43.735709ms)
+✖ woman-scout LOD0 climbUp: full body/garment surfaces have no crest or roof-contact pose jump (667.254ms)
+✖ woman-scout LOD0 climbDown: full body/garment surfaces have no crest or roof-contact pose jump (105.797042ms)
+✖ woman-scout LOD1 climbUp: full body/garment surfaces have no crest or roof-contact pose jump (57.823833ms)
+✖ woman-scout LOD1 climbDown: full body/garment surfaces have no crest or roof-contact pose jump (54.63525ms)
+✖ woman-scout LOD2 climbUp: full body/garment surfaces have no crest or roof-contact pose jump (32.347583ms)
+✖ woman-scout LOD2 climbDown: full body/garment surfaces have no crest or roof-contact pose jump (29.354042ms)
+✔ granadero LOD0: crest palms, complete weighted sole and held phase retain physical support (749.892292ms)
+✔ granadero LOD1: crest palms, complete weighted sole and held phase retain physical support (506.879708ms)
+✔ granadero LOD2: crest palms, complete weighted sole and held phase retain physical support (242.62725ms)
+✔ woman-scout LOD0: crest palms, complete weighted sole and held phase retain physical support (568.062833ms)
+✔ woman-scout LOD1: crest palms, complete weighted sole and held phase retain physical support (332.551833ms)
+✔ woman-scout LOD2: crest palms, complete weighted sole and held phase retain physical support (207.911125ms)
+✖ 0.0000m span: crest retains the final planted rung on each side (6.499083ms)
+✖ 1.2361m span: crest retains the final planted rung on each side (0.310375ms)
+✖ 1.7481m span: crest retains the final planted rung on each side (0.24675ms)
+✔ native eleven-rung cardinal reference preserves source anchors and phase map (0.16025ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 7
+ℹ fail 15
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5456.729584
+
+✖ failing tests:
+
+test at tests/characters-climb-crest-continuity.test.mjs:10:114
+✖ granadero LOD0 climbUp: full body/garment surfaces have no crest or roof-contact pose jump (878.281291ms)
+  AssertionError [ERR_ASSERTION]: 2m span0 0.85: bounded full-surface speed
+      at TestContext.<anonymous> (file:///private/tmp/granaderos-climb-crest-parity-prototype/tests/characters-climb-crest-continuity.test.mjs:14:343)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/characters-climb-crest-continuity.test.mjs:10:114
+✖ granadero LOD0 climbDown: full body/garment surfaces have no crest or roof-contact pose jump (167.432875ms)
+  AssertionError [ERR_ASSERTION]: 2m span0 0.85: bounded full-surface speed
+      at TestContext.<anonymous> (file:///private/tmp/granaderos-climb-crest-parity-prototype/tests/characters-climb-crest-continuity.test.mjs:14:343)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/characters-climb-crest-continuity.test.mjs:10:114
+✖ granadero LOD1 climbUp: full body/garment surfaces have no crest or roof-contact pose jump (99.813959ms)
+  AssertionError [ERR_ASSERTION]: 2m span0 0.85: bounded full-surface speed
+      at TestContext.<anonymous> (file:///private/tmp/granaderos-climb-crest-parity-prototype/tests/characters-climb-crest-continuity.test.mjs:14:343)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/characters-climb-crest-continuity.test.mjs:10:114
+✖ granadero LOD1 climbDown: full body/garment surfaces have no crest or roof-contact pose jump (92.622333ms)
+  AssertionError [ERR_ASSERTION]: 2m span0 0.85: bounded full-surface speed
+      at TestContext.<anonymous> (file:///private/tmp/granaderos-climb-crest-parity-prototype/tests/characters-climb-crest-continuity.test.mjs:14:343)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/characters-climb-crest-continuity.test.mjs:10:114
+✖ granadero LOD2 climbUp: full body/garment surfaces have no crest or roof-contact pose jump (46.159167ms)
+  AssertionError [ERR_ASSERTION]: 2m span0 0.85: bounded full-surface speed
+      at TestContext.<anonymous> (file:///private/tmp/granaderos-climb-crest-parity-prototype/tests/characters-climb-crest-continuity.test.mjs:14:343)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/characters-climb-crest-continuity.test.mjs:10:114
+✖ granadero LOD2 climbDown: full body/garment surfaces have no crest or roof-contact pose jump (43.735709ms)
+  AssertionError [ERR_ASSERTION]: 2m span0 0.85: bounded full-surface speed
+      at TestContext.<anonymous> (file:///private/tmp/granaderos-climb-crest-parity-prototype/tests/characters-climb-crest-continuity.test.mjs:14:343)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/characters-climb-crest-continuity.test.mjs:10:114
+✖ woman-scout LOD0 climbUp: full body/garment surfaces have no crest or roof-contact pose jump (667.254ms)
+  AssertionError [ERR_ASSERTION]: 2m span0 0.85: bounded full-surface speed
+      at TestContext.<anonymous> (file:///private/tmp/granaderos-climb-crest-parity-prototype/tests/characters-climb-crest-continuity.test.mjs:14:343)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/characters-climb-crest-continuity.test.mjs:10:114
+✖ woman-scout LOD0 climbDown: full body/garment surfaces have no crest or roof-contact pose jump (105.797042ms)
+  AssertionError [ERR_ASSERTION]: 2m span0 0.85: bounded full-surface speed
+      at TestContext.<anonymous> (file:///private/tmp/granaderos-climb-crest-parity-prototype/tests/characters-climb-crest-continuity.test.mjs:14:343)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/characters-climb-crest-continuity.test.mjs:10:114
+✖ woman-scout LOD1 climbUp: full body/garment surfaces have no crest or roof-contact pose jump (57.823833ms)
+  AssertionError [ERR_ASSERTION]: 2m span0 0.85: bounded full-surface speed
+      at TestContext.<anonymous> (file:///private/tmp/granaderos-climb-crest-parity-prototype/tests/characters-climb-crest-continuity.test.mjs:14:343)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/characters-climb-crest-continuity.test.mjs:10:114
+✖ woman-scout LOD1 climbDown: full body/garment surfaces have no crest or roof-contact pose jump (54.63525ms)
+  AssertionError [ERR_ASSERTION]: 2m span0 0.85: bounded full-surface speed
+      at TestContext.<anonymous> (file:///private/tmp/granaderos-climb-crest-parity-prototype/tests/characters-climb-crest-continuity.test.mjs:14:343)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/characters-climb-crest-continuity.test.mjs:10:114
+✖ woman-scout LOD2 climbUp: full body/garment surfaces have no crest or roof-contact pose jump (32.347583ms)
+  AssertionError [ERR_ASSERTION]: 2m span0 0.85: bounded full-surface speed
+      at TestContext.<anonymous> (file:///private/tmp/granaderos-climb-crest-parity-prototype/tests/characters-climb-crest-continuity.test.mjs:14:343)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/characters-climb-crest-continuity.test.mjs:10:114
+✖ woman-scout LOD2 climbDown: full body/garment surfaces have no crest or roof-contact pose jump (29.354042ms)
+  AssertionError [ERR_ASSERTION]: 2m span0 0.85: bounded full-surface speed
+      at TestContext.<anonymous> (file:///private/tmp/granaderos-climb-crest-parity-prototype/tests/characters-climb-crest-continuity.test.mjs:14:343)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/climb-crest-contact-plan.test.mjs:5:44
+✖ 0.0000m span: crest retains the final planted rung on each side (6.499083ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+
+    assert.ok(after.feet[side].planted)
+
+      at TestContext.<anonymous> (file:///private/tmp/granaderos-climb-crest-parity-prototype/tests/climb-crest-contact-plan.test.mjs:8:180)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.start (node:internal/test_runner/test:1096:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:385:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/climb-crest-contact-plan.test.mjs:5:44
+✖ 1.2361m span: crest retains the final planted rung on each side (0.310375ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+
+    assert.ok(after.feet[side].planted)
+
+      at TestContext.<anonymous> (file:///private/tmp/granaderos-climb-crest-parity-prototype/tests/climb-crest-contact-plan.test.mjs:8:180)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+      at Test.postRun (node:internal/test_runner/test:1330:19)
+      at Test.run (node:internal/test_runner/test:1258:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/climb-crest-contact-plan.test.mjs:5:44
+✖ 1.7481m span: crest retains the final planted rung on each side (0.24675ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+
+    assert.ok(after.feet[side].planted)
+
+      at TestContext.<anonymous> (file:///private/tmp/granaderos-climb-crest-parity-prototype/tests/climb-crest-contact-plan.test.mjs:8:180)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+      at Test.postRun (node:internal/test_runner/test:1330:19)
+      at Test.run (node:internal/test_runner/test:1258:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

@@ -1,0 +1,30 @@
+✔ granadero LOD0 climbUp: full body/garment surfaces have no crest or roof-contact pose jump (16544.884ms)
+✔ granadero LOD0 climbDown: full body/garment surfaces have no crest or roof-contact pose jump (14036.057959ms)
+✔ granadero LOD1 climbUp: full body/garment surfaces have no crest or roof-contact pose jump (7631.946917ms)
+✔ granadero LOD1 climbDown: full body/garment surfaces have no crest or roof-contact pose jump (7822.619125ms)
+✔ granadero LOD2 climbUp: full body/garment surfaces have no crest or roof-contact pose jump (3334.59275ms)
+✔ granadero LOD2 climbDown: full body/garment surfaces have no crest or roof-contact pose jump (3323.611209ms)
+✔ woman-scout LOD0 climbUp: full body/garment surfaces have no crest or roof-contact pose jump (9771.22775ms)
+✔ woman-scout LOD0 climbDown: full body/garment surfaces have no crest or roof-contact pose jump (9161.499458ms)
+✔ woman-scout LOD1 climbUp: full body/garment surfaces have no crest or roof-contact pose jump (4724.198792ms)
+✔ woman-scout LOD1 climbDown: full body/garment surfaces have no crest or roof-contact pose jump (4535.450458ms)
+✔ woman-scout LOD2 climbUp: full body/garment surfaces have no crest or roof-contact pose jump (2298.788625ms)
+✔ woman-scout LOD2 climbDown: full body/garment surfaces have no crest or roof-contact pose jump (2294.883791ms)
+✔ granadero LOD0: crest palms and complete soles retain predecessor clearance and held poses (986.3455ms)
+✔ granadero LOD1: crest palms and complete soles retain predecessor clearance and held poses (601.741625ms)
+✔ granadero LOD2: crest palms and complete soles retain predecessor clearance and held poses (349.886ms)
+✔ woman-scout LOD0: crest palms and complete soles retain predecessor clearance and held poses (822.649125ms)
+✔ woman-scout LOD1: crest palms and complete soles retain predecessor clearance and held poses (468.059166ms)
+✔ woman-scout LOD2: crest palms and complete soles retain predecessor clearance and held poses (302.9295ms)
+✔ 0.0000m span: crest retains the final planted rung on each side (3.152583ms)
+✔ 1.2361m span: crest retains the final planted rung on each side (0.996875ms)
+✔ 1.7481m span: crest retains the final planted rung on each side (1.873208ms)
+✔ native eleven-rung cardinal reference preserves source anchors and phase map (0.39025ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 22
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 91043.920042

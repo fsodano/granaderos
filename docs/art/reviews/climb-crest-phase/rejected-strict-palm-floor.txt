@@ -1,0 +1,46 @@
+✔ granadero LOD0 climbUp: full body/garment surfaces have no crest or roof-contact pose jump (20781.534667ms)
+✔ granadero LOD0 climbDown: full body/garment surfaces have no crest or roof-contact pose jump (20359.490709ms)
+✔ granadero LOD1 climbUp: full body/garment surfaces have no crest or roof-contact pose jump (11917.80375ms)
+✔ granadero LOD1 climbDown: full body/garment surfaces have no crest or roof-contact pose jump (12262.120375ms)
+✔ granadero LOD2 climbUp: full body/garment surfaces have no crest or roof-contact pose jump (5023.825833ms)
+✔ granadero LOD2 climbDown: full body/garment surfaces have no crest or roof-contact pose jump (5011.138583ms)
+✔ woman-scout LOD0 climbUp: full body/garment surfaces have no crest or roof-contact pose jump (16950.523125ms)
+✔ woman-scout LOD0 climbDown: full body/garment surfaces have no crest or roof-contact pose jump (15642.783917ms)
+✔ woman-scout LOD1 climbUp: full body/garment surfaces have no crest or roof-contact pose jump (9920.337625ms)
+✔ woman-scout LOD1 climbDown: full body/garment surfaces have no crest or roof-contact pose jump (9483.409417ms)
+✔ woman-scout LOD2 climbUp: full body/garment surfaces have no crest or roof-contact pose jump (3288.950875ms)
+✔ woman-scout LOD2 climbDown: full body/garment surfaces have no crest or roof-contact pose jump (2777.981708ms)
+✔ granadero LOD0: crest palms, complete weighted sole and held phase retain physical support (862.84825ms)
+✔ granadero LOD1: crest palms, complete weighted sole and held phase retain physical support (466.313625ms)
+✖ granadero LOD2: crest palms, complete weighted sole and held phase retain physical support (6.643792ms)
+✔ woman-scout LOD0: crest palms, complete weighted sole and held phase retain physical support (699.468167ms)
+✔ woman-scout LOD1: crest palms, complete weighted sole and held phase retain physical support (365.731708ms)
+✔ woman-scout LOD2: crest palms, complete weighted sole and held phase retain physical support (228.687792ms)
+✔ 0.0000m span: crest retains the final planted rung on each side (5.976792ms)
+✔ 1.2361m span: crest retains the final planted rung on each side (3.580583ms)
+✔ 1.7481m span: crest retains the final planted rung on each side (0.646042ms)
+✔ native eleven-rung cardinal reference preserves source anchors and phase map (0.138709ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 21
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 136913.645917
+
+✖ failing tests:
+
+test at tests/characters-climb-crest-continuity.test.mjs:21:70
+✖ granadero LOD2: crest palms, complete weighted sole and held phase retain physical support (6.643792ms)
+  AssertionError [ERR_ASSERTION]: 2m span0 0.84 lhands: current real support skin must retain accepted floor bound
+      at TestContext.<anonymous> (file:///private/tmp/granaderos-climb-crest-parity-prototype/tests/characters-climb-crest-continuity.test.mjs:25:755)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

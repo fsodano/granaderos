@@ -1,0 +1,32 @@
+✔ friar LOD0: complete appearance surfaces retain crest continuity (1121.997333ms)
+✔ friar LOD1: complete appearance surfaces retain crest continuity (207.590125ms)
+✔ friar LOD2: complete appearance surfaces retain crest continuity (156.299792ms)
+✔ woman-shawl LOD0: complete appearance surfaces retain crest continuity (952.648417ms)
+✔ woman-shawl LOD1: complete appearance surfaces retain crest continuity (192.08725ms)
+✔ woman-shawl LOD2: complete appearance surfaces retain crest continuity (112.642583ms)
+✔ royalist LOD0: complete appearance surfaces retain crest continuity (480.103209ms)
+✔ royalist LOD1: complete appearance surfaces retain crest continuity (360.925334ms)
+✔ royalist LOD2: complete appearance surfaces retain crest continuity (167.829833ms)
+✔ worker LOD0: complete appearance surfaces retain crest continuity (324.026542ms)
+✔ worker LOD1: complete appearance surfaces retain crest continuity (157.9095ms)
+✔ worker LOD2: complete appearance surfaces retain crest continuity (79.692791ms)
+✔ surgeon LOD0: complete appearance surfaces retain crest continuity (331.056792ms)
+✔ surgeon LOD1: complete appearance surfaces retain crest continuity (184.286ms)
+✔ surgeon LOD2: complete appearance surfaces retain crest continuity (101.503542ms)
+✔ gaucho LOD0: complete appearance surfaces retain crest continuity (308.563541ms)
+✔ gaucho LOD1: complete appearance surfaces retain crest continuity (155.940042ms)
+✔ gaucho LOD2: complete appearance surfaces retain crest continuity (80.44ms)
+✔ granadero LOD0: real carried items and worn overlays keep crest joins (1259.057083ms)
+✔ granadero LOD1: real carried items and worn overlays keep crest joins (783.843ms)
+✔ granadero LOD2: real carried items and worn overlays keep crest joins (403.487333ms)
+✔ woman-scout LOD0: real carried items and worn overlays keep crest joins (1029.604459ms)
+✔ woman-scout LOD1: real carried items and worn overlays keep crest joins (604.372625ms)
+✔ woman-scout LOD2: real carried items and worn overlays keep crest joins (379.256209ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 24
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 10592.263334
