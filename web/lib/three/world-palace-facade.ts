@@ -7,6 +7,7 @@ import {addDoorLeaf} from './world-building-doors';
 import {illuminationAt} from './world-materials';
 import {buildingArtInset} from './world-building-placement';
 import {palaceColumns} from './world-palace-columns';
+import {civicStoreyBands} from './world-civic-storey-bands';
 import type {WorldGeometry} from './world-geometry';
 import type {WorldMaterials} from './world-materials';
 import type {WorldBuilding,WorldInput} from './world-types';
@@ -41,7 +42,8 @@ export function palaceFacade(b:WorldBuilding,input:WorldInput,T:number,height:nu
     for(const u of [0,frame.width])for(let v=2;v<frame.depth-1;v+=4)if(wallAt(u,v)?.type==='wall')pier(u-.06*(frame.u.x+frame.u.y),v-depthInset,.30);
   });
   }
-  feature('palace-storey-bands',()=>{
+  if(twoStoreys&&wallInset===0&&(!legacy||b.wallFinish!==undefined))root.add(civicStoreyBands(b,input,T,height,base,geometry,materials));
+  else feature('palace-storey-bands',()=>{
     const bands=twoStoreys?[[storey,stone],[height-.10,trim]] as const:[[height-.10,trim]] as const;
     for(const [y,material]of bands){for(const v of [0,frame.depth])box(frame.width*.5,v+(v===0?-.10:.10)/T,y,frame.width+.20/T,.15,.29/T,material);for(const u of [0,frame.width])box(u+(u===0?-.10:.10)/T,frame.depth*.5,y,.29/T,.15,frame.depth,material);}
   });
