@@ -4,14 +4,15 @@ import {createRendererSandboxBattle} from '../web/app/renderer-sandbox/fixtures.
 import {presentedActBattle} from '../game/tactical.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
 
-test('both anatomy groups use paid care, ground pickup and self release with finite owned supplies',()=>{
-  const battle=createRendererSandboxBattle('reach-actions'),before=structuredClone(battle);
-  assert.deepEqual(createRendererSandboxBattle('reach-actions'),battle);
+for(const posture of ['standing','prone'])test(`both anatomy groups use paid ${posture} care, ground pickup and self release with finite owned supplies`,()=>{
+  const scenario=`reach-actions:${posture}`,battle=createRendererSandboxBattle(scenario),before=structuredClone(battle);
+  assert.deepEqual(createRendererSandboxBattle(scenario),battle);
   assert.doesNotThrow(()=>validateBattleSnapshot(JSON.parse(JSON.stringify(battle))));
   for(const anatomy of ['male','female'])for(const role of ['healer','pickup','free']){
     const unitId=`reach-${role}-${anatomy}`,unit=battle.units.find(actor=>actor.id===unitId);
     const action=role==='healer'?{type:'heal',unitId,targetId:`reach-patient-${anatomy}`}:role==='pickup'?{type:'lootBatch',unitId,items:[{groundId:`reach-dressings-${anatomy}`,count:1}]}:{type:'free',unitId};
     const shown=presentedActBattle(battle,action),next=shown.state,after=next.units.find(actor=>actor.id===unitId);
+    assert.equal(unit.stance,posture);assert.equal(after.stance,posture);
     assert.equal(next.lastError,null,role);assert.ok(shown.frames.length>1,'Real prepare and result presentation');
     assert.ok(after.ap<unit.ap);assert.equal(after.x,unit.x);assert.equal(after.y,unit.y);
     for(const key of ['weapon','weaponInstanceId','loaded','ammo'])assert.deepEqual(after[key],unit[key],key);
@@ -25,3 +26,5 @@ test('both anatomy groups use paid care, ground pickup and self release with fin
     assert.doesNotThrow(()=>validateBattleSnapshot(JSON.parse(JSON.stringify(next))));assert.deepEqual(battle,before);
   }
 });
+
+test('reach posture choice rejects unknown states and keeps the ordinary standing default',()=>{assert.throws(()=>createRendererSandboxBattle('reach-actions:invalid'));assert.deepEqual(createRendererSandboxBattle('reach-actions'),createRendererSandboxBattle('reach-actions:standing'));});
