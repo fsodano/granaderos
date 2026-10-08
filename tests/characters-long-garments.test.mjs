@@ -1,7 +1,7 @@
 import {register} from 'node:module';register('./tactical-render-loader.mjs',import.meta.url);
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readFileSync,mkdtempSync,writeFileSync,rmSync} from 'node:fs';
+import {readFileSync,mkdtempSync,writeFileSync,rmSync,mkdirSync,symlinkSync,readdirSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {spawnSync} from 'node:child_process';
@@ -55,6 +55,14 @@ for(const id of ['friar','woman-shawl'])for(const lod of [0,1,2]){
    assert.ok(target.array.every(Number.isFinite),'Sparse index/value compaction preserves finite values');
    assert.ok(largest>.01&&largest<.15,`Authored cloth offsets remain centimetres, got ${largest}`);
   }
+  const clip=source.animation.animations.find(clip=>clip.name===record.nativeClothSupport.sourceClip),sourcePoseHash=createHash('sha256').update(JSON.stringify({name:clip.name,duration:clip.duration,tracks:clip.tracks.map(track=>({name:track.name,type:track.ValueTypeName,times:Array.from(track.times),values:Array.from(track.values),interpolation:track.getInterpolation()}))})).digest('hex');
+  assert.equal(record.nativeClothSupport.sourcePoseHash,sourcePoseHash,'Cloth correction names its exact current native pose');
+  assert.equal(record.nativeClothSupport.retainedRestMeshAndRig,true);
+  const baseNormals=mesh.geometry.attributes.normal,proneNormals=mesh.geometry.morphAttributes.normal[1];
+  for(let i=0;i<baseNormals.count;i++){
+   const normal=new Vector3().fromBufferAttribute(baseNormals,i).add(new Vector3().fromBufferAttribute(proneNormals,i));
+   assert.ok(Number.isFinite(normal.length())&&Math.abs(normal.length()-1)<.00001,'Prone cloth normals stay finite and unit length');
+  }
   settle(actor);const prone=clothBounds(mesh);
   assert.ok(prone.max.y<.33,`Prone cloth rests over the legs, top ${prone.max.y}`);
   assert.ok(prone.min.y>-.025,`Prone hem remains at the floor, bottom ${prone.min.y}`);
@@ -104,5 +112,30 @@ test('the production packer preserves sparse cloth accessors when unused binary 
   const result=spawnSync('python3',['-c','import sys;sys.path.insert(0,sys.argv[1]);from gltf_pack import pack;pack(sys.argv[2],{})',packer,path],{encoding:'utf8'});assert.equal(result.status,0,result.stderr);
   const bytes=readFileSync(path),gltf=await new GLTFLoader().parseAsync(bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.length),'');let mesh;gltf.scene.traverse(node=>{if(node.isMesh)mesh=node;});
   mesh.morphTargetInfluences[0]=1;assert.ok(mesh.getVertexPosition(2,new Vector3()).distanceTo(new Vector3(0,1.125,0))<.000001,'Sparse index still selects vertex 2 and the 12.5 cm value survives compaction');
+ }finally{rmSync(folder,{recursive:true,force:true});}
+});
+
+
+test('native cloth fitting is read-only when the current source pose is already recorded',()=>{
+ const folder=mkdtempSync(join(tmpdir(),'granaderos-cloth-repeat-')),output=join(folder,'proposal.json'),root=new URL('../',import.meta.url).pathname;
+ const files=['models/characters/manifest.json',...['friar','woman-shawl'].flatMap(id=>[0,1,2].map(lod=>`models/characters/${id}-lod${lod}.glb`))];
+ const hashes=()=>files.map(file=>createHash('sha256').update(readFileSync(new URL(file,publicRoot))).digest('hex'));
+ try{
+  const before=hashes(),result=spawnSync('node',['tools/characters-3d/fit-long-cloth-support.mjs',output],{cwd:root,encoding:'utf8'});
+  assert.equal(result.status,0,result.stderr);const rows=JSON.parse(readFileSync(output));assert.equal(rows.length,6);assert.ok(rows.every(row=>row.unchanged));assert.deepEqual(hashes(),before);
+ }finally{rmSync(folder,{recursive:true,force:true});}
+});
+
+test('a changed native pose rejects a second nonlinear fit before writing any body',()=>{
+ const folder=mkdtempSync(join(tmpdir(),'granaderos-cloth-stale-')),root=new URL('../',import.meta.url).pathname,models=join(folder,'web/public/models/characters');
+ try{
+  mkdirSync(models,{recursive:true});mkdirSync(join(folder,'tests'));mkdirSync(join(folder,'tools/characters-3d'),{recursive:true});
+  for(const name of ['published-actor-fixture.mjs','tactical-render-loader.mjs'])writeFileSync(join(folder,'tests',name),readFileSync(join(root,'tests',name)));
+  for(const name of ['lib','node_modules'])symlinkSync(join(root,'web',name),join(folder,'web',name),'dir');
+  const modelRoot=join(root,'web/public/models/characters');for(const name of readdirSync(modelRoot))if(name!=='manifest.json')symlinkSync(join(modelRoot,name),join(models,name));
+  const changed=structuredClone(manifest);changed.appearances.friar.lods[0].nativeClothSupport.sourcePoseHash='changed-source';writeFileSync(join(models,'manifest.json'),JSON.stringify(changed));
+  const output=join(folder,'proposal.json'),result=spawnSync('node',[join(root,'tools/characters-3d/fit-long-cloth-support.mjs'),output],{cwd:folder,encoding:'utf8'});
+  assert.notEqual(result.status,0);assert.match(result.stderr,/Native cloth basis changed; regenerate the authored body before refitting/);
+  assert.ok(!readdirSync(folder).includes('proposal.json'),'The rejected fit writes no candidate');assert.equal(JSON.parse(readFileSync(join(models,'manifest.json'))).appearances.friar.lods[0].nativeClothSupport.sourcePoseHash,'changed-source');
  }finally{rmSync(folder,{recursive:true,force:true});}
 });

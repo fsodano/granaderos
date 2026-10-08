@@ -116,6 +116,30 @@ samplers retain their true value at both endpoints; non-default weapon holds are
 not discarded. Each actor needs its own bones but can share loaded geometry,
 textures, materials where immutable, and animation clips.
 
+## Native long cloth correction
+
+After native animation support is rebuilt, `build-library.py` runs
+`tools/characters-3d/build-long-cloth-support.py`. This pass fits the existing
+`cloth_prone` shape of the friar habit and woman's long skirt at all three LODs
+to `prone.idle.long-gun`. It changes only existing prone position offsets and
+normals on adjacent triangles. Rest geometry, skin weights, rig, crouched
+shape, textures and animation data are preserved and checked after packing.
+Targets remain sparse. The manifest stores the exact semantic native clip hash.
+
+A repeated fit makes no asset changes. If that native pose changes, rebuild the
+six authored long-cloth bodies before fitting again. The pass rejects a second
+nonlinear fit against a changed pose. Builds of other assets retain the reviewed
+cloth record when the published body hash still matches. To run the pass alone:
+
+```sh
+python3 tools/characters-3d/build-long-cloth-support.py
+node --test tests/characters-long-garments.test.mjs
+```
+
+The checks cover prone height, floor bounds, crawling, posture blending,
+replacement clothing, shading normals, repeat fitting and stale-pose rejection.
+They do not establish cloth and boot collision clearance in every motion.
+
 ## Sources and rights
 
 - **MakeHuman / MPFB body, targets, rig and weights:** CC0-1.0 assets from
