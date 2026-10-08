@@ -45,3 +45,14 @@ node tools/verify-three-climb-phase-preservation.mjs --before-helper=docs/art/re
 The existing visible UI checker uses `GRANADEROS_REVIEW_URL`, `GRANADEROS_REVIEW_OUTPUT`, `PLAYWRIGHT_MODULE` and `CHROMIUM_EXECUTABLE`. Select the normal Azoteas a distintas alturas scene. No private pose injection is used.
 
 Actual model and native-bank hashes are in `native-input-pins.json`. Male bank: 49f5d77abe97ae560f46060f93d3fdd31661eda97e47dfdf029216ade2beeb27. Female bank: 509a9c2c1ab0cb2a7d38c8f50cb7809cfa9f6c4cc946c69652b6918fdeb1ac10. This package contains no bank, mesh, gameplay geometry, manifest or architecture changes.
+
+## Root integration
+
+The root installed the exact frozen seven-file implementation on main `3541734ead91327c7941aba9de395180d83acb56` and committed it as `629b6366a572e09d2bd85bfc44b12917e9d65ca6`. All 110 affected checks pass in 11.02 seconds. The independent 96-case/4,104-pose comparison repeats the 144 repaired wraps, exact preserved dimensions/clocks and fourteen open broader palm-floor failures. TypeScript, native/profile verification, documentation and all 38 baseline checks pass. Production build `a943545c8220` verifies 1,247 files and 1,040 static references; its full game-source digest matches the committed candidate. All 106 published native/profile files and all eight preceding window-paint files remain exact.
+
+The current main renderer passes eight paid climbs/returns and four case resets. All 179 source/native pins remain exact before and after; 386 served pinned native responses match disk bytes. Both new phase/fit modules are actually served. There are no page, console or HTTP errors. The root viewed the retained before/current rung pair, the current main up-rung capture and the raised hatch return. These normal frames retain the ordinary overlay timing limit described above. The crest, palm and ceiling limits remain open. Full independent receipts are in `artifacts/three-climb-rung-phase-current-review/`.
+
+![Current main paid climb at the rung](root-current-up.png)
+![Current main raised hatch return](root-raised-return.png)
+
+The two copied text-only diagnostic receipts have trailing whitespace removed; their raw originals remain in the frozen root package. All other frozen files remain exact. This normalization changes no assertion, source or result.
