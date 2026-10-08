@@ -85,4 +85,8 @@ if manifest['complete']:
   # at 60 Hz without replacing native upper-body, Root or pace channels.
   leg_bones=[name+'_'+side for side in ('l','r')for name in ('thigh','calf','foot','ball')]
   subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-motion-increment.py'),'--blender',a.blender,'--posture','crouched','--gesture','strafeLeft','--gesture','strafeRight','--equipment','unarmed','--metadata-field','nativeSidewaysSupport','--existing-only']+[argument for bone in leg_bones for argument in ('--bone',bone)],cwd=ROOT,check=True)
+  # The five owned equipment poses retain that exact native parent path.
+  subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-equipped-crouch-support.py')],cwd=ROOT,check=True)
+  # Raised crouched guards retain the same supported native lower body.
+  subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-crouched-guard-support.py')],cwd=ROOT,check=True)
  else:subprocess.run(['node',str(ROOT/'tools/characters-3d/compile-locomotion-profile.mjs')],cwd=ROOT,check=True)
