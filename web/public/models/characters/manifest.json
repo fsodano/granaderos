@@ -236,7 +236,7 @@
         }
       },
       "lodPixelThresholds": [
-        160,
+        120,
         65,
         0
       ],
@@ -461,7 +461,7 @@
         }
       },
       "lodPixelThresholds": [
-        160,
+        120,
         65,
         0
       ],
@@ -686,7 +686,7 @@
         }
       },
       "lodPixelThresholds": [
-        160,
+        120,
         65,
         0
       ],
@@ -911,7 +911,7 @@
         }
       },
       "lodPixelThresholds": [
-        160,
+        120,
         65,
         0
       ],
@@ -1136,7 +1136,7 @@
         }
       },
       "lodPixelThresholds": [
-        160,
+        120,
         65,
         0
       ],
@@ -1432,7 +1432,7 @@
         }
       },
       "lodPixelThresholds": [
-        160,
+        120,
         65,
         0
       ],
@@ -1657,7 +1657,7 @@
         }
       },
       "lodPixelThresholds": [
-        160,
+        120,
         65,
         0
       ],
@@ -1954,7 +1954,7 @@
         }
       },
       "lodPixelThresholds": [
-        160,
+        120,
         65,
         0
       ],
