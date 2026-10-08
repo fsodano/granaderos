@@ -1,0 +1,8 @@
+{
+  "states": 504,
+  "meshes": 10240,
+  "bands": 468,
+  "beforeRoot": "/tmp/granaderos-source-door-straps-before",
+  "currentRoot": "/tmp/granaderos-source-door-straps-proposal",
+  "scope": "Only full authored non-panelled cross-band triangles are excluded. Every other vertex channel, material pigment/roughness/metalness, node transform/metadata and compiled gameplay input is exact. Four orientations, ordinary room disclosure and original/closed slab/usable roof."
+}

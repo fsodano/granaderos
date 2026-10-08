@@ -1,0 +1,28 @@
+✔ all sandbox choices are fresh, valid real battle snapshots with legal equipment states (366.964875ms)
+✔ combat starts with visible targets and real usable rifle, pistol, sabre, grenade and knife (66.280792ms)
+✔ architecture has all nine building identities, two facade directions, and usable doors (277.963625ms)
+✔ posture review exercises real travel for both prone anatomy banks (9.466667ms)
+✔ individual building review keeps a real lone guard outside each closed facade (11.006625ms)
+✔ the loaded cannon has a complete adjacent crew and finite ammunition (23.483083ms)
+✔ four-bore review loads both owned pistols with finite cartridges through ordinary exploration orders (3.579125ms)
+✔ mounted movement, dismount, real roof ascent/descent and the open door use legal game orders (41.058041ms)
+✔ night uses actual lights, shot-produced smoke, reload supplies and usable torches (22.059542ms)
+✔ same-cell hatch review uses ordinary climbs and keeps its roof walking cells (9.503042ms)
+✔ four rotations of all fourteen templates retain a jointed 20 cm footing and clear doors/windows (944.281417ms)
+✔ surface scenery stays in authored wall cells through all catalogue cutaways and breach edits (2281.4005ms)
+✔ metric slabs and legal roof routes keep lower facade details below the upper surface (224.077167ms)
+✔ lower-wall wear is stable across rebuilds without changing authored finish colours (120.965083ms)
+✔ timber lattice has clipped diagonal slats on both wall axes and readable lower openings from either face (7.510791ms)
+✔ the actual pulperia and stable retain diagonal timber windows at all four rotations and through authored tile-style overrides (189.038667ms)
+✔ other retained window styles keep their existing glazing and bars (0.620834ms)
+✔ ordinary window cutaways and breaches remove the new timber without changing retained opening flags or dimensions (391.333625ms)
+✔ authored green shutters remain visible inside the aperture from both actual wall faces with the source central gap and rails (6.295416ms)
+✔ real house and farmhouse shutter panels clear their masonry jambs across four rotations, saved style flags and ordinary disclosure (453.468209ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 20
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4400.068625
