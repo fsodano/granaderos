@@ -7,6 +7,7 @@ change. Every binary geometry/UV/morph/rig payload and old atlas remains exact.
 from pathlib import Path
 import argparse, copy, hashlib, importlib.util, io, json, math, struct, subprocess, tempfile
 from PIL import Image
+from cloth_material_roles import retained_charcoal_material
 
 
 def load_module(name, path):
@@ -65,9 +66,7 @@ def main():
             assert support and support == record.get('nativeSkirtHem'), 'Inconsistent completed hem metadata'
             assert material['pbrMetallicRoughness']['baseColorTexture'].get('texCoord') == 1
             assert 'TEXCOORD_1' in primitive['attributes']
-            retained = [m for m in doc['materials'] if m.get('name') == 'Apparel_Atlas_Charcoal_Legwear']
-            assert len(retained) == 1, 'Missing retained charcoal UV0 material'
-            material = retained[0]
+            material = doc['materials'][retained_charcoal_material(doc, primitive['material'])]
         else:
             assert 'nativeSkirtHem' not in doc['meshes'][mesh].get('extras', {}), 'Ambiguous hem material state'
         assert material['name'] in ('Apparel_Atlas', 'Apparel_Atlas_Charcoal_Legwear'), 'Unrecognized source palette role'

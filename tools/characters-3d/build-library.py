@@ -126,3 +126,6 @@ if manifest['complete']:
  subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-reviewed-long-cloth-lods.py')],cwd=ROOT,check=True)
  subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-woman-shawl-palette.py')],cwd=ROOT,check=True)
  subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-woman-shawl-hem.py')],cwd=ROOT,check=True)
+ # A fresh hem appends UV1 after the first coarse packing. Finalize the complete
+ # donor surface now so the first complete source build is already canonical.
+ subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-reviewed-long-cloth-lods.py')],cwd=ROOT,check=True)

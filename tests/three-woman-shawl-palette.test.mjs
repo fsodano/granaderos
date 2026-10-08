@@ -46,7 +46,10 @@ for (const lod of [0, 1, 2]) test(`woman-shawl LOD${lod} separates the charcoal 
     assert.equal(material.name, 'Apparel_Atlas_Charcoal_Legwear_Rust_Hem');
     // The hem has its own active-map/channel checks. Keep this regression on
     // the retained charcoal recipe and original UV/material payloads.
-    material = doc.materials.find(m => m.name === 'Apparel_Atlas_Charcoal_Legwear');
+    material = doc.materials.find(m => m.name === 'Apparel_Atlas_Charcoal_Legwear'
+      && m.normalTexture.index === material.normalTexture.index
+      && m.pbrMetallicRoughness.metallicRoughnessTexture.index === material.pbrMetallicRoughness.metallicRoughnessTexture.index);
+    assert.ok(material, 'The retained charcoal material belongs to the active hem surface');
   }
   const retained = doc.materials.find(m => m.name === 'Apparel_Atlas' && m.normalTexture.index === material.normalTexture.index && m.pbrMetallicRoughness.metallicRoughnessTexture.index === material.pbrMetallicRoughness.metallicRoughnessTexture.index);
   assert.ok(retained, 'The original legwear material stays in the body');
@@ -56,24 +59,40 @@ for (const lod of [0, 1, 2]) test(`woman-shawl LOD${lod} separates the charcoal 
   assert.deepEqual(cloned, retained, 'Roughness, normals, factors, extensions and every other material field stay exact');
   const color = m => rgbaPng(readFileSync(new URL(doc.images[doc.textures[m.pbrMetallicRoughness.baseColorTexture.index].source].uri, assets)));
   const atlas = color(material), old = color(retained);
-  assert.equal(atlas.width, 128); assert.equal(atlas.height, 128);
-  let changed = 0;
-  for (let y = 0; y < 128; y++) for (let x = 0; x < 128; x++) {
-    if (x >= 32 && x < 64 && y >= 96 && y < 128) {
-      assert.deepEqual(atlas.pixel(x, y), [49, 48, 49, 255]);
-      assert.deepEqual(old.pixel(x, y), [91, 44, 53, 255]); changed++;
-    } else assert.deepEqual(atlas.pixel(x, y), old.pixel(x, y), 'Other atlas pigments stay exact');
-  }
-  assert.equal(changed, 1024);
+  assert.equal(atlas.width, atlas.height); assert.equal(atlas.width % 32, 0);
+  assert.equal(old.width, atlas.width); assert.equal(old.height, atlas.height);
   const a = doc.accessors[primitive.attributes.TEXCOORD_0], view = doc.bufferViews[a.bufferView];
   assert.equal(a.componentType, 5126); assert.equal(a.type, 'VEC2'); assert.equal(a.sparse, undefined);
-  for (let i = 0; i < a.count; i++) {
+  const uv = i => {
     const offset = (view.byteOffset ?? 0) + (a.byteOffset ?? 0) + i * (view.byteStride ?? 8);
-    const x = binary.readFloatLE(offset) * 128 - .5, y = binary.readFloatLE(offset + 4) * 128 - .5;
+    return [binary.readFloatLE(offset), binary.readFloatLE(offset + 4)];
+  };
+  const side = atlas.width / 32, tiles = new Set(Array.from({length:a.count}, (_,i) => uv(i).map(v=>Math.floor(v*side)).join(',')));
+  assert.equal(tiles.size, 1); const [tx,ty] = [...tiles][0].split(',').map(Number);
+  const originalPigment = old.pixel(tx*32,ty*32);
+  assert.ok([[91,44,53,255],[49,48,49,255]].some(colour=>colour.every((v,i)=>v===originalPigment[i])), 'Source starts with legacy burgundy or current authored charcoal');
+  let changed = 0;
+  for (let y = 0; y < atlas.height; y++) for (let x = 0; x < atlas.width; x++) {
+    if (x >= tx*32 && x < (tx+1)*32 && y >= ty*32 && y < (ty+1)*32) {
+      assert.deepEqual(atlas.pixel(x, y), [49, 48, 49, 255]);
+      assert.deepEqual(old.pixel(x, y), originalPigment); if (originalPigment[0]===91) changed++;
+    } else assert.deepEqual(atlas.pixel(x, y), old.pixel(x, y), 'Other atlas pigments stay exact');
+  }
+  assert.equal(changed, originalPigment[0]===91 ? 1024 : 0);
+  for (let i = 0; i < a.count; i++) {
+    const [u,v] = uv(i), x = u * atlas.width - .5, y = v * atlas.height - .5;
     for (const px of [Math.floor(x), Math.ceil(x)]) for (const py of [Math.floor(y), Math.ceil(y)]) assert.deepEqual(atlas.pixel(px, py), [49, 48, 49, 255], 'The complete filtered UV neighborhood stays on the skirt pigment');
   }
   const outfit = doc.nodes.find(n => n.name === `Human_outfit_LOD${lod}`);
   assert.notEqual(doc.meshes[outfit.mesh].primitives[0].material, primitive.material, 'The shawl keeps its own retained atlas');
+  const outfitPrimitive = doc.meshes[outfit.mesh].primitives[0], outfitAtlas = color(doc.materials[outfitPrimitive.material]);
+  const oa = doc.accessors[outfitPrimitive.attributes.TEXCOORD_0], ov = doc.bufferViews[oa.bufferView];
+  let burgundyVertices = 0;
+  for (let i=0;i<oa.count;i++) {
+    const offset=(ov.byteOffset??0)+(oa.byteOffset??0)+i*(ov.byteStride??8), x=Math.floor(binary.readFloatLE(offset)*outfitAtlas.width), y=Math.floor(binary.readFloatLE(offset+4)*outfitAtlas.height);
+    if (outfitAtlas.pixel(x,y).join(',')==='91,44,53,255') burgundyVertices++;
+  }
+  assert.ok(burgundyVertices>=100, 'Actual shawl UVs still sample the source burgundy pigment');
   if (lod) {
     assert.equal(record.nativeClothTopology.sourceSha256, manifest.appearances['woman-shawl'].lods[0].sha256);
     assert.equal(doc.meshes[node.mesh].extras.nativeClothTopology.sourceSha256, record.nativeClothTopology.sourceSha256);

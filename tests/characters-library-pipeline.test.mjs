@@ -4,8 +4,9 @@ import {execFileSync} from 'node:child_process';
 
 const python = source => JSON.parse(execFileSync('python3', ['-c', `
 from pathlib import Path
-import importlib.util, json, copy, tempfile, hashlib
+import importlib.util, json, copy, tempfile, hashlib, sys
 root=Path.cwd()
+sys.path.insert(0,str(root/'tools/characters-3d'))
 s=importlib.util.spec_from_file_location('library',root/'tools/characters-3d/library_manifest.py')
 library=importlib.util.module_from_spec(s);s.loader.exec_module(library)
 assets=root/'web/public/models/characters';previous=json.loads((assets/'manifest.json').read_text())
@@ -207,16 +208,24 @@ with tempfile.TemporaryDirectory() as folder:
   for lod in (0,1,2):shutil.copy2(assets/f'{id}-lod{lod}.glb',out/f'{id}-lod{lod}.glb')
  for name in ('male-animations.glb','female-animations.glb','equipment.glb'):shutil.copy2(assets/name,out/name)
  shutil.copytree(assets/'textures',out/'textures')
+ # Model a fresh donor with updated native map bindings. Old coarse palette
+ # materials remain, so names alone cannot identify the new active surface.
+ path=out/'woman-shawl-lod0.glb';doc,binary=glb.read_glb(path)
+ mesh=next(n['mesh'] for n in doc['nodes'] if n.get('name')=='Human_legwear_LOD0');primitive=doc['meshes'][mesh]['primitives'][0]
+ charcoal=next(i for i,m in enumerate(doc['materials']) if m.get('name')=='Apparel_Atlas_Charcoal_Legwear')
+ normal_index=doc['materials'][charcoal]['normalTexture']['index']
+ for material in doc['materials']:
+  if material.get('normalTexture',{}).get('index')==normal_index:material['normalTexture']['scale']=.85
+ primitive['material']=charcoal;primitive['attributes'].pop('TEXCOORD_1');doc['meshes'][mesh]['extras'].pop('nativeSkirtHem');current['appearances']['woman-shawl']['lods'][0].pop('nativeSkirtHem')
+ glb.write_glb(path,doc,binary);current['appearances']['woman-shawl']['lods'][0].update(bytes=path.stat().st_size,sha256=library.digest(path))
  for lod in (1,2):
   path=out/f'woman-shawl-lod{lod}.glb';doc,binary=glb.read_glb(path)
   mesh=next(n['mesh'] for n in doc['nodes'] if n.get('name')==f'Human_legwear_LOD{lod}');primitive=doc['meshes'][mesh]['primitives'][0]
   primitive['material']=next(i for i,m in enumerate(doc['materials']) if m.get('name')=='Apparel_Atlas');primitive['attributes'].pop('TEXCOORD_1')
-  for material in doc['materials']:
-   if material.get('name')=='Apparel_Atlas_Charcoal_Legwear':material['name']='Fixture_Unreferenced_Previous_Palette'
   for key in ('nativeSkirtHem','nativeClothTopology'):doc['meshes'][mesh]['extras'].pop(key,None);current['appearances']['woman-shawl']['lods'][lod].pop(key,None)
   glb.write_glb(path,doc,binary);current['appearances']['woman-shawl']['lods'][lod].update(bytes=path.stat().st_size,sha256=library.digest(path))
  (out/'manifest.json').write_text(json.dumps(current))
- for tool in ('build-reviewed-long-cloth-lods.py','build-woman-shawl-palette.py','build-woman-shawl-hem.py'):
+ for tool in ('build-reviewed-long-cloth-lods.py','build-woman-shawl-palette.py','build-woman-shawl-hem.py','build-reviewed-long-cloth-lods.py'):
   run=subprocess.run(['python3',str(target/'tools/characters-3d'/tool)],cwd=target,capture_output=True,text=True)
   assert run.returncode==0,run.stdout+run.stderr
  completed=json.loads((out/'manifest.json').read_text());donor=completed['appearances']['woman-shawl']['lods'][0]['sha256']
@@ -224,12 +233,14 @@ with tempfile.TemporaryDirectory() as folder:
   doc,binary=glb.read_glb(out/f'woman-shawl-lod{lod}.glb');mesh=next(n['mesh'] for n in doc['nodes'] if n.get('name')==f'Human_legwear_LOD{lod}');record=completed['appearances']['woman-shawl']['lods'][lod]
   assert doc['meshes'][mesh]['extras']['nativeSkirtHem']==record['nativeSkirtHem']
   assert record['nativeClothTopology']['sourceSha256']==donor
-  assert len([m for m in doc['materials'] if m.get('name')=='Apparel_Atlas_Charcoal_Legwear'])==1
+  assert len([m for m in doc['materials'] if m.get('name')=='Apparel_Atlas_Charcoal_Legwear'])>=2
+  active=doc['materials'][doc['meshes'][mesh]['primitives'][0]['material']]
+  assert active['normalTexture']['scale']==.85
   assert 'TEXCOORD_1' in doc['meshes'][mesh]['primitives'][0]['attributes']
  assert completed['animationLibraries']==previous['animationLibraries']
  for bank in previous['animationLibraries'].values():assert library.digest(out/Path(bank['url']).name)==bank['sha256']
  stable={str(p.relative_to(out)):library.digest(p) for p in out.rglob('*') if p.is_file()}
- for tool in ('build-reviewed-long-cloth-lods.py','build-woman-shawl-palette.py','build-woman-shawl-hem.py'):
+ for tool in ('build-reviewed-long-cloth-lods.py','build-woman-shawl-palette.py','build-woman-shawl-hem.py','build-reviewed-long-cloth-lods.py'):
   run=subprocess.run(['python3',str(target/'tools/characters-3d'/tool)],cwd=target,capture_output=True,text=True);assert run.returncode==0,run.stdout+run.stderr
  assert stable=={str(p.relative_to(out)):library.digest(p) for p in out.rglob('*') if p.is_file()}
  print(json.dumps({'coarseHemClassificationRestored':True,'retainedUV0PaletteCopied':True,'finalDonorIdentity':True,'bothBankFilesAndMetadataExact':True,'orderedRepeatExact':True}))

@@ -7,6 +7,7 @@ Stage all four bodies, prove their source boundaries, then write atomically.
 """
 from pathlib import Path
 import argparse, copy, hashlib, importlib.util, json, subprocess, tempfile
+from cloth_material_roles import retained_charcoal_material
 
 
 def module(name, path):
@@ -159,10 +160,7 @@ def main():
                 # A fresh coarse body lacks this inactive UV0 palette material.
                 # Keep its reviewed colour resource for the following palette
                 # guard while the active hem continues to use TEXCOORD_1.
-                retained = [i for i, value in enumerate(donor['materials'])
-                            if value.get('name') == 'Apparel_Atlas_Charcoal_Legwear']
-                assert len(retained) == 1, 'Missing retained donor palette material'
-                material(retained[0])
+                material(retained_charcoal_material(donor, donor_mesh['primitives'][0]['material']))
             primitive['targets'] = [{key: accessor(value) for key, value in target.items()} for target in primitive['targets']]
             if row['changed']:
                 for semantic, key in (('POSITION', 'position'), ('NORMAL', 'normal')):
