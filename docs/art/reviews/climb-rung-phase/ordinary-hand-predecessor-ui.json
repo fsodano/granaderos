@@ -1,0 +1,183 @@
+{
+  "url": "http://127.0.0.1:3189/renderer-sandbox",
+  "errors": [],
+  "cases": [
+    {
+      "id": "tall-cardinal",
+      "direction": "up",
+      "file": "tall-cardinal-up-contact-0.png",
+      "upFractionFromOrdinaryOverlay": 0.6506383928578346,
+      "timestamp": 1791446951.260551
+    },
+    {
+      "id": "tall-cardinal",
+      "direction": "up",
+      "file": "tall-cardinal-up-contact-1.png",
+      "upFractionFromOrdinaryOverlay": 0.6525883928578345,
+      "timestamp": 1791446951.267127
+    },
+    {
+      "id": "tall-cardinal",
+      "direction": "up",
+      "file": "tall-cardinal-up-contact-2.png",
+      "upFractionFromOrdinaryOverlay": 0.6525883928578345,
+      "timestamp": 1791446951.274271
+    },
+    {
+      "id": "tall-cardinal",
+      "direction": "up",
+      "file": "tall-cardinal-up-contact-3.png",
+      "upFractionFromOrdinaryOverlay": 0.6487464285721203,
+      "timestamp": 1791446951.248098
+    },
+    {
+      "id": "tall-cardinal",
+      "direction": "up",
+      "final": "1. Escalador de la casa. Salud 100, 20 puntos de acción, energía 88, moral 80. Ve 0 enemigos. Mano principal: vacía. Segunda mano: vacía. Botón derecho: equipo del combatiente",
+      "actual": {
+        "x": 444,
+        "y": 146.54666666666668
+      },
+      "expected": {
+        "x": 8,
+        "y": 10,
+        "tacticalLevel": 1,
+        "elevation": 6.8
+      }
+    },
+    {
+      "id": "tall-cardinal",
+      "direction": "down",
+      "file": "tall-cardinal-down-contact-0.png",
+      "upFractionFromOrdinaryOverlay": 0.6524008928571428,
+      "timestamp": 1791446957.534564
+    },
+    {
+      "id": "tall-cardinal",
+      "direction": "down",
+      "file": "tall-cardinal-down-contact-1.png",
+      "upFractionFromOrdinaryOverlay": 0.6524008928571428,
+      "timestamp": 1791446957.547807
+    },
+    {
+      "id": "tall-cardinal",
+      "direction": "down",
+      "file": "tall-cardinal-down-contact-2.png",
+      "upFractionFromOrdinaryOverlay": 0.6505785714285712,
+      "timestamp": 1791446957.557403
+    },
+    {
+      "id": "tall-cardinal",
+      "direction": "down",
+      "file": "tall-cardinal-down-contact-3.png",
+      "upFractionFromOrdinaryOverlay": 0.6543044642857141,
+      "timestamp": 1791446957.524395
+    },
+    {
+      "id": "tall-cardinal",
+      "direction": "down",
+      "final": "1. Escalador de la casa. Salud 100, 16,25 puntos de acción, energía 80, moral 80. Ve 0 enemigos. Mano principal: vacía. Segunda mano: vacía. Botón derecho: equipo del combatiente",
+      "actual": {
+        "x": 418,
+        "y": 300.92
+      },
+      "expected": {
+        "x": 8,
+        "y": 11,
+        "tacticalLevel": 0,
+        "elevation": 1.2
+      }
+    },
+    {
+      "id": "raised-vertical",
+      "direction": "up",
+      "final": "1. Escalador de la casa. Salud 100, 20 puntos de acción, energía 88, moral 80. Ve 1 enemigos. Mano principal: vacía. Segunda mano: vacía. Botón derecho: equipo del combatiente",
+      "actual": {
+        "x": 496,
+        "y": 156.14666666666665
+      },
+      "expected": {
+        "x": 8,
+        "y": 8,
+        "tacticalLevel": 1,
+        "elevation": 5.300000000000001
+      }
+    },
+    {
+      "id": "raised-vertical",
+      "direction": "down",
+      "final": "1. Escalador de la casa. Salud 100, 16,25 puntos de acción, energía 80, moral 80. Ve 0 enemigos. Mano principal: vacía. Segunda mano: vacía. Botón derecho: equipo del combatiente",
+      "actual": {
+        "x": 496,
+        "y": 261.4266666666667
+      },
+      "expected": {
+        "x": 8,
+        "y": 8,
+        "tacticalLevel": 0,
+        "elevation": 1.1
+      }
+    },
+    {
+      "id": "tall-return",
+      "direction": "up",
+      "final": "1. Escalador de la casa. Salud 100, 20 puntos de acción, energía 88, moral 80. Ve 0 enemigos. Mano principal: vacía. Segunda mano: vacía. Botón derecho: equipo del combatiente",
+      "actual": {
+        "x": 444,
+        "y": 123.98666666666665
+      },
+      "expected": {
+        "x": 8,
+        "y": 10,
+        "tacticalLevel": 1,
+        "elevation": 7.7
+      }
+    },
+    {
+      "id": "tall-return",
+      "direction": "down",
+      "final": "1. Escalador de la casa. Salud 100, 16,25 puntos de acción, energía 80, moral 80. Ve 0 enemigos. Mano principal: vacía. Segunda mano: vacía. Botón derecho: equipo del combatiente",
+      "actual": {
+        "x": 418,
+        "y": 288.38666666666666
+      },
+      "expected": {
+        "x": 8,
+        "y": 11,
+        "tacticalLevel": 0,
+        "elevation": 1.7
+      }
+    },
+    {
+      "id": "low-vertical",
+      "direction": "up",
+      "final": "1. Escalador de la casa. Salud 100, 20 puntos de acción, energía 88, moral 80. Ve 1 enemigos. Mano principal: vacía. Segunda mano: vacía. Botón derecho: equipo del combatiente",
+      "actual": {
+        "x": 496,
+        "y": 228.84
+      },
+      "expected": {
+        "x": 8,
+        "y": 8,
+        "tacticalLevel": 1,
+        "elevation": 2.4
+      }
+    },
+    {
+      "id": "low-vertical",
+      "direction": "down",
+      "final": "1. Escalador de la casa. Salud 100, 16,25 puntos de acción, energía 80, moral 80. Ve 0 enemigos. Mano principal: vacía. Segunda mano: vacía. Botón derecho: equipo del combatiente",
+      "actual": {
+        "x": 496,
+        "y": 278.97333333333336
+      },
+      "expected": {
+        "x": 8,
+        "y": 8,
+        "tacticalLevel": 0,
+        "elevation": 0.4
+      }
+    }
+  ],
+  "scope": "Only visible controls and ordinary DOM telemetry. No state/pose/time injection."
+}
