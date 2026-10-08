@@ -7,9 +7,11 @@ const {WorldGeometry,disposeWorldNode}=await import('../web/lib/three/world-geom
 const {WorldMaterials}=await import('../web/lib/three/world-materials.ts');
 const {buildBuilding}=await import('../web/lib/three/world-buildings.ts');
 const {buildUpperSurfaces}=await import('../web/lib/three/world-terrain.ts');
-const {entranceFrame}=await import('../game/building-profile.js');
+const {entranceFrame,getBuildingProfile}=await import('../game/building-profile.js');
+const {buildingDetails}=await import('../web/app/TacticalBuildingDetails.tsx');
+const {ArchitectureVolume}=await import('../web/app/TacticalBuildingVolumes.tsx');
 const {createArchitectureReviewBattle}=await import('../web/app/renderer-sandbox/architecture-fixtures.js');
-const T=1.2360585147470482;
+const T=1.2360585147470482,V=25.066666666666666;
 const features={capilla:'chapel-bell-gable',casa:'domestic-chimney',herreria:'forge-chimney'};
 
 function fixture(id,rotation,roof,view='exterior'){
@@ -17,12 +19,25 @@ function fixture(id,rotation,roof,view='exterior'){
  return {battle,b,input,frame:entranceFrame({...b,walls:battle.tiles.filter(tile=>tile.buildingId===b.id)}),build:()=>buildBuilding(b,input,T,geometry,materials),name:`building-detail:${b.id}:${features[id]}`,dispose:object=>{disposeWorldNode(object);geometry.dispose();materials.dispose();}};
 }
 
+function sourceForge(f){
+ const parts={};const visit=node=>{if(!node)return;if(Array.isArray(node)){node.forEach(visit);return;}if(node.type===ArchitectureVolume&&['forge-chimney','chimney-cap'].includes(node.props.label))parts[node.props.label]=node.props;visit(node.props?.children);};
+ for(const entry of buildingDetails({...f.b,walls:f.input.terrain.tiles.filter(tile=>tile.buildingId===f.b.id)},new Set(),(x,y)=>({x:(x-y)*26,y:(x+y)*14})))visit(entry.node);
+ assert.ok(parts['forge-chimney']&&parts['chimney-cap'],'Use the actual current source masonry');return parts;
+}
+
 test('actual chapel and chimney templates follow explicit terraces and blocked metric slab elevations through four rotations',()=>{
  for(const id of Object.keys(features))for(const rotation of [0,90,180,270])for(const roof of ['terrace','slab']){
   const f=fixture(id,rotation,roof),before=JSON.stringify(f.input),building=f.build(),height=building.userData.height,feature=building.getObjectByName(f.name);assert.ok(feature,`${id}/${rotation}/${roof}`);
   if(roof==='slab')assert.equal(height,3);const bounds=new Box3().setFromObject(feature);
   if(id==='capilla'){assert.ok(Math.abs(bounds.min.y-height)<1e-5,'the bell gable must meet the real flat roof');assert.ok(bounds.max.y<height+1.60,'a flat chapel must not retain the generated gable rise');}
-  else{const rise=id==='herreria'?1.169:.729;assert.ok(Math.abs(bounds.min.y-height+.12)<1e-5,'chimney masonry must still enter the roof');assert.ok(Math.abs(bounds.max.y-height-rise)<1e-5,'the chimney cap must clear the flat slab without adding an imaginary pitch');}
+  else if(id==='herreria'){
+   const source=sourceForge(f),profile=getBuildingProfile(f.b),brick=feature.children.find(mesh=>mesh.material?.name==='world:brick'),masonry=new Box3().setFromObject(brick),flue=feature.children.find(mesh=>mesh.material?.name==='world:forge-flue');
+   assert.ok(brick&&flue);assert.equal(brick.material.color.getHexString(),source['forge-chimney'].palette.base.slice(1));assert.equal(source['forge-chimney'].texture,'brick');
+   assert.ok(Math.abs(masonry.min.y-height-(source['forge-chimney'].bottom-profile.wallHeight)/V)<1e-5,'source shaft must enter the actual flat roof');
+   const capTop=height+(source['chimney-cap'].top-profile.wallHeight-profile.roofRise)/V;
+   assert.ok(Math.abs(masonry.max.y-capTop)<1e-5,'source cap clears the slab without an imaginary roof rise');
+   assert.ok(Math.abs(bounds.max.y-capTop-.3/V)<1e-5,'the retained source flue plane sits above the cap');
+  }else{assert.ok(Math.abs(bounds.min.y-height+.12)<1e-5,'chimney masonry must still enter the roof');assert.ok(Math.abs(bounds.max.y-height-.729)<1e-5,'the chimney cap must clear the flat slab without adding an imaginary pitch');}
   assert.equal(JSON.stringify(f.input),before,'presentation must preserve collision, upper cells and disclosure');f.dispose(building);
  }
 });

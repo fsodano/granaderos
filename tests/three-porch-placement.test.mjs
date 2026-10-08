@@ -8,11 +8,32 @@ const {WorldMaterials}=await import('../web/lib/three/world-materials.ts');
 const {buildBuilding}=await import('../web/lib/three/world-buildings.ts');
 const {buildingArtInset,buildingFloorRectangles}=await import('../web/lib/three/world-building-placement.ts');
 const {entranceFrame,getBuildingProfile}=await import('../game/building-profile.js');
+const {buildingDetails}=await import('../web/app/TacticalBuildingDetails.tsx');
 const {createArchitectureReviewBattle}=await import('../web/app/renderer-sandbox/architecture-fixtures.js');
 const T=1.2360585147470482,V=25.066666666666666,rotations=[0,90,180,270],ids=['pulperia','herreria','deposito'];
 function fixture(id,rotation,view='exterior',roof='original'){
  const battle=createArchitectureReviewBattle(id,rotation,view,roof),b=battle.buildings[0],input={terrain:{width:battle.width,height:battle.height,tiles:battle.tiles,buildings:battle.buildings,upperSurfaces:battle.upperSurfaces},revealedRooms:battle.revealedRooms},frame=entranceFrame({...b,walls:battle.tiles}),geometry=new WorldGeometry(),materials=new WorldMaterials({tileMetres:T,assetUrl:path=>path});
  return {b,input,frame,build(){const before=JSON.stringify(input),building=buildBuilding(b,input,T,geometry,materials);building.updateMatrixWorld(true);assert.equal(JSON.stringify(input),before);return building;},dispose(building){disposeWorldNode(building);geometry.dispose();materials.dispose();}};
+}
+
+// Read the front-visible source once; opposite sprite views omit the glyph.
+// The native plaque retains the same authored proportions at every rotation.
+let retainedSourceSign;
+function sourceSign(f){
+ if(retainedSourceSign)return retainedSourceSign;
+ let sign;const visit=node=>{if(!node)return;if(Array.isArray(node)){node.forEach(visit);return;}if(node.key==='shop-sign')sign=node;visit(node.props?.children);};
+ for(const entry of buildingDetails({...f.b,walls:f.input.terrain.tiles.filter(tile=>tile.buildingId===f.b.id)},new Set(),(x,y)=>({x:(x-y)*26,y:(x+y)*14})))visit(entry.node);
+ assert.ok(sign);retainedSourceSign=sign.props.children.find(node=>node.type==='rect').props;return retainedSourceSign;
+}
+function supportedSourceSign(f,building,sign){
+ const source=sourceSign(f),board=sign.getObjectByName(`building-pulperia-sign:${f.b.id}:board`),bracket=sign.getObjectByName(`building-pulperia-sign:${f.b.id}:bracket`),porch=building.getObjectByName(`building-detail:${f.b.id}:gallery`);
+ assert.ok(board&&bracket&&porch);const boardBounds=new Box3().setFromObject(board),anchor=new Box3().setFromObject(bracket).max.y;
+ assert.ok(Math.abs(boardBounds.min.y-(anchor-(Number(source.y)+Number(source.height))/V))<1e-5,'the actual source board hangs below its own bracket');
+ assert.ok(Math.abs(boardBounds.max.y-(anchor-Number(source.y)/V))<1e-5);assert.ok(Math.abs(boardBounds.max.y-boardBounds.min.y-Number(source.height)/V)<1e-5);
+ const beam=porch.children.find(mesh=>mesh.material?.name==='world:wood'),beamTop=new Box3().setFromObject(beam).max.y,u=Math.max(.4,f.frame.doorU-1.35),p=f.frame.at(u,-.32);
+ const ray=new Raycaster(new Vector3(p.x*T,beamTop,p.y*T),new Vector3(0,-1,0),0,.035);
+ assert.ok(ray.intersectObject(bracket,true).length,'the real bracket return meets the actual porch beam');
+ let vertices=0;sign.traverse(mesh=>{if(mesh instanceof Mesh){const positions=mesh.geometry.getAttribute('position');vertices+=positions.count;for(let n=0;n<positions.count;n++)assert.equal(f.input.terrain.tiles.find(tile=>tile.x===Math.round(positions.getX(n)/T)&&tile.y===Math.round(positions.getZ(n)/T))?.type,'wall','all board, mark and bracket faces stay over an intact support');}});assert.ok(vertices>0);
 }
 
 test('shop, forge and depot centring requires both actual intact front corners and preserves legacy and edited support fallback',()=>{
@@ -40,7 +61,7 @@ test('actual shop, forge and depot floor returns retain physical hatches and ori
 
 test('existing shop signs, forge chimneys and depot piers or loft follow actual supports, flat roofs and ordinary disclosure after centring',()=>{
  for(const id of ids)for(const rotation of rotations)for(const roof of ['original','slab','terrace','roof-route']){
-  const f=fixture(id,rotation,'exterior',roof),building=f.build();if(id==='pulperia'){const sign=building.getObjectByName(`building-detail:${f.b.id}:trade-sign`);assert.ok(sign);assert.ok(new Box3().setFromObject(sign).min.y>=1.9);}if(id==='herreria'){const chimney=building.getObjectByName(`building-detail:${f.b.id}:forge-chimney`);assert.equal(Boolean(chimney),roof!=='roof-route');if(chimney)chimney.traverse(mesh=>{if(mesh instanceof Mesh){const p=mesh.geometry.getAttribute('position');for(let n=0;n<p.count;n++)assert.equal(f.input.terrain.tiles.find(tile=>tile.x===Math.round(p.getX(n)/T)&&tile.y===Math.round(p.getZ(n)/T))?.type,'wall');}});}if(id==='deposito'){assert.ok(building.getObjectByName(`building-detail:${f.b.id}:depot-masonry-piers`));for(const name of ['depot-loft-hatch','depot-loft-hoist'])assert.equal(Boolean(building.getObjectByName(`building-detail:${f.b.id}:${name}`)),roof==='original');}f.dispose(building);
+  const f=fixture(id,rotation,'exterior',roof),building=f.build();if(id==='pulperia'){const sign=building.getObjectByName(`building-detail:${f.b.id}:trade-sign`);assert.ok(sign);supportedSourceSign(f,building,sign);}if(id==='herreria'){const chimney=building.getObjectByName(`building-detail:${f.b.id}:forge-chimney`);assert.equal(Boolean(chimney),roof!=='roof-route');if(chimney)chimney.traverse(mesh=>{if(mesh instanceof Mesh){const p=mesh.geometry.getAttribute('position');for(let n=0;n<p.count;n++)assert.equal(f.input.terrain.tiles.find(tile=>tile.x===Math.round(p.getX(n)/T)&&tile.y===Math.round(p.getZ(n)/T))?.type,'wall');}});}if(id==='deposito'){assert.ok(building.getObjectByName(`building-detail:${f.b.id}:depot-masonry-piers`));for(const name of ['depot-loft-hatch','depot-loft-hoist'])assert.equal(Boolean(building.getObjectByName(`building-detail:${f.b.id}:${name}`)),roof==='original');}f.dispose(building);
  }
  for(const id of ids)for(const rotation of rotations)for(const view of ['partial','interior']){const f=fixture(id,rotation,view),building=f.build();for(const name of ['trade-sign','forge-chimney','depot-masonry-piers','depot-loft-hatch','depot-loft-hoist'])assert.equal(Boolean(building.getObjectByName(`building-detail:${f.b.id}:${name}`)),false);f.dispose(building);}
 });

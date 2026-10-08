@@ -27,7 +27,9 @@ platforms keep their existing linear rules.
 All 16 checks in these three files pass locally. The
 [source and cause receipt](native-climb-mount-gates-2026-10-08.json) records
 the original failures, unchanged runtime and bank hashes, and private checks.
-The integration checkout repeats the same selection on main `9002e91c`.
+The integration checkout repeats the same selection on main `9002e91c`
+and on the merged military clothing main `5f65ef08`, with all 16 checks
+passing in about 2.2 seconds on the latter.
 
 ```sh
 node --test tests/actor-unit-motion-distance.test.mjs \
@@ -35,6 +37,7 @@ node --test tests/actor-unit-motion-distance.test.mjs \
   tests/elevation-interface.test.mjs
 ```
 
-This does not establish a green full quick suite. The separate flat-roof,
-church-tower-foot and porch-placement failures remain under review. No
-browser or full motion sweep is required for this test-only correction.
+The [source architecture test correction](source-architecture-test-gates-2026-10-08.md)
+addresses the other three recorded failures. This does not establish a green
+full quick suite. No browser or full motion sweep is required for this
+test-only correction.
