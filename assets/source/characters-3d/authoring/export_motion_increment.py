@@ -9,7 +9,7 @@ import motion as motion_authoring
 from motion import apply_animations,_semantic_specs
 from gltf_pack import pack
 p=argparse.ArgumentParser();p.add_argument('--preset',required=True);p.add_argument('--output',required=True);p.add_argument('--gesture',action='append',required=True);p.add_argument('--equipment',required=True);p.add_argument('--posture');a=p.parse_args(sys.argv[sys.argv.index('--')+1:])
-native_contacts=set(a.gesture)<=set(('climbUp','climbDown'))
+native_contacts=set(a.gesture)<=set(('climbUp','climbDown')) or (a.posture=='crouched'and a.equipment=='unarmed'and set(a.gesture)<=set(('strafeLeft','strafeRight')))
 if native_contacts:motion_authoring.FPS=60
 bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=False)
 ctx=create_character(a.preset);create_equipment(ctx)
