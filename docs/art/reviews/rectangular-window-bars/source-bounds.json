@@ -1,0 +1,105 @@
+{
+  "base": "db32676f01df58bb6516a67a61878c3b6181fc66",
+  "source": "web/app/TacticalArchitectureMaterials.tsx Opening()",
+  "styles": {
+    "barred": {
+      "span": [
+        11,
+        29
+      ],
+      "vertical": [
+        -32,
+        -13
+      ],
+      "barXs": [
+        16,
+        20,
+        24
+      ],
+      "barEnds": [
+        -31,
+        -14
+      ],
+      "strokeWidth": 0.8,
+      "pigment": "#767c68",
+      "transverse": {
+        "from": [
+          12,
+          -22
+        ],
+        "to": [
+          28,
+          -22
+        ],
+        "strokeWidth": 0.8
+      }
+    },
+    "small": {
+      "span": [
+        15,
+        25
+      ],
+      "vertical": [
+        -30,
+        -20
+      ],
+      "barXs": [
+        16,
+        20,
+        24
+      ],
+      "barEnds": [
+        -29,
+        -21
+      ],
+      "strokeWidth": 0.8,
+      "pigment": "#767c68",
+      "transverse": null
+    }
+  },
+  "physicalAdaptation": "Source stroke proportions map into the existing actual compiled aperture. The window width, height, sill, masonry, glass, collision and save state are unchanged. This cut does not change a small-style aperture to the SVG small aperture dimensions.",
+  "checks": {
+    "actualTemplates": [
+      "barraca",
+      "capilla",
+      "cabildo",
+      "ayuntamiento",
+      "almacen",
+      "deposito",
+      "herreria"
+    ],
+    "rotations": [
+      0,
+      90,
+      180,
+      270
+    ],
+    "doorAndWindowRayRoofs": [
+      "original",
+      "slab",
+      "roof-route"
+    ],
+    "affectedPass": 25,
+    "affectedDurationMs": 7581.173584,
+    "originalSourceRegression": {
+      "pass": 1,
+      "fail": 5,
+      "durationMs": 886.012625
+    },
+    "additionalShellPass": 33,
+    "additionalShellDurationMs": 7561.629708,
+    "liveBefore": 18,
+    "liveAfter": 42,
+    "liveAfterSlab": 12,
+    "liveAfterRoofRoute": 12,
+    "liveErrors": []
+  },
+  "beforeReport": "artifacts/native-before/catalog-report.json",
+  "afterReport": "artifacts/native-after/catalog-report.json",
+  "previousNative": {
+    "pigment": "#41494b",
+    "verticalBars": 4,
+    "fullHeight": true,
+    "transverseInSmall": true
+  }
+}
