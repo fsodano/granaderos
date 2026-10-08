@@ -8,6 +8,7 @@ from pathlib import Path
 import argparse, copy, hashlib, importlib.util, io, json, math, struct, subprocess, tempfile
 from PIL import Image
 from cloth_material_roles import retained_charcoal_material
+from family_surface_context import family_surface_context
 
 
 def load_module(name, path):
@@ -37,6 +38,8 @@ def main():
     parser.add_argument('--receipt', type=Path)
     args = parser.parse_args()
     root = args.root.resolve()
+    if family_surface_context(__file__, root, args.receipt):
+        return
     merge = load_module('shawl_palette_glb', root / 'tools/characters-3d/merge-animation-bank.py')
     palette = load_module('shawl_palette_values', root / 'assets/source/characters-3d/authoring/appearance_palette.py')
     assets = root / 'web/public/models/characters'

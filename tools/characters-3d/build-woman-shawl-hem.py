@@ -7,6 +7,7 @@ maps/materials, positions, normals, vertex colours, rig, morphs and indices.
 from pathlib import Path
 import argparse, copy, hashlib, importlib.util, io, json, struct, subprocess, tempfile
 from PIL import Image
+from family_surface_context import family_surface_context
 
 
 def module(name, path):
@@ -26,6 +27,8 @@ def main():
     parser.add_argument('--receipt', type=Path)
     args = parser.parse_args()
     root = args.root.resolve()
+    if family_surface_context(__file__, root, args.receipt):
+        return
     merge = module('hem_glb', root / 'tools/characters-3d/merge-animation-bank.py')
     source = module('hem_source', root / 'assets/source/characters-3d/authoring/appearance_palette.py')
     decoded = module('hem_attributes', root / 'tools/characters-3d/build-long-cloth-support.py').decoded

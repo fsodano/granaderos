@@ -8,6 +8,7 @@ Stage all four bodies, prove their source boundaries, then write atomically.
 from pathlib import Path
 import argparse, copy, hashlib, importlib.util, json, subprocess, tempfile
 from cloth_material_roles import retained_charcoal_material
+from family_surface_context import family_surface_context
 
 
 def module(name, path):
@@ -27,6 +28,8 @@ def main():
     parser.add_argument('--receipt', type=Path)
     args = parser.parse_args()
     root = args.root.resolve()
+    if family_surface_context(__file__, root, args.receipt):
+        return
     proof = module('cloth_topology_proof', root / 'tools/characters-3d/build-long-cloth-support.py')
     merge = module('cloth_topology_merge', root / 'tools/characters-3d/merge-animation-bank.py')
     sparse = module('cloth_topology_sparse', root / 'tools/characters-3d/build-close-long-cloth-boot-support.py')

@@ -137,3 +137,5 @@ if manifest['complete']:
  # The first garment form pilot appends colours to the completed released
  # bodies. It retains native geometry, faces, maps and all animation banks.
  subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-cloth-depth.py')],cwd=ROOT,check=True)
+ # The independent six-family recipe keeps the accepted pilot bytes exact.
+ subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-family-cloth-depth.py')],cwd=ROOT,check=True)

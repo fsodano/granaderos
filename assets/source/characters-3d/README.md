@@ -76,6 +76,39 @@ navy colours provide headroom for normalized vertex highlights. This pilot
 does not add weave/roughness detail, alter anatomy or poses, or establish final visual
 agreement with the supplied tactical references.
 
+The six remaining appearance families use an independent frozen recipe in
+`authoring/family_cloth_depth.py`. The family pass retains the accepted pilot
+files and source recipe exactly. It appends garment colour arrays, with small
+owned albedo maps for surgeon, gaucho and friar cloth only. Faction trim, leather,
+faces, normals and roughness remain exact. Royalist and both women's active
+colour maps remain exact. Hanging panels use vertical radial form shading.
+The woman's UV1 rust-band triangles and an adjacent triangle ring retain their
+original vertex colours, including triangles that cross the stripe between
+sparse sampled vertices.
+
+```sh
+python3 tools/characters-3d/build-family-cloth-depth.py --receipt artifacts/character-family-cloth-depth/receipt.json
+python3 tools/characters-3d/build-family-cloth-depth.py --verify-only
+node --test tests/characters-family-cloth-depth.test.mjs
+```
+
+Each `familyClothDepth` receipt pins the complete original LOD record, JSON,
+binary prefix and external image bytes. Restoring the recorded colour/material
+references and donor links recovers the exact original GLB. Repeats verify the
+recipe, delivered colours, maps and donor links before writing nothing. Changed
+recipes require a source rebuild. All map collisions are checked before any
+installation. This preflight does not promise rollback after a filesystem I/O
+failure.
+
+Native topology, palette and hem postpasses replay completed family surfaces
+inside a private complete library. They restore native source inputs, run the
+existing rig/morph/hem/boot gates, then rebuild family colours. A native replay
+with equal decoded data and LOD metadata retains the exact released bytes;
+packing unused arrays is not a new source change. Changed source data receives
+a fresh colour receipt. The library installs only checked final differences.
+This surface pass adds no triangles or draw calls and does not add weave,
+roughness detail, geometry changes or new poses.
+
 Family attire is the base visual. An empty inventory outfit slot keeps that base
 visual and does not create an owned item. Equipped inventory garments use the
 manifest's explicit replacement/overlay rules. Each anatomy has fitted poncho,
