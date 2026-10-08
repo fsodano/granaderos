@@ -6,6 +6,7 @@ The approved playground is never read or changed by this production builder.
 """
 from pathlib import Path
 import argparse,subprocess,sys,json,os,struct,concurrent.futures,hashlib
+from library_manifest import checked_job_records, merge_job_manifest
 ROOT=Path(__file__).resolve().parents[2];HERE=ROOT/'assets/source/characters-3d/authoring';OUT=ROOT/'web/public/models/characters';META=HERE/'.build'
 PRESETS=['granadero','royalist','worker','surgeon','gaucho','friar','woman-scout','woman-shawl']
 p=argparse.ArgumentParser();p.add_argument('--blender',default='/Applications/Blender.app/Contents/MacOS/Blender');p.add_argument('--only',choices=['appearance','garments','equipment','horse','animations']);p.add_argument('--preset',choices=PRESETS);p.add_argument('--lod',type=int,choices=[0,1,2]);p.add_argument('--review',action='store_true');p.add_argument('--jobs',type=int,default=2);p.add_argument('--manifest-only',action='store_true');a=p.parse_args()
@@ -27,8 +28,7 @@ if not a.manifest_only:
   if r.returncode or 'ASSET_READY'not in content:raise RuntimeError(str(log)+'\n'+content[-3500:])
   print(next(line for line in content.splitlines()if line.startswith('ASSET_READY')),flush=True)
  with concurrent.futures.ThreadPoolExecutor(max_workers=a.jobs)as pool:list(pool.map(run,jobs))
-records=[json.loads(f.read_text())for f in META.glob('*.json')]
-byname={f['url'].split('/')[-1]:f for f in records}
+byname=checked_job_records(META,OUT,jobs)
 bones={'root':'Root','hips':'pelvis','spine':'spine_02','chest':'spine_03','neck':'neck_01','head':'head','handRight':'hand_r','handLeft':'hand_l','footRight':'foot_r','footLeft':'foot_l'}
 manifest={'version':1,'units':'metres','up':'+Y','forward':'+Z','bodyHeight':1.76,'bones':bones,'skinTones':{'light':'#d5a07d','brown':'#9d6844','dark':'#623c29'},'appearances':{},'animationLibraries':{},'equipment':{'url':'/models/characters/equipment.glb','items':{}},'garments':{},'horse':{},'provenance':'assets/source/characters-3d/README.md'}
 native_path=OUT/'granadero-lod0.glb'
@@ -41,14 +41,6 @@ if native_path.exists():
 for preset in PRESETS:
  gender='female'if preset.startswith('woman-')else'male';lods=[byname[preset+'-lod'+str(i)+'.glb']for i in range(3)if preset+'-lod'+str(i)+'.glb'in byname]
  manifest['appearances'][preset]={'id':preset,'gender':gender,'height':1.76,'animationLibrary':gender,'lods':[{k:f[k]for k in ('lod','url','triangles','bytes','drawCalls','sha256')}for f in lods],'materials':{'skin':'Skin','apparel':'Apparel_Atlas'},'parts':{part:'Human_'+part+'_LOD{lod}'for part in ('skin','outfit','legwear','footwear','headwear')},'sockets':lods[0]['sockets']if lods else{},'lodPixelThresholds':[120,65,0],'baseAttire':{'headwear':'appearance','outfit':'appearance','legwear':'appearance'},'nullWornItem':'keepBaseAttire'}
- # Source metadata predates the native cloth pass. Keep the reviewed record
- # when this invocation did not rebuild that exact authored body.
- for record in manifest['appearances'][preset]['lods']:
-  previous=next((r for r in previous_manifest.get('appearances',{}).get(preset,{}).get('lods',[])if r['lod']==record['lod']),{})
-  if previous.get('nativeClothSupport')and('appearance',preset,record['lod'])not in jobs:
-   path=OUT/Path(record['url']).name
-   assert hashlib.sha256(path.read_bytes()).hexdigest()==previous['sha256'],'Changed reviewed cloth body: '+str(path)
-   record.update({key:previous[key]for key in('bytes','sha256','nativeClothSupport','nativeClothBootSupport')if key in previous})
  sockets=manifest['appearances'][preset]['sockets']
  if 'handLeft_pistol'in sockets:sockets['handLeft_pistol']['mirror']={'socket':'handRight_pistol','localAxis':'z'}
 for gender in ('male','female'):
@@ -75,7 +67,11 @@ manifest['equipment']['fittings']={'india_socket':{'node':'item_1811','hostWeapo
 horses=[byname['horse-lod'+str(i)+'.glb']for i in range(3)if 'horse-lod'+str(i)+'.glb'in byname]
 if horses:manifest['horse']={'height':1.51,'saddle':horses[0]['saddle'],'lods':[{k:h[k]for k in ('lod','url','triangles','bytes','sha256')}for h in horses],'clips':horses[0]['clips'],'actions':{'idle':'HorseIdle','walk':'HorseWalk','run':'HorseRun'},'riderSeatLocal':'clip.seatAnchor'}
 manifest['complete']=all(len(x['lods'])==3 for x in manifest['appearances'].values())and len(manifest['animationLibraries'])==2 and len(manifest['garments'])==2 and len(horses)==3 and bool(manifest['equipment']['items'])
-OUT.mkdir(parents=True,exist_ok=True);(OUT/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n');print('Manifest written; complete=',manifest['complete'])
+manifest=merge_job_manifest(previous_manifest,manifest,OUT,jobs)
+OUT.mkdir(parents=True,exist_ok=True)
+canonical=subprocess.check_output(['node','-e',"let s='';process.stdin.setEncoding('utf8');process.stdin.on('data',v=>s+=v);process.stdin.on('end',()=>process.stdout.write(JSON.stringify(JSON.parse(s),null,2)+'\\n'));"],input=json.dumps(manifest),text=True)
+if not (OUT/'manifest.json').exists() or (OUT/'manifest.json').read_text()!=canonical:(OUT/'manifest.json').write_text(canonical)
+print('Manifest written; complete=',manifest['complete'])
 if manifest['complete']:
  # The general bank uses 30 Hz. Native ladder contacts need 60 Hz keys and
  # exact final-frame timing; retain the rest of each complete bank.
@@ -112,3 +108,7 @@ if manifest['complete']:
  # Fit existing long-cloth shapes only after the final native support poses.
  subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-long-cloth-support.py')],cwd=ROOT,check=True)
  subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-close-long-cloth-boot-support.py')],cwd=ROOT,check=True)
+ # Reuse the reviewed close sewn surface before adding its colour detail.
+ subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-reviewed-long-cloth-lods.py')],cwd=ROOT,check=True)
+ subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-woman-shawl-palette.py')],cwd=ROOT,check=True)
+ subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-woman-shawl-hem.py')],cwd=ROOT,check=True)

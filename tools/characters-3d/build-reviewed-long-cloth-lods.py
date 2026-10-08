@@ -155,6 +155,14 @@ def main():
             primitive['attributes'] = {key: accessor(value) for key, value in primitive['attributes'].items()}
             primitive['indices'] = accessor(primitive['indices'])
             primitive['material'] = material(primitive['material'])
+            if 'nativeSkirtHem' in donor_mesh.get('extras', {}):
+                # A fresh coarse body lacks this inactive UV0 palette material.
+                # Keep its reviewed colour resource for the following palette
+                # guard while the active hem continues to use TEXCOORD_1.
+                retained = [i for i, value in enumerate(donor['materials'])
+                            if value.get('name') == 'Apparel_Atlas_Charcoal_Legwear']
+                assert len(retained) == 1, 'Missing retained donor palette material'
+                material(retained[0])
             primitive['targets'] = [{key: accessor(value) for key, value in target.items()} for target in primitive['targets']]
             if row['changed']:
                 for semantic, key in (('POSITION', 'position'), ('NORMAL', 'normal')):
@@ -192,6 +200,10 @@ def main():
             record.update(bytes=len(raw), sha256=digest(raw), triangles=triangles,
                           nativeClothSupport=copy.deepcopy(manifest['appearances'][row['id']]['lods'][0]['nativeClothSupport']),
                           nativeClothBootSupport=row['support'], nativeClothTopology=topology)
+            if 'nativeSkirtHem' in donor_mesh.get('extras', {}):
+                record['nativeSkirtHem'] = copy.deepcopy(donor_mesh['extras']['nativeSkirtHem'])
+            else:
+                record.pop('nativeSkirtHem', None)
             pending.append((path, raw))
             receipts.append({key: row[key] for key in ('id', 'lod', 'url', 'sha256', 'donorUrl', 'donorSha256', 'oldCounts', 'newCounts', 'maximumExtraWorldDisplacement', 'maximumExtraNativeOffsetLength', 'maximumNativeOffsetLength', 'maximumNativeOffsetComponent')})
             receipts[-1].update(nextSha256=record['sha256'], bytes=len(raw), byteGrowth=len(raw)-len(original),
