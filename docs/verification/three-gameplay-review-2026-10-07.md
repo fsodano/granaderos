@@ -675,3 +675,7 @@ Authored depot piers now retain the current source's rectangular warm stone feet
 ## Standing lance idle boot support
 
 Both standing lance idle clips now support complete native boots while retaining all other clips, clocks, upper contact and dimensions. Fourteen affected checks, native/profile/type/docs/baseline checks and export `5ba61ae9ed40` pass. All four ordinary owned and dismounted lance routes save their destinations; seventy-two accepted source-pinned captures have no browser errors. Selected guards and supported feet were compared with the current walking sheets. The corrected setup failure and actual source bridge remain explicit. This accepts native idle support only. See [the lance review](../art/standing-lance-idle-support-3d-review-2026-10-07.md).
+
+## Current smithy brick chimney
+
+The authored smithy now retains its source brick shaft, broad brick cap and inset dark flue on actual intact supports. Legacy chimneys, edited supports, saved finishes, room disclosure and upper routes remain covered. Fifty-one affected checks, type/docs/baseline checks and combined export `b0f73eb21870` pass. Thirty-four source-pinned browser views pass without errors; selected views were compared with the current sprite, including the full chimney close view. The capture source, unchanged publication bridge and initial loading retries are recorded. See [the chimney review](../art/smithy-source-chimney-3d-review-2026-10-07.md).

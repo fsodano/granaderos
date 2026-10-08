@@ -16,6 +16,7 @@ import {farmhouseGallery as supportedFarmhouseGallery} from './world-farmhouse-g
 import {houseFacade} from './world-house-facade';
 import {chapelPiers} from './world-chapel-piers';
 import {workPorch} from './world-work-porches';
+import {smithyChimney} from './world-smithy-chimney';
 import {buildingArtInset} from './world-building-placement';
 import type {WorldGeometry} from './world-geometry';
 import type {WorldMaterials} from './world-materials';
@@ -418,7 +419,11 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
       else root.add(stableTimberFrame(b,input,T,height,base,geometry,materials));
       root.add(stableVentilation(b,input,T,height,base,roofRise,geometry,materials));
     }
-  }else if(kind==='smithy'){sideChimney(true);workCanopy('forge-canopy',entranceSupports(),.50);}
+  }else if(kind==='smithy'){
+    if(legacy&&b.wallFinish===undefined)sideChimney(true);
+    else root.add(smithyChimney(b,input,T,height,base,roofRise,geometry,materials));
+    workCanopy('forge-canopy',entranceSupports(),.50);
+  }
   else if(kind==='house'){sideChimney();root.add(houseFacade(b,input,T,height,base,geometry,materials,legacy));}
   root.add(batch.finish(`building-detail:${b.id}:fabric`));return root;
 }
