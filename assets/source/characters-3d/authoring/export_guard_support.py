@@ -1,9 +1,10 @@
-"""Fit two released native guard clips; export only their lower rotations."""
+"""Fit selected released rifle clips; export only their lower rotations."""
 from pathlib import Path
 import sys,argparse,json
 import bpy
 HERE=Path(__file__).resolve().parent;sys.path.insert(0,str(HERE))
 from guard_support import LEGS,boot_bindings,profiles,fit_pose
+from bayonet_support import fit_pose as fit_bayonet_pose
 p=argparse.ArgumentParser();p.add_argument('--input',required=True);p.add_argument('--output',required=True);a=p.parse_args(sys.argv[sys.argv.index('--')+1:])
 bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=False)
 bpy.ops.import_scene.gltf(filepath=a.input)
@@ -17,6 +18,7 @@ for track in tracks:
     rig.animation_data.action=native
     start,end=native.frame_range;duration=(end-start)/bpy.context.scene.render.fps
     bpy.context.scene.frame_set(int(start),subframe=start-int(start));basis=profiles(rig,boots)
+    bayonet=track.name=='stand.bayonet.long-gun';fitter=fit_bayonet_pose if bayonet else fit_pose
     # Sample the exact released pose. Native Root, pelvis and weapon tracks
     # are later retained byte for byte by the named rotation transplant.
     # Measure the full native reach demand before choosing a smooth roll.
@@ -25,7 +27,7 @@ for track in tracks:
     raw_times=sorted(set([i/240 for i in range(int(duration*240)+1)]+[duration]));required=[]
     for time in raw_times:
         frame=start+time*bpy.context.scene.render.fps;bpy.context.scene.frame_set(int(frame),subframe=frame-int(frame))
-        try:fitted,report=fit_pose(rig,boots,soles,basis)
+        try:fitted,report=fitter(rig,boots,soles,basis)
         except Exception:
             print('GUARD_FIT_FAILED',track.name,time,flush=True);raise
         required.append(report)
@@ -42,13 +44,39 @@ for track in tracks:
         def envelope(time):return smooth((time-begin)/(middle-begin))if time<=middle else 1-smooth((time-middle)/(end-middle))
         amplitude=max(required[i][side]['heelRoll']/envelope(raw_times[i])for i in active)+.00001
         envelopes[side]={'begin':begin,'peak':middle,'end':end,'amplitude':amplitude}
+    def values(windows,time):
+        result={}
+        for side,window in windows.items():
+            u=smooth((time-window['begin'])/(window['peak']-window['begin']))if time<=window['peak']else 1-smooth((time-window['peak'])/(window['end']-window['peak']))
+            result[side]=window['amplitude']*u
+        return result
+    shift_envelopes={}
+    if bayonet:
+        # A complete sole, rather than an arbitrary angle, bounds the roll.
+        # Retain the exact Root/pelvis and measure the smallest hip-directed
+        # planar correction for that smooth roll at every native pose.
+        for side,window in envelopes.items():
+            window['nativeDemandAmplitude']=window['amplitude']
+            window['amplitude']=min(window['amplitude'],min(report[side]['maximumHeelRoll']for report in required)-.000001)
+        shift_demand=[]
+        for time in raw_times:
+            frame=start+time*bpy.context.scene.render.fps;bpy.context.scene.frame_set(int(frame),subframe=frame-int(frame))
+            _,report=fitter(rig,boots,soles,basis,values(envelopes,time));shift_demand.append(report)
+        for side in ('l','r'):
+            active=[i for i,report in enumerate(shift_demand)if report[side]['planarCorrection']>.0000001]
+            if not active:continue
+            first,last=raw_times[active[0]],raw_times[active[-1]];peak=max(active,key=lambda i:shift_demand[i][side]['planarCorrection']);middle=raw_times[peak];begin=max(0,first-.1);end=min(duration,last+.1)
+            def envelope(time):return smooth((time-begin)/(middle-begin))if time<=middle else 1-smooth((time-middle)/(end-middle))
+            amplitude=max(shift_demand[i][side]['planarCorrection']/envelope(raw_times[i])for i in active)+.000001
+            assert amplitude<.005,('Measured bayonet correction exceeds a 5 mm native support adjustment',side,amplitude)
+            shift_envelopes[side]={'begin':begin,'peak':middle,'end':end,'amplitude':amplitude}
     rotations=[];detail=[];fps=120;times=sorted(set([i/fps for i in range(int(duration*fps)+1)]+[duration]))
     for time in times:
         frame=start+time*bpy.context.scene.render.fps;bpy.context.scene.frame_set(int(frame),subframe=frame-int(frame));rolls={}
         for side,window in envelopes.items():
             u=smooth((time-window['begin'])/(window['peak']-window['begin']))if time<=window['peak']else 1-smooth((time-window['peak'])/(window['end']-window['peak']))
             rolls[side]=window['amplitude']*u
-        fitted,report=fit_pose(rig,boots,soles,basis,rolls)
+        fitted,report=fitter(rig,boots,soles,basis,rolls,values(shift_envelopes,time))if bayonet else fitter(rig,boots,soles,basis,rolls)
         rotations.append(fitted);detail.append(report)
     action=bpy.data.actions.new(track.name);rig.animation_data.action=action
     for time,sample in zip(times,rotations):
@@ -61,6 +89,7 @@ for track in tracks:
                 for curve in bag.fcurves:
                     for key in curve.keyframe_points:key.interpolation='LINEAR'
     actions.append((track.name,action,duration));reports[track.name]={'duration':duration,'sampleRate':fps,'times':times,'samples':detail,'forefootRollEnvelopes':envelopes,'minimumStraightLegReserve':.002}
+    if bayonet:reports[track.name].update({'planarShiftEnvelopes':shift_envelopes,'measuredMinimumStraightLegReserve':min(report[side]['straightLegReserve']for report in detail for side in ('l','r')),'numericalReserveBuffer':.000001})
 rig.animation_data.action=None
 for track in tracks:rig.animation_data.nla_tracks.remove(track)
 for name,action,duration in actions:
