@@ -18,6 +18,7 @@ import {chapelPiers} from './world-chapel-piers';
 import {workPorch} from './world-work-porches';
 import {smithyChimney} from './world-smithy-chimney';
 import {barracksGate} from './world-barracks-gate';
+import {townhallColumns} from './world-townhall-columns';
 import {buildingArtInset} from './world-building-placement';
 import type {WorldGeometry} from './world-geometry';
 import type {WorldMaterials} from './world-materials';
@@ -273,7 +274,8 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
     else for(let v=1;v<frame.depth;v+=1.6)for(const u of [0,frame.width])if(wallAt(u,Math.round(v))?.type==='wall')box(u,v,.80,.20,1.6,.32,trim);
   }else if(kind==='townhall'){
     const profile=getBuildingProfile(b),twoStoreys=height>=4,storey=twoStoreys?height*profile.groundFloorHeight/profile.wallHeight:height,stone=materials.get('stone'),formal=[...new Set([-2,2].map(offset=>Math.max(0,Math.min(frame.width,Math.round(frame.doorU+offset)))))].filter(u=>wallAt(u,0)?.type==='wall');
-    feature('townhall-formal-columns',()=>{
+    if(wallInset===0&&(!legacy||b.wallFinish!==undefined))root.add(townhallColumns(b,input,T,height,base,geometry,materials));
+    else feature('townhall-formal-columns',()=>{
       const column=(u:number,v:number,w:number,material:MeshStandardMaterial)=>{
         box(u,v,(storey-.10)*.5,w/T,storey-.10,.38/T,material);box(u,v,.12,.38/T,.24,.38/T,stone);box(u,v,storey-.08,.38/T,.14,.38/T,stone);
       };

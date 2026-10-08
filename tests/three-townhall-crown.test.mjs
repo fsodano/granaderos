@@ -6,6 +6,7 @@ const {Box3,Mesh,Raycaster,Vector3}=await import('../web/node_modules/three/buil
 const {WorldGeometry,disposeWorldNode}=await import('../web/lib/three/world-geometry.ts');
 const {WorldMaterials}=await import('../web/lib/three/world-materials.ts');
 const {buildBuilding}=await import('../web/lib/three/world-buildings.ts');
+const {buildingArtInset}=await import('../web/lib/three/world-building-placement.ts');
 const {entranceFrame}=await import('../game/building-profile.js');
 const {createArchitectureReviewBattle}=await import('../web/app/renderer-sandbox/architecture-fixtures.js');
 const T=1.2360585147470482;
@@ -14,11 +15,11 @@ function fixture(rotation,view='exterior',roof='original'){
  const battle=createArchitectureReviewBattle('ayuntamiento',rotation,view,roof),b=battle.buildings[0],input={terrain:{width:battle.width,height:battle.height,tiles:battle.tiles,buildings:battle.buildings,upperSurfaces:battle.upperSurfaces},revealedRooms:battle.revealedRooms},frame=entranceFrame({...b,walls:battle.tiles.filter(tile=>tile.buildingId===b.id)}),geometry=new WorldGeometry(),materials=new WorldMaterials({tileMetres:T,assetUrl:path=>path});
  const build=()=>buildBuilding(b,input,T,geometry,materials);
  const name=feature=>`building-detail:${b.id}:${feature}`;
- const actualDoor=frame.doorU-.4*(frame.u.x+frame.u.y);
- const point=(u,v,y)=>{const p=frame.at(u,v);return new Vector3((p.x+.4)*T,y,(p.y+.4)*T);};
+ const actualDoor=frame.doorU-buildingArtInset(b,input)*(frame.u.x+frame.u.y);
+ const point=(u,v,y)=>{const p=frame.at(u,v);return new Vector3((p.x+buildingArtInset(b,input))*T,y,(p.y+buildingArtInset(b,input))*T);};
  const localBounds=object=>{
   const bounds=new Box3();object.traverse(child=>{if(child instanceof Mesh){const p=child.geometry.getAttribute('position');for(let n=0;n<p.count;n++){
-   const x=p.getX(n)/T-.4-frame.origin.x,z=p.getZ(n)/T-.4-frame.origin.y;
+   const x=p.getX(n)/T-buildingArtInset(b,input)-frame.origin.x,z=p.getZ(n)/T-buildingArtInset(b,input)-frame.origin.y;
    bounds.expandByPoint(new Vector3(x*frame.u.x+z*frame.u.y,p.getY(n),x*frame.v.x+z*frame.v.y));
   }}});return bounds;
  };
@@ -55,7 +56,7 @@ test('edited town hall supports omit the crown and finials without closing the a
  for(const rotation of [0,90,180,270])for(const type of ['window','door','rubble']){
   const f=fixture(rotation),point=f.frame.at(Math.round(f.frame.doorU+2),0),tile=f.input.terrain.tiles.find(tile=>tile.x===point.x&&tile.y===point.y);tile.type=type;
   const before=JSON.stringify(f.input),building=f.build();assert.equal(building.getObjectByName(f.name('townhall-clock-pediment')),undefined);assert.equal(building.getObjectByName(f.name('townhall-finials')),undefined);
-  building.updateMatrixWorld(true);const u=f.frame.doorU+2-.4*(f.frame.u.x+f.frame.u.y),ray=new Raycaster(f.point(u,-1,type==='window'?1.3:1.9),new Vector3(f.frame.v.x,0,f.frame.v.y),0,T*1.6);
+  building.updateMatrixWorld(true);const u=f.frame.doorU+2-buildingArtInset(f.b,f.input)*(f.frame.u.x+f.frame.u.y),ray=new Raycaster(f.point(u,-1,type==='window'?1.3:1.9),new Vector3(f.frame.v.x,0,f.frame.v.y),0,T*1.6);
   assert.equal(ray.intersectObject(building.getObjectByName(`building-details:${f.b.id}`),true).length,0,'the edited opening must remain clear');assert.equal(JSON.stringify(f.input),before);f.dispose(building);
  }
 });
@@ -82,7 +83,7 @@ test('the compiled town hall has formal stone columns, storey bands and eighteen
  for(const rotation of [0,90,180,270]){
   const f=fixture(rotation),before=JSON.stringify(f.input),building=f.build(),height=building.userData.height,columns=building.getObjectByName(f.name('townhall-formal-columns')),bands=building.getObjectByName(f.name('townhall-storey-bands')),windows=building.getObjectByName(f.name('townhall-upper-windows'));
   assert.ok(columns.children.some(child=>child.material?.name==='world:stone'));assert.ok(bands.children.some(child=>child.material?.name==='world:stone'));assert.ok(windows.children.some(child=>child.material?.name==='world:iron'));assert.equal(building.getObjectByName(f.name('civic-ground-arcade')),undefined);assert.equal(building.getObjectByName(f.name('civic-upper-arcade')),undefined);
-  building.updateMatrixWorld(true);const paneY=height*66/118+.62+.45,alongInset=.4*(f.frame.u.x+f.frame.u.y),depthInset=.4*(f.frame.v.x+f.frame.v.y);let panes=0;
+  building.updateMatrixWorld(true);const paneY=height*66/118+.62+.45,alongInset=buildingArtInset(f.b,f.input)*(f.frame.u.x+f.frame.u.y),depthInset=buildingArtInset(f.b,f.input)*(f.frame.v.x+f.frame.v.y);let panes=0;
   for(const v of [0,f.frame.depth])for(const u of [1,3,5,7,9]){
    const sign=v===0?1:-1,ray=new Raycaster(f.point(u-alongInset,v-sign,paneY),new Vector3(f.frame.v.x*sign,0,f.frame.v.y*sign),0,T*1.6);assert.ok(ray.intersectObject(windows,true).length,`${rotation}: missing front/rear pane at ${u},${v}`);panes++;
   }
@@ -97,7 +98,7 @@ test('formal town hall columns omit edited entrance supports and leave doors, wi
  for(const rotation of [0,90,180,270])for(const type of ['window','door','rubble']){
   const f=fixture(rotation),u=f.frame.doorU+2,cell=f.frame.at(u,0),tile=f.input.terrain.tiles.find(tile=>tile.x===cell.x&&tile.y===cell.y);tile.type=type;const before=JSON.stringify(f.input),building=f.build(),details=building.getObjectByName(`building-details:${f.b.id}`),columns=building.getObjectByName(f.name('townhall-formal-columns'));
   columns.traverse(child=>{if(child instanceof Mesh){const p=child.geometry.getAttribute('position');for(let n=0;n<p.count;n++)if(p.getY(n)<1.8)assert.ok(Math.abs(p.getX(n)/T-cell.x)>.5||Math.abs(p.getZ(n)/T-cell.y)>.5,'a column must leave an edited support cell empty');}});
-  details.updateMatrixWorld(true);const actual=u-.4*(f.frame.u.x+f.frame.u.y);for(const [along,y]of [[f.actualDoor,1.9],[actual,type==='window'?1.3:1.9]])assert.equal(new Raycaster(f.point(along,-1,y),new Vector3(f.frame.v.x,0,f.frame.v.y),0,T*1.6).intersectObject(details,true).length,0,'formal scenery must not obstruct an authored opening');
+  details.updateMatrixWorld(true);const actual=u-buildingArtInset(f.b,f.input)*(f.frame.u.x+f.frame.u.y);for(const [along,y]of [[f.actualDoor,1.9],[actual,type==='window'?1.3:1.9]])assert.equal(new Raycaster(f.point(along,-1,y),new Vector3(f.frame.v.x,0,f.frame.v.y),0,T*1.6).intersectObject(details,true).length,0,'formal scenery must not obstruct an authored opening');
   assert.equal(JSON.stringify(f.input),before);f.dispose(building);
  }
 });
