@@ -1,4 +1,4 @@
-import {settleServiceGuarantee} from './service-guarantees.js';
+import {settleServiceGuarantee,guaranteeRecord,treasuryRefundReason} from './service-guarantees.js';
 import {hiringPriceMultiplier} from './economy-balance.js';
 import {characterForOperative,isContractOperative} from './content-character-ids.js';
 import {CAMPAIGN_SECTORS} from './data.js';
@@ -51,8 +51,14 @@ export function redirectHire(state,id,destination){
 }
 export function cancelHireArrival(state,id){
   const arrival=pendingHire(state,id);if(!arrival)throw Error('No hay una llegada pendiente para cancelar.');
+  const reason=hireCancellationReason(state,id);if(reason)throw Error(reason);
   settleServiceGuarantee(state,arrival,{id:arrival.operativeId},'cancelled');
   state.resources.treasury+=arrival.paid;state.hiringArrivals=state.hiringArrivals.filter(a=>a!==arrival);
+}
+export function hireCancellationReason(state,id){
+  const arrival=pendingHire(state,id);if(!arrival)return null;
+  const guarantee=guaranteeRecord(state,arrival);
+  return treasuryRefundReason(state,arrival.paid+(guarantee?.state==='held'?guarantee.amount:0));
 }
 export function validateHireArrivals(state,roster){
   if(state.hiringArrivals===undefined)return;
