@@ -14,7 +14,7 @@ def once(text, before, after):
     return text.replace(before, after, 1)
 
 BEGIN='      this.gestureSupport.begin(this.clipSpec,clipSpec,this.mixer.time,clip,this.action?.getClip(),this.action?.time??0);\n'
-APPLY='    this.gestureSupport.apply(this.mixer.time,this.action.time);\n'
+APPLY='    this.gestureSupport.apply(this.mixer.time,this.action.time,this.action.timeScale);\n'
 HOOKS=[
 ("import {NativeGaitTransitionSupport} from './gait-transition-support';\n", "import {NativeGestureBlendSupport} from './gesture-blend-support';\n"),
 ('  private gaitSupport:NativeGaitTransitionSupport;\n', '  private gestureSupport:NativeGestureBlendSupport;\n'),
@@ -28,19 +28,24 @@ def compose(source):
     text=source
     mode='new-seven-hooks'
     if 'NativeGestureBlendSupport' in text:
-        mode='upgrade-existing-floor-hooks'
+        mode='upgrade-existing-gesture-hooks'
         for _,hook in HOOKS:
             if hook in [BEGIN,APPLY]:
                 continue
             if text.count(hook)!=1:
                 raise ValueError('Incomplete existing gesture hooks: '+hook.strip())
-        old_begin='      this.gestureSupport.begin(this.clipSpec,clipSpec,this.mixer.time);\n'
-        old_apply='    this.gestureSupport.apply(this.mixer.time);\n'
-        if text.count(BEGIN)==1 and text.count(APPLY)==1:
+        old_begin=BEGIN if text.count(BEGIN)==1 else '      this.gestureSupport.begin(this.clipSpec,clipSpec,this.mixer.time);\n'
+        old_apply=next((hook for hook in [APPLY,'    this.gestureSupport.apply(this.mixer.time,this.action.time);\n','    this.gestureSupport.apply(this.mixer.time);\n'] if text.count(hook)==1),None)
+        if old_apply is None:
+            raise ValueError('Expected one exact existing gesture apply hook')
+        if old_begin==BEGIN and old_apply==APPLY:
             return text,{'mode':'already-installed','before':digest(source),'after':digest(text),'allOtherBytesPreserved':True}
-        text=once(text,old_begin,BEGIN)
+        if old_begin!=BEGIN:
+            text=once(text,old_begin,BEGIN)
         text=once(text,old_apply,APPLY)
-        restored=once(once(text,BEGIN,old_begin),APPLY,old_apply)
+        restored=once(text,APPLY,old_apply)
+        if old_begin!=BEGIN:
+            restored=once(restored,BEGIN,old_begin)
     else:
         for anchor,hook in HOOKS:
             before=hook+anchor if 'restore()' in hook or 'dispose()' in hook else anchor+hook
