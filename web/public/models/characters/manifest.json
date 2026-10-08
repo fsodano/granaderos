@@ -2325,8 +2325,8 @@
   "animationLibraries": {
     "male": {
       "url": "/models/characters/male-animations.glb",
-      "bytes": 12335652,
-      "sha256": "49f5d77abe97ae560f46060f93d3fdd31661eda97e47dfdf029216ade2beeb27",
+      "bytes": 12559860,
+      "sha256": "624915277f2f4f842c0f2b8c251e91aee7b5436319612e327ecbb174fe1f8cda",
       "clips": [
         {
           "name": "stand.idle.unarmed",
@@ -9066,6 +9066,13 @@
                 0.14771625399589539
               ]
             }
+          },
+          "nativeRoofFingerSupport": {
+            "method": "existing-native-roof-finger-curl-relief",
+            "curlReliefRadians": 0.052,
+            "channels": "index-middle-ring-pinky-rotations-only",
+            "sourceSha256": "b2a228b18f122d17eb5d4a40272c92ba56d6bd6096bfad1365b3f7b63822da78",
+            "preservedNativeParentsAndClocks": true
           }
         },
         {
@@ -9131,6 +9138,13 @@
                 0.14771625399589539
               ]
             }
+          },
+          "nativeRoofFingerSupport": {
+            "method": "existing-native-roof-finger-curl-relief",
+            "curlReliefRadians": 0.052,
+            "channels": "index-middle-ring-pinky-rotations-only",
+            "sourceSha256": "b2a228b18f122d17eb5d4a40272c92ba56d6bd6096bfad1365b3f7b63822da78",
+            "preservedNativeParentsAndClocks": true
           }
         },
         {
@@ -17111,8 +17125,8 @@
     },
     "female": {
       "url": "/models/characters/female-animations.glb",
-      "bytes": 11946236,
-      "sha256": "509a9c2c1ab0cb2a7d38c8f50cb7809cfa9f6c4cc946c69652b6918fdeb1ac10",
+      "bytes": 12170444,
+      "sha256": "aa8cc1381835de19c1ffa747020d50225f92f3f8c1eb807e31c4a04007e2f37a",
       "clips": [
         {
           "name": "stand.idle.unarmed",
@@ -23853,6 +23867,13 @@
                 0.1525016576051712
               ]
             }
+          },
+          "nativeRoofFingerSupport": {
+            "method": "existing-native-roof-finger-curl-relief",
+            "curlReliefRadians": 0.052,
+            "channels": "index-middle-ring-pinky-rotations-only",
+            "sourceSha256": "b2a228b18f122d17eb5d4a40272c92ba56d6bd6096bfad1365b3f7b63822da78",
+            "preservedNativeParentsAndClocks": true
           }
         },
         {
@@ -23918,6 +23939,13 @@
                 0.1525016576051712
               ]
             }
+          },
+          "nativeRoofFingerSupport": {
+            "method": "existing-native-roof-finger-curl-relief",
+            "curlReliefRadians": 0.052,
+            "channels": "index-middle-ring-pinky-rotations-only",
+            "sourceSha256": "b2a228b18f122d17eb5d4a40272c92ba56d6bd6096bfad1365b3f7b63822da78",
+            "preservedNativeParentsAndClocks": true
           }
         },
         {
