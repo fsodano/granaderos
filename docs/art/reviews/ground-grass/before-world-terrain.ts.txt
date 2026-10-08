@@ -1,4 +1,4 @@
-import {Quaternion,Vector3} from 'three';
+import {Vector3} from 'three';
 import {terrainMaterial} from '../../../game/regional-terrain.js';
 import {WorldBatch,cellTop,seeded} from './world-geometry';
 import {illuminationAt,worldKey} from './world-materials';
@@ -41,8 +41,7 @@ export function buildTerrainChunk(id:string,tiles:readonly WorldTile[],input:Wor
       const seed=seeded(tile.x,tile.y),count=tile.type==='scrub'?5:2;
       for(let n=0;n<count;n++){
         const a=seeded(tile.x,tile.y,n+41),b=seeded(tile.y,tile.x,n+103),root=new Vector3(x+(a-.5)*T*.85,height,z+(b-.5)*T*.85);
-        const tuftHeight=.25*(.8+seeded(tile.x,tile.y,n+151)*.4),rotation=new Quaternion().setFromAxisAngle(new Vector3(0,1,0),seeded(tile.y,tile.x,n+173)*Math.PI*2);
-        batch.primitive('grass-tuft',materials.get('grass'),root,[tuftHeight,tuftHeight,tuftHeight],rotation,light*(.8+seed*.2));
+        batch.primitive('cone',materials.get('grass'),root.clone().add(new Vector3(0,.055,0)),[.025,.11,.022],undefined,light*(.8+seed*.2));
       }
     }
   }

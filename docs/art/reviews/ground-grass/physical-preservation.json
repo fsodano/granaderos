@@ -1,0 +1,5418 @@
+{
+  "sourcePins": {
+    "beforeGeometry": "01576ea58465d4a0e2d602336fb759afd01938f3ef537f95e650c968e012de0f",
+    "beforeTerrain": "d8cfbb1189ae0f5ab9de2fcec8580e306bb6411a74d50a04aa1c463f0ae45bbc",
+    "currentGeometry": "e2ceaef97d5132944be0424dc0c20ccf32b9eaef16720b3eadb80a35419109bb",
+    "currentTerrain": "791ce49a51811006b4e47a3f9918caef0cd51da0813bf6a5c80c8ce3b72c3413"
+  },
+  "cases": 540,
+  "unchangedNonGrassMeshes": 900,
+  "rootedTufts": 810,
+  "trianglesPerTuft": {
+    "before": 20,
+    "current": 9
+  },
+  "rows": [
+    {
+      "x": -8,
+      "y": -3,
+      "elevation": 0,
+      "type": "grass",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -8,
+      "y": -3,
+      "elevation": 0,
+      "type": "grass",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -8,
+      "y": -3,
+      "elevation": 0,
+      "type": "scrub",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": -8,
+      "y": -3,
+      "elevation": 0,
+      "type": "scrub",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": -8,
+      "y": -3,
+      "elevation": 0,
+      "type": "forest",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -8,
+      "y": -3,
+      "elevation": 0,
+      "type": "forest",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -8,
+      "y": -3,
+      "elevation": 0,
+      "type": "dirt",
+      "night": false,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -8,
+      "y": -3,
+      "elevation": 0,
+      "type": "dirt",
+      "night": true,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -8,
+      "y": -3,
+      "elevation": 0,
+      "type": "rubble",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": -8,
+      "y": -3,
+      "elevation": 0,
+      "type": "rubble",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": -8,
+      "y": -3,
+      "elevation": 0,
+      "type": "water",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -8,
+      "y": -3,
+      "elevation": 0,
+      "type": "water",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -8,
+      "y": -3,
+      "elevation": 0.4,
+      "type": "grass",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -8,
+      "y": -3,
+      "elevation": 0.4,
+      "type": "grass",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -8,
+      "y": -3,
+      "elevation": 0.4,
+      "type": "scrub",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": -8,
+      "y": -3,
+      "elevation": 0.4,
+      "type": "scrub",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": -8,
+      "y": -3,
+      "elevation": 0.4,
+      "type": "forest",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -8,
+      "y": -3,
+      "elevation": 0.4,
+      "type": "forest",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -8,
+      "y": -3,
+      "elevation": 0.4,
+      "type": "dirt",
+      "night": false,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -8,
+      "y": -3,
+      "elevation": 0.4,
+      "type": "dirt",
+      "night": true,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -8,
+      "y": -3,
+      "elevation": 0.4,
+      "type": "rubble",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": -8,
+      "y": -3,
+      "elevation": 0.4,
+      "type": "rubble",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": -8,
+      "y": -3,
+      "elevation": 0.4,
+      "type": "water",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -8,
+      "y": -3,
+      "elevation": 0.4,
+      "type": "water",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -8,
+      "y": -3,
+      "elevation": 1.7,
+      "type": "grass",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -8,
+      "y": -3,
+      "elevation": 1.7,
+      "type": "grass",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -8,
+      "y": -3,
+      "elevation": 1.7,
+      "type": "scrub",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": -8,
+      "y": -3,
+      "elevation": 1.7,
+      "type": "scrub",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": -8,
+      "y": -3,
+      "elevation": 1.7,
+      "type": "forest",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -8,
+      "y": -3,
+      "elevation": 1.7,
+      "type": "forest",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -8,
+      "y": -3,
+      "elevation": 1.7,
+      "type": "dirt",
+      "night": false,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -8,
+      "y": -3,
+      "elevation": 1.7,
+      "type": "dirt",
+      "night": true,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -8,
+      "y": -3,
+      "elevation": 1.7,
+      "type": "rubble",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": -8,
+      "y": -3,
+      "elevation": 1.7,
+      "type": "rubble",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": -8,
+      "y": -3,
+      "elevation": 1.7,
+      "type": "water",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -8,
+      "y": -3,
+      "elevation": 1.7,
+      "type": "water",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -8,
+      "y": 0,
+      "elevation": 0,
+      "type": "grass",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -8,
+      "y": 0,
+      "elevation": 0,
+      "type": "grass",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -8,
+      "y": 0,
+      "elevation": 0,
+      "type": "scrub",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": -8,
+      "y": 0,
+      "elevation": 0,
+      "type": "scrub",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": -8,
+      "y": 0,
+      "elevation": 0,
+      "type": "forest",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -8,
+      "y": 0,
+      "elevation": 0,
+      "type": "forest",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -8,
+      "y": 0,
+      "elevation": 0,
+      "type": "dirt",
+      "night": false,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -8,
+      "y": 0,
+      "elevation": 0,
+      "type": "dirt",
+      "night": true,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -8,
+      "y": 0,
+      "elevation": 0,
+      "type": "rubble",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": -8,
+      "y": 0,
+      "elevation": 0,
+      "type": "rubble",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": -8,
+      "y": 0,
+      "elevation": 0,
+      "type": "water",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -8,
+      "y": 0,
+      "elevation": 0,
+      "type": "water",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -8,
+      "y": 0,
+      "elevation": 0.4,
+      "type": "grass",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -8,
+      "y": 0,
+      "elevation": 0.4,
+      "type": "grass",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -8,
+      "y": 0,
+      "elevation": 0.4,
+      "type": "scrub",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": -8,
+      "y": 0,
+      "elevation": 0.4,
+      "type": "scrub",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": -8,
+      "y": 0,
+      "elevation": 0.4,
+      "type": "forest",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -8,
+      "y": 0,
+      "elevation": 0.4,
+      "type": "forest",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -8,
+      "y": 0,
+      "elevation": 0.4,
+      "type": "dirt",
+      "night": false,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -8,
+      "y": 0,
+      "elevation": 0.4,
+      "type": "dirt",
+      "night": true,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -8,
+      "y": 0,
+      "elevation": 0.4,
+      "type": "rubble",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": -8,
+      "y": 0,
+      "elevation": 0.4,
+      "type": "rubble",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": -8,
+      "y": 0,
+      "elevation": 0.4,
+      "type": "water",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -8,
+      "y": 0,
+      "elevation": 0.4,
+      "type": "water",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -8,
+      "y": 0,
+      "elevation": 1.7,
+      "type": "grass",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -8,
+      "y": 0,
+      "elevation": 1.7,
+      "type": "grass",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -8,
+      "y": 0,
+      "elevation": 1.7,
+      "type": "scrub",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": -8,
+      "y": 0,
+      "elevation": 1.7,
+      "type": "scrub",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": -8,
+      "y": 0,
+      "elevation": 1.7,
+      "type": "forest",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -8,
+      "y": 0,
+      "elevation": 1.7,
+      "type": "forest",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -8,
+      "y": 0,
+      "elevation": 1.7,
+      "type": "dirt",
+      "night": false,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -8,
+      "y": 0,
+      "elevation": 1.7,
+      "type": "dirt",
+      "night": true,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -8,
+      "y": 0,
+      "elevation": 1.7,
+      "type": "rubble",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": -8,
+      "y": 0,
+      "elevation": 1.7,
+      "type": "rubble",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": -8,
+      "y": 0,
+      "elevation": 1.7,
+      "type": "water",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -8,
+      "y": 0,
+      "elevation": 1.7,
+      "type": "water",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -8,
+      "y": 11,
+      "elevation": 0,
+      "type": "grass",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -8,
+      "y": 11,
+      "elevation": 0,
+      "type": "grass",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -8,
+      "y": 11,
+      "elevation": 0,
+      "type": "scrub",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": -8,
+      "y": 11,
+      "elevation": 0,
+      "type": "scrub",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": -8,
+      "y": 11,
+      "elevation": 0,
+      "type": "forest",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -8,
+      "y": 11,
+      "elevation": 0,
+      "type": "forest",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -8,
+      "y": 11,
+      "elevation": 0,
+      "type": "dirt",
+      "night": false,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -8,
+      "y": 11,
+      "elevation": 0,
+      "type": "dirt",
+      "night": true,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -8,
+      "y": 11,
+      "elevation": 0,
+      "type": "rubble",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": -8,
+      "y": 11,
+      "elevation": 0,
+      "type": "rubble",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": -8,
+      "y": 11,
+      "elevation": 0,
+      "type": "water",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -8,
+      "y": 11,
+      "elevation": 0,
+      "type": "water",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -8,
+      "y": 11,
+      "elevation": 0.4,
+      "type": "grass",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -8,
+      "y": 11,
+      "elevation": 0.4,
+      "type": "grass",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -8,
+      "y": 11,
+      "elevation": 0.4,
+      "type": "scrub",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": -8,
+      "y": 11,
+      "elevation": 0.4,
+      "type": "scrub",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": -8,
+      "y": 11,
+      "elevation": 0.4,
+      "type": "forest",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -8,
+      "y": 11,
+      "elevation": 0.4,
+      "type": "forest",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -8,
+      "y": 11,
+      "elevation": 0.4,
+      "type": "dirt",
+      "night": false,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -8,
+      "y": 11,
+      "elevation": 0.4,
+      "type": "dirt",
+      "night": true,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -8,
+      "y": 11,
+      "elevation": 0.4,
+      "type": "rubble",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": -8,
+      "y": 11,
+      "elevation": 0.4,
+      "type": "rubble",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": -8,
+      "y": 11,
+      "elevation": 0.4,
+      "type": "water",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -8,
+      "y": 11,
+      "elevation": 0.4,
+      "type": "water",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -8,
+      "y": 11,
+      "elevation": 1.7,
+      "type": "grass",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -8,
+      "y": 11,
+      "elevation": 1.7,
+      "type": "grass",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -8,
+      "y": 11,
+      "elevation": 1.7,
+      "type": "scrub",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": -8,
+      "y": 11,
+      "elevation": 1.7,
+      "type": "scrub",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": -8,
+      "y": 11,
+      "elevation": 1.7,
+      "type": "forest",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -8,
+      "y": 11,
+      "elevation": 1.7,
+      "type": "forest",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -8,
+      "y": 11,
+      "elevation": 1.7,
+      "type": "dirt",
+      "night": false,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -8,
+      "y": 11,
+      "elevation": 1.7,
+      "type": "dirt",
+      "night": true,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -8,
+      "y": 11,
+      "elevation": 1.7,
+      "type": "rubble",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": -8,
+      "y": 11,
+      "elevation": 1.7,
+      "type": "rubble",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": -8,
+      "y": 11,
+      "elevation": 1.7,
+      "type": "water",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -8,
+      "y": 11,
+      "elevation": 1.7,
+      "type": "water",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -1,
+      "y": -3,
+      "elevation": 0,
+      "type": "grass",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -1,
+      "y": -3,
+      "elevation": 0,
+      "type": "grass",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -1,
+      "y": -3,
+      "elevation": 0,
+      "type": "scrub",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": -1,
+      "y": -3,
+      "elevation": 0,
+      "type": "scrub",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": -1,
+      "y": -3,
+      "elevation": 0,
+      "type": "forest",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -1,
+      "y": -3,
+      "elevation": 0,
+      "type": "forest",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -1,
+      "y": -3,
+      "elevation": 0,
+      "type": "dirt",
+      "night": false,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -1,
+      "y": -3,
+      "elevation": 0,
+      "type": "dirt",
+      "night": true,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -1,
+      "y": -3,
+      "elevation": 0,
+      "type": "rubble",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": -1,
+      "y": -3,
+      "elevation": 0,
+      "type": "rubble",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": -1,
+      "y": -3,
+      "elevation": 0,
+      "type": "water",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -1,
+      "y": -3,
+      "elevation": 0,
+      "type": "water",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -1,
+      "y": -3,
+      "elevation": 0.4,
+      "type": "grass",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -1,
+      "y": -3,
+      "elevation": 0.4,
+      "type": "grass",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -1,
+      "y": -3,
+      "elevation": 0.4,
+      "type": "scrub",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": -1,
+      "y": -3,
+      "elevation": 0.4,
+      "type": "scrub",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": -1,
+      "y": -3,
+      "elevation": 0.4,
+      "type": "forest",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -1,
+      "y": -3,
+      "elevation": 0.4,
+      "type": "forest",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -1,
+      "y": -3,
+      "elevation": 0.4,
+      "type": "dirt",
+      "night": false,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -1,
+      "y": -3,
+      "elevation": 0.4,
+      "type": "dirt",
+      "night": true,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -1,
+      "y": -3,
+      "elevation": 0.4,
+      "type": "rubble",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": -1,
+      "y": -3,
+      "elevation": 0.4,
+      "type": "rubble",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": -1,
+      "y": -3,
+      "elevation": 0.4,
+      "type": "water",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -1,
+      "y": -3,
+      "elevation": 0.4,
+      "type": "water",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -1,
+      "y": -3,
+      "elevation": 1.7,
+      "type": "grass",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -1,
+      "y": -3,
+      "elevation": 1.7,
+      "type": "grass",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -1,
+      "y": -3,
+      "elevation": 1.7,
+      "type": "scrub",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": -1,
+      "y": -3,
+      "elevation": 1.7,
+      "type": "scrub",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": -1,
+      "y": -3,
+      "elevation": 1.7,
+      "type": "forest",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -1,
+      "y": -3,
+      "elevation": 1.7,
+      "type": "forest",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -1,
+      "y": -3,
+      "elevation": 1.7,
+      "type": "dirt",
+      "night": false,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -1,
+      "y": -3,
+      "elevation": 1.7,
+      "type": "dirt",
+      "night": true,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -1,
+      "y": -3,
+      "elevation": 1.7,
+      "type": "rubble",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": -1,
+      "y": -3,
+      "elevation": 1.7,
+      "type": "rubble",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": -1,
+      "y": -3,
+      "elevation": 1.7,
+      "type": "water",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -1,
+      "y": -3,
+      "elevation": 1.7,
+      "type": "water",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -1,
+      "y": 0,
+      "elevation": 0,
+      "type": "grass",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -1,
+      "y": 0,
+      "elevation": 0,
+      "type": "grass",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -1,
+      "y": 0,
+      "elevation": 0,
+      "type": "scrub",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": -1,
+      "y": 0,
+      "elevation": 0,
+      "type": "scrub",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": -1,
+      "y": 0,
+      "elevation": 0,
+      "type": "forest",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -1,
+      "y": 0,
+      "elevation": 0,
+      "type": "forest",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -1,
+      "y": 0,
+      "elevation": 0,
+      "type": "dirt",
+      "night": false,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -1,
+      "y": 0,
+      "elevation": 0,
+      "type": "dirt",
+      "night": true,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -1,
+      "y": 0,
+      "elevation": 0,
+      "type": "rubble",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": -1,
+      "y": 0,
+      "elevation": 0,
+      "type": "rubble",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": -1,
+      "y": 0,
+      "elevation": 0,
+      "type": "water",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -1,
+      "y": 0,
+      "elevation": 0,
+      "type": "water",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -1,
+      "y": 0,
+      "elevation": 0.4,
+      "type": "grass",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -1,
+      "y": 0,
+      "elevation": 0.4,
+      "type": "grass",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -1,
+      "y": 0,
+      "elevation": 0.4,
+      "type": "scrub",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": -1,
+      "y": 0,
+      "elevation": 0.4,
+      "type": "scrub",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": -1,
+      "y": 0,
+      "elevation": 0.4,
+      "type": "forest",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -1,
+      "y": 0,
+      "elevation": 0.4,
+      "type": "forest",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -1,
+      "y": 0,
+      "elevation": 0.4,
+      "type": "dirt",
+      "night": false,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -1,
+      "y": 0,
+      "elevation": 0.4,
+      "type": "dirt",
+      "night": true,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -1,
+      "y": 0,
+      "elevation": 0.4,
+      "type": "rubble",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": -1,
+      "y": 0,
+      "elevation": 0.4,
+      "type": "rubble",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": -1,
+      "y": 0,
+      "elevation": 0.4,
+      "type": "water",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -1,
+      "y": 0,
+      "elevation": 0.4,
+      "type": "water",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -1,
+      "y": 0,
+      "elevation": 1.7,
+      "type": "grass",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -1,
+      "y": 0,
+      "elevation": 1.7,
+      "type": "grass",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -1,
+      "y": 0,
+      "elevation": 1.7,
+      "type": "scrub",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": -1,
+      "y": 0,
+      "elevation": 1.7,
+      "type": "scrub",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": -1,
+      "y": 0,
+      "elevation": 1.7,
+      "type": "forest",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -1,
+      "y": 0,
+      "elevation": 1.7,
+      "type": "forest",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -1,
+      "y": 0,
+      "elevation": 1.7,
+      "type": "dirt",
+      "night": false,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -1,
+      "y": 0,
+      "elevation": 1.7,
+      "type": "dirt",
+      "night": true,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -1,
+      "y": 0,
+      "elevation": 1.7,
+      "type": "rubble",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": -1,
+      "y": 0,
+      "elevation": 1.7,
+      "type": "rubble",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": -1,
+      "y": 0,
+      "elevation": 1.7,
+      "type": "water",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -1,
+      "y": 0,
+      "elevation": 1.7,
+      "type": "water",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -1,
+      "y": 11,
+      "elevation": 0,
+      "type": "grass",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -1,
+      "y": 11,
+      "elevation": 0,
+      "type": "grass",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -1,
+      "y": 11,
+      "elevation": 0,
+      "type": "scrub",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": -1,
+      "y": 11,
+      "elevation": 0,
+      "type": "scrub",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": -1,
+      "y": 11,
+      "elevation": 0,
+      "type": "forest",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -1,
+      "y": 11,
+      "elevation": 0,
+      "type": "forest",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -1,
+      "y": 11,
+      "elevation": 0,
+      "type": "dirt",
+      "night": false,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -1,
+      "y": 11,
+      "elevation": 0,
+      "type": "dirt",
+      "night": true,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -1,
+      "y": 11,
+      "elevation": 0,
+      "type": "rubble",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": -1,
+      "y": 11,
+      "elevation": 0,
+      "type": "rubble",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": -1,
+      "y": 11,
+      "elevation": 0,
+      "type": "water",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -1,
+      "y": 11,
+      "elevation": 0,
+      "type": "water",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -1,
+      "y": 11,
+      "elevation": 0.4,
+      "type": "grass",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -1,
+      "y": 11,
+      "elevation": 0.4,
+      "type": "grass",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -1,
+      "y": 11,
+      "elevation": 0.4,
+      "type": "scrub",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": -1,
+      "y": 11,
+      "elevation": 0.4,
+      "type": "scrub",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": -1,
+      "y": 11,
+      "elevation": 0.4,
+      "type": "forest",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -1,
+      "y": 11,
+      "elevation": 0.4,
+      "type": "forest",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -1,
+      "y": 11,
+      "elevation": 0.4,
+      "type": "dirt",
+      "night": false,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -1,
+      "y": 11,
+      "elevation": 0.4,
+      "type": "dirt",
+      "night": true,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -1,
+      "y": 11,
+      "elevation": 0.4,
+      "type": "rubble",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": -1,
+      "y": 11,
+      "elevation": 0.4,
+      "type": "rubble",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": -1,
+      "y": 11,
+      "elevation": 0.4,
+      "type": "water",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -1,
+      "y": 11,
+      "elevation": 0.4,
+      "type": "water",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -1,
+      "y": 11,
+      "elevation": 1.7,
+      "type": "grass",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -1,
+      "y": 11,
+      "elevation": 1.7,
+      "type": "grass",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -1,
+      "y": 11,
+      "elevation": 1.7,
+      "type": "scrub",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": -1,
+      "y": 11,
+      "elevation": 1.7,
+      "type": "scrub",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": -1,
+      "y": 11,
+      "elevation": 1.7,
+      "type": "forest",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -1,
+      "y": 11,
+      "elevation": 1.7,
+      "type": "forest",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": -1,
+      "y": 11,
+      "elevation": 1.7,
+      "type": "dirt",
+      "night": false,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -1,
+      "y": 11,
+      "elevation": 1.7,
+      "type": "dirt",
+      "night": true,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -1,
+      "y": 11,
+      "elevation": 1.7,
+      "type": "rubble",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": -1,
+      "y": 11,
+      "elevation": 1.7,
+      "type": "rubble",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": -1,
+      "y": 11,
+      "elevation": 1.7,
+      "type": "water",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": -1,
+      "y": 11,
+      "elevation": 1.7,
+      "type": "water",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 0,
+      "y": -3,
+      "elevation": 0,
+      "type": "grass",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 0,
+      "y": -3,
+      "elevation": 0,
+      "type": "grass",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 0,
+      "y": -3,
+      "elevation": 0,
+      "type": "scrub",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": 0,
+      "y": -3,
+      "elevation": 0,
+      "type": "scrub",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": 0,
+      "y": -3,
+      "elevation": 0,
+      "type": "forest",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 0,
+      "y": -3,
+      "elevation": 0,
+      "type": "forest",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 0,
+      "y": -3,
+      "elevation": 0,
+      "type": "dirt",
+      "night": false,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 0,
+      "y": -3,
+      "elevation": 0,
+      "type": "dirt",
+      "night": true,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 0,
+      "y": -3,
+      "elevation": 0,
+      "type": "rubble",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": 0,
+      "y": -3,
+      "elevation": 0,
+      "type": "rubble",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": 0,
+      "y": -3,
+      "elevation": 0,
+      "type": "water",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 0,
+      "y": -3,
+      "elevation": 0,
+      "type": "water",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 0,
+      "y": -3,
+      "elevation": 0.4,
+      "type": "grass",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 0,
+      "y": -3,
+      "elevation": 0.4,
+      "type": "grass",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 0,
+      "y": -3,
+      "elevation": 0.4,
+      "type": "scrub",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": 0,
+      "y": -3,
+      "elevation": 0.4,
+      "type": "scrub",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": 0,
+      "y": -3,
+      "elevation": 0.4,
+      "type": "forest",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 0,
+      "y": -3,
+      "elevation": 0.4,
+      "type": "forest",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 0,
+      "y": -3,
+      "elevation": 0.4,
+      "type": "dirt",
+      "night": false,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 0,
+      "y": -3,
+      "elevation": 0.4,
+      "type": "dirt",
+      "night": true,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 0,
+      "y": -3,
+      "elevation": 0.4,
+      "type": "rubble",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": 0,
+      "y": -3,
+      "elevation": 0.4,
+      "type": "rubble",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": 0,
+      "y": -3,
+      "elevation": 0.4,
+      "type": "water",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 0,
+      "y": -3,
+      "elevation": 0.4,
+      "type": "water",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 0,
+      "y": -3,
+      "elevation": 1.7,
+      "type": "grass",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 0,
+      "y": -3,
+      "elevation": 1.7,
+      "type": "grass",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 0,
+      "y": -3,
+      "elevation": 1.7,
+      "type": "scrub",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": 0,
+      "y": -3,
+      "elevation": 1.7,
+      "type": "scrub",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": 0,
+      "y": -3,
+      "elevation": 1.7,
+      "type": "forest",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 0,
+      "y": -3,
+      "elevation": 1.7,
+      "type": "forest",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 0,
+      "y": -3,
+      "elevation": 1.7,
+      "type": "dirt",
+      "night": false,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 0,
+      "y": -3,
+      "elevation": 1.7,
+      "type": "dirt",
+      "night": true,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 0,
+      "y": -3,
+      "elevation": 1.7,
+      "type": "rubble",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": 0,
+      "y": -3,
+      "elevation": 1.7,
+      "type": "rubble",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": 0,
+      "y": -3,
+      "elevation": 1.7,
+      "type": "water",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 0,
+      "y": -3,
+      "elevation": 1.7,
+      "type": "water",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "elevation": 0,
+      "type": "grass",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "elevation": 0,
+      "type": "grass",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "elevation": 0,
+      "type": "scrub",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "elevation": 0,
+      "type": "scrub",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "elevation": 0,
+      "type": "forest",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "elevation": 0,
+      "type": "forest",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "elevation": 0,
+      "type": "dirt",
+      "night": false,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "elevation": 0,
+      "type": "dirt",
+      "night": true,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "elevation": 0,
+      "type": "rubble",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "elevation": 0,
+      "type": "rubble",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "elevation": 0,
+      "type": "water",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "elevation": 0,
+      "type": "water",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "elevation": 0.4,
+      "type": "grass",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "elevation": 0.4,
+      "type": "grass",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "elevation": 0.4,
+      "type": "scrub",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "elevation": 0.4,
+      "type": "scrub",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "elevation": 0.4,
+      "type": "forest",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "elevation": 0.4,
+      "type": "forest",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "elevation": 0.4,
+      "type": "dirt",
+      "night": false,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "elevation": 0.4,
+      "type": "dirt",
+      "night": true,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "elevation": 0.4,
+      "type": "rubble",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "elevation": 0.4,
+      "type": "rubble",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "elevation": 0.4,
+      "type": "water",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "elevation": 0.4,
+      "type": "water",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "elevation": 1.7,
+      "type": "grass",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "elevation": 1.7,
+      "type": "grass",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "elevation": 1.7,
+      "type": "scrub",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "elevation": 1.7,
+      "type": "scrub",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "elevation": 1.7,
+      "type": "forest",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "elevation": 1.7,
+      "type": "forest",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "elevation": 1.7,
+      "type": "dirt",
+      "night": false,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "elevation": 1.7,
+      "type": "dirt",
+      "night": true,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "elevation": 1.7,
+      "type": "rubble",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "elevation": 1.7,
+      "type": "rubble",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "elevation": 1.7,
+      "type": "water",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "elevation": 1.7,
+      "type": "water",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 0,
+      "y": 11,
+      "elevation": 0,
+      "type": "grass",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 0,
+      "y": 11,
+      "elevation": 0,
+      "type": "grass",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 0,
+      "y": 11,
+      "elevation": 0,
+      "type": "scrub",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": 0,
+      "y": 11,
+      "elevation": 0,
+      "type": "scrub",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": 0,
+      "y": 11,
+      "elevation": 0,
+      "type": "forest",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 0,
+      "y": 11,
+      "elevation": 0,
+      "type": "forest",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 0,
+      "y": 11,
+      "elevation": 0,
+      "type": "dirt",
+      "night": false,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 0,
+      "y": 11,
+      "elevation": 0,
+      "type": "dirt",
+      "night": true,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 0,
+      "y": 11,
+      "elevation": 0,
+      "type": "rubble",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": 0,
+      "y": 11,
+      "elevation": 0,
+      "type": "rubble",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": 0,
+      "y": 11,
+      "elevation": 0,
+      "type": "water",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 0,
+      "y": 11,
+      "elevation": 0,
+      "type": "water",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 0,
+      "y": 11,
+      "elevation": 0.4,
+      "type": "grass",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 0,
+      "y": 11,
+      "elevation": 0.4,
+      "type": "grass",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 0,
+      "y": 11,
+      "elevation": 0.4,
+      "type": "scrub",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": 0,
+      "y": 11,
+      "elevation": 0.4,
+      "type": "scrub",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": 0,
+      "y": 11,
+      "elevation": 0.4,
+      "type": "forest",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 0,
+      "y": 11,
+      "elevation": 0.4,
+      "type": "forest",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 0,
+      "y": 11,
+      "elevation": 0.4,
+      "type": "dirt",
+      "night": false,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 0,
+      "y": 11,
+      "elevation": 0.4,
+      "type": "dirt",
+      "night": true,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 0,
+      "y": 11,
+      "elevation": 0.4,
+      "type": "rubble",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": 0,
+      "y": 11,
+      "elevation": 0.4,
+      "type": "rubble",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": 0,
+      "y": 11,
+      "elevation": 0.4,
+      "type": "water",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 0,
+      "y": 11,
+      "elevation": 0.4,
+      "type": "water",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 0,
+      "y": 11,
+      "elevation": 1.7,
+      "type": "grass",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 0,
+      "y": 11,
+      "elevation": 1.7,
+      "type": "grass",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 0,
+      "y": 11,
+      "elevation": 1.7,
+      "type": "scrub",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": 0,
+      "y": 11,
+      "elevation": 1.7,
+      "type": "scrub",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": 0,
+      "y": 11,
+      "elevation": 1.7,
+      "type": "forest",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 0,
+      "y": 11,
+      "elevation": 1.7,
+      "type": "forest",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 0,
+      "y": 11,
+      "elevation": 1.7,
+      "type": "dirt",
+      "night": false,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 0,
+      "y": 11,
+      "elevation": 1.7,
+      "type": "dirt",
+      "night": true,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 0,
+      "y": 11,
+      "elevation": 1.7,
+      "type": "rubble",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": 0,
+      "y": 11,
+      "elevation": 1.7,
+      "type": "rubble",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": 0,
+      "y": 11,
+      "elevation": 1.7,
+      "type": "water",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 0,
+      "y": 11,
+      "elevation": 1.7,
+      "type": "water",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 7,
+      "y": -3,
+      "elevation": 0,
+      "type": "grass",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 7,
+      "y": -3,
+      "elevation": 0,
+      "type": "grass",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 7,
+      "y": -3,
+      "elevation": 0,
+      "type": "scrub",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": 7,
+      "y": -3,
+      "elevation": 0,
+      "type": "scrub",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": 7,
+      "y": -3,
+      "elevation": 0,
+      "type": "forest",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 7,
+      "y": -3,
+      "elevation": 0,
+      "type": "forest",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 7,
+      "y": -3,
+      "elevation": 0,
+      "type": "dirt",
+      "night": false,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 7,
+      "y": -3,
+      "elevation": 0,
+      "type": "dirt",
+      "night": true,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 7,
+      "y": -3,
+      "elevation": 0,
+      "type": "rubble",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": 7,
+      "y": -3,
+      "elevation": 0,
+      "type": "rubble",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": 7,
+      "y": -3,
+      "elevation": 0,
+      "type": "water",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 7,
+      "y": -3,
+      "elevation": 0,
+      "type": "water",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 7,
+      "y": -3,
+      "elevation": 0.4,
+      "type": "grass",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 7,
+      "y": -3,
+      "elevation": 0.4,
+      "type": "grass",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 7,
+      "y": -3,
+      "elevation": 0.4,
+      "type": "scrub",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": 7,
+      "y": -3,
+      "elevation": 0.4,
+      "type": "scrub",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": 7,
+      "y": -3,
+      "elevation": 0.4,
+      "type": "forest",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 7,
+      "y": -3,
+      "elevation": 0.4,
+      "type": "forest",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 7,
+      "y": -3,
+      "elevation": 0.4,
+      "type": "dirt",
+      "night": false,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 7,
+      "y": -3,
+      "elevation": 0.4,
+      "type": "dirt",
+      "night": true,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 7,
+      "y": -3,
+      "elevation": 0.4,
+      "type": "rubble",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": 7,
+      "y": -3,
+      "elevation": 0.4,
+      "type": "rubble",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": 7,
+      "y": -3,
+      "elevation": 0.4,
+      "type": "water",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 7,
+      "y": -3,
+      "elevation": 0.4,
+      "type": "water",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 7,
+      "y": -3,
+      "elevation": 1.7,
+      "type": "grass",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 7,
+      "y": -3,
+      "elevation": 1.7,
+      "type": "grass",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 7,
+      "y": -3,
+      "elevation": 1.7,
+      "type": "scrub",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": 7,
+      "y": -3,
+      "elevation": 1.7,
+      "type": "scrub",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": 7,
+      "y": -3,
+      "elevation": 1.7,
+      "type": "forest",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 7,
+      "y": -3,
+      "elevation": 1.7,
+      "type": "forest",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 7,
+      "y": -3,
+      "elevation": 1.7,
+      "type": "dirt",
+      "night": false,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 7,
+      "y": -3,
+      "elevation": 1.7,
+      "type": "dirt",
+      "night": true,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 7,
+      "y": -3,
+      "elevation": 1.7,
+      "type": "rubble",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": 7,
+      "y": -3,
+      "elevation": 1.7,
+      "type": "rubble",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": 7,
+      "y": -3,
+      "elevation": 1.7,
+      "type": "water",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 7,
+      "y": -3,
+      "elevation": 1.7,
+      "type": "water",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 7,
+      "y": 0,
+      "elevation": 0,
+      "type": "grass",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 7,
+      "y": 0,
+      "elevation": 0,
+      "type": "grass",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 7,
+      "y": 0,
+      "elevation": 0,
+      "type": "scrub",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": 7,
+      "y": 0,
+      "elevation": 0,
+      "type": "scrub",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": 7,
+      "y": 0,
+      "elevation": 0,
+      "type": "forest",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 7,
+      "y": 0,
+      "elevation": 0,
+      "type": "forest",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 7,
+      "y": 0,
+      "elevation": 0,
+      "type": "dirt",
+      "night": false,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 7,
+      "y": 0,
+      "elevation": 0,
+      "type": "dirt",
+      "night": true,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 7,
+      "y": 0,
+      "elevation": 0,
+      "type": "rubble",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": 7,
+      "y": 0,
+      "elevation": 0,
+      "type": "rubble",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": 7,
+      "y": 0,
+      "elevation": 0,
+      "type": "water",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 7,
+      "y": 0,
+      "elevation": 0,
+      "type": "water",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 7,
+      "y": 0,
+      "elevation": 0.4,
+      "type": "grass",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 7,
+      "y": 0,
+      "elevation": 0.4,
+      "type": "grass",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 7,
+      "y": 0,
+      "elevation": 0.4,
+      "type": "scrub",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": 7,
+      "y": 0,
+      "elevation": 0.4,
+      "type": "scrub",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": 7,
+      "y": 0,
+      "elevation": 0.4,
+      "type": "forest",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 7,
+      "y": 0,
+      "elevation": 0.4,
+      "type": "forest",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 7,
+      "y": 0,
+      "elevation": 0.4,
+      "type": "dirt",
+      "night": false,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 7,
+      "y": 0,
+      "elevation": 0.4,
+      "type": "dirt",
+      "night": true,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 7,
+      "y": 0,
+      "elevation": 0.4,
+      "type": "rubble",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": 7,
+      "y": 0,
+      "elevation": 0.4,
+      "type": "rubble",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": 7,
+      "y": 0,
+      "elevation": 0.4,
+      "type": "water",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 7,
+      "y": 0,
+      "elevation": 0.4,
+      "type": "water",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 7,
+      "y": 0,
+      "elevation": 1.7,
+      "type": "grass",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 7,
+      "y": 0,
+      "elevation": 1.7,
+      "type": "grass",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 7,
+      "y": 0,
+      "elevation": 1.7,
+      "type": "scrub",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": 7,
+      "y": 0,
+      "elevation": 1.7,
+      "type": "scrub",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": 7,
+      "y": 0,
+      "elevation": 1.7,
+      "type": "forest",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 7,
+      "y": 0,
+      "elevation": 1.7,
+      "type": "forest",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 7,
+      "y": 0,
+      "elevation": 1.7,
+      "type": "dirt",
+      "night": false,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 7,
+      "y": 0,
+      "elevation": 1.7,
+      "type": "dirt",
+      "night": true,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 7,
+      "y": 0,
+      "elevation": 1.7,
+      "type": "rubble",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": 7,
+      "y": 0,
+      "elevation": 1.7,
+      "type": "rubble",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": 7,
+      "y": 0,
+      "elevation": 1.7,
+      "type": "water",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 7,
+      "y": 0,
+      "elevation": 1.7,
+      "type": "water",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 7,
+      "y": 11,
+      "elevation": 0,
+      "type": "grass",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 7,
+      "y": 11,
+      "elevation": 0,
+      "type": "grass",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 7,
+      "y": 11,
+      "elevation": 0,
+      "type": "scrub",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": 7,
+      "y": 11,
+      "elevation": 0,
+      "type": "scrub",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": 7,
+      "y": 11,
+      "elevation": 0,
+      "type": "forest",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 7,
+      "y": 11,
+      "elevation": 0,
+      "type": "forest",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 7,
+      "y": 11,
+      "elevation": 0,
+      "type": "dirt",
+      "night": false,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 7,
+      "y": 11,
+      "elevation": 0,
+      "type": "dirt",
+      "night": true,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 7,
+      "y": 11,
+      "elevation": 0,
+      "type": "rubble",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": 7,
+      "y": 11,
+      "elevation": 0,
+      "type": "rubble",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": 7,
+      "y": 11,
+      "elevation": 0,
+      "type": "water",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 7,
+      "y": 11,
+      "elevation": 0,
+      "type": "water",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 7,
+      "y": 11,
+      "elevation": 0.4,
+      "type": "grass",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 7,
+      "y": 11,
+      "elevation": 0.4,
+      "type": "grass",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 7,
+      "y": 11,
+      "elevation": 0.4,
+      "type": "scrub",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": 7,
+      "y": 11,
+      "elevation": 0.4,
+      "type": "scrub",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": 7,
+      "y": 11,
+      "elevation": 0.4,
+      "type": "forest",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 7,
+      "y": 11,
+      "elevation": 0.4,
+      "type": "forest",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 7,
+      "y": 11,
+      "elevation": 0.4,
+      "type": "dirt",
+      "night": false,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 7,
+      "y": 11,
+      "elevation": 0.4,
+      "type": "dirt",
+      "night": true,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 7,
+      "y": 11,
+      "elevation": 0.4,
+      "type": "rubble",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": 7,
+      "y": 11,
+      "elevation": 0.4,
+      "type": "rubble",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": 7,
+      "y": 11,
+      "elevation": 0.4,
+      "type": "water",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 7,
+      "y": 11,
+      "elevation": 0.4,
+      "type": "water",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 7,
+      "y": 11,
+      "elevation": 1.7,
+      "type": "grass",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 7,
+      "y": 11,
+      "elevation": 1.7,
+      "type": "grass",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 7,
+      "y": 11,
+      "elevation": 1.7,
+      "type": "scrub",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": 7,
+      "y": 11,
+      "elevation": 1.7,
+      "type": "scrub",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": 7,
+      "y": 11,
+      "elevation": 1.7,
+      "type": "forest",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 7,
+      "y": 11,
+      "elevation": 1.7,
+      "type": "forest",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 7,
+      "y": 11,
+      "elevation": 1.7,
+      "type": "dirt",
+      "night": false,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 7,
+      "y": 11,
+      "elevation": 1.7,
+      "type": "dirt",
+      "night": true,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 7,
+      "y": 11,
+      "elevation": 1.7,
+      "type": "rubble",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": 7,
+      "y": 11,
+      "elevation": 1.7,
+      "type": "rubble",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": 7,
+      "y": 11,
+      "elevation": 1.7,
+      "type": "water",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 7,
+      "y": 11,
+      "elevation": 1.7,
+      "type": "water",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 23,
+      "y": -3,
+      "elevation": 0,
+      "type": "grass",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 23,
+      "y": -3,
+      "elevation": 0,
+      "type": "grass",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 23,
+      "y": -3,
+      "elevation": 0,
+      "type": "scrub",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": 23,
+      "y": -3,
+      "elevation": 0,
+      "type": "scrub",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": 23,
+      "y": -3,
+      "elevation": 0,
+      "type": "forest",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 23,
+      "y": -3,
+      "elevation": 0,
+      "type": "forest",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 23,
+      "y": -3,
+      "elevation": 0,
+      "type": "dirt",
+      "night": false,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 23,
+      "y": -3,
+      "elevation": 0,
+      "type": "dirt",
+      "night": true,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 23,
+      "y": -3,
+      "elevation": 0,
+      "type": "rubble",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": 23,
+      "y": -3,
+      "elevation": 0,
+      "type": "rubble",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": 23,
+      "y": -3,
+      "elevation": 0,
+      "type": "water",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 23,
+      "y": -3,
+      "elevation": 0,
+      "type": "water",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 23,
+      "y": -3,
+      "elevation": 0.4,
+      "type": "grass",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 23,
+      "y": -3,
+      "elevation": 0.4,
+      "type": "grass",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 23,
+      "y": -3,
+      "elevation": 0.4,
+      "type": "scrub",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": 23,
+      "y": -3,
+      "elevation": 0.4,
+      "type": "scrub",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": 23,
+      "y": -3,
+      "elevation": 0.4,
+      "type": "forest",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 23,
+      "y": -3,
+      "elevation": 0.4,
+      "type": "forest",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 23,
+      "y": -3,
+      "elevation": 0.4,
+      "type": "dirt",
+      "night": false,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 23,
+      "y": -3,
+      "elevation": 0.4,
+      "type": "dirt",
+      "night": true,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 23,
+      "y": -3,
+      "elevation": 0.4,
+      "type": "rubble",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": 23,
+      "y": -3,
+      "elevation": 0.4,
+      "type": "rubble",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": 23,
+      "y": -3,
+      "elevation": 0.4,
+      "type": "water",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 23,
+      "y": -3,
+      "elevation": 0.4,
+      "type": "water",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 23,
+      "y": -3,
+      "elevation": 1.7,
+      "type": "grass",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 23,
+      "y": -3,
+      "elevation": 1.7,
+      "type": "grass",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 23,
+      "y": -3,
+      "elevation": 1.7,
+      "type": "scrub",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": 23,
+      "y": -3,
+      "elevation": 1.7,
+      "type": "scrub",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": 23,
+      "y": -3,
+      "elevation": 1.7,
+      "type": "forest",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 23,
+      "y": -3,
+      "elevation": 1.7,
+      "type": "forest",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 23,
+      "y": -3,
+      "elevation": 1.7,
+      "type": "dirt",
+      "night": false,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 23,
+      "y": -3,
+      "elevation": 1.7,
+      "type": "dirt",
+      "night": true,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 23,
+      "y": -3,
+      "elevation": 1.7,
+      "type": "rubble",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": 23,
+      "y": -3,
+      "elevation": 1.7,
+      "type": "rubble",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": 23,
+      "y": -3,
+      "elevation": 1.7,
+      "type": "water",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 23,
+      "y": -3,
+      "elevation": 1.7,
+      "type": "water",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 23,
+      "y": 0,
+      "elevation": 0,
+      "type": "grass",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 23,
+      "y": 0,
+      "elevation": 0,
+      "type": "grass",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 23,
+      "y": 0,
+      "elevation": 0,
+      "type": "scrub",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": 23,
+      "y": 0,
+      "elevation": 0,
+      "type": "scrub",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": 23,
+      "y": 0,
+      "elevation": 0,
+      "type": "forest",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 23,
+      "y": 0,
+      "elevation": 0,
+      "type": "forest",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 23,
+      "y": 0,
+      "elevation": 0,
+      "type": "dirt",
+      "night": false,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 23,
+      "y": 0,
+      "elevation": 0,
+      "type": "dirt",
+      "night": true,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 23,
+      "y": 0,
+      "elevation": 0,
+      "type": "rubble",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": 23,
+      "y": 0,
+      "elevation": 0,
+      "type": "rubble",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": 23,
+      "y": 0,
+      "elevation": 0,
+      "type": "water",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 23,
+      "y": 0,
+      "elevation": 0,
+      "type": "water",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 23,
+      "y": 0,
+      "elevation": 0.4,
+      "type": "grass",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 23,
+      "y": 0,
+      "elevation": 0.4,
+      "type": "grass",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 23,
+      "y": 0,
+      "elevation": 0.4,
+      "type": "scrub",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": 23,
+      "y": 0,
+      "elevation": 0.4,
+      "type": "scrub",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": 23,
+      "y": 0,
+      "elevation": 0.4,
+      "type": "forest",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 23,
+      "y": 0,
+      "elevation": 0.4,
+      "type": "forest",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 23,
+      "y": 0,
+      "elevation": 0.4,
+      "type": "dirt",
+      "night": false,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 23,
+      "y": 0,
+      "elevation": 0.4,
+      "type": "dirt",
+      "night": true,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 23,
+      "y": 0,
+      "elevation": 0.4,
+      "type": "rubble",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": 23,
+      "y": 0,
+      "elevation": 0.4,
+      "type": "rubble",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": 23,
+      "y": 0,
+      "elevation": 0.4,
+      "type": "water",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 23,
+      "y": 0,
+      "elevation": 0.4,
+      "type": "water",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 23,
+      "y": 0,
+      "elevation": 1.7,
+      "type": "grass",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 23,
+      "y": 0,
+      "elevation": 1.7,
+      "type": "grass",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 23,
+      "y": 0,
+      "elevation": 1.7,
+      "type": "scrub",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": 23,
+      "y": 0,
+      "elevation": 1.7,
+      "type": "scrub",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": 23,
+      "y": 0,
+      "elevation": 1.7,
+      "type": "forest",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 23,
+      "y": 0,
+      "elevation": 1.7,
+      "type": "forest",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 23,
+      "y": 0,
+      "elevation": 1.7,
+      "type": "dirt",
+      "night": false,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 23,
+      "y": 0,
+      "elevation": 1.7,
+      "type": "dirt",
+      "night": true,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 23,
+      "y": 0,
+      "elevation": 1.7,
+      "type": "rubble",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": 23,
+      "y": 0,
+      "elevation": 1.7,
+      "type": "rubble",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": 23,
+      "y": 0,
+      "elevation": 1.7,
+      "type": "water",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 23,
+      "y": 0,
+      "elevation": 1.7,
+      "type": "water",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 23,
+      "y": 11,
+      "elevation": 0,
+      "type": "grass",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 23,
+      "y": 11,
+      "elevation": 0,
+      "type": "grass",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 23,
+      "y": 11,
+      "elevation": 0,
+      "type": "scrub",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": 23,
+      "y": 11,
+      "elevation": 0,
+      "type": "scrub",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": 23,
+      "y": 11,
+      "elevation": 0,
+      "type": "forest",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 23,
+      "y": 11,
+      "elevation": 0,
+      "type": "forest",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 23,
+      "y": 11,
+      "elevation": 0,
+      "type": "dirt",
+      "night": false,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 23,
+      "y": 11,
+      "elevation": 0,
+      "type": "dirt",
+      "night": true,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 23,
+      "y": 11,
+      "elevation": 0,
+      "type": "rubble",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": 23,
+      "y": 11,
+      "elevation": 0,
+      "type": "rubble",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": 23,
+      "y": 11,
+      "elevation": 0,
+      "type": "water",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 23,
+      "y": 11,
+      "elevation": 0,
+      "type": "water",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 23,
+      "y": 11,
+      "elevation": 0.4,
+      "type": "grass",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 23,
+      "y": 11,
+      "elevation": 0.4,
+      "type": "grass",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 23,
+      "y": 11,
+      "elevation": 0.4,
+      "type": "scrub",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": 23,
+      "y": 11,
+      "elevation": 0.4,
+      "type": "scrub",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": 23,
+      "y": 11,
+      "elevation": 0.4,
+      "type": "forest",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 23,
+      "y": 11,
+      "elevation": 0.4,
+      "type": "forest",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 23,
+      "y": 11,
+      "elevation": 0.4,
+      "type": "dirt",
+      "night": false,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 23,
+      "y": 11,
+      "elevation": 0.4,
+      "type": "dirt",
+      "night": true,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 23,
+      "y": 11,
+      "elevation": 0.4,
+      "type": "rubble",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": 23,
+      "y": 11,
+      "elevation": 0.4,
+      "type": "rubble",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": 23,
+      "y": 11,
+      "elevation": 0.4,
+      "type": "water",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 23,
+      "y": 11,
+      "elevation": 0.4,
+      "type": "water",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 23,
+      "y": 11,
+      "elevation": 1.7,
+      "type": "grass",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 23,
+      "y": 11,
+      "elevation": 1.7,
+      "type": "grass",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 23,
+      "y": 11,
+      "elevation": 1.7,
+      "type": "scrub",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": 23,
+      "y": 11,
+      "elevation": 1.7,
+      "type": "scrub",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 118,
+      "currentTriangles": 63
+    },
+    {
+      "x": 23,
+      "y": 11,
+      "elevation": 1.7,
+      "type": "forest",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 23,
+      "y": 11,
+      "elevation": 1.7,
+      "type": "forest",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 58,
+      "currentTriangles": 36
+    },
+    {
+      "x": 23,
+      "y": 11,
+      "elevation": 1.7,
+      "type": "dirt",
+      "night": false,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 23,
+      "y": 11,
+      "elevation": 1.7,
+      "type": "dirt",
+      "night": true,
+      "batches": 1,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 23,
+      "y": 11,
+      "elevation": 1.7,
+      "type": "rubble",
+      "night": false,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": 23,
+      "y": 11,
+      "elevation": 1.7,
+      "type": "rubble",
+      "night": true,
+      "batches": 3,
+      "oldTriangles": 158,
+      "currentTriangles": 158
+    },
+    {
+      "x": 23,
+      "y": 11,
+      "elevation": 1.7,
+      "type": "water",
+      "night": false,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    },
+    {
+      "x": 23,
+      "y": 11,
+      "elevation": 1.7,
+      "type": "water",
+      "night": true,
+      "batches": 2,
+      "oldTriangles": 18,
+      "currentTriangles": 18
+    }
+  ],
+  "scope": "Actual merged terrain geometry. Rooted centres/elevations, all non-grass attributes, existing materials/batches/shadows and admitted state retained; grass leaf shape and 20–30cm height intentionally change. No scene-FPS or full terrain-art acceptance."
+}
