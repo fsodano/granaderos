@@ -74,6 +74,8 @@ if manifest['complete']:
   subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-motion-increment.py'),'--blender',a.blender,'--gesture','climbUp','--gesture','climbDown','--equipment','any'],cwd=ROOT,check=True)
   # Keep the released rifle guard soles supported after native retargeting.
   subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-guard-support.py'),'--blender',a.blender],cwd=ROOT,check=True)
+  # The bayonet retains its own Root/pelvis and native support gate.
+  subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-guard-support.py'),'--blender',a.blender,'--clip','stand.bayonet.long-gun'],cwd=ROOT,check=True)
   # Prone rifle work retains its own body/weapon tracks and the already
   # supported native prone idle leg pose, with exact source input clocks.
   subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-prone-rifle-support.py')],cwd=ROOT,check=True)
