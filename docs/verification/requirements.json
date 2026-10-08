@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "updated": "2026-10-02",
-  "baseline": "7ac3c9d612cc5d46c846617e0686ef5b6b450184",
+  "updated": "2026-10-08",
+  "baseline": "c2cee4b421d9e6b9ff6ca3db3d5496051253646b",
   "audit": "docs/verification/formal-audit-2026-09-27.md",
   "design": "docs/specification/game-design.md",
   "evidence": [
@@ -660,6 +660,57 @@
       "id": "E-ALPHA-SERVICE-RETURN-LOCAL",
       "path": "docs/evidence/alpha-service-equipment-local-2026-10-01.json",
       "description": "Separate corrected local alpha at 67f6c7b5195d0cf946bf8c4c3134a84cabcf3702: 4,251/4,251, 600 files, 9324 unchanged executing inputs, all required gates and exact-source browser checks. Ordinary live service end returns finite physical gear once; actual collection or paid stock rearms later service. PR139 publication remains immutable. No alpha CI/merge, broad parity, manual balance, art/audio or loaded performance is asserted."
+    },
+    {
+      "id": "E-AI-FIELD-EQUIPMENT",
+      "path": "docs/gameplay/tactical/ai-field-equipment.md",
+      "description": "Dated shared-cost enemy care, short observed rescue approaches, owned pack/holstered firearm preparation and bayonet fitting specification/checkpoints. Current main retains the related core; the original local and browser counts are not a fresh full-AI acceptance run. Publication is paired with the PR139 receipt."
+    },
+    {
+      "id": "E-AI-SHOT-SELECTION",
+      "path": "docs/gameplay/tactical/ai-shot-selection.md",
+      "description": "Dated observed-target aim/body-region/penetration scoring and actual enemy-turn/reaction checks. The scoring and thresholds are Granaderos tuning; incoming exposure, specialist tools and general equipment planning remain open."
+    },
+    {
+      "id": "E-AI-SCAVENGING",
+      "path": "docs/gameplay/tactical/ai-scavenging.md",
+      "description": "Dated paid observed-ground/body ammunition and firearm recovery, finite ownership, capacity and saved-reaction checks. Broader searches, coordinated requests and live visual acceptance are not established by this record."
+    },
+    {
+      "id": "E-AI-SUPPLY-SHARING",
+      "path": "docs/gameplay/tactical/ai-supply-sharing.md",
+      "description": "Dated local paid cartridge/dressing handovers with finite donors, recipient reload/treatment and saved reactions. Historical counts and older uncommitted-route notes remain source-specific; PR139 publication supersedes the old campaign blockers. Firearm/tool handovers and coordinated supply requests remain open."
+    },
+    {
+      "id": "E-TACTICAL-ELEVATION",
+      "path": "docs/gameplay/tactical/tactical-elevation.md",
+      "description": "Authored single-storey roof terraces and paid links integrate floor-aware movement, sight, firearms, AI, HUD and saved reentry. Only authored access activates gameplay; this does not accept every roof, arbitrary slopes, falls or destructible support."
+    },
+    {
+      "id": "E-NATIVE-CLIMB",
+      "path": "docs/art/native-climbing-3d-review-2026-10-07.md",
+      "description": "Merged native ascent/descent, full paid movement interval, physical rung contacts and hatch/landing review. The measured authored access subset is accepted; low-ceiling/headwear clearance and complete body-motion polish remain open."
+    },
+    {
+      "id": "E-CLIMB-RUNG-PHASE",
+      "path": "docs/art/reviews/climb-rung-phase/README.md",
+      "description": "Merged PR279 removes measured remapped rung pose jumps with native dimensions, clocks, saved travel and finite fallback retained. Ninety-six-case source proof and eight ordinary paid climbs/returns are dated receipt evidence; later crest/palm/ceiling limits are separate."
+    },
+    {
+      "id": "E-CLIMB-CREST-PHASE",
+      "path": "docs/art/reviews/climb-crest-phase/README.md",
+      "description": "Merged PR281 removes the even-rung .76 crest jump and preserves paid cells/AP, native dimensions and later reference poses. Dense source and ordinary paid route receipts retain rapid native transfer, palm-plane and low-ceiling limits; continuity is not complete natural-motion acceptance."
+    },
+    {
+      "id": "E-CLIMB-ROOF-FINGERS",
+      "path": "docs/art/reviews/climb-roof-fingertips/README.md",
+      "description": "Merged PR283 named finger-only floor correction retains clocks, all unrelated tracks and paid routes. The planted fingertip gate passes; earlier descent-turn penetration, the main-palm support gap, rapid native motion and actual low-ceiling/slab acceptance remain open."
+    },
+    {
+      "id": "E-AI-OTHER-HAND-BACKUP",
+      "path": "docs/verification/ai-other-hand-backup.md",
+      "url": "https://github.com/fsodano/granaderos/pull/292",
+      "description": "Published PR292 accepts a loaded owned other-hand firearm through the shared paid swap preview/plan followed by a separate affordable useful shot. The receipt records 126 focused checks and exact finite ownership, ammunition and saved interruption behavior. Coordinated AI choice and the entire T07 requirement remain partial."
     }
   ],
   "queue": [
@@ -4134,17 +4185,33 @@
       "requirement": "All enemy actions obey the same state and cost constraints. G19; M35.",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Published related core exists; full parity acceptance is not established.",
-      "local": "The preserved source records the local implementation and remaining gaps. The fresh broad run is not a new visual or per-row acceptance check.",
-      "remaining": "Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main.",
+      "published": "Published bounded enemy orders use shared AP, state, observed-target and ownership rules: finite care and short rescue approaches; capacity-checked prepared pack/holstered guns and bayonet fitting; affordable aim/body-region/penetration choices; observed finite scavenging; local cartridge/dressing handovers; and a loaded owned other-hand backup via a paid swap followed by a separate shot. PR292 retains old-gun identity, finite ammunition, capacity, readiness and saved interruption sequencing. Existing movement plans use observed occupancy and stop at actual blockers. The named AI records retain their dated checks; the PR139 publication receipt covers the consolidated related core.",
+      "local": "The original development records and check counts remain source-specific. PR292 records 126 focused checks for the owned other-hand backup, paired maintenance and saved interruption sequencing. This October documentation reconciliation does not rerun those AI cases, a campaign or browser acceptance.",
+      "remaining": "Specialist tools, firearm/tool handovers, coordinated supply requests, wider cache searches and broader equipment choice remain incomplete. Search limits and scoring weights are Granaderos tuning; incoming exposure still estimates torso chance.",
       "acceptance": "Demonstrate this entire requirement in the published game through actual orders, resource conservation, failure paths and save/load. Also resolve the source row acceptance notes.",
       "evidence": [
         "E-PARITY",
-        "E-LOCAL",
-        "E-PUBLISHED"
+        "E-CONSOLIDATION-PR139",
+        "E-AI-FIELD-EQUIPMENT",
+        "E-AI-SHOT-SELECTION",
+        "E-AI-SCAVENGING",
+        "E-AI-SUPPLY-SHARING",
+        "E-AI-OTHER-HAND-BACKUP"
       ],
       "sourceRow": "JA2-T07",
-      "sourceNotes": "Search limits (three steps/24 AP normally, one protected step during an interrupt) are Granaderos tuning. Incoming exposure still uses torso chance. Specialist tools, firearm/tool handovers, coordinated supply requests, wider cache searches and broader equipment choice remain incomplete; body-region scoring weights are explicit game tuning."
+      "sourceNotes": "Three-step/24-AP normal searches and the protected interrupt-step policy are game tuning. Paid finite orders and saved reactions do not establish every enemy action, exact classic AI parity or a complete loadout policy.",
+      "testFiles": [
+        "tests/tactical-ai-care.test.mjs",
+        "tests/tactical-ai-equipment.test.mjs",
+        "tests/tactical-ai-targeting.test.mjs",
+        "tests/tactical-ai-scavenging.test.mjs",
+        "tests/tactical-ai-sharing.test.mjs",
+        "tests/enemy-turn-presentation.test.mjs",
+        "tests/tactical-ai-other-hand-backup.test.mjs",
+        "tests/paired-pistols-ai.test.mjs",
+        "tests/paired-pistol-fire.test.mjs",
+        "tests/paired-reload-ai.test.mjs"
+      ]
     },
     {
       "id": "JA2-T08",
@@ -4571,19 +4638,30 @@
       "id": "JA2-V09",
       "group": "JA2 gameplay parity",
       "requirement": "Rooftops and elevations support movement, sight, and different firing angles. G14-15,64; M17-20.",
-      "status": "LOCAL_ONLY",
+      "status": "PARTIAL",
       "priority": "P1",
-      "published": "This complete capability is not accepted in the published release.",
-      "local": "The preserved source records the local implementation and remaining gaps. The fresh broad run is not a new visual or per-row acceptance check.",
-      "remaining": "Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main.",
+      "published": "Authored roof terraces use paid access, floor-aware movement, sight, firearms, AI, HUD and saved reentry. The merged native ascent/descent and physical hatch retain the complete paid interval and saved endpoints. PR279/PR281 remove the measured remapped-rung and even-rung crest jumps; PR283 adds a bounded planted-fingertip floor correction. Normal authored cardinal and same-cell roof routes are recorded in the named receipts.",
+      "local": "The named native source, dense contact and ordinary paid-route receipts retain their exact original revisions and limits. This bookkeeping change does not rerun a motion sweep or browser route.",
+      "remaining": "Arbitrary slopes, falling and destructible support remain open. Decorative roofs require authored access before they support gameplay; unreviewed roofs/sectors and taller or multi-storey access need their own acceptance. Rapid native crest/leg transfer, main-palm support, earlier descent-turn penetration and low-ceiling/headwear/slab clearance remain open.",
       "acceptance": "Demonstrate this entire requirement in the published game through actual orders, resource conservation, failure paths and save/load. Also resolve the source row acceptance notes.",
       "evidence": [
         "E-PARITY",
-        "E-LOCAL",
-        "E-PUBLISHED"
+        "E-TACTICAL-ELEVATION",
+        "E-NATIVE-CLIMB",
+        "E-CLIMB-RUNG-PHASE",
+        "E-CLIMB-CREST-PHASE",
+        "E-CLIMB-ROOF-FINGERS"
       ],
       "sourceRow": "JA2-V09",
-      "sourceNotes": "Other eligible sectors still need live visual/combat acceptance; their complete topology is tested. Tall mansions remain decorative until their access and rooftop structures are supported. Dedicated climb poses, stairs, arbitrary slopes, falling and destructible support remain absent. Decorative roofs alone do not activate gameplay."
+      "sourceNotes": "The old claim that dedicated climb poses are absent is superseded by the merged native climbing receipts. Diagonal links remain outside the gameplay schema; offline diagonal stress samples are not paid-route acceptance. Continuity and a fingertip floor correction do not establish complete natural climbing or palm/slab support.",
+      "testFiles": [
+        "tests/elevation-interface.test.mjs",
+        "tests/climb-playback-timing.test.mjs",
+        "tests/characters-climbing-support.test.mjs",
+        "tests/characters-climb-phase-continuity.test.mjs",
+        "tests/characters-climb-crest-continuity.test.mjs",
+        "tests/characters-climb-roof-fingers.test.mjs"
+      ]
     },
     {
       "id": "JA2-V10",
@@ -5623,19 +5701,31 @@
       "id": "JA2-W10",
       "group": "JA2 gameplay parity",
       "requirement": "A complete campaign can be played from a clean start through the actual tactical rules. G13-18,59,75-106.",
-      "status": "FAILED",
+      "status": "PARTIAL",
       "priority": "P0",
-      "published": "This complete capability is not accepted in the published release.",
-      "local": "The preserved source records the local implementation and remaining gaps. The fresh broad run is not a new visual or per-row acceptance check.",
-      "remaining": "Fresh route fails at northern medical relief; established Córdoba recapture and prisoner-rescue routes also fail.",
+      "published": "WIN-01/E-FRESH-ENDING accept a fresh stock seed-8 mixed historical route through all thirteen locality victories, actual mission/project gates, paid supplies/service, permanent losses, saved victory and a 48-hour continuation. POST-01 accepts the declared independent La ruta de las postas campaign and its real ending/failure path. Published FIX-01 through FIX-04 and REL-02 supersede the September northern-relief, persistent Córdoba recapture, prisoner-evacuation and San Lorenzo route failures with finite paid recovery, actual battles, replay and saves.",
+      "local": "The failed September original/prototype snapshots remain unchanged history. The named later route records retain their exact sources and checkpoints. No long campaign, broader suite or fresh October ending run is claimed by this documentation-only update.",
+      "remaining": "The accepted routes cover their recorded seed/strategy, not every force, solo/unpaid route, hired-only full route or general balance. FIX-03 proves relief clears the guard force, frees three prisoners and leaves through actual Jujuy exits as a retreat; stealth evacuation through live hostile contact remains unaccepted. Extensive manual alpha, broader force/seed cases, full JA2 parity, art/audio and sustained loaded performance remain open.",
       "acceptance": "Demonstrate this entire requirement in the published game through actual orders, resource conservation, failure paths and save/load. Also resolve the source row acceptance notes.",
       "evidence": [
         "E-PARITY",
-        "E-LOCAL",
-        "E-PUBLISHED"
+        "E-FRESH-ENDING",
+        "E-POST-CAMPAIGN",
+        "E-FIRST-AID",
+        "E-PARTIAL-RELOAD",
+        "E-AMMO-CUSTODY",
+        "E-CONSOLIDATION-FINAL-LOCAL",
+        "E-CONSOLIDATION-PR139"
       ],
       "sourceRow": "JA2-W10",
-      "sourceNotes": "Complete real medical relief, then revalidate the remaining route and actual ending with paid supplies and real casualties. Established Córdoba recapture and physical Humahuaca rescue also fail. Scripted victory reports isolate subsystem settlement; they do not prove campaign playability or general balance."
+      "sourceNotes": "The 27 September failed medical-relief, recapture, prisoner-rescue and San Lorenzo snapshots are superseded for their bounded routes by verified FIX-01 through FIX-04. WIN-01, POST-01 and REL-02 remain separate scope authorities. Cleared-field evacuation is not stealth rescue, and scripted victory reports alone do not prove playability or balance.",
+      "testFiles": [
+        "tests/fresh-ending-route.test.mjs",
+        "tests/fresh-campaign-recovery.test.mjs",
+        "tests/opening-playthrough.test.mjs",
+        "tests/prisoner-rescue-route.test.mjs",
+        "tests/post-campaign.test.mjs"
+      ]
     },
     {
       "id": "UX-01",
@@ -6630,6 +6720,6 @@
     "frozenInputs": 9324,
     "sourceNote": "Complete local execution at 67f6c7b5195d0cf946bf8c4c3134a84cabcf3702. The compact delta reconstructs its frozen manifest byte for byte over immutable PR139 evidence. Browser QA at 2035fa7702858123b454141ca0c9d26b00fb10fe has identical game/tools/UI build source; only the exact reviewed test-only preparation and expectation changes differ. Final pre-push documentation/evidence is audited separately; no later full rerun, alpha CI or merge is asserted. The final pre-push workflow changes only the test-job timeout from 90 to 120 minutes after the complete run. All 9,323 other frozen inputs, including every game, test and tool source, remain byte-identical; the workflow and final documentation are checked separately. No later complete local run is claimed."
   },
-  "sourceRelationship": "The dated published baseline and published-check row preserve PR #139 at 7ac3c9d612cc5d46c846617e0686ef5b6b450184. This alpha PR includes the later finite service-equipment return with separate complete local acceptance at 67f6c7b5195d0cf946bf8c4c3134a84cabcf3702. The compact delta identifies its unchanged executing inputs. No alpha CI result or merge is asserted in this pre-push record; actual publication is recorded in the PR body and final delivery report. Original/prototype/presence snapshots remain historical. The final pre-push workflow changes only the test-job timeout from 90 to 120 minutes after the complete run. All 9,323 other frozen inputs, including every game, test and tool source, remain byte-identical; the workflow and final documentation are checked separately. No later complete local run is claimed.",
-  "snapshotSummary": "The 2026-09-27 audit snapshots and PR139 local/published 4214/4214 results remain unchanged dated evidence. The corrected alpha candidate passes 4,251/4,251 across 600 files with no failures, skips, cancellations or TODOs. It accepts the bounded return policy and preserves scripted routes. Extensive player alpha, wider force/seed balance, full JA2 parity, art/audio and sustained loaded 60 FPS remain open."
+  "sourceRelationship": "The selected T07, V09 and W10 rows are reconciled against named published records retained on main c2cee4b421d9e6b9ff6ca3db3d5496051253646b. This documentation-only reconciliation runs no long campaign or broad suite. The check table retains its original exact-source results. The following pre-push alpha source relationship is historical: The dated published baseline and published-check row preserve PR #139 at 7ac3c9d612cc5d46c846617e0686ef5b6b450184. This alpha PR includes the later finite service-equipment return with separate complete local acceptance at 67f6c7b5195d0cf946bf8c4c3134a84cabcf3702. The compact delta identifies its unchanged executing inputs. No alpha CI result or merge is asserted in this pre-push record; actual publication is recorded in the PR body and final delivery report. Original/prototype/presence snapshots remain historical. The final pre-push workflow changes only the test-job timeout from 90 to 120 minutes after the complete run. All 9,323 other frozen inputs, including every game, test and tool source, remain byte-identical; the workflow and final documentation are checked separately. No later complete local run is claimed.",
+  "snapshotSummary": "These totals are dated results, not a fresh run on the October baseline. W10 now points to the accepted WIN-01, POST-01, FIX-01 through FIX-04 and REL-02 route records; their bounded scope and remaining manual/balance limits are unchanged. The 2026-09-27 audit snapshots and PR139 local/published 4214/4214 results remain unchanged dated evidence. The corrected alpha candidate passes 4,251/4,251 across 600 files with no failures, skips, cancellations or TODOs. It accepts the bounded return policy and preserves scripted routes. Extensive player alpha, wider force/seed balance, full JA2 parity, art/audio and sustained loaded 60 FPS remain open."
 }
