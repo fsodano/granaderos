@@ -767,3 +767,23 @@ production export pass. Export identity is `6ec9b2ad390d`: 1,244 files and
 1,039 verified asset references. A local build attempted before a fixture
 merge conflict was resolved failed to parse; the resolved current source was
 then checked and rebuilt successfully. Its failed log is retained separately.
+
+## Native prone firearm maintenance and pistol work
+
+Nineteen additional prone rifle and pistol clips per anatomy now use the
+matching supported native idle leg rotations. Root, pelvis, upper body,
+weapon tracks, native clocks and 315 unrelated clips per bank remain exact.
+The compiled `Armas cuerpo a tierra` selector provides five owned finite
+weapon tasks for both bodies through ordinary gameplay controls.
+
+The 45 focused native/presentation/loading/clock checks and 14 combined
+scene checks pass, as do native library/calibration, TypeScript, documentation
+and 38 baseline checks. Combined production export is `d561cdb30b51`, with
+1,244 files and 1,039 verified asset references. All 20 current before/after browser routes pass in 80 captures without errors,
+with exact source hashes and retained prone cells. UI evidence and limits are
+recorded in the
+[prone firearm work review](../art/prone-firearm-work-native-support-review-2026-10-07.md).
+
+This cut repairs boot support. It retains known upper-surface and garment
+limits; remaining prone interactions, dynamic throws and final motion
+acceptance remain open.
