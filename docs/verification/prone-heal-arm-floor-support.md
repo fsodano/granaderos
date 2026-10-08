@@ -19,3 +19,9 @@ node tools/characters-3d/compile-locomotion-profile.mjs --check
 npm run typecheck
 node tools/characters-3d/build-prone-heal-arm-support.mjs --receipt /tmp/heal-support.json
 ```
+
+The final integration at `7c54c622557849551ed7e87622ddcf9534c0580c` applies the named-channel postpass to main `13baee9c`, including the four reviewed coarse garment bodies. It passes 46 affected checks in 17.483 s, including all 24 appearance/LOD runtime cases and the 1,248 held blend states. Typecheck, native/profile verification, documentation and all 38 baseline audits pass. The production build is `c2117943d686`, with 1,245 static files and 1,040 asset references. A repeated builder run retains both complete banks exactly.
+
+Independent before/current normal HUD runs each retain 48 images across four routes, with no browser errors and exact source hashes before/after capture. Their cells, AP, held items, ammunition, complete inventory text and wound results match. Each doctor spends one of two real dressings and 6.25 PA; each patient retains 60 HP, loses its 10-point bleeding rate and receives 40 bandaged wound points. Close LOD loading is awaited. Current served banks and manifest match source hashes. The baseline HUD capture predates the coarse garment merge; the current input preservation snapshot is from main `13baee9c` and confirms that every current appearance, equipment, prior support record and cue/profile/clock source stays exact. Only the two bank hashes/byte counts and two selected heal support records differ in that manifest. Reports, source proof and images are in `artifacts/three-prone-heal-arm-floor-current-review/`. Capture timing includes screenshot overhead and does not establish a frame-rate guarantee.
+
+Adjacent-patient palm reach and supported body approach remain open. This change removes the floor penetration from the existing native self-care path; it does not establish patient contact.
