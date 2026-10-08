@@ -1,0 +1,1536 @@
+{
+  "base": "9c3a119e9520559afa9c201cc19dba30db2caf4f",
+  "source": {
+    "cornice": "web/app/TacticalBuildingDetails.tsx:civicUpperStorey",
+    "roof": "web/app/TacticalRoof.tsx:buildingRoof",
+    "bodyBottomFromHeight": -0.1595744680851064,
+    "capTopFromHeight": 0.0398936170212766,
+    "outwardTiles": 0.21,
+    "inwardTiles": 0.12,
+    "texture": "/art/architecture-plaster-v2.png",
+    "overlayOpacity": 0.36,
+    "multiplyOpacity": 0,
+    "coping": "current WALL_COLOURS trim for authored wallFinish",
+    "cornices": [
+      {
+        "id": "ayuntamiento",
+        "rotation": 0,
+        "height": 4.707446808510638,
+        "cornices": [
+          {
+            "label": "townhall-upper-cornice-front",
+            "points": [
+              {
+                "x": 15,
+                "y": 12.21
+              },
+              {
+                "x": 4,
+                "y": 12.21
+              },
+              {
+                "x": 4,
+                "y": 11.88
+              },
+              {
+                "x": 15,
+                "y": 11.88
+              }
+            ],
+            "bottom": 114,
+            "top": 119,
+            "palette": {
+              "base": "#ded8c5",
+              "trim": "#eee6d1",
+              "shadow": "#aaa18a"
+            },
+            "texture": "plaster"
+          },
+          {
+            "label": "townhall-upper-cornice-left",
+            "points": [
+              {
+                "x": 15.21,
+                "y": 12
+              },
+              {
+                "x": 14.88,
+                "y": 12
+              },
+              {
+                "x": 14.88,
+                "y": 4
+              },
+              {
+                "x": 15.21,
+                "y": 4
+              }
+            ],
+            "bottom": 114,
+            "top": 119,
+            "palette": {
+              "base": "#ded8c5",
+              "trim": "#eee6d1",
+              "shadow": "#aaa18a"
+            },
+            "texture": "plaster"
+          }
+        ]
+      },
+      {
+        "id": "ayuntamiento",
+        "rotation": 90,
+        "height": 4.707446808510638,
+        "cornices": [
+          {
+            "label": "townhall-upper-cornice-rear",
+            "points": [
+              {
+                "x": 11.879999999999999,
+                "y": 15
+              },
+              {
+                "x": 11.879999999999999,
+                "y": 4
+              },
+              {
+                "x": 12.21,
+                "y": 4
+              },
+              {
+                "x": 12.21,
+                "y": 15
+              }
+            ],
+            "bottom": 114,
+            "top": 119,
+            "palette": {
+              "base": "#ded8c5",
+              "trim": "#eee6d1",
+              "shadow": "#aaa18a"
+            },
+            "texture": "plaster"
+          },
+          {
+            "label": "townhall-upper-cornice-left",
+            "points": [
+              {
+                "x": 4,
+                "y": 15.21
+              },
+              {
+                "x": 4,
+                "y": 14.88
+              },
+              {
+                "x": 12,
+                "y": 14.88
+              },
+              {
+                "x": 12,
+                "y": 15.21
+              }
+            ],
+            "bottom": 114,
+            "top": 119,
+            "palette": {
+              "base": "#ded8c5",
+              "trim": "#eee6d1",
+              "shadow": "#aaa18a"
+            },
+            "texture": "plaster"
+          }
+        ]
+      },
+      {
+        "id": "ayuntamiento",
+        "rotation": 180,
+        "height": 4.707446808510638,
+        "cornices": [
+          {
+            "label": "townhall-upper-cornice-rear",
+            "points": [
+              {
+                "x": 4,
+                "y": 11.879999999999999
+              },
+              {
+                "x": 15,
+                "y": 11.879999999999999
+              },
+              {
+                "x": 15,
+                "y": 12.21
+              },
+              {
+                "x": 4,
+                "y": 12.21
+              }
+            ],
+            "bottom": 114,
+            "top": 119,
+            "palette": {
+              "base": "#ded8c5",
+              "trim": "#eee6d1",
+              "shadow": "#aaa18a"
+            },
+            "texture": "plaster"
+          },
+          {
+            "label": "townhall-upper-cornice-right",
+            "points": [
+              {
+                "x": 14.88,
+                "y": 4
+              },
+              {
+                "x": 15.21,
+                "y": 4
+              },
+              {
+                "x": 15.21,
+                "y": 12
+              },
+              {
+                "x": 14.88,
+                "y": 12
+              }
+            ],
+            "bottom": 114,
+            "top": 119,
+            "palette": {
+              "base": "#ded8c5",
+              "trim": "#eee6d1",
+              "shadow": "#aaa18a"
+            },
+            "texture": "plaster"
+          }
+        ]
+      },
+      {
+        "id": "ayuntamiento",
+        "rotation": 270,
+        "height": 4.707446808510638,
+        "cornices": [
+          {
+            "label": "townhall-upper-cornice-front",
+            "points": [
+              {
+                "x": 12.21,
+                "y": 4
+              },
+              {
+                "x": 12.21,
+                "y": 15
+              },
+              {
+                "x": 11.88,
+                "y": 15
+              },
+              {
+                "x": 11.88,
+                "y": 4
+              }
+            ],
+            "bottom": 114,
+            "top": 119,
+            "palette": {
+              "base": "#ded8c5",
+              "trim": "#eee6d1",
+              "shadow": "#aaa18a"
+            },
+            "texture": "plaster"
+          },
+          {
+            "label": "townhall-upper-cornice-right",
+            "points": [
+              {
+                "x": 12,
+                "y": 14.88
+              },
+              {
+                "x": 12,
+                "y": 15.21
+              },
+              {
+                "x": 4,
+                "y": 15.21
+              },
+              {
+                "x": 4,
+                "y": 14.88
+              }
+            ],
+            "bottom": 114,
+            "top": 119,
+            "palette": {
+              "base": "#ded8c5",
+              "trim": "#eee6d1",
+              "shadow": "#aaa18a"
+            },
+            "texture": "plaster"
+          }
+        ]
+      },
+      {
+        "id": "palacio",
+        "rotation": 0,
+        "height": 4.946808510638298,
+        "cornices": [
+          {
+            "label": "palace-upper-cornice-front",
+            "points": [
+              {
+                "x": 17,
+                "y": 14.21
+              },
+              {
+                "x": 4,
+                "y": 14.21
+              },
+              {
+                "x": 4,
+                "y": 13.88
+              },
+              {
+                "x": 17,
+                "y": 13.88
+              }
+            ],
+            "bottom": 120,
+            "top": 125,
+            "palette": {
+              "base": "#c5a36e",
+              "trim": "#e4d3ab",
+              "shadow": "#8f754f"
+            },
+            "texture": "plaster"
+          },
+          {
+            "label": "palace-upper-cornice-left",
+            "points": [
+              {
+                "x": 17.21,
+                "y": 14
+              },
+              {
+                "x": 16.88,
+                "y": 14
+              },
+              {
+                "x": 16.88,
+                "y": 4
+              },
+              {
+                "x": 17.21,
+                "y": 4
+              }
+            ],
+            "bottom": 120,
+            "top": 125,
+            "palette": {
+              "base": "#c5a36e",
+              "trim": "#e4d3ab",
+              "shadow": "#8f754f"
+            },
+            "texture": "plaster"
+          }
+        ]
+      },
+      {
+        "id": "palacio",
+        "rotation": 90,
+        "height": 4.946808510638298,
+        "cornices": [
+          {
+            "label": "palace-upper-cornice-rear",
+            "points": [
+              {
+                "x": 13.88,
+                "y": 17
+              },
+              {
+                "x": 13.88,
+                "y": 4
+              },
+              {
+                "x": 14.21,
+                "y": 4
+              },
+              {
+                "x": 14.21,
+                "y": 17
+              }
+            ],
+            "bottom": 120,
+            "top": 125,
+            "palette": {
+              "base": "#c5a36e",
+              "trim": "#e4d3ab",
+              "shadow": "#8f754f"
+            },
+            "texture": "plaster"
+          },
+          {
+            "label": "palace-upper-cornice-left",
+            "points": [
+              {
+                "x": 4,
+                "y": 17.21
+              },
+              {
+                "x": 4,
+                "y": 16.88
+              },
+              {
+                "x": 14,
+                "y": 16.88
+              },
+              {
+                "x": 14,
+                "y": 17.21
+              }
+            ],
+            "bottom": 120,
+            "top": 125,
+            "palette": {
+              "base": "#c5a36e",
+              "trim": "#e4d3ab",
+              "shadow": "#8f754f"
+            },
+            "texture": "plaster"
+          }
+        ]
+      },
+      {
+        "id": "palacio",
+        "rotation": 180,
+        "height": 4.946808510638298,
+        "cornices": [
+          {
+            "label": "palace-upper-cornice-rear",
+            "points": [
+              {
+                "x": 4,
+                "y": 13.88
+              },
+              {
+                "x": 17,
+                "y": 13.88
+              },
+              {
+                "x": 17,
+                "y": 14.21
+              },
+              {
+                "x": 4,
+                "y": 14.21
+              }
+            ],
+            "bottom": 120,
+            "top": 125,
+            "palette": {
+              "base": "#c5a36e",
+              "trim": "#e4d3ab",
+              "shadow": "#8f754f"
+            },
+            "texture": "plaster"
+          },
+          {
+            "label": "palace-upper-cornice-right",
+            "points": [
+              {
+                "x": 16.880000000000003,
+                "y": 4
+              },
+              {
+                "x": 17.21,
+                "y": 4
+              },
+              {
+                "x": 17.21,
+                "y": 14
+              },
+              {
+                "x": 16.880000000000003,
+                "y": 14
+              }
+            ],
+            "bottom": 120,
+            "top": 125,
+            "palette": {
+              "base": "#c5a36e",
+              "trim": "#e4d3ab",
+              "shadow": "#8f754f"
+            },
+            "texture": "plaster"
+          }
+        ]
+      },
+      {
+        "id": "palacio",
+        "rotation": 270,
+        "height": 4.946808510638298,
+        "cornices": [
+          {
+            "label": "palace-upper-cornice-front",
+            "points": [
+              {
+                "x": 14.21,
+                "y": 4
+              },
+              {
+                "x": 14.21,
+                "y": 17
+              },
+              {
+                "x": 13.88,
+                "y": 17
+              },
+              {
+                "x": 13.88,
+                "y": 4
+              }
+            ],
+            "bottom": 120,
+            "top": 125,
+            "palette": {
+              "base": "#c5a36e",
+              "trim": "#e4d3ab",
+              "shadow": "#8f754f"
+            },
+            "texture": "plaster"
+          },
+          {
+            "label": "palace-upper-cornice-right",
+            "points": [
+              {
+                "x": 14,
+                "y": 16.880000000000003
+              },
+              {
+                "x": 14,
+                "y": 17.21
+              },
+              {
+                "x": 4,
+                "y": 17.21
+              },
+              {
+                "x": 4,
+                "y": 16.880000000000003
+              }
+            ],
+            "bottom": 120,
+            "top": 125,
+            "palette": {
+              "base": "#c5a36e",
+              "trim": "#e4d3ab",
+              "shadow": "#8f754f"
+            },
+            "texture": "plaster"
+          }
+        ]
+      }
+    ]
+  },
+  "physicalJoin": {
+    "sourceUnitsPerMetre": 25.066666666666666,
+    "tileMetres": 1.2360585147470482,
+    "states": 48,
+    "capSamples": 960,
+    "minClearance": -3.210971435407828e-07,
+    "maxClearance": 0.005418009153615344,
+    "examples": [
+      {
+        "id": "ayuntamiento",
+        "rotation": 0,
+        "finish": "clay",
+        "base": 0,
+        "height": 4.707446808510638,
+        "width": 11,
+        "depth": 8,
+        "rise": 1.1569148936170213,
+        "oldEaveTiles": 0.2,
+        "eaveTiles": 0.21,
+        "eaveLiftMetres": 0.1148936170212766,
+        "corniceOutwardMetres": 0.2595722880968801,
+        "corniceInwardMetres": 0.14832702176964577,
+        "corniceHeightMetres": 0.19946808510638298,
+        "minimumClearanceMetres": -2.2320037196266185e-07,
+        "maximumClearanceMetres": -2.2320037196266185e-07,
+        "oldLiteralPenetrationMetres": 0.1148936170212766
+      },
+      {
+        "id": "palacio",
+        "rotation": 0,
+        "finish": "clay",
+        "base": 0,
+        "height": 4.946808510638298,
+        "width": 13,
+        "depth": 10,
+        "rise": 1.2367021276595744,
+        "oldEaveTiles": 0.24,
+        "eaveTiles": 0.24,
+        "eaveLiftMetres": 0.10987807971588928,
+        "corniceOutwardMetres": 0.2595722880968801,
+        "corniceInwardMetres": 0.14832702176964577,
+        "corniceHeightMetres": 0.19946808510638298,
+        "minimumClearanceMetres": -1.324846437000815e-07,
+        "maximumClearanceMetres": 0.005418009153615344,
+        "oldLiteralPenetrationMetres": 0.1148936170212766
+      }
+    ],
+    "rows": [
+      {
+        "id": "ayuntamiento",
+        "rotation": 0,
+        "finish": "clay",
+        "base": 0,
+        "height": 4.707446808510638,
+        "width": 11,
+        "depth": 8,
+        "rise": 1.1569148936170213,
+        "oldEaveTiles": 0.2,
+        "eaveTiles": 0.21,
+        "eaveLiftMetres": 0.1148936170212766,
+        "corniceOutwardMetres": 0.2595722880968801,
+        "corniceInwardMetres": 0.14832702176964577,
+        "corniceHeightMetres": 0.19946808510638298,
+        "minimumClearanceMetres": -2.2320037196266185e-07,
+        "maximumClearanceMetres": -2.2320037196266185e-07,
+        "oldLiteralPenetrationMetres": 0.1148936170212766
+      },
+      {
+        "id": "ayuntamiento",
+        "rotation": 0,
+        "finish": "clay",
+        "base": 1.7,
+        "height": 4.707446808510638,
+        "width": 11,
+        "depth": 8,
+        "rise": 1.1569148936170213,
+        "oldEaveTiles": 0.2,
+        "eaveTiles": 0.21,
+        "eaveLiftMetres": 0.1148936170212766,
+        "corniceOutwardMetres": 0.2595722880968801,
+        "corniceInwardMetres": 0.14832702176964577,
+        "corniceHeightMetres": 0.19946808510638298,
+        "minimumClearanceMetres": 6.290192278157747e-08,
+        "maximumClearanceMetres": 6.290192278157747e-08,
+        "oldLiteralPenetrationMetres": 0.1148936170212766
+      },
+      {
+        "id": "ayuntamiento",
+        "rotation": 0,
+        "finish": "aged",
+        "base": 0,
+        "height": 4.707446808510638,
+        "width": 11,
+        "depth": 8,
+        "rise": 1.1569148936170213,
+        "oldEaveTiles": 0.2,
+        "eaveTiles": 0.21,
+        "eaveLiftMetres": 0.1148936170212766,
+        "corniceOutwardMetres": 0.2595722880968801,
+        "corniceInwardMetres": 0.14832702176964577,
+        "corniceHeightMetres": 0.19946808510638298,
+        "minimumClearanceMetres": -2.2320037196266185e-07,
+        "maximumClearanceMetres": -2.2320037196266185e-07,
+        "oldLiteralPenetrationMetres": 0.1148936170212766
+      },
+      {
+        "id": "ayuntamiento",
+        "rotation": 0,
+        "finish": "aged",
+        "base": 1.7,
+        "height": 4.707446808510638,
+        "width": 11,
+        "depth": 8,
+        "rise": 1.1569148936170213,
+        "oldEaveTiles": 0.2,
+        "eaveTiles": 0.21,
+        "eaveLiftMetres": 0.1148936170212766,
+        "corniceOutwardMetres": 0.2595722880968801,
+        "corniceInwardMetres": 0.14832702176964577,
+        "corniceHeightMetres": 0.19946808510638298,
+        "minimumClearanceMetres": 6.290192278157747e-08,
+        "maximumClearanceMetres": 6.290192278157747e-08,
+        "oldLiteralPenetrationMetres": 0.1148936170212766
+      },
+      {
+        "id": "ayuntamiento",
+        "rotation": 0,
+        "finish": "thatch",
+        "base": 0,
+        "height": 4.707446808510638,
+        "width": 11,
+        "depth": 8,
+        "rise": 1.1569148936170213,
+        "oldEaveTiles": 0.2,
+        "eaveTiles": 0.21,
+        "eaveLiftMetres": 0.1148936170212766,
+        "corniceOutwardMetres": 0.2595722880968801,
+        "corniceInwardMetres": 0.14832702176964577,
+        "corniceHeightMetres": 0.19946808510638298,
+        "minimumClearanceMetres": -2.2320037196266185e-07,
+        "maximumClearanceMetres": -2.2320037196266185e-07,
+        "oldLiteralPenetrationMetres": 0.1148936170212766
+      },
+      {
+        "id": "ayuntamiento",
+        "rotation": 0,
+        "finish": "thatch",
+        "base": 1.7,
+        "height": 4.707446808510638,
+        "width": 11,
+        "depth": 8,
+        "rise": 1.1569148936170213,
+        "oldEaveTiles": 0.2,
+        "eaveTiles": 0.21,
+        "eaveLiftMetres": 0.1148936170212766,
+        "corniceOutwardMetres": 0.2595722880968801,
+        "corniceInwardMetres": 0.14832702176964577,
+        "corniceHeightMetres": 0.19946808510638298,
+        "minimumClearanceMetres": 6.290192278157747e-08,
+        "maximumClearanceMetres": 6.290192278157747e-08,
+        "oldLiteralPenetrationMetres": 0.1148936170212766
+      },
+      {
+        "id": "ayuntamiento",
+        "rotation": 90,
+        "finish": "clay",
+        "base": 0,
+        "height": 4.707446808510638,
+        "width": 11,
+        "depth": 8,
+        "rise": 1.1569148936170213,
+        "oldEaveTiles": 0.2,
+        "eaveTiles": 0.21,
+        "eaveLiftMetres": 0.1148936170212766,
+        "corniceOutwardMetres": 0.2595722880968801,
+        "corniceInwardMetres": 0.14832702176964577,
+        "corniceHeightMetres": 0.19946808510638298,
+        "minimumClearanceMetres": -2.2320037196266185e-07,
+        "maximumClearanceMetres": -2.2320037196266185e-07,
+        "oldLiteralPenetrationMetres": 0.1148936170212766
+      },
+      {
+        "id": "ayuntamiento",
+        "rotation": 90,
+        "finish": "clay",
+        "base": 1.7,
+        "height": 4.707446808510638,
+        "width": 11,
+        "depth": 8,
+        "rise": 1.1569148936170213,
+        "oldEaveTiles": 0.2,
+        "eaveTiles": 0.21,
+        "eaveLiftMetres": 0.1148936170212766,
+        "corniceOutwardMetres": 0.2595722880968801,
+        "corniceInwardMetres": 0.14832702176964577,
+        "corniceHeightMetres": 0.19946808510638298,
+        "minimumClearanceMetres": 6.290192278157747e-08,
+        "maximumClearanceMetres": 6.290192278157747e-08,
+        "oldLiteralPenetrationMetres": 0.1148936170212766
+      },
+      {
+        "id": "ayuntamiento",
+        "rotation": 90,
+        "finish": "aged",
+        "base": 0,
+        "height": 4.707446808510638,
+        "width": 11,
+        "depth": 8,
+        "rise": 1.1569148936170213,
+        "oldEaveTiles": 0.2,
+        "eaveTiles": 0.21,
+        "eaveLiftMetres": 0.1148936170212766,
+        "corniceOutwardMetres": 0.2595722880968801,
+        "corniceInwardMetres": 0.14832702176964577,
+        "corniceHeightMetres": 0.19946808510638298,
+        "minimumClearanceMetres": -2.2320037196266185e-07,
+        "maximumClearanceMetres": -2.2320037196266185e-07,
+        "oldLiteralPenetrationMetres": 0.1148936170212766
+      },
+      {
+        "id": "ayuntamiento",
+        "rotation": 90,
+        "finish": "aged",
+        "base": 1.7,
+        "height": 4.707446808510638,
+        "width": 11,
+        "depth": 8,
+        "rise": 1.1569148936170213,
+        "oldEaveTiles": 0.2,
+        "eaveTiles": 0.21,
+        "eaveLiftMetres": 0.1148936170212766,
+        "corniceOutwardMetres": 0.2595722880968801,
+        "corniceInwardMetres": 0.14832702176964577,
+        "corniceHeightMetres": 0.19946808510638298,
+        "minimumClearanceMetres": 6.290192278157747e-08,
+        "maximumClearanceMetres": 6.290192278157747e-08,
+        "oldLiteralPenetrationMetres": 0.1148936170212766
+      },
+      {
+        "id": "ayuntamiento",
+        "rotation": 90,
+        "finish": "thatch",
+        "base": 0,
+        "height": 4.707446808510638,
+        "width": 11,
+        "depth": 8,
+        "rise": 1.1569148936170213,
+        "oldEaveTiles": 0.2,
+        "eaveTiles": 0.21,
+        "eaveLiftMetres": 0.1148936170212766,
+        "corniceOutwardMetres": 0.2595722880968801,
+        "corniceInwardMetres": 0.14832702176964577,
+        "corniceHeightMetres": 0.19946808510638298,
+        "minimumClearanceMetres": -2.2320037196266185e-07,
+        "maximumClearanceMetres": -2.2320037196266185e-07,
+        "oldLiteralPenetrationMetres": 0.1148936170212766
+      },
+      {
+        "id": "ayuntamiento",
+        "rotation": 90,
+        "finish": "thatch",
+        "base": 1.7,
+        "height": 4.707446808510638,
+        "width": 11,
+        "depth": 8,
+        "rise": 1.1569148936170213,
+        "oldEaveTiles": 0.2,
+        "eaveTiles": 0.21,
+        "eaveLiftMetres": 0.1148936170212766,
+        "corniceOutwardMetres": 0.2595722880968801,
+        "corniceInwardMetres": 0.14832702176964577,
+        "corniceHeightMetres": 0.19946808510638298,
+        "minimumClearanceMetres": 6.290192278157747e-08,
+        "maximumClearanceMetres": 6.290192278157747e-08,
+        "oldLiteralPenetrationMetres": 0.1148936170212766
+      },
+      {
+        "id": "ayuntamiento",
+        "rotation": 180,
+        "finish": "clay",
+        "base": 0,
+        "height": 4.707446808510638,
+        "width": 11,
+        "depth": 8,
+        "rise": 1.1569148936170213,
+        "oldEaveTiles": 0.2,
+        "eaveTiles": 0.21,
+        "eaveLiftMetres": 0.1148936170212766,
+        "corniceOutwardMetres": 0.2595722880968801,
+        "corniceInwardMetres": 0.14832702176964577,
+        "corniceHeightMetres": 0.19946808510638298,
+        "minimumClearanceMetres": -2.2320037196266185e-07,
+        "maximumClearanceMetres": -2.2320037196266185e-07,
+        "oldLiteralPenetrationMetres": 0.1148936170212766
+      },
+      {
+        "id": "ayuntamiento",
+        "rotation": 180,
+        "finish": "clay",
+        "base": 1.7,
+        "height": 4.707446808510638,
+        "width": 11,
+        "depth": 8,
+        "rise": 1.1569148936170213,
+        "oldEaveTiles": 0.2,
+        "eaveTiles": 0.21,
+        "eaveLiftMetres": 0.1148936170212766,
+        "corniceOutwardMetres": 0.2595722880968801,
+        "corniceInwardMetres": 0.14832702176964577,
+        "corniceHeightMetres": 0.19946808510638298,
+        "minimumClearanceMetres": 6.290192278157747e-08,
+        "maximumClearanceMetres": 6.290192278157747e-08,
+        "oldLiteralPenetrationMetres": 0.1148936170212766
+      },
+      {
+        "id": "ayuntamiento",
+        "rotation": 180,
+        "finish": "aged",
+        "base": 0,
+        "height": 4.707446808510638,
+        "width": 11,
+        "depth": 8,
+        "rise": 1.1569148936170213,
+        "oldEaveTiles": 0.2,
+        "eaveTiles": 0.21,
+        "eaveLiftMetres": 0.1148936170212766,
+        "corniceOutwardMetres": 0.2595722880968801,
+        "corniceInwardMetres": 0.14832702176964577,
+        "corniceHeightMetres": 0.19946808510638298,
+        "minimumClearanceMetres": -2.2320037196266185e-07,
+        "maximumClearanceMetres": -2.2320037196266185e-07,
+        "oldLiteralPenetrationMetres": 0.1148936170212766
+      },
+      {
+        "id": "ayuntamiento",
+        "rotation": 180,
+        "finish": "aged",
+        "base": 1.7,
+        "height": 4.707446808510638,
+        "width": 11,
+        "depth": 8,
+        "rise": 1.1569148936170213,
+        "oldEaveTiles": 0.2,
+        "eaveTiles": 0.21,
+        "eaveLiftMetres": 0.1148936170212766,
+        "corniceOutwardMetres": 0.2595722880968801,
+        "corniceInwardMetres": 0.14832702176964577,
+        "corniceHeightMetres": 0.19946808510638298,
+        "minimumClearanceMetres": 6.290192278157747e-08,
+        "maximumClearanceMetres": 6.290192278157747e-08,
+        "oldLiteralPenetrationMetres": 0.1148936170212766
+      },
+      {
+        "id": "ayuntamiento",
+        "rotation": 180,
+        "finish": "thatch",
+        "base": 0,
+        "height": 4.707446808510638,
+        "width": 11,
+        "depth": 8,
+        "rise": 1.1569148936170213,
+        "oldEaveTiles": 0.2,
+        "eaveTiles": 0.21,
+        "eaveLiftMetres": 0.1148936170212766,
+        "corniceOutwardMetres": 0.2595722880968801,
+        "corniceInwardMetres": 0.14832702176964577,
+        "corniceHeightMetres": 0.19946808510638298,
+        "minimumClearanceMetres": -2.2320037196266185e-07,
+        "maximumClearanceMetres": -2.2320037196266185e-07,
+        "oldLiteralPenetrationMetres": 0.1148936170212766
+      },
+      {
+        "id": "ayuntamiento",
+        "rotation": 180,
+        "finish": "thatch",
+        "base": 1.7,
+        "height": 4.707446808510638,
+        "width": 11,
+        "depth": 8,
+        "rise": 1.1569148936170213,
+        "oldEaveTiles": 0.2,
+        "eaveTiles": 0.21,
+        "eaveLiftMetres": 0.1148936170212766,
+        "corniceOutwardMetres": 0.2595722880968801,
+        "corniceInwardMetres": 0.14832702176964577,
+        "corniceHeightMetres": 0.19946808510638298,
+        "minimumClearanceMetres": 6.290192278157747e-08,
+        "maximumClearanceMetres": 6.290192278157747e-08,
+        "oldLiteralPenetrationMetres": 0.1148936170212766
+      },
+      {
+        "id": "ayuntamiento",
+        "rotation": 270,
+        "finish": "clay",
+        "base": 0,
+        "height": 4.707446808510638,
+        "width": 11,
+        "depth": 8,
+        "rise": 1.1569148936170213,
+        "oldEaveTiles": 0.2,
+        "eaveTiles": 0.21,
+        "eaveLiftMetres": 0.1148936170212766,
+        "corniceOutwardMetres": 0.2595722880968801,
+        "corniceInwardMetres": 0.14832702176964577,
+        "corniceHeightMetres": 0.19946808510638298,
+        "minimumClearanceMetres": -2.2320037196266185e-07,
+        "maximumClearanceMetres": -2.2320037196266185e-07,
+        "oldLiteralPenetrationMetres": 0.1148936170212766
+      },
+      {
+        "id": "ayuntamiento",
+        "rotation": 270,
+        "finish": "clay",
+        "base": 1.7,
+        "height": 4.707446808510638,
+        "width": 11,
+        "depth": 8,
+        "rise": 1.1569148936170213,
+        "oldEaveTiles": 0.2,
+        "eaveTiles": 0.21,
+        "eaveLiftMetres": 0.1148936170212766,
+        "corniceOutwardMetres": 0.2595722880968801,
+        "corniceInwardMetres": 0.14832702176964577,
+        "corniceHeightMetres": 0.19946808510638298,
+        "minimumClearanceMetres": 6.290192278157747e-08,
+        "maximumClearanceMetres": 6.290192278157747e-08,
+        "oldLiteralPenetrationMetres": 0.1148936170212766
+      },
+      {
+        "id": "ayuntamiento",
+        "rotation": 270,
+        "finish": "aged",
+        "base": 0,
+        "height": 4.707446808510638,
+        "width": 11,
+        "depth": 8,
+        "rise": 1.1569148936170213,
+        "oldEaveTiles": 0.2,
+        "eaveTiles": 0.21,
+        "eaveLiftMetres": 0.1148936170212766,
+        "corniceOutwardMetres": 0.2595722880968801,
+        "corniceInwardMetres": 0.14832702176964577,
+        "corniceHeightMetres": 0.19946808510638298,
+        "minimumClearanceMetres": -2.2320037196266185e-07,
+        "maximumClearanceMetres": -2.2320037196266185e-07,
+        "oldLiteralPenetrationMetres": 0.1148936170212766
+      },
+      {
+        "id": "ayuntamiento",
+        "rotation": 270,
+        "finish": "aged",
+        "base": 1.7,
+        "height": 4.707446808510638,
+        "width": 11,
+        "depth": 8,
+        "rise": 1.1569148936170213,
+        "oldEaveTiles": 0.2,
+        "eaveTiles": 0.21,
+        "eaveLiftMetres": 0.1148936170212766,
+        "corniceOutwardMetres": 0.2595722880968801,
+        "corniceInwardMetres": 0.14832702176964577,
+        "corniceHeightMetres": 0.19946808510638298,
+        "minimumClearanceMetres": 6.290192278157747e-08,
+        "maximumClearanceMetres": 6.290192278157747e-08,
+        "oldLiteralPenetrationMetres": 0.1148936170212766
+      },
+      {
+        "id": "ayuntamiento",
+        "rotation": 270,
+        "finish": "thatch",
+        "base": 0,
+        "height": 4.707446808510638,
+        "width": 11,
+        "depth": 8,
+        "rise": 1.1569148936170213,
+        "oldEaveTiles": 0.2,
+        "eaveTiles": 0.21,
+        "eaveLiftMetres": 0.1148936170212766,
+        "corniceOutwardMetres": 0.2595722880968801,
+        "corniceInwardMetres": 0.14832702176964577,
+        "corniceHeightMetres": 0.19946808510638298,
+        "minimumClearanceMetres": -2.2320037196266185e-07,
+        "maximumClearanceMetres": -2.2320037196266185e-07,
+        "oldLiteralPenetrationMetres": 0.1148936170212766
+      },
+      {
+        "id": "ayuntamiento",
+        "rotation": 270,
+        "finish": "thatch",
+        "base": 1.7,
+        "height": 4.707446808510638,
+        "width": 11,
+        "depth": 8,
+        "rise": 1.1569148936170213,
+        "oldEaveTiles": 0.2,
+        "eaveTiles": 0.21,
+        "eaveLiftMetres": 0.1148936170212766,
+        "corniceOutwardMetres": 0.2595722880968801,
+        "corniceInwardMetres": 0.14832702176964577,
+        "corniceHeightMetres": 0.19946808510638298,
+        "minimumClearanceMetres": 6.290192278157747e-08,
+        "maximumClearanceMetres": 6.290192278157747e-08,
+        "oldLiteralPenetrationMetres": 0.1148936170212766
+      },
+      {
+        "id": "palacio",
+        "rotation": 0,
+        "finish": "clay",
+        "base": 0,
+        "height": 4.946808510638298,
+        "width": 13,
+        "depth": 10,
+        "rise": 1.2367021276595744,
+        "oldEaveTiles": 0.24,
+        "eaveTiles": 0.24,
+        "eaveLiftMetres": 0.10987807971588928,
+        "corniceOutwardMetres": 0.2595722880968801,
+        "corniceInwardMetres": 0.14832702176964577,
+        "corniceHeightMetres": 0.19946808510638298,
+        "minimumClearanceMetres": -1.324846437000815e-07,
+        "maximumClearanceMetres": 0.005418009153615344,
+        "oldLiteralPenetrationMetres": 0.1148936170212766
+      },
+      {
+        "id": "palacio",
+        "rotation": 0,
+        "finish": "clay",
+        "base": 1.7,
+        "height": 4.946808510638298,
+        "width": 13,
+        "depth": 10,
+        "rise": 1.2367021276595744,
+        "oldEaveTiles": 0.24,
+        "eaveTiles": 0.24,
+        "eaveLiftMetres": 0.10987807971588928,
+        "corniceOutwardMetres": 0.2595722880968801,
+        "corniceInwardMetres": 0.14832702176964577,
+        "corniceHeightMetres": 0.19946808510638298,
+        "minimumClearanceMetres": -3.210971435407828e-07,
+        "maximumClearanceMetres": 0.0054178228339063494,
+        "oldLiteralPenetrationMetres": 0.1148936170212766
+      },
+      {
+        "id": "palacio",
+        "rotation": 0,
+        "finish": "aged",
+        "base": 0,
+        "height": 4.946808510638298,
+        "width": 13,
+        "depth": 10,
+        "rise": 1.2367021276595744,
+        "oldEaveTiles": 0.24,
+        "eaveTiles": 0.24,
+        "eaveLiftMetres": 0.10987807971588928,
+        "corniceOutwardMetres": 0.2595722880968801,
+        "corniceInwardMetres": 0.14832702176964577,
+        "corniceHeightMetres": 0.19946808510638298,
+        "minimumClearanceMetres": -1.324846437000815e-07,
+        "maximumClearanceMetres": 0.005418009153615344,
+        "oldLiteralPenetrationMetres": 0.1148936170212766
+      },
+      {
+        "id": "palacio",
+        "rotation": 0,
+        "finish": "aged",
+        "base": 1.7,
+        "height": 4.946808510638298,
+        "width": 13,
+        "depth": 10,
+        "rise": 1.2367021276595744,
+        "oldEaveTiles": 0.24,
+        "eaveTiles": 0.24,
+        "eaveLiftMetres": 0.10987807971588928,
+        "corniceOutwardMetres": 0.2595722880968801,
+        "corniceInwardMetres": 0.14832702176964577,
+        "corniceHeightMetres": 0.19946808510638298,
+        "minimumClearanceMetres": -3.210971435407828e-07,
+        "maximumClearanceMetres": 0.0054178228339063494,
+        "oldLiteralPenetrationMetres": 0.1148936170212766
+      },
+      {
+        "id": "palacio",
+        "rotation": 0,
+        "finish": "thatch",
+        "base": 0,
+        "height": 4.946808510638298,
+        "width": 13,
+        "depth": 10,
+        "rise": 1.2367021276595744,
+        "oldEaveTiles": 0.24,
+        "eaveTiles": 0.24,
+        "eaveLiftMetres": 0.10987807971588928,
+        "corniceOutwardMetres": 0.2595722880968801,
+        "corniceInwardMetres": 0.14832702176964577,
+        "corniceHeightMetres": 0.19946808510638298,
+        "minimumClearanceMetres": -1.324846437000815e-07,
+        "maximumClearanceMetres": 0.005418009153615344,
+        "oldLiteralPenetrationMetres": 0.1148936170212766
+      },
+      {
+        "id": "palacio",
+        "rotation": 0,
+        "finish": "thatch",
+        "base": 1.7,
+        "height": 4.946808510638298,
+        "width": 13,
+        "depth": 10,
+        "rise": 1.2367021276595744,
+        "oldEaveTiles": 0.24,
+        "eaveTiles": 0.24,
+        "eaveLiftMetres": 0.10987807971588928,
+        "corniceOutwardMetres": 0.2595722880968801,
+        "corniceInwardMetres": 0.14832702176964577,
+        "corniceHeightMetres": 0.19946808510638298,
+        "minimumClearanceMetres": -3.210971435407828e-07,
+        "maximumClearanceMetres": 0.0054178228339063494,
+        "oldLiteralPenetrationMetres": 0.1148936170212766
+      },
+      {
+        "id": "palacio",
+        "rotation": 90,
+        "finish": "clay",
+        "base": 0,
+        "height": 4.946808510638298,
+        "width": 13,
+        "depth": 10,
+        "rise": 1.2367021276595744,
+        "oldEaveTiles": 0.24,
+        "eaveTiles": 0.24,
+        "eaveLiftMetres": 0.10987807971588928,
+        "corniceOutwardMetres": 0.2595722880968801,
+        "corniceInwardMetres": 0.14832702176964577,
+        "corniceHeightMetres": 0.19946808510638298,
+        "minimumClearanceMetres": -1.324846437000815e-07,
+        "maximumClearanceMetres": 0.005418009153615344,
+        "oldLiteralPenetrationMetres": 0.1148936170212766
+      },
+      {
+        "id": "palacio",
+        "rotation": 90,
+        "finish": "clay",
+        "base": 1.7,
+        "height": 4.946808510638298,
+        "width": 13,
+        "depth": 10,
+        "rise": 1.2367021276595744,
+        "oldEaveTiles": 0.24,
+        "eaveTiles": 0.24,
+        "eaveLiftMetres": 0.10987807971588928,
+        "corniceOutwardMetres": 0.2595722880968801,
+        "corniceInwardMetres": 0.14832702176964577,
+        "corniceHeightMetres": 0.19946808510638298,
+        "minimumClearanceMetres": -3.210971435407828e-07,
+        "maximumClearanceMetres": 0.0054178228339063494,
+        "oldLiteralPenetrationMetres": 0.1148936170212766
+      },
+      {
+        "id": "palacio",
+        "rotation": 90,
+        "finish": "aged",
+        "base": 0,
+        "height": 4.946808510638298,
+        "width": 13,
+        "depth": 10,
+        "rise": 1.2367021276595744,
+        "oldEaveTiles": 0.24,
+        "eaveTiles": 0.24,
+        "eaveLiftMetres": 0.10987807971588928,
+        "corniceOutwardMetres": 0.2595722880968801,
+        "corniceInwardMetres": 0.14832702176964577,
+        "corniceHeightMetres": 0.19946808510638298,
+        "minimumClearanceMetres": -1.324846437000815e-07,
+        "maximumClearanceMetres": 0.005418009153615344,
+        "oldLiteralPenetrationMetres": 0.1148936170212766
+      },
+      {
+        "id": "palacio",
+        "rotation": 90,
+        "finish": "aged",
+        "base": 1.7,
+        "height": 4.946808510638298,
+        "width": 13,
+        "depth": 10,
+        "rise": 1.2367021276595744,
+        "oldEaveTiles": 0.24,
+        "eaveTiles": 0.24,
+        "eaveLiftMetres": 0.10987807971588928,
+        "corniceOutwardMetres": 0.2595722880968801,
+        "corniceInwardMetres": 0.14832702176964577,
+        "corniceHeightMetres": 0.19946808510638298,
+        "minimumClearanceMetres": -3.210971435407828e-07,
+        "maximumClearanceMetres": 0.0054178228339063494,
+        "oldLiteralPenetrationMetres": 0.1148936170212766
+      },
+      {
+        "id": "palacio",
+        "rotation": 90,
+        "finish": "thatch",
+        "base": 0,
+        "height": 4.946808510638298,
+        "width": 13,
+        "depth": 10,
+        "rise": 1.2367021276595744,
+        "oldEaveTiles": 0.24,
+        "eaveTiles": 0.24,
+        "eaveLiftMetres": 0.10987807971588928,
+        "corniceOutwardMetres": 0.2595722880968801,
+        "corniceInwardMetres": 0.14832702176964577,
+        "corniceHeightMetres": 0.19946808510638298,
+        "minimumClearanceMetres": -1.324846437000815e-07,
+        "maximumClearanceMetres": 0.005418009153615344,
+        "oldLiteralPenetrationMetres": 0.1148936170212766
+      },
+      {
+        "id": "palacio",
+        "rotation": 90,
+        "finish": "thatch",
+        "base": 1.7,
+        "height": 4.946808510638298,
+        "width": 13,
+        "depth": 10,
+        "rise": 1.2367021276595744,
+        "oldEaveTiles": 0.24,
+        "eaveTiles": 0.24,
+        "eaveLiftMetres": 0.10987807971588928,
+        "corniceOutwardMetres": 0.2595722880968801,
+        "corniceInwardMetres": 0.14832702176964577,
+        "corniceHeightMetres": 0.19946808510638298,
+        "minimumClearanceMetres": -3.210971435407828e-07,
+        "maximumClearanceMetres": 0.0054178228339063494,
+        "oldLiteralPenetrationMetres": 0.1148936170212766
+      },
+      {
+        "id": "palacio",
+        "rotation": 180,
+        "finish": "clay",
+        "base": 0,
+        "height": 4.946808510638298,
+        "width": 13,
+        "depth": 10,
+        "rise": 1.2367021276595744,
+        "oldEaveTiles": 0.24,
+        "eaveTiles": 0.24,
+        "eaveLiftMetres": 0.10987807971588928,
+        "corniceOutwardMetres": 0.2595722880968801,
+        "corniceInwardMetres": 0.14832702176964577,
+        "corniceHeightMetres": 0.19946808510638298,
+        "minimumClearanceMetres": -1.324846437000815e-07,
+        "maximumClearanceMetres": 0.005418009153615344,
+        "oldLiteralPenetrationMetres": 0.1148936170212766
+      },
+      {
+        "id": "palacio",
+        "rotation": 180,
+        "finish": "clay",
+        "base": 1.7,
+        "height": 4.946808510638298,
+        "width": 13,
+        "depth": 10,
+        "rise": 1.2367021276595744,
+        "oldEaveTiles": 0.24,
+        "eaveTiles": 0.24,
+        "eaveLiftMetres": 0.10987807971588928,
+        "corniceOutwardMetres": 0.2595722880968801,
+        "corniceInwardMetres": 0.14832702176964577,
+        "corniceHeightMetres": 0.19946808510638298,
+        "minimumClearanceMetres": -3.210971435407828e-07,
+        "maximumClearanceMetres": 0.0054178228339063494,
+        "oldLiteralPenetrationMetres": 0.1148936170212766
+      },
+      {
+        "id": "palacio",
+        "rotation": 180,
+        "finish": "aged",
+        "base": 0,
+        "height": 4.946808510638298,
+        "width": 13,
+        "depth": 10,
+        "rise": 1.2367021276595744,
+        "oldEaveTiles": 0.24,
+        "eaveTiles": 0.24,
+        "eaveLiftMetres": 0.10987807971588928,
+        "corniceOutwardMetres": 0.2595722880968801,
+        "corniceInwardMetres": 0.14832702176964577,
+        "corniceHeightMetres": 0.19946808510638298,
+        "minimumClearanceMetres": -1.324846437000815e-07,
+        "maximumClearanceMetres": 0.005418009153615344,
+        "oldLiteralPenetrationMetres": 0.1148936170212766
+      },
+      {
+        "id": "palacio",
+        "rotation": 180,
+        "finish": "aged",
+        "base": 1.7,
+        "height": 4.946808510638298,
+        "width": 13,
+        "depth": 10,
+        "rise": 1.2367021276595744,
+        "oldEaveTiles": 0.24,
+        "eaveTiles": 0.24,
+        "eaveLiftMetres": 0.10987807971588928,
+        "corniceOutwardMetres": 0.2595722880968801,
+        "corniceInwardMetres": 0.14832702176964577,
+        "corniceHeightMetres": 0.19946808510638298,
+        "minimumClearanceMetres": -3.210971435407828e-07,
+        "maximumClearanceMetres": 0.0054178228339063494,
+        "oldLiteralPenetrationMetres": 0.1148936170212766
+      },
+      {
+        "id": "palacio",
+        "rotation": 180,
+        "finish": "thatch",
+        "base": 0,
+        "height": 4.946808510638298,
+        "width": 13,
+        "depth": 10,
+        "rise": 1.2367021276595744,
+        "oldEaveTiles": 0.24,
+        "eaveTiles": 0.24,
+        "eaveLiftMetres": 0.10987807971588928,
+        "corniceOutwardMetres": 0.2595722880968801,
+        "corniceInwardMetres": 0.14832702176964577,
+        "corniceHeightMetres": 0.19946808510638298,
+        "minimumClearanceMetres": -1.324846437000815e-07,
+        "maximumClearanceMetres": 0.005418009153615344,
+        "oldLiteralPenetrationMetres": 0.1148936170212766
+      },
+      {
+        "id": "palacio",
+        "rotation": 180,
+        "finish": "thatch",
+        "base": 1.7,
+        "height": 4.946808510638298,
+        "width": 13,
+        "depth": 10,
+        "rise": 1.2367021276595744,
+        "oldEaveTiles": 0.24,
+        "eaveTiles": 0.24,
+        "eaveLiftMetres": 0.10987807971588928,
+        "corniceOutwardMetres": 0.2595722880968801,
+        "corniceInwardMetres": 0.14832702176964577,
+        "corniceHeightMetres": 0.19946808510638298,
+        "minimumClearanceMetres": -3.210971435407828e-07,
+        "maximumClearanceMetres": 0.0054178228339063494,
+        "oldLiteralPenetrationMetres": 0.1148936170212766
+      },
+      {
+        "id": "palacio",
+        "rotation": 270,
+        "finish": "clay",
+        "base": 0,
+        "height": 4.946808510638298,
+        "width": 13,
+        "depth": 10,
+        "rise": 1.2367021276595744,
+        "oldEaveTiles": 0.24,
+        "eaveTiles": 0.24,
+        "eaveLiftMetres": 0.10987807971588928,
+        "corniceOutwardMetres": 0.2595722880968801,
+        "corniceInwardMetres": 0.14832702176964577,
+        "corniceHeightMetres": 0.19946808510638298,
+        "minimumClearanceMetres": -1.324846437000815e-07,
+        "maximumClearanceMetres": 0.005418009153615344,
+        "oldLiteralPenetrationMetres": 0.1148936170212766
+      },
+      {
+        "id": "palacio",
+        "rotation": 270,
+        "finish": "clay",
+        "base": 1.7,
+        "height": 4.946808510638298,
+        "width": 13,
+        "depth": 10,
+        "rise": 1.2367021276595744,
+        "oldEaveTiles": 0.24,
+        "eaveTiles": 0.24,
+        "eaveLiftMetres": 0.10987807971588928,
+        "corniceOutwardMetres": 0.2595722880968801,
+        "corniceInwardMetres": 0.14832702176964577,
+        "corniceHeightMetres": 0.19946808510638298,
+        "minimumClearanceMetres": -3.210971435407828e-07,
+        "maximumClearanceMetres": 0.0054178228339063494,
+        "oldLiteralPenetrationMetres": 0.1148936170212766
+      },
+      {
+        "id": "palacio",
+        "rotation": 270,
+        "finish": "aged",
+        "base": 0,
+        "height": 4.946808510638298,
+        "width": 13,
+        "depth": 10,
+        "rise": 1.2367021276595744,
+        "oldEaveTiles": 0.24,
+        "eaveTiles": 0.24,
+        "eaveLiftMetres": 0.10987807971588928,
+        "corniceOutwardMetres": 0.2595722880968801,
+        "corniceInwardMetres": 0.14832702176964577,
+        "corniceHeightMetres": 0.19946808510638298,
+        "minimumClearanceMetres": -1.324846437000815e-07,
+        "maximumClearanceMetres": 0.005418009153615344,
+        "oldLiteralPenetrationMetres": 0.1148936170212766
+      },
+      {
+        "id": "palacio",
+        "rotation": 270,
+        "finish": "aged",
+        "base": 1.7,
+        "height": 4.946808510638298,
+        "width": 13,
+        "depth": 10,
+        "rise": 1.2367021276595744,
+        "oldEaveTiles": 0.24,
+        "eaveTiles": 0.24,
+        "eaveLiftMetres": 0.10987807971588928,
+        "corniceOutwardMetres": 0.2595722880968801,
+        "corniceInwardMetres": 0.14832702176964577,
+        "corniceHeightMetres": 0.19946808510638298,
+        "minimumClearanceMetres": -3.210971435407828e-07,
+        "maximumClearanceMetres": 0.0054178228339063494,
+        "oldLiteralPenetrationMetres": 0.1148936170212766
+      },
+      {
+        "id": "palacio",
+        "rotation": 270,
+        "finish": "thatch",
+        "base": 0,
+        "height": 4.946808510638298,
+        "width": 13,
+        "depth": 10,
+        "rise": 1.2367021276595744,
+        "oldEaveTiles": 0.24,
+        "eaveTiles": 0.24,
+        "eaveLiftMetres": 0.10987807971588928,
+        "corniceOutwardMetres": 0.2595722880968801,
+        "corniceInwardMetres": 0.14832702176964577,
+        "corniceHeightMetres": 0.19946808510638298,
+        "minimumClearanceMetres": -1.324846437000815e-07,
+        "maximumClearanceMetres": 0.005418009153615344,
+        "oldLiteralPenetrationMetres": 0.1148936170212766
+      },
+      {
+        "id": "palacio",
+        "rotation": 270,
+        "finish": "thatch",
+        "base": 1.7,
+        "height": 4.946808510638298,
+        "width": 13,
+        "depth": 10,
+        "rise": 1.2367021276595744,
+        "oldEaveTiles": 0.24,
+        "eaveTiles": 0.24,
+        "eaveLiftMetres": 0.10987807971588928,
+        "corniceOutwardMetres": 0.2595722880968801,
+        "corniceInwardMetres": 0.14832702176964577,
+        "corniceHeightMetres": 0.19946808510638298,
+        "minimumClearanceMetres": -3.210971435407828e-07,
+        "maximumClearanceMetres": 0.0054178228339063494,
+        "oldLiteralPenetrationMetres": 0.1148936170212766
+      }
+    ]
+  },
+  "adaptation": "Preserve complete source cornice and native ridge. Raise only the ordinary main hip eave ring until the timber underside covers its full cap. Townhall eave .20 to .21 tile; palace remains .24. Preserve four-facade native adaptation, unlike the two positive-axis source faces.",
+  "exclusions": [
+    "flat/terrace/slab/usable roof",
+    "short height <4 m",
+    "edited corner/inset fallback",
+    "unpainted legacy",
+    "ordinary partial/interior disclosure"
+  ],
+  "rejectedLiteral": {
+    "retained": true,
+    "priorPackage": "granaderos-civic-storey-bands-ready-cut/private-evidence/civic-rejected-upper-cornice",
+    "oldRoofCapDefect": "Cap is 11.489 cm above the old timber underside at the eave; townhall cap also extends 1.236 cm outside old roof.",
+    "negativeControl": "Current full cornice with previous roof fails actual full-cap timber coverage; source corners, camera rays and opening/fallback checks pass (3/4 checks). The earlier literal bright-line images are retained separately."
+  },
+  "preservation": {
+    "states": 408,
+    "unrelatedMeshes": 10788,
+    "exact": true,
+    "beforeSha256": "7e252ec732fdab5e0532a4a9ce476774b79ec2504a2ec80a9c9e7c9f7ab43a62",
+    "afterSha256": "7e252ec732fdab5e0532a4a9ce476774b79ec2504a2ec80a9c9e7c9f7ab43a62"
+  },
+  "browser": {
+    "beforeOriginalViews": 24,
+    "afterOriginalViews": 24,
+    "afterSlabViews": 12,
+    "afterUsableRoofViews": 12,
+    "errors": [],
+    "ordinaryVisibleControls": true,
+    "exteriorTrianglesAdded": 8,
+    "exteriorDrawCallsAdded": 1,
+    "partialInteriorAdded": 0
+  },
+  "limits": [
+    "The existing roof ridge and all other geometry are retained; this is a local roof/cornice adaptation, not a full source roof rebuild.",
+    "Existing portico rear gable is visible in both before/after palace side views. It is outside this join scope.",
+    "No total-building or sustained-performance polish claim."
+  ]
+}
