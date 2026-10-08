@@ -40,3 +40,12 @@ node tools/verify-three-palace-portico-preservation.mjs <source-root> <output.js
 The source point records and all 24 actual roof measurements are in [source-bounds.json](source-bounds.json). The source recipe is [palacePortico in TacticalBuildingDetails](../../../../web/app/TacticalBuildingDetails.tsx). The implementation is [world-palace-portico](../../../../web/lib/three/world-palace-portico.ts) with a narrow call in [world-palace-facade](../../../../web/lib/three/world-palace-facade.ts).
 
 Remaining limits: the source/native ground-window aperture adaptation remains disclosed elsewhere; this cut does not change it. Tall explicit terraces and edited/legacy geometry retain the literal rear gable. The supplied JA2 screenshots guide readable structure and interiors, but do not provide a period palace roof reconstruction. This bounded join does not establish complete architectural polish.
+
+Independent integration validation on main `c96ed32bd3f3f20250a491959343fec2891553f7`, with implementation commit `6aefc97b09f65135ea57fce6f51bb5969dbeb61b`:
+
+- All 85 affected checks pass in 12.82 s. TypeScript, native character-library verification, profile consistency, documentation and all 38 baseline checks pass.
+- The before and after 408-state results are byte-identical, retaining 10,948 non-portico meshes and the stated SHA-256.
+- The retained 48-view before review has all 20 source/model pins and both modified predecessors byte-identical to current main. A fresh 36-view after review uses normal gameplay controls for all four palace rotations, three room states and three roof states. Each report pins 21 inputs before and after, verifies served character resources and has no browser errors.
+- Visual comparison covers the current sprite, native front/side before and after, room disclosure, the closed slab and the accessible roof.
+- The production build passes: `3e5532ec2ba8`, 1,247 files and 1,040 checked asset references. All 106 released character/profile files and the merged pipeline-preservation implementation remain byte-identical.
+- The publication commit after that validation changes only this review text. The bounded architectural limits above remain open.
