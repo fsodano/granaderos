@@ -4,6 +4,7 @@ import {chooseGrenadeThrow} from './tactical-ai-grenades.js';
 import {sameSurface,spaceKey,surfaceAt,tacticalLevel} from './tactical-space.js';
 import {atHand,moveOrder,planningPoint} from './tactical-planning-space.js';
 import {chooseSupplySharingAction} from './tactical-ai-sharing.js';
+import {chooseGroundDressingRecovery} from './tactical-ai-medical-recovery.js';
 import {choosePackedGunHandover} from './tactical-ai-gun-handover.js';
 import {chooseScavengingAction} from './tactical-ai-scavenging.js';
 import {directionTo,facingAllowsSight,turnAPCost} from './tactical-awareness.js';
@@ -316,6 +317,8 @@ export function chooseEnemyAction(state, unit) {
   if (unit.bleeding > 0 && unit.medkits > 0 && unit.medical > 0 && unit.ap >= costs.heal + costs.weapon) return {type: 'weapon', unitId: unit.id, slot: 'medical'};
   const aid = fieldAid(state, unit, costs, targets, paths);
   if (aid) return aid;
+  const dressing=chooseGroundDressingRecovery(state,unit);
+  if(dressing)return dressing;
   const cannon=chooseArtilleryAction(state,unit,targets,paths);
   if(cannon)return cannon;
   // Keep the operator at the emplacement while its helpers approach or recover AP.
