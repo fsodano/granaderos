@@ -6,8 +6,8 @@ import {chooseEnemyAction} from './tactical-ai.js';
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 const able=u=>u.hp>=15&&!u.unconscious&&!u.routed&&!u.surrendered&&!u.departure&&!u.fled;
 
-export function automaticOrder(b,u){
- const action=chooseEnemyAction(b,u);if(action)return action;
+export function automaticOrder(b,u,options){
+ const action=chooseEnemyAction(b,u,options);if(action)return action;
  return searchOrder(b,u);
 }
 

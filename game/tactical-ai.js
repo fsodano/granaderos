@@ -134,7 +134,7 @@ export function chooseKnifeThrow(state,unit,targets){
   return {type:'throwKnife',unitId:unit.id,targetId:best.target.id,aim:best.aim,hitLocation:best.hitLocation};
 }
 
-function maintenance(state, unit, costs, allowSecondary=false) {
+function maintenance(state, unit, costs, allowSecondary=false, maintenanceContext=null) {
   if (weaponFor(unit).capacity <= 0) return null;
   const priming=reprimePlan(unit,state);
   if (unit.jammed && firearmServiceable(unit)) return priming.hands.length ? {type: 'reprime', unitId: unit.id} : null;
@@ -157,7 +157,7 @@ function maintenance(state, unit, costs, allowSecondary=false) {
     const loading=reloadPlan(unit,state);
     if(loading.hands?.some(hand=>hand.hand==='offhand'&&hand.pa>0))return {type:'reload',unitId:unit.id};
   }
-  return chooseOwnedFirearmRepair(state,unit) ?? (allowSecondary&&priming.hands.length ? {type:'reprime',unitId:unit.id} : null);
+  return chooseOwnedFirearmRepair(state,unit,maintenanceContext) ?? (allowSecondary&&priming.hands.length ? {type:'reprime',unitId:unit.id} : null);
 }
 
 function fieldAid(state, unit, costs, targets, paths) {
@@ -304,7 +304,7 @@ function verticalPursuit(state,unit,target,costs){
  return moveOrder(state,unit,prefix.at(-1));
 }
 
-export function chooseEnemyAction(state, unit) {
+export function chooseEnemyAction(state, unit, {maintenanceContext=null}={}) {
   if (!unit || !active(unit) || state.status !== 'active' || unit.ap <= 0) return null;
   const costs = actionCosts(state, unit);
   const targets = state.units.filter(other => other.side !== unit.side && other.hp > 0 && !other.departure && !other.surrendered && !other.unconscious && canSee(state, unit, other)).sort(compareId);
@@ -342,7 +342,7 @@ export function chooseEnemyAction(state, unit) {
     if(slot)return {type:'weapon',unitId:unit.id,slot};
   }
 
-  const upkeep = maintenance(state, unit, costs, !targets.length);
+  const upkeep = maintenance(state, unit, costs, !targets.length, maintenanceContext);
   const move = cell => cell.path?.[0]?.kind==='climb' ? (climbPreview(perceived,unit,{linkId:cell.path[0].linkId}).valid?{type:'climb',unitId:unit.id,linkId:cell.path[0].linkId}:null) : moveOrder(state,unit,cell);
 
   if (!targets.length) {

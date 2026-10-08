@@ -51,7 +51,7 @@ import {handsRequired,selectMainHand,handLayout} from './hand-layout.js';
 import {firearmPreparation,lowerWeapon,lowersWeapon,turnLowersWeapon} from './weapon-readiness.js';
 import {planReload,reloadRoundCost} from './weapon-reload.js';
 import {planReprime,reprimeCost} from './weapon-reprime.js';
-import {repairMaterialPoints} from './repair-materials.js';
+import {repairMaterialPoints,isRepairKit,validateRepairKit} from './repair-materials.js';
 import {spendRepairMaterials} from './equipment-repair.js';
 import {discoverInventory} from './inventory-discovery.js';
 import {isInteriorVisible} from './tactical-visibility.js';
@@ -134,10 +134,51 @@ export function actionCosts(s,u,point){
     reload:reloadCost(u,s),melee:meleeStrike+meleeStance,meleeStrike,meleeStance,
   };
 }
-export function firearmMaintenancePreview(s,u){
+// Only private live militia queues can mint this transient permission. It is
+// never placed in an order or snapshot; manual previews keep their old guard.
+const autonomousRepairContexts=new WeakMap();
+function autonomousRepairContext(s,u){
+ if(s.mode!=='combat'||s.status!=='active'||!s.roundTimeCharged||u?.side!=='player'||!u.militia||!alive(u)||u.routed||u.knockedDown||u.entangled||u.ap<3||s.units.find(v=>v.id===u.id)!==u||!hasFirearm(u)||u.condition!==0||!(u.loaded>0)||u.jammed)return null;
+ try{if(!Object.values(u.inventory??{}).some(item=>isRepairKit(item)&&validateRepairKit(item)))return null;}catch{return null;}
+ if(s.phase==='player'){
+  const queue=s.alliedTurn,count=queue?.actionsTaken;
+  if(!queue||queue.unitIds[queue.unitIndex]!==u.id||!Number.isInteger(count)||count<0||count>=12)return null;
+  const context={};autonomousRepairContexts.set(context,{state:s,actor:u,queue,index:queue.unitIndex,count,kind:'allied'});return context;
+ }
+ if(s.phase==='interrupt'){
+  const queue=s.interrupt;
+  const selected=queue?.unitIds.map(id=>s.units.find(v=>v.id===id)).find(v=>v?.militia&&alive(v)&&v.ap>=3&&(queue.militiaActions?.[v.id]??0)<12);
+  const count=queue?.militiaActions?.[u.id]??0;
+  if(selected!==u||!Number.isInteger(count)||count<0||count>=12)return null;
+  const context={};autonomousRepairContexts.set(context,{state:s,actor:u,queue,count,kind:'interrupt'});return context;
+ }
+ return null;
+}
+function autonomousRepairAllowed(s,u,context){
+ const entry=autonomousRepairContexts.get(context);
+ if(!entry||entry.state!==s||entry.actor!==u||s.units.find(v=>v.id===u.id)!==u||s.mode!=='combat'||s.status!=='active'||!s.roundTimeCharged||u.side!=='player'||!u.militia||!alive(u)||u.routed||u.knockedDown||u.entangled)return false;
+ let count;
+ if(entry.kind==='allied'){
+  const queue=s.alliedTurn;
+  if(s.phase!=='player'||queue!==entry.queue||queue.unitIndex!==entry.index||queue.unitIds[queue.unitIndex]!==u.id)return false;
+  count=queue.actionsTaken;
+ }else{
+  const queue=s.interrupt;
+  if(s.phase!=='interrupt'||queue!==entry.queue||!queue.unitIds.includes(u.id))return false;
+  count=queue.militiaActions?.[u.id]??0;
+  const selected=queue.unitIds.map(id=>s.units.find(v=>v.id===id)).find(v=>v?.militia&&alive(v)&&v.ap>=3&&(v===u&&count===entry.count+1?entry.count:queue.militiaActions?.[v.id]??0)<12);
+  if(selected!==u)return false;
+ }
+ // The queues increment after choosing and before applying. The twelfth
+ // selected action remains paid and legal; a later selection gets no token.
+ if(count!==entry.count&&count!==entry.count+1)return false;
+ if(!hasFirearm(u)||u.condition!==0||!(u.loaded>0)||u.jammed)return false;
+ try{return Object.values(u.inventory??{}).some(item=>isRepairKit(item)&&validateRepairKit(item));}catch{return false;}
+}
+export function firearmMaintenancePreview(s,u,autonomousContext=null){
  const pa=u?actionCosts(s,u).repair:25,action=u?{type:'repair',unitId:u.id}:null;
  let reason=inventoryOrderReason(s,u,0),materialsAvailable=0;
- if(!reason&&(u.militia||s.alliedTurn&&s.phase!=='interrupt'))reason='La milicia actúa por su cuenta. Da órdenes a los combatientes de tu escuadra.';
+ if(!reason&&(u.militia||s.alliedTurn&&s.phase!=='interrupt')&&!autonomousRepairAllowed(s,u,autonomousContext))reason='La milicia actúa por su cuenta. Da órdenes a los combatientes de tu escuadra.';
  if(!reason&&!hasFirearm(u))reason='Prepara primero el arma de fuego que quieres mantener.';
  if(!reason&&(!Number.isFinite(u.condition)||u.condition<0||u.condition>100))reason='El estado del mecanismo no es válido.';
  if(!reason&&u.condition>=100)reason='El mecanismo ya está en buen estado.';
@@ -1909,17 +1950,19 @@ function grenadeUseOrder(s,a){
   const {targetId,environment,hitLocation,...rest}=a;
   return {...rest,type:'throwGrenade',...(targetId===undefined?{}:known?positionOf(known):{x:undefined,y:undefined})};
 }
-function apply(s,a,enemy=false,movementPath=null){
+function apply(s,a,enemy=false,movementPath=null,maintenanceContext=null){
+ try{
  const movement=a.type==='move'||a.type==='climb'||a.type==='charge';
  const actor=s.units.find(u=>u.id===String(a.unitId));
  const frameAction=a.type!=='useItem'?a.type:actor&&heldGrenade(actor)?'throwGrenade':actor?.activeSlot==='medical'?'heal':actor?.activeSlot==='supply'?heldSupply(actor)?.action??'useItem':a.environment?'environment':actor?.activeSlot==='item'&&s.npcs?.some(n=>n.id===String(a.targetId))?'giveItem':actor?contextualAttack(s,actor,s.units.find(u=>u.id===String(a.targetId)),a).type:'useItem';
  if(!movement)recordBattleFrame(s,{type:'prepare',unitId:String(a.unitId),targetId:a.targetId,targetKind:a.targetKind,action:frameAction});
- const accepted=applyOrder(s,a,enemy,movementPath);
+ const accepted=applyOrder(s,a,enemy,movementPath,maintenanceContext);
  const closeCombat=['melee','meleePoint','charge'].includes(frameAction),completedStrike=closeCombat&&meleeAttackResults.get(s)?.has(String(a.unitId)),cancelledStrike=closeCombat&&!completedStrike;
  if(accepted!==false)recordBattleFrame(s,{type:'result',unitId:String(a.unitId),targetId:a.targetId,targetKind:a.targetKind,action:frameAction,...(cancelledStrike?{performed:false}:completedStrike?{contactComplete:true}:{})});
  return accepted;
+ }finally{if(maintenanceContext)autonomousRepairContexts.delete(maintenanceContext);}
 }
-function applyOrder(s,a,enemy=false,movementPath=null){if(a.type==='useItem'){const user=s.units.find(v=>v.id===String(a.unitId));if(heldGrenade(user))a=grenadeUseOrder(s,a);else if(user?.activeSlot==='item'&&s.npcs?.some(n=>n.id===String(a.targetId)))a={...a,type:'giveItem'};else if(user?.activeSlot==='supply'){const point=s.units.find(v=>v.id===String(a.targetId));a={...a,type:heldSupply(user)?.action??'invalidSupply',...(point?positionOf(point):{}),targetId:a.targetId??(user.activeSupply==='rations'?'':undefined)};}else if(a.environment)a={...a,...a.environment,type:'environment'};else a={...a,type:user?.activeSlot==='medical'?'heal':user?contextualAttack(s,user,s.units.find(v=>v.id===String(a.targetId)),a).type:'melee'};}const fail=text=>{if(!enemy||u&&journalVisible(s,u)){s.lastError=text;say(s,text);}return false;};const u=s.units.find(u=>u.id===String(a.unitId));if(s.status!=='active')return fail('El combate ya terminó.');if(!u||!alive(u))return fail('El soldado no puede actuar.');if(u.side!==(enemy?'enemy':'player'))return fail('No puedes dar órdenes a ese soldado.');if(!enemy&&!interruptAvailable(s,u))return fail('Ese soldado no puede actuar en esta interrupción.');if(u.knockedDown&&!['stance','heal','ration'].includes(a.type))return fail('El soldado está derribado: debe ponerse de pie.');const observation=reactionObservation(s,u);if(a.targetKind==='npc'&&a.targetId!==undefined&&!['heal','giveItem','free','prisonerEscort','loot','fire','melee'].includes(a.type))return fail('Prepará las vendas para tratar al habitante.');const target=a.type==='giveItem'||['heal','free','prisonerEscort','loot','fire','melee'].includes(a.type)&&a.targetKind==='npc'?s.npcs?.find(n=>n.id===String(a.targetId)):s.units.find(u=>u.id===String(a.targetId)&&!u.departure);if(a.type!=='inventoryMap'&&a.targetId!==undefined&&!target)return fail('El objetivo no está disponible en este sector.');const pay=n=>{if(!Number.isFinite(n)||n<0||s.mode!=='exploration'&&u.ap<n)return false;if(n>0&&(lowersWeapon(a.type)||a.type==='look'&&u.stance==='prone'))lowerWeapon(u);if(s.mode==='exploration'){if(a.type!=='move'&&a.type!=='climb')s.actionDurationSeconds=Math.max(1,Math.ceil(n*.06));return true;}u.ap-=n;return true;};
+function applyOrder(s,a,enemy=false,movementPath=null,maintenanceContext=null){if(a.type==='useItem'){const user=s.units.find(v=>v.id===String(a.unitId));if(heldGrenade(user))a=grenadeUseOrder(s,a);else if(user?.activeSlot==='item'&&s.npcs?.some(n=>n.id===String(a.targetId)))a={...a,type:'giveItem'};else if(user?.activeSlot==='supply'){const point=s.units.find(v=>v.id===String(a.targetId));a={...a,type:heldSupply(user)?.action??'invalidSupply',...(point?positionOf(point):{}),targetId:a.targetId??(user.activeSupply==='rations'?'':undefined)};}else if(a.environment)a={...a,...a.environment,type:'environment'};else a={...a,type:user?.activeSlot==='medical'?'heal':user?contextualAttack(s,user,s.units.find(v=>v.id===String(a.targetId)),a).type:'melee'};}const fail=text=>{if(!enemy||u&&journalVisible(s,u)){s.lastError=text;say(s,text);}return false;};const u=s.units.find(u=>u.id===String(a.unitId));if(s.status!=='active')return fail('El combate ya terminó.');if(!u||!alive(u))return fail('El soldado no puede actuar.');if(u.side!==(enemy?'enemy':'player'))return fail('No puedes dar órdenes a ese soldado.');if(!enemy&&!interruptAvailable(s,u))return fail('Ese soldado no puede actuar en esta interrupción.');if(u.knockedDown&&!['stance','heal','ration'].includes(a.type))return fail('El soldado está derribado: debe ponerse de pie.');const observation=reactionObservation(s,u);if(a.targetKind==='npc'&&a.targetId!==undefined&&!['heal','giveItem','free','prisonerEscort','loot','fire','melee'].includes(a.type))return fail('Prepará las vendas para tratar al habitante.');const target=a.type==='giveItem'||['heal','free','prisonerEscort','loot','fire','melee'].includes(a.type)&&a.targetKind==='npc'?s.npcs?.find(n=>n.id===String(a.targetId)):s.units.find(u=>u.id===String(a.targetId)&&!u.departure);if(a.type!=='inventoryMap'&&a.targetId!==undefined&&!target)return fail('El objetivo no está disponible en este sector.');const pay=n=>{if(!Number.isFinite(n)||n<0||s.mode!=='exploration'&&u.ap<n)return false;if(n>0&&(lowersWeapon(a.type)||a.type==='look'&&u.stance==='prone'))lowerWeapon(u);if(s.mode==='exploration'){if(a.type!=='move'&&a.type!=='climb')s.actionDurationSeconds=Math.max(1,Math.ceil(n*.06));return true;}u.ap-=n;return true;};
 if(a.type==='unloadAmmunition'){
  if(!hasFirearm(u)||!u.loaded||u.reloadProgress)return fail('El arma debe estar cargada y sin recarga pendiente.');
  let plan;try{plan=planEquipmentUnload(u,{hostId:'hand:right',expectedHost:equipmentFingerprint(u,'hand:right')});}catch(error){return fail(error.message);}if(!pay(plan.pa))return fail(`Descargar requiere ${formatAP(plan.pa)} PA.`);plan.unit.ap=u.ap;replaceUnit(u,plan.unit);sayObserved(s,[u],`${u.name} guarda la carga en sus bolsillos.`);
@@ -2389,7 +2432,7 @@ else if(a.type==='boleadoras'){const point=target??positionOf(a),preview=supplyU
 else if(a.type==='prisonerEscort'){const preview=prisonerReleasePreview(s,u,target,a.escortOrder??'invalid');if(!preview.valid)return fail(preview.reason);if(!pay(preview.cost))return fail('PA insuficientes.');recordPrisonerEscort(s,u,target,a.escortOrder==='wait');sayObserved(s,[u],`${u.name} indica a ${target.name} que ${a.escortOrder==='wait'?'espere aquí':'lo siga'}.`);}
 else if(a.type==='free'&&a.targetKind==='npc'){const preview=prisonerReleasePreview(s,u,target);if(!preview.valid)return fail(preview.reason);if(!pay(preview.cost))return fail('PA insuficientes.');lowerWeapon(u);recordPrisonerRelease(s,u,target);sayObserved(s,[u],`${u.name} libera de las ataduras a ${target.name}. Te seguirá cuando pueda caminar.`);}
 else if(a.type==='free'){if(!u.entangled)return fail('El soldado no está enredado.');if(!pay(15))return fail('Soltarse requiere 3,75 PA.');u.entangled=false;for(const g of s.groundItems)if(g.heldBy===u.id)g.heldBy=null;sayObserved(s,[u],`${u.name} se libera de las boleadoras.`);}
-else if(a.type==='repair'){const plan=firearmMaintenancePreview(s,u);if(!plan.valid)return fail(plan.reason);if(!pay(plan.pa))return fail(`Mantener el mecanismo requiere ${formatAP(plan.pa)} PA.`);spendRepairMaterials(u,plan.materialCost);practice(u,'mechanical',3);u.condition=Math.min(100,u.condition+plan.gain);sayObserved(s,[u],`${u.name} mantiene y ajusta el mecanismo.`);}
+else if(a.type==='repair'){const plan=firearmMaintenancePreview(s,u,maintenanceContext);if(!plan.valid)return fail(plan.reason);if(!pay(plan.pa))return fail(`Mantener el mecanismo requiere ${formatAP(plan.pa)} PA.`);spendRepairMaterials(u,plan.materialCost);practice(u,'mechanical',3);u.condition=Math.min(100,u.condition+plan.gain);sayObserved(s,[u],`${u.name} mantiene y ajusta el mecanismo.`);}
 else if(a.type==='ration'){
   const preview=supplyUsePreview(s,u,a.targetId===undefined?u:target,'rations');if(!preview.allowed)return fail(preview.reason);pay(preview.cost);
   u.rations--;clearEmptySupply(u);recoverFatigue(u,10,20);
@@ -2781,9 +2824,9 @@ function runAlliedTurn(s){
     const u=s.units.find(v=>v.id===queue.unitIds[queue.unitIndex]);
     if(u?.routed&&fieldCapable(u)&&!queue.actionsTaken){queue.actionsTaken=12;processRout(s,u);if(s.status!=='active'||s.phase!=='player')return s;}
     while(u&&alive(u)&&u.ap>=3&&queue.actionsTaken<12&&s.status==='active'){
-      rememberContacts(s);const order=automaticOrder(s,u);if(!order)break;
+      rememberContacts(s);const maintenanceContext=autonomousRepairContext(s,u),order=automaticOrder(s,u,{maintenanceContext});if(!order)break;
       queue.actionsTaken++;
-      const accepted=apply(s,order,false);if(order.patrol)u.patrolTurn=s.turn;
+      const accepted=apply(s,order,false,null,maintenanceContext);if(order.patrol)u.patrolTurn=s.turn;
       if(accepted===false){s.lastError=null;break;}
       if(s.status!=='active'||s.phase!=='player')return s;
     }
@@ -2800,9 +2843,9 @@ function settleAutonomous(s){
       const window=s.interrupt;
       const militia=window.unitIds.map(id=>s.units.find(u=>u.id===id)).find(u=>u?.militia&&alive(u)&&u.ap>=3&&(window.militiaActions?.[u.id]??0)<12);
       if(militia){
-        window.militiaActions??={};rememberContacts(s);const order=chooseEnemyAction(s,militia);
+        window.militiaActions??={};rememberContacts(s);const maintenanceContext=autonomousRepairContext(s,militia),order=chooseEnemyAction(s,militia,{maintenanceContext});
         window.militiaActions[militia.id]=order?(window.militiaActions[militia.id]??0)+1:12;
-        if(order&&apply(s,order,false)===false){window.militiaActions[militia.id]=12;s.lastError=null;}
+        if(order&&apply(s,order,false,null,maintenanceContext)===false){window.militiaActions[militia.id]=12;s.lastError=null;}
         continue;
       }
       if(window.unitIds.some(id=>{const u=s.units.find(v=>v.id===id);return u&&!u.militia;}))break;
