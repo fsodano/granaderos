@@ -3,6 +3,8 @@ import {sitePath} from '../lib/site-path.js';
 import {useState} from 'react';
 import {CAMPAIGN_SECTORS,rosterFor,contractQuote,contractStatus,civicStatus} from '../../game/campaign.js';
 import {hiringArrivalOptions,hiringArrivalReason,hiringTravelHours,pendingHire} from '../../game/hiring-arrivals.js';
+import {guaranteeRecord,serviceGuaranteeRefund} from '../../game/service-guarantees.js';
+import {operativeInTransit} from '../../game/squads.js';
 import {contractTermsFor,contractRenewalQuote} from '../../game/contracts.js';
 import {filterMercenaries} from '../../game/mercenary-catalogue.js';
 import {isContractOperative} from '../../game/content-character-ids.js';
@@ -47,7 +49,7 @@ export default function Recruitment({state:s,dispatch}:Props){
   <p className="catalogue-count" role="status">{visible.length} de {roster.length} mercenarios · {serving} en tus filas · {(s.hiringArrivals??[]).length} en viaje</p>
   {!visible.length&&<p className="catalogue-empty">No hay mercenarios con estos filtros. <button className="dossier-link" onClick={()=>{setQuery('');setSpecialty('all');setAvailability('all');}}>Mostrar todos</button></p>}
   <div className="recruit-catalogue">{visible.map(o=>{
-   const hired=s.recruited.includes(o.id),arrival=pendingHire(s,o.id),term=periods[o.id]||'day',quote=hired?contractRenewalQuote(s,o,term):contractQuote(s,o,term),contract=contractStatus(s,o.id),profile=characterProfile(o),record=s.operativeState[o.id];
+   const hired=s.recruited.includes(o.id),arrival=pendingHire(s,o.id),term=periods[o.id]||'day',quote=hired?contractRenewalQuote(s,o,term):contractQuote(s,o,term),contract=contractStatus(s,o.id),profile=characterProfile(o),record=s.operativeState[o.id],guarantee=guaranteeRecord(s,arrival??contract),inTransit=operativeInTransit(s,o.id);
    const hours=hiringTravelHours(s,o.id),remaining=arrival?Math.max(0,arrival.dueAt-s.hour):0,objection=serviceObjectionReason(s,o),moraleStatus=lowMoraleRenewalStatus(s,o);
    const held=arrival&&(hiringArrivalReason(s,arrival.destination)||(s.pendingBattle?.sector===arrival.destination?'La llegada espera a que salgas del sector.':null));
    return <article key={o.id} className="contract-card" data-operative-id={o.id}>
@@ -60,14 +62,14 @@ export default function Recruitment({state:s,dispatch}:Props){
     {quote.topTier&&<small className="elite-contract">Especialista de élite</small>}
     {arrival?<>
      <p className="contract-remaining">{remaining?`En viaje · faltan ${remaining} horas`:'Llegada pendiente'} · {CAMPAIGN_SECTORS.find(d=>d.id===arrival.destination)?.name}</p>
-     <small>{arrival.serviceHours===null?'Servicio permanente':`${arrival.serviceHours/24} días de servicio al llegar`} · Anticipo: {arrival.paid} pesos.</small>
+     <small>{arrival.serviceHours===null?'Servicio permanente':`${arrival.serviceHours/24} días de servicio al llegar`} · Paga: {arrival.paid} pesos. {guarantee&&<>Garantía financiada: {guarantee.amount} pesos. Total pagado: {arrival.paid+guarantee.amount} pesos.</>}</small>
      {held&&<p role="status">{held}</p>}
      <label>Cambiar destino<select aria-label={`Cambiar destino de ${o.name}`} value={arrival.destination} disabled={busy} onChange={e=>dispatch({type:'redirectHire',id:o.id,destination:e.target.value})}>
       {!options.some(d=>d.id===arrival.destination)&&<option value={arrival.destination}>{CAMPAIGN_SECTORS.find(d=>d.id===arrival.destination)?.name} · No disponible</option>}
       {options.map(d=><option key={d.id} value={d.id}>{d.name} · {d.infrastructure}</option>)}
      </select></label>
      <small>Al cambiar el destino, el viaje de {arrival.travelHours} horas comienza de nuevo. No se cobra otro anticipo.</small>
-     <button className="dossier-link" disabled={busy} onClick={()=>dispatch({type:'cancelHireArrival',id:o.id})}>Cancelar llegada · recuperar {arrival.paid} pesos</button>
+     <button className="dossier-link" disabled={busy} onClick={()=>dispatch({type:'cancelHireArrival',id:o.id,...(arrival.guaranteeId?{expectedGuaranteeId:arrival.guaranteeId}:{})})}>Cancelar llegada · recuperar {arrival.paid+(guarantee?.state==='held'?guarantee.amount:0)} pesos</button>
     </>:<>
      {hired&&<p className="contract-remaining">{contract?.remaining===null?'Servicio permanente':`${contract?.remaining??0} horas de contrato restantes`}</p>}
      {!hired&&<small>{hours?`Viaje previsto: ${hours} horas.`:'Llegada inmediata a un destino seguro.'}</small>}
@@ -75,8 +77,11 @@ export default function Recruitment({state:s,dispatch}:Props){
      <ContractMoraleNotice status={moraleStatus}/>
      {quote.serviceRefusal?<ServiceRefusalNotice state={s} refusal={quote.serviceRefusal} disabled={busy} dispatch={dispatch}/>:quote.reason&&quote.reason!==objection&&quote.reason!==moraleStatus.reason&&<small>{quote.reason}</small>}
      <label>Duración<select aria-label={`Duración del contrato de ${o.name}`} value={term} onChange={e=>setPeriods({...periods,[o.id]:e.target.value})}>{terms.map(([id,name])=><option key={id} value={id}>{name}</option>)}</select></label>
-     <button className="gold-button" disabled={!quote.available||s.resources.treasury<quote.price||record?.alive===false||busy||(!hired&&(!destination||!civicStatus(s,o.id).available))} onClick={()=>dispatch(hired?{type:'renewContract',id:o.id,term}:{type:'recruitCivic',id:o.id,term,destination})}>{record?.alive===false?'Caído en combate':`${hired?'Renovar':'Contratar'} · ${quote.price} pesos`}</button>
-     {hired&&<button className="dossier-link" disabled={busy} onClick={()=>dispatch({type:'dismiss',id:o.id})}>Finalizar servicio</button>}
+     {(quote.guarantee>0||guarantee)&&<small>Paga: {quote.price} pesos · Garantía a financiar: {quote.guarantee} pesos · Total: {quote.total} pesos.</small>}
+     {hired&&guarantee&&<small>Garantía {guarantee.state==='held'?`retenida: ${guarantee.amount} pesos. Al finalizar ahora: ${serviceGuaranteeRefund(s,contract,o)} pesos de devolución según la salud actual.`:`liquidada: ${guarantee.refund} pesos devueltos.`} La paga no se devuelve.</small>}
+     {hired&&inTransit&&<small>Está en camino. Esperá su llegada para finalizar el servicio. Si vence durante el viaje, la garantía queda retenida hasta la salida efectiva.</small>}
+     <button className="gold-button" disabled={!quote.available||s.resources.treasury<quote.total||record?.alive===false||busy||(!hired&&(!destination||!civicStatus(s,o.id).available))} onClick={()=>dispatch(hired?{type:'renewContract',id:o.id,term,...(contract?.guaranteeId?{expectedGuaranteeId:contract.guaranteeId}:{})}:{type:'recruitCivic',id:o.id,term,destination})}>{record?.alive===false?'Caído en combate':`${hired?'Renovar':'Contratar'} · ${quote.total} pesos`}</button>
+     {hired&&<button className="dossier-link" disabled={busy||inTransit} onClick={()=>dispatch({type:'dismiss',id:o.id,...(contract?.guaranteeId?{expectedGuaranteeId:contract.guaranteeId}:{})})}>Finalizar servicio</button>}
     </>}
     <small>Personaje ficticio · {profile.personality.split('.')[0]}.</small>
    </article>;

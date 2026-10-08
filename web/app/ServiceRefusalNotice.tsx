@@ -6,6 +6,6 @@ export default function ServiceRefusalNotice({state,refusal,disabled=false,dispa
  return <div className="service-refusal" role="status">
   <p>{refusal.reason}</p>
   <p>Podés conservar a {refusal.rivalName} o finalizar su servicio. El rechazo no acorta los contratos ya pagados.</p>
-  <button type="button" className="line-button" disabled={blocked} title={moving?'Esperá a que llegue antes de finalizar su servicio.':undefined} onClick={()=>dispatch({type:'dismiss',id:refusal.rivalId})}>Finalizar servicio de {refusal.rivalName}</button>
+  <button type="button" className="line-button" disabled={blocked} title={moving?'Esperá a que llegue antes de finalizar su servicio.':undefined} onClick={()=>dispatch({type:'dismiss',id:refusal.rivalId,...(state.contracts?.[refusal.rivalId]?.guaranteeId?{expectedGuaranteeId:state.contracts[refusal.rivalId].guaranteeId}:{})})}>Finalizar servicio de {refusal.rivalName}</button>
  </div>;
 }

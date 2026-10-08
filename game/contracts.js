@@ -1,3 +1,4 @@
+import {guaranteeAmount,guaranteeRecord} from './service-guarantees.js';
 import {hiringPriceMultiplier} from './economy-balance.js';
 import {contractRules} from './contract-rules.js';
 import {serviceRelationshipRefusal} from './service-relationships.js';
@@ -22,12 +23,13 @@ export function contractQuote(state,operative,term='day'){
  const salaryPercent=100+Math.floor(xp/rules.xpStep)*rules.xpRaisePercent;
  const daily=Math.max(operative.service==='contract'?0:1,Math.ceil((operative.monthlyPay??0)*hiringPriceMultiplier(state)*salaryPercent/(rules.salaryMonthDays*100)));
  const now=campaignSeconds(state),expiry=Math.max(now,contractExpiresSeconds(state.contracts?.[operative.id])??now)+(period?.hours??0)*3600;
- return {expiresAt:permanent?null:Math.floor(expiry/3600),expiresSecond:permanent?null:expiry%3600,available:!reason,reason,...(reason===refusal?.reason?{serviceRefusal:refusal}:{}),topTier,permanent,term,hours:permanent?null:period?.hours??0,price:permanent?0:daily*(period?.days??0),daily:permanent?0:daily};
+ const price=permanent?0:daily*(period?.days??0),held=guaranteeRecord(state,state.contracts?.[operative.id]),guarantee=permanent||held?0:guaranteeAmount(operative);
+ return {guarantee,total:price+guarantee,heldGuarantee:held?.state==='held'?held.amount:0,expiresAt:permanent?null:Math.floor(expiry/3600),expiresSecond:permanent?null:expiry%3600,available:!reason,reason,...(reason===refusal?.reason?{serviceRefusal:refusal}:{}),topTier,permanent,term,hours:permanent?null:period?.hours??0,price:permanent?0:daily*(period?.days??0),daily:permanent?0:daily};
 }
 // Hiring and re-hiring retain their existing admission. Only a requested
 // extension consults the authored morale rule, after existing refusal reasons.
 export function contractRenewalQuote(state,operative,term='day'){
- const quote=contractQuote(state,operative,term),reason=quote.reason??lowMoraleRenewalReason(state,operative);
+ const initial=contractQuote(state,operative,term),quote={...initial,guarantee:0,total:initial.price},reason=quote.reason??lowMoraleRenewalReason(state,operative);
  return {...quote,available:!reason,reason};
 }
 export function contractStatus(state,id){const c=state.contracts?.[id],expiry=contractExpiresSeconds(c),now=campaignSeconds(state);return c?{...c,remaining:expiry===null?null:Math.max(0,(expiry-now)/3600),active:expiry===null||expiry>now}:null;}

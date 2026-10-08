@@ -1,3 +1,4 @@
+import {fundServiceGuarantee,settleServiceGuarantee,forfeitDeadServiceGuarantees,validateServiceGuarantees} from './service-guarantees.js';
 import {withdrawQuest,validateQuestWithdrawalReceipts} from './quest-withdrawal.js';
 import {initializeTownIncome,activateTownIncome,validateTownIncome,collectTownIncome,townIncomeSourceForNPC} from './town-income.js';
 import {validateRepairReserve,validateRepairReserveContext,retainRepairReserves} from './repair-materials.js';
@@ -140,17 +141,19 @@ function removeFromService(s,id){
   for(const course of s.militiaTraining.filter(t=>t.trainerId===id)){returnMilitiaTrainees(s,course);}s.militiaTraining=s.militiaTraining.filter(t=>t.trainerId!==id);delete s.contracts[id];
 }
 function endOperativeService(s,id){
+ const op=rosterFor(s).find(o=>o.id===id),settlement=settleServiceGuarantee(s,s.contracts[id],op);
  const returned=returnServiceEquipment(s,id,rosterFor(s));removeFromService(s,id);
+ if(settlement)note(s,`${op.name}: garantía liquidada, ${settlement.refund} de ${settlement.amount} pesos devueltos. La paga no se devuelve.`);
  if(returned)note(s,`El equipo queda en ${MISSION_SCENES[returned.siteId]?.name??campaignPlace(returned.sectorId).name}, disponible para un combatiente presente.${returned.fallback?' Recogé todo el equipo antes de volver a contratar a esta persona.':''}`);
 }
 function signContract(s,op,term){
-  requireThat(!s.operativeState[op.id]?.captured,'El combatiente está prisionero; primero liberá su sector.');const quote=contractQuote(s,op,term??'day');requireThat(quote.available,quote.reason);pay(s,{treasury:quote.price});s.contracts[op.id]={kind:quote.permanent?'patriot':'paid',term:term??'day',...contractStartedFields(s,quote.expiresSecond),expiresAt:quote.expiresAt,paid:quote.price};
+  requireThat(!s.operativeState[op.id]?.captured,'El combatiente está prisionero; primero liberá su sector.');const quote=contractQuote(s,op,term??'day');requireThat(quote.available,quote.reason);pay(s,{treasury:quote.total});const guarantee=fundServiceGuarantee(s,op,quote.guarantee);s.contracts[op.id]={...guarantee,kind:quote.permanent?'patriot':'paid',term:term??'day',...contractStartedFields(s,quote.expiresSecond),expiresAt:quote.expiresAt,paid:quote.price};
   const contact=encounterDefinitions(s).find(n=>n.operativeId===op.id);if(contact){transferCivilian(s,contact);s.operativeState[op.id].startingCartridgesIssued=true;}
 }
 function receiveHire(s,arrival,joinSquad=true){
   const id=arrival.operativeId,op=rosterFor(s).find(o=>o.id===id);
   requireThat(!s.operativeState[id]?.serviceEquipmentReturn,'Recogé todo el equipo que dejó esta persona antes de volver a contratarla.');
-  s.contracts[id]={kind:arrival.permanent?'patriot':'paid',term:arrival.term,...contractStartedFields(s,arrival.permanent?null:s.secondOfHour??0),expiresAt:arrival.permanent?null:s.hour+arrival.serviceHours,paid:arrival.paid};
+  s.contracts[id]={...(arrival.guaranteeId?{guaranteeId:arrival.guaranteeId}:{}),kind:arrival.permanent?'patriot':'paid',term:arrival.term,...contractStartedFields(s,arrival.permanent?null:s.secondOfHour??0),expiresAt:arrival.permanent?null:s.hour+arrival.serviceHours,paid:arrival.paid};
   s.recruited.push(id);issueStartingCartridges(s,op);issueInitialOutfit(s,id);Object.assign(s.operativeState[id],{location:arrival.destination,arrival:null,residentSector:null,residentScene:null});
   if(joinSquad&&!s.pendingBattle&&s.location===arrival.destination&&s.squad.length<6)s.squad.push(id);
   note(s,`${op.name} llega a ${sector(arrival.destination).name} y comienza su servicio.`);
@@ -310,6 +313,7 @@ function releaseCaptives(s,at){
     setCarriedLoading(r,{weapon:op.weapon,...held,weaponDropped:r.weaponDropped});r.capturedAmmunition={loaded:0,ammo:0};
     for(const h of s.horseState.horses)if(h.custody?.kind==='captured'&&h.custody.operativeId===op.id){h.custody=null;h.assignedTo=null;}
     const contract=restoredCaptiveContract(r,s.hour,s.secondOfHour??0);
+    if(!contract)settleServiceGuarantee(s,r.capturedContract,op);
     Object.assign(r,{asleep:false,captured:false,capturedSector:null,capturedAt:null,capturedAtSecond:null,capturedContract:null,location:at,arrival:null,residentSector:at,residentScene:null,assignment:r.hp<r.maxHp||r.bleeding?'patient':'rest'});
     if(!contract){r.assignment='active';note(s,`${op.name} queda libre en ${sector(at).name}. Su contrato había terminado y puede volver a contratarse.`);continue;}
     s.contracts[op.id]=contract;s.recruited.push(op.id);if(s.location===at&&s.squad.length<6)s.squad.push(op.id);note(s,`${op.name} vuelve al servicio tras la liberación de ${sector(at).name}. Conserva sus heridas y equipo.`);
@@ -640,6 +644,7 @@ export function dispatchCampaign(previous,action){
   const s=migrateSquads(clone(previous));s.lastError=null;s.militiaTraining??=[];s.missions??={};s.sceneStates??={};s.missionAllies??={};s.quests??={};migrateContracts(s);
   try{
     initializeCampaignSystems(s);
+    forfeitDeadServiceGuarantees(s,rosterFor(s));validateServiceGuarantees(s,rosterFor(s));
     requireThat(action&&typeof action.type==='string','La orden no es válida.');
     validateCampaignServiceObjections(s,rosterFor(s));
     validatePendingCompanionLoss(s,rosterFor(s));
@@ -828,30 +833,31 @@ export function dispatchCampaign(previous,action){
         const options=hiringArrivalOptions(s),destination=action.destination??(options.some(o=>o.id===s.location)?s.location:options[0]?.id);
         const reason=hiringArrivalReason(s,destination);requireThat(!reason,reason);
         const op=rosterFor(s).find(o=>o.id===id),term=action.term??'day',quote=contractQuote(s,op,term);
-        requireThat(quote.available,quote.reason);pay(s,{treasury:quote.price});
-        const arrival=hireArrivalOrder(s,op,term,quote,destination);
+        requireThat(quote.available,quote.reason);pay(s,{treasury:quote.total});
+        const arrival={...hireArrivalOrder(s,op,term,quote,destination),...fundServiceGuarantee(s,op,quote.guarantee)};
         if(arrival.travelHours){s.hiringArrivals??=[];s.hiringArrivals.push(arrival);note(s,`${op.name} viaja a ${sector(destination).name}. Llegada prevista en ${arrival.travelHours} horas; el contrato empieza al llegar.`);}
         else receiveHire(s,arrival);
         break;
       }
       case 'redirectHire':redirectHire(s,action.id,action.destination);note(s,'Se cambia el destino de llegada. El viaje comienza de nuevo, sin otro pago.');break;
-      case 'cancelHireArrival':cancelHireArrival(s,action.id);note(s,'Se cancela la llegada y se devuelve el anticipo.');break;
+      case 'cancelHireArrival':requireThat(action.expectedGuaranteeId===undefined||pendingHire(s,action.id)?.guaranteeId===action.expectedGuaranteeId,'La llegada cambió. Revisá el contrato antes de cancelar.');cancelHireArrival(s,action.id);note(s,'Se cancela la llegada y se devuelve el anticipo.');break;
       case 'recruit':throw Error('Los oficiales históricos se incorporan mediante encuentros personales.');
       case 'renewContract':{
         const id=Number(action.id),op=rosterFor(s).find(o=>o.id===id),current=s.contracts[id];
         requireThat(op&&s.recruited.includes(id)&&current,'El combatiente no tiene un contrato activo.');
+        requireThat(action.expectedGuaranteeId===undefined||current.guaranteeId===action.expectedGuaranteeId,'El contrato cambió. Revisá la garantía antes de renovar.');
         requireThat(action.expectedExpiresAt===undefined||action.expectedExpiresAt===current.expiresAt,'El contrato cambió. Revisá la nueva fecha antes de renovar.');
         requireThat(action.expectedExpiresSecond===undefined||action.expectedExpiresSecond===(current.expiresSecond??0),'El contrato cambió. Revisá la nueva fecha antes de renovar.');
         requireThat(current.kind!=='patriot','Este oficial sirve por la causa y no necesita renovación.');
         const quote=contractRenewalQuote(s,op,action.term??'day');requireThat(quote.available,quote.reason);
-        pay(s,{treasury:quote.price});s.contracts[id]={kind:'paid',term:action.term??'day',...contractStartedFields(s,quote.expiresSecond),expiresAt:quote.expiresAt,paid:quote.price};
+        pay(s,{treasury:quote.price});s.contracts[id]={...(current.guaranteeId?{guaranteeId:current.guaranteeId}:{}),kind:'paid',term:action.term??'day',...contractStartedFields(s,quote.expiresSecond),expiresAt:quote.expiresAt,paid:quote.price};
         renewPendingCompanionLossService(s,id);
         // Modern paid contracts must retain the foreign-standing benefit of
         // legacy payroll. Reuse the saved pay clock to cap repeat renewals.
         if(op.foreign&&quote.price>0&&payMoraleRewardEligible(s,id))standing(s,'foreign',5);
         recordPayMorale(s,[id],true);note(s,`${op.name} renueva su servicio por ${quote.hours/24} días.`);break;
       }
-      case 'dismiss':{const id=Number(action.id);requireThat(s.recruited.includes(id),'El combatiente no está contratado.');requireThat(id!==1000,'Tu oficial dirige la campaña y no puede ser despedido.');endOperativeService(s,id);note(s,'El combatiente deja el servicio sin devolución del anticipo.');break;}
+      case 'dismiss':{const id=Number(action.id);requireThat(action.expectedGuaranteeId===undefined||s.contracts[id]?.guaranteeId===action.expectedGuaranteeId,'El contrato cambió. Revisá la garantía antes de finalizar.');requireThat(s.recruited.includes(id),'El combatiente no está contratado.');requireThat(id!==1000,'Tu oficial dirige la campaña y no puede ser despedido.');const funded=Boolean(s.contracts[id]?.guaranteeId);endOperativeService(s,id);note(s,funded?'El combatiente deja el servicio. La paga no se devuelve; la garantía conserva su recibo de liquidación.':'El combatiente deja el servicio sin devolución del anticipo.');break;}
       case 'createSquad':case 'squad':{
         const creating=action.type==='createSquad',at=creating?(action.sector??s.location):s.location,ids=action.ids;
         requireThat(validWorldLocation(at),'El sector de formación no existe.');
@@ -903,7 +909,7 @@ export function dispatchCampaign(previous,action){
           const hireTerms=encounterHireTerms(s,npc),availableTerms=hireTerms.filter(q=>q.available),gate=recruitmentStatus(s,npc.operativeId,true);
           const serviceReason=hireTerms.length?(availableTerms.length?null:hireTerms[0].reason):canRecruitEncounter(npc)?contractQuote(s,rosterFor(s).find(op=>op.id===npc.operativeId)).reason:null;
           const reason=encounterRequirements(s,npc,actor)||(!gate.available?gate.reason:null)||serviceReason;
-          const service=hireTerms.length?`Puedo incorporarme por contrato: ${availableTerms.map(q=>`${q.name.toLowerCase()}, ${q.price} pesos`).join('; ')}.`:'Puedo incorporarme sin paga.';
+          const service=hireTerms.length?`Puedo incorporarme por contrato: ${availableTerms.map(q=>`${q.name.toLowerCase()}, ${q.guarantee?`${q.total} pesos (paga ${q.price} + garantía ${q.guarantee})`:`${q.price} pesos`}`).join('; ')}.`:'Puedo incorporarme sin paga.';
           text=!canRecruitEncounter(npc)?npc.greeting:reason??`Estoy dispuesto a servir. ${service}`;
         }
         if(action.approach==='mission'){requireThat(s.pendingBattle.sceneId==='yatasto','No hay una conferencia pendiente.');text=talkMission(s,npc.id,isSupplied(s,'salta'));outcome='mission';}
@@ -1109,7 +1115,7 @@ export function dispatchCampaign(previous,action){
     if(s.pendingBattle&&s.pendingBattle.id!==previous.pendingBattle?.id)for(const unit of s.pendingBattle.squad){
      const before=carriedAmmunition(rosterFor(previous).find(o=>o.id===unit.id),previous.operativeState[unit.id]);requireThat(!pocketChangeReason(before,unit),`${unit.name}: ${POCKET_FULL}`);
     }
-    initializeCampaignSystems(s);validateServiceEquipmentReturns(s,rosterFor(s));syncCampaignAmmunition(s,rosterFor(s));validateCampaignAmmunition(s,rosterFor(s));validateDeploymentReturnState(s);validateEquipmentOwnership(s,rosterFor(s));if(Object.keys(s.assignmentAttention.reported).length)reconcileAssignmentAttention(s,assignmentStates(s,rosterFor(s),assignmentContext(s)));reconcileContractAttention(s);reconcileLogisticsAttention(s,{isSupplied});refreshEnemyIntelligence(s);return removeIgnitionSupplies(s);
+    forfeitDeadServiceGuarantees(s,rosterFor(s));validateServiceGuarantees(s,rosterFor(s));initializeCampaignSystems(s);validateServiceEquipmentReturns(s,rosterFor(s));syncCampaignAmmunition(s,rosterFor(s));validateCampaignAmmunition(s,rosterFor(s));validateDeploymentReturnState(s);validateEquipmentOwnership(s,rosterFor(s));if(Object.keys(s.assignmentAttention.reported).length)reconcileAssignmentAttention(s,assignmentStates(s,rosterFor(s),assignmentContext(s)));reconcileContractAttention(s);reconcileLogisticsAttention(s,{isSupplied});refreshEnemyIntelligence(s);return removeIgnitionSupplies(s);
   }catch(error){const rejected=clone(previous);rejected.lastError=error.message;return rejected;}
 }
 export function serializeCampaign(s){return JSON.stringify(s,cellSceneSaveReplacer(artillerySaveReplacer(s,weaponSaveReplacer(s))));}
@@ -1186,7 +1192,7 @@ export function restoreCampaignValue(s){
     requireThat(integer(s.operativeState[op.id].maxHp,1,op.maxHp),'La salud máxima guardada es inválida.');
     s.operativeState[op.id].maxHp=op.maxHp;
   }
-  validateHireArrivals(s,rosterFor(s));
+  validateHireArrivals(s,rosterFor(s));validateServiceGuarantees(s,rosterFor(s));
   requireThat(object(s.flags)&&Object.keys(base.flags).every(k=>typeof s.flags[k]==='boolean')&&object(s.routes)&&Object.keys(base.routes).every(k=>typeof s.routes[k]==='boolean'),'Los acuerdos del archivo son inválidos.');
   validateCampaignProgress(s);
   validateMedicalCare(s,rosterFor(s));for(const o of rosterFor(s)){const r=s.operativeState[o.id];if(r.bandaged!==undefined)requireThat(Number.isFinite(r.bandaged)&&r.bandaged>=0&&r.bandaged<=o.maxHp-r.hp,'Las heridas vendadas guardadas son inválidas.');}

@@ -27,7 +27,7 @@ export default function ContractAttention({state:s,roster,dispatch}:{state:any;r
     {serving&&unchanged&&op&&<><ServiceObjectionNotice reason={serviceObjectionReason(s,op)}/><ContractMoraleNotice status={lowMoraleRenewalStatus(s,op)}/><ServiceRefusalNotice state={s} refusal={contractRenewalQuote(s,op,'day').serviceRefusal} disabled={blocked} dispatch={dispatch}/></>}
     {serving&&unchanged&&op&&<div className="travel-actions">{Object.entries(contractTermsFor(s)).filter(([term])=>['day','week','fortnight'].includes(term)).map(([term,period])=>{
      const quote=contractRenewalQuote(s,op,term),reason=blocked?'Resolvé el encuentro antes de renovar.':!quote.available?quote.reason:s.resources.treasury<quote.price?'No hay suficientes pesos.':'';
-     return <button className="line-button" key={term} disabled={Boolean(reason)} title={reason||undefined} aria-label={`Renovar a ${name}: ${period.name} · ${quote.price} pesos`} onClick={()=>dispatch({type:'renewContract',id:event.operativeId,term,expectedExpiresAt:event.expiresAt,expectedExpiresSecond:event.expiresSecond??0})}>{period.name} · {quote.price} pesos</button>;
+     return <button className="line-button" key={term} disabled={Boolean(reason)} title={reason||undefined} aria-label={`Renovar a ${name}: ${period.name} · ${quote.price} pesos`} onClick={()=>dispatch({type:'renewContract',id:event.operativeId,term,...(current.guaranteeId?{expectedGuaranteeId:current.guaranteeId}:{}),expectedExpiresAt:event.expiresAt,expectedExpiresSecond:event.expiresSecond??0})}>{period.name} · {quote.price} pesos</button>;
     })}</div>}
    </li>;
   })}</ul>

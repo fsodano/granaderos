@@ -5,7 +5,7 @@ import {legacyOperativeId,characterForOperative,isWorldCharacter,isContractOpera
 import {characterPresentInSector} from './campaign-presence.js';
 import {authoredOperative} from './content-roster.js';
 import {CAMPAIGN_SECTORS,OPERATIVES} from './data.js';
-import {CIVIC_RECRUITS} from './recruitment.js';
+import {CIVIC_RECRUITS} from './civic-recruits.js';
 import {questContactIds} from './quest-beneficiaries.js';
 const local=[
  {id:'cabral',operativeId:3,sector:'retiro',requiredLeadership:30,requiredLiberated:1,requiredSector:'retiro',greeting:'Estoy dispuesto a servir. Quiero conocer al oficial que marchará con nosotros.'},
@@ -77,7 +77,7 @@ export function encounterHireTerms(s,npc){
  if(!c||!isWorldCharacter(c)||c.service!=='contract'||!canRecruitEncounter(npc))return [];
  const op=authoredOperative(s,{id:npc.operativeId});
  return Object.entries(contractTermsFor(s)).map(([term,period])=>{
-  const q=contractQuote(s,op,term),funded=s.resources.treasury>=q.price;
-  return {...q,name:period.name,available:q.available&&funded,reason:q.reason??(funded?null:`Necesitás ${q.price} pesos para este contrato.`)};
+  const q=contractQuote(s,op,term),funded=s.resources.treasury>=q.total;
+  return {...q,name:period.name,available:q.available&&funded,reason:q.reason??(funded?null:`Necesitás ${q.total} pesos para este contrato.`)};
  });
 }
