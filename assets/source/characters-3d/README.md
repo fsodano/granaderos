@@ -6,7 +6,8 @@ banks. `playgrounds/granadero-3d` opens the current game model in an isometric
 view; its older reference remains a separate comparison. The builder does not
 import that preview binary. See [the review inventory](REVIEW.md) for accepted
 motion work, current evidence and remaining limits. The new face and skin pass
-is still awaiting visual acceptance and the final local validation gate.
+has passed local export and surface checks. User approval of its appearance is
+still pending.
 
 ## Rebuild
 
@@ -51,8 +52,7 @@ The shared surface treatment adds facial pigment, cloth folds and seams,
 matte leather, and shaped uniform trim. The current face source uses separate
 2048-pixel male and female skin maps. It preserves local color differences,
 adds spatial roughness and derives restrained normals from fine source grain.
-Native UVs and the light/brown/dark palette controls remain intact. This new
-appearance pass is under review. Civilian garments keep their own colors and
+Native UVs and the light/brown/dark palette controls remain intact. Civilian garments keep their own colors and
 do not retain military
 cockades, chin scales, cords or epaulettes. Each complete hat is one replaceable
 headwear part, including its small trim pieces.
@@ -98,7 +98,8 @@ ammunition, apply damage, or move an actor. The later motion pass also corrects
 weapon grips and loading, throws, crouched attacks, crawl support, work gestures,
 recovery, mounted transitions and roof climbing. Climb supports, saved endpoints
 and timing are retained. These focused checks do not certify every combination;
-the review inventory records the remaining lance wrist and side-step loop issues.
+the review inventory records the corrected lance grips, their transition checks,
+and the retained side-step loop seams.
 
 Open `/renderer-sandbox` and select **Ocho personajes** to inspect all eight
 appearances and move or equip them without loading a saved campaign. The combat

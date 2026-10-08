@@ -39,7 +39,7 @@ The reviewed loading set contains 76 rifle/pistol clips per anatomy, including s
 - Crouch/prone transitions use planted hands and knees. Crawling includes alternating leg assistance. The [unarmed prone support](../../../docs/art/prone-arm-support-3d-review-2026-10-07.md) is retained and fitted to the revised torso motion; the actual planted sleeve surface determines its pace, while equipped crawls retain their own pace. Recovery starts from the preceding resting pose. Work gestures have continuous arm arcs; prone working palms and fingers stay above the floor.
 - The accepted [standing unarmed side steps](../../../docs/art/standing-unarmed-sideways-support-3d-review-2026-10-07.md) retain their exact published clips and pace. Their native boot support passes on the revised bodies. The [standing rifle side steps](../../../docs/art/standing-rifle-sideways-support-3d-review-2026-10-07.md) use the same native support and a reviewed chest-level carry. The support wrist stays below 36.6 degrees of bend and its palm stays within 2.35 mm of the rifle; the previous upright carry bent the wrist sharply. Fresh authoring passes complete-boot, travel-slip, wrist and grip checks.
 - Riders fit the saddle and moving stirrups. Mounting follows a continuous leg and supporting-hand path. Falls clear the horse before reaching the existing ground posture. The saved gameplay position does not move during the animation.
-- Lance carry and brace use bounded native wrist and finger frames. The correction covers 17 existing non-thrust clips per anatomy; thrust attacks, torso and leg motion, durations and markers remain unchanged. The runtime blends the lance frame through carry/brace transitions instead of switching it at the first tick.
+- Lance carry and brace use bounded native wrist and finger frames. This grip correction covers 17 existing non-thrust clips per anatomy; it preserves thrust attacks, torso and leg motion, durations and markers. The separate incoming [standing lance idle support](../../../docs/art/standing-lance-idle-support-3d-review-2026-10-07.md) changes only the six thigh/calf/foot rotation tracks in `stand.idle.lance` per anatomy. Its source integration preserves the revised upper-body grip, Root, pelvis, ball tracks and timing. The runtime blends the lance frame through carry/brace transitions instead of switching it at the first tick.
 - Roof climbing keeps continuous knee and elbow bend planes, a deeper intermediate foothold, and a lower forward mantle. The released hands return to idle before the final frame. Both native anatomies pass rung and roof contact checks, including runtime fits for 2–4.2 m ladders, diagonal approaches and vertical hatches. The saved endpoints, duration and action markers are retained.
 
 The animation banks preserve native bone lengths and scales. They do not change hit damage, AP costs, ammunition, inventory ownership, or gameplay event markers. The two-cut lab combination remains exclusive to the old reference: one production strike has one contact marker.
@@ -52,10 +52,11 @@ The audit keeps immutable source snapshots, exported-library hashes, exact frame
 
 The original baseline records 672 movement frames across all eight appearances and 27 representative actions. The appearance pass adds 756 frames across six remaining presets and 41 representative actions. Focused checks cover the poncho, braid, coat tails, long garments, firearms, throws, mounted transitions, hands and task arcs. The final combined review adds 864 rendered images: 288 full-body frames and 576 close views of heads and hands, across all eight presets and 12 selected actions. The two complete native banks were also sampled at 120 Hz for joint-length, scale, loop-seam and abrupt-motion checks. That scan found and led to corrections for maintenance arm paths, climb knees, loading arms and recovery wrists. The maintenance review adds 66 rendered images and native arc tests for both anatomies.
 
-The final delivery scan, recorded in `scan-delivery-668` after the guard and
-lance integration, covers all 668 clips and 165,724 sampled poses at 120 Hz.
+The final delivery scan, recorded in `scan-delivery-668` after the guard,
+lance grip and incoming standing lance idle support integrations, covers all
+668 clips and 165,724 sampled poses at 120 Hz.
 Its manifest hash is
-`7546be6e251f14dd83554993f273cb44b5cb2e6f3226aba937cec378ff347701`.
+`72774dd03356ff62f6bd5a9e6700929a310e2fa04e62d55f5dea39564d742a74`.
 The recorded manifest, both body files and both animation banks match the
 canonical candidate and the published library byte for byte.
 The largest native joint-length error is below 0.000001 m and the largest scale
@@ -108,9 +109,11 @@ result is described as an entirely green suite. The older full run (5,457
 passed, 26 failed, 5 skipped) remains historical evidence; its generated-asset
 failures were corrected before these final gates.
 
-The combined focused gate after the guard and lance corrections passed all
-114 tests. This is a separate affected-area check, not a replacement for the
-broad results and baseline failures above.
+The combined focused gate after the guard and lance grip corrections passed
+all 114 tests, before the final standing lance idle support integration. The
+subsequent lance integration gate passed all 10 grip, complete-boot support
+and runtime transition tests. These are separate affected-area checks, not a
+replacement for the broad results and baseline failures above.
 
 Typecheck, production build and published-library verification pass. The live
 lab loads all eight characters and the three skin palettes. Pistol, rifle,

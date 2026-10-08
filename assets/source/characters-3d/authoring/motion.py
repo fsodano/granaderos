@@ -204,7 +204,7 @@ def _collect(rig):
     return {pb.name:(pb.location.copy(),pb.rotation_quaternion.copy()) for pb in rig.pose.bones}
 
 
-def _write_clip(rig, name, samples, duration, loop=True, grounding=None, times=None, support=None, native_sideways=None):
+def _write_clip(rig, name, samples, duration, loop=True, grounding=None, times=None, support=None, native_sideways=None, native_lance_idle=None):
     action=bpy.data.actions.new(name)
     rig.animation_data_create();rig.animation_data.action=action
     if loop:
@@ -239,6 +239,12 @@ def _write_clip(rig, name, samples, duration, loop=True, grounding=None, times=N
             root=rig.pose.bones['Root']
             root.matrix=Matrix.Translation((0,0,goals[i]-lowest)) @ root.matrix
             sample['Root']=(root.location.copy(),root.rotation_quaternion.copy())
+    lance_support=None
+    if native_lance_idle is not None:
+        # PR237 fits complete boots after loop closure. Keep the newer common
+        # posture support path unchanged and correct only this native guard.
+        from lance_idle_support import support_clip
+        samples,times,lance_support=support_clip(native_lance_idle,samples,duration,times,FPS,'boot')
     arm_support=None
     if support is not None and name in ('prone.idle.unarmed','prone.crawl.unarmed'):
         from prone_arm_support import support_clip as support_arms
@@ -290,6 +296,7 @@ def _write_clip(rig, name, samples, duration, loop=True, grounding=None, times=N
     strip.frame_end=math.ceil(end_frame-1e-8)
     track.mute=True
     result={'name':name,'duration':round(duration,6),'loop':loop,'events':{}}
+    if lance_support:result['nativeBootSupport']=lance_support
     if support:result['nativeBootSupport']={'method':'native-leg-rotations','surface':'actual-sole-and-weighted-shaft','floor':.006,'sampleRate':FPS}
     if sideways_support:result['nativeSidewaysSupport']=sideways_support
     if arm_support:
@@ -1036,7 +1043,8 @@ def apply_animations(ctx, only=None):
     throwing_only=bool(only) and all(s['gesture'] in ('throw','throwKnife','bolas') for s in specs)
     climbing_only=bool(only) and all(s['gesture'] in ('climbUp','climbDown') for s in specs)
     riding_only=bool(only) and all(s['posture']=='mounted' for s in specs)
-    contact_only=loading_only or mounting_only or throwing_only or climbing_only
+    lance_idle_only=bool(only) and all(s['posture']=='standing' and s['equipment']=='lance' and s['gesture']=='idle' for s in specs)
+    contact_only=loading_only or mounting_only or throwing_only or climbing_only or lance_idle_only
     crouch_support_only=bool(only) and all(s['posture']=='crouched'and s['gesture']in('idle','walk')for s in specs)
     prone_support_only=bool(only) and all(s['posture']=='prone'and s['gesture']in('idle','crawl')for s in specs)
     sideways_support_only=bool(only) and all(s['posture']=='standing'and s['gesture']in('strafeLeft','strafeRight')for s in specs)
@@ -1215,7 +1223,7 @@ def apply_animations(ctx, only=None):
             samples.append(pose)
         supported=(gesture in ('transition','pickup','heal','free','walk','run','crawl','strafeLeft','strafeRight') and posture!='mounted') or (posture=='prone' and gesture=='idle' and equipment=='unarmed')
         native_sideways=(ctx,speed) if posture=='standing' and equipment in ('unarmed','long-gun','short-gun','blade','knife','lance') and gesture in ('strafeLeft','strafeRight') else None
-        meta=_write_clip(rig,spec['name'],samples,duration,spec['loop'],times=times,support=ctx if supported and native_sideways is None else None,native_sideways=native_sideways)
+        meta=_write_clip(rig,spec['name'],samples,duration,spec['loop'],times=times,support=ctx if supported and native_sideways is None else None,native_sideways=native_sideways,native_lance_idle=ctx if posture=='standing' and equipment=='lance' and gesture=='idle' else None)
         meta.update(spec);meta.update({'duration':round(duration,6),'events':markers,'markers':markers,'source':source,'sampleRate':SAMPLE_FPS,'timingAuthority':'simulation','rootMotion':'in-place'})
         if gesture=='reload' and equipment=='long-gun':meta['propCues']=[{'item':'ramrod','socket':'socket_handLeft_tool','start':round(duration*.46,6),'end':round(duration*.86,6),'rotation':[0,0,math.pi/2]}]
         if equipment=='long-gun' and gesture in ('reload','unload'):

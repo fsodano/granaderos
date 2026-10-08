@@ -667,3 +667,15 @@ The native standing rifle guard and initial/final stock-strike endpoints now kee
 ## Current shop forge and depot porch frames
 
 Authored shop and forge porches now expose their source timber posts, paired ties and shallow roof planes; depot loading frames retain their distinct three posts, warm stone feet and broad header. Actual supports, standing doors, edited corners, saved roofs and normal cutaways remain covered. All fifty-four combined affected checks, type/docs/baseline checks and export `2bb2077f2c1a` pass. Ninety actual original/slab/accessible-roof/close views pass without browser errors and were compared with the three current sprites. The source receipt and unchanged-file publication bridge retain the actual capture commit. See [the porch review](../art/source-work-porches-3d-review-2026-10-07.md).
+
+## Current depot stone pier volumes
+
+Authored depot piers now retain the current source's rectangular warm stone feet and capitals around their existing supported shafts. Legacy and edited-corner fallbacks, real openings, saved finishes and upper routes remain covered. All fifty-four combined affected checks, type/docs/baseline checks and export `6c318168bf4c` pass. Thirty source-pinned original/slab/accessible-roof/close views and six final combined porch-and-pier views pass without browser errors. Selected views were compared with the current depot sprite. See [the pier review](../art/depot-source-piers-3d-review-2026-10-07.md).
+
+## Standing lance idle boot support
+
+Both standing lance idle clips now support complete native boots while retaining all other clips, clocks, upper contact and dimensions. Fourteen affected checks, native/profile/type/docs/baseline checks and export `5ba61ae9ed40` pass. All four ordinary owned and dismounted lance routes save their destinations; seventy-two accepted source-pinned captures have no browser errors. Selected guards and supported feet were compared with the current walking sheets. The corrected setup failure and actual source bridge remain explicit. This accepts native idle support only. See [the lance review](../art/standing-lance-idle-support-3d-review-2026-10-07.md).
+
+## Current smithy brick chimney
+
+The authored smithy now retains its source brick shaft, broad brick cap and inset dark flue on actual intact supports. Legacy chimneys, edited supports, saved finishes, room disclosure and upper routes remain covered. Fifty-one affected checks, type/docs/baseline checks and combined export `b0f73eb21870` pass. Thirty-four source-pinned browser views pass without errors; selected views were compared with the current sprite, including the full chimney close view. The capture source, unchanged publication bridge and initial loading retries are recorded. See [the chimney review](../art/smithy-source-chimney-3d-review-2026-10-07.md).
