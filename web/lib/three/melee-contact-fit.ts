@@ -2,13 +2,14 @@ import type {ContactActorModel} from './contact-target-model';
 import {AnimationAction,AnimationClip,AnimationMixer,Matrix4,Mesh,Object3D,Quaternion,Skeleton,SkinnedMesh,Triangle,Vector3} from 'three';
 import type {ClipSpec} from './actor-assets';
 import type {ActorCue,ContactTarget,ContactSupport} from './presentation';
+import {animationPhaseRange} from './animation-clock';
 
 export type ContactActorResolver=(target:ContactTarget)=>ContactActorModel|undefined;
 type Limb={base:Object3D;middle:Object3D;end:Object3D;first:number;second:number};
 type Sole={mesh:SkinnedMesh;vertices:number[];outline:number[];floor:number};
 type SkinInfluence={bone:Object3D;point:Vector3;weight:number};
 type NativePathSample={time:number;shoulder:Vector3;hand:Vector3;hips:Vector3[];feet:Vector3[];soleMin:number[]};
-type Plan={key:string;cueId:string;target:Object3D;hand:Vector3;body:Vector3;step:Vector3;rearStep:Vector3;contact:number;duration:number;pistol?:boolean;sabre?:boolean;twoHands?:boolean;handRecovery?:number;yaw?:number;turn?:{fromYaw:number;toYaw:number;until:number;footDistance:number}};
+type Plan={key:string;cueId:string;target:Object3D;hand:Vector3;handFrom?:Vector3;handHandoffBegin?:number;body:Vector3;step:Vector3;rearStep:Vector3;contact:number;duration:number;pistol?:boolean;sabre?:boolean;twoHands?:boolean;handRecovery?:number;yaw?:number;turn?:{fromYaw:number;toYaw:number;until:number;footDistance:number}};
 const up=new Vector3(0,1,0);
 const angle=(value:number)=>Math.atan2(Math.sin(value),Math.cos(value));
 const smooth=(value:number)=>{const t=Math.max(0,Math.min(1,value));return t*t*(3-2*t);};
@@ -258,7 +259,7 @@ export class NativeMeleeContactFit {
   // current model/floor/cell identity reaches contact. Refit its current hand
   // surface, then admit the complete new wrist, gait and floor path again.
   if((spec.name.startsWith('stand.slash.blade')||twoHands)&&cue.phase==='contact'&&(previousPlan?.sabre||previousPlan?.twoHands)&&previousPlan.target===target&&previousPlan.key===key.replace(/:contact$/,':prepare')&&Number.isFinite(previousPlan.yaw)&&Math.abs(angle(yaw-previousPlan.yaw!))<1e-7){
-   const retained={...previousPlan,key,hand:correction.clone().applyQuaternion(rootRotation.clone().invert()),body:previousPlan.body.clone(),step:previousPlan.step.clone(),rearStep:previousPlan.rearStep.clone(),turn,yaw};
+   const retained={...previousPlan,key,hand:correction.clone().applyQuaternion(rootRotation.clone().invert()),...(previousPlan.sabre?{handFrom:previousPlan.hand.clone(),handHandoffBegin:animationPhaseRange({...spec,duration:clip.duration},cue.action,'contact')[0]}:{}),body:previousPlan.body.clone(),step:previousPlan.step.clone(),rearStep:previousPlan.rearStep.clone(),turn,yaw};
    if(this.pathAllowed(retained,clip,support,action)){this.plan=retained;this.bodyAdvance=Math.hypot(retained.body.x,retained.body.z);return;}
   }
   let accepted=false,acceptedPlan:Plan|undefined;
@@ -476,7 +477,13 @@ export class NativeMeleeContactFit {
   }
   // Keep the exact held contact. The added hand correction then returns
   // to its native guard before the pelvis completes its supported retreat.
-  const handDelta=plan.hand.clone().applyQuaternion(rootRotation).multiplyScalar(handWeight),handTarget=this.position(this.limbs.get('hand_r')!.end,new Vector3()).add(handDelta),leftTarget=plan.twoHands?this.position(this.limbs.get('hand_l')!.end,new Vector3()).add(handDelta):undefined,body=plan.body.clone().applyQuaternion(rootRotation).multiplyScalar(weight);
+  // The newly sampled target may breathe between wind-up and contact. Begin
+  // from the admitted wind-up wrist correction, then reach the current target
+  // correction at the original contact marker without an edge displacement.
+  const handDelta=plan.hand.clone();
+  if(plan.handFrom){const begin=plan.handHandoffBegin??0;handDelta.copy(plan.handFrom).lerp(plan.hand,smooth((time-begin)/(plan.contact-begin)));}
+  handDelta.applyQuaternion(rootRotation).multiplyScalar(handWeight);
+  const handTarget=this.position(this.limbs.get('hand_r')!.end,new Vector3()).add(handDelta),leftTarget=plan.twoHands?this.position(this.limbs.get('hand_l')!.end,new Vector3()).add(handDelta):undefined,body=plan.body.clone().applyQuaternion(rootRotation).multiplyScalar(weight);
   const turnRear=plan.turn?angle(plan.turn.fromYaw-this.root.rotation.y)*(time<plan.contact?1-rearWeight:0):0;
   const lead=footTargets.get('r')!,rear=footTargets.get('l')!;if(plan.turn)rear.sub(this.position(this.root,new Vector3())).applyAxisAngle(up,turnRear).add(this.position(this.root,new Vector3()));lead.add(plan.step.clone().applyQuaternion(rootRotation).multiplyScalar(leadWeight));rear.add(plan.rearStep.clone().applyQuaternion(rootRotation).multiplyScalar(rearWeight));
   rear.y+=rearArc*Math.min(.035,(plan.rearStep.length()+(plan.turn?.footDistance??0))*.1);lead.y+=leadArc*Math.min(.045,plan.step.length()*.1);

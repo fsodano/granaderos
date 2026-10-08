@@ -120,6 +120,9 @@ if manifest['complete']:
   subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-equipped-crouch-support.py')],cwd=ROOT,check=True)
   # Raised crouched guards retain the same supported native lower body.
   subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-crouched-guard-support.py')],cwd=ROOT,check=True)
+  # Retain the complete current bank and clocks; restore only the reviewed
+  # standing sabre thrust right-arm/wrist/thumb rotation set.
+  subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-standing-blade-wrists.py')],cwd=ROOT,check=True)
  else:subprocess.run(['node',str(ROOT/'tools/characters-3d/compile-locomotion-profile.mjs')],cwd=ROOT,check=True)
  # Fit existing long-cloth shapes only after the final native support poses.
  subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-long-cloth-support.py')],cwd=ROOT,check=True)

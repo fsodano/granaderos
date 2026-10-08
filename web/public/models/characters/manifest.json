@@ -2325,8 +2325,8 @@
   "animationLibraries": {
     "male": {
       "url": "/models/characters/male-animations.glb",
-      "bytes": 12559860,
-      "sha256": "624915277f2f4f842c0f2b8c251e91aee7b5436319612e327ecbb174fe1f8cda",
+      "bytes": 12564152,
+      "sha256": "48a5966d73058d2fef5eb77837d229377178106a349b903983c0bb38ad914d87",
       "clips": [
         {
           "name": "stand.idle.unarmed",
@@ -11891,6 +11891,21 @@
             "name": "SabreThrust",
             "origin": "approved-granadero-preview",
             "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          },
+          "nativeBladeWrist": {
+            "method": "reviewed-six-native-rotation-donor",
+            "sourceSha256": "b39a215cc00f813d473d976427bd714cb9aa59038f30c5715150b884a405ad0e",
+            "sourceCommit": "fe1487c1ddb3b65546b9a39f49dd400df9e40855",
+            "sourceBankSha256": "50e17bdd8545c7b31ad4b338a300f0c65936d64c6e7f8e41cfc83e0f9fd3e68b",
+            "bones": [
+              "upperarm_r",
+              "lowerarm_r",
+              "hand_r",
+              "thumb_01_r",
+              "thumb_02_r",
+              "thumb_03_r"
+            ],
+            "preservedNativeClocksAndOtherChannels": true
           }
         },
         {
@@ -17125,8 +17140,8 @@
     },
     "female": {
       "url": "/models/characters/female-animations.glb",
-      "bytes": 12170444,
-      "sha256": "aa8cc1381835de19c1ffa747020d50225f92f3f8c1eb807e31c4a04007e2f37a",
+      "bytes": 12174736,
+      "sha256": "0d437c4296ce6e7657626f0a18815eddf1b3cdf75479933ddd8a5fada017542e",
       "clips": [
         {
           "name": "stand.idle.unarmed",
@@ -26692,6 +26707,21 @@
             "name": "SabreThrust",
             "origin": "approved-granadero-preview",
             "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+          },
+          "nativeBladeWrist": {
+            "method": "reviewed-six-native-rotation-donor",
+            "sourceSha256": "b39a215cc00f813d473d976427bd714cb9aa59038f30c5715150b884a405ad0e",
+            "sourceCommit": "fe1487c1ddb3b65546b9a39f49dd400df9e40855",
+            "sourceBankSha256": "acd207a21f486dfe5032a3d7e73fa5fdefbea7237209529d696b1bb4ce10c99d",
+            "bones": [
+              "upperarm_r",
+              "lowerarm_r",
+              "hand_r",
+              "thumb_01_r",
+              "thumb_02_r",
+              "thumb_03_r"
+            ],
+            "preservedNativeClocksAndOtherChannels": true
           }
         },
         {
