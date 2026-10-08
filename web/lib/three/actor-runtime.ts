@@ -41,13 +41,14 @@ export class ActorRuntime {
   private gestureSupport:NativeGestureBlendSupport;
   private climbFit?:NativeClimbContactFit;
   private meleeFit:NativeMeleeContactFit;
-  private clothMeshes:{mesh:Mesh;prone:number;crouched:number}[]=[];private clothProne=0;private clothCrouched=0;
+  private clothMeshes:{mesh:Mesh;prone:number;crouched:number;boot?:number;bootClips:Set<string>}[]=[];private clothProne=0;private clothCrouched=0;
+  private clothActions=new Map<AnimationAction,{name:string;mirrored:boolean}>();
   private actionHand:HandRole='handRight';private actionBarrel=0;
   private seatActions=new Map<AnimationAction,{spec:ClipSpec;mounted:boolean}>();private saddlePosition=new Vector3();
   readonly root=new Group();readonly model:Object3D;private mixer:AnimationMixer;private action:AnimationAction|null=null;private actionKey='';private clipSpec:any;private ownedMaterials=new Set<Material>();private equipment=new Group();private equipmentKey='';private clothesKey='';private colorKey='';private horse?:Object3D;private horseMixer?:AnimationMixer;private horseAction?:AnimationAction;private horseClip='';private visual:ActorVisual;private bones=new Map<string,Object3D>();private clothing?:Object3D;private ghost?:Group;private cueStartedAt=0;private temporaryProps=new Map<string,Object3D>();private completedCues=new Set<string>();
   constructor(readonly asset:LoadedActor,visual:ActorVisual,private onCueComplete?:(key:string,id:string)=>void,private contactActor?:ContactActorResolver){
     this.visual=visual;this.model=clone(asset.body.scene);this.root.add(this.model);this.root.name=visual.key;
-    this.model.traverse(node=>{this.bones.set(node.name,node);if(node instanceof Mesh){node.castShadow=true;node.receiveShadow=true;node.frustumCulled=false;const targets=node.morphTargetDictionary;if(targets?.cloth_prone!==undefined&&targets?.cloth_crouched!==undefined)this.clothMeshes.push({mesh:node,prone:targets.cloth_prone,crouched:targets.cloth_crouched});}});
+    this.model.traverse(node=>{this.bones.set(node.name,node);if(node instanceof Mesh){node.castShadow=true;node.receiveShadow=true;node.frustumCulled=false;const targets=node.morphTargetDictionary;if(targets?.cloth_prone!==undefined&&targets?.cloth_crouched!==undefined)this.clothMeshes.push({mesh:node,prone:targets.cloth_prone,crouched:targets.cloth_crouched,boot:targets.cloth_prone_boot_clearance,bootClips:new Set(node.userData.nativeClothBootSupport?.clips??[])});}});
     this.gaitSupport=new NativeGaitTransitionSupport(this.model,this.root,asset.appearance.parts?.footwear?.replace('{lod}',String(asset.lod)));
     this.gestureSupport=new NativeGestureBlendSupport(this.model,this.root,asset.appearance.parts?.footwear?.replace('{lod}',String(asset.lod)));
     this.climbFit=new NativeClimbContactFit(this.model,this.root);
@@ -208,6 +209,7 @@ export class ActorRuntime {
       const previous=this.action;this.action=this.mixer.clipAction(clip);this.action.reset();this.action.enabled=true;this.action.clampWhenFinished=!clipSpec.loop;this.action.setLoop(clipSpec.loop?LoopRepeat:LoopOnce,clipSpec.loop?Infinity:1);this.action.play();
       if(previous&&previous!==this.action){if(visual.action==='fire'&&visual.cue?.shotHand)previous.stop();else this.action.crossFadeFrom(previous,.12,false);}this.actionKey=key;this.clipSpec=clipSpec;this.cueStartedAt=visual.cue?.startedAt??now;
       if(this.horse)this.seatActions.set(this.action,{spec:clipSpec,mounted:visual.mounted||visual.cue?.fromPosture==='mounted'});
+      if(this.clothMeshes.some(cloth=>cloth.boot!==undefined))this.clothActions.set(this.action,{name:sourceClip.name,mirrored:mirror});
     }
     this.actionHand=hand;this.actionBarrel=barrel;
     if(this.horse&&this.horseMixer){
@@ -252,7 +254,13 @@ export class ActorRuntime {
     // follows ordinary clip crossfades without adding a cloth simulation.
     const blend=1-Math.exp(-Math.max(0,delta)/.045);
     this.clothProne+=(prone-this.clothProne)*blend;this.clothCrouched+=(crouched-this.clothCrouched)*blend;
-    for(const {mesh,prone,crouched}of this.clothMeshes){mesh.morphTargetInfluences![prone]=this.clothProne;mesh.morphTargetInfluences![crouched]=this.clothCrouched;}
+    for(const [action]of this.clothActions)if(action!==this.action&&(!action.enabled||!action.isScheduled()))this.clothActions.delete(action);
+    for(const {mesh,prone,crouched,boot,bootClips}of this.clothMeshes){
+      mesh.morphTargetInfluences![prone]=this.clothProne;mesh.morphTargetInfluences![crouched]=this.clothCrouched;
+      // Use the actual native crossfade weights, including paid actions held
+      // at timeScale zero. Crawling and mirrored lower poses keep their source.
+      if(boot!==undefined){let weight=0;for(const [action,clip]of this.clothActions)if(action.enabled&&action.isScheduled()&&!clip.mirrored&&bootClips.has(clip.name))weight+=action.getEffectiveWeight();mesh.morphTargetInfluences![boot]=Math.min(this.clothProne,Math.max(0,weight));}
+    }
   }
   private placeRider(saddle:number[]|undefined){
     this.model.position.set(0,0,0);let totalWeight=0;

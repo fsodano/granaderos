@@ -49,7 +49,7 @@ for(const id of ['friar','woman-shawl'])for(const lod of [0,1,2]){
   const record=manifest.appearances[id].lods[lod],bytes=readFileSync(new URL(`.${record.url}`,publicRoot));
   assert.equal(createHash('sha256').update(bytes).digest('hex'),record.sha256);assert.equal(bytes.length,record.bytes);assert.equal(manifest.complete,true);
   const source=await asset(id,lod),actor=new ActorRuntime(source,visual(id,'prone')),mesh=clothMesh(actor,id,lod);
-  assert.deepEqual(mesh.morphTargetDictionary,{cloth_crouched:0,cloth_prone:1});assert.equal(mesh.skeleton.bones.length,53);
+  assert.deepEqual(mesh.morphTargetDictionary,{cloth_crouched:0,cloth_prone:1,...(record.nativeClothBootSupport?{cloth_prone_boot_clearance:2}:{})});assert.equal(mesh.skeleton.bones.length,53);
   for(const target of mesh.geometry.morphAttributes.position){
    const largest=Math.max(...target.array.map(Math.abs));
    assert.ok(target.array.every(Number.isFinite),'Sparse index/value compaction preserves finite values');

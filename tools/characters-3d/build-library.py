@@ -48,7 +48,7 @@ for preset in PRESETS:
   if previous.get('nativeClothSupport')and('appearance',preset,record['lod'])not in jobs:
    path=OUT/Path(record['url']).name
    assert hashlib.sha256(path.read_bytes()).hexdigest()==previous['sha256'],'Changed reviewed cloth body: '+str(path)
-   record.update({key:previous[key]for key in('bytes','sha256','nativeClothSupport')})
+   record.update({key:previous[key]for key in('bytes','sha256','nativeClothSupport','nativeClothBootSupport')if key in previous})
  sockets=manifest['appearances'][preset]['sockets']
  if 'handLeft_pistol'in sockets:sockets['handLeft_pistol']['mirror']={'socket':'handRight_pistol','localAxis':'z'}
 for gender in ('male','female'):
@@ -105,3 +105,4 @@ if manifest['complete']:
  else:subprocess.run(['node',str(ROOT/'tools/characters-3d/compile-locomotion-profile.mjs')],cwd=ROOT,check=True)
  # Fit existing long-cloth shapes only after the final native support poses.
  subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-long-cloth-support.py')],cwd=ROOT,check=True)
+ subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-close-long-cloth-boot-support.py')],cwd=ROOT,check=True)
