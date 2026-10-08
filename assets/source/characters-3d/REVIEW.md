@@ -15,7 +15,7 @@ The library contains eight human appearances, three mesh detail levels per appea
 | Exploradora | Green shirt, trousers and continuous braid |
 | Mujer con rebozo | Light blouse, burgundy shawl, skirt and hair bun |
 
-The earlier pass corrects open hairlines, collar seams, sleeve cuffs and cloth detail. The user requested a further face pass because the Granadero still looked like a toy. The new source uses clean CC0 young male and female skin maps from the MakeHuman system pack, at 2048 pixels. It retains local color variation, adds spatial roughness, and derives restrained normals from fine source grain. Aksel is no longer used by the current appearance source. Faces retain the native human surface and UVs; selectable skin color, female proportions, bind poses and clothing parts remain intact. **This new face pass is not yet visually accepted.**
+The earlier pass corrects open hairlines, collar seams, sleeve cuffs and cloth detail. The user requested a further face pass because the Granadero still looked like a toy. The new source uses clean CC0 young male and female skin maps from the MakeHuman system pack, at 2048 pixels. It retains local color variation, adds spatial roughness, and derives restrained normals from fine source grain. Aksel is no longer used by the current appearance source. Faces retain the native human surface and UVs; selectable skin color, female proportions, bind poses and clothing parts remain intact. The exported face review now shows local lip and cheek color, curved irises and pupils, and fitted individual brow hairs. The same detail is retained in all 24 appearance LODs. Cloth weave, buff leather, polished visors and brass have distinct surface responses. The final exported Granadero and scout faces, and all eight appearances in the live lab, were visually checked. This is the agent's recorded review; final user acceptance of the new appearance has not been given.
 
 Poncho openings allow the arms to pass beside the torso. Long garments have separate crouched, face-down and face-up shapes. Coat tails flatten under a fallen body rather than lifting the body above the floor. Military crossbelts share seam vertices and native skin weights with each reduced coat, so the shoulder strap follows the actual cloth at all three detail levels. These are authored cloth corrections, not a cloth simulation.
 
@@ -68,17 +68,31 @@ These are recorded limits, not accepted anatomy. The scan and source checks are
 kept in the local `scan-final-668` evidence bundle.
 
 Face comparisons are under `artifacts/character-anatomy-review/face-reset/`.
-The before views are recorded; candidate exports and final visual review are in
-progress. Compare the face at the same projected size, as well as at the normal
-isometric game scale. Pixel comparison off uses the native renderer; it does not
+The final face, head, hand and body views are in its `delivery/` directory,
+alongside live screenshots of all eight characters. Compare the face at the
+same projected size, as well as at the normal isometric game scale. The 24
+facial surface checks sample the actual native head UVs and verify that color,
+normal and roughness detail survives export. All 26 body/garment skeleton
+signatures retain the exact native joints, hierarchy and inverse-bind matrices. Pixel comparison off uses the native renderer; it does not
 apply the pixel or contour pass.
 
 ## Validation status
 
-The historical full-suite baseline was 5,457 passed, 26 failed and 5 skipped.
-Those counts are baseline evidence, not a passing final gate. Corrections and
-the new face exports are awaiting the final local gate; its result must replace
-this pending status before delivery is described as validated.
+The broad local quick gate completed all 809 selected files: **5,642 passed,
+4 failed, 0 skipped**. The four failures match the current-main baseline
+exactly: artillery mount cue (0 vs 1), climb segment (0.01299638895332932 vs
+0.5), roof inset (245.379320490434 vs 254.5), and projected height (1.2765625
+vs 1.5). The separate 47-file character/contact gate passed **398 of 399**
+tests; its only failure is that same baseline climb timing assertion. Neither
+result is described as an entirely green suite. The older full run (5,457
+passed, 26 failed, 5 skipped) remains historical evidence; its generated-asset
+failures were corrected before these final gates.
+
+Typecheck, production build and published-library verification pass. The live
+lab loads all eight characters and the three skin palettes. Pistol, rifle,
+sword and knife actions, and a paired sword attack in the game scene, were
+checked without new browser errors. Guard integration adds 12 support/blend
+checks on the final bodies, with all unrelated motion channels preserved.
 
 Acceptance applies to the tested library and recorded views. It is not a claim
 of historical reconstruction accuracy, universal cloth collision, or perfect
