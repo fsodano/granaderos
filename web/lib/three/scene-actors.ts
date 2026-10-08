@@ -1,7 +1,7 @@
 import type {ActorRuntime} from './actor-runtime';
 import type {ActorVisual} from './presentation';
 
-type SceneActorRuntime=Pick<ActorRuntime,'root'|'update'|'tick'>;
+type SceneActorRuntime=Pick<ActorRuntime,'root'|'update'|'tick'>&Partial<Pick<ActorRuntime,'prewarmContact'>>;
 export type SceneActorEntry={runtime?:SceneActorRuntime;visual?:ActorVisual;pending?:boolean;error?:boolean};
 type SceneActorFrame={visuals:readonly ActorVisual[];entry:(key:string)=>SceneActorEntry|undefined;active:(visual:ActorVisual)=>boolean;delta:number;now:number;ambientPaused?:boolean;reducedMotion?:boolean;report:(error:unknown)=>void};
 
@@ -24,5 +24,6 @@ export function advanceSceneActors({visuals,entry,active,delta,now,ambientPaused
   if(Boolean(visual.cue?.contactTarget)!==contact||actor.error)continue;
   try{runtime.tick(ambientPaused&&visual.action==='idle'?0:delta,now,reducedMotion);}catch(error){actor.error=true;report(error);}
  }
+ for(const {actor,runtime}of ready)if(!actor.error&&runtime.root.visible)try{runtime.prewarmContact?.();}catch(error){actor.error=true;report(error);}
  return ready.length;
 }

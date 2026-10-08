@@ -8,7 +8,8 @@ import {TILE_METRES} from './projection';
 import {NativeGaitTransitionSupport} from './gait-transition-support';
 import {NativeGestureBlendSupport} from './gesture-blend-support';
 import {NativeClimbContactFit} from './climb-contact-fit';
-import {NativeMeleeContactFit,type ContactActorResolver} from './melee-contact-fit';
+import type {ContactActorResolver} from './melee-contact-fit';
+import {NativeReadyMeleeContactFit as NativeMeleeContactFit} from './melee-ready-contact-fit';
 import type {ActorVisual} from './presentation';
 
 export type {ContactActorResolver} from './melee-contact-fit';
@@ -322,6 +323,11 @@ export class ActorRuntime {
       const saddle=socket?this.root.worldToLocal(socket.getWorldPosition(this.saddlePosition)).toArray():saddleSpec?.position;
       this.placeRider(saddle);
     }
+  }
+  prewarmContact(){
+    const visual=this.visual,attached=this.equipment.userData.attached as Object3D[],freeGuard=!attached.some(item=>item.userData.hand==='handLeft'),gun=freeGuard?attached.find(item=>item.userData.hand==='handRight'&&this.itemSpec(item.userData.itemId)?.category==='rifle'):undefined;
+    if(!visual.contactWarm||visual.cue||visual.motion?.moving||visual.posture!=='standing'||visual.mounted||!visual.selected){this.meleeFit.prewarm(undefined,this.action!.getClip(),this.clipSpec,undefined,this.contactActor);return;}
+    const bound=boundClip(this.asset.clips,this.asset.animation.animations,'stand.butt.long-gun');this.meleeFit.prewarm(visual.contactWarm,bound.clip,bound.spec,gun,this.contactActor);
   }
   anchor(role:string){
     const hand=this.actionHand,held=this.visual.items.find(item=>item.socket===hand),spec=held&&this.itemSpec(held.id);
