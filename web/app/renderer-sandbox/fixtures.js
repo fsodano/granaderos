@@ -7,6 +7,7 @@ import {BUILDING_TYPES,BUILDING_FOOTPRINTS} from '../../../game/building-types.j
 import {CLIMB_HATCH_SCENARIO,createClimbHatchBattle} from './climb-hatch-fixture.js';
 import {createArchitectureReviewBattle} from './architecture-fixtures.js';
 import {BAYONET_SCENARIO,createBayonetReviewBattle} from './bayonet-fixture.js';
+import {REACH_SCENARIO,createReachReviewBattle} from './reach-fixture.js';
 import {PARTIAL_LOADING_SCENARIO,createPartialLoadingBattle} from './partial-loading-fixture.js';
 import {PAIRED_LOADING_SCENARIO,FOUR_BORE_LOADING_SCENARIO,createPairedLoadingBattle} from './paired-loading-fixture.js';
 
@@ -19,6 +20,7 @@ export const RENDERER_SCENARIOS=Object.freeze([
   {id:'equipped-crouch',label:'Agachado con equipo',help:'Dos combatientes con el mismo equipo. Cambia el arma, selecciona cada combatiente y usa Alt + movimiento para desplazarte de costado sin girar. Puedes comparar entrada, avance y parada.'},
   {id:'combat',label:'Combate',help:'Fusil, pistola, sable, granada y cuchillo: cada especialista tiene un blanco enfrente. Los dos artilleros están junto al cañón. Usa las órdenes habituales; reinicia para repetir.'},
   BAYONET_SCENARIO,
+  REACH_SCENARIO,
   PARTIAL_LOADING_SCENARIO,
   PAIRED_LOADING_SCENARIO,
   FOUR_BORE_LOADING_SCENARIO,
@@ -136,6 +138,7 @@ function performance(count,architecture=false){
 }
 /** Fresh real battle state. Scene selection never issues private renderer poses. */
 export function createRendererSandboxBattle(id='combat'){
+  if(id==='reach-actions')return createReachReviewBattle();
   if(id==='equipped-crouch')return equippedCrouch();
   if(id.startsWith('equipped-crouch:'))return equippedCrouch(id.slice('equipped-crouch:'.length));
   if(id==='bayonets')return createBayonetReviewBattle();
