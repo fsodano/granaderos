@@ -1,7 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {Quaternion,Vector3,Matrix4,Box3,Ray} from '../web/node_modules/three/build/three.module.js';
+import {Quaternion,Vector3,Matrix4,Triangle} from '../web/node_modules/three/build/three.module.js';
 import {banks,manifest,sampleBank,readGlb,nativeScene} from './character-bank-fixture.mjs';
+import {openSurfaceProbe} from './open-surface-probe-fixture.mjs';
 const phases=[0,.12,.26,.30,.40,.43,.46,.58,.63,.70,.73,.77,.91,1],at=(values,fraction)=>values.find(value=>value.fraction===fraction);
 const angle=(a,b)=>a.angleTo(b),ahead=new Vector3(0,0,1);
 function bodySamples(bank,name){
@@ -125,20 +126,10 @@ function headContactProbe(bank){
   }
  }
  assert.ok(triangles.length>100&&hands.length>100,'The contact check uses exported head and hand surfaces');
- const bounds=new Box3().setFromPoints(triangles.flat()),ray=new Ray(new Vector3(),new Vector3(1,.137,.081).normalize()),hit=new Vector3();
- // Bin triangles in the plane normal to the ray. This retains the same exact
- // surface intersections without testing every head triangle for every finger.
- const u=new Vector3().crossVectors(ray.direction,new Vector3(0,1,0)).normalize(),v=new Vector3().crossVectors(ray.direction,u).normalize(),axes=[u,v];
- const ranges=axes.map(axis=>{const values=triangles.flat().map(point=>point.dot(axis));return [Math.min(...values),Math.max(...values)];});
- const bin=(value,axis)=>Math.max(0,Math.min(15,Math.floor((value-ranges[axis][0])/(ranges[axis][1]-ranges[axis][0])*16))),buckets=Array.from({length:256},()=>[]);
- for(const triangle of triangles){const spans=axes.map((axis,i)=>{const values=triangle.map(point=>point.dot(axis));return [bin(Math.min(...values),i),bin(Math.max(...values),i)];});for(let x=spans[0][0];x<=spans[0][1];x++)for(let y=spans[1][0];y<=spans[1][1];y++)buckets[x*16+y].push(triangle);}
- const inside=point=>{
-  if(!bounds.containsPoint(point))return false;
-  ray.origin.copy(point);const hits=[];
-  for(const triangle of buckets[bin(point.dot(u),0)*16+bin(point.dot(v),1)])if(ray.intersectTriangle(...triangle,false,hit))hits.push(point.distanceTo(hit));
-  hits.sort((a,b)=>a-b);const distinct=hits.filter((distance,i)=>distance>.002&&(!i||distance-hits[i-1]>.00001));
-  return distinct.length%2===1;
- };
+ // The head patch has open eye and neck boundaries. A single ray can
+ // misclassify an external fingertip as internal when it crosses a hole.
+ // Several oblique rays retain genuine interior points without that false hit.
+ const {inside}=openSurfaceProbe(triangles.map(face=>new Triangle(...face)));
  return (scene,heldItem)=>{
   const matrices=names.map((name,i)=>new Matrix4().multiplyMatrices(scene.getObjectByName(name).matrixWorld,inverseBinds[i])),headInverse=scene.getObjectByName('head').matrixWorld.clone().invert();
   let minimum=Infinity,contact=false;

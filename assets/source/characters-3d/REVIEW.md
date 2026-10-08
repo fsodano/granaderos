@@ -489,3 +489,20 @@ saw-tooth tonsure boundary. These are visible model limits, not differences
 in lighting or evidence of improvement across all faces. Clothing still has
 flat, sharp folds at the collar. The gallery, body hashes and per-character
 notes are in `artifacts/character-anatomy-review/delivery/face-family-review/`.
+
+
+## Prone throw contact-check correction, 8 October
+
+The prior female prone-throw failure at 0.717 seconds was a false positive
+from a single ray through the open head patch. The reported right-index
+fingertip is 33.951 mm from the nearest head triangle. Matched actual head
+renders and the existing six-direction open-surface classifier identify it
+as outside. No throw motion or asset changed.
+
+Punch and throw checks now share that classifier. All 16 contact/throw checks
+pass. A separate analytic-sphere test checks 64 interior and 64 exterior
+points around an open neck-like boundary; it also passes. This remains a
+sampled open-surface diagnostic, not a watertight-volume or between-frame
+collision proof. The earlier broad-suite result above remains attached to
+its exact checkpoint. Evidence is in
+`artifacts/character-anatomy-review/delivery/prone-throw-contact-review/`.
