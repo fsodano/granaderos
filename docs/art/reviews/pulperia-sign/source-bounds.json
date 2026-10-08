@@ -1,0 +1,92 @@
+{
+  "baseSource": "4a140a4fd8487b374da1c46174affb98721a2331",
+  "initialAffectedGate": {
+    "checks": 57,
+    "passed": 56,
+    "failed": 1,
+    "durationMs": 5241.966459,
+    "failedCheck": "actual pulperia signs remain inside their intact wall support and above standing door height",
+    "failedAssertion": "new Box3().setFromObject(sign).min.y >= 1.9",
+    "status": "preserved obsolete global-height failure; replaced with actual aperture safety rays"
+  },
+  "finalAffectedGate": {
+    "checks": 58,
+    "passed": 58,
+    "failed": 0,
+    "durationMs": 7601.099333
+  },
+  "allFourRotationBounds": [
+    {
+      "rotation": 0,
+      "height": 2.5,
+      "min": {
+        "u": 1.6257936288427537,
+        "y": 1.5475265979766846,
+        "v": -0.4792064259823299
+      },
+      "max": {
+        "u": 2.471153482877904,
+        "y": 2.279574394226074,
+        "v": -0.31999973350461275
+      },
+      "obsoleteMinHeightAssertion": false
+    },
+    {
+      "rotation": 90,
+      "height": 2.5,
+      "min": {
+        "u": 1.6257936288427537,
+        "y": 1.5475265979766846,
+        "v": -0.4792061206293523
+      },
+      "max": {
+        "u": 2.471153482877904,
+        "y": 2.279574394226074,
+        "v": -0.31999981392395327
+      },
+      "obsoleteMinHeightAssertion": false
+    },
+    {
+      "rotation": 180,
+      "height": 2.5,
+      "min": {
+        "u": 1.6257937080101685,
+        "y": 1.5475265979766846,
+        "v": -0.4792061206293523
+      },
+      "max": {
+        "u": 2.471153947817636,
+        "y": 2.279574394226074,
+        "v": -0.31999981392395327
+      },
+      "obsoleteMinHeightAssertion": false
+    },
+    {
+      "rotation": 270,
+      "height": 2.5,
+      "min": {
+        "u": 1.6257937080101685,
+        "y": 1.5475265979766846,
+        "v": -0.4792064259823299
+      },
+      "max": {
+        "u": 2.471153947817636,
+        "y": 2.279574394226074,
+        "v": -0.31999973350461275
+      },
+      "obsoleteMinHeightAssertion": false
+    }
+  ],
+  "normalUI": {
+    "allTemplateBeforeViews": 84,
+    "pulperiaOriginalBeforeViews": 12,
+    "pulperiaOriginalAfterViews": 12,
+    "pulperiaSlabAfterViews": 12,
+    "browserErrors": [],
+    "controls": "ordinary catalogue selectors, camera wheel/key input, compiled door/move/reveal fixtures"
+  },
+  "limits": [
+    "Physical source adaptation keeps the rail joined to the existing lifted porch; the 2D glyph is screen-facing, so both real 3D board faces carry it.",
+    "The plaque is small at the ordinary camera. This cut restores one missing source detail; it does not certify all architecture as fully polished."
+  ]
+}
