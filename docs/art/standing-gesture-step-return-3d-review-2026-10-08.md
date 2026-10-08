@@ -61,3 +61,19 @@ All measured fits succeed and retain complete weighted scans. This is a CPU meas
 Use the published `Vendas, recogida y liberación` scene and the ordinary HUD controls: `Vendar` (`heal`), ground collection (`lootBatch`, rendered as `loot`) and `Liberarse` (`free`). Medical playback has real 300 ms prepare/result phases. Ground pickup and release retain the unphased native duration. The fixture uses owned dressings, a valid injured adjacent ally, real ground items and actual boleadoras entanglement. Private pose injection is not an acceptance route. The integration checkout passes six before and six after normal HUD routes, with 144 captures, exact source and served bank hashes, no browser errors, and identical AP, cells and owned inventory. The baseline actor differs only by the already merged worker readiness hooks, which do not apply to these gestures. These rifle-equipped routes exercise ordinary contact and return; the changed-hand stepping matrix is independently covered by the focused physical checks. Local evidence is retained under `artifacts/three-gesture-step-return-current-review/`.
 
 No native bank, garment, architecture, gait or rifle-contact source file is included in this cut. Every earlier frozen cut remains unchanged.
+
+## Held clock and current publication
+
+Six additional current integration checks pass for both anatomies and all three
+LODs. They use the actual idle accessibility hold, pause during the step or
+through its endpoint, then resume. The complete boot minimum is 1.980860 mm,
+endpoint speed is at most 0.121116 mm/s, and all source/world/clock channels
+remain exact. The unchanged helper stays at `02724726`; the current runtime
+`9cb41d90` differs from released worker runtime `474212b4` only by the actual
+action time-scale argument. These test and documentation additions change no
+tested implementation or asset bytes.
+
+The ordinary selected fire cursor uses the right guard. Left-pistol aim occurs
+in offhand firing preparation, while the HUD blocks new orders during that
+presentation. An immediate left-aim-to-gesture sequence is focused physical
+coverage; it is not a currently reachable normal HUD acceptance route.
