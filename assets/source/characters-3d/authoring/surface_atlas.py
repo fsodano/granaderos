@@ -132,6 +132,11 @@ def surface_tile(name, colour, roughness, metallic, size=TILE_SIZE):
         shade += .13 * strands + .025 * broad
         rough = np.full_like(rough,.62) + .060 * strands + .025 * broad
         height = .23 * strands
+        if name == "Natural_Short_Hair":
+            fine=.70*np.cos(math.tau*(u*113+.18*np.sin(v*13)))+.30*_grain(x,y//12,4)
+            shade=1+.08*fine+.012*broad
+            rough=np.full_like(rough,.82)+.025*fine
+            height=.035*fine
     elif kind == 'wood':
         fibres = np.sin(math.tau * (u * 12 + .10 * np.sin(math.tau * v)))
         shade += .036 * fibres + .025 * grain

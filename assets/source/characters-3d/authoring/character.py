@@ -640,8 +640,11 @@ def create_character(preset="granadero", height=1.76):
                 radius=brow_random.uniform(.000038,.000068)
                 tube('Natural_Eyebrow_Hair_'+suffix,[start,(start+end)*.5+Vector((0,-.000055,.000015)),end],[radius,radius*.82,.000012],mats['hair'],'head',4)
     from anatomy_surface import scalp_patch, fitted_fingernails, hand_frames, hand_tone
-    hair=scalp_patch(mesh,faces,points,uvs,assignments,mats['hair'],preset in ('granadero','royalist'),gender=='female')
+    hair=scalp_patch(mesh,faces,points,uvs,assignments,mats['hair'],preset in ('granadero','royalist'),gender=='female',preset=preset)
     subdiv(hair,1)
+    if preset == "worker":
+        from hair_fringe import add_fringe
+        add_fringe(mesh,faces,points,assignments,hair,preset)
     # User photograph: broad woven yellow band, brass plate and red cords.
     hat_y=-.052;hat_base=1.692;hrings=[(hat_base,.087,.105),(1.725,.092,.108),(1.838,.101,.111),(1.851,.102,.111)]
     hv=[];hf=[]

@@ -56,6 +56,41 @@ def _preserve_head_skin(ctx,objects):
   for vertex,point in zip(skin.data.vertices,native):vertex.co=point
   skin.data.update()
 
+
+def _left_hand_component_vertices(obj):
+ """Select only the disconnected native left-hand/forearm island."""
+ adjacency=[[] for _ in obj.data.vertices]
+ for edge in obj.data.edges:
+  a,b=edge.vertices;adjacency[a].append(b);adjacency[b].append(a)
+ groups={group.index for group in obj.vertex_groups
+         if group.name in ('hand_l','lowerarm_l')
+         or (group.name.endswith('_l') and group.name.startswith(('thumb_','index_','middle_','ring_','pinky_')))}
+ seen=set();selected=set()
+ for vertex in obj.data.vertices:
+  if vertex.index in seen:continue
+  stack=[vertex.index];seen.add(vertex.index);component=[];weight=0
+  while stack:
+   index=stack.pop();component.append(index)
+   weight+=sum(group.weight for group in obj.data.vertices[index].groups if group.group in groups)
+   for neighbor in adjacency[index]:
+    if neighbor not in seen:seen.add(neighbor);stack.append(neighbor)
+  if weight>.5*len(component):selected.update(component)
+ return selected
+
+def _preserve_female_left_hand(ctx,objects,lod):
+ if ctx['gender']!='female' or lod==0:return
+ for skin in list(objects):
+  if not skin.name.startswith('Exposed_Human_Skin'):continue
+  selected=_left_hand_component_vertices(skin)
+  if not selected or len(selected)==len(skin.data.vertices):
+   raise ValueError('Expected a disconnected native left hand')
+  # Keep the complete original skin during BOTH reductions. Removing islands
+  # beforehand would redistribute the decimator budget to unrelated surfaces.
+  hand=skin.copy();hand.data=skin.data.copy();hand.name='Exposed_Human_Left_Hand'
+  bpy.context.collection.objects.link(hand);objects.append(hand)
+  hand['retain_left_hand_skin']=True
+  skin['replace_reduced_left_hand']=True
+
 def optimize_character(ctx,lod=0):
  rig=ctx['rig'];objects=ctx['objects']
  # Fitted brow pigment remains at every LOD; close hairs add fine relief.
@@ -87,6 +122,7 @@ def optimize_character(ctx,lod=0):
  from garment_detail import prepare_apparel_surface
  prepare_apparel_surface(ctx, objects)
  _preserve_head_skin(ctx,objects)
+ _preserve_female_left_hand(ctx,objects,lod)
  # Use a single attribute name on every object before decimation and joining.
  # Appearance pieces and owned garments may have been added after the native
  # body's face/cloth pigments. Missing attributes would otherwise become black
@@ -107,7 +143,7 @@ def optimize_character(ctx,lod=0):
  sources=[]
  for o in objects:
   for m in o.data.materials:
-   if m and m!=ctx['M']['skin'] and m not in sources:sources.append(m)
+   if m and m!=ctx['M']['skin'] and not m.get('preserve_cutout') and m not in sources:sources.append(m)
  atlas=bpy.data.materials.new('Apparel_Atlas');atlas.use_nodes=True;atlas.diffuse_color=(1,1,1,1)
  p=atlas.node_tree.nodes.get('Principled BSDF');p.inputs['Roughness'].default_value=1;p.inputs['Metallic'].default_value=1;p.inputs['Specular IOR Level'].default_value=.28
  # New cloth, braid, plume and relief materials exceed the old sixteen tiles.
@@ -138,8 +174,10 @@ def optimize_character(ctx,lod=0):
   fitted_cloth=any(obj.data.attributes.get(name) is not None for name in ('Long_Cloth','Fitted_Cloth'))
   ratio=LONG_CLOTH_RATIOS[lod] if fitted_cloth else RATIOS[lod]
   if obj.get('retain_head_skin'):ratio=HEAD_SKIN_RATIOS[lod]
+  if obj.get('retain_left_hand_skin'):ratio=RATIOS[0]
   if obj.data.attributes.get('Hair_Surface') is not None or obj.name.startswith(('Short_Hair','Braided_Hair','Bound_Hair')):
    ratio=HAIR_RATIOS[lod]
+  if obj.get('preserve_cutout'):ratio=1
   dec=obj.modifiers.new('Real_Mesh_LOD_'+str(lod),'DECIMATE');dec.ratio=min(1,max(ratio,minimum/max(1,len(obj.data.polygons))));dec.use_collapse_triangulate=True
   while obj.modifiers.find(dec.name)>0:bpy.ops.object.modifier_move_up(modifier=dec.name)
   # Paired neckline loops are sewn to different moving surfaces. Collapsing
@@ -155,6 +193,11 @@ def optimize_character(ctx,lod=0):
   if obj.get('replace_reduced_head'):
    head_vertices=_head_component_vertices(obj)
    _keep_vertices(obj,set(range(len(obj.data.vertices)))-head_vertices)
+  if obj.get('retain_left_hand_skin'):
+   _keep_vertices(obj,_left_hand_component_vertices(obj))
+  elif obj.get('replace_reduced_left_hand'):
+   left_vertices=_left_hand_component_vertices(obj)
+   _keep_vertices(obj,set(range(len(obj.data.vertices)))-left_vertices)
   # At most four normalized bone influences, preserving the strongest native
   # weights. The exporter therefore has one four-influence joint attribute.
   for v in obj.data.vertices:
@@ -164,7 +207,7 @@ def optimize_character(ctx,lod=0):
    total=sum(x[1] for x in groups[:4])
    if total:
     for idx,val in groups[:4]:obj.vertex_groups[idx].add([v.index],val/total,'REPLACE')
-  if obj.data.materials and obj.data.materials[0]!=ctx['M']['skin']:
+  if obj.data.materials and obj.data.materials[0]!=ctx['M']['skin'] and not obj.data.materials[0].get('preserve_cutout'):
    # Newly fitted trim without explicit sewn UVs still needs a surface domain.
    # A blank layer samples one texel and erases all material finish variation.
    if not obj.data.uv_layers.active:
@@ -184,6 +227,9 @@ def optimize_character(ctx,lod=0):
    obj.data.materials.clear();obj.data.materials.append(atlas)
   for key in list(obj.keys()):
    if key not in ('part','appearance'):del obj[key]
+ if ctx.get('preset')=='worker':
+  from hair_fringe import fit_reduced_head
+  fit_reduced_head(objects,lod)
  # Keep optional headwear in its own batch; body has Skin + Apparel primitives.
  result=[]
  batches={part:[o for o in objects if o.get('part','skin')==part] for part in set(o.get('part','skin') for o in objects)}

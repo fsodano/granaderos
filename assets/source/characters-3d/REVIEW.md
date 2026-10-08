@@ -553,3 +553,87 @@ and hand render confirms the corrected colour. Existing reviews made with
 the exported Granadero factor remain valid; earlier Granadero reviews made
 with the old `--skin` override must not be used for colour comparison. Evidence
 is in `artifacts/character-anatomy-review/delivery/review-palette-parity/`.
+
+
+## Connected thumb-web repair, 8 October
+
+Standing unarmed idle, walking and running now use a parent-relative thumb
+solve. It removes the folded-back thumb base on both native anatomies. The
+target scales with native thumb length; native joint offsets and weights
+remain unchanged. Male tips retain 30 degrees of bend; female
+tips use a separate 15-degree bend without pulling the clear web back into
+itself. The pose stays loose; it is not a tightly closed fist.
+
+Each bank changes exactly 18 thumb rotation channels and preserves the other
+53,088 channels, all input times and clip metadata. The merged banks exactly
+match the reviewed candidate. The
+source solver agrees within 3.85e-6 quaternion component, and a rotated-hand
+check agrees within 4.39e-6. No weapon grip, punch, other finger or body-motion
+channel changes.
+
+Twelve LOD0 full-cycle checks pass at 120 Hz: the six prior palm/digit checks
+and six new connected-web checks. The preceding bank fails all six web
+checks. There are no sampled nonadjacent web crossings; the smallest web
+triangle retains 22.09 percent of its native area. This is a sampled surface
+check, not a proof of all between-frame or volumetric contacts. The angular
+index-finger crease and loose thumb extension remain visible limitations.
+Evidence and exact deltas are retained in
+`artifacts/character-anatomy-review/delivery/relaxed-thumb-web/`.
+
+The first reduced-mesh follow-up found a visible female left-web fold at
+LOD1 and a notch at LOD2. Seven crossing pairs and a collapsed triangle were
+caused by coarse web chords. The accepted correction retains the existing
+LOD0 left hand in both reduced levels, inside the same Skin draw call. This
+adds 2,014 triangles at LOD1 and 2,656 at LOD2 for the scout and shawl bodies.
+All other decoded triangles, weights, UVs and cloth morph values remain
+exact. Materials and texture bytes remain exact; no texture is added.
+
+The final composed bodies and banks pass 54 full-cycle checks at 120 Hz:
+three appearances, three detail levels and three unarmed actions, checked
+for web crossings and distal digit contacts. No sampled crossings occur;
+the minimum web area remains 22.09 percent of its native area. Ten sampled
+weapon/punch entry-and-return routes introduce no new thumb snap. Maximum
+rotation steps are lower than in the preceding bank. The loose thumb and
+angular index crease still need further appearance work.
+
+The full source rebuild also exposed pre-existing shawl cloth-morph drift,
+including a supine offset of about 46 mm. The delivered four bodies preserve
+the current cloth morphs exactly by composing only the retained hand island.
+This does not establish that the complete cloth rebuild is reproducible.
+The source patch, four-body allowlist, preservation proofs and review views
+are in `artifacts/character-anatomy-review/delivery/female-hand-retention/`.
+
+## Worker hair surface, 8 October
+
+The worker now uses fitted cutout hair strands over a thin opaque underlayer.
+The original generated RGBA texture is retained without raster edits. The
+strand layer follows the actual reduced head at each detail level, including
+triangle-interior clearance checks. This removes the broad grooves, hard
+forehead band and visible crown patches from the inspected front and rear
+views. Both close and game-scale images were reviewed; the change is subtle
+at tactical size. The regular haircut and smooth native face remain limits.
+
+Only the three worker bodies change. Native Skin, eye and brow geometry,
+rig, bindings, other apparel geometry and cloth morphs remain unchanged.
+Other apparel texture tiles retain their original pixels; atlas UV packing
+has a maximum local rounding difference of 1.2e-7. Hair adds one masked draw
+call, for six total, and a fixed 4,800-triangle strand layer at every level.
+The resulting bodies contain 80,771, 50,872 and 21,852 triangles. Crowd
+performance has not been measured for this added layer.
+
+Six worker skin/eye gates and the library structure check pass. The actual
+Three.js loader also loads all three masked materials and the exact 1254 px
+source PNG with no reported errors. Inspection covers front/rear idle views
+at all levels, not all actions. The existing rear shirt-collar defects were
+preserved and remain under a separate repair. Evidence and the original
+generation prompt are in
+`artifacts/character-anatomy-review/delivery/worker-hair-surface/`.
+
+The combined hand/hair checkpoint passes library verification, typecheck,
+the production build, all 28 lab tests and the lab build. The web export
+contains 1,322 files and resolves 1,039 asset references. The quick profile
+completed 859 files with 6,311 passing tests and 10 failures. All ten failure
+assertion payloads match the preceding contact-check checkpoint; there are
+no new failures. All 2,155 recorded inputs stayed unchanged during that run.
+This compares candidate checkpoints, not a verified `main` baseline. The
+run excludes the later private collar and face trials.

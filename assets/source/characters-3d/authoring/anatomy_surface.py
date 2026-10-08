@@ -48,8 +48,10 @@ def surface_weights(obj, point, face):
     return {name:value/total for name,value in weights.items() if value>1e-7}
 
 
-def scalp_patch(mesh, faces, points, uvs, assignments, material, military=False, female=False):
+def scalp_patch(mesh, faces, points, uvs, assignments, material, military=False, female=False, preset=None):
     """Clip crossing faces at the hairline instead of dropping whole polygons."""
+    if preset == "worker":
+        material=material.copy();material.name="Natural_Short_Hair"
     def boundary(p):
         if military:
             return min(p.z-1.67, max(p.y+.025, p.z-1.739))
@@ -67,7 +69,11 @@ def scalp_patch(mesh, faces, points, uvs, assignments, material, military=False,
             ear_clearance=.077-abs(p.x)+max(0,p.z-1.670)*.34
             return min(p.z-hairline-edge,ear_clearance)
         hairline=1.711-.043*temple*temple
-        return min(p.z-1.640-edge, max(p.y+.024, p.z-hairline-edge))
+        if preset == "worker":
+            side=max(0,min(1,(abs(p.x)-.061)/.021))
+            hairline=1.710+.009*math.exp(-((abs(p.x)-.047)/.018)**2)-.044*side**1.5
+        bound=min(p.z-1.640-edge, max(p.y+.024, p.z-hairline-edge))
+        return bound
     coords=[];weights=[];polygons=[];texcoords=[];lookup={}
     for face in faces:
         polygon=[(points[i],Vector(uvs[uv]),assignments[i]) for i,uv in face]
@@ -105,6 +111,8 @@ def scalp_patch(mesh, faces, points, uvs, assignments, material, military=False,
             part_x=.023+.006*back
             part=math.exp(-((p.x-part_x)/.0032)**2)*max(0,min(1,(p.z-1.695)/.025))
             relief=.00115*lock+.00030*fine-.00065*part
+            if preset == "worker":
+                relief*=.20;thickness=.0015
             # A sharp 4.5 mm rim reads as a helmet. Feather the same fitted
             # surface down to the scalp over its final centimetre.
             edge=max(0,min(1,boundary(p)/.011));edge=edge*edge*(3-2*edge)

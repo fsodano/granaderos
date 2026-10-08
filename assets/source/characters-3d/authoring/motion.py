@@ -204,7 +204,7 @@ def _collect(rig):
     return {pb.name:(pb.location.copy(),pb.rotation_quaternion.copy()) for pb in rig.pose.bones}
 
 
-def _write_clip(rig, name, samples, duration, loop=True, grounding=None, times=None, support=None, native_sideways=None, native_lance_idle=None, native_prone_idle=None, native_crouch_idle=None):
+def _write_clip(rig, name, samples, duration, loop=True, grounding=None, times=None, support=None, native_sideways=None, native_lance_idle=None, native_prone_idle=None, native_crouch_idle=None, native_anatomy=None):
     action=bpy.data.actions.new(name)
     rig.animation_data_create();rig.animation_data.action=action
     if loop:
@@ -278,7 +278,7 @@ def _write_clip(rig, name, samples, duration, loop=True, grounding=None, times=N
             times=[time for time,sample in selected];samples=[sample for time,sample in selected]
     if name in ('stand.idle.unarmed','stand.walk.unarmed','stand.run.unarmed'):
         from relaxed_hands import apply_relaxed_hands
-        _apply_sample(rig,samples[0]);apply_relaxed_hands(rig)
+        _apply_sample(rig,samples[0]);apply_relaxed_hands(rig,native_anatomy)
         rotations={bone.name:bone.rotation_quaternion.copy()for bone in rig.pose.bones
             if any(bone.name.startswith(finger+'_')for finger in ('index','middle','ring','pinky','thumb'))}
         for sample in samples:
@@ -380,7 +380,7 @@ def _retarget_clip(ctx,clip_name,file,start,end):
         foot_path.append({s:min((p for side,p in _sole_points(rig) if side==s),key=lambda p:p.z).copy() for s in ('l','r')})
         all_samples.append(_collect(rig))
         ground_heights.append(airborne+.002)
-    meta=_write_clip(rig,clip_name,all_samples,duration,grounding=(boots,ground_heights))
+    meta=_write_clip(rig,clip_name,all_samples,duration,grounding=(boots,ground_heights),native_anatomy=ctx['gender'])
     meta['source']={'database':'CMU','file':file,'startFrame':start,'endFrame':end,'sampleRate':round(1/bvh.dt)}
     speeds=[]
     for i in range(1,len(foot_path)-1):
@@ -1010,7 +1010,7 @@ def _write_reviewed(ctx,spec,source,digest):
     for sample in samples:
         for name,(position,rotation) in sample.items():
             if name!='Root':sample[name]=(Vector(),rotation)
-    meta=_write_clip(rig,spec['name'],samples,duration,spec['loop'],times=times)
+    meta=_write_clip(rig,spec['name'],samples,duration,spec['loop'],times=times,native_anatomy=ctx['gender'])
     meta.update(spec)
     meta.update({'duration':duration,'events':markers,'markers':markers,
         'source':source.get('source',{'type':'native-contact-authoring'}),
@@ -1250,7 +1250,7 @@ def apply_animations(ctx, only=None):
             samples.append(pose)
         supported=(gesture in ('transition','pickup','heal','free','walk','run','crawl','strafeLeft','strafeRight') and posture!='mounted') or (posture=='prone' and gesture=='idle' and equipment=='unarmed')
         native_sideways=(ctx,speed) if (posture=='standing' and equipment in ('unarmed','long-gun','short-gun','blade','knife','lance') or posture=='crouched' and equipment=='unarmed') and gesture in ('strafeLeft','strafeRight') else None
-        meta=_write_clip(rig,spec['name'],samples,duration,spec['loop'],times=times,support=ctx if supported and native_sideways is None else None,native_sideways=native_sideways,native_lance_idle=ctx if posture=='standing' and equipment=='lance' and gesture=='idle' else None,native_prone_idle=ctx if posture=='prone' and gesture=='idle' else None,native_crouch_idle=ctx if posture=='crouched' and gesture=='idle' else None)
+        meta=_write_clip(rig,spec['name'],samples,duration,spec['loop'],times=times,support=ctx if supported and native_sideways is None else None,native_sideways=native_sideways,native_lance_idle=ctx if posture=='standing' and equipment=='lance' and gesture=='idle' else None,native_prone_idle=ctx if posture=='prone' and gesture=='idle' else None,native_crouch_idle=ctx if posture=='crouched' and gesture=='idle' else None,native_anatomy=ctx['gender'])
         meta.update(spec);meta.update({'duration':round(duration,6),'events':markers,'markers':markers,'source':source,'sampleRate':SAMPLE_FPS,'timingAuthority':'simulation','rootMotion':'in-place'})
         if gesture=='reload' and equipment=='long-gun':meta['propCues']=[{'item':'ramrod','socket':'socket_handLeft_tool','start':round(duration*.46,6),'end':round(duration*.86,6),'rotation':[0,0,math.pi/2]}]
         if equipment=='long-gun' and gesture in ('reload','unload'):
