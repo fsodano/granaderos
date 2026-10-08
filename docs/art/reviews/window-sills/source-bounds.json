@@ -1,0 +1,40 @@
+{
+  "basis": "88ee16b9f6e546ea8274602e6549429ac53e2522",
+  "implementation": "1ccf497c2448793121c7eb2fe69c5d0de5e83527",
+  "sourceOpeningSha256": "d865f416fbe99879cb0e1c1b24fdbd0619e6ce1b176cd29fdbc4a12534bf1691",
+  "sourceBuildingSha256": "19a7c67640b1d94ee1929787c3a296039553e4bfcc496b2912a2ed586214b199",
+  "sourceWidths": {
+    "regular": [
+      11,
+      29
+    ],
+    "small": [
+      15,
+      25
+    ]
+  },
+  "sourceSillWidths": {
+    "regular": [
+      9,
+      31
+    ],
+    "small": [
+      13,
+      27
+    ]
+  },
+  "sourceStrokeUnits": 2.5,
+  "metricSillThicknessMetres": 0.09973404255319149,
+  "placementAdaptation": "All native thickness below existing sill; bevel/project both camera faces. Raw source stroke is not the complete facade-scaled outline.",
+  "preservation": {
+    "exactNonSillMeshes": 9220,
+    "combinedSha256": "0d790ed6f8305241f12564d3d3fd851a3b7ba2eeff7241bd7febe0ae3dbc5732",
+    "sillTrianglesAcrossCases": 40800
+  },
+  "cases": 504,
+  "imageSha256": {
+    "before.png": "8da2f6af819d9d57d3649fe95639033a50ef89af92d7a63ddb73843c5fd79e90",
+    "after.png": "ff9356c59753ad4f7af93996e2b627d34313f6b2d995771ca5d4a4fc3b41389a",
+    "current-sprite.png": "9806e2e7da1bd39c21e6e1d7657b23acccc8bdd2674a3510b2f2286354bede0c"
+  }
+}
