@@ -7,6 +7,7 @@ import {chooseSupplySharingAction} from './tactical-ai-sharing.js';
 import {chooseGroundDressingRecovery} from './tactical-ai-medical-recovery.js';
 import {choosePackedGunHandover} from './tactical-ai-gun-handover.js';
 import {chooseScavengingAction} from './tactical-ai-scavenging.js';
+import {chooseOwnedFirearmRepair} from './tactical-ai-repair.js';
 import {directionTo,facingAllowsSight,turnAPCost} from './tactical-awareness.js';
 import {getReachable, hasFirearm, canSee, hasLineOfSight, shotChance, firearmShotOptions, actionCosts, stanceCost, weaponFor, bladeFor, planEquipLoot, planSwapHands, swapHandsPreview, maxActionPoints, AP_CARRY_LIMIT, movementStepCost, climbPreview,knifeThrowPreview,meleePreview} from './tactical.js';
 import {heldThrowingKnife,knifeThrowDamage} from './thrown-knife.js';
@@ -156,7 +157,7 @@ function maintenance(state, unit, costs, allowSecondary=false) {
     const loading=reloadPlan(unit,state);
     if(loading.hands?.some(hand=>hand.hand==='offhand'&&hand.pa>0))return {type:'reload',unitId:unit.id};
   }
-  return allowSecondary&&priming.hands.length ? {type:'reprime',unitId:unit.id} : null;
+  return chooseOwnedFirearmRepair(state,unit) ?? (allowSecondary&&priming.hands.length ? {type:'reprime',unitId:unit.id} : null);
 }
 
 function fieldAid(state, unit, costs, targets, paths) {
