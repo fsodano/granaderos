@@ -57,3 +57,36 @@ The isolated UI is at port 3170. The review script uses `Posturas`, selects
 Alt+Enter lateral movement. Letter rows are map Y; number columns are map X.
 Male endpoints are J5/K5; female endpoints P5/Q5. The image evidence includes
 entry, planted pull, recovery, late cycle, stop and exact idle.
+
+## Integrated current gameplay review
+
+The two source builders and the one-expression consumer are integrated
+together on main `43bcc8ad`, retaining the merged bayonet, prone rifle and
+standing reach-gesture tracks. Each builder runs against the current complete
+banks. Its named preservation proof retains every other native channel; the
+locomotion profile hash remains exact.
+
+The compiled `Agachado con equipo` scene owns two real combatants and a normal
+equipment selector for rifle, pistol, sabre, knife and lance. Reset and item
+selection create fresh legal battle snapshots. They do not issue renderer
+poses. Both anatomies use ordinary equipment and Alt+Enter movement controls.
+The saved cells are J5/K5 for the male and P5/Q5 for the female; facing stays
+unchanged. The browser completed eight source-before and twenty source-after
+routes with 168 entry, pull, recovery, late, stop and idle captures and no
+errors. All nine captured source/runtime/asset hashes stayed exact throughout.
+
+The male rifle before/after pull and idle, and female lance recovery and idle
+were inspected against the current `granadero-crouch-walk-atlas.png`. The
+retained rifle grip and compact crouched silhouette remain readable. The
+source-before pass has an extended unsupported trailing foot; the repaired
+route returns to the supported native crouched guard. This image review is
+limited to the shown weapons and base clothing. It does not certify long
+skirts, all garments or final art polish.
+
+The combined local gate passes 156 source/guard/consumer checks in 47.45
+seconds, 113 existing gait/loading/clock checks in 26.88 seconds, and eleven
+fixture checks in 1.46 seconds. Native library, calibration, Python compilation,
+TypeScript, documentation and all 38 baseline checks pass. Production static
+export passes with 1,244 files and 1,039 asset references, build
+`f692319d4888`. The previously recorded cold twenty-actor admission limit
+remains open; these browser captures do not establish sustained frame rate.

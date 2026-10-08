@@ -52,3 +52,8 @@ node --test tests/characters-equipped-crouched-sideways-support.test.mjs
 The builder rejects changed native parents, periods, pace or unaudited lower
 source outputs. It reads and retains the current banks; copying a stale whole
 bank is not the integration procedure.
+
+The current integration includes this source cut together with its dependent
+source and transition consumer. See the
+[integrated entry/return review](equipped-crouch-transition-admission-review-2026-10-07.md#integrated-current-gameplay-review)
+for current-main preservation, local checks and normal browser evidence.

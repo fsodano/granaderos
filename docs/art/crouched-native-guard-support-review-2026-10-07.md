@@ -29,3 +29,8 @@ node --test tests/characters-crouched-guard-support.test.mjs
 Integrate by running this builder on the current full banks. Do not replace
 current banks with a frozen copy. The accompanying named proof lists every
 changed output and every retained channel/clip.
+
+The current integration includes this source cut together with its dependent
+source and transition consumer. See the
+[integrated entry/return review](equipped-crouch-transition-admission-review-2026-10-07.md#integrated-current-gameplay-review)
+for current-main preservation, local checks and normal browser evidence.
