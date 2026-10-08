@@ -14,7 +14,8 @@ test('each prone work choice owns legal finite supplies and performs one ordinar
       const unit=battle.units.find(actor=>actor.id===id),type=task.id.endsWith('prime')?'reprime':task.id.endsWith('unload')?'unloadAmmunition':task.id.endsWith('repair')?'repair':'reload',next=actBattle(battle,{type,unitId:id}),after=next.units.find(actor=>actor.id===id);
       assert.equal(next.lastError,null,task.id);assert.ok(after.ap<unit.ap);
       assert.equal(after.weaponInstanceId,unit.weaponInstanceId);assert.equal(after.stance,'prone');assert.equal(after.movementMode,'prone');
-      assert.equal(after.x,unit.x);assert.equal(after.y,unit.y);assert.equal(after.ammo+after.loaded,unit.ammo+unit.loaded);
+      assert.equal(after.x,unit.x);assert.equal(after.y,unit.y);assert.equal(after.ammo+after.loaded+(after.offHand?.loaded??0),unit.ammo+unit.loaded+(unit.offHand?.loaded??0));
+      if(task.paired){assert.equal(after.offHand.loaded,1);assert.equal(after.offHand.instanceId,unit.offHand.instanceId);assert.equal(after.leftHandItem,'offhand');}
       if(type==='reprime')assert.equal(after.jammed,false);
       if(type==='unloadAmmunition')assert.equal(after.loaded,0);
       if(type==='repair'){assert.ok(after.condition>unit.condition);assert.ok(after.toolkitPoints<unit.toolkitPoints);}

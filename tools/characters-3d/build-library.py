@@ -94,6 +94,8 @@ if manifest['complete']:
   subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-prone-work-support.py')],cwd=ROOT,check=True)
   # Retain body/hand/item channels while supporting fixed prone interactions.
   subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-prone-interaction-support.py')],cwd=ROOT,check=True)
+  # Retain pistol grip/body clocks and support the native free forearm.
+  subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-prone-pistol-forearm-support.py')],cwd=ROOT,check=True)
   # Preserve the retained 30 Hz parent trajectory and fit crouched boot support
   # at 60 Hz without replacing native upper-body, Root or pace channels.
   leg_bones=[name+'_'+side for side in ('l','r')for name in ('thigh','calf','foot','ball')]
