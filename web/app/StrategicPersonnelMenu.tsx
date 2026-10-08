@@ -3,7 +3,7 @@ import {useEffect,useRef,useState} from 'react';
 import {contractRenewalQuote,contractStatus} from '../../game/contracts.js';
 import {CARE_ASSIGNMENTS,careAssignmentReason} from '../../game/medical-care.js';
 import {WORK_ASSIGNMENTS,STUDY_SKILLS,workAssignmentReason} from '../../game/assignments.js';
-import {guaranteeRecord,serviceGuaranteeRefund} from '../../game/service-guarantees.js';
+import {guaranteeRecord,serviceGuaranteeRefund,guaranteeDepartureReason} from '../../game/service-guarantees.js';
 import {operativeInTransit,operativeLocation} from '../../game/squads.js';
 import {mountForOperative,MATURITY_HOURS} from '../../game/horses.js';
 import {strategicSquadAssignments} from '../../game/strategic-squad-assignments.js';
@@ -43,7 +43,7 @@ export default function StrategicPersonnelMenu({state:s,roster,id,kind,onClose,d
  },[id,kind]);
  const [skill,setSkill]=useState('marksmanship'),[target,setTarget]=useState(String(id)),[teacher,setTeacher]=useState('');
  const [squadMenu,setSquadMenu]=useState(false);
- const blocked=Boolean(s.pendingBattle||s.pendingEncounter||s.defeated),contract=contractStatus(s,id);
+ const blocked=Boolean(s.pendingBattle||s.pendingEncounter||s.defeated),contract=contractStatus(s,id),departureReason=guaranteeDepartureReason(s,contract,op);
  const contractRefusal=kind==='contract'?contractRenewalQuote(s,op,'day').serviceRefusal:null;
  const local=roster.filter(o=>s.recruited.includes(o.id)&&s.operativeState[o.id]?.alive&&operativeLocation(s,o.id)===operativeLocation(s,id));
  const order=(action:any)=>{dispatch(action);onClose();};
@@ -80,7 +80,8 @@ export default function StrategicPersonnelMenu({state:s,roster,id,kind,onClose,d
    {contract?.remaining!==null&&['day','week','fortnight'].map(term=>{const q=contractRenewalQuote(s,op,term),reason=blocked?'Resolvé el encuentro antes de renovar.':!q.available?q.reason:q.price>s.resources.treasury?'No hay suficientes pesos.':null;return <button key={term} className="line-button" disabled={Boolean(reason)} title={reason||undefined} onClick={()=>order({type:'renewContract',id,term,...(s.contracts[id]?.guaranteeId?{expectedGuaranteeId:s.contracts[id].guaranteeId}:{}),expectedExpiresAt:s.contracts[id]?.expiresAt,expectedExpiresSecond:s.contracts[id]?.expiresSecond??0})}>{term==='day'?'Un día':term==='week'?'Una semana':'Dos semanas'} · {q.price.toLocaleString('es-AR')} pesos</button>;})}
    {guaranteeRecord(s,contract)&&<p>Garantía: {guaranteeRecord(s,contract).amount} pesos. Devolución actual al salir: {serviceGuaranteeRefund(s,contract,op)} pesos. La paga no se devuelve.</p>}
    {operativeInTransit(s,id)&&<p>Está en camino. Esperá su llegada para finalizar el servicio.</p>}
-   {id!==1000&&<button className="line-button" disabled={blocked||operativeInTransit(s,id)} onClick={()=>order({type:'dismiss',id,...(contract?.guaranteeId?{expectedGuaranteeId:contract.guaranteeId}:{})})}>Despedir</button>}
+   {departureReason&&!operativeInTransit(s,id)&&<p role="status">{departureReason}</p>}
+   {id!==1000&&<button className="line-button" disabled={blocked||operativeInTransit(s,id)||Boolean(departureReason)} title={departureReason||undefined} onClick={()=>order({type:'dismiss',id,...(contract?.guaranteeId?{expectedGuaranteeId:contract.guaranteeId}:{})})}>Despedir</button>}
   </>:<>
    <PreferredCompanionsSummary state={s} operative={op}/>
    <button type="button" className="line-button" aria-expanded={squadMenu} aria-controls={`personnel-squads-${id}`} disabled={blocked||!record.alive||record.captured} onClick={()=>setSquadMenu(open=>!open)}>Escuadra ›</button>

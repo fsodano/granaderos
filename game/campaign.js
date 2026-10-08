@@ -1,4 +1,4 @@
-import {fundServiceGuarantee,settleServiceGuarantee,forfeitDeadServiceGuarantees,validateServiceGuarantees} from './service-guarantees.js';
+import {fundServiceGuarantee,settleServiceGuarantee,forfeitDeadServiceGuarantees,validateServiceGuarantees,guaranteeDepartureReason,creditPendingGuaranteeRefunds} from './service-guarantees.js';
 import {withdrawQuest,validateQuestWithdrawalReceipts} from './quest-withdrawal.js';
 import {initializeTownIncome,activateTownIncome,validateTownIncome,collectTownIncome,townIncomeSourceForNPC} from './town-income.js';
 import {validateRepairReserve,validateRepairReserveContext,retainRepairReserves} from './repair-materials.js';
@@ -140,10 +140,10 @@ function removeFromService(s,id){
   for(const horse of s.horseState.horses)if(horse.assignedTo===id)horse.assignedTo=null;
   for(const course of s.militiaTraining.filter(t=>t.trainerId===id)){returnMilitiaTrainees(s,course);}s.militiaTraining=s.militiaTraining.filter(t=>t.trainerId!==id);delete s.contracts[id];
 }
-function endOperativeService(s,id){
- const op=rosterFor(s).find(o=>o.id===id),settlement=settleServiceGuarantee(s,s.contracts[id],op);
+function endOperativeService(s,id,fullCredit=false){
+ const op=rosterFor(s).find(o=>o.id===id),settlement=settleServiceGuarantee(s,s.contracts[id],op,'departed',fullCredit);
  const returned=returnServiceEquipment(s,id,rosterFor(s));removeFromService(s,id);
- if(settlement)note(s,`${op.name}: garantía liquidada, ${settlement.refund} de ${settlement.amount} pesos devueltos. La paga no se devuelve.`);
+ if(settlement)note(s,settlement.creditedRefund<settlement.refund?`${op.name}: garantía liquidada, ${settlement.creditedRefund} pesos abonados y ${settlement.refund-settlement.creditedRefund} pendientes de ${settlement.amount}. La paga no se devuelve.`:`${op.name}: garantía liquidada, ${settlement.refund} de ${settlement.amount} pesos devueltos. La paga no se devuelve.`);
  if(returned)note(s,`El equipo queda en ${MISSION_SCENES[returned.siteId]?.name??campaignPlace(returned.sectorId).name}, disponible para un combatiente presente.${returned.fallback?' Recogé todo el equipo antes de volver a contratar a esta persona.':''}`);
 }
 function signContract(s,op,term){
@@ -857,7 +857,7 @@ export function dispatchCampaign(previous,action){
         if(op.foreign&&quote.price>0&&payMoraleRewardEligible(s,id))standing(s,'foreign',5);
         recordPayMorale(s,[id],true);note(s,`${op.name} renueva su servicio por ${quote.hours/24} días.`);break;
       }
-      case 'dismiss':{const id=Number(action.id);requireThat(action.expectedGuaranteeId===undefined||s.contracts[id]?.guaranteeId===action.expectedGuaranteeId,'El contrato cambió. Revisá la garantía antes de finalizar.');requireThat(s.recruited.includes(id),'El combatiente no está contratado.');requireThat(id!==1000,'Tu oficial dirige la campaña y no puede ser despedido.');const funded=Boolean(s.contracts[id]?.guaranteeId);endOperativeService(s,id);note(s,funded?'El combatiente deja el servicio. La paga no se devuelve; la garantía conserva su recibo de liquidación.':'El combatiente deja el servicio sin devolución del anticipo.');break;}
+      case 'dismiss':{const id=Number(action.id);requireThat(action.expectedGuaranteeId===undefined||s.contracts[id]?.guaranteeId===action.expectedGuaranteeId,'El contrato cambió. Revisá la garantía antes de finalizar.');requireThat(s.recruited.includes(id),'El combatiente no está contratado.');requireThat(id!==1000,'Tu oficial dirige la campaña y no puede ser despedido.');const op=rosterFor(s).find(o=>o.id===id),refundReason=guaranteeDepartureReason(s,s.contracts[id],op);requireThat(!refundReason,refundReason);const funded=Boolean(s.contracts[id]?.guaranteeId);endOperativeService(s,id,true);note(s,funded?'El combatiente deja el servicio. La paga no se devuelve; la garantía conserva su recibo de liquidación.':'El combatiente deja el servicio sin devolución del anticipo.');break;}
       case 'createSquad':case 'squad':{
         const creating=action.type==='createSquad',at=creating?(action.sector??s.location):s.location,ids=action.ids;
         requireThat(validWorldLocation(at),'El sector de formación no existe.');
@@ -1115,7 +1115,7 @@ export function dispatchCampaign(previous,action){
     if(s.pendingBattle&&s.pendingBattle.id!==previous.pendingBattle?.id)for(const unit of s.pendingBattle.squad){
      const before=carriedAmmunition(rosterFor(previous).find(o=>o.id===unit.id),previous.operativeState[unit.id]);requireThat(!pocketChangeReason(before,unit),`${unit.name}: ${POCKET_FULL}`);
     }
-    forfeitDeadServiceGuarantees(s,rosterFor(s));validateServiceGuarantees(s,rosterFor(s));initializeCampaignSystems(s);validateServiceEquipmentReturns(s,rosterFor(s));syncCampaignAmmunition(s,rosterFor(s));validateCampaignAmmunition(s,rosterFor(s));validateDeploymentReturnState(s);validateEquipmentOwnership(s,rosterFor(s));if(Object.keys(s.assignmentAttention.reported).length)reconcileAssignmentAttention(s,assignmentStates(s,rosterFor(s),assignmentContext(s)));reconcileContractAttention(s);reconcileLogisticsAttention(s,{isSupplied});refreshEnemyIntelligence(s);return removeIgnitionSupplies(s);
+    forfeitDeadServiceGuarantees(s,rosterFor(s));for(const credit of creditPendingGuaranteeRefunds(s))note(s,`Garantía ${credit.id}: se abonan ${credit.amount} pesos pendientes; quedan ${credit.pendingRefund} pesos por devolver.`);validateServiceGuarantees(s,rosterFor(s));initializeCampaignSystems(s);validateServiceEquipmentReturns(s,rosterFor(s));syncCampaignAmmunition(s,rosterFor(s));validateCampaignAmmunition(s,rosterFor(s));validateDeploymentReturnState(s);validateEquipmentOwnership(s,rosterFor(s));if(Object.keys(s.assignmentAttention.reported).length)reconcileAssignmentAttention(s,assignmentStates(s,rosterFor(s),assignmentContext(s)));reconcileContractAttention(s);reconcileLogisticsAttention(s,{isSupplied});refreshEnemyIntelligence(s);return removeIgnitionSupplies(s);
   }catch(error){const rejected=clone(previous);rejected.lastError=error.message;return rejected;}
 }
 export function serializeCampaign(s){return JSON.stringify(s,cellSceneSaveReplacer(artillerySaveReplacer(s,weaponSaveReplacer(s))));}

@@ -3,8 +3,32 @@ const now=s=>s.hour*3600+(s.secondOfHour??0);
 const need=ok=>{if(!ok)throw Error('Las garantías de servicio guardadas son inválidas.');};
 const object=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
 const integer=(v,min,max)=>Number.isSafeInteger(v)&&v>=min&&v<=max;
+const treasuryCap=1000000000;
+const headroom=state=>Math.max(0,treasuryCap-state.resources.treasury);
 export function guaranteeAmount(operative){return operative?.serviceGuarantee??0;}
 export function guaranteeRecord(state,reference){return reference?.guaranteeId?state.serviceGuarantees?.entries?.[reference.guaranteeId]??null:null;}
+export function treasuryRefundReason(state,amount){return amount>headroom(state)?`La tesorería no tiene espacio para devolver ${amount} pesos. Gastá fondos y volvé a intentarlo.`:null;}
+export function guaranteeDepartureReason(state,reference,operative){return treasuryRefundReason(state,serviceGuaranteeRefund(state,reference,operative));}
+export function pendingGuaranteeRefunds(state){
+ if(state.serviceGuarantees?.version!==2)return [];
+ return Object.entries(state.serviceGuarantees.entries).sort(([a],[b])=>Number(a.slice(10))-Number(b.slice(10))).filter(([,entry])=>entry.state==='departed'&&entry.creditedRefund<entry.refund).map(([id,entry])=>({id,operativeId:entry.operativeId,refund:entry.refund,creditedRefund:entry.creditedRefund,pendingRefund:entry.refund-entry.creditedRefund}));
+}
+// A v1 terminal receipt was fully credited when it settled. Upgrade only
+// during an admitted new settlement; restoration itself never pays or upgrades.
+function upgradeCredits(state){
+ const ledger=state.serviceGuarantees;if(ledger.version===2)return;
+ need(ledger.version===1);ledger.version=2;
+ for(const entry of Object.values(ledger.entries))if(entry.state!=='held')Object.assign(entry,{creditedRefund:entry.refund,creditedAt:entry.settledAt,creditedSecond:entry.settledSecond});
+}
+export function creditPendingGuaranteeRefunds(state){
+ const credits=[];
+ for(const pending of pendingGuaranteeRefunds(state)){
+  const amount=Math.min(headroom(state),pending.pendingRefund);if(!amount)break;
+  const entry=state.serviceGuarantees.entries[pending.id];entry.creditedRefund+=amount;entry.creditedAt=state.hour;entry.creditedSecond=state.secondOfHour??0;state.resources.treasury+=amount;
+  credits.push({...pending,amount,creditedRefund:entry.creditedRefund,pendingRefund:entry.refund-entry.creditedRefund});
+ }
+ return credits;
+}
 export function fundServiceGuarantee(state,operative,amount){
  if(!amount)return {};
  need(integer(amount,1,1000000)&&amount===guaranteeAmount(operative));
@@ -18,14 +42,19 @@ export function serviceGuaranteeRefund(state,reference,operative){
  const hp=Math.max(0,Math.min(operative.maxHp,record.hp));
  return Math.floor(entry.amount*hp/operative.maxHp);
 }
-export function settleServiceGuarantee(state,reference,operative,kind='departed'){
+export function settleServiceGuarantee(state,reference,operative,kind='departed',fullCredit=false){
  const entry=guaranteeRecord(state,reference);if(!entry||entry.state!=='held')return null;
  need(entry.operativeId===operative.id&&['departed','cancelled','forfeited'].includes(kind));
  const record=state.operativeState[operative.id],dead=!record.alive||record.hp===0;
  if(dead)kind='forfeited';
  const refund=kind==='cancelled'?entry.amount:kind==='forfeited'?0:serviceGuaranteeRefund(state,reference,operative);
- Object.assign(entry,{state:kind,settledAt:state.hour,settledSecond:state.secondOfHour??0,refund,...(kind==='cancelled'?{}:{hp:dead?0:Math.min(operative.maxHp,record.hp),maxHp:operative.maxHp})});
- state.resources.treasury+=refund;return {id:reference.guaranteeId,...entry};
+ const reason=kind==='cancelled'||fullCredit?treasuryRefundReason(state,refund):null;if(reason)throw Error(reason);
+ upgradeCredits(state);
+ // Automatic departures enter the owed ledger before the one admitted
+ // end-of-command collector. Manual refunds are paid in full immediately.
+ const creditedRefund=kind==='departed'&&!fullCredit?0:refund;
+ Object.assign(entry,{state:kind,settledAt:state.hour,settledSecond:state.secondOfHour??0,refund,creditedRefund,creditedAt:state.hour,creditedSecond:state.secondOfHour??0,...(kind==='cancelled'?{}:{hp:dead?0:Math.min(operative.maxHp,record.hp),maxHp:operative.maxHp})});
+ state.resources.treasury+=creditedRefund;return {id:reference.guaranteeId,...entry};
 }
 // Death acknowledgements can precede service removal. Keep the terminal ID on
 // the dead contract until its ordinary departure, without ever paying twice.
@@ -47,7 +76,7 @@ export function validateServiceGuarantees(state,roster){
  }
  const ledger=state.serviceGuarantees;
  if(ledger===undefined){need(refs.length===0);return;}
- need(object(ledger)&&Object.keys(ledger).length===3&&ledger.version===1&&object(ledger.entries)&&integer(ledger.nextId,2,1000001));
+ need(object(ledger)&&Object.keys(ledger).length===3&&[1,2].includes(ledger.version)&&object(ledger.entries)&&integer(ledger.nextId,2,1000001));
  const entries=Object.entries(ledger.entries);need(entries.length===ledger.nextId-1);
  for(let n=1;n<ledger.nextId;n++)need(Object.hasOwn(ledger.entries,`guarantee-${n}`));
  for(const [id,entry]of entries){
@@ -58,9 +87,15 @@ export function validateServiceGuarantees(state,roster){
   if(entry.state==='held'){
    need(Object.keys(entry).length===base.length&&base.every(k=>Object.hasOwn(entry,k))&&record.alive&&matching.length===1);
   }else{
-   const keys=[...base,'settledAt','settledSecond','refund',...(entry.state==='cancelled'?[]:['hp','maxHp'])];
+   const keys=[...base,'settledAt','settledSecond','refund',...(entry.state==='cancelled'?[]:['hp','maxHp']),...(ledger.version===2?['creditedRefund','creditedAt','creditedSecond']:[])];
    need(['departed','cancelled','forfeited'].includes(entry.state)&&Object.keys(entry).length===keys.length&&keys.every(k=>Object.hasOwn(entry,k))&&integer(entry.settledAt,entry.fundedAt,state.hour)&&integer(entry.settledSecond,0,3599));
    const settled=entry.settledAt*3600+entry.settledSecond;need(settled>=funded&&settled<=now(state)&&integer(entry.refund,0,entry.amount));
+   if(ledger.version===2){
+    const credited=entry.creditedAt*3600+entry.creditedSecond;
+    need(integer(entry.creditedRefund,0,entry.refund)&&integer(entry.creditedAt,entry.settledAt,state.hour)&&integer(entry.creditedSecond,0,3599)&&credited>=settled&&credited<=now(state));
+    need(entry.state==='departed'||entry.creditedRefund===entry.refund);
+    if(entry.creditedRefund===0)need(credited===settled);
+   }
    if(entry.state==='cancelled')need(entry.refund===entry.amount&&matching.length===0);
    else {
     need(integer(entry.maxHp,1,operative.maxHp)&&integer(entry.hp,0,entry.maxHp)&&entry.refund===(entry.state==='forfeited'?0:Math.floor(entry.amount*entry.hp/entry.maxHp)));
