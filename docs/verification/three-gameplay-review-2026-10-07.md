@@ -825,3 +825,18 @@ retains the original failed mirrored-return test and measured 2.991 m/s
 return limit. Complete-surface speeds, 100-actor CPU costs, target hand
 contact and garments remain open. This is bounded contact repair, not final
 body-motion or 60 FPS acceptance.
+
+## Current native long cloth correction
+
+The six friar and woman's long-skirt LODs now use a sparse prone correction
+fitted to the current native supported legs. All rest mesh, skin, rig, other
+morph and animation values are preserved after packing. Repeated fitting is
+unchanged; a changed basis pose is rejected until authored bodies are rebuilt.
+
+All 29 affected checks pass with native/profile, TypeScript, documentation,
+38 baseline checks and production export `6c525c747e9f`. Six before and six
+final normal HUD states pass with no browser errors and exact source/served
+asset hashes. The [long cloth review](../art/native-long-cloth-3d-review-2026-10-08.md)
+records original failures, the 84-case movement sample and remaining cloth/boot
+collision and interaction contact limits. This is a bounded corrective-shape
+repair, not complete garment or character polish.
