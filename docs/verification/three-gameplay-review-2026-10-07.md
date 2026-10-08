@@ -647,3 +647,23 @@ The parish tower now has the source warm stone base and retained 67.82 cm height
 ## Closed and readable church nave supports
 
 Authored churches now have the current sprite's closed sloped nave supports, separate warm stone feet and measured local face borders. Both actual side walls retain stable physical anchors across rotation. The final combined source passes 63 affected geometry checks, type/docs/baseline checks and export `fa0709314bb2`. Thirty original/slab/accessible-roof/close views and six final combined views pass without browser errors and were compared with the current parish sprite. Edited supports, standing openings, upper routes and normal cutaways remain covered. The 90° flat-source anchor difference is a declared physical adaptation. See [the nave review](../art/church-nave-supports-3d-review-2026-10-07.md) and [source edges](../art/church-nave-edge-separation-3d-review-2026-10-07.md).
+
+## Exposed parish front piers
+
+The parish front corners now carry the current source-sized plaster shafts, separate warm stone feet and projecting capitals. Actual supports, compact/reserved tower foundations, standing openings, edited-corner fallback and accessible roofs remain covered through all rotations. All 59 affected checks, type/docs/baseline checks and export `f8931734fc11` pass. Thirty original/slab/accessible-roof/close browser views pass without errors and were compared with the current parish sprite. See [the front-pier review](../art/church-front-piers-3d-review-2026-10-07.md).
+
+## Supported shop forge and depot shells
+
+Authored shop, forge and depot roofs, walls, standing openings and floor returns now share centred support coordinates when both front corners are intact. Depot piers and its loft follow the same measured frame. Edited corners and unpainted legacy shells retain their existing placement. All 53 affected checks, type/docs/baseline checks and export `f615a93d1dbb` pass. Ninety original/slab/accessible-roof/close views and eighteen final combined views pass without browser errors; selected entrances, exteriors and interiors were compared with the three current sprites. Porch frames remain the next separate source detail. See [the shell review](../art/work-porch-shell-placement-3d-review-2026-10-07.md).
+
+## Current parish arched bars
+
+Authored church and explicitly arched chapel panes now use the current sprite's three pale bars, measured insets and transverse stroke. Default small chapel windows and other saved styles retain their existing helper. All 52 affected checks, type/docs/baseline checks and export `790c382a3b61` pass. Sixty actual original/slab/accessible-roof/close views pass without browser errors; selected exterior/interior church bars and the ordinary chapel entrance were compared with the current sprites. The publication bridge preserves the actual capture source and selected file hashes. See [the grille review](../art/parish-arched-window-bars-3d-review-2026-10-07.md).
+
+## Native standing rifle guard support
+
+The native standing rifle guard and initial/final stock-strike endpoints now keep both complete boots level at the 2 mm floor. Eight lower rotation tracks in two clips per anatomy change; all 332 other clips, 151 non-leg channels per selected clip, native rigs/meshes/skins and clocks remain exact. Twelve complete-boot/runtime-blend checks, native/profile/type/docs/baseline checks and final export `117224602904` pass. Four ordinary owned-rifle movement routes and both cardinal paid stock strikes pass in 114 source-pinned captures without browser errors. Each strike spends 4 PA, commits 18 damage once and retains ammunition. The same actor/native hashes remain exact after the parish merge. Sampled acceleration corners, sideways transitions, diagonal rifle turns and complete target contact remain open. See [the guard review](../art/standing-rifle-guard-support-3d-review-2026-10-07.md).
+
+## Current shop forge and depot porch frames
+
+Authored shop and forge porches now expose their source timber posts, paired ties and shallow roof planes; depot loading frames retain their distinct three posts, warm stone feet and broad header. Actual supports, standing doors, edited corners, saved roofs and normal cutaways remain covered. All fifty-four combined affected checks, type/docs/baseline checks and export `2bb2077f2c1a` pass. Ninety actual original/slab/accessible-roof/close views pass without browser errors and were compared with the three current sprites. The source receipt and unchanged-file publication bridge retain the actual capture commit. See [the porch review](../art/source-work-porches-3d-review-2026-10-07.md).

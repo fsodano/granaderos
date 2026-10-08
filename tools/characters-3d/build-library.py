@@ -95,4 +95,6 @@ if manifest['complete']:
  # exact final-frame timing; retain the rest of each complete bank.
  if any(kind=='animations'for kind,preset,lod in jobs):
   subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-motion-increment.py'),'--blender',a.blender,'--gesture','climbUp','--gesture','climbDown','--equipment','any','--directory',str(OUT),'--source-directory',str(HERE)],cwd=ROOT,check=True)
+  # Fit the released guard after native retargeting, in the same library lock.
+  subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-guard-support.py'),'--blender',a.blender,'--directory',str(OUT),'--source-directory',str(HERE)],cwd=ROOT,check=True)
  else:subprocess.run(['node',str(ROOT/'tools/characters-3d/compile-locomotion-profile.mjs'),'--directory',str(OUT)],cwd=ROOT,check=True)

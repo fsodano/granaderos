@@ -8,12 +8,14 @@ import {palaceFacade} from './world-palace-facade';
 import {depotFacade} from './world-depot-facade';
 import {warehouseButtresses} from './world-warehouse-buttresses';
 import {churchNave} from './world-church-nave';
+import {churchFrontPiers} from './world-church-front-piers';
 import {postaPiers} from './world-posta-piers';
 import {stableVentilation} from './world-stable-ventilation';
 import {stableTimberFrame} from './world-stable-frame';
 import {farmhouseGallery as supportedFarmhouseGallery} from './world-farmhouse-gallery';
 import {houseFacade} from './world-house-facade';
 import {chapelPiers} from './world-chapel-piers';
+import {workPorch} from './world-work-porches';
 import {buildingArtInset} from './world-building-placement';
 import type {WorldGeometry} from './world-geometry';
 import type {WorldMaterials} from './world-materials';
@@ -164,6 +166,10 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
     });
     root.getObjectByName(`building-detail:${b.id}:${name}`)?.add(roofEdgeDetails(`${b.id}:${name}`,[panel],low,geometry,roof,darkwood,light));
   };
+  const workCanopy=(name:string,supports:number[],depth:number)=>{
+    if(legacy&&b.wallFinish===undefined)roofCanopy(name,supports,depth);
+    else root.add(workPorch(b,input,T,height,base,geometry,materials,(panels,eave,surface)=>roofEdgeDetails(`${b.id}:${name}`,panels,eave,geometry,surface,darkwood,light)));
+  };
   const farmhouseGallery=()=>{
     const frontSupports=[...new Set([0,.3,.7,1].map(r=>Math.round(frame.width*r)))].filter(u=>wallAt(u,0)?.type==='wall'),length=Math.max(1,Math.round(frame.depth*.57)),sideSupports=[0,length].filter(v=>wallAt(0,v)?.type==='wall');
     const hasFront=frontSupports.length>=2,hasSide=sideSupports.length===2,joint=hasFront&&hasSide&&frontSupports[0]===0;
@@ -255,11 +261,12 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
       for(const a of [-.48,0,.48]){const x=a*radius,half=Math.sqrt(radius*radius-x*x)*.92;batch.cylinder(iron,at(center+x/T,v-.036/T,y-half),at(center+x/T,v-.036/T,y+half),.014,light);}
       batch.cylinder(iron,at(center-radius*.88/T,v-.036/T,y),at(center+radius*.88/T,v-.036/T,y),.015,light);
     });
-    feature('church-facade-pilasters',()=>{
+    if(legacy&&b.wallFinish===undefined)feature('church-facade-pilasters',()=>{
       for(const u of [0,frame.width])if(wallAt(u,0)?.type==='wall'){
         const [a,v]=bearing(u);box(a,v,height*.5,.23/T,height,.38/T,trim);box(a,v,.11,.34/T,.22,.38/T,materials.get('stone'));box(a,v,height-.035,.35/T,.15,.38/T,trim);
       }
     });
+    else root.add(churchFrontPiers(b,input,T,height,base,geometry,materials,legacy));
     if(!legacy||b.wallFinish!==undefined)root.add(churchNave(b,input,T,height,base,geometry,materials));
     else for(let v=1;v<frame.depth;v+=1.6)for(const u of [0,frame.width])if(wallAt(u,Math.round(v))?.type==='wall')box(u,v,.80,.20,1.6,.32,trim);
   }else if(kind==='townhall'){
@@ -362,7 +369,7 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
       if(v!==undefined)chimney(u-alongInset,v-depthInset,{name:u===0?'farmhouse-chimney-left':'farmhouse-chimney-right',material:wall,capMaterial:materials.get('stone'),top:height+roofRise+.68});
     }
   }else if(kind==='pulperia'){
-    roofCanopy('gallery',frontSupports(),.55);
+    workCanopy('gallery',frontSupports(),.55);
     const support=Array.from({length:Math.floor(frame.width)+1},(_,u)=>u).filter(u=>wallAt(u,0)?.type==='wall').sort((a,c)=>Math.abs(a-frame.doorU-1)-Math.abs(c-frame.doorU-1))[0];
     if(support!==undefined&&height>=2.4)feature('trade-sign',()=>{
       const u=support-alongInset,y=Math.max(2.05,Math.max(2.12,height*.82)-.055);
@@ -383,7 +390,7 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
       root.add(warehouseButtresses(b,input,T,height,base,geometry,materials,legacy));
     }
     if(kind==='depot'){
-      roofCanopy('gallery',frontSupports(),.60);
+      workCanopy('gallery',frontSupports(),.60);
       root.add(depotFacade(b,input,T,height,base,roofRise,geometry,materials));
     }
     if(kind==='barracks')feature('barracks-gate',()=>{
@@ -411,7 +418,7 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
       else root.add(stableTimberFrame(b,input,T,height,base,geometry,materials));
       root.add(stableVentilation(b,input,T,height,base,roofRise,geometry,materials));
     }
-  }else if(kind==='smithy'){sideChimney(true);roofCanopy('forge-canopy',entranceSupports(),.50);}
+  }else if(kind==='smithy'){sideChimney(true);workCanopy('forge-canopy',entranceSupports(),.50);}
   else if(kind==='house'){sideChimney();root.add(houseFacade(b,input,T,height,base,geometry,materials,legacy));}
   root.add(batch.finish(`building-detail:${b.id}:fabric`));return root;
 }

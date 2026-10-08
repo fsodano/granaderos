@@ -1826,8 +1826,8 @@
   "animationLibraries": {
     "male": {
       "url": "/models/characters/male-animations.glb",
-      "bytes": 17302384,
-      "sha256": "9c442370280b20bdc0808d3ed210e88737c63203f7efb2b92df62f934934714c",
+      "bytes": 17345020,
+      "sha256": "a2d1d26ccf5727ee9f74dfc519db8b9bfb116081afb08a910fc41fae838d71d9",
       "clips": [
         {
           "name": "stand.idle.unarmed",
@@ -2056,6 +2056,17 @@
               ],
               "space": "gltf-weapon-local"
             }
+          },
+          "nativeBootSupport": {
+            "method": "released-guard-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 120,
+            "preservedNativeLift": true,
+            "maximumHeelRoll": 0,
+            "forefootRollEnvelopes": {},
+            "minimumStraightLegReserve": 0.002,
+            "sourceSha256": "cc1100741c56e0a3808b5350671d78ccc808dd597c55ac1e1827f2a5ba55cda7"
           }
         },
         {
@@ -2586,6 +2597,17 @@
               ],
               "space": "gltf-weapon-local"
             }
+          },
+          "nativeBootSupport": {
+            "method": "released-guard-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 120,
+            "preservedNativeLift": true,
+            "maximumHeelRoll": 0,
+            "forefootRollEnvelopes": {},
+            "minimumStraightLegReserve": 0.002,
+            "sourceSha256": "cc1100741c56e0a3808b5350671d78ccc808dd597c55ac1e1827f2a5ba55cda7"
           }
         },
         {
@@ -17940,8 +17962,8 @@
     },
     "female": {
       "url": "/models/characters/female-animations.glb",
-      "bytes": 16595732,
-      "sha256": "3bb2e760b7522510f24e26e56e7975132ee190bafc384456bd42177746b5be9c",
+      "bytes": 16637980,
+      "sha256": "509ae4cfe63d32fb4ab5a9400c0eb3af1f5520bef65850fcf07c18be2befc5f6",
       "clips": [
         {
           "name": "stand.idle.unarmed",
@@ -18170,6 +18192,17 @@
               ],
               "space": "gltf-weapon-local"
             }
+          },
+          "nativeBootSupport": {
+            "method": "released-guard-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 120,
+            "preservedNativeLift": true,
+            "maximumHeelRoll": 0,
+            "forefootRollEnvelopes": {},
+            "minimumStraightLegReserve": 0.002,
+            "sourceSha256": "cc1100741c56e0a3808b5350671d78ccc808dd597c55ac1e1827f2a5ba55cda7"
           }
         },
         {
@@ -18700,6 +18733,24 @@
               ],
               "space": "gltf-weapon-local"
             }
+          },
+          "nativeBootSupport": {
+            "method": "released-guard-leg-rotations",
+            "surface": "complete-native-boot",
+            "floor": 0.002,
+            "sampleRate": 120,
+            "preservedNativeLift": true,
+            "maximumHeelRoll": 0.018758403320312506,
+            "forefootRollEnvelopes": {
+              "l": {
+                "begin": 0.3458333333333333,
+                "peak": 0.5,
+                "end": 0.65,
+                "amplitude": 0.018758403320312506
+              }
+            },
+            "minimumStraightLegReserve": 0.002,
+            "sourceSha256": "cc1100741c56e0a3808b5350671d78ccc808dd597c55ac1e1827f2a5ba55cda7"
           }
         },
         {
