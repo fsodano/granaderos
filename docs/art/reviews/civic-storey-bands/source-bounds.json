@@ -1,0 +1,1819 @@
+{
+  "base": "5d584532",
+  "source": "web/app/TacticalBuildingDetails.tsx:civicUpperStorey",
+  "metresPerTile": 1.2360585147470482,
+  "sourceUnitsPerMetre": 25.066666666666666,
+  "scope": "The two warm stone pieces at the actual civic storey boundary. The existing upper eave trim remains exact.",
+  "states": [
+    {
+      "id": "ayuntamiento",
+      "rotation": 0,
+      "actualHeight": 4.707446808510638,
+      "storey": 2.632978723404255,
+      "source": [
+        {
+          "points": [
+            {
+              "x": 15,
+              "y": 12.22
+            },
+            {
+              "x": 4,
+              "y": 12.22
+            },
+            {
+              "x": 4,
+              "y": 11.88
+            },
+            {
+              "x": 15,
+              "y": 11.88
+            }
+          ],
+          "bottom": 64,
+          "top": 70,
+          "palette": {
+            "base": "#a99a79",
+            "trim": "#c7b795",
+            "shadow": "#776d54"
+          },
+          "texture": "stone",
+          "cap": false
+        },
+        {
+          "points": [
+            {
+              "x": 15,
+              "y": 12.3
+            },
+            {
+              "x": 4,
+              "y": 12.3
+            },
+            {
+              "x": 4,
+              "y": 11.88
+            },
+            {
+              "x": 15,
+              "y": 11.88
+            }
+          ],
+          "bottom": 69,
+          "top": 71,
+          "palette": {
+            "base": "#a99a79",
+            "trim": "#c7b795",
+            "shadow": "#776d54"
+          },
+          "texture": "stone"
+        },
+        {
+          "label": "townhall-upper-cornice-front",
+          "points": [
+            {
+              "x": 15,
+              "y": 12.21
+            },
+            {
+              "x": 4,
+              "y": 12.21
+            },
+            {
+              "x": 4,
+              "y": 11.88
+            },
+            {
+              "x": 15,
+              "y": 11.88
+            }
+          ],
+          "bottom": 114,
+          "top": 119,
+          "palette": {
+            "base": "#ded8c5",
+            "trim": "#eee6d1",
+            "shadow": "#aaa18a"
+          },
+          "texture": "plaster"
+        },
+        {
+          "points": [
+            {
+              "x": 15.22,
+              "y": 12
+            },
+            {
+              "x": 14.88,
+              "y": 12
+            },
+            {
+              "x": 14.88,
+              "y": 4
+            },
+            {
+              "x": 15.22,
+              "y": 4
+            }
+          ],
+          "bottom": 64,
+          "top": 70,
+          "palette": {
+            "base": "#a99a79",
+            "trim": "#c7b795",
+            "shadow": "#776d54"
+          },
+          "texture": "stone",
+          "cap": false
+        },
+        {
+          "points": [
+            {
+              "x": 15.3,
+              "y": 12
+            },
+            {
+              "x": 14.88,
+              "y": 12
+            },
+            {
+              "x": 14.88,
+              "y": 4
+            },
+            {
+              "x": 15.3,
+              "y": 4
+            }
+          ],
+          "bottom": 69,
+          "top": 71,
+          "palette": {
+            "base": "#a99a79",
+            "trim": "#c7b795",
+            "shadow": "#776d54"
+          },
+          "texture": "stone"
+        },
+        {
+          "label": "townhall-upper-cornice-left",
+          "points": [
+            {
+              "x": 15.21,
+              "y": 12
+            },
+            {
+              "x": 14.88,
+              "y": 12
+            },
+            {
+              "x": 14.88,
+              "y": 4
+            },
+            {
+              "x": 15.21,
+              "y": 4
+            }
+          ],
+          "bottom": 114,
+          "top": 119,
+          "palette": {
+            "base": "#ded8c5",
+            "trim": "#eee6d1",
+            "shadow": "#aaa18a"
+          },
+          "texture": "plaster"
+        },
+        {
+          "label": "townhall-entrance-column-capital-3",
+          "points": [
+            {
+              "x": 12.23,
+              "y": 12.43
+            },
+            {
+              "x": 11.77,
+              "y": 12.43
+            },
+            {
+              "x": 11.77,
+              "y": 11.76
+            },
+            {
+              "x": 12.23,
+              "y": 11.76
+            }
+          ],
+          "bottom": 64,
+          "top": 68.5,
+          "palette": {
+            "base": "#a99a79",
+            "trim": "#c7b795",
+            "shadow": "#776d54"
+          },
+          "texture": "stone",
+          "cap": true
+        },
+        {
+          "label": "townhall-entrance-column-capital-7",
+          "points": [
+            {
+              "x": 8.23,
+              "y": 12.43
+            },
+            {
+              "x": 7.77,
+              "y": 12.43
+            },
+            {
+              "x": 7.77,
+              "y": 11.76
+            },
+            {
+              "x": 8.23,
+              "y": 11.76
+            }
+          ],
+          "bottom": 64,
+          "top": 68.5,
+          "palette": {
+            "base": "#a99a79",
+            "trim": "#c7b795",
+            "shadow": "#776d54"
+          },
+          "texture": "stone",
+          "cap": true
+        }
+      ],
+      "nativeFrontCrossSection": {
+        "bottom": 2.557978630065918,
+        "top": 2.7079787254333496,
+        "outerV": -0.19821096039566655,
+        "innerV": 0.036405733226134274,
+        "material": {
+          "name": "world:stone",
+          "colour": "ffffff",
+          "recipe": null
+        }
+      },
+      "directExpected": {
+        "bottom": 2.553191489361702,
+        "firstTop": 2.7925531914893615,
+        "capBottom": 2.752659574468085,
+        "capTop": 2.832446808510638,
+        "firstOuterV": -0.22,
+        "capOuterV": -0.3,
+        "baseColour": "#a99a79",
+        "capColour": "#c7b795",
+        "shadowColour": "#776d54",
+        "textureOpacity": 0.6
+      }
+    },
+    {
+      "id": "ayuntamiento",
+      "rotation": 90,
+      "actualHeight": 4.707446808510638,
+      "storey": 2.632978723404255,
+      "source": [
+        {
+          "points": [
+            {
+              "x": 11.879999999999999,
+              "y": 15
+            },
+            {
+              "x": 11.879999999999999,
+              "y": 4
+            },
+            {
+              "x": 12.22,
+              "y": 4
+            },
+            {
+              "x": 12.22,
+              "y": 15
+            }
+          ],
+          "bottom": 64,
+          "top": 70,
+          "palette": {
+            "base": "#a99a79",
+            "trim": "#c7b795",
+            "shadow": "#776d54"
+          },
+          "texture": "stone",
+          "cap": false
+        },
+        {
+          "points": [
+            {
+              "x": 11.879999999999999,
+              "y": 15
+            },
+            {
+              "x": 11.879999999999999,
+              "y": 4
+            },
+            {
+              "x": 12.3,
+              "y": 4
+            },
+            {
+              "x": 12.3,
+              "y": 15
+            }
+          ],
+          "bottom": 69,
+          "top": 71,
+          "palette": {
+            "base": "#a99a79",
+            "trim": "#c7b795",
+            "shadow": "#776d54"
+          },
+          "texture": "stone"
+        },
+        {
+          "label": "townhall-upper-cornice-rear",
+          "points": [
+            {
+              "x": 11.879999999999999,
+              "y": 15
+            },
+            {
+              "x": 11.879999999999999,
+              "y": 4
+            },
+            {
+              "x": 12.21,
+              "y": 4
+            },
+            {
+              "x": 12.21,
+              "y": 15
+            }
+          ],
+          "bottom": 114,
+          "top": 119,
+          "palette": {
+            "base": "#ded8c5",
+            "trim": "#eee6d1",
+            "shadow": "#aaa18a"
+          },
+          "texture": "plaster"
+        },
+        {
+          "points": [
+            {
+              "x": 4,
+              "y": 15.22
+            },
+            {
+              "x": 4,
+              "y": 14.88
+            },
+            {
+              "x": 12,
+              "y": 14.88
+            },
+            {
+              "x": 12,
+              "y": 15.22
+            }
+          ],
+          "bottom": 64,
+          "top": 70,
+          "palette": {
+            "base": "#a99a79",
+            "trim": "#c7b795",
+            "shadow": "#776d54"
+          },
+          "texture": "stone",
+          "cap": false
+        },
+        {
+          "points": [
+            {
+              "x": 4,
+              "y": 15.3
+            },
+            {
+              "x": 4,
+              "y": 14.88
+            },
+            {
+              "x": 12,
+              "y": 14.88
+            },
+            {
+              "x": 12,
+              "y": 15.3
+            }
+          ],
+          "bottom": 69,
+          "top": 71,
+          "palette": {
+            "base": "#a99a79",
+            "trim": "#c7b795",
+            "shadow": "#776d54"
+          },
+          "texture": "stone"
+        },
+        {
+          "label": "townhall-upper-cornice-left",
+          "points": [
+            {
+              "x": 4,
+              "y": 15.21
+            },
+            {
+              "x": 4,
+              "y": 14.88
+            },
+            {
+              "x": 12,
+              "y": 14.88
+            },
+            {
+              "x": 12,
+              "y": 15.21
+            }
+          ],
+          "bottom": 114,
+          "top": 119,
+          "palette": {
+            "base": "#ded8c5",
+            "trim": "#eee6d1",
+            "shadow": "#aaa18a"
+          },
+          "texture": "plaster"
+        }
+      ],
+      "nativeFrontCrossSection": {
+        "bottom": 2.557978630065918,
+        "top": 2.7079787254333496,
+        "outerV": -0.19821072164149767,
+        "innerV": 0.0364059719803036,
+        "material": {
+          "name": "world:stone",
+          "colour": "ffffff",
+          "recipe": null
+        }
+      },
+      "directExpected": {
+        "bottom": 2.553191489361702,
+        "firstTop": 2.7925531914893615,
+        "capBottom": 2.752659574468085,
+        "capTop": 2.832446808510638,
+        "firstOuterV": -0.22,
+        "capOuterV": -0.3,
+        "baseColour": "#a99a79",
+        "capColour": "#c7b795",
+        "shadowColour": "#776d54",
+        "textureOpacity": 0.6
+      }
+    },
+    {
+      "id": "ayuntamiento",
+      "rotation": 180,
+      "actualHeight": 4.707446808510638,
+      "storey": 2.632978723404255,
+      "source": [
+        {
+          "points": [
+            {
+              "x": 4,
+              "y": 11.879999999999999
+            },
+            {
+              "x": 15,
+              "y": 11.879999999999999
+            },
+            {
+              "x": 15,
+              "y": 12.22
+            },
+            {
+              "x": 4,
+              "y": 12.22
+            }
+          ],
+          "bottom": 64,
+          "top": 70,
+          "palette": {
+            "base": "#a99a79",
+            "trim": "#c7b795",
+            "shadow": "#776d54"
+          },
+          "texture": "stone",
+          "cap": false
+        },
+        {
+          "points": [
+            {
+              "x": 4,
+              "y": 11.879999999999999
+            },
+            {
+              "x": 15,
+              "y": 11.879999999999999
+            },
+            {
+              "x": 15,
+              "y": 12.3
+            },
+            {
+              "x": 4,
+              "y": 12.3
+            }
+          ],
+          "bottom": 69,
+          "top": 71,
+          "palette": {
+            "base": "#a99a79",
+            "trim": "#c7b795",
+            "shadow": "#776d54"
+          },
+          "texture": "stone"
+        },
+        {
+          "label": "townhall-upper-cornice-rear",
+          "points": [
+            {
+              "x": 4,
+              "y": 11.879999999999999
+            },
+            {
+              "x": 15,
+              "y": 11.879999999999999
+            },
+            {
+              "x": 15,
+              "y": 12.21
+            },
+            {
+              "x": 4,
+              "y": 12.21
+            }
+          ],
+          "bottom": 114,
+          "top": 119,
+          "palette": {
+            "base": "#ded8c5",
+            "trim": "#eee6d1",
+            "shadow": "#aaa18a"
+          },
+          "texture": "plaster"
+        },
+        {
+          "points": [
+            {
+              "x": 14.88,
+              "y": 4
+            },
+            {
+              "x": 15.22,
+              "y": 4
+            },
+            {
+              "x": 15.22,
+              "y": 12
+            },
+            {
+              "x": 14.88,
+              "y": 12
+            }
+          ],
+          "bottom": 64,
+          "top": 70,
+          "palette": {
+            "base": "#a99a79",
+            "trim": "#c7b795",
+            "shadow": "#776d54"
+          },
+          "texture": "stone",
+          "cap": false
+        },
+        {
+          "points": [
+            {
+              "x": 14.88,
+              "y": 4
+            },
+            {
+              "x": 15.3,
+              "y": 4
+            },
+            {
+              "x": 15.3,
+              "y": 12
+            },
+            {
+              "x": 14.88,
+              "y": 12
+            }
+          ],
+          "bottom": 69,
+          "top": 71,
+          "palette": {
+            "base": "#a99a79",
+            "trim": "#c7b795",
+            "shadow": "#776d54"
+          },
+          "texture": "stone"
+        },
+        {
+          "label": "townhall-upper-cornice-right",
+          "points": [
+            {
+              "x": 14.88,
+              "y": 4
+            },
+            {
+              "x": 15.21,
+              "y": 4
+            },
+            {
+              "x": 15.21,
+              "y": 12
+            },
+            {
+              "x": 14.88,
+              "y": 12
+            }
+          ],
+          "bottom": 114,
+          "top": 119,
+          "palette": {
+            "base": "#ded8c5",
+            "trim": "#eee6d1",
+            "shadow": "#aaa18a"
+          },
+          "texture": "plaster"
+        }
+      ],
+      "nativeFrontCrossSection": {
+        "bottom": 2.557978630065918,
+        "top": 2.7079787254333496,
+        "outerV": -0.19821072164149767,
+        "innerV": 0.0364059719803036,
+        "material": {
+          "name": "world:stone",
+          "colour": "ffffff",
+          "recipe": null
+        }
+      },
+      "directExpected": {
+        "bottom": 2.553191489361702,
+        "firstTop": 2.7925531914893615,
+        "capBottom": 2.752659574468085,
+        "capTop": 2.832446808510638,
+        "firstOuterV": -0.22,
+        "capOuterV": -0.3,
+        "baseColour": "#a99a79",
+        "capColour": "#c7b795",
+        "shadowColour": "#776d54",
+        "textureOpacity": 0.6
+      }
+    },
+    {
+      "id": "ayuntamiento",
+      "rotation": 270,
+      "actualHeight": 4.707446808510638,
+      "storey": 2.632978723404255,
+      "source": [
+        {
+          "points": [
+            {
+              "x": 12.22,
+              "y": 4
+            },
+            {
+              "x": 12.22,
+              "y": 15
+            },
+            {
+              "x": 11.88,
+              "y": 15
+            },
+            {
+              "x": 11.88,
+              "y": 4
+            }
+          ],
+          "bottom": 64,
+          "top": 70,
+          "palette": {
+            "base": "#a99a79",
+            "trim": "#c7b795",
+            "shadow": "#776d54"
+          },
+          "texture": "stone",
+          "cap": false
+        },
+        {
+          "points": [
+            {
+              "x": 12.3,
+              "y": 4
+            },
+            {
+              "x": 12.3,
+              "y": 15
+            },
+            {
+              "x": 11.88,
+              "y": 15
+            },
+            {
+              "x": 11.88,
+              "y": 4
+            }
+          ],
+          "bottom": 69,
+          "top": 71,
+          "palette": {
+            "base": "#a99a79",
+            "trim": "#c7b795",
+            "shadow": "#776d54"
+          },
+          "texture": "stone"
+        },
+        {
+          "label": "townhall-upper-cornice-front",
+          "points": [
+            {
+              "x": 12.21,
+              "y": 4
+            },
+            {
+              "x": 12.21,
+              "y": 15
+            },
+            {
+              "x": 11.88,
+              "y": 15
+            },
+            {
+              "x": 11.88,
+              "y": 4
+            }
+          ],
+          "bottom": 114,
+          "top": 119,
+          "palette": {
+            "base": "#ded8c5",
+            "trim": "#eee6d1",
+            "shadow": "#aaa18a"
+          },
+          "texture": "plaster"
+        },
+        {
+          "points": [
+            {
+              "x": 12,
+              "y": 14.88
+            },
+            {
+              "x": 12,
+              "y": 15.22
+            },
+            {
+              "x": 4,
+              "y": 15.22
+            },
+            {
+              "x": 4,
+              "y": 14.88
+            }
+          ],
+          "bottom": 64,
+          "top": 70,
+          "palette": {
+            "base": "#a99a79",
+            "trim": "#c7b795",
+            "shadow": "#776d54"
+          },
+          "texture": "stone",
+          "cap": false
+        },
+        {
+          "points": [
+            {
+              "x": 12,
+              "y": 14.88
+            },
+            {
+              "x": 12,
+              "y": 15.3
+            },
+            {
+              "x": 4,
+              "y": 15.3
+            },
+            {
+              "x": 4,
+              "y": 14.88
+            }
+          ],
+          "bottom": 69,
+          "top": 71,
+          "palette": {
+            "base": "#a99a79",
+            "trim": "#c7b795",
+            "shadow": "#776d54"
+          },
+          "texture": "stone"
+        },
+        {
+          "label": "townhall-upper-cornice-right",
+          "points": [
+            {
+              "x": 12,
+              "y": 14.88
+            },
+            {
+              "x": 12,
+              "y": 15.21
+            },
+            {
+              "x": 4,
+              "y": 15.21
+            },
+            {
+              "x": 4,
+              "y": 14.88
+            }
+          ],
+          "bottom": 114,
+          "top": 119,
+          "palette": {
+            "base": "#ded8c5",
+            "trim": "#eee6d1",
+            "shadow": "#aaa18a"
+          },
+          "texture": "plaster"
+        },
+        {
+          "label": "townhall-entrance-column-capital-3",
+          "points": [
+            {
+              "x": 12.43,
+              "y": 6.77
+            },
+            {
+              "x": 12.43,
+              "y": 7.23
+            },
+            {
+              "x": 11.76,
+              "y": 7.23
+            },
+            {
+              "x": 11.76,
+              "y": 6.77
+            }
+          ],
+          "bottom": 64,
+          "top": 68.5,
+          "palette": {
+            "base": "#a99a79",
+            "trim": "#c7b795",
+            "shadow": "#776d54"
+          },
+          "texture": "stone",
+          "cap": true
+        },
+        {
+          "label": "townhall-entrance-column-capital-7",
+          "points": [
+            {
+              "x": 12.43,
+              "y": 10.77
+            },
+            {
+              "x": 12.43,
+              "y": 11.23
+            },
+            {
+              "x": 11.76,
+              "y": 11.23
+            },
+            {
+              "x": 11.76,
+              "y": 10.77
+            }
+          ],
+          "bottom": 64,
+          "top": 68.5,
+          "palette": {
+            "base": "#a99a79",
+            "trim": "#c7b795",
+            "shadow": "#776d54"
+          },
+          "texture": "stone",
+          "cap": true
+        }
+      ],
+      "nativeFrontCrossSection": {
+        "bottom": 2.557978630065918,
+        "top": 2.7079787254333496,
+        "outerV": -0.19821096039566655,
+        "innerV": 0.036405733226134274,
+        "material": {
+          "name": "world:stone",
+          "colour": "ffffff",
+          "recipe": null
+        }
+      },
+      "directExpected": {
+        "bottom": 2.553191489361702,
+        "firstTop": 2.7925531914893615,
+        "capBottom": 2.752659574468085,
+        "capTop": 2.832446808510638,
+        "firstOuterV": -0.22,
+        "capOuterV": -0.3,
+        "baseColour": "#a99a79",
+        "capColour": "#c7b795",
+        "shadowColour": "#776d54",
+        "textureOpacity": 0.6
+      }
+    },
+    {
+      "id": "palacio",
+      "rotation": 0,
+      "actualHeight": 4.946808510638298,
+      "storey": 2.7925531914893615,
+      "source": [
+        {
+          "points": [
+            {
+              "x": 17,
+              "y": 14.22
+            },
+            {
+              "x": 4,
+              "y": 14.22
+            },
+            {
+              "x": 4,
+              "y": 13.88
+            },
+            {
+              "x": 17,
+              "y": 13.88
+            }
+          ],
+          "bottom": 68,
+          "top": 74,
+          "palette": {
+            "base": "#a99a79",
+            "trim": "#c7b795",
+            "shadow": "#776d54"
+          },
+          "texture": "stone",
+          "cap": false
+        },
+        {
+          "points": [
+            {
+              "x": 17,
+              "y": 14.3
+            },
+            {
+              "x": 4,
+              "y": 14.3
+            },
+            {
+              "x": 4,
+              "y": 13.88
+            },
+            {
+              "x": 17,
+              "y": 13.88
+            }
+          ],
+          "bottom": 73,
+          "top": 75,
+          "palette": {
+            "base": "#a99a79",
+            "trim": "#c7b795",
+            "shadow": "#776d54"
+          },
+          "texture": "stone"
+        },
+        {
+          "label": "palace-upper-cornice-front",
+          "points": [
+            {
+              "x": 17,
+              "y": 14.21
+            },
+            {
+              "x": 4,
+              "y": 14.21
+            },
+            {
+              "x": 4,
+              "y": 13.88
+            },
+            {
+              "x": 17,
+              "y": 13.88
+            }
+          ],
+          "bottom": 120,
+          "top": 125,
+          "palette": {
+            "base": "#c5a36e",
+            "trim": "#e4d3ab",
+            "shadow": "#8f754f"
+          },
+          "texture": "plaster"
+        },
+        {
+          "points": [
+            {
+              "x": 17.22,
+              "y": 14
+            },
+            {
+              "x": 16.88,
+              "y": 14
+            },
+            {
+              "x": 16.88,
+              "y": 4
+            },
+            {
+              "x": 17.22,
+              "y": 4
+            }
+          ],
+          "bottom": 68,
+          "top": 74,
+          "palette": {
+            "base": "#a99a79",
+            "trim": "#c7b795",
+            "shadow": "#776d54"
+          },
+          "texture": "stone",
+          "cap": false
+        },
+        {
+          "points": [
+            {
+              "x": 17.3,
+              "y": 14
+            },
+            {
+              "x": 16.88,
+              "y": 14
+            },
+            {
+              "x": 16.88,
+              "y": 4
+            },
+            {
+              "x": 17.3,
+              "y": 4
+            }
+          ],
+          "bottom": 73,
+          "top": 75,
+          "palette": {
+            "base": "#a99a79",
+            "trim": "#c7b795",
+            "shadow": "#776d54"
+          },
+          "texture": "stone"
+        },
+        {
+          "label": "palace-upper-cornice-left",
+          "points": [
+            {
+              "x": 17.21,
+              "y": 14
+            },
+            {
+              "x": 16.88,
+              "y": 14
+            },
+            {
+              "x": 16.88,
+              "y": 4
+            },
+            {
+              "x": 17.21,
+              "y": 4
+            }
+          ],
+          "bottom": 120,
+          "top": 125,
+          "palette": {
+            "base": "#c5a36e",
+            "trim": "#e4d3ab",
+            "shadow": "#8f754f"
+          },
+          "texture": "plaster"
+        }
+      ],
+      "nativeFrontCrossSection": {
+        "bottom": 2.71755313873291,
+        "top": 2.867553234100342,
+        "outerV": -0.1982112795691755,
+        "innerV": 0.0364061855972615,
+        "material": {
+          "name": "world:stone",
+          "colour": "ffffff",
+          "recipe": null
+        }
+      },
+      "directExpected": {
+        "bottom": 2.712765957446808,
+        "firstTop": 2.952127659574468,
+        "capBottom": 2.9122340425531914,
+        "capTop": 2.9920212765957444,
+        "firstOuterV": -0.22,
+        "capOuterV": -0.3,
+        "baseColour": "#a99a79",
+        "capColour": "#c7b795",
+        "shadowColour": "#776d54",
+        "textureOpacity": 0.6
+      }
+    },
+    {
+      "id": "palacio",
+      "rotation": 90,
+      "actualHeight": 4.946808510638298,
+      "storey": 2.7925531914893615,
+      "source": [
+        {
+          "points": [
+            {
+              "x": 13.88,
+              "y": 17
+            },
+            {
+              "x": 13.88,
+              "y": 4
+            },
+            {
+              "x": 14.22,
+              "y": 4
+            },
+            {
+              "x": 14.22,
+              "y": 17
+            }
+          ],
+          "bottom": 68,
+          "top": 74,
+          "palette": {
+            "base": "#a99a79",
+            "trim": "#c7b795",
+            "shadow": "#776d54"
+          },
+          "texture": "stone",
+          "cap": false
+        },
+        {
+          "points": [
+            {
+              "x": 13.88,
+              "y": 17
+            },
+            {
+              "x": 13.88,
+              "y": 4
+            },
+            {
+              "x": 14.3,
+              "y": 4
+            },
+            {
+              "x": 14.3,
+              "y": 17
+            }
+          ],
+          "bottom": 73,
+          "top": 75,
+          "palette": {
+            "base": "#a99a79",
+            "trim": "#c7b795",
+            "shadow": "#776d54"
+          },
+          "texture": "stone"
+        },
+        {
+          "label": "palace-upper-cornice-rear",
+          "points": [
+            {
+              "x": 13.88,
+              "y": 17
+            },
+            {
+              "x": 13.88,
+              "y": 4
+            },
+            {
+              "x": 14.21,
+              "y": 4
+            },
+            {
+              "x": 14.21,
+              "y": 17
+            }
+          ],
+          "bottom": 120,
+          "top": 125,
+          "palette": {
+            "base": "#c5a36e",
+            "trim": "#e4d3ab",
+            "shadow": "#8f754f"
+          },
+          "texture": "plaster"
+        },
+        {
+          "points": [
+            {
+              "x": 4,
+              "y": 17.22
+            },
+            {
+              "x": 4,
+              "y": 16.88
+            },
+            {
+              "x": 14,
+              "y": 16.88
+            },
+            {
+              "x": 14,
+              "y": 17.22
+            }
+          ],
+          "bottom": 68,
+          "top": 74,
+          "palette": {
+            "base": "#a99a79",
+            "trim": "#c7b795",
+            "shadow": "#776d54"
+          },
+          "texture": "stone",
+          "cap": false
+        },
+        {
+          "points": [
+            {
+              "x": 4,
+              "y": 17.3
+            },
+            {
+              "x": 4,
+              "y": 16.88
+            },
+            {
+              "x": 14,
+              "y": 16.88
+            },
+            {
+              "x": 14,
+              "y": 17.3
+            }
+          ],
+          "bottom": 73,
+          "top": 75,
+          "palette": {
+            "base": "#a99a79",
+            "trim": "#c7b795",
+            "shadow": "#776d54"
+          },
+          "texture": "stone"
+        },
+        {
+          "label": "palace-upper-cornice-left",
+          "points": [
+            {
+              "x": 4,
+              "y": 17.21
+            },
+            {
+              "x": 4,
+              "y": 16.88
+            },
+            {
+              "x": 14,
+              "y": 16.88
+            },
+            {
+              "x": 14,
+              "y": 17.21
+            }
+          ],
+          "bottom": 120,
+          "top": 125,
+          "palette": {
+            "base": "#c5a36e",
+            "trim": "#e4d3ab",
+            "shadow": "#8f754f"
+          },
+          "texture": "plaster"
+        }
+      ],
+      "nativeFrontCrossSection": {
+        "bottom": 2.71755313873291,
+        "top": 2.867553234100342,
+        "outerV": -0.19821072164149767,
+        "innerV": 0.0364059719803036,
+        "material": {
+          "name": "world:stone",
+          "colour": "ffffff",
+          "recipe": null
+        }
+      },
+      "directExpected": {
+        "bottom": 2.712765957446808,
+        "firstTop": 2.952127659574468,
+        "capBottom": 2.9122340425531914,
+        "capTop": 2.9920212765957444,
+        "firstOuterV": -0.22,
+        "capOuterV": -0.3,
+        "baseColour": "#a99a79",
+        "capColour": "#c7b795",
+        "shadowColour": "#776d54",
+        "textureOpacity": 0.6
+      }
+    },
+    {
+      "id": "palacio",
+      "rotation": 180,
+      "actualHeight": 4.946808510638298,
+      "storey": 2.7925531914893615,
+      "source": [
+        {
+          "points": [
+            {
+              "x": 4,
+              "y": 13.88
+            },
+            {
+              "x": 17,
+              "y": 13.88
+            },
+            {
+              "x": 17,
+              "y": 14.22
+            },
+            {
+              "x": 4,
+              "y": 14.22
+            }
+          ],
+          "bottom": 68,
+          "top": 74,
+          "palette": {
+            "base": "#a99a79",
+            "trim": "#c7b795",
+            "shadow": "#776d54"
+          },
+          "texture": "stone",
+          "cap": false
+        },
+        {
+          "points": [
+            {
+              "x": 4,
+              "y": 13.88
+            },
+            {
+              "x": 17,
+              "y": 13.88
+            },
+            {
+              "x": 17,
+              "y": 14.3
+            },
+            {
+              "x": 4,
+              "y": 14.3
+            }
+          ],
+          "bottom": 73,
+          "top": 75,
+          "palette": {
+            "base": "#a99a79",
+            "trim": "#c7b795",
+            "shadow": "#776d54"
+          },
+          "texture": "stone"
+        },
+        {
+          "label": "palace-upper-cornice-rear",
+          "points": [
+            {
+              "x": 4,
+              "y": 13.88
+            },
+            {
+              "x": 17,
+              "y": 13.88
+            },
+            {
+              "x": 17,
+              "y": 14.21
+            },
+            {
+              "x": 4,
+              "y": 14.21
+            }
+          ],
+          "bottom": 120,
+          "top": 125,
+          "palette": {
+            "base": "#c5a36e",
+            "trim": "#e4d3ab",
+            "shadow": "#8f754f"
+          },
+          "texture": "plaster"
+        },
+        {
+          "points": [
+            {
+              "x": 16.880000000000003,
+              "y": 4
+            },
+            {
+              "x": 17.22,
+              "y": 4
+            },
+            {
+              "x": 17.22,
+              "y": 14
+            },
+            {
+              "x": 16.880000000000003,
+              "y": 14
+            }
+          ],
+          "bottom": 68,
+          "top": 74,
+          "palette": {
+            "base": "#a99a79",
+            "trim": "#c7b795",
+            "shadow": "#776d54"
+          },
+          "texture": "stone",
+          "cap": false
+        },
+        {
+          "points": [
+            {
+              "x": 16.880000000000003,
+              "y": 4
+            },
+            {
+              "x": 17.3,
+              "y": 4
+            },
+            {
+              "x": 17.3,
+              "y": 14
+            },
+            {
+              "x": 16.880000000000003,
+              "y": 14
+            }
+          ],
+          "bottom": 73,
+          "top": 75,
+          "palette": {
+            "base": "#a99a79",
+            "trim": "#c7b795",
+            "shadow": "#776d54"
+          },
+          "texture": "stone"
+        },
+        {
+          "label": "palace-upper-cornice-right",
+          "points": [
+            {
+              "x": 16.880000000000003,
+              "y": 4
+            },
+            {
+              "x": 17.21,
+              "y": 4
+            },
+            {
+              "x": 17.21,
+              "y": 14
+            },
+            {
+              "x": 16.880000000000003,
+              "y": 14
+            }
+          ],
+          "bottom": 120,
+          "top": 125,
+          "palette": {
+            "base": "#c5a36e",
+            "trim": "#e4d3ab",
+            "shadow": "#8f754f"
+          },
+          "texture": "plaster"
+        }
+      ],
+      "nativeFrontCrossSection": {
+        "bottom": 2.71755313873291,
+        "top": 2.867553234100342,
+        "outerV": -0.19821072164149767,
+        "innerV": 0.0364059719803036,
+        "material": {
+          "name": "world:stone",
+          "colour": "ffffff",
+          "recipe": null
+        }
+      },
+      "directExpected": {
+        "bottom": 2.712765957446808,
+        "firstTop": 2.952127659574468,
+        "capBottom": 2.9122340425531914,
+        "capTop": 2.9920212765957444,
+        "firstOuterV": -0.22,
+        "capOuterV": -0.3,
+        "baseColour": "#a99a79",
+        "capColour": "#c7b795",
+        "shadowColour": "#776d54",
+        "textureOpacity": 0.6
+      }
+    },
+    {
+      "id": "palacio",
+      "rotation": 270,
+      "actualHeight": 4.946808510638298,
+      "storey": 2.7925531914893615,
+      "source": [
+        {
+          "points": [
+            {
+              "x": 14.22,
+              "y": 4
+            },
+            {
+              "x": 14.22,
+              "y": 17
+            },
+            {
+              "x": 13.88,
+              "y": 17
+            },
+            {
+              "x": 13.88,
+              "y": 4
+            }
+          ],
+          "bottom": 68,
+          "top": 74,
+          "palette": {
+            "base": "#a99a79",
+            "trim": "#c7b795",
+            "shadow": "#776d54"
+          },
+          "texture": "stone",
+          "cap": false
+        },
+        {
+          "points": [
+            {
+              "x": 14.3,
+              "y": 4
+            },
+            {
+              "x": 14.3,
+              "y": 17
+            },
+            {
+              "x": 13.88,
+              "y": 17
+            },
+            {
+              "x": 13.88,
+              "y": 4
+            }
+          ],
+          "bottom": 73,
+          "top": 75,
+          "palette": {
+            "base": "#a99a79",
+            "trim": "#c7b795",
+            "shadow": "#776d54"
+          },
+          "texture": "stone"
+        },
+        {
+          "label": "palace-upper-cornice-front",
+          "points": [
+            {
+              "x": 14.21,
+              "y": 4
+            },
+            {
+              "x": 14.21,
+              "y": 17
+            },
+            {
+              "x": 13.88,
+              "y": 17
+            },
+            {
+              "x": 13.88,
+              "y": 4
+            }
+          ],
+          "bottom": 120,
+          "top": 125,
+          "palette": {
+            "base": "#c5a36e",
+            "trim": "#e4d3ab",
+            "shadow": "#8f754f"
+          },
+          "texture": "plaster"
+        },
+        {
+          "points": [
+            {
+              "x": 14,
+              "y": 16.880000000000003
+            },
+            {
+              "x": 14,
+              "y": 17.22
+            },
+            {
+              "x": 4,
+              "y": 17.22
+            },
+            {
+              "x": 4,
+              "y": 16.880000000000003
+            }
+          ],
+          "bottom": 68,
+          "top": 74,
+          "palette": {
+            "base": "#a99a79",
+            "trim": "#c7b795",
+            "shadow": "#776d54"
+          },
+          "texture": "stone",
+          "cap": false
+        },
+        {
+          "points": [
+            {
+              "x": 14,
+              "y": 16.880000000000003
+            },
+            {
+              "x": 14,
+              "y": 17.3
+            },
+            {
+              "x": 4,
+              "y": 17.3
+            },
+            {
+              "x": 4,
+              "y": 16.880000000000003
+            }
+          ],
+          "bottom": 73,
+          "top": 75,
+          "palette": {
+            "base": "#a99a79",
+            "trim": "#c7b795",
+            "shadow": "#776d54"
+          },
+          "texture": "stone"
+        },
+        {
+          "label": "palace-upper-cornice-right",
+          "points": [
+            {
+              "x": 14,
+              "y": 16.880000000000003
+            },
+            {
+              "x": 14,
+              "y": 17.21
+            },
+            {
+              "x": 4,
+              "y": 17.21
+            },
+            {
+              "x": 4,
+              "y": 16.880000000000003
+            }
+          ],
+          "bottom": 120,
+          "top": 125,
+          "palette": {
+            "base": "#c5a36e",
+            "trim": "#e4d3ab",
+            "shadow": "#8f754f"
+          },
+          "texture": "plaster"
+        }
+      ],
+      "nativeFrontCrossSection": {
+        "bottom": 2.71755313873291,
+        "top": 2.867553234100342,
+        "outerV": -0.1982112795691755,
+        "innerV": 0.0364061855972615,
+        "material": {
+          "name": "world:stone",
+          "colour": "ffffff",
+          "recipe": null
+        }
+      },
+      "directExpected": {
+        "bottom": 2.712765957446808,
+        "firstTop": 2.952127659574468,
+        "capBottom": 2.9122340425531914,
+        "capTop": 2.9920212765957444,
+        "firstOuterV": -0.22,
+        "capOuterV": -0.3,
+        "baseColour": "#a99a79",
+        "capColour": "#c7b795",
+        "shadowColour": "#776d54",
+        "textureOpacity": 0.6
+      }
+    }
+  ],
+  "sourceStages": [
+    {
+      "bottomFromStorey": -0.0797872340425532,
+      "topFromStorey": 0.1595744680851064,
+      "outwardTiles": 0.22,
+      "inwardTiles": 0.12,
+      "cap": false
+    },
+    {
+      "bottomFromStorey": 0.1196808510638298,
+      "topFromStorey": 0.19946808510638298,
+      "outwardTiles": 0.3,
+      "inwardTiles": 0.12,
+      "cap": true
+    }
+  ],
+  "warmStone": {
+    "body": "#a99a79",
+    "cap": "#c7b795",
+    "sourceShadow": "#776d54",
+    "textureOpacity": 0.6,
+    "multiplyOpacity": 0,
+    "texture": "/art/architecture-stone-v2.png",
+    "uv": "Unchanged metre wall-face projection; native light and normal response."
+  },
+  "before": {
+    "heightMetres": 0.15,
+    "outwardMetres": 0.245,
+    "colour": "#918a76",
+    "architectureFinish": null
+  },
+  "after": {
+    "heightMetres": 0.2792553191489362,
+    "outerCapMetres": 0.37081755442411446,
+    "bodyCapHeightMetres": 0.0797872340425532,
+    "outwardIncreaseMetres": 0.12581755442411446
+  },
+  "upperEaveTrim": {
+    "preserved": true,
+    "bottomFromWallHeight": -0.175,
+    "topFromWallHeight": -0.025,
+    "outwardMetres": 0.245,
+    "colour": "#e0d2ad"
+  },
+  "rejectedUpperCornice": {
+    "sourceOutwardTiles": 0.21,
+    "sourceBottomFromWallHeight": -0.1595744680851064,
+    "sourceTopFromWallHeight": 0.0398936170212766,
+    "townhallEaveTiles": 0.2,
+    "palaceEaveTiles": 0.24,
+    "reason": "Literal source top emerges through the current pitched roof at its eave. A four-face physical adaptation creates a bright far-edge line absent from the positive-face source illustration. Excluded from this cut; no roof height or finish changes."
+  },
+  "preservation": {
+    "compiledStates": 360,
+    "nonBandMeshes": 9472,
+    "sha256": "3f473081caa338cf6908e547c6cad3623c23e76fd529bc433d153e668f28af9b",
+    "exactNonBandGeometryMaterialsOpeningRecordsAndDisclosure": true
+  },
+  "browser": {
+    "originalViews": 24,
+    "shortSlabViews": 12,
+    "roofRouteViews": 12,
+    "errors": [],
+    "ordinaryControls": true,
+    "sameCameraVisibleTriangleIncrease": 56
+  }
+}

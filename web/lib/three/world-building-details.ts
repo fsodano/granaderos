@@ -21,6 +21,7 @@ import {barracksGate} from './world-barracks-gate';
 import {townhallColumns} from './world-townhall-columns';
 import {cabildoFacade} from './world-cabildo-facade';
 import {pulperiaSign} from './world-pulperia-sign';
+import {civicStoreyBands} from './world-civic-storey-bands';
 import {buildingArtInset} from './world-building-placement';
 import type {WorldGeometry} from './world-geometry';
 import type {WorldMaterials} from './world-materials';
@@ -288,7 +289,8 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
       }
       for(const u of [0,frame.width])for(let v=2;v<frame.depth-1;v+=4)if(wallAt(u,v)?.type==='wall')column(u-.06*(frame.u.x+frame.u.y),v-depthInset,.30,wall);
     });
-    feature('townhall-storey-bands',()=>{
+    if(twoStoreys&&wallInset===0&&(!legacy||b.wallFinish!==undefined))root.add(civicStoreyBands(b,input,T,height,base,geometry,materials));
+    else feature('townhall-storey-bands',()=>{
       const bands=twoStoreys?[[storey,stone],[height-.10,trim]] as const:[[height-.10,trim]] as const;
       for(const [y,material]of bands){
         for(const v of [0,frame.depth])box(frame.width*.5,v+(v===0?-.10:.10)/T,y,frame.width+.20/T,.15,.29/T,material);
