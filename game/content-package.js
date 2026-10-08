@@ -25,7 +25,7 @@ import {FORCE_EQUIPMENT,defaultForceEquipment,validateForceEquipment} from './co
 import {legacyCharacterAbilities,validCharacterAbilities} from './character-abilities.js';
 import {CIVILIAN_CONSCIENCE,conductObserverDefinition,conductNoncombatantDefinition} from './service-objections.js';
 import {LOW_MORALE_REFUSAL} from './morale-renewal.js';
-import {legacyOperativeId,isWorldCharacter} from './content-character-ids.js';
+import {legacyOperativeId,isWorldCharacter,isHistoricalCharacter} from './content-character-ids.js';
 import {characterProfile,SPEECH_EVENTS,AUTHORABLE_SPEECH_EVENTS} from './characters.js';
 import {SPEECH_LINE_LIMIT} from './content-character-presentation.js';
 import {SPRITE_APPEARANCES,spriteAppearance} from './sprite-appearances.js';
@@ -240,6 +240,7 @@ export function validateContentPackage(value) {
       "usá un retrato local o una imagen PNG, JPEG o WebP de hasta 250 KB.",
     );
     if (c.arrivalHours !== undefined) check(integer(c.arrivalHours, 0, 168), `${c.id}.arrivalHours`, "el viaje debe durar de 0 a 168 horas.");
+    if(c.serviceGuarantee!==undefined)check(integer(c.serviceGuarantee,0,1000000)&&(c.serviceGuarantee===0||c.service==='contract'&&!isHistoricalCharacter(c)),`${c.id}.serviceGuarantee`,'garantía inválida; solo un servicio por contrato admite fondos.');
     check(integer(c.monthlyPay, 0, 1000000), `${c.id}.monthlyPay`, "paga inválida.");
     check(c.weapon === null || sets.weapons.has(c.weapon), `${c.id}.weapon`, "el arma no existe.");
     if(c.blade!==undefined)check(value.weapons.some(w=>w?.id===c.blade&&BLADES[w.template]),`${c.id}.blade`,"el arma blanca no existe.");

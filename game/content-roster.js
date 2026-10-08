@@ -25,6 +25,7 @@ export function authoredOperative(state, operative) {
     role: definition.role,
     biography: definition.biography,
     monthlyPay: definition.monthlyPay,
+    ...(definition.serviceGuarantee===undefined?{}:{serviceGuarantee:definition.serviceGuarantee}),
     weeklyPay: Math.ceil((definition.monthlyPay * 7) / 30),
     portraitId: definition.portrait,
     portrait: definition.portrait,

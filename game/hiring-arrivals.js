@@ -1,3 +1,4 @@
+import {settleServiceGuarantee} from './service-guarantees.js';
 import {hiringPriceMultiplier} from './economy-balance.js';
 import {characterForOperative,isContractOperative} from './content-character-ids.js';
 import {CAMPAIGN_SECTORS} from './data.js';
@@ -50,6 +51,7 @@ export function redirectHire(state,id,destination){
 }
 export function cancelHireArrival(state,id){
   const arrival=pendingHire(state,id);if(!arrival)throw Error('No hay una llegada pendiente para cancelar.');
+  settleServiceGuarantee(state,arrival,{id:arrival.operativeId},'cancelled');
   state.resources.treasury+=arrival.paid;state.hiringArrivals=state.hiringArrivals.filter(a=>a!==arrival);
 }
 export function validateHireArrivals(state,roster){
@@ -61,7 +63,7 @@ export function validateHireArrivals(state,roster){
   need(Array.isArray(state.hiringArrivals)&&state.hiringArrivals.length<=roster.length);
   const ids=new Set();
   for(const a of state.hiringArrivals){
-    need(a&&typeof a==='object'&&!Array.isArray(a)&&Object.keys(a).every(k=>keys.includes(k)||seconds.includes(k)||k==='priceScale')&&keys.every(k=>Object.hasOwn(a,k))&&(a.priceScale===undefined||Number.isFinite(a.priceScale)&&a.priceScale>0&&a.priceScale<=100));
+    need(a&&typeof a==='object'&&!Array.isArray(a)&&Object.keys(a).every(k=>keys.includes(k)||seconds.includes(k)||k==='priceScale'||k==='guaranteeId')&&keys.every(k=>Object.hasOwn(a,k))&&(a.priceScale===undefined||Number.isFinite(a.priceScale)&&a.priceScale>0&&a.priceScale<=100));
     need(seconds.every(k=>!Object.hasOwn(a,k)||integer(a[k],0,3599))&&Object.hasOwn(a,'departedSecond')===Object.hasOwn(a,'dueSecond'));
     const operative=roster.find(o=>o.id===a.operativeId);
     need(operative&&isContractOperative(state,operative)&&!ids.has(a.operativeId)&&!state.recruited.includes(a.operativeId)&&!state.contracts?.[a.operativeId]);ids.add(a.operativeId);

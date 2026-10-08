@@ -1,3 +1,4 @@
+import {settleServiceGuarantee} from './service-guarantees.js';
 import {sameCaptivity} from './capture-identity.js';
 import {validatePrisonerEscape} from './prisoner-escape.js';
 import {restoredCaptiveContract} from './prisoner-custody.js';
@@ -20,6 +21,7 @@ export function settlePrisonerEscapes(campaign,request,battle,roster){
    battle.groundItems.push({...structuredClone(stack),type:'item',id:cacheId,x:origin.x,y:origin.y,tacticalLevel:origin.tacticalLevel??0});cacheIds.push(cacheId);
   }
   const contract=restoredCaptiveContract(record,campaign.hour,campaign.secondOfHour??0);
+  if(!contract)settleServiceGuarantee(campaign,record.capturedContract,roster.find(op=>op.id===id));
   for(const horse of campaign.horseState.horses)if(horse.custody?.kind==='captured'&&horse.custody.operativeId===id)horse.custody.kind='field';
   returnEquipment(campaign,id,{weapon:0,blade:0,activeSlot:'unarmed',weaponDropped:false,jammed:false,outfit:null,headwear:null,legwear:null,leftHandItem:null});clearCarriedLoading(record);
   for(const key of Object.keys(SUPPLY_ITEMS))record[key]=0;
