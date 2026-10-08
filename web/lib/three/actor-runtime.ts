@@ -39,7 +39,8 @@ export class ActorRuntime {
   private clothMeshes:{mesh:Mesh;prone:number;crouched:number;supine?:number}[]=[];private clothProne=0;private clothCrouched=0;private clothSupine=0;
   private clothChest?:Object3D;private clothChestForward=new Vector3(0,0,1);private clothFacing=new Vector3();private clothRotation=new Quaternion();
   private actionHand:HandRole='handRight';private actionBarrel=0;
-  private gripRotation=new Quaternion();private gripNextRotation=new Quaternion();
+  private gripRotation=new Quaternion();private gripNextRotation=new Quaternion();private gripSampleRotation=new Quaternion();
+  private gripPosition=new Vector3();private gripSamplePosition=new Vector3();private gripActions=new Map<AnimationAction,ClipSpec>();
   private seatActions=new Map<AnimationAction,{spec:ClipSpec;mounted:boolean}>();private saddlePosition=new Vector3();
   readonly root=new Group();readonly model:Object3D;private mixer:AnimationMixer;private action:AnimationAction|null=null;private actionKey='';private clipSpec:any;private ownedMaterials=new Set<Material>();private equipment=new Group();private equipmentKey='';private clothesKey='';private colorKey='';private horse?:Object3D;private horseMixer?:AnimationMixer;private horseAction?:AnimationAction;private horseClip='';private visual:ActorVisual;private bones=new Map<string,Object3D>();private clothing?:Object3D;private ghost?:Group;private cueStartedAt=0;private temporaryProps=new Map<string,Object3D>();private completedCues=new Set<string>();
   constructor(readonly asset:LoadedActor,visual:ActorVisual,private onCueComplete?:(key:string,id:string)=>void,private contactActor?:ContactActorResolver){
@@ -138,7 +139,39 @@ export class ActorRuntime {
     while(node){for(const role of ['handRight','handLeft'] as const)if(node.name===this.asset.manifest.bones[role])return role;node=node.parent??undefined;}
     return undefined;
   }
-  private placeEquipment(time:number){
+  private sampleGrip(spec:ClipSpec,hand:string,time:number,position:Vector3,rotation:Quaternion){
+    position.set(0,0,0);rotation.identity();
+    const keys=spec.gripOffsets?.find(offset=>offset.hand===hand)?.keys;if(!keys?.length)return;
+    let from=keys[0],to=from,fraction=0;
+    for(let index=1;index<keys.length;index++){
+      const a=keys[index-1],b=keys[index];if(time>=b.time){from=to=b;continue;}
+      from=a;to=b;fraction=Math.max(0,(time-a.time)/(b.time-a.time));break;
+    }
+    position.set(...from.position.map((value,index)=>value+(to.position[index]-value)*fraction) as [number,number,number]);
+    if(from.rotationQuaternion)rotation.fromArray(from.rotationQuaternion).normalize();
+    this.gripNextRotation.identity();if(to.rotationQuaternion)this.gripNextRotation.fromArray(to.rotationQuaternion).normalize();
+    rotation.slerp(this.gripNextRotation,fraction).normalize();
+  }
+  private placeGrip(object:Object3D,hand:string,time:number,exact:boolean){
+    this.gripPosition.set(0,0,0);this.gripRotation.identity();
+    if(exact)this.sampleGrip(this.clipSpec,hand,time,this.gripPosition,this.gripRotation);
+    else{
+      let total=0;
+      for(const [action,spec]of this.gripActions){
+        if(!action.enabled||!action.isScheduled()){if(action!==this.action)this.gripActions.delete(action);continue;}
+        const weight=action.getEffectiveWeight();if(weight<=0)continue;
+        this.sampleGrip(spec,hand,action===this.action?time:action.time,this.gripSamplePosition,this.gripSampleRotation);
+        this.gripPosition.addScaledVector(this.gripSamplePosition,weight);
+        this.gripRotation.slerp(this.gripSampleRotation,weight/(total+weight));total+=weight;
+      }
+      // Match the body's mixer, including interrupted fades. Missing grip
+      // metadata contributes the normal socket frame, not the next clip's grip.
+      if(total>1)this.gripPosition.divideScalar(total);
+      if(total<1)this.gripRotation.slerp(this.gripNextRotation.identity(),1-total);
+    }
+    object.position.add(this.gripPosition);object.quaternion.multiply(this.gripRotation).normalize();
+  }
+  private placeEquipment(time:number,exactGrip=false){
     const spec:ClipSpec=this.clipSpec;if(!spec)return;
     const free=new Set(spec.freeHands??gestureHands[spec.gesture??'']??[]),propHands=new Set<HandRole>();
     if(this.visual.action==='reload'&&this.visual.equipment==='short-gun')free.add(this.actionHand==='handLeft'?'handRight':'handLeft');
@@ -169,25 +202,7 @@ export class ActorRuntime {
         if(stowItem.position){object.position.x+=stowItem.position[0];object.position.y+=stowItem.position[1];object.position.z+=stowItem.position[2];}
         if(stowItem.rotation)object.rotation.fromArray([...stowItem.rotation,'XYZ'] as any);
       }
-      const grip=!stow&&held?spec.gripOffsets?.find(offset=>offset.hand===hand):undefined;
-      if(grip?.keys.length){
-        let from=grip.keys[0],to=from,fraction=0,position=from.position;
-        for(let index=1;index<grip.keys.length;index++){
-          const a=grip.keys[index-1],b=grip.keys[index];
-          if(time>=b.time){from=to=b;position=b.position;continue;}
-          from=a;to=b;fraction=Math.max(0,(time-a.time)/(b.time-a.time));position=a.position.map((value,axis)=>value+(b.position[axis]-value)*fraction);break;
-        }
-        object.position.x+=position[0];object.position.y+=position[1];object.position.z+=position[2];
-        if(from.rotationQuaternion||to.rotationQuaternion){
-          // glTF quaternions are local deltas after the normal item transform.
-          // Missing keys mean identity; Three's slerp takes the shortest arc.
-          this.gripRotation.identity();this.gripNextRotation.identity();
-          if(from.rotationQuaternion)this.gripRotation.fromArray(from.rotationQuaternion).normalize();
-          if(to.rotationQuaternion)this.gripNextRotation.fromArray(to.rotationQuaternion).normalize();
-          this.gripRotation.slerp(this.gripNextRotation,fraction).normalize();
-          object.quaternion.multiply(this.gripRotation).normalize();
-        }
-      }
+      if(!stow&&held)this.placeGrip(object,hand,time,exactGrip);
       object.userData.presentationStowed=stow;
     }
   }
@@ -218,6 +233,7 @@ export class ActorRuntime {
     if(key!==this.actionKey){
       const previous=this.action;this.action=this.mixer.clipAction(clip);this.action.reset();this.action.enabled=true;this.action.clampWhenFinished=!clipSpec.loop;this.action.setLoop(clipSpec.loop?LoopRepeat:LoopOnce,clipSpec.loop?Infinity:1);this.action.play();
       if(previous&&previous!==this.action){if(visual.action==='fire'&&visual.cue?.shotHand)previous.stop();else this.action.crossFadeFrom(previous,.12,false);}this.actionKey=key;this.clipSpec=clipSpec;this.cueStartedAt=visual.cue?.startedAt??now;
+      this.gripActions.set(this.action,clipSpec);
       if(this.horse)this.seatActions.set(this.action,{spec:clipSpec,mounted:visual.mounted||visual.cue?.fromPosture==='mounted'});
     }
     this.actionHand=hand;this.actionBarrel=barrel;
@@ -328,7 +344,7 @@ export class ActorRuntime {
     const meleeWeapon=attached.find(item=>item.userData.hand==='handRight'&&(this.itemSpec(item.userData.itemId)?.category==='sabre'||freeGuard&&this.itemSpec(item.userData.itemId)?.category==='pistol'));
     // Contact fitting samples the strike's impact pose. Use its item grip too,
     // then restore the visible grip for this frame after the fitted body pose.
-    if(meleeWeapon&&visual.cue)this.placeEquipment(this.clipSpec.markers?.contact??this.action.time);
+    if(meleeWeapon&&visual.cue)this.placeEquipment(this.clipSpec.markers?.contact??this.action.time,true);
     this.meleeFit.apply(visual.cue,clip,this.clipSpec,meleeWeapon,this.action.time,this.contactActor);
     this.placeEquipment(this.action.time);this.timedProps(this.action.time);
     if(this.horse&&this.horseMixer){

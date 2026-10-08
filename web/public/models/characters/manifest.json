@@ -1826,8 +1826,8 @@
   "animationLibraries": {
     "male": {
       "url": "/models/characters/male-animations.glb",
-      "bytes": 17345020,
-      "sha256": "a2d1d26ccf5727ee9f74dfc519db8b9bfb116081afb08a910fc41fae838d71d9",
+      "bytes": 17394548,
+      "sha256": "da48a34b597a09a35500dd471bc0ea9cdbfa323070bcfacc4735797a8136e95d",
       "clips": [
         {
           "name": "stand.idle.unarmed",
@@ -10311,7 +10311,42 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "gripOffsets": [
+            {
+              "hand": "handRight",
+              "keys": [
+                {
+                  "time": 0,
+                  "position": [
+                    0.00860364654526569,
+                    -0.012287280664334876,
+                    -0.02
+                  ],
+                  "rotationQuaternion": [
+                    0,
+                    0,
+                    -0.4617486132350339,
+                    0.8870108331782217
+                  ]
+                },
+                {
+                  "time": 2,
+                  "position": [
+                    0.00860364654526569,
+                    -0.012287280664334876,
+                    -0.02
+                  ],
+                  "rotationQuaternion": [
+                    0,
+                    0,
+                    -0.4617486132350339,
+                    0.8870108331782217
+                  ]
+                }
+              ]
+            }
+          ]
         },
         {
           "name": "stand.brace.knife",
@@ -10597,7 +10632,42 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "gripOffsets": [
+            {
+              "hand": "handRight",
+              "keys": [
+                {
+                  "time": 0,
+                  "position": [
+                    0.00860364654526569,
+                    -0.012287280664334876,
+                    -0.02
+                  ],
+                  "rotationQuaternion": [
+                    0,
+                    0,
+                    -0.4617486132350339,
+                    0.8870108331782217
+                  ]
+                },
+                {
+                  "time": 2,
+                  "position": [
+                    0.00860364654526569,
+                    -0.012287280664334876,
+                    -0.02
+                  ],
+                  "rotationQuaternion": [
+                    0,
+                    0,
+                    -0.4617486132350339,
+                    0.8870108331782217
+                  ]
+                }
+              ]
+            }
+          ]
         },
         {
           "name": "crouch.brace.knife",
@@ -11154,7 +11224,42 @@
               ]
             }
           },
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "gripOffsets": [
+            {
+              "hand": "handRight",
+              "keys": [
+                {
+                  "time": 0,
+                  "position": [
+                    0.00860364654526569,
+                    -0.012287280664334876,
+                    -0.02
+                  ],
+                  "rotationQuaternion": [
+                    0,
+                    0,
+                    -0.4617486132350339,
+                    0.8870108331782217
+                  ]
+                },
+                {
+                  "time": 2,
+                  "position": [
+                    0.00860364654526569,
+                    -0.012287280664334876,
+                    -0.02
+                  ],
+                  "rotationQuaternion": [
+                    0,
+                    0,
+                    -0.4617486132350339,
+                    0.8870108331782217
+                  ]
+                }
+              ]
+            }
+          ]
         },
         {
           "name": "mounted.brace.knife",
@@ -17962,8 +18067,8 @@
     },
     "female": {
       "url": "/models/characters/female-animations.glb",
-      "bytes": 16637980,
-      "sha256": "509ae4cfe63d32fb4ab5a9400c0eb3af1f5520bef65850fcf07c18be2befc5f6",
+      "bytes": 16687516,
+      "sha256": "a1cc665e214330227c06edff38da4207811c18aa17667a75ebb7cc42395f92d5",
       "clips": [
         {
           "name": "stand.idle.unarmed",
@@ -26454,7 +26559,42 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "gripOffsets": [
+            {
+              "hand": "handRight",
+              "keys": [
+                {
+                  "time": 0,
+                  "position": [
+                    0.00860364654526569,
+                    -0.012287280664334876,
+                    -0.02
+                  ],
+                  "rotationQuaternion": [
+                    0,
+                    0,
+                    -0.4617486132350339,
+                    0.8870108331782217
+                  ]
+                },
+                {
+                  "time": 2,
+                  "position": [
+                    0.00860364654526569,
+                    -0.012287280664334876,
+                    -0.02
+                  ],
+                  "rotationQuaternion": [
+                    0,
+                    0,
+                    -0.4617486132350339,
+                    0.8870108331782217
+                  ]
+                }
+              ]
+            }
+          ]
         },
         {
           "name": "stand.brace.knife",
@@ -26740,7 +26880,42 @@
           },
           "sampleRate": 15,
           "timingAuthority": "simulation",
-          "rootMotion": "in-place"
+          "rootMotion": "in-place",
+          "gripOffsets": [
+            {
+              "hand": "handRight",
+              "keys": [
+                {
+                  "time": 0,
+                  "position": [
+                    0.00860364654526569,
+                    -0.012287280664334876,
+                    -0.02
+                  ],
+                  "rotationQuaternion": [
+                    0,
+                    0,
+                    -0.4617486132350339,
+                    0.8870108331782217
+                  ]
+                },
+                {
+                  "time": 2,
+                  "position": [
+                    0.00860364654526569,
+                    -0.012287280664334876,
+                    -0.02
+                  ],
+                  "rotationQuaternion": [
+                    0,
+                    0,
+                    -0.4617486132350339,
+                    0.8870108331782217
+                  ]
+                }
+              ]
+            }
+          ]
         },
         {
           "name": "crouch.brace.knife",
@@ -27297,7 +27472,42 @@
               ]
             }
           },
-          "seatAnchorSpace": "gltf-model-local"
+          "seatAnchorSpace": "gltf-model-local",
+          "gripOffsets": [
+            {
+              "hand": "handRight",
+              "keys": [
+                {
+                  "time": 0,
+                  "position": [
+                    0.00860364654526569,
+                    -0.012287280664334876,
+                    -0.02
+                  ],
+                  "rotationQuaternion": [
+                    0,
+                    0,
+                    -0.4617486132350339,
+                    0.8870108331782217
+                  ]
+                },
+                {
+                  "time": 2,
+                  "position": [
+                    0.00860364654526569,
+                    -0.012287280664334876,
+                    -0.02
+                  ],
+                  "rotationQuaternion": [
+                    0,
+                    0,
+                    -0.4617486132350339,
+                    0.8870108331782217
+                  ]
+                }
+              ]
+            }
+          ]
         },
         {
           "name": "mounted.brace.knife",

@@ -806,6 +806,9 @@ def _blade_pose(ctx,base,offsets,phase=0,key='sabre'):
 
 
 def _lance_pose(ctx,base,offsets,mode='carry',phase=0,posture=None):
+    if mode!='thrust':
+        from lance_grips import carry_pose
+        return carry_pose(ctx,base,offsets,mode,posture)
     rig=ctx['rig'];_apply_sample(rig,base)
     pelvis=rig.pose.bones['pelvis'].head.copy();chest=(rig.pose.bones['upperarm_l'].head+rig.pose.bones['upperarm_r'].head)*.5
     prone=chest.z-pelvis.z<.13
@@ -1248,6 +1251,9 @@ def apply_animations(ctx, only=None):
                     crawl_stride=_crawl_stride(rig,base_samples,duration)
                 else:crawl_stride=_crawl_stride(rig,samples,duration)
             meta.update(crawl_stride);source_meta['crawl']['locomotionSpeed']=crawl_stride['locomotionSpeed']
+        if equipment=='lance' and gesture=='brace':
+            from lance_grips import metadata as lance_metadata
+            meta.update(lance_metadata(duration))
         if gesture.startswith('strafe'):meta['locomotionAxis']='left' if gesture=='strafeLeft' else 'right'
         if posture=='mounted' and gesture not in ('mount','dismount'):meta['seatAnchor']=list(rig.data.bones['pelvis'].head_local)
         if posture=='mounted' or gesture=='mount':

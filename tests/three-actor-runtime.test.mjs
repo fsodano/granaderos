@@ -4,7 +4,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   AnimationClip,Bone,BoxGeometry,Float32BufferAttribute,Group,Mesh,
-  MeshStandardMaterial,NumberKeyframeTrack,Object3D,Quaternion,Skeleton,SkinnedMesh,
+  MeshStandardMaterial,NumberKeyframeTrack,Object3D,Quaternion,QuaternionKeyframeTrack,Skeleton,SkinnedMesh,
   Uint16BufferAttribute,Vector3,VectorKeyframeTrack,
 } from '../web/node_modules/three/build/three.module.js';
 const {ActorRuntime}=await import('../web/lib/three/actor-runtime.ts');
@@ -525,4 +525,36 @@ test('mounted falls blend the saddle offset to zero by ground contact and keep t
   runtime.tick(0,300);closeVector(runtime.model.position,[.04,.35,-.065]);runtime.tick(0,600);closeVector(runtime.model.position,[0,0,0]);assert.ok(horse.visible);
   runtime.tick(0,1001);assert.equal(horse.visible,false);closeVector(runtime.model.position,[0,0,0]);runtime.dispose();
  }
+});
+
+
+test('held grip offsets follow actual body weights through interrupted fades and exact impact sampling',()=>{
+  const f=fixture(),turns={'stand.idle.long-gun':0,'stand.aim.long-gun':55,'stand.reload.long-gun':-20};
+  for(const [semantic,degrees]of Object.entries(turns)){
+    const spec=f.asset.clips.find(clip=>clip.semantic===semantic),clip=f.asset.animation.animations.find(clip=>clip.name===spec.name),rotation=new Quaternion().setFromAxisAngle(new Vector3(0,0,1),degrees*Math.PI/180);
+    const shift=f.values[semantic]-f.values['stand.idle.long-gun'];
+    if(degrees)spec.gripOffsets=[{hand:'handRight',keys:[{time:0,position:[shift,0,0],rotationQuaternion:rotation.toArray()},{time:2,position:[shift,0,0],rotationQuaternion:rotation.toArray()}]}];
+    clip.tracks.push(new QuaternionKeyframeTrack(`${f.names.head}.quaternion`,[0,2],[...rotation.toArray(),...rotation.toArray()]));
+  }
+  const v=visual(f,{equipment:'long-gun',items:[{id:'1800',reference:'primary',socket:'handRight'}]}),runtime=new ActorRuntime(f.asset,v);
+  runtime.tick(0,0);const item=attached(runtime,'primary','1800'),normal=item.quaternion.clone(),origin=item.position.clone();
+  const matchesBody=()=>{
+    const head=actorHead(runtime,f),expected=normal.clone().multiply(head.quaternion).normalize();
+    assert.ok(item.quaternion.angleTo(expected)<1e-6,'The grip follows the mixer, including every overlapping action');
+    close(item.position.x,origin.x+head.position.x-f.values['stand.idle.long-gun']*Math.min(1,runtime.mixer._actions.filter(action=>action.enabled&&action.isScheduled()).reduce((sum,action)=>sum+action.getEffectiveWeight(),0)),'Grip translation follows the same body weights');
+  };
+  runtime.update({...v,action:'aim'},100);runtime.tick(0,100);matchesBody();assert.ok(item.quaternion.angleTo(normal)<1e-6,'Zero elapsed blend time cannot turn the held weapon');
+  runtime.tick(.06,160);matchesBody();const halfway=item.quaternion.clone();
+  const weights=runtime.mixer._actions.map(action=>action.getEffectiveWeight());
+  runtime.placeEquipment(.5,true);
+  assert.ok(item.quaternion.angleTo(normal.clone().multiply(new Quaternion().setFromAxisAngle(new Vector3(0,0,1),55*Math.PI/180)))<1e-6,'Impact preparation uses the full current clip grip at its exact sample time');
+  assert.deepEqual(runtime.mixer._actions.map(action=>action.getEffectiveWeight()),weights,'Exact grip sampling cannot change the body blend');
+  runtime.placeEquipment(runtime.action.time);assert.ok(item.quaternion.angleTo(halfway)<1e-6,'Normal display restores the blended grip');
+  runtime.update({...v,action:'reload'},160);runtime.tick(0,160);matchesBody();runtime.tick(.04,200);matchesBody();
+  const stopped=runtime.mixer._actions.find(action=>action.getClip().name===f.asset.clips.find(clip=>clip.semantic==='stand.aim.long-gun').name);stopped.stop();runtime.tick(0,200);matchesBody();
+  runtime.update(v,200);runtime.tick(0,200);matchesBody();runtime.tick(.1,300);matchesBody();runtime.tick(.03,330);matchesBody();
+  assert.ok(item.quaternion.angleTo(normal)<1e-6);closeVector(item.position,origin.toArray());
+  runtime.update({...v,action:'reload'},400);for(let i=0;i<24;i++)runtime.tick(.1,500+i*100);matchesBody();
+  assert.ok(runtime.action.paused&&runtime.action.isScheduled(),'The clamped terminal action still contributes to the body');
+  runtime.update(v,3000);runtime.tick(0,3000);matchesBody();runtime.tick(.1,3100);matchesBody();runtime.tick(.03,3130);matchesBody();runtime.dispose();
 });
