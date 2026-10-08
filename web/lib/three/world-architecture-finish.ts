@@ -11,6 +11,7 @@ const palettes:Record<string,Palette>={
   stone:{base:'#928f80',trim:'#c5bd9f',shadow:'#5e635c'},
   brick:{base:'#a17258',trim:'#cfb490',shadow:'#6f5140'},
 };
+export const architectureTrimColour=(finish:string)=>palettes[finish]?.trim;
 export type ArchitectureFinish={role:ArchitectureRole;base:string;texture:string;textureOpacity:number;multiplyOpacity:number};
 
 /** Main walls and solid ornaments use different source texture opacities.

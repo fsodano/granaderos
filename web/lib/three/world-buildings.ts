@@ -12,6 +12,7 @@ import {addWallSurfaceDetails} from './world-building-surfaces';
 import {addDoorLeaf} from './world-building-doors';
 import {climbOpenings} from './world-climb-openings';
 import {addWindowFace} from './world-building-windows';
+import {addWindowSill} from './world-window-sills';
 import {buildingArtInset,buildingFloorRectangles} from './world-building-placement';
 import type {WorldGeometry} from './world-geometry';
 import type {WorldMaterials} from './world-materials';
@@ -83,7 +84,7 @@ export function buildBuilding(b0:WorldBuilding,input:WorldInput,T:number,geometr
   // Existing metric slabs and cover metadata win over artwork pixel heights.
   const fullHeight=roofs.length?Math.min(...roofs.map(surface=>(surface.elevation??3)-base)):Math.max(2.5,(legacy?buildingStyle(b).height:profile.wallHeight)/V);
   const floorHeight=roofs.length?fullHeight:Math.min(fullHeight,Math.max(2.5,profile.groundFloorHeight/V));
-  const height=profile.floors>1&&someOpen?floorHeight:fullHeight,batch=new WorldBatch(geometry),surfaces=new WorldBatch(geometry),group=new Group();group.name=`building:${b.id}`;group.userData.semanticId=`building:${b.id}`;
+  const height=profile.floors>1&&someOpen?floorHeight:fullHeight,batch=new WorldBatch(geometry),surfaces=new WorldBatch(geometry),sills=new WorldBatch(geometry),group=new Group();group.name=`building:${b.id}`;group.userData.semanticId=`building:${b.id}`;
   const wallMat=materials.get(appearance.wallFinish,legacy&&b.wallFinish===undefined?{colour:buildingStyle(b).wall}:{architectureRole:'wall'}),trim=materials.get('trim',legacy?{colour:buildingStyle(b).trim}:{}),wood=materials.get('wood'),iron=materials.get('iron');
   const doorHeight=BUILDING_OPENINGS.doorHeight/V,doorWidth=T*.60,thickness=.18,cutaway=BUILDING_OPENINGS.cutawayHeight/V;
   const openingRecords:{id:string;type:string;open:boolean;axis:Axis;height:number;width:number}[]=[];
@@ -122,6 +123,7 @@ export function buildBuilding(b0:WorldBuilding,input:WorldInput,T:number,geometr
           group.add(leafGroup);
         }else if(!cut){
           addWindowFace(batch,materials,{axis,mid,cross,base:tileBase,sill,top,width:ow,style:tile.style??appearance.windowStyle,light,sourceRectangular:!legacy||b.wallFinish!==undefined,sourceParish:(!legacy||b.wallFinish!==undefined)&&['church','chapel'].includes(b.kind??'')});
+          if(!legacy||b.wallFinish!==undefined)addWindowSill(sills,materials,{axis,mid,cross,base:tileBase,sill,top,width:ow,span:len,thickness,style:tile.style??appearance.windowStyle,finish:appearance.wallFinish,light});
         }
       }
     }
@@ -155,7 +157,7 @@ export function buildBuilding(b0:WorldBuilding,input:WorldInput,T:number,geometr
     if(whole)group.add(roofEdgeDetails(b.id,panels,eaveHeight,geometry,roofMat,materials.get(terrace?'stone':'darkwood'),illuminationAt(input,b),terrace));
   }
   if(!someOpen)group.add(architecturalDetails(b,input,T,height,base,geometry,materials,legacy));
-  group.add(surfaces.finish(`building-surfaces:${b.id}`),batch.finish(`building-fabric:${b.id}`));group.userData.kind='building';group.userData.openings=openingRecords;group.userData.cutawayRooms=groundRooms.filter(room=>known.has(room.id)).map(room=>room.id);group.userData.height=height;return group;
+  group.add(surfaces.finish(`building-surfaces:${b.id}`),batch.finish(`building-fabric:${b.id}`),sills.finish(`window-sills:${b.id}`));group.userData.kind='building';group.userData.openings=openingRecords;group.userData.cutawayRooms=groundRooms.filter(room=>known.has(room.id)).map(room=>room.id);group.userData.height=height;return group;
 }
 
 export function buildIndependentWalls(input:WorldInput,T:number,geometry:WorldGeometry,materials:WorldMaterials){
