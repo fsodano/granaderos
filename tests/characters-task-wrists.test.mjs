@@ -23,5 +23,5 @@ if(previous){
 }previous=frame;
 return{};});
 for(const[kind,value]of Object.entries(min))assert.ok(value.height>-.002,`${spec.name} ${value.time}: actual ${kind} surface crosses the floor by ${-value.height} m`);
-} 
+}
 });
