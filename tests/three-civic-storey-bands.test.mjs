@@ -66,9 +66,9 @@ test('short slabs, edited-corner shells and unpainted legacy retain their origin
 });
 
 
-test('the released upper eave trim keeps its exact altitude, projection and authored material',()=>{
- for(const id of ids)for(const rotation of rotations){
-  const f=fixture(id,rotation),n=f.build(),band=f.band(n),trim=band.children.find(m=>m.material.name==='world:trim'),p=points(trim),height=n.userData.height;
+test('flat and usable roofs retain their exact upper eave trim altitude, projection and authored material',()=>{
+ for(const id of ids)for(const rotation of rotations)for(const roof of ['slab','terrace','roof-route']){
+  const f=fixture(id,rotation,'exterior',roof),n=f.build(),band=f.band(n),trim=band.children.find(m=>m.material.name==='world:trim'),p=points(trim),height=n.userData.height;
   assert.equal(trim.material.color.getHexString(),'e0d2ad');
   const corners=[];for(const v of [0,f.frame.depth])for(const u of [-.10/T,f.frame.width+.10/T])for(const d of [-.145/T,.145/T])for(const y of [height-.175,height-.025])corners.push(f.point(u,v+(v===0?-.10:.10)/T+d,y));
   for(const u of [0,f.frame.width])for(const v of [0,f.frame.depth])for(const d of [-.145/T,.145/T])for(const y of [height-.175,height-.025])corners.push(f.point(u+(u===0?-.10:.10)/T+d,v,y));
