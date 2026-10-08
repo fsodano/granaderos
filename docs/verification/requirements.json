@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "updated": "2026-10-08",
-  "baseline": "c2cee4b421d9e6b9ff6ca3db3d5496051253646b",
+  "baseline": "916049df7346a5b655564fafdea37c93be76045c",
   "audit": "docs/verification/formal-audit-2026-09-27.md",
   "design": "docs/specification/game-design.md",
   "evidence": [
@@ -711,6 +711,23 @@
       "path": "docs/verification/ai-other-hand-backup.md",
       "url": "https://github.com/fsodano/granaderos/pull/292",
       "description": "Published PR292 accepts a loaded owned other-hand firearm through the shared paid swap preview/plan followed by a separate affordable useful shot. The receipt records 126 focused checks and exact finite ownership, ammunition and saved interruption behavior. Coordinated AI choice and the entire T07 requirement remain partial."
+    },
+    {
+      "id": "E-FIREARM-SERVICEABILITY",
+      "path": "docs/verification/firearm-serviceability.md",
+      "url": "https://github.com/fsodano/granaderos/pull/294",
+      "description": "Published PR294 rejects zero-condition firing, loading and ignition work before paid state changes, while preserving broken ownership and healthy-secondary maintenance. 232 affected checks, type checking and independent private-condition comparisons pass. No general AI or campaign acceptance is claimed."
+    },
+    {
+      "id": "E-AI-PACKED-GUN-HANDOVER",
+      "path": "docs/verification/ai-packed-gun-handover.md",
+      "url": "https://github.com/fsodano/granaderos/pull/295",
+      "description": "Published PR295 accepts one adjacent owned packed-gun give, equip and useful shot through existing paid orders and actual upcoming queues. 334 affected checks and 112 independent checks retain identities, finite charge, AP and saved nested interruption. Care/grenade/artillery exclusions and inherited broken-primary cartridge demand remain explicit; T07 stays partial."
+    },
+    {
+      "id": "E-DETENTION-RESCUE-ROUTES",
+      "path": "docs/gameplay/characters/detention-gameplay.md",
+      "description": "Dated construction, finite custody care, paid physical release/following and joint safe-exit records, including the cleared-field Jujuy rescue with real combat, deaths, finite supplies, replay and intermediate saves. PR139 publication covers the consolidated bounded route. Earlier failure/control fixtures remain dated; stealth rescue, self-directed escape, carrying and wider detention choices remain open."
     }
   ],
   "queue": [
@@ -4185,9 +4202,9 @@
       "requirement": "All enemy actions obey the same state and cost constraints. G19; M35.",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Published bounded enemy orders use shared AP, state, observed-target and ownership rules: finite care and short rescue approaches; capacity-checked prepared pack/holstered guns and bayonet fitting; affordable aim/body-region/penetration choices; observed finite scavenging; local cartridge/dressing handovers; and a loaded owned other-hand backup via a paid swap followed by a separate shot. PR292 retains old-gun identity, finite ammunition, capacity, readiness and saved interruption sequencing. Existing movement plans use observed occupancy and stop at actual blockers. The named AI records retain their dated checks; the PR139 publication receipt covers the consolidated related core.",
-      "local": "The original development records and check counts remain source-specific. PR292 records 126 focused checks for the owned other-hand backup, paired maintenance and saved interruption sequencing. This October documentation reconciliation does not rerun those AI cases, a campaign or browser acceptance.",
-      "remaining": "Specialist tools, firearm/tool handovers, coordinated supply requests, wider cache searches and broader equipment choice remain incomplete. Search limits and scoring weights are Granaderos tuning; incoming exposure still estimates torso chance.",
+      "published": "Published bounded enemy orders use shared AP, state, observed-target and ownership rules: finite care and short rescue approaches; capacity-checked prepared pack/holstered guns and bayonet fitting; affordable aim/body-region/penetration choices; observed finite scavenging; local cartridge/dressing handovers; and a loaded owned other-hand backup via a paid swap followed by a separate shot. PR292 retains old-gun identity, finite ammunition, capacity, readiness and saved interruption sequencing. Existing movement plans use observed occupancy and stop at actual blockers. The named AI records retain their dated checks; the PR139 publication receipt covers the consolidated related core. PR294 now admits only serviceable owned firearms for paid firing/loading/ignition work and excludes opposing private condition from threat estimates. PR295 adds an adjacent unused owned pack-gun handover followed by paid equip and a useful shot, with actual upcoming queue membership and conserved donor/recipient records.",
+      "local": "The original development records and check counts remain source-specific. PR292 records 126 focused checks for the owned other-hand backup, paired maintenance and saved interruption sequencing. This October documentation reconciliation does not rerun those AI cases, a campaign or browser acceptance. The named PR294 and PR295 receipts record 232 and 334 affected checks, respectively, plus type checking and independent review. No new broad AI, campaign or browser run is claimed by this ledger update.",
+      "remaining": "Specialist tools, held-gun/tool handovers, coordinated supply requests, wider cache searches and broader equipment choice remain incomplete. PR295 conservatively excludes care/grenade/artillery recipients; inherited broken-primary cartridge demand remains open. Search limits and scoring weights are Granaderos tuning; incoming exposure still estimates torso chance.",
       "acceptance": "Demonstrate this entire requirement in the published game through actual orders, resource conservation, failure paths and save/load. Also resolve the source row acceptance notes.",
       "evidence": [
         "E-PARITY",
@@ -4196,7 +4213,9 @@
         "E-AI-SHOT-SELECTION",
         "E-AI-SCAVENGING",
         "E-AI-SUPPLY-SHARING",
-        "E-AI-OTHER-HAND-BACKUP"
+        "E-AI-OTHER-HAND-BACKUP",
+        "E-FIREARM-SERVICEABILITY",
+        "E-AI-PACKED-GUN-HANDOVER"
       ],
       "sourceRow": "JA2-T07",
       "sourceNotes": "Three-step/24-AP normal searches and the protected interrupt-step policy are game tuning. Paid finite orders and saved reactions do not establish every enemy action, exact classic AI parity or a complete loadout policy.",
@@ -4210,7 +4229,9 @@
         "tests/tactical-ai-other-hand-backup.test.mjs",
         "tests/paired-pistols-ai.test.mjs",
         "tests/paired-pistol-fire.test.mjs",
-        "tests/paired-reload-ai.test.mjs"
+        "tests/paired-reload-ai.test.mjs",
+        "tests/firearm-serviceability.test.mjs",
+        "tests/tactical-ai-packed-gun-handover.test.mjs"
       ]
     },
     {
@@ -5665,19 +5686,25 @@
       "id": "JA2-W08",
       "group": "JA2 gameplay parity",
       "requirement": "Surrender, capture, imprisonment, and rescue are distinct from death or rout. G66-68.",
-      "status": "FAILED",
+      "status": "PARTIAL",
       "priority": "P0",
-      "published": "This complete capability is not accepted in the published release.",
-      "local": "The preserved source records the local implementation and remaining gaps. The fresh broad run is not a new visual or per-row acceptance check.",
-      "remaining": "Local custody, physical release and following exist; current rescue route fails. Self-escape/carrying remain incomplete.",
+      "published": "Published bounded capture and rescue retain distinct living custody, tactical wounds, finite guard care, paid release/following, real boundary escape, unused contract time and confiscated equipment. FIX-03 and the PR139 publication receipt accept paid relief from its actual arrival, combat against the guards, physical release and cleared-field evacuation to Jujuy, with permanent deaths, finite ammunition, replay and saves. Earlier route failure is historical; full W08 acceptance remains open.",
+      "local": "The detention record preserves its original construction, care, controlled live release/exit checks and actual seven-turn rescue route. FIX-03 retains the 4214/4214 PR139 combined acceptance. This October ledger reconciliation does not rerun the long rescue route or claim a new full prison-scene browser check.",
+      "remaining": "Unaided or stealth rescue through live hostile contact, self-directed escape, carrying incapacitated prisoners, broader detention choices and narrative consequences remain incomplete. Controlled adjacent-release/exit fixtures and cleared-field evacuation do not prove those routes.",
       "acceptance": "Demonstrate this entire requirement in the published game through actual orders, resource conservation, failure paths and save/load. Also resolve the source row acceptance notes.",
       "evidence": [
         "E-PARITY",
         "E-LOCAL",
-        "E-PUBLISHED"
+        "E-PUBLISHED",
+        "E-DETENTION-RESCUE-ROUTES",
+        "E-CONSOLIDATION-FINAL-LOCAL",
+        "E-CONSOLIDATION-PR139"
       ],
       "sourceRow": "JA2-W08",
-      "sourceNotes": "Physical detainees now retain tactical wounds, first aid, death and save receipts. Able guards can provide finite care using confiscated dressings during elapsed strategic time; both sector-recapture rescue routes pass. See [detention care](detention-gameplay.md). Paid physical release, finite following, adjacent wait/follow orders, replacement leadership, saved failed attempts and distinct recapture identities now pass focused and live control checks. Joint safe-exit rescue now restores remaining service at the actual destination and leaves confiscated equipment for later physical pickup. Controlled live exit/return/reload and simulation checks pass. An unaided rescue approach, self-directed escape, detention choices and their narrative consequences remain open. Coastal defense victory now releases prisoners after the last local enemy group is defeated, including sectors that retained patriot ownership. A returning-squad regression covers actual capture, travel reversal and encounter entry, then a scripted victory report isolates settlement. It verifies retained wounds, ammunition, saves, duplicate-report rejection and no release while another local group remains. This does not establish a playable prison scene or combat balance."
+      "sourceNotes": "Physical detainees now retain tactical wounds, first aid, death and save receipts. Able guards can provide finite care using confiscated dressings during elapsed strategic time; both sector-recapture rescue routes pass. See [detention care](detention-gameplay.md). Paid physical release, finite following, adjacent wait/follow orders, replacement leadership, saved failed attempts and distinct recapture identities now pass focused and live control checks. Joint safe-exit rescue now restores remaining service at the actual destination and leaves confiscated equipment for later physical pickup. Controlled live exit/return/reload and simulation checks pass. An unaided rescue approach, self-directed escape, detention choices and their narrative consequences remain open. Coastal defense victory now releases prisoners after the last local enemy group is defeated, including sectors that retained patriot ownership. A returning-squad regression covers actual capture, travel reversal and encounter entry, then a scripted victory report isolates settlement. It verifies retained wounds, ammunition, saves, duplicate-report rejection and no release while another local group remains. This does not establish a playable prison scene or combat balance.",
+      "testFiles": [
+        "tests/prisoner-rescue-route.test.mjs"
+      ]
     },
     {
       "id": "JA2-W09",
@@ -6720,6 +6747,6 @@
     "frozenInputs": 9324,
     "sourceNote": "Complete local execution at 67f6c7b5195d0cf946bf8c4c3134a84cabcf3702. The compact delta reconstructs its frozen manifest byte for byte over immutable PR139 evidence. Browser QA at 2035fa7702858123b454141ca0c9d26b00fb10fe has identical game/tools/UI build source; only the exact reviewed test-only preparation and expectation changes differ. Final pre-push documentation/evidence is audited separately; no later full rerun, alpha CI or merge is asserted. The final pre-push workflow changes only the test-job timeout from 90 to 120 minutes after the complete run. All 9,323 other frozen inputs, including every game, test and tool source, remain byte-identical; the workflow and final documentation are checked separately. No later complete local run is claimed."
   },
-  "sourceRelationship": "The selected T07, V09 and W10 rows are reconciled against named published records retained on main c2cee4b421d9e6b9ff6ca3db3d5496051253646b. This documentation-only reconciliation runs no long campaign or broad suite. The check table retains its original exact-source results. The following pre-push alpha source relationship is historical: The dated published baseline and published-check row preserve PR #139 at 7ac3c9d612cc5d46c846617e0686ef5b6b450184. This alpha PR includes the later finite service-equipment return with separate complete local acceptance at 67f6c7b5195d0cf946bf8c4c3134a84cabcf3702. The compact delta identifies its unchanged executing inputs. No alpha CI result or merge is asserted in this pre-push record; actual publication is recorded in the PR body and final delivery report. Original/prototype/presence snapshots remain historical. The final pre-push workflow changes only the test-job timeout from 90 to 120 minutes after the complete run. All 9,323 other frozen inputs, including every game, test and tool source, remain byte-identical; the workflow and final documentation are checked separately. No later complete local run is claimed.",
-  "snapshotSummary": "These totals are dated results, not a fresh run on the October baseline. W10 now points to the accepted WIN-01, POST-01, FIX-01 through FIX-04 and REL-02 route records; their bounded scope and remaining manual/balance limits are unchanged. The 2026-09-27 audit snapshots and PR139 local/published 4214/4214 results remain unchanged dated evidence. The corrected alpha candidate passes 4,251/4,251 across 600 files with no failures, skips, cancellations or TODOs. It accepts the bounded return policy and preserves scripted routes. Extensive player alpha, wider force/seed balance, full JA2 parity, art/audio and sustained loaded 60 FPS remain open."
+  "sourceRelationship": "The selected T07 and W08 rows are reconciled against named published records retained on main 916049df7346a5b655564fafdea37c93be76045c. PR294 and PR295 add bounded paid firearm admission and owned packed-gun handover; FIX-03/PR139 supersede the old failed cleared-field rescue. This documentation-only reconciliation runs no long campaign or broad suite. The earlier T07/V09/W10 reconciliation and historical checks remain source-specific: The selected T07, V09 and W10 rows are reconciled against named published records retained on main c2cee4b421d9e6b9ff6ca3db3d5496051253646b. This documentation-only reconciliation runs no long campaign or broad suite. The check table retains its original exact-source results. The following pre-push alpha source relationship is historical: The dated published baseline and published-check row preserve PR #139 at 7ac3c9d612cc5d46c846617e0686ef5b6b450184. This alpha PR includes the later finite service-equipment return with separate complete local acceptance at 67f6c7b5195d0cf946bf8c4c3134a84cabcf3702. The compact delta identifies its unchanged executing inputs. No alpha CI result or merge is asserted in this pre-push record; actual publication is recorded in the PR body and final delivery report. Original/prototype/presence snapshots remain historical. The final pre-push workflow changes only the test-job timeout from 90 to 120 minutes after the complete run. All 9,323 other frozen inputs, including every game, test and tool source, remain byte-identical; the workflow and final documentation are checked separately. No later complete local run is claimed.",
+  "snapshotSummary": "These totals are dated results, not a fresh run on the October baseline. W10 now points to the accepted WIN-01, POST-01, FIX-01 through FIX-04 and REL-02 route records; their bounded scope and remaining manual/balance limits are unchanged. The 2026-09-27 audit snapshots and PR139 local/published 4214/4214 results remain unchanged dated evidence. The corrected alpha candidate passes 4,251/4,251 across 600 files with no failures, skips, cancellations or TODOs. It accepts the bounded return policy and preserves scripted routes. Extensive player alpha, wider force/seed balance, full JA2 parity, art/audio and sustained loaded 60 FPS remain open. W08 now points to the accepted FIX-03/PR139 cleared-field rescue while retaining stealth, self-escape, carrying and narrative gaps. T07 adds the bounded published PR294/PR295 records and stays partial."
 }
