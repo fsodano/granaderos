@@ -29,12 +29,20 @@ test('AI can select a useful second-pistol shot when the main projectile stops i
  assert.notEqual(chooseEnemyAction(s,{...u,leftHandItem:null})?.type,'fire');assert.deepEqual(s,before);
 });
 
-test('unavailable second pistols preserve ordinary AI aim and empty-main maintenance',()=>{
+test('unavailable second pistols preserve ordinary AI aim',()=>{
  for(const extra of [{offHand:second({loaded:0,reloadProgress:.5})},{offHand:second({jammed:true})},{offHand:second({condition:0})},{leftHandItem:null}]){
   const s=field({},extra),u=enemy(s),before=structuredClone(s);assert.deepEqual(chooseEnemyAction(s,u),chooseEnemyAction(s,{...u,offHand:undefined,leftHandItem:null}));assert.deepEqual(s,before);
  }
+});
+
+test('a useful loaded second pistol precedes main-gun maintenance through a paid swap',()=>{
  for(const patch of [{loaded:0,ammo:1,ap:32},{jammed:true,priming:1,ap:100}]){
-  const s=field({},patch),u=enemy(s),choice=chooseEnemyAction(s,u);assert.equal(choice.type,patch.jammed?'reprime':'reload');assert.deepEqual(choice,chooseEnemyAction(s,{...u,offHand:undefined,leftHandItem:null}));
+  const s=field({},patch),u=enemy(s),before=structuredClone(s);
+  assert.deepEqual(chooseEnemyAction(s,u),{type:'swapHands',unitId:'e'});
+  const without=chooseEnemyAction(s,{...u,offHand:undefined,leftHandItem:null});
+  assert.equal(without.type,patch.jammed?'reprime':'reload');
+  const unavailable=chooseEnemyAction(s,{...u,offHand:{...u.offHand,loaded:0}});
+  assert.equal(unavailable.type,without.type);assert.deepEqual(s,before);
  }
 });
 

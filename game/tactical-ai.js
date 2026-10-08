@@ -6,7 +6,7 @@ import {atHand,moveOrder,planningPoint} from './tactical-planning-space.js';
 import {chooseSupplySharingAction} from './tactical-ai-sharing.js';
 import {chooseScavengingAction} from './tactical-ai-scavenging.js';
 import {directionTo,facingAllowsSight,turnAPCost} from './tactical-awareness.js';
-import {getReachable, hasFirearm, canSee, hasLineOfSight, shotChance, firearmShotOptions, actionCosts, stanceCost, weaponFor, bladeFor, planEquipLoot, maxActionPoints, AP_CARRY_LIMIT, movementStepCost, climbPreview,knifeThrowPreview,meleePreview} from './tactical.js';
+import {getReachable, hasFirearm, canSee, hasLineOfSight, shotChance, firearmShotOptions, actionCosts, stanceCost, weaponFor, bladeFor, planEquipLoot, planSwapHands, swapHandsPreview, maxActionPoints, AP_CARRY_LIMIT, movementStepCost, climbPreview,knifeThrowPreview,meleePreview} from './tactical.js';
 import {heldThrowingKnife,knifeThrowDamage} from './thrown-knife.js';
 import {availableAmmunition} from './ammunition-types.js';
 import {planFitBayonet} from './tactical-inventory.js';
@@ -189,6 +189,17 @@ function backupWeapon(state, unit, costs, targets) {
   // permit a shot this turn when the held weapon needs a long reload.
   if (!targets.length && (serviceable || held.capacity === 0 && blade.id !== 0)) return null;
   const candidates = [];
+  if (unit.offHand?.count === 1) {
+    const ownTurn = {...state, phase: unit.side === 'enemy' ? 'enemy' : 'player'};
+    const swap = swapHandsPreview(ownTurn, unit);
+    if (swap.valid) {
+      try {
+        const next = planSwapHands(unit);
+        if ((next.condition ?? 100) > 0)
+          candidates.push({next, cost: swap.pa, order: {type: 'swapHands', unitId: unit.id}});
+      } catch { /* The owned other hand must pass the same capacity and item checks. */ }
+    }
+  }
   if (unit.activeSlot !== 'primary' && unit.weapon && !unit.weaponDropped)
     candidates.push({next: {...unit, activeSlot: 'primary'}, cost: costs.weapon, order: {type: 'weapon', unitId: unit.id, slot: 'primary'}});
   for (const key of Object.keys(unit.inventory ?? {}).sort()) {
