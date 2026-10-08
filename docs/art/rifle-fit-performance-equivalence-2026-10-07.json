@@ -1,0 +1,2366 @@
+{
+  "frozenPins": {
+    "web/lib/three/melee-contact-fit.ts": "39aa3b406af77de6e2864d580b00c2ce1327f17cabd33d8fec7e75d5abd65805",
+    "web/lib/three/actor-runtime.ts": "75d8271d668f4010bf8e7155fbe75db329fb6cee776570af7f7d6f5e2d173465"
+  },
+  "candidateHelperHash": "79236396011afc08d23cc7e933da809aa5082036495a778f720baf75d69e7774",
+  "cases": [
+    {
+      "appearance": "granadero",
+      "diagonal": false,
+      "posture": "standing",
+      "weapon": 1800,
+      "order": "frozen-first",
+      "frozen": {
+        "wallMs": 396.7222499999998,
+        "cpuMs": 504.591
+      },
+      "batch": {
+        "wallMs": 319.88145799999984,
+        "cpuMs": 320.385
+      },
+      "repeatedBatch": {
+        "wallMs": 54.421542000000045,
+        "cpuMs": 51.769
+      },
+      "repeatedFrozen": {
+        "wallMs": 50.21608300000025,
+        "cpuMs": 38.769
+      },
+      "plan": {
+        "body": [
+          -2.7755575615628914e-17,
+          0,
+          0.21000000000000005
+        ],
+        "hand": [
+          0.19684409940982306,
+          -0.006345280219558713,
+          0.11545557041637974
+        ],
+        "step": [
+          -2.7755575615628914e-17,
+          0,
+          0.21000000000000005
+        ],
+        "rearStep": [
+          -2.7755575615628914e-17,
+          0,
+          0.20904069226729893
+        ],
+        "contact": 0.42,
+        "duration": 1,
+        "twoHands": true,
+        "yaw": 1.5707963267948963
+      }
+    },
+    {
+      "appearance": "granadero",
+      "diagonal": false,
+      "posture": "standing",
+      "weapon": 1801,
+      "order": "batch-first",
+      "frozen": {
+        "wallMs": 294.6919169999992,
+        "cpuMs": 264.001
+      },
+      "batch": {
+        "wallMs": 270.1865829999997,
+        "cpuMs": 224.428
+      },
+      "repeatedBatch": {
+        "wallMs": 27.355000000000473,
+        "cpuMs": 24.347
+      },
+      "repeatedFrozen": {
+        "wallMs": 53.31533399999989,
+        "cpuMs": 18.136
+      },
+      "plan": {
+        "body": [
+          -2.7755575615628914e-17,
+          -0.04,
+          0.20000000000000004
+        ],
+        "hand": [
+          0.19324564725663862,
+          -0.004068876629292895,
+          0.11496295972356657
+        ],
+        "step": [
+          -2.7755575615628914e-17,
+          0,
+          0.20000000000000004
+        ],
+        "rearStep": [
+          0,
+          0,
+          0.11219082694309135
+        ],
+        "contact": 0.42,
+        "duration": 1,
+        "twoHands": true,
+        "yaw": 1.5707963267948963
+      }
+    },
+    {
+      "appearance": "granadero",
+      "diagonal": false,
+      "posture": "standing",
+      "weapon": 1802,
+      "order": "frozen-first",
+      "frozen": {
+        "wallMs": 303.03658300000006,
+        "cpuMs": 199.665
+      },
+      "batch": {
+        "wallMs": 218.10425000000032,
+        "cpuMs": 207.712
+      },
+      "repeatedBatch": {
+        "wallMs": 52.33270800000082,
+        "cpuMs": 34.255
+      },
+      "repeatedFrozen": {
+        "wallMs": 72.14608299999963,
+        "cpuMs": 28.226
+      },
+      "plan": {
+        "body": [
+          2.7755575615628914e-17,
+          0,
+          0.18
+        ],
+        "hand": [
+          0.16020557107499478,
+          0.007772171599610411,
+          0.10921987059608537
+        ],
+        "step": [
+          2.7755575615628914e-17,
+          0,
+          0.18
+        ],
+        "rearStep": [
+          0,
+          0,
+          0.17904069226729868
+        ],
+        "contact": 0.42,
+        "duration": 1,
+        "twoHands": true,
+        "yaw": 1.5707963267948963
+      }
+    },
+    {
+      "appearance": "granadero",
+      "diagonal": false,
+      "posture": "standing",
+      "weapon": 1803,
+      "order": "batch-first",
+      "frozen": {
+        "wallMs": 196.484375,
+        "cpuMs": 142.659
+      },
+      "batch": {
+        "wallMs": 216.50358400000005,
+        "cpuMs": 147.959
+      },
+      "repeatedBatch": {
+        "wallMs": 53.201999999999316,
+        "cpuMs": 26.434
+      },
+      "repeatedFrozen": {
+        "wallMs": 26.204792000000452,
+        "cpuMs": 23.042
+      },
+      "plan": {
+        "body": [
+          0,
+          -0.03,
+          0.15
+        ],
+        "hand": [
+          0.13856083505484487,
+          0.030514325860957703,
+          0.10013085673122821
+        ],
+        "step": [
+          0,
+          0,
+          0.15
+        ],
+        "rearStep": [
+          0,
+          0,
+          0.08167113516841928
+        ],
+        "contact": 0.42,
+        "duration": 1,
+        "twoHands": true,
+        "yaw": 1.5707963267948963
+      }
+    },
+    {
+      "appearance": "granadero",
+      "diagonal": false,
+      "posture": "standing",
+      "weapon": 1804,
+      "order": "frozen-first",
+      "frozen": {
+        "wallMs": 249.07058299999971,
+        "cpuMs": 197.599
+      },
+      "batch": {
+        "wallMs": 217.45016699999906,
+        "cpuMs": 190.175
+      },
+      "repeatedBatch": {
+        "wallMs": 50.826333000000886,
+        "cpuMs": 18.085
+      },
+      "repeatedFrozen": {
+        "wallMs": 43.852083000001585,
+        "cpuMs": 21.417
+      },
+      "plan": {
+        "body": [
+          0,
+          -0.04,
+          0.17
+        ],
+        "hand": [
+          0.14387915729957437,
+          0.007818165004026989,
+          0.11679924464375442
+        ],
+        "step": [
+          0,
+          0,
+          0.17
+        ],
+        "rearStep": [
+          0,
+          0,
+          0.0821908269430911
+        ],
+        "contact": 0.42,
+        "duration": 1,
+        "twoHands": true,
+        "yaw": 1.5707963267948963
+      }
+    },
+    {
+      "appearance": "granadero",
+      "diagonal": false,
+      "posture": "standing",
+      "weapon": 1807,
+      "order": "batch-first",
+      "frozen": {
+        "wallMs": 222.81025000000045,
+        "cpuMs": 157.967
+      },
+      "batch": {
+        "wallMs": 152.07800000000134,
+        "cpuMs": 106.454
+      },
+      "repeatedBatch": {
+        "wallMs": 26.776707999999417,
+        "cpuMs": 23.382
+      },
+      "repeatedFrozen": {
+        "wallMs": 27.972791000000143,
+        "cpuMs": 27.207
+      },
+      "plan": {
+        "body": [
+          0,
+          0,
+          0.15
+        ],
+        "hand": [
+          0.10239239081062125,
+          0.03455125003350612,
+          0.10813269382802024
+        ],
+        "step": [
+          0,
+          0,
+          0.15
+        ],
+        "rearStep": [
+          0,
+          0,
+          0.14904069226729932
+        ],
+        "contact": 0.42,
+        "duration": 1,
+        "twoHands": true,
+        "yaw": 1.5707963267948963
+      }
+    },
+    {
+      "appearance": "granadero",
+      "diagonal": false,
+      "posture": "crouched",
+      "weapon": 1800,
+      "order": "frozen-first",
+      "frozen": {
+        "wallMs": 235.72895900000003,
+        "cpuMs": 162.222
+      },
+      "batch": {
+        "wallMs": 219.64837500000067,
+        "cpuMs": 125.213
+      },
+      "repeatedBatch": {
+        "wallMs": 21.2706249999992,
+        "cpuMs": 17.677
+      },
+      "repeatedFrozen": {
+        "wallMs": 24.156875000000582,
+        "cpuMs": 17.097
+      },
+      "plan": {
+        "body": [
+          0,
+          -0.01,
+          0.11999999999999998
+        ],
+        "hand": [
+          0.19659856551594146,
+          0.00895196787235819,
+          0.03053860525438698
+        ],
+        "step": [
+          0,
+          0,
+          0.11999999999999998
+        ],
+        "rearStep": [
+          0,
+          0,
+          0.09481250369307352
+        ],
+        "contact": 0.42,
+        "duration": 1,
+        "twoHands": true,
+        "yaw": 1.5707963267948963
+      }
+    },
+    {
+      "appearance": "granadero",
+      "diagonal": false,
+      "posture": "crouched",
+      "weapon": 1801,
+      "order": "batch-first",
+      "frozen": {
+        "wallMs": 260.9524999999994,
+        "cpuMs": 135.12
+      },
+      "batch": {
+        "wallMs": 161.4579159999994,
+        "cpuMs": 120.088
+      },
+      "repeatedBatch": {
+        "wallMs": 33.63062499999978,
+        "cpuMs": 16.914
+      },
+      "repeatedFrozen": {
+        "wallMs": 30.002582999999504,
+        "cpuMs": 20.677
+      },
+      "plan": {
+        "body": [
+          0,
+          0,
+          0.11999999999999998
+        ],
+        "hand": [
+          0.19119536316176422,
+          0.008937804869831645,
+          0.03284657090542173
+        ],
+        "step": [
+          0,
+          0,
+          0.11999999999999998
+        ],
+        "rearStep": [
+          0,
+          0,
+          0.11904069226729906
+        ],
+        "contact": 0.42,
+        "duration": 1,
+        "twoHands": true,
+        "yaw": 1.5707963267948963
+      }
+    },
+    {
+      "appearance": "granadero",
+      "diagonal": false,
+      "posture": "crouched",
+      "weapon": 1802,
+      "order": "frozen-first",
+      "frozen": {
+        "wallMs": 163.20325000000048,
+        "cpuMs": 197.922
+      },
+      "batch": {
+        "wallMs": 200.5864160000001,
+        "cpuMs": 149.212
+      },
+      "repeatedBatch": {
+        "wallMs": 24.733916999999565,
+        "cpuMs": 20.34
+      },
+      "repeatedFrozen": {
+        "wallMs": 23.52375000000029,
+        "cpuMs": 19.184
+      },
+      "plan": {
+        "body": [
+          0,
+          0,
+          0.09
+        ],
+        "hand": [
+          0.14091919785221485,
+          0.029519153549967925,
+          0.035736487947934464
+        ],
+        "step": [
+          0,
+          0,
+          0.09
+        ],
+        "rearStep": [
+          1.3877787807814457e-17,
+          0,
+          0.08904069226729881
+        ],
+        "contact": 0.42,
+        "duration": 1,
+        "twoHands": true,
+        "yaw": 1.5707963267948963
+      }
+    },
+    {
+      "appearance": "granadero",
+      "diagonal": false,
+      "posture": "crouched",
+      "weapon": 1803,
+      "order": "batch-first",
+      "frozen": {
+        "wallMs": 216.96787500000028,
+        "cpuMs": 150.799
+      },
+      "batch": {
+        "wallMs": 247.52954099999988,
+        "cpuMs": 128.567
+      },
+      "repeatedBatch": {
+        "wallMs": 25.90466699999888,
+        "cpuMs": 18.701
+      },
+      "repeatedFrozen": {
+        "wallMs": 23.40233399999852,
+        "cpuMs": 19.279
+      },
+      "plan": {
+        "body": [
+          0,
+          -0.05,
+          0.08
+        ],
+        "hand": [
+          0.10722433512364839,
+          0.004900469116831285,
+          0.04474136486495613
+        ],
+        "step": [
+          0,
+          0,
+          0.08
+        ],
+        "rearStep": [
+          0,
+          0,
+          0
+        ],
+        "contact": 0.42,
+        "duration": 1,
+        "twoHands": true,
+        "yaw": 1.5707963267948963
+      }
+    },
+    {
+      "appearance": "granadero",
+      "diagonal": false,
+      "posture": "crouched",
+      "weapon": 1804,
+      "order": "frozen-first",
+      "frozen": {
+        "wallMs": 154.92845800000032,
+        "cpuMs": 164.197
+      },
+      "batch": {
+        "wallMs": 171.5712910000002,
+        "cpuMs": 111.797
+      },
+      "repeatedBatch": {
+        "wallMs": 26.22691599999962,
+        "cpuMs": 20.015
+      },
+      "repeatedFrozen": {
+        "wallMs": 22.70929199999955,
+        "cpuMs": 18.675
+      },
+      "plan": {
+        "body": [
+          0,
+          0,
+          0.09
+        ],
+        "hand": [
+          0.12459278407679442,
+          0.029565146954384502,
+          0.04331586199560354
+        ],
+        "step": [
+          0,
+          0,
+          0.09
+        ],
+        "rearStep": [
+          1.3877787807814457e-17,
+          0,
+          0.08904069226729881
+        ],
+        "contact": 0.42,
+        "duration": 1,
+        "twoHands": true,
+        "yaw": 1.5707963267948963
+      }
+    },
+    {
+      "appearance": "granadero",
+      "diagonal": false,
+      "posture": "crouched",
+      "weapon": 1807,
+      "order": "batch-first",
+      "frozen": {
+        "wallMs": 265.79962499999965,
+        "cpuMs": 176.299
+      },
+      "batch": {
+        "wallMs": 204.8104999999996,
+        "cpuMs": 154.761
+      },
+      "repeatedBatch": {
+        "wallMs": 40.28449999999975,
+        "cpuMs": 22.475
+      },
+      "repeatedFrozen": {
+        "wallMs": 28.37487500000134,
+        "cpuMs": 17.928
+      },
+      "plan": {
+        "body": [
+          -6.938893903907228e-18,
+          -0.01,
+          0.060000000000000005
+        ],
+        "hand": [
+          0.07089137502708986,
+          0.02403450015733033,
+          0.03824064210977339
+        ],
+        "step": [
+          -6.938893903907228e-18,
+          0,
+          0.060000000000000005
+        ],
+        "rearStep": [
+          0,
+          0,
+          0.03481250369307304
+        ],
+        "contact": 0.42,
+        "duration": 1,
+        "twoHands": true,
+        "yaw": 1.5707963267948963
+      }
+    },
+    {
+      "appearance": "granadero",
+      "diagonal": true,
+      "posture": "standing",
+      "weapon": 1800,
+      "order": "frozen-first",
+      "frozen": {
+        "wallMs": 546.6104169999999,
+        "cpuMs": 334.926
+      },
+      "batch": {
+        "wallMs": 527.258041000001,
+        "cpuMs": 270.077
+      },
+      "repeatedBatch": {
+        "wallMs": 28.305833999998868,
+        "cpuMs": 22.594
+      },
+      "repeatedFrozen": {
+        "wallMs": 35.938459000000876,
+        "cpuMs": 26.459
+      },
+      "plan": {
+        "body": [
+          -8.326672684688674e-17,
+          -0.01,
+          0.5600000000000003
+        ],
+        "hand": [
+          -0.028686663026034592,
+          0.11175810116744511,
+          0.5566952101577154
+        ],
+        "step": [
+          -1.3877787807814457e-17,
+          0,
+          0.3920000000000002
+        ],
+        "rearStep": [
+          1.3877787807814457e-17,
+          0,
+          0.5348125036930746
+        ],
+        "contact": 0.42,
+        "duration": 1,
+        "twoHands": true,
+        "yaw": 0.7853981633974485
+      }
+    },
+    {
+      "appearance": "granadero",
+      "diagonal": true,
+      "posture": "standing",
+      "weapon": 1801,
+      "order": "batch-first",
+      "frozen": {
+        "wallMs": 743.8264579999995,
+        "cpuMs": 354.656
+      },
+      "batch": {
+        "wallMs": 284.87975000000006,
+        "cpuMs": 177.283
+      },
+      "repeatedBatch": {
+        "wallMs": 23.241915999999037,
+        "cpuMs": 16.78
+      },
+      "repeatedFrozen": {
+        "wallMs": 40.638458999999784,
+        "cpuMs": 22.83
+      },
+      "plan": {
+        "body": [
+          -8.326672684688674e-17,
+          -0.01,
+          0.5600000000000003
+        ],
+        "hand": [
+          -0.03412877842504164,
+          0.11177343223879155,
+          0.5592216577160759
+        ],
+        "step": [
+          -1.3877787807814457e-17,
+          0,
+          0.3920000000000002
+        ],
+        "rearStep": [
+          1.3877787807814457e-17,
+          0,
+          0.5348125036930746
+        ],
+        "contact": 0.42,
+        "duration": 1,
+        "twoHands": true,
+        "yaw": 0.7853981633974485
+      }
+    },
+    {
+      "appearance": "granadero",
+      "diagonal": true,
+      "posture": "standing",
+      "weapon": 1802,
+      "order": "frozen-first",
+      "frozen": {
+        "wallMs": 639.2532089999986,
+        "cpuMs": 305.651
+      },
+      "batch": {
+        "wallMs": 365.0794999999998,
+        "cpuMs": 209.067
+      },
+      "repeatedBatch": {
+        "wallMs": 31.212999999999738,
+        "cpuMs": 22.175
+      },
+      "repeatedFrozen": {
+        "wallMs": 32.85833300000013,
+        "cpuMs": 20.07
+      },
+      "plan": {
+        "body": [
+          1.3877787807814457e-17,
+          -0.01,
+          0.5800000000000004
+        ],
+        "hand": [
+          -0.08582902338808886,
+          0.111919077835414,
+          0.5832229785401893
+        ],
+        "step": [
+          0,
+          0,
+          0.3190000000000002
+        ],
+        "rearStep": [
+          0,
+          0,
+          0.5548125036930741
+        ],
+        "contact": 0.42,
+        "duration": 1,
+        "twoHands": true,
+        "yaw": 0.7853981633974485
+      }
+    },
+    {
+      "appearance": "granadero",
+      "diagonal": true,
+      "posture": "standing",
+      "weapon": 1803,
+      "order": "batch-first",
+      "frozen": {
+        "wallMs": 520.1489579999998,
+        "cpuMs": 235.623
+      },
+      "batch": {
+        "wallMs": 431.9212090000001,
+        "cpuMs": 206.935
+      },
+      "repeatedBatch": {
+        "wallMs": 61.19441700000243,
+        "cpuMs": 29.048
+      },
+      "repeatedFrozen": {
+        "wallMs": 74.38470800000141,
+        "cpuMs": 26.555
+      },
+      "plan": {
+        "body": [
+          1.3877787807814457e-17,
+          -0.01,
+          0.6000000000000003
+        ],
+        "hand": [
+          -0.12513205776226433,
+          0.11139314519180044,
+          0.6025936392071187
+        ],
+        "step": [
+          -1.3877787807814457e-17,
+          0,
+          0.3300000000000002
+        ],
+        "rearStep": [
+          0,
+          0,
+          0.5748125036930749
+        ],
+        "contact": 0.42,
+        "duration": 1,
+        "twoHands": true,
+        "yaw": 0.7853981633974485
+      }
+    },
+    {
+      "appearance": "granadero",
+      "diagonal": true,
+      "posture": "standing",
+      "weapon": 1804,
+      "order": "frozen-first",
+      "frozen": {
+        "wallMs": 790.4245409999967,
+        "cpuMs": 322.215
+      },
+      "batch": {
+        "wallMs": 474.34529199999815,
+        "cpuMs": 198.922
+      },
+      "repeatedBatch": {
+        "wallMs": 45.861541999998735,
+        "cpuMs": 21.277
+      },
+      "repeatedFrozen": {
+        "wallMs": 64.91045800000211,
+        "cpuMs": 28.545
+      },
+      "plan": {
+        "body": [
+          -6.938893903907228e-17,
+          -0.01,
+          0.5900000000000003
+        ],
+        "hand": [
+          -0.10215543716351164,
+          0.11196507123983057,
+          0.5908023525878614
+        ],
+        "step": [
+          0,
+          0,
+          0.3245000000000001
+        ],
+        "rearStep": [
+          -6.938893903907228e-17,
+          0,
+          0.5648125036930751
+        ],
+        "contact": 0.42,
+        "duration": 1,
+        "twoHands": true,
+        "yaw": 0.7853981633974485
+      }
+    },
+    {
+      "appearance": "granadero",
+      "diagonal": true,
+      "posture": "standing",
+      "weapon": 1807,
+      "order": "batch-first",
+      "frozen": {
+        "wallMs": 728.8757919999989,
+        "cpuMs": 310.13
+      },
+      "batch": {
+        "wallMs": 532.9036670000023,
+        "cpuMs": 273.193
+      },
+      "repeatedBatch": {
+        "wallMs": 45.243624999999156,
+        "cpuMs": 18.773
+      },
+      "repeatedFrozen": {
+        "wallMs": 41.54225000000224,
+        "cpuMs": 22.736
+      },
+      "plan": {
+        "body": [
+          2.7755575615628914e-17,
+          -0.02,
+          0.6300000000000004
+        ],
+        "hand": [
+          -0.17411121799444967,
+          0.11153112517659913,
+          0.6253317237030162
+        ],
+        "step": [
+          1.3877787807814457e-17,
+          0,
+          0.25200000000000017
+        ],
+        "rearStep": [
+          -8.326672684688674e-17,
+          0,
+          0.5824651728486114
+        ],
+        "contact": 0.42,
+        "duration": 1,
+        "twoHands": true,
+        "yaw": 0.7853981633974485
+      }
+    },
+    {
+      "appearance": "granadero",
+      "diagonal": true,
+      "posture": "crouched",
+      "weapon": 1800,
+      "order": "frozen-first",
+      "frozen": {
+        "wallMs": 404.1653750000005,
+        "cpuMs": 173.436
+      },
+      "batch": {
+        "wallMs": 276.54008299999987,
+        "cpuMs": 127.271
+      },
+      "repeatedBatch": {
+        "wallMs": 69.8304590000007,
+        "cpuMs": 25.886
+      },
+      "repeatedFrozen": {
+        "wallMs": 63.76812499999869,
+        "cpuMs": 24.876
+      },
+      "plan": {
+        "body": [
+          0,
+          -0.3300000000000001,
+          0.34000000000000014
+        ],
+        "hand": [
+          -0.1310159046520463,
+          -0.2831158628562679,
+          0.34753219970331384
+        ],
+        "step": [
+          0,
+          0,
+          0.34000000000000014
+        ],
+        "rearStep": [
+          0,
+          0,
+          0
+        ],
+        "contact": 0.42,
+        "duration": 1,
+        "twoHands": true,
+        "yaw": 0.7853981633974485
+      }
+    },
+    {
+      "appearance": "granadero",
+      "diagonal": true,
+      "posture": "crouched",
+      "weapon": 1801,
+      "order": "batch-first",
+      "frozen": {
+        "wallMs": 236.6449590000011,
+        "cpuMs": 163.441
+      },
+      "batch": {
+        "wallMs": 159.69725000000108,
+        "cpuMs": 116.285
+      },
+      "repeatedBatch": {
+        "wallMs": 98.14120900000125,
+        "cpuMs": 25.928
+      },
+      "repeatedFrozen": {
+        "wallMs": 34.153958999999304,
+        "cpuMs": 22.646
+      },
+      "plan": {
+        "body": [
+          -4.163336342344337e-17,
+          -0.2700000000000001,
+          0.35000000000000014
+        ],
+        "hand": [
+          -0.1364580200510527,
+          -0.28310053178492145,
+          0.35005864726167485
+        ],
+        "step": [
+          -4.163336342344337e-17,
+          0,
+          0.35000000000000014
+        ],
+        "rearStep": [
+          0,
+          0,
+          0
+        ],
+        "contact": 0.42,
+        "duration": 1,
+        "twoHands": true,
+        "yaw": 0.7853981633974485
+      }
+    },
+    {
+      "appearance": "granadero",
+      "diagonal": true,
+      "posture": "crouched",
+      "weapon": 1802,
+      "order": "frozen-first",
+      "frozen": {
+        "wallMs": 359.99845800000185,
+        "cpuMs": 184.579
+      },
+      "batch": {
+        "wallMs": 286.24208400000134,
+        "cpuMs": 139.348
+      },
+      "repeatedBatch": {
+        "wallMs": 61.588416999999026,
+        "cpuMs": 28.625
+      },
+      "repeatedFrozen": {
+        "wallMs": 74.81366600000183,
+        "cpuMs": 23.215
+      },
+      "plan": {
+        "body": [
+          -2.7755575615628914e-17,
+          -0.2800000000000001,
+          0.38000000000000017
+        ],
+        "hand": [
+          -0.18815826501410055,
+          -0.2829548861882988,
+          0.3740599680857878
+        ],
+        "step": [
+          -2.7755575615628914e-17,
+          0,
+          0.38000000000000017
+        ],
+        "rearStep": [
+          0,
+          0,
+          0.009102596703600807
+        ],
+        "contact": 0.42,
+        "duration": 1,
+        "twoHands": true,
+        "yaw": 0.7853981633974485
+      }
+    },
+    {
+      "appearance": "granadero",
+      "diagonal": true,
+      "posture": "crouched",
+      "weapon": 1803,
+      "order": "batch-first",
+      "frozen": {
+        "wallMs": 210.97120799999902,
+        "cpuMs": 189.425
+      },
+      "batch": {
+        "wallMs": 276.3408339999987,
+        "cpuMs": 164.973
+      },
+      "repeatedBatch": {
+        "wallMs": 63.289082999999664,
+        "cpuMs": 29.487
+      },
+      "repeatedFrozen": {
+        "wallMs": 30.508042000001296,
+        "cpuMs": 21.592
+      },
+      "plan": {
+        "body": [
+          1.3877787807814457e-17,
+          -0.36000000000000015,
+          0.40000000000000024
+        ],
+        "hand": [
+          -0.22648026067777077,
+          -0.2833704635790808,
+          0.39398153017696336
+        ],
+        "step": [
+          1.3877787807814457e-17,
+          0,
+          0.40000000000000024
+        ],
+        "rearStep": [
+          0,
+          0,
+          0
+        ],
+        "contact": 0.42,
+        "duration": 1,
+        "twoHands": true,
+        "yaw": 0.7853981633974485
+      }
+    },
+    {
+      "appearance": "granadero",
+      "diagonal": true,
+      "posture": "crouched",
+      "weapon": 1804,
+      "order": "frozen-first",
+      "frozen": {
+        "wallMs": 435.0034579999992,
+        "cpuMs": 215.62
+      },
+      "batch": {
+        "wallMs": 213.32050000000163,
+        "cpuMs": 118.526
+      },
+      "repeatedBatch": {
+        "wallMs": 75.39316599999802,
+        "cpuMs": 24.591
+      },
+      "repeatedFrozen": {
+        "wallMs": 28.39979200000016,
+        "cpuMs": 19.123
+      },
+      "plan": {
+        "body": [
+          -2.7755575615628914e-17,
+          -0.2800000000000001,
+          0.3900000000000002
+        ],
+        "hand": [
+          -0.20448467878952267,
+          -0.2829088927838822,
+          0.38163934213346046
+        ],
+        "step": [
+          -2.7755575615628914e-17,
+          0,
+          0.3900000000000002
+        ],
+        "rearStep": [
+          -2.6020852139652106e-18,
+          0,
+          0.019102596703601704
+        ],
+        "contact": 0.42,
+        "duration": 1,
+        "twoHands": true,
+        "yaw": 0.7853981633974485
+      }
+    },
+    {
+      "appearance": "granadero",
+      "diagonal": true,
+      "posture": "crouched",
+      "weapon": 1807,
+      "order": "batch-first",
+      "frozen": {
+        "wallMs": 233.575499999999,
+        "cpuMs": 135.835
+      },
+      "batch": {
+        "wallMs": 254.4288749999978,
+        "cpuMs": 130.778
+      },
+      "repeatedBatch": {
+        "wallMs": 28.929040999999415,
+        "cpuMs": 51.398
+      },
+      "repeatedFrozen": {
+        "wallMs": 23.773042000000714,
+        "cpuMs": 22.998
+      },
+      "plan": {
+        "body": [
+          -1.3877787807814457e-17,
+          -0.3200000000000001,
+          0.4400000000000002
+        ],
+        "hand": [
+          -0.2754594209099555,
+          -0.2832324835942821,
+          0.4167196146728614
+        ],
+        "step": [
+          -1.3877787807814457e-17,
+          0,
+          0.4400000000000002
+        ],
+        "rearStep": [
+          0,
+          0,
+          0.040375728065257466
+        ],
+        "contact": 0.42,
+        "duration": 1,
+        "twoHands": true,
+        "yaw": 0.7853981633974485
+      }
+    },
+    {
+      "appearance": "woman-scout",
+      "diagonal": false,
+      "posture": "standing",
+      "weapon": 1800,
+      "order": "frozen-first",
+      "frozen": {
+        "wallMs": 221.80720799999835,
+        "cpuMs": 267.146
+      },
+      "batch": {
+        "wallMs": 167.27679200000057,
+        "cpuMs": 147.275
+      },
+      "repeatedBatch": {
+        "wallMs": 28.322959000000992,
+        "cpuMs": 17.03
+      },
+      "repeatedFrozen": {
+        "wallMs": 25.574083999999857,
+        "cpuMs": 17.27
+      },
+      "plan": {
+        "body": [
+          -2.7755575615628914e-17,
+          -0.02,
+          0.20000000000000004
+        ],
+        "hand": [
+          0.18495158979274962,
+          -0.0013400253089896896,
+          0.11194171355423596
+        ],
+        "step": [
+          -2.7755575615628914e-17,
+          0,
+          0.20000000000000004
+        ],
+        "rearStep": [
+          0,
+          0,
+          0.15962014548803838
+        ],
+        "contact": 0.42,
+        "duration": 1,
+        "twoHands": true,
+        "yaw": 1.5707963267948963
+      }
+    },
+    {
+      "appearance": "woman-scout",
+      "diagonal": false,
+      "posture": "standing",
+      "weapon": 1801,
+      "order": "batch-first",
+      "frozen": {
+        "wallMs": 272.6285830000015,
+        "cpuMs": 158.817
+      },
+      "batch": {
+        "wallMs": 149.29550000000017,
+        "cpuMs": 107.399
+      },
+      "repeatedBatch": {
+        "wallMs": 27.913541999998415,
+        "cpuMs": 15.401
+      },
+      "repeatedFrozen": {
+        "wallMs": 20.221542000002955,
+        "cpuMs": 15.626
+      },
+      "plan": {
+        "body": [
+          -2.7755575615628914e-17,
+          -0.01,
+          0.20000000000000004
+        ],
+        "hand": [
+          0.18135313217633356,
+          0.0009363714285892666,
+          0.11144909439296131
+        ],
+        "step": [
+          -2.7755575615628914e-17,
+          0,
+          0.20000000000000004
+        ],
+        "rearStep": [
+          0,
+          0,
+          0.18152313560003297
+        ],
+        "contact": 0.42,
+        "duration": 1,
+        "twoHands": true,
+        "yaw": 1.5707963267948963
+      }
+    },
+    {
+      "appearance": "woman-scout",
+      "diagonal": false,
+      "posture": "standing",
+      "weapon": 1802,
+      "order": "frozen-first",
+      "frozen": {
+        "wallMs": 195.3107089999976,
+        "cpuMs": 133.024
+      },
+      "batch": {
+        "wallMs": 121.85191699999996,
+        "cpuMs": 87.042
+      },
+      "repeatedBatch": {
+        "wallMs": 28.443624999999884,
+        "cpuMs": 16.139
+      },
+      "repeatedFrozen": {
+        "wallMs": 35.864041999997426,
+        "cpuMs": 17.27
+      },
+      "plan": {
+        "body": [
+          2.7755575615628914e-17,
+          -0.01,
+          0.18
+        ],
+        "hand": [
+          0.1394486852872099,
+          0.001906135152636379,
+          0.12022153383124487
+        ],
+        "step": [
+          2.7755575615628914e-17,
+          0,
+          0.18
+        ],
+        "rearStep": [
+          0,
+          0,
+          0.1615231356000325
+        ],
+        "contact": 0.42,
+        "duration": 1,
+        "twoHands": true,
+        "yaw": 1.5707963267948963
+      }
+    },
+    {
+      "appearance": "woman-scout",
+      "diagonal": false,
+      "posture": "standing",
+      "weapon": 1803,
+      "order": "batch-first",
+      "frozen": {
+        "wallMs": 169.35874999999942,
+        "cpuMs": 237.626
+      },
+      "batch": {
+        "wallMs": 117.75,
+        "cpuMs": 184.675
+      },
+      "repeatedBatch": {
+        "wallMs": 21.12366699999984,
+        "cpuMs": 16.094
+      },
+      "repeatedFrozen": {
+        "wallMs": 21.429125000002387,
+        "cpuMs": 15.603
+      },
+      "plan": {
+        "body": [
+          0,
+          -0.01,
+          0.16
+        ],
+        "hand": [
+          0.11958924946281438,
+          0.021452045503412842,
+          0.10981254206702214
+        ],
+        "step": [
+          0,
+          0,
+          0.16
+        ],
+        "rearStep": [
+          0,
+          0,
+          0.14152313560003293
+        ],
+        "contact": 0.42,
+        "duration": 1,
+        "twoHands": true,
+        "yaw": 1.5707963267948963
+      }
+    },
+    {
+      "appearance": "woman-scout",
+      "diagonal": false,
+      "posture": "standing",
+      "weapon": 1804,
+      "order": "frozen-first",
+      "frozen": {
+        "wallMs": 203.70574999999735,
+        "cpuMs": 196.843
+      },
+      "batch": {
+        "wallMs": 139.99341699999786,
+        "cpuMs": 113.138
+      },
+      "repeatedBatch": {
+        "wallMs": 23.927542000001267,
+        "cpuMs": 25.581
+      },
+      "repeatedFrozen": {
+        "wallMs": 20.93512499999997,
+        "cpuMs": 22.54
+      },
+      "plan": {
+        "body": [
+          0,
+          -0.01,
+          0.16
+        ],
+        "hand": [
+          0.142293538109632,
+          0.024579284745442243,
+          0.09976343497106474
+        ],
+        "step": [
+          0,
+          0,
+          0.16
+        ],
+        "rearStep": [
+          0,
+          0,
+          0.14152313560003293
+        ],
+        "contact": 0.42,
+        "duration": 1,
+        "twoHands": true,
+        "yaw": 1.5707963267948963
+      }
+    },
+    {
+      "appearance": "woman-scout",
+      "diagonal": false,
+      "posture": "standing",
+      "weapon": 1807,
+      "order": "batch-first",
+      "frozen": {
+        "wallMs": 210.1975829999974,
+        "cpuMs": 128.055
+      },
+      "batch": {
+        "wallMs": 102.13662499999919,
+        "cpuMs": 119.53
+      },
+      "repeatedBatch": {
+        "wallMs": 20.109709000000294,
+        "cpuMs": 15.356
+      },
+      "repeatedFrozen": {
+        "wallMs": 32.71162499999991,
+        "cpuMs": 16.553
+      },
+      "plan": {
+        "body": [
+          0,
+          -0.01,
+          0.13999999999999999
+        ],
+        "hand": [
+          0.09112394248819201,
+          0.03945807633217702,
+          0.10699535980102935
+        ],
+        "step": [
+          0,
+          0,
+          0.13999999999999999
+        ],
+        "rearStep": [
+          0,
+          0,
+          0.12152313560003247
+        ],
+        "contact": 0.42,
+        "duration": 1,
+        "twoHands": true,
+        "yaw": 1.5707963267948963
+      }
+    },
+    {
+      "appearance": "woman-scout",
+      "diagonal": false,
+      "posture": "crouched",
+      "weapon": 1800,
+      "order": "frozen-first",
+      "frozen": {
+        "wallMs": 134.77870800000164,
+        "cpuMs": 113.507
+      },
+      "batch": {
+        "wallMs": 122.47291699999914,
+        "cpuMs": 91.055
+      },
+      "repeatedBatch": {
+        "wallMs": 20.008583999999246,
+        "cpuMs": 15.5
+      },
+      "repeatedFrozen": {
+        "wallMs": 20.838082999998733,
+        "cpuMs": 15.594
+      },
+      "plan": {
+        "body": [
+          0,
+          -0.02,
+          0.09999999999999999
+        ],
+        "hand": [
+          0.17729045386060352,
+          0.023496454753161533,
+          0.02032992011977619
+        ],
+        "step": [
+          0,
+          0,
+          0.09999999999999999
+        ],
+        "rearStep": [
+          -6.938893903907228e-18,
+          0,
+          0.059620145488037846
+        ],
+        "contact": 0.42,
+        "duration": 1,
+        "twoHands": true,
+        "yaw": 1.5707963267948963
+      }
+    },
+    {
+      "appearance": "woman-scout",
+      "diagonal": false,
+      "posture": "crouched",
+      "weapon": 1801,
+      "order": "batch-first",
+      "frozen": {
+        "wallMs": 197.11529099999825,
+        "cpuMs": 126.594
+      },
+      "batch": {
+        "wallMs": 94.18000000000029,
+        "cpuMs": 78.071
+      },
+      "repeatedBatch": {
+        "wallMs": 55.0379580000008,
+        "cpuMs": 18.316
+      },
+      "repeatedFrozen": {
+        "wallMs": 38.412499999998545,
+        "cpuMs": 16.515
+      },
+      "plan": {
+        "body": [
+          0,
+          -0.01,
+          0.09999999999999999
+        ],
+        "hand": [
+          0.17186259359305822,
+          0.02350751779990712,
+          0.022736935921573193
+        ],
+        "step": [
+          0,
+          0,
+          0.09999999999999999
+        ],
+        "rearStep": [
+          0,
+          0,
+          0.08152313560003244
+        ],
+        "contact": 0.42,
+        "duration": 1,
+        "twoHands": true,
+        "yaw": 1.5707963267948963
+      }
+    },
+    {
+      "appearance": "woman-scout",
+      "diagonal": false,
+      "posture": "crouched",
+      "weapon": 1802,
+      "order": "frozen-first",
+      "frozen": {
+        "wallMs": 139.5265410000029,
+        "cpuMs": 113.779
+      },
+      "batch": {
+        "wallMs": 124.21199999999953,
+        "cpuMs": 80.096
+      },
+      "repeatedBatch": {
+        "wallMs": 15.866041999997833,
+        "cpuMs": 14.893
+      },
+      "repeatedFrozen": {
+        "wallMs": 17.54254099999889,
+        "cpuMs": 14.469
+      },
+      "plan": {
+        "body": [
+          0,
+          -0.01,
+          0.09999999999999999
+        ],
+        "hand": [
+          0.12016231206442995,
+          0.023653117102993892,
+          0.046738151183093976
+        ],
+        "step": [
+          0,
+          0,
+          0.09999999999999999
+        ],
+        "rearStep": [
+          0,
+          0,
+          0.08152313560003244
+        ],
+        "contact": 0.42,
+        "duration": 1,
+        "twoHands": true,
+        "yaw": 1.5707963267948963
+      }
+    },
+    {
+      "appearance": "woman-scout",
+      "diagonal": false,
+      "posture": "crouched",
+      "weapon": 1803,
+      "order": "batch-first",
+      "frozen": {
+        "wallMs": 131.20966600000247,
+        "cpuMs": 109.339
+      },
+      "batch": {
+        "wallMs": 93.54399999999805,
+        "cpuMs": 82.64
+      },
+      "repeatedBatch": {
+        "wallMs": 17.878874999998516,
+        "cpuMs": 14.713
+      },
+      "repeatedFrozen": {
+        "wallMs": 17.946333000003506,
+        "cpuMs": 14.388
+      },
+      "plan": {
+        "body": [
+          0,
+          -0.01,
+          0.08
+        ],
+        "hand": [
+          0.09134873411889899,
+          0.002647227735426805,
+          0.04543851613310321
+        ],
+        "step": [
+          0,
+          0,
+          0.08
+        ],
+        "rearStep": [
+          -6.938893903907228e-18,
+          0,
+          0.06152313560003286
+        ],
+        "contact": 0.42,
+        "duration": 1,
+        "twoHands": true,
+        "yaw": 1.5707963267948963
+      }
+    },
+    {
+      "appearance": "woman-scout",
+      "diagonal": false,
+      "posture": "crouched",
+      "weapon": 1804,
+      "order": "frozen-first",
+      "frozen": {
+        "wallMs": 145.0371660000019,
+        "cpuMs": 115.554
+      },
+      "batch": {
+        "wallMs": 100.49508299999798,
+        "cpuMs": 89.437
+      },
+      "repeatedBatch": {
+        "wallMs": 17.559375000000728,
+        "cpuMs": 13.932
+      },
+      "repeatedFrozen": {
+        "wallMs": 20.120084000001953,
+        "cpuMs": 14.548
+      },
+      "plan": {
+        "body": [
+          0,
+          -0.01,
+          0.09
+        ],
+        "hand": [
+          0.10597216546267596,
+          0.023079025531474562,
+          0.0500830129801155
+        ],
+        "step": [
+          0,
+          0,
+          0.09
+        ],
+        "rearStep": [
+          0,
+          0,
+          0.07152313560003265
+        ],
+        "contact": 0.42,
+        "duration": 1,
+        "twoHands": true,
+        "yaw": 1.5707963267948963
+      }
+    },
+    {
+      "appearance": "woman-scout",
+      "diagonal": false,
+      "posture": "crouched",
+      "weapon": 1807,
+      "order": "batch-first",
+      "frozen": {
+        "wallMs": 135.98612499999945,
+        "cpuMs": 110.882
+      },
+      "batch": {
+        "wallMs": 92.74387500000012,
+        "cpuMs": 106.201
+      },
+      "repeatedBatch": {
+        "wallMs": 13.348999999998341,
+        "cpuMs": 13.185
+      },
+      "repeatedFrozen": {
+        "wallMs": 16.48504200000025,
+        "cpuMs": 13.861
+      },
+      "plan": {
+        "body": [
+          0,
+          -0.01,
+          0.07
+        ],
+        "hand": [
+          0.050134425730657746,
+          0.018168383305784186,
+          0.049242121999350616
+        ],
+        "step": [
+          0,
+          0,
+          0.07
+        ],
+        "rearStep": [
+          -6.938893903907228e-18,
+          0,
+          0.051523135600033076
+        ],
+        "contact": 0.42,
+        "duration": 1,
+        "twoHands": true,
+        "yaw": 1.5707963267948963
+      }
+    },
+    {
+      "appearance": "woman-scout",
+      "diagonal": true,
+      "posture": "standing",
+      "weapon": 1800,
+      "order": "frozen-first",
+      "frozen": {
+        "wallMs": 114.06812499999796,
+        "cpuMs": 119.025
+      },
+      "batch": {
+        "wallMs": 87.39691699999821,
+        "cpuMs": 90.264
+      },
+      "repeatedBatch": {
+        "wallMs": 13.726416000001336,
+        "cpuMs": 13.391
+      },
+      "repeatedFrozen": {
+        "wallMs": 15.00104199999987,
+        "cpuMs": 14.035
+      },
+      "plan": {
+        "body": [
+          0,
+          -0.01,
+          0.5700000000000002
+        ],
+        "hand": [
+          -0.04944350839923865,
+          0.10589211588699832,
+          0.5676969900672825
+        ],
+        "step": [
+          0,
+          0,
+          0.3135000000000001
+        ],
+        "rearStep": [
+          -2.7755575615628914e-17,
+          0,
+          0.5515231356000349
+        ],
+        "contact": 0.42,
+        "duration": 1,
+        "twoHands": true,
+        "yaw": 0.7853981633974485
+      }
+    },
+    {
+      "appearance": "woman-scout",
+      "diagonal": true,
+      "posture": "standing",
+      "weapon": 1801,
+      "order": "batch-first",
+      "frozen": {
+        "wallMs": 103.89395800000057,
+        "cpuMs": 107.082
+      },
+      "batch": {
+        "wallMs": 83.28283400000146,
+        "cpuMs": 90.703
+      },
+      "repeatedBatch": {
+        "wallMs": 13.497458999998344,
+        "cpuMs": 13.296
+      },
+      "repeatedFrozen": {
+        "wallMs": 16.47741700000188,
+        "cpuMs": 13.918
+      },
+      "plan": {
+        "body": [
+          0,
+          -0.01,
+          0.5700000000000002
+        ],
+        "hand": [
+          -0.05488562764724385,
+          0.10590744208535519,
+          0.5702234265138215
+        ],
+        "step": [
+          0,
+          0,
+          0.3135000000000001
+        ],
+        "rearStep": [
+          -2.7755575615628914e-17,
+          0,
+          0.5515231356000349
+        ],
+        "contact": 0.42,
+        "duration": 1,
+        "twoHands": true,
+        "yaw": 0.7853981633974485
+      }
+    },
+    {
+      "appearance": "woman-scout",
+      "diagonal": true,
+      "posture": "standing",
+      "weapon": 1802,
+      "order": "frozen-first",
+      "frozen": {
+        "wallMs": 146.76145800000086,
+        "cpuMs": 157.948
+      },
+      "batch": {
+        "wallMs": 86.27145799999926,
+        "cpuMs": 88.078
+      },
+      "repeatedBatch": {
+        "wallMs": 17.511916999999812,
+        "cpuMs": 14.134
+      },
+      "repeatedFrozen": {
+        "wallMs": 16.130083000000013,
+        "cpuMs": 15.516
+      },
+      "plan": {
+        "body": [
+          -6.938893903907228e-17,
+          -0.01,
+          0.5900000000000003
+        ],
+        "hand": [
+          -0.10658590917587159,
+          0.10605304138844196,
+          0.5942246417753448
+        ],
+        "step": [
+          0,
+          0,
+          0.3245000000000001
+        ],
+        "rearStep": [
+          -1.3877787807814457e-17,
+          0,
+          0.5715231356000342
+        ],
+        "contact": 0.42,
+        "duration": 1,
+        "twoHands": true,
+        "yaw": 0.7853981633974485
+      }
+    },
+    {
+      "appearance": "woman-scout",
+      "diagonal": true,
+      "posture": "standing",
+      "weapon": 1803,
+      "order": "batch-first",
+      "frozen": {
+        "wallMs": 177.45300000000134,
+        "cpuMs": 164.535
+      },
+      "batch": {
+        "wallMs": 146.8293339999982,
+        "cpuMs": 139.105
+      },
+      "repeatedBatch": {
+        "wallMs": 14.379958000001352,
+        "cpuMs": 14.287
+      },
+      "repeatedFrozen": {
+        "wallMs": 13.938958999999159,
+        "cpuMs": 13.874
+      },
+      "plan": {
+        "body": [
+          -2.7755575615628914e-17,
+          -0.02,
+          0.6100000000000003
+        ],
+        "hand": [
+          -0.14588897241762946,
+          0.10552707219727275,
+          0.6135952191033185
+        ],
+        "step": [
+          -6.938893903907228e-18,
+          0,
+          0.2440000000000001
+        ],
+        "rearStep": [
+          -1.3877787807814457e-17,
+          0,
+          0.5696201454880392
+        ],
+        "contact": 0.42,
+        "duration": 1,
+        "twoHands": true,
+        "yaw": 0.7853981633974485
+      }
+    },
+    {
+      "appearance": "woman-scout",
+      "diagonal": true,
+      "posture": "standing",
+      "weapon": 1804,
+      "order": "frozen-first",
+      "frozen": {
+        "wallMs": 153.48970899999767,
+        "cpuMs": 151.489
+      },
+      "batch": {
+        "wallMs": 108.99033300000156,
+        "cpuMs": 107.7
+      },
+      "repeatedBatch": {
+        "wallMs": 13.576750000000175,
+        "cpuMs": 13.315
+      },
+      "repeatedFrozen": {
+        "wallMs": 14.887042000002111,
+        "cpuMs": 13.913
+      },
+      "plan": {
+        "body": [
+          1.3877787807814457e-17,
+          -0.02,
+          0.6000000000000003
+        ],
+        "hand": [
+          -0.12291233449833207,
+          0.106099020173829,
+          0.6018039824874167
+        ],
+        "step": [
+          -1.3877787807814457e-17,
+          0,
+          0.3300000000000002
+        ],
+        "rearStep": [
+          0,
+          0,
+          0.5596201454880408
+        ],
+        "contact": 0.42,
+        "duration": 1,
+        "twoHands": true,
+        "yaw": 0.7853981633974485
+      }
+    },
+    {
+      "appearance": "woman-scout",
+      "diagonal": true,
+      "posture": "standing",
+      "weapon": 1807,
+      "order": "batch-first",
+      "frozen": {
+        "wallMs": 365.78741699999955,
+        "cpuMs": 301.696
+      },
+      "batch": {
+        "wallMs": 154.85725000000093,
+        "cpuMs": 128.384
+      },
+      "repeatedBatch": {
+        "wallMs": 16.08837499999936,
+        "cpuMs": 13.806
+      },
+      "repeatedFrozen": {
+        "wallMs": 18.628083999999944,
+        "cpuMs": 14.569
+      },
+      "plan": {
+        "body": [
+          -5.551115123125783e-17,
+          -0.05,
+          0.6500000000000004
+        ],
+        "hand": [
+          -0.19486816729087467,
+          0.10566500832505454,
+          0.6363332035925868
+        ],
+        "step": [
+          -1.3877787807814457e-17,
+          0,
+          0.2600000000000002
+        ],
+        "rearStep": [
+          -8.326672684688674e-17,
+          0,
+          0.5523092786175393
+        ],
+        "contact": 0.42,
+        "duration": 1,
+        "twoHands": true,
+        "yaw": 0.7853981633974485
+      }
+    },
+    {
+      "appearance": "woman-scout",
+      "diagonal": true,
+      "posture": "crouched",
+      "weapon": 1800,
+      "order": "frozen-first",
+      "frozen": {
+        "wallMs": 115.39187500000116,
+        "cpuMs": 106.053
+      },
+      "batch": {
+        "wallMs": 75.55400000000009,
+        "cpuMs": 78.365
+      },
+      "repeatedBatch": {
+        "wallMs": 14.680459000002884,
+        "cpuMs": 13.694
+      },
+      "repeatedFrozen": {
+        "wallMs": 14.982374999999593,
+        "cpuMs": 14.011
+      },
+      "plan": {
+        "body": [
+          -1.3877787807814457e-17,
+          -0.2700000000000001,
+          0.36000000000000015
+        ],
+        "hand": [
+          -0.1517729671113371,
+          -0.2889817931594195,
+          0.35853371538150725
+        ],
+        "step": [
+          -1.3877787807814457e-17,
+          0,
+          0.36000000000000015
+        ],
+        "rearStep": [
+          -4.336808689942018e-19,
+          0,
+          0.01379497318707601
+        ],
+        "contact": 0.42,
+        "duration": 1,
+        "twoHands": true,
+        "yaw": 0.7853981633974485
+      }
+    },
+    {
+      "appearance": "woman-scout",
+      "diagonal": true,
+      "posture": "crouched",
+      "weapon": 1801,
+      "order": "batch-first",
+      "frozen": {
+        "wallMs": 108.49187499999971,
+        "cpuMs": 102.962
+      },
+      "batch": {
+        "wallMs": 73.03462500000023,
+        "cpuMs": 71.339
+      },
+      "repeatedBatch": {
+        "wallMs": 13.421167000000423,
+        "cpuMs": 13.109
+      },
+      "repeatedFrozen": {
+        "wallMs": 14.09337499999674,
+        "cpuMs": 13.857
+      },
+      "plan": {
+        "body": [
+          -1.3877787807814457e-17,
+          -0.2900000000000001,
+          0.36000000000000015
+        ],
+        "hand": [
+          -0.1572150863593423,
+          -0.28896646696106265,
+          0.36106015182804635
+        ],
+        "step": [
+          -1.3877787807814457e-17,
+          0,
+          0.36000000000000015
+        ],
+        "rearStep": [
+          0,
+          0,
+          0
+        ],
+        "contact": 0.42,
+        "duration": 1,
+        "twoHands": true,
+        "yaw": 0.7853981633974485
+      }
+    },
+    {
+      "appearance": "woman-scout",
+      "diagonal": true,
+      "posture": "crouched",
+      "weapon": 1802,
+      "order": "frozen-first",
+      "frozen": {
+        "wallMs": 129.8127910000003,
+        "cpuMs": 109.152
+      },
+      "batch": {
+        "wallMs": 80.63237499999741,
+        "cpuMs": 73.135
+      },
+      "repeatedBatch": {
+        "wallMs": 14.745167000000947,
+        "cpuMs": 13.706
+      },
+      "repeatedFrozen": {
+        "wallMs": 17.977167000000918,
+        "cpuMs": 14.698
+      },
+      "plan": {
+        "body": [
+          -2.7755575615628914e-17,
+          -0.3100000000000001,
+          0.3900000000000002
+        ],
+        "hand": [
+          -0.20891536788797,
+          -0.28882086765797566,
+          0.38506136708956956
+        ],
+        "step": [
+          -2.7755575615628914e-17,
+          0,
+          0.3900000000000002
+        ],
+        "rearStep": [
+          -4.336808689942018e-19,
+          0,
+          0.015635321078179443
+        ],
+        "contact": 0.42,
+        "duration": 1,
+        "twoHands": true,
+        "yaw": 0.7853981633974485
+      }
+    },
+    {
+      "appearance": "woman-scout",
+      "diagonal": true,
+      "posture": "crouched",
+      "weapon": 1803,
+      "order": "batch-first",
+      "frozen": {
+        "wallMs": 143.0491669999974,
+        "cpuMs": 110.401
+      },
+      "batch": {
+        "wallMs": 96.37162499999977,
+        "cpuMs": 75.145
+      },
+      "repeatedBatch": {
+        "wallMs": 17.846166000002995,
+        "cpuMs": 14.073
+      },
+      "repeatedFrozen": {
+        "wallMs": 17.89079099999799,
+        "cpuMs": 14.513
+      },
+      "plan": {
+        "body": [
+          0,
+          -0.3200000000000001,
+          0.42000000000000015
+        ],
+        "hand": [
+          -0.24723739241922324,
+          -0.28923648159631354,
+          0.4049828458417888
+        ],
+        "step": [
+          0,
+          0,
+          0.42000000000000015
+        ],
+        "rearStep": [
+          1.734723475976807e-18,
+          0,
+          0.03913460573833938
+        ],
+        "contact": 0.42,
+        "duration": 1,
+        "twoHands": true,
+        "yaw": 0.7853981633974485
+      }
+    },
+    {
+      "appearance": "woman-scout",
+      "diagonal": true,
+      "posture": "crouched",
+      "weapon": 1804,
+      "order": "frozen-first",
+      "frozen": {
+        "wallMs": 135.50500000000466,
+        "cpuMs": 109.784
+      },
+      "batch": {
+        "wallMs": 97.93054200000188,
+        "cpuMs": 75.007
+      },
+      "repeatedBatch": {
+        "wallMs": 18.2309580000001,
+        "cpuMs": 14.168
+      },
+      "repeatedFrozen": {
+        "wallMs": 20.718583000001672,
+        "cpuMs": 15.377
+      },
+      "plan": {
+        "body": [
+          1.3877787807814457e-17,
+          -0.3300000000000001,
+          0.40000000000000024
+        ],
+        "hand": [
+          -0.22274777470906756,
+          -0.2893054497172993,
+          0.39361384418541684
+        ],
+        "step": [
+          1.3877787807814457e-17,
+          0,
+          0.40000000000000024
+        ],
+        "rearStep": [
+          -1.3010426069826053e-18,
+          0,
+          0.012837243213948857
+        ],
+        "contact": 0.42,
+        "duration": 1,
+        "twoHands": true,
+        "yaw": 0.7853981633974485
+      }
+    },
+    {
+      "appearance": "woman-scout",
+      "diagonal": true,
+      "posture": "crouched",
+      "weapon": 1807,
+      "order": "batch-first",
+      "frozen": {
+        "wallMs": 172.9395829999994,
+        "cpuMs": 143.94
+      },
+      "batch": {
+        "wallMs": 149.39704199999687,
+        "cpuMs": 109.227
+      },
+      "repeatedBatch": {
+        "wallMs": 18.836167000001296,
+        "cpuMs": 14.779
+      },
+      "repeatedFrozen": {
+        "wallMs": 21.79966599999898,
+        "cpuMs": 14.045
+      },
+      "plan": {
+        "body": [
+          -1.3877787807814457e-17,
+          -0.3300000000000001,
+          0.4600000000000002
+        ],
+        "hand": [
+          -0.29621658729246847,
+          -0.28909854546853175,
+          0.4277208303310571
+        ],
+        "step": [
+          1.3877787807814457e-17,
+          0,
+          0.3910000000000002
+        ],
+        "rearStep": [
+          -3.469446951953614e-18,
+          0,
+          0.07283724321394924
+        ],
+        "contact": 0.42,
+        "duration": 1,
+        "twoHands": true,
+        "yaw": 0.7853981633974485
+      }
+    }
+  ],
+  "host": "Concurrent host load is uncontrolled; paired wall and process CPU measurements are reported separately.",
+  "coverage": "48 LOD0 rifle pairings: six owned rifles, both native attacker anatomies, cardinal/diagonal and standing/crouched targets. Same-process fresh runtimes, alternating evaluation order. All selected plans, gait caps and sampled native fitted bone transforms are bit-exact.",
+  "proof_base_helper": "39aa3b406af77de6e2864d580b00c2ce1327f17cabd33d8fec7e75d5abd65805",
+  "runtime_basis": "75d8271d668f4010bf8e7155fbe75db329fb6cee776570af7f7d6f5e2d173465",
+  "presentation_basis": "6ecdfa7147b12ad240198c8e379459c10fb33df1afd1314f8f3db6e3eff3bd43"
+}

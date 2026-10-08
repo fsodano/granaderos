@@ -5,6 +5,7 @@ import type {ActorCue,ContactTarget,ContactSupport} from './presentation';
 export type ContactActorResolver=(target:ContactTarget)=>{model:Object3D;root:Object3D}|undefined;
 type Limb={base:Object3D;middle:Object3D;end:Object3D;first:number;second:number};
 type Sole={mesh:SkinnedMesh;vertices:number[];outline:number[];floor:number};
+type SkinInfluence={bone:Object3D;point:Vector3;weight:number};
 type NativePathSample={time:number;shoulder:Vector3;hand:Vector3;hips:Vector3[];feet:Vector3[];soleMin:number[]};
 type Plan={key:string;cueId:string;target:Object3D;hand:Vector3;body:Vector3;step:Vector3;rearStep:Vector3;contact:number;duration:number;pistol?:boolean;sabre?:boolean;twoHands?:boolean;handRecovery?:number;yaw?:number;turn?:{fromYaw:number;toYaw:number;until:number;footDistance:number}};
 const up=new Vector3(0,1,0);
@@ -25,8 +26,8 @@ export class NativeMeleeContactFit {
  maximumReachError=0;footReachError=0;handReachError=0;bodyAdvance=0;rejectedFits=0;
  private limbs=new Map<string,Limb>();private body:Object3D;
  private soles=new Map<string,Sole>();private completeBoot?:Sole;
- private soleVertices=new WeakMap<Sole,Map<number,{bone:Object3D;point:Vector3;weight:number}[]>>();
- private soleScratch=new Vector3();
+ private soleVertices=new WeakMap<Sole,Map<number,SkinInfluence[]>>();
+ private bootInfluences?:SkinInfluence[][];private bootScratch=new Vector3();private rifleSpeedPair?:[number,number];
  // Native attached footwear shares its bone world transform. Cache the
  // immutable inverse-bind coordinates, keeping each current bone rotation.
  // Morph or detached footwear keeps Three's full vertex deformation.
@@ -40,7 +41,12 @@ export class NativeMeleeContactFit {
    influences=[];for(let slot=0;slot<4;slot++){const weight=weights.getComponent(index,slot);if(weight>0){const boneIndex=indices.getComponent(index,slot);influences.push({bone:mesh.skeleton.bones[boneIndex],point:position.clone().applyMatrix4(mesh.skeleton.boneInverses[boneIndex]),weight});}}
    vertices.set(index,influences);
   }
-  point.set(0,0,0);for(const influence of influences)point.addScaledVector(this.soleScratch.copy(influence.point).applyMatrix4(influence.bone.matrixWorld),influence.weight);return point;
+  let x=0,y=0,z=0;for(const influence of influences){
+   const p=influence.point,e=influence.bone.matrixWorld.elements,w=1/(e[3]*p.x+e[7]*p.y+e[11]*p.z+e[15]);
+   x+=((e[0]*p.x+e[4]*p.y+e[8]*p.z+e[12])*w)*influence.weight;
+   y+=((e[1]*p.x+e[5]*p.y+e[9]*p.z+e[13])*w)*influence.weight;
+   z+=((e[2]*p.x+e[6]*p.y+e[10]*p.z+e[14])*w)*influence.weight;
+  }return point.set(x,y,z);
  }
 
 
@@ -54,11 +60,32 @@ export class NativeMeleeContactFit {
  private walkingStep=0;private walkingFootSpeed=0;private walkingSoleSpeed=0;private walkingBootSpeed=0;private flatRest=new Map<string,Quaternion>();private pathFeet?:{time:number;points:Vector3[]};
  private soleCenters(){return [...this.previewFit!.soles.values()].map(sole=>{const center=new Vector3();for(const index of sole.outline)center.add(this.previewFit!.solePoint(sole,index,new Vector3()));return center.divideScalar(sole.outline.length);});}
  private soleOutlinePoints(){return [...this.previewFit!.soles.values()].flatMap(sole=>sole.outline.map(index=>this.previewFit!.solePoint(sole,index,new Vector3())));}
- private completeBootPoints(){const boot=this.previewFit!.completeBoot;return boot?boot.vertices.map(index=>this.previewFit!.solePoint(boot,index,new Vector3())):[];}
+ private completeBootPoints(target?:Float64Array){
+  const fit=this.previewFit!,boot=fit.completeBoot,length=(boot?.vertices.length??0)*3;
+  const points=target?.length===length?target:new Float64Array(length);if(!boot)return points;
+  const mesh=boot.mesh;
+  // Match solePoint's native attached skin calculation without allocating
+  // one Vector3 for every boot vertex at every complete-path sample.
+  // Detached or morph footwear retains Three's full deformation path.
+  if(mesh.bindMode!=='attached'||mesh.geometry.morphAttributes.position?.length){
+   for(let i=0;i<boot.vertices.length;i++){fit.solePoint(boot,boot.vertices[i],fit.bootScratch);points[i*3]=fit.bootScratch.x;points[i*3+1]=fit.bootScratch.y;points[i*3+2]=fit.bootScratch.z;}return points;
+  }
+  if(!fit.bootInfluences)fit.bootInfluences=boot.vertices.map(index=>{fit.solePoint(boot,index,fit.bootScratch);return fit.soleVertices.get(boot)!.get(index)!;});
+  for(let i=0;i<fit.bootInfluences.length;i++){
+   let x=0,y=0,z=0;for(const influence of fit.bootInfluences[i]){
+    const p=influence.point,e=influence.bone.matrixWorld.elements,w=1/(e[3]*p.x+e[7]*p.y+e[11]*p.z+e[15]);
+    x+=((e[0]*p.x+e[4]*p.y+e[8]*p.z+e[12])*w)*influence.weight;
+    y+=((e[1]*p.x+e[5]*p.y+e[9]*p.z+e[13])*w)*influence.weight;
+    z+=((e[2]*p.x+e[6]*p.y+e[10]*p.z+e[14])*w)*influence.weight;
+   }points[i*3]=x;points[i*3+1]=y;points[i*3+2]=z;
+  }return points;
+ }
+ private bootSpeed(points:Float64Array,before:Float64Array,dt:number){let maximum=0;for(let i=0;i<points.length;i+=3){const x=points[i]-before[i],y=points[i+1]-before[i+1],z=points[i+2]-before[i+2];maximum=Math.max(maximum,Math.sqrt(x*x+y*y+z*z)/dt);}return maximum;}
+ private bootSpeedAllowed(points:Float64Array,before:Float64Array,dt:number){for(let i=0;i<points.length;i+=3){const x=points[i]-before[i],y=points[i+1]-before[i+1],z=points[i+2]-before[i+2];if(Math.sqrt(x*x+y*y+z*z)/dt>this.walkingBootSpeed+1e-6)return false;}return true;}
  private measureWalkingGait(rifle=false){
   const gait=this.gait;if(!gait||!Number.isFinite(gait.speed)||gait.speed<=0)return;
-  const action=this.sampleMixer!.clipAction(gait.clip).reset().play();action.timeScale=0;const count=Math.ceil(gait.clip.duration*240),forward=new Vector3(0,0,1).applyQuaternion(this.sampleRoot.quaternion);let previous:Vector3[]|undefined,previousOutline:Vector3[]|undefined,previousBoot:Vector3[]|undefined;
-  for(let index=0;index<=count;index++){const time=gait.clip.duration*index/count;this.previewFit!.restore();action.time=time;this.sampleMixer!.update(0);this.sampleRoot.updateMatrixWorld(true);const points=this.soleCenters().map(point=>point.addScaledVector(forward,time*gait.speed));if(previous)for(let side=0;side<points.length;side++){const delta=points[side].clone().sub(previous[side]);this.walkingFootSpeed=Math.max(this.walkingFootSpeed,delta.length()/(gait.clip.duration/count));}previous=points;if(rifle){const outline=this.soleOutlinePoints().map(point=>point.addScaledVector(forward,time*gait.speed));if(previousOutline)for(let vertex=0;vertex<outline.length;vertex++)this.walkingSoleSpeed=Math.max(this.walkingSoleSpeed,outline[vertex].distanceTo(previousOutline[vertex])/(gait.clip.duration/count));previousOutline=outline;const boot=this.completeBootPoints().map(point=>point.addScaledVector(forward,time*gait.speed));if(previousBoot)for(let vertex=0;vertex<boot.length;vertex++)this.walkingBootSpeed=Math.max(this.walkingBootSpeed,boot[vertex].distanceTo(previousBoot[vertex])/(gait.clip.duration/count));previousBoot=boot;}}
+  const action=this.sampleMixer!.clipAction(gait.clip).reset().play();action.timeScale=0;const count=Math.ceil(gait.clip.duration*240),forward=new Vector3(0,0,1).applyQuaternion(this.sampleRoot.quaternion);let previous:Vector3[]|undefined,previousOutline:Vector3[]|undefined,previousBoot:Float64Array|undefined,bootBuffer:Float64Array|undefined;
+  for(let index=0;index<=count;index++){const time=gait.clip.duration*index/count;this.previewFit!.restore();action.time=time;this.sampleMixer!.update(0);this.sampleRoot.updateMatrixWorld(true);const points=this.soleCenters().map(point=>point.addScaledVector(forward,time*gait.speed));if(previous)for(let side=0;side<points.length;side++){const delta=points[side].clone().sub(previous[side]);this.walkingFootSpeed=Math.max(this.walkingFootSpeed,delta.length()/(gait.clip.duration/count));}previous=points;if(rifle){const outline=this.soleOutlinePoints().map(point=>point.addScaledVector(forward,time*gait.speed));if(previousOutline)for(let vertex=0;vertex<outline.length;vertex++)this.walkingSoleSpeed=Math.max(this.walkingSoleSpeed,outline[vertex].distanceTo(previousOutline[vertex])/(gait.clip.duration/count));previousOutline=outline;const boot=this.completeBootPoints(bootBuffer),travel=time*gait.speed;for(let vertex=0;vertex<boot.length;vertex+=3){boot[vertex]+=forward.x*travel;boot[vertex+1]+=forward.y*travel;boot[vertex+2]+=forward.z*travel;}if(previousBoot)this.walkingBootSpeed=Math.max(this.walkingBootSpeed,this.bootSpeed(boot,previousBoot,gait.clip.duration/count));bootBuffer=previousBoot;previousBoot=boot;}}
   this.walkingStep=gait.speed*gait.clip.duration/2;this.sampleMixer!.stopAllAction();
  }
  private target=new Vector3();private start=new Vector3();private joint=new Vector3();private end=new Vector3();private direction=new Vector3();private pole=new Vector3();private elbow=new Vector3();private before=new Vector3();private after=new Vector3();
@@ -185,7 +212,7 @@ export class NativeMeleeContactFit {
  }
  private prepare(key:string,cue:ActorCue,clip:AnimationClip,spec:ClipSpec,weapon:Object3D,target:Object3D){
   const previousPlan=this.plan,previousTurn=previousPlan?.cueId===cue.id?previousPlan.turn:undefined;
-  this.plan=undefined;this.bodyAdvance=0;this.attemptedKey=key;this.attemptedTarget=target;this.nativePath=[];this.pathPrioritized=false;
+  this.plan=undefined;this.bodyAdvance=0;this.attemptedKey=key;this.attemptedTarget=target;this.nativePath=[];this.pathPrioritized=false;this.rifleSpeedPair=undefined;
   const support=cue.contactSupport;if(!support?.floors.some(floor=>Math.abs(floor.height-this.root.getWorldPosition(new Vector3()).y)<.001))return;
   const contact=spec.markers?.contact;if(!Number.isFinite(contact))return;
   // Sample only this actor's known native clip. This hierarchy has no meshes
@@ -324,7 +351,7 @@ export class NativeMeleeContactFit {
   return {weight,handWeight,groundWeight:smooth(time/(end*.1))*(1-smooth((time-end*.9)/(end*.1))),rearWeight,leadWeight,rearArc:Math.max(rearAdvance,rearRecovery),leadArc:Math.max(leadAdvance,leadRecovery)};
  }
  private cacheNativePath(clip:AnimationClip,action:AnimationAction){
-  this.nativePath=[];this.pathPrioritized=false;const count=Math.ceil(clip.duration*240);
+  this.nativePath=[];this.pathPrioritized=false;this.rifleSpeedPair=undefined;const count=Math.ceil(clip.duration*240);
   for(let index=0;index<=count;index++){
    const time=Math.min(clip.duration,index/240);this.previewFit!.restore();action.time=time;this.sampleMixer!.update(0);this.sampleRoot.updateMatrixWorld(true);
    this.nativePath.push({time,shoulder:this.sample!.getObjectByName('upperarm_r')!.getWorldPosition(new Vector3()),hand:this.sample!.getObjectByName('hand_r')!.getWorldPosition(new Vector3()),hips:['l','r'].map(side=>this.sample!.getObjectByName(`thigh_${side}`)!.getWorldPosition(new Vector3())),feet:['l','r'].map(side=>this.sample!.getObjectByName(`foot_${side}`)!.getWorldPosition(new Vector3())),soleMin:['l','r'].map(side=>{const sole=this.previewFit!.soles.get(side)!;return Math.min(...sole.vertices.map(vertex=>this.previewFit!.solePoint(sole,vertex,new Vector3()).y));})});
@@ -373,7 +400,7 @@ export class NativeMeleeContactFit {
    if(!this.walkingStep||!this.walkingFootSpeed||plan.step.length()>this.walkingStep||plan.rearStep.length()>this.walkingStep||1.5*(plan.step.length()+plan.rearStep.length())/(plan.contact*.9-plan.duration*.1)>this.walkingFootSpeed)return false;
    if(plan.twoHands&&(!this.walkingSoleSpeed||!this.walkingBootSpeed||!this.previewFit!.completeBoot))return false;
   }
-  let previousOutline:{time:number;points:Vector3[]}|undefined,previousBoot:{time:number;points:Vector3[]}|undefined;
+  let previousOutline:{time:number;points:Vector3[]}|undefined,previousBoot:{time:number;points:Float64Array}|undefined,bootBuffer:Float64Array|undefined;
   const sample=(time:number)=>{
    if(plan.turn)this.sampleRoot.rotation.set(0,plan.turn.fromYaw+angle(plan.turn.toYaw-plan.turn.fromYaw)*smooth(time/plan.turn.until),0);
    this.previewFit!.restore();action.time=time;action.timeScale=0;this.sampleMixer!.update(0);this.sampleRoot.updateMatrixWorld(true);this.previewFit!.pose(plan,time);
@@ -381,13 +408,24 @@ export class NativeMeleeContactFit {
     const minimum=Math.min(...[...this.previewFit!.soles.values()].flatMap(sole=>sole.vertices.map(index=>this.previewFit!.solePoint(sole,index,new Vector3()).y)))-this.sampleRoot.position.y;
     if(minimum<-.001||minimum>.008||plan.twoHands&&!this.rifleFlatSupport())return false;
     const points=this.soleCenters(),before=this.pathFeet;if(before&&time>before.time)for(let side=0;side<points.length;side++){const delta=points[side].clone().sub(before.points[side]);if(delta.length()/(time-before.time)>this.walkingFootSpeed+1e-6)return false;}this.pathFeet={time,points};
-    if(plan.twoHands){const outline=this.soleOutlinePoints();if(previousOutline&&time>previousOutline.time)for(let vertex=0;vertex<outline.length;vertex++)if(outline[vertex].distanceTo(previousOutline.points[vertex])/(time-previousOutline.time)>this.walkingSoleSpeed+1e-6)return false;previousOutline={time,points:outline};const boot=this.completeBootPoints();if(previousBoot&&time>previousBoot.time)for(let vertex=0;vertex<boot.length;vertex++)if(boot[vertex].distanceTo(previousBoot.points[vertex])/(time-previousBoot.time)>this.walkingBootSpeed+1e-6)return false;previousBoot={time,points:boot};}
+    if(plan.twoHands){const outline=this.soleOutlinePoints();if(previousOutline&&time>previousOutline.time)for(let vertex=0;vertex<outline.length;vertex++)if(outline[vertex].distanceTo(previousOutline.points[vertex])/(time-previousOutline.time)>this.walkingSoleSpeed+1e-6)return false;previousOutline={time,points:outline};const boot=this.completeBootPoints(bootBuffer);if(previousBoot&&time>previousBoot.time&&!this.bootSpeedAllowed(boot,previousBoot.points,time-previousBoot.time)){this.rifleSpeedPair=[previousBoot.time,time];return false;}bootBuffer=previousBoot?.points;previousBoot={time,points:boot};}
    }
    return this.floorAllowed(support)&&this.previewFit!.footReachError<.001&&(!(plan.pistol||plan.sabre||plan.twoHands)||this.previewFit!.handReachError<1e-7);
   };
   // Reject an obstructed contact footprint before checking its whole path.
   this.pathPrevious=undefined;this.pathFeet=undefined;
   if(!sample(plan.contact)||!this.bodyAllowed(support))return false;
+  // A previously rejected pair identifies only native sample times, not a
+  // target pose or outcome. Screen those same adjacent boot samples first.
+  // Every accepted candidate still passes the full chronological path below.
+  const pair=plan.twoHands?this.rifleSpeedPair:undefined;
+  if(pair){
+   const bootAt=(time:number)=>{
+    if(plan.turn)this.sampleRoot.rotation.set(0,plan.turn.fromYaw+angle(plan.turn.toYaw-plan.turn.fromYaw)*smooth(time/plan.turn.until),0);
+    this.previewFit!.restore();action.time=time;action.timeScale=0;this.sampleMixer!.update(0);this.sampleRoot.updateMatrixWorld(true);this.previewFit!.pose(plan,time);return this.completeBootPoints();
+   };
+   const first=bootAt(pair[0]),second=bootAt(pair[1]);if(!this.bootSpeedAllowed(second,first,pair[1]-pair[0]))return false;
+  }
   this.pathPrevious=undefined;this.pathFeet=undefined;
   previousOutline=undefined;previousBoot=undefined;const frequency=plan.sabre||plan.twoHands?240:120;
   for(let index=0;index<=Math.ceil(clip.duration*frequency);index++)if(!sample(Math.min(clip.duration,index/frequency))||index%4===0&&!this.bodyAllowed(support))return false;
