@@ -7,7 +7,7 @@ and all other channels remain exact. The source idle and parents must be
 static, compatible and already certified by the native boot support builder.
 """
 from pathlib import Path
-import argparse,copy,hashlib,json,struct,importlib.util
+import argparse,copy,hashlib,json,struct,importlib.util,subprocess
 NAMES={'prone.aim.long-gun','prone.fire.long-gun','prone.reload.long-gun'}|{'prone.reload.long-gun.'+str(item)for item in(1800,1801,1802,1803,1804,1807)}
 SOURCE='prone.idle.long-gun'
 LEGS={role+'_'+side for side in('l','r')for role in('thigh','calf','foot')}
@@ -74,10 +74,13 @@ def main():
   for clip in bank['clips']:
    if clip['name']in NAMES:clip['nativeBootSupport']={'method':'retained-supported-prone-leg-rotations','surface':'complete-native-boot','sourceClip':SOURCE,'floor':source['nativeBootSupport']['floor'],'retainedInputTimes':True,'retainedNativeBodyAndWeapon':True}
   bank['bytes']=len(raw);bank['sha256']=hashlib.sha256(raw).hexdigest();pending.append((path,raw,candidate,initial_bank_hash));receipt[gender]={'changedRotationChannels':changed,'untouchedClips':len(before)-len(NAMES),'selectedOtherChannelsExact':retained,'inputTimes':'exact','nativeBodyWeaponBallAndDimensions':'exact','sha256':bank['sha256']}
+ # Use the same numeric JSON format as the native profile compiler.
+ # This preserves current gait metadata with small scientific values.
+ manifest_text=subprocess.check_output(['node','-e',"let s='';process.stdin.setEncoding('utf8');process.stdin.on('data',v=>s+=v);process.stdin.on('end',()=>process.stdout.write(JSON.stringify(JSON.parse(s),null,2)+'\\n'));"],input=json.dumps(manifest),text=True)
  assert manifest_path.read_bytes()==initial_manifest,'Concurrent manifest change; retry against the current copy'
  for path,raw,candidate,before_hash in pending:assert hashlib.sha256(path.read_bytes()).hexdigest()==before_hash,'Concurrent bank change; retry against the current copy'
  for path,raw,candidate,before_hash in pending:path.write_bytes(raw);candidate.unlink()
- manifest_path.write_text(json.dumps(manifest,indent=2)+'\n')
+ manifest_path.write_text(manifest_text)
  if a.receipt:a.receipt.write_text(json.dumps(receipt,indent=2)+'\n')
  print('PRONE_RIFLE_NATIVE_SUPPORT_READY',json.dumps(receipt),flush=True)
 if __name__=='__main__':main()
