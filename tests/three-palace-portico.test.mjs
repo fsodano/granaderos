@@ -6,13 +6,14 @@ const {Box3,Raycaster,Vector3}=await import('../web/node_modules/three/build/thr
 const {WorldGeometry,disposeWorldNode}=await import('../web/lib/three/world-geometry.ts');
 const {WorldMaterials}=await import('../web/lib/three/world-materials.ts');
 const {buildBuilding}=await import('../web/lib/three/world-buildings.ts');
+const {buildingArtInset}=await import('../web/lib/three/world-building-placement.ts');
 const {entranceFrame}=await import('../game/building-profile.js');
 const {buildTerrace}=await import('../game/buildings.js');
 const {createArchitectureReviewBattle}=await import('../web/app/renderer-sandbox/architecture-fixtures.js');
 const T=1.2360585147470482,V=25.066666666666666,rotations=[0,90,180,270],features=['palace-pediment','palace-portico-entablature','palace-portico-roof','palace-portico-return','palace-portico-crest'];
 function fixture(rotation,view='exterior',roof='original'){
  const battle=createArchitectureReviewBattle('palacio',rotation,view,roof),b=battle.buildings[0],input={terrain:{width:battle.width,height:battle.height,tiles:battle.tiles,buildings:battle.buildings,upperSurfaces:battle.upperSurfaces},revealedRooms:battle.revealedRooms},frame=entranceFrame({...b,walls:battle.tiles}),geometry=new WorldGeometry(),materials=new WorldMaterials({tileMetres:T,assetUrl:path=>path});
- const feature=(building,name)=>building.getObjectByName(`building-detail:${b.id}:${name}`),point=(u,v,y)=>{const p=frame.at(u,v);return new Vector3((p.x+.4)*T,y,(p.y+.4)*T);},center=frame.doorU-.4*(frame.u.x+frame.u.y);
+ const feature=(building,name)=>building.getObjectByName(`building-detail:${b.id}:${name}`),point=(u,v,y)=>{const p=frame.at(u,v);return new Vector3((p.x+buildingArtInset(b,input))*T,y,(p.y+buildingArtInset(b,input))*T);},center=frame.doorU-buildingArtInset(b,input)*(frame.u.x+frame.u.y);
  const build=()=>{const building=buildBuilding(b,input,T,geometry,materials);building.updateMatrixWorld(true);return building;},dispose=building=>{disposeWorldNode(building);geometry.dispose();materials.dispose();};
  return {b,input,frame,feature,point,center,build,dispose};
 }

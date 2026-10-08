@@ -5,6 +5,8 @@ import {buildingStyle} from '../../../game/building-types.js';
 import {WorldBatch,disposeWorldNode,roofTextureProjector} from './world-geometry';
 import {addDoorLeaf} from './world-building-doors';
 import {illuminationAt} from './world-materials';
+import {buildingArtInset} from './world-building-placement';
+import {palaceColumns} from './world-palace-columns';
 import type {WorldGeometry} from './world-geometry';
 import type {WorldMaterials} from './world-materials';
 import type {WorldBuilding,WorldInput} from './world-types';
@@ -13,8 +15,8 @@ import type {WorldBuilding,WorldInput} from './world-types';
 export function palaceFacade(b:WorldBuilding,input:WorldInput,T:number,height:number,base:number,geometry:WorldGeometry,materials:WorldMaterials,legacy:boolean,edgeDetails:(panels:readonly (readonly Vector3[])[],eave:number)=>Group){
   const walls=input.terrain.tiles.filter(tile=>tile.buildingId===b.id&&['wall','door','window'].includes(tile.type)),frame=entranceFrame({...b,walls}),profile=getBuildingProfile(b),appearance=buildingAppearance({...b,roofFinish:b.roofFinish??(b.roof==='thatch'?'thatch':undefined)}),light=illuminationAt(input,b);
   const wall=materials.get(appearance.wallFinish,legacy&&b.wallFinish===undefined?{colour:buildingStyle(b).wall}:{architectureRole:'volume'}),trim=materials.get('trim',legacy?{colour:buildingStyle(b).trim}:{}),stone=materials.get('stone'),dark=materials.get('darkwood'),iron=materials.get('iron'),bars=materials.get('iron',{colour:'#a7ae9b'});
-  const rotation=new Quaternion().setFromAxisAngle(new Vector3(0,1,0),Math.atan2(-frame.u.y,frame.u.x)),alongInset=.4*(frame.u.x+frame.u.y),depthInset=.4*(frame.v.x+frame.v.y),doorU=frame.doorU-alongInset;
-  const at=(u:number,v:number,y:number)=>{const p=frame.at(u,v);return new Vector3((p.x+.4)*T,base+y,(p.y+.4)*T);};
+  const rotation=new Quaternion().setFromAxisAngle(new Vector3(0,1,0),Math.atan2(-frame.u.y,frame.u.x)),wallInset=buildingArtInset(b,input),alongInset=wallInset*(frame.u.x+frame.u.y),depthInset=wallInset*(frame.v.x+frame.v.y),doorU=frame.doorU-alongInset;
+  const at=(u:number,v:number,y:number)=>{const p=frame.at(u,v);return new Vector3((p.x+wallInset)*T,base+y,(p.y+wallInset)*T);};
   const wallAt=(u:number,v:number)=>{const p=frame.at(u,v);return walls.find(tile=>tile.x===p.x&&tile.y===p.y);};
   const bearing=(u:number,v=0,along=false)=>[u-(along?alongInset:.06*(frame.u.x+frame.u.y)),v-.06*(frame.v.x+frame.v.y)] as const;
   const root=new Group();root.name=`palace-facade:${b.id}`;let batch=new WorldBatch(geometry);
@@ -26,6 +28,8 @@ export function palaceFacade(b:WorldBuilding,input:WorldInput,T:number,height:nu
   const supports=[...new Set([-3,-1,1,3].map(offset=>Math.round(frame.doorU+offset)))].filter(u=>u>0&&u<frame.width&&wallAt(u,0)?.type==='wall');
   const hasBalcony=twoStoreys&&supports.some(u=>u<frame.doorU-.66)&&supports.some(u=>u>frame.doorU+.66);
   root.userData.storey=storey;root.userData.balconyFloor=hasBalcony?storey+.24:undefined;
+  if(wallInset===0&&(!legacy||b.wallFinish!==undefined))root.add(palaceColumns(b,input,T,height,base,geometry,materials,supports));
+  else {
   feature('entrance-columns',()=>{
     for(const support of supports){const [u,v]=bearing(support,0,true),shaft=twoStoreys?storey+.02:storey-.12;box(u,v,shaft*.5,.31/T,shaft,.38/T,stone);box(u,v,.13,.38/T,.26,.38/T,stone);box(u,v,twoStoreys?storey+.055:storey-.10,.38/T,.15,.38/T,stone);}
   });
@@ -36,6 +40,7 @@ export function palaceFacade(b:WorldBuilding,input:WorldInput,T:number,height:nu
     }
     for(const u of [0,frame.width])for(let v=2;v<frame.depth-1;v+=4)if(wallAt(u,v)?.type==='wall')pier(u-.06*(frame.u.x+frame.u.y),v-depthInset,.30);
   });
+  }
   feature('palace-storey-bands',()=>{
     const bands=twoStoreys?[[storey,stone],[height-.10,trim]] as const:[[height-.10,trim]] as const;
     for(const [y,material]of bands){for(const v of [0,frame.depth])box(frame.width*.5,v+(v===0?-.10:.10)/T,y,frame.width+.20/T,.15,.29/T,material);for(const u of [0,frame.width])box(u+(u===0?-.10:.10)/T,frame.depth*.5,y,.29/T,.15,frame.depth,material);}
