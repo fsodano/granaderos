@@ -134,3 +134,6 @@ if manifest['complete']:
  # A fresh hem appends UV1 after the first coarse packing. Finalize the complete
  # donor surface now so the first complete source build is already canonical.
  subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-reviewed-long-cloth-lods.py')],cwd=ROOT,check=True)
+ # The first garment form pilot appends colours to the completed released
+ # bodies. It retains native geometry, faces, maps and all animation banks.
+ subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-cloth-depth.py')],cwd=ROOT,check=True)

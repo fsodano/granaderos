@@ -1,0 +1,6 @@
+.graphics-review{height:100svh;display:flex;flex-direction:column;overflow:hidden}
+.graphics-review>nav{display:flex;align-items:center;gap:8px;padding:6px 12px;flex-shrink:0;flex-wrap:wrap;border-bottom:1px solid #676c50}
+.graphics-review>nav strong{font-size:12px;margin-right:8px}
+.graphics-review>nav button,.graphics-review>nav a{font-size:11px;min-height:26px;padding:4px 8px}
+.graphics-review>nav button[aria-pressed="true"]{border-color:#e0cf7c;color:#e0cf7c}
+.graphics-review>.battle-layout{flex:1;min-height:0;height:auto}
