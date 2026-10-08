@@ -22,3 +22,19 @@ Focused command:
 node --test tests/three-rectangular-window-bars.test.mjs tests/three-building-windows.test.mjs tests/three-parish-window-bars.test.mjs tests/three-building-supports.test.mjs tests/three-building-surfaces.test.mjs
 npm run typecheck
 ```
+
+## Current-main integration
+
+Source commit `0b50f64e` applies the exact ten frozen files on main `71dd700d`
+after the rifle sleeve correction. All predecessor/candidate pins match. The
+released actor, pulpería plaque, parish arch, manifest and both native banks
+remain exact. All 72 current affected checks pass in 6.77 seconds with
+TypeScript, documentation and 38 baseline checks. Production export
+`c9ba90f375ef` verifies 1,245 files and 1,040 asset references.
+
+Twenty-four current normal chapel/smithy views cover all four rotations and
+exterior/partial/interior disclosure. Browser errors are empty; all sixteen
+capture source pins remain exact. The chapel source sprite and normal native
+view were visibly compared. Local integration evidence is in
+`artifacts/three-rectangular-window-bars-current-review/`. Final publication
+adds only this review and the verification record after the captured source.
