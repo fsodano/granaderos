@@ -1,6 +1,6 @@
 # Standing owned-rifle butt contact review — 2026-10-07
 
-This runtime cut extends the strict supported standing melee fitter to an owned two-hand rifle butt strike. It requires the separate corrected standing rifle guard source: `bebe5a5c` male bank, `a9df249e` female bank and `bd84e2aa` manifest. This cut does not write any animation bank or change any finite action rule.
+This runtime cut extends the strict supported standing melee fitter to an owned two-hand rifle butt strike. It requires the corrected standing rifle guard source from PR #234. The integrated PR #237 banks retain those guard and butt channels while adding the separate lance idle repair. This cut does not write any animation bank or change any finite action rule.
 
 The current admitted target resolver remains authoritative. No fit reads a roster, hidden actor, future outcome or unavailable model. A missing, hidden, failed, unsupported, replaced or unready target retains the finite native fallback. A fixed bayonet, mounted attacker, crouched attacker, occupied support hand and unsupported strike stay outside this cut.
 
@@ -41,4 +41,12 @@ The first continuity prototype measured diagonal body handoff at most 0.836057 m
 
 First-fit cost is a remaining responsiveness limit. The independent four-case cold probe measured 252.99–903.87 ms wall and 213.29–465.33 ms process CPU while regression jobs and separate Blender work ran. Process CPU includes V8 background work. This is not an unloaded-host measurement or a frame-budget claim. The full 240 Hz admission remains intact; native-cache/prewarm optimization is a separate follow-up.
 
-The corrected guard source still has explicitly documented source Root tangent and boot-shaft acceleration limits. This cut adds speed/support/contact admission; it does not prove complete derivative or visual polish for the whole butt animation. Native bank and model replacement invalidate target fitting as before. Live ordinary paid rifle screenshots and current sprite comparison are still required on the exact integrated commit. No live visual acceptance is claimed here.
+The corrected guard source still has explicitly documented source Root tangent and boot-shaft acceleration limits. This cut adds speed/support/contact admission; it does not prove complete derivative or visual polish for the whole butt animation. Native bank and model replacement invalidate target fitting as before.
+
+## Integrated paid browser review
+
+The parent integration passes 43 affected paid-facing, rifle-contact, facing-presentation and actor-runtime checks in 47.94 seconds. TypeScript, documentation and all 38 baseline audits pass. Static export `419a6ec71bc1` verifies 1,244 files and 1,039 asset references. The first export could not speculatively prerender three routes; its failure is retained. The retry rendered every route and passed the full static asset audit.
+
+Four normal paid combat routes pass on source `72448ef9d87eaa3335d44cc6d8c9b68ecbf0b3ec`: male cardinal F10→F11, male diagonal E10→F11, female cardinal N9→N10 and female diagonal M9→N10. Female setup uses the documented W shortcut to select her existing rifle. Each route retains the owned Brown Bess, one loaded round, pocket supplies and twelve reserve rounds. Each strike spends 4 displayed PA, changes target health 100→82 once, presents prepare/contact/impact and completes at its saved cell. Eighty-eight accepted captures have no browser errors. Selected poses were compared with the current strike sprite and walking sheets. Foreground walls and the target obscure some feet in these views; the independent complete-boot geometry checks provide floor acceptance.
+
+The initial review helper reversed grid axes and used a removed Orders dropdown. Corrected normal controls passed; failed setup attempts remain separate. `artifacts/three-rifle-whole-boot-cut-review/source-identity.json` records the accepted cases and exact served actor/model hashes. Publication source `00617ad07d55cd47d352a09d23fa86ce9d97f08a` includes PR #238 and retains every captured actor/helper/native hash byte for byte. Its bridge records this comparison. First-fit responsiveness remains open; this bounded contact acceptance is not full motion or performance polish.
