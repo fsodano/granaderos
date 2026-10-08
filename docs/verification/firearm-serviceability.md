@@ -1,0 +1,17 @@
+# Zero-condition firearm admission
+
+A firearm at mechanical condition zero is owned equipment, but cannot fire, reload or receive ignition work. The engine, point-fire preview, target and empty-gun HUD, paired-hand plans and owned AI decisions use the same [`firearmServiceable`](../../game/firearm-serviceability.js) predicate. The rejection occurs before AP, elapsed time, random seed, charge, supply or item state changes. No condition tuning or save schema changed.
+
+The predicate does not replace `hasFirearm`. A broken gun retains its capacity, identity, load, partial reload, fittings, authored data and ownership. Paid repair, swapping, dropping, unloading and gun-stock melee remain available. A healthy held secondary can receive its own reload or ignition work without spending AP or cartridges on the broken primary. The AI can then pay for the existing swap and a separate useful shot.
+
+Each discharge is admitted from its initial condition. A gun at condition 1 or a positive fraction can complete its paid shot and wear to zero. A second loaded barrel then waits for repair or replacement. Both healthy guns in an admitted paired order complete their respective shots even if the first gun wears to zero during the first discharge. The existing shot loop and recorded order remain unchanged. Zero-condition states with retained weapon readiness still restore normally.
+
+AI threat estimates use observed equipment with assumed serviceable condition for both opposing guns. They do not read either opponent's private condition. This intentionally changes old exposure-based choices that used hidden wear. The actor's own gun still uses its actual condition and finite supplies. Positive own-gun costs, previews, simulation results and recorded frames match the preceding implementation exactly in 114 baseline comparisons.
+
+The focused regression covers every firearm ID, combat and quiet modes, both held guns, mixed ammunition families, partial work, repair and transfer, stock melee, final-barrel rejection, paired completion and saved replay. The 232 affected checks pass. The former wet-weather failure fixture now uses condition 1; the unchanged 95% weather risk still tests an admitted misfire rather than a broken gun.
+
+```sh
+node --test tests/firearm-serviceability.test.mjs tests/tactical-ai-other-hand-backup.test.mjs tests/tactical-ai-equipment.test.mjs tests/paired-pistols-ai.test.mjs tests/paired-pistol-fire.test.mjs tests/paired-reload.test.mjs tests/paired-reload-ai.test.mjs tests/paired-reload-hud.test.mjs tests/paired-reprime.test.mjs tests/two-hands.test.mjs tests/weapon-readiness.test.mjs tests/weapon-fittings.test.mjs tests/fitting-item-metadata.test.mjs tests/content-weapons.test.mjs tests/tactical-firearm-maintenance.test.mjs tests/civilian-sound-timing.test.mjs tests/alternate-firearm-loads.test.mjs tests/typed-ammunition.test.mjs tests/point-fire.test.mjs tests/partial-firearm-reloads.test.mjs tests/shot-load-projectiles.test.mjs tests/typed-ammunition-ai.test.mjs tests/paired-pistols-hud.test.mjs tests/paired-pistols-ui.test.mjs tests/equipment-ammunition-loading.test.mjs
+```
+
+The cause was inconsistent admission: the second-hand helper already rejected condition zero, but primary discharge, reload and ignition work did not. [`The regression`](../../tests/firearm-serviceability.test.mjs) verifies the common authority without changing [the finite owned-backup increment](ai-other-hand-backup.md). Wider AI coordination and the remaining [parity work](ja2-parity-audit.md) remain separate.
