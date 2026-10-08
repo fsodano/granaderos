@@ -1,0 +1,316 @@
+✖ granadero LOD0 climbUp: reachable tall rung hands retain contact and native body (666.850375ms)
+✖ granadero LOD0 climbDown: reachable tall rung hands retain contact and native body (71.276125ms)
+✖ granadero LOD1 climbUp: reachable tall rung hands retain contact and native body (28.176542ms)
+✖ granadero LOD1 climbDown: reachable tall rung hands retain contact and native body (52.833875ms)
+✖ granadero LOD2 climbUp: reachable tall rung hands retain contact and native body (22.787375ms)
+✖ granadero LOD2 climbDown: reachable tall rung hands retain contact and native body (41.335666ms)
+✖ woman-scout LOD0 climbUp: reachable tall rung hands retain contact and native body (731.626417ms)
+✖ woman-scout LOD0 climbDown: reachable tall rung hands retain contact and native body (57.334083ms)
+✖ woman-scout LOD1 climbUp: reachable tall rung hands retain contact and native body (43.328541ms)
+✖ woman-scout LOD1 climbDown: reachable tall rung hands retain contact and native body (45.9005ms)
+✖ woman-scout LOD2 climbUp: reachable tall rung hands retain contact and native body (39.300333ms)
+✖ woman-scout LOD2 climbDown: reachable tall rung hands retain contact and native body (40.142958ms)
+✔ granadero: finite and unreachable targets retain native fallback (6.534875ms)
+✔ woman-scout: finite and unreachable targets retain native fallback (5.854167ms)
+✔ granadero climbUp: invalid climb inputs keep native mixer and all bone matrices finite (5.20425ms)
+✔ granadero climbDown: invalid climb inputs keep native mixer and all bone matrices finite (5.209041ms)
+✔ woman-scout climbUp: invalid climb inputs keep native mixer and all bone matrices finite (5.206292ms)
+✔ woman-scout climbDown: invalid climb inputs keep native mixer and all bone matrices finite (5.848084ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 6
+ℹ fail 12
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2475.3935
+
+✖ failing tests:
+
+test at tests/characters-tall-climbing-contact.test.mjs:62:122
+✖ granadero LOD0 climbUp: reachable tall rung hands retain contact and native body (666.850375ms)
+  AssertionError [ERR_ASSERTION]: spine_01: unrelated native rotation
+  + actual - expected
+
+    [
+  +   0.14853979647159574,
+  +   0.0010910431155934928,
+  +   0.004861970897763967,
+  +   0.9888938665390014
+  -   0.14853979647159576,
+  -   0.001091043115593493,
+  -   0.0048619708977639675,
+  -   0.9888938665390015
+    ]
+
+      at TestContext.<anonymous> (file:///private/tmp/granaderos-climb-native-wrap-prototype-3879a828/tests/characters-tall-climbing-contact.test.mjs:73:311)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ 0.14853979647159574, 0.0010910431155934928, 0.004861970897763967, 0.9888938665390014 ],
+    expected: [ 0.14853979647159576, 0.001091043115593493, 0.0048619708977639675, 0.9888938665390015 ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/characters-tall-climbing-contact.test.mjs:62:122
+✖ granadero LOD0 climbDown: reachable tall rung hands retain contact and native body (71.276125ms)
+  AssertionError [ERR_ASSERTION]: Root: native offsets
+  + actual - expected
+
+    [
+      0,
+  +   -0.02971164882183075,
+  -   -0.004026919603347778,
+      0
+    ]
+
+      at TestContext.<anonymous> (file:///private/tmp/granaderos-climb-native-wrap-prototype-3879a828/tests/characters-tall-climbing-contact.test.mjs:73:91)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ 0, -0.02971164882183075, 0 ],
+    expected: [ 0, -0.004026919603347778, 0 ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/characters-tall-climbing-contact.test.mjs:62:122
+✖ granadero LOD1 climbUp: reachable tall rung hands retain contact and native body (28.176542ms)
+  AssertionError [ERR_ASSERTION]: spine_01: unrelated native rotation
+  + actual - expected
+
+    [
+  +   0.14853979647159574,
+  +   0.0010910431155934928,
+  +   0.004861970897763967,
+  +   0.9888938665390014
+  -   0.14853979647159576,
+  -   0.001091043115593493,
+  -   0.0048619708977639675,
+  -   0.9888938665390015
+    ]
+
+      at TestContext.<anonymous> (file:///private/tmp/granaderos-climb-native-wrap-prototype-3879a828/tests/characters-tall-climbing-contact.test.mjs:73:311)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ 0.14853979647159574, 0.0010910431155934928, 0.004861970897763967, 0.9888938665390014 ],
+    expected: [ 0.14853979647159576, 0.001091043115593493, 0.0048619708977639675, 0.9888938665390015 ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/characters-tall-climbing-contact.test.mjs:62:122
+✖ granadero LOD1 climbDown: reachable tall rung hands retain contact and native body (52.833875ms)
+  AssertionError [ERR_ASSERTION]: Root: native offsets
+  + actual - expected
+
+    [
+      0,
+  +   -0.02971164882183075,
+  -   -0.004026919603347778,
+      0
+    ]
+
+      at TestContext.<anonymous> (file:///private/tmp/granaderos-climb-native-wrap-prototype-3879a828/tests/characters-tall-climbing-contact.test.mjs:73:91)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ 0, -0.02971164882183075, 0 ],
+    expected: [ 0, -0.004026919603347778, 0 ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/characters-tall-climbing-contact.test.mjs:62:122
+✖ granadero LOD2 climbUp: reachable tall rung hands retain contact and native body (22.787375ms)
+  AssertionError [ERR_ASSERTION]: spine_01: unrelated native rotation
+  + actual - expected
+
+    [
+  +   0.14853979647159574,
+  +   0.0010910431155934928,
+  +   0.004861970897763967,
+  +   0.9888938665390014
+  -   0.14853979647159576,
+  -   0.001091043115593493,
+  -   0.0048619708977639675,
+  -   0.9888938665390015
+    ]
+
+      at TestContext.<anonymous> (file:///private/tmp/granaderos-climb-native-wrap-prototype-3879a828/tests/characters-tall-climbing-contact.test.mjs:73:311)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ 0.14853979647159574, 0.0010910431155934928, 0.004861970897763967, 0.9888938665390014 ],
+    expected: [ 0.14853979647159576, 0.001091043115593493, 0.0048619708977639675, 0.9888938665390015 ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/characters-tall-climbing-contact.test.mjs:62:122
+✖ granadero LOD2 climbDown: reachable tall rung hands retain contact and native body (41.335666ms)
+  AssertionError [ERR_ASSERTION]: Root: native offsets
+  + actual - expected
+
+    [
+      0,
+  +   -0.02971164882183075,
+  -   -0.004026919603347778,
+      0
+    ]
+
+      at TestContext.<anonymous> (file:///private/tmp/granaderos-climb-native-wrap-prototype-3879a828/tests/characters-tall-climbing-contact.test.mjs:73:91)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ 0, -0.02971164882183075, 0 ],
+    expected: [ 0, -0.004026919603347778, 0 ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/characters-tall-climbing-contact.test.mjs:62:122
+✖ woman-scout LOD0 climbUp: reachable tall rung hands retain contact and native body (731.626417ms)
+  AssertionError [ERR_ASSERTION]: Root: native offsets
+  + actual - expected
+
+    [
+      0,
+  +   -0.0020105841996015082,
+  -   -0.01632441612499366,
+      0
+    ]
+
+      at TestContext.<anonymous> (file:///private/tmp/granaderos-climb-native-wrap-prototype-3879a828/tests/characters-tall-climbing-contact.test.mjs:73:91)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ 0, -0.0020105841996015082, 0 ],
+    expected: [ 0, -0.01632441612499366, 0 ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/characters-tall-climbing-contact.test.mjs:62:122
+✖ woman-scout LOD0 climbDown: reachable tall rung hands retain contact and native body (57.334083ms)
+  AssertionError [ERR_ASSERTION]: Root: native offsets
+  + actual - expected
+
+    [
+      0,
+  +   -0.027695313096046448,
+  -   -0.0020105838775634766,
+      0
+    ]
+
+      at TestContext.<anonymous> (file:///private/tmp/granaderos-climb-native-wrap-prototype-3879a828/tests/characters-tall-climbing-contact.test.mjs:73:91)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ 0, -0.027695313096046448, 0 ],
+    expected: [ 0, -0.0020105838775634766, 0 ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/characters-tall-climbing-contact.test.mjs:62:122
+✖ woman-scout LOD1 climbUp: reachable tall rung hands retain contact and native body (43.328541ms)
+  AssertionError [ERR_ASSERTION]: Root: native offsets
+  + actual - expected
+
+    [
+      0,
+  +   -0.0020105841996015082,
+  -   -0.01632441612499366,
+      0
+    ]
+
+      at TestContext.<anonymous> (file:///private/tmp/granaderos-climb-native-wrap-prototype-3879a828/tests/characters-tall-climbing-contact.test.mjs:73:91)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ 0, -0.0020105841996015082, 0 ],
+    expected: [ 0, -0.01632441612499366, 0 ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/characters-tall-climbing-contact.test.mjs:62:122
+✖ woman-scout LOD1 climbDown: reachable tall rung hands retain contact and native body (45.9005ms)
+  AssertionError [ERR_ASSERTION]: Root: native offsets
+  + actual - expected
+
+    [
+      0,
+  +   -0.027695313096046448,
+  -   -0.0020105838775634766,
+      0
+    ]
+
+      at TestContext.<anonymous> (file:///private/tmp/granaderos-climb-native-wrap-prototype-3879a828/tests/characters-tall-climbing-contact.test.mjs:73:91)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ 0, -0.027695313096046448, 0 ],
+    expected: [ 0, -0.0020105838775634766, 0 ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/characters-tall-climbing-contact.test.mjs:62:122
+✖ woman-scout LOD2 climbUp: reachable tall rung hands retain contact and native body (39.300333ms)
+  AssertionError [ERR_ASSERTION]: Root: native offsets
+  + actual - expected
+
+    [
+      0,
+  +   -0.0020105841996015082,
+  -   -0.01632441612499366,
+      0
+    ]
+
+      at TestContext.<anonymous> (file:///private/tmp/granaderos-climb-native-wrap-prototype-3879a828/tests/characters-tall-climbing-contact.test.mjs:73:91)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ 0, -0.0020105841996015082, 0 ],
+    expected: [ 0, -0.01632441612499366, 0 ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/characters-tall-climbing-contact.test.mjs:62:122
+✖ woman-scout LOD2 climbDown: reachable tall rung hands retain contact and native body (40.142958ms)
+  AssertionError [ERR_ASSERTION]: Root: native offsets
+  + actual - expected
+
+    [
+      0,
+  +   -0.027695313096046448,
+  -   -0.0020105838775634766,
+      0
+    ]
+
+      at TestContext.<anonymous> (file:///private/tmp/granaderos-climb-native-wrap-prototype-3879a828/tests/characters-tall-climbing-contact.test.mjs:73:91)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ 0, -0.027695313096046448, 0 ],
+    expected: [ 0, -0.0020105838775634766, 0 ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

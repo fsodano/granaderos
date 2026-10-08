@@ -1,0 +1,4718 @@
+{
+  "beforeHelperSha256": "165cb6b4bb6668dfb5ed4a6ac8e3d565c91bb8021bd2c4bfde8defa55fd194ff",
+  "cases": [
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbUp",
+      "height": 2,
+      "span": 0,
+      "poses": 30,
+      "changed": 30
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbUp",
+      "height": 2,
+      "span": 1.2360585147470482,
+      "poses": 32,
+      "changed": 32
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbUp",
+      "height": 3,
+      "span": 0,
+      "poses": 38,
+      "changed": 38
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbUp",
+      "height": 3,
+      "span": 1.2360585147470482,
+      "poses": 38,
+      "changed": 0
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbUp",
+      "height": 4.2,
+      "span": 0,
+      "poses": 46,
+      "changed": 46
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbUp",
+      "height": 4.2,
+      "span": 1.2360585147470482,
+      "poses": 46,
+      "changed": 46
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbUp",
+      "height": 5.6,
+      "span": 0,
+      "poses": 56,
+      "changed": 56
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbUp",
+      "height": 5.6,
+      "span": 1.2360585147470482,
+      "poses": 56,
+      "changed": 56
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbDown",
+      "height": 2,
+      "span": 0,
+      "poses": 30,
+      "changed": 30
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbDown",
+      "height": 2,
+      "span": 1.2360585147470482,
+      "poses": 32,
+      "changed": 32
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbDown",
+      "height": 3,
+      "span": 0,
+      "poses": 38,
+      "changed": 38
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbDown",
+      "height": 3,
+      "span": 1.2360585147470482,
+      "poses": 38,
+      "changed": 0
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbDown",
+      "height": 4.2,
+      "span": 0,
+      "poses": 46,
+      "changed": 46
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbDown",
+      "height": 4.2,
+      "span": 1.2360585147470482,
+      "poses": 46,
+      "changed": 46
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbDown",
+      "height": 5.6,
+      "span": 0,
+      "poses": 56,
+      "changed": 56
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbDown",
+      "height": 5.6,
+      "span": 1.2360585147470482,
+      "poses": 56,
+      "changed": 56
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbUp",
+      "height": 2,
+      "span": 0,
+      "poses": 30,
+      "changed": 30
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbUp",
+      "height": 2,
+      "span": 1.2360585147470482,
+      "poses": 32,
+      "changed": 32
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbUp",
+      "height": 3,
+      "span": 0,
+      "poses": 38,
+      "changed": 38
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbUp",
+      "height": 3,
+      "span": 1.2360585147470482,
+      "poses": 38,
+      "changed": 0
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbUp",
+      "height": 4.2,
+      "span": 0,
+      "poses": 46,
+      "changed": 46
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbUp",
+      "height": 4.2,
+      "span": 1.2360585147470482,
+      "poses": 46,
+      "changed": 46
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbUp",
+      "height": 5.6,
+      "span": 0,
+      "poses": 56,
+      "changed": 56
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbUp",
+      "height": 5.6,
+      "span": 1.2360585147470482,
+      "poses": 56,
+      "changed": 56
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbDown",
+      "height": 2,
+      "span": 0,
+      "poses": 30,
+      "changed": 30
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbDown",
+      "height": 2,
+      "span": 1.2360585147470482,
+      "poses": 32,
+      "changed": 32
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbDown",
+      "height": 3,
+      "span": 0,
+      "poses": 38,
+      "changed": 38
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbDown",
+      "height": 3,
+      "span": 1.2360585147470482,
+      "poses": 38,
+      "changed": 0
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbDown",
+      "height": 4.2,
+      "span": 0,
+      "poses": 46,
+      "changed": 46
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbDown",
+      "height": 4.2,
+      "span": 1.2360585147470482,
+      "poses": 46,
+      "changed": 46
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbDown",
+      "height": 5.6,
+      "span": 0,
+      "poses": 56,
+      "changed": 56
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbDown",
+      "height": 5.6,
+      "span": 1.2360585147470482,
+      "poses": 56,
+      "changed": 56
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 2,
+      "span": 0,
+      "poses": 30,
+      "changed": 30
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 2,
+      "span": 1.2360585147470482,
+      "poses": 32,
+      "changed": 32
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 3,
+      "span": 0,
+      "poses": 38,
+      "changed": 38
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 3,
+      "span": 1.2360585147470482,
+      "poses": 38,
+      "changed": 0
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 4.2,
+      "span": 0,
+      "poses": 46,
+      "changed": 46
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 4.2,
+      "span": 1.2360585147470482,
+      "poses": 46,
+      "changed": 46
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 5.6,
+      "span": 0,
+      "poses": 56,
+      "changed": 56
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 5.6,
+      "span": 1.2360585147470482,
+      "poses": 56,
+      "changed": 56
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 2,
+      "span": 0,
+      "poses": 30,
+      "changed": 30
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 2,
+      "span": 1.2360585147470482,
+      "poses": 32,
+      "changed": 32
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 3,
+      "span": 0,
+      "poses": 38,
+      "changed": 38
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 3,
+      "span": 1.2360585147470482,
+      "poses": 38,
+      "changed": 0
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 4.2,
+      "span": 0,
+      "poses": 46,
+      "changed": 46
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 4.2,
+      "span": 1.2360585147470482,
+      "poses": 46,
+      "changed": 46
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 5.6,
+      "span": 0,
+      "poses": 56,
+      "changed": 56
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 5.6,
+      "span": 1.2360585147470482,
+      "poses": 56,
+      "changed": 56
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbUp",
+      "height": 2,
+      "span": 0,
+      "poses": 30,
+      "changed": 30
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbUp",
+      "height": 2,
+      "span": 1.2360585147470482,
+      "poses": 32,
+      "changed": 32
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbUp",
+      "height": 3,
+      "span": 0,
+      "poses": 38,
+      "changed": 38
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbUp",
+      "height": 3,
+      "span": 1.2360585147470482,
+      "poses": 38,
+      "changed": 0
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbUp",
+      "height": 4.2,
+      "span": 0,
+      "poses": 46,
+      "changed": 46
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbUp",
+      "height": 4.2,
+      "span": 1.2360585147470482,
+      "poses": 46,
+      "changed": 46
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbUp",
+      "height": 5.6,
+      "span": 0,
+      "poses": 56,
+      "changed": 56
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbUp",
+      "height": 5.6,
+      "span": 1.2360585147470482,
+      "poses": 56,
+      "changed": 56
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbDown",
+      "height": 2,
+      "span": 0,
+      "poses": 30,
+      "changed": 30
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbDown",
+      "height": 2,
+      "span": 1.2360585147470482,
+      "poses": 32,
+      "changed": 32
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbDown",
+      "height": 3,
+      "span": 0,
+      "poses": 38,
+      "changed": 38
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbDown",
+      "height": 3,
+      "span": 1.2360585147470482,
+      "poses": 38,
+      "changed": 0
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbDown",
+      "height": 4.2,
+      "span": 0,
+      "poses": 46,
+      "changed": 46
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbDown",
+      "height": 4.2,
+      "span": 1.2360585147470482,
+      "poses": 46,
+      "changed": 46
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbDown",
+      "height": 5.6,
+      "span": 0,
+      "poses": 56,
+      "changed": 56
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbDown",
+      "height": 5.6,
+      "span": 1.2360585147470482,
+      "poses": 56,
+      "changed": 56
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbUp",
+      "height": 2,
+      "span": 0,
+      "poses": 30,
+      "changed": 30
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbUp",
+      "height": 2,
+      "span": 1.2360585147470482,
+      "poses": 32,
+      "changed": 32
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbUp",
+      "height": 3,
+      "span": 0,
+      "poses": 38,
+      "changed": 38
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbUp",
+      "height": 3,
+      "span": 1.2360585147470482,
+      "poses": 38,
+      "changed": 0
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbUp",
+      "height": 4.2,
+      "span": 0,
+      "poses": 46,
+      "changed": 46
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbUp",
+      "height": 4.2,
+      "span": 1.2360585147470482,
+      "poses": 46,
+      "changed": 46
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbUp",
+      "height": 5.6,
+      "span": 0,
+      "poses": 56,
+      "changed": 56
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbUp",
+      "height": 5.6,
+      "span": 1.2360585147470482,
+      "poses": 56,
+      "changed": 56
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbDown",
+      "height": 2,
+      "span": 0,
+      "poses": 30,
+      "changed": 30
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbDown",
+      "height": 2,
+      "span": 1.2360585147470482,
+      "poses": 32,
+      "changed": 32
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbDown",
+      "height": 3,
+      "span": 0,
+      "poses": 38,
+      "changed": 38
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbDown",
+      "height": 3,
+      "span": 1.2360585147470482,
+      "poses": 38,
+      "changed": 0
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbDown",
+      "height": 4.2,
+      "span": 0,
+      "poses": 46,
+      "changed": 46
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbDown",
+      "height": 4.2,
+      "span": 1.2360585147470482,
+      "poses": 46,
+      "changed": 46
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbDown",
+      "height": 5.6,
+      "span": 0,
+      "poses": 56,
+      "changed": 56
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbDown",
+      "height": 5.6,
+      "span": 1.2360585147470482,
+      "poses": 56,
+      "changed": 56
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 2,
+      "span": 0,
+      "poses": 30,
+      "changed": 30
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 2,
+      "span": 1.2360585147470482,
+      "poses": 32,
+      "changed": 32
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 3,
+      "span": 0,
+      "poses": 38,
+      "changed": 38
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 3,
+      "span": 1.2360585147470482,
+      "poses": 38,
+      "changed": 0
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 4.2,
+      "span": 0,
+      "poses": 46,
+      "changed": 46
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 4.2,
+      "span": 1.2360585147470482,
+      "poses": 46,
+      "changed": 46
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 5.6,
+      "span": 0,
+      "poses": 56,
+      "changed": 56
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 5.6,
+      "span": 1.2360585147470482,
+      "poses": 56,
+      "changed": 56
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 2,
+      "span": 0,
+      "poses": 30,
+      "changed": 30
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 2,
+      "span": 1.2360585147470482,
+      "poses": 32,
+      "changed": 32
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 3,
+      "span": 0,
+      "poses": 38,
+      "changed": 38
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 3,
+      "span": 1.2360585147470482,
+      "poses": 38,
+      "changed": 0
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 4.2,
+      "span": 0,
+      "poses": 46,
+      "changed": 46
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 4.2,
+      "span": 1.2360585147470482,
+      "poses": 46,
+      "changed": 46
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 5.6,
+      "span": 0,
+      "poses": 56,
+      "changed": 56
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 5.6,
+      "span": 1.2360585147470482,
+      "poses": 56,
+      "changed": 56
+    }
+  ],
+  "wraps": [
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbUp",
+      "height": 2,
+      "center": 0.22666666666666668,
+      "before": {
+        "shiftMm": 47.88010171594743,
+        "rootShiftMm": 0.003767332589560424
+      },
+      "current": {
+        "shiftMm": 0.004291817695547274,
+        "rootShiftMm": 0.003767332589560424
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbUp",
+      "height": 2,
+      "center": 0.6533333333333333,
+      "before": {
+        "shiftMm": 612.6427216066747,
+        "rootShiftMm": 30.97572000582387
+      },
+      "current": {
+        "shiftMm": 0.027413774567245877,
+        "rootShiftMm": 0.003737612489540593
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbUp",
+      "height": 4.2,
+      "center": 0.3169230769230769,
+      "before": {
+        "shiftMm": 26.913309655464182,
+        "rootShiftMm": 0.010548079087749542
+      },
+      "current": {
+        "shiftMm": 0.012101846035765952,
+        "rootShiftMm": 0.010548079087749542
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbUp",
+      "height": 4.2,
+      "center": 0.36615384615384616,
+      "before": {
+        "shiftMm": 30.88480304436396,
+        "rootShiftMm": 0.01054807908819369
+      },
+      "current": {
+        "shiftMm": 0.011913961564481136,
+        "rootShiftMm": 0.01054807908819369
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbUp",
+      "height": 4.2,
+      "center": 0.41538461538461535,
+      "before": {
+        "shiftMm": 32.110914630706844,
+        "rootShiftMm": 0.010548079087746144
+      },
+      "current": {
+        "shiftMm": 0.011981706094959854,
+        "rootShiftMm": 0.010548079087746144
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbUp",
+      "height": 4.2,
+      "center": 0.6123076923076923,
+      "before": {
+        "shiftMm": 510.14628679513254,
+        "rootShiftMm": 0.010548079088200485
+      },
+      "current": {
+        "shiftMm": 0.012261951913819992,
+        "rootShiftMm": 0.010548079088200485
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbUp",
+      "height": 4.2,
+      "center": 0.6615384615384615,
+      "before": {
+        "shiftMm": 572.2195309349049,
+        "rootShiftMm": 30.981970795829884
+      },
+      "current": {
+        "shiftMm": 0.04263136485050869,
+        "rootShiftMm": 0.0105490679417879
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbUp",
+      "height": 5.6,
+      "center": 0.22666666666666666,
+      "before": {
+        "shiftMm": 28.591997095943682,
+        "rootShiftMm": 0.014907125301511543
+      },
+      "current": {
+        "shiftMm": 0.02171549478872246,
+        "rootShiftMm": 0.014907125301511543
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbUp",
+      "height": 5.6,
+      "center": 0.36888888888888893,
+      "before": {
+        "shiftMm": 32.93981724822034,
+        "rootShiftMm": 0.014907125301282772
+      },
+      "current": {
+        "shiftMm": 0.016843941931090192,
+        "rootShiftMm": 0.014907125301282772
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbUp",
+      "height": 5.6,
+      "center": 0.5111111111111111,
+      "before": {
+        "shiftMm": 30.433197251591796,
+        "rootShiftMm": 0.014907125302177401
+      },
+      "current": {
+        "shiftMm": 0.017042928510783845,
+        "rootShiftMm": 0.014907125302177401
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbUp",
+      "height": 5.6,
+      "center": 0.6533333333333333,
+      "before": {
+        "shiftMm": 568.3180394858748,
+        "rootShiftMm": 30.985899928060437
+      },
+      "current": {
+        "shiftMm": 0.026461713129943006,
+        "rootShiftMm": 0.014905566561216962
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbUp",
+      "height": 5.6,
+      "center": 0.7244444444444444,
+      "before": {
+        "shiftMm": 598.3210003254096,
+        "rootShiftMm": 30.985899928060437
+      },
+      "current": {
+        "shiftMm": 0.03378315098999996,
+        "rootShiftMm": 0.013943248817063138
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbDown",
+      "height": 2,
+      "center": 0.22666666666666668,
+      "before": {
+        "shiftMm": 47.880190241890844,
+        "rootShiftMm": 0.003767332589560424
+      },
+      "current": {
+        "shiftMm": 0.004291817695547274,
+        "rootShiftMm": 0.003767332589560424
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbDown",
+      "height": 2,
+      "center": 0.6533333333333333,
+      "before": {
+        "shiftMm": 612.6427295497194,
+        "rootShiftMm": 30.975699282300983
+      },
+      "current": {
+        "shiftMm": 0.027413850036858107,
+        "rootShiftMm": 0.00373917778880159
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbDown",
+      "height": 4.2,
+      "center": 0.3169230769230769,
+      "before": {
+        "shiftMm": 26.9133493786321,
+        "rootShiftMm": 0.010548079087749542
+      },
+      "current": {
+        "shiftMm": 0.012101846035765952,
+        "rootShiftMm": 0.010548079087749542
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbDown",
+      "height": 4.2,
+      "center": 0.36615384615384616,
+      "before": {
+        "shiftMm": 30.884738335831052,
+        "rootShiftMm": 0.01054807908819369
+      },
+      "current": {
+        "shiftMm": 0.011913961564481136,
+        "rootShiftMm": 0.01054807908819369
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbDown",
+      "height": 4.2,
+      "center": 0.41538461538461535,
+      "before": {
+        "shiftMm": 32.110981730223905,
+        "rootShiftMm": 0.010548079087746144
+      },
+      "current": {
+        "shiftMm": 0.011981706095854803,
+        "rootShiftMm": 0.010548079087746144
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbDown",
+      "height": 4.2,
+      "center": 0.6123076923076923,
+      "before": {
+        "shiftMm": 510.1461764994474,
+        "rootShiftMm": 0.010548079088200485
+      },
+      "current": {
+        "shiftMm": 0.012261951913819992,
+        "rootShiftMm": 0.010548079088200485
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbDown",
+      "height": 4.2,
+      "center": 0.6615384615384615,
+      "before": {
+        "shiftMm": 572.2195368424492,
+        "rootShiftMm": 30.981950072307445
+      },
+      "current": {
+        "shiftMm": 0.04263092809613735,
+        "rootShiftMm": 0.010546986641572031
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbDown",
+      "height": 5.6,
+      "center": 0.22666666666666666,
+      "before": {
+        "shiftMm": 28.592048891584284,
+        "rootShiftMm": 0.014907125301511543
+      },
+      "current": {
+        "shiftMm": 0.021715494789192893,
+        "rootShiftMm": 0.014907125301511543
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbDown",
+      "height": 5.6,
+      "center": 0.36888888888888893,
+      "before": {
+        "shiftMm": 32.93974794537467,
+        "rootShiftMm": 0.014907125301282772
+      },
+      "current": {
+        "shiftMm": 0.016843941931141065,
+        "rootShiftMm": 0.014907125301282772
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbDown",
+      "height": 5.6,
+      "center": 0.5111111111111111,
+      "before": {
+        "shiftMm": 30.433295007083117,
+        "rootShiftMm": 0.014907125302177401
+      },
+      "current": {
+        "shiftMm": 0.017042928510783845,
+        "rootShiftMm": 0.014907125302177401
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbDown",
+      "height": 5.6,
+      "center": 0.6533333333333333,
+      "before": {
+        "shiftMm": 568.3180452785258,
+        "rootShiftMm": 30.985879204538005
+      },
+      "current": {
+        "shiftMm": 0.026462150391693078,
+        "rootShiftMm": 0.01490718785773905
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbDown",
+      "height": 5.6,
+      "center": 0.7244444444444444,
+      "before": {
+        "shiftMm": 598.3210075052755,
+        "rootShiftMm": 30.985879204538005
+      },
+      "current": {
+        "shiftMm": 0.03378450970163349,
+        "rootShiftMm": 0.013943942326433718
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbUp",
+      "height": 2,
+      "center": 0.22666666666666668,
+      "before": {
+        "shiftMm": 47.598954579656485,
+        "rootShiftMm": 0.003767332589560424
+      },
+      "current": {
+        "shiftMm": 0.004301647619959745,
+        "rootShiftMm": 0.003767332589560424
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbUp",
+      "height": 2,
+      "center": 0.6533333333333333,
+      "before": {
+        "shiftMm": 611.2567941014286,
+        "rootShiftMm": 30.97572000582387
+      },
+      "current": {
+        "shiftMm": 0.027327923003874988,
+        "rootShiftMm": 0.003737612489540593
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbUp",
+      "height": 4.2,
+      "center": 0.3169230769230769,
+      "before": {
+        "shiftMm": 26.946017360111167,
+        "rootShiftMm": 0.010548079087749542
+      },
+      "current": {
+        "shiftMm": 0.012101846035765952,
+        "rootShiftMm": 0.010548079087749542
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbUp",
+      "height": 4.2,
+      "center": 0.36615384615384616,
+      "before": {
+        "shiftMm": 30.896969987236677,
+        "rootShiftMm": 0.01054807908819369
+      },
+      "current": {
+        "shiftMm": 0.011901860127356995,
+        "rootShiftMm": 0.01054807908819369
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbUp",
+      "height": 4.2,
+      "center": 0.41538461538461535,
+      "before": {
+        "shiftMm": 32.08850710630636,
+        "rootShiftMm": 0.010548079087746144
+      },
+      "current": {
+        "shiftMm": 0.011981706094959854,
+        "rootShiftMm": 0.010548079087746144
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbUp",
+      "height": 4.2,
+      "center": 0.6123076923076923,
+      "before": {
+        "shiftMm": 508.7815103273331,
+        "rootShiftMm": 0.010548079088200485
+      },
+      "current": {
+        "shiftMm": 0.012201944656926028,
+        "rootShiftMm": 0.010548079088200485
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbUp",
+      "height": 4.2,
+      "center": 0.6615384615384615,
+      "before": {
+        "shiftMm": 570.9976101328239,
+        "rootShiftMm": 30.981970795829884
+      },
+      "current": {
+        "shiftMm": 0.04249805914554908,
+        "rootShiftMm": 0.0105490679417879
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbUp",
+      "height": 5.6,
+      "center": 0.22666666666666666,
+      "before": {
+        "shiftMm": 28.615736193898616,
+        "rootShiftMm": 0.014907125301511543
+      },
+      "current": {
+        "shiftMm": 0.0217418867443412,
+        "rootShiftMm": 0.014907125301511543
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbUp",
+      "height": 5.6,
+      "center": 0.36888888888888893,
+      "before": {
+        "shiftMm": 32.97378784211116,
+        "rootShiftMm": 0.014907125301282772
+      },
+      "current": {
+        "shiftMm": 0.01682411096852275,
+        "rootShiftMm": 0.014907125301282772
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbUp",
+      "height": 5.6,
+      "center": 0.5111111111111111,
+      "before": {
+        "shiftMm": 30.44181285273032,
+        "rootShiftMm": 0.014907125302177401
+      },
+      "current": {
+        "shiftMm": 0.016969778269311845,
+        "rootShiftMm": 0.014907125302177401
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbUp",
+      "height": 5.6,
+      "center": 0.6533333333333333,
+      "before": {
+        "shiftMm": 567.1029149856824,
+        "rootShiftMm": 30.985899928060437
+      },
+      "current": {
+        "shiftMm": 0.026484151227548432,
+        "rootShiftMm": 0.014905566561216962
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbUp",
+      "height": 5.6,
+      "center": 0.7244444444444444,
+      "before": {
+        "shiftMm": 597.0024006518146,
+        "rootShiftMm": 30.985899928060437
+      },
+      "current": {
+        "shiftMm": 0.0336364364096739,
+        "rootShiftMm": 0.013943248817063138
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbDown",
+      "height": 2,
+      "center": 0.22666666666666668,
+      "before": {
+        "shiftMm": 47.599042839501216,
+        "rootShiftMm": 0.003767332589560424
+      },
+      "current": {
+        "shiftMm": 0.004301647619959745,
+        "rootShiftMm": 0.003767332589560424
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbDown",
+      "height": 2,
+      "center": 0.6533333333333333,
+      "before": {
+        "shiftMm": 611.2568020349013,
+        "rootShiftMm": 30.975699282300983
+      },
+      "current": {
+        "shiftMm": 0.02732803301920131,
+        "rootShiftMm": 0.00373917778880159
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbDown",
+      "height": 4.2,
+      "center": 0.3169230769230769,
+      "before": {
+        "shiftMm": 26.946057003913847,
+        "rootShiftMm": 0.010548079087749542
+      },
+      "current": {
+        "shiftMm": 0.012101846035765952,
+        "rootShiftMm": 0.010548079087749542
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbDown",
+      "height": 4.2,
+      "center": 0.36615384615384616,
+      "before": {
+        "shiftMm": 30.89690543140111,
+        "rootShiftMm": 0.01054807908819369
+      },
+      "current": {
+        "shiftMm": 0.011901860127356995,
+        "rootShiftMm": 0.01054807908819369
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbDown",
+      "height": 4.2,
+      "center": 0.41538461538461535,
+      "before": {
+        "shiftMm": 32.08857385190454,
+        "rootShiftMm": 0.010548079087746144
+      },
+      "current": {
+        "shiftMm": 0.011981706095854803,
+        "rootShiftMm": 0.010548079087746144
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbDown",
+      "height": 4.2,
+      "center": 0.6123076923076923,
+      "before": {
+        "shiftMm": 508.78139990782256,
+        "rootShiftMm": 0.010548079088200485
+      },
+      "current": {
+        "shiftMm": 0.012201944656926028,
+        "rootShiftMm": 0.010548079088200485
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbDown",
+      "height": 4.2,
+      "center": 0.6615384615384615,
+      "before": {
+        "shiftMm": 570.9976160351428,
+        "rootShiftMm": 30.981950072307445
+      },
+      "current": {
+        "shiftMm": 0.042497649401595616,
+        "rootShiftMm": 0.010546986641572031
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbDown",
+      "height": 5.6,
+      "center": 0.22666666666666666,
+      "before": {
+        "shiftMm": 28.615788313386087,
+        "rootShiftMm": 0.014907125301511543
+      },
+      "current": {
+        "shiftMm": 0.02174188674479793,
+        "rootShiftMm": 0.014907125301511543
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbDown",
+      "height": 5.6,
+      "center": 0.36888888888888893,
+      "before": {
+        "shiftMm": 32.973718669193076,
+        "rootShiftMm": 0.014907125301282772
+      },
+      "current": {
+        "shiftMm": 0.01682411096851235,
+        "rootShiftMm": 0.014907125301282772
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbDown",
+      "height": 5.6,
+      "center": 0.5111111111111111,
+      "before": {
+        "shiftMm": 30.441910779443372,
+        "rootShiftMm": 0.014907125302177401
+      },
+      "current": {
+        "shiftMm": 0.016969778269311845,
+        "rootShiftMm": 0.014907125302177401
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbDown",
+      "height": 5.6,
+      "center": 0.6533333333333333,
+      "before": {
+        "shiftMm": 567.1029207736052,
+        "rootShiftMm": 30.985879204538005
+      },
+      "current": {
+        "shiftMm": 0.026484586398183133,
+        "rootShiftMm": 0.01490718785773905
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbDown",
+      "height": 5.6,
+      "center": 0.7244444444444444,
+      "before": {
+        "shiftMm": 597.0024078239023,
+        "rootShiftMm": 30.985879204538005
+      },
+      "current": {
+        "shiftMm": 0.03363778903794668,
+        "rootShiftMm": 0.013943942326433718
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 2,
+      "center": 0.22666666666666668,
+      "before": {
+        "shiftMm": 47.60134015707451,
+        "rootShiftMm": 0.003767332589560424
+      },
+      "current": {
+        "shiftMm": 0.004287464547186294,
+        "rootShiftMm": 0.003767332589560424
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 2,
+      "center": 0.6533333333333333,
+      "before": {
+        "shiftMm": 607.818595720477,
+        "rootShiftMm": 30.97572000582387
+      },
+      "current": {
+        "shiftMm": 0.027288586742365808,
+        "rootShiftMm": 0.003737612489540593
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 4.2,
+      "center": 0.3169230769230769,
+      "before": {
+        "shiftMm": 26.300214152604205,
+        "rootShiftMm": 0.010548079087749542
+      },
+      "current": {
+        "shiftMm": 0.012104018505078558,
+        "rootShiftMm": 0.010548079087749542
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 4.2,
+      "center": 0.36615384615384616,
+      "before": {
+        "shiftMm": 30.66320230404702,
+        "rootShiftMm": 0.01054807908819369
+      },
+      "current": {
+        "shiftMm": 0.01183565734898564,
+        "rootShiftMm": 0.01054807908819369
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 4.2,
+      "center": 0.41538461538461535,
+      "before": {
+        "shiftMm": 31.645427122007685,
+        "rootShiftMm": 0.010548079087746144
+      },
+      "current": {
+        "shiftMm": 0.011981706094959854,
+        "rootShiftMm": 0.010548079087746144
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 4.2,
+      "center": 0.6123076923076923,
+      "before": {
+        "shiftMm": 505.3313098816572,
+        "rootShiftMm": 0.010548079088200485
+      },
+      "current": {
+        "shiftMm": 0.012201944656926028,
+        "rootShiftMm": 0.010548079088200485
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 4.2,
+      "center": 0.6615384615384615,
+      "before": {
+        "shiftMm": 567.8028332423532,
+        "rootShiftMm": 30.981970795829884
+      },
+      "current": {
+        "shiftMm": 0.04268481065412499,
+        "rootShiftMm": 0.0105490679417879
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 5.6,
+      "center": 0.22666666666666666,
+      "before": {
+        "shiftMm": 28.063795770478563,
+        "rootShiftMm": 0.014907125301511543
+      },
+      "current": {
+        "shiftMm": 0.021614776318879016,
+        "rootShiftMm": 0.014907125301511543
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 5.6,
+      "center": 0.36888888888888893,
+      "before": {
+        "shiftMm": 32.638817150696426,
+        "rootShiftMm": 0.014907125301282772
+      },
+      "current": {
+        "shiftMm": 0.016731494526944116,
+        "rootShiftMm": 0.014907125301282772
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 5.6,
+      "center": 0.5111111111111111,
+      "before": {
+        "shiftMm": 30.441703932298108,
+        "rootShiftMm": 0.014907125302177401
+      },
+      "current": {
+        "shiftMm": 0.01697021259092316,
+        "rootShiftMm": 0.014907125302177401
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 5.6,
+      "center": 0.6533333333333333,
+      "before": {
+        "shiftMm": 563.9420580009526,
+        "rootShiftMm": 30.985899928060437
+      },
+      "current": {
+        "shiftMm": 0.026071752675561576,
+        "rootShiftMm": 0.014905566561216962
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 5.6,
+      "center": 0.7244444444444444,
+      "before": {
+        "shiftMm": 593.6439733623197,
+        "rootShiftMm": 30.985899928060437
+      },
+      "current": {
+        "shiftMm": 0.03335422750791439,
+        "rootShiftMm": 0.013943248817063138
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 2,
+      "center": 0.22666666666666668,
+      "before": {
+        "shiftMm": 47.60142813974657,
+        "rootShiftMm": 0.003767332589560424
+      },
+      "current": {
+        "shiftMm": 0.004287464547186294,
+        "rootShiftMm": 0.003767332589560424
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 2,
+      "center": 0.6533333333333333,
+      "before": {
+        "shiftMm": 607.8186036768552,
+        "rootShiftMm": 30.975699282300983
+      },
+      "current": {
+        "shiftMm": 0.02728864268072003,
+        "rootShiftMm": 0.00373917778880159
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 4.2,
+      "center": 0.3169230769230769,
+      "before": {
+        "shiftMm": 26.3002530418341,
+        "rootShiftMm": 0.010548079087749542
+      },
+      "current": {
+        "shiftMm": 0.012104018505078558,
+        "rootShiftMm": 0.010548079087749542
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 4.2,
+      "center": 0.36615384615384616,
+      "before": {
+        "shiftMm": 30.663138497516552,
+        "rootShiftMm": 0.01054807908819369
+      },
+      "current": {
+        "shiftMm": 0.01183565734898564,
+        "rootShiftMm": 0.01054807908819369
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 4.2,
+      "center": 0.41538461538461535,
+      "before": {
+        "shiftMm": 31.6454938660317,
+        "rootShiftMm": 0.010548079087746144
+      },
+      "current": {
+        "shiftMm": 0.011981706095854803,
+        "rootShiftMm": 0.010548079087746144
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 4.2,
+      "center": 0.6123076923076923,
+      "before": {
+        "shiftMm": 505.3311999958461,
+        "rootShiftMm": 0.010548079088200485
+      },
+      "current": {
+        "shiftMm": 0.012201944656926028,
+        "rootShiftMm": 0.010548079088200485
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 4.2,
+      "center": 0.6615384615384615,
+      "before": {
+        "shiftMm": 567.8028391685132,
+        "rootShiftMm": 30.981950072307445
+      },
+      "current": {
+        "shiftMm": 0.042684394474071616,
+        "rootShiftMm": 0.010546986641572031
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 5.6,
+      "center": 0.22666666666666666,
+      "before": {
+        "shiftMm": 28.063847018650492,
+        "rootShiftMm": 0.014907125301511543
+      },
+      "current": {
+        "shiftMm": 0.02161477631933386,
+        "rootShiftMm": 0.014907125301511543
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 5.6,
+      "center": 0.36888888888888893,
+      "before": {
+        "shiftMm": 32.63874896062444,
+        "rootShiftMm": 0.014907125301282772
+      },
+      "current": {
+        "shiftMm": 0.016731494526955944,
+        "rootShiftMm": 0.014907125301282772
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 5.6,
+      "center": 0.5111111111111111,
+      "before": {
+        "shiftMm": 30.441802142695266,
+        "rootShiftMm": 0.014907125302177401
+      },
+      "current": {
+        "shiftMm": 0.01697021259092316,
+        "rootShiftMm": 0.014907125302177401
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 5.6,
+      "center": 0.6533333333333333,
+      "before": {
+        "shiftMm": 563.9420638157849,
+        "rootShiftMm": 30.985879204538005
+      },
+      "current": {
+        "shiftMm": 0.02607213842024747,
+        "rootShiftMm": 0.01490718785773905
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 5.6,
+      "center": 0.7244444444444444,
+      "before": {
+        "shiftMm": 593.6439805554838,
+        "rootShiftMm": 30.985879204538005
+      },
+      "current": {
+        "shiftMm": 0.0333555689761792,
+        "rootShiftMm": 0.013943942326433718
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbUp",
+      "height": 2,
+      "center": 0.22666666666666668,
+      "before": {
+        "shiftMm": 53.19800311134231,
+        "rootShiftMm": 0.003767332589560424
+      },
+      "current": {
+        "shiftMm": 0.004227961688275118,
+        "rootShiftMm": 0.003767332589560424
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbUp",
+      "height": 2,
+      "center": 0.6533333333333333,
+      "before": {
+        "shiftMm": 598.3314584488427,
+        "rootShiftMm": 30.97572000582387
+      },
+      "current": {
+        "shiftMm": 0.02919956328135169,
+        "rootShiftMm": 0.003737612489540593
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbUp",
+      "height": 4.2,
+      "center": 0.3169230769230769,
+      "before": {
+        "shiftMm": 29.973895300636862,
+        "rootShiftMm": 0.010548079087749542
+      },
+      "current": {
+        "shiftMm": 0.0122255486543005,
+        "rootShiftMm": 0.010548079087749542
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbUp",
+      "height": 4.2,
+      "center": 0.36615384615384616,
+      "before": {
+        "shiftMm": 34.143209090786385,
+        "rootShiftMm": 0.01054807908819369
+      },
+      "current": {
+        "shiftMm": 0.012361986668953374,
+        "rootShiftMm": 0.01054807908819369
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbUp",
+      "height": 4.2,
+      "center": 0.41538461538461535,
+      "before": {
+        "shiftMm": 36.27576669388542,
+        "rootShiftMm": 0.010548079087746144
+      },
+      "current": {
+        "shiftMm": 0.012395503138094663,
+        "rootShiftMm": 0.010548079087746144
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbUp",
+      "height": 4.2,
+      "center": 0.6123076923076923,
+      "before": {
+        "shiftMm": 500.0600301940564,
+        "rootShiftMm": 0.010548079088200485
+      },
+      "current": {
+        "shiftMm": 0.0129498072731954,
+        "rootShiftMm": 0.010548079088200485
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbUp",
+      "height": 4.2,
+      "center": 0.6615384615384615,
+      "before": {
+        "shiftMm": 559.6073998872291,
+        "rootShiftMm": 30.98197079583033
+      },
+      "current": {
+        "shiftMm": 0.04306994044158433,
+        "rootShiftMm": 0.0105490679417879
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbUp",
+      "height": 5.6,
+      "center": 0.22666666666666666,
+      "before": {
+        "shiftMm": 32.15189438139118,
+        "rootShiftMm": 0.014907125301511543
+      },
+      "current": {
+        "shiftMm": 0.021095399879726657,
+        "rootShiftMm": 0.014907125301511543
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbUp",
+      "height": 5.6,
+      "center": 0.36888888888888893,
+      "before": {
+        "shiftMm": 37.22419938706677,
+        "rootShiftMm": 0.014907125301282772
+      },
+      "current": {
+        "shiftMm": 0.017435471722115015,
+        "rootShiftMm": 0.014907125301282772
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbUp",
+      "height": 5.6,
+      "center": 0.5111111111111111,
+      "before": {
+        "shiftMm": 33.24087587092147,
+        "rootShiftMm": 0.014907125302177401
+      },
+      "current": {
+        "shiftMm": 0.017744058780930466,
+        "rootShiftMm": 0.014907125302177401
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbUp",
+      "height": 5.6,
+      "center": 0.6533333333333333,
+      "before": {
+        "shiftMm": 555.5761244070451,
+        "rootShiftMm": 30.985899928060437
+      },
+      "current": {
+        "shiftMm": 0.02748030043056836,
+        "rootShiftMm": 0.014905566561216962
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbUp",
+      "height": 5.6,
+      "center": 0.7244444444444444,
+      "before": {
+        "shiftMm": 584.6405662715857,
+        "rootShiftMm": 30.985899928060437
+      },
+      "current": {
+        "shiftMm": 0.03608096014377226,
+        "rootShiftMm": 0.013943248817063138
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbDown",
+      "height": 2,
+      "center": 0.22666666666666668,
+      "before": {
+        "shiftMm": 53.198103083445034,
+        "rootShiftMm": 0.003767332589560424
+      },
+      "current": {
+        "shiftMm": 0.004227961688275118,
+        "rootShiftMm": 0.003767332589560424
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbDown",
+      "height": 2,
+      "center": 0.6533333333333333,
+      "before": {
+        "shiftMm": 598.3314674063254,
+        "rootShiftMm": 30.975699282300983
+      },
+      "current": {
+        "shiftMm": 0.029199597658524104,
+        "rootShiftMm": 0.00373917778880159
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbDown",
+      "height": 4.2,
+      "center": 0.3169230769230769,
+      "before": {
+        "shiftMm": 29.973940732344115,
+        "rootShiftMm": 0.010548079087749542
+      },
+      "current": {
+        "shiftMm": 0.0122255486543005,
+        "rootShiftMm": 0.010548079087749542
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbDown",
+      "height": 4.2,
+      "center": 0.36615384615384616,
+      "before": {
+        "shiftMm": 34.14314024493275,
+        "rootShiftMm": 0.01054807908819369
+      },
+      "current": {
+        "shiftMm": 0.012361986668953374,
+        "rootShiftMm": 0.01054807908819369
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbDown",
+      "height": 4.2,
+      "center": 0.41538461538461535,
+      "before": {
+        "shiftMm": 36.2758476409028,
+        "rootShiftMm": 0.010548079087746144
+      },
+      "current": {
+        "shiftMm": 0.012395503138129885,
+        "rootShiftMm": 0.010548079087746144
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbDown",
+      "height": 4.2,
+      "center": 0.6123076923076923,
+      "before": {
+        "shiftMm": 500.05992930556056,
+        "rootShiftMm": 0.010548079088200485
+      },
+      "current": {
+        "shiftMm": 0.0129498072731954,
+        "rootShiftMm": 0.010548079088200485
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbDown",
+      "height": 4.2,
+      "center": 0.6615384615384615,
+      "before": {
+        "shiftMm": 559.6074060138287,
+        "rootShiftMm": 30.981950072307004
+      },
+      "current": {
+        "shiftMm": 0.04306951144000678,
+        "rootShiftMm": 0.010546986641572031
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbDown",
+      "height": 5.6,
+      "center": 0.22666666666666666,
+      "before": {
+        "shiftMm": 32.151956014545995,
+        "rootShiftMm": 0.014907125301511543
+      },
+      "current": {
+        "shiftMm": 0.02109539988047703,
+        "rootShiftMm": 0.014907125301511543
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbDown",
+      "height": 5.6,
+      "center": 0.36888888888888893,
+      "before": {
+        "shiftMm": 37.22412398154143,
+        "rootShiftMm": 0.014907125301282772
+      },
+      "current": {
+        "shiftMm": 0.017435471723061004,
+        "rootShiftMm": 0.014907125301282772
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbDown",
+      "height": 5.6,
+      "center": 0.5111111111111111,
+      "before": {
+        "shiftMm": 33.24098592173067,
+        "rootShiftMm": 0.014907125302177401
+      },
+      "current": {
+        "shiftMm": 0.017744058780930466,
+        "rootShiftMm": 0.014907125302177401
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbDown",
+      "height": 5.6,
+      "center": 0.6533333333333333,
+      "before": {
+        "shiftMm": 555.5761303872775,
+        "rootShiftMm": 30.985879204538005
+      },
+      "current": {
+        "shiftMm": 0.027480652055455124,
+        "rootShiftMm": 0.01490718785773905
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbDown",
+      "height": 5.6,
+      "center": 0.7244444444444444,
+      "before": {
+        "shiftMm": 584.6405745559177,
+        "rootShiftMm": 30.985879204538005
+      },
+      "current": {
+        "shiftMm": 0.036084372541613965,
+        "rootShiftMm": 0.013944869122674886
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbUp",
+      "height": 2,
+      "center": 0.22666666666666668,
+      "before": {
+        "shiftMm": 53.26214064042397,
+        "rootShiftMm": 0.003767332589560424
+      },
+      "current": {
+        "shiftMm": 0.00422369072833752,
+        "rootShiftMm": 0.003767332589560424
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbUp",
+      "height": 2,
+      "center": 0.6533333333333333,
+      "before": {
+        "shiftMm": 597.3270058830391,
+        "rootShiftMm": 30.97572000582387
+      },
+      "current": {
+        "shiftMm": 0.029181940047841498,
+        "rootShiftMm": 0.003737612489540593
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbUp",
+      "height": 4.2,
+      "center": 0.3169230769230769,
+      "before": {
+        "shiftMm": 29.825051362034607,
+        "rootShiftMm": 0.010548079087749542
+      },
+      "current": {
+        "shiftMm": 0.012307143628670554,
+        "rootShiftMm": 0.010548079087749542
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbUp",
+      "height": 4.2,
+      "center": 0.36615384615384616,
+      "before": {
+        "shiftMm": 33.65022547075699,
+        "rootShiftMm": 0.01054807908819369
+      },
+      "current": {
+        "shiftMm": 0.012214673966890393,
+        "rootShiftMm": 0.01054807908819369
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbUp",
+      "height": 4.2,
+      "center": 0.41538461538461535,
+      "before": {
+        "shiftMm": 36.300654515459165,
+        "rootShiftMm": 0.010548079087746144
+      },
+      "current": {
+        "shiftMm": 0.012478528032876296,
+        "rootShiftMm": 0.010548079087746144
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbUp",
+      "height": 4.2,
+      "center": 0.6123076923076923,
+      "before": {
+        "shiftMm": 499.68351764182864,
+        "rootShiftMm": 0.010548079088200485
+      },
+      "current": {
+        "shiftMm": 0.013042622612454377,
+        "rootShiftMm": 0.010548079088200485
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbUp",
+      "height": 4.2,
+      "center": 0.6615384615384615,
+      "before": {
+        "shiftMm": 559.2578599312574,
+        "rootShiftMm": 30.98197079583033
+      },
+      "current": {
+        "shiftMm": 0.04304663336833138,
+        "rootShiftMm": 0.0105490679417879
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbUp",
+      "height": 5.6,
+      "center": 0.22666666666666666,
+      "before": {
+        "shiftMm": 31.556875794260343,
+        "rootShiftMm": 0.014907125301511543
+      },
+      "current": {
+        "shiftMm": 0.02108444399046649,
+        "rootShiftMm": 0.014907125301511543
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbUp",
+      "height": 5.6,
+      "center": 0.36888888888888893,
+      "before": {
+        "shiftMm": 36.628544018509075,
+        "rootShiftMm": 0.014907125301282772
+      },
+      "current": {
+        "shiftMm": 0.017230123832071294,
+        "rootShiftMm": 0.014907125301282772
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbUp",
+      "height": 5.6,
+      "center": 0.5111111111111111,
+      "before": {
+        "shiftMm": 32.9611394133338,
+        "rootShiftMm": 0.014907125302177401
+      },
+      "current": {
+        "shiftMm": 0.017515280524795555,
+        "rootShiftMm": 0.014907125302177401
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbUp",
+      "height": 5.6,
+      "center": 0.6533333333333333,
+      "before": {
+        "shiftMm": 555.2051217062096,
+        "rootShiftMm": 30.985899928060437
+      },
+      "current": {
+        "shiftMm": 0.02746148850191798,
+        "rootShiftMm": 0.014905566561216962
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbUp",
+      "height": 5.6,
+      "center": 0.7244444444444444,
+      "before": {
+        "shiftMm": 584.1453398529437,
+        "rootShiftMm": 30.985899928060437
+      },
+      "current": {
+        "shiftMm": 0.03608096014377226,
+        "rootShiftMm": 0.013943248817063138
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbDown",
+      "height": 2,
+      "center": 0.22666666666666668,
+      "before": {
+        "shiftMm": 53.262240566439985,
+        "rootShiftMm": 0.003767332589560424
+      },
+      "current": {
+        "shiftMm": 0.00422369072833752,
+        "rootShiftMm": 0.003767332589560424
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbDown",
+      "height": 2,
+      "center": 0.6533333333333333,
+      "before": {
+        "shiftMm": 597.3270135820492,
+        "rootShiftMm": 30.975699282300983
+      },
+      "current": {
+        "shiftMm": 0.029181973906686316,
+        "rootShiftMm": 0.00373917778880159
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbDown",
+      "height": 4.2,
+      "center": 0.3169230769230769,
+      "before": {
+        "shiftMm": 29.825096799164353,
+        "rootShiftMm": 0.010548079087749542
+      },
+      "current": {
+        "shiftMm": 0.012307143628670554,
+        "rootShiftMm": 0.010548079087749542
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbDown",
+      "height": 4.2,
+      "center": 0.36615384615384616,
+      "before": {
+        "shiftMm": 33.65015779744987,
+        "rootShiftMm": 0.01054807908819369
+      },
+      "current": {
+        "shiftMm": 0.012214673966890393,
+        "rootShiftMm": 0.01054807908819369
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbDown",
+      "height": 4.2,
+      "center": 0.41538461538461535,
+      "before": {
+        "shiftMm": 36.30073544877665,
+        "rootShiftMm": 0.010548079087746144
+      },
+      "current": {
+        "shiftMm": 0.012478528032892471,
+        "rootShiftMm": 0.010548079087746144
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbDown",
+      "height": 4.2,
+      "center": 0.6123076923076923,
+      "before": {
+        "shiftMm": 499.68341632450085,
+        "rootShiftMm": 0.010548079088200485
+      },
+      "current": {
+        "shiftMm": 0.013042622612454377,
+        "rootShiftMm": 0.010548079088200485
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbDown",
+      "height": 4.2,
+      "center": 0.6615384615384615,
+      "before": {
+        "shiftMm": 559.2578658711809,
+        "rootShiftMm": 30.981950072307004
+      },
+      "current": {
+        "shiftMm": 0.04304620528645456,
+        "rootShiftMm": 0.010546986641572031
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbDown",
+      "height": 5.6,
+      "center": 0.22666666666666666,
+      "before": {
+        "shiftMm": 31.556936043335934,
+        "rootShiftMm": 0.014907125301511543
+      },
+      "current": {
+        "shiftMm": 0.021084443991395505,
+        "rootShiftMm": 0.014907125301511543
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbDown",
+      "height": 5.6,
+      "center": 0.36888888888888893,
+      "before": {
+        "shiftMm": 36.62847000679029,
+        "rootShiftMm": 0.014907125301282772
+      },
+      "current": {
+        "shiftMm": 0.017230123833835813,
+        "rootShiftMm": 0.014907125301282772
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbDown",
+      "height": 5.6,
+      "center": 0.5111111111111111,
+      "before": {
+        "shiftMm": 32.96124875590198,
+        "rootShiftMm": 0.014907125302177401
+      },
+      "current": {
+        "shiftMm": 0.017515280524795555,
+        "rootShiftMm": 0.014907125302177401
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbDown",
+      "height": 5.6,
+      "center": 0.6533333333333333,
+      "before": {
+        "shiftMm": 555.2051274981453,
+        "rootShiftMm": 30.985879204538005
+      },
+      "current": {
+        "shiftMm": 0.027461839608672642,
+        "rootShiftMm": 0.01490718785773905
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbDown",
+      "height": 5.6,
+      "center": 0.7244444444444444,
+      "before": {
+        "shiftMm": 584.1453469341242,
+        "rootShiftMm": 30.985879204538005
+      },
+      "current": {
+        "shiftMm": 0.036084372541613965,
+        "rootShiftMm": 0.013944869122674886
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 2,
+      "center": 0.22666666666666668,
+      "before": {
+        "shiftMm": 53.07287585543067,
+        "rootShiftMm": 0.003767332589560424
+      },
+      "current": {
+        "shiftMm": 0.004260857891741905,
+        "rootShiftMm": 0.003767332589560424
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 2,
+      "center": 0.6533333333333333,
+      "before": {
+        "shiftMm": 597.5440044433053,
+        "rootShiftMm": 30.97572000582387
+      },
+      "current": {
+        "shiftMm": 0.029137318259885713,
+        "rootShiftMm": 0.003737612489540593
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 4.2,
+      "center": 0.3169230769230769,
+      "before": {
+        "shiftMm": 29.17151323106152,
+        "rootShiftMm": 0.010548079087749542
+      },
+      "current": {
+        "shiftMm": 0.012204451650323174,
+        "rootShiftMm": 0.010548079087749542
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 4.2,
+      "center": 0.36615384615384616,
+      "before": {
+        "shiftMm": 33.54404664179892,
+        "rootShiftMm": 0.01054807908819369
+      },
+      "current": {
+        "shiftMm": 0.01220852484616495,
+        "rootShiftMm": 0.01054807908819369
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 4.2,
+      "center": 0.41538461538461535,
+      "before": {
+        "shiftMm": 35.7566713227712,
+        "rootShiftMm": 0.010548079087746144
+      },
+      "current": {
+        "shiftMm": 0.012380473677793597,
+        "rootShiftMm": 0.010548079087746144
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 4.2,
+      "center": 0.6123076923076923,
+      "before": {
+        "shiftMm": 497.2895923732604,
+        "rootShiftMm": 0.010548079088200485
+      },
+      "current": {
+        "shiftMm": 0.012947271446829247,
+        "rootShiftMm": 0.010548079088200485
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 4.2,
+      "center": 0.6615384615384615,
+      "before": {
+        "shiftMm": 559.3943214014582,
+        "rootShiftMm": 30.98197079583033
+      },
+      "current": {
+        "shiftMm": 0.04298073896023428,
+        "rootShiftMm": 0.0105490679417879
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 5.6,
+      "center": 0.22666666666666666,
+      "before": {
+        "shiftMm": 31.298357919596683,
+        "rootShiftMm": 0.014907125301511543
+      },
+      "current": {
+        "shiftMm": 0.021049369485647375,
+        "rootShiftMm": 0.014907125301511543
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 5.6,
+      "center": 0.36888888888888893,
+      "before": {
+        "shiftMm": 36.502863921146854,
+        "rootShiftMm": 0.014907125301282772
+      },
+      "current": {
+        "shiftMm": 0.017217920970939053,
+        "rootShiftMm": 0.014907125301282772
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 5.6,
+      "center": 0.5111111111111111,
+      "before": {
+        "shiftMm": 32.85859883720123,
+        "rootShiftMm": 0.014907125302177401
+      },
+      "current": {
+        "shiftMm": 0.017508735876643335,
+        "rootShiftMm": 0.014907125302177401
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 5.6,
+      "center": 0.6533333333333333,
+      "before": {
+        "shiftMm": 555.3405260527744,
+        "rootShiftMm": 30.985899928060437
+      },
+      "current": {
+        "shiftMm": 0.0274208212240445,
+        "rootShiftMm": 0.014905566561216962
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 5.6,
+      "center": 0.7244444444444444,
+      "before": {
+        "shiftMm": 584.3262776697813,
+        "rootShiftMm": 30.985899928060437
+      },
+      "current": {
+        "shiftMm": 0.0360430110832129,
+        "rootShiftMm": 0.013943248817063138
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 2,
+      "center": 0.22666666666666668,
+      "before": {
+        "shiftMm": 53.07297525764653,
+        "rootShiftMm": 0.003767332589560424
+      },
+      "current": {
+        "shiftMm": 0.004260857891741905,
+        "rootShiftMm": 0.003767332589560424
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 2,
+      "center": 0.6533333333333333,
+      "before": {
+        "shiftMm": 597.5440120314731,
+        "rootShiftMm": 30.975699282300983
+      },
+      "current": {
+        "shiftMm": 0.029137352125358066,
+        "rootShiftMm": 0.00373917778880159
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 4.2,
+      "center": 0.3169230769230769,
+      "before": {
+        "shiftMm": 29.17155750808854,
+        "rootShiftMm": 0.010548079087749542
+      },
+      "current": {
+        "shiftMm": 0.012204451650323174,
+        "rootShiftMm": 0.010548079087749542
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 4.2,
+      "center": 0.36615384615384616,
+      "before": {
+        "shiftMm": 33.54397910682376,
+        "rootShiftMm": 0.01054807908819369
+      },
+      "current": {
+        "shiftMm": 0.01220852484616495,
+        "rootShiftMm": 0.01054807908819369
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 4.2,
+      "center": 0.41538461538461535,
+      "before": {
+        "shiftMm": 35.756752312122245,
+        "rootShiftMm": 0.010548079087746144
+      },
+      "current": {
+        "shiftMm": 0.012380473677835303,
+        "rootShiftMm": 0.010548079087746144
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 4.2,
+      "center": 0.6123076923076923,
+      "before": {
+        "shiftMm": 497.2894877595866,
+        "rootShiftMm": 0.010548079088200485
+      },
+      "current": {
+        "shiftMm": 0.012947271446829247,
+        "rootShiftMm": 0.010548079088200485
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 4.2,
+      "center": 0.6615384615384615,
+      "before": {
+        "shiftMm": 559.394327241121,
+        "rootShiftMm": 30.981950072307004
+      },
+      "current": {
+        "shiftMm": 0.04298031325399848,
+        "rootShiftMm": 0.010546986641572031
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 5.6,
+      "center": 0.22666666666666666,
+      "before": {
+        "shiftMm": 31.298417780870718,
+        "rootShiftMm": 0.014907125301511543
+      },
+      "current": {
+        "shiftMm": 0.021049369486608058,
+        "rootShiftMm": 0.014907125301511543
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 5.6,
+      "center": 0.36888888888888893,
+      "before": {
+        "shiftMm": 36.50279007643618,
+        "rootShiftMm": 0.014907125301282772
+      },
+      "current": {
+        "shiftMm": 0.017217920970943892,
+        "rootShiftMm": 0.014907125301282772
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 5.6,
+      "center": 0.5111111111111111,
+      "before": {
+        "shiftMm": 32.85870778781116,
+        "rootShiftMm": 0.014907125302177401
+      },
+      "current": {
+        "shiftMm": 0.017508735876643335,
+        "rootShiftMm": 0.014907125302177401
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 5.6,
+      "center": 0.6533333333333333,
+      "before": {
+        "shiftMm": 555.3405317441882,
+        "rootShiftMm": 30.985879204538005
+      },
+      "current": {
+        "shiftMm": 0.027421170773449535,
+        "rootShiftMm": 0.01490718785773905
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 5.6,
+      "center": 0.7244444444444444,
+      "before": {
+        "shiftMm": 584.3262846446886,
+        "rootShiftMm": 30.985879204538005
+      },
+      "current": {
+        "shiftMm": 0.03604641942062422,
+        "rootShiftMm": 0.013944869122674886
+      }
+    }
+  ],
+  "crest": [
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbUp",
+      "height": 2,
+      "span": 0,
+      "steps": 7,
+      "before": {
+        "surfaceShiftMm": 0.004001899277909731,
+        "footShiftMm": 0.000026699970690300478
+      },
+      "current": {
+        "surfaceShiftMm": 0.004001827509969744,
+        "footShiftMm": 0.000024492428286149067
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbUp",
+      "height": 2,
+      "span": 1.2360585147470482,
+      "steps": 8,
+      "before": {
+        "surfaceShiftMm": 543.8863125678121,
+        "footShiftMm": 258.29001185203015
+      },
+      "current": {
+        "surfaceShiftMm": 543.8863087536547,
+        "footShiftMm": 258.2899988246158
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbUp",
+      "height": 3,
+      "span": 0,
+      "steps": 11,
+      "before": {
+        "surfaceShiftMm": 0.005002136682867319,
+        "footShiftMm": 0.00003432812600441363
+      },
+      "current": {
+        "surfaceShiftMm": 0.005001623668816783,
+        "footShiftMm": 0.00003206901105378356
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbUp",
+      "height": 3,
+      "span": 1.2360585147470482,
+      "steps": 11,
+      "before": {
+        "surfaceShiftMm": 0.00504047986574802,
+        "footShiftMm": 0.000264486559850379
+      },
+      "current": {
+        "surfaceShiftMm": 0.00504047986574802,
+        "footShiftMm": 0.000264486559850379
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbUp",
+      "height": 4.2,
+      "span": 0,
+      "steps": 15,
+      "before": {
+        "surfaceShiftMm": 0.005863076975273337,
+        "footShiftMm": 0.000041956355072955355
+      },
+      "current": {
+        "surfaceShiftMm": 0.005861845248877092,
+        "footShiftMm": 0.00003966551135408796
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbUp",
+      "height": 4.2,
+      "span": 1.2360585147470482,
+      "steps": 15,
+      "before": {
+        "surfaceShiftMm": 0.005657730217417077,
+        "footShiftMm": 0.00004195636816870767
+      },
+      "current": {
+        "surfaceShiftMm": 0.00565693749808322,
+        "footShiftMm": 0.00003966533036934022
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbUp",
+      "height": 5.6,
+      "span": 0,
+      "steps": 20,
+      "before": {
+        "surfaceShiftMm": 527.1326348734353,
+        "footShiftMm": 280.03829767599194
+      },
+      "current": {
+        "surfaceShiftMm": 527.1326292217574,
+        "footShiftMm": 280.03828513246765
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbUp",
+      "height": 5.6,
+      "span": 1.2360585147470482,
+      "steps": 20,
+      "before": {
+        "surfaceShiftMm": 530.6310130883459,
+        "footShiftMm": 281.23469253594374
+      },
+      "current": {
+        "surfaceShiftMm": 530.6310076204107,
+        "footShiftMm": 281.23468107635773
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbDown",
+      "height": 2,
+      "span": 0,
+      "steps": 7,
+      "before": {
+        "surfaceShiftMm": 0.004001898805981529,
+        "footShiftMm": 0.00002669995618432921
+      },
+      "current": {
+        "surfaceShiftMm": 0.00400182703816288,
+        "footShiftMm": 0.000024492414342440212
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbDown",
+      "height": 2,
+      "span": 1.2360585147470482,
+      "steps": 8,
+      "before": {
+        "surfaceShiftMm": 543.8865048566654,
+        "footShiftMm": 258.2900127423416
+      },
+      "current": {
+        "surfaceShiftMm": 543.8865010425417,
+        "footShiftMm": 258.28999971496216
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbDown",
+      "height": 3,
+      "span": 0,
+      "steps": 11,
+      "before": {
+        "surfaceShiftMm": 0.005002136164875516,
+        "footShiftMm": 0.00003432810868821577
+      },
+      "current": {
+        "surfaceShiftMm": 0.005001623150653961,
+        "footShiftMm": 0.00003206899230312575
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbDown",
+      "height": 3,
+      "span": 1.2360585147470482,
+      "steps": 11,
+      "before": {
+        "surfaceShiftMm": 0.005040479841259673,
+        "footShiftMm": 0.00026448670408951144
+      },
+      "current": {
+        "surfaceShiftMm": 0.005040479841259673,
+        "footShiftMm": 0.00026448670408951144
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbDown",
+      "height": 4.2,
+      "span": 0,
+      "steps": 15,
+      "before": {
+        "surfaceShiftMm": 0.005863076454147869,
+        "footShiftMm": 0.00004195633125609726
+      },
+      "current": {
+        "surfaceShiftMm": 0.0058618447268462045,
+        "footShiftMm": 0.00003966548814443523
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbDown",
+      "height": 4.2,
+      "span": 1.2360585147470482,
+      "steps": 15,
+      "before": {
+        "surfaceShiftMm": 0.0056577297564643116,
+        "footShiftMm": 0.00004195634485890591
+      },
+      "current": {
+        "surfaceShiftMm": 0.005656937038124625,
+        "footShiftMm": 0.00003966530724144511
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbDown",
+      "height": 5.6,
+      "span": 0,
+      "steps": 20,
+      "before": {
+        "surfaceShiftMm": 527.1327888525037,
+        "footShiftMm": 280.03829852410655
+      },
+      "current": {
+        "surfaceShiftMm": 527.1327832008528,
+        "footShiftMm": 280.03828598059636
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 0,
+      "action": "climbDown",
+      "height": 5.6,
+      "span": 1.2360585147470482,
+      "steps": 20,
+      "before": {
+        "surfaceShiftMm": 530.6311752462917,
+        "footShiftMm": 281.23469340540055
+      },
+      "current": {
+        "surfaceShiftMm": 530.6311697783885,
+        "footShiftMm": 281.2346819458447
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbUp",
+      "height": 2,
+      "span": 0,
+      "steps": 7,
+      "before": {
+        "surfaceShiftMm": 0.0039719029506750225,
+        "footShiftMm": 0.000026699970690300478
+      },
+      "current": {
+        "surfaceShiftMm": 0.003971811309860977,
+        "footShiftMm": 0.000024492428286149067
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbUp",
+      "height": 2,
+      "span": 1.2360585147470482,
+      "steps": 8,
+      "before": {
+        "surfaceShiftMm": 542.6394406623021,
+        "footShiftMm": 258.29001185203015
+      },
+      "current": {
+        "surfaceShiftMm": 542.6394367854218,
+        "footShiftMm": 258.2899988246158
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbUp",
+      "height": 3,
+      "span": 0,
+      "steps": 11,
+      "before": {
+        "surfaceShiftMm": 0.004965799282327089,
+        "footShiftMm": 0.00003432812600441363
+      },
+      "current": {
+        "surfaceShiftMm": 0.004965247681257364,
+        "footShiftMm": 0.00003206901105378356
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbUp",
+      "height": 3,
+      "span": 1.2360585147470482,
+      "steps": 11,
+      "before": {
+        "surfaceShiftMm": 0.005015591936464937,
+        "footShiftMm": 0.000264486559850379
+      },
+      "current": {
+        "surfaceShiftMm": 0.005015591936464937,
+        "footShiftMm": 0.000264486559850379
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbUp",
+      "height": 4.2,
+      "span": 0,
+      "steps": 15,
+      "before": {
+        "surfaceShiftMm": 0.005817767971361391,
+        "footShiftMm": 0.000041956355072955355
+      },
+      "current": {
+        "surfaceShiftMm": 0.00581643569009322,
+        "footShiftMm": 0.00003966551135408796
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbUp",
+      "height": 4.2,
+      "span": 1.2360585147470482,
+      "steps": 15,
+      "before": {
+        "surfaceShiftMm": 0.005627464155736533,
+        "footShiftMm": 0.00004195636816870767
+      },
+      "current": {
+        "surfaceShiftMm": 0.00562667089117926,
+        "footShiftMm": 0.00003966533036934022
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbUp",
+      "height": 5.6,
+      "span": 0,
+      "steps": 20,
+      "before": {
+        "surfaceShiftMm": 525.8610676018773,
+        "footShiftMm": 280.03829767599194
+      },
+      "current": {
+        "surfaceShiftMm": 525.8610618849527,
+        "footShiftMm": 280.03828513246765
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbUp",
+      "height": 5.6,
+      "span": 1.2360585147470482,
+      "steps": 20,
+      "before": {
+        "surfaceShiftMm": 529.383452783529,
+        "footShiftMm": 281.23469253594374
+      },
+      "current": {
+        "surfaceShiftMm": 529.3834472420732,
+        "footShiftMm": 281.23468107635773
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbDown",
+      "height": 2,
+      "span": 0,
+      "steps": 7,
+      "before": {
+        "surfaceShiftMm": 0.003971902447308194,
+        "footShiftMm": 0.00002669995618432921
+      },
+      "current": {
+        "surfaceShiftMm": 0.003971810806678005,
+        "footShiftMm": 0.000024492414342440212
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbDown",
+      "height": 2,
+      "span": 1.2360585147470482,
+      "steps": 8,
+      "before": {
+        "surfaceShiftMm": 542.6396320157625,
+        "footShiftMm": 258.2900127423416
+      },
+      "current": {
+        "surfaceShiftMm": 542.6396281389166,
+        "footShiftMm": 258.28999971496216
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbDown",
+      "height": 3,
+      "span": 0,
+      "steps": 11,
+      "before": {
+        "surfaceShiftMm": 0.004965798720403334,
+        "footShiftMm": 0.00003432810868821577
+      },
+      "current": {
+        "surfaceShiftMm": 0.0049652471189696925,
+        "footShiftMm": 0.00003206899230312575
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbDown",
+      "height": 3,
+      "span": 1.2360585147470482,
+      "steps": 11,
+      "before": {
+        "surfaceShiftMm": 0.005015591911970974,
+        "footShiftMm": 0.00026448670408951144
+      },
+      "current": {
+        "surfaceShiftMm": 0.005015591911970974,
+        "footShiftMm": 0.00026448670408951144
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbDown",
+      "height": 4.2,
+      "span": 0,
+      "steps": 15,
+      "before": {
+        "surfaceShiftMm": 0.005817767378855932,
+        "footShiftMm": 0.00004195633125609726
+      },
+      "current": {
+        "surfaceShiftMm": 0.005816435097409127,
+        "footShiftMm": 0.00003966548814443523
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbDown",
+      "height": 4.2,
+      "span": 1.2360585147470482,
+      "steps": 15,
+      "before": {
+        "surfaceShiftMm": 0.0056274636967999616,
+        "footShiftMm": 0.00004195634485890591
+      },
+      "current": {
+        "surfaceShiftMm": 0.005626670432821099,
+        "footShiftMm": 0.00003966530724144511
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbDown",
+      "height": 5.6,
+      "span": 0,
+      "steps": 20,
+      "before": {
+        "surfaceShiftMm": 525.86122076395,
+        "footShiftMm": 280.03829852410655
+      },
+      "current": {
+        "surfaceShiftMm": 525.861215047052,
+        "footShiftMm": 280.03828598059636
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 1,
+      "action": "climbDown",
+      "height": 5.6,
+      "span": 1.2360585147470482,
+      "steps": 20,
+      "before": {
+        "surfaceShiftMm": 529.383614101535,
+        "footShiftMm": 281.23469340540055
+      },
+      "current": {
+        "surfaceShiftMm": 529.383608560112,
+        "footShiftMm": 281.2346819458447
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 2,
+      "span": 0,
+      "steps": 7,
+      "before": {
+        "surfaceShiftMm": 0.003931260598203325,
+        "footShiftMm": 0.000026699970690300478
+      },
+      "current": {
+        "surfaceShiftMm": 0.003931177831366535,
+        "footShiftMm": 0.000024492428286149067
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 2,
+      "span": 1.2360585147470482,
+      "steps": 8,
+      "before": {
+        "surfaceShiftMm": 539.7956666381958,
+        "footShiftMm": 258.29001185203015
+      },
+      "current": {
+        "surfaceShiftMm": 539.7956626259254,
+        "footShiftMm": 258.2899988246158
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 3,
+      "span": 0,
+      "steps": 11,
+      "before": {
+        "surfaceShiftMm": 0.004917072735414907,
+        "footShiftMm": 0.00003432812600441363
+      },
+      "current": {
+        "surfaceShiftMm": 0.004916516834273687,
+        "footShiftMm": 0.00003206901105378356
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 3,
+      "span": 1.2360585147470482,
+      "steps": 11,
+      "before": {
+        "surfaceShiftMm": 0.004959134250961602,
+        "footShiftMm": 0.000264486559850379
+      },
+      "current": {
+        "surfaceShiftMm": 0.004959134250961602,
+        "footShiftMm": 0.000264486559850379
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 4.2,
+      "span": 0,
+      "steps": 15,
+      "before": {
+        "surfaceShiftMm": 0.005761302458537899,
+        "footShiftMm": 0.000041956355072955355
+      },
+      "current": {
+        "surfaceShiftMm": 0.005759988108317779,
+        "footShiftMm": 0.00003966551135408796
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 4.2,
+      "span": 1.2360585147470482,
+      "steps": 15,
+      "before": {
+        "surfaceShiftMm": 0.005564501077556039,
+        "footShiftMm": 0.00004195636816870767
+      },
+      "current": {
+        "surfaceShiftMm": 0.005563719871159198,
+        "footShiftMm": 0.00003966533036934022
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 5.6,
+      "span": 0,
+      "steps": 20,
+      "before": {
+        "surfaceShiftMm": 523.1368597312596,
+        "footShiftMm": 280.03829767599194
+      },
+      "current": {
+        "surfaceShiftMm": 523.136853888949,
+        "footShiftMm": 280.03828513246765
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 5.6,
+      "span": 1.2360585147470482,
+      "steps": 20,
+      "before": {
+        "surfaceShiftMm": 526.6757451962154,
+        "footShiftMm": 281.23469253594374
+      },
+      "current": {
+        "surfaceShiftMm": 526.6757395116858,
+        "footShiftMm": 281.23468107635773
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 2,
+      "span": 0,
+      "steps": 7,
+      "before": {
+        "surfaceShiftMm": 0.003931260097940796,
+        "footShiftMm": 0.00002669995618432921
+      },
+      "current": {
+        "surfaceShiftMm": 0.003931177331214164,
+        "footShiftMm": 0.000024492414342440212
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 2,
+      "span": 1.2360585147470482,
+      "steps": 8,
+      "before": {
+        "surfaceShiftMm": 539.7958562637493,
+        "footShiftMm": 258.2900127423416
+      },
+      "current": {
+        "surfaceShiftMm": 539.7958522515133,
+        "footShiftMm": 258.28999971496216
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 3,
+      "span": 0,
+      "steps": 11,
+      "before": {
+        "surfaceShiftMm": 0.00491707217371539,
+        "footShiftMm": 0.00003432810868821577
+      },
+      "current": {
+        "surfaceShiftMm": 0.004916516272215411,
+        "footShiftMm": 0.00003206899230312575
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 3,
+      "span": 1.2360585147470482,
+      "steps": 11,
+      "before": {
+        "surfaceShiftMm": 0.004959134224665308,
+        "footShiftMm": 0.00026448670408951144
+      },
+      "current": {
+        "surfaceShiftMm": 0.004959134224665308,
+        "footShiftMm": 0.00026448670408951144
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 4.2,
+      "span": 0,
+      "steps": 15,
+      "before": {
+        "surfaceShiftMm": 0.005761301880852879,
+        "footShiftMm": 0.00004195633125609726
+      },
+      "current": {
+        "surfaceShiftMm": 0.005759987530122835,
+        "footShiftMm": 0.00003966548814443523
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 4.2,
+      "span": 1.2360585147470482,
+      "steps": 15,
+      "before": {
+        "surfaceShiftMm": 0.005564500630363761,
+        "footShiftMm": 0.00004195634485890591
+      },
+      "current": {
+        "surfaceShiftMm": 0.005563719424193922,
+        "footShiftMm": 0.00003966530724144511
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 5.6,
+      "span": 0,
+      "steps": 20,
+      "before": {
+        "surfaceShiftMm": 523.1370114568784,
+        "footShiftMm": 280.03829852410655
+      },
+      "current": {
+        "surfaceShiftMm": 523.1370056145962,
+        "footShiftMm": 280.03828598059636
+      }
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 5.6,
+      "span": 1.2360585147470482,
+      "steps": 20,
+      "before": {
+        "surfaceShiftMm": 526.6759050304286,
+        "footShiftMm": 281.23469340540055
+      },
+      "current": {
+        "surfaceShiftMm": 526.6758993459301,
+        "footShiftMm": 281.2346819458447
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbUp",
+      "height": 2,
+      "span": 0,
+      "steps": 7,
+      "before": {
+        "surfaceShiftMm": 0.003767894692060132,
+        "footShiftMm": 0.00002551381509323883
+      },
+      "current": {
+        "surfaceShiftMm": 0.003767781308306549,
+        "footShiftMm": 0.000027496814683519544
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbUp",
+      "height": 2,
+      "span": 1.2360585147470482,
+      "steps": 8,
+      "before": {
+        "surfaceShiftMm": 547.4618498358818,
+        "footShiftMm": 258.287821394339
+      },
+      "current": {
+        "surfaceShiftMm": 547.4618505147806,
+        "footShiftMm": 258.28782424506596
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbUp",
+      "height": 3,
+      "span": 0,
+      "steps": 11,
+      "before": {
+        "surfaceShiftMm": 0.004737150299254443,
+        "footShiftMm": 0.00003280345756321
+      },
+      "current": {
+        "surfaceShiftMm": 0.004736596799217146,
+        "footShiftMm": 0.000034761455039660826
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbUp",
+      "height": 3,
+      "span": 1.2360585147470482,
+      "steps": 11,
+      "before": {
+        "surfaceShiftMm": 0.004951755980086423,
+        "footShiftMm": 0.00026478636045272516
+      },
+      "current": {
+        "surfaceShiftMm": 0.004951755980086423,
+        "footShiftMm": 0.00026478636045272516
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbUp",
+      "height": 4.2,
+      "span": 0,
+      "steps": 15,
+      "before": {
+        "surfaceShiftMm": 0.005568076697409084,
+        "footShiftMm": 0.00004009304181588713
+      },
+      "current": {
+        "surfaceShiftMm": 0.005566808027495842,
+        "footShiftMm": 0.00004203473020426095
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbUp",
+      "height": 4.2,
+      "span": 1.2360585147470482,
+      "steps": 15,
+      "before": {
+        "surfaceShiftMm": 0.005484773506125911,
+        "footShiftMm": 0.00004009313161276094
+      },
+      "current": {
+        "surfaceShiftMm": 0.005483919576325018,
+        "footShiftMm": 0.00004203482596864089
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbUp",
+      "height": 5.6,
+      "span": 0,
+      "steps": 20,
+      "before": {
+        "surfaceShiftMm": 525.5496547665573,
+        "footShiftMm": 280.0356538541407
+      },
+      "current": {
+        "surfaceShiftMm": 525.5496453778575,
+        "footShiftMm": 280.0356580399138
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbUp",
+      "height": 5.6,
+      "span": 1.2360585147470482,
+      "steps": 20,
+      "before": {
+        "surfaceShiftMm": 529.2971555254106,
+        "footShiftMm": 281.23221023289204
+      },
+      "current": {
+        "surfaceShiftMm": 529.2971464638185,
+        "footShiftMm": 281.23221312032626
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbDown",
+      "height": 2,
+      "span": 0,
+      "steps": 7,
+      "before": {
+        "surfaceShiftMm": 0.0037678942122401204,
+        "footShiftMm": 0.000025513797893671714
+      },
+      "current": {
+        "surfaceShiftMm": 0.003767780828759421,
+        "footShiftMm": 0.000027496797135123733
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbDown",
+      "height": 2,
+      "span": 1.2360585147470482,
+      "steps": 8,
+      "before": {
+        "surfaceShiftMm": 547.4617150899242,
+        "footShiftMm": 258.2878222319217
+      },
+      "current": {
+        "surfaceShiftMm": 547.4617157688232,
+        "footShiftMm": 258.28782508264067
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbDown",
+      "height": 3,
+      "span": 0,
+      "steps": 11,
+      "before": {
+        "surfaceShiftMm": 0.004737149755926706,
+        "footShiftMm": 0.00003280343543234993
+      },
+      "current": {
+        "surfaceShiftMm": 0.004736596255285692,
+        "footShiftMm": 0.00003476143290441209
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbDown",
+      "height": 3,
+      "span": 1.2360585147470482,
+      "steps": 11,
+      "before": {
+        "surfaceShiftMm": 0.004951756049099195,
+        "footShiftMm": 0.00026478642344163997
+      },
+      "current": {
+        "surfaceShiftMm": 0.004951756049099195,
+        "footShiftMm": 0.00026478642344163997
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbDown",
+      "height": 4.2,
+      "span": 0,
+      "steps": 15,
+      "before": {
+        "surfaceShiftMm": 0.005568076140575562,
+        "footShiftMm": 0.00004009301292484401
+      },
+      "current": {
+        "surfaceShiftMm": 0.005566807470522,
+        "footShiftMm": 0.000042034702327604634
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbDown",
+      "height": 4.2,
+      "span": 1.2360585147470482,
+      "steps": 15,
+      "before": {
+        "surfaceShiftMm": 0.005484772942963329,
+        "footShiftMm": 0.00004009310350184597
+      },
+      "current": {
+        "surfaceShiftMm": 0.005483919012939989,
+        "footShiftMm": 0.00004203479807721669
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbDown",
+      "height": 5.6,
+      "span": 0,
+      "steps": 20,
+      "before": {
+        "surfaceShiftMm": 525.5497901935062,
+        "footShiftMm": 280.0356546377549
+      },
+      "current": {
+        "surfaceShiftMm": 525.549780804944,
+        "footShiftMm": 280.03565882352177
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 0,
+      "action": "climbDown",
+      "height": 5.6,
+      "span": 1.2360585147470482,
+      "steps": 20,
+      "before": {
+        "surfaceShiftMm": 529.2972992418779,
+        "footShiftMm": 281.2322110416948
+      },
+      "current": {
+        "surfaceShiftMm": 529.2972901804258,
+        "footShiftMm": 281.2322139291209
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbUp",
+      "height": 2,
+      "span": 0,
+      "steps": 7,
+      "before": {
+        "surfaceShiftMm": 0.003765809593181118,
+        "footShiftMm": 0.00002551381509323883
+      },
+      "current": {
+        "surfaceShiftMm": 0.003765696104181567,
+        "footShiftMm": 0.000027496814683519544
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbUp",
+      "height": 2,
+      "span": 1.2360585147470482,
+      "steps": 8,
+      "before": {
+        "surfaceShiftMm": 547.2034289459697,
+        "footShiftMm": 258.287821394339
+      },
+      "current": {
+        "surfaceShiftMm": 547.2034296256479,
+        "footShiftMm": 258.28782424506596
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbUp",
+      "height": 3,
+      "span": 0,
+      "steps": 11,
+      "before": {
+        "surfaceShiftMm": 0.00473434433479348,
+        "footShiftMm": 0.00003280345756321
+      },
+      "current": {
+        "surfaceShiftMm": 0.004733791034524903,
+        "footShiftMm": 0.000034761455039660826
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbUp",
+      "height": 3,
+      "span": 1.2360585147470482,
+      "steps": 11,
+      "before": {
+        "surfaceShiftMm": 0.004952600318220344,
+        "footShiftMm": 0.00026478636045272516
+      },
+      "current": {
+        "surfaceShiftMm": 0.004952600318220344,
+        "footShiftMm": 0.00026478636045272516
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbUp",
+      "height": 4.2,
+      "span": 0,
+      "steps": 15,
+      "before": {
+        "surfaceShiftMm": 0.005564433142149453,
+        "footShiftMm": 0.00004009304181588713
+      },
+      "current": {
+        "surfaceShiftMm": 0.005563165078774189,
+        "footShiftMm": 0.00004203473020426095
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbUp",
+      "height": 4.2,
+      "span": 1.2360585147470482,
+      "steps": 15,
+      "before": {
+        "surfaceShiftMm": 0.005485751718796076,
+        "footShiftMm": 0.00004009313161276094
+      },
+      "current": {
+        "surfaceShiftMm": 0.005484897976828834,
+        "footShiftMm": 0.00004203482596864089
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbUp",
+      "height": 5.6,
+      "span": 0,
+      "steps": 20,
+      "before": {
+        "surfaceShiftMm": 525.5496547665573,
+        "footShiftMm": 280.0356538541407
+      },
+      "current": {
+        "surfaceShiftMm": 525.5496453778575,
+        "footShiftMm": 280.0356580399138
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbUp",
+      "height": 5.6,
+      "span": 1.2360585147470482,
+      "steps": 20,
+      "before": {
+        "surfaceShiftMm": 529.2971555254106,
+        "footShiftMm": 281.23221023289204
+      },
+      "current": {
+        "surfaceShiftMm": 529.2971464638185,
+        "footShiftMm": 281.23221312032626
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbDown",
+      "height": 2,
+      "span": 0,
+      "steps": 7,
+      "before": {
+        "surfaceShiftMm": 0.003765809113465558,
+        "footShiftMm": 0.000025513797893671714
+      },
+      "current": {
+        "surfaceShiftMm": 0.0037656956246622107,
+        "footShiftMm": 0.000027496797135123733
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbDown",
+      "height": 2,
+      "span": 1.2360585147470482,
+      "steps": 8,
+      "before": {
+        "surfaceShiftMm": 547.2032938642973,
+        "footShiftMm": 258.2878222319217
+      },
+      "current": {
+        "surfaceShiftMm": 547.2032945439755,
+        "footShiftMm": 258.28782508264067
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbDown",
+      "height": 3,
+      "span": 0,
+      "steps": 11,
+      "before": {
+        "surfaceShiftMm": 0.00473434379162856,
+        "footShiftMm": 0.00003280343543234993
+      },
+      "current": {
+        "surfaceShiftMm": 0.004733790491352823,
+        "footShiftMm": 0.00003476143290441209
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbDown",
+      "height": 3,
+      "span": 1.2360585147470482,
+      "steps": 11,
+      "before": {
+        "surfaceShiftMm": 0.004952600386519364,
+        "footShiftMm": 0.00026478642344163997
+      },
+      "current": {
+        "surfaceShiftMm": 0.004952600386519364,
+        "footShiftMm": 0.00026478642344163997
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbDown",
+      "height": 4.2,
+      "span": 0,
+      "steps": 15,
+      "before": {
+        "surfaceShiftMm": 0.005564432585235681,
+        "footShiftMm": 0.00004009301292484401
+      },
+      "current": {
+        "surfaceShiftMm": 0.00556316452226704,
+        "footShiftMm": 0.000042034702327604634
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbDown",
+      "height": 4.2,
+      "span": 1.2360585147470482,
+      "steps": 15,
+      "before": {
+        "surfaceShiftMm": 0.00548575115616457,
+        "footShiftMm": 0.00004009310350184597
+      },
+      "current": {
+        "surfaceShiftMm": 0.005484897413683824,
+        "footShiftMm": 0.00004203479807721669
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbDown",
+      "height": 5.6,
+      "span": 0,
+      "steps": 20,
+      "before": {
+        "surfaceShiftMm": 525.5497901935062,
+        "footShiftMm": 280.0356546377549
+      },
+      "current": {
+        "surfaceShiftMm": 525.549780804944,
+        "footShiftMm": 280.03565882352177
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 1,
+      "action": "climbDown",
+      "height": 5.6,
+      "span": 1.2360585147470482,
+      "steps": 20,
+      "before": {
+        "surfaceShiftMm": 529.2972992418779,
+        "footShiftMm": 281.2322110416948
+      },
+      "current": {
+        "surfaceShiftMm": 529.2972901804258,
+        "footShiftMm": 281.2322139291209
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 2,
+      "span": 0,
+      "steps": 7,
+      "before": {
+        "surfaceShiftMm": 0.0037580325022730384,
+        "footShiftMm": 0.00002551381509323883
+      },
+      "current": {
+        "surfaceShiftMm": 0.0037579183988686164,
+        "footShiftMm": 0.000027496814683519544
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 2,
+      "span": 1.2360585147470482,
+      "steps": 8,
+      "before": {
+        "surfaceShiftMm": 547.1176293620304,
+        "footShiftMm": 258.287821394339
+      },
+      "current": {
+        "surfaceShiftMm": 547.1176299319263,
+        "footShiftMm": 258.28782424506596
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 3,
+      "span": 0,
+      "steps": 11,
+      "before": {
+        "surfaceShiftMm": 0.004724138585433916,
+        "footShiftMm": 0.00003280345756321
+      },
+      "current": {
+        "surfaceShiftMm": 0.004723584140577532,
+        "footShiftMm": 0.000034761455039660826
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 3,
+      "span": 1.2360585147470482,
+      "steps": 11,
+      "before": {
+        "surfaceShiftMm": 0.004962375718122491,
+        "footShiftMm": 0.00026478636045272516
+      },
+      "current": {
+        "surfaceShiftMm": 0.004962375718122491,
+        "footShiftMm": 0.00026478636045272516
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 4.2,
+      "span": 0,
+      "steps": 15,
+      "before": {
+        "surfaceShiftMm": 0.005552068769767298,
+        "footShiftMm": 0.00004009304181588713
+      },
+      "current": {
+        "surfaceShiftMm": 0.005550798709254002,
+        "footShiftMm": 0.00004203473020426095
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 4.2,
+      "span": 1.2360585147470482,
+      "steps": 15,
+      "before": {
+        "surfaceShiftMm": 0.005495804486668549,
+        "footShiftMm": 0.00004009313161276094
+      },
+      "current": {
+        "surfaceShiftMm": 0.005494952479453909,
+        "footShiftMm": 0.00004203482596864089
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 5.6,
+      "span": 0,
+      "steps": 20,
+      "before": {
+        "surfaceShiftMm": 525.9917909868693,
+        "footShiftMm": 280.0356538541407
+      },
+      "current": {
+        "surfaceShiftMm": 525.9917815409108,
+        "footShiftMm": 280.0356580399138
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 5.6,
+      "span": 1.2360585147470482,
+      "steps": 20,
+      "before": {
+        "surfaceShiftMm": 529.7579320598608,
+        "footShiftMm": 281.23221023289204
+      },
+      "current": {
+        "surfaceShiftMm": 529.7579229401044,
+        "footShiftMm": 281.23221312032626
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 2,
+      "span": 0,
+      "steps": 7,
+      "before": {
+        "surfaceShiftMm": 0.0037580320230844112,
+        "footShiftMm": 0.000025513797893671714
+      },
+      "current": {
+        "surfaceShiftMm": 0.0037579179197795866,
+        "footShiftMm": 0.000027496797135123733
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 2,
+      "span": 1.2360585147470482,
+      "steps": 8,
+      "before": {
+        "surfaceShiftMm": 547.1174937356698,
+        "footShiftMm": 258.2878222319217
+      },
+      "current": {
+        "surfaceShiftMm": 547.1174943055656,
+        "footShiftMm": 258.28782508264067
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 3,
+      "span": 0,
+      "steps": 11,
+      "before": {
+        "surfaceShiftMm": 0.004724138042737565,
+        "footShiftMm": 0.00003280343543234993
+      },
+      "current": {
+        "surfaceShiftMm": 0.004723583597805215,
+        "footShiftMm": 0.00003476143290441209
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 3,
+      "span": 1.2360585147470482,
+      "steps": 11,
+      "before": {
+        "surfaceShiftMm": 0.00496237578564612,
+        "footShiftMm": 0.00026478642344163997
+      },
+      "current": {
+        "surfaceShiftMm": 0.00496237578564612,
+        "footShiftMm": 0.00026478642344163997
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 4.2,
+      "span": 0,
+      "steps": 15,
+      "before": {
+        "surfaceShiftMm": 0.005552068213819181,
+        "footShiftMm": 0.00004009301292484401
+      },
+      "current": {
+        "surfaceShiftMm": 0.005550798153490669,
+        "footShiftMm": 0.000042034702327604634
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 4.2,
+      "span": 1.2360585147470482,
+      "steps": 15,
+      "before": {
+        "surfaceShiftMm": 0.0054958039206061985,
+        "footShiftMm": 0.00004009310350184597
+      },
+      "current": {
+        "surfaceShiftMm": 0.00549495191371286,
+        "footShiftMm": 0.00004203479807721669
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 5.6,
+      "span": 0,
+      "steps": 20,
+      "before": {
+        "surfaceShiftMm": 525.9919264899168,
+        "footShiftMm": 280.0356546377549
+      },
+      "current": {
+        "surfaceShiftMm": 525.9919170440983,
+        "footShiftMm": 280.03565882352177
+      }
+    },
+    {
+      "id": "woman-scout",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 5.6,
+      "span": 1.2360585147470482,
+      "steps": 20,
+      "before": {
+        "surfaceShiftMm": 529.7580758533016,
+        "footShiftMm": 281.2322110416948
+      },
+      "current": {
+        "surfaceShiftMm": 529.7580667336854,
+        "footShiftMm": 281.2322139291209
+      }
+    }
+  ],
+  "maxRootJumpBeforeMm": 30.985899928060437,
+  "maxRootJumpCurrentMm": 0.01490718785773905,
+  "retainedBroaderPalmFloorFailures": [
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 2,
+      "span": 0,
+      "up": 0.84,
+      "side": "l",
+      "handMinimumMm": -4.047529708894437
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 2,
+      "span": 1.2360585147470482,
+      "up": 0.84,
+      "side": "l",
+      "handMinimumMm": -4.047530213521
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 3,
+      "span": 0,
+      "up": 0.84,
+      "side": "l",
+      "handMinimumMm": -4.047537625136766
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 4.2,
+      "span": 0,
+      "up": 0.84,
+      "side": "l",
+      "handMinimumMm": -4.047547124627293
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 4.2,
+      "span": 1.2360585147470482,
+      "up": 0.84,
+      "side": "l",
+      "handMinimumMm": -4.047547505945381
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 5.6,
+      "span": 0,
+      "up": 0.84,
+      "side": "l",
+      "handMinimumMm": -4.047558207365576
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbUp",
+      "height": 5.6,
+      "span": 1.2360585147470482,
+      "up": 0.84,
+      "side": "l",
+      "handMinimumMm": -4.047558526321993
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 2,
+      "span": 0,
+      "up": 0.84,
+      "side": "l",
+      "handMinimumMm": -4.047568174120997
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 2,
+      "span": 1.2360585147470482,
+      "up": 0.84,
+      "side": "l",
+      "handMinimumMm": -4.047568678744895
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 3,
+      "span": 0,
+      "up": 0.84,
+      "side": "l",
+      "handMinimumMm": -4.047576090363325
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 4.2,
+      "span": 0,
+      "up": 0.84,
+      "side": "l",
+      "handMinimumMm": -4.0475855898529645
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 4.2,
+      "span": 1.2360585147470482,
+      "up": 0.84,
+      "side": "l",
+      "handMinimumMm": -4.047585971169276
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 5.6,
+      "span": 0,
+      "up": 0.84,
+      "side": "l",
+      "handMinimumMm": -4.0475966725930235
+    },
+    {
+      "id": "granadero",
+      "lod": 2,
+      "action": "climbDown",
+      "height": 5.6,
+      "span": 1.2360585147470482,
+      "up": 0.84,
+      "side": "l",
+      "handMinimumMm": -4.047596991547664
+    }
+  ],
+  "nativeBanks": {
+    "/models/characters/male-animations.glb": "49f5d77abe97ae560f46060f93d3fdd31661eda97e47dfdf029216ade2beeb27",
+    "/models/characters/female-animations.glb": "509a9c2c1ab0cb2a7d38c8f50cb7809cfa9f6c4cc946c69652b6918fdeb1ac10"
+  },
+  "scope": "96 real runtime cases; native channels unchanged on disk, all joint offsets/scales exact; only selected body tracks blend toward paid phase during the bounded rung section and four limb chains use the source contact/pole recipe. The existing even-rung crest defect remains outside acceptance. World actor transforms and action/mixer clocks exact."
+}

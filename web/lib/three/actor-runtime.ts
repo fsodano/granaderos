@@ -316,7 +316,7 @@ export class ActorRuntime {
     this.action.timeScale=timing.rate;if(timing.time!==undefined)this.action.time=timing.time;
     if(motion?.moving&&motion.climbGeometry&&this.clipSpec.climbSupport){const down=visual.action==='climbDown',fraction=this.climbFit!.nativeFraction(motion.climbGeometry,down?1-(motion.segmentFraction??0):motion.segmentFraction??0,this.clipSpec);this.action.time=clip.duration*(down?1-fraction:fraction);}
     this.mixer.update(Math.min(delta,.1));
-    if(motion?.moving&&motion.climbGeometry&&this.clipSpec.climbSupport)this.climbFit?.apply(motion.climbGeometry,visual.action==='climbDown'?1-(motion.segmentFraction??0):motion.segmentFraction??0,this.clipSpec);
+    if(motion?.moving&&motion.climbGeometry&&this.clipSpec.climbSupport)this.climbFit?.apply(motion.climbGeometry,visual.action==='climbDown'?1-(motion.segmentFraction??0):motion.segmentFraction??0,this.clipSpec,clip,this.action.getEffectiveWeight());
     this.gaitSupport.apply(this.mixer.time,this.action.time,inputMotion?.speed??0);
     this.gestureSupport.apply(this.mixer.time,this.action.time,this.action.timeScale);
     this.poseCloth(Math.min(delta,.1));

@@ -59,24 +59,29 @@ function bootSkin(actor){const result={l:[],r:[]};actor.model.traverse(mesh=>{if
 function clocks(actor){return [actor.action.time,actor.action.timeScale,actor.mixer.time];}
 function snapshot(actor){const result=new Map();actor.model.traverse(n=>{if(n.isBone)result.set(n.name,{position:n.position.toArray(),scale:n.scale.toArray(),rotation:n.quaternion.toArray()});});return result;}
 function sample(actor,appearance,action,g,spec,up){const f=action==='climbDown'?1-up:up,p=sampleLadderClimb(g,up,spec.climbSupport.feetRest),duration=Math.max(spec.duration,g.height/.65);actor.update(visual(appearance,action,{cue:undefined,position:[0,g.lower[1]+p.root.height,p.root.forward],motion:{moving:true,segmentFraction:f,climbGeometry:g}}),f*duration*1000);actor.tick(0,f*duration*1000);actor.root.updateMatrixWorld(true);return p;}
-for(const appearance of ['granadero','woman-scout'])for(const lod of [0,1,2])for(const action of ['climbUp','climbDown'])test(`${appearance} LOD${lod} ${action}: reachable tall rung hands retain contact and native body`,async()=>{
+for(const appearance of ['granadero','woman-scout'])for(const lod of [0,1,2])for(const action of ['climbUp','climbDown'])test(`${appearance} LOD${lod} ${action}: reachable tall rung hands retain contact, native dimensions and paid body phase`,async()=>{
  const source=await asset(appearance,lod),spec=source.clips.find(c=>c.name==='life.'+action);
  for(const height of [2,3,4.2,5.6]){
-  const base=height===5.6?1.2:height===4.2?1.1:.4,g=ladderGeometry([0,base,0],[0,base+height,TILE_METRES],TILE_METRES),actor=new ActorRuntime(source,visual(appearance,action,{cue:undefined,position:[0,0,0],motion:{moving:true,segmentFraction:0,climbGeometry:g}})),native=new ActorRuntime(source,visual(appearance,action,{cue:undefined,position:[0,0,0],motion:{moving:true,segmentFraction:0,climbGeometry:g}}));native.climbFit.apply=()=>{};
+  const base=height===5.6?1.2:height===4.2?1.1:.4,g=ladderGeometry([0,base,0],[0,base+height,TILE_METRES],TILE_METRES),actor=new ActorRuntime(source,visual(appearance,action,{cue:undefined,position:[0,0,0],motion:{moving:true,segmentFraction:0,climbGeometry:g}})),native=new ActorRuntime(source,visual(appearance,action,{cue:undefined,position:[0,0,0],motion:{moving:true,segmentFraction:0,climbGeometry:g}}));native.climbFit.apply=()=>{};const bodyReference=new ActorRuntime(source,visual(appearance,action,{cue:undefined}));bodyReference.climbFit.apply=()=>{};bodyReference.climbFit.nativeFraction=(_g,f)=>f;
   const full=bootSkin(actor),samples=new Set(Array.from({length:151},(_,i)=>i/150));
   // Real 240 Hz arrivals cover the old .65 m rejection interval and the
   // full-weight/fading edges; coarse samples cover the entire paid route.
   const duration=Math.max(spec.duration,height/.65);for(const [a,b]of [[.085,.115],[.635,.665],[.905,.985]])for(let up=a;up<=b;up+=1/(duration*240))samples.add(up);
   let contacts=0,roofChecks=0;
   for(const up of [...samples].sort((a,b)=>action==='climbDown'?b-a:a-b)){
-   const plan=sample(actor,appearance,action,g,spec,up);sample(native,appearance,action,g,spec,up);assert.equal(actor.climbFit.rejectedFits,0,`${height}m ${up}: no reachable hand is rejected`);
-   const n=snapshot(native),fitted=snapshot(actor);for(const [name,bone]of fitted){assert.deepEqual(bone.position,n.get(name).position,`${name}: native offsets`);assert.deepEqual(bone.scale,n.get(name).scale,`${name}: native dimensions`);if(!/^(thigh|calf|foot|upperarm|lowerarm|hand)_[lr]$/.test(name))assert.deepEqual(bone.rotation,n.get(name).rotation,`${name}: unrelated native rotation`);}
+   const plan=sample(actor,appearance,action,g,spec,up);sample(native,appearance,action,g,spec,up);sample(bodyReference,appearance,action,g,spec,up);assert.equal(actor.climbFit.rejectedFits,0,`${height}m ${up}: no reachable hand is rejected`);
+   const n=snapshot(native),body=snapshot(bodyReference),fitted=snapshot(actor);for(const [name,bone]of fitted){
+    if(name==='Root')assert.ok(new Vector3(...bone.position).distanceTo(new Vector3(...n.get(name).position).lerp(new Vector3(...body.get(name).position),actor.climbFit.sourceWeight))<1e-7,'Root keeps the bounded native paid body phase');else assert.deepEqual(bone.position,n.get(name).position,`${name}: native offsets`);
+    assert.deepEqual(bone.scale,n.get(name).scale,`${name}: native dimensions`);
+    if(/^spine_0[123]$/.test(name))assert.ok(new Quaternion(...bone.rotation).normalize().angleTo(new Quaternion(...n.get(name).rotation).normalize().slerp(new Quaternion(...body.get(name).rotation).normalize(),actor.climbFit.sourceWeight))<1e-5,`${name}: exact native paid body phase`);
+    else if(!/^(thigh|calf|foot|upperarm|lowerarm|hand)_[lr]$/.test(name))assert.deepEqual(bone.rotation,n.get(name).rotation,`${name}: unrelated native rotation`);
+   }
    assert.deepEqual(actor.root.position.toArray(),native.root.position.toArray());assert.deepEqual(actor.root.quaternion.toArray(),native.root.quaternion.toArray());assert.deepEqual(clocks(actor),clocks(native));
    for(const side of ['l','r']){const hand=plan.hands[side];if(hand.weight>.999){const target=new Vector3(hand.position[0],base+hand.position[1],hand.position[2]);assert.ok(actor.root.localToWorld(palm(actor,side)).distanceTo(target)<.025,`${height}m ${up}: moving and planted palm contact`);contacts++;}
     const foot=plan.feet[side];if(foot.planted&&foot.roofWeight>.999&&!(foot.restWeight>0)){assert.ok(full[side].length>100,'Complete weighted boot surface');assert.ok(lowestSurface(actor,full[side])+plan.root.height-height>-.004,`${height}m ${up}: complete roof boot clearance`);roofChecks++;}
    }
   }
-  assert.ok(contacts>100);assert.ok(roofChecks>10);actor.dispose();native.dispose();
+  assert.ok(contacts>100);assert.ok(roofChecks>10);actor.dispose();native.dispose();bodyReference.dispose();
  }
 });
 for(const appearance of ['granadero','woman-scout'])test(`${appearance}: finite and unreachable targets retain native fallback`,async()=>{
