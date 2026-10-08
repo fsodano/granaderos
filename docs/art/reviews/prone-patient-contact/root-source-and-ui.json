@@ -1,0 +1,2413 @@
+{
+  "implementationCommit": "f2e33df79fe4819a429d30aabb8c7d57ff560e13",
+  "baselineCommit": "65c14ef72474519bf6fad01be59bc9d4e275b673",
+  "buildSource": "577e42340cdf854ba4b3c6ae900b9ce4a4813ca12d1a1945417fd3f07dbb924e",
+  "rootTests": {
+    "passed": 201,
+    "failed": 0,
+    "skipped": 0,
+    "durationSeconds": 22.5133
+  },
+  "code": {
+    "web/lib/three/actor-runtime.ts": "075a40c931bc88e9d6c39fcd0b7629317795b966959f3ab5516d94496b2fc110",
+    "web/lib/three/scene-actors.ts": "5a9106b793a55c0a2bb5bb9c24b920496560ee4d91f97b8c62a84ea8df129b83",
+    "web/lib/three/presentation.ts": "c78f1984a7684717b8b8a17255a1b27daa39a1f4d1c4b75343f603287b0cf44d",
+    "web/lib/three/contact-target-model.ts": "a6f1c4a5bbb59b1eea083d863ad205e2a07848017fe3ecce0c9fafc37f458103",
+    "web/lib/three/melee-contact-fit.ts": "a861d48617c27f3c6d931cb30b654254ed4fba2c77a018149067dcfc995b7693",
+    "web/lib/three/heal-patient-contact-fit.ts": "55ca59c067a070ea81bc77e044a75d8b77bb77e27d04772865b4b61cd553dcda",
+    "web/lib/three/heal-patient-ready-fit.ts": "7f89fb58503964dca811ccffec0690bb3b322d2d50cef9a4267ac39cb4b30cc9",
+    "web/lib/three/heal-patient-fit-worker.ts": "34741f49eb6e089dedf68346f8fbc3dfc734b242ddba511592f5e00f56229bb0",
+    "tests/three-heal-patient-worker-ready.test.mjs": "09ee140b3bf60542ca9dd12a57004ebff447d967a9862b7cc975aa9cfcb340bf"
+  },
+  "preservedInputs": {
+    "web/public/models/characters/female-animations.glb": "509a9c2c1ab0cb2a7d38c8f50cb7809cfa9f6c4cc946c69652b6918fdeb1ac10",
+    "web/public/models/characters/woman-scout-lod1.glb": "358863428ae5d24a19f4d080dd56c7982b568041a5530bacc59e48153ca78cda",
+    "web/public/models/characters/friar-lod2.glb": "e31fdb7eef3729895d9bdc7c8eb11b4c57ac7ca7e7cd71eeed2e560fd1b8fcc5",
+    "web/public/models/characters/gaucho-lod1.glb": "69b3e5d633a9578338f5ae2c2270b1470096b1a031c55814bbc93d100baddf78",
+    "web/public/models/characters/worker-lod1.glb": "a83c44ad08118860c59ea02a330b617ad0d8ddfa2a4ed70fabe695a04bd10a7f",
+    "web/public/models/characters/male-animations.glb": "49f5d77abe97ae560f46060f93d3fdd31661eda97e47dfdf029216ade2beeb27",
+    "web/public/models/characters/worker-lod0.glb": "1682d2cbd20cca840fc088d58983fa37496db3cb56084babd6cdd7c7d179540a",
+    "web/public/models/characters/gaucho-lod0.glb": "7179603e7221ef55ea754590b1b4a81d521a8167ae1b033244042ad968f6c687",
+    "web/public/models/characters/woman-scout-lod0.glb": "8d7c0d817c45681a0a1ebf5068b985ad8d1de580a221d93af3ccba1640f5fa39",
+    "web/public/models/characters/woman-scout-lod2.glb": "06dee5978656e70919c86a3650e914c6f713afb00cf502c954a426740678aa93",
+    "web/public/models/characters/friar-lod1.glb": "17f92e1b1c45acaf06e20e58ba7e298f5cc847398a9205807694636e65a51a08",
+    "web/public/models/characters/gaucho-lod2.glb": "185ee45e4b006e9168650a02b3ceeac0e3a654dfcbeb3094dbbf543e03b7a083",
+    "web/public/models/characters/worker-lod2.glb": "52e16641b2ed73a47536faf899772678e30451b10d8d2704b171d8f631d9e517",
+    "web/public/models/characters/friar-lod0.glb": "b866a9269b046007dbff7191afa91e65a86128c36bf64925a5921e6ed8f43bd9",
+    "web/public/models/characters/horse-lod0.glb": "b83f48c9dd231ca5d4fd7c44115be540e2aa8459c94aef89e65ca849ade9bc04",
+    "web/public/models/characters/horse-lod1.glb": "edaa79079ae8dc5109ec30f43dccc1a66a667c75456ac5d59e18a89fe3f9aec1",
+    "web/public/models/characters/horse-lod2.glb": "6b232850ead3ebc220087c23c3405cc85991d03dfc7b130ee80493b6a7502993",
+    "web/public/models/characters/royalist-lod0.glb": "d23f8262eb38def87d7b21586d3faf308505323b5091a8c7150acd82a7334b01",
+    "web/public/models/characters/royalist-lod1.glb": "9199b37b27872bd9348f34c9f6bd051d45089aa3727ae76cd23347d30129df31",
+    "web/public/models/characters/manifest.json": "f57f1710b6e6c29b29ca53e9182c29b2b4f97b4e7849c1d57bf87ec8db2412b0",
+    "web/public/models/characters/royalist-lod2.glb": "294698350af08dc29e0b505fcc3f432a7634adda3ead34019a6e7ab5e4b99f34",
+    "web/public/models/characters/female-garments.glb": "e197024f2a2a9a2d18241206eef4e409189ceab1ba4f7fd97a8eb0d96784c5af",
+    "web/public/models/characters/woman-shawl-lod2.glb": "2ff3830480c870cf5733399a18635f1f176fd9a827206d9225083184543478ac",
+    "web/public/models/characters/surgeon-lod2.glb": "ac5ed22dfc4e5c4558a801df20cf7f87a6347f6f5cca0376214394ea04d0e5cd",
+    "web/public/models/characters/surgeon-lod0.glb": "7f40d2b114f1da469abb2dc0dfe13d1feb5212a98abdc90604b2f21e540d7fb7",
+    "web/public/models/characters/woman-shawl-lod0.glb": "840681442792a9ce2c0c688ceb8d5542caec5d618256c7366dc9bb8129765234",
+    "web/public/models/characters/woman-shawl-lod1.glb": "5653faec338aeed3923359b63d8ae08cec4a045919e6586d457346f6d7e9190f",
+    "web/public/models/characters/surgeon-lod1.glb": "78f121de0540449c2fad102c31a346b41e3afb13c94ac28bd24c3e0660324d0e",
+    "web/public/models/characters/male-garments.glb": "f2c8a94230284344705166b83e229194a2d38003c821fc1b7484c91573c4ea07",
+    "web/public/models/characters/granadero-lod2.glb": "de18c59d01ed02830e42cdc65a1b3b03a4f895746e800ba53c46eef8aa8a2f9f",
+    "web/public/models/characters/equipment.glb": "237c0e3dd3e7a3af5fbb0c05ee94a3aa95c25951b346877e43c9af4fb673edf5",
+    "web/public/models/characters/granadero-lod0.glb": "9041e7e5ecd249b0065cf012271d60552f418d1bb2809be6ccb973496c7e97e3",
+    "web/public/models/characters/granadero-lod1.glb": "b589b8558e13d693cccbbc28621ca96221cc9bc6ee58028751075b2fcf5c0188",
+    "web/public/models/characters/textures/190fcfc8745e6197a795.png": "190fcfc8745e6197a7954c6b921f4cf3a890d9ac78db560a67dcdbc8359de180",
+    "web/public/models/characters/textures/55e296edc51c20d99a47.png": "55e296edc51c20d99a4758abe005c1d98e463c01967303ce835d01bc3b54069f",
+    "web/public/models/characters/textures/836a76435d2a7ee1dd7e.png": "836a76435d2a7ee1dd7e7408d0252226096b5edb7a93a80f30e44c90523b6e9f",
+    "web/public/models/characters/textures/c797c24de7449f28452e.png": "c797c24de7449f28452eca47c08200b6b53c557c3f0c96469c819dd77df8fc96",
+    "web/public/models/characters/textures/8c172dc9580b54c81b2b.png": "8c172dc9580b54c81b2b8836c2505fb9a523d11c8e7440cc39765bc8fb1e227f",
+    "web/public/models/characters/textures/d119453aaca0a086a3ff.png": "d119453aaca0a086a3ff52033e281bdf80cc39f31e6f079c36fac01d50300448",
+    "web/public/models/characters/textures/7e88592eeb20ec0f16ff.png": "7e88592eeb20ec0f16fff1567f6419d1ef7e953388b4eda301ce7ccb477a9551",
+    "web/public/models/characters/textures/8cbf285a07c9ac6f5db6.png": "8cbf285a07c9ac6f5db6312b0f652cec8da66e8c5a093007684ee4912236e6a5",
+    "web/public/models/characters/textures/655e00fa1785da657da4.png": "655e00fa1785da657da4cc2cf75b4f0b397729a965855d9ee25c276b1564726f",
+    "web/public/models/characters/textures/02fc23efbfd8542db951.png": "02fc23efbfd8542db9518c8793db2b0b3ecb320896a7697607992b22c6568389",
+    "web/public/models/characters/textures/cfef86f82ac5d996af20.png": "cfef86f82ac5d996af200cedf4b76ca9d633459188d697a9d8cfdf17d08e7e18",
+    "web/public/models/characters/textures/0620e2e93cecf73291dd.png": "0620e2e93cecf73291ddcd06c6eff1fe268af67ece4d484c21c279a1501b4814",
+    "web/public/models/characters/textures/a27b9aff9f8c8edf1136.png": "a27b9aff9f8c8edf1136144e3450fcf61faad1b74eae0deb6b512c0c1d2b55de",
+    "web/public/models/characters/textures/ad4f1a90b4624a19fc15.png": "ad4f1a90b4624a19fc157ddc8479106e4a320e7198a5f61c8c7d2081bc751d74",
+    "web/public/models/characters/textures/95673a70dda3ae07ba70.png": "95673a70dda3ae07ba7077694469c628b2c8c8bda526424b86f40aa881d6b90b",
+    "web/public/models/characters/textures/14c044c8d8f2e139821a.png": "14c044c8d8f2e139821aef331e84b715642e77012daeb5fb5c37e6cee7987f22",
+    "web/public/models/characters/textures/5fbafa4e4224acc6b55d.png": "5fbafa4e4224acc6b55d9a76c820ed415f5d45e368ad9e07ad5253657a888626",
+    "web/public/models/characters/textures/bf154685e393a585d17b.png": "bf154685e393a585d17b3c3caff2e092d862b8047b6c99361d3a99b6eb800bfd",
+    "web/public/models/characters/textures/c2e31d1ddd86e7509c38.png": "c2e31d1ddd86e7509c381bcf15b4dcf0a116d1d2607a27e981b2b1c61ab42a0f",
+    "web/public/models/characters/textures/e35c2780ff9208044a69.png": "e35c2780ff9208044a6905df53ae7dcd74a781e2b6e0e043fc4ef0b1a2c34422",
+    "web/public/models/characters/textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+    "web/public/models/characters/textures/851812def6824e843620.png": "851812def6824e8436202da61466ea219f705c42ea2352d5d2a095be711d6c14",
+    "web/public/models/characters/textures/e80f68933ff3fbf30557.png": "e80f68933ff3fbf305574a55d2512ea143835de52314e7f62ecab38ec409a8c4",
+    "web/public/models/characters/textures/2b37ee7756a9b82dfffb.png": "2b37ee7756a9b82dfffb3745cf51692fae1ed75ec14ea0e66b6111d59f5c89ec",
+    "web/public/models/characters/textures/dbb6d5d6eecf88027af2.png": "dbb6d5d6eecf88027af2eb2d6948af114a6d4de7454c0f4c4ff04192eca25924",
+    "web/public/models/characters/textures/585896ee836fdcc77ac9.png": "585896ee836fdcc77ac94d7b87c6c2ac2b1c872810f85fc48f5b93178d3e08ac",
+    "web/public/models/characters/textures/6b9e6e7cf8e4e61f4eec.png": "6b9e6e7cf8e4e61f4eeca4c37b1a44185157489b9dfa152f06742cca0e05bd25",
+    "web/public/models/characters/textures/89135b727219523ff9ab.png": "89135b727219523ff9ab057e2481e4022fdd64fe463bfa1480ffbf1876a6475a",
+    "web/public/models/characters/textures/79b3320dd2f22a4941bf.png": "79b3320dd2f22a4941bf0243b0ebc0b7bc19cf512770d7627922d1fd67aeb9c3",
+    "web/public/models/characters/textures/9ee14da28eecf04abb47.png": "9ee14da28eecf04abb478cf4970a08598db7e84e3300e90cecbcea7b8d0ebedb",
+    "web/public/models/characters/textures/b14cf99a684846cb69e9.png": "b14cf99a684846cb69e9be4ab93a58d973d3bfce54c0ec9a47ca0545229d2cc1",
+    "web/public/models/characters/textures/222b2fd5222b6638ecda.png": "222b2fd5222b6638ecda965145397b879f1ede5d295c7b2b82ee1d57d4586f74",
+    "web/public/models/characters/textures/01f30a1649e149138639.png": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8",
+    "web/public/models/characters/textures/5fd47e864c3235fa586e.png": "5fd47e864c3235fa586eea83e79c96965cd2ff05d1fcc45f4022455293898cb0",
+    "web/public/models/characters/textures/c87059b901355578ac69.png": "c87059b901355578ac6969804d1893732e807e8e4825a3787733567b93a763aa",
+    "web/public/models/characters/textures/f1d9c1150e9ee0415b23.png": "f1d9c1150e9ee0415b236457423e9a338d59631ab7ad1c295e06950723e4498d",
+    "web/public/models/characters/textures/c4ad653360cce21ee393.png": "c4ad653360cce21ee3933b84279b682381beeb75d21e4f88906076fdd7165456",
+    "web/public/models/characters/textures/531a12fea7813218250b.png": "531a12fea7813218250b3e25413c9fd0e7456d66733a9affda8b7fdd383ae4ab",
+    "web/public/models/characters/textures/a536d20596728975d3d5.png": "a536d20596728975d3d5364979a12235b13fdda1c55a71beb924308f5d21ddae",
+    "web/public/models/characters/textures/84fcfbc60fab351843b9.png": "84fcfbc60fab351843b9915fce04eda3d1156fcd9d6b28840fd45cadc3123854",
+    "web/public/models/characters/textures/5e63547ca25d3a7cd3a2.png": "5e63547ca25d3a7cd3a25c0a96afcdc370582eafef0e1f03410b9caed5a33142",
+    "web/public/models/characters/textures/2e15a426be9ee20c39a7.png": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357",
+    "web/public/models/characters/textures/79b468f44254a4b58d1f.png": "79b468f44254a4b58d1fb54f597c0e3fab79ae8732637caed793639d5eaf26d5",
+    "web/public/models/characters/textures/4b76848f0034bd614ce5.png": "4b76848f0034bd614ce511b05a6e430f85e5468dd1ff065c393f2523e7ad91c9",
+    "web/public/models/characters/textures/ede54015ca90cc29311f.png": "ede54015ca90cc29311fc135ce09564f9fd977e40111655eb32a0ec3664d51f0",
+    "web/public/models/characters/textures/cde52c5fc44edc14b3d6.png": "cde52c5fc44edc14b3d661cff6a5a62068916c4af703298e0e31431b5eaf51a9",
+    "web/public/models/characters/textures/4b36fb5abe80124daabc.png": "4b36fb5abe80124daabce546e8ba9f220ed6467a69c301dd3baaeb43852e8aa5",
+    "web/public/models/characters/textures/ec6104babab48fadf35b.png": "ec6104babab48fadf35b19b20571477341e465c63d1e9e45d764e798b57bc034",
+    "web/public/models/characters/textures/b1024d7c1943be94a366.png": "b1024d7c1943be94a366fa1fdb203c81d018f9552d47d6f2b2a1217200d81b49",
+    "web/public/models/characters/textures/05fec3a4c6149b6ea6e2.png": "05fec3a4c6149b6ea6e22f2a3d81ef0e2002211f089d9d5e5722bee04b87d9e2",
+    "web/public/models/characters/textures/ca8dfdb29da067ef8ac1.png": "ca8dfdb29da067ef8ac15565cbd7779aef4188f41b2afc539af517a2680fbbe2",
+    "web/public/models/characters/textures/409b7f25641a2c1cf7e2.png": "409b7f25641a2c1cf7e2497521c2022152e41c3cad3e224a29384d18681ad207",
+    "web/public/models/characters/textures/b377c35c64fa14f7d1c4.png": "b377c35c64fa14f7d1c41d53fceb5488b812bfa6f2b04b3d071ce17bf3436852",
+    "web/public/models/characters/textures/36f03519aa9b1970bda4.png": "36f03519aa9b1970bda458421a19ab7bc1d72524d77135ea6d177d79898eb20d",
+    "web/public/models/characters/textures/72fcd3fee9a0c97e77fe.png": "72fcd3fee9a0c97e77feda0ba5f4444a3356a6b8f80aa1313cc609dbfb180e8e",
+    "web/public/models/characters/textures/76c6ed4f73557a4a0a53.png": "76c6ed4f73557a4a0a53d707abccd289a0cbe8d7a9c2a822753f6848ba41ae0f",
+    "web/public/models/characters/textures/040aa7bd60f397241c0c.png": "040aa7bd60f397241c0c5dd19c01e5d2660fc82c6d78e911b62e1efef5cbde33",
+    "web/public/models/characters/textures/f77574e15506128045f5.png": "f77574e15506128045f5f9f299f14c0827c7338cbcb9e7be4bb802f8ac729115",
+    "web/public/models/characters/textures/1b6188df5f9a698957f1.png": "1b6188df5f9a698957f1728ce3cbf8760c736178b4f43d1535b29d57ecbc6f83",
+    "web/public/models/characters/textures/3a317df510b9935d80c4.png": "3a317df510b9935d80c4659aa3b257bd138510ffac45aadab18506de529caa6c",
+    "web/public/models/characters/textures/0c2590e18b3ddbd6fba9.png": "0c2590e18b3ddbd6fba95c7836367be876695b21ac74b9009febe9d672ab5a85",
+    "web/public/models/characters/textures/0e8f9ee2451d7ab3080f.png": "0e8f9ee2451d7ab3080f186ca60a0089f60da036450c409526de83876a80d1f0",
+    "web/public/models/characters/textures/c314f9a903442ecaa6a4.png": "c314f9a903442ecaa6a41bb22680b1a68c574ec5cfdee4666041b11f7ee7cfb9",
+    "web/public/models/characters/textures/f63de566801fcea8ef97.png": "f63de566801fcea8ef973271a3cd46ac87cf285e766ecfa2d0c6f64670ff3af2",
+    "web/public/models/characters/textures/92f5ecf960db9837f174.png": "92f5ecf960db9837f174f2e110637c6c42e3987bb8be2c2a3bc6443b797319a8",
+    "web/public/models/characters/textures/4e49a6468ea885a3f342.png": "4e49a6468ea885a3f34272c59358043ec4a97429e0ca0af5dbfeea0cf61e3c7a",
+    "web/public/models/characters/textures/8a4e28b91cfa07b8dbd2.png": "8a4e28b91cfa07b8dbd2f22cc7739ed5f79ed0f02f2ebb5d167c165cb06ad6e6",
+    "web/public/models/characters/textures/9fc805252cb605d3ce55.png": "9fc805252cb605d3ce55864a5cbe3b40809771e35ff8983c8d492d3041c6089f",
+    "web/public/models/characters/textures/09edeca97bbf63512088.png": "09edeca97bbf635120882bf0f079560f2da1d017f48770acb70e51e72eff7707",
+    "web/public/models/characters/textures/61cd16599facd99f5d0d.png": "61cd16599facd99f5d0d037f37c0b057d88cdea8ce88e047216fa9db975b8e29",
+    "web/public/models/characters/textures/55aaf791e83ec37fa219.png": "55aaf791e83ec37fa219953f3eb685a5375b2f35e1c93991a15f1c637b764dbe",
+    "web/public/models/characters/textures/4c4475e9444839cf1982.png": "4c4475e9444839cf1982cfb2bdec28eaf720b9152abe3b229c69c20592329386",
+    "game/inventory-pockets.js": "0aa0441b4462aede88b969ea3b06aa4aa05e51b1c10a2b469d0f139d2d1c9876",
+    "game/battle-handoff.js": "cde414a8a187b2fe87dea871a9bccbcf2672593f273ee70be1f8d05f290fcbb4",
+    "game/tactical-awareness.js": "480ae29a8543fdc9ead2d7e30c837006bcb42b45d7d4e70303e5201285fa5c3f",
+    "game/campaign-presence.js": "e60dcd5df079a3466b6bb5460c47c12687a4cac9df4971aa0daa16bfecd01fb9",
+    "game/auto-resolve.js": "63f68927c41d2b24970c83d95b913064cf3bc2d3bb196888101601f9de865c6a",
+    "game/sleep-needs.js": "625eb6d27764fb4acfc0fab30216a3c610ed217ad5d645ae922dfec67a6eb7ba",
+    "game/campaign-civilian-harm.js": "2c25ad8094fa6cc8c655b4e85b028e715a9836a65257edb2ef824961347ed211",
+    "game/horses.js": "61ca7ed32377af1593386741bc223e1571b7807a49d94457529e39102e4743d1",
+    "game/morale.js": "6ba46e211b28d06b73c545c1a2af5714bcbecdec652e93240bc768926e49180d",
+    "game/tactical-visibility.js": "08484e30df4346acb6df1abc855f0c982c83c0d280c299eff566e0e779a1270e",
+    "game/missions.js": "0ea487bef4daf5ad34bfa63f417ad03f0d6adca1f9dfe4c64032d2f91605dbb1",
+    "game/logistics.js": "cc6654d356e7532acdc02b82d7baadcc0fe62477172d0c342c965959a951043f",
+    "game/enemy-groups.js": "f94d344424ff50cfd56490aec3d7da6197424860755bde0f53592627b98c79e6",
+    "game/quests.js": "a7c616af6b90b7a1f31de23ec381adc4ef3b3467743c1afebb9a31136d6a9592",
+    "game/thrown-knife.js": "aa6ad240bf3ab6734a63d43a5f60ca1f966b9d674a5b79f25cb3673b563a3244",
+    "game/merchant-preferences.js": "10de423f52f493b9c131f74f8666ab55a9deb737f6654908d54f7c1973621f21",
+    "game/militia-patrol.js": "1deab425a7589af777930410e20ac85fe4d19c44318449748756fc661ece2e8a",
+    "game/first-aid.js": "4972b738286f2671ee4aaad3653aa0829b1004fad620f4bde75d0e24263171e5",
+    "game/sprite-order-pose.js": "c891ad1efa14f2171d876eca618ab3cb71267bde3f83420c0098b311a0301c5a",
+    "game/militia-arrival.js": "a35b558848364b99a9a9e86a1f6726bd59eb40a61e4ac8f9806bf17370be1785",
+    "game/equipment-repair.js": "eb84ad2e0cc3af18d63c525cae319fc1b5846bfd498f255a3a5d363b2ee57e8e",
+    "game/artillery-transport.js": "70f336d462185d1ac1373362a9c2a9f70dcf26e6678590a781c062795bde30f2",
+    "game/sector-deployment.js": "bacc02e0d49da388f10336aeb42a9781cffc7e0a2932a5bb4cda136cc79aff5b",
+    "game/militia-progression-rules.js": "6d80bb702d2e61e48dd3aacbf291907f02339a8492cd7c1863c1f51b3e04f6d8",
+    "game/firearm-definitions.js": "e2dd2bb74104eb42369b5a39cea8d9382129c2142705768eaf810f1bba07b18f",
+    "game/prisoner-release.js": "04fded678a8db9caad9539589f897eaf13736ed38cc3d368a0cb1b48b1356e39",
+    "game/building-types.js": "95e93d690a6b857fd6f59869f497341602f37917a5234c9f1bfdec9d0ee8778e",
+    "game/prisoner-escape-return.js": "e23d692d32ece553863f94a1d42d9aa87d39d801f51acdc3e2d19df44f7572c9",
+    "game/npc-dialogue.js": "d246ebc67f9af70a15eb77b4d9dc70269bed19cd7336589b5c8b4ff14265f0d6",
+    "game/ammunition-family-migration.js": "5a248334489ac569f4b17297864f90ea815a4b6af7c3d2677af6f9a226b1594d",
+    "game/dialogue-movement.js": "5434f81d5bec5f6d0e149a0fab8a7e83b1f253998584bb2d7a5cbfa8cb0501fc",
+    "game/tactical-inventory.js": "b2c6657fb313ed07d1138a181dd4c44c39b9693fe2e9aa9b0bd498f635974cb1",
+    "game/knife-flight.js": "215f76dfdb504c6eba67fac276ef5f791798e67e047ed21acf722558410b4477",
+    "game/route-queue.js": "ba53f1323484f1f25077b8e0901ef2330351305a6933020470e68db58b879812",
+    "game/campaign-story.js": "affb8ffee7fcb567a270e8b2211698ce2306a709738a678151f29c1b6d07b364",
+    "game/item-inspection.js": "fc9dca10526f43fba48a2fc571b99ab472f3cc89378042af79dd57ec084fdbbb",
+    "game/quest-beneficiaries.js": "f4d1062d27ba442a171c269ab876e13e6633bb0ff8998e6219efece58906ec88",
+    "game/fatigue.js": "acfceea2732e7ad312590751bdd9d6dab95d29763343c03969b2c6618cddd434",
+    "game/enclosed-room-fear.js": "041b1f7d28fdbbd245cefe054a19d6c0fbe49cbf712fd3ba9e3547737a1cbdeb",
+    "game/map-schema.js": "23ea1f8d798ad91165211595dbda461dc1bf5f346581a342c8e5d2cd758dc563",
+    "game/battle-outcome.js": "36bd6b177c5adc6828549c0079ebeef616301bb12855fecafffed32800ca15d9",
+    "game/companion-loss.js": "02ba80c616d10b6c0118b55ca4e3ab4868e03bf354a7618877ca4ac8fbf0ff23",
+    "game/compile-map.js": "914a296056a7f4ccbb789906ef8e354b22334287874d8a79170ffc815c0674a2",
+    "game/sector-income.js": "8362dd8c129f17d530771f447d5df43c2a11ad6b752282a5baa0a6a4c6ad682f",
+    "game/sector-expansion.js": "8eef57bccae920c879e611a07f76df135fb5ec6ec6f67922d1ada53727143cfb",
+    "game/campaign-artillery.js": "ba4a1265af2a5291cd9e32558fa49eb5db27c6d3745bc8830b01c5659fd694e0",
+    "game/map-editor-tools.js": "7834eae378eb161302c05ec414755d47da36f5a91db55782ca8153d603d0d315",
+    "game/narrative.js": "5da83507484bbe23a2420153f1423208a49c3af61b8e889cfba256c79d649035",
+    "game/hotkeys.js": "1fb062bcdc956d38aa02e88def1abb71e8063967c68d492f8f024440ec5207fe",
+    "game/content-placement.js": "a86c390075a7147c1c6e4eb60135eb37c13f0ac297062afbd16473a4f7d39c3b",
+    "game/weapon-readiness.js": "f8918beae4d8eae68c02a921fbda5b3193d7e09b2a91b1e20250fc7adf9ee89a",
+    "game/group-movement.js": "a1502529749d818fdf0759c587da0bc49418ff02f3573b3a13302f6769928938",
+    "game/campaign-roles.js": "ad46fb59b61ed7fd225a109a44b1ce97501cde5634a01e56f2e8280e3475d040",
+    "game/firearm-near-passage.js": "28dbc2d40cff9de7df0f75701968e606d3da246375d47044324a9173d7b3b128",
+    "game/historical-loss.js": "02a72357fea1f3fe61e2d61193779040814c89324d603996bff7a2cba8f4b9f4",
+    "game/strategic-isolation.js": "11217a815e9f3e9f2ba427074165ce4f6a11625b5e41d4edcee4e98e3204a7ec",
+    "game/enemy-intelligence.js": "7c32d5e389d46a5c14ab2c8859995d4633cb77180bc1ad9cdd336fb0b2130ec7",
+    "game/sprite-skin-masks.js": "614cfeadf3abf593cf946b3ece97decd6956eef05f392b39a08e5f3301b93bfd",
+    "game/actor-condition.js": "2ecb7a9ea99720114684f2bde34deaeae93480feaf0906a06cfecc716e982953",
+    "game/artillery-supply-rules.js": "0cf7fe17b51b5b4902ede387722ca683959eecd32ea15e61f6e82c68f4932feb",
+    "game/dialogue-conditions.js": "e9f551a7a6e8f335fe1b7072478781e8c8c0b14a0e8f6d5b1f2625b6de10ca87",
+    "game/shot-load.js": "4746cf0ab5848a481a25af34a4472ac485ccf637d8d05dec085a77ce7d8ba964",
+    "game/content-quests.js": "11388dc6d0044e546dab2c1d5b7d200427ec7a855444ac7e5dab1c8dfc670a29",
+    "game/character-condition.js": "774132cd3317e72fccaf3db8f32997739940e8919722a60748f830aac230754f",
+    "game/combat-balance.js": "317f80a4808486f46462ecff4f48dd42b898f90a5305841917114e5526f57f7a",
+    "game/artillery-supply.js": "95ea79229c8cf270ac0ed45b4cb2084cac21d8ae6e26e631fd52bb65256caa16",
+    "game/quest-escort.js": "78328e2c53058f4dc522410698ae70eafdd0c437481ed2e3e135026d786c8a53",
+    "game/ammunition-families.js": "1f13fba851672a15f7c9877ec86978cbbbf4a1c0c133d4ccae205cb297622194",
+    "game/workshop-access.js": "d591ddbdb53aa91785cab066fca6cc90c6d4f68d4fcd248c1cc5a9ac62329458",
+    "game/prisoner-escape.js": "5218677c9b79b4ea9baf164608a30d41509fe3e1f51bd9fa6481fd3e16f07499",
+    "game/deployment-return.js": "403ea3b172deb784c8f10f6fc30d40c5d1b00ff1f39c5f78ac6a06592206f4aa",
+    "game/merchant-exchange.js": "f6b73a8a2f93fd4d026ce969287325bd77040c5821497dff182ead4030ec4c0a",
+    "game/world-cells.js": "dfde9b4e98d8f482c98ab195b66109bd2667699f5c26078c1fbaa3a8b3e792d5",
+    "game/campaign-care-rules.js": "aeb37cd89beb8ff32b099bd603ec1a8e03f87d9c03e699b54522709f260f6ebd",
+    "game/military-remains.js": "719e59664d0639b5bdde2759a1a6173b2405dab626245973c9d431cbf1b74c2c",
+    "game/tactical-ai.js": "946f55798d88d1a76d3a1fe06741e5019ca87a1ab2c3f01bbeee0178e16cf232",
+    "game/strategic-presence.js": "14f1aa78cf18be5897a8a4f2fd11fd673490786ac131da6fd59e62e891b5c12d",
+    "game/detention-care.js": "95a822d6067e8830b047af8b530e09275d3ac8fc0bf022407b5eae04fe7fc17c",
+    "game/paired-fire.js": "f4f9c8dd064a8edbfb912fff6868b8c29c2997ad73ed9d578919edfdd3eab833",
+    "game/sprite-layouts.js": "6ecafbe1a6b09c29c0fceb60e4138e84aeeebd78aa632e98dc676482b4b52e9f",
+    "game/firearm-bystander-risk.js": "805094395ef30159ea5432b9438ce8b7725c481d1ef9aefb92ab368813924fb8",
+    "game/shot-range.js": "b95a50e731cf042d1fdc3c157660fcc3c145c794a92c651afb12460dee851df1",
+    "game/mercenaries.js": "45323afea58b0045bb09e2adb61ed516c2b2ca6dd5b5a2723227d550316ee37e",
+    "game/world.js": "128bca97a62a4f24448bc583e46a216bda58fe1ef44a1adf221be0efbd325cca",
+    "game/auto-bandage.js": "eeee581ffb2ee1eebc264feacbf8a33e5ae568fd639225ba06f520acc6b7f987",
+    "game/content-character-abilities.js": "27c1131712b68dd074d9bb113d6ab6ac1f6b15280d00bbfb68436416244b5b49",
+    "game/maps.js": "0ac08cad5d2cb39ca9a95d24dfef5e88e01b33fc3769d203224aafa9e6ac50b9",
+    "game/tactical-planning-space.js": "d6159a82ef81659437baa3065bebd96828e1f8ef1f9fe8734451a9e3f4f20da6",
+    "game/map-templates.js": "a56c6c5cc25d6b0394a36bfe6b51c17ac7a2e6d74ce5321e7ffe7777ec41dbb1",
+    "game/campaign-imports.js": "c24ac29300e302acb3454d3c659c67fa54516fb1f2f3e8516d97512eaabfe59c",
+    "game/tactical-minimap-label.js": "d0b9994bd9beb13d1d11705cf4fe8fed61e3b319508dfb1060644a25d6b111be",
+    "game/field-dressings.js": "8310cad11302d36a80d94a2c4e86ed5d11a3bd3a33378150bc2bc6aa387d8a0b",
+    "game/grenade-flight.js": "99132515e7c8d11c25949d2bf8393750975e44be2df6192113cf02023c665483",
+    "game/grenades.js": "3870ea040fbde4e7301882200252f4c78e2fb4eb257f23f4b3c0787016624a99",
+    "game/recruitment.js": "ebc94c353a12b763c89cbb0b2546dd138d84baed7e0a5bd305e89537c2d863ff",
+    "game/ammunition.js": "bd1a480352e8db2c305ba4f48af43835a4a914a0e063ff9d91317f287ca3fcb3",
+    "game/tactical-feedback.js": "932fbc50c6dad0c6f406407cead15fc9cd0d37111cce17c7cb8f5675cf25ac3f",
+    "game/time.js": "54d7c1d441ef6e123a4c1eac5738270d8697849997f4cd82141729f4f240e402",
+    "game/npc-patrol.js": "b5513697fa513eef854ab013e818e20344f5a18f94082e57734605071b90beca",
+    "game/save.js": "244e322bb6ae76f133d804c5021c9b9c782e8dfd76718fbfe1a9341485e45d66",
+    "game/sprite-family-sequences.js": "37062ca2a51d14d9c84b551629a5c0ea4e6d97d4fc5d074818e01ea80214cda1",
+    "game/equipment.js": "d125386ea4c34f9b358ca9a64d552570163a0b9a4be7f656a244eb7bc657fccc",
+    "game/building-profile.js": "2be6ec989e602b6953746d96f6fa0e95fecd1b08de036a4cd08676a84e6f66b0",
+    "game/artillery-definitions.js": "30bf08f735f171c8d7fc896df91787aaab3d61af0af9403bd887540e4714bbfb",
+    "game/politics.js": "26e33b136f4ae9731a8f35eec98cf5ce267a7e6f2b720ff44a98ee344d0f4474",
+    "game/campaign-civilians.js": "b1a34d7ec3de77526a903d5e159895033eacc15ac3f1bdf54d34952115e2c1fc",
+    "game/sector-inventory.js": "e43375abc0367c09fb6af0459de183f88821bcd930c636294b148887c33effc5",
+    "game/projectile-air-drag.js": "87a358328f1a22e33dbae10503af23750e8d97da47c1984dfc1d3578d8eed9bd",
+    "game/campaign-rules.js": "c219bd2a19484b041bb667b20fee29450c70bec2ae328e385ff5e9ac12013927",
+    "game/actor-action-contract.js": "28c562e7dd6c5c3d1ff932cef0685b5c1a85b92d4f861a2bd59a9fb30918b29f",
+    "game/armory-items.js": "914de00e16967868b6ee6dd6c94d0646e00c20f48c676d1413832797c32d884b",
+    "game/firearm-loads.js": "1cb538fcd6a2ce76635e2914cf09c8670096c341853de25e76b525947901eb5f",
+    "game/artillery-trading-rules.js": "647535c9583342f2cdf6cf9ceba38103eebd0aeebb5f276a96f386dcd487d057",
+    "game/projectile-cover.js": "eea790ea6b8906584a089afa645096b8143beca098a12df3ac0006a58c269d74",
+    "game/validate-battle.js": "c5a28e7220a500e9a0600f290ad4e25d4d61114bbd0d905734f834c5bcb6b84f",
+    "game/militia-patrol-rules.js": "e1e5b54e0ca0feac8c1cd2c81f1f838c954bd6b4cefd1271e00232dbbeecef59",
+    "game/sprite-equipment.js": "3c651a782d5b9b2a1b51ee961e60362dffeaaa5a9e34b285d0a1069f44fc35aa",
+    "game/artillery-trading.js": "89899475616d7ab2c50b35fec77cdfc1e83fd10e8407e9cb4387367503674c8a",
+    "game/supply-presentation.js": "69a1011ea7b5c681ee1db3b775d17c3d7bdffb7704fcd2af66638fba5dff43d5",
+    "game/economy.js": "c1521a1b2454c9525d40d25837bdca6bcabc7732fc1f2cb3615d947569427139",
+    "game/medical-care.js": "6d6241afcb2d37391f9e3aaed2a6a7990eff790ec4289382b039dff0be4ac3ec",
+    "game/personal-pockets.js": "2f138f4d308db397e10fa7f52c70e10e11fb5491bf88c17516224dc984b2e3fa",
+    "game/material-range-penetration.js": "9c01be3e5d31cb3669fcabb5d4337bf3bbd5eceef25f9e057a743fc6e9a12e70",
+    "game/invader-entry.js": "6505a485ac7bf323bd08fe5bc4beec9bbc4666c23264612db0fd5f6a8e7aa989",
+    "game/finite-sector-caches.js": "615bc7b0bc8e2df851caf09bd8d467f6cafba908a1c67dd3e4d1a072167b0f73",
+    "game/nervous-isolation.js": "b27f00dae0d489aaca7e637296c02b2ab1820ff9d889561cbf36ecb2b673d787",
+    "game/service-equipment-return.js": "9ba013b4d7742d674c37058e69e02d46cb237a0d0155f21948f9fc15a3f9a0ca",
+    "game/squad-travel.js": "dd1268cbd407ec1b3bb47639a34f9556440605412bc7b80434d9289664fdd623",
+    "game/content-force-equipment.js": "7d90928b1ab9aa11ee8a743ae11d46d7661ad6971e2925f3e44aac21e526a1dd",
+    "game/tactical-condition.js": "b758f2859fb899596d4c6cba57588499bf4288891fca2b0a1c40182edd9e4dc9",
+    "game/portrait-expansion.js": "616ac363115a40ddd4f71f0bbb8674642446e43616bb59c2127f59829d88a1ef",
+    "game/weapon-definition.js": "3723b381f6f50f4f1dc5617e4096638def8d852ba2897ab821af4e81d780ec71",
+    "game/service-objections.js": "af39e821eda84d7964ecd6f76061d89fb3d527fded7d9d82e54e294a3f88c2f6",
+    "game/workshop-service.js": "89b3caa81c37c9d267e8fd2ec4213245c3e9d8eabb5dfcee0fe677a24a939e4f",
+    "game/quest-definitions.js": "c126c4089e407f8184313fd8e0d3878a52d5903af1417196fb8a4ac4998f4b99",
+    "game/arrival-sites.js": "868a3a0e9a5ccda3235e81edf791c100c17b387c0d1092a28b9a70c9431a0e07",
+    "game/battle-playback.js": "3ef84d71ac95add9ee4d5be81b4a19545a11f50705f0f6d97035ca975e0c8038",
+    "game/dialogue-effects.js": "8e65dcf0842f48c5e45d98565584b81ab8629958a9e62571ccb30ec7d72e2e33",
+    "game/roster-hands.js": "52f3073f11d3c92dc80b5b08757c6c26eb8b2ad514917c0d0b703bc725df589b",
+    "game/content-map.js": "6007a18cc72e61643c5b831c594dcc911ec2e3193415dfacd3abbcb2040e518c",
+    "game/projectile-trajectory.js": "e43287b18a69d29a2e733a25f178c9f0a75ebd1b380e3a44b63975b065653a9f",
+    "game/ammunition-market-rules.js": "59d916fba539328ccec5d5971608e67c86f6c9ff564c533b5bec0906db1e85a6",
+    "game/content-roster.js": "5dd866568ae5d0960250cca66597eec7415fc4119ce37fd768d679805502891f",
+    "game/content-package.js": "b14ec434f244261f7ba617404af591c6230a824309b21aab95213f580ed9c969",
+    "game/weapon-reprime.js": "b3a6a58692a070aff807f7bfba0119a5ef647de186fca1fe3865acf22e5e6b6f",
+    "game/militia-distribution.js": "1d01763fdfe1de78b894864353f8c0385a12842062880d69958ef9b99008b0b0",
+    "game/civic-recruits.js": "408755f8096038c50c37f94349fd1b84a64e80cb611a249664099c85816be401",
+    "game/civilian-supplies.js": "cf5d77718aa9d63ddf0d700b2c0f198ab09313736421b23082e8d94b8125dacf",
+    "game/march-fatigue.js": "12366318c15345a622036e2f9b8c92e2ddc184aa3dd40cc1c34d19b1d7af3ef0",
+    "game/building-scale.js": "456b260f282ccf653ef9ce60bec313e8aed2ce845ace9e4a8d2711b44fe73ca4",
+    "game/save-terrain.js": "cc36b2861a7409fea24f64bea9c4b95dec2e01f8536c585a498688ef1e75040f",
+    "game/unarmed-combat.js": "318d182f3076bfd88d2f882764f4644c1400dac23cb977ba3439e9b52b82fab7",
+    "game/tactical-ai-scavenging.js": "39cf39dcd7501bf6756dac73583bdaeaf09fc8c97c2fefd5833efb18d91fb843",
+    "game/travel-balance.js": "00a835f99a7719c63f63137bcbe3eaa681bcd25ccd36c824b0026d0eb745dd76",
+    "game/world-cell-map.js": "f72636778f6d5ec309b9c4d8eed0e19008506c8180a55d6a162cb6bc1d6876e8",
+    "game/buildings.js": "7e3a5fe22303c0072e59b15d7f362f58b2ed2ab96c05ddfe37b711a1c0883113",
+    "game/militia-experience.js": "32b143e8fd9d6b23131217663a6e5f1f9aee91530477e392a266067c507d7e3d",
+    "game/transport-network.js": "13bf84575fdd785ca91e5c77856e302c0732a6f27f627a073a38d08ce6a22ddd",
+    "game/map-catalog.js": "d926937a9c598092dad2f774cb7f81bb4bc00ee0012da80351ca3d4f5e993977",
+    "game/weapon-reload.js": "1c3d0ceaf88623b2ab6db9cf46d86376567c609f622b19cccdb9620d48fcf858",
+    "game/autonomous-orders.js": "1a4fa37f62fd5986b7e63ef91869f06240647f4bb336c0f43e49474abb5ef59e",
+    "game/town-income.js": "0ab3554d32cad4407620af6e4c488a87e0faf3a094e94c280e5c9ae7736b42e3",
+    "game/tactical-viewport.js": "45a2102d82ddd8a46bab4af45b3420dc094efb4b4df416c3680368dd11b09d3e",
+    "game/illustrated-sprite-atlases.js": "f83d9b0935949220b4d6a30e6ad97b5d4d92284d570634cb3c2160ffd3a33164",
+    "game/player-known-state.js": "7bb30b3d7d2fcc13662a2925f016f335400ff5fa5658b2029571fd217bba8128",
+    "game/props.js": "4bf6a2b661ae156d0c6d86a7cbe816eb3c4b29be94c0ba47103a34d58af4b8e6",
+    "game/civilian-harm.js": "8898c2998eae640c55d01590eebf9f5684b26811a0dcb6fd1e0ac34929e8226f",
+    "game/content-identity.js": "818449760bf28823bc72cc01854f0ac0c8386bfcf218bff403b2765750152354",
+    "game/npc-perception.js": "6b33814455059566d5eb860ae34261e42c8692c9e14ee76fc9bdb9a2d7affeff",
+    "game/characters.js": "55c8e9adf4fb1f5838f587f7f6fa170af7eda7045180e42e8ecac4d04dd3b83d",
+    "game/campaign-projects.js": "3633ae94246bc11cdb836f0e0e95f45b22c6fdf93207c024e4edbb89dd6781c7",
+    "game/logistics-attention.js": "72eddb1f74d32e3a83fc945ad218c85f03234ef44149027bf45e150386dae287",
+    "game/civilian-health.js": "9ff96c07fe6f9048a52e5e5a7e8d399bba25dcfcfc2ac744322bafad19d2b3a0",
+    "game/content-character-presentation.js": "9c8c4be8b90fdcdf749dc1c23ff2275b05ef1ba0dbd4bf75c1bcc2aa5a3b9712",
+    "game/sight-geometry.js": "62e1d832f2954ea6a93e94f149d67cefd357893d454d54880ebb5779ff88de95",
+    "game/sprite-action-requirements.js": "085fbe28a17b148c720b47457d0089888f3e0209aa3653a8b33274a82e7bd0e6",
+    "game/encounters.js": "36bfee35db323be32f646c57645c4572b9333b3b9e541db5344623d99b8ff98b",
+    "game/campaign-content.js": "3d82c267b462f5452cade9fec9c9c2558a4df6380dcc25e917934fe47541651e",
+    "game/tactical-ai-artillery.js": "01ed2ef5250a21b68fffac96635d3386a5eba0d1bdc074254d30dea8c609b2a8",
+    "game/campaign-detention.js": "c6c087dd837d3726557040b5e92a36febc84bd7928e93fc09976a16fbd6a3d27",
+    "game/data.js": "2962f074f8c6f99832486afae94e673fa7d436e9e330de9892da59b739df7e7a",
+    "game/campaign-terraces.js": "b0fdac38cb845f33e473d1ce8cba770bd98c17c70f8038d023cf98399e2ff179",
+    "game/cell-scene-storage.js": "2592d032e06064e2df04c5497425371096293353f75310de5cffc95f551e38df",
+    "game/quest-withdrawal.js": "553dcd874fe6fc9894f8286dc828471583cd430b3a398bc164d9966d2861e54a",
+    "game/repair-materials.js": "05da12e6caf9d2f8773405f4d3bfc8b42501fc1082508103a997fa8e9d556e66",
+    "game/mission-assault.js": "d58dc7a6caf3962bf722221721e4f8d3684e601d4a72a1f337ab8bf0a2cf194b",
+    "game/stored-equipment.js": "77f3beceea986ec7ae8e8b72567aa702bcd1c6e92e21b4d957f53a923b64b548",
+    "game/weapon-fittings.js": "478ac6a738b5a2ca3a060f6489a215b7e0397c10930a56ff18e11f72d85f6f2a",
+    "game/artillery-trade.js": "fd7c9f68659ce89b124c27fa656b81a30ec907d4a3801d5852e0b554d7e82945",
+    "game/ja2-hud.js": "a91c9dc9b720a71ba7861c83b6436a587450b8fc294e5f9a9beac486ec84169b",
+    "game/ammo-types.js": "197b68c39e4ead86ca3d815082c45e7f66f7c8e4103b60ba1df212362744661f",
+    "game/projectile-energy.js": "ab3f3ae436b2ec5f3682d6527d54c0d84ddee54cf23e4680282146ec77edb918",
+    "game/tactical-ammunition.js": "ecf64e899a880c63ed648428ee908c25551bb17c6ab0a403650885e45ecff1cc",
+    "game/tactical-grid.js": "4ebf6b84715f8a036463591f991b49673d478b23290c146c156e06c88f1669c7",
+    "game/militia.js": "7d242581a7f1db9c802abaa376e61cbe67ed7529581aaf27ee1f9aaa1e4b2b0e",
+    "game/capture-identity.js": "482fd27ab7b1bffac0b6f361446bd493f121b238f0064f98ba9ac23a315f2bcb",
+    "game/outfits.js": "0eda96d22ddded61a4823c2bf64e6b9a20ccc7d53ae2a5a9ea78368e4927a6d6",
+    "game/character-events.js": "a7e192eb476c33de7baf6f577975750761744a704cf79d626552f646d509420f",
+    "game/campaign-ammunition.js": "9f8c47d31e53403387995a0c6b90bb15aac5a1735400dc6835b73cc02a1a7da9",
+    "game/hiring-arrivals.js": "c6c59927919b58da4cf6551a5c71b4d747305b9030c87d3a9c214149ccb0b4b1",
+    "game/enemy-reserves.js": "f06c43981d525bbf42526ee401195ce753e58e2e7e75e13c1c74f1bb472bd6c3",
+    "game/held-supplies.js": "33c30e28f6b7bbf8380a960b56be1b612c25fe4be9f7748a95ed66511b6d32de",
+    "game/climb-geometry.js": "b7ad2737df630896eb19583a5aca386c72047491930ba32c7b4460f62b4ffc8a",
+    "game/character-profile.js": "386fd49ebee0f6517c01f8a1004e80632d6e7eaa47122f924ffe896ed41c16e7",
+    "game/sector-entry.js": "b2bf0a5bc84bb82c5983ac5ad1d4f3d43b2fa7ea622084295cb0281b80e33688",
+    "game/map-library.js": "b89fbf4510745da909e0b4923091e7adb4adf20a7edfd0d100dc7cfb76e88312",
+    "game/campaign-headquarters.js": "611d8a029df3b7c49ee01a6862865738df38c46684e9fab7519f8cc593f94bb8",
+    "game/morale-renewal.js": "cb406eee1038b84f76b194a66d51df382c3014effc8cf7a7038559989bfa7fcf",
+    "game/strategic-map.js": "824f11778373af8fa7d6235a5bc6d89de42c13ff3c50f6d5653e5bbd95954c27",
+    "game/content-territory.js": "fc90cc749b80afcef7cf7ed9d692642d792944844c5344eb0934fe53cab12afe",
+    "game/ignition-kit.js": "a20a4dd1ea68036b1c3b6d7f6f38515d656b55506022bd137a9044dbae0819d2",
+    "game/tactical-ai-sharing.js": "a6984fffd88d4028a0d9edf52dcc68ad880708c91bcbe75da82b9181c1ff3454",
+    "game/battle-presentation.js": "650ded25f0fa01fb121a6f2a7b6f6fcc056b44dcca01fb16353d9de629c5a4e4",
+    "game/roadside-discoveries.js": "02c3a69210b0d308c2069a1fa73f7c9ec2d1345a2fdc4e1498742f166ce66928",
+    "game/cell-scene-codec.js": "d33e9c20616d49eeb580275eff198070c0a78605ce49d02ced516920d7a51d00",
+    "game/equipment-merchants.js": "9581206b9c703bcccb85ec93ed1007765fcaf3a9baa4c4384c53b7dd7fb147ec",
+    "game/squads.js": "918f541d61753bc85a8e234bc96cb13a30a6f44bc94d922a4102d52f3ecc8322",
+    "game/sprite-state.js": "ec9a8946fcb0ad2350ecb696ce3aa68f32b23db19b2f6e6d26ddffb707d51502",
+    "game/tactical.js": "372159ac1f6ddfd86ad7f1f7e02e63662c08be6c4e15a230a1d3f32626f07fbc",
+    "game/character-supplies.js": "8f2a762a143b7f45495fe9948ead414e2967a6fcb35ec1364d62a9e5d3659e4d",
+    "game/strategic-clock.js": "79903490802bf7e2125dda17b654e7d18bd4396673841714e71be51f172ed084",
+    "game/tactical-exits.js": "e4d7120140de12443d79454b9f9292d0d0c96f73e811aa3d4b44e245d6390fd2",
+    "game/environment-interactions.js": "d795867563e46822ef9a1f3e81de75365867ccc8c5715b8a6c56516853e2a184",
+    "game/sprite-display-calibration.js": "f9693b8695f3ceab67c27b9287c0c51694d1ac41df16141039bcbb178a6bc4cb",
+    "game/strategic-squad-assignments.js": "59ed867f9ddd5cf35a61578380775d5194d27bba1383b29b9c1faaef50750456",
+    "game/character-portraits.js": "1bf8130516c087c23974c26818e1d3f8fb038eb6450c16d651a9576c7d976520",
+    "game/assignment-labels.js": "dccfd7b2b7a31c03c93a0c6411c543acc97e665684351b2314caf95c34c22768",
+    "game/strategic-route.js": "d1b4d9d32b71555539979cd4fb010c15b73c8815749d5878c45b00f533e3bb92",
+    "game/scene-readability.js": "e61598f2d11da6b2539950d37471cf7e6ca87576f65a40a737df52836eca3f8d",
+    "game/study-training.js": "ecfaf89dd525327211e4ea8175660c67d7c467a547a5e7972a1380fa5cf3eefc",
+    "game/content-dialogue.js": "d9493595976ce26d5f88153f9ff2c4578c660535ebfc2b1c490cebec145f6e7a",
+    "game/assignment-attention.js": "807eb7433cc2898737eee81a357202bebbe1ed2a718d959542b6c94dce8b982e",
+    "game/civilian-weapons.js": "8a8d6906bd386641865309f6aa34e269ef8b811093689e71de3ed834e7f067c3",
+    "game/prisoner-custody.js": "a89142191d73f4cce1e873fee03785736a1fbc2d00b815e06c13f97ede42e53b",
+    "game/artillery-transport-rules.js": "750c3bd72983574d60aea69164b6c6fa9a7b2496cb9f579a903a31c1d8339f5d",
+    "game/detention.js": "4177cad0a9f38ade4ff2b25e28640db3986f353b34eda5fdce11805a18da35ec",
+    "game/campaign.js": "b4d2ad0835ae350adc0479d0fe188be1b0e0dde257a2417e7e17dea95092332c",
+    "game/item-flight.js": "a3a0a9137aa01f50ee83db5b2adcdde114ea1438e9ce856f735b59247fb262c8",
+    "game/skill-training.js": "b9721c02303dd7dbd0e5774e3bda17d56066bf6b44acadca39ad134feb2ab281",
+    "game/finite-artillery-arsenals.js": "ad0b1eed86b5a34220a231c38c94a07bf4a7df89cb8f6c272c7dba1654f17e49",
+    "game/inventory-discovery.js": "35ecdafe0d74c1ed76995421789d46d039469b0ac33a24b57e098694c49b6a76",
+    "game/aim-cursor.js": "771f6428fbeb3b7e5c9110c089e2697e7421ca2c5f4ef12dc47ee1fcca25875a",
+    "game/content-character-options.js": "ebad2237ecd78972473fef9b48b6d03164c47521ed72b72aa89d5c7fc5ab1c67",
+    "game/sprite-render.js": "d60230c70e95b1533c7bb7206f964d054af37756ee236b066a2545e45d27ae9e",
+    "game/campaign-foundry.js": "061b7ad169c9197410637773f3506635c39537730b71034f021fb935f0c827dc",
+    "game/artillery-depots.js": "2cee8bf36b87f049fd9b27858ec3e68f683068da38ec33a48e188060f1ab5d76",
+    "game/save-limits.js": "a008a61278413d8401788e48ce7ec1fc216fefd5440d00cb6f1b4e7dd37fdc54",
+    "game/care-composure.js": "2b721cf9860232f40705ae155b20bfce2bc86dc5cba1f060f0dc4b07e15e24db",
+    "game/firearm-near-miss-practice.js": "a7119d4ce5e477eec6f2374b534d967d77abc804c54d478f3b2725f2f3d23d15",
+    "game/character-abilities.js": "47534cddf1f19189544675cd3ded7014e93ed296b4603bda42bef4bdd7d5a984",
+    "game/economy-balance.js": "e094f808c3d517250e3e6142c2b4431fec1631be998f207737bd9552ca785925",
+    "game/ammunition-types.js": "6db8db743f9cdd0f6370a82d53665d31d9a07dcce33f7c263e32f87fc2a6d3ac",
+    "game/building-appearance.js": "6780f1068a310db58bb34491ebf1deee907f713388352115f0bd220b059451f8",
+    "game/assignments.js": "61ba83c183762cc123df9884df306e6320daf97c56d03fc00117a83541d7784f",
+    "game/strategic-rest.js": "3cc150d51b44e989044e4025918e499a195d8523f85711c94e52bab8543c08ec",
+    "game/targeted-combat.js": "6632979be206d502af1bea2c089cccc27fc7a5855f4371c962f6fbf96bcd68d6",
+    "game/room-dressing.js": "d4a45781d1a3b9e047bba43571a8bfe9328e7dc1270fd4f60ceedcb88c1ae219",
+    "game/regional-weather.js": "707377ea5768254cec8da952de6b500ad0fa7cefcaf0c36d5c988a43ea8fe84a",
+    "game/garrison.js": "d80f3118e31b8b61134878d1d19fe928d004ada8dc086cf9a324919ef924c430",
+    "game/sleep.js": "8ee6e74674153089a5117e3626c72eb1ab3f59fc79e5b1e391d29e123f813e82",
+    "game/detention-health.js": "e3c9267b005bca5221693c2bf0011cd23011325250e376aa21ccef0381918ff2",
+    "game/grenade-throw.js": "14a1244836ba7f2aa425fde1ff3d923c8b86a76c71e520652b826ebc4255f45a",
+    "game/movement-step.js": "b6f71927fec204c25e6267cc5b590cd8e49c5092f0dcdf5c135a77f64ff9f4ff",
+    "game/regional-terrain.js": "08550fe1c512f118e6033158a5c0cf2bfbdb12f290a68d1caf0d3bedc4a7bdf0",
+    "game/cities.js": "408d89b6b9b217b2ba2a1839b49fe2ffefcc83cffb37d2e47c931df9539e46a4",
+    "game/tactical-space.js": "aaefeb3ef7b2ac44f14242ea4919cf2c9189f512dc1ef8e905bdd499567ef57b",
+    "game/equipment-cursor.js": "4230c324708931291f26482eb23a8778d71bc42c3b3145442dbdc460f931ecb9",
+    "game/tactical-ai-grenades.js": "15c68f0d28521f01b3a344d0d7c7ef1acf06f9cc378c1f7919dc8abb821213da",
+    "game/sprite-skin.js": "0797345f075e36a38ad5e7e12811de626ffac8510b23e58a90dbc3db4e3f23f0",
+    "game/contracts.js": "7dc84f1186cfe85675bc134842bec9491ce792cf8bd29f7688e2cc490b83b9c6",
+    "game/content-test-range.js": "ec859cd44ab391a10c334c5ef8a15d53434499205ac86bc7627470c68fde76a4",
+    "game/physical-ammunition.js": "aa31b5885a6c66201eb15fda601fc26ba54bda8023d3b59f6e31956d3c8b6cc7",
+    "game/service-relationships.js": "4d8eaca7ec7832ac0dece69746d641cbd1dc6b8c123bb8b87e8d52db1b99dcd4",
+    "game/sprite-appearances.js": "9b872400a65f5f68dac90c2b3c5408da9f24286d6b17cfabaf0342c9a1025a06",
+    "game/map-playtest.js": "6db4aed91fe34cb982abec6eea30ad8f177ad6d0c5a64050bb15526a63b596b0",
+    "game/blade-definitions.js": "249017d9fc2a44e376ec5c783ccf1a041bde1863d16978d7aa213807fc56c095",
+    "game/hand-layout.js": "3e20219aa2d4b7704b9561a95074996ec7e5ec0c37e2ae735ddbdc1a6a5d2875",
+    "game/content-character-ids.js": "8f665ab1eb2bed8d55e4e08ce2824d8299b304e957af6f938e2c680b6da7b3fe",
+    "game/content-launch.js": "b6068973e0b8471f45181b6614128f98de662b18b0c47cc4608b7691982d415e",
+    "game/companion-grief.js": "ce3ccea65a411e99fd63f0b8840d67772073568a0e0a4b1d694fda6d5a1ba419",
+    "game/action-points.js": "be4ae8c310a59b8fa91a0d4649d3958ffe018247525b626b85d413807b73957d",
+    "game/equipment-catalog.js": "51c54c0bb29f23052792cca2ca7d9429dd564aa0dacfcc163fc9ab029e85776e",
+    "game/map-commands.js": "a72a068eb91781a538f11c905cf6c3e3ae67dca0d07186d4c0ee654f0a4924a9",
+    "game/contract-attention.js": "00c8b862ddd55a7d347c5cc1717a8cca9a21f0646bd252c7e0b54959d4830392",
+    "game/tactical-camera.js": "f6bcfe9a2c737979a52247b29fd5fc8c743f8f3350576b632f250f35523b4141",
+    "game/correspondence.js": "2dd1b46ca582806f80cdd62b448a29f12fb38983b91cfcf34b781760c4615aa0",
+    "game/battle-job.js": "934e57338088b6f95712232140f1946587ea14846b23539babd88ad985e6d2d5",
+    "game/scene-terrain.js": "493e6e72d8d3155d164bc1f06c731ddff8c9da9ba30a6eaa40df52e26095c04d",
+    "game/contract-rules.js": "c848ef234675014b6e5cee0c12d64959cd8cdd18b329b53d7fa4f64f5606dc52",
+    "game/firearm-near-miss-feedback.js": "62826a19885371cab6f28082fe418a8a47ef734bb3b15e3527ebbc228090b1be",
+    "game/mercenary-catalogue.js": "d39bd62406ea774dea9b7888a81df2c9074437c3f18517ffb72070f0022740f0",
+    "game/sprite-skin-roster.js": "1209745ac0b1b83c93ec3d3ec81196cc9d0935ce5d19581322e24a5f61289c84",
+    "game/npc-ai.js": "70012382960d6938fbb6a0ed88a2a443bbb4cc0f71d17973bcb196273bc4f91f",
+    "web/lib/three/action-timing.ts": "3165468886dd644c42076a06481d73d6374a5bbe4dc985700479ed46ba2b012f",
+    "web/lib/three/animation-clock.ts": "643390f99dbc28ba98d90894f5cdf9313c718f2f38f0fbafa0b0165f48a1ce9a",
+    "web/lib/three/locomotion-profile.json": "d3a9d3d1af2468a7a07ccb4d2a422b1d860b2526f9faa25b8b11e8603f8c3431",
+    "web/lib/three/prone-arm-blend-support.ts": "e0ba76113f4da048c4764332ca7e32ab382241eb27c8fde598ffe290dd774db3",
+    "web/lib/three/gesture-blend-support.ts": "02724726747181baeb1529f8928c0c986d2a5135704495da87d203643df4d905",
+    "web/lib/three/gait-transition-support.ts": "2f42bb24bf93812af3f526bd32bf5fe0aafcea2eddf29d57313f024a61f2b312",
+    "web/lib/three/climb-contact-fit.ts": "231daa09c37bc391ccaeb0ebd4734218e6a2214d30782043078f2c335da95d6f",
+    "web/lib/three/climb-body-phase.ts": "f15bd357270cba7aec5a74accfe81060b9a55f0ede069bd253980e6de228723e"
+  },
+  "baselineUI": {
+    "source": {
+      "commit": "65c14ef72474519bf6fad01be59bc9d4e275b673",
+      "hashes": {
+        "web/app/renderer-sandbox/reach-fixture.js": "7287cfd46f9f8a7d99ff6d51d6c634ca06d0fadc07ffc5ae15164818dbfd8b62",
+        "web/app/renderer-sandbox/fixtures.js": "4a41cd61e2ab69b678242c8dc4a0b33588421aa96ce3b5597c9ac1302dd7ceaf",
+        "web/lib/three/actor-runtime.ts": "9b6b9e925bbdb2df1914ed54a3623ffe19300239f270f0c16ec9f888971ebebb",
+        "web/lib/three/scene-actors.ts": "9f8b68ee0f4702df99e33dddf284fed4ba30f8f5a3fad21a5c78e268bdcd7445",
+        "web/lib/three/contact-target-model.ts": "6bb217622532288abc4b32ed5119ab784f51ffb9f0795e8ac327452c25c119f8",
+        "web/lib/three/melee-contact-fit.ts": "79236396011afc08d23cc7e933da809aa5082036495a778f720baf75d69e7774",
+        "web/lib/three/gesture-blend-support.ts": "02724726747181baeb1529f8928c0c986d2a5135704495da87d203643df4d905",
+        "web/lib/three/presentation.ts": "33b498669db18b0603af2306dfbb32a48f6054bd034e43121f3f5a6e8f40115d",
+        "web/lib/three/useActorCues.ts": "8a738385a26a07b768b1a7fa3c95bfd33913d5b4e240fe00ebc1c525a56ccfc9",
+        "web/lib/three/action-timing.ts": "3165468886dd644c42076a06481d73d6374a5bbe4dc985700479ed46ba2b012f",
+        "web/lib/three/animation-clock.ts": "643390f99dbc28ba98d90894f5cdf9313c718f2f38f0fbafa0b0165f48a1ce9a",
+        "web/lib/three/locomotion-profile.json": "d3a9d3d1af2468a7a07ccb4d2a422b1d860b2526f9faa25b8b11e8603f8c3431",
+        "game/tactical.js": "372159ac1f6ddfd86ad7f1f7e02e63662c08be6c4e15a230a1d3f32626f07fbc",
+        "game/battle-presentation.js": "650ded25f0fa01fb121a6f2a7b6f6fcc056b44dcca01fb16353d9de629c5a4e4",
+        "web/public/models/characters/equipment.glb": "237c0e3dd3e7a3af5fbb0c05ee94a3aa95c25951b346877e43c9af4fb673edf5",
+        "web/public/models/characters/female-animations.glb": "509a9c2c1ab0cb2a7d38c8f50cb7809cfa9f6c4cc946c69652b6918fdeb1ac10",
+        "web/public/models/characters/female-garments.glb": "e197024f2a2a9a2d18241206eef4e409189ceab1ba4f7fd97a8eb0d96784c5af",
+        "web/public/models/characters/friar-lod0.glb": "b866a9269b046007dbff7191afa91e65a86128c36bf64925a5921e6ed8f43bd9",
+        "web/public/models/characters/friar-lod1.glb": "17f92e1b1c45acaf06e20e58ba7e298f5cc847398a9205807694636e65a51a08",
+        "web/public/models/characters/friar-lod2.glb": "e31fdb7eef3729895d9bdc7c8eb11b4c57ac7ca7e7cd71eeed2e560fd1b8fcc5",
+        "web/public/models/characters/gaucho-lod0.glb": "7179603e7221ef55ea754590b1b4a81d521a8167ae1b033244042ad968f6c687",
+        "web/public/models/characters/gaucho-lod1.glb": "69b3e5d633a9578338f5ae2c2270b1470096b1a031c55814bbc93d100baddf78",
+        "web/public/models/characters/gaucho-lod2.glb": "185ee45e4b006e9168650a02b3ceeac0e3a654dfcbeb3094dbbf543e03b7a083",
+        "web/public/models/characters/granadero-lod0.glb": "9041e7e5ecd249b0065cf012271d60552f418d1bb2809be6ccb973496c7e97e3",
+        "web/public/models/characters/granadero-lod1.glb": "b589b8558e13d693cccbbc28621ca96221cc9bc6ee58028751075b2fcf5c0188",
+        "web/public/models/characters/granadero-lod2.glb": "de18c59d01ed02830e42cdc65a1b3b03a4f895746e800ba53c46eef8aa8a2f9f",
+        "web/public/models/characters/horse-lod0.glb": "b83f48c9dd231ca5d4fd7c44115be540e2aa8459c94aef89e65ca849ade9bc04",
+        "web/public/models/characters/horse-lod1.glb": "edaa79079ae8dc5109ec30f43dccc1a66a667c75456ac5d59e18a89fe3f9aec1",
+        "web/public/models/characters/horse-lod2.glb": "6b232850ead3ebc220087c23c3405cc85991d03dfc7b130ee80493b6a7502993",
+        "web/public/models/characters/male-animations.glb": "49f5d77abe97ae560f46060f93d3fdd31661eda97e47dfdf029216ade2beeb27",
+        "web/public/models/characters/male-garments.glb": "f2c8a94230284344705166b83e229194a2d38003c821fc1b7484c91573c4ea07",
+        "web/public/models/characters/manifest.json": "f57f1710b6e6c29b29ca53e9182c29b2b4f97b4e7849c1d57bf87ec8db2412b0",
+        "web/public/models/characters/royalist-lod0.glb": "d23f8262eb38def87d7b21586d3faf308505323b5091a8c7150acd82a7334b01",
+        "web/public/models/characters/royalist-lod1.glb": "9199b37b27872bd9348f34c9f6bd051d45089aa3727ae76cd23347d30129df31",
+        "web/public/models/characters/royalist-lod2.glb": "294698350af08dc29e0b505fcc3f432a7634adda3ead34019a6e7ab5e4b99f34",
+        "web/public/models/characters/surgeon-lod0.glb": "7f40d2b114f1da469abb2dc0dfe13d1feb5212a98abdc90604b2f21e540d7fb7",
+        "web/public/models/characters/surgeon-lod1.glb": "78f121de0540449c2fad102c31a346b41e3afb13c94ac28bd24c3e0660324d0e",
+        "web/public/models/characters/surgeon-lod2.glb": "ac5ed22dfc4e5c4558a801df20cf7f87a6347f6f5cca0376214394ea04d0e5cd",
+        "web/public/models/characters/textures/01f30a1649e149138639.png": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8",
+        "web/public/models/characters/textures/02fc23efbfd8542db951.png": "02fc23efbfd8542db9518c8793db2b0b3ecb320896a7697607992b22c6568389",
+        "web/public/models/characters/textures/040aa7bd60f397241c0c.png": "040aa7bd60f397241c0c5dd19c01e5d2660fc82c6d78e911b62e1efef5cbde33",
+        "web/public/models/characters/textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+        "web/public/models/characters/textures/05fec3a4c6149b6ea6e2.png": "05fec3a4c6149b6ea6e22f2a3d81ef0e2002211f089d9d5e5722bee04b87d9e2",
+        "web/public/models/characters/textures/0620e2e93cecf73291dd.png": "0620e2e93cecf73291ddcd06c6eff1fe268af67ece4d484c21c279a1501b4814",
+        "web/public/models/characters/textures/09edeca97bbf63512088.png": "09edeca97bbf635120882bf0f079560f2da1d017f48770acb70e51e72eff7707",
+        "web/public/models/characters/textures/0c2590e18b3ddbd6fba9.png": "0c2590e18b3ddbd6fba95c7836367be876695b21ac74b9009febe9d672ab5a85",
+        "web/public/models/characters/textures/0e8f9ee2451d7ab3080f.png": "0e8f9ee2451d7ab3080f186ca60a0089f60da036450c409526de83876a80d1f0",
+        "web/public/models/characters/textures/14c044c8d8f2e139821a.png": "14c044c8d8f2e139821aef331e84b715642e77012daeb5fb5c37e6cee7987f22",
+        "web/public/models/characters/textures/190fcfc8745e6197a795.png": "190fcfc8745e6197a7954c6b921f4cf3a890d9ac78db560a67dcdbc8359de180",
+        "web/public/models/characters/textures/1b6188df5f9a698957f1.png": "1b6188df5f9a698957f1728ce3cbf8760c736178b4f43d1535b29d57ecbc6f83",
+        "web/public/models/characters/textures/222b2fd5222b6638ecda.png": "222b2fd5222b6638ecda965145397b879f1ede5d295c7b2b82ee1d57d4586f74",
+        "web/public/models/characters/textures/2b37ee7756a9b82dfffb.png": "2b37ee7756a9b82dfffb3745cf51692fae1ed75ec14ea0e66b6111d59f5c89ec",
+        "web/public/models/characters/textures/2e15a426be9ee20c39a7.png": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357",
+        "web/public/models/characters/textures/36f03519aa9b1970bda4.png": "36f03519aa9b1970bda458421a19ab7bc1d72524d77135ea6d177d79898eb20d",
+        "web/public/models/characters/textures/3a317df510b9935d80c4.png": "3a317df510b9935d80c4659aa3b257bd138510ffac45aadab18506de529caa6c",
+        "web/public/models/characters/textures/409b7f25641a2c1cf7e2.png": "409b7f25641a2c1cf7e2497521c2022152e41c3cad3e224a29384d18681ad207",
+        "web/public/models/characters/textures/4b36fb5abe80124daabc.png": "4b36fb5abe80124daabce546e8ba9f220ed6467a69c301dd3baaeb43852e8aa5",
+        "web/public/models/characters/textures/4b76848f0034bd614ce5.png": "4b76848f0034bd614ce511b05a6e430f85e5468dd1ff065c393f2523e7ad91c9",
+        "web/public/models/characters/textures/4c4475e9444839cf1982.png": "4c4475e9444839cf1982cfb2bdec28eaf720b9152abe3b229c69c20592329386",
+        "web/public/models/characters/textures/4e49a6468ea885a3f342.png": "4e49a6468ea885a3f34272c59358043ec4a97429e0ca0af5dbfeea0cf61e3c7a",
+        "web/public/models/characters/textures/531a12fea7813218250b.png": "531a12fea7813218250b3e25413c9fd0e7456d66733a9affda8b7fdd383ae4ab",
+        "web/public/models/characters/textures/55aaf791e83ec37fa219.png": "55aaf791e83ec37fa219953f3eb685a5375b2f35e1c93991a15f1c637b764dbe",
+        "web/public/models/characters/textures/55e296edc51c20d99a47.png": "55e296edc51c20d99a4758abe005c1d98e463c01967303ce835d01bc3b54069f",
+        "web/public/models/characters/textures/585896ee836fdcc77ac9.png": "585896ee836fdcc77ac94d7b87c6c2ac2b1c872810f85fc48f5b93178d3e08ac",
+        "web/public/models/characters/textures/5e63547ca25d3a7cd3a2.png": "5e63547ca25d3a7cd3a25c0a96afcdc370582eafef0e1f03410b9caed5a33142",
+        "web/public/models/characters/textures/5fbafa4e4224acc6b55d.png": "5fbafa4e4224acc6b55d9a76c820ed415f5d45e368ad9e07ad5253657a888626",
+        "web/public/models/characters/textures/5fd47e864c3235fa586e.png": "5fd47e864c3235fa586eea83e79c96965cd2ff05d1fcc45f4022455293898cb0",
+        "web/public/models/characters/textures/61cd16599facd99f5d0d.png": "61cd16599facd99f5d0d037f37c0b057d88cdea8ce88e047216fa9db975b8e29",
+        "web/public/models/characters/textures/655e00fa1785da657da4.png": "655e00fa1785da657da4cc2cf75b4f0b397729a965855d9ee25c276b1564726f",
+        "web/public/models/characters/textures/6b9e6e7cf8e4e61f4eec.png": "6b9e6e7cf8e4e61f4eeca4c37b1a44185157489b9dfa152f06742cca0e05bd25",
+        "web/public/models/characters/textures/72fcd3fee9a0c97e77fe.png": "72fcd3fee9a0c97e77feda0ba5f4444a3356a6b8f80aa1313cc609dbfb180e8e",
+        "web/public/models/characters/textures/76c6ed4f73557a4a0a53.png": "76c6ed4f73557a4a0a53d707abccd289a0cbe8d7a9c2a822753f6848ba41ae0f",
+        "web/public/models/characters/textures/79b3320dd2f22a4941bf.png": "79b3320dd2f22a4941bf0243b0ebc0b7bc19cf512770d7627922d1fd67aeb9c3",
+        "web/public/models/characters/textures/79b468f44254a4b58d1f.png": "79b468f44254a4b58d1fb54f597c0e3fab79ae8732637caed793639d5eaf26d5",
+        "web/public/models/characters/textures/7e88592eeb20ec0f16ff.png": "7e88592eeb20ec0f16fff1567f6419d1ef7e953388b4eda301ce7ccb477a9551",
+        "web/public/models/characters/textures/836a76435d2a7ee1dd7e.png": "836a76435d2a7ee1dd7e7408d0252226096b5edb7a93a80f30e44c90523b6e9f",
+        "web/public/models/characters/textures/84fcfbc60fab351843b9.png": "84fcfbc60fab351843b9915fce04eda3d1156fcd9d6b28840fd45cadc3123854",
+        "web/public/models/characters/textures/851812def6824e843620.png": "851812def6824e8436202da61466ea219f705c42ea2352d5d2a095be711d6c14",
+        "web/public/models/characters/textures/89135b727219523ff9ab.png": "89135b727219523ff9ab057e2481e4022fdd64fe463bfa1480ffbf1876a6475a",
+        "web/public/models/characters/textures/8a4e28b91cfa07b8dbd2.png": "8a4e28b91cfa07b8dbd2f22cc7739ed5f79ed0f02f2ebb5d167c165cb06ad6e6",
+        "web/public/models/characters/textures/8c172dc9580b54c81b2b.png": "8c172dc9580b54c81b2b8836c2505fb9a523d11c8e7440cc39765bc8fb1e227f",
+        "web/public/models/characters/textures/8cbf285a07c9ac6f5db6.png": "8cbf285a07c9ac6f5db6312b0f652cec8da66e8c5a093007684ee4912236e6a5",
+        "web/public/models/characters/textures/92f5ecf960db9837f174.png": "92f5ecf960db9837f174f2e110637c6c42e3987bb8be2c2a3bc6443b797319a8",
+        "web/public/models/characters/textures/95673a70dda3ae07ba70.png": "95673a70dda3ae07ba7077694469c628b2c8c8bda526424b86f40aa881d6b90b",
+        "web/public/models/characters/textures/9ee14da28eecf04abb47.png": "9ee14da28eecf04abb478cf4970a08598db7e84e3300e90cecbcea7b8d0ebedb",
+        "web/public/models/characters/textures/9fc805252cb605d3ce55.png": "9fc805252cb605d3ce55864a5cbe3b40809771e35ff8983c8d492d3041c6089f",
+        "web/public/models/characters/textures/a27b9aff9f8c8edf1136.png": "a27b9aff9f8c8edf1136144e3450fcf61faad1b74eae0deb6b512c0c1d2b55de",
+        "web/public/models/characters/textures/a536d20596728975d3d5.png": "a536d20596728975d3d5364979a12235b13fdda1c55a71beb924308f5d21ddae",
+        "web/public/models/characters/textures/ad4f1a90b4624a19fc15.png": "ad4f1a90b4624a19fc157ddc8479106e4a320e7198a5f61c8c7d2081bc751d74",
+        "web/public/models/characters/textures/b1024d7c1943be94a366.png": "b1024d7c1943be94a366fa1fdb203c81d018f9552d47d6f2b2a1217200d81b49",
+        "web/public/models/characters/textures/b14cf99a684846cb69e9.png": "b14cf99a684846cb69e9be4ab93a58d973d3bfce54c0ec9a47ca0545229d2cc1",
+        "web/public/models/characters/textures/b377c35c64fa14f7d1c4.png": "b377c35c64fa14f7d1c41d53fceb5488b812bfa6f2b04b3d071ce17bf3436852",
+        "web/public/models/characters/textures/bf154685e393a585d17b.png": "bf154685e393a585d17b3c3caff2e092d862b8047b6c99361d3a99b6eb800bfd",
+        "web/public/models/characters/textures/c2e31d1ddd86e7509c38.png": "c2e31d1ddd86e7509c381bcf15b4dcf0a116d1d2607a27e981b2b1c61ab42a0f",
+        "web/public/models/characters/textures/c314f9a903442ecaa6a4.png": "c314f9a903442ecaa6a41bb22680b1a68c574ec5cfdee4666041b11f7ee7cfb9",
+        "web/public/models/characters/textures/c4ad653360cce21ee393.png": "c4ad653360cce21ee3933b84279b682381beeb75d21e4f88906076fdd7165456",
+        "web/public/models/characters/textures/c797c24de7449f28452e.png": "c797c24de7449f28452eca47c08200b6b53c557c3f0c96469c819dd77df8fc96",
+        "web/public/models/characters/textures/c87059b901355578ac69.png": "c87059b901355578ac6969804d1893732e807e8e4825a3787733567b93a763aa",
+        "web/public/models/characters/textures/ca8dfdb29da067ef8ac1.png": "ca8dfdb29da067ef8ac15565cbd7779aef4188f41b2afc539af517a2680fbbe2",
+        "web/public/models/characters/textures/cde52c5fc44edc14b3d6.png": "cde52c5fc44edc14b3d661cff6a5a62068916c4af703298e0e31431b5eaf51a9",
+        "web/public/models/characters/textures/cfef86f82ac5d996af20.png": "cfef86f82ac5d996af200cedf4b76ca9d633459188d697a9d8cfdf17d08e7e18",
+        "web/public/models/characters/textures/d119453aaca0a086a3ff.png": "d119453aaca0a086a3ff52033e281bdf80cc39f31e6f079c36fac01d50300448",
+        "web/public/models/characters/textures/dbb6d5d6eecf88027af2.png": "dbb6d5d6eecf88027af2eb2d6948af114a6d4de7454c0f4c4ff04192eca25924",
+        "web/public/models/characters/textures/e35c2780ff9208044a69.png": "e35c2780ff9208044a6905df53ae7dcd74a781e2b6e0e043fc4ef0b1a2c34422",
+        "web/public/models/characters/textures/e80f68933ff3fbf30557.png": "e80f68933ff3fbf305574a55d2512ea143835de52314e7f62ecab38ec409a8c4",
+        "web/public/models/characters/textures/ec6104babab48fadf35b.png": "ec6104babab48fadf35b19b20571477341e465c63d1e9e45d764e798b57bc034",
+        "web/public/models/characters/textures/ede54015ca90cc29311f.png": "ede54015ca90cc29311fc135ce09564f9fd977e40111655eb32a0ec3664d51f0",
+        "web/public/models/characters/textures/f1d9c1150e9ee0415b23.png": "f1d9c1150e9ee0415b236457423e9a338d59631ab7ad1c295e06950723e4498d",
+        "web/public/models/characters/textures/f63de566801fcea8ef97.png": "f63de566801fcea8ef973271a3cd46ac87cf285e766ecfa2d0c6f64670ff3af2",
+        "web/public/models/characters/textures/f77574e15506128045f5.png": "f77574e15506128045f5f9f299f14c0827c7338cbcb9e7be4bb802f8ac729115",
+        "web/public/models/characters/woman-scout-lod0.glb": "8d7c0d817c45681a0a1ebf5068b985ad8d1de580a221d93af3ccba1640f5fa39",
+        "web/public/models/characters/woman-scout-lod1.glb": "358863428ae5d24a19f4d080dd56c7982b568041a5530bacc59e48153ca78cda",
+        "web/public/models/characters/woman-scout-lod2.glb": "06dee5978656e70919c86a3650e914c6f713afb00cf502c954a426740678aa93",
+        "web/public/models/characters/woman-shawl-lod0.glb": "840681442792a9ce2c0c688ceb8d5542caec5d618256c7366dc9bb8129765234",
+        "web/public/models/characters/woman-shawl-lod1.glb": "5653faec338aeed3923359b63d8ae08cec4a045919e6586d457346f6d7e9190f",
+        "web/public/models/characters/woman-shawl-lod2.glb": "2ff3830480c870cf5733399a18635f1f176fd9a827206d9225083184543478ac",
+        "web/public/models/characters/worker-lod0.glb": "1682d2cbd20cca840fc088d58983fa37496db3cb56084babd6cdd7c7d179540a",
+        "web/public/models/characters/worker-lod1.glb": "a83c44ad08118860c59ea02a330b617ad0d8ddfa2a4ed70fabe695a04bd10a7f",
+        "web/public/models/characters/worker-lod2.glb": "52e16641b2ed73a47536faf899772678e30451b10d8d2704b171d8f631d9e517"
+      }
+    },
+    "sourceAfter": {
+      "commit": "65c14ef72474519bf6fad01be59bc9d4e275b673",
+      "hashes": {
+        "web/app/renderer-sandbox/reach-fixture.js": "7287cfd46f9f8a7d99ff6d51d6c634ca06d0fadc07ffc5ae15164818dbfd8b62",
+        "web/app/renderer-sandbox/fixtures.js": "4a41cd61e2ab69b678242c8dc4a0b33588421aa96ce3b5597c9ac1302dd7ceaf",
+        "web/lib/three/actor-runtime.ts": "9b6b9e925bbdb2df1914ed54a3623ffe19300239f270f0c16ec9f888971ebebb",
+        "web/lib/three/scene-actors.ts": "9f8b68ee0f4702df99e33dddf284fed4ba30f8f5a3fad21a5c78e268bdcd7445",
+        "web/lib/three/contact-target-model.ts": "6bb217622532288abc4b32ed5119ab784f51ffb9f0795e8ac327452c25c119f8",
+        "web/lib/three/melee-contact-fit.ts": "79236396011afc08d23cc7e933da809aa5082036495a778f720baf75d69e7774",
+        "web/lib/three/gesture-blend-support.ts": "02724726747181baeb1529f8928c0c986d2a5135704495da87d203643df4d905",
+        "web/lib/three/presentation.ts": "33b498669db18b0603af2306dfbb32a48f6054bd034e43121f3f5a6e8f40115d",
+        "web/lib/three/useActorCues.ts": "8a738385a26a07b768b1a7fa3c95bfd33913d5b4e240fe00ebc1c525a56ccfc9",
+        "web/lib/three/action-timing.ts": "3165468886dd644c42076a06481d73d6374a5bbe4dc985700479ed46ba2b012f",
+        "web/lib/three/animation-clock.ts": "643390f99dbc28ba98d90894f5cdf9313c718f2f38f0fbafa0b0165f48a1ce9a",
+        "web/lib/three/locomotion-profile.json": "d3a9d3d1af2468a7a07ccb4d2a422b1d860b2526f9faa25b8b11e8603f8c3431",
+        "game/tactical.js": "372159ac1f6ddfd86ad7f1f7e02e63662c08be6c4e15a230a1d3f32626f07fbc",
+        "game/battle-presentation.js": "650ded25f0fa01fb121a6f2a7b6f6fcc056b44dcca01fb16353d9de629c5a4e4",
+        "web/public/models/characters/equipment.glb": "237c0e3dd3e7a3af5fbb0c05ee94a3aa95c25951b346877e43c9af4fb673edf5",
+        "web/public/models/characters/female-animations.glb": "509a9c2c1ab0cb2a7d38c8f50cb7809cfa9f6c4cc946c69652b6918fdeb1ac10",
+        "web/public/models/characters/female-garments.glb": "e197024f2a2a9a2d18241206eef4e409189ceab1ba4f7fd97a8eb0d96784c5af",
+        "web/public/models/characters/friar-lod0.glb": "b866a9269b046007dbff7191afa91e65a86128c36bf64925a5921e6ed8f43bd9",
+        "web/public/models/characters/friar-lod1.glb": "17f92e1b1c45acaf06e20e58ba7e298f5cc847398a9205807694636e65a51a08",
+        "web/public/models/characters/friar-lod2.glb": "e31fdb7eef3729895d9bdc7c8eb11b4c57ac7ca7e7cd71eeed2e560fd1b8fcc5",
+        "web/public/models/characters/gaucho-lod0.glb": "7179603e7221ef55ea754590b1b4a81d521a8167ae1b033244042ad968f6c687",
+        "web/public/models/characters/gaucho-lod1.glb": "69b3e5d633a9578338f5ae2c2270b1470096b1a031c55814bbc93d100baddf78",
+        "web/public/models/characters/gaucho-lod2.glb": "185ee45e4b006e9168650a02b3ceeac0e3a654dfcbeb3094dbbf543e03b7a083",
+        "web/public/models/characters/granadero-lod0.glb": "9041e7e5ecd249b0065cf012271d60552f418d1bb2809be6ccb973496c7e97e3",
+        "web/public/models/characters/granadero-lod1.glb": "b589b8558e13d693cccbbc28621ca96221cc9bc6ee58028751075b2fcf5c0188",
+        "web/public/models/characters/granadero-lod2.glb": "de18c59d01ed02830e42cdc65a1b3b03a4f895746e800ba53c46eef8aa8a2f9f",
+        "web/public/models/characters/horse-lod0.glb": "b83f48c9dd231ca5d4fd7c44115be540e2aa8459c94aef89e65ca849ade9bc04",
+        "web/public/models/characters/horse-lod1.glb": "edaa79079ae8dc5109ec30f43dccc1a66a667c75456ac5d59e18a89fe3f9aec1",
+        "web/public/models/characters/horse-lod2.glb": "6b232850ead3ebc220087c23c3405cc85991d03dfc7b130ee80493b6a7502993",
+        "web/public/models/characters/male-animations.glb": "49f5d77abe97ae560f46060f93d3fdd31661eda97e47dfdf029216ade2beeb27",
+        "web/public/models/characters/male-garments.glb": "f2c8a94230284344705166b83e229194a2d38003c821fc1b7484c91573c4ea07",
+        "web/public/models/characters/manifest.json": "f57f1710b6e6c29b29ca53e9182c29b2b4f97b4e7849c1d57bf87ec8db2412b0",
+        "web/public/models/characters/royalist-lod0.glb": "d23f8262eb38def87d7b21586d3faf308505323b5091a8c7150acd82a7334b01",
+        "web/public/models/characters/royalist-lod1.glb": "9199b37b27872bd9348f34c9f6bd051d45089aa3727ae76cd23347d30129df31",
+        "web/public/models/characters/royalist-lod2.glb": "294698350af08dc29e0b505fcc3f432a7634adda3ead34019a6e7ab5e4b99f34",
+        "web/public/models/characters/surgeon-lod0.glb": "7f40d2b114f1da469abb2dc0dfe13d1feb5212a98abdc90604b2f21e540d7fb7",
+        "web/public/models/characters/surgeon-lod1.glb": "78f121de0540449c2fad102c31a346b41e3afb13c94ac28bd24c3e0660324d0e",
+        "web/public/models/characters/surgeon-lod2.glb": "ac5ed22dfc4e5c4558a801df20cf7f87a6347f6f5cca0376214394ea04d0e5cd",
+        "web/public/models/characters/textures/01f30a1649e149138639.png": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8",
+        "web/public/models/characters/textures/02fc23efbfd8542db951.png": "02fc23efbfd8542db9518c8793db2b0b3ecb320896a7697607992b22c6568389",
+        "web/public/models/characters/textures/040aa7bd60f397241c0c.png": "040aa7bd60f397241c0c5dd19c01e5d2660fc82c6d78e911b62e1efef5cbde33",
+        "web/public/models/characters/textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+        "web/public/models/characters/textures/05fec3a4c6149b6ea6e2.png": "05fec3a4c6149b6ea6e22f2a3d81ef0e2002211f089d9d5e5722bee04b87d9e2",
+        "web/public/models/characters/textures/0620e2e93cecf73291dd.png": "0620e2e93cecf73291ddcd06c6eff1fe268af67ece4d484c21c279a1501b4814",
+        "web/public/models/characters/textures/09edeca97bbf63512088.png": "09edeca97bbf635120882bf0f079560f2da1d017f48770acb70e51e72eff7707",
+        "web/public/models/characters/textures/0c2590e18b3ddbd6fba9.png": "0c2590e18b3ddbd6fba95c7836367be876695b21ac74b9009febe9d672ab5a85",
+        "web/public/models/characters/textures/0e8f9ee2451d7ab3080f.png": "0e8f9ee2451d7ab3080f186ca60a0089f60da036450c409526de83876a80d1f0",
+        "web/public/models/characters/textures/14c044c8d8f2e139821a.png": "14c044c8d8f2e139821aef331e84b715642e77012daeb5fb5c37e6cee7987f22",
+        "web/public/models/characters/textures/190fcfc8745e6197a795.png": "190fcfc8745e6197a7954c6b921f4cf3a890d9ac78db560a67dcdbc8359de180",
+        "web/public/models/characters/textures/1b6188df5f9a698957f1.png": "1b6188df5f9a698957f1728ce3cbf8760c736178b4f43d1535b29d57ecbc6f83",
+        "web/public/models/characters/textures/222b2fd5222b6638ecda.png": "222b2fd5222b6638ecda965145397b879f1ede5d295c7b2b82ee1d57d4586f74",
+        "web/public/models/characters/textures/2b37ee7756a9b82dfffb.png": "2b37ee7756a9b82dfffb3745cf51692fae1ed75ec14ea0e66b6111d59f5c89ec",
+        "web/public/models/characters/textures/2e15a426be9ee20c39a7.png": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357",
+        "web/public/models/characters/textures/36f03519aa9b1970bda4.png": "36f03519aa9b1970bda458421a19ab7bc1d72524d77135ea6d177d79898eb20d",
+        "web/public/models/characters/textures/3a317df510b9935d80c4.png": "3a317df510b9935d80c4659aa3b257bd138510ffac45aadab18506de529caa6c",
+        "web/public/models/characters/textures/409b7f25641a2c1cf7e2.png": "409b7f25641a2c1cf7e2497521c2022152e41c3cad3e224a29384d18681ad207",
+        "web/public/models/characters/textures/4b36fb5abe80124daabc.png": "4b36fb5abe80124daabce546e8ba9f220ed6467a69c301dd3baaeb43852e8aa5",
+        "web/public/models/characters/textures/4b76848f0034bd614ce5.png": "4b76848f0034bd614ce511b05a6e430f85e5468dd1ff065c393f2523e7ad91c9",
+        "web/public/models/characters/textures/4c4475e9444839cf1982.png": "4c4475e9444839cf1982cfb2bdec28eaf720b9152abe3b229c69c20592329386",
+        "web/public/models/characters/textures/4e49a6468ea885a3f342.png": "4e49a6468ea885a3f34272c59358043ec4a97429e0ca0af5dbfeea0cf61e3c7a",
+        "web/public/models/characters/textures/531a12fea7813218250b.png": "531a12fea7813218250b3e25413c9fd0e7456d66733a9affda8b7fdd383ae4ab",
+        "web/public/models/characters/textures/55aaf791e83ec37fa219.png": "55aaf791e83ec37fa219953f3eb685a5375b2f35e1c93991a15f1c637b764dbe",
+        "web/public/models/characters/textures/55e296edc51c20d99a47.png": "55e296edc51c20d99a4758abe005c1d98e463c01967303ce835d01bc3b54069f",
+        "web/public/models/characters/textures/585896ee836fdcc77ac9.png": "585896ee836fdcc77ac94d7b87c6c2ac2b1c872810f85fc48f5b93178d3e08ac",
+        "web/public/models/characters/textures/5e63547ca25d3a7cd3a2.png": "5e63547ca25d3a7cd3a25c0a96afcdc370582eafef0e1f03410b9caed5a33142",
+        "web/public/models/characters/textures/5fbafa4e4224acc6b55d.png": "5fbafa4e4224acc6b55d9a76c820ed415f5d45e368ad9e07ad5253657a888626",
+        "web/public/models/characters/textures/5fd47e864c3235fa586e.png": "5fd47e864c3235fa586eea83e79c96965cd2ff05d1fcc45f4022455293898cb0",
+        "web/public/models/characters/textures/61cd16599facd99f5d0d.png": "61cd16599facd99f5d0d037f37c0b057d88cdea8ce88e047216fa9db975b8e29",
+        "web/public/models/characters/textures/655e00fa1785da657da4.png": "655e00fa1785da657da4cc2cf75b4f0b397729a965855d9ee25c276b1564726f",
+        "web/public/models/characters/textures/6b9e6e7cf8e4e61f4eec.png": "6b9e6e7cf8e4e61f4eeca4c37b1a44185157489b9dfa152f06742cca0e05bd25",
+        "web/public/models/characters/textures/72fcd3fee9a0c97e77fe.png": "72fcd3fee9a0c97e77feda0ba5f4444a3356a6b8f80aa1313cc609dbfb180e8e",
+        "web/public/models/characters/textures/76c6ed4f73557a4a0a53.png": "76c6ed4f73557a4a0a53d707abccd289a0cbe8d7a9c2a822753f6848ba41ae0f",
+        "web/public/models/characters/textures/79b3320dd2f22a4941bf.png": "79b3320dd2f22a4941bf0243b0ebc0b7bc19cf512770d7627922d1fd67aeb9c3",
+        "web/public/models/characters/textures/79b468f44254a4b58d1f.png": "79b468f44254a4b58d1fb54f597c0e3fab79ae8732637caed793639d5eaf26d5",
+        "web/public/models/characters/textures/7e88592eeb20ec0f16ff.png": "7e88592eeb20ec0f16fff1567f6419d1ef7e953388b4eda301ce7ccb477a9551",
+        "web/public/models/characters/textures/836a76435d2a7ee1dd7e.png": "836a76435d2a7ee1dd7e7408d0252226096b5edb7a93a80f30e44c90523b6e9f",
+        "web/public/models/characters/textures/84fcfbc60fab351843b9.png": "84fcfbc60fab351843b9915fce04eda3d1156fcd9d6b28840fd45cadc3123854",
+        "web/public/models/characters/textures/851812def6824e843620.png": "851812def6824e8436202da61466ea219f705c42ea2352d5d2a095be711d6c14",
+        "web/public/models/characters/textures/89135b727219523ff9ab.png": "89135b727219523ff9ab057e2481e4022fdd64fe463bfa1480ffbf1876a6475a",
+        "web/public/models/characters/textures/8a4e28b91cfa07b8dbd2.png": "8a4e28b91cfa07b8dbd2f22cc7739ed5f79ed0f02f2ebb5d167c165cb06ad6e6",
+        "web/public/models/characters/textures/8c172dc9580b54c81b2b.png": "8c172dc9580b54c81b2b8836c2505fb9a523d11c8e7440cc39765bc8fb1e227f",
+        "web/public/models/characters/textures/8cbf285a07c9ac6f5db6.png": "8cbf285a07c9ac6f5db6312b0f652cec8da66e8c5a093007684ee4912236e6a5",
+        "web/public/models/characters/textures/92f5ecf960db9837f174.png": "92f5ecf960db9837f174f2e110637c6c42e3987bb8be2c2a3bc6443b797319a8",
+        "web/public/models/characters/textures/95673a70dda3ae07ba70.png": "95673a70dda3ae07ba7077694469c628b2c8c8bda526424b86f40aa881d6b90b",
+        "web/public/models/characters/textures/9ee14da28eecf04abb47.png": "9ee14da28eecf04abb478cf4970a08598db7e84e3300e90cecbcea7b8d0ebedb",
+        "web/public/models/characters/textures/9fc805252cb605d3ce55.png": "9fc805252cb605d3ce55864a5cbe3b40809771e35ff8983c8d492d3041c6089f",
+        "web/public/models/characters/textures/a27b9aff9f8c8edf1136.png": "a27b9aff9f8c8edf1136144e3450fcf61faad1b74eae0deb6b512c0c1d2b55de",
+        "web/public/models/characters/textures/a536d20596728975d3d5.png": "a536d20596728975d3d5364979a12235b13fdda1c55a71beb924308f5d21ddae",
+        "web/public/models/characters/textures/ad4f1a90b4624a19fc15.png": "ad4f1a90b4624a19fc157ddc8479106e4a320e7198a5f61c8c7d2081bc751d74",
+        "web/public/models/characters/textures/b1024d7c1943be94a366.png": "b1024d7c1943be94a366fa1fdb203c81d018f9552d47d6f2b2a1217200d81b49",
+        "web/public/models/characters/textures/b14cf99a684846cb69e9.png": "b14cf99a684846cb69e9be4ab93a58d973d3bfce54c0ec9a47ca0545229d2cc1",
+        "web/public/models/characters/textures/b377c35c64fa14f7d1c4.png": "b377c35c64fa14f7d1c41d53fceb5488b812bfa6f2b04b3d071ce17bf3436852",
+        "web/public/models/characters/textures/bf154685e393a585d17b.png": "bf154685e393a585d17b3c3caff2e092d862b8047b6c99361d3a99b6eb800bfd",
+        "web/public/models/characters/textures/c2e31d1ddd86e7509c38.png": "c2e31d1ddd86e7509c381bcf15b4dcf0a116d1d2607a27e981b2b1c61ab42a0f",
+        "web/public/models/characters/textures/c314f9a903442ecaa6a4.png": "c314f9a903442ecaa6a41bb22680b1a68c574ec5cfdee4666041b11f7ee7cfb9",
+        "web/public/models/characters/textures/c4ad653360cce21ee393.png": "c4ad653360cce21ee3933b84279b682381beeb75d21e4f88906076fdd7165456",
+        "web/public/models/characters/textures/c797c24de7449f28452e.png": "c797c24de7449f28452eca47c08200b6b53c557c3f0c96469c819dd77df8fc96",
+        "web/public/models/characters/textures/c87059b901355578ac69.png": "c87059b901355578ac6969804d1893732e807e8e4825a3787733567b93a763aa",
+        "web/public/models/characters/textures/ca8dfdb29da067ef8ac1.png": "ca8dfdb29da067ef8ac15565cbd7779aef4188f41b2afc539af517a2680fbbe2",
+        "web/public/models/characters/textures/cde52c5fc44edc14b3d6.png": "cde52c5fc44edc14b3d661cff6a5a62068916c4af703298e0e31431b5eaf51a9",
+        "web/public/models/characters/textures/cfef86f82ac5d996af20.png": "cfef86f82ac5d996af200cedf4b76ca9d633459188d697a9d8cfdf17d08e7e18",
+        "web/public/models/characters/textures/d119453aaca0a086a3ff.png": "d119453aaca0a086a3ff52033e281bdf80cc39f31e6f079c36fac01d50300448",
+        "web/public/models/characters/textures/dbb6d5d6eecf88027af2.png": "dbb6d5d6eecf88027af2eb2d6948af114a6d4de7454c0f4c4ff04192eca25924",
+        "web/public/models/characters/textures/e35c2780ff9208044a69.png": "e35c2780ff9208044a6905df53ae7dcd74a781e2b6e0e043fc4ef0b1a2c34422",
+        "web/public/models/characters/textures/e80f68933ff3fbf30557.png": "e80f68933ff3fbf305574a55d2512ea143835de52314e7f62ecab38ec409a8c4",
+        "web/public/models/characters/textures/ec6104babab48fadf35b.png": "ec6104babab48fadf35b19b20571477341e465c63d1e9e45d764e798b57bc034",
+        "web/public/models/characters/textures/ede54015ca90cc29311f.png": "ede54015ca90cc29311fc135ce09564f9fd977e40111655eb32a0ec3664d51f0",
+        "web/public/models/characters/textures/f1d9c1150e9ee0415b23.png": "f1d9c1150e9ee0415b236457423e9a338d59631ab7ad1c295e06950723e4498d",
+        "web/public/models/characters/textures/f63de566801fcea8ef97.png": "f63de566801fcea8ef973271a3cd46ac87cf285e766ecfa2d0c6f64670ff3af2",
+        "web/public/models/characters/textures/f77574e15506128045f5.png": "f77574e15506128045f5f9f299f14c0827c7338cbcb9e7be4bb802f8ac729115",
+        "web/public/models/characters/woman-scout-lod0.glb": "8d7c0d817c45681a0a1ebf5068b985ad8d1de580a221d93af3ccba1640f5fa39",
+        "web/public/models/characters/woman-scout-lod1.glb": "358863428ae5d24a19f4d080dd56c7982b568041a5530bacc59e48153ca78cda",
+        "web/public/models/characters/woman-scout-lod2.glb": "06dee5978656e70919c86a3650e914c6f713afb00cf502c954a426740678aa93",
+        "web/public/models/characters/woman-shawl-lod0.glb": "840681442792a9ce2c0c688ceb8d5542caec5d618256c7366dc9bb8129765234",
+        "web/public/models/characters/woman-shawl-lod1.glb": "5653faec338aeed3923359b63d8ae08cec4a045919e6586d457346f6d7e9190f",
+        "web/public/models/characters/woman-shawl-lod2.glb": "2ff3830480c870cf5733399a18635f1f176fd9a827206d9225083184543478ac",
+        "web/public/models/characters/worker-lod0.glb": "1682d2cbd20cca840fc088d58983fa37496db3cb56084babd6cdd7c7d179540a",
+        "web/public/models/characters/worker-lod1.glb": "a83c44ad08118860c59ea02a330b617ad0d8ddfa2a4ed70fabe695a04bd10a7f",
+        "web/public/models/characters/worker-lod2.glb": "52e16641b2ed73a47536faf899772678e30451b10d8d2704b171d8f631d9e517"
+      }
+    },
+    "servedNativeResponses": 300,
+    "errors": []
+  },
+  "currentUI": {
+    "source": {
+      "commit": "f2e33df79fe4819a429d30aabb8c7d57ff560e13",
+      "hashes": {
+        "web/app/renderer-sandbox/reach-fixture.js": "7287cfd46f9f8a7d99ff6d51d6c634ca06d0fadc07ffc5ae15164818dbfd8b62",
+        "web/app/renderer-sandbox/fixtures.js": "4a41cd61e2ab69b678242c8dc4a0b33588421aa96ce3b5597c9ac1302dd7ceaf",
+        "web/lib/three/actor-runtime.ts": "075a40c931bc88e9d6c39fcd0b7629317795b966959f3ab5516d94496b2fc110",
+        "web/lib/three/heal-patient-contact-fit.ts": "55ca59c067a070ea81bc77e044a75d8b77bb77e27d04772865b4b61cd553dcda",
+        "web/lib/three/heal-patient-ready-fit.ts": "7f89fb58503964dca811ccffec0690bb3b322d2d50cef9a4267ac39cb4b30cc9",
+        "web/lib/three/heal-patient-fit-worker.ts": "34741f49eb6e089dedf68346f8fbc3dfc734b242ddba511592f5e00f56229bb0",
+        "web/lib/three/scene-actors.ts": "5a9106b793a55c0a2bb5bb9c24b920496560ee4d91f97b8c62a84ea8df129b83",
+        "web/lib/three/contact-target-model.ts": "a6f1c4a5bbb59b1eea083d863ad205e2a07848017fe3ecce0c9fafc37f458103",
+        "web/lib/three/melee-contact-fit.ts": "a861d48617c27f3c6d931cb30b654254ed4fba2c77a018149067dcfc995b7693",
+        "web/lib/three/gesture-blend-support.ts": "02724726747181baeb1529f8928c0c986d2a5135704495da87d203643df4d905",
+        "web/lib/three/presentation.ts": "c78f1984a7684717b8b8a17255a1b27daa39a1f4d1c4b75343f603287b0cf44d",
+        "web/lib/three/useActorCues.ts": "8a738385a26a07b768b1a7fa3c95bfd33913d5b4e240fe00ebc1c525a56ccfc9",
+        "web/lib/three/action-timing.ts": "3165468886dd644c42076a06481d73d6374a5bbe4dc985700479ed46ba2b012f",
+        "web/lib/three/animation-clock.ts": "643390f99dbc28ba98d90894f5cdf9313c718f2f38f0fbafa0b0165f48a1ce9a",
+        "web/lib/three/locomotion-profile.json": "d3a9d3d1af2468a7a07ccb4d2a422b1d860b2526f9faa25b8b11e8603f8c3431",
+        "game/tactical.js": "372159ac1f6ddfd86ad7f1f7e02e63662c08be6c4e15a230a1d3f32626f07fbc",
+        "game/battle-presentation.js": "650ded25f0fa01fb121a6f2a7b6f6fcc056b44dcca01fb16353d9de629c5a4e4",
+        "web/public/models/characters/equipment.glb": "237c0e3dd3e7a3af5fbb0c05ee94a3aa95c25951b346877e43c9af4fb673edf5",
+        "web/public/models/characters/female-animations.glb": "509a9c2c1ab0cb2a7d38c8f50cb7809cfa9f6c4cc946c69652b6918fdeb1ac10",
+        "web/public/models/characters/female-garments.glb": "e197024f2a2a9a2d18241206eef4e409189ceab1ba4f7fd97a8eb0d96784c5af",
+        "web/public/models/characters/friar-lod0.glb": "b866a9269b046007dbff7191afa91e65a86128c36bf64925a5921e6ed8f43bd9",
+        "web/public/models/characters/friar-lod1.glb": "17f92e1b1c45acaf06e20e58ba7e298f5cc847398a9205807694636e65a51a08",
+        "web/public/models/characters/friar-lod2.glb": "e31fdb7eef3729895d9bdc7c8eb11b4c57ac7ca7e7cd71eeed2e560fd1b8fcc5",
+        "web/public/models/characters/gaucho-lod0.glb": "7179603e7221ef55ea754590b1b4a81d521a8167ae1b033244042ad968f6c687",
+        "web/public/models/characters/gaucho-lod1.glb": "69b3e5d633a9578338f5ae2c2270b1470096b1a031c55814bbc93d100baddf78",
+        "web/public/models/characters/gaucho-lod2.glb": "185ee45e4b006e9168650a02b3ceeac0e3a654dfcbeb3094dbbf543e03b7a083",
+        "web/public/models/characters/granadero-lod0.glb": "9041e7e5ecd249b0065cf012271d60552f418d1bb2809be6ccb973496c7e97e3",
+        "web/public/models/characters/granadero-lod1.glb": "b589b8558e13d693cccbbc28621ca96221cc9bc6ee58028751075b2fcf5c0188",
+        "web/public/models/characters/granadero-lod2.glb": "de18c59d01ed02830e42cdc65a1b3b03a4f895746e800ba53c46eef8aa8a2f9f",
+        "web/public/models/characters/horse-lod0.glb": "b83f48c9dd231ca5d4fd7c44115be540e2aa8459c94aef89e65ca849ade9bc04",
+        "web/public/models/characters/horse-lod1.glb": "edaa79079ae8dc5109ec30f43dccc1a66a667c75456ac5d59e18a89fe3f9aec1",
+        "web/public/models/characters/horse-lod2.glb": "6b232850ead3ebc220087c23c3405cc85991d03dfc7b130ee80493b6a7502993",
+        "web/public/models/characters/male-animations.glb": "49f5d77abe97ae560f46060f93d3fdd31661eda97e47dfdf029216ade2beeb27",
+        "web/public/models/characters/male-garments.glb": "f2c8a94230284344705166b83e229194a2d38003c821fc1b7484c91573c4ea07",
+        "web/public/models/characters/manifest.json": "f57f1710b6e6c29b29ca53e9182c29b2b4f97b4e7849c1d57bf87ec8db2412b0",
+        "web/public/models/characters/royalist-lod0.glb": "d23f8262eb38def87d7b21586d3faf308505323b5091a8c7150acd82a7334b01",
+        "web/public/models/characters/royalist-lod1.glb": "9199b37b27872bd9348f34c9f6bd051d45089aa3727ae76cd23347d30129df31",
+        "web/public/models/characters/royalist-lod2.glb": "294698350af08dc29e0b505fcc3f432a7634adda3ead34019a6e7ab5e4b99f34",
+        "web/public/models/characters/surgeon-lod0.glb": "7f40d2b114f1da469abb2dc0dfe13d1feb5212a98abdc90604b2f21e540d7fb7",
+        "web/public/models/characters/surgeon-lod1.glb": "78f121de0540449c2fad102c31a346b41e3afb13c94ac28bd24c3e0660324d0e",
+        "web/public/models/characters/surgeon-lod2.glb": "ac5ed22dfc4e5c4558a801df20cf7f87a6347f6f5cca0376214394ea04d0e5cd",
+        "web/public/models/characters/textures/01f30a1649e149138639.png": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8",
+        "web/public/models/characters/textures/02fc23efbfd8542db951.png": "02fc23efbfd8542db9518c8793db2b0b3ecb320896a7697607992b22c6568389",
+        "web/public/models/characters/textures/040aa7bd60f397241c0c.png": "040aa7bd60f397241c0c5dd19c01e5d2660fc82c6d78e911b62e1efef5cbde33",
+        "web/public/models/characters/textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+        "web/public/models/characters/textures/05fec3a4c6149b6ea6e2.png": "05fec3a4c6149b6ea6e22f2a3d81ef0e2002211f089d9d5e5722bee04b87d9e2",
+        "web/public/models/characters/textures/0620e2e93cecf73291dd.png": "0620e2e93cecf73291ddcd06c6eff1fe268af67ece4d484c21c279a1501b4814",
+        "web/public/models/characters/textures/09edeca97bbf63512088.png": "09edeca97bbf635120882bf0f079560f2da1d017f48770acb70e51e72eff7707",
+        "web/public/models/characters/textures/0c2590e18b3ddbd6fba9.png": "0c2590e18b3ddbd6fba95c7836367be876695b21ac74b9009febe9d672ab5a85",
+        "web/public/models/characters/textures/0e8f9ee2451d7ab3080f.png": "0e8f9ee2451d7ab3080f186ca60a0089f60da036450c409526de83876a80d1f0",
+        "web/public/models/characters/textures/14c044c8d8f2e139821a.png": "14c044c8d8f2e139821aef331e84b715642e77012daeb5fb5c37e6cee7987f22",
+        "web/public/models/characters/textures/190fcfc8745e6197a795.png": "190fcfc8745e6197a7954c6b921f4cf3a890d9ac78db560a67dcdbc8359de180",
+        "web/public/models/characters/textures/1b6188df5f9a698957f1.png": "1b6188df5f9a698957f1728ce3cbf8760c736178b4f43d1535b29d57ecbc6f83",
+        "web/public/models/characters/textures/222b2fd5222b6638ecda.png": "222b2fd5222b6638ecda965145397b879f1ede5d295c7b2b82ee1d57d4586f74",
+        "web/public/models/characters/textures/2b37ee7756a9b82dfffb.png": "2b37ee7756a9b82dfffb3745cf51692fae1ed75ec14ea0e66b6111d59f5c89ec",
+        "web/public/models/characters/textures/2e15a426be9ee20c39a7.png": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357",
+        "web/public/models/characters/textures/36f03519aa9b1970bda4.png": "36f03519aa9b1970bda458421a19ab7bc1d72524d77135ea6d177d79898eb20d",
+        "web/public/models/characters/textures/3a317df510b9935d80c4.png": "3a317df510b9935d80c4659aa3b257bd138510ffac45aadab18506de529caa6c",
+        "web/public/models/characters/textures/409b7f25641a2c1cf7e2.png": "409b7f25641a2c1cf7e2497521c2022152e41c3cad3e224a29384d18681ad207",
+        "web/public/models/characters/textures/4b36fb5abe80124daabc.png": "4b36fb5abe80124daabce546e8ba9f220ed6467a69c301dd3baaeb43852e8aa5",
+        "web/public/models/characters/textures/4b76848f0034bd614ce5.png": "4b76848f0034bd614ce511b05a6e430f85e5468dd1ff065c393f2523e7ad91c9",
+        "web/public/models/characters/textures/4c4475e9444839cf1982.png": "4c4475e9444839cf1982cfb2bdec28eaf720b9152abe3b229c69c20592329386",
+        "web/public/models/characters/textures/4e49a6468ea885a3f342.png": "4e49a6468ea885a3f34272c59358043ec4a97429e0ca0af5dbfeea0cf61e3c7a",
+        "web/public/models/characters/textures/531a12fea7813218250b.png": "531a12fea7813218250b3e25413c9fd0e7456d66733a9affda8b7fdd383ae4ab",
+        "web/public/models/characters/textures/55aaf791e83ec37fa219.png": "55aaf791e83ec37fa219953f3eb685a5375b2f35e1c93991a15f1c637b764dbe",
+        "web/public/models/characters/textures/55e296edc51c20d99a47.png": "55e296edc51c20d99a4758abe005c1d98e463c01967303ce835d01bc3b54069f",
+        "web/public/models/characters/textures/585896ee836fdcc77ac9.png": "585896ee836fdcc77ac94d7b87c6c2ac2b1c872810f85fc48f5b93178d3e08ac",
+        "web/public/models/characters/textures/5e63547ca25d3a7cd3a2.png": "5e63547ca25d3a7cd3a25c0a96afcdc370582eafef0e1f03410b9caed5a33142",
+        "web/public/models/characters/textures/5fbafa4e4224acc6b55d.png": "5fbafa4e4224acc6b55d9a76c820ed415f5d45e368ad9e07ad5253657a888626",
+        "web/public/models/characters/textures/5fd47e864c3235fa586e.png": "5fd47e864c3235fa586eea83e79c96965cd2ff05d1fcc45f4022455293898cb0",
+        "web/public/models/characters/textures/61cd16599facd99f5d0d.png": "61cd16599facd99f5d0d037f37c0b057d88cdea8ce88e047216fa9db975b8e29",
+        "web/public/models/characters/textures/655e00fa1785da657da4.png": "655e00fa1785da657da4cc2cf75b4f0b397729a965855d9ee25c276b1564726f",
+        "web/public/models/characters/textures/6b9e6e7cf8e4e61f4eec.png": "6b9e6e7cf8e4e61f4eeca4c37b1a44185157489b9dfa152f06742cca0e05bd25",
+        "web/public/models/characters/textures/72fcd3fee9a0c97e77fe.png": "72fcd3fee9a0c97e77feda0ba5f4444a3356a6b8f80aa1313cc609dbfb180e8e",
+        "web/public/models/characters/textures/76c6ed4f73557a4a0a53.png": "76c6ed4f73557a4a0a53d707abccd289a0cbe8d7a9c2a822753f6848ba41ae0f",
+        "web/public/models/characters/textures/79b3320dd2f22a4941bf.png": "79b3320dd2f22a4941bf0243b0ebc0b7bc19cf512770d7627922d1fd67aeb9c3",
+        "web/public/models/characters/textures/79b468f44254a4b58d1f.png": "79b468f44254a4b58d1fb54f597c0e3fab79ae8732637caed793639d5eaf26d5",
+        "web/public/models/characters/textures/7e88592eeb20ec0f16ff.png": "7e88592eeb20ec0f16fff1567f6419d1ef7e953388b4eda301ce7ccb477a9551",
+        "web/public/models/characters/textures/836a76435d2a7ee1dd7e.png": "836a76435d2a7ee1dd7e7408d0252226096b5edb7a93a80f30e44c90523b6e9f",
+        "web/public/models/characters/textures/84fcfbc60fab351843b9.png": "84fcfbc60fab351843b9915fce04eda3d1156fcd9d6b28840fd45cadc3123854",
+        "web/public/models/characters/textures/851812def6824e843620.png": "851812def6824e8436202da61466ea219f705c42ea2352d5d2a095be711d6c14",
+        "web/public/models/characters/textures/89135b727219523ff9ab.png": "89135b727219523ff9ab057e2481e4022fdd64fe463bfa1480ffbf1876a6475a",
+        "web/public/models/characters/textures/8a4e28b91cfa07b8dbd2.png": "8a4e28b91cfa07b8dbd2f22cc7739ed5f79ed0f02f2ebb5d167c165cb06ad6e6",
+        "web/public/models/characters/textures/8c172dc9580b54c81b2b.png": "8c172dc9580b54c81b2b8836c2505fb9a523d11c8e7440cc39765bc8fb1e227f",
+        "web/public/models/characters/textures/8cbf285a07c9ac6f5db6.png": "8cbf285a07c9ac6f5db6312b0f652cec8da66e8c5a093007684ee4912236e6a5",
+        "web/public/models/characters/textures/92f5ecf960db9837f174.png": "92f5ecf960db9837f174f2e110637c6c42e3987bb8be2c2a3bc6443b797319a8",
+        "web/public/models/characters/textures/95673a70dda3ae07ba70.png": "95673a70dda3ae07ba7077694469c628b2c8c8bda526424b86f40aa881d6b90b",
+        "web/public/models/characters/textures/9ee14da28eecf04abb47.png": "9ee14da28eecf04abb478cf4970a08598db7e84e3300e90cecbcea7b8d0ebedb",
+        "web/public/models/characters/textures/9fc805252cb605d3ce55.png": "9fc805252cb605d3ce55864a5cbe3b40809771e35ff8983c8d492d3041c6089f",
+        "web/public/models/characters/textures/a27b9aff9f8c8edf1136.png": "a27b9aff9f8c8edf1136144e3450fcf61faad1b74eae0deb6b512c0c1d2b55de",
+        "web/public/models/characters/textures/a536d20596728975d3d5.png": "a536d20596728975d3d5364979a12235b13fdda1c55a71beb924308f5d21ddae",
+        "web/public/models/characters/textures/ad4f1a90b4624a19fc15.png": "ad4f1a90b4624a19fc157ddc8479106e4a320e7198a5f61c8c7d2081bc751d74",
+        "web/public/models/characters/textures/b1024d7c1943be94a366.png": "b1024d7c1943be94a366fa1fdb203c81d018f9552d47d6f2b2a1217200d81b49",
+        "web/public/models/characters/textures/b14cf99a684846cb69e9.png": "b14cf99a684846cb69e9be4ab93a58d973d3bfce54c0ec9a47ca0545229d2cc1",
+        "web/public/models/characters/textures/b377c35c64fa14f7d1c4.png": "b377c35c64fa14f7d1c41d53fceb5488b812bfa6f2b04b3d071ce17bf3436852",
+        "web/public/models/characters/textures/bf154685e393a585d17b.png": "bf154685e393a585d17b3c3caff2e092d862b8047b6c99361d3a99b6eb800bfd",
+        "web/public/models/characters/textures/c2e31d1ddd86e7509c38.png": "c2e31d1ddd86e7509c381bcf15b4dcf0a116d1d2607a27e981b2b1c61ab42a0f",
+        "web/public/models/characters/textures/c314f9a903442ecaa6a4.png": "c314f9a903442ecaa6a41bb22680b1a68c574ec5cfdee4666041b11f7ee7cfb9",
+        "web/public/models/characters/textures/c4ad653360cce21ee393.png": "c4ad653360cce21ee3933b84279b682381beeb75d21e4f88906076fdd7165456",
+        "web/public/models/characters/textures/c797c24de7449f28452e.png": "c797c24de7449f28452eca47c08200b6b53c557c3f0c96469c819dd77df8fc96",
+        "web/public/models/characters/textures/c87059b901355578ac69.png": "c87059b901355578ac6969804d1893732e807e8e4825a3787733567b93a763aa",
+        "web/public/models/characters/textures/ca8dfdb29da067ef8ac1.png": "ca8dfdb29da067ef8ac15565cbd7779aef4188f41b2afc539af517a2680fbbe2",
+        "web/public/models/characters/textures/cde52c5fc44edc14b3d6.png": "cde52c5fc44edc14b3d661cff6a5a62068916c4af703298e0e31431b5eaf51a9",
+        "web/public/models/characters/textures/cfef86f82ac5d996af20.png": "cfef86f82ac5d996af200cedf4b76ca9d633459188d697a9d8cfdf17d08e7e18",
+        "web/public/models/characters/textures/d119453aaca0a086a3ff.png": "d119453aaca0a086a3ff52033e281bdf80cc39f31e6f079c36fac01d50300448",
+        "web/public/models/characters/textures/dbb6d5d6eecf88027af2.png": "dbb6d5d6eecf88027af2eb2d6948af114a6d4de7454c0f4c4ff04192eca25924",
+        "web/public/models/characters/textures/e35c2780ff9208044a69.png": "e35c2780ff9208044a6905df53ae7dcd74a781e2b6e0e043fc4ef0b1a2c34422",
+        "web/public/models/characters/textures/e80f68933ff3fbf30557.png": "e80f68933ff3fbf305574a55d2512ea143835de52314e7f62ecab38ec409a8c4",
+        "web/public/models/characters/textures/ec6104babab48fadf35b.png": "ec6104babab48fadf35b19b20571477341e465c63d1e9e45d764e798b57bc034",
+        "web/public/models/characters/textures/ede54015ca90cc29311f.png": "ede54015ca90cc29311fc135ce09564f9fd977e40111655eb32a0ec3664d51f0",
+        "web/public/models/characters/textures/f1d9c1150e9ee0415b23.png": "f1d9c1150e9ee0415b236457423e9a338d59631ab7ad1c295e06950723e4498d",
+        "web/public/models/characters/textures/f63de566801fcea8ef97.png": "f63de566801fcea8ef973271a3cd46ac87cf285e766ecfa2d0c6f64670ff3af2",
+        "web/public/models/characters/textures/f77574e15506128045f5.png": "f77574e15506128045f5f9f299f14c0827c7338cbcb9e7be4bb802f8ac729115",
+        "web/public/models/characters/woman-scout-lod0.glb": "8d7c0d817c45681a0a1ebf5068b985ad8d1de580a221d93af3ccba1640f5fa39",
+        "web/public/models/characters/woman-scout-lod1.glb": "358863428ae5d24a19f4d080dd56c7982b568041a5530bacc59e48153ca78cda",
+        "web/public/models/characters/woman-scout-lod2.glb": "06dee5978656e70919c86a3650e914c6f713afb00cf502c954a426740678aa93",
+        "web/public/models/characters/woman-shawl-lod0.glb": "840681442792a9ce2c0c688ceb8d5542caec5d618256c7366dc9bb8129765234",
+        "web/public/models/characters/woman-shawl-lod1.glb": "5653faec338aeed3923359b63d8ae08cec4a045919e6586d457346f6d7e9190f",
+        "web/public/models/characters/woman-shawl-lod2.glb": "2ff3830480c870cf5733399a18635f1f176fd9a827206d9225083184543478ac",
+        "web/public/models/characters/worker-lod0.glb": "1682d2cbd20cca840fc088d58983fa37496db3cb56084babd6cdd7c7d179540a",
+        "web/public/models/characters/worker-lod1.glb": "a83c44ad08118860c59ea02a330b617ad0d8ddfa2a4ed70fabe695a04bd10a7f",
+        "web/public/models/characters/worker-lod2.glb": "52e16641b2ed73a47536faf899772678e30451b10d8d2704b171d8f631d9e517"
+      }
+    },
+    "sourceAfter": {
+      "commit": "f2e33df79fe4819a429d30aabb8c7d57ff560e13",
+      "hashes": {
+        "web/app/renderer-sandbox/reach-fixture.js": "7287cfd46f9f8a7d99ff6d51d6c634ca06d0fadc07ffc5ae15164818dbfd8b62",
+        "web/app/renderer-sandbox/fixtures.js": "4a41cd61e2ab69b678242c8dc4a0b33588421aa96ce3b5597c9ac1302dd7ceaf",
+        "web/lib/three/actor-runtime.ts": "075a40c931bc88e9d6c39fcd0b7629317795b966959f3ab5516d94496b2fc110",
+        "web/lib/three/heal-patient-contact-fit.ts": "55ca59c067a070ea81bc77e044a75d8b77bb77e27d04772865b4b61cd553dcda",
+        "web/lib/three/heal-patient-ready-fit.ts": "7f89fb58503964dca811ccffec0690bb3b322d2d50cef9a4267ac39cb4b30cc9",
+        "web/lib/three/heal-patient-fit-worker.ts": "34741f49eb6e089dedf68346f8fbc3dfc734b242ddba511592f5e00f56229bb0",
+        "web/lib/three/scene-actors.ts": "5a9106b793a55c0a2bb5bb9c24b920496560ee4d91f97b8c62a84ea8df129b83",
+        "web/lib/three/contact-target-model.ts": "a6f1c4a5bbb59b1eea083d863ad205e2a07848017fe3ecce0c9fafc37f458103",
+        "web/lib/three/melee-contact-fit.ts": "a861d48617c27f3c6d931cb30b654254ed4fba2c77a018149067dcfc995b7693",
+        "web/lib/three/gesture-blend-support.ts": "02724726747181baeb1529f8928c0c986d2a5135704495da87d203643df4d905",
+        "web/lib/three/presentation.ts": "c78f1984a7684717b8b8a17255a1b27daa39a1f4d1c4b75343f603287b0cf44d",
+        "web/lib/three/useActorCues.ts": "8a738385a26a07b768b1a7fa3c95bfd33913d5b4e240fe00ebc1c525a56ccfc9",
+        "web/lib/three/action-timing.ts": "3165468886dd644c42076a06481d73d6374a5bbe4dc985700479ed46ba2b012f",
+        "web/lib/three/animation-clock.ts": "643390f99dbc28ba98d90894f5cdf9313c718f2f38f0fbafa0b0165f48a1ce9a",
+        "web/lib/three/locomotion-profile.json": "d3a9d3d1af2468a7a07ccb4d2a422b1d860b2526f9faa25b8b11e8603f8c3431",
+        "game/tactical.js": "372159ac1f6ddfd86ad7f1f7e02e63662c08be6c4e15a230a1d3f32626f07fbc",
+        "game/battle-presentation.js": "650ded25f0fa01fb121a6f2a7b6f6fcc056b44dcca01fb16353d9de629c5a4e4",
+        "web/public/models/characters/equipment.glb": "237c0e3dd3e7a3af5fbb0c05ee94a3aa95c25951b346877e43c9af4fb673edf5",
+        "web/public/models/characters/female-animations.glb": "509a9c2c1ab0cb2a7d38c8f50cb7809cfa9f6c4cc946c69652b6918fdeb1ac10",
+        "web/public/models/characters/female-garments.glb": "e197024f2a2a9a2d18241206eef4e409189ceab1ba4f7fd97a8eb0d96784c5af",
+        "web/public/models/characters/friar-lod0.glb": "b866a9269b046007dbff7191afa91e65a86128c36bf64925a5921e6ed8f43bd9",
+        "web/public/models/characters/friar-lod1.glb": "17f92e1b1c45acaf06e20e58ba7e298f5cc847398a9205807694636e65a51a08",
+        "web/public/models/characters/friar-lod2.glb": "e31fdb7eef3729895d9bdc7c8eb11b4c57ac7ca7e7cd71eeed2e560fd1b8fcc5",
+        "web/public/models/characters/gaucho-lod0.glb": "7179603e7221ef55ea754590b1b4a81d521a8167ae1b033244042ad968f6c687",
+        "web/public/models/characters/gaucho-lod1.glb": "69b3e5d633a9578338f5ae2c2270b1470096b1a031c55814bbc93d100baddf78",
+        "web/public/models/characters/gaucho-lod2.glb": "185ee45e4b006e9168650a02b3ceeac0e3a654dfcbeb3094dbbf543e03b7a083",
+        "web/public/models/characters/granadero-lod0.glb": "9041e7e5ecd249b0065cf012271d60552f418d1bb2809be6ccb973496c7e97e3",
+        "web/public/models/characters/granadero-lod1.glb": "b589b8558e13d693cccbbc28621ca96221cc9bc6ee58028751075b2fcf5c0188",
+        "web/public/models/characters/granadero-lod2.glb": "de18c59d01ed02830e42cdc65a1b3b03a4f895746e800ba53c46eef8aa8a2f9f",
+        "web/public/models/characters/horse-lod0.glb": "b83f48c9dd231ca5d4fd7c44115be540e2aa8459c94aef89e65ca849ade9bc04",
+        "web/public/models/characters/horse-lod1.glb": "edaa79079ae8dc5109ec30f43dccc1a66a667c75456ac5d59e18a89fe3f9aec1",
+        "web/public/models/characters/horse-lod2.glb": "6b232850ead3ebc220087c23c3405cc85991d03dfc7b130ee80493b6a7502993",
+        "web/public/models/characters/male-animations.glb": "49f5d77abe97ae560f46060f93d3fdd31661eda97e47dfdf029216ade2beeb27",
+        "web/public/models/characters/male-garments.glb": "f2c8a94230284344705166b83e229194a2d38003c821fc1b7484c91573c4ea07",
+        "web/public/models/characters/manifest.json": "f57f1710b6e6c29b29ca53e9182c29b2b4f97b4e7849c1d57bf87ec8db2412b0",
+        "web/public/models/characters/royalist-lod0.glb": "d23f8262eb38def87d7b21586d3faf308505323b5091a8c7150acd82a7334b01",
+        "web/public/models/characters/royalist-lod1.glb": "9199b37b27872bd9348f34c9f6bd051d45089aa3727ae76cd23347d30129df31",
+        "web/public/models/characters/royalist-lod2.glb": "294698350af08dc29e0b505fcc3f432a7634adda3ead34019a6e7ab5e4b99f34",
+        "web/public/models/characters/surgeon-lod0.glb": "7f40d2b114f1da469abb2dc0dfe13d1feb5212a98abdc90604b2f21e540d7fb7",
+        "web/public/models/characters/surgeon-lod1.glb": "78f121de0540449c2fad102c31a346b41e3afb13c94ac28bd24c3e0660324d0e",
+        "web/public/models/characters/surgeon-lod2.glb": "ac5ed22dfc4e5c4558a801df20cf7f87a6347f6f5cca0376214394ea04d0e5cd",
+        "web/public/models/characters/textures/01f30a1649e149138639.png": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8",
+        "web/public/models/characters/textures/02fc23efbfd8542db951.png": "02fc23efbfd8542db9518c8793db2b0b3ecb320896a7697607992b22c6568389",
+        "web/public/models/characters/textures/040aa7bd60f397241c0c.png": "040aa7bd60f397241c0c5dd19c01e5d2660fc82c6d78e911b62e1efef5cbde33",
+        "web/public/models/characters/textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+        "web/public/models/characters/textures/05fec3a4c6149b6ea6e2.png": "05fec3a4c6149b6ea6e22f2a3d81ef0e2002211f089d9d5e5722bee04b87d9e2",
+        "web/public/models/characters/textures/0620e2e93cecf73291dd.png": "0620e2e93cecf73291ddcd06c6eff1fe268af67ece4d484c21c279a1501b4814",
+        "web/public/models/characters/textures/09edeca97bbf63512088.png": "09edeca97bbf635120882bf0f079560f2da1d017f48770acb70e51e72eff7707",
+        "web/public/models/characters/textures/0c2590e18b3ddbd6fba9.png": "0c2590e18b3ddbd6fba95c7836367be876695b21ac74b9009febe9d672ab5a85",
+        "web/public/models/characters/textures/0e8f9ee2451d7ab3080f.png": "0e8f9ee2451d7ab3080f186ca60a0089f60da036450c409526de83876a80d1f0",
+        "web/public/models/characters/textures/14c044c8d8f2e139821a.png": "14c044c8d8f2e139821aef331e84b715642e77012daeb5fb5c37e6cee7987f22",
+        "web/public/models/characters/textures/190fcfc8745e6197a795.png": "190fcfc8745e6197a7954c6b921f4cf3a890d9ac78db560a67dcdbc8359de180",
+        "web/public/models/characters/textures/1b6188df5f9a698957f1.png": "1b6188df5f9a698957f1728ce3cbf8760c736178b4f43d1535b29d57ecbc6f83",
+        "web/public/models/characters/textures/222b2fd5222b6638ecda.png": "222b2fd5222b6638ecda965145397b879f1ede5d295c7b2b82ee1d57d4586f74",
+        "web/public/models/characters/textures/2b37ee7756a9b82dfffb.png": "2b37ee7756a9b82dfffb3745cf51692fae1ed75ec14ea0e66b6111d59f5c89ec",
+        "web/public/models/characters/textures/2e15a426be9ee20c39a7.png": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357",
+        "web/public/models/characters/textures/36f03519aa9b1970bda4.png": "36f03519aa9b1970bda458421a19ab7bc1d72524d77135ea6d177d79898eb20d",
+        "web/public/models/characters/textures/3a317df510b9935d80c4.png": "3a317df510b9935d80c4659aa3b257bd138510ffac45aadab18506de529caa6c",
+        "web/public/models/characters/textures/409b7f25641a2c1cf7e2.png": "409b7f25641a2c1cf7e2497521c2022152e41c3cad3e224a29384d18681ad207",
+        "web/public/models/characters/textures/4b36fb5abe80124daabc.png": "4b36fb5abe80124daabce546e8ba9f220ed6467a69c301dd3baaeb43852e8aa5",
+        "web/public/models/characters/textures/4b76848f0034bd614ce5.png": "4b76848f0034bd614ce511b05a6e430f85e5468dd1ff065c393f2523e7ad91c9",
+        "web/public/models/characters/textures/4c4475e9444839cf1982.png": "4c4475e9444839cf1982cfb2bdec28eaf720b9152abe3b229c69c20592329386",
+        "web/public/models/characters/textures/4e49a6468ea885a3f342.png": "4e49a6468ea885a3f34272c59358043ec4a97429e0ca0af5dbfeea0cf61e3c7a",
+        "web/public/models/characters/textures/531a12fea7813218250b.png": "531a12fea7813218250b3e25413c9fd0e7456d66733a9affda8b7fdd383ae4ab",
+        "web/public/models/characters/textures/55aaf791e83ec37fa219.png": "55aaf791e83ec37fa219953f3eb685a5375b2f35e1c93991a15f1c637b764dbe",
+        "web/public/models/characters/textures/55e296edc51c20d99a47.png": "55e296edc51c20d99a4758abe005c1d98e463c01967303ce835d01bc3b54069f",
+        "web/public/models/characters/textures/585896ee836fdcc77ac9.png": "585896ee836fdcc77ac94d7b87c6c2ac2b1c872810f85fc48f5b93178d3e08ac",
+        "web/public/models/characters/textures/5e63547ca25d3a7cd3a2.png": "5e63547ca25d3a7cd3a25c0a96afcdc370582eafef0e1f03410b9caed5a33142",
+        "web/public/models/characters/textures/5fbafa4e4224acc6b55d.png": "5fbafa4e4224acc6b55d9a76c820ed415f5d45e368ad9e07ad5253657a888626",
+        "web/public/models/characters/textures/5fd47e864c3235fa586e.png": "5fd47e864c3235fa586eea83e79c96965cd2ff05d1fcc45f4022455293898cb0",
+        "web/public/models/characters/textures/61cd16599facd99f5d0d.png": "61cd16599facd99f5d0d037f37c0b057d88cdea8ce88e047216fa9db975b8e29",
+        "web/public/models/characters/textures/655e00fa1785da657da4.png": "655e00fa1785da657da4cc2cf75b4f0b397729a965855d9ee25c276b1564726f",
+        "web/public/models/characters/textures/6b9e6e7cf8e4e61f4eec.png": "6b9e6e7cf8e4e61f4eeca4c37b1a44185157489b9dfa152f06742cca0e05bd25",
+        "web/public/models/characters/textures/72fcd3fee9a0c97e77fe.png": "72fcd3fee9a0c97e77feda0ba5f4444a3356a6b8f80aa1313cc609dbfb180e8e",
+        "web/public/models/characters/textures/76c6ed4f73557a4a0a53.png": "76c6ed4f73557a4a0a53d707abccd289a0cbe8d7a9c2a822753f6848ba41ae0f",
+        "web/public/models/characters/textures/79b3320dd2f22a4941bf.png": "79b3320dd2f22a4941bf0243b0ebc0b7bc19cf512770d7627922d1fd67aeb9c3",
+        "web/public/models/characters/textures/79b468f44254a4b58d1f.png": "79b468f44254a4b58d1fb54f597c0e3fab79ae8732637caed793639d5eaf26d5",
+        "web/public/models/characters/textures/7e88592eeb20ec0f16ff.png": "7e88592eeb20ec0f16fff1567f6419d1ef7e953388b4eda301ce7ccb477a9551",
+        "web/public/models/characters/textures/836a76435d2a7ee1dd7e.png": "836a76435d2a7ee1dd7e7408d0252226096b5edb7a93a80f30e44c90523b6e9f",
+        "web/public/models/characters/textures/84fcfbc60fab351843b9.png": "84fcfbc60fab351843b9915fce04eda3d1156fcd9d6b28840fd45cadc3123854",
+        "web/public/models/characters/textures/851812def6824e843620.png": "851812def6824e8436202da61466ea219f705c42ea2352d5d2a095be711d6c14",
+        "web/public/models/characters/textures/89135b727219523ff9ab.png": "89135b727219523ff9ab057e2481e4022fdd64fe463bfa1480ffbf1876a6475a",
+        "web/public/models/characters/textures/8a4e28b91cfa07b8dbd2.png": "8a4e28b91cfa07b8dbd2f22cc7739ed5f79ed0f02f2ebb5d167c165cb06ad6e6",
+        "web/public/models/characters/textures/8c172dc9580b54c81b2b.png": "8c172dc9580b54c81b2b8836c2505fb9a523d11c8e7440cc39765bc8fb1e227f",
+        "web/public/models/characters/textures/8cbf285a07c9ac6f5db6.png": "8cbf285a07c9ac6f5db6312b0f652cec8da66e8c5a093007684ee4912236e6a5",
+        "web/public/models/characters/textures/92f5ecf960db9837f174.png": "92f5ecf960db9837f174f2e110637c6c42e3987bb8be2c2a3bc6443b797319a8",
+        "web/public/models/characters/textures/95673a70dda3ae07ba70.png": "95673a70dda3ae07ba7077694469c628b2c8c8bda526424b86f40aa881d6b90b",
+        "web/public/models/characters/textures/9ee14da28eecf04abb47.png": "9ee14da28eecf04abb478cf4970a08598db7e84e3300e90cecbcea7b8d0ebedb",
+        "web/public/models/characters/textures/9fc805252cb605d3ce55.png": "9fc805252cb605d3ce55864a5cbe3b40809771e35ff8983c8d492d3041c6089f",
+        "web/public/models/characters/textures/a27b9aff9f8c8edf1136.png": "a27b9aff9f8c8edf1136144e3450fcf61faad1b74eae0deb6b512c0c1d2b55de",
+        "web/public/models/characters/textures/a536d20596728975d3d5.png": "a536d20596728975d3d5364979a12235b13fdda1c55a71beb924308f5d21ddae",
+        "web/public/models/characters/textures/ad4f1a90b4624a19fc15.png": "ad4f1a90b4624a19fc157ddc8479106e4a320e7198a5f61c8c7d2081bc751d74",
+        "web/public/models/characters/textures/b1024d7c1943be94a366.png": "b1024d7c1943be94a366fa1fdb203c81d018f9552d47d6f2b2a1217200d81b49",
+        "web/public/models/characters/textures/b14cf99a684846cb69e9.png": "b14cf99a684846cb69e9be4ab93a58d973d3bfce54c0ec9a47ca0545229d2cc1",
+        "web/public/models/characters/textures/b377c35c64fa14f7d1c4.png": "b377c35c64fa14f7d1c41d53fceb5488b812bfa6f2b04b3d071ce17bf3436852",
+        "web/public/models/characters/textures/bf154685e393a585d17b.png": "bf154685e393a585d17b3c3caff2e092d862b8047b6c99361d3a99b6eb800bfd",
+        "web/public/models/characters/textures/c2e31d1ddd86e7509c38.png": "c2e31d1ddd86e7509c381bcf15b4dcf0a116d1d2607a27e981b2b1c61ab42a0f",
+        "web/public/models/characters/textures/c314f9a903442ecaa6a4.png": "c314f9a903442ecaa6a41bb22680b1a68c574ec5cfdee4666041b11f7ee7cfb9",
+        "web/public/models/characters/textures/c4ad653360cce21ee393.png": "c4ad653360cce21ee3933b84279b682381beeb75d21e4f88906076fdd7165456",
+        "web/public/models/characters/textures/c797c24de7449f28452e.png": "c797c24de7449f28452eca47c08200b6b53c557c3f0c96469c819dd77df8fc96",
+        "web/public/models/characters/textures/c87059b901355578ac69.png": "c87059b901355578ac6969804d1893732e807e8e4825a3787733567b93a763aa",
+        "web/public/models/characters/textures/ca8dfdb29da067ef8ac1.png": "ca8dfdb29da067ef8ac15565cbd7779aef4188f41b2afc539af517a2680fbbe2",
+        "web/public/models/characters/textures/cde52c5fc44edc14b3d6.png": "cde52c5fc44edc14b3d661cff6a5a62068916c4af703298e0e31431b5eaf51a9",
+        "web/public/models/characters/textures/cfef86f82ac5d996af20.png": "cfef86f82ac5d996af200cedf4b76ca9d633459188d697a9d8cfdf17d08e7e18",
+        "web/public/models/characters/textures/d119453aaca0a086a3ff.png": "d119453aaca0a086a3ff52033e281bdf80cc39f31e6f079c36fac01d50300448",
+        "web/public/models/characters/textures/dbb6d5d6eecf88027af2.png": "dbb6d5d6eecf88027af2eb2d6948af114a6d4de7454c0f4c4ff04192eca25924",
+        "web/public/models/characters/textures/e35c2780ff9208044a69.png": "e35c2780ff9208044a6905df53ae7dcd74a781e2b6e0e043fc4ef0b1a2c34422",
+        "web/public/models/characters/textures/e80f68933ff3fbf30557.png": "e80f68933ff3fbf305574a55d2512ea143835de52314e7f62ecab38ec409a8c4",
+        "web/public/models/characters/textures/ec6104babab48fadf35b.png": "ec6104babab48fadf35b19b20571477341e465c63d1e9e45d764e798b57bc034",
+        "web/public/models/characters/textures/ede54015ca90cc29311f.png": "ede54015ca90cc29311fc135ce09564f9fd977e40111655eb32a0ec3664d51f0",
+        "web/public/models/characters/textures/f1d9c1150e9ee0415b23.png": "f1d9c1150e9ee0415b236457423e9a338d59631ab7ad1c295e06950723e4498d",
+        "web/public/models/characters/textures/f63de566801fcea8ef97.png": "f63de566801fcea8ef973271a3cd46ac87cf285e766ecfa2d0c6f64670ff3af2",
+        "web/public/models/characters/textures/f77574e15506128045f5.png": "f77574e15506128045f5f9f299f14c0827c7338cbcb9e7be4bb802f8ac729115",
+        "web/public/models/characters/woman-scout-lod0.glb": "8d7c0d817c45681a0a1ebf5068b985ad8d1de580a221d93af3ccba1640f5fa39",
+        "web/public/models/characters/woman-scout-lod1.glb": "358863428ae5d24a19f4d080dd56c7982b568041a5530bacc59e48153ca78cda",
+        "web/public/models/characters/woman-scout-lod2.glb": "06dee5978656e70919c86a3650e914c6f713afb00cf502c954a426740678aa93",
+        "web/public/models/characters/woman-shawl-lod0.glb": "840681442792a9ce2c0c688ceb8d5542caec5d618256c7366dc9bb8129765234",
+        "web/public/models/characters/woman-shawl-lod1.glb": "5653faec338aeed3923359b63d8ae08cec4a045919e6586d457346f6d7e9190f",
+        "web/public/models/characters/woman-shawl-lod2.glb": "2ff3830480c870cf5733399a18635f1f176fd9a827206d9225083184543478ac",
+        "web/public/models/characters/worker-lod0.glb": "1682d2cbd20cca840fc088d58983fa37496db3cb56084babd6cdd7c7d179540a",
+        "web/public/models/characters/worker-lod1.glb": "a83c44ad08118860c59ea02a330b617ad0d8ddfa2a4ed70fabe695a04bd10a7f",
+        "web/public/models/characters/worker-lod2.glb": "52e16641b2ed73a47536faf899772678e30451b10d8d2704b171d8f631d9e517"
+      }
+    },
+    "network": [
+      {
+        "file": "web/public/models/characters/manifest.json",
+        "sha256": "f57f1710b6e6c29b29ca53e9182c29b2b4f97b4e7849c1d57bf87ec8db2412b0"
+      },
+      {
+        "file": "web/public/models/characters/granadero-lod1.glb",
+        "sha256": "b589b8558e13d693cccbbc28621ca96221cc9bc6ee58028751075b2fcf5c0188"
+      },
+      {
+        "file": "web/public/models/characters/equipment.glb",
+        "sha256": "237c0e3dd3e7a3af5fbb0c05ee94a3aa95c25951b346877e43c9af4fb673edf5"
+      },
+      {
+        "file": "web/public/models/characters/male-garments.glb",
+        "sha256": "f2c8a94230284344705166b83e229194a2d38003c821fc1b7484c91573c4ea07"
+      },
+      {
+        "file": "web/public/models/characters/woman-scout-lod1.glb",
+        "sha256": "358863428ae5d24a19f4d080dd56c7982b568041a5530bacc59e48153ca78cda"
+      },
+      {
+        "file": "web/public/models/characters/gaucho-lod1.glb",
+        "sha256": "69b3e5d633a9578338f5ae2c2270b1470096b1a031c55814bbc93d100baddf78"
+      },
+      {
+        "file": "web/public/models/characters/female-garments.glb",
+        "sha256": "e197024f2a2a9a2d18241206eef4e409189ceab1ba4f7fd97a8eb0d96784c5af"
+      },
+      {
+        "file": "web/public/models/characters/worker-lod1.glb",
+        "sha256": "a83c44ad08118860c59ea02a330b617ad0d8ddfa2a4ed70fabe695a04bd10a7f"
+      },
+      {
+        "file": "web/public/models/characters/royalist-lod1.glb",
+        "sha256": "9199b37b27872bd9348f34c9f6bd051d45089aa3727ae76cd23347d30129df31"
+      },
+      {
+        "file": "web/public/models/characters/male-animations.glb",
+        "sha256": "49f5d77abe97ae560f46060f93d3fdd31661eda97e47dfdf029216ade2beeb27"
+      },
+      {
+        "file": "web/public/models/characters/female-animations.glb",
+        "sha256": "509a9c2c1ab0cb2a7d38c8f50cb7809cfa9f6c4cc946c69652b6918fdeb1ac10"
+      },
+      {
+        "file": "web/public/models/characters/textures/76c6ed4f73557a4a0a53.png",
+        "sha256": "76c6ed4f73557a4a0a53d707abccd289a0cbe8d7a9c2a822753f6848ba41ae0f"
+      },
+      {
+        "file": "web/public/models/characters/textures/040aa7bd60f397241c0c.png",
+        "sha256": "040aa7bd60f397241c0c5dd19c01e5d2660fc82c6d78e911b62e1efef5cbde33"
+      },
+      {
+        "file": "web/public/models/characters/textures/409b7f25641a2c1cf7e2.png",
+        "sha256": "409b7f25641a2c1cf7e2497521c2022152e41c3cad3e224a29384d18681ad207"
+      },
+      {
+        "file": "web/public/models/characters/textures/2e15a426be9ee20c39a7.png",
+        "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+      },
+      {
+        "file": "web/public/models/characters/textures/851812def6824e843620.png",
+        "sha256": "851812def6824e8436202da61466ea219f705c42ea2352d5d2a095be711d6c14"
+      },
+      {
+        "file": "web/public/models/characters/textures/042e670c62ad34a45c14.png",
+        "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+      },
+      {
+        "file": "web/public/models/characters/textures/6b9e6e7cf8e4e61f4eec.png",
+        "sha256": "6b9e6e7cf8e4e61f4eeca4c37b1a44185157489b9dfa152f06742cca0e05bd25"
+      },
+      {
+        "file": "web/public/models/characters/textures/531a12fea7813218250b.png",
+        "sha256": "531a12fea7813218250b3e25413c9fd0e7456d66733a9affda8b7fdd383ae4ab"
+      },
+      {
+        "file": "web/public/models/characters/textures/e80f68933ff3fbf30557.png",
+        "sha256": "e80f68933ff3fbf305574a55d2512ea143835de52314e7f62ecab38ec409a8c4"
+      },
+      {
+        "file": "web/public/models/characters/textures/f63de566801fcea8ef97.png",
+        "sha256": "f63de566801fcea8ef973271a3cd46ac87cf285e766ecfa2d0c6f64670ff3af2"
+      },
+      {
+        "file": "web/public/models/characters/textures/4b36fb5abe80124daabc.png",
+        "sha256": "4b36fb5abe80124daabce546e8ba9f220ed6467a69c301dd3baaeb43852e8aa5"
+      },
+      {
+        "file": "web/public/models/characters/textures/2e15a426be9ee20c39a7.png",
+        "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+      },
+      {
+        "file": "web/public/models/characters/textures/042e670c62ad34a45c14.png",
+        "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+      },
+      {
+        "file": "web/public/models/characters/textures/02fc23efbfd8542db951.png",
+        "sha256": "02fc23efbfd8542db9518c8793db2b0b3ecb320896a7697607992b22c6568389"
+      },
+      {
+        "file": "web/public/models/characters/textures/190fcfc8745e6197a795.png",
+        "sha256": "190fcfc8745e6197a7954c6b921f4cf3a890d9ac78db560a67dcdbc8359de180"
+      },
+      {
+        "file": "web/public/models/characters/textures/2e15a426be9ee20c39a7.png",
+        "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+      },
+      {
+        "file": "web/public/models/characters/textures/042e670c62ad34a45c14.png",
+        "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+      },
+      {
+        "file": "web/public/models/characters/textures/79b3320dd2f22a4941bf.png",
+        "sha256": "79b3320dd2f22a4941bf0243b0ebc0b7bc19cf512770d7627922d1fd67aeb9c3"
+      },
+      {
+        "file": "web/public/models/characters/textures/2e15a426be9ee20c39a7.png",
+        "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+      },
+      {
+        "file": "web/public/models/characters/textures/042e670c62ad34a45c14.png",
+        "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+      },
+      {
+        "file": "web/public/models/characters/textures/4b36fb5abe80124daabc.png",
+        "sha256": "4b36fb5abe80124daabce546e8ba9f220ed6467a69c301dd3baaeb43852e8aa5"
+      },
+      {
+        "file": "web/public/models/characters/textures/89135b727219523ff9ab.png",
+        "sha256": "89135b727219523ff9ab057e2481e4022fdd64fe463bfa1480ffbf1876a6475a"
+      },
+      {
+        "file": "web/public/models/characters/textures/6b9e6e7cf8e4e61f4eec.png",
+        "sha256": "6b9e6e7cf8e4e61f4eeca4c37b1a44185157489b9dfa152f06742cca0e05bd25"
+      },
+      {
+        "file": "web/public/models/characters/textures/cde52c5fc44edc14b3d6.png",
+        "sha256": "cde52c5fc44edc14b3d661cff6a5a62068916c4af703298e0e31431b5eaf51a9"
+      },
+      {
+        "file": "web/public/models/characters/textures/531a12fea7813218250b.png",
+        "sha256": "531a12fea7813218250b3e25413c9fd0e7456d66733a9affda8b7fdd383ae4ab"
+      },
+      {
+        "file": "web/public/models/characters/textures/c4ad653360cce21ee393.png",
+        "sha256": "c4ad653360cce21ee3933b84279b682381beeb75d21e4f88906076fdd7165456"
+      },
+      {
+        "file": "web/public/models/characters/textures/409b7f25641a2c1cf7e2.png",
+        "sha256": "409b7f25641a2c1cf7e2497521c2022152e41c3cad3e224a29384d18681ad207"
+      },
+      {
+        "file": "web/public/models/characters/textures/01f30a1649e149138639.png",
+        "sha256": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8"
+      },
+      {
+        "file": "web/public/models/characters/textures/040aa7bd60f397241c0c.png",
+        "sha256": "040aa7bd60f397241c0c5dd19c01e5d2660fc82c6d78e911b62e1efef5cbde33"
+      },
+      {
+        "file": "web/public/models/characters/textures/042e670c62ad34a45c14.png",
+        "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+      },
+      {
+        "file": "web/public/models/characters/textures/2e15a426be9ee20c39a7.png",
+        "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+      },
+      {
+        "file": "web/public/models/characters/textures/a536d20596728975d3d5.png",
+        "sha256": "a536d20596728975d3d5364979a12235b13fdda1c55a71beb924308f5d21ddae"
+      },
+      {
+        "file": "web/public/models/characters/textures/55aaf791e83ec37fa219.png",
+        "sha256": "55aaf791e83ec37fa219953f3eb685a5375b2f35e1c93991a15f1c637b764dbe"
+      },
+      {
+        "file": "web/public/models/characters/textures/cfef86f82ac5d996af20.png",
+        "sha256": "cfef86f82ac5d996af200cedf4b76ca9d633459188d697a9d8cfdf17d08e7e18"
+      },
+      {
+        "file": "web/public/models/characters/textures/2e15a426be9ee20c39a7.png",
+        "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+      },
+      {
+        "file": "web/public/models/characters/textures/042e670c62ad34a45c14.png",
+        "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+      },
+      {
+        "file": "web/public/models/characters/textures/ca8dfdb29da067ef8ac1.png",
+        "sha256": "ca8dfdb29da067ef8ac15565cbd7779aef4188f41b2afc539af517a2680fbbe2"
+      },
+      {
+        "file": "web/public/models/characters/textures/a27b9aff9f8c8edf1136.png",
+        "sha256": "a27b9aff9f8c8edf1136144e3450fcf61faad1b74eae0deb6b512c0c1d2b55de"
+      },
+      {
+        "file": "web/public/models/characters/textures/01f30a1649e149138639.png",
+        "sha256": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8"
+      },
+      {
+        "file": "web/public/models/characters/textures/2e15a426be9ee20c39a7.png",
+        "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+      },
+      {
+        "file": "web/public/models/characters/textures/042e670c62ad34a45c14.png",
+        "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+      },
+      {
+        "file": "web/public/models/characters/manifest.json",
+        "sha256": "f57f1710b6e6c29b29ca53e9182c29b2b4f97b4e7849c1d57bf87ec8db2412b0"
+      },
+      {
+        "file": "web/public/models/characters/male-garments.glb",
+        "sha256": "f2c8a94230284344705166b83e229194a2d38003c821fc1b7484c91573c4ea07"
+      },
+      {
+        "file": "web/public/models/characters/equipment.glb",
+        "sha256": "237c0e3dd3e7a3af5fbb0c05ee94a3aa95c25951b346877e43c9af4fb673edf5"
+      },
+      {
+        "file": "web/public/models/characters/female-garments.glb",
+        "sha256": "e197024f2a2a9a2d18241206eef4e409189ceab1ba4f7fd97a8eb0d96784c5af"
+      },
+      {
+        "file": "web/public/models/characters/woman-scout-lod1.glb",
+        "sha256": "358863428ae5d24a19f4d080dd56c7982b568041a5530bacc59e48153ca78cda"
+      },
+      {
+        "file": "web/public/models/characters/granadero-lod1.glb",
+        "sha256": "b589b8558e13d693cccbbc28621ca96221cc9bc6ee58028751075b2fcf5c0188"
+      },
+      {
+        "file": "web/public/models/characters/royalist-lod1.glb",
+        "sha256": "9199b37b27872bd9348f34c9f6bd051d45089aa3727ae76cd23347d30129df31"
+      },
+      {
+        "file": "web/public/models/characters/textures/6b9e6e7cf8e4e61f4eec.png",
+        "sha256": "6b9e6e7cf8e4e61f4eeca4c37b1a44185157489b9dfa152f06742cca0e05bd25"
+      },
+      {
+        "file": "web/public/models/characters/textures/531a12fea7813218250b.png",
+        "sha256": "531a12fea7813218250b3e25413c9fd0e7456d66733a9affda8b7fdd383ae4ab"
+      },
+      {
+        "file": "web/public/models/characters/textures/851812def6824e843620.png",
+        "sha256": "851812def6824e8436202da61466ea219f705c42ea2352d5d2a095be711d6c14"
+      },
+      {
+        "file": "web/public/models/characters/textures/89135b727219523ff9ab.png",
+        "sha256": "89135b727219523ff9ab057e2481e4022fdd64fe463bfa1480ffbf1876a6475a"
+      },
+      {
+        "file": "web/public/models/characters/textures/6b9e6e7cf8e4e61f4eec.png",
+        "sha256": "6b9e6e7cf8e4e61f4eeca4c37b1a44185157489b9dfa152f06742cca0e05bd25"
+      },
+      {
+        "file": "web/public/models/characters/textures/531a12fea7813218250b.png",
+        "sha256": "531a12fea7813218250b3e25413c9fd0e7456d66733a9affda8b7fdd383ae4ab"
+      },
+      {
+        "file": "web/public/models/characters/textures/e80f68933ff3fbf30557.png",
+        "sha256": "e80f68933ff3fbf305574a55d2512ea143835de52314e7f62ecab38ec409a8c4"
+      },
+      {
+        "file": "web/public/models/characters/textures/4b36fb5abe80124daabc.png",
+        "sha256": "4b36fb5abe80124daabce546e8ba9f220ed6467a69c301dd3baaeb43852e8aa5"
+      },
+      {
+        "file": "web/public/models/characters/textures/2e15a426be9ee20c39a7.png",
+        "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+      },
+      {
+        "file": "web/public/models/characters/textures/042e670c62ad34a45c14.png",
+        "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+      },
+      {
+        "file": "web/public/models/characters/textures/76c6ed4f73557a4a0a53.png",
+        "sha256": "76c6ed4f73557a4a0a53d707abccd289a0cbe8d7a9c2a822753f6848ba41ae0f"
+      },
+      {
+        "file": "web/public/models/characters/textures/409b7f25641a2c1cf7e2.png",
+        "sha256": "409b7f25641a2c1cf7e2497521c2022152e41c3cad3e224a29384d18681ad207"
+      },
+      {
+        "file": "web/public/models/characters/textures/f63de566801fcea8ef97.png",
+        "sha256": "f63de566801fcea8ef973271a3cd46ac87cf285e766ecfa2d0c6f64670ff3af2"
+      },
+      {
+        "file": "web/public/models/characters/textures/040aa7bd60f397241c0c.png",
+        "sha256": "040aa7bd60f397241c0c5dd19c01e5d2660fc82c6d78e911b62e1efef5cbde33"
+      },
+      {
+        "file": "web/public/models/characters/textures/cde52c5fc44edc14b3d6.png",
+        "sha256": "cde52c5fc44edc14b3d661cff6a5a62068916c4af703298e0e31431b5eaf51a9"
+      },
+      {
+        "file": "web/public/models/characters/female-animations.glb",
+        "sha256": "509a9c2c1ab0cb2a7d38c8f50cb7809cfa9f6c4cc946c69652b6918fdeb1ac10"
+      },
+      {
+        "file": "web/public/models/characters/male-animations.glb",
+        "sha256": "49f5d77abe97ae560f46060f93d3fdd31661eda97e47dfdf029216ade2beeb27"
+      },
+      {
+        "file": "web/public/models/characters/manifest.json",
+        "sha256": "f57f1710b6e6c29b29ca53e9182c29b2b4f97b4e7849c1d57bf87ec8db2412b0"
+      },
+      {
+        "file": "web/public/models/characters/granadero-lod1.glb",
+        "sha256": "b589b8558e13d693cccbbc28621ca96221cc9bc6ee58028751075b2fcf5c0188"
+      },
+      {
+        "file": "web/public/models/characters/equipment.glb",
+        "sha256": "237c0e3dd3e7a3af5fbb0c05ee94a3aa95c25951b346877e43c9af4fb673edf5"
+      },
+      {
+        "file": "web/public/models/characters/male-garments.glb",
+        "sha256": "f2c8a94230284344705166b83e229194a2d38003c821fc1b7484c91573c4ea07"
+      },
+      {
+        "file": "web/public/models/characters/woman-scout-lod1.glb",
+        "sha256": "358863428ae5d24a19f4d080dd56c7982b568041a5530bacc59e48153ca78cda"
+      },
+      {
+        "file": "web/public/models/characters/female-garments.glb",
+        "sha256": "e197024f2a2a9a2d18241206eef4e409189ceab1ba4f7fd97a8eb0d96784c5af"
+      },
+      {
+        "file": "web/public/models/characters/royalist-lod1.glb",
+        "sha256": "9199b37b27872bd9348f34c9f6bd051d45089aa3727ae76cd23347d30129df31"
+      },
+      {
+        "file": "web/public/models/characters/female-animations.glb",
+        "sha256": "509a9c2c1ab0cb2a7d38c8f50cb7809cfa9f6c4cc946c69652b6918fdeb1ac10"
+      },
+      {
+        "file": "web/public/models/characters/male-animations.glb",
+        "sha256": "49f5d77abe97ae560f46060f93d3fdd31661eda97e47dfdf029216ade2beeb27"
+      },
+      {
+        "file": "web/public/models/characters/textures/2e15a426be9ee20c39a7.png",
+        "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+      },
+      {
+        "file": "web/public/models/characters/textures/042e670c62ad34a45c14.png",
+        "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+      },
+      {
+        "file": "web/public/models/characters/textures/409b7f25641a2c1cf7e2.png",
+        "sha256": "409b7f25641a2c1cf7e2497521c2022152e41c3cad3e224a29384d18681ad207"
+      },
+      {
+        "file": "web/public/models/characters/textures/040aa7bd60f397241c0c.png",
+        "sha256": "040aa7bd60f397241c0c5dd19c01e5d2660fc82c6d78e911b62e1efef5cbde33"
+      },
+      {
+        "file": "web/public/models/characters/textures/2e15a426be9ee20c39a7.png",
+        "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+      },
+      {
+        "file": "web/public/models/characters/textures/042e670c62ad34a45c14.png",
+        "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+      },
+      {
+        "file": "web/public/models/characters/textures/ca8dfdb29da067ef8ac1.png",
+        "sha256": "ca8dfdb29da067ef8ac15565cbd7779aef4188f41b2afc539af517a2680fbbe2"
+      },
+      {
+        "file": "web/public/models/characters/textures/a27b9aff9f8c8edf1136.png",
+        "sha256": "a27b9aff9f8c8edf1136144e3450fcf61faad1b74eae0deb6b512c0c1d2b55de"
+      },
+      {
+        "file": "web/public/models/characters/textures/01f30a1649e149138639.png",
+        "sha256": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8"
+      },
+      {
+        "file": "web/public/models/characters/textures/2e15a426be9ee20c39a7.png",
+        "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+      },
+      {
+        "file": "web/public/models/characters/textures/042e670c62ad34a45c14.png",
+        "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+      },
+      {
+        "file": "web/public/models/characters/textures/a536d20596728975d3d5.png",
+        "sha256": "a536d20596728975d3d5364979a12235b13fdda1c55a71beb924308f5d21ddae"
+      },
+      {
+        "file": "web/public/models/characters/textures/cfef86f82ac5d996af20.png",
+        "sha256": "cfef86f82ac5d996af200cedf4b76ca9d633459188d697a9d8cfdf17d08e7e18"
+      },
+      {
+        "file": "web/public/models/characters/textures/2e15a426be9ee20c39a7.png",
+        "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+      },
+      {
+        "file": "web/public/models/characters/textures/042e670c62ad34a45c14.png",
+        "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+      },
+      {
+        "file": "web/public/models/characters/textures/55aaf791e83ec37fa219.png",
+        "sha256": "55aaf791e83ec37fa219953f3eb685a5375b2f35e1c93991a15f1c637b764dbe"
+      },
+      {
+        "file": "web/public/models/characters/textures/76c6ed4f73557a4a0a53.png",
+        "sha256": "76c6ed4f73557a4a0a53d707abccd289a0cbe8d7a9c2a822753f6848ba41ae0f"
+      },
+      {
+        "file": "web/public/models/characters/textures/040aa7bd60f397241c0c.png",
+        "sha256": "040aa7bd60f397241c0c5dd19c01e5d2660fc82c6d78e911b62e1efef5cbde33"
+      },
+      {
+        "file": "web/public/models/characters/textures/409b7f25641a2c1cf7e2.png",
+        "sha256": "409b7f25641a2c1cf7e2497521c2022152e41c3cad3e224a29384d18681ad207"
+      },
+      {
+        "file": "web/public/models/characters/textures/2e15a426be9ee20c39a7.png",
+        "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+      },
+      {
+        "file": "web/public/models/characters/textures/042e670c62ad34a45c14.png",
+        "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+      },
+      {
+        "file": "web/public/models/characters/textures/851812def6824e843620.png",
+        "sha256": "851812def6824e8436202da61466ea219f705c42ea2352d5d2a095be711d6c14"
+      },
+      {
+        "file": "web/public/models/characters/textures/531a12fea7813218250b.png",
+        "sha256": "531a12fea7813218250b3e25413c9fd0e7456d66733a9affda8b7fdd383ae4ab"
+      },
+      {
+        "file": "web/public/models/characters/textures/e80f68933ff3fbf30557.png",
+        "sha256": "e80f68933ff3fbf305574a55d2512ea143835de52314e7f62ecab38ec409a8c4"
+      },
+      {
+        "file": "web/public/models/characters/textures/6b9e6e7cf8e4e61f4eec.png",
+        "sha256": "6b9e6e7cf8e4e61f4eeca4c37b1a44185157489b9dfa152f06742cca0e05bd25"
+      },
+      {
+        "file": "web/public/models/characters/textures/f63de566801fcea8ef97.png",
+        "sha256": "f63de566801fcea8ef973271a3cd46ac87cf285e766ecfa2d0c6f64670ff3af2"
+      },
+      {
+        "file": "web/public/models/characters/textures/4b36fb5abe80124daabc.png",
+        "sha256": "4b36fb5abe80124daabce546e8ba9f220ed6467a69c301dd3baaeb43852e8aa5"
+      },
+      {
+        "file": "web/public/models/characters/textures/2e15a426be9ee20c39a7.png",
+        "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+      },
+      {
+        "file": "web/public/models/characters/textures/042e670c62ad34a45c14.png",
+        "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+      },
+      {
+        "file": "web/public/models/characters/textures/89135b727219523ff9ab.png",
+        "sha256": "89135b727219523ff9ab057e2481e4022fdd64fe463bfa1480ffbf1876a6475a"
+      },
+      {
+        "file": "web/public/models/characters/textures/cde52c5fc44edc14b3d6.png",
+        "sha256": "cde52c5fc44edc14b3d661cff6a5a62068916c4af703298e0e31431b5eaf51a9"
+      },
+      {
+        "file": "web/public/models/characters/textures/040aa7bd60f397241c0c.png",
+        "sha256": "040aa7bd60f397241c0c5dd19c01e5d2660fc82c6d78e911b62e1efef5cbde33"
+      },
+      {
+        "file": "web/public/models/characters/textures/6b9e6e7cf8e4e61f4eec.png",
+        "sha256": "6b9e6e7cf8e4e61f4eeca4c37b1a44185157489b9dfa152f06742cca0e05bd25"
+      },
+      {
+        "file": "web/public/models/characters/textures/531a12fea7813218250b.png",
+        "sha256": "531a12fea7813218250b3e25413c9fd0e7456d66733a9affda8b7fdd383ae4ab"
+      },
+      {
+        "file": "web/public/models/characters/textures/409b7f25641a2c1cf7e2.png",
+        "sha256": "409b7f25641a2c1cf7e2497521c2022152e41c3cad3e224a29384d18681ad207"
+      },
+      {
+        "file": "web/public/models/characters/textures/2e15a426be9ee20c39a7.png",
+        "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+      },
+      {
+        "file": "web/public/models/characters/textures/042e670c62ad34a45c14.png",
+        "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+      },
+      {
+        "file": "web/public/models/characters/textures/ca8dfdb29da067ef8ac1.png",
+        "sha256": "ca8dfdb29da067ef8ac15565cbd7779aef4188f41b2afc539af517a2680fbbe2"
+      },
+      {
+        "file": "web/public/models/characters/textures/a27b9aff9f8c8edf1136.png",
+        "sha256": "a27b9aff9f8c8edf1136144e3450fcf61faad1b74eae0deb6b512c0c1d2b55de"
+      },
+      {
+        "file": "web/public/models/characters/textures/01f30a1649e149138639.png",
+        "sha256": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8"
+      },
+      {
+        "file": "web/public/models/characters/textures/55aaf791e83ec37fa219.png",
+        "sha256": "55aaf791e83ec37fa219953f3eb685a5375b2f35e1c93991a15f1c637b764dbe"
+      },
+      {
+        "file": "web/public/models/characters/textures/2e15a426be9ee20c39a7.png",
+        "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+      },
+      {
+        "file": "web/public/models/characters/textures/042e670c62ad34a45c14.png",
+        "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+      },
+      {
+        "file": "web/public/models/characters/textures/cfef86f82ac5d996af20.png",
+        "sha256": "cfef86f82ac5d996af200cedf4b76ca9d633459188d697a9d8cfdf17d08e7e18"
+      },
+      {
+        "file": "web/public/models/characters/textures/a536d20596728975d3d5.png",
+        "sha256": "a536d20596728975d3d5364979a12235b13fdda1c55a71beb924308f5d21ddae"
+      },
+      {
+        "file": "web/public/models/characters/textures/2e15a426be9ee20c39a7.png",
+        "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+      },
+      {
+        "file": "web/public/models/characters/textures/042e670c62ad34a45c14.png",
+        "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+      },
+      {
+        "file": "web/public/models/characters/granadero-lod0.glb",
+        "sha256": "9041e7e5ecd249b0065cf012271d60552f418d1bb2809be6ccb973496c7e97e3"
+      },
+      {
+        "file": "web/public/models/characters/woman-scout-lod0.glb",
+        "sha256": "8d7c0d817c45681a0a1ebf5068b985ad8d1de580a221d93af3ccba1640f5fa39"
+      },
+      {
+        "file": "web/public/models/characters/royalist-lod0.glb",
+        "sha256": "d23f8262eb38def87d7b21586d3faf308505323b5091a8c7150acd82a7334b01"
+      },
+      {
+        "file": "web/public/models/characters/textures/76c6ed4f73557a4a0a53.png",
+        "sha256": "76c6ed4f73557a4a0a53d707abccd289a0cbe8d7a9c2a822753f6848ba41ae0f"
+      },
+      {
+        "file": "web/public/models/characters/textures/042e670c62ad34a45c14.png",
+        "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+      },
+      {
+        "file": "web/public/models/characters/textures/e80f68933ff3fbf30557.png",
+        "sha256": "e80f68933ff3fbf305574a55d2512ea143835de52314e7f62ecab38ec409a8c4"
+      },
+      {
+        "file": "web/public/models/characters/textures/4b36fb5abe80124daabc.png",
+        "sha256": "4b36fb5abe80124daabce546e8ba9f220ed6467a69c301dd3baaeb43852e8aa5"
+      },
+      {
+        "file": "web/public/models/characters/textures/040aa7bd60f397241c0c.png",
+        "sha256": "040aa7bd60f397241c0c5dd19c01e5d2660fc82c6d78e911b62e1efef5cbde33"
+      },
+      {
+        "file": "web/public/models/characters/textures/409b7f25641a2c1cf7e2.png",
+        "sha256": "409b7f25641a2c1cf7e2497521c2022152e41c3cad3e224a29384d18681ad207"
+      },
+      {
+        "file": "web/public/models/characters/textures/2e15a426be9ee20c39a7.png",
+        "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+      },
+      {
+        "file": "web/public/models/characters/textures/2e15a426be9ee20c39a7.png",
+        "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+      },
+      {
+        "file": "web/public/models/characters/textures/f63de566801fcea8ef97.png",
+        "sha256": "f63de566801fcea8ef973271a3cd46ac87cf285e766ecfa2d0c6f64670ff3af2"
+      },
+      {
+        "file": "web/public/models/characters/textures/042e670c62ad34a45c14.png",
+        "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+      },
+      {
+        "file": "web/public/models/characters/textures/cde52c5fc44edc14b3d6.png",
+        "sha256": "cde52c5fc44edc14b3d661cff6a5a62068916c4af703298e0e31431b5eaf51a9"
+      },
+      {
+        "file": "web/public/models/characters/textures/040aa7bd60f397241c0c.png",
+        "sha256": "040aa7bd60f397241c0c5dd19c01e5d2660fc82c6d78e911b62e1efef5cbde33"
+      },
+      {
+        "file": "web/public/models/characters/textures/409b7f25641a2c1cf7e2.png",
+        "sha256": "409b7f25641a2c1cf7e2497521c2022152e41c3cad3e224a29384d18681ad207"
+      },
+      {
+        "file": "web/public/models/characters/textures/2e15a426be9ee20c39a7.png",
+        "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+      },
+      {
+        "file": "web/public/models/characters/textures/042e670c62ad34a45c14.png",
+        "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+      },
+      {
+        "file": "web/public/models/characters/manifest.json",
+        "sha256": "f57f1710b6e6c29b29ca53e9182c29b2b4f97b4e7849c1d57bf87ec8db2412b0"
+      },
+      {
+        "file": "web/public/models/characters/granadero-lod1.glb",
+        "sha256": "b589b8558e13d693cccbbc28621ca96221cc9bc6ee58028751075b2fcf5c0188"
+      },
+      {
+        "file": "web/public/models/characters/equipment.glb",
+        "sha256": "237c0e3dd3e7a3af5fbb0c05ee94a3aa95c25951b346877e43c9af4fb673edf5"
+      },
+      {
+        "file": "web/public/models/characters/male-garments.glb",
+        "sha256": "f2c8a94230284344705166b83e229194a2d38003c821fc1b7484c91573c4ea07"
+      },
+      {
+        "file": "web/public/models/characters/gaucho-lod1.glb",
+        "sha256": "69b3e5d633a9578338f5ae2c2270b1470096b1a031c55814bbc93d100baddf78"
+      },
+      {
+        "file": "web/public/models/characters/woman-scout-lod1.glb",
+        "sha256": "358863428ae5d24a19f4d080dd56c7982b568041a5530bacc59e48153ca78cda"
+      },
+      {
+        "file": "web/public/models/characters/female-garments.glb",
+        "sha256": "e197024f2a2a9a2d18241206eef4e409189ceab1ba4f7fd97a8eb0d96784c5af"
+      },
+      {
+        "file": "web/public/models/characters/worker-lod1.glb",
+        "sha256": "a83c44ad08118860c59ea02a330b617ad0d8ddfa2a4ed70fabe695a04bd10a7f"
+      },
+      {
+        "file": "web/public/models/characters/royalist-lod1.glb",
+        "sha256": "9199b37b27872bd9348f34c9f6bd051d45089aa3727ae76cd23347d30129df31"
+      },
+      {
+        "file": "web/public/models/characters/textures/76c6ed4f73557a4a0a53.png",
+        "sha256": "76c6ed4f73557a4a0a53d707abccd289a0cbe8d7a9c2a822753f6848ba41ae0f"
+      },
+      {
+        "file": "web/public/models/characters/textures/040aa7bd60f397241c0c.png",
+        "sha256": "040aa7bd60f397241c0c5dd19c01e5d2660fc82c6d78e911b62e1efef5cbde33"
+      },
+      {
+        "file": "web/public/models/characters/textures/409b7f25641a2c1cf7e2.png",
+        "sha256": "409b7f25641a2c1cf7e2497521c2022152e41c3cad3e224a29384d18681ad207"
+      },
+      {
+        "file": "web/public/models/characters/textures/851812def6824e843620.png",
+        "sha256": "851812def6824e8436202da61466ea219f705c42ea2352d5d2a095be711d6c14"
+      },
+      {
+        "file": "web/public/models/characters/textures/6b9e6e7cf8e4e61f4eec.png",
+        "sha256": "6b9e6e7cf8e4e61f4eeca4c37b1a44185157489b9dfa152f06742cca0e05bd25"
+      },
+      {
+        "file": "web/public/models/characters/textures/531a12fea7813218250b.png",
+        "sha256": "531a12fea7813218250b3e25413c9fd0e7456d66733a9affda8b7fdd383ae4ab"
+      },
+      {
+        "file": "web/public/models/characters/textures/02fc23efbfd8542db951.png",
+        "sha256": "02fc23efbfd8542db9518c8793db2b0b3ecb320896a7697607992b22c6568389"
+      },
+      {
+        "file": "web/public/models/characters/textures/042e670c62ad34a45c14.png",
+        "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+      },
+      {
+        "file": "web/public/models/characters/textures/2e15a426be9ee20c39a7.png",
+        "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+      },
+      {
+        "file": "web/public/models/characters/textures/190fcfc8745e6197a795.png",
+        "sha256": "190fcfc8745e6197a7954c6b921f4cf3a890d9ac78db560a67dcdbc8359de180"
+      },
+      {
+        "file": "web/public/models/characters/textures/4b36fb5abe80124daabc.png",
+        "sha256": "4b36fb5abe80124daabce546e8ba9f220ed6467a69c301dd3baaeb43852e8aa5"
+      },
+      {
+        "file": "web/public/models/characters/textures/e80f68933ff3fbf30557.png",
+        "sha256": "e80f68933ff3fbf305574a55d2512ea143835de52314e7f62ecab38ec409a8c4"
+      },
+      {
+        "file": "web/public/models/characters/textures/f63de566801fcea8ef97.png",
+        "sha256": "f63de566801fcea8ef973271a3cd46ac87cf285e766ecfa2d0c6f64670ff3af2"
+      },
+      {
+        "file": "web/public/models/characters/textures/89135b727219523ff9ab.png",
+        "sha256": "89135b727219523ff9ab057e2481e4022fdd64fe463bfa1480ffbf1876a6475a"
+      },
+      {
+        "file": "web/public/models/characters/textures/c4ad653360cce21ee393.png",
+        "sha256": "c4ad653360cce21ee3933b84279b682381beeb75d21e4f88906076fdd7165456"
+      },
+      {
+        "file": "web/public/models/characters/textures/79b3320dd2f22a4941bf.png",
+        "sha256": "79b3320dd2f22a4941bf0243b0ebc0b7bc19cf512770d7627922d1fd67aeb9c3"
+      },
+      {
+        "file": "web/public/models/characters/textures/01f30a1649e149138639.png",
+        "sha256": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8"
+      },
+      {
+        "file": "web/public/models/characters/textures/cde52c5fc44edc14b3d6.png",
+        "sha256": "cde52c5fc44edc14b3d661cff6a5a62068916c4af703298e0e31431b5eaf51a9"
+      },
+      {
+        "file": "web/public/models/characters/textures/040aa7bd60f397241c0c.png",
+        "sha256": "040aa7bd60f397241c0c5dd19c01e5d2660fc82c6d78e911b62e1efef5cbde33"
+      },
+      {
+        "file": "web/public/models/characters/textures/042e670c62ad34a45c14.png",
+        "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+      },
+      {
+        "file": "web/public/models/characters/textures/6b9e6e7cf8e4e61f4eec.png",
+        "sha256": "6b9e6e7cf8e4e61f4eeca4c37b1a44185157489b9dfa152f06742cca0e05bd25"
+      },
+      {
+        "file": "web/public/models/characters/textures/2e15a426be9ee20c39a7.png",
+        "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+      },
+      {
+        "file": "web/public/models/characters/textures/409b7f25641a2c1cf7e2.png",
+        "sha256": "409b7f25641a2c1cf7e2497521c2022152e41c3cad3e224a29384d18681ad207"
+      },
+      {
+        "file": "web/public/models/characters/textures/042e670c62ad34a45c14.png",
+        "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+      },
+      {
+        "file": "web/public/models/characters/textures/531a12fea7813218250b.png",
+        "sha256": "531a12fea7813218250b3e25413c9fd0e7456d66733a9affda8b7fdd383ae4ab"
+      },
+      {
+        "file": "web/public/models/characters/textures/4b36fb5abe80124daabc.png",
+        "sha256": "4b36fb5abe80124daabce546e8ba9f220ed6467a69c301dd3baaeb43852e8aa5"
+      },
+      {
+        "file": "web/public/models/characters/textures/2e15a426be9ee20c39a7.png",
+        "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+      },
+      {
+        "file": "web/public/models/characters/textures/042e670c62ad34a45c14.png",
+        "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+      },
+      {
+        "file": "web/public/models/characters/male-animations.glb",
+        "sha256": "49f5d77abe97ae560f46060f93d3fdd31661eda97e47dfdf029216ade2beeb27"
+      },
+      {
+        "file": "web/public/models/characters/female-animations.glb",
+        "sha256": "509a9c2c1ab0cb2a7d38c8f50cb7809cfa9f6c4cc946c69652b6918fdeb1ac10"
+      },
+      {
+        "file": "web/public/models/characters/textures/2e15a426be9ee20c39a7.png",
+        "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+      },
+      {
+        "file": "web/public/models/characters/textures/042e670c62ad34a45c14.png",
+        "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+      },
+      {
+        "file": "web/public/models/characters/textures/2e15a426be9ee20c39a7.png",
+        "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+      },
+      {
+        "file": "web/public/models/characters/textures/a536d20596728975d3d5.png",
+        "sha256": "a536d20596728975d3d5364979a12235b13fdda1c55a71beb924308f5d21ddae"
+      },
+      {
+        "file": "web/public/models/characters/textures/55aaf791e83ec37fa219.png",
+        "sha256": "55aaf791e83ec37fa219953f3eb685a5375b2f35e1c93991a15f1c637b764dbe"
+      },
+      {
+        "file": "web/public/models/characters/textures/cfef86f82ac5d996af20.png",
+        "sha256": "cfef86f82ac5d996af200cedf4b76ca9d633459188d697a9d8cfdf17d08e7e18"
+      },
+      {
+        "file": "web/public/models/characters/textures/2e15a426be9ee20c39a7.png",
+        "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+      },
+      {
+        "file": "web/public/models/characters/textures/042e670c62ad34a45c14.png",
+        "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+      },
+      {
+        "file": "web/public/models/characters/textures/01f30a1649e149138639.png",
+        "sha256": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8"
+      },
+      {
+        "file": "web/public/models/characters/textures/042e670c62ad34a45c14.png",
+        "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+      },
+      {
+        "file": "web/public/models/characters/textures/2e15a426be9ee20c39a7.png",
+        "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+      },
+      {
+        "file": "web/public/models/characters/textures/ca8dfdb29da067ef8ac1.png",
+        "sha256": "ca8dfdb29da067ef8ac15565cbd7779aef4188f41b2afc539af517a2680fbbe2"
+      },
+      {
+        "file": "web/public/models/characters/textures/a27b9aff9f8c8edf1136.png",
+        "sha256": "a27b9aff9f8c8edf1136144e3450fcf61faad1b74eae0deb6b512c0c1d2b55de"
+      },
+      {
+        "file": "web/public/models/characters/manifest.json",
+        "sha256": "f57f1710b6e6c29b29ca53e9182c29b2b4f97b4e7849c1d57bf87ec8db2412b0"
+      },
+      {
+        "file": "web/public/models/characters/granadero-lod1.glb",
+        "sha256": "b589b8558e13d693cccbbc28621ca96221cc9bc6ee58028751075b2fcf5c0188"
+      },
+      {
+        "file": "web/public/models/characters/woman-scout-lod1.glb",
+        "sha256": "358863428ae5d24a19f4d080dd56c7982b568041a5530bacc59e48153ca78cda"
+      },
+      {
+        "file": "web/public/models/characters/equipment.glb",
+        "sha256": "237c0e3dd3e7a3af5fbb0c05ee94a3aa95c25951b346877e43c9af4fb673edf5"
+      },
+      {
+        "file": "web/public/models/characters/male-garments.glb",
+        "sha256": "f2c8a94230284344705166b83e229194a2d38003c821fc1b7484c91573c4ea07"
+      },
+      {
+        "file": "web/public/models/characters/royalist-lod1.glb",
+        "sha256": "9199b37b27872bd9348f34c9f6bd051d45089aa3727ae76cd23347d30129df31"
+      },
+      {
+        "file": "web/public/models/characters/female-garments.glb",
+        "sha256": "e197024f2a2a9a2d18241206eef4e409189ceab1ba4f7fd97a8eb0d96784c5af"
+      },
+      {
+        "file": "web/public/models/characters/female-animations.glb",
+        "sha256": "509a9c2c1ab0cb2a7d38c8f50cb7809cfa9f6c4cc946c69652b6918fdeb1ac10"
+      },
+      {
+        "file": "web/public/models/characters/male-animations.glb",
+        "sha256": "49f5d77abe97ae560f46060f93d3fdd31661eda97e47dfdf029216ade2beeb27"
+      },
+      {
+        "file": "web/public/models/characters/manifest.json",
+        "sha256": "f57f1710b6e6c29b29ca53e9182c29b2b4f97b4e7849c1d57bf87ec8db2412b0"
+      },
+      {
+        "file": "web/public/models/characters/granadero-lod1.glb",
+        "sha256": "b589b8558e13d693cccbbc28621ca96221cc9bc6ee58028751075b2fcf5c0188"
+      },
+      {
+        "file": "web/public/models/characters/equipment.glb",
+        "sha256": "237c0e3dd3e7a3af5fbb0c05ee94a3aa95c25951b346877e43c9af4fb673edf5"
+      },
+      {
+        "file": "web/public/models/characters/male-garments.glb",
+        "sha256": "f2c8a94230284344705166b83e229194a2d38003c821fc1b7484c91573c4ea07"
+      },
+      {
+        "file": "web/public/models/characters/woman-scout-lod1.glb",
+        "sha256": "358863428ae5d24a19f4d080dd56c7982b568041a5530bacc59e48153ca78cda"
+      },
+      {
+        "file": "web/public/models/characters/female-garments.glb",
+        "sha256": "e197024f2a2a9a2d18241206eef4e409189ceab1ba4f7fd97a8eb0d96784c5af"
+      },
+      {
+        "file": "web/public/models/characters/royalist-lod1.glb",
+        "sha256": "9199b37b27872bd9348f34c9f6bd051d45089aa3727ae76cd23347d30129df31"
+      },
+      {
+        "file": "web/public/models/characters/male-animations.glb",
+        "sha256": "49f5d77abe97ae560f46060f93d3fdd31661eda97e47dfdf029216ade2beeb27"
+      },
+      {
+        "file": "web/public/models/characters/female-animations.glb",
+        "sha256": "509a9c2c1ab0cb2a7d38c8f50cb7809cfa9f6c4cc946c69652b6918fdeb1ac10"
+      },
+      {
+        "file": "web/public/models/characters/textures/76c6ed4f73557a4a0a53.png",
+        "sha256": "76c6ed4f73557a4a0a53d707abccd289a0cbe8d7a9c2a822753f6848ba41ae0f"
+      },
+      {
+        "file": "web/public/models/characters/textures/040aa7bd60f397241c0c.png",
+        "sha256": "040aa7bd60f397241c0c5dd19c01e5d2660fc82c6d78e911b62e1efef5cbde33"
+      },
+      {
+        "file": "web/public/models/characters/textures/042e670c62ad34a45c14.png",
+        "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+      },
+      {
+        "file": "web/public/models/characters/textures/e80f68933ff3fbf30557.png",
+        "sha256": "e80f68933ff3fbf305574a55d2512ea143835de52314e7f62ecab38ec409a8c4"
+      },
+      {
+        "file": "web/public/models/characters/textures/409b7f25641a2c1cf7e2.png",
+        "sha256": "409b7f25641a2c1cf7e2497521c2022152e41c3cad3e224a29384d18681ad207"
+      },
+      {
+        "file": "web/public/models/characters/textures/f63de566801fcea8ef97.png",
+        "sha256": "f63de566801fcea8ef973271a3cd46ac87cf285e766ecfa2d0c6f64670ff3af2"
+      },
+      {
+        "file": "web/public/models/characters/textures/2e15a426be9ee20c39a7.png",
+        "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+      },
+      {
+        "file": "web/public/models/characters/textures/4b36fb5abe80124daabc.png",
+        "sha256": "4b36fb5abe80124daabce546e8ba9f220ed6467a69c301dd3baaeb43852e8aa5"
+      },
+      {
+        "file": "web/public/models/characters/textures/851812def6824e843620.png",
+        "sha256": "851812def6824e8436202da61466ea219f705c42ea2352d5d2a095be711d6c14"
+      },
+      {
+        "file": "web/public/models/characters/textures/6b9e6e7cf8e4e61f4eec.png",
+        "sha256": "6b9e6e7cf8e4e61f4eeca4c37b1a44185157489b9dfa152f06742cca0e05bd25"
+      },
+      {
+        "file": "web/public/models/characters/textures/531a12fea7813218250b.png",
+        "sha256": "531a12fea7813218250b3e25413c9fd0e7456d66733a9affda8b7fdd383ae4ab"
+      },
+      {
+        "file": "web/public/models/characters/textures/cde52c5fc44edc14b3d6.png",
+        "sha256": "cde52c5fc44edc14b3d661cff6a5a62068916c4af703298e0e31431b5eaf51a9"
+      },
+      {
+        "file": "web/public/models/characters/textures/89135b727219523ff9ab.png",
+        "sha256": "89135b727219523ff9ab057e2481e4022fdd64fe463bfa1480ffbf1876a6475a"
+      },
+      {
+        "file": "web/public/models/characters/textures/040aa7bd60f397241c0c.png",
+        "sha256": "040aa7bd60f397241c0c5dd19c01e5d2660fc82c6d78e911b62e1efef5cbde33"
+      },
+      {
+        "file": "web/public/models/characters/textures/042e670c62ad34a45c14.png",
+        "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+      },
+      {
+        "file": "web/public/models/characters/textures/409b7f25641a2c1cf7e2.png",
+        "sha256": "409b7f25641a2c1cf7e2497521c2022152e41c3cad3e224a29384d18681ad207"
+      },
+      {
+        "file": "web/public/models/characters/textures/2e15a426be9ee20c39a7.png",
+        "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+      },
+      {
+        "file": "web/public/models/characters/textures/6b9e6e7cf8e4e61f4eec.png",
+        "sha256": "6b9e6e7cf8e4e61f4eeca4c37b1a44185157489b9dfa152f06742cca0e05bd25"
+      },
+      {
+        "file": "web/public/models/characters/textures/531a12fea7813218250b.png",
+        "sha256": "531a12fea7813218250b3e25413c9fd0e7456d66733a9affda8b7fdd383ae4ab"
+      },
+      {
+        "file": "web/public/models/characters/textures/ca8dfdb29da067ef8ac1.png",
+        "sha256": "ca8dfdb29da067ef8ac15565cbd7779aef4188f41b2afc539af517a2680fbbe2"
+      },
+      {
+        "file": "web/public/models/characters/textures/2e15a426be9ee20c39a7.png",
+        "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+      },
+      {
+        "file": "web/public/models/characters/textures/042e670c62ad34a45c14.png",
+        "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+      },
+      {
+        "file": "web/public/models/characters/textures/a27b9aff9f8c8edf1136.png",
+        "sha256": "a27b9aff9f8c8edf1136144e3450fcf61faad1b74eae0deb6b512c0c1d2b55de"
+      },
+      {
+        "file": "web/public/models/characters/textures/01f30a1649e149138639.png",
+        "sha256": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8"
+      },
+      {
+        "file": "web/public/models/characters/textures/2e15a426be9ee20c39a7.png",
+        "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+      },
+      {
+        "file": "web/public/models/characters/textures/042e670c62ad34a45c14.png",
+        "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+      },
+      {
+        "file": "web/public/models/characters/textures/a536d20596728975d3d5.png",
+        "sha256": "a536d20596728975d3d5364979a12235b13fdda1c55a71beb924308f5d21ddae"
+      },
+      {
+        "file": "web/public/models/characters/textures/cfef86f82ac5d996af20.png",
+        "sha256": "cfef86f82ac5d996af200cedf4b76ca9d633459188d697a9d8cfdf17d08e7e18"
+      },
+      {
+        "file": "web/public/models/characters/textures/55aaf791e83ec37fa219.png",
+        "sha256": "55aaf791e83ec37fa219953f3eb685a5375b2f35e1c93991a15f1c637b764dbe"
+      },
+      {
+        "file": "web/public/models/characters/textures/2e15a426be9ee20c39a7.png",
+        "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+      },
+      {
+        "file": "web/public/models/characters/textures/042e670c62ad34a45c14.png",
+        "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+      },
+      {
+        "file": "web/public/models/characters/textures/76c6ed4f73557a4a0a53.png",
+        "sha256": "76c6ed4f73557a4a0a53d707abccd289a0cbe8d7a9c2a822753f6848ba41ae0f"
+      },
+      {
+        "file": "web/public/models/characters/textures/040aa7bd60f397241c0c.png",
+        "sha256": "040aa7bd60f397241c0c5dd19c01e5d2660fc82c6d78e911b62e1efef5cbde33"
+      },
+      {
+        "file": "web/public/models/characters/textures/409b7f25641a2c1cf7e2.png",
+        "sha256": "409b7f25641a2c1cf7e2497521c2022152e41c3cad3e224a29384d18681ad207"
+      },
+      {
+        "file": "web/public/models/characters/textures/2e15a426be9ee20c39a7.png",
+        "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+      },
+      {
+        "file": "web/public/models/characters/textures/042e670c62ad34a45c14.png",
+        "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+      },
+      {
+        "file": "web/public/models/characters/textures/851812def6824e843620.png",
+        "sha256": "851812def6824e8436202da61466ea219f705c42ea2352d5d2a095be711d6c14"
+      },
+      {
+        "file": "web/public/models/characters/textures/6b9e6e7cf8e4e61f4eec.png",
+        "sha256": "6b9e6e7cf8e4e61f4eeca4c37b1a44185157489b9dfa152f06742cca0e05bd25"
+      },
+      {
+        "file": "web/public/models/characters/textures/531a12fea7813218250b.png",
+        "sha256": "531a12fea7813218250b3e25413c9fd0e7456d66733a9affda8b7fdd383ae4ab"
+      },
+      {
+        "file": "web/public/models/characters/textures/e80f68933ff3fbf30557.png",
+        "sha256": "e80f68933ff3fbf305574a55d2512ea143835de52314e7f62ecab38ec409a8c4"
+      },
+      {
+        "file": "web/public/models/characters/textures/f63de566801fcea8ef97.png",
+        "sha256": "f63de566801fcea8ef973271a3cd46ac87cf285e766ecfa2d0c6f64670ff3af2"
+      },
+      {
+        "file": "web/public/models/characters/textures/4b36fb5abe80124daabc.png",
+        "sha256": "4b36fb5abe80124daabce546e8ba9f220ed6467a69c301dd3baaeb43852e8aa5"
+      },
+      {
+        "file": "web/public/models/characters/textures/2e15a426be9ee20c39a7.png",
+        "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+      },
+      {
+        "file": "web/public/models/characters/textures/042e670c62ad34a45c14.png",
+        "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+      },
+      {
+        "file": "web/public/models/characters/textures/89135b727219523ff9ab.png",
+        "sha256": "89135b727219523ff9ab057e2481e4022fdd64fe463bfa1480ffbf1876a6475a"
+      },
+      {
+        "file": "web/public/models/characters/textures/6b9e6e7cf8e4e61f4eec.png",
+        "sha256": "6b9e6e7cf8e4e61f4eeca4c37b1a44185157489b9dfa152f06742cca0e05bd25"
+      },
+      {
+        "file": "web/public/models/characters/textures/531a12fea7813218250b.png",
+        "sha256": "531a12fea7813218250b3e25413c9fd0e7456d66733a9affda8b7fdd383ae4ab"
+      },
+      {
+        "file": "web/public/models/characters/textures/cde52c5fc44edc14b3d6.png",
+        "sha256": "cde52c5fc44edc14b3d661cff6a5a62068916c4af703298e0e31431b5eaf51a9"
+      },
+      {
+        "file": "web/public/models/characters/textures/040aa7bd60f397241c0c.png",
+        "sha256": "040aa7bd60f397241c0c5dd19c01e5d2660fc82c6d78e911b62e1efef5cbde33"
+      },
+      {
+        "file": "web/public/models/characters/textures/409b7f25641a2c1cf7e2.png",
+        "sha256": "409b7f25641a2c1cf7e2497521c2022152e41c3cad3e224a29384d18681ad207"
+      },
+      {
+        "file": "web/public/models/characters/textures/2e15a426be9ee20c39a7.png",
+        "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+      },
+      {
+        "file": "web/public/models/characters/textures/042e670c62ad34a45c14.png",
+        "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+      },
+      {
+        "file": "web/public/models/characters/textures/a536d20596728975d3d5.png",
+        "sha256": "a536d20596728975d3d5364979a12235b13fdda1c55a71beb924308f5d21ddae"
+      },
+      {
+        "file": "web/public/models/characters/textures/55aaf791e83ec37fa219.png",
+        "sha256": "55aaf791e83ec37fa219953f3eb685a5375b2f35e1c93991a15f1c637b764dbe"
+      },
+      {
+        "file": "web/public/models/characters/textures/a27b9aff9f8c8edf1136.png",
+        "sha256": "a27b9aff9f8c8edf1136144e3450fcf61faad1b74eae0deb6b512c0c1d2b55de"
+      },
+      {
+        "file": "web/public/models/characters/textures/cfef86f82ac5d996af20.png",
+        "sha256": "cfef86f82ac5d996af200cedf4b76ca9d633459188d697a9d8cfdf17d08e7e18"
+      },
+      {
+        "file": "web/public/models/characters/textures/2e15a426be9ee20c39a7.png",
+        "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+      },
+      {
+        "file": "web/public/models/characters/textures/042e670c62ad34a45c14.png",
+        "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+      },
+      {
+        "file": "web/public/models/characters/textures/ca8dfdb29da067ef8ac1.png",
+        "sha256": "ca8dfdb29da067ef8ac15565cbd7779aef4188f41b2afc539af517a2680fbbe2"
+      },
+      {
+        "file": "web/public/models/characters/textures/2e15a426be9ee20c39a7.png",
+        "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+      },
+      {
+        "file": "web/public/models/characters/textures/01f30a1649e149138639.png",
+        "sha256": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8"
+      },
+      {
+        "file": "web/public/models/characters/textures/042e670c62ad34a45c14.png",
+        "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+      },
+      {
+        "file": "web/public/models/characters/granadero-lod0.glb",
+        "sha256": "9041e7e5ecd249b0065cf012271d60552f418d1bb2809be6ccb973496c7e97e3"
+      },
+      {
+        "file": "web/public/models/characters/woman-scout-lod0.glb",
+        "sha256": "8d7c0d817c45681a0a1ebf5068b985ad8d1de580a221d93af3ccba1640f5fa39"
+      },
+      {
+        "file": "web/public/models/characters/royalist-lod0.glb",
+        "sha256": "d23f8262eb38def87d7b21586d3faf308505323b5091a8c7150acd82a7334b01"
+      },
+      {
+        "file": "web/public/models/characters/textures/76c6ed4f73557a4a0a53.png",
+        "sha256": "76c6ed4f73557a4a0a53d707abccd289a0cbe8d7a9c2a822753f6848ba41ae0f"
+      },
+      {
+        "file": "web/public/models/characters/textures/040aa7bd60f397241c0c.png",
+        "sha256": "040aa7bd60f397241c0c5dd19c01e5d2660fc82c6d78e911b62e1efef5cbde33"
+      },
+      {
+        "file": "web/public/models/characters/textures/409b7f25641a2c1cf7e2.png",
+        "sha256": "409b7f25641a2c1cf7e2497521c2022152e41c3cad3e224a29384d18681ad207"
+      },
+      {
+        "file": "web/public/models/characters/textures/2e15a426be9ee20c39a7.png",
+        "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+      },
+      {
+        "file": "web/public/models/characters/textures/042e670c62ad34a45c14.png",
+        "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+      },
+      {
+        "file": "web/public/models/characters/textures/e80f68933ff3fbf30557.png",
+        "sha256": "e80f68933ff3fbf305574a55d2512ea143835de52314e7f62ecab38ec409a8c4"
+      },
+      {
+        "file": "web/public/models/characters/textures/f63de566801fcea8ef97.png",
+        "sha256": "f63de566801fcea8ef973271a3cd46ac87cf285e766ecfa2d0c6f64670ff3af2"
+      },
+      {
+        "file": "web/public/models/characters/textures/4b36fb5abe80124daabc.png",
+        "sha256": "4b36fb5abe80124daabce546e8ba9f220ed6467a69c301dd3baaeb43852e8aa5"
+      },
+      {
+        "file": "web/public/models/characters/textures/2e15a426be9ee20c39a7.png",
+        "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+      },
+      {
+        "file": "web/public/models/characters/textures/042e670c62ad34a45c14.png",
+        "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+      },
+      {
+        "file": "web/public/models/characters/textures/cde52c5fc44edc14b3d6.png",
+        "sha256": "cde52c5fc44edc14b3d661cff6a5a62068916c4af703298e0e31431b5eaf51a9"
+      },
+      {
+        "file": "web/public/models/characters/textures/040aa7bd60f397241c0c.png",
+        "sha256": "040aa7bd60f397241c0c5dd19c01e5d2660fc82c6d78e911b62e1efef5cbde33"
+      },
+      {
+        "file": "web/public/models/characters/textures/409b7f25641a2c1cf7e2.png",
+        "sha256": "409b7f25641a2c1cf7e2497521c2022152e41c3cad3e224a29384d18681ad207"
+      },
+      {
+        "file": "web/public/models/characters/textures/2e15a426be9ee20c39a7.png",
+        "sha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+      },
+      {
+        "file": "web/public/models/characters/textures/042e670c62ad34a45c14.png",
+        "sha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591"
+      }
+    ],
+    "cases": [
+      {
+        "posture": "prone",
+        "anatomy": "male",
+        "before": "1. Sanitario. Salud 100, 25 puntos de acci\u00f3n, energ\u00eda 100, moral 80. Ve 0 enemigos. Mano principal: Vendas. Segunda mano: vac\u00eda. Bot\u00f3n derecho: equipo del combatiente",
+        "after": "1. Sanitario. Salud 100, 18,75 puntos de acci\u00f3n, energ\u00eda 100, moral 80. Ve 0 enemigos. Mano principal: Vendas. Segunda mano: vac\u00eda. Bot\u00f3n derecho: equipo del combatiente",
+        "errors": [],
+        "patientBefore": "2. Herido. Salud 60, 21,5 puntos de acci\u00f3n, energ\u00eda 100, moral 80. Ve 0 enemigos. Hemorragia: 10 salud por turno. Mano principal: Brown Bess. 1 carga(s). 12 de reserva \u00b7 Cartuchos de mosquete. Disparo activo. Estado 100%. Segunda mano: ocupada por el arma de dos manos. Bot\u00f3n derecho: equipo del combatiente",
+        "patientAfterTurn": "2. Herido. Salud 60, 20,5 puntos de acci\u00f3n, energ\u00eda 100, moral 80. Ve 0 enemigos. Hemorragia: 10 salud por turno. Mano principal: Brown Bess. 1 carga(s). 12 de reserva \u00b7 Cartuchos de mosquete. Disparo activo. Estado 100%. Segunda mano: ocupada por el arma de dos manos. Bot\u00f3n derecho: equipo del combatiente",
+        "patientAfterCare": "2. Herido. Salud 60, 20,5 puntos de acci\u00f3n, energ\u00eda 100, moral 80. Ve 0 enemigos. Mano principal: Brown Bess. 1 carga(s). 12 de reserva \u00b7 Cartuchos de mosquete. Disparo activo. Estado 100%. Segunda mano: ocupada por el arma de dos manos. Bot\u00f3n derecho: equipo del combatiente",
+        "controls": "public prone fixture \u2192 patient shortcut2/6 \u2192 Girar a la derecha (paid southeast look) \u2192 doctor shortcut1/5 \u2192 ally Enter",
+        "savedDoctor": "E7",
+        "savedPatient": "E8",
+        "patientFacing": 3,
+        "lookRawAP": 4,
+        "healRawAP": 25,
+        "physicalContactClaim": false,
+        "applySamples": 38,
+        "firstApply": {
+          "name": "granaderos-patient-ready-apply",
+          "duration": 4.299999982118607,
+          "detail": {
+            "ready": true,
+            "weight": 0,
+            "phase": "prepare",
+            "time": 0,
+            "duration": 1.399999976158142,
+            "using": "1:1:1:unit:reach-healer-male"
+          }
+        },
+        "maxApplyMs": 4.299999982118607
+      },
+      {
+        "posture": "prone",
+        "anatomy": "female",
+        "before": "5. Sanitaria. Salud 100, 25 puntos de acci\u00f3n, energ\u00eda 100, moral 80. Ve 0 enemigos. Mano principal: Vendas. Segunda mano: vac\u00eda. Bot\u00f3n derecho: equipo del combatiente",
+        "after": "5. Sanitaria. Salud 100, 18,75 puntos de acci\u00f3n, energ\u00eda 100, moral 80. Ve 0 enemigos. Mano principal: Vendas. Segunda mano: vac\u00eda. Bot\u00f3n derecho: equipo del combatiente",
+        "errors": [],
+        "patientBefore": "6. Herida. Salud 60, 21,5 puntos de acci\u00f3n, energ\u00eda 100, moral 80. Ve 0 enemigos. Hemorragia: 10 salud por turno. Mano principal: Brown Bess. 1 carga(s). 12 de reserva \u00b7 Cartuchos de mosquete. Disparo activo. Estado 100%. Segunda mano: ocupada por el arma de dos manos. Bot\u00f3n derecho: equipo del combatiente",
+        "patientAfterTurn": "6. Herida. Salud 60, 20,5 puntos de acci\u00f3n, energ\u00eda 100, moral 80. Ve 0 enemigos. Hemorragia: 10 salud por turno. Mano principal: Brown Bess. 1 carga(s). 12 de reserva \u00b7 Cartuchos de mosquete. Disparo activo. Estado 100%. Segunda mano: ocupada por el arma de dos manos. Bot\u00f3n derecho: equipo del combatiente",
+        "patientAfterCare": "6. Herida. Salud 60, 20,5 puntos de acci\u00f3n, energ\u00eda 100, moral 80. Ve 0 enemigos. Mano principal: Brown Bess. 1 carga(s). 12 de reserva \u00b7 Cartuchos de mosquete. Disparo activo. Estado 100%. Segunda mano: ocupada por el arma de dos manos. Bot\u00f3n derecho: equipo del combatiente",
+        "controls": "public prone fixture \u2192 patient shortcut2/6 \u2192 Girar a la derecha (paid southeast look) \u2192 doctor shortcut1/5 \u2192 ally Enter",
+        "savedDoctor": "Q7",
+        "savedPatient": "Q8",
+        "patientFacing": 3,
+        "lookRawAP": 4,
+        "healRawAP": 25,
+        "physicalContactClaim": false,
+        "applySamples": 68,
+        "firstApply": {
+          "name": "granaderos-patient-ready-apply",
+          "duration": 3.5,
+          "detail": {
+            "ready": true,
+            "weight": 0,
+            "phase": "prepare",
+            "time": 0,
+            "duration": 1.399999976158142,
+            "using": "1:1:1:unit:reach-healer-female"
+          }
+        },
+        "maxApplyMs": 3.5
+      }
+    ],
+    "errors": []
+  },
+  "servedNewModules": [
+    {
+      "name": "heal-patient-ready-fit",
+      "url": "http://127.0.0.1:3150/lib/three/heal-patient-ready-fit.ts",
+      "compiledSha256": "e8ce2ba020b27f9c83c0265633ac46d6b5d6a9b64f4bdaaf0240e8394c0427ac",
+      "bytes": 49087,
+      "tokens": [
+        "NativeReadyPatientContactFit",
+        "granaderos-patient-ready-apply"
+      ]
+    },
+    {
+      "name": "heal-patient-contact-fit",
+      "url": "http://127.0.0.1:3150/lib/three/heal-patient-contact-fit.ts",
+      "compiledSha256": "6f08b8f73e2768e8baea0bf1cc1c8bbb8fa8ff94e26a4638b8f9861808f4fdd9",
+      "bytes": 101257,
+      "tokens": [
+        "NativePatientContactFit",
+        "contactWeight",
+        "supportedPose"
+      ]
+    },
+    {
+      "name": "heal-patient-fit-worker",
+      "url": "http://127.0.0.1:3150/lib/three/heal-patient-fit-worker.ts?worker_file&type=module",
+      "compiledSha256": "f0735fc4f288c8884d412ce3a30e04ad4a4ea12101fa8401a18f83dcbd1af908",
+      "bytes": 4705,
+      "tokens": [
+        "runPatientFitJob",
+        "workerMs"
+      ]
+    },
+    {
+      "name": "heal-patient-contact-fit",
+      "url": "http://127.0.0.1:3150/lib/three/heal-patient-contact-fit.ts",
+      "compiledSha256": "6f08b8f73e2768e8baea0bf1cc1c8bbb8fa8ff94e26a4638b8f9861808f4fdd9",
+      "bytes": 101257,
+      "tokens": [
+        "NativePatientContactFit",
+        "contactWeight",
+        "supportedPose"
+      ]
+    },
+    {
+      "name": "heal-patient-ready-fit",
+      "url": "http://127.0.0.1:3150/lib/three/heal-patient-ready-fit.ts",
+      "compiledSha256": "e8ce2ba020b27f9c83c0265633ac46d6b5d6a9b64f4bdaaf0240e8394c0427ac",
+      "bytes": 49087,
+      "tokens": [
+        "NativeReadyPatientContactFit",
+        "granaderos-patient-ready-apply"
+      ]
+    },
+    {
+      "name": "heal-patient-contact-fit",
+      "url": "http://127.0.0.1:3150/lib/three/heal-patient-contact-fit.ts",
+      "compiledSha256": "6f08b8f73e2768e8baea0bf1cc1c8bbb8fa8ff94e26a4638b8f9861808f4fdd9",
+      "bytes": 101257,
+      "tokens": [
+        "NativePatientContactFit",
+        "contactWeight",
+        "supportedPose"
+      ]
+    },
+    {
+      "name": "heal-patient-fit-worker",
+      "url": "http://127.0.0.1:3150/lib/three/heal-patient-fit-worker.ts?worker_file&type=module",
+      "compiledSha256": "f0735fc4f288c8884d412ce3a30e04ad4a4ea12101fa8401a18f83dcbd1af908",
+      "bytes": 4705,
+      "tokens": [
+        "runPatientFitJob",
+        "workerMs"
+      ]
+    },
+    {
+      "name": "heal-patient-contact-fit",
+      "url": "http://127.0.0.1:3150/lib/three/heal-patient-contact-fit.ts",
+      "compiledSha256": "6f08b8f73e2768e8baea0bf1cc1c8bbb8fa8ff94e26a4638b8f9861808f4fdd9",
+      "bytes": 101257,
+      "tokens": [
+        "NativePatientContactFit",
+        "contactWeight",
+        "supportedPose"
+      ]
+    }
+  ],
+  "screenshots": {
+    "current-sprite-female.png": "0a9a9b1d98b527cbcf654b02939307ee96d67833461d4caf84a84956f35cd647",
+    "before-male-work.png": "a61ae8f4540ed56907dcb8766b845e439842230d16cc0e3af08ad22cf1de2306",
+    "current-male-work.png": "5d08b7f52bbb41f66346fdd7bd18c2d922927b14537888f2cbfde2fca83a1b89",
+    "before-female-work.png": "68f2ba378337dcbc70e3377e5a1f0f7a06d72f01391411c7c9bb9b381ddda7ca",
+    "current-sprite-male.png": "91019a70924f9b39c71f419c3eace834ce081e7a5aba3c4d5507d0570cfaf89e",
+    "current-female-work.png": "19c292721559cd4beb3df6ef3bb8239de33047ebba5bc465a6076e076a218307"
+  },
+  "spriteProof": {
+    "head": "65c14ef72474519bf6fad01be59bc9d4e275b673",
+    "pins": {
+      "web/app/TacticalScene.tsx": "f6562b090ed1660eacb0c950d563e387d72e8bc551bf59d9bada359d880ef747",
+      "web/app/SpriteFigure.tsx": "e0aa0626f1c5f34ed448441ca0773764fdd94fd36108f7499b84a306f4e8a34f",
+      "web/app/renderer-sandbox/reach-fixture.js": "7287cfd46f9f8a7d99ff6d51d6c634ca06d0fadc07ffc5ae15164818dbfd8b62",
+      "game/tactical.js": "372159ac1f6ddfd86ad7f1f7e02e63662c08be6c4e15a230a1d3f32626f07fbc",
+      "game/battle-playback.js": "3ef84d71ac95add9ee4d5be81b4a19545a11f50705f0f6d97035ca975e0c8038",
+      "game/sprite-state.js": "ec9a8946fcb0ad2350ecb696ce3aa68f32b23db19b2f6e6d26ddffb707d51502",
+      "game/sprite-render.js": "d60230c70e95b1533c7bb7206f964d054af37756ee236b066a2545e45d27ae9e",
+      "game/sprite-appearances.js": "9b872400a65f5f68dac90c2b3c5408da9f24286d6b17cfabaf0342c9a1025a06",
+      "game/sprite-skin.js": "0797345f075e36a38ad5e7e12811de626ffac8510b23e58a90dbc3db4e3f23f0",
+      "game/sprite-skin-masks.js": "614cfeadf3abf593cf946b3ece97decd6956eef05f392b39a08e5f3301b93bfd",
+      "game/illustrated-sprite-atlases.js": "f83d9b0935949220b4d6a30e6ad97b5d4d92284d570634cb3c2160ffd3a33164",
+      "game/sprite-display-calibration.js": "f9693b8695f3ceab67c27b9287c0c51694d1ac41df16141039bcbb178a6bc4cb"
+    },
+    "records": [
+      {
+        "anatomy": "male",
+        "stateSha256": "9f5b2962959da25b61626a932d42f984b087776c6ed9348ca7d9eb9c42804527",
+        "frameType": "result",
+        "pose": "interact",
+        "patientFacing": 3,
+        "doctorFacing": 2,
+        "assets": {
+          "/art/terrain-dry-grass-v1.webp": "33847b112d2d0c46703f725c9149fdf17e774c0d5b00f62bcfb3975b77f05332",
+          "/art/terrain-dirt-v1.webp": "f7c100b9729e054479fa4d9439b1c9d448a4240e5e1d846a342fca70290d32fe",
+          "/art/terrain-cobble-v1.webp": "c4969eca5be30371fa8d78b63dc0dcdcd34cab8a51afc3b06c6c2e8db8085b61",
+          "/art/terrain-green-grass-v1.webp": "f7e6a43712ad6215fe7b90a3732fd2f2629050bc44e7f3dab89fa5edd4aeceae",
+          "/art/terrain-mud-v1.webp": "2921daf88fdb89a014bd9939c990c60064fc51de0958f9496fd963ab564703a9",
+          "/art/terrain-floor-v1.webp": "97417be4287c7d209fb9930b5231b3869790b941cd38e319d27aeaf3824cd37e",
+          "/art/terrain-plaster-v1.webp": "d59db2f994553fe87433d00122b60c2a21769297edaaa8e145d274788b7df781",
+          "/art/terrain-roof-v1.webp": "06c64eb1b1516386c08dc28f02530fd69a546dc56711d9e6b6d53157b4468476",
+          "/art/terrain-wood-v1.webp": "2489ffd744984a966cbd45cb9214c4f41bdbb77398fc67b890b04d7393409bbc",
+          "/art/buildings/plaster-v1.webp": "68d4ba774a263e71e5b54fe511fd584ea956da8a920207da636e0435f481d1b2",
+          "/art/buildings/clay-v1.webp": "f38b52fb79602948f893b04d002903d91fe5fc996b56251c1b2e21c06c3b968f",
+          "/art/buildings/brick-v1.webp": "605ef0edb2c6acd6c4fc01cdf4451a8477cb180c32c60c830970e12236c8fdd6",
+          "/art/buildings/timber-v1.webp": "bcda581d83b51863fbd75e9895173a331b355f050473b804897b080a91a45ad9",
+          "/art/buildings/thatch-v1.webp": "84d706746aea50358357efe1ff6d8a259544a974323622d5b37f8a673d766bcc",
+          "/art/buildings/terrace-v1.webp": "0e40c84adc4fc5382289defc9cb7de82399e9832bbad763479ab2c7479099441",
+          "/art/buildings/plaster-house-v1.webp": "b2e5ce190a57381ae779889426d2bf164b45cbfb63af2769da3c5cb1baa69ced",
+          "/art/buildings/plaster-farmhouse-v1.webp": "4fc3f2fd0759ff80ae7256304e3ee44a63cc0765bba6b0d2ed1cdffcb6df2488",
+          "/art/buildings/plaster-estancia-v1.webp": "ffdce098e085511953dc7c9577a7a927a3fb28ca1695432b0ac252dcd57c138a",
+          "/art/buildings/plaster-church-v1.webp": "2f919a723399d29e2ca8dff75a10aa09aedd8cb9b8742fa9c6d756d573ff73eb",
+          "/art/buildings/plaster-mansion-v1.webp": "7a311d4f9d9dde1c1109e704c76e36740dbe59abdff9e7a90b5bb0f7359bcfbf",
+          "/art/buildings/plaster-cabildo-v1.webp": "630f2a95d849c73f7ba8aaf7478d6f01eb1cd56b9ef4b7a90364d057416ca49a",
+          "/art/buildings/plaster-pulperia-v1.webp": "17c350ba3d7cd2f149efc1d92abe41b9437423b424a0053024927b520b3d6682",
+          "/art/buildings/plaster-warehouse-v1.webp": "29fdc2ca4fa43a5a10ec4aaed0924e72762d1b0839c9c9c635325b5eb6ebe1ed",
+          "/art/buildings/plaster-barracks-v1.webp": "b8cd4528cb7d48c6629b2cb9394a6f70de688ecfa874cd3a4f078cf3a5d16897",
+          "/art/architecture-plaster-v2.png": "e22a9ae08b87c03c0845a1170660042373dba57510dd9db185e22a5c7a3069f8",
+          "/art/architecture-stone-v2.png": "e666253dc2c03968c8221cd4d3774a8190498fc4682b2110c43cd9f5588be6eb",
+          "/art/architecture-brick-v2.png": "c867d205c1046c53911d8d460b30cebe75044b7382c816ff0b53920b212529a8",
+          "/art/architecture-wood-v2.png": "1512e4169d32a2aaaa81e0c1dcdf6f25dd2d685cae0a1b94ef0c1016a5ea9d98",
+          "/art/scenery-shrub-v1.webp": "099f634566285443b7b64608dbc3ce68aad6b1caed8cd2ec868180343de2a1e5",
+          "/art/illustrated/granadero-prone-unarmed-idle.png": "a446cf7dbdfdc9b80cb452699dc2730d925f8e3d87d90166dec63a3a8b20db85",
+          "/art/skin/granadero-prone-unarmed-idle.png": "e4c9f5442761c4731c1a58ca5a5f8910574d310cb27c9d33613a4b614b81d8c0",
+          "/art/illustrated/granadero-prone-armed-idle.png": "2c762329e0f4694b81ec9de80d061c1e7449f3c53d0acdcb011adf6b3728d3c9",
+          "/art/skin/granadero-prone-armed-idle.png": "0d42b1a63f6617939160c2840420c8b42d51976cc2363f8774e52898bae2447a"
+        },
+        "actualAtlasNames": [
+          "granadero-prone-unarmed-idle",
+          "granadero-prone-armed-idle"
+        ]
+      },
+      {
+        "anatomy": "female",
+        "stateSha256": "4d3cd6744d443afd38c3dac29ef5320f751e9c629b94b689ce43f29e55cbc882",
+        "frameType": "result",
+        "pose": "interact",
+        "patientFacing": 3,
+        "doctorFacing": 2,
+        "assets": {
+          "/art/terrain-dry-grass-v1.webp": "33847b112d2d0c46703f725c9149fdf17e774c0d5b00f62bcfb3975b77f05332",
+          "/art/terrain-dirt-v1.webp": "f7c100b9729e054479fa4d9439b1c9d448a4240e5e1d846a342fca70290d32fe",
+          "/art/terrain-cobble-v1.webp": "c4969eca5be30371fa8d78b63dc0dcdcd34cab8a51afc3b06c6c2e8db8085b61",
+          "/art/terrain-green-grass-v1.webp": "f7e6a43712ad6215fe7b90a3732fd2f2629050bc44e7f3dab89fa5edd4aeceae",
+          "/art/terrain-mud-v1.webp": "2921daf88fdb89a014bd9939c990c60064fc51de0958f9496fd963ab564703a9",
+          "/art/terrain-floor-v1.webp": "97417be4287c7d209fb9930b5231b3869790b941cd38e319d27aeaf3824cd37e",
+          "/art/terrain-plaster-v1.webp": "d59db2f994553fe87433d00122b60c2a21769297edaaa8e145d274788b7df781",
+          "/art/terrain-roof-v1.webp": "06c64eb1b1516386c08dc28f02530fd69a546dc56711d9e6b6d53157b4468476",
+          "/art/terrain-wood-v1.webp": "2489ffd744984a966cbd45cb9214c4f41bdbb77398fc67b890b04d7393409bbc",
+          "/art/buildings/plaster-v1.webp": "68d4ba774a263e71e5b54fe511fd584ea956da8a920207da636e0435f481d1b2",
+          "/art/buildings/clay-v1.webp": "f38b52fb79602948f893b04d002903d91fe5fc996b56251c1b2e21c06c3b968f",
+          "/art/buildings/brick-v1.webp": "605ef0edb2c6acd6c4fc01cdf4451a8477cb180c32c60c830970e12236c8fdd6",
+          "/art/buildings/timber-v1.webp": "bcda581d83b51863fbd75e9895173a331b355f050473b804897b080a91a45ad9",
+          "/art/buildings/thatch-v1.webp": "84d706746aea50358357efe1ff6d8a259544a974323622d5b37f8a673d766bcc",
+          "/art/buildings/terrace-v1.webp": "0e40c84adc4fc5382289defc9cb7de82399e9832bbad763479ab2c7479099441",
+          "/art/buildings/plaster-house-v1.webp": "b2e5ce190a57381ae779889426d2bf164b45cbfb63af2769da3c5cb1baa69ced",
+          "/art/buildings/plaster-farmhouse-v1.webp": "4fc3f2fd0759ff80ae7256304e3ee44a63cc0765bba6b0d2ed1cdffcb6df2488",
+          "/art/buildings/plaster-estancia-v1.webp": "ffdce098e085511953dc7c9577a7a927a3fb28ca1695432b0ac252dcd57c138a",
+          "/art/buildings/plaster-church-v1.webp": "2f919a723399d29e2ca8dff75a10aa09aedd8cb9b8742fa9c6d756d573ff73eb",
+          "/art/buildings/plaster-mansion-v1.webp": "7a311d4f9d9dde1c1109e704c76e36740dbe59abdff9e7a90b5bb0f7359bcfbf",
+          "/art/buildings/plaster-cabildo-v1.webp": "630f2a95d849c73f7ba8aaf7478d6f01eb1cd56b9ef4b7a90364d057416ca49a",
+          "/art/buildings/plaster-pulperia-v1.webp": "17c350ba3d7cd2f149efc1d92abe41b9437423b424a0053024927b520b3d6682",
+          "/art/buildings/plaster-warehouse-v1.webp": "29fdc2ca4fa43a5a10ec4aaed0924e72762d1b0839c9c9c635325b5eb6ebe1ed",
+          "/art/buildings/plaster-barracks-v1.webp": "b8cd4528cb7d48c6629b2cb9394a6f70de688ecfa874cd3a4f078cf3a5d16897",
+          "/art/architecture-plaster-v2.png": "e22a9ae08b87c03c0845a1170660042373dba57510dd9db185e22a5c7a3069f8",
+          "/art/architecture-stone-v2.png": "e666253dc2c03968c8221cd4d3774a8190498fc4682b2110c43cd9f5588be6eb",
+          "/art/architecture-brick-v2.png": "c867d205c1046c53911d8d460b30cebe75044b7382c816ff0b53920b212529a8",
+          "/art/architecture-wood-v2.png": "1512e4169d32a2aaaa81e0c1dcdf6f25dd2d685cae0a1b94ef0c1016a5ea9d98",
+          "/art/scenery-shrub-v1.webp": "099f634566285443b7b64608dbc3ce68aad6b1caed8cd2ec868180343de2a1e5",
+          "/art/illustrated/woman-scout-prone-unarmed-idle.png": "f902015d17137deeb260df893b497e452f5c36e444cec669eace3f2c7b80e33e",
+          "/art/skin/woman-scout-prone-unarmed-idle.png": "8909eba1907698037e3fafe473705e40ede2407035006e71eeb2c1f32bc65bb3",
+          "/art/illustrated/woman-scout-prone-armed-idle.png": "9d2b0b23438eaf39ed224ba89a172791ff8f7d35151ea53f141f3b1822628f10",
+          "/art/skin/woman-scout-prone-armed-idle.png": "8b5aadf0004a9a888ce5c3fbcd32265cc49070a92658ebae1c7feb57580011a7"
+        },
+        "actualAtlasNames": [
+          "woman-scout-prone-unarmed-idle",
+          "woman-scout-prone-armed-idle"
+        ]
+      }
+    ],
+    "scope": "Direct current TacticalScene/SpriteFigure reference at the ordinary paid heal action. Exact decoded atlas reference: hide only its transient loading placeholder. Prone 2D care uses its existing idle art. This is not proof of a separate current 2D gameplay route."
+  }
+}
