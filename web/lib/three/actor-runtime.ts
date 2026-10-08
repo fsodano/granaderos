@@ -7,6 +7,7 @@ import {sampleAnimationTime,cueControlsAction} from './animation-clock';
 import {TILE_METRES} from './projection';
 import {NativeGaitTransitionSupport} from './gait-transition-support';
 import {NativeGestureBlendSupport} from './gesture-blend-support';
+import {NativeProneArmBlendSupport} from './prone-arm-blend-support';
 import {NativeClimbContactFit} from './climb-contact-fit';
 import type {ContactActorResolver} from './melee-contact-fit';
 import {NativeReadyMeleeContactFit as NativeMeleeContactFit} from './melee-ready-contact-fit';
@@ -39,6 +40,7 @@ function shareSkeletons(root:Object3D){
 export class ActorRuntime {
   private gaitSupport:NativeGaitTransitionSupport;
   private gestureSupport:NativeGestureBlendSupport;
+  private proneArmSupport:NativeProneArmBlendSupport;
   private climbFit?:NativeClimbContactFit;
   private meleeFit:NativeMeleeContactFit;
   private clothMeshes:{mesh:Mesh;prone:number;crouched:number}[]=[];private clothProne=0;private clothCrouched=0;
@@ -50,6 +52,7 @@ export class ActorRuntime {
     this.model.traverse(node=>{this.bones.set(node.name,node);if(node instanceof Mesh){node.castShadow=true;node.receiveShadow=true;node.frustumCulled=false;const targets=node.morphTargetDictionary;if(targets?.cloth_prone!==undefined&&targets?.cloth_crouched!==undefined)this.clothMeshes.push({mesh:node,prone:targets.cloth_prone,crouched:targets.cloth_crouched});}});
     this.gaitSupport=new NativeGaitTransitionSupport(this.model,this.root,asset.appearance.parts?.footwear?.replace('{lod}',String(asset.lod)));
     this.gestureSupport=new NativeGestureBlendSupport(this.model,this.root,asset.appearance.parts?.footwear?.replace('{lod}',String(asset.lod)));
+    this.proneArmSupport=new NativeProneArmBlendSupport(this.model,this.root);
     this.climbFit=new NativeClimbContactFit(this.model,this.root);
     const walkingClip=asset.animation.animations.find(clip=>clip.name==='stand.walk.blade'),walkingSpec=asset.clips.find(clip=>clip.name==='stand.walk.blade'),walkingSpeed=walkingSpec?.nativeStrideSpeed??walkingSpec?.locomotionSpeed;
     this.meleeFit=new NativeMeleeContactFit(this.model,this.root,asset.appearance.parts?.footwear?.replace('{lod}',String(asset.lod)),false,walkingClip&&walkingSpeed?{clip:walkingClip,speed:walkingSpeed}:undefined);
@@ -205,6 +208,7 @@ export class ActorRuntime {
     if(key!==this.actionKey){
       this.gaitSupport.begin(this.clipSpec,clipSpec,this.mixer.time,clip);
       this.gestureSupport.begin(this.clipSpec,clipSpec,this.mixer.time,clip,this.action?.getClip(),this.action?.time??0);
+      this.proneArmSupport.begin(this.clipSpec,clipSpec,this.mixer.time);
       const previous=this.action;this.action=this.mixer.clipAction(clip);this.action.reset();this.action.enabled=true;this.action.clampWhenFinished=!clipSpec.loop;this.action.setLoop(clipSpec.loop?LoopRepeat:LoopOnce,clipSpec.loop?Infinity:1);this.action.play();
       if(previous&&previous!==this.action){if(visual.action==='fire'&&visual.cue?.shotHand)previous.stop();else this.action.crossFadeFrom(previous,.12,false);}this.actionKey=key;this.clipSpec=clipSpec;this.cueStartedAt=visual.cue?.startedAt??now;
       if(this.horse)this.seatActions.set(this.action,{spec:clipSpec,mounted:visual.mounted||visual.cue?.fromPosture==='mounted'});
@@ -280,6 +284,7 @@ export class ActorRuntime {
   }
   tick(delta:number,now:number,reducedMotion=false){
     if(!this.action)return;
+    this.proneArmSupport.restore();
     this.gestureSupport.restore();
     this.gaitSupport.restore();
     this.meleeFit.restore();this.root.rotation.y=this.visual.yaw;
@@ -307,6 +312,7 @@ export class ActorRuntime {
     this.gaitSupport.apply(this.mixer.time,this.action.time,inputMotion?.speed??0);
     this.gestureSupport.apply(this.mixer.time,this.action.time,this.action.timeScale);
     this.poseCloth(Math.min(delta,.1));
+    this.proneArmSupport.apply(this.mixer.time);
     const attached=this.equipment.userData.attached as Object3D[],freeGuard=!attached.some(item=>item.userData.hand==='handLeft');
     const meleeWeapon=attached.find(item=>item.userData.hand==='handRight'&&(this.itemSpec(item.userData.itemId)?.category==='sabre'||freeGuard&&['pistol','rifle'].includes(this.itemSpec(item.userData.itemId)?.category??'')));
     this.meleeFit.apply(visual.cue,clip,this.clipSpec,meleeWeapon,this.action.time,this.contactActor);
@@ -336,6 +342,7 @@ export class ActorRuntime {
     return node?.getWorldPosition(new Vector3())??null;
   }
   dispose(){
+    this.proneArmSupport.dispose();
     this.gestureSupport.dispose();
     this.gaitSupport.dispose();
     this.meleeFit.dispose();

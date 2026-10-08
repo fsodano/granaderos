@@ -1862,8 +1862,8 @@
   "animationLibraries": {
     "male": {
       "url": "/models/characters/male-animations.glb",
-      "bytes": 12066216,
-      "sha256": "d75355af7f86c0f6840399c83092bf4e72f1036218621432cbe6762ab1cf0a85",
+      "bytes": 12067128,
+      "sha256": "5bec05916de50ee256db2344a95f237476e78363b92d7da1c52f74c087cdcd43",
       "clips": [
         {
           "name": "stand.idle.unarmed",
@@ -4857,6 +4857,15 @@
             "floor": 0.002,
             "sampleRate": 30,
             "maximumLift": 0.054151
+          },
+          "nativeProneForearmSupport": {
+            "method": "retained-supported-free-forearm-rotations",
+            "surface": "complete-native-palm-finger-and-sleeve",
+            "sourceClip": "prone.idle.unarmed",
+            "hand": "left",
+            "floor": 0.002,
+            "retainedBodyLegsRightGripAndClock": true,
+            "rotationKeys": "native-supported-breathing-curve"
           }
         },
         {
@@ -4924,6 +4933,15 @@
             "floor": 0.002,
             "retainedInputTimes": true,
             "retainedNativeBodyAndWeapon": true
+          },
+          "nativeProneForearmSupport": {
+            "method": "retained-supported-free-forearm-rotations",
+            "surface": "complete-native-palm-finger-and-sleeve",
+            "sourceClip": "prone.idle.unarmed",
+            "hand": "left",
+            "floor": 0.002,
+            "retainedBodyLegsRightGripAndClock": true,
+            "rotationKeys": "retained-static-input-times"
           }
         },
         {
@@ -4952,6 +4970,15 @@
             "floor": 0.002,
             "retainedInputTimes": true,
             "retainedNativeBodyAndWeapon": true
+          },
+          "nativeProneForearmSupport": {
+            "method": "retained-supported-free-forearm-rotations",
+            "surface": "complete-native-palm-finger-and-sleeve",
+            "sourceClip": "prone.idle.unarmed",
+            "hand": "left",
+            "floor": 0.002,
+            "retainedBodyLegsRightGripAndClock": true,
+            "rotationKeys": "retained-static-input-times"
           }
         },
         {
@@ -16482,8 +16509,8 @@
     },
     "female": {
       "url": "/models/characters/female-animations.glb",
-      "bytes": 11891352,
-      "sha256": "aef5ad3949c2282e55cda6d116f8dc895f5a4aabd64a184c8dcabf827838de8d",
+      "bytes": 11892264,
+      "sha256": "8e5f0f867c177baa762559421be9026c957142345b4bb5d3d15f1225d31792b7",
       "clips": [
         {
           "name": "stand.idle.unarmed",
@@ -19491,6 +19518,15 @@
             "floor": 0.002,
             "sampleRate": 30,
             "maximumLift": 0.048419
+          },
+          "nativeProneForearmSupport": {
+            "method": "retained-supported-free-forearm-rotations",
+            "surface": "complete-native-palm-finger-and-sleeve",
+            "sourceClip": "prone.idle.unarmed",
+            "hand": "left",
+            "floor": 0.002,
+            "retainedBodyLegsRightGripAndClock": true,
+            "rotationKeys": "native-supported-breathing-curve"
           }
         },
         {
@@ -19558,6 +19594,15 @@
             "floor": 0.002,
             "retainedInputTimes": true,
             "retainedNativeBodyAndWeapon": true
+          },
+          "nativeProneForearmSupport": {
+            "method": "retained-supported-free-forearm-rotations",
+            "surface": "complete-native-palm-finger-and-sleeve",
+            "sourceClip": "prone.idle.unarmed",
+            "hand": "left",
+            "floor": 0.002,
+            "retainedBodyLegsRightGripAndClock": true,
+            "rotationKeys": "retained-static-input-times"
           }
         },
         {
@@ -19586,6 +19631,15 @@
             "floor": 0.002,
             "retainedInputTimes": true,
             "retainedNativeBodyAndWeapon": true
+          },
+          "nativeProneForearmSupport": {
+            "method": "retained-supported-free-forearm-rotations",
+            "surface": "complete-native-palm-finger-and-sleeve",
+            "sourceClip": "prone.idle.unarmed",
+            "hand": "left",
+            "floor": 0.002,
+            "retainedBodyLegsRightGripAndClock": true,
+            "rotationKeys": "retained-static-input-times"
           }
         },
         {
