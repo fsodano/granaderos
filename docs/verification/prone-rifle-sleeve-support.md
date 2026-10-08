@@ -23,3 +23,43 @@ npm run typecheck
 ```
 
 The general library builder runs this postpass after the prior prone leg/free-arm corrections and before long-cloth fitting. Repeat execution verifies the stored selected-track digests and leaves both banks and the manifest unchanged. A changed or unknown source recipe rejects the write.
+
+## Current-main integration and ordinary reload review
+
+Source commit `f4383acb` composes the current bank on main `db32676f`.
+The exact preservation receipt confirms 21 changed channels, 1,092 retained
+selected channels, 327 retained other male clips, unchanged female bank,
+runtime and locomotion profile, and only seven support records plus the male
+bank bytes/hash in the manifest. Repeated fitting changes no asset. The male
+bank grows by 214,840 bytes. All close-garment support sets remain valid.
+
+All 27 current rifle, garment, pistol, clock and fixture checks pass in 26.89
+seconds, including all 36 paid rifle routes. Native verification, locomotion
+calibration, TypeScript, documentation and 38 baseline checks pass. Production
+export `c02e3814860c` verifies 1,245 files and 1,040 references.
+
+The public prone-work selector now offers all six owned rifle reloads. Each
+starts with an empty stable weapon instance and eight finite cartridges. The
+Baker pays its actual full first-turn budget, retains 20/21 reload progress
+without consuming a cartridge, then completes on the next turn for five
+internal AP and one cartridge. The fixture test covers the saved partial and
+completed states. The original incorrect one-order completion assumption is
+retained as a failed local result; gameplay costs are unchanged.
+
+Eight before and eight current normal HUD routes cover the six male rifle
+choices and two unchanged female control choices. Each run has 65 captures,
+including the Baker's next-turn completion. All paid/owned inventories, cells
+and prone postures match. Ten source/model hashes remain exact through each
+run; served banks, manifest and selected detailed bodies match. Browser errors
+are empty. The source commits are `7946deda` before and `f4383acb` current.
+
+The 240 ms early-pull views were visibly compared. At ordinary camera scale
+this is a small sleeve correction; complete weighted geometry checks establish
+its floor clearance. Some 940 ms captures straddle the prepare/result boundary
+and are retained as timing-limited evidence. Final publication changes only
+this review and the verification record after the captured source.
+
+Local evidence is in `artifacts/three-prone-rifle-sleeve-current-review/`:
+current original banks/source pins, immutable cut pins, preservation and repeat
+receipts, focused checks/export and both normal HUD runs. This remains bounded
+sleeve support, with the broader motion limits above still open.
