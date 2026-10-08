@@ -9,6 +9,7 @@ function measure(bank,name){
  const frames=sampleBank(bank,name,Array.from({length:count+1},(_,i)=>i/count),(point,scene)=>({
   joints:joints.map(name=>scene.getObjectByName(name).quaternion.clone()),
   wrist:point('middle_01_r').sub(point('hand_r')).angleTo(point('hand_r').sub(point('lowerarm_r')))*180/Math.PI,
+  wrists:['l','r'].map(side=>point('middle_01_'+side).sub(point('hand_'+side)).angleTo(point('hand_'+side).sub(point('lowerarm_'+side)))*180/Math.PI),
   hands:['l','r'].map(side=>point('hand_'+side)),
  }));
  let turn=0,speed=0;
@@ -39,6 +40,7 @@ for(const [gender,bank]of Object.entries(banks)){
  test(`${gender} firearm maintenance reaches retain continuous native joint arcs`,()=>{
   for(const posture of ['stand','crouch','prone','mounted'])for(const item of ['long-gun','short-gun'])for(const gesture of item==='short-gun'?['reprime','repair','unload']:['reprime','repair']){
    const name=`${posture}.${gesture}.${item}`,result=measure(bank,name);
+   assert.ok(Math.max(...result.frames.flatMap(frame=>frame.wrists))<25,`${name}: both palms follow their forearms during inspection`);
    assert.ok(result.turn<650,`${name}: no elbow or wrist flip (${result.turn.toFixed(1)} deg/s)`);
    assert.ok(result.speed<4,`${name}: no hand jump (${result.speed.toFixed(2)} m/s)`);
   }
@@ -56,8 +58,13 @@ for(const [gender,bank]of Object.entries(banks)){
    }
   }
   assert.ok(vertices.length>100,'The floor check uses the exported hand surfaces');
-  for(const gesture of ['equip','ration','offer','signal','grab','door','tool','fitting','breach']){
-   const name=`prone.gesture.${gesture}`,spec=bank.specs.find(clip=>clip.name===name),count=Math.ceil(spec.duration*120);
+  const namesToCheck=[
+   ...['equip','ration','offer','signal','grab','door','tool','fitting','breach'].map(gesture=>`prone.gesture.${gesture}`),
+   ...['long-gun','short-gun'].flatMap(item=>['reprime','repair'].map(gesture=>`prone.${gesture}.${item}`)),
+   'prone.unload.short-gun',
+  ];
+  for(const name of namesToCheck){
+   const spec=bank.specs.find(clip=>clip.name===name),count=Math.ceil(spec.duration*120);
    sampleBank(bank,name,Array.from({length:count+1},(_,i)=>i/count),(point,scene,time)=>{
     const matrices=names.map((name,i)=>new Matrix4().multiplyMatrices(scene.getObjectByName(name).matrixWorld,new Matrix4().fromArray(inverse,i*16)));
     let low=Infinity;

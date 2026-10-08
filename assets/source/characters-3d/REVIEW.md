@@ -43,6 +43,17 @@ Each anatomy has the same action coverage:
 The reviewed loading set contains 76 rifle/pistol clips per anatomy, including shared bindings, six rifle profiles, three pistols, the second pistol barrel and four postures. Other maintenance actions, including priming and repairs, are separate clips. Appearance changes share the relevant anatomy bank rather than copying or scaling a different skeleton.
 
 - Punches and relaxed hands use the native palm frame. Closed fingers and the guarding fist no longer flare or flip during preparation.
+- The later crouched-punch and low-work correction covers 13 clips per anatomy.
+  Actual forearm-to-palm bend stays below 7.13 degrees, hand speed below
+  2.36 m/s and hand skin at least 7.10 mm above the floor at 120 Hz. Only 90
+  arm/fist rotation channels per anatomy change. Deep pickup lets the free arm
+  counterbalance beside the leg instead of compressing the elbow against the knee.
+- Priming, repairs and pistol unloading use a relaxed inspection hold. Across
+  20 clips per anatomy, actual wrist bend stays below 16.82 degrees, local arm
+  speed below 511 degrees/s and hand speed below 3.76 m/s at 120 Hz. The prone
+  hands clear the floor by at least 196 mm. A steady middle reach and authored
+  surface clearance avoid both the prior folded wrist and a ground-crossing
+  palm arc. Body/leg channels, durations and event metadata remain unchanged.
 - Sword and knife cuts retain torso drive, anticipation and recovery. Their wrists follow the forearms; the forehand has knuckles down and the returning backhand has knuckles up. Thrusts point forward. Crouched attacks use continuous joint arcs instead of a changing elbow bend plane. Paired sword contact checks include the complete return to guard. If the original contact offset would exceed native reach on that return, the fit releases it earlier; the authored cut and the reach, floor and walking-speed limits stay unchanged.
 - Rifle and pistol holds fit the actual stock, grip, eye line and supporting hand. Finger bends use a stable native flexion plane, including the straight index outside the pistol guard. The pistol stock seats against the palm during a butt strike; the paired contact fit measures that same impact grip. Loading uses each weapon's physical length and bore. The ramrod hand and tool share a consistent frame. Native wrist checks accompany contact checks so a precise muzzle contact cannot conceal a bent wrist.
 - Throws retain their original release markers. The throwing knife follows its release velocity; grenade and bolas preparations have continuous wrist paths and actual head clearance.
@@ -115,8 +126,10 @@ currently passes 21 of 27 tests; six failures expose native rifle grip and
 paired-contact compatibility problems. These are not baseline failures and
 must pass before this branch is merged. A separate actual forearm-to-palm
 audit also found static wrist folds that the older angular-continuity checks
-did not detect. Private repairs cover maintenance, low work, crouched punches,
-rifle unload/carry and rifle strikes. Their pending files are not accepted
+did not detect. Maintenance, low work and crouched-punch repairs are now
+published and pass their combined 10 wrist, arc and floor gates, plus two
+retained low-work boot checks. Rifle unload/carry and rifle strikes remain
+in private review. Their pending files are not accepted
 merely because a wrist is straight; speed, surface clearance and item contact
 also need to pass. PR #239 remains a draft while this review is active.
 

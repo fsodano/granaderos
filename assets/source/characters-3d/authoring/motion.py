@@ -850,27 +850,8 @@ def _equipment_pose(ctx,base,equipment,offsets,mode='carry',posture=None):
 
 
 def _reload_pose(ctx,base,key,offsets,t,gesture):
-    rig=ctx['rig'];pose,grip,q=_gun_pose(ctx,base,key,offsets,'reload')
-    _apply_sample(rig,pose);head=rig.pose.bones['head'].head.copy();pelvis=rig.pose.bones['pelvis'].head.copy()
-    muzzle=grip+q @ Vector((.94 if key=='rifle' else .27,0,.055))
-    breech=grip+q @ Vector((.08,0,.035));belt=pelvis+Vector((.18,-.12,-.02));mouth=head+Vector((0,-.08,-.025))
-    if gesture=='reload':
-        stages=[(0,breech),(.12,belt),(.24,mouth),(.36,muzzle),(.46,muzzle),(.58,muzzle+q @ Vector((.12,0,0))),(.70,muzzle),(.79,muzzle+q @ Vector((.12,0,0))),(.88,breech),(1,breech)]
-    elif gesture=='unload':stages=[(0,breech),(.25,muzzle),(.55,muzzle+q @ Vector((.10,0,0))),(.78,belt),(1,breech)]
-    else:stages=[(0,breech),(.25,belt),(.45,breech),(.60,breech+q @ Vector((.03,.025,0))),(.78,breech),(1,breech)]
-    # Solve the contact poses first, then interpolate native joint arcs. A
-    # straight wrist target crossing the forearm axis can flip the IK plane
-    # between adjacent frames, especially when the body is prone.
-    def contact(target):
-        _apply_sample(rig,pose)
-        _gesture_reach(rig,'l',target,1,.9)
-        return _collect(rig)
-    for (a,pa),(b,pb) in zip(stages,stages[1:]):
-        if t<=b:
-            u=max(0,min(1,(t-a)/(b-a)));u=u*u*(3-2*u)
-            return _blend(contact(pa),contact(pb),u)
-    return contact(stages[-1][1])
-
+    from maintenance_pose import pose
+    return pose(ctx,base,key,offsets,t,gesture)
 
 
 def _gesture_reach(rig,side,target,weight,curl,offer=False):
@@ -942,7 +923,10 @@ def _gesture_pose(ctx,base,gesture,t,bank):
         if other:
             origin=rig.pose.bones['hand_l'].matrix@rig.data.bones['hand_l'].matrix_local.inverted()@rig.data.bones['hand_l'].head_local.lerp(rig.data.bones['middle_01_l'].head_local,.72)
             _gesture_reach(rig,'l',target+Vector((.20,.04,0)),weight,.65)
-    if chest.z-pelvis.z<.13 and gesture not in ('pickup','heal','free'):
+    if gesture in ('pickup','heal','free'):
+        from task_wrists import fit_working_wrists
+        fit_working_wrists(ctx,gesture,t,bank.get('canCrouch',False))
+    elif chest.z-pelvis.z<.13:
         from posture_support import clear_working_hands
         clear_working_hands(ctx)
     return _collect(rig)
@@ -1162,7 +1146,17 @@ def apply_animations(ctx, only=None):
                     # Keep both palms fitted while extending the shoulder line.
                     _apply_sample(rig,pose);pb=rig.pose.bones['spine_03'];_set_world_rotation(rig,'spine_03',Quaternion(UP,-phase*.38) @ pb.matrix.to_quaternion());pose=_collect(rig)
                 else:
-                    _apply_sample(rig,base);chest=rig.pose.bones['spine_03'].head.copy();_reach(rig,'r',chest+Vector((-.16,-.28-.29*phase,-.04)),curl=1.4);pose=_collect(rig)
+                    _apply_sample(rig,base);chest=rig.pose.bones['spine_03'].head.copy()
+                    target=chest+Vector((-.16,-.28-.29*phase,-.04))
+                    if posture=='crouched' and gesture=='punch':
+                        # Keep the wind-up outside the ribs and use the
+                        # approved closed fist, with the same impact reach.
+                        target.x-=.09*(1-max(0,phase))
+                        _gesture_reach(rig,'r',target,1,1.4)
+                        from reviewed_motion import _finger_curl as closed_fist
+                        closed_fist(rig,1.4,'r',closed=True)
+                    else:_reach(rig,'r',target,curl=1.4)
+                    pose=_collect(rig)
             elif gesture=='transition':
                 from posture_support import transition
                 pose=transition(ctx,bases,spec['fromPosture'],spec['toPosture'],t)

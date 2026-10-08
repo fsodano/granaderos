@@ -1826,8 +1826,8 @@
   "animationLibraries": {
     "male": {
       "url": "/models/characters/male-animations.glb",
-      "bytes": 17403512,
-      "sha256": "9d9075877569ff737bc5dfbf41a1d31744f183b6552377e6c6c8cab51532b16c",
+      "bytes": 17730616,
+      "sha256": "18775a9848ca3e38eda6d55c1264ef86b56c3fc6fdad9db816264e96578de94e",
       "clips": [
         {
           "name": "stand.idle.unarmed",
@@ -18074,8 +18074,8 @@
     },
     "female": {
       "url": "/models/characters/female-animations.glb",
-      "bytes": 16696484,
-      "sha256": "889a3501619dd21c0a76e41b3cea7a6f42bee853a1e81594375d7c0635947113",
+      "bytes": 17001196,
+      "sha256": "6a61b83aa990be398f62c4a27aee08eee9d6c6337d54184e269ffa2c07b14a1f",
       "clips": [
         {
           "name": "stand.idle.unarmed",
